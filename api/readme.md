@@ -34,7 +34,11 @@ It expects this payload (all fields required):
     {
          id: "ID",
          description: "DESCRIPTION",
-         date: "DATE"
+         date: "DATE",
+         years: {
+         	start: NUMBER,
+         	end: NUMBER
+         }
     }
 
 Fails if there is an existing touchstone with that ID.
@@ -136,7 +140,7 @@ It returns an enumeration of scenarios in this touchstone:
             vaccination_level: "none",
             disease: "MenA",
             vaccine: "MenA",
-            type: "n/a"
+            scenario_type: "n/a"
         },
         {
             id: "yf-campaign-reactive-nogavi",
@@ -145,14 +149,36 @@ It returns an enumeration of scenarios in this touchstone:
             vaccination_level: "no-gavi",
             disease: "YF",
             vaccine: "YF",
-            type: "campaign"
+            scenario_type: "campaign"
         }
     ]
 
 Notes:
 
 * `vaccinationLevel` must be one of `[none, no-gavi, gavi]`.
-* `type` must be one of `[n/a, routine, campaign]`.
+* `scenario_type` must be one of `[n/a, routine, campaign]`.
+
+##### Query parameters:
+
+###### vaccine
+Optional. A vaccine id. Only returns scenarios that match that vaccine.
+
+Example: `/touchstones/2017-op/scenarios/?vaccine=MenA`
+
+###### disease
+Optional. A disease id. Only returns scenarios that match that disease.
+
+Example: `/touchstones/2017-op/scenarios/?disease=YF`
+
+###### vaccination_level
+Optional. A vaccination level (none, no-gavi, gavi). Only returns scenarios that match that vaccination level.
+
+Example: `/touchstones/2017-op/scenarios/?vaccination_level=gavi`
+
+###### scenario_type
+Optional. A scenario type (n/a, routine, campaign). Only returns scenarios that match that scenario type.
+
+Example: `/touchstones/2017-op/scenarios/?scenario_type=gavi`
 
 #### `GET /touchstones/[touchstone-id]/scenarios/[scenario-id]/`
 Returns a single scenario and its accompanying coverage data.
@@ -169,10 +195,10 @@ Example response:
             vaccination_level: "none",
             disease: "MenA",
             vaccine: "MenA",
-            type: "n/a",
+            scenario_type: "n/a",
         },
         countries: [ "AFG", "AGO", "ALB", "ARM", ... ],
-        years: [ 1996, ... , 2062 ],
+        years: { start: 1996, end: 2081 }
         coverage: [
             { 
                 country: "AFG", 
@@ -198,8 +224,15 @@ Example response:
         ]
     } 
 
+##### Query parameters:
+
+###### countries
+Optional. Takes a list of country codes. The countries field and coverage data are filtered to just the specified countries.
+
+Example: `/touchstones/2017-op/scenarios/menA-novacc/?countries=AFG,ANG,CHN`
+
 #### `GET /touchstones/[touchstone-id]/scenarios/[scenario-id]/[country-code]`
-Returns coverage data for a given country in a single scenario.
+Returns coverage data for a single country in a single scenario.
 
 Example URL: `/touchstones/2017-op/scenarios/menA-novacc/AFG`
 
@@ -208,7 +241,8 @@ Example response:
     {
         scenario: "menA-novacc",
         touchstone: "2017-op",
-        country: "AFG", 
+        country: "AFG",
+        years: { start: 1996, end: 2081 }
         data: [
             ...
             { year: 2006, coverage: 0.0 },
@@ -314,4 +348,4 @@ Returns data in this format:
 1. Do we need a "published" flag on reference data sets which hides them (and their sub-objects) from ordinary users until they have been completed?
 4. Do users actually want the coverage data for all countries, or would they handle them one at a time?
 5. Should we return all years in the data set, or just the min and max? i.e. Can there be holes in the data? Perhaps we should define the years covered in the touchstone (with a start and an end) and reject any uploaded coverage data that doesn't provide numbers for every year in the touchstone?
-7. Do we add new diseases/vaccines/countries: Via the REST API? As part of adding a scenario (seems like a bad idea)? Or directly to the database? Are disease, vaccine and country codes specific to a given touchstone?
+7. Do we add new diseases/vaccines: Via the REST API? As part of adding a scenario (seems like a bad idea)? Or directly to the database? Are disease, vaccine and country codes specific to a given touchstone?
