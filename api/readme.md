@@ -178,9 +178,9 @@ Example response:
                 country: "AFG", 
                 data: [
                     ...
-                    { year: 2006, coverage: 0 },
-                    { year: 2007, coverage: 64 },
-                    { year: 2008, coverage: 63 },
+                    { year: 2006, coverage: 0.0 },
+                    { year: 2007, coverage: 64.0 },
+                    { year: 2008, coverage: 63.0 },
                     ...
                 ]
             },
@@ -188,9 +188,9 @@ Example response:
                 country: "AGO", 
                 data: [
                     ...
-                    { year: 2006, coverage: 0 },
-                    { year: 2007, coverage: 83 },
-                    { year: 2008, coverage: 81 },
+                    { year: 2006, coverage: 0.0 },
+                    { year: 2007, coverage: 83.0 },
+                    { year: 2008, coverage: 81.0 },
                     ...
                 ]
             },
@@ -211,9 +211,9 @@ Example response:
         country: "AFG", 
         data: [
             ...
-            { year: 2006, coverage: 0 },
-            { year: 2007, coverage: 64 },
-            { year: 2008, coverage: 63 },
+            { year: 2006, coverage: 0.0 },
+            { year: 2007, coverage: 64.0 },
+            { year: 2008, coverage: 63.0 },
             ...
         ]
     }
@@ -312,10 +312,7 @@ Returns data in this format:
 
 ## Questions
 1. Do we need a "published" flag on reference data sets which hides them (and their sub-objects) from ordinary users until they have been completed?
-2. Should coverage be an integer or a decimal?
-3. Is there a better way of returning a 2D table of coverage data?
 4. Do users actually want the coverage data for all countries, or would they handle them one at a time?
 5. Should we return all years in the data set, or just the min and max? i.e. Can there be holes in the data? Perhaps we should define the years covered in the touchstone (with a start and an end) and reject any uploaded coverage data that doesn't provide numbers for every year in the touchstone?
-6. Is it better to POST/PUT a blob of JSON, or http-encoded form data?
 7. Do we add new diseases/vaccines/countries: Via the REST API? As part of adding a scenario (seems like a bad idea)? Or directly to the database? Are disease, vaccine and country codes specific to a given touchstone?
 8. camelCase or snake_case?
