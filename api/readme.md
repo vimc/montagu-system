@@ -79,16 +79,16 @@ It returns data in this format:
         id: "AFG",
         name: "Angola",
         touchstone: "2017-op",
-        annualData: [
+        annual_data: [
             {
                 year: 1996,
-                totalPopulation: 17481800,
-                liveBirths: 835399,
-                survivingBirths: 750582,
-                under5MortalityRate: 148.6,
-                infantMortalityRate: 102.7,
-                neonatalMortalityRate: 47.5,
-                lifeExpectancyAtBirth: 54.171
+                total_population: 17481800,
+                live_births: 835399,
+                surviving_births: 750582,
+                under5_mortality_rate: 148.6,
+                infant_mortality_rate: 102.7,
+                neonatal_mortality_rate: 47.5,
+                life_expectancy_at_birth: 54.171
             },
             ...
         ]
@@ -103,16 +103,16 @@ It expects a payload in this format:
 
     {
         id: "AFG",
-        annualData: [
+        annual_data: [
             {
                 year: 1996,
-                totalPopulation: 17481800,
-                liveBirths: 835399,
-                survivingBirths: 750582,
-                under5MortalityRate: 148.6,
-                infantMortalityRate: 102.7,
-                neonatalMortalityRate: 47.5,
-                lifeExpectancyAtBirth: 54.171
+                total_population: 17481800,
+                live_births: 835399,
+                surviving_births: 750582,
+                under5_mortality_rate: 148.6,
+                infant_mortality_rate: 102.7,
+                neonatal_mortality_rate: 47.5,
+                life_expectancy_at_birth: 54.171
             },
             ...
         ]
@@ -133,7 +133,7 @@ It returns an enumeration of scenarios in this touchstone:
             id: "menA-novacc",
             touchstone: "2017-op",
             description: "2017 OP, Menigitis A, No vaccination",
-            vaccinationLevel: "none",
+            vaccination_level: "none",
             disease: "MenA",
             vaccine: "MenA",
             type: "n/a"
@@ -142,7 +142,7 @@ It returns an enumeration of scenarios in this touchstone:
             id: "yf-campaign-reactive-nogavi",
             touchstone: "2017-op",
             description: "2017 OP, Yellow Fever, Reactive campaign, SDF coverage without GAVI support",
-            vaccinationLevel: "no-gavi",
+            vaccination_level: "no-gavi",
             disease: "YF",
             vaccine: "YF",
             type: "campaign"
@@ -166,7 +166,7 @@ Example response:
             id: "menA-novacc",
             touchstone: "2017-op",
             description: "2017 OP, Menigitis A, No vaccination",
-            vaccinationLevel: "none",
+            vaccination_level: "none",
             disease: "MenA",
             vaccine: "MenA",
             type: "n/a",
@@ -227,7 +227,7 @@ Creates a new scenario. It expects data in the following format. All fields are 
         id: "ID",
         touchstone: "EXISTING TOUCHSTONE ID",
         description: "DESCRIPTION",
-        vaccinationLevel: "VACCINATION LEVEL (See above for options),
+        vaccination_level: "VACCINATION LEVEL (See above for options),
         disease: "VALID DISEASE CODE",
         vaccine: "VALID VACCINE CODE",
         type: "SCENARIO TYPE (See above for options)"
@@ -261,13 +261,13 @@ Returns data in this format:
         description: "2017 Operational Forecast",
         date: "2017-07-15",
         status: {
-            isComplete: false,
+            is_complete: false,
             years: { start: 1996, end: 2081 },
             countries: {
                 count: 97,
                 all: [ "AFG", "ALB", "AGO" ... ],
                 problems: {
-                    byCountry: [ 
+                    by_country: [ 
                         { 
                             id: "AFG",
                             problems: [ 
@@ -285,7 +285,7 @@ Returns data in this format:
                     general: [ 
                         "There are no scenarios for these vaccines: Hib3, HPV"
                     ],
-                    byVaccine: [
+                    by_vaccine: [
                         {
                             id: "YF",
                             problems: [
@@ -295,7 +295,7 @@ Returns data in this format:
                         },
                         ...
                     ],
-                    byScenario: [
+                    by_scenario: [
                         {
                             id: "menA-routine-gavi",
                             problems: [
@@ -315,4 +315,3 @@ Returns data in this format:
 4. Do users actually want the coverage data for all countries, or would they handle them one at a time?
 5. Should we return all years in the data set, or just the min and max? i.e. Can there be holes in the data? Perhaps we should define the years covered in the touchstone (with a start and an end) and reject any uploaded coverage data that doesn't provide numbers for every year in the touchstone?
 7. Do we add new diseases/vaccines/countries: Via the REST API? As part of adding a scenario (seems like a bad idea)? Or directly to the database? Are disease, vaccine and country codes specific to a given touchstone?
-8. camelCase or snake_case?
