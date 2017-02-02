@@ -1,7 +1,7 @@
 package uk.ac.imperial.vimc.demo.app.viewmodels
 
 import uk.ac.imperial.vimc.demo.app.models.*
-import java.time.LocalDate
+import java.time.Instant
 
 class NewImpactEstimate(val scenarioId: String?, val modelVersion: String?, val outcomes: List<NewCountryOutcomes>?) {
     class NewCountryOutcomes(val countryId: String?, val data: List<NewOutcome>?)
@@ -17,7 +17,7 @@ class NewImpactEstimate(val scenarioId: String?, val modelVersion: String?, val 
         val estimate = ImpactEstimate(
                 id = StaticModellingGroups.newEstimateId(),
                 scenario = scenario,
-                dateUploaded = LocalDate.now(),
+                uploadedTimestamp = Instant.now(),
                 modelVersion = modelVersion,
                 outcomes = outcomes.map(this::toCountryOutcomes)
         )

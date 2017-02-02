@@ -7,5 +7,5 @@ class ViewImpactEstimateMetadata(x: ImpactEstimate) {
     val id = x.id
     val scenario = ViewScenarioMetadata(x.scenario)
     val modelVersion = x.modelVersion
-    val dateUploaded = x.dateUploaded
+    val uploadedTimestamp = x.uploadedTimestamp
 }

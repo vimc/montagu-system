@@ -3,7 +3,9 @@ package uk.ac.imperial.vimc.demo.app.models
 import uk.ac.imperial.vimc.demo.app.extensions.clamp
 import uk.ac.imperial.vimc.demo.app.extensions.toSeed
 import java.math.BigDecimal
+import java.time.Duration
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 class FakeDataGenerator {
     fun generateCoverage(scenarioId: String, countries: Set<Country>, years: IntRange): List<CountryCoverage> {
@@ -28,5 +30,12 @@ class FakeDataGenerator {
 
     private fun generateOutcomesList(random: Random, years: IntRange): List<Outcome> {
         return years.map { Outcome(it, random.nextInt(100000) + 10000) }
+    }
+
+    private val timeRandomizer = Random(354373)
+    private val oneDayInMillis = TimeUnit.DAYS.toMillis(1).toInt()
+
+    fun randomTimeOffset(): Duration {
+        return Duration.ofMillis(timeRandomizer.nextInt(oneDayInMillis).toLong())
     }
 }
