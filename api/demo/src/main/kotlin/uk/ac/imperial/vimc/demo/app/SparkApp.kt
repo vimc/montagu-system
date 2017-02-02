@@ -43,7 +43,10 @@ class DemoApp {
         spk.get("$urlBase/modellers/:group-id/estimates/:estimate-id/", modellers::getEstimate, this::toJson)
         spk.post("$urlBase/modellers/:group-id/estimates/", modellers::createEstimate, this::toJson)
 
-        spk.after("*", { req, res -> res.type("application/json") })
+        spk.after("*", { req, res ->
+            res.type("application/json")
+            res.header("Content-Encoding", "gzip")
+        })
     }
 
     fun toJson(x: Any): String = Serializer.gson.toJson(x)
