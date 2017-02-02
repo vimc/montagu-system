@@ -10,5 +10,6 @@ object Serializer {
             .setPrettyPrinting()
             .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
             .registerTypeAdapter(LocalDateSerializer())
+            .registerTypeAdapter(RangeSerializer())
             .create()
 }
