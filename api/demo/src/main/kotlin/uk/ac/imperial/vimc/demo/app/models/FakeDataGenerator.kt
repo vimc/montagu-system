@@ -1,9 +1,26 @@
 package uk.ac.imperial.vimc.demo.app.models
 
+import uk.ac.imperial.vimc.demo.app.extensions.clamp
 import uk.ac.imperial.vimc.demo.app.extensions.toSeed
+import java.math.BigDecimal
 import java.util.*
 
 class FakeDataGenerator {
+    fun generateCoverage(scenarioId: String, countries: Set<Country>, years: IntRange): List<CountryCoverage> {
+        val random = Random(scenarioId.toSeed())
+        return countries.map { CountryCoverage(it, generateCountryCoverage(random, years)) }
+    }
+
+    private fun generateCountryCoverage(random: Random, years: IntRange): List<YearCoverage> {
+        var coverage = random.nextInt(100)
+        return years.map {
+            coverage = mutate(coverage, random)
+            YearCoverage(it, BigDecimal(coverage))
+        }
+    }
+
+    private fun mutate(coverage: Int, random: Random) = (coverage - 8 + random.nextInt(16)).clamp(0, 100)
+
     fun generateOutcomes(scenario: Scenario): List<CountryOutcomes> {
         val random = Random(scenario.id.toSeed())
         return scenario.countries.map { CountryOutcomes(it, generateOutcomesList(random, scenario.years)) }

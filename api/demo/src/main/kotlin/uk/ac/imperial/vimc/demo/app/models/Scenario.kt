@@ -1,24 +1,16 @@
 package uk.ac.imperial.vimc.demo.app.models
 
-import uk.ac.imperial.vimc.demo.app.extensions.toSeed
-import java.util.*
-
 @Suppress("Unused", "CanBeParameter")
 class Scenario(val id: String,
-                    val description: String,
-                    val vaccinationLevel: String,
-                    val disease: String,
-                    val vaccine: String,
-                    val scenarioType: String,
-                    val countries: Set<Country>,
-                    val years: IntRange) {
-    val coverage = generateFakeData(id, countries, years)
-
-    private fun generateFakeData(scenarioId: String, countries: Set<Country>, years: IntRange)
-            : List<CountryCoverage> {
-        val random = Random(scenarioId.toSeed())
-        return countries.map { CountryCoverage(it, random, years) }
-    }
+               val description: String,
+               val vaccinationLevel: String,
+               val disease: String,
+               val vaccine: String,
+               val scenarioType: String,
+               val countries: Set<Country>,
+               val years: IntRange,
+               coverage: Iterable<CountryCoverage>? = null) {
+    val coverage = (coverage ?: FakeDataGenerator().generateCoverage(id, countries, years)).toList()
 }
 
 object StaticScenarios {
