@@ -10,10 +10,9 @@ class Scenario(val id: String,
                     val disease: String,
                     val vaccine: String,
                     val scenarioType: String,
-                    countries: Set<Country>,
+                    val countries: Set<Country>,
                     val years: IntRange) {
     val coverage = generateFakeData(id, countries, years)
-    val countries = countries.map { it.toString() }
 
     private fun generateFakeData(scenarioId: String, countries: Set<Country>, years: IntRange)
             : List<CountryCoverage> {

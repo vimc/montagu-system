@@ -3,7 +3,7 @@ package uk.ac.imperial.vimc.demo.app.filters
 import spark.Request
 
 /**
- * A ParameterFilterSet is a list of ParameterFilters. It applies them all to a iterable of models in turn,
+ * A ParameterFilterSet is a list of ParameterFilters. It applies them all to an iterable of models in turn,
  * so that all filters are applied.
  */
 open class ParameterFilterSet<TModel>(filters: Iterable<ParameterFilter<TModel>>) {

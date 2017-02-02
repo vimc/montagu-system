@@ -1,11 +1,11 @@
 package uk.ac.imperial.vimc.demo.app
 
+import com.google.gson.JsonSyntaxException
 import org.slf4j.LoggerFactory
 import spark.Request
 import spark.Response
 import uk.ac.imperial.vimc.demo.app.controllers.ModellingGroupController
 import uk.ac.imperial.vimc.demo.app.controllers.ScenarioController
-import uk.ac.imperial.vimc.demo.app.serialization.Serializer
 import java.net.URL
 import spark.Spark as spk
 
@@ -22,7 +22,10 @@ class DemoApp {
 
         spk.exception(Exception::class.java) { e, req, res ->
             logger.error("An unhandled exception occurred", e)
-            res.body("An error occurred")
+            res.body("An error occurred: $e")
+        }
+        spk.exception(JsonSyntaxException::class.java) { e, req, res ->
+            res.body("Error: Unable to parse supplied JSON: ${req.body()}")
         }
 
         spk.redirect.get("/", urlBase)
@@ -31,12 +34,14 @@ class DemoApp {
         spk.get("$urlBase/", { req, res -> "root.json" }, this::fromFile)
         val scenarios = ScenarioController()
         spk.get("$urlBase/scenarios/", scenarios::getAllScenarios, this::toJson)
-        spk.get("$urlBase/scenarios/:id/", scenarios::getScenario, this::toJson)
+        spk.get("$urlBase/scenarios/:scenario-id/", scenarios::getScenario, this::toJson)
+        spk.get("$urlBase/scenarios/:scenario-id/countries/", scenarios::getCountriesInScenario, this::toJson)
         val modellers = ModellingGroupController()
         spk.get("$urlBase/modellers/", modellers::getAllModellingGroups, this::toJson)
         spk.get("$urlBase/modellers/", modellers::getAllModellingGroups, this::toJson)
-        spk.get("$urlBase/modellers/:id/estimates/", modellers::getAllEstimates, this::toJson)
-        spk.get("$urlBase/modellers/:id/estimates/:estimate-id/", modellers::getEstimate, this::toJson)
+        spk.get("$urlBase/modellers/:group-id/estimates/", modellers::getAllEstimates, this::toJson)
+        spk.get("$urlBase/modellers/:group-id/estimates/:estimate-id/", modellers::getEstimate, this::toJson)
+        spk.post("$urlBase/modellers/:group-id/estimates/", modellers::createEstimate, this::toJson)
 
         spk.after("*", { req, res -> res.type("application/json") })
     }
