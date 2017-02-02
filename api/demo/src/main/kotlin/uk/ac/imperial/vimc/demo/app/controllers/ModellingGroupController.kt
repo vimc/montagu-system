@@ -2,6 +2,8 @@ package uk.ac.imperial.vimc.demo.app.controllers
 
 import spark.Request
 import spark.Response
+import uk.ac.imperial.vimc.demo.app.filters.ScenarioFilter
+import uk.ac.imperial.vimc.demo.app.models.ImpactEstimate
 import uk.ac.imperial.vimc.demo.app.models.StaticModellingGroups
 import uk.ac.imperial.vimc.demo.app.viewmodels.ImpactEstimateAndGroup
 import uk.ac.imperial.vimc.demo.app.viewmodels.ModellingGroupAndEstimateListing
@@ -11,11 +13,15 @@ class ModellingGroupController {
     fun getAllModellingGroups(req: Request, res: Response): List<ModellingGroupMetadata> {
         return StaticModellingGroups.all.map(::ModellingGroupMetadata)
     }
+
     fun getAllEstimates(req: Request, res: Response): ModellingGroupAndEstimateListing {
-        val id = req.params(":id")
-        val group = StaticModellingGroups.all.single { it.id == id }
-        return ModellingGroupAndEstimateListing(group)
+        val groupId = req.params(":id")
+        val group = StaticModellingGroups.all.single { it.id == groupId }
+        val filters = ScenarioFilter.adaptedFor<ImpactEstimate> { it.scenario }
+        val estimates = filters.apply(group.estimates, req)
+        return ModellingGroupAndEstimateListing(group, estimates)
     }
+
     fun getEstimate(req: Request, res: Response): ImpactEstimateAndGroup {
         val id = req.params(":id")
         val group = StaticModellingGroups.all.single { it.id == id }
