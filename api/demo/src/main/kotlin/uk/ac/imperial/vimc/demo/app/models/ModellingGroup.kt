@@ -3,19 +3,7 @@ package uk.ac.imperial.vimc.demo.app.models
 import java.time.LocalDate
 import java.time.Month
 
-data class ModellingGroup(val id: String, val description: String, val estimates: List<ImpactEstimate>) {
-    fun metadata() = ModellingGroupMetadata(this)
-}
-
-class ModellingGroupMetadata(group: ModellingGroup) {
-    val id = group.id
-    val description = group.description
-}
-
-class ModellingGroupWithEstimateListing(group: ModellingGroup) {
-    val group = group.metadata()
-    val estimates = group.estimates.map { it.metadata() }.toList()
-}
+data class ModellingGroup(val id: String, val description: String, val estimates: List<ImpactEstimate>)
 
 object StaticModellingGroups {
     val all = listOf(

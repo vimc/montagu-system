@@ -2,14 +2,18 @@ package uk.ac.imperial.vimc.demo.app
 
 import com.github.salomonbrys.kotson.registerTypeAdapter
 import com.google.gson.FieldNamingPolicy
-import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import org.slf4j.LoggerFactory
 import spark.Request
 import spark.Response
-import uk.ac.imperial.vimc.demo.app.models.*
+import uk.ac.imperial.vimc.demo.app.models.Scenario
+import uk.ac.imperial.vimc.demo.app.models.StaticModellingGroups
+import uk.ac.imperial.vimc.demo.app.models.StaticScenarios
 import uk.ac.imperial.vimc.demo.app.serialization.LocalDateSerializer
-import uk.ac.imperial.vimc.demo.app.serialization.ScenarioIdSerializer
+import uk.ac.imperial.vimc.demo.app.viewmodels.ImpactEstimateAndGroup
+import uk.ac.imperial.vimc.demo.app.viewmodels.ModellingGroupAndEstimateListing
+import uk.ac.imperial.vimc.demo.app.viewmodels.ModellingGroupMetadata
+import uk.ac.imperial.vimc.demo.app.viewmodels.ScenarioMetadata
 import java.net.URL
 import spark.Spark as spk
 
@@ -39,69 +43,46 @@ class DemoApp {
 
         spk.get("$urlBase/",               { req, res -> "root.json" }, ::fromFile)
         val scenarios = ScenarioController()
-        scenarios.get("$urlBase/scenarios/", scenarios.getAllScenarios)
-        scenarios.get("$urlBase/scenarios/:id/", scenarios.getScenario)
+        spk.get("$urlBase/scenarios/", scenarios::getAllScenarios, this::toJson)
+        spk.get("$urlBase/scenarios/:id/", scenarios::getScenario, this::toJson)
         val modellers = ModellingGroupController()
-        modellers.get("$urlBase/modellers/", modellers.getAllModellingGroups)
-        modellers.get("$urlBase/modellers/:id/estimates/", modellers.getAllEstimates)
-        modellers.get("$urlBase/modellers/:id/estimates/:estimate-id/", modellers.getEstimate)
+        spk.get("$urlBase/modellers/", modellers::getAllModellingGroups, this::toJson)
+        spk.get("$urlBase/modellers/", modellers::getAllModellingGroups, this::toJson)
+        spk.get("$urlBase/modellers/:id/estimates/", modellers::getAllEstimates, this::toJson)
+        spk.get("$urlBase/modellers/:id/estimates/:estimate-id/", modellers::getEstimate, this::toJson)
 
         spk.after("*", { req, res -> res.type("application/json") })
     }
+
+    fun toJson(x: Any): String = gson.toJson(x)
 }
 
-abstract class Controller {
-    protected fun gsonBuilder() = GsonBuilder()
-            .setPrettyPrinting()
-            .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
-            .registerTypeAdapter(LocalDateSerializer())
-    protected val defaultGson : Gson = gsonBuilder().create()
-
-    fun get(path: String, handler: Handler) {
-        spk.get(path, handler.route, { handler.transformer.toJson(it) })
+class ScenarioController {
+    fun getAllScenarios(req: Request, res: Response): List<ScenarioMetadata> {
+        return StaticScenarios.all.map(::ScenarioMetadata)
     }
-
-    protected fun handler(route: (Request, Response) -> Any) = handler(route, defaultGson)
-    protected fun handler(route: (Request, Response) -> Any, transformer: Gson) = Handler(route, transformer)
-    protected fun handler(route: (Request, Response) -> Any, build: (GsonBuilder) -> GsonBuilder): Handler {
-        val newBuilder = build(gsonBuilder())
-        return handler(route, newBuilder.create())
+    fun getScenario(req: Request, res: Response): Scenario {
+        val id = req.params(":id")
+        return StaticScenarios.all.single { it.id == id }
     }
 }
 
-class Handler(val route: (Request, Response) -> Any, val transformer: Gson) {
-}
-
-class ScenarioController : Controller() {
-    val getAllScenarios = handler({ req, res -> StaticScenarios.all })
-    val getScenario = handler(
-            { req, res ->
-                val id = req.params(":id")
-                val scenario = StaticScenarios.all.single { it.id == id }
-                ScenarioWithData(scenario, StaticCountries.all, StaticData.defaultYears)
-            }
-    )
-}
-
-class ModellingGroupController : Controller() {
-    val getAllModellingGroups = handler({ req, res -> StaticModellingGroups.all.map { it.metadata() } })
-    val getAllEstimates = handler(
-            { req, res ->
-                val id = req.params(":id")
-                val group = StaticModellingGroups.all.single { it.id == id }
-                ModellingGroupWithEstimateListing(group)
-            },
-            { it.registerTypeAdapter(ScenarioIdSerializer()) }
-    )
-    val getEstimate = handler(
-            { req, res ->
-                val id = req.params(":id")
-                val group = StaticModellingGroups.all.single { it.id == id }
-                val estimateId = req.params(":estimate-id").toInt()
-                val estimate = group.estimates.single { it.id == estimateId }
-                EstimateWithGroup(group.metadata(), estimate)
-            }
-    )
+class ModellingGroupController {
+    fun getAllModellingGroups(req: Request, res: Response): List<ModellingGroupMetadata> {
+        return StaticModellingGroups.all.map(::ModellingGroupMetadata)
+    }
+    fun getAllEstimates(req: Request, res: Response): ModellingGroupAndEstimateListing {
+        val id = req.params(":id")
+        val group = StaticModellingGroups.all.single { it.id == id }
+        return ModellingGroupAndEstimateListing(group)
+    }
+    fun getEstimate(req: Request, res: Response): ImpactEstimateAndGroup {
+        val id = req.params(":id")
+        val group = StaticModellingGroups.all.single { it.id == id }
+        val estimateId = req.params(":estimate-id").toInt()
+        val estimate = group.estimates.single { it.id == estimateId }
+        return ImpactEstimateAndGroup(group, estimate)
+    }
 }
 
 fun fromFile(fileName: Any): String {
