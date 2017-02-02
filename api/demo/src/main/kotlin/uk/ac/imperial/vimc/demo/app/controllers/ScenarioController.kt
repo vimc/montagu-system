@@ -6,6 +6,7 @@ import uk.ac.imperial.vimc.demo.app.filters.ScenarioFilter
 import uk.ac.imperial.vimc.demo.app.models.Country
 import uk.ac.imperial.vimc.demo.app.models.Scenario
 import uk.ac.imperial.vimc.demo.app.models.StaticScenarios
+import uk.ac.imperial.vimc.demo.app.viewmodels.ViewScenario
 import uk.ac.imperial.vimc.demo.app.viewmodels.ViewScenarioMetadata
 
 class ScenarioController {
@@ -14,8 +15,8 @@ class ScenarioController {
         return scenarios.map(::ViewScenarioMetadata)
     }
 
-    fun getScenario(req: Request, res: Response): Scenario {
-        return getScenario(req)
+    fun getScenario(req: Request, res: Response): ViewScenario {
+        return ViewScenario(getScenario(req))
     }
 
     fun getCountriesInScenario(req: Request, res: Response): List<Country> {
