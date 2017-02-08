@@ -5,13 +5,13 @@ import spark.Response
 import uk.ac.imperial.vimc.demo.app.filters.ScenarioFilter
 import uk.ac.imperial.vimc.demo.app.models.Country
 import uk.ac.imperial.vimc.demo.app.models.Scenario
-import uk.ac.imperial.vimc.demo.app.models.StaticScenarios
+import uk.ac.imperial.vimc.demo.app.repositories.Repository
 import uk.ac.imperial.vimc.demo.app.viewmodels.ViewScenario
 import uk.ac.imperial.vimc.demo.app.viewmodels.ViewScenarioMetadata
 
-class ScenarioController {
+class ScenarioController(private val db: Repository) {
     fun getAllScenarios(req: Request, res: Response): List<ViewScenarioMetadata> {
-        val scenarios = ScenarioFilter.apply(StaticScenarios.all, req)
+        val scenarios = ScenarioFilter.apply(db.scenarios.all(), req)
         return scenarios.map(::ViewScenarioMetadata)
     }
 
@@ -25,6 +25,6 @@ class ScenarioController {
 
     private fun getScenario(req: Request): Scenario {
         val id = req.params(":scenario-id")
-        return StaticScenarios.all.single { it.id == id }
+        return db.scenarios.get(id)
     }
 }

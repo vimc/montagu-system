@@ -7,15 +7,15 @@ import uk.ac.imperial.vimc.demo.app.Serializer
 import uk.ac.imperial.vimc.demo.app.filters.ScenarioFilter
 import uk.ac.imperial.vimc.demo.app.models.ImpactEstimate
 import uk.ac.imperial.vimc.demo.app.models.ModellingGroup
-import uk.ac.imperial.vimc.demo.app.models.StaticModellingGroups
+import uk.ac.imperial.vimc.demo.app.repositories.Repository
 import uk.ac.imperial.vimc.demo.app.viewmodels.ImpactEstimateDataAndGroup
 import uk.ac.imperial.vimc.demo.app.viewmodels.NewImpactEstimate
 import uk.ac.imperial.vimc.demo.app.viewmodels.ViewModellingGroupEstimateListing
 import uk.ac.imperial.vimc.demo.app.viewmodels.ViewModellingGroupMetadata
 
-class ModellingGroupController {
+class ModellingGroupController(private val db: Repository) {
     fun getAllModellingGroups(req: Request, res: Response): List<ViewModellingGroupMetadata> {
-        return StaticModellingGroups.all.map(::ViewModellingGroupMetadata)
+        return db.modellingGroups.all().map(::ViewModellingGroupMetadata)
     }
 
     fun getAllEstimates(req: Request, res: Response): ViewModellingGroupEstimateListing {
@@ -35,13 +35,13 @@ class ModellingGroupController {
     fun createEstimate(req: Request, res: Response): ImpactEstimateDataAndGroup {
         val group = getGroup(req)
         val data = Serializer.gson.fromJson<NewImpactEstimate>(req.body())
-        val estimate = data.toEstimate(group)
+        val estimate = data.toEstimate(group, db)
         res.status(201)
         return ImpactEstimateDataAndGroup(group, estimate)
     }
 
     private fun getGroup(req: Request): ModellingGroup {
         val id = req.params(":group-id")
-        return StaticModellingGroups.all.single { it.id == id }
+        return db.modellingGroups.get(id)
     }
 }
