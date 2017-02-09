@@ -1,5 +1,5 @@
 # Build instructions
-## Get the database up and runnning
+## Get the database up and running
 In the repository root, run `./scripts/setup-database.sh`
 
 This gives you a Docker instance with a populated database. You'll need to run this again if the instance is stopped - for example, if you reboot your machine.

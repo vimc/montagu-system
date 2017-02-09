@@ -1,35 +1,31 @@
-package uk.ac.imperial.vimc.demo.app.repositories
+package uk.ac.imperial.vimc.demo.app.repositories.jooq
 
 import org.jooq.DSLContext
 import org.jooq.Record
-import org.jooq.SQLDialect
 import org.jooq.TableField
-import org.jooq.impl.DSL
 import org.jooq.impl.TableImpl
+import uk.ac.imperial.vimc.demo.app.filters.ScenarioFilterParameters
 import uk.ac.imperial.vimc.demo.app.models.Country
 import uk.ac.imperial.vimc.demo.app.models.HasKey
-import uk.ac.imperial.vimc.demo.app.models.ModellingGroup
 import uk.ac.imperial.vimc.demo.app.models.Scenario
 import uk.ac.imperial.vimc.demo.app.models.jooq.Tables
-import java.sql.Connection
-import java.sql.DriverManager
+import uk.ac.imperial.vimc.demo.app.repositories.DataSet
+import uk.ac.imperial.vimc.demo.app.repositories.ScenarioRepository
+import uk.ac.imperial.vimc.demo.app.models.ScenarioAndCoverage
 
-class JooqRepository : Repository, AutoCloseable {
-    private val conn = DriverManager.getConnection("jdbc:postgresql://localhost:8888/vimc", "postgres", "")
-    private val dsl = getDSL(conn)
-
+@Suppress("unused")
+class JooqScenarioRepository(context: JooqContext) : JooqRepository(context), ScenarioRepository {
     override val countries: DataSet<Country, String> = JooqDataSet(dsl, Tables.COUNTRY, Tables.COUNTRY.CODE, { Country(it.code, it.name) })
     override val scenarios: DataSet<Scenario, String>
         get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
-    override val modellingGroups: DataSet<ModellingGroup, String>
-        get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
-
-    private fun getDSL(conn: Connection): DSLContext {
-        return DSL.using(conn, SQLDialect.POSTGRES)
+    override fun getScenarios(scenarioFilterParameters: ScenarioFilterParameters): Iterable<Scenario> {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
-
-    override fun close() {
-        conn.close()
+    override fun getScenarioAndCoverage(key: String): ScenarioAndCoverage {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+    override fun getScenarioCountries(scenarioId: String): List<Country> {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }
 

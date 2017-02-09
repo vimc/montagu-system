@@ -2,29 +2,24 @@ package uk.ac.imperial.vimc.demo.app.controllers
 
 import spark.Request
 import spark.Response
-import uk.ac.imperial.vimc.demo.app.filters.ScenarioFilter
+import uk.ac.imperial.vimc.demo.app.filters.ScenarioFilterParameters
 import uk.ac.imperial.vimc.demo.app.models.Country
 import uk.ac.imperial.vimc.demo.app.models.Scenario
-import uk.ac.imperial.vimc.demo.app.repositories.Repository
-import uk.ac.imperial.vimc.demo.app.viewmodels.ViewScenario
-import uk.ac.imperial.vimc.demo.app.viewmodels.ViewScenarioMetadata
+import uk.ac.imperial.vimc.demo.app.models.ScenarioAndCoverage
+import uk.ac.imperial.vimc.demo.app.repositories.ScenarioRepository
 
-class ScenarioController(private val db: Repository) {
-    fun getAllScenarios(req: Request, res: Response): List<ViewScenarioMetadata> {
-        val scenarios = ScenarioFilter.apply(db.scenarios.all(), req)
-        return scenarios.map(::ViewScenarioMetadata)
+class ScenarioController(private val db: ScenarioRepository) {
+    fun getAllScenarios(req: Request, res: Response): List<Scenario> {
+        return db.getScenarios(ScenarioFilterParameters.fromRequest(req)).toList()
     }
 
-    fun getScenario(req: Request, res: Response): ViewScenario {
-        return ViewScenario(getScenario(req))
+    fun getScenario(req: Request, res: Response): ScenarioAndCoverage {
+        return db.getScenarioAndCoverage(req.scenarioId())
     }
 
     fun getCountriesInScenario(req: Request, res: Response): List<Country> {
-        return getScenario(req).countries.toList()
+        return db.getScenarioCountries(req.scenarioId())
     }
 
-    private fun getScenario(req: Request): Scenario {
-        val id = req.params(":scenario-id")
-        return db.scenarios.get(id)
-    }
+    private fun Request.scenarioId(): String = this.params(":scenario-id")
 }

@@ -1,17 +1,18 @@
-package uk.ac.imperial.vimc.demo.app.repositories
+package uk.ac.imperial.vimc.demo.app.repositories.fake
 
 import uk.ac.imperial.vimc.demo.app.extensions.clamp
 import uk.ac.imperial.vimc.demo.app.extensions.toSeed
 import uk.ac.imperial.vimc.demo.app.models.*
+import uk.ac.imperial.vimc.demo.app.repositories.ScenarioRepository
 import java.math.BigDecimal
 import java.time.Duration
 import java.util.*
 import java.util.concurrent.TimeUnit
 
 class FakeDataGenerator {
-    fun generateCoverage(scenarioId: String, countries: Set<Country>, years: IntRange): List<CountryCoverage> {
+    fun generateCoverage(scenarioId: String, countries: Iterable<Country>, years: IntRange): List<CountryCoverage> {
         val random = Random(scenarioId.toSeed())
-        return countries.map { CountryCoverage(it, generateCountryCoverage(random, years)) }
+        return countries.map { CountryCoverage(it.id, generateCountryCoverage(random, years)) }
     }
 
     private fun generateCountryCoverage(random: Random, years: IntRange): List<YearCoverage> {
@@ -24,9 +25,10 @@ class FakeDataGenerator {
 
     private fun mutate(coverage: Int, random: Random) = (coverage - 8 + random.nextInt(16)).clamp(0, 100)
 
-    fun generateOutcomes(scenario: Scenario): List<CountryOutcomes> {
-        val random = Random(scenario.id.toSeed())
-        return scenario.countries.map { CountryOutcomes(it, generateOutcomesList(random, scenario.years)) }
+    fun generateOutcomes(scenarioId: String, scenarioRepository: ScenarioRepository): List<CountryOutcomes> {
+        val scenario = scenarioRepository.getScenarioAndCoverage(scenarioId)
+        val random = Random(scenario.scenario.id.toSeed())
+        return scenarioRepository.getScenarioCountries(scenarioId).map { CountryOutcomes(it.id, generateOutcomesList(random, scenario.years)) }
     }
 
     private fun generateOutcomesList(random: Random, years: IntRange): List<Outcome> {

@@ -6,8 +6,10 @@ import spark.Request
 import spark.Response
 import uk.ac.imperial.vimc.demo.app.controllers.ModellingGroupController
 import uk.ac.imperial.vimc.demo.app.controllers.ScenarioController
-import uk.ac.imperial.vimc.demo.app.repositories.FakeDataRepository
-import uk.ac.imperial.vimc.demo.app.repositories.Repository
+import uk.ac.imperial.vimc.demo.app.repositories.ModellingGroupRepository
+import uk.ac.imperial.vimc.demo.app.repositories.ScenarioRepository
+import uk.ac.imperial.vimc.demo.app.repositories.fake.FakeModellingGroupRepository
+import uk.ac.imperial.vimc.demo.app.repositories.fake.FakeScenarioRepository
 import java.net.URL
 import spark.Spark as spk
 
@@ -33,13 +35,16 @@ class DemoApp {
         spk.redirect.get("/", urlBase)
         spk.before("*", this::addTrailingSlashes)
 
-        val db: Repository = FakeDataRepository()
         spk.get("$urlBase/", { req, res -> "root.json" }, this::fromFile)
-        val scenarios = ScenarioController(db)
+
+        val scenarioRepository: ScenarioRepository = FakeScenarioRepository()
+        val scenarios = ScenarioController(scenarioRepository)
         spk.get("$urlBase/scenarios/", scenarios::getAllScenarios, this::toJson)
         spk.get("$urlBase/scenarios/:scenario-id/", scenarios::getScenario, this::toJson)
         spk.get("$urlBase/scenarios/:scenario-id/countries/", scenarios::getCountriesInScenario, this::toJson)
-        val modellers = ModellingGroupController(db)
+
+        val modellingGroupRepository: ModellingGroupRepository = FakeModellingGroupRepository(scenarioRepository)
+        val modellers = ModellingGroupController(modellingGroupRepository)
         spk.get("$urlBase/modellers/", modellers::getAllModellingGroups, this::toJson)
         spk.get("$urlBase/modellers/", modellers::getAllModellingGroups, this::toJson)
         spk.get("$urlBase/modellers/:group-id/estimates/", modellers::getAllEstimates, this::toJson)

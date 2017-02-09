@@ -1,0 +1,20 @@
+package uk.ac.imperial.vimc.demo.app.repositories.jooq
+
+import org.jooq.DSLContext
+import org.jooq.SQLDialect
+import org.jooq.impl.DSL
+import java.sql.Connection
+import java.sql.DriverManager
+
+class JooqContext : AutoCloseable {
+    private val conn = DriverManager.getConnection("jdbc:postgresql://localhost:8888/vimc", "postgres", "")
+    val dsl = getDSL(conn)
+
+    private fun getDSL(conn: Connection): DSLContext {
+        return DSL.using(conn, SQLDialect.POSTGRES)
+    }
+
+    override fun close() {
+        conn.close()
+    }
+}
