@@ -35,10 +35,10 @@
 
         <target>
             <!-- The destination package of your generated classes (within the destination directory) -->
-            <packageName>uk.ac.imperial.vimc.demo.models</packageName>
+            <packageName>uk.ac.imperial.vimc.demo.app.models.jooq</packageName>
 
             <!-- The destination directory of your generated classes -->
-            <directory>/home/me06/projects/vimc/repo/api/demo/generateFromDatabase/src/main/java</directory>
+            <directory>/home/me06/projects/vimc/repo/api/demo/app/src/main/java</directory>
         </target>
     </generator>
 </configuration>
