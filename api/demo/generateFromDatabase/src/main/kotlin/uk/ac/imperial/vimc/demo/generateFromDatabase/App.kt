@@ -1,3 +1,5 @@
+package uk.ac.imperial.vimc.demo.generateFromDatabase
+
 import org.jooq.util.GenerationTool
 
 fun main(args: Array<String>) {

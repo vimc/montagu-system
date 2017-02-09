@@ -43,6 +43,8 @@ project(':app')  {
     mainClassName = "uk.ac.imperial.vimc.demo.app.SparkAppKt"
 }
 project(':generateFromDatabase')  {
+    mainClassName = "uk.ac.imperial.vimc.demo.generateFromDatabase.AppKt"
+
     dependencies {
         compile "org.jooq:jooq-codegen:3.9.1"
     }
