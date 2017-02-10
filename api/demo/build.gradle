@@ -16,6 +16,7 @@ buildscript {
 }
 
 task run(dependsOn: ':app:run')
+task generateFromDatabase(dependsOn: ':generateFromDatabase:run')
 
 subprojects {
     apply plugin: 'kotlin'

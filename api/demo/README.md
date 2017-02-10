@@ -5,7 +5,7 @@ In the repository root, run `./scripts/setup-database.sh`
 This gives you a Docker instance with a populated database. You'll need to run this again if the instance is stopped - for example, if you reboot your machine.
 
 ## Generate the data models
-In `./api/demo`, run `gradlew :generateFromDatabase run`
+In `./api/demo`, run `gradlew generateFromDatabase`
 
 You will only have to do this step again when the database schema changes (or if you lose the generated code somehow).
 
