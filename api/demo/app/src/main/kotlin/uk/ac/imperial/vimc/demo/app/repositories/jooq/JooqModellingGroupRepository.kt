@@ -40,10 +40,10 @@ class JooqModellingGroupRepository : JooqRepository(), ModellingGroupRepository 
                 Tables.RESPONSIBILITY_SET.MODELLING_GROUP.eq(group.id))
         val scenarios = dsl
                 .select(Tables.COVERAGE_SCENARIO_DESCRIPTION.fields().toList())
-                .from(Tables.RESPONSIBLITY)
+                .from(Tables.RESPONSIBILITY)
                 .join(Tables.COVERAGE_SCENARIO).onKey()
                 .join(Tables.COVERAGE_SCENARIO_DESCRIPTION).onKey()
-                .where(Tables.RESPONSIBLITY.RESPONSIBILITY_SET.eq(responsibility_set.id))
+                .where(Tables.RESPONSIBILITY.RESPONSIBILITY_SET.eq(responsibility_set.id))
                 .whereMatchesFilter(JooqScenarioFilter(), scenarioFilterParameters)
                 .fetchInto<CoverageScenarioDescriptionRecord>()
                 .map { JooqScenarioRepository.scenarioMapper(it) }
@@ -55,12 +55,12 @@ class JooqModellingGroupRepository : JooqRepository(), ModellingGroupRepository 
         val group = getModellingGroupByCode(groupCode)
         val scenarioIdField = Tables.COVERAGE_SCENARIO_DESCRIPTION.ID
         val impactEstimates = dsl
-                .select(Tables.IMPACT_ESTIMATE_SET.ID, Tables.MODEL_VERSIONS.VERSION, Tables.MODEL.NAME, scenarioIdField)
+                .select(Tables.IMPACT_ESTIMATE_SET.ID, Tables.MODEL_VERSION.VERSION, Tables.MODEL.NAME, scenarioIdField)
                 .from(Tables.MODELLING_GROUP)
                 .join(Tables.RESPONSIBILITY_SET).using(Tables.MODELLING_GROUP.ID)
-                .join(Tables.RESPONSIBLITY).using(Tables.RESPONSIBILITY_SET.ID)
+                .join(Tables.RESPONSIBILITY).using(Tables.RESPONSIBILITY_SET.ID)
                 .join(Tables.IMPACT_ESTIMATE_SET).using(Tables.IMPACT_ESTIMATE_SET.ID)
-                .join(Tables.MODEL_VERSIONS).onKey()
+                .join(Tables.RESPONSIBILITY).onKey()
                 .join(Tables.MODEL).onKey()
                 .join(Tables.COVERAGE_SCENARIO).onKey()
                 .join(Tables.COVERAGE_SCENARIO_DESCRIPTION).onKey()
@@ -77,7 +77,7 @@ class JooqModellingGroupRepository : JooqRepository(), ModellingGroupRepository 
                     record[Tables.IMPACT_ESTIMATE_SET.ID],
                     scenarios.single { record[scenarioIdField] == it.id },
                     record[Tables.MODEL.NAME],
-                    record[Tables.MODEL_VERSIONS.VERSION],
+                    record[Tables.MODEL_VERSION.VERSION],
                     Instant.now()
             )
         }
