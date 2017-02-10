@@ -8,9 +8,9 @@ import java.sql.DriverManager
 
 class JooqContext : AutoCloseable {
     private val conn = DriverManager.getConnection("jdbc:postgresql://localhost:8888/vimc", "postgres", "")
-    val dsl = getDSL(conn)
+    val dsl = createDSL(conn)
 
-    private fun getDSL(conn: Connection): DSLContext {
+    private fun createDSL(conn: Connection): DSLContext {
         return DSL.using(conn, SQLDialect.POSTGRES)
     }
 

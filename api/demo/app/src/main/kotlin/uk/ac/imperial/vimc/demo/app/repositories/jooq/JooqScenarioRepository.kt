@@ -11,8 +11,9 @@ import uk.ac.imperial.vimc.demo.app.repositories.DataSet
 import uk.ac.imperial.vimc.demo.app.repositories.ScenarioRepository
 
 @Suppress("unused")
-class JooqScenarioRepository(context: JooqContext) : JooqRepository(context), ScenarioRepository {
-    override val countries: DataSet<Country, String> = JooqDataSet(dsl, Tables.COUNTRY, Tables.COUNTRY.CODE, { Country(it.code, it.name) })
+class JooqScenarioRepository : JooqRepository(), ScenarioRepository {
+    override val countries: DataSet<Country, String>
+            get() = JooqDataSet(dsl, Tables.COUNTRY, Tables.COUNTRY.ID, { Country(it.id, it.name) })
     override val scenarios: DataSet<Scenario, String>
             get() = JooqDataSet(dsl, Tables.COVERAGE_SCENARIO_DESCRIPTION, Tables.COVERAGE_SCENARIO_DESCRIPTION.ID, this::scenarioMapper)
 

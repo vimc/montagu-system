@@ -14,8 +14,7 @@ import java.net.URL
 import spark.Spark as spk
 
 fun main(args: Array<String>) {
-    val db = JooqContext()
-    val scenarioRepository = JooqScenarioRepository(db)
+    val scenarioRepository = JooqScenarioRepository()
     val scenarioController = ScenarioController(scenarioRepository)
 
     val modellingGroupRepository = FakeModellingGroupRepository(FakeScenarioRepository())
