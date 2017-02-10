@@ -1,41 +1,54 @@
 package uk.ac.imperial.vimc.demo.app.repositories.jooq
 
-import org.jooq.DSLContext
-import org.jooq.Record
-import org.jooq.TableField
-import org.jooq.impl.TableImpl
+import org.slf4j.LoggerFactory
 import uk.ac.imperial.vimc.demo.app.filters.ScenarioFilterParameters
 import uk.ac.imperial.vimc.demo.app.models.Country
-import uk.ac.imperial.vimc.demo.app.models.HasKey
 import uk.ac.imperial.vimc.demo.app.models.Scenario
+import uk.ac.imperial.vimc.demo.app.models.ScenarioAndCoverage
 import uk.ac.imperial.vimc.demo.app.models.jooq.Tables
+import uk.ac.imperial.vimc.demo.app.models.jooq.tables.records.CoverageScenarioDescriptionRecord
 import uk.ac.imperial.vimc.demo.app.repositories.DataSet
 import uk.ac.imperial.vimc.demo.app.repositories.ScenarioRepository
-import uk.ac.imperial.vimc.demo.app.models.ScenarioAndCoverage
 
 @Suppress("unused")
 class JooqScenarioRepository(context: JooqContext) : JooqRepository(context), ScenarioRepository {
     override val countries: DataSet<Country, String> = JooqDataSet(dsl, Tables.COUNTRY, Tables.COUNTRY.CODE, { Country(it.code, it.name) })
     override val scenarios: DataSet<Scenario, String>
-        get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
+            get() = JooqDataSet(dsl, Tables.COVERAGE_SCENARIO_DESCRIPTION, Tables.COVERAGE_SCENARIO_DESCRIPTION.ID, this::scenarioMapper)
+
     override fun getScenarios(scenarioFilterParameters: ScenarioFilterParameters): Iterable<Scenario> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val table = Tables.COVERAGE_SCENARIO_DESCRIPTION
+        val filterable = dsl.selectFrom(table).where()
+        return JooqScenarioFilter()
+                .apply(filterable, scenarioFilterParameters)
+                .fetch()
+                .map(this::scenarioMapper)
     }
+
+
+    private val logger = LoggerFactory.getLogger(JooqScenarioRepository::class.java)
+
     override fun getScenarioAndCoverage(key: String): ScenarioAndCoverage {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val records = dsl.select()
+                .from(Tables.COVERAGE_SCENARIO_DESCRIPTION
+                        .join(Tables.COVERAGE_SCENARIO).onKey()
+                        .join(Tables.ROUTINE_COVERAGE_SET).onKey()
+                        //.join(Tables.ROUTINE_COVERAGE).using(Tables.ROUTINE_COVERAGE_SET.ID)
+                )
+                .fetch()
+        records.forEach { logger.warn(it.toString()) }
+        throw Exception("MEESE!")
+
     }
     override fun getScenarioCountries(scenarioId: String): List<Country> {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
-}
 
-class JooqDataSet<out TModel : HasKey<TKey>, TKey, TRepoModel : Record>(
-        private val dsl: DSLContext,
-        private val table: TableImpl<TRepoModel>,
-        private val primaryKey: TableField<TRepoModel, TKey>,
-        private val map: (TRepoModel) -> TModel) : DataSet<TModel, TKey> {
-
-    override fun all(): Iterable<TModel> = dsl.fetch(table).map { map(it) }
-    override fun get(key: TKey): TModel = map(dsl.fetchOne(table, primaryKey.eq(key)))
-
+    private fun scenarioMapper(input: CoverageScenarioDescriptionRecord) = Scenario(
+            id = input.id,
+            description = input.description,
+            disease = input.disease,
+            vaccine = input.vaccine,
+            scenarioType = input.scenarioType,
+            vaccinationLevel = input.vaccinationLevel)
 }

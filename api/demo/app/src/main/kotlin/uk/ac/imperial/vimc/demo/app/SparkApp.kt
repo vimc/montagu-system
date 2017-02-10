@@ -6,22 +6,29 @@ import spark.Request
 import spark.Response
 import uk.ac.imperial.vimc.demo.app.controllers.ModellingGroupController
 import uk.ac.imperial.vimc.demo.app.controllers.ScenarioController
-import uk.ac.imperial.vimc.demo.app.repositories.ModellingGroupRepository
-import uk.ac.imperial.vimc.demo.app.repositories.ScenarioRepository
 import uk.ac.imperial.vimc.demo.app.repositories.fake.FakeModellingGroupRepository
 import uk.ac.imperial.vimc.demo.app.repositories.fake.FakeScenarioRepository
+import uk.ac.imperial.vimc.demo.app.repositories.jooq.JooqContext
+import uk.ac.imperial.vimc.demo.app.repositories.jooq.JooqScenarioRepository
 import java.net.URL
 import spark.Spark as spk
 
 fun main(args: Array<String>) {
-    DemoApp().run()
+    val db = JooqContext()
+    val scenarioRepository = JooqScenarioRepository(db)
+    val scenarioController = ScenarioController(scenarioRepository)
+
+    val modellingGroupRepository = FakeModellingGroupRepository(FakeScenarioRepository())
+    val modellingGroupController = ModellingGroupController(modellingGroupRepository)
+
+    DemoApp().run(scenarioController, modellingGroupController)
 }
 
 class DemoApp {
     private val urlBase = "/v1"
     private val logger = LoggerFactory.getLogger(DemoApp::class.java)
 
-    fun run() {
+    fun run(scenarios: ScenarioController, modellers: ModellingGroupController) {
         spk.port(8080)
 
         spk.exception(Exception::class.java) { e, req, res ->
@@ -36,15 +43,9 @@ class DemoApp {
         spk.before("*", this::addTrailingSlashes)
 
         spk.get("$urlBase/", { req, res -> "root.json" }, this::fromFile)
-
-        val scenarioRepository: ScenarioRepository = FakeScenarioRepository()
-        val scenarios = ScenarioController(scenarioRepository)
         spk.get("$urlBase/scenarios/", scenarios::getAllScenarios, this::toJson)
         spk.get("$urlBase/scenarios/:scenario-id/", scenarios::getScenario, this::toJson)
         spk.get("$urlBase/scenarios/:scenario-id/countries/", scenarios::getCountriesInScenario, this::toJson)
-
-        val modellingGroupRepository: ModellingGroupRepository = FakeModellingGroupRepository(scenarioRepository)
-        val modellers = ModellingGroupController(modellingGroupRepository)
         spk.get("$urlBase/modellers/", modellers::getAllModellingGroups, this::toJson)
         spk.get("$urlBase/modellers/", modellers::getAllModellingGroups, this::toJson)
         spk.get("$urlBase/modellers/:group-id/estimates/", modellers::getAllEstimates, this::toJson)
