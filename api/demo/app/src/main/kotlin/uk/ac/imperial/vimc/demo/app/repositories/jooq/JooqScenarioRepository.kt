@@ -1,12 +1,12 @@
 package uk.ac.imperial.vimc.demo.app.repositories.jooq
 
 import org.slf4j.LoggerFactory
+import uk.ac.imperial.vimc.demo.app.extensions.toBigDecimal
 import uk.ac.imperial.vimc.demo.app.filters.ScenarioFilterParameters
-import uk.ac.imperial.vimc.demo.app.models.Country
-import uk.ac.imperial.vimc.demo.app.models.Scenario
-import uk.ac.imperial.vimc.demo.app.models.ScenarioAndCoverage
+import uk.ac.imperial.vimc.demo.app.models.*
 import uk.ac.imperial.vimc.demo.app.models.jooq.Tables
 import uk.ac.imperial.vimc.demo.app.models.jooq.tables.records.CoverageScenarioDescriptionRecord
+import uk.ac.imperial.vimc.demo.app.models.jooq.tables.records.RoutineCoverageRecord
 import uk.ac.imperial.vimc.demo.app.repositories.DataSet
 import uk.ac.imperial.vimc.demo.app.repositories.ScenarioRepository
 
@@ -29,20 +29,35 @@ class JooqScenarioRepository : JooqRepository(), ScenarioRepository {
 
     private val logger = LoggerFactory.getLogger(JooqScenarioRepository::class.java)
 
-    override fun getScenarioAndCoverage(key: String): ScenarioAndCoverage {
-        val records = dsl.select()
+    override fun getScenarioAndCoverage(scenarioId: String): ScenarioAndCoverage {
+        val scenario = scenarios.get(scenarioId)
+        // TODO: It's a bit inefficient to pull in the whole country data, but given that this
+        // is just a placeholder until there is a mapping from scenario to country, this will do
+        val countries = getScenarioCountries(scenarioId).map { it.id }.toList()
+        val coverage = getRoutineCoverage(scenarioId)
+        val coverageByCountry = coverage
+                .groupBy { it.country }
+                .map { group -> CountryCoverage(group.key, group.value.map { YearCoverage(it.year, it.coverage?.toBigDecimal()) }) }
+                .toList()
+        return ScenarioAndCoverage(scenario, countries, 1996..2096, coverageByCountry)
+    }
+
+    private fun getRoutineCoverage(scenarioId: String): List<RoutineCoverageRecord> {
+        return dsl
+                .select(Tables.ROUTINE_COVERAGE.fields().toList())
                 .from(Tables.COVERAGE_SCENARIO_DESCRIPTION
                         .join(Tables.COVERAGE_SCENARIO).onKey()
                         .join(Tables.ROUTINE_COVERAGE_SET).onKey()
-                        //.join(Tables.ROUTINE_COVERAGE).using(Tables.ROUTINE_COVERAGE_SET.ID)
+                        .join(Tables.ROUTINE_COVERAGE).on(Tables.ROUTINE_COVERAGE_SET.ID.eq(Tables.ROUTINE_COVERAGE.ROUTINE_COVERAGE_SET))
                 )
-                .fetch()
-        records.forEach { logger.warn(it.toString()) }
-        throw Exception("MEESE!")
-
+                .where(Tables.COVERAGE_SCENARIO_DESCRIPTION.ID.eq(scenarioId))
+                .fetchInto(Tables.ROUTINE_COVERAGE)
+                .toList()
     }
+
     override fun getScenarioCountries(scenarioId: String): List<Country> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        // TODO: Make the data model actually map from scenarios to countries
+        return countries.all().toList()
     }
 
     private fun scenarioMapper(input: CoverageScenarioDescriptionRecord) = Scenario(
