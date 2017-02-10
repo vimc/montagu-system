@@ -2,14 +2,9 @@ package uk.ac.imperial.vimc.demo.app.repositories.fake
 
 import uk.ac.imperial.vimc.demo.app.errors.UnknownObject
 import uk.ac.imperial.vimc.demo.app.filters.ScenarioFilterParameters
-import uk.ac.imperial.vimc.demo.app.models.ModellingGroup
-import uk.ac.imperial.vimc.demo.app.models.Year
+import uk.ac.imperial.vimc.demo.app.models.*
 import uk.ac.imperial.vimc.demo.app.repositories.ModellingGroupRepository
 import uk.ac.imperial.vimc.demo.app.repositories.ScenarioRepository
-import uk.ac.imperial.vimc.demo.app.models.ImpactEstimateDataAndGroup
-import uk.ac.imperial.vimc.demo.app.models.ImpactEstimateDescription
-import uk.ac.imperial.vimc.demo.app.models.ModellingGroupEstimateListing
-import uk.ac.imperial.vimc.demo.app.models.NewImpactEstimate
 import java.time.LocalDate
 import java.time.Month
 import java.time.ZoneOffset
@@ -20,34 +15,39 @@ class FakeModellingGroupRepository(private val scenarioRepository: ScenarioRepos
     private val yfScenario = scenarioRepository.scenarios.get("yf-routine-gavi")
 
     override val modellingGroups = InMemoryDataSet.new(listOf(
-            ModellingGroup("pennsylvania-state", "Pennsylvania State University"),
-            ModellingGroup("harvard-public-health", "Harvard University School of Public Health"),
-            ModellingGroup("oxford-vietnam", "Oxford University Clinical Research Unit (Vietnam)"),
-            ModellingGroup("john-hopkins", "Johns Hopkins University"),
-            ModellingGroup("cda", "CDA (Center for Disease Analysis)"),
-            ModellingGroup("cambridge", "University of Cambridge"),
-            ModellingGroup("london-school", "London School of Hygiene & Tropical Medicine"),
-            ModellingGroup("phe", "Public Health England"),
-            ModellingGroup("imperial", "Imperial College London")
+            ModellingGroup(1, "pennsylvania-state", "Pennsylvania State University"),
+            ModellingGroup(2, "harvard-public-health", "Harvard University School of Public Health"),
+            ModellingGroup(3, "oxford-vietnam", "Oxford University Clinical Research Unit (Vietnam)"),
+            ModellingGroup(4, "john-hopkins", "Johns Hopkins University"),
+            ModellingGroup(5, "cda", "CDA (Center for Disease Analysis)"),
+            ModellingGroup(6, "cambridge", "University of Cambridge"),
+            ModellingGroup(7, "london-school", "London School of Hygiene & Tropical Medicine"),
+            ModellingGroup(8, "phe", "Public Health England"),
+            ModellingGroup(9, "imperial", "Imperial College London")
     ))
 
-    override fun getModellingGroupEstimateListing(groupId: String, filterParameters: ScenarioFilterParameters): ModellingGroupEstimateListing {
-        val group = modellingGroups.get(groupId)
-        val estimates = fakeEstimateDescriptions(group.id)
+    override fun getModellingGroupByCode(groupCode: String): ModellingGroup {
+        return modellingGroups.all().singleOrNull { it.code == groupCode }
+            ?: throw UnknownObject(groupCode, ModellingGroup::class.simpleName!!)
+    }
+
+    override fun getModellingGroupEstimateListing(groupCode: String, filterParameters: ScenarioFilterParameters): ModellingGroupEstimateListing {
+        val group = getModellingGroupByCode(groupCode)
+        val estimates = fakeEstimateDescriptions(group.code)
         val filter = InMemoryModellingGroupFilter(filterParameters)
         return ModellingGroupEstimateListing(group, filter.modelMatchesParameter(estimates).toList())
     }
 
-    override fun getEstimateForGroup(groupId: String, estimateId: Int): ImpactEstimateDataAndGroup {
-        val group = modellingGroups.get(groupId)
-        val estimateDescription = fakeEstimateDescriptions(group.id).singleOrNull { it.id == estimateId }
+    override fun getEstimateForGroup(groupCode: String, estimateId: Int): ImpactEstimateDataAndGroup {
+        val group = getModellingGroupByCode(groupCode)
+        val estimateDescription = fakeEstimateDescriptions(group.code).singleOrNull { it.id == estimateId }
             ?: throw UnknownObject(estimateId, "ImpactEstimate")
         val outcomes = generator.generateOutcomes(estimateDescription.scenario.id, scenarioRepository)
         return ImpactEstimateDataAndGroup(group, estimateDescription, outcomes)
     }
 
-    override fun createEstimate(groupId: String, data: NewImpactEstimate): ImpactEstimateDataAndGroup {
-        val group = modellingGroups.get(groupId)
+    override fun createEstimate(groupCode: String, data: NewImpactEstimate): ImpactEstimateDataAndGroup {
+        val group = getModellingGroupByCode(groupCode)
         val scenario = data.getScenario(scenarioRepository)
         val estimates = data.getImpactEstimates(scenario)
         estimates.id = 6    //First unused ID
@@ -55,7 +55,7 @@ class FakeModellingGroupRepository(private val scenarioRepository: ScenarioRepos
         return ImpactEstimateDataAndGroup(group, description, estimates.outcomes)
     }
 
-    private fun fakeEstimateDescriptions(groupId: String) = when (groupId) {
+    private fun fakeEstimateDescriptions(groupCode: String) = when (groupCode) {
         "imperial" -> listOf(
                 ImpactEstimateDescription(1, menAScenario, "SuperModel 1.0", date(2017, Month.JANUARY, 15)),
                 ImpactEstimateDescription(2, menAScenario, "SuperModel 1.1", date(2017, Month.JANUARY, 20)),

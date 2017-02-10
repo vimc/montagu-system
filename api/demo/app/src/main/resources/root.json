@@ -5,8 +5,8 @@
       "/v1/scenarios/",
       "/v1/scenarios/{scenario-id}/",
       "/v1/modellers/",
-      "/v1/modellers/{modelling-group-id}/estimates/",
-      "/v1/modellers/{modelling-group-id}/estimates/{estimate-id}"
+      "/v1/modellers/{modelling-group-code}/estimates/",
+      "/v1/modellers/{modelling-group-code}/estimates/{estimate-id}"
     ]
   }
 }

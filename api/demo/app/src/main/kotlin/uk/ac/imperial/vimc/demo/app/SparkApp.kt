@@ -6,9 +6,7 @@ import spark.Request
 import spark.Response
 import uk.ac.imperial.vimc.demo.app.controllers.ModellingGroupController
 import uk.ac.imperial.vimc.demo.app.controllers.ScenarioController
-import uk.ac.imperial.vimc.demo.app.repositories.fake.FakeModellingGroupRepository
-import uk.ac.imperial.vimc.demo.app.repositories.fake.FakeScenarioRepository
-import uk.ac.imperial.vimc.demo.app.repositories.jooq.JooqContext
+import uk.ac.imperial.vimc.demo.app.repositories.jooq.JooqModellingGroupRepository
 import uk.ac.imperial.vimc.demo.app.repositories.jooq.JooqScenarioRepository
 import java.net.URL
 import spark.Spark as spk
@@ -17,7 +15,7 @@ fun main(args: Array<String>) {
     val scenarioRepository = JooqScenarioRepository()
     val scenarioController = ScenarioController(scenarioRepository)
 
-    val modellingGroupRepository = FakeModellingGroupRepository(FakeScenarioRepository())
+    val modellingGroupRepository = JooqModellingGroupRepository()
     val modellingGroupController = ModellingGroupController(modellingGroupRepository)
 
     DemoApp().run(scenarioController, modellingGroupController)
@@ -47,9 +45,9 @@ class DemoApp {
         spk.get("$urlBase/scenarios/:scenario-id/countries/", scenarios::getCountriesInScenario, this::toJson)
         spk.get("$urlBase/modellers/", modellers::getAllModellingGroups, this::toJson)
         spk.get("$urlBase/modellers/", modellers::getAllModellingGroups, this::toJson)
-        spk.get("$urlBase/modellers/:group-id/estimates/", modellers::getAllEstimates, this::toJson)
-        spk.get("$urlBase/modellers/:group-id/estimates/:estimate-id/", modellers::getEstimate, this::toJson)
-        spk.post("$urlBase/modellers/:group-id/estimates/", modellers::createEstimate, this::toJson)
+        spk.get("$urlBase/modellers/:group-code/estimates/", modellers::getAllEstimates, this::toJson)
+        spk.get("$urlBase/modellers/:group-code/estimates/:estimate-id/", modellers::getEstimate, this::toJson)
+        spk.post("$urlBase/modellers/:group-code/estimates/", modellers::createEstimate, this::toJson)
 
         spk.after("*", { req, res ->
             res.type("application/json")
