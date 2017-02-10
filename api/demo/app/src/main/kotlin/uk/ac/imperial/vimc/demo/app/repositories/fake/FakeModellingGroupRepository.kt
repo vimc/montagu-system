@@ -31,14 +31,26 @@ class FakeModellingGroupRepository(private val scenarioRepository: ScenarioRepos
             ?: throw UnknownObject(groupCode, ModellingGroup::class.simpleName!!)
     }
 
-    override fun getModellingGroupEstimateListing(groupCode: String, filterParameters: ScenarioFilterParameters): ModellingGroupEstimateListing {
-        val group = getModellingGroupByCode(groupCode)
-        val estimates = fakeEstimateDescriptions(group.code)
-        val filter = InMemoryModellingGroupFilter(filterParameters)
-        return ModellingGroupEstimateListing(group, filter.modelMatchesParameter(estimates).toList())
+    override fun getModels(groupCode: String): List<VaccineModel> {
+        return listOf(VaccineModel(1, "FakeModel", "Fake citation", "A description"))
     }
 
-    override fun getEstimateForGroup(groupCode: String, estimateId: Int): ImpactEstimateDataAndGroup {
+    override fun getResponsibilities(groupCode: String, scenarioFilterParameters: ScenarioFilterParameters): Responsibilities {
+        val group = getModellingGroupByCode(groupCode)
+        val filter = InMemoryScenarioFilter(scenarioFilterParameters)
+        val scenarios = filter.apply(scenarioRepository.scenarios.all())
+        val responsibilities = scenarios.map(::Responsibility)
+        return Responsibilities(group, responsibilities, complete = false)
+    }
+
+    override fun getEstimateListing(groupCode: String, scenarioFilterParameters: ScenarioFilterParameters): ModellingGroupEstimateListing {
+        val group = getModellingGroupByCode(groupCode)
+        val estimates = fakeEstimateDescriptions(group.code)
+        val filter = InMemoryModellingGroupFilter(scenarioFilterParameters)
+        return ModellingGroupEstimateListing(group, filter.apply(estimates).toList())
+    }
+
+    override fun getEstimate(groupCode: String, estimateId: Int): ImpactEstimateDataAndGroup {
         val group = getModellingGroupByCode(groupCode)
         val estimateDescription = fakeEstimateDescriptions(group.code).singleOrNull { it.id == estimateId }
             ?: throw UnknownObject(estimateId, "ImpactEstimate")

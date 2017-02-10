@@ -127,7 +127,7 @@ class FakeScenarioRepository : ScenarioRepository {
 
     override fun getScenarios(scenarioFilterParameters: ScenarioFilterParameters): Iterable<Scenario> {
         val filter = InMemoryScenarioFilter(scenarioFilterParameters)
-        return filter.modelMatchesParameter(scenarios.all())
+        return filter.apply(scenarios.all())
     }
 
     override fun getScenarioAndCoverage(scenarioId: String): ScenarioAndCoverage {

@@ -1,8 +1,8 @@
 package uk.ac.imperial.vimc.demo.app.repositories.jooq
 
-import org.slf4j.LoggerFactory
 import uk.ac.imperial.vimc.demo.app.extensions.toBigDecimal
 import uk.ac.imperial.vimc.demo.app.filters.ScenarioFilterParameters
+import uk.ac.imperial.vimc.demo.app.filters.whereMatchesFilter
 import uk.ac.imperial.vimc.demo.app.models.*
 import uk.ac.imperial.vimc.demo.app.models.jooq.Tables
 import uk.ac.imperial.vimc.demo.app.models.jooq.tables.records.CoverageScenarioDescriptionRecord
@@ -10,24 +10,19 @@ import uk.ac.imperial.vimc.demo.app.models.jooq.tables.records.RoutineCoverageRe
 import uk.ac.imperial.vimc.demo.app.repositories.DataSet
 import uk.ac.imperial.vimc.demo.app.repositories.ScenarioRepository
 
-@Suppress("unused")
 class JooqScenarioRepository : JooqRepository(), ScenarioRepository {
     override val countries: DataSet<Country, String>
             get() = JooqDataSet.new(dsl, Tables.COUNTRY, { it.ID }, { Country(it.id, it.name) })
     override val scenarios: DataSet<Scenario, String>
-            get() = JooqDataSet.new(dsl, Tables.COVERAGE_SCENARIO_DESCRIPTION, { it.ID }, this::scenarioMapper)
+            get() = JooqDataSet.new(dsl, Tables.COVERAGE_SCENARIO_DESCRIPTION, { it.ID }, { scenarioMapper(it) })
 
     override fun getScenarios(scenarioFilterParameters: ScenarioFilterParameters): Iterable<Scenario> {
-        val table = Tables.COVERAGE_SCENARIO_DESCRIPTION
-        val filterable = dsl.selectFrom(table).where()
-        return JooqScenarioFilter()
-                .apply(filterable, scenarioFilterParameters)
+        return dsl
+                .selectFrom(Tables.COVERAGE_SCENARIO_DESCRIPTION)
+                .whereMatchesFilter(JooqScenarioFilter(), scenarioFilterParameters)
                 .fetch()
-                .map(this::scenarioMapper)
+                .map { scenarioMapper(it) }
     }
-
-
-    private val logger = LoggerFactory.getLogger(JooqScenarioRepository::class.java)
 
     override fun getScenarioAndCoverage(scenarioId: String): ScenarioAndCoverage {
         val scenario = scenarios.get(scenarioId)
@@ -60,11 +55,13 @@ class JooqScenarioRepository : JooqRepository(), ScenarioRepository {
         return countries.all().toList()
     }
 
-    private fun scenarioMapper(input: CoverageScenarioDescriptionRecord) = Scenario(
-            id = input.id,
-            description = input.description,
-            disease = input.disease,
-            vaccine = input.vaccine,
-            scenarioType = input.scenarioType,
-            vaccinationLevel = input.vaccinationLevel)
+    companion object {
+        fun scenarioMapper(input: CoverageScenarioDescriptionRecord) = Scenario(
+                id = input.id,
+                description = input.description,
+                disease = input.disease,
+                vaccine = input.vaccine,
+                scenarioType = input.scenarioType,
+                vaccinationLevel = input.vaccinationLevel)
+    }
 }

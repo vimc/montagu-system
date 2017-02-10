@@ -5,10 +5,7 @@ import spark.Request
 import spark.Response
 import uk.ac.imperial.vimc.demo.app.Serializer
 import uk.ac.imperial.vimc.demo.app.filters.ScenarioFilterParameters
-import uk.ac.imperial.vimc.demo.app.models.ImpactEstimateDataAndGroup
-import uk.ac.imperial.vimc.demo.app.models.ModellingGroup
-import uk.ac.imperial.vimc.demo.app.models.ModellingGroupEstimateListing
-import uk.ac.imperial.vimc.demo.app.models.NewImpactEstimate
+import uk.ac.imperial.vimc.demo.app.models.*
 import uk.ac.imperial.vimc.demo.app.repositories.ModellingGroupRepository
 
 class ModellingGroupController(private val db: ModellingGroupRepository) {
@@ -16,14 +13,27 @@ class ModellingGroupController(private val db: ModellingGroupRepository) {
         return db.modellingGroups.all().toList()
     }
 
+    fun getModellingGroup(req: Request, res: Response): ModellingGroup {
+        return db.getModellingGroupByCode(groupCode(req))
+    }
+
+    fun getModels(req: Request, res: Response): List<VaccineModel> {
+        return db.getModels(groupCode(req))
+    }
+
+    fun getResponsibilities(req: Request, res: Response): Responsibilities {
+        val filterParameters = ScenarioFilterParameters.fromRequest(req)
+        return db.getResponsibilities(groupCode(req), filterParameters)
+    }
+
     fun getAllEstimates(req: Request, res: Response): ModellingGroupEstimateListing {
         val filterParameters = ScenarioFilterParameters.fromRequest(req)
-        return db.getModellingGroupEstimateListing(groupCode(req), filterParameters)
+        return db.getEstimateListing(groupCode(req), filterParameters)
     }
 
     fun getEstimate(req: Request, res: Response): ImpactEstimateDataAndGroup {
         val estimateId = req.params(":estimate-id").toInt()
-        return db.getEstimateForGroup(groupCode = groupCode(req), estimateId = estimateId)
+        return db.getEstimate(groupCode = groupCode(req), estimateId = estimateId)
     }
 
     fun createEstimate(req: Request, res: Response): ImpactEstimateDataAndGroup {
