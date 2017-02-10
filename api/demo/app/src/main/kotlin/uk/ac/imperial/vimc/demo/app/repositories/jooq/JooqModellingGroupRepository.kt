@@ -11,6 +11,7 @@ import uk.ac.imperial.vimc.demo.app.models.jooq.tables.records.ModelRecord
 import uk.ac.imperial.vimc.demo.app.models.jooq.tables.records.ModellingGroupRecord
 import uk.ac.imperial.vimc.demo.app.repositories.DataSet
 import uk.ac.imperial.vimc.demo.app.repositories.ModellingGroupRepository
+import java.time.Instant
 
 class JooqModellingGroupRepository : JooqRepository(), ModellingGroupRepository {
     override val modellingGroups: DataSet<ModellingGroup, Int>
@@ -51,7 +52,36 @@ class JooqModellingGroupRepository : JooqRepository(), ModellingGroupRepository 
     }
 
     override fun getEstimateListing(groupCode: String, scenarioFilterParameters: ScenarioFilterParameters): ModellingGroupEstimateListing {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val group = getModellingGroupByCode(groupCode)
+        val scenarioIdField = Tables.COVERAGE_SCENARIO_DESCRIPTION.ID
+        val impactEstimates = dsl
+                .select(Tables.IMPACT_ESTIMATE_SET.ID, Tables.MODEL_VERSIONS.VERSION, Tables.MODEL.NAME, scenarioIdField)
+                .from(Tables.MODELLING_GROUP)
+                .join(Tables.RESPONSIBILITY_SET).using(Tables.MODELLING_GROUP.ID)
+                .join(Tables.RESPONSIBLITY).using(Tables.RESPONSIBILITY_SET.ID)
+                .join(Tables.IMPACT_ESTIMATE_SET).using(Tables.IMPACT_ESTIMATE_SET.ID)
+                .join(Tables.MODEL_VERSIONS).onKey()
+                .join(Tables.MODEL).onKey()
+                .join(Tables.COVERAGE_SCENARIO).onKey()
+                .join(Tables.COVERAGE_SCENARIO_DESCRIPTION).onKey()
+                .where(groupHasCode(groupCode))
+                .toList()
+        val scenarioIds : List<String> = impactEstimates.map { it[scenarioIdField] }.toList()
+        val scenarios = dsl
+                .fetch(Tables.COVERAGE_SCENARIO_DESCRIPTION, scenarioIdField.`in`(scenarioIds))
+                .map { JooqScenarioRepository.scenarioMapper(it) }
+
+        val listing = impactEstimates.map {
+            record ->
+            ImpactEstimateDescription(
+                    record[Tables.IMPACT_ESTIMATE_SET.ID],
+                    scenarios.single { record[scenarioIdField] == it.id },
+                    record[Tables.MODEL.NAME],
+                    record[Tables.MODEL_VERSIONS.VERSION],
+                    Instant.now()
+            )
+        }
+        return ModellingGroupEstimateListing(group, listing)
     }
 
     override fun getEstimate(groupCode: String, estimateId: Int): ImpactEstimateDataAndGroup {

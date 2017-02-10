@@ -4,5 +4,9 @@ import java.time.Instant
 
 data class ImpactEstimateDescription(val id: Int,
                                      val scenario: Scenario,
-                                     val modelVersion: String,
-                                     val uploadedTimestamp: Instant)
+                                     private val modelName: String,
+                                     private val modelVersion: String,
+                                     val uploadedTimestamp: Instant) {
+    val model
+        get() = "$modelName: $modelVersion"
+}

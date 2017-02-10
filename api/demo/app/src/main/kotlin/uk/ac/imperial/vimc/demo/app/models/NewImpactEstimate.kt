@@ -3,7 +3,11 @@ package uk.ac.imperial.vimc.demo.app.models
 import uk.ac.imperial.vimc.demo.app.repositories.ScenarioRepository
 import java.time.Instant
 
-class NewImpactEstimate(val scenarioId: String?, val modelVersion: String?, val outcomes: List<NewCountryOutcomes>?) {
+class NewImpactEstimate(
+        val scenarioId: String?,
+        val modelName: String?,
+        val modelVersion: String?,
+        val outcomes: List<NewCountryOutcomes>?) {
     class NewCountryOutcomes(val countryId: String?, val data: List<NewOutcome>?)
     class NewOutcome(val year: Year?, val numberOfDeaths: Int?)
 
@@ -12,12 +16,14 @@ class NewImpactEstimate(val scenarioId: String?, val modelVersion: String?, val 
         return db.scenarios.get(scenarioId)
     }
     fun getImpactEstimates(scenario: Scenario): ImpactEstimate {
+        val modelName = modelName ?: missingParameter("model_name")
         val modelVersion = modelVersion ?: missingParameter("model_version")
         val outcomes = outcomes ?: missingParameter("outcomes")
 
         return ImpactEstimate(
                 uploadedTimestamp = Instant.now(),
                 scenarioId = scenario.id,
+                modelName = modelName,
                 modelVersion = modelVersion,
                 outcomes = outcomes.map(this::toCountryOutcomes)
         )
