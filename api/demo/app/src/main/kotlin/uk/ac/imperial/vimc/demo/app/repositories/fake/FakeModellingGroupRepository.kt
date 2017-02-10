@@ -66,8 +66,7 @@ class FakeModellingGroupRepository(private val scenarioRepository: ScenarioRepos
         val description = ImpactEstimateDescription(
                 estimates.id,
                 scenario,
-                estimates.modelName,
-                estimates.modelVersion,
+                ModelIdentifier(estimates.modelName, estimates.modelVersion),
                 estimates.uploadedTimestamp
         )
         return ImpactEstimateDataAndGroup(group, description, estimates.outcomes)
@@ -75,11 +74,11 @@ class FakeModellingGroupRepository(private val scenarioRepository: ScenarioRepos
 
     private fun fakeEstimateDescriptions(groupCode: String) = when (groupCode) {
         "imperial" -> listOf(
-                ImpactEstimateDescription(1, menAScenario, "SuperModel", "1.0", date(2017, Month.JANUARY, 15)),
-                ImpactEstimateDescription(2, menAScenario, "SuperModel", "1.1", date(2017, Month.JANUARY, 20)),
-                ImpactEstimateDescription(3, menAScenario, "SuperModel", "1.1", date(2017, Month.JANUARY, 21)),
-                ImpactEstimateDescription(4, yfScenario, "YF Model", "3.14", date(2017, Month.JANUARY, 2)),
-                ImpactEstimateDescription(5, yfScenario, "YF Model", "3.14", date(2017, Month.JANUARY, 3))
+                ImpactEstimateDescription(1, menAScenario, ModelIdentifier("SuperModel", "1.0"), date(2017, Month.JANUARY, 15)),
+                ImpactEstimateDescription(2, menAScenario, ModelIdentifier("SuperModel", "1.1"), date(2017, Month.JANUARY, 20)),
+                ImpactEstimateDescription(3, menAScenario, ModelIdentifier("SuperModel", "1.1"), date(2017, Month.JANUARY, 21)),
+                ImpactEstimateDescription(4, yfScenario, ModelIdentifier("YF Model", "3.14"), date(2017, Month.JANUARY, 2)),
+                ImpactEstimateDescription(5, yfScenario, ModelIdentifier("YF Model", "3.14"), date(2017, Month.JANUARY, 3))
         )
         else -> emptyList()
     }

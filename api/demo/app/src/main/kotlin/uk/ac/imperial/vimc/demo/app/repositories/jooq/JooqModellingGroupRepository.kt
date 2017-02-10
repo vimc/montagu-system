@@ -11,7 +11,6 @@ import uk.ac.imperial.vimc.demo.app.models.jooq.tables.records.ModelRecord
 import uk.ac.imperial.vimc.demo.app.models.jooq.tables.records.ModellingGroupRecord
 import uk.ac.imperial.vimc.demo.app.repositories.DataSet
 import uk.ac.imperial.vimc.demo.app.repositories.ModellingGroupRepository
-import java.time.Instant
 
 class JooqModellingGroupRepository : JooqRepository(), ModellingGroupRepository {
     override val modellingGroups: DataSet<ModellingGroup, Int>
@@ -55,7 +54,13 @@ class JooqModellingGroupRepository : JooqRepository(), ModellingGroupRepository 
         val group = getModellingGroupByCode(groupCode)
         val scenarioIdField = Tables.COVERAGE_SCENARIO_DESCRIPTION.ID
         val impactEstimates = dsl
-                .select(Tables.IMPACT_ESTIMATE_SET.ID, Tables.MODEL_VERSION.VERSION, Tables.MODEL.NAME, scenarioIdField)
+                .select(
+                        Tables.IMPACT_ESTIMATE_SET.ID,
+                        Tables.IMPACT_ESTIMATE_SET.UPLOADED_TIMESTAMP,
+                        Tables.MODEL_VERSION.VERSION,
+                        Tables.MODEL.NAME,
+                        scenarioIdField
+                )
                 .from(Tables.MODELLING_GROUP)
                 .join(Tables.RESPONSIBILITY_SET).onKey()
                 .join(Tables.RESPONSIBILITY).on(Tables.RESPONSIBILITY_SET.ID.eq(Tables.RESPONSIBILITY.RESPONSIBILITY_SET))
@@ -76,9 +81,8 @@ class JooqModellingGroupRepository : JooqRepository(), ModellingGroupRepository 
             ImpactEstimateDescription(
                     record[Tables.IMPACT_ESTIMATE_SET.ID],
                     scenarios.single { record[scenarioIdField] == it.id },
-                    record[Tables.MODEL.NAME],
-                    record[Tables.MODEL_VERSION.VERSION],
-                    Instant.now()
+                    ModelIdentifier(record[Tables.MODEL.NAME], record[Tables.MODEL_VERSION.VERSION]),
+                    record[Tables.IMPACT_ESTIMATE_SET.UPLOADED_TIMESTAMP].toInstant()
             )
         }
         return ModellingGroupEstimateListing(group, listing)
