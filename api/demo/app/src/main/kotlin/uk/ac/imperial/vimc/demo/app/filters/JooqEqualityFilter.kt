@@ -6,13 +6,17 @@ import org.jooq.SelectConditionStep
 
 class JooqEqualityFilter<in TParameters, out TField>(
         private val field: Field<TField>,
-        val mapper: (TParameters) -> TField): JooqFilter<TParameters> {
+        val mapper: (TParameters) -> TField) : JooqFilter<TParameters>
+{
 
-    override fun <T: Record> apply(context: SelectConditionStep<T>, parameterValues: TParameters): SelectConditionStep<T> {
+    override fun <T : Record> apply(context: SelectConditionStep<T>, parameterValues: TParameters): SelectConditionStep<T>
+    {
         val parameterValue = mapper(parameterValues)
-        if (parameterValue != null) {
+        if (parameterValue != null)
+        {
             return context.and(field.eq(parameterValue))
-        } else {
+        } else
+        {
             return context
         }
     }

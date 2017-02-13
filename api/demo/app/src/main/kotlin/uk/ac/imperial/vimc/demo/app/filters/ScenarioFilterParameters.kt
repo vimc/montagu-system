@@ -6,8 +6,10 @@ data class ScenarioFilterParameters(val scenarioId: String?,
                                     val disease: String?,
                                     val vaccine: String?,
                                     val vaccinationLevel: String?,
-                                    val scenarioType: String?) {
-    companion object {
+                                    val scenarioType: String?)
+{
+    companion object
+    {
         fun fromRequest(req: Request): ScenarioFilterParameters =
                 ScenarioFilterParameters(
                         req.queryParams("scenario_id"),

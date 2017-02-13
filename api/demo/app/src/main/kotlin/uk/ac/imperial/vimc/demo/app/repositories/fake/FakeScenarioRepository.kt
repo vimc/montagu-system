@@ -3,13 +3,14 @@ package uk.ac.imperial.vimc.demo.app.repositories.fake
 import uk.ac.imperial.vimc.demo.app.filters.ScenarioFilterParameters
 import uk.ac.imperial.vimc.demo.app.models.Country
 import uk.ac.imperial.vimc.demo.app.models.Scenario
-import uk.ac.imperial.vimc.demo.app.repositories.ScenarioRepository
 import uk.ac.imperial.vimc.demo.app.models.ScenarioAndCoverage
+import uk.ac.imperial.vimc.demo.app.repositories.ScenarioRepository
 
-class FakeScenarioRepository : ScenarioRepository {
+class FakeScenarioRepository : ScenarioRepository
+{
     private val generator = FakeDataGenerator()
     private val defaultYears = 1996..2069
-    
+
     override val countries = InMemoryDataSet.new(setOf(
             Country("AFG", "Afghanistan"),
             Country("ALB", "Albania"),
@@ -111,32 +112,35 @@ class FakeScenarioRepository : ScenarioRepository {
     ))
 
     override val scenarios = InMemoryDataSet.new(listOf(
-        Scenario("menA-novacc", "Meningitis A, No vaccination", "none", "MenA", "MenA", "n/a"),
-        Scenario("menA-routine-nogavi", "Meningitis A, Routine, No GAVI support", "nogavi", "MenA", "MenA", "routine"),
-        Scenario("menA-routine-gavi", "Meningitis A, Routine, With GAVI support", "gavi", "MenA", "MenA", "routine"),
-        Scenario("menA-campaign-nogavi", "Meningitis A, Campaign, No GAVI support", "nogavi", "MenA", "MenA", "campaign"),
-        Scenario("menA-campaign-gavi", "Meningitis A, Campaign, With GAVI support", "gavi", "MenA", "MenA", "campaign"),
-        Scenario("yf-novacc", "Yellow Fever, No vaccination", "none", "YF", "YF", "n/a"),
-        Scenario("yf-routine-nogavi", "Yellow Fever, Routine, No GAVI support", "nogavi", "YF", "YF", "routine"),
-        Scenario("yf-routine-gavi", "Yellow Fever, Routine, With GAVI support", "gavi", "YF", "YF", "routine"),
-        Scenario("yf-campaign-reactive-nogavi", "Yellow Fever, Reactive Campaign, No GAVI support", "nogavi", "YF", "YF", "campaign"),
-        Scenario("yf-campaign-reactive-gavi", "Yellow Fever, Reactive Campaign, With GAVI support", "gavi", "YF", "YF", "campaign"),
-        Scenario("yf-campaign-preventative-nogavi", "Yellow Fever, Preventative Campaign, No GAVI support", "nogavi", "YF", "YF", "campaign"),
-        Scenario("yf-campaign-preventative-gavi", "Yellow Fever, Preventative Campaign, With GAVI support", "gavi", "YF", "YF", "campaign")
+            Scenario("menA-novacc", "Meningitis A, No vaccination", "none", "MenA", "MenA", "n/a"),
+            Scenario("menA-routine-nogavi", "Meningitis A, Routine, No GAVI support", "nogavi", "MenA", "MenA", "routine"),
+            Scenario("menA-routine-gavi", "Meningitis A, Routine, With GAVI support", "gavi", "MenA", "MenA", "routine"),
+            Scenario("menA-campaign-nogavi", "Meningitis A, Campaign, No GAVI support", "nogavi", "MenA", "MenA", "campaign"),
+            Scenario("menA-campaign-gavi", "Meningitis A, Campaign, With GAVI support", "gavi", "MenA", "MenA", "campaign"),
+            Scenario("yf-novacc", "Yellow Fever, No vaccination", "none", "YF", "YF", "n/a"),
+            Scenario("yf-routine-nogavi", "Yellow Fever, Routine, No GAVI support", "nogavi", "YF", "YF", "routine"),
+            Scenario("yf-routine-gavi", "Yellow Fever, Routine, With GAVI support", "gavi", "YF", "YF", "routine"),
+            Scenario("yf-campaign-reactive-nogavi", "Yellow Fever, Reactive Campaign, No GAVI support", "nogavi", "YF", "YF", "campaign"),
+            Scenario("yf-campaign-reactive-gavi", "Yellow Fever, Reactive Campaign, With GAVI support", "gavi", "YF", "YF", "campaign"),
+            Scenario("yf-campaign-preventative-nogavi", "Yellow Fever, Preventative Campaign, No GAVI support", "nogavi", "YF", "YF", "campaign"),
+            Scenario("yf-campaign-preventative-gavi", "Yellow Fever, Preventative Campaign, With GAVI support", "gavi", "YF", "YF", "campaign")
     ))
 
-    override fun getScenarios(scenarioFilterParameters: ScenarioFilterParameters): Iterable<Scenario> {
+    override fun getScenarios(scenarioFilterParameters: ScenarioFilterParameters): Iterable<Scenario>
+    {
         val filter = InMemoryScenarioFilter(scenarioFilterParameters)
         return filter.apply(scenarios.all())
     }
 
-    override fun getScenarioAndCoverage(scenarioId: String): ScenarioAndCoverage {
+    override fun getScenarioAndCoverage(scenarioId: String): ScenarioAndCoverage
+    {
         val scenario = scenarios.get(scenarioId)
         val coverage = generator.generateCoverage(scenario.id, countries.all(), defaultYears)
         return ScenarioAndCoverage(scenario, countries.all().map { it.id }, defaultYears, coverage)
     }
 
-    override fun getScenarioCountries(scenarioId: String): List<Country> {
+    override fun getScenarioCountries(scenarioId: String): List<Country>
+    {
         return countries.all().toList()
     }
 

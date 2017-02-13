@@ -4,7 +4,8 @@ import com.github.salomonbrys.kotson.jsonSerializer
 import com.github.salomonbrys.kotson.registerTypeAdapter
 import com.google.gson.*
 
-object Serializer {
+object Serializer
+{
     val toStringSerializer = jsonSerializer<Any> { JsonPrimitive(it.src.toString()) }
     val rangeSerializer = jsonSerializer<IntRange> {
         JsonObject().apply {

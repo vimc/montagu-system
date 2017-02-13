@@ -6,15 +6,18 @@ import org.jooq.impl.DSL
 import java.sql.Connection
 import java.sql.DriverManager
 
-class JooqContext : AutoCloseable {
+class JooqContext : AutoCloseable
+{
     private val conn = DriverManager.getConnection("jdbc:postgresql://localhost:8888/vimc", "postgres", "")
     val dsl = createDSL(conn)
 
-    private fun createDSL(conn: Connection): DSLContext {
+    private fun createDSL(conn: Connection): DSLContext
+    {
         return DSL.using(conn, SQLDialect.POSTGRES)
     }
 
-    override fun close() {
+    override fun close()
+    {
         conn.close()
     }
 }

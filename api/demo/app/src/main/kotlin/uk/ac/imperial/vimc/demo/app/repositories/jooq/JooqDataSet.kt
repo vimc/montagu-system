@@ -14,7 +14,8 @@ class JooqDataSet<out TModel : HasKey<TKey>, TKey : Any, TRepoModel : Record, TT
         primaryKey: (TTable) -> TableField<TRepoModel, TKey>,
         private val map: (TRepoModel) -> TModel,
         private val modelType: Class<*>)
-    : DataSet<TModel, TKey> {
+    : DataSet<TModel, TKey>
+{
 
     private val primaryKey = primaryKey(table)
 
@@ -24,8 +25,9 @@ class JooqDataSet<out TModel : HasKey<TKey>, TKey : Any, TRepoModel : Record, TT
     private fun fetch(key: TKey) = dsl.fetchAny(table, primaryKey.eq(key))
             ?: throw UnknownObject(key, modelType.simpleName)
 
-    companion object {
-        inline fun <reified TModel : HasKey<TKey>, TKey: Any, TRepoModel : Record, TTable : TableImpl<TRepoModel>>
+    companion object
+    {
+        inline fun <reified TModel : HasKey<TKey>, TKey : Any, TRepoModel : Record, TTable : TableImpl<TRepoModel>>
                 new(dsl: DSLContext,
                     table: TTable,
                     noinline primaryKey: (TTable) -> TableField<TRepoModel, TKey>,

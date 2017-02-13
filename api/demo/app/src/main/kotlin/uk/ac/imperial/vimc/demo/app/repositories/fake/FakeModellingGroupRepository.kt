@@ -9,7 +9,8 @@ import java.time.LocalDate
 import java.time.Month
 import java.time.ZoneOffset
 
-class FakeModellingGroupRepository(private val scenarioRepository: ScenarioRepository): ModellingGroupRepository {
+class FakeModellingGroupRepository(private val scenarioRepository: ScenarioRepository) : ModellingGroupRepository
+{
     private val generator = FakeDataGenerator()
     private val menAScenario = scenarioRepository.scenarios.get("menA-novacc")
     private val yfScenario = scenarioRepository.scenarios.get("yf-routine-gavi")
@@ -26,16 +27,19 @@ class FakeModellingGroupRepository(private val scenarioRepository: ScenarioRepos
             ModellingGroup(9, "imperial", "Imperial College London")
     ))
 
-    override fun getModellingGroupByCode(groupCode: String): ModellingGroup {
+    override fun getModellingGroupByCode(groupCode: String): ModellingGroup
+    {
         return modellingGroups.all().singleOrNull { it.code == groupCode }
-            ?: throw UnknownObject(groupCode, ModellingGroup::class.simpleName!!)
+                ?: throw UnknownObject(groupCode, ModellingGroup::class.simpleName!!)
     }
 
-    override fun getModels(groupCode: String): List<VaccineModel> {
+    override fun getModels(groupCode: String): List<VaccineModel>
+    {
         return listOf(VaccineModel(1, "FakeModel", "Fake citation", "A description"))
     }
 
-    override fun getResponsibilities(groupCode: String, scenarioFilterParameters: ScenarioFilterParameters): Responsibilities {
+    override fun getResponsibilities(groupCode: String, scenarioFilterParameters: ScenarioFilterParameters): Responsibilities
+    {
         val group = getModellingGroupByCode(groupCode)
         val filter = InMemoryScenarioFilter(scenarioFilterParameters)
         val scenarios = filter.apply(scenarioRepository.scenarios.all())
@@ -43,22 +47,25 @@ class FakeModellingGroupRepository(private val scenarioRepository: ScenarioRepos
         return Responsibilities(group, responsibilities, complete = false)
     }
 
-    override fun getEstimateListing(groupCode: String, scenarioFilterParameters: ScenarioFilterParameters): ModellingGroupEstimateListing {
+    override fun getEstimateListing(groupCode: String, scenarioFilterParameters: ScenarioFilterParameters): ModellingGroupEstimateListing
+    {
         val group = getModellingGroupByCode(groupCode)
         val estimates = fakeEstimateDescriptions(group.code)
         val filter = InMemoryModellingGroupFilter(scenarioFilterParameters)
         return ModellingGroupEstimateListing(group, filter.apply(estimates).toList())
     }
 
-    override fun getEstimate(groupCode: String, estimateId: Int): ImpactEstimateDataAndGroup {
+    override fun getEstimate(groupCode: String, estimateId: Int): ImpactEstimateDataAndGroup
+    {
         val group = getModellingGroupByCode(groupCode)
         val estimateDescription = fakeEstimateDescriptions(group.code).singleOrNull { it.id == estimateId }
-            ?: throw UnknownObject(estimateId, "ImpactEstimate")
+                ?: throw UnknownObject(estimateId, "ImpactEstimate")
         val outcomes = generator.generateOutcomes(estimateDescription.scenario.id, scenarioRepository)
         return ImpactEstimateDataAndGroup(group, estimateDescription, outcomes)
     }
 
-    override fun createEstimate(groupCode: String, data: NewImpactEstimate): ImpactEstimateDataAndGroup {
+    override fun createEstimate(groupCode: String, data: NewImpactEstimate): ImpactEstimateDataAndGroup
+    {
         val group = getModellingGroupByCode(groupCode)
         val scenario = data.getScenario(scenarioRepository)
         val estimates = data.getImpactEstimates(scenario)
@@ -72,7 +79,8 @@ class FakeModellingGroupRepository(private val scenarioRepository: ScenarioRepos
         return ImpactEstimateDataAndGroup(group, description, estimates.outcomes)
     }
 
-    private fun fakeEstimateDescriptions(groupCode: String) = when (groupCode) {
+    private fun fakeEstimateDescriptions(groupCode: String) = when (groupCode)
+    {
         "imperial" -> listOf(
                 ImpactEstimateDescription(1, menAScenario, ModelIdentifier("SuperModel", "1.0"), date(2017, Month.JANUARY, 15)),
                 ImpactEstimateDescription(2, menAScenario, ModelIdentifier("SuperModel", "1.1"), date(2017, Month.JANUARY, 20)),

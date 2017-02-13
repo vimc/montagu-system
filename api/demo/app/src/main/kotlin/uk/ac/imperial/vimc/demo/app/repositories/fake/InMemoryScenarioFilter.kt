@@ -4,10 +4,11 @@ import uk.ac.imperial.vimc.demo.app.filters.InMemoryFilter
 import uk.ac.imperial.vimc.demo.app.filters.InMemoryFilterAdapter
 import uk.ac.imperial.vimc.demo.app.filters.Mapper
 import uk.ac.imperial.vimc.demo.app.filters.ScenarioFilterParameters
-import uk.ac.imperial.vimc.demo.app.models.Scenario
 import uk.ac.imperial.vimc.demo.app.models.ImpactEstimateDescription
+import uk.ac.imperial.vimc.demo.app.models.Scenario
 
-class InMemoryScenarioFilter(parameters: ScenarioFilterParameters) : InMemoryFilter<ScenarioFilterParameters, Scenario>(parameters) {
+class InMemoryScenarioFilter(parameters: ScenarioFilterParameters) : InMemoryFilter<ScenarioFilterParameters, Scenario>(parameters)
+{
     override val mappers = listOf<Mapper<ScenarioFilterParameters, Scenario, String?>>(
             Mapper({ it.scenarioId }, { it.id }),
             Mapper({ it.disease }, { it.disease }),

@@ -5,7 +5,8 @@ import uk.ac.imperial.vimc.demo.app.models.Country
 import uk.ac.imperial.vimc.demo.app.models.Scenario
 import uk.ac.imperial.vimc.demo.app.models.ScenarioAndCoverage
 
-interface ScenarioRepository {
+interface ScenarioRepository
+{
     val countries: DataSet<Country, String>
     val scenarios: DataSet<Scenario, String>
 

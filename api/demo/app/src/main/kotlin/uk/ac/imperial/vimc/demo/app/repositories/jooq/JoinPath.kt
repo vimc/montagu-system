@@ -16,50 +16,61 @@ import uk.ac.imperial.vimc.demo.app.extensions.getOther
  * It is intended that you would use this using the two extension methods below, `fromJoinPath`
  * at the beginning of a query, and `joinPath` to add more joins on to an existing query.
  */
-class JoinPath(tables: Iterable<TableImpl<*>>) {
+class JoinPath(tables: Iterable<TableImpl<*>>)
+{
     val steps = buildSteps(tables.toList()).toList()
 
-    private fun buildSteps(tables: List<TableImpl<*>>): Iterable<JoinPathStep> {
+    private fun buildSteps(tables: List<TableImpl<*>>): Iterable<JoinPathStep>
+    {
         return tables.indices.drop(1).map { JoinPathStep(tables[it - 1], tables[it]) }
     }
 
-    fun <T: Record> doJoin(initialQuery: SelectJoinStep<T>): SelectJoinStep<T> {
+    fun <T : Record> doJoin(initialQuery: SelectJoinStep<T>): SelectJoinStep<T>
+    {
         return steps.fold(initialQuery, { query, step -> step.doJoin(query) })
     }
 }
 
-class JoinPathStep(private val from: TableImpl<*>, private val to: TableImpl<*>) {
+class JoinPathStep(private val from: TableImpl<*>, private val to: TableImpl<*>)
+{
     val foreignKeyField: TableField<*, Any>
     val primaryKeyField: Field<Any>
 
-    init {
+    init
+    {
         val references = from.keys.flatMap { it.references }.filter { it.table == to } +
-                         to.keys.flatMap { it.references }.filter { it.table == from }
+                to.keys.flatMap { it.references }.filter { it.table == from }
         val reference = references.singleOrNull()
-            ?: throwKeyProblem(references)
+                ?: throwKeyProblem(references)
         foreignKeyField = reference.fields.single() as TableField<*, Any>
         val targetTable = foreignKeyField.table.getOther(from, to)
         primaryKeyField = targetTable.primaryKey.fields.single() as Field<Any>
     }
 
-    private fun throwKeyProblem(keys: Iterable<ForeignKey<*, *>>): ForeignKey<*, *> {
+    private fun throwKeyProblem(keys: Iterable<ForeignKey<*, *>>): ForeignKey<*, *>
+    {
         val context = "Attempted to construct join from ${from.name} to ${to.name}, "
-        val message = context + when (keys.count()) {
+        val message = context + when (keys.count())
+        {
             0 -> "but there are no keys joining those tables."
             else -> "but there was more than key to choose from: $keys."
         }
         throw Throwable(message)
     }
 
-    fun <T: Record> doJoin(query: SelectJoinStep<T>): SelectJoinStep<T> {
+    fun <T : Record> doJoin(query: SelectJoinStep<T>): SelectJoinStep<T>
+    {
         return query.join(to).on(foreignKeyField.eqField(primaryKeyField))
     }
 }
 
-fun <T: Record> SelectJoinStep<T>.joinPath(vararg tables: TableImpl<*>): SelectJoinStep<T> {
+fun <T : Record> SelectJoinStep<T>.joinPath(vararg tables: TableImpl<*>): SelectJoinStep<T>
+{
     return JoinPath(tables.toList()).doJoin(this)
 }
-fun <T: Record> SelectFromStep<T>.fromJoinPath(vararg tables: TableImpl<*>): SelectJoinStep<T> {
+
+fun <T : Record> SelectFromStep<T>.fromJoinPath(vararg tables: TableImpl<*>): SelectJoinStep<T>
+{
     val query = this.from(tables.first())
     return JoinPath(tables.toList()).doJoin(query)
 }

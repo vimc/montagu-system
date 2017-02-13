@@ -11,7 +11,8 @@ import uk.ac.imperial.vimc.demo.app.repositories.jooq.JooqScenarioRepository
 import java.net.URL
 import spark.Spark as spk
 
-fun main(args: Array<String>) {
+fun main(args: Array<String>)
+{
     val scenarioRepository = JooqScenarioRepository()
     val scenarioController = ScenarioController(scenarioRepository)
 
@@ -21,11 +22,13 @@ fun main(args: Array<String>) {
     DemoApp().run(scenarioController, modellingGroupController)
 }
 
-class DemoApp {
+class DemoApp
+{
     private val urlBase = "/v1"
     private val logger = LoggerFactory.getLogger(DemoApp::class.java)
 
-    fun run(scenarios: ScenarioController, modellers: ModellingGroupController) {
+    fun run(scenarios: ScenarioController, modellers: ModellingGroupController)
+    {
         spk.port(8080)
 
         spk.exception(Exception::class.java) { e, req, res ->
@@ -60,23 +63,31 @@ class DemoApp {
 
     fun toJson(x: Any): String = Serializer.gson.toJson(x)
 
-    fun fromFile(fileName: Any): String {
-        if (fileName is String) {
+    fun fromFile(fileName: Any): String
+    {
+        if (fileName is String)
+        {
             val url: URL? = DemoApp::class.java.classLoader.getResource(fileName)
-            if (url != null) {
+            if (url != null)
+            {
                 return url.readText()
-            } else {
+            } else
+            {
                 return "Unknown file name '$fileName'"
             }
-        } else {
+        } else
+        {
             throw Exception("Unable to use $fileName as a file name")
         }
     }
 
-    fun addTrailingSlashes(req: Request, res: Response) {
-        if (!req.pathInfo().endsWith("/")) {
+    fun addTrailingSlashes(req: Request, res: Response)
+    {
+        if (!req.pathInfo().endsWith("/"))
+        {
             var path = req.pathInfo() + "/"
-            if (req.queryString() != null) {
+            if (req.queryString() != null)
+            {
                 path += "/?" + req.queryString()
             }
             res.redirect(path)

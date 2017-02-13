@@ -6,10 +6,11 @@ import uk.ac.imperial.vimc.demo.app.filters.JooqFilterSet
 import uk.ac.imperial.vimc.demo.app.filters.ScenarioFilterParameters
 import uk.ac.imperial.vimc.demo.app.models.jooq.Tables
 
-class JooqScenarioFilter : JooqFilterSet<ScenarioFilterParameters>() {
+class JooqScenarioFilter : JooqFilterSet<ScenarioFilterParameters>()
+{
     private val table = Tables.COVERAGE_SCENARIO_DESCRIPTION
 
-    override val filters : Iterable<JooqFilter<ScenarioFilterParameters>>
+    override val filters: Iterable<JooqFilter<ScenarioFilterParameters>>
         get() = listOf<JooqEqualityFilter<ScenarioFilterParameters, Any>>(
                 JooqEqualityFilter(table.ID, { it.scenarioId }),
                 JooqEqualityFilter(table.VACCINE, { it.vaccine }),

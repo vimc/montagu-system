@@ -3,7 +3,8 @@ package uk.ac.imperial.vimc.demo.app.repositories
 import uk.ac.imperial.vimc.demo.app.filters.ScenarioFilterParameters
 import uk.ac.imperial.vimc.demo.app.models.*
 
-interface ModellingGroupRepository {
+interface ModellingGroupRepository
+{
     val modellingGroups: DataSet<ModellingGroup, Int>
 
     fun getModellingGroupByCode(groupCode: String): ModellingGroup

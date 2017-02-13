@@ -5,4 +5,4 @@ data class Scenario(override val id: String,
                     val vaccinationLevel: String,
                     val disease: String,
                     val vaccine: String,
-                    val scenarioType: String): HasKey<String>
+                    val scenarioType: String) : HasKey<String>

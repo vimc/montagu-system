@@ -3,7 +3,8 @@ package uk.ac.imperial.vimc.demo.app.models
 data class Responsibilities(
         val group: ModellingGroup,
         val responsibilities: List<Responsibility>,
-        val complete: Boolean): Iterable<Responsibility> {
+        val complete: Boolean) : Iterable<Responsibility>
+{
     override fun iterator() = responsibilities.iterator()
 }
 

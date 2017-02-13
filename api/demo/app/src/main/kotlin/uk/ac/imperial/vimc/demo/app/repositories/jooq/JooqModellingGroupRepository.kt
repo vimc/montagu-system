@@ -12,19 +12,22 @@ import uk.ac.imperial.vimc.demo.app.models.jooq.tables.records.ModellingGroupRec
 import uk.ac.imperial.vimc.demo.app.repositories.DataSet
 import uk.ac.imperial.vimc.demo.app.repositories.ModellingGroupRepository
 
-class JooqModellingGroupRepository : JooqRepository(), ModellingGroupRepository {
+class JooqModellingGroupRepository : JooqRepository(), ModellingGroupRepository
+{
     override val modellingGroups: DataSet<ModellingGroup, Int>
         get() = JooqDataSet.new(dsl, MODELLING_GROUP, { it.ID }, this::mapModellingGroup)
 
     private fun groupHasCode(groupCode: String) = MODELLING_GROUP.CODE.eq(groupCode)
 
-    override fun getModellingGroupByCode(groupCode: String): ModellingGroup {
+    override fun getModellingGroupByCode(groupCode: String): ModellingGroup
+    {
         val record = dsl.fetchAny(MODELLING_GROUP, groupHasCode(groupCode))
                 ?: throw UnknownObject(groupCode, ModellingGroup::class.simpleName!!)
         return mapModellingGroup(record)
     }
 
-    override fun getModels(groupCode: String): List<VaccineModel> {
+    override fun getModels(groupCode: String): List<VaccineModel>
+    {
         return dsl.select()
                 .from(MODEL)
                 .join(MODELLING_GROUP).onKey()
@@ -33,7 +36,8 @@ class JooqModellingGroupRepository : JooqRepository(), ModellingGroupRepository 
                 .map { VaccineModel(it.id, it.name, it.citation, it.description) }
     }
 
-    override fun getResponsibilities(groupCode: String, scenarioFilterParameters: ScenarioFilterParameters): Responsibilities {
+    override fun getResponsibilities(groupCode: String, scenarioFilterParameters: ScenarioFilterParameters): Responsibilities
+    {
         val group = getModellingGroupByCode(groupCode)
         val responsibility_set = dsl.fetchAny(RESPONSIBILITY_SET,
                 RESPONSIBILITY_SET.MODELLING_GROUP.eq(group.id))
@@ -48,7 +52,8 @@ class JooqModellingGroupRepository : JooqRepository(), ModellingGroupRepository 
         return Responsibilities(group, scenarios, responsibility_set.complete)
     }
 
-    override fun getEstimateListing(groupCode: String, scenarioFilterParameters: ScenarioFilterParameters): ModellingGroupEstimateListing {
+    override fun getEstimateListing(groupCode: String, scenarioFilterParameters: ScenarioFilterParameters): ModellingGroupEstimateListing
+    {
         val group = getModellingGroupByCode(groupCode)
         val scenarioIdField = COVERAGE_SCENARIO_DESCRIPTION.ID
         val impactEstimates = dsl
@@ -64,7 +69,7 @@ class JooqModellingGroupRepository : JooqRepository(), ModellingGroupRepository 
                 .joinPath(RESPONSIBILITY, COVERAGE_SCENARIO, COVERAGE_SCENARIO_DESCRIPTION)
                 .where(groupHasCode(groupCode))
                 .toList()
-        val scenarioIds : List<String> = impactEstimates.map { it[scenarioIdField] }.toList()
+        val scenarioIds: List<String> = impactEstimates.map { it[scenarioIdField] }.toList()
         val scenarios = dsl
                 .fetch(COVERAGE_SCENARIO_DESCRIPTION, scenarioIdField.`in`(scenarioIds))
                 .map { JooqScenarioRepository.scenarioMapper(it) }
@@ -81,11 +86,13 @@ class JooqModellingGroupRepository : JooqRepository(), ModellingGroupRepository 
         return ModellingGroupEstimateListing(group, listing)
     }
 
-    override fun getEstimate(groupCode: String, estimateId: Int): ImpactEstimateDataAndGroup {
+    override fun getEstimate(groupCode: String, estimateId: Int): ImpactEstimateDataAndGroup
+    {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun createEstimate(groupCode: String, data: NewImpactEstimate): ImpactEstimateDataAndGroup {
+    override fun createEstimate(groupCode: String, data: NewImpactEstimate): ImpactEstimateDataAndGroup
+    {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 

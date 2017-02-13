@@ -9,7 +9,8 @@ open class InMemoryFilterAdapter<TParameters, TParentModel, TModel>(
         parameters: TParameters,
         adapter: (TParentModel) -> TModel,
         filter: InMemoryFilter<TParameters, TModel>)
-    : InMemoryFilter<TParameters, TParentModel>(parameters) {
+    : InMemoryFilter<TParameters, TParentModel>(parameters)
+{
 
     override val mappers = filter.mappers.map {
         Mapper<TParameters, TParentModel, Any?>(it.getA, { parentModel -> it.getB(adapter(parentModel)) })
