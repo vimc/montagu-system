@@ -1,8 +1,23 @@
 package uk.ac.imperial.vimc.demo.app.repositories.jooq
 
-import org.jooq.*
+import org.jooq.Record
+import org.jooq.SelectFromStep
+import org.jooq.SelectJoinStep
+import org.jooq.TableField
 import org.jooq.impl.TableImpl
+import uk.ac.imperial.vimc.demo.app.extensions.eqField
 
+/**
+ * A JoinPath allows us to automatically construct the series of join operations needed
+ * to get from table A -> B -> ... --> Z, assuming that there is a single foreign key between
+ * each pair of tables, either from A->B or B->A.
+ *
+ * This is the same thing as jOOQ's join(...).onKey(), but because we have an ordering on the
+ * tables we can avoid ambiguity which sometimes causes it to fail.
+ *
+ * It is intended that you would use this using the two extension methods below, `fromJoinPath`
+ * at the beginning of a query, and `joinPath` to add more joins on to an existing query.
+ */
 class JoinPath(tables: Iterable<TableImpl<*>>) {
     val steps = buildSteps(tables.toList()).toList()
 
@@ -16,24 +31,19 @@ class JoinPath(tables: Iterable<TableImpl<*>>) {
 }
 
 class JoinPathStep(from: TableImpl<*>, val to: TableImpl<*>) {
-    val foreignKeyField : TableField<*, Any>
-    val targetKeyField : Field<Any>
+    val field1: TableField<*, Any>
+    val field2: TableField<*, Any>
 
     init {
         val reference = from.keys.flatMap { it.references }.filter { it.table == to }.singleOrNull()
             ?: throw Throwable("Attempted to construct join from $from to $to, but there is not exactly one foreign key")
         val fields = reference.fields
-        foreignKeyField = fields.single { it.table == from } as TableField<*, Any>
-        targetKeyField = fields.single { it.table == to } as Field<Any>
+        field1 = fields.single { it.table == from } as TableField<*, Any>
+        field2 = fields.single { it.table == to } as TableField<*, Any>
     }
 
-    fun <T: Record> doJoin(query: SelectJoinStep<T>) = doJoin(query, foreignKeyField, targetKeyField)
-
-    private fun <TRecord: Record, TField> doJoin(
-            query: SelectJoinStep<TRecord>,
-            foreignKeyField: TableField<*, TField>,
-            targetKeyField: Field<TField>): SelectJoinStep<TRecord>  {
-        return query.join(to).on(foreignKeyField.eq(targetKeyField))
+    fun <T: Record> doJoin(query: SelectJoinStep<T>): SelectJoinStep<T> {
+        return query.join(to).on(field1.eqField(field2))
     }
 }
 
