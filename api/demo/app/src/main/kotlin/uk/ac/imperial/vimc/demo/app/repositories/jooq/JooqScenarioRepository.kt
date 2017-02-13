@@ -4,7 +4,7 @@ import uk.ac.imperial.vimc.demo.app.extensions.toBigDecimal
 import uk.ac.imperial.vimc.demo.app.filters.ScenarioFilterParameters
 import uk.ac.imperial.vimc.demo.app.filters.whereMatchesFilter
 import uk.ac.imperial.vimc.demo.app.models.*
-import uk.ac.imperial.vimc.demo.app.models.jooq.Tables
+import uk.ac.imperial.vimc.demo.app.models.jooq.Tables.*
 import uk.ac.imperial.vimc.demo.app.models.jooq.tables.records.CoverageScenarioDescriptionRecord
 import uk.ac.imperial.vimc.demo.app.models.jooq.tables.records.RoutineCoverageRecord
 import uk.ac.imperial.vimc.demo.app.repositories.DataSet
@@ -12,13 +12,13 @@ import uk.ac.imperial.vimc.demo.app.repositories.ScenarioRepository
 
 class JooqScenarioRepository : JooqRepository(), ScenarioRepository {
     override val countries: DataSet<Country, String>
-            get() = JooqDataSet.new(dsl, Tables.COUNTRY, { it.ID }, { Country(it.id, it.name) })
+            get() = JooqDataSet.new(dsl, COUNTRY, { it.ID }, { Country(it.id, it.name) })
     override val scenarios: DataSet<Scenario, String>
-            get() = JooqDataSet.new(dsl, Tables.COVERAGE_SCENARIO_DESCRIPTION, { it.ID }, { scenarioMapper(it) })
+            get() = JooqDataSet.new(dsl, COVERAGE_SCENARIO_DESCRIPTION, { it.ID }, { scenarioMapper(it) })
 
     override fun getScenarios(scenarioFilterParameters: ScenarioFilterParameters): Iterable<Scenario> {
         return dsl
-                .selectFrom(Tables.COVERAGE_SCENARIO_DESCRIPTION)
+                .selectFrom(COVERAGE_SCENARIO_DESCRIPTION)
                 .whereMatchesFilter(JooqScenarioFilter(), scenarioFilterParameters)
                 .fetch()
                 .map { scenarioMapper(it) }
@@ -39,14 +39,10 @@ class JooqScenarioRepository : JooqRepository(), ScenarioRepository {
 
     private fun getRoutineCoverage(scenarioId: String): List<RoutineCoverageRecord> {
         return dsl
-                .select(Tables.ROUTINE_COVERAGE.fields().toList())
-                .from(Tables.COVERAGE_SCENARIO_DESCRIPTION
-                        .join(Tables.COVERAGE_SCENARIO).onKey()
-                        .join(Tables.ROUTINE_COVERAGE_SET).onKey()
-                        .join(Tables.ROUTINE_COVERAGE).on(Tables.ROUTINE_COVERAGE_SET.ID.eq(Tables.ROUTINE_COVERAGE.ROUTINE_COVERAGE_SET))
-                )
-                .where(Tables.COVERAGE_SCENARIO_DESCRIPTION.ID.eq(scenarioId))
-                .fetchInto(Tables.ROUTINE_COVERAGE)
+                .select(ROUTINE_COVERAGE.fields().toList())
+                .fromJoinPath(COVERAGE_SCENARIO_DESCRIPTION, COVERAGE_SCENARIO, ROUTINE_COVERAGE_SET, ROUTINE_COVERAGE)
+                .where(COVERAGE_SCENARIO_DESCRIPTION.ID.eq(scenarioId))
+                .fetchInto(ROUTINE_COVERAGE)
                 .toList()
     }
 

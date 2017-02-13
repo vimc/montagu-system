@@ -5,7 +5,7 @@ import uk.ac.imperial.vimc.demo.app.extensions.fetchInto
 import uk.ac.imperial.vimc.demo.app.filters.ScenarioFilterParameters
 import uk.ac.imperial.vimc.demo.app.filters.whereMatchesFilter
 import uk.ac.imperial.vimc.demo.app.models.*
-import uk.ac.imperial.vimc.demo.app.models.jooq.Tables
+import uk.ac.imperial.vimc.demo.app.models.jooq.Tables.*
 import uk.ac.imperial.vimc.demo.app.models.jooq.tables.records.CoverageScenarioDescriptionRecord
 import uk.ac.imperial.vimc.demo.app.models.jooq.tables.records.ModelRecord
 import uk.ac.imperial.vimc.demo.app.models.jooq.tables.records.ModellingGroupRecord
@@ -14,20 +14,20 @@ import uk.ac.imperial.vimc.demo.app.repositories.ModellingGroupRepository
 
 class JooqModellingGroupRepository : JooqRepository(), ModellingGroupRepository {
     override val modellingGroups: DataSet<ModellingGroup, Int>
-        get() = JooqDataSet.new(dsl, Tables.MODELLING_GROUP, { it.ID }, this::mapModellingGroup)
+        get() = JooqDataSet.new(dsl, MODELLING_GROUP, { it.ID }, this::mapModellingGroup)
 
-    private fun groupHasCode(groupCode: String) = Tables.MODELLING_GROUP.CODE.eq(groupCode)
+    private fun groupHasCode(groupCode: String) = MODELLING_GROUP.CODE.eq(groupCode)
 
     override fun getModellingGroupByCode(groupCode: String): ModellingGroup {
-        val record = dsl.fetchAny(Tables.MODELLING_GROUP, groupHasCode(groupCode))
+        val record = dsl.fetchAny(MODELLING_GROUP, groupHasCode(groupCode))
                 ?: throw UnknownObject(groupCode, ModellingGroup::class.simpleName!!)
         return mapModellingGroup(record)
     }
 
     override fun getModels(groupCode: String): List<VaccineModel> {
         return dsl.select()
-                .from(Tables.MODEL)
-                .join(Tables.MODELLING_GROUP).onKey()
+                .from(MODEL)
+                .join(MODELLING_GROUP).onKey()
                 .where(groupHasCode(groupCode))
                 .fetchInto<ModelRecord>()
                 .map { VaccineModel(it.id, it.name, it.citation, it.description) }
@@ -35,14 +35,12 @@ class JooqModellingGroupRepository : JooqRepository(), ModellingGroupRepository 
 
     override fun getResponsibilities(groupCode: String, scenarioFilterParameters: ScenarioFilterParameters): Responsibilities {
         val group = getModellingGroupByCode(groupCode)
-        val responsibility_set = dsl.fetchAny(Tables.RESPONSIBILITY_SET,
-                Tables.RESPONSIBILITY_SET.MODELLING_GROUP.eq(group.id))
+        val responsibility_set = dsl.fetchAny(RESPONSIBILITY_SET,
+                RESPONSIBILITY_SET.MODELLING_GROUP.eq(group.id))
         val scenarios = dsl
-                .select(Tables.COVERAGE_SCENARIO_DESCRIPTION.fields().toList())
-                .from(Tables.RESPONSIBILITY)
-                .join(Tables.COVERAGE_SCENARIO).onKey()
-                .join(Tables.COVERAGE_SCENARIO_DESCRIPTION).onKey()
-                .where(Tables.RESPONSIBILITY.RESPONSIBILITY_SET.eq(responsibility_set.id))
+                .select(COVERAGE_SCENARIO_DESCRIPTION.fields().toList())
+                .fromJoinPath(RESPONSIBILITY, COVERAGE_SCENARIO, COVERAGE_SCENARIO_DESCRIPTION)
+                .where(RESPONSIBILITY.RESPONSIBILITY_SET.eq(responsibility_set.id))
                 .whereMatchesFilter(JooqScenarioFilter(), scenarioFilterParameters)
                 .fetchInto<CoverageScenarioDescriptionRecord>()
                 .map { JooqScenarioRepository.scenarioMapper(it) }
@@ -52,37 +50,32 @@ class JooqModellingGroupRepository : JooqRepository(), ModellingGroupRepository 
 
     override fun getEstimateListing(groupCode: String, scenarioFilterParameters: ScenarioFilterParameters): ModellingGroupEstimateListing {
         val group = getModellingGroupByCode(groupCode)
-        val scenarioIdField = Tables.COVERAGE_SCENARIO_DESCRIPTION.ID
+        val scenarioIdField = COVERAGE_SCENARIO_DESCRIPTION.ID
         val impactEstimates = dsl
                 .select(
-                        Tables.IMPACT_ESTIMATE_SET.ID,
-                        Tables.IMPACT_ESTIMATE_SET.UPLOADED_TIMESTAMP,
-                        Tables.MODEL_VERSION.VERSION,
-                        Tables.MODEL.NAME,
+                        IMPACT_ESTIMATE_SET.ID,
+                        IMPACT_ESTIMATE_SET.UPLOADED_TIMESTAMP,
+                        MODEL_VERSION.VERSION,
+                        MODEL.NAME,
                         scenarioIdField
                 )
-                .from(Tables.MODELLING_GROUP)
-                .join(Tables.RESPONSIBILITY_SET).onKey()
-                .join(Tables.RESPONSIBILITY).on(Tables.RESPONSIBILITY_SET.ID.eq(Tables.RESPONSIBILITY.RESPONSIBILITY_SET))
-                .join(Tables.IMPACT_ESTIMATE_SET).on(Tables.RESPONSIBILITY.ID.eq(Tables.IMPACT_ESTIMATE_SET.RESPONSIBILITY))
-                .join(Tables.MODEL_VERSION).onKey()
-                .join(Tables.MODEL).onKey()
-                .join(Tables.COVERAGE_SCENARIO).onKey()
-                .join(Tables.COVERAGE_SCENARIO_DESCRIPTION).onKey()
+                .fromJoinPath(MODELLING_GROUP, RESPONSIBILITY_SET, RESPONSIBILITY)
+                .joinPath(RESPONSIBILITY, IMPACT_ESTIMATE_SET, MODEL_VERSION, MODEL)
+                .joinPath(RESPONSIBILITY, COVERAGE_SCENARIO, COVERAGE_SCENARIO_DESCRIPTION)
                 .where(groupHasCode(groupCode))
                 .toList()
         val scenarioIds : List<String> = impactEstimates.map { it[scenarioIdField] }.toList()
         val scenarios = dsl
-                .fetch(Tables.COVERAGE_SCENARIO_DESCRIPTION, scenarioIdField.`in`(scenarioIds))
+                .fetch(COVERAGE_SCENARIO_DESCRIPTION, scenarioIdField.`in`(scenarioIds))
                 .map { JooqScenarioRepository.scenarioMapper(it) }
 
         val listing = impactEstimates.map {
             record ->
             ImpactEstimateDescription(
-                    record[Tables.IMPACT_ESTIMATE_SET.ID],
+                    record[IMPACT_ESTIMATE_SET.ID],
                     scenarios.single { record[scenarioIdField] == it.id },
-                    ModelIdentifier(record[Tables.MODEL.NAME], record[Tables.MODEL_VERSION.VERSION]),
-                    record[Tables.IMPACT_ESTIMATE_SET.UPLOADED_TIMESTAMP].toInstant()
+                    ModelIdentifier(record[MODEL.NAME], record[MODEL_VERSION.VERSION]),
+                    record[IMPACT_ESTIMATE_SET.UPLOADED_TIMESTAMP].toInstant()
             )
         }
         return ModellingGroupEstimateListing(group, listing)

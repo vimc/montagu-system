@@ -1,11 +1,9 @@
 package uk.ac.imperial.vimc.demo.app.repositories.jooq
 
-import org.jooq.Record
-import org.jooq.SelectFromStep
-import org.jooq.SelectJoinStep
-import org.jooq.TableField
+import org.jooq.*
 import org.jooq.impl.TableImpl
 import uk.ac.imperial.vimc.demo.app.extensions.eqField
+import uk.ac.imperial.vimc.demo.app.extensions.getOther
 
 /**
  * A JoinPath allows us to automatically construct the series of join operations needed
@@ -30,26 +28,38 @@ class JoinPath(tables: Iterable<TableImpl<*>>) {
     }
 }
 
-class JoinPathStep(from: TableImpl<*>, val to: TableImpl<*>) {
-    val field1: TableField<*, Any>
-    val field2: TableField<*, Any>
+class JoinPathStep(private val from: TableImpl<*>, private val to: TableImpl<*>) {
+    val foreignKeyField: TableField<*, Any>
+    val primaryKeyField: Field<Any>
 
     init {
-        val reference = from.keys.flatMap { it.references }.filter { it.table == to }.singleOrNull()
-            ?: throw Throwable("Attempted to construct join from $from to $to, but there is not exactly one foreign key")
-        val fields = reference.fields
-        field1 = fields.single { it.table == from } as TableField<*, Any>
-        field2 = fields.single { it.table == to } as TableField<*, Any>
+        val references = from.keys.flatMap { it.references }.filter { it.table == to } +
+                         to.keys.flatMap { it.references }.filter { it.table == from }
+        val reference = references.singleOrNull()
+            ?: throwKeyProblem(references)
+        foreignKeyField = reference.fields.single() as TableField<*, Any>
+        val targetTable = foreignKeyField.table.getOther(from, to)
+        primaryKeyField = targetTable.primaryKey.fields.single() as Field<Any>
+    }
+
+    private fun throwKeyProblem(keys: Iterable<ForeignKey<*, *>>): ForeignKey<*, *> {
+        val context = "Attempted to construct join from ${from.name} to ${to.name}, "
+        val message = context + when (keys.count()) {
+            0 -> "but there are no keys joining those tables."
+            else -> "but there was more than key to choose from: $keys."
+        }
+        throw Throwable(message)
     }
 
     fun <T: Record> doJoin(query: SelectJoinStep<T>): SelectJoinStep<T> {
-        return query.join(to).on(field1.eqField(field2))
+        return query.join(to).on(foreignKeyField.eqField(primaryKeyField))
     }
 }
 
-fun <T: Record> SelectJoinStep<T>.joinPath(tables: Iterable<TableImpl<*>>): SelectJoinStep<T> {
-    return JoinPath(tables).doJoin(this)
+fun <T: Record> SelectJoinStep<T>.joinPath(vararg tables: TableImpl<*>): SelectJoinStep<T> {
+    return JoinPath(tables.toList()).doJoin(this)
 }
-fun <T: Record> SelectFromStep<T>.fromJoinPath(tables: Iterable<TableImpl<*>>): SelectJoinStep<T> {
-    return this.from(tables.first()).joinPath<T>(tables)
+fun <T: Record> SelectFromStep<T>.fromJoinPath(vararg tables: TableImpl<*>): SelectJoinStep<T> {
+    val query = this.from(tables.first())
+    return JoinPath(tables.toList()).doJoin(query)
 }
