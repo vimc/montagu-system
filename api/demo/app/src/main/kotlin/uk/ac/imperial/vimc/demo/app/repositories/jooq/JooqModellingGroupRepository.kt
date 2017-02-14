@@ -72,7 +72,6 @@ class JooqModellingGroupRepository : JooqRepository(), ModellingGroupRepository
         val outcomes = dsl.select()
                 .fromJoinPath(IMPACT_ESTIMATE, OUTCOME)
                 .where(IMPACT_ESTIMATE.IMPACT_ESTIMATE_SET.eq(estimateId))
-                .and(OUTCOME.CODE.eq("Deaths"))
                 .groupBy { it[IMPACT_ESTIMATE.COUNTRY] }
                 .map(this::mapCountryOutcomes)
         return ImpactEstimateDataAndGroup(group, estimateDescription, outcomes)
@@ -103,9 +102,11 @@ class JooqModellingGroupRepository : JooqRepository(), ModellingGroupRepository
 
     private fun mapCountryOutcomes(groupedData: Map.Entry<String, Iterable<Record>>): CountryOutcomes {
         val (country, data) = groupedData
-        return CountryOutcomes(country, data.map { Outcome(
-                year = it[IMPACT_ESTIMATE.YEAR],
-                numberOfDeaths = it[IMPACT_ESTIMATE.VALUE]?.toInt()
-        )})
+        return CountryOutcomes(country, data.groupBy { it[IMPACT_ESTIMATE.YEAR] }.map {
+            (year, outcomes) -> Outcome(year, outcomes.associateBy(
+                { it[OUTCOME.CODE] },
+                { it[IMPACT_ESTIMATE.VALUE] }
+            ))
+        })
     }
 }

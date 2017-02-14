@@ -44,7 +44,7 @@ class NewImpactEstimate(
     {
         val year = outcome.year ?: missingParameter("year", "on 'outcomes' object within the data for country '$countryId'")
         val numberOfDeaths = outcome.numberOfDeaths ?: missingParameter("number_of_deaths", "on 'outcomes' object within the data for country '$countryId'")
-        return Outcome(year, numberOfDeaths)
+        return Outcome(year, mapOf("Deaths" to numberOfDeaths.toDouble()))
     }
 
     private fun <T> missingParameter(name: String, text: String = ""): T

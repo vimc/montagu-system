@@ -37,7 +37,7 @@ class FakeDataGenerator
 
     private fun generateOutcomesList(random: Random, years: IntRange): List<Outcome>
     {
-        return years.map { Outcome(it, random.nextInt(100000) + 10000) }
+        return years.map { Outcome(it, mapOf("Deaths" to random.nextDouble() * 100000 + 10000)) }
     }
 
     private val timeRandomizer = Random(354373)
