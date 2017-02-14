@@ -3,7 +3,7 @@
     <!-- Configure the database connection here -->
     <jdbc>
         <driver>org.postgresql.Driver</driver>
-        <url>jdbc:postgresql://localhost:8888/vimc</url>
+        <url>jdbc:postgresql://vimc-db:5432/vimc</url>
         <user>postgres</user>
         <password/>
     </jdbc>

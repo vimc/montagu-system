@@ -15,8 +15,11 @@ In `./api/demo` run: `gradlew run`. You will need JDK 1.8 installed, but you sho
 But better, build and run it from a docker container:
 
 ```
-docker build --rm --tag vimc-api --file docker/Dockerfile .
-docker run -p 8080:8080 vimc-api
+docker build --rm --tag vimc-api-bare --file docker/Dockerfile .
+docker run --name vimc-api-build  --link vimc-db:vimc-db vimc-api-bare ./gradlew generateFromDatabase build
+docker commit vimc-api-build vimc-api
+docker rm vimc-api-build
+docker run -p 8080:8080 --link vimc-db:vimc-db vimc-api ./gradlew run
 ```
 
 Either way, you can then browse to `http://localhost:8080/` to start using the API. A listing of available endpoints is included at the root URL.

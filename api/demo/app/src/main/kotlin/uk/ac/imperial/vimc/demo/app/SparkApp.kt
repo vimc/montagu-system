@@ -6,17 +6,17 @@ import spark.Request
 import spark.Response
 import uk.ac.imperial.vimc.demo.app.controllers.ModellingGroupController
 import uk.ac.imperial.vimc.demo.app.controllers.ScenarioController
-import uk.ac.imperial.vimc.demo.app.repositories.jooq.JooqModellingGroupRepository
-import uk.ac.imperial.vimc.demo.app.repositories.jooq.JooqScenarioRepository
+import uk.ac.imperial.vimc.demo.app.repositories.fake.FakeModellingGroupRepository
+import uk.ac.imperial.vimc.demo.app.repositories.fake.FakeScenarioRepository
 import java.net.URL
 import spark.Spark as spk
 
 fun main(args: Array<String>)
 {
-    val scenarioRepository = JooqScenarioRepository()
+    val scenarioRepository = FakeScenarioRepository()
     val scenarioController = ScenarioController(scenarioRepository)
 
-    val modellingGroupRepository = JooqModellingGroupRepository()
+    val modellingGroupRepository = FakeModellingGroupRepository(scenarioRepository)
     val modellingGroupController = ModellingGroupController(modellingGroupRepository)
 
     DemoApp().run(scenarioController, modellingGroupController)
