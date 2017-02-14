@@ -1,11 +1,11 @@
 package uk.ac.imperial.vimc.demo.app.repositories.jooq
 
+import org.jooq.Record
 import uk.ac.imperial.vimc.demo.app.extensions.toBigDecimal
 import uk.ac.imperial.vimc.demo.app.filters.ScenarioFilterParameters
 import uk.ac.imperial.vimc.demo.app.filters.whereMatchesFilter
 import uk.ac.imperial.vimc.demo.app.models.*
 import uk.ac.imperial.vimc.demo.app.models.jooq.Tables.*
-import uk.ac.imperial.vimc.demo.app.models.jooq.tables.records.CoverageScenarioDescriptionRecord
 import uk.ac.imperial.vimc.demo.app.models.jooq.tables.records.RoutineCoverageRecord
 import uk.ac.imperial.vimc.demo.app.repositories.DataSet
 import uk.ac.imperial.vimc.demo.app.repositories.ScenarioRepository
@@ -58,12 +58,16 @@ class JooqScenarioRepository : JooqRepository(), ScenarioRepository
 
     companion object
     {
-        fun scenarioMapper(input: CoverageScenarioDescriptionRecord) = Scenario(
-                id = input.id,
-                description = input.description,
-                disease = input.disease,
-                vaccine = input.vaccine,
-                scenarioType = input.scenarioType,
-                vaccinationLevel = input.vaccinationLevel)
+        fun scenarioMapper(input: Record): Scenario {
+            val t = COVERAGE_SCENARIO_DESCRIPTION
+            return Scenario(
+                    id = input[t.ID],
+                    description = input[t.DESCRIPTION],
+                    disease = input[t.DISEASE],
+                    vaccine = input[t.VACCINE],
+                    scenarioType = input[t.SCENARIO_TYPE],
+                    vaccinationLevel = input[t.VACCINATION_LEVEL]
+            )
+        }
     }
 }
