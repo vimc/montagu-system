@@ -6,6 +6,7 @@ data class ImpactEstimate(var id: Int = 0,
                           val scenarioId: String,
                           val model: ModelIdentifier,
                           val uploadedTimestamp: Instant,
-                          val outcomes: List<CountryOutcomes>) {
+                          val outcomes: List<CountryOutcomes>)
+{
     fun toOutcomeLines(): Iterable<OutcomeLine> = outcomes.flatMap { it.toLines() }
 }

@@ -58,7 +58,8 @@ class JooqScenarioRepository : JooqRepository(), ScenarioRepository
 
     companion object
     {
-        fun mapScenario(input: Record): Scenario {
+        fun mapScenario(input: Record): Scenario
+        {
             val t = COVERAGE_SCENARIO_DESCRIPTION
             return Scenario(
                     id = input[t.ID],

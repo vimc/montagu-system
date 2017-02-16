@@ -108,21 +108,26 @@ class JooqModellingGroupRepository : JooqRepository(), ModellingGroupRepository
         return getEstimate(groupCode, estimateSetRecord.id)
     }
 
-    private fun getModelAndVersion(groupCode: String, model: ModelIdentifier): DatabaseModelIdentifier {
+    private fun getModelAndVersion(groupCode: String, model: ModelIdentifier): DatabaseModelIdentifier
+    {
         val record = dsl.select(MODELLING_GROUP.CODE, MODEL.ID, MODEL_VERSION.ID)
                 .fromJoinPath(MODELLING_GROUP, MODEL, MODEL_VERSION)
                 .where(groupHasCode(groupCode))
                 .and(MODEL.NAME.eq(model.name))
                 .and(MODEL_VERSION.VERSION.eq(model.version))
                 .fetchAny()
-        if (record != null) {
-            if (record[MODELLING_GROUP.CODE] == groupCode) {
+        if (record != null)
+        {
+            if (record[MODELLING_GROUP.CODE] == groupCode)
+            {
                 return DatabaseModelIdentifier(record[MODEL.ID], record[MODEL_VERSION.ID])
-            } else {
+            } else
+            {
                 throw OwnershipError("Attempted to upload impact estimates for model '${model.name}', " +
                         "but this model belongs to another modelling group.")
             }
-        } else {
+        } else
+        {
             throw UnknownObjectError("${model.name}:${model.version}", "Model+Version")
         }
     }
