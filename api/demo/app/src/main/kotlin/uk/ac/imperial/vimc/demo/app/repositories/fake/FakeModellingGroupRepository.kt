@@ -1,6 +1,6 @@
 package uk.ac.imperial.vimc.demo.app.repositories.fake
 
-import uk.ac.imperial.vimc.demo.app.errors.UnknownObject
+import uk.ac.imperial.vimc.demo.app.errors.UnknownObjectError
 import uk.ac.imperial.vimc.demo.app.filters.ScenarioFilterParameters
 import uk.ac.imperial.vimc.demo.app.models.*
 import uk.ac.imperial.vimc.demo.app.repositories.ModellingGroupRepository
@@ -30,7 +30,7 @@ class FakeModellingGroupRepository(private val scenarioRepository: ScenarioRepos
     override fun getModellingGroupByCode(groupCode: String): ModellingGroup
     {
         return modellingGroups.all().singleOrNull { it.code == groupCode }
-                ?: throw UnknownObject(groupCode, ModellingGroup::class.simpleName!!)
+                ?: throw UnknownObjectError(groupCode, ModellingGroup::class.simpleName!!)
     }
 
     override fun getModels(groupCode: String): List<VaccineModel>
@@ -43,8 +43,7 @@ class FakeModellingGroupRepository(private val scenarioRepository: ScenarioRepos
         val group = getModellingGroupByCode(groupCode)
         val filter = InMemoryScenarioFilter(scenarioFilterParameters)
         val scenarios = filter.apply(scenarioRepository.scenarios.all())
-        val responsibilities = scenarios.map(::Responsibility)
-        return Responsibilities(group, responsibilities, complete = false)
+        return Responsibilities(group, scenarios.toList(), complete = false)
     }
 
     override fun getEstimateListing(groupCode: String, scenarioFilterParameters: ScenarioFilterParameters): ModellingGroupEstimateListing
@@ -59,7 +58,7 @@ class FakeModellingGroupRepository(private val scenarioRepository: ScenarioRepos
     {
         val group = getModellingGroupByCode(groupCode)
         val estimateDescription = fakeEstimateDescriptions(group.code).singleOrNull { it.id == estimateId }
-                ?: throw UnknownObject(estimateId, "ImpactEstimate")
+                ?: throw UnknownObjectError(estimateId, "ImpactEstimate")
         val outcomes = generator.generateOutcomes(estimateDescription.scenario.id, scenarioRepository)
         return ImpactEstimateDataAndGroup(group, estimateDescription, outcomes)
     }
@@ -67,13 +66,13 @@ class FakeModellingGroupRepository(private val scenarioRepository: ScenarioRepos
     override fun createEstimate(groupCode: String, data: NewImpactEstimate): ImpactEstimateDataAndGroup
     {
         val group = getModellingGroupByCode(groupCode)
-        val scenario = data.getScenario(scenarioRepository)
-        val estimates = data.getImpactEstimates(scenario)
+        val estimates = data.getImpactEstimates()
+        val scenario = scenarioRepository.scenarios.get(estimates.scenarioId)
         estimates.id = 6    //First unused ID
         val description = ImpactEstimateDescription(
                 estimates.id,
                 scenario,
-                ModelIdentifier(estimates.modelName, estimates.modelVersion),
+                estimates.model,
                 estimates.uploadedTimestamp
         )
         return ImpactEstimateDataAndGroup(group, description, estimates.outcomes)
