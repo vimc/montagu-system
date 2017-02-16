@@ -8,7 +8,7 @@ import uk.ac.imperial.vimc.demo.app.controllers.ModellingGroupController
 import uk.ac.imperial.vimc.demo.app.controllers.ScenarioController
 import uk.ac.imperial.vimc.demo.app.repositories.jooq.JooqModellingGroupRepository
 import uk.ac.imperial.vimc.demo.app.repositories.jooq.JooqScenarioRepository
-import java.net.URL
+import java.io.FileNotFoundException
 import spark.Spark as spk
 
 fun main(args: Array<String>)
@@ -67,15 +67,16 @@ class DemoApp
     {
         if (fileName is String)
         {
-            val url: URL? = DemoApp::class.java.classLoader.getResource(fileName)
-            if (url != null)
+            try
             {
-                return url.readText()
-            } else
+                return getResource(fileName).readText()
+            }
+            catch (e: FileNotFoundException)
             {
                 return "Unknown file name '$fileName'"
             }
-        } else
+        }
+        else
         {
             throw Exception("Unable to use $fileName as a file name")
         }

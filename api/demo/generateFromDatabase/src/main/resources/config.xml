@@ -2,10 +2,10 @@
 <configuration xmlns="http://www.jooq.org/xsd/jooq-codegen-3.6.0.xsd">
     <!-- Configure the database connection here -->
     <jdbc>
-        <driver>org.postgresql.Driver</driver>
-        <url>jdbc:postgresql://vimc-db:5432/vimc</url>
-        <user>postgres</user>
-        <password/>
+        <driver>${db_driver}</driver>
+        <url>${db_url}</url>
+        <user>${db_username}</user>
+        <password>${db_password}</password>
     </jdbc>
 
     <generator>

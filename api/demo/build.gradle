@@ -47,6 +47,20 @@ subprojects {
 
 project(':app')  {
     mainClassName = "uk.ac.imperial.vimc.demo.app.SparkAppKt"
+
+    task copyConfig(type: Copy) {
+        from 'src/main/resources'
+        include 'config.properties'
+        into 'build/resources/main/'
+        expand([
+                db_url: 'jdbc:postgresql://localhost:8888/vimc',
+                db_username: 'postgres',
+                db_password: '',
+                db_driver: 'org.postgresql.Driver'
+        ])
+    }
+
+    processResources.finalizedBy copyConfig
 }
 project(':generateFromDatabase')  {
     mainClassName = "uk.ac.imperial.vimc.demo.generateFromDatabase.AppKt"
@@ -54,4 +68,18 @@ project(':generateFromDatabase')  {
     dependencies {
         compile "org.jooq:jooq-codegen:3.9.1"
     }
+
+    task copyConfig(type: Copy) {
+        from 'src/main/resources'
+        include 'config.xml'
+        into 'build/resources/main/'
+        expand([
+                db_url: 'jdbc:postgresql://localhost:8888/vimc',
+                db_username: 'postgres',
+                db_password: '',
+                db_driver: 'org.postgresql.Driver'
+        ])
+    }
+
+    processResources.finalizedBy copyConfig
 }
