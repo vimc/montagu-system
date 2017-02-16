@@ -13,6 +13,11 @@ buildscript {
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
+
+    ext.myProperties = new Properties()
+    file("gradle.properties").withReader {
+        ext.myProperties.load(it)
+    }
 }
 
 task run(dependsOn: ':app:run')
@@ -52,12 +57,7 @@ project(':app')  {
         from 'src/main/resources'
         include 'config.properties'
         into 'build/resources/main/'
-        expand([
-                db_url: 'jdbc:postgresql://localhost:8888/vimc',
-                db_username: 'postgres',
-                db_password: '',
-                db_driver: 'org.postgresql.Driver'
-        ])
+        expand(myProperties)
     }
 
     processResources.finalizedBy copyConfig
@@ -73,12 +73,7 @@ project(':generateFromDatabase')  {
         from 'src/main/resources'
         include 'config.xml'
         into 'build/resources/main/'
-        expand([
-                db_url: 'jdbc:postgresql://localhost:8888/vimc',
-                db_username: 'postgres',
-                db_password: '',
-                db_driver: 'org.postgresql.Driver'
-        ])
+        expand(myProperties)
     }
 
     processResources.finalizedBy copyConfig
