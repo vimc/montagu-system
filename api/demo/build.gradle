@@ -13,12 +13,35 @@ buildscript {
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
-
-    ext.myProperties = new Properties()
-    file("gradle.properties").withReader {
-        ext.myProperties.load(it)
-    }
 }
+
+def loadPropertiesFile(path) {
+    def props = new Properties()
+    file(path).withReader {
+        props.load(it)
+    }
+    return props
+}
+
+def loadProperties() {
+    def properties = loadPropertiesFile("config/default.properties")
+    def userFile = file("config/current_user")
+    if (userFile.exists()) {
+        def user = userFile.text
+        print("Using configuration for user $user")
+        def userPropertiesFile = file("config/users/${user}.properties")
+        if (userPropertiesFile.exists()) {
+            def userProperties = loadPropertiesFile(userPropertiesFile.path)
+            properties.putAll(userProperties)
+        } else {
+            throw new Exception("You defined a user file, with user '$user', " +
+                    "but no corresponding properties file exists at $userPropertiesFile.absolutePath")
+        }
+    }
+    return properties
+}
+
+def properties = loadProperties()
 
 task run(dependsOn: ':app:run')
 task generateFromDatabase(dependsOn: ':generateFromDatabase:run')
@@ -57,7 +80,7 @@ project(':app')  {
         from 'src/main/resources'
         include 'config.properties'
         into 'build/resources/main/'
-        expand(myProperties)
+        expand(properties)
     }
 
     processResources.finalizedBy copyConfig
@@ -73,7 +96,7 @@ project(':generateFromDatabase')  {
         from 'src/main/resources'
         include 'config.xml'
         into 'build/resources/main/'
-        expand(myProperties)
+        expand(properties)
     }
 
     processResources.finalizedBy copyConfig
