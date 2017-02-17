@@ -2,7 +2,7 @@ package uk.ac.imperial.vimc.demo.app.repositories.jooq
 
 import org.jooq.Record
 import org.jooq.SelectConditionStep
-import uk.ac.imperial.vimc.demo.app.errors.OwnershipError
+import uk.ac.imperial.vimc.demo.app.errors.ModelOwnershipError
 import uk.ac.imperial.vimc.demo.app.errors.ScenarioOutsideResponsibilityError
 import uk.ac.imperial.vimc.demo.app.errors.UnknownObjectError
 import uk.ac.imperial.vimc.demo.app.extensions.fetchInto
@@ -112,8 +112,7 @@ class JooqModellingGroupRepository : JooqRepository(), ModellingGroupRepository
     {
         val record = dsl.select(MODELLING_GROUP.CODE, MODEL.ID, MODEL_VERSION.ID)
                 .fromJoinPath(MODELLING_GROUP, MODEL, MODEL_VERSION)
-                .where(groupHasCode(groupCode))
-                .and(MODEL.NAME.eq(model.name))
+                .where(MODEL.NAME.eq(model.name))
                 .and(MODEL_VERSION.VERSION.eq(model.version))
                 .fetchAny()
         if (record != null)
@@ -123,8 +122,7 @@ class JooqModellingGroupRepository : JooqRepository(), ModellingGroupRepository
                 return DatabaseModelIdentifier(record[MODEL.ID], record[MODEL_VERSION.ID])
             } else
             {
-                throw OwnershipError("Attempted to upload impact estimates for model '${model.name}', " +
-                        "but this model belongs to another modelling group.")
+                throw ModelOwnershipError(model.name, actionAttempted = "upload impact estimates")
             }
         } else
         {

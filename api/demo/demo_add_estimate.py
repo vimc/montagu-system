@@ -28,4 +28,5 @@ data = {
 }
 
 res = requests.post(url, data=json.dumps(data))
+print("Status: {}".format(res.status_code))
 print(res.text)
