@@ -6,12 +6,22 @@
         <option name="compilerInfo">
           <KotlinCompilerInfo>
             <option name="compilerSettings">
-              <CompilerSettings>
-                <option name="additionalArguments" value="generateFromDatabase_main 1.6" />
-              </CompilerSettings>
+              <CompilerSettings />
             </option>
             <option name="k2jsCompilerArguments">
               <K2JSCompilerArguments />
+            </option>
+            <option name="k2jvmCompilerArguments">
+              <K2JVMCompilerArguments>
+                <option name="noStdlib" value="true" />
+                <option name="noReflect" value="true" />
+                <option name="moduleName" value="generateFromDatabase_main" />
+                <option name="jvmTarget" value="1.6" />
+                <option name="addCompilerBuiltIns" value="true" />
+                <option name="languageVersion" value="1.1" />
+                <option name="apiVersion" value="1.1" />
+                <option name="coroutinesWarn" value="true" />
+              </K2JVMCompilerArguments>
             </option>
             <option name="_commonCompilerArguments">
               <DummyImpl>
@@ -23,17 +33,6 @@
                 <option name="coroutinesWarn" value="true" />
                 <option name="pluginOptions">
                   <array />
-                </option>
-                <option name="freeArgs">
-                  <list>
-                    <option value="generateFromDatabase_main" />
-                    <option value="1.6" />
-                  </list>
-                </option>
-                <option name="unknownExtraFlags">
-                  <list>
-                    <option value="-Xadd-compiler-builtins" />
-                  </list>
                 </option>
               </DummyImpl>
             </option>
@@ -61,8 +60,8 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="generateFromDatabase_main" />
-    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-jre8:1.1.0-beta-38" level="project" />
-    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-reflect:1.1.0-beta-38" level="project" />
+    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-jre8:1.1.0-rc-91" level="project" />
+    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-reflect:1.1.0-rc-91" level="project" />
     <orderEntry type="library" name="Gradle: com.sparkjava:spark-core:2.5.4" level="project" />
     <orderEntry type="library" name="Gradle: org.slf4j:slf4j-simple:1.7.21" level="project" />
     <orderEntry type="library" name="Gradle: com.github.salomonbrys.kotson:kotson:2.5.0" level="project" />
@@ -70,8 +69,8 @@
     <orderEntry type="library" name="Gradle: org.jooq:jooq:3.9.1" level="project" />
     <orderEntry type="library" name="Gradle: org.jooq:jooq-meta:3.9.1" level="project" />
     <orderEntry type="library" name="Gradle: org.jooq:jooq-codegen:3.9.1" level="project" />
-    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-jre7:1.1.0-beta-38" level="project" />
-    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib:1.1.0-beta-38" level="project" />
+    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-jre7:1.1.0-rc-91" level="project" />
+    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib:1.1.0-rc-91" level="project" />
     <orderEntry type="library" name="Gradle: org.eclipse.jetty:jetty-server:9.3.6.v20151106" level="project" />
     <orderEntry type="library" name="Gradle: org.eclipse.jetty:jetty-webapp:9.3.6.v20151106" level="project" />
     <orderEntry type="library" name="Gradle: org.eclipse.jetty.websocket:websocket-server:9.3.6.v20151106" level="project" />
