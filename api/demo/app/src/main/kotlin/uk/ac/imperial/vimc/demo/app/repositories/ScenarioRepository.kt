@@ -4,8 +4,9 @@ import uk.ac.imperial.vimc.demo.app.filters.ScenarioFilterParameters
 import uk.ac.imperial.vimc.demo.app.models.Country
 import uk.ac.imperial.vimc.demo.app.models.Scenario
 import uk.ac.imperial.vimc.demo.app.models.ScenarioAndCoverage
+import java.io.Closeable
 
-interface ScenarioRepository
+interface ScenarioRepository : Closeable
 {
     val countries: DataSet<Country, String>
     val scenarios: DataSet<Scenario, String>

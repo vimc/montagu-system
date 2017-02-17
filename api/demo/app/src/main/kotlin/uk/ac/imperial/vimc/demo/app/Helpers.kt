@@ -12,8 +12,7 @@ fun getResource(path: String): URL
     if (url != null)
     {
         return url
-    }
-    else
+    } else
     {
         throw FileNotFoundException("Unable to load '$path' as a resource steam")
     }

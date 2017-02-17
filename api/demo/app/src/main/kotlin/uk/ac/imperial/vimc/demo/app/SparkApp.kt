@@ -13,12 +13,8 @@ import spark.Spark as spk
 
 fun main(args: Array<String>)
 {
-    val scenarioRepository = JooqScenarioRepository()
-    val scenarioController = ScenarioController(scenarioRepository)
-
-    val modellingGroupRepository = JooqModellingGroupRepository()
-    val modellingGroupController = ModellingGroupController(modellingGroupRepository)
-
+    val scenarioController = ScenarioController({ JooqScenarioRepository() })
+    val modellingGroupController = ModellingGroupController({ JooqModellingGroupRepository() })
     DemoApp().run(scenarioController, modellingGroupController)
 }
 
@@ -70,13 +66,11 @@ class DemoApp
             try
             {
                 return getResource(fileName).readText()
-            }
-            catch (e: FileNotFoundException)
+            } catch (e: FileNotFoundException)
             {
                 return "Unknown file name '$fileName'"
             }
-        }
-        else
+        } else
         {
             throw Exception("Unable to use $fileName as a file name")
         }

@@ -1,7 +1,14 @@
 package uk.ac.imperial.vimc.demo.app.repositories.jooq
 
-open abstract class JooqRepository
+import java.io.Closeable
+
+open abstract class JooqRepository : Closeable
 {
-    val dsl
-        get() = JooqContext().dsl
+    private val context = JooqContext()
+    val dsl = context.dsl
+
+    override fun close()
+    {
+        context.close()
+    }
 }
