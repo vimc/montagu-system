@@ -17,11 +17,11 @@ object Serializer
     val outcomeSerializer = jsonSerializer<Outcome> {
         JsonObject().apply {
             addProperty("year", it.src.year)
-            addProperty("Deaths", it.src.numberOfDeaths)
-            addProperty("Cases", it.src.cases)
-            addProperty("DALYs", it.src.dalys)
-            addProperty("FVPs", it.src.fvps)
-            addProperty("Deaths Averted", it.src.deathsAverted)
+            addProperty(Outcome.Keys.deaths, it.src.deaths)
+            addProperty(Outcome.Keys.cases, it.src.cases)
+            addProperty(Outcome.Keys.dalys, it.src.dalys)
+            addProperty(Outcome.Keys.fvps, it.src.fvps)
+            addProperty(Outcome.Keys.deathsAverted, it.src.deathsAverted)
         }
     }
 

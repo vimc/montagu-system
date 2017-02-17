@@ -7,15 +7,15 @@ outcomes = [
 	{ 
 		"country_id": "AFG",
 		"data": [
-			{ "year": 1996, "number_of_deaths": 78946 },
-			{ "year": 1997, "number_of_deaths": 72345 },
+			{ "year": 1996, "deaths": 78946 },
+			{ "year": 1997, "deaths": 72345 },
 		]
 	},
 	{ 
 		"country_id": "AGO",
 		"data": [
-			{ "year": 1996, "number_of_deaths": 12345 },
-			{ "year": 1997, "number_of_deaths": 13435 },
+			{ "year": 1996, "deaths": 12345 },
+			{ "year": 1997, "cases": 13435 },
 		]
 	}
 ]

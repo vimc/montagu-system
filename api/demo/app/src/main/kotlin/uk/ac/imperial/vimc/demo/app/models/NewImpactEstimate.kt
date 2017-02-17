@@ -9,7 +9,14 @@ class NewImpactEstimate(
         val outcomes: List<NewCountryOutcomes>?)
 {
     class NewCountryOutcomes(val countryId: String?, val data: List<NewOutcome>?)
-    class NewOutcome(val year: Year?, val numberOfDeaths: Int?)
+    class NewOutcome(
+            val year: Year?,
+            val deaths: Double?,
+            val cases: Double?,
+            val dalys: Double?,
+            val fvps: Double?,
+            val deathsAverted: Double?
+    )
 
     fun getImpactEstimates(): ImpactEstimate
     {
@@ -36,8 +43,19 @@ class NewImpactEstimate(
     private fun toOutcome(outcome: NewOutcome, countryId: String): Outcome
     {
         val year = outcome.year ?: missingParameter("year", "on 'outcomes' object within the data for country '$countryId'")
-        val numberOfDeaths = outcome.numberOfDeaths ?: missingParameter("number_of_deaths", "on 'outcomes' object within the data for country '$countryId'")
-        return Outcome(year, mapOf("Deaths" to numberOfDeaths.toDouble()))
+        val map = mapOf(
+                Outcome.Keys.deaths to outcome.deaths,
+                Outcome.Keys.cases to outcome.cases,
+                Outcome.Keys.dalys to outcome.dalys,
+                Outcome.Keys.fvps to outcome.fvps,
+                Outcome.Keys.deathsAverted to outcome.deathsAverted
+        )
+        if (map.values.all { it == null })
+        {
+            val options = Outcome.Keys.all.joinToString(", ")
+            throw IllegalArgumentException("Expected one of [$options] in outcomes.data[$countryId]")
+        }
+        return Outcome(year, map)
     }
 
     private fun <T> missingParameter(name: String, text: String = ""): T

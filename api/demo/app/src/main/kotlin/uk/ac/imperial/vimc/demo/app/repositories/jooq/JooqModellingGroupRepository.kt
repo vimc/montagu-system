@@ -94,7 +94,8 @@ class JooqModellingGroupRepository : JooqRepository(), ModellingGroupRepository
         }
         estimateSetRecord.store()
 
-        val outcomeLookup = dsl.fetch(OUTCOME).associateBy({ it.code }, { it.id })
+        val outcomeLookup = dsl.fetch(OUTCOME)
+                .associateBy({ Outcome.Keys.fromDatabaseCode(it.code) }, { it.id })
         dsl.batchStore(impactEstimate.toOutcomeLines().map {
             dsl.newRecord(IMPACT_ESTIMATE).apply {
                 impactEstimateSet = estimateSetRecord.id
@@ -171,7 +172,7 @@ class JooqModellingGroupRepository : JooqRepository(), ModellingGroupRepository
         return CountryOutcomes(country, data.groupBy { it[IMPACT_ESTIMATE.YEAR] }.map {
             (year, outcomes) ->
             Outcome(year, outcomes.associateBy(
-                    { it[OUTCOME.CODE] },
+                    { Outcome.Keys.fromDatabaseCode(it[OUTCOME.CODE]) },
                     { it[IMPACT_ESTIMATE.VALUE] }
             ))
         })

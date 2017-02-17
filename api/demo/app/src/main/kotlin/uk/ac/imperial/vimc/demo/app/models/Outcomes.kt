@@ -8,14 +8,33 @@ data class CountryOutcomes(val country: String, val data: List<Outcome>)
 
 class Outcome(val year: Year, private val values: Map<String, Double?>)
 {
-    val numberOfDeaths get() = values["Deaths"]
-    val cases get() = values["Cases"]
-    val dalys get() = values["DALYs"]
-    val fvps get() = values["FVPs"]
-    val deathsAverted get() = values["Deaths Averted"]
+    val deaths get() = values[Keys.deaths]
+    val cases get() = values[Keys.cases]
+    val dalys get() = values[Keys.dalys]
+    val fvps get() = values[Keys.fvps]
+    val deathsAverted get() = values[Keys.deathsAverted]
 
     fun toLines(country: String): Iterable<OutcomeLine> = values.map {
         OutcomeLine(country, year, it.key, it.value)
+    }
+
+    companion object Keys {
+        val deaths = "deaths"
+        val cases = "cases"
+        val dalys = "dalys"
+        val fvps = "fvps"
+        val deathsAverted = "deaths_averted"
+        val all = listOf(deaths, cases, dalys, fvps, deathsAverted)
+
+        fun fromDatabaseCode(code: String): String = when(code)
+        {
+            "Deaths" -> deaths
+            "Cases" -> cases
+            "DALYs" -> dalys
+            "FVPs" -> fvps
+            "Deaths Averted" -> deathsAverted
+            else -> "unknown"
+        }
     }
 }
 
