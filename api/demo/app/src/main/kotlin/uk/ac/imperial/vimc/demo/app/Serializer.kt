@@ -32,6 +32,7 @@ object Serializer
 
     val gson: Gson = GsonBuilder()
             .setPrettyPrinting()
+            .disableHtmlEscaping()
             .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
             .registerTypeAdapter<java.time.LocalDate>(toStringSerializer)
             .registerTypeAdapter<java.time.Instant>(toStringSerializer)

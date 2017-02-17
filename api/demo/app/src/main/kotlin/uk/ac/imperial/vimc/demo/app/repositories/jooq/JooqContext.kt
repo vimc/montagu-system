@@ -16,13 +16,14 @@ class JooqContext : AutoCloseable
 
     private fun getConnection(): Connection
     {
+        val url = Config["db.url"]
         try
         {
-            return DriverManager.getConnection(Config["db.url"], Config["db.username"], Config["db.password"])
+            return DriverManager.getConnection(url, Config["db.username"], Config["db.password"])
         }
         catch (e: PSQLException)
         {
-            throw UnableToConnectToDatabaseError()
+            throw UnableToConnectToDatabaseError(url)
         }
     }
 

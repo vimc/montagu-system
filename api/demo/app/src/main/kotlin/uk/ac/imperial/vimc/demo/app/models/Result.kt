@@ -11,4 +11,6 @@ enum class ResultStatus
     SUCCESS, FAILURE
 }
 
-data class ErrorInfo(val code: String, val message: String)
+data class ErrorInfo(val code: String, val message: String) {
+    override fun toString(): String = message
+}

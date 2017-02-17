@@ -26,7 +26,7 @@ class ErrorHandler
 
     private fun handleError(error: VimcError, req: Request, res: Response)
     {
-        logger.warn("For request $req, $error")
+        logger.warn("For request ${req.uri()}, a ${error::class.simpleName} occcurred with the following problems: ${error.problems}")
         res.body(Serializer.toJson(error.asResult()))
         res.status(error.httpStatus)
         addDefaultResponseHeaders(res)

@@ -52,6 +52,6 @@ fun addTrailingSlashes(req: Request, res: Response)
 
 fun addDefaultResponseHeaders(res: Response)
 {
-    res.type("application/json")
+    res.type("application/json; charset=utf-8")
     res.header("Content-Encoding", "gzip")
 }
