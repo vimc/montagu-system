@@ -27,18 +27,18 @@ class DemoApp
     {
         spk.port(8080)
 
-        spk.exception(Exception::class.java) { e, req, res ->
+        spk.exception(Exception::class.java) { e, _, res ->
             logger.error("An unhandled exception occurred", e)
             res.body("An error occurred: $e")
         }
-        spk.exception(JsonSyntaxException::class.java) { e, req, res ->
+        spk.exception(JsonSyntaxException::class.java) { _, req, res ->
             res.body("Error: Unable to parse supplied JSON: ${req.body()}")
         }
 
         spk.redirect.get("/", urlBase)
         spk.before("*", this::addTrailingSlashes)
 
-        spk.get("$urlBase/", { req, res -> "root.json" }, this::fromFile)
+        spk.get("$urlBase/", { _, _ -> "root.json" }, this::fromFile)
         spk.get("$urlBase/scenarios/", scenarios::getAllScenarios, this::toJson)
         spk.get("$urlBase/scenarios/:scenario-id/", scenarios::getScenario, this::toJson)
         spk.get("$urlBase/scenarios/:scenario-id/countries/", scenarios::getCountriesInScenario, this::toJson)
@@ -51,7 +51,7 @@ class DemoApp
         spk.get("$urlBase/modellers/:group-code/estimates/:estimate-id/", modellers::getEstimate, this::toJson)
         spk.post("$urlBase/modellers/:group-code/estimates/", modellers::createEstimate, this::toJson)
 
-        spk.after("*", { req, res ->
+        spk.after("*", { _, res ->
             res.type("application/json")
             res.header("Content-Encoding", "gzip")
         })
