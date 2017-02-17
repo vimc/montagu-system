@@ -1,8 +1,8 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import json
 import requests
 
-url = "http://localhost:8080/v1/modellers/imperial/estimates/"
+url = "http://localhost:8080/v1/modellers/IC-Garske/estimates/"
 outcomes = [
 	{ 
 		"country_id": "AFG",
@@ -21,8 +21,9 @@ outcomes = [
 ]
 
 data = {
-	"scenario_id": "menA-novacc",
-	"model_version": "SuperModel 1.2",
+	"scenario_id": "yf-yf-routine-gavi",
+	"model_name": "YF burden estimate - without herd effect",
+	"model_version": "no version information",
 	"outcomes": outcomes
 }
 

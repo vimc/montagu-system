@@ -15,7 +15,7 @@ class JooqScenarioRepository : JooqRepository(), ScenarioRepository
     override val countries: DataSet<Country, String>
         get() = JooqDataSet.new(dsl, COUNTRY, { it.ID }, { Country(it.id, it.name) })
     override val scenarios: DataSet<Scenario, String>
-        get() = JooqDataSet.new(dsl, COVERAGE_SCENARIO_DESCRIPTION, { it.ID }, { scenarioMapper(it) })
+        get() = JooqDataSet.new(dsl, COVERAGE_SCENARIO_DESCRIPTION, { it.ID }, { mapScenario(it) })
 
     override fun getScenarios(scenarioFilterParameters: ScenarioFilterParameters): Iterable<Scenario>
     {
@@ -23,7 +23,7 @@ class JooqScenarioRepository : JooqRepository(), ScenarioRepository
                 .selectFrom(COVERAGE_SCENARIO_DESCRIPTION)
                 .whereMatchesFilter(JooqScenarioFilter(), scenarioFilterParameters)
                 .fetch()
-                .map { scenarioMapper(it) }
+                .map { mapScenario(it) }
     }
 
     override fun getScenarioAndCoverage(scenarioId: String): ScenarioAndCoverage
@@ -58,7 +58,7 @@ class JooqScenarioRepository : JooqRepository(), ScenarioRepository
 
     companion object
     {
-        fun scenarioMapper(input: Record): Scenario {
+        fun mapScenario(input: Record): Scenario {
             val t = COVERAGE_SCENARIO_DESCRIPTION
             return Scenario(
                     id = input[t.ID],

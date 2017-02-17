@@ -4,7 +4,7 @@ import org.jooq.DSLContext
 import org.jooq.Record
 import org.jooq.TableField
 import org.jooq.impl.TableImpl
-import uk.ac.imperial.vimc.demo.app.errors.UnknownObject
+import uk.ac.imperial.vimc.demo.app.errors.UnknownObjectError
 import uk.ac.imperial.vimc.demo.app.models.HasKey
 import uk.ac.imperial.vimc.demo.app.repositories.DataSet
 
@@ -23,7 +23,7 @@ class JooqDataSet<out TModel : HasKey<TKey>, TKey : Any, TRepoModel : Record, TT
     override fun get(key: TKey): TModel = map(fetch(key))
 
     private fun fetch(key: TKey) = dsl.fetchAny(table, primaryKey.eq(key))
-            ?: throw UnknownObject(key, modelType.simpleName)
+            ?: throw UnknownObjectError(key, modelType.simpleName)
 
     companion object
     {
