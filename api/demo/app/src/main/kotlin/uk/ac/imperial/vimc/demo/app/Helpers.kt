@@ -1,5 +1,7 @@
 package uk.ac.imperial.vimc.demo.app
 
+import spark.Request
+import spark.Response
 import java.io.FileNotFoundException
 import java.net.URL
 
@@ -12,9 +14,44 @@ fun getResource(path: String): URL
     if (url != null)
     {
         return url
-    }
-    else
+    } else
     {
         throw FileNotFoundException("Unable to load '$path' as a resource steam")
     }
+}
+
+fun fromFile(fileName: Any): String
+{
+    if (fileName is String)
+    {
+        try
+        {
+            return getResource(fileName).readText()
+        } catch (e: FileNotFoundException)
+        {
+            return "Unknown file name '$fileName'"
+        }
+    } else
+    {
+        throw Exception("Unable to use $fileName as a file name")
+    }
+}
+
+fun addTrailingSlashes(req: Request, res: Response)
+{
+    if (!req.pathInfo().endsWith("/"))
+    {
+        var path = req.pathInfo() + "/"
+        if (req.queryString() != null)
+        {
+            path += "/?" + req.queryString()
+        }
+        res.redirect(path)
+    }
+}
+
+fun addDefaultResponseHeaders(res: Response)
+{
+    res.type("application/json")
+    res.header("Content-Encoding", "gzip")
 }

@@ -2,8 +2,8 @@ package uk.ac.imperial.vimc.demo.app.repositories.jooq
 
 import org.jooq.Record
 import org.jooq.SelectConditionStep
-import uk.ac.imperial.vimc.demo.app.errors.OutsideResponsibilityError
 import uk.ac.imperial.vimc.demo.app.errors.OwnershipError
+import uk.ac.imperial.vimc.demo.app.errors.ScenarioOutsideResponsibilityError
 import uk.ac.imperial.vimc.demo.app.errors.UnknownObjectError
 import uk.ac.imperial.vimc.demo.app.extensions.fetchInto
 import uk.ac.imperial.vimc.demo.app.extensions.fieldsAsList
@@ -140,9 +140,7 @@ class JooqModellingGroupRepository : JooqRepository(), ModellingGroupRepository
                 .where(groupHasCode(groupCode))
                 .and(COVERAGE_SCENARIO_DESCRIPTION.ID.eq(scenarioId))
                 .fetchAny()
-                ?: throw OutsideResponsibilityError("Attempted to upload impact estimates for scenario '$scenarioId', " +
-                "but we weren't expecting your modelling group to do so. If you are sure you should be able to upload " +
-                "data for this scenario, please contact Tini Garske")
+                ?: throw ScenarioOutsideResponsibilityError(scenarioId, groupCode)
         return result[RESPONSIBILITY.ID]
 
     }
