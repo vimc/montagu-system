@@ -14,7 +14,8 @@ fun getResource(path: String): URL
     if (url != null)
     {
         return url
-    } else
+    }
+    else
     {
         throw FileNotFoundException("Unable to load '$path' as a resource steam")
     }
@@ -31,9 +32,10 @@ fun fromFile(fileName: Any): String
         {
             return "Unknown file name '$fileName'"
         }
-    } else
+    }
+    else
     {
-        throw Exception("Unable to use $fileName as a file name")
+        throw IllegalArgumentException("Unable to use $fileName as a file name")
     }
 }
 

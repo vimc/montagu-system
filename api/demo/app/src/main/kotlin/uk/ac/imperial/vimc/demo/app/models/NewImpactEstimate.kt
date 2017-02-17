@@ -1,5 +1,6 @@
 package uk.ac.imperial.vimc.demo.app.models
 
+import uk.ac.imperial.vimc.demo.app.errors.MissingRequiredParameterError
 import java.time.Instant
 
 class NewImpactEstimate(
@@ -22,26 +23,26 @@ class NewImpactEstimate(
                 uploadedTimestamp = Instant.now(),
                 scenarioId = scenarioId,
                 model = ModelIdentifier(modelName, modelVersion),
-                outcomes = outcomes.map(this::toCountryOutcomes)
+                outcomes = outcomes.withIndex().map(this::toCountryOutcomes)
         )
     }
 
-    private fun toCountryOutcomes(outcomes: NewCountryOutcomes): CountryOutcomes
+    private fun toCountryOutcomes(outcomes: IndexedValue<NewCountryOutcomes>): CountryOutcomes
     {
-        val countryId = outcomes.countryId ?: missingParameter("country_id")
-        val data = outcomes.data ?: missingParameter("data", "on 'outcomes' object with country '${outcomes.countryId}'")
+        val countryId = outcomes.value.countryId ?: missingParameter("country_id", "outcomes[${outcomes.index}]")
+        val data = outcomes.value.data ?: missingParameter("data", "outcomes[$countryId]")
         return CountryOutcomes(countryId, data.map { toOutcome(it, countryId) })
     }
 
     private fun toOutcome(outcome: NewOutcome, countryId: String): Outcome
     {
-        val year = outcome.year ?: missingParameter("year", "on 'outcomes' object within the data for country '$countryId'")
-        val numberOfDeaths = outcome.numberOfDeaths ?: missingParameter("number_of_deaths", "on 'outcomes' object within the data for country '$countryId'")
+        val year = outcome.year ?: missingParameter("year", "outcomes[$countryId].data")
+        val numberOfDeaths = outcome.numberOfDeaths ?: missingParameter("number_of_deaths", "outcomes[$countryId].data")
         return Outcome(year, mapOf("Deaths" to numberOfDeaths.toDouble()))
     }
 
-    private fun <T> missingParameter(name: String, text: String = ""): T
+    private fun <T> missingParameter(name: String, context: String? = null): T
     {
-        throw IllegalArgumentException("Missing required parameter '$name' $text")
+        throw MissingRequiredParameterError(name, context)
     }
 }

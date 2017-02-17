@@ -2,8 +2,9 @@ package uk.ac.imperial.vimc.demo.app.errors
 
 import uk.ac.imperial.vimc.demo.app.models.ErrorInfo
 
-class ScenarioOutsideResponsibilityError(scenarioId: String, groupCode: String)
-    : VimcError(400, listOf(ErrorInfo("scenario-outside-responsibility", formatMessage(scenarioId, groupCode))))
+class ScenarioOutsideResponsibilityError(scenarioId: String, groupCode: String): VimcError(400, listOf(
+        ErrorInfo("scenario-outside-responsibility", formatMessage(scenarioId, groupCode))
+))
 {
     companion object
     {
