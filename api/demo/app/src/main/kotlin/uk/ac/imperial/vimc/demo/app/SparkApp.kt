@@ -3,6 +3,8 @@ package uk.ac.imperial.vimc.demo.app
 import uk.ac.imperial.vimc.demo.app.controllers.ModellingGroupController
 import uk.ac.imperial.vimc.demo.app.controllers.ScenarioController
 import uk.ac.imperial.vimc.demo.app.errors.ErrorHandler
+import uk.ac.imperial.vimc.demo.app.repositories.jooq.DatabaseChecker
+import uk.ac.imperial.vimc.demo.app.repositories.jooq.JooqContext
 import uk.ac.imperial.vimc.demo.app.repositories.jooq.JooqModellingGroupRepository
 import uk.ac.imperial.vimc.demo.app.repositories.jooq.JooqScenarioRepository
 import spark.Spark as spk
@@ -12,6 +14,8 @@ fun main(args: Array<String>)
     val scenarioController = ScenarioController({ JooqScenarioRepository() })
     val modellingGroupController = ModellingGroupController({ JooqModellingGroupRepository() })
     DemoApp().run(scenarioController, modellingGroupController)
+
+    JooqContext().use { DatabaseChecker(it).runChecks() }
 }
 
 class DemoApp
