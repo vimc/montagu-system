@@ -2,20 +2,22 @@ package uk.ac.imperial.vimc.demo.app.errors
 
 import uk.ac.imperial.vimc.demo.app.models.ErrorInfo
 
-class MissingRequiredParameterError(parameterName: String, context: String? = null): VimcError(400, listOf(
-        ErrorInfo("missing-parameter", formatMessage(parameterName, context))
-))
+class MissingRequiredParameterError(message: String)
+    : VimcError(400, listOf(ErrorInfo("missing-parameter", message)))
 {
-    companion object
+    constructor(parameterName: String, context: String? = null):
+            this(MissingParameter(parameterName, context).toString())
+}
+
+class MissingParameter(val parameterName: String, val context: String? = null)
+{
+    override fun toString(): String
     {
-        fun formatMessage(parameterName: String, context: String?): String
+        var message = "Missing required parameter '$parameterName'"
+        if (context != null)
         {
-            var message = "Missing required parameter '$parameterName'"
-            if (context != null)
-            {
-                message = "$message in context: $context"
-            }
-            return message
+            message = "$message in context: $context"
         }
+        return message
     }
 }

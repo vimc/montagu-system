@@ -54,7 +54,7 @@ class NewImpactEstimate(
         if (map.values.all { it == null })
         {
             val options = Outcome.Keys.all.joinToString(", ")
-            throw IllegalArgumentException("Expected one of [$options] in outcomes.data[$countryId]")
+            throw MissingRequiredParameterError("Expected one of [$options] in outcomes.data[$countryId]")
         }
         return Outcome(year, map)
     }
