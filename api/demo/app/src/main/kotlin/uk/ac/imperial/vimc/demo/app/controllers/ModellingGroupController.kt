@@ -8,45 +8,45 @@ import uk.ac.imperial.vimc.demo.app.filters.ScenarioFilterParameters
 import uk.ac.imperial.vimc.demo.app.models.*
 import uk.ac.imperial.vimc.demo.app.repositories.ModellingGroupRepository
 
-class ModellingGroupController(private val db: ModellingGroupRepository)
+class ModellingGroupController(private val db: () -> ModellingGroupRepository)
 {
     fun getAllModellingGroups(req: Request, res: Response): List<ModellingGroup>
     {
-        return db.modellingGroups.all().toList()
+        return db().use { it.modellingGroups.all().toList() }
     }
 
     fun getModellingGroup(req: Request, res: Response): ModellingGroup
     {
-        return db.getModellingGroupByCode(groupCode(req))
+        return db().use { it.getModellingGroupByCode(groupCode(req)) }
     }
 
     fun getModels(req: Request, res: Response): List<VaccineModel>
     {
-        return db.getModels(groupCode(req))
+        return db().use { it.getModels(groupCode(req)) }
     }
 
     fun getResponsibilities(req: Request, res: Response): Responsibilities
     {
         val filterParameters = ScenarioFilterParameters.fromRequest(req)
-        return db.getResponsibilities(groupCode(req), filterParameters)
+        return db().use { it.getResponsibilities(groupCode(req), filterParameters) }
     }
 
     fun getAllEstimates(req: Request, res: Response): ModellingGroupEstimateListing
     {
         val filterParameters = ScenarioFilterParameters.fromRequest(req)
-        return db.getEstimateListing(groupCode(req), filterParameters)
+        return db().use { it.getEstimateListing(groupCode(req), filterParameters) }
     }
 
     fun getEstimate(req: Request, res: Response): ImpactEstimateDataAndGroup
     {
         val estimateId = req.params(":estimate-id").toInt()
-        return db.getEstimate(groupCode = groupCode(req), estimateId = estimateId)
+        return db().use { it.getEstimate(groupCode = groupCode(req), estimateId = estimateId) }
     }
 
     fun createEstimate(req: Request, res: Response): ImpactEstimateDataAndGroup
     {
         val data = Serializer.gson.fromJson<NewImpactEstimate>(req.body())
-        val estimate = db.createEstimate(groupCode(req), data)
+        val estimate = db().use { it.createEstimate(groupCode(req), data) }
         res.status(201)
         return estimate
     }

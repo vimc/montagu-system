@@ -112,12 +112,12 @@ class FakeScenarioRepository : ScenarioRepository
     ))
 
     override val scenarios = InMemoryDataSet.new(listOf(
-            Scenario("menA-novacc", "Meningitis A, No vaccination", "none", "MenA", "MenA", "n/a"),
+            Scenario("menA-novacc", "Meningitis A, No vaccination", "none", "MenA", "MenA", "none"),
             Scenario("menA-routine-nogavi", "Meningitis A, Routine, No GAVI support", "nogavi", "MenA", "MenA", "routine"),
             Scenario("menA-routine-gavi", "Meningitis A, Routine, With GAVI support", "gavi", "MenA", "MenA", "routine"),
             Scenario("menA-campaign-nogavi", "Meningitis A, Campaign, No GAVI support", "nogavi", "MenA", "MenA", "campaign"),
             Scenario("menA-campaign-gavi", "Meningitis A, Campaign, With GAVI support", "gavi", "MenA", "MenA", "campaign"),
-            Scenario("yf-novacc", "Yellow Fever, No vaccination", "none", "YF", "YF", "n/a"),
+            Scenario("yf-novacc", "Yellow Fever, No vaccination", "none", "YF", "YF", "none"),
             Scenario("yf-routine-nogavi", "Yellow Fever, Routine, No GAVI support", "nogavi", "YF", "YF", "routine"),
             Scenario("yf-routine-gavi", "Yellow Fever, Routine, With GAVI support", "gavi", "YF", "YF", "routine"),
             Scenario("yf-campaign-reactive-nogavi", "Yellow Fever, Reactive Campaign, No GAVI support", "nogavi", "YF", "YF", "campaign"),
@@ -144,4 +144,8 @@ class FakeScenarioRepository : ScenarioRepository
         return countries.all().toList()
     }
 
+    override fun close()
+    {
+        //do nothing
+    }
 }

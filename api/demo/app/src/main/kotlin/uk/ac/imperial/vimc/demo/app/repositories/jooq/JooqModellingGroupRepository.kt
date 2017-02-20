@@ -60,7 +60,9 @@ class JooqModellingGroupRepository : JooqRepository(), ModellingGroupRepository
     override fun getEstimateListing(groupCode: String, scenarioFilterParameters: ScenarioFilterParameters): ModellingGroupEstimateListing
     {
         val group = getModellingGroupByCode(groupCode)
-        val impactEstimates = getImpactEstimateDescriptions(groupCode).map(this::mapImpactEstimateSet)
+        val impactEstimates = getImpactEstimateDescriptions(groupCode)
+                .whereMatchesFilter(JooqScenarioFilter(), scenarioFilterParameters)
+                .map(this::mapImpactEstimateSet)
         return ModellingGroupEstimateListing(group, impactEstimates)
     }
 

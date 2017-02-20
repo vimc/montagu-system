@@ -94,4 +94,9 @@ class FakeModellingGroupRepository(private val scenarioRepository: ScenarioRepos
             .atStartOfDay()
             .plus(generator.randomTimeOffset())
             .toInstant(ZoneOffset.UTC)
+
+    override fun close()
+    {
+        //do nothing
+    }
 }

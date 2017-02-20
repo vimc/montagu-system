@@ -27,7 +27,7 @@ def loadProperties() {
     def properties = loadPropertiesFile("config/default.properties")
     def userFile = file("config/current_user")
     if (userFile.exists()) {
-        def user = userFile.text
+        def user = userFile.text.trim()
         print("Using configuration for user $user")
         def userPropertiesFile = file("config/users/${user}.properties")
         if (userPropertiesFile.exists()) {

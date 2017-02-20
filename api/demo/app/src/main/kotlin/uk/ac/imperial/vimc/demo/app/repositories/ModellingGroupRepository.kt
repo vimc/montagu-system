@@ -2,8 +2,9 @@ package uk.ac.imperial.vimc.demo.app.repositories
 
 import uk.ac.imperial.vimc.demo.app.filters.ScenarioFilterParameters
 import uk.ac.imperial.vimc.demo.app.models.*
+import java.io.Closeable
 
-interface ModellingGroupRepository
+interface ModellingGroupRepository : Closeable
 {
     val modellingGroups: DataSet<ModellingGroup, Int>
 
