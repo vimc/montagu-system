@@ -2,7 +2,7 @@ package uk.ac.imperial.vimc.demo.app.repositories.jooq
 
 import org.jooq.*
 import org.jooq.impl.TableImpl
-import uk.ac.imperial.vimc.demo.app.errors.AmbigiousRelationBetweenTables
+import uk.ac.imperial.vimc.demo.app.errors.AmbiguousRelationBetweenTables
 import uk.ac.imperial.vimc.demo.app.errors.MissingRelationBetweenTables
 import uk.ac.imperial.vimc.demo.app.extensions.eqField
 import uk.ac.imperial.vimc.demo.app.extensions.getOther
@@ -54,7 +54,7 @@ class JoinPathStep(private val from: TableImpl<*>, private val to: TableImpl<*>)
         throw when (keys.count())
         {
             0 -> MissingRelationBetweenTables(from, to)
-            else -> AmbigiousRelationBetweenTables(from, to)
+            else -> AmbiguousRelationBetweenTables(from, to)
         }
     }
 
