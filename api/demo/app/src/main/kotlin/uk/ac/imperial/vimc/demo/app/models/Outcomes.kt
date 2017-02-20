@@ -26,15 +26,7 @@ class Outcome(val year: Year, private val values: Map<String, Double?>)
         val deathsAverted = "deaths_averted"
         val all = listOf(deaths, cases, dalys, fvps, deathsAverted)
 
-        fun fromDatabaseCode(code: String): String = when(code)
-        {
-            "Deaths" -> deaths
-            "Cases" -> cases
-            "DALYs" -> dalys
-            "FVPs" -> fvps
-            "Deaths Averted" -> deathsAverted
-            else -> "unknown"
-        }
+        fun fromDatabaseCode(code: String): String = if (all.contains(code)) code else "unknown"
     }
 }
 
