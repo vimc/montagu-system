@@ -2,6 +2,8 @@ package uk.ac.imperial.vimc.demo.app.repositories.jooq
 
 import org.jooq.*
 import org.jooq.impl.TableImpl
+import uk.ac.imperial.vimc.demo.app.errors.AmbiguousRelationBetweenTables
+import uk.ac.imperial.vimc.demo.app.errors.MissingRelationBetweenTables
 import uk.ac.imperial.vimc.demo.app.extensions.eqField
 import uk.ac.imperial.vimc.demo.app.extensions.getOther
 
@@ -49,13 +51,11 @@ class JoinPathStep(private val from: TableImpl<*>, private val to: TableImpl<*>)
 
     private fun throwKeyProblem(keys: Iterable<ForeignKey<*, *>>): ForeignKey<*, *>
     {
-        val context = "Attempted to construct join from ${from.name} to ${to.name}, "
-        val message = context + when (keys.count())
+        throw when (keys.count())
         {
-            0 -> "but there are no keys joining those tables."
-            else -> "but there was more than key to choose from: $keys."
+            0 -> MissingRelationBetweenTables(from, to)
+            else -> AmbiguousRelationBetweenTables(from, to)
         }
-        throw Throwable(message)
     }
 
     fun <T : Record> doJoin(query: SelectJoinStep<T>): SelectJoinStep<T>

@@ -144,4 +144,8 @@ class FakeScenarioRepository : ScenarioRepository
         return countries.all().toList()
     }
 
+    override fun close()
+    {
+        //do nothing
+    }
 }

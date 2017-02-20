@@ -2,8 +2,8 @@ package uk.ac.imperial.vimc.demo.app.repositories.jooq
 
 import org.jooq.Record
 import org.jooq.SelectConditionStep
-import uk.ac.imperial.vimc.demo.app.errors.OutsideResponsibilityError
-import uk.ac.imperial.vimc.demo.app.errors.OwnershipError
+import uk.ac.imperial.vimc.demo.app.errors.ModelOwnershipError
+import uk.ac.imperial.vimc.demo.app.errors.ScenarioOutsideResponsibilityError
 import uk.ac.imperial.vimc.demo.app.errors.UnknownObjectError
 import uk.ac.imperial.vimc.demo.app.extensions.fetchInto
 import uk.ac.imperial.vimc.demo.app.extensions.fieldsAsList
@@ -60,7 +60,9 @@ class JooqModellingGroupRepository : JooqRepository(), ModellingGroupRepository
     override fun getEstimateListing(groupCode: String, scenarioFilterParameters: ScenarioFilterParameters): ModellingGroupEstimateListing
     {
         val group = getModellingGroupByCode(groupCode)
-        val impactEstimates = getImpactEstimateDescriptions(groupCode).map(this::mapImpactEstimateSet)
+        val impactEstimates = getImpactEstimateDescriptions(groupCode)
+                .whereMatchesFilter(JooqScenarioFilter(), scenarioFilterParameters)
+                .map(this::mapImpactEstimateSet)
         return ModellingGroupEstimateListing(group, impactEstimates)
     }
 
@@ -113,8 +115,7 @@ class JooqModellingGroupRepository : JooqRepository(), ModellingGroupRepository
     {
         val record = dsl.select(MODELLING_GROUP.CODE, MODEL.ID, MODEL_VERSION.ID)
                 .fromJoinPath(MODELLING_GROUP, MODEL, MODEL_VERSION)
-                .where(groupHasCode(groupCode))
-                .and(MODEL.NAME.eq(model.name))
+                .where(MODEL.NAME.eq(model.name))
                 .and(MODEL_VERSION.VERSION.eq(model.version))
                 .fetchAny()
         if (record != null)
@@ -124,8 +125,7 @@ class JooqModellingGroupRepository : JooqRepository(), ModellingGroupRepository
                 return DatabaseModelIdentifier(record[MODEL.ID], record[MODEL_VERSION.ID])
             } else
             {
-                throw OwnershipError("Attempted to upload impact estimates for model '${model.name}', " +
-                        "but this model belongs to another modelling group.")
+                throw ModelOwnershipError(model.name, actionAttempted = "upload impact estimates")
             }
         } else
         {
@@ -141,9 +141,7 @@ class JooqModellingGroupRepository : JooqRepository(), ModellingGroupRepository
                 .where(groupHasCode(groupCode))
                 .and(COVERAGE_SCENARIO_DESCRIPTION.ID.eq(scenarioId))
                 .fetchAny()
-                ?: throw OutsideResponsibilityError("Attempted to upload impact estimates for scenario '$scenarioId', " +
-                "but we weren't expecting your modelling group to do so. If you are sure you should be able to upload " +
-                "data for this scenario, please contact Tini Garske")
+                ?: throw ScenarioOutsideResponsibilityError(scenarioId, groupCode)
         return result[RESPONSIBILITY.ID]
 
     }
