@@ -11,24 +11,30 @@ All responses are returned in a standard format. Throughout this specification,
 wherever an endpoint describes its response format, it should be assumed the payload is wrapped in
 the standard response format, so that the `data` property holds the payload.
 
+### Success
 Schema: [`Response.schema.json`](Response.schema.json)
 
-### Examples
-Either a success, which looks like this:
+Example
 
     {
         "status": "success",
-        "data": SOME_PAYLOAD,
+        "data": {},
         "errors": []
     }
 
-Or an error, which looks like this:
+### Error
+Schema: [`Response.schema.json`](Response.schema.json)
+
+Example
 
     {
         "status": "failure",
         "data": null,
         "errors": [
-            { "code": "unique-error-code", message: "Full, user-friendly error message" },
+            { 
+                "code": "unique-error-code", 
+                "message": "Full, user-friendly error message" 
+            }
         ]
     }
 

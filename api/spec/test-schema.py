@@ -27,7 +27,7 @@ def get_next_non_blank(iterator):
 
 def get_example(lines):
     next_line = get_next_non_blank(lines)
-    if re.match("#+ Example$", next_line):
+    if re.match("#* ?Example$", next_line):
         return get_example_body(lines)
     else:
         return None
