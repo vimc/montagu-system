@@ -1,0 +1,5 @@
+{
+    "id": "Diseases",
+    "type": "array",
+    "items": { "$ref": "Disease.schema.json" }
+}

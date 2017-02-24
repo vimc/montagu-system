@@ -1,0 +1,18 @@
+{
+	"id": "Scenario",
+	"type": "object",
+	"properties": {
+		"id": { "type": "string" },
+		"touchstones": {
+			"type": "array",
+			"item": { "type": "string" }
+		},
+		"description": { "type": "string" },
+		"vaccination_level": { "$ref": "VaccinationLevel.schema.json" },
+    	"disease": { "type": "string" },
+    	"vaccine": { "type": "string" },
+    	"scenario_type": { "$ref": "ScenarioType.schema.json" },
+    	"published": { "type": "boolean" }
+	},
+	"required": [ "id", "touchstones", "description", "vaccination_level", "disease", "vaccine", "scenario_type", "published" ]
+}

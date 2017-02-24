@@ -1,0 +1,5 @@
+{
+    "id": "Scenarios",
+    "type": "array",
+    "items": { "$ref": "Scenario.schema.json" }
+}

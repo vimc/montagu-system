@@ -1,0 +1,4 @@
+{
+	"id": "VaccinationLevel",
+	"enum": [ "none", "without", "with" ]
+}

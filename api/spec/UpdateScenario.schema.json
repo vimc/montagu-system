@@ -1,0 +1,11 @@
+{
+	"id": "Scenario",
+	"type": "object",
+	"properties": {
+		"description": { "type": "string" },
+		"vaccination_level": { "$ref": "VaccinationLevel.schema.json" },
+    	"disease": { "type": "string" },
+    	"vaccine": { "type": "string" },
+    	"scenario_type": { "$ref": "ScenarioType.schema.json" }
+	}
+}

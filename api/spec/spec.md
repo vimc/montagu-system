@@ -6,145 +6,187 @@
 * The canonical form for all URLs (not including query string) ends in a slash: `/`.
 * The API will be versioned via URL. So for version 1, all URLs will begin `/v1/`. e.g. `http://vimc.dide.ic.ac.uk/api/v1/diseases/`
 
-## Reference data
-Here, all `GET` methods are available to modelling groups, but `POST` methods are only available to authorised VIMC central users.
+## Standard response format
+All responses are returned in a standard format. Throughout this specification, 
+wherever an endpoint describes its response format, it should be assumed the payload is wrapped in
+the standard response format, so that the `data` property holds the payload.
 
-### Diseases
-#### `GET /diseases/`
-Returns an enumeration of all diseases in this format:
+Schema: [`Response.schema.json`](Response.schema.json)
+
+### Examples
+Either a success, which looks like this:
+
+    {
+        "status": "success",
+        "data": SOME_PAYLOAD,
+        "errors": []
+    }
+
+Or an error, which looks like this:
+
+    {
+        "status": "failure",
+        "data": null,
+        "errors": [
+            { "code": "unique-error-code", message: "Full, user-friendly error message" },
+        ]
+    }
+
+## Diseases
+### `GET /diseases/`
+Returns an enumeration of all diseases.
+
+Schema: [`Diseases.schema.json`](Diseases.schema.json)
+
+##### Example
 
     [
         {
-            id: "HepB",
-            name: "Hepatitis B"
+            "id": "HepB",
+            "name": "Hepatitis B"
         },
         {
-            id: "YF",
-            name: "Yellow Fever"
+            "id": "YF",
+            "name": "Yellow Fever"
         }
     ]
-    
-#### `POST /diseases/`
-Adds a new disease. Expects data in this format:
 
+### `POST /diseases/`
+Adds a new disease. Request data:
+
+Schema: [`Disease.schema.json`](Disease.schema.json)
+
+#### Example
     {
-    	id: "NEW DISEASE ID",
-    	name: "NEW DISEASE NAME"
+        "id": "NEW DISEASE ID",
+        "name": "NEW DISEASE NAME"
     }
 
 Diseases cannot be deleted via the API.
 
-#### `GET /diseases/{disease-id}/`
+### `GET /diseases/{disease-id}/`
 Example URL: `/diseases/YF/`
 
-Returns one disease. e.g.
+Returns one disease.
 
+Schema: [`Disease.schema.json`](Disease.schema.json)
+
+#### Example
     {
-        id: "YF",
-        name: "Yellow Fever"
+        "id": "YF",
+        "name": "Yellow Fever"
     }
 
-#### `PUT /diseases/{disease-id}/`
-Update the disease's human-readable id. Expects data in this format:
+### `PUT /diseases/{disease-id}/`
+Update the disease's human-readable id. Request data:
 
+Schema: [`UpdateDisease.schema.json`](UpdateDisease.schema.json)
+
+#### Example
     {
-        name: "NEW DISEASE NAME"
+        "name": "NEW DISEASE NAME"
     }
 
 You cannot update a disease's ID via the API.
 
-### Vaccines
+## Vaccines
 The vaccine API is identical to the disease API, but uses `/vaccines` as its base URI.
 
-### Scenarios
-#### `GET /scenarios/`
+## Scenarios
+### `GET /scenarios/`
 Returns all scenarios.
 
-Example response:
+Schema: [`Scenarios.schema.json`](Scenarios.schema.json)
 
+#### Example
     [
         {
-            id: "menA-novacc",
-            touchstones: [ "2016-op", "2017-wuenic", "2017-op" ],
-            description: "Menigitis A, No vaccination",
-            vaccination_level: "none",
-            disease: "MenA",
-            vaccine: "MenA",
-            scenario_type: "n/a",
-            published: true,
+            "id": "menA-novacc",
+            "touchstones": [ "2016-op", "2017-wuenic", "2017-op" ],
+            "description": "Menigitis A, No vaccination",
+            "vaccination_level": "none",
+            "disease": "MenA",
+            "vaccine": "MenA",
+            "scenario_type": "none",
+            "published": true
         },
         {
-            id: "yf-campaign-reactive-nogavi",
-            touchstone: [ "2017-wuenic", "2017-op" ],
-            description: "Yellow Fever, Reactive campaign, SDF coverage without GAVI support",
-            vaccination_level: "no-gavi",
-            disease: "YF",
-            vaccine: "YF",
-            scenario_type: "campaign",
-            published: false,
+            "id": "yf-campaign-reactive-nogavi",
+            "touchstones": [ "2017-wuenic", "2017-op" ],
+            "description": "Yellow Fever, Reactive campaign, SDF coverage without GAVI support",
+            "vaccination_level": "without",
+            "disease": "YF",
+            "vaccine": "YF",
+            "scenario_type": "campaign",
+            "published": false
         }
     ]
     
 Notes:
 
-* `vaccinationLevel` must be one of `[none, no-gavi, gavi]`.
-* `scenario_type` must be one of `[n/a, routine, campaign]`.
+* `vaccinationLevel` must be one of `[none, without, with]`.
+* `scenario_type` must be one of `[none, routine, campaign]`.
     
-##### Query parameters:
+#### Query parameters:
 
-###### vaccine
+##### vaccine
 Optional. A vaccine id. Only returns scenarios that match that vaccine.
 
 Example: `/touchstones/2017-op/scenarios/?vaccine=MenA`
 
-###### disease
+##### disease
 Optional. A disease id. Only returns scenarios that match that disease.
 
 Example: `/touchstones/2017-op/scenarios/?disease=YF`
 
-###### vaccination_level
-Optional. A vaccination level (none, no-gavi, gavi). Only returns scenarios that match that vaccination level.
+##### vaccination_level
+Optional. A vaccination level (none, without, with). Only returns scenarios that match that vaccination level.
 
-Example: `/touchstones/2017-op/scenarios/?vaccination_level=gavi`
+Example: `/touchstones/2017-op/scenarios/?vaccination_level=with`
 
-###### scenario_type
-Optional. A scenario type (n/a, routine, campaign). Only returns scenarios that match that scenario type.
+##### scenario_type
+Optional. A scenario type (none, routine, campaign). Only returns scenarios that match that scenario type.
 
-Example: `/touchstones/2017-op/scenarios/?scenario_type=gavi`
+Example: `/touchstones/2017-op/scenarios/?scenario_type=routine`
 
-#### `POST /scenarios/`
-Creates a new scenario. It expects data in the following format. All fields are required.
+### `POST /scenarios/`
+Creates a new scenario. Request format:
 
+Schema: [`NewScenario.schema.json`](NewScenario.schema.json)
+
+#### Example
     {
-        id: "ID",
-        description: "DESCRIPTION",
-        vaccination_level: "VACCINATION LEVEL (See above for options)",
-        disease: "VALID DISEASE ID",
-        vaccine: "VALID VACCINE ID",
-        type: "SCENARIO TYPE (See above for options)"
+        "id": "ID",
+        "description": "DESCRIPTION",
+        "vaccination_level": "none",
+        "disease": "VALID DISEASE ID",
+        "vaccine": "VALID VACCINE ID",
+        "scenario_type": "none"
     }
     
-#### `PATCH /scenarios/{scenario-id}/`
+### `PATCH /scenarios/{scenario-id}/`
 Updates a scenario's properties. This is only allowed until a scenario is published. All fields are optional.
 
-Any of these fields can be modified:
+Schema: [`UpdateScenario.schema.json`](UpdateScenario.schema.json)
+
+#### Example
 
     {
-        description: "DESCRIPTION",
-        vaccination_level: "VACCINATION LEVEL (See above for options)",
-        disease: "VALID DISEASE ID",
-        vaccine: "VALID VACCINE ID",
-        type: "SCENARIO TYPE (See above for options)"
+        "description": "DESCRIPTION",
+        "vaccination_level": "none",
+        "disease": "VALID DISEASE ID",
+        "vaccine": "VALID VACCINE ID",
+        "type": "none"
     }
 
-#### `DELETE /scenarios/{scenario-id}/`
+### `DELETE /scenarios/{scenario-id}/`
 Deletes a scenario. This is only allowed until a scenario is published.
 
-#### `POST /scenarios/{scenario-id}/publish/`
+### `POST /scenarios/{scenario-id}/publish/`
 Publishes an unpublished scenario.
 
-### Touchstones
-#### `GET /touchstones/`
+## Touchstones
+### `GET /touchstones/`
 Returns an enumeration of all touchstones in this format:
 
     [
@@ -164,7 +206,7 @@ Returns an enumeration of all touchstones in this format:
         }
     ]
 
-#### `POST /touchstones/`
+### `POST /touchstones/`
 POST creates a new, empty, unpublished touchstone. 
 It expects this payload (all fields required):
 
@@ -180,10 +222,10 @@ It expects this payload (all fields required):
 
 Fails if there is an existing touchstone with that ID.
 
-#### `POST /touchstones/{touchstone-id}/publish/`
+### `POST /touchstones/{touchstone-id}/publish/`
 Publishes an unpublished touchstone.
 
-#### `GET /touchstones/{touchstone-id}/scenarios/`
+### `GET /touchstones/{touchstone-id}/scenarios/`
 Returns an enumeration of scenarios associated with this touchstone.
 
 This expects a touchstone id in the URL. e.g. `/touchstones/2017-op/scenarios/`
@@ -211,10 +253,10 @@ Returns data in this format:
         }
     ]
 
-##### Query parameters:
+#### Query parameters:
 The same as `GET /scenarios/`
 
-#### `POST /touchstones/{touchstone-id}/scenarios/`
+### `POST /touchstones/{touchstone-id}/scenarios/`
 Associate or unassociate a scenario with a touchstone.
 
 It takes data in this format:
@@ -231,7 +273,7 @@ A scenario can only be associated with a touchstone if:
 1. The scenario IS published
 2. The touchstone IS NOT published.
     
-#### `GET /touchstones/{touchstone-id}/scenarios/{scenario-id}/`
+### `GET /touchstones/{touchstone-id}/scenarios/{scenario-id}/`
 Returns the coverage data for a scenario that is assciated with the touchstone.
 
 Example URL: `/touchstones/2017-op/scenarios/menA-novacc/`
@@ -278,17 +320,17 @@ Example response:
         ]
     }
     
-##### Query parameters:
+#### Query parameters:
 
-###### countries
+##### countries
 Optional. Takes a list of country codes. The countries field and coverage data are filtered to just the specified countries.
 
 Example: `/touchstones/2017-op/scenarios/menA-novacc/?countries=AFG,ANG,CHN`
 
 If no data has been uploaded for the given country code (and it is a valid country code) the `data` element will be an empty array. 
 
-### Countries
-#### `GET /touchstones/{touchstone-id}/countries/`
+## Countries
+### `GET /touchstones/{touchstone-id}/countries/`
 Returns all the countries associated with this touchstone. Note that this assumes that countries may change from touchstone to touchstone - e.g. South Sudan did not exist as a UN country before 2011. Change becomes more likely once we add regions within countries.
 
 Example URL: `/touchstones/2017-op/countries/`
@@ -309,14 +351,14 @@ It returns data in this format:
         ...
     ]
 
-#### `PATCH /touchstones/{touchstone-id}/countries/`
+### `PATCH /touchstones/{touchstone-id}/countries/`
 Adds a list of countries to a given touchstone. This can be an incomplete list, including just adding one country. (For example, because it was missed out earlier).
 
 Example URL: `/touchstones/2017-op/countries/`
 
 It expects a payload in the same format as the GET request. It will error if any new country has the same ID or name as an existing country.
 
-#### `GET /touchstones/{touchstone-id}/countries/{country-id}/`
+### `GET /touchstones/{touchstone-id}/countries/{country-id}/`
 Returns demographic data for the country, as published in the relevant touchstone.
 
 Example URL: `/touchstones/2017-op/countries/AFG/`
@@ -342,7 +384,7 @@ It returns data in this format:
         ]
     }
 
-#### `PATCH /touchstones/{touchstone-id}/countries/{country-id}/`
+### `PATCH /touchstones/{touchstone-id}/countries/{country-id}/`
 Adds demographic data to a country.
 
 Example URL: `/touchstones/2017-op/countries/AFG/`
@@ -370,7 +412,7 @@ Not all years have to be uploaded in one go.
 
 How to handle existing data? Overwrite? Overwrite with warning? Error, and require a separate call to delete the existing data?
 
-#### `PATCH /touchstones/{touchstone-id}/scenarios/{scenario-id}/{country-code}/`
+### `PATCH /touchstones/{touchstone-id}/scenarios/{scenario-id}/{country-code}/`
 Adds coverage data to a scenario/touchstone combination for a given country. 
 
 Example URL: `/touchstones/2017-op/scenarios/menA-novacc/AFG/`
@@ -385,8 +427,8 @@ It expects data in the following format. All fields are required.
         ...
     ]
 
-### Status
-#### `GET /touchstones/{touchstone-id}/status/`
+## Status
+### `GET /touchstones/{touchstone-id}/status/`
 Returns a summary of the completeness and correctness of the touchstone, so that the VIMC administrator can track progress through uploading a new touchstone.
 
 Example URL: `/touchstones/2017-op/status/`
