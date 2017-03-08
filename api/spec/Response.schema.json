@@ -12,5 +12,6 @@
             "minimumLength": 0
         }
     },
+    "additionalProperties": false,
     "required": ["status", "errors", "data" ]
 }

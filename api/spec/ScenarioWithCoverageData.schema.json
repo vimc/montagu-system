@@ -1,0 +1,41 @@
+{
+    "id": "ScenarioWithCoverageData",
+    "type": "object",
+    "properties": {
+        "touchstone": { "$ref": "Touchstone.schema.json" },
+        "scenario":  { "$ref": "Scenario.schema.json" },
+        "countries": {
+            "type": "array",
+            "items": { "$ref": "CountryId.schema.json" }
+        },
+        "coverage": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "country":  { "$ref": "CountryId.schema.json" },
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "year": { "$ref": "Year.schema.json" },
+                                "coverage": { 
+                                    "type": "number",
+                                    "minimum": 0,
+                                    "maximum": 100
+                                }
+                            },
+                            "additionalProperties": false,
+                            "required": [ "year", "coverage" ]
+                        }
+                    }
+                },
+                "additionalProperties": false,
+                "required": [ "country", "data" ]
+            }
+        }
+    },
+    "additionalProperties": false,
+    "required": [ "touchstone", "scenario", "coverage" ]
+}

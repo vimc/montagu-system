@@ -4,5 +4,6 @@
         "code": { "type": "string" },
         "message": { "type": "string" }
     },
+    "additionalProperties": false,
     "required": [ "code", "message" ]
 }

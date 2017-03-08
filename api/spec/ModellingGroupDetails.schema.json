@@ -1,0 +1,18 @@
+{
+	"id": "ModellingGroupDetails",
+	"type": "object",
+	"properties": {
+		"code": { "type": "string" },
+        "description": { "type": "string" },
+        "models": { 
+    		"type": "array",
+    		"items": { "$ref": "Model.schema.json" }
+    	},
+        "responsibilities": {
+        	"type": "array",
+        	"items": { "type": "string" }
+        }
+	},
+	"additionalProperties": false,
+	"required": [ "code", "description", "models", "responsibilities" ]
+}

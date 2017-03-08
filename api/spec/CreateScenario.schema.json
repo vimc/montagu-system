@@ -9,5 +9,6 @@
     	"vaccine": { "type": "string" },
     	"scenario_type": { "$ref": "ScenarioType.schema.json" }
 	},
+	"additionalProperties": false,
 	"required": [ "id", "description", "vaccination_level", "disease", "vaccine", "scenario_type" ]
 }

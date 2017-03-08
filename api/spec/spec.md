@@ -1,17 +1,17 @@
 # VIMC draft API
-## General points
+# General points
 * All data returned is in JSON format. POST and PUT data is expected as a string containing JSON-formatted data.
 * Dates and times are returned as strings according to the ISO 8601 standard.
 * Unless otherwise noted, URLs and IDs embedded in URLs are case-sensitive.
 * The canonical form for all URLs (not including query string) ends in a slash: `/`.
 * The API will be versioned via URL. So for version 1, all URLs will begin `/v1/`. e.g. `http://vimc.dide.ic.ac.uk/api/v1/diseases/`
 
-## Standard response format
+# Standard response format
 All responses are returned in a standard format. Throughout this specification, 
 wherever an endpoint describes its response format, it should be assumed the payload is wrapped in
 the standard response format, so that the `data` property holds the payload.
 
-### Success
+## Success
 Schema: [`Response.schema.json`](Response.schema.json)
 
 Example
@@ -22,7 +22,7 @@ Example
         "errors": []
     }
 
-### Error
+## Error
 Schema: [`Response.schema.json`](Response.schema.json)
 
 Example
@@ -38,13 +38,13 @@ Example
         ]
     }
 
-## Diseases
-### `GET /diseases/`
+# Diseases
+## GET /diseases/
 Returns an enumeration of all diseases.
 
 Schema: [`Diseases.schema.json`](Diseases.schema.json)
 
-##### Example
+#### Example
 
     [
         {
@@ -57,12 +57,12 @@ Schema: [`Diseases.schema.json`](Diseases.schema.json)
         }
     ]
 
-### `POST /diseases/`
+## POST /diseases/
 Adds a new disease. Request data:
 
 Schema: [`Disease.schema.json`](Disease.schema.json)
 
-#### Example
+### Example
     {
         "id": "NEW DISEASE ID",
         "name": "NEW DISEASE NAME"
@@ -70,41 +70,41 @@ Schema: [`Disease.schema.json`](Disease.schema.json)
 
 Diseases cannot be deleted via the API.
 
-### `GET /diseases/{disease-id}/`
+## GET /diseases/{disease-id}/
 Example URL: `/diseases/YF/`
 
 Returns one disease.
 
 Schema: [`Disease.schema.json`](Disease.schema.json)
 
-#### Example
+### Example
     {
         "id": "YF",
         "name": "Yellow Fever"
     }
 
-### `PUT /diseases/{disease-id}/`
-Update the disease's human-readable id. Request data:
+## PUT /diseases/{disease-id}/
+Update the disease's human-readable name. Request data:
 
 Schema: [`UpdateDisease.schema.json`](UpdateDisease.schema.json)
 
-#### Example
+### Example
     {
         "name": "NEW DISEASE NAME"
     }
 
 You cannot update a disease's ID via the API.
 
-## Vaccines
+# Vaccines
 The vaccine API is identical to the disease API, but uses `/vaccines` as its base URI.
 
-## Scenarios
-### `GET /scenarios/`
+# Scenarios
+## GET /scenarios/
 Returns all scenarios.
 
 Schema: [`Scenarios.schema.json`](Scenarios.schema.json)
 
-#### Example
+### Example
     [
         {
             "id": "menA-novacc",
@@ -127,40 +127,38 @@ Schema: [`Scenarios.schema.json`](Scenarios.schema.json)
             "published": false
         }
     ]
-    
-Notes:
 
-* `vaccinationLevel` must be one of `[none, without, with]`.
-* `scenario_type` must be one of `[none, routine, campaign]`.
-    
-#### Query parameters:
+### Query parameters:
 
-##### vaccine
+#### touchstone
+Optional. A touchstone id. Only returns scenarios that belong to that touchstone.
+
+#### vaccine
 Optional. A vaccine id. Only returns scenarios that match that vaccine.
 
-Example: `/touchstones/2017-op/scenarios/?vaccine=MenA`
+Example: `/scenarios/?vaccine=MenA`
 
-##### disease
+#### disease
 Optional. A disease id. Only returns scenarios that match that disease.
 
-Example: `/touchstones/2017-op/scenarios/?disease=YF`
+Example: `/scenarios/?disease=YF`
 
-##### vaccination_level
+#### vaccination_level
 Optional. A vaccination level (none, without, with). Only returns scenarios that match that vaccination level.
 
-Example: `/touchstones/2017-op/scenarios/?vaccination_level=with`
+Example: `/scenarios/?vaccination_level=with`
 
-##### scenario_type
+#### scenario_type
 Optional. A scenario type (none, routine, campaign). Only returns scenarios that match that scenario type.
 
-Example: `/touchstones/2017-op/scenarios/?scenario_type=routine`
+Example: `/scenarios/?scenario_type=routine`
 
-### `POST /scenarios/`
+## POST /scenarios/
 Creates a new scenario. Request format:
 
-Schema: [`NewScenario.schema.json`](NewScenario.schema.json)
+Schema: [`CreateScenario.schema.json`](CreateScenario.schema.json)
 
-#### Example
+### Example
     {
         "id": "ID",
         "description": "DESCRIPTION",
@@ -170,274 +168,241 @@ Schema: [`NewScenario.schema.json`](NewScenario.schema.json)
         "scenario_type": "none"
     }
     
-### `PATCH /scenarios/{scenario-id}/`
-Updates a scenario's properties. This is only allowed until a scenario is published. All fields are optional.
+## PATCH /scenarios/{scenario-id}/
+Updates a scenario's properties. This is only allowed until a scenario is associated with a touchstone. All fields are optional.
 
 Schema: [`UpdateScenario.schema.json`](UpdateScenario.schema.json)
 
-#### Example
+### Example
 
     {
         "description": "DESCRIPTION",
         "vaccination_level": "none",
         "disease": "VALID DISEASE ID",
         "vaccine": "VALID VACCINE ID",
-        "type": "none"
+        "scenario_type": "none"
     }
 
-### `DELETE /scenarios/{scenario-id}/`
-Deletes a scenario. This is only allowed until a scenario is published.
+## DELETE /scenarios/{scenario-id}/
+Deletes a scenario. This is only allowed until a scenario is associated with a touchstone.
 
-### `POST /scenarios/{scenario-id}/publish/`
-Publishes an unpublished scenario.
+# Touchstones
+## GET /touchstones/
+Returns an enumeration of all touchstones.
 
-## Touchstones
-### `GET /touchstones/`
-Returns an enumeration of all touchstones in this format:
+Schema: [`Touchstones.schema.json`](Touchstones.schema.json)
 
+### Example
     [
         { 
-            id: "2017-wuenic",
-            description: "2017 WUENIC Update",
-            date: "2017-07-15",
-            years: { start: 1996, end: 2017 },
-            published: true
+            "id": "2017-wuenic",
+            "description": "2017 WUENIC Update",
+            "date": "2017-07-15",
+            "years": { "start": 1996, "end": 2017 },
+            "status": "public"
         },
         { 
-            id: "2017-op",
-            description: "2017 Operational Forecast",
-            date: "2017-07-15",
-            years: { start: 1996, end: 2081 },
-            published: false
+            "id": "2017-op",
+            "description": "2017 Operational Forecast",
+            "date": "2017-07-15",
+            "years": { "start": 1996, "end": 2081 },
+            "status": "open"
         }
     ]
 
-### `POST /touchstones/`
-POST creates a new, empty, unpublished touchstone. 
-It expects this payload (all fields required):
+## POST /touchstones/
+POST creates a new, empty touchstone in the 'in-preparation' state.
 
+Schema: [`CreateTouchstone.schema.json`](CreateTouchstone.schema.json)
+
+### Example
     {
-         id: "ID",
-         description: "DESCRIPTION",
-         date: "DATE",
-         years: {
-             start: NUMBER,
-             end: NUMBER
+         "id": "an-id",
+         "description": "A description",
+         "date": "2017-06-01",
+         "years": {
+             "start": 2000,
+             "end": 2100
          }
     }
 
 Fails if there is an existing touchstone with that ID.
 
-### `POST /touchstones/{touchstone-id}/publish/`
-Publishes an unpublished touchstone.
+## PATCH /touchstones/{touchstone-id}/
+Updates editable fields on a touchstone (currently just status). 
+Changing the status is only allowed if requirements have been met (i.e. cannot move from "open" to "finished" if some responsibilities are unfulfilled).
 
-### `GET /touchstones/{touchstone-id}/scenarios/`
-Returns an enumeration of scenarios associated with this touchstone.
+Schema: [`UpdateTouchstone.schema.json`](UpdateTouchstone.schema.json)
 
-This expects a touchstone id in the URL. e.g. `/touchstones/2017-op/scenarios/`
+### Example
+    {
+        "status": "finished"
+    }
 
-Returns data in this format:
+## GET /touchstones/{touchstone-id}/scenarios/
+Returns all scenarios associated with the touchstone.
 
+Schema: [`Scenarios.schema.json`](Scenarios.schema.json)
+
+### Example
     [
         {
-            id: "menA-novacc",
-            touchstones: [ "2016-op", "2017-wuenic", "2017-op" ],
-            description: "Menigitis A, No vaccination",
-            vaccination_level: "none",
-            disease: "MenA",
-            vaccine: "MenA",
-            scenario_type: "n/a"
+            "id": "menA-novacc",
+            "touchstones": [ "2016-op", "2017-wuenic", "2017-op" ],
+            "description": "Menigitis A, No vaccination",
+            "vaccination_level": "none",
+            "disease": "MenA",
+            "vaccine": "MenA",
+            "scenario_type": "none",
+            "published": true
         },
         {
-            id: "yf-campaign-reactive-nogavi",
-            touchstone: [ "2017-wuenic", "2017-op" ],
-            description: "Yellow Fever, Reactive campaign, SDF coverage without GAVI support",
-            vaccination_level: "no-gavi",
-            disease: "YF",
-            vaccine: "YF",
-            scenario_type: "campaign"
+            "id": "yf-campaign-reactive-nogavi",
+            "touchstones": [ "2017-wuenic", "2017-op" ],
+            "description": "Yellow Fever, Reactive campaign, SDF coverage without GAVI support",
+            "vaccination_level": "without",
+            "disease": "YF",
+            "vaccine": "YF",
+            "scenario_type": "campaign",
+            "published": false
         }
     ]
 
-#### Query parameters:
-The same as `GET /scenarios/`
+The returned scenarios can be filtered using the same query parameters as `GET /scenarios`, with the exception that the touchstone parameter is ignored.
 
-### `POST /touchstones/{touchstone-id}/scenarios/`
+## POST /touchstones/{touchstone-id}/actions/associate_scenario/
 Associate or unassociate a scenario with a touchstone.
 
-It takes data in this format:
+Schema: [`AssociateScenario.schema.json`](AssociateScenario.schema.json)
 
+### Example
     {
-        action: "add" OR "remove",
-        scenario_id: "menA-novacc"
+        "action": "add",
+        "scenario_id": "menA-novacc"
     }
     
 If the action is "add" then the two are associated. If the action is "remove", then they become unassociated.
 
-A scenario can only be associated with a touchstone if:
-
-1. The scenario IS published
-2. The touchstone IS NOT published.
+A scenario can only be associated with a touchstone if the touchstone is in the status 'in-preparation'.
     
-### `GET /touchstones/{touchstone-id}/scenarios/{scenario-id}/`
+## GET /touchstones/{touchstone-id}/scenarios/{scenario-id}/
 Returns the coverage data for a scenario that is assciated with the touchstone.
 
 Example URL: `/touchstones/2017-op/scenarios/menA-novacc/`
 
-Example response:
+Schema: [`ScenarioWithCoverageData.schema.json`](ScenarioWithCoverageData.schema.json)
 
+### Example
     {
-        touchstone: {
-            id: "2017-op",
-            description: "2017 Operational Forecast",
-            years: { start: 1996, end: 2081 },
-    	}
-        scenario: {
-            id: "menA-novacc",
-            description: "Menigitis A, No vaccination",
-            vaccination_level: "none",
-            disease: "MenA",
-            vaccine: "MenA",
-            scenario_type: "n/a",
+        "touchstone": {
+            "id": "2017-op",
+            "description": "2017 Operational Forecast",
+            "date": "2017-07-15",
+            "years": { "start": 1996, "end": 2017 },
+            "status": "public"
+    	},
+        "scenario": {
+            "id": "menA-novacc",
+            "touchstones": [ "2016-op", "2017-wuenic", "2017-op" ],
+            "description": "Menigitis A, No vaccination",
+            "vaccination_level": "none",
+            "disease": "MenA",
+            "vaccine": "MenA",
+            "scenario_type": "none",
+            "published": true
         },
-        countries: [ "AFG", "AGO", "ALB", "ARM", ... ],
-        coverage: [
+        "countries": [ "AFG", "AGO" ],
+        "coverage": [
             { 
-                country: "AFG", 
-                data: [
-                    ...
-                    { year: 2006, coverage: 0.0 },
-                    { year: 2007, coverage: 64.0 },
-                    { year: 2008, coverage: 63.0 },
-                    ...
+                "country": "AFG", 
+                "data": [
+                    { "year": 2006, "coverage": 0.0 },
+                    { "year": 2007, "coverage": 64.0 },
+                    { "year": 2008, "coverage": 63.0 }
                 ]
             },
             { 
-                country: "AGO", 
-                data: [
-                    ...
-                    { year: 2006, coverage: 0.0 },
-                    { year: 2007, coverage: 83.0 },
-                    { year: 2008, coverage: 81.0 },
-                    ...
+                "country": "AGO", 
+                "data": [
+                    { "year": 2006, "coverage": 0.0 },
+                    { "year": 2007, "coverage": 83.0 },
+                    { "year": 2008, "coverage": 81.0 }
                 ]
-            },
-            ...
+            }
         ]
     }
     
-#### Query parameters:
+### Query parameters:
 
-##### countries
+#### countries
 Optional. Takes a list of country codes. The countries field and coverage data are filtered to just the specified countries.
 
 Example: `/touchstones/2017-op/scenarios/menA-novacc/?countries=AFG,ANG,CHN`
 
 If no data has been uploaded for the given country code (and it is a valid country code) the `data` element will be an empty array. 
 
-## Countries
-### `GET /touchstones/{touchstone-id}/countries/`
-Returns all the countries associated with this touchstone. Note that this assumes that countries may change from touchstone to touchstone - e.g. South Sudan did not exist as a UN country before 2011. Change becomes more likely once we add regions within countries.
+# Modelling groups
+## GET /modelling-groups/
+Returns an enumeration of all modelling groups.
 
-Example URL: `/touchstones/2017-op/countries/`
+Schema: [`ModellingGroups.schema.json`](ModellingGroups.schema.json)
 
-It returns data in this format:
-
+### Example
     [
         {
-            id: "AFG",
-            name: "Afghanistan",
-            touchstone: "2017-op"
+            "code": "IC-Garske",
+            "description": "Imperial College, Yellow Fever, PI: Tini Garske"
         },
         {
-            id: "AGO",
-            name: "Angola",
-            touchstone: "2017-op"
+            "code": "LSHTM-Jit",
+            "description": "London School of Hygiene and Tropical Medicine, PI: Mark Jit"
         }
-        ...
     ]
 
-### `PATCH /touchstones/{touchstone-id}/countries/`
-Adds a list of countries to a given touchstone. This can be an incomplete list, including just adding one country. (For example, because it was missed out earlier).
+## GET /modelling-groups/{modelling-group-id}/
+Returns the identified modelling group, their model(s), and any touchstones they have responsibilities for.
 
-Example URL: `/touchstones/2017-op/countries/`
+Schema: [`ModellingGroupDetails.schema.json`](ModellingGroupDetails.schema.json)
 
-It expects a payload in the same format as the GET request. It will error if any new country has the same ID or name as an existing country.
-
-### `GET /touchstones/{touchstone-id}/countries/{country-id}/`
-Returns demographic data for the country, as published in the relevant touchstone.
-
-Example URL: `/touchstones/2017-op/countries/AFG/`
-
-It returns data in this format:
-
+### Example
     {
-        id: "AFG",
-        name: "Angola",
-        touchstone: "2017-op",
-        annual_data: [
+        "code": "IC-Garske",
+        "description": "Imperial College, Yellow Fever, PI: Tini Garske",
+        "models": [
             {
-                year: 1996,
-                total_population: 17481800,
-                live_births: 835399,
-                surviving_births: 750582,
-                under5_mortality_rate: 148.6,
-                infant_mortality_rate: 102.7,
-                neonatal_mortality_rate: 47.5,
-                life_expectancy_at_birth: 54.171
-            },
-            ...
-        ]
+                "id": "IC-YellowFever",
+                "name": "YF burden estimate - without herd effect",
+                "citation": "Garske T, Van Kerkhove MD, Yactayo S, Ronveaux O, Lewis RF, Staples JE, Perea W, Ferguson NMet al., 2014, Yellow Fever in Africa: Estimating the Burden of Disease and Impact of Mass Vaccination from Outbreak and Serological Data, PLOS MEDICINE, Vol: 11, ISSN: 1549-1676",
+                "description": "Yellow Fever model",
+                "modelling_group": "IC-Garske"
+            }
+        ],
+        "responsibilities": [ "wuenic-2017", "op-2017" ]
     }
 
-### `PATCH /touchstones/{touchstone-id}/countries/{country-id}/`
-Adds demographic data to a country.
+## GET /models/
+Returns an enumeration of all models
 
-Example URL: `/touchstones/2017-op/countries/AFG/`
+Schema: [`Models.schema.json`](Models.schema.json)
 
-It expects a payload in this format:
-
-    {
-        id: "AFG",
-        annual_data: [
-            {
-                year: 1996,
-                total_population: 17481800,
-                live_births: 835399,
-                surviving_births: 750582,
-                under5_mortality_rate: 148.6,
-                infant_mortality_rate: 102.7,
-                neonatal_mortality_rate: 47.5,
-                life_expectancy_at_birth: 54.171
-            },
-            ...
-        ]
-    }
-
-Not all years have to be uploaded in one go.
-
-How to handle existing data? Overwrite? Overwrite with warning? Error, and require a separate call to delete the existing data?
-
-### `PATCH /touchstones/{touchstone-id}/scenarios/{scenario-id}/{country-code}/`
-Adds coverage data to a scenario/touchstone combination for a given country. 
-
-Example URL: `/touchstones/2017-op/scenarios/menA-novacc/AFG/`
-
-It expects data in the following format. All fields are required.
-
+### Example
     [
-        ...
-        { year: 2006, coverage: 0 },
-        { year: 2007, coverage: 64 },
-        { year: 2008, coverage: 63 },
-        ...
+        { 
+            "code": "IC-YellowFever",
+            "name": "YF burden estimate - without herd effect",
+            "citation": "Garske T, Van Kerkhove MD, Yactayo S, Ronveaux O, Lewis RF, Staples JE, Perea W, Ferguson NMet al., 2014, Yellow Fever in Africa: Estimating the Burden of Disease and Impact of Mass Vaccination from Outbreak and Serological Data, PLOS MEDICINE, Vol: 11, ISSN: 1549-1676",
+            "description": "Yellow Fever model",
+            "modelling_group": "IC-Garske"
+        }
     ]
 
-## Status
-### `GET /touchstones/{touchstone-id}/status/`
+# Status
+## GET /touchstones/{touchstone-id}/status/
 Returns a summary of the completeness and correctness of the touchstone, so that the VIMC administrator can track progress through uploading a new touchstone.
 
 Example URL: `/touchstones/2017-op/status/`
+
+Note the lack of spec. I expect this to change.
 
 Returns data in this format:
 

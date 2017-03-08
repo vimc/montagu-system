@@ -14,5 +14,6 @@
     	"scenario_type": { "$ref": "ScenarioType.schema.json" },
     	"published": { "type": "boolean" }
 	},
+	"additionalProperties": false,
 	"required": [ "id", "touchstones", "description", "vaccination_level", "disease", "vaccine", "scenario_type", "published" ]
 }

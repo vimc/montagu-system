@@ -1,0 +1,8 @@
+{
+	"id": "UpdateTouchstone",
+	"type": "object",
+	"properties": {
+		"status": { "$ref": "TouchstoneStatus.schema.json" }
+	},
+	"additionalProperties": false
+}

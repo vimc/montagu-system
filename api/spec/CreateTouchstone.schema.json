@@ -1,0 +1,12 @@
+{
+	"id": "CreateTouchstone",
+	"type": "object",
+	"properties": {
+		"id": { "type": "string" },
+		"description": { "type": "string" },
+		"date": { "$ref": "Date.schema.json" },
+		"years": { "$ref": "YearRange.schema.json" }
+	},
+	"additionalProperties": false,
+	"required": [ "id", "description", "date", "years" ]
+}

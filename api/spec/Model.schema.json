@@ -1,0 +1,9 @@
+{
+	"id": "Model",
+	"type": "object",
+	"properties": {
+        "name": { "type": "string" },
+        "citation": { "type": "string" },
+        "description": { "type": "string" }
+    }
+}

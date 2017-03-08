@@ -1,0 +1,100 @@
+I've removed all of this from the spec for now, as I think demographic data is lower priority.
+
+# Countries
+## GET /touchstones/{touchstone-id}/countries/
+Returns all the countries associated with this touchstone. Note that this assumes that countries may change from touchstone to touchstone 
+- e.g. South Sudan did not exist as a UN country before 2011. Change becomes more likely once we add regions within countries.
+
+Example URL: `/touchstones/2017-op/countries/`
+
+It returns data in this format:
+
+    [
+        {
+            id: "AFG",
+            name: "Afghanistan",
+            touchstone: "2017-op"
+        },
+        {
+            id: "AGO",
+            name: "Angola",
+            touchstone: "2017-op"
+        }
+        ...
+    ]
+
+## PATCH /touchstones/{touchstone-id}/countries/
+Adds a list of countries to a given touchstone. This can be an incomplete list, including just adding one country. (For example, because it was missed out earlier).  Can only be invoked on a touchstone in the 'in-preparation' state.
+
+Example URL: `/touchstones/2017-op/countries/`
+
+It expects a payload in the same format as the GET request. It will error if any new country has the same ID or name as an existing country.
+
+## GET /touchstones/{touchstone-id}/countries/{country-id}/
+Returns demographic data for the country, as published in the relevant touchstone.
+
+Example URL: `/touchstones/2017-op/countries/AFG/`
+
+It returns data in this format:
+
+    {
+        id: "AFG",
+        name: "Angola",
+        touchstone: "2017-op",
+        annual_data: [
+            {
+                year: 1996,
+                total_population: 17481800,
+                live_births: 835399,
+                surviving_births: 750582,
+                under5_mortality_rate: 148.6,
+                infant_mortality_rate: 102.7,
+                neonatal_mortality_rate: 47.5,
+                life_expectancy_at_birth: 54.171
+            },
+            ...
+        ]
+    }
+
+## PATCH /touchstones/{touchstone-id}/countries/{country-id}/
+Adds demographic data to a country. Can only be invoked on a touchstone in the 'in-preparation' state.
+
+Example URL: `/touchstones/2017-op/countries/AFG/`
+
+It expects a payload in this format:
+
+    {
+        id: "AFG",
+        annual_data: [
+            {
+                year: 1996,
+                total_population: 17481800,
+                live_births: 835399,
+                surviving_births: 750582,
+                under5_mortality_rate: 148.6,
+                infant_mortality_rate: 102.7,
+                neonatal_mortality_rate: 47.5,
+                life_expectancy_at_birth: 54.171
+            },
+            ...
+        ]
+    }
+
+Not all years have to be uploaded in one go.
+
+How to handle existing data? Overwrite? Overwrite with warning? Error, and require a separate call to delete the existing data?
+
+## PATCH /touchstones/{touchstone-id}/scenarios/{scenario-id}/
+Sets the coverage data to a scenario/touchstone combination. Can only be invoked on a touchstone in the 'in-preparation' state.
+
+Example URL: `/touchstones/2017-op/scenarios/menA-novacc/`
+
+It expects data in the following format. All fields are required.
+
+    [
+        ...
+        { year: 2006, coverage: 0 },
+        { year: 2007, coverage: 64 },
+        { year: 2008, coverage: 63 },
+        ...
+    ]

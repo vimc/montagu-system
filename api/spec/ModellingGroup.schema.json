@@ -1,0 +1,10 @@
+{
+	"id": "ModellingGroup",
+	"type": "object",
+    "properties": {
+        "code": { "type": "string" },
+        "description": { "type": "string" }
+    },
+    "additionalProperties": false,
+    "required": [ "code", "description" ]
+}

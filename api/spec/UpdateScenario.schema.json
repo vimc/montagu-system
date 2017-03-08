@@ -1,5 +1,5 @@
 {
-	"id": "Scenario",
+	"id": "UpdateScenario",
 	"type": "object",
 	"properties": {
 		"description": { "type": "string" },
@@ -7,5 +7,6 @@
     	"disease": { "type": "string" },
     	"vaccine": { "type": "string" },
     	"scenario_type": { "$ref": "ScenarioType.schema.json" }
-	}
+	},
+	"additionalProperties": false
 }
