@@ -5,8 +5,9 @@
         "id": { "type": "integer" },
         "scenario": { "$ref": "Scenario.schema.json" },
         "responsible_group": { "$ref": "ModellingGroup.schema.json" },
-        "uploaded_by": { "$ref": "Username.schema.json" }
+        "uploaded_by": { "$ref": "Username.schema.json" },
+        "may_be_published": { "type": "boolean" }
     },
     "additionalProperties": false,
-    "required": [ "id", "scenario", "responsible_group", "uploaded_by" ]
+    "required": [ "id", "scenario", "responsible_group", "uploaded_by", "may_be_published" ]
 }

@@ -515,9 +515,15 @@ Schema: [`BurdenEstimates.schema.json`](BurdenEstimates.schema.json)
                 "code": "IC-Garske",
                 "description": "Imperial College, Yellow Fever, PI: Tini Garske"
             },
-            "uploaded_by": "tgarske"
+            "uploaded_by": "tgarske",
+            "may_be_published": false
         }
     ]
+
+The `may_be_published` flag will be true if and only if:
+
+* The responsibility set is `approved`
+* The touchstone is `public` (note that even if the touchstone is `finished`, that's not enough)
 
 ## GET /touchstone/{touchstone-id}/estimates/{estimate-id}/
 Returns the full burden estimate data.
@@ -531,21 +537,24 @@ Schema: [`BurdenEstimateWithData.schema.json`](BurdenEstimateWithData.schema.jso
 
 ### Example
     {
-        "id": 1,
-        "scenario": {
-        "id": "menA-novacc",
-            "touchstones": [ "2016-op", "2017-wuenic", "2017-op" ],
-            "description": "Menigitis A, No vaccination",
-            "vaccination_level": "none",
-            "disease": "MenA",
-            "vaccine": "MenA",
-            "scenario_type": "none"
+        "metadata": {
+            "id": 1,
+            "scenario": {
+            "id": "menA-novacc",
+                "touchstones": [ "2016-op", "2017-wuenic", "2017-op" ],
+                "description": "Menigitis A, No vaccination",
+                "vaccination_level": "none",
+                "disease": "MenA",
+                "vaccine": "MenA",
+                "scenario_type": "none"
+            },
+            "responsible_group": {
+                "code": "IC-Garske",
+                "description": "Imperial College, Yellow Fever, PI: Tini Garske"
+            },
+            "uploaded_by": "tgarske",
+            "may_be_published": false
         },
-        "responsible_group": {
-            "code": "IC-Garske",
-            "description": "Imperial College, Yellow Fever, PI: Tini Garske"
-        },
-        "uploaded_by": "tgarske",
         "data": [
             { 
                 "country_id": "AFG",
