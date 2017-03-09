@@ -1,0 +1,11 @@
+{
+    "id": "CreateBurdenEstimate",
+    "type": "object",
+    "properties": {
+        "scenario_id": { "type": "string" },
+        "responsible_group_code": { "type": "string" },
+        "data": { "$ref": "BurdenEstimateData.schema.json" }
+    },
+    "additionalProperties": false,
+    "required": [ "scenario_id", "responsible_group_code", "data" ]
+}

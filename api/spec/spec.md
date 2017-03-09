@@ -468,6 +468,39 @@ Schema: [`BurdenEstimateWithData.schema.json`](BurdenEstimateWithData.schema.jso
         ]
     }
 
+## POST /touchstone/{touchstone-id}/estimates/
+Adds a new burden estimate.
+
+Can only by invoked if:
+
+* The touchstone is `open`
+* The modelling group is responsible for the given scenario in the touchstone
+* The relevant responsibility set is `incomplete`
+
+Schema: [`CreateBurdenEstimate.schema.json`](CreateBurdenEstimate.schema.json)
+
+### Example
+    {
+        "scenario_id": "menA-novacc",
+        "responsible_group_code": "IC-Garske",
+        "data": [
+            { 
+                "country_id": "AFG",
+                "data": [
+                    { "year": 1996, "deaths": 1000, "cases": 2000 },
+                    { "year": 1997, "deaths":  900, "cases": 2050 }
+                ]
+            },
+            { 
+                "country_id": "AGO",
+                "data": [
+                    { "year": 1996, "deaths": 1000, "dalys": 5670 },
+                    { "year": 1997, "deaths": 1200, "dalys": 5870 }
+                ]
+            }
+        ]
+    }
+
 # Modelling groups
 ## GET /modelling-groups/
 Returns an enumeration of all modelling groups.
