@@ -71,7 +71,7 @@ def check_spec(spec_path):
             if example:
                 validate(url, example)        
             else:
-                print("No example given for {}".format(url))
+                raise Exception("No example given for {}".format(url))
         
         line = get_next(lines)
 

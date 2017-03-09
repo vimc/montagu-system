@@ -101,6 +101,32 @@ You cannot update a disease's ID via the API.
 # Vaccines
 The vaccine API is identical to the disease API, but uses `/vaccines` as its base URI.
 
+# Countries
+## GET /countries/
+Returns all countries.
+
+Note that countries only gain names and other data when associated
+with a particular point in time, via a touchstone. This part of the API
+just tracks countries in their abstract sense, using ISO codes.
+
+Schema: [`Countries.schema.json`](Countries.schema.json)
+
+### Example
+    [
+        "AFG",
+        "AGO"
+    ]
+
+## POST /countries/
+Adds a new country.
+
+Schema: [`CreateCountry.schema.json`](CreateCountry.schema.json)
+
+### Example
+    {
+        "id": "MDG"
+    }
+
 # Scenarios
 ## GET /scenarios/
 Returns all scenarios.
@@ -170,7 +196,8 @@ Schema: [`CreateScenario.schema.json`](CreateScenario.schema.json)
     }
     
 ## PATCH /scenarios/{scenario-id}/
-Updates a scenario's properties. This is only allowed until a scenario is associated with a touchstone. All fields are optional.
+Updates a scenario's properties. This is only allowed until a 
+scenario is associated with a touchstone. All fields are optional.
 
 Schema: [`UpdateScenario.schema.json`](UpdateScenario.schema.json)
 
@@ -305,8 +332,77 @@ If the action is "add" then the two are associated. If the action is "remove", t
 
 A scenario can only be associated with a touchstone if the touchstone is in the status 'in-preparation'.
 
+# Touchstone + countries
+## GET /touchstones/{touchstone-id}/countries/
+Returns all countries associated with the touchstone.
+
+Schema: [`CountriesWithDetails.schema.json`](CountriesWithDetails.schema.json)
+
+### Example
+    [
+        {
+            "id": "AFG",
+            "name": "Afghanistan"
+        },
+        {
+            "id": "AGO",
+            "name": "Angola"
+        }
+    ]
+
+## POST /touchstones/{touchstone-id}/countries/
+Sets the list of countries associated with the touchstone, and their
+touchstone-specific properties (currently just name).
+
+Schema: [`CountriesWithDetails.schema.json`](CountriesWithDetails.schema.json)
+
+### Example
+    [
+        {
+            "id": "AFG",
+            "name": "Afghanistan"
+        },
+        {
+            "id": "AGO",
+            "name": "Angola"
+        }
+    ]
+
+If a country is referred (by id) that does not exist in the master list
+of countries (see `/countries/`), the action fails without effect.
+
+## GET /touchstones/{touchstone-id}/scenarios/{scenario-id}/countries/
+Returns a list of the countries associated with the scenario in this touchstone.
+
+Schema: [`CountriesWithDetails.schema.json`](CountriesWithDetails.schema.json)
+
+### Example
+    [
+        {
+            "id": "AFG",
+            "name": "Afghanistan"
+        },
+        {
+            "id": "AGO",
+            "name": "Angola"
+        }
+    ]
+
+## POST /touchstones/{touchstone-id}/scenarios/{scenario-id}/countries/
+Sets the list of countries associated with this scenario in this touchstone.
+
+Schema: [`Countries.schema.json`](Countries.schema.json)
+
+### Example
+    [ "AFG", "AGO" ]
+
+The countries set here must:
+
+* Exist overall (see `/countries`)
+* Exist in this touchstone (see `/touchstones/{touchstone-id}/countries/`)
+
 # Coverage data
-## GET /touchstones/{touchstone-id}/scenarios/{scenario-id}/
+## GET /touchstones/{touchstone-id}/scenarios/{scenario-id}/coverage/
 Returns the coverage data for a scenario that is assciated with the touchstone.
 
 Example URL: `/touchstones/2017-op/scenarios/menA-novacc/`
@@ -361,7 +457,7 @@ Example: `/touchstones/2017-op/scenarios/menA-novacc/?countries=AFG,ANG,CHN`
 
 If no data has been uploaded for the given country code (and it is a valid country code) the `data` element will be an empty array. 
 
-## POST /touchstones/{touchstone-id}/scenarios/{scenario-id}/
+## POST /touchstones/{touchstone-id}/scenarios/{scenario-id}/coverage/
 Sets the coverage data for a scenario.
 
 Schema: [`Coverage.schema.json`](Coverage.schema.json)
