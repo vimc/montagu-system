@@ -4,11 +4,15 @@
     "properties": {
         "touchstone": { "type": "string" },
         "status": { "$ref": "ResponsibilitySetStatus.schema.json" },
+        "problems": {
+            "type": "array",
+            "items": { "type": "string" }
+        },
         "responsibilities": { 
             "type": "array",
             "items": { "$ref": "Responsibility.schema.json" }
          }
     },
     "additionalProperties": false,
-    "required": [ "touchstone", "status", "responsibilities" ]
+    "required": [ "touchstone", "status", "problems", "responsibilities" ]
 }

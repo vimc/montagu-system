@@ -518,6 +518,7 @@ Schema: [`ResponsibilitySet.schema.json`](ResponsibilitySet.schema.json)
     {
         "touchstone": "2017-op",
         "status": "incomplete",
+        "problems": [],
         "responsibilities": [
             {
                 "scenario": {
@@ -561,11 +562,39 @@ Schema: [`ResponsibilitySet.schema.json`](ResponsibilitySet.schema.json)
     {
         "touchstone": "2017-op",
         "status": null,
+        "problems": [],
         "responsibilities": []
     }
 
 Note that even if a modelling group has no responsibilities in a given touchstone,
 using this endpoint is not an error: an empty array will just be returned.
+
+## PATCH /modelling-groups/{modelling-group-code}/responsibilities/{touchstone-id}
+Allows you to change the status of the responsibility set.
+
+Only the owning modelling group can move the responsibility set to `submitted`. They can only do so if:
+
+* The status is `incomplete`
+* All responsibilities have the status `valid`
+
+Schema: [`EditResponsibilitySet.schema.json`](EditResponsibilitySet.schema.json)
+
+### Example
+    {
+        "status": "submitted"
+    }
+
+Users in the reviewer role can change the status of the responsibility set when it is in `submitted`. 
+They can change it to either `incomplete` or `approved`. If they change it to incomplete, they must include
+at least one problem.
+
+Schema: [`EditResponsibilitySet.schema.json`](EditResponsibilitySet.schema.json)
+
+### Example
+    {
+        "status": "incomplete",
+        "problems": [ "Please review the numbers for Afghanistan - they look much too high" ]
+    }
 
 ## POST /modelling-groups/{modelling-group-code}/actions/associate_responsibility
 Adds or removes a responsibility for a given modelling group, scenario, and touchstone.

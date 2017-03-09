@@ -1,0 +1,12 @@
+{
+    "id": "EditResponsibilitySet",
+    "type": "object",
+    "properties": {
+        "status": { "$ref": "ResponsibilitySetStatus.schema.json" },
+        "problems": { 
+            "type": "array",
+            "items": { "type": "string" }
+        }
+    },
+    "additionalProperties": false
+}
