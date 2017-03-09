@@ -6,11 +6,11 @@ import jsonschema
 import re
 
 def check_example(schema_path, example):
-    schema_dir = os.path.abspath(schema_path)
+    schema_dir = os.path.abspath(schema_path).replace('\\', '/')
     with open(schema_path, 'r') as f:
         schema = json.load(f)
     
-    resolver = jsonschema.RefResolver(base_uri = 'file://' + schema_dir, referrer = schema)
+    resolver = jsonschema.RefResolver(base_uri = 'file:///' + schema_dir, referrer = schema)
     jsonschema.validate(example, schema, resolver = resolver)
 
 def get_next(iterator):
