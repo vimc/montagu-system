@@ -1,0 +1,16 @@
+{
+    "id": "ModelDetails",
+    "type": "object",
+    "allOf": [
+        { "$ref": "Model.schema.json" },
+        { 
+            "properties": {
+                "versions": {
+                    "type": "array",
+                    "items": { "$ref": "ModelVersion.schema.json" }
+                }
+            },
+            "required": [ "versions" ]
+        }
+    ]
+}

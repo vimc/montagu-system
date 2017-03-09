@@ -359,7 +359,7 @@ Schema: [`ModellingGroups.schema.json`](ModellingGroups.schema.json)
         }
     ]
 
-## GET /modelling-groups/{modelling-group-id}/
+## GET /modelling-groups/{modelling-group-code}/
 Returns the identified modelling group, their model(s), and any touchstones they have responsibilities for.
 
 Schema: [`ModellingGroupDetails.schema.json`](ModellingGroupDetails.schema.json)
@@ -380,6 +380,18 @@ Schema: [`ModellingGroupDetails.schema.json`](ModellingGroupDetails.schema.json)
         "responsibilities": [ "wuenic-2017", "op-2017" ]
     }
 
+## POST /modelling-groups/
+Creates a new modelling group.
+
+Schema: [`ModellingGroup.schema.json`](ModellingGroup.schema.json)
+
+### Example
+    {
+        "code": "NEW UNIQUE CODE",
+        "description": "DESCRIPTION"
+    }
+
+# Models
 ## GET /models/
 Returns an enumeration of all models
 
@@ -393,8 +405,57 @@ Schema: [`Models.schema.json`](Models.schema.json)
             "citation": "Garske T, Van Kerkhove MD, Yactayo S, Ronveaux O, Lewis RF, Staples JE, Perea W, Ferguson NMet al., 2014, Yellow Fever in Africa: Estimating the Burden of Disease and Impact of Mass Vaccination from Outbreak and Serological Data, PLOS MEDICINE, Vol: 11, ISSN: 1549-1676",
             "description": "Yellow Fever model",
             "modelling_group": "IC-Garske"
+        },
+        { 
+            "code": "LSHTM-DynaMice",
+            "name": "DynaMice",
+            "citation": null,
+            "description": "DynaMice",
+            "modelling_group": "LSHTML-Jit"
         }
     ]
+
+## GET /models/{model-code}/
+Returns a model and all its versions.
+
+Schema: [`ModelDetails.schema.json`](ModelDetails.schema.json)
+
+### Example
+    {
+        "code": "IC-YellowFever",
+        "name": "YF burden estimate - without herd effect",
+        "citation": "Garske T, Van Kerkhove MD, Yactayo S, Ronveaux O, Lewis RF, Staples JE, Perea W, Ferguson NMet al., 2014, Yellow Fever in Africa: Estimating the Burden of Disease and Impact of Mass Vaccination from Outbreak and Serological Data, PLOS MEDICINE, Vol: 11, ISSN: 1549-1676",
+        "description": "Yellow Fever model",
+        "modelling_group": "IC-Garske",
+        "versions": [
+            { 
+                "model": "IC-YellowFever",
+                "version": "1.0.0",
+                "note": "Some notes",
+                "fingerprint": null
+            },
+            { 
+                "model": "IC-YellowFever",
+                "version": "1.1.0",
+                "note": "Some notes about 1.1 release",
+                "fingerprint": "4b0bef9edfb15ac02e7410b21d8ed3398fa52982"
+            }
+        ]
+    }
+
+## POST /models/
+Creates a new model.
+
+Schema: [`Model.schema.json`](Model.schema.json)
+
+### Example
+    { 
+        "code": "NEW UNIQUE CODE",
+        "name": "MODEL NAME",
+        "citation": null,
+        "description": "DESCRIPTION",
+        "modelling_group": "CODE OF EXISTING MODELLING GROUP"
+    }
 
 # Status
 ## GET /touchstones/{touchstone-id}/status/
