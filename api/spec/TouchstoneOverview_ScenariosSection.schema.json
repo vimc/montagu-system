@@ -6,7 +6,7 @@
             "items": {
                 "type": "object",
                 "properties": {
-                    "id": { "type": "string" },
+                    "id": { "$ref": "StandardIdentifier.schema.json" },
                     "problems": { "$ref": "ProblemsArray.schema.json" }
                 },
                 "additionalProperties": false,
@@ -15,7 +15,7 @@
         },        
         "unused": {
             "type": "array",
-            "items": { "type": "string" }
+            "items": { "$ref": "StandardIdentifier.schema.json" }
         }
     },
     "additionalProperties": false,

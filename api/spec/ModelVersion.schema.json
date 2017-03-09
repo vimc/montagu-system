@@ -2,7 +2,7 @@
     "id": "ModelVersion",
     "type": "object",
     "properties": {
-        "model": { "type": "string" },
+        "model": { "$ref": "StandardIdentifier.schema.json" },
         "version": { "type": "string" },
         "note": { "type": "string" },
         "fingerprint": { "type": [ "string", "null" ] }

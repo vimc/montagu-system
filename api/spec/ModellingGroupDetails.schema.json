@@ -2,7 +2,7 @@
 	"id": "ModellingGroupDetails",
 	"type": "object",
 	"properties": {
-		"code": { "type": "string" },
+		"code": { "$ref": "StandardIdentifier.schema.json" },
         "description": { "type": "string" },
         "models": { 
     		"type": "array",
@@ -10,7 +10,7 @@
     	},
         "responsibilities": {
         	"type": "array",
-        	"items": { "type": "string" }
+        	"items": { "$ref": "StandardIdentifier.schema.json" }
         }
 	},
 	"additionalProperties": false,

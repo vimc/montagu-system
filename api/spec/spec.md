@@ -67,7 +67,7 @@ Schema: [`Disease.schema.json`](Disease.schema.json)
 
 ### Example
     {
-        "id": "NEW DISEASE ID",
+        "id": "NEW-DISEASE-ID",
         "name": "NEW DISEASE NAME"
     }
 
@@ -190,8 +190,8 @@ Schema: [`CreateScenario.schema.json`](CreateScenario.schema.json)
         "id": "ID",
         "description": "DESCRIPTION",
         "vaccination_level": "none",
-        "disease": "VALID DISEASE ID",
-        "vaccine": "VALID VACCINE ID",
+        "disease": "VALID-DISEASE-ID",
+        "vaccine": "VALID-VACCINE-ID",
         "scenario_type": "none"
     }
     
@@ -206,8 +206,8 @@ Schema: [`UpdateScenario.schema.json`](UpdateScenario.schema.json)
     {
         "description": "DESCRIPTION",
         "vaccination_level": "none",
-        "disease": "VALID DISEASE ID",
-        "vaccine": "VALID VACCINE ID",
+        "disease": "VALID-DISEASE-ID",
+        "vaccine": "VALID-VACCINE-ID",
         "scenario_type": "none"
     }
 

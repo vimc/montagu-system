@@ -2,7 +2,7 @@
 	"id": "ModellingGroup",
 	"type": "object",
     "properties": {
-        "code": { "type": "string" },
+        "code": { "$ref": "StandardIdentifier.schema.json" },
         "description": { "type": "string" }
     },
     "additionalProperties": false,

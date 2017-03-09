@@ -1,7 +1,7 @@
 {
 	"id": "Error",
     "properties": {
-        "code": { "type": "string" },
+        "code": { "$ref": "StandardIdentifier.schema.json" },
         "message": { "type": "string" }
     },
     "additionalProperties": false,

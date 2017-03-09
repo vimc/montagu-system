@@ -2,15 +2,15 @@
 	"id": "Scenario",
 	"type": "object",
 	"properties": {
-		"id": { "type": "string" },
+		"id": { "$ref": "StandardIdentifier.schema.json" },
 		"touchstones": {
 			"type": "array",
-			"item": { "type": "string" }
+			"item": { "$ref": "StandardIdentifier.schema.json" }
 		},
 		"description": { "type": "string" },
 		"vaccination_level": { "$ref": "VaccinationLevel.schema.json" },
-    	"disease": { "type": "string" },
-    	"vaccine": { "type": "string" },
+    	"disease": { "$ref": "StandardIdentifier.schema.json" },
+    	"vaccine": { "$ref": "StandardIdentifier.schema.json" },
     	"scenario_type": { "$ref": "ScenarioType.schema.json" }
 	},
 	"additionalProperties": false,

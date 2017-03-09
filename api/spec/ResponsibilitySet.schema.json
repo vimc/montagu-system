@@ -2,7 +2,7 @@
     "id": "ResponsibilitySet",
     "type": "object",
     "properties": {
-        "touchstone": { "type": "string" },
+        "touchstone": { "$ref": "StandardIdentifier.schema.json" },
         "status": { "$ref": "ResponsibilitySetStatus.schema.json" },
         "problems": { "$ref": "ProblemsArray.schema.json" },
         "responsibilities": { 
