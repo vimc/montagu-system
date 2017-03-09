@@ -1,0 +1,17 @@
+{
+	"id": "AssociateResponsibility",
+	"type": "object",
+	"properties": {
+		"action": {
+			"enum": [ "add", "remove" ]
+		},
+		"scenario_id": {
+			"type": "string"
+		},
+		"touchstone_id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [ "action", "scenario_id", "touchstone_id" ]
+}

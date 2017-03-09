@@ -186,6 +186,27 @@ Schema: [`UpdateScenario.schema.json`](UpdateScenario.schema.json)
 ## DELETE /scenarios/{scenario-id}/
 Deletes a scenario. This is only allowed until a scenario is associated with a touchstone.
 
+## GET /scenarios/{scenario-id}/responsibilities/{touchstone-id}
+Returns an enumeration (potentially empty) of modelling groups who are responsible for this 
+scenario in the given touchstone.
+
+Schema: [`ModellingGroups.schema.json`](ModellingGroups.schema.json)
+
+### Example
+    [
+        {
+            "code": "IC-Garske",
+            "description": "Imperial College, Yellow Fever, PI: Tini Garske"
+        },
+        {
+            "code": "LSHTM-Jit",
+            "description": "London School of Hygiene and Tropical Medicine, PI: Mark Jit"
+        }
+    ]
+
+See `POST /modelling-groups/{modelling-group-code}/actions/associate_responsibility` for editing 
+this data.
+
 # Touchstones
 ## GET /touchstones/
 Returns an enumeration of all touchstones.
@@ -456,6 +477,57 @@ Schema: [`Model.schema.json`](Model.schema.json)
         "description": "DESCRIPTION",
         "modelling_group": "CODE OF EXISTING MODELLING GROUP"
     }
+
+# Responsibilities
+## GET /modelling-groups/{modelling-group-code}/responsibilities/{touchstone-id}
+Returns an enumerations of the responsibilities of this modelling group in the given touchstone.
+
+Schema: [`Scenarios.schema.json`](Scenarios.schema.json)
+
+### Example
+    [
+        {
+            "id": "menA-novacc",
+            "touchstones": [ "2016-op", "2017-wuenic", "2017-op" ],
+            "description": "Menigitis A, No vaccination",
+            "vaccination_level": "none",
+            "disease": "MenA",
+            "vaccine": "MenA",
+            "scenario_type": "none",
+            "published": true
+        },
+        {
+            "id": "yf-campaign-reactive-nogavi",
+            "touchstones": [ "2017-wuenic", "2017-op" ],
+            "description": "Yellow Fever, Reactive campaign, SDF coverage without GAVI support",
+            "vaccination_level": "without",
+            "disease": "YF",
+            "vaccine": "YF",
+            "scenario_type": "campaign",
+            "published": false
+        }
+    ]
+
+Note that even if a modelling group has no responsibilities in a given touchstone,
+using this endpoint is not an error: an empty array will just be returned.
+
+## POST /modelling-groups/{modelling-group-code}/actions/associate_responsibility
+Adds or removes a responsibility for a given modelling group, scenario, and touchstone.
+
+Schema: [`AssociateResponsibility.schema.json`](AssociateResponsibility.schema.json)
+
+### Example
+    {
+        "action": "add",
+        "touchstone_id": "op-2017",
+        "scenario_id": "menA-novacc"
+    }
+
+Removing an responsibility that does not exist, or adding one that already exists, are both allowed
+operations that will have no effect.
+
+This can be only be invoked in the touchstone is in the 'in-preparation' or 'open' states
+(so not submitted to GAVI).
 
 # Status
 ## GET /touchstones/{touchstone-id}/status/
