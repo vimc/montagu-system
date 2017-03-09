@@ -8,33 +8,7 @@
             "type": "array",
             "items": { "$ref": "CountryId.schema.json" }
         },
-        "coverage": {
-            "type": "array",
-            "items": {
-                "type": "object",
-                "properties": {
-                    "country":  { "$ref": "CountryId.schema.json" },
-                    "data": {
-                        "type": "array",
-                        "items": {
-                            "type": "object",
-                            "properties": {
-                                "year": { "$ref": "Year.schema.json" },
-                                "coverage": { 
-                                    "type": "number",
-                                    "minimum": 0,
-                                    "maximum": 100
-                                }
-                            },
-                            "additionalProperties": false,
-                            "required": [ "year", "coverage" ]
-                        }
-                    }
-                },
-                "additionalProperties": false,
-                "required": [ "country", "data" ]
-            }
-        }
+        "coverage": { "$ref": "Coverage.schema.json" }
     },
     "additionalProperties": false,
     "required": [ "touchstone", "scenario", "coverage" ]

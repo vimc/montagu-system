@@ -305,7 +305,8 @@ Schema: [`AssociateScenario.schema.json`](AssociateScenario.schema.json)
 If the action is "add" then the two are associated. If the action is "remove", then they become unassociated.
 
 A scenario can only be associated with a touchstone if the touchstone is in the status 'in-preparation'.
-    
+
+# Coverage data
 ## GET /touchstones/{touchstone-id}/scenarios/{scenario-id}/
 Returns the coverage data for a scenario that is assciated with the touchstone.
 
@@ -361,6 +362,36 @@ Optional. Takes a list of country codes. The countries field and coverage data a
 Example: `/touchstones/2017-op/scenarios/menA-novacc/?countries=AFG,ANG,CHN`
 
 If no data has been uploaded for the given country code (and it is a valid country code) the `data` element will be an empty array. 
+
+## POST /touchstones/{touchstone-id}/scenarios/{scenario-id}/
+Sets the coverage data for a scenario.
+
+Schema: [`Coverage.schema.json`](Coverage.schema.json)
+
+### Example
+    [
+        { 
+            "country": "AFG", 
+            "data": [
+                { "year": 2006, "coverage": 0.0 },
+                { "year": 2007, "coverage": 64.0 },
+                { "year": 2008, "coverage": 63.0 }
+            ]
+        },
+        { 
+            "country": "AGO", 
+            "data": [
+                { "year": 2006, "coverage": 0.0 },
+                { "year": 2007, "coverage": 83.0 },
+                { "year": 2008, "coverage": 81.0 }
+            ]
+        }
+    ]
+
+This replaces all existing coverage data for this scenario, in this touchstone. 
+An error occurs if data is not supplied for all expected countries.
+
+This can only be invoked if the touchstone is in the 'in-preparation' state.
 
 # Modelling groups
 ## GET /modelling-groups/
