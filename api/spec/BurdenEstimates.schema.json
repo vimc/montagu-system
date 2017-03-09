@@ -1,0 +1,5 @@
+{
+    "id": "BurdenEstimates",
+    "type": "array",
+    "items": { "$ref": "BurdenEstimate.schema.json" }
+}

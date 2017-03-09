@@ -1,0 +1,12 @@
+{
+    "id": "BurdenEstimate",
+    "type": "object",
+    "properties": {
+        "id": { "type": "integer" },
+        "scenario": { "$ref": "Scenario.schema.json" },
+        "responsible_group": { "$ref": "ModellingGroup.schema.json" },
+        "uploaded_by": { "$ref": "Username.schema.json" }
+    },
+    "additionalProperties": false,
+    "required": [ "id", "scenario", "responsible_group", "uploaded_by" ]
+}

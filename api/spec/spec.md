@@ -391,6 +391,83 @@ An error occurs if data is not supplied for all expected countries.
 
 This can only be invoked if the touchstone is in the 'in-preparation' state.
 
+# Burden estimates
+## GET /touchstone/{touchstone-id}/estimates/
+Returns all burden estimates that have been uploaded for this touchstone.
+
+If the touchstone is `open` then users without appropriate admin permissions can only 
+see estimates that their modelling group has uploaded. If the touchstone is `finished` 
+or `public` then all users can see all estimates. There should not be any estimates if
+the touchstone is `in-preparation`.
+
+Schema: [`BurdenEstimates.schema.json`](BurdenEstimates.schema.json)
+
+### Example
+    [
+        {
+            "id": 1,
+            "scenario": {
+                "id": "menA-novacc",
+                "touchstones": [ "2016-op", "2017-wuenic", "2017-op" ],
+                "description": "Menigitis A, No vaccination",
+                "vaccination_level": "none",
+                "disease": "MenA",
+                "vaccine": "MenA",
+                "scenario_type": "none"
+            },
+            "responsible_group": {
+                "code": "IC-Garske",
+                "description": "Imperial College, Yellow Fever, PI: Tini Garske"
+            },
+            "uploaded_by": "tgarske"
+        }
+    ]
+
+## GET /touchstone/{touchstone-id}/estimates/{estimate-id}/
+Returns the full burden estimate data.
+
+If the touchstone is `open` then users without appropriate admin permissions can only 
+see estimates that their modelling group has uploaded. If the touchstone is `finished` 
+or `public` then all users can see all estimates. There should not be any estimates if
+the touchstone is `in-preparation`.
+
+Schema: [`BurdenEstimateWithData.schema.json`](BurdenEstimateWithData.schema.json)
+
+### Example
+    {
+        "id": 1,
+        "scenario": {
+        "id": "menA-novacc",
+            "touchstones": [ "2016-op", "2017-wuenic", "2017-op" ],
+            "description": "Menigitis A, No vaccination",
+            "vaccination_level": "none",
+            "disease": "MenA",
+            "vaccine": "MenA",
+            "scenario_type": "none"
+        },
+        "responsible_group": {
+            "code": "IC-Garske",
+            "description": "Imperial College, Yellow Fever, PI: Tini Garske"
+        },
+        "uploaded_by": "tgarske",
+        "data": [
+            { 
+                "country_id": "AFG",
+                "data": [
+                    { "year": 1996, "deaths": 1000, "cases": 2000 },
+                    { "year": 1997, "deaths":  900, "cases": 2050 }
+                ]
+            },
+            { 
+                "country_id": "AGO",
+                "data": [
+                    { "year": 1996, "deaths": 1000, "dalys": 5670 },
+                    { "year": 1997, "deaths": 1200, "dalys": 5870 }
+                ]
+            }
+        ]
+    }
+
 # Modelling groups
 ## GET /modelling-groups/
 Returns an enumeration of all modelling groups.
@@ -511,6 +588,9 @@ Schema: [`Model.schema.json`](Model.schema.json)
 ## GET /modelling-groups/{modelling-group-code}/responsibilities/{touchstone-id}
 Returns an enumerations of the responsibilities of this modelling group in the given touchstone,
 and the overall status of this modelling groups work in this touchstone.
+
+If the touchstone is `in-preparation`, and the user does not have permission to see touchstones before they are made `open`,
+then this returns an error 404.
 
 Schema: [`ResponsibilitySet.schema.json`](ResponsibilitySet.schema.json)
 

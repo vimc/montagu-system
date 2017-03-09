@@ -1,0 +1,26 @@
+{
+    "id": "BurdenEstimateData",
+    "type": "array",
+    "items": {
+        "type": "object",
+        "properties": {
+            "country_id": { "$ref": "CountryId.schema.json" },
+            "data": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "year": { "$ref": "Year.schema.json" },
+                        "deaths": { "type": "integer" },
+                        "cases": { "type": "integer" },
+                        "dalys": { "type": "integer" }
+                    }
+                },
+                "additionalProperties": false,
+                "required": [ "year" ]
+            }
+        },
+        "additionalProperties": false,
+        "required": [ "country_id", "data" ]
+    }
+}
