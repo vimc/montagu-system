@@ -38,7 +38,7 @@ def get_example(lines):
 def get_example_body(lines):
     line = get_next_non_blank(lines)
     json = ""
-    while is_preformatted(line):
+    while line and is_preformatted(line):
         json += line[4:]
         line = get_next(lines)
     if json.isspace():

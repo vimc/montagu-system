@@ -1,0 +1,23 @@
+{
+    "type": "object",
+    "properties": {
+        "used": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "id": { "type": "string" },
+                    "problems": { "$ref": "ProblemsArray.schema.json" }
+                },
+                "additionalProperties": false,
+                "required": [ "id", "problems" ]
+            }
+        },        
+        "unused": {
+            "type": "array",
+            "items": { "type": "string" }
+        }
+    },
+    "additionalProperties": false,
+    "required": [ "used", "unused" ]
+}

@@ -6,10 +6,7 @@
         "status": { 
             "enum": [ "empty", "invalid", "valid" ]
         },
-        "problems": {
-            "type": "array",
-            "items": { "type": "string" }
-        },
+        "problems": { "$ref": "ProblemsArray.schema.json" },
         "current_estimate": {
             "type": [ "integer", "null" ]
         }

@@ -1,0 +1,23 @@
+{
+    "type": "object",
+    "properties": {
+        "used": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "id": { "type": "string" },
+                    "responsibilities_status": { "$ref": "ResponsibilitySetStatus.schema.json" }
+                },
+                "additionalProperties": false,
+                "required": [ "id", "responsibilities_status" ]
+            }
+        },
+        "unused": {
+            "type": "array",
+            "items": { "type": "string" }
+        }
+    },
+    "additionalProperties": false,
+    "required": [ "used", "unused" ]
+}

@@ -214,7 +214,7 @@ Schema: [`UpdateScenario.schema.json`](UpdateScenario.schema.json)
 ## DELETE /scenarios/{scenario-id}/
 Deletes a scenario. This is only allowed until a scenario is associated with a touchstone.
 
-## GET /scenarios/{scenario-id}/responsibilities/{touchstone-id}
+## GET /scenarios/{scenario-id}/responsible_groups/{touchstone-id}
 Returns an enumeration (potentially empty) of modelling groups who are responsible for this 
 scenario in the given touchstone.
 
@@ -833,65 +833,129 @@ This can be only be invoked in the touchstone is in the 'in-preparation' or 'ope
 (so not submitted to GAVI).
 
 # Status
-## GET /touchstones/{touchstone-id}/status/
-Returns a summary of the completeness and correctness of the touchstone, so that the VIMC administrator can track progress through uploading a new touchstone.
+## GET /touchstones/{touchstone-id}/overview/
+Returns a summary of the completeness and correctness of the touchstone, so that the VIMC 
+administrator can track progress. This is useful when the touchstone is `in-preparation` 
+and when it is `open` and the modelling groups are working on it.
 
 Example URL: `/touchstones/2017-op/status/`
 
-Note the lack of spec. I expect this to change.
+`allowed_state_changes` tells the client which states the touchstone is currently allowed to move in to.
 
-Returns data in this format:
+* When the touchstone is `in-preparation` it can move into `open` when there are no outstanding problems. 
+* When it is `open`, it can move into `finished` when all responsibility sets are in the `approved` status.
+* When it is `finished`, it can always move into `public`.
 
+Note that countries cannot have problems in the current version of the spec as I have left
+off all details relating to demographic data. The `problems` array is included here, as I expect
+later we will want to communicate problems with missing or invalid demographic data.
+
+### In preparation
+Schema: [`TouchstoneOverview.schema.json`](TouchstoneOverview.schema.json)
+
+#### Example
     {
-        id: "2017-op",
-        description: "2017 Operational Forecast",
-        date: "2017-07-15",
-        status: {
-            is_complete: false,
-            years: { start: 1996, end: 2081 },
-            countries: {
-                count: 97,
-                all: [ "AFG", "ALB", "AGO" ... ],
-                problems: {
-                    by_country: [ 
-                        { 
-                            id: "AFG",
-                            problems: [ 
-                                "Missing demographic data for the following years: 2077, 2078, 2079, 2080, 2081",
-                                "Surviving births is greater than live births for the following years: 2001, 2009",
-                            ]
-                        },
-                        ...
-                    ]
-                },
-            scenarios: {
-                count: 22,
-                all: [ "menA-novacc", "menA-routine-nogavi", "menA-routine-gavi", ... ],
-                problems: {
-                    general: [ 
-                        "There are no scenarios associated for these vaccines: Hib3, HPV"
-                    ],
-                    by_vaccine: [
-                        {
-                            id: "YF",
-                            problems: [
-                                "Expected a Yellow Fever 'No vaccination' scenario",
-                                "Expected at least one Yellow Fever 'Routine' scenario",
-                            ]
-                        },
-                        ...
-                    ],
-                    by_scenario: [
-                        {
-                            id: "menA-routine-gavi",
-                            problems: [
-                                "Missing coverage data for the following countries: AFG, AGO",
-                                "Only patial coverage data (missing some years) for the following countries: KGZ, SEN"
-                            ]
-                        },
-                        ...
-                    ]
-                }
+        "id": "2017-op",
+        "description": "2017 Operational Forecast",
+        "date": "2017-07-15",
+        "years": { "start": 1996, "end": 2081 },
+        "status": "in-preparation",
+        "allowed_state_changes": [],
+        "sections": {
+            "countries": {
+                "used": [
+                    {
+                        "id": "AFG",                    
+                        "problems": []
+                    },
+                    {
+                        "id": "AGO",                    
+                        "problems": []
+                    }
+                ],
+                "unused": [ "CAF", "MAD" ]
+            },
+            "scenarios": {
+                "used": [
+                    {
+                        "id": "menA-novacc",
+                        "problems": [
+                            "Missing coverage data"
+                        ]
+                    },
+                    {
+                        "id": "menA-routine-nogavi",
+                        "problems": []
+                    }
+                ],
+                "unused": [ "menA-routine-gavi" ]
+            },
+            "modelling_groups": {
+                "used": [
+                    { 
+                        "id": "IC-Garske",
+                        "responsibilities_status": null
+                    },
+                    { 
+                        "id": "LSHTM-Measles",
+                        "responsibilities_status": null
+                    }
+                ],
+                "unused": [ "LSHTM-Rota" ]
+            }
+        }
+    }
+
+### Open
+Schema: [`TouchstoneOverview.schema.json`](TouchstoneOverview.schema.json)
+
+#### Example
+    {
+        "id": "2017-op",
+        "description": "2017 Operational Forecast",
+        "date": "2017-07-15",
+        "years": { "start": 1996, "end": 2081 },
+        "status": "open",
+        "allowed_state_changes": [],
+        "sections": {
+            "countries": {
+                "used": [
+                    {
+                        "id": "AFG",
+                        "problems": []
+                    },
+                    {
+                        "id": "AGO",                    
+                        "problems": []
+                    }
+                ],
+                "unused": [ "CAF", "MAD" ]
+            },
+            "scenarios": {
+                "used": [
+                    {
+                        "id": "menA-novacc",
+                        "problems": []
+                    },
+                    {
+                        "id": "menA-routine-nogavi",
+                        "problems": []
+                    }
+                ],
+                "unused": [ "menA-routine-gavi" ]
+            },
+            "modelling_groups": {
+                "used": [
+                    { 
+                        "id": "IC-Garske",
+                        "responsibilities_status": "submitted"
+                    },
+                    { 
+                        "id": "LSHTM-Measles",
+                        "responsibilities_status": "approved"
+                    }
+                ],
+                "unused": [ "LSHTM-Rota" ]
             }
         }
     }
