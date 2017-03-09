@@ -8,7 +8,10 @@ import re
 def check_example(schema_path, example):
     schema_dir = os.path.abspath(schema_path).replace('\\', '/')
     with open(schema_path, 'r') as f:
-        schema = json.load(f)
+        try:            
+            schema = json.load(f)
+        except Exception as e:
+            raise Exception("There was an error parsing the JSON schema", e)
     
     resolver = jsonschema.RefResolver(base_uri = 'file:///' + schema_dir, referrer = schema)
     jsonschema.validate(example, schema, resolver = resolver)
@@ -48,7 +51,10 @@ def is_preformatted(line):
 
 def validate(url, example):
     print("Checking [{}] against {}".format(url, example.strip()))
-    data = json.loads(example)
+    try:
+        data = json.loads(example)
+    except Exception as e:
+        raise Exception("There was an error parsing the example JSON", e)
     check_example(url, data)    
 
 def check_spec(spec_path):
