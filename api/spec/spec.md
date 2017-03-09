@@ -6,6 +6,9 @@
 * The canonical form for all URLs (not including query string) ends in a slash: `/`.
 * The API will be versioned via URL. So for version 1, all URLs will begin `/v1/`. e.g. `http://vimc.dide.ic.ac.uk/api/v1/diseases/`
 
+# Issues to be resolved:
+* CSV options for some endpoints
+
 # Standard response format
 All responses are returned in a standard format. Throughout this specification, 
 wherever an endpoint describes its response format, it should be assumed the payload is wrapped in
@@ -113,8 +116,7 @@ Schema: [`Scenarios.schema.json`](Scenarios.schema.json)
             "vaccination_level": "none",
             "disease": "MenA",
             "vaccine": "MenA",
-            "scenario_type": "none",
-            "published": true
+            "scenario_type": "none"
         },
         {
             "id": "yf-campaign-reactive-nogavi",
@@ -123,8 +125,7 @@ Schema: [`Scenarios.schema.json`](Scenarios.schema.json)
             "vaccination_level": "without",
             "disease": "YF",
             "vaccine": "YF",
-            "scenario_type": "campaign",
-            "published": false
+            "scenario_type": "campaign"
         }
     ]
 
@@ -274,8 +275,7 @@ Schema: [`Scenarios.schema.json`](Scenarios.schema.json)
             "vaccination_level": "none",
             "disease": "MenA",
             "vaccine": "MenA",
-            "scenario_type": "none",
-            "published": true
+            "scenario_type": "none"
         },
         {
             "id": "yf-campaign-reactive-nogavi",
@@ -284,8 +284,7 @@ Schema: [`Scenarios.schema.json`](Scenarios.schema.json)
             "vaccination_level": "without",
             "disease": "YF",
             "vaccine": "YF",
-            "scenario_type": "campaign",
-            "published": false
+            "scenario_type": "campaign"
         }
     ]
 
@@ -330,8 +329,7 @@ Schema: [`ScenarioWithCoverageData.schema.json`](ScenarioWithCoverageData.schema
             "vaccination_level": "none",
             "disease": "MenA",
             "vaccine": "MenA",
-            "scenario_type": "none",
-            "published": true
+            "scenario_type": "none"
         },
         "countries": [ "AFG", "AGO" ],
         "coverage": [
@@ -429,7 +427,7 @@ Schema: [`ModellingGroupDetails.schema.json`](ModellingGroupDetails.schema.json)
                 "modelling_group": "IC-Garske"
             }
         ],
-        "responsibilities": [ "wuenic-2017", "op-2017" ]
+        "responsibilities": [ "wuenic-2017", "2017-op" ]
     }
 
 ## POST /modelling-groups/
@@ -511,33 +509,60 @@ Schema: [`Model.schema.json`](Model.schema.json)
 
 # Responsibilities
 ## GET /modelling-groups/{modelling-group-code}/responsibilities/{touchstone-id}
-Returns an enumerations of the responsibilities of this modelling group in the given touchstone.
+Returns an enumerations of the responsibilities of this modelling group in the given touchstone,
+and the overall status of this modelling groups work in this touchstone.
 
-Schema: [`Scenarios.schema.json`](Scenarios.schema.json)
+Schema: [`ResponsibilitySet.schema.json`](ResponsibilitySet.schema.json)
 
 ### Example
-    [
-        {
-            "id": "menA-novacc",
-            "touchstones": [ "2016-op", "2017-wuenic", "2017-op" ],
-            "description": "Menigitis A, No vaccination",
-            "vaccination_level": "none",
-            "disease": "MenA",
-            "vaccine": "MenA",
-            "scenario_type": "none",
-            "published": true
-        },
-        {
-            "id": "yf-campaign-reactive-nogavi",
-            "touchstones": [ "2017-wuenic", "2017-op" ],
-            "description": "Yellow Fever, Reactive campaign, SDF coverage without GAVI support",
-            "vaccination_level": "without",
-            "disease": "YF",
-            "vaccine": "YF",
-            "scenario_type": "campaign",
-            "published": false
-        }
-    ]
+    {
+        "touchstone": "2017-op",
+        "status": "incomplete",
+        "responsibilities": [
+            {
+                "scenario": {
+                    "id": "menA-novacc",
+                    "touchstones": [ "2016-op", "2017-wuenic", "2017-op" ],
+                    "description": "Menigitis A, No vaccination",
+                    "vaccination_level": "none",
+                    "disease": "MenA",
+                    "vaccine": "MenA",
+                    "scenario_type": "none"
+                },
+                "status": "empty",
+                "problems": [ "No burden estimates have been uploaded" ],
+                "current_estimate": null
+            },        
+            {
+                "scenario": {
+                    "id": "yf-campaign-reactive-nogavi",
+                    "touchstones": [ "2017-wuenic", "2017-op" ],
+                    "description": "Yellow Fever, Reactive campaign, SDF coverage without GAVI support",
+                    "vaccination_level": "without",
+                    "disease": "YF",
+                    "vaccine": "YF",
+                    "scenario_type": "campaign"
+                },
+                "status": "invalid",
+                "problems": [
+                    "Missing data for these countries: AFG",
+                    "There are negative burden numbers for some outcomes."
+                ],
+                "current_estimate": 37
+            }
+        ]
+    }
+
+If they have no responsibilities, `status` is null.
+
+Schema: [`ResponsibilitySet.schema.json`](ResponsibilitySet.schema.json)
+
+### Example
+    {
+        "touchstone": "2017-op",
+        "status": null,
+        "responsibilities": []
+    }
 
 Note that even if a modelling group has no responsibilities in a given touchstone,
 using this endpoint is not an error: an empty array will just be returned.
@@ -550,7 +575,7 @@ Schema: [`AssociateResponsibility.schema.json`](AssociateResponsibility.schema.j
 ### Example
     {
         "action": "add",
-        "touchstone_id": "op-2017",
+        "touchstone_id": "2017-op",
         "scenario_id": "menA-novacc"
     }
 

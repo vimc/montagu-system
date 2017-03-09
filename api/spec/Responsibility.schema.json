@@ -1,0 +1,19 @@
+{
+    "id": "Responsibility",
+    "type": "object",
+    "properties": {
+        "scenario": { "$ref": "Scenario.schema.json" },
+        "status": { 
+            "enum": [ "empty", "invalid", "valid" ]
+        },
+        "problems": {
+            "type": "array",
+            "items": { "type": "string" }
+        },
+        "current_estimate": {
+            "type": [ "integer", "null" ]
+        }
+    },
+    "additionalProperties": false,
+    "required": [ "scenario", "status", "problems", "current_estimate" ]
+}

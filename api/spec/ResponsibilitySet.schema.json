@@ -1,0 +1,14 @@
+{
+    "id": "ResponsibilitySet",
+    "type": "object",
+    "properties": {
+        "touchstone": { "type": "string" },
+        "status": { "$ref": "ResponsibilitySetStatus.schema.json" },
+        "responsibilities": { 
+            "type": "array",
+            "items": { "$ref": "Responsibility.schema.json" }
+         }
+    },
+    "additionalProperties": false,
+    "required": [ "touchstone", "status", "responsibilities" ]
+}

@@ -11,9 +11,8 @@
 		"vaccination_level": { "$ref": "VaccinationLevel.schema.json" },
     	"disease": { "type": "string" },
     	"vaccine": { "type": "string" },
-    	"scenario_type": { "$ref": "ScenarioType.schema.json" },
-    	"published": { "type": "boolean" }
+    	"scenario_type": { "$ref": "ScenarioType.schema.json" }
 	},
 	"additionalProperties": false,
-	"required": [ "id", "touchstones", "description", "vaccination_level", "disease", "vaccine", "scenario_type", "published" ]
+	"required": [ "id", "touchstones", "description", "vaccination_level", "disease", "vaccine", "scenario_type" ]
 }
