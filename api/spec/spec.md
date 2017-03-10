@@ -255,7 +255,7 @@ Schema: [`Touchstones.schema.json`](Touchstones.schema.json)
             "description": "2017 WUENIC Update",
             "date": "2017-07-15",
             "years": { "start": 1996, "end": 2017 },
-            "status": "public"
+            "status": "finished"
         },
         { 
             "id": "2017-op",
@@ -443,7 +443,7 @@ Schema: [`ScenarioWithCoverageData.schema.json`](ScenarioWithCoverageData.schema
             "description": "2017 Operational Forecast",
             "date": "2017-07-15",
             "years": { "start": 1996, "end": 2017 },
-            "status": "public"
+            "status": "open"
     	},
         "scenario": {
             "id": "menA-novacc",
@@ -520,7 +520,7 @@ Returns all burden estimates that have been uploaded for this touchstone.
 
 If the touchstone is `open` then users without appropriate admin permissions can only 
 see estimates that their modelling group has uploaded. If the touchstone is `finished` 
-or `public` then all users can see all estimates. There should not be any estimates if
+then all users can see all estimates. There should not be any estimates if
 the touchstone is `in-preparation`.
 
 Schema: [`BurdenEstimates.schema.json`](BurdenEstimates.schema.json)
@@ -542,22 +542,16 @@ Schema: [`BurdenEstimates.schema.json`](BurdenEstimates.schema.json)
                 "code": "IC-YellowFever",
                 "description": "Imperial College, Yellow Fever, PI: Tini Garske"
             },
-            "uploaded_by": "tgarske",
-            "may_be_published": false
+            "uploaded_by": "tgarske"
         }
     ]
-
-The `may_be_published` flag will be true if and only if:
-
-* The responsibility set is `approved`
-* The touchstone is `public` (note that even if the touchstone is `finished`, that's not enough)
 
 ## GET /touchstone/{touchstone-id}/estimates/{estimate-id}/
 Returns the full burden estimate data.
 
 If the touchstone is `open` then users without appropriate admin permissions can only 
 see estimates that their modelling group has uploaded. If the touchstone is `finished` 
-or `public` then all users can see all estimates. There should not be any estimates if
+then all users can see all estimates. There should not be any estimates if
 the touchstone is `in-preparation`.
 
 Schema: [`BurdenEstimateWithData.schema.json`](BurdenEstimateWithData.schema.json)
@@ -579,8 +573,7 @@ Schema: [`BurdenEstimateWithData.schema.json`](BurdenEstimateWithData.schema.jso
                 "code": "IC-YellowFever",
                 "description": "Imperial College, Yellow Fever, PI: Tini Garske"
             },
-            "uploaded_by": "tgarske",
-            "may_be_published": false
+            "uploaded_by": "tgarske"
         },
         "data": [
             { 
@@ -871,7 +864,6 @@ Example URL: `/touchstones/2017-op/status/`
 
 * When the touchstone is `in-preparation` it can move into `open` when there are no outstanding problems. 
 * When it is `open`, it can move into `finished` when all responsibility sets are in the `approved` status.
-* When it is `finished`, it can always move into `public`.
 
 Note that countries cannot have problems in the current version of the spec as I have left
 off all details relating to demographic data. The `problems` array is included here, as I expect

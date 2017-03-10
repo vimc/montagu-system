@@ -1,4 +1,4 @@
 {
 	"id": "TouchstoneStatus",
-	"enum": [ "in-preparation", "open", "finished", "public" ]
+	"enum": [ "in-preparation", "open", "finished" ]
 }
