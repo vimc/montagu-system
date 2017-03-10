@@ -1,4 +1,4 @@
 {
     "type": "array",
-    "items": { "$ref": "CountryId.schema.json" }
+    "items": { "$ref": "Country.schema.json" }
 }

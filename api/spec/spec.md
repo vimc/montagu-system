@@ -113,18 +113,25 @@ Schema: [`Countries.schema.json`](Countries.schema.json)
 
 ### Example
     [
-        "AFG",
-        "AGO"
+        {
+            "id": "AFG",
+            "name": "Afghanistan"
+        },
+        {
+            "id": "AGO",
+            "name": "Angola"
+        }
     ]
 
 ## POST /countries/
 Adds a new country.
 
-Schema: [`CreateCountry.schema.json`](CreateCountry.schema.json)
+Schema: [`Country.schema.json`](Country.schema.json)
 
 ### Example
     {
-        "id": "MDG"
+        "id": "MDG",
+        "name": "Madagascar"
     }
 
 # Scenarios
@@ -342,11 +349,17 @@ Schema: [`CountriesWithDetails.schema.json`](CountriesWithDetails.schema.json)
     [
         {
             "id": "AFG",
-            "name": "Afghanistan"
+            "name": "Afghanistan",
+            "who_region": "emro",
+            "gavi73": true,
+            "wuenic": true
         },
         {
             "id": "AGO",
-            "name": "Angola"
+            "name": "Angola",
+            "who_region": "afro",
+            "gavi73": true,
+            "wuenic": true
         }
     ]
 
@@ -354,17 +367,21 @@ Schema: [`CountriesWithDetails.schema.json`](CountriesWithDetails.schema.json)
 Sets the list of countries associated with the touchstone, and their
 touchstone-specific properties (currently just name).
 
-Schema: [`CountriesWithDetails.schema.json`](CountriesWithDetails.schema.json)
+Schema: [`SetCountriesWithDetails.schema.json`](SetCountriesWithDetails.schema.json)
 
 ### Example
     [
-        {
+        {   
             "id": "AFG",
-            "name": "Afghanistan"
+            "who_region": "emro",
+            "gavi73": true,
+            "wuenic": true
         },
         {
             "id": "AGO",
-            "name": "Angola"
+            "who_region": "afro",
+            "gavi73": true,
+            "wuenic": true
         }
     ]
 
@@ -380,18 +397,24 @@ Schema: [`CountriesWithDetails.schema.json`](CountriesWithDetails.schema.json)
     [
         {
             "id": "AFG",
-            "name": "Afghanistan"
+            "name": "Afghanistan",
+            "who_region": "emro",
+            "gavi73": true,
+            "wuenic": true
         },
         {
             "id": "AGO",
-            "name": "Angola"
+            "name": "Angola",
+            "who_region": "afro",
+            "gavi73": true,
+            "wuenic": true
         }
     ]
 
 ## POST /touchstones/{touchstone-id}/scenarios/{scenario-id}/countries/
 Sets the list of countries associated with this scenario in this touchstone.
 
-Schema: [`Countries.schema.json`](Countries.schema.json)
+Schema: [`CountryIds.schema.json`](CountryIds.schema.json)
 
 ### Example
     [ "AFG", "AGO" ]

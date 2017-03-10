@@ -1,9 +1,0 @@
-{
-    "id": "CreateCountry",
-    "type": "object",
-    "properties": {
-        "id": { "$ref": "CountryId.schema.json" }
-    },
-    "additionalProperties": false,
-    "required": [ "id" ]
-}
