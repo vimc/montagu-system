@@ -894,14 +894,20 @@ Schema: [`TouchstoneOverview.schema.json`](TouchstoneOverview.schema.json)
                 "used": [
                     { 
                         "id": "IC-YellowFever",
-                        "responsibilities_status": null
-                    },
-                    { 
-                        "id": "LSHTM-Measles",
-                        "responsibilities_status": null
+                        "responsibilities_status": null,
+                        "responsibilities": [
+                            { 
+                                "id": "yf-routine-novacc",
+                                "status": "empty"
+                            },
+                            { 
+                                "id": "yf-routine-nogavi",
+                                "status": "empty"
+                            }
+                        ]
                     }
                 ],
-                "unused": [ "LSHTM-Rota" ]
+                "unused": [ "LSHTM-Measles" ]
             }
         }
     }
@@ -948,14 +954,20 @@ Schema: [`TouchstoneOverview.schema.json`](TouchstoneOverview.schema.json)
                 "used": [
                     { 
                         "id": "IC-YellowFever",
-                        "responsibilities_status": "submitted"
-                    },
-                    { 
-                        "id": "LSHTM-Measles",
-                        "responsibilities_status": "approved"
+                        "responsibilities_status": "submitted",
+                        "responsibilities": [
+                            { 
+                                "id": "yf-routine-novacc",
+                                "status": "invalid"
+                            },
+                            { 
+                                "id": "yf-routine-nogavi",
+                                "status": "valid"
+                            }
+                        ]
                     }
                 ],
-                "unused": [ "LSHTM-Rota" ]
+                "unused": [ "LSHTM-Measles" ]
             }
         }
     }

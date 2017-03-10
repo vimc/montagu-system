@@ -3,9 +3,7 @@
     "type": "object",
     "properties": {
         "scenario": { "$ref": "Scenario.schema.json" },
-        "status": { 
-            "enum": [ "empty", "invalid", "valid" ]
-        },
+        "status": { "$ref": "ResponsibilityStatus.schema.json" },
         "problems": { "$ref": "ProblemsArray.schema.json" },
         "current_estimate": {
             "type": [ "integer", "null" ]

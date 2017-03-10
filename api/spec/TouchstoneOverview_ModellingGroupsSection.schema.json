@@ -7,7 +7,19 @@
                 "type": "object",
                 "properties": {
                     "id": { "$ref": "StandardIdentifier.schema.json" },
-                    "responsibilities_status": { "$ref": "ResponsibilitySetStatus.schema.json" }
+                    "responsibilities_status": { "$ref": "ResponsibilitySetStatus.schema.json" },
+                    "responsibilities": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "id": { "$ref": "StandardIdentifier.schema.json" },
+                                "status": { "$ref": "ResponsibilityStatus.schema.json" }
+                            },
+                            "additionalProperties": false,
+                            "required": [ "id", "status" ]
+                        }
+                    }
                 },
                 "additionalProperties": false,
                 "required": [ "id", "responsibilities_status" ]
