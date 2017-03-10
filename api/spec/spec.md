@@ -253,14 +253,12 @@ Schema: [`Touchstones.schema.json`](Touchstones.schema.json)
         { 
             "id": "2017-wuenic",
             "description": "2017 WUENIC Update",
-            "date": "2017-07-15",
             "years": { "start": 1996, "end": 2017 },
             "status": "finished"
         },
         { 
             "id": "2017-op",
             "description": "2017 Operational Forecast",
-            "date": "2017-07-15",
             "years": { "start": 1996, "end": 2081 },
             "status": "open"
         }
@@ -275,11 +273,7 @@ Schema: [`CreateTouchstone.schema.json`](CreateTouchstone.schema.json)
     {
          "id": "an-id",
          "description": "A description",
-         "date": "2017-06-01",
-         "years": {
-             "start": 2000,
-             "end": 2100
-         }
+         "years": { "start": 2000, "end": 2100 }
     }
 
 Fails if there is an existing touchstone with that ID.
@@ -441,7 +435,6 @@ Schema: [`ScenarioWithCoverageData.schema.json`](ScenarioWithCoverageData.schema
         "touchstone": {
             "id": "2017-op",
             "description": "2017 Operational Forecast",
-            "date": "2017-07-15",
             "years": { "start": 1996, "end": 2017 },
             "status": "open"
     	},
@@ -876,7 +869,6 @@ Schema: [`TouchstoneOverview.schema.json`](TouchstoneOverview.schema.json)
     {
         "id": "2017-op",
         "description": "2017 Operational Forecast",
-        "date": "2017-07-15",
         "years": { "start": 1996, "end": 2081 },
         "status": "in-preparation",
         "allowed_state_changes": [],
@@ -938,7 +930,6 @@ Schema: [`TouchstoneOverview.schema.json`](TouchstoneOverview.schema.json)
     {
         "id": "2017-op",
         "description": "2017 Operational Forecast",
-        "date": "2017-07-15",
         "years": { "start": 1996, "end": 2081 },
         "status": "open",
         "allowed_state_changes": [],

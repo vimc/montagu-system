@@ -4,10 +4,9 @@
 	"properties": {
 		"id": { "$ref": "StandardIdentifier.schema.json" },
 		"description": { "type": "string" },
-		"date": { "$ref": "Date.schema.json" },
 		"years": { "$ref": "YearRange.schema.json" },
 		"status": { "$ref": "TouchstoneStatus.schema.json" }
 	},
 	"additionalProperties": false,
-	"required": [ "id", "description", "date", "years", "status" ]
+	"required": [ "id", "description", "years", "status" ]
 }

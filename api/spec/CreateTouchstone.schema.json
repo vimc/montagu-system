@@ -4,9 +4,8 @@
 	"properties": {
 		"id": { "$ref": "StandardIdentifier.schema.json" },
 		"description": { "type": "string" },
-		"date": { "$ref": "Date.schema.json" },
 		"years": { "$ref": "YearRange.schema.json" }
 	},
 	"additionalProperties": false,
-	"required": [ "id", "description", "date", "years" ]
+	"required": [ "id", "description", "years" ]
 }
