@@ -223,7 +223,7 @@ Schema: [`ModellingGroups.schema.json`](ModellingGroups.schema.json)
 ### Example
     [
         {
-            "code": "IC-Garske",
+            "code": "IC-YellowFever",
             "description": "Imperial College, Yellow Fever, PI: Tini Garske"
         },
         {
@@ -512,7 +512,7 @@ Schema: [`BurdenEstimates.schema.json`](BurdenEstimates.schema.json)
                 "scenario_type": "none"
             },
             "responsible_group": {
-                "code": "IC-Garske",
+                "code": "IC-YellowFever",
                 "description": "Imperial College, Yellow Fever, PI: Tini Garske"
             },
             "uploaded_by": "tgarske",
@@ -549,7 +549,7 @@ Schema: [`BurdenEstimateWithData.schema.json`](BurdenEstimateWithData.schema.jso
                 "scenario_type": "none"
             },
             "responsible_group": {
-                "code": "IC-Garske",
+                "code": "IC-YellowFever",
                 "description": "Imperial College, Yellow Fever, PI: Tini Garske"
             },
             "uploaded_by": "tgarske",
@@ -587,7 +587,7 @@ Schema: [`CreateBurdenEstimate.schema.json`](CreateBurdenEstimate.schema.json)
 ### Example
     {
         "scenario_id": "menA-novacc",
-        "responsible_group_code": "IC-Garske",
+        "responsible_group_code": "IC-YellowFever",
         "data": [
             { 
                 "country_id": "AFG",
@@ -615,11 +615,11 @@ Schema: [`ModellingGroups.schema.json`](ModellingGroups.schema.json)
 ### Example
     [
         {
-            "code": "IC-Garske",
+            "code": "IC-YellowFever",
             "description": "Imperial College, Yellow Fever, PI: Tini Garske"
         },
         {
-            "code": "LSHTM-Jit",
+            "code": "LSHTM-Measles",
             "description": "London School of Hygiene and Tropical Medicine, PI: Mark Jit"
         }
     ]
@@ -631,15 +631,15 @@ Schema: [`ModellingGroupDetails.schema.json`](ModellingGroupDetails.schema.json)
 
 ### Example
     {
-        "code": "IC-Garske",
+        "code": "IC-YellowFever",
         "description": "Imperial College, Yellow Fever, PI: Tini Garske",
         "models": [
             {
-                "id": "IC-YellowFever",
+                "id": "IC-YF-WithoutHerd",
                 "name": "YF burden estimate - without herd effect",
                 "citation": "Garske T, Van Kerkhove MD, Yactayo S, Ronveaux O, Lewis RF, Staples JE, Perea W, Ferguson NMet al., 2014, Yellow Fever in Africa: Estimating the Burden of Disease and Impact of Mass Vaccination from Outbreak and Serological Data, PLOS MEDICINE, Vol: 11, ISSN: 1549-1676",
                 "description": "Yellow Fever model",
-                "modelling_group": "IC-Garske"
+                "modelling_group": "IC-YellowFever"
             }
         ],
         "responsibilities": [ "wuenic-2017", "2017-op" ]
@@ -665,11 +665,11 @@ Schema: [`Models.schema.json`](Models.schema.json)
 ### Example
     [
         { 
-            "code": "IC-YellowFever",
+            "code": "IC-YF-WithoutHerd",
             "name": "YF burden estimate - without herd effect",
             "citation": "Garske T, Van Kerkhove MD, Yactayo S, Ronveaux O, Lewis RF, Staples JE, Perea W, Ferguson NMet al., 2014, Yellow Fever in Africa: Estimating the Burden of Disease and Impact of Mass Vaccination from Outbreak and Serological Data, PLOS MEDICINE, Vol: 11, ISSN: 1549-1676",
             "description": "Yellow Fever model",
-            "modelling_group": "IC-Garske"
+            "modelling_group": "IC-YellowFever"
         },
         { 
             "code": "LSHTM-DynaMice",
@@ -687,20 +687,20 @@ Schema: [`ModelDetails.schema.json`](ModelDetails.schema.json)
 
 ### Example
     {
-        "code": "IC-YellowFever",
+        "code": "IC-YF-WithoutHerd",
         "name": "YF burden estimate - without herd effect",
         "citation": "Garske T, Van Kerkhove MD, Yactayo S, Ronveaux O, Lewis RF, Staples JE, Perea W, Ferguson NMet al., 2014, Yellow Fever in Africa: Estimating the Burden of Disease and Impact of Mass Vaccination from Outbreak and Serological Data, PLOS MEDICINE, Vol: 11, ISSN: 1549-1676",
         "description": "Yellow Fever model",
-        "modelling_group": "IC-Garske",
+        "modelling_group": "IC-YellowFever",
         "versions": [
             { 
-                "model": "IC-YellowFever",
+                "model": "IC-YF-WithoutHerd",
                 "version": "1.0.0",
                 "note": "Some notes",
                 "fingerprint": null
             },
             { 
-                "model": "IC-YellowFever",
+                "model": "IC-YF-WithoutHerd",
                 "version": "1.1.0",
                 "note": "Some notes about 1.1 release",
                 "fingerprint": "4b0bef9edfb15ac02e7410b21d8ed3398fa52982"
@@ -893,7 +893,7 @@ Schema: [`TouchstoneOverview.schema.json`](TouchstoneOverview.schema.json)
             "modelling_groups": {
                 "used": [
                     { 
-                        "id": "IC-Garske",
+                        "id": "IC-YellowFever",
                         "responsibilities_status": null
                     },
                     { 
@@ -947,7 +947,7 @@ Schema: [`TouchstoneOverview.schema.json`](TouchstoneOverview.schema.json)
             "modelling_groups": {
                 "used": [
                     { 
-                        "id": "IC-Garske",
+                        "id": "IC-YellowFever",
                         "responsibilities_status": "submitted"
                     },
                     { 
