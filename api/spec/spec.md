@@ -389,6 +389,8 @@ If a country is referred (by id) that does not exist in the master list
 of countries (see `/countries/`), the action fails without effect.
 
 ## GET /touchstones/{touchstone-id}/scenarios/{scenario-id}/countries/
+**This is likely to change, as Rich and Martin need to have a conversation about more generic validation approaches**
+
 Returns a list of the countries associated with the scenario in this touchstone.
 
 Schema: [`CountriesWithDetails.schema.json`](CountriesWithDetails.schema.json)
@@ -412,6 +414,8 @@ Schema: [`CountriesWithDetails.schema.json`](CountriesWithDetails.schema.json)
     ]
 
 ## POST /touchstones/{touchstone-id}/scenarios/{scenario-id}/countries/
+**This is likely to change, as Rich and Martin need to have a conversation about more generic validation approaches**
+
 Sets the list of countries associated with this scenario in this touchstone.
 
 Schema: [`CountryIds.schema.json`](CountryIds.schema.json)
