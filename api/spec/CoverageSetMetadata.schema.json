@@ -1,0 +1,13 @@
+{
+	"id": "CoverageSet",
+	"type": "object",
+	"properties": {
+		"id": { "type": "integer" },
+		"touchstone": { "$ref": "StandardIdentifier.schema.json" },
+        "name": { "type": "string" },
+		"coverage_type": { "enum": [ "routine", "campaign" ] },
+		"vaccine": { "$ref": "StandardIdentifier.schema.json" }
+	},
+	"additionalProperties": false,
+	"required": [ "id", "touchstone", "name", "coverage_type", "vaccine" ]
+}

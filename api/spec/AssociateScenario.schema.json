@@ -5,7 +5,7 @@
 			"enum": [ "add", "remove" ]
 		},
 		"scenario_id": {
-			"type": "string"
+			"$ref": "StandardIdentifier.schema.json"
 		}
 	},
 	"additionalProperties": false,

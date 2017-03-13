@@ -1,0 +1,15 @@
+{
+	"id": "CreateCoverageSet",
+	"type": "object",
+	"properties": {
+        "name": { "type": "string" },
+		"coverage_type": { "enum": [ "routine", "campaign" ] },
+		"vaccine": { "$ref": "StandardIdentifier.schema.json" },
+		"data": {
+            "type": "array",
+            "item": { "$ref": "CoverageLine.schema.json" }
+        }
+	},
+	"additionalProperties": false,
+	"required": [ "name", "coverage_type", "vaccine", "data" ]
+}

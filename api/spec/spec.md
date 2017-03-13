@@ -203,8 +203,9 @@ Schema: [`CreateScenario.schema.json`](CreateScenario.schema.json)
     }
     
 ## PATCH /scenarios/{scenario-id}/
-Updates a scenario's properties. This is only allowed until a 
-scenario is associated with a touchstone. All fields are optional.
+Updates a scenario's properties. This is only allowed if the 
+scenario is not associated with any touchstone. 
+All fields are optional.
 
 Schema: [`UpdateScenario.schema.json`](UpdateScenario.schema.json)
 
@@ -219,7 +220,8 @@ Schema: [`UpdateScenario.schema.json`](UpdateScenario.schema.json)
     }
 
 ## DELETE /scenarios/{scenario-id}/
-Deletes a scenario. This is only allowed until a scenario is associated with a touchstone.
+Deletes a scenario. This is only allowed if the scenario is 
+not associated with any touchstone.
 
 ## GET /scenarios/{scenario-id}/responsible_groups/{touchstone-id}
 Returns an enumeration (potentially empty) of modelling groups who are responsible for this 
@@ -292,29 +294,62 @@ Schema: [`UpdateTouchstone.schema.json`](UpdateTouchstone.schema.json)
 ## GET /touchstones/{touchstone-id}/scenarios/
 Returns all scenarios associated with the touchstone.
 
-Schema: [`Scenarios.schema.json`](Scenarios.schema.json)
+Schema: [`ScenariosInTouchstone.schema.json`](ScenariosInTouchstone.schema.json)
 
 ### Example
     [
         {
-            "id": "menA-novacc",
-            "touchstones": [ "2016-op", "2017-wuenic", "2017-op" ],
-            "description": "Menigitis A, No vaccination",
-            "vaccination_level": "none",
-            "disease": "MenA",
-            "vaccine": "MenA",
-            "scenario_type": "none"
+            "scenario": {
+                "id": "menA-novacc",
+                "touchstones": [ "2016-op", "2017-wuenic", "2017-op" ],
+                "description": "Menigitis A, No vaccination",
+                "vaccination_level": "none",
+                "disease": "MenA",
+                "vaccine": "MenA",
+                "scenario_type": "none"
+            },
+            "coverage_sets": [ 
+                { 
+                    "id": 101,
+                    "touchstone": "2017-op",
+                    "name": "Menigitis no vaccination",
+                    "coverage_type": "routine",
+                    "vaccine": "MenA"
+                }
+            ]
         },
         {
-            "id": "yf-campaign-reactive-nogavi",
-            "touchstones": [ "2017-wuenic", "2017-op" ],
-            "description": "Yellow Fever, Reactive campaign, SDF coverage without GAVI support",
-            "vaccination_level": "without",
-            "disease": "YF",
-            "vaccine": "YF",
-            "scenario_type": "campaign"
+            "scenario": {
+                "id": "yf-campaign-reactive-nogavi",
+                "touchstones": [ "2017-wuenic", "2017-op" ],
+                "description": "Yellow Fever, Reactive campaign, SDF coverage without GAVI support",
+                "vaccination_level": "without",
+                "disease": "YF",
+                "vaccine": "YF",
+                "scenario_type": "campaign"
+            },
+            "coverage_sets": [
+                { 
+                    "id": 643,
+                    "touchstone": "2017-op",
+                    "name": "Yellow fever birth dose (with GAVI support)",
+                    "coverage_type": "routine",
+                    "vaccine": "YF"
+                },
+                { 
+                    "id": 643,
+                    "touchstone": "2017-op",
+                    "name": "Yellow fever reactive campaign (with GAVI support)",
+                    "coverage_type": "campaign",
+                    "vaccine": "YF"
+                }
+            ]
         }
     ]
+
+Note that the coverage sets returned are just those that belong to the touchstone in the URL.
+In other words, if the same scenario is associated with other coverage
+sets in a different touchstone, those are not returned here.
 
 The returned scenarios can be filtered using the same query parameters as `GET /scenarios`, with the exception that the touchstone parameter is ignored.
 
@@ -423,89 +458,137 @@ The countries set here must:
 * Exist in this touchstone (see `/touchstones/{touchstone-id}/countries/`)
 
 # Coverage data
-## GET /touchstones/{touchstone-id}/scenarios/{scenario-id}/coverage/
-Returns the coverage data for a scenario that is assciated with the touchstone.
+## GET /touchstones/{touchstone-id}/coverage_sets/
+Returns the coverage data sets associated with the touchstone
 
-Example URL: `/touchstones/2017-op/scenarios/menA-novacc/`
-
-Schema: [`ScenarioWithCoverageData.schema.json`](ScenarioWithCoverageData.schema.json)
-
-### Example
-    {
-        "touchstone": {
-            "id": "2017-op",
-            "description": "2017 Operational Forecast",
-            "years": { "start": 1996, "end": 2017 },
-            "status": "open"
-    	},
-        "scenario": {
-            "id": "menA-novacc",
-            "touchstones": [ "2016-op", "2017-wuenic", "2017-op" ],
-            "description": "Menigitis A, No vaccination",
-            "vaccination_level": "none",
-            "disease": "MenA",
-            "vaccine": "MenA",
-            "scenario_type": "none"
-        },
-        "countries": [ "AFG", "AGO" ],
-        "coverage": [
-            { 
-                "country": "AFG", 
-                "data": [
-                    { "year": 2006, "coverage": 0.0 },
-                    { "year": 2007, "coverage": 64.0 },
-                    { "year": 2008, "coverage": 63.0 }
-                ]
-            },
-            { 
-                "country": "AGO", 
-                "data": [
-                    { "year": 2006, "coverage": 0.0 },
-                    { "year": 2007, "coverage": 83.0 },
-                    { "year": 2008, "coverage": 81.0 }
-                ]
-            }
-        ]
-    }
-    
-### Query parameters:
-
-#### countries
-Optional. Takes a list of country codes. The countries field and coverage data are filtered to just the specified countries.
-
-Example: `/touchstones/2017-op/scenarios/menA-novacc/?countries=AFG,ANG,CHN`
-
-If no data has been uploaded for the given country code (and it is a valid country code) the `data` element will be an empty array. 
-
-## POST /touchstones/{touchstone-id}/scenarios/{scenario-id}/coverage/
-Sets the coverage data for a scenario.
-
-Schema: [`Coverage.schema.json`](Coverage.schema.json)
+Schema: [`CoverageSets.schema.json`](CoverageSets.schema.json)
 
 ### Example
     [
-        { 
-            "country": "AFG", 
-            "data": [
-                { "year": 2006, "coverage": 0.0 },
-                { "year": 2007, "coverage": 64.0 },
-                { "year": 2008, "coverage": 63.0 }
-            ]
+        {
+            "id": 189,
+            "touchstone": "2017-op",
+            "name": "Measles 1st Dose",
+            "coverage_type": "routine",
+            "vaccine": "MCV1"
         },
-        { 
-            "country": "AGO", 
-            "data": [
-                { "year": 2006, "coverage": 0.0 },
-                { "year": 2007, "coverage": 83.0 },
-                { "year": 2008, "coverage": 81.0 }
-            ]
+        {
+            "id": 278,
+            "touchstone": "2017-op",
+            "name": "Measles 2nd Dose",
+            "coverage_type": "routine",
+            "vaccine": "MCV2"
+        },
+        {
+            "id": 290,
+            "touchstone": "2017-op",
+            "name": "Yellow Fever reactive campaign (with GAVI support)",
+            "coverage_type": "campaign",
+            "vaccine": "YF"
         }
     ]
 
-This replaces all existing coverage data for this scenario, in this touchstone. 
-An error occurs if data is not supplied for all expected countries.
+### Query parameters
+#### coverage_type
+Optional. Takes either 'routine' or 'campaign'. The coverage sets are filtered to the specified coverage type.
 
-This can only be invoked if the touchstone is in the 'in-preparation' state.
+Example: `/touchstones/2017-op/coverage_sets/?coverage_type=campaign`
+
+#### vaccine
+Optional. Takes a valid vaccine identifier. The coverage sets are filtered to the specified vaccine.
+
+Example: `/touchstones/2017-op/coverage_sets/?vaccine=MCV1`
+
+## GET /touchstones/{touchstone-id}/coverage_sets/{coverage-set-id}/
+Returns a single coverage set and its coverage data.
+
+Schema: [`CoverageSet.schema.json`](CoverageSet.schema.json)
+
+### Example
+    {
+        "id": 189,
+        "touchstone": "2017-op",        
+        "name": "Measles 1st Dose",
+        "coverage_type": "routine",
+        "data": [
+            { "country": "AFG", "year": 2006, "age_from": 0, "age_to": 2, "coverage":  0.0 },
+            { "country": "AFG", "year": 2007, "age_from": 0, "age_to": 2, "coverage": 64.0 },
+            { "country": "AFG", "year": 2008, "age_from": 0, "age_to": 2, "coverage": 63.0 },
+            { "country": "AGO", "year": 2006, "age_from": 0, "age_to": 1, "coverage":  0.0 },
+            { "country": "AGO", "year": 2007, "age_from": 0, "age_to": 1, "coverage": 83.0 },
+            { "country": "AGO", "year": 2008, "age_from": 0, "age_to": 1, "coverage": 81.0 }
+        ]
+    }
+
+### Query parameters
+#### countries
+Optional. Takes a list of country codes. The coverage data is filtered to just the specified countries.
+
+Example: `/touchstones/2017-op/coverage_sets/189/?countries=AFG,ANG,CHN`
+
+## POST /touchstones/{touchstone-id}/coverage_sets/
+Adds a new coverage set to the touchstone
+
+Schema: [`CreateCoverageSet.schema.json`](CreateCoverageSet.schema.json)
+
+### Example
+    {
+        "name": "Measles 1st dose",
+        "vaccine": "MCV1",
+        "coverage_type": "routine",
+        "data": [
+            { "country": "AFG", "year": 2006, "age_from": 0, "age_to": 2, "coverage":  0.0 },
+            { "country": "AFG", "year": 2007, "age_from": 0, "age_to": 2, "coverage": 64.0 },
+            { "country": "AFG", "year": 2008, "age_from": 0, "age_to": 2, "coverage": 63.0 },
+            { "country": "AGO", "year": 2006, "age_from": 0, "age_to": 1, "coverage":  0.0 },
+            { "country": "AGO", "year": 2007, "age_from": 0, "age_to": 1, "coverage": 83.0 },
+            { "country": "AGO", "year": 2008, "age_from": 0, "age_to": 1, "coverage": 81.0 }
+        ]
+    }
+
+This adds a new coverage set for this touchstone. It then needs to be associated with 1 or more
+scenarios. This can only be invoked if the touchstone is in `in-preparation`. An error
+occurs if the name matches an existing coverage set in this touchstone.
+
+## PUT /touchstones/{touchstone-id}/coverage_sets/{coverage-set-id}/
+Replaces the data in an existing coverage set.
+
+Schema: [`CreateCoverageSet.schema.json`](CreateCoverageSet.schema.json)
+
+### Example
+    {
+        "name": "Measles 1st dose",
+        "vaccine": "MCV1",
+        "coverage_type": "routine",
+        "data": [
+            { "country": "AFG", "year": 2006, "age_from": 0, "age_to": 2, "coverage":  0.0 },
+            { "country": "AFG", "year": 2007, "age_from": 0, "age_to": 2, "coverage": 64.0 },
+            { "country": "AFG", "year": 2008, "age_from": 0, "age_to": 2, "coverage": 63.0 },
+            { "country": "AGO", "year": 2006, "age_from": 0, "age_to": 1, "coverage":  0.0 },
+            { "country": "AGO", "year": 2007, "age_from": 0, "age_to": 1, "coverage": 83.0 },
+            { "country": "AGO", "year": 2008, "age_from": 0, "age_to": 1, "coverage": 81.0 }
+        ]
+    }
+
+This can only be invoked if the touchstone is in `in-preparation`.
+
+## POST /touchstones/{touchstone-id}/actions/associate_coverage_set/
+Associates or unassociates a given scenario and coverage set.
+
+Schema: [`AssociateCoverageSet.schema.json`](AssociateCoverageSet.schema.json)
+
+### Example
+    {
+        "action": "add",
+        "scenario_id": "Measles-Routine-NoGavi",
+        "coverage_set_id": 189
+    }
+
+An error occurs (and no changes are made) if:
+* The touchstone is not `in-preparation`
+* The coverage set does not contain data for all expected countries in the scenario.
+* The coverage set has a different vaccine than the scenario.
+* The coverage set is `campaign` and the scenario is `routine`. (All other combinations are acceptable)
 
 # Burden estimates
 ## GET /touchstone/{touchstone-id}/estimates/
@@ -665,7 +748,7 @@ Schema: [`ModellingGroup.schema.json`](ModellingGroup.schema.json)
 
 ### Example
     {
-        "code": "NEW UNIQUE CODE",
+        "code": "NEW-UNIQUE-CODE",
         "description": "DESCRIPTION"
     }
 

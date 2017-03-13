@@ -1,0 +1,10 @@
+{
+	"id": "ScenarioInTouchstone",
+	"type": "object",
+	"properties": {
+		"scenario": { "$ref": "Scenario.schema.json" },
+		"coverage_sets": { "$ref": "CoverageSets.schema.json" }
+	},
+	"additionalProperties": false,
+	"required": [ "scenario", "coverage_sets" ]
+}

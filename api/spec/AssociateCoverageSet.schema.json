@@ -1,5 +1,5 @@
 {
-	"id": "AssociateResponsibility",
+	"id": "AssociateCoverageSet",
 	"type": "object",
 	"properties": {
 		"action": {
@@ -8,10 +8,10 @@
 		"scenario_id": {
 			"$ref": "StandardIdentifier.schema.json"
 		},
-		"touchstone_id": {
-			"type": "string"
+		"coverage_set_id": {
+			"type": "integer"
 		}
 	},
 	"additionalProperties": false,
-	"required": [ "action", "scenario_id", "touchstone_id" ]
+	"required": [ "action", "scenario_id", "coverage_set_id" ]
 }

@@ -1,0 +1,16 @@
+{
+    "id": "CoverageSet",
+    "type": "object",
+    "properties": {
+        "id": { "type": "integer" },
+        "name": { "type": "string" },
+        "touchstone": { "$ref": "StandardIdentifier.schema.json" },
+        "coverage_type": { "enum": [ "routine", "campaign" ] },
+        "data": {
+            "type": "array",
+            "item": { "$ref": "CoverageLine.schema.json" }
+        }
+    },
+    "additionalProperties": false,
+    "required": [ "coverage_type", "name", "data" ]
+}

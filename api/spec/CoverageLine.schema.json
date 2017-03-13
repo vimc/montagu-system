@@ -1,0 +1,17 @@
+{
+    "id": "CoverageLine",
+    "type": "object",
+    "properties": {
+        "country":  { "$ref": "CountryId.schema.json" },
+        "year": { "$ref": "Year.schema.json" },
+        "age_from": { "type": "integer" },
+        "age_to": { "type": "integer" },
+        "coverage": { 
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100
+        }
+    },
+    "additionalProperties": false,
+    "required": [ "country", "year", "age_from", "age_to", "coverage" ]
+}
