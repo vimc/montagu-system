@@ -4,7 +4,7 @@
     "properties": {
         "touchstone": { "$ref": "StandardIdentifier.schema.json" },
         "status": { "$ref": "ResponsibilitySetStatus.schema.json" },
-        "problems": { "$ref": "ProblemsArray.schema.json" },
+        "problems": { "type": "string" },
         "responsibilities": { 
             "type": "array",
             "items": { "$ref": "Responsibility.schema.json" }

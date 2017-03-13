@@ -834,7 +834,7 @@ Schema: [`ResponsibilitySet.schema.json`](ResponsibilitySet.schema.json)
     {
         "touchstone": "2017-op",
         "status": "incomplete",
-        "problems": [],
+        "problems": "",
         "responsibilities": [
             {
                 "scenario": {
@@ -878,7 +878,7 @@ Schema: [`ResponsibilitySet.schema.json`](ResponsibilitySet.schema.json)
     {
         "touchstone": "2017-op",
         "status": null,
-        "problems": [],
+        "problems": "",
         "responsibilities": []
     }
 
@@ -909,7 +909,7 @@ Schema: [`EditResponsibilitySet.schema.json`](EditResponsibilitySet.schema.json)
 ### Example
     {
         "status": "incomplete",
-        "problems": [ "Please review the numbers for Afghanistan - they look much too high" ]
+        "problems": "Please review the numbers for Afghanistan - they look much too high"
     }
 
 ## POST /modelling-groups/{modelling-group-code}/actions/associate_responsibility

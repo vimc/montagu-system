@@ -3,7 +3,7 @@
     "type": "object",
     "properties": {
         "status": { "$ref": "ResponsibilitySetStatus.schema.json" },
-        "problems": { "$ref": "ProblemsArray.schema.json" }
+        "problems": { "type": "string" }
     },
     "additionalProperties": false
 }
