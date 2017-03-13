@@ -313,8 +313,9 @@ Schema: [`ScenariosInTouchstone.schema.json`](ScenariosInTouchstone.schema.json)
                     "id": 101,
                     "touchstone": "2017-op",
                     "name": "Menigitis no vaccination",
-                    "coverage_type": "routine",
-                    "vaccine": "MenA"
+                    "coverage_type": "none",
+                    "vaccine": "MenA",
+                    "vaccination_level": "none"
                 }
             ]
         },
@@ -334,14 +335,16 @@ Schema: [`ScenariosInTouchstone.schema.json`](ScenariosInTouchstone.schema.json)
                     "touchstone": "2017-op",
                     "name": "Yellow fever birth dose (with GAVI support)",
                     "coverage_type": "routine",
-                    "vaccine": "YF"
+                    "vaccine": "YF",
+                    "vaccination_level": "with"
                 },
                 { 
                     "id": 643,
                     "touchstone": "2017-op",
                     "name": "Yellow fever reactive campaign (with GAVI support)",
                     "coverage_type": "campaign",
-                    "vaccine": "YF"
+                    "vaccine": "YF",
+                    "vaccination_level": "with"
                 }
             ]
         }
@@ -468,23 +471,26 @@ Schema: [`CoverageSets.schema.json`](CoverageSets.schema.json)
         {
             "id": 189,
             "touchstone": "2017-op",
-            "name": "Measles 1st Dose",
+            "name": "Measles 1st Dose (without GAVI support)",
             "coverage_type": "routine",
-            "vaccine": "MCV1"
+            "vaccine": "MCV1",
+            "vaccination_level": "without"
         },
         {
             "id": 278,
             "touchstone": "2017-op",
-            "name": "Measles 2nd Dose",
+            "name": "Measles 2nd Dose (without GAVI support)",
             "coverage_type": "routine",
-            "vaccine": "MCV2"
+            "vaccine": "MCV2",
+            "vaccination_level": "without"
         },
         {
             "id": 290,
             "touchstone": "2017-op",
             "name": "Yellow Fever reactive campaign (with GAVI support)",
             "coverage_type": "campaign",
-            "vaccine": "YF"
+            "vaccine": "YF",
+            "vaccination_level": "with"
         }
     ]
 
@@ -506,10 +512,14 @@ Schema: [`CoverageSet.schema.json`](CoverageSet.schema.json)
 
 ### Example
     {
-        "id": 189,
-        "touchstone": "2017-op",        
-        "name": "Measles 1st Dose",
-        "coverage_type": "routine",
+        "metadata": {
+            "id": 189,
+            "touchstone": "2017-op",        
+            "name": "Measles 1st Dose (With GAVI support)",
+            "coverage_type": "routine",
+            "vaccine": "Measles",
+            "vaccination_level": "with"
+        },
         "data": [
             { "country": "AFG", "year": 2006, "age_from": 0, "age_to": 2, "coverage":  0.0 },
             { "country": "AFG", "year": 2007, "age_from": 0, "age_to": 2, "coverage": 64.0 },

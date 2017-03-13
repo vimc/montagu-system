@@ -5,9 +5,17 @@
 		"id": { "type": "integer" },
 		"touchstone": { "$ref": "StandardIdentifier.schema.json" },
         "name": { "type": "string" },
-		"coverage_type": { "enum": [ "routine", "campaign" ] },
-		"vaccine": { "$ref": "StandardIdentifier.schema.json" }
+		"coverage_type": { "$ref": "ScenarioType.schema.json" },
+		"vaccine": { "$ref": "StandardIdentifier.schema.json" },
+		"vaccination_level": { "$ref": "VaccinationLevel.schema.json" }
 	},
 	"additionalProperties": false,
-	"required": [ "id", "touchstone", "name", "coverage_type", "vaccine" ]
+	"required": [ 
+		"id", 
+		"touchstone", 
+		"name", 
+		"coverage_type", 
+		"vaccine", 
+		"vaccination_level" 
+	]
 }
