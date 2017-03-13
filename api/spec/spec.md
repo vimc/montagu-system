@@ -618,7 +618,8 @@ Schema: [`BurdenEstimates.schema.json`](BurdenEstimates.schema.json)
                 "code": "IC-YellowFever",
                 "description": "Imperial College, Yellow Fever, PI: Tini Garske"
             },
-            "uploaded_by": "tgarske"
+            "uploaded_by": "tgarske",
+            "uploaded_on": "2017-10-06T11:18:06Z"
         }
     ]
 
@@ -649,7 +650,8 @@ Schema: [`BurdenEstimateWithData.schema.json`](BurdenEstimateWithData.schema.jso
                 "code": "IC-YellowFever",
                 "description": "Imperial College, Yellow Fever, PI: Tini Garske"
             },
-            "uploaded_by": "tgarske"
+            "uploaded_by": "tgarske",
+            "uploaded_on": "2017-10-06T11:18:06Z"
         },
         "data": [
             { 
