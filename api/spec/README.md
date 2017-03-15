@@ -1,1 +1,1 @@
-See [spec.md](Spec.md) for the full API specification.
+See [spec.md](spec.md) for the full API specification.
