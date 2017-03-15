@@ -27,89 +27,81 @@ This is manually kept in sync with [spec.md](Spec.md).
 * `vaccines.write`
 
 ## Roles
-Some roles are `simple`. You either have them, or you don't, and they apply to all
-securables equally. These are stored in the database with the `simple_role` flag set
-to true, and with `scope_prefix` set to `null`. When a user is granted a simple role
-no scope can be specified and the user gets the associated permissions with a scope 
-of `*`.
+A role is defined by a `scope_prefix` and a `name`.
 
-Other roles are `complex`. They apply to subset of securables. For example, to a 
-particular modelling group. They are stored in the database with `simple_role` flag
-set to false, and with a non-null `scope_prefix`. When a user is granted a complex
-role a scope identifier must be specified and the user gets the associated permissons 
-with a scope of `SCOPE_PREFIX:SCOPE_IDENTIFIER`.
+Some roles are 'simple'. You either have them, or you don't, and they apply to all
+securables equally. These are stored in the database with a `null` `scope_prefix`. 
+When a user is granted a simple role no scope can be specified and the user gets 
+the associated permissions with a scope of `*`.
 
-This is what should be in the DB, in JSON, for lack of a better option:
+Other roles are 'complex'. They apply to subset of securables. For example, to a 
+particular modelling group. They are stored in the database with a non-null 
+`scope_prefix`. When a user is granted a complex role a scope identifier must 
+be specified and the user gets the associated permissons with a scope of 
+`SCOPE_PREFIX:SCOPE_IDENTIFIER`.
+
+This is what should be in the DB, in JSON, for lack of a better option, probably
+also with a numeric primary key.
 
     [
         {
-            "id": "user",
-            "description": "Log in",
-            "simple_role": true,
+            "name": "user",
             "scope_prefix": null,
+            "description": "Log in",
             "permissions": [ "can-login", "scenarios.read", "countries.read", "modelling-groups.read", "models.read", "touchstones.read", "responsibilities.read", "users.read", "estimates.read" ]
         },
         {
-            "id": "touchstone-preparer",
-            "description": "Prepare touchstones",
-            "simple_role": true,
+            "name": "touchstone-preparer",
             "scope_prefix": null,
+            "description": "Prepare touchstones",
             "permissions": [ "diseases.write", "vaccines.write", "scenarios.write", "countries.write", "touchstones.prepare", "responsibilities.write", "coverage.read" ]
         },
         {
-            "id": "touchstone-reviewer",
-            "description": "Review touchstones before marking as 'open'",
-            "simple_role": true,
+            "name": "touchstone-reviewer",
             "scope_prefix": null,
+            "description": "Review touchstones before marking as 'open'",
             "permissions": [ "touchstones.open", "coverage.read" ],
         },
         {
-            "id": "coverage-provider",
-            "description": "Upload coverage data",
-            "simple_role": true,
+            "name": "coverage-provider",
             "scope_prefix": null,
+            "description": "Upload coverage data",
             "permissions": [ "coverage.read", "coverage.write" ],
         },
         {
-            "id": "user-manager",
-            "description": "Manage users and permissions",
-            "simple_role": true,
+            "name": "user-manager",
             "scope_prefix": null,
+            "description": "Manage users and permissions",
             "permissions": [ "users.create", "users.edit-all", "roles.read", "roles.write", "modelling-groups.write" ],
         },
         {
-            "id": "estimates-reviewer",
-            "description": "Review uploaded burden estimates",
-            "simple_role": true,
+            "name": "estimates-reviewer",
             "scope_prefix": null,
+            "description": "Review uploaded burden estimates",
             "permissions": [ "estimates.review", "estimates.read-unfinished" ]
         },
         {
-            "id": "modelling-group.member",
+            "name": "member",
+            "scope_prefix": "modelling-group",            
             "description": "Member of the group",
-            "simple_role": false,
-            "scope_prefix": "modelling-group",
             "permissions": [ "estimates.read-unfinished", "coverage.read" ]
         },
         {
-            "id": "modelling-group.uploader",
-            "description": "Upload burden estimates",
-            "simple_role": false,
+            "name": "uploader",
             "scope_prefix": "modelling-group",
+            "description": "Upload burden estimates",
             "permissions": [ "estimates.write" ],
         },
         {
-            "id": "modelling-group.submitter",
-            "description": "Mark burden estimates as complete",
-            "simple_role": false,
+            "name": "submitter",
             "scope_prefix": "modelling-group",
+            "description": "Mark burden estimates as complete",
             "permissions": [ "estimates.submit" ]
         },
         {
-            "id": "modelling-group.user-manager",
-            "description": "Manage group members and permissions",
-            "simple_role": false,
+            "name": "user-manager",
             "scope_prefix": "modelling-group",
+            "description": "Manage group members and permissions",
             "permissions": [ "modelling-groups.manage-members", "users.create", "roles.write" ]
         }
     ]

@@ -62,12 +62,36 @@ Schema: [`Users.schema.json`](Users.schema.json)
             "email": "example@imperial.ac.uk",
             "last_logged_in": "2017-10-06T11:06:22Z",
             "roles": [ 
-                { "role": "user", "scope": "*" },
-                { "role": "touchstone-preparer", "scope": "*" }, 
-                { "role": "touchstone-reviewer", "scope": "*" }, 
-                { "role": "user-manager", "scope": "*" },
-                { "role": "estimates-reviewer", "scope": "*" },
-                { "role": "modelling-group.member", "scope": "modelling-group:IC-YellowFever" }
+                { 
+                    "name": "user", 
+                    "scope_prefix": null, 
+                    "scope_id": null 
+                },
+                { 
+                    "name": "touchstone-preparer",
+                    "scope_prefix": null,
+                    "scope_id": null
+                }, 
+                {
+                    "name": "touchstone-reviewer", 
+                    "scope_prefix": null,
+                    "scope_id": null
+                }, 
+                { 
+                    "name": "user-manager",
+                    "scope_prefix": null,
+                    "scope_id": null
+                },
+                { 
+                    "name": "estimates-reviewer",
+                    "scope_prefix": null,
+                    "scope_id": null
+                },
+                { 
+                    "name": "modelling-group.member",
+                    "scope_prefix": "modelling-group",
+                    "scope_id": "IC-YellowFever" 
+                }
             ]
         }
     ]
@@ -85,12 +109,36 @@ Schema: [`User.schema.json`](User.schema.json)
         "email": "example@imperial.ac.uk",
         "last_logged_in": "2017-10-06T11:06:22Z",
         "roles": [ 
-            { "role": "user", "scope": "*" },
-            { "role": "touchstone-preparer", "scope": "*" }, 
-            { "role": "touchstone-reviewer", "scope": "*" }, 
-            { "role": "user-manager", "scope": "*" },
-            { "role": "estimates-reviewer", "scope": "*" },
-            { "role": "modelling-group.member", "scope": "modelling-group:IC-YellowFever" }
+            { 
+                "name": "user", 
+                "scope_prefix": null, 
+                "scope_id": null 
+            },
+            { 
+                "name": "touchstone-preparer",
+                "scope_prefix": null,
+                "scope_id": null
+            }, 
+            {
+                "name": "touchstone-reviewer", 
+                "scope_prefix": null,
+                "scope_id": null
+            }, 
+            { 
+                "name": "user-manager",
+                "scope_prefix": null,
+                "scope_id": null
+            },
+            { 
+                "name": "estimates-reviewer",
+                "scope_prefix": null,
+                "scope_id": null
+            },
+            { 
+                "name": "modelling-group.member",
+                "scope_prefix": "modelling-group",
+                "scope_id": "IC-YellowFever" 
+            }
         ]
     }
 
@@ -136,7 +184,8 @@ Schema: [`AssociateRole.schema.json`](AssociateRole.schema.json)
 ### Example
     {
         "action": "add",
-        "role": "touchstones.open"
+        "scope_prefix": null,
+        "name": "touchstones.open"
     }
 
 For complex roles, the scope_id must be provided. When removing an association, if the scope
@@ -148,7 +197,8 @@ Schema: [`AssociateRole.schema.json`](AssociateRole.schema.json)
 ### Example
     {
         "action": "remove",
-        "role": "modelling-group.member",
+        "scope_prefix": "modelling-group",
+        "name": "member",
         "scope_id": "IC-YellowFever"
     }
 
