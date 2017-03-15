@@ -2,6 +2,7 @@
 	"id": "Model",
 	"type": "object",
 	"properties": {
+        "id": { "$ref": "StandardIdentifier.schema.json" },
         "name": { "type": "string" },
         "citation": { 
             "type": ["string", "null"] 
@@ -9,6 +10,9 @@
         "description": { 
             "type": "string",
             "minLength": 1
-        }
-    }
+        },
+        "modelling_group": { "$ref": "StandardIdentifier.schema.json" }
+    },
+    "additionalProperties": false,
+    "required": [ "id", "name", "citation", "description", "modelling_group" ]
 }

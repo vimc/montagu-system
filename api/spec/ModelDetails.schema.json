@@ -1,16 +1,13 @@
 {
     "id": "ModelDetails",
     "type": "object",
-    "allOf": [
-        { "$ref": "Model.schema.json" },
-        { 
-            "properties": {
-                "versions": {
-                    "type": "array",
-                    "items": { "$ref": "ModelVersion.schema.json" }
-                }
-            },
-            "required": [ "versions" ]
+    "properties": {
+        "metadata": { "$ref": "Model.schema.json" },
+        "versions": {
+            "type": "array",
+            "items": { "$ref": "ModelVersion.schema.json" }
         }
-    ]
+    },
+    "additionalProperties": false,
+    "required": [ "metadata", "versions" ]
 }

@@ -424,16 +424,16 @@ Schema: [`ModellingGroups.schema.json`](ModellingGroups.schema.json)
 ### Example
     [
         {
-            "code": "IC-YellowFever",
+            "id": "IC-YellowFever",
             "description": "Imperial College, Yellow Fever, PI: Tini Garske"
         },
         {
-            "code": "LSHTM-Jit",
+            "id": "LSHTM-Jit",
             "description": "London School of Hygiene and Tropical Medicine, PI: Mark Jit"
         }
     ]
 
-See `POST /modelling-groups/{modelling-group-code}/actions/associate_responsibility` for editing 
+See `POST /modelling-groups/{modelling-group-id}/actions/associate_responsibility` for editing 
 this data.
 
 # Touchstones
@@ -838,7 +838,7 @@ Schema: [`BurdenEstimates.schema.json`](BurdenEstimates.schema.json)
                 "scenario_type": "none"
             },
             "responsible_group": {
-                "code": "IC-YellowFever",
+                "id": "IC-YellowFever",
                 "description": "Imperial College, Yellow Fever, PI: Tini Garske"
             },
             "uploaded_by": "tgarske",
@@ -872,7 +872,7 @@ Schema: [`BurdenEstimateWithData.schema.json`](BurdenEstimateWithData.schema.jso
                 "scenario_type": "none"
             },
             "responsible_group": {
-                "code": "IC-YellowFever",
+                "id": "IC-YellowFever",
                 "description": "Imperial College, Yellow Fever, PI: Tini Garske"
             },
             "uploaded_by": "tgarske",
@@ -912,7 +912,7 @@ Schema: [`CreateBurdenEstimate.schema.json`](CreateBurdenEstimate.schema.json)
 ### Example
     {
         "scenario_id": "menA-novacc",
-        "responsible_group_code": "IC-YellowFever",
+        "responsible_group": "IC-YellowFever",
         "data": [
             { 
                 "country_id": "AFG",
@@ -942,16 +942,16 @@ Schema: [`ModellingGroups.schema.json`](ModellingGroups.schema.json)
 ### Example
     [
         {
-            "code": "IC-YellowFever",
+            "id": "IC-YellowFever",
             "description": "Imperial College, Yellow Fever, PI: Tini Garske"
         },
         {
-            "code": "LSHTM-Measles",
+            "id": "LSHTM-Measles",
             "description": "London School of Hygiene and Tropical Medicine, PI: Mark Jit"
         }
     ]
 
-## GET /modelling-groups/{modelling-group-code}/
+## GET /modelling-groups/{modelling-group-id}/
 Returns the identified modelling group, their model(s), and any touchstones they have responsibilities for.
 
 Required permissions: `modelling-groups.read`, `models.read`, `responsibilities.read`.
@@ -960,7 +960,7 @@ Schema: [`ModellingGroupDetails.schema.json`](ModellingGroupDetails.schema.json)
 
 ### Example
     {
-        "code": "IC-YellowFever",
+        "id": "IC-YellowFever",
         "description": "Imperial College, Yellow Fever, PI: Tini Garske",
         "models": [
             {
@@ -983,11 +983,11 @@ Schema: [`ModellingGroup.schema.json`](ModellingGroup.schema.json)
 
 ### Example
     {
-        "code": "NEW-UNIQUE-CODE",
+        "id": "NEW-UNIQUE-ID",
         "description": "DESCRIPTION"
     }
 
-## GET /modelling-groups/{modelling-group-code}/members/
+## GET /modelling-groups/{modelling-group-id}/members/
 Returns all users in the modelling group.
 
 Required permissions: `users.read`, `modelling-groups.read`. Additionally, roles are only included if the user has `roles.read`, scoped to this group (or to *)
@@ -1009,7 +1009,7 @@ Schma: [`Users.schema.json`](Users.schema.json)
         }
     ]
 
-## POST /modelling-groups/{modelling-group-code}/actions/associate_member/
+## POST /modelling-groups/{modelling-group-id}/actions/associate_member/
 Adds or removes a user from a modelling group.
 
 Required permissions: `modelling-groups.manage-members` (scoped to the group or *)
@@ -1033,14 +1033,14 @@ Schema: [`Models.schema.json`](Models.schema.json)
 ### Example
     [
         { 
-            "code": "IC-YF-WithoutHerd",
+            "id": "IC-YF-WithoutHerd",
             "name": "YF burden estimate - without herd effect",
             "citation": "Garske T, Van Kerkhove MD, Yactayo S, Ronveaux O, Lewis RF, Staples JE, Perea W, Ferguson NMet al., 2014, Yellow Fever in Africa: Estimating the Burden of Disease and Impact of Mass Vaccination from Outbreak and Serological Data, PLOS MEDICINE, Vol: 11, ISSN: 1549-1676",
             "description": "Yellow Fever model",
             "modelling_group": "IC-YellowFever"
         },
         { 
-            "code": "LSHTM-DynaMice",
+            "id": "LSHTM-DynaMice",
             "name": "DynaMice",
             "citation": null,
             "description": "DynaMice",
@@ -1048,7 +1048,7 @@ Schema: [`Models.schema.json`](Models.schema.json)
         }
     ]
 
-## GET /models/{model-code}/
+## GET /models/{model-id}/
 Returns a model and all its versions.
 
 Required permissions: `models.read`
@@ -1057,11 +1057,13 @@ Schema: [`ModelDetails.schema.json`](ModelDetails.schema.json)
 
 ### Example
     {
-        "code": "IC-YF-WithoutHerd",
-        "name": "YF burden estimate - without herd effect",
-        "citation": "Garske T, Van Kerkhove MD, Yactayo S, Ronveaux O, Lewis RF, Staples JE, Perea W, Ferguson NMet al., 2014, Yellow Fever in Africa: Estimating the Burden of Disease and Impact of Mass Vaccination from Outbreak and Serological Data, PLOS MEDICINE, Vol: 11, ISSN: 1549-1676",
-        "description": "Yellow Fever model",
-        "modelling_group": "IC-YellowFever",
+        "metadata": {
+            "id": "IC-YF-WithoutHerd",
+            "name": "YF burden estimate - without herd effect",
+            "citation": "Garske T, Van Kerkhove MD, Yactayo S, Ronveaux O, Lewis RF, Staples JE, Perea W, Ferguson NMet al., 2014, Yellow Fever in Africa: Estimating the Burden of Disease and Impact of Mass Vaccination from Outbreak and Serological Data, PLOS MEDICINE, Vol: 11, ISSN: 1549-1676",
+            "description": "Yellow Fever model",
+            "modelling_group": "IC-YellowFever"
+        },
         "versions": [
             { 
                 "model": "IC-YF-WithoutHerd",
@@ -1087,15 +1089,15 @@ Schema: [`Model.schema.json`](Model.schema.json)
 
 ### Example
     { 
-        "code": "NEW UNIQUE CODE",
+        "id": "NEW-UNIQUE-ID",
         "name": "MODEL NAME",
         "citation": null,
         "description": "DESCRIPTION",
-        "modelling_group": "CODE OF EXISTING MODELLING GROUP"
+        "modelling_group": "ID-OF-EXISTING-MODELLING-GROUP"
     }
 
 # Responsibilities
-## GET /modelling-groups/{modelling-group-code}/responsibilities/{touchstone-id}
+## GET /modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}
 Returns an enumerations of the responsibilities of this modelling group in the given touchstone,
 and the overall status of this modelling groups work in this touchstone.
 
@@ -1161,7 +1163,7 @@ Schema: [`ResponsibilitySet.schema.json`](ResponsibilitySet.schema.json)
 Note that even if a modelling group has no responsibilities in a given touchstone,
 using this endpoint is not an error: an empty array will just be returned.
 
-## PATCH /modelling-groups/{modelling-group-code}/responsibilities/{touchstone-id}
+## PATCH /modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}
 Allows you to change the status of the responsibility set.
 
 Can only move the responsibility set to `submitted` if:
@@ -1192,7 +1194,7 @@ Schema: [`EditResponsibilitySet.schema.json`](EditResponsibilitySet.schema.json)
         "problems": "Please review the numbers for Afghanistan - they look much too high"
     }
 
-## POST /modelling-groups/{modelling-group-code}/actions/associate_responsibility
+## POST /modelling-groups/{modelling-group-id}/actions/associate_responsibility
 Adds or removes a responsibility for a given modelling group, scenario, and touchstone.
 
 Required permissions: `responsibilities.write`

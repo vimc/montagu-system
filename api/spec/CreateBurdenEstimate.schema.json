@@ -3,9 +3,9 @@
     "type": "object",
     "properties": {
         "scenario_id": { "$ref": "StandardIdentifier.schema.json" },
-        "responsible_group_code": { "$ref": "StandardIdentifier.schema.json" },
+        "responsible_group": { "$ref": "StandardIdentifier.schema.json" },
         "data": { "$ref": "BurdenEstimateData.schema.json" }
     },
     "additionalProperties": false,
-    "required": [ "scenario_id", "responsible_group_code", "data" ]
+    "required": [ "scenario_id", "responsible_group", "data" ]
 }

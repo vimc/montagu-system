@@ -2,7 +2,7 @@
 	"id": "ModellingGroupDetails",
 	"type": "object",
 	"properties": {
-		"code": { "$ref": "StandardIdentifier.schema.json" },
+		"id": { "$ref": "StandardIdentifier.schema.json" },
         "description": { "type": "string" },
         "models": { 
     		"type": "array",
@@ -14,5 +14,5 @@
         }
 	},
 	"additionalProperties": false,
-	"required": [ "code", "description", "models", "responsibilities" ]
+	"required": [ "id", "description", "models", "responsibilities" ]
 }
