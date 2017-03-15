@@ -174,10 +174,11 @@ Adds or removes a role from a user.
 
 Required permissions: `roles.write`. If the logged in user only has `roles.write` with a scope `SCOPE_PREFIX/SCOPE_ID` then the following restrictions apply:
 
-* The role specified must match have a scope prefix that matches `SCOPE_PREFIX`
+* The scope_prefix specified must match `SCOPE_PREFIX`
 * The scope_id must be specified and must match `SCOPE_ID`
 
-For simple roles (see [Security.md](Security.md)) no scope should be specified.
+For simple roles (see [Security.md](Security.md)) no scope should be specified 
+(which means they can't be used if the user only has a scoped `roles.write` permission).
 
 Schema: [`AssociateRole.schema.json`](AssociateRole.schema.json)
 
@@ -188,9 +189,8 @@ Schema: [`AssociateRole.schema.json`](AssociateRole.schema.json)
         "name": "touchstones.open"
     }
 
-For complex roles, the scope_id must be provided. When removing an association, if the scope
-and role do not both match an existing association, no change is made. Note that you just
-provide a scope_id here - the scope prefix is automatically added.
+For complex roles, the `scope_id` must be provided. When removing an association, if the scope_prefix,
+name, and scope_id do not both match an existing association, no change is made.
 
 Schema: [`AssociateRole.schema.json`](AssociateRole.schema.json)
 
@@ -201,6 +201,9 @@ Schema: [`AssociateRole.schema.json`](AssociateRole.schema.json)
         "name": "member",
         "scope_id": "IC-YellowFever"
     }
+
+The scope_id is additionally constrained to be a valid ID of the appropriate kind. If the scope_prefix
+is "modelling-group" then the scope_id must be the ID of a modelling group.
 
 ## POST /users/{username}/actions/remove_all_access/
 Removes all roles from a user that match the given scope. If the scope is `*`, all roles are removed.
@@ -371,9 +374,9 @@ Example: `/scenarios/?scenario_type=routine`
 ## POST /scenarios/
 Creates a new scenario. Request format:
 
-Schema: [`CreateScenario.schema.json`](CreateScenario.schema.json)
-
 Required permissions: `scenarios.write`
+
+Schema: [`CreateScenario.schema.json`](CreateScenario.schema.json)
 
 ### Example
     {
@@ -951,9 +954,9 @@ Schema: [`ModellingGroups.schema.json`](ModellingGroups.schema.json)
 ## GET /modelling-groups/{modelling-group-code}/
 Returns the identified modelling group, their model(s), and any touchstones they have responsibilities for.
 
-Schema: [`ModellingGroupDetails.schema.json`](ModellingGroupDetails.schema.json)
-
 Required permissions: `modelling-groups.read`, `models.read`, `responsibilities.read`.
+
+Schema: [`ModellingGroupDetails.schema.json`](ModellingGroupDetails.schema.json)
 
 ### Example
     {

@@ -1,0 +1,5 @@
+{
+	"id": "Users",
+	"type": "array",
+	"items": { "$ref": "User.schema.json" }
+}

@@ -1,0 +1,12 @@
+{
+	"id": "AssociateRole",
+	"type": "object",
+	"properties": {
+        "action": { "enum": [ "add", "remove" ] },
+        "scope_prefix": { "type": [ "string", "null" ] },
+        "name": { "type": "string" },
+        "scope_id": { "type": [ "string", "null" ] }
+    },
+    "additionalProperties": false,
+    "required": [ "action", "scope_prefix", "name" ]
+}

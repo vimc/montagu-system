@@ -1,0 +1,10 @@
+{
+	"id": "AssociateUser",
+	"type": "object",
+	"properties": {
+        "action": { "enum": [ "add", "remove" ] },
+        "username": { "type": "string" }
+    },
+    "additionalProperties": false,
+    "required": [ "action", "username" ]
+}
