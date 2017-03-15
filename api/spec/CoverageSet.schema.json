@@ -1,13 +1,21 @@
 {
-    "id": "CoverageSet",
-    "type": "object",
-    "properties": {
-        "metadata": { "$ref": "CoverageSetMetadata.schema.json" },
-        "data": {
-            "type": "array",
-            "item": { "$ref": "CoverageLine.schema.json" }
-        }
-    },
-    "additionalProperties": false,
-    "required": [ "metadata", "data" ]
+	"id": "CoverageSet",
+	"type": "object",
+	"properties": {
+		"id": { "type": "integer" },
+		"touchstone": { "$ref": "StandardIdentifier.schema.json" },
+        "name": { "type": "string" },
+		"coverage_type": { "$ref": "ScenarioType.schema.json" },
+		"vaccine": { "$ref": "StandardIdentifier.schema.json" },
+		"vaccination_level": { "$ref": "VaccinationLevel.schema.json" }
+	},
+	"additionalProperties": false,
+	"required": [ 
+		"id", 
+		"touchstone", 
+		"name", 
+		"coverage_type", 
+		"vaccine", 
+		"vaccination_level" 
+	]
 }

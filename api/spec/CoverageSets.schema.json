@@ -1,5 +1,5 @@
 {
 	"id": "CoverageSets",
 	"type": "array",
-	"items": { "$ref": "CoverageSetMetadata.schema.json" }
+	"items": { "$ref": "CoverageSet.schema.json" }
 }

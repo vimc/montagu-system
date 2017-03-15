@@ -755,27 +755,30 @@ Returns a single coverage set and its coverage data.
 
 Required permissions: `coverage.read`
 
+Returns HTTP multipart data with two sections. The first section has `Content-Type: application/json`
+and conforms to this schema.
+
 Schema: [`CoverageSet.schema.json`](CoverageSet.schema.json)
 
 ### Example
     {
-        "metadata": {
-            "id": 189,
-            "touchstone": "2017-op",        
-            "name": "Measles 1st Dose (With GAVI support)",
-            "coverage_type": "routine",
-            "vaccine": "Measles",
-            "vaccination_level": "with"
-        },
-        "data": [
-            { "country": "AFG", "year": 2006, "age_from": 0, "age_to": 2, "coverage":  0.0 },
-            { "country": "AFG", "year": 2007, "age_from": 0, "age_to": 2, "coverage": 64.0 },
-            { "country": "AFG", "year": 2008, "age_from": 0, "age_to": 2, "coverage": 63.0 },
-            { "country": "AGO", "year": 2006, "age_from": 0, "age_to": 1, "coverage":  0.0 },
-            { "country": "AGO", "year": 2007, "age_from": 0, "age_to": 1, "coverage": 83.0 },
-            { "country": "AGO", "year": 2008, "age_from": 0, "age_to": 1, "coverage": 81.0 }
-        ]
+        "id": 189,
+        "touchstone": "2017-op",        
+        "name": "Measles 1st Dose (With GAVI support)",
+        "coverage_type": "routine",
+        "vaccine": "Measles",
+        "vaccination_level": "with"
     }
+
+The second section has `Content-Type: text/csv`, and returns CSV data with headers:
+
+    "country","year","age_from","age_to","coverage"
+    "AFG",      2006,         0,       2,       0.0
+    "AFG",      2007,         0,       2,      64.0
+    "AFG",      2008,         0,       2,      63.0
+    "AGO",      2006,         0,       1,       0.0
+    "AGO",      2007,         0,       1,      83.0
+    "AGO",      2008,         0,       1,      81.0
 
 ### Query parameters
 #### countries
@@ -788,6 +791,9 @@ Adds a new coverage set to the touchstone
 
 Required permissions: `coverage.write`
 
+Takes HTTP multipart data with two sections. The first section must have
+`Content-Type: application/json` and must conform to this schema.
+
 Schema: [`CreateCoverageSet.schema.json`](CreateCoverageSet.schema.json)
 
 ### Example
@@ -795,25 +801,32 @@ Schema: [`CreateCoverageSet.schema.json`](CreateCoverageSet.schema.json)
         "name": "Measles 1st dose",
         "vaccine": "MCV1",
         "coverage_type": "routine",
-        "data": [
-            { "country": "AFG", "year": 2006, "age_from": 0, "age_to": 2, "coverage":  0.0 },
-            { "country": "AFG", "year": 2007, "age_from": 0, "age_to": 2, "coverage": 64.0 },
-            { "country": "AFG", "year": 2008, "age_from": 0, "age_to": 2, "coverage": 63.0 },
-            { "country": "AGO", "year": 2006, "age_from": 0, "age_to": 1, "coverage":  0.0 },
-            { "country": "AGO", "year": 2007, "age_from": 0, "age_to": 1, "coverage": 83.0 },
-            { "country": "AGO", "year": 2008, "age_from": 0, "age_to": 1, "coverage": 81.0 }
-        ]
+        "vaccination_level": "with"
     }
 
-This adds a new coverage set for this touchstone. It then needs to be associated with 1 or more
-scenarios. This can only be invoked if the touchstone is in `in-preparation`. An error
-occurs if the name matches an existing coverage set in this touchstone.
+The second section must have `Content-Type: text\csv` and requires CSV data with headers:
+
+    "country","year","age_from","age_to","coverage"
+    "AFG",      2006,         0,       2,       0.0
+    "AFG",      2007,         0,       2,      64.0
+    "AFG",      2008,         0,       2,      63.0
+    "AGO",      2006,         0,       1,       0.0
+    "AGO",      2007,         0,       1,      83.0
+    "AGO",      2008,         0,       1,      81.0
+
+This adds a new coverage set for this touchstone. This can only be invoked if the 
+touchstone is in `in-preparation`. An error occurs if the name matches an existing 
+coverage set in this touchstone. It then needs to be associated with 1 or more
+scenarios.
 
 ## PUT /touchstones/{touchstone-id}/coverage_sets/{coverage-set-id}/
 Replaces the data in an existing coverage set.
 
 Required permissions: `coverage.write`
 
+Takes HTTP multipart data with two sections. The first section must have
+`Content-Type: application/json` and must conform to this schema.
+
 Schema: [`CreateCoverageSet.schema.json`](CreateCoverageSet.schema.json)
 
 ### Example
@@ -821,15 +834,18 @@ Schema: [`CreateCoverageSet.schema.json`](CreateCoverageSet.schema.json)
         "name": "Measles 1st dose",
         "vaccine": "MCV1",
         "coverage_type": "routine",
-        "data": [
-            { "country": "AFG", "year": 2006, "age_from": 0, "age_to": 2, "coverage":  0.0 },
-            { "country": "AFG", "year": 2007, "age_from": 0, "age_to": 2, "coverage": 64.0 },
-            { "country": "AFG", "year": 2008, "age_from": 0, "age_to": 2, "coverage": 63.0 },
-            { "country": "AGO", "year": 2006, "age_from": 0, "age_to": 1, "coverage":  0.0 },
-            { "country": "AGO", "year": 2007, "age_from": 0, "age_to": 1, "coverage": 83.0 },
-            { "country": "AGO", "year": 2008, "age_from": 0, "age_to": 1, "coverage": 81.0 }
-        ]
+        "vaccination_level": "with"
     }
+
+The second section must have `Content-Type: text\csv` and requires CSV data with headers:
+
+    "country","year","age_from","age_to","coverage"
+    "AFG",      2006,         0,       2,       0.0
+    "AFG",      2007,         0,       2,      64.0
+    "AFG",      2008,         0,       2,      63.0
+    "AGO",      2006,         0,       1,       0.0
+    "AGO",      2007,         0,       1,      83.0
+    "AGO",      2008,         0,       1,      81.0
 
 This can only be invoked if the touchstone is in `in-preparation`.
 
@@ -893,45 +909,38 @@ the touchstone is `in-preparation`.
 
 Required permissions: `estimates.read`, `scenarios.read`, `modelling-groups.read`. If the estimate belongs to a touchstone that is `open` then it are only returned if the user has `estimates.read-unfinished` scoped to the uploading modelling group (or to the more permissive * scope)
 
+Returns HTTP multipart data with two sections. The first section has `Content-Type: application/json`
+and conforms to this schema.
+
 Schema: [`BurdenEstimateWithData.schema.json`](BurdenEstimateWithData.schema.json)
 
 ### Example
     {
-        "metadata": {
-            "id": 1,
-            "scenario": {
-            "id": "menA-novacc",
-                "touchstones": [ "2016-op", "2017-wuenic", "2017-op" ],
-                "description": "Menigitis A, No vaccination",
-                "vaccination_level": "none",
-                "disease": "MenA",
-                "vaccine": "MenA",
-                "scenario_type": "none"
-            },
-            "responsible_group": {
-                "id": "IC-YellowFever",
-                "description": "Imperial College, Yellow Fever, PI: Tini Garske"
-            },
-            "uploaded_by": "tgarske",
-            "uploaded_on": "2017-10-06T11:18:06Z"
+        "id": 1,
+        "scenario": {
+        "id": "menA-novacc",
+            "touchstones": [ "2016-op", "2017-wuenic", "2017-op" ],
+            "description": "Menigitis A, No vaccination",
+            "vaccination_level": "none",
+            "disease": "MenA",
+            "vaccine": "MenA",
+            "scenario_type": "none"
         },
-        "data": [
-            { 
-                "country_id": "AFG",
-                "data": [
-                    { "year": 1996, "deaths": 1000, "cases": 2000 },
-                    { "year": 1997, "deaths":  900, "cases": 2050 }
-                ]
-            },
-            { 
-                "country_id": "AGO",
-                "data": [
-                    { "year": 1996, "deaths": 1000, "dalys": 5670 },
-                    { "year": 1997, "deaths": 1200, "dalys": 5870 }
-                ]
-            }
-        ]
+        "responsible_group": {
+            "id": "IC-YellowFever",
+            "description": "Imperial College, Yellow Fever, PI: Tini Garske"
+        },
+        "uploaded_by": "tgarske",
+        "uploaded_on": "2017-10-06T11:18:06Z"
     }
+
+The second section has `Content-Type: text/csv`, and returns CSV data with headers:
+
+    "country","year","deaths","cases","dalys"
+        "AFG",  1996,    1000,   2000,  null
+        "AFG",  1997,     900,   2000,  null
+        "AGO",  1996,    1000,   null,  5670
+        "AGO",  1997,    1200,   null,  5870
 
 ## POST /touchstone/{touchstone-id}/estimates/
 Adds a new burden estimate.
@@ -944,29 +953,24 @@ Can only by invoked if:
 
 Required permissions: `estimates.write`, scoped to the responsible group (or the more permissive * scope)
 
+Takes HTTP multipart data with two sections. The first section must have
+`Content-Type: application/json` and must conform to this schema.
+
 Schema: [`CreateBurdenEstimate.schema.json`](CreateBurdenEstimate.schema.json)
 
 ### Example
     {
         "scenario_id": "menA-novacc",
-        "responsible_group": "IC-YellowFever",
-        "data": [
-            { 
-                "country_id": "AFG",
-                "data": [
-                    { "year": 1996, "deaths": 1000, "cases": 2000 },
-                    { "year": 1997, "deaths":  900, "cases": 2050 }
-                ]
-            },
-            { 
-                "country_id": "AGO",
-                "data": [
-                    { "year": 1996, "deaths": 1000, "dalys": 5670 },
-                    { "year": 1997, "deaths": 1200, "dalys": 5870 }
-                ]
-            }
-        ]
+        "responsible_group": "IC-YellowFever"
     }
+
+The second section must have `Content-Type: text\csv` and requires CSV data with headers:
+
+    "country","year","deaths","cases","dalys"
+        "AFG",  1996,    1000,   2000,  null
+        "AFG",  1997,     900,   2000,  null
+        "AGO",  1996,    1000,   null,  5670
+        "AGO",  1997,    1200,   null,  5870
 
 # Modelling groups
 ## GET /modelling-groups/
