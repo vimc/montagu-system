@@ -773,7 +773,7 @@ Schema: [`CoverageSet.schema.json`](CoverageSet.schema.json)
 The second section has `Content-Type: text/csv`, and returns CSV data with headers:
 
     "country","year","age_from","age_to","coverage"
-    "AFG",      2006,         0,       2,       0.0
+    "AFG",      2006,         0,       2,        NA
     "AFG",      2007,         0,       2,      64.0
     "AFG",      2008,         0,       2,      63.0
     "AGO",      2006,         0,       1,       0.0
@@ -807,7 +807,7 @@ Schema: [`CreateCoverageSet.schema.json`](CreateCoverageSet.schema.json)
 The second section must have `Content-Type: text\csv` and requires CSV data with headers:
 
     "country","year","age_from","age_to","coverage"
-    "AFG",      2006,         0,       2,       0.0
+    "AFG",      2006,         0,       2,        NA
     "AFG",      2007,         0,       2,      64.0
     "AFG",      2008,         0,       2,      63.0
     "AGO",      2006,         0,       1,       0.0
@@ -840,7 +840,7 @@ Schema: [`CreateCoverageSet.schema.json`](CreateCoverageSet.schema.json)
 The second section must have `Content-Type: text\csv` and requires CSV data with headers:
 
     "country","year","age_from","age_to","coverage"
-    "AFG",      2006,         0,       2,       0.0
+    "AFG",      2006,         0,       2,        NA
     "AFG",      2007,         0,       2,      64.0
     "AFG",      2008,         0,       2,      63.0
     "AGO",      2006,         0,       1,       0.0
@@ -937,10 +937,10 @@ Schema: [`BurdenEstimateWithData.schema.json`](BurdenEstimateWithData.schema.jso
 The second section has `Content-Type: text/csv`, and returns CSV data with headers:
 
     "country","year","deaths","cases","dalys"
-        "AFG",  1996,    1000,   2000,  null
-        "AFG",  1997,     900,   2000,  null
-        "AGO",  1996,    1000,   null,  5670
-        "AGO",  1997,    1200,   null,  5870
+        "AFG",  1996,    1000,   2000,    NA
+        "AFG",  1997,     900,   2000,    NA
+        "AGO",  1996,    1000,     NA,  5670
+        "AGO",  1997,    1200,     NA,  5870
 
 ## POST /touchstone/{touchstone-id}/estimates/
 Adds a new burden estimate.
@@ -967,10 +967,10 @@ Schema: [`CreateBurdenEstimate.schema.json`](CreateBurdenEstimate.schema.json)
 The second section must have `Content-Type: text\csv` and requires CSV data with headers:
 
     "country","year","deaths","cases","dalys"
-        "AFG",  1996,    1000,   2000,  null
-        "AFG",  1997,     900,   2000,  null
-        "AGO",  1996,    1000,   null,  5670
-        "AGO",  1997,    1200,   null,  5870
+        "AFG",  1996,    1000,   2000,    NA
+        "AFG",  1997,     900,   2000,    NA
+        "AGO",  1996,    1000,     NA,  5670
+        "AGO",  1997,    1200,     NA,  5870
 
 # Modelling groups
 ## GET /modelling-groups/
