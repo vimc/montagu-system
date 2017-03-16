@@ -444,12 +444,6 @@ Schema: [`UpdateScenario.schema.json`](UpdateScenario.schema.json)
         "scenario_type": "none"
     }
 
-## DELETE /scenarios/{scenario-id}/
-Deletes a scenario. This is only allowed if the scenario is 
-not associated with any touchstone.
-
-Required permissions: `scenarios.write`
-
 ## GET /scenarios/{scenario-id}/responsible_groups/{touchstone-id}
 Returns an enumeration (potentially empty) of modelling groups who are responsible for this 
 scenario in the given touchstone.
