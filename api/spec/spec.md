@@ -899,6 +899,13 @@ Schema: [`BurdenEstimates.schema.json`](BurdenEstimates.schema.json)
         }
     ]
 
+### Query parameters
+#### scenario
+Filter by scenario. e.g. GET /touchstone/2017-op/estimates/?scenario=menA-novacc
+
+#### responsible_group
+Filter by responsible group. e.g. GET /touchstone/2017-op/estimates/?responsible_group=IC-YellowFever
+
 ## GET /touchstone/{touchstone-id}/estimates/{estimate-id}/
 Returns the full burden estimate data.
 
@@ -1218,7 +1225,7 @@ Schema: [`ResponsibilitySet.schema.json`](ResponsibilitySet.schema.json)
 Note that even if a modelling group has no responsibilities in a given touchstone,
 using this endpoint is not an error: an empty array will just be returned.
 
-## PATCH /modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}
+## PATCH /modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}/
 Allows you to change the status of the responsibility set.
 
 Can only move the responsibility set to `submitted` if:
