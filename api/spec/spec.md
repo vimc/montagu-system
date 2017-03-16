@@ -912,13 +912,13 @@ Required permissions: `estimates.read`, `scenarios.read`, `modelling-groups.read
 Returns HTTP multipart data with two sections. The first section has `Content-Type: application/json`
 and conforms to this schema.
 
-Schema: [`BurdenEstimateWithData.schema.json`](BurdenEstimateWithData.schema.json)
+Schema: [`BurdenEstimate.schema.json`](BurdenEstimate.schema.json)
 
 ### Example
     {
         "id": 1,
         "scenario": {
-        "id": "menA-novacc",
+            "id": "menA-novacc",
             "touchstones": [ "2016-op", "2017-wuenic", "2017-op" ],
             "description": "Menigitis A, No vaccination",
             "vaccination_level": "none",
