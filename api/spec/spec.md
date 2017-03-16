@@ -1124,7 +1124,7 @@ Schema: [`ModelDetails.schema.json`](ModelDetails.schema.json)
 ## POST /models/
 Creates a new model.
 
-Required permissions: `models.write`
+Required permissions: `models.write` scoped to the modelling group (or *).
 
 Schema: [`Model.schema.json`](Model.schema.json)
 
@@ -1137,15 +1137,29 @@ Schema: [`Model.schema.json`](Model.schema.json)
         "modelling_group": "ID-OF-EXISTING-MODELLING-GROUP"
     }
 
+## POST /models/{model-id}/versions
+Adds a new version to a model
+
+Required permissions: `models.write` scoped to the modelling group (or *).
+
+Schema: [`CreateModelVersion.schema.json`](CreateModelVersion.schema.json)
+
+### Example
+    {
+        "version": "5.7-stable",
+        "note": "Notes about what's changed in the model",
+        "fingerprint": null
+    }
+
 # Responsibilities
 ## GET /modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}
 Returns an enumerations of the responsibilities of this modelling group in the given touchstone,
 and the overall status of this modelling groups work in this touchstone.
 
-If the touchstone is `in-preparation`, and the user does not have permission to see touchstones before they are made `open`,
-then this returns an error 404.
+If the touchstone is `in-preparation`, and the user does not have permission to see touchstones 
+before they are made `open`, then this returns an error 404.
 
-Required permissions: `responsibilities.read`, `scenarios.read`
+Required permissions: `responsibilities.read`, `scenarios.read`. Additionally, to view responsibilities for an `in-preparation` touchstone, the user needs the `touchstones.prepare` permission.
 
 Schema: [`ResponsibilitySet.schema.json`](ResponsibilitySet.schema.json)
 

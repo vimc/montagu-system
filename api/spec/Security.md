@@ -103,5 +103,11 @@ also with a numeric primary key.
             "scope_prefix": "modelling-group",
             "description": "Manage group members and permissions",
             "permissions": [ "modelling-groups.manage-members", "users.create", "roles.write" ]
+        },
+        {
+            "name": "model-manager",
+            "scope_prefix": "modelling-group",
+            "description": "Add new models and model versions",
+            "permissions": [ "models.write" ]
         }
     ]
