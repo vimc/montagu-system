@@ -250,6 +250,12 @@ Required permissions: `roles.write` with scope matching scope in URL.
 For example, to remove all permissions from user `martin` for modelling group `IC-YellowFever`, the URL
 would be `/users/martin/actions/remove_all_access/modelling-group:IC-YellowFever/`
 
+## POST /users/{username}/actions/reset_password/
+Changes the password for the user to a new random password and emails it to the
+user's email address.
+
+Required permissions: `can-login`.
+
 # Diseases
 ## GET /diseases/
 Returns an enumeration of all diseases.
