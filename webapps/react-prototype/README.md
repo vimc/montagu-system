@@ -1,3 +1,8 @@
+# Run with Docker:
+* `docker build -t react-prototype .`
+* `docker run -p 8080:5000 -t -i react-prototype`
+* Browse to `http://localhost:8080/`
+
 # Build instructions
 * Install npm (https://nodejs.org/en/download/package-manager/)
 * Install webpack: `npm install webpack --global`
