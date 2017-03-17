@@ -1,3 +1,4 @@
 *.dropbox.attr
-react-prototype/node_modules/*
 react-prototype/dist/*
+react-prototype/node_modules/*
+react-prototype/npm-debug\.log

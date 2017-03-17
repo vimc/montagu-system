@@ -1,41 +1,32 @@
 import * as React from "react";
 import * as VaccineStore from '../stores/VaccineStore'
 import VaccineActions from '../actions/VaccineActions'
+import { connectToStores } from '../alt'
 
-
-class VaccineList extends React.Component<undefined, VaccineStore.State> {
-    constructor(props: any, context: any) {
-        super(props, context);
-        this.state = VaccineStore.Store.getState();
-    }
-
-    componentDidMount = () => {
-        VaccineStore.Store.listen(this.onChange);        
+class VaccineList extends React.Component<VaccineStore.State, undefined> {
+    static getStores(props: VaccineStore.State) {
         VaccineActions.fetchVaccines();
+        return [ VaccineStore.Store ];
     }
-
-    componentWillUnmount = () => {
-        VaccineStore.Store.unlisten(this.onChange);
-    }
-
-    onChange = (state: VaccineStore.State) => {
-        this.setState(state);
+    static getPropsFromStores(props: VaccineStore.State): VaccineStore.State {
+        return VaccineStore.Store.getState();
     }
 
     render() { 
-        if (this.state.errorMessage) {
+        if (this.props.errorMessage) {
             return <div>Something is wrong</div>
         }
-        if (!this.state.vaccines.length) {
+        if (!this.props.vaccines.length) {
             return <div><img src="/spinner.gif" /></div>
         }
 
-        let vaccines = this.state.vaccines.map((vaccine, i) => {
+        let vaccines = this.props.vaccines.map((vaccine, i) => {
             return <li key={ vaccine.id }>{ vaccine.name }</li>
         });
         return <ul>{vaccines}</ul>
     }
 }
+const VaccineListWithStores = connectToStores(VaccineList);
 
 class NewVaccine extends React.Component<undefined, VaccineStore.Vaccine> {
     constructor() {
@@ -55,6 +46,7 @@ class NewVaccine extends React.Component<undefined, VaccineStore.Vaccine> {
     createVaccine = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         VaccineActions.addVaccine(this.state);
+        this.setState({ id: "", name: "" })
     }
 
     render() {
@@ -70,7 +62,7 @@ export default class VaccinePage extends React.Component<undefined, undefined> {
     render() {       
         return <div>
             <h1>Vaccines</h1>
-            <VaccineList />
+            <VaccineListWithStores />
             <NewVaccine />
         </div>
     }
