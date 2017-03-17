@@ -21,7 +21,7 @@ class VaccineList extends React.Component<VaccineStore.State, undefined> {
         }
 
         let vaccines = this.props.vaccines.map((vaccine, i) => {
-            return <li key={ vaccine.id }>{ vaccine.name }</li>
+            return <li key={ vaccine.id }>{ vaccine.name } ({ vaccine.id })</li>
         });
         return <ul>{vaccines}</ul>
     }
