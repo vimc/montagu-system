@@ -2,7 +2,7 @@ FROM ubuntu:16.04
 
 # Installation tools
 RUN apt-get update
-RUN apt-get install -y wget unzip software-properties-common apt-transport-https
+RUN apt-get install -y software-properties-common apt-transport-https
 
 # JDK
 RUN apt-get install -y openjdk-8-jdk
