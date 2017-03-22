@@ -5,15 +5,20 @@ import json
 import jsonschema
 import re
 
+schema_relative_path = ".."
+schema_dir = os.path.abspath(schema_relative_path).replace('\\', '/')
+spec_path = os.path.join(schema_dir, "spec.md")
+print(schema_dir)
+
 def check_example(schema_path, example):
-    schema_dir = os.path.abspath(schema_path).replace('\\', '/')
-    with open(schema_path, 'r') as f:
+    full_path = os.path.join(schema_dir, schema_path)
+    with open(full_path, 'r') as f:
         try:            
             schema = json.load(f)
         except Exception as e:
             raise Exception("There was an error parsing the JSON schema", e)
     
-    resolver = jsonschema.RefResolver(base_uri = 'file:///' + schema_dir, referrer = schema)
+    resolver = jsonschema.RefResolver(base_uri = 'file:///' + full_path, referrer = schema)
     jsonschema.validate(example, schema, resolver = resolver)
 
 def get_next(iterator):
@@ -75,14 +80,5 @@ def check_spec(spec_path):
         
         line = get_next(lines)
 
-
-#schema_path = sys.argv[1]
-#example_path = sys.argv[2]
-#with open(example_path, 'r') as f:
-#    example = json.load(f)
-
-#check_example(schema_path, example)
-
-spec_path = "spec.md"
 check_spec(spec_path)
 print("Finished without errors ☺")
