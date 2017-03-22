@@ -53,7 +53,7 @@ project(':app')  {
     }
 
     distDocker {
-        dependsOn = [ test ]
+        dependsOn = [ build, test ]
         push = false
         tag = "vimc/montagu-api"
         tagVersion = "UNKNOWN" //${grgit.head().abbreviatedId}
