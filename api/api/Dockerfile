@@ -13,8 +13,12 @@ RUN add-apt-repository 'deb https://apt.dockerproject.org/repo ubuntu-xenial mai
 RUN apt-get update
 RUN apt-get install -y docker-engine
 
+# Setup gradle
+COPY api/gradlew /api/api/
+COPY api/gradle /api/api/gradle/
+WORKDIR /api/api
+RUN ./gradlew
+
 # Do our build
 COPY . /api
-WORKDIR /api/api
-
 CMD ./gradlew :app:distDocker -i
