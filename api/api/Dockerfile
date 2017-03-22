@@ -1,6 +1,6 @@
-FROM openjdk:8
+FROM frekele/gradle:3.1-jdk8
 
 COPY . /api
 WORKDIR /api
 
-CMD ["./gradlew", ":app:test", "-i"]
+CMD gradle :app:test -i
