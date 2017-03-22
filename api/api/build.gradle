@@ -47,7 +47,7 @@ project(':app')  {
         testCompile 'junit:junit:4.12'
     }
 
-    /*docker {
+    docker {
         baseImage = "openjdk:8u121-jre"
         registry = "REGISTRY URL GOES HERE"
     }
@@ -56,6 +56,6 @@ project(':app')  {
         dependsOn = [ test ]
         push = false
         tag = "vimc/montagu-api"
-        tagVersion = "${grgit.head().abbreviatedId}"
-    }*/
+        tagVersion = "UNKNOWN" //${grgit.head().abbreviatedId}
+    }
 }

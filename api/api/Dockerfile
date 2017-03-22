@@ -17,4 +17,4 @@ RUN apt-get install -y docker-engine
 COPY . /api
 WORKDIR /api/api
 
-CMD ./gradlew :app:test -i
+CMD ./gradlew :app:distDocker -i
