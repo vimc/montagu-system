@@ -56,6 +56,6 @@ project(':app')  {
         dependsOn = [ build, test ]
         push = false
         tag = "vimc/montagu-api"
-        tagVersion = "UNKNOWN" //${grgit.head().abbreviatedId}
+        tagVersion = "${grgit.head().abbreviatedId}"
     }
 }
