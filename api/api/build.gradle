@@ -19,6 +19,10 @@ subprojects {
     repositories {
         mavenCentral()
     }
+}
+
+project(':app')  {
+    mainClassName = "org.vaccineimpact.api.app.SparkAppKt"
 
     dependencies {
         compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
@@ -33,9 +37,7 @@ subprojects {
         compile "org.postgresql:postgresql:9.4.1212.jre7"
         compile "org.jooq:jooq:3.9.1"
         compile "org.jooq:jooq-meta:3.9.1"
-    }
-}
 
-project(':app')  {
-    mainClassName = "org.vaccineimpact.api.app.SparkAppKt"
+        testCompile 'junit:junit:4.12'
+    }
 }
