@@ -39,4 +39,5 @@ CMD webpack \
     && echo "Building $APP_DOCKER_TAG" \
     && docker build -f docker/run.dockerfile -t $APP_DOCKER_COMMIT_TAG . \
     && docker tag $APP_DOCKER_COMMIT_TAG $APP_DOCKER_BRANCH_TAG \
-    && docker push $APP_DOCKER_TAG
+    && docker push $APP_DOCKER_COMMIT_TAG \
+    && docker push $APP_DOCKER_BRANCH_TAG
