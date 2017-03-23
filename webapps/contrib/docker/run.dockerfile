@@ -1,5 +1,4 @@
 FROM nginx:1.11
 
 COPY dist /usr/share/nginx/html
-
-CMD echo "Running..."
+COPY docker/nginx.conf /etc/nginx/nginx.conf
