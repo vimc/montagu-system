@@ -6,6 +6,7 @@ export default class HomePage extends React.Component<undefined, undefined> {
         return <div>
             <h1>Modelling groups contribution portal</h1>
             <div>Hello world!</div>
+            <Link href="/other" />
         </div>;
     }
 }
