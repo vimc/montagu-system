@@ -1,0 +1,40 @@
+{
+  "name": "contrib-portal",
+  "version": "0.0.0",
+  "description": "Modelling groups burden contribution portal",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "serve dist"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/vimc/montagu-webapps.git"
+  },
+  "author": "Martin Eden <martin.eden@imperial.ac.uk>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/vimc/montagu-webapps/issues"
+  },
+  "homepage": "https://github.com/vimc/montagu-webapps#readme",
+  "devDependencies": {
+    "awesome-typescript-loader": "^3.1.2",
+    "copy-webpack-plugin": "^4.0.1",
+    "file-loader": "^0.10.1",
+    "serve": "^5.0.4",
+    "source-map-loader": "^0.2.0",
+    "typescript": "^2.2.1"
+  },
+  "dependencies": {
+    "@types/alt": "^0.16.32",
+    "@types/es6-promise": "0.0.32",
+    "@types/react": "^15.0.18",
+    "@types/react-dom": "^0.14.23",
+    "alt": "^0.18.6",
+    "alt-utils": "^1.0.0",
+    "react": "^15.4.2",
+    "react-dom": "^15.4.2",
+    "simple-react-router": "0.0.13",
+    "whatwg-fetch": "^2.0.3"
+  }
+}
