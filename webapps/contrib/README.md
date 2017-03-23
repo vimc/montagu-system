@@ -19,3 +19,5 @@ nginx to serve the site.
 rebuild as needed.
 3. Run `npm start` to run a development server on port 5000.
 
+Or, build using docker (`docker build -f dev.dockerfile .`) and then run the 
+resulting image.

@@ -28,7 +28,7 @@ COPY . /usr/src/app
 
 ARG app_docker_version='UNKNOWN'
 ENV APP_DOCKER_VERSION $app_docker_version
-ENV APP_DOCKER_TAG fi--didelx05.dide.ic.ac.uk/montagu-contrib-portal:$APP_DOCKER_VERSION
+ENV APP_DOCKER_TAG fi--didelx05.dide.ic.ac.uk:5000/montagu-contrib-portal:$APP_DOCKER_VERSION
 
 # Build and publish docker image
 CMD webpack \
