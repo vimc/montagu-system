@@ -26,12 +26,17 @@ RUN npm install
 
 COPY . /usr/src/app
 
-ARG app_docker_version='UNKNOWN'
-ENV APP_DOCKER_VERSION $app_docker_version
-ENV APP_DOCKER_TAG fi--didelx05.dide.ic.ac.uk:5000/montagu-contrib-portal:$APP_DOCKER_VERSION
+ARG git_id='UNKNOWN'
+ARG git_branch='UNKNOWN'
+ARG registry=fi--didelx05.dide.ic.ac.uk:5000
+ARG name=montagu-contrib-portal
 
-# Build and publish docker image
+ENV APP_DOCKER_COMMIT_TAG $registry/$name:$git_id
+ENV APP_DOCKER_BRANCH_TAG $registry/$name:$git_branch
+
+# Build, tag and publish docker image
 CMD webpack \
     && echo "Building $APP_DOCKER_TAG" \
-    && docker build -f docker/run.dockerfile -t $APP_DOCKER_TAG . \
+    && docker build -f docker/run.dockerfile -t $APP_DOCKER_COMMIT_TAG . \
+    && docker tag $APP_DOCKER_COMMIT_TAG $APP_DOCKER_BRANCH_TAG \
     && docker push $APP_DOCKER_TAG
