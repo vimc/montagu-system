@@ -33,5 +33,5 @@ ENV APP_DOCKER_TAG fi--didelx05.dide.ic.ac.uk:5000/montagu-contrib-portal:$APP_D
 # Build and publish docker image
 CMD webpack \
     && echo "Building $APP_DOCKER_TAG" \
-    && docker build -f run.dockerfile -t $APP_DOCKER_TAG . \
+    && docker build -f docker/run.dockerfile -t $APP_DOCKER_TAG . \
     && docker push $APP_DOCKER_TAG
