@@ -5,6 +5,7 @@ export default class OtherPage extends React.Component<undefined, undefined> {
     render() {
         return <div>
             <h1>Another page</h1>
+            <Link href="/">Return</Link>
         </div>;
     }
 }
