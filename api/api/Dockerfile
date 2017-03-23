@@ -22,4 +22,6 @@ RUN ./gradlew
 # Do our build
 COPY . /api
 ARG docker_version=UNKNOWN
-CMD ./gradlew :app:distDocker -i -Pdocker_version=$docker_version
+ENV API_DOCKER_VERSION $docker_version
+
+CMD ./gradlew :app:distDocker -i -Pdocker_version=$API_DOCKER_VERSION
