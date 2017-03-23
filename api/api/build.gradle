@@ -52,12 +52,12 @@ project(':app')  {
 
     docker {
         baseImage = "openjdk:8u121-jre"
-        registry = "REGISTRY URL GOES HERE"
+        registry = "http://fi--didelx05.dide.ic.ac.uk:5000"
     }
 
     distDocker {
         dependsOn = [ build, test ]
-        push = false
+        push = true
         tag = "vimc/montagu-api"
         tagVersion = api_docker_version
     }
