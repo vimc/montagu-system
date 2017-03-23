@@ -14,9 +14,9 @@ RUN apt-get update
 RUN apt-get install -y docker-engine
 
 # Setup gradle
-COPY api/gradlew /api/api/
-COPY api/gradle /api/api/gradle/
-WORKDIR /api/api
+COPY gradlew /api/
+COPY gradle /api/gradle/
+WORKDIR /api
 RUN ./gradlew
 
 # Do our build
