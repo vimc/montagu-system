@@ -36,7 +36,7 @@ ENV APP_DOCKER_BRANCH_TAG $registry/$name:$git_branch
 
 # Build, tag and publish docker image
 CMD webpack \
-    && echo "Building $APP_DOCKER_TAG" \
+    && echo "Building $APP_DOCKER_COMMIT_TAG" \
     && docker build -f docker/run.dockerfile -t $APP_DOCKER_COMMIT_TAG . \
     && docker tag $APP_DOCKER_COMMIT_TAG $APP_DOCKER_BRANCH_TAG \
     && docker push $APP_DOCKER_COMMIT_TAG \
