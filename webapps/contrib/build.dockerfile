@@ -25,13 +25,13 @@ COPY package.json /usr/src/app
 RUN npm install
 
 COPY . /usr/src/app
-RUN webpack
 
 ARG app_docker_version='UNKNOWN'
 ENV APP_DOCKER_VERSION $app_docker_version
 ENV APP_DOCKER_TAG fi--didelx05.dide.ic.ac.uk/montagu-contrib-portal:$APP_DOCKER_VERSION
 
 # Build and publish docker image
-CMD echo "Building $APP_DOCKER_TAG" \
+CMD webpack \
+    && echo "Building $APP_DOCKER_TAG" \
     && docker build -f run.dockerfile -t $APP_DOCKER_TAG . \
     && docker push $APP_DOCKER_TAG
