@@ -1,8 +1,8 @@
 *.dropbox.attr
+contrib/.tmp/*
+contrib/node_modules/*
+contrib/npm-debug\.log
+contrib/out/*
 react-prototype/dist/*
 react-prototype/node_modules/*
 react-prototype/npm-debug\.log
-contrib/out/*
-contrib/node_modules/*
-contrib/npm-debug\.log
-contrib/.tmp/*
