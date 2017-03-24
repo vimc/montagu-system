@@ -19,6 +19,10 @@ def api_docker_version = 'UNKNOWN'
 if (hasProperty('docker_version')) {
     api_docker_version = docker_version
 }
+def api_docker_name = 'montagu-api'
+if (hasProperty('docker_name')) {
+    api_docker_name = docker_name
+}
 
 subprojects {
     repositories {
@@ -57,7 +61,7 @@ project(':app')  {
     distDocker {
         dependsOn = [ build, test ]
         push = true
-        tag = "fi--didelx05.dide.ic.ac.uk:5000/montagu-api"
+        tag = api_docker_name
         tagVersion = api_docker_version
     }
 }
