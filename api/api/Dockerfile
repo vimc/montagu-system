@@ -21,6 +21,11 @@ COPY gradle /api/gradle/
 WORKDIR /api
 RUN ./gradlew
 
+# Pull in dependencies
+COPY ./build.gradle /api/
+COPY ./settings.gradle /api/
+RUN ./gradlew
+
 # Do our build
 COPY . /api
 
