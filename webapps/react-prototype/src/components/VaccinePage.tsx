@@ -1,17 +1,14 @@
 import * as React from "react";
-import * as VaccineStore from '../stores/VaccineStore'
+import { State, Vaccine, Store } from '../stores/VaccineStore'
 import VaccineActions from '../actions/VaccineActions'
 import { connectToStores } from '../alt'
 
-class VaccineList extends React.Component<VaccineStore.State, undefined> {
-    static getStores(props: VaccineStore.State) {
-        VaccineActions.fetchVaccines();
-        return [ VaccineStore.Store ];
-    }
-    static getPropsFromStores(props: VaccineStore.State): VaccineStore.State {
-        return VaccineStore.Store.getState();
-    }
+interface VaccineListProps {
+    vaccines: Array<Vaccine>;
+    errorMessage: String;
+}
 
+class VaccineList extends React.Component<VaccineListProps, undefined> {
     render() { 
         if (this.props.errorMessage) {
             return <div>Something is wrong</div>
@@ -26,44 +23,53 @@ class VaccineList extends React.Component<VaccineStore.State, undefined> {
         return <ul>{vaccines}</ul>
     }
 }
-const VaccineListWithStores = connectToStores(VaccineList);
 
-class NewVaccine extends React.Component<undefined, VaccineStore.Vaccine> {
-    constructor() {
-        super();
-        this.state = {
-            id: "",
-            name: ""
-        };
-    }
+interface NewVaccineProps {
+    vaccine: Vaccine;
+}
 
+class NewVaccine extends React.Component<NewVaccineProps, undefined> {
     handleIdChange = (event: React.FormEvent<HTMLInputElement>) => {
-        this.setState({ id: event.currentTarget.value });
+        VaccineActions.modifyNewVaccine({ id: event.currentTarget.value });
     }
     handleNameChange = (event: React.FormEvent<HTMLInputElement>) => {
-        this.setState({ name: event.currentTarget.value });
+        VaccineActions.modifyNewVaccine({ name: event.currentTarget.value });
     }
     createVaccine = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        VaccineActions.addVaccine(this.state);
-        this.setState({ id: "", name: "" })
+        VaccineActions.addNewVaccine();
     }
 
     render() {
         return <form onSubmit={ this.createVaccine }>
-            <input name="id" value={ this.state.id } onChange={ this.handleIdChange } />
-            <input name="name" value={ this.state.name } onChange={ this.handleNameChange } />
+            <input name="id" value={ this.props.vaccine.id } onChange={ this.handleIdChange } />
+            <input name="name" value={ this.props.vaccine.name } onChange={ this.handleNameChange } />
             <button type="submit">Add</button>
         </form>
     }
 }
 
-export default class VaccinePage extends React.Component<undefined, undefined> {
+class VaccineEditor extends React.Component<State, undefined> {
+    static getStores(props: State) {
+        VaccineActions.fetchVaccines();
+        return [ Store ];
+    }
+    static getPropsFromStores(props: State): State {
+        return Store.getState();
+    }
+
     render() {       
         return <div>
             <h1>Vaccines</h1>
-            <VaccineListWithStores />
-            <NewVaccine />
+            <VaccineList vaccines={ this.props.vaccines } errorMessage={ this.props.errorMessage } />
+            <NewVaccine vaccine={ this.props.newVaccine } />
         </div>
+    }
+}
+const VaccineEditor_Connected = connectToStores(VaccineEditor);
+
+export default class VaccinePage extends React.Component<undefined, undefined> {
+    render() {
+        return <VaccineEditor_Connected />;
     }
 }

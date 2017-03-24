@@ -1,21 +1,25 @@
 import alt from '../alt'
 import AbstractActions from './AbstractActions'
 import VaccineSource from '../sources/VaccineSource'
-import { Vaccine } from '../stores/VaccineStore'
+import { Vaccine, VaccineProperties } from '../stores/VaccineStore'
 
 interface Actions {
     updateVaccines(vaccines: Array<Vaccine>): Array<Vaccine>;
-    addVaccine(vaccine: Vaccine): Vaccine;
+    modifyNewVaccine(vaccine: VaccineProperties): VaccineProperties;
+    addNewVaccine(): boolean;
     fetchVaccines(): (dispatch: any) => any;
-    vaccinesFailed(errorMessage: string): string;
+    vaccinesFailed(errorMessage: string): string;    
 }
 
 class VaccineActions extends AbstractActions implements Actions {
     updateVaccines(vaccines: Array<Vaccine>): Array<Vaccine> {
         return vaccines;
     }
-    addVaccine(vaccine: Vaccine): Vaccine {
-    	return vaccine;
+    modifyNewVaccine(vaccine: VaccineProperties): VaccineProperties {
+        return vaccine;
+    }
+    addNewVaccine(): boolean { 
+        return true;
     }
     fetchVaccines(): (dispatch: any) => any {
     	return (dispatch: any) => {

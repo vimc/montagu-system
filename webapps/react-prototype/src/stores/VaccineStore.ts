@@ -7,10 +7,15 @@ export interface Vaccine {
     id: string;
     name: string;
 }
+export interface VaccineProperties {
+    id?: string;
+    name?: string;
+}
 
 export interface State {
     vaccines: Array<Vaccine>;
     errorMessage: string;
+    newVaccine: Vaccine;
 }
 
 interface VaccineStoreInterface extends AltJS.AltStore<State> {
@@ -19,24 +24,31 @@ interface VaccineStoreInterface extends AltJS.AltStore<State> {
 class VaccineStore extends AbstractStore<State> {
     vaccines: Array<Vaccine>;
     errorMessage: string;
+    newVaccine: Vaccine;
 
     constructor() {
         super();
         this.vaccines = [];
         this.errorMessage = null;
+        this.newVaccine = { id: "", name: "" };
         this.bindListeners({
             handleUpdateVaccines: VaccineActions.updateVaccines,
             handleFetchVaccines: VaccineActions.fetchVaccines,
             handleVaccinesFailed: VaccineActions.vaccinesFailed,
-            handleAddVaccine: VaccineActions.addVaccine
+            handleModifyNewVaccine: VaccineActions.modifyNewVaccine,
+            handleAddNewVaccine: VaccineActions.addNewVaccine
         });
     }
 
     handleUpdateVaccines(vaccines: Array<Vaccine>): void {
         this.vaccines = vaccines;
     }
-    handleAddVaccine(vaccine: Vaccine) {
-        this.vaccines.push(vaccine);
+    handleModifyNewVaccine(vaccine: VaccineProperties) {
+        Object.assign(this.newVaccine, vaccine);
+    }
+    handleAddNewVaccine() {
+        this.vaccines.push(this.newVaccine);
+        this.newVaccine = { id: "", name: "" };
     }
     handleFetchVaccines() {
         this.vaccines = [];
