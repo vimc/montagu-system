@@ -6,67 +6,59 @@ buildscript {
 
     repositories {
         mavenCentral()
-        // This is needed for gradle-docker
         jcenter()
     }
+
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath 'se.transmode.gradle:gradle-docker:1.2'
     }
 }
 
-def api_docker_version = 'UNKNOWN'
-if (hasProperty('docker_version')) {
-    api_docker_version = docker_version
+task run(dependsOn: ':app:run')
+task generateDatabaseInterface(dependsOn: ':generateDatabaseInterface:run')
+
+def loadPropertiesFile(path) {
+    def props = new Properties()
+    file(path).withReader {
+        props.load(it)
+    }
+    return props
 }
-def api_docker_name = 'montagu-api'
-if (hasProperty('docker_name')) {
-    api_docker_name = docker_name
+
+def loadProperties() {
+    def properties = loadPropertiesFile("config/default.properties")
+    def userFile = file("config/current_user")
+    if (userFile.exists()) {
+        def user = userFile.text.trim()
+        print("Using configuration for user $user")
+        def userPropertiesFile = file("config/users/${user}.properties")
+        if (userPropertiesFile.exists()) {
+            def userProperties = loadPropertiesFile(userPropertiesFile.path)
+            properties.putAll(userProperties)
+        } else {
+            throw new Exception("You defined a user file, with user '$user', " +
+                    "but no corresponding properties file exists at $userPropertiesFile.absolutePath")
+        }
+    }
+    return properties
 }
+
+def properties = loadProperties()
 
 subprojects {
+    apply plugin: 'kotlin'
+
     repositories {
         mavenCentral()
-        // Needed for Klaxon
         jcenter()
     }
-}
 
-project(':app')  {
-    apply plugin: 'kotlin'
-    apply plugin: 'application'
-    apply plugin: 'docker'
-
-    mainClassName = "org.vaccineimpact.api.app.SparkAppKt"
-
-    dependencies {
-        compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
-        compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
-
-        compile "com.sparkjava:spark-core:2.5.4"
-        compile "org.slf4j:slf4j-simple:1.7.21"
-
-        compile "com.google.code.gson:gson:2.2.4"
-        compile "com.github.salomonbrys.kotson:kotson:2.5.0"
-
-        compile "org.postgresql:postgresql:9.4.1212.jre7"
-        compile "org.jooq:jooq:3.9.1"
-        compile "org.jooq:jooq-meta:3.9.1"
-
-        testCompile "junit:junit:4.12"
-        testCompile "org.mockito:mockito-core:2.+"
-        testCompile "com.nhaarman:mockito-kotlin:1.3.0"
-        testCompile "com.beust:klaxon:0.31"
+    task copyConfig(type: Copy) {
+        from 'src/main/resources'
+        include '*'
+        into 'build/resources/main/'
+        expand(properties)
     }
 
-    docker {
-        baseImage = "openjdk:8u121-jre"
-    }
-
-    distDocker {
-        dependsOn = [ build, test ]
-        push = true
-        tag = api_docker_name
-        tagVersion = api_docker_version
-    }
+    processResources.finalizedBy copyConfig
 }
