@@ -1,0 +1,235 @@
+@font-face {
+	font-family: body;
+	src: url(resources/Cloud-Light.otf);
+}
+@font-face {
+	font-family: header;
+	src: url(resources/PetitaBold.ttf);
+}
+
+form {
+	margin: 0;
+	padding: 0;
+	display: inline;
+}
+
+button, .button {
+	display: inline-block;
+	background-color: rgb(0, 173, 239);
+	border: none;
+	outline-style: outset;
+	outline-width: 1px;
+	outline-color: rgb(200, 200, 200);
+	color: white;
+	font-family: inherit;
+	font-size: 12pt;
+	font-weight: bold;
+	padding: 10px 20px 5px 20px;
+	height: 40px;
+}
+button:hover, .browse-button:hover {
+	outline-width: 2px;
+}
+button:active, .browse-button:active {
+	outline-style: inset;
+}
+button {	
+	vertical-align: top;
+}
+input[type="text"] {
+	border: 1px solid rgb(127, 127, 127);
+	font-family: inherit;
+	font-size: inherit;
+	width: 400px;
+	height: 40px;
+}
+input[type="file"] {
+	width: 0.1px;
+	height: 0.1px;
+	opacity: 0;
+	overflow: hidden;
+	position: absolute;
+	z-index: -1;
+}
+
+button {
+	height: 40px;
+}
+
+button:hover, .button:hover {
+	outline-width: 2px;
+}
+button:active, .button:active {
+	outline-style: inset;
+}
+button:disabled {
+	color: rgb(230, 230, 230);
+	background-color: rgb(122, 204, 125);
+}
+button:disabled:hover {
+	outline-width: 1px;
+}
+
+.file-upload {
+	display: table;
+	margin-bottom: 20px;
+}
+.file-upload .row {
+	display: table-row;
+}
+.file-upload .text {	
+	border: 1px solid rgb(127, 127, 127);
+}
+.file-upload .text, .file-upload .browse, .file-upload .upload {
+	display: table-cell;
+	padding: 0;
+} 
+.file-upload .upload {
+	padding-left: 40px;	
+}
+.file-upload .upload button, .file-upload .browse .button {
+	height: 100%;
+}
+.file-upload .text input[type=text] {
+	border: none;
+	width: 300px;
+	height: 35px;
+	padding: 0 5px;
+}
+
+.file-upload [type=file] {
+	width: 0.1px;
+	height: 0.1px;
+	opacity: 0;
+	overflow: hidden;
+	position: absolute;
+	z-index: -1;
+}
+
+body {
+	position: relative;
+	margin: 0;
+	padding: 0;
+	font-family: body;
+	font-size: 12pt;
+	background-color: white;
+}
+
+form {
+	display: inline-block;
+}
+
+header {
+	font-family: header;
+	padding: 10px;
+	background-color: rgb(38, 50, 122);
+	border-bottom: 2px solid white;
+	color: white;
+}
+
+header .title {
+	margin-top: 0;
+	margin-bottom: 10px;
+	font-size: 30pt;
+}
+header img {
+}
+header .subtitle {
+	font-size: 16pt;
+	margin-top: 50px;
+}
+
+#user {
+	position: absolute;
+	right: 20px;
+	top: 20px;
+	color: white;
+}
+#user a, #user a:visited, #user a:hover {
+	color: white;
+}
+
+article {
+	background-color: white;
+	width: 800px;
+	margin: 0 auto;
+	padding: 30px;
+	height: 100%;
+}
+
+article h2 {
+	font-size: 24pt;
+	border-bottom: 1px dashed;
+}
+
+.progress-bar {
+	margin-bottom: 10px;
+}
+
+ul.responsibilities {
+	list-style-type: none;
+	padding: 0;
+}
+
+ul.responsibilities .scenario {
+	margin-top: 50px;
+	border: 1px solid rgb(200, 200, 200);
+}
+
+ul.responsibilities .scenario .header {
+	cursor: pointer;
+	padding: 5px 0 0px 10px;
+	background-color: rgb(210, 210, 210);
+	color: inherit;
+	border-bottom: 1px solid rgb(200, 200, 200);
+}
+
+/*ul.responsibilities .scenario .header.active {
+	background-color: rgb(210, 210, 0);
+}*/
+
+ul.responsibilities .scenario .header .name {
+	font-size: 20pt;
+	font-weight: bold;
+}
+
+ul.responsibilities .scenario .header .status-summary {
+	float: right;
+	margin: 10px 10px;
+	font-size: 10pt;
+	font-weight: bold;
+}
+ul.responsibilities .scenario .header .status-summary.no-data {
+	color: inherit;
+}
+ul.responsibilities .scenario .header .status-summary.problems {
+	color: rgb(210, 0, 0);
+}
+ul.responsibilities .scenario .header .status-summary.complete {
+	color: rgb(0, 128, 0);
+}
+
+ul.responsibilities .scenario .content {
+	padding: 10px;
+}
+
+ul.responsibilities .scenario .progress {
+	margin-bottom: 20px
+}
+
+ul.responsibilities .scenario .actions {
+	text-align: right;
+	margin: 5px 0 10px 0;
+}
+
+table {
+	border-collapse: collapse;
+	width: 780px;
+}
+table tr td, table tr th {
+	padding: 5px;
+	border: 1px solid rgb(127, 127, 127);
+}
+table tr th {
+	background-color: rgb(170, 224, 250);
+}
