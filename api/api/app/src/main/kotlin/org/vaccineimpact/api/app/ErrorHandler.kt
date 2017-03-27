@@ -25,7 +25,7 @@ class ErrorHandler
         }
     }
 
-    private fun handleError(error: MontaguError, req: Request, res: Response)
+    fun handleError(error: MontaguError, req: Request, res: Response)
     {
         logger.warn("For request ${req.uri()}, a ${error::class.simpleName} occurred with the following problems: ${error.problems}")
         res.body(Serializer.toJson(error.asResult()))

@@ -27,6 +27,8 @@ if (hasProperty('docker_name')) {
 subprojects {
     repositories {
         mavenCentral()
+        // Needed for Klaxon
+        jcenter()
     }
 }
 
@@ -51,7 +53,10 @@ project(':app')  {
         compile "org.jooq:jooq:3.9.1"
         compile "org.jooq:jooq-meta:3.9.1"
 
-        testCompile 'junit:junit:4.12'
+        testCompile "junit:junit:4.12"
+        testCompile "org.mockito:mockito-core:2.+"
+        testCompile "com.nhaarman:mockito-kotlin:1.3.0"
+        testCompile "com.beust:klaxon:0.31"
     }
 
     docker {
