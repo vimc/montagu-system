@@ -1,6 +1,6 @@
 import { handleTeamCityEvent } from './TeamCityIntegration'
 
-function fullTestName(test) {
+function fullTestName(test: TestContext): string {
 	if (test != null) {
 		return (fullTestName(test.parent) + " " + test.title).trim();
 	} else {
@@ -10,15 +10,15 @@ function fullTestName(test) {
 
 
 beforeEach(function() {
-	handleTeamCityEvent('before', fullTestName(this.currentTest));
+	handleTeamCityEvent('before', fullTestName(this.currentTest), null);
 });
 afterEach(function() {
-	const testName = fullTestName(this.currentTest);
+	const testName: string = fullTestName(this.currentTest);
 	if (this.currentTest.state == "failed") {	
 		handleTeamCityEvent('failed', testName, { 
 			message: this.currentTest.err.toString(), 
 			details: this.currentTest.err.stack  
 		});
 	}
-	handleTeamCityEvent('after', testName);
+	handleTeamCityEvent('after', testName, null);
 });

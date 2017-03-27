@@ -1,4 +1,9 @@
-export function handleTeamCityEvent(event, testName, error=null) {
+interface TestErrorInfo {
+	message: string;
+	details: string;
+}
+
+export function handleTeamCityEvent(event: string, testName: string, error: TestErrorInfo) {
 	switch (event) {
 		case "before":
 			console.log(`##teamcity[testStarted name='${testName}']`);
@@ -10,6 +15,6 @@ export function handleTeamCityEvent(event, testName, error=null) {
 			console.log(`##teamcity[testFailed name='${testName}' message='${error.message}' details='${error.details}']`);
 			break;
 		default:
-			throw Exception(`Unknown TeamCity event '${event}'`);
+			throw Error(`Unknown TeamCity event '${event}'`);
 	}
 }
