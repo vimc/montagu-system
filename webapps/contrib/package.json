@@ -37,6 +37,7 @@
   "dependencies": {
     "@types/alt": "^0.16.32",
     "@types/chai": "^3.4.35",
+    "@types/node": "^7.0.11",
     "@types/react": "^15.0.18",
     "@types/react-dom": "^0.14.23",
     "alt": "^0.18.6",
