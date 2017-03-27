@@ -1,4 +1,4 @@
-package org.vaccineimpact.api.tests.helpers
+package org.vaccineimpact.api.tests.testhelpers
 
 import org.junit.rules.TestWatcher
 import org.junit.runner.Description
