@@ -2,8 +2,7 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel>
-      <module name="api-app_main" target="1.8" />
-      <module name="api-app_test" target="1.8" />
+      <module name="app_databaseTest" target="1.8" />
       <module name="app_main" target="1.8" />
       <module name="app_test" target="1.8" />
       <module name="generateDatabaseInterface_main" target="1.8" />
