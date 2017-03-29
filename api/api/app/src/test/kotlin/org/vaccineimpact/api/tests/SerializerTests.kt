@@ -3,10 +3,11 @@ package org.vaccineimpact.api.tests
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
 import com.beust.klaxon.json
-import org.junit.Assert.assertEquals
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.vaccineimpact.api.app.Serializer
 import org.vaccineimpact.api.app.models.ErrorInfo
+import org.vaccineimpact.api.app.models.ResponsibilitySetStatus
 import org.vaccineimpact.api.app.models.Result
 import org.vaccineimpact.api.app.models.ResultStatus
 import java.time.LocalDate
@@ -44,10 +45,18 @@ class SerializerTests : MontaguTests()
     }
 
     @Test
-    fun `can serialize Enum`()
+    fun `can serialize ResultStatus`()
     {
         val actual = ResultStatus.SUCCESS
         val expected = "\"success\""
+        checkSerializedForm(expected, actual)
+    }
+
+    @Test
+    fun `can serialize ResponsibilitySetStatus`()
+    {
+        val actual = ResponsibilitySetStatus.APPROVED
+        val expected = "\"approved\""
         checkSerializedForm(expected, actual)
     }
 
@@ -63,7 +72,7 @@ class SerializerTests : MontaguTests()
                     "status" to "success"
             )
         }
-        assertEquals(expected, parse(actual))
+        assertThat(parse(actual)).isEqualTo(expected)
     }
 
     @Test
@@ -82,7 +91,7 @@ class SerializerTests : MontaguTests()
                     "status" to "failure"
             )
         }
-        assertEquals(expected, parse(actual))
+        assertThat(parse(actual)).isEqualTo(expected)
     }
 
     fun checkSerializedForm(expected: JsonObject, actual: Any): Unit {
@@ -91,7 +100,7 @@ class SerializerTests : MontaguTests()
     }
     fun checkSerializedForm(expected: String, actual: Any): Unit {
         val actualAsString = Serializer.gson.toJson(actual)
-        assertEquals(expected, actualAsString)
+        assertThat(actualAsString).isEqualTo(expected)
     }
 
     fun parse(string: String): JsonObject = Parser().parse(StringBuilder(string)) as JsonObject

@@ -1,6 +1,6 @@
 package org.vaccineimpact.api.tests.errors
 
-import org.junit.Assert.assertEquals
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.vaccineimpact.api.app.errors.MontaguError
 import org.vaccineimpact.api.app.models.ErrorInfo
@@ -19,6 +19,6 @@ class MontaguErrorTests : MontaguTests()
         val expected = """the following problems occurred:
 message1
 message2"""
-        assertEquals(expected, actual)
+        assertThat(actual).isEqualTo(expected)
     }
 }

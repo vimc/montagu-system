@@ -4,7 +4,7 @@ import com.nhaarman.mockito_kotlin.doReturn
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.verifyZeroInteractions
-import org.junit.Assert.assertEquals
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.vaccineimpact.api.app.addTrailingSlashes
 import org.vaccineimpact.api.app.getResource
@@ -15,7 +15,7 @@ class HelpersTests : MontaguTests()
     fun `can load resource`()
     {
         val url = getResource("ExampleResource.txt")
-        assertEquals("Hello world!", url.readText())
+        assertThat(url.readText()).isEqualTo("Hello world!")
     }
 
     @Test

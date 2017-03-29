@@ -7,7 +7,7 @@ import com.nhaarman.mockito_kotlin.argumentCaptor
 import com.nhaarman.mockito_kotlin.doReturn
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.verify
-import org.junit.Assert.assertEquals
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
 import org.junit.Test
 import org.vaccineimpact.api.app.ErrorHandler
@@ -62,7 +62,7 @@ class ErrorHandlerTests : MontaguTests()
                     "status" to "failure"
             )
         }
-        assertEquals(expectedBody, actualBody)
+        assertThat(actualBody).isEqualTo(expectedBody)
     }
 
     @Test

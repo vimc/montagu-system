@@ -14,7 +14,8 @@ class JooqEqualityFilter<in TParameters, out TField>(
         if (parameterValue != null)
         {
             return context.and(field.eq(parameterValue))
-        } else
+        }
+        else
         {
             return context
         }
