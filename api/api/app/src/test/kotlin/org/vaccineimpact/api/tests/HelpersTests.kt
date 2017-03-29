@@ -9,7 +9,7 @@ import org.junit.Test
 import org.vaccineimpact.api.app.addTrailingSlashes
 import org.vaccineimpact.api.app.getResource
 
-class HelpersTests
+class HelpersTests : MontaguTests()
 {
     @Test
     fun `can load resource`()
