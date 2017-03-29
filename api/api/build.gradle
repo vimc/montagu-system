@@ -19,8 +19,11 @@ task generateDatabaseInterface(dependsOn: ':generateDatabaseInterface:run')
 
 def loadPropertiesFile(path) {
     def props = new Properties()
-    file(path).withReader {
-        props.load(it)
+    def f = file(path)
+    if (f.exists()) {
+        f.withReader {
+            props.load(it)
+        }
     }
     return props
 }
@@ -43,9 +46,8 @@ def loadProperties() {
     return properties
 }
 
-def properties = loadProperties()
-
 subprojects {
+    Properties properties
     apply plugin: 'kotlin'
 
     repositories {
@@ -53,12 +55,17 @@ subprojects {
         jcenter()
     }
 
-    task copyConfig(type: Copy) {
+    task loadPropertiesTask() {
+        properties = loadProperties()
+    }
+
+    task copyConfig(type: Copy, dependsOn: 'loadPropertiesTask') {
         from 'src/main/resources'
         include '*'
         into 'build/classes/main/'
         expand(properties)
     }
 
+    copyConfig.dependsOn = ['loadPropertiesTask']
     processResources.finalizedBy copyConfig
 }
