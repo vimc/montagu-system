@@ -66,14 +66,14 @@ public class Responsibility extends TableImpl<ResponsibilityRecord> {
     public final TableField<ResponsibilityRecord, Integer> SCENARIO = createField("scenario", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
-     * Create a <code>public.responsibility</code> table reference
+     * Create a <code>public.responsibility</code> type reference
      */
     public Responsibility() {
         this("responsibility", null);
     }
 
     /**
-     * Create an aliased <code>public.responsibility</code> table reference
+     * Create an aliased <code>public.responsibility</code> type reference
      */
     public Responsibility(String alias) {
         this(alias, RESPONSIBILITY);
@@ -136,7 +136,7 @@ public class Responsibility extends TableImpl<ResponsibilityRecord> {
     }
 
     /**
-     * Rename this table
+     * Rename this type
      */
     @Override
     public Responsibility rename(String name) {

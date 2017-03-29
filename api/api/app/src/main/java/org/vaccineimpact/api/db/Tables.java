@@ -49,67 +49,67 @@ import org.vaccineimpact.api.db.tables.Vaccine;
 public class Tables {
 
     /**
-     * The table <code>public.burden_estimate</code>.
+     * The type <code>public.burden_estimate</code>.
      */
     public static final BurdenEstimate BURDEN_ESTIMATE = org.vaccineimpact.api.db.tables.BurdenEstimate.BURDEN_ESTIMATE;
 
     /**
-     * The table <code>public.burden_estimate_set</code>.
+     * The type <code>public.burden_estimate_set</code>.
      */
     public static final BurdenEstimateSet BURDEN_ESTIMATE_SET = org.vaccineimpact.api.db.tables.BurdenEstimateSet.BURDEN_ESTIMATE_SET;
 
     /**
-     * The table <code>public.country</code>.
+     * The type <code>public.country</code>.
      */
     public static final Country COUNTRY = org.vaccineimpact.api.db.tables.Country.COUNTRY;
 
     /**
-     * The table <code>public.coverage</code>.
+     * The type <code>public.coverage</code>.
      */
     public static final Coverage COVERAGE = org.vaccineimpact.api.db.tables.Coverage.COVERAGE;
 
     /**
-     * The table <code>public.coverage_set</code>.
+     * The type <code>public.coverage_set</code>.
      */
     public static final CoverageSet COVERAGE_SET = org.vaccineimpact.api.db.tables.CoverageSet.COVERAGE_SET;
 
     /**
-     * The table <code>public.disease</code>.
+     * The type <code>public.disease</code>.
      */
     public static final Disease DISEASE = org.vaccineimpact.api.db.tables.Disease.DISEASE;
 
     /**
-     * The table <code>public.model</code>.
+     * The type <code>public.model</code>.
      */
     public static final Model MODEL = org.vaccineimpact.api.db.tables.Model.MODEL;
 
     /**
-     * The table <code>public.model_version</code>.
+     * The type <code>public.model_version</code>.
      */
     public static final ModelVersion MODEL_VERSION = org.vaccineimpact.api.db.tables.ModelVersion.MODEL_VERSION;
 
     /**
-     * The table <code>public.modelling_group</code>.
+     * The type <code>public.modelling_group</code>.
      */
     public static final ModellingGroup MODELLING_GROUP = org.vaccineimpact.api.db.tables.ModellingGroup.MODELLING_GROUP;
 
     /**
-     * The table <code>public.outcome</code>.
+     * The type <code>public.outcome</code>.
      */
     public static final Outcome OUTCOME = org.vaccineimpact.api.db.tables.Outcome.OUTCOME;
 
     /**
-     * The table <code>public.permission</code>.
+     * The type <code>public.permission</code>.
      */
     public static final Permission PERMISSION = org.vaccineimpact.api.db.tables.Permission.PERMISSION;
 
     /**
-     * The table <code>public.responsibility</code>.
+     * The type <code>public.responsibility</code>.
      */
     public static final Responsibility RESPONSIBILITY = org.vaccineimpact.api.db.tables.Responsibility.RESPONSIBILITY;
 
     /**
-     * The table <code>public.responsibility_set</code>.
+     * The type <code>public.responsibility_set</code>.
      */
     public static final ResponsibilitySet RESPONSIBILITY_SET = org.vaccineimpact.api.db.tables.ResponsibilitySet.RESPONSIBILITY_SET;
 
@@ -119,27 +119,27 @@ public class Tables {
     public static final ResponsibilitySetStatus RESPONSIBILITY_SET_STATUS = org.vaccineimpact.api.db.tables.ResponsibilitySetStatus.RESPONSIBILITY_SET_STATUS;
 
     /**
-     * The table <code>public.role</code>.
+     * The type <code>public.role</code>.
      */
     public static final Role ROLE = org.vaccineimpact.api.db.tables.Role.ROLE;
 
     /**
-     * The table <code>public.role_permission</code>.
+     * The type <code>public.role_permission</code>.
      */
     public static final RolePermission ROLE_PERMISSION = org.vaccineimpact.api.db.tables.RolePermission.ROLE_PERMISSION;
 
     /**
-     * The table <code>public.scenario</code>.
+     * The type <code>public.scenario</code>.
      */
     public static final Scenario SCENARIO = org.vaccineimpact.api.db.tables.Scenario.SCENARIO;
 
     /**
-     * The table <code>public.scenario_coverage_set</code>.
+     * The type <code>public.scenario_coverage_set</code>.
      */
     public static final ScenarioCoverageSet SCENARIO_COVERAGE_SET = org.vaccineimpact.api.db.tables.ScenarioCoverageSet.SCENARIO_COVERAGE_SET;
 
     /**
-     * The table <code>public.scenario_description</code>.
+     * The type <code>public.scenario_description</code>.
      */
     public static final ScenarioDescription SCENARIO_DESCRIPTION = org.vaccineimpact.api.db.tables.ScenarioDescription.SCENARIO_DESCRIPTION;
 
@@ -154,7 +154,7 @@ public class Tables {
     public static final Touchstone TOUCHSTONE = org.vaccineimpact.api.db.tables.Touchstone.TOUCHSTONE;
 
     /**
-     * The table <code>public.touchstone_country</code>.
+     * The type <code>public.touchstone_country</code>.
      */
     public static final TouchstoneCountry TOUCHSTONE_COUNTRY = org.vaccineimpact.api.db.tables.TouchstoneCountry.TOUCHSTONE_COUNTRY;
 
@@ -164,22 +164,22 @@ public class Tables {
     public static final TouchstoneStatus TOUCHSTONE_STATUS = org.vaccineimpact.api.db.tables.TouchstoneStatus.TOUCHSTONE_STATUS;
 
     /**
-     * The table <code>public.user</code>.
+     * The type <code>public.user</code>.
      */
     public static final User USER = org.vaccineimpact.api.db.tables.User.USER;
 
     /**
-     * The table <code>public.user_role</code>.
+     * The type <code>public.user_role</code>.
      */
     public static final UserRole USER_ROLE = org.vaccineimpact.api.db.tables.UserRole.USER_ROLE;
 
     /**
-     * Enum table. Possible values: No vaccination, Vaccination without GAVI support, Vaccination with GAVI support
+     * Enum type. Possible values: No vaccination, Vaccination without GAVI support, Vaccination with GAVI support
      */
     public static final VaccinationLevel VACCINATION_LEVEL = org.vaccineimpact.api.db.tables.VaccinationLevel.VACCINATION_LEVEL;
 
     /**
-     * The table <code>public.vaccine</code>.
+     * The type <code>public.vaccine</code>.
      */
     public static final Vaccine VACCINE = org.vaccineimpact.api.db.tables.Vaccine.VACCINE;
 }

@@ -65,14 +65,14 @@ public class ModellingGroup extends TableImpl<ModellingGroupRecord> {
     public final TableField<ModellingGroupRecord, String> CURRENT = createField("current", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
 
     /**
-     * Create a <code>public.modelling_group</code> table reference
+     * Create a <code>public.modelling_group</code> type reference
      */
     public ModellingGroup() {
         this("modelling_group", null);
     }
 
     /**
-     * Create an aliased <code>public.modelling_group</code> table reference
+     * Create an aliased <code>public.modelling_group</code> type reference
      */
     public ModellingGroup(String alias) {
         this(alias, MODELLING_GROUP);
@@ -127,7 +127,7 @@ public class ModellingGroup extends TableImpl<ModellingGroupRecord> {
     }
 
     /**
-     * Rename this table
+     * Rename this type
      */
     @Override
     public ModellingGroup rename(String name) {

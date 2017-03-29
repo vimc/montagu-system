@@ -80,14 +80,14 @@ public class ScenarioDescription extends TableImpl<ScenarioDescriptionRecord> {
     public final TableField<ScenarioDescriptionRecord, String> SCENARIO_TYPE = createField("scenario_type", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
 
     /**
-     * Create a <code>public.scenario_description</code> table reference
+     * Create a <code>public.scenario_description</code> type reference
      */
     public ScenarioDescription() {
         this("scenario_description", null);
     }
 
     /**
-     * Create an aliased <code>public.scenario_description</code> table reference
+     * Create an aliased <code>public.scenario_description</code> type reference
      */
     public ScenarioDescription(String alias) {
         this(alias, SCENARIO_DESCRIPTION);
@@ -142,7 +142,7 @@ public class ScenarioDescription extends TableImpl<ScenarioDescriptionRecord> {
     }
 
     /**
-     * Rename this table
+     * Rename this type
      */
     @Override
     public ScenarioDescription rename(String name) {
