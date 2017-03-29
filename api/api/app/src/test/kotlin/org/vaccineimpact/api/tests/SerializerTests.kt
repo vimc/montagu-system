@@ -94,11 +94,14 @@ class SerializerTests : MontaguTests()
         assertThat(parse(actual)).isEqualTo(expected)
     }
 
-    fun checkSerializedForm(expected: JsonObject, actual: Any): Unit {
+    fun checkSerializedForm(expected: JsonObject, actual: Any): Unit
+    {
         val expectedAsString = expected.toJsonString(prettyPrint = true)
         checkSerializedForm(expectedAsString, actual)
     }
-    fun checkSerializedForm(expected: String, actual: Any): Unit {
+
+    fun checkSerializedForm(expected: String, actual: Any): Unit
+    {
         val actualAsString = Serializer.gson.toJson(actual)
         assertThat(actualAsString).isEqualTo(expected)
     }

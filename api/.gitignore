@@ -1,4 +1,5 @@
 *.pyc
+*/config/current_user
 .~lock*
 api/*/build/*
 api/.gradle
@@ -18,5 +19,4 @@ demo/.idea/tasks.xml
 demo/.idea/workspace.xml
 demo/app/src/main/java/uk/ac/imperial/vimc/demo/app/models/jooq/**
 demo/build/*
-demo/config/current_user
 demo/out

@@ -12,7 +12,8 @@ abstract class AbstractController
     abstract val urlComponent: String
     abstract val endpoints: Iterable<EndpointDefinition>
 
-    fun mapEndpoints(urlBase: String) {
+    fun mapEndpoints(urlBase: String)
+    {
         val transformer = Serializer::toResult
         for ((urlFragment, route, method) in endpoints)
         {

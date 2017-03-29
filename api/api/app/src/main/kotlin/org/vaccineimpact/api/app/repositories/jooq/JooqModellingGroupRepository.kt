@@ -36,7 +36,8 @@ class JooqModellingGroupRepository(private val touchstoneRepository: () -> Touch
             val scenarios = getScenariosInResponsibilitySet(responsibilitySet, scenarioFilterParameters)
             val status = mapEnum<ResponsibilitySetStatus>(responsibilitySet.status)
             return Responsibilities(group, scenarios, status)
-        } else
+        }
+        else
         {
             return Responsibilities(group, emptyList(), null)
         }
