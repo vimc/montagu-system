@@ -71,14 +71,14 @@ public class ResponsibilitySet extends TableImpl<ResponsibilitySetRecord> {
     public final TableField<ResponsibilitySetRecord, String> STATUS = createField("status", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
 
     /**
-     * Create a <code>public.responsibility_set</code> type reference
+     * Create a <code>public.responsibility_set</code> table reference
      */
     public ResponsibilitySet() {
         this("responsibility_set", null);
     }
 
     /**
-     * Create an aliased <code>public.responsibility_set</code> type reference
+     * Create an aliased <code>public.responsibility_set</code> table reference
      */
     public ResponsibilitySet(String alias) {
         this(alias, RESPONSIBILITY_SET);
@@ -141,7 +141,7 @@ public class ResponsibilitySet extends TableImpl<ResponsibilitySetRecord> {
     }
 
     /**
-     * Rename this type
+     * Rename this table
      */
     @Override
     public ResponsibilitySet rename(String name) {
