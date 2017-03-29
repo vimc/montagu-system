@@ -56,7 +56,7 @@ subprojects {
     task copyConfig(type: Copy) {
         from 'src/main/resources'
         include '*'
-        into 'build/resources/main/'
+        into 'build/classes/main/'
         expand(properties)
     }
 

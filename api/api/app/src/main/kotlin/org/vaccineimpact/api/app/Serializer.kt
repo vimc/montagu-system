@@ -3,6 +3,7 @@ package org.vaccineimpact.api.app
 import com.github.salomonbrys.kotson.jsonSerializer
 import com.github.salomonbrys.kotson.registerTypeAdapter
 import com.google.gson.*
+import org.vaccineimpact.api.app.models.ResponsibilitySetStatus
 import org.vaccineimpact.api.app.models.Result
 import org.vaccineimpact.api.app.models.ResultStatus
 
@@ -27,6 +28,7 @@ object Serializer
             .registerTypeAdapter<java.time.Instant>(toStringSerializer)
             .registerTypeAdapter(rangeSerializer)
             .registerTypeAdapter<ResultStatus>(enumSerializer)
+            .registerTypeAdapter<ResponsibilitySetStatus>(enumSerializer)
             .create()
 
     fun toResult(data: Any?): String = toJson(Result(ResultStatus.SUCCESS, data, emptyList()))
