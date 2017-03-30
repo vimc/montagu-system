@@ -55,6 +55,10 @@ subprojects {
         jcenter()
     }
 
+    dependencies {
+        compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
+    }
+
     task loadPropertiesTask() {
         properties = loadProperties()
     }
