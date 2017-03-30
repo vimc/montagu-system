@@ -16,6 +16,7 @@ buildscript {
 
 task run(dependsOn: ':app:run')
 task generateDatabaseInterface(dependsOn: ':generateDatabaseInterface:run')
+task test(dependsOn: [':app:test', ':testDatabase:test'])
 
 def loadPropertiesFile(path) {
     def props = new Properties()
@@ -47,7 +48,6 @@ def loadProperties() {
 }
 
 subprojects {
-    Properties properties
     apply plugin: 'kotlin'
 
     repositories {
@@ -60,20 +60,20 @@ subprojects {
     }
 
     task loadPropertiesTask() {
-        properties = loadProperties()
+        rootProject.ext.props = loadProperties()
     }
 
     task copyConfig(type: Copy, dependsOn: 'loadPropertiesTask') {
         from 'src/main/resources'
         include '*'
         into 'build/classes/main/'
-        expand(properties)
+        expand(rootProject.ext.props)
     }
     task copyTestConfig(type: Copy, dependsOn: 'loadPropertiesTask') {
         from 'src/test/resources'
         include '*'
         into 'build/classes/test/'
-        expand(properties)
+        expand(rootProject.ext.props)
     }
 
     copyConfig.dependsOn = ['loadPropertiesTask']

@@ -9,7 +9,9 @@ class ConfigTests : MontaguTests()
     fun `all expected fields are present`()
     {
         val keys = listOf(
-                "db.url",
+                "db.host",
+                "db.port",
+                "db.name",
                 "db.username",
                 "db.password"
         )

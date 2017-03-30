@@ -1,38 +1,66 @@
 package org.vaccineimpact.api.testDatabase
 
+import org.junit.After
+import org.junit.Before
 import org.junit.BeforeClass
+import org.vaccineimpact.api.app.Config
 import org.vaccineimpact.api.app.errors.UnableToConnectToDatabaseError
 import org.vaccineimpact.api.app.repositories.jooq.JooqContext
 import org.vaccineimpact.api.tests.MontaguTests
 
 abstract class DatabaseTest : MontaguTests()
 {
-    companion object {
+
+    @Before
+    fun createDatabase()
+    {
+        JooqContext(dbName = "postgres").use {
+            it.dsl.query("CREATE DATABASE $dbName TEMPLATE $templateDbName;").execute()
+        }
+        DatabaseChecker.checkDatabaseExists(dbName)
+    }
+
+    @After
+    fun dropDatabase()
+    {
+        JooqContext(dbName = "postgres").use {
+            it.dsl.query("DROP DATABASE $dbName").execute()
+        }
+    }
+
+    companion object
+    {
+        private val templateDbName = Config["testdb.template_name"]
+        private val dbName = Config["db.name"]
+
         @BeforeClass @JvmStatic
         fun setupTestEnvironment()
         {
-            if (!DatabaseChecker.databaseExists)
-            {
-                throw DatabaseChecker.error!!
-            }
+            DatabaseChecker.checkDatabaseExists(templateDbName)
         }
     }
 }
 
 object DatabaseChecker
 {
-    val databaseExists: Boolean by lazy {
-        checkDatabaseExists()
-    }
-    var error: Exception? = null
+    private var error: Exception? = null
 
-    fun checkDatabaseExists(): Boolean
+    fun checkDatabaseExists(dbName: String): Unit
     {
-        println("Checking that database exists...")
+        if (!databaseExists(dbName))
+        {
+            throw error!!
+        }
+    }
+
+    fun databaseExists(dbName: String): Boolean
+    {
+        println("Checking that database '$dbName' exists...")
         var attemptsRemaining = 10
         while (attemptsRemaining > 0)
         {
-            if (check()) {
+            if (check(dbName))
+            {
                 return true
             }
             else
@@ -45,11 +73,11 @@ object DatabaseChecker
         return false
     }
 
-    private fun check(): Boolean
+    private fun check(dbName: String): Boolean
     {
         try
         {
-            JooqContext()
+            JooqContext(dbName = dbName).close()
             return true
         }
         catch (e: UnableToConnectToDatabaseError)

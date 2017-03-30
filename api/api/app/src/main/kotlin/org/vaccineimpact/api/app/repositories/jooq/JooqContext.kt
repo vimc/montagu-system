@@ -8,14 +8,17 @@ import org.vaccineimpact.api.app.errors.UnableToConnectToDatabaseError
 import java.sql.Connection
 import java.sql.DriverManager
 
-class JooqContext : AutoCloseable
+class JooqContext(val dbName: String? = null) : AutoCloseable
 {
     private val conn = getConnection()
     val dsl = createDSL(conn)
 
     private fun getConnection(): Connection
     {
-        val url = Config["db.url"]
+        val dbHost = Config["db.host"]
+        val dbPort = Config["db.port"]
+        val dbName = dbName ?: Config["db.name"]
+        val url = "jdbc:postgresql://$dbHost:$dbPort/$dbName"
         try
         {
             return DriverManager.getConnection(url, Config["db.username"], Config["db.password"])

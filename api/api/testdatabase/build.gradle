@@ -17,8 +17,13 @@ dependencies {
 test.dependsOn 'startDatabase'
 test.finalizedBy 'stopDatabase'
 
-task startDatabase(type: Exec) {
-    commandLine 'docker', 'run', '-d', '--rm', '-p', '5432:5432', '--name', 'montagu-api-test_database', 'fi--didelx05.dide.ic.ac.uk:5000/montagu-db:i228'
+
+task startDatabase(type: Exec, dependsOn: 'loadPropertiesTask') {
+    String portBinding = rootProject.ext.props.get('testdb_external_port') + ':' +  rootProject.ext.props.get('testdb_exposed_port')
+    String image = rootProject.ext.props.get('testdb_image')
+    println(portBinding)
+    println(image)
+    commandLine 'docker', 'run', '-d', '--rm', '-p', portBinding, '--name', 'montagu-api-test_database', image
 }
 
 task stopDatabase(type: Exec) {
