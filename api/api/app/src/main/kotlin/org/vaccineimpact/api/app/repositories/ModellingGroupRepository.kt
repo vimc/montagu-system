@@ -7,7 +7,8 @@ import java.io.Closeable
 
 interface ModellingGroupRepository : Closeable
 {
-    val modellingGroups: SimpleDataSet<ModellingGroup, String>
+    fun getModellingGroups(): Iterable<ModellingGroup>
+    fun getModellingGroup(id: String): ModellingGroup
 
     fun getResponsibilities(groupId: String, touchstoneId: String,
                             scenarioFilterParameters: ScenarioFilterParameters): Responsibilities

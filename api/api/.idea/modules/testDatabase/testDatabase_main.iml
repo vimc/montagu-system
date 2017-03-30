@@ -50,12 +50,12 @@
     </facet>
   </component>
   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8">
-    <output url="file://$MODULE_DIR$/../../../testDatabase/build/classes/main" />
+    <output url="file://$MODULE_DIR$/../../../testdatabase/build/classes/main" />
     <exclude-output />
-    <content url="file://$MODULE_DIR$/../../../testDatabase/src/main">
-      <sourceFolder url="file://$MODULE_DIR$/../../../testDatabase/src/main/java" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/../../../testDatabase/src/main/kotlin" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/../../../testDatabase/src/main/resources" type="java-resource" />
+    <content url="file://$MODULE_DIR$/../../../testdatabase/src/main">
+      <sourceFolder url="file://$MODULE_DIR$/../../../testdatabase/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../../testdatabase/src/main/kotlin" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../../testdatabase/src/main/resources" type="java-resource" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

@@ -10,6 +10,9 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/generateDatabaseInterface/generateDatabaseInterface.iml" filepath="$PROJECT_DIR$/.idea/modules/generateDatabaseInterface/generateDatabaseInterface.iml" group="generateDatabaseInterface" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/generateDatabaseInterface/generateDatabaseInterface_main.iml" filepath="$PROJECT_DIR$/.idea/modules/generateDatabaseInterface/generateDatabaseInterface_main.iml" group="generateDatabaseInterface" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/generateDatabaseInterface/generateDatabaseInterface_test.iml" filepath="$PROJECT_DIR$/.idea/modules/generateDatabaseInterface/generateDatabaseInterface_test.iml" group="generateDatabaseInterface" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/testDatabase/testDatabase.iml" filepath="$PROJECT_DIR$/.idea/modules/testDatabase/testDatabase.iml" group="testDatabase" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/testDatabase/testDatabase_main.iml" filepath="$PROJECT_DIR$/.idea/modules/testDatabase/testDatabase_main.iml" group="testDatabase" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/testDatabase/testDatabase_test.iml" filepath="$PROJECT_DIR$/.idea/modules/testDatabase/testDatabase_test.iml" group="testDatabase" />
     </modules>
   </component>
 </project>

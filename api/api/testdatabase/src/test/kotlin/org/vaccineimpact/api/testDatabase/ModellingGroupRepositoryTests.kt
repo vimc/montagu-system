@@ -23,8 +23,8 @@ class ModellingGroupRepositoryTests : DatabaseTest()
     {
         val repo = makeRepository()
         JooqContext().use {
-            it.dsl.newRecord(MODELLING_GROUP).apply { id = "ID1"; description = "Description1"; current = null }.store()
-            it.dsl.newRecord(MODELLING_GROUP).apply { id = "ID2"; description = "Description2"; current = null }.store()
+            it.dsl.newRecord(MODELLING_GROUP).apply { id = "ID1"; description = "Description1"; current = "ID1" }.store()
+            it.dsl.newRecord(MODELLING_GROUP).apply { id = "ID2"; description = "Description2"; current = "ID2" }.store()
         }
         val groups = repo.modellingGroups.all()
         assertThat(groups).hasSameElementsAs(listOf(

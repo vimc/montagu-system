@@ -69,7 +69,14 @@ subprojects {
         into 'build/classes/main/'
         expand(properties)
     }
+    task copyTestConfig(type: Copy, dependsOn: 'loadPropertiesTask') {
+        from 'src/test/resources'
+        include '*'
+        into 'build/classes/test/'
+        expand(properties)
+    }
 
     copyConfig.dependsOn = ['loadPropertiesTask']
     processResources.finalizedBy copyConfig
+    processTestResources.finalizedBy copyTestConfig
 }

@@ -9,4 +9,5 @@ object Config
     }
 
     operator fun get(key: String): String = properties[key] as String
+    fun getInt(key: String) = get(key).toInt()
 }

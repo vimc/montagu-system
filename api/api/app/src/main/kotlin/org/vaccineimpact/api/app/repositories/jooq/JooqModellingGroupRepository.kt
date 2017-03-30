@@ -22,8 +22,13 @@ import java.util.*
 class JooqModellingGroupRepository(private val touchstoneRepository: () -> TouchstoneRepository)
     : JooqRepository(), ModellingGroupRepository
 {
-    override val modellingGroups: SimpleDataSet<ModellingGroup, String>
-        get() = JooqSimpleDataSet.new(dsl, MODELLING_GROUP, { it.ID }, this::mapModellingGroup)
+    override fun getModellingGroups(): Iterable<ModellingGroup> {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun getModellingGroup(id: String): ModellingGroup {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 
     override fun getResponsibilities(groupId: String, touchstoneId: String,
                                      scenarioFilterParameters: ScenarioFilterParameters): Responsibilities

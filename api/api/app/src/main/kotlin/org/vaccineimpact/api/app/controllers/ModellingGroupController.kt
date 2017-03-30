@@ -19,7 +19,7 @@ class ModellingGroupController(private val db: () -> ModellingGroupRepository)
 
     fun getModellingGroups(req: Request, res: Response): List<ModellingGroup>
     {
-        return db().use { it.modellingGroups.all() }.toList()
+        return db().use { it.getModellingGroups() }.toList()
     }
 
     fun getResponsibilities(req: Request, res: Response): Responsibilities

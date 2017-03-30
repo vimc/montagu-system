@@ -13,3 +13,14 @@ dependencies {
     testCompile project(":app")
     testCompile project(":app").sourceSets.test.output
 }
+
+test.dependsOn 'startDatabase'
+test.finalizedBy 'stopDatabase'
+
+task startDatabase(type: Exec) {
+    commandLine 'docker', 'run', '-d', '--rm', '-p', '5432:5432', '--name', 'montagu-api-test_database', 'fi--didelx05.dide.ic.ac.uk:5000/montagu-db:i228'
+}
+
+task stopDatabase(type: Exec) {
+    commandLine 'docker', 'stop', 'montagu-api-test_database'
+}
