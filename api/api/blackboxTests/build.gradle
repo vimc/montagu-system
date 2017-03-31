@@ -1,3 +1,12 @@
 dependencies {
+    testCompile "junit:junit:4.12"
+    testCompile "org.assertj:assertj-core:3.6.2"
+
+    testCompile "khttp:khttp:0.1.0"
+    testCompile "com.beust:klaxon:0.31"
+
+    testCompile "com.github.fge:json-schema-validator:2.2.6"
+
+    testCompile project(":testHelpers")
     testCompile project(":databaseInterface")
 }
