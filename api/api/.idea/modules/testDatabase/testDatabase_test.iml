@@ -50,17 +50,17 @@
     </facet>
   </component>
   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8">
-    <output-test url="file://$MODULE_DIR$/../../../testdatabase/build/classes/test" />
+    <output-test url="file://$MODULE_DIR$/../../../testDatabase/build/classes/test" />
     <exclude-output />
     <content url="file://$MODULE_DIR$/../../../testDatabase/src/test">
-      <sourceFolder url="file://$MODULE_DIR$/../../../testdatabase/src/test/java" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/../../../testDatabase/src/test/java" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/../../../testDatabase/src/test/kotlin" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/../../../testDatabase/src/test/resources" type="java-test-resource" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="app_test" production-on-test="" />
     <orderEntry type="module" module-name="testDatabase_main" />
+    <orderEntry type="module" module-name="app_test" production-on-test="" />
     <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-jre8:1.1.1" level="project" />
     <orderEntry type="library" name="Gradle: com.github.docker-java:docker-java:3.0.6" level="project" />
     <orderEntry type="library" name="Gradle: org.slf4j:slf4j-simple:1.7.21" level="project" />
