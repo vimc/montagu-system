@@ -1,2 +1,2 @@
 rootProject.name = 'api'
-include 'app', 'generateDatabaseInterface', 'testDatabase'
+include 'app', 'generateDatabaseInterface', 'databaseTests'
