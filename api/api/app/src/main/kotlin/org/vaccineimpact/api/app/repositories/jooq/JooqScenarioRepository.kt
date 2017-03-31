@@ -14,10 +14,7 @@ class JooqScenarioRepository
             return Scenario(
                     id = input[t.ID],
                     description = input[t.DESCRIPTION],
-                    disease = input[t.DISEASE],
-                    vaccine = input[t.VACCINE],
-                    scenarioType = input[t.SCENARIO_TYPE],
-                    vaccinationLevel = input[t.VACCINATION_LEVEL]
+                    disease = input[t.DISEASE]
             )
         }
     }
