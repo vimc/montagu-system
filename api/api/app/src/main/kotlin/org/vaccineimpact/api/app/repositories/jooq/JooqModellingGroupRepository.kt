@@ -60,7 +60,7 @@ class JooqModellingGroupRepository(private val touchstoneRepository: () -> Touch
                                      scenarioFilterParameters: ScenarioFilterParameters): Responsibilities
     {
         val group = getModellingGroup(groupId)
-        touchstoneRepository().touchstones.assertExists(touchstoneId)
+        touchstoneRepository().use { it.touchstones.assertExists(touchstoneId) }
         val responsibilitySet = getResponsibilitySet(groupId, touchstoneId)
         if (responsibilitySet != null)
         {

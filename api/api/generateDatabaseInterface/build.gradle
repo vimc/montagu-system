@@ -16,3 +16,6 @@ dependencies {
     compile "org.jooq:jooq-meta:3.9.1"
     compile "org.jooq:jooq-codegen:3.9.1"
 }
+
+run.dependsOn 'startDatabase'
+run.finalizedBy 'stopDatabase'

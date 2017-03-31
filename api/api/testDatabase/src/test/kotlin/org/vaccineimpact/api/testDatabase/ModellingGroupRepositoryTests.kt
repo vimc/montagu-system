@@ -1,32 +1,27 @@
 package org.vaccineimpact.api.testDatabase
 
-import com.nhaarman.mockito_kotlin.mock
 import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
-import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.app.repositories.jooq.JooqContext
 import org.vaccineimpact.api.app.repositories.jooq.JooqModellingGroupRepository
-import org.vaccineimpact.api.db.Tables.MODELLING_GROUP
+import org.vaccineimpact.api.app.repositories.jooq.JooqTouchstoneRepository
+import org.vaccineimpact.api.db.Tables.*
 
 abstract class ModellingGroupRepositoryTests : DatabaseTest()
 {
-    protected fun withRepositoryAndGroups(populateDatabase: (JooqContext) -> Unit, withRepository: (ModellingGroupRepository) -> Unit)
+    protected fun given(populateDatabase: (JooqContext) -> Unit)
+            : RepositoryTestContext<ModellingGroupRepository>
     {
         JooqContext().use { populateDatabase(it) }
-        makeRepository().use { withRepository(it) }
+        return RepositoryTestContext(this::makeRepository)
     }
 
-    protected fun makeRepository(): ModellingGroupRepository
+    protected fun givenABlankDatabase(): RepositoryTestContext<ModellingGroupRepository>
     {
-        val touchstoneRepository = mock<TouchstoneRepository>()
-        return JooqModellingGroupRepository({ touchstoneRepository })
+        return RepositoryTestContext(this::makeRepository)
     }
 
-    protected fun JooqContext.addGroup(id: String, description: String, current: String? = null)
+    private fun makeRepository(): ModellingGroupRepository
     {
-        this.dsl.newRecord(MODELLING_GROUP).apply {
-            this.id = id
-            this.description = description
-            this.current = current
-        }.store()
+        return JooqModellingGroupRepository({ JooqTouchstoneRepository() })
     }
 }

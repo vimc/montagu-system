@@ -79,4 +79,21 @@ subprojects {
     copyConfig.dependsOn = ['loadPropertiesTask']
     processResources.finalizedBy copyConfig
     processTestResources.finalizedBy copyTestConfig
+
+    task startDatabase(dependsOn: 'loadPropertiesTask') {
+        String portBinding = rootProject.ext.props.get('testdb_external_port') + ':' +  rootProject.ext.props.get('testdb_exposed_port')
+        String image = rootProject.ext.props.get('testdb_image')
+        doLast {
+            exec {
+                commandLine 'docker', 'pull', image
+            }
+            exec {
+                commandLine 'docker', 'run', '-d', '--rm', '-p', portBinding, '--name', 'montagu-api-test_database', image
+            }
+        }
+    }
+
+    task stopDatabase(type: Exec) {
+        commandLine 'docker', 'stop', 'montagu-api-test_database'
+    }
 }
