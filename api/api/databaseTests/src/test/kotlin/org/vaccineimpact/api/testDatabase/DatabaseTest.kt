@@ -1,4 +1,4 @@
-package org.vaccineimpact.api.testDatabase
+package org.vaccineimpact.api.databaseTests
 
 import org.junit.After
 import org.junit.Before
