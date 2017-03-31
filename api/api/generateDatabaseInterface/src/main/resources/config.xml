@@ -19,7 +19,7 @@
 
         <target>
             <packageName>org.vaccineimpact.api.db</packageName>
-            <directory>../app/src/main/java</directory>
+            <directory>../databaseInterface/src/main/java</directory>
         </target>
     </generator>
 </configuration>

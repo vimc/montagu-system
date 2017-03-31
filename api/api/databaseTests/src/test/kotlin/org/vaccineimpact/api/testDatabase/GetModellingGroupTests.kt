@@ -4,6 +4,7 @@ import org.assertj.core.api.Assertions
 import org.junit.Test
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.models.ModellingGroup
+import org.vaccineimpact.api.db.direct.addGroup
 
 class GetModellingGroupTests : ModellingGroupRepositoryTests()
 {

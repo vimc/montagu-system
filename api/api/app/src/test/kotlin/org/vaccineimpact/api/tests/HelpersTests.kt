@@ -7,7 +7,8 @@ import com.nhaarman.mockito_kotlin.verifyZeroInteractions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.vaccineimpact.api.app.addTrailingSlashes
-import org.vaccineimpact.api.app.getResource
+import org.vaccineimpact.api.db.getResource
+import org.vaccineimpact.api.test_helpers.MontaguTests
 
 class HelpersTests : MontaguTests()
 {

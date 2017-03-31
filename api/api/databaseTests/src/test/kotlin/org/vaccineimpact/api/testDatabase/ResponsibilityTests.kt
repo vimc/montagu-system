@@ -8,6 +8,7 @@ import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
 import org.vaccineimpact.api.app.models.ModellingGroup
 import org.vaccineimpact.api.app.models.ResponsibilitySetStatus
 import org.vaccineimpact.api.app.models.Scenario
+import org.vaccineimpact.api.db.direct.*
 
 class ResponsibilityTests : ModellingGroupRepositoryTests()
 {

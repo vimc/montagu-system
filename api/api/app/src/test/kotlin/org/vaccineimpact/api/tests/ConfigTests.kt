@@ -1,7 +1,8 @@
 package org.vaccineimpact.api.tests
 
 import org.junit.Test
-import org.vaccineimpact.api.app.Config
+import org.vaccineimpact.api.db.Config
+import org.vaccineimpact.api.test_helpers.MontaguTests
 
 class ConfigTests : MontaguTests()
 {

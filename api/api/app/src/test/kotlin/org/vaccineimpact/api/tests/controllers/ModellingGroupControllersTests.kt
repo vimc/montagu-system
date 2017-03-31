@@ -4,7 +4,7 @@ import com.nhaarman.mockito_kotlin.*
 import org.junit.Test
 import org.vaccineimpact.api.app.controllers.ModellingGroupController
 import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
-import org.vaccineimpact.api.tests.MontaguTests
+import org.vaccineimpact.api.test_helpers.MontaguTests
 import spark.Request
 import spark.Response
 

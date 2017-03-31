@@ -3,7 +3,7 @@ package org.vaccineimpact.api.tests.controllers
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
 import org.vaccineimpact.api.app.controllers.EndpointDefinition
-import org.vaccineimpact.api.tests.MontaguTests
+import org.vaccineimpact.api.test_helpers.MontaguTests
 
 class EndpointTests : MontaguTests()
 {

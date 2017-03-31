@@ -1,7 +1,7 @@
 package org.vaccineimpact.api.databaseTests
 
 import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
-import org.vaccineimpact.api.app.repositories.jooq.JooqContext
+import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.app.repositories.jooq.JooqModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.jooq.JooqTouchstoneRepository
 import org.vaccineimpact.api.db.Tables.*

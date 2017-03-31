@@ -11,7 +11,8 @@ dependencies {
     testCompile "org.jooq:jooq-meta:3.9.1"
 
     testCompile project(":app")
-    testCompile project(":app").sourceSets.test.output
+    testCompile project(":databaseInterface")
+    testCompile project(":testHelpers")
 }
 
 test.dependsOn 'startDatabase'

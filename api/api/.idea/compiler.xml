@@ -5,10 +5,16 @@
       <module name="app_databaseTest" target="1.8" />
       <module name="app_main" target="1.8" />
       <module name="app_test" target="1.8" />
-      <module name="generateDatabaseInterface_main" target="1.8" />
-      <module name="generateDatabaseInterface_test" target="1.8" />
+      <module name="blackboxTests_main" target="1.8" />
+      <module name="blackboxTests_test" target="1.8" />
+      <module name="databaseInterface_main" target="1.8" />
+      <module name="databaseInterface_test" target="1.8" />
       <module name="databaseTests_main" target="1.8" />
       <module name="databaseTests_test" target="1.8" />
+      <module name="generateDatabaseInterface_main" target="1.8" />
+      <module name="generateDatabaseInterface_test" target="1.8" />
+      <module name="testHelpers_main" target="1.8" />
+      <module name="testHelpers_test" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

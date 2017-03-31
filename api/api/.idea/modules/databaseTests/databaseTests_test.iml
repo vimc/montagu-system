@@ -60,7 +60,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="databaseTests_main" />
-    <orderEntry type="module" module-name="app_test" production-on-test="" />
     <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-jre8:1.1.1" level="project" />
     <orderEntry type="library" name="Gradle: com.github.docker-java:docker-java:3.0.6" level="project" />
     <orderEntry type="library" name="Gradle: org.slf4j:slf4j-simple:1.7.21" level="project" />
@@ -71,6 +70,8 @@
     <orderEntry type="library" name="Gradle: org.jooq:jooq:3.9.1" level="project" />
     <orderEntry type="library" name="Gradle: org.jooq:jooq-meta:3.9.1" level="project" />
     <orderEntry type="module" module-name="app_main" />
+    <orderEntry type="module" module-name="databaseInterface_main" />
+    <orderEntry type="module" module-name="testHelpers_main" />
     <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-jre7:1.1.1" level="project" />
     <orderEntry type="library" name="Gradle: com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.6.4" level="project" />
     <orderEntry type="library" name="Gradle: org.glassfish.jersey.connectors:jersey-apache-connector:2.23.1" level="project" />

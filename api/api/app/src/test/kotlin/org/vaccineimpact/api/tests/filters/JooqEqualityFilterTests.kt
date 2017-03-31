@@ -7,7 +7,7 @@ import org.jooq.Record
 import org.jooq.SelectConditionStep
 import org.junit.Test
 import org.vaccineimpact.api.app.filters.JooqEqualityFilter
-import org.vaccineimpact.api.tests.MontaguTests
+import org.vaccineimpact.api.test_helpers.MontaguTests
 
 class JooqEqualityFilterTests : MontaguTests()
 {

@@ -1,6 +1,6 @@
-package org.vaccineimpact.api.databaseTests
+package org.vaccineimpact.api.db.direct
 
-import org.vaccineimpact.api.app.repositories.jooq.JooqContext
+import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.Tables.*
 
 fun JooqContext.addGroup(id: String, description: String, current: String? = null)

@@ -1,10 +1,8 @@
-package org.vaccineimpact.api.app.repositories.jooq
+package org.vaccineimpact.api.db
 
 import org.jooq.DSLContext
 import org.jooq.SQLDialect
 import org.jooq.impl.DSL
-import org.vaccineimpact.api.app.Config
-import org.vaccineimpact.api.app.errors.UnableToConnectToDatabaseError
 import java.sql.Connection
 import java.sql.DriverManager
 
@@ -25,7 +23,7 @@ class JooqContext(val dbName: String? = null) : AutoCloseable
         }
         catch (e: Exception)
         {
-            throw UnableToConnectToDatabaseError(url)
+            throw UnableToConnectToDatabase(url)
         }
     }
 

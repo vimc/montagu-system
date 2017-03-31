@@ -3,12 +3,12 @@ package org.vaccineimpact.api.databaseTests
 import org.junit.After
 import org.junit.Before
 import org.junit.BeforeClass
-import org.vaccineimpact.api.app.Config
+import org.vaccineimpact.api.db.Config
 import org.vaccineimpact.api.app.errors.UnableToConnectToDatabaseError
-import org.vaccineimpact.api.app.repositories.jooq.JooqContext
-import org.vaccineimpact.api.tests.MontaguTests
+import org.vaccineimpact.api.db.JooqContext
+import org.vaccineimpact.api.test_helpers.MontaguTests
 
-abstract class DatabaseTest : MontaguTests()
+abstract class DatabaseTest : org.vaccineimpact.api.test_helpers.MontaguTests()
 {
 
     @Before
