@@ -5,8 +5,9 @@ import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
-import org.vaccineimpact.api.app.models.ModellingGroup
+import org.vaccineimpact.api.app.models.Responsibility
 import org.vaccineimpact.api.app.models.ResponsibilitySetStatus
+import org.vaccineimpact.api.app.models.ResponsibilityStatus
 import org.vaccineimpact.api.app.models.Scenario
 import org.vaccineimpact.api.db.direct.*
 
@@ -44,9 +45,10 @@ class ResponsibilityTests : ModellingGroupRepositoryTests()
             it.addTouchstone("touchstone", 1, "status", 1900..2000, addName = true, addStatus = true)
         } check { repo ->
             val set = repo.getResponsibilities("group", "touchstone-1", ScenarioFilterParameters())
+            assertThat(set.touchstone).isEqualTo("touchstone-1")
+            assertThat(set.status).isNull()
+            assertThat(set.problems).isEmpty()
             assertThat(set).isEmpty()
-            assertThat(set.group).isEqualTo(ModellingGroup("group", "description"))
-            assertThat(set.responsibilitySetStatus).isNull()
         }
     }
 
@@ -59,9 +61,10 @@ class ResponsibilityTests : ModellingGroupRepositoryTests()
             it.addResponsibilitySet("group", "touchstone-1", "incomplete", addStatus = true)
         } check { repo ->
             val set = repo.getResponsibilities("group", "touchstone-1", ScenarioFilterParameters())
+            assertThat(set.touchstone).isEqualTo("touchstone-1")
+            assertThat(set.status).isEqualTo(ResponsibilitySetStatus.INCOMPLETE)
+            assertThat(set.problems).isEmpty()
             assertThat(set).isEmpty()
-            assertThat(set.group).isEqualTo(ModellingGroup("group", "description"))
-            assertThat(set.responsibilitySetStatus).isEqualTo(ResponsibilitySetStatus.INCOMPLETE)
         }
     }
 
@@ -79,12 +82,23 @@ class ResponsibilityTests : ModellingGroupRepositoryTests()
             it.addResponsibility(setId, "touchstone-1", "scenario-2")
         } check { repo ->
             val set = repo.getResponsibilities("group", "touchstone-1", ScenarioFilterParameters())
+            assertThat(set.touchstone).isEqualTo("touchstone-1")
+            assertThat(set.status).isEqualTo(ResponsibilitySetStatus.SUBMITTED)
+            assertThat(set.problems).isEmpty()
             assertThat(set).hasSameElementsAs(listOf(
-                    Scenario("scenario-1", "description 1", "disease 1"),
-                    Scenario("scenario-2", "description 2", "disease 2")
+                    Responsibility(
+                            Scenario("scenario-1", "description 1", "disease 1"),
+                            ResponsibilityStatus.EMPTY,
+                            emptyList(),
+                            null
+                    ),
+                    Responsibility(
+                            Scenario("scenario-2", "description 2", "disease 2"),
+                            ResponsibilityStatus.EMPTY,
+                            emptyList(),
+                            null
+                    )
             ))
-            assertThat(set.group).isEqualTo(ModellingGroup("group", "description"))
-            assertThat(set.responsibilitySetStatus).isEqualTo(ResponsibilitySetStatus.SUBMITTED)
         }
     }
 
@@ -103,11 +117,17 @@ class ResponsibilityTests : ModellingGroupRepositoryTests()
             it.addResponsibility(set2, "touchstone-1", "scenario-2")
         } check { repo ->
             val set = repo.getResponsibilities("group1", "touchstone-1", ScenarioFilterParameters())
+            assertThat(set.touchstone).isEqualTo("touchstone-1")
+            assertThat(set.status).isEqualTo(ResponsibilitySetStatus.SUBMITTED)
+            assertThat(set.problems).isEmpty()
             assertThat(set).hasSameElementsAs(listOf(
-                    Scenario("scenario-1", "description 1", "disease 1")
+                    Responsibility(
+                            Scenario("scenario-1", "description 1", "disease 1"),
+                            ResponsibilityStatus.EMPTY,
+                            emptyList(),
+                            null
+                    )
             ))
-            assertThat(set.group).isEqualTo(ModellingGroup("group1", "description"))
-            assertThat(set.responsibilitySetStatus).isEqualTo(ResponsibilitySetStatus.SUBMITTED)
         }
     }
 
@@ -126,11 +146,17 @@ class ResponsibilityTests : ModellingGroupRepositoryTests()
             it.addResponsibility(set2, "touchstone-2", "scenario-2")
         } check { repo ->
             val set = repo.getResponsibilities("group", "touchstone-1", ScenarioFilterParameters())
+            assertThat(set.touchstone).isEqualTo("touchstone-1")
+            assertThat(set.status).isEqualTo(ResponsibilitySetStatus.SUBMITTED)
+            assertThat(set.problems).isEmpty()
             assertThat(set).hasSameElementsAs(listOf(
-                    Scenario("scenario-1", "description 1", "disease 1")
+                    Responsibility(
+                            Scenario("scenario-1", "description 1", "disease 1"),
+                            ResponsibilityStatus.EMPTY,
+                            emptyList(),
+                            null
+                    )
             ))
-            assertThat(set.group).isEqualTo(ModellingGroup("group", "description"))
-            assertThat(set.responsibilitySetStatus).isEqualTo(ResponsibilitySetStatus.SUBMITTED)
         }
     }
 
@@ -152,7 +178,12 @@ class ResponsibilityTests : ModellingGroupRepositoryTests()
                     disease = "disease 2"
             ))
             assertThat(filteredSet).hasSameElementsAs(listOf(
-                    Scenario("scenario-2", "description 2", "disease 2")
+                    Responsibility(
+                            Scenario("scenario-2", "description 2", "disease 2"),
+                            ResponsibilityStatus.EMPTY,
+                            emptyList(),
+                            null
+                    )
             ))
         }
     }

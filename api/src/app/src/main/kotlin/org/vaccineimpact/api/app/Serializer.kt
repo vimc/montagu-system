@@ -4,6 +4,7 @@ import com.github.salomonbrys.kotson.jsonSerializer
 import com.github.salomonbrys.kotson.registerTypeAdapter
 import com.google.gson.*
 import org.vaccineimpact.api.app.models.ResponsibilitySetStatus
+import org.vaccineimpact.api.app.models.ResponsibilityStatus
 import org.vaccineimpact.api.app.models.Result
 import org.vaccineimpact.api.app.models.ResultStatus
 
@@ -24,11 +25,13 @@ object Serializer
             .setPrettyPrinting()
             .disableHtmlEscaping()
             .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+            .serializeNulls()
             .registerTypeAdapter<java.time.LocalDate>(toStringSerializer)
             .registerTypeAdapter<java.time.Instant>(toStringSerializer)
             .registerTypeAdapter(rangeSerializer)
             .registerTypeAdapter<ResultStatus>(enumSerializer)
             .registerTypeAdapter<ResponsibilitySetStatus>(enumSerializer)
+            .registerTypeAdapter<ResponsibilityStatus>(enumSerializer)
             .create()
 
     fun toResult(data: Any?): String = toJson(Result(ResultStatus.SUCCESS, data, emptyList()))

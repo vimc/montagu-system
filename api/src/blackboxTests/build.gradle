@@ -10,3 +10,10 @@ dependencies {
     testCompile project(":testHelpers")
     testCompile project(":databaseInterface")
 }
+
+task copySpec(type: Copy) {
+    from 'src/test/resources/spec'
+    include '*.schema.json'
+    into 'build/classes/test/spec'
+}
+test.dependsOn 'copySpec'

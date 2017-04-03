@@ -6,10 +6,7 @@ import com.beust.klaxon.json
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.vaccineimpact.api.app.Serializer
-import org.vaccineimpact.api.app.models.ErrorInfo
-import org.vaccineimpact.api.app.models.ResponsibilitySetStatus
-import org.vaccineimpact.api.app.models.Result
-import org.vaccineimpact.api.app.models.ResultStatus
+import org.vaccineimpact.api.app.models.*
 import org.vaccineimpact.api.test_helpers.MontaguTests
 import java.time.LocalDate
 import java.time.Month
@@ -58,6 +55,14 @@ class SerializerTests : MontaguTests()
     {
         val actual = ResponsibilitySetStatus.APPROVED
         val expected = "\"approved\""
+        checkSerializedForm(expected, actual)
+    }
+
+    @Test
+    fun `can serialize ResponsibilityStatus`()
+    {
+        val actual = ResponsibilityStatus.INVALID
+        val expected = "\"invalid\""
         checkSerializedForm(expected, actual)
     }
 

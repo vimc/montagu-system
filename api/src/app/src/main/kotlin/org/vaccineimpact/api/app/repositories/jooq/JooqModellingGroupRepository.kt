@@ -6,10 +6,7 @@ import org.vaccineimpact.api.app.extensions.fetchInto
 import org.vaccineimpact.api.app.extensions.fieldsAsList
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
 import org.vaccineimpact.api.app.filters.whereMatchesFilter
-import org.vaccineimpact.api.app.models.ModellingGroup
-import org.vaccineimpact.api.app.models.Responsibilities
-import org.vaccineimpact.api.app.models.ResponsibilitySetStatus
-import org.vaccineimpact.api.app.models.Scenario
+import org.vaccineimpact.api.app.models.*
 import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.db.Tables.*
@@ -59,18 +56,19 @@ class JooqModellingGroupRepository(private val touchstoneRepository: () -> Touch
     override fun getResponsibilities(groupId: String, touchstoneId: String,
                                      scenarioFilterParameters: ScenarioFilterParameters): Responsibilities
     {
-        val group = getModellingGroup(groupId)
+        getModellingGroup(groupId)
         touchstoneRepository().use { it.touchstones.assertExists(touchstoneId) }
         val responsibilitySet = getResponsibilitySet(groupId, touchstoneId)
         if (responsibilitySet != null)
         {
-            val scenarios = getScenariosInResponsibilitySet(responsibilitySet, scenarioFilterParameters)
+            val responsibilities = getScenariosInResponsibilitySet(responsibilitySet, scenarioFilterParameters)
+                    .map { Responsibility(it, ResponsibilityStatus.EMPTY, emptyList(), null) }
             val status = mapEnum<ResponsibilitySetStatus>(responsibilitySet.status)
-            return Responsibilities(group, scenarios, status)
+            return Responsibilities(touchstoneId, "", status, responsibilities)
         }
         else
         {
-            return Responsibilities(group, emptyList(), null)
+            return Responsibilities(touchstoneId, "", null, emptyList())
         }
     }
 
