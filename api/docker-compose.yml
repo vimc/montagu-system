@@ -1,0 +1,8 @@
+version: '2'
+services:
+  api:
+    image: fi--didelx05.dide.ic.ac.uk:5000/montagu-api:${MONTAGU_API_VERSION}
+    ports:
+      - "8080:8080"
+  db:
+    image: fi--didelx05.dide.ic.ac.uk:5000/montagu-db:i228

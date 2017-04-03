@@ -56,3 +56,11 @@ distDocker {
     tag = api_docker_name
     tagVersion = api_docker_version
 }
+
+task showConfig(dependsOn: 'copyConfig') {
+    doLast {
+        println("This is the config being used by the main app:")
+        println(file("build/classes/main/config.properties").text)
+    }
+}
+copyConfig.finalizedBy 'showConfig'

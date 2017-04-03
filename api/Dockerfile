@@ -24,6 +24,8 @@ RUN ./gradlew
 # Pull in dependencies
 COPY ./src/build.gradle /api/src/
 COPY ./src/settings.gradle /api/src/
+COPY ./src/config/ /api/src/config/
+RUN echo 'docker' > config/current_user
 RUN ./gradlew
 
 # Do our build
