@@ -1,0 +1,109 @@
+group 'org.vaccineimpact'
+version '1.0-SNAPSHOT'
+
+buildscript {
+    ext.kotlin_version = '1.1.1'
+
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+task run(dependsOn: ':app:run')
+task generateDatabaseInterface(dependsOn: ':generateDatabaseInterface:run')
+// 'testLibrary' runs things that can be tested without a running API.
+// i.e. everything other than blackboxTests.
+task testLibrary(dependsOn: [':app:test', ':databaseTests:test'])
+
+def loadPropertiesFile(path) {
+    def props = new Properties()
+    def f = file(path)
+    if (f.exists()) {
+        f.withReader {
+            props.load(it)
+        }
+    }
+    return props
+}
+
+def loadProperties() {
+    def properties = loadPropertiesFile("config/default.properties")
+    def userFile = file("config/current_user")
+    if (userFile.exists()) {
+        def user = userFile.text.trim()
+        println("Using configuration for user $user")
+        def userPropertiesFile = file("config/users/${user}.properties")
+        if (userPropertiesFile.exists()) {
+            println("Found extra configuration in config/users/${user}.properties")
+            def userProperties = loadPropertiesFile(userPropertiesFile.path)
+            properties.putAll(userProperties)
+        } else {
+            throw new Exception("You defined a user file, with user '$user', " +
+                    "but no corresponding properties file exists at $userPropertiesFile.absolutePath")
+        }
+    }
+    return properties
+}
+
+task loadPropertiesTask() {
+    rootProject.ext.props = loadProperties()
+}
+subprojects {
+    apply plugin: 'kotlin'
+
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+
+    dependencies {
+        compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
+    }
+
+    task copyConfig(type: Copy, dependsOn: ':loadPropertiesTask') {
+        from 'src/main/resources'
+        include '*'
+        into 'build/classes/main/'
+        expand(rootProject.ext.props)
+    }
+    //There are two different places the JVM might look for these, and it depends
+    //on whether we're running in development, or from a proper JAR distribution
+    //which one we need. So let's just do both
+    task copyConfigToResources(type: Copy, dependsOn: ':loadPropertiesTask') {
+        from 'src/main/resources'
+        include '*'
+        into 'build/resources/main/'
+        expand(rootProject.ext.props)
+    }
+    task copyTestConfig(type: Copy, dependsOn: ':loadPropertiesTask') {
+        from 'src/test/resources'
+        include '*'
+        into 'build/classes/test/'
+        expand(rootProject.ext.props)
+    }
+
+    processResources.finalizedBy 'copyConfig', 'copyConfigToResources'
+    processTestResources.finalizedBy 'copyTestConfig'
+
+    task startDatabase(dependsOn: ':loadPropertiesTask') {
+        String portBinding = rootProject.ext.props.get('testdb_external_port') + ':' +  rootProject.ext.props.get('testdb_exposed_port')
+        String image = rootProject.ext.props.get('testdb_image')
+        doLast {
+            exec {
+                commandLine 'docker', 'pull', image
+            }
+            exec {
+                commandLine 'docker', 'run', '-d', '--rm', '-p', portBinding, '--name', 'montagu-api-test_database', image
+            }
+        }
+    }
+
+    task stopDatabase(type: Exec) {
+        commandLine 'docker', 'stop', 'montagu-api-test_database'
+    }
+}

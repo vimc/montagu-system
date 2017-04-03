@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/api.iml" filepath="$PROJECT_DIR$/.idea/modules/api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/app.iml" group="app" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/app_databaseTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/app_databaseTest.iml" group="app" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/app_main.iml" filepath="$PROJECT_DIR$/.idea/modules/app/app_main.iml" group="app" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/app_test.iml" filepath="$PROJECT_DIR$/.idea/modules/app/app_test.iml" group="app" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/blackboxTests/blackboxTests.iml" filepath="$PROJECT_DIR$/.idea/modules/blackboxTests/blackboxTests.iml" group="blackboxTests" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/blackboxTests/blackboxTests_main.iml" filepath="$PROJECT_DIR$/.idea/modules/blackboxTests/blackboxTests_main.iml" group="blackboxTests" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/blackboxTests/blackboxTests_test.iml" filepath="$PROJECT_DIR$/.idea/modules/blackboxTests/blackboxTests_test.iml" group="blackboxTests" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/databaseInterface/databaseInterface.iml" filepath="$PROJECT_DIR$/.idea/modules/databaseInterface/databaseInterface.iml" group="databaseInterface" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/databaseInterface/databaseInterface_main.iml" filepath="$PROJECT_DIR$/.idea/modules/databaseInterface/databaseInterface_main.iml" group="databaseInterface" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/databaseInterface/databaseInterface_test.iml" filepath="$PROJECT_DIR$/.idea/modules/databaseInterface/databaseInterface_test.iml" group="databaseInterface" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/databaseTests/databaseTests.iml" filepath="$PROJECT_DIR$/.idea/modules/databaseTests/databaseTests.iml" group="databaseTests" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/databaseTests/databaseTests_main.iml" filepath="$PROJECT_DIR$/.idea/modules/databaseTests/databaseTests_main.iml" group="databaseTests" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/databaseTests/databaseTests_test.iml" filepath="$PROJECT_DIR$/.idea/modules/databaseTests/databaseTests_test.iml" group="databaseTests" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/generateDatabaseInterface/generateDatabaseInterface.iml" filepath="$PROJECT_DIR$/.idea/modules/generateDatabaseInterface/generateDatabaseInterface.iml" group="generateDatabaseInterface" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/generateDatabaseInterface/generateDatabaseInterface_main.iml" filepath="$PROJECT_DIR$/.idea/modules/generateDatabaseInterface/generateDatabaseInterface_main.iml" group="generateDatabaseInterface" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/generateDatabaseInterface/generateDatabaseInterface_test.iml" filepath="$PROJECT_DIR$/.idea/modules/generateDatabaseInterface/generateDatabaseInterface_test.iml" group="generateDatabaseInterface" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/testHelpers/testHelpers.iml" filepath="$PROJECT_DIR$/.idea/modules/testHelpers/testHelpers.iml" group="testHelpers" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/testHelpers/testHelpers_main.iml" filepath="$PROJECT_DIR$/.idea/modules/testHelpers/testHelpers_main.iml" group="testHelpers" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/testHelpers/testHelpers_test.iml" filepath="$PROJECT_DIR$/.idea/modules/testHelpers/testHelpers_test.iml" group="testHelpers" />
+    </modules>
+  </component>
+</project>
