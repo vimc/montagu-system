@@ -8,14 +8,17 @@ import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
 import org.vaccineimpact.api.app.filters.whereMatchesFilter
 import org.vaccineimpact.api.app.models.*
 import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
+import org.vaccineimpact.api.app.repositories.ScenarioRepository
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.db.Tables.*
 import org.vaccineimpact.api.db.tables.records.ModellingGroupRecord
 import org.vaccineimpact.api.db.tables.records.ResponsibilitySetRecord
-import org.vaccineimpact.api.db.tables.records.ScenarioDescriptionRecord
 import java.util.*
 
-class JooqModellingGroupRepository(private val touchstoneRepository: () -> TouchstoneRepository)
+class JooqModellingGroupRepository(
+        private val touchstoneRepository: () -> TouchstoneRepository,
+        private val scenarioRepository: () -> ScenarioRepository
+)
     : JooqRepository(), ModellingGroupRepository
 {
     override fun getModellingGroups(): Iterable<ModellingGroup>
@@ -75,21 +78,22 @@ class JooqModellingGroupRepository(private val touchstoneRepository: () -> Touch
     private fun getScenariosInResponsibilitySet(responsibilitySet: ResponsibilitySetRecord,
                                                 scenarioFilterParameters: ScenarioFilterParameters): List<Scenario>
     {
-        return dsl
-                .select(SCENARIO_DESCRIPTION.fieldsAsList())
+        val records = dsl
+                .select(SCENARIO_DESCRIPTION.ID)
                 .fromJoinPath(RESPONSIBILITY_SET, RESPONSIBILITY, SCENARIO, SCENARIO_DESCRIPTION)
                 .where(RESPONSIBILITY.RESPONSIBILITY_SET.eq(responsibilitySet.id))
                 .whereMatchesFilter(JooqScenarioFilter(), scenarioFilterParameters)
-                .fetchInto<ScenarioDescriptionRecord>()
-                .map { JooqScenarioRepository.mapScenario(it) }
-                .toList()
+                .fetch()
+        val scenarioIds = records.map { it.getValue(SCENARIO_DESCRIPTION.ID) }
+        return scenarioRepository().use {
+            it.getScenarios(scenarioIds)
+        }
     }
 
     private fun getResponsibilitySet(groupId: String, touchstoneId: String): ResponsibilitySetRecord?
     {
-        val responsibility_set: ResponsibilitySetRecord? = dsl.fetchAny(RESPONSIBILITY_SET,
+        return dsl.fetchAny(RESPONSIBILITY_SET,
                 RESPONSIBILITY_SET.MODELLING_GROUP.eq(groupId).and(RESPONSIBILITY_SET.TOUCHSTONE.eq(touchstoneId)))
-        return responsibility_set
     }
 
     private fun mapModellingGroup(x: ModellingGroupRecord) = ModellingGroup(x.id, x.description)

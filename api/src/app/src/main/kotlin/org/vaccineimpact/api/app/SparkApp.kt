@@ -4,6 +4,7 @@ import org.vaccineimpact.api.app.controllers.ModellingGroupController
 import org.vaccineimpact.api.app.controllers.TouchstoneController
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.jooq.JooqModellingGroupRepository
+import org.vaccineimpact.api.app.repositories.jooq.JooqScenarioRepository
 import org.vaccineimpact.api.app.repositories.jooq.JooqTouchstoneRepository
 import spark.Spark as spk
 
@@ -21,9 +22,11 @@ class MontaguApi
     fun makeRepositories(): Repositories
     {
         val touchstoneRepository = { JooqTouchstoneRepository() }
-        val modellingGroupRepository = { JooqModellingGroupRepository(touchstoneRepository) }
+        val scenarioRepository = { JooqScenarioRepository() }
+        val modellingGroupRepository = { JooqModellingGroupRepository(touchstoneRepository, scenarioRepository) }
         return Repositories(
                 touchstoneRepository,
+                scenarioRepository,
                 modellingGroupRepository
         )
     }

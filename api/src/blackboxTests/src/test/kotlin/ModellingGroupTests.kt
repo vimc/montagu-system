@@ -30,8 +30,8 @@ class ModellingGroupTests : DatabaseTest()
         val touchstone = "touchstone-1"
         validate("/modelling-groups/$group/responsibilities/$touchstone/") against "ResponsibilitySet" given {
             it.addGroup(group, "description")
-            it.addScenarioDescription("scenario-1", "description 1", "disease 1", addDisease = true)
-            it.addScenarioDescription("scenario-2", "description 2", "disease 2", addDisease = true)
+            it.addScenarioDescription("scenario-1", "description 1", "disease-1", addDisease = true)
+            it.addScenarioDescription("scenario-2", "description 2", "disease-2", addDisease = true)
             it.addTouchstone("touchstone", 1, "status", 1900..2000, addName = true, addStatus = true)
             val setId = it.addResponsibilitySet(group, touchstone, "submitted", addStatus = true)
             it.addResponsibility(setId, touchstone, "scenario-1")
@@ -48,9 +48,10 @@ class ModellingGroupTests : DatabaseTest()
                     "id" to "scenario-1",
                     "description" to
                     "description 1",
-                    "disease" to "disease 1"
+                    "disease" to "disease-1",
+                    "touchstones" to array("touchstone-1")
             )})
-            assertThat(responsibility["status"]).isEqualTo("submitted")
+            assertThat(responsibility["status"]).isEqualTo("empty")
             assertThat(responsibility["problems"]).isEqualTo(json { array() })
             assertThat(responsibility["current_estimate"]).isEqualTo(null)
         }

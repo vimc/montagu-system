@@ -5,7 +5,7 @@
 		"id": { "$ref": "StandardIdentifier.schema.json" },
 		"touchstones": {
 			"type": "array",
-			"item": { "$ref": "StandardIdentifier.schema.json" }
+			"items": { "$ref": "StandardIdentifier.schema.json" }
 		},
 		"description": { "type": "string" },
     	"disease": { "$ref": "StandardIdentifier.schema.json" }

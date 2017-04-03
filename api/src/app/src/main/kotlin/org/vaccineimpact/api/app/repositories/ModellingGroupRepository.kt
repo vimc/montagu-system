@@ -5,7 +5,7 @@ import org.vaccineimpact.api.app.models.ModellingGroup
 import org.vaccineimpact.api.app.models.Responsibilities
 import java.io.Closeable
 
-interface ModellingGroupRepository : Closeable
+interface ModellingGroupRepository : Repository
 {
     fun getModellingGroups(): Iterable<ModellingGroup>
     fun getModellingGroup(id: String): ModellingGroup

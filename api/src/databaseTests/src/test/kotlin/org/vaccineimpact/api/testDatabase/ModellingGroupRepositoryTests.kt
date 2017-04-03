@@ -2,6 +2,7 @@ package org.vaccineimpact.api.databaseTests
 
 import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.jooq.JooqModellingGroupRepository
+import org.vaccineimpact.api.app.repositories.jooq.JooqScenarioRepository
 import org.vaccineimpact.api.app.repositories.jooq.JooqTouchstoneRepository
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.test_helpers.DatabaseTest
@@ -22,6 +23,9 @@ abstract class ModellingGroupRepositoryTests : DatabaseTest()
 
     private fun makeRepository(): ModellingGroupRepository
     {
-        return JooqModellingGroupRepository({ JooqTouchstoneRepository() })
+        return JooqModellingGroupRepository(
+                { JooqTouchstoneRepository() },
+                { JooqScenarioRepository() }
+        )
     }
 }
