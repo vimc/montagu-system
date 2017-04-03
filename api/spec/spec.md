@@ -373,19 +373,13 @@ Schema: [`Scenarios.schema.json`](Scenarios.schema.json)
             "id": "menA-novacc",
             "touchstones": [ "2016-op", "2017-wuenic", "2017-op" ],
             "description": "Menigitis A, No vaccination",
-            "vaccination_level": "none",
-            "disease": "MenA",
-            "vaccine": "MenA",
-            "scenario_type": "none"
+            "disease": "MenA"
         },
         {
             "id": "yf-campaign-reactive-nogavi",
             "touchstones": [ "2017-wuenic", "2017-op" ],
             "description": "Yellow Fever, Reactive campaign, SDF coverage without GAVI support",
-            "vaccination_level": "without",
-            "disease": "YF",
-            "vaccine": "YF",
-            "scenario_type": "campaign"
+            "disease": "YF"
         }
     ]
 
@@ -394,25 +388,10 @@ Schema: [`Scenarios.schema.json`](Scenarios.schema.json)
 #### touchstone
 Optional. A touchstone id. Only returns scenarios that belong to that touchstone.
 
-#### vaccine
-Optional. A vaccine id. Only returns scenarios that match that vaccine.
-
-Example: `/scenarios/?vaccine=MenA`
-
 #### disease
 Optional. A disease id. Only returns scenarios that match that disease.
 
 Example: `/scenarios/?disease=YF`
-
-#### vaccination_level
-Optional. A vaccination level (none, without, with). Only returns scenarios that match that vaccination level.
-
-Example: `/scenarios/?vaccination_level=with`
-
-#### scenario_type
-Optional. A scenario type (none, routine, campaign). Only returns scenarios that match that scenario type.
-
-Example: `/scenarios/?scenario_type=routine`
 
 ## POST /scenarios/
 Creates a new scenario. Request format:
@@ -425,10 +404,7 @@ Schema: [`CreateScenario.schema.json`](CreateScenario.schema.json)
     {
         "id": "ID",
         "description": "DESCRIPTION",
-        "vaccination_level": "none",
-        "disease": "VALID-DISEASE-ID",
-        "vaccine": "VALID-VACCINE-ID",
-        "scenario_type": "none"
+        "disease": "VALID-DISEASE-ID"
     }
     
 ## PATCH /scenarios/{scenario-id}/
@@ -444,10 +420,7 @@ Schema: [`UpdateScenario.schema.json`](UpdateScenario.schema.json)
 
     {
         "description": "DESCRIPTION",
-        "vaccination_level": "none",
-        "disease": "VALID-DISEASE-ID",
-        "vaccine": "VALID-VACCINE-ID",
-        "scenario_type": "none"
+        "disease": "VALID-DISEASE-ID"
     }
 
 ## GET /scenarios/{scenario-id}/responsible_groups/{touchstone-id}
@@ -540,19 +513,16 @@ Schema: [`ScenariosInTouchstone.schema.json`](ScenariosInTouchstone.schema.json)
                 "id": "menA-novacc",
                 "touchstones": [ "2016-op", "2017-wuenic", "2017-op" ],
                 "description": "Menigitis A, No vaccination",
-                "vaccination_level": "none",
-                "disease": "MenA",
-                "vaccine": "MenA",
-                "scenario_type": "none"
+                "disease": "MenA"
             },
             "coverage_sets": [ 
                 { 
                     "id": 101,
                     "touchstone": "2017-op",
                     "name": "Menigitis no vaccination",
-                    "coverage_type": "none",
                     "vaccine": "MenA",
-                    "vaccination_level": "none"
+                    "vaccination_level": "none",
+                    "scenario_type": "none"
                 }
             ]
         },
@@ -561,27 +531,24 @@ Schema: [`ScenariosInTouchstone.schema.json`](ScenariosInTouchstone.schema.json)
                 "id": "yf-campaign-reactive-nogavi",
                 "touchstones": [ "2017-wuenic", "2017-op" ],
                 "description": "Yellow Fever, Reactive campaign, SDF coverage without GAVI support",
-                "vaccination_level": "without",
-                "disease": "YF",
-                "vaccine": "YF",
-                "scenario_type": "campaign"
+                "disease": "YF"
             },
             "coverage_sets": [
                 { 
                     "id": 643,
                     "touchstone": "2017-op",
                     "name": "Yellow fever birth dose (with GAVI support)",
-                    "coverage_type": "routine",
                     "vaccine": "YF",
-                    "vaccination_level": "with"
+                    "vaccination_level": "with",
+                    "scenario_type": "routine"
                 },
                 { 
                     "id": 643,
                     "touchstone": "2017-op",
                     "name": "Yellow fever reactive campaign (with GAVI support)",
-                    "coverage_type": "campaign",
                     "vaccine": "YF",
-                    "vaccination_level": "with"
+                    "vaccination_level": "with",
+                    "scenario_type": "campaign"
                 }
             ]
         }
@@ -717,7 +684,7 @@ Schema: [`CoverageSets.schema.json`](CoverageSets.schema.json)
             "id": 189,
             "touchstone": "2017-op",
             "name": "Measles 1st Dose (without GAVI support)",
-            "coverage_type": "routine",
+            "scenario_type": "routine",
             "vaccine": "MCV1",
             "vaccination_level": "without"
         },
@@ -725,7 +692,7 @@ Schema: [`CoverageSets.schema.json`](CoverageSets.schema.json)
             "id": 278,
             "touchstone": "2017-op",
             "name": "Measles 2nd Dose (without GAVI support)",
-            "coverage_type": "routine",
+            "scenario_type": "routine",
             "vaccine": "MCV2",
             "vaccination_level": "without"
         },
@@ -733,17 +700,22 @@ Schema: [`CoverageSets.schema.json`](CoverageSets.schema.json)
             "id": 290,
             "touchstone": "2017-op",
             "name": "Yellow Fever reactive campaign (with GAVI support)",
-            "coverage_type": "campaign",
+            "scenario_type": "campaign",
             "vaccine": "YF",
             "vaccination_level": "with"
         }
     ]
 
 ### Query parameters
-#### coverage_type
+#### scenario
+Optional. Takes a scenario id. Returns only those coverage sets that belong to the given scenario.
+
+Example: `/touchstones/2017-op/coverage_sets/?scenario=64`
+
+#### scenario_type
 Optional. Takes either 'routine' or 'campaign'. The coverage sets are filtered to the specified coverage type.
 
-Example: `/touchstones/2017-op/coverage_sets/?coverage_type=campaign`
+Example: `/touchstones/2017-op/coverage_sets/?scenario_type=campaign`
 
 #### vaccine
 Optional. Takes a valid vaccine identifier. The coverage sets are filtered to the specified vaccine.
@@ -765,9 +737,9 @@ Schema: [`CoverageSet.schema.json`](CoverageSet.schema.json)
         "id": 189,
         "touchstone": "2017-op",        
         "name": "Measles 1st Dose (With GAVI support)",
-        "coverage_type": "routine",
         "vaccine": "Measles",
-        "vaccination_level": "with"
+        "vaccination_level": "with",        
+        "scenario_type": "routine"
     }
 
 The second section has `Content-Type: text/csv`, and returns CSV data with headers:
@@ -800,8 +772,8 @@ Schema: [`CreateCoverageSet.schema.json`](CreateCoverageSet.schema.json)
     {
         "name": "Measles 1st dose",
         "vaccine": "MCV1",
-        "coverage_type": "routine",
-        "vaccination_level": "with"
+        "vaccination_level": "with",
+        "scenario_type": "routine"
     }
 
 The second section must have `Content-Type: text\csv` and requires CSV data with headers:
@@ -833,8 +805,8 @@ Schema: [`CreateCoverageSet.schema.json`](CreateCoverageSet.schema.json)
     {
         "name": "Measles 1st dose",
         "vaccine": "MCV1",
-        "coverage_type": "routine",
-        "vaccination_level": "with"
+        "vaccination_level": "with",        
+        "scenario_type": "routine"
     }
 
 The second section must have `Content-Type: text\csv` and requires CSV data with headers:
@@ -885,10 +857,7 @@ Schema: [`BurdenEstimates.schema.json`](BurdenEstimates.schema.json)
                 "id": "menA-novacc",
                 "touchstones": [ "2016-op", "2017-wuenic", "2017-op" ],
                 "description": "Menigitis A, No vaccination",
-                "vaccination_level": "none",
-                "disease": "MenA",
-                "vaccine": "MenA",
-                "scenario_type": "none"
+                "disease": "MenA"
             },
             "responsible_group": {
                 "id": "IC-YellowFever",
@@ -928,10 +897,7 @@ Schema: [`BurdenEstimate.schema.json`](BurdenEstimate.schema.json)
             "id": "menA-novacc",
             "touchstones": [ "2016-op", "2017-wuenic", "2017-op" ],
             "description": "Menigitis A, No vaccination",
-            "vaccination_level": "none",
-            "disease": "MenA",
-            "vaccine": "MenA",
-            "scenario_type": "none"
+            "disease": "MenA"
         },
         "responsible_group": {
             "id": "IC-YellowFever",
@@ -1159,7 +1125,7 @@ Schema: [`CreateModelVersion.schema.json`](CreateModelVersion.schema.json)
     }
 
 # Responsibilities
-## GET /modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}
+## GET /modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}/
 Returns an enumerations of the responsibilities of this modelling group in the given touchstone,
 and the overall status of this modelling groups work in this touchstone.
 
@@ -1181,10 +1147,7 @@ Schema: [`ResponsibilitySet.schema.json`](ResponsibilitySet.schema.json)
                     "id": "menA-novacc",
                     "touchstones": [ "2016-op", "2017-wuenic", "2017-op" ],
                     "description": "Menigitis A, No vaccination",
-                    "vaccination_level": "none",
-                    "disease": "MenA",
-                    "vaccine": "MenA",
-                    "scenario_type": "none"
+                    "disease": "MenA"
                 },
                 "status": "empty",
                 "problems": [ "No burden estimates have been uploaded" ],
@@ -1195,10 +1158,7 @@ Schema: [`ResponsibilitySet.schema.json`](ResponsibilitySet.schema.json)
                     "id": "yf-campaign-reactive-nogavi",
                     "touchstones": [ "2017-wuenic", "2017-op" ],
                     "description": "Yellow Fever, Reactive campaign, SDF coverage without GAVI support",
-                    "vaccination_level": "without",
-                    "disease": "YF",
-                    "vaccine": "YF",
-                    "scenario_type": "campaign"
+                    "disease": "YF"
                 },
                 "status": "invalid",
                 "problems": [

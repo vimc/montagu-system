@@ -8,11 +8,8 @@
 			"item": { "$ref": "StandardIdentifier.schema.json" }
 		},
 		"description": { "type": "string" },
-		"vaccination_level": { "$ref": "VaccinationLevel.schema.json" },
-    	"disease": { "$ref": "StandardIdentifier.schema.json" },
-    	"vaccine": { "$ref": "StandardIdentifier.schema.json" },
-    	"scenario_type": { "$ref": "ScenarioType.schema.json" }
+    	"disease": { "$ref": "StandardIdentifier.schema.json" }
 	},
 	"additionalProperties": false,
-	"required": [ "id", "touchstones", "description", "vaccination_level", "disease", "vaccine", "scenario_type" ]
+	"required": [ "id", "touchstones", "description", "disease" ]
 }

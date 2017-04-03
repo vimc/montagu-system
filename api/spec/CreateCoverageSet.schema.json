@@ -3,10 +3,10 @@
 	"type": "object",
 	"properties": {
         "name": { "type": "string" },
-		"coverage_type": { "enum": [ "routine", "campaign" ] },
+		"scenario_type": { "enum": [ "routine", "campaign" ] },
 		"vaccine": { "$ref": "StandardIdentifier.schema.json" },
 		"vaccination_level": { "$ref": "VaccinationLevel.schema.json" }
 	},
 	"additionalProperties": false,
-	"required": [ "name", "coverage_type", "vaccine", "vaccination_level" ]
+	"required": [ "name", "scenario_type", "vaccine", "vaccination_level" ]
 }

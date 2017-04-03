@@ -5,7 +5,7 @@
 		"id": { "type": "integer" },
 		"touchstone": { "$ref": "StandardIdentifier.schema.json" },
         "name": { "type": "string" },
-		"coverage_type": { "$ref": "ScenarioType.schema.json" },
+		"scenario_type": { "$ref": "ScenarioType.schema.json" },
 		"vaccine": { "$ref": "StandardIdentifier.schema.json" },
 		"vaccination_level": { "$ref": "VaccinationLevel.schema.json" }
 	},
@@ -14,7 +14,7 @@
 		"id", 
 		"touchstone", 
 		"name", 
-		"coverage_type", 
+		"scenario_type", 
 		"vaccine", 
 		"vaccination_level" 
 	]
