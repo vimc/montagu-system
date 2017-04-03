@@ -16,6 +16,8 @@ buildscript {
 
 task run(dependsOn: ':app:run')
 task generateDatabaseInterface(dependsOn: ':generateDatabaseInterface:run')
+// 'testLibrary' runs things that can be tested without a running API.
+// i.e. everything other than blackboxTests.
 task testLibrary(dependsOn: [':app:test', ':databaseTests:test'])
 
 def loadPropertiesFile(path) {
