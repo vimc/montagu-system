@@ -1,14 +1,13 @@
-package org.vaccineimpact.api.databaseTests
+package org.vaccineimpact.api.test_helpers
 
 import org.junit.After
 import org.junit.Before
 import org.junit.BeforeClass
 import org.vaccineimpact.api.db.Config
-import org.vaccineimpact.api.app.errors.UnableToConnectToDatabaseError
 import org.vaccineimpact.api.db.JooqContext
-import org.vaccineimpact.api.test_helpers.MontaguTests
+import org.vaccineimpact.api.db.UnableToConnectToDatabase
 
-abstract class DatabaseTest : org.vaccineimpact.api.test_helpers.MontaguTests()
+abstract class DatabaseTest : MontaguTests()
 {
 
     @Before
@@ -23,7 +22,7 @@ abstract class DatabaseTest : org.vaccineimpact.api.test_helpers.MontaguTests()
     @After
     fun dropDatabase()
     {
-        JooqContext(dbName = "postgres").use {
+        org.vaccineimpact.api.db.JooqContext(dbName = "postgres").use {
             it.dsl.query("DROP DATABASE $dbName").execute()
         }
     }
@@ -36,7 +35,16 @@ abstract class DatabaseTest : org.vaccineimpact.api.test_helpers.MontaguTests()
         @BeforeClass @JvmStatic
         fun setupTestEnvironment()
         {
-            DatabaseChecker.checkDatabaseExists(templateDbName)
+            if (!DatabaseChecker.check(templateDbName))
+            {
+                println("Template database does not exist, will rename from '${dbName}'")
+                DatabaseChecker.checkDatabaseExists(dbName)
+                JooqContext(dbName = "postgres").use {
+                    it.dsl.query("ALTER DATABASE ${dbName} RENAME TO ${templateDbName}").execute()
+                }
+                println("Created template database by renaming ${dbName} to ${templateDbName}")
+                DatabaseChecker.checkDatabaseExists(templateDbName)
+            }
         }
     }
 }
@@ -73,14 +81,14 @@ object DatabaseChecker
         return false
     }
 
-    private fun check(dbName: String): Boolean
+    fun check(dbName: String): Boolean
     {
         try
         {
             JooqContext(dbName = dbName).close()
             return true
         }
-        catch (e: UnableToConnectToDatabaseError)
+        catch (e: UnableToConnectToDatabase)
         {
             error = e
             return false

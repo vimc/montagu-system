@@ -77,9 +77,9 @@
     <orderEntry type="library" name="Gradle: com.github.fge:json-schema-core:1.2.5" level="project" />
     <orderEntry type="library" name="Gradle: javax.mail:mailapi:1.4.3" level="project" />
     <orderEntry type="library" name="Gradle: net.sf.jopt-simple:jopt-simple:4.6" level="project" />
-    <orderEntry type="library" name="Gradle: org.postgresql:postgresql:9.4.1212.jre7" level="project" />
     <orderEntry type="library" name="Gradle: org.jooq:jooq:3.9.1" level="project" />
     <orderEntry type="library" name="Gradle: org.jooq:jooq-meta:3.9.1" level="project" />
+    <orderEntry type="library" name="Gradle: org.postgresql:postgresql:9.4.1212.jre7" level="project" />
     <orderEntry type="library" name="Gradle: com.github.fge:uri-template:0.9" level="project" />
     <orderEntry type="library" name="Gradle: com.github.fge:jackson-coreutils:1.8" level="project" />
     <orderEntry type="library" name="Gradle: org.mozilla:rhino:1.7R4" level="project" />

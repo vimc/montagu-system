@@ -1,12 +1,15 @@
 
+import com.fasterxml.jackson.databind.JsonNode
 import com.github.fge.jackson.JsonLoader
 import com.github.fge.jsonschema.main.JsonSchemaFactory
 import khttp.get
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
-import org.vaccineimpact.api.test_helpers.MontaguTests
+import org.vaccineimpact.api.db.JooqContext
+import org.vaccineimpact.api.db.direct.addGroup
+import org.vaccineimpact.api.test_helpers.DatabaseTest
 
-class ModellingGroupTests : MontaguTests()
+class ModellingGroupTests : DatabaseTest()
 {
     @Test
     fun `modelling-groups matches schema`()
@@ -15,20 +18,24 @@ class ModellingGroupTests : MontaguTests()
         val baseUrl = "v1"
         val root = "$hostUrl/$baseUrl"
 
-        // Need to set up a temporary database in a known state
-        /*JooqContext().use {
+        JooqContext().use {
             it.addGroup("group-id", "group description")
-        }*/
+        }
 
         val response = get("$root/modelling-groups/")
 
-        // Need to first check it conforms to Result.schema.json
-        val schemaJson = JsonLoader.fromPath("/home/me06/projects/vimc/api/spec/ModellingGroups.schema.json")
-        // Need to pull out the 'data' field of the generic result
+        val resultSchema = JsonLoader.fromPath("/home/me06/projects/vimc/api/spec/Response.schema.json")
+        val dataSchema = JsonLoader.fromPath("/home/me06/projects/vimc/api/spec/ModellingGroups.schema.json")
         val json = JsonLoader.fromString(response.text)
+        validate(resultSchema, json)
+        val data = json["data"]
+        validate(dataSchema, data)
+    }
+
+    private fun validate(schema: JsonNode, json: JsonNode)
+    {
         val schemaFactory = JsonSchemaFactory.byDefault()
-        val schema = schemaFactory.getJsonSchema(schemaJson)
-        val report = schema.validate(json)
+        val report = schemaFactory.getJsonSchema(schema).validate(json)
         println(report)
         assertThat(report.isSuccess).isTrue()
     }
