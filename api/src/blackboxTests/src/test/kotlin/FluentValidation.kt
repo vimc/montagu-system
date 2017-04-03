@@ -3,6 +3,7 @@ import com.beust.klaxon.JsonArray
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
 import khttp.get
+import org.vaccineimpact.api.db.Config
 import org.vaccineimpact.api.db.JooqContext
 
 fun validate(url: String) = FluentValidationValidateStep(url)
@@ -51,7 +52,7 @@ class FluentValidation(
 
     private fun run(): String
     {
-        val hostUrl = "http://localhost:8080"
+        val hostUrl = Config["app.url"]
         val baseUrl = "v1"
         val root = "$hostUrl/$baseUrl"
 

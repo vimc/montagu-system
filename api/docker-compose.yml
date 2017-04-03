@@ -4,5 +4,14 @@ services:
     image: fi--didelx05.dide.ic.ac.uk:5000/montagu-api:${MONTAGU_API_VERSION}
     ports:
       - "8080:8080"
+    depends_on:
+      - db
   db:
     image: fi--didelx05.dide.ic.ac.uk:5000/montagu-db:i228
+  tests:
+    depends_on:
+      - api
+      - db
+    build:
+      context: .
+      dockerfile: Dockerfile-blackbox
