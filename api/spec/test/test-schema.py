@@ -6,7 +6,7 @@ import jsonschema
 import re
 
 schema_relative_path = ".."
-schema_dir = os.path.abspath(schema_relative_path).replace('\\', '/')
+schema_dir = os.path.abspath(schema_relative_path).replace('\\', '/') + "/"
 spec_path = os.path.join(schema_dir, "spec.md")
 print(schema_dir)
 

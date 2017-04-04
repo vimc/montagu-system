@@ -371,13 +371,13 @@ Schema: [`Scenarios.schema.json`](Scenarios.schema.json)
     [
         {
             "id": "menA-novacc",
-            "touchstones": [ "2016-op", "2017-wuenic", "2017-op" ],
+            "touchstones": [ "2016-op-1", "2017-wuenic-1", "2017-op-1" ],
             "description": "Menigitis A, No vaccination",
             "disease": "MenA"
         },
         {
             "id": "yf-campaign-reactive-nogavi",
-            "touchstones": [ "2017-wuenic", "2017-op" ],
+            "touchstones": [ "2017-wuenic-1", "2017-op-1" ],
             "description": "Yellow Fever, Reactive campaign, SDF coverage without GAVI support",
             "disease": "YF"
         }
@@ -457,14 +457,18 @@ Schema: [`Touchstones.schema.json`](Touchstones.schema.json)
 ### Example
     [
         { 
-            "id": "2017-wuenic",
-            "description": "2017 WUENIC Update",
+            "id": "op-2017-1",
+            "name": "op-2017",
+            "version": 1,            
+            "description": "2017 Operational Forecast",
             "years": { "start": 1996, "end": 2017 },
             "status": "finished"
         },
         { 
-            "id": "2017-op",
-            "description": "2017 Operational Forecast",
+            "id": "wuenic-2017-1",
+            "name": "wuenic-2017",
+            "version": 1,
+            "description": "2017 Wuenic Update",
             "years": { "start": 1996, "end": 2081 },
             "status": "open"
         }
@@ -480,6 +484,8 @@ Schema: [`CreateTouchstone.schema.json`](CreateTouchstone.schema.json)
 ### Example
     {
          "id": "an-id",
+         "name": "a-name",
+         "version": 1,
          "description": "A description",
          "years": { "start": 2000, "end": 2100 }
     }
@@ -511,14 +517,14 @@ Schema: [`ScenariosInTouchstone.schema.json`](ScenariosInTouchstone.schema.json)
         {
             "scenario": {
                 "id": "menA-novacc",
-                "touchstones": [ "2016-op", "2017-wuenic", "2017-op" ],
+                "touchstones": [ "2016-op-1", "2017-wuenic-1", "2017-op-1" ],
                 "description": "Menigitis A, No vaccination",
                 "disease": "MenA"
             },
             "coverage_sets": [ 
                 { 
                     "id": 101,
-                    "touchstone": "2017-op",
+                    "touchstone": "2017-op-1",
                     "name": "Menigitis no vaccination",
                     "vaccine": "MenA",
                     "vaccination_level": "none",
@@ -529,14 +535,14 @@ Schema: [`ScenariosInTouchstone.schema.json`](ScenariosInTouchstone.schema.json)
         {
             "scenario": {
                 "id": "yf-campaign-reactive-nogavi",
-                "touchstones": [ "2017-wuenic", "2017-op" ],
+                "touchstones": [ "2017-wuenic-1", "2017-op-1" ],
                 "description": "Yellow Fever, Reactive campaign, SDF coverage without GAVI support",
                 "disease": "YF"
             },
             "coverage_sets": [
                 { 
                     "id": 643,
-                    "touchstone": "2017-op",
+                    "touchstone": "2017-op-1",
                     "name": "Yellow fever birth dose (with GAVI support)",
                     "vaccine": "YF",
                     "vaccination_level": "with",
@@ -544,7 +550,7 @@ Schema: [`ScenariosInTouchstone.schema.json`](ScenariosInTouchstone.schema.json)
                 },
                 { 
                     "id": 643,
-                    "touchstone": "2017-op",
+                    "touchstone": "2017-op-1",
                     "name": "Yellow fever reactive campaign (with GAVI support)",
                     "vaccine": "YF",
                     "vaccination_level": "with",
@@ -682,7 +688,7 @@ Schema: [`CoverageSets.schema.json`](CoverageSets.schema.json)
     [
         {
             "id": 189,
-            "touchstone": "2017-op",
+            "touchstone": "2017-op-1",
             "name": "Measles 1st Dose (without GAVI support)",
             "scenario_type": "routine",
             "vaccine": "MCV1",
@@ -690,7 +696,7 @@ Schema: [`CoverageSets.schema.json`](CoverageSets.schema.json)
         },
         {
             "id": 278,
-            "touchstone": "2017-op",
+            "touchstone": "2017-op-1",
             "name": "Measles 2nd Dose (without GAVI support)",
             "scenario_type": "routine",
             "vaccine": "MCV2",
@@ -698,7 +704,7 @@ Schema: [`CoverageSets.schema.json`](CoverageSets.schema.json)
         },
         {
             "id": 290,
-            "touchstone": "2017-op",
+            "touchstone": "2017-op-1",
             "name": "Yellow Fever reactive campaign (with GAVI support)",
             "scenario_type": "campaign",
             "vaccine": "YF",
@@ -710,17 +716,17 @@ Schema: [`CoverageSets.schema.json`](CoverageSets.schema.json)
 #### scenario
 Optional. Takes a scenario id. Returns only those coverage sets that belong to the given scenario.
 
-Example: `/touchstones/2017-op/coverage_sets/?scenario=64`
+Example: `/touchstones/2017-op-1/coverage_sets/?scenario=64`
 
 #### scenario_type
 Optional. Takes either 'routine' or 'campaign'. The coverage sets are filtered to the specified coverage type.
 
-Example: `/touchstones/2017-op/coverage_sets/?scenario_type=campaign`
+Example: `/touchstones/2017-op-1/coverage_sets/?scenario_type=campaign`
 
 #### vaccine
 Optional. Takes a valid vaccine identifier. The coverage sets are filtered to the specified vaccine.
 
-Example: `/touchstones/2017-op/coverage_sets/?vaccine=MCV1`
+Example: `/touchstones/2017-op-1/coverage_sets/?vaccine=MCV1`
 
 ## GET /touchstones/{touchstone-id}/coverage_sets/{coverage-set-id}/
 Returns a single coverage set and its coverage data.
@@ -735,7 +741,7 @@ Schema: [`CoverageSet.schema.json`](CoverageSet.schema.json)
 ### Example
     {
         "id": 189,
-        "touchstone": "2017-op",        
+        "touchstone": "2017-op-1",        
         "name": "Measles 1st Dose (With GAVI support)",
         "vaccine": "Measles",
         "vaccination_level": "with",        
@@ -756,7 +762,7 @@ The second section has `Content-Type: text/csv`, and returns CSV data with heade
 #### countries
 Optional. Takes a list of country codes. The coverage data is filtered to just the specified countries.
 
-Example: `/touchstones/2017-op/coverage_sets/189/?countries=AFG,ANG,CHN`
+Example: `/touchstones/2017-op-1/coverage_sets/189/?countries=AFG,ANG,CHN`
 
 ## POST /touchstones/{touchstone-id}/coverage_sets/
 Adds a new coverage set to the touchstone
@@ -855,7 +861,7 @@ Schema: [`BurdenEstimates.schema.json`](BurdenEstimates.schema.json)
             "id": 1,
             "scenario": {
                 "id": "menA-novacc",
-                "touchstones": [ "2016-op", "2017-wuenic", "2017-op" ],
+                "touchstones": [ "2016-op-1", "2017-wuenic-1", "2017-op-1" ],
                 "description": "Menigitis A, No vaccination",
                 "disease": "MenA"
             },
@@ -870,10 +876,10 @@ Schema: [`BurdenEstimates.schema.json`](BurdenEstimates.schema.json)
 
 ### Query parameters
 #### scenario
-Filter by scenario. e.g. GET /touchstone/2017-op/estimates/?scenario=menA-novacc
+Filter by scenario. e.g. GET /touchstone/2017-op-1/estimates/?scenario=menA-novacc
 
 #### responsible_group
-Filter by responsible group. e.g. GET /touchstone/2017-op/estimates/?responsible_group=IC-YellowFever
+Filter by responsible group. e.g. GET /touchstone/2017-op-1/estimates/?responsible_group=IC-YellowFever
 
 ## GET /touchstone/{touchstone-id}/estimates/{estimate-id}/
 Returns the full burden estimate data.
@@ -895,7 +901,7 @@ Schema: [`BurdenEstimate.schema.json`](BurdenEstimate.schema.json)
         "id": 1,
         "scenario": {
             "id": "menA-novacc",
-            "touchstones": [ "2016-op", "2017-wuenic", "2017-op" ],
+            "touchstones": [ "2016-op-1", "2017-wuenic-1", "2017-op-1" ],
             "description": "Menigitis A, No vaccination",
             "disease": "MenA"
         },
@@ -985,7 +991,7 @@ Schema: [`ModellingGroupDetails.schema.json`](ModellingGroupDetails.schema.json)
                 "modelling_group": "IC-YellowFever"
             }
         ],
-        "responsibilities": [ "wuenic-2017", "2017-op" ]
+        "responsibilities": [ "wuenic-2017-1", "2017-op-1" ]
     }
 
 ## POST /modelling-groups/
@@ -1138,14 +1144,14 @@ Schema: [`ResponsibilitySet.schema.json`](ResponsibilitySet.schema.json)
 
 ### Example
     {
-        "touchstone": "2017-op",
+        "touchstone": "2017-op-1",
         "status": "incomplete",
         "problems": "",
         "responsibilities": [
             {
                 "scenario": {
                     "id": "menA-novacc",
-                    "touchstones": [ "2016-op", "2017-wuenic", "2017-op" ],
+                    "touchstones": [ "2016-op-1", "2017-wuenic-1", "2017-op-1" ],
                     "description": "Menigitis A, No vaccination",
                     "disease": "MenA"
                 },
@@ -1156,7 +1162,7 @@ Schema: [`ResponsibilitySet.schema.json`](ResponsibilitySet.schema.json)
             {
                 "scenario": {
                     "id": "yf-campaign-reactive-nogavi",
-                    "touchstones": [ "2017-wuenic", "2017-op" ],
+                    "touchstones": [ "2017-wuenic-1", "2017-op-1" ],
                     "description": "Yellow Fever, Reactive campaign, SDF coverage without GAVI support",
                     "disease": "YF"
                 },
@@ -1176,7 +1182,7 @@ Schema: [`ResponsibilitySet.schema.json`](ResponsibilitySet.schema.json)
 
 ### Example
     {
-        "touchstone": "2017-op",
+        "touchstone": "2017-op-1",
         "status": null,
         "problems": "",
         "responsibilities": []
@@ -1226,7 +1232,7 @@ Schema: [`AssociateResponsibility.schema.json`](AssociateResponsibility.schema.j
 ### Example
     {
         "action": "add",
-        "touchstone_id": "2017-op",
+        "touchstone_id": "2017-op-1",
         "scenario_id": "menA-novacc"
     }
 
@@ -1242,7 +1248,7 @@ Returns a summary of the completeness and correctness of the touchstone, so that
 administrator can track progress. This is useful when the touchstone is `in-preparation` 
 and when it is `open` and the modelling groups are working on it.
 
-Example URL: `/touchstones/2017-op/status/`
+Example URL: `/touchstones/2017-op-1/status/`
 
 `allowed_state_changes` tells the client which states the touchstone is currently allowed to move in to.
 
@@ -1260,7 +1266,7 @@ Schema: [`TouchstoneOverview.schema.json`](TouchstoneOverview.schema.json)
 
 #### Example
     {
-        "id": "2017-op",
+        "id": "2017-op-1",
         "description": "2017 Operational Forecast",
         "years": { "start": 1996, "end": 2081 },
         "status": "in-preparation",
@@ -1321,7 +1327,7 @@ Schema: [`TouchstoneOverview.schema.json`](TouchstoneOverview.schema.json)
 
 #### Example
     {
-        "id": "2017-op",
+        "id": "2017-op-1",
         "description": "2017 Operational Forecast",
         "years": { "start": 1996, "end": 2081 },
         "status": "open",
