@@ -5,17 +5,17 @@
 		"id": { "type": "integer" },
 		"touchstone": { "$ref": "StandardIdentifier.schema.json" },
         "name": { "type": "string" },
-		"scenario_type": { "$ref": "ScenarioType.schema.json" },
+		"activity_type": { "$ref": "ActivityType.schema.json" },
 		"vaccine": { "$ref": "StandardIdentifier.schema.json" },
-		"vaccination_level": { "$ref": "VaccinationLevel.schema.json" }
+		"gavi_support_level": { "$ref": "GaviSupportLevel.schema.json" }
 	},
 	"additionalProperties": false,
 	"required": [ 
 		"id", 
 		"touchstone", 
 		"name", 
-		"scenario_type", 
+		"activity_type", 
 		"vaccine", 
-		"vaccination_level" 
+		"gavi_support_level" 
 	]
 }
