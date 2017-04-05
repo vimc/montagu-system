@@ -10,8 +10,8 @@ This is what the CI system does:
 ## Docker run
 Do make use of a built image, run:
 
-    docker pull fi--didelx05.dide.ic.ac.uk:5000/montagu-api:master
-    docker run --rm -p 8080:8080 fi--didelx05.dide.ic.ac.uk:5000/montagu-api:master
+    docker pull montagu.dide.ic.ac.uk:5000/montagu-api:master
+    docker run --rm -p 8080:8080 montagu.dide.ic.ac.uk:5000/montagu-api:master
 
 Subsitute a different branch or 7-character commit hash in place of 'master' to get a different version.
 
