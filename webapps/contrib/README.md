@@ -8,7 +8,7 @@ and then upload burden estimates.
 3. Run the containerised app
 
 ```
-docker run -p 8080:80 fi--didelx05.dide.ic.ac.uk/montagu-contrib-portal:CURRENT_GIT_BRANCH
+docker run -p 8080:80 montagu.dide.ic.ac.uk/montagu-contrib-portal:CURRENT_GIT_BRANCH
 ```
 
 4. Browse to `http://localhost:8080/`

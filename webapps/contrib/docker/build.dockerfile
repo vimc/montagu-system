@@ -28,7 +28,7 @@ COPY . /usr/src/app
 
 ARG git_id='UNKNOWN'
 ARG git_branch='UNKNOWN'
-ARG registry=fi--didelx05.dide.ic.ac.uk:5000
+ARG registry=montagu.dide.ic.ac.uk:5000
 ARG name=montagu-contrib-portal
 
 ENV APP_DOCKER_COMMIT_TAG $registry/$name:$git_id
