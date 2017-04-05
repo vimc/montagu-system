@@ -3,10 +3,7 @@
 	"type": "object",
 	"properties": {
 		"description": { "type": "string" },
-		"vaccination_level": { "$ref": "VaccinationLevel.schema.json" },
-    	"disease": { "$ref": "StandardIdentifier.schema.json" },
-    	"vaccine": { "$ref": "StandardIdentifier.schema.json" },
-    	"scenario_type": { "$ref": "ScenarioType.schema.json" }
+    	"disease": { "$ref": "StandardIdentifier.schema.json" }
 	},
 	"additionalProperties": false
 }

@@ -1,4 +1,4 @@
 {
-	"id": "VaccinationLevel",
+	"id": "GaviSupportLevel",
 	"enum": [ "none", "without", "with" ]
 }

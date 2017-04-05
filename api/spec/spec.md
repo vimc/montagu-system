@@ -521,8 +521,8 @@ Schema: [`ScenariosInTouchstone.schema.json`](ScenariosInTouchstone.schema.json)
                     "touchstone": "2017-op",
                     "name": "Menigitis no vaccination",
                     "vaccine": "MenA",
-                    "vaccination_level": "none",
-                    "scenario_type": "none"
+                    "gavi_support_level": "none",
+                    "activity_type": "none"
                 }
             ]
         },
@@ -539,16 +539,16 @@ Schema: [`ScenariosInTouchstone.schema.json`](ScenariosInTouchstone.schema.json)
                     "touchstone": "2017-op",
                     "name": "Yellow fever birth dose (with GAVI support)",
                     "vaccine": "YF",
-                    "vaccination_level": "with",
-                    "scenario_type": "routine"
+                    "gavi_support_level": "with",
+                    "activity_type": "routine"
                 },
                 { 
                     "id": 643,
                     "touchstone": "2017-op",
                     "name": "Yellow fever reactive campaign (with GAVI support)",
                     "vaccine": "YF",
-                    "vaccination_level": "with",
-                    "scenario_type": "campaign"
+                    "gavi_support_level": "with",
+                    "activity_type": "campaign"
                 }
             ]
         }
@@ -684,25 +684,25 @@ Schema: [`CoverageSets.schema.json`](CoverageSets.schema.json)
             "id": 189,
             "touchstone": "2017-op",
             "name": "Measles 1st Dose (without GAVI support)",
-            "scenario_type": "routine",
+            "activity_type": "routine",
             "vaccine": "MCV1",
-            "vaccination_level": "without"
+            "gavi_support_level": "without"
         },
         {
             "id": 278,
             "touchstone": "2017-op",
             "name": "Measles 2nd Dose (without GAVI support)",
-            "scenario_type": "routine",
+            "activity_type": "routine",
             "vaccine": "MCV2",
-            "vaccination_level": "without"
+            "gavi_support_level": "without"
         },
         {
             "id": 290,
             "touchstone": "2017-op",
             "name": "Yellow Fever reactive campaign (with GAVI support)",
-            "scenario_type": "campaign",
+            "activity_type": "campaign",
             "vaccine": "YF",
-            "vaccination_level": "with"
+            "gavi_support_level": "with"
         }
     ]
 
@@ -712,10 +712,10 @@ Optional. Takes a scenario id. Returns only those coverage sets that belong to t
 
 Example: `/touchstones/2017-op/coverage_sets/?scenario=64`
 
-#### scenario_type
+#### activity_type
 Optional. Takes either 'routine' or 'campaign'. The coverage sets are filtered to the specified coverage type.
 
-Example: `/touchstones/2017-op/coverage_sets/?scenario_type=campaign`
+Example: `/touchstones/2017-op/coverage_sets/?activity_type=campaign`
 
 #### vaccine
 Optional. Takes a valid vaccine identifier. The coverage sets are filtered to the specified vaccine.
@@ -738,8 +738,8 @@ Schema: [`CoverageSet.schema.json`](CoverageSet.schema.json)
         "touchstone": "2017-op",        
         "name": "Measles 1st Dose (With GAVI support)",
         "vaccine": "Measles",
-        "vaccination_level": "with",        
-        "scenario_type": "routine"
+        "gavi_support_level": "with",        
+        "activity_type": "routine"
     }
 
 The second section has `Content-Type: text/csv`, and returns CSV data with headers:
@@ -772,8 +772,8 @@ Schema: [`CreateCoverageSet.schema.json`](CreateCoverageSet.schema.json)
     {
         "name": "Measles 1st dose",
         "vaccine": "MCV1",
-        "vaccination_level": "with",
-        "scenario_type": "routine"
+        "gavi_support_level": "with",
+        "activity_type": "routine"
     }
 
 The second section must have `Content-Type: text\csv` and requires CSV data with headers:
@@ -805,8 +805,8 @@ Schema: [`CreateCoverageSet.schema.json`](CreateCoverageSet.schema.json)
     {
         "name": "Measles 1st dose",
         "vaccine": "MCV1",
-        "vaccination_level": "with",        
-        "scenario_type": "routine"
+        "gavi_support_level": "with",        
+        "activity_type": "routine"
     }
 
 The second section must have `Content-Type: text\csv` and requires CSV data with headers:

@@ -1,4 +1,4 @@
 {
-	"id": "ScenarioType",
+	"id": "ActivityType",
 	"enum": [ "none", "routine", "campaign" ]
 }
