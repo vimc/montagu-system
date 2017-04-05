@@ -1,6 +1,5 @@
 package org.vaccineimpact.api.app.repositories.jooq
 
-import org.vaccineimpact.api.app.errors.BadDatabaseConstant
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.extensions.fetchInto
 import org.vaccineimpact.api.app.extensions.fieldsAsList
@@ -13,7 +12,6 @@ import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.db.Tables.*
 import org.vaccineimpact.api.db.tables.records.ModellingGroupRecord
 import org.vaccineimpact.api.db.tables.records.ResponsibilitySetRecord
-import java.util.*
 
 class JooqModellingGroupRepository(
         private val touchstoneRepository: () -> TouchstoneRepository,
@@ -97,10 +95,4 @@ class JooqModellingGroupRepository(
     }
 
     private fun mapModellingGroup(x: ModellingGroupRecord) = ModellingGroup(x.id, x.description)
-    private inline fun <reified T : Enum<T>> mapEnum(name: String): T
-    {
-        return EnumSet.allOf(T::class.java)
-                .firstOrNull { name.equals(it.name, ignoreCase = true) }
-                ?: throw BadDatabaseConstant(name, T::class.simpleName ?: "[unknown]")
-    }
 }

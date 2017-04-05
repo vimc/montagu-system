@@ -12,5 +12,5 @@ dependencies {
     testCompile project(":testHelpers")
 }
 
-test.dependsOn 'startDatabase'
-test.finalizedBy 'stopDatabase'
+test.dependsOn ':startDatabase'
+test.finalizedBy ':stopDatabase'

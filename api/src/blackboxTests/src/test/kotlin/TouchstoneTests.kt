@@ -11,7 +11,7 @@ class TouchstoneTests : DatabaseTest()
     {
         validate("/touchstones/") against "Touchstones" given {
             it.addTouchstone("test", 6, "open", 1990..2070, addName = true, addStatus = true)
-            it.addTouchstone("example", 1, "in-progress", 1900..2100, addName = true, addStatus = true)
+            it.addTouchstone("example", 1, "in-preparation", 1900..2100, addName = true, addStatus = true)
         } andCheckArray {
             assertThat(it.count()).isEqualTo(2)
             assertThat(it).contains(json { obj(
