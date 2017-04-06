@@ -4,6 +4,7 @@
 package org.vaccineimpact.api.db.tables;
 
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
@@ -35,7 +36,7 @@ import org.vaccineimpact.api.db.tables.records.BurdenEstimateRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class BurdenEstimate extends TableImpl<BurdenEstimateRecord> {
 
-    private static final long serialVersionUID = 172100513;
+    private static final long serialVersionUID = 1961210300;
 
     /**
      * The reference instance of <code>public.burden_estimate</code>
@@ -83,7 +84,7 @@ public class BurdenEstimate extends TableImpl<BurdenEstimateRecord> {
     /**
      * The column <code>public.burden_estimate.value</code>.
      */
-    public final TableField<BurdenEstimateRecord, Double> VALUE = createField("value", org.jooq.impl.SQLDataType.DOUBLE, this, "");
+    public final TableField<BurdenEstimateRecord, BigDecimal> VALUE = createField("value", org.jooq.impl.SQLDataType.NUMERIC, this, "");
 
     /**
      * Create a <code>public.burden_estimate</code> table reference

@@ -25,4 +25,5 @@ fun addDefaultResponseHeaders(res: Response)
 {
     res.type("application/json; charset=utf-8")
     res.header("Content-Encoding", "gzip")
+    res.header("Access-Control-Allow-Origin", "*")
 }

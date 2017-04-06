@@ -1,4 +1,10 @@
+apply plugin: 'application'
+mainClassName = "org.vaccineimpact.api.blackboxTests.AppKt"
+
 dependencies {
+    compile project(":testHelpers")
+    compile project(":databaseInterface")
+
     testCompile "junit:junit:4.12"
     testCompile "org.assertj:assertj-core:3.6.2"
 

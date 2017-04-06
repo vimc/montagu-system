@@ -36,7 +36,7 @@ import org.vaccineimpact.api.db.tables.records.BurdenEstimateSetRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class BurdenEstimateSet extends TableImpl<BurdenEstimateSetRecord> {
 
-    private static final long serialVersionUID = 1867393101;
+    private static final long serialVersionUID = -1315053141;
 
     /**
      * The reference instance of <code>public.burden_estimate_set</code>
@@ -57,14 +57,14 @@ public class BurdenEstimateSet extends TableImpl<BurdenEstimateSetRecord> {
     public final TableField<BurdenEstimateSetRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('burden_estimate_set_id_seq'::regclass)", org.jooq.impl.SQLDataType.INTEGER)), this, "");
 
     /**
-     * The column <code>public.burden_estimate_set.responsibility</code>.
-     */
-    public final TableField<BurdenEstimateSetRecord, Integer> RESPONSIBILITY = createField("responsibility", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
-
-    /**
      * The column <code>public.burden_estimate_set.model_version</code>.
      */
     public final TableField<BurdenEstimateSetRecord, Integer> MODEL_VERSION = createField("model_version", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+
+    /**
+     * The column <code>public.burden_estimate_set.responsibility</code>.
+     */
+    public final TableField<BurdenEstimateSetRecord, Integer> RESPONSIBILITY = createField("responsibility", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * The column <code>public.burden_estimate_set.run_info</code>.
@@ -160,7 +160,7 @@ public class BurdenEstimateSet extends TableImpl<BurdenEstimateSetRecord> {
      */
     @Override
     public List<ForeignKey<BurdenEstimateSetRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<BurdenEstimateSetRecord, ?>>asList(Keys.BURDEN_ESTIMATE_SET__BURDEN_ESTIMATE_SET_RESPONSIBILITY_FKEY, Keys.BURDEN_ESTIMATE_SET__BURDEN_ESTIMATE_SET_MODEL_VERSION_FKEY, Keys.BURDEN_ESTIMATE_SET__BURDEN_ESTIMATE_SET_UPLOADED_BY_FKEY);
+        return Arrays.<ForeignKey<BurdenEstimateSetRecord, ?>>asList(Keys.BURDEN_ESTIMATE_SET__BURDEN_ESTIMATE_SET_MODEL_VERSION_FKEY, Keys.BURDEN_ESTIMATE_SET__BURDEN_ESTIMATE_SET_RESPONSIBILITY_FKEY, Keys.BURDEN_ESTIMATE_SET__BURDEN_ESTIMATE_SET_UPLOADED_BY_FKEY);
     }
 
     /**

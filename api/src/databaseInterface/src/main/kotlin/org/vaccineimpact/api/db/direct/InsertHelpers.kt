@@ -30,6 +30,7 @@ fun JooqContext.addTouchstoneStatus(id: String, name: String? = null)
 fun JooqContext.addTouchstone(
         name: String,
         version: Int,
+        description: String,
         status: String,
         yearRange: IntRange,
         addName: Boolean = false,
@@ -47,6 +48,7 @@ fun JooqContext.addTouchstone(
         this.id = "$name-$version"
         this.touchstoneName = name
         this.version = version
+        this.description = description
         this.status = status
         this.yearStart = yearRange.start
         this.yearEnd = yearRange.endInclusive
