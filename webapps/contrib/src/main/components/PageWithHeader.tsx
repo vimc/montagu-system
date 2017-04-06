@@ -1,24 +1,30 @@
 import * as React from 'react'
+import { Location, Link } from 'simple-react-router';
 
 const logo = require("../resources/logo.png");
-require('../fonts.css');
-const headerStyles = require('./Header.css');
+const headerStyles = require('../styles/header.css');
 
-export abstract class PageWithHeader<TProps, TState> extends React.Component<TProps, TState> {
-    abstract title: String;
+export abstract class PageWithHeader<TProps, TState> extends React.Component<PageProperties<TProps>, TState> {
+    abstract title(): JSX.Element;
 
-	render() {
-		return <div>
+    render() {
+        return <div>
             <header className={ headerStyles.header }>
-            	<img src={ logo } height="80" alt="VIMC" />            	
-            	<div className={ headerStyles.siteTitle }>Contribution portal</div>
+                <img src={ logo } height="80" alt="VIMC" />                
+                <div className={ headerStyles.siteTitle }>
+                    <Link href="/">Contribution portal</Link>
+                </div>
             </header>
-            <div className={ headerStyles.content }>
-                <div className={ headerStyles.pageTitle }>{ this.title }</div>            
+            <article className={ headerStyles.content }>
+                <div className={ headerStyles.pageTitle }>{ this.title() }</div>            
                 { this.renderPageContent() }
-            </div>
+            </article>
         </div>
-	}
+    }
 
     abstract renderPageContent(): JSX.Element;
+}
+
+export interface PageProperties<T> {
+    location: Location<T>;
 }

@@ -42,14 +42,22 @@ module.exports = {
                         loader: "css-loader",
                         options: {
                             modules: true,
-                            localIdentName: "[name]__[local]___[hash:base64:5]",
+                            localIdentName: "[local]_from_[name]",
                         }
                     }
                 ]
             },
             {
-                test: /\.(jpeg?|gif|png|svg|woff|ttf)$/,
-                loader: 'file-loader'
+                test: /\.(jpeg?|gif|png|svg|otf|ttf)$/,
+                loaders: [
+                    {
+                        loader: "file-loader",
+                        options: {
+                            publicPath: "/",
+                            useRelativePath: false
+                        }
+                    }
+                ]
             }
         ]
     },

@@ -1,12 +1,12 @@
 declare interface TestError {
-	stack: string;
+    stack: string;
 }
 
 declare interface TestContext {
-	parent: TestContext;
-	title: string;
-	state: string;
-	err: TestError;
+    parent: TestContext;
+    title: string;
+    state: string;
+    err: TestError;
 }
 
 declare function describe(description: string, body: () => void): void;

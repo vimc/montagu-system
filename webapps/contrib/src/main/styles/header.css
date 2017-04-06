@@ -1,0 +1,41 @@
+:local(.header) {
+    position: relative;
+    padding: 10px;
+    background-color: rgb(38, 50, 122);
+    border-bottom: 2px solid white;
+    color: white;
+    margin-bottom: 20px;
+}
+
+:local(.siteTitle) {
+    position: absolute;
+    top: 42px;
+    left: 280px;
+    font-family: header;
+    font-size: 24pt;
+    font-variant-caps: small-caps; 
+}
+
+:local(.siteTitle) a, :local(.siteTitle) a:visited, :local(.siteTitle) a:hover {
+    text-decoration: inherit;
+    color: inherit;
+}
+
+:local(.titleAddition) {
+    font-family: body;
+    font-size: 10pt;
+    margin-left: 20px;
+}
+
+:local(.pageTitle) {
+    font-family: header;
+    font-size: 24pt;
+    margin-bottom: 30px;
+    border-bottom: 1px dashed;
+}
+
+:local(.content) {
+    margin: 0 auto;
+    width: 1000px;
+    padding: 20px;
+}
