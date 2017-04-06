@@ -10,8 +10,8 @@ class TouchstoneTests : DatabaseTest()
     fun `can get touchstones`()
     {
         validate("/touchstones/") against "Touchstones" given {
-            it.addTouchstone("test", 6, "open", "description-1", 1990..2070, addName = true, addStatus = true)
-            it.addTouchstone("example", 1, "in-preparation", "description-2", 1900..2100, addName = true, addStatus = true)
+            it.addTouchstone("test", 6, "description-1", "open", 1990..2070, addName = true, addStatus = true)
+            it.addTouchstone("example", 1, "description-2", "in-preparation", 1900..2100, addName = true, addStatus = true)
         } andCheckArray {
             assertThat(it.count()).isEqualTo(2)
             assertThat(it).contains(json { obj(

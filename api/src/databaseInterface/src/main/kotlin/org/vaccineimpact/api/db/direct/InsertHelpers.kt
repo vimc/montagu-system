@@ -12,10 +12,11 @@ fun JooqContext.addGroup(id: String, description: String, current: String? = nul
     }.store()
 }
 
-fun JooqContext.addTouchstoneName(id: String)
+fun JooqContext.addTouchstoneName(id: String, description: String)
 {
     this.dsl.newRecord(TOUCHSTONE_NAME).apply {
         this.id = id
+        this.description = description
     }.store()
 }
 
@@ -38,7 +39,7 @@ fun JooqContext.addTouchstone(
 {
     if (addName)
     {
-        addTouchstoneName(name)
+        addTouchstoneName(name, description)
     }
     if (addStatus)
     {
