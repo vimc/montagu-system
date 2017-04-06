@@ -1,0 +1,28 @@
+:local(.header) {
+	position: relative;
+	padding: 10px;
+	background-color: rgb(38, 50, 122);
+	border-bottom: 2px solid white;
+	color: white;
+}
+
+:local(.siteTitle) {
+	position: absolute;
+	top: 42px;
+	left: 280px;
+	font-family: header;
+	font-size: 24pt;
+	font-variant-caps: small-caps; 
+}
+
+:local(.pageTitle) {
+	font-family: header;
+	font-size: 24pt;
+	margin-bottom: 20px;
+}
+
+:local(.content) {
+	margin: 0 auto;
+	width: 1000px;
+	padding: 20px;
+}

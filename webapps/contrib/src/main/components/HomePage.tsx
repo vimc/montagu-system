@@ -1,10 +1,12 @@
 import * as React from "react";
 import { Link } from 'simple-react-router'
+import { PageWithHeader } from './PageWithHeader'
 
-export default class HomePage extends React.Component<undefined, undefined> {
-    render() {
+export default class HomePage extends PageWithHeader<undefined, undefined> {	
+	title: String = "Home page";
+
+    renderPageContent() {
         return <div>
-            <h1>Modelling groups contribution portal</h1>
             <div>Hello world!</div>
             <Link href="/other">Other page</Link>
         </div>;

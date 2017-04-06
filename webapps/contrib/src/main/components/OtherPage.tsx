@@ -1,10 +1,12 @@
 import * as React from "react";
 import { Link } from 'simple-react-router'
+import { PageWithHeader } from './PageWithHeader'
 
-export default class OtherPage extends React.Component<undefined, undefined> {
-    render() {
+export default class OtherPage extends PageWithHeader<undefined, undefined> {
+	title: String = "Other page";
+
+    renderPageContent(): JSX.Element {
         return <div>
-            <h1>Another page</h1>
             <Link href="/">Return</Link>
         </div>;
     }

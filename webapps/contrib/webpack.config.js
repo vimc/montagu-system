@@ -32,6 +32,24 @@ module.exports = {
                 enforce: 'pre',
                 test: /\.js$/, 
                 loader: "source-map-loader" 
+            },
+            // Use CSS modules
+            {
+                test: /\.css$/,
+                loaders: [                        
+                    "style-loader",
+                    {
+                        loader: "css-loader",
+                        options: {
+                            modules: true,
+                            localIdentName: "[name]__[local]___[hash:base64:5]",
+                        }
+                    }
+                ]
+            },
+            {
+                test: /\.(jpeg?|gif|png|svg|woff|ttf)$/,
+                loader: 'file-loader'
             }
         ]
     },

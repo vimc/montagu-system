@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha-webpack --webpack-config webpack-test.config.js \"src/test/**/*\"",
-    "start": "serve dist"
+    "start": "serve out/dist"
   },
   "repository": {
     "type": "git",

@@ -4,7 +4,7 @@ import Router from "./Router";
 
 require('file-loader?name=[name].[ext]!./index.html');
 
-ReactDOM.render(
+ReactDOM.render(	
     <Router />,
     document.getElementById("react")
 );
