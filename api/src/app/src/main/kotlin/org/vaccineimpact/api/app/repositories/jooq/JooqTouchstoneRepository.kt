@@ -16,7 +16,7 @@ class JooqTouchstoneRepository : JooqRepository(), TouchstoneRepository
             record.id,
             record.touchstoneName,
             record.version,
-            "MISSING DESCRIPTION FIELD",
+            record.description,
             record.yearStart..record.yearEnd,
             mapEnum(record.status)
     )
