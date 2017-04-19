@@ -1,6 +1,6 @@
 package org.vaccineimpact.api.app.errors
 
-import org.vaccineimpact.api.app.models.ErrorInfo
+import org.vaccineimpact.api.models.ErrorInfo
 
 class UnknownObjectError(id: Any, typeName: Any) : MontaguError(404, listOf(
         ErrorInfo("unknown-${mangleTypeName(typeName)}", "Unknown ${mangleTypeName(typeName)} with id '$id'")

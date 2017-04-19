@@ -1,6 +1,6 @@
 package org.vaccineimpact.api.app.repositories
 
-import org.vaccineimpact.api.app.models.HasKey
+import org.vaccineimpact.api.models.HasKey
 
 interface SimpleDataSet<out TModel : HasKey<TKey>, TKey>
 {

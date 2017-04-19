@@ -1,8 +1,8 @@
 package org.vaccineimpact.api.app.errors
 
-import org.vaccineimpact.api.app.models.ErrorInfo
-import org.vaccineimpact.api.app.models.Result
-import org.vaccineimpact.api.app.models.ResultStatus
+import org.vaccineimpact.api.models.ErrorInfo
+import org.vaccineimpact.api.models.Result
+import org.vaccineimpact.api.models.ResultStatus
 
 abstract class MontaguError(
         open val httpStatus: Int,

@@ -5,13 +5,13 @@ import org.vaccineimpact.api.app.extensions.fetchInto
 import org.vaccineimpact.api.app.extensions.fieldsAsList
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
 import org.vaccineimpact.api.app.filters.whereMatchesFilter
-import org.vaccineimpact.api.app.models.*
 import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.ScenarioRepository
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.db.Tables.*
 import org.vaccineimpact.api.db.tables.records.ModellingGroupRecord
 import org.vaccineimpact.api.db.tables.records.ResponsibilitySetRecord
+import org.vaccineimpact.api.models.*
 
 class JooqModellingGroupRepository(
         private val touchstoneRepository: () -> TouchstoneRepository,

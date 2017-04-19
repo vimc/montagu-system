@@ -3,7 +3,7 @@ package org.vaccineimpact.api.app
 import com.github.salomonbrys.kotson.jsonSerializer
 import com.github.salomonbrys.kotson.registerTypeAdapter
 import com.google.gson.*
-import org.vaccineimpact.api.app.models.*
+import org.vaccineimpact.api.models.*
 
 object Serializer
 {

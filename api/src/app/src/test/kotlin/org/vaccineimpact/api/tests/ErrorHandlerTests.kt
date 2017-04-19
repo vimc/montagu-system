@@ -12,9 +12,9 @@ import org.junit.Before
 import org.junit.Test
 import org.vaccineimpact.api.app.ErrorHandler
 import org.vaccineimpact.api.app.errors.MontaguError
-import org.vaccineimpact.api.app.models.ErrorInfo
-import org.vaccineimpact.api.app.models.Result
-import org.vaccineimpact.api.app.models.ResultStatus
+import org.vaccineimpact.api.models.ErrorInfo
+import org.vaccineimpact.api.models.Result
+import org.vaccineimpact.api.models.ResultStatus
 import org.vaccineimpact.api.test_helpers.MontaguTests
 
 class ErrorHandlerTests : MontaguTests()

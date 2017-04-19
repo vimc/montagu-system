@@ -1,8 +1,8 @@
 package org.vaccineimpact.api.app.repositories
 
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
-import org.vaccineimpact.api.app.models.ModellingGroup
-import org.vaccineimpact.api.app.models.Responsibilities
+import org.vaccineimpact.api.models.ModellingGroup
+import org.vaccineimpact.api.models.Responsibilities
 import java.io.Closeable
 
 interface ModellingGroupRepository : Repository

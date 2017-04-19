@@ -5,7 +5,7 @@ import org.jooq.Record
 import org.jooq.TableField
 import org.jooq.impl.TableImpl
 import org.vaccineimpact.api.app.errors.UnknownObjectError
-import org.vaccineimpact.api.app.models.HasKey
+import org.vaccineimpact.api.models.HasKey
 import org.vaccineimpact.api.app.repositories.SimpleDataSet
 
 class JooqSimpleDataSet<out TModel : HasKey<TKey>, TKey : Any, TRepoModel : Record, TTable : TableImpl<TRepoModel>>(

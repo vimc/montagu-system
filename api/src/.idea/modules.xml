@@ -18,6 +18,9 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/generateDatabaseInterface/generateDatabaseInterface.iml" filepath="$PROJECT_DIR$/.idea/modules/generateDatabaseInterface/generateDatabaseInterface.iml" group="generateDatabaseInterface" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/generateDatabaseInterface/generateDatabaseInterface_main.iml" filepath="$PROJECT_DIR$/.idea/modules/generateDatabaseInterface/generateDatabaseInterface_main.iml" group="generateDatabaseInterface" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/generateDatabaseInterface/generateDatabaseInterface_test.iml" filepath="$PROJECT_DIR$/.idea/modules/generateDatabaseInterface/generateDatabaseInterface_test.iml" group="generateDatabaseInterface" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/models/models.iml" filepath="$PROJECT_DIR$/.idea/modules/models/models.iml" group="models" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/models/models_main.iml" filepath="$PROJECT_DIR$/.idea/modules/models/models_main.iml" group="models" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/models/models_test.iml" filepath="$PROJECT_DIR$/.idea/modules/models/models_test.iml" group="models" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/testHelpers/testHelpers.iml" filepath="$PROJECT_DIR$/.idea/modules/testHelpers/testHelpers.iml" group="testHelpers" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/testHelpers/testHelpers_main.iml" filepath="$PROJECT_DIR$/.idea/modules/testHelpers/testHelpers_main.iml" group="testHelpers" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/testHelpers/testHelpers_test.iml" filepath="$PROJECT_DIR$/.idea/modules/testHelpers/testHelpers_test.iml" group="testHelpers" />

@@ -1,6 +1,6 @@
 package org.vaccineimpact.api.app.controllers
 
-import org.vaccineimpact.api.app.models.Touchstone
+import org.vaccineimpact.api.models.Touchstone
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import spark.Request
 import spark.Response

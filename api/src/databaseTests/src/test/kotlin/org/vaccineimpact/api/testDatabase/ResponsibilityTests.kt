@@ -5,10 +5,10 @@ import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
-import org.vaccineimpact.api.app.models.Responsibility
-import org.vaccineimpact.api.app.models.ResponsibilitySetStatus
-import org.vaccineimpact.api.app.models.ResponsibilityStatus
-import org.vaccineimpact.api.app.models.Scenario
+import org.vaccineimpact.api.models.Responsibility
+import org.vaccineimpact.api.models.ResponsibilitySetStatus
+import org.vaccineimpact.api.models.ResponsibilityStatus
+import org.vaccineimpact.api.models.Scenario
 import org.vaccineimpact.api.db.direct.*
 
 class ResponsibilityTests : ModellingGroupRepositoryTests()

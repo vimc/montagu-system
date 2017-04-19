@@ -1,6 +1,6 @@
 package org.vaccineimpact.api.app.repositories.jooq
 
-import org.vaccineimpact.api.app.models.Touchstone
+import org.vaccineimpact.api.models.Touchstone
 import org.vaccineimpact.api.app.repositories.SimpleDataSet
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.db.Tables.TOUCHSTONE

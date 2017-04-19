@@ -1,7 +1,7 @@
 package org.vaccineimpact.api.app.errors
 
 import com.google.gson.JsonSyntaxException
-import org.vaccineimpact.api.app.models.ErrorInfo
+import org.vaccineimpact.api.models.ErrorInfo
 
 class UnableToParseJsonError(e: JsonSyntaxException) : MontaguError(400, listOf(
         ErrorInfo("bad-json", formatMessage(e))

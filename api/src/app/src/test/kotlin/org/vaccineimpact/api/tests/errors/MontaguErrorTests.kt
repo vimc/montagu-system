@@ -3,7 +3,7 @@ package org.vaccineimpact.api.tests.errors
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.vaccineimpact.api.app.errors.MontaguError
-import org.vaccineimpact.api.app.models.ErrorInfo
+import org.vaccineimpact.api.models.ErrorInfo
 import org.vaccineimpact.api.test_helpers.MontaguTests
 
 class MontaguErrorTests : MontaguTests()
