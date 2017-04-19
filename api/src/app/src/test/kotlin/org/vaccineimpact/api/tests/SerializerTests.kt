@@ -6,7 +6,6 @@ import com.beust.klaxon.json
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.vaccineimpact.api.app.Serializer
-import org.vaccineimpact.api.app.models.*
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.test_helpers.MontaguTests
 import java.time.LocalDate
