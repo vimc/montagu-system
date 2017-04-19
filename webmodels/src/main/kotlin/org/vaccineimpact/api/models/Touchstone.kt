@@ -5,7 +5,7 @@ data class Touchstone(
         val name: String,
         val version: Int,
         val description: String,
-        val years: IntRange,
+        val years: YearRange,
         val status: TouchstoneStatus
 ) : HasKey<String>
 
