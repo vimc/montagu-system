@@ -8,8 +8,7 @@
         "data": {},
         "errors": {
             "type": "array",
-            "items": { "$ref": "Error.schema.json" },
-            "minimumLength": 0
+            "items": { "$ref": "Error.schema.json" }
         }
     },
     "additionalProperties": false,

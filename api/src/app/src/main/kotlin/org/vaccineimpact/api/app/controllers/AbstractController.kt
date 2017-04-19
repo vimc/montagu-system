@@ -1,5 +1,6 @@
 package org.vaccineimpact.api.app.controllers
 
+import org.slf4j.LoggerFactory
 import org.vaccineimpact.api.app.Serializer
 import org.vaccineimpact.api.app.errors.UnsupportedValueException
 import spark.Request
@@ -9,6 +10,8 @@ import spark.route.HttpMethod
 
 abstract class AbstractController
 {
+    private val logger = LoggerFactory.getLogger(AbstractController::class.java)
+
     abstract val urlComponent: String
     abstract val endpoints: Iterable<EndpointDefinition>
 
@@ -18,6 +21,7 @@ abstract class AbstractController
         for ((urlFragment, route, method) in endpoints)
         {
             val fullUrl = urlBase + urlComponent + urlFragment
+            logger.info("Mapping $fullUrl")
             when (method)
             {
                 HttpMethod.get -> Spark.get(fullUrl, route, transformer)

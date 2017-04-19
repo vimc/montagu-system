@@ -12,8 +12,12 @@ class JooqTouchstoneRepository : JooqRepository(), TouchstoneRepository
     override val touchstones: SimpleDataSet<Touchstone, String>
         get() = JooqSimpleDataSet.new(dsl, TOUCHSTONE, { it.ID }, { mapTouchstone(it) })
 
-    companion object
-    {
-        fun mapTouchstone(record: TouchstoneRecord) = Touchstone(record.id)
-    }
+    fun mapTouchstone(record: TouchstoneRecord) = Touchstone(
+            record.id,
+            record.touchstoneName,
+            record.version,
+            record.description,
+            record.yearStart..record.yearEnd,
+            mapEnum(record.status)
+    )
 }

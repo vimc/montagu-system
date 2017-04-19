@@ -33,7 +33,7 @@ import org.vaccineimpact.api.db.tables.records.TouchstoneNameRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TouchstoneName extends TableImpl<TouchstoneNameRecord> {
 
-    private static final long serialVersionUID = 874528355;
+    private static final long serialVersionUID = 1408474989;
 
     /**
      * The reference instance of <code>public.touchstone_name</code>
@@ -52,6 +52,11 @@ public class TouchstoneName extends TableImpl<TouchstoneNameRecord> {
      * The column <code>public.touchstone_name.id</code>.
      */
     public final TableField<TouchstoneNameRecord, String> ID = createField("id", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+
+    /**
+     * The column <code>public.touchstone_name.description</code>.
+     */
+    public final TableField<TouchstoneNameRecord, String> DESCRIPTION = createField("description", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * Create a <code>public.touchstone_name</code> table reference

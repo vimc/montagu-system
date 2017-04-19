@@ -29,7 +29,7 @@ import org.vaccineimpact.api.db.tables.BurdenEstimateSet;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class BurdenEstimateSetRecord extends UpdatableRecordImpl<BurdenEstimateSetRecord> implements Record10<Integer, Integer, Integer, String, String, String, Boolean, Boolean, String, Timestamp> {
 
-    private static final long serialVersionUID = 1480674588;
+    private static final long serialVersionUID = 880179224;
 
     /**
      * Setter for <code>public.burden_estimate_set.id</code>.
@@ -46,30 +46,30 @@ public class BurdenEstimateSetRecord extends UpdatableRecordImpl<BurdenEstimateS
     }
 
     /**
-     * Setter for <code>public.burden_estimate_set.responsibility</code>.
-     */
-    public void setResponsibility(Integer value) {
-        set(1, value);
-    }
-
-    /**
-     * Getter for <code>public.burden_estimate_set.responsibility</code>.
-     */
-    public Integer getResponsibility() {
-        return (Integer) get(1);
-    }
-
-    /**
      * Setter for <code>public.burden_estimate_set.model_version</code>.
      */
     public void setModelVersion(Integer value) {
-        set(2, value);
+        set(1, value);
     }
 
     /**
      * Getter for <code>public.burden_estimate_set.model_version</code>.
      */
     public Integer getModelVersion() {
+        return (Integer) get(1);
+    }
+
+    /**
+     * Setter for <code>public.burden_estimate_set.responsibility</code>.
+     */
+    public void setResponsibility(Integer value) {
+        set(2, value);
+    }
+
+    /**
+     * Getter for <code>public.burden_estimate_set.responsibility</code>.
+     */
+    public Integer getResponsibility() {
         return (Integer) get(2);
     }
 
@@ -216,7 +216,7 @@ public class BurdenEstimateSetRecord extends UpdatableRecordImpl<BurdenEstimateS
      */
     @Override
     public Field<Integer> field2() {
-        return BurdenEstimateSet.BURDEN_ESTIMATE_SET.RESPONSIBILITY;
+        return BurdenEstimateSet.BURDEN_ESTIMATE_SET.MODEL_VERSION;
     }
 
     /**
@@ -224,7 +224,7 @@ public class BurdenEstimateSetRecord extends UpdatableRecordImpl<BurdenEstimateS
      */
     @Override
     public Field<Integer> field3() {
-        return BurdenEstimateSet.BURDEN_ESTIMATE_SET.MODEL_VERSION;
+        return BurdenEstimateSet.BURDEN_ESTIMATE_SET.RESPONSIBILITY;
     }
 
     /**
@@ -296,7 +296,7 @@ public class BurdenEstimateSetRecord extends UpdatableRecordImpl<BurdenEstimateS
      */
     @Override
     public Integer value2() {
-        return getResponsibility();
+        return getModelVersion();
     }
 
     /**
@@ -304,7 +304,7 @@ public class BurdenEstimateSetRecord extends UpdatableRecordImpl<BurdenEstimateS
      */
     @Override
     public Integer value3() {
-        return getModelVersion();
+        return getResponsibility();
     }
 
     /**
@@ -377,7 +377,7 @@ public class BurdenEstimateSetRecord extends UpdatableRecordImpl<BurdenEstimateS
      */
     @Override
     public BurdenEstimateSetRecord value2(Integer value) {
-        setResponsibility(value);
+        setModelVersion(value);
         return this;
     }
 
@@ -386,7 +386,7 @@ public class BurdenEstimateSetRecord extends UpdatableRecordImpl<BurdenEstimateS
      */
     @Override
     public BurdenEstimateSetRecord value3(Integer value) {
-        setModelVersion(value);
+        setResponsibility(value);
         return this;
     }
 
@@ -485,12 +485,12 @@ public class BurdenEstimateSetRecord extends UpdatableRecordImpl<BurdenEstimateS
     /**
      * Create a detached, initialised BurdenEstimateSetRecord
      */
-    public BurdenEstimateSetRecord(Integer id, Integer responsibility, Integer modelVersion, String runInfo, String validation, String comment, Boolean interpolated, Boolean complete, String uploadedBy, Timestamp uploadedOn) {
+    public BurdenEstimateSetRecord(Integer id, Integer modelVersion, Integer responsibility, String runInfo, String validation, String comment, Boolean interpolated, Boolean complete, String uploadedBy, Timestamp uploadedOn) {
         super(BurdenEstimateSet.BURDEN_ESTIMATE_SET);
 
         set(0, id);
-        set(1, responsibility);
-        set(2, modelVersion);
+        set(1, modelVersion);
+        set(2, responsibility);
         set(3, runInfo);
         set(4, validation);
         set(5, comment);
