@@ -2,16 +2,7 @@ import alt from '../alt';
 import * as AltJS from 'alt';
 import { AbstractStore } from './AbstractStore';
 import { touchstoneActions } from '../actions/TouchstoneActions';
-import { YearRange } from '../models/YearRange';
-
-export interface Touchstone {
-    id: string;
-    name: string,
-    version: number;
-    description: string;
-    years: YearRange;
-    status: string;
-}
+import { Touchstone } from '../Models'
 
 export interface State {
     touchstones: Array<Touchstone>;

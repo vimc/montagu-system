@@ -2,31 +2,11 @@ import alt from "../alt";
 import * as AltJS from 'alt';
 import { responsibilityActions } from '../actions/ResponsibilityActions';
 import { AbstractStore } from "./AbstractStore";
-import { Touchstone } from '../stores/TouchstoneStore';
-
-export interface Scenario {
-    id: string;
-    touchstones: Array<string>;
-    description: string;
-    disease: string;
-}
-
-export interface Responsibility {
-    scenario: Scenario;
-    status: string;
-    problems: Array<string>;
-}
-
-export interface ResponsibilitySet {    
-    responsibilities: Array<Responsibility>;
-    touchstone: string;
-    status: string;
-    problems: string;
-}
+import { Touchstone, Responsibilities } from '../Models';
 
 export interface State {
     currentTouchstone: Touchstone;
-    responsibilitySet: ResponsibilitySet;
+    responsibilitySet: Responsibilities;
     errorMessage: string;
 }
 
@@ -34,7 +14,7 @@ interface ResponsibilityStoreInterface extends AltJS.AltStore<State> { }
 
 class ResponsibilityStore extends AbstractStore<State> {
     currentTouchstone: Touchstone;
-    responsibilitySet: ResponsibilitySet;
+    responsibilitySet: Responsibilities;
     errorMessage: string;
 
     constructor() {
@@ -59,7 +39,7 @@ class ResponsibilityStore extends AbstractStore<State> {
         this.responsibilitySet = null;
         this.errorMessage = null;
     }
-    handleUpdateResponsibilities(responsibilitySet: ResponsibilitySet) {
+    handleUpdateResponsibilities(responsibilitySet: Responsibilities) {
         this.responsibilitySet = responsibilitySet;
     }
     handleFetchFailed(errorMessage: string) {

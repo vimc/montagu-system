@@ -1,4 +1,4 @@
-import { ResponsibilitySet } from '../stores/ResponsibilityStore';
+import { Responsibilities } from '../Models';
 
 export interface ResponsibilitySourceInterface {
     fetch(groupId: string, touchstoneId: string): Promise<Response>;

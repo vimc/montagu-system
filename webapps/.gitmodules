@@ -1,0 +1,6 @@
+[submodule "contrib/src/webmodels/webmodels"]
+	path = contrib/src/webmodels/webmodels
+	url = git@github.com:vimc/webmodels.git
+[submodule "contrib/src/webmodels/tsgenerator"]
+	path = contrib/src/webmodels/tsgenerator
+	url = git@github.com:vimc/ts-generator.git

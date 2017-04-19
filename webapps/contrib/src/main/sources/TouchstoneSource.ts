@@ -1,4 +1,4 @@
-import { Touchstone } from '../stores/TouchstoneStore';
+import { Touchstone } from '../Models';
 
 export interface TouchstoneSourceInterface {
     fetch(): Promise<Response>;

@@ -1,8 +1,9 @@
 import * as React from "react";
 import { Link, Location } from 'simple-react-router';
 import { PageWithHeader } from './PageWithHeader';
-import * as Responsibilities from '../stores/ResponsibilityStore';
-import * as Touchstones from '../stores/TouchstoneStore';
+import * as ResponsibilityStore from '../stores/ResponsibilityStore';
+import * as TouchstoneStore from '../stores/TouchstoneStore';
+import { Responsibilities, Responsibility, Touchstone } from '../Models'
 import { connectToStores } from '../alt';
 import { responsibilityActions } from '../actions/ResponsibilityActions';
 
@@ -10,20 +11,20 @@ const styles = require("../styles/responsibilities.css");
 const spinner = require("../resources/spinner.gif");
 const headerStyles = require("../styles/header.css");
 
-class ResponsibilityList extends React.Component<Responsibilities.State, undefined> {
+class ResponsibilityList extends React.Component<ResponsibilityStore.State, undefined> {
 	static getStores() {
-		return [ Responsibilities.Store ];
+		return [ ResponsibilityStore.Store ];
 	}
 	static getPropsFromStores() {
-		return Responsibilities.Store.getState();
+		return ResponsibilityStore.Store.getState();
 	}
 
     render() {
     	const store = this.props;
         if (store.responsibilitySet) {
-            const set: Responsibilities.ResponsibilitySet = store.responsibilitySet;
+            const set: Responsibilities = store.responsibilitySet;
             if (set.responsibilities.length) {
-                const items = set.responsibilities.map((item: Responsibilities.Responsibility) => 
+                const items = set.responsibilities.map((item: Responsibility) => 
                     <li className={ styles.scenario } key={ item.scenario.id }>
                         <div className={ styles.header }>
                             <span className={ styles.name }>{ item.scenario.description }</span>
@@ -64,23 +65,23 @@ interface ResponsibilityOverviewPageProps {
 	touchstoneId: string;
 }
 
-export class ResponsibilityOverviewPage extends PageWithHeader<ResponsibilityOverviewPageProps, Touchstones.State> {
-	state: Touchstones.State = Touchstones.Store.getState();
+export class ResponsibilityOverviewPage extends PageWithHeader<ResponsibilityOverviewPageProps, TouchstoneStore.State> {
+	state: TouchstoneStore.State = TouchstoneStore.Store.getState();
 
 	componentDidMount() {
-		Touchstones.Store.listen(this.onChange);
+		TouchstoneStore.Store.listen(this.onChange);
 		responsibilityActions.setTouchstone(this.touchstone());
 	}
 
 	componentWillUnmount() {
-		Touchstones.Store.unlisten(this.onChange);
+		TouchstoneStore.Store.unlisten(this.onChange);
 	}
 
-	onChange(state: Touchstones.State) {
+	onChange(state: TouchstoneStore.State) {
 		this.setState(state);		
 	}
 
-	touchstone(): Touchstones.Touchstone {
+	touchstone(): Touchstone {
 		return this.state.touchstones.find((x) => x.id == this.props.location.params.touchstoneId);
 	}
 

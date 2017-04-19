@@ -1,7 +1,8 @@
 import * as React from "react";
 import { Link } from "simple-react-router";
 import { connectToStores } from '../alt';
-import { State, Store, Touchstone } from '../stores/TouchstoneStore';
+import { State, Store } from '../stores/TouchstoneStore';
+import { Touchstone } from '../Models'
 import { PageWithHeader } from './PageWithHeader';
 import { touchstoneActions } from '../actions/TouchstoneActions';
 

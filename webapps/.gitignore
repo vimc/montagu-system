@@ -3,6 +3,9 @@ contrib/.tmp/*
 contrib/node_modules/*
 contrib/npm-debug\.log
 contrib/out/*
+contrib/src/main/Models\.ts
+contrib/src/webmodels/.gradle/**
+contrib/src/webmodels/build/**
 react-prototype/dist/*
 react-prototype/node_modules/*
 react-prototype/npm-debug\.log

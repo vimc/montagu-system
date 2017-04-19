@@ -1,8 +1,7 @@
 import alt from '../alt';
 import { AbstractActions } from './AbstractActions';
 import { TouchstoneSource } from '../sources/TouchstoneSource';
-import { Touchstone } from '../stores/TouchstoneStore';
-import { APIResponse } from '../models/APIResponse';
+import { Touchstone, Result } from '../Models';
 
 interface Actions {
     fetch(): (dispatch: any) => any;
@@ -19,7 +18,7 @@ class TouchstoneActions extends AbstractActions implements Actions {
                     return response.json();
                 })
                 .then((response: any) => {
-                    const apiResponse = <APIResponse>response;
+                    const apiResponse = <Result>response;
                     switch (apiResponse.status)
                     {
                         case "success":
