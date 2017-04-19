@@ -12,7 +12,7 @@ import kotlin.reflect.KProperty
 
 fun main(args: Array<String>)
 {
-    val outputPath = "./webmodels.d.ts"
+    val outputPath = "../../main/Models.ts"
 
     val generator = TypeScriptGenerator(
             rootClasses = setOf(
