@@ -28,7 +28,9 @@ fun main(args: Array<String>)
                     LocalDate::class to "Date"
             ),
             ignoreSuperclasses = setOf(Iterable::class, HasKey::class),
-            classTransformers = listOf(MyClassTransformer)
+            classTransformers = listOf(MyClassTransformer),
+            addExportStatements = true,
+            enumTransformer = { klass, value -> value.toString().toLowerCase().replace('_', '-') }
     )
     File(outputPath).writeText(generator.definitionsText)
 }
