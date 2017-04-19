@@ -2,18 +2,15 @@ package org.vaccineimpact.api.app
 
 import com.github.salomonbrys.kotson.jsonSerializer
 import com.github.salomonbrys.kotson.registerTypeAdapter
-import com.google.gson.*
+import com.google.gson.FieldNamingPolicy
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
+import com.google.gson.JsonPrimitive
 import org.vaccineimpact.api.models.*
 
 object Serializer
 {
     private val toStringSerializer = jsonSerializer<Any> { JsonPrimitive(it.src.toString()) }
-    private val rangeSerializer = jsonSerializer<IntRange> {
-        JsonObject().apply {
-            addProperty("start", it.src.first)
-            addProperty("end", it.src.last)
-        }
-    }
     private val enumSerializer = jsonSerializer<Any> {
         JsonPrimitive(it.src.toString().toLowerCase().replace('_', '-'))
     }
@@ -25,7 +22,6 @@ object Serializer
             .serializeNulls()
             .registerTypeAdapter<java.time.LocalDate>(toStringSerializer)
             .registerTypeAdapter<java.time.Instant>(toStringSerializer)
-            .registerTypeAdapter(rangeSerializer)
             .registerTypeAdapter<ResultStatus>(enumSerializer)
             .registerTypeAdapter<ResponsibilitySetStatus>(enumSerializer)
             .registerTypeAdapter<ResponsibilityStatus>(enumSerializer)
