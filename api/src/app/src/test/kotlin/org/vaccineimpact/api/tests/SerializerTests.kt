@@ -33,9 +33,9 @@ class SerializerTests : MontaguTests()
     }
 
     @Test
-    fun `can serialize IntRange`()
+    fun `can serialize YearRange`()
     {
-        val actual = 1..6
+        val actual = YearRange(1, 6)
         val expected = json {
             obj("start" to 1, "end" to 6)
         }
