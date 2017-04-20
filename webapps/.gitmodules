@@ -3,4 +3,4 @@
 	url = https://github.com/vimc/montagu-webmodels.git
 [submodule "contrib/src/webmodels/tsgenerator"]
 	path = contrib/src/webmodels/tsgenerator
-	url = https://github.com/vimc/tsgenerator.git
+	url = https://github.com/vimc/ts-generator.git
