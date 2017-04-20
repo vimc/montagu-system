@@ -1,1 +1,1 @@
-include 'webmodels', 'tsgenerator'
+include 'models', 'tsgenerator', 'generate'

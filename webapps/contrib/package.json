@@ -4,6 +4,7 @@
   "description": "Modelling groups burden contribution portal",
   "main": "index.js",
   "scripts": {
+    "generate-models": "cd ./src/webmodels && ./gradlew generateTypeDefinitions",
     "test": "mocha-webpack --webpack-config webpack-test.config.js \"src/test/**/*\"",
     "start": "serve out/dist"
   },
