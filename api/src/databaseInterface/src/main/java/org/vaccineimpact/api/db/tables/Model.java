@@ -35,7 +35,7 @@ import org.vaccineimpact.api.db.tables.records.ModelRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Model extends TableImpl<ModelRecord> {
 
-    private static final long serialVersionUID = -640008856;
+    private static final long serialVersionUID = 1637175979;
 
     /**
      * The reference instance of <code>public.model</code>
@@ -61,9 +61,9 @@ public class Model extends TableImpl<ModelRecord> {
     public final TableField<ModelRecord, String> MODELLING_GROUP = createField("modelling_group", org.jooq.impl.SQLDataType.CLOB.nullable(false).defaultValue(org.jooq.impl.DSL.field("'NULL'::text", org.jooq.impl.SQLDataType.CLOB)), this, "");
 
     /**
-     * The column <code>public.model.name</code>.
+     * The column <code>public.model.description</code>.
      */
-    public final TableField<ModelRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(64).nullable(false), this, "");
+    public final TableField<ModelRecord, String> DESCRIPTION = createField("description", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.model.citation</code>.
@@ -71,14 +71,9 @@ public class Model extends TableImpl<ModelRecord> {
     public final TableField<ModelRecord, String> CITATION = createField("citation", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
 
     /**
-     * The column <code>public.model.description</code>.
-     */
-    public final TableField<ModelRecord, String> DESCRIPTION = createField("description", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
-
-    /**
      * The column <code>public.model.current</code>.
      */
-    public final TableField<ModelRecord, String> CURRENT = createField("current", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<ModelRecord, String> CURRENT = createField("current", org.jooq.impl.SQLDataType.CLOB, this, "");
 
     /**
      * Create a <code>public.model</code> table reference

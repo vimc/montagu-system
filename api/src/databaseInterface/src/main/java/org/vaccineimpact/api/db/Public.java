@@ -23,6 +23,9 @@ import org.vaccineimpact.api.db.tables.Coverage;
 import org.vaccineimpact.api.db.tables.CoverageSet;
 import org.vaccineimpact.api.db.tables.Disease;
 import org.vaccineimpact.api.db.tables.GaviSupportLevel;
+import org.vaccineimpact.api.db.tables.ImpactEstimate;
+import org.vaccineimpact.api.db.tables.ImpactEstimateComponents;
+import org.vaccineimpact.api.db.tables.ImpactEstimateSet;
 import org.vaccineimpact.api.db.tables.Model;
 import org.vaccineimpact.api.db.tables.ModelVersion;
 import org.vaccineimpact.api.db.tables.ModellingGroup;
@@ -57,7 +60,7 @@ import org.vaccineimpact.api.db.tables.Vaccine;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = -797710501;
+    private static final long serialVersionUID = 804692792;
 
     /**
      * The reference instance of <code>public</code>
@@ -108,6 +111,21 @@ public class Public extends SchemaImpl {
      * Enum table. Possible values: none (No vaccination), without (Vaccination without GAVI support), with (Vaccination with GAVI support)
      */
     public final GaviSupportLevel GAVI_SUPPORT_LEVEL = org.vaccineimpact.api.db.tables.GaviSupportLevel.GAVI_SUPPORT_LEVEL;
+
+    /**
+     * The table <code>public.impact_estimate</code>.
+     */
+    public final ImpactEstimate IMPACT_ESTIMATE = org.vaccineimpact.api.db.tables.ImpactEstimate.IMPACT_ESTIMATE;
+
+    /**
+     * The table <code>public.impact_estimate_components</code>.
+     */
+    public final ImpactEstimateComponents IMPACT_ESTIMATE_COMPONENTS = org.vaccineimpact.api.db.tables.ImpactEstimateComponents.IMPACT_ESTIMATE_COMPONENTS;
+
+    /**
+     * The table <code>public.impact_estimate_set</code>.
+     */
+    public final ImpactEstimateSet IMPACT_ESTIMATE_SET = org.vaccineimpact.api.db.tables.ImpactEstimateSet.IMPACT_ESTIMATE_SET;
 
     /**
      * With the self-referencing "current" field; we consider a model to be the current one if current is null.  See comment about recursion in modelling_group
@@ -233,6 +251,9 @@ public class Public extends SchemaImpl {
             Sequences.BURDEN_ESTIMATE_SET_ID_SEQ,
             Sequences.COVERAGE_ID_SEQ,
             Sequences.COVERAGE_SET_ID_SEQ,
+            Sequences.IMPACT_ESTIMATE_COMPONENTS_ID_SEQ,
+            Sequences.IMPACT_ESTIMATE_ID_SEQ,
+            Sequences.IMPACT_ESTIMATE_SET_ID_SEQ,
             Sequences.MODEL_VERSION_ID_SEQ,
             Sequences.OUTCOME_ID_SEQ,
             Sequences.RESPONSIBILITY_ID_SEQ,
@@ -261,6 +282,9 @@ public class Public extends SchemaImpl {
             CoverageSet.COVERAGE_SET,
             Disease.DISEASE,
             GaviSupportLevel.GAVI_SUPPORT_LEVEL,
+            ImpactEstimate.IMPACT_ESTIMATE,
+            ImpactEstimateComponents.IMPACT_ESTIMATE_COMPONENTS,
+            ImpactEstimateSet.IMPACT_ESTIMATE_SET,
             Model.MODEL,
             ModelVersion.MODEL_VERSION,
             ModellingGroup.MODELLING_GROUP,

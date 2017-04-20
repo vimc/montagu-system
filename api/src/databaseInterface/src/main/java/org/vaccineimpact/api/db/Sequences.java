@@ -44,6 +44,21 @@ public class Sequences {
     public static final Sequence<Long> COVERAGE_SET_ID_SEQ = new SequenceImpl<Long>("coverage_set_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
     /**
+     * The sequence <code>public.impact_estimate_components_id_seq</code>
+     */
+    public static final Sequence<Long> IMPACT_ESTIMATE_COMPONENTS_ID_SEQ = new SequenceImpl<Long>("impact_estimate_components_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
+     * The sequence <code>public.impact_estimate_id_seq</code>
+     */
+    public static final Sequence<Long> IMPACT_ESTIMATE_ID_SEQ = new SequenceImpl<Long>("impact_estimate_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
+     * The sequence <code>public.impact_estimate_set_id_seq</code>
+     */
+    public static final Sequence<Long> IMPACT_ESTIMATE_SET_ID_SEQ = new SequenceImpl<Long>("impact_estimate_set_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
      * The sequence <code>public.model_version_id_seq</code>
      */
     public static final Sequence<Long> MODEL_VERSION_ID_SEQ = new SequenceImpl<Long>("model_version_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));

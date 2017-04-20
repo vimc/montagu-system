@@ -15,6 +15,9 @@ import org.vaccineimpact.api.db.tables.Coverage;
 import org.vaccineimpact.api.db.tables.CoverageSet;
 import org.vaccineimpact.api.db.tables.Disease;
 import org.vaccineimpact.api.db.tables.GaviSupportLevel;
+import org.vaccineimpact.api.db.tables.ImpactEstimate;
+import org.vaccineimpact.api.db.tables.ImpactEstimateComponents;
+import org.vaccineimpact.api.db.tables.ImpactEstimateSet;
 import org.vaccineimpact.api.db.tables.Model;
 import org.vaccineimpact.api.db.tables.ModelVersion;
 import org.vaccineimpact.api.db.tables.ModellingGroup;
@@ -93,6 +96,21 @@ public class Tables {
      * Enum table. Possible values: none (No vaccination), without (Vaccination without GAVI support), with (Vaccination with GAVI support)
      */
     public static final GaviSupportLevel GAVI_SUPPORT_LEVEL = org.vaccineimpact.api.db.tables.GaviSupportLevel.GAVI_SUPPORT_LEVEL;
+
+    /**
+     * The table <code>public.impact_estimate</code>.
+     */
+    public static final ImpactEstimate IMPACT_ESTIMATE = org.vaccineimpact.api.db.tables.ImpactEstimate.IMPACT_ESTIMATE;
+
+    /**
+     * The table <code>public.impact_estimate_components</code>.
+     */
+    public static final ImpactEstimateComponents IMPACT_ESTIMATE_COMPONENTS = org.vaccineimpact.api.db.tables.ImpactEstimateComponents.IMPACT_ESTIMATE_COMPONENTS;
+
+    /**
+     * The table <code>public.impact_estimate_set</code>.
+     */
+    public static final ImpactEstimateSet IMPACT_ESTIMATE_SET = org.vaccineimpact.api.db.tables.ImpactEstimateSet.IMPACT_ESTIMATE_SET;
 
     /**
      * With the self-referencing "current" field; we consider a model to be the current one if current is null.  See comment about recursion in modelling_group
