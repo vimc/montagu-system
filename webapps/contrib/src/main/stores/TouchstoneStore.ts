@@ -1,12 +1,12 @@
 import alt from '../alt';
 import * as AltJS from 'alt';
+import { RemoteContent }  from './RemoteContent'
 import { AbstractStore } from './AbstractStore';
 import { touchstoneActions } from '../actions/TouchstoneActions';
 import { Touchstone } from '../Models'
 
-export interface State {
+export interface State extends RemoteContent {
     touchstones: Array<Touchstone>;
-    errorMessage: string;
 }
 
 interface TouchstoneStoreInterface extends AltJS.AltStore<State> { }
@@ -14,11 +14,13 @@ interface TouchstoneStoreInterface extends AltJS.AltStore<State> { }
 class TouchstoneStore extends AbstractStore<State> {
     touchstones: Array<Touchstone>;
     errorMessage: string;
+    ready: boolean;
 
     constructor() {
         super();
         this.touchstones = null;
-        this.errorMessage = null;        
+        this.errorMessage = null;
+        this.ready = false;    
         this.bindListeners({
             handleFetch: touchstoneActions.fetch,
             handleUpdate: touchstoneActions.update,
@@ -28,12 +30,15 @@ class TouchstoneStore extends AbstractStore<State> {
     handleFetch() {
         this.touchstones = null;
         this.errorMessage = null;
+        this.ready = false;
     }
     handleUpdate(touchstones: Array<Touchstone>) {
         this.touchstones = touchstones;
+        this.ready = true;
     }
     handleFetchFailed(errorMessage: string) {
         this.errorMessage = errorMessage;
+        this.ready = false;
     }
 }
 
