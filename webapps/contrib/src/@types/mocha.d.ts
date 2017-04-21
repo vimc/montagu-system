@@ -12,5 +12,8 @@ declare interface TestContext {
 declare function describe(description: string, body: () => void): void;
 declare function it(expectation: string, body: () => void): void;
 
+declare function before(step: () => void): void;
+declare function after(step: () => void): void;
+
 declare function beforeEach(step: () => void): void;
 declare function afterEach(step: () => void): void;

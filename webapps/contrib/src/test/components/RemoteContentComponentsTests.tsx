@@ -1,13 +1,13 @@
-import { setupVirtualDOM } from './JSDomHelpers';
+import { setupVirtualDOM } from '../JSDomHelpers';
 setupVirtualDOM();
 
 import * as React from 'react';
 import { expect } from 'chai';
 import { shallow, ShallowWrapper } from 'enzyme';
 
-import { RemoteContent } from '../main/stores/RemoteContent';
-import { RemoteContentComponent } from '../main/components/RemoteContentComponent/RemoteContentComponent';
-const spinner = require("../main/components/RemoteContentComponent/spinner.gif");
+import { RemoteContent } from '../../main/stores/RemoteContent';
+import { RemoteContentComponent } from '../../main/components/RemoteContentComponent/RemoteContentComponent';
+const spinner = require("../../main/components/RemoteContentComponent/spinner.gif");
 
 interface Properties extends RemoteContent {
     ready: boolean;
@@ -25,7 +25,6 @@ function render(props: Properties): ShallowWrapper<any, any> {
 };
 
 describe('DummyComponent', () => {
-
     it("renders a spinner when content is not ready", () => {
         const rendered = render({ ready: false, errorMessage: "" });
         expect(rendered.contains(<img src={ spinner } />)).to.equal(true);

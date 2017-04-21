@@ -6,7 +6,7 @@ import { connectToStores } from '../../alt';
 
 const styles = require("./Responsibilities.css");
 
-class ResponsibilityListComponent extends RemoteContentComponent<State> {
+export class ResponsibilityListComponent extends RemoteContentComponent<State> {
     static getStores() {
         return [ Store ];
     }
@@ -29,7 +29,7 @@ class ResponsibilityListComponent extends RemoteContentComponent<State> {
     }
 }
 
-class ResponsibilityComponent extends React.Component<Responsibility, undefined> {
+export class ResponsibilityComponent extends React.Component<Responsibility, undefined> {
     render() {
         const item = this.props;
         return <li className={ styles.scenario }>
