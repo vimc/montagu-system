@@ -1,12 +1,12 @@
 import * as React from "react";
 import { Link, Location } from 'simple-react-router';
-import { PageWithHeader } from './PageWithHeader';
+import { PageWithHeader } from '../PageWithHeader/PageWithHeader';
 import { ResponsibilityList } from './ResponsibilityList'
-import * as TouchstoneStore from '../stores/TouchstoneStore';
-import { Touchstone } from '../Models'
-import { responsibilityActions } from '../actions/ResponsibilityActions';
+import * as TouchstoneStore from '../../stores/TouchstoneStore';
+import { Touchstone } from '../../Models'
+import { responsibilityActions } from '../../actions/ResponsibilityActions';
 
-const headerStyles = require("../styles/header.css");
+const headerStyles = require("../PageWithHeader/PageWithHeader.css");
 
 interface ResponsibilityOverviewPageProps {
 	touchstoneId: string;

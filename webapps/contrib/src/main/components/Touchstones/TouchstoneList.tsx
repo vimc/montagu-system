@@ -1,11 +1,11 @@
 import * as React from "react";
-import { RemoteContentComponent } from './RemoteContentComponent';
-import { RemoteContent }  from '../stores/RemoteContent';
+import { RemoteContentComponent } from '../RemoteContentComponent/RemoteContentComponent';
+import { RemoteContent }  from '../../stores/RemoteContent';
 import { Link } from "simple-react-router";
-import { connectToStores } from '../alt';
-import { State, Store } from '../stores/TouchstoneStore';
-import { Touchstone } from '../Models'
-import { touchstoneActions } from '../actions/TouchstoneActions';
+import { connectToStores } from '../../alt';
+import { State, Store } from '../../stores/TouchstoneStore';
+import { Touchstone } from '../../Models'
+import { touchstoneActions } from '../../actions/TouchstoneActions';
 
 class TouchstoneListComponent extends RemoteContentComponent<State> {
     static getStores() {

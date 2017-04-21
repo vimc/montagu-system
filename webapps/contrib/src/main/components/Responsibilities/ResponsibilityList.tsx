@@ -1,11 +1,10 @@
 import * as React from 'react';
-import { RemoteContentComponent } from './RemoteContentComponent';
-import { State, Store } from '../stores/ResponsibilityStore';
-import { Responsibilities, Responsibility } from '../Models';
-import { connectToStores } from '../alt';
+import { RemoteContentComponent } from '../RemoteContentComponent/RemoteContentComponent';
+import { State, Store } from '../../stores/ResponsibilityStore';
+import { Responsibilities, Responsibility } from '../../Models';
+import { connectToStores } from '../../alt';
 
-const spinner = require("../resources/spinner.gif");
-const styles = require("../styles/responsibilities.css");
+const styles = require("./Responsibilities.css");
 
 class ResponsibilityListComponent extends RemoteContentComponent<State> {
     static getStores() {
