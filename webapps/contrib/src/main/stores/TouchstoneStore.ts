@@ -22,12 +22,12 @@ class TouchstoneStore extends AbstractStore<State> {
         this.errorMessage = null;
         this.ready = false;    
         this.bindListeners({
-            handleFetch: touchstoneActions.fetch,
+            handleBeginFetch: touchstoneActions.beginFetch,
             handleUpdate: touchstoneActions.update,
             handleFetchFailed: touchstoneActions.fetchFailed
         });
     }
-    handleFetch() {
+    handleBeginFetch() {
         this.touchstones = null;
         this.errorMessage = null;
         this.ready = false;

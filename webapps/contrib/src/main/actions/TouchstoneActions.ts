@@ -1,12 +1,11 @@
 import alt from '../alt';
-import { FetchActions } from './FetchActions';
+import { FetchActions, FetchActionsInterface } from './FetchActions';
 import { TouchstoneSource, NoParameters } from '../sources/Sources';
 import { Touchstone, Result } from '../Models';
 
-interface Actions {
+interface Actions extends FetchActionsInterface {
     fetch(): (dispatch: any) => any;
     update(touchstones: Array<Touchstone>): Array<Touchstone>;
-    fetchFailed(errorMessage: string): string;
 }
 
 class TouchstoneActions extends FetchActions<NoParameters, Array<Touchstone>> implements Actions {
@@ -14,7 +13,7 @@ class TouchstoneActions extends FetchActions<NoParameters, Array<Touchstone>> im
         return this.dispatchFetch({});
     }
 
-    doFetch(_: boolean) {
+    doFetch(_: NoParameters) {
         return TouchstoneSource.fetch({});
     }
 
@@ -24,10 +23,6 @@ class TouchstoneActions extends FetchActions<NoParameters, Array<Touchstone>> im
 
     update(touchstones: Array<Touchstone>): Array<Touchstone> {
         return touchstones;
-    }
-
-    fetchFailed(errorMessage: string): string {
-        return errorMessage;
     }
 }
 
