@@ -27,6 +27,12 @@
     margin-left: 20px;
 }
 
+:local(.page) {
+    margin: 0 auto;
+    width: 1000px;
+    padding: 20px;
+}
+
 :local(.pageTitle) {
     font-family: header;
     font-size: 24pt;
@@ -34,8 +40,5 @@
     border-bottom: 1px dashed;
 }
 
-:local(.content) {
-    margin: 0 auto;
-    width: 1000px;
-    padding: 20px;
+:local(.pageContent) {
 }

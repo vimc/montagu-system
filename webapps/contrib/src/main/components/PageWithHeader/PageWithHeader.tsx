@@ -15,9 +15,9 @@ export abstract class PageWithHeader<TProps, TState> extends React.Component<Pag
                     <Link href="/">Contribution portal</Link>
                 </div>
             </header>
-            <article className={ styles.content }>
+            <article className={ styles.page }>
                 <div className={ styles.pageTitle }>{ this.title() }</div>            
-                { this.renderPageContent() }
+                <div className={ styles.pageContent }>{ this.renderPageContent() }</div>
             </article>
         </div>
     }
