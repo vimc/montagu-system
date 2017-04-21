@@ -1,6 +1,6 @@
 import alt from '../alt';
 import { FetchActions } from './FetchActions';
-import { TouchstoneSource } from '../sources/TouchstoneSource';
+import { TouchstoneSource, NoParameters } from '../sources/Sources';
 import { Touchstone, Result } from '../Models';
 
 interface Actions {
@@ -9,13 +9,13 @@ interface Actions {
     fetchFailed(errorMessage: string): string;
 }
 
-class TouchstoneActions extends FetchActions<boolean, Array<Touchstone>> implements Actions {
+class TouchstoneActions extends FetchActions<NoParameters, Array<Touchstone>> implements Actions {
     fetch(): (dispatch: any) => any {
-        return this.dispatchFetch(true);
+        return this.dispatchFetch({});
     }
 
     doFetch(_: boolean) {
-        return TouchstoneSource.fetch();
+        return TouchstoneSource.fetch({});
     }
 
     receivedFetchedData(data: Array<Touchstone>) {

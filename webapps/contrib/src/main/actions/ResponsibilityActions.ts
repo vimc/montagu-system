@@ -1,6 +1,6 @@
 import alt from '../alt';
 import { FetchActions } from './FetchActions';
-import { ResponsibilitySource } from '../sources/ResponsibilitySource';
+import { ResponsibilitySource, ResponsibilityFetchParameters } from '../sources/Sources';
 import { Responsibilities, Result, Touchstone } from '../Models';
 
 interface Actions {
@@ -10,18 +10,14 @@ interface Actions {
     fetchFailed(errorMessage: string): string;
 }
 
-interface FetchParameters {
-    groupId: string;
-    touchstoneId: string;
-}
 
-class ResponsibilityActions extends FetchActions<FetchParameters, Responsibilities> implements Actions {
+class ResponsibilityActions extends FetchActions<ResponsibilityFetchParameters, Responsibilities> implements Actions {
     setTouchstone(touchstone: Touchstone) {
         return touchstone;
     }
 
-    doFetch(params: FetchParameters): Promise<Response> {
-        return ResponsibilitySource.fetch(params.groupId, params.touchstoneId);
+    doFetch(params: ResponsibilityFetchParameters): Promise<Response> {
+        return ResponsibilitySource.fetch(params);
     }
 
     fetch(groupId: string, touchstoneId: string): (dispatch: any) => any {
