@@ -34,7 +34,7 @@ project(':generate') {
 }
 
 project(':models') {
-    apply plugin: 'application'
+    apply plugin: 'kotlin'
 
     repositories {
         mavenCentral()
