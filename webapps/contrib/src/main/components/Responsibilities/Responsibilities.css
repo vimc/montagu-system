@@ -52,12 +52,3 @@
 :local(.estimates) table tr th {
     background-color: rgb(170, 224, 250);
 }
-
-:local(.message) {    
-    font-size: 16pt;
-}
-
-:local(.errorMessage) {
-    composes: message;
-    color: red;
-}

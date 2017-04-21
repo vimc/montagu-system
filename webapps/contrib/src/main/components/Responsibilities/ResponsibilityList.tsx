@@ -5,6 +5,7 @@ import { Responsibilities, Responsibility } from '../../Models';
 import { connectToStores } from '../../alt';
 
 const styles = require("./Responsibilities.css");
+const messageStyles = require("../../styles/messages.css");
 
 export class ResponsibilityListComponent extends RemoteContentComponent<State> {
     static getStores() {
@@ -24,7 +25,7 @@ export class ResponsibilityListComponent extends RemoteContentComponent<State> {
                 <ul className={ styles.responsibilities }>{ items }</ul>
             </div>
         } else {
-            return <div className={ styles.message }>This modelling group has no responsibilities in the current touchstone</div>                
+            return <div className={ messageStyles.message }>This modelling group has no responsibilities in the current touchstone</div>
         }
     }
 }

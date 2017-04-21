@@ -1,14 +1,15 @@
 import { Location } from 'simple-react-router';
-export function mockLocation(): Location<undefined> {
+import { Responsibility, Scenario, Touchstone } from '../main/Models';
+
+export function mockLocation(params?: any): Location<undefined> {
     return {
         hash: "hash",
-        params: undefined,
+        params: params || null,
         pathName: "/some/path",
         query: null
     };
 }
 
-import { Responsibility, Scenario } from '../main/Models';
 export function mockResponsibility(properties: any, scenarioProperties: any): Responsibility {
     const scenarioTemplate: Scenario = {
         id: "scenario-id",
@@ -22,5 +23,20 @@ export function mockResponsibility(properties: any, scenarioProperties: any): Re
            scenario: Object.assign(scenarioTemplate, scenarioProperties),
            status: "empty"
     };
+    return Object.assign(template, properties);
+}
+
+export function mockTouchstone(properties: any): Touchstone {
+    const template: Touchstone = {
+        id: "touchstone-1",
+        name: "touchstone",
+        version: 1,
+        description: "Description",
+        status: "open",
+        years: {
+            start: 1970,
+            end: 2100
+        }
+    }
     return Object.assign(template, properties);
 }
