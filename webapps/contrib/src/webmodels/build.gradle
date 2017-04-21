@@ -31,6 +31,10 @@ project(':generate') {
         compile project(":tsgenerator")
         compile project(":models")
     }
+
+    run {
+        args (rootDir.getPath() + '/../main/Models.ts')
+    }
 }
 
 project(':models') {
