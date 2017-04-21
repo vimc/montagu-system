@@ -1,5 +1,5 @@
 import alt from '../alt';
-import { AbstractActions } from './AbstractActions';
+import { FetchActions } from './FetchActions';
 import { TouchstoneSource } from '../sources/TouchstoneSource';
 import { Touchstone, Result } from '../Models';
 
@@ -9,32 +9,17 @@ interface Actions {
     fetchFailed(errorMessage: string): string;
 }
 
-class TouchstoneActions extends AbstractActions implements Actions {
+class TouchstoneActions extends FetchActions<boolean, Array<Touchstone>> implements Actions {
     fetch(): (dispatch: any) => any {
-        return (dispatch: any) => {
-            dispatch();
-            TouchstoneSource.fetch()
-                .then((response: Response) => {
-                    return response.json();
-                })
-                .then((response: any) => {
-                    const apiResponse = <Result>response;
-                    switch (apiResponse.status)
-                    {
-                        case "success":
-                            this.update(<Array<Touchstone>>(apiResponse.data));
-                            break;
-                        case "failure":
-                            this.fetchFailed(apiResponse.errors[0].message);
-                            break;
-                        default:
-                            this.fetchFailed("The server response was not correctly formatted: " + response.toString());
-                    }
-                })
-                .catch((errorMessage: string) => {
-                    this.fetchFailed(errorMessage);
-                });
-        };
+        return this.dispatchFetch(true);
+    }
+
+    doFetch(_: boolean) {
+        return TouchstoneSource.fetch();
+    }
+
+    receivedFetchedData(data: Array<Touchstone>) {
+        this.update(data);
     }
 
     update(touchstones: Array<Touchstone>): Array<Touchstone> {

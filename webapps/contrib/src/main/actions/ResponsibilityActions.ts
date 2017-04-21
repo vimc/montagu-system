@@ -1,5 +1,5 @@
 import alt from '../alt';
-import { AbstractActions } from './AbstractActions';
+import { FetchActions } from './FetchActions';
 import { ResponsibilitySource } from '../sources/ResponsibilitySource';
 import { Responsibilities, Result, Touchstone } from '../Models';
 
@@ -10,44 +10,30 @@ interface Actions {
     fetchFailed(errorMessage: string): string;
 }
 
-class ResponsibilityActions extends AbstractActions implements Actions {
+interface FetchParameters {
+    groupId: string;
+    touchstoneId: string;
+}
+
+class ResponsibilityActions extends FetchActions<FetchParameters, Responsibilities> implements Actions {
     setTouchstone(touchstone: Touchstone) {
         return touchstone;
     }
 
+    doFetch(params: FetchParameters): Promise<Response> {
+        return ResponsibilitySource.fetch(params.groupId, params.touchstoneId);
+    }
+
     fetch(groupId: string, touchstoneId: string): (dispatch: any) => any {
-        return (dispatch: any) => {
-            dispatch();
-            ResponsibilitySource.fetch(groupId, touchstoneId)
-                .then((response: Response) => {
-                    return response.json();
-                })
-                .then((response: any) => {
-                    const apiResponse = <Result>response;
-                    switch (apiResponse.status)
-                    {
-                        case "success":
-                            this.updateResponsibilities(<Responsibilities>(apiResponse.data));
-                            break;
-                        case "failure":
-                            this.fetchFailed(apiResponse.errors[0].message);
-                            break;
-                        default:
-                            this.fetchFailed("The server response was not correctly formatted: " + response.toString());
-                    }
-                })
-                .catch((errorMessage: string) => {
-                    this.fetchFailed(errorMessage);
-                });
-        };
+        return this.dispatchFetch({ groupId, touchstoneId });
+    }
+
+    receivedFetchedData(data: Responsibilities) {
+        this.updateResponsibilities(data);
     }
 
     updateResponsibilities(responsibilitySet: Responsibilities): Responsibilities {
         return responsibilitySet;
-    }
-
-    fetchFailed(errorMessage: string): string {
-        return errorMessage;
     }
 }
 
