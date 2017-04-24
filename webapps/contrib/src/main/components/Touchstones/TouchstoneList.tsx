@@ -11,7 +11,7 @@ const messageStyles = require("../../styles/messages.css");
 
 export class TouchstoneListComponent extends RemoteContentComponent<State> {
     static getStores() {
-        touchstoneActions.fetch();
+        touchstoneActions.fetch({});
         return [ Store ];
     }
     static getPropsFromStores(props: State): State {

@@ -4,6 +4,7 @@ import { RemoteContent } from './RemoteContent';
 import { responsibilityActions } from '../actions/ResponsibilityActions';
 import { AbstractStore } from "./AbstractStore";
 import { Touchstone, Responsibilities } from '../Models';
+import { ResponsibilityFetchParameters } from '../sources/Sources';
 
 export interface State extends RemoteContent {
     currentTouchstone: Touchstone;
@@ -35,7 +36,11 @@ class ResponsibilityStore extends AbstractStore<State> {
     handleSetTouchstone(touchstone: Touchstone) {
         this.currentTouchstone = touchstone;
         const action: any = responsibilityActions.fetch;
-        action.defer("group-1", this.currentTouchstone.id);
+        const params: ResponsibilityFetchParameters = { 
+            groupId: "group-1",
+            touchstoneId: this.currentTouchstone.id
+        };
+        action.defer(params);
     }
     handleFetch() {
         this.responsibilitySet = null;

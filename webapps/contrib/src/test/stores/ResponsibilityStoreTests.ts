@@ -5,7 +5,7 @@ import * as actionHelpers from '../actionHelpers';
 
 import { Store } from '../../main/stores/ResponsibilityStore';
 import { responsibilityActions } from '../../main/actions/ResponsibilityActions';
-import { sources } from '../../main/sources/Sources';
+import { sources, ResponsibilityFetchParameters } from '../../main/sources/Sources';
 import { settings } from '../../main/Settings';
 
 function sleep(ms: number) {
@@ -28,7 +28,7 @@ describe("ResponsibilityStore", () => {
         });
     });
 
-    it("setTouchstone triggers fetch", (done: TestCallback) => {
+    it("setTouchstone triggers fetch", (done: DoneCallback) => {
         const touchstone = mocks.mockTouchstone({});
         const spy = actionHelpers.dispatchSpy();
         mocks.mockSource(sources.responsibilities);

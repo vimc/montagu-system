@@ -1,4 +1,5 @@
 import { handleTeamCityEvent } from './TeamCityIntegration'
+import 'isomorphic-fetch'
 
 function fullTestName(test: TestContext): string {
     if (test != null) {

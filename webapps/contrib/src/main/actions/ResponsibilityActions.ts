@@ -3,8 +3,7 @@ import { FetchActions, FetchActionsInterface } from './FetchActions';
 import { sources, ResponsibilityFetchParameters } from '../sources/Sources';
 import { Responsibilities, Result, Touchstone } from '../Models';
 
-interface Actions extends FetchActionsInterface {
-    fetch(groupId: string, touchstoneId: string): boolean;
+interface Actions extends FetchActionsInterface<ResponsibilityFetchParameters> {
     setTouchstone(touchstone: Touchstone): Touchstone;
     updateResponsibilities(responsibilitySet: Responsibilities): Responsibilities;
 }
@@ -17,11 +16,6 @@ class ResponsibilityActions extends FetchActions<ResponsibilityFetchParameters, 
 
     doFetch(params: ResponsibilityFetchParameters): Promise<Response> {
         return sources.responsibilities.fetch(params);
-    }
-
-    fetch(groupId: string, touchstoneId: string): boolean {
-        this.dispatchFetch({ groupId, touchstoneId });
-        return true;
     }
 
     receivedFetchedData(data: Responsibilities) {
