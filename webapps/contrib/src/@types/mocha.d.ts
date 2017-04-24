@@ -9,8 +9,10 @@ declare interface TestContext {
     err: TestError;
 }
 
+declare type TestCallback = () => void;
+
 declare function describe(description: string, body: () => void): void;
-declare function it(expectation: string, body: () => void): void;
+declare function it(expectation: string, body: (done?: TestCallback) => void): void;
 
 declare function before(step: () => void): void;
 declare function after(step: () => void): void;

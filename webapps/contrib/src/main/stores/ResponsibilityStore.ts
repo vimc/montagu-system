@@ -26,7 +26,7 @@ class ResponsibilityStore extends AbstractStore<State> {
         this.ready = false;
         this.bindListeners({
             handleSetTouchstone: responsibilityActions.setTouchstone,
-            handleFetch: responsibilityActions.fetch,
+            handleFetch: responsibilityActions.beginFetch,
             handleUpdateResponsibilities: responsibilityActions.updateResponsibilities,
             handleFetchFailed: responsibilityActions.fetchFailed
         });

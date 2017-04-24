@@ -1,13 +1,12 @@
 import alt from '../alt';
-import { FetchActions } from './FetchActions';
-import { ResponsibilitySource, ResponsibilityFetchParameters } from '../sources/Sources';
+import { FetchActions, FetchActionsInterface } from './FetchActions';
+import { sources, ResponsibilityFetchParameters } from '../sources/Sources';
 import { Responsibilities, Result, Touchstone } from '../Models';
 
-interface Actions {
+interface Actions extends FetchActionsInterface {
+    fetch(groupId: string, touchstoneId: string): boolean;
     setTouchstone(touchstone: Touchstone): Touchstone;
-    fetch(groupId: string, touchstoneId: string): (dispatch: any) => any;
     updateResponsibilities(responsibilitySet: Responsibilities): Responsibilities;
-    fetchFailed(errorMessage: string): string;
 }
 
 
@@ -17,11 +16,12 @@ class ResponsibilityActions extends FetchActions<ResponsibilityFetchParameters, 
     }
 
     doFetch(params: ResponsibilityFetchParameters): Promise<Response> {
-        return ResponsibilitySource.fetch(params);
+        return sources.responsibilities.fetch(params);
     }
 
-    fetch(groupId: string, touchstoneId: string): (dispatch: any) => any {
-        return this.dispatchFetch({ groupId, touchstoneId });
+    fetch(groupId: string, touchstoneId: string): boolean {
+        this.dispatchFetch({ groupId, touchstoneId });
+        return true;
     }
 
     receivedFetchedData(data: Responsibilities) {

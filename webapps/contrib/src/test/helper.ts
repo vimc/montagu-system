@@ -8,7 +8,6 @@ function fullTestName(test: TestContext): string {
     }
 }
 
-
 beforeEach(function() {
     handleTeamCityEvent('before', fullTestName(this.currentTest), null);
 });
