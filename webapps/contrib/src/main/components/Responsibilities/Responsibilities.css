@@ -1,0 +1,54 @@
+:local(.responsibilities) {
+    list-style-type: none;
+    padding: 0;
+}
+
+:local(.scenario) {
+    margin-top: 50px;
+    border: 1px solid rgb(200, 200, 200);
+}
+
+:local(.header) {
+    cursor: pointer;
+    padding: 5px 0 0px 10px;
+    background-color: rgb(210, 210, 210);
+    color: inherit;
+    border-bottom: 1px solid rgb(200, 200, 200);
+}
+
+:local(.name) {
+    font-size: 20pt;
+    font-weight: bold;
+}
+
+:local(.status) {
+    float: right;
+    margin: 10px 10px;
+    font-size: 10pt;
+    font-weight: bold;
+};
+
+:local(.content) {
+    padding: 10px;
+}
+
+:local(.progress) {
+    margin-bottom: 20px
+}
+
+:local(.actions) {
+    text-align: right;
+    margin: 5px 0 10px 0;
+}
+
+:local(.estimates) table {
+    border-collapse: collapse;
+    width: 780px;
+}
+:local(.estimates) table tr td, :local(.estimates) table tr th {
+    padding: 5px;
+    border: 1px solid rgb(127, 127, 127);
+}
+:local(.estimates) table tr th {
+    background-color: rgb(170, 224, 250);
+}

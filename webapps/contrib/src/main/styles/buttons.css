@@ -1,0 +1,31 @@
+button {
+    display: inline-block;
+    background-color: rgb(0, 173, 239);
+    border: none;
+    outline-style: outset;
+    outline-width: 1px;
+    outline-color: rgb(200, 200, 200);
+    color: white;
+    font-family: inherit;
+    font-size: 12pt;
+    font-weight: bold;
+    padding: 10px 20px 5px 20px;
+    height: 40px;
+    margin: 5px;
+}
+button:hover, {
+    outline-width: 2px;
+}
+button:active {
+    outline-style: inset;
+}
+button {    
+    vertical-align: top;
+}
+button:disabled {
+    color: rgb(230, 230, 230);
+    background-color: rgb(122, 204, 125);
+}
+button:disabled:hover {
+    outline-width: 1px;
+}

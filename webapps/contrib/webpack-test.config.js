@@ -9,11 +9,44 @@ module.exports = {
         extensions: ["*", ".webpack.js", ".web.js", ".ts", ".tsx", ".js"]
     },
 
+    // Enable sourcemaps for debugging webpack's output.
+    devtool: "source-map",
+
     module: {
         loaders: [
             {
                 test: /\.tsx?$/, 
                 loaders: [ "babel-loader", "awesome-typescript-loader" ]
+            },
+            // Use CSS modules
+            {
+                test: /\.css$/,
+                loaders: [                        
+                    "style-loader",
+                    {
+                        loader: "css-loader",
+                        options: {
+                            modules: true,
+                            localIdentName: "[local]_from_[name]",
+                        }
+                    }
+                ]
+            },
+            {
+                test: /\.(jpeg?|gif|png|svg|otf|ttf)$/,
+                loaders: [
+                    {
+                        loader: "file-loader",
+                        options: {
+                            publicPath: "/",
+                            useRelativePath: false
+                        }
+                    }
+                ]
+            },
+            {
+                test: /.md$/,
+                loader: "ignore-loader"
             }
         ]
     }

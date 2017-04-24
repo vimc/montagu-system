@@ -1,0 +1,8 @@
+:local(.message) {    
+    font-size: 16pt;
+}
+
+:local(.errorMessage) {
+    composes: message;
+    color: red;
+}
