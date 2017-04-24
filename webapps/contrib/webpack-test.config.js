@@ -1,4 +1,5 @@
 var nodeExternals = require('webpack-node-externals');
+const path = require('path');
  
 module.exports = {
     target: 'node', // in order to ignore built-in modules like path, fs, etc. 
@@ -6,7 +7,11 @@ module.exports = {
 
     resolve: {
         // Add '.ts' and '.tsx' as resolvable extensions.
-        extensions: ["*", ".webpack.js", ".web.js", ".ts", ".tsx", ".js"]
+        extensions: ["*", ".webpack.js", ".web.js", ".ts", ".tsx", ".js"],
+
+        alias: {
+            "environmentSettings": path.join(__dirname, "./src/main/settings/", "development")
+        }
     },
 
     // Enable sourcemaps for debugging webpack's output.
