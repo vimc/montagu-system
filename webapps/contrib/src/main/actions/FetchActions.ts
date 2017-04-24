@@ -34,11 +34,9 @@ export abstract class FetchActions<TFetchParameters, TModel> extends AbstractAct
 
 function handleResponse(promise: Promise<Response>, success: (data: any) => void, failure: (message: string) => void): void {
     promise.then((response: Response) => {
-        console.log(response.json());
         return response.json();
     })
     .then((response: any) => {
-        console.log(response);
         const apiResponse = <Result>response;
         switch (apiResponse.status)
         {
