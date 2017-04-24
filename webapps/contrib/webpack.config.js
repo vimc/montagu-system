@@ -1,4 +1,5 @@
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const path = require('path');
 
 module.exports = {
     entry: [
@@ -15,7 +16,11 @@ module.exports = {
 
     resolve: {
         // Add '.ts' and '.tsx' as resolvable extensions.
-        extensions: ["*", ".webpack.js", ".web.js", ".ts", ".tsx", ".js"]
+        extensions: ["*", ".webpack.js", ".web.js", ".ts", ".tsx", ".js"],
+
+        alias: {
+            "environmentSettings": path.join(__dirname, "./src/main/settings/", process.env.MONTAGU_CONTRIB_PROFILE || "development")
+        }
     },
 
     module: {

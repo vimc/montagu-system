@@ -1,7 +1,5 @@
-interface Settings {
-    baseUrl: string;
-}
+const environment = require('environmentSettings');
 
-export const settings: Settings = {
-    baseUrl: "http://localhost:8080/v1"
-};
+export const settings = environment.settings;
+
+console.log("Current settings: " + JSON.stringify(settings));
