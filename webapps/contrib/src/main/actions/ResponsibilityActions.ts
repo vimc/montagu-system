@@ -6,6 +6,7 @@ import { Responsibilities, Result, Touchstone } from '../Models';
 interface Actions extends FetchActionsInterface<ResponsibilityFetchParameters> {
     setTouchstone(touchstone: Touchstone): Touchstone;
     updateResponsibilities(responsibilitySet: Responsibilities): Responsibilities;
+    filterByDisease(diseaseId: string): string;
 }
 
 
@@ -20,10 +21,15 @@ class ResponsibilityActions extends FetchActions<ResponsibilityFetchParameters, 
 
     receivedFetchedData(data: Responsibilities) {
         this.updateResponsibilities(data);
+        return true;
     }
 
     updateResponsibilities(responsibilitySet: Responsibilities): Responsibilities {
         return responsibilitySet;
+    }
+
+    filterByDisease(diseaseId: string): string {
+        return diseaseId;
     }
 }
 

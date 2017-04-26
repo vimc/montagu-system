@@ -14,6 +14,7 @@ class TouchstoneActions extends FetchActions<NoParameters, Array<Touchstone>> im
 
     receivedFetchedData(data: Array<Touchstone>) {
         this.update(data);
+        return true;
     }
 
     update(touchstones: Array<Touchstone>): Array<Touchstone> {
