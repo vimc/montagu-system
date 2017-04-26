@@ -8,6 +8,7 @@ dependencies {
     testCompile "org.jooq:jooq-meta:3.9.1"
 
     testCompile project(":app")
+    testCompile project(":models")
     testCompile project(":databaseInterface")
     testCompile project(":testHelpers")
 }
