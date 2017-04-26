@@ -9,9 +9,7 @@ export interface State extends RemoteContent {
     touchstones: Array<Touchstone>;
 }
 
-interface TouchstoneStoreInterface extends AltJS.AltStore<State> {     
-    openTouchstone(): Touchstone;
-}
+interface TouchstoneStoreInterface extends AltJS.AltStore<State> { }
 
 class TouchstoneStore extends AbstractStore<State> {
     touchstones: Array<Touchstone>;
@@ -27,9 +25,6 @@ class TouchstoneStore extends AbstractStore<State> {
             handleBeginFetch: touchstoneActions.beginFetch,
             handleUpdate: touchstoneActions.update,
             handleFetchFailed: touchstoneActions.fetchFailed
-        });
-        this.exportPublicMethods({
-            openTouchstone: () => this.touchstones.find(x => x.status == "open")
         });
     }
     handleBeginFetch() {
