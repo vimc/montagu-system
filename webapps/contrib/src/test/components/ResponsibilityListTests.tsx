@@ -6,7 +6,8 @@ import { expect } from 'chai';
 import { shallow, ShallowWrapper } from 'enzyme';
 import { mockResponsibility } from '../mocks';
 
-import { ResponsibilityListComponent, ResponsibilityComponent } from '../../main/components/Responsibilities/ResponsibilityList';
+import { ResponsibilityListComponent } from '../../main/components/Responsibilities/ResponsibilityList';
+import { ResponsibilityComponent } from '../../main/components/Responsibilities/ResponsibilityComponent';
 import { Responsibility } from '../../main/Models';
 import { State } from '../../main/stores/ResponsibilityStore';
 const styles = require("../../main/components/Responsibilities/Responsibilities.css");
@@ -14,6 +15,7 @@ const styles = require("../../main/components/Responsibilities/Responsibilities.
 function makeStoreState(responsibilities: Array<Responsibility>): State {
     return {
         currentTouchstone: null,
+        currentDiseaseId: null,
         responsibilitySet: {
             problems: "",
             status: null,

@@ -1,5 +1,7 @@
 import * as React from 'react';
 
+import { Store } from '../../stores/MainStore';
+
 interface OptionList {
     options: string[];
     onChange: (id: string) => void;
@@ -7,7 +9,7 @@ interface OptionList {
 
 export class DiseaseFilter extends React.Component<OptionList, undefined> {
     render() {
-        const options = this.props.options.map(x => <option key={ x } value={ x }>{ x }</option>);
+        const options = this.props.options.map(x => <option key={ x } value={ x }>{ Store.getDiseaseById(x).name }</option>);
         return <select onChange={ this.onChange }>
             <option key={ null } value="">All</option>
             { options }

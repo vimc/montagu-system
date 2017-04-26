@@ -1,12 +1,12 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import Router from "./Router";
+import { Application } from "./components/Application";
 
 require('file-loader?name=[name].[ext]!./index.html');
 require('./styles/fonts.css');
 require('./styles/buttons.css');
 
 ReactDOM.render(    
-    <Router />,
+    <Application />,
     document.getElementById("react")
 );

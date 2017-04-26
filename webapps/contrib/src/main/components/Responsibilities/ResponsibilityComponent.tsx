@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {  Responsibility } from '../../Models';
+import { Store } from '../../stores/MainStore';
 
 const styles = require("./Responsibilities.css");
 
@@ -16,7 +17,7 @@ export class ResponsibilityComponent extends React.Component<Responsibility, und
             <div>
                 <div className={ styles.content }>
                     <div className={ styles.metadata }>
-                        Disease: { item.scenario.disease }
+                        Disease: { Store.getDiseaseById(item.scenario.disease).name }
                     </div>
                     <div className={ styles.actions }>
                         <button>Download input data</button>

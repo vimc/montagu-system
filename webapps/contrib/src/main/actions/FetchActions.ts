@@ -24,6 +24,7 @@ export abstract class FetchActions<TFetchParameters, TModel> extends AbstractAct
     }
 
     fetchFailed(errorMessage: string): string {
+        console.log("fetchFailed: " + errorMessage);
         return errorMessage;
     }
 

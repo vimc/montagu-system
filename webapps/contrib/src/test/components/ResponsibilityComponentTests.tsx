@@ -6,7 +6,7 @@ import { expect } from 'chai';
 import { shallow, ShallowWrapper } from 'enzyme';
 import { mockResponsibility } from '../mocks';
 
-import { ResponsibilityComponent } from '../../main/components/Responsibilities/ResponsibilityList';
+import { ResponsibilityComponent } from '../../main/components/Responsibilities/ResponsibilityComponent';
 const styles = require("../../main/components/Responsibilities/Responsibilities.css");
 import { Responsibility } from '../../main/Models';
 

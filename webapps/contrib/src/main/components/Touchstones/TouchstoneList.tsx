@@ -19,7 +19,6 @@ export class TouchstoneLink extends React.Component<Touchstone, undefined> {
 
 export class TouchstoneListComponent extends RemoteContentComponent<State> {
     static getStores() {
-        touchstoneActions.fetch({});
         return [ Store ];
     }
     static getPropsFromStores(props: State): State {
