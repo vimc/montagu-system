@@ -1,10 +1,12 @@
 package org.vaccineimpact.api.app
 
+import org.vaccineimpact.api.app.controllers.DiseaseController
 import org.vaccineimpact.api.app.controllers.ModellingGroupController
 import org.vaccineimpact.api.app.controllers.TouchstoneController
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.jooq.JooqModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.jooq.JooqScenarioRepository
+import org.vaccineimpact.api.app.repositories.jooq.JooqSimpleObjectsRepository
 import org.vaccineimpact.api.app.repositories.jooq.JooqTouchstoneRepository
 import spark.Spark as spk
 
@@ -21,10 +23,12 @@ class MontaguApi
 
     fun makeRepositories(): Repositories
     {
+        val simpleObjectsRepository = { JooqSimpleObjectsRepository() }
         val touchstoneRepository = { JooqTouchstoneRepository() }
         val scenarioRepository = { JooqScenarioRepository() }
         val modellingGroupRepository = { JooqModellingGroupRepository(touchstoneRepository, scenarioRepository) }
         return Repositories(
+                simpleObjectsRepository,
                 touchstoneRepository,
                 scenarioRepository,
                 modellingGroupRepository
@@ -39,6 +43,7 @@ class MontaguApi
         ErrorHandler.setup()
 
         val controllers = listOf(
+                DiseaseController(repositories.simpleObjectsRepository),
                 TouchstoneController(repositories.touchstoneRepository),
                 ModellingGroupController(repositories.modellingGroupRepository)
         )
