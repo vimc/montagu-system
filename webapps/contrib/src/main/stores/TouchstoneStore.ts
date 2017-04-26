@@ -42,4 +42,4 @@ class TouchstoneStore extends AbstractStore<State> {
     }
 }
 
-export const Store = <TouchstoneStoreInterface>alt.createStore<State>(TouchstoneStore);
+export const Store = alt.createStore<State>(TouchstoneStore) as TouchstoneStoreInterface;

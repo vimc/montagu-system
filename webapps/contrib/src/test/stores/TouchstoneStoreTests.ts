@@ -22,7 +22,7 @@ describe("TouchstoneStore", () => {
     });
 
     it("update sets touchstones", () => {
-        const touchstones = [ mockTouchstone({}) ];
+        const touchstones = [ mockTouchstone({ status: "finished" }) ];
         touchstoneActions.update(touchstones);
 
         const state = Store.getState();

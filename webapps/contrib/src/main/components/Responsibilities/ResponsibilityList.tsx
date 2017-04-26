@@ -25,7 +25,7 @@ export class ResponsibilityListComponent extends RemoteContentComponent<State> {
                 <ul className={ styles.responsibilities }>{ items }</ul>
             </div>
         } else {
-            return <div className={ messageStyles.message }>This modelling group has no responsibilities in the current touchstone</div>
+            return <div className={ messageStyles.message }>This modelling group has no responsibilities in this touchstone</div>
         }
     }
 }

@@ -8,6 +8,14 @@ import { Touchstone } from '../../Models'
 import { touchstoneActions } from '../../actions/TouchstoneActions';
 
 const messageStyles = require("../../styles/messages.css");
+const commonStyles = require("../../styles/common.css");
+const styles = require("./TouchstoneList.css");
+
+export class TouchstoneLink extends React.Component<Touchstone, undefined> {
+    render() {
+        return <Link href={ `/responsibilities/${this.props.id}/` }>{ this.props.description }</Link>
+    }
+}
 
 export class TouchstoneListComponent extends RemoteContentComponent<State> {
     static getStores() {
@@ -18,17 +26,40 @@ export class TouchstoneListComponent extends RemoteContentComponent<State> {
         return Store.getState();
     }
 
-    renderContent(content: State): JSX.Element {
-        if (content.touchstones.length > 0) {
-            const items = content.touchstones.map((touchstone: Touchstone) => 
+    renderFinished(content: State): JSX.Element {
+        const finished = content.touchstones.filter(x => x.status != "open");
+        if (finished.length > 0) {
+            const items = finished.map((touchstone: Touchstone) => 
                 <li key={ touchstone.id}>
-                    <Link href={ `/responsibilities/${touchstone.id}/` }>{ touchstone.description }</Link>
+                    <TouchstoneLink { ...touchstone } />
                 </li>
             );
-            return <ul>{ items }</ul>;
+            return <div>{ items }</div>
         } else {
-            return <div className={ messageStyles.message }>There are no touchstones currently.</div>;
+            return <div>There are no past touchstones.</div>
         }
+    }
+
+    renderOpen(content: State): JSX.Element {
+        const open = content.touchstones.find(x => x.status == "open");
+        if (open) {
+            return <TouchstoneLink { ...open } />
+        } else {
+            return <div>There is no open touchstone currently.</div>
+        }
+    }
+
+    renderContent(content: State): JSX.Element {
+        return <div>
+            <div className={ styles.openTouchstone }>
+                <div className={ commonStyles.sectionTitle }>Open touchstone</div>
+                <div>{ this.renderOpen(content) }</div>
+            </div>
+            <div className={ styles.finishedTouchstones }>
+                <div className={ commonStyles.sectionTitle }>Past finished touchstones</div>
+                <div>{ this.renderFinished(content) }</div>
+            </div>
+        </div>;
     }
 }
 

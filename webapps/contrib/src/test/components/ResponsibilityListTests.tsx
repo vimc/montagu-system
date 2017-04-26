@@ -29,7 +29,7 @@ describe('ResponsibilityListComponent', () => {
     it("renders message when there are no responsibilities", () => {
         const state = makeStoreState([]);
         const rendered = shallow(<ResponsibilityListComponent {...state} />);
-        expect(rendered.text()).to.contain("This modelling group has no responsibilities in the current touchstone");
+        expect(rendered.text()).to.contain("This modelling group has no responsibilities in this touchstone");
     });
 
     it("renders one ResponsibilityComponent per responsibility", () => {
