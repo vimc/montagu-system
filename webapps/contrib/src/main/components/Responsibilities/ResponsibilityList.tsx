@@ -5,7 +5,6 @@ import { ResponsibilityComponent } from './ResponsibilityComponent';
 import { State, Store } from '../../stores/ResponsibilityStore';
 import { Responsibilities, Responsibility } from '../../Models';
 import { connectToStores } from '../../alt';
-import { responsibilityActions } from '../../actions/ResponsibilityActions';
 
 const styles = require("./Responsibilities.css");
 const messageStyles = require("../../styles/messages.css");
@@ -28,19 +27,7 @@ export class ResponsibilityListComponent extends RemoteContentComponent<State> {
         return reps;
     }
 
-    renderDiseaseFilter(diseases: string[]): JSX.Element {
-        if (diseases.length > 1) {
-            return <div>
-                Filter by disease:&nbsp;
-                <DiseaseFilter options={ diseases } onChange={ this.filterByDisease } />
-            </div>;
-        } else {
-            return <span />;
-        }
-    }
-
     renderContent(store: State): JSX.Element {
-        const diseases = [...new Set(store.responsibilitySet.responsibilities.map(x => x.scenario.disease))];
         const reps = this.getResponsibilities(store);
         if (reps.length) {
             const items = reps.map((item: Responsibility) => 
@@ -48,17 +35,13 @@ export class ResponsibilityListComponent extends RemoteContentComponent<State> {
             );
             return <div>
                 <div className={ commonStyles.control }>
-                    { this.renderDiseaseFilter(diseases) }
+                    <DiseaseFilter { ...this.props.responsibilitySet } />
                 </div>
                 <ul className={ styles.responsibilities }>{ items }</ul>
             </div>;
         } else {
             return <div className={ messageStyles.message }>This modelling group has no responsibilities in this touchstone</div>
         }
-    }
-
-    filterByDisease(id: string) {
-        responsibilityActions.filterByDisease(id);
     }
 }
 

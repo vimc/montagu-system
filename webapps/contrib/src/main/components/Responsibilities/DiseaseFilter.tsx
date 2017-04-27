@@ -1,23 +1,28 @@
 import * as React from 'react';
 
+import { Disease, Responsibilities } from '../../Models';
 import { Store } from '../../stores/MainStore';
+import { OptionSelector, Option } from '../OptionSelector/OptionSelector';
+import { responsibilityActions } from '../../actions/ResponsibilityActions';
 
-interface OptionList {
-    options: string[];
-    onChange: (id: string) => void;
-}
+export class DiseaseFilter extends React.Component<Responsibilities, undefined> {
+    render(): JSX.Element {        
+        const diseaseIds = [...new Set(this.props.responsibilities.map(x => x.scenario.disease))];
+        if (diseaseIds.length > 1) {
+            const options: Option[] = diseaseIds
+                .map(id => Store.getDiseaseById(id))
+                .map(disease => ({ value: disease.id, text: disease.name }));
 
-export class DiseaseFilter extends React.Component<OptionList, undefined> {
-    render() {
-        const options = this.props.options.map(x => <option key={ x } value={ x }>{ Store.getDiseaseById(x).name }</option>);
-        return <select onChange={ this.onChange }>
-            <option key={ null } value="">All</option>
-            { options }
-        </select>;
+            return <div>
+                Filter by disease:&nbsp;
+                <OptionSelector options={ options } onChange={ this.filterByDisease } defaultOption="All" />
+            </div>;
+        } else {
+            return <span />;
+        }
     }
 
-    onChange = (event: React.FormEvent<HTMLSelectElement>) => {
-        event.preventDefault();
-        this.props.onChange(event.currentTarget.value);
+    filterByDisease(id: string) {
+        responsibilityActions.filterByDisease(id);
     }
 }

@@ -24,6 +24,16 @@ function onReady() {
     action.defer();
 }
 
+export function makeDiseaseLookup(diseases: Disease[]) {
+    let lookup: { [index: string] : Disease } = {};
+    diseases.forEach(d => lookup[d.id] = d);
+
+    return { 
+        content: lookup, 
+        loaded: true
+    };
+}
+
 class MainStore extends AbstractStore<State> {
     ready: boolean;
     errorMessage: string;
@@ -43,13 +53,7 @@ class MainStore extends AbstractStore<State> {
         })
     }
     handleDiseases(diseases: Array<Disease>) {
-        let lookup: { [index: string] : Disease } = {};
-        diseases.forEach(d => lookup[d.id] = d);
-
-        this.diseases = { 
-            content: lookup, 
-            loaded: true
-        };
+        this.diseases = makeDiseaseLookup(diseases);
         if (this.diseases.loaded) {
             this.ready = true;
             onReady();

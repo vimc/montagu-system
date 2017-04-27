@@ -4,7 +4,7 @@ setupVirtualDOM();
 import * as React from 'react';
 import { expect } from 'chai';
 import { shallow, ShallowWrapper } from 'enzyme';
-import { mockResponsibility } from '../mocks';
+import * as mocks from '../mocks';
 import { alt } from '../../main/alt';
 
 import { ResponsibilityComponent } from '../../main/components/Responsibilities/ResponsibilityComponent';
@@ -15,16 +15,11 @@ describe('ResponsibilityComponent', () => {
     let rendered: ShallowWrapper<any, any>;
 
     before(() => {
-        alt.bootstrap(JSON.stringify({
-            MainStore: {
-                diseases: {
-                    loaded: true,
-                    content: { "disease-id": "Disease name" }
-                }
-            }
-        }));
+        mocks.setupMainStore([
+            { id: "disease-id", name: "Disease name" }
+        ]);
 
-        const responsibility = mockResponsibility({
+        const responsibility = mocks.mockResponsibility({
             status: "empty"
         }, { 
             id: "scenario-id",
@@ -33,6 +28,9 @@ describe('ResponsibilityComponent', () => {
         rendered = shallow(<ResponsibilityComponent {...responsibility} />);
     });
 
+    after(() => {
+        alt.recycle();
+    });
 
     it("renders the scenario header", () => {
         expect(rendered.find(`.${styles.header}`).text()).to.contain("Description (ID: scenario-id)");
