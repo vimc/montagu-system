@@ -15,6 +15,15 @@ export function mockLocation(params?: any): Location<undefined> {
     };
 }
 
+let counter = 0;
+export function mockDisease(properties?: any): models.Disease {
+    counter++;
+    return Object.assign({
+        id: `disease-${counter}`,
+        name: `Disease ${counter}`,
+    }, properties);
+}
+
 export function mockResponsibility(properties?: any, scenarioProperties?: any): models.Responsibility {
     const scenarioTemplate: models.Scenario = {
         id: "scenario-id",

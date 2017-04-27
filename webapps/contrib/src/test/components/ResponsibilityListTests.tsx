@@ -13,10 +13,13 @@ import { Responsibility } from '../../main/Models';
 import { State } from '../../main/stores/ResponsibilityStore';
 const styles = require("../../main/components/Responsibilities/Responsibilities.css");
 
-function makeStoreState(responsibilities: Array<Responsibility>): State {
+function makeStoreState(
+    responsibilities: Array<Responsibility>, 
+    currentDiseaseId?: string
+): State {
     return {
         currentTouchstone: null,
-        currentDiseaseId: null,
+        currentDiseaseId: currentDiseaseId,
         responsibilitySet: {
             problems: "",
             status: null,
@@ -37,8 +40,8 @@ describe('ResponsibilityListComponent', () => {
 
     it("renders one ResponsibilityComponent per responsibility", () => {
         const state = makeStoreState([
-            mockResponsibility({}, { id: "scenario-1" }),
-            mockResponsibility({}, { id: "scenario-2" })
+            mockResponsibility({}, { id: "scenario-1", disease: "d1" }),
+            mockResponsibility({}, { id: "scenario-2", disease: "d2" })
         ]);
         const rendered = shallow(<ResponsibilityListComponent {...state} />);
         const children = rendered.find(ResponsibilityComponent);
@@ -51,5 +54,16 @@ describe('ResponsibilityListComponent', () => {
         const state = makeStoreState([ mockResponsibility() ]);
         const rendered = shallow(<ResponsibilityListComponent {...state} />);
         expect(rendered.find(DiseaseFilter)).to.have.length(1, "Expected to render DiseaseFilter");
+    });
+
+    it("can filter be filtered by diesase", () => {
+        const state = makeStoreState([
+            mockResponsibility({}, { id: "scenario-1", disease: "d1" }),
+            mockResponsibility({}, { id: "scenario-2", disease: "d2" })
+        ], "d2");
+        const rendered = shallow(<ResponsibilityListComponent {...state} />);
+        const children = rendered.find(ResponsibilityComponent);
+        expect(children).to.have.length(1);
+        expect(children.at(0).key()).to.equal("scenario-2");
     });
 });

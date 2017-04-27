@@ -4,7 +4,7 @@ setupVirtualDOM();
 import * as React from 'react';
 import { expect } from 'chai';
 import * as sinon from 'sinon';
-import { shallow, mount, ShallowWrapper } from 'enzyme';
+import { shallow, ShallowWrapper } from 'enzyme';
 import { mockLocation, mockTouchstone } from '../mocks';
 import { Location } from 'simple-react-router';
 import { alt } from '../../main/alt';

@@ -7,7 +7,7 @@ import { touchstoneActions } from '../actions/TouchstoneActions';
 import { Disease } from '../Models'
 
 export interface State extends RemoteContent {
-    diseases: Array<Disease>;
+    diseases: Loadable<Array<Disease>>;
 }
 
 interface MainStoreInterface extends AltJS.AltStore<State> { 
