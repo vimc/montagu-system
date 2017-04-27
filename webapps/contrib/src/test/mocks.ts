@@ -3,6 +3,8 @@ import * as sinon from 'sinon';
 import { Location } from 'simple-react-router';
 import * as models from '../main/Models';
 import { Source } from '../main/sources/Source';
+import { alt } from '../main/alt';
+import { makeDiseaseLookup } from '../main/stores/MainStore';
 
 export function mockLocation(params?: any): Location<undefined> {
     return {
@@ -13,11 +15,20 @@ export function mockLocation(params?: any): Location<undefined> {
     };
 }
 
+let counter = 0;
+export function mockDisease(properties?: any): models.Disease {
+    counter++;
+    return Object.assign({
+        id: `disease-${counter}`,
+        name: `Disease ${counter}`,
+    }, properties);
+}
+
 export function mockResponsibility(properties?: any, scenarioProperties?: any): models.Responsibility {
     const scenarioTemplate: models.Scenario = {
         id: "scenario-id",
         description: "Description",
-        disease: "Disease",
+        disease: "disease-id",
         touchstones: []
     };
     const template: models.Responsibility = {
@@ -95,4 +106,12 @@ export function mockResult<T>(
     status = status || "success";
 
     return { data, errors, status };
+}
+
+export function setupMainStore(diseases: models.Disease[]) {
+    alt.bootstrap(JSON.stringify({
+        MainStore: {
+            diseases: makeDiseaseLookup(diseases)
+        }
+    }));
 }

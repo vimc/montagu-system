@@ -65,21 +65,6 @@ describe('TouchstoneListComponent', () => {
             expect(link.props()).to.eql(touchstone);
         });
     });
-
-    describe("emits", () => {
-        beforeEach(() => {
-            mockSource(sources.touchstones);
-        });
-
-        it("fetch action when connected to stores", () => {
-            const spy = actionHelpers.dispatchSpy();
-            TouchstoneListComponent.getStores();
-
-            actionHelpers.expectFetchActions(spy, "TouchstoneActions", 0);
-        });
-
-        afterEach(actionHelpers.restoreDispatch);
-    });
 });
 
 describe("TouchstoneLink", () => {

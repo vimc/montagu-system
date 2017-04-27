@@ -3,27 +3,27 @@ import * as mocks from '../mocks';
 import { FetchHelper } from './helpers';
 import * as actionHelpers from '../actionHelpers';
 
-import { touchstoneActions } from '../../main/actions/TouchstoneActions';
+import { mainActions } from '../../main/actions/MainActions';
 
 let helper: FetchHelper<NoParameters>;
 
-describe("TouchstoneFetch", () => {
+describe("MainFetch", () => {
     afterEach(() => {
         actionHelpers.restoreDispatch();
     });
 
     new FetchHelper<NoParameters>({
-        source: sources.touchstones,
-        fetchAction: () => touchstoneActions.fetch({}),
+        source: sources.diseases,
+        fetchAction: () => mainActions.fetch({}),
         params: {},
 
-        actionNamespace: "TouchstoneActions", 
-        successAction: "update",
+        actionNamespace: "MainActions", 
+        successAction: "receiveDiseases",
         failAction: "fetchFailed",
 
         makePayload: () => [ 
-            mocks.mockTouchstone({ id: "a" }), 
-            mocks.mockTouchstone({ id: "b" })
+            mocks.mockDisease(), 
+            mocks.mockDisease()
         ]
     }).addTestsToMocha();
 });

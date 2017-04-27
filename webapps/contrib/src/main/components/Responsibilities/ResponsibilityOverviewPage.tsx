@@ -9,48 +9,52 @@ import { responsibilityActions } from '../../actions/ResponsibilityActions';
 const headerStyles = require("../PageWithHeader/PageWithHeader.css");
 
 interface ResponsibilityOverviewPageProps {
-	touchstoneId: string;
+    touchstoneId: string;
 }
 
 export class ResponsibilityOverviewPage extends PageWithHeader<ResponsibilityOverviewPageProps, TouchstoneStore.State> {
-	state: TouchstoneStore.State = TouchstoneStore.Store.getState();
+    state: TouchstoneStore.State = TouchstoneStore.Store.getState();
 
-	componentDidMount() {
-		TouchstoneStore.Store.listen(this.onChange);
-		responsibilityActions.setTouchstone(this.touchstone());
-	}
+    componentDidMount() {
+        this.onLoad();
+        TouchstoneStore.Store.listen(this.onChange);
+    }
 
-	componentWillUnmount() {
-		TouchstoneStore.Store.unlisten(this.onChange);
-	}
+    componentWillUnmount() {
+        TouchstoneStore.Store.unlisten(this.onChange);
+    }
 
-	onChange(state: TouchstoneStore.State) {
-		this.setState(state);		
-	}
+    onLoad() {
+        responsibilityActions.setTouchstone(this.touchstone());
+    }
 
-	touchstone(): Touchstone {
-		return this.state.touchstones.find((x) => x.id == this.props.location.params.touchstoneId);
-	}
+    onChange(state: TouchstoneStore.State) {
+        this.setState(state);        
+    }
+
+    touchstone(): Touchstone {
+        return this.state.touchstones.find((x) => x.id == this.props.location.params.touchstoneId);
+    }
 
     title() {
-    	return <span>
-    		Responsibilities in { this.touchstone().description }
-    		<span className={ headerStyles.titleAddition }>
-    			<Link href="/">Change touchstone</Link>
-    		</span>
-    	</span>;
+        return <span>
+            Responsibilities in { this.touchstone().description }
+            <span className={ headerStyles.titleAddition }>
+                <Link href="/">Change touchstone</Link>
+            </span>
+        </span>;
     }
     renderPageContent() {
-        return <div>  		
-	        On this page you can:
-	        <ol>
-	            <li>See an overview of which scenarios your group are responsible for providing impact estimates for. If we have the wrong scenarios listed, please contact us here.</li>
-	            <li>Download demographic data which applies to all scenarios</li>
-	            <li>Download coverage data for each scenario</li>
-	            <li>Upload impact estimates for each scenario, and review any problems the system has detected in the uploaded data.</li>
-	            <li>Track progress towards providing impact estimates for all your scenarios</li>
-	        </ol>
-	        <ResponsibilityList />
-	    </div>
+        return <div>          
+            On this page you can:
+            <ol>
+                <li>See an overview of which scenarios your group are responsible for providing impact estimates for. If we have the wrong scenarios listed, please contact us here.</li>
+                <li>Download demographic data which applies to all scenarios</li>
+                <li>Download coverage data for each scenario</li>
+                <li>Upload impact estimates for each scenario, and review any problems the system has detected in the uploaded data.</li>
+                <li>Track progress towards providing impact estimates for all your scenarios</li>
+            </ol>
+            <ResponsibilityList />
+        </div>
     }
 }

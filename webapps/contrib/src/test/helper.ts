@@ -1,4 +1,6 @@
 import { handleTeamCityEvent } from './TeamCityIntegration'
+import * as mocks from './mocks';
+import { sources } from '../main/sources/Sources';
 import 'isomorphic-fetch'
 
 function fullTestName(test: TestContext): string {
@@ -9,7 +11,13 @@ function fullTestName(test: TestContext): string {
     }
 }
 
-beforeEach(function() {
+before(() => {
+    mocks.mockSource(sources.diseases);
+    mocks.mockSource(sources.responsibilities);
+    mocks.mockSource(sources.touchstones);
+});
+
+beforeEach(function() {    
     handleTeamCityEvent('before', fullTestName(this.currentTest), null);
 });
 afterEach(function() {

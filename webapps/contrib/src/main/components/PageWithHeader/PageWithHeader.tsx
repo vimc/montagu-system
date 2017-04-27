@@ -6,6 +6,7 @@ const styles = require('./PageWithHeader.css');
 
 export abstract class PageWithHeader<TProps, TState> extends React.Component<PageProperties<TProps>, TState> {
     abstract title(): JSX.Element;
+    abstract renderPageContent(): JSX.Element;
 
     render() {
         return <div>
@@ -21,8 +22,6 @@ export abstract class PageWithHeader<TProps, TState> extends React.Component<Pag
             </article>
         </div>
     }
-
-    abstract renderPageContent(): JSX.Element;
 }
 
 export interface PageProperties<T> {

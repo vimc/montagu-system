@@ -4,11 +4,13 @@ setupVirtualDOM();
 import * as React from 'react';
 import { expect } from 'chai';
 import * as sinon from 'sinon';
-import { shallow, mount, ShallowWrapper } from 'enzyme';
+import { shallow, ShallowWrapper } from 'enzyme';
 import { mockLocation, mockTouchstone } from '../mocks';
 import { Location } from 'simple-react-router';
 import { alt } from '../../main/alt';
 import * as actionHelpers from '../actionHelpers';
+import { sources } from '../../main/sources/Sources';
+import * as mocks from '../mocks';
 
 import { ResponsibilityOverviewPage } from '../../main/components/Responsibilities/ResponsibilityOverviewPage';
 import { Store } from '../../main/stores/TouchstoneStore';
@@ -54,7 +56,9 @@ describe('ResponsibilityOverviewPage', () => {
             const spy = actionHelpers.dispatchSpy();
             const expected = Store.getState().touchstones[0];
             const location = mockLocation({ touchstoneId: expected.id });
-            mount(<ResponsibilityOverviewPage location={ location } />).unmount();
+            const rendered = shallow(<ResponsibilityOverviewPage location={ location } />)
+            const instance = rendered.instance() as ResponsibilityOverviewPage;
+            instance.onLoad();
             actionHelpers.expectOrderedActions(spy, [
                 { action: "ResponsibilityActions.setTouchstone", payload: expected }
             ], 0);

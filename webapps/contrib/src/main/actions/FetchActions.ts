@@ -9,7 +9,7 @@ export interface FetchActionsInterface<TFetchParameters> {
 
 export abstract class FetchActions<TFetchParameters, TModel> extends AbstractActions {
     abstract doFetch(parameters: TFetchParameters): Promise<Response>;
-    abstract receivedFetchedData(data: TModel): void;
+    abstract receivedFetchedData(data: TModel): boolean;
 
     fetch(parameters: TFetchParameters): (dispatch: any) => any {
         return (dispatch: any) => {
@@ -24,6 +24,7 @@ export abstract class FetchActions<TFetchParameters, TModel> extends AbstractAct
     }
 
     fetchFailed(errorMessage: string): string {
+        console.log("fetchFailed: " + errorMessage);
         return errorMessage;
     }
 

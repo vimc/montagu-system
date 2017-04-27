@@ -24,7 +24,8 @@ describe("ResponsibilityStore", () => {
             errorMessage: null,
             ready: false,
             currentTouchstone: null,
-            responsibilitySet: null
+            responsibilitySet: null,
+            currentDiseaseId: null
         });
     });
 
@@ -39,7 +40,8 @@ describe("ResponsibilityStore", () => {
             errorMessage: null,
             ready: false,
             currentTouchstone: touchstone,
-            responsibilitySet: null
+            responsibilitySet: null,
+            currentDiseaseId: null
         });
 
         actionHelpers.expectOrderedActions(spy, [
@@ -62,7 +64,8 @@ describe("ResponsibilityStore", () => {
             errorMessage: null,
             ready: true,
             currentTouchstone: null,
-            responsibilitySet: responsibilitySet
+            responsibilitySet: responsibilitySet,
+            currentDiseaseId: null
         });
     });
 
@@ -74,11 +77,12 @@ describe("ResponsibilityStore", () => {
             errorMessage: "message",
             ready: false,
             currentTouchstone: null,
-            responsibilitySet: null
+            responsibilitySet: null,
+            currentDiseaseId: null
         });
     });
 
-    it("beginFetch clears everything expect currentTouchstone", () => {
+    it("beginFetch clears everything except currentTouchstone", () => {
         const touchstone = mocks.mockTouchstone()
         // First set us up in an impossible state where everything is non-null
         alt.bootstrap(JSON.stringify({
@@ -86,7 +90,8 @@ describe("ResponsibilityStore", () => {
                 errorMessage: "message",
                 ready: true,
                 currentTouchstone: touchstone,
-                responsibilitySet: mocks.mockResponsibilitySet()
+                responsibilitySet: mocks.mockResponsibilitySet(),
+                currentDiseaseId: "disease"
             }
         }));
         responsibilityActions.beginFetch();
@@ -96,7 +101,21 @@ describe("ResponsibilityStore", () => {
             errorMessage: null,
             ready: false,
             currentTouchstone: touchstone,
-            responsibilitySet: null
+            responsibilitySet: null,
+            currentDiseaseId: null
+        });
+    });
+
+    it("filterByDisease sets currentDiseaseId", () => {
+        responsibilityActions.filterByDisease("YF");
+
+        const state = Store.getState();
+        expect(state).to.eql({
+            errorMessage: null,
+            ready: false,
+            currentTouchstone: null,
+            responsibilitySet: null,
+            currentDiseaseId: "YF"
         });
     });
 });

@@ -28,5 +28,12 @@ export function dispatchSpy(): sinon.SinonSpy {
 }
 
 export function restoreDispatch() {
-    (alt.dispatch as any as sinon.SinonSpy).restore();
+    const dispatch = alt.dispatch;
+    if (isSpy(dispatch)) {
+        dispatch.restore();
+    }
+}
+
+function isSpy(x: any): x is sinon.SinonSpy {
+    return x.hasOwnProperty("restore");
 }

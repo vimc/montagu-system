@@ -31,7 +31,8 @@ fun main(args: Array<String>)
                         Touchstone::class,
                         ModellingGroup::class,
                         Responsibilities::class,
-                        Result::class
+                        Result::class,
+                        Disease::class
                 ),
                 mappings = mapOf(
                         LocalDateTime::class to "Date",

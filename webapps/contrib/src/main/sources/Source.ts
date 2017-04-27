@@ -8,7 +8,9 @@ export class Source<TParams> {
     }
 
     fetch(parameters: TParams): Promise<Response> {
-        const url: string = this.urlFunc(parameters);
-        return fetch(`${settings.baseUrl}${url}`);
+        const urlFragment = this.urlFunc(parameters);
+        const url = settings.baseUrl + urlFragment;
+        console.log(`Fetching from ${url}`);
+        return fetch(url);
     }
 }
