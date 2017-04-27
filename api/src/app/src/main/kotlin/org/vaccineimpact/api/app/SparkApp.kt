@@ -1,5 +1,6 @@
 package org.vaccineimpact.api.app
 
+import org.vaccineimpact.api.app.controllers.AuthenticationController
 import org.vaccineimpact.api.app.controllers.DiseaseController
 import org.vaccineimpact.api.app.controllers.ModellingGroupController
 import org.vaccineimpact.api.app.controllers.TouchstoneController
@@ -43,6 +44,7 @@ class MontaguApi
         ErrorHandler.setup()
 
         val controllers = listOf(
+                AuthenticationController(),
                 DiseaseController(repositories.simpleObjectsRepository),
                 TouchstoneController(repositories.touchstoneRepository),
                 ModellingGroupController(repositories.modellingGroupRepository)
@@ -52,6 +54,6 @@ class MontaguApi
             controller.mapEndpoints(urlBase)
         }
 
-        spk.after("*", { req, res -> addDefaultResponseHeaders(res) })
+        spk.after("*", { _, res -> addDefaultResponseHeaders(res) })
     }
 }

@@ -17,9 +17,10 @@ abstract class AbstractController
 
     fun mapEndpoints(urlBase: String)
     {
-        val transformer = Serializer::toResult
-        for ((urlFragment, route, method) in endpoints)
+        val transformer = this::transform
+        for (endpoint in endpoints)
         {
+            val (urlFragment, route, method) = endpoint
             val fullUrl = urlBase + urlComponent + urlFragment
             logger.info("Mapping $fullUrl")
             when (method)
@@ -31,14 +32,18 @@ abstract class AbstractController
                 HttpMethod.delete -> Spark.delete(fullUrl, route, transformer)
                 else -> throw UnsupportedValueException(method)
             }
+            endpoint.additionalSetup?.invoke(fullUrl)
         }
     }
+
+    protected open fun transform(x: Any): String = Serializer.toResult(x)
 }
 
 data class EndpointDefinition(
         val urlFragment: String,
         val route: (Request, Response) -> Any,
-        val method: HttpMethod = HttpMethod.get
+        val method: HttpMethod = HttpMethod.get,
+        val additionalSetup: ((String) -> Unit)? = null
 )
 {
     init

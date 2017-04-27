@@ -10,7 +10,7 @@ class EndpointTests : MontaguTests()
     @Test
     fun `URL must end in slash`()
     {
-        val handler: (spark.Request, spark.Response) -> Any = { req, res -> print("Hello world ") }
+        val handler: (spark.Request, spark.Response) -> Any = { _, _ -> print("Hello world ") }
         assertThatThrownBy({ EndpointDefinition("/path/without/terminal/slash", handler) })
                 .hasMessageContaining("must end with a forward slash")
     }

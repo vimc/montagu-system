@@ -21,6 +21,9 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/models/models.iml" filepath="$PROJECT_DIR$/.idea/modules/models/models.iml" group="models" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/models/models_main.iml" filepath="$PROJECT_DIR$/.idea/modules/models/models_main.iml" group="models" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/models/models_test.iml" filepath="$PROJECT_DIR$/.idea/modules/models/models_test.iml" group="models" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/security/security.iml" filepath="$PROJECT_DIR$/.idea/modules/security/security.iml" group="security" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/security/security_main.iml" filepath="$PROJECT_DIR$/.idea/modules/security/security_main.iml" group="security" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/security/security_test.iml" filepath="$PROJECT_DIR$/.idea/modules/security/security_test.iml" group="security" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/testHelpers/testHelpers.iml" filepath="$PROJECT_DIR$/.idea/modules/testHelpers/testHelpers.iml" group="testHelpers" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/testHelpers/testHelpers_main.iml" filepath="$PROJECT_DIR$/.idea/modules/testHelpers/testHelpers_main.iml" group="testHelpers" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/testHelpers/testHelpers_test.iml" filepath="$PROJECT_DIR$/.idea/modules/testHelpers/testHelpers_test.iml" group="testHelpers" />

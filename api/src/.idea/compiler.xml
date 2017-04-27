@@ -14,6 +14,8 @@
       <module name="generateDatabaseInterface_test" target="1.8" />
       <module name="models_main" target="1.8" />
       <module name="models_test" target="1.8" />
+      <module name="security_main" target="1.8" />
+      <module name="security_test" target="1.8" />
       <module name="testHelpers_main" target="1.8" />
       <module name="testHelpers_test" target="1.8" />
     </bytecodeTargetLevel>
