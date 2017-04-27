@@ -8,6 +8,7 @@ import { mockResponsibility } from '../mocks';
 
 import { ResponsibilityListComponent } from '../../main/components/Responsibilities/ResponsibilityList';
 import { ResponsibilityComponent } from '../../main/components/Responsibilities/ResponsibilityComponent';
+import { DiseaseFilter } from '../../main/components/Responsibilities/DiseaseFilter';
 import { Responsibility } from '../../main/Models';
 import { State } from '../../main/stores/ResponsibilityStore';
 const styles = require("../../main/components/Responsibilities/Responsibilities.css");
@@ -44,5 +45,11 @@ describe('ResponsibilityListComponent', () => {
         expect(children).to.have.length(2);
         expect(children.at(0).key()).to.equal("scenario-1");
         expect(children.at(1).key()).to.equal("scenario-2");
+    });
+
+    it("renders disease filter", () => {
+        const state = makeStoreState([ mockResponsibility() ]);
+        const rendered = shallow(<ResponsibilityListComponent {...state} />);
+        expect(rendered.find(DiseaseFilter)).to.have.length(1, "Expected to render DiseaseFilter");
     });
 });
