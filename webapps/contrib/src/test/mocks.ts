@@ -17,7 +17,7 @@ export function mockResponsibility(properties?: any, scenarioProperties?: any): 
     const scenarioTemplate: models.Scenario = {
         id: "scenario-id",
         description: "Description",
-        disease: "Disease",
+        disease: "disease-id",
         touchstones: []
     };
     const template: models.Responsibility = {

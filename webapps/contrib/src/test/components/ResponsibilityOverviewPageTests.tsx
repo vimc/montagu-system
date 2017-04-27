@@ -9,6 +9,8 @@ import { mockLocation, mockTouchstone } from '../mocks';
 import { Location } from 'simple-react-router';
 import { alt } from '../../main/alt';
 import * as actionHelpers from '../actionHelpers';
+import { sources } from '../../main/sources/Sources';
+import * as mocks from '../mocks';
 
 import { ResponsibilityOverviewPage } from '../../main/components/Responsibilities/ResponsibilityOverviewPage';
 import { Store } from '../../main/stores/TouchstoneStore';
