@@ -8,10 +8,3 @@ services:
       - db
   db:
     image: montagu.dide.ic.ac.uk:5000/montagu-db:master
-  tests:
-    depends_on:
-      - api
-      - db
-    build:
-      context: .
-      dockerfile: Dockerfile-blackbox
