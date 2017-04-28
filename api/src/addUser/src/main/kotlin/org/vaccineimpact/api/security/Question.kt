@@ -38,6 +38,6 @@ class PasswordQuestion(fieldName: String): Question(fieldName)
 {
     override fun getLine(): String?
     {
-        return System.console().readPassword().toString()
+        return System.console().readPassword().joinToString("")
     }
 }
