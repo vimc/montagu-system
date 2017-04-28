@@ -9,6 +9,7 @@ import org.vaccineimpact.api.app.repositories.jooq.JooqModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.jooq.JooqScenarioRepository
 import org.vaccineimpact.api.app.repositories.jooq.JooqSimpleObjectsRepository
 import org.vaccineimpact.api.app.repositories.jooq.JooqTouchstoneRepository
+import org.vaccineimpact.api.security.WebTokenHelper
 import spark.Spark as spk
 
 fun main(args: Array<String>)
@@ -21,6 +22,7 @@ class MontaguApi
 {
     private val urlBase = "/v1"
     private val jsonTransform = Serializer::toResult
+    private val tokenHelper = WebTokenHelper()
 
     fun makeRepositories(): Repositories
     {
@@ -44,7 +46,7 @@ class MontaguApi
         ErrorHandler.setup()
 
         val controllers = listOf(
-                AuthenticationController(),
+                AuthenticationController(tokenHelper),
                 DiseaseController(repositories.simpleObjectsRepository),
                 TouchstoneController(repositories.touchstoneRepository),
                 ModellingGroupController(repositories.modellingGroupRepository)

@@ -8,6 +8,8 @@ dependencies {
     testCompile "junit:junit:4.12"
     testCompile "org.assertj:assertj-core:3.6.2"
 
+    testCompile "org.slf4j:slf4j-simple:1.7.21"
+
     testCompile "khttp:khttp:0.1.0"
     testCompile "com.beust:klaxon:0.31"
 
@@ -15,6 +17,7 @@ dependencies {
 
     testCompile project(":testHelpers")
     testCompile project(":databaseInterface")
+    testCompile project(":security")
 }
 
 task copySpec(type: Copy) {
