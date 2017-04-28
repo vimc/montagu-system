@@ -1,11 +1,13 @@
 package org.vaccineimpact.api.models
 
+import java.time.Duration
+
 interface AuthenticationResponse
 
-data class SuccessfulAuthentication(val accessToken: Any): AuthenticationResponse
+class SuccessfulAuthentication(val accessToken: Any, lifeSpan: Duration): AuthenticationResponse
 {
     val tokenType = "bearer"
-    val expiresIn = 3600
+    val expiresIn = lifeSpan.seconds
 }
 
-data class FailedAuthentication(val error: String)
+data class FailedAuthentication(val error: String): AuthenticationResponse
