@@ -3,4 +3,5 @@ dependencies {
     compile "commons-codec:commons-codec:1.10"
 
     compile project(":models")
+    compile project(":databaseInterface")
 }

@@ -2,8 +2,11 @@ rootProject.name = 'api'
 include 'app',
         'models',
         'security',
-        'generateDatabaseInterface',
         'databaseInterface',
+
+        'generateDatabaseInterface',
+        'addUser',
+
         'testHelpers',
         'databaseTests',
         'blackboxTests'

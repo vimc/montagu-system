@@ -1,0 +1,9 @@
+apply plugin: 'application'
+
+mainClassName = "org.vaccineimpact.api.security.AddUserKt"
+
+dependencies {
+    compile "org.slf4j:slf4j-simple:1.7.21"
+
+    compile project(":security")
+}
