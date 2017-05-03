@@ -1,36 +1,26 @@
 package org.vaccineimpact.api.security
 
+import org.pac4j.core.credentials.password.PasswordEncoder
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.Tables.APP_USER
-import java.security.SecureRandom
-import java.util.*
 
 object UserHelper
 {
+    val encoder: PasswordEncoder = SodiumPasswordEncoder()
+
     fun saveUser(username: String, name: String, email: String, plainPassword: String)
     {
-        val salt = newSalt()
         JooqContext().use {
             it.dsl.newRecord(APP_USER).apply {
                 this.username = username
                 this.name = name
                 this.email = email
-                this.passwordHash = hashedPassword(plainPassword, salt)
-                this.salt = salt
+                this.passwordHash = hashedPassword(plainPassword)
             }.store()
         }
     }
 
-    fun encoder(salt: String) = BasicSaltedSha512PasswordEncoder(salt)
-
-    private fun hashedPassword(plainPassword: String, salt: String) = encoder(salt).encode(plainPassword)
-
-    private fun newSalt(): String
-    {
-        val saltBytes = ByteArray(32)
-        SecureRandom().nextBytes(saltBytes)
-        return Base64.getEncoder().encodeToString(saltBytes)
-    }
+    private fun hashedPassword(plainPassword: String) = encoder.encode(plainPassword)
 
     fun suggestUsername(name: String): String
     {
@@ -38,7 +28,7 @@ object UserHelper
         var username = names.first()
         if (names.size > 1)
         {
-            username = "${username}.${names.last()}"
+            username = "$username.${names.last()}"
         }
         return username
     }

@@ -53,8 +53,7 @@ class DatabasePasswordAuthenticator : Authenticator<UsernamePasswordCredentials>
             }
             else
             {
-                val encoder = UserHelper.encoder(user.salt)
-                if (!encoder.matches(password, user.passwordHash))
+                if (!UserHelper.encoder.matches(password, user.passwordHash))
                 {
                     throwsException("Provided password does not match password on record")
                 }
