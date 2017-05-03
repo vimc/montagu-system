@@ -1,6 +1,5 @@
 package eden.martin.webapi.security
 
-import org.pac4j.core.context.Pac4jConstants
 import org.pac4j.core.context.WebContext
 import org.pac4j.core.credentials.UsernamePasswordCredentials
 import org.pac4j.core.credentials.authenticator.Authenticator
@@ -8,10 +7,16 @@ import org.pac4j.core.exception.CredentialsException
 import org.pac4j.core.profile.CommonProfile
 import org.pac4j.core.util.CommonHelper
 import org.vaccineimpact.api.app.repositories.jooq.JooqUserRepository
+import org.vaccineimpact.api.models.User
 import org.vaccineimpact.api.security.UserHelper
 
 class DatabasePasswordAuthenticator : Authenticator<UsernamePasswordCredentials>
 {
+    companion object
+    {
+        val USER_OBJECT = "userObject"
+    }
+
     override fun validate(credentials: UsernamePasswordCredentials?, context: WebContext?)
     {
         if (credentials == null)
@@ -20,9 +25,9 @@ class DatabasePasswordAuthenticator : Authenticator<UsernamePasswordCredentials>
         }
         else
         {
-            val username = credentials.username
+            val email = credentials.username
             val password = credentials.password
-            if (CommonHelper.isBlank(username))
+            if (CommonHelper.isBlank(email))
             {
                 throwsException("Username cannot be blank")
             }
@@ -30,21 +35,21 @@ class DatabasePasswordAuthenticator : Authenticator<UsernamePasswordCredentials>
             {
                 throwsException("Password cannot be blank")
             }
-            validate(username, password)
+            val user = validate(email, password)
             credentials.userProfile = CommonProfile().apply {
-                setId(username)
-                addAttribute(Pac4jConstants.USERNAME, username)
+                setId(email)
+                addAttribute(USER_OBJECT, user)
             }
         }
     }
 
-    private fun validate(username: String, password: String)
+    private fun validate(email: String, password: String): User
     {
-        JooqUserRepository().use { repo ->
-            val user = repo.getUserByUsername(username)
+        return JooqUserRepository().use { repo ->
+            val user = repo.getUserByEmail(email)
             if (user == null)
             {
-                throwsException("Unknown username '$username'")
+                throw CredentialsException("Unknown email '$email'")
             }
             else
             {
@@ -53,6 +58,7 @@ class DatabasePasswordAuthenticator : Authenticator<UsernamePasswordCredentials>
                 {
                     throwsException("Provided password does not match password on record")
                 }
+                user
             }
         }
     }

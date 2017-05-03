@@ -22,44 +22,60 @@ class AuthenticationTests : DatabaseTest()
     @Test
     fun `authentication fails without BasicAuth header`()
     {
-        val result = post("user", "password", includeAuth = false)
-        assertThat(result).isEqualTo(json {
-            obj(
-                    "error" to "Bad credentials"
-            )
-        })
+        val result = post("email@example.com", "password", includeAuth = false)
+        assertDoesNotAuthenticate(result)
     }
 
     @Test
-    fun `unknown username does not authenticate`()
+    fun `unknown email does not authenticate`()
     {
-        val result = post("bad_user", "password")
-        assertThat(result).isEqualTo(json {
-            obj(
-                    "error" to "Bad credentials"
-            )
-        })
+        val result = post("bad@example.com", "password")
+        assertDoesNotAuthenticate(result)
     }
 
     @Test
     fun `incorrect password does not authenticate`()
     {
-        val result = post("user", "bad_password")
-        assertThat(result).isEqualTo(json {
-            obj(
-                    "error" to "Bad credentials"
-            )
-        })
+        val result = post("email@example.com", "bad_password")
+        assertDoesNotAuthenticate(result)
+    }
+
+    @Test
+    fun `cannot authenticate with username`()
+    {
+        val result = post("user", "password")
+        assertDoesNotAuthenticate(result)
     }
 
     @Test
     fun `correct password does authenticate`()
     {
-        val result = post("user", "password")
+        val result = post("email@example.com", "password")
+        assertDoesAuthenticate(result)
+    }
+
+    @Test
+    fun `email authentication is not case sensitive`()
+    {
+        val result = post("EMAIL@example.cOm", "password")
+        assertDoesAuthenticate(result)
+    }
+
+    private fun assertDoesAuthenticate(result: JsonObject)
+    {
         assertThat(result).doesNotContainKey("error")
         assertThat(result).containsKey("access_token")
         assertThat(result["token_type"]).isEqualTo("bearer")
         assertThat(isLong(result["expires_in"].toString()))
+    }
+
+    private fun assertDoesNotAuthenticate(result: JsonObject)
+    {
+        assertThat(result).isEqualTo(json {
+            obj(
+                    "error" to "Bad credentials"
+            )
+        })
     }
 
     private fun isLong(raw: String): Boolean

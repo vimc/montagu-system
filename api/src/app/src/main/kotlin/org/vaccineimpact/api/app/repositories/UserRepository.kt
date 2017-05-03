@@ -4,5 +4,5 @@ import org.vaccineimpact.api.models.User
 
 interface UserRepository : Repository
 {
-    fun getUserByUsername(username: String): User?
+    fun getUserByEmail(email: String): User?
 }

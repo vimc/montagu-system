@@ -7,7 +7,11 @@ import org.vaccineimpact.api.models.User
 
 class JooqUserRepository : JooqRepository(), UserRepository
 {
-    override fun getUserByUsername(username: String): User? = dsl.fetchAny(APP_USER, APP_USER.USERNAME.eq(username))?.mapUser()
+    override fun getUserByEmail(email: String): User?
+            = dsl.fetchAny(APP_USER, caseInsensitiveEmailMatch(email))?.mapUser()
+
+    private fun caseInsensitiveEmailMatch(email: String)
+            = APP_USER.EMAIL.lower().eq(email.toLowerCase())
 
     fun AppUserRecord.mapUser() = User(
             this.username,
