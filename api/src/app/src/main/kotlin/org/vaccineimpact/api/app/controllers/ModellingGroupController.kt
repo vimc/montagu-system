@@ -1,14 +1,14 @@
 package org.vaccineimpact.api.app.controllers
 
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
+import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.models.ModellingGroup
 import org.vaccineimpact.api.models.Responsibilities
-import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import spark.Request
 import spark.Response
 
 class ModellingGroupController(private val db: () -> ModellingGroupRepository)
-    : AbstractController()
+    : SecuredController()
 {
     override val urlComponent = "/modelling-groups"
 

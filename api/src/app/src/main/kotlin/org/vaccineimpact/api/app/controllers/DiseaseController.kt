@@ -5,7 +5,7 @@ import org.vaccineimpact.api.models.Disease
 import spark.Request
 import spark.Response
 
-class DiseaseController(val db: () -> SimpleObjectsRepository) : AbstractController()
+class DiseaseController(val db: () -> SimpleObjectsRepository) : SecuredController()
 {
     override val urlComponent = "/diseases"
     override val endpoints = listOf(

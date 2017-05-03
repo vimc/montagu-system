@@ -1,11 +1,7 @@
-package org.vaccineimpact.api.app.repositories.jooq
+package org.vaccineimpact.api.db
 
 import org.jooq.*
 import org.jooq.impl.TableImpl
-import org.vaccineimpact.api.app.errors.AmbiguousRelationBetweenTables
-import org.vaccineimpact.api.app.errors.MissingRelationBetweenTables
-import org.vaccineimpact.api.app.extensions.eqField
-import org.vaccineimpact.api.app.extensions.getOther
 
 /**
  * A JoinPath allows us to automatically construct the series of join operations needed

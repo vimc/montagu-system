@@ -1,11 +1,9 @@
 package org.vaccineimpact.api.app
 
-import org.vaccineimpact.api.app.controllers.AuthenticationController
-import org.vaccineimpact.api.app.controllers.DiseaseController
-import org.vaccineimpact.api.app.controllers.ModellingGroupController
-import org.vaccineimpact.api.app.controllers.TouchstoneController
+import org.vaccineimpact.api.app.controllers.*
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.jooq.*
+import org.vaccineimpact.api.app.security.TokenVerifyingConfigFactory
 import org.vaccineimpact.api.security.WebTokenHelper
 import spark.Spark as spk
 
@@ -39,6 +37,7 @@ class MontaguApi
 
     fun run(repositories: Repositories)
     {
+        val tokenVerifier = TokenVerifyingConfigFactory(tokenHelper).build()
         spk.port(8080)
         spk.redirect.get("/", urlBase)
         spk.before("*", ::addTrailingSlashes)
@@ -53,6 +52,10 @@ class MontaguApi
         for (controller in controllers)
         {
             controller.mapEndpoints(urlBase)
+            if (controller is SecuredController)
+            {
+                controller.setupSecurity(urlBase, tokenVerifier)
+            }
         }
 
         spk.after("*", { _, res -> addDefaultResponseHeaders(res) })

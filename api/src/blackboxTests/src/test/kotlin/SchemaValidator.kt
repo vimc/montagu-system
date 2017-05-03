@@ -15,15 +15,26 @@ class SchemaValidator
     {
         val json = JsonLoader.fromString(jsonAsString)
         // Everything must meet the basic response schema
-        assertValidates(responseSchema, json)
-        val status = json["status"].textValue()
-        assertThat(status)
-                .`as`("Check that the following response has status 'success': $jsonAsString")
-                .isEqualTo("success")
+        checkResultSchema(json, jsonAsString, "success")
         // Then use the more specific schema on the data portion
         val data = json["data"]
         val schema = readSchema(schemaName)
         assertValidates(schema, data)
+    }
+
+    fun validateError(jsonAsString: String, errorText: String? = null)
+    {
+        val json = JsonLoader.fromString(jsonAsString)
+        checkResultSchema(json, jsonAsString, "failure", errorText = errorText)
+    }
+
+    private fun checkResultSchema(json: JsonNode, jsonAsString: String, expectedStatus: String, errorText: String? = null)
+    {
+        assertValidates(responseSchema, json)
+        val status = json["status"].textValue()
+        assertThat(status)
+                .`as`(errorText ?: "Check that the following response has status '$expectedStatus': $jsonAsString")
+                .isEqualTo(expectedStatus)
     }
 
     private fun readSchema(name: String) = JsonLoader.fromResource("/spec/$name.schema.json")

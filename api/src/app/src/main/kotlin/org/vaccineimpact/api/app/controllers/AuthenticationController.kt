@@ -1,7 +1,7 @@
 package org.vaccineimpact.api.app.controllers
 
 import eden.martin.webapi.security.DatabasePasswordAuthenticator
-import eden.martin.webapi.security.SecurityConfigFactory
+import eden.martin.webapi.security.TokenIssuingConfigFactory
 import org.pac4j.core.profile.CommonProfile
 import org.pac4j.core.profile.ProfileManager
 import org.pac4j.http.client.direct.DirectBasicAuthClient
@@ -49,8 +49,8 @@ class AuthenticationController(
 
     private fun setupSecurity(fullUrl: String)
     {
-        val securityConfig = SecurityConfigFactory().build()
-        before(fullUrl, SecurityFilter(securityConfig, DirectBasicAuthClient::class.java.simpleName))
+        val config = TokenIssuingConfigFactory().build()
+        before(fullUrl, SecurityFilter(config, DirectBasicAuthClient::class.java.simpleName))
     }
 
     private fun getUserFromUserProfile(request: Request, response: Response): User

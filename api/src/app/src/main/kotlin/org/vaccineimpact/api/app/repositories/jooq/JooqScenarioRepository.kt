@@ -1,11 +1,12 @@
 package org.vaccineimpact.api.app.repositories.jooq
 
 import org.jooq.Record
-import org.vaccineimpact.api.app.extensions.fieldsAsList
+import org.vaccineimpact.api.db.fieldsAsList
 import org.vaccineimpact.api.models.Scenario
 import org.vaccineimpact.api.app.repositories.ScenarioRepository
 import org.vaccineimpact.api.db.Tables.SCENARIO
 import org.vaccineimpact.api.db.Tables.SCENARIO_DESCRIPTION
+import org.vaccineimpact.api.db.fromJoinPath
 
 class JooqScenarioRepository : JooqRepository(), ScenarioRepository
 {

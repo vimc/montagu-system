@@ -1,4 +1,4 @@
-package org.vaccineimpact.api.app.extensions
+package org.vaccineimpact.api.db
 
 import org.jooq.*
 import org.jooq.impl.TableImpl

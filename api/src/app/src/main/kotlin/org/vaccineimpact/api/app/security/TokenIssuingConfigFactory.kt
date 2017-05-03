@@ -10,18 +10,18 @@ import org.vaccineimpact.api.app.Serializer
 import org.vaccineimpact.api.models.FailedAuthentication
 import spark.Spark as spk
 
-class SecurityConfigFactory : ConfigFactory
+class TokenIssuingConfigFactory : ConfigFactory
 {
     override fun build(): Config
     {
         val authClient = DirectBasicAuthClient(DatabasePasswordAuthenticator())
         val config = Config(authClient)
-        config.httpActionAdapter = ActionAdapter()
+        config.httpActionAdapter = BasicAuthActionAdapter()
         return config
     }
 }
 
-class ActionAdapter : DefaultHttpActionAdapter()
+class BasicAuthActionAdapter : DefaultHttpActionAdapter()
 {
     val unauthorizedResponse: String = Serializer.gson.toJson(FailedAuthentication("Bad credentials"))
 
