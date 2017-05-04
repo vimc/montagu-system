@@ -1,8 +1,7 @@
 package org.vaccineimpact.api.models
 
-
 // A permission is just a name, like 'coverage.read'
-// To be useable, it must be reified with a scope, like:
+// To be usable, it must be reified with a scope, like:
 // */coverage.read (for the global scope)
 // modelling-group:IC-Garske/coverage.read (for a more specific scope)
 data class ReifiedPermission(
@@ -11,16 +10,21 @@ data class ReifiedPermission(
 )
 {
     override fun toString() = "$scope/$name"
-}
 
-sealed class Scope(val value: String)
-{
-    class Global : Scope("*")
-    class Specific(val scopePrefix: String, val scopeId: String): Scope("$scopePrefix:$scopeId")
+    fun satisfiedBy(permission: ReifiedPermission)
+            = name == permission.name && permission.scope.encompasses(scope)
 
-    override fun toString() = value
-    override fun equals(other: Any?) = when(other) {
-        is Scope -> other.toString() == toString()
-        else -> false
+    companion object
+    {
+        fun parse(raw: String): ReifiedPermission
+        {
+            val parts = raw.split('/')
+            val rawScope = parts[0]
+            val name = parts[1]
+            return ReifiedPermission(name, Scope.parse(rawScope))
+        }
     }
 }
+
+fun List<ReifiedPermission>.hasPermission(requirement: ReifiedPermission)
+    = this.any { requirement.satisfiedBy(it) }
