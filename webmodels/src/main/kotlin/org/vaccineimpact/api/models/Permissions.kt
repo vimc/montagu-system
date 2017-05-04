@@ -1,23 +1,26 @@
 package org.vaccineimpact.api.models
 
-import java.sql.Timestamp
 
-data class User(
-        val username: String,
+// A permission is just a name, like 'coverage.read'
+// To be useable, it must be reified with a scope, like:
+// */coverage.read (for the global scope)
+// modelling-group:IC-Garske/coverage.read (for a more specific scope)
+data class ReifiedPermission(
         val name: String,
-        val email: String,
-        val passwordHash: String,
-        val salt: String,
-        val lastLoggedIn: Timestamp?
+        val scope: Scope
 )
+{
+    override fun toString() = "$scope/$name"
+}
 
-data class Role(
-        override val id: Int,
-        val name: String,
-        val scopePrefix: String,
-        val description: String
-): HasKey<Int>
+sealed class Scope(val value: String)
+{
+    class Global : Scope("*")
+    class Specific(val scopePrefix: String, val scopeId: String): Scope("$scopePrefix:$scopeId")
 
-data class Permission(
-        val name: String
-)
+    override fun toString() = value
+    override fun equals(other: Any?) = when(other) {
+        is Scope -> other.toString() == toString()
+        else -> false
+    }
+}
