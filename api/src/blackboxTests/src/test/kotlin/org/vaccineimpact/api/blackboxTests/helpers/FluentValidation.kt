@@ -46,7 +46,7 @@ class FluentValidation(config: FluentValidationConfig)
     val schemaName = config.schemaName ?: throw Exception("Missing 'against' clause in fluent validation builder")
     val prepareDatabase = config.prepareDatabase ?: throw Exception("Missing 'given' clause in fluent validation builder")
     val requiredPermissions: List<String> = config.checkRequiredPermissions ?: emptyList()
-    val ownedPermissions: List<String> = config.ownedPermissions ?: requiredPermissions
+    val ownedPermissions: List<String> = config.ownedPermissions ?: config.checkRequiredPermissions ?: listOf("can-login")
 
     fun runWithObjectCheck(additionalChecks: (JsonObject) -> Unit)
     {
