@@ -4,6 +4,7 @@ import com.beust.klaxon.JsonObject
 import com.beust.klaxon.json
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
+import org.vaccineimpact.api.blackboxTests.helpers.validate
 import org.vaccineimpact.api.db.direct.*
 import org.vaccineimpact.api.test_helpers.DatabaseTest
 

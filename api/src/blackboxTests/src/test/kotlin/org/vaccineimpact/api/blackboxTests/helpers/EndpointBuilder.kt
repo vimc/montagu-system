@@ -1,3 +1,5 @@
+package org.vaccineimpact.api.blackboxTests.helpers
+
 import org.vaccineimpact.api.db.Config
 
 class EndpointBuilder

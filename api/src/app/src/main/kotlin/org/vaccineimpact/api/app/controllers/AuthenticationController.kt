@@ -1,17 +1,12 @@
 package org.vaccineimpact.api.app.controllers
 
-import eden.martin.webapi.security.DatabasePasswordAuthenticator
 import eden.martin.webapi.security.TokenIssuingConfigFactory
-import org.pac4j.core.profile.CommonProfile
-import org.pac4j.core.profile.ProfileManager
 import org.pac4j.http.client.direct.DirectBasicAuthClient
 import org.pac4j.sparkjava.SecurityFilter
-import org.pac4j.sparkjava.SparkWebContext
 import org.vaccineimpact.api.app.HTMLForm
 import org.vaccineimpact.api.app.HTMLFormHelpers
 import org.vaccineimpact.api.app.Serializer
 import org.vaccineimpact.api.app.controllers.endpoints.BasicEndpoint
-import org.vaccineimpact.api.app.repositories.UserRepository
 import org.vaccineimpact.api.app.security.USER_OBJECT
 import org.vaccineimpact.api.models.AuthenticationResponse
 import org.vaccineimpact.api.models.FailedAuthentication
@@ -56,12 +51,5 @@ class AuthenticationController(private val tokenHelper: WebTokenHelper) : Abstra
     {
         val userProfile = getUserProfile(request, response)
         return userProfile.getAttribute(USER_OBJECT) as User
-    }
-
-    private fun getUserProfile(request: Request, response: Response): CommonProfile
-    {
-        val context = SparkWebContext(request, response)
-        val manager = ProfileManager<CommonProfile>(context)
-        return manager.getAll(false).single()
     }
 }

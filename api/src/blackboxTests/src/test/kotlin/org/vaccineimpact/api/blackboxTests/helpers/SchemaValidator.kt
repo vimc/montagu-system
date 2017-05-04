@@ -1,3 +1,5 @@
+package org.vaccineimpact.api.blackboxTests.helpers
+
 import com.beust.klaxon.json
 import com.fasterxml.jackson.core.JsonParseException
 import com.fasterxml.jackson.databind.JsonNode
@@ -46,7 +48,7 @@ class SchemaValidator
         val report = schemaFactory.getJsonSchema(schema).validate(json)
         if (!report.isSuccess)
         {
-            Assertions.fail("JSON failed schema validation. Attempted to validate: $json against $schema. Report follows: $report")
+            Assertions.fail("JSON failed schema validation. Attempted to org.vaccineimpact.api.blackboxTests.helpers.validate: $json against $schema. Report follows: $report")
         }
     }
 
