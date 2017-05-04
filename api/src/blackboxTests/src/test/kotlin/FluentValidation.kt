@@ -3,6 +3,8 @@ import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
 import khttp.get
 import org.vaccineimpact.api.db.JooqContext
+import org.vaccineimpact.api.db.direct.createPermissions
+import org.vaccineimpact.api.db.direct.givePermissionsToUserUsingTestRole
 import org.vaccineimpact.api.security.UserHelper
 
 fun validate(url: String) = FluentValidationValidateStep(url)
@@ -59,7 +61,7 @@ class FluentValidation(
     val testUsername = "test.user"
     val testUserEmail = "user@test.com"
     val testUserPassword = "test"
-    val tokenHelper = TokenTestHelpers()
+    val tokenFetcher = TokenFetcher()
 
     fun runWithObjectCheck(additionalChecks: (JsonObject) -> Unit)
     {
@@ -80,7 +82,7 @@ class FluentValidation(
         JooqContext().use {
             prepareDatabase(it)
             UserHelper.saveUser(it.dsl, testUsername, "Test User", testUserEmail, testUserPassword)
-            tokenHelper.createPermissions(it.dsl, allRequiredPermissions)
+            it.createPermissions(allRequiredPermissions)
         }
         val url = EndpointBuilder().build(url)
 
@@ -104,8 +106,10 @@ class FluentValidation(
 
     private fun getToken(permissions: List<String>): String
     {
-        tokenHelper.setupPermissions(testUsername, permissions)
-        val token = tokenHelper.getToken(testUserEmail, testUserPassword)
+        JooqContext().use {
+            it.givePermissionsToUserUsingTestRole(testUsername, permissions)
+        }
+        val token = tokenFetcher.getToken(testUserEmail, testUserPassword)
         return when (token)
         {
             is TokenResponse.Token -> token.token

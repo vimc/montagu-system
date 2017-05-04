@@ -38,7 +38,7 @@ class AuthenticationController(
         {
             is HTMLForm.ValidForm -> {
                 val user = getUserFromUserProfile(request, response)
-                val token = tokenHelper.generateToken(user.username)
+                val token = tokenHelper.generateToken(user)
                 return SuccessfulAuthentication(token, tokenHelper.lifeSpan)
             }
             is HTMLForm.InvalidForm -> FailedAuthentication(validationResult.problem)
