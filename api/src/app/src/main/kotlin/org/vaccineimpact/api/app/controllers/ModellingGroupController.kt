@@ -1,5 +1,6 @@
 package org.vaccineimpact.api.app.controllers
 
+import org.vaccineimpact.api.app.controllers.endpoints.SecuredEndpoint
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
 import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.models.ModellingGroup
@@ -8,13 +9,13 @@ import spark.Request
 import spark.Response
 
 class ModellingGroupController(private val db: () -> ModellingGroupRepository)
-    : SecuredController()
+    : AbstractController()
 {
     override val urlComponent = "/modelling-groups"
 
     override val endpoints = listOf(
-            EndpointDefinition("/", this::getModellingGroups),
-            EndpointDefinition("/:group-id/responsibilities/:touchstone-id/", this::getResponsibilities)
+            SecuredEndpoint("/", this::getModellingGroups, listOf("*/modelling-groups.read")),
+            SecuredEndpoint("/:group-id/responsibilities/:touchstone-id/", this::getResponsibilities, listOf("*/responsibilities.read", "*/scenarios.read"))
     )
 
     fun getModellingGroups(req: Request, res: Response): List<ModellingGroup>

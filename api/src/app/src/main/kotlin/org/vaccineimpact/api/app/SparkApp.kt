@@ -37,25 +37,20 @@ class MontaguApi
 
     fun run(repositories: Repositories)
     {
-        val tokenVerifier = TokenVerifyingConfigFactory(tokenHelper).build()
         spk.port(8080)
         spk.redirect.get("/", urlBase)
         spk.before("*", ::addTrailingSlashes)
         ErrorHandler.setup()
 
-        val controllers = listOf(
-                AuthenticationController(tokenHelper, repositories.userRepository),
+        val controllers: Iterable<AbstractController> = listOf(
+                AuthenticationController(tokenHelper),
                 DiseaseController(repositories.simpleObjectsRepository),
                 TouchstoneController(repositories.touchstoneRepository),
                 ModellingGroupController(repositories.modellingGroupRepository)
         )
         for (controller in controllers)
         {
-            controller.mapEndpoints(urlBase)
-            if (controller is SecuredController)
-            {
-                controller.setupSecurity(urlBase, tokenVerifier)
-            }
+            controller.mapEndpoints(urlBase, tokenHelper)
         }
 
         spk.after("*", { _, res -> addDefaultResponseHeaders(res) })

@@ -1,16 +1,17 @@
 package org.vaccineimpact.api.app.controllers
 
+import org.vaccineimpact.api.app.controllers.endpoints.SecuredEndpoint
 import org.vaccineimpact.api.app.repositories.SimpleObjectsRepository
 import org.vaccineimpact.api.models.Disease
 import spark.Request
 import spark.Response
 
-class DiseaseController(val db: () -> SimpleObjectsRepository) : SecuredController()
+class DiseaseController(val db: () -> SimpleObjectsRepository) : AbstractController()
 {
     override val urlComponent = "/diseases"
     override val endpoints = listOf(
-            EndpointDefinition("/", this::getDiseases),
-            EndpointDefinition("/:id/", this::getDisease)
+            SecuredEndpoint("/", this::getDiseases, emptyList()),
+            SecuredEndpoint("/:id/", this::getDisease, emptyList())
     )
 
     fun getDiseases(request: Request, response: Response): List<Disease>

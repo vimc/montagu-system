@@ -78,7 +78,7 @@ class FluentValidation(
 
     private fun run(): String
     {
-        val allRequiredPermissions = listOf("can-login") + requiredPermissions
+        val allRequiredPermissions = requiredPermissions + listOf("can-login")
         JooqContext().use {
             prepareDatabase(it)
             UserHelper.saveUser(it.dsl, testUsername, "Test User", testUserEmail, testUserPassword)
@@ -118,7 +118,8 @@ class FluentValidation(
     }
 
     private fun checkPermission(
-            url: String, permission: String,
+            url: String,
+            permission: String,
             allRequiringPermissions: List<String>,
             validator: SchemaValidator)
     {

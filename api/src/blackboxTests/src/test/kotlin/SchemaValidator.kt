@@ -1,3 +1,5 @@
+import com.beust.klaxon.json
+import com.fasterxml.jackson.core.JsonParseException
 import com.fasterxml.jackson.databind.JsonNode
 import com.github.fge.jackson.JsonLoader
 import com.github.fge.jsonschema.core.load.configuration.LoadingConfiguration
@@ -13,7 +15,7 @@ class SchemaValidator
 
     fun validate(schemaName: String, jsonAsString: String)
     {
-        val json = JsonLoader.fromString(jsonAsString)
+        val json = parseJson(jsonAsString)
         // Everything must meet the basic response schema
         checkResultSchema(json, jsonAsString, "success")
         // Then use the more specific schema on the data portion
@@ -24,7 +26,7 @@ class SchemaValidator
 
     fun validateError(jsonAsString: String, errorText: String? = null)
     {
-        val json = JsonLoader.fromString(jsonAsString)
+        val json = parseJson(jsonAsString)
         checkResultSchema(json, jsonAsString, "failure", errorText = errorText)
     }
 
@@ -61,5 +63,17 @@ class SchemaValidator
         return JsonSchemaFactory.newBuilder()
                 .setLoadingConfiguration(loadingConfig)
                 .freeze()
+    }
+
+    private fun parseJson(jsonAsString: String): JsonNode
+    {
+        return try
+        {
+            JsonLoader.fromString(jsonAsString)
+        }
+        catch (e: JsonParseException)
+        {
+            throw Exception("Failed to parse text as JSON.\nText was: $jsonAsString\n\n$e")
+        }
     }
 }

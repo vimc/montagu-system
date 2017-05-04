@@ -50,11 +50,13 @@ fun JooqContext.getOrCreateRole(name: String, scopePrefix: String?, description:
 
 fun JooqContext.getRole(name: String, scopePrefix: String?): Int?
 {
-    return dsl.select(ROLE.ID)
+    val role = dsl.select(ROLE.ID)
             .from(ROLE)
             .where(ROLE.NAME.eq(name))
-            .and(ROLE.SCOPE_PREFIX.eq(scopePrefix))
-            .fetchAny()?.value1()
+            // Dealing with SQLs ternary NULL logic - this is just an equality check
+            .and(ROLE.SCOPE_PREFIX.isNotDistinctFrom(scopePrefix))
+            .fetchAny()
+    return role?.get(ROLE.ID)
 }
 
 fun JooqContext.createRole(name: String, scopePrefix: String?, description: String): Int

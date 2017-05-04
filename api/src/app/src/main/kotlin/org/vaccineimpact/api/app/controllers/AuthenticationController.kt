@@ -10,7 +10,9 @@ import org.pac4j.sparkjava.SparkWebContext
 import org.vaccineimpact.api.app.HTMLForm
 import org.vaccineimpact.api.app.HTMLFormHelpers
 import org.vaccineimpact.api.app.Serializer
+import org.vaccineimpact.api.app.controllers.endpoints.BasicEndpoint
 import org.vaccineimpact.api.app.repositories.UserRepository
+import org.vaccineimpact.api.app.security.USER_OBJECT
 import org.vaccineimpact.api.models.AuthenticationResponse
 import org.vaccineimpact.api.models.FailedAuthentication
 import org.vaccineimpact.api.models.SuccessfulAuthentication
@@ -21,14 +23,11 @@ import spark.Response
 import spark.Spark.before
 import spark.route.HttpMethod
 
-class AuthenticationController(
-        private val tokenHelper: WebTokenHelper,
-        private val userRepository: () -> UserRepository
-) : AbstractController()
+class AuthenticationController(private val tokenHelper: WebTokenHelper) : AbstractController()
 {
     override val urlComponent = "/"
     override val endpoints = listOf(
-            EndpointDefinition("authenticate/", this::authenticate, HttpMethod.post, this::setupSecurity)
+            BasicEndpoint("authenticate/", this::authenticate, HttpMethod.post, this::setupSecurity)
     )
 
     fun authenticate(request: Request, response: Response): AuthenticationResponse
@@ -56,7 +55,7 @@ class AuthenticationController(
     private fun getUserFromUserProfile(request: Request, response: Response): User
     {
         val userProfile = getUserProfile(request, response)
-        return userProfile.getAttribute(DatabasePasswordAuthenticator.USER_OBJECT) as User
+        return userProfile.getAttribute(USER_OBJECT) as User
     }
 
     private fun getUserProfile(request: Request, response: Response): CommonProfile
