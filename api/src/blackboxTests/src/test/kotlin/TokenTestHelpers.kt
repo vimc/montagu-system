@@ -45,6 +45,14 @@ class TokenTestHelpers
         }
     }
 
+    fun createPermissions(dsl: DSLContext, permissions: List<String>)
+    {
+        val records = permissions.map {
+            dsl.newRecord(PERMISSION).apply { name = it }
+        }
+        dsl.batchStore(records).execute()
+    }
+
     private fun setRolePermissions(dsl: DSLContext, roleId: Int, permissions: List<String>)
     {
         dsl.deleteFrom(ROLE_PERMISSION)

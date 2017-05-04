@@ -15,6 +15,8 @@ class ModellingGroupTests : DatabaseTest()
         validate("/modelling-groups/") against "ModellingGroups" given {
             it.addGroup("a", "description a")
             it.addGroup("b", "description b")
+        } requiringPermissions {
+            listOf("modelling-groups.read")
         } andCheckArray {
             assertThat(it).isEqualTo(json { array(
                     obj("id" to "a", "description" to "description a"),
@@ -36,6 +38,8 @@ class ModellingGroupTests : DatabaseTest()
             val setId = it.addResponsibilitySet(group, touchstone, "submitted", addStatus = true)
             it.addResponsibility(setId, touchstone, "scenario-1")
             it.addResponsibility(setId, touchstone, "scenario-2")
+        } requiringPermissions {
+            listOf("responsibilities.read", "scenarios.read")
         } andCheck {
             assertThat(it["touchstone"]).isEqualTo(touchstone)
             assertThat(it["status"]).isEqualTo("submitted")
@@ -55,5 +59,11 @@ class ModellingGroupTests : DatabaseTest()
             assertThat(responsibility["problems"]).isEqualTo(json { array() })
             assertThat(responsibility["current_estimate"]).isEqualTo(null)
         }
+    }
+
+    @Test
+    fun `only touchstone preparer can see in-preparation responsibilities`()
+    {
+        TODO()
     }
 }

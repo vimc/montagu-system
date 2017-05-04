@@ -20,14 +20,14 @@ class FluentValidationAgainstStep(val url: String, val schemaName: String)
 
 class FluentValidationGivenStep(val url: String, val schemaName: String, val prepareDatabase: (JooqContext) -> Unit)
 {
-    infix fun requiringPermissions(requiredPermissions: List<String>)
-            = FluentValidationRequiringPermissionsStep(url, schemaName, prepareDatabase, requiredPermissions)
+    infix fun requiringPermissions(requiredPermissions: () -> List<String>)
+            = FluentValidationRequiringPermissionsStep(url, schemaName, prepareDatabase, requiredPermissions())
 
     infix fun andCheck(additionalChecks: (JsonObject) -> Unit)
-            = requiringPermissions(emptyList()).andCheck(additionalChecks)
+            = requiringPermissions({ emptyList() }).andCheck(additionalChecks)
 
     infix fun andCheckArray(additionalChecks: (JsonArray<JsonObject>) -> Unit)
-            = requiringPermissions(emptyList()).andCheckArray(additionalChecks)
+            = requiringPermissions({ emptyList() }).andCheckArray(additionalChecks)
 }
 
 class FluentValidationRequiringPermissionsStep(
@@ -76,9 +76,11 @@ class FluentValidation(
 
     private fun run(): String
     {
+        val allRequiredPermissions = listOf("can-login") + requiredPermissions
         JooqContext().use {
             prepareDatabase(it)
-            UserHelper.saveUser(testUsername, "Test User", testUserEmail, testUserPassword)
+            UserHelper.saveUser(it.dsl, testUsername, "Test User", testUserEmail, testUserPassword)
+            tokenHelper.createPermissions(it.dsl, allRequiredPermissions)
         }
         val url = EndpointBuilder().build(url)
 
@@ -88,7 +90,6 @@ class FluentValidation(
         validator.validateError(badResponse.text)
 
         // Check permissions
-        val allRequiredPermissions = listOf("can-login") + requiredPermissions
         for (permission in allRequiredPermissions)
         {
             checkPermission(url, permission, allRequiredPermissions, validator)

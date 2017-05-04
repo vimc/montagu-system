@@ -12,6 +12,8 @@ class TouchstoneTests : DatabaseTest()
         validate("/touchstones/") against "Touchstones" given {
             it.addTouchstone("test", 6, "description-1", "open", 1990..2070, addName = true, addStatus = true)
             it.addTouchstone("example", 1, "description-2", "in-preparation", 1900..2100, addName = true, addStatus = true)
+        } requiringPermissions {
+            listOf("touchstones.read")
         } andCheckArray {
             assertThat(it.count()).isEqualTo(2)
             assertThat(it).contains(json { obj(
@@ -23,5 +25,11 @@ class TouchstoneTests : DatabaseTest()
                     "description" to "description-1"
             )})
         }
+    }
+
+    @Test
+    fun `only touchstone preparer can see in-preparation touchstones`()
+    {
+        TODO()
     }
 }

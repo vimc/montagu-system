@@ -6,6 +6,7 @@ import khttp.structures.authorization.BasicAuthorization
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
 import org.junit.Test
+import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.security.UserHelper
 import org.vaccineimpact.api.test_helpers.DatabaseTest
 
@@ -16,7 +17,9 @@ class AuthenticationTests : DatabaseTest()
     @Before
     fun addUser()
     {
-        UserHelper.saveUser("user", "Full Name", "email@example.com", "password")
+        JooqContext().use {
+            UserHelper.saveUser(it.dsl, "user", "Full Name", "email@example.com", "password")
+        }
     }
 
     @Test

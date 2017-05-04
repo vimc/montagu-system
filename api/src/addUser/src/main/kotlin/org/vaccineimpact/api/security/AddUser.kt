@@ -1,5 +1,7 @@
 package org.vaccineimpact.api.security
 
+import org.vaccineimpact.api.db.JooqContext
+
 fun main(args: Array<String>)
 {
     println("Fill in the following fields to add a new user to the database:")
@@ -9,7 +11,9 @@ fun main(args: Array<String>)
     val password = PasswordQuestion("Password").ask()
     try
     {
-        UserHelper.saveUser(username, name, email, password)
+        JooqContext().use {
+            UserHelper.saveUser(it.dsl, username, name, email, password)
+        }
         println("Saved user '$username' to the database")
     }
     catch (e: Exception)

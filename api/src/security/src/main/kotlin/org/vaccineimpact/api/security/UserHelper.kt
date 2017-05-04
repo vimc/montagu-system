@@ -1,5 +1,6 @@
 package org.vaccineimpact.api.security
 
+import org.jooq.DSLContext
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.Tables.APP_USER
 import java.security.SecureRandom
@@ -7,18 +8,16 @@ import java.util.*
 
 object UserHelper
 {
-    fun saveUser(username: String, name: String, email: String, plainPassword: String)
+    fun saveUser(dsl: DSLContext, username: String, name: String, email: String, plainPassword: String)
     {
         val salt = newSalt()
-        JooqContext().use {
-            it.dsl.newRecord(APP_USER).apply {
-                this.username = username
-                this.name = name
-                this.email = email
-                this.passwordHash = hashedPassword(plainPassword, salt)
-                this.salt = salt
-            }.store()
-        }
+        dsl.newRecord(APP_USER).apply {
+            this.username = username
+            this.name = name
+            this.email = email
+            this.passwordHash = hashedPassword(plainPassword, salt)
+            this.salt = salt
+        }.store()
     }
 
     fun encoder(salt: String) = BasicSaltedSha512PasswordEncoder(salt)
