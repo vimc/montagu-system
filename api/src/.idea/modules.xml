@@ -2,9 +2,6 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/addUser/addUser.iml" filepath="$PROJECT_DIR$/.idea/modules/addUser/addUser.iml" group="addUser" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/addUser/addUser_main.iml" filepath="$PROJECT_DIR$/.idea/modules/addUser/addUser_main.iml" group="addUser" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/addUser/addUser_test.iml" filepath="$PROJECT_DIR$/.idea/modules/addUser/addUser_test.iml" group="addUser" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/api.iml" filepath="$PROJECT_DIR$/.idea/modules/api.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/app.iml" group="app" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/app_main.iml" filepath="$PROJECT_DIR$/.idea/modules/app/app_main.iml" group="app" />
@@ -30,6 +27,9 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/testHelpers/testHelpers.iml" filepath="$PROJECT_DIR$/.idea/modules/testHelpers/testHelpers.iml" group="testHelpers" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/testHelpers/testHelpers_main.iml" filepath="$PROJECT_DIR$/.idea/modules/testHelpers/testHelpers_main.iml" group="testHelpers" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/testHelpers/testHelpers_test.iml" filepath="$PROJECT_DIR$/.idea/modules/testHelpers/testHelpers_test.iml" group="testHelpers" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/userCLI/userCLI.iml" filepath="$PROJECT_DIR$/.idea/modules/userCLI/userCLI.iml" group="userCLI" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/userCLI/userCLI_main.iml" filepath="$PROJECT_DIR$/.idea/modules/userCLI/userCLI_main.iml" group="userCLI" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/userCLI/userCLI_test.iml" filepath="$PROJECT_DIR$/.idea/modules/userCLI/userCLI_test.iml" group="userCLI" />
     </modules>
   </component>
 </project>

@@ -20,6 +20,8 @@
       <module name="security_test" target="1.8" />
       <module name="testHelpers_main" target="1.8" />
       <module name="testHelpers_test" target="1.8" />
+      <module name="userCLI_main" target="1.8" />
+      <module name="userCLI_test" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>
