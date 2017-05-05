@@ -1,4 +1,4 @@
-package org.vaccineimpact.api.testDatabase
+package org.vaccineimpact.api.databaseTests
 
 import org.vaccineimpact.api.app.repositories.Repository
 import org.vaccineimpact.api.databaseTests.RepositoryTestContext

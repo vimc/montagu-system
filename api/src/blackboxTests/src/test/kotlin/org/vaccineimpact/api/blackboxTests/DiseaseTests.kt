@@ -1,7 +1,9 @@
+package org.vaccineimpact.api.blackboxTests
 
 import com.beust.klaxon.json
 import org.assertj.core.api.Assertions
 import org.junit.Test
+import org.vaccineimpact.api.blackboxTests.helpers.validate
 import org.vaccineimpact.api.db.direct.addDisease
 import org.vaccineimpact.api.test_helpers.DatabaseTest
 

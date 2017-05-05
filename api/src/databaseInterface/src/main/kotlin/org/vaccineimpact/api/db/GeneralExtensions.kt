@@ -1,4 +1,4 @@
-package org.vaccineimpact.api.app.extensions
+package org.vaccineimpact.api.db
 
 fun <T> T.getOther(a: T, b: T) = when (this)
 {

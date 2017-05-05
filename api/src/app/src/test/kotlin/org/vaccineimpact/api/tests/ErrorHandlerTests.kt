@@ -39,7 +39,6 @@ class ErrorHandlerTests : MontaguTests()
     @Test
     fun `handleError sets Response body`()
     {
-        var body: String? = null
         val error = mock<MontaguError> {
             on { asResult() } doReturn Result(
                     ResultStatus.FAILURE,

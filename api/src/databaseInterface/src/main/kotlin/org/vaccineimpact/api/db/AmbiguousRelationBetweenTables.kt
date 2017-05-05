@@ -1,4 +1,4 @@
-package org.vaccineimpact.api.app.errors
+package org.vaccineimpact.api.db
 
 import org.jooq.Table
 

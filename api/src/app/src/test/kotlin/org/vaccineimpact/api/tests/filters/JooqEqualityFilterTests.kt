@@ -32,7 +32,7 @@ class JooqEqualityFilterTests : MontaguTests()
 
     private fun runFilter(parameterValue: Any?, field: Field<Any?>, context: SelectConditionStep<Record>)
     {
-        val filter = JooqEqualityFilter<String, Any?>(field, { params -> parameterValue })
+        val filter = JooqEqualityFilter<String, Any?>(field, { _ -> parameterValue })
         filter.apply(context, "fake parameters")
     }
 

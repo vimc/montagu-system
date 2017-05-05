@@ -3,7 +3,7 @@ package org.vaccineimpact.api.tests.extensions
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
-import org.vaccineimpact.api.app.extensions.getOther
+import org.vaccineimpact.api.db.getOther
 import org.vaccineimpact.api.test_helpers.MontaguTests
 
 class GeneralExtensionsTests : MontaguTests()

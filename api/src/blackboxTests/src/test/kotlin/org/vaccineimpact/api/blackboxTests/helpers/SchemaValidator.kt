@@ -1,3 +1,6 @@
+package org.vaccineimpact.api.blackboxTests.helpers
+
+import com.fasterxml.jackson.core.JsonParseException
 import com.fasterxml.jackson.databind.JsonNode
 import com.github.fge.jackson.JsonLoader
 import com.github.fge.jsonschema.core.load.configuration.LoadingConfiguration
@@ -13,17 +16,40 @@ class SchemaValidator
 
     fun validate(schemaName: String, jsonAsString: String)
     {
-        val json = JsonLoader.fromString(jsonAsString)
+        val json = parseJson(jsonAsString)
         // Everything must meet the basic response schema
-        assertValidates(responseSchema, json)
-        val status = json["status"].textValue()
-        assertThat(status)
-                .`as`("Check that the following response has status 'success': $jsonAsString")
-                .isEqualTo("success")
+        checkResultSchema(json, jsonAsString, "success")
         // Then use the more specific schema on the data portion
         val data = json["data"]
         val schema = readSchema(schemaName)
         assertValidates(schema, data)
+    }
+
+    fun validateError(jsonAsString: String,
+                      expectedErrorCode: String? = null,
+                      assertionText: String? = null)
+    {
+        val json = parseJson(jsonAsString)
+        checkResultSchema(json, jsonAsString, "failure", assertionText = assertionText)
+        val errors = json["errors"]
+        if (expectedErrorCode != null)
+        {
+            assertThat(errors.map { it["code"].asText() }).contains(expectedErrorCode)
+        }
+    }
+    fun validateSuccess(jsonAsString: String, assertionText: String? = null)
+    {
+        val json = parseJson(jsonAsString)
+        checkResultSchema(json, jsonAsString, "success", assertionText = assertionText)
+    }
+
+    private fun checkResultSchema(json: JsonNode, jsonAsString: String, expectedStatus: String, assertionText: String? = null)
+    {
+        assertValidates(responseSchema, json)
+        val status = json["status"].textValue()
+        assertThat(status)
+                .`as`(assertionText ?: "Check that the following response has status '$expectedStatus': $jsonAsString")
+                .isEqualTo(expectedStatus)
     }
 
     private fun readSchema(name: String) = JsonLoader.fromResource("/spec/$name.schema.json")
@@ -50,5 +76,17 @@ class SchemaValidator
         return JsonSchemaFactory.newBuilder()
                 .setLoadingConfiguration(loadingConfig)
                 .freeze()
+    }
+
+    private fun parseJson(jsonAsString: String): JsonNode
+    {
+        return try
+        {
+            JsonLoader.fromString(jsonAsString)
+        }
+        catch (e: JsonParseException)
+        {
+            throw Exception("Failed to parse text as JSON.\nText was: $jsonAsString\n\n$e")
+        }
     }
 }
