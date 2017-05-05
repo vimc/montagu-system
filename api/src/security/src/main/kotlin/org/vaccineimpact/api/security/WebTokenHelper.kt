@@ -15,18 +15,23 @@ class WebTokenHelper
 {
     val lifeSpan: Duration = Duration.ofSeconds(Config["token.lifespan"].toLong())
     private val keyPair = generateKeyPair()
-    private val issuer = Config["token.issuer"]
+    val issuer = Config["token.issuer"]
     val signatureConfiguration = RSASignatureConfiguration(keyPair)
+    val generator = JwtGenerator<CommonProfile>(signatureConfiguration)
 
     fun generateToken(user: User): String
     {
-        val generator = JwtGenerator<CommonProfile>(signatureConfiguration)
-        return generator.generate(mapOf(
+        return generator.generate(claims(user))
+    }
+
+    fun claims(user: User): Map<String, Any>
+    {
+        return mapOf(
                 "iss" to issuer,
                 "sub" to user.username,
                 "exp" to Date.from(Instant.now().plus(lifeSpan)),
                 "permissions" to user.permissions.joinToString(",")
-        ))
+        )
     }
 
     /*fun verifyToken(token: String): MontaguToken
