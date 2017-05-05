@@ -25,7 +25,7 @@ class ModellingGroupController(private val db: () -> ModellingGroupRepository)
     fun getResponsibilities(context: ActionContext): Responsibilities
     {
         val groupId = groupId(context)
-        val touchstoneId = context.request.params(":touchstone-id")
+        val touchstoneId = context.params(":touchstone-id")
         val filterParameters = ScenarioFilterParameters.fromContext(context)
 
         val data = db().use { it.getResponsibilities(groupId, touchstoneId, filterParameters) }
@@ -41,5 +41,5 @@ class ModellingGroupController(private val db: () -> ModellingGroupRepository)
 
     // We are sure that this will be non-null, as its part of the URL,
     // and Spark wouldn't have mapped us here if it were blank
-    private fun groupId(context: ActionContext): String = context.request.params(":group-id")
+    private fun groupId(context: ActionContext): String = context.params(":group-id")
 }

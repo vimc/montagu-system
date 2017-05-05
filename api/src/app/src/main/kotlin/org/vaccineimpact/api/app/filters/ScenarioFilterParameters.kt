@@ -9,8 +9,8 @@ data class ScenarioFilterParameters(val scenarioId: String? = null,
     {
         fun fromContext(context: ActionContext): ScenarioFilterParameters =
                 ScenarioFilterParameters(
-                        context.request.queryParams("scenario_id"),
-                        context.request.queryParams("disease")
+                        context.queryParams("scenario_id"),
+                        context.queryParams("disease")
                 )
     }
 }

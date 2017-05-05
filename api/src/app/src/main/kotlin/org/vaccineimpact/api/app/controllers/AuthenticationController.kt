@@ -26,7 +26,7 @@ class AuthenticationController(private val tokenHelper: WebTokenHelper) : Abstra
 
     fun authenticate(context: ActionContext): AuthenticationResponse
     {
-        val validationResult = HTMLFormHelpers.checkForm(context.request,
+        val validationResult = HTMLFormHelpers.checkForm(context,
                 mapOf("grant_type" to "client_credentials")
         )
         return when (validationResult)

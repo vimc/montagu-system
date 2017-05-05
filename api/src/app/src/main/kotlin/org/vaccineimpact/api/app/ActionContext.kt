@@ -7,17 +7,19 @@ import org.vaccineimpact.api.models.ReifiedPermission
 import spark.Request
 import spark.Response
 
-class ActionContext(private val context: SparkWebContext)
+open class ActionContext(private val context: SparkWebContext)
 {
-    val request: Request
+    private val request
             get() = context.sparkRequest
-    val response: Response
-            get() = context.sparkResponse
 
     constructor(request: Request, response: Response)
         : this(SparkWebContext(request, response))
 
-    fun hasPermission(requirement: ReifiedPermission)
+    open fun contentType(): String = request.contentType()
+    open fun queryParams(key: String): String? = request.queryParams(key)
+    open fun params(key: String): String = request.params(key)
+
+    open fun hasPermission(requirement: ReifiedPermission)
             = permissions.any { requirement.satisfiedBy(it) }
 
     val permissions by lazy {

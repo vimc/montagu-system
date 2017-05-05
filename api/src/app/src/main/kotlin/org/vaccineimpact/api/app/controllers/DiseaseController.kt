@@ -23,5 +23,5 @@ class DiseaseController(val db: () -> SimpleObjectsRepository) : AbstractControl
         return db().use { it.diseases.get(diseaseId(context)) }
     }
 
-    private fun diseaseId(context: ActionContext): String = context.request.params(":id")
+    private fun diseaseId(context: ActionContext): String = context.params(":id")
 }
