@@ -1,16 +1,16 @@
 package org.vaccineimpact.api.app.filters
 
-import spark.Request
+import org.vaccineimpact.api.app.ActionContext
 
 data class ScenarioFilterParameters(val scenarioId: String? = null,
                                     val disease: String? = null)
 {
     companion object
     {
-        fun fromRequest(req: Request): ScenarioFilterParameters =
+        fun fromContext(context: ActionContext): ScenarioFilterParameters =
                 ScenarioFilterParameters(
-                        req.queryParams("scenario_id"),
-                        req.queryParams("disease")
+                        context.request.queryParams("scenario_id"),
+                        context.request.queryParams("disease")
                 )
     }
 }

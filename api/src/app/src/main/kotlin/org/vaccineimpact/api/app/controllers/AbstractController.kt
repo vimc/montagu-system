@@ -4,6 +4,7 @@ import org.pac4j.core.profile.CommonProfile
 import org.pac4j.core.profile.ProfileManager
 import org.pac4j.sparkjava.SparkWebContext
 import org.slf4j.LoggerFactory
+import org.vaccineimpact.api.app.ActionContext
 import org.vaccineimpact.api.app.Serializer
 import org.vaccineimpact.api.app.controllers.endpoints.EndpointDefinition
 import org.vaccineimpact.api.app.errors.UnsupportedValueException
@@ -27,7 +28,7 @@ abstract class AbstractController
         for (endpoint in endpoints)
         {
             val fullUrl = urlBase + urlComponent + endpoint.urlFragment
-            val route = endpoint.route
+            val route = wrapRoute(endpoint.route)
             logger.info("Mapping $fullUrl")
             when (endpoint.method)
             {
@@ -42,18 +43,10 @@ abstract class AbstractController
         }
     }
 
+    private fun wrapRoute(route: (ActionContext) -> Any): (Request, Response) -> Any
+    {
+        return { req: Request, res: Response -> route(ActionContext(req, res)) }
+    }
+
     protected open fun transform(x: Any): String = Serializer.toResult(x)
-
-    protected fun getUserProfile(request: Request, response: Response): CommonProfile
-    {
-        val context = SparkWebContext(request, response)
-        val manager = ProfileManager<CommonProfile>(context)
-        return manager.getAll(false).single()
-    }
-
-    protected fun getPermissions(request: Request, response: Response): List<ReifiedPermission>
-    {
-        val userProfile = getUserProfile(request, response)
-        return userProfile.permissions.map { ReifiedPermission.parse(it) }
-    }
 }

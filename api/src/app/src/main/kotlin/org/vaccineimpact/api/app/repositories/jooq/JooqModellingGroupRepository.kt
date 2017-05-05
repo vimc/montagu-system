@@ -1,14 +1,14 @@
 package org.vaccineimpact.api.app.repositories.jooq
 
 import org.vaccineimpact.api.app.errors.UnknownObjectError
-import org.vaccineimpact.api.db.fetchInto
-import org.vaccineimpact.api.db.fieldsAsList
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
 import org.vaccineimpact.api.app.filters.whereMatchesFilter
 import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.ScenarioRepository
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.db.Tables.*
+import org.vaccineimpact.api.db.fetchInto
+import org.vaccineimpact.api.db.fieldsAsList
 import org.vaccineimpact.api.db.fromJoinPath
 import org.vaccineimpact.api.db.tables.records.ModellingGroupRecord
 import org.vaccineimpact.api.db.tables.records.ResponsibilitySetRecord
@@ -56,11 +56,19 @@ class JooqModellingGroupRepository(
     }
 
     override fun getResponsibilities(groupId: String, touchstoneId: String,
-                                     scenarioFilterParameters: ScenarioFilterParameters): Responsibilities
+                                     scenarioFilterParameters: ScenarioFilterParameters): ResponsibilitiesAndTouchstoneStatus
     {
         getModellingGroup(groupId)
-        touchstoneRepository().use { it.touchstones.assertExists(touchstoneId) }
+        val touchstone = touchstoneRepository().use { it.touchstones.get(touchstoneId) }
         val responsibilitySet = getResponsibilitySet(groupId, touchstoneId)
+        val responsibilities = getResponsibilities(responsibilitySet, scenarioFilterParameters, touchstoneId)
+        return ResponsibilitiesAndTouchstoneStatus(responsibilities, touchstone.status)
+    }
+
+    private fun getResponsibilities(responsibilitySet: ResponsibilitySetRecord?,
+                                    scenarioFilterParameters: ScenarioFilterParameters,
+                                    touchstoneId: String): Responsibilities
+    {
         if (responsibilitySet != null)
         {
             val responsibilities = getScenariosInResponsibilitySet(responsibilitySet, scenarioFilterParameters)

@@ -1,3 +1,4 @@
+package org.vaccineimpact.api.blackboxTests
 
 import com.beust.klaxon.json
 import org.assertj.core.api.Assertions

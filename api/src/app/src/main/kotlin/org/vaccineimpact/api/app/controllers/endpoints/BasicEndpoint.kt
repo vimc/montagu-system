@@ -1,13 +1,12 @@
 package org.vaccineimpact.api.app.controllers.endpoints
 
+import org.vaccineimpact.api.app.ActionContext
 import org.vaccineimpact.api.security.WebTokenHelper
-import spark.Request
-import spark.Response
 import spark.route.HttpMethod
 
 open class BasicEndpoint(
         override val urlFragment: String,
-        override val route: (Request, Response) -> Any,
+        override val route: (ActionContext) -> Any,
         override val method: HttpMethod = HttpMethod.get,
         private val additionalSetupCallback: ((String) -> Unit)? = null
 ): EndpointDefinition

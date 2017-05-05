@@ -2,6 +2,7 @@ package org.vaccineimpact.api.tests.controllers
 
 import com.nhaarman.mockito_kotlin.*
 import org.junit.Test
+import org.vaccineimpact.api.app.ActionContext
 import org.vaccineimpact.api.app.controllers.ModellingGroupController
 import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.test_helpers.MontaguTests
@@ -21,7 +22,7 @@ class ModellingGroupControllersTests : MontaguTests()
         val response = mock<Response>()
 
         val controller = ModellingGroupController({ repo })
-        controller.getResponsibilities(request, response)
+        controller.getResponsibilities(ActionContext(request, response))
 
         verify(repo).getResponsibilities(eq("gId"), eq("tId"), any())
     }

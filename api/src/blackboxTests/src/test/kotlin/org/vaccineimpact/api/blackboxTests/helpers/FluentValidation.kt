@@ -2,8 +2,8 @@ package org.vaccineimpact.api.blackboxTests.helpers
 
 import com.beust.klaxon.JsonArray
 import com.beust.klaxon.JsonObject
-import com.beust.klaxon.Parser
 import khttp.get
+import khttp.request
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.direct.createPermissions
 
@@ -45,20 +45,23 @@ class FluentValidation(config: FluentValidationConfig)
     val url = config.url
     val schemaName = config.schemaName ?: throw Exception("Missing 'against' clause in fluent validation builder")
     val prepareDatabase = config.prepareDatabase ?: throw Exception("Missing 'given' clause in fluent validation builder")
-    val requiredPermissions: List<String> = config.checkRequiredPermissions ?: emptyList()
-    val ownedPermissions: List<String> = config.ownedPermissions ?: config.checkRequiredPermissions ?: listOf("can-login")
+    val requiredPermissions: List<String> = config.checkRequiredPermissions ?: listOf("can-login")
+    val ownedPermissions: List<String> = config.ownedPermissions ?: requiredPermissions
+
+    val userHelper = TestUserHelper()
+    val requestHelper = RequestHelper()
 
     fun runWithObjectCheck(additionalChecks: (JsonObject) -> Unit)
     {
         val text = run()
-        additionalChecks(getData(text) as JsonObject)
+        additionalChecks(requestHelper.getData(text) as JsonObject)
     }
 
     fun runWithArrayCheck(additionalChecks: (JsonArray<JsonObject>) -> Unit)
     {
         val text = run()
         @Suppress("UNCHECKED_CAST")
-        additionalChecks(getData(text) as JsonArray<JsonObject>)
+        additionalChecks(requestHelper.getData(text) as JsonArray<JsonObject>)
     }
 
     private fun run(): String
@@ -66,14 +69,13 @@ class FluentValidation(config: FluentValidationConfig)
         val allPermissions = (requiredPermissions + ownedPermissions).distinct()
         JooqContext().use {
             prepareDatabase(it)
-            TestUserHelper.setupTestUser(it)
+            userHelper.setupTestUser(it)
             it.createPermissions(allPermissions)
         }
-        val url = EndpointBuilder().build(url)
 
         // Check that the auth token is required
         val validator = SchemaValidator()
-        val badResponse = get(url)
+        val badResponse = requestHelper.get(url)
         validator.validateError(badResponse.text)
 
         // Check the permissions
@@ -83,8 +85,8 @@ class FluentValidation(config: FluentValidationConfig)
         }
 
         // Check the actual response
-        val token = TestUserHelper.getTokenForTestUser(ownedPermissions)
-        val response = doRequest(url, token)
+        val token = userHelper.getTokenForTestUser(ownedPermissions)
+        val response = requestHelper.get(url, token)
         validator.validate(schemaName, response.text)
         return response.text
     }
@@ -104,14 +106,9 @@ class FluentValidation(config: FluentValidationConfig)
             validator: SchemaValidator)
     {
         println("Checking that permission '$permission' is required for $url")
-        val limitedToken = TestUserHelper.getTokenForTestUser(allRequiringPermissions - permission)
-        val response = doRequest(url, limitedToken)
-        validator.validateError(response.text, errorText = "Expected permission '$permission' to be required for $url")
+        val limitedToken = userHelper.getTokenForTestUser(allRequiringPermissions - permission)
+        val response = requestHelper.get(url, limitedToken)
+        validator.validateError(response.text,
+                assertionText = "Expected permission '$permission' to be required for $url")
     }
-
-    private fun doRequest(url: String, token: String) = get(url,
-        headers = mapOf("Authorization" to "Bearer $token")
-    )
-    private fun getData(text: String) = parseJson(text)["data"]
-    private fun parseJson(text: String) = Parser().parse(StringBuilder(text)) as JsonObject
 }

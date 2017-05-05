@@ -1,6 +1,5 @@
 package org.vaccineimpact.api.blackboxTests.helpers
 
-import com.beust.klaxon.json
 import com.fasterxml.jackson.core.JsonParseException
 import com.fasterxml.jackson.databind.JsonNode
 import com.github.fge.jackson.JsonLoader
@@ -26,18 +25,30 @@ class SchemaValidator
         assertValidates(schema, data)
     }
 
-    fun validateError(jsonAsString: String, errorText: String? = null)
+    fun validateError(jsonAsString: String,
+                      expectedErrorCode: String? = null,
+                      assertionText: String? = null)
     {
         val json = parseJson(jsonAsString)
-        checkResultSchema(json, jsonAsString, "failure", errorText = errorText)
+        checkResultSchema(json, jsonAsString, "failure", assertionText = assertionText)
+        val errors = json["errors"]
+        if (expectedErrorCode != null)
+        {
+            assertThat(errors.map { it["code"].asText() }).contains(expectedErrorCode)
+        }
+    }
+    fun validateSuccess(jsonAsString: String, assertionText: String? = null)
+    {
+        val json = parseJson(jsonAsString)
+        checkResultSchema(json, jsonAsString, "success", assertionText = assertionText)
     }
 
-    private fun checkResultSchema(json: JsonNode, jsonAsString: String, expectedStatus: String, errorText: String? = null)
+    private fun checkResultSchema(json: JsonNode, jsonAsString: String, expectedStatus: String, assertionText: String? = null)
     {
         assertValidates(responseSchema, json)
         val status = json["status"].textValue()
         assertThat(status)
-                .`as`(errorText ?: "Check that the following response has status '$expectedStatus': $jsonAsString")
+                .`as`(assertionText ?: "Check that the following response has status '$expectedStatus': $jsonAsString")
                 .isEqualTo(expectedStatus)
     }
 
@@ -48,7 +59,7 @@ class SchemaValidator
         val report = schemaFactory.getJsonSchema(schema).validate(json)
         if (!report.isSuccess)
         {
-            Assertions.fail("JSON failed schema validation. Attempted to org.vaccineimpact.api.blackboxTests.helpers.validate: $json against $schema. Report follows: $report")
+            Assertions.fail("JSON failed schema validation. Attempted to validate: $json against $schema. Report follows: $report")
         }
     }
 

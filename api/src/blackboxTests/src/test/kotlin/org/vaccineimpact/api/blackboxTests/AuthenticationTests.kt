@@ -1,3 +1,5 @@
+package org.vaccineimpact.api.blackboxTests
+
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
 import com.beust.klaxon.json

@@ -1,11 +1,11 @@
+package org.vaccineimpact.api.blackboxTests
+
 import com.beust.klaxon.json
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
-import org.vaccineimpact.api.blackboxTests.helpers.TestUserHelper
 import org.vaccineimpact.api.blackboxTests.helpers.validate
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.direct.addTouchstone
-import org.vaccineimpact.api.db.direct.createPermissions
 import org.vaccineimpact.api.test_helpers.DatabaseTest
 
 class TouchstoneTests : DatabaseTest()

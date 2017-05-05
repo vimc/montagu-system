@@ -4,7 +4,7 @@ import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.direct.givePermissionsToUserUsingTestRole
 import org.vaccineimpact.api.security.UserHelper
 
-object TestUserHelper
+class TestUserHelper
 {
     val testUsername = "test.user"
     val testUserEmail = "user@test.com"
