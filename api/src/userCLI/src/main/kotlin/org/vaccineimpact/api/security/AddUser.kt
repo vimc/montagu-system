@@ -2,7 +2,7 @@ package org.vaccineimpact.api.security
 
 import org.vaccineimpact.api.db.JooqContext
 
-fun main(args: Array<String>)
+fun addUser()
 {
     println("Fill in the following fields to add a new user to the database:")
     val name = Question("Full name").ask()
