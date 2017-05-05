@@ -7,8 +7,16 @@ import org.vaccineimpact.api.models.ReifiedPermission
 import spark.Request
 import spark.Response
 
-class ActionContext(val request: Request, val response: Response)
+class ActionContext(private val context: SparkWebContext)
 {
+    val request: Request
+            get() = context.sparkRequest
+    val response: Response
+            get() = context.sparkResponse
+
+    constructor(request: Request, response: Response)
+        : this(SparkWebContext(request, response))
+
     fun hasPermission(requirement: ReifiedPermission)
             = permissions.any { requirement.satisfiedBy(it) }
 
@@ -17,7 +25,6 @@ class ActionContext(val request: Request, val response: Response)
     }
 
     val userProfile: CommonProfile by lazy {
-        val context = SparkWebContext(request, response)
         val manager = ProfileManager<CommonProfile>(context)
         manager.getAll(false).single()
     }
