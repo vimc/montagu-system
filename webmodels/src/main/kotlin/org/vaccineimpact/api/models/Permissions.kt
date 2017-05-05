@@ -25,6 +25,3 @@ data class ReifiedPermission(
         }
     }
 }
-
-fun List<ReifiedPermission>.hasPermission(requirement: ReifiedPermission)
-    = this.any { requirement.satisfiedBy(it) }

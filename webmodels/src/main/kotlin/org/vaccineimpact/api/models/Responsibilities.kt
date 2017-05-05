@@ -1,5 +1,10 @@
 package org.vaccineimpact.api.models
 
+data class ResponsibilitiesAndTouchstoneStatus(
+        val responsibilities: Responsibilities,
+        val touchstoneStatus: TouchstoneStatus
+)
+
 data class Responsibilities(
         val touchstone: String,
         val problems: String,
