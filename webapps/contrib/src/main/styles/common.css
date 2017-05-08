@@ -1,4 +1,4 @@
-select {
+select, input {
     font-size: inherit;
 }
 
@@ -6,8 +6,8 @@ select {
     font-family: header;
     font-size: 16pt;
     margin: 30px 0;
-};
+}
 
 :local(.control) {
     font-size: 24pt;
-};
+}

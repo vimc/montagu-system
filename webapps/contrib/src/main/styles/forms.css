@@ -1,0 +1,11 @@
+:local(.form) :local(.fields) {
+    float: left;
+    margin-right: 20px;
+}
+
+:local(.form) :local(.fields) input {
+    display: block;
+    margin-bottom: 10px;
+    padding: 5px;
+    width: 300px;
+}
