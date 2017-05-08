@@ -2,8 +2,7 @@ package org.vaccineimpact.api.app
 
 import spark.Request
 import spark.Response
-import java.io.FileNotFoundException
-import java.net.URL
+import javax.servlet.http.HttpServletResponse
 
 // The idea is that as this file grows, I'll group helpers and split them off into files/classes with more
 // specific aims.
@@ -21,9 +20,11 @@ fun addTrailingSlashes(req: Request, res: Response)
     }
 }
 
-fun addDefaultResponseHeaders(res: Response)
+fun addDefaultResponseHeaders(res: Response, contentType: String = "application/json; charset=utf-8")
+    = addDefaultResponseHeaders(res.raw(), contentType = contentType)
+fun addDefaultResponseHeaders(res: HttpServletResponse, contentType: String = "application/json; charset=utf-8")
 {
-    res.type("application/json; charset=utf-8")
-    res.header("Content-Encoding", "gzip")
-    res.header("Access-Control-Allow-Origin", "*")
+    res.contentType = contentType
+    res.addHeader("Content-Encoding", "gzip")
+    res.addHeader("Access-Control-Allow-Origin", "*")
 }

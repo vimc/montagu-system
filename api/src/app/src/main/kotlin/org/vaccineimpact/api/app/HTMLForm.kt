@@ -14,7 +14,7 @@ object HTMLFormHelpers
         {
             if (context.queryParams(key) != value)
             {
-                return HTMLForm.InvalidForm("Expected form content include $key=$value")
+                return HTMLForm.InvalidForm("Expected form content to include $key=$value")
             }
         }
         return HTMLForm.ValidForm()

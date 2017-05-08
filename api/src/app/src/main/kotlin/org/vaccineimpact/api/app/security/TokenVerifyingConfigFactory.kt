@@ -9,6 +9,7 @@ import org.pac4j.jwt.profile.JwtProfile
 import org.pac4j.sparkjava.DefaultHttpActionAdapter
 import org.pac4j.sparkjava.SparkWebContext
 import org.vaccineimpact.api.app.Serializer
+import org.vaccineimpact.api.app.addDefaultResponseHeaders
 import org.vaccineimpact.api.models.ErrorInfo
 import org.vaccineimpact.api.models.Result
 import org.vaccineimpact.api.models.ResultStatus
@@ -22,6 +23,7 @@ class TokenVerifyingConfigFactory(private val tokenHelper: WebTokenHelper, val r
         client.addAuthorizationGenerator(this::extractPermissionsFromToken)
         return Config(client).apply {
             setAuthorizer(MontaguAuthorizer(requiredPermissions))
+            addMatcher(SkipOptionsMatcher.name, SkipOptionsMatcher)
             httpActionAdapter = TokenActionAdapter()
         }
     }
@@ -55,12 +57,12 @@ class TokenActionAdapter : DefaultHttpActionAdapter()
     {
         HttpConstants.UNAUTHORIZED ->
         {
-            context.response.contentType = "application/json"
+            addDefaultResponseHeaders(context.response)
             spark.Spark.halt(code, unauthorizedResponse)
         }
         HttpConstants.FORBIDDEN ->
         {
-            context.response.contentType = "application/json"
+            addDefaultResponseHeaders(context.response)
             spark.Spark.halt(code, forbiddenResponse)
         }
         else -> super.adapt(code, context)
