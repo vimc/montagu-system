@@ -17,7 +17,10 @@ export abstract class FetchActions<TFetchParameters, TModel> extends AbstractAct
             this.beginFetch();
             const promise = this.doFetch(parameters);
             handleResponse(promise, 
-                data => this.receivedFetchedData(<TModel>(data)),
+                data => {
+                    console.log("Received fetched data");
+                    this.receivedFetchedData(<TModel>(data));
+                },
                 error => this.fetchFailed(error)
             );
         };

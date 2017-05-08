@@ -58,7 +58,6 @@ describe('ResponsibilityOverviewPage', () => {
             const location = mockLocation({ touchstoneId: expected.id });
             const rendered = shallow(<ResponsibilityOverviewPage location={ location } />)
             const instance = rendered.instance() as ResponsibilityOverviewPage;
-            instance.onLoad();
             actionHelpers.expectOrderedActions(spy, [
                 { action: "ResponsibilityActions.setTouchstone", payload: expected }
             ], 0);

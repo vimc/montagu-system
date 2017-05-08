@@ -4,6 +4,7 @@ import { RemoteContent }  from './RemoteContent'
 import { AbstractStore } from './AbstractStore';
 import { touchstoneActions } from '../actions/TouchstoneActions';
 import { Touchstone } from '../Models'
+import {authActions} from "../actions/AuthActions";
 
 export interface State extends RemoteContent {
     touchstones: Array<Touchstone>;
@@ -18,17 +19,23 @@ class TouchstoneStore extends AbstractStore<State> {
 
     constructor() {
         super();
-        this.touchstones = null;
-        this.errorMessage = null;
-        this.ready = false;    
+        this.initialState();
         this.bindListeners({
             handleBeginFetch: touchstoneActions.beginFetch,
             handleUpdate: touchstoneActions.update,
-            handleFetchFailed: touchstoneActions.fetchFailed
+            handleFetchFailed: touchstoneActions.fetchFailed,
+            handleLogOut: authActions.logOut
         });
     }
+
+    initialState() {
+        this.touchstones = [];
+        this.errorMessage = null;
+        this.ready = false;
+    }
+
     handleBeginFetch() {
-        this.touchstones = null;
+        this.touchstones = [];
         this.errorMessage = null;
         this.ready = false;
     }
@@ -39,6 +46,9 @@ class TouchstoneStore extends AbstractStore<State> {
     handleFetchFailed(errorMessage: string) {
         this.errorMessage = errorMessage;
         this.ready = false;
+    }
+    handleLogOut() {
+        this.initialState();
     }
 }
 

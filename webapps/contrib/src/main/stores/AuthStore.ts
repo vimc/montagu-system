@@ -19,7 +19,8 @@ class AuthStore extends AbstractStore<State> {
         this.loggedIn = false;
         this.bearerToken = null;
         this.bindListeners({
-            handleLogIn: authActions.logIn
+            handleLogIn: authActions.logIn,
+            handleLogOut: authActions.logOut
         })
     }
 
@@ -27,6 +28,10 @@ class AuthStore extends AbstractStore<State> {
         this.loggedIn = true;
         this.bearerToken = bearerToken;
         console.log("Saved bearer token");
+    }
+    handleLogOut() {
+        this.loggedIn = false;
+        this.bearerToken = null;
     }
 }
 

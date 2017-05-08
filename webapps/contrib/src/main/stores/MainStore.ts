@@ -48,7 +48,8 @@ class MainStore extends AbstractStore<State> {
         this.bindListeners({
             handleDiseases: mainActions.receiveDiseases,
             handleFetchFailed: mainActions.fetchFailed,
-            handleLogIn: authActions.logIn
+            handleLogIn: authActions.logIn,
+            handleLogOut: authActions.logOut
         });
         this.exportPublicMethods({
             getDiseaseById: id => this.diseases.content[id]
@@ -66,6 +67,9 @@ class MainStore extends AbstractStore<State> {
     }
     handleLogIn(token: string) {
         (mainActions.fetch as any).defer({});
+    }
+    handleLogOut() {
+        this.diseases = { content: null, loaded: false };
     }
 }
 

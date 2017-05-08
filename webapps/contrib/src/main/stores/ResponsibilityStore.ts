@@ -1,10 +1,11 @@
 import alt from "../alt";
-import * as AltJS from 'alt';
-import { RemoteContent } from './RemoteContent';
-import { responsibilityActions } from '../actions/ResponsibilityActions';
-import { AbstractStore } from "./AbstractStore";
-import { Touchstone, Responsibilities } from '../Models';
-import { ResponsibilityFetchParameters } from '../sources/Sources';
+import * as AltJS from "alt";
+import {RemoteContent} from "./RemoteContent";
+import {responsibilityActions} from "../actions/ResponsibilityActions";
+import {AbstractStore} from "./AbstractStore";
+import {Responsibilities, Touchstone} from "../Models";
+import {ResponsibilityFetchParameters} from "../sources/Sources";
+import {authActions} from "../actions/AuthActions";
 
 export interface State extends RemoteContent {
     currentTouchstone: Touchstone;
@@ -12,7 +13,8 @@ export interface State extends RemoteContent {
     currentDiseaseId: string;
 }
 
-interface ResponsibilityStoreInterface extends AltJS.AltStore<State> { }
+interface ResponsibilityStoreInterface extends AltJS.AltStore<State> {
+}
 
 class ResponsibilityStore extends AbstractStore<State> {
     currentTouchstone: Touchstone;
@@ -23,45 +25,52 @@ class ResponsibilityStore extends AbstractStore<State> {
 
     constructor() {
         super();
-        this.currentTouchstone = null;
-        this.responsibilitySet = null;
-        this.currentDiseaseId = null;
-        this.errorMessage = null;
-        this.ready = false;
+        this.initialState();
         this.bindListeners({
             handleSetTouchstone: responsibilityActions.setTouchstone,
             handleFetch: responsibilityActions.beginFetch,
             handleUpdateResponsibilities: responsibilityActions.updateResponsibilities,
             handleFetchFailed: responsibilityActions.fetchFailed,
-            handleFilterByDisease: responsibilityActions.filterByDisease
+            handleFilterByDisease: responsibilityActions.filterByDisease,
+            handleLogOut: authActions.logOut
         });
+    }
+
+    initialState() {
+        this.currentTouchstone = null;
+        this.responsibilitySet = null;
+        this.currentDiseaseId = null;
+        this.errorMessage = null;
+        this.ready = false;
     }
 
     handleSetTouchstone(touchstone: Touchstone) {
         this.currentTouchstone = touchstone;
-        const action: any = responsibilityActions.fetch;
-        const params: ResponsibilityFetchParameters = { 
-            groupId: "group-1",
-            touchstoneId: this.currentTouchstone.id
-        };
-        action.defer(params);
     }
+
     handleFetch() {
         this.responsibilitySet = null;
         this.errorMessage = null;
         this.ready = false;
         this.currentDiseaseId = null;
     }
+
     handleUpdateResponsibilities(responsibilitySet: Responsibilities) {
-        this.responsibilitySet = responsibilitySet;        
+        this.responsibilitySet = responsibilitySet;
         this.ready = true;
     }
+
     handleFetchFailed(errorMessage: string) {
         this.errorMessage = errorMessage;
         this.ready = false;
     }
+
     handleFilterByDisease(diseaseId: string) {
         this.currentDiseaseId = diseaseId;
+    }
+
+    handleLogOut() {
+        this.initialState();
     }
 }
 

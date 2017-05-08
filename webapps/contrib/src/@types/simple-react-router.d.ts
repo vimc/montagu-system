@@ -2,6 +2,8 @@ declare module "simple-react-router" {
     import { Component } from 'react'
 
     type ComponentConstructor = new (...args: any[]) => Component<any, any>;
+    type EventHandler = (e: React.MouseEvent<any>) => void;
+
     export type RouteMap = (path: string, component: ComponentConstructor, params?: any) => void;
 
     export abstract class Router<RoutingProperties> extends Component<RoutingProperties, any> {
@@ -11,7 +13,9 @@ declare module "simple-react-router" {
         getRoutes(map: RouteMap, props: RoutingProperties): void;
         redirectTo(href: String, replace: Boolean): void;
     }
-    export class Link extends Component<any, any> {}
+    export class Link extends Component<any, any> {
+        onClick: EventHandler;
+    }
 
     export interface Location<T> {
         hash: string;

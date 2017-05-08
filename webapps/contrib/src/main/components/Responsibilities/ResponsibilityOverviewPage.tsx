@@ -5,6 +5,7 @@ import { ResponsibilityList } from './ResponsibilityList'
 import * as TouchstoneStore from '../../stores/TouchstoneStore';
 import { Touchstone } from '../../Models'
 import { responsibilityActions } from '../../actions/ResponsibilityActions';
+import {isUndefined} from "util";
 
 const headerStyles = require("../PageWithHeader/PageWithHeader.css");
 
@@ -16,8 +17,11 @@ export class ResponsibilityOverviewPage
     extends PageWithHeader<LocationProps, PageProperties<LocationProps>, TouchstoneStore.State> {
     state: TouchstoneStore.State = TouchstoneStore.Store.getState();
 
+    constructor(props: any) {
+        super(props);
+    }
+
     componentDidMount() {
-        this.onLoad();
         TouchstoneStore.Store.listen(this.onChange);
     }
 
@@ -25,16 +29,24 @@ export class ResponsibilityOverviewPage
         TouchstoneStore.Store.unlisten(this.onChange);
     }
 
-    onLoad() {
-        responsibilityActions.setTouchstone(this.touchstone());
-    }
-
-    onChange(state: TouchstoneStore.State) {
+    onChange = (state: TouchstoneStore.State) => {
         this.setState(state);        
-    }
+    };
 
     touchstone(): Touchstone {
-        return this.state.touchstones.find((x) => x.id == this.props.location.params.touchstoneId);
+        const touchstone = this.state.touchstones.find((x) => x.id == this.props.location.params.touchstoneId);
+        if (isUndefined(touchstone)) {
+            return {
+                id: "",
+                name: "",
+                version: 0,
+                description: "",
+                status: null,
+                years: null
+            };
+        } else {
+            return touchstone;
+        }
     }
 
     title() {
