@@ -1,23 +1,32 @@
 import alt from '../alt';
 import * as AltJS from 'alt';
-import { RemoteContent }  from './RemoteContent'
 import { AbstractStore } from './AbstractStore';
-import { mainActions } from '../actions/MainActions';
-import { touchstoneActions } from '../actions/TouchstoneActions';
-import { Disease } from '../Models'
+import { authActions } from '../actions/AuthActions';
 
-export interface State extends RemoteContent {
+export interface State {
     loggedIn: boolean;
+    bearerToken: string;
 }
 
 interface AuthStoreInterface extends AltJS.AltStore<State> {
 }
 class AuthStore extends AbstractStore<State> {
     loggedIn: boolean;
+    bearerToken: string;
 
     constructor() {
         super();
         this.loggedIn = false;
+        this.bearerToken = null;
+        this.bindListeners({
+            handleLogIn: authActions.logIn
+        })
+    }
+
+    handleLogIn(bearerToken: string) {
+        this.loggedIn = true;
+        this.bearerToken = bearerToken;
+        console.log("Saved bearer token");
     }
 }
 

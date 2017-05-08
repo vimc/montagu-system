@@ -1,7 +1,7 @@
 declare module "simple-react-router" {
     import { Component } from 'react'
 
-    export type ComponentConstructor = new (...args: any[]) => Component<any, any>;
+    type ComponentConstructor = new (...args: any[]) => Component<any, any>;
     export type RouteMap = (path: string, component: ComponentConstructor, params?: any) => void;
 
     export abstract class Router<RoutingProperties> extends Component<RoutingProperties, any> {

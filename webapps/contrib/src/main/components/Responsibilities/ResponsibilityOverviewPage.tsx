@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Link, Location } from 'simple-react-router';
-import { PageWithHeader } from '../PageWithHeader/PageWithHeader';
+import {PageProperties, PageWithHeader} from '../PageWithHeader/PageWithHeader';
 import { ResponsibilityList } from './ResponsibilityList'
 import * as TouchstoneStore from '../../stores/TouchstoneStore';
 import { Touchstone } from '../../Models'
@@ -8,11 +8,12 @@ import { responsibilityActions } from '../../actions/ResponsibilityActions';
 
 const headerStyles = require("../PageWithHeader/PageWithHeader.css");
 
-interface ResponsibilityOverviewPageProps {
+interface LocationProps {
     touchstoneId: string;
 }
 
-export class ResponsibilityOverviewPage extends PageWithHeader<ResponsibilityOverviewPageProps, TouchstoneStore.State> {
+export class ResponsibilityOverviewPage
+    extends PageWithHeader<LocationProps, PageProperties<LocationProps>, TouchstoneStore.State> {
     state: TouchstoneStore.State = TouchstoneStore.Store.getState();
 
     componentDidMount() {

@@ -3,7 +3,6 @@ import { connectToStores } from '../alt';
 
 import * as MainStore from '../stores/MainStore';
 import * as AuthStore from '../stores/AuthStore';
-import { mainActions } from '../actions/MainActions';
 import Router from './Router';
 
 interface AppProps {
@@ -13,7 +12,6 @@ interface AppProps {
 
 export class ApplicationComponent extends React.Component<AppProps, undefined> {
     static getStores() {
-        mainActions.fetch({});
         return [ MainStore.Store, AuthStore.Store ];
     }
     static getPropsFromStores(props: AppProps): AppProps {
@@ -25,6 +23,7 @@ export class ApplicationComponent extends React.Component<AppProps, undefined> {
 
     render() {
         return <Router
+            errorMessage={ this.props.main.errorMessage }
             loggedIn={ this.props.auth.loggedIn }
             loaded={ this.props.main.ready } />;
     }

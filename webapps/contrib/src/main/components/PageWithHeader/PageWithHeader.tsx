@@ -4,7 +4,8 @@ import { Location, Link } from 'simple-react-router';
 const logo = require("./logo.png");
 const styles = require('./PageWithHeader.css');
 
-export abstract class PageWithHeader<TProps, TState> extends React.Component<PageProperties<TProps>, TState> {
+export abstract class PageWithHeader<TLocationProps, TProps extends PageProperties<TLocationProps>, TState>
+    extends React.Component<TProps, TState> {
     abstract title(): JSX.Element;
     abstract renderPageContent(): JSX.Element;
 

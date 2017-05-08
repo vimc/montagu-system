@@ -7,8 +7,6 @@ require('file-loader?name=[name].[ext]!./index.html');
 require('./styles/fonts.css');
 require('./styles/buttons.css');
 
-mainActions.fetch({});
-
 ReactDOM.render(    
     <Application />,
     document.getElementById("react")

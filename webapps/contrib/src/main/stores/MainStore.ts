@@ -4,6 +4,7 @@ import { RemoteContent }  from './RemoteContent'
 import { AbstractStore } from './AbstractStore';
 import { mainActions } from '../actions/MainActions';
 import { touchstoneActions } from '../actions/TouchstoneActions';
+import { authActions } from '../actions/AuthActions';
 import { Disease } from '../Models'
 
 export interface State extends RemoteContent {
@@ -46,7 +47,8 @@ class MainStore extends AbstractStore<State> {
         this.ready = false;    
         this.bindListeners({
             handleDiseases: mainActions.receiveDiseases,
-            handleFetchFailed: mainActions.fetchFailed
+            handleFetchFailed: mainActions.fetchFailed,
+            handleLogIn: authActions.logIn
         });
         this.exportPublicMethods({
             getDiseaseById: id => this.diseases.content[id]
@@ -61,6 +63,9 @@ class MainStore extends AbstractStore<State> {
     }
     handleFetchFailed(errorMessage: string) {
         this.errorMessage = errorMessage;
+    }
+    handleLogIn(token: string) {
+        (mainActions.fetch as any).defer({});
     }
 }
 
