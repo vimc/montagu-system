@@ -1,5 +1,6 @@
 *.dropbox.attr
 contrib/.tmp/*
+contrib/\.idea/workspace\.xml
 contrib/node_modules/*
 contrib/npm-debug\.log
 contrib/out/*

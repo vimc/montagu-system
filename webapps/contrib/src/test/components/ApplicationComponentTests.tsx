@@ -20,8 +20,10 @@ describe("Application", () => {
         };
         const auth: AuthStore.State = {
             loggedIn: false,
+            username: null,
             bearerToken: null,
-            permissions: []
+            permissions: [],
+            modellingGroups: []
         };
         const rendered = shallow(<ApplicationComponent main={ main } auth={ auth } />);
         expect(rendered.find(LoadingPage)).has.length(1, "Expected LoadingPage to be rendered");
@@ -35,8 +37,10 @@ describe("Application", () => {
         };
         const auth: AuthStore.State = {
             loggedIn: false,
+            username: null,
             bearerToken: null,
-            permissions: []
+            permissions: [],
+            modellingGroups: []
         };
         const rendered = shallow(<ApplicationComponent main={ main } auth={ auth } />);
         expect(rendered.find(Router)).has.length(1, "Expected Router to be rendered");

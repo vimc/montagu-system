@@ -7,6 +7,7 @@ import {parseRole,Role} from '../models/Roles';
 
 export interface State {
     loggedIn: boolean;
+    username: string;
     bearerToken: string;
     permissions: string[];
     modellingGroups: string[];
@@ -16,6 +17,7 @@ interface AuthStoreInterface extends AltJS.AltStore<State> {}
 
 class AuthStore extends AbstractStore<State> {
     loggedIn: boolean;
+    username: string;
     bearerToken: string;
     permissions: string[];
     modellingGroups: string[];
@@ -23,6 +25,7 @@ class AuthStore extends AbstractStore<State> {
     constructor() {
         super();
         this.loggedIn = false;
+        this.username = null;
         this.bearerToken = null;
         this.permissions = [];
         this.modellingGroups = [];
@@ -36,6 +39,7 @@ class AuthStore extends AbstractStore<State> {
         this.loggedIn = true;
         this.bearerToken = bearerToken;
         const decoded = jwt_decode(bearerToken);
+        this.username = decoded.sub;
         this.permissions = decoded.permissions.split(",");
         this.modellingGroups = decoded.roles
             .split(",")
