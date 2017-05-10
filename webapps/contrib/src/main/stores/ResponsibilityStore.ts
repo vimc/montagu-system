@@ -31,8 +31,7 @@ class ResponsibilityStore extends AbstractStore<State> {
             handleFetch: responsibilityActions.beginFetch,
             handleUpdateResponsibilities: responsibilityActions.updateResponsibilities,
             handleFetchFailed: responsibilityActions.fetchFailed,
-            handleFilterByDisease: responsibilityActions.filterByDisease,
-            handleLogOut: authActions.logOut
+            handleFilterByDisease: responsibilityActions.filterByDisease
         });
     }
 
@@ -67,10 +66,6 @@ class ResponsibilityStore extends AbstractStore<State> {
 
     handleFilterByDisease(diseaseId: string) {
         this.currentDiseaseId = diseaseId;
-    }
-
-    handleLogOut() {
-        this.initialState();
     }
 }
 

@@ -23,8 +23,7 @@ class TouchstoneStore extends AbstractStore<State> {
         this.bindListeners({
             handleBeginFetch: touchstoneActions.beginFetch,
             handleUpdate: touchstoneActions.update,
-            handleFetchFailed: touchstoneActions.fetchFailed,
-            handleLogOut: authActions.logOut
+            handleFetchFailed: touchstoneActions.fetchFailed
         });
     }
 
@@ -46,9 +45,6 @@ class TouchstoneStore extends AbstractStore<State> {
     handleFetchFailed(errorMessage: string) {
         this.errorMessage = errorMessage;
         this.ready = false;
-    }
-    handleLogOut() {
-        this.initialState();
     }
 }
 

@@ -2,8 +2,21 @@ import * as React from 'react';
 import {Link} from "simple-react-router";
 
 export class ButtonLink extends Link {
-    onClick = (event: any) => {
-        const href = (this.refs.link as any).getAttribute("href");
+    constructor(props: any) {
+        super(props);
+        this.onClick = this.onClick.bind(this);
+    }
+
+    isAbsoluteURL(url: string) {
+        const pat = /^https?:\/\//i;
+        return pat.test(url);
+    }
+
+    onClick(event: any) {
+        let href = (this.refs.link as HTMLButtonElement).getAttribute("href");
+        if (!this.isAbsoluteURL(href)) {
+            href = location.origin + href;
+        }
 
         if (this.props.onClick){
             this.props.onClick(event)

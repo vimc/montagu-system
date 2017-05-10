@@ -32,6 +32,7 @@ class AuthStore extends AbstractStore<State> {
     handleLogOut() {
         this.loggedIn = false;
         this.bearerToken = null;
+        alt.recycle();
     }
 }
 
