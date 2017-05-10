@@ -10,6 +10,7 @@ import org.vaccineimpact.api.db.direct.createRole
 import org.vaccineimpact.api.db.direct.ensureUserHasRole
 import org.vaccineimpact.api.db.direct.setRolePermissions
 import org.vaccineimpact.api.models.ReifiedPermission
+import org.vaccineimpact.api.models.ReifiedRole
 import org.vaccineimpact.api.models.Scope
 import org.vaccineimpact.api.models.User
 import org.vaccineimpact.api.security.UserHelper
@@ -29,8 +30,8 @@ class UserTests : RepositoryTests<UserRepository>()
     fun `can retrieve user with any case email address`()
     {
         given(this::addTestUser).check { repo ->
-            checkUser(getUser(repo, email), emptyList())
-            checkUser(getUser(repo, email.toUpperCase()), emptyList())
+            checkUser(getUser(repo, email))
+            checkUser(getUser(repo, email.toUpperCase()))
         }
     }
 
@@ -52,10 +53,12 @@ class UserTests : RepositoryTests<UserRepository>()
             it.setRolePermissions(roleId, listOf("p1", "p2"), createPermissions = true)
             it.ensureUserHasRole("test.user", roleId, scopeId = "")
         } check { repo ->
-            checkUser(getUser(repo, email), listOf(
+            val roles = listOf(ReifiedRole("role", Scope.Global()))
+            val permissions = listOf(
                     ReifiedPermission("p1", Scope.Global()),
                     ReifiedPermission("p2", Scope.Global())
-            ))
+            )
+            checkUser(getUser(repo, email), roles, permissions)
         }
     }
 
@@ -75,21 +78,31 @@ class UserTests : RepositoryTests<UserRepository>()
             it.ensureUserHasRole("test.user", roleA, scopeId = "idA")
             it.ensureUserHasRole("test.user", roleB, scopeId = "idB")
         } check { repo ->
-            checkUser(getUser(repo, email), listOf(
+            val roles = listOf(
+                    ReifiedRole("a", Scope.Global()),
+                    ReifiedRole("a", Scope.Specific("prefixA", "idA")),
+                    ReifiedRole("b", Scope.Specific("prefixB", "idB"))
+            )
+            val permissions = listOf(
                     ReifiedPermission("p1", Scope.Global()),
                     ReifiedPermission("p1", Scope.Specific("prefixA", "idA")),
                     ReifiedPermission("p2", Scope.Specific("prefixA", "idA")),
                     ReifiedPermission("p1", Scope.Specific("prefixB", "idB")),
                     ReifiedPermission("p3", Scope.Specific("prefixB", "idB"))
-            ))
+            )
+            checkUser(getUser(repo, email), roles, permissions)
         }
     }
 
-    private fun checkUser(user: User, expectedPermissions: List<ReifiedPermission>)
+    private fun checkUser(
+            user: User,
+            expectedRoles: List<ReifiedRole> = emptyList(),
+            expectedPermissions: List<ReifiedPermission> = emptyList())
     {
         assertThat(user.username).isEqualTo("test.user")
         assertThat(user.name).isEqualTo("Test User")
         assertThat(user.email).isEqualTo("test@example.com")
+        assertThat(user.roles).hasSameElementsAs(expectedRoles)
         assertThat(user.permissions).hasSameElementsAs(expectedPermissions)
     }
 

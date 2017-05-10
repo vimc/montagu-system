@@ -2,7 +2,7 @@ package org.vaccineimpact.api.blackboxTests.helpers
 
 import org.vaccineimpact.api.db.Config
 
-class EndpointBuilder
+object EndpointBuilder
 {
     val hostUrl = Config["app.url"]
     val baseUrl = "v1"

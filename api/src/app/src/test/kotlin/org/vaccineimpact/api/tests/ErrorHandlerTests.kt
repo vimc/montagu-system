@@ -16,6 +16,7 @@ import org.vaccineimpact.api.models.ErrorInfo
 import org.vaccineimpact.api.models.Result
 import org.vaccineimpact.api.models.ResultStatus
 import org.vaccineimpact.api.test_helpers.MontaguTests
+import javax.servlet.http.HttpServletResponse
 
 class ErrorHandlerTests : MontaguTests()
 {
@@ -33,7 +34,9 @@ class ErrorHandlerTests : MontaguTests()
     fun makeMocks()
     {
         request = mock<spark.Request>()
-        response = mock<spark.Response>()
+        response = mock<spark.Response> {
+            on { raw() } doReturn mock<HttpServletResponse>()
+        }
     }
 
     @Test

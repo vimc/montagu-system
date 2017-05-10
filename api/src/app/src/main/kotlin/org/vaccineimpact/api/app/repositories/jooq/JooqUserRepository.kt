@@ -21,8 +21,8 @@ class JooqUserRepository : JooqRepository(), UserRepository
                     .fetch()
             return User(
                     user.mapUserProperties(),
-                    records.map(this::mapPermission),
-                    records.map(this::mapRole).distinct()
+                    records.map(this::mapRole).distinct(),
+                    records.map(this::mapPermission)
             )
         }
         else
