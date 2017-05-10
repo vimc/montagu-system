@@ -3,6 +3,7 @@ import {RemoteContentComponent} from "../RemoteContentComponent/RemoteContentCom
 import {Link} from "simple-react-router";
 import {connectToStores} from "../../alt";
 import {State, Store} from "../../stores/TouchstoneStore";
+import * as AuthStore from '../../stores/AuthStore';
 import {Touchstone} from "../../Models";
 import {responsibilityActions} from "../../actions/ResponsibilityActions";
 
@@ -13,7 +14,7 @@ export class TouchstoneLink extends React.Component<Touchstone, undefined> {
     onClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
         responsibilityActions.setTouchstone(this.props);
         responsibilityActions.fetch({
-            groupId: "group-1",
+            groupId: AuthStore.Store.getState().modellingGroups[0],
             touchstoneId: this.props.id
         });
     };
