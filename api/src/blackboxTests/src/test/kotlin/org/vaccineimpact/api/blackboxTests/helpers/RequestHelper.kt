@@ -7,9 +7,7 @@ import khttp.responses.Response
 
 class RequestHelper
 {
-    val builder = EndpointBuilder()
-
-    fun get(url: String) = khttp.get(builder.build(url))
+    fun get(url: String) = khttp.get(EndpointBuilder.build(url))
 
     fun get(url: String, permissions: List<String>): Response
     {
@@ -17,7 +15,7 @@ class RequestHelper
         return get(url, token)
     }
 
-    fun get(url: String, token: String) = get(builder.build(url),
+    fun get(url: String, token: String) = get(EndpointBuilder.build(url),
             headers = mapOf("Authorization" to "Bearer $token")
     )
 

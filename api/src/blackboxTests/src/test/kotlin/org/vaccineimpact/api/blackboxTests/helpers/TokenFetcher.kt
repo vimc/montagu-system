@@ -1,13 +1,10 @@
 package org.vaccineimpact.api.blackboxTests.helpers
 
-import org.vaccineimpact.api.db.JooqContext
-import org.vaccineimpact.api.db.direct.givePermissionsToUserUsingTestRole
-
 class TokenFetcher
 {
     fun getToken(email: String, password: String): TokenResponse
     {
-        val url = EndpointBuilder().build("/authenticate/")
+        val url = EndpointBuilder.build("/authenticate/")
         val auth = khttp.structures.authorization.BasicAuthorization(email, password)
         val response = khttp.post(url,
                 data = mapOf("grant_type" to "client_credentials"),

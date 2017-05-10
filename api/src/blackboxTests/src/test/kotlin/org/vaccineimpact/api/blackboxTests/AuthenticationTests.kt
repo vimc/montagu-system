@@ -3,6 +3,7 @@ package org.vaccineimpact.api.blackboxTests
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
 import com.beust.klaxon.json
+import khttp.options
 import khttp.post
 import khttp.structures.authorization.BasicAuthorization
 import org.assertj.core.api.Assertions.assertThat
@@ -15,7 +16,7 @@ import org.vaccineimpact.api.test_helpers.DatabaseTest
 
 class AuthenticationTests : DatabaseTest()
 {
-    val url = EndpointBuilder().build("/authenticate/")
+    val url = EndpointBuilder.build("/authenticate/")
 
     @Before
     fun addUser()
@@ -65,6 +66,13 @@ class AuthenticationTests : DatabaseTest()
     {
         val result = post("EMAIL@example.cOm", "password")
         assertDoesAuthenticate(result)
+    }
+
+    @Test
+    fun `can get OPTIONS for authentication endpoint`()
+    {
+        val result = options(url)
+        assertThat(result.statusCode).isEqualTo(200)
     }
 
     private fun assertDoesAuthenticate(result: JsonObject)

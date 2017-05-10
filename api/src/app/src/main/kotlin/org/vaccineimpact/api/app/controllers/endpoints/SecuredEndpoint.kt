@@ -6,8 +6,6 @@ import org.vaccineimpact.api.app.security.JWTHeaderClient
 import org.vaccineimpact.api.app.security.MontaguAuthorizer
 import org.vaccineimpact.api.app.security.TokenVerifyingConfigFactory
 import org.vaccineimpact.api.security.WebTokenHelper
-import spark.Request
-import spark.Response
 import spark.Spark
 import spark.route.HttpMethod
 
@@ -28,7 +26,8 @@ class SecuredEndpoint(
         Spark.before(url, SecurityFilter(
                 tokenVerifier,
                 JWTHeaderClient::class.java.simpleName,
-                MontaguAuthorizer::class.java.simpleName
+                MontaguAuthorizer::class.java.simpleName,
+                "SkipOptions"
         ))
     }
 }

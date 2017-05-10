@@ -7,6 +7,8 @@ import org.pac4j.http.client.direct.DirectBasicAuthClient
 import org.pac4j.sparkjava.DefaultHttpActionAdapter
 import org.pac4j.sparkjava.SparkWebContext
 import org.vaccineimpact.api.app.Serializer
+import org.vaccineimpact.api.app.addDefaultResponseHeaders
+import org.vaccineimpact.api.app.security.SkipOptionsMatcher
 import org.vaccineimpact.api.models.FailedAuthentication
 import spark.Spark as spk
 
@@ -15,9 +17,10 @@ class TokenIssuingConfigFactory : ConfigFactory
     override fun build(): Config
     {
         val authClient = DirectBasicAuthClient(DatabasePasswordAuthenticator())
-        val config = Config(authClient)
-        config.httpActionAdapter = BasicAuthActionAdapter()
-        return config
+        return Config(authClient).apply {
+            httpActionAdapter = BasicAuthActionAdapter()
+            addMatcher(SkipOptionsMatcher.name, SkipOptionsMatcher)
+        }
     }
 }
 
@@ -30,7 +33,7 @@ class BasicAuthActionAdapter : DefaultHttpActionAdapter()
         HttpConstants.UNAUTHORIZED ->
         {
             context.response.addHeader("WWW-Authenticate", "Basic")
-            context.response.contentType = "application/json"
+            addDefaultResponseHeaders(context.response)
             spark.Spark.halt(code, unauthorizedResponse)
         }
         else -> super.adapt(code, context)

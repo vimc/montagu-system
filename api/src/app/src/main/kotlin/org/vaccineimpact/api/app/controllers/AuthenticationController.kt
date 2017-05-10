@@ -8,6 +8,7 @@ import org.vaccineimpact.api.app.HTMLForm
 import org.vaccineimpact.api.app.HTMLFormHelpers
 import org.vaccineimpact.api.app.Serializer
 import org.vaccineimpact.api.app.controllers.endpoints.BasicEndpoint
+import org.vaccineimpact.api.app.security.SkipOptionsMatcher
 import org.vaccineimpact.api.app.security.USER_OBJECT
 import org.vaccineimpact.api.models.AuthenticationResponse
 import org.vaccineimpact.api.models.FailedAuthentication
@@ -45,7 +46,11 @@ class AuthenticationController(private val tokenHelper: WebTokenHelper) : Abstra
     private fun setupSecurity(fullUrl: String)
     {
         val config = TokenIssuingConfigFactory().build()
-        before(fullUrl, SecurityFilter(config, DirectBasicAuthClient::class.java.simpleName))
+        before(fullUrl, SecurityFilter(
+                config,
+                DirectBasicAuthClient::class.java.simpleName,
+                null,
+                SkipOptionsMatcher.name))
     }
 
     private fun getUserFromUserProfile(context: ActionContext)

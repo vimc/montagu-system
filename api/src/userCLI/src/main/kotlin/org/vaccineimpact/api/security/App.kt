@@ -10,7 +10,7 @@ fun main(args: Array<String>)
         val args = args.drop(1)
         when (action)
         {
-            Action.add -> addUser()
+            Action.add -> addUser(args)
             Action.addRole -> addRole(args)
         }
     }

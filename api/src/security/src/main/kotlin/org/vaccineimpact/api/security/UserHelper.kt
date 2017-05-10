@@ -1,8 +1,7 @@
 package org.vaccineimpact.api.security
 
 import org.jooq.DSLContext
-import org.vaccineimpact.api.db.Tables.*
-import org.vaccineimpact.api.models.Role
+import org.vaccineimpact.api.db.Tables.APP_USER
 import java.security.SecureRandom
 import java.util.*
 
@@ -18,32 +17,6 @@ object UserHelper
             this.passwordHash = hashedPassword(plainPassword, salt)
             this.salt = salt
         }.store()
-    }
-
-    fun hasRoleMapping(dsl: DSLContext, username: String, roleId: Int, scopeId: String): Boolean
-    {
-        val record = dsl.fetchAny(USER_ROLE, USER_ROLE.USERNAME
-                .eq(username)
-                .and(USER_ROLE.ROLE.eq(roleId))
-                .and(USER_ROLE.SCOPE_ID.eq(scopeId)))
-        return record != null
-    }
-
-    fun addRole(dsl: DSLContext, username: String, roleId: Int, scopeId: String)
-    {
-        dsl.newRecord(USER_ROLE).apply {
-            this.username = username
-            this.role = roleId
-            this.scopeId = scopeId
-        }.store()
-    }
-
-    fun getRole(dsl: DSLContext, roleName: String, roleScopePrefix: String?): Role?
-    {
-        val record = dsl.fetchAny(ROLE, ROLE.NAME
-                .eq(roleName)
-                .and(ROLE.SCOPE_PREFIX.isNotDistinctFrom(roleScopePrefix)))
-        return record?.let { Role(record.id, record.name, record.scopePrefix, record.description) }
     }
 
     fun encoder(salt: String) = BasicSaltedSha512PasswordEncoder(salt)
