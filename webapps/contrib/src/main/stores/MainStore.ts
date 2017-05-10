@@ -1,13 +1,13 @@
 import alt from "../alt";
 import * as AltJS from "alt";
-import {RemoteContent} from "./RemoteContent";
-import {AbstractStore} from "./AbstractStore";
-import {mainActions} from "../actions/MainActions";
-import {touchstoneActions} from "../actions/TouchstoneActions";
-import {authActions} from "../actions/AuthActions";
-import {Disease} from "../Models";
-import {settings} from "../Settings";
-import {Loadable} from "./Loadable";
+import { RemoteContent } from "./RemoteContent";
+import { AbstractStore } from "./AbstractStore";
+import { mainActions } from "../actions/MainActions";
+import { touchstoneActions } from "../actions/TouchstoneActions";
+import { authActions } from "../actions/AuthActions";
+import { Disease } from "../Models";
+import { settings } from "../Settings";
+import { Loadable } from "./Loadable";
 
 export interface State extends RemoteContent {
     diseases: Loadable<Disease>;
@@ -24,7 +24,7 @@ function onReady() {
 
 export function makeDiseaseLookup(diseases: Disease[]): Loadable<Disease> {
     let lookup: { [index: string]: Disease } = {};
-    diseases.forEach(d => lookup[d.id] = d);
+    diseases.forEach(d => lookup[ d.id ] = d);
 
     return {
         content: lookup,
@@ -34,7 +34,7 @@ export function makeDiseaseLookup(diseases: Disease[]): Loadable<Disease> {
 
 export function initialState(): State {
     return {
-        diseases: {content: null, loaded: false},
+        diseases: { content: null, loaded: false },
         errorMessage: null,
         ready: false
     };
@@ -55,7 +55,7 @@ class MainStore extends AbstractStore<State> {
             handleLogInForbidden: authActions.logInForbidden,
         });
         this.exportPublicMethods({
-            getDiseaseById: id => this.diseases.content[id]
+            getDiseaseById: id => this.diseases.content[ id ]
         })
     }
 

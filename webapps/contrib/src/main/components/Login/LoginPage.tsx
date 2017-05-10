@@ -1,26 +1,27 @@
-import * as React from 'react';
-import AltReform, { FormConnector, ReformProps } from 'alt-reform';
-import FormActions from '../../FormActions';
-import { PageWithHeader } from '../PageWithHeader/PageWithHeader';
-import { ValidationError } from './ValidationError';
-import { alt } from '../../alt';
-import fetcher from '../../sources/Fetcher';
-import * as Validation from '../../Validation';
-import {authActions} from "../../actions/AuthActions";
+import * as React from "react";
+import AltReform, { FormConnector, Reform, ReformProps } from "alt-reform";
+import FormActions from "../../FormActions";
+import { PageWithHeader } from "../PageWithHeader/PageWithHeader";
+import { ValidationError } from "./ValidationError";
+import { alt } from "../../alt";
+import fetcher from "../../sources/Fetcher";
+import * as Validation from "../../Validation";
+import { authActions } from "../../actions/AuthActions";
 
 const formStyles = require('../../styles/forms.css');
 const { submitFailed } = FormActions("Login");
 
-interface LoginFields {
+export interface LoginFields {
     email: string;
     password: string;
 }
 
-const loginForm = AltReform("Login", alt, {
+export const loginForm: Reform<LoginFields> = AltReform("Login", alt, {
     fields: {
         email: Validation.required("Email address"),
         password: Validation.required("Password"),
-        errors: () => {},
+        errors: () => {
+        },
     },
     onSubmit: (state: LoginFields) => {
         const data = "grant_type=client_credentials";
@@ -48,7 +49,7 @@ const loginForm = AltReform("Login", alt, {
     }
 });
 
-class LoginFormComponent extends React.Component<ReformProps, undefined> {
+export class LoginFormComponent extends React.Component<ReformProps, undefined> {
     render() {
         const buttonStyle = {
             width: 140
@@ -64,7 +65,8 @@ class LoginFormComponent extends React.Component<ReformProps, undefined> {
             </div>
             <button type="submit"
                     style={ buttonStyle }
-                    disabled={ buttonDisabled }>Log in ➡</button>
+                    disabled={ buttonDisabled }>Log in ➡
+            </button>
         </form>;
     }
 }

@@ -1,5 +1,5 @@
-import * as React from 'react';
-import {Link} from "simple-react-router";
+import * as React from "react";
+import { Link } from "simple-react-router";
 
 export class ButtonLink extends Link {
     constructor(props: any) {
@@ -18,13 +18,13 @@ export class ButtonLink extends Link {
             href = location.origin + href;
         }
 
-        if (this.props.onClick){
+        if (this.props.onClick) {
             this.props.onClick(event)
         }
 
         if (event.isDefaultPrevented() || event.isPropagationStopped()) return
 
-        if (!this.props.externalLink && !event.ctrlKey && !event.metaKey && !event.shiftKey && href.startsWith(location.origin)){
+        if (!this.props.externalLink && !event.ctrlKey && !event.metaKey && !event.shiftKey && href.startsWith(location.origin)) {
             event.preventDefault()
             this.context.redirectTo(href, !!this.props.replace)
         }

@@ -1,9 +1,9 @@
 import alt from "../alt";
 import * as AltJS from "alt";
-import {AbstractStore} from "./AbstractStore";
-import {authActions} from "../actions/AuthActions";
+import { AbstractStore } from "./AbstractStore";
+import { authActions } from "../actions/AuthActions";
+import { parseRole, Role } from "../models/Roles";
 const jwt_decode = require('jwt-decode');
-import {parseRole,Role} from '../models/Roles';
 
 export interface State {
     loggedIn: boolean;
@@ -13,7 +13,8 @@ export interface State {
     modellingGroups: string[];
 }
 
-interface AuthStoreInterface extends AltJS.AltStore<State> {}
+interface AuthStoreInterface extends AltJS.AltStore<State> {
+}
 
 export function initialState(): State {
     return {

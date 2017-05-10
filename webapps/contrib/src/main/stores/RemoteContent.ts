@@ -1,4 +1,4 @@
 export interface RemoteContent {
     ready: boolean;
-    errorMessage: string;    
+    errorMessage: string;
 }

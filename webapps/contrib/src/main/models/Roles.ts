@@ -17,8 +17,8 @@ function parseScope(raw: string): Scope {
     } else {
         const parts = raw.split(":");
         return {
-            prefix: parts[0],
-            id: parts[1]
+            prefix: parts[ 0 ],
+            id: parts[ 1 ]
         };
     }
 }
@@ -26,7 +26,7 @@ function parseScope(raw: string): Scope {
 export function parseRole(raw: string): Role {
     const parts = raw.split("/");
     return {
-        name: parts[1],
-        scope: parseScope(parts[0])
+        name: parts[ 1 ],
+        scope: parseScope(parts[ 0 ])
     }
 }

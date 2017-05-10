@@ -1,9 +1,9 @@
-import { sources, NoParameters } from '../../main/sources/Sources';
-import * as mocks from '../mocks';
-import { FetchHelper } from './helpers';
-import * as actionHelpers from '../actionHelpers';
+import { NoParameters, sources } from "../../main/sources/Sources";
+import { mockDisease } from "../mocks/mockModels";
+import { FetchHelper } from "./helpers";
+import * as actionHelpers from "../actionHelpers";
 
-import { mainActions } from '../../main/actions/MainActions';
+import { mainActions } from "../../main/actions/MainActions";
 
 let helper: FetchHelper<NoParameters>;
 
@@ -17,13 +17,13 @@ describe("MainFetch", () => {
         fetchAction: () => mainActions.fetch({}),
         params: {},
 
-        actionNamespace: "MainActions", 
+        actionNamespace: "MainActions",
         successAction: "receiveDiseases",
         failAction: "fetchFailed",
 
-        makePayload: () => [ 
-            mocks.mockDisease(), 
-            mocks.mockDisease()
+        makePayload: () => [
+            mockDisease(),
+            mockDisease()
         ]
     }).addTestsToMocha();
 });

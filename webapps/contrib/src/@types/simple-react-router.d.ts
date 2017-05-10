@@ -1,5 +1,5 @@
 declare module "simple-react-router" {
-    import { Component } from 'react'
+    import { Component } from "react";
 
     type ComponentConstructor = new (...args: any[]) => Component<any, any>;
 
@@ -9,7 +9,9 @@ declare module "simple-react-router" {
         component: Component<any, any>;
 
         routes(map: RouteMap): void;
+
         getRoutes(map: RouteMap, props: RoutingProperties): void;
+
         redirectTo(href: String, replace: Boolean): void;
     }
     export class Link extends Component<any, any> {

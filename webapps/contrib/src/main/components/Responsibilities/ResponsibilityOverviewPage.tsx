@@ -1,11 +1,11 @@
 import * as React from "react";
-import {Link} from "simple-react-router";
-import {PageProperties, PageWithHeader} from "../PageWithHeader/PageWithHeader";
-import {ResponsibilityList} from "./ResponsibilityList";
+import { Link } from "simple-react-router";
+import { PageProperties, PageWithHeader } from "../PageWithHeader/PageWithHeader";
+import { ResponsibilityList } from "./ResponsibilityList";
 import * as TouchstoneStore from "../../stores/TouchstoneStore";
-import {Touchstone} from "../../Models";
-import {isUndefined} from "util";
-import {settings} from "../../Settings";
+import { Touchstone } from "../../Models";
+import { isUndefined } from "util";
+import { settings } from "../../Settings";
 
 const headerStyles = require("../PageWithHeader/PageWithHeader.css");
 

@@ -1,4 +1,4 @@
-import fetcher from './Fetcher';
+import fetcher from "./Fetcher";
 
 export class Source<TParams> {
     urlFunc: (parameters: TParams) => string;

@@ -1,16 +1,16 @@
 import * as React from "react";
 import * as AuthStore from "../../stores/AuthStore";
-import {connectToStores} from "../../alt";
-import {ButtonLink} from '../ButtonLink';
-import {authActions} from "../../actions/AuthActions";
-import {Link} from "simple-react-router";
+import { connectToStores } from "../../alt";
+import { authActions } from "../../actions/AuthActions";
+import { Link } from "simple-react-router";
 
 const style = require("./Logout.css");
 
 export class LogoutComponent extends React.Component<AuthStore.State, undefined> {
     static getStores() {
-        return [AuthStore.Store];
+        return [ AuthStore.Store ];
     }
+
     static getPropsFromStores() {
         return AuthStore.Store.getState();
     }

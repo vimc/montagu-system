@@ -1,22 +1,18 @@
-import { setupVirtualDOM } from '../JSDomHelpers';
-setupVirtualDOM();
+import * as React from "react";
+import { expect } from "chai";
+import { shallow } from "enzyme";
+import { mockResponsibility } from "../mocks/mockModels";
 
-import * as React from 'react';
-import { expect } from 'chai';
-import { shallow, ShallowWrapper } from 'enzyme';
-import { mockResponsibility } from '../mocks';
+import { ResponsibilityListComponent } from "../../main/components/Responsibilities/ResponsibilityList";
+import { ResponsibilityComponent } from "../../main/components/Responsibilities/ResponsibilityComponent";
+import { DiseaseFilter } from "../../main/components/Responsibilities/DiseaseFilter";
+import { Responsibility } from "../../main/Models";
+import { State } from "../../main/stores/ResponsibilityStore";
 
-import { ResponsibilityListComponent } from '../../main/components/Responsibilities/ResponsibilityList';
-import { ResponsibilityComponent } from '../../main/components/Responsibilities/ResponsibilityComponent';
-import { DiseaseFilter } from '../../main/components/Responsibilities/DiseaseFilter';
-import { Responsibility } from '../../main/Models';
-import { State } from '../../main/stores/ResponsibilityStore';
 const styles = require("../../main/components/Responsibilities/Responsibilities.css");
 
-function makeStoreState(
-    responsibilities: Array<Responsibility>, 
-    currentDiseaseId?: string
-): State {
+function makeStoreState(responsibilities: Array<Responsibility>,
+                        currentDiseaseId?: string): State {
     return {
         currentTouchstone: null,
         currentDiseaseId: currentDiseaseId,

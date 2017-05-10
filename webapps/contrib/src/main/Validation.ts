@@ -1,8 +1,8 @@
-type validator = (value: string) => void;
+export type Validator = (value: string) => void;
 
-export function required(name: string): validator {
+export function required(name: string): Validator {
     return (value: string) => {
-        if (value.trim().length < 1) {
+        if (value == null || value.trim().length < 1) {
             throw Error(`${name} is required`);
         }
     };

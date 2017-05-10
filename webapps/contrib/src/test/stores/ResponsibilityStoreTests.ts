@@ -1,15 +1,12 @@
-import { expect } from 'chai';
-import alt from '../../main/alt';
-import * as mocks from '../mocks';
-import * as actionHelpers from '../actionHelpers';
+import { expect } from "chai";
+import alt from "../../main/alt";
+import { mockResponsibilitySet, mockTouchstone } from "../mocks/mockModels";
 
-import { Store } from '../../main/stores/ResponsibilityStore';
-import { responsibilityActions } from '../../main/actions/ResponsibilityActions';
-import { sources, ResponsibilityFetchParameters } from '../../main/sources/Sources';
-import { settings } from '../../main/Settings';
+import { Store } from "../../main/stores/ResponsibilityStore";
+import { responsibilityActions } from "../../main/actions/ResponsibilityActions";
 
 function sleep(ms: number) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 describe("ResponsibilityStore", () => {
@@ -30,7 +27,7 @@ describe("ResponsibilityStore", () => {
     });
 
     it("updateResponsibilities sets responsibility set", () => {
-        const responsibilitySet = mocks.mockResponsibilitySet({});
+        const responsibilitySet = mockResponsibilitySet({});
         responsibilityActions.updateResponsibilities(responsibilitySet);
 
         const state = Store.getState();
@@ -57,14 +54,14 @@ describe("ResponsibilityStore", () => {
     });
 
     it("beginFetch clears everything except currentTouchstone", () => {
-        const touchstone = mocks.mockTouchstone()
+        const touchstone = mockTouchstone()
         // First set us up in an impossible state where everything is non-null
         alt.bootstrap(JSON.stringify({
             ResponsibilityStore: {
                 errorMessage: "message",
                 ready: true,
                 currentTouchstone: touchstone,
-                responsibilitySet: mocks.mockResponsibilitySet(),
+                responsibilitySet: mockResponsibilitySet(),
                 currentDiseaseId: "disease"
             }
         }));

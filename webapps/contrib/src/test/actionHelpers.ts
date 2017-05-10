@@ -1,6 +1,6 @@
-import * as sinon from 'sinon';
-import { expect } from 'chai';
-import { alt } from '../main/alt';
+import * as sinon from "sinon";
+import { expect } from "chai";
+import { alt } from "../main/alt";
 
 export interface ActionExpectation {
     action: string,
@@ -9,10 +9,17 @@ export interface ActionExpectation {
 
 export function expectOrderedActions(spy: sinon.SinonSpy, expectations: Array<ActionExpectation>, startIndex: number) {
     expectations.forEach((value, index) => {
-        const event = spy.args[startIndex + index];
+        const event = spy.args[ startIndex + index ];
         expect(event).is.not.equal(undefined, `Expected this ${startIndex + index}th event: ${value.action}`);
-        expect(event[0]).to.equal(value.action);
-        expect(event[1]).to.eql(value.payload);
+        if (typeof event[0] == "string") {
+            expect(event[0]).to.equal(value.action);
+            expect(event[1]).to.eql(value.payload);
+        } else {
+            expect(event[0]).to.eql({
+                type: value.action,
+                payload: value.payload
+            })
+        }
     })
 }
 

@@ -1,10 +1,10 @@
-import * as React from 'react';
-import { RemoteContentComponent } from '../RemoteContentComponent/RemoteContentComponent';
-import { DiseaseFilter } from './DiseaseFilter';
-import { ResponsibilityComponent } from './ResponsibilityComponent';
-import { State, Store } from '../../stores/ResponsibilityStore';
-import { Responsibilities, Responsibility } from '../../Models';
-import { connectToStores } from '../../alt';
+import * as React from "react";
+import { RemoteContentComponent } from "../RemoteContentComponent/RemoteContentComponent";
+import { DiseaseFilter } from "./DiseaseFilter";
+import { ResponsibilityComponent } from "./ResponsibilityComponent";
+import { State, Store } from "../../stores/ResponsibilityStore";
+import { Responsibilities, Responsibility } from "../../Models";
+import { connectToStores } from "../../alt";
 
 const styles = require("./Responsibilities.css");
 const messageStyles = require("../../styles/messages.css");
@@ -14,6 +14,7 @@ export class ResponsibilityListComponent extends RemoteContentComponent<State> {
     static getStores() {
         return [ Store ];
     }
+
     static getPropsFromStores() {
         return Store.getState();
     }
@@ -30,7 +31,7 @@ export class ResponsibilityListComponent extends RemoteContentComponent<State> {
     renderContent(store: State): JSX.Element {
         const reps = this.getResponsibilities(store);
         if (reps.length) {
-            const items = reps.map((item: Responsibility) => 
+            const items = reps.map((item: Responsibility) =>
                 <ResponsibilityComponent key={ item.scenario.id } {...item} />
             );
             return <div>
@@ -40,7 +41,8 @@ export class ResponsibilityListComponent extends RemoteContentComponent<State> {
                 <ul className={ styles.responsibilities }>{ items }</ul>
             </div>;
         } else {
-            return <div className={ messageStyles.message }>This modelling group has no responsibilities in this touchstone</div>
+            return <div className={ messageStyles.message }>This modelling group has no responsibilities in this
+                touchstone</div>
         }
     }
 }

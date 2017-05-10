@@ -1,17 +1,15 @@
-import { setupVirtualDOM } from '../JSDomHelpers';
-setupVirtualDOM();
+import * as React from "react";
+import { expect } from "chai";
+import { shallow, ShallowWrapper } from "enzyme";
 
-import * as React from 'react';
-import { expect } from 'chai';
-import { shallow, ShallowWrapper } from 'enzyme';
+import { RemoteContent } from "../../main/stores/RemoteContent";
+import { RemoteContentComponent } from "../../main/components/RemoteContentComponent/RemoteContentComponent";
 
-import { RemoteContent } from '../../main/stores/RemoteContent';
-import { RemoteContentComponent } from '../../main/components/RemoteContentComponent/RemoteContentComponent';
 const spinner = require("../../main/components/RemoteContentComponent/spinner.gif");
 
 interface Properties extends RemoteContent {
     ready: boolean;
-    errorMessage: string;    
+    errorMessage: string;
 }
 
 class DummyComponent extends RemoteContentComponent<Properties> {

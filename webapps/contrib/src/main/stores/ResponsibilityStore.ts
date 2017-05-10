@@ -1,11 +1,9 @@
 import alt from "../alt";
 import * as AltJS from "alt";
-import {RemoteContent} from "./RemoteContent";
-import {responsibilityActions} from "../actions/ResponsibilityActions";
-import {AbstractStore} from "./AbstractStore";
-import {Responsibilities, Touchstone} from "../Models";
-import {ResponsibilityFetchParameters} from "../sources/Sources";
-import {authActions} from "../actions/AuthActions";
+import { RemoteContent } from "./RemoteContent";
+import { responsibilityActions } from "../actions/ResponsibilityActions";
+import { AbstractStore } from "./AbstractStore";
+import { Responsibilities, Touchstone } from "../Models";
 
 export interface State extends RemoteContent {
     currentTouchstone: Touchstone;

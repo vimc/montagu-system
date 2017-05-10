@@ -1,4 +1,4 @@
-import { generateActions } from 'create-actions';
+import { generateActions } from "create-actions";
 
 export default (namespace: string) => {
     return generateActions(namespace, [

@@ -1,6 +1,6 @@
-import * as React from 'react';
-import {  Responsibility } from '../../Models';
-import { Store } from '../../stores/MainStore';
+import * as React from "react";
+import { Responsibility } from "../../Models";
+import { Store } from "../../stores/MainStore";
 
 const styles = require("./Responsibilities.css");
 

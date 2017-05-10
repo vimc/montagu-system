@@ -1,9 +1,9 @@
-import { expect } from 'chai';
-import alt from '../../main/alt';
-import * as mocks from '../mocks';
+import { expect } from "chai";
+import alt from "../../main/alt";
+import { mockDisease } from "../mocks/mockModels";
 
-import { Store } from '../../main/stores/MainStore';
-import { mainActions } from '../../main/actions/MainActions';
+import { Store } from "../../main/stores/MainStore";
+import { mainActions } from "../../main/actions/MainActions";
 
 describe("MainStore", () => {
     beforeEach(() => {
@@ -21,8 +21,8 @@ describe("MainStore", () => {
     });
 
     it("receiveDiseases sets diseases", () => {
-        const disease1 = mocks.mockDisease({ id: "d1" });
-        const disease2 = mocks.mockDisease({ id: "d2" });
+        const disease1 = mockDisease({ id: "d1" });
+        const disease2 = mockDisease({ id: "d2" });
         mainActions.receiveDiseases([ disease1, disease2 ]);
 
         const state = Store.getState();

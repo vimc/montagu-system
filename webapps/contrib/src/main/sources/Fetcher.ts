@@ -1,7 +1,7 @@
-import { settings } from '../Settings';
-import * as AuthStore from '../stores/AuthStore';
+import { settings } from "../Settings";
+import * as AuthStore from "../stores/AuthStore";
 
-interface FetchOptions {
+export interface FetchOptions {
     method?: string,
     body?: any,
     headers?: any,
@@ -15,7 +15,7 @@ class Fetcher {
         options = options || {};
         options.headers = options.headers || {};
         if (includeToken) {
-            options.headers["Authorization"] = `Bearer ${AuthStore.Store.getState().bearerToken}`;
+            options.headers[ "Authorization" ] = `Bearer ${AuthStore.Store.getState().bearerToken}`;
         }
         return fetch(url, options);
     }

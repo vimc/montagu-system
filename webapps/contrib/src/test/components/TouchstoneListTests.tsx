@@ -1,13 +1,11 @@
-import {setupVirtualDOM} from "../JSDomHelpers";
 import * as React from "react";
-import {expect} from "chai";
-import {mount, shallow} from "enzyme";
-import {mockTouchstone} from "../mocks";
+import { expect } from "chai";
+import { mount, shallow } from "enzyme";
+import { mockTouchstone } from "../mocks/mockModels";
 
-import {TouchstoneLink, TouchstoneListComponent} from "../../main/components/Touchstones/TouchstoneList";
+import { TouchstoneLink, TouchstoneListComponent } from "../../main/components/Touchstones/TouchstoneList";
 import * as TouchstoneStore from "../../main/stores/TouchstoneStore";
-import {Touchstone} from "../../main/Models";
-setupVirtualDOM();
+import { Touchstone } from "../../main/Models";
 
 const styles = require("../../main/components/Touchstones/TouchstoneList.css");
 
@@ -29,8 +27,8 @@ describe('TouchstoneListComponent', () => {
 
         it("one Link per finished touchstone", () => {
             const touchstones = [
-                mockTouchstone({id: "touchstone-1", description: "Description 1", status: "finished"}),
-                mockTouchstone({id: "touchstone-2", description: "Description 2", status: "finished"})
+                mockTouchstone({ id: "touchstone-1", description: "Description 1", status: "finished" }),
+                mockTouchstone({ id: "touchstone-2", description: "Description 2", status: "finished" })
             ];
             const state = makeStoreState(touchstones);
             const rendered = shallow(<TouchstoneListComponent {...state} />);
@@ -40,7 +38,7 @@ describe('TouchstoneListComponent', () => {
             // Check the first link in detail
             const first = children.at(0);
             expect(first.key()).to.equal("touchstone-1");
-            expect(first.find(TouchstoneLink).props()).to.eql(touchstones[0]);
+            expect(first.find(TouchstoneLink).props()).to.eql(touchstones[ 0 ]);
 
             // Also do a basic test on the other one, to make sure it's different
             expect(children.at(1).key()).to.equal("touchstone-2");
@@ -53,8 +51,8 @@ describe('TouchstoneListComponent', () => {
         });
 
         it("link when there is an open touchstone", () => {
-            const touchstone = mockTouchstone({id: "touchstone-1", description: "Description 1", status: "open"})
-            const state = makeStoreState([touchstone]);
+            const touchstone = mockTouchstone({ id: "touchstone-1", description: "Description 1", status: "open" })
+            const state = makeStoreState([ touchstone ]);
             const rendered = mount(<TouchstoneListComponent {...state} />);
             const link = rendered.find(`.${styles.openTouchstone}`).find(TouchstoneLink);
             expect(link.props()).to.eql(touchstone);

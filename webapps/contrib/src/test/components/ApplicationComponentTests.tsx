@@ -1,14 +1,14 @@
-import { setupVirtualDOM } from '../JSDomHelpers';
+import { setupVirtualDOM } from "../JSDomHelpers";
 setupVirtualDOM();
 
-import * as React from 'react';
-import { shallow } from 'enzyme';
-import * as MainStore from '../../main/stores/MainStore';
-import * as AuthStore from '../../main/stores/AuthStore';
-import { expect } from 'chai';
+import * as React from "react";
+import { shallow } from "enzyme";
+import * as MainStore from "../../main/stores/MainStore";
+import * as AuthStore from "../../main/stores/AuthStore";
+import { expect } from "chai";
 
-import { ApplicationComponent } from '../../main/components/Application';
-import Router from '../../main/components/Router';
+import { ApplicationComponent } from "../../main/components/Application";
+import Router from "../../main/components/Router";
 
 describe("Application", () => {
     it("renders Router", () => {

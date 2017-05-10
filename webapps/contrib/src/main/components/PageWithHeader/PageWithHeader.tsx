@@ -1,6 +1,6 @@
 import * as React from "react";
-import {Link, Location} from "simple-react-router";
-import {Logout} from "../Login/Logout";
+import { Link, Location } from "simple-react-router";
+import { Logout } from "../Login/Logout";
 
 const logo = require("./logo.png");
 const styles = require('./PageWithHeader.css');
@@ -14,7 +14,7 @@ export abstract class PageWithHeader<TLocationProps, TProps extends PageProperti
     render() {
         return <div>
             <header className={ styles.header }>
-                <img src={ logo } height="80" alt="VIMC"/>
+                <img src={ logo } height="80" alt="VIMC" />
                 <div className={ styles.siteTitle }>
                     <Link href="/">Contribution portal</Link>
                 </div>

@@ -1,5 +1,5 @@
-import * as React from 'react';
-import {PageProperties, PageWithHeader} from './PageWithHeader/PageWithHeader';
+import * as React from "react";
+import { PageProperties, PageWithHeader } from "./PageWithHeader/PageWithHeader";
 
 const spinner = require("./RemoteContentComponent/spinner.gif");
 const messages = require("../styles/messages.css");
@@ -23,7 +23,7 @@ export class LoadingPage extends PageWithHeader<undefined, Props, undefined> {
                 An error occurred: { this.props.errorMessage }
             </span>;
         } else {
-            return <img src={ spinner }/>;
+            return <img src={ spinner } />;
         }
     }
 }

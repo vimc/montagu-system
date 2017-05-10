@@ -1,9 +1,9 @@
-import * as React from 'react'
-import { connectToStores } from '../alt';
+import * as React from "react";
+import { connectToStores } from "../alt";
 
-import * as MainStore from '../stores/MainStore';
-import * as AuthStore from '../stores/AuthStore';
-import Router from './Router';
+import * as MainStore from "../stores/MainStore";
+import * as AuthStore from "../stores/AuthStore";
+import Router from "./Router";
 
 interface AppProps {
     auth: AuthStore.State,
@@ -14,6 +14,7 @@ export class ApplicationComponent extends React.Component<AppProps, undefined> {
     static getStores() {
         return [ MainStore.Store, AuthStore.Store ];
     }
+
     static getPropsFromStores(props: AppProps): AppProps {
         return {
             auth: AuthStore.Store.getState(),

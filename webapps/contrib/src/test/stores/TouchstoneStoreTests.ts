@@ -1,9 +1,9 @@
-import {expect} from "chai";
+import { expect } from "chai";
 import alt from "../../main/alt";
-import {mockTouchstone} from "../mocks";
+import { mockTouchstone } from "../mocks/mockModels";
 
-import {Store} from "../../main/stores/TouchstoneStore";
-import {touchstoneActions} from "../../main/actions/TouchstoneActions";
+import { Store } from "../../main/stores/TouchstoneStore";
+import { touchstoneActions } from "../../main/actions/TouchstoneActions";
 
 describe("TouchstoneStore", () => {
     beforeEach(() => {
@@ -21,7 +21,7 @@ describe("TouchstoneStore", () => {
     });
 
     it("update sets touchstones", () => {
-        const touchstones = [mockTouchstone({status: "finished"})];
+        const touchstones = [ mockTouchstone({ status: "finished" }) ];
         touchstoneActions.update(touchstones);
 
         const state = Store.getState();
@@ -49,7 +49,7 @@ describe("TouchstoneStore", () => {
             TouchstoneStore: {
                 errorMessage: "message",
                 ready: true,
-                touchstones: [mockTouchstone({})]
+                touchstones: [ mockTouchstone({}) ]
             }
         }));
         touchstoneActions.beginFetch();

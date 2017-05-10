@@ -1,11 +1,11 @@
 import * as React from "react";
-import {RemoteContentComponent} from "../RemoteContentComponent/RemoteContentComponent";
-import {Link} from "simple-react-router";
-import {connectToStores} from "../../alt";
-import {State, Store} from "../../stores/TouchstoneStore";
-import * as AuthStore from '../../stores/AuthStore';
-import {Touchstone} from "../../Models";
-import {responsibilityActions} from "../../actions/ResponsibilityActions";
+import { RemoteContentComponent } from "../RemoteContentComponent/RemoteContentComponent";
+import { Link } from "simple-react-router";
+import { connectToStores } from "../../alt";
+import { State, Store } from "../../stores/TouchstoneStore";
+import * as AuthStore from "../../stores/AuthStore";
+import { Touchstone } from "../../Models";
+import { responsibilityActions } from "../../actions/ResponsibilityActions";
 
 const commonStyles = require("../../styles/common.css");
 const styles = require("./TouchstoneList.css");
@@ -14,7 +14,7 @@ export class TouchstoneLink extends React.Component<Touchstone, undefined> {
     onClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
         responsibilityActions.setTouchstone(this.props);
         responsibilityActions.fetch({
-            groupId: AuthStore.Store.getState().modellingGroups[0],
+            groupId: AuthStore.Store.getState().modellingGroups[ 0 ],
             touchstoneId: this.props.id
         });
     };
@@ -24,7 +24,7 @@ export class TouchstoneLink extends React.Component<Touchstone, undefined> {
             href={ `/responsibilities/${this.props.id}/` }
             onClick={ this.onClick }>
             { this.props.description }
-            </Link>
+        </Link>
     }
 }
 
@@ -32,6 +32,7 @@ export class TouchstoneListComponent extends RemoteContentComponent<State> {
     static getStores() {
         return [ Store ];
     }
+
     static getPropsFromStores(props: State): State {
         return Store.getState();
     }

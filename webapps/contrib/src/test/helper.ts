@@ -1,7 +1,8 @@
-import { handleTeamCityEvent } from './TeamCityIntegration'
-import * as mocks from './mocks';
-import { sources } from '../main/sources/Sources';
-import 'isomorphic-fetch'
+import { setupVirtualDOM } from "./JSDomHelpers";
+import { handleTeamCityEvent } from "./TeamCityIntegration";
+import { mockSource } from "./mocks/mockRemote";
+import { sources } from "../main/sources/Sources";
+import "isomorphic-fetch";
 
 function fullTestName(test: TestContext): string {
     if (test != null) {
@@ -12,20 +13,21 @@ function fullTestName(test: TestContext): string {
 }
 
 before(() => {
-    mocks.mockSource(sources.diseases);
-    mocks.mockSource(sources.responsibilities);
-    mocks.mockSource(sources.touchstones);
+    setupVirtualDOM();
+    mockSource(sources.diseases);
+    mockSource(sources.responsibilities);
+    mockSource(sources.touchstones);
 });
 
-beforeEach(function() {    
+beforeEach(function () {
     handleTeamCityEvent('before', fullTestName(this.currentTest), null);
 });
-afterEach(function() {
+afterEach(function () {
     const testName: string = fullTestName(this.currentTest);
-    if (this.currentTest.state == "failed") {    
-        handleTeamCityEvent('failed', testName, { 
-            message: this.currentTest.err.toString(), 
-            details: this.currentTest.err.stack  
+    if (this.currentTest.state == "failed") {
+        handleTeamCityEvent('failed', testName, {
+            message: this.currentTest.err.toString(),
+            details: this.currentTest.err.stack
         });
     }
     handleTeamCityEvent('after', testName, null);
