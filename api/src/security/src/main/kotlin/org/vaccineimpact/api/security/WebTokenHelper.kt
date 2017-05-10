@@ -19,6 +19,8 @@ class WebTokenHelper
     val signatureConfiguration = RSASignatureConfiguration(keyPair)
     val generator = JwtGenerator<CommonProfile>(signatureConfiguration)
 
+    //val publicKey: String = Base64.getUrlEncoder().encodeToString(keyPair.public.encoded)
+
     fun generateToken(user: User): String
     {
         return generator.generate(claims(user))
@@ -30,23 +32,10 @@ class WebTokenHelper
                 "iss" to issuer,
                 "sub" to user.username,
                 "exp" to Date.from(Instant.now().plus(lifeSpan)),
-                "permissions" to user.permissions.joinToString(",")
+                "permissions" to user.permissions.joinToString(","),
+                "roles" to user.roles.joinToString(",")
         )
     }
-
-    /*fun verifyToken(token: String): MontaguToken
-    {
-        val decoded = verifier.verify(token)
-        if (decoded.issuer != issuer)
-        {
-            throw TokenValidationException("Issuer", issuer, decoded.issuer)
-        }
-        if (decoded.expiresAt < Date.from(Instant.now()))
-        {
-            throw TokenValidationException("Token has expired")
-        }
-        return MontaguToken(decoded.subject)
-    }*/
 
     private fun generateKeyPair(): KeyPair
     {

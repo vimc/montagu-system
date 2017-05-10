@@ -38,7 +38,7 @@ class WebTokenHelperTests : MontaguTests()
     @Test
     fun `can generate token`()
     {
-        val token = helper.generateToken(User(properties, permissions))
+        val token = helper.generateToken(User(properties, permissions, emptyList()))
 
         val verifier = MontaguTokenAuthenticator(helper)
         val claims = verifier.validateTokenAndGetClaims(token)
@@ -52,7 +52,7 @@ class WebTokenHelperTests : MontaguTests()
     @Test
     fun `token fails validation when issuer is wrong`()
     {
-        val claims = helper.claims(User(properties, permissions))
+        val claims = helper.claims(User(properties, permissions, emptyList()))
         val badToken = helper.generator.generate(claims.plus("iss" to "unexpected.issuer"))
         val verifier = MontaguTokenAuthenticator(helper)
         assertThat(verifier.validateToken(badToken)).isNull()
@@ -61,7 +61,7 @@ class WebTokenHelperTests : MontaguTests()
     @Test
     fun `token fails validation when token is old`()
     {
-        val claims = helper.claims(User(properties, permissions))
+        val claims = helper.claims(User(properties, permissions, emptyList()))
         val badToken = helper.generator.generate(claims.plus("exp" to Date.from(Instant.now())))
         val verifier = MontaguTokenAuthenticator(helper)
         assertThat(verifier.validateToken(badToken)).isNull()
@@ -71,7 +71,7 @@ class WebTokenHelperTests : MontaguTests()
     fun `token fails validation when token is signed by wrong key`()
     {
         val sauron = WebTokenHelper()
-        val evilToken = sauron.generateToken(User(properties, permissions))
+        val evilToken = sauron.generateToken(User(properties, permissions, emptyList()))
         val verifier = MontaguTokenAuthenticator(helper)
         assertThat(verifier.validateToken(evilToken)).isNull()
     }

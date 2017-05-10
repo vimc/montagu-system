@@ -16,7 +16,6 @@ import org.vaccineimpact.api.models.SuccessfulAuthentication
 import org.vaccineimpact.api.models.User
 import org.vaccineimpact.api.security.WebTokenHelper
 import spark.Spark.before
-import spark.Spark.options
 import spark.route.HttpMethod
 
 class AuthenticationController(private val tokenHelper: WebTokenHelper) : AbstractController()
