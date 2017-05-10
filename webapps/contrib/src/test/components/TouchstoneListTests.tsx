@@ -1,22 +1,17 @@
-import { setupVirtualDOM } from '../JSDomHelpers';
+import {setupVirtualDOM} from "../JSDomHelpers";
+import * as React from "react";
+import {expect} from "chai";
+import {mount, shallow} from "enzyme";
+import {mockTouchstone} from "../mocks";
+
+import {TouchstoneLink, TouchstoneListComponent} from "../../main/components/Touchstones/TouchstoneList";
+import * as TouchstoneStore from "../../main/stores/TouchstoneStore";
+import {Touchstone} from "../../main/Models";
 setupVirtualDOM();
 
-import * as React from 'react';
-import { expect } from 'chai';
-import { shallow, mount } from 'enzyme';
-import { mockTouchstone, mockSource } from '../mocks';
-import * as sinon from 'sinon';
-import { alt } from '../../main/alt';
-import * as actionHelpers from '../actionHelpers';
-
-import { TouchstoneListComponent, TouchstoneLink } from '../../main/components/Touchstones/TouchstoneList';
-import { State } from '../../main/stores/TouchstoneStore';
-import { Touchstone } from '../../main/Models';
-import { Link } from "simple-react-router";
-import { sources } from "../../main/sources/Sources";
 const styles = require("../../main/components/Touchstones/TouchstoneList.css");
 
-function makeStoreState(touchstones: Array<Touchstone>): State {
+function makeStoreState(touchstones: Array<Touchstone>): TouchstoneStore.State {
     return {
         ready: true,
         errorMessage: "",
@@ -34,8 +29,8 @@ describe('TouchstoneListComponent', () => {
 
         it("one Link per finished touchstone", () => {
             const touchstones = [
-                mockTouchstone({ id: "touchstone-1", description: "Description 1", status: "finished" }),
-                mockTouchstone({ id: "touchstone-2", description: "Description 2", status: "finished" })
+                mockTouchstone({id: "touchstone-1", description: "Description 1", status: "finished"}),
+                mockTouchstone({id: "touchstone-2", description: "Description 2", status: "finished"})
             ];
             const state = makeStoreState(touchstones);
             const rendered = shallow(<TouchstoneListComponent {...state} />);
@@ -58,20 +53,11 @@ describe('TouchstoneListComponent', () => {
         });
 
         it("link when there is an open touchstone", () => {
-            const touchstone = mockTouchstone({ id: "touchstone-1", description: "Description 1", status: "open" })
-            const state = makeStoreState([ touchstone ]);
+            const touchstone = mockTouchstone({id: "touchstone-1", description: "Description 1", status: "open"})
+            const state = makeStoreState([touchstone]);
             const rendered = mount(<TouchstoneListComponent {...state} />);
             const link = rendered.find(`.${styles.openTouchstone}`).find(TouchstoneLink);
             expect(link.props()).to.eql(touchstone);
         });
-    });
-});
-
-describe("TouchstoneLink", () => {
-    it("renders correctly", () => {
-        const touchstone = mockTouchstone({ id: "touchstone-1", description: "Description 1" });
-        const rendered = mount(<TouchstoneLink {...touchstone} />).find(Link);
-        expect(rendered.prop('href')).to.equal("/responsibilities/touchstone-1/");
-        expect(rendered.text()).to.equal("Description 1");
     });
 });

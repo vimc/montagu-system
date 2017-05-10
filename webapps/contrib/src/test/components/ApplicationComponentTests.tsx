@@ -8,41 +8,24 @@ import * as AuthStore from '../../main/stores/AuthStore';
 import { expect } from 'chai';
 
 import { ApplicationComponent } from '../../main/components/Application';
-import { LoadingPage } from '../../main/components/LoadingPage';
 import Router from '../../main/components/Router';
 
 describe("Application", () => {
-    it("renders LoadingPage when not ready", () => {
-        const main: MainStore.State = {
-            ready: false,
-            diseases: { loaded: false, content: null },
-            errorMessage: null
-        };
-        const auth: AuthStore.State = {
-            loggedIn: false,
-            username: null,
-            bearerToken: null,
-            permissions: [],
-            modellingGroups: []
-        };
-        const rendered = shallow(<ApplicationComponent main={ main } auth={ auth } />);
-        expect(rendered.find(LoadingPage)).has.length(1, "Expected LoadingPage to be rendered");
-    });
-
-    it("renders Router when ready", () => {
-        const main: MainStore.State = {
+    it("renders Router", () => {
+        const main = Object.assign(MainStore.initialState(), {
+            errorMessage: "message",
             ready: true,
-            diseases: { loaded: false, content: null },
-            errorMessage: null
-        };
-        const auth: AuthStore.State = {
-            loggedIn: false,
-            username: null,
-            bearerToken: null,
-            permissions: [],
-            modellingGroups: []
-        };
+        });
+        const auth = Object.assign(AuthStore.initialState(), {
+            loggedIn: true
+        });
         const rendered = shallow(<ApplicationComponent main={ main } auth={ auth } />);
-        expect(rendered.find(Router)).has.length(1, "Expected Router to be rendered");
+        const router = rendered.find(Router);
+        expect(router).has.length(1, "Expected Router to be rendered");
+        expect(router.props()).to.eql({
+            errorMessage: "message",
+            loaded: true,
+            loggedIn: true
+        });
     });
 });

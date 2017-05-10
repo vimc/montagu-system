@@ -29,32 +29,6 @@ describe("ResponsibilityStore", () => {
         });
     });
 
-    it("setTouchstone triggers fetch", (done: DoneCallback) => {
-        const touchstone = mocks.mockTouchstone({});
-        const spy = actionHelpers.dispatchSpy();
-        mocks.mockSource(sources.responsibilities);
-
-        responsibilityActions.setTouchstone(touchstone);
-        const state = Store.getState();
-        expect(state).to.eql({
-            errorMessage: null,
-            ready: false,
-            currentTouchstone: touchstone,
-            responsibilitySet: null,
-            currentDiseaseId: null
-        });
-
-        actionHelpers.expectOrderedActions(spy, [
-            { action: "ResponsibilityActions.setTouchstone", payload: touchstone }
-        ], 0);
-
-        // Yield test thread so that deferred action gets dispatched
-        setTimeout(() => {
-            actionHelpers.expectFetchActions(spy, "ResponsibilityActions", 1);
-            done();
-        });
-    });
-
     it("updateResponsibilities sets responsibility set", () => {
         const responsibilitySet = mocks.mockResponsibilitySet({});
         responsibilityActions.updateResponsibilities(responsibilitySet);

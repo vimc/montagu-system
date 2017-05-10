@@ -19,7 +19,6 @@ class TouchstoneStore extends AbstractStore<State> {
 
     constructor() {
         super();
-        this.initialState();
         this.bindListeners({
             handleBeginFetch: touchstoneActions.beginFetch,
             handleUpdate: touchstoneActions.update,
@@ -27,10 +26,12 @@ class TouchstoneStore extends AbstractStore<State> {
         });
     }
 
-    initialState() {
-        this.touchstones = [];
-        this.errorMessage = null;
-        this.ready = false;
+    initialState(): State {
+        return {
+            touchstones: [],
+            errorMessage: null,
+            ready: false,
+        };
     }
 
     handleBeginFetch() {

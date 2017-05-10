@@ -15,6 +15,16 @@ export interface State {
 
 interface AuthStoreInterface extends AltJS.AltStore<State> {}
 
+export function initialState(): State {
+    return {
+        loggedIn: false,
+        username: null,
+        bearerToken: null,
+        permissions: [],
+        modellingGroups: []
+    };
+}
+
 class AuthStore extends AbstractStore<State> {
     loggedIn: boolean;
     username: string;
@@ -24,15 +34,14 @@ class AuthStore extends AbstractStore<State> {
 
     constructor() {
         super();
-        this.loggedIn = false;
-        this.username = null;
-        this.bearerToken = null;
-        this.permissions = [];
-        this.modellingGroups = [];
         this.bindListeners({
             handleLogIn: authActions.logIn,
             handleLogOut: authActions.logOut
         })
+    }
+
+    initialState(): State {
+        return initialState();
     }
 
     handleLogIn(bearerToken: string) {

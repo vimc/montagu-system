@@ -25,7 +25,6 @@ class ResponsibilityStore extends AbstractStore<State> {
 
     constructor() {
         super();
-        this.initialState();
         this.bindListeners({
             handleSetTouchstone: responsibilityActions.setTouchstone,
             handleFetch: responsibilityActions.beginFetch,
@@ -35,12 +34,14 @@ class ResponsibilityStore extends AbstractStore<State> {
         });
     }
 
-    initialState() {
-        this.currentTouchstone = null;
-        this.responsibilitySet = null;
-        this.currentDiseaseId = null;
-        this.errorMessage = null;
-        this.ready = false;
+    initialState(): State {
+        return {
+            currentTouchstone: null,
+            responsibilitySet: null,
+            currentDiseaseId: null,
+            errorMessage: null,
+            ready: false
+        };
     }
 
     handleSetTouchstone(touchstone: Touchstone) {

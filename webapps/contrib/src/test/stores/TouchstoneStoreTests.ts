@@ -1,10 +1,9 @@
-import { expect } from 'chai';
-import alt from '../../main/alt';
-import { mockTouchstone } from '../mocks';
+import {expect} from "chai";
+import alt from "../../main/alt";
+import {mockTouchstone} from "../mocks";
 
-import { Store } from '../../main/stores/TouchstoneStore';
-import { touchstoneActions } from '../../main/actions/TouchstoneActions';
-import { settings } from '../../main/Settings';
+import {Store} from "../../main/stores/TouchstoneStore";
+import {touchstoneActions} from "../../main/actions/TouchstoneActions";
 
 describe("TouchstoneStore", () => {
     beforeEach(() => {
@@ -17,12 +16,12 @@ describe("TouchstoneStore", () => {
         expect(state).to.eql({
             errorMessage: null,
             ready: false,
-            touchstones: null
+            touchstones: []
         });
     });
 
     it("update sets touchstones", () => {
-        const touchstones = [ mockTouchstone({ status: "finished" }) ];
+        const touchstones = [mockTouchstone({status: "finished"})];
         touchstoneActions.update(touchstones);
 
         const state = Store.getState();
@@ -40,7 +39,7 @@ describe("TouchstoneStore", () => {
         expect(state).to.eql({
             errorMessage: "message",
             ready: false,
-            touchstones: null
+            touchstones: []
         });
     });
 
@@ -50,7 +49,7 @@ describe("TouchstoneStore", () => {
             TouchstoneStore: {
                 errorMessage: "message",
                 ready: true,
-                touchstones: [ mockTouchstone({}) ]
+                touchstones: [mockTouchstone({})]
             }
         }));
         touchstoneActions.beginFetch();
@@ -59,7 +58,7 @@ describe("TouchstoneStore", () => {
         expect(state).to.eql({
             errorMessage: null,
             ready: false,
-            touchstones: null
+            touchstones: []
         });
     });
 });
