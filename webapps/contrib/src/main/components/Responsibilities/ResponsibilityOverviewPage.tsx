@@ -1,11 +1,11 @@
 import * as React from "react";
-import { Link, Location } from 'simple-react-router';
-import {PageProperties, PageWithHeader} from '../PageWithHeader/PageWithHeader';
-import { ResponsibilityList } from './ResponsibilityList'
-import * as TouchstoneStore from '../../stores/TouchstoneStore';
-import { Touchstone } from '../../Models'
-import { responsibilityActions } from '../../actions/ResponsibilityActions';
+import {Link} from "simple-react-router";
+import {PageProperties, PageWithHeader} from "../PageWithHeader/PageWithHeader";
+import {ResponsibilityList} from "./ResponsibilityList";
+import * as TouchstoneStore from "../../stores/TouchstoneStore";
+import {Touchstone} from "../../Models";
 import {isUndefined} from "util";
+import {settings} from "../../Settings";
 
 const headerStyles = require("../PageWithHeader/PageWithHeader.css");
 
@@ -30,7 +30,7 @@ export class ResponsibilityOverviewPage
     }
 
     onChange = (state: TouchstoneStore.State) => {
-        this.setState(state);        
+        this.setState(state);
     };
 
     touchstone(): Touchstone {
@@ -57,14 +57,21 @@ export class ResponsibilityOverviewPage
             </span>
         </span>;
     }
+
     renderPageContent() {
-        return <div>          
+        const supportEmail = `mailto:${settings.supportContact}`;
+        return <div>
             On this page you can:
             <ol>
-                <li>See an overview of which scenarios your group are responsible for providing impact estimates for. If we have the wrong scenarios listed, please contact us here.</li>
+                <li>
+                    See an overview of which scenarios your group are responsible for providing impact estimates for.
+                    If we have the wrong scenarios listed, please contact us <a href={ supportEmail }>here</a>.
+                </li>
                 <li>Download demographic data which applies to all scenarios</li>
                 <li>Download coverage data for each scenario</li>
-                <li>Upload impact estimates for each scenario, and review any problems the system has detected in the uploaded data.</li>
+                <li>Upload impact estimates for each scenario, and review any problems the system has detected in the
+                    uploaded data.
+                </li>
                 <li>Track progress towards providing impact estimates for all your scenarios</li>
             </ol>
             <ResponsibilityList />

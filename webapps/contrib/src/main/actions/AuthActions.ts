@@ -4,6 +4,8 @@ import {AbstractActions} from "./AbstractActions";
 interface Actions {
     logIn(token: string): string;
     logOut(): boolean;
+    logInForbidden(): boolean;
+    logInAllowed(): boolean;
 }
 
 class AuthActions extends AbstractActions implements Actions {
@@ -11,6 +13,12 @@ class AuthActions extends AbstractActions implements Actions {
         return token;
     }
     logOut(): boolean {
+        return true;
+    }
+    logInForbidden(): boolean {
+        return true;
+    }
+    logInAllowed(): boolean {
         return true;
     }
 }

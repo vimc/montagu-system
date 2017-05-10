@@ -6,6 +6,7 @@ import { mainActions } from '../actions/MainActions';
 import { touchstoneActions } from '../actions/TouchstoneActions';
 import { authActions } from '../actions/AuthActions';
 import { Disease } from '../Models'
+import { settings } from '../Settings';
 
 export interface State extends RemoteContent {
     diseases: Loadable<Array<Disease>>;
@@ -48,7 +49,8 @@ class MainStore extends AbstractStore<State> {
         this.bindListeners({
             handleDiseases: mainActions.receiveDiseases,
             handleFetchFailed: mainActions.fetchFailed,
-            handleLogIn: authActions.logIn
+            handleLogIn: authActions.logInAllowed,
+            handleLogInForbidden: authActions.logInForbidden,
         });
         this.exportPublicMethods({
             getDiseaseById: id => this.diseases.content[id]
@@ -66,6 +68,10 @@ class MainStore extends AbstractStore<State> {
     }
     handleLogIn(token: string) {
         (mainActions.fetch as any).defer({});
+    }
+    handleLogInForbidden() {
+        const support = settings.supportContact;
+        this.errorMessage = `Your account has been deactivated. Please contact ${support} for help.`;
     }
 }
 
