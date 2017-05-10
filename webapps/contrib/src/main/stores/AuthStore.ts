@@ -43,10 +43,18 @@ class AuthStore extends AbstractStore<State> {
             .filter((x: Role) => x.name == "member" && x.scope.prefix == "modelling-group")
             .map((x: Role) => x.scope.id);
 
-        if (this.permissions.some(x => x == "*/can-login")) {
+        const accountActive = this.permissions.some(x => x == "*/can-login");
+        const modeller = this.modellingGroups.length > 0;
+
+        if (accountActive && modeller) {
             (authActions.logInAllowed as any).defer();
         } else {
-            (authActions.logInForbidden as any).defer();
+            const action: any = authActions.logInForbidden;
+            if (!accountActive) {
+                action.defer("Your account has been deactivated");
+            } else {
+                action.defer("Only members of modelling groups can log into the contribution portal");
+            }
         }
 
         console.log("Saved bearer token");

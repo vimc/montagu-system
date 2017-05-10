@@ -69,9 +69,9 @@ class MainStore extends AbstractStore<State> {
     handleLogIn(token: string) {
         (mainActions.fetch as any).defer({});
     }
-    handleLogInForbidden() {
+    handleLogInForbidden(reason: string) {
         const support = settings.supportContact;
-        this.errorMessage = `Your account has been deactivated. Please contact ${support} for help.`;
+        this.errorMessage = `${reason}. Please contact ${support} for help.`;
     }
 }
 
