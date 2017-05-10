@@ -4,7 +4,8 @@ import java.sql.Timestamp
 
 data class User(
         val properties: UserProperties,
-        val permissions: List<ReifiedPermission>
+        val permissions: List<ReifiedPermission>,
+        val roles: List<ReifiedRole>
 ): UserPropertiesInterface by properties
 
 interface UserPropertiesInterface {

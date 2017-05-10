@@ -6,3 +6,11 @@ data class Role(
         val scopePrefix: String?,
         val description: String
 )
+
+data class ReifiedRole(
+        val name: String,
+        val scope: Scope
+)
+{
+    override fun toString() = "$scope/$name"
+}
