@@ -31,9 +31,9 @@ fun JooqContext.addTouchstoneStatus(id: String, name: String? = null)
 fun JooqContext.addTouchstone(
         name: String,
         version: Int,
-        description: String,
-        status: String,
-        yearRange: IntRange,
+        description: String = "Description",
+        status: String = "open",
+        yearRange: IntRange = 1900..2000,
         addName: Boolean = false,
         addStatus: Boolean = false)
 {
@@ -59,6 +59,30 @@ fun JooqContext.addTouchstone(
 fun JooqContext.addDisease(id: String, name: String? = null)
 {
     this.dsl.newRecord(DISEASE).apply {
+        this.id = id
+        this.name = name ?: id
+    }.store()
+}
+
+fun JooqContext.addVaccine(id: String, name: String? = null)
+{
+    this.dsl.newRecord(VACCINE).apply {
+        this.id = id
+        this.name = name ?: id
+    }.store()
+}
+
+fun JooqContext.addSupportLevel(id: String, name: String? = null)
+{
+    this.dsl.newRecord(GAVI_SUPPORT_LEVEL).apply {
+        this.id = id
+        this.name = name ?: id
+    }.store()
+}
+
+fun JooqContext.addActivityType(id: String, name: String? = null)
+{
+    this.dsl.newRecord(ACTIVITY_TYPE).apply {
         this.id = id
         this.name = name ?: id
     }.store()
@@ -131,4 +155,50 @@ fun JooqContext.addResponsibility(responsibilitySetId: Int, touchstone: String, 
 {
     val scenarioId = this.addScenario(touchstone, scenarioDescription)
     return this.addResponsibility(responsibilitySetId, scenarioId)
+}
+
+fun JooqContext.addCoverageSet(
+        touchstoneId: String,
+        name: String,
+        vaccine: String,
+        supportLevel: String,
+        activityType: String,
+        addVaccine: Boolean = false,
+        addSupportLevel: Boolean = false,
+        addActivityType: Boolean = false
+): Int
+{
+    if (addVaccine)
+    {
+        this.addVaccine(vaccine)
+    }
+    if (addSupportLevel)
+    {
+        this.addSupportLevel(supportLevel)
+    }
+    if (addActivityType)
+    {
+        this.addActivityType(activityType)
+    }
+
+    val record = this.dsl.newRecord(COVERAGE_SET).apply {
+        this.touchstone = touchstoneId
+        this.name = name
+        this.vaccine = vaccine
+        this.gaviSupportLevel = supportLevel
+        this.activityType = activityType
+    }
+    record.store()
+    return record.id
+}
+
+fun JooqContext.addCoverageSetToScenario(scenarioId: Int, coverageSetId: Int, order: Int): Int
+{
+    val record = this.dsl.newRecord(SCENARIO_COVERAGE_SET).apply {
+        this.scenario = scenarioId
+        this.coverageSet = coverageSetId
+        this.order = order
+    }
+    record.store()
+    return record.id
 }
