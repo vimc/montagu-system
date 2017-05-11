@@ -1,7 +1,8 @@
 import { expect } from 'chai';
 import { alt } from "../../main/alt";
 import { authActions } from "../../main/actions/AuthActions";
-import { sampleToken } from "../mocks/mocks";
+import { dispatchSpy, expectOrderedActions } from "../actionHelpers";
+const jwt = require("jsonwebtoken");
 
 import * as AuthStore from '../../main/stores/AuthStore';
 import * as MainStore from '../../main/stores/MainStore';
@@ -12,14 +13,19 @@ describe("AuthStore", () => {
     });
 
     it("handles logIn event", () => {
-        authActions.logIn(sampleToken);
-        // This state is all encoded within the sampleToken
+        const token = jwt.sign({
+            sub: "test.user",
+            permissions: "p1,p2",
+            roles: "r1,modelling-group:test.group/member"
+        }, 'secret');
+        authActions.logIn(token);
+
         const expected: AuthStore.State = {
             loggedIn: true,
             modellingGroups: [ "test.group" ],
             permissions: [ "p1", "p2" ],
             username: "test.user",
-            bearerToken: sampleToken
+            bearerToken: token
         };
         expect(AuthStore.Store.getState()).to.eql(expected);
     });

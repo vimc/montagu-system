@@ -1,6 +1,7 @@
 import { expect } from "chai";
 import alt from "../../main/alt";
 import { mockDisease } from "../mocks/mockModels";
+const jwt = require("jsonwebtoken");
 
 import { Store } from "../../main/stores/MainStore";
 import { mainActions } from "../../main/actions/MainActions";
@@ -51,11 +52,39 @@ describe("MainStore", () => {
         });
     });
 
-    it("logInForbidden sets errorMessage", () => {
-        authActions.logInForbidden("REASON");
+    it("logIn does not set errorMessage if user is active modeller", () => {
+        const token = jwt.sign({
+            sub: "user",
+            permissions: "*/can-login",
+            roles: "modelling-group:group/member"
+        }, "secret");
+        authActions.logIn(token);
 
         const state = Store.getState();
-        expect(state.errorMessage).to.contain("REASON");
-        expect(state.errorMessage).to.contain("Please contact");
+        expect(state.errorMessage).to.be.null;
+    });
+
+    it("logIn does set errorMessage if user is inactive", () => {
+        const token = jwt.sign({
+            sub: "user",
+            permissions: "",
+            roles: "modelling-group:group/member"
+        }, "secret");
+        authActions.logIn(token);
+
+        const state = Store.getState();
+        expect(state.errorMessage).to.contain("Your account has been deactivated");
+    });
+
+    it("logIn does set errorMessage if user is not a modeller", () => {
+        const token = jwt.sign({
+            sub: "user",
+            permissions: "*/can-login",
+            roles: ""
+        }, "secret");
+        authActions.logIn(token);
+
+        const state = Store.getState();
+        expect(state.errorMessage).to.contain("Only members of modelling groups");
     });
 });

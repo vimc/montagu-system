@@ -4,7 +4,7 @@ import { RemoteContent } from "./RemoteContent";
 import { AbstractStore } from "./AbstractStore";
 import { mainActions } from "../actions/MainActions";
 import { touchstoneActions } from "../actions/TouchstoneActions";
-import { authActions } from "../actions/AuthActions";
+import { authActions, LogInProperties } from "../actions/AuthActions";
 import { Disease } from "../Models";
 import { settings } from "../Settings";
 import { Loadable } from "./Loadable";
@@ -51,7 +51,7 @@ class MainStore extends AbstractStore<State> {
         this.bindListeners({
             handleDiseases: mainActions.receiveDiseases,
             handleFetchFailed: mainActions.fetchFailed,
-            handleLogInForbidden: authActions.logInForbidden,
+            handleLogIn: authActions.logIn,
         });
         this.exportPublicMethods({
             getDiseaseById: id => this.diseases.content[ id ]
@@ -74,9 +74,18 @@ class MainStore extends AbstractStore<State> {
         this.errorMessage = errorMessage;
     }
 
-    handleLogInForbidden(reason: string) {
-        const support = settings.supportContact;
-        this.errorMessage = `${reason}. Please contact ${support} for help.`;
+    handleLogIn(props: LogInProperties) {
+        if (!props.isAccountActive || !props.isModeller) {
+            let reason: string;
+            if (!props.isAccountActive) {
+                reason = "Your account has been deactivated";
+            } else {
+                reason = "Only members of modelling groups can log into the contribution portal";
+            }
+
+            const support = settings.supportContact;
+            this.errorMessage = `${reason}. Please contact ${support} for help.`;
+        }
     }
 }
 

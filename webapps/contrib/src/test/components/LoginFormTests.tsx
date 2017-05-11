@@ -7,8 +7,9 @@ import { mockFormProperties, numberOfSubmissionActions } from "../mocks/mockForm
 import { mockFetcher, promiseJSON } from "../mocks/mockRemote";
 import { ValidationError } from "../../main/components/Login/ValidationError";
 import * as actionHelpers from "../actionHelpers";
-import { mockEvent, sampleToken } from "../mocks/mocks";
+import { mockEvent } from "../mocks/mocks";
 import { Reform } from "alt-reform";
+const jwt = require("jsonwebtoken");
 
 function checkSubmit(
     form: Reform<LoginFields>,
@@ -50,8 +51,13 @@ describe("LoginForm", () => {
     });
 
     it("authenticates when form is submitted", (done: DoneCallback) => {
+        const token = jwt.sign({
+            sub: "username",
+            permissions: "",
+            roles: ""
+        }, "secret");
         mockFetcher(new Promise<Response>(function (resolve, reject) {
-            resolve(promiseJSON({ access_token: sampleToken }));
+            resolve(promiseJSON({ access_token: token }));
         }));
         loginForm.change({
             email: "an@email",
@@ -60,7 +66,7 @@ describe("LoginForm", () => {
         checkSubmit(loginForm, done, spy => {
             actionHelpers.expectOrderedActions(
                 spy,
-                [ { action: "AuthActions.logIn", payload: sampleToken } ],
+                [ { action: "AuthActions.logIn" } ],
                 numberOfSubmissionActions
             );
             actionHelpers.expectFetchActions(spy, "MainActions", numberOfSubmissionActions + 1);

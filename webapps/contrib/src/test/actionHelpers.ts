@@ -4,7 +4,8 @@ import { alt } from "../main/alt";
 
 export interface ActionExpectation {
     action: string,
-    payload: any
+    // Leave payload off to not make an assertion about it
+    payload?: any
 }
 
 export function expectOrderedActions(spy: sinon.SinonSpy, expectations: Array<ActionExpectation>, startIndex: number) {
@@ -13,7 +14,9 @@ export function expectOrderedActions(spy: sinon.SinonSpy, expectations: Array<Ac
         expect(event).is.not.equal(undefined, `Expected this ${startIndex + index}th event: ${value.action}`);
         if (typeof event[0] == "string") {
             expect(event[0]).to.equal(value.action);
-            expect(event[1]).to.eql(value.payload);
+            if (value.hasOwnProperty("payload")) {
+                expect(event[1]).to.eql(value.payload);
+            }
         } else {
             expect(event[0]).to.eql({
                 type: value.action,
