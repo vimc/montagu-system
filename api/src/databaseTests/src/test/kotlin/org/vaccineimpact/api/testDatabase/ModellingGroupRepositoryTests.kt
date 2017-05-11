@@ -9,9 +9,8 @@ abstract class ModellingGroupRepositoryTests : RepositoryTests<ModellingGroupRep
 {
     override fun makeRepository(): ModellingGroupRepository
     {
-        return JooqModellingGroupRepository(
-                { JooqTouchstoneRepository() },
-                { JooqScenarioRepository() }
-        )
+        val scenarioRepository = { JooqScenarioRepository() }
+        val touchstoneRepository = { JooqTouchstoneRepository(scenarioRepository) }
+        return JooqModellingGroupRepository(touchstoneRepository, scenarioRepository)
     }
 }

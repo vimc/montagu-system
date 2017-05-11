@@ -22,8 +22,8 @@ class MontaguApi
     {
         val simpleObjectsRepository = { JooqSimpleObjectsRepository() }
         val userRepository = { JooqUserRepository() }
-        val touchstoneRepository = { JooqTouchstoneRepository() }
         val scenarioRepository = { JooqScenarioRepository() }
+        val touchstoneRepository = { JooqTouchstoneRepository(scenarioRepository) }
         val modellingGroupRepository = { JooqModellingGroupRepository(touchstoneRepository, scenarioRepository) }
         return Repositories(
                 simpleObjectsRepository,

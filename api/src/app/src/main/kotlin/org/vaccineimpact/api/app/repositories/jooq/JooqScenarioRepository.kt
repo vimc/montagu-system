@@ -10,12 +10,12 @@ import org.vaccineimpact.api.db.fromJoinPath
 
 class JooqScenarioRepository : JooqRepository(), ScenarioRepository
 {
-    override fun getScenarios(ids: Iterable<String>): List<Scenario>
+    override fun getScenarios(descriptionIds: Iterable<String>): List<Scenario>
     {
         return dsl.select(SCENARIO_DESCRIPTION.fieldsAsList())
                 .select(SCENARIO.TOUCHSTONE)
                 .fromJoinPath(SCENARIO_DESCRIPTION, SCENARIO)
-                .where(SCENARIO_DESCRIPTION.ID.`in`(ids.toList()))
+                .where(SCENARIO_DESCRIPTION.ID.`in`(descriptionIds.toList()))
                 .fetch()
                 .groupBy { it[SCENARIO_DESCRIPTION.ID] }
                 .map { mapScenario(it.value) }

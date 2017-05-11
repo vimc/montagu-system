@@ -2,17 +2,16 @@ package org.vaccineimpact.api.app.controllers
 
 import org.vaccineimpact.api.app.ActionContext
 import org.vaccineimpact.api.app.controllers.endpoints.SecuredEndpoint
+import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
-import org.vaccineimpact.api.models.ReifiedPermission
-import org.vaccineimpact.api.models.Scope
-import org.vaccineimpact.api.models.Touchstone
-import org.vaccineimpact.api.models.TouchstoneStatus
+import org.vaccineimpact.api.models.*
 
 class TouchstoneController(private val db: () -> TouchstoneRepository) : AbstractController()
 {
     override val urlComponent: String = "/touchstones"
     override val endpoints = listOf(
-            SecuredEndpoint("/", this::getTouchstones, listOf("*/touchstones.read"))
+            SecuredEndpoint("/", this::getTouchstones, listOf("*/touchstones.read")),
+            SecuredEndpoint("/:touchstone-id/scenarios", this::getScenarios, listOf("*/touchstones.read", "*/scenarios.read", "*/coverage.read"))
     )
 
     fun getTouchstones(context: ActionContext): List<Touchstone>
@@ -24,4 +23,13 @@ class TouchstoneController(private val db: () -> TouchstoneRepository) : Abstrac
         }
         return touchstones.toList()
     }
+
+    fun getScenarios(context: ActionContext): List<ScenarioAndCoverageSets>
+    {
+        val touchstoneId = touchstoneId(context)
+        val filterParameters = ScenarioFilterParameters.fromContext(context)
+        return db().use { it.scenarios(touchstoneId, filterParameters) }
+    }
+
+    private fun touchstoneId(context: ActionContext): String = context.params(":touchstone-id")
 }
