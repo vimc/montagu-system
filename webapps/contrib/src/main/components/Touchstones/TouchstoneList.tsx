@@ -1,19 +1,30 @@
 import * as React from "react";
-import { RemoteContentComponent } from '../RemoteContentComponent/RemoteContentComponent';
-import { RemoteContent }  from '../../stores/RemoteContent';
+import { RemoteContentComponent } from "../RemoteContentComponent/RemoteContentComponent";
 import { Link } from "simple-react-router";
-import { connectToStores } from '../../alt';
-import { State, Store } from '../../stores/TouchstoneStore';
-import { Touchstone } from '../../Models'
-import { touchstoneActions } from '../../actions/TouchstoneActions';
+import { connectToStores } from "../../alt";
+import { State, Store } from "../../stores/TouchstoneStore";
+import * as AuthStore from "../../stores/AuthStore";
+import { Touchstone } from "../../Models";
+import { responsibilityActions } from "../../actions/ResponsibilityActions";
 
-const messageStyles = require("../../styles/messages.css");
 const commonStyles = require("../../styles/common.css");
 const styles = require("./TouchstoneList.css");
 
 export class TouchstoneLink extends React.Component<Touchstone, undefined> {
+    onClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+        responsibilityActions.setTouchstone(this.props);
+        responsibilityActions.fetch({
+            groupId: AuthStore.Store.getState().modellingGroups[ 0 ],
+            touchstoneId: this.props.id
+        });
+    };
+
     render() {
-        return <Link href={ `/responsibilities/${this.props.id}/` }>{ this.props.description }</Link>
+        return <Link
+            href={ `/responsibilities/${this.props.id}/` }
+            onClick={ this.onClick }>
+            { this.props.description }
+        </Link>
     }
 }
 
@@ -21,6 +32,7 @@ export class TouchstoneListComponent extends RemoteContentComponent<State> {
     static getStores() {
         return [ Store ];
     }
+
     static getPropsFromStores(props: State): State {
         return Store.getState();
     }
@@ -28,7 +40,7 @@ export class TouchstoneListComponent extends RemoteContentComponent<State> {
     renderFinished(content: State): JSX.Element {
         const finished = content.touchstones.filter(x => x.status != "open");
         if (finished.length > 0) {
-            const items = finished.map((touchstone: Touchstone) => 
+            const items = finished.map((touchstone: Touchstone) =>
                 <li key={ touchstone.id}>
                     <TouchstoneLink { ...touchstone } />
                 </li>

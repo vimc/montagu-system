@@ -1,8 +1,9 @@
 import Alt = require("alt");
 
 export abstract class AbstractActions implements AltJS.ActionsClass {
-    constructor(alt:AltJS.Alt) {
-  
+    constructor(alt: AltJS.Alt) {
+
     }
-    dispatch: (...payload: Array<any>) => void;    
+
+    dispatch: (...payload: Array<any>) => void;
 }

@@ -1,25 +1,32 @@
-import * as React from 'react'
-import { connectToStores } from '../alt';
+import * as React from "react";
+import { connectToStores } from "../alt";
 
-import { State, Store } from '../stores/MainStore';
-import { mainActions } from '../actions/MainActions';
-import Router from './Router';
-import { LoadingPage } from './LoadingPage';
+import * as MainStore from "../stores/MainStore";
+import * as AuthStore from "../stores/AuthStore";
+import Router from "./Router";
 
-export class ApplicationComponent extends React.Component<State, undefined> {
+interface AppProps {
+    auth: AuthStore.State,
+    main: MainStore.State
+}
+
+export class ApplicationComponent extends React.Component<AppProps, undefined> {
     static getStores() {
-        return [ Store ];
+        return [ MainStore.Store, AuthStore.Store ];
     }
-    static getPropsFromStores(props: State): State {
-        return Store.getState();
+
+    static getPropsFromStores(props: AppProps): AppProps {
+        return {
+            auth: AuthStore.Store.getState(),
+            main: MainStore.Store.getState()
+        };
     }
 
     render() {
-        if (this.props.ready) {
-            return <Router />
-        } else {
-            return <LoadingPage />;
-        }
+        return <Router
+            errorMessage={ this.props.main.errorMessage }
+            loggedIn={ this.props.auth.loggedIn }
+            loaded={ this.props.main.ready } />;
     }
 }
 

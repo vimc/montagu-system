@@ -13,7 +13,7 @@
     left: 280px;
     font-family: header;
     font-size: 24pt;
-    font-variant-caps: small-caps; 
+    font-variant-caps: small-caps;
 }
 
 :local(.siteTitle) a, :local(.siteTitle) a:visited, :local(.siteTitle) a:hover {

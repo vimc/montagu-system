@@ -1,4 +1,4 @@
-import * as React from 'react';
+import * as React from "react";
 
 export interface Option {
     value: string;
@@ -13,7 +13,7 @@ export interface OptionList {
 
 export class OptionSelector extends React.Component<OptionList, undefined> {
     render() {
-        const options = this.props.options.map(option => 
+        const options = this.props.options.map(option =>
             <option key={ option.value } value={ option.value }>
                 { option.text }
             </option>

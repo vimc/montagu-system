@@ -1,15 +1,13 @@
-import { setupVirtualDOM } from '../JSDomHelpers';
-setupVirtualDOM();
+import * as React from "react";
+import { expect } from "chai";
+import { shallow, ShallowWrapper } from "enzyme";
+import { mockLocation } from "../mocks/mocks";
 
-import * as React from 'react';
-import { expect } from 'chai';
-import { shallow, ShallowWrapper } from 'enzyme';
-import { mockLocation } from '../mocks';
+import { PageProperties, PageWithHeader } from "../../main/components/PageWithHeader/PageWithHeader";
 
-import { PageWithHeader } from '../../main/components/PageWithHeader/PageWithHeader';
 const styles = require('../../main/components/PageWithHeader/PageWithHeader.css');
 
-class DummyPage extends PageWithHeader<undefined, undefined> {
+class DummyPage extends PageWithHeader<undefined, PageProperties<undefined>, undefined> {
     title(): JSX.Element {
         return <span>Elbereth</span>;
     }

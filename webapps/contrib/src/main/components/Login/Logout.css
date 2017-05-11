@@ -1,0 +1,9 @@
+:local(.logout) {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: white;
+}
+:local(.logout) a, :local(.logout) a:visited, :local(.logout) a:hover {
+    color: inherit;
+}

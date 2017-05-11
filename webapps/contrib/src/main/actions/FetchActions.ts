@@ -1,7 +1,7 @@
-import { AbstractActions } from './AbstractActions';
-import { Result } from '../Models';
+import { AbstractActions } from "./AbstractActions";
+import { Result } from "../Models";
 
-export interface FetchActionsInterface<TFetchParameters> {    
+export interface FetchActionsInterface<TFetchParameters> {
     fetch(parameters: TFetchParameters): (dispatch: any) => any;
     beginFetch(): any;
     fetchFailed(errorMessage: string): string;
@@ -9,6 +9,7 @@ export interface FetchActionsInterface<TFetchParameters> {
 
 export abstract class FetchActions<TFetchParameters, TModel> extends AbstractActions {
     abstract doFetch(parameters: TFetchParameters): Promise<Response>;
+
     abstract receivedFetchedData(data: TModel): boolean;
 
     fetch(parameters: TFetchParameters): (dispatch: any) => any {
@@ -16,8 +17,11 @@ export abstract class FetchActions<TFetchParameters, TModel> extends AbstractAct
             dispatch();
             this.beginFetch();
             const promise = this.doFetch(parameters);
-            handleResponse(promise, 
-                data => this.receivedFetchedData(<TModel>(data)),
+            handleResponse(promise,
+                data => {
+                    console.log("Received fetched data");
+                    this.receivedFetchedData(<TModel>(data));
+                },
                 error => this.fetchFailed(error)
             );
         };
@@ -37,21 +41,20 @@ function handleResponse(promise: Promise<Response>, success: (data: any) => void
     promise.then((response: Response) => {
         return response.json();
     })
-    .then((response: any) => {
-        const apiResponse = <Result>response;
-        switch (apiResponse.status)
-        {
-            case "success":
-                success(apiResponse.data);
-                break;
-            case "failure":
-                failure(apiResponse.errors[0].message);
-                break;
-            default:
-                failure("The server response was not correctly formatted: " + response.toString());
-        }
-    })
-    .catch((errorMessage: string) => {
-        failure(errorMessage);
-    });
+        .then((response: any) => {
+            const apiResponse = <Result>response;
+            switch (apiResponse.status) {
+                case "success":
+                    success(apiResponse.data);
+                    break;
+                case "failure":
+                    failure(apiResponse.errors[ 0 ].message);
+                    break;
+                default:
+                    failure("The server response was not correctly formatted: " + response.toString());
+            }
+        })
+        .catch((errorMessage: string) => {
+            failure(errorMessage);
+        });
 }

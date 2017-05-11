@@ -1,7 +1,7 @@
-import alt from '../alt';
-import { FetchActions, FetchActionsInterface } from './FetchActions';
-import { sources, NoParameters } from '../sources/Sources';
-import { Disease } from '../Models';
+import alt from "../alt";
+import { FetchActions, FetchActionsInterface } from "./FetchActions";
+import { NoParameters, sources } from "../sources/Sources";
+import { Disease } from "../Models";
 
 interface Actions extends FetchActionsInterface<NoParameters> {
     receiveDiseases(diseases: Array<Disease>): Array<Disease>;

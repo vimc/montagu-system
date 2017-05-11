@@ -1,22 +1,15 @@
-import { setupVirtualDOM } from '../JSDomHelpers';
-setupVirtualDOM();
+import * as React from "react";
+import { expect } from "chai";
+import { mount, shallow } from "enzyme";
+import { mockTouchstone } from "../mocks/mockModels";
 
-import * as React from 'react';
-import { expect } from 'chai';
-import { shallow, mount } from 'enzyme';
-import { mockTouchstone, mockSource } from '../mocks';
-import * as sinon from 'sinon';
-import { alt } from '../../main/alt';
-import * as actionHelpers from '../actionHelpers';
+import { TouchstoneLink, TouchstoneListComponent } from "../../main/components/Touchstones/TouchstoneList";
+import * as TouchstoneStore from "../../main/stores/TouchstoneStore";
+import { Touchstone } from "../../main/Models";
 
-import { TouchstoneListComponent, TouchstoneLink } from '../../main/components/Touchstones/TouchstoneList';
-import { State } from '../../main/stores/TouchstoneStore';
-import { Touchstone } from '../../main/Models';
-import { Link } from "simple-react-router";
-import { sources } from "../../main/sources/Sources";
 const styles = require("../../main/components/Touchstones/TouchstoneList.css");
 
-function makeStoreState(touchstones: Array<Touchstone>): State {
+function makeStoreState(touchstones: Array<Touchstone>): TouchstoneStore.State {
     return {
         ready: true,
         errorMessage: "",
@@ -45,7 +38,7 @@ describe('TouchstoneListComponent', () => {
             // Check the first link in detail
             const first = children.at(0);
             expect(first.key()).to.equal("touchstone-1");
-            expect(first.find(TouchstoneLink).props()).to.eql(touchstones[0]);
+            expect(first.find(TouchstoneLink).props()).to.eql(touchstones[ 0 ]);
 
             // Also do a basic test on the other one, to make sure it's different
             expect(children.at(1).key()).to.equal("touchstone-2");
@@ -64,14 +57,5 @@ describe('TouchstoneListComponent', () => {
             const link = rendered.find(`.${styles.openTouchstone}`).find(TouchstoneLink);
             expect(link.props()).to.eql(touchstone);
         });
-    });
-});
-
-describe("TouchstoneLink", () => {
-    it("renders correctly", () => {
-        const touchstone = mockTouchstone({ id: "touchstone-1", description: "Description 1" });
-        const rendered = mount(<TouchstoneLink {...touchstone} />).find(Link);
-        expect(rendered.prop('href')).to.equal("/responsibilities/touchstone-1/");
-        expect(rendered.text()).to.equal("Description 1");
     });
 });

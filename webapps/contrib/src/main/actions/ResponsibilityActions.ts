@@ -1,7 +1,7 @@
-import alt from '../alt';
-import { FetchActions, FetchActionsInterface } from './FetchActions';
-import { sources, ResponsibilityFetchParameters } from '../sources/Sources';
-import { Responsibilities, Result, Touchstone } from '../Models';
+import alt from "../alt";
+import { FetchActions, FetchActionsInterface } from "./FetchActions";
+import { ResponsibilityFetchParameters, sources } from "../sources/Sources";
+import { Responsibilities, Touchstone } from "../Models";
 
 interface Actions extends FetchActionsInterface<ResponsibilityFetchParameters> {
     setTouchstone(touchstone: Touchstone): Touchstone;

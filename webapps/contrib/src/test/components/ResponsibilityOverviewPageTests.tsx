@@ -1,20 +1,11 @@
-import { setupVirtualDOM } from '../JSDomHelpers';
-setupVirtualDOM();
+import * as React from "react";
+import { expect } from "chai";
+import { shallow } from "enzyme";
+import { mockLocation } from "../mocks/mocks";
+import { alt } from "../../main/alt";
 
-import * as React from 'react';
-import { expect } from 'chai';
-import * as sinon from 'sinon';
-import { shallow, ShallowWrapper } from 'enzyme';
-import { mockLocation, mockTouchstone } from '../mocks';
-import { Location } from 'simple-react-router';
-import { alt } from '../../main/alt';
-import * as actionHelpers from '../actionHelpers';
-import { sources } from '../../main/sources/Sources';
-import * as mocks from '../mocks';
-
-import { ResponsibilityOverviewPage } from '../../main/components/Responsibilities/ResponsibilityOverviewPage';
-import { Store } from '../../main/stores/TouchstoneStore';
-import { responsibilityActions } from '../../main/actions/ResponsibilityActions';
+import { ResponsibilityOverviewPage } from "../../main/components/Responsibilities/ResponsibilityOverviewPage";
+import { mockTouchstone } from "../mocks/mockModels";
 
 const headerStyles = require("../../main/components/PageWithHeader/PageWithHeader.css");
 
@@ -41,29 +32,11 @@ function setupStore() {
 describe('ResponsibilityOverviewPage', () => {
     before(setupStore);
 
-    describe("renders", () => {
-        it("renders a title for A when URL is a", () => { 
-            checkTitleIs("a", "Responsibilities in A");
-        });
-
-        it("renders a title for B when URL is b", () => { 
-            checkTitleIs("b", "Responsibilities in B");
-        });
+    it("renders a title for A when URL is a", () => {
+        checkTitleIs("a", "Responsibilities in A");
     });
 
-    describe("emits", () => {
-        it("setTouchstone on load", () => {
-            const spy = actionHelpers.dispatchSpy();
-            const expected = Store.getState().touchstones[0];
-            const location = mockLocation({ touchstoneId: expected.id });
-            const rendered = shallow(<ResponsibilityOverviewPage location={ location } />)
-            const instance = rendered.instance() as ResponsibilityOverviewPage;
-            instance.onLoad();
-            actionHelpers.expectOrderedActions(spy, [
-                { action: "ResponsibilityActions.setTouchstone", payload: expected }
-            ], 0);
-        });
-
-        afterEach(actionHelpers.restoreDispatch);
+    it("renders a title for B when URL is b", () => {
+        checkTitleIs("b", "Responsibilities in B");
     });
 });

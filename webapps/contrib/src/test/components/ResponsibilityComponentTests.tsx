@@ -1,29 +1,27 @@
-import { setupVirtualDOM } from '../JSDomHelpers';
-setupVirtualDOM();
+import * as React from "react";
+import { expect } from "chai";
+import { shallow, ShallowWrapper } from "enzyme";
+import { mockResponsibility } from "../mocks/mockModels";
+import { setupMainStore } from "../mocks/mocks";
+import { alt } from "../../main/alt";
 
-import * as React from 'react';
-import { expect } from 'chai';
-import { shallow, ShallowWrapper } from 'enzyme';
-import * as mocks from '../mocks';
-import { alt } from '../../main/alt';
+import { ResponsibilityComponent } from "../../main/components/Responsibilities/ResponsibilityComponent";
 
-import { ResponsibilityComponent } from '../../main/components/Responsibilities/ResponsibilityComponent';
 const styles = require("../../main/components/Responsibilities/Responsibilities.css");
-import { Responsibility } from '../../main/Models';
 
 describe('ResponsibilityComponent', () => {
     let rendered: ShallowWrapper<any, any>;
 
     before(() => {
-        mocks.setupMainStore([
+        setupMainStore([
             { id: "disease-id", name: "Disease name" }
         ]);
 
-        const responsibility = mocks.mockResponsibility({
+        const responsibility = mockResponsibility({
             status: "empty"
-        }, { 
+        }, {
             id: "scenario-id",
-            description: "Description" ,          
+            description: "Description",
         });
         rendered = shallow(<ResponsibilityComponent {...responsibility} />);
     });

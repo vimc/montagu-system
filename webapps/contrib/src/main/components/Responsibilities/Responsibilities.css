@@ -41,6 +41,10 @@
     margin: 5px 0 10px 0;
 }
 
+:local(.actions) button {
+    margin-right: 10px;
+}
+
 :local(.estimates) table {
     border-collapse: collapse;
     width: 780px;

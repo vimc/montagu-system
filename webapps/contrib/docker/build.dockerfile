@@ -67,6 +67,7 @@ ARG name=montagu-contrib-portal
 
 ENV APP_DOCKER_COMMIT_TAG $registry/$name:$git_id
 ENV APP_DOCKER_BRANCH_TAG $registry/$name:$git_branch
+ENV MONTAGU_CONTRIB_PROFILE teamcity
 
 # Build, tag and publish docker image
 CMD webpack \

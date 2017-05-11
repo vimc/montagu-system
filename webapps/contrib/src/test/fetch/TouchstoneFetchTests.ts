@@ -1,9 +1,9 @@
-import { sources, NoParameters } from '../../main/sources/Sources';
-import * as mocks from '../mocks';
-import { FetchHelper } from './helpers';
-import * as actionHelpers from '../actionHelpers';
+import { NoParameters, sources } from "../../main/sources/Sources";
+import { mockTouchstone } from "../mocks/mockModels";
+import { FetchHelper } from "./helpers";
+import * as actionHelpers from "../actionHelpers";
 
-import { touchstoneActions } from '../../main/actions/TouchstoneActions';
+import { touchstoneActions } from "../../main/actions/TouchstoneActions";
 
 let helper: FetchHelper<NoParameters>;
 
@@ -17,13 +17,13 @@ describe("TouchstoneFetch", () => {
         fetchAction: () => touchstoneActions.fetch({}),
         params: {},
 
-        actionNamespace: "TouchstoneActions", 
+        actionNamespace: "TouchstoneActions",
         successAction: "update",
         failAction: "fetchFailed",
 
-        makePayload: () => [ 
-            mocks.mockTouchstone({ id: "a" }), 
-            mocks.mockTouchstone({ id: "b" })
+        makePayload: () => [
+            mockTouchstone({ id: "a" }),
+            mockTouchstone({ id: "b" })
         ]
     }).addTestsToMocha();
 });

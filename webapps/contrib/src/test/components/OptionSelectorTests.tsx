@@ -1,12 +1,9 @@
-import { setupVirtualDOM } from '../JSDomHelpers';
-setupVirtualDOM();
+import * as React from "react";
+import { expect } from "chai";
+import { shallow } from "enzyme";
+import * as sinon from "sinon";
 
-import * as React from 'react';
-import { expect } from 'chai';
-import { shallow, ShallowWrapper } from 'enzyme';
-import * as sinon from 'sinon';
-
-import { OptionSelector, Option } from '../../main/components/OptionSelector/OptionSelector';
+import { Option, OptionSelector } from "../../main/components/OptionSelector/OptionSelector";
 
 function mockOptions(): Option[] {
     return [
@@ -27,7 +24,8 @@ describe('OptionSelector', () => {
 
     it("renders default option", () => {
         const callback = sinon.spy();
-        const rendered = shallow(<OptionSelector options={ mockOptions() } defaultOption="Fruit" onChange={ callback } />);
+        const rendered = shallow(<OptionSelector options={ mockOptions() } defaultOption="Fruit"
+                                                 onChange={ callback } />);
         const children = rendered.find("option");
         expect(children).to.have.length(3);
         expect(children.at(0).prop("value")).to.equal("");
@@ -41,9 +39,10 @@ describe('OptionSelector', () => {
             currentTarget: {
                 value: "test",
             },
-            preventDefault: () => {}
+            preventDefault: () => {
+            }
         });
         expect(callback.called).to.be.equal(true, "Expected callback to be called");
-        expect(callback.args[0][0]).to.equal("test");
+        expect(callback.args[ 0 ][ 0 ]).to.equal("test");
     });
 });

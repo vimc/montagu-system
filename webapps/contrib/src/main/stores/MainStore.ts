@@ -1,22 +1,20 @@
-import alt from '../alt';
-import * as AltJS from 'alt';
-import { RemoteContent }  from './RemoteContent'
-import { AbstractStore } from './AbstractStore';
-import { mainActions } from '../actions/MainActions';
-import { touchstoneActions } from '../actions/TouchstoneActions';
-import { Disease } from '../Models'
+import alt from "../alt";
+import * as AltJS from "alt";
+import { RemoteContent } from "./RemoteContent";
+import { AbstractStore } from "./AbstractStore";
+import { mainActions } from "../actions/MainActions";
+import { touchstoneActions } from "../actions/TouchstoneActions";
+import { authActions, LogInProperties } from "../actions/AuthActions";
+import { Disease } from "../Models";
+import { settings } from "../Settings";
+import { Loadable } from "./Loadable";
 
 export interface State extends RemoteContent {
-    diseases: Loadable<Array<Disease>>;
+    diseases: Loadable<Disease>;
 }
 
-interface MainStoreInterface extends AltJS.AltStore<State> { 
+interface MainStoreInterface extends AltJS.AltStore<State> {
     getDiseaseById(id: string): Disease;
-}
-
-interface Loadable<T> {
-    content: { [index: string] : Disease };
-    loaded: boolean;
 }
 
 function onReady() {
@@ -24,34 +22,46 @@ function onReady() {
     action.defer();
 }
 
-export function makeDiseaseLookup(diseases: Disease[]) {
-    let lookup: { [index: string] : Disease } = {};
-    diseases.forEach(d => lookup[d.id] = d);
+export function makeDiseaseLookup(diseases: Disease[]): Loadable<Disease> {
+    let lookup: { [index: string]: Disease } = {};
+    diseases.forEach(d => lookup[ d.id ] = d);
 
-    return { 
-        content: lookup, 
+    return {
+        content: lookup,
         loaded: true
     };
 }
 
+export function initialState(): State {
+    return {
+        diseases: { content: null, loaded: false },
+        errorMessage: null,
+        ready: false
+    };
+}
+
+
 class MainStore extends AbstractStore<State> {
     ready: boolean;
     errorMessage: string;
-    diseases: Loadable<Array<Disease>>;
+    diseases: Loadable<Disease>;
 
     constructor() {
         super();
-        this.diseases = { content: null, loaded: false };
-        this.errorMessage = null;
-        this.ready = false;    
         this.bindListeners({
             handleDiseases: mainActions.receiveDiseases,
-            handleFetchFailed: mainActions.fetchFailed
+            handleFetchFailed: mainActions.fetchFailed,
+            handleLogIn: authActions.logIn,
         });
         this.exportPublicMethods({
-            getDiseaseById: id => this.diseases.content[id]
+            getDiseaseById: id => this.diseases.content[ id ]
         })
     }
+
+    initialState(): State {
+        return initialState();
+    }
+
     handleDiseases(diseases: Array<Disease>) {
         this.diseases = makeDiseaseLookup(diseases);
         if (this.diseases.loaded) {
@@ -59,8 +69,23 @@ class MainStore extends AbstractStore<State> {
             onReady();
         }
     }
+
     handleFetchFailed(errorMessage: string) {
         this.errorMessage = errorMessage;
+    }
+
+    handleLogIn(props: LogInProperties) {
+        if (!props.isAccountActive || !props.isModeller) {
+            let reason: string;
+            if (!props.isAccountActive) {
+                reason = "Your account has been deactivated";
+            } else {
+                reason = "Only members of modelling groups can log into the contribution portal";
+            }
+
+            const support = settings.supportContact;
+            this.errorMessage = `${reason}. Please contact ${support} for help.`;
+        }
     }
 }
 

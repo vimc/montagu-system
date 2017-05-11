@@ -1,4 +1,4 @@
-import { settings } from '../Settings';
+import fetcher from "./Fetcher";
 
 export class Source<TParams> {
     urlFunc: (parameters: TParams) => string;
@@ -9,8 +9,6 @@ export class Source<TParams> {
 
     fetch(parameters: TParams): Promise<Response> {
         const urlFragment = this.urlFunc(parameters);
-        const url = settings.baseUrl + urlFragment;
-        console.log(`Fetching from ${url}`);
-        return fetch(url);
+        return fetcher.fetch(urlFragment);
     }
 }
