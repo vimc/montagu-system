@@ -10,7 +10,7 @@ module.exports = {
         extensions: ["*", ".webpack.js", ".web.js", ".ts", ".tsx", ".js"],
 
         alias: {
-            "environmentSettings": path.join(__dirname, "./src/main/settings/", "development")
+            "environmentSettings": path.join(__dirname, "./src/main/settings/", process.env.MONTAGU_CONTRIB_PROFILE || "development")
         }
     },
 
