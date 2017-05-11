@@ -4,6 +4,7 @@ import { mockDisease } from "../mocks/mockModels";
 
 import { Store } from "../../main/stores/MainStore";
 import { mainActions } from "../../main/actions/MainActions";
+import { authActions } from "../../main/actions/AuthActions";
 
 describe("MainStore", () => {
     beforeEach(() => {
@@ -48,5 +49,13 @@ describe("MainStore", () => {
             ready: false,
             diseases: { loaded: false, content: null }
         });
+    });
+
+    it("logInForbidden sets errorMessage", () => {
+        authActions.logInForbidden("REASON");
+
+        const state = Store.getState();
+        expect(state.errorMessage).to.contain("REASON");
+        expect(state.errorMessage).to.contain("Please contact");
     });
 });

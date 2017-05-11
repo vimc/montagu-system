@@ -51,7 +51,6 @@ class MainStore extends AbstractStore<State> {
         this.bindListeners({
             handleDiseases: mainActions.receiveDiseases,
             handleFetchFailed: mainActions.fetchFailed,
-            handleLogIn: authActions.logInAllowed,
             handleLogInForbidden: authActions.logInForbidden,
         });
         this.exportPublicMethods({
@@ -73,10 +72,6 @@ class MainStore extends AbstractStore<State> {
 
     handleFetchFailed(errorMessage: string) {
         this.errorMessage = errorMessage;
-    }
-
-    handleLogIn(token: string) {
-        (mainActions.fetch as any).defer({});
     }
 
     handleLogInForbidden(reason: string) {

@@ -7,6 +7,7 @@ import { alt } from "../../alt";
 import fetcher from "../../sources/Fetcher";
 import * as Validation from "../../Validation";
 import { authActions } from "../../actions/AuthActions";
+import { mainActions } from "../../actions/MainActions";
 
 const formStyles = require('../../styles/forms.css');
 const { submitFailed } = FormActions("Login");
@@ -40,6 +41,7 @@ export const loginForm: Reform<LoginFields> = AltReform("Login", alt, {
                 alt.dispatch(submitFailed("Your username or password is incorrect"));
             } else {
                 authActions.logIn(json.access_token);
+                mainActions.fetch({});
             }
         });
     },

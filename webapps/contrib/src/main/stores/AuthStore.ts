@@ -71,12 +71,10 @@ class AuthStore extends AbstractStore<State> {
             }
         }
 
-        console.log("Saved bearer token");
+        console.log("Saved bearer token: " + this.bearerToken);
     }
 
     handleLogOut() {
-        this.loggedIn = false;
-        this.bearerToken = null;
         alt.recycle();
     }
 }

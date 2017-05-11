@@ -9,6 +9,10 @@ export abstract class AbstractStore<S> implements AltJS.StoreModel<S> {
     abstract initialState(): S;
 
     constructor() {
+        this.resetState();
+    }
+
+    resetState() {
         Object.assign(this, this.initialState());
     }
 }
