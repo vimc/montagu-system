@@ -1,0 +1,15 @@
+{
+	"id": "ScenarioAndCoverageSets",
+	"type": "object",
+	"properties": {
+		"touchstone": { "$ref": "Touchstone.schema.json" },
+		"scenario": { "$ref": "Scenario.schema.json" },
+		"coverage_sets": { "$ref": "CoverageSets.schema.json" }
+	},
+	"additionalProperties": false,
+	"required": [
+		"touchstone",
+		"scenario",
+		"coverage_sets"
+	]
+}

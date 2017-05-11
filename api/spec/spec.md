@@ -564,7 +564,73 @@ Note that the coverage sets returned are just those that belong to the touchston
 In other words, if the same scenario is associated with other coverage
 sets in a different touchstone, those are not returned here.
 
+Coverage sets are returned in the order they are to be applied.
+
 The returned scenarios can be filtered using the same query parameters as `GET /scenarios`, with the exception that the touchstone parameter is ignored.
+
+## GET /touchstones/{touchstone-id}/scenarios/{scenario-id}/coverage/
+Returns the amalgamated coverage data of all the coverage sets associated with this scenario in this touchstone.
+
+Required permissions: `touchstones.read`, `scenarios.read`, `coverage.read`
+
+This data is returned in two parts: First the metadata, then the coverage in CSV format.
+
+### Metadata
+Schema: [`ScenarioAndCoverageSets.schema.json`](ScenarioAndCoverageSets.schema.json)
+
+#### Example
+
+    {
+        "touchstone": { 
+            "id": "2017-op-1",
+            "name": "2017-op",
+            "version": 1,            
+            "description": "2017 Operational Forecast",
+            "years": { "start": 1996, "end": 2017 },
+            "status": "finished"
+        },
+        "scenario": {
+            "id": "menA-novacc",
+            "touchstones": [ "2016-op-1", "2017-wuenic-1", "op-2017-1" ],
+            "description": "Menigitis A, No vaccination",
+            "disease": "MenA"
+        },
+        "coverage_sets": [ 
+            { 
+                "id": 101,
+                "touchstone": "2017-op-1",
+                "name": "Menigitis no vaccination",
+                "vaccine": "MenA",
+                "gavi_support_level": "none",
+                "activity_type": "none"
+            }
+        ]
+    }
+
+Coverage sets are returned in the order they are to be applied.
+
+### Coverage data
+CSV data in this format:
+
+    "set_id", "set_order", "country",    "year","age_from","age_to","coverage"
+         101,           0,     "AFG",      2006,         0,       2,        NA
+         101,           0,     "AFG",      2007,         0,       2,      64.0
+         101,           0,     "AFG",      2008,         0,       2,      63.0
+         101,           0,     "AGO",      2006,         0,       1,       0.0
+         101,           0,     "AGO",      2007,         0,       1,      83.0
+         101,           0,     "AGO",      2008,         0,       1,      81.0
+         136,           1,     "AFG",      2006,         0,       2,        NA
+         136,           1,     "AFG",      2007,         0,       2,      80.0
+         136,           1,     "AFG",      2008,         0,       2,      90.0
+         136,           1,     "AGO",      2006,         0,       1,      20.0
+         136,           1,     "AGO",      2007,         0,       1,      90.0
+         136,           1,     "AGO",      2008,         0,       1,      95.0                       
+
+The coverage sets are de-normalized and merged into this single table. You can identify 
+which coverage set a line is from using either the `set_id` or `set_order` columns. 
+
+* `set_id:` The unique ID of the coverage set the line is from
+* `set_order`: The order that this set has within the scenario. Coverage data is applied in this order, and it matches the order of the coverage sets in the metadata above
 
 ## POST /touchstones/{touchstone-id}/actions/associate_scenario/
 Associate or unassociate a scenario with a touchstone.
