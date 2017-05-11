@@ -8,6 +8,10 @@ interface Props {
 
 export class ValidationError extends React.Component<Props, undefined> {
     render() {
-        return <span className={ formStyles.error }>{ this.props.message }</span>;
+        if (typeof this.props.message == "string") {
+            return <span className={ formStyles.error }>{ this.props.message }</span>;
+        } else {
+            return null;
+        }
     }
 }

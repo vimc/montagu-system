@@ -44,7 +44,7 @@ export const loginForm: Reform<LoginFields> = AltReform("Login", alt, {
         });
     },
     onSubmitFail: (response: any) => {
-        console.log("Error logging in: " + response)
+        console.log("Error logging in: " + response);
         alt.dispatch(submitFailed("An error occurred logging in"));
     }
 });
@@ -54,18 +54,22 @@ export class LoginFormComponent extends React.Component<ReformProps, undefined> 
         const buttonStyle = {
             width: 140
         };
-        const buttonDisabled = this.props.loading;
+        const disabled = this.props.loading;
         return <form className={ formStyles.form } onSubmit={ this.props.submit }>
             <div className={ formStyles.fields }>
-                <input name="email" type="email" placeholder="Email address" { ...this.props.fields.email } />
+                <input name="email" type="email" placeholder="Email address"
+                       disabled={ disabled }
+                       { ...this.props.fields.email } />
                 <ValidationError message={ this.props.errors.email } />
-                <input name="password" type="password" placeholder="Password" { ...this.props.fields.password } />
+                <input name="password" type="password" placeholder="Password"
+                       disabled={ disabled }
+                       { ...this.props.fields.password } />
                 <ValidationError message={ this.props.errors.password } />
                 <ValidationError message={ this.props.store.state.submitError } />
             </div>
             <button type="submit"
                     style={ buttonStyle }
-                    disabled={ buttonDisabled }>Log in ➡
+                    disabled={ disabled }>Log in ➡
             </button>
         </form>;
     }
