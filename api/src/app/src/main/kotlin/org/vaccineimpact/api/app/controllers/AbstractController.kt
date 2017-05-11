@@ -22,25 +22,31 @@ abstract class AbstractController
     abstract val urlComponent: String
     abstract val endpoints: Iterable<EndpointDefinition>
 
-    fun mapEndpoints(urlBase: String, tokenHelper: WebTokenHelper)
+    fun mapEndpoints(urlBase: String, tokenHelper: WebTokenHelper): List<String>
+    {
+        return endpoints.map { mapEndpoint(it, urlBase, tokenHelper) }
+    }
+
+    private fun mapEndpoint(
+            endpoint: EndpointDefinition,
+            urlBase: String,
+            tokenHelper: WebTokenHelper): String
     {
         val transformer = this::transform
-        for (endpoint in endpoints)
+        val fullUrl = urlBase + urlComponent + endpoint.urlFragment
+        val route = wrapRoute(endpoint.route)
+        logger.info("Mapping $fullUrl")
+        when (endpoint.method)
         {
-            val fullUrl = urlBase + urlComponent + endpoint.urlFragment
-            val route = wrapRoute(endpoint.route)
-            logger.info("Mapping $fullUrl")
-            when (endpoint.method)
-            {
-                HttpMethod.get -> Spark.get(fullUrl, route, transformer)
-                HttpMethod.post -> Spark.post(fullUrl, route, transformer)
-                HttpMethod.put -> Spark.put(fullUrl, route, transformer)
-                HttpMethod.patch -> Spark.patch(fullUrl, route, transformer)
-                HttpMethod.delete -> Spark.delete(fullUrl, route, transformer)
-                else -> throw UnsupportedValueException(endpoint.method)
-            }
-            endpoint.additionalSetup(fullUrl, tokenHelper)
+            HttpMethod.get -> Spark.get(fullUrl, route, transformer)
+            HttpMethod.post -> Spark.post(fullUrl, route, transformer)
+            HttpMethod.put -> Spark.put(fullUrl, route, transformer)
+            HttpMethod.patch -> Spark.patch(fullUrl, route, transformer)
+            HttpMethod.delete -> Spark.delete(fullUrl, route, transformer)
+            else -> throw UnsupportedValueException(endpoint.method)
         }
+        endpoint.additionalSetup(fullUrl, tokenHelper)
+        return fullUrl
     }
 
     private fun wrapRoute(route: (ActionContext) -> Any): (Request, Response) -> Any

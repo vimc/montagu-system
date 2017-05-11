@@ -50,10 +50,8 @@ class MontaguApi
                 TouchstoneController(repositories.touchstoneRepository),
                 ModellingGroupController(repositories.modellingGroupRepository)
         )
-        for (controller in controllers)
-        {
-            controller.mapEndpoints(urlBase, tokenHelper)
-        }
+        val endpoints = controllers.flatMap { it.mapEndpoints(urlBase, tokenHelper) }
+        HomeController(endpoints).mapEndpoints(urlBase, tokenHelper)
 
         spk.after("*", { _, res -> addDefaultResponseHeaders(res) })
     }
