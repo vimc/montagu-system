@@ -8,7 +8,7 @@ export interface ActionExpectation {
     payload?: any
 }
 
-export function expectOrderedActions(spy: sinon.SinonSpy, expectations: Array<ActionExpectation>, startIndex: number) {
+export function expectOrderedActions(spy: sinon.SinonSpy, expectations: Array<ActionExpectation>, startIndex: number = 0) {
     expectations.forEach((value, index) => {
         const event = spy.args[ startIndex + index ];
         expect(event).is.not.equal(undefined, `Expected this ${startIndex + index}th event: ${value.action}`);
@@ -31,6 +31,10 @@ export function expectFetchActions(spy: sinon.SinonSpy, namespace: string, start
         { action: `${namespace}.fetch`, payload: undefined },
         { action: `${namespace}.beginFetch`, payload: true },
     ], startIndex);
+}
+
+export function expectOneAction(spy: sinon.SinonSpy, expectation: ActionExpectation, startIndex: number = 0) {
+    expectOrderedActions(spy, [ expectation ], startIndex);
 }
 
 export function dispatchSpy(): sinon.SinonSpy {
