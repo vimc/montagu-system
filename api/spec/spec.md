@@ -47,6 +47,30 @@ Example
         ]
     }
 
+# Index
+## GET /
+The root of the API returns some simple data, which is mainly there to make it clear that you
+have correctly connected to the API. It also tells you what endpoints are implemented in the
+version you are currently connected to.
+
+Required permissions: User does not need to be logged in to access this endpoint.
+
+Schema: [`Index.schema.json`](Index.schema.json)
+
+### Example
+    {
+        "name": "montagu",
+        "version": "1.0.0",
+        "endpoints": [
+            "/v1/authenticate/",
+            "/v1/diseases/",
+            "/v1/diseases/:id/",
+            "/v1/touchstones/",
+            "/v1/modelling-groups/",
+            "/v1/modelling-groups/:group-id/responsibilities/:touchstone-id/"
+        ]
+    }
+
 # Authentication
 ## POST /authenticate
 Required permissions: User does not need to be logged in to access this endpoint.
