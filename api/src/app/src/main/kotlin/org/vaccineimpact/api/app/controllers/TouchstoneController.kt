@@ -11,7 +11,7 @@ class TouchstoneController(private val db: () -> TouchstoneRepository) : Abstrac
     override val urlComponent: String = "/touchstones"
     override val endpoints = listOf(
             SecuredEndpoint("/", this::getTouchstones, listOf("*/touchstones.read")),
-            SecuredEndpoint("/:touchstone-id/scenarios", this::getScenarios, listOf("*/touchstones.read", "*/scenarios.read", "*/coverage.read"))
+            SecuredEndpoint("/:touchstone-id/scenarios/", this::getScenarios, listOf("*/touchstones.read", "*/scenarios.read", "*/coverage.read"))
     )
 
     fun getTouchstones(context: ActionContext): List<Touchstone>
