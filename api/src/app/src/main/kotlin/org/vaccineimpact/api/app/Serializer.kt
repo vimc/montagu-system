@@ -26,6 +26,8 @@ object Serializer
             .registerTypeAdapter<ResponsibilitySetStatus>(enumSerializer)
             .registerTypeAdapter<ResponsibilityStatus>(enumSerializer)
             .registerTypeAdapter<TouchstoneStatus>(enumSerializer)
+            .registerTypeAdapter<GAVISupportLevel>(enumSerializer)
+            .registerTypeAdapter<ActivityType>(enumSerializer)
             .create()
 
     fun toResult(data: Any?): String = toJson(Result(ResultStatus.SUCCESS, data, emptyList()))
