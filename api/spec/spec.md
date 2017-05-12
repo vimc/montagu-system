@@ -594,6 +594,43 @@ Coverage sets are returned in the order they are to be applied.
 
 The returned scenarios can be filtered using the same query parameters as `GET /scenarios`, with the exception that the touchstone parameter is ignored.
 
+## GET /touchstones/{touchstone-id}/scenarios/{scenario-id}/
+Returns a single scenario associated with a touchstone.
+
+Required permissions: `touchstones.read`, `scenarios.read`, `coverage.read`
+
+Additionally, to view scenarios for an in-preparation touchstone, `touchstones.prepare` is required.
+
+Schema: [`ScenarioAndCoverageSets.schema.json`](ScenarioAndCoverageSets.schema.json)
+
+### Example
+    {
+        "touchstone": { 
+            "id": "2017-op-1",
+            "name": "2017-op",
+            "version": 1,            
+            "description": "2017 Operational Forecast",
+            "years": { "start": 1996, "end": 2017 },
+            "status": "finished"
+        },
+        "scenario": {
+            "id": "menA-novacc",
+            "touchstones": [ "2016-op-1", "2017-wuenic-1", "op-2017-1" ],
+            "description": "Menigitis A, No vaccination",
+            "disease": "MenA"
+        },
+        "coverage_sets": [ 
+            { 
+                "id": 101,
+                "touchstone": "2017-op-1",
+                "name": "Menigitis no vaccination",
+                "vaccine": "MenA",
+                "gavi_support_level": "none",
+                "activity_type": "none"
+            }
+        ]
+    }
+
 ## GET /touchstones/{touchstone-id}/scenarios/{scenario-id}/coverage/
 Returns the amalgamated coverage data of all the coverage sets associated with this scenario in this touchstone.
 
@@ -605,7 +642,6 @@ This data is returned in two parts: First the metadata, then the coverage in CSV
 Schema: [`ScenarioAndCoverageSets.schema.json`](ScenarioAndCoverageSets.schema.json)
 
 #### Example
-
     {
         "touchstone": { 
             "id": "2017-op-1",
