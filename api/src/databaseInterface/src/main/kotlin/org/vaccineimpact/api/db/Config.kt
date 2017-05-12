@@ -13,7 +13,12 @@ object Config
         val x = properties[key]
         if (x != null)
         {
-            return x as String
+            val value = x as String
+            if (value.startsWith("\${"))
+            {
+                throw MissingConfiguration(key)
+            }
+            return value
         }
         else
         {
@@ -24,4 +29,5 @@ object Config
     fun getInt(key: String) = get(key).toInt()
 }
 
+class MissingConfiguration(key: String): Exception("Detected a value like \${foo} for key '$key' in the configuration. This probably means that the config template has not been processed. Try running ./gradlew :PROJECT:copy[Test]Config")
 class MissingConfigurationKey(val key: String): Exception("Missing configuration key '$key'")

@@ -22,12 +22,6 @@ fun addRole(args: List<String>)
         scopePrefix = args[2]
         scopeId = args[3]
     }
-    val scope = when (scopePrefix)
-    {
-        null -> "*"
-        else -> "$scopePrefix:$scopeId"
-    }
-
     JooqContext().use { db ->
         val roleId = db.getRole(roleName, scopePrefix)
                 ?: throw ActionException("No role exists with name '$roleName' and scope prefix '$scopePrefix'")
