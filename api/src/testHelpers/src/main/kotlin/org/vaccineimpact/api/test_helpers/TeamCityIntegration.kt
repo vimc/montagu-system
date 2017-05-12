@@ -22,10 +22,10 @@ class TeamCityIntegration : org.junit.rules.TestWatcher()
     private fun org.junit.runner.Description.name() = "${this.className}.${this.methodName}"
 
     private fun escape(text: String?) = text
+            ?.replace("|", "||")
             ?.replace("'", "|'")
             ?.replace("\r", "|r")
             ?.replace("\n", "|n")
-            ?.replace("|", "||")
             ?.replace("[", "|[")
             ?.replace("]", "|]")
 }
