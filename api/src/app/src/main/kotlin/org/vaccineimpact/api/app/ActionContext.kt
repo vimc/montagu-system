@@ -3,6 +3,7 @@ package org.vaccineimpact.api.app
 import org.pac4j.core.profile.CommonProfile
 import org.pac4j.core.profile.ProfileManager
 import org.pac4j.sparkjava.SparkWebContext
+import org.vaccineimpact.api.app.errors.MissingRequiredPermissionError
 import org.vaccineimpact.api.models.ReifiedPermission
 import spark.Request
 import spark.Response
@@ -21,6 +22,13 @@ open class ActionContext(private val context: SparkWebContext)
 
     open fun hasPermission(requirement: ReifiedPermission)
             = permissions.any { requirement.satisfiedBy(it) }
+    open fun requirePermission(requirement: ReifiedPermission)
+    {
+        if (!hasPermission(requirement))
+        {
+            throw MissingRequiredPermissionError(setOf(requirement.toString()))
+        }
+    }
 
     val permissions by lazy {
         userProfile.permissions.map { ReifiedPermission.parse(it) }

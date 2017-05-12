@@ -4,5 +4,5 @@ import org.vaccineimpact.api.models.Scenario
 
 interface ScenarioRepository : Repository
 {
-    fun getScenarios(ids: Iterable<String>): List<Scenario>
+    fun getScenarios(descriptionIds: Iterable<String>): List<Scenario>
 }

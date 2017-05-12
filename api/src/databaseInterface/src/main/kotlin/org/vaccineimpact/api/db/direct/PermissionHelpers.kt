@@ -11,7 +11,7 @@ fun JooqContext.givePermissionsToUserUsingTestRole(username: String, permissions
     this.setRolePermissions(testRoleId, permissions)
 }
 
-fun JooqContext.createPermissions(permissions: List<String>)
+fun JooqContext.createPermissions(permissions: Set<String>)
 {
     val records = permissions.map {
         dsl.newRecord(PERMISSION).apply { name = it }
@@ -23,7 +23,7 @@ fun JooqContext.setRolePermissions(roleId: Int, permissions: List<String>, creat
 {
     if (createPermissions)
     {
-        createPermissions(permissions)
+        createPermissions(permissions.toSet())
     }
     dsl.deleteFrom(ROLE_PERMISSION).where(ROLE_PERMISSION.ROLE.eq(roleId)).execute()
     val records = permissions.map { permission ->

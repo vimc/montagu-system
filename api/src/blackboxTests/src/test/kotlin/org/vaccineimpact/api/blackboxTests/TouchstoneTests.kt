@@ -22,7 +22,7 @@ class TouchstoneTests : DatabaseTest()
         validate("/touchstones/") against "Touchstones" given {
             it.setupTouchstones()
         } requiringPermissions {
-            listOf("touchstones.read")
+            setOf("touchstones.read")
         } andCheckArray {
             assertThat(it).isEqualTo(json {
                 array(
@@ -45,7 +45,7 @@ class TouchstoneTests : DatabaseTest()
         validate("/touchstones/") against "Touchstones" given {
             it.setupTouchstones()
         } withPermissions {
-            listOf("touchstones.read", "touchstones.prepare")
+            setOf("touchstones.read", "touchstones.prepare")
         } andCheckArray {
             assertThat(it.size).isEqualTo(2)
             assertThat(it).contains(json {

@@ -24,7 +24,7 @@ class ModellingGroupTests : DatabaseTest()
             it.addGroup("a", "description a")
             it.addGroup("b", "description b")
         } requiringPermissions {
-            listOf("modelling-groups.read")
+            setOf("modelling-groups.read")
         } andCheckArray {
             assertThat(it).isEqualTo(json { array(
                     obj("id" to "a", "description" to "description a"),
@@ -40,7 +40,7 @@ class ModellingGroupTests : DatabaseTest()
         validate("/modelling-groups/$group/responsibilities/$touchstoneId/") against "ResponsibilitySet" given {
             addResponsibilities(it, group, touchstoneStatus = "open")
         } requiringPermissions {
-            listOf("responsibilities.read", "scenarios.read")
+            setOf("responsibilities.read", "scenarios.read")
         } andCheck {
             assertThat(it["touchstone"]).isEqualTo(touchstoneId)
             assertThat(it["status"]).isEqualTo("submitted")
@@ -66,8 +66,8 @@ class ModellingGroupTests : DatabaseTest()
     fun `only touchstone preparer can see in-preparation responsibilities`()
     {
         val group = "groupId"
-        val minimumPermissions = listOf("can-login", "responsibilities.read", "scenarios.read")
-        val extraPermissions = listOf("touchstones.prepare")
+        val minimumPermissions = setOf("can-login", "responsibilities.read", "scenarios.read")
+        val extraPermissions = setOf("touchstones.prepare")
         val userHelper = TestUserHelper()
         val requestHelper = RequestHelper()
         val validator = SchemaValidator()
