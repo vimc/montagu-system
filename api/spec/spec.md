@@ -534,6 +534,8 @@ Returns all scenarios associated with the touchstone.
 
 Required permissions: `touchstones.read`, `scenarios.read`, `coverage.read`
 
+Additionally, to view scenarios for an in-preparation touchstone, `touchstones.prepare` is required.
+
 Schema: [`ScenariosInTouchstone.schema.json`](ScenariosInTouchstone.schema.json)
 
 ### Example

@@ -2,8 +2,7 @@ package org.vaccineimpact.api.blackboxTests.helpers
 
 import com.beust.klaxon.JsonArray
 import com.beust.klaxon.JsonObject
-import khttp.get
-import khttp.request
+import khttp.responses.Response
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.direct.createPermissions
 
@@ -13,19 +12,19 @@ data class FluentValidationConfig(
         val url: String,
         val schemaName: String? = null,
         val prepareDatabase: ((JooqContext) -> Unit)? = null,
-        val checkRequiredPermissions: List<String>? = null,
-        val ownedPermissions: List<String>? = null
+        val checkRequiredPermissions: Set<String>? = null,
+        val ownedPermissions: Set<String>? = null
 )
 {
     infix fun against(schemaName: String) = this.copy(schemaName = schemaName)
 
     infix fun given(prepareDatabase: (JooqContext) -> Unit) = this.copy(prepareDatabase = prepareDatabase)
 
-    infix fun requiringPermissions(requiredPermissions: () -> List<String>)
-            = this.copy(checkRequiredPermissions = listOf("can-login") + requiredPermissions())
+    infix fun requiringPermissions(requiredPermissions: () -> Set<String>)
+            = this.copy(checkRequiredPermissions = setOf("can-login") + requiredPermissions())
 
-    infix fun withPermissions(ownedPermissions: () -> List<String>)
-            = this.copy(ownedPermissions = listOf("can-login") + ownedPermissions())
+    infix fun withPermissions(ownedPermissions: () -> Set<String>)
+            = this.copy(ownedPermissions = setOf("can-login") + ownedPermissions())
 
     infix fun andCheck(additionalChecks: (JsonObject) -> Unit)
     {
@@ -45,28 +44,27 @@ class FluentValidation(config: FluentValidationConfig)
     val url = config.url
     val schemaName = config.schemaName ?: throw Exception("Missing 'against' clause in fluent validation builder")
     val prepareDatabase = config.prepareDatabase ?: throw Exception("Missing 'given' clause in fluent validation builder")
-    val requiredPermissions: List<String> = config.checkRequiredPermissions ?: listOf("can-login")
-    val ownedPermissions: List<String> = config.ownedPermissions ?: requiredPermissions
+    val requiredPermissions: Set<String> = config.checkRequiredPermissions ?: setOf("can-login")
+    val ownedPermissions: Set<String> = config.ownedPermissions ?: requiredPermissions
 
     val userHelper = TestUserHelper()
     val requestHelper = RequestHelper()
 
     fun runWithObjectCheck(additionalChecks: (JsonObject) -> Unit)
     {
-        val text = run()
-        additionalChecks(requestHelper.getData(text) as JsonObject)
+        val response = run()
+        additionalChecks(response.montaguData()!!)
     }
 
     fun runWithArrayCheck(additionalChecks: (JsonArray<JsonObject>) -> Unit)
     {
-        val text = run()
-        @Suppress("UNCHECKED_CAST")
-        additionalChecks(requestHelper.getData(text) as JsonArray<JsonObject>)
+        val response = run()
+        additionalChecks(response.montaguDataAsArray())
     }
 
-    private fun run(): String
+    private fun run(): Response
     {
-        val allPermissions = (requiredPermissions + ownedPermissions).distinct()
+        val allPermissions = requiredPermissions + ownedPermissions
         JooqContext().use {
             prepareDatabase(it)
             userHelper.setupTestUser(it)
@@ -88,7 +86,7 @@ class FluentValidation(config: FluentValidationConfig)
         val token = userHelper.getTokenForTestUser(ownedPermissions)
         val response = requestHelper.get(url, token)
         validator.validate(schemaName, response.text)
-        return response.text
+        return response
     }
 
     private fun checkPermissions(url: String, validator: SchemaValidator)
@@ -102,7 +100,7 @@ class FluentValidation(config: FluentValidationConfig)
     private fun checkPermission(
             url: String,
             permission: String,
-            allRequiringPermissions: List<String>,
+            allRequiringPermissions: Set<String>,
             validator: SchemaValidator)
     {
         println("Checking that permission '$permission' is required for $url")

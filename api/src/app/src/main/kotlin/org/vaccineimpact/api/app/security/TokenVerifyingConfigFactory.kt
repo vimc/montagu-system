@@ -8,8 +8,10 @@ import org.pac4j.core.profile.CommonProfile
 import org.pac4j.jwt.profile.JwtProfile
 import org.pac4j.sparkjava.DefaultHttpActionAdapter
 import org.pac4j.sparkjava.SparkWebContext
+import org.vaccineimpact.api.app.ActionContext
 import org.vaccineimpact.api.app.Serializer
 import org.vaccineimpact.api.app.addDefaultResponseHeaders
+import org.vaccineimpact.api.app.errors.MissingRequiredPermissionError
 import org.vaccineimpact.api.models.ErrorInfo
 import org.vaccineimpact.api.models.Result
 import org.vaccineimpact.api.models.ResultStatus
@@ -47,10 +49,10 @@ class TokenActionAdapter : DefaultHttpActionAdapter()
             listOf(ErrorInfo("bearer-token-missing", "Bearer token not supplied in Authorization header"))
     ))
 
-    val forbiddenResponse: String = Serializer.toJson(Result(
+    fun forbiddenResponse(missingPermissions: Set<String>): String = Serializer.toJson(Result(
             ResultStatus.FAILURE,
             null,
-            listOf(ErrorInfo("forbidden", "You do not have sufficient permissions to access this resource"))
+            MissingRequiredPermissionError(missingPermissions).problems
     ))
 
     override fun adapt(code: Int, context: SparkWebContext): Any? = when (code)
@@ -63,7 +65,9 @@ class TokenActionAdapter : DefaultHttpActionAdapter()
         HttpConstants.FORBIDDEN ->
         {
             addDefaultResponseHeaders(context.response)
-            spark.Spark.halt(code, forbiddenResponse)
+            val profile = ActionContext(context).userProfile
+            val missingPermissions = profile.getAttributeOrDefault(MISSING_PERMISSIONS, mutableSetOf<String>())
+            spark.Spark.halt(code, forbiddenResponse(missingPermissions))
         }
         else -> super.adapt(code, context)
     }

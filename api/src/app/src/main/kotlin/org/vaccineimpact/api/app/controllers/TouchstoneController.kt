@@ -14,10 +14,12 @@ class TouchstoneController(private val db: () -> TouchstoneRepository) : Abstrac
             SecuredEndpoint("/:touchstone-id/scenarios/", this::getScenarios, listOf("*/touchstones.read", "*/scenarios.read", "*/coverage.read"))
     )
 
+    private val touchstonePreparer = ReifiedPermission("touchstones.prepare", Scope.Global())
+
     fun getTouchstones(context: ActionContext): List<Touchstone>
     {
         var touchstones = db().use { it.touchstones.all() }
-        if (!context.hasPermission(ReifiedPermission("touchstones.prepare", Scope.Global())))
+        if (!context.hasPermission(touchstonePreparer))
         {
             touchstones = touchstones.filter { it.status != TouchstoneStatus.IN_PREPARATION }
         }
@@ -27,8 +29,15 @@ class TouchstoneController(private val db: () -> TouchstoneRepository) : Abstrac
     fun getScenarios(context: ActionContext): List<ScenarioAndCoverageSets>
     {
         val touchstoneId = touchstoneId(context)
-        val filterParameters = ScenarioFilterParameters.fromContext(context)
-        return db().use { it.scenarios(touchstoneId, filterParameters) }
+        db().use {
+            val touchstone = it.touchstones.get(touchstoneId)
+            if (touchstone.status == TouchstoneStatus.IN_PREPARATION)
+            {
+                context.requirePermission(touchstonePreparer)
+            }
+            val filterParameters = ScenarioFilterParameters.fromContext(context)
+            return it.scenarios(touchstoneId, filterParameters)
+        }
     }
 
     private fun touchstoneId(context: ActionContext): String = context.params(":touchstone-id")

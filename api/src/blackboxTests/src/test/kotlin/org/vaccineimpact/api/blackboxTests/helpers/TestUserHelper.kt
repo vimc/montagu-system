@@ -16,10 +16,10 @@ class TestUserHelper
         UserHelper.saveUser(db.dsl, testUsername, "Test User", testUserEmail, testUserPassword)
     }
 
-    fun getTokenForTestUser(permissions: List<String>): String
+    fun getTokenForTestUser(permissions: Set<String>): String
     {
         JooqContext().use {
-            it.givePermissionsToUserUsingTestRole(testUsername, permissions)
+            it.givePermissionsToUserUsingTestRole(testUsername, permissions.toList())
         }
         val token = tokenFetcher.getToken(testUserEmail, testUserPassword)
         return when (token)
