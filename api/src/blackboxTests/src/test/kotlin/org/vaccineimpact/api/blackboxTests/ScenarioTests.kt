@@ -1,6 +1,7 @@
 package org.vaccineimpact.api.blackboxTests
 
 import com.beust.klaxon.JSON
+import com.beust.klaxon.JsonArray
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.json
 import org.assertj.core.api.Assertions.assertThat
@@ -16,18 +17,21 @@ class ScenarioTests : DatabaseTest()
     val requiredPermissions = setOf("can-login", "touchstones.read", "scenarios.read", "coverage.read")
     val touchstoneId = "touchstone-1"
     val setId = 1
-    val scenarioId = 1
+    val scenarioId = "scenario"
 
     @Test
     fun `can get scenarios (as they exist within a touchstone)`()
     {
         validate("/touchstones/$touchstoneId/scenarios/") against "ScenariosInTouchstone" given {
-            addTouchstoneWithScenarios(it, touchstoneId, "open", scenarioId, setId)
+            addTouchstoneWithScenarios(it, touchstoneId, "open", coverageSetId = setId)
         } requiringPermissions {
             requiredPermissions
         } andCheckArray {
             assertThat(it).isEqualTo(json {
-                array(expectedObject())
+                array(obj(
+                        "scenario" to expectedScenario(),
+                        "coverage_sets" to expectedCoverageSets()
+                ))
             })
         }
     }
@@ -40,19 +44,30 @@ class ScenarioTests : DatabaseTest()
                 "/touchstones/$touchstoneId/scenarios/",
                 requiredPermissions + permissionUnderTest
         ).checkPermissionIsRequired(permissionUnderTest, given = {
-            addTouchstoneWithScenarios(it, touchstoneId, "in-preparation", scenarioId)
+            addTouchstoneWithScenarios(it, touchstoneId, "in-preparation")
         })
     }
 
     @Test
     fun `can get scenario (as it exists within a touchstone)`()
     {
-        validate("/touchstones/$touchstoneId/scenarios/$scenarioId") against "ScenariosInTouchstone" given {
-            addTouchstoneWithScenarios(it, touchstoneId, "open", scenarioId, setId)
+        validate("/touchstones/$touchstoneId/scenarios/$scenarioId") against "ScenarioAndCoverageSets" given {
+            addTouchstoneWithScenarios(it, touchstoneId, "open", coverageSetId = setId)
         } requiringPermissions {
             requiredPermissions
-        } andCheckArray {
-            assertThat(it).isEqualTo(json { expectedObject() })
+        } andCheck {
+            assertThat(it).isEqualTo(json { obj(
+                    "touchstone" to obj(
+                            "id" to touchstoneId,
+                            "name" to "touchstone",
+                            "version" to 1,
+                            "description" to "Description",
+                            "years" to obj("start" to 1900, "end" to 2000),
+                            "status" to "open"
+                    ),
+                    "scenario" to expectedScenario(),
+                    "coverage_sets" to expectedCoverageSets()
+            ) })
         }
     }
 
@@ -64,7 +79,7 @@ class ScenarioTests : DatabaseTest()
                 "/touchstones/$touchstoneId/scenarios/$scenarioId",
                 requiredPermissions + permissionUnderTest
         ).checkPermissionIsRequired(permissionUnderTest, given = {
-            addTouchstoneWithScenarios(it, touchstoneId, "in-preparation", scenarioId)
+            addTouchstoneWithScenarios(it, touchstoneId, "in-preparation")
         })
     }
 
@@ -72,7 +87,7 @@ class ScenarioTests : DatabaseTest()
             it: JooqContext,
             touchstoneId: String,
             touchstoneStatus: String,
-            scenarioId: Int,
+            scenarioId: Int = 1,
             coverageSetId: Int = 1
     )
     {
@@ -85,23 +100,25 @@ class ScenarioTests : DatabaseTest()
         it.addCoverageSetToScenario(scenarioId, coverageSetId, order = 0)
     }
 
-    private fun JSON.expectedObject(): JsonObject
+    private fun JSON.expectedScenario(): JsonObject
     {
         return obj(
-                "scenario" to obj(
-                        "id" to "scenario",
-                        "description" to "description",
-                        "touchstones" to array("touchstone-1"),
-                        "disease" to "disease"
-                ),
-                "coverage_sets" to array(obj(
-                        "id" to setId,
-                        "touchstone" to "touchstone-1",
-                        "name" to "Set 1",
-                        "vaccine" to "vaccine",
-                        "gavi_support_level" to "none",
-                        "activity_type" to "routine"
-                ))
+                "id" to "scenario",
+                "description" to "description",
+                "touchstones" to array("touchstone-1"),
+                "disease" to "disease"
         )
+    }
+
+    private fun JSON.expectedCoverageSets(): JsonArray<Any?>
+    {
+        return array(obj(
+                "id" to setId,
+                "touchstone" to "touchstone-1",
+                "name" to "Set 1",
+                "vaccine" to "vaccine",
+                "gavi_support_level" to "none",
+                "activity_type" to "routine"
+        ))
     }
 }

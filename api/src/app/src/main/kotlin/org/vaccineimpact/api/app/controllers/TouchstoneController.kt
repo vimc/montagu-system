@@ -8,10 +8,14 @@ import org.vaccineimpact.api.models.*
 
 class TouchstoneController(private val db: () -> TouchstoneRepository) : AbstractController()
 {
+    private val permissions = listOf("*/touchstones.read")
+    private val scenarioPermissions = permissions + listOf("*/scenarios.read", "*/coverage.read")
+
     override val urlComponent: String = "/touchstones"
     override val endpoints = listOf(
-            SecuredEndpoint("/", this::getTouchstones, listOf("*/touchstones.read")),
-            SecuredEndpoint("/:touchstone-id/scenarios/", this::getScenarios, listOf("*/touchstones.read", "*/scenarios.read", "*/coverage.read"))
+            SecuredEndpoint("/",                                       this::getTouchstones, permissions),
+            SecuredEndpoint("/:touchstone-id/scenarios/",              this::getScenarios, scenarioPermissions),
+            SecuredEndpoint("/:touchstone-id/scenarios/:scenario-id/", this::getScenario, scenarioPermissions)
     )
 
     private val touchstonePreparer = ReifiedPermission("touchstones.prepare", Scope.Global())
@@ -28,17 +32,31 @@ class TouchstoneController(private val db: () -> TouchstoneRepository) : Abstrac
 
     fun getScenarios(context: ActionContext): List<ScenarioAndCoverageSets>
     {
-        val touchstoneId = touchstoneId(context)
         db().use {
-            val touchstone = it.touchstones.get(touchstoneId)
-            if (touchstone.status == TouchstoneStatus.IN_PREPARATION)
-            {
-                context.requirePermission(touchstonePreparer)
-            }
+            val touchstone = touchstone(context, it)
             val filterParameters = ScenarioFilterParameters.fromContext(context)
-            return it.scenarios(touchstoneId, filterParameters)
+            return it.scenarios(touchstone.id, filterParameters)
         }
     }
 
-    private fun touchstoneId(context: ActionContext): String = context.params(":touchstone-id")
+    fun getScenario(context: ActionContext): ScenarioTouchtsoneAndCoverageSets
+    {
+        db().use {
+            val touchstone = touchstone(context, it)
+            val scenarioId: String = context.params(":scenario-id")
+            val data = it.getScenario(touchstone.id, scenarioId)
+            return ScenarioTouchtsoneAndCoverageSets(touchstone, data.scenario, data.coverageSets)
+        }
+    }
+
+    private fun touchstone(context: ActionContext, db: TouchstoneRepository): Touchstone
+    {
+        val id = context.params(":touchstone-id")
+        val touchstone = db.touchstones.get(id)
+        if (touchstone.status == TouchstoneStatus.IN_PREPARATION)
+        {
+            context.requirePermission(touchstonePreparer)
+        }
+        return touchstone
+    }
 }
