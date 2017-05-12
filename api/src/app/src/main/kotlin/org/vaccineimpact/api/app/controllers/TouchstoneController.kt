@@ -39,13 +39,13 @@ class TouchstoneController(private val db: () -> TouchstoneRepository) : Abstrac
         }
     }
 
-    fun getScenario(context: ActionContext): ScenarioTouchtsoneAndCoverageSets
+    fun getScenario(context: ActionContext): ScenarioTouchstoneAndCoverageSets
     {
         db().use {
             val touchstone = touchstone(context, it)
             val scenarioId: String = context.params(":scenario-id")
             val data = it.getScenario(touchstone.id, scenarioId)
-            return ScenarioTouchtsoneAndCoverageSets(touchstone, data.scenario, data.coverageSets)
+            return ScenarioTouchstoneAndCoverageSets(touchstone, data.scenario, data.coverageSets)
         }
     }
 
