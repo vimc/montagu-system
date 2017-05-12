@@ -91,22 +91,10 @@ class FluentValidation(config: FluentValidationConfig)
 
     private fun checkPermissions(url: String, validator: SchemaValidator)
     {
+        val checker = PermissionChecker(url, requiredPermissions)
         for (permission in requiredPermissions)
         {
-            checkPermission(url, permission, requiredPermissions, validator)
+            checker.checkPermissionIsRequired(permission, validator)
         }
-    }
-
-    private fun checkPermission(
-            url: String,
-            permission: String,
-            allRequiringPermissions: Set<String>,
-            validator: SchemaValidator)
-    {
-        println("Checking that permission '$permission' is required for $url")
-        val limitedToken = userHelper.getTokenForTestUser(allRequiringPermissions - permission)
-        val response = requestHelper.get(url, limitedToken)
-        validator.validateError(response.text,
-                assertionText = "Expected permission '$permission' to be required for $url")
     }
 }

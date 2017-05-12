@@ -109,9 +109,16 @@ fun JooqContext.addScenarioDescription(id: String, description: String, disease:
     }.store()
 }
 
-fun JooqContext.addScenario(touchstone: String, scenarioDescription: String): Int
+fun JooqContext.addScenario(touchstone: String,
+                            scenarioDescription: String,
+                            id: Int? = null
+): Int
 {
     return this.dsl.newRecord(SCENARIO).apply {
+        if (id != null)
+        {
+            this.id = id
+        }
         this.touchstone = touchstone
         this.scenarioDescription = scenarioDescription
         store()
@@ -175,6 +182,7 @@ fun JooqContext.addCoverageSet(
         vaccine: String,
         supportLevel: String,
         activityType: String,
+        id: Int? = null,
         addVaccine: Boolean = false,
         addSupportLevel: Boolean = false,
         addActivityType: Boolean = false
@@ -194,6 +202,10 @@ fun JooqContext.addCoverageSet(
     }
 
     val record = this.dsl.newRecord(COVERAGE_SET).apply {
+        if (id != null)
+        {
+            this.id = id
+        }
         this.touchstone = touchstoneId
         this.name = name
         this.vaccine = vaccine
