@@ -157,10 +157,13 @@ class TouchstoneTests : RepositoryTests<TouchstoneRepository>()
         val scenarioId = 1
         val setA = 1
         val setB = 2
+        val extraTouchstoneId = "extra-1"
         given {
             createTouchstoneAndScenarioDescriptions(it)
+            it.addTouchstone("extra", 1, addName = true)
             it.addScenario(touchstoneId, "yf-1", id = scenarioId)
             it.addScenario(touchstoneId, "yf-2", id = scenarioId + 1)
+            it.addScenario(extraTouchstoneId, "yf-1", id = scenarioId + 2)
             it.addCoverageSet(touchstoneId, "YF without", "YF", "without", "campaign", id = setA)
             it.addCoverageSet(touchstoneId, "YF with", "YF", "with", "campaign", id = setB)
             it.addCoverageSetToScenario(scenarioId, setB, 4)
@@ -168,7 +171,7 @@ class TouchstoneTests : RepositoryTests<TouchstoneRepository>()
         } check {
             val result = it.getScenario(touchstoneId, "yf-1")
             assertThat(result.scenario).isEqualTo(Scenario(
-                    "yf-1", "Yellow Fever 1", "YF", listOf(touchstoneId)
+                    "yf-1", "Yellow Fever 1", "YF", listOf(touchstoneId, extraTouchstoneId)
             ))
             assertThat(result.coverageSets).hasSameElementsAs(listOf(
                     CoverageSet(setA, touchstoneId, "YF without", "YF", GAVISupportLevel.WITHOUT, ActivityType.CAMPAIGN),
