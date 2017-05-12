@@ -1,8 +1,8 @@
 package org.vaccineimpact.api.databaseTests
 
-import org.assertj.core.api.Assertions.assertThat
-import org.assertj.core.api.Assertions.fail
+import org.assertj.core.api.Assertions.*
 import org.junit.Test
+import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.app.repositories.jooq.JooqScenarioRepository
@@ -137,6 +137,43 @@ class TouchstoneTests : RepositoryTests<TouchstoneRepository>()
                     Scenario("ms-2", "Measles 2", "Measles", listOf(touchstoneId))
             ))
             assertThat(getScenarios(it, filter(scenarioId = "yf-1", disease = "Measles"))).isEmpty()
+        }
+    }
+
+    @Test
+    fun `getScenario throws exception if scenario doesn't exist`()
+    {
+        given {
+            createTouchstoneAndScenarioDescriptions(it)
+        } check {
+            assertThatThrownBy { it.getScenario(touchstoneId, "yf-1") }
+                    .isInstanceOf(UnknownObjectError::class.java)
+        }
+    }
+
+    @Test
+    fun `can get scenario with ordered coverage sets`()
+    {
+        val scenarioId = 1
+        val setA = 1
+        val setB = 2
+        given {
+            createTouchstoneAndScenarioDescriptions(it)
+            it.addScenario(touchstoneId, "yf-1", id = scenarioId)
+            it.addScenario(touchstoneId, "yf-2", id = scenarioId + 1)
+            it.addCoverageSet(touchstoneId, "YF without", "YF", "without", "campaign", id = setA)
+            it.addCoverageSet(touchstoneId, "YF with", "YF", "with", "campaign", id = setB)
+            it.addCoverageSetToScenario(scenarioId, setB, 4)
+            it.addCoverageSetToScenario(scenarioId, setA, 0)
+        } check {
+            val result = it.getScenario(touchstoneId, "yf-1")
+            assertThat(result.scenario).isEqualTo(Scenario(
+                    "yf-1", "Yellow Fever 1", "YF", listOf(touchstoneId)
+            ))
+            assertThat(result.coverageSets).hasSameElementsAs(listOf(
+                    CoverageSet(setA, touchstoneId, "YF without", "YF", GAVISupportLevel.WITHOUT, ActivityType.CAMPAIGN),
+                    CoverageSet(setB, touchstoneId, "YF with", "YF", GAVISupportLevel.WITH, ActivityType.CAMPAIGN)
+            ))
         }
     }
 
