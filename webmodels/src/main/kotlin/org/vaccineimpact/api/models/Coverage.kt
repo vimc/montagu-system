@@ -5,8 +5,8 @@ data class CoverageSet(
         val touchstone: String,
         val name: String,
         val vaccine: String,
-        val gaviSupportLevel: String,
-        val activityType: String
+        val gaviSupportLevel: GAVISupportLevel,
+        val activityType: ActivityType
 ): HasKey<Int>
 
 data class ScenarioAndCoverageSets(
