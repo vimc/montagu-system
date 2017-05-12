@@ -87,7 +87,7 @@ class JooqTouchstoneRepository(private val scenarioRepository: () -> JooqScenari
             record[TOUCHSTONE.ID],
             record[COVERAGE_SET.NAME],
             record[COVERAGE_SET.VACCINE],
-            record[COVERAGE_SET.GAVI_SUPPORT_LEVEL],
-            record[COVERAGE_SET.ACTIVITY_TYPE]
+            mapEnum(record[COVERAGE_SET.GAVI_SUPPORT_LEVEL]),
+            mapEnum(record[COVERAGE_SET.ACTIVITY_TYPE])
     )
 }

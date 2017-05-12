@@ -58,7 +58,7 @@ class TouchstoneControllerTests : MontaguTests()
     {
         val touchstone = Touchstone("t-1", "t", 1, "description", YearRange(2000, 2010), TouchstoneStatus.OPEN)
         val scenario = Scenario("id", "desc", "disease", listOf("t1, t2"))
-        val coverageSets = listOf(CoverageSet(1, "t1", "name", "vaccine", "supportLevel", "activityType"))
+        val coverageSets = listOf(CoverageSet(1, "t1", "name", "vaccine", GAVISupportLevel.WITH, ActivityType.CAMPAIGN))
         val result = ScenarioAndCoverageSets(scenario, coverageSets)
 
         val repo = mock<TouchstoneRepository> {
