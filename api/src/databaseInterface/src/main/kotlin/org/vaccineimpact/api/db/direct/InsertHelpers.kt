@@ -79,6 +79,10 @@ fun JooqContext.addSupportLevel(id: String, name: String? = null)
         this.name = name ?: id
     }.store()
 }
+fun JooqContext.addSupportLevels(vararg ids: String)
+{
+    ids.forEach { this.addSupportLevel(it) }
+}
 
 fun JooqContext.addActivityType(id: String, name: String? = null)
 {
@@ -86,6 +90,10 @@ fun JooqContext.addActivityType(id: String, name: String? = null)
         this.id = id
         this.name = name ?: id
     }.store()
+}
+fun JooqContext.addActivityTypes(vararg ids: String)
+{
+    ids.forEach { this.addActivityType(it) }
 }
 
 fun JooqContext.addScenarioDescription(id: String, description: String, disease: String, addDisease: Boolean = false)
@@ -103,12 +111,16 @@ fun JooqContext.addScenarioDescription(id: String, description: String, disease:
 
 fun JooqContext.addScenario(touchstone: String, scenarioDescription: String): Int
 {
-    val record = this.dsl.newRecord(SCENARIO).apply {
+    return this.dsl.newRecord(SCENARIO).apply {
         this.touchstone = touchstone
         this.scenarioDescription = scenarioDescription
-    }
-    record.store()
-    return record.id
+        store()
+    }.id
+}
+
+fun JooqContext.addScenarios(touchstone: String, vararg scenarioDescriptions: String): List<Int>
+{
+    return scenarioDescriptions.map { this.addScenario(touchstone, it) }
 }
 
 fun JooqContext.addResponsibilitySetStatus(id: String, name: String? = null)

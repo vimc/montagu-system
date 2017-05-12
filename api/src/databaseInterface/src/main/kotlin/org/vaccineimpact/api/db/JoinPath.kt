@@ -14,13 +14,13 @@ import org.jooq.impl.TableImpl
  * It is intended that you would use this using the two extension methods below, `fromJoinPath`
  * at the beginning of a query, and `joinPath` to add more joins on to an existing query.
  */
-class JoinPath(tables: Iterable<TableImpl<*>>)
+class JoinPath(tables: Iterable<TableImpl<*>>, val joinType: JoinType)
 {
     val steps = buildSteps(tables.toList()).toList()
 
     private fun buildSteps(tables: List<TableImpl<*>>): Iterable<JoinPathStep>
     {
-        return tables.indices.drop(1).map { JoinPathStep(tables[it - 1], tables[it]) }
+        return tables.indices.drop(1).map { JoinPathStep(tables[it - 1], tables[it], joinType) }
     }
 
     fun <T : Record> doJoin(initialQuery: SelectJoinStep<T>): SelectJoinStep<T>
@@ -29,7 +29,10 @@ class JoinPath(tables: Iterable<TableImpl<*>>)
     }
 }
 
-class JoinPathStep(private val from: TableImpl<*>, private val to: TableImpl<*>)
+class JoinPathStep(
+        private val from: TableImpl<*>,
+        private val to: TableImpl<*>,
+        val joinType: JoinType = JoinType.JOIN)
 {
     val foreignKeyField: TableField<*, Any>
     val primaryKeyField: Field<Any>
@@ -56,17 +59,25 @@ class JoinPathStep(private val from: TableImpl<*>, private val to: TableImpl<*>)
 
     fun <T : Record> doJoin(query: SelectJoinStep<T>): SelectJoinStep<T>
     {
-        return query.join(to).on(foreignKeyField.eqField(primaryKeyField))
+        return query.join(to, joinType).on(foreignKeyField.eqField(primaryKeyField))
     }
 }
 
-fun <T : Record> SelectJoinStep<T>.joinPath(vararg tables: TableImpl<*>): SelectJoinStep<T>
+fun <T : Record> SelectJoinStep<T>.joinPath(
+        vararg tables: TableImpl<*>,
+        joinType: JoinType = JoinType.JOIN
+)
+        : SelectJoinStep<T>
 {
-    return JoinPath(tables.toList()).doJoin(this)
+    return JoinPath(tables.toList(), joinType).doJoin(this)
 }
 
-fun <T : Record> SelectFromStep<T>.fromJoinPath(vararg tables: TableImpl<*>): SelectJoinStep<T>
+fun <T : Record> SelectFromStep<T>.fromJoinPath(
+        vararg tables: TableImpl<*>,
+        joinType: JoinType = JoinType.JOIN
+)
+        : SelectJoinStep<T>
 {
     val query = this.from(tables.first())
-    return JoinPath(tables.toList()).doJoin(query)
+    return JoinPath(tables.toList(), joinType).doJoin(query)
 }
