@@ -9,9 +9,7 @@ import org.vaccineimpact.api.app.repositories.jooq.JooqScenarioRepository
 import org.vaccineimpact.api.app.repositories.jooq.JooqTouchstoneRepository
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.direct.*
-import org.vaccineimpact.api.models.CoverageSet
-import org.vaccineimpact.api.models.Scenario
-import org.vaccineimpact.api.models.ScenarioAndCoverageSets
+import org.vaccineimpact.api.models.*
 
 class TouchstoneTests : RepositoryTests<TouchstoneRepository>()
 {
@@ -80,15 +78,15 @@ class TouchstoneTests : RepositoryTests<TouchstoneRepository>()
                     ScenarioAndCoverageSets(
                             Scenario("yf-1", "Yellow Fever 1", "YF", listOf(touchstoneId)),
                             listOf(
-                                    CoverageSet(yfSet1, touchstoneId, "YF, No vacc", "YF", "none", "none"),
-                                    CoverageSet(yfSet2, touchstoneId, "YF, Routine vacc", "YF", "without", "routine"),
-                                    CoverageSet(yfSet3, touchstoneId, "YF, Routine GAVI vacc", "YF", "with", "routine")
+                                    CoverageSet(yfSet1, touchstoneId, "YF, No vacc", "YF", GAVISupportLevel.NONE, ActivityType.NONE),
+                                    CoverageSet(yfSet2, touchstoneId, "YF, Routine vacc", "YF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE),
+                                    CoverageSet(yfSet3, touchstoneId, "YF, Routine GAVI vacc", "YF", GAVISupportLevel.WITH, ActivityType.ROUTINE)
                             )
                     ),
                     ScenarioAndCoverageSets(
                             Scenario("ms-1", "Measles 1", "Measles", listOf(touchstoneId)),
                             listOf(
-                                    CoverageSet(measlesSet, touchstoneId, "Measles, No vacc", "Measles", "none", "none")
+                                    CoverageSet(measlesSet, touchstoneId, "Measles, No vacc", "Measles", GAVISupportLevel.NONE, ActivityType.NONE)
                             )
                     )
             ))
@@ -116,7 +114,7 @@ class TouchstoneTests : RepositoryTests<TouchstoneRepository>()
                     ScenarioAndCoverageSets(
                             Scenario("yf-1", "Yellow Fever 1", "YF", listOf(touchstoneId, otherTouchstone)),
                             listOf(
-                                    CoverageSet(goodSet, touchstoneId, "YF, No vacc", "YF", "none", "none")
+                                    CoverageSet(goodSet, touchstoneId, "YF, No vacc", "YF", GAVISupportLevel.NONE, ActivityType.NONE)
                             )
                     )
             ))
