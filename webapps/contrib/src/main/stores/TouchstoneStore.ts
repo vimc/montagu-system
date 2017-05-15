@@ -4,50 +4,45 @@ import { RemoteContent } from "./RemoteContent";
 import { AbstractStore } from "./AbstractStore";
 import { touchstoneActions } from "../actions/TouchstoneActions";
 import { Touchstone } from "../Models";
+import { sources } from "../sources/Sources";
 
 export interface State extends RemoteContent {
     touchstones: Array<Touchstone>;
 }
 
 interface TouchstoneStoreInterface extends AltJS.AltStore<State> {
+    fetchTouchstones(): void;
+    isLoading(): boolean;
 }
 
-class TouchstoneStore extends AbstractStore<State> {
+class TouchstoneStore extends AbstractStore<State, TouchstoneStoreInterface> {
     touchstones: Array<Touchstone>;
-    errorMessage: string;
     ready: boolean;
 
     constructor() {
         super();
+        this.registerAsync(sources.touchstones);
         this.bindListeners({
             handleBeginFetch: touchstoneActions.beginFetch,
-            handleUpdate: touchstoneActions.update,
-            handleFetchFailed: touchstoneActions.fetchFailed
+            handleUpdate: touchstoneActions.update
         });
     }
 
     initialState(): State {
         return {
             touchstones: [],
-            errorMessage: null,
-            ready: false,
+            ready: false
         };
     }
 
     handleBeginFetch() {
         this.touchstones = [];
-        this.errorMessage = null;
         this.ready = false;
     }
 
     handleUpdate(touchstones: Array<Touchstone>) {
         this.touchstones = touchstones;
         this.ready = true;
-    }
-
-    handleFetchFailed(errorMessage: string) {
-        this.errorMessage = errorMessage;
-        this.ready = false;
     }
 }
 

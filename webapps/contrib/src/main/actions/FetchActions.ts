@@ -1,60 +1,16 @@
 import { AbstractActions } from "./AbstractActions";
 import { Result } from "../Models";
 
-export interface FetchActionsInterface<TFetchParameters> {
-    fetch(parameters: TFetchParameters): (dispatch: any) => any;
-    beginFetch(): any;
-    fetchFailed(errorMessage: string): string;
+export interface FetchActionsInterface<T> {
+    update(data: T): T;
+    beginFetch(): boolean;
 }
 
-export abstract class FetchActions<TFetchParameters, TModel> extends AbstractActions {
-    abstract doFetch(parameters: TFetchParameters): Promise<Response>;
-
-    abstract receivedFetchedData(data: TModel): boolean;
-
-    fetch(parameters: TFetchParameters): (dispatch: any) => any {
-        return (dispatch: any) => {
-            dispatch();
-            this.beginFetch();
-            const promise = this.doFetch(parameters);
-            handleResponse(promise,
-                data => {
-                    console.log("Received fetched data");
-                    this.receivedFetchedData(<TModel>(data));
-                },
-                error => this.fetchFailed(error)
-            );
-        };
+export class FetchActions<T> extends AbstractActions implements FetchActionsInterface<T> {
+    update(data: T) {
+        return data;
     }
-
-    fetchFailed(errorMessage: string): string {
-        console.log("fetchFailed: " + errorMessage);
-        return errorMessage;
-    }
-
-    beginFetch(): any {
+    beginFetch(): boolean {
         return true;
     }
-}
-
-function handleResponse(promise: Promise<Response>, success: (data: any) => void, failure: (message: string) => void): void {
-    promise.then((response: Response) => {
-        return response.json();
-    })
-        .then((response: any) => {
-            const apiResponse = <Result>response;
-            switch (apiResponse.status) {
-                case "success":
-                    success(apiResponse.data);
-                    break;
-                case "failure":
-                    failure(apiResponse.errors[ 0 ].message);
-                    break;
-                default:
-                    failure("The server response was not correctly formatted: " + response.toString());
-            }
-        })
-        .catch((errorMessage: string) => {
-            failure(errorMessage);
-        });
 }

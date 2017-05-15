@@ -1,7 +1,6 @@
 import { setupVirtualDOM } from "./JSDomHelpers";
 import { handleTeamCityEvent } from "./TeamCityIntegration";
-import { mockSource } from "./mocks/mockRemote";
-import { sources } from "../main/sources/Sources";
+import { mockFetcherResponse } from "./mocks/mockRemote";
 import "isomorphic-fetch";
 
 function fullTestName(test: TestContext): string {
@@ -14,9 +13,7 @@ function fullTestName(test: TestContext): string {
 
 before(() => {
     setupVirtualDOM();
-    mockSource(sources.diseases);
-    mockSource(sources.responsibilities);
-    mockSource(sources.touchstones);
+    mockFetcherResponse();
 });
 
 beforeEach(function () {

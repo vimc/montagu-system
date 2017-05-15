@@ -4,8 +4,9 @@ import { mockDisease } from "../mocks/mockModels";
 const jwt = require("jsonwebtoken");
 
 import { Store } from "../../main/stores/MainStore";
-import { mainActions } from "../../main/actions/MainActions";
 import { authActions } from "../../main/actions/AuthActions";
+import { diseaseActions } from "../../main/actions/DiseaseActions";
+import { errorActions } from "../../main/actions/ErrorActions";
 
 describe("MainStore", () => {
     beforeEach(() => {
@@ -25,7 +26,7 @@ describe("MainStore", () => {
     it("receiveDiseases sets diseases", () => {
         const disease1 = mockDisease({ id: "d1" });
         const disease2 = mockDisease({ id: "d2" });
-        mainActions.receiveDiseases([ disease1, disease2 ]);
+        diseaseActions.update([ disease1, disease2 ]);
 
         const state = Store.getState();
         expect(state).to.eql({
@@ -41,12 +42,21 @@ describe("MainStore", () => {
         });
     });
 
-    it("fetchFailed sets errorMessage", () => {
-        mainActions.fetchFailed("message");
+    it("errorActions.error adds errorMessage", () => {
+        errorActions.error("message");
 
-        const state = Store.getState();
+        let state = Store.getState();
         expect(state).to.eql({
-            errorMessage: "message",
+            errors: [ "message" ],
+            ready: false,
+            diseases: { loaded: false, content: null }
+        });
+
+        errorActions.error("message 2");
+
+        state = Store.getState();
+        expect(state).to.eql({
+            errors: [ "message 2", "message" ],
             ready: false,
             diseases: { loaded: false, content: null }
         });
@@ -61,7 +71,7 @@ describe("MainStore", () => {
         authActions.logIn(token);
 
         const state = Store.getState();
-        expect(state.errorMessage).to.be.null;
+        expect(state.errors).to.be.empty;
     });
 
     it("logIn does set errorMessage if user is inactive", () => {
@@ -73,7 +83,7 @@ describe("MainStore", () => {
         authActions.logIn(token);
 
         const state = Store.getState();
-        expect(state.errorMessage).to.contain("Your account has been deactivated");
+        expect(state.errors[0]).to.contain("Your account has been deactivated");
     });
 
     it("logIn does set errorMessage if user is not a modeller", () => {
@@ -85,6 +95,6 @@ describe("MainStore", () => {
         authActions.logIn(token);
 
         const state = Store.getState();
-        expect(state.errorMessage).to.contain("Only members of modelling groups");
+        expect(state.errors[0]).to.contain("Only members of modelling groups");
     });
 });

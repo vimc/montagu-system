@@ -1,25 +1,30 @@
 import alt from "../alt";
 import * as AltJS from "alt";
-import { RemoteContent } from "./RemoteContent";
 import { AbstractStore } from "./AbstractStore";
-import { mainActions } from "../actions/MainActions";
-import { touchstoneActions } from "../actions/TouchstoneActions";
+import * as TouchstoneStore from './TouchstoneStore';
 import { authActions, LogInProperties } from "../actions/AuthActions";
 import { Disease } from "../Models";
 import { settings } from "../Settings";
 import { Loadable } from "./Loadable";
+import { DiseaseSource } from "../sources/DiseaseSource";
+import { diseaseActions } from "../actions/DiseaseActions";
+import { errorActions } from "../actions/ErrorActions";
+import { RemoteContent } from "./RemoteContent";
+import { sources } from "../sources/Sources";
 
 export interface State extends RemoteContent {
     diseases: Loadable<Disease>;
+    errors: string[]
 }
 
-interface MainStoreInterface extends AltJS.AltStore<State> {
+interface Interface extends AltJS.AltStore<State> {
     getDiseaseById(id: string): Disease;
+    fetchDiseases(): void;
+    isLoading(): boolean;
 }
 
 function onReady() {
-    const action: any = touchstoneActions.fetch;
-    action.defer();
+    setTimeout(() => TouchstoneStore.Store.fetchTouchstones());
 }
 
 export function makeDiseaseLookup(diseases: Disease[]): Loadable<Disease> {
@@ -35,24 +40,25 @@ export function makeDiseaseLookup(diseases: Disease[]): Loadable<Disease> {
 export function initialState(): State {
     return {
         diseases: { content: null, loaded: false },
-        errorMessage: null,
+        errors: [],
         ready: false
     };
 }
 
 
-class MainStore extends AbstractStore<State> {
+class MainStore extends AbstractStore<State, Interface> {
     ready: boolean;
-    errorMessage: string;
+    errors: string[];
     diseases: Loadable<Disease>;
 
     constructor() {
         super();
         this.bindListeners({
-            handleDiseases: mainActions.receiveDiseases,
-            handleFetchFailed: mainActions.fetchFailed,
+            handleDiseases: diseaseActions.update,
+            handleError: errorActions.error,
             handleLogIn: authActions.logIn,
         });
+        this.registerAsync(sources.diseases);
         this.exportPublicMethods({
             getDiseaseById: id => this.diseases.content[ id ]
         })
@@ -70,8 +76,8 @@ class MainStore extends AbstractStore<State> {
         }
     }
 
-    handleFetchFailed(errorMessage: string) {
-        this.errorMessage = errorMessage;
+    handleError(error: string) {
+        this.errors = [error, ...this.errors];
     }
 
     handleLogIn(props: LogInProperties) {
@@ -84,9 +90,9 @@ class MainStore extends AbstractStore<State> {
             }
 
             const support = settings.supportContact;
-            this.errorMessage = `${reason}. Please contact ${support} for help.`;
+            this.errors = [`${reason}. Please contact ${support} for help.`, ...this.errors];
         }
     }
 }
 
-export const Store = alt.createStore<State>(MainStore) as MainStoreInterface;
+export const Store = alt.createStore<State>(MainStore) as Interface;

@@ -4,6 +4,7 @@ import { Link } from "simple-react-router";
 import { connectToStores } from "../../alt";
 import { State, Store } from "../../stores/TouchstoneStore";
 import * as AuthStore from "../../stores/AuthStore";
+import * as ResponsibilityStore from "../../stores/ResponsibilityStore";
 import { Touchstone } from "../../Models";
 import { responsibilityActions } from "../../actions/ResponsibilityActions";
 
@@ -13,10 +14,7 @@ const styles = require("./TouchstoneList.css");
 export class TouchstoneLink extends React.Component<Touchstone, undefined> {
     onClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
         responsibilityActions.setTouchstone(this.props);
-        responsibilityActions.fetch({
-            groupId: AuthStore.Store.getState().modellingGroups[ 0 ],
-            touchstoneId: this.props.id
-        });
+        ResponsibilityStore.Store.fetchResponsibilities();
     };
 
     render() {

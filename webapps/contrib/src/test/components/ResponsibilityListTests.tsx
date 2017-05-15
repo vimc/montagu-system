@@ -15,6 +15,7 @@ function makeStoreState(responsibilities: Array<Responsibility>,
                         currentDiseaseId?: string): State {
     return {
         currentTouchstone: null,
+        currentModellingGroupId: null,
         currentDiseaseId: currentDiseaseId,
         responsibilitySet: {
             problems: "",
@@ -22,8 +23,7 @@ function makeStoreState(responsibilities: Array<Responsibility>,
             touchstone: "touchstone-1",
             responsibilities
         },
-        ready: true,
-        errorMessage: ""
+        ready: true
     };
 }
 

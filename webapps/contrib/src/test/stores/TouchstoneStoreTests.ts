@@ -32,17 +32,6 @@ describe("TouchstoneStore", () => {
         });
     });
 
-    it("fetchFailed sets errorMessage", () => {
-        touchstoneActions.fetchFailed("message");
-
-        const state = Store.getState();
-        expect(state).to.eql({
-            errorMessage: "message",
-            ready: false,
-            touchstones: []
-        });
-    });
-
     it("beginFetch clears everything", () => {
         // First set us up in an impossible state where everything is non-null
         alt.bootstrap(JSON.stringify({

@@ -8,18 +8,17 @@ import { LoginPage } from "./Login/LoginPage";
 interface RoutingProperties {
     loggedIn: boolean;
     loaded: boolean;
-    errorMessage: string;
 }
 
 export default class AppRouter extends Router<RoutingProperties> {
     getRoutes(map: RouteMap, props: RoutingProperties) {
-        const { loggedIn, loaded, errorMessage } = props;
+        const { loggedIn, loaded } = props;
         if (loggedIn) {
             if (loaded) {
                 map('/', ChooseTouchstonePage);
                 map('/responsibilities/:touchstoneId', ResponsibilityOverviewPage);
             } else {
-                map("*", LoadingPage, { errorMessage });
+                map("*", LoadingPage);
             }
         } else {
             map('*', LoginPage);

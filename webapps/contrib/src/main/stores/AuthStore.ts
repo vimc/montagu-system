@@ -2,8 +2,6 @@ import alt from "../alt";
 import * as AltJS from "alt";
 import { AbstractStore } from "./AbstractStore";
 import { authActions, LogInProperties } from "../actions/AuthActions";
-import { parseRole, Role } from "../models/Roles";
-const jwt_decode = require('jwt-decode');
 
 export interface State {
     loggedIn: boolean;
@@ -26,7 +24,7 @@ export function initialState(): State {
     };
 }
 
-class AuthStore extends AbstractStore<State> {
+class AuthStore extends AbstractStore<State, AuthStoreInterface> {
     loggedIn: boolean;
     username: string;
     bearerToken: string;
@@ -46,12 +44,14 @@ class AuthStore extends AbstractStore<State> {
     }
 
     handleLogIn(props: LogInProperties) {
-        this.loggedIn = true;
-        this.bearerToken = props.token;
-        this.username = props.username;
-        this.permissions = props.permissions;
-        this.modellingGroups = props.modellingGroups;
-        console.log("Saved bearer token");
+        if (props.isAccountActive && props.isModeller) {
+            this.loggedIn = true;
+            this.bearerToken = props.token;
+            this.username = props.username;
+            this.permissions = props.permissions;
+            this.modellingGroups = props.modellingGroups;
+            console.log("Saved bearer token");
+        }
     }
 
     handleLogOut() {

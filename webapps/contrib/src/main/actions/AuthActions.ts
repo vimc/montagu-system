@@ -27,11 +27,14 @@ class AuthActions extends AbstractActions implements Actions {
             .filter((x: Role) => x.name == "member" && x.scope.prefix == "modelling-group")
             .map((x: Role) => x.scope.id);
 
+        const isAccountActive = permissions.some((x: string) => x == "*/can-login");
+        const isModeller = modellingGroups.length > 0;
+
         return {
             token: token,
             username: decoded.sub,
-            isAccountActive: permissions.some((x: string) => x == "*/can-login"),
-            isModeller: modellingGroups.length > 0,
+            isAccountActive,
+            isModeller,
             permissions,
             modellingGroups
         };

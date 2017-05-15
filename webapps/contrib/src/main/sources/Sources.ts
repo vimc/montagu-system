@@ -1,22 +1,9 @@
-import { Source } from "./Source";
-
-export interface NoParameters {
-}
-;
-
-const touchstoneSource = new Source<NoParameters>(_ => '/touchstones/');
-const diseaseSource = new Source<NoParameters>(_ => '/diseases/');
-
-export interface ResponsibilityFetchParameters {
-    groupId: string;
-    touchstoneId: string;
-}
-const responsibilitySource = new Source<ResponsibilityFetchParameters>(p =>
-    `/modelling-groups/${p.groupId}/responsibilities/${p.touchstoneId}/`);
+import { DiseaseSource } from "./DiseaseSource";
+import { TouchstoneSource } from "./TouchstoneSource";
+import { ResponsibilitySource } from "./ResponsibilitySource";
 
 export const sources = {
-    diseases: diseaseSource,
-    touchstones: touchstoneSource,
-    responsibilities: responsibilitySource
+    diseases: new DiseaseSource(),
+    touchstones: new TouchstoneSource(),
+    responsibilities: new ResponsibilitySource()
 };
-

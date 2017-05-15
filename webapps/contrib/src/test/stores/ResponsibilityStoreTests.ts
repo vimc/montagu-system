@@ -5,10 +5,6 @@ import { mockResponsibilitySet, mockTouchstone } from "../mocks/mockModels";
 import { Store } from "../../main/stores/ResponsibilityStore";
 import { responsibilityActions } from "../../main/actions/ResponsibilityActions";
 
-function sleep(ms: number) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
-
 describe("ResponsibilityStore", () => {
     beforeEach(() => {
         // Clear all stores
@@ -28,7 +24,7 @@ describe("ResponsibilityStore", () => {
 
     it("updateResponsibilities sets responsibility set", () => {
         const responsibilitySet = mockResponsibilitySet({});
-        responsibilityActions.updateResponsibilities(responsibilitySet);
+        responsibilityActions.update(responsibilitySet);
 
         const state = Store.getState();
         expect(state).to.eql({
@@ -36,19 +32,6 @@ describe("ResponsibilityStore", () => {
             ready: true,
             currentTouchstone: null,
             responsibilitySet: responsibilitySet,
-            currentDiseaseId: null
-        });
-    });
-
-    it("fetchFailed sets errorMessage", () => {
-        responsibilityActions.fetchFailed("message");
-
-        const state = Store.getState();
-        expect(state).to.eql({
-            errorMessage: "message",
-            ready: false,
-            currentTouchstone: null,
-            responsibilitySet: null,
             currentDiseaseId: null
         });
     });

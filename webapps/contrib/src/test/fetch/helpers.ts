@@ -1,9 +1,9 @@
-import { Source } from "../../main/sources/Source";
-import { ErrorInfo, Result } from "../../main/Models";
-import * as actionHelpers from "../actionHelpers";
-import { mockResult, mockSource } from "../mocks/mockRemote";
+//import { Source } from "../../main/sources/Source";
+//import { ErrorInfo, Result } from "../../main/Models";
+//import * as actionHelpers from "../actionHelpers";
+//import { mockResult, mockSource } from "../mocks/mockRemote";
 
-interface FetchHelperConfig<TFetchParameters> {
+/*interface FetchHelperConfig<TFetchParameters> {
     source: Source<TFetchParameters>;
     fetchAction: (params: TFetchParameters) => void,
     params: TFetchParameters,
@@ -19,9 +19,9 @@ interface FetchTestConfig<TFetchParameters> {
     payload: Result,
     errorMessage: string,
     expectedAction: actionHelpers.ActionExpectation
-}
+}*/
 
-export class FetchHelper<TFetchParameters> {
+/*export class FetchHelper<TFetchParameters> {
     config: FetchHelperConfig<TFetchParameters>;
 
     constructor(config: FetchHelperConfig<TFetchParameters>) {
@@ -83,4 +83,4 @@ export class FetchHelper<TFetchParameters> {
             });
         });
     }
-}
+}*/
