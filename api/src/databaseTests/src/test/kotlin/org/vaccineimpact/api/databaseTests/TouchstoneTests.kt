@@ -1,17 +1,15 @@
 package org.vaccineimpact.api.databaseTests
 
-import org.assertj.core.api.Assertions.assertThat
-import org.assertj.core.api.Assertions.fail
+import org.assertj.core.api.Assertions.*
 import org.junit.Test
+import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.app.repositories.jooq.JooqScenarioRepository
 import org.vaccineimpact.api.app.repositories.jooq.JooqTouchstoneRepository
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.direct.*
-import org.vaccineimpact.api.models.CoverageSet
-import org.vaccineimpact.api.models.Scenario
-import org.vaccineimpact.api.models.ScenarioAndCoverageSets
+import org.vaccineimpact.api.models.*
 
 class TouchstoneTests : RepositoryTests<TouchstoneRepository>()
 {
@@ -80,15 +78,15 @@ class TouchstoneTests : RepositoryTests<TouchstoneRepository>()
                     ScenarioAndCoverageSets(
                             Scenario("yf-1", "Yellow Fever 1", "YF", listOf(touchstoneId)),
                             listOf(
-                                    CoverageSet(yfSet1, touchstoneId, "YF, No vacc", "YF", "none", "none"),
-                                    CoverageSet(yfSet2, touchstoneId, "YF, Routine vacc", "YF", "without", "routine"),
-                                    CoverageSet(yfSet3, touchstoneId, "YF, Routine GAVI vacc", "YF", "with", "routine")
+                                    CoverageSet(yfSet1, touchstoneId, "YF, No vacc", "YF", GAVISupportLevel.NONE, ActivityType.NONE),
+                                    CoverageSet(yfSet2, touchstoneId, "YF, Routine vacc", "YF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE),
+                                    CoverageSet(yfSet3, touchstoneId, "YF, Routine GAVI vacc", "YF", GAVISupportLevel.WITH, ActivityType.ROUTINE)
                             )
                     ),
                     ScenarioAndCoverageSets(
                             Scenario("ms-1", "Measles 1", "Measles", listOf(touchstoneId)),
                             listOf(
-                                    CoverageSet(measlesSet, touchstoneId, "Measles, No vacc", "Measles", "none", "none")
+                                    CoverageSet(measlesSet, touchstoneId, "Measles, No vacc", "Measles", GAVISupportLevel.NONE, ActivityType.NONE)
                             )
                     )
             ))
@@ -116,7 +114,7 @@ class TouchstoneTests : RepositoryTests<TouchstoneRepository>()
                     ScenarioAndCoverageSets(
                             Scenario("yf-1", "Yellow Fever 1", "YF", listOf(touchstoneId, otherTouchstone)),
                             listOf(
-                                    CoverageSet(goodSet, touchstoneId, "YF, No vacc", "YF", "none", "none")
+                                    CoverageSet(goodSet, touchstoneId, "YF, No vacc", "YF", GAVISupportLevel.NONE, ActivityType.NONE)
                             )
                     )
             ))
@@ -139,6 +137,46 @@ class TouchstoneTests : RepositoryTests<TouchstoneRepository>()
                     Scenario("ms-2", "Measles 2", "Measles", listOf(touchstoneId))
             ))
             assertThat(getScenarios(it, filter(scenarioId = "yf-1", disease = "Measles"))).isEmpty()
+        }
+    }
+
+    @Test
+    fun `getScenario throws exception if scenario doesn't exist`()
+    {
+        given {
+            createTouchstoneAndScenarioDescriptions(it)
+        } check {
+            assertThatThrownBy { it.getScenario(touchstoneId, "yf-1") }
+                    .isInstanceOf(UnknownObjectError::class.java)
+        }
+    }
+
+    @Test
+    fun `can get scenario with ordered coverage sets`()
+    {
+        val scenarioId = 1
+        val setA = 1
+        val setB = 2
+        val extraTouchstoneId = "extra-1"
+        given {
+            createTouchstoneAndScenarioDescriptions(it)
+            it.addTouchstone("extra", 1, addName = true)
+            it.addScenario(touchstoneId, "yf-1", id = scenarioId)
+            it.addScenario(touchstoneId, "yf-2", id = scenarioId + 1)
+            it.addScenario(extraTouchstoneId, "yf-1", id = scenarioId + 2)
+            it.addCoverageSet(touchstoneId, "YF without", "YF", "without", "campaign", id = setA)
+            it.addCoverageSet(touchstoneId, "YF with", "YF", "with", "campaign", id = setB)
+            it.addCoverageSetToScenario(scenarioId, setB, 4)
+            it.addCoverageSetToScenario(scenarioId, setA, 0)
+        } check {
+            val result = it.getScenario(touchstoneId, "yf-1")
+            assertThat(result.scenario).isEqualTo(Scenario(
+                    "yf-1", "Yellow Fever 1", "YF", listOf(touchstoneId, extraTouchstoneId)
+            ))
+            assertThat(result.coverageSets).hasSameElementsAs(listOf(
+                    CoverageSet(setA, touchstoneId, "YF without", "YF", GAVISupportLevel.WITHOUT, ActivityType.CAMPAIGN),
+                    CoverageSet(setB, touchstoneId, "YF with", "YF", GAVISupportLevel.WITH, ActivityType.CAMPAIGN)
+            ))
         }
     }
 

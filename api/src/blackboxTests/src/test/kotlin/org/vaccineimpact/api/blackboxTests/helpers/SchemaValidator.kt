@@ -27,14 +27,19 @@ class SchemaValidator
 
     fun validateError(jsonAsString: String,
                       expectedErrorCode: String? = null,
+                      expectedErrorText: String? = null,
                       assertionText: String? = null)
     {
         val json = parseJson(jsonAsString)
         checkResultSchema(json, jsonAsString, "failure", assertionText = assertionText)
-        val errors = json["errors"]
+        val error = json["errors"].first()
         if (expectedErrorCode != null)
         {
-            assertThat(errors.map { it["code"].asText() }).contains(expectedErrorCode)
+            assertThat(error["code"].asText()).isEqualTo(expectedErrorCode)
+        }
+        if (expectedErrorText != null)
+        {
+            assertThat(error["message"].asText()).contains(expectedErrorText)
         }
     }
     fun validateSuccess(jsonAsString: String, assertionText: String? = null)

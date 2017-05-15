@@ -75,6 +75,22 @@ class SerializerTests : MontaguTests()
     }
 
     @Test
+    fun `can serialize GAVISupportLevel`()
+    {
+        val actual = GAVISupportLevel.WITH
+        val expected = "\"with\""
+        checkSerializedForm(expected, actual)
+    }
+
+    @Test
+    fun `can serialize ActivityType`()
+    {
+        val actual = ActivityType.CAMPAIGN
+        val expected = "\"campaign\""
+        checkSerializedForm(expected, actual)
+    }
+
+    @Test
     fun `toResult wraps object in successful Result`()
     {
         val data = 31415

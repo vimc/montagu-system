@@ -22,7 +22,7 @@ open class ActionContext(private val context: SparkWebContext)
 
     open fun hasPermission(requirement: ReifiedPermission)
             = permissions.any { requirement.satisfiedBy(it) }
-    open fun requirePermission(requirement: ReifiedPermission)
+    fun requirePermission(requirement: ReifiedPermission)
     {
         if (!hasPermission(requirement))
         {
