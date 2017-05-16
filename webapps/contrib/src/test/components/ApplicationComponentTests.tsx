@@ -8,12 +8,12 @@ import * as AuthStore from "../../main/stores/AuthStore";
 import { expect } from "chai";
 
 import { ApplicationComponent } from "../../main/components/Application";
+import { ErrorLog } from "../../main/components/ErrorLog/ErrorLog";
 import Router from "../../main/components/Router";
 
 describe("Application", () => {
     it("renders Router", () => {
         const main = Object.assign(MainStore.initialState(), {
-            errorMessage: "message",
             ready: true,
         });
         const auth = Object.assign(AuthStore.initialState(), {
@@ -23,9 +23,21 @@ describe("Application", () => {
         const router = rendered.find(Router);
         expect(router).has.length(1, "Expected Router to be rendered");
         expect(router.props()).to.eql({
-            errorMessage: "message",
             loaded: true,
             loggedIn: true
+        });
+    });
+
+    it("renders ErrorLog", () => {
+        const main = Object.assign(MainStore.initialState(), {
+            errors: [ "m1", "m2" ]
+        });
+        const auth = AuthStore.initialState();
+        const rendered = shallow(<ApplicationComponent main={ main } auth={ auth } />);
+        const log = rendered.find(ErrorLog);
+        expect(log).has.length(1, "Expected Router to be rendered");
+        expect(log.props()).to.eql({
+            errors: [ "m1", "m2" ]
         });
     });
 });

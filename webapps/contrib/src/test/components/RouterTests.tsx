@@ -15,7 +15,6 @@ describe("Router", () => {
         const rendered = shallow(<Router loggedIn={true} loaded={false} />);
         const page = rendered.find(LoadingPage);
         expect(page).has.length(1, "Expected LoadingPage to be rendered");
-        expect(page.prop("errorMessage")).to.equal("");
     });
 
     it("does normal routing when logged in and loaded", () => {

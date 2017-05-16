@@ -9,6 +9,8 @@ export interface ActionExpectation {
 }
 
 export function expectOrderedActions(spy: sinon.SinonSpy, expectations: Array<ActionExpectation>, startIndex: number = 0) {
+    //spy.args.forEach((e, i) => console.log(`${i}: ${JSON.stringify(e[0])} with payload ${JSON.stringify(e[1])}`));
+
     expectations.forEach((value, index) => {
         const event = spy.args[ startIndex + index ];
         expect(event).is.not.equal(undefined, `Expected this ${startIndex + index}th event: ${value.action}`);
@@ -24,13 +26,6 @@ export function expectOrderedActions(spy: sinon.SinonSpy, expectations: Array<Ac
             })
         }
     })
-}
-
-export function expectFetchActions(spy: sinon.SinonSpy, namespace: string, startIndex: number) {
-    expectOrderedActions(spy, [
-        { action: `${namespace}.fetch`, payload: undefined },
-        { action: `${namespace}.beginFetch`, payload: true },
-    ], startIndex);
 }
 
 export function expectOneAction(spy: sinon.SinonSpy, expectation: ActionExpectation, startIndex: number = 0) {

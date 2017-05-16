@@ -14,7 +14,6 @@ describe("TouchstoneStore", () => {
     it("is initially blank", () => {
         const state = Store.getState();
         expect(state).to.eql({
-            errorMessage: null,
             ready: false,
             touchstones: []
         });
@@ -26,17 +25,15 @@ describe("TouchstoneStore", () => {
 
         const state = Store.getState();
         expect(state).to.eql({
-            errorMessage: null,
             ready: true,
             touchstones
         });
     });
 
     it("beginFetch clears everything", () => {
-        // First set us up in an impossible state where everything is non-null
+        // First set us up in a state where everything is non-null
         alt.bootstrap(JSON.stringify({
             TouchstoneStore: {
-                errorMessage: "message",
                 ready: true,
                 touchstones: [ mockTouchstone({}) ]
             }
@@ -45,7 +42,6 @@ describe("TouchstoneStore", () => {
 
         const state = Store.getState();
         expect(state).to.eql({
-            errorMessage: null,
             ready: false,
             touchstones: []
         });

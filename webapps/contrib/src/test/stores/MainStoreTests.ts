@@ -17,7 +17,7 @@ describe("MainStore", () => {
     it("is initially blank", () => {
         const state = Store.getState();
         expect(state).to.eql({
-            errorMessage: null,
+            errors: [],
             ready: false,
             diseases: { loaded: false, content: null }
         });
@@ -30,7 +30,7 @@ describe("MainStore", () => {
 
         const state = Store.getState();
         expect(state).to.eql({
-            errorMessage: null,
+            errors: [],
             ready: true,
             diseases: {
                 loaded: true,

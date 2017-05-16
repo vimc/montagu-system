@@ -1,9 +1,11 @@
 import { expect } from "chai";
 import alt from "../../main/alt";
 import { mockResponsibilitySet, mockTouchstone } from "../mocks/mockModels";
+const jwt = require("jsonwebtoken");
 
 import { Store } from "../../main/stores/ResponsibilityStore";
 import { responsibilityActions } from "../../main/actions/ResponsibilityActions";
+import { authActions } from "../../main/actions/AuthActions";
 
 describe("ResponsibilityStore", () => {
     beforeEach(() => {
@@ -14,8 +16,8 @@ describe("ResponsibilityStore", () => {
     it("is initially blank", () => {
         const state = Store.getState();
         expect(state).to.eql({
-            errorMessage: null,
             ready: false,
+            currentModellingGroupId: null,
             currentTouchstone: null,
             responsibilitySet: null,
             currentDiseaseId: null
@@ -28,22 +30,40 @@ describe("ResponsibilityStore", () => {
 
         const state = Store.getState();
         expect(state).to.eql({
-            errorMessage: null,
             ready: true,
             currentTouchstone: null,
+            currentModellingGroupId: null,
             responsibilitySet: responsibilitySet,
             currentDiseaseId: null
         });
     });
 
-    it("beginFetch clears everything except currentTouchstone", () => {
-        const touchstone = mockTouchstone()
-        // First set us up in an impossible state where everything is non-null
+    it("setTouchstone sets touchstone", () => {
+        const touchstone = mockTouchstone();
+        responsibilityActions.setTouchstone(touchstone);
+        const state = Store.getState();
+        expect(state.currentTouchstone).to.equal(touchstone);
+    });
+
+    it("logIn sets modelling group id", () => {
+        const token = jwt.sign({
+            sub: "test.user",
+            permissions: "*/can-login",
+            roles: "modelling-group:test.group/member"
+        }, 'secret');
+        authActions.logIn(token);
+        const state = Store.getState();
+        expect(state.currentModellingGroupId).to.equal("test.group");
+    });
+
+    it("beginFetch clears everything except currentTouchstone and currentModellingGroupId", () => {
+        const touchstone = mockTouchstone();
+        // First set us up in a state where everything is non-null
         alt.bootstrap(JSON.stringify({
             ResponsibilityStore: {
-                errorMessage: "message",
                 ready: true,
                 currentTouchstone: touchstone,
+                currentModellingGroupId: "id",
                 responsibilitySet: mockResponsibilitySet(),
                 currentDiseaseId: "disease"
             }
@@ -52,9 +72,9 @@ describe("ResponsibilityStore", () => {
 
         const state = Store.getState();
         expect(state).to.eql({
-            errorMessage: null,
             ready: false,
             currentTouchstone: touchstone,
+            currentModellingGroupId: "id",
             responsibilitySet: null,
             currentDiseaseId: null
         });
@@ -65,9 +85,9 @@ describe("ResponsibilityStore", () => {
 
         const state = Store.getState();
         expect(state).to.eql({
-            errorMessage: null,
             ready: false,
             currentTouchstone: null,
+            currentModellingGroupId: null,
             responsibilitySet: null,
             currentDiseaseId: "YF"
         });

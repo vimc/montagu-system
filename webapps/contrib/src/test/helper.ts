@@ -2,6 +2,7 @@ import { setupVirtualDOM } from "./JSDomHelpers";
 import { handleTeamCityEvent } from "./TeamCityIntegration";
 import { mockFetcherResponse } from "./mocks/mockRemote";
 import "isomorphic-fetch";
+import { restoreDispatch } from "./actionHelpers";
 
 function fullTestName(test: TestContext): string {
     if (test != null) {
@@ -28,4 +29,5 @@ afterEach(function () {
         });
     }
     handleTeamCityEvent('after', testName, null);
+    restoreDispatch();
 });
