@@ -9,15 +9,17 @@ export interface ActionExpectation {
 }
 
 export function expectOrderedActions(spy: sinon.SinonSpy, expectations: Array<ActionExpectation>, startIndex: number = 0) {
-    //spy.args.forEach((e, i) => console.log(`${i}: ${JSON.stringify(e[0])} with payload ${JSON.stringify(e[1])}`));
+    //spy.args.forEach((e, i) => console.log(`${i}: ${JSON.stringify(e)}`));
 
     expectations.forEach((value, index) => {
-        const event = spy.args[ startIndex + index ];
-        expect(event).is.not.equal(undefined, `Expected this ${startIndex + index}th event: ${value.action}`);
+        const realIndex = startIndex + index;
+        const event = spy.args[realIndex];
+        expect(event).is.not.equal(undefined, `Expected this ${realIndex}th event: ${value.action}`);
         if (typeof event[0] == "string") {
             expect(event[0]).to.equal(value.action);
             if (value.hasOwnProperty("payload")) {
-                expect(event[1]).to.eql(value.payload);
+                expect(event[1]).to.eql(value.payload,
+                    `Expected payload for event ${realIndex}, which was ${JSON.stringify(event[1])}, to match ${JSON.stringify(value.payload)}`);
             }
         } else {
             expect(event[0]).to.eql({

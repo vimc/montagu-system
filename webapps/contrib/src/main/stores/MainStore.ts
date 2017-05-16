@@ -18,7 +18,7 @@ export interface State extends RemoteContent {
 }
 
 interface Interface extends AltJS.AltStore<State> {
-    load(): void;
+    load(): Promise<Response>;
     getDiseaseById(id: string): Disease;
     fetchDiseases(): void;
     isLoading(): boolean;
@@ -61,10 +61,8 @@ class MainStore extends AbstractStore<State, Interface> {
         });
         this.registerAsync(sources.diseases);
         this.exportPublicMethods({
-            getDiseaseById: id => this.diseases.content[ id ],
-            load: () => {
-                this.getInstance().fetchDiseases();
-            }
+            getDiseaseById: id => this.diseases.content[id],
+            load: () => this.getInstance().fetchDiseases()
         })
     }
 
@@ -80,7 +78,10 @@ class MainStore extends AbstractStore<State, Interface> {
         }
     }
 
-    handleError(error: string) {
+    handleError(error: string | Error) {
+        if (error instanceof Error) {
+            error = error.message;
+        }
         this.errors = [error, ...this.errors];
     }
 

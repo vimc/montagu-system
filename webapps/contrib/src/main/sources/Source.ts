@@ -31,6 +31,12 @@ export abstract class Source<TModel, TState> {
                             default:
                                 throw Error("The server response was not correctly formatted: " + response.toString());
                         }
+                    }).catch((error: any) => {
+                        if (error instanceof Error) {
+                            throw error;
+                        } else {
+                            throw Error(error);
+                        }
                     });
             },
             local(state: TState) {

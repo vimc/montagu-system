@@ -1,61 +1,60 @@
-//import { Source } from "../../main/sources/Source";
-//import { ErrorInfo, Result } from "../../main/Models";
-//import * as actionHelpers from "../actionHelpers";
-//import { mockResult, mockSource } from "../mocks/mockRemote";
+import { Source } from "../../main/sources/Source";
+import { ErrorInfo, Result } from "../../main/Models";
+import * as actionHelpers from "../actionHelpers";
+import { mockFetcherResponse, mockResult } from "../mocks/mockRemote";
+import { expectOneAction } from "../actionHelpers";
 
-/*interface FetchHelperConfig<TFetchParameters> {
-    source: Source<TFetchParameters>;
-    fetchAction: (params: TFetchParameters) => void,
-    params: TFetchParameters,
-
-    actionNamespace: string;
-    successAction: string;
-    failAction: string;
+interface FetchHelperConfig {
+    triggerFetch: () => Promise<any>,
     makePayload: () => any;
 }
 
-interface FetchTestConfig<TFetchParameters> {
+interface FetchTestConfig {
     done: DoneCallback,
     payload: Result,
     errorMessage: string,
     expectedAction: actionHelpers.ActionExpectation
-}*/
+}
 
-/*export class FetchHelper<TFetchParameters> {
-    config: FetchHelperConfig<TFetchParameters>;
+export class FetchHelper {
+    config: FetchHelperConfig;
 
-    constructor(config: FetchHelperConfig<TFetchParameters>) {
+    constructor(config: FetchHelperConfig) {
         this.config = config;
     }
 
-    testFetchWithMockedResponse({ done, payload, errorMessage, expectedAction }: FetchTestConfig<TFetchParameters>) {
-        mockSource(this.config.source, payload, errorMessage);
+    testFetchWithMockedResponse({ done, payload, errorMessage, expectedAction }: FetchTestConfig) {
+        mockFetcherResponse(payload, errorMessage);
         const spy = actionHelpers.dispatchSpy();
-        this.config.fetchAction(this.config.params);
+        const handler = (_: any) => {
+            try {
+                expectOneAction(spy, { action: `_class.beginFetch1` }, 0);
+                expectOneAction(spy, expectedAction, 1);
+                done();
+            } catch (e) {
+                done(e);
+            }
+        };
 
-        setTimeout(() => {
-            actionHelpers.expectFetchActions(spy, this.config.actionNamespace, 0);
-            actionHelpers.expectOrderedActions(spy, [ expectedAction ], 2);
-            done();
-        });
+        this.config.triggerFetch().then(handler, handler);
     }
 
     addTestsToMocha() {
-        it(`emits ${this.config.successAction} when source returns successfully`, (done: DoneCallback) => {
+        it(`emits update when source returns successfully`, (done: DoneCallback) => {
             const payload = this.config.makePayload();
             this.testFetchWithMockedResponse({
                 done,
                 payload: mockResult(payload),
                 errorMessage: null,
                 expectedAction: {
-                    action: `${this.config.actionNamespace}.${this.config.successAction}`,
+                    action: "_class.update1",
                     payload: payload
                 }
             });
         });
 
-        it("emits fetchFailed when source returns errors", (done: DoneCallback) => {
-            const message = "Error message";
+        it("emits errorActions.error when source returns errors", (done: DoneCallback) => {
+            const message = "Error message in error collection";
             const errors: Array<ErrorInfo> = [
                 { code: "code", message: message }
             ];
@@ -64,23 +63,23 @@ interface FetchTestConfig<TFetchParameters> {
                 payload: mockResult(null, errors, "failure"),
                 errorMessage: null,
                 expectedAction: {
-                    action: `${this.config.actionNamespace}.${this.config.failAction}`,
-                    payload: message
+                    action: "ErrorActions.error",
+                    payload: Error(message)
                 }
             });
         });
 
-        it("emits fetchFailed when error occurs accessing source", (done: DoneCallback) => {
+        it("emits errorActions.error when error occurs accessing source", (done: DoneCallback) => {
             const errorMessage = "Error message";
             this.testFetchWithMockedResponse({
                 done,
                 payload: null,
                 errorMessage,
                 expectedAction: {
-                    action: `${this.config.actionNamespace}.${this.config.failAction}`,
-                    payload: errorMessage
+                    action: "ErrorActions.error",
+                    payload: Error(errorMessage)
                 }
             });
         });
     }
-}*/
+}

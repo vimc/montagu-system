@@ -1,5 +1,6 @@
 import { expect } from "chai";
 import alt from "../../main/alt";
+import * as sinon from "sinon";
 import { mockDisease } from "../mocks/mockModels";
 const jwt = require("jsonwebtoken");
 
@@ -7,6 +8,7 @@ import { Store } from "../../main/stores/MainStore";
 import { authActions } from "../../main/actions/AuthActions";
 import { diseaseActions } from "../../main/actions/DiseaseActions";
 import { errorActions } from "../../main/actions/ErrorActions";
+import * as TouchstoneStore from '../../main/stores/TouchstoneStore';
 
 describe("MainStore", () => {
     beforeEach(() => {
@@ -23,7 +25,8 @@ describe("MainStore", () => {
         });
     });
 
-    it("receiveDiseases sets diseases", () => {
+    it("receiveDiseases sets diseases", (done: DoneCallback) => {
+        const spy = sinon.spy(TouchstoneStore.Store, "fetchTouchstones");
         const disease1 = mockDisease({ id: "d1" });
         const disease2 = mockDisease({ id: "d2" });
         diseaseActions.update([ disease1, disease2 ]);
@@ -39,6 +42,11 @@ describe("MainStore", () => {
                     d2: disease2,
                 }
             }
+        });
+        setTimeout(() => {
+           expect(spy.called).to.be.true;
+           spy.restore();
+           done();
         });
     });
 
