@@ -2,9 +2,9 @@ import { mockTouchstone } from "../mocks/mockModels";
 import { FetchHelper } from "./helpers";
 import * as actionHelpers from "../actionHelpers";
 
-import { Store } from "../../main/stores/TouchstoneStore";
+import { Store } from "../../main/stores/ResponsibilityStore";
 
-describe("TouchstoneStore.fetchTouchstones", () => {
+describe("ResponsibilityStore.fetchTouchstones", () => {
     afterEach(() => {
         actionHelpers.restoreDispatch();
     });

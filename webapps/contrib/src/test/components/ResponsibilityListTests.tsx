@@ -1,21 +1,17 @@
 import * as React from "react";
 import { expect } from "chai";
 import { shallow } from "enzyme";
-import { mockResponsibility } from "../mocks/mockModels";
+import { mockResponsibility, mockTouchstone } from "../mocks/mockModels";
 
-import { ResponsibilityListComponent } from "../../main/components/Responsibilities/ResponsibilityList";
+import { ResponsibilityListComponent, ResponsibilityListComponentProps } from "../../main/components/Responsibilities/ResponsibilityList";
 import { ResponsibilityComponent } from "../../main/components/Responsibilities/ResponsibilityComponent";
 import { DiseaseFilter } from "../../main/components/Responsibilities/DiseaseFilter";
 import { Responsibility } from "../../main/Models";
-import { State } from "../../main/stores/ResponsibilityStore";
 
-const styles = require("../../main/components/Responsibilities/Responsibilities.css");
-
-function makeStoreState(responsibilities: Array<Responsibility>,
-                        currentDiseaseId?: string): State {
+function makeProps(responsibilities: Array<Responsibility>,
+                        currentDiseaseId?: string): ResponsibilityListComponentProps {
     return {
-        currentTouchstone: null,
-        currentModellingGroupId: null,
+        touchstone: mockTouchstone(),
         currentDiseaseId: currentDiseaseId,
         responsibilitySet: {
             problems: "",
@@ -29,17 +25,17 @@ function makeStoreState(responsibilities: Array<Responsibility>,
 
 describe('ResponsibilityListComponent', () => {
     it("renders message when there are no responsibilities", () => {
-        const state = makeStoreState([]);
-        const rendered = shallow(<ResponsibilityListComponent {...state} />);
+        const props = makeProps([]);
+        const rendered = shallow(<ResponsibilityListComponent {...props} />);
         expect(rendered.text()).to.contain("This modelling group has no responsibilities in this touchstone");
     });
 
     it("renders one ResponsibilityComponent per responsibility", () => {
-        const state = makeStoreState([
+        const props = makeProps([
             mockResponsibility({}, { id: "scenario-1", disease: "d1" }),
             mockResponsibility({}, { id: "scenario-2", disease: "d2" })
         ]);
-        const rendered = shallow(<ResponsibilityListComponent {...state} />);
+        const rendered = shallow(<ResponsibilityListComponent {...props} />);
         const children = rendered.find(ResponsibilityComponent);
         expect(children).to.have.length(2);
         expect(children.at(0).key()).to.equal("scenario-1");
@@ -47,17 +43,17 @@ describe('ResponsibilityListComponent', () => {
     });
 
     it("renders disease filter", () => {
-        const state = makeStoreState([ mockResponsibility() ]);
-        const rendered = shallow(<ResponsibilityListComponent {...state} />);
+        const props = makeProps([ mockResponsibility() ]);
+        const rendered = shallow(<ResponsibilityListComponent {...props} />);
         expect(rendered.find(DiseaseFilter)).to.have.length(1, "Expected to render DiseaseFilter");
     });
 
     it("can filter be filtered by diesase", () => {
-        const state = makeStoreState([
+        const props = makeProps([
             mockResponsibility({}, { id: "scenario-1", disease: "d1" }),
             mockResponsibility({}, { id: "scenario-2", disease: "d2" })
         ], "d2");
-        const rendered = shallow(<ResponsibilityListComponent {...state} />);
+        const rendered = shallow(<ResponsibilityListComponent {...props} />);
         const children = rendered.find(ResponsibilityComponent);
         expect(children).to.have.length(1);
         expect(children.at(0).key()).to.equal("scenario-2");

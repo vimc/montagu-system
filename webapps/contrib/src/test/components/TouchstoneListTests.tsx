@@ -3,13 +3,15 @@ import { expect } from "chai";
 import { mount, shallow } from "enzyme";
 import { mockTouchstone } from "../mocks/mockModels";
 
-import { TouchstoneLink, TouchstoneListComponent } from "../../main/components/Touchstones/TouchstoneList";
-import * as TouchstoneStore from "../../main/stores/TouchstoneStore";
+import {
+    TouchstoneLink, TouchstoneListComponent,
+    TouchstoneListProps
+} from "../../main/components/Touchstones/TouchstoneList";
 import { Touchstone } from "../../main/Models";
 
 const styles = require("../../main/components/Touchstones/TouchstoneList.css");
 
-function makeStoreState(touchstones: Array<Touchstone>): TouchstoneStore.State {
+function makeProps(touchstones: Array<Touchstone>): TouchstoneListProps {
     return {
         ready: true,
         touchstones
@@ -19,8 +21,8 @@ function makeStoreState(touchstones: Array<Touchstone>): TouchstoneStore.State {
 describe('TouchstoneListComponent', () => {
     describe("renders", () => {
         it("message when there are no finished touchstones", () => {
-            const state = makeStoreState([]);
-            const rendered = shallow(<TouchstoneListComponent {...state} />);
+            const props = makeProps([]);
+            const rendered = shallow(<TouchstoneListComponent {...props} />);
             expect(rendered.find(`.${styles.finishedTouchstones}`).text()).to.contain("There are no past touchstones.");
         });
 
@@ -29,8 +31,8 @@ describe('TouchstoneListComponent', () => {
                 mockTouchstone({ id: "touchstone-1", description: "Description 1", status: "finished" }),
                 mockTouchstone({ id: "touchstone-2", description: "Description 2", status: "finished" })
             ];
-            const state = makeStoreState(touchstones);
-            const rendered = shallow(<TouchstoneListComponent {...state} />);
+            const props = makeProps(touchstones);
+            const rendered = shallow(<TouchstoneListComponent {...props} />);
             const children = rendered.find(`.${styles.finishedTouchstones}`).find("li");
             expect(children).to.have.length(2);
 
@@ -44,15 +46,15 @@ describe('TouchstoneListComponent', () => {
         });
 
         it("message when there is no open touchstone", () => {
-            const state = makeStoreState([]);
-            const rendered = shallow(<TouchstoneListComponent {...state} />);
+            const props = makeProps([]);
+            const rendered = shallow(<TouchstoneListComponent {...props} />);
             expect(rendered.find(`.${styles.openTouchstone}`).text()).to.contain("There is no open touchstone currently.");
         });
 
         it("link when there is an open touchstone", () => {
             const touchstone = mockTouchstone({ id: "touchstone-1", description: "Description 1", status: "open" });
-            const state = makeStoreState([ touchstone ]);
-            const rendered = mount(<TouchstoneListComponent {...state} />);
+            const props = makeProps([ touchstone ]);
+            const rendered = mount(<TouchstoneListComponent {...props} />);
             const link = rendered.find(`.${styles.openTouchstone}`).find(TouchstoneLink);
             expect(link.props()).to.eql(touchstone);
         });

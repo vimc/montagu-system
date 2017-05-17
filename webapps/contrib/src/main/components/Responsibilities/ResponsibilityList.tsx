@@ -2,41 +2,62 @@ import * as React from "react";
 import { RemoteContentComponent } from "../RemoteContentComponent/RemoteContentComponent";
 import { DiseaseFilter } from "./DiseaseFilter";
 import { ResponsibilityComponent } from "./ResponsibilityComponent";
-import { State, Store } from "../../stores/ResponsibilityStore";
-import { Responsibilities, Responsibility } from "../../Models";
+import * as ResponsibilityStore from "../../stores/ResponsibilityStore";
+import { Responsibilities, Responsibility, Touchstone } from "../../Models";
 import { connectToStores } from "../../alt";
+import { RemoteContent } from "../../stores/RemoteContent";
 
 const styles = require("./Responsibilities.css");
 const messageStyles = require("../../styles/messages.css");
 const commonStyles = require("../../styles/common.css");
 
-export class ResponsibilityListComponent extends RemoteContentComponent<State> {
+export interface ResponsibilityListComponentProps extends RemoteContent {
+    touchstone: Touchstone;
+    responsibilitySet: Responsibilities;
+    currentDiseaseId: string;
+}
+
+export class ResponsibilityListComponent extends RemoteContentComponent<ResponsibilityListComponentProps> {
     static getStores() {
-        return [ Store ];
+        return [ ResponsibilityStore.Store ];
     }
 
-    static getPropsFromStores() {
-        return Store.getState();
-    }
-
-    getResponsibilities(store: State): Responsibility[] {
-        const set: Responsibilities = store.responsibilitySet;
-        let reps = set.responsibilities;
-        if (store.currentDiseaseId) {
-            reps = reps.filter(r => r.scenario.disease == store.currentDiseaseId);
+    static getPropsFromStores(): ResponsibilityListComponentProps {
+        const state = ResponsibilityStore.Store.getState();
+        return {
+            touchstone: state.currentTouchstone,
+            responsibilitySet: state.responsibilitySet,
+            ready: state.ready,
+            currentDiseaseId: state.currentDiseaseId
         }
-        return reps;
     }
 
-    renderContent(store: State): JSX.Element {
-        const reps = this.getResponsibilities(store);
+    getResponsibilities(props: ResponsibilityListComponentProps): Responsibility[] {
+        const set: Responsibilities = props.responsibilitySet;
+        if (set) {
+            let reps = set.responsibilities;
+            if (props.currentDiseaseId) {
+                reps = reps.filter(r => r.scenario.disease == props.currentDiseaseId);
+            }
+            return reps;
+        } else {
+            return [];
+        }
+    }
+
+    renderContent(props: ResponsibilityListComponentProps): JSX.Element {
+        const reps = this.getResponsibilities(props);
         if (reps.length) {
             const items = reps.map((item: Responsibility) =>
-                <ResponsibilityComponent key={ item.scenario.id } {...item} />
+                <ResponsibilityComponent
+                    key={ item.scenario.id }
+                    responsibility={ item }
+                    touchstone={ props.touchstone }
+                />
             );
             return <div>
                 <div className={ commonStyles.control }>
-                    <DiseaseFilter { ...this.props.responsibilitySet } />
+                    <DiseaseFilter { ...props.responsibilitySet } />
                 </div>
                 <ul className={ styles.responsibilities }>{ items }</ul>
             </div>;

@@ -2,40 +2,39 @@ import * as React from "react";
 import { RemoteContentComponent } from "../RemoteContentComponent/RemoteContentComponent";
 import { Link } from "simple-react-router";
 import { connectToStores } from "../../alt";
-import { State, Store } from "../../stores/TouchstoneStore";
-import * as AuthStore from "../../stores/AuthStore";
 import * as ResponsibilityStore from "../../stores/ResponsibilityStore";
 import { Touchstone } from "../../Models";
-import { responsibilityActions } from "../../actions/ResponsibilityActions";
+import { RemoteContent } from "../../stores/RemoteContent";
 
 const commonStyles = require("../../styles/common.css");
 const styles = require("./TouchstoneList.css");
 
-export class TouchstoneLink extends React.Component<Touchstone, undefined> {
-    onClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-        responsibilityActions.setTouchstone(this.props);
-        ResponsibilityStore.Store.fetchResponsibilities();
-    };
+export interface TouchstoneListProps extends RemoteContent {
+    touchstones: Touchstone[];
+}
 
+export class TouchstoneLink extends React.Component<Touchstone, undefined> {
     render() {
-        return <Link
-            href={ `/responsibilities/${this.props.id}/` }
-            onClick={ this.onClick }>
+        return <Link href={ `/responsibilities/${this.props.id}/` }>
             { this.props.description }
         </Link>
     }
 }
 
-export class TouchstoneListComponent extends RemoteContentComponent<State> {
+export class TouchstoneListComponent extends RemoteContentComponent<TouchstoneListProps> {
     static getStores() {
-        return [ Store ];
+        return [ ResponsibilityStore.Store ];
     }
 
-    static getPropsFromStores(props: State): State {
-        return Store.getState();
+    static getPropsFromStores(): TouchstoneListProps {
+        const state = ResponsibilityStore.Store.getState();
+        return {
+            touchstones: state.touchstones,
+            ready: state.ready
+        };
     }
 
-    renderFinished(content: State): JSX.Element {
+    renderFinished(content: TouchstoneListProps): JSX.Element {
         const finished = content.touchstones.filter(x => x.status != "open");
         if (finished.length > 0) {
             const items = finished.map((touchstone: Touchstone) =>
@@ -49,7 +48,7 @@ export class TouchstoneListComponent extends RemoteContentComponent<State> {
         }
     }
 
-    renderOpen(content: State): JSX.Element {
+    renderOpen(content: TouchstoneListProps): JSX.Element {
         const open = content.touchstones.find(x => x.status == "open");
         if (open) {
             return <TouchstoneLink { ...open } />
@@ -58,7 +57,7 @@ export class TouchstoneListComponent extends RemoteContentComponent<State> {
         }
     }
 
-    renderContent(content: State): JSX.Element {
+    renderContent(content: TouchstoneListProps): JSX.Element {
         return <div>
             <div className={ styles.openTouchstone }>
                 <div className={ commonStyles.sectionTitle }>Open touchstone</div>

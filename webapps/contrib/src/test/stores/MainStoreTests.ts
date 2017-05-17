@@ -8,7 +8,7 @@ import { Store } from "../../main/stores/MainStore";
 import { authActions } from "../../main/actions/AuthActions";
 import { diseaseActions } from "../../main/actions/DiseaseActions";
 import { errorActions } from "../../main/actions/ErrorActions";
-import * as TouchstoneStore from '../../main/stores/TouchstoneStore';
+import * as ResponsibilityStore from "../../main/stores/ResponsibilityStore";
 
 describe("MainStore", () => {
     beforeEach(() => {
@@ -25,8 +25,8 @@ describe("MainStore", () => {
         });
     });
 
-    it("diseaseActions.update sets diseases and triggers TouchstoneStore.fetchTouchstones", (done: DoneCallback) => {
-        const spy = sinon.spy(TouchstoneStore.Store, "fetchTouchstones");
+    it("diseaseActions.update sets diseases and triggers ResponsibilityStore.fetchTouchstones", (done: DoneCallback) => {
+        const spy = sinon.spy(ResponsibilityStore.Store, "fetchTouchstones");
         const disease1 = mockDisease({ id: "d1" });
         const disease2 = mockDisease({ id: "d2" });
         diseaseActions.update([ disease1, disease2 ]);

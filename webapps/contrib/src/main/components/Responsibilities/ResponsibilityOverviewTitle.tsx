@@ -1,50 +1,30 @@
 import * as React from "react";
-import { State, Store } from "../../stores/TouchstoneStore";
-import { Touchstone } from "../../Models";
-import { isUndefined } from "util";
+import { Store } from "../../stores/ResponsibilityStore";
 import { Link } from "simple-react-router";
+import { Touchstone } from "../../Models";
 import { connectToStores } from "../../alt";
 
 const headerStyles = require("../PageWithHeader/PageWithHeader.css");
 
-interface Props {
-    touchstoneId: string;
-    touchstones?: State;
-}
-
-export class ResponsibilityOverviewTitleComponent extends React.Component<Props, undefined> {
+export class ResponsibilityOverviewTitleComponent extends React.Component<Touchstone, undefined> {
     static getStores() {
-        return [ Store ]
+        return [ Store ];
     }
     static getPropsFromStores() {
-        return {
-            touchstones: Store.getState()
-        };
-    }
-
-    touchstone(): Touchstone {
-        const touchstone = this.props.touchstones.touchstones.find((x) => x.id == this.props.touchstoneId);
-        if (isUndefined(touchstone)) {
-            return {
-                id: "",
-                name: "",
-                version: 0,
-                description: "",
-                status: null,
-                years: null
-            };
-        } else {
-            return touchstone;
-        }
+        return Store.getState().currentTouchstone;
     }
 
     render() {
+        let description = "";
+        if (this.props != null) {
+            description = this.props.description;
+        }
         return <span>
-            Responsibilities in { this.touchstone().description }
+            Responsibilities in { description }
             <span className={ headerStyles.titleAddition }>
                 <Link href="/">Change touchstone</Link>
             </span>
         </span>;
     }
 }
-export const ResponsibilityOverviewTitle: ComponentConstructor<Props, undefined> = connectToStores(ResponsibilityOverviewTitleComponent);
+export const ResponsibilityOverviewTitle = connectToStores(ResponsibilityOverviewTitleComponent);

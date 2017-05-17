@@ -1,7 +1,7 @@
 import alt from "../alt";
 import * as AltJS from "alt";
 import { AbstractStore } from "./AbstractStore";
-import * as TouchstoneStore from './TouchstoneStore';
+import * as ResponsibilityStore from './ResponsibilityStore';
 import { authActions, LogInProperties } from "../actions/AuthActions";
 import { Disease } from "../Models";
 import { settings } from "../Settings";
@@ -24,7 +24,7 @@ interface Interface extends AltJS.AltStore<State> {
 }
 
 function onReady() {
-    setTimeout(() => TouchstoneStore.Store.fetchTouchstones());
+    setTimeout(() => ResponsibilityStore.Store.fetchTouchstones());
 }
 
 export function makeDiseaseLookup(diseases: Disease[]): Loadable<Disease> {

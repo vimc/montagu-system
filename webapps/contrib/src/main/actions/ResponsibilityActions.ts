@@ -3,22 +3,21 @@ import { FetchActions, FetchActionsInterface } from "./FetchActions";
 import { Responsibilities, Touchstone } from "../Models";
 
 interface Actions extends FetchActionsInterface<Responsibilities> {
-    setTouchstone(touchstone: Touchstone): Touchstone;
     filterByDisease(diseaseId: string): string;
+    setCurrentResponsibility(scenarioId: string): string;
 }
 
 
 class ResponsibilityActions extends FetchActions<Responsibilities> implements Actions {
-    setTouchstone(touchstone: Touchstone) {
-        return touchstone;
-    }
-
     updateResponsibilities(responsibilitySet: Responsibilities): Responsibilities {
         return responsibilitySet;
     }
 
     filterByDisease(diseaseId: string): string {
         return diseaseId;
+    }
+    setCurrentResponsibility(scenarioId: string): string {
+        return scenarioId;
     }
 }
 

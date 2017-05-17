@@ -1,40 +1,37 @@
 import * as React from "react";
+import * as sinon from "sinon";
 import { expect } from "chai";
-import { shallow } from "enzyme";
+import { mount, shallow } from "enzyme";
 import { mockLocation } from "../mocks/mocks";
-import { alt } from "../../main/alt";
+import { dispatchSpy, expectOrderedActions } from "../actionHelpers";
 
 import { ResponsibilityOverviewPage } from "../../main/components/Responsibilities/ResponsibilityOverviewPage";
 import { mockTouchstone } from "../mocks/mockModels";
-import {
-    ResponsibilityOverviewTitle,
-    ResponsibilityOverviewTitleComponent
-} from "../../main/components/Responsibilities/ResponsibilityOverviewTitle";
-import { State } from "../../main/stores/TouchstoneStore";
-
-const headerStyles = require("../../main/components/PageWithHeader/PageWithHeader.css");
+import { ResponsibilityOverviewTitleComponent } from "../../main/components/Responsibilities/ResponsibilityOverviewTitle";
+import * as ResponsibilityStore from "../../main/stores/ResponsibilityStore";
 
 describe('ResponsibilityOverviewPage', () => {
-    it("passes touchstoneId to title component", () => {
+    it("triggers actions when it mounts", () => {
+        const spy = dispatchSpy();
+        const fetchResponsibilities = sinon.stub(ResponsibilityStore.Store, "fetchResponsibilities");
         const location = mockLocation({ touchstoneId: "fizzy-pop" });
-        const rendered = shallow(<ResponsibilityOverviewPage location={ location } />);
-        const title = rendered.find(ResponsibilityOverviewTitle);
-        expect(title.prop("touchstoneId")).to.equal("fizzy-pop");
+
+        const rendered = mount(<ResponsibilityOverviewPage location={ location } />);
+        rendered.unmount();
+
+        expectOrderedActions(spy, [
+            { action: "TouchstoneActions.setCurrentTouchstone", payload: "fizzy-pop" }
+        ], 0);
+        expect(fetchResponsibilities.called).to.be.true;
+        fetchResponsibilities.restore();
     });
 });
 
 describe("ResponsibilityOverviewTitleComponent", () => {
     it("renders title based on touchstoneId", () => {
-        const storeState: State = {
-            touchstones: [
-                mockTouchstone({ id: "a", description: "Abba" }),
-                mockTouchstone({ id: "b", description: "Beatles" })
-            ],
-            ready: true
-        };
-        const rendered = shallow(<ResponsibilityOverviewTitleComponent
-            touchstoneId="a" touchstones={ storeState } />);
+        const touchstone = mockTouchstone({ description: "Fizzy pop" });
+        const rendered = shallow(<ResponsibilityOverviewTitleComponent {...touchstone} />);
         const titleText = rendered.text();
-        expect(titleText).to.contain("Responsibilities in Abba");
+        expect(titleText).to.contain("Responsibilities in Fizzy pop");
     });
-})
+});

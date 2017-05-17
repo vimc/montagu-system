@@ -1,7 +1,7 @@
 import * as React from "react";
 import { expect } from "chai";
 import { shallow, ShallowWrapper } from "enzyme";
-import { mockResponsibility } from "../mocks/mockModels";
+import { mockResponsibility, mockTouchstone } from "../mocks/mockModels";
 import { setupMainStore } from "../mocks/mocks";
 import { alt } from "../../main/alt";
 
@@ -23,7 +23,9 @@ describe('ResponsibilityComponent', () => {
             id: "scenario-id",
             description: "Description",
         });
-        rendered = shallow(<ResponsibilityComponent {...responsibility} />);
+        rendered = shallow(<ResponsibilityComponent
+            responsibility={ responsibility }
+            touchstone={ mockTouchstone() } />);
     });
 
     after(() => {

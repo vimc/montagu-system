@@ -3,14 +3,21 @@ import { PageWithHeader } from "../PageWithHeader/PageWithHeader";
 import { ResponsibilityList } from "./ResponsibilityList";
 import { settings } from "../../Settings";
 import { ResponsibilityOverviewTitle } from "./ResponsibilityOverviewTitle";
+import * as ResponsibilityStore from "../../stores/ResponsibilityStore";
+import { touchstoneActions } from "../../actions/TouchstoneActions";
 
 interface LocationProps {
     touchstoneId: string
 }
 
 export class ResponsibilityOverviewPage extends PageWithHeader<LocationProps> {
+    componentDidMount() {
+        touchstoneActions.setCurrentTouchstone(this.props.location.params.touchstoneId);
+        ResponsibilityStore.Store.fetchResponsibilities();
+    }
+
     title() {
-        return <ResponsibilityOverviewTitle touchstoneId={ this.props.location.params.touchstoneId } />
+        return <ResponsibilityOverviewTitle />
     }
 
     renderPageContent() {

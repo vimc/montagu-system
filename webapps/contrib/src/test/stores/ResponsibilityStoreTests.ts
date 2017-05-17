@@ -6,6 +6,7 @@ const jwt = require("jsonwebtoken");
 import { Store } from "../../main/stores/ResponsibilityStore";
 import { responsibilityActions } from "../../main/actions/ResponsibilityActions";
 import { authActions } from "../../main/actions/AuthActions";
+import { touchstoneActions } from "../../main/actions/TouchstoneActions";
 
 describe("ResponsibilityStore", () => {
     beforeEach(() => {
@@ -16,36 +17,42 @@ describe("ResponsibilityStore", () => {
     it("is initially blank", () => {
         const state = Store.getState();
         expect(state).to.eql({
-            ready: false,
-            currentModellingGroupId: null,
+            touchstones: [],
             currentTouchstone: null,
+
             responsibilitySet: null,
-            currentDiseaseId: null
+            currentResponsibility: null,
+
+            currentModellingGroupId: null,
+            currentDiseaseId: null,
+
+            ready: false
         });
     });
 
-    it("updateResponsibilities sets responsibility set", () => {
+    it("responsibilityActions.update sets responsibility set", () => {
         const responsibilitySet = mockResponsibilitySet({});
         responsibilityActions.update(responsibilitySet);
 
         const state = Store.getState();
-        expect(state).to.eql({
-            ready: true,
-            currentTouchstone: null,
-            currentModellingGroupId: null,
-            responsibilitySet: responsibilitySet,
-            currentDiseaseId: null
-        });
+        expect(state.ready).to.equal(true);
+        expect(state.responsibilitySet).to.eql(responsibilitySet);
     });
 
-    it("setTouchstone sets touchstone", () => {
+    it("touchstoneActions.setCurrentTouchstone sets touchstone", () => {
         const touchstone = mockTouchstone();
-        responsibilityActions.setTouchstone(touchstone);
+        alt.bootstrap(JSON.stringify({
+            ResponsibilityStore: {
+                touchstones: [ touchstone ]
+            }
+        }));
+
+        touchstoneActions.setCurrentTouchstone(touchstone.id);
         const state = Store.getState();
-        expect(state.currentTouchstone).to.equal(touchstone);
+        expect(state.currentTouchstone).to.eql(touchstone);
     });
 
-    it("logIn sets modelling group id", () => {
+    it("authActions.logIn sets modelling group id", () => {
         const token = jwt.sign({
             sub: "test.user",
             permissions: "*/can-login",
@@ -56,14 +63,11 @@ describe("ResponsibilityStore", () => {
         expect(state.currentModellingGroupId).to.equal("test.group");
     });
 
-    it("beginFetch clears everything except currentTouchstone and currentModellingGroupId", () => {
-        const touchstone = mockTouchstone();
+    it("responsibilityActions.beginFetch clears responsibilities", () => {
         // First set us up in a state where everything is non-null
         alt.bootstrap(JSON.stringify({
             ResponsibilityStore: {
                 ready: true,
-                currentTouchstone: touchstone,
-                currentModellingGroupId: "id",
                 responsibilitySet: mockResponsibilitySet(),
                 currentDiseaseId: "disease"
             }
@@ -71,25 +75,39 @@ describe("ResponsibilityStore", () => {
         responsibilityActions.beginFetch();
 
         const state = Store.getState();
-        expect(state).to.eql({
-            ready: false,
-            currentTouchstone: touchstone,
-            currentModellingGroupId: "id",
-            responsibilitySet: null,
-            currentDiseaseId: null
-        });
+        expect(state.ready).to.equal(false);
+        expect(state.responsibilitySet).to.equal(null);
+        expect(state.currentDiseaseId).to.equal(null);
     });
 
-    it("filterByDisease sets currentDiseaseId", () => {
+    it("responsibilityActions.filterByDisease sets currentDiseaseId", () => {
         responsibilityActions.filterByDisease("YF");
 
         const state = Store.getState();
-        expect(state).to.eql({
-            ready: false,
-            currentTouchstone: null,
-            currentModellingGroupId: null,
-            responsibilitySet: null,
-            currentDiseaseId: "YF"
-        });
+        expect(state.currentDiseaseId).to.equal("YF");
+    });
+
+    it("touchstoneActions.update sets touchstones", () => {
+        const touchstones = [ mockTouchstone({ status: "finished" }) ];
+        touchstoneActions.update(touchstones);
+
+        const state = Store.getState();
+        expect(state.ready).to.equal(true);
+        expect(state.touchstones).to.eql(touchstones);
+    });
+
+    it("touchstoneActions.beginFetch clears touchstones", () => {
+        // First set us up in a state where everything is non-null
+        alt.bootstrap(JSON.stringify({
+            ResponsibilityStore: {
+                ready: true,
+                touchstones: [ mockTouchstone({}) ]
+            }
+        }));
+        touchstoneActions.beginFetch();
+
+        const state = Store.getState();
+        expect(state.ready).to.equal(false);
+        expect(state.touchstones).to.eql([]);
     });
 });
