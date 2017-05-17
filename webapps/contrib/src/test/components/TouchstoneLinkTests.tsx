@@ -1,4 +1,8 @@
+import { setupVirtualDOM } from "../JSDomHelpers";
+setupVirtualDOM();
+
 import * as React from "react";
+import * as sinon from "sinon";
 import { expect } from "chai";
 import { mount, shallow } from "enzyme";
 import { mockTouchstone } from "../mocks/mockModels";
@@ -8,6 +12,7 @@ import * as actionHelpers from "../actionHelpers";
 
 import { TouchstoneLink } from "../../main/components/Touchstones/TouchstoneList";
 import * as TouchstoneStore from "../../main/stores/TouchstoneStore";
+import * as ResponsibilityStore from "../../main/stores/ResponsibilityStore";
 
 describe("TouchstoneLink", () => {
     it("renders correctly", () => {
@@ -26,20 +31,20 @@ describe("TouchstoneLink", () => {
                 ],
                 errorMessage: "",
                 ready: true
-            },
-            AuthStore: {
-                modellingGroups: [ "group-test" ]
             }
         }));
 
         const spy = actionHelpers.dispatchSpy();
-        const touchstone = TouchstoneStore.Store.getState().touchstones[ 0 ];
+        const fetchResponsibilities = sinon.stub(ResponsibilityStore.Store, "fetchResponsibilities");
+
+        const touchstone = TouchstoneStore.Store.getState().touchstones[0];
         const rendered = shallow(<TouchstoneLink {...touchstone} />);
         rendered.find("Link").simulate("click");
         actionHelpers.expectOrderedActions(spy, [
             { action: "ResponsibilityActions.setTouchstone", payload: touchstone }
         ], 0);
-        actionHelpers.expectFetchActions(spy, "ResponsibilityActions", 1);
+        expect(fetchResponsibilities.called).to.be.true;
+        fetchResponsibilities.restore();
     });
 
     afterEach(actionHelpers.restoreDispatch);

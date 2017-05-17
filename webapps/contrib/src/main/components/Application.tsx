@@ -3,6 +3,7 @@ import { connectToStores } from "../alt";
 
 import * as MainStore from "../stores/MainStore";
 import * as AuthStore from "../stores/AuthStore";
+import { ErrorLog } from "./ErrorLog/ErrorLog";
 import Router from "./Router";
 
 interface AppProps {
@@ -23,10 +24,12 @@ export class ApplicationComponent extends React.Component<AppProps, undefined> {
     }
 
     render() {
-        return <Router
-            errorMessage={ this.props.main.errorMessage }
-            loggedIn={ this.props.auth.loggedIn }
-            loaded={ this.props.main.ready } />;
+        return <div>
+            <Router
+                loggedIn={ this.props.auth.loggedIn }
+                loaded={ this.props.main.ready } />
+            <ErrorLog errors={ this.props.main.errors } />
+        </div>;
     }
 }
 

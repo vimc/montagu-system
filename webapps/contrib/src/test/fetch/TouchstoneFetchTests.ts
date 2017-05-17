@@ -1,29 +1,16 @@
-import { NoParameters, sources } from "../../main/sources/Sources";
 import { mockTouchstone } from "../mocks/mockModels";
 import { FetchHelper } from "./helpers";
 import * as actionHelpers from "../actionHelpers";
 
-import { touchstoneActions } from "../../main/actions/TouchstoneActions";
+import { Store } from "../../main/stores/TouchstoneStore";
 
-let helper: FetchHelper<NoParameters>;
-
-describe("TouchstoneFetch", () => {
+describe("TouchstoneStore.fetchTouchstones", () => {
     afterEach(() => {
         actionHelpers.restoreDispatch();
     });
 
-    new FetchHelper<NoParameters>({
-        source: sources.touchstones,
-        fetchAction: () => touchstoneActions.fetch({}),
-        params: {},
-
-        actionNamespace: "TouchstoneActions",
-        successAction: "update",
-        failAction: "fetchFailed",
-
-        makePayload: () => [
-            mockTouchstone({ id: "a" }),
-            mockTouchstone({ id: "b" })
-        ]
+    new FetchHelper({
+        triggerFetch: () => Store.fetchTouchstones(),
+        makePayload: () => [ mockTouchstone(), mockTouchstone() ]
     }).addTestsToMocha();
 });

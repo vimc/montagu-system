@@ -4,40 +4,47 @@ import { RemoteContent } from "./RemoteContent";
 import { responsibilityActions } from "../actions/ResponsibilityActions";
 import { AbstractStore } from "./AbstractStore";
 import { Responsibilities, Touchstone } from "../Models";
+import { ResponsibilitySource } from "../sources/ResponsibilitySource";
+import { sources } from "../sources/Sources";
+import { authActions, LogInProperties } from "../actions/AuthActions";
 
 export interface State extends RemoteContent {
     currentTouchstone: Touchstone;
+    currentModellingGroupId: string;
     responsibilitySet: Responsibilities;
     currentDiseaseId: string;
 }
 
 interface ResponsibilityStoreInterface extends AltJS.AltStore<State> {
+    fetchResponsibilities(): Promise<any>;
+    isLoading(): boolean;
 }
 
-class ResponsibilityStore extends AbstractStore<State> {
+class ResponsibilityStore extends AbstractStore<State, ResponsibilityStoreInterface> {
     currentTouchstone: Touchstone;
+    currentModellingGroupId: string;
     responsibilitySet: Responsibilities;
     currentDiseaseId: string;
-    errorMessage: string;
     ready: boolean;
 
     constructor() {
         super();
+        this.registerAsync(sources.responsibilities);
         this.bindListeners({
             handleSetTouchstone: responsibilityActions.setTouchstone,
-            handleFetch: responsibilityActions.beginFetch,
-            handleUpdateResponsibilities: responsibilityActions.updateResponsibilities,
-            handleFetchFailed: responsibilityActions.fetchFailed,
-            handleFilterByDisease: responsibilityActions.filterByDisease
+            handleBeginFetch: responsibilityActions.beginFetch,
+            handleUpdateResponsibilities: responsibilityActions.update,
+            handleFilterByDisease: responsibilityActions.filterByDisease,
+            handleLogIn: authActions.logIn
         });
     }
 
     initialState(): State {
         return {
             currentTouchstone: null,
+            currentModellingGroupId: null,
             responsibilitySet: null,
             currentDiseaseId: null,
-            errorMessage: null,
             ready: false
         };
     }
@@ -46,9 +53,8 @@ class ResponsibilityStore extends AbstractStore<State> {
         this.currentTouchstone = touchstone;
     }
 
-    handleFetch() {
+    handleBeginFetch() {
         this.responsibilitySet = null;
-        this.errorMessage = null;
         this.ready = false;
         this.currentDiseaseId = null;
     }
@@ -58,13 +64,12 @@ class ResponsibilityStore extends AbstractStore<State> {
         this.ready = true;
     }
 
-    handleFetchFailed(errorMessage: string) {
-        this.errorMessage = errorMessage;
-        this.ready = false;
-    }
-
     handleFilterByDisease(diseaseId: string) {
         this.currentDiseaseId = diseaseId;
+    }
+
+    handleLogIn(loginProps: LogInProperties) {
+        this.currentModellingGroupId = loginProps.modellingGroups[0];
     }
 }
 

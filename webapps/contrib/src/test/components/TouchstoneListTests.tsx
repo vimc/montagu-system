@@ -12,8 +12,7 @@ const styles = require("../../main/components/Touchstones/TouchstoneList.css");
 function makeStoreState(touchstones: Array<Touchstone>): TouchstoneStore.State {
     return {
         ready: true,
-        errorMessage: "",
-        touchstones,
+        touchstones
     };
 }
 
@@ -51,7 +50,7 @@ describe('TouchstoneListComponent', () => {
         });
 
         it("link when there is an open touchstone", () => {
-            const touchstone = mockTouchstone({ id: "touchstone-1", description: "Description 1", status: "open" })
+            const touchstone = mockTouchstone({ id: "touchstone-1", description: "Description 1", status: "open" });
             const state = makeStoreState([ touchstone ]);
             const rendered = mount(<TouchstoneListComponent {...state} />);
             const link = rendered.find(`.${styles.openTouchstone}`).find(TouchstoneLink);

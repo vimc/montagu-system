@@ -1,5 +1,3 @@
-import * as sinon from "sinon";
-import { Source } from "../../main/sources/Source";
 import { ErrorInfo, Result, ResultStatus } from "../../main/Models";
 import fetcher, { FetchOptions } from "../../main/sources/Fetcher";
 
@@ -11,12 +9,12 @@ export function promiseJSON(data: any): Response {
     } as Response;
 }
 
-export function mockSource<T>(source: Source<T>, data?: Result, errorMessage?: string) {
+export function mockFetcherResponse<T>(data?: Result, errorMessage?: string) {
     data = data || {
-            status: "success",
-            data: {},
-            errors: []
-        };
+        status: "success",
+        data: {},
+        errors: []
+    };
 
     const promise = new Promise<Response>(function (resolve, reject) {
         if (errorMessage) {
@@ -25,7 +23,7 @@ export function mockSource<T>(source: Source<T>, data?: Result, errorMessage?: s
             resolve(promiseJSON(data));
         }
     });
-    source.fetch = sinon.stub().returns(promise);
+    mockFetcher(promise);
 }
 
 export function mockResult<T>(data: T,

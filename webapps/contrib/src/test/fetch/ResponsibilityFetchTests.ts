@@ -1,24 +1,25 @@
-import { ResponsibilityFetchParameters, sources } from "../../main/sources/Sources";
-import { mockResponsibilitySet } from "../mocks/mockModels";
+import { mockResponsibilitySet, mockTouchstone } from "../mocks/mockModels";
 import { FetchHelper } from "./helpers";
 import * as actionHelpers from "../actionHelpers";
+import { Store } from "../../main/stores/ResponsibilityStore";
+import { alt } from "../../main/alt";
 
-import { responsibilityActions } from "../../main/actions/ResponsibilityActions";
-
-describe("ResponsibilityFetch", () => {
+describe("ResponsibilityStore.fetchResponsibilities", () => {
     afterEach(() => {
         actionHelpers.restoreDispatch();
     });
 
-    new FetchHelper<ResponsibilityFetchParameters>({
-        source: sources.responsibilities,
-        fetchAction: x => responsibilityActions.fetch(x),
-        params: { groupId: "group-1", touchstoneId: "touchstone-id" },
-
-        actionNamespace: "ResponsibilityActions",
-        successAction: "updateResponsibilities",
-        failAction: "fetchFailed",
-
-        makePayload: () => mockResponsibilitySet()
+    const touchstone = mockTouchstone();
+    new FetchHelper({
+        triggerFetch: () => {
+            alt.bootstrap(JSON.stringify({
+                ResponsibilityStore: {
+                    currentTouchstone: touchstone,
+                    currentModellingGroupId: "group-id"
+                }
+            }));
+            return Store.fetchResponsibilities();
+        },
+        makePayload: () => mockResponsibilitySet({ touchstone: touchstone.id })
     }).addTestsToMocha();
 });

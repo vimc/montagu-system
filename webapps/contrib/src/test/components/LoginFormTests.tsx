@@ -1,15 +1,19 @@
+import { setupVirtualDOM } from "../JSDomHelpers";
+setupVirtualDOM();
+
 import * as React from "react";
+import { Reform } from "alt-reform";
 import { expect } from "chai";
 import { shallow } from "enzyme";
 import * as sinon from "sinon";
-import { LoginFields, loginForm, LoginFormComponent } from "../../main/components/Login/LoginPage";
-import { mockFormProperties, numberOfSubmissionActions } from "../mocks/mockForm";
 import { mockFetcher, promiseJSON } from "../mocks/mockRemote";
-import { ValidationError } from "../../main/components/Login/ValidationError";
-import * as actionHelpers from "../actionHelpers";
+import { mockFormProperties, numberOfSubmissionActions } from "../mocks/mockForm";
 import { mockEvent } from "../mocks/mocks";
-import { Reform } from "alt-reform";
-const jwt = require("jsonwebtoken");
+import * as actionHelpers from "../actionHelpers";
+
+import * as AuthStore from "../../main/stores/AuthStore";
+import { LoginFields, loginForm, LoginFormComponent } from "../../main/components/Login/LoginPage";
+import { ValidationError } from "../../main/components/Login/ValidationError";
 
 function checkSubmit(
     form: Reform<LoginFields>,
@@ -51,11 +55,9 @@ describe("LoginForm", () => {
     });
 
     it("authenticates when form is submitted", (done: DoneCallback) => {
-        const token = jwt.sign({
-            sub: "username",
-            permissions: "",
-            roles: ""
-        }, "secret");
+        const token = "TOKEN";
+        const spy = sinon.spy(AuthStore.Store, "logIn");
+
         mockFetcher(new Promise<Response>(function (resolve, reject) {
             resolve(promiseJSON({ access_token: token }));
         }));
@@ -63,13 +65,10 @@ describe("LoginForm", () => {
             email: "an@email",
             password: "not-real"
         });
-        checkSubmit(loginForm, done, spy => {
-            actionHelpers.expectOrderedActions(
-                spy,
-                [ { action: "AuthActions.logIn" } ],
-                numberOfSubmissionActions
-            );
-            actionHelpers.expectFetchActions(spy, "MainActions", numberOfSubmissionActions + 1);
+        checkSubmit(loginForm, done, _ => {
+            expect(spy.called).to.be.true;
+            expect(spy.args[0][0]).to.equal(token);
+            spy.restore();
         });
 
     });

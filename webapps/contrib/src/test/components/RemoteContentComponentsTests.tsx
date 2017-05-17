@@ -7,36 +7,24 @@ import { RemoteContentComponent } from "../../main/components/RemoteContentCompo
 
 const spinner = require("../../main/components/RemoteContentComponent/spinner.gif");
 
-interface Properties extends RemoteContent {
-    ready: boolean;
-    errorMessage: string;
-}
-
-class DummyComponent extends RemoteContentComponent<Properties> {
+class DummyComponent extends RemoteContentComponent<RemoteContent> {
     renderContent() {
         return <span>Content</span>
     }
 }
 
-function render(props: Properties): ShallowWrapper<any, any> {
+function render(props: RemoteContent): ShallowWrapper<any, any> {
     return shallow(<DummyComponent {...props} />);
 };
 
 describe('DummyComponent', () => {
     it("renders a spinner when content is not ready", () => {
-        const rendered = render({ ready: false, errorMessage: "" });
+        const rendered = render({ ready: false });
         expect(rendered.contains(<img src={ spinner } />)).to.equal(true);
     });
 
-    it("renders the error message when one is set", () => {
-        let rendered = render({ ready: false, errorMessage: "message" });
-        expect(rendered.text()).to.equal("message");
-        rendered = render({ ready: true, errorMessage: "message" });
-        expect(rendered.text()).to.equal("message");
-    });
-
-    it("renders the content if it is ready and there is no error message", () => {
-        const rendered = render({ ready: true, errorMessage: "" });
+    it("renders the content if it is ready", () => {
+        const rendered = render({ ready: true });
         expect(rendered.text()).to.equal("Content");
     });
 });
