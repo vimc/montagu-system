@@ -5,10 +5,10 @@ import { Logout } from "../Login/Logout";
 const logo = require("./logo.png");
 const styles = require('./PageWithHeader.css');
 
-export abstract class PageWithHeader<TLocationProps, TProps extends PageProperties<TLocationProps>, TState>
-    extends React.Component<TProps, TState> {
-    abstract title(): JSX.Element;
+export abstract class PageWithHeader<TLocationProps>
+    extends React.Component<PageProperties<TLocationProps>, undefined> {
 
+    abstract title(): JSX.Element;
     abstract renderPageContent(): JSX.Element;
 
     render() {

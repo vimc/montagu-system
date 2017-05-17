@@ -78,7 +78,7 @@ export class LoginFormComponent extends React.Component<ReformProps, undefined> 
 }
 const LoginForm = FormConnector(loginForm)(LoginFormComponent);
 
-export class LoginPage extends PageWithHeader<undefined, undefined, undefined> {
+export class LoginPage extends PageWithHeader<undefined> {
     title(): JSX.Element {
         return <span>Log in</span>;
     }

@@ -7,7 +7,7 @@ import { PageProperties, PageWithHeader } from "../../main/components/PageWithHe
 
 const styles = require('../../main/components/PageWithHeader/PageWithHeader.css');
 
-class DummyPage extends PageWithHeader<undefined, PageProperties<undefined>, undefined> {
+class DummyPage extends PageWithHeader<undefined> {
     title(): JSX.Element {
         return <span>Elbereth</span>;
     }

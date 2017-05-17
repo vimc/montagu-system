@@ -6,7 +6,6 @@ import { authActions, LogInProperties } from "../actions/AuthActions";
 import { Disease } from "../Models";
 import { settings } from "../Settings";
 import { Loadable } from "./Loadable";
-import { DiseaseSource } from "../sources/DiseaseSource";
 import { diseaseActions } from "../actions/DiseaseActions";
 import { errorActions } from "../actions/ErrorActions";
 import { RemoteContent } from "./RemoteContent";
@@ -14,7 +13,7 @@ import { sources } from "../sources/Sources";
 
 export interface State extends RemoteContent {
     diseases: Loadable<Disease>;
-    errors: string[]
+    errors: string[];
 }
 
 interface Interface extends AltJS.AltStore<State> {
@@ -57,7 +56,7 @@ class MainStore extends AbstractStore<State, Interface> {
         this.bindListeners({
             handleDiseases: diseaseActions.update,
             handleError: errorActions.error,
-            handleLogIn: authActions.logIn,
+            handleLogIn: authActions.logIn
         });
         this.registerAsync(sources.diseases);
         this.exportPublicMethods({

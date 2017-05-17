@@ -1,61 +1,16 @@
 import * as React from "react";
-import { Link } from "simple-react-router";
-import { PageProperties, PageWithHeader } from "../PageWithHeader/PageWithHeader";
+import { PageWithHeader } from "../PageWithHeader/PageWithHeader";
 import { ResponsibilityList } from "./ResponsibilityList";
-import * as TouchstoneStore from "../../stores/TouchstoneStore";
-import { Touchstone } from "../../Models";
-import { isUndefined } from "util";
 import { settings } from "../../Settings";
-
-const headerStyles = require("../PageWithHeader/PageWithHeader.css");
+import { ResponsibilityOverviewTitle } from "./ResponsibilityOverviewTitle";
 
 interface LocationProps {
-    touchstoneId: string;
+    touchstoneId: string
 }
 
-export class ResponsibilityOverviewPage
-    extends PageWithHeader<LocationProps, PageProperties<LocationProps>, TouchstoneStore.State> {
-    state: TouchstoneStore.State = TouchstoneStore.Store.getState();
-
-    constructor(props: any) {
-        super(props);
-    }
-
-    componentDidMount() {
-        TouchstoneStore.Store.listen(this.onChange);
-    }
-
-    componentWillUnmount() {
-        TouchstoneStore.Store.unlisten(this.onChange);
-    }
-
-    onChange = (state: TouchstoneStore.State) => {
-        this.setState(state);
-    };
-
-    touchstone(): Touchstone {
-        const touchstone = this.state.touchstones.find((x) => x.id == this.props.location.params.touchstoneId);
-        if (isUndefined(touchstone)) {
-            return {
-                id: "",
-                name: "",
-                version: 0,
-                description: "",
-                status: null,
-                years: null
-            };
-        } else {
-            return touchstone;
-        }
-    }
-
+export class ResponsibilityOverviewPage extends PageWithHeader<LocationProps> {
     title() {
-        return <span>
-            Responsibilities in { this.touchstone().description }
-            <span className={ headerStyles.titleAddition }>
-                <Link href="/">Change touchstone</Link>
-            </span>
-        </span>;
+        return <ResponsibilityOverviewTitle touchstoneId={ this.props.location.params.touchstoneId } />
     }
 
     renderPageContent() {

@@ -1,8 +1,6 @@
 declare module "alt-reform" {
     import * as React from "react";
 
-    type ComponentConstructor<TProps, TState> = new (...args: any[]) => React.Component<TProps, TState>;
-
     export interface Reform<TFields> {
         store: any;
         submit: (e: any) => Promise<any>;
