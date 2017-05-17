@@ -3,17 +3,17 @@ import { RemoteContentComponent } from "../RemoteContentComponent/RemoteContentC
 import { DiseaseFilter } from "./DiseaseFilter";
 import { ResponsibilityComponent } from "./ResponsibilityComponent";
 import * as ResponsibilityStore from "../../stores/ResponsibilityStore";
-import { Responsibilities, Responsibility, Touchstone } from "../../models/Generated";
+import { Responsibility } from "../../models/Generated";
 import { connectToStores } from "../../alt";
 import { RemoteContent } from "../../stores/RemoteContent";
+import { ExtendedResponsibilitySet } from "../../models/ResponsibilitySet";
 
 const styles = require("./Responsibilities.css");
 const messageStyles = require("../../styles/messages.css");
 const commonStyles = require("../../styles/common.css");
 
 export interface ResponsibilityListComponentProps extends RemoteContent {
-    touchstone: Touchstone;
-    responsibilitySet: Responsibilities;
+    responsibilitySet: ExtendedResponsibilitySet;
     currentDiseaseId: string;
 }
 
@@ -25,7 +25,6 @@ export class ResponsibilityListComponent extends RemoteContentComponent<Responsi
     static getPropsFromStores(): ResponsibilityListComponentProps {
         const state = ResponsibilityStore.Store.getState();
         return {
-            touchstone: state.currentTouchstone,
             responsibilitySet: state.responsibilitySet,
             ready: state.ready,
             currentDiseaseId: state.currentDiseaseId
@@ -33,7 +32,7 @@ export class ResponsibilityListComponent extends RemoteContentComponent<Responsi
     }
 
     getResponsibilities(props: ResponsibilityListComponentProps): Responsibility[] {
-        const set: Responsibilities = props.responsibilitySet;
+        const set = props.responsibilitySet;
         if (set) {
             let reps = set.responsibilities;
             if (props.currentDiseaseId) {
@@ -52,7 +51,7 @@ export class ResponsibilityListComponent extends RemoteContentComponent<Responsi
                 <ResponsibilityComponent
                     key={ item.scenario.id }
                     responsibility={ item }
-                    touchstone={ props.touchstone }
+                    touchstone={ props.responsibilitySet.touchstone }
                 />
             );
             return <div>

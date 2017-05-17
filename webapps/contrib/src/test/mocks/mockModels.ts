@@ -1,4 +1,6 @@
 import * as models from "../../main/models/Generated";
+import { ExtendedResponsibilitySet } from "../../main/models/ResponsibilitySet";
+import { Touchstone } from "../../main/models/Generated";
 
 let counter = 0;
 export function mockDisease(properties?: any): models.Disease {
@@ -53,4 +55,16 @@ export function mockResponsibilitySet(properties?: any,
         touchstone: "touchstone-1"
     }
     return Object.assign(template, properties);
+}
+
+export function mockExtendedResponsibilitySet(
+    properties?: any,
+    responsibilities?: Array<models.Responsibility>,
+    touchstone?: Touchstone
+): ExtendedResponsibilitySet
+{
+    touchstone = touchstone || mockTouchstone();
+    properties = Object.assign(properties, { touchstone: touchstone.id });
+    const values = mockResponsibilitySet(properties, responsibilities);
+    return new ExtendedResponsibilitySet(values, touchstone);
 }

@@ -7,18 +7,19 @@ import { ResponsibilityListComponent, ResponsibilityListComponentProps } from ".
 import { ResponsibilityComponent } from "../../main/components/Responsibilities/ResponsibilityComponent";
 import { DiseaseFilter } from "../../main/components/Responsibilities/DiseaseFilter";
 import { Responsibility } from "../../main/models/Generated";
+import { ExtendedResponsibilitySet } from "../../main/models/ResponsibilitySet";
 
 function makeProps(responsibilities: Array<Responsibility>,
                         currentDiseaseId?: string): ResponsibilityListComponentProps {
+    const touchstone = mockTouchstone();
     return {
-        touchstone: mockTouchstone(),
         currentDiseaseId: currentDiseaseId,
-        responsibilitySet: {
+        responsibilitySet: new ExtendedResponsibilitySet({
             problems: "",
             status: null,
-            touchstone: "touchstone-1",
+            touchstone: touchstone.id,
             responsibilities
-        },
+        }, touchstone),
         ready: true
     };
 }

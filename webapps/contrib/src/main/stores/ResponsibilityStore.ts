@@ -4,16 +4,16 @@ import { RemoteContent } from "./RemoteContent";
 import { responsibilityActions } from "../actions/ResponsibilityActions";
 import { AbstractStore } from "./AbstractStore";
 import { Responsibilities, Responsibility, Touchstone } from "../models/Generated";
-import { ResponsibilitySource } from "../sources/ResponsibilitySource";
 import { sources } from "../sources/Sources";
 import { authActions, LogInProperties } from "../actions/AuthActions";
 import { touchstoneActions } from "../actions/TouchstoneActions";
+import { ExtendedResponsibilitySet } from "../models/ResponsibilitySet";
 
 export interface State extends RemoteContent {
     touchstones: Array<Touchstone>;
     currentTouchstone: Touchstone;
 
-    responsibilitySet: Responsibilities;
+    responsibilitySet: ExtendedResponsibilitySet;
     currentResponsibility: Responsibility;
 
     currentModellingGroupId: string;
@@ -30,7 +30,7 @@ class ResponsibilityStore extends AbstractStore<State, ResponsibilityStoreInterf
     touchstones: Array<Touchstone>;
     currentTouchstone: Touchstone;
 
-    responsibilitySet: Responsibilities;
+    responsibilitySet: ExtendedResponsibilitySet;
     currentResponsibility: Responsibility;
 
     currentModellingGroupId: string;
@@ -89,8 +89,9 @@ class ResponsibilityStore extends AbstractStore<State, ResponsibilityStoreInterf
         this.currentDiseaseId = null;
     }
 
-    handleUpdateResponsibilities(responsibilitySet: Responsibilities) {
-        this.responsibilitySet = responsibilitySet;
+    handleUpdateResponsibilities(responsibilities: Responsibilities) {
+        const touchstone = this.touchstones.find(x => x.id == responsibilities.touchstone);
+        this.responsibilitySet = new ExtendedResponsibilitySet(responsibilities, touchstone);
         this.ready = true;
     }
     handleUpdateTouchstones(touchstones: Array<Touchstone>) {

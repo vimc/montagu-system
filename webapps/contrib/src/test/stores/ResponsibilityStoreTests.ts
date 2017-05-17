@@ -7,6 +7,7 @@ import { Store } from "../../main/stores/ResponsibilityStore";
 import { responsibilityActions } from "../../main/actions/ResponsibilityActions";
 import { authActions } from "../../main/actions/AuthActions";
 import { touchstoneActions } from "../../main/actions/TouchstoneActions";
+import { ExtendedResponsibilitySet } from "../../main/models/ResponsibilitySet";
 
 describe("ResponsibilityStore", () => {
     beforeEach(() => {
@@ -31,12 +32,18 @@ describe("ResponsibilityStore", () => {
     });
 
     it("responsibilityActions.update sets responsibility set", () => {
-        const responsibilitySet = mockResponsibilitySet({});
+        const touchstone = mockTouchstone();
+        alt.bootstrap(JSON.stringify({
+            ResponsibilityStore: {
+                touchstones: [ touchstone ]
+            }
+        }));
+        const responsibilitySet = mockResponsibilitySet({ touchstone: touchstone.id });
         responsibilityActions.update(responsibilitySet);
 
         const state = Store.getState();
         expect(state.ready).to.equal(true);
-        expect(state.responsibilitySet).to.eql(responsibilitySet);
+        expect(state.responsibilitySet).to.eql(new ExtendedResponsibilitySet(responsibilitySet, touchstone));
     });
 
     it("touchstoneActions.setCurrentTouchstone sets touchstone", () => {

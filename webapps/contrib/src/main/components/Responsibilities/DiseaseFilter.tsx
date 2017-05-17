@@ -1,11 +1,10 @@
 import * as React from "react";
-
-import { Responsibilities } from "../../models/Generated";
 import { Store } from "../../stores/MainStore";
 import { Option, OptionSelector } from "../OptionSelector/OptionSelector";
 import { responsibilityActions } from "../../actions/ResponsibilityActions";
+import { ExtendedResponsibilitySet } from "../../models/ResponsibilitySet";
 
-export class DiseaseFilter extends React.Component<Responsibilities, undefined> {
+export class DiseaseFilter extends React.Component<ExtendedResponsibilitySet, undefined> {
     render(): JSX.Element {
         const diseaseIds = [ ...new Set(this.props.responsibilities.map(x => x.scenario.disease)) ];
         if (diseaseIds.length > 1) {
