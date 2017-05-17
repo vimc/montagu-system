@@ -25,7 +25,7 @@ describe("MainStore", () => {
         });
     });
 
-    it("receiveDiseases sets diseases", (done: DoneCallback) => {
+    it("diseaseActions.update sets diseases and triggers TouchstoneStore.fetchTouchstones", (done: DoneCallback) => {
         const spy = sinon.spy(TouchstoneStore.Store, "fetchTouchstones");
         const disease1 = mockDisease({ id: "d1" });
         const disease2 = mockDisease({ id: "d2" });
@@ -44,9 +44,14 @@ describe("MainStore", () => {
             }
         });
         setTimeout(() => {
-           expect(spy.called).to.be.true;
-           spy.restore();
-           done();
+            try {
+                expect(spy.called).to.be.true;
+                done();
+            } catch (e) {
+                done(e);
+            } finally {
+                spy.restore();
+            }
         });
     });
 

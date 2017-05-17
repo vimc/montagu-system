@@ -16,7 +16,7 @@ export interface State extends RemoteContent {
 }
 
 interface ResponsibilityStoreInterface extends AltJS.AltStore<State> {
-    fetchResponsibilities(): void;
+    fetchResponsibilities(): Promise<any>;
     isLoading(): boolean;
 }
 

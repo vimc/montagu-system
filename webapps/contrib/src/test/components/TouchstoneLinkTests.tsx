@@ -44,6 +44,7 @@ describe("TouchstoneLink", () => {
             { action: "ResponsibilityActions.setTouchstone", payload: touchstone }
         ], 0);
         expect(fetchResponsibilities.called).to.be.true;
+        fetchResponsibilities.restore();
     });
 
     afterEach(actionHelpers.restoreDispatch);

@@ -1,8 +1,8 @@
-import { Source } from "../../main/sources/Source";
+import { expect } from "chai";
 import { ErrorInfo, Result } from "../../main/Models";
 import * as actionHelpers from "../actionHelpers";
 import { mockFetcherResponse, mockResult } from "../mocks/mockRemote";
-import { expectOneAction } from "../actionHelpers";
+import { getActions } from "../actionHelpers";
 
 interface FetchHelperConfig {
     triggerFetch: () => Promise<any>,
@@ -28,14 +28,15 @@ export class FetchHelper {
         const spy = actionHelpers.dispatchSpy();
         const handler = (_: any) => {
             try {
-                expectOneAction(spy, { action: `_class.beginFetch1` }, 0);
-                expectOneAction(spy, expectedAction, 1);
+                const actions = getActions(spy);
+                expect(actions[0].action).to.contain("beginFetch");
+                expect(actions[1].action).to.contain(expectedAction.action);
+                expect(actions[1].payload).to.eql(expectedAction.payload);
                 done();
             } catch (e) {
                 done(e);
             }
         };
-
         this.config.triggerFetch().then(handler, handler);
     }
 
@@ -47,7 +48,7 @@ export class FetchHelper {
                 payload: mockResult(payload),
                 errorMessage: null,
                 expectedAction: {
-                    action: "_class.update1",
+                    action: "update",
                     payload: payload
                 }
             });

@@ -11,7 +11,7 @@ export interface State extends RemoteContent {
 }
 
 interface TouchstoneStoreInterface extends AltJS.AltStore<State> {
-    fetchTouchstones(): void;
+    fetchTouchstones(): Promise<any>;
     isLoading(): boolean;
 }
 
