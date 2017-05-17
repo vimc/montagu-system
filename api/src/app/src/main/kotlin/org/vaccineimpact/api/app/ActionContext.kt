@@ -4,6 +4,7 @@ import org.pac4j.core.profile.CommonProfile
 import org.pac4j.core.profile.ProfileManager
 import org.pac4j.sparkjava.SparkWebContext
 import org.vaccineimpact.api.app.errors.MissingRequiredPermissionError
+import org.vaccineimpact.api.app.security.montaguPermissions
 import org.vaccineimpact.api.models.ReifiedPermission
 import spark.Request
 import spark.Response
@@ -31,7 +32,7 @@ open class ActionContext(private val context: SparkWebContext)
     }
 
     val permissions by lazy {
-        userProfile.permissions.map { ReifiedPermission.parse(it) }
+        userProfile.montaguPermissions()
     }
 
     val userProfile: CommonProfile by lazy {

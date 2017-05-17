@@ -107,7 +107,7 @@ class ModellingGroupTests : DatabaseTest()
                     addVaccine = true, addActivityType = true, addSupportLevel = true)
             it.addCoverageSetToScenario(scenarioId, touchstoneId, coverageSetId, 0)
         } requiringPermissions {
-            setOf("touchstones.read", "coverage.read")
+            setOf("scenarios.read", "responsibilities.read", "coverage.read")
         } andCheck {
             assertThat(it).isEqualTo(json {
                 obj(

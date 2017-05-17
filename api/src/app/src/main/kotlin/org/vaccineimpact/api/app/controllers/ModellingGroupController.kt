@@ -11,14 +11,21 @@ class ModellingGroupController(private val db: () -> ModellingGroupRepository)
     : AbstractController()
 {
     override val urlComponent = "/modelling-groups"
+    private val groupScope = "modelling-group:<group-id>"
 
     override val endpoints = listOf(
-            SecuredEndpoint("/",
-                    this::getModellingGroups, listOf("*/modelling-groups.read")),
-            SecuredEndpoint("/:group-id/responsibilities/:touchstone-id/",
-                    this::getResponsibilities, listOf("*/responsibilities.read", "*/scenarios.read")),
-            SecuredEndpoint("/:group-id/responsibilities/:touchstone-id/coverage_sets/:scenario-id",
-                    this::getCoverageSets, listOf("*/responsibilities.read", "*/scenarios.read"))
+            SecuredEndpoint("/", this::getModellingGroups, setOf(
+                    "*/modelling-groups.read"
+            )),
+            SecuredEndpoint("/:group-id/responsibilities/:touchstone-id/", this::getResponsibilities, setOf(
+                    "$groupScope/responsibilities.read",
+                    "$groupScope/scenarios.read"
+            )),
+            SecuredEndpoint("/:group-id/responsibilities/:touchstone-id/coverage_sets/:scenario-id/", this::getCoverageSets, setOf(
+                    "$groupScope/responsibilities.read",
+                    "$groupScope/scenarios.read",
+                    "$groupScope/coverage.read"
+            ))
     )
 
     fun getModellingGroups(context: ActionContext): List<ModellingGroup>

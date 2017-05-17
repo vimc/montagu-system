@@ -13,11 +13,15 @@ import org.vaccineimpact.api.app.Serializer
 import org.vaccineimpact.api.app.addDefaultResponseHeaders
 import org.vaccineimpact.api.app.errors.MissingRequiredPermissionError
 import org.vaccineimpact.api.models.ErrorInfo
+import org.vaccineimpact.api.models.ReifiedPermission
 import org.vaccineimpact.api.models.Result
 import org.vaccineimpact.api.models.ResultStatus
 import org.vaccineimpact.api.security.WebTokenHelper
 
-class TokenVerifyingConfigFactory(private val tokenHelper: WebTokenHelper, val requiredPermissions: List<String>) : ConfigFactory
+class TokenVerifyingConfigFactory(
+        private val tokenHelper: WebTokenHelper,
+        val requiredPermissions: Set<PermissionRequirement>
+) : ConfigFactory
 {
     override fun build(): Config
     {
@@ -36,7 +40,9 @@ class TokenVerifyingConfigFactory(private val tokenHelper: WebTokenHelper, val r
         val permissions = (profile.getAttribute("permissions") as String)
                 .split(',')
                 .filter { it.isNotEmpty() }
-        commonProfile.addPermissions(permissions)
+                .map { ReifiedPermission.parse(it) }
+                .toSet()
+        commonProfile.addAttribute(PERMISSIONS, permissions)
         return commonProfile
     }
 }
