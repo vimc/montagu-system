@@ -1,5 +1,6 @@
 import {
-    BurdenEstimate, Responsibilities, Responsibility, ResponsibilitySetStatus, ResponsibilityStatus, Scenario,
+    BurdenEstimate, CoverageSet, Responsibilities, Responsibility, ResponsibilitySetStatus, ResponsibilityStatus,
+    Scenario,
     Touchstone
 } from "./Generated";
 
@@ -8,12 +9,14 @@ export class ExtendedResponsibility {
     problems: string[];
     scenario: Scenario;
     status: ResponsibilityStatus;
+    coverageSets: CoverageSet[];
 
     constructor(x: Responsibility) {
         this.current_estimate = x.current_estimate;
         this.problems = x.problems;
         this.scenario = x.scenario;
         this.status = x.status;
+        this.coverageSets = null;
     }
 }
 
@@ -28,5 +31,10 @@ export class ExtendedResponsibilitySet {
         this.responsibilities = x.responsibilities.map(r => new ExtendedResponsibility(r));
         this.status = x.status;
         this.touchstone = touchstone
+    }
+
+    addCoverageSets(scenarioId: string, coverageSets: CoverageSet[]) {
+        const responsibility = this.responsibilities.find(x => x.scenario.id == scenarioId);
+        responsibility.coverageSets = coverageSets;
     }
 }

@@ -1,12 +1,13 @@
 import alt from "../alt";
 import { FetchActions, FetchActionsInterface } from "./FetchActions";
-import { Responsibilities, Touchstone } from "../models/Generated";
+import { CoverageSet, Responsibilities, ScenarioTouchstoneAndCoverageSets, Touchstone } from "../models/Generated";
 
 interface Actions extends FetchActionsInterface<Responsibilities> {
     filterByDisease(diseaseId: string): string;
     setCurrentResponsibility(scenarioId: string): string;
+    beginFetchCoverageSets(): boolean;
+    updateCoverageSets(data: ScenarioTouchstoneAndCoverageSets): ScenarioTouchstoneAndCoverageSets;
 }
-
 
 class ResponsibilityActions extends FetchActions<Responsibilities> implements Actions {
     updateResponsibilities(responsibilitySet: Responsibilities): Responsibilities {
@@ -18,6 +19,13 @@ class ResponsibilityActions extends FetchActions<Responsibilities> implements Ac
     }
     setCurrentResponsibility(scenarioId: string): string {
         return scenarioId;
+    }
+
+    beginFetchCoverageSets(): boolean {
+        return true;
+    }
+    updateCoverageSets(data: ScenarioTouchstoneAndCoverageSets): ScenarioTouchstoneAndCoverageSets {
+        return data;
     }
 }
 
