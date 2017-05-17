@@ -1,6 +1,6 @@
 import alt from "../alt";
 import { FetchActions, FetchActionsInterface } from "./FetchActions";
-import { Responsibilities, Touchstone } from "../Models";
+import { Responsibilities, Touchstone } from "../models/Generated";
 
 interface Actions extends FetchActionsInterface<Responsibilities> {
     filterByDisease(diseaseId: string): string;

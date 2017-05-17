@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Store } from "../../stores/ResponsibilityStore";
 import { Link } from "simple-react-router";
-import { Touchstone } from "../../Models";
+import { Touchstone } from "../../models/Generated";
 import { connectToStores } from "../../alt";
 
 const headerStyles = require("../PageWithHeader/PageWithHeader.css");

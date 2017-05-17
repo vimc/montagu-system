@@ -1,5 +1,5 @@
 import { AbstractActions } from "./AbstractActions";
-import { Result } from "../Models";
+import { Result } from "../models/Generated";
 
 export interface FetchActionsInterface<T> {
     update(data: T): T;

@@ -3,7 +3,7 @@ import * as AltJS from "alt";
 import { RemoteContent } from "./RemoteContent";
 import { responsibilityActions } from "../actions/ResponsibilityActions";
 import { AbstractStore } from "./AbstractStore";
-import { Responsibilities, Responsibility, Touchstone } from "../Models";
+import { Responsibilities, Responsibility, Touchstone } from "../models/Generated";
 import { ResponsibilitySource } from "../sources/ResponsibilitySource";
 import { sources } from "../sources/Sources";
 import { authActions, LogInProperties } from "../actions/AuthActions";

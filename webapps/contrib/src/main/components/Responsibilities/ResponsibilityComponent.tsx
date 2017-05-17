@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Responsibility, Touchstone } from "../../Models";
+import { Responsibility, Touchstone } from "../../models/Generated";
 import { Store } from "../../stores/MainStore";
 import { ButtonLink } from "../ButtonLink";
 

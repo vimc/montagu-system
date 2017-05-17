@@ -3,7 +3,7 @@ import { RemoteContentComponent } from "../RemoteContentComponent/RemoteContentC
 import { Link } from "simple-react-router";
 import { connectToStores } from "../../alt";
 import * as ResponsibilityStore from "../../stores/ResponsibilityStore";
-import { Touchstone } from "../../Models";
+import { Touchstone } from "../../models/Generated";
 import { RemoteContent } from "../../stores/RemoteContent";
 
 const commonStyles = require("../../styles/common.css");

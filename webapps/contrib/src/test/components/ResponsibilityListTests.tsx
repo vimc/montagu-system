@@ -6,7 +6,7 @@ import { mockResponsibility, mockTouchstone } from "../mocks/mockModels";
 import { ResponsibilityListComponent, ResponsibilityListComponentProps } from "../../main/components/Responsibilities/ResponsibilityList";
 import { ResponsibilityComponent } from "../../main/components/Responsibilities/ResponsibilityComponent";
 import { DiseaseFilter } from "../../main/components/Responsibilities/DiseaseFilter";
-import { Responsibility } from "../../main/Models";
+import { Responsibility } from "../../main/models/Generated";
 
 function makeProps(responsibilities: Array<Responsibility>,
                         currentDiseaseId?: string): ResponsibilityListComponentProps {

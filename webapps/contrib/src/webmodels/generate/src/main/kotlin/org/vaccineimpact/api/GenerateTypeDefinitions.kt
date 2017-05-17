@@ -32,7 +32,10 @@ fun main(args: Array<String>)
                         ModellingGroup::class,
                         Responsibilities::class,
                         Result::class,
-                        Disease::class
+                        Disease::class,
+                        CoverageSet::class,
+                        ScenarioAndCoverageSets::class,
+                        ScenarioTouchstoneAndCoverageSets::class
                 ),
                 mappings = mapOf(
                         LocalDateTime::class to "Date",

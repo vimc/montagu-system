@@ -1,5 +1,5 @@
 import SourceModel = AltJS.SourceModel;
-import { Result } from "../Models";
+import { Result } from "../models/Generated";
 import fetcher from "./Fetcher";
 import { errorActions } from "../actions/ErrorActions";
 import AltStore = AltJS.AltStore;

@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { ErrorInfo, Result } from "../../main/Models";
+import { ErrorInfo, Result } from "../../main/models/Generated";
 import * as actionHelpers from "../actionHelpers";
 import { mockFetcherResponse, mockResult } from "../mocks/mockRemote";
 import { getActions } from "../actionHelpers";

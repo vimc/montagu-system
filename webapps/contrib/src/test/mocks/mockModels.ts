@@ -1,4 +1,4 @@
-import * as models from "../../main/Models";
+import * as models from "../../main/models/Generated";
 
 let counter = 0;
 export function mockDisease(properties?: any): models.Disease {

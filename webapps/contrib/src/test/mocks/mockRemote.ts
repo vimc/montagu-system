@@ -1,4 +1,4 @@
-import { ErrorInfo, Result, ResultStatus } from "../../main/Models";
+import { ErrorInfo, Result, ResultStatus } from "../../main/models/Generated";
 import fetcher, { FetchOptions } from "../../main/sources/Fetcher";
 
 export function promiseJSON(data: any): Response {

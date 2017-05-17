@@ -1,4 +1,4 @@
-import { Disease } from "../Models";
+import { Disease } from "../models/Generated";
 import { diseaseActions } from "../actions/DiseaseActions";
 import { Source } from './Source';
 import SourceModel = AltJS.SourceModel;

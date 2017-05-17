@@ -1,5 +1,5 @@
 import { Source } from "./Source";
-import { Responsibilities } from "../Models";
+import { Responsibilities } from "../models/Generated";
 import { responsibilityActions } from "../actions/ResponsibilityActions";
 import SourceModel = AltJS.SourceModel;
 import { State } from "../stores/ResponsibilityStore";

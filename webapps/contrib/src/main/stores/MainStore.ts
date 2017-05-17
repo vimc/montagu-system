@@ -3,7 +3,7 @@ import * as AltJS from "alt";
 import { AbstractStore } from "./AbstractStore";
 import * as ResponsibilityStore from './ResponsibilityStore';
 import { authActions, LogInProperties } from "../actions/AuthActions";
-import { Disease } from "../Models";
+import { Disease } from "../models/Generated";
 import { settings } from "../Settings";
 import { Loadable } from "./Loadable";
 import { diseaseActions } from "../actions/DiseaseActions";

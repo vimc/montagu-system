@@ -3,7 +3,7 @@ import { RemoteContentComponent } from "../RemoteContentComponent/RemoteContentC
 import { DiseaseFilter } from "./DiseaseFilter";
 import { ResponsibilityComponent } from "./ResponsibilityComponent";
 import * as ResponsibilityStore from "../../stores/ResponsibilityStore";
-import { Responsibilities, Responsibility, Touchstone } from "../../Models";
+import { Responsibilities, Responsibility, Touchstone } from "../../models/Generated";
 import { connectToStores } from "../../alt";
 import { RemoteContent } from "../../stores/RemoteContent";
 

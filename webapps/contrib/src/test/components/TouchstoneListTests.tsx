@@ -7,7 +7,7 @@ import {
     TouchstoneLink, TouchstoneListComponent,
     TouchstoneListProps
 } from "../../main/components/Touchstones/TouchstoneList";
-import { Touchstone } from "../../main/Models";
+import { Touchstone } from "../../main/models/Generated";
 
 const styles = require("../../main/components/Touchstones/TouchstoneList.css");
 

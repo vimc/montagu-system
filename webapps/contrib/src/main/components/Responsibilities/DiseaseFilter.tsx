@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { Responsibilities } from "../../Models";
+import { Responsibilities } from "../../models/Generated";
 import { Store } from "../../stores/MainStore";
 import { Option, OptionSelector } from "../OptionSelector/OptionSelector";
 import { responsibilityActions } from "../../actions/ResponsibilityActions";

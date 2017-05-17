@@ -1,6 +1,6 @@
 import * as React from "react";
 import { connectToStores } from "../../alt";
-import { Responsibility, Touchstone } from "../../Models";
+import { Responsibility, Touchstone } from "../../models/Generated";
 import * as ResponsibilityStore from "../../stores/ResponsibilityStore";
 import { RemoteContent } from "../../stores/RemoteContent";
 import { RemoteContentComponent } from "../RemoteContentComponent/RemoteContentComponent";
