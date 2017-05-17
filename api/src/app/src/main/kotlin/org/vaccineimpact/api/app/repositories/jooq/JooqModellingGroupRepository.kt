@@ -65,6 +65,21 @@ class JooqModellingGroupRepository(
         return ResponsibilitiesAndTouchstoneStatus(responsibilities, touchstone.status)
     }
 
+    override fun getCoverageSets(groupId: String, touchstoneId: String, scenarioId: String): ScenarioTouchstoneAndCoverageSets
+    {
+        val responsibilities = getResponsibilities(groupId, touchstoneId, ScenarioFilterParameters())
+        if (!responsibilities.responsibilities.any { it.scenario.id == scenarioId })
+        {
+            throw UnknownObjectError(scenarioId, "scenario")
+        }
+
+        return touchstoneRepository().use { repo ->
+            val touchstone = repo.touchstones.get(touchstoneId)
+            val scenario = repo.getScenario(touchstoneId, scenarioId)
+            ScenarioTouchstoneAndCoverageSets(touchstone, scenario.scenario, scenario.coverageSets)
+        }
+    }
+
     private fun getResponsibilities(responsibilitySet: ResponsibilitySetRecord?,
                                     scenarioFilterParameters: ScenarioFilterParameters,
                                     touchstoneId: String): Responsibilities

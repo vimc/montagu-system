@@ -63,6 +63,13 @@ class ModellingGroupTests : DatabaseTest()
     }
 
     @Test
+    fun `can get responsibilities with modelling group scoped permissions`()
+    {
+        // We should check that only the correct modelling group can do so
+        TODO()
+    }
+
+    @Test
     fun `only touchstone preparer can see in-preparation responsibilities`()
     {
         val group = "groupId"
@@ -137,6 +144,13 @@ class ModellingGroupTests : DatabaseTest()
         // We should check that only the correct modelling group can do so
         TODO()
     }
+
+    @Test
+    fun `only touchstone preparer can see in-preparation coverage sets`()
+    {
+        TODO()
+    }
+
 
     private fun addResponsibilities(db: JooqContext, groupId: String, touchstoneStatus: String)
     {

@@ -1266,7 +1266,7 @@ and the overall status of this modelling groups work in this touchstone.
 If the touchstone is `in-preparation`, and the user does not have permission to see touchstones 
 before they are made `open`, then this returns an error 404.
 
-Required permissions: `responsibilities.read`, `scenarios.read`. Additionally, to view responsibilities for an `in-preparation` touchstone, the user needs the `touchstones.prepare` permission.
+Required permissions: Global scope: `scenarios.read`. Scoped to modelling group: `responsibilities.read`. Additionally, to view responsibilities for an `in-preparation` touchstone, the user needs the `touchstones.prepare` permission.
 
 Schema: [`ResponsibilitySet.schema.json`](ResponsibilitySet.schema.json)
 
@@ -1353,7 +1353,7 @@ Schema: [`EditResponsibilitySet.schema.json`](EditResponsibilitySet.schema.json)
 ## GET /modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}/coverage_sets/{scenario-id}/
 Returns metadata for the coverage sets associated with the responsibility.
 
-Required permissions: `touchstones.read`, with global scope, and `coverage.read` scoped to the modelling-group.
+Required permissions: Global scope: `scenarios.read`. Scoped to modelling group: `responsibilities.read` and `coverage.read`.  Additionally, to view coverage sets for an `in-preparation` touchstone, the user needs the `touchstones.prepare` permission.
 
 If the touchstone is `in-preparation`, and the user does not have permission to see touchstones 
 before they are made `open`, then this returns an error 404.

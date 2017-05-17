@@ -13,8 +13,12 @@ class ModellingGroupController(private val db: () -> ModellingGroupRepository)
     override val urlComponent = "/modelling-groups"
 
     override val endpoints = listOf(
-            SecuredEndpoint("/", this::getModellingGroups, listOf("*/modelling-groups.read")),
-            SecuredEndpoint("/:group-id/responsibilities/:touchstone-id/", this::getResponsibilities, listOf("*/responsibilities.read", "*/scenarios.read"))
+            SecuredEndpoint("/",
+                    this::getModellingGroups, listOf("*/modelling-groups.read")),
+            SecuredEndpoint("/:group-id/responsibilities/:touchstone-id/",
+                    this::getResponsibilities, listOf("*/responsibilities.read", "*/scenarios.read")),
+            SecuredEndpoint("/:group-id/responsibilities/:touchstone-id/coverage_sets/:scenario-id",
+                    this::getCoverageSets, listOf("*/responsibilities.read", "*/scenarios.read"))
     )
 
     fun getModellingGroups(context: ActionContext): List<ModellingGroup>
@@ -29,13 +33,28 @@ class ModellingGroupController(private val db: () -> ModellingGroupRepository)
         val filterParameters = ScenarioFilterParameters.fromContext(context)
 
         val data = db().use { it.getResponsibilities(groupId, touchstoneId, filterParameters) }
-        if (data.touchstoneStatus == TouchstoneStatus.IN_PREPARATION && !context.hasPermission(ReifiedPermission("touchstones.prepare", Scope.Global())))
+        checkTouchstoneStatus(data.touchstoneStatus, touchstoneId, context)
+        return data.responsibilities
+    }
+
+    fun getCoverageSets(context: ActionContext): ScenarioTouchstoneAndCoverageSets
+    {
+        val groupId = groupId(context)
+        val touchstoneId = context.params(":touchstone-id")
+        val scenarioDescriptionId = context.params(":scenario-id")
+        val data = db().use { it.getCoverageSets(groupId, touchstoneId, scenarioDescriptionId) }
+        checkTouchstoneStatus(data.touchstone.status, touchstoneId, context)
+        return data
+    }
+
+    private fun checkTouchstoneStatus(
+            touchstoneStatus: TouchstoneStatus,
+            touchstoneId: String,
+            context: ActionContext)
+    {
+        if (touchstoneStatus == TouchstoneStatus.IN_PREPARATION && !context.hasPermission(ReifiedPermission("touchstones.prepare", Scope.Global())))
         {
             throw UnknownObjectError(touchstoneId, "Touchstone")
-        }
-        else
-        {
-            return data.responsibilities
         }
     }
 
