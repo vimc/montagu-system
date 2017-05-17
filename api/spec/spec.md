@@ -1350,6 +1350,44 @@ Schema: [`EditResponsibilitySet.schema.json`](EditResponsibilitySet.schema.json)
         "problems": "Please review the numbers for Afghanistan - they look much too high"
     }
 
+## GET /modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}/coverage_sets/{scenario-id}/
+Returns metadata for the coverage sets associated with the responsibility.
+
+Required permissions: `touchstones.read`, with global scope, and `coverage.read` scoped to the modelling-group.
+
+If the touchstone is `in-preparation`, and the user does not have permission to see touchstones 
+before they are made `open`, then this returns an error 404.
+
+Schema: [`ScenarioAndCoverageSets.schema.json`](ScenarioAndCoverageSets.schema.json)
+
+### Example
+    {
+        "touchstone": { 
+            "id": "2017-op-1",
+            "name": "2017-op",
+            "version": 1,            
+            "description": "2017 Operational Forecast",
+            "years": { "start": 1996, "end": 2017 },
+            "status": "finished"
+        },
+        "scenario": {
+            "id": "menA-novacc",
+            "touchstones": [ "2016-op-1", "2017-wuenic-1", "op-2017-1" ],
+            "description": "Menigitis A, No vaccination",
+            "disease": "MenA"
+        },
+        "coverage_sets": [ 
+            { 
+                "id": 101,
+                "touchstone": "2017-op-1",
+                "name": "Menigitis no vaccination",
+                "vaccine": "MenA",
+                "gavi_support_level": "none",
+                "activity_type": "none"
+            }
+        ]
+    }
+
 ## POST /modelling-groups/{modelling-group-id}/actions/associate_responsibility
 Adds or removes a responsibility for a given modelling group, scenario, and touchstone.
 

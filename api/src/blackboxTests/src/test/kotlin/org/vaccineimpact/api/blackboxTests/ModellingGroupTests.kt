@@ -88,6 +88,56 @@ class ModellingGroupTests : DatabaseTest()
         validator.validateSuccess(response.text)
     }
 
+    @Test
+    fun `get coverage sets matches schema`()
+    {
+        val group = "groupId"
+        val scenarioId = "scenario-1"
+        val coverageSetId = 1
+        validate("/modelling-groups/$group/responsibilities/$touchstoneId/coverage_sets/$scenarioId") against "ScenarioAndCoverageSets" given {
+            addResponsibilities(it, group, touchstoneStatus = "open")
+            it.addCoverageSet(touchstoneId, "coverage set name", "vaccine-1", "without", "routine", coverageSetId,
+                    addVaccine = true, addActivityType = true, addSupportLevel = true)
+            it.addCoverageSetToScenario(scenarioId, touchstoneId, coverageSetId, 0)
+        } requiringPermissions {
+            setOf("touchstones.read", "coverage.read")
+        } andCheck {
+            assertThat(it).isEqualTo(json {
+                obj(
+                        "touchstone" to obj(
+                                "id" to touchstoneId,
+                                "name" to "touchstone",
+                                "version" to 1,
+                                "description" to "description",
+                                "years" to obj("start" to 1900, "end" to 2000),
+                                "status" to "open"
+                        ),
+                        "scenario" to obj(
+                                "id" to scenarioId,
+                                "touchstones" to array(touchstoneId),
+                                "description" to "description 1",
+                                "disease" to "disease-1"
+                        ),
+                        "coverage_sets" to array(obj(
+                                "id" to coverageSetId,
+                                "touchstone" to touchstoneId,
+                                "name" to "coverage set name",
+                                "vaccine" to "vaccine-1",
+                                "gavi_support_level" to "without",
+                                "activity_type" to "routine"
+                        ))
+                )
+            })
+        }
+    }
+
+    @Test
+    fun `can get coverage sets with modelling group scoped permissions`()
+    {
+        // We should check that only the correct modelling group can do so
+        TODO()
+    }
+
     private fun addResponsibilities(db: JooqContext, groupId: String, touchstoneStatus: String)
     {
         db.addGroup(groupId, "description")
