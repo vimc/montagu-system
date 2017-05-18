@@ -8,6 +8,8 @@ import org.pac4j.core.context.Pac4jConstants
 import org.pac4j.core.profile.CommonProfile
 import org.pac4j.sparkjava.SparkWebContext
 import org.vaccineimpact.api.app.ActionContext
+import org.vaccineimpact.api.app.security.PERMISSIONS
+import org.vaccineimpact.api.models.PermissionSet
 import org.vaccineimpact.api.models.ReifiedPermission
 import org.vaccineimpact.api.models.Scope
 import org.vaccineimpact.api.test_helpers.MontaguTests
@@ -26,11 +28,13 @@ class ActionContextTests : MontaguTests()
     fun `can get user permissions`()
     {
         val profile = CommonProfile().apply {
-            addPermission("*/can-login")
-            addPermission("modelling-group:IC-Garske/coverage.read")
+            addAttribute(PERMISSIONS, PermissionSet(
+                    "*/can-login",
+                    "modelling-group:IC-Garske/coverage.read"
+            ))
         }
         val context = ActionContext(mockWebContext(profile))
-        assertThat(context.permissions).isEqualTo(listOf(
+        assertThat(context.permissions).hasSameElementsAs(listOf(
                 ReifiedPermission("can-login", Scope.Global()),
                 ReifiedPermission("coverage.read", Scope.Specific("modelling-group", "IC-Garske"))
         ))

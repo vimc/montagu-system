@@ -1,20 +1,30 @@
 package org.vaccineimpact.api.app.security
 
-import org.pac4j.core.authorization.authorizer.RequireAllPermissionsAuthorizer
+import org.pac4j.core.authorization.authorizer.AbstractRequireAllAuthorizer
 import org.pac4j.core.context.WebContext
 import org.pac4j.core.profile.CommonProfile
+import org.pac4j.sparkjava.SparkWebContext
+import org.vaccineimpact.api.app.ActionContext
+import org.vaccineimpact.api.models.ReifiedPermission
 
-class MontaguAuthorizer(requiredPermissions: List<String>)
-    : RequireAllPermissionsAuthorizer<CommonProfile>(requiredPermissions)
+class MontaguAuthorizer(requiredPermissions: Set<PermissionRequirement>)
+    : AbstractRequireAllAuthorizer<PermissionRequirement, CommonProfile>()
 {
-    override fun check(context: WebContext?, profile: CommonProfile, element: String): Boolean
+    init {
+        elements = requiredPermissions
+    }
+
+    override fun check(context: WebContext, profile: CommonProfile, element: PermissionRequirement): Boolean
     {
-        val hasElement = super.check(context, profile, element)
-        if (!hasElement)
+        val profilePermissions = profile.montaguPermissions()
+        val reifiedRequirement = element.reify(ActionContext(context as SparkWebContext))
+
+        val hasPermission = profilePermissions.any { reifiedRequirement.satisfiedBy(it) }
+        if (!hasPermission)
         {
-            var missing = profile.getAttributeOrDefault(MISSING_PERMISSIONS, default = mutableSetOf<String>())
-            missing.add(element)
+            val missing = profile.getAttributeOrDefault(MISSING_PERMISSIONS, default = mutableSetOf<ReifiedPermission>())
+            missing.add(reifiedRequirement)
         }
-        return hasElement
+        return hasPermission
     }
 }

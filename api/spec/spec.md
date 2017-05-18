@@ -1266,7 +1266,7 @@ and the overall status of this modelling groups work in this touchstone.
 If the touchstone is `in-preparation`, and the user does not have permission to see touchstones 
 before they are made `open`, then this returns an error 404.
 
-Required permissions: `responsibilities.read`, `scenarios.read`. Additionally, to view responsibilities for an `in-preparation` touchstone, the user needs the `touchstones.prepare` permission.
+Required permissions: Global scope: `scenarios.read`. Scoped to modelling group: `responsibilities.read`. Additionally, to view responsibilities for an `in-preparation` touchstone, the user needs the `touchstones.prepare` permission.
 
 Schema: [`ResponsibilitySet.schema.json`](ResponsibilitySet.schema.json)
 
@@ -1348,6 +1348,77 @@ Schema: [`EditResponsibilitySet.schema.json`](EditResponsibilitySet.schema.json)
     {
         "status": "incomplete",
         "problems": "Please review the numbers for Afghanistan - they look much too high"
+    }
+
+## GET /modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}/{scenario-id}/
+Returns the specified responsibility of this modelling group in the given touchstone.
+
+If the touchstone is `in-preparation`, and the user does not have permission to see touchstones 
+before they are made `open`, then this returns an error 404.
+
+Required permissions: Global scope: `scenarios.read`. Scoped to modelling group: `responsibilities.read`. Additionally, to view responsibilities for an `in-preparation` touchstone, the user needs the `touchstones.prepare` permission.
+
+Schema: [`ResponsibilityAndTouchstone.schema.json`](ResponsibilityAndTouchstone.schema.json)
+
+### Example
+    {
+        "touchstone": { 
+            "id": "2017-op-1",
+            "name": "2017-op",
+            "version": 1,            
+            "description": "2017 Operational Forecast",
+            "years": { "start": 1996, "end": 2017 },
+            "status": "finished"
+        },
+        "responsibility": {
+            "scenario": {
+                "id": "menA-novacc",
+                "touchstones": [ "2016-op-1", "2017-wuenic-1", "2017-op-1" ],
+                "description": "Menigitis A, No vaccination",
+                "disease": "MenA"
+            },
+            "status": "empty",
+            "problems": [ "No burden estimates have been uploaded" ],
+            "current_estimate": null
+        }
+    }
+
+## GET /modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}/{scenario-id}/coverage_sets/
+Returns metadata for the coverage sets associated with the responsibility.
+
+Required permissions: Global scope: `scenarios.read`. Scoped to modelling group: `responsibilities.read` and `coverage.read`.  Additionally, to view coverage sets for an `in-preparation` touchstone, the user needs the `touchstones.prepare` permission.
+
+If the touchstone is `in-preparation`, and the user does not have permission to see touchstones 
+before they are made `open`, then this returns an error 404.
+
+Schema: [`ScenarioAndCoverageSets.schema.json`](ScenarioAndCoverageSets.schema.json)
+
+### Example
+    {
+        "touchstone": { 
+            "id": "2017-op-1",
+            "name": "2017-op",
+            "version": 1,            
+            "description": "2017 Operational Forecast",
+            "years": { "start": 1996, "end": 2017 },
+            "status": "finished"
+        },
+        "scenario": {
+            "id": "menA-novacc",
+            "touchstones": [ "2016-op-1", "2017-wuenic-1", "op-2017-1" ],
+            "description": "Menigitis A, No vaccination",
+            "disease": "MenA"
+        },
+        "coverage_sets": [ 
+            { 
+                "id": 101,
+                "touchstone": "2017-op-1",
+                "name": "Menigitis no vaccination",
+                "vaccine": "MenA",
+                "gavi_support_level": "none",
+                "activity_type": "none"
+            }
+        ]
     }
 
 ## POST /modelling-groups/{modelling-group-id}/actions/associate_responsibility

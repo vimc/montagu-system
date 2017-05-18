@@ -2,6 +2,7 @@ package org.vaccineimpact.api.db.direct
 
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.Tables.*
+import org.vaccineimpact.api.db.fromJoinPath
 
 fun JooqContext.addGroup(id: String, description: String, current: String? = null)
 {
@@ -225,4 +226,14 @@ fun JooqContext.addCoverageSetToScenario(scenarioId: Int, coverageSetId: Int, or
     }
     record.store()
     return record.id
+}
+
+fun JooqContext.addCoverageSetToScenario(scenarioId: String, touchstoneId: String, coverageSetId: Int, order: Int): Int
+{
+    val record = this.dsl.select(SCENARIO.ID)
+            .fromJoinPath(SCENARIO, SCENARIO_DESCRIPTION)
+            .where(SCENARIO.TOUCHSTONE.eq(touchstoneId))
+            .and(SCENARIO_DESCRIPTION.ID.eq(scenarioId))
+            .fetchOne()
+    return this.addCoverageSetToScenario(record[SCENARIO.ID], coverageSetId, order)
 }

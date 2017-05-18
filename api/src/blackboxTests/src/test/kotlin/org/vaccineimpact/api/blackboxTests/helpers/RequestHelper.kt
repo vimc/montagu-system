@@ -5,12 +5,13 @@ import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
 import khttp.get
 import khttp.responses.Response
+import org.vaccineimpact.api.models.ReifiedPermission
 
 class RequestHelper
 {
     fun get(url: String) = khttp.get(EndpointBuilder.build(url))
 
-    fun get(url: String, permissions: Set<String>): Response
+    fun get(url: String, permissions: Set<ReifiedPermission>): Response
     {
         val token = TestUserHelper().getTokenForTestUser(permissions)
         return get(url, token)

@@ -1,0 +1,13 @@
+{
+    "id": "ResponsibilityAndTouchstone",
+    "type": "object",
+    "properties": {
+        "touchstone": { "$ref": "Touchstone.schema.json" },
+        "responsibility": { "$ref": "Responsibility.schema.json" }
+    },
+    "additionalProperties": false,
+    "required": [
+        "touchstone",
+        "responsibility"
+    ]
+}

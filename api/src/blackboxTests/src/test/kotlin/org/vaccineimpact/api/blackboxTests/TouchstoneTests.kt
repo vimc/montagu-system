@@ -6,6 +6,7 @@ import org.junit.Test
 import org.vaccineimpact.api.blackboxTests.helpers.validate
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.direct.addTouchstone
+import org.vaccineimpact.api.models.PermissionSet
 import org.vaccineimpact.api.test_helpers.DatabaseTest
 
 class TouchstoneTests : DatabaseTest()
@@ -22,7 +23,7 @@ class TouchstoneTests : DatabaseTest()
         validate("/touchstones/") against "Touchstones" given {
             it.setupTouchstones()
         } requiringPermissions {
-            setOf("touchstones.read")
+            PermissionSet("*/touchstones.read")
         } andCheckArray {
             assertThat(it).isEqualTo(json {
                 array(
@@ -45,7 +46,7 @@ class TouchstoneTests : DatabaseTest()
         validate("/touchstones/") against "Touchstones" given {
             it.setupTouchstones()
         } withPermissions {
-            setOf("touchstones.read", "touchstones.prepare")
+            PermissionSet("*/touchstones.read", "*/touchstones.prepare")
         } andCheckArray {
             assertThat(it.size).isEqualTo(2)
             assertThat(it).contains(json {

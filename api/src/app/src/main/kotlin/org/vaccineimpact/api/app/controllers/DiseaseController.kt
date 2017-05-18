@@ -9,8 +9,8 @@ class DiseaseController(val db: () -> SimpleObjectsRepository) : AbstractControl
 {
     override val urlComponent = "/diseases"
     override val endpoints = listOf(
-            SecuredEndpoint("/", this::getDiseases, emptyList()),
-            SecuredEndpoint("/:id/", this::getDisease, emptyList())
+            SecuredEndpoint("/", this::getDiseases, emptySet()),
+            SecuredEndpoint("/:id/", this::getDisease, emptySet())
     )
 
     fun getDiseases(context: ActionContext): List<Disease>

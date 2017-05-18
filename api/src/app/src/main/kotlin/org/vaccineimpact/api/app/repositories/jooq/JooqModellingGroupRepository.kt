@@ -1,5 +1,7 @@
 package org.vaccineimpact.api.app.repositories.jooq
 
+import org.jooq.Record1
+import org.jooq.SelectConditionStep
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
 import org.vaccineimpact.api.app.filters.whereMatchesFilter
@@ -59,10 +61,49 @@ class JooqModellingGroupRepository(
                                      scenarioFilterParameters: ScenarioFilterParameters): ResponsibilitiesAndTouchstoneStatus
     {
         getModellingGroup(groupId)
-        val touchstone = touchstoneRepository().use { it.touchstones.get(touchstoneId) }
+        val touchstone = getTouchstone(touchstoneId)
         val responsibilitySet = getResponsibilitySet(groupId, touchstoneId)
         val responsibilities = getResponsibilities(responsibilitySet, scenarioFilterParameters, touchstoneId)
         return ResponsibilitiesAndTouchstoneStatus(responsibilities, touchstone.status)
+    }
+
+    override fun getResponsibility(groupId: String, touchstoneId: String, scenarioId: String): ResponsibilityAndTouchstone
+    {
+        getModellingGroup(groupId)
+        val touchstone = getTouchstone(touchstoneId)
+        val responsibilitySet = getResponsibilitySet(groupId, touchstoneId)
+        if (responsibilitySet != null)
+        {
+            val scenario = getScenariosInResponsibilitySet(
+                    responsibilitySet,
+                    { this.and(SCENARIO_DESCRIPTION.ID.eq(scenarioId)) }
+            ).singleOrNull() ?: throw UnknownObjectError(scenarioId, "responsibility")
+            val responsibility = convertScenarioToResponsibility(scenario)
+            return ResponsibilityAndTouchstone(touchstone, responsibility)
+        }
+        else
+        {
+            throw UnknownObjectError(scenarioId, "responsibility")
+        }
+    }
+
+    override fun getCoverageSets(groupId: String, touchstoneId: String, scenarioId: String): ScenarioTouchstoneAndCoverageSets
+    {
+        // We don't use the returned responsibility, but by using this method we check that the group exists
+        // and that the group is responsible for the given scenario in the given touchstone
+        val responsibilityAndTouchstone = getResponsibility(groupId, touchstoneId, scenarioId)
+        return touchstoneRepository().use { repo ->
+            val scenario = repo.getScenario(touchstoneId, scenarioId)
+            ScenarioTouchstoneAndCoverageSets(
+                    responsibilityAndTouchstone.touchstone,
+                    scenario.scenario,
+                    scenario.coverageSets)
+        }
+    }
+
+    private fun convertScenarioToResponsibility(scenario: Scenario): Responsibility
+    {
+        return Responsibility(scenario, ResponsibilityStatus.EMPTY, emptyList(), null)
     }
 
     private fun getResponsibilities(responsibilitySet: ResponsibilitySetRecord?,
@@ -71,8 +112,11 @@ class JooqModellingGroupRepository(
     {
         if (responsibilitySet != null)
         {
-            val responsibilities = getScenariosInResponsibilitySet(responsibilitySet, scenarioFilterParameters)
-                    .map { Responsibility(it, ResponsibilityStatus.EMPTY, emptyList(), null) }
+            val scenarios = getScenariosInResponsibilitySet(
+                    responsibilitySet,
+                    { this.whereMatchesFilter(JooqScenarioFilter(), scenarioFilterParameters) }
+            )
+            val responsibilities = scenarios.map(this::convertScenarioToResponsibility)
             val status = mapEnum<ResponsibilitySetStatus>(responsibilitySet.status)
             return Responsibilities(touchstoneId, "", status, responsibilities)
         }
@@ -82,14 +126,16 @@ class JooqModellingGroupRepository(
         }
     }
 
-    private fun getScenariosInResponsibilitySet(responsibilitySet: ResponsibilitySetRecord,
-                                                scenarioFilterParameters: ScenarioFilterParameters): List<Scenario>
+    private fun getScenariosInResponsibilitySet(
+            responsibilitySet: ResponsibilitySetRecord,
+            applyWhereFilter: SelectConditionStep<Record1<String>>.() -> SelectConditionStep<Record1<String>>)
+            : List<Scenario>
     {
         val records = dsl
                 .select(SCENARIO_DESCRIPTION.ID)
                 .fromJoinPath(RESPONSIBILITY_SET, RESPONSIBILITY, SCENARIO, SCENARIO_DESCRIPTION)
                 .where(RESPONSIBILITY.RESPONSIBILITY_SET.eq(responsibilitySet.id))
-                .whereMatchesFilter(JooqScenarioFilter(), scenarioFilterParameters)
+                .applyWhereFilter()
                 .fetch()
         val scenarioIds = records.map { it.getValue(SCENARIO_DESCRIPTION.ID) }
         return scenarioRepository().use {
@@ -104,4 +150,6 @@ class JooqModellingGroupRepository(
     }
 
     private fun mapModellingGroup(x: ModellingGroupRecord) = ModellingGroup(x.id, x.description)
+
+    private fun getTouchstone(touchstoneId: String) = touchstoneRepository().use { it.touchstones.get(touchstoneId) }
 }

@@ -8,8 +8,8 @@ import org.vaccineimpact.api.models.*
 
 class TouchstoneController(private val db: () -> TouchstoneRepository) : AbstractController()
 {
-    private val permissions = listOf("*/touchstones.read")
-    private val scenarioPermissions = permissions + listOf("*/scenarios.read", "*/coverage.read")
+    private val permissions = setOf("*/touchstones.read")
+    private val scenarioPermissions = permissions + setOf("*/scenarios.read", "*/coverage.read")
 
     override val urlComponent: String = "/touchstones"
     override val endpoints = listOf(

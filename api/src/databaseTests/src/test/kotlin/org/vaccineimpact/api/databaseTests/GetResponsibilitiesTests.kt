@@ -8,7 +8,7 @@ import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
 import org.vaccineimpact.api.db.direct.*
 import org.vaccineimpact.api.models.*
 
-class ResponsibilityTests : ModellingGroupRepositoryTests()
+class GetResponsibilitiesTests : ModellingGroupRepositoryTests()
 {
     @Test
     fun `getResponsibilities throws error for unknown modelling group`()
@@ -84,7 +84,6 @@ class ResponsibilityTests : ModellingGroupRepositoryTests()
             assertThat(set).isEmpty()
         }
     }
-
 
     @Test
     fun `can get responsibilities`()
