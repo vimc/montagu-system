@@ -4,10 +4,12 @@ import { Responsibility, Touchstone } from "../../models/Generated";
 import * as ResponsibilityStore from "../../stores/ResponsibilityStore";
 import { RemoteContent } from "../../stores/RemoteContent";
 import { RemoteContentComponent } from "../RemoteContentComponent/RemoteContentComponent";
+import { Link } from "simple-react-router";
+
+const headerStyles = require("../PageWithHeader/PageWithHeader.css");
 
 interface Props extends RemoteContent {
     touchstone: Touchstone;
-    responsibility: Responsibility;
 }
 
 export class ResponsibilityDetailsTitleComponent extends RemoteContentComponent<Props> {
@@ -18,14 +20,17 @@ export class ResponsibilityDetailsTitleComponent extends RemoteContentComponent<
         const state = ResponsibilityStore.Store.getState();
         return {
             touchstone: state.currentTouchstone,
-            responsibility: state.currentResponsibility,
             ready: state.currentTouchstone && state.currentResponsibility
         };
     }
 
     renderContent(props: Props) {
+        const url = `/responsibilities/${props.touchstone.id}/`;
         return <span>
-            { props.touchstone.description }: { props.responsibility.scenario.description }
+            Download coverage data
+            <span className={ headerStyles.titleAddition }>
+                <Link href={ url }>Return to responsibilities list</Link>
+            </span>
         </span>;
     }
 }

@@ -12,8 +12,11 @@ export class CoverageSetSource extends Source<ScenarioTouchstoneAndCoverageSets,
             success: responsibilityActions.updateCoverageSets,
             loading: responsibilityActions.beginFetchCoverageSets
         });
-        this.fetchCoverageSets = () => {
-            return this.doFetch(s => `/touchstones/${s.currentTouchstone.id}/scenarios/${s.currentResponsibility.scenario.id}/`);
-        };
+        this.fetchCoverageSets = () => this.doFetch(s => {
+            const group = s.currentModellingGroupId;
+            const touchstone = s.currentTouchstone.id;
+            const scenario = s.currentResponsibility.scenario.id;
+            return `/modelling-groups/${group}/responsibilities/${touchstone}/${scenario}/coverage_sets/`;
+        });
     }
 }

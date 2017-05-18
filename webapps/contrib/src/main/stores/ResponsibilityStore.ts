@@ -7,14 +7,14 @@ import { Responsibilities, Responsibility, ScenarioTouchstoneAndCoverageSets, To
 import { sources } from "../sources/Sources";
 import { authActions, LogInProperties } from "../actions/AuthActions";
 import { touchstoneActions } from "../actions/TouchstoneActions";
-import { ExtendedResponsibilitySet } from "../models/ResponsibilitySet";
+import { ExtendedResponsibility, ExtendedResponsibilitySet } from "../models/ResponsibilitySet";
 
 export interface State extends RemoteContent {
     touchstones: Array<Touchstone>;
     currentTouchstone: Touchstone;
 
     responsibilitySet: ExtendedResponsibilitySet;
-    currentResponsibility: Responsibility;
+    currentResponsibility: ExtendedResponsibility;
 
     currentModellingGroupId: string;
     currentDiseaseId: string;
@@ -32,7 +32,7 @@ class ResponsibilityStore extends AbstractStore<State, ResponsibilityStoreInterf
     currentTouchstone: Touchstone;
 
     responsibilitySet: ExtendedResponsibilitySet;
-    currentResponsibility: Responsibility;
+    currentResponsibility: ExtendedResponsibility;
 
     currentModellingGroupId: string;
     currentDiseaseId: string;
@@ -109,6 +109,7 @@ class ResponsibilityStore extends AbstractStore<State, ResponsibilityStoreInterf
     }
     handleUpdateCoverageSets(data: ScenarioTouchstoneAndCoverageSets) {
         this.responsibilitySet.addCoverageSets(data.scenario.id, data.coverage_sets);
+        this.ready = true;
     }
 
     handleFilterByDisease(diseaseId: string) {

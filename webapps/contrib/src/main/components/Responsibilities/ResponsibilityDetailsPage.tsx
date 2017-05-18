@@ -4,6 +4,7 @@ import { touchstoneActions } from "../../actions/TouchstoneActions";
 import { responsibilityActions } from "../../actions/ResponsibilityActions";
 import { ResponsibilityDetailsTitle } from "./ResponsibilityDetailsTitle";
 import { Store } from "../../stores/ResponsibilityStore";
+import { ResponsibilityDetails } from "./ResponsibilityDetails";
 
 interface LocationProps {
     touchstoneId: string;
@@ -22,6 +23,6 @@ export class ResponsibilityDetailsPage extends PageWithHeader<LocationProps> {
     }
 
     renderPageContent() {
-        return <span>Test</span>
+        return <ResponsibilityDetails />
     }
 }

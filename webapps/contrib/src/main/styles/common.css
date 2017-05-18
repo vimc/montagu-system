@@ -2,6 +2,19 @@ select, input {
     font-size: inherit;
 }
 
+table {
+    border-collapse: collapse;
+    width: 780px;
+}
+table tr td, table tr th {
+    padding: 5px;
+    border: 1px solid rgb(127, 127, 127);
+}
+table tr th, :local(.specialColumn) td:first-child {
+    background-color: rgb(170, 224, 250);
+    font-weight: bold;
+}
+
 :local(.sectionTitle) {
     font-family: header;
     font-size: 16pt;
@@ -10,4 +23,8 @@ select, input {
 
 :local(.control) {
     font-size: 16pt;
+}
+
+:local(.gapAbove) {
+    margin-top: 20px;
 }
