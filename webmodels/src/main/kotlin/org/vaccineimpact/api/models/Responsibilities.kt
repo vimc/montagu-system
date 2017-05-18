@@ -14,6 +14,11 @@ data class Responsibilities(
     override fun iterator() = responsibilities.iterator()
 }
 
+data class ResponsibilityAndTouchstone(
+        val touchstone: Touchstone,
+        val responsibility: Responsibility
+)
+
 data class Responsibility(
         val scenario: Scenario,
         val status: ResponsibilityStatus,
