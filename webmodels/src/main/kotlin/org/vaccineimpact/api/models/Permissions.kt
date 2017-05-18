@@ -1,5 +1,7 @@
 package org.vaccineimpact.api.models
 
+import org.vaccineimpact.api.models.exceptions.ReifiedPermissionParseException
+
 // A permission is just a name, like 'coverage.read'
 // To be usable, it must be reified with a scope, like:
 // */coverage.read (for the global scope)
@@ -18,10 +20,30 @@ data class ReifiedPermission(
     {
         fun parse(raw: String): ReifiedPermission
         {
-            val parts = raw.split('/')
-            val rawScope = parts[0]
-            val name = parts[1]
-            return ReifiedPermission(name, Scope.parse(rawScope))
+            try
+            {
+                val parts = raw.split('/')
+                val rawScope = parts[0]
+                val name = parts[1]
+                return ReifiedPermission(name, Scope.parse(rawScope))
+            } catch (e: Exception)
+            {
+                throw ReifiedPermissionParseException(raw)
+            }
         }
     }
+}
+
+class PermissionSet(val permissions: Set<ReifiedPermission>): Set<ReifiedPermission> by permissions
+{
+    constructor(vararg rawPermissions: String)
+        : this(rawPermissions.map { ReifiedPermission.parse(it) }.toSet())
+    constructor(rawPermissions: Iterable<String>)
+            : this(rawPermissions.map { ReifiedPermission.parse(it) }.toSet())
+
+    val names by lazy { permissions.map { it.name }.distinct() }
+
+    infix operator fun plus(other: PermissionSet) = PermissionSet(this.permissions + other.permissions)
+    infix operator fun plus(other: ReifiedPermission) = PermissionSet(this.permissions + other)
+    infix operator fun plus(other: String) = this + ReifiedPermission.parse(other)
 }

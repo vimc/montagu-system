@@ -6,6 +6,8 @@ sealed class Scope(val value: String)
     {
         // Global scope is greater than or equal to all other scopes
         override fun encompasses(other: Scope) = true
+        override val databaseScopePrefix = null
+        override val databaseScopeId = ""
     }
 
     class Specific(val scopePrefix: String, val scopeId: String): Scope("$scopePrefix:$scopeId")
@@ -18,6 +20,9 @@ sealed class Scope(val value: String)
         // Different specific scopes are not ordered relative to each other, so only return true if they are indentical
             is Specific -> equals(other)
         }
+
+        override val databaseScopePrefix = scopePrefix
+        override val databaseScopeId = scopeId
     }
 
     override fun toString() = value
@@ -28,6 +33,8 @@ sealed class Scope(val value: String)
     override fun hashCode() = toString().hashCode()
 
     abstract fun encompasses(other: Scope): Boolean
+    abstract val databaseScopePrefix: String?
+    abstract val databaseScopeId: String
 
     companion object
     {
