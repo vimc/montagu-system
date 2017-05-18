@@ -11,14 +11,38 @@ import org.vaccineimpact.api.db.direct.*
  */
 fun main(args: Array<String>) {
     JooqContext().use { db ->
-        db.addGroup("group-1", "description")
-        db.addScenarioDescription("scenario-1", "description 1", "disease-1", addDisease = true)
-        db.addScenarioDescription("scenario-2", "description 2", "disease-2", addDisease = true)
-        db.addTouchstone("touchstone", 1, "Touchstone v1", "open", 1900..2000, addName = true, addStatus = true)
-        db.addTouchstone("touchstone", 2, "Touchstone v2", "open", 1900..2000)
-        val setId = db.addResponsibilitySet("group-1", "touchstone-1", "submitted", addStatus = true)
-        db.addResponsibility(setId, "touchstone-1", "scenario-1")
-        db.addResponsibility(setId, "touchstone-1", "scenario-2")
+        db.addDisease("YF", "Yellow Fever")
+        db.addVaccine("YF", "Yellow Fever")
+        db.addSupportLevels("none", "without", "with")
+        db.addActivityTypes("none", "routine", "campaign")
+
+        db.addScenarioDescription("yf-routine", "Yellow Fever, routine", "YF")
+        db.addScenarioDescription("yf-campaign", "Yellow Fever, campaign", "YF")
+
+        db.addTouchstoneName("op-2017", "Operational Forecast 2017")
+        db.addTouchstone("op-2017", 1, "Operational Forecast 2017 (v1)", "finished", 1900..2000, addStatus = true)
+        db.addTouchstone("op-2017", 2, "Operational Forecast 2017 (v2)", "open", 1900..2000, addStatus = true)
+        val yfRoutine = db.addScenarioToTouchstone("op-2017-2", "yf-routine")
+        val yfCampaign = db.addScenarioToTouchstone("op-2017-2", "yf-campaign")
+
+        val yfNoVacc = db.addCoverageSet("op-2017-2", "Yellow Fever, no vaccination", "YF", "none", "none")
+        val yfRoutineWithout = db.addCoverageSet("op-2017-2", "Yellow Fever, routine, without GAVI", "YF", "without", "routine")
+        val yfRoutineWith = db.addCoverageSet("op-2017-2", "Yellow Fever, routine, with GAVI", "YF", "with", "routine")
+        val yfCampaignWithout = db.addCoverageSet("op-2017-2", "Yellow Fever, campaign, without GAVI", "YF", "without", "campaign")
+        val yfCampaignWith = db.addCoverageSet("op-2017-2", "Yellow Fever, campaign, with GAVI", "YF", "with", "campaign")
+        db.addCoverageSetToScenario("yf-routine", "op-2017-2", yfNoVacc, 0)
+        db.addCoverageSetToScenario("yf-routine", "op-2017-2", yfRoutineWithout, 1)
+        db.addCoverageSetToScenario("yf-routine", "op-2017-2", yfRoutineWith, 2)
+        db.addCoverageSetToScenario("yf-campaign", "op-2017-2", yfNoVacc, 0)
+        db.addCoverageSetToScenario("yf-campaign", "op-2017-2", yfRoutineWithout, 1)
+        db.addCoverageSetToScenario("yf-campaign", "op-2017-2", yfRoutineWith, 2)
+        db.addCoverageSetToScenario("yf-campaign", "op-2017-2", yfCampaignWithout, 3)
+        db.addCoverageSetToScenario("yf-campaign", "op-2017-2", yfCampaignWith, 4)
+
+        db.addGroup("IC-Garske", "Imperial Yellow Fever modelling group")
+        val setId = db.addResponsibilitySet("IC-Garske", "op-2017-2", "incomplete", addStatus = true)
+        db.addResponsibility(setId, yfRoutine)
+        db.addResponsibility(setId, yfCampaign)
 
         val roles = listOf(
                 Role("user", null, "Log in", listOf("can-login", "scenarios.read", "countries.read", "modelling-groups.read", "models.read", "touchstones.read", "responsibilities.read", "users.read", "estimates.read")),

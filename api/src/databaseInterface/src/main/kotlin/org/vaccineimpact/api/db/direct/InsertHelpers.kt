@@ -110,9 +110,9 @@ fun JooqContext.addScenarioDescription(id: String, description: String, disease:
     }.store()
 }
 
-fun JooqContext.addScenario(touchstone: String,
-                            scenarioDescription: String,
-                            id: Int? = null
+fun JooqContext.addScenarioToTouchstone(touchstone: String,
+                                        scenarioDescription: String,
+                                        id: Int? = null
 ): Int
 {
     return this.dsl.newRecord(SCENARIO).apply {
@@ -128,7 +128,7 @@ fun JooqContext.addScenario(touchstone: String,
 
 fun JooqContext.addScenarios(touchstone: String, vararg scenarioDescriptions: String): List<Int>
 {
-    return scenarioDescriptions.map { this.addScenario(touchstone, it) }
+    return scenarioDescriptions.map { this.addScenarioToTouchstone(touchstone, it) }
 }
 
 fun JooqContext.addResponsibilitySetStatus(id: String, name: String? = null)
@@ -173,7 +173,7 @@ fun JooqContext.addResponsibility(responsibilitySetId: Int, scenarioId: Int): In
 /** Creates both a responsibility and the scenario it depends on **/
 fun JooqContext.addResponsibility(responsibilitySetId: Int, touchstone: String, scenarioDescription: String): Int
 {
-    val scenarioId = this.addScenario(touchstone, scenarioDescription)
+    val scenarioId = this.addScenarioToTouchstone(touchstone, scenarioDescription)
     return this.addResponsibility(responsibilitySetId, scenarioId)
 }
 

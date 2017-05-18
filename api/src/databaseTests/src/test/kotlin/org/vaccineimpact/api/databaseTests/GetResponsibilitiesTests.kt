@@ -163,8 +163,8 @@ class GetResponsibilitiesTests : ModellingGroupRepositoryTests()
             // scenario 1 in touchstone 1, and scenario 2 in touchstone 2
             it.addResponsibility(set1, "touchstone-1", "scenario-1")
             it.addResponsibility(set2, "touchstone-2", "scenario-2")
-            it.addScenario("touchstone-1", "scenario-2")
-            it.addScenario("touchstone-2", "scenario-1")
+            it.addScenarioToTouchstone("touchstone-1", "scenario-2")
+            it.addScenarioToTouchstone("touchstone-2", "scenario-1")
         } check { repo ->
             val set = repo.getResponsibilities("group", "touchstone-1", ScenarioFilterParameters()).responsibilities
             assertThat(set.touchstone).isEqualTo("touchstone-1")

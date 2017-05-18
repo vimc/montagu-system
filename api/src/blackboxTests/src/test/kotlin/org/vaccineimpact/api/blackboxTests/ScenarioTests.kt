@@ -94,7 +94,7 @@ class ScenarioTests : DatabaseTest()
     {
         it.addTouchstone("touchstone", 1, status = touchstoneStatus, addStatus = true, addName = true)
         it.addScenarioDescription("scenario", "description", "disease", addDisease = true)
-        it.addScenario(touchstoneId, "scenario", id = scenarioId)
+        it.addScenarioToTouchstone(touchstoneId, "scenario", id = scenarioId)
         it.addCoverageSet(touchstoneId, "Set 1", "vaccine", "none", "routine",
                 id = coverageSetId,
                 addVaccine = true, addSupportLevel = true, addActivityType = true)
