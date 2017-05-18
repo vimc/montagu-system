@@ -18,12 +18,17 @@ class ModellingGroupController(private val db: () -> ModellingGroupRepository)
                     "*/modelling-groups.read"
             )),
             SecuredEndpoint("/:group-id/responsibilities/:touchstone-id/", this::getResponsibilities, setOf(
+                    "*/scenarios.read",
                     "$groupScope/responsibilities.read",
-                    "$groupScope/scenarios.read"
+                    "$groupScope/responsibilities.read"
             )),
-            SecuredEndpoint("/:group-id/responsibilities/:touchstone-id/coverage_sets/:scenario-id/", this::getCoverageSets, setOf(
+            SecuredEndpoint("/:group-id/responsibilities/:touchstone-id/:scenario-id/", this::getResponsibility, setOf(
+                    "*/scenarios.read",
+                    "$groupScope/responsibilities.read"
+            )),
+            SecuredEndpoint("/:group-id/responsibilities/:touchstone-id/:scenario-id/coverage_sets/", this::getCoverageSets, setOf(
+                    "*/scenarios.read",
                     "$groupScope/responsibilities.read",
-                    "$groupScope/scenarios.read",
                     "$groupScope/coverage.read"
             ))
     )
@@ -44,13 +49,19 @@ class ModellingGroupController(private val db: () -> ModellingGroupRepository)
         return data.responsibilities
     }
 
+    fun getResponsibility(context: ActionContext): ResponsibilityAndTouchstone
+    {
+        val path = ResponsibilityPath(context)
+        val data = db().use { it.getResponsibility(path.groupId, path.touchstoneId, path.scenarioId)}
+        checkTouchstoneStatus(data.touchstone.status, path.touchstoneId, context)
+        return data
+    }
+
     fun getCoverageSets(context: ActionContext): ScenarioTouchstoneAndCoverageSets
     {
-        val groupId = groupId(context)
-        val touchstoneId = context.params(":touchstone-id")
-        val scenarioDescriptionId = context.params(":scenario-id")
-        val data = db().use { it.getCoverageSets(groupId, touchstoneId, scenarioDescriptionId) }
-        checkTouchstoneStatus(data.touchstone.status, touchstoneId, context)
+        val path = ResponsibilityPath(context)
+        val data = db().use { it.getCoverageSets(path.groupId, path.touchstoneId, path.scenarioId) }
+        checkTouchstoneStatus(data.touchstone.status, path.touchstoneId, context)
         return data
     }
 
@@ -68,4 +79,11 @@ class ModellingGroupController(private val db: () -> ModellingGroupRepository)
     // We are sure that this will be non-null, as its part of the URL,
     // and Spark wouldn't have mapped us here if it were blank
     private fun groupId(context: ActionContext): String = context.params(":group-id")
+}
+
+// Everything needed to precisely specify one responsibility
+data class ResponsibilityPath(val groupId: String, val touchstoneId: String, val scenarioId: String)
+{
+    constructor(context: ActionContext)
+        : this(context.params(":group-id"), context.params(":touchstone-id"), context.params("scenario-id"))
 }

@@ -4,14 +4,23 @@ import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.Tables.*
 import org.vaccineimpact.api.db.fieldsAsList
 
-fun JooqContext.givePermissionsToUserUsingTestRole(username: String, permissions: List<String>)
+fun JooqContext.givePermissionsToUserUsingTestRole(
+        username: String,
+        scopePrefix: String?,
+        scopeId: String,
+        permissions: List<String>)
 {
-    val testRoleId = this.getOrCreateRole("test_role", null, "Test role")
-    this.ensureUserHasRole(username, testRoleId, scopeId = "")
+    val testRoleId = this.getOrCreateRole("test_role_$scopeId", scopePrefix, "Test role")
+    this.ensureUserHasRole(username, testRoleId, scopeId = scopeId)
     this.setRolePermissions(testRoleId, permissions)
 }
 
-fun JooqContext.createPermissions(permissions: Set<String>)
+fun JooqContext.clearRolesForUser(username: String)
+{
+    dsl.deleteFrom(USER_ROLE).where(USER_ROLE.USERNAME.eq(username)).execute()
+}
+
+fun JooqContext.createPermissions(permissions: List<String>)
 {
     val records = permissions.map {
         dsl.newRecord(PERMISSION).apply { name = it }
@@ -23,7 +32,7 @@ fun JooqContext.setRolePermissions(roleId: Int, permissions: List<String>, creat
 {
     if (createPermissions)
     {
-        createPermissions(permissions.toSet())
+        createPermissions(permissions)
     }
     dsl.deleteFrom(ROLE_PERMISSION).where(ROLE_PERMISSION.ROLE.eq(roleId)).execute()
     val records = permissions.map { permission ->

@@ -5,6 +5,8 @@ import com.beust.klaxon.JsonObject
 import khttp.responses.Response
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.direct.createPermissions
+import org.vaccineimpact.api.models.PermissionSet
+import org.vaccineimpact.api.models.ReifiedPermission
 
 fun validate(url: String) = FluentValidationConfig(url = url)
 
@@ -12,19 +14,19 @@ data class FluentValidationConfig(
         val url: String,
         val schemaName: String? = null,
         val prepareDatabase: ((JooqContext) -> Unit)? = null,
-        val checkRequiredPermissions: Set<String>? = null,
-        val ownedPermissions: Set<String>? = null
+        val checkRequiredPermissions: Set<ReifiedPermission>? = null,
+        val ownedPermissions: Set<ReifiedPermission>? = null
 )
 {
     infix fun against(schemaName: String) = this.copy(schemaName = schemaName)
 
     infix fun given(prepareDatabase: (JooqContext) -> Unit) = this.copy(prepareDatabase = prepareDatabase)
 
-    infix fun requiringPermissions(requiredPermissions: () -> Set<String>)
-            = this.copy(checkRequiredPermissions = setOf("can-login") + requiredPermissions())
+    infix fun requiringPermissions(requiredPermissions: () -> PermissionSet)
+            = this.copy(checkRequiredPermissions = PermissionSet("*/can-login") + requiredPermissions())
 
-    infix fun withPermissions(ownedPermissions: () -> Set<String>)
-            = this.copy(ownedPermissions = setOf("can-login") + ownedPermissions())
+    infix fun withPermissions(ownedPermissions: () -> PermissionSet)
+            = this.copy(ownedPermissions = PermissionSet("*/can-login") + ownedPermissions())
 
     infix fun andCheck(additionalChecks: (JsonObject) -> Unit)
     {
@@ -44,8 +46,9 @@ class FluentValidation(config: FluentValidationConfig)
     val url = config.url
     val schemaName = config.schemaName ?: throw Exception("Missing 'against' clause in fluent validation builder")
     val prepareDatabase = config.prepareDatabase ?: throw Exception("Missing 'given' clause in fluent validation builder")
-    val requiredPermissions: Set<String> = config.checkRequiredPermissions ?: setOf("can-login")
-    val ownedPermissions: Set<String> = config.ownedPermissions ?: requiredPermissions
+    val requiredPermissions: Set<ReifiedPermission> = config.checkRequiredPermissions ?: PermissionSet("*/can-login")
+    val ownedPermissions: Set<ReifiedPermission> = config.ownedPermissions ?: requiredPermissions
+    val allPermissions = requiredPermissions + ownedPermissions
 
     val userHelper = TestUserHelper()
     val requestHelper = RequestHelper()
@@ -64,11 +67,10 @@ class FluentValidation(config: FluentValidationConfig)
 
     private fun run(): Response
     {
-        val allPermissions = requiredPermissions + ownedPermissions
         JooqContext().use {
             prepareDatabase(it)
             userHelper.setupTestUser(it)
-            it.createPermissions(allPermissions)
+            it.createPermissions(allPermissions.map { it.name })
         }
 
         // Check that the auth token is required
@@ -91,7 +93,7 @@ class FluentValidation(config: FluentValidationConfig)
 
     private fun checkPermissions(url: String, validator: SchemaValidator)
     {
-        val checker = PermissionChecker(url, requiredPermissions)
+        val checker = PermissionChecker(url, allPermissions)
         for (permission in requiredPermissions)
         {
             checker.checkPermissionIsRequired(permission, validator)

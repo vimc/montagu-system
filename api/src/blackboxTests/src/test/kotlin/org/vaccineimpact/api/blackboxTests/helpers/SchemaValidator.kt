@@ -35,7 +35,9 @@ class SchemaValidator
         val error = json["errors"].first()
         if (expectedErrorCode != null)
         {
-            assertThat(error["code"].asText()).isEqualTo(expectedErrorCode)
+            assertThat(error["code"].asText())
+                    .withFailMessage("Expected error code to be '$expectedErrorCode' in $jsonAsString")
+                    .isEqualTo(expectedErrorCode)
         }
         if (expectedErrorText != null)
         {

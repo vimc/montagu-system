@@ -10,11 +10,12 @@ import org.vaccineimpact.api.blackboxTests.helpers.PermissionChecker
 import org.vaccineimpact.api.blackboxTests.helpers.validate
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.direct.*
+import org.vaccineimpact.api.models.PermissionSet
 import org.vaccineimpact.api.test_helpers.DatabaseTest
 
 class ScenarioTests : DatabaseTest()
 {
-    val requiredPermissions = setOf("can-login", "touchstones.read", "scenarios.read", "coverage.read")
+    val requiredPermissions = PermissionSet("*/can-login", "*/touchstones.read", "*/scenarios.read", "*/coverage.read")
     val touchstoneId = "touchstone-1"
     val setId = 1
     val scenarioId = "scenario"
@@ -39,7 +40,7 @@ class ScenarioTests : DatabaseTest()
     @Test
     fun `only touchstone preparer can see scenarios for in-preparation touchstone`()
     {
-        val permissionUnderTest = "touchstones.prepare"
+        val permissionUnderTest = "*/touchstones.prepare"
         PermissionChecker(
                 "/touchstones/$touchstoneId/scenarios/",
                 requiredPermissions + permissionUnderTest
@@ -74,7 +75,7 @@ class ScenarioTests : DatabaseTest()
     @Test
     fun `only touchstone-preparer can get scenario for in-preparation touchstone`()
     {
-        val permissionUnderTest = "touchstones.prepare"
+        val permissionUnderTest = "*/touchstones.prepare"
         PermissionChecker(
                 "/touchstones/$touchstoneId/scenarios/$scenarioId",
                 requiredPermissions + permissionUnderTest

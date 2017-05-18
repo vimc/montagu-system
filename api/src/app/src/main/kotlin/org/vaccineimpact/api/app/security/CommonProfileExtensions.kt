@@ -1,7 +1,7 @@
 package org.vaccineimpact.api.app.security
 
 import org.pac4j.core.profile.CommonProfile
-import org.vaccineimpact.api.models.ReifiedPermission
+import org.vaccineimpact.api.models.PermissionSet
 
 fun <T> CommonProfile.getAttributeOrDefault(key: String, default: T): T
 {
@@ -18,4 +18,4 @@ fun <T> CommonProfile.getAttributeOrDefault(key: String, default: T): T
 }
 
 @Suppress("UNCHECKED_CAST")
-fun CommonProfile.montaguPermissions() = this.attributes[PERMISSIONS] as Set<ReifiedPermission>
+fun CommonProfile.montaguPermissions() = this.attributes[PERMISSIONS] as PermissionSet
