@@ -1,6 +1,7 @@
 package org.vaccineimpact.api.app.security
 
 import org.vaccineimpact.api.app.ActionContext
+import org.vaccineimpact.api.app.errors.PermissionRequirementParseException
 import org.vaccineimpact.api.models.ReifiedPermission
 import org.vaccineimpact.api.models.Scope
 
@@ -14,10 +15,17 @@ data class PermissionRequirement(val name: String, val scopeRequirement: ScopeRe
     {
         fun parse(raw: String): PermissionRequirement
         {
-            val parts = raw.split('/')
-            val rawScope = parts[0]
-            val name = parts[1]
-            return PermissionRequirement(name, ScopeRequirement.parse(rawScope))
+            try
+            {
+                val parts = raw.split('/')
+                val rawScope = parts[0]
+                val name = parts[1]
+                return PermissionRequirement(name, ScopeRequirement.parse(rawScope))
+            }
+            catch (e: Exception)
+            {
+                throw PermissionRequirementParseException(raw)
+            }
         }
     }
 }
@@ -34,6 +42,11 @@ sealed class ScopeRequirement(val value: String)
     }
 
     override fun toString() = value
+    override fun equals(other: Any?) = when(other) {
+        is ScopeRequirement -> other.toString() == toString()
+        else -> false
+    }
+    override fun hashCode() = toString().hashCode()
 
     companion object
     {

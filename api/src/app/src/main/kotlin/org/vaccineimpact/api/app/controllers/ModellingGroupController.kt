@@ -85,5 +85,5 @@ class ModellingGroupController(private val db: () -> ModellingGroupRepository)
 data class ResponsibilityPath(val groupId: String, val touchstoneId: String, val scenarioId: String)
 {
     constructor(context: ActionContext)
-        : this(context.params(":group-id"), context.params(":touchstone-id"), context.params("scenario-id"))
+        : this(context.params(":group-id"), context.params(":touchstone-id"), context.params(":scenario-id"))
 }

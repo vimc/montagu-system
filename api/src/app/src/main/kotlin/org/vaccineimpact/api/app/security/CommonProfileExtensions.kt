@@ -18,4 +18,4 @@ fun <T> CommonProfile.getAttributeOrDefault(key: String, default: T): T
 }
 
 @Suppress("UNCHECKED_CAST")
-fun CommonProfile.montaguPermissions() = this.attributes[PERMISSIONS] as PermissionSet
+fun CommonProfile.montaguPermissions() = this.getAttributeOrDefault(PERMISSIONS, PermissionSet())
