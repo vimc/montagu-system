@@ -46,4 +46,9 @@ class PermissionSet(val permissions: Set<ReifiedPermission>): Set<ReifiedPermiss
     infix operator fun plus(other: PermissionSet) = PermissionSet(this.permissions + other.permissions)
     infix operator fun plus(other: ReifiedPermission) = PermissionSet(this.permissions + other)
     infix operator fun plus(other: String) = this + ReifiedPermission.parse(other)
+
+    override fun toString(): String
+    {
+        return "[${permissions.joinToString()}]"
+    }
 }
