@@ -2,9 +2,9 @@ import * as React from "react";
 import { Store } from "../../../stores/MainStore";
 import { Option, OptionSelector } from "../../OptionSelector/OptionSelector";
 import { responsibilityActions } from "../../../actions/ResponsibilityActions";
-import { ExtendedResponsibilitySet } from "../../../models/ResponsibilitySet";
+import { IExtendedResponsibilitySet } from "../../../models/ResponsibilitySet";
 
-export class DiseaseFilter extends React.Component<ExtendedResponsibilitySet, undefined> {
+export class DiseaseFilter extends React.Component<IExtendedResponsibilitySet, undefined> {
     render(): JSX.Element {
         const diseaseIds = [ ...new Set(this.props.responsibilities.map(x => x.scenario.disease)) ];
         if (diseaseIds.length > 1) {

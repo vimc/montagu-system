@@ -20,7 +20,14 @@ export class ExtendedResponsibility {
     }
 }
 
-export class ExtendedResponsibilitySet {
+export interface IExtendedResponsibilitySet {
+    problems: string;
+    responsibilities: ExtendedResponsibility[];
+    status: ResponsibilitySetStatus | null;
+    touchstone: Touchstone;
+}
+
+export class ExtendedResponsibilitySet implements IExtendedResponsibilitySet {
     problems: string;
     responsibilities: ExtendedResponsibility[];
     status: ResponsibilitySetStatus | null;
