@@ -1,13 +1,13 @@
 import * as React from "react";
 import { expect } from "chai";
 import { shallow } from "enzyme";
-import { mockResponsibility, mockTouchstone } from "../mocks/mockModels";
+import { mockResponsibility, mockTouchstone } from "../../mocks/mockModels";
 
-import { ResponsibilityListComponent, ResponsibilityListComponentProps } from "../../main/components/Responsibilities/Overview/ResponsibilityList";
-import { ResponsibilityComponent } from "../../main/components/Responsibilities/Overview/ResponsibilityComponent";
-import { DiseaseFilter } from "../../main/components/Responsibilities/Overview/DiseaseFilter";
-import { Responsibility } from "../../main/models/Generated";
-import { ExtendedResponsibilitySet } from "../../main/models/ResponsibilitySet";
+import { ResponsibilityListComponent, ResponsibilityListComponentProps } from "../../../main/components/Responsibilities/Overview/ResponsibilityList";
+import { ResponsibilityComponent } from "../../../main/components/Responsibilities/Overview/ResponsibilityComponent";
+import { DiseaseFilter } from "../../../main/components/Responsibilities/Overview/DiseaseFilter";
+import { Responsibility } from "../../../main/models/Generated";
+import { ExtendedResponsibilitySet } from "../../../main/models/ResponsibilitySet";
 
 function makeProps(responsibilities: Array<Responsibility>,
                         currentDiseaseId?: string): ResponsibilityListComponentProps {

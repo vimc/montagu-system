@@ -1,13 +1,13 @@
 import * as React from "react";
-import * as mocks from "../mocks/mocks";
+import * as mocks from "../../mocks/mocks";
 import { shallow } from "enzyme";
 import { expect } from "chai";
-import { alt } from "../../main/alt";
-import * as actionHelpers from "../actionHelpers";
-import { mockExtendedResponsibilitySet, mockResponsibility } from "../mocks/mockModels";
+import { alt } from "../../../main/alt";
+import * as actionHelpers from "../../actionHelpers";
+import { mockExtendedResponsibilitySet, mockResponsibility } from "../../mocks/mockModels";
 
-import { DiseaseFilter } from "../../main/components/Responsibilities/Overview/DiseaseFilter";
-import { OptionSelector } from "../../main/components/OptionSelector/OptionSelector";
+import { DiseaseFilter } from "../../../main/components/Responsibilities/Overview/DiseaseFilter";
+import { OptionSelector } from "../../../main/components/OptionSelector/OptionSelector";
 
 describe("DiseaseFilter", () => {
     afterEach(() => {

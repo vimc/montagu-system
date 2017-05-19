@@ -2,13 +2,13 @@ import * as React from "react";
 import * as sinon from "sinon";
 import { expect } from "chai";
 import { mount, shallow } from "enzyme";
-import { mockLocation } from "../mocks/mocks";
-import { dispatchSpy, expectOrderedActions } from "../actionHelpers";
+import { mockLocation } from "../../mocks/mocks";
+import { dispatchSpy, expectOrderedActions } from "../../actionHelpers";
 
-import { ResponsibilityOverviewPage } from "../../main/components/Responsibilities/Overview/ResponsibilityOverviewPage";
-import { mockTouchstone } from "../mocks/mockModels";
-import { ResponsibilityOverviewTitleComponent } from "../../main/components/Responsibilities/Overview/ResponsibilityOverviewTitle";
-import * as ResponsibilityStore from "../../main/stores/ResponsibilityStore";
+import { ResponsibilityOverviewPage } from "../../../main/components/Responsibilities/Overview/ResponsibilityOverviewPage";
+import { mockTouchstone } from "../../mocks/mockModels";
+import { ResponsibilityOverviewTitleComponent } from "../../../main/components/Responsibilities/Overview/ResponsibilityOverviewTitle";
+import * as ResponsibilityStore from "../../../main/stores/ResponsibilityStore";
 
 describe('ResponsibilityOverviewPage', () => {
     it("triggers actions when it mounts", () => {

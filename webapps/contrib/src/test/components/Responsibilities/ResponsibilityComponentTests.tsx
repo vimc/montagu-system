@@ -1,13 +1,13 @@
 import * as React from "react";
 import { expect } from "chai";
 import { shallow, ShallowWrapper } from "enzyme";
-import { mockResponsibility, mockTouchstone } from "../mocks/mockModels";
-import { setupMainStore } from "../mocks/mocks";
-import { alt } from "../../main/alt";
+import { mockResponsibility, mockTouchstone } from "../../mocks/mockModels";
+import { setupMainStore } from "../../mocks/mocks";
+import { alt } from "../../../main/alt";
 
-import { ResponsibilityComponent } from "../../main/components/Responsibilities/Overview/ResponsibilityComponent";
+import { ResponsibilityComponent } from "../../../main/components/Responsibilities/Overview/ResponsibilityComponent";
 
-const styles = require("../../main/components/Responsibilities/Responsibilities.css");
+const styles = require("../../../main/components/Responsibilities/Responsibilities.css");
 
 describe('ResponsibilityComponent', () => {
     let rendered: ShallowWrapper<any, any>;
