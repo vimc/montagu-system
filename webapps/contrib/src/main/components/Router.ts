@@ -1,10 +1,10 @@
 import { RouteMap, Router } from "simple-react-router";
 // Pages
-import { ResponsibilityOverviewPage } from "./Responsibilities/ResponsibilityOverviewPage";
+import { ResponsibilityOverviewPage } from "./Responsibilities/Overview/ResponsibilityOverviewPage";
 import { ChooseTouchstonePage } from "./Touchstones/ChooseTouchstonePage";
 import { LoadingPage } from "./LoadingPage";
 import { LoginPage } from "./Login/LoginPage";
-import { ResponsibilityDetailsPage } from "./Responsibilities/ResponsibilityDetailsPage";
+import { ResponsibilityDetailsPage } from "./Responsibilities/Details/ResponsibilityDetailsPage";
 
 interface RoutingProperties {
     loggedIn: boolean;

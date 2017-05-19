@@ -6,7 +6,7 @@ import { alt } from "../../main/alt";
 import * as actionHelpers from "../actionHelpers";
 import { mockExtendedResponsibilitySet, mockResponsibility } from "../mocks/mockModels";
 
-import { DiseaseFilter } from "../../main/components/Responsibilities/DiseaseFilter";
+import { DiseaseFilter } from "../../main/components/Responsibilities/Overview/DiseaseFilter";
 import { OptionSelector } from "../../main/components/OptionSelector/OptionSelector";
 
 describe("DiseaseFilter", () => {

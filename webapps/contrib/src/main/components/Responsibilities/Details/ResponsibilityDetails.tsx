@@ -1,13 +1,13 @@
 import * as React from "react";
-import { Store } from "../../stores/ResponsibilityStore";
-import { connectToStores } from "../../alt";
-import { CoverageSet, Scenario, Touchstone } from "../../models/Generated";
+import { Store } from "../../../stores/ResponsibilityStore";
+import { connectToStores } from "../../../alt";
+import { CoverageSet, Scenario, Touchstone } from "../../../models/Generated";
 import { CoverageSetComponent } from "./CoverageSetComponent";
-import { RemoteContent } from "../../stores/RemoteContent";
-import { RemoteContentComponent } from "../RemoteContentComponent/RemoteContentComponent";
-import { ButtonLink } from "../ButtonLink";
-const commonStyles = require("../../styles/common.css");
-const styles = require("./Responsibilities.css");
+import { RemoteContent } from "../../../stores/RemoteContent";
+import { RemoteContentComponent } from "../../RemoteContentComponent/RemoteContentComponent";
+import { ButtonLink } from "../../ButtonLink";
+const commonStyles = require("../../../styles/common.css");
+const styles = require("../Responsibilities.css");
 
 interface Props extends RemoteContent {
     touchstone?: Touchstone;

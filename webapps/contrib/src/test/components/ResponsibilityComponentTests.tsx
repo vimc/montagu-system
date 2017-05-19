@@ -5,7 +5,7 @@ import { mockResponsibility, mockTouchstone } from "../mocks/mockModels";
 import { setupMainStore } from "../mocks/mocks";
 import { alt } from "../../main/alt";
 
-import { ResponsibilityComponent } from "../../main/components/Responsibilities/ResponsibilityComponent";
+import { ResponsibilityComponent } from "../../main/components/Responsibilities/Overview/ResponsibilityComponent";
 
 const styles = require("../../main/components/Responsibilities/Responsibilities.css");
 

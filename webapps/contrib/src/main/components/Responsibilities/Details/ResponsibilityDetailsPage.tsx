@@ -1,9 +1,9 @@
 import * as React from "react";
-import { PageWithHeader } from "../PageWithHeader/PageWithHeader";
-import { touchstoneActions } from "../../actions/TouchstoneActions";
-import { responsibilityActions } from "../../actions/ResponsibilityActions";
+import { PageWithHeader } from "../../PageWithHeader/PageWithHeader";
+import { touchstoneActions } from "../../../actions/TouchstoneActions";
+import { responsibilityActions } from "../../../actions/ResponsibilityActions";
 import { ResponsibilityDetailsTitle } from "./ResponsibilityDetailsTitle";
-import { Store } from "../../stores/ResponsibilityStore";
+import { Store } from "../../../stores/ResponsibilityStore";
 import { ResponsibilityDetails } from "./ResponsibilityDetails";
 
 interface LocationProps {

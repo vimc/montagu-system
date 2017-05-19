@@ -1,12 +1,12 @@
 import * as React from "react";
-import { connectToStores } from "../../alt";
-import { Responsibility, Touchstone } from "../../models/Generated";
-import * as ResponsibilityStore from "../../stores/ResponsibilityStore";
-import { RemoteContent } from "../../stores/RemoteContent";
-import { RemoteContentComponent } from "../RemoteContentComponent/RemoteContentComponent";
+import { connectToStores } from "../../../alt";
+import { Touchstone } from "../../../models/Generated";
+import * as ResponsibilityStore from "../../../stores/ResponsibilityStore";
+import { RemoteContent } from "../../../stores/RemoteContent";
+import { RemoteContentComponent } from "../../RemoteContentComponent/RemoteContentComponent";
 import { Link } from "simple-react-router";
 
-const headerStyles = require("../PageWithHeader/PageWithHeader.css");
+const headerStyles = require("../../PageWithHeader/PageWithHeader.css");
 
 interface Props extends RemoteContent {
     touchstone: Touchstone;

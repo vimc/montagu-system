@@ -3,9 +3,9 @@ import { expect } from "chai";
 import { shallow } from "enzyme";
 import { mockResponsibility, mockTouchstone } from "../mocks/mockModels";
 
-import { ResponsibilityListComponent, ResponsibilityListComponentProps } from "../../main/components/Responsibilities/ResponsibilityList";
-import { ResponsibilityComponent } from "../../main/components/Responsibilities/ResponsibilityComponent";
-import { DiseaseFilter } from "../../main/components/Responsibilities/DiseaseFilter";
+import { ResponsibilityListComponent, ResponsibilityListComponentProps } from "../../main/components/Responsibilities/Overview/ResponsibilityList";
+import { ResponsibilityComponent } from "../../main/components/Responsibilities/Overview/ResponsibilityComponent";
+import { DiseaseFilter } from "../../main/components/Responsibilities/Overview/DiseaseFilter";
 import { Responsibility } from "../../main/models/Generated";
 import { ExtendedResponsibilitySet } from "../../main/models/ResponsibilitySet";
 

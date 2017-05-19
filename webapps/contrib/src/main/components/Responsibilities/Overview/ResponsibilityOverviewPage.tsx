@@ -1,10 +1,10 @@
 import * as React from "react";
-import { PageWithHeader } from "../PageWithHeader/PageWithHeader";
+import { PageWithHeader } from "../../PageWithHeader/PageWithHeader";
 import { ResponsibilityList } from "./ResponsibilityList";
-import { settings } from "../../Settings";
+import { settings } from "../../../Settings";
 import { ResponsibilityOverviewTitle } from "./ResponsibilityOverviewTitle";
-import * as ResponsibilityStore from "../../stores/ResponsibilityStore";
-import { touchstoneActions } from "../../actions/TouchstoneActions";
+import * as ResponsibilityStore from "../../../stores/ResponsibilityStore";
+import { touchstoneActions } from "../../../actions/TouchstoneActions";
 
 interface LocationProps {
     touchstoneId: string

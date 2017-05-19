@@ -1,16 +1,16 @@
 import * as React from "react";
-import { RemoteContentComponent } from "../RemoteContentComponent/RemoteContentComponent";
+import { RemoteContentComponent } from "../../RemoteContentComponent/RemoteContentComponent";
 import { DiseaseFilter } from "./DiseaseFilter";
 import { ResponsibilityComponent } from "./ResponsibilityComponent";
-import * as ResponsibilityStore from "../../stores/ResponsibilityStore";
-import { Responsibility } from "../../models/Generated";
-import { connectToStores } from "../../alt";
-import { RemoteContent } from "../../stores/RemoteContent";
-import { ExtendedResponsibilitySet } from "../../models/ResponsibilitySet";
+import * as ResponsibilityStore from "../../../stores/ResponsibilityStore";
+import { Responsibility } from "../../../models/Generated";
+import { connectToStores } from "../../../alt";
+import { RemoteContent } from "../../../stores/RemoteContent";
+import { ExtendedResponsibilitySet } from "../../../models/ResponsibilitySet";
 
-const styles = require("./Responsibilities.css");
-const messageStyles = require("../../styles/messages.css");
-const commonStyles = require("../../styles/common.css");
+const styles = require("../Responsibilities.css");
+const messageStyles = require("../../../styles/messages.css");
+const commonStyles = require("../../../styles/common.css");
 
 export interface ResponsibilityListComponentProps extends RemoteContent {
     responsibilitySet: ExtendedResponsibilitySet;

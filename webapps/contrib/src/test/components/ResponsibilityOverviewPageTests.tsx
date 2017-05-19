@@ -5,9 +5,9 @@ import { mount, shallow } from "enzyme";
 import { mockLocation } from "../mocks/mocks";
 import { dispatchSpy, expectOrderedActions } from "../actionHelpers";
 
-import { ResponsibilityOverviewPage } from "../../main/components/Responsibilities/ResponsibilityOverviewPage";
+import { ResponsibilityOverviewPage } from "../../main/components/Responsibilities/Overview/ResponsibilityOverviewPage";
 import { mockTouchstone } from "../mocks/mockModels";
-import { ResponsibilityOverviewTitleComponent } from "../../main/components/Responsibilities/ResponsibilityOverviewTitle";
+import { ResponsibilityOverviewTitleComponent } from "../../main/components/Responsibilities/Overview/ResponsibilityOverviewTitle";
 import * as ResponsibilityStore from "../../main/stores/ResponsibilityStore";
 
 describe('ResponsibilityOverviewPage', () => {

@@ -1,9 +1,9 @@
 import * as React from "react";
-import { Responsibility, Touchstone } from "../../models/Generated";
-import { Store } from "../../stores/MainStore";
-import { ButtonLink } from "../ButtonLink";
+import { Responsibility, Touchstone } from "../../../models/Generated";
+import { Store } from "../../../stores/MainStore";
+import { ButtonLink } from "../../ButtonLink";
 
-const styles = require("./Responsibilities.css");
+const styles = require("../Responsibilities.css");
 
 interface Props {
     responsibility: Responsibility;
