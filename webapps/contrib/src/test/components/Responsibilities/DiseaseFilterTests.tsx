@@ -1,18 +1,19 @@
 import * as React from "react";
+import { Sandbox } from "../../Sandbox";
 import * as mocks from "../../mocks/mocks";
 import { shallow } from "enzyme";
 import { expect } from "chai";
-import { alt } from "../../../main/alt";
-import * as actionHelpers from "../../actionHelpers";
 import { mockExtendedResponsibilitySet, mockResponsibility } from "../../mocks/mockModels";
 
 import { DiseaseFilter } from "../../../main/components/Responsibilities/Overview/DiseaseFilter";
 import { OptionSelector } from "../../../main/components/OptionSelector/OptionSelector";
+import { dispatchSpy, expectOrderedActions } from "../../actionHelpers";
 
 describe("DiseaseFilter", () => {
+    const sandbox = new Sandbox();
+
     afterEach(() => {
-        alt.recycle();
-        actionHelpers.restoreDispatch();
+        sandbox.restore();
     });
 
     it("is empty if there are no diseases", () => {
@@ -52,12 +53,12 @@ describe("DiseaseFilter", () => {
         //We know from "it renders disease options" that the callback is set correctly.
         //We know from OptionSelectorTests that the callback will be invoked.
         //So we can just run the callback and test what it does.
-        const spy = actionHelpers.dispatchSpy();
+        const spy = dispatchSpy(sandbox);
         const rendered = shallow(<DiseaseFilter {...mockExtendedResponsibilitySet({}, [])} />);
         const instance = rendered.instance() as DiseaseFilter;
         instance.filterByDisease("d1");
 
-        actionHelpers.expectOrderedActions(spy, [
+        expectOrderedActions(spy, [
             {
                 action: "ResponsibilityActions.filterByDisease",
                 payload: "d1"

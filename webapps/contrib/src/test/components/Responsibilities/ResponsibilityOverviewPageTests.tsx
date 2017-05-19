@@ -1,7 +1,7 @@
 import * as React from "react";
-import * as sinon from "sinon";
+import { Sandbox } from "../../Sandbox";
 import { expect } from "chai";
-import { mount, shallow } from "enzyme";
+import { shallow } from "enzyme";
 import { mockLocation } from "../../mocks/mocks";
 import { dispatchSpy, expectOrderedActions } from "../../actionHelpers";
 
@@ -11,13 +11,18 @@ import { ResponsibilityOverviewTitleComponent } from "../../../main/components/R
 import * as ResponsibilityStore from "../../../main/stores/ResponsibilityStore";
 
 describe('ResponsibilityOverviewPage', () => {
+    const sandbox = new Sandbox();
+
+    afterEach(() => {
+        sandbox.restore();
+    });
+
     it("triggers actions when it mounts", () => {
-        const spy = dispatchSpy();
-        const fetchResponsibilities = sinon.stub(ResponsibilityStore.Store, "fetchResponsibilities");
+        const spy = dispatchSpy(sandbox);
+        const fetchResponsibilities = sandbox.sinon.stub(ResponsibilityStore.Store, "fetchResponsibilities");
         const location = mockLocation({ touchstoneId: "fizzy-pop" });
 
-        const rendered = mount(<ResponsibilityOverviewPage location={ location } />);
-        rendered.unmount();
+        sandbox.mount(<ResponsibilityOverviewPage location={ location } />);
 
         expectOrderedActions(spy, [
             { action: "TouchstoneActions.setCurrentTouchstone", payload: "fizzy-pop" }

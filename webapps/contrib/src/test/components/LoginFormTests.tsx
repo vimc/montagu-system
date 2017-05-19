@@ -1,11 +1,9 @@
-import { setupVirtualDOM } from "../JSDomHelpers";
-setupVirtualDOM();
-
 import * as React from "react";
 import { Reform } from "alt-reform";
 import { expect } from "chai";
 import { shallow } from "enzyme";
 import * as sinon from "sinon";
+import { Sandbox } from "../Sandbox";
 import { mockFetcher, promiseJSON } from "../mocks/mockRemote";
 import { mockFormProperties, numberOfSubmissionActions } from "../mocks/mockForm";
 import { mockEvent } from "../mocks/mocks";
@@ -18,9 +16,10 @@ import { ValidationError } from "../../main/components/Login/ValidationError";
 function checkSubmit(
     form: Reform<LoginFields>,
     done: DoneCallback,
+    sandbox: Sandbox,
     callback: (spy: sinon.SinonSpy) => void)
 {
-    const spy = actionHelpers.dispatchSpy();
+    const spy = actionHelpers.dispatchSpy(sandbox);
     form.submit(mockEvent()).then(x => {
         callback(spy);
         done();
@@ -30,6 +29,12 @@ function checkSubmit(
 }
 
 describe("LoginForm", () => {
+    const sandbox = new Sandbox();
+
+    afterEach(() => {
+        sandbox.restore();
+    });
+
     it("renders fields", () => {
         loginForm.change({
             email: "an@email",
@@ -56,7 +61,7 @@ describe("LoginForm", () => {
 
     it("authenticates when form is submitted", (done: DoneCallback) => {
         const token = "TOKEN";
-        const spy = sinon.spy(AuthStore.Store, "logIn");
+        const spy = sandbox.sinon.spy(AuthStore.Store, "logIn");
 
         mockFetcher(new Promise<Response>(function (resolve, reject) {
             resolve(promiseJSON({ access_token: token }));
@@ -65,7 +70,7 @@ describe("LoginForm", () => {
             email: "an@email",
             password: "not-real"
         });
-        checkSubmit(loginForm, done, _ => {
+        checkSubmit(loginForm, done, sandbox, _ => {
             expect(spy.called).to.be.true;
             expect(spy.args[0][0]).to.equal(token);
             spy.restore();
@@ -81,7 +86,7 @@ describe("LoginForm", () => {
             email: "an@email",
             password: "not-real"
         });
-        checkSubmit(loginForm, done, spy => {
+        checkSubmit(loginForm, done, sandbox, spy => {
             actionHelpers.expectOrderedActions(
                 spy,
                 [ { action: "Login/submitFailed", payload: "Your username or password is incorrect" } ],
@@ -98,16 +103,12 @@ describe("LoginForm", () => {
             email: "an@email",
             password: "not-real"
         });
-        checkSubmit(loginForm, done, spy => {
+        checkSubmit(loginForm, done, sandbox, spy => {
             actionHelpers.expectOrderedActions(
                 spy,
                 [ { action: "Login/submitFailed", payload: "An error occurred logging in" } ],
                 numberOfSubmissionActions
             );
         });
-    });
-
-    afterEach(() => {
-        actionHelpers.restoreDispatch();
     });
 });

@@ -7,13 +7,16 @@ import { Responsibilities, Responsibility, ScenarioTouchstoneAndCoverageSets, To
 import { sources } from "../sources/Sources";
 import { authActions, LogInProperties } from "../actions/AuthActions";
 import { touchstoneActions } from "../actions/TouchstoneActions";
-import { ExtendedResponsibility, ExtendedResponsibilitySet } from "../models/ResponsibilitySet";
+import {
+    ExtendedResponsibility, ExtendedResponsibilitySet,
+    IExtendedResponsibilitySet
+} from "../models/ResponsibilitySet";
 
 export interface State extends RemoteContent {
     touchstones: Array<Touchstone>;
     currentTouchstone: Touchstone;
 
-    responsibilitySet: ExtendedResponsibilitySet;
+    responsibilitySet: IExtendedResponsibilitySet;
     currentResponsibility: ExtendedResponsibility;
 
     currentModellingGroupId: string;
@@ -31,7 +34,7 @@ class ResponsibilityStore extends AbstractStore<State, ResponsibilityStoreInterf
     touchstones: Array<Touchstone>;
     currentTouchstone: Touchstone;
 
-    responsibilitySet: ExtendedResponsibilitySet;
+    responsibilitySet: IExtendedResponsibilitySet;
     currentResponsibility: ExtendedResponsibility;
 
     currentModellingGroupId: string;
@@ -78,7 +81,10 @@ class ResponsibilityStore extends AbstractStore<State, ResponsibilityStoreInterf
     }
 
     handleSetCurrentResponsibility(scenarioId: string) {
-        this.currentResponsibility = this.responsibilitySet.responsibilities.find(x => x.scenario.id == scenarioId);
+        if (this.responsibilitySet != null) {
+            console.log(JSON.stringify(this.responsibilitySet));
+            this.currentResponsibility = this.responsibilitySet.getResponsibilityByScenario(scenarioId);
+        }
     }
     handleSetCurrentTouchstone(touchstoneId: string) {
         this.currentTouchstone = this.touchstones.find(x => x.id == touchstoneId);

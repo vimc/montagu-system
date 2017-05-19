@@ -1,17 +1,19 @@
 import { expect } from 'chai';
-import { dispatchSpy, restoreDispatch } from "../actionHelpers";
+import { Sandbox } from "../Sandbox";
+import { dispatchSpy } from "../actionHelpers";
 const jwt = require("jsonwebtoken");
 
 import { authActions, LogInProperties } from "../../main/actions/AuthActions";
 
 function getPayload(tokenProperties: any): LogInProperties {
     const token = jwt.sign(tokenProperties, "secret");
-    const spy = dispatchSpy();
+    const sandbox = new Sandbox();
     try {
+        const spy = dispatchSpy(sandbox);
         authActions.logIn(token);
         return spy.args[ 0 ][ 1 ] as LogInProperties;
     } finally {
-        restoreDispatch();
+        sandbox.restore();
     }
 }
 

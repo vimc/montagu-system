@@ -21,7 +21,7 @@ describe('PageWithHeader', () => {
     let rendered: ShallowWrapper<any, any>;
 
     beforeEach(() => {
-        rendered = shallow(<DummyPage location={ mockLocation() } />);
+        rendered = shallow(<DummyPage location={ mockLocation<undefined>() } />);
     });
 
     it("renders the title", () => {

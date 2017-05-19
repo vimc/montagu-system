@@ -2,12 +2,12 @@ import * as React from "react";
 import { CoverageSet } from "../../../models/Generated";
 const styles = require("../Responsibilities.css");
 
-interface Props {
+export interface CoverageSetComponentProps {
     order: number,
     set: CoverageSet
 }
 
-export class CoverageSetComponent extends React.Component<Props, undefined> {
+export class CoverageSetComponent extends React.Component<CoverageSetComponentProps, undefined> {
     render() {
         return <tr>
             <td>{ this.props.order + 1 }</td>

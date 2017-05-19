@@ -6,20 +6,20 @@ import { CoverageSetComponent } from "./CoverageSetComponent";
 import { RemoteContent } from "../../../stores/RemoteContent";
 import { RemoteContentComponent } from "../../RemoteContentComponent/RemoteContentComponent";
 import { ButtonLink } from "../../ButtonLink";
+import { CoverageSetList } from "./CoverageSetList";
 const commonStyles = require("../../../styles/common.css");
-const styles = require("../Responsibilities.css");
 
-interface Props extends RemoteContent {
+export interface ResponsibilityDetailsProps extends RemoteContent {
     touchstone?: Touchstone;
     scenario?: Scenario;
     coverageSets?: CoverageSet[];
 }
 
-export class ResponsibilityDetailsComponent extends RemoteContentComponent<Props> {
+export class ResponsibilityDetailsComponent extends RemoteContentComponent<ResponsibilityDetailsProps> {
     static getStores() {
         return [ Store ];
     }
-    static getPropsFromStores(): Props {
+    static getPropsFromStores(): ResponsibilityDetailsProps {
         const r = Store.getState().currentResponsibility;
         if (r != null) {
             return {
@@ -33,10 +33,7 @@ export class ResponsibilityDetailsComponent extends RemoteContentComponent<Props
         }
     }
 
-    renderContent(props: Props) {
-        const coverageSets = props.coverageSets.map((x, order) =>
-            <CoverageSetComponent key={ order } order={ order } set={ x } />
-        );
+    renderContent(props: ResponsibilityDetailsProps) {
         return <div>
             <table className={ commonStyles.specialColumn }>
                 <tbody>
@@ -44,21 +41,7 @@ export class ResponsibilityDetailsComponent extends RemoteContentComponent<Props
                     <tr><td>Scenario</td><td>{ this.props.scenario.description }</td></tr>
                 </tbody>
             </table>
-            <div className={[ styles.coverageSets, commonStyles.gapAbove ].join(" ")}>
-                <div>These coverage sets must be applied in the following order:</div>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Order</th>
-                            <th>Description</th>
-                            <th>Vaccine</th>
-                            <th>Activity type</th>
-                            <th>GAVI support level</th>
-                        </tr>
-                    </thead>
-                    <tbody>{ coverageSets }</tbody>
-                </table>
-            </div>
+            <CoverageSetList coverageSets={ this.props.coverageSets } />
             <div className={ commonStyles.gapAbove }>
                 <ButtonLink href="/">Download combined coverage set data in CSV format</ButtonLink>
             </div>

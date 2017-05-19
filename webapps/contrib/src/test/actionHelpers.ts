@@ -1,6 +1,7 @@
 import * as sinon from "sinon";
 import { expect } from "chai";
 import { alt } from "../main/alt";
+import { Sandbox } from "./Sandbox";
 
 export interface ActionExpectation {
     action: string;
@@ -43,17 +44,6 @@ export function expectOneAction(spy: sinon.SinonSpy, expectation: ActionExpectat
     expectOrderedActions(spy, [ expectation ], startIndex);
 }
 
-export function dispatchSpy(): sinon.SinonSpy {
-    return sinon.spy(alt, "dispatch");
-}
-
-export function restoreDispatch() {
-    const dispatch = alt.dispatch;
-    if (isSpy(dispatch)) {
-        dispatch.restore();
-    }
-}
-
-function isSpy(x: any): x is sinon.SinonSpy {
-    return x.hasOwnProperty("restore");
+export function dispatchSpy(sandbox: Sandbox): sinon.SinonSpy {
+    return sandbox.sinon.spy(alt, "dispatch");
 }

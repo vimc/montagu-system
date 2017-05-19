@@ -1,6 +1,3 @@
-import { setupVirtualDOM } from "../JSDomHelpers";
-setupVirtualDOM();
-
 import * as React from "react";
 import { shallow } from "enzyme";
 import * as MainStore from "../../main/stores/MainStore";

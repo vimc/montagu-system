@@ -1,16 +1,22 @@
 import { expect } from 'chai';
-import * as sinon from "sinon"
+import { Sandbox } from "../Sandbox";
 import { alt } from "../../main/alt";
 import { authActions, LogInProperties } from "../../main/actions/AuthActions";
 const jwt = require("jsonwebtoken");
 
 import * as AuthStore from '../../main/stores/AuthStore';
 import * as MainStore from '../../main/stores/MainStore';
-import { dispatchSpy, expectOrderedActions, restoreDispatch } from "../actionHelpers";
+import { dispatchSpy, expectOrderedActions } from "../actionHelpers";
 
 describe("AuthStore", () => {
+    const sandbox = new Sandbox();
+
     beforeEach(() => {
         alt.recycle();
+    });
+
+    afterEach(() => {
+        sandbox.restore();
     });
 
     it("handles logIn event", () => {
@@ -50,8 +56,8 @@ describe("AuthStore", () => {
     });
 
     it("logIn invokes logIn action", () => {
-        const spy = dispatchSpy();
-        const storeLoad = sinon.stub(MainStore.Store, "load");
+        const spy = dispatchSpy(sandbox);
+        const storeLoad = sandbox.sinon.stub(MainStore.Store, "load");
         const token = "TOKEN";
         AuthStore.Store.logIn(token);
         const expectedPayload: LogInProperties = {
@@ -68,8 +74,8 @@ describe("AuthStore", () => {
     });
 
     it("logIn with good token also invokes MainStore.load", () => {
-        const spy = dispatchSpy();
-        const storeLoad = sinon.stub(MainStore.Store, "load");
+        const spy = dispatchSpy(sandbox);
+        const storeLoad = sandbox.sinon.stub(MainStore.Store, "load");
         const token = jwt.sign({
             sub: "test.user",
             permissions: "*/can-login,*/other",
@@ -79,9 +85,5 @@ describe("AuthStore", () => {
         expectOrderedActions(spy, [{ action: "AuthActions.logIn" }], 0);
         expect(storeLoad.called).to.be.true;
         storeLoad.restore();
-    });
-
-    afterEach(() => {
-        restoreDispatch();
     });
 });

@@ -1,17 +1,23 @@
 import * as React from "react";
+import { Sandbox } from "../Sandbox";
 import { expect } from "chai";
 import { shallow } from "enzyme";
-import { LogoutComponent } from "../../main/components/Login/Logout";
-import { initialState } from "../../main/stores/AuthStore";
 import { Link } from "simple-react-router";
-import { dispatchSpy, expectOneAction, expectOrderedActions, restoreDispatch } from "../actionHelpers";
+import { dispatchSpy, expectOneAction } from "../actionHelpers";
+
+import { initialState } from "../../main/stores/AuthStore";
+import { LogoutComponent } from "../../main/components/Login/Logout";
 
 describe("LogoutComponent", () => {
-   it("renders nothing when the user is not logged in", () => {
-       const state = initialState();
-       const rendered = shallow(<LogoutComponent {...state} />)
-       expect(rendered.text()).to.be.empty;
-   });
+    const sandbox = new Sandbox();
+
+    afterEach(() => sandbox.restore());
+
+    it("renders nothing when the user is not logged in", () => {
+        const state = initialState();
+        const rendered = shallow(<LogoutComponent {...state} />)
+        expect(rendered.text()).to.be.empty;
+    });
 
     it("renders log out link", () => {
         const state = Object.assign(initialState(), {
@@ -39,12 +45,8 @@ describe("LogoutComponent", () => {
             username: "test.user"
         });
         const rendered = shallow(<LogoutComponent {...state} />);
-        try {
-            const spy = dispatchSpy();
-            rendered.find(Link).simulate("click");
-            expectOneAction(spy, { action: "AuthActions.logOut" });
-        } finally {
-            restoreDispatch();
-        }
+        const spy = dispatchSpy(sandbox);
+        rendered.find(Link).simulate("click");
+        expectOneAction(spy, { action: "AuthActions.logOut" });
     });
 });

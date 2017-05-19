@@ -25,6 +25,9 @@ export interface IExtendedResponsibilitySet {
     responsibilities: ExtendedResponsibility[];
     status: ResponsibilitySetStatus | null;
     touchstone: Touchstone;
+
+    getResponsibilityByScenario(scenarioId: string): ExtendedResponsibility;
+    addCoverageSets(scenarioId: string, coverageSets: CoverageSet[]): void;
 }
 
 export class ExtendedResponsibilitySet implements IExtendedResponsibilitySet {
@@ -40,8 +43,12 @@ export class ExtendedResponsibilitySet implements IExtendedResponsibilitySet {
         this.touchstone = touchstone
     }
 
+    getResponsibilityByScenario(scenarioId: string): ExtendedResponsibility {
+        return this.responsibilities.find(x => x.scenario.id == scenarioId);
+    }
+
     addCoverageSets(scenarioId: string, coverageSets: CoverageSet[]) {
-        const responsibility = this.responsibilities.find(x => x.scenario.id == scenarioId);
+        const responsibility = this.getResponsibilityByScenario(scenarioId);
         responsibility.coverageSets = coverageSets;
     }
 }

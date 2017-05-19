@@ -2,35 +2,38 @@ import * as React from "react";
 import { connectToStores } from "../../../alt";
 import { Touchstone } from "../../../models/Generated";
 import * as ResponsibilityStore from "../../../stores/ResponsibilityStore";
-import { RemoteContent } from "../../../stores/RemoteContent";
-import { RemoteContentComponent } from "../../RemoteContentComponent/RemoteContentComponent";
 import { Link } from "simple-react-router";
 
 const headerStyles = require("../../PageWithHeader/PageWithHeader.css");
 
-interface Props extends RemoteContent {
+interface Props {
     touchstone: Touchstone;
 }
 
-export class ResponsibilityDetailsTitleComponent extends RemoteContentComponent<Props> {
+export class ResponsibilityDetailsTitleComponent extends React.Component<Props, undefined> {
     static getStores() {
         return [ ResponsibilityStore.Store ];
     }
     static getPropsFromStores() {
         const state = ResponsibilityStore.Store.getState();
-        return {
-            touchstone: state.currentTouchstone,
-            ready: state.currentTouchstone && state.currentResponsibility
-        };
+        return { touchstone: state.currentTouchstone };
     }
 
-    renderContent(props: Props) {
-        const url = `/responsibilities/${props.touchstone.id}/`;
+    renderReturnLink() {
+        if (this.props.touchstone) {
+            const url = `/responsibilities/${this.props.touchstone.id}/`
+            return <span className={ headerStyles.titleAddition }>
+                <Link href={ url }>Return to responsibilities list</Link>
+            </span>;
+        } else {
+            return null;
+        }
+    }
+
+    render() {
         return <span>
             Download coverage data
-            <span className={ headerStyles.titleAddition }>
-                <Link href={ url }>Return to responsibilities list</Link>
-            </span>
+            { this.renderReturnLink() }
         </span>;
     }
 }

@@ -1,13 +1,21 @@
 import { expect } from "chai";
 import alt from "../../main/alt";
-import { mockResponsibilitySet, mockTouchstone } from "../mocks/mockModels";
+import {
+    mockCoverageSet,
+    mockExtendedResponsibility,
+    mockExtendedResponsibilitySet,
+    mockResponsibility,
+    mockResponsibilitySet,
+    mockScenario, mockScenarioTouchstoneAndCoverageSets,
+    mockTouchstone
+} from "../mocks/mockModels";
+import { authActions } from "../../main/actions/AuthActions";
+import { ExtendedResponsibilitySet } from "../../main/models/ResponsibilitySet";
 const jwt = require("jsonwebtoken");
 
-import { Store } from "../../main/stores/ResponsibilityStore";
-import { responsibilityActions } from "../../main/actions/ResponsibilityActions";
-import { authActions } from "../../main/actions/AuthActions";
 import { touchstoneActions } from "../../main/actions/TouchstoneActions";
-import { ExtendedResponsibilitySet } from "../../main/models/ResponsibilitySet";
+import { responsibilityActions } from "../../main/actions/ResponsibilityActions";
+import { Store } from "../../main/stores/ResponsibilityStore";
 
 describe("ResponsibilityStore", () => {
     beforeEach(() => {
@@ -116,5 +124,55 @@ describe("ResponsibilityStore", () => {
         const state = Store.getState();
         expect(state.ready).to.equal(false);
         expect(state.touchstones).to.eql([]);
+    });
+
+    it("responsibilityActions.setCurrentResponsibility sets the current responsibility", () => {
+        const scenario = mockScenario({ id: "scenario-special" });
+        const responsibility = mockExtendedResponsibility({}, scenario);
+        const responsibilities = [ responsibility, mockResponsibility() ];
+        responsibilityActions.update(mockResponsibilitySet({}, responsibilities));
+
+        responsibilityActions.setCurrentResponsibility(scenario.id);
+
+        const state = Store.getState();
+        expect(state.currentResponsibility).to.eql(responsibility);
+    });
+
+    it("responsibilityActions.beginFetchCoverageSets sets ready to false", () => {
+        alt.bootstrap(JSON.stringify({
+            ResponsibilityStore: {
+                ready: true,
+            }
+        }));
+        responsibilityActions.beginFetchCoverageSets();
+
+        const state = Store.getState();
+        expect(state.ready).to.equal(false);
+    });
+
+    it("responsibilityActions.updateCoverageSets updates the correct responsibilities coverage sets", () => {
+        const scenario = mockScenario({ id: "scenario-special" });
+        const touchstone = mockTouchstone();
+
+        // First, set up a responsibility set that doesn't have any coverage sets
+        const responsibility = mockResponsibility({}, scenario);
+        const inputSet = mockResponsibilitySet(
+            { touchstone: touchstone.id },
+            [ responsibility, mockResponsibility() ]
+        );
+        responsibilityActions.update(inputSet);
+        const responsibilities = Store.getState().responsibilitySet.responsibilities;
+        expect(responsibilities[0].coverageSets).to.equal(null);
+        expect(responsibilities[1].coverageSets).to.equal(null);
+
+        // Second, fire the event and check that the correct responsibility now has the coverage sets
+        const coverageSets = [ mockCoverageSet() ];
+        const payload = mockScenarioTouchstoneAndCoverageSets(scenario, touchstone, coverageSets);
+        responsibilityActions.updateCoverageSets(payload);
+
+        const set = Store.getState().responsibilitySet;
+        expect(set.responsibilities[0].coverageSets).to.equal(coverageSets);
+        expect(set.responsibilities[1].coverageSets).to.equal(null);
+        expect(set.getResponsibilityByScenario(scenario.id).coverageSets).to.eql(coverageSets);
     });
 });

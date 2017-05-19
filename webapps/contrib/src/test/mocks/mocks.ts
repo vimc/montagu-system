@@ -3,7 +3,7 @@ import * as models from "../../main/models/Generated";
 import { alt } from "../../main/alt";
 import { makeDiseaseLookup } from "../../main/stores/MainStore";
 
-export function mockLocation(params?: any): Location<undefined> {
+export function mockLocation<T>(params?: T): Location<T> {
     return {
         hash: "hash",
         params: params || null,

@@ -1,6 +1,5 @@
 import * as models from "../../main/models/Generated";
-import { ExtendedResponsibilitySet } from "../../main/models/ResponsibilitySet";
-import { Touchstone } from "../../main/models/Generated";
+import { ExtendedResponsibility, ExtendedResponsibilitySet } from "../../main/models/ResponsibilitySet";
 
 let counter = 0;
 export function mockDisease(properties?: any): models.Disease {
@@ -11,20 +10,28 @@ export function mockDisease(properties?: any): models.Disease {
     }, properties);
 }
 
-export function mockResponsibility(properties?: any, scenarioProperties?: any): models.Responsibility {
-    const scenarioTemplate: models.Scenario = {
+export function mockScenario(properties?: any): models.Scenario {
+    const template: models.Scenario = {
         id: "scenario-id",
         description: "Description",
         disease: "disease-id",
         touchstones: []
     };
+    return Object.assign(template, properties);
+}
+
+export function mockResponsibility(properties?: any, scenarioProperties?: any): models.Responsibility {
     const template: models.Responsibility = {
         current_estimate: null,
         problems: [],
-        scenario: Object.assign(scenarioTemplate, scenarioProperties),
+        scenario: mockScenario(scenarioProperties),
         status: "empty"
     };
     return Object.assign(template, properties);
+}
+export function mockExtendedResponsibility(properties?: any, scenarioProperties?: any): ExtendedResponsibility {
+    const values = mockResponsibility(properties, scenarioProperties);
+    return new ExtendedResponsibility(values);
 }
 
 export function mockTouchstone(properties?: any): models.Touchstone {
@@ -60,11 +67,37 @@ export function mockResponsibilitySet(properties?: any,
 export function mockExtendedResponsibilitySet(
     properties?: any,
     responsibilities?: Array<models.Responsibility>,
-    touchstone?: Touchstone
+    touchstone?: models.Touchstone
 ): ExtendedResponsibilitySet
 {
     touchstone = touchstone || mockTouchstone();
     properties = Object.assign(properties, { touchstone: touchstone.id });
     const values = mockResponsibilitySet(properties, responsibilities);
     return new ExtendedResponsibilitySet(values, touchstone);
+}
+
+export function mockCoverageSet(properties?: any): models.CoverageSet {
+    const template: models.CoverageSet = {
+        id: 100,
+        name: "Coverage set name",
+        activity_type: "routine",
+        gavi_support_level: "without",
+        touchstone: "touchstone-1",
+        vaccine: "some-vaccine"
+    };
+    return Object.assign(template, properties);
+}
+
+export function mockScenarioTouchstoneAndCoverageSets(
+    scenarioProperties?: any,
+    touchstoneProperties?: any,
+    coverageSets?: models.CoverageSet[]
+): models.ScenarioTouchstoneAndCoverageSets
+{
+    const touchstone =  mockTouchstone(touchstoneProperties);
+    return {
+        touchstone: touchstone,
+        scenario: mockScenario(scenarioProperties),
+        coverage_sets: coverageSets || [ mockCoverageSet({ touchstone: touchstone.id }) ]
+    };
 }

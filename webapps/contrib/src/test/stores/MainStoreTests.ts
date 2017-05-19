@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import alt from "../../main/alt";
-import * as sinon from "sinon";
+import { Sandbox } from "../Sandbox";
 import { mockDisease } from "../mocks/mockModels";
 const jwt = require("jsonwebtoken");
 
@@ -11,9 +11,15 @@ import { errorActions } from "../../main/actions/ErrorActions";
 import * as ResponsibilityStore from "../../main/stores/ResponsibilityStore";
 
 describe("MainStore", () => {
+    const sandbox = new Sandbox();
+
     beforeEach(() => {
         // Clear all stores
         alt.recycle();
+    });
+
+    afterEach(() => {
+        sandbox.restore();
     });
 
     it("is initially blank", () => {
@@ -26,7 +32,7 @@ describe("MainStore", () => {
     });
 
     it("diseaseActions.update sets diseases and triggers ResponsibilityStore.fetchTouchstones", (done: DoneCallback) => {
-        const spy = sinon.spy(ResponsibilityStore.Store, "fetchTouchstones");
+        const spy = sandbox.sinon.spy(ResponsibilityStore.Store, "fetchTouchstones");
         const disease1 = mockDisease({ id: "d1" });
         const disease2 = mockDisease({ id: "d2" });
         diseaseActions.update([ disease1, disease2 ]);
@@ -49,8 +55,6 @@ describe("MainStore", () => {
                 done();
             } catch (e) {
                 done(e);
-            } finally {
-                spy.restore();
             }
         });
     });
