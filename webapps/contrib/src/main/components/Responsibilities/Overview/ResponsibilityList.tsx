@@ -6,14 +6,14 @@ import * as ResponsibilityStore from "../../../stores/ResponsibilityStore";
 import { Responsibility } from "../../../models/Generated";
 import { connectToStores } from "../../../alt";
 import { RemoteContent } from "../../../stores/RemoteContent";
-import { ExtendedResponsibilitySet } from "../../../models/ResponsibilitySet";
+import { IExtendedResponsibilitySet } from "../../../models/ResponsibilitySet";
 
 const styles = require("../Responsibilities.css");
 const messageStyles = require("../../../styles/messages.css");
 const commonStyles = require("../../../styles/common.css");
 
 export interface ResponsibilityListComponentProps extends RemoteContent {
-    responsibilitySet: ExtendedResponsibilitySet;
+    responsibilitySet: IExtendedResponsibilitySet;
     currentDiseaseId: string;
 }
 

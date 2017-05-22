@@ -16,7 +16,7 @@ export interface State extends RemoteContent {
     touchstones: Array<Touchstone>;
     currentTouchstone: Touchstone;
 
-    responsibilitySet: IExtendedResponsibilitySet;
+    responsibilitySet: ExtendedResponsibilitySet;
     currentResponsibility: ExtendedResponsibility;
 
     currentModellingGroupId: string;
@@ -34,7 +34,7 @@ class ResponsibilityStore extends AbstractStore<State, ResponsibilityStoreInterf
     touchstones: Array<Touchstone>;
     currentTouchstone: Touchstone;
 
-    responsibilitySet: IExtendedResponsibilitySet;
+    responsibilitySet: ExtendedResponsibilitySet;
     currentResponsibility: ExtendedResponsibility;
 
     currentModellingGroupId: string;

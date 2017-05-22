@@ -25,9 +25,6 @@ export interface IExtendedResponsibilitySet {
     responsibilities: ExtendedResponsibility[];
     status: ResponsibilitySetStatus | null;
     touchstone: Touchstone;
-
-    getResponsibilityByScenario(scenarioId: string): ExtendedResponsibility;
-    addCoverageSets(scenarioId: string, coverageSets: CoverageSet[]): void;
 }
 
 export class ExtendedResponsibilitySet implements IExtendedResponsibilitySet {
