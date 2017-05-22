@@ -32,6 +32,7 @@ class ResponsibilityTests : DatabaseTest()
             assertThat(it["status"]).isEqualTo("submitted")
             assertThat(it["problems"]).isEqualTo("")
 
+            @Suppress("UNCHECKED_CAST")
             val responsibilities = it["responsibilities"] as JsonArray<JsonObject>
             val responsibility = responsibilities[0]
             val scenario = responsibility["scenario"]

@@ -243,6 +243,26 @@ fun JooqContext.addCoverageSetToScenario(scenarioId: String, touchstoneId: Strin
     return this.addCoverageSetToScenario(record[SCENARIO.ID], coverageSetId, order)
 }
 
+fun JooqContext.addCountries(ids: List<String>)
+{
+    val records = ids.map {
+        this.dsl.newRecord(COUNTRY).apply {
+            this.id = it
+            this.name = "$it-Name"
+        }
+    }
+    this.dsl.batchStore(records).execute()
+}
+
+fun JooqContext.generateCountries(count: Int): List<String>
+{
+    val countries = (0..count).map {
+        RandomStringUtils.randomAlphabetic(3).toUpperCase()
+    }
+    this.addCountries(countries)
+    return countries
+}
+
 fun JooqContext.generateCoverageData(
         coverageSetId: Int,
         countryCount: Int = 5,
@@ -251,9 +271,9 @@ fun JooqContext.generateCoverageData(
 {
     val generator = Random()
     val records = mutableListOf<CoverageRecord>()
-    for (i in 0..countryCount)
+    val countries = this.generateCountries(countryCount)
+    for (country in countries)
     {
-        val country = RandomStringUtils.randomAlphabetic(3).toUpperCase()
         for (year in yearRange)
         {
             for (age in ageRange)
@@ -267,6 +287,7 @@ fun JooqContext.generateCoverageData(
                     this.ageRangeVerbatim = null
                     this.target = null
                     this.coverage = generator.nextDecimal(0, 100, numberOfDecimalPlaces = 2)
+                    this.gaviSupport = false
                 })
             }
         }

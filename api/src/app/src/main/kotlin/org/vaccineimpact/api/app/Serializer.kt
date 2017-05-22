@@ -2,7 +2,6 @@ package org.vaccineimpact.api.app
 
 import com.github.salomonbrys.kotson.jsonSerializer
 import com.github.salomonbrys.kotson.registerTypeAdapter
-import com.google.gson.FieldNamingPolicy
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonPrimitive
@@ -14,11 +13,10 @@ object Serializer
     private val enumSerializer = jsonSerializer<Any> {
         JsonPrimitive(it.src.toString().toLowerCase().replace('_', '-'))
     }
-
     val gson: Gson = GsonBuilder()
             .setPrettyPrinting()
             .disableHtmlEscaping()
-            .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+            .setFieldNamingStrategy { convertFieldName(it.name) }
             .serializeNulls()
             .registerTypeAdapter<java.time.LocalDate>(toStringSerializer)
             .registerTypeAdapter<java.time.Instant>(toStringSerializer)
@@ -32,4 +30,21 @@ object Serializer
 
     fun toResult(data: Any?): String = toJson(Result(ResultStatus.SUCCESS, data, emptyList()))
     fun toJson(result: Result): String = Serializer.gson.toJson(result)
+
+    fun convertFieldName(name: String): String
+    {
+        val builder = StringBuilder()
+        for (char in name)
+        {
+            if (char.isUpperCase())
+            {
+                builder.append("_" + char.toLowerCase())
+            }
+            else
+            {
+                builder.append(char)
+            }
+        }
+        return builder.toString().trim('_')
+    }
 }

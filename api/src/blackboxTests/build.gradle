@@ -29,6 +29,7 @@ dependencies {
 task copySpec(type: Copy) {
     from 'src/test/resources/spec'
     include '*.schema.json'
+    include "*.csvschema"
     into 'build/classes/test/spec'
 }
 test.dependsOn 'copySpec'

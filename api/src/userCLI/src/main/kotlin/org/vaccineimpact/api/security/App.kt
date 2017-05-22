@@ -23,7 +23,7 @@ fun main(args: Array<String>)
 
 fun getAction(args: Array<String>): Action
 {
-    if (args.size < 1)
+    if (args.isEmpty())
     {
         println("An action is required. ./user.sh ACTION")
         println("ACTION must be one of " + enumValues<Action>().joinToString())

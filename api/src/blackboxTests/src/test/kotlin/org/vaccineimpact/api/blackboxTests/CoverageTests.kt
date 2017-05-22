@@ -5,6 +5,7 @@ import org.vaccineimpact.api.blackboxTests.helpers.ExpectedProblem
 import org.vaccineimpact.api.blackboxTests.helpers.PermissionChecker
 import org.vaccineimpact.api.blackboxTests.helpers.validate
 import org.vaccineimpact.api.blackboxTests.schemas.SplitSchema
+import org.vaccineimpact.api.blackboxTests.validators.SplitValidator
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.direct.*
 import org.vaccineimpact.api.models.PermissionSet
@@ -31,10 +32,10 @@ class CoverageTests : DatabaseTest()
     }
 
     @Test
-    fun `only touchstone prepare can get coverage data for in-preparation responsibility`()
+    fun `only touchstone preparer can get coverage data for in-preparation responsibility`()
     {
         val permission = "*/touchstones.prepare"
-        val checker = PermissionChecker(url, minimumPermissions + permission)
+        val checker = PermissionChecker(url, minimumPermissions + permission, SplitValidator())
         checker.checkPermissionIsRequired(permission,
                 given = { addCoverageData(it, touchstoneStatus = "in-preparation") },
                 expectedProblem = ExpectedProblem("unknown-touchstone", touchstoneId))

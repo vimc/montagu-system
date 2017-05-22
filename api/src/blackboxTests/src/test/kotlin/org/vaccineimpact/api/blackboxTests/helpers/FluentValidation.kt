@@ -81,7 +81,7 @@ class FluentValidation(config: FluentValidationConfig)
 
         // Check that the auth token is required
         val badResponse = requestHelper.get(url)
-        schema.validateError(badResponse.text)
+        schema.validator.validateError(badResponse.text)
 
         // Check the permissions
         if (requiredPermissions.any())
@@ -98,7 +98,7 @@ class FluentValidation(config: FluentValidationConfig)
 
     private fun checkPermissions(url: String)
     {
-        val checker = PermissionChecker(url, allPermissions)
+        val checker = PermissionChecker(url, allPermissions, schema.validator)
         for (permission in requiredPermissions)
         {
             checker.checkPermissionIsRequired(permission)

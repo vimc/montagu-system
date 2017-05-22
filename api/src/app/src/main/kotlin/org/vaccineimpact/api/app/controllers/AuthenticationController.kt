@@ -22,7 +22,9 @@ class AuthenticationController(private val tokenHelper: WebTokenHelper) : Abstra
 {
     override val urlComponent = "/"
     override val endpoints = listOf(
-            BasicEndpoint("authenticate/", this::authenticate, HttpMethod.post, this::setupSecurity)
+            BasicEndpoint("authenticate/", this::authenticate, HttpMethod.post,
+                    additionalSetupCallback = this::setupSecurity,
+                    transformer = { Serializer.gson.toJson(it) })
     )
 
     fun authenticate(context: ActionContext): AuthenticationResponse
@@ -40,8 +42,6 @@ class AuthenticationController(private val tokenHelper: WebTokenHelper) : Abstra
             is HTMLForm.InvalidForm -> FailedAuthentication(validationResult.problem)
         }
     }
-
-    override fun transform(x: Any): String = Serializer.gson.toJson(x)
 
     private fun setupSecurity(fullUrl: String)
     {

@@ -1,5 +1,7 @@
 package org.vaccineimpact.api.blackboxTests.helpers
 
+import org.vaccineimpact.api.blackboxTests.validators.JSONValidator
+import org.vaccineimpact.api.blackboxTests.validators.Validator
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.direct.createPermissions
 import org.vaccineimpact.api.models.ReifiedPermission
@@ -9,10 +11,11 @@ data class ExpectedProblem(val errorCode: String, val errorTextContains: String)
 
 class PermissionChecker(
         val url: String,
-        val allRequiredPermissions: Set<ReifiedPermission>)
+        val allRequiredPermissions: Set<ReifiedPermission>,
+        val validator: Validator = JSONValidator()
+)
 {
     val helper = TestUserHelper()
-    val validator = JSONValidator()
     val requestHelper = RequestHelper()
 
     /**
@@ -40,8 +43,8 @@ class PermissionChecker(
         checkPermissionIsRequired(permissionUnderTest, expectedProblem)
 
         val token = helper.getTokenForTestUser(allRequiredPermissions)
-        val response = requestHelper.get(url, token)
-        validator.validateSuccess(response.text)
+        val response = getResponse(token)
+        validator.validateSuccess(response)
     }
 
     /**
@@ -83,8 +86,8 @@ class PermissionChecker(
     )
     {
         val limitedToken = helper.getTokenForTestUser(permissions)
-        val response = requestHelper.get(url, limitedToken)
-        validator.validateError(response.text,
+        val response = getResponse(limitedToken)
+        validator.validateError(response,
                 expectedErrorCode = expectedProblem.errorCode,
                 expectedErrorText = expectedProblem.errorTextContains,
                 assertionText = assertionText)
@@ -94,7 +97,9 @@ class PermissionChecker(
                                            assertionText: String)
     {
         val token = helper.getTokenForTestUser(permissions)
-        val response = requestHelper.get(url, token)
-        validator.validateSuccess(response.text, assertionText = assertionText)
+        val response = getResponse(token)
+        validator.validateSuccess(response, assertionText = assertionText)
     }
+
+    private fun getResponse(token: String) = requestHelper.get(url, token).text
 }

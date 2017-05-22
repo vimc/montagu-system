@@ -1,12 +1,9 @@
 package org.vaccineimpact.api.blackboxTests.schemas
 
+import org.vaccineimpact.api.blackboxTests.validators.Validator
+
 interface Schema
 {
-    fun validate(jsonAsString: String): Unit
-    fun validateError(jsonAsString: String,
-                      expectedErrorCode: String? = null,
-                      expectedErrorText: String? = null,
-                      assertionText: String? = null)
-
-    fun validateSuccess(jsonAsString: String, assertionText: String? = null)
+    val validator: Validator
+    fun validate(response: String): Unit
 }

@@ -1,10 +1,10 @@
-version 1.2
+version 1.1
 @totalColumns 13
 set_id: positiveInteger
 set_order: positiveInteger
 set_name: notEmpty
 vaccine: notEmpty
-gavi_support_level: is("none") or is("without") or is("with)
+gavi_support_level: is("none") or is("without") or is("with")
 activity_type: is("none") or is("routine") or is("campaign")
 country: upperCase
 year: range(1800, 2300)
