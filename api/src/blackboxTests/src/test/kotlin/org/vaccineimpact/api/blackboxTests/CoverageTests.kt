@@ -1,10 +1,13 @@
 package org.vaccineimpact.api.blackboxTests
 
 import org.junit.Test
+import org.vaccineimpact.api.blackboxTests.helpers.ExpectedProblem
+import org.vaccineimpact.api.blackboxTests.helpers.PermissionChecker
 import org.vaccineimpact.api.blackboxTests.helpers.validate
 import org.vaccineimpact.api.blackboxTests.schemas.SplitSchema
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.direct.*
+import org.vaccineimpact.api.models.PermissionSet
 import org.vaccineimpact.api.test_helpers.DatabaseTest
 
 class CoverageTests : DatabaseTest()
@@ -13,6 +16,8 @@ class CoverageTests : DatabaseTest()
     val touchstoneId = "touchstone-1"
     val scenarioId = "scenario-1"
     val coverageSetId = 1
+    val groupScope = "modelling-group:$groupId"
+    val minimumPermissions = PermissionSet("*/scenarios.read", "$groupScope/responsibilities.read", "$groupScope/coverage.read")
     val url = "/modelling-groups/$groupId/responsibilities/$touchstoneId/$scenarioId/coverage/"
 
     @Test
@@ -21,8 +26,18 @@ class CoverageTests : DatabaseTest()
         val schema = SplitSchema(json = "ScenarioAndCoverageSets", csv = "MergedCoverageData")
         val test = validate(url) against (schema) given {
             addCoverageData(it, touchstoneStatus = "open")
-        }
+        } requiringPermissions { minimumPermissions }
         test.run()
+    }
+
+    @Test
+    fun `only touchstone prepare can get coverage data for in-preparation responsibility`()
+    {
+        val permission = "*/touchstones.prepare"
+        val checker = PermissionChecker(url, minimumPermissions + permission)
+        checker.checkPermissionIsRequired(permission,
+                given = { addCoverageData(it, touchstoneStatus = "in-preparation") },
+                expectedProblem = ExpectedProblem("unknown-touchstone", touchstoneId))
     }
 
     private fun addCoverageData(db: JooqContext, touchstoneStatus: String)

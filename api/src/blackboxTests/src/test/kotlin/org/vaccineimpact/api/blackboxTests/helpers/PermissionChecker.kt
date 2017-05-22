@@ -26,7 +26,7 @@ class PermissionChecker(
     {
         checkPermissionIsRequired(ReifiedPermission.parse(permissionUnderTest), given, expectedProblem)
     }
-    fun checkPermissionIsRequired(
+    private fun checkPermissionIsRequired(
             permissionUnderTest: ReifiedPermission,
             given: (JooqContext) -> Unit,
             expectedProblem: ExpectedProblem? = null)
