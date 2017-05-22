@@ -1,8 +1,13 @@
 package org.vaccineimpact.api.db.direct
 
+import org.apache.commons.lang3.RandomStringUtils
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.Tables.*
 import org.vaccineimpact.api.db.fromJoinPath
+import org.vaccineimpact.api.db.nextDecimal
+import org.vaccineimpact.api.db.tables.records.CoverageRecord
+import java.math.BigDecimal
+import java.util.*
 
 fun JooqContext.addGroup(id: String, description: String, current: String? = null)
 {
@@ -236,4 +241,35 @@ fun JooqContext.addCoverageSetToScenario(scenarioId: String, touchstoneId: Strin
             .and(SCENARIO_DESCRIPTION.ID.eq(scenarioId))
             .fetchOne()
     return this.addCoverageSetToScenario(record[SCENARIO.ID], coverageSetId, order)
+}
+
+fun JooqContext.generateCoverageData(
+        coverageSetId: Int,
+        countryCount: Int = 5,
+        yearRange: IntProgression = 1950..2000 step 5,
+        ageRange: IntProgression = 0..80 step 5)
+{
+    val generator = Random()
+    val records = mutableListOf<CoverageRecord>()
+    for (i in 0..countryCount)
+    {
+        val country = RandomStringUtils.randomAlphabetic(3).toUpperCase()
+        for (year in yearRange)
+        {
+            for (age in ageRange)
+            {
+                records.add(this.dsl.newRecord(COVERAGE).apply {
+                    this.coverageSet = coverageSetId
+                    this.country = country
+                    this.year = year
+                    this.ageFrom = BigDecimal(age)
+                    this.ageTo = BigDecimal(age + ageRange.step)
+                    this.ageRangeVerbatim = null
+                    this.target = null
+                    this.coverage = generator.nextDecimal(0, 100, numberOfDecimalPlaces = 2)
+                })
+            }
+        }
+    }
+    this.dsl.batchStore(records).execute()
 }

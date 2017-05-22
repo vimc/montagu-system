@@ -12,7 +12,7 @@ class PermissionChecker(
         val allRequiredPermissions: Set<ReifiedPermission>)
 {
     val helper = TestUserHelper()
-    val validator = SchemaValidator()
+    val validator = JSONValidator()
     val requestHelper = RequestHelper()
 
     /**
@@ -37,7 +37,7 @@ class PermissionChecker(
             it.createPermissions(allRequiredPermissions.map { it.name })
         }
 
-        checkPermissionIsRequired(permissionUnderTest, validator, expectedProblem)
+        checkPermissionIsRequired(permissionUnderTest, expectedProblem)
 
         val token = helper.getTokenForTestUser(allRequiredPermissions)
         val response = requestHelper.get(url, token)
@@ -50,7 +50,6 @@ class PermissionChecker(
      */
     fun checkPermissionIsRequired(
             permission: ReifiedPermission,
-            validator: SchemaValidator,
             expectedProblem: ExpectedProblem? = null
     )
     {
@@ -59,7 +58,7 @@ class PermissionChecker(
         val limitedPermissions = allRequiredPermissions - permission
 
         println("Checking that permission '$permission' is required for $url")
-        checkThesePermissionsAreInsufficient(limitedPermissions, validator, expectedProblem, assertionText)
+        checkThesePermissionsAreInsufficient(limitedPermissions, expectedProblem, assertionText)
 
         if (permission.scope is Scope.Specific)
         {
@@ -67,19 +66,18 @@ class PermissionChecker(
 
             println("Checking that same permission with different scope will not satisfy the requirement")
             val badPermission = ReifiedPermission(permission.name, Scope.Specific(scope.scopePrefix, "bad-id"))
-            checkThesePermissionsAreInsufficient(limitedPermissions + badPermission, validator,
+            checkThesePermissionsAreInsufficient(limitedPermissions + badPermission,
                     expectedProblem, assertionText)
 
             println("Checking that same permission with the global scope WILL satisfy the requirement")
             val betterPermission = ReifiedPermission(permission.name, Scope.Global())
-            checkThesePermissionsAreSufficient(limitedPermissions + betterPermission, validator,
+            checkThesePermissionsAreSufficient(limitedPermissions + betterPermission,
                     "Expected to be able to substitute '$betterPermission' in place of '$permission' for $url")
         }
     }
 
     fun checkThesePermissionsAreInsufficient(
             permissions: Set<ReifiedPermission>,
-            validator: SchemaValidator,
             expectedProblem: ExpectedProblem,
             assertionText: String
     )
@@ -92,7 +90,7 @@ class PermissionChecker(
                 assertionText = assertionText)
     }
 
-    fun checkThesePermissionsAreSufficient(permissions: Set<ReifiedPermission>, validator: SchemaValidator,
+    fun checkThesePermissionsAreSufficient(permissions: Set<ReifiedPermission>,
                                            assertionText: String)
     {
         val token = helper.getTokenForTestUser(permissions)

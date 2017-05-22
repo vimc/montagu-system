@@ -1,6 +1,11 @@
 apply plugin: 'application'
 mainClassName = "org.vaccineimpact.api.blackboxTests.AppKt"
 
+repositories {
+    maven { url "http://dl.bintray.com/scalaz/releases" }
+    maven { url "https://dl.bintray.com/giltgroupe/maven/" }
+}
+
 dependencies {
     compile project(":testHelpers")
     compile project(":databaseInterface")
@@ -14,6 +19,7 @@ dependencies {
     testCompile "com.beust:klaxon:0.31"
 
     testCompile "com.github.fge:json-schema-validator:2.2.6"
+    testCompile "uk.gov.nationalarchives:csv-validator-java-api:1.1"
 
     testCompile project(":testHelpers")
     testCompile project(":databaseInterface")
