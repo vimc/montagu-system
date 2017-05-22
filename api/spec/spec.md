@@ -661,10 +661,18 @@ Schema: [`ScenarioAndCoverageSets.schema.json`](ScenarioAndCoverageSets.schema.j
             { 
                 "id": 101,
                 "touchstone": "2017-op-1",
-                "name": "Menigitis no vaccination",
+                "name": "Menigitis without GAVI support",
                 "vaccine": "MenA",
-                "gavi_support_level": "none",
-                "activity_type": "none"
+                "gavi_support_level": "without",
+                "activity_type": "routine"
+            },
+            { 
+                "id": 136,
+                "touchstone": "2017-op-1",
+                "name": "Menigitis with GAVI support",
+                "vaccine": "MenA",
+                "gavi_support_level": "with",
+                "activity_type": "routine"
             }
         ]
     }
@@ -674,19 +682,19 @@ Coverage sets are returned in the order they are to be applied.
 ### Coverage data
 CSV data in this format:
 
-    "set_id", "set_order", "country",    "year","age_from","age_to","coverage"
-         101,           0,     "AFG",      2006,         0,       2,        NA
-         101,           0,     "AFG",      2007,         0,       2,      64.0
-         101,           0,     "AFG",      2008,         0,       2,      63.0
-         101,           0,     "AGO",      2006,         0,       1,       0.0
-         101,           0,     "AGO",      2007,         0,       1,      83.0
-         101,           0,     "AGO",      2008,         0,       1,      81.0
-         136,           1,     "AFG",      2006,         0,       2,        NA
-         136,           1,     "AFG",      2007,         0,       2,      80.0
-         136,           1,     "AFG",      2008,         0,       2,      90.0
-         136,           1,     "AGO",      2006,         0,       1,      20.0
-         136,           1,     "AGO",      2007,         0,       1,      90.0
-         136,           1,     "AGO",      2008,         0,       1,      95.0                       
+    "set_id", "set_order",                        "set_name", "vaccine", "gavi_support_level", "activity_type", country",    "year","age_from","age_to","coverage"
+         101,           1,  "Menigitis without GAVI support",    "MenA",            "without",       "routine",    "AFG",      2006,         0,       2,        NA
+         101,           1,  "Menigitis without GAVI support",    "MenA",            "without",       "routine",    "AFG",      2007,         0,       2,      64.0
+         101,           1,  "Menigitis without GAVI support",    "MenA",            "without",       "routine",    "AFG",      2008,         0,       2,      63.0
+         101,           1,  "Menigitis without GAVI support",    "MenA",            "without",       "routine",    "AGO",      2006,         0,       1,       0.0
+         101,           1,  "Menigitis without GAVI support",    "MenA",            "without",       "routine",    "AGO",      2007,         0,       1,      83.0
+         101,           1,  "Menigitis without GAVI support",    "MenA",            "without",       "routine",    "AGO",      2008,         0,       1,      81.0
+         136,           2,     "Menigitis with GAVI support",    "MenA",               "with",       "routine",    "AFG",      2006,         0,       2,        NA
+         136,           2,     "Menigitis with GAVI support",    "MenA",               "with",       "routine",    "AFG",      2007,         0,       2,      80.0
+         136,           2,     "Menigitis with GAVI support",    "MenA",               "with",       "routine",    "AFG",      2008,         0,       2,      90.0
+         136,           2,     "Menigitis with GAVI support",    "MenA",               "with",       "routine",    "AGO",      2006,         0,       1,      20.0
+         136,           2,     "Menigitis with GAVI support",    "MenA",               "with",       "routine",    "AGO",      2007,         0,       1,      90.0
+         136,           2,     "Menigitis with GAVI support",    "MenA",               "with",       "routine",    "AGO",      2008,         0,       1,      95.0
 
 The coverage sets are de-normalized and merged into this single table. You can identify 
 which coverage set a line is from using either the `set_id` or `set_order` columns. 
@@ -1413,13 +1421,95 @@ Schema: [`ScenarioAndCoverageSets.schema.json`](ScenarioAndCoverageSets.schema.j
             { 
                 "id": 101,
                 "touchstone": "2017-op-1",
-                "name": "Menigitis no vaccination",
+                "name": "Menigitis without GAVI support",
                 "vaccine": "MenA",
-                "gavi_support_level": "none",
-                "activity_type": "none"
+                "gavi_support_level": "without",
+                "activity_type": "routine"
+            },
+            { 
+                "id": 136,
+                "touchstone": "2017-op-1",
+                "name": "Menigitis with GAVI support",
+                "vaccine": "MenA",
+                "gavi_support_level": "with",
+                "activity_type": "routine"
             }
         ]
     }
+
+## GET /modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}/{scenario-id}/coverage/
+Returns the amalgamated coverage data of all the coverage sets associated with this responsibility.
+
+Required permissions: Global scope: `scenarios.read`. Scoped to modelling group: `responsibilities.read` and `coverage.read`.  Additionally, to view coverage data for an `in-preparation` touchstone, the user needs the `touchstones.prepare` permission.
+
+If the touchstone is `in-preparation`, and the user does not have permission to see touchstones 
+before they are made `open`, then this returns an error 404.
+
+This data is returned in two parts: First the metadata, then the coverage in CSV format.
+
+### Metadata
+Schema: [`ScenarioAndCoverageSets.schema.json`](ScenarioAndCoverageSets.schema.json)
+
+#### Example
+    {
+        "touchstone": { 
+            "id": "2017-op-1",
+            "name": "2017-op",
+            "version": 1,            
+            "description": "2017 Operational Forecast",
+            "years": { "start": 1996, "end": 2017 },
+            "status": "finished"
+        },
+        "scenario": {
+            "id": "menA-novacc",
+            "touchstones": [ "2016-op-1", "2017-wuenic-1", "op-2017-1" ],
+            "description": "Menigitis A, No vaccination",
+            "disease": "MenA"
+        },
+        "coverage_sets": [ 
+            { 
+                "id": 101,
+                "touchstone": "2017-op-1",
+                "name": "Menigitis without GAVI support",
+                "vaccine": "MenA",
+                "gavi_support_level": "without",
+                "activity_type": "routine"
+            },
+            { 
+                "id": 136,
+                "touchstone": "2017-op-1",
+                "name": "Menigitis with GAVI support",
+                "vaccine": "MenA",
+                "gavi_support_level": "with",
+                "activity_type": "routine"
+            }
+        ]
+    }
+
+Coverage sets are returned in the order they are to be applied.
+
+### Coverage data
+CSV data in this format:
+
+    "set_id", "set_order",                        "set_name", "vaccine", "gavi_support_level", "activity_type", country",    "year","age_from","age_to","coverage"
+         101,           1,  "Menigitis without GAVI support",    "MenA",            "without",       "routine",    "AFG",      2006,         0,       2,        NA
+         101,           1,  "Menigitis without GAVI support",    "MenA",            "without",       "routine",    "AFG",      2007,         0,       2,      64.0
+         101,           1,  "Menigitis without GAVI support",    "MenA",            "without",       "routine",    "AFG",      2008,         0,       2,      63.0
+         101,           1,  "Menigitis without GAVI support",    "MenA",            "without",       "routine",    "AGO",      2006,         0,       1,       0.0
+         101,           1,  "Menigitis without GAVI support",    "MenA",            "without",       "routine",    "AGO",      2007,         0,       1,      83.0
+         101,           1,  "Menigitis without GAVI support",    "MenA",            "without",       "routine",    "AGO",      2008,         0,       1,      81.0
+         136,           2,     "Menigitis with GAVI support",    "MenA",               "with",       "routine",    "AFG",      2006,         0,       2,        NA
+         136,           2,     "Menigitis with GAVI support",    "MenA",               "with",       "routine",    "AFG",      2007,         0,       2,      80.0
+         136,           2,     "Menigitis with GAVI support",    "MenA",               "with",       "routine",    "AFG",      2008,         0,       2,      90.0
+         136,           2,     "Menigitis with GAVI support",    "MenA",               "with",       "routine",    "AGO",      2006,         0,       1,      20.0
+         136,           2,     "Menigitis with GAVI support",    "MenA",               "with",       "routine",    "AGO",      2007,         0,       1,      90.0
+         136,           2,     "Menigitis with GAVI support",    "MenA",               "with",       "routine",    "AGO",      2008,         0,       1,      95.0
+
+The coverage sets are de-normalized and merged into this single table. You can identify 
+which coverage set a line is from using either the `set_id` or `set_order` columns. 
+
+* `set_id:` The unique ID of the coverage set the line is from
+* `set_order`: The order that this set has within the scenario. Coverage data is applied in this order, and it matches the order of the coverage sets in the metadata above
 
 ## POST /modelling-groups/{modelling-group-id}/actions/associate_responsibility
 Adds or removes a responsibility for a given modelling group, scenario, and touchstone.

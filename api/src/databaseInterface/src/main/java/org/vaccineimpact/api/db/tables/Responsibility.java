@@ -35,7 +35,7 @@ import org.vaccineimpact.api.db.tables.records.ResponsibilityRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Responsibility extends TableImpl<ResponsibilityRecord> {
 
-    private static final long serialVersionUID = -302415918;
+    private static final long serialVersionUID = 1922527466;
 
     /**
      * The reference instance of <code>public.responsibility</code>
@@ -64,6 +64,11 @@ public class Responsibility extends TableImpl<ResponsibilityRecord> {
      * The column <code>public.responsibility.scenario</code>.
      */
     public final TableField<ResponsibilityRecord, Integer> SCENARIO = createField("scenario", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+
+    /**
+     * The column <code>public.responsibility.current_burden_estimate_set</code>.
+     */
+    public final TableField<ResponsibilityRecord, Integer> CURRENT_BURDEN_ESTIMATE_SET = createField("current_burden_estimate_set", org.jooq.impl.SQLDataType.INTEGER, this, "");
 
     /**
      * Create a <code>public.responsibility</code> table reference
@@ -124,7 +129,7 @@ public class Responsibility extends TableImpl<ResponsibilityRecord> {
      */
     @Override
     public List<ForeignKey<ResponsibilityRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<ResponsibilityRecord, ?>>asList(Keys.RESPONSIBILITY__RESPONSIBILITY_RESPONSIBILITY_SET_FKEY, Keys.RESPONSIBILITY__RESPONSIBILITY_SCENARIO_FKEY);
+        return Arrays.<ForeignKey<ResponsibilityRecord, ?>>asList(Keys.RESPONSIBILITY__RESPONSIBILITY_RESPONSIBILITY_SET_FKEY, Keys.RESPONSIBILITY__RESPONSIBILITY_SCENARIO_FKEY, Keys.RESPONSIBILITY__RESPONSIBILITY_CURRENT_BURDEN_ESTIMATE_SET_FKEY);
     }
 
     /**
