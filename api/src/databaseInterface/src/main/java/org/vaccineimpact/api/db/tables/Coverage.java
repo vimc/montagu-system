@@ -36,7 +36,7 @@ import org.vaccineimpact.api.db.tables.records.CoverageRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Coverage extends TableImpl<CoverageRecord> {
 
-    private static final long serialVersionUID = 976153939;
+    private static final long serialVersionUID = 156436739;
 
     /**
      * The reference instance of <code>public.coverage</code>
@@ -95,6 +95,11 @@ public class Coverage extends TableImpl<CoverageRecord> {
      * The column <code>public.coverage.coverage</code>.
      */
     public final TableField<CoverageRecord, BigDecimal> COVERAGE_ = createField("coverage", org.jooq.impl.SQLDataType.NUMERIC, this, "");
+
+    /**
+     * The column <code>public.coverage.target</code>. This field is valid only for campaign coverage
+     */
+    public final TableField<CoverageRecord, BigDecimal> TARGET = createField("target", org.jooq.impl.SQLDataType.NUMERIC, this, "This field is valid only for campaign coverage");
 
     /**
      * The column <code>public.coverage.gavi_support</code>.

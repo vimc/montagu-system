@@ -29,7 +29,7 @@ import org.vaccineimpact.api.db.tables.BurdenEstimate;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class BurdenEstimateRecord extends UpdatableRecordImpl<BurdenEstimateRecord> implements Record7<Integer, Integer, String, Integer, Integer, Boolean, BigDecimal> {
 
-    private static final long serialVersionUID = -799604827;
+    private static final long serialVersionUID = 1712940354;
 
     /**
      * Setter for <code>public.burden_estimate.id</code>.
@@ -88,16 +88,16 @@ public class BurdenEstimateRecord extends UpdatableRecordImpl<BurdenEstimateReco
     }
 
     /**
-     * Setter for <code>public.burden_estimate.outcome</code>.
+     * Setter for <code>public.burden_estimate.burden_outcome</code>.
      */
-    public void setOutcome(Integer value) {
+    public void setBurdenOutcome(Integer value) {
         set(4, value);
     }
 
     /**
-     * Getter for <code>public.burden_estimate.outcome</code>.
+     * Getter for <code>public.burden_estimate.burden_outcome</code>.
      */
-    public Integer getOutcome() {
+    public Integer getBurdenOutcome() {
         return (Integer) get(4);
     }
 
@@ -198,7 +198,7 @@ public class BurdenEstimateRecord extends UpdatableRecordImpl<BurdenEstimateReco
      */
     @Override
     public Field<Integer> field5() {
-        return BurdenEstimate.BURDEN_ESTIMATE.OUTCOME;
+        return BurdenEstimate.BURDEN_ESTIMATE.BURDEN_OUTCOME;
     }
 
     /**
@@ -254,7 +254,7 @@ public class BurdenEstimateRecord extends UpdatableRecordImpl<BurdenEstimateReco
      */
     @Override
     public Integer value5() {
-        return getOutcome();
+        return getBurdenOutcome();
     }
 
     /**
@@ -314,7 +314,7 @@ public class BurdenEstimateRecord extends UpdatableRecordImpl<BurdenEstimateReco
      */
     @Override
     public BurdenEstimateRecord value5(Integer value) {
-        setOutcome(value);
+        setBurdenOutcome(value);
         return this;
     }
 
@@ -365,14 +365,14 @@ public class BurdenEstimateRecord extends UpdatableRecordImpl<BurdenEstimateReco
     /**
      * Create a detached, initialised BurdenEstimateRecord
      */
-    public BurdenEstimateRecord(Integer id, Integer burdenEstimateSet, String country, Integer year, Integer outcome, Boolean stochastic, BigDecimal value) {
+    public BurdenEstimateRecord(Integer id, Integer burdenEstimateSet, String country, Integer year, Integer burdenOutcome, Boolean stochastic, BigDecimal value) {
         super(BurdenEstimate.BURDEN_ESTIMATE);
 
         set(0, id);
         set(1, burdenEstimateSet);
         set(2, country);
         set(3, year);
-        set(4, outcome);
+        set(4, burdenOutcome);
         set(5, stochastic);
         set(6, value);
     }

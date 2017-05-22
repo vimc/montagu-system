@@ -4,12 +4,14 @@
 package org.vaccineimpact.api.db.tables;
 
 
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.Generated;
 
 import org.jooq.Field;
+import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Schema;
 import org.jooq.Table;
@@ -34,7 +36,7 @@ import org.vaccineimpact.api.db.tables.records.ImpactEstimateSetRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ImpactEstimateSet extends TableImpl<ImpactEstimateSetRecord> {
 
-    private static final long serialVersionUID = 2086246447;
+    private static final long serialVersionUID = -1029489402;
 
     /**
      * The reference instance of <code>public.impact_estimate_set</code>
@@ -55,19 +57,14 @@ public class ImpactEstimateSet extends TableImpl<ImpactEstimateSetRecord> {
     public final TableField<ImpactEstimateSetRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('impact_estimate_set_id_seq'::regclass)", org.jooq.impl.SQLDataType.INTEGER)), this, "");
 
     /**
-     * The column <code>public.impact_estimate_set.version</code>.
+     * The column <code>public.impact_estimate_set.impact_estimate_recipe</code>.
      */
-    public final TableField<ImpactEstimateSetRecord, Integer> VERSION = createField("version", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<ImpactEstimateSetRecord, Integer> IMPACT_ESTIMATE_RECIPE = createField("impact_estimate_recipe", org.jooq.impl.SQLDataType.INTEGER, this, "");
 
     /**
-     * The column <code>public.impact_estimate_set.name</code>.
+     * The column <code>public.impact_estimate_set.computed_on</code>.
      */
-    public final TableField<ImpactEstimateSetRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.CLOB, this, "");
-
-    /**
-     * The column <code>public.impact_estimate_set.script</code>.
-     */
-    public final TableField<ImpactEstimateSetRecord, String> SCRIPT = createField("script", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<ImpactEstimateSetRecord, Timestamp> COMPUTED_ON = createField("computed_on", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("now()", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
      * Create a <code>public.impact_estimate_set</code> table reference
@@ -121,6 +118,14 @@ public class ImpactEstimateSet extends TableImpl<ImpactEstimateSetRecord> {
     @Override
     public List<UniqueKey<ImpactEstimateSetRecord>> getKeys() {
         return Arrays.<UniqueKey<ImpactEstimateSetRecord>>asList(Keys.IMPACT_ESTIMATE_SET_PKEY);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<ForeignKey<ImpactEstimateSetRecord, ?>> getReferences() {
+        return Arrays.<ForeignKey<ImpactEstimateSetRecord, ?>>asList(Keys.IMPACT_ESTIMATE_SET__IMPACT_ESTIMATE_SET_IMPACT_ESTIMATE_RECIPE_FKEY);
     }
 
     /**
