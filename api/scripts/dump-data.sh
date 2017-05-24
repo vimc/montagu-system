@@ -1,0 +1,1 @@
+pg_dump -h localhost -p 8000 -U vimc -d montagu --data-only

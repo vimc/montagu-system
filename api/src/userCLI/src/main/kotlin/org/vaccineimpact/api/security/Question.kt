@@ -18,7 +18,7 @@ open class Question(val fieldName: String, val default: String? = null)
     fun ask(): String
     {
         var answer: String? = null
-        while (answer == null)
+        while (answer.isNullOrEmpty())
         {
             answer = getAnswer()
             if (default != null)
@@ -30,7 +30,7 @@ open class Question(val fieldName: String, val default: String? = null)
                 println("'$fieldName' cannot be blank")
             }
         }
-        return answer
+        return answer!!
     }
 }
 
