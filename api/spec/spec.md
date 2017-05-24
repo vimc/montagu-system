@@ -5,6 +5,7 @@
 * Unless otherwise noted, URLs and IDs embedded in URLs are case-sensitive.
 * The canonical form for all URLs (not including query string) ends in a slash: `/`.
 * The API will be versioned via URL. So for version 1, all URLs will begin `/v1/`. e.g. `http://vimc.dide.ic.ac.uk/api/v1/diseases/`
+* When a POST results in the creation of a new object, the API returns a response in the standard format (see below) with the 'data' field being the URL that identifies the new resource.
 
 # Issues to be resolved:
 * CSV options for some endpoints
