@@ -23,6 +23,7 @@ data class ScenarioTouchstoneAndCoverageSets(
 )
 
 data class CoverageRow(
+        val scenario: String,   //This is the scenario description ID
         val setId: Int,
         val setOrder: Int,
         val setName: String,
