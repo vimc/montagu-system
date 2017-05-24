@@ -14,7 +14,6 @@ class CSVSchema(schemaFileName: String)
 
     fun validate(csvAsString: String)
     {
-        println(csvAsString)
         val csv = StringReader(csvAsString.trim())
                 .use { CSVReader(it).readAll() }
         val headers = csv.first()

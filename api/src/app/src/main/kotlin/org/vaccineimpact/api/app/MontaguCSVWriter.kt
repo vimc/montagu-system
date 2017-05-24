@@ -1,6 +1,7 @@
 package org.vaccineimpact.api.app
 
 import com.opencsv.CSVWriter
+import org.vaccineimpact.api.db.toDecimalOrNull
 import java.io.IOException
 import java.io.Writer
 
@@ -31,7 +32,7 @@ class MontaguCSVWriter(writer: Writer) : CSVWriter(writer)
     private fun writeElement(nextElement: String, applyQuotesToAll: Boolean, appendable: Appendable)
     {
         val stringContainsSpecialCharacters = stringContainsSpecialCharacters(nextElement)
-        val shouldQuote = (applyQuotesToAll || stringContainsSpecialCharacters)
+        val shouldQuote = (applyQuotesToAll || isText(nextElement) || stringContainsSpecialCharacters)
                 && quotechar != NO_QUOTE_CHARACTER
                 && nextElement != NoValue
 
@@ -52,6 +53,8 @@ class MontaguCSVWriter(writer: Writer) : CSVWriter(writer)
             appendable.append(quotechar)
         }
     }
+
+    private fun isText(element: String) = element.toDecimalOrNull() == null
 
     companion object
     {

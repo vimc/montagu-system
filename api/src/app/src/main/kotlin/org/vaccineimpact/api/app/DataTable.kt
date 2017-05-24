@@ -29,7 +29,7 @@ class DataTable<T : Any>(val data: Iterable<T>, val type: KClass<T>)
                         .map { it.property.get(line) }
                         .map { serialize(it) }
                         .toTypedArray()
-                csv.writeNext(asArray)
+                csv.writeNext(asArray, false)
             }
         }
     }
