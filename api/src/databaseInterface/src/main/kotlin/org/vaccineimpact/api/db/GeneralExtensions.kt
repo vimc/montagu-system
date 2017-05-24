@@ -17,3 +17,15 @@ fun Random.nextDecimal(min: Int = 0, max: Int = 1, numberOfDecimalPlaces: Int = 
     val int = this.nextInt(range * factor)
     return BigDecimal(int) / BigDecimal(factor)
 }
+
+fun String.toDecimalOrNull(): BigDecimal?
+{
+    try
+    {
+        return BigDecimal(this)
+    }
+    catch (e: NumberFormatException)
+    {
+        return null
+    }
+}

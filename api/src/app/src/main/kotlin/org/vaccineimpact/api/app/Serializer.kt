@@ -10,9 +10,7 @@ import org.vaccineimpact.api.models.*
 object Serializer
 {
     private val toStringSerializer = jsonSerializer<Any> { JsonPrimitive(it.src.toString()) }
-    private val enumSerializer = jsonSerializer<Any> {
-        JsonPrimitive(it.src.toString().toLowerCase().replace('_', '-'))
-    }
+    private val enumSerializer = jsonSerializer<Any> { JsonPrimitive(serializeEnum(it.src)) }
     val gson: Gson = GsonBuilder()
             .setPrettyPrinting()
             .disableHtmlEscaping()
@@ -47,4 +45,5 @@ object Serializer
         }
         return builder.toString().trim('_')
     }
+    fun serializeEnum(value: Any) = value.toString().toLowerCase().replace('_', '-')
 }

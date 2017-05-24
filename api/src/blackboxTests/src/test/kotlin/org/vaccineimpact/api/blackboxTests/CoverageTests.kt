@@ -18,7 +18,7 @@ class CoverageTests : DatabaseTest()
     val scenarioId = "scenario-1"
     val coverageSetId = 1
     val groupScope = "modelling-group:$groupId"
-    val minimumPermissions = PermissionSet("*/scenarios.read", "$groupScope/responsibilities.read", "$groupScope/coverage.read")
+    val minimumPermissions = PermissionSet("*/can-login", "*/scenarios.read", "$groupScope/responsibilities.read", "$groupScope/coverage.read")
     val url = "/modelling-groups/$groupId/responsibilities/$touchstoneId/$scenarioId/coverage/"
 
     @Test

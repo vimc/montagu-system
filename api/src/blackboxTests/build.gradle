@@ -1,11 +1,6 @@
 apply plugin: 'application'
 mainClassName = "org.vaccineimpact.api.blackboxTests.AppKt"
 
-repositories {
-    maven { url "http://dl.bintray.com/scalaz/releases" }
-    maven { url "https://dl.bintray.com/giltgroupe/maven/" }
-}
-
 dependencies {
     compile project(":testHelpers")
     compile project(":databaseInterface")
@@ -17,9 +12,9 @@ dependencies {
 
     testCompile "khttp:khttp:0.1.0"
     testCompile "com.beust:klaxon:0.31"
+    testCompile "com.opencsv:opencsv:3.9"
 
     testCompile "com.github.fge:json-schema-validator:2.2.6"
-    testCompile "uk.gov.nationalarchives:csv-validator-java-api:1.1"
 
     testCompile project(":testHelpers")
     testCompile project(":databaseInterface")
@@ -29,7 +24,7 @@ dependencies {
 task copySpec(type: Copy) {
     from 'src/test/resources/spec'
     include '*.schema.json'
-    include "*.csvschema"
+    include '*.csvschema.json'
     into 'build/classes/test/spec'
 }
 test.dependsOn 'copySpec'

@@ -1,0 +1,17 @@
+{
+    "columns": {
+        "set_id": "Int",
+        "set_order": "Int",
+        "set_name": "String",
+        "vaccine": "String",
+        "gavi_support_level": ["none", "without", "with"],
+        "activity_type": ["none", "routine", "campaign"],
+        "country": "String",
+        "year": "Int",
+        "age_from": "Int",
+        "age_to": "Int",
+        "age_range_verbatim": "String?",
+        "target": "Decimal?",
+        "coverage": "Decimal?"
+    }
+}
