@@ -1,5 +1,6 @@
 {
     "columns": {
+        "scenario": "String",
         "set_id": "Int",
         "set_order": "Int",
         "set_name": "String",
