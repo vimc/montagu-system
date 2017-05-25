@@ -1,5 +1,7 @@
 package org.vaccineimpact.api.blackboxTests.helpers
 
+import org.vaccineimpact.api.blackboxTests.validators.JSONValidator
+import org.vaccineimpact.api.blackboxTests.validators.Validator
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.direct.createPermissions
 import org.vaccineimpact.api.models.ReifiedPermission
@@ -9,10 +11,11 @@ data class ExpectedProblem(val errorCode: String, val errorTextContains: String)
 
 class PermissionChecker(
         val url: String,
-        val allRequiredPermissions: Set<ReifiedPermission>)
+        val allRequiredPermissions: Set<ReifiedPermission>,
+        val validator: Validator = JSONValidator()
+)
 {
     val helper = TestUserHelper()
-    val validator = SchemaValidator()
     val requestHelper = RequestHelper()
 
     /**
@@ -26,7 +29,7 @@ class PermissionChecker(
     {
         checkPermissionIsRequired(ReifiedPermission.parse(permissionUnderTest), given, expectedProblem)
     }
-    fun checkPermissionIsRequired(
+    private fun checkPermissionIsRequired(
             permissionUnderTest: ReifiedPermission,
             given: (JooqContext) -> Unit,
             expectedProblem: ExpectedProblem? = null)
@@ -37,11 +40,11 @@ class PermissionChecker(
             it.createPermissions(allRequiredPermissions.map { it.name })
         }
 
-        checkPermissionIsRequired(permissionUnderTest, validator, expectedProblem)
+        checkPermissionIsRequired(permissionUnderTest, expectedProblem)
 
         val token = helper.getTokenForTestUser(allRequiredPermissions)
-        val response = requestHelper.get(url, token)
-        validator.validateSuccess(response.text)
+        val response = getResponse(token)
+        validator.validateSuccess(response)
     }
 
     /**
@@ -50,7 +53,6 @@ class PermissionChecker(
      */
     fun checkPermissionIsRequired(
             permission: ReifiedPermission,
-            validator: SchemaValidator,
             expectedProblem: ExpectedProblem? = null
     )
     {
@@ -59,7 +61,7 @@ class PermissionChecker(
         val limitedPermissions = allRequiredPermissions - permission
 
         println("Checking that permission '$permission' is required for $url")
-        checkThesePermissionsAreInsufficient(limitedPermissions, validator, expectedProblem, assertionText)
+        checkThesePermissionsAreInsufficient(limitedPermissions, expectedProblem, assertionText)
 
         if (permission.scope is Scope.Specific)
         {
@@ -67,36 +69,37 @@ class PermissionChecker(
 
             println("Checking that same permission with different scope will not satisfy the requirement")
             val badPermission = ReifiedPermission(permission.name, Scope.Specific(scope.scopePrefix, "bad-id"))
-            checkThesePermissionsAreInsufficient(limitedPermissions + badPermission, validator,
+            checkThesePermissionsAreInsufficient(limitedPermissions + badPermission,
                     expectedProblem, assertionText)
 
             println("Checking that same permission with the global scope WILL satisfy the requirement")
             val betterPermission = ReifiedPermission(permission.name, Scope.Global())
-            checkThesePermissionsAreSufficient(limitedPermissions + betterPermission, validator,
+            checkThesePermissionsAreSufficient(limitedPermissions + betterPermission,
                     "Expected to be able to substitute '$betterPermission' in place of '$permission' for $url")
         }
     }
 
     fun checkThesePermissionsAreInsufficient(
             permissions: Set<ReifiedPermission>,
-            validator: SchemaValidator,
             expectedProblem: ExpectedProblem,
             assertionText: String
     )
     {
         val limitedToken = helper.getTokenForTestUser(permissions)
-        val response = requestHelper.get(url, limitedToken)
-        validator.validateError(response.text,
+        val response = getResponse(limitedToken)
+        validator.validateError(response,
                 expectedErrorCode = expectedProblem.errorCode,
                 expectedErrorText = expectedProblem.errorTextContains,
                 assertionText = assertionText)
     }
 
-    fun checkThesePermissionsAreSufficient(permissions: Set<ReifiedPermission>, validator: SchemaValidator,
+    fun checkThesePermissionsAreSufficient(permissions: Set<ReifiedPermission>,
                                            assertionText: String)
     {
         val token = helper.getTokenForTestUser(permissions)
-        val response = requestHelper.get(url, token)
-        validator.validateSuccess(response.text, assertionText = assertionText)
+        val response = getResponse(token)
+        validator.validateSuccess(response, assertionText = assertionText)
     }
+
+    private fun getResponse(token: String) = requestHelper.get(url, token).text
 }

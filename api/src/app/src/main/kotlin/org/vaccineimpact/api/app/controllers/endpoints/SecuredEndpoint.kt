@@ -10,13 +10,14 @@ import org.vaccineimpact.api.security.WebTokenHelper
 import spark.Spark
 import spark.route.HttpMethod
 
-class SecuredEndpoint(
+open class SecuredEndpoint<out T : Any>(
         urlFragment: String,
-        route: (ActionContext) -> Any,
+        route: (ActionContext) -> T,
         val permissions: Set<String>,
         method: HttpMethod = HttpMethod.get,
-        additionalSetupCallback: ((String) -> Unit)? = null
-) : BasicEndpoint(urlFragment, route, method, additionalSetupCallback)
+        additionalSetupCallback: ((String) -> Unit)? = null,
+        transformer: Transformer<T>? = null
+) : BasicEndpoint<T>(urlFragment, route, method, additionalSetupCallback, transformer)
 {
 
     override fun additionalSetup(url: String, tokenHelper: WebTokenHelper)

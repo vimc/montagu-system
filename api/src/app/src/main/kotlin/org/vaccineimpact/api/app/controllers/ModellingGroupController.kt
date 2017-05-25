@@ -1,7 +1,9 @@
 package org.vaccineimpact.api.app.controllers
 
 import org.vaccineimpact.api.app.ActionContext
+import org.vaccineimpact.api.app.serialization.SplitData
 import org.vaccineimpact.api.app.controllers.endpoints.SecuredEndpoint
+import org.vaccineimpact.api.app.controllers.endpoints.withSplitData
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
 import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
@@ -12,25 +14,24 @@ class ModellingGroupController(private val db: () -> ModellingGroupRepository)
 {
     override val urlComponent = "/modelling-groups"
     private val groupScope = "modelling-group:<group-id>"
+    val responsibilityPermissions = setOf(
+            "*/scenarios.read",
+            "$groupScope/responsibilities.read",
+            "$groupScope/responsibilities.read"
+    )
+    val coveragePermissions = responsibilityPermissions + "$groupScope/coverage.read"
 
     override val endpoints = listOf(
-            SecuredEndpoint("/", this::getModellingGroups, setOf(
-                    "*/modelling-groups.read"
-            )),
-            SecuredEndpoint("/:group-id/responsibilities/:touchstone-id/", this::getResponsibilities, setOf(
-                    "*/scenarios.read",
-                    "$groupScope/responsibilities.read",
-                    "$groupScope/responsibilities.read"
-            )),
-            SecuredEndpoint("/:group-id/responsibilities/:touchstone-id/:scenario-id/", this::getResponsibility, setOf(
-                    "*/scenarios.read",
-                    "$groupScope/responsibilities.read"
-            )),
-            SecuredEndpoint("/:group-id/responsibilities/:touchstone-id/:scenario-id/coverage_sets/", this::getCoverageSets, setOf(
-                    "*/scenarios.read",
-                    "$groupScope/responsibilities.read",
-                    "$groupScope/coverage.read"
-            ))
+            SecuredEndpoint("/",
+                    this::getModellingGroups, setOf("*/modelling-groups.read")),
+            SecuredEndpoint("/:group-id/responsibilities/:touchstone-id/",
+                    this::getResponsibilities, responsibilityPermissions),
+            SecuredEndpoint("/:group-id/responsibilities/:touchstone-id/:scenario-id/",
+                    this::getResponsibility, responsibilityPermissions),
+            SecuredEndpoint("/:group-id/responsibilities/:touchstone-id/:scenario-id/coverage_sets/",
+                    this::getCoverageSets, coveragePermissions),
+            SecuredEndpoint("/:group-id/responsibilities/:touchstone-id/:scenario-id/coverage/",
+                    this::getCoverageData, coveragePermissions).withSplitData()
     )
 
     fun getModellingGroups(context: ActionContext): List<ModellingGroup>
@@ -62,6 +63,16 @@ class ModellingGroupController(private val db: () -> ModellingGroupRepository)
         val path = ResponsibilityPath(context)
         val data = db().use { it.getCoverageSets(path.groupId, path.touchstoneId, path.scenarioId) }
         checkTouchstoneStatus(data.touchstone.status, path.touchstoneId, context)
+        return data
+    }
+
+    // TODO: https://vimc.myjetbrains.com/youtrack/issue/VIMC-307
+    // Use streams to speed up this process of sending large data
+    fun getCoverageData(context: ActionContext): SplitData<ScenarioTouchstoneAndCoverageSets, CoverageRow>
+    {
+        val path = ResponsibilityPath(context)
+        val data = db().use { it.getCoverageData(path.groupId, path.touchstoneId, path.scenarioId) }
+        checkTouchstoneStatus(data.structuredMetadata.touchstone.status, path.touchstoneId, context)
         return data
     }
 

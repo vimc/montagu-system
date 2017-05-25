@@ -27,4 +27,5 @@ fun addRole(args: List<String>)
                 ?: throw ActionException("No role exists with name '$roleName' and scope prefix '$scopePrefix'")
         db.ensureUserHasRole(username, roleId, scopeId)
     }
+    println("Gave role $scopePrefix:$scopeId/$roleName to '$username'")
 }

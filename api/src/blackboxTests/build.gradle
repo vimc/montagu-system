@@ -12,6 +12,7 @@ dependencies {
 
     testCompile "khttp:khttp:0.1.0"
     testCompile "com.beust:klaxon:0.31"
+    testCompile "com.opencsv:opencsv:3.9"
 
     testCompile "com.github.fge:json-schema-validator:2.2.6"
 
@@ -23,6 +24,7 @@ dependencies {
 task copySpec(type: Copy) {
     from 'src/test/resources/spec'
     include '*.schema.json'
+    include '*.csvschema.json'
     into 'build/classes/test/spec'
 }
 test.dependsOn 'copySpec'

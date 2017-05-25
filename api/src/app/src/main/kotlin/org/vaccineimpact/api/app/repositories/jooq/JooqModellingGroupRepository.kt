@@ -2,6 +2,7 @@ package org.vaccineimpact.api.app.repositories.jooq
 
 import org.jooq.Record1
 import org.jooq.SelectConditionStep
+import org.vaccineimpact.api.app.serialization.SplitData
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
 import org.vaccineimpact.api.app.filters.whereMatchesFilter
@@ -98,6 +99,19 @@ class JooqModellingGroupRepository(
                     responsibilityAndTouchstone.touchstone,
                     scenario.scenario,
                     scenario.coverageSets)
+        }
+    }
+
+    override fun getCoverageData(groupId: String, touchstoneId: String, scenarioId: String): SplitData<ScenarioTouchstoneAndCoverageSets, CoverageRow>
+    {
+        val responsibilityAndTouchstone = getResponsibility(groupId, touchstoneId, scenarioId)
+        return touchstoneRepository().use { repo ->
+            val scenarioAndData = repo.getScenarioAndCoverageData(touchstoneId, scenarioId)
+            SplitData(ScenarioTouchstoneAndCoverageSets(
+                    responsibilityAndTouchstone.touchstone,
+                    scenarioAndData.structuredMetadata.scenario,
+                    scenarioAndData.structuredMetadata.coverageSets
+            ), scenarioAndData.tableData)
         }
     }
 

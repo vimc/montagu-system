@@ -3,6 +3,8 @@ package org.vaccineimpact.api.blackboxTests.helpers
 import com.beust.klaxon.JsonArray
 import com.beust.klaxon.JsonObject
 import khttp.responses.Response
+import org.vaccineimpact.api.blackboxTests.schemas.JSONSchema
+import org.vaccineimpact.api.blackboxTests.schemas.Schema
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.direct.createPermissions
 import org.vaccineimpact.api.models.PermissionSet
@@ -12,13 +14,14 @@ fun validate(url: String) = FluentValidationConfig(url = url)
 
 data class FluentValidationConfig(
         val url: String,
-        val schemaName: String? = null,
+        val schema: Schema? = null,
         val prepareDatabase: ((JooqContext) -> Unit)? = null,
         val checkRequiredPermissions: Set<ReifiedPermission>? = null,
         val ownedPermissions: Set<ReifiedPermission>? = null
 )
 {
-    infix fun against(schemaName: String) = this.copy(schemaName = schemaName)
+    infix fun against(schemaName: String) = this.copy(schema = JSONSchema(schemaName))
+    infix fun against(schema: Schema) = this.copy(schema = schema)
 
     infix fun given(prepareDatabase: (JooqContext) -> Unit) = this.copy(prepareDatabase = prepareDatabase)
 
@@ -32,10 +35,13 @@ data class FluentValidationConfig(
     {
         this.finalized().runWithObjectCheck(additionalChecks)
     }
-
     infix fun andCheckArray(additionalChecks: (JsonArray<JsonObject>) -> Unit)
     {
         this.finalized().runWithArrayCheck(additionalChecks)
+    }
+    fun run()
+    {
+        this.finalized().run()
     }
 
     private fun finalized() = FluentValidation(this)
@@ -44,7 +50,7 @@ data class FluentValidationConfig(
 class FluentValidation(config: FluentValidationConfig)
 {
     val url = config.url
-    val schemaName = config.schemaName ?: throw Exception("Missing 'against' clause in fluent validation builder")
+    val schema = config.schema ?: throw Exception("Missing 'against' clause in fluent validation builder")
     val prepareDatabase = config.prepareDatabase ?: throw Exception("Missing 'given' clause in fluent validation builder")
     val requiredPermissions: Set<ReifiedPermission> = config.checkRequiredPermissions ?: PermissionSet("*/can-login")
     val ownedPermissions: Set<ReifiedPermission> = config.ownedPermissions ?: requiredPermissions
@@ -65,7 +71,7 @@ class FluentValidation(config: FluentValidationConfig)
         additionalChecks(response.montaguDataAsArray())
     }
 
-    private fun run(): Response
+    fun run(): Response
     {
         JooqContext().use {
             prepareDatabase(it)
@@ -74,29 +80,28 @@ class FluentValidation(config: FluentValidationConfig)
         }
 
         // Check that the auth token is required
-        val validator = SchemaValidator()
         val badResponse = requestHelper.get(url)
-        validator.validateError(badResponse.text)
+        schema.validator.validateError(badResponse.text)
 
         // Check the permissions
         if (requiredPermissions.any())
         {
-            checkPermissions(url, validator)
+            checkPermissions(url)
         }
 
         // Check the actual response
         val token = userHelper.getTokenForTestUser(ownedPermissions)
         val response = requestHelper.get(url, token)
-        validator.validate(schemaName, response.text)
+        schema.validate(response.text)
         return response
     }
 
-    private fun checkPermissions(url: String, validator: SchemaValidator)
+    private fun checkPermissions(url: String)
     {
-        val checker = PermissionChecker(url, allPermissions)
+        val checker = PermissionChecker(url, allPermissions, schema.validator)
         for (permission in requiredPermissions)
         {
-            checker.checkPermissionIsRequired(permission, validator)
+            checker.checkPermissionIsRequired(permission)
         }
     }
 }

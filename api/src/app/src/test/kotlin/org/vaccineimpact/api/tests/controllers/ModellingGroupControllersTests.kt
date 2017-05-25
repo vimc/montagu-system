@@ -6,8 +6,11 @@ import org.junit.Test
 import org.vaccineimpact.api.app.ActionContext
 import org.vaccineimpact.api.app.controllers.ModellingGroupController
 import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
+import org.vaccineimpact.api.app.serialization.DataTable
+import org.vaccineimpact.api.app.serialization.SplitData
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.test_helpers.MontaguTests
+import java.math.BigDecimal
 
 class ModellingGroupControllersTests : MontaguTests()
 {
@@ -15,8 +18,8 @@ class ModellingGroupControllersTests : MontaguTests()
     fun `getResponsibilities gets parameters from URL`()
     {
         val data = ResponsibilitiesAndTouchstoneStatus(
-            Responsibilities("tId", "", null, emptyList()),
-            TouchstoneStatus.FINISHED
+                Responsibilities("tId", "", null, emptyList()),
+                TouchstoneStatus.FINISHED
         )
         val repo = mock<ModellingGroupRepository> {
             on { getResponsibilities(any(), any(), any()) } doReturn data
@@ -89,12 +92,31 @@ class ModellingGroupControllersTests : MontaguTests()
 
     @Test
     fun `getCoverageSets returns error if user does not have permission to see in-preparation touchstone`()
-
     {
         val repo = makeRepoMockingGetCoverageSets(TouchstoneStatus.IN_PREPARATION)
         val context = mockContextForSpecificResponsibility(false)
         val controller = ModellingGroupController({ repo })
         assertThatThrownBy { controller.getCoverageSets(context) }
+                .hasMessageContaining("Unknown touchstone")
+    }
+
+    @Test
+    fun `getCoverageData gets parameters from URL`()
+    {
+        val repo = makeRepoMockingGetCoverageData(TouchstoneStatus.IN_PREPARATION)
+        val context = mockContextForSpecificResponsibility(true)
+        val controller = ModellingGroupController({ repo })
+        controller.getCoverageData(context)
+        verify(repo).getCoverageData(eq("gId"), eq("tId"), eq("sId"))
+    }
+
+    @Test
+    fun `getCoverageData returns error if user does not have permission to see in-preparation touchstone`()
+    {
+        val repo = makeRepoMockingGetCoverageData(TouchstoneStatus.IN_PREPARATION)
+        val context = mockContextForSpecificResponsibility(false)
+        val controller = ModellingGroupController({ repo })
+        assertThatThrownBy { controller.getCoverageData(context) }
                 .hasMessageContaining("Unknown touchstone")
     }
 
@@ -123,17 +145,27 @@ class ModellingGroupControllersTests : MontaguTests()
         }
     }
 
-    private fun makeRepoMockingGetCoverageSets(status: TouchstoneStatus): ModellingGroupRepository
+    private fun makeRepoMockingGetCoverageSets(status: TouchstoneStatus) = mock<ModellingGroupRepository> {
+        on { getCoverageSets(any(), any(), any()) } doReturn mockCoverageSetsData(status)
+    }
+
+    private fun makeRepoMockingGetCoverageData(status: TouchstoneStatus): ModellingGroupRepository
     {
-        val data = ScenarioTouchstoneAndCoverageSets(
-                Touchstone("tId", "t", 1, "desc", YearRange(1900, 2000), status),
-                Scenario("sId", "scDesc", "disease", listOf("t-1")),
-                listOf(
-                        CoverageSet(1, "tId", "name", "vaccine", GAVISupportLevel.WITH, ActivityType.CAMPAIGN)
-                )
-        )
+        val coverageSets = mockCoverageSetsData(status)
+        val data = SplitData(coverageSets, DataTable.new(listOf(
+                CoverageRow("sId", 1, 0, "name", "vaccine", GAVISupportLevel.WITH, ActivityType.CAMPAIGN,
+                        "ABC", 2000, BigDecimal.ZERO, BigDecimal.TEN, "0-10", null, BigDecimal("67.88"))
+        )))
         return mock {
-            on { getCoverageSets(any(), any(), any()) } doReturn data
+            on { getCoverageData(any(), any(), any()) } doReturn data
         }
     }
+
+    private fun mockCoverageSetsData(status: TouchstoneStatus) = ScenarioTouchstoneAndCoverageSets(
+            Touchstone("tId", "t", 1, "desc", YearRange(1900, 2000), status),
+            Scenario("sId", "scDesc", "disease", listOf("t-1")),
+            listOf(
+                    CoverageSet(1, "tId", "name", "vaccine", GAVISupportLevel.WITH, ActivityType.CAMPAIGN)
+            )
+    )
 }

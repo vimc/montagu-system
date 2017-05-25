@@ -1,14 +1,9 @@
 package org.vaccineimpact.api.app.controllers
 
-import org.pac4j.core.profile.CommonProfile
-import org.pac4j.core.profile.ProfileManager
-import org.pac4j.sparkjava.SparkWebContext
 import org.slf4j.LoggerFactory
 import org.vaccineimpact.api.app.ActionContext
-import org.vaccineimpact.api.app.Serializer
 import org.vaccineimpact.api.app.controllers.endpoints.EndpointDefinition
 import org.vaccineimpact.api.app.errors.UnsupportedValueException
-import org.vaccineimpact.api.models.ReifiedPermission
 import org.vaccineimpact.api.security.WebTokenHelper
 import spark.Request
 import spark.Response
@@ -20,7 +15,7 @@ abstract class AbstractController
     private val logger = LoggerFactory.getLogger(AbstractController::class.java)
 
     abstract val urlComponent: String
-    abstract val endpoints: Iterable<EndpointDefinition>
+    abstract val endpoints: Iterable<EndpointDefinition<Any>>
 
     fun mapEndpoints(urlBase: String, tokenHelper: WebTokenHelper): List<String>
     {
@@ -28,11 +23,11 @@ abstract class AbstractController
     }
 
     private fun mapEndpoint(
-            endpoint: EndpointDefinition,
+            endpoint: EndpointDefinition<Any>,
             urlBase: String,
             tokenHelper: WebTokenHelper): String
     {
-        val transformer = this::transform
+        val transformer = endpoint::transform
         val fullUrl = urlBase + urlComponent + endpoint.urlFragment
         val route = wrapRoute(endpoint.route)
         logger.info("Mapping $fullUrl")
@@ -53,6 +48,4 @@ abstract class AbstractController
     {
         return { req: Request, res: Response -> route(ActionContext(req, res)) }
     }
-
-    protected open fun transform(x: Any): String = Serializer.toResult(x)
 }

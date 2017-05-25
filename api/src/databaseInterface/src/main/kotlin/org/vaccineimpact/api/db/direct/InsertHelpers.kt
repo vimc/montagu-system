@@ -1,8 +1,13 @@
 package org.vaccineimpact.api.db.direct
 
+import org.apache.commons.lang3.RandomStringUtils
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.Tables.*
 import org.vaccineimpact.api.db.fromJoinPath
+import org.vaccineimpact.api.db.nextDecimal
+import org.vaccineimpact.api.db.tables.records.CoverageRecord
+import java.math.BigDecimal
+import java.util.*
 
 fun JooqContext.addGroup(id: String, description: String, current: String? = null)
 {
@@ -236,4 +241,86 @@ fun JooqContext.addCoverageSetToScenario(scenarioId: String, touchstoneId: Strin
             .and(SCENARIO_DESCRIPTION.ID.eq(scenarioId))
             .fetchOne()
     return this.addCoverageSetToScenario(record[SCENARIO.ID], coverageSetId, order)
+}
+
+fun JooqContext.addCountries(ids: List<String>)
+{
+    val records = ids.map {
+        this.dsl.newRecord(COUNTRY).apply {
+            this.id = it
+            this.name = "$it-Name"
+        }
+    }
+    this.dsl.batchStore(records).execute()
+}
+
+fun JooqContext.generateCountries(count: Int): List<String>
+{
+    val countries = (0..count).map {
+        RandomStringUtils.randomAlphabetic(3).toUpperCase()
+    }
+    this.addCountries(countries)
+    return countries
+}
+
+fun JooqContext.generateCoverageData(
+        coverageSetId: Int,
+        countryCount: Int = 5,
+        yearRange: IntProgression = 1950..2000 step 5,
+        ageRange: IntProgression = 0..80 step 5)
+{
+    val generator = Random()
+    val records = mutableListOf<CoverageRecord>()
+    val countries = this.generateCountries(countryCount)
+    for (country in countries)
+    {
+        for (year in yearRange)
+        {
+            for (age in ageRange)
+            {
+                records.add(this.newCoverageRowRecord(
+                        coverageSetId,
+                        country,
+                        year,
+                        ageFrom = BigDecimal(age),
+                        ageTo = BigDecimal(age + ageRange.step),
+                        ageRangeVerbatim = null,
+                        target = null,
+                        coverage = generator.nextDecimal(0, 100, numberOfDecimalPlaces = 2)
+                ))
+            }
+        }
+    }
+    this.dsl.batchStore(records).execute()
+}
+
+fun JooqContext.addCoverageRow(coverageSetId: Int, country: String, year: Int,
+                               ageFrom: BigDecimal, ageTo: BigDecimal, ageRangeVerbatim: String?,
+                               target: BigDecimal?, coverage: BigDecimal?)
+{
+    this.newCoverageRowRecord(
+            coverageSetId,
+            country,
+            year,
+            ageFrom,
+            ageTo,
+            ageRangeVerbatim,
+            target,
+            coverage
+    ).store()
+}
+
+private fun JooqContext.newCoverageRowRecord(coverageSetId: Int, country: String, year: Int,
+                                 ageFrom: BigDecimal, ageTo: BigDecimal, ageRangeVerbatim: String?,
+                                 target: BigDecimal?, coverage: BigDecimal?)
+        = this.dsl.newRecord(COVERAGE).apply {
+    this.coverageSet = coverageSetId
+    this.country = country
+    this.year = year
+    this.ageFrom = ageFrom
+    this.ageTo = ageTo
+    this.ageRangeVerbatim = ageRangeVerbatim
+    this.target = target
+    this.coverage = coverage
+    this.gaviSupport = false
 }
