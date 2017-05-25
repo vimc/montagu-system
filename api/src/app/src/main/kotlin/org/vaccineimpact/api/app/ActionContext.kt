@@ -13,6 +13,8 @@ open class ActionContext(private val context: SparkWebContext)
 {
     private val request
             get() = context.sparkRequest
+    private val response
+            get() = context.sparkResponse
 
     constructor(request: Request, response: Response)
         : this(SparkWebContext(request, response))
@@ -20,6 +22,10 @@ open class ActionContext(private val context: SparkWebContext)
     open fun contentType(): String = request.contentType()
     open fun queryParams(key: String): String? = request.queryParams(key)
     open fun params(key: String): String = request.params(key)
+    open fun addResponseHeader(key: String, value: String)
+    {
+        response.header(key, value)
+    }
 
     open fun hasPermission(requirement: ReifiedPermission)
             = permissions.any { requirement.satisfiedBy(it) }

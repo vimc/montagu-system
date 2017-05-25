@@ -8,6 +8,7 @@ import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.serialization.DataTable
 import org.vaccineimpact.api.app.serialization.SplitData
 import org.vaccineimpact.api.models.*
+import spark.route.HttpMethod
 
 class ModellingGroupController(private val db: () -> ModellingGroupRepository)
     : AbstractController()
@@ -33,7 +34,9 @@ class ModellingGroupController(private val db: () -> ModellingGroupRepository)
             SecuredEndpoint("/:group-id/responsibilities/:touchstone-id/:scenario-id/coverage/",
                     this::getCoverageDataAndMetadata, coveragePermissions, contentType = "application/json"),
             SecuredEndpoint("/:group-id/responsibilities/:touchstone-id/:scenario-id/coverage/",
-                    this::getCoverageData, coveragePermissions, contentType = "text/csv")
+                    this::getCoverageData, coveragePermissions,
+                    method = HttpMethod.post,
+                    contentType = "text/csv")
     )
 
     fun getModellingGroups(context: ActionContext): List<ModellingGroup>
@@ -68,7 +71,14 @@ class ModellingGroupController(private val db: () -> ModellingGroupRepository)
         return data
     }
 
-    fun getCoverageData(context: ActionContext) = getCoverageDataAndMetadata(context).tableData
+    fun getCoverageData(context: ActionContext): DataTable<CoverageRow>
+    {
+        val data = getCoverageDataAndMetadata(context)
+        val metadata = data.structuredMetadata
+        val filename = "coverage_${metadata.touchstone.id}_${metadata.scenario.id}.csv"
+        context.addResponseHeader("Content-Disposition", """inline; filename="$filename"""")
+        return data.tableData
+    }
 
     // TODO: https://vimc.myjetbrains.com/youtrack/issue/VIMC-307
     // Use streams to speed up this process of sending large data

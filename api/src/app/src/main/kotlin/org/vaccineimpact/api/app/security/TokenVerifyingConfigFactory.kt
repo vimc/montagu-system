@@ -23,18 +23,26 @@ class TokenVerifyingConfigFactory(
         val requiredPermissions: Set<PermissionRequirement>
 ) : ConfigFactory
 {
+    private val clients = listOf(
+            JWTHeaderClient(tokenHelper),
+            JWTParameterClient(tokenHelper)
+    )
+
     override fun build(): Config
     {
-        val client = JWTHeaderClient(tokenHelper)
-        client.addAuthorizationGenerator(this::extractPermissionsFromToken)
-        return Config(client).apply {
+        clients.forEach {
+            it.addAuthorizationGenerator({ _, profile -> extractPermissionsFromToken(profile) })
+        }
+        return Config(clients).apply {
             setAuthorizer(MontaguAuthorizer(requiredPermissions))
             addMatcher(SkipOptionsMatcher.name, SkipOptionsMatcher)
             httpActionAdapter = TokenActionAdapter()
         }
     }
 
-    private fun extractPermissionsFromToken(context: WebContext, commonProfile: CommonProfile): CommonProfile
+    fun allClients() = clients.map { it::class.java.simpleName }.joinToString()
+
+    private fun extractPermissionsFromToken(commonProfile: CommonProfile): CommonProfile
     {
         val profile = commonProfile as JwtProfile
         val permissions = PermissionSet((profile.getAttribute("permissions") as String)

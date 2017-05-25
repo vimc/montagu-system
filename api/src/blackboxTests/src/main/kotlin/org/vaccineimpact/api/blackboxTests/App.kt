@@ -30,6 +30,12 @@ fun main(args: Array<String>) {
         val yfRoutineWith = db.addCoverageSet("op-2017-2", "Yellow Fever, routine, with GAVI", "YF", "with", "routine")
         val yfCampaignWithout = db.addCoverageSet("op-2017-2", "Yellow Fever, campaign, without GAVI", "YF", "without", "campaign")
         val yfCampaignWith = db.addCoverageSet("op-2017-2", "Yellow Fever, campaign, with GAVI", "YF", "with", "campaign")
+        db.generateCoverageData(yfNoVacc)
+        db.generateCoverageData(yfRoutineWithout)
+        db.generateCoverageData(yfRoutineWith)
+        db.generateCoverageData(yfCampaignWithout)
+        db.generateCoverageData(yfCampaignWith)
+
         db.addCoverageSetToScenario("yf-routine", "op-2017-2", yfNoVacc, 0)
         db.addCoverageSetToScenario("yf-routine", "op-2017-2", yfRoutineWithout, 1)
         db.addCoverageSetToScenario("yf-routine", "op-2017-2", yfRoutineWith, 2)
