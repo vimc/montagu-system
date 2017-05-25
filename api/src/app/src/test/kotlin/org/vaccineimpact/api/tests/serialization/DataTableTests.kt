@@ -64,5 +64,5 @@ NA,NA,NA""")
 "free text","in-preparation"""")
     }
 
-    private fun serialize(table: DataTable<*>) = table.serialize(Serializer.instance)
+    private fun serialize(table: DataTable<*>) = table.serialize(Serializer.instance).trim()
 }
