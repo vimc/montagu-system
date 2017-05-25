@@ -1,23 +1,19 @@
-package org.vaccineimpact.api.databaseTests
+package org.vaccineimpact.api.databaseTests.modellingGroupRepository
 
-import org.assertj.core.api.Assertions
-import org.junit.Test
-import org.vaccineimpact.api.app.errors.UnknownObjectError
-import org.vaccineimpact.api.models.ModellingGroup
 import org.vaccineimpact.api.db.direct.addGroup
 
 class GetModellingGroupTests : ModellingGroupRepositoryTests()
 {
-    @Test
+    @org.junit.Test
     fun `no modelling groups are returned if table is empty`()
     {
         givenABlankDatabase() check { repo ->
             val groups = repo.getModellingGroups()
-            Assertions.assertThat(groups).isEmpty()
+            org.assertj.core.api.Assertions.assertThat(groups).isEmpty()
         }
     }
 
-    @Test
+    @org.junit.Test
     fun `can get all modelling groups`()
     {
         given {
@@ -26,14 +22,14 @@ class GetModellingGroupTests : ModellingGroupRepositoryTests()
         } check {
             repo ->
             val groups = repo.getModellingGroups()
-            Assertions.assertThat(groups).hasSameElementsAs(listOf(
-                    ModellingGroup("a", "description a"),
-                    ModellingGroup("b", "description b")
+            org.assertj.core.api.Assertions.assertThat(groups).hasSameElementsAs(listOf(
+                    org.vaccineimpact.api.models.ModellingGroup("a", "description a"),
+                    org.vaccineimpact.api.models.ModellingGroup("b", "description b")
             ))
         }
     }
 
-    @Test
+    @org.junit.Test
     fun `only most recent version of modelling groups is returned`()
     {
         given {
@@ -43,14 +39,14 @@ class GetModellingGroupTests : ModellingGroupRepositoryTests()
         } check {
             repo ->
             val groups = repo.getModellingGroups()
-            Assertions.assertThat(groups).hasSameElementsAs(listOf(
-                    ModellingGroup("a2", "description a version 2"),
-                    ModellingGroup("b", "description b")
+            org.assertj.core.api.Assertions.assertThat(groups).hasSameElementsAs(listOf(
+                    org.vaccineimpact.api.models.ModellingGroup("a2", "description a version 2"),
+                    org.vaccineimpact.api.models.ModellingGroup("b", "description b")
             ))
         }
     }
 
-    @Test
+    @org.junit.Test
     fun `can get modelling group by ID`()
     {
         given {
@@ -58,31 +54,31 @@ class GetModellingGroupTests : ModellingGroupRepositoryTests()
         } check {
             repo ->
             var group = repo.getModellingGroup("a")
-            Assertions.assertThat(group).isEqualTo(ModellingGroup("a", "description a"))
+            org.assertj.core.api.Assertions.assertThat(group).isEqualTo(org.vaccineimpact.api.models.ModellingGroup("a", "description a"))
         }
     }
 
-    @Test
+    @org.junit.Test
     fun `can get modelling group by any ID in its history`()
     {
-        val expected = ModellingGroup("a2", "description version 2")
+        val expected = org.vaccineimpact.api.models.ModellingGroup("a2", "description version 2")
         given {
             it.addGroup("a2", "description version 2")
             it.addGroup("a1", "description version 1", current = "a2")
         } check { repo ->
             val group1 = repo.getModellingGroup("a2")
-            Assertions.assertThat(group1).isEqualTo(expected)
+            org.assertj.core.api.Assertions.assertThat(group1).isEqualTo(expected)
 
             val group2 = repo.getModellingGroup("a1")
-            Assertions.assertThat(group2).isEqualTo(expected)
+            org.assertj.core.api.Assertions.assertThat(group2).isEqualTo(expected)
         }
     }
 
-    @Test
+    @org.junit.Test
     fun `exception is thrown for non-existent modelling group ID`()
     {
         givenABlankDatabase() check { repo ->
-            Assertions.assertThatThrownBy { repo.getModellingGroup("a") }.isInstanceOf(UnknownObjectError::class.java)
+            org.assertj.core.api.Assertions.assertThatThrownBy { repo.getModellingGroup("a") }.isInstanceOf(org.vaccineimpact.api.app.errors.UnknownObjectError::class.java)
         }
     }
 

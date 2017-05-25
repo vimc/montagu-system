@@ -1,4 +1,4 @@
-package org.vaccineimpact.api.databaseTests
+package org.vaccineimpact.api.databaseTests.modellingGroupRepository
 
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy

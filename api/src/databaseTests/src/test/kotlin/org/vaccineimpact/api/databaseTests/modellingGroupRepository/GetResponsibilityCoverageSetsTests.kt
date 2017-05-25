@@ -1,10 +1,7 @@
-package org.vaccineimpact.api.databaseTests
+package org.vaccineimpact.api.databaseTests.modellingGroupRepository
 
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
-import org.junit.Test
-import org.vaccineimpact.api.app.errors.UnknownObjectError
-import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.direct.*
 import org.vaccineimpact.api.models.*
 
@@ -16,7 +13,7 @@ class GetResponsibilityCoverageSetsTests : ModellingGroupRepositoryTests()
     val touchstoneId = "$touchstoneName-$touchstoneVersion"
     val scenarioId = "scenario-1"
 
-    @Test
+    @org.junit.Test
     fun `getCoverageSets throws exception if scenario doesn't exist`()
     {
         given {
@@ -24,12 +21,12 @@ class GetResponsibilityCoverageSetsTests : ModellingGroupRepositoryTests()
             it.addResponsibilitySet(groupId, touchstoneId, "incomplete", addStatus = true)
         } check {
             assertThatThrownBy { it.getCoverageSets(groupId, touchstoneId, scenarioId) }
-                    .isInstanceOf(UnknownObjectError::class.java)
+                    .isInstanceOf(org.vaccineimpact.api.app.errors.UnknownObjectError::class.java)
                     .hasMessageContaining("responsibility")
         }
     }
 
-    @Test
+    @org.junit.Test
     fun `can get ordered coverage sets`()
     {
         val setA = 1
@@ -44,21 +41,21 @@ class GetResponsibilityCoverageSetsTests : ModellingGroupRepositoryTests()
             it.addCoverageSetToScenario(scenarioId, touchstoneId, setA, 0)
         } check {
             val result = it.getCoverageSets(groupId, touchstoneId, scenarioId)
-            assertThat(result.touchstone).isEqualTo(Touchstone(
+            assertThat(result.touchstone).isEqualTo(org.vaccineimpact.api.models.Touchstone(
                     touchstoneId, touchstoneName, touchstoneVersion,
                     "description", YearRange(1900, 2000), TouchstoneStatus.OPEN
             ))
-            assertThat(result.scenario).isEqualTo(Scenario(
+            assertThat(result.scenario).isEqualTo(org.vaccineimpact.api.models.Scenario(
                     scenarioId, "Yellow Fever Scenario", "YF", listOf(touchstoneId)
             ))
             assertThat(result.coverageSets).hasSameElementsAs(listOf(
-                    CoverageSet(setA, touchstoneId, "First", "YF", GAVISupportLevel.WITHOUT, ActivityType.CAMPAIGN),
-                    CoverageSet(setB, touchstoneId, "Second", "YF", GAVISupportLevel.WITH, ActivityType.CAMPAIGN)
+                    org.vaccineimpact.api.models.CoverageSet(setA, touchstoneId, "First", "YF", GAVISupportLevel.WITHOUT, ActivityType.CAMPAIGN),
+                    org.vaccineimpact.api.models.CoverageSet(setB, touchstoneId, "Second", "YF", GAVISupportLevel.WITH, ActivityType.CAMPAIGN)
             ))
         }
     }
 
-    private fun createGroupAndSupportingObjects(it: JooqContext)
+    private fun createGroupAndSupportingObjects(it: org.vaccineimpact.api.db.JooqContext)
     {
         it.addGroup(groupId, "description")
 

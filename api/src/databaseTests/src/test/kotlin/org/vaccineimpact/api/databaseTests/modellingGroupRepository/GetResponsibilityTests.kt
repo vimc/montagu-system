@@ -1,15 +1,13 @@
-package org.vaccineimpact.api.databaseTests
+package org.vaccineimpact.api.databaseTests.modellingGroupRepository
 
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
-import org.junit.Test
-import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.db.direct.*
 import org.vaccineimpact.api.models.*
 
 class GetResponsibilityTests : ModellingGroupRepositoryTests()
 {
-    @Test
+    @org.junit.Test
     fun `getResponsibility throws error for unknown modelling group`()
     {
         given {
@@ -17,12 +15,12 @@ class GetResponsibilityTests : ModellingGroupRepositoryTests()
             it.addScenarioDescription("scenario-1", "description", "disease", addDisease = true)
         } check { repo ->
             assertThatThrownBy { repo.getResponsibility("group-1", "touchstone-1", "scenario-1") }
-                    .isInstanceOf(UnknownObjectError::class.java)
+                    .isInstanceOf(org.vaccineimpact.api.app.errors.UnknownObjectError::class.java)
                     .hasMessageContaining("modelling-group")
         }
     }
 
-    @Test
+    @org.junit.Test
     fun `getResponsibility checks that touchstone exists`()
     {
         given {
@@ -30,12 +28,12 @@ class GetResponsibilityTests : ModellingGroupRepositoryTests()
             it.addScenarioDescription("scenario-1", "description", "disease", addDisease = true)
         } check { repo ->
             assertThatThrownBy { repo.getResponsibility("group-1", "touchstone-1", "scenario-1") }
-                    .isInstanceOf(UnknownObjectError::class.java)
+                    .isInstanceOf(org.vaccineimpact.api.app.errors.UnknownObjectError::class.java)
                     .hasMessageContaining("touchstone")
         }
     }
 
-    @Test
+    @org.junit.Test
     fun `getResponsibility throws exception when group has no responsibilities`()
     {
         given {
@@ -44,12 +42,12 @@ class GetResponsibilityTests : ModellingGroupRepositoryTests()
             it.addScenarioDescription("scenario-1", "description", "disease", addDisease = true)
         } check { repo ->
             assertThatThrownBy { repo.getResponsibility("group-1", "touchstone-1", "scenario-1") }
-                    .isInstanceOf(UnknownObjectError::class.java)
+                    .isInstanceOf(org.vaccineimpact.api.app.errors.UnknownObjectError::class.java)
                     .hasMessageContaining("responsibility")
         }
     }
 
-    @Test
+    @org.junit.Test
     fun `getResponsibility throws exception when group has empty responsibilities`()
     {
         given {
@@ -59,12 +57,12 @@ class GetResponsibilityTests : ModellingGroupRepositoryTests()
             it.addResponsibilitySet("group-1", "touchstone-1", "incomplete", addStatus = true)
         } check { repo ->
             assertThatThrownBy { repo.getResponsibility("group-1", "touchstone-1", "scenario-1") }
-                    .isInstanceOf(UnknownObjectError::class.java)
+                    .isInstanceOf(org.vaccineimpact.api.app.errors.UnknownObjectError::class.java)
                     .hasMessageContaining("responsibility")
         }
     }
 
-    @Test
+    @org.junit.Test
     fun `getResponsibility throws exception when when group is not responsible for given scenario`()
     {
         given {
@@ -77,12 +75,12 @@ class GetResponsibilityTests : ModellingGroupRepositoryTests()
             it.addResponsibility(setId, "touchstone-1", "scenario-1")
         } check { repo ->
             assertThatThrownBy { repo.getResponsibility("group-1", "touchstone-1", "scenario-2") }
-                    .isInstanceOf(UnknownObjectError::class.java)
+                    .isInstanceOf(org.vaccineimpact.api.app.errors.UnknownObjectError::class.java)
                     .hasMessageContaining("responsibility")
         }
     }
 
-    @Test
+    @org.junit.Test
     fun `can get responsibility`()
     {
         given {
@@ -93,7 +91,7 @@ class GetResponsibilityTests : ModellingGroupRepositoryTests()
             it.addResponsibility(setId, "touchstone-1", "scenario-1")
         } check { repo ->
             val data = repo.getResponsibility("group-1", "touchstone-1", "scenario-1")
-            assertThat(data).isEqualTo(ResponsibilityAndTouchstone(
+            assertThat(data).isEqualTo(org.vaccineimpact.api.models.ResponsibilityAndTouchstone(
                     Touchstone("touchstone-1", "touchstone", 1, "description", YearRange(1900, 2000), TouchstoneStatus.OPEN),
                     Responsibility(
                             Scenario("scenario-1", "description", "disease", listOf("touchstone-1")),
