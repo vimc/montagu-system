@@ -16,7 +16,6 @@ fun main(args: Array<String>)
 class MontaguApi
 {
     private val urlBase = "/v1"
-    private val jsonTransform = Serializer::toResult
     private val tokenHelper = WebTokenHelper()
 
     fun makeRepositories(): Repositories
@@ -53,7 +52,5 @@ class MontaguApi
         )
         val endpoints = controllers.flatMap { it.mapEndpoints(urlBase, tokenHelper) }
         HomeController(endpoints).mapEndpoints(urlBase, tokenHelper)
-
-        spk.after("*", { _, res -> addDefaultResponseHeaders(res) })
     }
 }

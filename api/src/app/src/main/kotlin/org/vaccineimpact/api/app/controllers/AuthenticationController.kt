@@ -23,8 +23,7 @@ class AuthenticationController(private val tokenHelper: WebTokenHelper) : Abstra
     override val urlComponent = "/"
     override val endpoints = listOf(
             BasicEndpoint("authenticate/", this::authenticate, HttpMethod.post,
-                    additionalSetupCallback = this::setupSecurity,
-                    transformer = { Serializer.instance.gson.toJson(it) })
+                    additionalSetupCallback = this::setupSecurity)
     )
 
     fun authenticate(context: ActionContext): AuthenticationResponse

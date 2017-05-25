@@ -1,5 +1,6 @@
 package org.vaccineimpact.api.app.serialization
 
+import java.io.StringWriter
 import kotlin.reflect.full.declaredMemberProperties
 import kotlin.reflect.full.primaryConstructor
 
@@ -10,7 +11,15 @@ class Header<T>(private val name: String, val property: kotlin.reflect.KProperty
 
 open class DataTable<T : Any>(val data: Iterable<T>, val type: kotlin.reflect.KClass<T>)
 {
-    open fun toCSV(target: java.io.Writer, serializer: Serializer)
+    open fun serialize(serializer: Serializer): String
+    {
+        return StringWriter().use {
+            toCSV(it, serializer)
+            it.toString()
+        }
+    }
+
+    private fun toCSV(target: java.io.Writer, serializer: Serializer)
     {
         val headers = getHeaders(type).toList()
         MontaguCSVWriter(target).use { csv ->
@@ -23,14 +32,14 @@ open class DataTable<T : Any>(val data: Iterable<T>, val type: kotlin.reflect.KC
                 }
                 val asArray = headers
                         .map { it.property.get(line) }
-                        .map { serialize(it, serializer) }
+                        .map { serializeValue(it, serializer) }
                         .toTypedArray()
                 csv.writeNext(asArray, false)
             }
         }
     }
 
-    private fun serialize(value: Any?, serializer: Serializer) = when (value)
+    private fun serializeValue(value: Any?, serializer: Serializer) = when (value)
     {
         null -> MontaguCSVWriter.Companion.NoValue
         is Enum<*> -> serializer.serializeEnum(value)

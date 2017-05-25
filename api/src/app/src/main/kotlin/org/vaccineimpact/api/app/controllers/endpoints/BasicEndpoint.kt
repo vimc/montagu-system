@@ -1,22 +1,24 @@
 package org.vaccineimpact.api.app.controllers.endpoints
 
 import org.vaccineimpact.api.app.ActionContext
+import org.vaccineimpact.api.app.ContentTypes
+import org.vaccineimpact.api.app.addDefaultResponseHeaders
+import org.vaccineimpact.api.app.serialization.DataTable
 import org.vaccineimpact.api.app.serialization.Serializer
+import org.vaccineimpact.api.app.serialization.SplitData
+import org.vaccineimpact.api.models.AuthenticationResponse
 import org.vaccineimpact.api.security.WebTokenHelper
+import spark.Spark
 import spark.route.HttpMethod
 
-typealias Transformer<T> = (x: T) -> String
-
-open class BasicEndpoint<out T: Any>(
+open class BasicEndpoint(
         override val urlFragment: String,
-        override val route: (ActionContext) -> T,
+        override val route: (ActionContext) -> Any,
         override val method: HttpMethod = HttpMethod.get,
-        private val additionalSetupCallback: ((String) -> Unit)? = null,
-        transformer: Transformer<T>? = null
-): EndpointDefinition<T>
+        override val contentType: String = ContentTypes.json,
+        private val additionalSetupCallback: ((String) -> Unit)? = null
+): EndpointDefinition
 {
-    private val transformer = transformer ?: Serializer.instance::toResult
-
     init
     {
         if (!urlFragment.endsWith("/"))
@@ -27,14 +29,15 @@ open class BasicEndpoint<out T: Any>(
 
     override fun additionalSetup(url: String, tokenHelper: WebTokenHelper)
     {
+        Spark.after(url) { _, res -> addDefaultResponseHeaders(res, contentType) }
         additionalSetupCallback?.invoke(url)
     }
 
-    final override fun transform(x: Any): String
+    final override fun transform(x: Any) = when(x)
     {
-        // We know x will always be T, as it is the output of route
-        // We don't want to put T in the interface, as that would lose our covariant status
-        @Suppress("UNCHECKED_CAST")
-        return transformer(x as T)
+        is SplitData<*, *> -> x.serialize(Serializer.instance)
+        is DataTable<*> -> x.serialize(Serializer.instance)
+        is AuthenticationResponse -> Serializer.instance.gson.toJson(x)!!
+        else -> Serializer.instance.toResult(x)
     }
 }

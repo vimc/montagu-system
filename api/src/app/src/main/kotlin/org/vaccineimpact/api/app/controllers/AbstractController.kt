@@ -15,7 +15,7 @@ abstract class AbstractController
     private val logger = LoggerFactory.getLogger(AbstractController::class.java)
 
     abstract val urlComponent: String
-    abstract val endpoints: Iterable<EndpointDefinition<Any>>
+    abstract val endpoints: Iterable<EndpointDefinition>
 
     fun mapEndpoints(urlBase: String, tokenHelper: WebTokenHelper): List<String>
     {
@@ -23,21 +23,23 @@ abstract class AbstractController
     }
 
     private fun mapEndpoint(
-            endpoint: EndpointDefinition<Any>,
+            endpoint: EndpointDefinition,
             urlBase: String,
             tokenHelper: WebTokenHelper): String
     {
         val transformer = endpoint::transform
         val fullUrl = urlBase + urlComponent + endpoint.urlFragment
         val route = wrapRoute(endpoint.route)
+        val contentType = endpoint.contentType
+
         logger.info("Mapping $fullUrl")
         when (endpoint.method)
         {
-            HttpMethod.get -> Spark.get(fullUrl, route, transformer)
-            HttpMethod.post -> Spark.post(fullUrl, route, transformer)
-            HttpMethod.put -> Spark.put(fullUrl, route, transformer)
-            HttpMethod.patch -> Spark.patch(fullUrl, route, transformer)
-            HttpMethod.delete -> Spark.delete(fullUrl, route, transformer)
+            HttpMethod.get -> Spark.get(fullUrl, contentType, route, transformer)
+            HttpMethod.post -> Spark.post(fullUrl, contentType, route, transformer)
+            HttpMethod.put -> Spark.put(fullUrl, contentType, route, transformer)
+            HttpMethod.patch -> Spark.patch(fullUrl, contentType, route, transformer)
+            HttpMethod.delete -> Spark.delete(fullUrl, contentType, route, transformer)
             else -> throw UnsupportedValueException(endpoint.method)
         }
         endpoint.additionalSetup(fullUrl, tokenHelper)

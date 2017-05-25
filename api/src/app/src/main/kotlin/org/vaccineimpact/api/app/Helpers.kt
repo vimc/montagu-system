@@ -20,9 +20,9 @@ fun addTrailingSlashes(req: Request, res: Response)
     }
 }
 
-fun addDefaultResponseHeaders(res: Response, contentType: String = "application/json; charset=utf-8")
+fun addDefaultResponseHeaders(res: Response, contentType: String = "${ContentTypes.json}; charset=utf-8")
     = addDefaultResponseHeaders(res.raw(), contentType = contentType)
-fun addDefaultResponseHeaders(res: HttpServletResponse, contentType: String = "application/json; charset=utf-8")
+fun addDefaultResponseHeaders(res: HttpServletResponse, contentType: String = "${ContentTypes.json}; charset=utf-8")
 {
     res.contentType = contentType
     res.addHeader("Content-Encoding", "gzip")
