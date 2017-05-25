@@ -278,19 +278,49 @@ fun JooqContext.generateCoverageData(
         {
             for (age in ageRange)
             {
-                records.add(this.dsl.newRecord(COVERAGE).apply {
-                    this.coverageSet = coverageSetId
-                    this.country = country
-                    this.year = year
-                    this.ageFrom = BigDecimal(age)
-                    this.ageTo = BigDecimal(age + ageRange.step)
-                    this.ageRangeVerbatim = null
-                    this.target = null
-                    this.coverage = generator.nextDecimal(0, 100, numberOfDecimalPlaces = 2)
-                    this.gaviSupport = false
-                })
+                records.add(this.newCoverageRowRecord(
+                        coverageSetId,
+                        country,
+                        year,
+                        ageFrom = BigDecimal(age),
+                        ageTo = BigDecimal(age + ageRange.step),
+                        ageRangeVerbatim = null,
+                        target = null,
+                        coverage = generator.nextDecimal(0, 100, numberOfDecimalPlaces = 2)
+                ))
             }
         }
     }
     this.dsl.batchStore(records).execute()
+}
+
+fun JooqContext.addCoverageRow(coverageSetId: Int, country: String, year: Int,
+                               ageFrom: BigDecimal, ageTo: BigDecimal, ageRangeVerbatim: String?,
+                               target: BigDecimal?, coverage: BigDecimal?)
+{
+    this.newCoverageRowRecord(
+            coverageSetId,
+            country,
+            year,
+            ageFrom,
+            ageTo,
+            ageRangeVerbatim,
+            target,
+            coverage
+    ).store()
+}
+
+private fun JooqContext.newCoverageRowRecord(coverageSetId: Int, country: String, year: Int,
+                                 ageFrom: BigDecimal, ageTo: BigDecimal, ageRangeVerbatim: String?,
+                                 target: BigDecimal?, coverage: BigDecimal?)
+        = this.dsl.newRecord(COVERAGE).apply {
+    this.coverageSet = coverageSetId
+    this.country = country
+    this.year = year
+    this.ageFrom = ageFrom
+    this.ageTo = ageTo
+    this.ageRangeVerbatim = ageRangeVerbatim
+    this.target = target
+    this.coverage = coverage
+    this.gaviSupport = false
 }

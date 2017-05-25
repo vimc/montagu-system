@@ -18,6 +18,9 @@ fun Random.nextDecimal(min: Int = 0, max: Int = 1, numberOfDecimalPlaces: Int = 
     return BigDecimal(int) / BigDecimal(factor)
 }
 
+fun Int.toDecimal(): BigDecimal = this.toLong().toDecimal()
+fun Long.toDecimal(): BigDecimal = BigDecimal.valueOf(this)
+
 fun String.toDecimalOrNull(): BigDecimal?
 {
     try

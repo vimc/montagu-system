@@ -12,6 +12,7 @@ abstract class TouchstoneRepositoryTests : RepositoryTests<TouchstoneRepository>
     val touchstoneName = "touchstone"
     val touchstoneVersion = 1
     val touchstoneId = "$touchstoneName-$touchstoneVersion"
+    val scenarioId = "yf-1"
 
     override fun makeRepository(): TouchstoneRepository
     {
@@ -24,7 +25,7 @@ abstract class TouchstoneRepositoryTests : RepositoryTests<TouchstoneRepository>
         it.addTouchstone(touchstoneName, touchstoneVersion, addName = true, addStatus = true)
         it.addDisease("YF", "Yellow Fever")
         it.addDisease("Measles", "Measles")
-        it.addScenarioDescription("yf-1", "Yellow Fever 1", "YF")
+        it.addScenarioDescription(scenarioId, "Yellow Fever 1", "YF")
         it.addScenarioDescription("yf-2", "Yellow Fever 2", "YF")
         it.addScenarioDescription("ms-1", "Measles 1", "Measles")
         it.addScenarioDescription("ms-2", "Measles 2", "Measles")

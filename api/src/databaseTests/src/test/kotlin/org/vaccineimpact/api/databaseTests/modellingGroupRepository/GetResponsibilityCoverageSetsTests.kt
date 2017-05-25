@@ -2,7 +2,11 @@ package org.vaccineimpact.api.databaseTests.modellingGroupRepository
 
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
+import org.junit.Test
+import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.direct.*
+import org.vaccineimpact.api.db.toDecimal
+import org.vaccineimpact.api.db.toDecimalOrNull
 import org.vaccineimpact.api.models.*
 
 class GetResponsibilityCoverageSetsTests : ModellingGroupRepositoryTests()
@@ -12,8 +16,10 @@ class GetResponsibilityCoverageSetsTests : ModellingGroupRepositoryTests()
     val touchstoneVersion = 1
     val touchstoneId = "$touchstoneName-$touchstoneVersion"
     val scenarioId = "scenario-1"
+    val setA = 1
+    val setB = 2
 
-    @org.junit.Test
+    @Test
     fun `getCoverageSets throws exception if scenario doesn't exist`()
     {
         given {
@@ -26,45 +32,90 @@ class GetResponsibilityCoverageSetsTests : ModellingGroupRepositoryTests()
         }
     }
 
-    @org.junit.Test
+    @Test
     fun `can get ordered coverage sets`()
     {
-        val setA = 1
-        val setB = 2
         given {
             createGroupAndSupportingObjects(it)
-            val setId = it.addResponsibilitySet(groupId, touchstoneId, "incomplete", addStatus = true)
-            it.addResponsibility(setId, touchstoneId, scenarioId)
-            it.addCoverageSet(touchstoneId, "First", "YF", "without", "campaign", id = setA)
-            it.addCoverageSet(touchstoneId, "Second", "YF", "with", "campaign", id = setB)
-            it.addCoverageSetToScenario(scenarioId, touchstoneId, setB, 1)
-            it.addCoverageSetToScenario(scenarioId, touchstoneId, setA, 0)
+            giveCoverageSetsToResponsibility(it, includeCoverageData = false)
         } check {
             val result = it.getCoverageSets(groupId, touchstoneId, scenarioId)
-            assertThat(result.touchstone).isEqualTo(org.vaccineimpact.api.models.Touchstone(
-                    touchstoneId, touchstoneName, touchstoneVersion,
-                    "description", YearRange(1900, 2000), TouchstoneStatus.OPEN
-            ))
-            assertThat(result.scenario).isEqualTo(org.vaccineimpact.api.models.Scenario(
-                    scenarioId, "Yellow Fever Scenario", "YF", listOf(touchstoneId)
-            ))
-            assertThat(result.coverageSets).hasSameElementsAs(listOf(
-                    org.vaccineimpact.api.models.CoverageSet(setA, touchstoneId, "First", "YF", GAVISupportLevel.WITHOUT, ActivityType.CAMPAIGN),
-                    org.vaccineimpact.api.models.CoverageSet(setB, touchstoneId, "Second", "YF", GAVISupportLevel.WITH, ActivityType.CAMPAIGN)
+            checkMetadataIsAsExpected(result)
+        }
+    }
+
+    @Test
+    fun `getCoverageData throws exception if scenario doesn't exist`()
+    {
+        given {
+            createGroupAndSupportingObjects(it)
+            it.addResponsibilitySet(groupId, touchstoneId, "incomplete", addStatus = true)
+        } check {
+            assertThatThrownBy { it.getCoverageData(groupId, touchstoneId, scenarioId) }
+                    .isInstanceOf(org.vaccineimpact.api.app.errors.UnknownObjectError::class.java)
+                    .hasMessageContaining("responsibility")
+        }
+    }
+
+    @Test
+    fun `can get coverage data`()
+    {
+        given {
+            createGroupAndSupportingObjects(it)
+            giveCoverageSetsToResponsibility(it, includeCoverageData = true)
+        } check {
+            val result = it.getCoverageData(groupId, touchstoneId, scenarioId)
+            checkMetadataIsAsExpected(result.structuredMetadata)
+            assertThat(result.tableData.data).containsExactlyElementsOf(listOf(
+                    CoverageRow(scenarioId, setA, 0, "First", "YF", GAVISupportLevel.WITHOUT, ActivityType.CAMPAIGN,
+                            "AAA", 2000, 10.toDecimal(), 20.toDecimal(), "10-20", 100.toDecimal(), "50.50".toDecimalOrNull()),
+                    CoverageRow(scenarioId, setB, 1, "Second", "YF", GAVISupportLevel.WITH, ActivityType.CAMPAIGN,
+                            "BBB", 2001, 11.toDecimal(), 21.toDecimal(), null, null, null)
             ))
         }
     }
 
-    private fun createGroupAndSupportingObjects(it: org.vaccineimpact.api.db.JooqContext)
+    private fun checkMetadataIsAsExpected(result: ScenarioTouchstoneAndCoverageSets)
     {
-        it.addGroup(groupId, "description")
+        assertThat(result.touchstone).isEqualTo(Touchstone(
+                touchstoneId, touchstoneName, touchstoneVersion,
+                "description", YearRange(1900, 2000), TouchstoneStatus.OPEN
+        ))
+        assertThat(result.scenario).isEqualTo(Scenario(
+                scenarioId, "Yellow Fever Scenario", "YF", listOf(touchstoneId)
+        ))
+        assertThat(result.coverageSets).hasSameElementsAs(listOf(
+                CoverageSet(setA, touchstoneId, "First", "YF", GAVISupportLevel.WITHOUT, ActivityType.CAMPAIGN),
+                CoverageSet(setB, touchstoneId, "Second", "YF", GAVISupportLevel.WITH, ActivityType.CAMPAIGN)
+        ))
+    }
 
-        it.addTouchstone(touchstoneName, touchstoneVersion, "description", "open", 1900..2000,
+    private fun createGroupAndSupportingObjects(db: JooqContext)
+    {
+        db.addGroup(groupId, "description")
+        db.addTouchstone(touchstoneName, touchstoneVersion, "description", "open", 1900..2000,
                 addName = true, addStatus = true)
-        it.addScenarioDescription(scenarioId, "Yellow Fever Scenario", "YF", addDisease = true)
+        db.addScenarioDescription(scenarioId, "Yellow Fever Scenario", "YF", addDisease = true)
 
-        it.addSupportLevels("none", "without", "with")
-        it.addActivityTypes("none", "routine", "campaign")
-        it.addVaccine("YF", "Yellow Fever")
+        db.addSupportLevels("none", "without", "with")
+        db.addActivityTypes("none", "routine", "campaign")
+        db.addVaccine("YF", "Yellow Fever")
+    }
+
+    private fun giveCoverageSetsToResponsibility(db: JooqContext, includeCoverageData: Boolean)
+    {
+        val setId = db.addResponsibilitySet(groupId, touchstoneId, "incomplete", addStatus = true)
+        db.addResponsibility(setId, touchstoneId, scenarioId)
+        db.addCoverageSet(touchstoneId, "First", "YF", "without", "campaign", id = setA)
+        db.addCoverageSet(touchstoneId, "Second", "YF", "with", "campaign", id = setB)
+        db.addCoverageSetToScenario(scenarioId, touchstoneId, setB, 1)
+        db.addCoverageSetToScenario(scenarioId, touchstoneId, setA, 0)
+
+        if (includeCoverageData)
+        {
+            db.addCountries(listOf("AAA", "BBB"))
+            db.addCoverageRow(setA, "AAA", 2000, 10.toDecimal(), 20.toDecimal(), "10-20", 100.toDecimal(), "50.50".toDecimalOrNull())
+            db.addCoverageRow(setB, "BBB", 2001, 11.toDecimal(), 21.toDecimal(), null, null, null)
+        }
     }
 }
