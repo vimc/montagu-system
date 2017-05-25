@@ -68,12 +68,11 @@ class ModellingGroupController(private val db: () -> ModellingGroupRepository)
         return data
     }
 
-    fun getCoverageData(context: ActionContext) = getCoverage(context).tableData
-    fun getCoverageDataAndMetadata(context: ActionContext) = getCoverage(context)
+    fun getCoverageData(context: ActionContext) = getCoverageDataAndMetadata(context).tableData
 
     // TODO: https://vimc.myjetbrains.com/youtrack/issue/VIMC-307
     // Use streams to speed up this process of sending large data
-    private fun getCoverage(context: ActionContext): SplitData<ScenarioTouchstoneAndCoverageSets, CoverageRow>
+    fun getCoverageDataAndMetadata(context: ActionContext): SplitData<ScenarioTouchstoneAndCoverageSets, CoverageRow>
     {
         val path = ResponsibilityPath(context)
         val data = db().use { it.getCoverageData(path.groupId, path.touchstoneId, path.scenarioId) }

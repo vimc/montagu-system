@@ -1,4 +1,4 @@
-package org.vaccineimpact.api.app
+package org.vaccineimpact.api
 
 object ContentTypes
 {

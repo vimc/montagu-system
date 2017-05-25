@@ -1,5 +1,6 @@
 package org.vaccineimpact.api.app
 
+import org.slf4j.LoggerFactory
 import org.vaccineimpact.api.app.controllers.*
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.jooq.*
@@ -34,6 +35,8 @@ class MontaguApi
         )
     }
 
+    private val logger = LoggerFactory.getLogger(MontaguApi::class.java)
+
     fun run(repositories: Repositories)
     {
         spk.port(8080)
@@ -42,6 +45,7 @@ class MontaguApi
         spk.options("*", { _, res ->
             res.header("Access-Control-Allow-Headers", "Authorization")
         })
+        spk.before("*", { req, _ -> logger.warn(req.headers("Accepts")) })
         ErrorHandler.setup()
 
         val controllers: Iterable<AbstractController> = listOf(

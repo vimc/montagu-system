@@ -2,7 +2,7 @@ package org.vaccineimpact.api.app.controllers.endpoints
 
 import org.pac4j.sparkjava.SecurityFilter
 import org.vaccineimpact.api.app.ActionContext
-import org.vaccineimpact.api.app.ContentTypes
+import org.vaccineimpact.api.ContentTypes
 import org.vaccineimpact.api.app.security.JWTHeaderClient
 import org.vaccineimpact.api.app.security.MontaguAuthorizer
 import org.vaccineimpact.api.app.security.PermissionRequirement

@@ -1,13 +1,17 @@
 package org.vaccineimpact.api.app.controllers.endpoints
 
 import org.vaccineimpact.api.app.ActionContext
-import org.vaccineimpact.api.app.ContentTypes
+import org.vaccineimpact.api.ContentTypes
+import org.vaccineimpact.api.app.DefaultHeadersFilter
 import org.vaccineimpact.api.app.addDefaultResponseHeaders
 import org.vaccineimpact.api.app.serialization.DataTable
 import org.vaccineimpact.api.app.serialization.Serializer
 import org.vaccineimpact.api.app.serialization.SplitData
 import org.vaccineimpact.api.models.AuthenticationResponse
 import org.vaccineimpact.api.security.WebTokenHelper
+import spark.Filter
+import spark.Request
+import spark.Response
 import spark.Spark
 import spark.route.HttpMethod
 
@@ -29,11 +33,11 @@ open class BasicEndpoint(
 
     override fun additionalSetup(url: String, tokenHelper: WebTokenHelper)
     {
-        Spark.after(url) { _, res -> addDefaultResponseHeaders(res, contentType) }
+        Spark.after(url, contentType, DefaultHeadersFilter(contentType))
         additionalSetupCallback?.invoke(url)
     }
 
-    final override fun transform(x: Any) = when(x)
+    override fun transform(x: Any) = when(x)
     {
         is SplitData<*, *> -> x.serialize(Serializer.instance)
         is DataTable<*> -> x.serialize(Serializer.instance)

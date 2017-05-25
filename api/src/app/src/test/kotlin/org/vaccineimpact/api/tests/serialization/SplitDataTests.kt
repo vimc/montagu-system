@@ -21,7 +21,7 @@ class SplitDataTests : MontaguTests()
             on { it.toResult(any()) } doReturn "METADATA"
         }
         val table = mock<DataTable<Any>> {
-            on { it.toCSV(any(), any()) } doAnswer { it.getArgument<Writer>(0).write("ROWS") }
+            on { it.serialize(any()) } doReturn "ROWS"
         }
         val data = SplitData(1, table)
         val actual = data.serialize(serializer).trim()

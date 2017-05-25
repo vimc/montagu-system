@@ -3,6 +3,7 @@ package org.vaccineimpact.api.blackboxTests.helpers
 import com.beust.klaxon.JsonArray
 import com.beust.klaxon.JsonObject
 import khttp.responses.Response
+import org.vaccineimpact.api.ContentTypes
 import org.vaccineimpact.api.blackboxTests.schemas.JSONSchema
 import org.vaccineimpact.api.blackboxTests.schemas.Schema
 import org.vaccineimpact.api.db.JooqContext
@@ -17,7 +18,8 @@ data class FluentValidationConfig(
         val schema: Schema? = null,
         val prepareDatabase: ((JooqContext) -> Unit)? = null,
         val checkRequiredPermissions: Set<ReifiedPermission>? = null,
-        val ownedPermissions: Set<ReifiedPermission>? = null
+        val ownedPermissions: Set<ReifiedPermission>? = null,
+        val acceptsContentType: String? = null
 )
 {
     infix fun against(schemaName: String) = this.copy(schema = JSONSchema(schemaName))
@@ -30,6 +32,8 @@ data class FluentValidationConfig(
 
     infix fun withPermissions(ownedPermissions: () -> PermissionSet)
             = this.copy(ownedPermissions = PermissionSet("*/can-login") + ownedPermissions())
+
+    infix fun acceptingContentType(contentType: String) = this.copy(acceptsContentType = contentType)
 
     infix fun andCheck(additionalChecks: (JsonObject) -> Unit)
     {
@@ -55,6 +59,7 @@ class FluentValidation(config: FluentValidationConfig)
     val requiredPermissions: Set<ReifiedPermission> = config.checkRequiredPermissions ?: PermissionSet("*/can-login")
     val ownedPermissions: Set<ReifiedPermission> = config.ownedPermissions ?: requiredPermissions
     val allPermissions = requiredPermissions + ownedPermissions
+    val acceptContentType = config.acceptsContentType ?: ContentTypes.json
 
     val userHelper = TestUserHelper()
     val requestHelper = RequestHelper()
@@ -76,11 +81,11 @@ class FluentValidation(config: FluentValidationConfig)
         JooqContext().use {
             prepareDatabase(it)
             userHelper.setupTestUser(it)
-            it.createPermissions(allPermissions.map { it.name })
+            userHelper.createPermissions(it, allPermissions)
         }
 
         // Check that the auth token is required
-        val badResponse = requestHelper.get(url)
+        val badResponse = requestHelper.get(url, contentType = acceptContentType)
         schema.validator.validateError(badResponse.text)
 
         // Check the permissions
@@ -91,14 +96,14 @@ class FluentValidation(config: FluentValidationConfig)
 
         // Check the actual response
         val token = userHelper.getTokenForTestUser(ownedPermissions)
-        val response = requestHelper.get(url, token)
+        val response = requestHelper.get(url, token = token, contentType = acceptContentType)
         schema.validate(response.text)
         return response
     }
 
     private fun checkPermissions(url: String)
     {
-        val checker = PermissionChecker(url, allPermissions, schema.validator)
+        val checker = PermissionChecker(url, allPermissions, schema.validator, acceptContentType)
         for (permission in requiredPermissions)
         {
             checker.checkPermissionIsRequired(permission)
