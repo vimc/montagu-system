@@ -55,7 +55,10 @@ class JooqTouchstoneRepository(private val scenarioRepository: () -> JooqScenari
         val scenario = getScenariosFromRecords(records).singleOrNull()
                 ?: throw UnknownObjectError(scenarioDescId, "scenario")
         val metadata = ScenarioAndCoverageSets(scenario, getCoverageSetsFromRecord(records, scenario))
-        return SplitData(metadata, DataTable.new(records.map { mapCoverageRow(it, scenarioDescId) }))
+        val coverageRows = records
+                .filter { it[COVERAGE.ID] != null }
+                .map { mapCoverageRow(it, scenarioDescId) }
+        return SplitData(metadata, DataTable.new(coverageRows))
     }
 
     private fun getCoverageSetsForScenario(
@@ -89,7 +92,8 @@ class JooqTouchstoneRepository(private val scenarioRepository: () -> JooqScenari
                 .joinPath(SCENARIO, SCENARIO_COVERAGE_SET, COVERAGE_SET, joinType = JoinType.LEFT_OUTER_JOIN)
         if (includeCoverageData)
         {
-            fromQuery = fromQuery.joinPath(COVERAGE_SET, COVERAGE)
+            // We don't mind if there are 0 rows of coverage data, so do a left join
+            fromQuery = fromQuery.joinPath(COVERAGE_SET, COVERAGE, joinType = JoinType.LEFT_OUTER_JOIN)
         }
         return fromQuery.where(TOUCHSTONE.ID.eq(touchstoneId))
     }

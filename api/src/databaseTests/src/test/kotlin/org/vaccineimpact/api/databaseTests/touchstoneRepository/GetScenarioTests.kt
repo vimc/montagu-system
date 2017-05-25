@@ -75,6 +75,20 @@ class GetScenarioTests : TouchstoneRepositoryTests()
         }
     }
 
+    @Test
+    fun `can get scenario with empty coverage data`()
+    {
+        given {
+            createTouchstoneAndScenarioDescriptions(it)
+            it.addScenarioToTouchstone(touchstoneId, scenarioId)
+            giveScenarioCoverageSets(it, scenarioId, includeCoverageData = false)
+        } check {
+            val result = it.getScenarioAndCoverageData(touchstoneId, scenarioId)
+            checkScenarioIsAsExpected(result.structuredMetadata)
+            assertThat(result.tableData.data).isEmpty()
+        }
+    }
+
     private fun checkScenarioIsAsExpected(result: ScenarioAndCoverageSets, extraTouchstones: List<String> = emptyList())
     {
         assertThat(result.scenario).isEqualTo(Scenario(
