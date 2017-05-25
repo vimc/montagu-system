@@ -1,32 +1,37 @@
 import * as React from "react";
-import { Store } from "../../../stores/ResponsibilityStore";
+import * as ResponsibilityStore from "../../../stores/ResponsibilityStore";
+import * as AuthStore from "../../../stores/AuthStore";
 import { connectToStores } from "../../../alt";
 import { CoverageSet, Scenario, Touchstone } from "../../../models/Generated";
-import { CoverageSetComponent } from "./CoverageSetComponent";
 import { RemoteContent } from "../../../stores/RemoteContent";
 import { RemoteContentComponent } from "../../RemoteContentComponent/RemoteContentComponent";
-import { ButtonLink } from "../../ButtonLink";
 import { CoverageSetList } from "./CoverageSetList";
+import { sources } from "../../../sources/Sources";
 const commonStyles = require("../../../styles/common.css");
 
 export interface ResponsibilityDetailsProps extends RemoteContent {
     touchstone?: Touchstone;
     scenario?: Scenario;
     coverageSets?: CoverageSet[];
+    coverageURL?: string;
+    bearerToken?: string;
 }
 
 export class ResponsibilityDetailsComponent extends RemoteContentComponent<ResponsibilityDetailsProps> {
     static getStores() {
-        return [ Store ];
+        return [ ResponsibilityStore.Store, AuthStore.Store ];
     }
     static getPropsFromStores(): ResponsibilityDetailsProps {
-        const r = Store.getState().currentResponsibility;
+        const state = ResponsibilityStore.Store.getState();
+        const r = state.currentResponsibility;
         if (r != null) {
             return {
-                touchstone: Store.getState().currentTouchstone,
+                touchstone: state.currentTouchstone,
                 scenario: r.scenario,
                 coverageSets: r.coverageSets,
-                ready: Store.getState().ready
+                coverageURL: sources.coverageSets.coverageURL(state),
+                bearerToken: AuthStore.Store.getState().bearerToken,
+                ready: state.ready
             };
         } else {
             return { ready: false };
@@ -43,7 +48,10 @@ export class ResponsibilityDetailsComponent extends RemoteContentComponent<Respo
             </table>
             <CoverageSetList coverageSets={ this.props.coverageSets } />
             <div className={ commonStyles.gapAbove }>
-                <ButtonLink href="/">Download combined coverage set data in CSV format</ButtonLink>
+                <form action={ props.coverageURL } method="post">
+                    <input name="bearer-token" type="hidden" value={ props.bearerToken } />
+                    <button type="submit">Download combined coverage set data in CSV format</button>
+                </form>
             </div>
         </div>;
     }
