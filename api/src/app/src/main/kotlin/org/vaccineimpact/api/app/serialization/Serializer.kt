@@ -1,4 +1,4 @@
-package org.vaccineimpact.api.app
+package org.vaccineimpact.api.app.serialization
 
 import com.github.salomonbrys.kotson.jsonSerializer
 import com.github.salomonbrys.kotson.registerTypeAdapter
@@ -7,8 +7,13 @@ import com.google.gson.GsonBuilder
 import com.google.gson.JsonPrimitive
 import org.vaccineimpact.api.models.*
 
-object Serializer
+open class Serializer
 {
+    companion object
+    {
+        val instance = Serializer()
+    }
+
     private val toStringSerializer = jsonSerializer<Any> { JsonPrimitive(it.src.toString()) }
     private val enumSerializer = jsonSerializer<Any> { JsonPrimitive(serializeEnum(it.src)) }
     val gson: Gson = GsonBuilder()
@@ -26,8 +31,8 @@ object Serializer
             .registerTypeAdapter<ActivityType>(enumSerializer)
             .create()
 
-    fun toResult(data: Any?): String = toJson(Result(ResultStatus.SUCCESS, data, emptyList()))
-    fun toJson(result: Result): String = Serializer.gson.toJson(result)
+    open fun toResult(data: Any?): String = toJson(Result(ResultStatus.SUCCESS, data, emptyList()))
+    open fun toJson(result: Result): String = gson.toJson(result)
 
     fun convertFieldName(name: String): String
     {

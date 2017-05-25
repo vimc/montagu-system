@@ -1,7 +1,7 @@
 package org.vaccineimpact.api.app.controllers
 
 import org.vaccineimpact.api.app.ActionContext
-import org.vaccineimpact.api.app.SplitData
+import org.vaccineimpact.api.app.serialization.SplitData
 import org.vaccineimpact.api.app.controllers.endpoints.SecuredEndpoint
 import org.vaccineimpact.api.app.controllers.endpoints.withSplitData
 import org.vaccineimpact.api.app.errors.UnknownObjectError

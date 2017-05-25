@@ -6,7 +6,7 @@ import org.pac4j.sparkjava.SecurityFilter
 import org.vaccineimpact.api.app.ActionContext
 import org.vaccineimpact.api.app.HTMLForm
 import org.vaccineimpact.api.app.HTMLFormHelpers
-import org.vaccineimpact.api.app.Serializer
+import org.vaccineimpact.api.app.serialization.Serializer
 import org.vaccineimpact.api.app.controllers.endpoints.BasicEndpoint
 import org.vaccineimpact.api.app.security.SkipOptionsMatcher
 import org.vaccineimpact.api.app.security.USER_OBJECT
@@ -24,7 +24,7 @@ class AuthenticationController(private val tokenHelper: WebTokenHelper) : Abstra
     override val endpoints = listOf(
             BasicEndpoint("authenticate/", this::authenticate, HttpMethod.post,
                     additionalSetupCallback = this::setupSecurity,
-                    transformer = { Serializer.gson.toJson(it) })
+                    transformer = { Serializer.instance.gson.toJson(it) })
     )
 
     fun authenticate(context: ActionContext): AuthenticationResponse

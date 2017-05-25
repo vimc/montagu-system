@@ -9,7 +9,7 @@ import org.pac4j.jwt.profile.JwtProfile
 import org.pac4j.sparkjava.DefaultHttpActionAdapter
 import org.pac4j.sparkjava.SparkWebContext
 import org.vaccineimpact.api.app.ActionContext
-import org.vaccineimpact.api.app.Serializer
+import org.vaccineimpact.api.app.serialization.Serializer
 import org.vaccineimpact.api.app.addDefaultResponseHeaders
 import org.vaccineimpact.api.app.errors.MissingRequiredPermissionError
 import org.vaccineimpact.api.models.ErrorInfo
@@ -48,13 +48,13 @@ class TokenVerifyingConfigFactory(
 
 class TokenActionAdapter : DefaultHttpActionAdapter()
 {
-    val unauthorizedResponse: String = Serializer.toJson(Result(
+    val unauthorizedResponse: String = Serializer.instance.toJson(Result(
             ResultStatus.FAILURE,
             null,
             listOf(ErrorInfo("bearer-token-missing", "Bearer token not supplied in Authorization header"))
     ))
 
-    fun forbiddenResponse(missingPermissions: Set<String>): String = Serializer.toJson(Result(
+    fun forbiddenResponse(missingPermissions: Set<String>): String = Serializer.instance.toJson(Result(
             ResultStatus.FAILURE,
             null,
             MissingRequiredPermissionError(missingPermissions).problems

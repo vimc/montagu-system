@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory
 import org.vaccineimpact.api.app.errors.MontaguError
 import org.vaccineimpact.api.app.errors.UnableToParseJsonError
 import org.vaccineimpact.api.app.errors.UnexpectedError
+import org.vaccineimpact.api.app.serialization.Serializer
 import spark.Request
 import spark.Response
 import spark.Spark as spk
@@ -28,7 +29,7 @@ class ErrorHandler
     fun handleError(error: MontaguError, req: Request, res: Response)
     {
         logger.warn("For request ${req.uri()}, a ${error::class.simpleName} occurred with the following problems: ${error.problems}")
-        res.body(Serializer.toJson(error.asResult()))
+        res.body(Serializer.instance.toJson(error.asResult()))
         res.status(error.httpStatus)
         addDefaultResponseHeaders(res)
     }

@@ -2,7 +2,6 @@ package org.vaccineimpact.api.app.controllers
 
 import org.slf4j.LoggerFactory
 import org.vaccineimpact.api.app.ActionContext
-import org.vaccineimpact.api.app.Serializer
 import org.vaccineimpact.api.app.controllers.endpoints.EndpointDefinition
 import org.vaccineimpact.api.app.errors.UnsupportedValueException
 import org.vaccineimpact.api.security.WebTokenHelper

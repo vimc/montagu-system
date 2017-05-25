@@ -1,7 +1,7 @@
 package org.vaccineimpact.api.app.controllers.endpoints
 
 import org.vaccineimpact.api.app.ActionContext
-import org.vaccineimpact.api.app.Serializer
+import org.vaccineimpact.api.app.serialization.Serializer
 import org.vaccineimpact.api.security.WebTokenHelper
 import spark.route.HttpMethod
 
@@ -15,7 +15,7 @@ open class BasicEndpoint<out T: Any>(
         transformer: Transformer<T>? = null
 ): EndpointDefinition<T>
 {
-    private val transformer = transformer ?: Serializer::toResult
+    private val transformer = transformer ?: Serializer.instance::toResult
 
     init
     {

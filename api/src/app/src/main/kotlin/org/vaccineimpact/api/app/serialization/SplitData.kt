@@ -1,6 +1,4 @@
-package org.vaccineimpact.api.app
-
-import java.io.StringWriter
+package org.vaccineimpact.api.app.serialization
 
 data class SplitData<out Metadata, DataRow : Any>(
         val structuredMetadata: Metadata,
@@ -9,11 +7,11 @@ data class SplitData<out Metadata, DataRow : Any>(
 {
     // TODO: https://vimc.myjetbrains.com/youtrack/issue/VIMC-307
     // Use streams to speed up this process of sending large data
-    fun serialize(): String
+    fun serialize(serializer: Serializer): String
     {
-        val target = StringWriter()
-        val metadata = Serializer.toResult(structuredMetadata)
-        val data = tableData.toCSV(target)
+        val target = java.io.StringWriter()
+        val metadata = serializer.toResult(structuredMetadata)
+        tableData.toCSV(target, serializer)
         return "$metadata\n---\n$target"
     }
 }

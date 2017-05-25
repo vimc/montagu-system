@@ -1,6 +1,6 @@
 package org.vaccineimpact.api.app.repositories
 
-import org.vaccineimpact.api.app.SplitData
+import org.vaccineimpact.api.app.serialization.SplitData
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
 import org.vaccineimpact.api.models.*
 

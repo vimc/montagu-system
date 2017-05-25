@@ -1,13 +1,10 @@
-package org.vaccineimpact.api.app
+package org.vaccineimpact.api.app.serialization
 
-import com.opencsv.CSVWriter
 import org.vaccineimpact.api.db.toDecimalOrNull
-import java.io.IOException
-import java.io.Writer
 
-class MontaguCSVWriter(writer: Writer) : CSVWriter(writer)
+class MontaguCSVWriter(writer: java.io.Writer) : com.opencsv.CSVWriter(writer)
 {
-    @Throws(IOException::class)
+    @Throws(java.io.IOException::class)
     override fun writeNext(nextLine: Array<String?>?, applyQuotesToAll: Boolean, appendable: Appendable)
     {
         if (nextLine == null)
@@ -34,7 +31,7 @@ class MontaguCSVWriter(writer: Writer) : CSVWriter(writer)
         val stringContainsSpecialCharacters = stringContainsSpecialCharacters(nextElement)
         val shouldQuote = (applyQuotesToAll || isText(nextElement) || stringContainsSpecialCharacters)
                 && quotechar != NO_QUOTE_CHARACTER
-                && nextElement != NoValue
+                && nextElement != org.vaccineimpact.api.app.serialization.MontaguCSVWriter.Companion.NoValue
 
         if (shouldQuote)
         {

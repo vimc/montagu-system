@@ -1,11 +1,11 @@
-package org.vaccineimpact.api.tests
+package org.vaccineimpact.api.tests.serialization
 
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
 import com.beust.klaxon.json
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
-import org.vaccineimpact.api.app.Serializer
+import org.vaccineimpact.api.app.serialization.Serializer
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.test_helpers.MontaguTests
 import java.time.LocalDate
@@ -14,6 +14,31 @@ import java.time.ZoneId
 
 class SerializerTests : MontaguTests()
 {
+    @Test
+    fun `convertFieldName handles empty string`()
+    {
+        assertThat(Serializer.convertFieldName("")).isEqualTo("")
+    }
+    @Test
+    fun `convertFieldName handles lowercase field name`()
+    {
+        assertThat(Serializer.convertFieldName("field")).isEqualTo("field")
+    }
+    @Test
+    fun `convertFieldName handles camelCase field name`()
+    {
+        assertThat(Serializer.convertFieldName("camelCase")).isEqualTo("camel_case")
+    }
+
+    enum class TestEnum { SIMPLE, COMPLEX_VALUE }
+
+    @Test
+    fun `serializeEnum serializes any enum correctly`()
+    {
+        assertThat(Serializer.serializeEnum(TestEnum.SIMPLE)).isEqualTo("simple")
+        assertThat(Serializer.serializeEnum(TestEnum.COMPLEX_VALUE)).isEqualTo("complex-value")
+    }
+
     @Test
     fun `can serialize LocalDate`()
     {

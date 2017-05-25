@@ -2,7 +2,7 @@ package org.vaccineimpact.api.app.repositories.jooq
 
 import org.jooq.Record1
 import org.jooq.SelectConditionStep
-import org.vaccineimpact.api.app.SplitData
+import org.vaccineimpact.api.app.serialization.SplitData
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
 import org.vaccineimpact.api.app.filters.whereMatchesFilter

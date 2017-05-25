@@ -3,6 +3,7 @@ package org.vaccineimpact.api.app
 import org.vaccineimpact.api.app.controllers.*
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.jooq.*
+import org.vaccineimpact.api.app.serialization.Serializer
 import org.vaccineimpact.api.security.WebTokenHelper
 import spark.Spark as spk
 
