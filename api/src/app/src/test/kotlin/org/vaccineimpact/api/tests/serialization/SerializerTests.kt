@@ -14,20 +14,22 @@ import java.time.ZoneId
 
 class SerializerTests : MontaguTests()
 {
+    private val serializer = Serializer.instance
+
     @Test
     fun `convertFieldName handles empty string`()
     {
-        assertThat(Serializer.convertFieldName("")).isEqualTo("")
+        assertThat(serializer.convertFieldName("")).isEqualTo("")
     }
     @Test
     fun `convertFieldName handles lowercase field name`()
     {
-        assertThat(Serializer.convertFieldName("field")).isEqualTo("field")
+        assertThat(serializer.convertFieldName("field")).isEqualTo("field")
     }
     @Test
     fun `convertFieldName handles camelCase field name`()
     {
-        assertThat(Serializer.convertFieldName("camelCase")).isEqualTo("camel_case")
+        assertThat(serializer.convertFieldName("camelCase")).isEqualTo("camel_case")
     }
 
     enum class TestEnum { SIMPLE, COMPLEX_VALUE }
@@ -35,8 +37,8 @@ class SerializerTests : MontaguTests()
     @Test
     fun `serializeEnum serializes any enum correctly`()
     {
-        assertThat(Serializer.serializeEnum(TestEnum.SIMPLE)).isEqualTo("simple")
-        assertThat(Serializer.serializeEnum(TestEnum.COMPLEX_VALUE)).isEqualTo("complex-value")
+        assertThat(serializer.serializeEnum(TestEnum.SIMPLE)).isEqualTo("simple")
+        assertThat(serializer.serializeEnum(TestEnum.COMPLEX_VALUE)).isEqualTo("complex-value")
     }
 
     @Test
@@ -119,7 +121,7 @@ class SerializerTests : MontaguTests()
     fun `toResult wraps object in successful Result`()
     {
         val data = 31415
-        val actual = Serializer.toResult(data)
+        val actual = serializer.toResult(data)
         val expected = json {
             obj(
                     "data" to 31415,
@@ -138,7 +140,7 @@ class SerializerTests : MontaguTests()
                 31415,
                 listOf(ErrorInfo("code", "message"))
         )
-        val actual = Serializer.toJson(result)
+        val actual = serializer.toJson(result)
         val expected = json {
             obj(
                     "data" to 31415,
@@ -151,13 +153,13 @@ class SerializerTests : MontaguTests()
 
     fun checkSerializedForm(expected: JsonObject, actual: Any): Unit
     {
-        val actualInKlaxon = parse(Serializer.gson.toJson(actual))
+        val actualInKlaxon = parse(serializer.gson.toJson(actual))
         assertThat(actualInKlaxon).isEqualTo(expected)
     }
 
     fun checkSerializedForm(expected: String, actual: Any): Unit
     {
-        val actualAsString = Serializer.gson.toJson(actual)
+        val actualAsString = serializer.gson.toJson(actual)
         assertThat(actualAsString).isEqualTo(expected)
     }
 

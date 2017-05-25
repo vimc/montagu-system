@@ -5,6 +5,7 @@ import org.vaccineimpact.api.app.serialization.DataTable
 import org.vaccineimpact.api.test_helpers.MontaguTests
 import java.io.StringWriter
 import org.assertj.core.api.Assertions.assertThat
+import org.vaccineimpact.api.app.serialization.Serializer
 import org.vaccineimpact.api.models.TouchstoneStatus
 import java.math.BigDecimal
 
@@ -64,7 +65,7 @@ NA,NA,NA""")
     }
 
     private fun serialize(table: DataTable<*>) = StringWriter().use {
-        table.toCSV(it)
+        table.toCSV(it, Serializer.instance)
         it.toString().trim()
     }
 }
