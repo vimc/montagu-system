@@ -1,5 +1,6 @@
 package org.vaccineimpact.api.blackboxTests.helpers
 
+import org.vaccineimpact.api.ContentTypes
 import org.vaccineimpact.api.blackboxTests.validators.JSONValidator
 import org.vaccineimpact.api.blackboxTests.validators.Validator
 import org.vaccineimpact.api.db.JooqContext
@@ -12,7 +13,8 @@ data class ExpectedProblem(val errorCode: String, val errorTextContains: String)
 class PermissionChecker(
         val url: String,
         val allRequiredPermissions: Set<ReifiedPermission>,
-        val validator: Validator = JSONValidator()
+        val validator: Validator = JSONValidator(),
+        val acceptContentType: String = ContentTypes.json
 )
 {
     val helper = TestUserHelper()
@@ -34,10 +36,11 @@ class PermissionChecker(
             given: (JooqContext) -> Unit,
             expectedProblem: ExpectedProblem? = null)
     {
-        JooqContext().use {
-            given(it)
-            TestUserHelper().setupTestUser(it)
-            it.createPermissions(allRequiredPermissions.map { it.name })
+        JooqContext().use { db ->
+            given(db)
+            val userHelper = TestUserHelper()
+            userHelper.setupTestUser(db)
+            userHelper.createPermissions(db, allRequiredPermissions)
         }
 
         checkPermissionIsRequired(permissionUnderTest, expectedProblem)
@@ -101,5 +104,9 @@ class PermissionChecker(
         validator.validateSuccess(response, assertionText = assertionText)
     }
 
-    private fun getResponse(token: String) = requestHelper.get(url, token).text
+    private fun getResponse(token: TokenLiteral): String
+    {
+        val response = requestHelper.get(url, token, acceptContentType)
+        return response.text
+    }
 }

@@ -9,9 +9,8 @@ data class SplitData<out Metadata, DataRow : Any>(
     // Use streams to speed up this process of sending large data
     fun serialize(serializer: Serializer): String
     {
-        val target = java.io.StringWriter()
         val metadata = serializer.toResult(structuredMetadata)
-        tableData.toCSV(target, serializer)
-        return "$metadata\n---\n$target"
+        val data = tableData.serialize(serializer)
+        return "$metadata\n---\n$data"
     }
 }

@@ -64,8 +64,5 @@ NA,NA,NA""")
 "free text","in-preparation"""")
     }
 
-    private fun serialize(table: DataTable<*>) = StringWriter().use {
-        table.toCSV(it, Serializer.instance)
-        it.toString().trim()
-    }
+    private fun serialize(table: DataTable<*>) = table.serialize(Serializer.instance).trim()
 }

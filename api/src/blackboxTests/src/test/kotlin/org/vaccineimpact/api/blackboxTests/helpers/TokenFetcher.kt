@@ -17,13 +17,13 @@ class TokenFetcher
         }
         else
         {
-            return TokenResponse.Token(json["access_token"] as String)
+            return TokenResponse.Token(TokenLiteral(json["access_token"] as String))
         }
     }
 
     sealed class TokenResponse
     {
-        class Token(val token: String): TokenResponse()
+        class Token(val token: TokenLiteral): TokenResponse()
         class Error(val message: String): TokenResponse()
     }
 }

@@ -1,12 +1,12 @@
 package org.vaccineimpact.api.app.controllers
 
 import org.vaccineimpact.api.app.ActionContext
-import org.vaccineimpact.api.app.serialization.SplitData
 import org.vaccineimpact.api.app.controllers.endpoints.SecuredEndpoint
-import org.vaccineimpact.api.app.controllers.endpoints.withSplitData
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
 import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
+import org.vaccineimpact.api.app.serialization.DataTable
+import org.vaccineimpact.api.app.serialization.SplitData
 import org.vaccineimpact.api.models.*
 
 class ModellingGroupController(private val db: () -> ModellingGroupRepository)
@@ -31,7 +31,9 @@ class ModellingGroupController(private val db: () -> ModellingGroupRepository)
             SecuredEndpoint("/:group-id/responsibilities/:touchstone-id/:scenario-id/coverage_sets/",
                     this::getCoverageSets, coveragePermissions),
             SecuredEndpoint("/:group-id/responsibilities/:touchstone-id/:scenario-id/coverage/",
-                    this::getCoverageData, coveragePermissions).withSplitData()
+                    this::getCoverageDataAndMetadata, coveragePermissions, contentType = "application/json"),
+            SecuredEndpoint("/:group-id/responsibilities/:touchstone-id/:scenario-id/coverage/",
+                    this::getCoverageData, coveragePermissions, contentType = "text/csv")
     )
 
     fun getModellingGroups(context: ActionContext): List<ModellingGroup>
@@ -66,9 +68,11 @@ class ModellingGroupController(private val db: () -> ModellingGroupRepository)
         return data
     }
 
+    fun getCoverageData(context: ActionContext) = getCoverageDataAndMetadata(context).tableData
+
     // TODO: https://vimc.myjetbrains.com/youtrack/issue/VIMC-307
     // Use streams to speed up this process of sending large data
-    fun getCoverageData(context: ActionContext): SplitData<ScenarioTouchstoneAndCoverageSets, CoverageRow>
+    fun getCoverageDataAndMetadata(context: ActionContext): SplitData<ScenarioTouchstoneAndCoverageSets, CoverageRow>
     {
         val path = ResponsibilityPath(context)
         val data = db().use { it.getCoverageData(path.groupId, path.touchstoneId, path.scenarioId) }

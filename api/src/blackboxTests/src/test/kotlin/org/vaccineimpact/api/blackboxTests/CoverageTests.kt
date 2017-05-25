@@ -1,9 +1,8 @@
 package org.vaccineimpact.api.blackboxTests
 
 import org.junit.Test
-import org.vaccineimpact.api.blackboxTests.helpers.ExpectedProblem
-import org.vaccineimpact.api.blackboxTests.helpers.PermissionChecker
-import org.vaccineimpact.api.blackboxTests.helpers.validate
+import org.vaccineimpact.api.blackboxTests.helpers.*
+import org.vaccineimpact.api.blackboxTests.schemas.CSVSchema
 import org.vaccineimpact.api.blackboxTests.schemas.SplitSchema
 import org.vaccineimpact.api.blackboxTests.validators.SplitValidator
 import org.vaccineimpact.api.db.JooqContext
@@ -29,6 +28,23 @@ class CoverageTests : DatabaseTest()
             addCoverageData(it, touchstoneStatus = "open")
         } requiringPermissions { minimumPermissions }
         test.run()
+    }
+
+    @Test
+    fun `can get pure CSV coverage data for responsibility`()
+    {
+        val schema = CSVSchema("MergedCoverageData")
+        val userHelper = TestUserHelper()
+        val requestHelper = RequestHelper()
+
+        JooqContext().use {
+            addCoverageData(it, touchstoneStatus = "open")
+            userHelper.setupTestUser(it)
+            userHelper.createPermissions(it, minimumPermissions)
+        }
+
+        val response = requestHelper.get(url, minimumPermissions, contentType = "text/csv")
+        schema.validate(response.text)
     }
 
     @Test
