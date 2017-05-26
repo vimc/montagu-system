@@ -72,7 +72,7 @@ class ModellingGroupController(context: ControllerContext)
         val data = getCoverageDataAndMetadata(context)
         val metadata = data.structuredMetadata
         val filename = "coverage_${metadata.touchstone.id}_${metadata.scenario.id}.csv"
-        context.addResponseHeader("Content-Disposition", """inline; filename="$filename"""")
+        context.addResponseHeader("Content-Disposition", """attachment; filename="$filename"""")
         return data.tableData
     }
 

@@ -12,7 +12,7 @@ class OneTimeLinkController(
 )
     : AbstractController(context)
 {
-    override val urlComponent = "/"
+    override val urlComponent = ""
     override val endpoints = listOf(
             BasicEndpoint("/onetime_link/:token/", this::onetimeLink)
     )
@@ -32,7 +32,7 @@ class OneTimeLinkController(
         repos.token().use {
             if (!it.validateOneTimeToken(token))
             {
-                throw InvalidOneTimeLinkToken("used", "Token has already been used")
+                throw InvalidOneTimeLinkToken("used", "Token has already been used (or never existed)")
             }
         }
 
