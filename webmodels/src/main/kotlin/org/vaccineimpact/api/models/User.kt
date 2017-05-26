@@ -1,5 +1,6 @@
 package org.vaccineimpact.api.models
 
+import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import java.sql.Timestamp
 
 data class User(

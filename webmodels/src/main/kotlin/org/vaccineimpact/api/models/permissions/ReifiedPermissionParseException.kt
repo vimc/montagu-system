@@ -1,4 +1,4 @@
-package org.vaccineimpact.api.models.exceptions
+package org.vaccineimpact.api.models.permissions
 
 class ReifiedPermissionParseException(raw: String)
     : Exception("Unable to parse '$raw' as a ReifiedPermission. " +
