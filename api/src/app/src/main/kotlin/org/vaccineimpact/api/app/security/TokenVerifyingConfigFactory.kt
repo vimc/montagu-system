@@ -3,17 +3,16 @@ package org.vaccineimpact.api.app.security
 import org.pac4j.core.config.Config
 import org.pac4j.core.config.ConfigFactory
 import org.pac4j.core.context.HttpConstants
-import org.pac4j.core.context.WebContext
 import org.pac4j.core.profile.CommonProfile
 import org.pac4j.jwt.profile.JwtProfile
 import org.pac4j.sparkjava.DefaultHttpActionAdapter
 import org.pac4j.sparkjava.SparkWebContext
-import org.vaccineimpact.api.app.ActionContext
-import org.vaccineimpact.api.app.serialization.Serializer
+import org.vaccineimpact.api.app.DirectActionContext
 import org.vaccineimpact.api.app.addDefaultResponseHeaders
 import org.vaccineimpact.api.app.errors.MissingRequiredPermissionError
+import org.vaccineimpact.api.app.serialization.Serializer
 import org.vaccineimpact.api.models.ErrorInfo
-import org.vaccineimpact.api.models.PermissionSet
+import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.models.Result
 import org.vaccineimpact.api.models.ResultStatus
 import org.vaccineimpact.api.security.WebTokenHelper
@@ -78,7 +77,7 @@ class TokenActionAdapter : DefaultHttpActionAdapter()
         HttpConstants.FORBIDDEN ->
         {
             addDefaultResponseHeaders(context.response)
-            val profile = ActionContext(context).userProfile
+            val profile = DirectActionContext(context).userProfile
             val missingPermissions = profile.getAttributeOrDefault(MISSING_PERMISSIONS, mutableSetOf<String>())
             spark.Spark.halt(code, forbiddenResponse(missingPermissions))
         }

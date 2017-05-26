@@ -6,7 +6,7 @@ import org.junit.Test
 import org.vaccineimpact.api.blackboxTests.helpers.validate
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.direct.addTouchstone
-import org.vaccineimpact.api.models.PermissionSet
+import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.test_helpers.DatabaseTest
 
 class TouchstoneTests : DatabaseTest()

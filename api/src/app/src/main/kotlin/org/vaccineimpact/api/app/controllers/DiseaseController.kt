@@ -2,10 +2,9 @@ package org.vaccineimpact.api.app.controllers
 
 import org.vaccineimpact.api.app.ActionContext
 import org.vaccineimpact.api.app.controllers.endpoints.SecuredEndpoint
-import org.vaccineimpact.api.app.repositories.SimpleObjectsRepository
 import org.vaccineimpact.api.models.Disease
 
-class DiseaseController(val db: () -> SimpleObjectsRepository) : AbstractController()
+class DiseaseController(context: ControllerContext) : AbstractController(context)
 {
     override val urlComponent = "/diseases"
     override val endpoints = listOf(
@@ -15,12 +14,12 @@ class DiseaseController(val db: () -> SimpleObjectsRepository) : AbstractControl
 
     fun getDiseases(context: ActionContext): List<Disease>
     {
-        return db().use { it.diseases.all() }.toList()
+        return repos.simpleObjects().use { it.diseases.all() }.toList()
     }
 
     fun getDisease(context: ActionContext): Disease
     {
-        return db().use { it.diseases.get(diseaseId(context)) }
+        return repos.simpleObjects().use { it.diseases.get(diseaseId(context)) }
     }
 
     private fun diseaseId(context: ActionContext): String = context.params(":id")

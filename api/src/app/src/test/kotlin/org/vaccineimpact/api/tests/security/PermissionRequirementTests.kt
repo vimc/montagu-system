@@ -5,7 +5,6 @@ import org.junit.Test
 import org.vaccineimpact.api.app.errors.PermissionRequirementParseException
 import org.vaccineimpact.api.app.security.PermissionRequirement
 import org.vaccineimpact.api.app.security.ScopeRequirement
-import org.vaccineimpact.api.models.ReifiedPermission
 import org.vaccineimpact.api.test_helpers.MontaguTests
 
 class PermissionRequirementTests : MontaguTests()

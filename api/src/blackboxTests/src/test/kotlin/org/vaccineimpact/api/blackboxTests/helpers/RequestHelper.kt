@@ -1,11 +1,10 @@
 package org.vaccineimpact.api.blackboxTests.helpers
 
-import com.beust.klaxon.JsonArray
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
 import khttp.responses.Response
 import org.vaccineimpact.api.ContentTypes
-import org.vaccineimpact.api.models.ReifiedPermission
+import org.vaccineimpact.api.models.permissions.ReifiedPermission
 
 data class TokenLiteral(val value: String)
 {
@@ -39,18 +38,17 @@ class RequestHelper
     private fun defaultHeaders(contentType: String) = mapOf("Accepts" to contentType)
 }
 
-fun Response.montaguData() : JsonObject?
+fun <T> Response.montaguData() : T?
 {
     val data = this.json()["data"]
     if (data != "")
     {
-        return data as JsonObject
+        @Suppress("UNCHECKED_CAST")
+        return data as T
     }
     else
     {
         return null
     }
 }
-@Suppress("UNCHECKED_CAST")
-fun Response.montaguDataAsArray() = this.json()["data"] as JsonArray<JsonObject>
 fun Response.json() = Parser().parse(StringBuilder(text)) as JsonObject

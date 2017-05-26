@@ -4,6 +4,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
 import org.junit.Test
 import org.vaccineimpact.api.models.*
+import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import org.vaccineimpact.api.security.MontaguTokenAuthenticator
 import org.vaccineimpact.api.security.WebTokenHelper
 import org.vaccineimpact.api.test_helpers.MontaguTests

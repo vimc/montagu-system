@@ -1,10 +1,12 @@
 package org.vaccineimpact.api.app
 
 import org.slf4j.LoggerFactory
-import org.vaccineimpact.api.app.controllers.*
+import org.vaccineimpact.api.app.controllers.ControllerContext
+import org.vaccineimpact.api.app.controllers.HomeController
+import org.vaccineimpact.api.app.controllers.MontaguControllers
+import org.vaccineimpact.api.app.controllers.OneTimeLinkController
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.jooq.*
-import org.vaccineimpact.api.app.serialization.Serializer
 import org.vaccineimpact.api.security.WebTokenHelper
 import spark.Spark as spk
 
@@ -23,12 +25,14 @@ class MontaguApi
     {
         val simpleObjectsRepository = { JooqSimpleObjectsRepository() }
         val userRepository = { JooqUserRepository() }
+        val tokenRepository = { JooqTokenRepository() }
         val scenarioRepository = { JooqScenarioRepository() }
         val touchstoneRepository = { JooqTouchstoneRepository(scenarioRepository) }
         val modellingGroupRepository = { JooqModellingGroupRepository(touchstoneRepository, scenarioRepository) }
         return Repositories(
                 simpleObjectsRepository,
                 userRepository,
+                tokenRepository,
                 touchstoneRepository,
                 scenarioRepository,
                 modellingGroupRepository
@@ -48,13 +52,12 @@ class MontaguApi
         spk.before("*", { req, _ -> logger.warn(req.headers("Accepts")) })
         ErrorHandler.setup()
 
-        val controllers: Iterable<AbstractController> = listOf(
-                AuthenticationController(tokenHelper),
-                DiseaseController(repositories.simpleObjectsRepository),
-                TouchstoneController(repositories.touchstoneRepository),
-                ModellingGroupController(repositories.modellingGroupRepository)
-        )
-        val endpoints = controllers.flatMap { it.mapEndpoints(urlBase, tokenHelper) }
-        HomeController(endpoints).mapEndpoints(urlBase, tokenHelper)
+        val controllerContext = ControllerContext(repositories, tokenHelper)
+        val standardControllers = MontaguControllers(controllerContext)
+        val oneTimeLink = OneTimeLinkController(controllerContext, standardControllers)
+        val endpoints = (standardControllers.all + oneTimeLink).flatMap {
+            it.mapEndpoints(urlBase)
+        }
+        HomeController(endpoints, controllerContext).mapEndpoints(urlBase)
     }
 }

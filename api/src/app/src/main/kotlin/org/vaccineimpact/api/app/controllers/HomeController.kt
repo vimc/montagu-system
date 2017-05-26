@@ -4,7 +4,10 @@ import org.vaccineimpact.api.app.ActionContext
 import org.vaccineimpact.api.app.controllers.endpoints.BasicEndpoint
 import org.vaccineimpact.api.db.Config
 
-class HomeController(val otherEndpoints: List<String>) : AbstractController()
+class HomeController(
+        val otherEndpoints: List<String>,
+        val context: ControllerContext
+) : AbstractController(context)
 {
     override val urlComponent = ""
     override val endpoints = listOf(

@@ -1,9 +1,10 @@
 package org.vaccineimpact.api.app.repositories
 
-class Repositories(
-        val simpleObjectsRepository: () -> SimpleObjectsRepository,
-        val userRepository: () -> UserRepository,
-        val touchstoneRepository: () -> TouchstoneRepository,
-        val scenarioRepository: () -> ScenarioRepository,
-        val modellingGroupRepository: () -> ModellingGroupRepository
+open class Repositories(
+        open val simpleObjects: () -> SimpleObjectsRepository,
+        open val user: () -> UserRepository,
+        open val token: () -> TokenRepository,
+        open val touchstone: () -> TouchstoneRepository,
+        open val scenario: () -> ScenarioRepository,
+        open val modellingGroup: () -> ModellingGroupRepository
 )

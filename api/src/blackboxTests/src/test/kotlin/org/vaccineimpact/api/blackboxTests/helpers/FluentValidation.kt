@@ -7,9 +7,8 @@ import org.vaccineimpact.api.ContentTypes
 import org.vaccineimpact.api.blackboxTests.schemas.JSONSchema
 import org.vaccineimpact.api.blackboxTests.schemas.Schema
 import org.vaccineimpact.api.db.JooqContext
-import org.vaccineimpact.api.db.direct.createPermissions
-import org.vaccineimpact.api.models.PermissionSet
-import org.vaccineimpact.api.models.ReifiedPermission
+import org.vaccineimpact.api.models.permissions.PermissionSet
+import org.vaccineimpact.api.models.permissions.ReifiedPermission
 
 fun validate(url: String) = FluentValidationConfig(url = url)
 
@@ -37,12 +36,17 @@ data class FluentValidationConfig(
 
     infix fun andCheck(additionalChecks: (JsonObject) -> Unit)
     {
-        this.finalized().runWithObjectCheck(additionalChecks)
+        this.finalized().runWithCheck(additionalChecks)
     }
-    infix fun andCheckArray(additionalChecks: (JsonArray<JsonObject>) -> Unit)
+    infix fun andCheckArray(additionalChecks: (JsonArray<Any>) -> Unit)
     {
-        this.finalized().runWithArrayCheck(additionalChecks)
+        this.finalized().runWithCheck(additionalChecks)
     }
+    infix fun andCheckString(additionalChecks: (String) -> Unit)
+    {
+        this.finalized().runWithCheck(additionalChecks)
+    }
+
     fun run()
     {
         this.finalized().run()
@@ -64,16 +68,10 @@ class FluentValidation(config: FluentValidationConfig)
     val userHelper = TestUserHelper()
     val requestHelper = RequestHelper()
 
-    fun runWithObjectCheck(additionalChecks: (JsonObject) -> Unit)
+    fun <T> runWithCheck(additionalChecks: (T) -> Unit)
     {
         val response = run()
-        additionalChecks(response.montaguData()!!)
-    }
-
-    fun runWithArrayCheck(additionalChecks: (JsonArray<JsonObject>) -> Unit)
-    {
-        val response = run()
-        additionalChecks(response.montaguDataAsArray())
+        additionalChecks(response.montaguData<T>()!!)
     }
 
     fun run(): Response
@@ -81,7 +79,6 @@ class FluentValidation(config: FluentValidationConfig)
         JooqContext().use {
             prepareDatabase(it)
             userHelper.setupTestUser(it)
-            userHelper.createPermissions(it, allPermissions)
         }
 
         // Check that the auth token is required
