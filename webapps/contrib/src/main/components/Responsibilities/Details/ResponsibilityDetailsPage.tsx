@@ -16,6 +16,7 @@ export class ResponsibilityDetailsPage extends PageWithHeader<LocationProps> {
         touchstoneActions.setCurrentTouchstone(this.props.location.params.touchstoneId);
         responsibilityActions.setCurrentResponsibility(this.props.location.params.scenarioId);
         Store.fetchCoverageSets();
+        Store.fetchOneTimeCoverageToken();
     }
 
     title() {

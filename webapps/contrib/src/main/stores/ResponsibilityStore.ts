@@ -11,6 +11,8 @@ import {
     ExtendedResponsibility, ExtendedResponsibilitySet,
     IExtendedResponsibilitySet
 } from "../models/ResponsibilitySet";
+import { coverageSetActions } from "../actions/CoverageSetActions";
+import { coverageTokenActions } from "../actions/CoverageActions";
 
 export interface State extends RemoteContent {
     touchstones: Array<Touchstone>;
@@ -18,6 +20,7 @@ export interface State extends RemoteContent {
 
     responsibilitySet: ExtendedResponsibilitySet;
     currentResponsibility: ExtendedResponsibility;
+    coverageOneTimeToken: string;
 
     currentModellingGroupId: string;
     currentDiseaseId: string;
@@ -27,6 +30,7 @@ interface ResponsibilityStoreInterface extends AltJS.AltStore<State> {
     fetchResponsibilities(): Promise<any>;
     fetchTouchstones(): Promise<any>;
     fetchCoverageSets(): Promise<any>;
+    fetchOneTimeCoverageToken(): Promise<any>;
     isLoading(): boolean;
 }
 
@@ -36,6 +40,7 @@ class ResponsibilityStore extends AbstractStore<State, ResponsibilityStoreInterf
 
     responsibilitySet: ExtendedResponsibilitySet;
     currentResponsibility: ExtendedResponsibility;
+    coverageOneTimeToken: string;
 
     currentModellingGroupId: string;
     currentDiseaseId: string;
@@ -47,6 +52,7 @@ class ResponsibilityStore extends AbstractStore<State, ResponsibilityStoreInterf
         this.registerAsync(sources.responsibilities);
         this.registerAsync(sources.touchstones);
         this.registerAsync(sources.coverageSets);
+        this.registerAsync(sources.coverageToken);
 
         this.bindListeners({
             handleBeginTouchstoneFetch: touchstoneActions.beginFetch,
@@ -57,8 +63,11 @@ class ResponsibilityStore extends AbstractStore<State, ResponsibilityStoreInterf
             handleBeginResponsibilityFetch: responsibilityActions.beginFetch,
             handleUpdateResponsibilities: responsibilityActions.update,
 
-            handleBeginFetchCoverageSets: responsibilityActions.beginFetchCoverageSets,
-            handleUpdateCoverageSets: responsibilityActions.updateCoverageSets,
+            handleBeginFetchCoverageSets: coverageSetActions.beginFetch,
+            handleUpdateCoverageSets: coverageSetActions.update,
+
+            handleUpdateCoverageToken: coverageTokenActions.update,
+            handleClearUsedToken: coverageTokenActions.clearUsedToken,
 
             handleFilterByDisease: responsibilityActions.filterByDisease,
             handleLogIn: authActions.logIn
@@ -75,6 +84,7 @@ class ResponsibilityStore extends AbstractStore<State, ResponsibilityStoreInterf
 
             currentModellingGroupId: null,
             currentDiseaseId: null,
+            coverageOneTimeToken: null,
 
             ready: false
         };
@@ -82,7 +92,6 @@ class ResponsibilityStore extends AbstractStore<State, ResponsibilityStoreInterf
 
     handleSetCurrentResponsibility(scenarioId: string) {
         if (this.responsibilitySet != null) {
-            console.log(JSON.stringify(this.responsibilitySet));
             this.currentResponsibility = this.responsibilitySet.getResponsibilityByScenario(scenarioId);
         }
     }
@@ -103,6 +112,9 @@ class ResponsibilityStore extends AbstractStore<State, ResponsibilityStoreInterf
     handleBeginFetchCoverageSets() {
         this.ready = false;
     }
+    handleClearUsedToken() {
+        this.coverageOneTimeToken = null;
+    }
 
     handleUpdateResponsibilities(responsibilities: Responsibilities) {
         const touchstone = this.touchstones.find(x => x.id == responsibilities.touchstone);
@@ -116,6 +128,9 @@ class ResponsibilityStore extends AbstractStore<State, ResponsibilityStoreInterf
     handleUpdateCoverageSets(data: ScenarioTouchstoneAndCoverageSets) {
         this.responsibilitySet.addCoverageSets(data.scenario.id, data.coverage_sets);
         this.ready = true;
+    }
+    handleUpdateCoverageToken(url: string) {
+        this.coverageOneTimeToken = url;
     }
 
     handleFilterByDisease(diseaseId: string) {

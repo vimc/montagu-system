@@ -1,36 +1,35 @@
 import * as React from "react";
-import * as ResponsibilityStore from "../../../stores/ResponsibilityStore";
-import * as AuthStore from "../../../stores/AuthStore";
 import { connectToStores } from "../../../alt";
 import { CoverageSet, Scenario, Touchstone } from "../../../models/Generated";
 import { RemoteContent } from "../../../stores/RemoteContent";
 import { RemoteContentComponent } from "../../RemoteContentComponent/RemoteContentComponent";
 import { CoverageSetList } from "./CoverageSetList";
-import { sources } from "../../../sources/Sources";
+import { Store } from "../../../stores/ResponsibilityStore";
+import fetcher from "../../../sources/Fetcher";
+import { coverageTokenActions } from "../../../actions/CoverageActions";
 const commonStyles = require("../../../styles/common.css");
 
 export interface ResponsibilityDetailsProps extends RemoteContent {
     touchstone?: Touchstone;
     scenario?: Scenario;
     coverageSets?: CoverageSet[];
-    coverageURL?: string;
+    coverageToken?: string;
     bearerToken?: string;
 }
 
 export class ResponsibilityDetailsComponent extends RemoteContentComponent<ResponsibilityDetailsProps> {
     static getStores() {
-        return [ ResponsibilityStore.Store, AuthStore.Store ];
+        return [ Store ];
     }
     static getPropsFromStores(): ResponsibilityDetailsProps {
-        const state = ResponsibilityStore.Store.getState();
+        const state = Store.getState();
         const r = state.currentResponsibility;
         if (r != null) {
             return {
                 touchstone: state.currentTouchstone,
                 scenario: r.scenario,
                 coverageSets: r.coverageSets,
-                coverageURL: sources.coverageSets.coverageURL(state),
-                bearerToken: AuthStore.Store.getState().bearerToken,
+                coverageToken: state.coverageOneTimeToken,
                 ready: state.ready
             };
         } else {
@@ -38,7 +37,16 @@ export class ResponsibilityDetailsComponent extends RemoteContentComponent<Respo
         }
     }
 
+    refreshToken(e: React.MouseEvent<HTMLButtonElement>): void {
+        setTimeout(() => {
+            coverageTokenActions.clearUsedToken();
+            Store.fetchOneTimeCoverageToken();
+        });
+    }
+
     renderContent(props: ResponsibilityDetailsProps) {
+        const url = fetcher.buildURL(`/onetime_link/${props.coverageToken}/`);
+        const downloadDisabled = props.coverageToken == null;
         return <div>
             <table className={ commonStyles.specialColumn }>
                 <tbody>
@@ -48,9 +56,12 @@ export class ResponsibilityDetailsComponent extends RemoteContentComponent<Respo
             </table>
             <CoverageSetList coverageSets={ this.props.coverageSets } />
             <div className={ commonStyles.gapAbove }>
-                <form action={ props.coverageURL } method="post">
-                    <input name="bearer-token" type="hidden" value={ props.bearerToken } />
-                    <button type="submit">Download combined coverage set data in CSV format</button>
+                <form action={ url }>
+                    <button onClick={ this.refreshToken }
+                            disabled={ downloadDisabled }
+                            type="submit">
+                        Download combined coverage set data in CSV format
+                    </button>
                 </form>
             </div>
         </div>;

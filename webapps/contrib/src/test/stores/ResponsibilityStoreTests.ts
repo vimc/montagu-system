@@ -16,6 +16,7 @@ const jwt = require("jsonwebtoken");
 import { touchstoneActions } from "../../main/actions/TouchstoneActions";
 import { responsibilityActions } from "../../main/actions/ResponsibilityActions";
 import { Store } from "../../main/stores/ResponsibilityStore";
+import { coverageSetActions } from "../../main/actions/CoverageSetActions";
 
 describe("ResponsibilityStore", () => {
     beforeEach(() => {
@@ -144,7 +145,7 @@ describe("ResponsibilityStore", () => {
                 ready: true,
             }
         }));
-        responsibilityActions.beginFetchCoverageSets();
+        coverageSetActions.beginFetch();
 
         const state = Store.getState();
         expect(state.ready).to.equal(false);
@@ -168,7 +169,7 @@ describe("ResponsibilityStore", () => {
         // Second, fire the event and check that the correct responsibility now has the coverage sets
         const coverageSets = [ mockCoverageSet() ];
         const payload = mockScenarioTouchstoneAndCoverageSets(scenario, touchstone, coverageSets);
-        responsibilityActions.updateCoverageSets(payload);
+        coverageSetActions.update(payload);
 
         const set = Store.getState().responsibilitySet;
         expect(set.responsibilities[0].coverageSets).to.equal(coverageSets);
