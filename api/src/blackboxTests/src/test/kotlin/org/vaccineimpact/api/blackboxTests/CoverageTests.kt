@@ -4,6 +4,7 @@ import org.junit.Test
 import org.vaccineimpact.api.blackboxTests.helpers.*
 import org.vaccineimpact.api.blackboxTests.schemas.CSVSchema
 import org.vaccineimpact.api.blackboxTests.schemas.SplitSchema
+import org.vaccineimpact.api.blackboxTests.validators.JSONValidator
 import org.vaccineimpact.api.blackboxTests.validators.SplitValidator
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.direct.*
@@ -52,10 +53,14 @@ class CoverageTests : DatabaseTest()
         validate("$url/get_onetime_link/") against "Token" given {
             addCoverageData(it, touchstoneStatus = "open")
         } requiringPermissions { minimumPermissions } andCheckString { token ->
+            val oneTimeURL = "/onetime_link/$token/"
             val schema = CSVSchema("MergedCoverageData")
             val requestHelper = RequestHelper()
-            val response = requestHelper.get("/onetime_link/$token/")
+            val response = requestHelper.get(oneTimeURL)
             schema.validate(response.text)
+
+            val badResponse =  requestHelper.get(oneTimeURL)
+            JSONValidator().validateError(badResponse.text, expectedErrorCode = "invalid-token-used")
         }
     }
 
