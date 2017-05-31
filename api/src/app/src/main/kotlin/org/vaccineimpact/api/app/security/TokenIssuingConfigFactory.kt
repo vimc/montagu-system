@@ -6,15 +6,15 @@ import org.pac4j.core.context.HttpConstants
 import org.pac4j.http.client.direct.DirectBasicAuthClient
 import org.pac4j.sparkjava.DefaultHttpActionAdapter
 import org.pac4j.sparkjava.SparkWebContext
-import org.vaccineimpact.api.app.serialization.Serializer
 import org.vaccineimpact.api.app.addDefaultResponseHeaders
 import org.vaccineimpact.api.app.security.SkipOptionsMatcher
+import org.vaccineimpact.api.app.serialization.Serializer
 import org.vaccineimpact.api.models.FailedAuthentication
 import spark.Spark as spk
 
 class TokenIssuingConfigFactory : ConfigFactory
 {
-    override fun build(): Config
+    override fun build(vararg parameters: Any?): Config
     {
         val authClient = DirectBasicAuthClient(DatabasePasswordAuthenticator())
         return Config(authClient).apply {
