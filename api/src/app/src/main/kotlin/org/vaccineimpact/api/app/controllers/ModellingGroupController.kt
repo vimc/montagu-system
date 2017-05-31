@@ -10,7 +10,7 @@ import org.vaccineimpact.api.app.serialization.SplitData
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 
-class ModellingGroupController(context: ControllerContext)
+open class ModellingGroupController(context: ControllerContext)
     : AbstractController(context)
 {
     override val urlComponent = "/modelling-groups"
@@ -32,7 +32,7 @@ class ModellingGroupController(context: ControllerContext)
             SecuredEndpoint("$scenarioURL/coverage_sets/", this::getCoverageSets, coveragePermissions),
             SecuredEndpoint("$coverageURL/", this::getCoverageDataAndMetadata, coveragePermissions, contentType = "application/json"),
             SecuredEndpoint("$coverageURL/", this::getCoverageData, coveragePermissions, contentType = "text/csv"),
-            SecuredEndpoint("$coverageURL/get_onetime_link/", { c -> getOneTimeLink(c, OneTimeAction.COVERAGE) }, coveragePermissions)
+            SecuredEndpoint("$coverageURL/get_onetime_link/", { c -> getOneTimeLinkToken(c, OneTimeAction.COVERAGE) }, coveragePermissions)
     )
 
     fun getModellingGroups(context: ActionContext): List<ModellingGroup>
@@ -67,7 +67,7 @@ class ModellingGroupController(context: ControllerContext)
         return data
     }
 
-    fun getCoverageData(context: ActionContext): DataTable<CoverageRow>
+    open fun getCoverageData(context: ActionContext): DataTable<CoverageRow>
     {
         val data = getCoverageDataAndMetadata(context)
         val metadata = data.structuredMetadata

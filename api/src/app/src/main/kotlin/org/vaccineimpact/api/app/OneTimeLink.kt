@@ -13,7 +13,7 @@ data class OneTimeLink(val action: OneTimeAction, val payload: Map<String, Strin
         return callback.invoke(context)
     }
 
-    fun getCallback(action: OneTimeAction, controllers: MontaguControllers): (ActionContext) -> Any
+    private fun getCallback(action: OneTimeAction, controllers: MontaguControllers): (ActionContext) -> Any
     {
         return when (action)
         {
@@ -33,23 +33,6 @@ data class OneTimeLink(val action: OneTimeAction, val payload: Map<String, Strin
                     .map { it.split('=') }
                     .associateBy({ it[0] }, { it[1] })
             return OneTimeLink(action, payload)
-        }
-    }
-
-    class OneTimeLinkActionContext(
-            private val payload: Map<String, String>,
-            context: ActionContext
-    ) : ActionContext by context
-    {
-        override fun params() = payload
-
-        override fun params(key: String): String {
-            var keyWithColon = key
-            if (!keyWithColon.startsWith(":"))
-            {
-                keyWithColon = ":" + keyWithColon
-            }
-            return payload[keyWithColon]!!
         }
     }
 }

@@ -27,7 +27,7 @@ abstract class AbstractController(val controllerContext: ControllerContext)
         return endpoints.map { mapEndpoint(it, urlBase, tokenHelper) }
     }
 
-    protected fun getOneTimeLink(context: ActionContext, action: OneTimeAction): String
+    fun getOneTimeLinkToken(context: ActionContext, action: OneTimeAction): String
     {
         val actionAsString = Serializer.instance.serializeEnum(action)
         val params = context.params()

@@ -12,7 +12,7 @@ import java.time.Duration
 import java.time.Instant
 import java.util.*
 
-class WebTokenHelper
+open class WebTokenHelper
 {
     val lifeSpan: Duration = Duration.ofSeconds(Config["token.lifespan"].toLong())
     val oneTimeLinkLifeSpan: Duration = Duration.ofMinutes(10)
@@ -28,7 +28,7 @@ class WebTokenHelper
     {
         return generator.generate(claims(user))
     }
-    fun generateOneTimeActionToken(action: String, params: Map<String, String>): String
+    open fun generateOneTimeActionToken(action: String, params: Map<String, String>): String
     {
         return generator.generate(mapOf(
                 "iss" to issuer,
@@ -51,11 +51,11 @@ class WebTokenHelper
         )
     }
 
-    fun verify(token: String): Map<String, Any> = MontaguTokenAuthenticator(this).validateTokenAndGetClaims(token)
+    open fun verify(token: String): Map<String, Any> = MontaguTokenAuthenticator(this).validateTokenAndGetClaims(token)
 
     private fun getNonce(): String
     {
-        val bytes = ByteArray(256)
+        val bytes = ByteArray(32)
         random.nextBytes(bytes)
         return Base64.getEncoder().encodeToString(bytes)
     }

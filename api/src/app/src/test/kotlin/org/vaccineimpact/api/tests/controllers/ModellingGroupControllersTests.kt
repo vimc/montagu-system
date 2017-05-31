@@ -12,8 +12,11 @@ import org.vaccineimpact.api.app.serialization.SplitData
 import org.vaccineimpact.api.models.*
 import java.math.BigDecimal
 
-class ModellingGroupControllersTests : ControllerTests()
+class ModellingGroupControllersTests : ControllerTests<ModellingGroupController>()
 {
+    override fun makeController(controllerContext: ControllerContext)
+            = ModellingGroupController(controllerContext)
+
     @Test
     fun `getResponsibilities gets parameters from URL`()
     {
@@ -122,8 +125,9 @@ class ModellingGroupControllersTests : ControllerTests()
 
     private fun mockRepository(repo: ModellingGroupRepository): ControllerContext
     {
-        return mockControllerContext(repo) { it.modellingGroup }
+        return mockControllerContext(RepositoryMock({ it.modellingGroup }, repo))
     }
+
     private fun getRepository(controllerContext: ControllerContext) = controllerContext.repositories.modellingGroup()
 
     private fun mockContextForSpecificResponsibility(hasPermissions: Boolean): ActionContext
