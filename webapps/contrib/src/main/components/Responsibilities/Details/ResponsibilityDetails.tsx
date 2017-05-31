@@ -64,6 +64,7 @@ export class ResponsibilityDetailsComponent extends RemoteContentComponent<Respo
                 </tbody>
             </table>
             <CoverageSetList coverageSets={ data.coverageSets } />
+            <div>Experiment</div>
             <div className={ commonStyles.gapAbove }>
                 <form action={ url }>
                     <button onClick={ this.refreshToken }
