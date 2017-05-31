@@ -27,10 +27,10 @@ export interface State extends RemoteContent {
 }
 
 interface ResponsibilityStoreInterface extends AltJS.AltStore<State> {
-    fetchResponsibilities(): Promise<any>;
-    fetchTouchstones(): Promise<any>;
-    fetchCoverageSets(): Promise<any>;
-    fetchOneTimeCoverageToken(): Promise<any>;
+    fetchResponsibilities(): Promise<Responsibilities>;
+    fetchTouchstones(): Promise<Touchstone[]>;
+    fetchCoverageSets(): Promise<ScenarioTouchstoneAndCoverageSets>;
+    fetchOneTimeCoverageToken(): Promise<string>;
     isLoading(): boolean;
 }
 

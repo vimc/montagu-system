@@ -2,13 +2,12 @@ import { mockResponsibility, mockScenarioTouchstoneAndCoverageSets, mockTouchsto
 import { FetchHelper } from "./helpers";
 import { Store } from "../../main/stores/ResponsibilityStore";
 import { alt } from "../../main/alt";
-import { ScenarioTouchstoneAndCoverageSets } from "../../main/models/Generated";
 
-describe("ResponsibilityStore.fetchCoverageSets", () => {
+describe("ResponsibilityStore.fetchOneTimeCoverageToken", () => {
     const touchstone = mockTouchstone({ id: "touchstone-id" });
     const responsibility = mockResponsibility({}, { id: "scenario-id"});
-    new FetchHelper<ScenarioTouchstoneAndCoverageSets>({
-        expectedURL: "/modelling-groups/group-id/responsibilities/touchstone-id/scenario-id/coverage_sets/",
+    new FetchHelper<string>({
+        expectedURL: "/modelling-groups/group-id/responsibilities/touchstone-id/scenario-id/coverage/get_onetime_link/",
         triggerFetch: () => {
             alt.bootstrap(JSON.stringify({
                 ResponsibilityStore: {
@@ -17,8 +16,8 @@ describe("ResponsibilityStore.fetchCoverageSets", () => {
                     currentResponsibility: responsibility
                 }
             }));
-            return Store.fetchCoverageSets();
+            return Store.fetchOneTimeCoverageToken();
         },
-        makePayload: () => mockScenarioTouchstoneAndCoverageSets()
+        makePayload: () => "TOKEN"
     }).addTestsToMocha();
 });

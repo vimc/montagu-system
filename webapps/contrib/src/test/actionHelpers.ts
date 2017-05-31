@@ -44,6 +44,11 @@ export function expectOneAction(spy: sinon.SinonSpy, expectation: ActionExpectat
     expectOrderedActions(spy, [ expectation ], startIndex);
 }
 
+export function expectNoActions(spy: sinon.SinonSpy) {
+    const actions = getActions(spy);
+    expect(actions.length).to.equal(0);
+}
+
 export function dispatchSpy(sandbox: Sandbox): sinon.SinonSpy {
     return sandbox.sinon.spy(alt, "dispatch");
 }

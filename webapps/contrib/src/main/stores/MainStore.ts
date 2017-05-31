@@ -17,7 +17,7 @@ export interface State extends RemoteContent {
 }
 
 interface Interface extends AltJS.AltStore<State> {
-    load(): Promise<Response>;
+    load(): Promise<Disease[]>;
     getDiseaseById(id: string): Disease;
     fetchDiseases(): void;
     isLoading(): boolean;

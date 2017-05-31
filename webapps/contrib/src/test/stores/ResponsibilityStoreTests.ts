@@ -17,6 +17,7 @@ import { touchstoneActions } from "../../main/actions/TouchstoneActions";
 import { responsibilityActions } from "../../main/actions/ResponsibilityActions";
 import { Store } from "../../main/stores/ResponsibilityStore";
 import { coverageSetActions } from "../../main/actions/CoverageSetActions";
+import { coverageTokenActions } from "../../main/actions/CoverageActions";
 
 describe("ResponsibilityStore", () => {
     beforeEach(() => {
@@ -35,6 +36,8 @@ describe("ResponsibilityStore", () => {
 
             currentModellingGroupId: null,
             currentDiseaseId: null,
+
+            coverageOneTimeToken: null,
 
             ready: false
         });
@@ -139,7 +142,7 @@ describe("ResponsibilityStore", () => {
         expect(state.currentResponsibility).to.eql(responsibility);
     });
 
-    it("responsibilityActions.beginFetchCoverageSets sets ready to false", () => {
+    it("coverageSetActions.beginFetch sets ready to false", () => {
         alt.bootstrap(JSON.stringify({
             ResponsibilityStore: {
                 ready: true,
@@ -151,7 +154,7 @@ describe("ResponsibilityStore", () => {
         expect(state.ready).to.equal(false);
     });
 
-    it("responsibilityActions.updateCoverageSets updates the correct responsibilities coverage sets", () => {
+    it("coverageSetActions.update updates the correct responsibilities coverage sets", () => {
         const scenario = mockScenario({ id: "scenario-special" });
         const touchstone = mockTouchstone();
 
@@ -175,5 +178,24 @@ describe("ResponsibilityStore", () => {
         expect(set.responsibilities[0].coverageSets).to.equal(coverageSets);
         expect(set.responsibilities[1].coverageSets).to.equal(null);
         expect(set.getResponsibilityByScenario(scenario.id).coverageSets).to.eql(coverageSets);
+    });
+
+    it("coverageTokenActions.clearUsedToken sets token to null", () => {
+        alt.bootstrap(JSON.stringify({
+            ResponsibilityStore: {
+                coverageOneTimeToken: "TOKEN",
+            }
+        }));
+        coverageTokenActions.clearUsedToken();
+
+        const state = Store.getState();
+        expect(state.coverageOneTimeToken).to.equal(null);
+    });
+
+    it("coverageTokenActions.update sets the token", () => {
+        coverageTokenActions.update("TOKEN");
+
+        const state = Store.getState();
+        expect(state.coverageOneTimeToken).to.equal("TOKEN");
     });
 });

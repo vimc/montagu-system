@@ -9,12 +9,15 @@ import fetcher from "../../../sources/Fetcher";
 import { coverageTokenActions } from "../../../actions/CoverageActions";
 const commonStyles = require("../../../styles/common.css");
 
+interface ResponsibilityDetails {
+    touchstone: Touchstone;
+    scenario: Scenario;
+    coverageSets: CoverageSet[];
+    coverageToken: string;
+}
+
 export interface ResponsibilityDetailsProps extends RemoteContent {
-    touchstone?: Touchstone;
-    scenario?: Scenario;
-    coverageSets?: CoverageSet[];
-    coverageToken?: string;
-    bearerToken?: string;
+    props: ResponsibilityDetails;
 }
 
 export class ResponsibilityDetailsComponent extends RemoteContentComponent<ResponsibilityDetailsProps> {
@@ -26,14 +29,19 @@ export class ResponsibilityDetailsComponent extends RemoteContentComponent<Respo
         const r = state.currentResponsibility;
         if (r != null) {
             return {
-                touchstone: state.currentTouchstone,
-                scenario: r.scenario,
-                coverageSets: r.coverageSets,
-                coverageToken: state.coverageOneTimeToken,
-                ready: state.ready
+                ready: state.ready,
+                props: {
+                    touchstone: state.currentTouchstone,
+                    scenario: r.scenario,
+                    coverageSets: r.coverageSets,
+                    coverageToken: state.coverageOneTimeToken
+                }
             };
         } else {
-            return { ready: false };
+            return {
+                ready: false,
+                props: null
+            };
         }
     }
 
@@ -45,16 +53,17 @@ export class ResponsibilityDetailsComponent extends RemoteContentComponent<Respo
     }
 
     renderContent(props: ResponsibilityDetailsProps) {
-        const url = fetcher.buildURL(`/onetime_link/${props.coverageToken}/`);
-        const downloadDisabled = props.coverageToken == null;
+        const data = props.props;
+        const url = fetcher.buildURL(`/onetime_link/${data.coverageToken}/`);
+        const downloadDisabled = data.coverageToken == null;
         return <div>
             <table className={ commonStyles.specialColumn }>
                 <tbody>
-                    <tr><td>Touchstone</td><td>{ this.props.touchstone.description }</td></tr>
-                    <tr><td>Scenario</td><td>{ this.props.scenario.description }</td></tr>
+                    <tr><td>Touchstone</td><td>{ data.touchstone.description }</td></tr>
+                    <tr><td>Scenario</td><td>{ data.scenario.description }</td></tr>
                 </tbody>
             </table>
-            <CoverageSetList coverageSets={ this.props.coverageSets } />
+            <CoverageSetList coverageSets={ data.coverageSets } />
             <div className={ commonStyles.gapAbove }>
                 <form action={ url }>
                     <button onClick={ this.refreshToken }

@@ -17,6 +17,7 @@ describe('ResponsibilityDetailsPage', () => {
     it("triggers actions when it mounts", () => {
         const spy = dispatchSpy(sandbox);
         const fetchCoverageSets = sandbox.sinon.stub(ResponsibilityStore.Store, "fetchCoverageSets");
+        const fetchOneTimeCoverageToken = sandbox.sinon.stub(ResponsibilityStore.Store, "fetchOneTimeCoverageToken");
         const location = mockLocation({
             touchstoneId: "touchstone-1",
             scenarioId: "scenario-1"
@@ -29,5 +30,6 @@ describe('ResponsibilityDetailsPage', () => {
             { action: "ResponsibilityActions.setCurrentResponsibility", payload: "scenario-1" },
         ], 0);
         expect(fetchCoverageSets.called).to.be.true;
+        expect(fetchOneTimeCoverageToken.called).to.be.true;
     });
 });

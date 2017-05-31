@@ -4,10 +4,12 @@ import { ErrorInfo, Result } from "../../main/models/Generated";
 import * as actionHelpers from "../actionHelpers";
 import { mockFetcherResponse, mockResult } from "../mocks/mockRemote";
 import { getActions } from "../actionHelpers";
+import fetcher from "../../main/sources/Fetcher";
 
-interface FetchHelperConfig {
-    triggerFetch: () => Promise<any>,
-    makePayload: () => any;
+interface FetchHelperConfig<TPayload> {
+    triggerFetch: () => Promise<TPayload>,
+    makePayload: () => TPayload;
+    expectedURL: string;
 }
 
 interface FetchTestConfig {
@@ -17,20 +19,22 @@ interface FetchTestConfig {
     expectedAction: actionHelpers.ActionExpectation;
 }
 
-export class FetchHelper {
-    config: FetchHelperConfig;
+export class FetchHelper<TPayload> {
+    config: FetchHelperConfig<TPayload>;
     sandbox: Sandbox;
 
-    constructor(config: FetchHelperConfig) {
+    constructor(config: FetchHelperConfig<TPayload>) {
         this.config = config;
     }
 
     testFetchWithMockedResponse({ done, payload, errorMessage, expectedAction }: FetchTestConfig) {
         mockFetcherResponse(payload, errorMessage);
-        const spy = actionHelpers.dispatchSpy(this.sandbox);
+        const fetcherSpy = this.sandbox.sinon.spy(fetcher, "fetch");
+        const dispatchSpy = actionHelpers.dispatchSpy(this.sandbox);
         const handler = (_: any) => {
             try {
-                const actions = getActions(spy);
+                expect(fetcherSpy.args[0][0]).to.equal(this.config.expectedURL);
+                const actions = getActions(dispatchSpy);
                 expect(actions[0].action).to.contain("beginFetch");
                 expect(actions[1].action).to.contain(expectedAction.action);
                 expect(actions[1].payload).to.eql(expectedAction.payload);
