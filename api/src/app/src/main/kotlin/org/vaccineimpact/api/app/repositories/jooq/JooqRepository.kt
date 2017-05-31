@@ -1,5 +1,7 @@
 package org.vaccineimpact.api.app.repositories.jooq
 
+import org.vaccineimpact.api.Deserializer
+import org.vaccineimpact.api.UnknownEnumValue
 import org.vaccineimpact.api.app.errors.BadDatabaseConstant
 import org.vaccineimpact.api.app.errors.UnableToConnectToDatabaseError
 import org.vaccineimpact.api.db.JooqContext
@@ -9,6 +11,7 @@ import java.io.Closeable
 abstract class JooqRepository : Closeable
 {
     private val context = makeContext()
+    val deserializer = Deserializer()
     val dsl = context.dsl
 
     override fun close()
@@ -28,10 +31,15 @@ abstract class JooqRepository : Closeable
         }
     }
 
-    protected inline fun <reified T : Enum<T>> mapEnum(name: String): T
+    protected inline fun <reified T: Enum<T>> mapEnum(raw: String): T
     {
-        return enumValues<T>()
-                .firstOrNull { name.replace('-', '_').equals(it.name, ignoreCase = true) }
-                ?: throw BadDatabaseConstant(name, T::class.simpleName ?: "[unknown]")
+        return try
+        {
+            deserializer.parseEnum<T>(raw)
+        }
+        catch (e: UnknownEnumValue)
+        {
+            throw BadDatabaseConstant(e.name, e.type)
+        }
     }
 }

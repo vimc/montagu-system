@@ -2,16 +2,15 @@ package org.vaccineimpact.api.tests.controllers
 
 import com.nhaarman.mockito_kotlin.*
 import org.assertj.core.api.Assertions.assertThat
-import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
 import org.vaccineimpact.api.app.ActionContext
 import org.vaccineimpact.api.app.controllers.TouchstoneController
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.app.repositories.inmemory.InMemoryDataSet
 import org.vaccineimpact.api.models.*
-import org.vaccineimpact.api.test_helpers.MontaguTests
+import org.vaccineimpact.api.models.permissions.ReifiedPermission
 
-class TouchstoneControllerTests : MontaguTests()
+class TouchstoneControllerTests : ControllerTests()
 {
     @Test
     fun `getTouchstones returns touchstones`()
@@ -19,14 +18,14 @@ class TouchstoneControllerTests : MontaguTests()
         val touchstones = listOf(
                 Touchstone("t-1", "t", 1, "description", YearRange(2000, 2010), TouchstoneStatus.OPEN)
         )
-        val repo = mock<TouchstoneRepository> {
+        val controllerContext = mockControllerContext(mock<TouchstoneRepository> {
             on { this.touchstones } doReturn InMemoryDataSet(touchstones)
-        }
+        })
         val context = mock<ActionContext> {
             on { hasPermission(any()) } doReturn true
         }
 
-        val controller = TouchstoneController({ repo })
+        val controller = TouchstoneController(controllerContext)
         assertThat(controller.getTouchstones(context)).hasSameElementsAs(touchstones)
     }
 
@@ -37,10 +36,10 @@ class TouchstoneControllerTests : MontaguTests()
                 Touchstone("t-1", "t", 1, "description", YearRange(2000, 2010), TouchstoneStatus.OPEN),
                 Touchstone("t-2", "t", 2, "description", YearRange(2000, 2010), TouchstoneStatus.IN_PREPARATION)
         )
-        val repo = mock<TouchstoneRepository> {
+        val controllerContext = mockControllerContext(mock<TouchstoneRepository> {
             on { this.touchstones } doReturn InMemoryDataSet(touchstones)
-        }
-        val controller = TouchstoneController({ repo })
+        })
+        val controller = TouchstoneController(controllerContext)
 
         val permissiveContext = mock<ActionContext> {
             on { hasPermission(any()) } doReturn true
@@ -61,38 +60,43 @@ class TouchstoneControllerTests : MontaguTests()
         val coverageSets = listOf(CoverageSet(1, "t1", "name", "vaccine", GAVISupportLevel.WITH, ActivityType.CAMPAIGN))
         val result = ScenarioAndCoverageSets(scenario, coverageSets)
 
-        val repo = mock<TouchstoneRepository> {
+        val controllerContext = mockControllerContext(mock<TouchstoneRepository> {
             on { getScenario(any(), any()) } doReturn result
             on { touchstones } doReturn InMemoryDataSet(listOf(touchstone))
-        }
+        })
         val context = mock<ActionContext> {
             on { hasPermission(any()) } doReturn true
             on { params(":touchstone-id") } doReturn touchstone.id
             on { params(":scenario-id") } doReturn scenario.id
         }
 
-        val controller = TouchstoneController({ repo })
+        val controller = TouchstoneController(controllerContext)
         val data = controller.getScenario(context)
 
-        verify(repo).getScenario(eq(touchstone.id), eq(scenario.id))
+        verify(controllerContext.repositories.touchstone()).getScenario(eq(touchstone.id), eq(scenario.id))
         assertThat(data.touchstone).isEqualTo(touchstone)
         assertThat(data.scenario).isEqualTo(scenario)
         assertThat(data.coverageSets).hasSameElementsAs(coverageSets)
     }
 
     @Test
-    fun `getScenario throws exception on in-preparation touchstone if user doesn't have permission`()
+    fun `getScenario requires touchstones prepare permission for in-preparation touchstone`()
     {
         val touchstone = Touchstone("t-1", "t", 1, "description", YearRange(2000, 2010), TouchstoneStatus.IN_PREPARATION)
-        val repo = mock<TouchstoneRepository> {
+        val scenario = Scenario("id", "desc", "disease", listOf("t1, t2"))
+        val controllerContext = mockControllerContext(mock<TouchstoneRepository> {
             on { touchstones } doReturn InMemoryDataSet(listOf(touchstone))
-        }
+            on { getScenario(any(), any()) } doReturn ScenarioAndCoverageSets(scenario, emptyList())
+        })
         val context = mock<ActionContext> {
-            on { hasPermission(any()) } doReturn false
             on { params(":touchstone-id") } doReturn touchstone.id
+            on { params(":scenario-id") } doReturn scenario.id
         }
-
-        val controller = TouchstoneController({ repo })
-        assertThatThrownBy { controller.getScenario(context) }.hasMessageContaining("touchstones.prepare")
+        val controller = TouchstoneController(controllerContext)
+        controller.getScenario(context)
+        verify(context).requirePermission(ReifiedPermission("touchstones.prepare", Scope.Global()))
     }
+
+    private fun mockControllerContext(repo: TouchstoneRepository)
+            = mockControllerContext(repo) { it.touchstone }
 }

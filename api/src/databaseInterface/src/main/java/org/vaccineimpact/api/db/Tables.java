@@ -30,6 +30,7 @@ import org.vaccineimpact.api.db.tables.ImpactOutcome;
 import org.vaccineimpact.api.db.tables.Model;
 import org.vaccineimpact.api.db.tables.ModelVersion;
 import org.vaccineimpact.api.db.tables.ModellingGroup;
+import org.vaccineimpact.api.db.tables.OnetimeToken;
 import org.vaccineimpact.api.db.tables.Permission;
 import org.vaccineimpact.api.db.tables.Responsibility;
 import org.vaccineimpact.api.db.tables.ResponsibilitySet;
@@ -178,6 +179,11 @@ public class Tables {
      * With the self-referencing "current" field; we consider a modelling group to be the current one if current is null.  This is not recursive; if we move a modelling group to a new id then every modelling group that has current pointing at the old id must be updated to point at the new one.  This means that no `current` points at an `id` that does not have `current` as `null`.
      */
     public static final ModellingGroup MODELLING_GROUP = org.vaccineimpact.api.db.tables.ModellingGroup.MODELLING_GROUP;
+
+    /**
+     * The table <code>public.onetime_token</code>.
+     */
+    public static final OnetimeToken ONETIME_TOKEN = org.vaccineimpact.api.db.tables.OnetimeToken.ONETIME_TOKEN;
 
     /**
      * The table <code>public.permission</code>.

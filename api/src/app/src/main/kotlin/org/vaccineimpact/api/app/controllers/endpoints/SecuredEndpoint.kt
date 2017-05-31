@@ -3,10 +3,7 @@ package org.vaccineimpact.api.app.controllers.endpoints
 import org.pac4j.sparkjava.SecurityFilter
 import org.vaccineimpact.api.app.ActionContext
 import org.vaccineimpact.api.ContentTypes
-import org.vaccineimpact.api.app.security.JWTHeaderClient
-import org.vaccineimpact.api.app.security.MontaguAuthorizer
-import org.vaccineimpact.api.app.security.PermissionRequirement
-import org.vaccineimpact.api.app.security.TokenVerifyingConfigFactory
+import org.vaccineimpact.api.app.security.*
 import org.vaccineimpact.api.security.WebTokenHelper
 import spark.Spark
 import spark.route.HttpMethod
@@ -27,10 +24,11 @@ open class SecuredEndpoint(
         val allPermissions = (permissions + "*/can-login").map {
             PermissionRequirement.parse(it)
         }
-        val tokenVerifier = TokenVerifyingConfigFactory(tokenHelper, allPermissions.toSet()).build()
+        val configFactory = TokenVerifyingConfigFactory(tokenHelper, allPermissions.toSet())
+        val tokenVerifier = configFactory.build()
         Spark.before(url, SecurityFilter(
                 tokenVerifier,
-                JWTHeaderClient::class.java.simpleName,
+                configFactory.allClients(),
                 MontaguAuthorizer::class.java.simpleName,
                 "SkipOptions"
         ))

@@ -4,10 +4,11 @@ import org.junit.Test
 import org.vaccineimpact.api.blackboxTests.helpers.*
 import org.vaccineimpact.api.blackboxTests.schemas.CSVSchema
 import org.vaccineimpact.api.blackboxTests.schemas.SplitSchema
+import org.vaccineimpact.api.blackboxTests.validators.JSONValidator
 import org.vaccineimpact.api.blackboxTests.validators.SplitValidator
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.direct.*
-import org.vaccineimpact.api.models.PermissionSet
+import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.test_helpers.DatabaseTest
 
 class CoverageTests : DatabaseTest()
@@ -40,11 +41,27 @@ class CoverageTests : DatabaseTest()
         JooqContext().use {
             addCoverageData(it, touchstoneStatus = "open")
             userHelper.setupTestUser(it)
-            userHelper.createPermissions(it, minimumPermissions)
         }
 
         val response = requestHelper.get(url, minimumPermissions, contentType = "text/csv")
         schema.validate(response.text)
+    }
+
+    @Test
+    fun `can get pure CSV coverage data via one time link`()
+    {
+        validate("$url/get_onetime_link/") against "Token" given {
+            addCoverageData(it, touchstoneStatus = "open")
+        } requiringPermissions { minimumPermissions } andCheckString { token ->
+            val oneTimeURL = "/onetime_link/$token/"
+            val schema = CSVSchema("MergedCoverageData")
+            val requestHelper = RequestHelper()
+            val response = requestHelper.get(oneTimeURL)
+            schema.validate(response.text)
+
+            val badResponse =  requestHelper.get(oneTimeURL)
+            JSONValidator().validateError(badResponse.text, expectedErrorCode = "invalid-token-used")
+        }
     }
 
     @Test

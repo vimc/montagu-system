@@ -1,16 +1,17 @@
 package org.vaccineimpact.api.app.controllers
 
+import org.vaccineimpact.api.OneTimeAction
 import org.vaccineimpact.api.app.ActionContext
 import org.vaccineimpact.api.app.controllers.endpoints.SecuredEndpoint
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
-import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.serialization.DataTable
 import org.vaccineimpact.api.app.serialization.SplitData
 import org.vaccineimpact.api.models.*
+import org.vaccineimpact.api.models.permissions.ReifiedPermission
 
-class ModellingGroupController(private val db: () -> ModellingGroupRepository)
-    : AbstractController()
+class ModellingGroupController(context: ControllerContext)
+    : AbstractController(context)
 {
     override val urlComponent = "/modelling-groups"
     private val groupScope = "modelling-group:<group-id>"
@@ -20,20 +21,18 @@ class ModellingGroupController(private val db: () -> ModellingGroupRepository)
             "$groupScope/responsibilities.read"
     )
     val coveragePermissions = responsibilityPermissions + "$groupScope/coverage.read"
+    val responsibilitiesURL = "/:group-id/responsibilities/:touchstone-id"
+    val scenarioURL = "$responsibilitiesURL/:scenario-id"
+    val coverageURL = "$scenarioURL/coverage"
 
     override val endpoints = listOf(
-            SecuredEndpoint("/",
-                    this::getModellingGroups, setOf("*/modelling-groups.read")),
-            SecuredEndpoint("/:group-id/responsibilities/:touchstone-id/",
-                    this::getResponsibilities, responsibilityPermissions),
-            SecuredEndpoint("/:group-id/responsibilities/:touchstone-id/:scenario-id/",
-                    this::getResponsibility, responsibilityPermissions),
-            SecuredEndpoint("/:group-id/responsibilities/:touchstone-id/:scenario-id/coverage_sets/",
-                    this::getCoverageSets, coveragePermissions),
-            SecuredEndpoint("/:group-id/responsibilities/:touchstone-id/:scenario-id/coverage/",
-                    this::getCoverageDataAndMetadata, coveragePermissions, contentType = "application/json"),
-            SecuredEndpoint("/:group-id/responsibilities/:touchstone-id/:scenario-id/coverage/",
-                    this::getCoverageData, coveragePermissions, contentType = "text/csv")
+            SecuredEndpoint("/", this::getModellingGroups, setOf("*/modelling-groups.read")),
+            SecuredEndpoint("$responsibilitiesURL/", this::getResponsibilities, responsibilityPermissions),
+            SecuredEndpoint("$scenarioURL/", this::getResponsibility, responsibilityPermissions),
+            SecuredEndpoint("$scenarioURL/coverage_sets/", this::getCoverageSets, coveragePermissions),
+            SecuredEndpoint("$coverageURL/", this::getCoverageDataAndMetadata, coveragePermissions, contentType = "application/json"),
+            SecuredEndpoint("$coverageURL/", this::getCoverageData, coveragePermissions, contentType = "text/csv"),
+            SecuredEndpoint("$coverageURL/get_onetime_link/", { c -> getOneTimeLink(c, OneTimeAction.COVERAGE) }, coveragePermissions)
     )
 
     fun getModellingGroups(context: ActionContext): List<ModellingGroup>
@@ -68,7 +67,14 @@ class ModellingGroupController(private val db: () -> ModellingGroupRepository)
         return data
     }
 
-    fun getCoverageData(context: ActionContext) = getCoverageDataAndMetadata(context).tableData
+    fun getCoverageData(context: ActionContext): DataTable<CoverageRow>
+    {
+        val data = getCoverageDataAndMetadata(context)
+        val metadata = data.structuredMetadata
+        val filename = "coverage_${metadata.touchstone.id}_${metadata.scenario.id}.csv"
+        context.addResponseHeader("Content-Disposition", """attachment; filename="$filename"""")
+        return data.tableData
+    }
 
     // TODO: https://vimc.myjetbrains.com/youtrack/issue/VIMC-307
     // Use streams to speed up this process of sending large data
@@ -79,6 +85,8 @@ class ModellingGroupController(private val db: () -> ModellingGroupRepository)
         checkTouchstoneStatus(data.structuredMetadata.touchstone.status, path.touchstoneId, context)
         return data
     }
+
+    private fun db() = repos.modellingGroup()
 
     private fun checkTouchstoneStatus(
             touchstoneStatus: TouchstoneStatus,

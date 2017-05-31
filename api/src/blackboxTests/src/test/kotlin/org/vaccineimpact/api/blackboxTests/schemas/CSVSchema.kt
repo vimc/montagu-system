@@ -14,7 +14,13 @@ class CSVSchema(schemaFileName: String)
 
     fun validate(csvAsString: String)
     {
-        val csv = StringReader(csvAsString.trim())
+        val trimmedText = csvAsString.trim()
+        if (trimmedText.startsWith("{") || trimmedText.startsWith("["))
+        {
+            fail("Expected CSV data, but this looks a lot like JSON: $csvAsString")
+        }
+
+        val csv = StringReader(trimmedText)
                 .use { CSVReader(it).readAll() }
         val headers = csv.first()
         val body = csv.drop(1)

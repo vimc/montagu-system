@@ -5,7 +5,11 @@ import org.vaccineimpact.api.app.repositories.UserRepository
 import org.vaccineimpact.api.db.Tables.*
 import org.vaccineimpact.api.db.fromJoinPath
 import org.vaccineimpact.api.db.tables.records.AppUserRecord
-import org.vaccineimpact.api.models.*
+import org.vaccineimpact.api.models.ReifiedRole
+import org.vaccineimpact.api.models.Scope
+import org.vaccineimpact.api.models.User
+import org.vaccineimpact.api.models.UserProperties
+import org.vaccineimpact.api.models.permissions.ReifiedPermission
 
 class JooqUserRepository : JooqRepository(), UserRepository
 {

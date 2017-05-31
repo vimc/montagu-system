@@ -3,9 +3,9 @@ package org.vaccineimpact.api.tests.security
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
-import org.vaccineimpact.api.models.ReifiedPermission
+import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import org.vaccineimpact.api.models.Scope
-import org.vaccineimpact.api.models.exceptions.ReifiedPermissionParseException
+import org.vaccineimpact.api.models.permissions.ReifiedPermissionParseException
 import org.vaccineimpact.api.test_helpers.MontaguTests
 
 class PermissionTests : MontaguTests()

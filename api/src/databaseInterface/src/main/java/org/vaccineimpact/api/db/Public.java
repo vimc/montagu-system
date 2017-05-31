@@ -38,6 +38,7 @@ import org.vaccineimpact.api.db.tables.ImpactOutcome;
 import org.vaccineimpact.api.db.tables.Model;
 import org.vaccineimpact.api.db.tables.ModelVersion;
 import org.vaccineimpact.api.db.tables.ModellingGroup;
+import org.vaccineimpact.api.db.tables.OnetimeToken;
 import org.vaccineimpact.api.db.tables.Permission;
 import org.vaccineimpact.api.db.tables.Responsibility;
 import org.vaccineimpact.api.db.tables.ResponsibilitySet;
@@ -87,7 +88,7 @@ import org.vaccineimpact.api.db.tables.records.SelectBurdenDataColRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = -1888118577;
+    private static final long serialVersionUID = 296419779;
 
     /**
      * The reference instance of <code>public</code>
@@ -193,6 +194,11 @@ public class Public extends SchemaImpl {
      * With the self-referencing "current" field; we consider a modelling group to be the current one if current is null.  This is not recursive; if we move a modelling group to a new id then every modelling group that has current pointing at the old id must be updated to point at the new one.  This means that no `current` points at an `id` that does not have `current` as `null`.
      */
     public final ModellingGroup MODELLING_GROUP = org.vaccineimpact.api.db.tables.ModellingGroup.MODELLING_GROUP;
+
+    /**
+     * The table <code>public.onetime_token</code>.
+     */
+    public final OnetimeToken ONETIME_TOKEN = org.vaccineimpact.api.db.tables.OnetimeToken.ONETIME_TOKEN;
 
     /**
      * The table <code>public.permission</code>.
@@ -566,6 +572,7 @@ public class Public extends SchemaImpl {
             Model.MODEL,
             ModelVersion.MODEL_VERSION,
             ModellingGroup.MODELLING_GROUP,
+            OnetimeToken.ONETIME_TOKEN,
             Permission.PERMISSION,
             Responsibility.RESPONSIBILITY,
             ResponsibilitySet.RESPONSIBILITY_SET,

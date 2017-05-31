@@ -5,8 +5,9 @@ import org.vaccineimpact.api.app.controllers.endpoints.SecuredEndpoint
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.models.*
+import org.vaccineimpact.api.models.permissions.ReifiedPermission
 
-class TouchstoneController(private val db: () -> TouchstoneRepository) : AbstractController()
+class TouchstoneController(context: ControllerContext) : AbstractController(context)
 {
     private val permissions = setOf("*/touchstones.read")
     private val scenarioPermissions = permissions + setOf("*/scenarios.read", "*/coverage.read")
@@ -59,4 +60,6 @@ class TouchstoneController(private val db: () -> TouchstoneRepository) : Abstrac
         }
         return touchstone
     }
+
+    private fun db() = repos.touchstone()
 }

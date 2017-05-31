@@ -9,7 +9,7 @@ import org.vaccineimpact.api.db.direct.createPermissions
 import org.vaccineimpact.api.db.direct.createRole
 import org.vaccineimpact.api.db.direct.ensureUserHasRole
 import org.vaccineimpact.api.db.direct.setRolePermissions
-import org.vaccineimpact.api.models.ReifiedPermission
+import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import org.vaccineimpact.api.models.ReifiedRole
 import org.vaccineimpact.api.models.Scope
 import org.vaccineimpact.api.models.User

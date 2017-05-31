@@ -4,9 +4,8 @@ import org.vaccineimpact.api.ContentTypes
 import org.vaccineimpact.api.blackboxTests.validators.JSONValidator
 import org.vaccineimpact.api.blackboxTests.validators.Validator
 import org.vaccineimpact.api.db.JooqContext
-import org.vaccineimpact.api.db.direct.createPermissions
-import org.vaccineimpact.api.models.ReifiedPermission
 import org.vaccineimpact.api.models.Scope
+import org.vaccineimpact.api.models.permissions.ReifiedPermission
 
 data class ExpectedProblem(val errorCode: String, val errorTextContains: String)
 
@@ -40,7 +39,6 @@ class PermissionChecker(
             given(db)
             val userHelper = TestUserHelper()
             userHelper.setupTestUser(db)
-            userHelper.createPermissions(db, allRequiredPermissions)
         }
 
         checkPermissionIsRequired(permissionUnderTest, expectedProblem)

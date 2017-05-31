@@ -6,7 +6,6 @@ import org.pac4j.sparkjava.SecurityFilter
 import org.vaccineimpact.api.app.ActionContext
 import org.vaccineimpact.api.app.HTMLForm
 import org.vaccineimpact.api.app.HTMLFormHelpers
-import org.vaccineimpact.api.app.serialization.Serializer
 import org.vaccineimpact.api.app.controllers.endpoints.BasicEndpoint
 import org.vaccineimpact.api.app.security.SkipOptionsMatcher
 import org.vaccineimpact.api.app.security.USER_OBJECT
@@ -14,11 +13,10 @@ import org.vaccineimpact.api.models.AuthenticationResponse
 import org.vaccineimpact.api.models.FailedAuthentication
 import org.vaccineimpact.api.models.SuccessfulAuthentication
 import org.vaccineimpact.api.models.User
-import org.vaccineimpact.api.security.WebTokenHelper
 import spark.Spark.before
 import spark.route.HttpMethod
 
-class AuthenticationController(private val tokenHelper: WebTokenHelper) : AbstractController()
+class AuthenticationController(context: ControllerContext) : AbstractController(context)
 {
     override val urlComponent = "/"
     override val endpoints = listOf(
