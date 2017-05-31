@@ -9,6 +9,8 @@ import org.vaccineimpact.api.db.tables.records.CoverageRecord
 import java.math.BigDecimal
 import java.util.*
 
+private val random = Random(0)
+
 fun JooqContext.addGroup(id: String, description: String, current: String? = null)
 {
     this.dsl.newRecord(MODELLING_GROUP).apply {
@@ -256,8 +258,9 @@ fun JooqContext.addCountries(ids: List<String>)
 
 fun JooqContext.generateCountries(count: Int): List<String>
 {
+    val letters = "ABCDEFGHIJKLMNOPQSTUVWXYZ".toCharArray()
     val countries = (0..count).map {
-        RandomStringUtils.randomAlphabetic(3).toUpperCase()
+        RandomStringUtils.random(3, 0, letters.size, true, false, letters, random).toUpperCase()
     }
     this.addCountries(countries)
     return countries
@@ -269,7 +272,6 @@ fun JooqContext.generateCoverageData(
         yearRange: IntProgression = 1950..2000 step 5,
         ageRange: IntProgression = 0..80 step 5)
 {
-    val generator = Random()
     val records = mutableListOf<CoverageRecord>()
     val countries = this.generateCountries(countryCount)
     for (country in countries)
@@ -286,7 +288,7 @@ fun JooqContext.generateCoverageData(
                         ageTo = BigDecimal(age + ageRange.step),
                         ageRangeVerbatim = null,
                         target = null,
-                        coverage = generator.nextDecimal(0, 100, numberOfDecimalPlaces = 2)
+                        coverage = random.nextDecimal(0, 100, numberOfDecimalPlaces = 2)
                 ))
             }
         }
