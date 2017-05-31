@@ -12,13 +12,13 @@ import org.vaccineimpact.api.app.addDefaultResponseHeaders
 import org.vaccineimpact.api.app.errors.MissingRequiredPermissionError
 import org.vaccineimpact.api.app.serialization.Serializer
 import org.vaccineimpact.api.models.ErrorInfo
-import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.models.Result
 import org.vaccineimpact.api.models.ResultStatus
+import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.security.WebTokenHelper
 
 class TokenVerifyingConfigFactory(
-        private val tokenHelper: WebTokenHelper,
+        tokenHelper: WebTokenHelper,
         val requiredPermissions: Set<PermissionRequirement>
 ) : ConfigFactory
 {
@@ -27,7 +27,7 @@ class TokenVerifyingConfigFactory(
             JWTParameterClient(tokenHelper)
     )
 
-    override fun build(): Config
+    override fun build(vararg parameters: Any?): Config
     {
         clients.forEach {
             it.addAuthorizationGenerator({ _, profile -> extractPermissionsFromToken(profile) })
