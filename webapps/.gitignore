@@ -1,8 +1,6 @@
 *.dropbox.attr
 contrib/.tmp/*
-contrib/\.idea/dictionaries/
-contrib/\.idea/kotlinc\.xml
-contrib/\.idea/workspace\.xml
+contrib/\.idea/*
 contrib/node_modules/*
 contrib/npm-debug\.log
 contrib/out/*
