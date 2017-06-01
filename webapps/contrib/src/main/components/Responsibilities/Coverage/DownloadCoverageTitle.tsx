@@ -10,7 +10,7 @@ interface Props {
     touchstone: Touchstone;
 }
 
-export class ResponsibilityDetailsTitleComponent extends React.Component<Props, undefined> {
+export class DownloadCoverageTitle extends React.Component<Props, undefined> {
     static getStores() {
         return [ responsibilityStore ];
     }
@@ -37,4 +37,4 @@ export class ResponsibilityDetailsTitleComponent extends React.Component<Props, 
         </span>;
     }
 }
-export const ResponsibilityDetailsTitle = connectToStores(ResponsibilityDetailsTitleComponent);
+export const ResponsibilityDetailsTitle = connectToStores(DownloadCoverageTitle);

@@ -9,22 +9,20 @@ import fetcher from "../../../sources/Fetcher";
 import { coverageTokenActions } from "../../../actions/CoverageActions";
 const commonStyles = require("../../../styles/common.css");
 
-interface ResponsibilityDetails {
-    touchstone: Touchstone;
-    scenario: Scenario;
-    coverageSets: CoverageSet[];
-    coverageToken: string;
+export interface DownloadCoverageComponentProps extends RemoteContent {
+    props: {
+        touchstone: Touchstone;
+        scenario: Scenario;
+        coverageSets: CoverageSet[];
+        coverageToken: string;
+    };
 }
 
-export interface ResponsibilityDetailsProps extends RemoteContent {
-    props: ResponsibilityDetails;
-}
-
-export class ResponsibilityDetailsComponent extends RemoteContentComponent<ResponsibilityDetailsProps> {
+export class DownloadCoverageComponent extends RemoteContentComponent<DownloadCoverageComponentProps> {
     static getStores() {
         return [ responsibilityStore ];
     }
-    static getPropsFromStores(): ResponsibilityDetailsProps {
+    static getPropsFromStores(): DownloadCoverageComponentProps {
         const state = responsibilityStore.getState();
         const r = state.currentResponsibility;
         if (r != null) {
@@ -52,7 +50,7 @@ export class ResponsibilityDetailsComponent extends RemoteContentComponent<Respo
         });
     }
 
-    renderContent(props: ResponsibilityDetailsProps) {
+    renderContent(props: DownloadCoverageComponentProps) {
         const data = props.props;
         const url = fetcher.buildURL(`/onetime_link/${data.coverageToken}/`);
         const downloadDisabled = data.coverageToken == null;
@@ -77,4 +75,4 @@ export class ResponsibilityDetailsComponent extends RemoteContentComponent<Respo
     }
 }
 
-export const ResponsibilityDetails = connectToStores(ResponsibilityDetailsComponent);
+export const ResponsibilityDetails = connectToStores(DownloadCoverageComponent);

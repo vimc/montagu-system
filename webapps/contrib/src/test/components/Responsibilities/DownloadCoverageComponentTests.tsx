@@ -4,16 +4,16 @@ import { mockCoverageSet, mockScenario, mockTouchstone } from "../../mocks/mockM
 import { shallow } from "enzyme";
 
 import {
-    ResponsibilityDetailsComponent,
-    ResponsibilityDetailsProps
-} from "../../../main/components/Responsibilities/Details/ResponsibilityDetails"
+    DownloadCoverageComponent,
+    DownloadCoverageComponentProps
+} from "../../../main/components/Responsibilities/Coverage/DownloadCoverageComponent"
 import { findLabelledCell } from "../../TableHelpers";
-import { CoverageSetList } from "../../../main/components/Responsibilities/Details/CoverageSetList";
+import { CoverageSetList } from "../../../main/components/Responsibilities/Coverage/CoverageSetList";
 import { Sandbox } from "../../Sandbox";
 import { dispatchSpy, expectNoActions, expectOneAction } from "../../actionHelpers";
 import { responsibilityStore } from "../../../main/stores/ResponsibilityStore";
 
-describe("ResponsibilityDetailsComponent", () => {
+describe("DownloadCoverageComponent", () => {
     const sandbox = new Sandbox();
 
     afterEach(() => {
@@ -24,7 +24,7 @@ describe("ResponsibilityDetailsComponent", () => {
         const touchstone = mockTouchstone();
         const scenario = mockScenario();
         const props = makeProps({ touchstone, scenario });
-        const rendered = shallow(<ResponsibilityDetailsComponent {...props} />);
+        const rendered = shallow(<DownloadCoverageComponent {...props} />);
         expect(findLabelledCell(rendered, "Touchstone").text()).to.equal(touchstone.description);
         expect(findLabelledCell(rendered, "Scenario").text()).to.equal(scenario.description);
     });
@@ -32,13 +32,13 @@ describe("ResponsibilityDetailsComponent", () => {
     it("renders coverage set list", () => {
         const sets = [ mockCoverageSet(), mockCoverageSet() ];
         const props = makeProps({ coverageSets: sets });
-        const rendered = shallow(<ResponsibilityDetailsComponent {...props} />);
+        const rendered = shallow(<DownloadCoverageComponent {...props} />);
         expect(rendered.find(CoverageSetList).props()).to.eql({ coverageSets: sets });
     });
 
     it("renders form with onetime URL", () => {
         const props = makeProps({ coverageToken: "TOKEN" });
-        const rendered = shallow(<ResponsibilityDetailsComponent {...props} />);
+        const rendered = shallow(<DownloadCoverageComponent {...props} />);
         expect(rendered.find("form").prop("action")).to.equal("http://localhost:8080/v1/onetime_link/TOKEN/");
     });
 
@@ -47,7 +47,7 @@ describe("ResponsibilityDetailsComponent", () => {
         const fetchNewToken = sandbox.sinon.stub(responsibilityStore, "fetchOneTimeCoverageToken");
 
         const props = makeProps({ coverageToken: "TOKEN" });
-        const rendered = shallow(<ResponsibilityDetailsComponent {...props} />);
+        const rendered = shallow(<DownloadCoverageComponent {...props} />);
         const button = rendered.find("form").find("button");
         expect(button.prop("disabled")).to.be.false;
         button.simulate("click");
@@ -60,13 +60,13 @@ describe("ResponsibilityDetailsComponent", () => {
 
     it("download coverage data button is disabled when token is null", () => {
         const props = makeProps({ coverageToken: null });
-        const rendered = shallow(<ResponsibilityDetailsComponent {...props} />);
+        const rendered = shallow(<DownloadCoverageComponent {...props} />);
         const button = rendered.find("form").find("button");
         expect(button.prop("disabled")).to.be.true;
     });
 });
 
-function makeProps(props: any): ResponsibilityDetailsProps {
+function makeProps(props: any): DownloadCoverageComponentProps {
     const touchstone = mockTouchstone();
     const scenario = mockScenario();
     return {

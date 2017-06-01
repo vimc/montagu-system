@@ -5,9 +5,9 @@ import { dispatchSpy, expectOrderedActions } from "../../actionHelpers";
 import { mockLocation } from "../../mocks/mocks";
 
 import { responsibilityStore } from "../../../main/stores/ResponsibilityStore";
-import { ResponsibilityDetailsPage } from "../../../main/components/Responsibilities/Details/ResponsibilityDetailsPage";
+import { DownloadCoveragePage } from "../../../main/components/Responsibilities/Coverage/DownloadCoveragePage";
 
-describe('ResponsibilityDetailsPage', () => {
+describe('DownloadCoveragePage', () => {
     const sandbox = new Sandbox();
 
     afterEach(() => {
@@ -23,7 +23,7 @@ describe('ResponsibilityDetailsPage', () => {
             scenarioId: "scenario-1"
         });
 
-        sandbox.mount(<ResponsibilityDetailsPage location={ location } />);
+        sandbox.mount(<DownloadCoveragePage location={ location } />);
 
         expectOrderedActions(spy, [
             { action: "TouchstoneActions.setCurrentTouchstone", payload: "touchstone-1" },
