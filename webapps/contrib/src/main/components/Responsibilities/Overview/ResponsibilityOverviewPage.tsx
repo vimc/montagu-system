@@ -3,8 +3,8 @@ import { PageWithHeader } from "../../PageWithHeader/PageWithHeader";
 import { ResponsibilityList } from "./ResponsibilityList";
 import { settings } from "../../../Settings";
 import { ResponsibilityOverviewTitle } from "./ResponsibilityOverviewTitle";
-import * as ResponsibilityStore from "../../../stores/ResponsibilityStore";
 import { touchstoneActions } from "../../../actions/TouchstoneActions";
+import { responsibilityStore } from "../../../stores/ResponsibilityStore";
 
 interface LocationProps {
     touchstoneId: string
@@ -13,7 +13,7 @@ interface LocationProps {
 export class ResponsibilityOverviewPage extends PageWithHeader<LocationProps> {
     componentDidMount() {
         touchstoneActions.setCurrentTouchstone(this.props.location.params.touchstoneId);
-        ResponsibilityStore.Store.fetchResponsibilities();
+        responsibilityStore.fetchResponsibilities();
     }
 
     title() {

@@ -3,18 +3,15 @@ import * as AltJS from "alt";
 import { RemoteContent } from "./RemoteContent";
 import { responsibilityActions } from "../actions/ResponsibilityActions";
 import { AbstractStore } from "./AbstractStore";
-import { Responsibilities, Responsibility, ScenarioTouchstoneAndCoverageSets, Touchstone } from "../models/Generated";
+import { Responsibilities, ScenarioTouchstoneAndCoverageSets, Touchstone } from "../models/Generated";
 import { sources } from "../sources/Sources";
 import { authActions, LogInProperties } from "../actions/AuthActions";
 import { touchstoneActions } from "../actions/TouchstoneActions";
-import {
-    ExtendedResponsibility, ExtendedResponsibilitySet,
-    IExtendedResponsibilitySet
-} from "../models/ResponsibilitySet";
+import { ExtendedResponsibility, ExtendedResponsibilitySet } from "../models/ResponsibilitySet";
 import { coverageSetActions } from "../actions/CoverageSetActions";
 import { coverageTokenActions } from "../actions/CoverageActions";
 
-export interface State extends RemoteContent {
+export interface ResponsibilityState extends RemoteContent {
     touchstones: Array<Touchstone>;
     currentTouchstone: Touchstone;
 
@@ -26,7 +23,7 @@ export interface State extends RemoteContent {
     currentDiseaseId: string;
 }
 
-interface ResponsibilityStoreInterface extends AltJS.AltStore<State> {
+interface ResponsibilityStoreInterface extends AltJS.AltStore<ResponsibilityState> {
     fetchResponsibilities(): Promise<Responsibilities>;
     fetchTouchstones(): Promise<Touchstone[]>;
     fetchCoverageSets(): Promise<ScenarioTouchstoneAndCoverageSets>;
@@ -34,7 +31,7 @@ interface ResponsibilityStoreInterface extends AltJS.AltStore<State> {
     isLoading(): boolean;
 }
 
-class ResponsibilityStore extends AbstractStore<State, ResponsibilityStoreInterface> implements State {
+class ResponsibilityStore extends AbstractStore<ResponsibilityState, ResponsibilityStoreInterface> implements ResponsibilityState {
     touchstones: Array<Touchstone>;
     currentTouchstone: Touchstone;
 
@@ -74,7 +71,7 @@ class ResponsibilityStore extends AbstractStore<State, ResponsibilityStoreInterf
         });
     }
 
-    initialState(): State {
+    initialState(): ResponsibilityState {
         return {
             touchstones: [],
             currentTouchstone: null,
@@ -142,4 +139,4 @@ class ResponsibilityStore extends AbstractStore<State, ResponsibilityStoreInterf
     }
 }
 
-export const Store = <ResponsibilityStoreInterface>alt.createStore<State>(ResponsibilityStore);
+export const responsibilityStore = <ResponsibilityStoreInterface>alt.createStore<ResponsibilityState>(ResponsibilityStore);

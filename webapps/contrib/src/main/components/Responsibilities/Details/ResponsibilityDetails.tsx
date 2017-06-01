@@ -4,7 +4,7 @@ import { CoverageSet, Scenario, Touchstone } from "../../../models/Generated";
 import { RemoteContent } from "../../../stores/RemoteContent";
 import { RemoteContentComponent } from "../../RemoteContentComponent/RemoteContentComponent";
 import { CoverageSetList } from "./CoverageSetList";
-import { Store } from "../../../stores/ResponsibilityStore";
+import { responsibilityStore } from "../../../stores/ResponsibilityStore";
 import fetcher from "../../../sources/Fetcher";
 import { coverageTokenActions } from "../../../actions/CoverageActions";
 const commonStyles = require("../../../styles/common.css");
@@ -22,10 +22,10 @@ export interface ResponsibilityDetailsProps extends RemoteContent {
 
 export class ResponsibilityDetailsComponent extends RemoteContentComponent<ResponsibilityDetailsProps> {
     static getStores() {
-        return [ Store ];
+        return [ responsibilityStore ];
     }
     static getPropsFromStores(): ResponsibilityDetailsProps {
-        const state = Store.getState();
+        const state = responsibilityStore.getState();
         const r = state.currentResponsibility;
         if (r != null) {
             return {
@@ -48,7 +48,7 @@ export class ResponsibilityDetailsComponent extends RemoteContentComponent<Respo
     refreshToken(e: React.MouseEvent<HTMLButtonElement>): void {
         setTimeout(() => {
             coverageTokenActions.clearUsedToken();
-            Store.fetchOneTimeCoverageToken();
+            responsibilityStore.fetchOneTimeCoverageToken();
         });
     }
 

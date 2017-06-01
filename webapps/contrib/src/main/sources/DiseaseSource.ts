@@ -2,9 +2,9 @@ import { Disease } from "../models/Generated";
 import { diseaseActions } from "../actions/DiseaseActions";
 import { Source } from './Source';
 import SourceModel = AltJS.SourceModel;
-import { State } from "../stores/MainStore";
+import { MainState } from "../stores/MainStore";
 
-export class DiseaseSource extends Source<Disease[], State> {
+export class DiseaseSource extends Source<Disease[], MainState> {
     fetchDiseases: () => SourceModel<Disease[]>;
 
     constructor() {

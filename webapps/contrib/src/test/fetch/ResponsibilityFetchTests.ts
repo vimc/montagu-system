@@ -1,6 +1,6 @@
 import { mockResponsibilitySet, mockTouchstone } from "../mocks/mockModels";
 import { FetchHelper } from "./helpers";
-import { Store } from "../../main/stores/ResponsibilityStore";
+import { responsibilityStore } from "../../main/stores/ResponsibilityStore";
 import { alt } from "../../main/alt";
 
 describe("ResponsibilityStore.fetchResponsibilities", () => {
@@ -14,7 +14,7 @@ describe("ResponsibilityStore.fetchResponsibilities", () => {
                     currentModellingGroupId: "group-id"
                 }
             }));
-            return Store.fetchResponsibilities();
+            return responsibilityStore.fetchResponsibilities();
         },
         makePayload: () => mockResponsibilitySet({ touchstone: touchstone.id })
     }).addTestsToMocha();

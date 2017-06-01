@@ -1,6 +1,6 @@
 import { mockResponsibility, mockScenarioTouchstoneAndCoverageSets, mockTouchstone } from "../mocks/mockModels";
 import { FetchHelper } from "./helpers";
-import { Store } from "../../main/stores/ResponsibilityStore";
+import { responsibilityStore } from "../../main/stores/ResponsibilityStore";
 import { alt } from "../../main/alt";
 import { ScenarioTouchstoneAndCoverageSets } from "../../main/models/Generated";
 
@@ -17,7 +17,7 @@ describe("ResponsibilityStore.fetchCoverageSets", () => {
                     currentResponsibility: responsibility
                 }
             }));
-            return Store.fetchCoverageSets();
+            return responsibilityStore.fetchCoverageSets();
         },
         makePayload: () => mockScenarioTouchstoneAndCoverageSets()
     }).addTestsToMocha();

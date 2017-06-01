@@ -11,7 +11,7 @@ import { findLabelledCell } from "../../TableHelpers";
 import { CoverageSetList } from "../../../main/components/Responsibilities/Details/CoverageSetList";
 import { Sandbox } from "../../Sandbox";
 import { dispatchSpy, expectNoActions, expectOneAction } from "../../actionHelpers";
-import { Store } from "../../../main/stores/ResponsibilityStore";
+import { responsibilityStore } from "../../../main/stores/ResponsibilityStore";
 
 describe("ResponsibilityDetailsComponent", () => {
     const sandbox = new Sandbox();
@@ -44,7 +44,7 @@ describe("ResponsibilityDetailsComponent", () => {
 
     it("clicking download coverage data button triggers token refresh", (done: DoneCallback) => {
         const spy = dispatchSpy(sandbox);
-        const fetchNewToken = sandbox.sinon.stub(Store, "fetchOneTimeCoverageToken");
+        const fetchNewToken = sandbox.sinon.stub(responsibilityStore, "fetchOneTimeCoverageToken");
 
         const props = makeProps({ coverageToken: "TOKEN" });
         const rendered = shallow(<ResponsibilityDetailsComponent {...props} />);

@@ -1,12 +1,12 @@
 import { mockDisease } from "../mocks/mockModels";
 import { FetchHelper } from "./helpers";
 
-import { Store } from "../../main/stores/MainStore";
+import { mainStore } from "../../main/stores/MainStore";
 import { Disease } from "../../main/models/Generated";
 
 describe("MainStore.load", () => {
     new FetchHelper<Disease[]>({
-        triggerFetch: () => Store.load(),
+        triggerFetch: () => mainStore.load(),
         makePayload: () => [ mockDisease(), mockDisease() ],
         expectedURL: "/diseases/"
     }).addTestsToMocha();

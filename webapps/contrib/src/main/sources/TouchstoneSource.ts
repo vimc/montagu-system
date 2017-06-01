@@ -2,9 +2,9 @@ import { Source } from "./Source";
 import { Touchstone } from "../models/Generated";
 import { touchstoneActions } from "../actions/TouchstoneActions";
 import SourceModel = AltJS.SourceModel;
-import { State } from "../stores/ResponsibilityStore";
+import { ResponsibilityState } from "../stores/ResponsibilityStore";
 
-export class TouchstoneSource extends Source<Touchstone[], State> {
+export class TouchstoneSource extends Source<Touchstone[], ResponsibilityState> {
     fetchTouchstones: () => SourceModel<Touchstone[]>;
 
     constructor() {

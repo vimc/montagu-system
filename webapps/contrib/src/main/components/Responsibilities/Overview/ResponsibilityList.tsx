@@ -2,7 +2,7 @@ import * as React from "react";
 import { RemoteContentComponent } from "../../RemoteContentComponent/RemoteContentComponent";
 import { DiseaseFilter } from "./DiseaseFilter";
 import { ResponsibilityComponent } from "./ResponsibilityComponent";
-import * as ResponsibilityStore from "../../../stores/ResponsibilityStore";
+import { responsibilityStore } from "../../../stores/ResponsibilityStore";
 import { Responsibility } from "../../../models/Generated";
 import { connectToStores } from "../../../alt";
 import { RemoteContent } from "../../../stores/RemoteContent";
@@ -19,11 +19,11 @@ export interface ResponsibilityListComponentProps extends RemoteContent {
 
 export class ResponsibilityListComponent extends RemoteContentComponent<ResponsibilityListComponentProps> {
     static getStores() {
-        return [ ResponsibilityStore.Store ];
+        return [ responsibilityStore ];
     }
 
     static getPropsFromStores(): ResponsibilityListComponentProps {
-        const state = ResponsibilityStore.Store.getState();
+        const state = responsibilityStore.getState();
         return {
             responsibilitySet: state.responsibilitySet,
             ready: state.ready,

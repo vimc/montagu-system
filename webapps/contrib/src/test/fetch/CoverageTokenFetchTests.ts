@@ -1,6 +1,6 @@
 import { mockResponsibility, mockScenarioTouchstoneAndCoverageSets, mockTouchstone } from "../mocks/mockModels";
 import { FetchHelper } from "./helpers";
-import { Store } from "../../main/stores/ResponsibilityStore";
+import { responsibilityStore } from "../../main/stores/ResponsibilityStore";
 import { alt } from "../../main/alt";
 
 describe("ResponsibilityStore.fetchOneTimeCoverageToken", () => {
@@ -16,7 +16,7 @@ describe("ResponsibilityStore.fetchOneTimeCoverageToken", () => {
                     currentResponsibility: responsibility
                 }
             }));
-            return Store.fetchOneTimeCoverageToken();
+            return responsibilityStore.fetchOneTimeCoverageToken();
         },
         makePayload: () => "TOKEN"
     }).addTestsToMocha();

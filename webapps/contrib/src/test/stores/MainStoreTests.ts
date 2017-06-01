@@ -4,11 +4,11 @@ import { Sandbox } from "../Sandbox";
 import { mockDisease } from "../mocks/mockModels";
 const jwt = require("jsonwebtoken");
 
-import { Store } from "../../main/stores/MainStore";
+import { mainStore } from "../../main/stores/MainStore";
 import { authActions } from "../../main/actions/AuthActions";
 import { diseaseActions } from "../../main/actions/DiseaseActions";
 import { errorActions } from "../../main/actions/ErrorActions";
-import * as ResponsibilityStore from "../../main/stores/ResponsibilityStore";
+import { responsibilityStore } from "../../main/stores/ResponsibilityStore";
 
 describe("MainStore", () => {
     const sandbox = new Sandbox();
@@ -23,7 +23,7 @@ describe("MainStore", () => {
     });
 
     it("is initially blank", () => {
-        const state = Store.getState();
+        const state = mainStore.getState();
         expect(state).to.eql({
             errors: [],
             ready: false,
@@ -32,12 +32,12 @@ describe("MainStore", () => {
     });
 
     it("diseaseActions.update sets diseases and triggers ResponsibilityStore.fetchTouchstones", (done: DoneCallback) => {
-        const spy = sandbox.sinon.spy(ResponsibilityStore.Store, "fetchTouchstones");
+        const spy = sandbox.sinon.spy(responsibilityStore, "fetchTouchstones");
         const disease1 = mockDisease({ id: "d1" });
         const disease2 = mockDisease({ id: "d2" });
         diseaseActions.update([ disease1, disease2 ]);
 
-        const state = Store.getState();
+        const state = mainStore.getState();
         expect(state).to.eql({
             errors: [],
             ready: true,
@@ -62,7 +62,7 @@ describe("MainStore", () => {
     it("errorActions.error adds errorMessage", () => {
         errorActions.error("message");
 
-        let state = Store.getState();
+        let state = mainStore.getState();
         expect(state).to.eql({
             errors: [ "message" ],
             ready: false,
@@ -71,7 +71,7 @@ describe("MainStore", () => {
 
         errorActions.error("message 2");
 
-        state = Store.getState();
+        state = mainStore.getState();
         expect(state).to.eql({
             errors: [ "message 2", "message" ],
             ready: false,
@@ -87,7 +87,7 @@ describe("MainStore", () => {
         }, "secret");
         authActions.logIn(token);
 
-        const state = Store.getState();
+        const state = mainStore.getState();
         expect(state.errors).to.be.empty;
     });
 
@@ -99,7 +99,7 @@ describe("MainStore", () => {
         }, "secret");
         authActions.logIn(token);
 
-        const state = Store.getState();
+        const state = mainStore.getState();
         expect(state.errors[0]).to.contain("Your account has been deactivated");
     });
 
@@ -111,7 +111,7 @@ describe("MainStore", () => {
         }, "secret");
         authActions.logIn(token);
 
-        const state = Store.getState();
+        const state = mainStore.getState();
         expect(state.errors[0]).to.contain("Only members of modelling groups");
     });
 });

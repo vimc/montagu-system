@@ -1,7 +1,6 @@
 import alt from "../alt";
 import * as AltJS from "alt";
 import { AbstractStore } from "./AbstractStore";
-import * as ResponsibilityStore from './ResponsibilityStore';
 import { authActions, LogInProperties } from "../actions/AuthActions";
 import { Disease } from "../models/Generated";
 import { settings } from "../Settings";
@@ -10,13 +9,14 @@ import { diseaseActions } from "../actions/DiseaseActions";
 import { errorActions } from "../actions/ErrorActions";
 import { RemoteContent } from "./RemoteContent";
 import { sources } from "../sources/Sources";
+import { responsibilityStore } from "./ResponsibilityStore";
 
-export interface State extends RemoteContent {
+export interface MainState extends RemoteContent {
     diseases: Loadable<Disease>;
     errors: string[];
 }
 
-interface Interface extends AltJS.AltStore<State> {
+interface Interface extends AltJS.AltStore<MainState> {
     load(): Promise<Disease[]>;
     getDiseaseById(id: string): Disease;
     fetchDiseases(): void;
@@ -24,7 +24,7 @@ interface Interface extends AltJS.AltStore<State> {
 }
 
 function onReady() {
-    setTimeout(() => ResponsibilityStore.Store.fetchTouchstones());
+    setTimeout(() => responsibilityStore.fetchTouchstones());
 }
 
 export function makeDiseaseLookup(diseases: Disease[]): Loadable<Disease> {
@@ -37,7 +37,7 @@ export function makeDiseaseLookup(diseases: Disease[]): Loadable<Disease> {
     };
 }
 
-export function initialState(): State {
+export function initialMainState(): MainState {
     return {
         diseases: { content: null, loaded: false },
         errors: [],
@@ -46,7 +46,7 @@ export function initialState(): State {
 }
 
 
-class MainStore extends AbstractStore<State, Interface> {
+class MainStore extends AbstractStore<MainState, Interface> {
     ready: boolean;
     errors: string[];
     diseases: Loadable<Disease>;
@@ -65,8 +65,8 @@ class MainStore extends AbstractStore<State, Interface> {
         })
     }
 
-    initialState(): State {
-        return initialState();
+    initialState(): MainState {
+        return initialMainState();
     }
 
     handleDiseases(diseases: Array<Disease>) {
@@ -99,4 +99,4 @@ class MainStore extends AbstractStore<State, Interface> {
     }
 }
 
-export const Store = alt.createStore<State>(MainStore) as Interface;
+export const mainStore = alt.createStore<MainState>(MainStore) as Interface;

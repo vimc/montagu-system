@@ -9,7 +9,7 @@ import { mockFormProperties, numberOfSubmissionActions } from "../mocks/mockForm
 import { mockEvent } from "../mocks/mocks";
 import * as actionHelpers from "../actionHelpers";
 
-import * as AuthStore from "../../main/stores/AuthStore";
+import { authStore } from "../../main/stores/AuthStore";
 import { LoginFields, loginForm, LoginFormComponent } from "../../main/components/Login/LoginPage";
 import { ValidationError } from "../../main/components/Login/ValidationError";
 
@@ -61,7 +61,7 @@ describe("LoginForm", () => {
 
     it("authenticates when form is submitted", (done: DoneCallback) => {
         const token = "TOKEN";
-        const spy = sandbox.sinon.spy(AuthStore.Store, "logIn");
+        const spy = sandbox.sinon.spy(authStore, "logIn");
 
         mockFetcher(new Promise<Response>(function (resolve, reject) {
             resolve(promiseJSON({ access_token: token }));

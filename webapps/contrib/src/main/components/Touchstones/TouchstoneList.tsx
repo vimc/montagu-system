@@ -2,9 +2,9 @@ import * as React from "react";
 import { RemoteContentComponent } from "../RemoteContentComponent/RemoteContentComponent";
 import { Link } from "simple-react-router";
 import { connectToStores } from "../../alt";
-import * as ResponsibilityStore from "../../stores/ResponsibilityStore";
 import { Touchstone } from "../../models/Generated";
 import { RemoteContent } from "../../stores/RemoteContent";
+import { responsibilityStore } from "../../stores/ResponsibilityStore";
 
 const commonStyles = require("../../styles/common.css");
 const styles = require("./TouchstoneList.css");
@@ -23,11 +23,11 @@ export class TouchstoneLink extends React.Component<Touchstone, undefined> {
 
 export class TouchstoneListComponent extends RemoteContentComponent<TouchstoneListProps> {
     static getStores() {
-        return [ ResponsibilityStore.Store ];
+        return [ responsibilityStore ];
     }
 
     static getPropsFromStores(): TouchstoneListProps {
-        const state = ResponsibilityStore.Store.getState();
+        const state = responsibilityStore.getState();
         return {
             touchstones: state.touchstones,
             ready: state.ready

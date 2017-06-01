@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Store } from "../../../stores/ResponsibilityStore";
+import { responsibilityStore } from "../../../stores/ResponsibilityStore";
 import { Link } from "simple-react-router";
 import { Touchstone } from "../../../models/Generated";
 import { connectToStores } from "../../../alt";
@@ -8,10 +8,10 @@ const headerStyles = require("../../PageWithHeader/PageWithHeader.css");
 
 export class ResponsibilityOverviewTitleComponent extends React.Component<Touchstone, undefined> {
     static getStores() {
-        return [ Store ];
+        return [ responsibilityStore ];
     }
     static getPropsFromStores() {
-        return Store.getState().currentTouchstone;
+        return responsibilityStore.getState().currentTouchstone;
     }
 
     render() {

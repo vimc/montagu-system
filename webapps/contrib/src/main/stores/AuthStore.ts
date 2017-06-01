@@ -2,9 +2,9 @@ import alt from "../alt";
 import * as AltJS from "alt";
 import { AbstractStore } from "./AbstractStore";
 import { authActions, LogInProperties } from "../actions/AuthActions";
-import * as MainStore from './MainStore';
+import { mainStore } from "./MainStore";
 
-export interface State {
+export interface AuthState {
     loggedIn: boolean;
     username: string;
     bearerToken: string;
@@ -12,11 +12,11 @@ export interface State {
     modellingGroups: string[];
 }
 
-interface AuthStoreInterface extends AltJS.AltStore<State> {
+interface AuthStoreInterface extends AltJS.AltStore<AuthState> {
     logIn(access_token: string): void;
 }
 
-export function initialState(): State {
+export function initialAuthState(): AuthState {
     return {
         loggedIn: false,
         username: null,
@@ -26,7 +26,7 @@ export function initialState(): State {
     };
 }
 
-class AuthStore extends AbstractStore<State, AuthStoreInterface> {
+class AuthStore extends AbstractStore<AuthState, AuthStoreInterface> {
     loggedIn: boolean;
     username: string;
     bearerToken: string;
@@ -43,14 +43,14 @@ class AuthStore extends AbstractStore<State, AuthStoreInterface> {
             logIn: access_token => {
                 authActions.logIn(access_token);
                 if (this.loggedIn) {
-                    MainStore.Store.load();
+                    mainStore.load();
                 }
             }
         })
     }
 
-    initialState(): State {
-        return initialState();
+    initialState(): AuthState {
+        return initialAuthState();
     }
 
     handleLogIn(props: LogInProperties) {
@@ -69,4 +69,4 @@ class AuthStore extends AbstractStore<State, AuthStoreInterface> {
     }
 }
 
-export const Store = alt.createStore<State>(AuthStore) as AuthStoreInterface;
+export const authStore = alt.createStore<AuthState>(AuthStore) as AuthStoreInterface;

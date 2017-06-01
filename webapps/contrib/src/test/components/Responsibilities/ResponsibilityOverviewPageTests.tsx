@@ -8,7 +8,7 @@ import { dispatchSpy, expectOrderedActions } from "../../actionHelpers";
 import { ResponsibilityOverviewPage } from "../../../main/components/Responsibilities/Overview/ResponsibilityOverviewPage";
 import { mockTouchstone } from "../../mocks/mockModels";
 import { ResponsibilityOverviewTitleComponent } from "../../../main/components/Responsibilities/Overview/ResponsibilityOverviewTitle";
-import * as ResponsibilityStore from "../../../main/stores/ResponsibilityStore";
+import { responsibilityStore } from "../../../main/stores/ResponsibilityStore";
 
 describe('ResponsibilityOverviewPage', () => {
     const sandbox = new Sandbox();
@@ -19,7 +19,7 @@ describe('ResponsibilityOverviewPage', () => {
 
     it("triggers actions when it mounts", () => {
         const spy = dispatchSpy(sandbox);
-        const fetchResponsibilities = sandbox.sinon.stub(ResponsibilityStore.Store, "fetchResponsibilities");
+        const fetchResponsibilities = sandbox.sinon.stub(responsibilityStore, "fetchResponsibilities");
         const location = mockLocation({ touchstoneId: "fizzy-pop" });
 
         sandbox.mount(<ResponsibilityOverviewPage location={ location } />);
