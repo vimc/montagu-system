@@ -12,6 +12,7 @@ import { CoverageSetList } from "../../../main/components/Responsibilities/Cover
 import { Sandbox } from "../../Sandbox";
 import { expectOneAction } from "../../actionHelpers";
 import { responsibilityStore } from "../../../main/stores/ResponsibilityStore";
+import fetcher from "../../../main/sources/Fetcher";
 
 describe("DownloadCoverageComponent", () => {
     const sandbox = new Sandbox();
@@ -39,7 +40,7 @@ describe("DownloadCoverageComponent", () => {
     it("renders form with onetime URL", () => {
         const props = makeProps({ coverageToken: "TOKEN" });
         const rendered = shallow(<DownloadCoverageComponent {...props} />);
-        expect(rendered.find("form").prop("action")).to.equal("http://localhost:8080/v1/onetime_link/TOKEN/");
+        expect(rendered.find("form").prop("action")).to.equal(fetcher.buildURL("/onetime_link/TOKEN/"));
     });
 
     it("clicking download coverage data button triggers token refresh", (done: DoneCallback) => {
