@@ -15,6 +15,8 @@ import java.net.BindException
 import java.net.ConnectException
 import java.net.ServerSocket
 import java.net.Socket
+import java.time.Duration
+import java.time.Instant
 import kotlin.system.exitProcess
 import spark.Spark as spk
 
@@ -57,8 +59,11 @@ class MontaguApi
         val password = Config["ssl.keystore.password"]
         if (!File(path).exists())
         {
-            logger.error("SSL keystore could not be found at $path")
-            exitProcess(-1)
+            logger.info("Waiting for SSL keystore to be present at $path...")
+            while (!File(path).exists())
+            {
+                Thread.sleep(1000)
+            }
         }
         spark.Spark.secure(path, password, null, null)
     }

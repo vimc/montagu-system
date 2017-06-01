@@ -28,3 +28,4 @@ task copySpec(type: Copy) {
     into 'build/classes/test/spec'
 }
 test.dependsOn 'copySpec'
+copyTestConfig.finalizedBy 'showTestConfig'
