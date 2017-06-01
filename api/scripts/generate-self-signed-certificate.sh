@@ -1,4 +1,12 @@
-read -s -p "Enter new password: " password
+set -e
+
+if [ -z ${1+x} ]
+	then
+	    read -s -p "Enter new password: " password
+	    echo ""
+	else
+		password=$1
+fi
 keytool -genkeypair \
   -dname "CN=vaccineimpact.org, OU=Montagu, O=Vacinne Impact Modelling Consortium, L=London, C=GB" \
   -keyalg RSA \
