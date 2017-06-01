@@ -13,6 +13,11 @@ data class TokenLiteral(val value: String)
 
 class RequestHelper
 {
+    init
+    {
+        CertificateHelper.disableCertificateValidation()
+    }
+
     fun get(url: String, permissions: Set<ReifiedPermission>, contentType: String = ContentTypes.json): Response
     {
         val token = TestUserHelper().getTokenForTestUser(permissions)
@@ -34,8 +39,6 @@ class RequestHelper
 
     private fun get(url: String, headers: Map<String, String>)
             = khttp.get(EndpointBuilder.build(url), headers)
-
-    private fun defaultHeaders(contentType: String) = mapOf("Accepts" to contentType)
 }
 
 fun <T> Response.montaguData() : T?

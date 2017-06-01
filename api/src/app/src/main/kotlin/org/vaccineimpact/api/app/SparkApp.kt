@@ -7,13 +7,23 @@ import org.vaccineimpact.api.app.controllers.MontaguControllers
 import org.vaccineimpact.api.app.controllers.OneTimeLinkController
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.jooq.*
+import org.vaccineimpact.api.app.repositories.makeRepositories
+import org.vaccineimpact.api.db.Config
 import org.vaccineimpact.api.security.WebTokenHelper
+import java.io.File
+import java.net.BindException
+import java.net.ConnectException
+import java.net.ServerSocket
+import java.net.Socket
+import java.time.Duration
+import java.time.Instant
+import kotlin.system.exitProcess
 import spark.Spark as spk
 
 fun main(args: Array<String>)
 {
     val api = MontaguApi()
-    api.run(api.makeRepositories())
+    api.run(makeRepositories())
 }
 
 class MontaguApi
@@ -21,35 +31,17 @@ class MontaguApi
     private val urlBase = "/v1"
     private val tokenHelper = WebTokenHelper()
 
-    fun makeRepositories(): Repositories
-    {
-        val simpleObjectsRepository = { JooqSimpleObjectsRepository() }
-        val userRepository = { JooqUserRepository() }
-        val tokenRepository = { JooqTokenRepository() }
-        val scenarioRepository = { JooqScenarioRepository() }
-        val touchstoneRepository = { JooqTouchstoneRepository(scenarioRepository) }
-        val modellingGroupRepository = { JooqModellingGroupRepository(touchstoneRepository, scenarioRepository) }
-        return Repositories(
-                simpleObjectsRepository,
-                userRepository,
-                tokenRepository,
-                touchstoneRepository,
-                scenarioRepository,
-                modellingGroupRepository
-        )
-    }
-
     private val logger = LoggerFactory.getLogger(MontaguApi::class.java)
 
     fun run(repositories: Repositories)
     {
-        spk.port(8080)
+        setupSSL()
+        setupPort()
         spk.redirect.get("/", urlBase)
         spk.before("*", ::addTrailingSlashes)
         spk.options("*", { _, res ->
             res.header("Access-Control-Allow-Headers", "Authorization")
         })
-        spk.before("*", { req, _ -> logger.warn(req.headers("Accepts")) })
         ErrorHandler.setup()
 
         val controllerContext = ControllerContext(repositories, tokenHelper)
@@ -59,5 +51,52 @@ class MontaguApi
             it.mapEndpoints(urlBase)
         }
         HomeController(endpoints, controllerContext).mapEndpoints(urlBase)
+    }
+
+    private fun setupSSL()
+    {
+        val path = Config["ssl.keystore.path"]
+        val password = Config["ssl.keystore.password"]
+        if (!File(path).exists())
+        {
+            logger.info("Waiting for SSL keystore to be present at $path...")
+            while (!File(path).exists())
+            {
+                Thread.sleep(1000)
+            }
+        }
+        spark.Spark.secure(path, password, null, null)
+    }
+
+    private fun setupPort()
+    {
+        val port = Config.getInt("app.port")
+        var attempts = 5
+        spk.port(port)
+
+        while (!isPortAvailable(port) && attempts > 0)
+        {
+            logger.info("Waiting for port $port to be available, $attempts attempts remaining")
+            Thread.sleep(2000)
+            attempts--
+        }
+        if (attempts == 0)
+        {
+            logger.error("Unable to bind to port $port - it is already in use.")
+            exitProcess(-1)
+        }
+    }
+
+    private fun isPortAvailable(port: Int): Boolean
+    {
+        try
+        {
+            ServerSocket(port).use {}
+            return true
+        }
+        catch (e: BindException)
+        {
+            return false
+        }
     }
 }

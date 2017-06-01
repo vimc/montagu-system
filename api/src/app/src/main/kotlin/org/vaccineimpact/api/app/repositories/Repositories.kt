@@ -1,5 +1,7 @@
 package org.vaccineimpact.api.app.repositories
 
+import org.vaccineimpact.api.app.repositories.jooq.*
+
 open class Repositories(
         open val simpleObjects: () -> SimpleObjectsRepository,
         open val user: () -> UserRepository,
@@ -8,3 +10,21 @@ open class Repositories(
         open val scenario: () -> ScenarioRepository,
         open val modellingGroup: () -> ModellingGroupRepository
 )
+
+fun makeRepositories(): Repositories
+{
+    val simpleObjectsRepository = { JooqSimpleObjectsRepository() }
+    val userRepository = { JooqUserRepository() }
+    val tokenRepository = { JooqTokenRepository() }
+    val scenarioRepository = { JooqScenarioRepository() }
+    val touchstoneRepository = { JooqTouchstoneRepository(scenarioRepository) }
+    val modellingGroupRepository = { JooqModellingGroupRepository(touchstoneRepository, scenarioRepository) }
+    return Repositories(
+            simpleObjectsRepository,
+            userRepository,
+            tokenRepository,
+            touchstoneRepository,
+            scenarioRepository,
+            modellingGroupRepository
+    )
+}
