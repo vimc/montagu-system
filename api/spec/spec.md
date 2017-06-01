@@ -1446,9 +1446,12 @@ Required permissions: Global scope: `scenarios.read`. Scoped to modelling group:
 If the touchstone is `in-preparation`, and the user does not have permission to see touchstones 
 before they are made `open`, then this returns an error 404.
 
-This data is returned in two parts: First the metadata, then the coverage in CSV format.
+Depending on the "Accept" header sent by the client, there are two different
+result formats. If "Accept" is "application/json" then both JSON metadata and 
+CSV table data are returned, separated by a single line of three dashes. If
+"Accept" is "text/csv" then only the CSV table data is returned.
 
-### Metadata
+### JSON metadata
 Schema: [`ScenarioAndCoverageSets.schema.json`](ScenarioAndCoverageSets.schema.json)
 
 #### Example
@@ -1489,7 +1492,7 @@ Schema: [`ScenarioAndCoverageSets.schema.json`](ScenarioAndCoverageSets.schema.j
 
 Coverage sets are returned in the order they are to be applied.
 
-### Coverage data
+### CSV table data
 CSV data in this format:
 
     "set_id", "set_order",                        "set_name", "vaccine", "gavi_support_level", "activity_type", country",    "year","age_from","age_to",   "age_range_verbatim", "target", coverage"
@@ -1511,6 +1514,13 @@ which coverage set a line is from using either the `set_id` or `set_order` colum
 
 * `set_id:` The unique ID of the coverage set the line is from
 * `set_order`: The order that this set has within the scenario. Coverage data is applied in this order, and it matches the order of the coverage sets in the metadata above
+
+### Onetime Link
+A client may make a GET request to 
+`/modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}/{scenario-id}/coverage/get_onetime_link/`.
+This endpoint requires the same permissions as getting the coverage directly.
+It returns a onetime token that can be used to get the coverage data in CSV 
+format without authentication. See [Onetime Link](onetime-link-spec.md).
 
 ## POST /modelling-groups/{modelling-group-id}/actions/associate_responsibility
 Adds or removes a responsibility for a given modelling group, scenario, and touchstone.
