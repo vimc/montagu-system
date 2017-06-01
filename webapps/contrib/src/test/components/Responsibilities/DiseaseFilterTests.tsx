@@ -7,7 +7,7 @@ import { mockExtendedResponsibilitySet, mockResponsibility } from "../../mocks/m
 
 import { DiseaseFilter } from "../../../main/components/Responsibilities/Overview/DiseaseFilter";
 import { OptionSelector } from "../../../main/components/OptionSelector/OptionSelector";
-import { dispatchSpy, expectOrderedActions } from "../../actionHelpers";
+import { expectOrderedActions } from "../../actionHelpers";
 
 describe("DiseaseFilter", () => {
     const sandbox = new Sandbox();
@@ -53,7 +53,7 @@ describe("DiseaseFilter", () => {
         //We know from "it renders disease options" that the callback is set correctly.
         //We know from OptionSelectorTests that the callback will be invoked.
         //So we can just run the callback and test what it does.
-        const spy = dispatchSpy(sandbox);
+        const spy = sandbox.dispatchSpy();
         const rendered = shallow(<DiseaseFilter {...mockExtendedResponsibilitySet({}, [])} />);
         const instance = rendered.instance() as DiseaseFilter;
         instance.filterByDisease("d1");

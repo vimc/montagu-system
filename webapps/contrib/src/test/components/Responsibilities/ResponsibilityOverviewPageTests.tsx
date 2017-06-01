@@ -3,7 +3,7 @@ import { Sandbox } from "../../Sandbox";
 import { expect } from "chai";
 import { shallow } from "enzyme";
 import { mockLocation } from "../../mocks/mocks";
-import { dispatchSpy, expectOrderedActions } from "../../actionHelpers";
+import { expectOrderedActions } from "../../actionHelpers";
 
 import { ResponsibilityOverviewPage } from "../../../main/components/Responsibilities/Overview/ResponsibilityOverviewPage";
 import { mockTouchstone } from "../../mocks/mockModels";
@@ -18,7 +18,7 @@ describe('ResponsibilityOverviewPage', () => {
     });
 
     it("triggers actions when it mounts", () => {
-        const spy = dispatchSpy(sandbox);
+        const spy = sandbox.dispatchSpy();
         const fetchResponsibilities = sandbox.sinon.stub(responsibilityStore, "fetchResponsibilities");
         const location = mockLocation({ touchstoneId: "fizzy-pop" });
 

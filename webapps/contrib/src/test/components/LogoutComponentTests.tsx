@@ -3,7 +3,7 @@ import { Sandbox } from "../Sandbox";
 import { expect } from "chai";
 import { shallow } from "enzyme";
 import { Link } from "simple-react-router";
-import { dispatchSpy, expectOneAction } from "../actionHelpers";
+import { expectOneAction } from "../actionHelpers";
 
 import { initialAuthState } from "../../main/stores/AuthStore";
 import { LogoutComponent } from "../../main/components/Login/Logout";
@@ -45,7 +45,7 @@ describe("LogoutComponent", () => {
             username: "test.user"
         });
         const rendered = shallow(<LogoutComponent {...state} />);
-        const spy = dispatchSpy(sandbox);
+        const spy = sandbox.dispatchSpy();
         rendered.find(Link).simulate("click");
         expectOneAction(spy, { action: "AuthActions.logOut" });
     });

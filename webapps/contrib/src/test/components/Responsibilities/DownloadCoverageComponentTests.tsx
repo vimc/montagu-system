@@ -10,7 +10,7 @@ import {
 import { findLabelledCell } from "../../TableHelpers";
 import { CoverageSetList } from "../../../main/components/Responsibilities/Coverage/CoverageSetList";
 import { Sandbox } from "../../Sandbox";
-import { dispatchSpy, expectNoActions, expectOneAction } from "../../actionHelpers";
+import { expectOneAction } from "../../actionHelpers";
 import { responsibilityStore } from "../../../main/stores/ResponsibilityStore";
 
 describe("DownloadCoverageComponent", () => {
@@ -43,7 +43,7 @@ describe("DownloadCoverageComponent", () => {
     });
 
     it("clicking download coverage data button triggers token refresh", (done: DoneCallback) => {
-        const spy = dispatchSpy(sandbox);
+        const spy = sandbox.dispatchSpy();
         const fetchNewToken = sandbox.sinon.stub(responsibilityStore, "fetchOneTimeCoverageToken");
 
         const props = makeProps({ coverageToken: "TOKEN" });

@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Sandbox } from "../../Sandbox";
 import { expect } from "chai";
-import { dispatchSpy, expectOrderedActions } from "../../actionHelpers";
+import { expectOrderedActions } from "../../actionHelpers";
 import { mockLocation } from "../../mocks/mocks";
 
 import { responsibilityStore } from "../../../main/stores/ResponsibilityStore";
@@ -15,7 +15,7 @@ describe('DownloadCoveragePage', () => {
     });
 
     it("triggers actions when it mounts", () => {
-        const spy = dispatchSpy(sandbox);
+        const spy = sandbox.dispatchSpy();
         const fetchCoverageSets = sandbox.sinon.stub(responsibilityStore, "fetchCoverageSets");
         const fetchOneTimeCoverageToken = sandbox.sinon.stub(responsibilityStore, "fetchOneTimeCoverageToken");
         const location = mockLocation({

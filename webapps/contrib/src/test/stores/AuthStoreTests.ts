@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import { Sandbox } from "../Sandbox";
 import { alt } from "../../main/alt";
 import { authActions, LogInProperties } from "../../main/actions/AuthActions";
-import { dispatchSpy, expectOrderedActions } from "../actionHelpers";
+import { expectOrderedActions } from "../actionHelpers";
 import { AuthState, authStore, initialAuthState } from "../../main/stores/AuthStore";
 import { initialMainState, mainStore } from "../../main/stores/MainStore";
 const jwt = require("jsonwebtoken");
@@ -55,7 +55,7 @@ describe("AuthStore", () => {
     });
 
     it("logIn invokes logIn action", () => {
-        const spy = dispatchSpy(sandbox);
+        const spy = sandbox.dispatchSpy();
         const storeLoad = sandbox.sinon.stub(mainStore, "load");
         const token = "TOKEN";
         authStore.logIn(token);
@@ -73,7 +73,7 @@ describe("AuthStore", () => {
     });
 
     it("logIn with good token also invokes MainStore.load", () => {
-        const spy = dispatchSpy(sandbox);
+        const spy = sandbox.dispatchSpy();
         const storeLoad = sandbox.sinon.stub(mainStore, "load");
         const token = jwt.sign({
             sub: "test.user",

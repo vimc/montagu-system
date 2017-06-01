@@ -19,7 +19,7 @@ function checkSubmit(
     sandbox: Sandbox,
     callback: (spy: sinon.SinonSpy) => void)
 {
-    const spy = actionHelpers.dispatchSpy(sandbox);
+    const spy = sandbox.dispatchSpy();
     form.submit(mockEvent()).then(x => {
         callback(spy);
         done();
