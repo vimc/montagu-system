@@ -7,6 +7,7 @@ import org.vaccineimpact.api.app.controllers.MontaguControllers
 import org.vaccineimpact.api.app.controllers.OneTimeLinkController
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.jooq.*
+import org.vaccineimpact.api.db.Config
 import org.vaccineimpact.api.security.WebTokenHelper
 import spark.Spark as spk
 
@@ -43,13 +44,13 @@ class MontaguApi
 
     fun run(repositories: Repositories)
     {
-        spk.port(8080)
+        SSL.setup()
+        spk.port(Config.getInt("app.port"))
         spk.redirect.get("/", urlBase)
         spk.before("*", ::addTrailingSlashes)
         spk.options("*", { _, res ->
             res.header("Access-Control-Allow-Headers", "Authorization")
         })
-        spk.before("*", { req, _ -> logger.warn(req.headers("Accepts")) })
         ErrorHandler.setup()
 
         val controllerContext = ControllerContext(repositories, tokenHelper)
