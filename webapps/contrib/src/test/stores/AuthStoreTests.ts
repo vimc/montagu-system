@@ -2,11 +2,10 @@ import { expect } from 'chai';
 import { Sandbox } from "../Sandbox";
 import { alt } from "../../main/alt";
 import { authActions, LogInProperties } from "../../main/actions/AuthActions";
+import { expectOrderedActions } from "../actionHelpers";
+import { AuthState, authStore, initialAuthState } from "../../main/stores/AuthStore";
+import { initialMainState, mainStore } from "../../main/stores/MainStore";
 const jwt = require("jsonwebtoken");
-
-import * as AuthStore from '../../main/stores/AuthStore';
-import * as MainStore from '../../main/stores/MainStore';
-import { dispatchSpy, expectOrderedActions } from "../actionHelpers";
 
 describe("AuthStore", () => {
     const sandbox = new Sandbox();
@@ -27,14 +26,14 @@ describe("AuthStore", () => {
         }, 'secret');
         authActions.logIn(token);
 
-        const expected: AuthStore.State = {
+        const expected: AuthState = {
             loggedIn: true,
             modellingGroups: [ "test.group" ],
             permissions: [ "*/can-login", "*/other" ],
             username: "test.user",
             bearerToken: token
         };
-        expect(AuthStore.Store.getState()).to.eql(expected);
+        expect(authStore.getState()).to.eql(expected);
     });
 
     it("clears everything on logOut", () => {
@@ -51,15 +50,15 @@ describe("AuthStore", () => {
             }
         }));
         authActions.logOut();
-        expect(AuthStore.Store.getState()).to.eql(AuthStore.initialState());
-        expect(MainStore.Store.getState()).to.eql(MainStore.initialState());
+        expect(authStore.getState()).to.eql(initialAuthState());
+        expect(mainStore.getState()).to.eql(initialMainState());
     });
 
     it("logIn invokes logIn action", () => {
-        const spy = dispatchSpy(sandbox);
-        const storeLoad = sandbox.sinon.stub(MainStore.Store, "load");
+        const spy = sandbox.dispatchSpy();
+        const storeLoad = sandbox.sinon.stub(mainStore, "load");
         const token = "TOKEN";
-        AuthStore.Store.logIn(token);
+        authStore.logIn(token);
         const expectedPayload: LogInProperties = {
             token: "TOKEN",
             username: null,
@@ -74,14 +73,14 @@ describe("AuthStore", () => {
     });
 
     it("logIn with good token also invokes MainStore.load", () => {
-        const spy = dispatchSpy(sandbox);
-        const storeLoad = sandbox.sinon.stub(MainStore.Store, "load");
+        const spy = sandbox.dispatchSpy();
+        const storeLoad = sandbox.sinon.stub(mainStore, "load");
         const token = jwt.sign({
             sub: "test.user",
             permissions: "*/can-login,*/other",
             roles: "r1,modelling-group:test.group/member"
         }, 'secret');
-        AuthStore.Store.logIn(token);
+        authStore.logIn(token);
         expectOrderedActions(spy, [{ action: "AuthActions.logIn" }], 0);
         expect(storeLoad.called).to.be.true;
         storeLoad.restore();

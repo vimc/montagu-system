@@ -4,7 +4,7 @@ import { ResponsibilityOverviewPage } from "./Responsibilities/Overview/Responsi
 import { ChooseTouchstonePage } from "./Touchstones/ChooseTouchstonePage";
 import { LoadingPage } from "./LoadingPage";
 import { LoginPage } from "./Login/LoginPage";
-import { ResponsibilityDetailsPage } from "./Responsibilities/Details/ResponsibilityDetailsPage";
+import { DownloadCoveragePage } from "./Responsibilities/Coverage/DownloadCoveragePage";
 
 interface RoutingProperties {
     loggedIn: boolean;
@@ -18,7 +18,7 @@ export default class AppRouter extends Router<RoutingProperties> {
             if (loaded) {
                 map('/', ChooseTouchstonePage);
                 map('/responsibilities/:touchstoneId', ResponsibilityOverviewPage);
-                map('/responsibilities/:touchstoneId/:scenarioId', ResponsibilityDetailsPage);
+                map('/responsibilities/:touchstoneId/:scenarioId', DownloadCoveragePage);
             } else {
                 map("*", LoadingPage);
             }

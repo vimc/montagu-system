@@ -1,18 +1,18 @@
 import * as React from "react";
-import * as AuthStore from "../../stores/AuthStore";
 import { connectToStores } from "../../alt";
 import { authActions } from "../../actions/AuthActions";
 import { Link } from "simple-react-router";
+import { AuthState, authStore } from "../../stores/AuthStore";
 
 const style = require("./Logout.css");
 
-export class LogoutComponent extends React.Component<AuthStore.State, undefined> {
+export class LogoutComponent extends React.Component<AuthState, undefined> {
     static getStores() {
-        return [ AuthStore.Store ];
+        return [ authStore ];
     }
 
     static getPropsFromStores() {
-        return AuthStore.Store.getState();
+        return authStore.getState();
     }
 
     logout(e: React.MouseEvent<HTMLButtonElement>) {

@@ -3,10 +3,7 @@ import { expect } from "chai";
 import { shallow } from "enzyme";
 import { mockCoverageSet } from "../../mocks/mockModels";
 
-import {
-    CoverageSetComponent,
-    CoverageSetComponentProps
-} from "../../../main/components/Responsibilities/Details/CoverageSetComponent";
+import { CoverageSetComponent } from "../../../main/components/Responsibilities/Coverage/CoverageSetComponent";
 
 describe("CoverageSetComponent", () => {
     it("renders all metadata", () => {

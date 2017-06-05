@@ -1,8 +1,8 @@
-import { State } from "../stores/ResponsibilityStore";
+import { ResponsibilityState } from "../stores/ResponsibilityStore";
 import { Source } from "./Source";
 
-export abstract class CoverageSource<T> extends Source<T, State> {
-    protected baseURL(state: State): string {
+export abstract class CoverageSource<T> extends Source<T, ResponsibilityState> {
+    protected baseURL(state: ResponsibilityState): string {
         const k = {
             group: state.currentModellingGroupId,
             touchstone: state.currentTouchstone.id,

@@ -4,28 +4,26 @@ import { CoverageSet, Scenario, Touchstone } from "../../../models/Generated";
 import { RemoteContent } from "../../../stores/RemoteContent";
 import { RemoteContentComponent } from "../../RemoteContentComponent/RemoteContentComponent";
 import { CoverageSetList } from "./CoverageSetList";
-import { Store } from "../../../stores/ResponsibilityStore";
+import { responsibilityStore } from "../../../stores/ResponsibilityStore";
 import fetcher from "../../../sources/Fetcher";
 import { coverageTokenActions } from "../../../actions/CoverageActions";
 const commonStyles = require("../../../styles/common.css");
 
-interface ResponsibilityDetails {
-    touchstone: Touchstone;
-    scenario: Scenario;
-    coverageSets: CoverageSet[];
-    coverageToken: string;
+export interface DownloadCoverageComponentProps extends RemoteContent {
+    props: {
+        touchstone: Touchstone;
+        scenario: Scenario;
+        coverageSets: CoverageSet[];
+        coverageToken: string;
+    };
 }
 
-export interface ResponsibilityDetailsProps extends RemoteContent {
-    props: ResponsibilityDetails;
-}
-
-export class ResponsibilityDetailsComponent extends RemoteContentComponent<ResponsibilityDetailsProps> {
+export class DownloadCoverageComponent extends RemoteContentComponent<DownloadCoverageComponentProps> {
     static getStores() {
-        return [ Store ];
+        return [ responsibilityStore ];
     }
-    static getPropsFromStores(): ResponsibilityDetailsProps {
-        const state = Store.getState();
+    static getPropsFromStores(): DownloadCoverageComponentProps {
+        const state = responsibilityStore.getState();
         const r = state.currentResponsibility;
         if (r != null) {
             return {
@@ -48,11 +46,11 @@ export class ResponsibilityDetailsComponent extends RemoteContentComponent<Respo
     refreshToken(e: React.MouseEvent<HTMLButtonElement>): void {
         setTimeout(() => {
             coverageTokenActions.clearUsedToken();
-            Store.fetchOneTimeCoverageToken();
+            responsibilityStore.fetchOneTimeCoverageToken();
         });
     }
 
-    renderContent(props: ResponsibilityDetailsProps) {
+    renderContent(props: DownloadCoverageComponentProps) {
         const data = props.props;
         const url = fetcher.buildURL(`/onetime_link/${data.coverageToken}/`);
         const downloadDisabled = data.coverageToken == null;
@@ -77,4 +75,4 @@ export class ResponsibilityDetailsComponent extends RemoteContentComponent<Respo
     }
 }
 
-export const ResponsibilityDetails = connectToStores(ResponsibilityDetailsComponent);
+export const ResponsibilityDetails = connectToStores(DownloadCoverageComponent);

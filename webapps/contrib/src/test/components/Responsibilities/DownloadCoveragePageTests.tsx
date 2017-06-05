@@ -1,13 +1,13 @@
 import * as React from "react";
 import { Sandbox } from "../../Sandbox";
 import { expect } from "chai";
-import { dispatchSpy, expectOrderedActions } from "../../actionHelpers";
+import { expectOrderedActions } from "../../actionHelpers";
 import { mockLocation } from "../../mocks/mocks";
 
-import * as ResponsibilityStore from "../../../main/stores/ResponsibilityStore";
-import { ResponsibilityDetailsPage } from "../../../main/components/Responsibilities/Details/ResponsibilityDetailsPage";
+import { responsibilityStore } from "../../../main/stores/ResponsibilityStore";
+import { DownloadCoveragePage } from "../../../main/components/Responsibilities/Coverage/DownloadCoveragePage";
 
-describe('ResponsibilityDetailsPage', () => {
+describe('DownloadCoveragePage', () => {
     const sandbox = new Sandbox();
 
     afterEach(() => {
@@ -15,15 +15,15 @@ describe('ResponsibilityDetailsPage', () => {
     });
 
     it("triggers actions when it mounts", () => {
-        const spy = dispatchSpy(sandbox);
-        const fetchCoverageSets = sandbox.sinon.stub(ResponsibilityStore.Store, "fetchCoverageSets");
-        const fetchOneTimeCoverageToken = sandbox.sinon.stub(ResponsibilityStore.Store, "fetchOneTimeCoverageToken");
+        const spy = sandbox.dispatchSpy();
+        const fetchCoverageSets = sandbox.sinon.stub(responsibilityStore, "fetchCoverageSets");
+        const fetchOneTimeCoverageToken = sandbox.sinon.stub(responsibilityStore, "fetchOneTimeCoverageToken");
         const location = mockLocation({
             touchstoneId: "touchstone-1",
             scenarioId: "scenario-1"
         });
 
-        sandbox.mount(<ResponsibilityDetailsPage location={ location } />);
+        sandbox.mount(<DownloadCoveragePage location={ location } />);
 
         expectOrderedActions(spy, [
             { action: "TouchstoneActions.setCurrentTouchstone", payload: "touchstone-1" },

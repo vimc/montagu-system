@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Store } from "../../../stores/MainStore";
+import { mainStore } from "../../../stores/MainStore";
 import { Option, OptionSelector } from "../../OptionSelector/OptionSelector";
 import { responsibilityActions } from "../../../actions/ResponsibilityActions";
 import { IExtendedResponsibilitySet } from "../../../models/ResponsibilitySet";
@@ -9,7 +9,7 @@ export class DiseaseFilter extends React.Component<IExtendedResponsibilitySet, u
         const diseaseIds = [ ...new Set(this.props.responsibilities.map(x => x.scenario.disease)) ];
         if (diseaseIds.length > 1) {
             const options: Option[] = diseaseIds
-                .map(id => Store.getDiseaseById(id))
+                .map(id => mainStore.getDiseaseById(id))
                 .map(disease => ({ value: disease.id, text: disease.name }));
 
             return <div>

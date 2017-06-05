@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Responsibility, Touchstone } from "../../../models/Generated";
-import { Store } from "../../../stores/MainStore";
+import { mainStore } from "../../../stores/MainStore";
 import { ButtonLink } from "../../ButtonLink";
 
 const styles = require("../Responsibilities.css");
@@ -25,7 +25,7 @@ export class ResponsibilityComponent extends React.Component<Props, undefined> {
             <div>
                 <div className={ styles.content }>
                     <div className={ styles.metadata }>
-                        Disease: { Store.getDiseaseById(item.scenario.disease).name }
+                        Disease: { mainStore.getDiseaseById(item.scenario.disease).name }
                     </div>
                     <div className={ styles.actions }>
                         <ButtonLink href={ downloadUrl }>Download input data</ButtonLink>

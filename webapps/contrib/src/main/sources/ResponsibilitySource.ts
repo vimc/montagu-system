@@ -2,9 +2,9 @@ import { Source } from "./Source";
 import { Responsibilities } from "../models/Generated";
 import { responsibilityActions } from "../actions/ResponsibilityActions";
 import SourceModel = AltJS.SourceModel;
-import { State } from "../stores/ResponsibilityStore";
+import { ResponsibilityState } from "../stores/ResponsibilityStore";
 
-export class ResponsibilitySource extends Source<Responsibilities, State> {
+export class ResponsibilitySource extends Source<Responsibilities, ResponsibilityState> {
     private fetchResponsibilities: () => SourceModel<Responsibilities>;
 
     constructor() {

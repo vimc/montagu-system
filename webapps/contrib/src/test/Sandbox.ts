@@ -29,4 +29,8 @@ export class Sandbox {
         this.mounted = [];
         alt.recycle();
     }
+
+    dispatchSpy(): sinon.SinonSpy {
+        return this.sinon.spy(alt, "dispatch");
+    }
 }

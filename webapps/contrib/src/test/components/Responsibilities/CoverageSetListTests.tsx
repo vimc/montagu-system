@@ -1,9 +1,9 @@
 import * as React from "react";
 import { shallow } from "enzyme";
 import { expect } from "chai";
-import { CoverageSetList } from "../../../main/components/Responsibilities/Details/CoverageSetList";
+import { CoverageSetList } from "../../../main/components/Responsibilities/Coverage/CoverageSetList";
 import { mockCoverageSet } from "../../mocks/mockModels";
-import { CoverageSetComponent } from "../../../main/components/Responsibilities/Details/CoverageSetComponent";
+import { CoverageSetComponent } from "../../../main/components/Responsibilities/Coverage/CoverageSetComponent";
 
 describe("CoverageSetList", () => {
     it("renders one coverage set per line item", () => {

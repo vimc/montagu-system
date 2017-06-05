@@ -1,25 +1,24 @@
 import * as React from "react";
 import { connectToStores } from "../alt";
-
-import * as MainStore from "../stores/MainStore";
-import * as AuthStore from "../stores/AuthStore";
 import { ErrorLog } from "./ErrorLog/ErrorLog";
 import Router from "./Router";
+import { AuthState, authStore } from "../stores/AuthStore";
+import { MainState, mainStore } from "../stores/MainStore";
 
 interface AppProps {
-    auth: AuthStore.State,
-    main: MainStore.State
+    auth: AuthState,
+    main: MainState
 }
 
 export class ApplicationComponent extends React.Component<AppProps, undefined> {
     static getStores() {
-        return [ MainStore.Store, AuthStore.Store ];
+        return [ mainStore, authStore ];
     }
 
     static getPropsFromStores(props: AppProps): AppProps {
         return {
-            auth: AuthStore.Store.getState(),
-            main: MainStore.Store.getState()
+            auth: authStore.getState(),
+            main: mainStore.getState()
         };
     }
 

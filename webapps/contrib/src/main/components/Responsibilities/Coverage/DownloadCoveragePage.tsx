@@ -2,21 +2,21 @@ import * as React from "react";
 import { PageWithHeader } from "../../PageWithHeader/PageWithHeader";
 import { touchstoneActions } from "../../../actions/TouchstoneActions";
 import { responsibilityActions } from "../../../actions/ResponsibilityActions";
-import { ResponsibilityDetailsTitle } from "./ResponsibilityDetailsTitle";
-import { Store } from "../../../stores/ResponsibilityStore";
-import { ResponsibilityDetails } from "./ResponsibilityDetails";
+import { ResponsibilityDetailsTitle } from "./DownloadCoverageTitle";
+import { responsibilityStore } from "../../../stores/ResponsibilityStore";
+import { ResponsibilityDetails } from "./DownloadCoverageComponent";
 
 interface LocationProps {
     touchstoneId: string;
     scenarioId: string;
 }
 
-export class ResponsibilityDetailsPage extends PageWithHeader<LocationProps> {
+export class DownloadCoveragePage extends PageWithHeader<LocationProps> {
     componentDidMount() {
         touchstoneActions.setCurrentTouchstone(this.props.location.params.touchstoneId);
         responsibilityActions.setCurrentResponsibility(this.props.location.params.scenarioId);
-        Store.fetchCoverageSets();
-        Store.fetchOneTimeCoverageToken();
+        responsibilityStore.fetchCoverageSets();
+        responsibilityStore.fetchOneTimeCoverageToken();
     }
 
     title() {
