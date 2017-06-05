@@ -1,10 +1,17 @@
 set -e
+# Make the build environment image that is shared between multiple build targets
+./scripts/make-build-env.sh
 
-cd src
+# Setup the database on a named network
+docker network create test-data
+docker run -d --rm --name db --network=test-data -p "8000:5432" montagu.dide.ic.ac.uk:5000/montagu-db:master
 
-./gradlew :startDatabase :generateTestData
+# Generate the test data
+docker build --tag montagu-test-data-build -f generate-test-data.Dockerfile .
+docker run --rm --network=test-data montagu-test-data-build
 
-docker exec montagu-api-test_database \
-    pg_dump -h localhost -U vimc -d montagu --data-only > ../test-data.sql
+# Dump the test data to an SQL file
+docker exec db pg_dump -h localhost -U vimc -d montagu --data-only > ./test-data.sql
 
-./gradlew :stopDatabase
+docker stop db
+docker network rm test-data
