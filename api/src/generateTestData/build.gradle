@@ -1,0 +1,8 @@
+apply plugin: 'application'
+mainClassName = "org.vaccineimpact.api.generateTestData.AppKt"
+
+dependencies {
+    compile project(":testHelpers")
+    compile project(":databaseInterface")
+}
+

@@ -1,4 +1,4 @@
-package org.vaccineimpact.api.blackboxTests
+package org.vaccineimpact.api.generateTestData
 
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.Tables.*

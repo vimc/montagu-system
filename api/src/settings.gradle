@@ -5,6 +5,7 @@ include 'app',
         'databaseInterface',
 
         'generateDatabaseInterface',
+        'generateTestData',
         'userCLI',
 
         'testHelpers',

@@ -30,3 +30,4 @@ src/.idea/workspace.xml
 src/build/*
 src/config/users/current_user
 src/out
+test-data\.sql
