@@ -16,6 +16,7 @@ buildscript {
 
 task run(dependsOn: ':app:run')
 task generateDatabaseInterface(dependsOn: ':generateDatabaseInterface:run')
+task generateTestData(dependsOn: ':generateTestData:run')
 // 'testLibrary' runs things that can be tested without a running API.
 // i.e. everything other than blackboxTests.
 task testLibrary(dependsOn: [':app:test', ':databaseTests:test'])
@@ -108,4 +109,17 @@ subprojects {
 
     processResources.finalizedBy 'copyConfig', 'copyConfigToResources'
     processTestResources.finalizedBy 'copyTestConfig'
+
+    task showConfig(dependsOn: 'copyConfig') {
+        doLast {
+            println("This is the config being used:")
+            println(file("build/classes/main/config.properties").text)
+        }
+    }
+    task showTestConfig(dependsOn: 'copyTestConfig') {
+        doLast {
+            println("This is the config being used:")
+            println(file("build/classes/test/config.properties").text)
+        }
+    }
 }

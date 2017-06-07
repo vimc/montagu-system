@@ -36,7 +36,7 @@ import org.vaccineimpact.api.db.tables.records.CoverageRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Coverage extends TableImpl<CoverageRecord> {
 
-    private static final long serialVersionUID = 976153939;
+    private static final long serialVersionUID = -1259198433;
 
     /**
      * The reference instance of <code>public.coverage</code>
@@ -82,11 +82,6 @@ public class Coverage extends TableImpl<CoverageRecord> {
     public final TableField<CoverageRecord, BigDecimal> AGE_TO = createField("age_to", org.jooq.impl.SQLDataType.NUMERIC.nullable(false), this, "");
 
     /**
-     * The column <code>public.coverage.age_to_exclusive</code>.
-     */
-    public final TableField<CoverageRecord, Boolean> AGE_TO_EXCLUSIVE = createField("age_to_exclusive", org.jooq.impl.SQLDataType.BOOLEAN.nullable(false), this, "");
-
-    /**
      * The column <code>public.coverage.age_range_verbatim</code>.
      */
     public final TableField<CoverageRecord, String> AGE_RANGE_VERBATIM = createField("age_range_verbatim", org.jooq.impl.SQLDataType.CLOB, this, "");
@@ -95,6 +90,11 @@ public class Coverage extends TableImpl<CoverageRecord> {
      * The column <code>public.coverage.coverage</code>.
      */
     public final TableField<CoverageRecord, BigDecimal> COVERAGE_ = createField("coverage", org.jooq.impl.SQLDataType.NUMERIC, this, "");
+
+    /**
+     * The column <code>public.coverage.target</code>. This field is valid only for campaign coverage
+     */
+    public final TableField<CoverageRecord, BigDecimal> TARGET = createField("target", org.jooq.impl.SQLDataType.NUMERIC, this, "This field is valid only for campaign coverage");
 
     /**
      * The column <code>public.coverage.gavi_support</code>.

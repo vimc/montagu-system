@@ -1,7 +1,15 @@
 package org.vaccineimpact.api.db.direct
 
+import org.apache.commons.lang3.RandomStringUtils
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.Tables.*
+import org.vaccineimpact.api.db.fromJoinPath
+import org.vaccineimpact.api.db.nextDecimal
+import org.vaccineimpact.api.db.tables.records.CoverageRecord
+import java.math.BigDecimal
+import java.util.*
+
+private val random = Random(0)
 
 fun JooqContext.addGroup(id: String, description: String, current: String? = null)
 {
@@ -31,9 +39,9 @@ fun JooqContext.addTouchstoneStatus(id: String, name: String? = null)
 fun JooqContext.addTouchstone(
         name: String,
         version: Int,
-        description: String,
-        status: String,
-        yearRange: IntRange,
+        description: String = "Description",
+        status: String = "open",
+        yearRange: IntRange = 1900..2000,
         addName: Boolean = false,
         addStatus: Boolean = false)
 {
@@ -64,6 +72,38 @@ fun JooqContext.addDisease(id: String, name: String? = null)
     }.store()
 }
 
+fun JooqContext.addVaccine(id: String, name: String? = null)
+{
+    this.dsl.newRecord(VACCINE).apply {
+        this.id = id
+        this.name = name ?: id
+    }.store()
+}
+
+fun JooqContext.addSupportLevel(id: String, name: String? = null)
+{
+    this.dsl.newRecord(GAVI_SUPPORT_LEVEL).apply {
+        this.id = id
+        this.name = name ?: id
+    }.store()
+}
+fun JooqContext.addSupportLevels(vararg ids: String)
+{
+    ids.forEach { this.addSupportLevel(it) }
+}
+
+fun JooqContext.addActivityType(id: String, name: String? = null)
+{
+    this.dsl.newRecord(ACTIVITY_TYPE).apply {
+        this.id = id
+        this.name = name ?: id
+    }.store()
+}
+fun JooqContext.addActivityTypes(vararg ids: String)
+{
+    ids.forEach { this.addActivityType(it) }
+}
+
 fun JooqContext.addScenarioDescription(id: String, description: String, disease: String, addDisease: Boolean = false)
 {
     if (addDisease)
@@ -77,14 +117,25 @@ fun JooqContext.addScenarioDescription(id: String, description: String, disease:
     }.store()
 }
 
-fun JooqContext.addScenario(touchstone: String, scenarioDescription: String): Int
+fun JooqContext.addScenarioToTouchstone(touchstone: String,
+                                        scenarioDescription: String,
+                                        id: Int? = null
+): Int
 {
-    val record = this.dsl.newRecord(SCENARIO).apply {
+    return this.dsl.newRecord(SCENARIO).apply {
+        if (id != null)
+        {
+            this.id = id
+        }
         this.touchstone = touchstone
         this.scenarioDescription = scenarioDescription
-    }
-    record.store()
-    return record.id
+        store()
+    }.id
+}
+
+fun JooqContext.addScenarios(touchstone: String, vararg scenarioDescriptions: String): List<Int>
+{
+    return scenarioDescriptions.map { this.addScenarioToTouchstone(touchstone, it) }
 }
 
 fun JooqContext.addResponsibilitySetStatus(id: String, name: String? = null)
@@ -129,6 +180,149 @@ fun JooqContext.addResponsibility(responsibilitySetId: Int, scenarioId: Int): In
 /** Creates both a responsibility and the scenario it depends on **/
 fun JooqContext.addResponsibility(responsibilitySetId: Int, touchstone: String, scenarioDescription: String): Int
 {
-    val scenarioId = this.addScenario(touchstone, scenarioDescription)
+    val scenarioId = this.addScenarioToTouchstone(touchstone, scenarioDescription)
     return this.addResponsibility(responsibilitySetId, scenarioId)
+}
+
+fun JooqContext.addCoverageSet(
+        touchstoneId: String,
+        name: String,
+        vaccine: String,
+        supportLevel: String,
+        activityType: String,
+        id: Int? = null,
+        addVaccine: Boolean = false,
+        addSupportLevel: Boolean = false,
+        addActivityType: Boolean = false
+): Int
+{
+    if (addVaccine)
+    {
+        this.addVaccine(vaccine)
+    }
+    if (addSupportLevel)
+    {
+        this.addSupportLevel(supportLevel)
+    }
+    if (addActivityType)
+    {
+        this.addActivityType(activityType)
+    }
+
+    val record = this.dsl.newRecord(COVERAGE_SET).apply {
+        if (id != null)
+        {
+            this.id = id
+        }
+        this.touchstone = touchstoneId
+        this.name = name
+        this.vaccine = vaccine
+        this.gaviSupportLevel = supportLevel
+        this.activityType = activityType
+    }
+    record.store()
+    return record.id
+}
+
+fun JooqContext.addCoverageSetToScenario(scenarioId: Int, coverageSetId: Int, order: Int): Int
+{
+    val record = this.dsl.newRecord(SCENARIO_COVERAGE_SET).apply {
+        this.scenario = scenarioId
+        this.coverageSet = coverageSetId
+        this.order = order
+    }
+    record.store()
+    return record.id
+}
+
+fun JooqContext.addCoverageSetToScenario(scenarioId: String, touchstoneId: String, coverageSetId: Int, order: Int): Int
+{
+    val record = this.dsl.select(SCENARIO.ID)
+            .fromJoinPath(SCENARIO, SCENARIO_DESCRIPTION)
+            .where(SCENARIO.TOUCHSTONE.eq(touchstoneId))
+            .and(SCENARIO_DESCRIPTION.ID.eq(scenarioId))
+            .fetchOne()
+    return this.addCoverageSetToScenario(record[SCENARIO.ID], coverageSetId, order)
+}
+
+fun JooqContext.addCountries(ids: List<String>)
+{
+    val records = ids.map {
+        this.dsl.newRecord(COUNTRY).apply {
+            this.id = it
+            this.name = "$it-Name"
+        }
+    }
+    this.dsl.batchStore(records).execute()
+}
+
+fun JooqContext.generateCountries(count: Int): List<String>
+{
+    val letters = "ABCDEFGHIJKLMNOPQSTUVWXYZ".toCharArray()
+    val countries = (0..count).map {
+        RandomStringUtils.random(3, 0, letters.size, true, false, letters, random).toUpperCase()
+    }
+    this.addCountries(countries)
+    return countries
+}
+
+fun JooqContext.generateCoverageData(
+        coverageSetId: Int,
+        countryCount: Int = 5,
+        yearRange: IntProgression = 1950..2000 step 5,
+        ageRange: IntProgression = 0..80 step 5)
+{
+    val records = mutableListOf<CoverageRecord>()
+    val countries = this.generateCountries(countryCount)
+    for (country in countries)
+    {
+        for (year in yearRange)
+        {
+            for (age in ageRange)
+            {
+                records.add(this.newCoverageRowRecord(
+                        coverageSetId,
+                        country,
+                        year,
+                        ageFrom = BigDecimal(age),
+                        ageTo = BigDecimal(age + ageRange.step),
+                        ageRangeVerbatim = null,
+                        target = null,
+                        coverage = random.nextDecimal(0, 100, numberOfDecimalPlaces = 2)
+                ))
+            }
+        }
+    }
+    this.dsl.batchStore(records).execute()
+}
+
+fun JooqContext.addCoverageRow(coverageSetId: Int, country: String, year: Int,
+                               ageFrom: BigDecimal, ageTo: BigDecimal, ageRangeVerbatim: String?,
+                               target: BigDecimal?, coverage: BigDecimal?)
+{
+    this.newCoverageRowRecord(
+            coverageSetId,
+            country,
+            year,
+            ageFrom,
+            ageTo,
+            ageRangeVerbatim,
+            target,
+            coverage
+    ).store()
+}
+
+private fun JooqContext.newCoverageRowRecord(coverageSetId: Int, country: String, year: Int,
+                                 ageFrom: BigDecimal, ageTo: BigDecimal, ageRangeVerbatim: String?,
+                                 target: BigDecimal?, coverage: BigDecimal?)
+        = this.dsl.newRecord(COVERAGE).apply {
+    this.coverageSet = coverageSetId
+    this.country = country
+    this.year = year
+    this.ageFrom = ageFrom
+    this.ageTo = ageTo
+    this.ageRangeVerbatim = ageRangeVerbatim
+    this.target = target
+    this.coverage = coverage
+    this.gaviSupport = false
 }

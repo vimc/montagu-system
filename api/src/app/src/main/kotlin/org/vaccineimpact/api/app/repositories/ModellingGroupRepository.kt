@@ -1,9 +1,8 @@
 package org.vaccineimpact.api.app.repositories
 
+import org.vaccineimpact.api.app.serialization.SplitData
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
-import org.vaccineimpact.api.models.ModellingGroup
-import org.vaccineimpact.api.models.Responsibilities
-import java.io.Closeable
+import org.vaccineimpact.api.models.*
 
 interface ModellingGroupRepository : Repository
 {
@@ -11,5 +10,8 @@ interface ModellingGroupRepository : Repository
     fun getModellingGroup(id: String): ModellingGroup
 
     fun getResponsibilities(groupId: String, touchstoneId: String,
-                            scenarioFilterParameters: ScenarioFilterParameters): Responsibilities
+                            scenarioFilterParameters: ScenarioFilterParameters): ResponsibilitiesAndTouchstoneStatus
+    fun getResponsibility(groupId: String, touchstoneId: String, scenarioId: String): ResponsibilityAndTouchstone
+    fun getCoverageSets(groupId: String, touchstoneId: String, scenarioId: String): ScenarioTouchstoneAndCoverageSets
+    fun getCoverageData(groupId: String, touchstoneId: String, scenarioId: String): SplitData<ScenarioTouchstoneAndCoverageSets, CoverageRow>
 }

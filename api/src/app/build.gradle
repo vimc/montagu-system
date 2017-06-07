@@ -31,13 +31,14 @@ dependencies {
 
     compile "com.google.code.gson:gson:2.2.4"
     compile "com.github.salomonbrys.kotson:kotson:2.5.0"
+    compile "com.opencsv:opencsv:3.9"
 
     compile "org.postgresql:postgresql:9.4.1212.jre7"
     compile "org.jooq:jooq:3.9.1"
     compile "org.jooq:jooq-meta:3.9.1"
 
-    compile "org.pac4j:spark-pac4j:2.0.0-RC2"
-    compile "org.pac4j:pac4j-http:2.0.0-RC2"
+    compile "org.pac4j:spark-pac4j:2.0.0"
+    compile "org.pac4j:pac4j-http:2.0.0"
 
     compile project(":databaseInterface")
     compile project(":models")
@@ -62,10 +63,4 @@ distDocker {
     tagVersion = api_docker_version
 }
 
-task showConfig(dependsOn: 'copyConfig') {
-    doLast {
-        println("This is the config being used by the main app:")
-        println(file("build/classes/main/config.properties").text)
-    }
-}
 copyConfig.finalizedBy 'showConfig'

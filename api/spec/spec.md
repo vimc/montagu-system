@@ -5,6 +5,7 @@
 * Unless otherwise noted, URLs and IDs embedded in URLs are case-sensitive.
 * The canonical form for all URLs (not including query string) ends in a slash: `/`.
 * The API will be versioned via URL. So for version 1, all URLs will begin `/v1/`. e.g. `http://vimc.dide.ic.ac.uk/api/v1/diseases/`
+* When a POST results in the creation of a new object, the API returns a response in the standard format (see below) with the 'data' field being the URL that identifies the new resource.
 
 # Issues to be resolved:
 * CSV options for some endpoints
@@ -44,6 +45,30 @@ Example
                 "code": "unique-error-code", 
                 "message": "Full, user-friendly error message" 
             }
+        ]
+    }
+
+# Index
+## GET /
+The root of the API returns some simple data, which is mainly there to make it clear that you
+have correctly connected to the API. It also tells you what endpoints are implemented in the
+version you are currently connected to.
+
+Required permissions: User does not need to be logged in to access this endpoint.
+
+Schema: [`Index.schema.json`](Index.schema.json)
+
+### Example
+    {
+        "name": "montagu",
+        "version": "1.0.0",
+        "endpoints": [
+            "/v1/authenticate/",
+            "/v1/diseases/",
+            "/v1/diseases/:id/",
+            "/v1/touchstones/",
+            "/v1/modelling-groups/",
+            "/v1/modelling-groups/:group-id/responsibilities/:touchstone-id/"
         ]
     }
 
@@ -510,6 +535,8 @@ Returns all scenarios associated with the touchstone.
 
 Required permissions: `touchstones.read`, `scenarios.read`, `coverage.read`
 
+Additionally, to view scenarios for an in-preparation touchstone, `touchstones.prepare` is required.
+
 Schema: [`ScenariosInTouchstone.schema.json`](ScenariosInTouchstone.schema.json)
 
 ### Example
@@ -564,7 +591,117 @@ Note that the coverage sets returned are just those that belong to the touchston
 In other words, if the same scenario is associated with other coverage
 sets in a different touchstone, those are not returned here.
 
+Coverage sets are returned in the order they are to be applied.
+
 The returned scenarios can be filtered using the same query parameters as `GET /scenarios`, with the exception that the touchstone parameter is ignored.
+
+## GET /touchstones/{touchstone-id}/scenarios/{scenario-id}/
+Returns a single scenario associated with a touchstone.
+
+Required permissions: `touchstones.read`, `scenarios.read`, `coverage.read`
+
+Additionally, to view scenarios for an in-preparation touchstone, `touchstones.prepare` is required.
+
+Schema: [`ScenarioAndCoverageSets.schema.json`](ScenarioAndCoverageSets.schema.json)
+
+### Example
+    {
+        "touchstone": { 
+            "id": "2017-op-1",
+            "name": "2017-op",
+            "version": 1,            
+            "description": "2017 Operational Forecast",
+            "years": { "start": 1996, "end": 2017 },
+            "status": "finished"
+        },
+        "scenario": {
+            "id": "menA-novacc",
+            "touchstones": [ "2016-op-1", "2017-wuenic-1", "op-2017-1" ],
+            "description": "Menigitis A, No vaccination",
+            "disease": "MenA"
+        },
+        "coverage_sets": [ 
+            { 
+                "id": 101,
+                "touchstone": "2017-op-1",
+                "name": "Menigitis no vaccination",
+                "vaccine": "MenA",
+                "gavi_support_level": "none",
+                "activity_type": "none"
+            }
+        ]
+    }
+
+## GET /touchstones/{touchstone-id}/scenarios/{scenario-id}/coverage/
+Returns the amalgamated coverage data of all the coverage sets associated with this scenario in this touchstone.
+
+Required permissions: `touchstones.read`, `scenarios.read`, `coverage.read`
+
+This data is returned in two parts: First the metadata, then the coverage in CSV format.
+
+### Metadata
+Schema: [`ScenarioAndCoverageSets.schema.json`](ScenarioAndCoverageSets.schema.json)
+
+#### Example
+    {
+        "touchstone": { 
+            "id": "2017-op-1",
+            "name": "2017-op",
+            "version": 1,            
+            "description": "2017 Operational Forecast",
+            "years": { "start": 1996, "end": 2017 },
+            "status": "finished"
+        },
+        "scenario": {
+            "id": "menA-novacc",
+            "touchstones": [ "2016-op-1", "2017-wuenic-1", "op-2017-1" ],
+            "description": "Menigitis A, No vaccination",
+            "disease": "MenA"
+        },
+        "coverage_sets": [ 
+            { 
+                "id": 101,
+                "touchstone": "2017-op-1",
+                "name": "Menigitis without GAVI support",
+                "vaccine": "MenA",
+                "gavi_support_level": "without",
+                "activity_type": "routine"
+            },
+            { 
+                "id": 136,
+                "touchstone": "2017-op-1",
+                "name": "Menigitis with GAVI support",
+                "vaccine": "MenA",
+                "gavi_support_level": "with",
+                "activity_type": "routine"
+            }
+        ]
+    }
+
+Coverage sets are returned in the order they are to be applied.
+
+### Coverage data
+CSV data in this format:
+
+       "scenario", "set_id", "set_order",                        "set_name", "vaccine", "gavi_support_level", "activity_type", country",    "year","age_from","age_to","coverage"
+    "menA-novacc",      101,           1,  "Menigitis without GAVI support",    "MenA",            "without",       "routine",    "AFG",      2006,         0,       2,        NA
+    "menA-novacc",      101,           1,  "Menigitis without GAVI support",    "MenA",            "without",       "routine",    "AFG",      2007,         0,       2,      64.0
+    "menA-novacc",      101,           1,  "Menigitis without GAVI support",    "MenA",            "without",       "routine",    "AFG",      2008,         0,       2,      63.0
+    "menA-novacc",      101,           1,  "Menigitis without GAVI support",    "MenA",            "without",       "routine",    "AGO",      2006,         0,       1,       0.0
+    "menA-novacc",      101,           1,  "Menigitis without GAVI support",    "MenA",            "without",       "routine",    "AGO",      2007,         0,       1,      83.0
+    "menA-novacc",      101,           1,  "Menigitis without GAVI support",    "MenA",            "without",       "routine",    "AGO",      2008,         0,       1,      81.0
+    "menA-novacc",      136,           2,     "Menigitis with GAVI support",    "MenA",               "with",       "routine",    "AFG",      2006,         0,       2,        NA
+    "menA-novacc",      136,           2,     "Menigitis with GAVI support",    "MenA",               "with",       "routine",    "AFG",      2007,         0,       2,      80.0
+    "menA-novacc",      136,           2,     "Menigitis with GAVI support",    "MenA",               "with",       "routine",    "AFG",      2008,         0,       2,      90.0
+    "menA-novacc",      136,           2,     "Menigitis with GAVI support",    "MenA",               "with",       "routine",    "AGO",      2006,         0,       1,      20.0
+    "menA-novacc",      136,           2,     "Menigitis with GAVI support",    "MenA",               "with",       "routine",    "AGO",      2007,         0,       1,      90.0
+    "menA-novacc",      136,           2,     "Menigitis with GAVI support",    "MenA",               "with",       "routine",    "AGO",      2008,         0,       1,      95.0
+
+The coverage sets are de-normalized and merged into this single table. You can identify 
+which coverage set a line is from using either the `set_id` or `set_order` columns. 
+
+* `set_id:` The unique ID of the coverage set the line is from
+* `set_order`: The order that this set has within the scenario. Coverage data is applied in this order, and it matches the order of the coverage sets in the metadata above
 
 ## POST /touchstones/{touchstone-id}/actions/associate_scenario/
 Associate or unassociate a scenario with a touchstone.
@@ -1138,7 +1275,7 @@ and the overall status of this modelling groups work in this touchstone.
 If the touchstone is `in-preparation`, and the user does not have permission to see touchstones 
 before they are made `open`, then this returns an error 404.
 
-Required permissions: `responsibilities.read`, `scenarios.read`. Additionally, to view responsibilities for an `in-preparation` touchstone, the user needs the `touchstones.prepare` permission.
+Required permissions: Global scope: `scenarios.read`. Scoped to modelling group: `responsibilities.read`. Additionally, to view responsibilities for an `in-preparation` touchstone, the user needs the `touchstones.prepare` permission.
 
 Schema: [`ResponsibilitySet.schema.json`](ResponsibilitySet.schema.json)
 
@@ -1221,6 +1358,169 @@ Schema: [`EditResponsibilitySet.schema.json`](EditResponsibilitySet.schema.json)
         "status": "incomplete",
         "problems": "Please review the numbers for Afghanistan - they look much too high"
     }
+
+## GET /modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}/{scenario-id}/
+Returns the specified responsibility of this modelling group in the given touchstone.
+
+If the touchstone is `in-preparation`, and the user does not have permission to see touchstones 
+before they are made `open`, then this returns an error 404.
+
+Required permissions: Global scope: `scenarios.read`. Scoped to modelling group: `responsibilities.read`. Additionally, to view responsibilities for an `in-preparation` touchstone, the user needs the `touchstones.prepare` permission.
+
+Schema: [`ResponsibilityAndTouchstone.schema.json`](ResponsibilityAndTouchstone.schema.json)
+
+### Example
+    {
+        "touchstone": { 
+            "id": "2017-op-1",
+            "name": "2017-op",
+            "version": 1,            
+            "description": "2017 Operational Forecast",
+            "years": { "start": 1996, "end": 2017 },
+            "status": "finished"
+        },
+        "responsibility": {
+            "scenario": {
+                "id": "menA-novacc",
+                "touchstones": [ "2016-op-1", "2017-wuenic-1", "2017-op-1" ],
+                "description": "Menigitis A, No vaccination",
+                "disease": "MenA"
+            },
+            "status": "empty",
+            "problems": [ "No burden estimates have been uploaded" ],
+            "current_estimate": null
+        }
+    }
+
+## GET /modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}/{scenario-id}/coverage_sets/
+Returns metadata for the coverage sets associated with the responsibility.
+
+Required permissions: Global scope: `scenarios.read`. Scoped to modelling group: `responsibilities.read` and `coverage.read`.  Additionally, to view coverage sets for an `in-preparation` touchstone, the user needs the `touchstones.prepare` permission.
+
+If the touchstone is `in-preparation`, and the user does not have permission to see touchstones 
+before they are made `open`, then this returns an error 404.
+
+Schema: [`ScenarioAndCoverageSets.schema.json`](ScenarioAndCoverageSets.schema.json)
+
+### Example
+    {
+        "touchstone": { 
+            "id": "2017-op-1",
+            "name": "2017-op",
+            "version": 1,            
+            "description": "2017 Operational Forecast",
+            "years": { "start": 1996, "end": 2017 },
+            "status": "finished"
+        },
+        "scenario": {
+            "id": "menA-novacc",
+            "touchstones": [ "2016-op-1", "2017-wuenic-1", "op-2017-1" ],
+            "description": "Menigitis A, No vaccination",
+            "disease": "MenA"
+        },
+        "coverage_sets": [ 
+            { 
+                "id": 101,
+                "touchstone": "2017-op-1",
+                "name": "Menigitis without GAVI support",
+                "vaccine": "MenA",
+                "gavi_support_level": "without",
+                "activity_type": "routine"
+            },
+            { 
+                "id": 136,
+                "touchstone": "2017-op-1",
+                "name": "Menigitis with GAVI support",
+                "vaccine": "MenA",
+                "gavi_support_level": "with",
+                "activity_type": "routine"
+            }
+        ]
+    }
+
+## GET /modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}/{scenario-id}/coverage/
+Returns the amalgamated coverage data of all the coverage sets associated with this responsibility.
+
+Required permissions: Global scope: `scenarios.read`. Scoped to modelling group: `responsibilities.read` and `coverage.read`.  Additionally, to view coverage data for an `in-preparation` touchstone, the user needs the `touchstones.prepare` permission.
+
+If the touchstone is `in-preparation`, and the user does not have permission to see touchstones 
+before they are made `open`, then this returns an error 404.
+
+Depending on the "Accept" header sent by the client, there are two different
+result formats. If "Accept" is "application/json" then both JSON metadata and 
+CSV table data are returned, separated by a single line of three dashes. If
+"Accept" is "text/csv" then only the CSV table data is returned.
+
+### JSON metadata
+Schema: [`ScenarioAndCoverageSets.schema.json`](ScenarioAndCoverageSets.schema.json)
+
+#### Example
+    {
+        "touchstone": { 
+            "id": "2017-op-1",
+            "name": "2017-op",
+            "version": 1,            
+            "description": "2017 Operational Forecast",
+            "years": { "start": 1996, "end": 2017 },
+            "status": "finished"
+        },
+        "scenario": {
+            "id": "menA-novacc",
+            "touchstones": [ "2016-op-1", "2017-wuenic-1", "op-2017-1" ],
+            "description": "Menigitis A, No vaccination",
+            "disease": "MenA"
+        },
+        "coverage_sets": [ 
+            { 
+                "id": 101,
+                "touchstone": "2017-op-1",
+                "name": "Menigitis without GAVI support",
+                "vaccine": "MenA",
+                "gavi_support_level": "without",
+                "activity_type": "routine"
+            },
+            { 
+                "id": 136,
+                "touchstone": "2017-op-1",
+                "name": "Menigitis with GAVI support",
+                "vaccine": "MenA",
+                "gavi_support_level": "with",
+                "activity_type": "routine"
+            }
+        ]
+    }
+
+Coverage sets are returned in the order they are to be applied.
+
+### CSV table data
+CSV data in this format:
+
+    "set_id", "set_order",                        "set_name", "vaccine", "gavi_support_level", "activity_type", country",    "year","age_from","age_to",   "age_range_verbatim", "target", coverage"
+         101,           1,  "Menigitis without GAVI support",    "MenA",            "without",       "routine",    "AFG",      2006,         0,       2,                     NA,       NA,        NA
+         101,           1,  "Menigitis without GAVI support",    "MenA",            "without",       "routine",    "AFG",      2007,         0,       2,                     NA,       NA,      64.0
+         101,           1,  "Menigitis without GAVI support",    "MenA",            "without",       "routine",    "AFG",      2008,         0,       2,                     NA,       NA,      63.0
+         101,           1,  "Menigitis without GAVI support",    "MenA",            "without",       "routine",    "AGO",      2006,         0,       1,                     NA,       NA,       0.0
+         101,           1,  "Menigitis without GAVI support",    "MenA",            "without",       "routine",    "AGO",      2007,         0,       1, "school aged children",  1465824,      83.0
+         101,           1,  "Menigitis without GAVI support",    "MenA",            "without",       "routine",    "AGO",      2008,         0,       1,                     NA,       NA,      81.0
+         136,           2,     "Menigitis with GAVI support",    "MenA",               "with",       "routine",    "AFG",      2006,         0,       2,                     NA,       NA,        NA
+         136,           2,     "Menigitis with GAVI support",    "MenA",               "with",       "routine",    "AFG",      2007,         0,       2,                     NA,       NA,      80.0
+         136,           2,     "Menigitis with GAVI support",    "MenA",               "with",       "routine",    "AFG",      2008,         0,       2,                     NA,       NA,      90.0
+         136,           2,     "Menigitis with GAVI support",    "MenA",               "with",       "routine",    "AGO",      2006,         0,       1,                     NA,       NA,      20.0
+         136,           2,     "Menigitis with GAVI support",    "MenA",               "with",       "routine",    "AGO",      2007,         0,       1,                     NA,       NA,      90.0
+         136,           2,     "Menigitis with GAVI support",    "MenA",               "with",       "routine",    "AGO",      2008,         0,       1                      NA,       NA,      95.0
+
+The coverage sets are de-normalized and merged into this single table. You can identify 
+which coverage set a line is from using either the `set_id` or `set_order` columns. 
+
+* `set_id:` The unique ID of the coverage set the line is from
+* `set_order`: The order that this set has within the scenario. Coverage data is applied in this order, and it matches the order of the coverage sets in the metadata above
+
+### Onetime Link
+A client may make a GET request to 
+`/modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}/{scenario-id}/coverage/get_onetime_link/`.
+This endpoint requires the same permissions as getting the coverage directly.
+It returns a onetime token that can be used to get the coverage data in CSV 
+format without authentication. See [Onetime Link](onetime-link-spec.md).
 
 ## POST /modelling-groups/{modelling-group-id}/actions/associate_responsibility
 Adds or removes a responsibility for a given modelling group, scenario, and touchstone.

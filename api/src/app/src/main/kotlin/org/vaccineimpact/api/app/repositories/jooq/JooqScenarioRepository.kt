@@ -1,20 +1,21 @@
 package org.vaccineimpact.api.app.repositories.jooq
 
 import org.jooq.Record
-import org.vaccineimpact.api.app.extensions.fieldsAsList
-import org.vaccineimpact.api.models.Scenario
 import org.vaccineimpact.api.app.repositories.ScenarioRepository
 import org.vaccineimpact.api.db.Tables.SCENARIO
 import org.vaccineimpact.api.db.Tables.SCENARIO_DESCRIPTION
+import org.vaccineimpact.api.db.fieldsAsList
+import org.vaccineimpact.api.db.fromJoinPath
+import org.vaccineimpact.api.models.Scenario
 
 class JooqScenarioRepository : JooqRepository(), ScenarioRepository
 {
-    override fun getScenarios(ids: Iterable<String>): List<Scenario>
+    override fun getScenarios(descriptionIds: Iterable<String>): List<Scenario>
     {
         return dsl.select(SCENARIO_DESCRIPTION.fieldsAsList())
                 .select(SCENARIO.TOUCHSTONE)
                 .fromJoinPath(SCENARIO_DESCRIPTION, SCENARIO)
-                .where(SCENARIO_DESCRIPTION.ID.`in`(ids.toList()))
+                .where(SCENARIO_DESCRIPTION.ID.`in`(descriptionIds.distinct().toList()))
                 .fetch()
                 .groupBy { it[SCENARIO_DESCRIPTION.ID] }
                 .map { mapScenario(it.value) }

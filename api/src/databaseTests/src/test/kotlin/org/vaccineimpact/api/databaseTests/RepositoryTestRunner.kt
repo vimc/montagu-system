@@ -1,0 +1,56 @@
+package org.vaccineimpact.api.databaseTests
+
+import org.vaccineimpact.api.app.repositories.Repository
+import org.vaccineimpact.api.db.JooqContext
+
+data class RepositoryTestConfig<TRepository : Repository>(
+        val makeRepository: () -> TRepository,
+        val populateDatabase: ((JooqContext) -> Unit),
+        val checkRepository: ((TRepository) -> Unit)? = null,
+        val changeViaRepository: ((TRepository) -> Unit)? = null,
+        val checkDatabase: ((JooqContext) -> Unit)? = null
+)
+{
+    infix fun makeTheseChanges(changeViaRepository: (TRepository) -> Unit)
+            = this.copy(changeViaRepository = changeViaRepository)
+
+    infix fun check(checkRepository: (TRepository) -> Unit)
+    {
+        val config = this.copy(checkRepository = checkRepository)
+        RepositoryTestRunner(config).run()
+    }
+
+    infix fun andCheck(checkRepository: (TRepository) -> Unit)
+            = check(checkRepository)
+
+    infix fun andCheckDatabase(checkDatabase: (JooqContext) -> Unit)
+    {
+        val config = this.copy(checkDatabase = checkDatabase)
+        RepositoryTestRunner(config).run()
+    }
+}
+
+
+class RepositoryTestRunner<TRepository : Repository>(config: RepositoryTestConfig<TRepository>)
+{
+    val makeRepository = config.makeRepository
+    val populateDatabase = config.populateDatabase
+    val checkRepository = config.checkRepository ?: {}
+    val changeViaRepository = config.changeViaRepository ?: {}
+    val checkDatabase = config.checkDatabase ?: {}
+
+    fun run()
+    {
+        JooqContext().use { populateDatabase(it) }
+        makeRepository().use {
+            changeViaRepository(it)
+            checkRepository(it)
+        }
+        JooqContext().use { checkDatabase(it) }
+    }
+
+    infix fun check(withRepository: (TRepository) -> Unit)
+    {
+        makeRepository().use { withRepository(it) }
+    }
+}

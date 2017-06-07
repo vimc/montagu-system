@@ -1,56 +1,64 @@
 package org.vaccineimpact.api.security
 
-import com.auth0.jwt.JWT
-import com.auth0.jwt.algorithms.Algorithm
-import org.slf4j.LoggerFactory
+import org.pac4j.core.profile.CommonProfile
+import org.pac4j.jwt.config.signature.RSASignatureConfiguration
+import org.pac4j.jwt.profile.JwtGenerator
 import org.vaccineimpact.api.db.Config
+import org.vaccineimpact.api.models.User
 import java.security.KeyPair
 import java.security.KeyPairGenerator
-import java.security.interfaces.RSAKey
+import java.security.SecureRandom
 import java.time.Duration
 import java.time.Instant
 import java.util.*
 
-class WebTokenHelper
+open class WebTokenHelper
 {
-    private val logger = LoggerFactory.getLogger(WebTokenHelper::class.java)
-
     val lifeSpan: Duration = Duration.ofSeconds(Config["token.lifespan"].toLong())
+    val oneTimeLinkLifeSpan: Duration = Duration.ofMinutes(10)
     private val keyPair = generateKeyPair()
-    private val issuer = Config["token.issuer"]
-    private val verifier = JWT.require(Algorithm.RSA256(verificationKey))
-            .withIssuer(issuer)
-            .build()
+    val issuer = Config["token.issuer"]
+    val signatureConfiguration = RSASignatureConfiguration(keyPair)
+    val generator = JwtGenerator<CommonProfile>(signatureConfiguration)
+    private val random = SecureRandom()
 
-    fun generateToken(username: String): String
+    //val publicKey: String = Base64.getUrlEncoder().encodeToString(keyPair.public.encoded)
+
+    fun generateToken(user: User): String
     {
-        val algorithm = Algorithm.RSA256(signingKey)
-        return JWT.create()
-                .withIssuer(issuer)
-                .withSubject(username)
-                .withExpiresAt(Date.from(Instant.now().plus(lifeSpan)))
-                .sign(algorithm)
+        return generator.generate(claims(user))
+    }
+    open fun generateOneTimeActionToken(action: String, params: Map<String, String>): String
+    {
+        return generator.generate(mapOf(
+                "iss" to issuer,
+                "sub" to oneTimeActionSubject,
+                "exp" to Date.from(Instant.now().plus(oneTimeLinkLifeSpan)),
+                "action" to action,
+                "payload" to params.map { "${it.key}=${it.value}" }.joinToString("&"),
+                "nonce" to getNonce()
+        ))
     }
 
-    fun verifyToken(token: String): MontaguToken
+    fun claims(user: User): Map<String, Any>
     {
-        val decoded = verifier.verify(token)
-        if (decoded.issuer != issuer)
-        {
-            throw TokenValidationException("Issuer", issuer, decoded.issuer)
-        }
-        if (decoded.expiresAt < Date.from(Instant.now()))
-        {
-            throw TokenValidationException("Token has expired")
-        }
-        return MontaguToken(decoded.subject)
+        return mapOf(
+                "iss" to issuer,
+                "sub" to user.username,
+                "exp" to Date.from(Instant.now().plus(lifeSpan)),
+                "permissions" to user.permissions.joinToString(","),
+                "roles" to user.roles.joinToString(",")
+        )
     }
 
-    private val signingKey
-        get() = keyPair.private as RSAKey
+    open fun verify(token: String): Map<String, Any> = MontaguTokenAuthenticator(this).validateTokenAndGetClaims(token)
 
-    private val verificationKey
-        get() = keyPair.public as RSAKey
+    private fun getNonce(): String
+    {
+        val bytes = ByteArray(32)
+        random.nextBytes(bytes)
+        return Base64.getEncoder().encodeToString(bytes)
+    }
 
     private fun generateKeyPair(): KeyPair
     {
@@ -58,5 +66,10 @@ class WebTokenHelper
             initialize(1024)
         }
         return generator.generateKeyPair()
+    }
+
+    companion object
+    {
+        val oneTimeActionSubject = "onetime_link"
     }
 }

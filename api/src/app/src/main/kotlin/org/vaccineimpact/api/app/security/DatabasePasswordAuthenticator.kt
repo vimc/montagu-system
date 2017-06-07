@@ -7,16 +7,12 @@ import org.pac4j.core.exception.CredentialsException
 import org.pac4j.core.profile.CommonProfile
 import org.pac4j.core.util.CommonHelper
 import org.vaccineimpact.api.app.repositories.jooq.JooqUserRepository
+import org.vaccineimpact.api.app.security.USER_OBJECT
 import org.vaccineimpact.api.models.User
 import org.vaccineimpact.api.security.UserHelper
 
 class DatabasePasswordAuthenticator : Authenticator<UsernamePasswordCredentials>
 {
-    companion object
-    {
-        val USER_OBJECT = "userObject"
-    }
-
     override fun validate(credentials: UsernamePasswordCredentials?, context: WebContext?)
     {
         if (credentials == null)

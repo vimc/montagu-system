@@ -2,4 +2,5 @@ dependencies {
     compile "org.postgresql:postgresql:9.4.1212.jre7"
     compile "org.jooq:jooq:3.9.1"
     compile "org.jooq:jooq-meta:3.9.1"
+    compile "org.apache.commons:commons-lang3:3.5"
 }

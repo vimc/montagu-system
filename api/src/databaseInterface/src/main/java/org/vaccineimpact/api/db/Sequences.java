@@ -34,6 +34,16 @@ public class Sequences {
     public static final Sequence<Long> BURDEN_ESTIMATE_SET_ID_SEQ = new SequenceImpl<Long>("burden_estimate_set_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
     /**
+     * The sequence <code>public.burden_estimate_set_problem_id_seq</code>
+     */
+    public static final Sequence<Long> BURDEN_ESTIMATE_SET_PROBLEM_ID_SEQ = new SequenceImpl<Long>("burden_estimate_set_problem_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
+     * The sequence <code>public.burden_outcome_id_seq</code>
+     */
+    public static final Sequence<Long> BURDEN_OUTCOME_ID_SEQ = new SequenceImpl<Long>("burden_outcome_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
      * The sequence <code>public.coverage_id_seq</code>
      */
     public static final Sequence<Long> COVERAGE_ID_SEQ = new SequenceImpl<Long>("coverage_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
@@ -44,14 +54,19 @@ public class Sequences {
     public static final Sequence<Long> COVERAGE_SET_ID_SEQ = new SequenceImpl<Long>("coverage_set_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
     /**
-     * The sequence <code>public.impact_estimate_components_id_seq</code>
-     */
-    public static final Sequence<Long> IMPACT_ESTIMATE_COMPONENTS_ID_SEQ = new SequenceImpl<Long>("impact_estimate_components_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
-
-    /**
      * The sequence <code>public.impact_estimate_id_seq</code>
      */
     public static final Sequence<Long> IMPACT_ESTIMATE_ID_SEQ = new SequenceImpl<Long>("impact_estimate_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
+     * The sequence <code>public.impact_estimate_ingredient_id_seq</code>
+     */
+    public static final Sequence<Long> IMPACT_ESTIMATE_INGREDIENT_ID_SEQ = new SequenceImpl<Long>("impact_estimate_ingredient_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
+     * The sequence <code>public.impact_estimate_recipe_id_seq</code>
+     */
+    public static final Sequence<Long> IMPACT_ESTIMATE_RECIPE_ID_SEQ = new SequenceImpl<Long>("impact_estimate_recipe_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
     /**
      * The sequence <code>public.impact_estimate_set_id_seq</code>
@@ -59,14 +74,14 @@ public class Sequences {
     public static final Sequence<Long> IMPACT_ESTIMATE_SET_ID_SEQ = new SequenceImpl<Long>("impact_estimate_set_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
     /**
+     * The sequence <code>public.impact_estimate_set_ingredient_id_seq</code>
+     */
+    public static final Sequence<Long> IMPACT_ESTIMATE_SET_INGREDIENT_ID_SEQ = new SequenceImpl<Long>("impact_estimate_set_ingredient_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
      * The sequence <code>public.model_version_id_seq</code>
      */
     public static final Sequence<Long> MODEL_VERSION_ID_SEQ = new SequenceImpl<Long>("model_version_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
-
-    /**
-     * The sequence <code>public.outcome_id_seq</code>
-     */
-    public static final Sequence<Long> OUTCOME_ID_SEQ = new SequenceImpl<Long>("outcome_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
     /**
      * The sequence <code>public.responsibility_id_seq</code>

@@ -5,8 +5,8 @@ import org.jooq.Record
 import org.jooq.TableField
 import org.jooq.impl.TableImpl
 import org.vaccineimpact.api.app.errors.UnknownObjectError
-import org.vaccineimpact.api.models.HasKey
 import org.vaccineimpact.api.app.repositories.SimpleDataSet
+import org.vaccineimpact.api.models.HasKey
 
 class JooqSimpleDataSet<out TModel : HasKey<TKey>, TKey : Any, TRepoModel : Record, TTable : TableImpl<TRepoModel>>(
         private val dsl: DSLContext,
@@ -26,8 +26,8 @@ class JooqSimpleDataSet<out TModel : HasKey<TKey>, TKey : Any, TRepoModel : Reco
         fetch(key)
     }
 
-    private fun fetch(key: TKey) = dsl.fetchAny(table, primaryKey.eq(key))
-            ?: throw UnknownObjectError(key, modelType.simpleName)
+    private fun fetchOrNull(key: TKey): TRepoModel? = dsl.fetchAny(table, primaryKey.eq(key))
+    private fun fetch(key: TKey) = fetchOrNull(key) ?: throw UnknownObjectError(key, modelType.simpleName)
 
     companion object
     {
