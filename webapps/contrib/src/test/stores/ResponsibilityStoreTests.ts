@@ -34,7 +34,7 @@ describe("ResponsibilityStore", () => {
             responsibilitySet: null,
             currentResponsibility: null,
 
-            currentModellingGroupId: null,
+            currentModellingGroup: null,
             currentDiseaseId: null,
 
             coverageOneTimeToken: null,

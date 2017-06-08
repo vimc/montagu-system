@@ -1,22 +1,15 @@
-import { expect } from 'chai';
+import { expect } from "chai";
 import { Sandbox } from "../Sandbox";
 import { alt } from "../../main/alt";
 import { authActions, LogInProperties } from "../../main/actions/AuthActions";
 import { expectOrderedActions } from "../actionHelpers";
 import { AuthState, authStore, initialAuthState } from "../../main/stores/AuthStore";
-import { initialMainState, mainStore, makeLookup } from "../../main/stores/MainStore";
+import { initialMainState, mainStore } from "../../main/stores/MainStore";
 import { mockModellingGroup } from "../mocks/mockModels";
 import { ModellingGroup } from "../../main/models/Generated";
 import { modellingGroupActions } from "../../main/actions/ModellingGroupActions";
+import { makeLookup } from "../../main/stores/Loadable";
 const jwt = require("jsonwebtoken");
-
-function setModellingGroups(group: ModellingGroup) {
-    alt.bootstrap(JSON.stringify({
-        MainStore: {
-            modellingGroups: makeLookup([group])
-        }
-    }))
-}
 
 describe("AuthStore", () => {
     const sandbox = new Sandbox();
@@ -39,16 +32,25 @@ describe("AuthStore", () => {
 
         const expected: AuthState = {
             loggedIn: true,
-            modellingGroups: null,
+            modellingGroupIds: [ "test.group" ],
+            modellingGroups: [],
             permissions: [ "*/can-login", "*/other" ],
             username: "test.user",
             bearerToken: token
         };
         expect(authStore.getState()).to.eql(expected);
+    });
+
+    it("sets modellingGroups array when modelling groups are received", () => {
+        alt.bootstrap(JSON.stringify({
+            AuthStore: {
+                modellingGroupIds: [ "test.group" ]
+            }
+        }));
 
         const group = mockModellingGroup({ id: "test.group" });
         modellingGroupActions.update([ mockModellingGroup(), group ]);
-        expect(authStore.getState().modellingGroups).to.eql(group);
+        expect(authStore.getState().modellingGroups).to.eql([ group ]);
     });
 
     it("clears everything on logOut", () => {

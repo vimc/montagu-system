@@ -29,10 +29,12 @@ describe("DiseaseFilter", () => {
     });
 
     it("renders disease options", () => {
-        mocks.setupMainStore([
-            { id: "d1", name: "Disease 1" },
-            { id: "d2", name: "Disease 2" },
-        ]);
+        mocks.setupMainStore({
+            diseases: [
+                { id: "d1", name: "Disease 1" },
+                { id: "d2", name: "Disease 2" },
+            ]
+        });
         const set = mockExtendedResponsibilitySet({}, [
             mockResponsibility({}, { disease: "d1" }),
             mockResponsibility({}, { disease: "d2" })

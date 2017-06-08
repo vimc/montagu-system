@@ -2,10 +2,11 @@ import * as React from "react";
 import { Sandbox } from "../../Sandbox";
 import { expect } from "chai";
 import { expectOrderedActions } from "../../actionHelpers";
-import { mockLocation } from "../../mocks/mocks";
+import { mockLocation, setupMainStore } from "../../mocks/mocks";
 
 import { responsibilityStore } from "../../../main/stores/ResponsibilityStore";
 import { DownloadCoveragePage } from "../../../main/components/Responsibilities/Coverage/DownloadCoveragePage";
+import { mockModellingGroup } from "../../mocks/mockModels";
 
 describe('DownloadCoveragePage', () => {
     const sandbox = new Sandbox();
@@ -23,11 +24,13 @@ describe('DownloadCoveragePage', () => {
             scenarioId: "scenario-1",
             groupId: "group-1",
         });
+        const group = mockModellingGroup({ id: "group-1" });
+        setupMainStore({ groups: [group] });
 
         sandbox.mount(<DownloadCoveragePage location={ location } />);
 
         expectOrderedActions(spy, [
-            { action: "ModellingGroupActions.setCurrentModellingGroup", payload: "group-1" },
+            { action: "ModellingGroupActions.setCurrentModellingGroup", payload: group },
             { action: "TouchstoneActions.setCurrentTouchstone", payload: "touchstone-1" },
             { action: "ResponsibilityActions.setCurrentResponsibility", payload: "scenario-1" },
         ], 0);

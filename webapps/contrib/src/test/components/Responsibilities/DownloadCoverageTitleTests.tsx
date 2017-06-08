@@ -21,6 +21,6 @@ describe("DownloadCoverageTitleComponent", () => {
             touchstone={ touchstone }
             modellingGroup={ group } />)
         const link = rendered.find(Link);
-        expect(link.prop("href")).to.equal("group-id/responsibilities/some-id/");
+        expect(link.prop("href")).to.equal("/group-id/responsibilities/some-id/");
     });
 });

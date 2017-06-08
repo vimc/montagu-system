@@ -29,16 +29,6 @@ describe("LogoutComponent", () => {
         expect(rendered.find(Link)).to.have.length(1);
     });
 
-    it("renders group membership", () => {
-        const state = Object.assign(initialAuthState(), {
-            loggedIn: true,
-            username: "test.user",
-            modellingGroups: [ "BEATLES", "BEACH BOYS" ]
-        });
-        const rendered = shallow(<LogoutComponent {...state} />);
-        expect(rendered.text()).to.contain("Member of: BEATLES, BEACH BOYS");
-    });
-
     it("clicking log out emits logOut event", () => {
         const state = Object.assign(initialAuthState(), {
             loggedIn: true,

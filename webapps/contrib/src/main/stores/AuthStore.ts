@@ -12,6 +12,7 @@ export interface AuthState {
     username: string;
     bearerToken: string;
     permissions: string[];
+    modellingGroupIds: string[];
     modellingGroups: ModellingGroup[];
 }
 
@@ -25,6 +26,7 @@ export function initialAuthState(): AuthState {
         username: null,
         bearerToken: null,
         permissions: [],
+        modellingGroupIds: [],
         modellingGroups: []
     };
 }
@@ -39,7 +41,6 @@ class AuthStore extends AbstractStore<AuthState, AuthStoreInterface> {
 
     constructor() {
         super();
-        this.modellingGroupIds = [];
         this.bindListeners({
             handleLogIn: authActions.logIn,
             handleLogOut: authActions.logOut,

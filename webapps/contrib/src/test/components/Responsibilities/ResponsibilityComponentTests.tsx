@@ -15,9 +15,11 @@ describe('ResponsibilityComponent', () => {
     const sandbox = new Sandbox();
 
     before(() => {
-        setupMainStore([
-            { id: "disease-id", name: "Disease name" }
-        ]);
+        setupMainStore({
+            diseases: [
+                { id: "disease-id", name: "Disease name" }
+            ]
+        });
 
         const responsibility = mockResponsibility({
             status: "empty"
@@ -25,9 +27,10 @@ describe('ResponsibilityComponent', () => {
             id: "scenario-1",
             description: "Description",
         });
+        const group = mockModellingGroup({ id: "group-1" });
         const touchstone = mockTouchstone({ id: "touchstone-1" });
         rendered = shallow(<ResponsibilityComponent
-            modellingGroup={ mockModellingGroup() }
+            modellingGroup={ group }
             responsibility={ responsibility }
             touchstone={ touchstone } />);
     });
@@ -44,6 +47,6 @@ describe('ResponsibilityComponent', () => {
 
     it("renders the coverage download link", () => {
         const link = rendered.findWhere(e => e.is(ButtonLink) && e.children().text() == "Download input data");
-        expect(link.prop("href")).to.equal(`/responsibilities/touchstone-1/scenario-1/`);
+        expect(link.prop("href")).to.equal(`/group-1/responsibilities/touchstone-1/scenario-1/`);
     });
 });

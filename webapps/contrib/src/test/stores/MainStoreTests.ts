@@ -9,6 +9,8 @@ import { authActions } from "../../main/actions/AuthActions";
 import { diseaseActions } from "../../main/actions/DiseaseActions";
 import { errorActions } from "../../main/actions/ErrorActions";
 import { responsibilityStore } from "../../main/stores/ResponsibilityStore";
+import { Disease, ModellingGroup } from "../../main/models/Generated";
+import { emptyLookup } from "../../main/stores/Loadable";
 
 describe("MainStore", () => {
     const sandbox = new Sandbox();
@@ -27,7 +29,8 @@ describe("MainStore", () => {
         expect(state).to.eql({
             errors: [],
             ready: false,
-            diseases: { loaded: false, content: null }
+            diseases: emptyLookup<Disease>(),
+            modellingGroups: emptyLookup<ModellingGroup>()
         });
     });
 
@@ -40,14 +43,15 @@ describe("MainStore", () => {
         const state = mainStore.getState();
         expect(state).to.eql({
             errors: [],
-            ready: true,
+            ready: false,
             diseases: {
                 loaded: true,
                 content: {
                     d1: disease1,
                     d2: disease2,
                 }
-            }
+            },
+            modellingGroups: emptyLookup<ModellingGroup>()
         });
         setTimeout(() => {
             try {
@@ -66,7 +70,8 @@ describe("MainStore", () => {
         expect(state).to.eql({
             errors: [ "message" ],
             ready: false,
-            diseases: { loaded: false, content: null }
+            diseases: emptyLookup<Disease>(),
+            modellingGroups: emptyLookup<ModellingGroup>()
         });
 
         errorActions.error("message 2");
@@ -75,7 +80,8 @@ describe("MainStore", () => {
         expect(state).to.eql({
             errors: [ "message 2", "message" ],
             ready: false,
-            diseases: { loaded: false, content: null }
+            diseases: emptyLookup<Disease>(),
+            modellingGroups: emptyLookup<ModellingGroup>()
         });
     });
 

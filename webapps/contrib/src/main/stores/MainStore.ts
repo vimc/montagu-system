@@ -4,7 +4,7 @@ import { AbstractStore } from "./AbstractStore";
 import { authActions, LogInProperties } from "../actions/AuthActions";
 import { Disease, ModellingGroup } from "../models/Generated";
 import { settings } from "../Settings";
-import { Loadable } from "./Loadable";
+import { emptyLookup, getFromLookup, ILoadable, makeLookup } from "./Loadable";
 import { diseaseActions } from "../actions/DiseaseActions";
 import { errorActions } from "../actions/ErrorActions";
 import { RemoteContent } from "./RemoteContent";
@@ -13,8 +13,8 @@ import { responsibilityStore } from "./ResponsibilityStore";
 import { modellingGroupActions } from "../actions/ModellingGroupActions";
 
 export interface MainState extends RemoteContent {
-    diseases: Loadable<Disease>;
-    modellingGroups: Loadable<ModellingGroup>;
+    diseases: ILoadable<Disease>;
+    modellingGroups: ILoadable<ModellingGroup>;
     errors: string[];
 }
 
@@ -34,20 +34,10 @@ function onReady() {
     setTimeout(() => responsibilityStore.fetchTouchstones());
 }
 
-export function makeLookup<TModel extends HasId>(models: TModel[]): Loadable<TModel> {
-    let lookup: { [index: string]: TModel } = {};
-    models.forEach(d => lookup[ d.id ] = d);
-
-    return {
-        content: lookup,
-        loaded: true
-    };
-}
-
 export function initialMainState(): MainState {
     return {
-        diseases: { content: null, loaded: false },
-        modellingGroups: { content: null, loaded: false },
+        diseases: emptyLookup<Disease>(),
+        modellingGroups: emptyLookup<ModellingGroup>(),
         errors: [],
         ready: false
     };
@@ -56,8 +46,8 @@ export function initialMainState(): MainState {
 class MainStore extends AbstractStore<MainState, Interface> {
     ready: boolean;
     errors: string[];
-    diseases: Loadable<Disease>;
-    modellingGroups: Loadable<ModellingGroup>;
+    diseases: ILoadable<Disease>;
+    modellingGroups: ILoadable<ModellingGroup>;
 
     constructor() {
         super();
@@ -70,8 +60,8 @@ class MainStore extends AbstractStore<MainState, Interface> {
         this.registerAsync(sources.diseases);
         this.registerAsync(sources.modellingGroups);
         this.exportPublicMethods({
-            getDiseaseById: id => this.diseases.content[id],
-            getGroupById: id => this.modellingGroups.content[id],
+            getDiseaseById: id => getFromLookup(this.diseases, id),
+            getGroupById: id => getFromLookup(this.modellingGroups, id),
             load: () => {
                 this.getInstance().fetchDiseases();
                 this.getInstance().fetchModellingGroups();

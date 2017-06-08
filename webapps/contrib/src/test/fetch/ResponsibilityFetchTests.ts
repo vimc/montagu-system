@@ -1,9 +1,10 @@
-import { mockResponsibilitySet, mockTouchstone } from "../mocks/mockModels";
+import { mockModellingGroup, mockResponsibilitySet, mockTouchstone } from "../mocks/mockModels";
 import { FetchHelper } from "./helpers";
 import { responsibilityStore } from "../../main/stores/ResponsibilityStore";
 import { alt } from "../../main/alt";
 
 describe("ResponsibilityStore.fetchResponsibilities", () => {
+    const group = mockModellingGroup({ id: "group-id" });
     const touchstone = mockTouchstone({ id: "touchstone-id" });
     new FetchHelper({
         expectedURL: "/modelling-groups/group-id/responsibilities/touchstone-id/",
@@ -11,7 +12,7 @@ describe("ResponsibilityStore.fetchResponsibilities", () => {
             alt.bootstrap(JSON.stringify({
                 ResponsibilityStore: {
                     currentTouchstone: touchstone,
-                    currentModellingGroupId: "group-id"
+                    currentModellingGroup: group
                 }
             }));
             return responsibilityStore.fetchResponsibilities();

@@ -44,7 +44,10 @@ describe('TouchstoneListComponent renders', () => {
         // Check the first link in detail
         const first = children.at(0);
         expect(first.key()).to.equal("touchstone-1");
-        expect(first.find(TouchstoneLink).props()).to.eql(touchstones[ 0 ]);
+        expect(first.find(TouchstoneLink).props()).to.eql({
+            selected: false,
+            touchstone: touchstones[0]
+        });
 
         // Also do a basic test on the other one, to make sure it's different
         expect(children.at(1).key()).to.equal("touchstone-2");
@@ -61,6 +64,20 @@ describe('TouchstoneListComponent renders', () => {
         const props = makeProps(null, [ touchstone ]);
         const rendered = sandbox.mount(<TouchstoneList {...props} />);
         const link = rendered.find(`.${styles.openTouchstone}`).find(TouchstoneLink);
-        expect(link.props()).to.eql(touchstone);
+        expect(link.props()).to.eql({
+            selected: false,
+            touchstone: touchstone
+        });
+    });
+
+    it("selected link for selected touchstone", () => {
+        const touchstone = mockTouchstone({ id: "touchstone-1", description: "Description 1", status: "open" });
+        const props = makeProps(touchstone, [ touchstone ]);
+        const rendered = sandbox.mount(<TouchstoneList {...props} />);
+        const link = rendered.find(`.${styles.openTouchstone}`).find(TouchstoneLink);
+        expect(link.props()).to.eql({
+            selected: true,
+            touchstone: touchstone
+        });
     });
 });

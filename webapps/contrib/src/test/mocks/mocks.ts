@@ -1,7 +1,7 @@
 import { Location } from "simple-react-router";
 import * as models from "../../main/models/Generated";
 import { alt } from "../../main/alt";
-import { makeLookup } from "../../main/stores/MainStore";
+import { makeLookup } from "../../main/stores/Loadable";
 
 export function mockLocation<T>(params?: T): Location<T> {
     return {
@@ -12,10 +12,15 @@ export function mockLocation<T>(params?: T): Location<T> {
     };
 }
 
-export function setupMainStore(diseases: models.Disease[]) {
+export function setupMainStore(config: {
+    diseases?: models.Disease[],
+    groups?: models.ModellingGroup[]
+})
+{
     alt.bootstrap(JSON.stringify({
         MainStore: {
-            diseases: makeLookup(diseases)
+            diseases: makeLookup<models.Disease>(config.diseases),
+            modellingGroups: makeLookup<models.ModellingGroup>(config.groups),
         }
     }));
 }
