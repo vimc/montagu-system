@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Responsibility, Touchstone } from "../../../models/Generated";
+import { ModellingGroup, Responsibility, Touchstone } from "../../../models/Generated";
 import { mainStore } from "../../../stores/MainStore";
 import { ButtonLink } from "../../ButtonLink";
 
@@ -7,13 +7,14 @@ const styles = require("../Responsibilities.css");
 
 interface Props {
     responsibility: Responsibility;
+    modellingGroup: ModellingGroup;
     touchstone: Touchstone;
 }
 
 export class ResponsibilityComponent extends React.Component<Props, undefined> {
     render() {
         const item = this.props.responsibility;
-        const downloadUrl = `/responsibilities/${ this.props.touchstone.id }/${ item.scenario.id }/`;
+        const downloadUrl = `/${ this.props.modellingGroup.id }/responsibilities/${ this.props.touchstone.id }/${ item.scenario.id }/`;
 
         return <li className={ styles.scenario }>
             <div className={ styles.header }>

@@ -5,13 +5,16 @@ import { settings } from "../../../Settings";
 import { ResponsibilityOverviewTitle } from "./ResponsibilityOverviewTitle";
 import { touchstoneActions } from "../../../actions/TouchstoneActions";
 import { responsibilityStore } from "../../../stores/ResponsibilityStore";
+import { modellingGroupActions } from "../../../actions/ModellingGroupActions";
 
 interface LocationProps {
-    touchstoneId: string
+    groupId: string;
+    touchstoneId: string;
 }
 
 export class ResponsibilityOverviewPage extends PageWithHeader<LocationProps> {
     componentDidMount() {
+        modellingGroupActions.setCurrentModellingGroup(this.props.location.params.groupId);
         touchstoneActions.setCurrentTouchstone(this.props.location.params.touchstoneId);
         responsibilityStore.fetchResponsibilities();
     }

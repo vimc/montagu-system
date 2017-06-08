@@ -1,7 +1,7 @@
 import { RouteMap, Router } from "simple-react-router";
 // Pages
 import { ResponsibilityOverviewPage } from "./Responsibilities/Overview/ResponsibilityOverviewPage";
-import { ChooseTouchstonePage } from "./Touchstones/ChooseTouchstonePage";
+import { ChooseGroupAndTouchstonePage } from "./ChooseGroupAndTouchstone/ChooseGroupAndTouchstonePage";
 import { LoadingPage } from "./LoadingPage";
 import { LoginPage } from "./Login/LoginPage";
 import { DownloadCoveragePage } from "./Responsibilities/Coverage/DownloadCoveragePage";
@@ -16,9 +16,9 @@ export default class AppRouter extends Router<RoutingProperties> {
         const { loggedIn, loaded } = props;
         if (loggedIn) {
             if (loaded) {
-                map('/', ChooseTouchstonePage);
-                map('/responsibilities/:touchstoneId', ResponsibilityOverviewPage);
-                map('/responsibilities/:touchstoneId/:scenarioId', DownloadCoveragePage);
+                map('/', ChooseGroupAndTouchstonePage);
+                map('/:groupId/responsibilities/:touchstoneId', ResponsibilityOverviewPage);
+                map('/:groupId/responsibilities/:touchstoneId/:scenarioId', DownloadCoveragePage);
             } else {
                 map("*", LoadingPage);
             }

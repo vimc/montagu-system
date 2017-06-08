@@ -21,9 +21,6 @@ export class ResponsibilityOverviewTitleComponent extends React.Component<Touchs
         }
         return <span>
             Responsibilities in { description }
-            <span className={ headerStyles.titleAddition }>
-                <Link href="/">Change touchstone</Link>
-            </span>
         </span>;
     }
 }

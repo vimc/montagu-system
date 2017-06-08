@@ -3,13 +3,15 @@ import * as AltJS from "alt";
 import { RemoteContent } from "./RemoteContent";
 import { responsibilityActions } from "../actions/ResponsibilityActions";
 import { AbstractStore } from "./AbstractStore";
-import { Responsibilities, ScenarioTouchstoneAndCoverageSets, Touchstone } from "../models/Generated";
+import { ModellingGroup, Responsibilities, ScenarioTouchstoneAndCoverageSets, Touchstone } from "../models/Generated";
 import { sources } from "../sources/Sources";
 import { authActions, LogInProperties } from "../actions/AuthActions";
 import { touchstoneActions } from "../actions/TouchstoneActions";
 import { ExtendedResponsibility, ExtendedResponsibilitySet } from "../models/ResponsibilitySet";
 import { coverageSetActions } from "../actions/CoverageSetActions";
 import { coverageTokenActions } from "../actions/CoverageActions";
+import { modellingGroupActions } from "../actions/ModellingGroupActions";
+import { authStore } from "./AuthStore";
 
 export interface ResponsibilityState extends RemoteContent {
     touchstones: Array<Touchstone>;
@@ -19,7 +21,7 @@ export interface ResponsibilityState extends RemoteContent {
     currentResponsibility: ExtendedResponsibility;
     coverageOneTimeToken: string;
 
-    currentModellingGroupId: string;
+    currentModellingGroup: ModellingGroup;
     currentDiseaseId: string;
 }
 
@@ -39,7 +41,7 @@ class ResponsibilityStore extends AbstractStore<ResponsibilityState, Responsibil
     currentResponsibility: ExtendedResponsibility;
     coverageOneTimeToken: string;
 
-    currentModellingGroupId: string;
+    currentModellingGroup: ModellingGroup;
     currentDiseaseId: string;
 
     ready: boolean;
@@ -52,6 +54,9 @@ class ResponsibilityStore extends AbstractStore<ResponsibilityState, Responsibil
         this.registerAsync(sources.coverageToken);
 
         this.bindListeners({
+            handleSetCurrentModellingGroup: modellingGroupActions.setCurrentModellingGroup,
+            handleUpdateModellingGroups: modellingGroupActions.update,
+
             handleBeginTouchstoneFetch: touchstoneActions.beginFetch,
             handleUpdateTouchstones: touchstoneActions.update,
             handleSetCurrentTouchstone: touchstoneActions.setCurrentTouchstone,
@@ -66,8 +71,7 @@ class ResponsibilityStore extends AbstractStore<ResponsibilityState, Responsibil
             handleUpdateCoverageToken: coverageTokenActions.update,
             handleClearUsedToken: coverageTokenActions.clearUsedToken,
 
-            handleFilterByDisease: responsibilityActions.filterByDisease,
-            handleLogIn: authActions.logIn
+            handleFilterByDisease: responsibilityActions.filterByDisease
         });
     }
 
@@ -79,7 +83,7 @@ class ResponsibilityStore extends AbstractStore<ResponsibilityState, Responsibil
             responsibilitySet: null,
             currentResponsibility: null,
 
-            currentModellingGroupId: null,
+            currentModellingGroup: null,
             currentDiseaseId: null,
             coverageOneTimeToken: null,
 
@@ -94,6 +98,9 @@ class ResponsibilityStore extends AbstractStore<ResponsibilityState, Responsibil
     }
     handleSetCurrentTouchstone(touchstoneId: string) {
         this.currentTouchstone = this.touchstones.find(x => x.id == touchstoneId);
+    }
+    handleSetCurrentModellingGroup(modellingGroup: ModellingGroup) {
+        this.currentModellingGroup = modellingGroup;
     }
 
     handleBeginTouchstoneFetch() {
@@ -113,6 +120,13 @@ class ResponsibilityStore extends AbstractStore<ResponsibilityState, Responsibil
         this.coverageOneTimeToken = null;
     }
 
+    handleUpdateModellingGroups(groups: ModellingGroup[]) {
+        this.waitFor(authStore);
+        const membership = authStore.getState().modellingGroups;
+        if (membership.length == 1) {
+            this.currentModellingGroup = groups.find(g => g.id == membership[0].id);
+        }
+    }
     handleUpdateResponsibilities(responsibilities: Responsibilities) {
         const touchstone = this.touchstones.find(x => x.id == responsibilities.touchstone);
         this.responsibilitySet = new ExtendedResponsibilitySet(responsibilities, touchstone);
@@ -121,6 +135,10 @@ class ResponsibilityStore extends AbstractStore<ResponsibilityState, Responsibil
     handleUpdateTouchstones(touchstones: Array<Touchstone>) {
         this.touchstones = touchstones;
         this.ready = true;
+        const open = touchstones.find(x => x.status == "open");
+        if (open) {
+            this.currentTouchstone = open;
+        }
     }
     handleUpdateCoverageSets(data: ScenarioTouchstoneAndCoverageSets) {
         this.responsibilitySet.addCoverageSets(data.scenario.id, data.coverage_sets);
@@ -132,10 +150,6 @@ class ResponsibilityStore extends AbstractStore<ResponsibilityState, Responsibil
 
     handleFilterByDisease(diseaseId: string) {
         this.currentDiseaseId = diseaseId;
-    }
-
-    handleLogIn(loginProps: LogInProperties) {
-        this.currentModellingGroupId = loginProps.modellingGroups[0];
     }
 }
 

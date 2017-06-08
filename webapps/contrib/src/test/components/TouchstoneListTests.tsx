@@ -8,10 +8,10 @@ import {
     TouchstoneLink,
     TouchstoneListComponent,
     TouchstoneListProps
-} from "../../main/components/Touchstones/TouchstoneList";
+} from "../../main/components/ChooseGroupAndTouchstone/TouchstoneList";
 import { Touchstone } from "../../main/models/Generated";
 
-const styles = require("../../main/components/Touchstones/TouchstoneList.css");
+const styles = require("../../main/components/ChooseGroupAndTouchstone/TouchstoneList.css");
 
 function makeProps(touchstones: Array<Touchstone>): TouchstoneListProps {
     return {

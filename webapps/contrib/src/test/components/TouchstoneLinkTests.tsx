@@ -3,7 +3,7 @@ import { expect } from "chai";
 import { mockTouchstone } from "../mocks/mockModels";
 import { Link } from "simple-react-router";
 
-import { TouchstoneLink } from "../../main/components/Touchstones/TouchstoneList";
+import { TouchstoneLink } from "../../main/components/ChooseGroupAndTouchstone/TouchstoneList";
 import { Sandbox } from "../Sandbox";
 
 describe("TouchstoneLink", () => {

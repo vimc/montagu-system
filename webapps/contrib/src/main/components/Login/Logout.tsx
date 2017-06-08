@@ -21,12 +21,8 @@ export class LogoutComponent extends React.Component<AuthState, undefined> {
 
     render() {
         if (this.props.loggedIn) {
-            const groups = this.props.modellingGroups.join(", ");
             return <div className={ style.logout }>
                 <div>Logged in as { this.props.username } | <Link href="/" onClick={ this.logout }>Log out</Link></div>
-                <div>
-                    Member of: { groups }
-                </div>
             </div>;
         } else {
             return null;

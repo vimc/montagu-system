@@ -1,7 +1,7 @@
 import { Location } from "simple-react-router";
 import * as models from "../../main/models/Generated";
 import { alt } from "../../main/alt";
-import { makeDiseaseLookup } from "../../main/stores/MainStore";
+import { makeLookup } from "../../main/stores/MainStore";
 
 export function mockLocation<T>(params?: T): Location<T> {
     return {
@@ -15,7 +15,7 @@ export function mockLocation<T>(params?: T): Location<T> {
 export function setupMainStore(diseases: models.Disease[]) {
     alt.bootstrap(JSON.stringify({
         MainStore: {
-            diseases: makeDiseaseLookup(diseases)
+            diseases: makeLookup(diseases)
         }
     }));
 }
