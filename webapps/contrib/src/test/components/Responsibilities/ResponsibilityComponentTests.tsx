@@ -1,7 +1,7 @@
 import * as React from "react";
 import { expect } from "chai";
 import { shallow, ShallowWrapper } from "enzyme";
-import { mockResponsibility, mockTouchstone } from "../../mocks/mockModels";
+import { mockModellingGroup, mockResponsibility, mockTouchstone } from "../../mocks/mockModels";
 import { setupMainStore } from "../../mocks/mocks";
 import { Sandbox } from "../../Sandbox";
 
@@ -27,6 +27,7 @@ describe('ResponsibilityComponent', () => {
         });
         const touchstone = mockTouchstone({ id: "touchstone-1" });
         rendered = shallow(<ResponsibilityComponent
+            modellingGroup={ mockModellingGroup() }
             responsibility={ responsibility }
             touchstone={ touchstone } />);
     });

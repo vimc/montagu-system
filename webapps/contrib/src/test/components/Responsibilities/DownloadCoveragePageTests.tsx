@@ -20,12 +20,14 @@ describe('DownloadCoveragePage', () => {
         const fetchOneTimeCoverageToken = sandbox.sinon.stub(responsibilityStore, "fetchOneTimeCoverageToken");
         const location = mockLocation({
             touchstoneId: "touchstone-1",
-            scenarioId: "scenario-1"
+            scenarioId: "scenario-1",
+            groupId: "group-1",
         });
 
         sandbox.mount(<DownloadCoveragePage location={ location } />);
 
         expectOrderedActions(spy, [
+            { action: "ModellingGroupActions.setCurrentModellingGroup", payload: "group-1" },
             { action: "TouchstoneActions.setCurrentTouchstone", payload: "touchstone-1" },
             { action: "ResponsibilityActions.setCurrentResponsibility", payload: "scenario-1" },
         ], 0);

@@ -4,19 +4,17 @@ import { shallow } from "enzyme";
 import { mockTouchstone } from "../mocks/mockModels";
 import { Sandbox } from "../Sandbox";
 
-import {
-    TouchstoneLink,
-    TouchstoneListComponent,
-    TouchstoneListProps
-} from "../../main/components/ChooseGroupAndTouchstone/TouchstoneList";
 import { Touchstone } from "../../main/models/Generated";
+import { TouchstoneList, TouchstoneListProps } from "../../main/components/ChooseGroupAndTouchstone/TouchstoneList";
+import { TouchstoneLink } from "../../main/components/ChooseGroupAndTouchstone/TouchstoneLink";
 
 const styles = require("../../main/components/ChooseGroupAndTouchstone/TouchstoneList.css");
 
-function makeProps(touchstones: Array<Touchstone>): TouchstoneListProps {
+function makeProps(selected?: Touchstone, touchstones?: Array<Touchstone>): TouchstoneListProps {
     return {
         ready: true,
-        touchstones
+        touchstones: touchstones || [],
+        selected: selected || null
     };
 }
 
@@ -28,8 +26,8 @@ describe('TouchstoneListComponent renders', () => {
     });
 
     it("message when there are no finished touchstones", () => {
-        const props = makeProps([]);
-        const rendered = shallow(<TouchstoneListComponent {...props} />);
+        const props = makeProps();
+        const rendered = shallow(<TouchstoneList {...props} />);
         expect(rendered.find(`.${styles.finishedTouchstones}`).text()).to.contain("There are no past touchstones.");
     });
 
@@ -38,8 +36,8 @@ describe('TouchstoneListComponent renders', () => {
             mockTouchstone({ id: "touchstone-1", description: "Description 1", status: "finished" }),
             mockTouchstone({ id: "touchstone-2", description: "Description 2", status: "finished" })
         ];
-        const props = makeProps(touchstones);
-        const rendered = shallow(<TouchstoneListComponent {...props} />);
+        const props = makeProps(null, touchstones);
+        const rendered = shallow(<TouchstoneList {...props} />);
         const children = rendered.find(`.${styles.finishedTouchstones}`).find("li");
         expect(children).to.have.length(2);
 
@@ -53,15 +51,15 @@ describe('TouchstoneListComponent renders', () => {
     });
 
     it("message when there is no open touchstone", () => {
-        const props = makeProps([]);
-        const rendered = shallow(<TouchstoneListComponent {...props} />);
+        const props = makeProps();
+        const rendered = shallow(<TouchstoneList {...props} />);
         expect(rendered.find(`.${styles.openTouchstone}`).text()).to.contain("There is no open touchstone currently.");
     });
 
     it("link when there is an open touchstone", () => {
         const touchstone = mockTouchstone({ id: "touchstone-1", description: "Description 1", status: "open" });
-        const props = makeProps([ touchstone ]);
-        const rendered = sandbox.mount(<TouchstoneListComponent {...props} />);
+        const props = makeProps(null, [ touchstone ]);
+        const rendered = sandbox.mount(<TouchstoneList {...props} />);
         const link = rendered.find(`.${styles.openTouchstone}`).find(TouchstoneLink);
         expect(link.props()).to.eql(touchstone);
     });

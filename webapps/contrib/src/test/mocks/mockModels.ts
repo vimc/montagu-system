@@ -20,6 +20,14 @@ export function mockScenario(properties?: any): models.Scenario {
     return Object.assign(template, properties);
 }
 
+export function mockModellingGroup(properties?: any) {
+    const template: models.ModellingGroup = {
+        id: "group-id",
+        description: "Description"
+    };
+    return Object.assign(template, properties);
+}
+
 export function mockResponsibility(properties?: any, scenarioProperties?: any): models.Responsibility {
     const template: models.Responsibility = {
         current_estimate: null,

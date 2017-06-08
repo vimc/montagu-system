@@ -4,8 +4,19 @@ import { alt } from "../../main/alt";
 import { authActions, LogInProperties } from "../../main/actions/AuthActions";
 import { expectOrderedActions } from "../actionHelpers";
 import { AuthState, authStore, initialAuthState } from "../../main/stores/AuthStore";
-import { initialMainState, mainStore } from "../../main/stores/MainStore";
+import { initialMainState, mainStore, makeLookup } from "../../main/stores/MainStore";
+import { mockModellingGroup } from "../mocks/mockModels";
+import { ModellingGroup } from "../../main/models/Generated";
+import { modellingGroupActions } from "../../main/actions/ModellingGroupActions";
 const jwt = require("jsonwebtoken");
+
+function setModellingGroups(group: ModellingGroup) {
+    alt.bootstrap(JSON.stringify({
+        MainStore: {
+            modellingGroups: makeLookup([group])
+        }
+    }))
+}
 
 describe("AuthStore", () => {
     const sandbox = new Sandbox();
@@ -28,12 +39,16 @@ describe("AuthStore", () => {
 
         const expected: AuthState = {
             loggedIn: true,
-            modellingGroups: [ "test.group" ],
+            modellingGroups: null,
             permissions: [ "*/can-login", "*/other" ],
             username: "test.user",
             bearerToken: token
         };
         expect(authStore.getState()).to.eql(expected);
+
+        const group = mockModellingGroup({ id: "test.group" });
+        modellingGroupActions.update([ mockModellingGroup(), group ]);
+        expect(authStore.getState().modellingGroups).to.eql(group);
     });
 
     it("clears everything on logOut", () => {

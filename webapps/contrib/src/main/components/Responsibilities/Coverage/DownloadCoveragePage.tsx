@@ -4,7 +4,7 @@ import { touchstoneActions } from "../../../actions/TouchstoneActions";
 import { responsibilityActions } from "../../../actions/ResponsibilityActions";
 import { DownloadCoverageTitle } from "./DownloadCoverageTitle";
 import { responsibilityStore } from "../../../stores/ResponsibilityStore";
-import { ResponsibilityDetails } from "./DownloadCoverageComponent";
+import { DownloadCoverageContent } from "./DownloadCoverageContent";
 import { modellingGroupActions } from "../../../actions/ModellingGroupActions";
 
 interface LocationProps {
@@ -27,6 +27,6 @@ export class DownloadCoveragePage extends PageWithHeader<LocationProps> {
     }
 
     renderPageContent() {
-        return <ResponsibilityDetails />
+        return <DownloadCoverageContent />
     }
 }

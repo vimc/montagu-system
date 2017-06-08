@@ -20,12 +20,16 @@ describe('ResponsibilityOverviewPage', () => {
     it("triggers actions when it mounts", () => {
         const spy = sandbox.dispatchSpy();
         const fetchResponsibilities = sandbox.sinon.stub(responsibilityStore, "fetchResponsibilities");
-        const location = mockLocation({ touchstoneId: "fizzy-pop" });
+        const location = mockLocation({
+            touchstoneId: "touchstone-id",
+            groupId: "group-id"
+        });
 
         sandbox.mount(<ResponsibilityOverviewPage location={ location } />);
 
         expectOrderedActions(spy, [
-            { action: "TouchstoneActions.setCurrentTouchstone", payload: "fizzy-pop" }
+            { action: "ModellingGroupActions.setCurrentModellingGroup", payload: "group-id" },
+            { action: "TouchstoneActions.setCurrentTouchstone", payload: "touchstone-id" }
         ], 0);
         expect(fetchResponsibilities.called).to.be.true;
         fetchResponsibilities.restore();

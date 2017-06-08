@@ -71,17 +71,6 @@ describe("ResponsibilityStore", () => {
         expect(state.currentTouchstone).to.eql(touchstone);
     });
 
-    it("authActions.logIn sets modelling group id", () => {
-        const token = jwt.sign({
-            sub: "test.user",
-            permissions: "*/can-login",
-            roles: "modelling-group:test.group/member"
-        }, 'secret');
-        authActions.logIn(token);
-        const state = responsibilityStore.getState();
-        expect(state.currentModellingGroupId).to.equal("test.group");
-    });
-
     it("responsibilityActions.beginFetch clears responsibilities", () => {
         // First set us up in a state where everything is non-null
         alt.bootstrap(JSON.stringify({
