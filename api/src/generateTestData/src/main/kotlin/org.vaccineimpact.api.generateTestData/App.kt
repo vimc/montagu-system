@@ -46,6 +46,7 @@ fun main(args: Array<String>) {
         db.addCoverageSetToScenario("yf-campaign", "op-2017-2", yfCampaignWith, 4)
 
         db.addGroup("IC-Garske", "Imperial Yellow Fever modelling group")
+        db.addGroup("IC-Imaginary", "Imperial speculative modelling group")
         val setId = db.addResponsibilitySet("IC-Garske", "op-2017-2", "incomplete", addStatus = true)
         db.addResponsibility(setId, yfRoutine)
         db.addResponsibility(setId, yfCampaign)

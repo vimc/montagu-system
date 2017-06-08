@@ -85,6 +85,7 @@ fun JooqContext.ensureUserHasRole(username: String, roleId: Int, scopeId: String
             .from(USER_ROLE)
             .where(USER_ROLE.USERNAME.eq(username))
             .and(USER_ROLE.ROLE.eq(roleId))
+            .and(USER_ROLE.SCOPE_ID.eq(scopeId))
             .fetchAny()
     if (roleMapping == null)
     {
