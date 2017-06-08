@@ -20,6 +20,23 @@ fun JooqContext.addGroup(id: String, description: String, current: String? = nul
     }.store()
 }
 
+fun JooqContext.addModel(
+        id: String,
+        groupId: String,
+        description: String = id,
+        citation: String = "Unknown citation",
+        current: String? = null
+)
+{
+    this.dsl.newRecord(MODEL).apply {
+        this.id = id
+        this.modellingGroup = groupId
+        this.description = description
+        this.citation = citation
+        this.current = current
+    }.store()
+}
+
 fun JooqContext.addTouchstoneName(id: String, description: String)
 {
     this.dsl.newRecord(TOUCHSTONE_NAME).apply {

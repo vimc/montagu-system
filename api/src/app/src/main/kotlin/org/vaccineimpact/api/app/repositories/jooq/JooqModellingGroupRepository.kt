@@ -58,6 +58,18 @@ class JooqModellingGroupRepository(
         }
     }
 
+    override fun getModellingGroupDetails(id: String): ModellingGroupDetails
+    {
+        val group = getModellingGroup(id)
+        val models = dsl.select(MODEL.fieldsAsList())
+                .from(MODEL)
+                .where(MODEL.CURRENT.isNull)
+                .and(MODEL.MODELLING_GROUP.eq(group.id))
+                .fetch()
+                .map { ResearchModel(it[MODEL.ID], it[MODEL.DESCRIPTION], it[MODEL.CITATION], group.id) }
+        return ModellingGroupDetails(group.id, group.description, models)
+    }
+
     override fun getResponsibilities(groupId: String, touchstoneId: String,
                                      scenarioFilterParameters: ScenarioFilterParameters): ResponsibilitiesAndTouchstoneStatus
     {

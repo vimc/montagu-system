@@ -8,6 +8,7 @@ interface ModellingGroupRepository : Repository
 {
     fun getModellingGroups(): Iterable<ModellingGroup>
     fun getModellingGroup(id: String): ModellingGroup
+    fun getModellingGroupDetails(id: String): ModellingGroupDetails
 
     fun getResponsibilities(groupId: String, touchstoneId: String,
                             scenarioFilterParameters: ScenarioFilterParameters): ResponsibilitiesAndTouchstoneStatus

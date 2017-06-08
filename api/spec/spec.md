@@ -1109,9 +1109,9 @@ Schema: [`ModellingGroups.schema.json`](ModellingGroups.schema.json)
     ]
 
 ## GET /modelling-groups/{modelling-group-id}/
-Returns the identified modelling group, their model(s), and any touchstones they have responsibilities for.
+Returns the identified modelling group and their model(s).
 
-Required permissions: `modelling-groups.read`, `models.read`, `responsibilities.read`.
+Required permissions: `modelling-groups.read`, `models.read`.
 
 Schema: [`ModellingGroupDetails.schema.json`](ModellingGroupDetails.schema.json)
 
@@ -1122,13 +1122,11 @@ Schema: [`ModellingGroupDetails.schema.json`](ModellingGroupDetails.schema.json)
         "models": [
             {
                 "id": "IC-YF-WithoutHerd",
-                "name": "YF burden estimate - without herd effect",
+                "description": "YF burden estimate - without herd effect",
                 "citation": "Garske T, Van Kerkhove MD, Yactayo S, Ronveaux O, Lewis RF, Staples JE, Perea W, Ferguson NMet al., 2014, Yellow Fever in Africa: Estimating the Burden of Disease and Impact of Mass Vaccination from Outbreak and Serological Data, PLOS MEDICINE, Vol: 11, ISSN: 1549-1676",
-                "description": "Yellow Fever model",
                 "modelling_group": "IC-YellowFever"
             }
-        ],
-        "responsibilities": [ "wuenic-2017-1", "2017-op-1" ]
+        ]
     }
 
 ## POST /modelling-groups/
@@ -1191,16 +1189,14 @@ Schema: [`Models.schema.json`](Models.schema.json)
     [
         { 
             "id": "IC-YF-WithoutHerd",
-            "name": "YF burden estimate - without herd effect",
+            "description": "YF burden estimate - without herd effect",
             "citation": "Garske T, Van Kerkhove MD, Yactayo S, Ronveaux O, Lewis RF, Staples JE, Perea W, Ferguson NMet al., 2014, Yellow Fever in Africa: Estimating the Burden of Disease and Impact of Mass Vaccination from Outbreak and Serological Data, PLOS MEDICINE, Vol: 11, ISSN: 1549-1676",
-            "description": "Yellow Fever model",
             "modelling_group": "IC-YellowFever"
         },
         { 
             "id": "LSHTM-DynaMice",
-            "name": "DynaMice",
-            "citation": null,
             "description": "DynaMice",
+            "citation": "Dynamic Citation",
             "modelling_group": "LSHTML-Jit"
         }
     ]
@@ -1216,9 +1212,8 @@ Schema: [`ModelDetails.schema.json`](ModelDetails.schema.json)
     {
         "metadata": {
             "id": "IC-YF-WithoutHerd",
-            "name": "YF burden estimate - without herd effect",
+            "description": "YF burden estimate - without herd effect",
             "citation": "Garske T, Van Kerkhove MD, Yactayo S, Ronveaux O, Lewis RF, Staples JE, Perea W, Ferguson NMet al., 2014, Yellow Fever in Africa: Estimating the Burden of Disease and Impact of Mass Vaccination from Outbreak and Serological Data, PLOS MEDICINE, Vol: 11, ISSN: 1549-1676",
-            "description": "Yellow Fever model",
             "modelling_group": "IC-YellowFever"
         },
         "versions": [
@@ -1247,9 +1242,8 @@ Schema: [`Model.schema.json`](Model.schema.json)
 ### Example
     { 
         "id": "NEW-UNIQUE-ID",
-        "name": "MODEL NAME",
-        "citation": null,
         "description": "DESCRIPTION",
+        "citation": "CITATION",
         "modelling_group": "ID-OF-EXISTING-MODELLING-GROUP"
     }
 

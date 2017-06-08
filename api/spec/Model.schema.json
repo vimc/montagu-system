@@ -3,9 +3,8 @@
 	"type": "object",
 	"properties": {
         "id": { "$ref": "StandardIdentifier.schema.json" },
-        "name": { "type": "string" },
         "citation": { 
-            "type": ["string", "null"] 
+            "type": "string"
         },
         "description": { 
             "type": "string",
@@ -14,5 +13,5 @@
         "modelling_group": { "$ref": "StandardIdentifier.schema.json" }
     },
     "additionalProperties": false,
-    "required": [ "id", "name", "citation", "description", "modelling_group" ]
+    "required": [ "id", "citation", "description", "modelling_group" ]
 }
