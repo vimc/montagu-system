@@ -14,7 +14,6 @@ export function makeLookup<T extends HasId>(items: T[]) {
     const content: { [index: string]: T } = {};
     if (items) {
         items.forEach(x => {
-            console.log("Id: " + x.id + " = " + x);
             content[x.id] = x;
         });
     }

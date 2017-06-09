@@ -3,7 +3,7 @@ import { ModellingGroup } from "../models/Generated";
 import { FetchActions, FetchActionsInterface } from "./FetchActions";
 import { mainStore } from "../stores/MainStore";
 
-export interface Actions extends FetchActionsInterface<ModellingGroup[]> {
+interface Actions extends FetchActionsInterface<ModellingGroup[]> {
     setCurrentModellingGroup(id: string): ModellingGroup;
 }
 

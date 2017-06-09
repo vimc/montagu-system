@@ -11,14 +11,14 @@ import { ButtonLink } from "../ButtonLink";
 
 const commonStyles = require("../../styles/common.css");
 
-interface Props extends RemoteContent {
+export interface GroupAndTouchstoneChoiceProps extends RemoteContent {
     groups: ModellingGroup[],
     chosenGroup: ModellingGroup,
     touchstones: Touchstone[],
     chosenTouchstone: Touchstone,
 }
 
-export class GroupAndTouchstoneChoiceComponent extends RemoteContentComponent<Props> {
+export class GroupAndTouchstoneChoiceComponent extends RemoteContentComponent<GroupAndTouchstoneChoiceProps> {
     static getStores() {
         return [ responsibilityStore, authStore ];
     }
@@ -33,8 +33,8 @@ export class GroupAndTouchstoneChoiceComponent extends RemoteContentComponent<Pr
         };
     }
 
-    renderGroupChoice(props: Props): JSX.Element {
-        if (props.groups.length > 1) {
+    renderGroupChoice(props: GroupAndTouchstoneChoiceProps): JSX.Element {
+        if (props.groups && props.groups.length > 1) {
             return <div>
                 <div className={ commonStyles.sectionTitle }>Modelling group</div>
                 <div>
@@ -52,7 +52,7 @@ export class GroupAndTouchstoneChoiceComponent extends RemoteContentComponent<Pr
         }
     }
 
-    renderTouchstoneChoice(props: Props): JSX.Element {
+    renderTouchstoneChoice(props: GroupAndTouchstoneChoiceProps): JSX.Element {
         return <div>
             <div className={ commonStyles.sectionTitle }>Touchstone</div>
             <div>
@@ -65,7 +65,7 @@ export class GroupAndTouchstoneChoiceComponent extends RemoteContentComponent<Pr
         </div>;
     }
 
-    renderContent(props: Props) {
+    renderContent(props: GroupAndTouchstoneChoiceProps) {
         const buttonEnabled = props.chosenGroup != null && props.chosenTouchstone != null;
         let href = null;
         if (buttonEnabled) {

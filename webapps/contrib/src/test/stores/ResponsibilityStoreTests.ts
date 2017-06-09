@@ -3,21 +3,23 @@ import alt from "../../main/alt";
 import {
     mockCoverageSet,
     mockExtendedResponsibility,
-    mockExtendedResponsibilitySet,
+    mockModellingGroup,
     mockResponsibility,
     mockResponsibilitySet,
-    mockScenario, mockScenarioTouchstoneAndCoverageSets,
+    mockScenario,
+    mockScenarioTouchstoneAndCoverageSets,
     mockTouchstone
 } from "../mocks/mockModels";
-import { authActions } from "../../main/actions/AuthActions";
 import { ExtendedResponsibilitySet } from "../../main/models/ResponsibilitySet";
-const jwt = require("jsonwebtoken");
-
 import { touchstoneActions } from "../../main/actions/TouchstoneActions";
 import { responsibilityActions } from "../../main/actions/ResponsibilityActions";
 import { responsibilityStore } from "../../main/stores/ResponsibilityStore";
 import { coverageSetActions } from "../../main/actions/CoverageSetActions";
 import { coverageTokenActions } from "../../main/actions/CoverageActions";
+import { modellingGroupActions } from "../../main/actions/ModellingGroupActions";
+import { makeLookup } from "../../main/stores/Loadable";
+import { ModellingGroup } from "../../main/models/Generated";
+const jwt = require("jsonwebtoken");
 
 describe("ResponsibilityStore", () => {
     beforeEach(() => {
@@ -41,6 +43,36 @@ describe("ResponsibilityStore", () => {
 
             ready: false
         });
+    });
+
+    it("modellingGroupActions.setCurrentModellingGroup sets current modelling group", () => {
+        const group = mockModellingGroup();
+        alt.bootstrap(JSON.stringify({
+            MainStore: { modellingGroups: makeLookup<ModellingGroup>([ group ]) }
+        }));
+        modellingGroupActions.setCurrentModellingGroup(group.id);
+        expect(responsibilityStore.getState().currentModellingGroup).to.eql(group);
+    });
+
+    it("modellingGroupActions.update sets current modelling group if only a member of one", () => {
+        // User has no membership of any group
+        const group = mockModellingGroup();
+        modellingGroupActions.update([ group ]);
+        expect(responsibilityStore.getState().currentModellingGroup).to.be.null;
+
+        // User has membership of multiple groups
+        alt.bootstrap(JSON.stringify({
+            AuthStore: { modellingGroupIds: [ group.id, "another-id" ] }
+        }));
+        modellingGroupActions.update([ group ]);
+        expect(responsibilityStore.getState().currentModellingGroup).to.be.null;
+
+        // User has membership of just one group
+        alt.bootstrap(JSON.stringify({
+            AuthStore: { modellingGroupIds: [ group.id ] }
+        }));
+        modellingGroupActions.update([ group ]);
+        expect(responsibilityStore.getState().currentModellingGroup).to.eql(group);
     });
 
     it("responsibilityActions.update sets responsibility set", () => {
@@ -102,6 +134,16 @@ describe("ResponsibilityStore", () => {
         const state = responsibilityStore.getState();
         expect(state.ready).to.equal(true);
         expect(state.touchstones).to.eql(touchstones);
+        expect(state.currentTouchstone).to.be.null;
+    });
+
+    it("touchstoneActions.update sets current touchstone to open touchstone if any", () => {
+        const touchstones = [
+            mockTouchstone({ status: "finished" }),
+            mockTouchstone({ status: "open" })
+        ];
+        touchstoneActions.update(touchstones);
+        expect(responsibilityStore.getState().currentTouchstone).to.eql(touchstones[1]);
     });
 
     it("touchstoneActions.beginFetch clears touchstones", () => {

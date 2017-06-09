@@ -10,7 +10,7 @@ function getPayload(tokenProperties: any): LogInProperties {
     try {
         const spy = sandbox.dispatchSpy();
         authActions.logIn(token);
-        return spy.args[ 0 ][ 1 ] as LogInProperties;
+        return spy.args[0][1] as LogInProperties;
     } finally {
         sandbox.restore();
     }

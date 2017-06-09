@@ -21,8 +21,9 @@ export function mockScenario(properties?: any): models.Scenario {
 }
 
 export function mockModellingGroup(properties?: any) {
+    counter++;
     const template: models.ModellingGroup = {
-        id: "group-id",
+        id: "group-" + counter,
         description: "Description"
     };
     return Object.assign(template, properties);
@@ -43,8 +44,9 @@ export function mockExtendedResponsibility(properties?: any, scenarioProperties?
 }
 
 export function mockTouchstone(properties?: any): models.Touchstone {
+    counter++;
     const template: models.Touchstone = {
-        id: "touchstone-1",
+        id: "touchstone-" + counter,
         name: "touchstone",
         version: 1,
         description: "Description",

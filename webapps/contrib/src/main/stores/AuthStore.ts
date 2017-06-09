@@ -5,7 +5,6 @@ import { authActions, LogInProperties } from "../actions/AuthActions";
 import { mainStore } from "./MainStore";
 import { ModellingGroup } from "../models/Generated";
 import { modellingGroupActions } from "../actions/ModellingGroupActions";
-import { responsibilityActions } from "../actions/ResponsibilityActions";
 
 export interface AuthState {
     loggedIn: boolean;

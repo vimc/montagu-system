@@ -8,7 +8,6 @@ export interface Actions extends FetchActionsInterface<Touchstone[]> {
 
 class TouchstoneActions extends FetchActions<Touchstone[]> implements Actions {
     setCurrentTouchstone(touchstoneId: string): string {
-        console.log("Set current touchstone to " + touchstoneId);
         return touchstoneId;
     }
 }

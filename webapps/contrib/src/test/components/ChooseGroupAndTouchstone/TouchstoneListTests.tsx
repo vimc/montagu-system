@@ -1,14 +1,14 @@
 import * as React from "react";
 import { expect } from "chai";
 import { shallow } from "enzyme";
-import { mockTouchstone } from "../mocks/mockModels";
-import { Sandbox } from "../Sandbox";
+import { mockTouchstone } from "../../mocks/mockModels";
+import { Sandbox } from "../../Sandbox";
 
-import { Touchstone } from "../../main/models/Generated";
-import { TouchstoneList, TouchstoneListProps } from "../../main/components/ChooseGroupAndTouchstone/TouchstoneList";
-import { TouchstoneLink } from "../../main/components/ChooseGroupAndTouchstone/TouchstoneLink";
+import { Touchstone } from "../../../main/models/Generated";
+import { TouchstoneList, TouchstoneListProps } from "../../../main/components/ChooseGroupAndTouchstone/TouchstoneList";
+import { TouchstoneLink } from "../../../main/components/ChooseGroupAndTouchstone/TouchstoneLink";
 
-const styles = require("../../main/components/ChooseGroupAndTouchstone/TouchstoneList.css");
+const styles = require("../../../main/components/ChooseGroupAndTouchstone/TouchstoneList.css");
 
 function makeProps(selected?: Touchstone, touchstones?: Array<Touchstone>): TouchstoneListProps {
     return {
