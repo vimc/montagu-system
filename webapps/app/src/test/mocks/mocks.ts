@@ -1,6 +1,6 @@
 import { Location } from "simple-react-router";
 import * as models from "../../main/contrib/models/Generated";
-import { alt } from "../../main/alt";
+import { alt } from "../../main/shared/alt";
 import { makeLookup } from "../../main/contrib/stores/Loadable";
 
 export function mockLocation<T>(params?: T): Location<T> {

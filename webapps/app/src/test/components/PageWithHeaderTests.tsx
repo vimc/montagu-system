@@ -8,6 +8,10 @@ import { PageWithHeader } from "../../main/shared/components/PageWithHeader/Page
 const styles = require('../../main/contrib/components/PageWithHeader/PageWithHeader.css');
 
 class DummyPage extends PageWithHeader<undefined> {
+    siteTitle() {
+        return "LOTR";
+    }
+
     title(): JSX.Element {
         return <span>Elbereth</span>;
     }
@@ -22,6 +26,10 @@ describe('PageWithHeader', () => {
 
     beforeEach(() => {
         rendered = shallow(<DummyPage location={ mockLocation<undefined>() } />);
+    });
+
+    it("renders the application title", () => {
+        expect(rendered.find(`.${styles.siteTitle}`).text()).to.equal("LOTR");
     });
 
     it("renders the title", () => {

@@ -2,7 +2,7 @@ import * as React from "react";
 import { shallow } from "enzyme";
 import { expect } from "chai";
 
-import { ErrorLog } from "../../main/contrib/components/ErrorLog/ErrorLog";
+import { ErrorLog } from "../../main/shared/components/ErrorLog/ErrorLog";
 
 describe("ErrorLog", () => {
    it("is hidden when there are no errors", () => {

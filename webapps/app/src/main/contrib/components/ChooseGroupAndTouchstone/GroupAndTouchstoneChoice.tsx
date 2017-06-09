@@ -1,8 +1,8 @@
 import * as React from "react";
 import { ModellingGroup, Touchstone } from "../../models/Generated";
 import { responsibilityStore } from "../../stores/ResponsibilityStore";
-import { authStore } from "../../stores/AuthStore";
-import { connectToStores } from "../../../alt";
+import { contribAuthStore } from "../../stores/ContribAuthStore";
+import { connectToStores } from "../../../shared/alt";
 import { TouchstoneList } from "./TouchstoneList";
 import { RemoteContent } from "../../stores/RemoteContent";
 import { RemoteContentComponent } from "../RemoteContentComponent/RemoteContentComponent";
@@ -20,12 +20,12 @@ export interface GroupAndTouchstoneChoiceProps extends RemoteContent {
 
 export class GroupAndTouchstoneChoiceComponent extends RemoteContentComponent<GroupAndTouchstoneChoiceProps> {
     static getStores() {
-        return [ responsibilityStore, authStore ];
+        return [ responsibilityStore, contribAuthStore ];
     }
     static getPropsFromStores() {
         const res = responsibilityStore.getState();
         return {
-            groups: authStore.getState().modellingGroups,
+            groups: contribAuthStore.getState().modellingGroups,
             chosenGroup: res.currentModellingGroup,
             touchstones: res.touchstones,
             chosenTouchstone: res.currentTouchstone,

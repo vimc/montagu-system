@@ -1,12 +1,12 @@
-import alt from "../../alt";
+import alt from "../../shared/alt";
 import * as AltJS from "alt";
-import { AbstractStore } from "./AbstractStore";
-import { authActions, LogInProperties } from "../actions/AuthActions";
+import { AbstractStore } from "../../shared/stores/AbstractStore";
+import { authActions, LogInProperties } from "../../shared/actions/AuthActions";
 import { Disease, ModellingGroup } from "../models/Generated";
 import { settings } from "../../Settings";
 import { emptyLookup, getFromLookup, ILoadable, makeLookup } from "./Loadable";
 import { diseaseActions } from "../actions/DiseaseActions";
-import { errorActions } from "../actions/ErrorActions";
+import { errorActions } from "../../shared/actions/ErrorActions";
 import { RemoteContent } from "./RemoteContent";
 import { sources } from "../sources/Sources";
 import { responsibilityStore } from "./ResponsibilityStore";
@@ -15,7 +15,6 @@ import { modellingGroupActions } from "../actions/ModellingGroupActions";
 export interface MainState extends RemoteContent {
     diseases: ILoadable<Disease>;
     modellingGroups: ILoadable<ModellingGroup>;
-    errors: string[];
 }
 
 interface Interface extends AltJS.AltStore<MainState> {
@@ -38,14 +37,12 @@ export function initialMainState(): MainState {
     return {
         diseases: emptyLookup<Disease>(),
         modellingGroups: emptyLookup<ModellingGroup>(),
-        errors: [],
         ready: false
     };
 }
 
 class MainStore extends AbstractStore<MainState, Interface> {
     ready: boolean;
-    errors: string[];
     diseases: ILoadable<Disease>;
     modellingGroups: ILoadable<ModellingGroup>;
 
@@ -54,8 +51,6 @@ class MainStore extends AbstractStore<MainState, Interface> {
         this.bindListeners({
             handleDiseases: diseaseActions.update,
             handleModellingGroups: modellingGroupActions.update,
-            handleError: errorActions.error,
-            handleLogIn: authActions.logIn
         });
         this.registerAsync(sources.diseases);
         this.registerAsync(sources.modellingGroups);
@@ -81,27 +76,6 @@ class MainStore extends AbstractStore<MainState, Interface> {
     handleModellingGroups(groups: Array<ModellingGroup>) {
         this.modellingGroups = makeLookup(groups);
         this.checkReadiness();
-    }
-
-    handleError(error: string | Error) {
-        if (error instanceof Error) {
-            error = error.message;
-        }
-        this.errors = [error, ...this.errors];
-    }
-
-    handleLogIn(props: LogInProperties) {
-        if (!props.isAccountActive || !props.isModeller) {
-            let reason: string;
-            if (!props.isAccountActive) {
-                reason = "Your account has been deactivated";
-            } else {
-                reason = "Only members of modelling groups can log into the contribution portal";
-            }
-
-            const support = settings.supportContact;
-            this.errors = [`${reason}. Please contact ${support} for help.`, ...this.errors];
-        }
     }
 
     checkReadiness(): void {

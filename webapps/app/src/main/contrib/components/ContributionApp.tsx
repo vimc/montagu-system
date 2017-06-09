@@ -1,33 +1,36 @@
 import * as React from "react";
-import { connectToStores } from "../../alt";
-import { ErrorLog } from "./ErrorLog/ErrorLog";
-import Router from "./Router";
-import { AuthState, authStore } from "../stores/AuthStore";
-import { MainState, mainStore } from "../stores/MainStore";
+import { connectToStores } from "../../shared/alt";
+import { ErrorLog } from "../../shared/components/ErrorLog/ErrorLog";
+import { contribAuthStore } from "../stores/ContribAuthStore";
+import { mainStore } from "../stores/MainStore";
+import { errorStore } from "../../shared/stores/ErrorStore";
+import { ContribRouter } from "./ContribRouter";
 
 interface AppProps {
-    auth: AuthState,
-    main: MainState
+    loggedIn: boolean,
+    ready: boolean,
+    errors: string[]
 }
 
 export class ContributionAppComponent extends React.Component<AppProps, undefined> {
     static getStores() {
-        return [ mainStore, authStore ];
+        return [ errorStore, contribAuthStore ];
     }
 
-    static getPropsFromStores(props: AppProps): AppProps {
+    static getPropsFromStores(): AppProps {
         return {
-            auth: authStore.getState(),
-            main: mainStore.getState()
+            loggedIn: contribAuthStore.getState().loggedIn,
+            ready: mainStore.getState().ready,
+            errors: errorStore.getState().errors
         };
     }
 
     render() {
         return <div>
-            <Router
-                loggedIn={ this.props.auth.loggedIn }
-                loaded={ this.props.main.ready } />
-            <ErrorLog errors={ this.props.main.errors } />
+            <ContribRouter
+                loggedIn={ this.props.loggedIn }
+                loaded={ this.props.ready } />
+            <ErrorLog errors={ this.props.errors } />
         </div>;
     }
 }

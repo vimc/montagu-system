@@ -5,7 +5,7 @@ import { shallow } from "enzyme";
 import { Link } from "simple-react-router";
 import { expectOneAction } from "../actionHelpers";
 
-import { initialAuthState } from "../../main/contrib/stores/AuthStore";
+import { initialAuthState } from "../../main/contrib/stores/ContribAuthStore";
 import { LogoutComponent } from "../../main/contrib/components/Login/Logout";
 
 describe("LogoutComponent", () => {

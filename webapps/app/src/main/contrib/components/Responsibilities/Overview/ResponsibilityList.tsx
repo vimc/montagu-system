@@ -4,7 +4,7 @@ import { DiseaseFilter } from "./DiseaseFilter";
 import { ResponsibilityComponent } from "./ResponsibilityComponent";
 import { responsibilityStore } from "../../../stores/ResponsibilityStore";
 import { ModellingGroup, Responsibility } from "../../../models/Generated";
-import { connectToStores } from "../../../../alt";
+import { connectToStores } from "../../../../shared/alt";
 import { RemoteContent } from "../../../stores/RemoteContent";
 import { IExtendedResponsibilitySet } from "../../../models/ResponsibilitySet";
 

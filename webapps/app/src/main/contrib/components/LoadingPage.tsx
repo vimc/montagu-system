@@ -1,9 +1,9 @@
 import * as React from "react";
-import { PageWithHeaderAndUserControls } from "./PageWithHeader/PageWithHeaderAndUserControls";
+import { ContribPageWithHeader } from "./PageWithHeader/ContribPageWithHeader";
 
 const spinner = require("./RemoteContentComponent/spinner.gif");
 
-export class LoadingPage extends PageWithHeaderAndUserControls<undefined> {
+export class LoadingPage extends ContribPageWithHeader<undefined> {
     title(): JSX.Element {
         return <span>Loading...</span>;
     }

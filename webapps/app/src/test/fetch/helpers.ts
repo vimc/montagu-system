@@ -4,7 +4,7 @@ import { ErrorInfo, Result } from "../../main/contrib/models/Generated";
 import * as actionHelpers from "../actionHelpers";
 import { mockFetcherResponse, mockResult } from "../mocks/mockRemote";
 import { getActions } from "../actionHelpers";
-import fetcher from "../../main/contrib/sources/Fetcher";
+import fetcher from "../../main/shared/sources/Fetcher";
 
 interface FetchHelperConfig<TPayload> {
     triggerFetch: () => Promise<TPayload>,

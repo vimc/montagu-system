@@ -1,8 +1,8 @@
 import * as React from "react";
 import { NavBar } from "../NavBar/NavBar";
-import { PageWithHeaderAndUserControls } from "./PageWithHeaderAndUserControls";
+import { ContribPageWithHeader } from "./ContribPageWithHeader";
 
-export abstract class PageWithHeaderAndNav<TLocationProps> extends PageWithHeaderAndUserControls<TLocationProps> {
+export abstract class PageWithHeaderAndNav<TLocationProps> extends ContribPageWithHeader<TLocationProps> {
     postHeader() {
         return <NavBar />;
     }

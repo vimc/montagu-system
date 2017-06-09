@@ -2,7 +2,7 @@ import * as React from "react";
 import { ModellingGroup } from "../../models/Generated";
 import { RemoteContent } from "../../stores/RemoteContent";
 import { responsibilityStore } from "../../stores/ResponsibilityStore";
-import { authStore } from "../../stores/AuthStore";
+import { contribAuthStore } from "../../stores/ContribAuthStore";
 import { GroupLink, GroupLinkProps } from "./GroupLink";
 
 const chooseStyles = require("./Choose.css");
@@ -14,13 +14,13 @@ export interface GroupListProps extends RemoteContent {
 
 export class GroupList extends React.Component<GroupListProps, undefined> {
     static getStores() {
-        return [ responsibilityStore, authStore ];
+        return [ responsibilityStore, contribAuthStore ];
     }
 
     static getPropsFromStores(): GroupListProps {
         const state = responsibilityStore.getState();
         return {
-            groups: authStore.getState().modellingGroups,
+            groups: contribAuthStore.getState().modellingGroups,
             selected: state.currentModellingGroup,
             ready: state.ready
         };

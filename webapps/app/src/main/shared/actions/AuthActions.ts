@@ -1,7 +1,7 @@
-import alt from "../../alt";
+import alt from "../alt";
 import { AbstractActions } from "./AbstractActions";
 import { parseRole, Role } from "../models/Roles";
-import { decodeToken, Token } from "../../Token";
+import { decodeToken, Token } from "../Token";
 
 export interface LogInProperties {
     token: string,

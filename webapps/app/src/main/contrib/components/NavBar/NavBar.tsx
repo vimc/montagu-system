@@ -1,6 +1,6 @@
 import { responsibilityStore } from "../../stores/ResponsibilityStore";
 import { ModellingGroup, Touchstone } from "../../models/Generated";
-import { connectToStores } from "../../../alt";
+import { connectToStores } from "../../../shared/alt";
 import * as React from "react";
 import { Link } from "simple-react-router";
 

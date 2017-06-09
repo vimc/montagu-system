@@ -1,4 +1,4 @@
-import alt from "../../alt";
+import alt from "../../shared/alt";
 import { FetchActions, FetchActionsInterface } from "./FetchActions";
 import { CoverageSet, Responsibilities, ScenarioTouchstoneAndCoverageSets, Touchstone } from "../models/Generated";
 

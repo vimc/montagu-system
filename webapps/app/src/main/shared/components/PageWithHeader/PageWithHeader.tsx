@@ -8,6 +8,7 @@ export abstract class PageWithHeader<TLocationProps>
     extends React.Component<PageProperties<TLocationProps>, undefined> {
 
     abstract title(): JSX.Element;
+    abstract siteTitle(): string;
     abstract renderPageContent(): JSX.Element;
 
     render() {
@@ -15,7 +16,7 @@ export abstract class PageWithHeader<TLocationProps>
             <header className={ styles.header }>
                 <img src={ logo } height="80" alt="VIMC" />
                 <div className={ styles.siteTitle }>
-                    <Link href="/">Contribution portal</Link>
+                    <Link href="/">{ this.siteTitle() }</Link>
                 </div>
                 { this.header() }
             </header>

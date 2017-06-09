@@ -1,7 +1,7 @@
 import SourceModel = AltJS.SourceModel;
 import { Result } from "../models/Generated";
-import fetcher from "./Fetcher";
-import { errorActions } from "../actions/ErrorActions";
+import fetcher from "../../shared/sources/Fetcher";
+import { errorActions } from "../../shared/actions/ErrorActions";
 import AltStore = AltJS.AltStore;
 
 interface ActionProps<T> {

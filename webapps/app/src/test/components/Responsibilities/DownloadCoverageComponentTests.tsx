@@ -12,7 +12,7 @@ import { CoverageSetList } from "../../../main/contrib/components/Responsibiliti
 import { Sandbox } from "../../Sandbox";
 import { expectOneAction } from "../../actionHelpers";
 import { responsibilityStore } from "../../../main/contrib/stores/ResponsibilityStore";
-import fetcher from "../../../main/contrib/sources/Fetcher";
+import fetcher from "../../../main/shared/sources/Fetcher";
 
 describe("DownloadCoverageContentComponent", () => {
     const sandbox = new Sandbox();

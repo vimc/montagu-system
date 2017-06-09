@@ -1,4 +1,4 @@
-import alt from "../../alt";
+import alt from "../../shared/alt";
 import { ModellingGroup } from "../models/Generated";
 import { FetchActions, FetchActionsInterface } from "./FetchActions";
 import { mainStore } from "../stores/MainStore";

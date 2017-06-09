@@ -1,7 +1,7 @@
 import * as sinon from 'sinon';
 import { mount, MountRendererProps, ReactWrapper } from "enzyme";
 import { ReactElement } from "react";
-import { alt } from "../main/alt";
+import { alt } from "../main/shared/alt";
 
 export class Sandbox {
     sinon: sinon.SinonSandbox;

@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import alt from "../../main/alt";
+import alt from "../../main/shared/alt";
 import {
     mockCoverageSet,
     mockExtendedResponsibility,

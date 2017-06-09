@@ -4,7 +4,7 @@ import {
 } from "../mocks/mockModels";
 import { FetchHelper } from "./helpers";
 import { responsibilityStore } from "../../main/contrib/stores/ResponsibilityStore";
-import { alt } from "../../main/alt";
+import { alt } from "../../main/shared/alt";
 
 describe("ResponsibilityStore.fetchOneTimeCoverageToken", () => {
     const group = mockModellingGroup({ id: "group-id" });

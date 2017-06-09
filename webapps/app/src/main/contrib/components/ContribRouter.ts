@@ -3,15 +3,15 @@ import { RouteMap, Router } from "simple-react-router";
 import { ResponsibilityOverviewPage } from "./Responsibilities/Overview/ResponsibilityOverviewPage";
 import { ChooseGroupAndTouchstonePage } from "./ChooseGroupAndTouchstone/ChooseGroupAndTouchstonePage";
 import { LoadingPage } from "./LoadingPage";
-import { LoginPage } from "./Login/LoginPage";
 import { DownloadCoveragePage } from "./Responsibilities/Coverage/DownloadCoveragePage";
+import { ContribLoginPage } from "./Login/ContribLoginPage";
 
 interface RoutingProperties {
     loggedIn: boolean;
     loaded: boolean;
 }
 
-export default class AppRouter extends Router<RoutingProperties> {
+export class ContribRouter extends Router<RoutingProperties> {
     getRoutes(map: RouteMap, props: RoutingProperties) {
         const { loggedIn, loaded } = props;
         if (loggedIn) {
@@ -23,7 +23,7 @@ export default class AppRouter extends Router<RoutingProperties> {
                 map("*", LoadingPage);
             }
         } else {
-            map('*', LoginPage);
+            map('*', ContribLoginPage);
         }
     }
 }

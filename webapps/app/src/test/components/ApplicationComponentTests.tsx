@@ -1,23 +1,30 @@
 import * as React from "react";
 import { shallow } from "enzyme";
 import { expect } from "chai";
-import { initialMainState } from "../../main/contrib/stores/MainStore";
-import { initialAuthState } from "../../main/contrib/stores/AuthStore";
 
 import { ContributionAppComponent } from "../../main/contrib/components/ContributionApp";
-import { ErrorLog } from "../../main/contrib/components/ErrorLog/ErrorLog";
-import Router from "../../main/contrib/components/Router";
+import { ErrorLog } from "../../main/shared/components/ErrorLog/ErrorLog";
+import { alt } from "../../main/shared/alt";
+import { ContribRouter } from "../../main/contrib/components/ContribRouter";
 
 describe("ContributionApp", () => {
-    it("renders Router", () => {
-        const main = Object.assign(initialMainState(), {
+    it("pulls properties from stores", () => {
+        alt.bootstrap(JSON.stringify({
+            MainStore: { ready: true },
+            AuthStore: { loggedIn: true },
+            ErrorStore: { errors: [ "Hi" ] }
+        }));
+        const props = ContributionAppComponent.getPropsFromStores();
+        expect(props).to.eql({
             ready: true,
+            loggedIn: true,
+            errors: [ "Hi" ]
         });
-        const auth = Object.assign(initialAuthState(), {
-            loggedIn: true
-        });
-        const rendered = shallow(<ContributionAppComponent main={ main } auth={ auth } />);
-        const router = rendered.find(Router);
+    });
+
+    it("renders Router", () => {
+        const rendered = shallow(<ContributionAppComponent ready={ true } errors={ [] } loggedIn={ true } />);
+        const router = rendered.find(ContribRouter);
         expect(router).has.length(1, "Expected Router to be rendered");
         expect(router.props()).to.eql({
             loaded: true,
@@ -26,11 +33,7 @@ describe("ContributionApp", () => {
     });
 
     it("renders ErrorLog", () => {
-        const main = Object.assign(initialMainState(), {
-            errors: [ "m1", "m2" ]
-        });
-        const auth = initialAuthState();
-        const rendered = shallow(<ContributionAppComponent main={ main } auth={ auth } />);
+        const rendered = shallow(<ContributionAppComponent errors={ [ "m1", "m2" ] } loggedIn={ true } ready={ true } />);
         const log = rendered.find(ErrorLog);
         expect(log).has.length(1, "Expected Router to be rendered");
         expect(log.props()).to.eql({

@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import { Sandbox } from "../Sandbox";
 const jwt = require("jsonwebtoken");
 
-import { authActions, LogInProperties } from "../../main/contrib/actions/AuthActions";
+import { authActions, LogInProperties } from "../../main/shared/actions/AuthActions";
 
 function getPayload(tokenProperties: any): LogInProperties {
     const token = jwt.sign(tokenProperties, "secret");

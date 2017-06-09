@@ -1,5 +1,5 @@
 import { settings } from "../../Settings";
-import { authStore } from "../stores/AuthStore";
+import { contribAuthStore } from "../../contrib/stores/ContribAuthStore";
 
 export interface FetchOptions {
     method?: string,
@@ -19,7 +19,7 @@ class Fetcher {
         options = options || {};
         options.headers = options.headers || {};
         if (includeToken) {
-            options.headers["Authorization"] = `Bearer ${authStore.getState().bearerToken}`;
+            options.headers["Authorization"] = `Bearer ${contribAuthStore.getState().bearerToken}`;
         }
         return fetch(url, options);
     }

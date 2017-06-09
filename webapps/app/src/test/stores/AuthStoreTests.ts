@@ -1,17 +1,15 @@
 import { expect } from "chai";
 import { Sandbox } from "../Sandbox";
-import { alt } from "../../main/alt";
-import { authActions, LogInProperties } from "../../main/contrib/actions/AuthActions";
+import { alt } from "../../main/shared/alt";
+import { authActions, LogInProperties } from "../../main/shared/actions/AuthActions";
 import { expectOrderedActions } from "../actionHelpers";
-import { AuthState, authStore, initialAuthState } from "../../main/contrib/stores/AuthStore";
+import { ContribAuthState, contribAuthStore, initialAuthState } from "../../main/contrib/stores/ContribAuthStore";
 import { initialMainState, mainStore } from "../../main/contrib/stores/MainStore";
 import { mockModellingGroup } from "../mocks/mockModels";
-import { ModellingGroup } from "../../main/contrib/models/Generated";
 import { modellingGroupActions } from "../../main/contrib/actions/ModellingGroupActions";
-import { makeLookup } from "../../main/contrib/stores/Loadable";
 const jwt = require("jsonwebtoken");
 
-describe("AuthStore", () => {
+describe("ContribAuthStore", () => {
     const sandbox = new Sandbox();
 
     beforeEach(() => {
@@ -30,7 +28,7 @@ describe("AuthStore", () => {
         }, 'secret');
         authActions.logIn(token);
 
-        const expected: AuthState = {
+        const expected: ContribAuthState = {
             loggedIn: true,
             modellingGroupIds: [ "test.group" ],
             modellingGroups: [],
@@ -38,7 +36,7 @@ describe("AuthStore", () => {
             username: "test.user",
             bearerToken: token
         };
-        expect(authStore.getState()).to.eql(expected);
+        expect(contribAuthStore.getState()).to.eql(expected);
     });
 
     it("sets modellingGroups array when modelling groups are received", () => {
@@ -50,7 +48,7 @@ describe("AuthStore", () => {
 
         const group = mockModellingGroup({ id: "test.group" });
         modellingGroupActions.update([ mockModellingGroup(), group ]);
-        expect(authStore.getState().modellingGroups).to.eql([ group ]);
+        expect(contribAuthStore.getState().modellingGroups).to.eql([ group ]);
     });
 
     it("clears everything on logOut", () => {
@@ -67,7 +65,7 @@ describe("AuthStore", () => {
             }
         }));
         authActions.logOut();
-        expect(authStore.getState()).to.eql(initialAuthState());
+        expect(contribAuthStore.getState()).to.eql(initialAuthState());
         expect(mainStore.getState()).to.eql(initialMainState());
     });
 
@@ -75,7 +73,7 @@ describe("AuthStore", () => {
         const spy = sandbox.dispatchSpy();
         const storeLoad = sandbox.sinon.stub(mainStore, "load");
         const token = "TOKEN";
-        authStore.logIn(token);
+        contribAuthStore.logIn(token);
         const expectedPayload: LogInProperties = {
             token: "TOKEN",
             username: null,
@@ -97,7 +95,7 @@ describe("AuthStore", () => {
             permissions: "*/can-login,*/other",
             roles: "r1,modelling-group:test.group/member"
         }, 'secret');
-        authStore.logIn(token);
+        contribAuthStore.logIn(token);
         expectOrderedActions(spy, [{ action: "AuthActions.logIn" }], 0);
         expect(storeLoad.called).to.be.true;
         storeLoad.restore();

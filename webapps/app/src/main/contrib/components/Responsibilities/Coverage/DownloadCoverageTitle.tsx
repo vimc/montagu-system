@@ -1,5 +1,5 @@
 import * as React from "react";
-import { connectToStores } from "../../../../alt";
+import { connectToStores } from "../../../../shared/alt";
 import { ModellingGroup, Touchstone } from "../../../models/Generated";
 import { Link } from "simple-react-router";
 import { responsibilityStore } from "../../../stores/ResponsibilityStore";

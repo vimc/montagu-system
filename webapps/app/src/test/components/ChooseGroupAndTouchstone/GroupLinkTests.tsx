@@ -5,7 +5,7 @@ import { expect } from "chai";
 import { mockModellingGroup } from "../../mocks/mockModels";
 import { Sandbox } from "../../Sandbox";
 import { expectOneAction } from "../../actionHelpers";
-import { alt } from "../../../main/alt";
+import { alt } from "../../../main/shared/alt";
 import { modellingGroupActions } from "../../../main/contrib/actions/ModellingGroupActions";
 
 import { GroupLink } from "../../../main/contrib/components/ChooseGroupAndTouchstone/GroupLink";

@@ -1,6 +1,6 @@
 import * as sinon from "sinon";
 import { expect } from "chai";
-import { alt } from "../main/alt";
+import { alt } from "../main/shared/alt";
 import { Sandbox } from "./Sandbox";
 
 export interface ActionExpectation {

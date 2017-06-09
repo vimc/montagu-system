@@ -1,11 +1,11 @@
 import * as React from "react";
-import { connectToStores } from "../../../../alt";
+import { connectToStores } from "../../../../shared/alt";
 import { CoverageSet, Scenario, Touchstone } from "../../../models/Generated";
 import { RemoteContent } from "../../../stores/RemoteContent";
 import { RemoteContentComponent } from "../../RemoteContentComponent/RemoteContentComponent";
 import { CoverageSetList } from "./CoverageSetList";
 import { responsibilityStore } from "../../../stores/ResponsibilityStore";
-import fetcher from "../../../sources/Fetcher";
+import fetcher from "../../../../shared/sources/Fetcher";
 import { coverageTokenActions } from "../../../actions/CoverageActions";
 const commonStyles = require("../../../../shared/styles/common.css");
 

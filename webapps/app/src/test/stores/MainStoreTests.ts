@@ -1,13 +1,11 @@
 import { expect } from "chai";
-import alt from "../../main/alt";
+import alt from "../../main/shared/alt";
 import { Sandbox } from "../Sandbox";
 import { mockDisease, mockModellingGroup } from "../mocks/mockModels";
-const jwt = require("jsonwebtoken");
 
 import { mainStore } from "../../main/contrib/stores/MainStore";
-import { authActions } from "../../main/contrib/actions/AuthActions";
 import { diseaseActions } from "../../main/contrib/actions/DiseaseActions";
-import { errorActions } from "../../main/contrib/actions/ErrorActions";
+import { errorActions } from "../../main/shared/actions/ErrorActions";
 import { responsibilityStore } from "../../main/contrib/stores/ResponsibilityStore";
 import { Disease, ModellingGroup } from "../../main/contrib/models/Generated";
 import { emptyLookup } from "../../main/contrib/stores/Loadable";
@@ -111,41 +109,5 @@ describe("MainStore", () => {
             diseases: emptyLookup<Disease>(),
             modellingGroups: emptyLookup<ModellingGroup>()
         });
-    });
-
-    it("logIn does not set errorMessage if user is active modeller", () => {
-        const token = jwt.sign({
-            sub: "user",
-            permissions: "*/can-login",
-            roles: "modelling-group:group/member"
-        }, "secret");
-        authActions.logIn(token);
-
-        const state = mainStore.getState();
-        expect(state.errors).to.be.empty;
-    });
-
-    it("logIn does set errorMessage if user is inactive", () => {
-        const token = jwt.sign({
-            sub: "user",
-            permissions: "",
-            roles: "modelling-group:group/member"
-        }, "secret");
-        authActions.logIn(token);
-
-        const state = mainStore.getState();
-        expect(state.errors[0]).to.contain("Your account has been deactivated");
-    });
-
-    it("logIn does set errorMessage if user is not a modeller", () => {
-        const token = jwt.sign({
-            sub: "user",
-            permissions: "*/can-login",
-            roles: ""
-        }, "secret");
-        authActions.logIn(token);
-
-        const state = mainStore.getState();
-        expect(state.errors[0]).to.contain("Only members of modelling groups");
     });
 });

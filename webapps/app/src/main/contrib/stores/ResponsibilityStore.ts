@@ -1,17 +1,17 @@
-import alt from "../../alt";
+import alt from "../../shared/alt";
 import * as AltJS from "alt";
 import { RemoteContent } from "./RemoteContent";
 import { responsibilityActions } from "../actions/ResponsibilityActions";
-import { AbstractStore } from "./AbstractStore";
+import { AbstractStore } from "../../shared/stores/AbstractStore";
 import { ModellingGroup, Responsibilities, ScenarioTouchstoneAndCoverageSets, Touchstone } from "../models/Generated";
 import { sources } from "../sources/Sources";
-import { authActions, LogInProperties } from "../actions/AuthActions";
+import { authActions, LogInProperties } from "../../shared/actions/AuthActions";
 import { touchstoneActions } from "../actions/TouchstoneActions";
 import { ExtendedResponsibility, ExtendedResponsibilitySet } from "../models/ResponsibilitySet";
 import { coverageSetActions } from "../actions/CoverageSetActions";
 import { coverageTokenActions } from "../actions/CoverageActions";
 import { modellingGroupActions } from "../actions/ModellingGroupActions";
-import { authStore } from "./AuthStore";
+import { contribAuthStore } from "./ContribAuthStore";
 
 export interface ResponsibilityState extends RemoteContent {
     touchstones: Array<Touchstone>;
@@ -121,8 +121,8 @@ class ResponsibilityStore extends AbstractStore<ResponsibilityState, Responsibil
     }
 
     handleUpdateModellingGroups(groups: ModellingGroup[]) {
-        this.waitFor(authStore);
-        const membership = authStore.getState().modellingGroups;
+        this.waitFor(contribAuthStore);
+        const membership = contribAuthStore.getState().modellingGroups;
         if (membership.length == 1) {
             this.currentModellingGroup = groups.find(g => g.id == membership[0].id);
         }

@@ -1,5 +1,5 @@
 import { ErrorInfo, Result, ResultStatus } from "../../main/contrib/models/Generated";
-import fetcher, { FetchOptions } from "../../main/contrib/sources/Fetcher";
+import fetcher, { FetchOptions } from "../../main/shared/sources/Fetcher";
 
 export function promiseJSON(data: any): Response {
     return {
