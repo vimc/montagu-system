@@ -6,6 +6,7 @@ interface TestErrorInfo {
 }
 
 export function handleTeamCityEvent(event: string, testName: string, error: TestErrorInfo) {
+    console.log("handleTeamCityEvent " + event + "(" + settings.teamcityServiceMessages + ")");
     if (settings.teamcityServiceMessages) {
         switch (event) {
             case "before":
@@ -15,6 +16,7 @@ export function handleTeamCityEvent(event: string, testName: string, error: Test
                 console.log(`##teamcity[testFinished name='${testName}']`);
                 break;
             case "failed":
+                const details = error.details.replace("\n", " ");
                 console.log(`##teamcity[testFailed name='${testName}' message='${error.message}' details='${error.details}']`);
                 break;
             default:
