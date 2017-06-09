@@ -3,7 +3,7 @@ import { RemoteContentComponent } from "../../RemoteContentComponent/RemoteConte
 import { DiseaseFilter } from "./DiseaseFilter";
 import { ResponsibilityComponent } from "./ResponsibilityComponent";
 import { responsibilityStore } from "../../../stores/ResponsibilityStore";
-import { Responsibility } from "../../../models/Generated";
+import { ModellingGroup, Responsibility } from "../../../models/Generated";
 import { connectToStores } from "../../../alt";
 import { RemoteContent } from "../../../stores/RemoteContent";
 import { IExtendedResponsibilitySet } from "../../../models/ResponsibilitySet";
@@ -15,6 +15,7 @@ const commonStyles = require("../../../styles/common.css");
 export interface ResponsibilityListComponentProps extends RemoteContent {
     responsibilitySet: IExtendedResponsibilitySet;
     currentDiseaseId: string;
+    modellingGroup: ModellingGroup;
 }
 
 export class ResponsibilityListComponent extends RemoteContentComponent<ResponsibilityListComponentProps> {
@@ -27,7 +28,8 @@ export class ResponsibilityListComponent extends RemoteContentComponent<Responsi
         return {
             responsibilitySet: state.responsibilitySet,
             ready: state.ready,
-            currentDiseaseId: state.currentDiseaseId
+            currentDiseaseId: state.currentDiseaseId,
+            modellingGroup: state.currentModellingGroup
         }
     }
 
@@ -52,6 +54,7 @@ export class ResponsibilityListComponent extends RemoteContentComponent<Responsi
                     key={ item.scenario.id }
                     responsibility={ item }
                     touchstone={ props.responsibilitySet.touchstone }
+                    modellingGroup={ props.modellingGroup }
                 />
             );
             return <div>

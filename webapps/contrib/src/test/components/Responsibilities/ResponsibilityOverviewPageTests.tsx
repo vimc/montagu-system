@@ -2,11 +2,11 @@ import * as React from "react";
 import { Sandbox } from "../../Sandbox";
 import { expect } from "chai";
 import { shallow } from "enzyme";
-import { mockLocation } from "../../mocks/mocks";
+import { mockLocation, setupMainStore } from "../../mocks/mocks";
 import { expectOrderedActions } from "../../actionHelpers";
 
 import { ResponsibilityOverviewPage } from "../../../main/components/Responsibilities/Overview/ResponsibilityOverviewPage";
-import { mockTouchstone } from "../../mocks/mockModels";
+import { mockModellingGroup, mockTouchstone } from "../../mocks/mockModels";
 import { ResponsibilityOverviewTitleComponent } from "../../../main/components/Responsibilities/Overview/ResponsibilityOverviewTitle";
 import { responsibilityStore } from "../../../main/stores/ResponsibilityStore";
 
@@ -20,12 +20,18 @@ describe('ResponsibilityOverviewPage', () => {
     it("triggers actions when it mounts", () => {
         const spy = sandbox.dispatchSpy();
         const fetchResponsibilities = sandbox.sinon.stub(responsibilityStore, "fetchResponsibilities");
-        const location = mockLocation({ touchstoneId: "fizzy-pop" });
+        const location = mockLocation({
+            touchstoneId: "touchstone-id",
+            groupId: "group-id"
+        });
+        const group = mockModellingGroup({ id: "group-id" });
+        setupMainStore({ groups: [ group ] });
 
         sandbox.mount(<ResponsibilityOverviewPage location={ location } />);
 
         expectOrderedActions(spy, [
-            { action: "TouchstoneActions.setCurrentTouchstone", payload: "fizzy-pop" }
+            { action: "ModellingGroupActions.setCurrentModellingGroup", payload: group },
+            { action: "TouchstoneActions.setCurrentTouchstone", payload: "touchstone-id" }
         ], 0);
         expect(fetchResponsibilities.called).to.be.true;
         fetchResponsibilities.restore();

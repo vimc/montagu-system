@@ -8,6 +8,10 @@ export class LoadingPage extends PageWithHeader<undefined> {
         return <span>Loading...</span>;
     }
 
+    showNavBar() {
+        return false;
+    }
+
     renderPageContent(): JSX.Element {
         return <img src={ spinner } />;
     }

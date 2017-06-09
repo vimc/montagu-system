@@ -3,13 +3,16 @@ import * as AltJS from "alt";
 import { AbstractStore } from "./AbstractStore";
 import { authActions, LogInProperties } from "../actions/AuthActions";
 import { mainStore } from "./MainStore";
+import { ModellingGroup } from "../models/Generated";
+import { modellingGroupActions } from "../actions/ModellingGroupActions";
 
 export interface AuthState {
     loggedIn: boolean;
     username: string;
     bearerToken: string;
     permissions: string[];
-    modellingGroups: string[];
+    modellingGroupIds: string[];
+    modellingGroups: ModellingGroup[];
 }
 
 interface AuthStoreInterface extends AltJS.AltStore<AuthState> {
@@ -22,6 +25,7 @@ export function initialAuthState(): AuthState {
         username: null,
         bearerToken: null,
         permissions: [],
+        modellingGroupIds: [],
         modellingGroups: []
     };
 }
@@ -31,13 +35,15 @@ class AuthStore extends AbstractStore<AuthState, AuthStoreInterface> {
     username: string;
     bearerToken: string;
     permissions: string[];
-    modellingGroups: string[];
+    modellingGroups: ModellingGroup[];
+    modellingGroupIds: string[];
 
     constructor() {
         super();
         this.bindListeners({
             handleLogIn: authActions.logIn,
-            handleLogOut: authActions.logOut
+            handleLogOut: authActions.logOut,
+            handleModellingGroups: modellingGroupActions.update
         });
         this.exportPublicMethods({
             logIn: access_token => {
@@ -59,13 +65,17 @@ class AuthStore extends AbstractStore<AuthState, AuthStoreInterface> {
             this.bearerToken = props.token;
             this.username = props.username;
             this.permissions = props.permissions;
-            this.modellingGroups = props.modellingGroups;
+            this.modellingGroupIds = props.modellingGroups;
             console.log("Saved bearer token");
         }
     }
 
     handleLogOut() {
         alt.recycle();
+    }
+
+    handleModellingGroups(groups: ModellingGroup[]) {
+        this.modellingGroups = this.modellingGroupIds.map(id => groups.find(g => g.id == id));
     }
 }
 

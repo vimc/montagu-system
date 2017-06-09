@@ -1,13 +1,21 @@
-import { mockDisease } from "../mocks/mockModels";
+import { mockDisease, mockModellingGroup } from "../mocks/mockModels";
 import { FetchHelper } from "./helpers";
 
 import { mainStore } from "../../main/stores/MainStore";
-import { Disease } from "../../main/models/Generated";
+import { Disease, ModellingGroup } from "../../main/models/Generated";
 
-describe("MainStore.load", () => {
+describe("MainStore.fetchDiseases", () => {
     new FetchHelper<Disease[]>({
-        triggerFetch: () => mainStore.load(),
+        triggerFetch: () => mainStore.fetchDiseases(),
         makePayload: () => [ mockDisease(), mockDisease() ],
         expectedURL: "/diseases/"
+    }).addTestsToMocha();
+});
+
+describe("MainStore.fetchModellingGroups", () => {
+    new FetchHelper<ModellingGroup[]>({
+        triggerFetch: () => mainStore.fetchModellingGroups(),
+        makePayload: () => [ mockModellingGroup(), mockModellingGroup() ],
+        expectedURL: "/modelling-groups/"
     }).addTestsToMocha();
 });

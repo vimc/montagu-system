@@ -26,7 +26,7 @@
     margin: 10px 10px;
     font-size: 10pt;
     font-weight: bold;
-};
+}
 
 :local(.content) {
     padding: 10px;

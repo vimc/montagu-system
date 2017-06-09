@@ -81,6 +81,10 @@ export class LoginPage extends PageWithHeader<undefined> {
         return <span>Log in</span>;
     }
 
+    showNavBar() {
+        return false;
+    }
+
     renderPageContent(): JSX.Element {
         return <LoginForm />;
     }

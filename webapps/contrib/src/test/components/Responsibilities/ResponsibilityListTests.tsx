@@ -1,7 +1,7 @@
 import * as React from "react";
 import { expect } from "chai";
 import { shallow } from "enzyme";
-import { mockResponsibility, mockTouchstone } from "../../mocks/mockModels";
+import { mockModellingGroup, mockResponsibility, mockTouchstone } from "../../mocks/mockModels";
 
 import { ResponsibilityListComponent, ResponsibilityListComponentProps } from "../../../main/components/Responsibilities/Overview/ResponsibilityList";
 import { ResponsibilityComponent } from "../../../main/components/Responsibilities/Overview/ResponsibilityComponent";
@@ -13,6 +13,7 @@ function makeProps(responsibilities: Array<Responsibility>,
                         currentDiseaseId?: string): ResponsibilityListComponentProps {
     const touchstone = mockTouchstone();
     return {
+        modellingGroup: mockModellingGroup(),
         currentDiseaseId: currentDiseaseId,
         responsibilitySet: new ExtendedResponsibilitySet({
             problems: "",

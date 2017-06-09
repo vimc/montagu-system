@@ -18,7 +18,7 @@ export interface DownloadCoverageComponentProps extends RemoteContent {
     };
 }
 
-export class DownloadCoverageComponent extends RemoteContentComponent<DownloadCoverageComponentProps> {
+export class DownloadCoverageContentComponent extends RemoteContentComponent<DownloadCoverageComponentProps> {
     static getStores() {
         return [ responsibilityStore ];
     }
@@ -75,4 +75,4 @@ export class DownloadCoverageComponent extends RemoteContentComponent<DownloadCo
     }
 }
 
-export const ResponsibilityDetails = connectToStores(DownloadCoverageComponent);
+export const DownloadCoverageContent = connectToStores(DownloadCoverageContentComponent);

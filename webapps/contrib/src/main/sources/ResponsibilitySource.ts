@@ -10,7 +10,7 @@ export class ResponsibilitySource extends Source<Responsibilities, Responsibilit
     constructor() {
         super({ success: responsibilityActions.update, loading: responsibilityActions.beginFetch });
         this.fetchResponsibilities = () => {
-            return this.doFetch(s => `/modelling-groups/${s.currentModellingGroupId}/responsibilities/${s.currentTouchstone.id}/`);
+            return this.doFetch(s => `/modelling-groups/${s.currentModellingGroup.id}/responsibilities/${s.currentTouchstone.id}/`);
         };
     }
 }

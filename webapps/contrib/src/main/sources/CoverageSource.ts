@@ -4,7 +4,7 @@ import { Source } from "./Source";
 export abstract class CoverageSource<T> extends Source<T, ResponsibilityState> {
     protected baseURL(state: ResponsibilityState): string {
         const k = {
-            group: state.currentModellingGroupId,
+            group: state.currentModellingGroup.id,
             touchstone: state.currentTouchstone.id,
             scenario: state.currentResponsibility.scenario.id
         };
