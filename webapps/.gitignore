@@ -1,4 +1,13 @@
 *.dropbox.attr
+app/.tmp/*
+app/\.idea/*
+app/node_modules/*
+app/npm-debug\.log
+app/out/*
+app/src/main/Models\.ts
+app/src/webmodels/.gradle/**
+app/src/webmodels/build/**
+app/src/webmodels/generate/build/**
 contrib/.tmp/*
 contrib/\.idea/*
 contrib/node_modules/*
