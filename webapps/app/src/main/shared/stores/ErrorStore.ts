@@ -2,7 +2,7 @@ import { AbstractStore } from "./AbstractStore";
 import { errorActions } from "../actions/ErrorActions";
 import { alt } from "../alt";
 import { authActions, LogInProperties } from "../actions/AuthActions";
-import { settings } from "../../Settings";
+import { settings } from "../Settings";
 
 export interface ErrorState {
     errors: string[];

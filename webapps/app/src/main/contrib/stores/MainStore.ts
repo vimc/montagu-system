@@ -1,16 +1,14 @@
 import alt from "../../shared/alt";
 import * as AltJS from "alt";
 import { AbstractStore } from "../../shared/stores/AbstractStore";
-import { authActions, LogInProperties } from "../../shared/actions/AuthActions";
 import { Disease, ModellingGroup } from "../models/Generated";
-import { settings } from "../../Settings";
 import { emptyLookup, getFromLookup, ILoadable, makeLookup } from "./Loadable";
 import { diseaseActions } from "../actions/DiseaseActions";
-import { errorActions } from "../../shared/actions/ErrorActions";
 import { RemoteContent } from "./RemoteContent";
-import { sources } from "../sources/Sources";
 import { responsibilityStore } from "./ResponsibilityStore";
 import { modellingGroupActions } from "../actions/ModellingGroupActions";
+import { DiseaseSource } from "../sources/DiseaseSource";
+import { ModellingGroupSource } from "../sources/ModellingGroupSource";
 
 export interface MainState extends RemoteContent {
     diseases: ILoadable<Disease>;
@@ -52,8 +50,8 @@ class MainStore extends AbstractStore<MainState, Interface> {
             handleDiseases: diseaseActions.update,
             handleModellingGroups: modellingGroupActions.update,
         });
-        this.registerAsync(sources.diseases);
-        this.registerAsync(sources.modellingGroups);
+        this.registerAsync(new DiseaseSource());
+        this.registerAsync(new ModellingGroupSource());
         this.exportPublicMethods({
             getDiseaseById: id => getFromLookup(this.diseases, id),
             getGroupById: id => getFromLookup(this.modellingGroups, id),

@@ -4,14 +4,17 @@ import { RemoteContent } from "./RemoteContent";
 import { responsibilityActions } from "../actions/ResponsibilityActions";
 import { AbstractStore } from "../../shared/stores/AbstractStore";
 import { ModellingGroup, Responsibilities, ScenarioTouchstoneAndCoverageSets, Touchstone } from "../models/Generated";
-import { sources } from "../sources/Sources";
-import { authActions, LogInProperties } from "../../shared/actions/AuthActions";
 import { touchstoneActions } from "../actions/TouchstoneActions";
 import { ExtendedResponsibility, ExtendedResponsibilitySet } from "../models/ResponsibilitySet";
 import { coverageSetActions } from "../actions/CoverageSetActions";
 import { coverageTokenActions } from "../actions/CoverageActions";
 import { modellingGroupActions } from "../actions/ModellingGroupActions";
 import { contribAuthStore } from "./ContribAuthStore";
+import { ResponsibilitySource } from "../sources/ResponsibilitySource";
+import { TouchstoneSource } from "../sources/TouchstoneSource";
+import { CoverageSetSource } from "../sources/CoverageSetSource";
+import { CoverageTokenSource } from "../sources/CoverageTokenSource";
+import { mainStore } from "./MainStore";
 
 export interface ResponsibilityState extends RemoteContent {
     touchstones: Array<Touchstone>;
@@ -48,10 +51,10 @@ class ResponsibilityStore extends AbstractStore<ResponsibilityState, Responsibil
 
     constructor() {
         super();
-        this.registerAsync(sources.responsibilities);
-        this.registerAsync(sources.touchstones);
-        this.registerAsync(sources.coverageSets);
-        this.registerAsync(sources.coverageToken);
+        this.registerAsync(new ResponsibilitySource());
+        this.registerAsync(new TouchstoneSource());
+        this.registerAsync(new CoverageSetSource());
+        this.registerAsync(new CoverageTokenSource());
 
         this.bindListeners({
             handleSetCurrentModellingGroup: modellingGroupActions.setCurrentModellingGroup,
@@ -99,8 +102,8 @@ class ResponsibilityStore extends AbstractStore<ResponsibilityState, Responsibil
     handleSetCurrentTouchstone(touchstoneId: string) {
         this.currentTouchstone = this.touchstones.find(x => x.id == touchstoneId);
     }
-    handleSetCurrentModellingGroup(modellingGroup: ModellingGroup) {
-        this.currentModellingGroup = modellingGroup;
+    handleSetCurrentModellingGroup(modellingGroupId: string) {
+        this.currentModellingGroup = mainStore.getGroupById(modellingGroupId);
     }
 
     handleBeginTouchstoneFetch() {

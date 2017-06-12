@@ -1,6 +1,6 @@
 import * as React from "react";
 import { ResponsibilityList } from "./ResponsibilityList";
-import { settings } from "../../../../Settings";
+import { settings } from "../../../../shared/Settings";
 import { ResponsibilityOverviewTitle } from "./ResponsibilityOverviewTitle";
 import { touchstoneActions } from "../../../actions/TouchstoneActions";
 import { responsibilityStore } from "../../../stores/ResponsibilityStore";

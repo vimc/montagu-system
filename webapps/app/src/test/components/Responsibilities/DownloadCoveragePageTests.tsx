@@ -30,7 +30,7 @@ describe('DownloadCoveragePage', () => {
         sandbox.mount(<DownloadCoveragePage location={ location } />);
 
         expectOrderedActions(spy, [
-            { action: "ModellingGroupActions.setCurrentModellingGroup", payload: group },
+            { action: "ModellingGroupActions.setCurrentModellingGroup", payload: "group-1" },
             { action: "TouchstoneActions.setCurrentTouchstone", payload: "touchstone-1" },
             { action: "ResponsibilityActions.setCurrentResponsibility", payload: "scenario-1" },
         ], 0);

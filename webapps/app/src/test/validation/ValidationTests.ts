@@ -1,4 +1,4 @@
-import * as Validation from "../../main/Validation";
+import * as Validation from "../../main/shared/Validation";
 import { expect } from "chai";
 
 let validate: Validation.Validator;

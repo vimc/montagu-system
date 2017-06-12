@@ -1,4 +1,4 @@
-import { settings } from "../../Settings";
+import { settings } from "../Settings";
 import { contribAuthStore } from "../../contrib/stores/ContribAuthStore";
 
 export interface FetchOptions {

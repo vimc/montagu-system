@@ -12,7 +12,7 @@ interface AppProps {
     errors: string[]
 }
 
-export class ContributionAppComponent extends React.Component<AppProps, undefined> {
+export class ContribAppComponent extends React.Component<AppProps, undefined> {
     static getStores() {
         return [ errorStore, contribAuthStore ];
     }
@@ -35,4 +35,4 @@ export class ContributionAppComponent extends React.Component<AppProps, undefine
     }
 }
 
-export const ContributionApp = connectToStores(ContributionAppComponent);
+export const ContribApp = connectToStores(ContribAppComponent);

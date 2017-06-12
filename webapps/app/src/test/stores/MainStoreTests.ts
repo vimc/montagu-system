@@ -27,7 +27,6 @@ describe("MainStore", () => {
     it("is initially blank", () => {
         const state = mainStore.getState();
         expect(state).to.eql({
-            errors: [],
             ready: false,
             diseases: emptyLookup<Disease>(),
             modellingGroups: emptyLookup<ModellingGroup>()
@@ -41,7 +40,6 @@ describe("MainStore", () => {
 
         const state = mainStore.getState();
         expect(state).to.eql({
-            errors: [],
             ready: false,
             diseases: {
                 loaded: true,
@@ -61,7 +59,6 @@ describe("MainStore", () => {
 
         const state = mainStore.getState();
         expect(state).to.eql({
-            errors: [],
             ready: false,
             diseases: emptyLookup<Disease>(),
             modellingGroups: {
@@ -85,29 +82,6 @@ describe("MainStore", () => {
 
         checkAsync(done, () => {
             expect(spy.called).to.equal(true, "Expected responsibilityStore.fetchTouchstones to be called");
-        });
-    });
-
-
-    it("errorActions.error adds errorMessage", () => {
-        errorActions.error("message");
-
-        let state = mainStore.getState();
-        expect(state).to.eql({
-            errors: [ "message" ],
-            ready: false,
-            diseases: emptyLookup<Disease>(),
-            modellingGroups: emptyLookup<ModellingGroup>()
-        });
-
-        errorActions.error("message 2");
-
-        state = mainStore.getState();
-        expect(state).to.eql({
-            errors: [ "message 2", "message" ],
-            ready: false,
-            diseases: emptyLookup<Disease>(),
-            modellingGroups: emptyLookup<ModellingGroup>()
         });
     });
 });

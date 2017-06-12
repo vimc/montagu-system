@@ -62,14 +62,14 @@ describe("ResponsibilityStore", () => {
 
         // User has membership of multiple groups
         alt.bootstrap(JSON.stringify({
-            AuthStore: { modellingGroupIds: [ group.id, "another-id" ] }
+            ContribAuthStore: { modellingGroupIds: [ group.id, "another-id" ] }
         }));
         modellingGroupActions.update([ group ]);
         expect(responsibilityStore.getState().currentModellingGroup).to.be.null;
 
         // User has membership of just one group
         alt.bootstrap(JSON.stringify({
-            AuthStore: { modellingGroupIds: [ group.id ] }
+            ContribAuthStore: { modellingGroupIds: [ group.id ] }
         }));
         modellingGroupActions.update([ group ]);
         expect(responsibilityStore.getState().currentModellingGroup).to.eql(group);

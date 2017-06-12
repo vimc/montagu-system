@@ -5,7 +5,7 @@ import { loginForm } from "../../shared/components/Login/LoginForm";
 import { LoginFormComponent } from "../../shared/components/Login/LoginFormComponent";
 import { adminAuthStore } from "../stores/AdminAuthStore";
 
-const LoginForm = FormConnector(loginForm(adminAuthStore))(LoginFormComponent);
+const LoginForm = FormConnector(loginForm("admin", adminAuthStore))(LoginFormComponent);
 
 export class AdminLoginPage extends AdminPageWithHeader<undefined> {
     title(): JSX.Element {

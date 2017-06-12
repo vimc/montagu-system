@@ -1,15 +1,14 @@
 import alt from "../../shared/alt";
 import { ModellingGroup } from "../models/Generated";
 import { FetchActions, FetchActionsInterface } from "./FetchActions";
-import { mainStore } from "../stores/MainStore";
 
 interface Actions extends FetchActionsInterface<ModellingGroup[]> {
-    setCurrentModellingGroup(id: string): ModellingGroup;
+    setCurrentModellingGroup(id: string): string;
 }
 
 class ModellingGroupActions extends FetchActions<ModellingGroup[]> implements Actions {
-    setCurrentModellingGroup(id: string): ModellingGroup {
-        return mainStore.getGroupById(id);
+    setCurrentModellingGroup(id: string): string {
+        return id;
     }
 }
 

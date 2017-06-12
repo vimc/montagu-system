@@ -2,19 +2,19 @@ import * as React from "react";
 import { shallow } from "enzyme";
 import { expect } from "chai";
 
-import { ContributionAppComponent } from "../../main/contrib/components/ContributionApp";
+import { ContribAppComponent } from "../../main/contrib/components/ContribApp";
 import { ErrorLog } from "../../main/shared/components/ErrorLog/ErrorLog";
 import { alt } from "../../main/shared/alt";
 import { ContribRouter } from "../../main/contrib/components/ContribRouter";
 
-describe("ContributionApp", () => {
+describe("ContribApp", () => {
     it("pulls properties from stores", () => {
         alt.bootstrap(JSON.stringify({
             MainStore: { ready: true },
-            AuthStore: { loggedIn: true },
+            ContribAuthStore: { loggedIn: true },
             ErrorStore: { errors: [ "Hi" ] }
         }));
-        const props = ContributionAppComponent.getPropsFromStores();
+        const props = ContribAppComponent.getPropsFromStores();
         expect(props).to.eql({
             ready: true,
             loggedIn: true,
@@ -23,7 +23,7 @@ describe("ContributionApp", () => {
     });
 
     it("renders Router", () => {
-        const rendered = shallow(<ContributionAppComponent ready={ true } errors={ [] } loggedIn={ true } />);
+        const rendered = shallow(<ContribAppComponent ready={ true } errors={ [] } loggedIn={ true } />);
         const router = rendered.find(ContribRouter);
         expect(router).has.length(1, "Expected Router to be rendered");
         expect(router.props()).to.eql({
@@ -33,7 +33,7 @@ describe("ContributionApp", () => {
     });
 
     it("renders ErrorLog", () => {
-        const rendered = shallow(<ContributionAppComponent errors={ [ "m1", "m2" ] } loggedIn={ true } ready={ true } />);
+        const rendered = shallow(<ContribAppComponent errors={ [ "m1", "m2" ] } loggedIn={ true } ready={ true } />);
         const log = rendered.find(ErrorLog);
         expect(log).has.length(1, "Expected Router to be rendered");
         expect(log.props()).to.eql({

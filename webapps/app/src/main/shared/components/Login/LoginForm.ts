@@ -2,8 +2,8 @@ import { AuthStoreBaseInterface } from "../../stores/AuthStoreBase";
 import AltReform, { Reform } from "alt-reform";
 import { alt } from "../../alt";
 import fetcher from "../../sources/Fetcher";
-import FormActions from "../../../FormActions";
-import * as Validation from "../../../Validation";
+import FormActions from "../../FormActions";
+import * as Validation from "../../Validation";
 
 const { submitFailed } = FormActions("Login");
 
@@ -12,8 +12,8 @@ export interface LoginFields {
     password: string;
 }
 
-export function loginForm(authStore: AuthStoreBaseInterface<any>): Reform<LoginFields> {
-    return AltReform("Login", alt, {
+export function loginForm(name: string, authStore: AuthStoreBaseInterface<any>): Reform<LoginFields> {
+    return AltReform("Login_" + name, alt, {
         fields: {
             email: Validation.required("Email address"),
             password: Validation.required("Password"),

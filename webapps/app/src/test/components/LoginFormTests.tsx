@@ -34,7 +34,7 @@ describe("LoginForm", () => {
     let form: Reform<LoginFields>;
 
     before(() => {
-        form = loginForm(contribAuthStore);
+        form = loginForm("contrib_test", contribAuthStore);
     });
 
     afterEach(() => {

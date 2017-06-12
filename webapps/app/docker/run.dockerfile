@@ -8,6 +8,6 @@ COPY docker/nginx.default.conf /etc/nginx/conf.d/default.conf
 WORKDIR /app
 COPY docker/entrypoint.sh entrypoint.sh
 
-ENV MONTAGU_CONTRIB_PROFILE docker
+ENV MONTAGU_PORTAL_PROFILE docker
 
 ENTRYPOINT /app/entrypoint.sh

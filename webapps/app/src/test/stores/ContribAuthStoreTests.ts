@@ -41,7 +41,7 @@ describe("ContribAuthStore", () => {
 
     it("sets modellingGroups array when modelling groups are received", () => {
         alt.bootstrap(JSON.stringify({
-            AuthStore: {
+            ContribAuthStore: {
                 modellingGroupIds: [ "test.group" ]
             }
         }));
@@ -53,7 +53,7 @@ describe("ContribAuthStore", () => {
 
     it("clears everything on logOut", () => {
         alt.bootstrap(JSON.stringify({
-            AuthStore: {
+            ContribAuthStore: {
                 loggedIn: true,
                 username: "username",
                 bearerToken: "TOKEN",

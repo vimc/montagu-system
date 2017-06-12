@@ -1,4 +1,4 @@
-import { settings } from "../main/Settings";
+import { settings } from "../main/shared/Settings";
 
 interface TestErrorInfo {
     message: string;

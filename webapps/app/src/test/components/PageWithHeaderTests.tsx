@@ -5,7 +5,7 @@ import { mockLocation } from "../mocks/mocks";
 
 import { PageWithHeader } from "../../main/shared/components/PageWithHeader/PageWithHeader";
 
-const styles = require('../../main/contrib/components/PageWithHeader/PageWithHeader.css');
+const styles = require('../../main/shared/components/PageWithHeader/PageWithHeader.css');
 
 class DummyPage extends PageWithHeader<undefined> {
     siteTitle() {
@@ -29,7 +29,7 @@ describe('PageWithHeader', () => {
     });
 
     it("renders the application title", () => {
-        expect(rendered.find(`.${styles.siteTitle}`).text()).to.equal("LOTR");
+        expect(rendered.find(`.${styles.siteTitle}`).render().text()).to.equal("LOTR");
     });
 
     it("renders the title", () => {

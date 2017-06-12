@@ -5,7 +5,7 @@ import { contribAuthStore } from "../../stores/ContribAuthStore";
 import { LoginFormComponent } from "../../../shared/components/Login/LoginFormComponent";
 import { ContribPageWithHeader } from "../PageWithHeader/ContribPageWithHeader";
 
-const LoginForm = FormConnector(loginForm(contribAuthStore))(LoginFormComponent);
+const LoginForm = FormConnector(loginForm("contrib", contribAuthStore))(LoginFormComponent);
 
 export class ContribLoginPage extends ContribPageWithHeader<undefined> {
     title(): JSX.Element {

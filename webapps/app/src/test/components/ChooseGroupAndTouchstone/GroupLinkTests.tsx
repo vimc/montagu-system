@@ -25,7 +25,7 @@ describe("GroupLink", () => {
 
         const spy = sandbox.dispatchSpy();
         rendered.find("div").simulate("click");
-        expectOneAction(spy, { action: "ModellingGroupActions.setCurrentModellingGroup", payload: group });
+        expectOneAction(spy, { action: "ModellingGroupActions.setCurrentModellingGroup", payload: group.id });
     });
 
     it("when selected includes selected CSS class", () => {

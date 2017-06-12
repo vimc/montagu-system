@@ -30,7 +30,7 @@ describe('ResponsibilityOverviewPage', () => {
         sandbox.mount(<ResponsibilityOverviewPage location={ location } />);
 
         expectOrderedActions(spy, [
-            { action: "ModellingGroupActions.setCurrentModellingGroup", payload: group },
+            { action: "ModellingGroupActions.setCurrentModellingGroup", payload: "group-id" },
             { action: "TouchstoneActions.setCurrentTouchstone", payload: "touchstone-id" }
         ], 0);
         expect(fetchResponsibilities.called).to.be.true;
