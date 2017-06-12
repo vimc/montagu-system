@@ -32,8 +32,7 @@ RUN apt-get install -y docker-ce=17.03.0~ce-0~debian-jessie
 RUN npm install webpack --global
 
 # Create workspace
-RUN mkdir -p /usr/src/app
-WORKDIR /usr/src/app
+WORKDIR /workspace
 
 # Install Gradle wrapper
 RUN mkdir -p src/webmodels/
@@ -47,33 +46,24 @@ COPY ./src/webmodels/settings.gradle src/webmodels/
 RUN ./src/webmodels/gradlew
 
 # Install Node dependencies
-COPY package.json /usr/src/app
+COPY package.json .
 RUN npm install
 
 # Generate Typescript models from montagu-webmodels
 COPY ./src/webmodels/ src/webmodels
-RUN mkdir -p src/main/models
+RUN mkdir -p src/main/contrib/models
 RUN npm run generate-models
 
 # Main build starts here
 # --------------------------------
-WORKDIR /usr/src/app
-COPY . /usr/src/app
+COPY . .
 
-ARG git_id='UNKNOWN'
-ARG git_branch='UNKNOWN'
-ARG registry=montagu.dide.ic.ac.uk:5000
-ARG name=montagu-contrib-portal
+ARG MONTAGU_GIT_ID="UNKNOWN"
+ARG MONTAGU_GIT_BRANCH="UNKNOWN"
 
-ENV APP_DOCKER_COMMIT_TAG $registry/$name:$git_id
-ENV APP_DOCKER_BRANCH_TAG $registry/$name:$git_branch
+ENV MONTAGU_GIT_ID=$MONTAGU_GIT_ID
+ENV MONTAGU_GIT_BRANCH=$MONTAGU_GIT_BRANCH
 ENV MONTAGU_CONTRIB_PROFILE teamcity
 
 # Build, tag and publish docker image
-CMD webpack \
-    && npm run test \
-    && echo "Building $APP_DOCKER_COMMIT_TAG" \
-    && docker build -f docker/run.dockerfile -t $APP_DOCKER_COMMIT_TAG . \
-    && docker tag $APP_DOCKER_COMMIT_TAG $APP_DOCKER_BRANCH_TAG \
-    && docker push $APP_DOCKER_COMMIT_TAG \
-    && docker push $APP_DOCKER_BRANCH_TAG
+CMD docker/build-images.sh $MONTAGU_GIT_BRANCH $MONTAGU_GIT_ID
