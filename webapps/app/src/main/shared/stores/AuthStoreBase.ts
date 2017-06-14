@@ -14,7 +14,7 @@ export interface AuthStoreBaseInterface<TState> extends AltJS.AltStore<TState> {
     logIn(access_token: string): void;
 }
 
-export abstract class AuthStoreBase<TState extends AuthStateBase, TInterface extends AuthStoreBaseInterface<TState>>
+export abstract class AuthStore<TState extends AuthStateBase, TInterface extends AuthStoreBaseInterface<TState>>
     extends AbstractStore<TState, TInterface>
 {
     loggedIn: boolean;
