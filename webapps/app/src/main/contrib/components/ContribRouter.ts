@@ -5,6 +5,7 @@ import { ChooseGroupAndTouchstonePage } from "./ChooseGroupAndTouchstone/ChooseG
 import { LoadingPage } from "./LoadingPage";
 import { DownloadCoveragePage } from "./Responsibilities/Coverage/DownloadCoveragePage";
 import { ContribLoginPage } from "./Login/ContribLoginPage";
+import { ContribNoRouteFoundPage } from "./ContribNoRouteFoundPage";
 
 interface RoutingProperties {
     loggedIn: boolean;
@@ -19,6 +20,7 @@ export class ContribRouter extends Router<RoutingProperties> {
                 map('/', ChooseGroupAndTouchstonePage);
                 map('/:groupId/responsibilities/:touchstoneId', ResponsibilityOverviewPage);
                 map('/:groupId/responsibilities/:touchstoneId/:scenarioId', DownloadCoveragePage);
+                map('*', ContribNoRouteFoundPage);
             } else {
                 map("*", LoadingPage);
             }

@@ -14,7 +14,7 @@ interface AppProps {
 
 export class ContribAppComponent extends React.Component<AppProps, undefined> {
     static getStores() {
-        return [ errorStore, contribAuthStore ];
+        return [ mainStore, errorStore, contribAuthStore ];
     }
 
     static getPropsFromStores(): AppProps {

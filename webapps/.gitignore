@@ -1,4 +1,5 @@
 *.dropbox.attr
+*.iml
 app/.tmp/*
 app/\.awcache/
 app/\.idea/*
