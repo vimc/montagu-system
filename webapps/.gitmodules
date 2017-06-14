@@ -1,6 +1,6 @@
-[submodule "contrib/src/webmodels/webmodels"]
-	path = contrib/src/webmodels/models
+[submodule "app/src/webmodels/models"]
+	path = app/src/webmodels/models
 	url = https://github.com/vimc/montagu-webmodels.git
-[submodule "contrib/src/webmodels/tsgenerator"]
-	path = contrib/src/webmodels/tsgenerator
+[submodule "app/src/webmodels/tsgenerator"]
+	path = app/src/webmodels/tsgenerator
 	url = https://github.com/vimc/ts-generator.git
