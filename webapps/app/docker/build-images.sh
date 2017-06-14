@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 set -e
 
 git_branch=$1
@@ -24,6 +25,7 @@ echo "Building admin portal image"
 docker build -f docker/run.dockerfile \
     -t $registry/$admin_name:$git_id \
     -t $registry/$admin_name:$git_branch \
+    --build-arg APP_NAME=admin \
     .
 
 id=$registry/$contrib_name:$git_id
