@@ -30,7 +30,7 @@ function makePortalConfig(name) {
                 {from: 'node_modules/react-dom/dist/react-dom.js', to: 'react-dom.js'}
             ])
         ]
-    }, helper.commonConfig());
+    }, helper.commonConfig(name));
 }
 
 module.exports = [

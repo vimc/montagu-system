@@ -1,3 +1,5 @@
+import { HasId } from "../models/HasId"
+
 export interface ILoadable<T> {
     content: { [index: string]: T };
     loaded: boolean;

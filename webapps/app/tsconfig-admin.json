@@ -1,6 +1,6 @@
 {
     "compilerOptions": {
-        "outDir": "./out/dist/",
+        "outDir": "./out/build/admin",
         "sourceMap": true,
         "noImplicitAny": true,
         "module": "commonjs",
@@ -8,9 +8,8 @@
         "jsx": "react"
     },
     "include": [
-        "./src/**/*"
-    ],
-    "exclude": [
-        "webmodels/"
+        "./src/@types/**/*",
+        "./src/main/admin/*",
+        "./src/main/shared/*"
     ]
 }

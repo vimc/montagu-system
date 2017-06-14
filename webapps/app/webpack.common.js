@@ -1,6 +1,6 @@
 const path = require('path');
 
-function commonConfig() {
+function commonConfig(name) {
     return {
         // Enable sourcemaps for debugging webpack's output.
         devtool: "source-map",
@@ -24,7 +24,16 @@ function commonConfig() {
                 // and then fed through Babel to compiled from ES6 to ES5
                 {
                     test: /\.tsx?$/,
-                    loaders: ["babel-loader", "awesome-typescript-loader"],
+                    loaders: [
+                        {
+                            loader: "awesome-typescript-loader",
+                            options: {
+                                useBabel: true,
+                                useCache: true,
+                                configFileName: path.join(__dirname, "tsconfig-" + name + ".json")
+                            }
+                        }
+                    ],
                     exclude: [/node_modules/]
                 },
                 // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
