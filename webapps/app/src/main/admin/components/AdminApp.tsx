@@ -5,16 +5,16 @@ import { ErrorLog } from "../../shared/components/ErrorLog/ErrorLog";
 import { AdminRouter } from "./AdminRouter";
 import { adminAuthStore } from "../stores/AdminAuthStore";
 
-interface Props {
+export interface AdminAppProps {
     errors: string[];
     loggedIn: boolean;
 }
 
-export class AdminAppComponent extends React.Component<Props, undefined> {
+export class AdminAppComponent extends React.Component<AdminAppProps, undefined> {
     static getStores() {
         return [ errorStore, adminAuthStore ];
     }
-    static getPropsFromStores(): Props {
+    static getPropsFromStores(): AdminAppProps {
         return {
             errors: errorStore.getState().errors,
             loggedIn: adminAuthStore.getState().loggedIn
