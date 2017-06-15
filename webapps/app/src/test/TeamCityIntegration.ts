@@ -27,10 +27,13 @@ export function handleTeamCityEvent(event: string, testName: string, error: Test
 }
 
 function escape(text: string) {
-        return text.replace("|", "||")
-            .replace(/'/, "|'")
-            .replace(/\r/, "|r")
-            .replace(/\n/, "|n")
-            .replace(/\[/, "|[")
-            .replace(/]/, "|]")
+    // JS string.replace only replaces the first occurence.
+    // To replace all occurences you must use a regex with the 'g' option at the end:
+    // g means "Global" and causes it to replace all matches
+    return text.replace(/|/g, "||")
+        .replace(/'/g, "|'")
+        .replace(/\r/g, "|r")
+        .replace(/\n/g, "|n")
+        .replace(/\[/g, "|[")
+        .replace(/]/g, "|]")
 }
