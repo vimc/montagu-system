@@ -3,7 +3,7 @@ set -e
 
 git_branch=$1
 git_id=$2
-registry=montagu.dide.ic.ac.uk:5000
+registry=docker.montagu.dide.ic.ac.uk:5000
 contrib_name=montagu-contrib-portal
 admin_name=montagu-admin-portal
 
