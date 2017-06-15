@@ -6,7 +6,7 @@ import { setupMainStore } from "../../../mocks/mocks";
 import { Sandbox } from "../../../Sandbox";
 
 import { ResponsibilityComponent } from "../../../../main/contrib/components/Responsibilities/Overview/ResponsibilityComponent";
-import { ButtonLink } from "../../../../main/contrib/components/ButtonLink";
+import { ButtonLink } from "../../../../main/shared/components/ButtonLink";
 
 const styles = require("../../../../main/contrib/components/Responsibilities/Responsibilities.css");
 

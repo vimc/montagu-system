@@ -1,0 +1,13 @@
+:local(.menu) {
+    list-style-type: none;
+}
+
+:local(.menu) li {
+    margin: 30px 0;
+    width: 400px;
+    text-align: center;
+}
+
+:local(.menu) button {
+    width: 300px;
+}

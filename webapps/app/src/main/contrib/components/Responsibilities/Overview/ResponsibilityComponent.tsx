@@ -1,7 +1,7 @@
 import * as React from "react";
 import { ModellingGroup, Responsibility, Touchstone } from "../../../models/Generated";
 import { mainStore } from "../../../stores/MainStore";
-import { ButtonLink } from "../../ButtonLink";
+import { ButtonLink } from "../../../../shared/components/ButtonLink";
 
 const styles = require("../Responsibilities.css");
 

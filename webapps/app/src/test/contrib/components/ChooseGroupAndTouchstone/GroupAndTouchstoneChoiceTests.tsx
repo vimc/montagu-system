@@ -8,7 +8,7 @@ import { mockModellingGroup, mockTouchstone } from "../../../mocks/mockModels";
 import * as React from "react";
 import { TouchstoneList } from "../../../../main/contrib/components/ChooseGroupAndTouchstone/TouchstoneList";
 import { GroupList } from "../../../../main/contrib/components/ChooseGroupAndTouchstone/GroupList";
-import { ButtonLink } from "../../../../main/contrib/components/ButtonLink";
+import { ButtonLink } from "../../../../main/shared/components/ButtonLink";
 
 function render(props: GroupAndTouchstoneChoiceProps): ShallowWrapper<any, any> {
     return shallow(<GroupAndTouchstoneChoiceComponent { ...props } />);

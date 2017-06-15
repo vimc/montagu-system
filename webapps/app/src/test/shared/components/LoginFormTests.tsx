@@ -34,7 +34,7 @@ describe("LoginForm", () => {
     let form: Reform<LoginFields>;
 
     before(() => {
-        form = loginForm("contrib_test", contribAuthStore);
+        form = loginForm("test", contribAuthStore);
     });
 
     afterEach(() => {
@@ -95,7 +95,7 @@ describe("LoginForm", () => {
         checkSubmit(form, done, sandbox, spy => {
             actionHelpers.expectOrderedActions(
                 spy,
-                [ { action: "Login/submitFailed", payload: "Your username or password is incorrect" } ],
+                [ { action: "Login_test/submitFailed", payload: "Your username or password is incorrect" } ],
                 numberOfSubmissionActions
             );
         });
@@ -112,7 +112,7 @@ describe("LoginForm", () => {
         checkSubmit(form, done, sandbox, spy => {
             actionHelpers.expectOrderedActions(
                 spy,
-                [ { action: "Login/submitFailed", payload: "An error occurred logging in" } ],
+                [ { action: "Login_test/submitFailed", payload: "An error occurred logging in" } ],
                 numberOfSubmissionActions
             );
         });

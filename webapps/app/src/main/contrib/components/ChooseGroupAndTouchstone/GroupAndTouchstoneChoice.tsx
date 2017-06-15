@@ -7,7 +7,7 @@ import { TouchstoneList } from "./TouchstoneList";
 import { RemoteContent } from "../../stores/RemoteContent";
 import { RemoteContentComponent } from "../RemoteContentComponent/RemoteContentComponent";
 import { GroupList } from "./GroupList";
-import { ButtonLink } from "../ButtonLink";
+import { ButtonLink } from "../../../shared/components/ButtonLink";
 
 const commonStyles = require("../../../shared/styles/common.css");
 

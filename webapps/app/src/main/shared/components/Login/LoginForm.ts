@@ -5,15 +5,16 @@ import fetcher from "../../sources/Fetcher";
 import FormActions from "../../FormActions";
 import * as Validation from "../../Validation";
 
-const { submitFailed } = FormActions("Login");
-
 export interface LoginFields {
     email: string;
     password: string;
 }
 
 export function loginForm(name: string, authStore: AuthStoreBaseInterface<any>): Reform<LoginFields> {
-    return AltReform("Login_" + name, alt, {
+    const qualifiedName = "Login_" + name;
+    const { submitFailed } = FormActions(qualifiedName);
+
+    return AltReform(qualifiedName, alt, {
         fields: {
             email: Validation.required("Email address"),
             password: Validation.required("Password"),
