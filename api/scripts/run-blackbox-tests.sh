@@ -1,5 +1,5 @@
 export MONTAGU_API_VERSION=$(git rev-parse --short HEAD)
-cert_tool_version=d3f4ecb
+cert_tool_version=59657b2
 
 docker-compose pull
 docker-compose --project-name montagu up -d
