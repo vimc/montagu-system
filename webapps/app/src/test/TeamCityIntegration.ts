@@ -28,9 +28,9 @@ export function handleTeamCityEvent(event: string, testName: string, error: Test
 
 function escape(text: string) {
         return text.replace("|", "||")
-            .replace("'", "|'")
-            .replace("\r", "|r")
-            .replace("\n", "|n")
-            .replace("[", "|[")
-            .replace("]", "|]")
+            .replace(/'/, "|'")
+            .replace(/\r/, "|r")
+            .replace(/\n/, "|n")
+            .replace(/\[/, "|[")
+            .replace(/]/, "|]")
 }
