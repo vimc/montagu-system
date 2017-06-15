@@ -30,7 +30,7 @@ function escape(text: string) {
     // JS string.replace only replaces the first occurence.
     // To replace all occurences you must use a regex with the 'g' option at the end:
     // g means "Global" and causes it to replace all matches
-    return text.replace(/|/g, "||")
+    return text.replace(/\|/g, "||")
         .replace(/'/g, "|'")
         .replace(/\r/g, "|r")
         .replace(/\n/g, "|n")
