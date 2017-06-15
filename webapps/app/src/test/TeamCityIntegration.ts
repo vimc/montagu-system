@@ -6,6 +6,7 @@ interface TestErrorInfo {
 }
 
 export function handleTeamCityEvent(event: string, testName: string, error: TestErrorInfo) {
+    testName = escape(testName)
     if (settings.teamcityServiceMessages) {
         switch (event) {
             case "before":
@@ -15,11 +16,21 @@ export function handleTeamCityEvent(event: string, testName: string, error: Test
                 console.log(`##teamcity[testFinished name='${testName}']`);
                 break;
             case "failed":
-                const details = error.details.replace("\n", " ");
-                console.log(`##teamcity[testFailed name='${testName}' message='${error.message}' details='${error.details}']`);
+                const message = escape(error.message);
+                const details = escape(error.details);
+                console.log(`##teamcity[testFailed name='${testName}' message='${message}' details='${details}']`);
                 break;
             default:
                 throw Error(`Unknown TeamCity event '${event}'`);
         }
     }
+}
+
+function escape(text: string) {
+        return text.replace("|", "||")
+            .replace("'", "|'")
+            .replace("\r", "|r")
+            .replace("\n", "|n")
+            .replace("[", "|[")
+            .replace("]", "|]")
 }
