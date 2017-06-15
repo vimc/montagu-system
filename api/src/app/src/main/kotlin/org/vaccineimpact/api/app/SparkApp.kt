@@ -35,7 +35,7 @@ class MontaguApi
 
     fun run(repositories: Repositories)
     {
-        setupSSL()
+        //setupSSL()
         setupPort()
         spk.redirect.get("/", urlBase)
         spk.before("*", ::addTrailingSlashes)
@@ -53,7 +53,7 @@ class MontaguApi
         HomeController(endpoints, controllerContext).mapEndpoints(urlBase)
     }
 
-    private fun setupSSL()
+    /*private fun setupSSL()
     {
         val path = Config["ssl.keystore.path"]
         val password = Config["ssl.keystore.password"]
@@ -66,7 +66,7 @@ class MontaguApi
             }
         }
         spark.Spark.secure(path, password, null, null)
-    }
+    }*/
 
     private fun setupPort()
     {
