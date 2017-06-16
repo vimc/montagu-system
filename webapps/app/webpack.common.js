@@ -1,6 +1,6 @@
 const path = require('path');
 
-function commonConfig(name) {
+function commonConfig(name, public_path) {
     return {
         // Enable sourcemaps for debugging webpack's output.
         devtool: "source-map",
@@ -14,6 +14,11 @@ function commonConfig(name) {
                     __dirname,
                     "src/main/shared/settings",
                     process.env.MONTAGU_PORTAL_PROFILE || "development"
+                ),
+                "appName": path.join(
+                    __dirname,
+                    "src/main/shared/settings/app",
+                    name
                 )
             }
         },
@@ -62,8 +67,7 @@ function commonConfig(name) {
                         {
                             loader: "file-loader",
                             options: {
-                                publicPath: "/",
-                                useRelativePath: false
+                                publicPath: public_path,
                             }
                         }
                     ]

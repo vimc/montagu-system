@@ -2,7 +2,7 @@ import { responsibilityStore } from "../../stores/ResponsibilityStore";
 import { ModellingGroup, Touchstone } from "../../models/Generated";
 import { connectToStores } from "../../../shared/alt";
 import * as React from "react";
-import { Link } from "simple-react-router";
+import { InternalLink } from "../../../shared/components/InternalLink";
 
 const styles = require("./NavBar.css");
 
@@ -37,7 +37,7 @@ export class NavBarComponent extends React.Component<Props, undefined> {
         return <div className={ styles.navbar }>
             { g }
             { t }
-            <Link href="/">Change</Link>
+            <InternalLink href="/">Change</InternalLink>
         </div>
     }
 }

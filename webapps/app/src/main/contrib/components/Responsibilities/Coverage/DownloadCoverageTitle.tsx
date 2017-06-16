@@ -1,8 +1,8 @@
 import * as React from "react";
 import { connectToStores } from "../../../../shared/alt";
 import { ModellingGroup, Touchstone } from "../../../models/Generated";
-import { Link } from "simple-react-router";
 import { responsibilityStore } from "../../../stores/ResponsibilityStore";
+import { InternalLink } from "../../../../shared/components/InternalLink";
 
 const headerStyles = require("../../../../shared/components/PageWithHeader/PageWithHeader.css");
 
@@ -27,7 +27,7 @@ export class DownloadCoverageTitleComponent extends React.Component<Props, undef
         if (this.props.touchstone) {
             const url = `/${this.props.modellingGroup.id}/responsibilities/${this.props.touchstone.id}/`
             return <span className={ headerStyles.titleAddition }>
-                <Link href={ url }>Return to responsibilities list</Link>
+                <InternalLink href={ url }>Return to responsibilities list</InternalLink>
             </span>;
         } else {
             return null;

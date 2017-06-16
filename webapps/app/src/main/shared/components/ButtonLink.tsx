@@ -1,5 +1,6 @@
 import * as React from "react";
 import { Link } from "simple-react-router";
+import { appSettings } from "../Settings";
 
 export class ButtonLink extends Link {
     constructor(props: any) {
@@ -15,7 +16,7 @@ export class ButtonLink extends Link {
     onClick(event: any) {
         let href = (this.refs.link as HTMLButtonElement).getAttribute("href");
         if (!this.isAbsoluteURL(href)) {
-            href = location.origin + href;
+            href = location.origin + appSettings.publicPath + href;
         }
 
         if (this.props.onClick) {
@@ -25,7 +26,7 @@ export class ButtonLink extends Link {
         if (event.isDefaultPrevented() || event.isPropagationStopped()) return
 
         if (!this.props.externalLink && !event.ctrlKey && !event.metaKey && !event.shiftKey && href.startsWith(location.origin)) {
-            event.preventDefault()
+            event.preventDefault();
             this.context.redirectTo(href, !!this.props.replace)
         }
     };

@@ -6,6 +6,7 @@ import { alt } from "../../../main/shared/alt";
 import { AdminApp, AdminAppComponent, AdminAppProps } from "../../../main/admin/components/AdminApp";
 import { AdminRouter } from "../../../main/admin/components/AdminRouter";
 import { ErrorLog } from "../../../main/shared/components/ErrorLog/ErrorLog";
+import { settings } from "../../../main/shared/Settings";
 
 describe("AdminApp", () => {
     it("can get props from stores", () => {
@@ -23,7 +24,9 @@ describe("AdminApp", () => {
 
     it("passes through loggedIn to router", () => {
         const rendered = shallow(<AdminAppComponent errors={ [] } loggedIn={ true } />);
-        expect(rendered.find(AdminRouter).props()).to.eql({ loggedIn: true });
+        expect(rendered.find(AdminRouter).props()).to.eql({
+            loggedIn: true
+        });
     });
 
     it("passes through errors to ErrorLog", () => {
