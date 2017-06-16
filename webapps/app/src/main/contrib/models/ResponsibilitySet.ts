@@ -2,7 +2,7 @@ import {
     BurdenEstimate, CoverageSet, Responsibilities, Responsibility, ResponsibilitySetStatus, ResponsibilityStatus,
     Scenario,
     Touchstone
-} from "./Generated";
+} from "../../shared/models/Generated";
 
 export class ExtendedResponsibility {
     current_estimate: BurdenEstimate | null;

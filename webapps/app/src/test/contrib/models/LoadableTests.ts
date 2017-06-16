@@ -2,7 +2,7 @@ import { expect } from "chai";
 
 import { emptyLookup, getFromLookup, makeLookup } from "../../../main/contrib/stores/Loadable";
 import { mockDisease } from "../../mocks/mockModels";
-import { Disease } from "../../../main/contrib/models/Generated";
+import { Disease } from "../../../main/shared/models/Generated";
 
 describe("Loadable", () => {
     it("can make lookup from array", () => {

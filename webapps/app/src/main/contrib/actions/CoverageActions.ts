@@ -1,5 +1,5 @@
-import { FetchActions, FetchActionsInterface } from "./FetchActions";
-import { ScenarioTouchstoneAndCoverageSets } from "../models/Generated";
+import { FetchActions, FetchActionsInterface } from "../../shared/actions/FetchActions";
+import { ScenarioTouchstoneAndCoverageSets } from "../../shared/models/Generated";
 import { alt } from "../../shared/alt";
 
 interface Actions extends FetchActionsInterface<string> {

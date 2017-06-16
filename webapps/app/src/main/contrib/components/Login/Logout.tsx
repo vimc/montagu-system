@@ -1,12 +1,9 @@
 import * as React from "react";
 import { connectToStores } from "../../../shared/alt";
-import { authActions } from "../../../shared/actions/AuthActions";
-import { ContribAuthState, contribAuthStore } from "../../stores/ContribAuthStore";
-import { InternalLink } from "../../../shared/components/InternalLink";
+import { contribAuthStore } from "../../stores/ContribAuthStore";
+import { LogoutComponent } from "../../../shared/components/Login/Logout";
 
-const style = require("./Logout.css");
-
-export class LogoutComponent extends React.Component<ContribAuthState, undefined> {
+export const ContribLogout = connectToStores(class extends LogoutComponent {
     static getStores() {
         return [ contribAuthStore ];
     }
@@ -14,20 +11,4 @@ export class LogoutComponent extends React.Component<ContribAuthState, undefined
     static getPropsFromStores() {
         return contribAuthStore.getState();
     }
-
-    logout(e: React.MouseEvent<HTMLAnchorElement>) {
-        authActions.logOut();
-    }
-
-    render() {
-        if (this.props.loggedIn) {
-            return <div className={ style.logout }>
-                <div>Logged in as { this.props.username } | <InternalLink href="/" onClick={ this.logout }>Log out</InternalLink></div>
-            </div>;
-        } else {
-            return null;
-        }
-    }
-}
-
-export const Logout = connectToStores(LogoutComponent);
+});

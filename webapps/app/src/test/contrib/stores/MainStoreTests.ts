@@ -6,7 +6,7 @@ import { mockDisease, mockModellingGroup } from "../../mocks/mockModels";
 import { mainStore } from "../../../main/contrib/stores/MainStore";
 import { diseaseActions } from "../../../main/contrib/actions/DiseaseActions";
 import { responsibilityStore } from "../../../main/contrib/stores/ResponsibilityStore";
-import { Disease, ModellingGroup } from "../../../main/contrib/models/Generated";
+import { Disease, ModellingGroup } from "../../../main/shared/models/Generated";
 import { emptyLookup } from "../../../main/contrib/stores/Loadable";
 import { modellingGroupActions } from "../../../main/contrib/actions/ModellingGroupActions";
 import { checkAsync } from "../../testHelpers";

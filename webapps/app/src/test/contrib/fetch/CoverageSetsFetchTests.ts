@@ -5,7 +5,7 @@ import {
 import { FetchHelper } from "../../shared/fetch/helpers";
 import { responsibilityStore } from "../../../main/contrib/stores/ResponsibilityStore";
 import { alt } from "../../../main/shared/alt";
-import { ScenarioTouchstoneAndCoverageSets } from "../../../main/contrib/models/Generated";
+import { ScenarioTouchstoneAndCoverageSets } from "../../../main/shared/models/Generated";
 
 describe("ResponsibilityStore.fetchCoverageSets", () => {
     const group = mockModellingGroup({ id: "group-id" });

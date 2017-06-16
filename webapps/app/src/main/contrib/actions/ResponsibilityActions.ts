@@ -1,6 +1,6 @@
 import alt from "../../shared/alt";
-import { FetchActions, FetchActionsInterface } from "./FetchActions";
-import { CoverageSet, Responsibilities, ScenarioTouchstoneAndCoverageSets, Touchstone } from "../models/Generated";
+import { FetchActions, FetchActionsInterface } from "../../shared/actions/FetchActions";
+import { CoverageSet, Responsibilities, ScenarioTouchstoneAndCoverageSets, Touchstone } from "../../shared/models/Generated";
 
 interface Actions extends FetchActionsInterface<Responsibilities> {
     filterByDisease(diseaseId: string): string;

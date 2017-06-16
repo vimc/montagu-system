@@ -1,6 +1,6 @@
 import * as React from "react";
-import { Touchstone } from "../../models/Generated";
-import { RemoteContent } from "../../stores/RemoteContent";
+import { Touchstone } from "../../../shared/models/Generated";
+import { RemoteContent } from "../../../shared/models/RemoteContent";
 import { responsibilityStore } from "../../stores/ResponsibilityStore";
 import { TouchstoneLink, TouchstoneLinkProps } from "./TouchstoneLink";
 

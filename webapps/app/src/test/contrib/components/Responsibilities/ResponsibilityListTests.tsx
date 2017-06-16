@@ -6,7 +6,7 @@ import { mockModellingGroup, mockResponsibility, mockTouchstone } from "../../..
 import { ResponsibilityListComponent, ResponsibilityListComponentProps } from "../../../../main/contrib/components/Responsibilities/Overview/ResponsibilityList";
 import { ResponsibilityComponent } from "../../../../main/contrib/components/Responsibilities/Overview/ResponsibilityComponent";
 import { DiseaseFilter } from "../../../../main/contrib/components/Responsibilities/Overview/DiseaseFilter";
-import { Responsibility } from "../../../../main/contrib/models/Generated";
+import { Responsibility } from "../../../../main/shared/models/Generated";
 import { ExtendedResponsibilitySet } from "../../../../main/contrib/models/ResponsibilitySet";
 
 function makeProps(responsibilities: Array<Responsibility>,

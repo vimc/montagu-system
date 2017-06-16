@@ -1,8 +1,11 @@
 import { RouteMap, Router } from "simple-react-router";
+import { appSettings } from "../../shared/Settings";
+
+// Pages
 import { MainMenu } from "./MainMenu/MainMenu";
 import { AdminLoginPage } from "./AdminLoginPage";
 import { AdminNoRouteFoundPage } from "./AdminNoRouteFoundPage";
-import { appSettings } from "../../shared/Settings";
+import { ViewAllModellingGroupsPage } from "./ModellingGroups/List/ViewAllModellingGroupsPage";
 
 interface RouterProps {
     loggedIn: boolean;
@@ -16,6 +19,7 @@ export class AdminRouter extends Router<RouterProps> {
 
         if (props.loggedIn) {
             map('/', MainMenu);
+            map('/modelling-groups/', ViewAllModellingGroupsPage);
             map('*', AdminNoRouteFoundPage);
         } else {
             map('*', AdminLoginPage);

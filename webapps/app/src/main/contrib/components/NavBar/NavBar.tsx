@@ -1,5 +1,5 @@
 import { responsibilityStore } from "../../stores/ResponsibilityStore";
-import { ModellingGroup, Touchstone } from "../../models/Generated";
+import { ModellingGroup, Touchstone } from "../../../shared/models/Generated";
 import { connectToStores } from "../../../shared/alt";
 import * as React from "react";
 import { InternalLink } from "../../../shared/components/InternalLink";

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { CoverageSet } from "../../../models/Generated";
+import { CoverageSet } from "../../../../shared/models/Generated";
 const styles = require("../Responsibilities.css");
 
 export interface CoverageSetComponentProps {

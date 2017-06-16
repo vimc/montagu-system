@@ -1,6 +1,6 @@
-import { Disease } from "../models/Generated";
+import { Disease } from "../../shared/models/Generated";
 import { diseaseActions } from "../actions/DiseaseActions";
-import { Source } from './Source';
+import { Source } from '../../shared/sources/Source';
 import SourceModel = AltJS.SourceModel;
 import { MainState } from "../stores/MainStore";
 
