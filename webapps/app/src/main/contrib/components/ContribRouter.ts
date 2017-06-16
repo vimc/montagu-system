@@ -6,6 +6,7 @@ import { LoadingPage } from "./LoadingPage";
 import { DownloadCoveragePage } from "./Responsibilities/Coverage/DownloadCoveragePage";
 import { ContribLoginPage } from "./Login/ContribLoginPage";
 import { ContribNoRouteFoundPage } from "./ContribNoRouteFoundPage";
+import { appSettings } from "../../shared/Settings";
 
 interface RoutingProperties {
     loggedIn: boolean;
@@ -13,8 +14,12 @@ interface RoutingProperties {
 }
 
 export class ContribRouter extends Router<RoutingProperties> {
-    getRoutes(map: RouteMap, props: RoutingProperties) {
-        const { loggedIn, loaded } = props;
+    getRoutes(_map: RouteMap, props: RoutingProperties) {
+        const { loggedIn, loaded }= props;
+        const map: RouteMap = function (urlFragment: string, component: ComponentConstructor<any, any>) {
+            _map(appSettings.publicPath + urlFragment, component);
+        };
+
         if (loggedIn) {
             if (loaded) {
                 map('/', ChooseGroupAndTouchstonePage);

@@ -7,6 +7,7 @@ import { expectOneAction } from "../../actionHelpers";
 
 import { initialAuthState } from "../../../main/contrib/stores/ContribAuthStore";
 import { LogoutComponent } from "../../../main/contrib/components/Login/Logout";
+import { InternalLink } from "../../../main/shared/components/InternalLink";
 
 describe("LogoutComponent", () => {
     const sandbox = new Sandbox();
@@ -26,7 +27,7 @@ describe("LogoutComponent", () => {
         });
         const rendered = shallow(<LogoutComponent {...state} />);
         expect(rendered.text()).to.contain("Logged in as test.user");
-        expect(rendered.find(Link)).to.have.length(1);
+        expect(rendered.find(InternalLink)).to.have.length(1);
     });
 
     it("clicking log out emits logOut event", () => {
@@ -36,7 +37,7 @@ describe("LogoutComponent", () => {
         });
         const rendered = shallow(<LogoutComponent {...state} />);
         const spy = sandbox.dispatchSpy();
-        rendered.find(Link).simulate("click");
+        rendered.find(InternalLink).simulate("click");
         expectOneAction(spy, { action: "AuthActions.logOut" });
     });
 });

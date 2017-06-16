@@ -1,5 +1,6 @@
 import * as React from "react";
-import { Link, Location } from "simple-react-router";
+import { Location } from "simple-react-router";
+import { InternalLink } from "../InternalLink";
 
 const logo = require("./logo.png");
 const styles = require('./PageWithHeader.css');
@@ -16,7 +17,7 @@ export abstract class PageWithHeader<TLocationProps>
             <header className={ styles.header }>
                 <img src={ logo } height="80" alt="VIMC" />
                 <div className={ styles.siteTitle }>
-                    <Link href="/">{ this.siteTitle() }</Link>
+                    <InternalLink href="/">{ this.siteTitle() }</InternalLink>
                 </div>
                 { this.header() }
             </header>

@@ -4,7 +4,7 @@ import { expect } from "chai";
 import { mockModellingGroup, mockTouchstone } from "../../../mocks/mockModels";
 
 import { DownloadCoverageTitleComponent } from "../../../../main/contrib/components/Responsibilities/Coverage/DownloadCoverageTitle";
-import { Link } from "simple-react-router";
+import { InternalLink } from "../../../../main/shared/components/InternalLink";
 
 describe("DownloadCoverageTitleComponent", () => {
     it("renders title", () => {
@@ -20,7 +20,7 @@ describe("DownloadCoverageTitleComponent", () => {
         const rendered = shallow(<DownloadCoverageTitleComponent
             touchstone={ touchstone }
             modellingGroup={ group } />)
-        const link = rendered.find(Link);
+        const link = rendered.find(InternalLink);
         expect(link.prop("href")).to.equal("/group-id/responsibilities/some-id/");
     });
 });

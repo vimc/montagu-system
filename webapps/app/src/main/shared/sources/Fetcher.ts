@@ -10,7 +10,7 @@ export interface FetchOptions {
 
 class Fetcher {
     buildURL(urlFragment: string): string {
-        return settings.baseUrl + urlFragment;
+        return settings.apiUrl + urlFragment;
     }
 
     fetch(urlFragment: string, options?: FetchOptions, includeToken: boolean = true): Promise<Response> {
