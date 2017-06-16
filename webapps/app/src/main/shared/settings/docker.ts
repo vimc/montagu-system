@@ -1,5 +1,5 @@
 export const settings: Settings = {
-    apiUrl: "https://localhost/api/v1",
+    apiUrl: () => "https://" + window.location.host + "/api/v1",
     supportContact: "t.garske@imperial.ac.uk",
     teamcityServiceMessages: false,
     admin: {

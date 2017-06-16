@@ -1,5 +1,5 @@
 interface Settings {
-    apiUrl: string;
+    apiUrl: () => string;
     supportContact: string;
     teamcityServiceMessages: boolean;
     admin: AdminSettings;
