@@ -1,6 +1,15 @@
 #!/usr/bin/env bash
 set -e
 
+if [[ $# -eq 0 ]] ; then
+    echo "Please provide a port to listen on"
+    exit -1
+fi
+
+port=$1
+echo "Will listen on port $port"
+sed "s/_PORT_/$port/g" /etc/nginx/conf.d/montagu.conf.template > /etc/nginx/conf.d/montagu.conf
+
 root="/etc/montagu/proxy"
 mkdir -p $root
 
