@@ -1,6 +1,6 @@
 import alt from "../../shared/alt";
-import { FetchActions, FetchActionsInterface } from "./FetchActions";
-import { Touchstone } from "../models/Generated";
+import { FetchActions, FetchActionsInterface } from "../../shared/actions/FetchActions";
+import { Touchstone } from "../../shared/models/Generated";
 
 export interface Actions extends FetchActionsInterface<Touchstone[]> {
     setCurrentTouchstone(touchstoneId: string): string;

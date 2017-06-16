@@ -1,5 +1,5 @@
 import * as React from "react";
-import { RemoteContent } from "../../stores/RemoteContent";
+import { RemoteContent } from "../../../shared/models/RemoteContent";
 
 const spinner = require("./spinner.gif");
 const messageStyles = require("../../../shared/styles/messages.css");

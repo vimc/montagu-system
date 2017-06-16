@@ -1,4 +1,4 @@
-import * as models from "../../main/contrib/models/Generated";
+import * as models from "../../main/shared/models/Generated";
 import { ExtendedResponsibility, ExtendedResponsibilitySet } from "../../main/contrib/models/ResponsibilitySet";
 
 let counter = 0;

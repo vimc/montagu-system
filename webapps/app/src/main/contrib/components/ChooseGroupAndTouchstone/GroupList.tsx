@@ -1,6 +1,6 @@
 import * as React from "react";
-import { ModellingGroup } from "../../models/Generated";
-import { RemoteContent } from "../../stores/RemoteContent";
+import { ModellingGroup } from "../../../shared/models/Generated";
+import { RemoteContent } from "../../../shared/models/RemoteContent";
 import { responsibilityStore } from "../../stores/ResponsibilityStore";
 import { contribAuthStore } from "../../stores/ContribAuthStore";
 import { GroupLink, GroupLinkProps } from "./GroupLink";

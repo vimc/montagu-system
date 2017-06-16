@@ -2,7 +2,7 @@ import { mockDisease, mockModellingGroup } from "../../mocks/mockModels";
 import { FetchHelper } from "../../shared/fetch/helpers";
 
 import { mainStore } from "../../../main/contrib/stores/MainStore";
-import { Disease, ModellingGroup } from "../../../main/contrib/models/Generated";
+import { Disease, ModellingGroup } from "../../../main/shared/models/Generated";
 
 describe("MainStore.fetchDiseases", () => {
     new FetchHelper<Disease[]>({

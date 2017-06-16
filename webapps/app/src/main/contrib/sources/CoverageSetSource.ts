@@ -1,4 +1,4 @@
-import { ScenarioTouchstoneAndCoverageSets } from "../models/Generated";
+import { ScenarioTouchstoneAndCoverageSets } from "../../shared/models/Generated";
 import { coverageSetActions } from "../actions/CoverageSetActions";
 import { CoverageSource } from "./CoverageSource";
 import SourceModel = AltJS.SourceModel;

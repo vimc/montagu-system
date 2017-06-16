@@ -1,7 +1,7 @@
 import * as React from "react";
 import { connectToStores } from "../../../../shared/alt";
-import { CoverageSet, Scenario, Touchstone } from "../../../models/Generated";
-import { RemoteContent } from "../../../stores/RemoteContent";
+import { CoverageSet, Scenario, Touchstone } from "../../../../shared/models/Generated";
+import { RemoteContent } from "../../../../shared/models/RemoteContent";
 import { RemoteContentComponent } from "../../RemoteContentComponent/RemoteContentComponent";
 import { CoverageSetList } from "./CoverageSetList";
 import { responsibilityStore } from "../../../stores/ResponsibilityStore";

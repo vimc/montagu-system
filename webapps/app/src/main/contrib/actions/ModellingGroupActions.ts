@@ -1,6 +1,6 @@
 import alt from "../../shared/alt";
-import { ModellingGroup } from "../models/Generated";
-import { FetchActions, FetchActionsInterface } from "./FetchActions";
+import { ModellingGroup } from "../../shared/models/Generated";
+import { FetchActions, FetchActionsInterface } from "../../shared/actions/FetchActions";
 
 interface Actions extends FetchActionsInterface<ModellingGroup[]> {
     setCurrentModellingGroup(id: string): string;

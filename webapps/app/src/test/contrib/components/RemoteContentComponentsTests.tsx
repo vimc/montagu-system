@@ -2,7 +2,7 @@ import * as React from "react";
 import { expect } from "chai";
 import { shallow, ShallowWrapper } from "enzyme";
 
-import { RemoteContent } from "../../../main/contrib/stores/RemoteContent";
+import { RemoteContent } from "../../../main/shared/models/RemoteContent";
 import { RemoteContentComponent } from "../../../main/contrib/components/RemoteContentComponent/RemoteContentComponent";
 
 const spinner = require("../../../main/contrib/components/RemoteContentComponent/spinner.gif");

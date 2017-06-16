@@ -33,7 +33,7 @@ project(':generate') {
     }
 
     run {
-        args (rootDir.getPath() + '/../main/contrib/models/Generated.ts')
+        args (rootDir.getPath() + '/../main/shared/models/Generated.ts')
     }
 }
 

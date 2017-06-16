@@ -1,6 +1,6 @@
 import * as React from "react";
 import { responsibilityStore } from "../../../stores/ResponsibilityStore";
-import { Touchstone } from "../../../models/Generated";
+import { Touchstone } from "../../../../shared/models/Generated";
 import { connectToStores } from "../../../../shared/alt";
 
 const headerStyles = require("../../../../shared/components/PageWithHeader/PageWithHeader.css");

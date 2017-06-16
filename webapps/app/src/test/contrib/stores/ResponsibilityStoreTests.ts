@@ -18,7 +18,7 @@ import { coverageSetActions } from "../../../main/contrib/actions/CoverageSetAct
 import { coverageTokenActions } from "../../../main/contrib/actions/CoverageActions";
 import { modellingGroupActions } from "../../../main/contrib/actions/ModellingGroupActions";
 import { makeLookup } from "../../../main/contrib/stores/Loadable";
-import { ModellingGroup } from "../../../main/contrib/models/Generated";
+import { ModellingGroup } from "../../../main/shared/models/Generated";
 const jwt = require("jsonwebtoken");
 
 describe("ResponsibilityStore", () => {

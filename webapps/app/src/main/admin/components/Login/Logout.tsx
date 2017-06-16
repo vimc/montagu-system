@@ -1,14 +1,14 @@
 import * as React from "react";
 import { connectToStores } from "../../../shared/alt";
-import { contribAuthStore } from "../../stores/ContribAuthStore";
 import { LogoutComponent } from "../../../shared/components/Login/Logout";
+import { adminAuthStore } from "../../stores/AdminAuthStore";
 
-export const ContribLogout = connectToStores(class extends LogoutComponent {
+export const AdminLogout = connectToStores(class extends LogoutComponent {
     static getStores() {
-        return [ contribAuthStore ];
+        return [ adminAuthStore ];
     }
 
     static getPropsFromStores() {
-        return contribAuthStore.getState();
+        return adminAuthStore.getState();
     }
 });

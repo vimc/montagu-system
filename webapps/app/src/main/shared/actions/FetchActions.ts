@@ -1,4 +1,4 @@
-import { AbstractActions } from "../../shared/actions/AbstractActions";
+import { AbstractActions } from "./AbstractActions";
 import { Result } from "../models/Generated";
 
 export interface FetchActionsInterface<T> {

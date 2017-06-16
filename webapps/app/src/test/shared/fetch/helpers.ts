@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import { Sandbox } from "../../Sandbox";
-import { ErrorInfo, Result } from "../../../main/contrib/models/Generated";
+import { ErrorInfo, Result } from "../../../main/shared/models/Generated";
 import * as actionHelpers from "../../actionHelpers";
 import { mockFetcherResponse, mockResult } from "../../mocks/mockRemote";
 import { getActions } from "../../actionHelpers";

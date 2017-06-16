@@ -1,4 +1,4 @@
-import { Touchstone } from "../../models/Generated";
+import { Touchstone } from "../../../shared/models/Generated";
 import * as React from "react";
 import { touchstoneActions } from "../../actions/TouchstoneActions";
 

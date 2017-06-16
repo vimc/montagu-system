@@ -1,4 +1,4 @@
-import { ModellingGroup, Touchstone } from "../../models/Generated";
+import { ModellingGroup, Touchstone } from "../../../shared/models/Generated";
 import * as React from "react";
 import { touchstoneActions } from "../../actions/TouchstoneActions";
 import { responsibilityActions } from "../../actions/ResponsibilityActions";

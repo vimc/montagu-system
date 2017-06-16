@@ -6,7 +6,7 @@ import { Link } from "simple-react-router";
 import { TouchstoneLink } from "../../../../main/contrib/components/ChooseGroupAndTouchstone/TouchstoneLink";
 import { Sandbox } from "../../../Sandbox";
 import { expectOneAction } from "../../../actionHelpers";
-import { Touchstone } from "../../../../main/contrib/models/Generated";
+import { Touchstone } from "../../../../main/shared/models/Generated";
 import { shallow } from "enzyme";
 
 const chooseStyles = require("../../../../main/contrib/components/ChooseGroupAndTouchstone/Choose.css");

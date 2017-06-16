@@ -1,10 +1,10 @@
 import * as React from "react";
-import { ModellingGroup, Touchstone } from "../../models/Generated";
+import { ModellingGroup, Touchstone } from "../../../shared/models/Generated";
 import { responsibilityStore } from "../../stores/ResponsibilityStore";
 import { contribAuthStore } from "../../stores/ContribAuthStore";
 import { connectToStores } from "../../../shared/alt";
 import { TouchstoneList } from "./TouchstoneList";
-import { RemoteContent } from "../../stores/RemoteContent";
+import { RemoteContent } from "../../../shared/models/RemoteContent";
 import { RemoteContentComponent } from "../RemoteContentComponent/RemoteContentComponent";
 import { GroupList } from "./GroupList";
 import { ButtonLink } from "../../../shared/components/ButtonLink";

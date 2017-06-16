@@ -1,21 +1,11 @@
 import * as React from "react";
-import { connectToStores } from "../../../shared/alt";
 import { authActions } from "../../../shared/actions/AuthActions";
 import { Link } from "simple-react-router";
-import { ContribAuthState, contribAuthStore } from "../../stores/ContribAuthStore";
 import { AuthStateBase } from "../../stores/AuthStoreBase";
 
 const style = require("./Logout.css");
 
 export abstract class LogoutComponent extends React.Component<AuthStateBase, undefined> {
-    static getStores() {
-        return [ contribAuthStore ];
-    }
-
-    static getPropsFromStores() {
-        return contribAuthStore.getState();
-    }
-
     logout(e: React.MouseEvent<HTMLButtonElement>) {
         authActions.logOut();
     }
@@ -30,5 +20,3 @@ export abstract class LogoutComponent extends React.Component<AuthStateBase, und
         }
     }
 }
-
-export const Logout = connectToStores(LogoutComponent);

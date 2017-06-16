@@ -1,5 +1,5 @@
 import { Location } from "simple-react-router";
-import * as models from "../../main/contrib/models/Generated";
+import * as models from "../../main/shared/models/Generated";
 import { alt } from "../../main/shared/alt";
 import { makeLookup } from "../../main/contrib/stores/Loadable";
 

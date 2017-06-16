@@ -1,5 +1,5 @@
-import { Source } from "./Source";
-import { Touchstone } from "../models/Generated";
+import { Source } from "../../shared/sources/Source";
+import { Touchstone } from "../../shared/models/Generated";
 import { touchstoneActions } from "../actions/TouchstoneActions";
 import SourceModel = AltJS.SourceModel;
 import { ResponsibilityState } from "../stores/ResponsibilityStore";

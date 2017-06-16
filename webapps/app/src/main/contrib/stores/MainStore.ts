@@ -1,10 +1,10 @@
 import alt from "../../shared/alt";
 import * as AltJS from "alt";
 import { AbstractStore } from "../../shared/stores/AbstractStore";
-import { Disease, ModellingGroup } from "../models/Generated";
+import { Disease, ModellingGroup } from "../../shared/models/Generated";
 import { emptyLookup, getFromLookup, ILoadable, makeLookup } from "./Loadable";
 import { diseaseActions } from "../actions/DiseaseActions";
-import { RemoteContent } from "./RemoteContent";
+import { RemoteContent } from "../../shared/models/RemoteContent";
 import { responsibilityStore } from "./ResponsibilityStore";
 import { modellingGroupActions } from "../actions/ModellingGroupActions";
 import { DiseaseSource } from "../sources/DiseaseSource";

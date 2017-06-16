@@ -1,9 +1,9 @@
 import alt from "../../shared/alt";
 import * as AltJS from "alt";
-import { RemoteContent } from "./RemoteContent";
+import { RemoteContent } from "../../shared/models/RemoteContent";
 import { responsibilityActions } from "../actions/ResponsibilityActions";
 import { AbstractStore } from "../../shared/stores/AbstractStore";
-import { ModellingGroup, Responsibilities, ScenarioTouchstoneAndCoverageSets, Touchstone } from "../models/Generated";
+import { ModellingGroup, Responsibilities, ScenarioTouchstoneAndCoverageSets, Touchstone } from "../../shared/models/Generated";
 import { touchstoneActions } from "../actions/TouchstoneActions";
 import { ExtendedResponsibility, ExtendedResponsibilitySet } from "../models/ResponsibilitySet";
 import { coverageSetActions } from "../actions/CoverageSetActions";

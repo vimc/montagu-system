@@ -1,6 +1,6 @@
 import * as React from "react";
 import { connectToStores } from "../../../../shared/alt";
-import { ModellingGroup, Touchstone } from "../../../models/Generated";
+import { ModellingGroup, Touchstone } from "../../../../shared/models/Generated";
 import { responsibilityStore } from "../../../stores/ResponsibilityStore";
 import { InternalLink } from "../../../../shared/components/InternalLink";
 

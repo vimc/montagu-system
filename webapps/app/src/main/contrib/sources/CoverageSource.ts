@@ -1,5 +1,5 @@
 import { ResponsibilityState } from "../stores/ResponsibilityStore";
-import { Source } from "./Source";
+import { Source } from "../../shared/sources/Source";
 
 export abstract class CoverageSource<T> extends Source<T, ResponsibilityState> {
     protected baseURL(state: ResponsibilityState): string {

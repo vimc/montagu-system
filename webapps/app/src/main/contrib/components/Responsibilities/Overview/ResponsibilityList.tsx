@@ -3,9 +3,9 @@ import { RemoteContentComponent } from "../../RemoteContentComponent/RemoteConte
 import { DiseaseFilter } from "./DiseaseFilter";
 import { ResponsibilityComponent } from "./ResponsibilityComponent";
 import { responsibilityStore } from "../../../stores/ResponsibilityStore";
-import { ModellingGroup, Responsibility } from "../../../models/Generated";
+import { ModellingGroup, Responsibility } from "../../../../shared/models/Generated";
 import { connectToStores } from "../../../../shared/alt";
-import { RemoteContent } from "../../../stores/RemoteContent";
+import { RemoteContent } from "../../../../shared/models/RemoteContent";
 import { IExtendedResponsibilitySet } from "../../../models/ResponsibilitySet";
 
 const styles = require("../Responsibilities.css");
