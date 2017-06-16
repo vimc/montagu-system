@@ -22,4 +22,4 @@ do
 done
 
 echo "Certificate files detected. Running nginx"
-nginx -g "daemon off;"
+exec nginx -g "daemon off;"
