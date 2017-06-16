@@ -36,6 +36,7 @@ export class GroupStore extends AbstractStore<GroupState, Interface> {
 
     handleFetch() {
         this.ready = false;
+        this.groups = null;
     }
     handleUpdate(groups: ModellingGroup[]) {
         this.ready = true;
