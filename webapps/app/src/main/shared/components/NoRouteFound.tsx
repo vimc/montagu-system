@@ -1,6 +1,6 @@
 import * as React from "react";
 import { settings } from "../Settings";
-import { Link } from "simple-react-router";
+import { InternalLink } from "./InternalLink";
 
 const styles = require("../styles/common.css");
 
@@ -17,7 +17,7 @@ export class NoRouteFound {
                 Here are some options:
                 <ul>
                     <li>Click back in your browser to return to the previous page</li>
-                    <li>Return to <Link href="/">the main menu</Link></li>
+                    <li>Return to <InternalLink href="/">the main menu</InternalLink></li>
                     <li>If you are sure this page should exist, please <a href={ supportEmail }>let us know</a></li>
                 </ul>
             </div>

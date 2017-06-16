@@ -1,5 +1,11 @@
 export const settings: Settings = {
-    baseUrl: "https://api:8080/v1",
+    apiUrl: () => "https://" + window.location.host + "/api/v1",
     supportContact: "t.garske@imperial.ac.uk",
-    teamcityServiceMessages: false
+    teamcityServiceMessages: false,
+    admin: {
+        publicPath: "/admin"
+    },
+    contrib: {
+        publicPath: "/contribution"
+    }
 };

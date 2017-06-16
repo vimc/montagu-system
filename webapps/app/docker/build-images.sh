@@ -11,8 +11,11 @@ echo "Beginning webapp build with:"
 echo "Branch: $git_branch"
 echo "Commit hash: $git_id"
 
-webpack
+export MONTAGU_PORTAL_PROFILE=teamcity
 npm run test
+
+export MONTAGU_PORTAL_PROFILE=docker
+webpack
 
 echo "Building contribution portal image"
 docker build -f docker/run.dockerfile \

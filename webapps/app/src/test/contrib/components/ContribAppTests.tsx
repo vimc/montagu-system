@@ -6,6 +6,7 @@ import { ErrorLog } from "../../../main/shared/components/ErrorLog/ErrorLog";
 import { alt } from "../../../main/shared/alt";
 import { ContribAppComponent } from "../../../main/contrib/components/ContribApp";
 import { ContribRouter } from "../../../main/contrib/components/ContribRouter";
+import { settings } from "../../../main/shared/Settings";
 
 describe("ContribApp", () => {
     it("pulls properties from stores", () => {
