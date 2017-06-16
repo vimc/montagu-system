@@ -51,7 +51,7 @@ RUN npm install
 
 # Generate Typescript models from montagu-webmodels
 COPY ./src/webmodels/ src/webmodels
-RUN mkdir -p src/main/contrib/models
+RUN mkdir -p src/main/shared/models
 RUN npm run generate-models
 
 # Main build starts here
