@@ -4,7 +4,7 @@ import org.pac4j.core.profile.CommonProfile
 import org.pac4j.jwt.config.signature.RSASignatureConfiguration
 import org.pac4j.jwt.profile.JwtGenerator
 import org.vaccineimpact.api.db.Config
-import org.vaccineimpact.api.models.User
+import org.vaccineimpact.api.models.permissions.User
 import java.security.KeyPair
 import java.security.KeyPairGenerator
 import java.security.SecureRandom

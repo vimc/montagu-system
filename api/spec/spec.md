@@ -1126,7 +1126,8 @@ Schema: [`ModellingGroupDetails.schema.json`](ModellingGroupDetails.schema.json)
                 "citation": "Garske T, Van Kerkhove MD, Yactayo S, Ronveaux O, Lewis RF, Staples JE, Perea W, Ferguson NMet al., 2014, Yellow Fever in Africa: Estimating the Burden of Disease and Impact of Mass Vaccination from Outbreak and Serological Data, PLOS MEDICINE, Vol: 11, ISSN: 1549-1676",
                 "modelling_group": "IC-YellowFever"
             }
-        ]
+        ],
+        "admins": [ "john.smith" ]
     }
 
 ## POST /modelling-groups/

@@ -8,7 +8,7 @@ import org.pac4j.core.profile.CommonProfile
 import org.pac4j.core.util.CommonHelper
 import org.vaccineimpact.api.app.repositories.jooq.JooqUserRepository
 import org.vaccineimpact.api.app.security.USER_OBJECT
-import org.vaccineimpact.api.models.User
+import org.vaccineimpact.api.models.permissions.User
 import org.vaccineimpact.api.security.UserHelper
 
 class DatabasePasswordAuthenticator : Authenticator<UsernamePasswordCredentials>
