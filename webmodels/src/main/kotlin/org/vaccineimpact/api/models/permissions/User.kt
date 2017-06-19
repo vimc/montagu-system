@@ -1,6 +1,5 @@
-package org.vaccineimpact.api.models
+package org.vaccineimpact.api.models.permissions
 
-import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import java.sql.Timestamp
 
 typealias Username = String
