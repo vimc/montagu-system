@@ -3,6 +3,8 @@ package org.vaccineimpact.api.models
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import java.sql.Timestamp
 
+typealias Username = String
+
 data class User(
         val properties: UserProperties,
         val roles: List<ReifiedRole>,
