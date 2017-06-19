@@ -4,4 +4,6 @@ dependencies {
     compile "org.jooq:jooq-meta:3.9.1"
 
     compile project(':databaseInterface')
+    compile project(':models')
+    compile project(':security')
 }

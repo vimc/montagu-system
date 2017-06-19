@@ -6,7 +6,10 @@ import org.junit.Test
 import org.vaccineimpact.api.blackboxTests.helpers.validate
 import org.vaccineimpact.api.db.direct.addGroup
 import org.vaccineimpact.api.db.direct.addModel
+import org.vaccineimpact.api.db.direct.addUserWithRoles
+import org.vaccineimpact.api.models.Scope
 import org.vaccineimpact.api.models.permissions.PermissionSet
+import org.vaccineimpact.api.models.permissions.ReifiedRole
 import org.vaccineimpact.api.test_helpers.DatabaseTest
 
 class ModellingGroupTests : DatabaseTest()
@@ -34,6 +37,7 @@ class ModellingGroupTests : DatabaseTest()
             it.addGroup("group", "group description")
             it.addModel("a", "group", "description A", "citation A")
             it.addModel("b", "group", "description B", "citation B")
+            it.addUserWithRoles("group.admin", ReifiedRole("member", Scope.Specific("modelling-group", "group")))
         } requiringPermissions {
             PermissionSet("*/modelling-groups.read", "*/models.read")
         } andCheck {
@@ -53,7 +57,8 @@ class ModellingGroupTests : DatabaseTest()
                                     "description" to "description B",
                                     "citation" to "citation B"
                             )
-                    )
+                    ),
+                    "admins" to array("group.admin")
             )})
         }
     }

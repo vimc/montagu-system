@@ -2,13 +2,13 @@ package org.vaccineimpact.api.app.repositories.jooq
 
 import org.jooq.Record1
 import org.jooq.SelectConditionStep
-import org.vaccineimpact.api.app.serialization.SplitData
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
 import org.vaccineimpact.api.app.filters.whereMatchesFilter
 import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.ScenarioRepository
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
+import org.vaccineimpact.api.app.serialization.SplitData
 import org.vaccineimpact.api.db.Tables.*
 import org.vaccineimpact.api.db.fetchInto
 import org.vaccineimpact.api.db.fieldsAsList
@@ -34,6 +34,16 @@ class JooqModellingGroupRepository(
 
     override fun getModellingGroup(id: String): ModellingGroup
     {
+        // This is a little confusing.
+        // The modelling_group table has a self-referential foreign key called 'current'.
+        // If the modelling group's ID need to change (e.g. the group moves to another
+        // institution) we insertInto a new row with the new ID. The old row remains, and
+        // has current set to point at the new ID. If we change the ID again, we update
+        // all the old rows to point at the most recent one.
+
+        // So this join says: Get me the group with the specified ID, but if current is
+        // not null, this must be an old row so join current to ID and get the row it
+        // points at instead.
         val t1 = MODELLING_GROUP.`as`("t1")
         val t2 = MODELLING_GROUP.`as`("t2")
         val record = dsl.select(t1.CURRENT, t1.ID, t1.DESCRIPTION, t2.ID, t2.DESCRIPTION)
@@ -58,16 +68,23 @@ class JooqModellingGroupRepository(
         }
     }
 
-    override fun getModellingGroupDetails(id: String): ModellingGroupDetails
+    override fun getModellingGroupDetails(groupId: String): ModellingGroupDetails
     {
-        val group = getModellingGroup(id)
+        val group = getModellingGroup(groupId)
         val models = dsl.select(MODEL.fieldsAsList())
                 .from(MODEL)
                 .where(MODEL.CURRENT.isNull)
                 .and(MODEL.MODELLING_GROUP.eq(group.id))
                 .fetch()
                 .map { ResearchModel(it[MODEL.ID], it[MODEL.DESCRIPTION], it[MODEL.CITATION], group.id) }
-        return ModellingGroupDetails(group.id, group.description, models)
+        val users = dsl.select(APP_USER.USERNAME)
+                .fromJoinPath(APP_USER, USER_ROLE, ROLE)
+                .where(ROLE.NAME.eq("member"))
+                .and(ROLE.SCOPE_PREFIX.eq("modelling-group"))
+                .and(USER_ROLE.SCOPE_ID.eq(group.id))
+                .fetch()
+                .map { it[APP_USER.USERNAME] }
+        return ModellingGroupDetails(group.id, group.description, models, users)
     }
 
     override fun getResponsibilities(groupId: String, touchstoneId: String,

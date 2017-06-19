@@ -4,10 +4,10 @@ import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Before
 import org.junit.Test
-import org.vaccineimpact.api.models.ReifiedRole
+import org.vaccineimpact.api.models.permissions.ReifiedRole
 import org.vaccineimpact.api.models.Scope
-import org.vaccineimpact.api.models.User
-import org.vaccineimpact.api.models.UserProperties
+import org.vaccineimpact.api.models.permissions.User
+import org.vaccineimpact.api.models.permissions.UserProperties
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import org.vaccineimpact.api.security.MontaguTokenAuthenticator
 import org.vaccineimpact.api.security.WebTokenHelper

@@ -5,9 +5,12 @@ import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
 import org.vaccineimpact.api.db.direct.addGroup
 import org.vaccineimpact.api.db.direct.addModel
+import org.vaccineimpact.api.db.direct.addUserWithRoles
 import org.vaccineimpact.api.models.ModellingGroup
 import org.vaccineimpact.api.models.ModellingGroupDetails
 import org.vaccineimpact.api.models.ResearchModel
+import org.vaccineimpact.api.models.Scope
+import org.vaccineimpact.api.models.permissions.ReifiedRole
 
 class GetModellingGroupTests : ModellingGroupRepositoryTests()
 {
@@ -87,13 +90,32 @@ class GetModellingGroupTests : ModellingGroupRepositoryTests()
         val expected = ModellingGroupDetails("new-id", "description", listOf(
                 ResearchModel("a2", "description A2", "citation A2", modellingGroup = "new-id"),
                 ResearchModel("b", "description B", "citation B", modellingGroup = "new-id")
-        ))
+        ), emptyList())
         given {
             it.addGroup("new-id", "description")
             it.addGroup("old-id", "old description", current = "new-id")
             it.addModel("a2", "new-id", "description A2", "citation A2")
             it.addModel("a1", "new-id", "description A1", "citation A1", current = "a2")
             it.addModel("b", "new-id", "description B", "citation B")
+        } check { repo ->
+            assertThat(repo.getModellingGroupDetails("old-id")).isEqualTo(expected)
+            assertThat(repo.getModellingGroupDetails("new-id")).isEqualTo(expected)
+        }
+    }
+
+    @Test
+    fun `can get admin users for modelling group`()
+    {
+        val expected = ModellingGroupDetails("new-id", "description", emptyList(), listOf(
+                "user.a",
+                "user.b"
+        ))
+        given {
+            it.addGroup("new-id", "description")
+            it.addGroup("old-id", "old description", current = "new-id")
+            val role = ReifiedRole("member", Scope.parse("modelling-group:new-id"))
+            it.addUserWithRoles("user.a", role)
+            it.addUserWithRoles("user.b", role)
         } check { repo ->
             assertThat(repo.getModellingGroupDetails("old-id")).isEqualTo(expected)
             assertThat(repo.getModellingGroupDetails("new-id")).isEqualTo(expected)

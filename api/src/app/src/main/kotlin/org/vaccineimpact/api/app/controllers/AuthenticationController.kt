@@ -12,7 +12,7 @@ import org.vaccineimpact.api.app.security.USER_OBJECT
 import org.vaccineimpact.api.models.AuthenticationResponse
 import org.vaccineimpact.api.models.FailedAuthentication
 import org.vaccineimpact.api.models.SuccessfulAuthentication
-import org.vaccineimpact.api.models.User
+import org.vaccineimpact.api.models.permissions.User
 import spark.Spark.before
 import spark.route.HttpMethod
 

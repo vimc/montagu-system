@@ -6,6 +6,9 @@ import org.vaccineimpact.api.db.Tables.*
 import org.vaccineimpact.api.db.fromJoinPath
 import org.vaccineimpact.api.db.nextDecimal
 import org.vaccineimpact.api.db.tables.records.CoverageRecord
+import org.vaccineimpact.api.models.permissions.ReifiedRole
+import org.vaccineimpact.api.security.UserHelper
+import org.vaccineimpact.api.security.ensureUserHasRole
 import java.math.BigDecimal
 import java.util.*
 
@@ -342,4 +345,23 @@ private fun JooqContext.newCoverageRowRecord(coverageSetId: Int, country: String
     this.target = target
     this.coverage = coverage
     this.gaviSupport = false
+}
+
+fun JooqContext.addUserForTesting(
+        username: String,
+        name: String = "Test User",
+        email: String = "$username@example.com",
+        password: String = "password"
+)
+{
+    UserHelper.saveUser(this.dsl, username, name, email, password)
+}
+
+fun JooqContext.addUserWithRoles(username: String, vararg roles: ReifiedRole)
+{
+    this.addUserForTesting(username)
+    for (role in roles)
+    {
+        this.ensureUserHasRole(username, role)
+    }
 }

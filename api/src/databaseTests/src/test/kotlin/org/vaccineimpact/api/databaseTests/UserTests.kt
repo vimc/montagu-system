@@ -5,15 +5,15 @@ import org.junit.Test
 import org.vaccineimpact.api.app.repositories.UserRepository
 import org.vaccineimpact.api.app.repositories.jooq.JooqUserRepository
 import org.vaccineimpact.api.db.JooqContext
-import org.vaccineimpact.api.db.direct.createPermissions
-import org.vaccineimpact.api.db.direct.createRole
-import org.vaccineimpact.api.db.direct.ensureUserHasRole
-import org.vaccineimpact.api.db.direct.setRolePermissions
-import org.vaccineimpact.api.models.permissions.ReifiedPermission
-import org.vaccineimpact.api.models.ReifiedRole
+import org.vaccineimpact.api.db.Tables
 import org.vaccineimpact.api.models.Scope
-import org.vaccineimpact.api.models.User
+import org.vaccineimpact.api.models.permissions.ReifiedPermission
+import org.vaccineimpact.api.models.permissions.ReifiedRole
+import org.vaccineimpact.api.models.permissions.User
 import org.vaccineimpact.api.security.UserHelper
+import org.vaccineimpact.api.security.createRole
+import org.vaccineimpact.api.security.ensureUserHasRole
+import org.vaccineimpact.api.security.setRolePermissions
 
 class UserTests : RepositoryTests<UserRepository>()
 {
@@ -50,7 +50,8 @@ class UserTests : RepositoryTests<UserRepository>()
         given {
             addTestUser(it)
             val roleId = it.createRole("role", scopePrefix = null, description = "Role")
-            it.setRolePermissions(roleId, listOf("p1", "p2"), createPermissions = true)
+            createPermissions(it, listOf("p1", "p2"))
+            it.setRolePermissions(roleId, listOf("p1", "p2"))
             it.ensureUserHasRole("test.user", roleId, scopeId = "")
         } check { repo ->
             val roles = listOf(ReifiedRole("role", Scope.Global()))
@@ -70,7 +71,7 @@ class UserTests : RepositoryTests<UserRepository>()
             val roleGlobal = it.createRole("a", scopePrefix = null, description = "Role Global")
             val roleA = it.createRole("a", scopePrefix = "prefixA", description = "Role A")
             val roleB = it.createRole("b", scopePrefix = "prefixB", description = "Role B")
-            it.createPermissions(listOf("p1", "p2", "p3"))
+            createPermissions(it, listOf("p1", "p2", "p3"))
             it.setRolePermissions(roleGlobal, listOf("p1"))
             it.setRolePermissions(roleA, listOf("p1", "p2"))
             it.setRolePermissions(roleB, listOf("p1", "p3"))
@@ -111,5 +112,13 @@ class UserTests : RepositoryTests<UserRepository>()
         val user = repository.getUserByEmail(email)
         assertThat(user).isNotNull()
         return user!!
+    }
+
+    private fun createPermissions(db: JooqContext, permissions: List<String>)
+    {
+        val records = permissions.map {
+            db.dsl.newRecord(Tables.PERMISSION).apply { name = it }
+        }
+        db.dsl.batchStore(records).execute()
     }
 }

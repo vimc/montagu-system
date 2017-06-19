@@ -5,6 +5,7 @@ import org.junit.Before
 import org.junit.BeforeClass
 import org.vaccineimpact.api.db.Config
 import org.vaccineimpact.api.db.JooqContext
+import org.vaccineimpact.api.db.StandardRoles
 import org.vaccineimpact.api.db.UnableToConnectToDatabase
 
 abstract class DatabaseTest : MontaguTests()
@@ -44,6 +45,11 @@ abstract class DatabaseTest : MontaguTests()
                 }
                 println("Created template database by renaming ${dbName} to ${templateDbName}")
                 DatabaseChecker.checkDatabaseExists(templateDbName)
+
+                println("Doing onetime database setup")
+                JooqContext(dbName = templateDbName).use {
+                    StandardRoles.insertInto(it)
+                }
             }
         }
     }
