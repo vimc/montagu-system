@@ -12,7 +12,8 @@ class CSVSchema(schemaFileName: String)
 {
     val columns = parseSchema(schemaFileName)
 
-    fun validate(csvAsString: String): Iterable<IndexedValue<Array<String>>> {
+    fun validate(csvAsString: String): Iterable<IndexedValue<Array<String>>> 
+    {
         val trimmedText = csvAsString.trim()
         if (trimmedText.startsWith("{") || trimmedText.startsWith("["))
         {
