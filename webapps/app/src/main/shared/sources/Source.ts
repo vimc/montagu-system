@@ -6,23 +6,17 @@ import AltStore = AltJS.AltStore;
 
 interface ActionProps<T> {
     success: (data: T) => void;
-    loading: () => void
+    loading: (x: any) => void
 }
 
 type UrlBuilder<TState> = (state: TState) => string;
 
-export abstract class Source<TModel, TState> {
-    private actions: ActionProps<TModel>;
-
-    constructor(actions: ActionProps<TModel>, ) {
-        this.actions = actions;
-    }
-
-    protected doFetch(urlFragment: UrlBuilder<TState>): AltJS.SourceModel<TModel> {
+export abstract class Source<TState> {
+    protected doFetch<TModel>(urlFragment: UrlBuilder<TState>, actions: ActionProps<TModel>): AltJS.SourceModel<TModel> {
         const handler = this.processResponse;
         return {
             remote(state: TState) {
-                return handler(fetcher.fetch(urlFragment(state)))
+                return handler(fetcher.fetcher.fetch(urlFragment(state)))
                     .catch((error: any) => {
                         if (error instanceof Error) {
                             throw error;
@@ -34,13 +28,13 @@ export abstract class Source<TModel, TState> {
             local(state: TState) {
                 return null;
             },
-            success: this.actions.success,
-            loading: this.actions.loading,
+            success: actions.success,
+            loading: actions.loading,
             error: errorActions.error,
         };
     }
 
-    protected processResponse(promise: Promise<Response>): Promise<any> {
+    protected processResponse<TModel>(promise: Promise<Response>): Promise<any> {
         return promise
             .then((response: Response) => response.json())
             .then((response: any) => {

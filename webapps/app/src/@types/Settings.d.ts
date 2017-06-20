@@ -8,6 +8,7 @@ interface Settings {
 
 interface AppSpecificSettings {
     publicPath: string;
+    requiresModellingGroupMembership: boolean;
 }
 
 interface AdminSettings extends AppSpecificSettings {

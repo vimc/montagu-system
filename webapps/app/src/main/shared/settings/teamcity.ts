@@ -3,9 +3,11 @@ export const settings: Settings = {
     supportContact: "t.garske@imperial.ac.uk",
     teamcityServiceMessages: true,
     admin: {
-        publicPath: ""
+        publicPath: "",
+        requiresModellingGroupMembership: false
     },
     contrib: {
-        publicPath: ""
+        publicPath: "",
+        requiresModellingGroupMembership: true
     }
 };

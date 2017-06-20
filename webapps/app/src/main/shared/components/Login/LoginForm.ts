@@ -23,7 +23,7 @@ export function loginForm(name: string, authStore: AuthStoreBaseInterface<any>):
         },
         onSubmit: (state: LoginFields) => {
             const data = "grant_type=client_credentials";
-            return fetcher.fetch("/authenticate/", {
+            return fetcher.fetcher.fetch("/authenticate/", {
                 method: "POST",
                 headers: {
                     'Authorization': 'Basic ' + btoa(`${state.email}:${state.password}`),

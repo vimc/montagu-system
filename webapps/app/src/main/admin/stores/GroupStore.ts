@@ -1,46 +1,79 @@
 import * as AltJS from "alt";
-import { ModellingGroup } from "../../shared/models/Generated";
+import { ModellingGroup, ModellingGroupDetails } from "../../shared/models/Generated";
 import { alt } from "../../shared/alt";
 import { AbstractStore } from "../../shared/stores/AbstractStore";
 import { modellingGroupActions } from "../actions/ModellingGroupActions";
 import { RemoteContent } from "../../shared/models/RemoteContent";
 import { ModellingGroupSource } from "../sources/ModellingGroupSource";
+import { ILookup } from "../../shared/models/Lookup";
 
 export interface GroupState extends RemoteContent {
     groups: ModellingGroup[];
+    groupDetails: ILookup<ModellingGroupDetails>;
+    currentGroupId: string;
 }
 
 interface Interface extends AltJS.AltStore<GroupState> {
-    fetch(): Promise<ModellingGroup[]>;
+    fetchGroups(): Promise<ModellingGroup[]>;
+    fetchGroupDetails(): Promise<ModellingGroupDetails>;
+    getCurrentGroupDetails(): ModellingGroupDetails;
 }
 
 export class GroupStore extends AbstractStore<GroupState, Interface> {
     groups: ModellingGroup[];
+    groupDetails: ILookup<ModellingGroupDetails>;
+    currentGroupId: string;
     ready: boolean;
 
     constructor() {
         super();
         this.bindListeners({
-            handleFetch: modellingGroupActions.beginFetch,
-            handleUpdate: modellingGroupActions.update
+            handleBeginFetchGroups: modellingGroupActions.beginFetchGroups,
+            handleUpdateGroups: modellingGroupActions.updateGroups,
+
+            handleSetCurrentGroup: modellingGroupActions.setCurrentGroup,
+
+            handleBeginFetchDetails: modellingGroupActions.beginFetchDetails,
+            handleUpdateGroupDetails: modellingGroupActions.updateGroupDetails,
         });
         this.registerAsync(new ModellingGroupSource());
+        this.exportPublicMethods({
+            getCurrentGroupDetails: () => {
+                if (this.currentGroupId && this.groupDetails.hasOwnProperty(this.currentGroupId)) {
+                    return this.groupDetails[this.currentGroupId]
+                } else {
+                    return null;
+                }
+            }
+        })
     }
 
     initialState(): GroupState {
         return {
-            groups: null,
+            groups: [],
+            groupDetails: {},
+            currentGroupId: null,
             ready: false
         };
     }
 
-    handleFetch() {
+    handleBeginFetchGroups() {
         this.ready = false;
-        this.groups = null;
+        this.groups = [];
     }
-    handleUpdate(groups: ModellingGroup[]) {
+    handleUpdateGroups(groups: ModellingGroup[]) {
         this.ready = true;
         this.groups = groups;
+    }
+    handleSetCurrentGroup(groupId: string) {
+        this.currentGroupId = groupId;
+    }
+    handleBeginFetchDetails(groupId: string) {
+        this.ready = false;
+        delete this.groupDetails[groupId];
+    }
+    handleUpdateGroupDetails(details: ModellingGroupDetails) {
+        this.groupDetails[details.id] = details;
     }
 }
 

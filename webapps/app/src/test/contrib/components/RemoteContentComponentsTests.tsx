@@ -3,9 +3,9 @@ import { expect } from "chai";
 import { shallow, ShallowWrapper } from "enzyme";
 
 import { RemoteContent } from "../../../main/shared/models/RemoteContent";
-import { RemoteContentComponent } from "../../../main/contrib/components/RemoteContentComponent/RemoteContentComponent";
+import { RemoteContentComponent } from "../../../main/shared/components/RemoteContentComponent/RemoteContentComponent";
 
-const spinner = require("../../../main/contrib/components/RemoteContentComponent/spinner.gif");
+const spinner = require("../../../main/shared/components/RemoteContentComponent/spinner.gif");
 
 class DummyComponent extends RemoteContentComponent<RemoteContent> {
     renderContent() {

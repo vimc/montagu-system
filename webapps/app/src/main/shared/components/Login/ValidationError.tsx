@@ -1,6 +1,6 @@
 import * as React from "react";
 
-const formStyles = require("../../../shared/styles/forms.css");
+const formStyles = require("../../styles/forms.css");
 
 interface Props {
     message: string;

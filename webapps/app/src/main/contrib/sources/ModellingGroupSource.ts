@@ -4,11 +4,14 @@ import { MainState } from "../stores/MainStore";
 import { modellingGroupActions } from "../actions/ModellingGroupActions";
 import SourceModel = AltJS.SourceModel;
 
-export class ModellingGroupSource extends Source<ModellingGroup[], MainState> {
+export class ModellingGroupSource extends Source<MainState> {
     fetchModellingGroups: () => SourceModel<ModellingGroup[]>;
 
     constructor() {
-        super({ success: modellingGroupActions.update, loading: modellingGroupActions.beginFetch });
-        this.fetchModellingGroups = () => this.doFetch(_ => "/modelling-groups/");
+        super();
+        this.fetchModellingGroups = () => this.doFetch(_ => "/modelling-groups/", {
+            success: modellingGroupActions.update,
+            loading: modellingGroupActions.beginFetch
+        });
     }
 }

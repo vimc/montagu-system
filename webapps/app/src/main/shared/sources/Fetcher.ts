@@ -1,5 +1,4 @@
 import { settings } from "../Settings";
-import { contribAuthStore } from "../../contrib/stores/ContribAuthStore";
 
 export interface FetchOptions {
     method?: string,
@@ -8,7 +7,9 @@ export interface FetchOptions {
     credentials?: "omit" | "same-origin" | "include"
 }
 
-class Fetcher {
+export abstract class Fetcher {
+    protected abstract getBearerToken(): string;
+
     buildURL(urlFragment: string): string {
         return settings.apiUrl() + urlFragment;
     }
@@ -19,12 +20,12 @@ class Fetcher {
         options = options || {};
         options.headers = options.headers || {};
         if (includeToken) {
-            options.headers["Authorization"] = `Bearer ${contribAuthStore.getState().bearerToken}`;
+            options.headers["Authorization"] = `Bearer ${this.getBearerToken()}`;
         }
         return fetch(url, options);
     }
 }
 
-const fetcher = new Fetcher();
-
-export default fetcher;
+export default {
+    fetcher: null
+};

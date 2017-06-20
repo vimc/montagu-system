@@ -2,7 +2,7 @@ import * as React from "react";
 import { connectToStores } from "../../../../shared/alt";
 import { CoverageSet, Scenario, Touchstone } from "../../../../shared/models/Generated";
 import { RemoteContent } from "../../../../shared/models/RemoteContent";
-import { RemoteContentComponent } from "../../RemoteContentComponent/RemoteContentComponent";
+import { RemoteContentComponent } from "../../../../shared/components/RemoteContentComponent/RemoteContentComponent";
 import { CoverageSetList } from "./CoverageSetList";
 import { responsibilityStore } from "../../../stores/ResponsibilityStore";
 import fetcher from "../../../../shared/sources/Fetcher";
@@ -52,7 +52,7 @@ export class DownloadCoverageContentComponent extends RemoteContentComponent<Dow
 
     renderContent(props: DownloadCoverageComponentProps) {
         const data = props.props;
-        const url = fetcher.buildURL(`/onetime_link/${data.coverageToken}/`);
+        const url = fetcher.fetcher.buildURL(`/onetime_link/${data.coverageToken}/`);
         const downloadDisabled = data.coverageToken == null;
         return <div>
             <table className={ commonStyles.specialColumn }>
