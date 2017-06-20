@@ -12,6 +12,7 @@ fun main(args: Array<String>)
         {
             Action.add -> addUser(args)
             Action.addRole -> addRole(args)
+            Action.addUserToGroup -> addToGroup(args)
         }
     }
     catch (e: ActionException)
