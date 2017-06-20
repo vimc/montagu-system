@@ -9,17 +9,17 @@ describe("GroupStore", () => {
 
     it("modellingGroupActions.update sets groups", () => {
         const groups = [ mockModellingGroup(), mockModellingGroup() ];
-        modellingGroupActions.update(groups);
+        modellingGroupActions.updateGroups(groups);
         const s = groupStore.getState();
         expect(s.groups).to.eql(groups);
         expect(s.ready).to.be.true;
     });
 
     it("modellingGroupActions.beginFetch clears groups and set unready", () => {
-        modellingGroupActions.update([ mockModellingGroup() ]);
-        modellingGroupActions.beginFetch();
+        modellingGroupActions.updateGroups([ mockModellingGroup() ]);
+        modellingGroupActions.beginFetchGroups();
         const s = groupStore.getState();
-        expect(s.groups).to.be.null;
+        expect(s.groups).to.eql([]);
         expect(s.ready).to.be.false;
     });
 });

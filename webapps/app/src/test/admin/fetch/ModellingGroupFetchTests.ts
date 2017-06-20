@@ -6,7 +6,7 @@ import { groupStore } from "../../../main/admin/stores/GroupStore";
 describe("GroupStore.fetch", () => {
     new FetchHelper<ModellingGroup[]>({
         expectedURL: "/modelling-groups/",
-        triggerFetch: () => groupStore.fetch(),
+        triggerFetch: () => groupStore.fetchGroups(),
         makePayload: () => [ mockModellingGroup() ]
     }).addTestsToMocha();
 });
