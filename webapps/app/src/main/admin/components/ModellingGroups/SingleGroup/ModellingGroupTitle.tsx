@@ -14,11 +14,10 @@ export abstract class ModellingGroupTitle extends RemoteContentComponent<TitlePr
         return [ groupStore ];
     }
     static getPropsFromStores(): TitleProps {
-        const s = groupStore.getState();
-        const group = s.groups.find(x => x.id == s.currentGroupId);
+        const group = groupStore.getCurrentGroupDetails();
         return {
             group: group,
-            ready: !isNullOrUndefined(group)
+            ready: group != null
         };
     }
 }

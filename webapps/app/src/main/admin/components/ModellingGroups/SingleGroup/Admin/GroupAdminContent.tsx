@@ -11,7 +11,7 @@ interface Props extends RemoteContent {
     group: ModellingGroupDetails;
 }
 
-class GroupAdminContentComponent extends RemoteContentComponent<Props> {
+export class GroupAdminContentComponent extends RemoteContentComponent<Props> {
     static getStores() {
         return [groupStore];
     }

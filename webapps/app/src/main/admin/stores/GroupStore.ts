@@ -73,6 +73,7 @@ export class GroupStore extends AbstractStore<GroupState, Interface> {
         delete this.groupDetails[groupId];
     }
     handleUpdateGroupDetails(details: ModellingGroupDetails) {
+        this.ready = true;
         this.groupDetails[details.id] = details;
     }
 }

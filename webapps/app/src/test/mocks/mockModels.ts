@@ -29,6 +29,17 @@ export function mockModellingGroup(properties?: any) {
     return Object.assign(template, properties);
 }
 
+export function mockModellingGroupDetails(properties?: any) {
+    counter++;
+    const template: models.ModellingGroupDetails = {
+        id: "group-" + counter,
+        description: "Description",
+        models: [],
+        admins: [ "user.a" ]
+    };
+    return Object.assign(template, properties);
+}
+
 export function mockResponsibility(properties?: any, scenarioProperties?: any): models.Responsibility {
     const template: models.Responsibility = {
         current_estimate: null,

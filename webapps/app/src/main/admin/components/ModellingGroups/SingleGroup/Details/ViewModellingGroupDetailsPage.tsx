@@ -6,7 +6,7 @@ import { AdminPageWithHeader } from "../../../AdminPageWithHeader";
 import { groupStore } from "../../../../stores/GroupStore";
 import { modellingGroupActions } from "../../../../actions/ModellingGroupActions";
 
-interface PageProps {
+export interface PageProps {
     groupId: string;
 }
 

@@ -8,7 +8,7 @@ export interface FetchOptions {
 }
 
 export abstract class Fetcher {
-    protected abstract getBearerToken(): string;
+    abstract getBearerToken(): string;
 
     buildURL(urlFragment: string): string {
         return settings.apiUrl() + urlFragment;
