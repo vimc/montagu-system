@@ -22,14 +22,14 @@ class CSVSchema(schemaFileName: String)
         val csv = StringReader(trimmedText)
                 .use { CSVReader(it).readAll() }
         val headers = csv.first()
-        val body = csv.drop(1)
+        val body = csv.drop(1).withIndex()
         assertThat(headers).containsExactlyElementsOf(columns.map { it.name })
-        for ((index, row) in body.withIndex())
+        for ((index, row) in body)
         {
             validate(row, index)
         }
 
-        return body.withIndex()
+        return body
     }
 
     private fun validate(row: Array<String>, rowIndex: Int)
