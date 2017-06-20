@@ -1,6 +1,6 @@
 import * as React from "react";
 import { ReformProps } from "alt-reform";
-import { ValidationError } from "../../../contrib/components/Login/ValidationError";
+import { ValidationError } from "./ValidationError";
 
 const formStyles = require("../../styles/forms.css");
 

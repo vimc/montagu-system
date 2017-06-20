@@ -1,7 +1,7 @@
 import { ResponsibilityState } from "../stores/ResponsibilityStore";
 import { Source } from "../../shared/sources/Source";
 
-export abstract class CoverageSource<T> extends Source<T, ResponsibilityState> {
+export abstract class CoverageSource extends Source<ResponsibilityState> {
     protected baseURL(state: ResponsibilityState): string {
         const k = {
             group: state.currentModellingGroup.id,

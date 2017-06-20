@@ -29,6 +29,20 @@ export interface ModellingGroup {
     id: string;
 }
 
+export interface ResearchModel {
+    citation: string;
+    description: string;
+    id: string;
+    modelling_group: string;
+}
+
+export interface ModellingGroupDetails {
+    admins: string[];
+    description: string;
+    id: string;
+    models: ResearchModel[];
+}
+
 export interface BurdenEstimate {
 }
 

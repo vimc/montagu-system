@@ -5,7 +5,7 @@ import { groupStore } from "../../../stores/GroupStore";
 
 export class ViewAllModellingGroupsPage extends AdminPageWithHeader<undefined> {
     componentDidMount() {
-        groupStore.fetch();
+        groupStore.fetchGroups();
     }
 
     title() {

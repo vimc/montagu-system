@@ -4,11 +4,14 @@ import { Source } from '../../shared/sources/Source';
 import SourceModel = AltJS.SourceModel;
 import { MainState } from "../stores/MainStore";
 
-export class DiseaseSource extends Source<Disease[], MainState> {
+export class DiseaseSource extends Source<MainState> {
     fetchDiseases: () => SourceModel<Disease[]>;
 
     constructor() {
-        super({ success: diseaseActions.update, loading: diseaseActions.beginFetch });
-        this.fetchDiseases = () => this.doFetch(_ => "/diseases/");
+        super();
+        this.fetchDiseases = () => this.doFetch(_ => "/diseases/", {
+            success: diseaseActions.update,
+            loading: diseaseActions.beginFetch
+        });
     }
 }

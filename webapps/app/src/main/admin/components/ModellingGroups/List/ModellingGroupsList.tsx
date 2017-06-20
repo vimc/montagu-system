@@ -1,5 +1,5 @@
 import * as React from "react";
-import { RemoteContentComponent } from "../../../../contrib/components/RemoteContentComponent/RemoteContentComponent";
+import { RemoteContentComponent } from "../../../../shared/components/RemoteContentComponent/RemoteContentComponent";
 import { ModellingGroup } from "../../../../shared/models/Generated";
 import { RemoteContent } from "../../../../shared/models/RemoteContent";
 import { groupStore } from "../../../stores/GroupStore";

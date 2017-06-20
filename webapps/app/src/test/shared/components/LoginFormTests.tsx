@@ -10,9 +10,9 @@ import { mockEvent } from "../../mocks/mocks";
 import * as actionHelpers from "../../actionHelpers";
 
 import { contribAuthStore } from "../../../main/contrib/stores/ContribAuthStore";
-import { ValidationError } from "../../../main/contrib/components/Login/ValidationError";
 import { LoginFields, loginForm } from "../../../main/shared/components/Login/LoginForm";
 import { LoginFormComponent } from "../../../main/shared/components/Login/LoginFormComponent";
+import { ValidationError } from "../../../main/shared/components/Login/ValidationError";
 
 function checkSubmit(
     form: Reform<LoginFields>,

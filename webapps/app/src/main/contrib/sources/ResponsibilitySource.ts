@@ -4,13 +4,16 @@ import { responsibilityActions } from "../actions/ResponsibilityActions";
 import SourceModel = AltJS.SourceModel;
 import { ResponsibilityState } from "../stores/ResponsibilityStore";
 
-export class ResponsibilitySource extends Source<Responsibilities, ResponsibilityState> {
+export class ResponsibilitySource extends Source<ResponsibilityState> {
     private fetchResponsibilities: () => SourceModel<Responsibilities>;
 
     constructor() {
-        super({ success: responsibilityActions.update, loading: responsibilityActions.beginFetch });
+        super();
         this.fetchResponsibilities = () => {
-            return this.doFetch(s => `/modelling-groups/${s.currentModellingGroup.id}/responsibilities/${s.currentTouchstone.id}/`);
+            return this.doFetch(s => `/modelling-groups/${s.currentModellingGroup.id}/responsibilities/${s.currentTouchstone.id}/`, {
+                success: responsibilityActions.update,
+                loading: responsibilityActions.beginFetch
+            });
         };
     }
 }

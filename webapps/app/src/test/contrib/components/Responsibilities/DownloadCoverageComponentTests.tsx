@@ -40,7 +40,7 @@ describe("DownloadCoverageContentComponent", () => {
     it("renders form with onetime URL", () => {
         const props = makeProps({ coverageToken: "TOKEN" });
         const rendered = shallow(<DownloadCoverageContentComponent {...props} />);
-        expect(rendered.find("form").prop("action")).to.equal(fetcher.buildURL("/onetime_link/TOKEN/"));
+        expect(rendered.find("form").prop("action")).to.equal(fetcher.fetcher.buildURL("/onetime_link/TOKEN/"));
     });
 
     it("clicking download coverage data button triggers token refresh", (done: DoneCallback) => {

@@ -4,11 +4,14 @@ import { touchstoneActions } from "../actions/TouchstoneActions";
 import SourceModel = AltJS.SourceModel;
 import { ResponsibilityState } from "../stores/ResponsibilityStore";
 
-export class TouchstoneSource extends Source<Touchstone[], ResponsibilityState> {
+export class TouchstoneSource extends Source<ResponsibilityState> {
     fetchTouchstones: () => SourceModel<Touchstone[]>;
 
     constructor() {
-        super({ success: touchstoneActions.update, loading: touchstoneActions.beginFetch });
-        this.fetchTouchstones = () => this.doFetch(_ => "/touchstones/");
+        super();
+        this.fetchTouchstones = () => this.doFetch(_ => "/touchstones/", {
+            success: touchstoneActions.update,
+            loading: touchstoneActions.beginFetch
+        });
     }
 }

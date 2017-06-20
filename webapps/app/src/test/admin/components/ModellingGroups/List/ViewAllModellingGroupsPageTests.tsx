@@ -11,9 +11,9 @@ describe("ViewAllModellingGroupsPageTests", () => {
     afterEach(() => sandbox.restore());
 
     it("triggers fetch on load", () => {
-        const spy = sandbox.sinon.spy(groupStore, "fetch");
+        const spy = sandbox.sinon.spy(groupStore, "fetchGroups");
         sandbox.mount(<ViewAllModellingGroupsPage location={ mockLocation<undefined>() } />);
 
-        expect(spy.called).to.equal(true, "Expected groupStore.fetch to be triggered");
+        expect(spy.called).to.equal(true, "Expected groupStore.fetchGroups to be triggered");
     });
 });

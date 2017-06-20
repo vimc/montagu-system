@@ -29,7 +29,7 @@ export class FetchHelper<TPayload> {
 
     testFetchWithMockedResponse({ done, payload, errorMessage, expectedAction }: FetchTestConfig) {
         mockFetcherResponse(payload, errorMessage);
-        const fetcherSpy = this.sandbox.sinon.spy(fetcher, "fetch");
+        const fetcherSpy = this.sandbox.sinon.spy(fetcher.fetcher, "fetch");
         const dispatchSpy = this.sandbox.dispatchSpy();
         const handler = (_: any) => {
             try {

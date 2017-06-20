@@ -6,6 +6,8 @@ import { MainMenu } from "./MainMenu/MainMenu";
 import { AdminLoginPage } from "./AdminLoginPage";
 import { AdminNoRouteFoundPage } from "./AdminNoRouteFoundPage";
 import { ViewAllModellingGroupsPage } from "./ModellingGroups/List/ViewAllModellingGroupsPage";
+import { ViewModellingGroupDetailsPage } from "./ModellingGroups/SingleGroup/Details/ViewModellingGroupDetailsPage";
+import { GroupAdminPage } from "./ModellingGroups/SingleGroup/Admin/GroupAdminPage";
 
 interface RouterProps {
     loggedIn: boolean;
@@ -20,6 +22,8 @@ export class AdminRouter extends Router<RouterProps> {
         if (props.loggedIn) {
             map('/', MainMenu);
             map('/modelling-groups/', ViewAllModellingGroupsPage);
+            map('/modelling-groups/:groupId/', ViewModellingGroupDetailsPage);
+            map('/modelling-groups/:groupId/admin/', GroupAdminPage);
             map('*', AdminNoRouteFoundPage);
         } else {
             map('*', AdminLoginPage);

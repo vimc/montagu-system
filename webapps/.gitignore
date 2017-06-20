@@ -2,7 +2,12 @@
 *.iml
 app/.tmp/*
 app/\.awcache/
-app/\.idea/*
+app/\.idea/misc.xml
+app/\.idea/inspectionProfiles
+app/\.idea/modules.xml
+app/\.idea/typescript-compiler.xml
+app/\.idea/vcs.xml
+app/\.idea/workspace.xml
 app/node_modules/*
 app/npm-debug\.log
 app/out/*

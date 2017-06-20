@@ -1,5 +1,5 @@
 import * as React from "react";
-import { RemoteContentComponent } from "../../RemoteContentComponent/RemoteContentComponent";
+import { RemoteContentComponent } from "../../../../shared/components/RemoteContentComponent/RemoteContentComponent";
 import { DiseaseFilter } from "./DiseaseFilter";
 import { ResponsibilityComponent } from "./ResponsibilityComponent";
 import { responsibilityStore } from "../../../stores/ResponsibilityStore";

@@ -2,7 +2,7 @@ import { AbstractStore } from "./AbstractStore";
 import { errorActions } from "../actions/ErrorActions";
 import { alt } from "../alt";
 import { authActions, LogInProperties } from "../actions/AuthActions";
-import { settings } from "../Settings";
+import { appSettings, settings } from "../Settings";
 
 export interface ErrorState {
     errors: string[];
@@ -41,12 +41,13 @@ class ErrorStore extends AbstractStore<ErrorState, AltJS.AltStore<ErrorState>> {
             let reason: string;
             if (!props.isAccountActive) {
                 reason = "Your account has been deactivated";
-            } else {
+            } else if (appSettings.requiresModellingGroupMembership) {
                 reason = "Only members of modelling groups can log into the contribution portal";
             }
-
-            const support = settings.supportContact;
-            this.errors = [`${reason}. Please contact ${support} for help.`, ...this.errors];
+            if (reason) {
+                const support = settings.supportContact;
+                this.errors = [`${reason}. Please contact ${support} for help.`, ...this.errors];
+            }
         }
     }
 }

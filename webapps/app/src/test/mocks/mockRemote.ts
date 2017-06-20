@@ -1,5 +1,6 @@
 import { ErrorInfo, Result, ResultStatus } from "../../main/shared/models/Generated";
 import fetcher, { FetchOptions } from "../../main/shared/sources/Fetcher";
+import { AdminFetcher } from "../../main/admin/sources/AdminFetcher";
 
 export function promiseJSON(data: any): Response {
     return {
@@ -36,7 +37,8 @@ export function mockResult<T>(data: T,
 }
 
 export function mockFetcher(promise: Promise<Response>) {
-    fetcher.fetch = function (urlFragment: string, options?: FetchOptions, includeToken: boolean = true) {
+    fetcher.fetcher = new AdminFetcher();
+    fetcher.fetcher.fetch = function(urlFragment: string, options?: FetchOptions, includeToken: boolean = true) {
         return promise;
     };
 }

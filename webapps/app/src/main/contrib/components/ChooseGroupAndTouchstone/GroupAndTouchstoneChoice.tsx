@@ -5,7 +5,7 @@ import { contribAuthStore } from "../../stores/ContribAuthStore";
 import { connectToStores } from "../../../shared/alt";
 import { TouchstoneList } from "./TouchstoneList";
 import { RemoteContent } from "../../../shared/models/RemoteContent";
-import { RemoteContentComponent } from "../RemoteContentComponent/RemoteContentComponent";
+import { RemoteContentComponent } from "../../../shared/components/RemoteContentComponent/RemoteContentComponent";
 import { GroupList } from "./GroupList";
 import { ButtonLink } from "../../../shared/components/ButtonLink";
 

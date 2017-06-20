@@ -1,7 +1,8 @@
 import { HasId } from "../models/HasId"
+import { ILookup } from "../../shared/models/Lookup";
 
 export interface ILoadable<T> {
-    content: { [index: string]: T };
+    content: ILookup<T>;
     loaded: boolean;
 }
 

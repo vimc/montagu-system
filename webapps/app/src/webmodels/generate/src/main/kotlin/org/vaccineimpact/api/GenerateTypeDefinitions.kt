@@ -30,6 +30,7 @@ fun main(args: Array<String>)
                         TouchstoneStatus::class,
                         Touchstone::class,
                         ModellingGroup::class,
+                        ModellingGroupDetails::class,
                         Responsibilities::class,
                         Result::class,
                         Disease::class,
