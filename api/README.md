@@ -1,5 +1,23 @@
 # Montagu API
 
+## Running the app locally
+System requirements:
+* openjdk 8
+* Docker
+
+Install Docker and add your user to the Docker group (e.g. https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-16-04.) You may need to restart your machine for changes to take effect.
+
+Configure your Docker client to use our registry by following instructions here:
+https://github.com/vimc/montagu-ci#configuring-docker-clients-to-use-the-registry
+
+Start the database by navigating to the `src` folder and running
+
+    ./gradlew :startDatabase
+
+Run the app
+
+    ./gradlew :run
+
 ## Project anatomy
 At the top level we have four folders of note:
 * `src/`: The source code of the application and its tests and helpers
