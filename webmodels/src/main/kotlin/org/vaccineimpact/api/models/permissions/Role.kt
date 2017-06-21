@@ -16,3 +16,9 @@ data class ReifiedRole(
 {
     override fun toString() = "$scope/$name"
 }
+
+data class RoleAssignment(
+        val name: String,
+        var scopeId: String?,
+        var scopePrefix: String?
+)
