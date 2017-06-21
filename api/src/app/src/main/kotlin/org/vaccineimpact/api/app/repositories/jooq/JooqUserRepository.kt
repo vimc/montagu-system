@@ -7,6 +7,7 @@ import org.vaccineimpact.api.db.fromJoinPath
 import org.vaccineimpact.api.db.tables.records.AppUserRecord
 import org.vaccineimpact.api.models.Scope
 import org.vaccineimpact.api.models.UserDto
+import org.vaccineimpact.api.models.UserWithRolesDto
 import org.vaccineimpact.api.models.permissions.*
 
 class JooqUserRepository : JooqRepository(), UserRepository
@@ -40,13 +41,32 @@ class JooqUserRepository : JooqRepository(), UserRepository
         val user = dsl.fetchAny(APP_USER, caseInsensitiveUsernameMatch(username))
         if (user != null)
         {
+
+            return UserDto(
+                    user.username,
+                    user.name,
+                    user.email,
+                    user.lastLoggedIn
+            )
+        }
+        else
+        {
+            return null
+        }
+    }
+
+    override fun getUserByUsernameWithRoles(username: String): UserWithRolesDto?
+    {
+        val user = dsl.fetchAny(APP_USER, caseInsensitiveUsernameMatch(username))
+        if (user != null)
+        {
             val records = dsl.select(ROLE.NAME, ROLE.SCOPE_PREFIX)
                     .select(USER_ROLE.SCOPE_ID)
                     .fromJoinPath(APP_USER, USER_ROLE, ROLE)
                     .where(caseInsensitiveUsernameMatch(username))
                     .fetch()
 
-            return UserDto(
+            return UserWithRolesDto(
                     user.username,
                     user.name,
                     user.email,

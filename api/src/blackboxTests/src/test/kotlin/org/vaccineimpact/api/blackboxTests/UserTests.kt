@@ -21,6 +21,30 @@ class UserTests : DatabaseTest()
     {
         validate("/users/testuser") against "User" given {
             it.addUserWithRoles("testuser", ReifiedRole("member", Scope.Specific("modelling-group", "group")))
+        } requiringPermissions {
+            PermissionSet("*/users.read")
+        } andCheck {
+            Assertions.assertThat(it).isEqualTo(json {
+                obj(
+                        "username" to "testuser",
+                        "name" to "Test User",
+                        "email" to "testuser@example.com",
+                        "last_logged_in" to null
+                )
+            })
+        }
+    }
+
+    @Test
+    fun `returns user with all roles if logged in user has global scope role read perm`()
+    {
+        validate("/users/testuser") against "User" given {
+            it.addUserWithRoles("testuser",
+                    ReifiedRole("member", Scope.Specific("modelling-group", "group")),
+                    ReifiedRole("member", Scope.Specific("modelling-group", "group2")),
+                    ReifiedRole("touchstone-preparer", Scope.Global()))
+        } withPermissions {
+            PermissionSet("*/users.read", "*/roles.read")
         } andCheck {
             Assertions.assertThat(it).isEqualTo(json {
                 obj(
@@ -32,7 +56,15 @@ class UserTests : DatabaseTest()
                                 obj(
                                         "name" to "member",
                                         "scope_id" to "group",
-                                        "scope_prefix" to "modelling-group"))
+                                        "scope_prefix" to "modelling-group"),
+                                obj(
+                                        "name" to "member",
+                                        "scope_id" to "group2",
+                                        "scope_prefix" to "modelling-group"),
+                                obj(
+                                        "name" to "touchstone-preparer",
+                                        "scope_id" to "",
+                                        "scope_prefix" to null))
                 )
             })
         }
@@ -48,21 +80,9 @@ class UserTests : DatabaseTest()
             userHelper.setupTestUser(it)
         }
 
-        val response = requestHelper.get("/users/nonexistentuser", PermissionSet("*/can-login"), contentType = "application/json")
+        val response = requestHelper.get("/users/nonexistentuser", PermissionSet("*/can-login", "*/users.read"), contentType = "application/json")
         JSONSchema("User").validator.validateError(response.text, "unknown-username")
         Assertions.assertThat(response.statusCode).isEqualTo(404)
     }
 
-//    @Test
-//    fun `can get disease`()
-//    {
-//        validate("/diseases/HepB/") against "User" given {
-//            it.addUserWithRoles("group.admin", ReifiedRole("member", Scope.Specific("modelling-group", "group")))
-//        } andCheck {
-//            Assertions.assertThat(it).isEqualTo(json { obj(
-//                    "id" to "HepB",
-//                    "name" to "Hepatitis B"
-//            )})
-//        }
-//    }
 }
