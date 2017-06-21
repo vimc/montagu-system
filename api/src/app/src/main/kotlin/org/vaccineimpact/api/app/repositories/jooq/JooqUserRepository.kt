@@ -5,15 +5,14 @@ import org.vaccineimpact.api.app.repositories.UserRepository
 import org.vaccineimpact.api.db.Tables.*
 import org.vaccineimpact.api.db.fromJoinPath
 import org.vaccineimpact.api.db.tables.records.AppUserRecord
-import org.vaccineimpact.api.models.permissions.ReifiedRole
 import org.vaccineimpact.api.models.Scope
-import org.vaccineimpact.api.models.permissions.User
-import org.vaccineimpact.api.models.permissions.UserProperties
-import org.vaccineimpact.api.models.permissions.ReifiedPermission
+import org.vaccineimpact.api.models.UserDto
+import org.vaccineimpact.api.models.permissions.*
 
 class JooqUserRepository : JooqRepository(), UserRepository
 {
-    override fun getUserByEmail(email: String): User? {
+    override fun getUserByEmail(email: String): User?
+    {
         val user = dsl.fetchAny(APP_USER, caseInsensitiveEmailMatch(email))
         if (user != null)
         {
@@ -23,6 +22,7 @@ class JooqUserRepository : JooqRepository(), UserRepository
                     .fromJoinPath(APP_USER, USER_ROLE, ROLE, ROLE_PERMISSION, PERMISSION)
                     .where(caseInsensitiveEmailMatch(email))
                     .fetch()
+
             return User(
                     user.mapUserProperties(),
                     records.map(this::mapRole).distinct(),
@@ -35,8 +35,36 @@ class JooqUserRepository : JooqRepository(), UserRepository
         }
     }
 
+    override fun getUserByUsername(username: String): UserDto?
+    {
+        val user = dsl.fetchAny(APP_USER, caseInsensitiveUsernameMatch(username))
+        if (user != null)
+        {
+            val records = dsl.select(ROLE.NAME, ROLE.SCOPE_PREFIX)
+                    .select(USER_ROLE.SCOPE_ID)
+                    .fromJoinPath(APP_USER, USER_ROLE, ROLE)
+                    .where(caseInsensitiveUsernameMatch(username))
+                    .fetch()
+
+            return UserDto(
+                    user.username,
+                    user.name,
+                    user.email,
+                    user.lastLoggedIn,
+                    records.map(this::mapRoleAssignment).distinct()
+            )
+        }
+        else
+        {
+            return null
+        }
+    }
+
     private fun caseInsensitiveEmailMatch(email: String)
             = APP_USER.EMAIL.lower().eq(email.toLowerCase())
+
+    private fun caseInsensitiveUsernameMatch(username: String)
+            = APP_USER.USERNAME.lower().eq(username.toLowerCase())
 
     fun AppUserRecord.mapUserProperties() = UserProperties(
             this.username,
@@ -48,7 +76,13 @@ class JooqUserRepository : JooqRepository(), UserRepository
     )
 
     fun mapPermission(record: Record) = ReifiedPermission(record[PERMISSION.NAME], mapScope(record))
+
     fun mapRole(record: Record) = ReifiedRole(record[ROLE.NAME], mapScope(record))
+
+    fun mapRoleAssignment(record: Record) = RoleAssignment(
+            record[ROLE.NAME],
+            record[USER_ROLE.SCOPE_ID],
+            record[ROLE.SCOPE_PREFIX])
 
     fun mapScope(record: Record): Scope
     {
