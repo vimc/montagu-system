@@ -17,6 +17,9 @@ Start the database by navigating to the `src` folder and running
 Run the app
 
     ./gradlew :run
+    
+## Running tests
+To run the Blackbox tests, you will need to start the database and run the app as described above. Note that if you want to run individual tests through IntelliJ, you will need to manually run the `copySpec` Gradle task first.
 
 ## Project anatomy
 At the top level we have four folders of note:
