@@ -90,7 +90,7 @@ class CoverageTests : DatabaseTest()
         val response = requestHelper.get(url, minimumPermissions, contentType = "text/csv")
         var csvRows = schema.validate(response.text)
 
-        Assertions.assertThat(csvRows.first().value[2]).isEqualTo("1")
+        Assertions.assertThat(csvRows.first()[2]).isEqualTo("1")
 
     }
 
