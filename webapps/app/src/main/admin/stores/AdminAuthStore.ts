@@ -3,12 +3,7 @@ import { alt } from "../../shared/alt";
 
 class AdminAuthStore extends AuthStore<AuthStateBase, AuthStoreBaseInterface<AuthStateBase>> {
     initialState(): AuthStateBase {
-        return {
-            username: null,
-            permissions: null,
-            loggedIn: false,
-            bearerToken: null
-        }
+        return AuthStore.baseInitialState();
     }
 }
 

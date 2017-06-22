@@ -12,6 +12,7 @@ export interface AuthStateBase {
 
 export interface AuthStoreBaseInterface<TState> extends AltJS.AltStore<TState> {
     logIn(access_token: string): void;
+    loadAccessToken(): void;
 }
 
 export abstract class AuthStore<TState extends AuthStateBase, TInterface extends AuthStoreBaseInterface<TState>>
@@ -29,8 +30,26 @@ export abstract class AuthStore<TState extends AuthStateBase, TInterface extends
             handleLogOut: authActions.logOut,
         });
         this.exportPublicMethods({
-            logIn: accessToken => this.doLogIn(accessToken)
+            logIn: accessToken => this.doLogIn(accessToken),
+            loadAccessToken: () => {
+                if (typeof(Storage) !== "undefined") {
+                    const token = localStorage.getItem("accessToken");
+                    if (token) {
+                        console.log("Found access token in local storage. Restoring authenticated session");
+                        this.doLogIn(token);
+                    }
+                }
+            }
         })
+    }
+
+    static baseInitialState(): AuthStateBase {
+        return {
+            bearerToken: null,
+            loggedIn: false,
+            username: null,
+            permissions: []
+        };
     }
 
     protected doLogIn(accessToken: string) {
@@ -46,6 +65,10 @@ export abstract class AuthStore<TState extends AuthStateBase, TInterface extends
         this.bearerToken = props.token;
         this.username = props.username;
         this.permissions = props.permissions;
+
+        if (typeof(Storage) !== "undefined") {
+            localStorage.setItem("accessToken", this.bearerToken);
+        }
     }
 
     handleLogIn(props: LogInProperties) {
@@ -56,5 +79,8 @@ export abstract class AuthStore<TState extends AuthStateBase, TInterface extends
 
     handleLogOut() {
         alt.recycle();
+        if (typeof(Storage) !== "undefined") {
+            localStorage.clear();
+        }
     }
 }
