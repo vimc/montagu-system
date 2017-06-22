@@ -80,7 +80,7 @@ class UserTests : RepositoryTests<UserRepository>()
                     RoleAssignment("a", "idA", "prefixA"),
                     RoleAssignment("b", "idB", "prefixB"))
 
-            var user = repo.getUserByUsername("test.user")!!
+            var user = repo.getUserByUsernameWithRoles("test.user")!!
 
             assertThat(user.username).isEqualTo("test.user")
             assertThat(user.name).isEqualTo("Test User")
