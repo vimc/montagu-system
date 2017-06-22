@@ -20,6 +20,9 @@ class UserTests : DatabaseTest()
     fun `can get user by username`()
     {
         validate("/users/testuser") against "User" given {
+            it.addUserWithRoles("testuser",
+                    ReifiedRole("member", Scope.Specific("modelling-group", "group")),
+                    ReifiedRole("user", Scope.Global()))
             it.addUserWithRoles("testuser", ReifiedRole("member", Scope.Specific("modelling-group", "group")))
         } requiringPermissions {
             PermissionSet("*/users.read")

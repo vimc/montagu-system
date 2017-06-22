@@ -6,7 +6,7 @@ import org.vaccineimpact.api.security.MontaguUser
 
 interface UserRepository : Repository
 {
-    fun getUserByEmail(email: String): MontaguUser?
-    fun getUserByUsername(username: String): User?
-    fun getUserByUsernameWithRoles(username: String): UserWithRoles?
+    fun getMontaguUserByEmail(email: String): MontaguUser?
+    fun getUserByUsernameWithRoles(username: String): UserWithRoles
+    fun getUserByUsername(username: String): User
 }

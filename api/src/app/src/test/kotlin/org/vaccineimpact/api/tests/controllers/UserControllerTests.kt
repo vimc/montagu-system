@@ -55,24 +55,6 @@ class UserControllerTests : ControllerTests<UserController>()
         assertThat(controller.getUser(context)).isEqualToComparingFieldByField(user)
     }
 
-    @Test(expected = UnknownObjectError::class)
-    fun `getUserByUsername throws error`()
-    {
-        val userName = "test"
-        val user : User? = null
-
-        val controllerContext = mockControllerContext(mock<UserRepository> {
-            on { this.getUserByUsername(userName) } doReturn user
-        })
-        val context = mock<ActionContext> {
-            on { hasPermission(any()) } doReturn true
-            on { params(":username") } doReturn userName
-        }
-
-        val controller = UserController(controllerContext)
-        controller.getUser(context)
-    }
-
     private fun mockControllerContext(repo: UserRepository)
             = mockControllerContext(RepositoryMock({ it.user }, repo))
 }

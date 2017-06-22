@@ -23,16 +23,12 @@ class UserController(context: ControllerContext) : AbstractController(context)
         var user =
                 if (context.hasPermission(globalRoleReader))
                 {
-                    repos.user().use { it.getUserByUsernameWithRoles(userName(context)) }
+                    repos.user().use { it.getUserByUsernameWithRoles(userName) }
                 }
                 else
                 {
-                    repos.user().use { it.getUserByUsername(userName(context)) }
+                    repos.user().use { it.getUserByUsername(userName) }
                 }
-
-        if (user == null)
-            throw UnknownObjectError(userName, "Username")
-
 
         return user
     }
