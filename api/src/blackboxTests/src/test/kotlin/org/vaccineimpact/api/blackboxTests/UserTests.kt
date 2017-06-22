@@ -20,7 +20,9 @@ class UserTests : DatabaseTest()
     fun `can get user by username`()
     {
         validate("/users/testuser") against "User" given {
-            it.addUserWithRoles("testuser", ReifiedRole("member", Scope.Specific("modelling-group", "group")))
+            it.addUserWithRoles("testuser",
+                    ReifiedRole("member", Scope.Specific("modelling-group", "group")),
+                    ReifiedRole("user", Scope.Global()))
         } andCheck {
             Assertions.assertThat(it).isEqualTo(json {
                 obj(
@@ -32,7 +34,11 @@ class UserTests : DatabaseTest()
                                 obj(
                                         "name" to "member",
                                         "scope_id" to "group",
-                                        "scope_prefix" to "modelling-group"))
+                                        "scope_prefix" to "modelling-group"),
+                                obj(
+                                        "name" to "user",
+                                        "scope_id" to "",
+                                        "scope_prefix" to null))
                 )
             })
         }
