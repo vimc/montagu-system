@@ -1,7 +1,7 @@
 import { RouteMap, Router } from "simple-react-router";
 // Pages
 import { ResponsibilityOverviewPage } from "./Responsibilities/Overview/ResponsibilityOverviewPage";
-import { ChooseActionPage } from "./Group/ChooseActionPage";
+import { ChooseActionPage } from "./ChooseAction/ChooseActionPage";
 import { LoadingPage } from "./LoadingPage";
 import { DownloadCoveragePage } from "./Responsibilities/Coverage/DownloadCoveragePage";
 import { ContribLoginPage } from "./Login/ContribLoginPage";

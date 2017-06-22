@@ -3,13 +3,13 @@ import { expect } from "chai";
 import { mockTouchstone } from "../../../mocks/mockModels";
 import { Link } from "simple-react-router";
 
-import { TouchstoneLink } from "../../../../main/contrib/components/Group/TouchstoneLink";
+import { TouchstoneLink } from "../../../../main/contrib/components/ChooseAction/TouchstoneLink";
 import { Sandbox } from "../../../Sandbox";
 import { expectOneAction } from "../../../actionHelpers";
 import { Touchstone } from "../../../../main/shared/models/Generated";
 import { shallow } from "enzyme";
 
-const chooseStyles = require("../../../../main/contrib/components/Group/ChooseTouchstone.css");
+const chooseStyles = require("../../../../main/contrib/components/ChooseAction/ChooseTouchstone.css");
 
 function render(touchstone: Touchstone, selected: boolean) {
     return shallow(<TouchstoneLink touchstone={ touchstone } selected={ selected } />).find("div");

@@ -3,11 +3,11 @@ import { expect } from "chai";
 import {
     ChooseActionContentComponent,
     ChooseActionContentProps
-} from "../../../../main/contrib/components/Group/ChooseActionContent";
+} from "../../../../main/contrib/components/ChooseAction/ChooseActionContent";
 import { mockModellingGroup, mockTouchstone } from "../../../mocks/mockModels";
 import * as React from "react";
-import { TouchstoneList } from "../../../../main/contrib/components/Group/TouchstoneList";
-import { GroupList } from "../../../../main/contrib/components/Group/GroupList";
+import { TouchstoneList } from "../../../../main/contrib/components/ChooseAction/TouchstoneList";
+import { GroupList } from "../../../../main/contrib/components/ChooseAction/GroupList";
 import { ButtonLink } from "../../../../main/shared/components/ButtonLink";
 
 function render(props: ChooseActionContentProps): ShallowWrapper<any, any> {

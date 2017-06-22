@@ -5,10 +5,10 @@ import { mockTouchstone } from "../../../mocks/mockModels";
 import { Sandbox } from "../../../Sandbox";
 
 import { Touchstone } from "../../../../main/shared/models/Generated";
-import { TouchstoneList, TouchstoneListProps } from "../../../../main/contrib/components/Group/TouchstoneList";
-import { TouchstoneLink } from "../../../../main/contrib/components/Group/TouchstoneLink";
+import { TouchstoneList, TouchstoneListProps } from "../../../../main/contrib/components/ChooseAction/TouchstoneList";
+import { TouchstoneLink } from "../../../../main/contrib/components/ChooseAction/TouchstoneLink";
 
-const styles = require("../../../../main/contrib/components/Group/TouchstoneList.css");
+const styles = require("../../../../main/contrib/components/ChooseAction/TouchstoneList.css");
 
 function makeProps(selected?: Touchstone, touchstones?: Array<Touchstone>): TouchstoneListProps {
     return {
