@@ -9,6 +9,9 @@ import org.vaccineimpact.api.app.repositories.jooq.JooqUserRepository
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.Tables
 import org.vaccineimpact.api.models.Scope
+import org.vaccineimpact.api.models.User
+import org.vaccineimpact.api.models.UserWithRoles
+import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import org.vaccineimpact.api.models.permissions.ReifiedRole
 import org.vaccineimpact.api.models.permissions.RoleAssignment
@@ -26,7 +29,7 @@ class UserTests : RepositoryTests<UserRepository>()
 
     private fun addTestUser(db: JooqContext)
     {
-        UserHelper.saveUser(db.dsl, username, "Test User",email, "password")
+        UserHelper.saveUser(db.dsl, username, "Test User", email, "password")
     }
 
     @Test
@@ -51,8 +54,8 @@ class UserTests : RepositoryTests<UserRepository>()
     fun `can retrieve user with any case username`()
     {
         given(this::addTestUser).check { repo ->
-            assertThat(repo.getUserByUsername("test.user")).isNotNull()
-            assertThat(repo.getUserByUsername("Test.User")).isNotNull()
+            assertThat(repo.getUserByUsername("test.user", PermissionSet()) as User).isNotNull()
+            assertThat(repo.getUserByUsername("Test.User", PermissionSet()) as User).isNotNull()
         }
     }
 
@@ -60,7 +63,7 @@ class UserTests : RepositoryTests<UserRepository>()
     fun `throws unknown object error for incorrect username`()
     {
         given(this::addTestUser).check { repo ->
-            assertThatThrownBy { repo.getUserByUsername("Test User") }
+            assertThatThrownBy { repo.getUserByUsername("Test User", PermissionSet()) }
                     .isInstanceOf(UnknownObjectError::class.java)
         }
     }
@@ -83,7 +86,35 @@ class UserTests : RepositoryTests<UserRepository>()
                     RoleAssignment("a", "idA", "prefixA"),
                     RoleAssignment("b", "idB", "prefixB"))
 
-            var user = repo.getUserByUsernameWithRoles("test.user")!!
+            var permissions = PermissionSet(setOf(ReifiedPermission("roles.read", Scope.Global())))
+
+            var user = repo.getUserByUsername("test.user", permissions) as UserWithRoles
+
+            assertThat(user.username).isEqualTo("test.user")
+            assertThat(user.name).isEqualTo("Test User")
+            assertThat(user.email).isEqualTo("test@example.com")
+            assertThat(user.roles).hasSameElementsAs(expectedRoles)
+        }
+    }
+
+    @Test
+    fun `only returns roles in scope of logged in users role reading permissions`()
+    {
+        given {
+            addTestUser(it)
+            val roleGlobal = it.createRole("role", scopePrefix = null, description = "Role Global")
+            val roleA = it.createRole("a", scopePrefix = "prefixA", description = "Role A")
+            val roleB = it.createRole("b", scopePrefix = "prefixB", description = "Role B")
+            it.ensureUserHasRole("test.user", roleGlobal, scopeId = "")
+            it.ensureUserHasRole("test.user", roleA, scopeId = "idA")
+            it.ensureUserHasRole("test.user", roleB, scopeId = "idB")
+        } check { repo ->
+
+            val expectedRoles = listOf(RoleAssignment("a", "idA", "prefixA"))
+
+            var permissions = PermissionSet(setOf(ReifiedPermission("roles.read", Scope.Specific("prefixA", "idA"))))
+
+            var user = repo.getUserByUsername("test.user", permissions) as UserWithRoles
 
             assertThat(user.username).isEqualTo("test.user")
             assertThat(user.name).isEqualTo("Test User")

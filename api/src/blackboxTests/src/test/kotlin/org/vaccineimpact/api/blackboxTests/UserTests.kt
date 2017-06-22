@@ -23,7 +23,6 @@ class UserTests : DatabaseTest()
             it.addUserWithRoles("testuser",
                     ReifiedRole("member", Scope.Specific("modelling-group", "group")),
                     ReifiedRole("user", Scope.Global()))
-            it.addUserWithRoles("testuser", ReifiedRole("member", Scope.Specific("modelling-group", "group")))
         } requiringPermissions {
             PermissionSet("*/users.read")
         } andCheck {
@@ -74,10 +73,37 @@ class UserTests : DatabaseTest()
     }
 
     @Test
+    fun `returns user with scoped roles if logged in user has specific scope role read perm`()
+    {
+        validate("/users/testuser") against "User" given {
+            it.addUserWithRoles("testuser",
+                    ReifiedRole("member", Scope.Specific("modelling-group", "group")),
+                    ReifiedRole("member", Scope.Specific("modelling-group", "group2")),
+                    ReifiedRole("touchstone-preparer", Scope.Global()))
+        } withPermissions {
+            PermissionSet("*/users.read", "modelling-group:group/roles.read")
+        } andCheck {
+            Assertions.assertThat(it).isEqualTo(json {
+                obj(
+                        "username" to "testuser",
+                        "name" to "Test User",
+                        "email" to "testuser@example.com",
+                        "last_logged_in" to null,
+                        "roles" to array(
+                                obj(
+                                        "name" to "member",
+                                        "scope_id" to "group",
+                                        "scope_prefix" to "modelling-group"))
+                )
+            })
+        }
+    }
+
+    @Test
     fun `returns 404 and descriptive error code if username does not exist`()
     {
         val requestHelper = RequestHelper()
-        var userHelper = TestUserHelper()
+        val userHelper = TestUserHelper()
 
         JooqContext().use {
             userHelper.setupTestUser(it)

@@ -2,7 +2,6 @@ package org.vaccineimpact.api.app.controllers
 
 import org.vaccineimpact.api.app.ActionContext
 import org.vaccineimpact.api.app.controllers.endpoints.SecuredEndpoint
-import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.models.Scope
 import org.vaccineimpact.api.models.UserInterface
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
@@ -14,23 +13,11 @@ class UserController(context: ControllerContext) : AbstractController(context)
             SecuredEndpoint("/:username/", this::getUser, setOf("*/users.read"))
     )
 
-    private val globalRoleReader = ReifiedPermission("roles.read", Scope.Global())
-
     fun getUser(context: ActionContext): UserInterface
     {
         var userName = userName(context)
 
-        var user =
-                if (context.hasPermission(globalRoleReader))
-                {
-                    repos.user().use { it.getUserByUsernameWithRoles(userName) }
-                }
-                else
-                {
-                    repos.user().use { it.getUserByUsername(userName) }
-                }
-
-        return user
+        return repos.user().use { it.getUserByUsername(userName, context.permissions) }
     }
 
     private fun userName(context: ActionContext): String = context.params(":username")
