@@ -4,8 +4,6 @@ import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import org.vaccineimpact.api.models.permissions.ReifiedRole
 import java.sql.Timestamp
 
-typealias Username = String
-
 data class MontaguUser(
         val properties: UserProperties,
         val roles: List<ReifiedRole>,
