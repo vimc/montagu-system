@@ -6,7 +6,7 @@ import org.jooq.impl.DSL
 import java.sql.Connection
 import java.sql.DriverManager
 
-class JooqContext(val dbName: String? = null) : AutoCloseable
+open class JooqContext(val dbName: String? = null) : AutoCloseable
 {
     private val conn = getConnection()
     val dsl = createDSL(conn)
