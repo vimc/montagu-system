@@ -1,14 +1,12 @@
 package org.vaccineimpact.api.app.repositories
 
-import org.jooq.Record
-import org.jooq.Result
-import org.vaccineimpact.api.models.UserDto
-import org.vaccineimpact.api.models.UserWithRolesDto
-import org.vaccineimpact.api.models.permissions.User
+import org.vaccineimpact.api.models.User
+import org.vaccineimpact.api.models.UserWithRoles
+import org.vaccineimpact.api.security.MontaguUser
 
 interface UserRepository : Repository
 {
-    fun getUserByEmail(email: String): User?
-    fun getUserByUsername(username: String): UserDto?
-    fun getUserByUsernameWithRoles(username: String): UserWithRolesDto?
+    fun getUserByEmail(email: String): MontaguUser?
+    fun getUserByUsername(username: String): User?
+    fun getUserByUsernameWithRoles(username: String): UserWithRoles?
 }
