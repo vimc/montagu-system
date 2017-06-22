@@ -15,11 +15,8 @@ class UserController(context: ControllerContext) : AbstractController(context)
     fun getUser(context: ActionContext): User
     {
         var userName = userName(context)
-        var user = repos.user().use { it.getUserByUsername(userName)  }
-        if (user == null)
-            throw UnknownObjectError(userName, "Username")
 
-        return user
+        return repos.user().use { it.getUserByUsername(userName)  }
     }
 
     private fun userName(context: ActionContext): String = context.params(":username")

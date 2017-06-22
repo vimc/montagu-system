@@ -42,7 +42,7 @@ class DatabasePasswordAuthenticator : Authenticator<UsernamePasswordCredentials>
     private fun validate(email: String, password: String): MontaguUser
     {
         return JooqUserRepository().use { repo ->
-            val user = repo.getUserByEmail(email)
+            val user = repo.getMontaguUserByEmail(email)
             if (user == null)
             {
                 throw CredentialsException("Unknown email '$email'")

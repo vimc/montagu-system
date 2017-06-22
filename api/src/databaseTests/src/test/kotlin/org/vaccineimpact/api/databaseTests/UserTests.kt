@@ -1,7 +1,9 @@
 package org.vaccineimpact.api.databaseTests
 
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
+import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.repositories.UserRepository
 import org.vaccineimpact.api.app.repositories.jooq.JooqUserRepository
 import org.vaccineimpact.api.db.JooqContext
@@ -40,8 +42,8 @@ class UserTests : RepositoryTests<UserRepository>()
     fun `cannot retrieve user with incorrect email address`()
     {
         given(this::addTestUser).check { repo ->
-            assertThat(repo.getUserByEmail(username)).isNull()
-            assertThat(repo.getUserByEmail("Test User")).isNull()
+            assertThat(repo.getMontaguUserByEmail(username)).isNull()
+            assertThat(repo.getMontaguUserByEmail("Test User")).isNull()
         }
     }
 
@@ -55,10 +57,11 @@ class UserTests : RepositoryTests<UserRepository>()
     }
 
     @Test
-    fun `cannot retrieve user with incorrect username`()
+    fun `throws unknown object error for incorrect username`()
     {
         given(this::addTestUser).check { repo ->
-            assertThat(repo.getUserByUsername("Test User")).isNull()
+            assertThatThrownBy { repo.getUserByUsername("Test User") }
+                    .isInstanceOf(UnknownObjectError::class.java)
         }
     }
 
@@ -80,7 +83,7 @@ class UserTests : RepositoryTests<UserRepository>()
                     RoleAssignment("a", "idA", "prefixA"),
                     RoleAssignment("b", "idB", "prefixB"))
 
-            var user = repo.getUserByUsername("test.user")!!
+            var user = repo.getUserByUsername("test.user")
 
             assertThat(user.username).isEqualTo("test.user")
             assertThat(user.name).isEqualTo("Test User")
@@ -154,7 +157,7 @@ class UserTests : RepositoryTests<UserRepository>()
 
     private fun getUser(repository: UserRepository, email: String): MontaguUser
     {
-        val user = repository.getUserByEmail(email)
+        val user = repository.getMontaguUserByEmail(email)
         assertThat(user).isNotNull()
         return user!!
     }
