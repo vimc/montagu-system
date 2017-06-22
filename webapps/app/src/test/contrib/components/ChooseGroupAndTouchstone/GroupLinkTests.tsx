@@ -8,9 +8,9 @@ import { expectOneAction } from "../../../actionHelpers";
 import { alt } from "../../../../main/shared/alt";
 import { modellingGroupActions } from "../../../../main/contrib/actions/ModellingGroupActions";
 
-import { GroupLink } from "../../../../main/contrib/components/ChooseGroupAndTouchstone/GroupLink";
+import { GroupLink } from "../../../../main/contrib/components/Group/GroupLink";
 
-const styles = require("../../../../main/contrib/components/ChooseGroupAndTouchstone/Choose.css");
+const styles = require("../../../../main/contrib/components/Group/ChooseTouchstone.css");
 
 describe("GroupLink", () => {
     const sandbox = new Sandbox();

@@ -4,8 +4,8 @@ import { expect } from "chai";
 
 import { mockModellingGroup } from "../../../mocks/mockModels";
 
-import { GroupList } from "../../../../main/contrib/components/ChooseGroupAndTouchstone/GroupList";
-import { GroupLink } from "../../../../main/contrib/components/ChooseGroupAndTouchstone/GroupLink";
+import { GroupList } from "../../../../main/contrib/components/Group/GroupList";
+import { GroupLink } from "../../../../main/contrib/components/Group/GroupLink";
 
 describe("GroupList", () => {
     it("renders one group link per group", () => {

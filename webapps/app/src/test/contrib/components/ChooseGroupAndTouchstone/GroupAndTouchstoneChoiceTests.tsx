@@ -1,17 +1,17 @@
 import { shallow, ShallowWrapper } from "enzyme";
 import { expect } from "chai";
 import {
-    GroupAndTouchstoneChoiceComponent,
-    GroupAndTouchstoneChoiceProps
-} from "../../../../main/contrib/components/ChooseGroupAndTouchstone/GroupAndTouchstoneChoice";
+    ChooseActionContentComponent,
+    ChooseActionContentProps
+} from "../../../../main/contrib/components/Group/ChooseActionContent";
 import { mockModellingGroup, mockTouchstone } from "../../../mocks/mockModels";
 import * as React from "react";
-import { TouchstoneList } from "../../../../main/contrib/components/ChooseGroupAndTouchstone/TouchstoneList";
-import { GroupList } from "../../../../main/contrib/components/ChooseGroupAndTouchstone/GroupList";
+import { TouchstoneList } from "../../../../main/contrib/components/Group/TouchstoneList";
+import { GroupList } from "../../../../main/contrib/components/Group/GroupList";
 import { ButtonLink } from "../../../../main/shared/components/ButtonLink";
 
-function render(props: GroupAndTouchstoneChoiceProps): ShallowWrapper<any, any> {
-    return shallow(<GroupAndTouchstoneChoiceComponent { ...props } />);
+function render(props: ChooseActionContentProps): ShallowWrapper<any, any> {
+    return shallow(<ChooseActionContentComponent { ...props } />);
 }
 function makeProps(properties: any) {
     return Object.assign({
@@ -23,7 +23,7 @@ function makeProps(properties: any) {
     }, properties);
 }
 
-function checkButton(expectEnabled: boolean, props: GroupAndTouchstoneChoiceProps): ShallowWrapper<any, any> {
+function checkButton(expectEnabled: boolean, props: ChooseActionContentProps): ShallowWrapper<any, any> {
     const rendered = render(props);
     const button = rendered.find(ButtonLink);
     expect(button.prop("disabled")).to.equal(!expectEnabled);
@@ -33,7 +33,7 @@ function checkButton(expectEnabled: boolean, props: GroupAndTouchstoneChoiceProp
     return button;
 }
 
-describe("GroupAndTouchstoneChoiceComponent", () => {
+describe("ChooseGroupContentComponent", () => {
     it("renders TouchstoneList", () => {
         const touchstones = [ mockTouchstone(), mockTouchstone() ];
         const props = makeProps({

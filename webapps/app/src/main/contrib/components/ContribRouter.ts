@@ -1,12 +1,13 @@
 import { RouteMap, Router } from "simple-react-router";
 // Pages
 import { ResponsibilityOverviewPage } from "./Responsibilities/Overview/ResponsibilityOverviewPage";
-import { ChooseGroupAndTouchstonePage } from "./ChooseGroupAndTouchstone/ChooseGroupAndTouchstonePage";
+import { ChooseActionPage } from "./Group/ChooseActionPage";
 import { LoadingPage } from "./LoadingPage";
 import { DownloadCoveragePage } from "./Responsibilities/Coverage/DownloadCoveragePage";
 import { ContribLoginPage } from "./Login/ContribLoginPage";
 import { ContribNoRouteFoundPage } from "./ContribNoRouteFoundPage";
 import { appSettings } from "../../shared/Settings";
+import { ChooseGroupPage } from "./ChooseGroup/ChooseGroupPage";
 
 interface RoutingProperties {
     loggedIn: boolean;
@@ -22,7 +23,8 @@ export class ContribRouter extends Router<RoutingProperties> {
 
         if (loggedIn) {
             if (loaded) {
-                map('/', ChooseGroupAndTouchstonePage);
+                map('/', ChooseGroupPage);
+                map('/:groupId/', ChooseActionPage);
                 map('/:groupId/responsibilities/:touchstoneId', ResponsibilityOverviewPage);
                 map('/:groupId/responsibilities/:touchstoneId/:scenarioId', DownloadCoveragePage);
                 map('*', ContribNoRouteFoundPage);

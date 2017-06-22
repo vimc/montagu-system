@@ -138,10 +138,6 @@ class ResponsibilityStore extends AbstractStore<ResponsibilityState, Responsibil
     handleUpdateTouchstones(touchstones: Array<Touchstone>) {
         this.touchstones = touchstones;
         this.ready = true;
-        const open = touchstones.find(x => x.status == "open");
-        if (open) {
-            this.currentTouchstone = open;
-        }
     }
     handleUpdateCoverageSets(data: ScenarioTouchstoneAndCoverageSets) {
         this.responsibilitySet.addCoverageSets(data.scenario.id, data.coverage_sets);
