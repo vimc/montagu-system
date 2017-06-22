@@ -17,7 +17,6 @@ open class ModellingGroupController(context: ControllerContext)
     private val groupScope = "modelling-group:<group-id>"
     val responsibilityPermissions = setOf(
             "*/scenarios.read",
-            "$groupScope/responsibilities.read",
             "$groupScope/responsibilities.read"
     )
     val coveragePermissions = responsibilityPermissions + "$groupScope/coverage.read"

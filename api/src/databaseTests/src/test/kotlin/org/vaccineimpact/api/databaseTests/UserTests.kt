@@ -1,7 +1,9 @@
 package org.vaccineimpact.api.databaseTests
 
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
+import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.repositories.UserRepository
 import org.vaccineimpact.api.app.repositories.jooq.JooqUserRepository
 import org.vaccineimpact.api.db.JooqContext
@@ -9,7 +11,8 @@ import org.vaccineimpact.api.db.Tables
 import org.vaccineimpact.api.models.Scope
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import org.vaccineimpact.api.models.permissions.ReifiedRole
-import org.vaccineimpact.api.models.permissions.User
+import org.vaccineimpact.api.models.permissions.RoleAssignment
+import org.vaccineimpact.api.security.MontaguUser
 import org.vaccineimpact.api.security.UserHelper
 import org.vaccineimpact.api.security.createRole
 import org.vaccineimpact.api.security.ensureUserHasRole
@@ -39,13 +42,58 @@ class UserTests : RepositoryTests<UserRepository>()
     fun `cannot retrieve user with incorrect email address`()
     {
         given(this::addTestUser).check { repo ->
-            assertThat(repo.getUserByEmail(username)).isNull()
-            assertThat(repo.getUserByEmail("Test User")).isNull()
+            assertThat(repo.getMontaguUserByEmail(username)).isNull()
+            assertThat(repo.getMontaguUserByEmail("Test User")).isNull()
         }
     }
 
     @Test
-    fun `can retrieve user with globally scoped permissions`()
+    fun `can retrieve user with any case username`()
+    {
+        given(this::addTestUser).check { repo ->
+            assertThat(repo.getUserByUsername("test.user")).isNotNull()
+            assertThat(repo.getUserByUsername("Test.User")).isNotNull()
+        }
+    }
+
+    @Test
+    fun `throws unknown object error for incorrect username`()
+    {
+        given(this::addTestUser).check { repo ->
+            assertThatThrownBy { repo.getUserByUsername("Test User") }
+                    .isInstanceOf(UnknownObjectError::class.java)
+        }
+    }
+
+    @Test
+    fun `retrieves user by username with roles`()
+    {
+        given {
+            addTestUser(it)
+            val roleGlobal = it.createRole("role", scopePrefix = null, description = "Role Global")
+            val roleA = it.createRole("a", scopePrefix = "prefixA", description = "Role A")
+            val roleB = it.createRole("b", scopePrefix = "prefixB", description = "Role B")
+            it.ensureUserHasRole("test.user", roleGlobal, scopeId = "")
+            it.ensureUserHasRole("test.user", roleA, scopeId = "idA")
+            it.ensureUserHasRole("test.user", roleB, scopeId = "idB")
+        } check { repo ->
+
+            val expectedRoles = listOf(
+                    RoleAssignment("role", null, null),
+                    RoleAssignment("a", "idA", "prefixA"),
+                    RoleAssignment("b", "idB", "prefixB"))
+
+            var user = repo.getUserByUsername("test.user")
+
+            assertThat(user.username).isEqualTo("test.user")
+            assertThat(user.name).isEqualTo("Test User")
+            assertThat(user.email).isEqualTo("test@example.com")
+            assertThat(user.roles).hasSameElementsAs(expectedRoles)
+        }
+    }
+
+    @Test
+    fun `can retrieve user by email with globally scoped permissions`()
     {
         given {
             addTestUser(it)
@@ -64,7 +112,7 @@ class UserTests : RepositoryTests<UserRepository>()
     }
 
     @Test
-    fun `can retrieve user with specifically scoped permissions`()
+    fun `can retrieve user by email with specifically scoped permissions`()
     {
         given {
             addTestUser(it)
@@ -96,7 +144,7 @@ class UserTests : RepositoryTests<UserRepository>()
     }
 
     private fun checkUser(
-            user: User,
+            user: MontaguUser,
             expectedRoles: List<ReifiedRole> = emptyList(),
             expectedPermissions: List<ReifiedPermission> = emptyList())
     {
@@ -107,9 +155,9 @@ class UserTests : RepositoryTests<UserRepository>()
         assertThat(user.permissions).hasSameElementsAs(expectedPermissions)
     }
 
-    private fun getUser(repository: UserRepository, email: String): User
+    private fun getUser(repository: UserRepository, email: String): MontaguUser
     {
-        val user = repository.getUserByEmail(email)
+        val user = repository.getMontaguUserByEmail(email)
         assertThat(user).isNotNull()
         return user!!
     }
