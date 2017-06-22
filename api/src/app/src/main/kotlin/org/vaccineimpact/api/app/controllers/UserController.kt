@@ -10,7 +10,6 @@ class UserController(context: ControllerContext) : AbstractController(context)
 {
     override val urlComponent = "/users"
     override val endpoints = listOf(
-          //  BasicEndpoint("/", this::getUsers),
             SecuredEndpoint("/:username/", this::getUser, emptySet())
     )
 
@@ -23,11 +22,6 @@ class UserController(context: ControllerContext) : AbstractController(context)
 
         return user
     }
-//
-//    fun getUsers(context: ActionContext) : Result<Record>?
-//    {
-//        return repos.user().use { it.getAllUsers() }
-//    }
 
     private fun userName(context: ActionContext): String = context.params(":username")
 }

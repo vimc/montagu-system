@@ -53,16 +53,4 @@ class UserTests : DatabaseTest()
         Assertions.assertThat(response.statusCode).isEqualTo(404)
     }
 
-//    @Test
-//    fun `can get disease`()
-//    {
-//        validate("/diseases/HepB/") against "User" given {
-//            it.addUserWithRoles("group.admin", ReifiedRole("member", Scope.Specific("modelling-group", "group")))
-//        } andCheck {
-//            Assertions.assertThat(it).isEqualTo(json { obj(
-//                    "id" to "HepB",
-//                    "name" to "Hepatitis B"
-//            )})
-//        }
-//    }
 }
