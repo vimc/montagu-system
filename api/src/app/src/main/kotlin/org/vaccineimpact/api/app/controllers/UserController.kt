@@ -1,10 +1,9 @@
 package org.vaccineimpact.api.app.controllers
 
 import org.vaccineimpact.api.app.ActionContext
-import org.vaccineimpact.api.app.controllers.endpoints.BasicEndpoint
 import org.vaccineimpact.api.app.controllers.endpoints.SecuredEndpoint
 import org.vaccineimpact.api.app.errors.UnknownObjectError
-import org.vaccineimpact.api.models.UserDto
+import org.vaccineimpact.api.models.User
 
 class UserController(context: ControllerContext) : AbstractController(context)
 {
@@ -13,7 +12,7 @@ class UserController(context: ControllerContext) : AbstractController(context)
             SecuredEndpoint("/:username/", this::getUser, emptySet())
     )
 
-    fun getUser(context: ActionContext): UserDto
+    fun getUser(context: ActionContext): User
     {
         var userName = userName(context)
         var user = repos.user().use { it.getUserByUsername(userName(context))  }

@@ -6,8 +6,8 @@ import org.junit.Before
 import org.junit.Test
 import org.vaccineimpact.api.models.permissions.ReifiedRole
 import org.vaccineimpact.api.models.Scope
-import org.vaccineimpact.api.models.permissions.User
-import org.vaccineimpact.api.models.permissions.UserProperties
+import org.vaccineimpact.api.security.MontaguUser
+import org.vaccineimpact.api.security.UserProperties
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import org.vaccineimpact.api.security.MontaguTokenAuthenticator
 import org.vaccineimpact.api.security.WebTokenHelper
@@ -44,7 +44,7 @@ class WebTokenHelperTests : MontaguTests()
     @Test
     fun `can generate token`()
     {
-        val token = helper.generateToken(User(properties, roles, permissions))
+        val token = helper.generateToken(MontaguUser(properties, roles, permissions))
         val claims = helper.verify(token)
 
         assertThat(claims["iss"]).isEqualTo("vaccineimpact.org")
@@ -73,7 +73,7 @@ class WebTokenHelperTests : MontaguTests()
     @Test
     fun `token fails validation when issuer is wrong`()
     {
-        val claims = helper.claims(User(properties, roles, permissions))
+        val claims = helper.claims(MontaguUser(properties, roles, permissions))
         val badToken = helper.generator.generate(claims.plus("iss" to "unexpected.issuer"))
         val verifier = MontaguTokenAuthenticator(helper)
         assertThat(verifier.validateToken(badToken)).isNull()
@@ -83,7 +83,7 @@ class WebTokenHelperTests : MontaguTests()
     @Test
     fun `token fails validation when token is old`()
     {
-        val claims = helper.claims(User(properties, roles, permissions))
+        val claims = helper.claims(MontaguUser(properties, roles, permissions))
         val badToken = helper.generator.generate(claims.plus("exp" to Date.from(Instant.now())))
         val verifier = MontaguTokenAuthenticator(helper)
         assertThat(verifier.validateToken(badToken)).isNull()
@@ -94,7 +94,7 @@ class WebTokenHelperTests : MontaguTests()
     fun `token fails validation when token is signed by wrong key`()
     {
         val sauron = WebTokenHelper()
-        val evilToken = sauron.generateToken(User(properties, roles, permissions))
+        val evilToken = sauron.generateToken(MontaguUser(properties, roles, permissions))
         val verifier = MontaguTokenAuthenticator(helper)
         assertThat(verifier.validateToken(evilToken)).isNull()
         assertThatThrownBy { helper.verify(evilToken) }

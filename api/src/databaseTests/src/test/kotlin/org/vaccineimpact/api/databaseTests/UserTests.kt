@@ -10,7 +10,7 @@ import org.vaccineimpact.api.models.Scope
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import org.vaccineimpact.api.models.permissions.ReifiedRole
 import org.vaccineimpact.api.models.permissions.RoleAssignment
-import org.vaccineimpact.api.models.permissions.User
+import org.vaccineimpact.api.security.MontaguUser
 import org.vaccineimpact.api.security.UserHelper
 import org.vaccineimpact.api.security.createRole
 import org.vaccineimpact.api.security.ensureUserHasRole
@@ -141,7 +141,7 @@ class UserTests : RepositoryTests<UserRepository>()
     }
 
     private fun checkUser(
-            user: User,
+            user: MontaguUser,
             expectedRoles: List<ReifiedRole> = emptyList(),
             expectedPermissions: List<ReifiedPermission> = emptyList())
     {
@@ -152,7 +152,7 @@ class UserTests : RepositoryTests<UserRepository>()
         assertThat(user.permissions).hasSameElementsAs(expectedPermissions)
     }
 
-    private fun getUser(repository: UserRepository, email: String): User
+    private fun getUser(repository: UserRepository, email: String): MontaguUser
     {
         val user = repository.getUserByEmail(email)
         assertThat(user).isNotNull()

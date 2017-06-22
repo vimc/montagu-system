@@ -12,7 +12,7 @@ import org.vaccineimpact.api.app.security.USER_OBJECT
 import org.vaccineimpact.api.models.AuthenticationResponse
 import org.vaccineimpact.api.models.FailedAuthentication
 import org.vaccineimpact.api.models.SuccessfulAuthentication
-import org.vaccineimpact.api.models.permissions.User
+import org.vaccineimpact.api.security.MontaguUser
 import spark.Spark.before
 import spark.route.HttpMethod
 
@@ -51,5 +51,5 @@ class AuthenticationController(context: ControllerContext) : AbstractController(
     }
 
     private fun getUserFromUserProfile(context: ActionContext)
-        = context.userProfile.getAttribute(USER_OBJECT) as User
+        = context.userProfile.getAttribute(USER_OBJECT) as MontaguUser
 }
