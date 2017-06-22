@@ -1,20 +1,20 @@
 import * as React from "react";
 import { expect } from "chai";
 import { shallow } from "enzyme";
-import { mockTouchstone } from "../../../mocks/mockModels";
+import { mockModellingGroup, mockTouchstone } from "../../../mocks/mockModels";
 import { Sandbox } from "../../../Sandbox";
 
 import { Touchstone } from "../../../../main/shared/models/Generated";
-import { TouchstoneList, TouchstoneListProps } from "../../../../main/contrib/components/ChooseGroupAndTouchstone/TouchstoneList";
-import { TouchstoneLink } from "../../../../main/contrib/components/ChooseGroupAndTouchstone/TouchstoneLink";
+import { TouchstoneList, TouchstoneListProps } from "../../../../main/contrib/components/ChooseAction/TouchstoneList";
+import { ButtonLink } from "../../../../main/shared/components/ButtonLink";
 
-const styles = require("../../../../main/contrib/components/ChooseGroupAndTouchstone/TouchstoneList.css");
+const styles = require("../../../../main/contrib/components/ChooseAction/TouchstoneList.css");
 
-function makeProps(selected?: Touchstone, touchstones?: Array<Touchstone>): TouchstoneListProps {
+function makeProps(touchstones?: Array<Touchstone>): TouchstoneListProps {
     return {
         ready: true,
         touchstones: touchstones || [],
-        selected: selected || null
+        group: mockModellingGroup({ id: "gId" })
     };
 }
 
@@ -36,7 +36,7 @@ describe('TouchstoneListComponent renders', () => {
             mockTouchstone({ id: "touchstone-1", description: "Description 1", status: "finished" }),
             mockTouchstone({ id: "touchstone-2", description: "Description 2", status: "finished" })
         ];
-        const props = makeProps(null, touchstones);
+        const props = makeProps(touchstones);
         const rendered = shallow(<TouchstoneList {...props} />);
         const children = rendered.find(`.${styles.finishedTouchstones}`).find("li");
         expect(children).to.have.length(2);
@@ -44,10 +44,7 @@ describe('TouchstoneListComponent renders', () => {
         // Check the first link in detail
         const first = children.at(0);
         expect(first.key()).to.equal("touchstone-1");
-        expect(first.find(TouchstoneLink).props()).to.eql({
-            selected: false,
-            touchstone: touchstones[0]
-        });
+        expect(first.find(ButtonLink).prop("href")).to.eql("/gId/responsibilities/touchstone-1/");
 
         // Also do a basic test on the other one, to make sure it's different
         expect(children.at(1).key()).to.equal("touchstone-2");
@@ -61,23 +58,9 @@ describe('TouchstoneListComponent renders', () => {
 
     it("link when there is an open touchstone", () => {
         const touchstone = mockTouchstone({ id: "touchstone-1", description: "Description 1", status: "open" });
-        const props = makeProps(null, [ touchstone ]);
+        const props = makeProps([ touchstone ]);
         const rendered = sandbox.mount(<TouchstoneList {...props} />);
-        const link = rendered.find(`.${styles.openTouchstone}`).find(TouchstoneLink);
-        expect(link.props()).to.eql({
-            selected: false,
-            touchstone: touchstone
-        });
-    });
-
-    it("selected link for selected touchstone", () => {
-        const touchstone = mockTouchstone({ id: "touchstone-1", description: "Description 1", status: "open" });
-        const props = makeProps(touchstone, [ touchstone ]);
-        const rendered = sandbox.mount(<TouchstoneList {...props} />);
-        const link = rendered.find(`.${styles.openTouchstone}`).find(TouchstoneLink);
-        expect(link.props()).to.eql({
-            selected: true,
-            touchstone: touchstone
-        });
+        const link = rendered.find(`.${styles.openTouchstone}`).find(ButtonLink);
+        expect(link.prop("href")).to.eql("/gId/responsibilities/touchstone-1/");
     });
 });

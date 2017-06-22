@@ -1,45 +1,24 @@
 import * as React from "react";
-import { Touchstone } from "../../../shared/models/Generated";
+import { ModellingGroup, Touchstone } from "../../../shared/models/Generated";
 import { RemoteContent } from "../../../shared/models/RemoteContent";
-import { responsibilityStore } from "../../stores/ResponsibilityStore";
-import { TouchstoneLink, TouchstoneLinkProps } from "./TouchstoneLink";
+import { ButtonLink } from "../../../shared/components/ButtonLink";
 
 const commonStyles = require("../../../shared/styles/common.css");
 const styles = require("./TouchstoneList.css");
-const chooseStyles = require("./Choose.css");
+const chooseStyles = require("./ChooseTouchstone.css");
 
 export interface TouchstoneListProps extends RemoteContent {
     touchstones: Touchstone[];
-    selected: Touchstone;
+    group: ModellingGroup;
 }
 
 export class TouchstoneList extends React.Component<TouchstoneListProps, undefined> {
-    static getStores() {
-        return [ responsibilityStore ];
-    }
-
-    static getPropsFromStores(): TouchstoneListProps {
-        const state = responsibilityStore.getState();
-        return {
-            touchstones: state.touchstones,
-            selected: state.currentTouchstone,
-            ready: state.ready
-        };
-    }
-
-    private getLinkProps(touchstone: Touchstone): TouchstoneLinkProps {
-        return {
-            touchstone: touchstone,
-            selected: this.props.selected == touchstone
-        };
-    }
-
     renderFinished(content: TouchstoneListProps): JSX.Element {
         const finished = content.touchstones.filter(x => x.status != "open");
         if (finished.length > 0) {
             const items = finished.map((touchstone: Touchstone) =>
                 <li key={ touchstone.id}>
-                    <TouchstoneLink { ...this.getLinkProps(touchstone) } />
+                    { this.renderButton(touchstone) }
                 </li>
             );
             return <ul className={ chooseStyles.list }>{ items }</ul>
@@ -51,10 +30,15 @@ export class TouchstoneList extends React.Component<TouchstoneListProps, undefin
     renderOpen(content: TouchstoneListProps): JSX.Element {
         const open = content.touchstones.find(x => x.status == "open");
         if (open) {
-            return <TouchstoneLink { ...this.getLinkProps(open) } />
+            return this.renderButton(open);
         } else {
             return <div>There is no open touchstone currently.</div>
         }
+    }
+
+    renderButton(touchstone: Touchstone): JSX.Element {
+        const url = `/${this.props.group.id}/responsibilities/${touchstone.id}/`;
+        return <ButtonLink className={ chooseStyles.choice } href={ url }>{ touchstone.description }</ButtonLink>
     }
 
     render(): JSX.Element {
