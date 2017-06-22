@@ -11,7 +11,7 @@ fun addToGroup(args: List<String>)
 
 data class AddUserToGroupOptions(
         val username: String,
-        val groups: GroupDefinition
+        val groups: Groups
 )
 {
     companion object
@@ -34,11 +34,11 @@ data class AddUserToGroupOptions(
                     {
                         throw ActionException("Cannot combine the 'ALL' groups option with a list of groups")
                     }
-                    GroupDefinition.AllGroups()
+                    Groups.AllGroups()
                 }
                 else
                 {
-                    GroupDefinition.GroupList(args.drop(1))
+                    Groups.GroupList(args.drop(1))
                 }
                 return AddUserToGroupOptions(username, groups)
             }

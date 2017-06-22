@@ -7,12 +7,12 @@ import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.direct.addGroup
 import org.vaccineimpact.api.test_helpers.DatabaseTest
 
-class GroupDefinitionTests : DatabaseTest()
+class GroupsTests : DatabaseTest()
 {
     @Test
     fun `GroupList getGroups just returns list`()
     {
-        val def = GroupDefinition.GroupList(listOf("a", "b"))
+        val def = Groups.GroupList(listOf("a", "b"))
         val groups = def.getGroups(mock<JooqContext>())
         assertThat(groups).isEqualTo(listOf("a", "b"))
     }
@@ -20,7 +20,7 @@ class GroupDefinitionTests : DatabaseTest()
     @Test
     fun `AllGroups returns all current groups in database`()
     {
-        val def = GroupDefinition.AllGroups()
+        val def = Groups.AllGroups()
         val groups = JooqContext().use { db ->
             db.addGroup("a", "A")
             db.addGroup("b2", "B")

@@ -3,15 +3,15 @@ package org.vaccineimpact.api.security
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.Tables.MODELLING_GROUP
 
-sealed class GroupDefinition
+sealed class Groups
 {
     abstract fun getGroups(db: JooqContext): Iterable<String>
 
-    data class GroupList(val groups: List<String>): GroupDefinition()
+    data class GroupList(val groups: List<String>): Groups()
     {
         override fun getGroups(db: JooqContext) = groups
     }
-    class AllGroups: GroupDefinition()
+    class AllGroups: Groups()
     {
         override fun getGroups(db: JooqContext): Iterable<String>
         {

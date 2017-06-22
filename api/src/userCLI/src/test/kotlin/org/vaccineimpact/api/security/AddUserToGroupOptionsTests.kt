@@ -13,7 +13,7 @@ class AddUserToGroupOptionsTests : MontaguTests()
         val options = AddUserToGroupOptions.parseArgs(listOf("username", "group"))
         assertThat(options).isEqualTo(AddUserToGroupOptions(
                 "username",
-                GroupDefinition.GroupList(listOf("group"))
+                Groups.GroupList(listOf("group"))
         ))
     }
 
@@ -23,7 +23,7 @@ class AddUserToGroupOptionsTests : MontaguTests()
         val options = AddUserToGroupOptions.parseArgs(listOf("username", "a", "b", "c"))
         assertThat(options).isEqualTo(AddUserToGroupOptions(
                 "username",
-                GroupDefinition.GroupList(listOf("a", "b", "c"))
+                Groups.GroupList(listOf("a", "b", "c"))
         ))
     }
 
@@ -33,7 +33,7 @@ class AddUserToGroupOptionsTests : MontaguTests()
         val options = AddUserToGroupOptions.parseArgs(listOf("username", "ALL"))
         assertThat(options).isEqualTo(AddUserToGroupOptions(
                 "username",
-                GroupDefinition.AllGroups()
+                Groups.AllGroups()
         ))
     }
 

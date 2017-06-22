@@ -14,7 +14,7 @@ class AddUserToGroupTests : DatabaseTest()
     @Test
     fun `can give groups to user`()
     {
-        val options = AddUserToGroupOptions("username", GroupDefinition.GroupList(listOf("group1", "group2")))
+        val options = AddUserToGroupOptions("username", Groups.GroupList(listOf("group1", "group2")))
         JooqContext().use { db ->
             db.addUserForTesting("username")
             db.addGroup("group1")
