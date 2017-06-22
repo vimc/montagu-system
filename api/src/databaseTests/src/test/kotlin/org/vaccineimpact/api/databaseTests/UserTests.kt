@@ -79,7 +79,7 @@ class UserTests : RepositoryTests<UserRepository>()
         } check { repo ->
 
             val expectedRoles = listOf(
-                    RoleAssignment("role", "", null),
+                    RoleAssignment("role", null, null),
                     RoleAssignment("a", "idA", "prefixA"),
                     RoleAssignment("b", "idB", "prefixB"))
 

@@ -92,10 +92,19 @@ class JooqUserRepository : JooqRepository(), UserRepository
 
     fun mapRole(record: Record) = ReifiedRole(record[ROLE.NAME], mapScope(record))
 
-    fun mapRoleAssignment(record: Record) = RoleAssignment(
-            record[ROLE.NAME],
-            record[USER_ROLE.SCOPE_ID],
-            record[ROLE.SCOPE_PREFIX])
+    fun mapRoleAssignment(record: Record): RoleAssignment
+    {
+        var scopeId = record[USER_ROLE.SCOPE_ID]
+
+        // set scopeId to null if USER_ROLE.SCOPE_ID is an empty string,
+        // so that scopeId and scopePrefix are consistently null/not null
+        scopeId = if (scopeId.isEmpty()) { null } else { scopeId }
+
+        return RoleAssignment(
+                record[ROLE.NAME],
+                scopeId,
+                record[ROLE.SCOPE_PREFIX])
+    }
 
     fun mapScope(record: Record): Scope
     {

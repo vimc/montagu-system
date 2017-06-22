@@ -66,7 +66,7 @@ class UserTests : DatabaseTest()
                                         "scope_prefix" to "modelling-group"),
                                 obj(
                                         "name" to "touchstone-preparer",
-                                        "scope_id" to "",
+                                        "scope_id" to null,
                                         "scope_prefix" to null))
                 )
             })
