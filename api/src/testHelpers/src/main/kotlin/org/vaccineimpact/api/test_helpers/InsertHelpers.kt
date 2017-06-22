@@ -14,7 +14,7 @@ import java.util.*
 
 private val random = Random(0)
 
-fun JooqContext.addGroup(id: String, description: String, current: String? = null)
+fun JooqContext.addGroup(id: String, description: String = id, current: String? = null)
 {
     this.dsl.newRecord(MODELLING_GROUP).apply {
         this.id = id

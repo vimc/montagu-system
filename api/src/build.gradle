@@ -19,7 +19,7 @@ task generateDatabaseInterface(dependsOn: ':generateDatabaseInterface:run')
 task generateTestData(dependsOn: ':generateTestData:run')
 // 'testLibrary' runs things that can be tested without a running API.
 // i.e. everything other than blackboxTests.
-task testLibrary(dependsOn: [':app:test', ':databaseTests:test'])
+task testLibrary(dependsOn: [':app:test', ':databaseTests:test', ':userCLI:test'])
 
 def loadPropertiesFile(path) {
     def props = new Properties()
