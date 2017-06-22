@@ -137,15 +137,6 @@ describe("ResponsibilityStore", () => {
         expect(state.currentTouchstone).to.be.null;
     });
 
-    it("touchstoneActions.update sets current touchstone to open touchstone if any", () => {
-        const touchstones = [
-            mockTouchstone({ status: "finished" }),
-            mockTouchstone({ status: "open" })
-        ];
-        touchstoneActions.update(touchstones);
-        expect(responsibilityStore.getState().currentTouchstone).to.eql(touchstones[1]);
-    });
-
     it("touchstoneActions.beginFetch clears touchstones", () => {
         // First set us up in a state where everything is non-null
         alt.bootstrap(JSON.stringify({

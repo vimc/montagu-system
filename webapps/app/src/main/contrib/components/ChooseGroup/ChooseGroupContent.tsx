@@ -1,12 +1,11 @@
 import * as React from "react";
-import { ModellingGroup, Touchstone } from "../../../shared/models/Generated";
+import { ModellingGroup } from "../../../shared/models/Generated";
 import { responsibilityStore } from "../../stores/ResponsibilityStore";
 import { contribAuthStore } from "../../stores/ContribAuthStore";
 import { connectToStores } from "../../../shared/alt";
 import { GroupList } from "./GroupList";
 import { RemoteContentComponent } from "../../../shared/components/RemoteContentComponent/RemoteContentComponent";
 import { RemoteContent } from "../../../shared/models/RemoteContent";
-import { ContribRouter } from "../ContribRouter";
 import { InternalLink } from "../../../shared/components/InternalLink";
 
 const commonStyles = require("../../../shared/styles/common.css");

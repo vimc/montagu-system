@@ -3,7 +3,7 @@ import { ChooseActionContent } from "./ChooseActionContent";
 import { modellingGroupActions } from "../../actions/ModellingGroupActions";
 import { PageWithHeaderAndNav } from "../PageWithHeader/PageWithHeaderAndNav";
 
-interface LocationProps {
+export interface LocationProps {
     groupId: string;
 }
 
