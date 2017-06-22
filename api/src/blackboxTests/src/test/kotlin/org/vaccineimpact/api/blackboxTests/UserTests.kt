@@ -37,7 +37,7 @@ class UserTests : DatabaseTest()
                                         "scope_prefix" to "modelling-group"),
                                 obj(
                                         "name" to "user",
-                                        "scope_id" to "",
+                                        "scope_id" to null,
                                         "scope_prefix" to null))
                 )
             })
