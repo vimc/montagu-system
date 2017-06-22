@@ -1,8 +1,6 @@
 import * as React from "react";
 import { ModellingGroup, Touchstone } from "../../../shared/models/Generated";
 import { RemoteContent } from "../../../shared/models/RemoteContent";
-import { responsibilityStore } from "../../stores/ResponsibilityStore";
-import { TouchstoneLink, TouchstoneLinkProps } from "./TouchstoneLink";
 import { ButtonLink } from "../../../shared/components/ButtonLink";
 
 const commonStyles = require("../../../shared/styles/common.css");
