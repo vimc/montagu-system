@@ -38,6 +38,24 @@ class UserTests : DatabaseTest()
     }
 
     @Test
+    fun `cannot get user without user reading permission`()
+    {
+        val requestHelper = RequestHelper()
+        val userHelper = TestUserHelper()
+
+        JooqContext().use {
+            userHelper.setupTestUser(it)
+        }
+
+        val response = requestHelper.get("/users/testuser",
+                PermissionSet("*/can-login"),
+                contentType = "application/json")
+
+        JSONSchema("User").validator.validateError(response.text, "forbidden")
+        Assertions.assertThat(response.statusCode).isEqualTo(403)
+    }
+
+    @Test
     fun `returns user with all roles if logged in user has global scope role read perm`()
     {
         validate("/users/testuser") against "User" given {
