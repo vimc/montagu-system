@@ -76,11 +76,11 @@ class UserTests : DatabaseTest()
     @Test
     fun `returns user with scoped roles if logged in user has specific scope role read perm`()
     {
-        validate("/users/testuser") against "User" given {
+        validate("/users/someotheruser") against "User" given {
 
             it.createRole("test", "fake", "test role")
 
-            it.addUserWithRoles("testuser",
+            it.addUserWithRoles("someotheruser",
                     ReifiedRole("member", Scope.Specific("modelling-group", "group")),
                     ReifiedRole("member", Scope.Specific("modelling-group", "group2")),
                     ReifiedRole("test", Scope.Specific("fake", "group")),
@@ -91,9 +91,9 @@ class UserTests : DatabaseTest()
         } andCheck {
             Assertions.assertThat(it).isEqualTo(json {
                 obj(
-                        "username" to "testuser",
+                        "username" to "someotheruser",
                         "name" to "Test User",
-                        "email" to "testuser@example.com",
+                        "email" to "someotheruser@example.com",
                         "last_logged_in" to null,
                         "roles" to array(
                                 obj(
