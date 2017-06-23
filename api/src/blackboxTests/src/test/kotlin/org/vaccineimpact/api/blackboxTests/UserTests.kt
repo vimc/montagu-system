@@ -79,6 +79,7 @@ class UserTests : DatabaseTest()
             it.addUserWithRoles("testuser",
                     ReifiedRole("member", Scope.Specific("modelling-group", "group")),
                     ReifiedRole("member", Scope.Specific("modelling-group", "group2")),
+                    ReifiedRole("test", Scope.Specific("something", "group2")),
                     ReifiedRole("touchstone-preparer", Scope.Global()))
         } withPermissions {
             PermissionSet("*/users.read", "modelling-group:group/roles.read")
