@@ -30,8 +30,8 @@ class UserControllerTests : ControllerTests<UserController>()
         val controllerContext = mockControllerContext(mock<UserRepository> {
             on { this.getUserByUsername(userName) } doReturn user
         })
+
         val context = mock<ActionContext> {
-            on { hasPermission(ReifiedPermission("users.read", Scope.Global())) } doReturn true
             on { params(":username") } doReturn userName
             on { permissions } doReturn permissionSet
         }
