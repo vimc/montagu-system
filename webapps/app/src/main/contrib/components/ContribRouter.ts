@@ -16,7 +16,7 @@ interface RoutingProperties {
 
 export class ContribRouter extends Router<RoutingProperties> {
     getRoutes(_map: RouteMap, props: RoutingProperties) {
-        const { loggedIn, loaded }= props;
+        const { loggedIn, loaded } = props;
         const map: RouteMap = function (urlFragment: string, component: ComponentConstructor<any, any>) {
             _map(appSettings.publicPath + urlFragment, component);
         };
