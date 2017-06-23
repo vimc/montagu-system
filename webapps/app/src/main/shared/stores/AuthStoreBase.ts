@@ -2,6 +2,7 @@ import alt from "../alt";
 import * as AltJS from "alt";
 import { AbstractStore } from "./AbstractStore";
 import { authActions, LogInProperties } from "../actions/AuthActions";
+import { decodeToken } from "../Token";
 
 export interface AuthStateBase {
     loggedIn: boolean;
@@ -15,9 +16,29 @@ export interface AuthStoreBaseInterface<TState> extends AltJS.AltStore<TState> {
     loadAccessToken(): void;
 }
 
+export function loadTokenFromStorage(): string {
+    if (typeof(Storage) !== "undefined") {
+        const token = localStorage.getItem("accessToken");
+        if (token) {
+            const t = decodeToken(token);
+            const now = new Date();
+            // If the token has already expired, or it is going to in the next five minutes, just throw it
+            // away and get a fresh one
+            const futureDate = new Date(now.getTime() + (5 * 60));
+            if (futureDate > new Date(t.exp * 1000)) {
+                localStorage.removeItem("accessToken");
+                return null;
+            } else {
+                console.log("Found unexpired access token in local storage, so we're already logged in");
+                return token;
+            }
+        }
+    }
+    return null;
+}
+
 export abstract class AuthStore<TState extends AuthStateBase, TInterface extends AuthStoreBaseInterface<TState>>
-    extends AbstractStore<TState, TInterface>
-{
+    extends AbstractStore<TState, TInterface> {
     loggedIn: boolean;
     username: string;
     bearerToken: string;
@@ -32,12 +53,9 @@ export abstract class AuthStore<TState extends AuthStateBase, TInterface extends
         this.exportPublicMethods({
             logIn: accessToken => this.doLogIn(accessToken),
             loadAccessToken: () => {
-                if (typeof(Storage) !== "undefined") {
-                    const token = localStorage.getItem("accessToken");
-                    if (token) {
-                        console.log("Found access token in local storage. Restoring authenticated session");
-                        this.doLogIn(token);
-                    }
+                const token = loadTokenFromStorage();
+                if (token != null) {
+                    this.doLogIn(token);
                 }
             }
         })
