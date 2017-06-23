@@ -3,6 +3,7 @@ package org.vaccineimpact.api.generateTestData
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.StandardRoles
 import org.vaccineimpact.api.db.direct.*
+import org.vaccineimpact.api.models.permissions.Role
 
 /** The more important source set here is blackboxTests/src/test - that actually contains the
  * Black box tests. This "main" source set is just a place to put a little script you can
@@ -51,6 +52,8 @@ fun main(args: Array<String>) {
         db.addResponsibility(setId, yfRoutine)
         db.addResponsibility(setId, yfCampaign)
 
+        // note these roles are the real standard roles for the live db, not just test data!
         StandardRoles.insertInto(db)
+
     }
 }
