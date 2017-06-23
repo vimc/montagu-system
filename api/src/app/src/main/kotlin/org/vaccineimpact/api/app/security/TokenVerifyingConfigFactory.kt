@@ -23,8 +23,7 @@ class TokenVerifyingConfigFactory(
 ) : ConfigFactory
 {
     private val clients = listOf(
-            JWTHeaderClient(tokenHelper),
-            JWTParameterClient(tokenHelper)
+            JWTHeaderClient(tokenHelper)
     )
 
     override fun build(vararg parameters: Any?): Config
