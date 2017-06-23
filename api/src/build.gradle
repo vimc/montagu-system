@@ -33,6 +33,7 @@ def loadPropertiesFile(path) {
 }
 
 def loadProperties() {
+    println("Loading base configuration from config/default.properties.")
     def properties = loadPropertiesFile("config/default.properties")
     def userFile = file("config/current_user")
     if (userFile.exists()) {
@@ -53,12 +54,15 @@ def loadProperties() {
 
 task loadPropertiesTask() {
     rootProject.ext.props = loadProperties()
+    doLast {
+        println("(Properties were loaded during configuration)")
+    }
 }
 
 task startDatabase(dependsOn: ':loadPropertiesTask') {
-    String portBinding = rootProject.ext.props.get('testdb_external_port') + ':' +  rootProject.ext.props.get('testdb_exposed_port')
-    String image = rootProject.ext.props.get('testdb_image')
     doLast {
+        String portBinding = rootProject.ext.props.get('testdb_external_port') + ':' +  rootProject.ext.props.get('testdb_exposed_port')
+        String image = rootProject.ext.props.get('testdb_image')
         exec {
             commandLine 'docker', 'pull', image
         }
@@ -90,6 +94,7 @@ subprojects {
         include '*'
         into 'build/classes/main/'
         expand(rootProject.ext.props)
+        outputs.upToDateWhen { false }
     }
     //There are two different places the JVM might look for these, and it depends
     //on whether we're running in development, or from a proper JAR distribution
@@ -99,6 +104,7 @@ subprojects {
         include '*'
         into 'build/resources/main/'
         expand(rootProject.ext.props)
+        outputs.upToDateWhen { false }
     }
     task copyTestConfig(type: Copy, dependsOn: ':loadPropertiesTask') {
         from 'src/test/resources'
