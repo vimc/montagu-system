@@ -4,8 +4,6 @@ import org.vaccineimpact.api.app.ActionContext
 import org.vaccineimpact.api.app.controllers.endpoints.SecuredEndpoint
 import org.vaccineimpact.api.models.Scope
 import org.vaccineimpact.api.models.UserInterface
-import org.vaccineimpact.api.models.permissions.ReifiedPermission
-import org.vaccineimpact.api.models.permissions.RoleAssignment
 
 class UserController(context: ControllerContext) : AbstractController(context)
 {
@@ -26,22 +24,12 @@ class UserController(context: ControllerContext) : AbstractController(context)
 
         userWithRoles.roles = userWithRoles.roles.filter { r ->
             roleReadingPermissions.any {
-                p ->  p.scope.encompasses(parseScope(r))
+                p ->  p.scope.encompasses(Scope.parse(r))
             }
         }
 
         return userWithRoles
     }
-
-    private fun parseScope(role: RoleAssignment) =
-            if (role.scopePrefix.isNullOrEmpty())
-            {
-                Scope.Global()
-            }
-            else
-            {
-                Scope.parse("${role.scopePrefix}:${role.scopeId}")
-            }
 
     private fun userName(context: ActionContext): String = context.params(":username")
 }
