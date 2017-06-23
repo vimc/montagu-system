@@ -24,8 +24,7 @@ object StandardRoles
                 Role("uploader", "modelling-group", "Upload burden estimates", listOf("estimates.write")),
                 Role("submitter", "modelling-group", "Mark burden estimates as complete", listOf("estimates.submit")),
                 Role("user-manager", "modelling-group", "Manage group members and permissions", listOf("modelling-groups.manage-members", "users.create", "roles.write")),
-                Role("model-manager", "modelling-group", "Add new models and model versions", listOf("models.write")),
-                Role("test", "something", "", listOf("users.read"))
+                Role("model-manager", "modelling-group", "Add new models and model versions", listOf("models.write"))
         )
         val permissions = roles.flatMap { it.permissions }.distinct().map {
             db.dsl.newRecord(PERMISSION).apply { name = it }

@@ -12,6 +12,7 @@ import org.vaccineimpact.api.db.direct.addUserWithRoles
 import org.vaccineimpact.api.models.permissions.ReifiedRole
 import org.vaccineimpact.api.models.Scope
 import org.vaccineimpact.api.models.permissions.PermissionSet
+import org.vaccineimpact.api.security.createRole
 import org.vaccineimpact.api.test_helpers.DatabaseTest
 
 class UserTests : DatabaseTest()
@@ -76,11 +77,15 @@ class UserTests : DatabaseTest()
     fun `returns user with scoped roles if logged in user has specific scope role read perm`()
     {
         validate("/users/testuser") against "User" given {
+
+            it.createRole("test", "fake", "test role")
+
             it.addUserWithRoles("testuser",
                     ReifiedRole("member", Scope.Specific("modelling-group", "group")),
                     ReifiedRole("member", Scope.Specific("modelling-group", "group2")),
-                    ReifiedRole("test", Scope.Specific("something", "group")),
+                    ReifiedRole("test", Scope.Specific("fake", "group")),
                     ReifiedRole("touchstone-preparer", Scope.Global()))
+
         } withPermissions {
             PermissionSet("*/users.read", "modelling-group:group/roles.read")
         } andCheck {

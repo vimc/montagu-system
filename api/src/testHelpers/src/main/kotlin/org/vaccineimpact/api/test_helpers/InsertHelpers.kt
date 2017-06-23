@@ -7,6 +7,7 @@ import org.vaccineimpact.api.db.fromJoinPath
 import org.vaccineimpact.api.db.nextDecimal
 import org.vaccineimpact.api.db.tables.records.CoverageRecord
 import org.vaccineimpact.api.models.permissions.ReifiedRole
+import org.vaccineimpact.api.models.permissions.Role
 import org.vaccineimpact.api.security.UserHelper
 import org.vaccineimpact.api.security.ensureUserHasRole
 import java.math.BigDecimal

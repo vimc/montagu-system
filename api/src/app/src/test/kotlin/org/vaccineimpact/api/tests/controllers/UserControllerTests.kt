@@ -74,7 +74,8 @@ class UserControllerTests : ControllerTests<UserController>()
         val userWithRoles = UserWithRoles("test", "test name", "test@test.com", null,
                 listOf(RoleAssignment("user", null, null),
                         RoleAssignment("member", "modelling-group", "IC-Garske"),
-                        RoleAssignment("member", "modelling-group", "group2")))
+                        RoleAssignment("member", "modelling-group", "group2"),
+                        RoleAssignment("member", "foo", "IC:Garske")))
 
         val permissionSet = PermissionSet("modelling-group:IC-Garske/roles.read")
 

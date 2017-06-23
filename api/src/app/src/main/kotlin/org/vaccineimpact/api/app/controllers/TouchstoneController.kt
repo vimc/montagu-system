@@ -20,6 +20,7 @@ class TouchstoneController(context: ControllerContext) : AbstractController(cont
     )
 
     private val touchstonePreparer = ReifiedPermission("touchstones.prepare", Scope.Global())
+    private fun db() = repos.touchstone()
 
     fun getTouchstones(context: ActionContext): List<Touchstone>
     {
@@ -61,5 +62,5 @@ class TouchstoneController(context: ControllerContext) : AbstractController(cont
         return touchstone
     }
 
-    private fun db() = repos.touchstone()
+
 }
