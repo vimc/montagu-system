@@ -1,16 +1,19 @@
 package org.vaccineimpact.api.models
 
+import org.vaccineimpact.api.models.permissions.RoleAssignment
+
 sealed class Scope(val value: String)
 {
     class Global : Scope("*")
     {
         // Global scope is greater than or equal to all other scopes
         override fun encompasses(other: Scope) = true
+
         override val databaseScopePrefix = null
         override val databaseScopeId = ""
     }
 
-    class Specific(val scopePrefix: String, val scopeId: String): Scope("$scopePrefix:$scopeId")
+    class Specific(val scopePrefix: String, val scopeId: String) : Scope("$scopePrefix:$scopeId")
     {
         override fun encompasses(other: Scope): Boolean = when (other)
         {
@@ -26,10 +29,12 @@ sealed class Scope(val value: String)
     }
 
     override fun toString() = value
-    override fun equals(other: Any?) = when(other) {
+    override fun equals(other: Any?) = when (other)
+    {
         is Scope -> other.toString() == toString()
         else -> false
     }
+
     override fun hashCode() = toString().hashCode()
 
     abstract fun encompasses(other: Scope): Boolean
@@ -48,6 +53,19 @@ sealed class Scope(val value: String)
             {
                 val parts = rawScope.split(':')
                 return Specific(parts[0], parts[1])
+            }
+        }
+
+        fun parse(role: RoleAssignment): Scope
+        {
+            if (role.scopePrefix.isNullOrEmpty())
+            {
+                return Scope.Global()
+            }
+            else
+            {
+
+                return Scope.Specific(role.scopePrefix!!, role.scopeId!!)
             }
         }
     }
