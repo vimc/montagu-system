@@ -22,4 +22,4 @@ data class UserWithRoles(
         override val name: String,
         override val email: String,
         override val lastLoggedIn: Timestamp?,
-        val roles: List<RoleAssignment>) : UserInterface
+        var roles: List<RoleAssignment>) : UserInterface
