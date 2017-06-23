@@ -42,7 +42,7 @@ class JooqUserRepository : JooqRepository(), UserRepository
 
     override fun getUserByUsername(username: String): User
     {
-        var user = getUser(username)
+        val user = getUser(username)
 
         return User(
                 user.username,
@@ -54,12 +54,12 @@ class JooqUserRepository : JooqRepository(), UserRepository
 
     override fun getUserWithRolesByUsername(username: String): UserWithRoles
     {
-        var user = getUser(username)
+        val user = getUser(username)
 
         val records = dsl.select(ROLE.NAME, ROLE.SCOPE_PREFIX)
                 .select(USER_ROLE.SCOPE_ID)
                 .fromJoinPath(APP_USER, USER_ROLE, ROLE)
-                .where(caseInsensitiveUsernameMatch(user.username))
+                .where(caseInsensitiveUsernameMatch(username))
                 .fetch()
 
         return UserWithRoles(
@@ -67,9 +67,7 @@ class JooqUserRepository : JooqRepository(), UserRepository
                 user.name,
                 user.email,
                 user.lastLoggedIn,
-                records
-                        .map(this::mapRoleAssignment)
-                        .distinct()
+                records.map(this::mapRoleAssignment).distinct()
         )
     }
 
