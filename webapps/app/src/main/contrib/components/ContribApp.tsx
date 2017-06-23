@@ -3,25 +3,28 @@ import { connectToStores } from "../../shared/alt";
 import { ErrorLog } from "../../shared/components/ErrorLog/ErrorLog";
 import { contribAuthStore } from "../stores/ContribAuthStore";
 import { mainStore } from "../stores/MainStore";
-import { errorStore } from "../../shared/stores/ErrorStore";
+import { notificationStore } from "../../shared/stores/NotificationStore";
 import { ContribRouter } from "./ContribRouter";
+import { NotificationArea } from "../../shared/components/NotificationArea/NotificationArea";
 
 interface AppProps {
     loggedIn: boolean,
     ready: boolean,
-    errors: string[]
+    errors: string[],
+    infos: string[]
 }
 
 export class ContribAppComponent extends React.Component<AppProps, undefined> {
     static getStores() {
-        return [ mainStore, errorStore, contribAuthStore ];
+        return [ mainStore, notificationStore, contribAuthStore ];
     }
 
     static getPropsFromStores(): AppProps {
         return {
             loggedIn: contribAuthStore.getState().loggedIn,
             ready: mainStore.getState().ready,
-            errors: errorStore.getState().errors
+            errors: notificationStore.getState().errors,
+            infos: notificationStore.getState().infos
         };
     }
 
@@ -30,6 +33,8 @@ export class ContribAppComponent extends React.Component<AppProps, undefined> {
             <ContribRouter
                 loggedIn={ this.props.loggedIn }
                 loaded={ this.props.ready } />
+
+            <NotificationArea notifications={ this.props.infos } />
             <ErrorLog errors={ this.props.errors } />
         </div>;
     }

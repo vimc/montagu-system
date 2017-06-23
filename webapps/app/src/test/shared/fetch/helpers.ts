@@ -63,7 +63,7 @@ export class FetchHelper<TPayload> {
             });
         });
 
-        it("emits errorActions.error when source returns errors", (done: DoneCallback) => {
+        it("emits notificationActions.error when source returns errors", (done: DoneCallback) => {
             const message = "Error message in error collection";
             const errors: Array<ErrorInfo> = [
                 { code: "code", message: message }
@@ -73,20 +73,20 @@ export class FetchHelper<TPayload> {
                 payload: mockResult(null, errors, "failure"),
                 errorMessage: null,
                 expectedAction: {
-                    action: "ErrorActions.error",
+                    action: "NotificationActions.error",
                     payload: Error(message)
                 }
             });
         });
 
-        it("emits errorActions.error when error occurs accessing source", (done: DoneCallback) => {
+        it("emits notificationActions.error when error occurs accessing source", (done: DoneCallback) => {
             const errorMessage = "Error message";
             this.testFetchWithMockedResponse({
                 done,
                 payload: null,
                 errorMessage,
                 expectedAction: {
-                    action: "ErrorActions.error",
+                    action: "NotificationActions.error",
                     payload: Error(errorMessage)
                 }
             });

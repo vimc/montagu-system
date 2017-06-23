@@ -1,0 +1,25 @@
+:local(.notifications) {
+    position: fixed;
+    width: 400px;
+    top: 130px;
+    left: 0;
+    right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: white;
+    padding: 7px 30px 5px 10px;
+    outline: rgb(200, 200, 200) outset 2px;
+}
+
+:local(.hideButton) {
+    position: absolute;
+    right: 1px;
+    top: 0;
+    bottom: 1px;
+    padding: 7px 5px 5px 6px;
+    width: 30px;
+    height: auto;
+    border-right: none;
+    border-top: none;
+    border-bottom: none;
+}

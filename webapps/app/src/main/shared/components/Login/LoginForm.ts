@@ -36,8 +36,13 @@ export function loginForm(name: string, authStore: AuthStoreBaseInterface<any>):
             response.json().then((json: any) => {
                 if (json.error) {
                     alt.dispatch(submitFailed("Your username or password is incorrect"));
-                } else {
+                } else if (json.access_token) {
                     authStore.logIn(json.access_token);
+                } else {
+                    // This case catches the situation where the server has an internal error, but
+                    // still returns something in the standard format
+                    console.log("Error logging in: " + JSON.stringify(json));
+                    alt.dispatch(submitFailed("An error occurred logging in"));
                 }
             });
         },

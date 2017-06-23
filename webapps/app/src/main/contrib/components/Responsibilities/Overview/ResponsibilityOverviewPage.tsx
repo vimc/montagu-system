@@ -16,7 +16,7 @@ export class ResponsibilityOverviewPage extends PageWithHeaderAndNav<LocationPro
     componentDidMount() {
         modellingGroupActions.setCurrentModellingGroup(this.props.location.params.groupId);
         touchstoneActions.setCurrentTouchstone(this.props.location.params.touchstoneId);
-        responsibilityStore.fetchResponsibilities();
+        responsibilityStore.fetchResponsibilities().catch(() => {});
     }
 
     title() {

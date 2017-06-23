@@ -3,7 +3,7 @@ import { Sandbox } from "../../Sandbox";
 import { alt } from "../../../main/shared/alt";
 import { authActions, LogInProperties } from "../../../main/shared/actions/AuthActions";
 import { AuthStoreBaseInterface } from "../../../main/shared/stores/AuthStoreBase";
-import { errorStore } from "../../../main/shared/stores/ErrorStore";
+import { notificationStore } from "../../../main/shared/stores/NotificationStore";
 import { expectOrderedActions } from "../../actionHelpers";
 const jwt = require("jsonwebtoken");
 
@@ -48,13 +48,13 @@ export abstract class AuthStoreBaseTests<TState, TInterface extends AuthStoreBas
                 permissions: [ "p1", "p2" ],
                 modellingGroups: [ "group-1" ]
             };
-            stores["ErrorStore"] = {
+            stores["NotificationStore"] = {
                 errors: [ "Some error " ]
             };
             alt.bootstrap(JSON.stringify(stores));
             authActions.logOut();
             expect(this.getStoreState()).to.eql(this.initialState());
-            expect(errorStore.getState()).to.eql({
+            expect(notificationStore.getState()).to.eql({
                 errors: []
             });
         });

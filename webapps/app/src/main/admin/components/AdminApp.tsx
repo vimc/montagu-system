@@ -1,5 +1,5 @@
 import * as React from "react";
-import { errorStore } from "../../shared/stores/ErrorStore";
+import { notificationStore } from "../../shared/stores/NotificationStore";
 import { connectToStores } from "../../shared/alt";
 import { ErrorLog } from "../../shared/components/ErrorLog/ErrorLog";
 import { AdminRouter } from "./AdminRouter";
@@ -12,11 +12,11 @@ export interface AdminAppProps {
 
 export class AdminAppComponent extends React.Component<AdminAppProps, undefined> {
     static getStores() {
-        return [ errorStore, adminAuthStore ];
+        return [ notificationStore, adminAuthStore ];
     }
     static getPropsFromStores(): AdminAppProps {
         return {
-            errors: errorStore.getState().errors,
+            errors: notificationStore.getState().errors,
             loggedIn: adminAuthStore.getState().loggedIn
         }
     }

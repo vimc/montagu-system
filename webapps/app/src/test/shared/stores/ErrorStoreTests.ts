@@ -2,12 +2,12 @@ import { expect } from "chai";
 import { alt } from "../../../main/shared/alt";
 import { Sandbox } from "../../Sandbox";
 
-import { errorStore } from "../../../main/shared/stores/ErrorStore";
-import { errorActions } from "../../../main/shared/actions/ErrorActions";
+import { notificationStore } from "../../../main/shared/stores/NotificationStore";
+import { errorActions } from "../../../main/shared/actions/NotificationActions";
 import { authActions } from "../../../main/shared/actions/AuthActions";
 const jwt = require("jsonwebtoken");
 
-describe("ErrorStore", () => {
+describe("NotificationStore", () => {
     const sandbox = new Sandbox();
 
     beforeEach(() => {
@@ -20,7 +20,7 @@ describe("ErrorStore", () => {
     });
 
     it("is initially blank", () => {
-        const state = errorStore.getState();
+        const state = notificationStore.getState();
         expect(state).to.eql({
             errors: []
         });
@@ -29,14 +29,14 @@ describe("ErrorStore", () => {
     it("errorActions.error adds errorMessage", () => {
         errorActions.error("message 1");
 
-        let state = errorStore.getState();
+        let state = notificationStore.getState();
         expect(state).to.eql({
             errors: [ "message 1" ]
         });
 
         errorActions.error("message 2");
 
-        state = errorStore.getState();
+        state = notificationStore.getState();
         expect(state).to.eql({
             errors: [ "message 2", "message 1" ]
         });
@@ -50,7 +50,7 @@ describe("ErrorStore", () => {
         }, "secret");
         authActions.logIn(token);
 
-        const state = errorStore.getState();
+        const state = notificationStore.getState();
         expect(state.errors).to.be.empty;
     });
 
@@ -62,7 +62,7 @@ describe("ErrorStore", () => {
         }, "secret");
         authActions.logIn(token);
 
-        const state = errorStore.getState();
+        const state = notificationStore.getState();
         expect(state.errors[0]).to.contain("Your account has been deactivated");
     });
 
@@ -74,7 +74,7 @@ describe("ErrorStore", () => {
         }, "secret");
         authActions.logIn(token);
 
-        const state = errorStore.getState();
+        const state = notificationStore.getState();
         expect(state.errors[0]).to.contain("Only members of modelling groups");
     });
 });
