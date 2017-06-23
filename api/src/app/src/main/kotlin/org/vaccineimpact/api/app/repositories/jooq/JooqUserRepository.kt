@@ -5,6 +5,7 @@ import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.repositories.UserRepository
 import org.vaccineimpact.api.db.Tables.*
 import org.vaccineimpact.api.db.fromJoinPath
+import org.vaccineimpact.api.db.tables.AppUser
 import org.vaccineimpact.api.db.tables.records.AppUserRecord
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.permissions.*
@@ -39,30 +40,23 @@ class JooqUserRepository : JooqRepository(), UserRepository
         }
     }
 
-    override fun getUserByUsername(username: String, permissions: PermissionSet): UserInterface
+    override fun getUserByUsername(username: String): User
     {
-        val user = dsl.fetchAny(APP_USER, caseInsensitiveUsernameMatch(username))
+        var user = getUser(username)
 
-        if (user == null)
-            throw UnknownObjectError(username, "Username")
+        return User(
+                user.username,
+                user.name,
+                user.email,
+                user.lastLoggedIn)
 
-        var permittedRoleReadingScopeIds = permittedRoleReadingScopeIds(permissions)
-
-        if (permittedRoleReadingScopeIds.isEmpty())
-        {
-            return User(
-                    user.username,
-                    user.name,
-                    user.email,
-                    user.lastLoggedIn)
-        }
-
-        return getUserByUsernameWithRoles(user, permittedRoleReadingScopeIds)
     }
 
-    private fun getUserByUsernameWithRoles(user: AppUserRecord, permittedRoleReadingScopeIds: List<String>): UserWithRoles
+    override fun getUserWithRolesByUsername(username: String): UserWithRoles
     {
-       val records = dsl.select(ROLE.NAME, ROLE.SCOPE_PREFIX)
+        var user = getUser(username)
+
+        val records = dsl.select(ROLE.NAME, ROLE.SCOPE_PREFIX)
                 .select(USER_ROLE.SCOPE_ID)
                 .fromJoinPath(APP_USER, USER_ROLE, ROLE)
                 .where(caseInsensitiveUsernameMatch(user.username))
@@ -73,14 +67,19 @@ class JooqUserRepository : JooqRepository(), UserRepository
                 user.name,
                 user.email,
                 user.lastLoggedIn,
-                records.filter { r ->
-                    permittedRoleReadingScopeIds.any { s ->
-                        matchingOrGlobal(s, r)
-                    }
-                }
+                records
                 .map(this::mapRoleAssignment)
                 .distinct()
         )
+    }
+
+    private fun getUser(username: String) : AppUserRecord {
+        val user = dsl.fetchAny(APP_USER, caseInsensitiveUsernameMatch(username))
+
+        if (user == null)
+            throw UnknownObjectError(username, "Username")
+
+        return user
     }
 
     private fun caseInsensitiveEmailMatch(email: String)
@@ -88,14 +87,6 @@ class JooqUserRepository : JooqRepository(), UserRepository
 
     private fun caseInsensitiveUsernameMatch(username: String)
             = APP_USER.USERNAME.lower().eq(username.toLowerCase())
-
-    private fun permittedRoleReadingScopeIds(permissions: PermissionSet)
-            = permissions.filter { p -> p.name == "roles.read" }
-            .map { p -> p.scope.databaseScopeId }
-
-    private fun matchingOrGlobal(scopeId: String, record: Record) =
-            scopeId == record[USER_ROLE.SCOPE_ID]
-                    || scopeId.isNullOrEmpty()
 
     fun AppUserRecord.mapUserProperties() = UserProperties(
             this.username,

@@ -54,8 +54,8 @@ class UserTests : RepositoryTests<UserRepository>()
     fun `can retrieve user with any case username`()
     {
         given(this::addTestUser).check { repo ->
-            repo.getUserByUsername("test.user", PermissionSet()) as User
-            repo.getUserByUsername("Test.User", PermissionSet()) as User
+            repo.getUserByUsername("test.user")
+            repo.getUserByUsername("Test.User")
         }
     }
 
@@ -63,7 +63,7 @@ class UserTests : RepositoryTests<UserRepository>()
     fun `throws unknown object error for incorrect username`()
     {
         given(this::addTestUser).check { repo ->
-            assertThatThrownBy { repo.getUserByUsername("Test User", PermissionSet()) }
+            assertThatThrownBy { repo.getUserByUsername("Test User") }
                     .isInstanceOf(UnknownObjectError::class.java)
         }
     }
@@ -86,35 +86,8 @@ class UserTests : RepositoryTests<UserRepository>()
                     RoleAssignment("a", "idA", "prefixA"),
                     RoleAssignment("b", "idB", "prefixB"))
 
-            var permissions = PermissionSet(setOf(ReifiedPermission("roles.read", Scope.Global())))
 
-            var user = repo.getUserByUsername("test.user", permissions) as UserWithRoles
-
-            assertThat(user.username).isEqualTo("test.user")
-            assertThat(user.name).isEqualTo("Test User")
-            assertThat(user.email).isEqualTo("test@example.com")
-            assertThat(user.roles).hasSameElementsAs(expectedRoles)
-        }
-    }
-
-    @Test
-    fun `only returns roles in scope of logged in users role reading permissions`()
-    {
-        given {
-            addTestUser(it)
-            val roleGlobal = it.createRole("role", scopePrefix = null, description = "Role Global")
-            val roleA = it.createRole("a", scopePrefix = "prefixA", description = "Role A")
-            val roleB = it.createRole("b", scopePrefix = "prefixB", description = "Role B")
-            it.ensureUserHasRole("test.user", roleGlobal, scopeId = "")
-            it.ensureUserHasRole("test.user", roleA, scopeId = "idA")
-            it.ensureUserHasRole("test.user", roleB, scopeId = "idB")
-        } check { repo ->
-
-            val expectedRoles = listOf(RoleAssignment("a", "idA", "prefixA"))
-
-            var permissions = PermissionSet(setOf(ReifiedPermission("roles.read", Scope.Specific("prefixA", "idA"))))
-
-            var user = repo.getUserByUsername("test.user", permissions) as UserWithRoles
+            var user = repo.getUserWithRolesByUsername("test.user")
 
             assertThat(user.username).isEqualTo("test.user")
             assertThat(user.name).isEqualTo("Test User")

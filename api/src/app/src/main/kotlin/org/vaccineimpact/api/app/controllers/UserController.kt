@@ -17,7 +17,7 @@ class UserController(context: ControllerContext) : AbstractController(context)
     {
         var userName = userName(context)
 
-        return repos.user().use { it.getUserByUsername(userName, context.permissions) }
+        return repos.user().use { it.getUserByUsername(userName) }
     }
 
     private fun userName(context: ActionContext): String = context.params(":username")
