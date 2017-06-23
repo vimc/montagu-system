@@ -54,8 +54,8 @@ class UserTests : RepositoryTests<UserRepository>()
     fun `can retrieve user with any case username`()
     {
         given(this::addTestUser).check { repo ->
-            assertThat(repo.getUserByUsername("test.user", PermissionSet()) as User).isNotNull()
-            assertThat(repo.getUserByUsername("Test.User", PermissionSet()) as User).isNotNull()
+            repo.getUserByUsername("test.user", PermissionSet()) as User
+            repo.getUserByUsername("Test.User", PermissionSet()) as User
         }
     }
 
