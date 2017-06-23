@@ -9,9 +9,6 @@ import org.vaccineimpact.api.app.repositories.jooq.JooqUserRepository
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.Tables
 import org.vaccineimpact.api.models.Scope
-import org.vaccineimpact.api.models.User
-import org.vaccineimpact.api.models.UserWithRoles
-import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import org.vaccineimpact.api.models.permissions.ReifiedRole
 import org.vaccineimpact.api.models.permissions.RoleAssignment
@@ -83,8 +80,8 @@ class UserTests : RepositoryTests<UserRepository>()
 
             val expectedRoles = listOf(
                     RoleAssignment("role", null, null),
-                    RoleAssignment("a", "idA", "prefixA"),
-                    RoleAssignment("b", "idB", "prefixB"))
+                    RoleAssignment("a", "prefixA","idA"),
+                    RoleAssignment("b", "prefixB", "idB"))
 
 
             var user = repo.getUserWithRolesByUsername("test.user")

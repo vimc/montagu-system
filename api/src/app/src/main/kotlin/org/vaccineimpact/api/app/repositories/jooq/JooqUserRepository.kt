@@ -68,12 +68,13 @@ class JooqUserRepository : JooqRepository(), UserRepository
                 user.email,
                 user.lastLoggedIn,
                 records
-                .map(this::mapRoleAssignment)
-                .distinct()
+                        .map(this::mapRoleAssignment)
+                        .distinct()
         )
     }
 
-    private fun getUser(username: String) : AppUserRecord {
+    private fun getUser(username: String): AppUserRecord
+    {
         val user = dsl.fetchAny(APP_USER, caseInsensitiveUsernameMatch(username))
 
         if (user == null)
@@ -118,8 +119,8 @@ class JooqUserRepository : JooqRepository(), UserRepository
 
         return RoleAssignment(
                 record[ROLE.NAME],
-                scopeId,
-                record[ROLE.SCOPE_PREFIX])
+                record[ROLE.SCOPE_PREFIX],
+                scopeId)
     }
 
     fun mapScope(record: Record): Scope
