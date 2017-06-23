@@ -5,7 +5,6 @@ import org.pac4j.core.profile.ProfileManager
 import org.pac4j.sparkjava.SparkWebContext
 import org.vaccineimpact.api.app.errors.MissingRequiredPermissionError
 import org.vaccineimpact.api.app.security.montaguPermissions
-import org.vaccineimpact.api.db.tables.Permission
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import spark.Request
 import spark.Response
