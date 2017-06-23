@@ -5,13 +5,14 @@ import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.repositories.UserRepository
 import org.vaccineimpact.api.db.Tables.*
 import org.vaccineimpact.api.db.fromJoinPath
+import org.vaccineimpact.api.db.tables.AppUser
 import org.vaccineimpact.api.db.tables.records.AppUserRecord
-import org.vaccineimpact.api.models.Scope
-import org.vaccineimpact.api.models.User
+import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.permissions.*
 import org.vaccineimpact.api.security.MontaguUser
 
 import org.vaccineimpact.api.security.UserProperties
+import java.security.Permissions
 
 class JooqUserRepository : JooqRepository(), UserRepository
 {
@@ -41,10 +42,19 @@ class JooqUserRepository : JooqRepository(), UserRepository
 
     override fun getUserByUsername(username: String): User
     {
-        val user = dsl.fetchAny(APP_USER, caseInsensitiveUsernameMatch(username))
+        val user = getUser(username)
 
-        if (user == null)
-            throw UnknownObjectError(username, "Username")
+        return User(
+                user.username,
+                user.name,
+                user.email,
+                user.lastLoggedIn)
+
+    }
+
+    override fun getUserWithRolesByUsername(username: String): UserWithRoles
+    {
+        val user = getUser(username)
 
         val records = dsl.select(ROLE.NAME, ROLE.SCOPE_PREFIX)
                 .select(USER_ROLE.SCOPE_ID)
@@ -52,13 +62,23 @@ class JooqUserRepository : JooqRepository(), UserRepository
                 .where(caseInsensitiveUsernameMatch(username))
                 .fetch()
 
-        return User(
+        return UserWithRoles(
                 user.username,
                 user.name,
                 user.email,
                 user.lastLoggedIn,
                 records.map(this::mapRoleAssignment).distinct()
         )
+    }
+
+    private fun getUser(username: String): AppUserRecord
+    {
+        val user = dsl.fetchAny(APP_USER, caseInsensitiveUsernameMatch(username))
+
+        if (user == null)
+            throw UnknownObjectError(username, "Username")
+
+        return user
     }
 
     private fun caseInsensitiveEmailMatch(email: String)
@@ -86,12 +106,19 @@ class JooqUserRepository : JooqRepository(), UserRepository
 
         // set scopeId to null if USER_ROLE.SCOPE_ID is an empty string,
         // so that scopeId and scopePrefix are consistently null/not null
-        scopeId = if (scopeId.isEmpty()) { null } else { scopeId }
+        scopeId = if (scopeId.isEmpty())
+        {
+            null
+        }
+        else
+        {
+            scopeId
+        }
 
         return RoleAssignment(
                 record[ROLE.NAME],
-                scopeId,
-                record[ROLE.SCOPE_PREFIX])
+                record[ROLE.SCOPE_PREFIX],
+                scopeId)
     }
 
     fun mapScope(record: Record): Scope

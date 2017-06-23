@@ -26,7 +26,7 @@ class UserTests : RepositoryTests<UserRepository>()
 
     private fun addTestUser(db: JooqContext)
     {
-        UserHelper.saveUser(db.dsl, username, "Test User",email, "password")
+        UserHelper.saveUser(db.dsl, username, "Test User", email, "password")
     }
 
     @Test
@@ -51,8 +51,8 @@ class UserTests : RepositoryTests<UserRepository>()
     fun `can retrieve user with any case username`()
     {
         given(this::addTestUser).check { repo ->
-            assertThat(repo.getUserByUsername("test.user")).isNotNull()
-            assertThat(repo.getUserByUsername("Test.User")).isNotNull()
+            repo.getUserByUsername("test.user")
+            repo.getUserByUsername("Test.User")
         }
     }
 
@@ -80,10 +80,11 @@ class UserTests : RepositoryTests<UserRepository>()
 
             val expectedRoles = listOf(
                     RoleAssignment("role", null, null),
-                    RoleAssignment("a", "idA", "prefixA"),
-                    RoleAssignment("b", "idB", "prefixB"))
+                    RoleAssignment("a", "prefixA","idA"),
+                    RoleAssignment("b", "prefixB", "idB"))
 
-            var user = repo.getUserByUsername("test.user")
+
+            var user = repo.getUserWithRolesByUsername("test.user")
 
             assertThat(user.username).isEqualTo("test.user")
             assertThat(user.name).isEqualTo("Test User")

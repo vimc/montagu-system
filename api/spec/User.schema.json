@@ -15,5 +15,5 @@
         }
 	},
     "additionalProperties": false,
-    "required": [ "username", "name", "email", "last_logged_in", "roles" ]
+    "required": [ "username", "name", "email", "last_logged_in" ]
 }
