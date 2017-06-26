@@ -6,6 +6,7 @@ import { responsibilityStore } from "../../../stores/ResponsibilityStore";
 import { DownloadCoverageContent } from "./DownloadCoverageContent";
 import { modellingGroupActions } from "../../../actions/ModellingGroupActions";
 import { PageWithHeaderAndNav } from "../../PageWithHeader/PageWithHeaderAndNav";
+import { doNothing } from "../../../../shared/Helpers";
 
 interface LocationProps {
     groupId: string;
@@ -15,11 +16,17 @@ interface LocationProps {
 
 export class DownloadCoveragePage extends PageWithHeaderAndNav<LocationProps> {
     componentDidMount() {
-        modellingGroupActions.setCurrentModellingGroup(this.props.location.params.groupId);
-        touchstoneActions.setCurrentTouchstone(this.props.location.params.touchstoneId);
-        responsibilityActions.setCurrentResponsibility(this.props.location.params.scenarioId);
-        responsibilityStore.fetchCoverageSets();
-        responsibilityStore.fetchOneTimeCoverageToken();
+        setTimeout(() => {
+            modellingGroupActions.setCurrentModellingGroup(this.props.location.params.groupId);
+            responsibilityStore.fetchTouchstones().catch(doNothing).then(() => {
+                touchstoneActions.setCurrentTouchstone(this.props.location.params.touchstoneId);
+                responsibilityStore.fetchResponsibilities().catch(doNothing).then(() => {
+                    responsibilityActions.setCurrentResponsibility(this.props.location.params.scenarioId);
+                    responsibilityStore.fetchCoverageSets().catch(doNothing);
+                    responsibilityStore.fetchOneTimeCoverageToken().catch(doNothing);
+                });
+            });
+        });
     }
 
     title() {

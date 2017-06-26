@@ -3,20 +3,24 @@ import { responsibilityStore } from "../../../stores/ResponsibilityStore";
 import { Touchstone } from "../../../../shared/models/Generated";
 import { connectToStores } from "../../../../shared/alt";
 
-const headerStyles = require("../../../../shared/components/PageWithHeader/PageWithHeader.css");
+interface Props {
+    touchstone: Touchstone;
+}
 
-export class ResponsibilityOverviewTitleComponent extends React.Component<Touchstone, undefined> {
+export class ResponsibilityOverviewTitleComponent extends React.Component<Props, undefined> {
     static getStores() {
         return [ responsibilityStore ];
     }
-    static getPropsFromStores() {
-        return responsibilityStore.getState().currentTouchstone;
+    static getPropsFromStores(): Props {
+        return {
+            touchstone: responsibilityStore.getState().currentTouchstone
+        };
     }
 
     render() {
         let description = "";
-        if (this.props != null) {
-            description = this.props.description;
+        if (this.props.touchstone != null) {
+            description = this.props.touchstone.description;
         }
         return <span>
             Responsibilities in { description }

@@ -46,5 +46,5 @@ export function expectOneAction(spy: sinon.SinonSpy, expectation: ActionExpectat
 
 export function expectNoActions(spy: sinon.SinonSpy) {
     const actions = getActions(spy);
-    expect(actions.length).to.equal(0);
+    expect(actions.length).to.equal(0, "Expected zero actions. Actual actions: " + JSON.stringify(getActions(spy)));
 }

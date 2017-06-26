@@ -11,7 +11,11 @@ export abstract class RemoteContentComponent<TProps extends RemoteContent> exten
         if (this.props.ready) {
             return this.renderContent(this.props);
         } else {
-            return <img src={ spinner } />
+            return this.renderLoading();
         }
+    }
+
+    renderLoading(): JSX.Element {
+        return <img src={ spinner } />;
     }
 }

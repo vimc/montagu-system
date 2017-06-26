@@ -9,6 +9,7 @@ import { responsibilityStore } from "./ResponsibilityStore";
 import { modellingGroupActions } from "../actions/ModellingGroupActions";
 import { DiseaseSource } from "../sources/DiseaseSource";
 import { ModellingGroupSource } from "../sources/ModellingGroupSource";
+import { doNothing } from "../../shared/Helpers";
 
 export interface MainState extends RemoteContent {
     diseases: ILoadable<Disease>;
@@ -25,10 +26,6 @@ interface Interface extends AltJS.AltStore<MainState> {
     fetchModellingGroups(): Promise<ModellingGroup[]>;
 
     isLoading(): boolean;
-}
-
-function onReady() {
-    setTimeout(() => responsibilityStore.fetchTouchstones());
 }
 
 export function initialMainState(): MainState {
@@ -56,8 +53,8 @@ class MainStore extends AbstractStore<MainState, Interface> {
             getDiseaseById: id => getFromLookup(this.diseases, id),
             getGroupById: id => getFromLookup(this.modellingGroups, id),
             load: () => {
-                this.getInstance().fetchDiseases();
-                this.getInstance().fetchModellingGroups();
+                this.getInstance().fetchDiseases().catch(doNothing);
+                this.getInstance().fetchModellingGroups().catch(doNothing);
             }
         })
     }
@@ -81,7 +78,6 @@ class MainStore extends AbstractStore<MainState, Interface> {
             && this.modellingGroups.loaded;
         if (!this.ready && ready) {
             this.ready = true;
-            onReady();
         }
     }
 }

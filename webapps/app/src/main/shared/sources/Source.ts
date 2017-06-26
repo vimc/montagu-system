@@ -1,7 +1,13 @@
 import SourceModel = AltJS.SourceModel;
-import { Result } from "../models/Generated";
+import { ErrorInfo, Result } from "../models/Generated";
 import fetcher from "./Fetcher";
-import { errorActions } from "../actions/ErrorActions";
+import {
+    makeNotificationException,
+    Notification,
+    notificationActions,
+    NotificationException
+} from "../actions/NotificationActions";
+import { authActions } from "../actions/AuthActions";
 import AltStore = AltJS.AltStore;
 
 interface ActionProps<T> {
@@ -18,10 +24,13 @@ export abstract class Source<TState> {
             remote(state: TState) {
                 return handler(fetcher.fetcher.fetch(urlFragment(state)))
                     .catch((error: any) => {
-                        if (error instanceof Error) {
+                        // Because of transpilation to ES5, we cannot test for instanceof NotificationException
+                        if (error.hasOwnProperty("notification")) {
                             throw error;
+                        } else if (error instanceof Error) {
+                            throw makeNotificationException(error.message, "error");
                         } else {
-                            throw Error(error);
+                            throw makeNotificationException(error, "error");
                         }
                     });
             },
@@ -30,11 +39,26 @@ export abstract class Source<TState> {
             },
             success: actions.success,
             loading: actions.loading,
-            error: errorActions.error,
+            error: notificationActions.notify,
         };
     }
 
     protected processResponse<TModel>(promise: Promise<Response>): Promise<any> {
+        const handleError = (error: ErrorInfo) => {
+            switch (error.code) {
+                case "bearer-token-invalid":
+                    console.log("Access token has expired or is otherwise invalid: Logging out.");
+                    authActions.logOut();
+                    const notification: Notification = {
+                        message: "Your session has expired. You will need to log in again",
+                        type: "info"
+                    };
+                    throw new NotificationException(notification);
+                default:
+                    throw makeNotificationException(error.message, "error");
+            }
+        };
+
         return promise
             .then((response: Response) => response.json())
             .then((response: any) => {
@@ -43,9 +67,10 @@ export abstract class Source<TState> {
                     case "success":
                         return apiResponse.data as TModel;
                     case "failure":
-                        throw Error(apiResponse.errors[ 0 ].message);
+                        return apiResponse.errors.forEach(handleError);
                     default:
-                        throw Error("The server response was not correctly formatted: " + response.toString());
+                        throw makeNotificationException("The server response was not correctly formatted: "
+                            + response.toString(), "error");
                 }
             });
     }

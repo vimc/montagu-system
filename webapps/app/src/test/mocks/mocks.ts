@@ -2,6 +2,7 @@ import { Location } from "simple-react-router";
 import * as models from "../../main/shared/models/Generated";
 import { alt } from "../../main/shared/alt";
 import { makeLookup } from "../../main/contrib/stores/Loadable";
+import { ILookup } from "../../main/shared/models/Lookup";
 
 export function mockLocation<T>(params?: T): Location<T> {
     return {
@@ -30,4 +31,29 @@ export function mockEvent() {
         preventDefault: () => {
         }
     };
+}
+
+export function withMockLocalStorage(contents: ILookup<string>, test: () => void) {
+    const mutableGlobal = global as any;
+    mutableGlobal.Storage = true;
+    mutableGlobal.localStorage = {
+        getItem: function (key: string) {
+            return contents[key];
+        },
+        setItem: function (key: string, value: any) {
+            contents[key] = value;
+        },
+        removeItem: function (key: string) {
+            delete contents[key];
+        },
+        clear: function() {
+            contents = {};
+        }
+    };
+    try {
+        test()
+    } finally {
+        delete mutableGlobal.Storage;
+        delete mutableGlobal.localStorage;
+    }
 }

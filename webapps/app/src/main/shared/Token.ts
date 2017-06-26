@@ -4,6 +4,7 @@ export interface Token {
     permissions: string;
     roles: string;
     sub: string;
+    exp: number;
 }
 
 export function decodeToken(token: string ): Token {
@@ -19,6 +20,7 @@ export function emptyToken(): Token {
     return {
         permissions: "",
         roles: "",
-        sub: null
+        sub: null,
+        exp: null
     };
 }

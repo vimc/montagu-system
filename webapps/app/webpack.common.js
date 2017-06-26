@@ -56,7 +56,8 @@ function commonConfig(name, public_path) {
                             loader: "css-loader",
                             options: {
                                 modules: true,
-                                localIdentName: "[local]_from_[name]",
+                                // The local name must come last so that CSSTransitionGroup can append suffixes
+                                localIdentName: "[name]_[local]",
                             }
                         }
                     ]
