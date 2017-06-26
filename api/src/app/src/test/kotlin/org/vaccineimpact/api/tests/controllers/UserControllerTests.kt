@@ -96,6 +96,27 @@ class UserControllerTests : ControllerTests<UserController>()
         assertThat(actualRoles).hasSameElementsAs(expectedRoles)
     }
 
+    @Test
+    fun `getUsers returns all users without roles`()
+    {
+        val permissionSet = PermissionSet()
+
+        val users = listOf(User("test1", "Test Name 1", "test1@test.com", null))
+
+        val controllerContext = mockControllerContext(mock<UserRepository> {
+            on { this.getAllUsers()} doReturn users
+        })
+
+        val context = mock<ActionContext> {
+            on { permissions } doReturn permissionSet
+        }
+
+        val controller = UserController(controllerContext)
+        val actualRoles = (controller.getUsers(context))
+
+        assertThat(actualRoles).hasSameElementsAs(users)
+    }
+
     private fun mockControllerContext(repo: UserRepository)
             = mockControllerContext(RepositoryMock({ it.user }, repo))
 }

@@ -9,6 +9,7 @@ import org.vaccineimpact.api.app.repositories.jooq.JooqUserRepository
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.Tables
 import org.vaccineimpact.api.models.Scope
+import org.vaccineimpact.api.models.User
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import org.vaccineimpact.api.models.permissions.ReifiedRole
 import org.vaccineimpact.api.models.permissions.RoleAssignment
@@ -54,6 +55,7 @@ class UserTests : RepositoryTests<UserRepository>()
             repo.getUserByUsername("test.user")
             repo.getUserByUsername("Test.User")
         }
+
     }
 
     @Test
@@ -62,6 +64,20 @@ class UserTests : RepositoryTests<UserRepository>()
         given(this::addTestUser).check { repo ->
             assertThatThrownBy { repo.getUserByUsername("Test User") }
                     .isInstanceOf(UnknownObjectError::class.java)
+        }
+    }
+
+    @Test
+    fun `can retrieve all users`()
+    {
+        given({
+            UserHelper.saveUser(it.dsl, "testuser", "Test User", "test1@test.com", "password")
+            UserHelper.saveUser(it.dsl, "testuser2", "Test User 2", "test2@test.com", "password")
+        }).check { repo ->
+            val expectedUser = User("testuser", "Test User", "test1@test.com", null)
+            val results = repo.getAllUsers()
+            assertThat(results.count()).isEqualTo(2)
+            assertThat(results[0]).isEqualToComparingFieldByField(expectedUser)
         }
     }
 

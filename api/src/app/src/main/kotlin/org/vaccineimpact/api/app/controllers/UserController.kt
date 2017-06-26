@@ -3,6 +3,7 @@ package org.vaccineimpact.api.app.controllers
 import org.vaccineimpact.api.app.ActionContext
 import org.vaccineimpact.api.app.controllers.endpoints.SecuredEndpoint
 import org.vaccineimpact.api.models.Scope
+import org.vaccineimpact.api.models.User
 import org.vaccineimpact.api.models.UserInterface
 
 class UserController(context: ControllerContext) : AbstractController(context)
@@ -29,6 +30,12 @@ class UserController(context: ControllerContext) : AbstractController(context)
         }
 
         return userWithRoles
+    }
+
+
+    fun  getUsers(context: ActionContext): List<User>
+    {
+        return return repos.user().use { it.getAllUsers() }
     }
 
     private fun userName(context: ActionContext): String = context.params(":username")
