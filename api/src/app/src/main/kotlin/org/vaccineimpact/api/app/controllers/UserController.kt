@@ -9,7 +9,9 @@ import org.vaccineimpact.api.models.UserInterface
 class UserController(context: ControllerContext) : AbstractController(context)
 {
     override val urlComponent = "/users"
-    override val endpoints = listOf(SecuredEndpoint("/:username/", this::getUser, setOf("*/users.read"))
+    override val endpoints = listOf(
+            SecuredEndpoint("/:username/", this::getUser, setOf("*/users.read")),
+            SecuredEndpoint("/", this::getUsers, setOf("*/users.read"))
     )
 
     fun getUser(context: ActionContext): UserInterface
@@ -33,7 +35,7 @@ class UserController(context: ControllerContext) : AbstractController(context)
     }
 
 
-    fun  getUsers(context: ActionContext): List<User>
+    fun getUsers(context: ActionContext): List<User>
     {
         return return repos.user().use { it.getAllUsers() }
     }
