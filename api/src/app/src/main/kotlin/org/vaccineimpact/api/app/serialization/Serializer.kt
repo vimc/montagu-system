@@ -16,7 +16,13 @@ open class Serializer
 
     private val toStringSerializer = jsonSerializer<Any> { JsonPrimitive(it.src.toString()) }
     private val enumSerializer = jsonSerializer<Any> { JsonPrimitive(serializeEnum(it.src)) }
-    val gson: Gson = GsonBuilder()
+
+    val baseGson: Gson
+    val gson: Gson
+
+    init
+    {
+        val common = GsonBuilder()
             .setPrettyPrinting()
             .disableHtmlEscaping()
             .setFieldNamingStrategy { convertFieldName(it.name) }
@@ -29,7 +35,16 @@ open class Serializer
             .registerTypeAdapter<TouchstoneStatus>(enumSerializer)
             .registerTypeAdapter<GAVISupportLevel>(enumSerializer)
             .registerTypeAdapter<ActivityType>(enumSerializer)
-            .create()
+
+        // Some serializers for complex objects need to recurse back to the default
+        // serialization strategy. So we separate out a Gson object that has all the
+        // primitive serializers, and then create one that extends it with the complex
+        // serializers.
+        baseGson = common.create()
+        gson = common
+                .registerTypeAdapter(userSerializer)
+                .create()
+    }
 
     open fun toResult(data: Any?): String = toJson(Result(ResultStatus.SUCCESS, data, emptyList()))
     open fun toJson(result: Result): String = gson.toJson(result)
