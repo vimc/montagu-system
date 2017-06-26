@@ -17,7 +17,6 @@ open class Serializer
     private val toStringSerializer = jsonSerializer<Any> { JsonPrimitive(it.src.toString()) }
     private val enumSerializer = jsonSerializer<Any> { JsonPrimitive(serializeEnum(it.src)) }
 
-    val baseGson: Gson
     val gson: Gson
 
     init
@@ -40,9 +39,9 @@ open class Serializer
         // serialization strategy. So we separate out a Gson object that has all the
         // primitive serializers, and then create one that extends it with the complex
         // serializers.
-        baseGson = common.create()
+        val baseGson = common.create()
         gson = common
-                .registerTypeAdapter(userSerializer)
+                .registerTypeAdapter<User>(ruleBasedSerializer(baseGson))
                 .create()
     }
 
