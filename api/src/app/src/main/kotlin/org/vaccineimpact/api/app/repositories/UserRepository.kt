@@ -12,4 +12,5 @@ interface UserRepository : Repository
     fun getUserByUsername(username: String): User
     fun getUserWithRolesByUsername(username: String): UserWithRoles
     fun all(): Iterable<User>
+    fun allWithRoles(): Iterable<UserWithRoles>
 }

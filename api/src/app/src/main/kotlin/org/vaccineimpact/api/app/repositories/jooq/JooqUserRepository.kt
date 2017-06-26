@@ -80,6 +80,16 @@ class JooqUserRepository : JooqRepository(), UserRepository
     }
 
 
+    override fun allWithRoles(): Iterable<UserWithRoles>
+    {
+        return dsl.select(APP_USER.USERNAME, APP_USER.NAME,
+                    APP_USER.EMAIL, APP_USER.LAST_LOGGED_IN)
+                .select(ROLE.NAME, ROLE.SCOPE_PREFIX)
+                .select(USER_ROLE.SCOPE_ID)
+                .fromJoinPath(APP_USER, USER_ROLE, ROLE)
+                .fetchInto(UserWithRoles::class.java)
+    }
+
     private fun getUser(username: String): AppUserRecord
     {
         val user = dsl.fetchAny(APP_USER, caseInsensitiveUsernameMatch(username))
