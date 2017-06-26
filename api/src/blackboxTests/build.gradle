@@ -20,6 +20,7 @@ task copySpec(type: Copy) {
     include '*.schema.json'
     include '*.csvschema.json'
     into 'build/classes/test/spec'
+    outputs.upToDateWhen { false }
 }
 test.dependsOn 'copySpec'
 copyTestConfig.finalizedBy 'showTestConfig'

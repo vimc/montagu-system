@@ -14,11 +14,7 @@ import org.vaccineimpact.api.models.UserWithRoles
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import org.vaccineimpact.api.models.permissions.ReifiedRole
 import org.vaccineimpact.api.models.permissions.RoleAssignment
-import org.vaccineimpact.api.security.MontaguUser
-import org.vaccineimpact.api.security.UserHelper
-import org.vaccineimpact.api.security.createRole
-import org.vaccineimpact.api.security.ensureUserHasRole
-import org.vaccineimpact.api.security.setRolePermissions
+import org.vaccineimpact.api.security.*
 
 class UserTests : RepositoryTests<UserRepository>()
 {
@@ -69,7 +65,7 @@ class UserTests : RepositoryTests<UserRepository>()
     }
 
     @Test
-    fun `can retrieve all users`()
+    fun `can retrieve roles for user`()
     {
         given({
             UserHelper.saveUser(it.dsl, "testuser", "Test User", "test1@test.com", "password")
@@ -153,6 +149,9 @@ class UserTests : RepositoryTests<UserRepository>()
             val expectedRoles = listOf(
                     RoleAssignment("role", null, null),
                     RoleAssignment("a", "prefixA","idA"),
+                    RoleAssignment("b", "prefixB", "idB")
+            )
+            assertThat(repo.getRolesForUser("test.user")).hasSameElementsAs(expectedRoles)
                     RoleAssignment("b", "prefixB", "idB"))
 
 
