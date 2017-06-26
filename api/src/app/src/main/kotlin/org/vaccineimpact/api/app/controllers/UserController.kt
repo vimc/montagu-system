@@ -4,7 +4,7 @@ import org.vaccineimpact.api.app.ActionContext
 import org.vaccineimpact.api.app.controllers.endpoints.SecuredEndpoint
 import org.vaccineimpact.api.models.Scope
 import org.vaccineimpact.api.models.User
-import org.vaccineimpact.api.models.UserInterface
+import org.vaccineimpact.api.models.encompass
 
 class UserController(context: ControllerContext) : AbstractController(context)
 {
@@ -14,26 +14,25 @@ class UserController(context: ControllerContext) : AbstractController(context)
             SecuredEndpoint("/", this::getUsers, setOf("*/users.read"))
     )
 
-    fun getUser(context: ActionContext): UserInterface
+    fun getUser(context: ActionContext): User
     {
         val userName = userName(context)
+        val roleReadingScopes = context.permissions
+                .filter { it.name == "roles.read" }
+                .map { it.scope }
 
-        val roleReadingPermissions = context.permissions.filter { p -> p.name == "roles.read" }
-
-        if (!roleReadingPermissions.any())
-            return repos.user().use { it.getUserByUsername(userName) }
-
-        val userWithRoles = repos.user().use { it.getUserWithRolesByUsername(userName) }
-
-        userWithRoles.roles = userWithRoles.roles.filter { r ->
-            roleReadingPermissions.any {
-                p ->  p.scope.encompasses(Scope.parse(r))
-            }
+        val user = repos.user().use { it.getUserByUsername(userName) }
+        if (roleReadingScopes.any())
+        {
+            val allRoles = repos.user().use { it.getRolesForUser(userName) }
+            val roles = allRoles.filter { roleReadingScopes.encompass(Scope.parse(it)) }
+            return user.copy(roles = roles)
         }
-
-        return userWithRoles
+        else
+        {
+            return user
+        }
     }
-
 
     fun getUsers(context: ActionContext): List<User>
     {

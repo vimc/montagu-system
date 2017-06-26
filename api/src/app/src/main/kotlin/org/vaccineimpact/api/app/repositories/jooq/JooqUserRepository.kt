@@ -48,27 +48,20 @@ class JooqUserRepository : JooqRepository(), UserRepository
                 user.username,
                 user.name,
                 user.email,
-                user.lastLoggedIn)
+                user.lastLoggedIn,
+                null)
 
     }
 
-    override fun getUserWithRolesByUsername(username: String): UserWithRoles
+    override fun getRolesForUser(username: String): List<RoleAssignment>
     {
-        val user = getUser(username)
-
-        val records = dsl.select(ROLE.NAME, ROLE.SCOPE_PREFIX)
+        return dsl.select(ROLE.NAME, ROLE.SCOPE_PREFIX)
                 .select(USER_ROLE.SCOPE_ID)
                 .fromJoinPath(APP_USER, USER_ROLE, ROLE)
                 .where(caseInsensitiveUsernameMatch(username))
                 .fetch()
-
-        return UserWithRoles(
-                user.username,
-                user.name,
-                user.email,
-                user.lastLoggedIn,
-                records.map(this::mapRoleAssignment).distinct()
-        )
+                .map(this::mapRoleAssignment)
+                .distinct()
     }
 
 
