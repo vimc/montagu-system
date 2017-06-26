@@ -5,14 +5,14 @@ import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.repositories.UserRepository
 import org.vaccineimpact.api.db.Tables.*
 import org.vaccineimpact.api.db.fromJoinPath
-import org.vaccineimpact.api.db.tables.AppUser
 import org.vaccineimpact.api.db.tables.records.AppUserRecord
-import org.vaccineimpact.api.models.*
-import org.vaccineimpact.api.models.permissions.*
+import org.vaccineimpact.api.models.Scope
+import org.vaccineimpact.api.models.User
+import org.vaccineimpact.api.models.permissions.ReifiedPermission
+import org.vaccineimpact.api.models.permissions.ReifiedRole
+import org.vaccineimpact.api.models.permissions.RoleAssignment
 import org.vaccineimpact.api.security.MontaguUser
-
 import org.vaccineimpact.api.security.UserProperties
-import java.security.Permissions
 
 class JooqUserRepository : JooqRepository(), UserRepository
 {
@@ -71,7 +71,6 @@ class JooqUserRepository : JooqRepository(), UserRepository
                 .from(APP_USER)
                 .fetchInto(User::class.java)
     }
-
 
     private fun getUser(username: String): AppUserRecord
     {

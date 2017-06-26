@@ -8,7 +8,7 @@ val userSerializer = jsonSerializer<User> {
     val json = Serializer.instance.baseGson.toJsonTree(it.src) as JsonObject
     if (it.src.roles == null)
     {
-        json.remove(it.src.roles)
+        json.remove("roles")
     }
     json
 }

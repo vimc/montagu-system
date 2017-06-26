@@ -36,7 +36,7 @@ class UserController(context: ControllerContext) : AbstractController(context)
 
     fun getUsers(context: ActionContext): List<User>
     {
-        return return repos.user().use { it.all().toList() }
+        return repos.user().use { it.all().toList() }
     }
 
     private fun userName(context: ActionContext): String = context.params(":username")
