@@ -19,6 +19,6 @@ data class ReifiedRole(
 
 data class RoleAssignment(
         val name: String,
-        var scopeId: String?,
-        var scopePrefix: String?
+        var scopePrefix: String?,
+        var scopeId: String?
 )
