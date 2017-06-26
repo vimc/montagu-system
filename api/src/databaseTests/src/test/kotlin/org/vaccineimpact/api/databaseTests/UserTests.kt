@@ -83,6 +83,20 @@ class UserTests : RepositoryTests<UserRepository>()
         }
     }
 
+
+    @Test
+    fun `can retrieve all users groups`()
+    {
+        given({
+            UserHelper.saveUser(it.dsl, "testuser", "Test User", "test1@test.com", "password")
+            UserHelper.saveUser(it.dsl, "testuser2", "Test User 2", "test2@test.com", "password")
+        }).check { repo ->
+            val expectedUser = User("testuser", "Test User", "test1@test.com", null)
+            val results = repo.alltest()
+            var whatever = 22
+        }
+    }
+
     @Test
     fun `can retrieve all users with roles`()
     {

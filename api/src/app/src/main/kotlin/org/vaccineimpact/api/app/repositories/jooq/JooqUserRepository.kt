@@ -71,7 +71,6 @@ class JooqUserRepository : JooqRepository(), UserRepository
         )
     }
 
-
     override fun all(): Iterable<User>
     {
         return dsl.select(APP_USER.USERNAME, APP_USER.NAME, APP_USER.EMAIL, APP_USER.LAST_LOGGED_IN)
@@ -79,6 +78,29 @@ class JooqUserRepository : JooqRepository(), UserRepository
                 .fetchInto(User::class.java)
     }
 
+    override fun alltest(): List<UserWithRoles>
+    {
+        return dsl.select()
+                .from(APP_USER)
+                .leftJoin(USER_ROLE)
+                .on(APP_USER.USERNAME.eq(USER_ROLE.USERNAME))
+                .leftJoin(ROLE)
+                .on(ROLE.ID.eq(USER_ROLE.ROLE))
+                .fetchGroups(APP_USER)
+                .map(this::mapUserWithRoles)
+    }
+
+    private fun mapUserWithRoles(entry: Map.Entry<AppUserRecord, org.jooq.Result<Record>>): UserWithRoles
+    {
+        val user = entry.key.into(UserWithRoles::class.java)
+        var roles = entry.value.map{
+            r-> r.into(RoleAssignment::class.java)
+        }
+
+        user.roles = roles
+
+        return user
+    }
 
     override fun allWithRoles(): Iterable<UserWithRoles>
     {
