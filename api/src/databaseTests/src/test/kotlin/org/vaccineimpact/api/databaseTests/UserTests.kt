@@ -10,7 +10,6 @@ import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.Tables
 import org.vaccineimpact.api.models.Scope
 import org.vaccineimpact.api.models.User
-import org.vaccineimpact.api.models.UserWithRoles
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import org.vaccineimpact.api.models.permissions.ReifiedRole
 import org.vaccineimpact.api.models.permissions.RoleAssignment
@@ -112,14 +111,14 @@ class UserTests : RepositoryTests<UserRepository>()
                     RoleAssignment("role", null, null),
                     RoleAssignment("a", "prefixA","idA"))
 
-            val expectedUser = UserWithRoles(
+            val expectedUser = User(
                     "testuser1", "Test User", "test1@test.com",
                     null, expectedRoles1)
 
             val expectedRoles2 = listOf(
                     RoleAssignment("b", "prefixB", "idB"))
 
-            val expectedUser2 =  UserWithRoles(
+            val expectedUser2 =  User(
                     "testuser2", "Test User 2", "test2@test.com",
                     null, expectedRoles2)
 
@@ -152,16 +151,8 @@ class UserTests : RepositoryTests<UserRepository>()
                     RoleAssignment("b", "prefixB", "idB")
             )
             assertThat(repo.getRolesForUser("test.user")).hasSameElementsAs(expectedRoles)
-                    RoleAssignment("b", "prefixB", "idB"))
-
-
-            val user = repo.getUserWithRolesByUsername("test.user")
-
-            assertThat(user.username).isEqualTo("test.user")
-            assertThat(user.name).isEqualTo("Test User")
-            assertThat(user.email).isEqualTo("test@example.com")
-            assertThat(user.roles).hasSameElementsAs(expectedRoles)
-        }
+                    RoleAssignment("b", "prefixB", "idB")
+          }
     }
 
     @Test
@@ -228,8 +219,8 @@ class UserTests : RepositoryTests<UserRepository>()
     }
 
     private fun checkUserWithRoles(
-            actualUser: UserWithRoles,
-            expectedUser: UserWithRoles,
+            actualUser: User,
+            expectedUser: User,
             expectedRoles: List<RoleAssignment>)
     {
         assertThat(actualUser.username).isEqualTo(expectedUser.username)

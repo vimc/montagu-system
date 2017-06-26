@@ -71,7 +71,7 @@ class JooqUserRepository : JooqRepository(), UserRepository
                 .fetchInto(User::class.java)
     }
 
-    override fun alltest(): List<UserWithRoles>
+    override fun alltest(): List<User>
     {
         return dsl.select()
                 .from(APP_USER)
@@ -83,26 +83,26 @@ class JooqUserRepository : JooqRepository(), UserRepository
                 .map(this::mapUserWithRoles)
     }
 
-    private fun mapUserWithRoles(entry: Map.Entry<AppUserRecord, org.jooq.Result<Record>>): UserWithRoles
+    private fun mapUserWithRoles(entry: Map.Entry<AppUserRecord, org.jooq.Result<Record>>): User
     {
-        val user = entry.key.into(UserWithRoles::class.java)
+        val user = entry.key.into(User::class.java)
         var roles = entry.value.map{
             r-> r.into(RoleAssignment::class.java)
         }
 
-        user.roles = roles
+        //user.roles = roles
 
         return user
     }
 
-    override fun allWithRoles(): Iterable<UserWithRoles>
+    override fun allWithRoles(): Iterable<User>
     {
         return dsl.select(APP_USER.USERNAME, APP_USER.NAME,
                     APP_USER.EMAIL, APP_USER.LAST_LOGGED_IN)
                 .select(ROLE.NAME, ROLE.SCOPE_PREFIX)
                 .select(USER_ROLE.SCOPE_ID)
                 .fromJoinPath(APP_USER, USER_ROLE, ROLE)
-                .fetchInto(UserWithRoles::class.java)
+                .fetchInto(User::class.java)
     }
 
     private fun getUser(username: String): AppUserRecord
