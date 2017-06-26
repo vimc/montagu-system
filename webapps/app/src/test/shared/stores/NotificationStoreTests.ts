@@ -28,12 +28,13 @@ describe("NotificationStore", () => {
         expect(state).to.eql(expected);
     });
 
-    it("errorActions.notify with type error adds errorMessage", () => {
+    it("notificationActions.notify with type error adds error message (LIFO)", () => {
+        // LIFO = Last in, first out: This collection is a stack
         notificationActions.notify({ message: "message 1", type: "error" });
 
         let state = notificationStore.getState();
         expect(state).to.eql({
-            errors: [ "message 1" ],
+            errors: ["message 1"],
             infos: []
         });
 
@@ -41,9 +42,41 @@ describe("NotificationStore", () => {
 
         state = notificationStore.getState();
         expect(state).to.eql({
-            errors: [ "message 2", "message 1" ],
+            errors: ["message 2", "message 1"],
             infos: []
         });
+    });
+
+    it("notificationActions.notify with type info adds info message (FIFO)", () => {
+        // FIFO = First in, first out: This collection is a queue
+        notificationActions.notify({ message: "message 1", type: "info" });
+
+        let state = notificationStore.getState();
+        expect(state).to.eql({
+            infos: ["message 1"],
+            errors: []
+        });
+
+        notificationActions.notify({ message: "message 2", type: "info" });
+
+        state = notificationStore.getState();
+        expect(state).to.eql({
+            infos: ["message 1", "message 2"],
+            errors: []
+        });
+    });
+
+    it("notificationActions.clear with type info removes first message from queue", () => {
+        notificationActions.notify({ message: "1", type: "info" });
+        notificationActions.notify({ message: "2", type: "info" });
+        notificationActions.notify({ message: "3", type: "info" });
+        expect(notificationStore.getState().infos).to.eql(["1", "2", "3"]);
+        notificationActions.clear("info");
+        expect(notificationStore.getState().infos).to.eql(["2", "3"]);
+        notificationActions.clear("info");
+        expect(notificationStore.getState().infos).to.eql(["3"]);
+        notificationActions.clear("info");
+        expect(notificationStore.getState().infos).to.eql([]);
     });
 
     it("logIn does not set errorMessage if user is active modeller", () => {

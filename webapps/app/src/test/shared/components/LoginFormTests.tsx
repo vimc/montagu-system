@@ -14,12 +14,10 @@ import { LoginFields, loginForm } from "../../../main/shared/components/Login/Lo
 import { LoginFormComponent } from "../../../main/shared/components/Login/LoginFormComponent";
 import { ValidationError } from "../../../main/shared/components/Login/ValidationError";
 
-function checkSubmit(
-    form: Reform<LoginFields>,
-    done: DoneCallback,
-    sandbox: Sandbox,
-    callback: (spy: sinon.SinonSpy) => void)
-{
+function checkSubmit(form: Reform<LoginFields>,
+                     done: DoneCallback,
+                     sandbox: Sandbox,
+                     callback: (spy: sinon.SinonSpy) => void) {
     const spy = sandbox.dispatchSpy();
     form.submit(mockEvent()).then(x => {
         callback(spy);
@@ -69,9 +67,7 @@ describe("LoginForm", () => {
         const token = "TOKEN";
         const spy = sandbox.sinon.spy(contribAuthStore, "logIn");
 
-        mockFetcher(new Promise<Response>(function (resolve, reject) {
-            resolve(promiseJSON({ access_token: token }));
-        }));
+        mockFetcher(Promise.resolve(promiseJSON({ access_token: token })));
         form.change({
             email: "an@email",
             password: "not-real"
@@ -85,9 +81,7 @@ describe("LoginForm", () => {
     });
 
     it("displays error when credentials are wrong", (done: DoneCallback) => {
-        mockFetcher(new Promise<Response>(function (resolve, reject) {
-            resolve(promiseJSON({ error: "Wrong password" }));
-        }));
+        mockFetcher(Promise.resolve(promiseJSON({ error: "Wrong password" })));
         form.change({
             email: "an@email",
             password: "not-real"
@@ -95,16 +89,34 @@ describe("LoginForm", () => {
         checkSubmit(form, done, sandbox, spy => {
             actionHelpers.expectOrderedActions(
                 spy,
-                [ { action: "Login_test/submitFailed", payload: "Your username or password is incorrect" } ],
+                [{ action: "Login_test/submitFailed", payload: "Your username or password is incorrect" }],
+                numberOfSubmissionActions
+            );
+        });
+    });
+
+    it("displays error when login fails with internal error", (done: DoneCallback) => {
+        mockFetcher(Promise.resolve(promiseJSON({
+            errors: [{
+                "code": "unexpected-error",
+                "message": "Some message"
+            }]
+        })));
+        form.change({
+            email: "an@email",
+            password: "not-real"
+        });
+        checkSubmit(form, done, sandbox, spy => {
+            actionHelpers.expectOrderedActions(
+                spy,
+                [{ action: "Login_test/submitFailed", payload: "An error occurred logging in" }],
                 numberOfSubmissionActions
             );
         });
     });
 
     it("displays error when login fails", (done: DoneCallback) => {
-        mockFetcher(new Promise<Response>(function (resolve, reject) {
-            reject(true);
-        }));
+        mockFetcher(Promise.reject(true));
         form.change({
             email: "an@email",
             password: "not-real"
@@ -112,7 +124,7 @@ describe("LoginForm", () => {
         checkSubmit(form, done, sandbox, spy => {
             actionHelpers.expectOrderedActions(
                 spy,
-                [ { action: "Login_test/submitFailed", payload: "An error occurred logging in" } ],
+                [{ action: "Login_test/submitFailed", payload: "An error occurred logging in" }],
                 numberOfSubmissionActions
             );
         });

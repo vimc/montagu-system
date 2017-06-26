@@ -101,5 +101,23 @@ export class FetchHelper<TPayload> {
                 }
             });
         });
+
+        it("triggers logout when server returns bearer token error", (done: DoneCallback) => {
+            const errors: Array<ErrorInfo> = [
+                {
+                    code: "bearer-token-invalid",
+                    message: "Something wicked this way comes"
+                }
+            ];
+            this.testFetchWithMockedResponse({
+                done,
+                payload: mockResult(null, errors, "failure"),
+                errorMessage: null,
+                expectedAction: {
+                    action: "AuthActions.logOut",
+                    payload: true
+                }
+            });
+        });
     }
 }

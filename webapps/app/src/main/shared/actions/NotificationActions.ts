@@ -10,7 +10,7 @@ export interface Notification {
 }
 
 interface Actions {
-    notify(notification: Notification): Notification;
+    notify(notification: Notification | NotificationException): Notification;
     clear(messageType: MessageType): MessageType;
 }
 

@@ -16,26 +16,33 @@ export interface AuthStoreBaseInterface<TState> extends AltJS.AltStore<TState> {
     loadAccessToken(): void;
 }
 
-export function loadTokenFromStorage(): string {
-    if (typeof(Storage) !== "undefined") {
-        const token = localStorage.getItem("accessToken");
-        if (token) {
-            const t = decodeToken(token);
-            const now = new Date();
-            // If the token has already expired, or it is going to in the next five minutes, just throw it
-            // away and get a fresh one
-            const futureDate = new Date(now.getTime() + (5 * 60));
-            if (futureDate > new Date(t.exp * 1000)) {
-                localStorage.removeItem("accessToken");
-                return null;
-            } else {
-                console.log("Found unexpired access token in local storage, so we're already logged in");
-                return token;
+export const tokenStorageHelper = {
+    loadToken: function(): string {
+        console.log("Loading token");
+        if (typeof(Storage) !== "undefined") {
+            console.log("Storage is defined");
+            const token = localStorage.getItem("accessToken");
+            if (token) {
+                console.log("Token is found");
+                const t = decodeToken(token);
+                console.log("exp: " + t.exp);
+                const now = new Date();
+                // If the token has already expired, or it is going to in the next five minutes, just throw it
+                // away and get a fresh one
+                const futureDate = new Date(now.getTime() + (5 * 60 * 1000));
+                if (!t.exp || futureDate > new Date(t.exp * 1000)) {
+                    console.log("Token is expired");
+                    localStorage.removeItem("accessToken");
+                    return null;
+                } else {
+                    console.log("Found unexpired access token in local storage, so we're already logged in");
+                    return token;
+                }
             }
         }
+        return null;
     }
-    return null;
-}
+};
 
 export abstract class AuthStore<TState extends AuthStateBase, TInterface extends AuthStoreBaseInterface<TState>>
     extends AbstractStore<TState, TInterface> {
@@ -53,7 +60,7 @@ export abstract class AuthStore<TState extends AuthStateBase, TInterface extends
         this.exportPublicMethods({
             logIn: accessToken => this.doLogIn(accessToken),
             loadAccessToken: () => {
-                const token = loadTokenFromStorage();
+                const token = tokenStorageHelper.loadToken();
                 if (token != null) {
                     this.doLogIn(token);
                 }
