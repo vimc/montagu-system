@@ -70,3 +70,8 @@ sealed class Scope(val value: String)
         }
     }
 }
+
+fun Iterable<Scope>.encompass(other: Scope): Boolean
+{
+    return this.any { it.encompasses(other) }
+}
