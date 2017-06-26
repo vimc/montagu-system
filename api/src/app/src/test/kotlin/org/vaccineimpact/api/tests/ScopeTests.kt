@@ -1,3 +1,4 @@
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.vaccineimpact.api.models.Scope.*
 
@@ -10,8 +11,8 @@ class ScopeTests{
 
         val specificScope = Specific("foo", "bar")
 
-        assert(globalScope.encompasses(specificScope))
-        assert(globalScope.encompasses(Global()))
+        assertThat(globalScope.encompasses(specificScope)).isTrue()
+        assertThat(globalScope.encompasses(Global())).isTrue()
     }
 
     @Test
@@ -20,7 +21,7 @@ class ScopeTests{
         val specificScope = Specific("foo", "bar")
         val specificScopeAgain = Specific("foo", "bar")
 
-        assert(specificScope.encompasses(specificScopeAgain))
+        assertThat(specificScope.encompasses(specificScopeAgain)).isTrue()
     }
 
     @Test
@@ -29,8 +30,8 @@ class ScopeTests{
         val specificScope = Specific("foo", "bar")
         val anotherSpecificScope = Specific("oof", "rab")
 
-        assert(!specificScope.encompasses(anotherSpecificScope))
-        assert(!specificScope.encompasses(Global()))
+        assertThat(specificScope.encompasses(anotherSpecificScope)).isFalse()
+        assertThat(specificScope.encompasses(Global())).isFalse()
     }
 
 }
