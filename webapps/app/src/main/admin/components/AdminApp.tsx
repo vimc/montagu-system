@@ -4,9 +4,11 @@ import { connectToStores } from "../../shared/alt";
 import { ErrorLog } from "../../shared/components/ErrorLog/ErrorLog";
 import { AdminRouter } from "./AdminRouter";
 import { adminAuthStore } from "../stores/AdminAuthStore";
+import { NotificationArea } from "../../shared/components/NotificationArea/NotificationArea";
 
 export interface AdminAppProps {
     errors: string[];
+    notifications: string[];
     loggedIn: boolean;
 }
 
@@ -17,6 +19,7 @@ export class AdminAppComponent extends React.Component<AdminAppProps, undefined>
     static getPropsFromStores(): AdminAppProps {
         return {
             errors: notificationStore.getState().errors,
+            notifications: notificationStore.getState().infos,
             loggedIn: adminAuthStore.getState().loggedIn
         }
     }
@@ -24,6 +27,7 @@ export class AdminAppComponent extends React.Component<AdminAppProps, undefined>
     render() {
         return <div>
             <AdminRouter loggedIn={ this.props.loggedIn } />
+            <NotificationArea notifications={ this.props.notifications } />
             <ErrorLog errors={ this.props.errors } />
         </div>;
     }

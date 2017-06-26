@@ -5,6 +5,7 @@ import { ModellingGroupTitle, TitleProps } from "../ModellingGroupTitle";
 import { AdminPageWithHeader } from "../../../AdminPageWithHeader";
 import { groupStore } from "../../../../stores/GroupStore";
 import { modellingGroupActions } from "../../../../actions/ModellingGroupActions";
+import { doNothing } from "../../../../../shared/Helpers";
 
 export interface PageProps {
     groupId: string;
@@ -12,9 +13,11 @@ export interface PageProps {
 
 export class ViewModellingGroupDetailsPage extends AdminPageWithHeader<PageProps> {
     componentDidMount() {
-        groupStore.fetchGroups().then(_ => {
-            modellingGroupActions.setCurrentGroup(this.props.location.params.groupId);
-            groupStore.fetchGroupDetails()
+        setTimeout(() => {
+            groupStore.fetchGroups().catch(doNothing).then(() => {
+                modellingGroupActions.setCurrentGroup(this.props.location.params.groupId);
+                groupStore.fetchGroupDetails().catch(doNothing);
+            });
         });
     }
 

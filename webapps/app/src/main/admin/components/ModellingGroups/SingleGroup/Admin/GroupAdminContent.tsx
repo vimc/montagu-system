@@ -35,7 +35,7 @@ export class GroupAdminContentComponent extends RemoteContentComponent<Props> {
     }
 
     renderAdd(props: Props): JSX.Element {
-        const options = [1, 2, 3].map(n => <option value={ n }>Fake user { n }</option>);
+        const options = [1, 2, 3].map(n => <option key={ n } value={ n }>Fake user { n }</option>);
         const select = {
             width: 300,
             height: 32

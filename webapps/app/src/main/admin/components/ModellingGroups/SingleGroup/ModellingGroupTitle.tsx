@@ -2,7 +2,6 @@ import * as React from "react";
 import { ModellingGroup } from "../../../../shared/models/Generated";
 import { groupStore } from "../../../stores/GroupStore";
 import { RemoteContent } from "../../../../shared/models/RemoteContent";
-import { isNullOrUndefined } from "util";
 import { RemoteContentComponent } from "../../../../shared/components/RemoteContentComponent/RemoteContentComponent";
 
 export interface TitleProps extends RemoteContent {
@@ -19,5 +18,9 @@ export abstract class ModellingGroupTitle extends RemoteContentComponent<TitlePr
             group: group,
             ready: group != null
         };
+    }
+
+    renderLoading() {
+        return <span>Loading...</span>;
     }
 }
