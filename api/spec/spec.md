@@ -1158,8 +1158,16 @@ Schma: [`Users.schema.json`](Users.schema.json)
             "email": "example@imperial.ac.uk",
             "last_logged_in": "2017-10-06T11:06:22Z",
             "roles": [ 
-                "user",
-                "modelling-group.member"
+                { 
+                    "name": "user", 
+                    "scope_prefix": null, 
+                    "scope_id": null 
+                },
+                { 
+                    "name": "modelling-group.member",
+                    "scope_prefix": "modelling-group",
+                    "scope_id": "IC-YellowFever" 
+                }
             ],
             "modelling_groups": [ "IC-YellowFever" ]
         }
