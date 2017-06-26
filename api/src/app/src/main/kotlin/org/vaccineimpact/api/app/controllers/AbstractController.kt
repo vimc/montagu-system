@@ -66,4 +66,5 @@ abstract class AbstractController(val controllerContext: ControllerContext)
     {
         return { req: Request, res: Response -> route(DirectActionContext(req, res)) }
     }
+
 }

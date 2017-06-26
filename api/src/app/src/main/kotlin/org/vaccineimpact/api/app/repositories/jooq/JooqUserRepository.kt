@@ -71,6 +71,15 @@ class JooqUserRepository : JooqRepository(), UserRepository
         )
     }
 
+
+    override fun all(): Iterable<User>
+    {
+        return dsl.select(APP_USER.USERNAME, APP_USER.NAME, APP_USER.EMAIL, APP_USER.LAST_LOGGED_IN)
+                .from(APP_USER)
+                .fetchInto(User::class.java)
+    }
+
+
     private fun getUser(username: String): AppUserRecord
     {
         val user = dsl.fetchAny(APP_USER, caseInsensitiveUsernameMatch(username))
