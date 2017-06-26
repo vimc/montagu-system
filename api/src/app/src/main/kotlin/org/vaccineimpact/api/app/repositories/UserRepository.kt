@@ -11,5 +11,5 @@ interface UserRepository : Repository
     fun getMontaguUserByEmail(email: String): MontaguUser?
     fun getUserByUsername(username: String): User
     fun getUserWithRolesByUsername(username: String): UserWithRoles
-    fun  getAllUsers(): List<User>
+    fun all(): Iterable<User>
 }

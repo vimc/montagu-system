@@ -75,7 +75,8 @@ class UserTests : RepositoryTests<UserRepository>()
             UserHelper.saveUser(it.dsl, "testuser2", "Test User 2", "test2@test.com", "password")
         }).check { repo ->
             val expectedUser = User("testuser", "Test User", "test1@test.com", null)
-            val results = repo.getAllUsers()
+            val results = repo.all().toList()
+
             assertThat(results.count()).isEqualTo(2)
             assertThat(results[0]).isEqualToComparingFieldByField(expectedUser)
         }

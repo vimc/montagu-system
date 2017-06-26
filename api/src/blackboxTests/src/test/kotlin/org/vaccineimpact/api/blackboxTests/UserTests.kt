@@ -120,4 +120,39 @@ class UserTests : DatabaseTest()
         Assertions.assertThat(response.statusCode).isEqualTo(404)
     }
 
+    @Test
+    fun `can get all users`()
+    {
+        validate("/users/") against "Users" given {
+            it.addUserWithRoles("testuser1",
+                    ReifiedRole("member", Scope.Specific("modelling-group", "group")),
+                    ReifiedRole("user", Scope.Global()))
+            it.addUserWithRoles("testuser2",
+                    ReifiedRole("user", Scope.Global()))
+        } requiringPermissions {
+            PermissionSet("*/users.read")
+        } andCheckArray {
+
+            // the above 2 users plus standard test user
+            Assertions.assertThat(it.size).isEqualTo(3)
+
+            Assertions.assertThat(it).contains(json {
+                obj(
+                        "username" to "testuser1",
+                        "name" to "Test User",
+                        "email" to "testuser1@example.com",
+                        "last_logged_in" to null
+                )
+            })
+
+            Assertions.assertThat(it).contains(json{  obj(
+                            "username" to "testuser2",
+                            "name" to "Test User",
+                            "email" to "testuser2@example.com",
+                            "last_logged_in" to null)
+            })
+
+        }
+    }
+
 }
