@@ -2,8 +2,8 @@ import { expect } from "chai";
 import { alt } from "../../../main/shared/alt";
 import { Sandbox } from "../../Sandbox";
 
-import { notificationStore } from "../../../main/shared/stores/NotificationStore";
-import { errorActions } from "../../../main/shared/actions/NotificationActions";
+import { NotificationState, notificationStore } from "../../../main/shared/stores/NotificationStore";
+import { notificationActions } from "../../../main/shared/actions/NotificationActions";
 import { authActions } from "../../../main/shared/actions/AuthActions";
 const jwt = require("jsonwebtoken");
 
@@ -21,24 +21,28 @@ describe("NotificationStore", () => {
 
     it("is initially blank", () => {
         const state = notificationStore.getState();
-        expect(state).to.eql({
-            errors: []
-        });
+        const expected: NotificationState = {
+            errors: [],
+            infos: []
+        };
+        expect(state).to.eql(expected);
     });
 
-    it("errorActions.error adds errorMessage", () => {
-        errorActions.error("message 1");
+    it("errorActions.notify with type error adds errorMessage", () => {
+        notificationActions.notify({ message: "message 1", type: "error" });
 
         let state = notificationStore.getState();
         expect(state).to.eql({
-            errors: [ "message 1" ]
+            errors: [ "message 1" ],
+            infos: []
         });
 
-        errorActions.error("message 2");
+        notificationActions.notify({ message: "message 2", type: "error" });
 
         state = notificationStore.getState();
         expect(state).to.eql({
-            errors: [ "message 2", "message 1" ]
+            errors: [ "message 2", "message 1" ],
+            infos: []
         });
     });
 

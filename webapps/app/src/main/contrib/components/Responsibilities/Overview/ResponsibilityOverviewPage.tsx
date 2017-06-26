@@ -17,10 +17,10 @@ export class ResponsibilityOverviewPage extends PageWithHeaderAndNav<LocationPro
     componentDidMount() {
         setTimeout(() => {
             modellingGroupActions.setCurrentModellingGroup(this.props.location.params.groupId);
-            responsibilityStore.fetchTouchstones().then(() => {
+            responsibilityStore.fetchTouchstones().catch(doNothing).then(() => {
                 touchstoneActions.setCurrentTouchstone(this.props.location.params.touchstoneId);
                 responsibilityStore.fetchResponsibilities().catch(doNothing);
-            }).catch(doNothing);
+            });
         });
     }
 

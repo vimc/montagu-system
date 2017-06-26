@@ -23,10 +23,12 @@ describe("ViewModelingGroupDetailsPage", () => {
         const location = mockLocation<PageProps>({ groupId: "gId" });
         sandbox.mount(<ViewModellingGroupDetailsPage location={ location }/>);
 
-        checkAsync(done, () => {
+        checkAsync(done, (afterWait) => {
             expect(fetchGroups.called).to.equal(true, "Expected groupStore.fetchGroups to be triggered");
-            expectOneAction(dispatchSpy, { action: "ModellingGroupActions.setCurrentGroup", payload: "gId" });
-            expect(fetchGroupDetails.called).to.equal(true, "Expected groupStore.fetchGroupDetails to be triggered");
+            afterWait(() => {
+                expectOneAction(dispatchSpy, { action: "ModellingGroupActions.setCurrentGroup", payload: "gId" });
+                expect(fetchGroupDetails.called).to.equal(true, "Expected groupStore.fetchGroupDetails to be triggered");
+            });
         });
     });
 });

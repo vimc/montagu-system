@@ -8,7 +8,7 @@ import { NotificationArea } from "../../shared/components/NotificationArea/Notif
 
 export interface AdminAppProps {
     errors: string[];
-    notifications: string[];
+    infos: string[];
     loggedIn: boolean;
 }
 
@@ -19,7 +19,7 @@ export class AdminAppComponent extends React.Component<AdminAppProps, undefined>
     static getPropsFromStores(): AdminAppProps {
         return {
             errors: notificationStore.getState().errors,
-            notifications: notificationStore.getState().infos,
+            infos: notificationStore.getState().infos,
             loggedIn: adminAuthStore.getState().loggedIn
         }
     }
@@ -27,7 +27,7 @@ export class AdminAppComponent extends React.Component<AdminAppProps, undefined>
     render() {
         return <div>
             <AdminRouter loggedIn={ this.props.loggedIn } />
-            <NotificationArea notifications={ this.props.notifications } />
+            <NotificationArea notifications={ this.props.infos } />
             <ErrorLog errors={ this.props.errors } />
         </div>;
     }

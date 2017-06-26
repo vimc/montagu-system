@@ -55,7 +55,8 @@ export abstract class AuthStoreBaseTests<TState, TInterface extends AuthStoreBas
             authActions.logOut();
             expect(this.getStoreState()).to.eql(this.initialState());
             expect(notificationStore.getState()).to.eql({
-                errors: []
+                errors: [],
+                infos: []
             });
         });
 

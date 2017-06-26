@@ -19,7 +19,7 @@ class AdminAuthStoreTests extends AuthStoreBaseTests<AuthStateBase, AuthStoreBas
     protected initialState(): AuthStateBase {
         return {
             username: null,
-            permissions: null,
+            permissions: [],
             loggedIn: false,
             bearerToken: null
         };

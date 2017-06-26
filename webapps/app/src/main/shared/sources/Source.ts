@@ -24,10 +24,13 @@ export abstract class Source<TState> {
             remote(state: TState) {
                 return handler(fetcher.fetcher.fetch(urlFragment(state)))
                     .catch((error: any) => {
-                        if (error instanceof Error) {
+                        // Because of transpilation to ES5, we cannot test for instanceof NotificationException
+                        if (error.hasOwnProperty("notification")) {
                             throw error;
+                        } else if (error instanceof Error) {
+                            throw makeNotificationException(error.message, "error");
                         } else {
-                            throw Error(error);
+                            throw makeNotificationException(error, "error");
                         }
                     });
             },

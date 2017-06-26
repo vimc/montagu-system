@@ -69,18 +69,4 @@ describe("MainStore", () => {
             }
         });
     });
-
-    it("when all sources have been loaded, store is ready and fetchTouchstones is triggered", (done: DoneCallback) => {
-        const spy = sandbox.sinon.spy(responsibilityStore, "fetchTouchstones");
-
-        expect(mainStore.getState().ready).to.be.false;
-        modellingGroupActions.update([]);
-        expect(mainStore.getState().ready).to.be.false;
-        diseaseActions.update([]);
-        expect(mainStore.getState().ready).to.be.true;
-
-        checkAsync(done, () => {
-            expect(spy.called).to.equal(true, "Expected responsibilityStore.fetchTouchstones to be called");
-        });
-    });
 });
