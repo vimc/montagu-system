@@ -8,4 +8,4 @@ data class User(
         val name: String,
         val email: String,
         val lastLoggedIn: Timestamp?,
-        var roles: List<RoleAssignment>?)
+        val roles: List<RoleAssignment>?)
