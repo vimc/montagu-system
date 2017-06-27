@@ -141,29 +141,6 @@ class UserTests : RepositoryTests<UserRepository>()
     }
 
     @Test
-    fun `retrieves user by username with roles`()
-    {
-        given {
-            addTestUser(it)
-            val roleGlobal = it.createRole("role", scopePrefix = null, description = "Role Global")
-            val roleA = it.createRole("a", scopePrefix = "prefixA", description = "Role A")
-            val roleB = it.createRole("b", scopePrefix = "prefixB", description = "Role B")
-            it.ensureUserHasRole("test.user", roleGlobal, scopeId = "")
-            it.ensureUserHasRole("test.user", roleA, scopeId = "idA")
-            it.ensureUserHasRole("test.user", roleB, scopeId = "idB")
-        } check { repo ->
-
-            val expectedRoles = listOf(
-                    RoleAssignment("role", null, null),
-                    RoleAssignment("a", "prefixA","idA"),
-                    RoleAssignment("b", "prefixB", "idB")
-            )
-            assertThat(repo.getRolesForUser("test.user")).hasSameElementsAs(expectedRoles)
-                    RoleAssignment("b", "prefixB", "idB")
-          }
-    }
-
-    @Test
     fun `can retrieve user by email with globally scoped permissions`()
     {
         given {
