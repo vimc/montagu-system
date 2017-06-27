@@ -3,6 +3,7 @@ package org.vaccineimpact.api.models
 import org.vaccineimpact.api.models.helpers.Rule
 import org.vaccineimpact.api.models.helpers.SerializationRule
 import org.vaccineimpact.api.models.permissions.RoleAssignment
+import java.beans.ConstructorProperties
 import java.sql.Timestamp
 
 data class User(
@@ -14,6 +15,7 @@ data class User(
 )
 {
     // Exists to make it easier to map with jOOQ
+    @ConstructorProperties("username", "name", "email", "lastLoggedIn")
     constructor(username: String, name: String, email: String, lastLoggedIn: Timestamp?)
         : this(username, name, email, lastLoggedIn, roles = null)
 }
