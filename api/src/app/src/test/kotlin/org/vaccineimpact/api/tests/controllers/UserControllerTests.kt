@@ -108,10 +108,67 @@ class UserControllerTests : ControllerTests<UserController>()
             on { this.all() } doReturn users
         })
 
+        val context = mock<ActionContext> {
+            on { permissions } doReturn PermissionSet()
+        }
+
         val controller = UserController(controllerContext)
-        val actualUsers = controller.getUsers(mock<ActionContext>())
+        val actualUsers = controller.getUsers(context)
 
         assertThat(actualUsers).hasSameElementsAs(users)
+    }
+
+    @Test
+    fun `getUsers returns all users with all roles`()
+    {
+        val expectedRoles = listOf(
+                RoleAssignment("user", null, null),
+                RoleAssignment("member", "modelling-group", "IC-Garske")
+        )
+
+        val users = listOf(User("test", "test name", "test@test.com", null, expectedRoles))
+        val permissionSet = PermissionSet("*/roles.read")
+
+        val controllerContext = mockControllerContext(mock<UserRepository> {
+            on { allWithRoles() } doReturn users
+        })
+
+        val context = mock<ActionContext> {
+            on { permissions } doReturn permissionSet
+        }
+
+        val controller = UserController(controllerContext)
+        val actualRoles = controller.getUsers(context)[0].roles
+        assertThat(actualRoles).hasSameElementsAs(expectedRoles)
+    }
+
+    @Test
+    fun `getUsers returns all users with specific scoped roles`()
+    {
+        val users = listOf(User("test", "test name", "test@test.com", null,
+                listOf(
+                        RoleAssignment("user", null, null),
+                        RoleAssignment("member", "modelling-group", "IC-Garske"),
+                        RoleAssignment("member", "modelling-group", "group2"),
+                        RoleAssignment("member", "foo", "IC:Garske")
+                )))
+
+        val permissionSet = PermissionSet("modelling-group:IC-Garske/roles.read")
+
+        val controllerContext = mockControllerContext(mock<UserRepository> {
+            on { this.allWithRoles() } doReturn users
+        })
+
+        val context = mock<ActionContext> {
+            on { permissions } doReturn permissionSet
+        }
+
+        val expectedRoles = listOf(RoleAssignment("member", "modelling-group", "IC-Garske"))
+
+        val controller = UserController(controllerContext)
+        val actualRoles = controller.getUsers(context)[0].roles
+
+        assertThat(actualRoles).hasSameElementsAs(expectedRoles)
     }
 
     private fun mockControllerContext(repo: UserRepository)

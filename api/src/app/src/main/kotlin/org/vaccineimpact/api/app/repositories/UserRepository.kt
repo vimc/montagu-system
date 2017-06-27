@@ -12,7 +12,5 @@ interface UserRepository : Repository
     fun getUserByUsername(username: String): User
     fun getRolesForUser(username: String): List<RoleAssignment>
     fun all(): Iterable<User>
-    fun alltest(): List<User>
-
-    fun allWithRoles(): Iterable<User>
+    fun allWithRoles(): List<User>
 }

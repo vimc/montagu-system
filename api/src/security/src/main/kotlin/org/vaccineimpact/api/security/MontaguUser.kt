@@ -2,6 +2,7 @@ package org.vaccineimpact.api.security
 
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import org.vaccineimpact.api.models.permissions.ReifiedRole
+import java.beans.ConstructorProperties
 import java.sql.Timestamp
 
 data class MontaguUser(
@@ -19,7 +20,9 @@ interface UserPropertiesInterface {
     val lastLoggedIn: Timestamp?
 }
 
-data class UserProperties(
+data class UserProperties
+@ConstructorProperties("username", "name", "email", "passwordHash", "salt", "lastLoggedIn")
+constructor(
         override val username: String,
         override val name: String,
         override val email: String,

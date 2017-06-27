@@ -64,7 +64,7 @@ class UserTests : RepositoryTests<UserRepository>()
     }
 
     @Test
-    fun `can retrieve roles for user`()
+    fun `can retrieve all users`()
     {
         given({
             UserHelper.saveUser(it.dsl, "testuser", "Test User", "test1@test.com", "password")
@@ -78,17 +78,25 @@ class UserTests : RepositoryTests<UserRepository>()
         }
     }
 
-
     @Test
-    fun `can retrieve all users groups`()
+    fun `can retrieve roles for user`()
     {
-        given({
-            UserHelper.saveUser(it.dsl, "testuser", "Test User", "test1@test.com", "password")
-            UserHelper.saveUser(it.dsl, "testuser2", "Test User 2", "test2@test.com", "password")
-        }).check { repo ->
-            val expectedUser = User("testuser", "Test User", "test1@test.com", null)
-            val results = repo.alltest()
-            var whatever = 22
+        given {
+            addTestUser(it)
+            val roleGlobal = it.createRole("role", scopePrefix = null, description = "Role Global")
+            val roleA = it.createRole("a", scopePrefix = "prefixA", description = "Role A")
+            val roleB = it.createRole("b", scopePrefix = "prefixB", description = "Role B")
+            it.ensureUserHasRole("test.user", roleGlobal, scopeId = "")
+            it.ensureUserHasRole("test.user", roleA, scopeId = "idA")
+            it.ensureUserHasRole("test.user", roleB, scopeId = "idB")
+        } check { repo ->
+
+            val expectedRoles = listOf(
+                    RoleAssignment("role", null, null),
+                    RoleAssignment("a", "prefixA","idA"),
+                    RoleAssignment("b", "prefixB", "idB")
+            )
+            assertThat(repo.getRolesForUser("test.user")).hasSameElementsAs(expectedRoles)
         }
     }
 
@@ -122,7 +130,7 @@ class UserTests : RepositoryTests<UserRepository>()
                     "testuser2", "Test User 2", "test2@test.com",
                     null, expectedRoles2)
 
-            val results = repo.allWithRoles().toList()
+            val results = repo.allWithRoles()
 
             assertThat(results.count()).isEqualTo(2)
 
