@@ -10,7 +10,6 @@ import { ListOfUsers } from "../../ListOfUsers";
 const commonStyles = require("../../../../../shared/styles/common.css");
 
 interface Props extends RemoteContent {
-    group: ModellingGroupDetails;
     admins: Set<User>;
     users: User[];
 }
@@ -20,15 +19,22 @@ export class GroupAdminContentComponent extends RemoteContentComponent<Props> {
         return [ groupStore, userStore ];
     }
 
-    static getPropsFromStores() {
+    static getPropsFromStores(): Props {
         const group = groupStore.getCurrentGroupDetails();
         const allUsers = userStore.getState().users;
-        return {
-            group: group,
-            users: allUsers,
-            admins: new Set(group.admins.map(a => allUsers.find(u => a == u.username))),
-            ready: group != null && userStore.getState().ready
-        };
+        if (group != null) {
+            return {
+                users: allUsers,
+                admins: new Set(group.admins.map(a => allUsers.find(u => a == u.username))),
+                ready: group != null && userStore.getState().ready
+            };
+        } else {
+            return {
+                users: [],
+                admins: new Set(),
+                ready: false
+            };
+        }
     }
 
     renderCurrent(props: Props): JSX.Element {
