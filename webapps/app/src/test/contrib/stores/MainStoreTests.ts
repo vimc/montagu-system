@@ -7,7 +7,7 @@ import { mainStore } from "../../../main/contrib/stores/MainStore";
 import { diseaseActions } from "../../../main/contrib/actions/DiseaseActions";
 import { responsibilityStore } from "../../../main/contrib/stores/ResponsibilityStore";
 import { Disease, ModellingGroup } from "../../../main/shared/models/Generated";
-import { emptyLookup } from "../../../main/contrib/stores/Loadable";
+import { emptyLoadable } from "../../../main/contrib/stores/Loadable";
 import { modellingGroupActions } from "../../../main/contrib/actions/ModellingGroupActions";
 import { checkAsync } from "../../testHelpers";
 
@@ -27,8 +27,8 @@ describe("MainStore", () => {
         const state = mainStore.getState();
         expect(state).to.eql({
             ready: false,
-            diseases: emptyLookup<Disease>(),
-            modellingGroups: emptyLookup<ModellingGroup>()
+            diseases: emptyLoadable<Disease>(),
+            modellingGroups: emptyLoadable<ModellingGroup>()
         });
     });
 
@@ -47,7 +47,7 @@ describe("MainStore", () => {
                     d2: disease2,
                 }
             },
-            modellingGroups: emptyLookup<ModellingGroup>()
+            modellingGroups: emptyLoadable<ModellingGroup>()
         });
     });
 
@@ -59,7 +59,7 @@ describe("MainStore", () => {
         const state = mainStore.getState();
         expect(state).to.eql({
             ready: false,
-            diseases: emptyLookup<Disease>(),
+            diseases: emptyLoadable<Disease>(),
             modellingGroups: {
                 loaded: true,
                 content: {

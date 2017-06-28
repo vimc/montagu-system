@@ -2,7 +2,7 @@ import alt from "../../shared/alt";
 import * as AltJS from "alt";
 import { AbstractStore } from "../../shared/stores/AbstractStore";
 import { Disease, ModellingGroup } from "../../shared/models/Generated";
-import { emptyLookup, getFromLookup, ILoadable, makeLookup } from "./Loadable";
+import { emptyLoadable, getFromLoadable, ILoadable, makeLoadable } from "./Loadable";
 import { diseaseActions } from "../actions/DiseaseActions";
 import { RemoteContent } from "../../shared/models/RemoteContent";
 import { responsibilityStore } from "./ResponsibilityStore";
@@ -30,8 +30,8 @@ interface Interface extends AltJS.AltStore<MainState> {
 
 export function initialMainState(): MainState {
     return {
-        diseases: emptyLookup<Disease>(),
-        modellingGroups: emptyLookup<ModellingGroup>(),
+        diseases: emptyLoadable<Disease>(),
+        modellingGroups: emptyLoadable<ModellingGroup>(),
         ready: false
     };
 }
@@ -50,8 +50,8 @@ class MainStore extends AbstractStore<MainState, Interface> {
         this.registerAsync(new DiseaseSource());
         this.registerAsync(new ModellingGroupSource());
         this.exportPublicMethods({
-            getDiseaseById: id => getFromLookup(this.diseases, id),
-            getGroupById: id => getFromLookup(this.modellingGroups, id),
+            getDiseaseById: id => getFromLoadable(this.diseases, id),
+            getGroupById: id => getFromLoadable(this.modellingGroups, id),
             load: () => {
                 this.getInstance().fetchDiseases().catch(doNothing);
                 this.getInstance().fetchModellingGroups().catch(doNothing);
@@ -64,12 +64,12 @@ class MainStore extends AbstractStore<MainState, Interface> {
     }
 
     handleDiseases(diseases: Array<Disease>) {
-        this.diseases = makeLookup(diseases);
+        this.diseases = makeLoadable(diseases);
         this.checkReadiness();
     }
 
     handleModellingGroups(groups: Array<ModellingGroup>) {
-        this.modellingGroups = makeLookup(groups);
+        this.modellingGroups = makeLoadable(groups);
         this.checkReadiness();
     }
 

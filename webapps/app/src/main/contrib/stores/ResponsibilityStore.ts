@@ -15,12 +15,14 @@ import { TouchstoneSource } from "../sources/TouchstoneSource";
 import { CoverageSetSource } from "../sources/CoverageSetSource";
 import { CoverageTokenSource } from "../sources/CoverageTokenSource";
 import { mainStore } from "./MainStore";
+import { Dict, ILookup } from "../../shared/models/Lookup";
+import { emptyLoadable, getFromLoadable } from "./Loadable";
 
 export interface ResponsibilityState extends RemoteContent {
     touchstones: Array<Touchstone>;
     currentTouchstone: Touchstone;
 
-    responsibilitySet: ExtendedResponsibilitySet;
+    responsibilitySets: ILookup<ExtendedResponsibilitySet>;
     currentResponsibility: ExtendedResponsibility;
     coverageOneTimeToken: string;
 
@@ -36,11 +38,19 @@ interface ResponsibilityStoreInterface extends AltJS.AltStore<ResponsibilityStat
     isLoading(): boolean;
 }
 
+export function getCurrentResponsibilitySet(state: ResponsibilityState): ExtendedResponsibilitySet {
+    if (state.currentTouchstone != null) {
+        new Dict(state.responsibilitySets).get(state.currentTouchstone.id);
+    } else {
+        return null;
+    }
+}
+
 class ResponsibilityStore extends AbstractStore<ResponsibilityState, ResponsibilityStoreInterface> implements ResponsibilityState {
     touchstones: Array<Touchstone>;
     currentTouchstone: Touchstone;
 
-    responsibilitySet: ExtendedResponsibilitySet;
+    responsibilitySets: ILookup<ExtendedResponsibilitySet>;
     currentResponsibility: ExtendedResponsibility;
     coverageOneTimeToken: string;
 
@@ -83,7 +93,7 @@ class ResponsibilityStore extends AbstractStore<ResponsibilityState, Responsibil
             touchstones: [],
             currentTouchstone: null,
 
-            responsibilitySet: null,
+            responsibilitySets: null,
             currentResponsibility: null,
 
             currentModellingGroup: null,
@@ -95,8 +105,8 @@ class ResponsibilityStore extends AbstractStore<ResponsibilityState, Responsibil
     }
 
     handleSetCurrentResponsibility(scenarioId: string) {
-        if (this.responsibilitySet != null) {
-            this.currentResponsibility = this.responsibilitySet.getResponsibilityByScenario(scenarioId);
+        if (this.responsibilitySets != null) {
+            this.currentResponsibility = getCurrentResponsibilitySet(this.getState()).getResponsibilityByScenario(scenarioId);
         }
     }
     handleSetCurrentTouchstone(touchstoneId: string) {
@@ -108,11 +118,11 @@ class ResponsibilityStore extends AbstractStore<ResponsibilityState, Responsibil
 
     handleBeginTouchstoneFetch() {
         this.touchstones = [];
-        this.responsibilitySet = null;
+        this.responsibilitySets = null;
         this.ready = false;
     }
     handleBeginResponsibilityFetch() {
-        this.responsibilitySet = null;
+        new Dict(this.responsibilitySets).remove(this.currentTouchstone.id);
         this.ready = false;
         this.currentDiseaseId = null;
     }
@@ -132,7 +142,8 @@ class ResponsibilityStore extends AbstractStore<ResponsibilityState, Responsibil
     }
     handleUpdateResponsibilities(responsibilities: Responsibilities) {
         const touchstone = this.touchstones.find(x => x.id == responsibilities.touchstone);
-        this.responsibilitySet = new ExtendedResponsibilitySet(responsibilities, touchstone, this.currentModellingGroup);
+        const set = new ExtendedResponsibilitySet(responsibilities, touchstone, this.currentModellingGroup);
+        this.responsibilitySets[this.currentTouchstone.id] = set;
         this.ready = true;
     }
     handleUpdateTouchstones(touchstones: Array<Touchstone>) {
@@ -140,7 +151,7 @@ class ResponsibilityStore extends AbstractStore<ResponsibilityState, Responsibil
         this.ready = true;
     }
     handleUpdateCoverageSets(data: ScenarioTouchstoneAndCoverageSets) {
-        this.responsibilitySet.addCoverageSets(data.scenario.id, data.coverage_sets);
+        getCurrentResponsibilitySet(this.getState()).addCoverageSets(data.scenario.id, data.coverage_sets);
         this.ready = true;
     }
     handleUpdateCoverageToken(url: string) {

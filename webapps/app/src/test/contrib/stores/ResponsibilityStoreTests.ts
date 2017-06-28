@@ -17,7 +17,7 @@ import { responsibilityStore } from "../../../main/contrib/stores/Responsibility
 import { coverageSetActions } from "../../../main/contrib/actions/CoverageSetActions";
 import { coverageTokenActions } from "../../../main/contrib/actions/CoverageActions";
 import { modellingGroupActions } from "../../../main/contrib/actions/ModellingGroupActions";
-import { makeLookup } from "../../../main/contrib/stores/Loadable";
+import { makeLoadable } from "../../../main/contrib/stores/Loadable";
 import { ModellingGroup } from "../../../main/shared/models/Generated";
 const jwt = require("jsonwebtoken");
 
@@ -48,7 +48,7 @@ describe("ResponsibilityStore", () => {
     it("modellingGroupActions.setCurrentModellingGroup sets current modelling group", () => {
         const group = mockModellingGroup();
         alt.bootstrap(JSON.stringify({
-            MainStore: { modellingGroups: makeLookup<ModellingGroup>([ group ]) }
+            MainStore: { modellingGroups: makeLoadable<ModellingGroup>([ group ]) }
         }));
         modellingGroupActions.setCurrentModellingGroup(group.id);
         expect(responsibilityStore.getState().currentModellingGroup).to.eql(group);
