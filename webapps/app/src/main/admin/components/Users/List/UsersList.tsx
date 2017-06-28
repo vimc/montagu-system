@@ -1,7 +1,7 @@
 import * as React from "react";
-import { RemoteContentComponent } from "../../../../shared/components/RemoteContentComponent/RemoteContentComponent";
-import { RemoteContent } from "../../../../shared/models/RemoteContent";
-import { connectToStores } from "../../../../shared/alt";
+import {RemoteContentComponent} from "../../../../shared/components/RemoteContentComponent/RemoteContentComponent";
+import {RemoteContent} from "../../../../shared/models/RemoteContent";
+import {connectToStores} from "../../../../shared/alt";
 import {userStore} from "../../../stores/UserStore";
 import {User} from "../../../../shared/models/Generated";
 import {UserListItem} from "./UserListItem";
@@ -10,11 +10,11 @@ interface UserProps extends RemoteContent {
     users: User[]
 }
 
-export class UsersListComponent extends
-RemoteContentComponent<UserProps> {
-static getStores() {
-        return [ userStore ];
+export class UsersListComponent extends RemoteContentComponent<UserProps> {
+    static getStores() {
+        return [userStore];
     }
+
     static getPropsFromStores(): UserProps {
         const s = userStore.getState();
         return {
@@ -27,15 +27,19 @@ static getStores() {
         const items = props.users
             .sort((a, b) => a.username.localeCompare(b.username))
             .map(g =>
-            <UserListItem {...g} />);
+                <UserListItem {...g} />);
         return <table>
+            <thead>
             <tr>
                 <th>Username</th>
                 <th>Name</th>
                 <th>Email</th>
                 <th>Last logged in</th>
             </tr>
-            { items }
+            </thead>
+            <tbody>
+                { items }
+            </tbody>
         </table>;
     }
 }
