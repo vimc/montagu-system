@@ -11,7 +11,7 @@ export class UserListItem extends React.Component<User, undefined> {
                     </td>
                     <td>{ this.props.name }</td>
                     <td>{ this.props.email }</td>
-                    <td>{ this.props.last_logged_in }</td>
+                    <td>{ this.props.last_logged_in || "never" }</td>
                 </tr>;
     }
 }
