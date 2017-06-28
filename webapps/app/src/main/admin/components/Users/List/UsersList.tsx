@@ -27,7 +27,7 @@ export class UsersListComponent extends RemoteContentComponent<UserProps> {
         const items = props.users
             .sort((a, b) => a.username.localeCompare(b.username))
             .map(g =>
-                <UserListItem {...g} />);
+                <UserListItem key={ g.username } {...g} />);
         return <table>
             <thead>
             <tr>

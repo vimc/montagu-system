@@ -5,7 +5,7 @@ import {User} from "../../../../shared/models/Generated";
 export class UserListItem extends React.Component<User, undefined> {
     render() {
         const url = `/users/${ this.props.username }/`;
-        return <tr key={ this.props.username }>
+        return <tr>
                     <td><InternalLink href={ url }>{ this.props.username}
                         </InternalLink>
                     </td>
