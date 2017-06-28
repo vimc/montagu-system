@@ -6,7 +6,7 @@ import { checkAsync } from "../../../../testHelpers";
 import {ViewAllUsersPage} from "../../../../../main/admin/components/Users/List/ViewAllUsersPage";
 import {userStore} from "../../../../../main/admin/stores/UserStore";
 
-describe("ViewAllModellingGroupsPageTests", () => {
+describe("ViewAllUsersPageTests", () => {
     const sandbox = new Sandbox();
 
     afterEach(() => sandbox.restore());
