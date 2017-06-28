@@ -1,6 +1,7 @@
 package org.vaccineimpact.api.models.permissions
 
 import org.vaccineimpact.api.models.Scope
+import java.beans.ConstructorProperties
 
 data class Role(
         val id: Int,
@@ -17,7 +18,9 @@ data class ReifiedRole(
     override fun toString() = "$scope/$name"
 }
 
-data class RoleAssignment(
+
+data class RoleAssignment @ConstructorProperties("name", "scopePrefix", "scopeId")
+constructor(
         val name: String,
         var scopePrefix: String?,
         var scopeId: String?
