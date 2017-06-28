@@ -122,3 +122,23 @@ export function mockScenarioTouchstoneAndCoverageSets(
         coverage_sets: coverageSets || [ mockCoverageSet({ touchstone: touchstone.id }) ]
     };
 }
+
+export function mockRole(): models.RoleAssignment {
+    counter++;
+    return {
+        name: "mockRole" + counter,
+        scope_prefix: null,
+        scope_id: null
+    };
+}
+
+export function mockUser(properties?: any): models.User {
+    counter++;
+    return Object.assign({
+        username: "mock.user" + counter,
+        name: "Mockery Jones",
+        email: "mock@example.com",
+        roles: [ mockRole(), mockRole() ],
+        last_logged_in: null
+    }, properties);
+}

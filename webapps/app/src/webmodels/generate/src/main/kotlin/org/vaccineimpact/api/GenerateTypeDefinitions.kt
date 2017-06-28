@@ -7,6 +7,7 @@ import org.vaccineimpact.api.models.*
 import java.io.File
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.sql.Timestamp
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty
 import kotlin.system.exitProcess
@@ -26,21 +27,23 @@ fun main(args: Array<String>)
 
         val generator = TypeScriptGenerator(
                 rootClasses = setOf(
-                        Scenario::class,
-                        TouchstoneStatus::class,
-                        Touchstone::class,
+                        CoverageSet::class,
+                        Disease::class,
                         ModellingGroup::class,
                         ModellingGroupDetails::class,
                         Responsibilities::class,
                         Result::class,
-                        Disease::class,
-                        CoverageSet::class,
+                        Scenario::class,
                         ScenarioAndCoverageSets::class,
-                        ScenarioTouchstoneAndCoverageSets::class
+                        ScenarioTouchstoneAndCoverageSets::class,
+                        Touchstone::class,
+                        TouchstoneStatus::class,
+                        User::class
                 ),
                 mappings = mapOf(
                         LocalDateTime::class to "Date",
-                        LocalDate::class to "Date"
+                        LocalDate::class to "Date",
+                        Timestamp::class to "Date"
                 ),
                 ignoreSuperclasses = setOf(Iterable::class, HasKey::class),
                 classTransformers = listOf(MyClassTransformer),
