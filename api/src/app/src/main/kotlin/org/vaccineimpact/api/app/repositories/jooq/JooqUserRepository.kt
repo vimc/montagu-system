@@ -29,7 +29,7 @@ class JooqUserRepository : JooqRepository(), UserRepository
                     .fetch()
 
             return MontaguUser(
-                    user.mapUserProperties(),
+                    user.into(UserProperties::class.java),
                     records.map(this::mapRole).distinct(),
                     records.map(this::mapPermission)
             )
@@ -42,15 +42,7 @@ class JooqUserRepository : JooqRepository(), UserRepository
 
     override fun getUserByUsername(username: String): User
     {
-        val user = getUser(username)
-
-        return User(
-                user.username,
-                user.name,
-                user.email,
-                user.lastLoggedIn,
-                null)
-
+        return getUser(username).into(User::class.java)
     }
 
     override fun getRolesForUser(username: String): List<RoleAssignment>
@@ -64,12 +56,32 @@ class JooqUserRepository : JooqRepository(), UserRepository
                 .distinct()
     }
 
-
     override fun all(): Iterable<User>
     {
         return dsl.select(APP_USER.USERNAME, APP_USER.NAME, APP_USER.EMAIL, APP_USER.LAST_LOGGED_IN)
                 .from(APP_USER)
                 .fetchInto(User::class.java)
+    }
+
+    override fun allWithRoles(): List<User>
+    {
+        return dsl.select()
+                .from(APP_USER)
+                .leftJoin(USER_ROLE)
+                .on(APP_USER.USERNAME.eq(USER_ROLE.USERNAME))
+                .leftJoin(ROLE)
+                .on(ROLE.ID.eq(USER_ROLE.ROLE))
+                .fetchGroups(APP_USER)
+                .map(this::mapUserWithRoles)
+    }
+
+    private fun mapUserWithRoles(entry: Map.Entry<AppUserRecord, org.jooq.Result<Record>>): User
+    {
+        val user = entry.key.into(User::class.java)
+        val roles = entry.value.filter{ r-> r[USER_ROLE.ROLE] != null }
+                .map(this::mapRoleAssignment)
+
+        return user.copy(roles = roles)
     }
 
     private fun getUser(username: String): AppUserRecord
@@ -88,20 +100,11 @@ class JooqUserRepository : JooqRepository(), UserRepository
     private fun caseInsensitiveUsernameMatch(username: String)
             = APP_USER.USERNAME.lower().eq(username.toLowerCase())
 
-    fun AppUserRecord.mapUserProperties() = UserProperties(
-            this.username,
-            this.name,
-            this.email,
-            this.passwordHash,
-            this.salt,
-            this.lastLoggedIn
-    )
+    private fun mapPermission(record: Record) = ReifiedPermission(record[PERMISSION.NAME], mapScope(record))
 
-    fun mapPermission(record: Record) = ReifiedPermission(record[PERMISSION.NAME], mapScope(record))
+    private fun mapRole(record: Record) = ReifiedRole(record[ROLE.NAME], mapScope(record))
 
-    fun mapRole(record: Record) = ReifiedRole(record[ROLE.NAME], mapScope(record))
-
-    fun mapRoleAssignment(record: Record): RoleAssignment
+    private fun mapRoleAssignment(record: Record): RoleAssignment
     {
         var scopeId = record[USER_ROLE.SCOPE_ID]
 
@@ -122,7 +125,7 @@ class JooqUserRepository : JooqRepository(), UserRepository
                 scopeId)
     }
 
-    fun mapScope(record: Record): Scope
+    private fun mapScope(record: Record): Scope
     {
         val scopePrefix = record[ROLE.SCOPE_PREFIX]
         val scopeId = record[USER_ROLE.SCOPE_ID]

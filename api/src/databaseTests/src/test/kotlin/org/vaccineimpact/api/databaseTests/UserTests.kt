@@ -101,6 +101,46 @@ class UserTests : RepositoryTests<UserRepository>()
     }
 
     @Test
+    fun `can retrieve all users with roles`()
+    {
+        given({
+            UserHelper.saveUser(it.dsl, "testuser1", "Test User", "test1@test.com", "password")
+            UserHelper.saveUser(it.dsl, "testuser2", "Test User 2", "test2@test.com", "password")
+            val roleGlobal = it.createRole("role", scopePrefix = null, description = "Role Global")
+            val roleA = it.createRole("a", scopePrefix = "prefixA", description = "Role A")
+            val roleB = it.createRole("b", scopePrefix = "prefixB", description = "Role B")
+            it.ensureUserHasRole("testuser1", roleGlobal, scopeId = "")
+            it.ensureUserHasRole("testuser1", roleA, scopeId = "idA")
+            it.ensureUserHasRole("testuser2", roleB, scopeId = "idB")
+
+        }).check { repo ->
+
+            val expectedRoles1 = listOf(
+                    RoleAssignment("role", null, null),
+                    RoleAssignment("a", "prefixA","idA"))
+
+            val expectedUser = User(
+                    "testuser1", "Test User", "test1@test.com",
+                    null, expectedRoles1)
+
+            val expectedRoles2 = listOf(
+                    RoleAssignment("b", "prefixB", "idB"))
+
+            val expectedUser2 =  User(
+                    "testuser2", "Test User 2", "test2@test.com",
+                    null, expectedRoles2)
+
+            val results = repo.allWithRoles()
+
+            assertThat(results.count()).isEqualTo(2)
+
+            checkUserWithRoles(results[0], expectedUser, expectedRoles1)
+            checkUserWithRoles(results[1], expectedUser2, expectedRoles2)
+
+        }
+    }
+
+    @Test
     fun `can retrieve user by email with globally scoped permissions`()
     {
         given {
@@ -161,6 +201,17 @@ class UserTests : RepositoryTests<UserRepository>()
         assertThat(user.email).isEqualTo("test@example.com")
         assertThat(user.roles).hasSameElementsAs(expectedRoles)
         assertThat(user.permissions).hasSameElementsAs(expectedPermissions)
+    }
+
+    private fun checkUserWithRoles(
+            actualUser: User,
+            expectedUser: User,
+            expectedRoles: List<RoleAssignment>)
+    {
+        assertThat(actualUser.username).isEqualTo(expectedUser.username)
+        assertThat(actualUser.name).isEqualTo(expectedUser.name)
+        assertThat(actualUser.email).isEqualTo(expectedUser.email)
+        assertThat(actualUser.roles).hasSameElementsAs(expectedRoles)
     }
 
     private fun getUser(repository: UserRepository, email: String): MontaguUser
