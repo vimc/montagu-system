@@ -1,7 +1,7 @@
 import * as React from "react";
 import { ModellingGroupDetailsContent } from "./ModellingGroupDetailsContent";
 import { connectToStores } from "../../../../../shared/alt";
-import { ModellingGroupTitle, TitleProps } from "../ModellingGroupTitle";
+import { ModellingGroupTitle, GroupTitleProps } from "../ModellingGroupTitle";
 import { AdminPageWithHeader } from "../../../AdminPageWithHeader";
 import { groupStore } from "../../../../stores/GroupStore";
 import { modellingGroupActions } from "../../../../actions/ModellingGroupActions";
@@ -31,7 +31,7 @@ export class ViewModellingGroupDetailsPage extends AdminPageWithHeader<PageProps
 }
 
 const Title = connectToStores(class extends ModellingGroupTitle {
-    renderContent(props: TitleProps) {
+    renderContent(props: GroupTitleProps) {
         return <span>{ props.group.description }</span>;
     }
 });

@@ -4,8 +4,8 @@ import { alt } from "../../shared/alt";
 import { AbstractStore } from "../../shared/stores/AbstractStore";
 import { modellingGroupActions } from "../actions/ModellingGroupActions";
 import { RemoteContent } from "../../shared/models/RemoteContent";
-import { ModellingGroupSource } from "../sources/ModellingGroupSource";
 import { ILookup } from "../../shared/models/Lookup";
+import {ModellingGroupSource} from "../sources/ModellingGroupSource";
 
 export interface GroupState extends RemoteContent {
     groups: ModellingGroup[];

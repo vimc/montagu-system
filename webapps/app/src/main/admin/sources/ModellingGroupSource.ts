@@ -4,7 +4,8 @@ import { GroupState } from "../stores/GroupStore";
 import SourceModel = AltJS.SourceModel;
 import { modellingGroupActions } from "../actions/ModellingGroupActions";
 
-export class ModellingGroupSource extends Source<GroupState> {
+export class ModellingGroupSource extends Source<GroupState>
+{
     fetchGroups: () => SourceModel<ModellingGroup[]>;
     fetchGroupDetails: () => SourceModel<ModellingGroupDetails>;
 
