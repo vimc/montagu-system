@@ -8,11 +8,15 @@ export class CoverageSetSource extends CoverageSource {
 
     constructor() {
         super();
-        this.fetchCoverageSets = () => this.doFetch(state => {
+        this.fetchCoverageSets = () => this.doFetch<ScenarioTouchstoneAndCoverageSets>(state => {
             return this.baseURL(state) + "/coverage_sets/";
         }, {
             success: coverageSetActions.update,
-            loading: coverageSetActions.beginFetch
+            loading: coverageSetActions.beginFetch,
+            isCached: state => {
+                const sets = state.responsibilitySet.getCoverageSets(state.currentResponsibility.scenario.id);
+                return sets != null && sets.length > 0;
+            }
         });
     }
 }

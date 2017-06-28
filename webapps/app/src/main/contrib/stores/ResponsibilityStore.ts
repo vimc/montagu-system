@@ -132,7 +132,7 @@ class ResponsibilityStore extends AbstractStore<ResponsibilityState, Responsibil
     }
     handleUpdateResponsibilities(responsibilities: Responsibilities) {
         const touchstone = this.touchstones.find(x => x.id == responsibilities.touchstone);
-        this.responsibilitySet = new ExtendedResponsibilitySet(responsibilities, touchstone);
+        this.responsibilitySet = new ExtendedResponsibilitySet(responsibilities, touchstone, this.currentModellingGroup);
         this.ready = true;
     }
     handleUpdateTouchstones(touchstones: Array<Touchstone>) {
