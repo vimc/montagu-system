@@ -9,6 +9,7 @@ import org.vaccineimpact.api.app.repositories.jooq.JooqUserRepository
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.Tables
 import org.vaccineimpact.api.models.Scope
+import org.vaccineimpact.api.models.User
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import org.vaccineimpact.api.models.permissions.ReifiedRole
 import org.vaccineimpact.api.models.permissions.RoleAssignment
@@ -63,6 +64,21 @@ class UserTests : RepositoryTests<UserRepository>()
     }
 
     @Test
+    fun `can retrieve all users`()
+    {
+        given({
+            UserHelper.saveUser(it.dsl, "testuser", "Test User", "test1@test.com", "password")
+            UserHelper.saveUser(it.dsl, "testuser2", "Test User 2", "test2@test.com", "password")
+        }).check { repo ->
+            val expectedUser = User("testuser", "Test User", "test1@test.com", null)
+            val results = repo.all().toList()
+
+            assertThat(results.count()).isEqualTo(2)
+            assertThat(results[0]).isEqualToComparingFieldByField(expectedUser)
+        }
+    }
+
+    @Test
     fun `can retrieve roles for user`()
     {
         given {
@@ -77,7 +93,7 @@ class UserTests : RepositoryTests<UserRepository>()
 
             val expectedRoles = listOf(
                     RoleAssignment("role", null, null),
-                    RoleAssignment("a", "prefixA","idA"),
+                    RoleAssignment("a", "prefixA", "idA"),
                     RoleAssignment("b", "prefixB", "idB")
             )
             assertThat(repo.getRolesForUser("test.user")).hasSameElementsAs(expectedRoles)
