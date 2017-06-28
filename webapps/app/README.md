@@ -17,7 +17,8 @@ docker run -p 8080:80 montagu.dide.ic.ac.uk/montagu-contrib-portal:CURRENT_GIT_B
 1. Run `npm install` to get dependencies and `npm install webpack --global` to install webpack
 2. Run `webpack` to build, or `webpack --watch` to continuously monitor files and
 rebuild as needed.
-3. Run `npm start` to run a development server on port 5000.
+3. Run `npm run admin` / `npm run contrib` to run a development server (serving admin/contrib portals, respectively) 
+on port 5000.
 
 Or, build using docker (`docker build -f dev.dockerfile .`) and then run the 
 resulting image.
