@@ -93,7 +93,7 @@ class UserTests : RepositoryTests<UserRepository>()
 
             val expectedRoles = listOf(
                     RoleAssignment("role", null, null),
-                    RoleAssignment("a", "prefixA","idA"),
+                    RoleAssignment("a", "prefixA", "idA"),
                     RoleAssignment("b", "prefixB", "idB")
             )
             assertThat(repo.getRolesForUser("test.user")).hasSameElementsAs(expectedRoles)

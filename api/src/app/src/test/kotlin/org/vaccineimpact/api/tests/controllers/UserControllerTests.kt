@@ -21,7 +21,7 @@ class UserControllerTests : ControllerTests<UserController>()
     fun `getUser returns user without roles`()
     {
         val userName = "test"
-        val user = User("test", "test name", "test@test.com", null, null)
+        val user = User("test", "test name", "test@test.com", null)
 
         val permissionSet = PermissionSet()
 
@@ -43,7 +43,7 @@ class UserControllerTests : ControllerTests<UserController>()
     {
         val userName = "test"
 
-        val user = User("test", "test name", "test@test.com", null, null)
+        val user = User("test", "test name", "test@test.com", null)
         val expectedRoles = listOf(
                 RoleAssignment("user", null, null),
                 RoleAssignment("member", "modelling-group", "IC-Garske")
@@ -71,7 +71,7 @@ class UserControllerTests : ControllerTests<UserController>()
     {
         val userName = "test"
 
-        val user = User("test", "test name", "test@test.com", null, null)
+        val user = User("test", "test name", "test@test.com", null)
         val roles = listOf(
                 RoleAssignment("user", null, null),
                 RoleAssignment("member", "modelling-group", "IC-Garske"),
@@ -102,7 +102,7 @@ class UserControllerTests : ControllerTests<UserController>()
     @Test
     fun `getUsers returns all users without roles`()
     {
-        val users = listOf(User("test1", "Test Name 1   ", "test1@test.com", null, null))
+        val users = listOf(User("test1", "Test Name 1   ", "test1@test.com", null))
 
         val controllerContext = mockControllerContext(mock<UserRepository> {
             on { this.all() } doReturn users
