@@ -5,14 +5,14 @@ import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.repositories.UserRepository
 import org.vaccineimpact.api.db.Tables.*
 import org.vaccineimpact.api.db.fromJoinPath
-import org.vaccineimpact.api.db.tables.AppUser
 import org.vaccineimpact.api.db.tables.records.AppUserRecord
-import org.vaccineimpact.api.models.*
-import org.vaccineimpact.api.models.permissions.*
+import org.vaccineimpact.api.models.Scope
+import org.vaccineimpact.api.models.User
+import org.vaccineimpact.api.models.permissions.ReifiedPermission
+import org.vaccineimpact.api.models.permissions.ReifiedRole
+import org.vaccineimpact.api.models.permissions.RoleAssignment
 import org.vaccineimpact.api.security.MontaguUser
-
 import org.vaccineimpact.api.security.UserProperties
-import java.security.Permissions
 
 class JooqUserRepository : JooqRepository(), UserRepository
 {
@@ -48,27 +48,20 @@ class JooqUserRepository : JooqRepository(), UserRepository
                 user.username,
                 user.name,
                 user.email,
-                user.lastLoggedIn)
+                user.lastLoggedIn,
+                null)
 
     }
 
-    override fun getUserWithRolesByUsername(username: String): UserWithRoles
+    override fun getRolesForUser(username: String): List<RoleAssignment>
     {
-        val user = getUser(username)
-
-        val records = dsl.select(ROLE.NAME, ROLE.SCOPE_PREFIX)
+        return dsl.select(ROLE.NAME, ROLE.SCOPE_PREFIX)
                 .select(USER_ROLE.SCOPE_ID)
                 .fromJoinPath(APP_USER, USER_ROLE, ROLE)
                 .where(caseInsensitiveUsernameMatch(username))
                 .fetch()
-
-        return UserWithRoles(
-                user.username,
-                user.name,
-                user.email,
-                user.lastLoggedIn,
-                records.map(this::mapRoleAssignment).distinct()
-        )
+                .map(this::mapRoleAssignment)
+                .distinct()
     }
 
 
@@ -78,7 +71,6 @@ class JooqUserRepository : JooqRepository(), UserRepository
                 .from(APP_USER)
                 .fetchInto(User::class.java)
     }
-
 
     private fun getUser(username: String): AppUserRecord
     {

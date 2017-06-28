@@ -13,11 +13,7 @@ import org.vaccineimpact.api.models.User
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import org.vaccineimpact.api.models.permissions.ReifiedRole
 import org.vaccineimpact.api.models.permissions.RoleAssignment
-import org.vaccineimpact.api.security.MontaguUser
-import org.vaccineimpact.api.security.UserHelper
-import org.vaccineimpact.api.security.createRole
-import org.vaccineimpact.api.security.ensureUserHasRole
-import org.vaccineimpact.api.security.setRolePermissions
+import org.vaccineimpact.api.security.*
 
 class UserTests : RepositoryTests<UserRepository>()
 {
@@ -83,7 +79,7 @@ class UserTests : RepositoryTests<UserRepository>()
     }
 
     @Test
-    fun `retrieves user by username with roles`()
+    fun `can retrieve roles for user`()
     {
         given {
             addTestUser(it)
@@ -97,16 +93,10 @@ class UserTests : RepositoryTests<UserRepository>()
 
             val expectedRoles = listOf(
                     RoleAssignment("role", null, null),
-                    RoleAssignment("a", "prefixA","idA"),
-                    RoleAssignment("b", "prefixB", "idB"))
-
-
-            var user = repo.getUserWithRolesByUsername("test.user")
-
-            assertThat(user.username).isEqualTo("test.user")
-            assertThat(user.name).isEqualTo("Test User")
-            assertThat(user.email).isEqualTo("test@example.com")
-            assertThat(user.roles).hasSameElementsAs(expectedRoles)
+                    RoleAssignment("a", "prefixA", "idA"),
+                    RoleAssignment("b", "prefixB", "idB")
+            )
+            assertThat(repo.getRolesForUser("test.user")).hasSameElementsAs(expectedRoles)
         }
     }
 
