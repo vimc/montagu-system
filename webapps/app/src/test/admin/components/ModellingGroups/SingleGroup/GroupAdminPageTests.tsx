@@ -1,19 +1,19 @@
-import { Sandbox } from "../../../../Sandbox";
+import * as React from "react";
 import { expect } from "chai";
+import { Sandbox } from "../../../../Sandbox";
+import { userStore } from "../../../../../main/admin/stores/UserStore";
 import { groupStore } from "../../../../../main/admin/stores/GroupStore";
 import { mockLocation } from "../../../../mocks/mocks";
-import * as React from "react";
-import {
-    PageProps,
-    ViewModellingGroupDetailsPage
-} from "../../../../../main/admin/components/ModellingGroups/SingleGroup/Details/ViewModellingGroupDetailsPage";
-import { expectOneAction } from "../../../../actionHelpers";
+import { GroupAdminPage } from "../../../../../main/admin/components/ModellingGroups/SingleGroup/Admin/GroupAdminPage";
+import { PageProps } from "../../../../../main/admin/components/ModellingGroups/SingleGroup/Details/ViewModellingGroupDetailsPage";
 import { checkAsync } from "../../../../testHelpers";
-import { userStore } from "../../../../../main/admin/stores/UserStore";
+import { expectOneAction } from "../../../../actionHelpers";
+import { alt } from "../../../../../main/shared/alt";
 
-describe("ViewModelingGroupDetailsPage", () => {
+describe("GroupAdminPage", () => {
     const sandbox = new Sandbox();
 
+    beforeEach(() => alt.recycle());
     afterEach(() => sandbox.restore());
 
     it("triggers fetch on load", (done: DoneCallback) => {
@@ -23,7 +23,7 @@ describe("ViewModelingGroupDetailsPage", () => {
         const dispatchSpy = sandbox.dispatchSpy();
 
         const location = mockLocation<PageProps>({ groupId: "gId" });
-        sandbox.mount(<ViewModellingGroupDetailsPage location={ location }/>);
+        sandbox.mount(<GroupAdminPage location={ location }/>);
 
         checkAsync(done, (afterWait) => {
             expect(fetchGroups.called).to.equal(true, "Expected groupStore.fetchGroups to be triggered");
