@@ -26,7 +26,6 @@ export class AdminRouter extends Router<RouterProps> {
             map('/modelling-groups/:groupId/', ViewModellingGroupDetailsPage);
             map('/modelling-groups/:groupId/admin/', GroupAdminPage);
             map('/users/', ViewAllUsersPage);
-           // map('/users/:username', ViewAllUsersPage);
             map('*', AdminNoRouteFoundPage);
         } else {
             map('*', AdminLoginPage);
