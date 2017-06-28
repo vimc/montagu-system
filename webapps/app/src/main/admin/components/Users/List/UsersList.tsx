@@ -26,12 +26,17 @@ static getStores() {
     renderContent(props: UserProps) {
         const items = props.users
             .sort((a, b) => a.username.localeCompare(b.username))
-            .map(g => <li key={ g.username }>
-            <UserListItem {...g} />
-        </li>);
-        return <ul>
+            .map(g =>
+            <UserListItem {...g} />);
+        return <table>
+            <tr>
+                <th>Username</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Last logged in</th>
+            </tr>
             { items }
-        </ul>;
+        </table>;
     }
 }
 
