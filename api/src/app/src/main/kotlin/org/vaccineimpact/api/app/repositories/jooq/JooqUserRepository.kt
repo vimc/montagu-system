@@ -63,15 +63,6 @@ class JooqUserRepository : JooqRepository(), UserRepository
                 .fetchInto(User::class.java)
     }
 
-    private fun mapUserWithRoles(entry: Map.Entry<AppUserRecord, org.jooq.Result<Record>>): User
-    {
-        val user = entry.key.into(User::class.java)
-        val roles = entry.value.filter{ r-> r[USER_ROLE.ROLE] != null }
-                .map(this::mapRoleAssignment)
-
-        return user.copy(roles = roles)
-    }
-
     override fun allWithRoles(): List<User>
     {
         return dsl.select()
@@ -82,6 +73,15 @@ class JooqUserRepository : JooqRepository(), UserRepository
                 .on(ROLE.ID.eq(USER_ROLE.ROLE))
                 .fetchGroups(APP_USER)
                 .map(this::mapUserWithRoles)
+    }
+
+    private fun mapUserWithRoles(entry: Map.Entry<AppUserRecord, org.jooq.Result<Record>>): User
+    {
+        val user = entry.key.into(User::class.java)
+        val roles = entry.value.filter{ r-> r[USER_ROLE.ROLE] != null }
+                .map(this::mapRoleAssignment)
+
+        return user.copy(roles = roles)
     }
 
     private fun getUser(username: String): AppUserRecord
@@ -100,11 +100,11 @@ class JooqUserRepository : JooqRepository(), UserRepository
     private fun caseInsensitiveUsernameMatch(username: String)
             = APP_USER.USERNAME.lower().eq(username.toLowerCase())
 
-    fun mapPermission(record: Record) = ReifiedPermission(record[PERMISSION.NAME], mapScope(record))
+    private fun mapPermission(record: Record) = ReifiedPermission(record[PERMISSION.NAME], mapScope(record))
 
-    fun mapRole(record: Record) = ReifiedRole(record[ROLE.NAME], mapScope(record))
+    private fun mapRole(record: Record) = ReifiedRole(record[ROLE.NAME], mapScope(record))
 
-    fun mapRoleAssignment(record: Record): RoleAssignment
+    private fun mapRoleAssignment(record: Record): RoleAssignment
     {
         var scopeId = record[USER_ROLE.SCOPE_ID]
 
@@ -125,7 +125,7 @@ class JooqUserRepository : JooqRepository(), UserRepository
                 scopeId)
     }
 
-    fun mapScope(record: Record): Scope
+    private fun mapScope(record: Record): Scope
     {
         val scopePrefix = record[ROLE.SCOPE_PREFIX]
         val scopeId = record[USER_ROLE.SCOPE_ID]

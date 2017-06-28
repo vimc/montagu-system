@@ -2,7 +2,6 @@ package org.vaccineimpact.api.app.controllers
 
 import org.vaccineimpact.api.app.ActionContext
 import org.vaccineimpact.api.app.controllers.endpoints.SecuredEndpoint
-import org.vaccineimpact.api.db.tables.Role
 import org.vaccineimpact.api.models.Scope
 import org.vaccineimpact.api.models.User
 import org.vaccineimpact.api.models.encompass
@@ -43,8 +42,7 @@ class UserController(context: ControllerContext) : AbstractController(context)
             val users = repos.user().use { it.allWithRoles().toList() }
 
             return users.map {
-                u ->
-                u.copy(roles = filteredRoles(u.roles, roleReadingScopes))
+                it.copy(roles = filteredRoles(it.roles, roleReadingScopes))
             }
         }
         else
