@@ -1,11 +1,10 @@
 import * as React from "react";
-import { RemoteContent } from "../../../../shared/models/RemoteContent";
-import { RemoteContentComponent } from "../../../../shared/components/RemoteContentComponent/RemoteContentComponent";
-import { connectToStores } from "../../../../shared/alt";
+import {RemoteContent} from "../../../../shared/models/RemoteContent";
+import {RemoteContentComponent} from "../../../../shared/components/RemoteContentComponent/RemoteContentComponent";
+import {connectToStores} from "../../../../shared/alt";
 import {User} from "../../../../shared/models/Generated";
 import {userStore} from "../../../../../../../contrib/src/main/admin/stores/UserStore";
-
-const commonStyles = require("../../../../shared/styles/common.css");
+import {UserRole} from "./UserRoleComponent";
 
 interface Props extends RemoteContent {
     user: User;
@@ -13,8 +12,9 @@ interface Props extends RemoteContent {
 
 class UserDetailsContentComponent extends RemoteContentComponent<Props> {
     static getStores() {
-        return [ userStore ];
+        return [userStore];
     }
+
     static getPropsFromStores(): Props {
         const user = userStore.getCurrentUserDetails();
         return {
@@ -24,14 +24,21 @@ class UserDetailsContentComponent extends RemoteContentComponent<Props> {
     }
 
     renderContent(props: Props) {
-        return <div>
-            <table className={ commonStyles.specialColumn }>
-                <tbody>
-                    <tr><td>Username</td><td>{ props.user.username }
-                    </td></tr>
-                 </tbody>
-            </table>
-        </div>
+
+        let roles;
+        if (props.user.roles != null)
+            roles =
+                <li>
+                    {props.user.roles
+                        .map(r =>
+                            <UserRole key={ r.name } {...r} />)}
+                </li>;
+        return <ul>
+            <li>{ props.user.username }</li>
+            <li>{ props.user.name }</li>
+            <li>{ props.user.email }</li>
+            { roles }
+        </ul>
     }
 }
 
