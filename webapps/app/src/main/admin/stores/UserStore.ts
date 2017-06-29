@@ -4,6 +4,7 @@ import { User } from "../../shared/models/Generated";
 import { UserSource } from "../sources/UserSource";
 import { userActions } from "../actions/UserActions";
 import { RemoteContent } from "../../shared/models/RemoteContent";
+import StoreModel = AltJS.StoreModel;
 
 export interface UserStoreState extends RemoteContent {
     users: User[];
@@ -43,4 +44,4 @@ class UserStore extends AbstractStore<UserStoreState, UserStoreInterface> {
     }
 }
 
-export const userStore = alt.createStore<UserStoreState>(UserStore) as UserStoreInterface;
+export const userStore = alt.createStore<UserStoreState>(UserStore as StoreModel<UserStoreState>) as UserStoreInterface;

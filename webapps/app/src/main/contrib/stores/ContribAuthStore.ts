@@ -4,6 +4,7 @@ import { mainStore } from "./MainStore";
 import { ModellingGroup } from "../../shared/models/Generated";
 import { modellingGroupActions } from "../actions/ModellingGroupActions";
 import { AuthStateBase, AuthStore, AuthStoreBaseInterface } from "../../shared/stores/AuthStoreBase";
+import StoreModel = AltJS.StoreModel;
 
 export interface ContribAuthState extends AuthStateBase {
     modellingGroupIds: string[];
@@ -55,4 +56,6 @@ class ContribAuthStore extends AuthStore<ContribAuthState, ContribAuthStoreInter
     }
 }
 
-export const contribAuthStore = alt.createStore<ContribAuthState>(ContribAuthStore) as ContribAuthStoreInterface;
+export const contribAuthStore =
+    alt.createStore<ContribAuthState>(ContribAuthStore as StoreModel<ContribAuthState>) as
+        ContribAuthStoreInterface;

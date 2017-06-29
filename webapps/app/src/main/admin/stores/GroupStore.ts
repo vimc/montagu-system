@@ -6,6 +6,7 @@ import { modellingGroupActions } from "../actions/ModellingGroupActions";
 import { RemoteContent } from "../../shared/models/RemoteContent";
 import { ModellingGroupSource } from "../sources/ModellingGroupSource";
 import { ILookup } from "../../shared/models/Lookup";
+import StoreModel = AltJS.StoreModel;
 
 export interface GroupState extends RemoteContent {
     groups: ModellingGroup[];
@@ -78,4 +79,4 @@ export class GroupStore extends AbstractStore<GroupState, Interface> {
     }
 }
 
-export const groupStore = alt.createStore<GroupState>(GroupStore) as Interface;
+export const groupStore = alt.createStore<GroupState>(GroupStore as StoreModel<GroupState>) as Interface;

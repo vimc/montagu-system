@@ -15,6 +15,7 @@ import { TouchstoneSource } from "../sources/TouchstoneSource";
 import { CoverageSetSource } from "../sources/CoverageSetSource";
 import { CoverageTokenSource } from "../sources/CoverageTokenSource";
 import { mainStore } from "./MainStore";
+import StoreModel = AltJS.StoreModel;
 
 export interface ResponsibilityState extends RemoteContent {
     touchstones: Array<Touchstone>;
@@ -152,4 +153,5 @@ class ResponsibilityStore extends AbstractStore<ResponsibilityState, Responsibil
     }
 }
 
-export const responsibilityStore = <ResponsibilityStoreInterface>alt.createStore<ResponsibilityState>(ResponsibilityStore);
+export const responsibilityStore =
+    <ResponsibilityStoreInterface>alt.createStore<ResponsibilityState>(ResponsibilityStore as StoreModel<ResponsibilityState>);
