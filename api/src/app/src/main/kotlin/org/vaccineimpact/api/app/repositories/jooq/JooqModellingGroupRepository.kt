@@ -9,6 +9,7 @@ import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.ScenarioRepository
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.app.serialization.SplitData
+import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.Tables.*
 import org.vaccineimpact.api.db.fetchInto
 import org.vaccineimpact.api.db.fieldsAsList
@@ -18,10 +19,11 @@ import org.vaccineimpact.api.db.tables.records.ResponsibilitySetRecord
 import org.vaccineimpact.api.models.*
 
 class JooqModellingGroupRepository(
-        private val touchstoneRepository: () -> TouchstoneRepository,
-        private val scenarioRepository: () -> ScenarioRepository
+        db: JooqContext,
+        private val touchstoneRepository: TouchstoneRepository,
+        private val scenarioRepository: ScenarioRepository
 )
-    : JooqRepository(), ModellingGroupRepository
+    : JooqRepository(db), ModellingGroupRepository
 {
     override fun getModellingGroups(): Iterable<ModellingGroup>
     {
@@ -122,26 +124,22 @@ class JooqModellingGroupRepository(
         // We don't use the returned responsibility, but by using this method we check that the group exists
         // and that the group is responsible for the given scenario in the given touchstone
         val responsibilityAndTouchstone = getResponsibility(groupId, touchstoneId, scenarioId)
-        return touchstoneRepository().use { repo ->
-            val scenario = repo.getScenario(touchstoneId, scenarioId)
-            ScenarioTouchstoneAndCoverageSets(
-                    responsibilityAndTouchstone.touchstone,
-                    scenario.scenario,
-                    scenario.coverageSets)
-        }
+        val scenario = touchstoneRepository.getScenario(touchstoneId, scenarioId)
+        return ScenarioTouchstoneAndCoverageSets(
+                responsibilityAndTouchstone.touchstone,
+                scenario.scenario,
+                scenario.coverageSets)
     }
 
     override fun getCoverageData(groupId: String, touchstoneId: String, scenarioId: String): SplitData<ScenarioTouchstoneAndCoverageSets, CoverageRow>
     {
         val responsibilityAndTouchstone = getResponsibility(groupId, touchstoneId, scenarioId)
-        return touchstoneRepository().use { repo ->
-            val scenarioAndData = repo.getScenarioAndCoverageData(touchstoneId, scenarioId)
-            SplitData(ScenarioTouchstoneAndCoverageSets(
-                    responsibilityAndTouchstone.touchstone,
-                    scenarioAndData.structuredMetadata.scenario,
-                    scenarioAndData.structuredMetadata.coverageSets
-            ), scenarioAndData.tableData)
-        }
+        val scenarioAndData = touchstoneRepository.getScenarioAndCoverageData(touchstoneId, scenarioId)
+        return SplitData(ScenarioTouchstoneAndCoverageSets(
+                responsibilityAndTouchstone.touchstone,
+                scenarioAndData.structuredMetadata.scenario,
+                scenarioAndData.structuredMetadata.coverageSets
+        ), scenarioAndData.tableData)
     }
 
     private fun convertScenarioToResponsibility(scenario: Scenario): Responsibility
@@ -181,9 +179,7 @@ class JooqModellingGroupRepository(
                 .applyWhereFilter()
                 .fetch()
         val scenarioIds = records.map { it.getValue(SCENARIO_DESCRIPTION.ID) }
-        return scenarioRepository().use {
-            it.getScenarios(scenarioIds)
-        }
+        return scenarioRepository.getScenarios(scenarioIds)
     }
 
     private fun getResponsibilitySet(groupId: String, touchstoneId: String): ResponsibilitySetRecord?
@@ -194,5 +190,5 @@ class JooqModellingGroupRepository(
 
     private fun mapModellingGroup(x: ModellingGroupRecord) = ModellingGroup(x.id, x.description)
 
-    private fun getTouchstone(touchstoneId: String) = touchstoneRepository().use { it.touchstones.get(touchstoneId) }
+    private fun getTouchstone(touchstoneId: String) = touchstoneRepository.touchstones.get(touchstoneId)
 }

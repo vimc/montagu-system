@@ -6,6 +6,7 @@ import org.vaccineimpact.api.app.ActionContext
 import org.vaccineimpact.api.app.DirectActionContext
 import org.vaccineimpact.api.app.controllers.endpoints.EndpointDefinition
 import org.vaccineimpact.api.app.errors.UnsupportedValueException
+import org.vaccineimpact.api.app.repositories.TokenRepository
 import org.vaccineimpact.api.app.serialization.Serializer
 import org.vaccineimpact.api.security.WebTokenHelper
 import spark.Request
@@ -13,10 +14,10 @@ import spark.Response
 import spark.Spark
 import spark.route.HttpMethod
 
-abstract class AbstractController(val controllerContext: ControllerContext)
+abstract class AbstractController<TContext: ActionContext>(controllerContext: ControllerContext)
 {
     protected val logger = LoggerFactory.getLogger(AbstractController::class.java)
-    val repos = controllerContext.repositories
+    protected val repos = controllerContext.repositories
     val tokenHelper = controllerContext.tokenHelper
 
     abstract val urlComponent: String
@@ -32,9 +33,7 @@ abstract class AbstractController(val controllerContext: ControllerContext)
         val actionAsString = Serializer.instance.serializeEnum(action)
         val params = context.params()
         val token = tokenHelper.generateOneTimeActionToken(actionAsString, params)
-        repos.token().use {
-            it.storeToken(token)
-        }
+        context.repo<TokenRepository>().storeToken(token)
         return token
     }
 
@@ -62,9 +61,10 @@ abstract class AbstractController(val controllerContext: ControllerContext)
         return fullUrl
     }
 
-    private fun wrapRoute(route: (ActionContext) -> Any): (Request, Response) -> Any
+    protected open fun wrapRoute(route: (TContext) -> Any): (Request, Response) -> Any
     {
-        return { req: Request, res: Response -> route(DirectActionContext(req, res)) }
+        return { req: Request, res: Response ->
+            DirectActionContext(req, res, repos).use { route(it) }
+        }
     }
-
 }

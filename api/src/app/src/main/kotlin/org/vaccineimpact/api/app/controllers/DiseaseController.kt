@@ -2,6 +2,9 @@ package org.vaccineimpact.api.app.controllers
 
 import org.vaccineimpact.api.app.ActionContext
 import org.vaccineimpact.api.app.controllers.endpoints.SecuredEndpoint
+import org.vaccineimpact.api.app.getRepo
+import org.vaccineimpact.api.app.repositories.SimpleObjectsRepository
+import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.models.Disease
 
 class DiseaseController(context: ControllerContext) : AbstractController(context)
@@ -14,12 +17,12 @@ class DiseaseController(context: ControllerContext) : AbstractController(context
 
     fun getDiseases(context: ActionContext): List<Disease>
     {
-        return repos.simpleObjects().use { it.diseases.all() }.toList()
+        return context.getRepo<SimpleObjectsRepository>().diseases.all().toList()
     }
 
     fun getDisease(context: ActionContext): Disease
     {
-        return repos.simpleObjects().use { it.diseases.get(diseaseId(context)) }
+        return context.getRepo<SimpleObjectsRepository>().diseases.get(diseaseId(context))
     }
 
     private fun diseaseId(context: ActionContext): String = context.params(":id")

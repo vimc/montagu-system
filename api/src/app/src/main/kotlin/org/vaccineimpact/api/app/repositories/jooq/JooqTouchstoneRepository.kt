@@ -9,8 +9,10 @@ import org.vaccineimpact.api.app.serialization.SplitData
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
 import org.vaccineimpact.api.app.filters.whereMatchesFilter
+import org.vaccineimpact.api.app.repositories.ScenarioRepository
 import org.vaccineimpact.api.app.repositories.SimpleDataSet
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
+import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.Tables.*
 import org.vaccineimpact.api.db.fieldsAsList
 import org.vaccineimpact.api.db.fromJoinPath
@@ -19,8 +21,11 @@ import org.vaccineimpact.api.db.tables.records.TouchstoneRecord
 import org.vaccineimpact.api.models.*
 import uk.ac.imperial.vimc.demo.app.repositories.jooq.JooqSimpleDataSet
 
-class JooqTouchstoneRepository(private val scenarioRepository: () -> JooqScenarioRepository)
-    : JooqRepository(), TouchstoneRepository
+class JooqTouchstoneRepository(
+        db: JooqContext,
+        private val scenarioRepository: ScenarioRepository
+)
+    : JooqRepository(db), TouchstoneRepository
 {
     override val touchstones: SimpleDataSet<Touchstone, String>
         get() = JooqSimpleDataSet.new(dsl, TOUCHSTONE, { it.ID }, { mapTouchstone(it) })
@@ -101,9 +106,7 @@ class JooqTouchstoneRepository(private val scenarioRepository: () -> JooqScenari
     private fun getScenariosFromRecords(records: Result<Record>): List<Scenario>
     {
         val scenarioIds = records.map { it[SCENARIO_DESCRIPTION.ID] }
-        return scenarioRepository().use { scenarioRepo ->
-            scenarioRepo.getScenarios(scenarioIds)
-        }
+        return scenarioRepository.getScenarios(scenarioIds)
     }
 
     private fun getCoverageSetsFromRecord(records: Result<Record>, scenario: Scenario) =

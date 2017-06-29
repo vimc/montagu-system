@@ -5,6 +5,7 @@ import org.vaccineimpact.api.app.ActionContext
 import org.vaccineimpact.api.app.controllers.endpoints.SecuredEndpoint
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
+import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.serialization.DataTable
 import org.vaccineimpact.api.app.serialization.SplitData
 import org.vaccineimpact.api.models.*
@@ -37,7 +38,7 @@ open class ModellingGroupController(context: ControllerContext)
 
     fun getModellingGroups(context: ActionContext): List<ModellingGroup>
     {
-        return db().use { it.getModellingGroups() }.toList()
+        return context.repo<ModellingGroupRepository>().getModellingGroups().toList()
     }
 
     fun getModellingGroup(context: ActionContext): ModellingGroupDetails
@@ -91,8 +92,6 @@ open class ModellingGroupController(context: ControllerContext)
         checkTouchstoneStatus(data.structuredMetadata.touchstone.status, path.touchstoneId, context)
         return data
     }
-
-    private fun db() = repos.modellingGroup()
 
     private fun checkTouchstoneStatus(
             touchstoneStatus: TouchstoneStatus,
