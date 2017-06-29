@@ -1,4 +1,4 @@
-package uk.ac.imperial.vimc.demo.app.repositories.jooq
+package org.vaccineimpact.api.app.repositories.jooq
 
 import org.jooq.DSLContext
 import org.jooq.Record
