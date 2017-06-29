@@ -10,7 +10,7 @@ interface Props extends RemoteContent {
     user: User;
 }
 
-class UserDetailsContentComponent extends RemoteContentComponent<Props> {
+export class UserDetailsContentComponent extends RemoteContentComponent<Props> {
     static getStores() {
         return [userStore];
     }
@@ -28,11 +28,11 @@ class UserDetailsContentComponent extends RemoteContentComponent<Props> {
         let roles;
         if (props.user.roles != null)
             roles =
-                <li>
+                <ul>
                     {props.user.roles
                         .map(r =>
-                            <UserRole key={ r.name } {...r} />)}
-                </li>;
+                            <UserRole key={ r.name + r.scope_prefix + r.scope_id } {...r} />)}
+                </ul>;
         return <ul>
             <li>{ props.user.username }</li>
             <li>{ props.user.name }</li>
