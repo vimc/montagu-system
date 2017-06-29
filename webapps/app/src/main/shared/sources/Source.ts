@@ -13,7 +13,7 @@ import AltStore = AltJS.AltStore;
 interface FetchConfig<TState, TModel> {
     success: (data: TModel) => void;
     loading: (x: any) => void;
-    isCached?: CacheCheck<TState>;
+    isCached: CacheCheck<TState>;
 }
 
 type UrlBuilder<TState> = (state: TState) => string;
@@ -43,8 +43,7 @@ export abstract class Source<TState> {
             loading: config.loading,
             error: notificationActions.notify,
         };
-        const isCached = config.isCached || (() => false);
-        source.shouldFetch = ((state: TState) => !isCached(state)) as any;
+        source.shouldFetch = ((state: TState) => !config.isCached(state)) as any;
         return source;
     }
 

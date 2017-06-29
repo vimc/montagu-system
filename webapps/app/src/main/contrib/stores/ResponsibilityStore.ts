@@ -124,9 +124,7 @@ class ResponsibilityStore extends AbstractStore<ResponsibilityState, Responsibil
     }
 
     handleSetCurrentModellingGroup(modellingGroupId: string) {
-        console.log("Setting to " + modellingGroupId);
         this.currentModellingGroup = mainStore.getGroupById(modellingGroupId);
-        console.log("Now is " + JSON.stringify(this.currentModellingGroup));
     }
 
     handleBeginTouchstoneFetch() {

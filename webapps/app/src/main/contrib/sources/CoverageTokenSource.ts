@@ -11,7 +11,8 @@ export class CoverageTokenSource extends CoverageSource {
             return this.baseURL(state) + "/coverage/get_onetime_link/";
         }, {
             success: coverageTokenActions.update,
-            loading: coverageTokenActions.beginFetch
+            loading: coverageTokenActions.beginFetch,
+            isCached: () => false   // Always get a fresh token
         });
     }
 }
