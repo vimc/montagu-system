@@ -34,7 +34,7 @@ describe('ResponsibilityOverviewPage', () => {
         checkAsync(done, (afterWait) => {
             expectOneAction(spy, { action: "ModellingGroupActions.setCurrentModellingGroup", payload: "group-id" }, 0);
             expect(fetchTouchstones.called).to.equal(true, "Expected fetchTouchstones to be called");
-            afterWait(() => {
+            afterWait(done, () => {
                 expectOneAction(spy, { action: "TouchstoneActions.setCurrentTouchstone", payload: "touchstone-id" }, 1);
                 expect(fetchResponsibilities.called).to.equal(true, "Expected fetchResponsibilities to be called");
             });

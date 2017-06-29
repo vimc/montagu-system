@@ -22,7 +22,7 @@ describe("ChooseActionPage", () => {
         sandbox.mount(<ChooseActionPage location={ location } />);
         checkAsync(done, (afterWait) => {
             expect(fetchTouchstones.called).to.equal(true, "Expected responsibilityStore.fetchTouchstones to be called");
-            afterWait(() => {
+            afterWait(done, () => {
                 expectOneAction(spy, {
                     action: "ModellingGroupActions.setCurrentModellingGroup",
                     payload: "gId"
