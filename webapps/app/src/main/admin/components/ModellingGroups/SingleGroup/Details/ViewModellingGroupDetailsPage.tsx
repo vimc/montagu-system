@@ -8,11 +8,11 @@ import { modellingGroupActions } from "../../../../actions/ModellingGroupActions
 import { doNothing } from "../../../../../shared/Helpers";
 import { userStore } from "../../../../stores/UserStore";
 
-export interface PageProps {
+export interface ModellingGroupDetailsPageProps {
     groupId: string;
 }
 
-export class ViewModellingGroupDetailsPage extends AdminPageWithHeader<PageProps> {
+export class ViewModellingGroupDetailsPage extends AdminPageWithHeader<ModellingGroupDetailsPageProps> {
     componentDidMount() {
         setTimeout(() => {
             groupStore.fetchGroups().catch(doNothing).then(() => {

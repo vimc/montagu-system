@@ -6,7 +6,7 @@ import { expectOneAction } from "../../../../actionHelpers";
 import { checkAsync } from "../../../../testHelpers";
 import { userStore } from "../../../../../main/admin/stores/UserStore";
 import {
-    PageProps,
+    UserDetailsPageProps,
     ViewUserDetailsPage
 } from "../../../../../main/admin/components/Users/SingleUser/ViewUserDetailsPage";
 
@@ -20,7 +20,7 @@ describe("ViewUserDetailsPage", () => {
         const fetchUserDetails = sandbox.sinon.stub(userStore, "fetchUserDetails");
         const dispatchSpy = sandbox.dispatchSpy();
 
-        const location = mockLocation<PageProps>({ username: "testuser" });
+        const location = mockLocation<UserDetailsPageProps>({ username: "testuser" });
         sandbox.mount(<ViewUserDetailsPage location={ location }/>);
 
         checkAsync(done, (afterWait) => {

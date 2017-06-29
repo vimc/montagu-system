@@ -7,11 +7,11 @@ import {UserDetailsContent} from "./UserDetailsContent";
 import {userActions} from "../../../actions/UserActions";
 import {userStore} from "../../../stores/UserStore";
 
-export interface PageProps {
+export interface UserDetailsPageProps {
     username: string;
 }
 
-export class ViewUserDetailsPage extends AdminPageWithHeader<PageProps> {
+export class ViewUserDetailsPage extends AdminPageWithHeader<UserDetailsPageProps> {
     componentDidMount() {
         setTimeout(() => {
             userStore.fetchUsers().catch(doNothing).then(() => {
