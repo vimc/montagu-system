@@ -2,7 +2,7 @@ import { expect } from "chai";
 import alt from "../../../main/shared/alt";
 import {
     mockCoverageSet,
-    mockExtendedResponsibility,
+    mockExtendedResponsibility, mockExtendedResponsibilitySet,
     mockModellingGroup,
     mockResponsibility,
     mockResponsibilitySet,
@@ -13,12 +13,13 @@ import {
 import { ExtendedResponsibilitySet } from "../../../main/contrib/models/ResponsibilitySet";
 import { touchstoneActions } from "../../../main/contrib/actions/TouchstoneActions";
 import { responsibilityActions } from "../../../main/contrib/actions/ResponsibilityActions";
-import { responsibilityStore } from "../../../main/contrib/stores/ResponsibilityStore";
+import { getCurrentResponsibilitySet, responsibilityStore } from "../../../main/contrib/stores/ResponsibilityStore";
 import { coverageSetActions } from "../../../main/contrib/actions/CoverageSetActions";
 import { coverageTokenActions } from "../../../main/contrib/actions/CoverageActions";
 import { modellingGroupActions } from "../../../main/contrib/actions/ModellingGroupActions";
 import { makeLoadable } from "../../../main/contrib/stores/Loadable";
 import { ModellingGroup } from "../../../main/shared/models/Generated";
+import { ResponsibilitySetManager } from "../../../main/contrib/stores/ResponsibilitySetManager";
 const jwt = require("jsonwebtoken");
 
 describe("ResponsibilityStore", () => {
@@ -77,9 +78,11 @@ describe("ResponsibilityStore", () => {
 
     it("responsibilityActions.update sets responsibility set", () => {
         const touchstone = mockTouchstone();
+        const group = mockModellingGroup();
         alt.bootstrap(JSON.stringify({
             ResponsibilityStore: {
-                touchstones: [ touchstone ]
+                touchstones: [ touchstone ],
+                currentModellingGroup: group
             }
         }));
         const responsibilitySet = mockResponsibilitySet({ touchstone: touchstone.id });
@@ -87,7 +90,8 @@ describe("ResponsibilityStore", () => {
 
         const state = responsibilityStore.getState();
         expect(state.ready).to.equal(true);
-        expect(state.responsibilitySet).to.eql(new ExtendedResponsibilitySet(responsibilitySet, touchstone));
+        const expectedSet = new ExtendedResponsibilitySet(responsibilitySet, touchstone, group);
+        expect(getCurrentResponsibilitySet(state)).to.eql(expectedSet);
     });
 
     it("touchstoneActions.setCurrentTouchstone sets touchstone", () => {
@@ -103,21 +107,35 @@ describe("ResponsibilityStore", () => {
         expect(state.currentTouchstone).to.eql(touchstone);
     });
 
-    it("responsibilityActions.beginFetch clears responsibilities", () => {
-        // First set us up in a state where everything is non-null
+    it("responsibilityActions.beginFetch clears current responsibility set", () => {
+        const groupA = mockModellingGroup();
+        const groupB = mockModellingGroup();
+        const touchstoneA = mockTouchstone();
+        const touchstoneB = mockTouchstone();
         alt.bootstrap(JSON.stringify({
             ResponsibilityStore: {
                 ready: true,
-                responsibilitySet: mockResponsibilitySet(),
-                currentDiseaseId: "disease"
+                responsibilitySets: new ResponsibilitySetManager([
+                    mockExtendedResponsibilitySet(null, null, touchstoneA, groupA),
+                    mockExtendedResponsibilitySet(null, null, touchstoneA, groupB),
+                    mockExtendedResponsibilitySet(null, null, touchstoneB, groupA),
+                    mockExtendedResponsibilitySet(null, null, touchstoneA, groupB),
+                ]),
+                currentDiseaseId: "disease",
+                currentTouchstone: touchstoneA,
+                currentModellingGroup: groupA
             }
         }));
         responsibilityActions.beginFetch();
 
         const state = responsibilityStore.getState();
         expect(state.ready).to.equal(false);
-        expect(state.responsibilitySet).to.equal(null);
         expect(state.currentDiseaseId).to.equal(null);
+        const sets = state.responsibilitySets;
+        expect(sets.hasSet(groupA, touchstoneA)).to.be.false;
+        expect(sets.hasSet(groupA, touchstoneB)).to.be.true;
+        expect(sets.hasSet(groupB, touchstoneA)).to.be.true;
+        expect(sets.hasSet(groupB, touchstoneB)).to.be.true;
     });
 
     it("responsibilityActions.filterByDisease sets currentDiseaseId", () => {
@@ -187,7 +205,7 @@ describe("ResponsibilityStore", () => {
             [ responsibility, mockResponsibility() ]
         );
         responsibilityActions.update(inputSet);
-        const responsibilities = responsibilityStore.getState().responsibilitySet.responsibilities;
+        const responsibilities = getCurrentResponsibilitySet(responsibilityStore.getState()).responsibilities;
         expect(responsibilities[0].coverageSets).to.equal(null);
         expect(responsibilities[1].coverageSets).to.equal(null);
 
@@ -196,7 +214,7 @@ describe("ResponsibilityStore", () => {
         const payload = mockScenarioTouchstoneAndCoverageSets(scenario, touchstone, coverageSets);
         coverageSetActions.update(payload);
 
-        const set = responsibilityStore.getState().responsibilitySet;
+        const set = getCurrentResponsibilitySet(responsibilityStore.getState());
         expect(set.responsibilities[0].coverageSets).to.equal(coverageSets);
         expect(set.responsibilities[1].coverageSets).to.equal(null);
         expect(set.getResponsibilityByScenario(scenario.id).coverageSets).to.eql(coverageSets);

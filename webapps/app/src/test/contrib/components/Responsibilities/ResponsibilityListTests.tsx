@@ -12,15 +12,16 @@ import { ExtendedResponsibilitySet } from "../../../../main/contrib/models/Respo
 function makeProps(responsibilities: Array<Responsibility>,
                         currentDiseaseId?: string): ResponsibilityListComponentProps {
     const touchstone = mockTouchstone();
+    const modellingGroup = mockModellingGroup();
     return {
-        modellingGroup: mockModellingGroup(),
+        modellingGroup: modellingGroup,
         currentDiseaseId: currentDiseaseId,
         responsibilitySet: new ExtendedResponsibilitySet({
             problems: "",
             status: null,
             touchstone: touchstone.id,
             responsibilities
-        }, touchstone),
+        }, touchstone, modellingGroup),
         ready: true
     };
 }

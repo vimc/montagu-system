@@ -5,8 +5,8 @@ import { ModellingGroup, Touchstone } from "../../shared/models/Generated";
 export class ResponsibilitySetManager {
     private sets: ExtendedResponsibilitySet[];
 
-    constructor() {
-        this.sets = [];
+    constructor(initialSets?: ExtendedResponsibilitySet[]) {
+        this.sets = initialSets || [];
     }
 
     addSet(set: ExtendedResponsibilitySet) {
