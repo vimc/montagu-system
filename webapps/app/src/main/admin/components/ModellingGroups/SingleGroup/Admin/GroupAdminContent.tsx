@@ -1,41 +1,53 @@
 import * as React from "react";
 import { RemoteContentComponent } from "../../../../../shared/components/RemoteContentComponent/RemoteContentComponent";
 import { RemoteContent } from "../../../../../shared/models/RemoteContent";
-import { ModellingGroupDetails } from "../../../../../shared/models/Generated";
+import { ModellingGroupDetails, User } from "../../../../../shared/models/Generated";
 import { groupStore } from "../../../../stores/GroupStore";
 import { connectToStores } from "../../../../../shared/alt";
+import { userStore } from "../../../../stores/UserStore";
+import { ListOfUsers } from "../../ListOfUsers";
 
 const commonStyles = require("../../../../../shared/styles/common.css");
 
 interface Props extends RemoteContent {
-    group: ModellingGroupDetails;
+    admins: Set<User>;
+    users: User[];
 }
 
 export class GroupAdminContentComponent extends RemoteContentComponent<Props> {
     static getStores() {
-        return [groupStore];
+        return [ groupStore, userStore ];
     }
 
-    static getPropsFromStores() {
+    static getPropsFromStores(): Props {
         const group = groupStore.getCurrentGroupDetails();
-        return {
-            group: group,
-            ready: group != null
-        };
+        const allUsers = userStore.getState().users;
+        if (group != null) {
+            return {
+                users: allUsers,
+                admins: new Set(group.admins.map(a => allUsers.find(u => a == u.username))),
+                ready: group != null && userStore.getState().ready
+            };
+        } else {
+            return {
+                users: [],
+                admins: new Set(),
+                ready: false
+            };
+        }
     }
 
     renderCurrent(props: Props): JSX.Element {
-        const admins = props.group.admins;
-        if (admins.length == 0) {
+        if (props.admins.size == 0) {
             return <div>This group does not have an admin.</div>;
         } else {
-            const items = admins.join(", ");
-            return <div>{ items }</div>
+            return <ListOfUsers users={ [...props.admins] } />;
         }
     }
 
     renderAdd(props: Props): JSX.Element {
-        const options = [1, 2, 3].map(n => <option key={ n } value={ n }>Fake user { n }</option>);
+        const options = props.users.filter(x => !props.admins.has(x))
+            .map(u => <option key={ u.username } value={ u.username }>{ u.name }</option>);
         const select = {
             width: 300,
             height: 32

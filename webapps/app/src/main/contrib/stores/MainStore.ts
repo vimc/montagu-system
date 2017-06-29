@@ -10,6 +10,7 @@ import { modellingGroupActions } from "../actions/ModellingGroupActions";
 import { DiseaseSource } from "../sources/DiseaseSource";
 import { ModellingGroupSource } from "../sources/ModellingGroupSource";
 import { doNothing } from "../../shared/Helpers";
+import StoreModel = AltJS.StoreModel;
 
 export interface MainState extends RemoteContent {
     diseases: ILoadable<Disease>;
@@ -82,4 +83,4 @@ class MainStore extends AbstractStore<MainState, Interface> {
     }
 }
 
-export const mainStore = alt.createStore<MainState>(MainStore) as Interface;
+export const mainStore = alt.createStore<MainState>(MainStore as StoreModel<MainState>) as Interface;

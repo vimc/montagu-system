@@ -3,6 +3,7 @@ import { MessageType, Notification, notificationActions } from "../actions/Notif
 import { alt } from "../alt";
 import { authActions, LogInProperties } from "../actions/AuthActions";
 import { appSettings, settings } from "../Settings";
+import StoreModel = AltJS.StoreModel;
 
 export interface NotificationState {
     errors: string[];
@@ -69,4 +70,6 @@ class NotificationStore extends AbstractStore<NotificationState, AltJS.AltStore<
     }
 }
 
-export const notificationStore = alt.createStore<NotificationState>(NotificationStore) as AltJS.AltStore<NotificationState>;
+export const notificationStore =
+    alt.createStore<NotificationState>(NotificationStore as StoreModel<NotificationState>) as
+    AltJS.AltStore<NotificationState>;

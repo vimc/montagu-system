@@ -18,14 +18,10 @@ export interface AuthStoreBaseInterface<TState> extends AltJS.AltStore<TState> {
 
 export const tokenStorageHelper = {
     loadToken: function(): string {
-        console.log("Loading token");
         if (typeof(Storage) !== "undefined") {
-            console.log("Storage is defined");
             const token = localStorage.getItem("accessToken");
             if (token) {
-                console.log("Token is found");
                 const t = decodeToken(token);
-                console.log("exp: " + t.exp);
                 const now = new Date();
                 // If the token has already expired, or it is going to in the next five minutes, just throw it
                 // away and get a fresh one

@@ -4,6 +4,7 @@ import { User } from "../../shared/models/Generated";
 import { UserSource } from "../sources/UserSource";
 import { userActions } from "../actions/UserActions";
 import { RemoteContent } from "../../shared/models/RemoteContent";
+import StoreModel = AltJS.StoreModel;
 import { ILookup } from "../../shared/models/Lookup";
 
 export interface UserStoreState extends RemoteContent {
@@ -75,4 +76,4 @@ class UserStore
     }
 }
 
-export const userStore = alt.createStore<UserStoreState>(UserStore) as UserStoreInterface;
+export const userStore = alt.createStore<UserStoreState>(UserStore as StoreModel<UserStoreState>) as UserStoreInterface;
