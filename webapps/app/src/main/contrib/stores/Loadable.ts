@@ -1,19 +1,19 @@
 import { HasId } from "../models/HasId"
-import { Dict, ILookup } from "../../shared/models/Lookup";
+import { ILookup } from "../../shared/models/Lookup";
 
 export interface ILoadable<T> {
     content: ILookup<T>;
     loaded: boolean;
 }
 
-export function emptyLoadable<T>(): ILoadable<T> {
+export function emptyLookup<T>(): ILoadable<T> {
     return {
         content: null,
         loaded: false
     };
 }
 
-export function makeLoadable<T extends HasId>(items: T[]) {
+export function makeLookup<T extends HasId>(items: T[]) {
     const content: { [index: string]: T } = {};
     if (items) {
         items.forEach(x => {
@@ -26,9 +26,13 @@ export function makeLoadable<T extends HasId>(items: T[]) {
     };
 }
 
-export function getFromLoadable<T>(loadable: ILoadable<T>, index: string) {
-    if (loadable.loaded) {
-        return new Dict(loadable.content).get(index);
+export function getFromLoadable<T>(lookup: ILoadable<T>, index: string) {
+    if (lookup.loaded) {
+        if (lookup.content.hasOwnProperty(index)) {
+            return lookup.content[index];
+        } else {
+            return null;
+        }
     } else {
         console.warn(`Attempted to retrieve '${index}' from unloaded lookup`);
         return null;
