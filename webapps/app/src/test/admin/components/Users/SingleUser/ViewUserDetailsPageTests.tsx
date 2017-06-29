@@ -25,7 +25,7 @@ describe("ViewUserDetailsPage", () => {
 
         checkAsync(done, (afterWait) => {
             expect(fetchUsers.called).to.equal(true, "Expected userStore.fetchUsers to be triggered");
-            afterWait(() => {
+            afterWait(done, () => {
                 expectOneAction(dispatchSpy, { action: "UserActions.setCurrentUser", payload: "testuser" });
                 expect(fetchUserDetails.called).to.equal(true, "Expected userStore.fetchUserDetails to be triggered");
             });
