@@ -19,6 +19,7 @@ table tr td, table tr th {
 table tr th, :local(.specialColumn) td:first-child {
     background-color: rgb(170, 224, 250);
     font-weight: bold;
+    vertical-align: top;
 }
 
 :local(.sectionTitle) {

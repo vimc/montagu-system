@@ -12,7 +12,7 @@ describe("UserRole", () => {
         role.scope_prefix = "";
         role.name = "rolename";
         const rendered = shallow(<UserRole { ...role} />);
-        const text = rendered.find('li').text();
+        const text = rendered.find('div').text();
 
         expect(text).to.eq("rolename")
     });
@@ -24,7 +24,7 @@ describe("UserRole", () => {
         role.scope_id = "fake";
         role.name = "rolename";
         const rendered = shallow(<UserRole { ...role} />);
-        const text = rendered.find('li').text();
+        const text = rendered.find('div').text();
 
         expect(text).to.eq("rolename / group:fake")
     });

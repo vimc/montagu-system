@@ -5,10 +5,11 @@ import {connectToStores} from "../../../../shared/alt";
 import {User} from "../../../../shared/models/Generated";
 import {UserRole} from "./UserRoleComponent";
 import {userStore} from "../../../stores/UserStore";
-
 interface Props extends RemoteContent {
     user: User;
 }
+
+const commonStyles = require("../../../../shared/styles/common.css");
 
 export class UserDetailsContentComponent extends RemoteContentComponent<Props> {
     static getStores() {
@@ -28,17 +29,28 @@ export class UserDetailsContentComponent extends RemoteContentComponent<Props> {
         let roles;
         if (props.user.roles != null)
             roles =
-                <ul>
-                    {props.user.roles
-                        .map(r =>
-                            <UserRole key={ r.name + r.scope_prefix + r.scope_id } {...r} />)}
-                </ul>;
-        return <ul>
-            <li>{ props.user.username }</li>
-            <li>{ props.user.name }</li>
-            <li>{ props.user.email }</li>
-            { roles }
-        </ul>
+                <tr>
+                    <td>Roles</td>
+                    <td>
+                        {props.user.roles
+                            .map(r =>
+                                <UserRole key={ r.name + r.scope_prefix + r.scope_id } {...r} />)}
+                    </td>
+                </tr>;
+
+        return <table className={ commonStyles.specialColumn }>
+                    <tbody>
+                        <tr>
+                            <td>Username</td>
+                            <td>{ props.user.username }</td>
+                        </tr>
+                        <tr>
+                            <td>Email</td>
+                            <td>{ props.user.email }</td>
+                        </tr>
+                        { roles }
+                    </tbody>
+                </table>
     }
 }
 

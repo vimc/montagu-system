@@ -26,8 +26,8 @@ describe("ViewUserDetailsPage", () => {
         checkAsync(done, (afterWait) => {
             expect(fetchUsers.called).to.equal(true, "Expected userStore.fetchUsers to be triggered");
             afterWait(() => {
-                expectOneAction(dispatchSpy, { action: "ModellingGroupActions.setCurrentUser", payload: "testuser" });
-                expect(fetchUserDetails.called).to.equal(true, "Expected groupStore.fetchUserDetails to be triggered");
+                expectOneAction(dispatchSpy, { action: "UserActions.setCurrentUser", payload: "testuser" });
+                expect(fetchUserDetails.called).to.equal(true, "Expected userStore.fetchUserDetails to be triggered");
             });
         });
     });
