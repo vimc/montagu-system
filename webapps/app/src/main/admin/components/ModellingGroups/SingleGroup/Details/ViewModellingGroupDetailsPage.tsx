@@ -6,6 +6,7 @@ import { AdminPageWithHeader } from "../../../AdminPageWithHeader";
 import { groupStore } from "../../../../stores/GroupStore";
 import { modellingGroupActions } from "../../../../actions/ModellingGroupActions";
 import { doNothing } from "../../../../../shared/Helpers";
+import { userStore } from "../../../../stores/UserStore";
 
 export interface PageProps {
     groupId: string;
@@ -18,6 +19,7 @@ export class ViewModellingGroupDetailsPage extends AdminPageWithHeader<PageProps
                 modellingGroupActions.setCurrentGroup(this.props.location.params.groupId);
                 groupStore.fetchGroupDetails().catch(doNothing);
             });
+            userStore.fetchUsers().catch(doNothing);
         });
     }
 
