@@ -1,7 +1,7 @@
 import * as React from "react";
 import { expect } from "chai";
 import { shallow } from "enzyme";
-import { mockModellingGroup, mockResponsibility, mockTouchstone } from "../../../mocks/mockModels";
+import { mockModellingGroup, mockResponsibility, mockScenario, mockTouchstone } from "../../../mocks/mockModels";
 
 import { ResponsibilityListComponent, ResponsibilityListComponentProps } from "../../../../main/contrib/components/Responsibilities/Overview/ResponsibilityList";
 import { ResponsibilityComponent } from "../../../../main/contrib/components/Responsibilities/Overview/ResponsibilityComponent";
@@ -35,8 +35,8 @@ describe('ResponsibilityListComponent', () => {
 
     it("renders one ResponsibilityComponent per responsibility", () => {
         const props = makeProps([
-            mockResponsibility({}, { id: "scenario-1", disease: "d1" }),
-            mockResponsibility({}, { id: "scenario-2", disease: "d2" })
+            mockResponsibility({}, mockScenario({ id: "scenario-1", disease: "d1" })),
+            mockResponsibility({}, mockScenario({ id: "scenario-2", disease: "d2" }))
         ]);
         const rendered = shallow(<ResponsibilityListComponent {...props} />);
         const children = rendered.find(ResponsibilityComponent);
@@ -53,8 +53,8 @@ describe('ResponsibilityListComponent', () => {
 
     it("can filter be filtered by diesase", () => {
         const props = makeProps([
-            mockResponsibility({}, { id: "scenario-1", disease: "d1" }),
-            mockResponsibility({}, { id: "scenario-2", disease: "d2" })
+            mockResponsibility({}, mockScenario({ id: "scenario-1", disease: "d1" })),
+            mockResponsibility({}, mockScenario({ id: "scenario-2", disease: "d2" }))
         ], "d2");
         const rendered = shallow(<ResponsibilityListComponent {...props} />);
         const children = rendered.find(ResponsibilityComponent);
