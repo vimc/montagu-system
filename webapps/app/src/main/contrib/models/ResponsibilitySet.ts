@@ -48,4 +48,9 @@ export class ExtendedResponsibilitySet implements IExtendedResponsibilitySet {
         const responsibility = this.getResponsibilityByScenario(scenarioId);
         responsibility.coverageSets = coverageSets;
     }
+
+    getCoverageSets(scenarioId: string): CoverageSet[] {
+        const responsibility = this.getResponsibilityByScenario(scenarioId);
+        return responsibility.coverageSets;
+    }
 }

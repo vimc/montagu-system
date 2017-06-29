@@ -2,12 +2,14 @@ import { expect } from "chai";
 import { Sandbox } from "../../Sandbox";
 import { ErrorInfo, Result } from "../../../main/shared/models/Generated";
 import * as actionHelpers from "../../actionHelpers";
-import { getActions } from "../../actionHelpers";
-import { mockFetcherResponse, mockResult } from "../../mocks/mockRemote";
+import { expectNoActions, getActions } from "../../actionHelpers";
+import { mockFetcher, mockFetcherResponse, mockResult } from "../../mocks/mockRemote";
 import fetcher from "../../../main/shared/sources/Fetcher";
 import { Notification } from "../../../main/shared/actions/NotificationActions";
 
 interface FetchHelperConfig<TPayload> {
+    prepareForFetch: () => void;
+    prepareForCachedFetch?: () => void;
     triggerFetch: () => Promise<TPayload>,
     makePayload: () => TPayload;
     expectedURL: string;
@@ -54,6 +56,7 @@ export class FetchHelper<TPayload> {
 
         it(`emits update when source returns successfully`, (done: DoneCallback) => {
             const payload = this.config.makePayload();
+            this.config.prepareForFetch();
             this.testFetchWithMockedResponse({
                 done,
                 payload: mockResult(payload),
@@ -74,6 +77,7 @@ export class FetchHelper<TPayload> {
                 message: message,
                 type: "error"
             };
+            this.config.prepareForFetch();
             this.testFetchWithMockedResponse({
                 done,
                 payload: mockResult(null, errors, "failure"),
@@ -91,6 +95,7 @@ export class FetchHelper<TPayload> {
                 message: errorMessage,
                 type: "error"
             };
+            this.config.prepareForFetch();
             this.testFetchWithMockedResponse({
                 done,
                 payload: null,
@@ -109,6 +114,7 @@ export class FetchHelper<TPayload> {
                     message: "Something wicked this way comes"
                 }
             ];
+            this.config.prepareForFetch();
             this.testFetchWithMockedResponse({
                 done,
                 payload: mockResult(null, errors, "failure"),
@@ -119,5 +125,25 @@ export class FetchHelper<TPayload> {
                 }
             });
         });
+
+        if (this.config.prepareForCachedFetch) {
+            it("does not fetch when data is present in cache", (done: DoneCallback) => {
+                mockFetcherResponse(mockResult(true));
+                const fetcherSpy = this.sandbox.sinon.spy(fetcher.fetcher, "fetch");
+
+                this.config.prepareForCachedFetch();
+                const dispatchSpy = this.sandbox.dispatchSpy();
+                const handler = () => {
+                    try {
+                        expect(fetcherSpy.called).to.equal(false, "Cache miss - fetcher was invoked");
+                        expectNoActions(dispatchSpy);
+                        done();
+                    } catch (e) {
+                        done(e);
+                    }
+                };
+                this.config.triggerFetch().then(handler, handler);
+            });
+        }
     }
 }

@@ -1,7 +1,13 @@
-type AfterWaitCallback = (then: () => void) => void;
+type AfterWaitCallback = (done: DoneCallback, then: () => void) => void;
 
-function afterWait(then: () => void) {
-    setTimeout(then);
+function afterWait(done: DoneCallback, then: () => void): void {
+    setTimeout(() => {
+        try {
+            then();
+        } catch (e) {
+            done(e);
+        }
+    });
 }
 
 export function checkAsync(done: DoneCallback, checks: (afterWait: AfterWaitCallback) => void) {
