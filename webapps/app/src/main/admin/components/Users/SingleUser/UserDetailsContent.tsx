@@ -48,6 +48,10 @@ export class UserDetailsContentComponent extends RemoteContentComponent<Props> {
                             <td>Email</td>
                             <td>{ props.user.email }</td>
                         </tr>
+                        <tr>
+                            <td>Last logged in</td>
+                            <td>{ props.user.last_logged_in || "never" }</td>
+                        </tr>
                         { roles }
                     </tbody>
                 </table>
