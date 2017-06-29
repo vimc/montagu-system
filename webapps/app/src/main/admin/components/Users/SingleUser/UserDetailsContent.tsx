@@ -3,8 +3,8 @@ import {RemoteContent} from "../../../../shared/models/RemoteContent";
 import {RemoteContentComponent} from "../../../../shared/components/RemoteContentComponent/RemoteContentComponent";
 import {connectToStores} from "../../../../shared/alt";
 import {User} from "../../../../shared/models/Generated";
-import {userStore} from "../../../../../../../contrib/src/main/admin/stores/UserStore";
 import {UserRole} from "./UserRoleComponent";
+import {userStore} from "../../../stores/UserStore";
 
 interface Props extends RemoteContent {
     user: User;
