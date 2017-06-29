@@ -28,11 +28,23 @@ export class ResponsibilitySetManager {
     }
 
     clearSet(modellingGroup: ModellingGroup, touchstone: Touchstone) {
-        // Include all the elements that *don't* match the given modelling group and touchstone
-        this.sets = this.sets.filter(s => !this.matches(s, modellingGroup, touchstone));
+        const index = this.sets.findIndex(s => this.matches(s, modellingGroup, touchstone));
+        this.sets.splice(index, 1);
     }
 
     private matches(set: ExtendedResponsibilitySet, modellingGroup: ModellingGroup, touchstone: Touchstone) {
+        if (modellingGroup == null) {
+            throw Error("Modelling group was null");
+        }
+        if (touchstone == null) {
+            throw Error("Touchstone was null");
+        }
+        if (set.modellingGroup == null) {
+            throw Error("Cannot perform comparison: Set had null modelling group");
+        }
+        if (set.touchstone == null) {
+            throw Error("Cannot perform comparison: Set had null touchstone");
+        }
         return set.modellingGroup.id == modellingGroup.id && set.touchstone.id == touchstone.id;
     }
 }

@@ -2,7 +2,7 @@ import * as React from "react";
 import { RemoteContentComponent } from "../../../../shared/components/RemoteContentComponent/RemoteContentComponent";
 import { DiseaseFilter } from "./DiseaseFilter";
 import { ResponsibilityComponent } from "./ResponsibilityComponent";
-import { getCurrentResponsibilitySet, responsibilityStore } from "../../../stores/ResponsibilityStore";
+import { responsibilityStore } from "../../../stores/ResponsibilityStore";
 import { ModellingGroup, Responsibility } from "../../../../shared/models/Generated";
 import { connectToStores } from "../../../../shared/alt";
 import { RemoteContent } from "../../../../shared/models/RemoteContent";
@@ -26,7 +26,7 @@ export class ResponsibilityListComponent extends RemoteContentComponent<Responsi
     static getPropsFromStores(): ResponsibilityListComponentProps {
         const state = responsibilityStore.getState();
         return {
-            responsibilitySet: getCurrentResponsibilitySet(state),
+            responsibilitySet: responsibilityStore.getCurrentResponsibilitySet(),
             ready: state.ready,
             currentDiseaseId: state.currentDiseaseId,
             modellingGroup: state.currentModellingGroup

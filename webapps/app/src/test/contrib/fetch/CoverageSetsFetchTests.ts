@@ -1,5 +1,7 @@
 import {
-    mockModellingGroup, mockResponsibility, mockScenarioTouchstoneAndCoverageSets,
+    mockModellingGroup,
+    mockResponsibility,
+    mockScenarioTouchstoneAndCoverageSets,
     mockTouchstone
 } from "../../mocks/mockModels";
 import { FetchHelper } from "../../shared/fetch/helpers";

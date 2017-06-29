@@ -81,7 +81,7 @@ export function mockResponsibilitySet(properties?: any,
         responsibilities: responsibilities,
         status: "incomplete",
         touchstone: "touchstone-1"
-    }
+    };
     return Object.assign(template, properties);
 }
 
@@ -94,7 +94,7 @@ export function mockExtendedResponsibilitySet(
 {
     touchstone = touchstone || mockTouchstone();
     modellingGroup = modellingGroup || mockModellingGroup();
-    properties = Object.assign(properties, { touchstone: touchstone.id });
+    properties = Object.assign(properties || {}, { touchstone: touchstone.id });
     const values = mockResponsibilitySet(properties, responsibilities);
     return new ExtendedResponsibilitySet(values, touchstone, modellingGroup);
 }

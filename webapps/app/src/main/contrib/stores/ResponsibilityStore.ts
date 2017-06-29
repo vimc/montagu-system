@@ -27,7 +27,7 @@ export interface ResponsibilityState extends RemoteContent {
     touchstones: Array<Touchstone>;
     currentTouchstone: Touchstone;
 
-    responsibilitySets: ResponsibilitySetManager;
+    responsibilitySets: ExtendedResponsibilitySet[];
     currentResponsibility: ExtendedResponsibility;
     coverageOneTimeToken: string;
 
@@ -41,21 +41,16 @@ interface ResponsibilityStoreInterface extends AltJS.AltStore<ResponsibilityStat
     fetchCoverageSets(): Promise<ScenarioTouchstoneAndCoverageSets>;
     fetchOneTimeCoverageToken(): Promise<string>;
     isLoading(): boolean;
-}
 
-export function getCurrentResponsibilitySet(state: ResponsibilityState): ExtendedResponsibilitySet {
-    if (state.currentTouchstone != null && state.currentModellingGroup != null) {
-        return state.responsibilitySets.getSet(state.currentModellingGroup, state.currentTouchstone);
-    } else {
-        return null;
-    }
+    responsibilitySetManager(): ResponsibilitySetManager;
+    getCurrentResponsibilitySet(): ExtendedResponsibilitySet;
 }
 
 class ResponsibilityStore extends AbstractStore<ResponsibilityState, ResponsibilityStoreInterface> implements ResponsibilityState {
     touchstones: Array<Touchstone>;
     currentTouchstone: Touchstone;
 
-    responsibilitySets: ResponsibilitySetManager;
+    responsibilitySets: ExtendedResponsibilitySet[];
     currentResponsibility: ExtendedResponsibility;
     coverageOneTimeToken: string;
 
@@ -91,6 +86,13 @@ class ResponsibilityStore extends AbstractStore<ResponsibilityState, Responsibil
 
             handleFilterByDisease: responsibilityActions.filterByDisease
         });
+        this.exportPublicMethods({
+            responsibilitySetManager: () => new ResponsibilitySetManager(this.responsibilitySets),
+            getCurrentResponsibilitySet: () => {
+                const manager = this.getInstance().responsibilitySetManager();
+                return manager.getSet(this.currentModellingGroup, this.currentTouchstone);
+            }
+        });
     }
 
     initialState(): ResponsibilityState {
@@ -98,7 +100,7 @@ class ResponsibilityStore extends AbstractStore<ResponsibilityState, Responsibil
             touchstones: [],
             currentTouchstone: null,
 
-            responsibilitySets: new ResponsibilitySetManager(),
+            responsibilitySets: [],
             currentResponsibility: null,
 
             currentModellingGroup: null,
@@ -110,7 +112,8 @@ class ResponsibilityStore extends AbstractStore<ResponsibilityState, Responsibil
     }
 
     handleSetCurrentResponsibility(scenarioId: string) {
-        const set = getCurrentResponsibilitySet(this.getState());
+        const instance = this.getInstance();
+        const set = this.getInstance().getCurrentResponsibilitySet();
         if (set != null) {
             this.currentResponsibility = set.getResponsibilityByScenario(scenarioId);
         }
@@ -121,7 +124,9 @@ class ResponsibilityStore extends AbstractStore<ResponsibilityState, Responsibil
     }
 
     handleSetCurrentModellingGroup(modellingGroupId: string) {
+        console.log("Setting to " + modellingGroupId);
         this.currentModellingGroup = mainStore.getGroupById(modellingGroupId);
+        console.log("Now is " + JSON.stringify(this.currentModellingGroup));
     }
 
     handleBeginTouchstoneFetch() {
@@ -130,7 +135,8 @@ class ResponsibilityStore extends AbstractStore<ResponsibilityState, Responsibil
     }
 
     handleBeginResponsibilityFetch() {
-        this.responsibilitySets.clearSet(this.currentModellingGroup, this.currentTouchstone);
+        const manager = this.getInstance().responsibilitySetManager();
+        manager.clearSet(this.currentModellingGroup, this.currentTouchstone);
         this.ready = false;
         this.currentDiseaseId = null;
     }
@@ -154,7 +160,7 @@ class ResponsibilityStore extends AbstractStore<ResponsibilityState, Responsibil
     handleUpdateResponsibilities(responsibilities: Responsibilities) {
         const touchstone = this.touchstones.find(x => x.id == responsibilities.touchstone);
         const set = new ExtendedResponsibilitySet(responsibilities, touchstone, this.currentModellingGroup);
-        this.responsibilitySets.addSet(set);
+        this.getInstance().responsibilitySetManager().addSet(set);
         this.ready = true;
     }
 
@@ -164,7 +170,7 @@ class ResponsibilityStore extends AbstractStore<ResponsibilityState, Responsibil
     }
 
     handleUpdateCoverageSets(data: ScenarioTouchstoneAndCoverageSets) {
-        getCurrentResponsibilitySet(this.getState()).addCoverageSets(data.scenario.id, data.coverage_sets);
+        this.getInstance().getCurrentResponsibilitySet().addCoverageSets(data.scenario.id, data.coverage_sets);
         this.ready = true;
     }
 
