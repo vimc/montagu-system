@@ -3,7 +3,12 @@ import * as AltJS from "alt";
 import { RemoteContent } from "../../shared/models/RemoteContent";
 import { responsibilityActions } from "../actions/ResponsibilityActions";
 import { AbstractStore } from "../../shared/stores/AbstractStore";
-import { ModellingGroup, Responsibilities, ScenarioTouchstoneAndCoverageSets, Touchstone } from "../../shared/models/Generated";
+import {
+    ModellingGroup,
+    Responsibilities,
+    ScenarioTouchstoneAndCoverageSets,
+    Touchstone
+} from "../../shared/models/Generated";
 import { touchstoneActions } from "../actions/TouchstoneActions";
 import { ExtendedResponsibility, ExtendedResponsibilitySet } from "../models/ResponsibilitySet";
 import { coverageSetActions } from "../actions/CoverageSetActions";
@@ -15,14 +20,13 @@ import { TouchstoneSource } from "../sources/TouchstoneSource";
 import { CoverageSetSource } from "../sources/CoverageSetSource";
 import { CoverageTokenSource } from "../sources/CoverageTokenSource";
 import { mainStore } from "./MainStore";
-import { Dict, ILookup } from "../../shared/models/Lookup";
-import { emptyLoadable, getFromLoadable } from "./Loadable";
+import { ResponsibilitySetManager } from "./ResponsibilitySetManager";
 
 export interface ResponsibilityState extends RemoteContent {
     touchstones: Array<Touchstone>;
     currentTouchstone: Touchstone;
 
-    responsibilitySets: ILookup<ExtendedResponsibilitySet>;
+    responsibilitySets: ResponsibilitySetManager;
     currentResponsibility: ExtendedResponsibility;
     coverageOneTimeToken: string;
 
@@ -39,8 +43,8 @@ interface ResponsibilityStoreInterface extends AltJS.AltStore<ResponsibilityStat
 }
 
 export function getCurrentResponsibilitySet(state: ResponsibilityState): ExtendedResponsibilitySet {
-    if (state.currentTouchstone != null) {
-        new Dict(state.responsibilitySets).get(state.currentTouchstone.id);
+    if (state.currentTouchstone != null && state.currentModellingGroup != null) {
+        return state.responsibilitySets.getSet(state.currentModellingGroup, state.currentTouchstone);
     } else {
         return null;
     }
@@ -50,7 +54,7 @@ class ResponsibilityStore extends AbstractStore<ResponsibilityState, Responsibil
     touchstones: Array<Touchstone>;
     currentTouchstone: Touchstone;
 
-    responsibilitySets: ILookup<ExtendedResponsibilitySet>;
+    responsibilitySets: ResponsibilitySetManager;
     currentResponsibility: ExtendedResponsibility;
     coverageOneTimeToken: string;
 
@@ -93,7 +97,7 @@ class ResponsibilityStore extends AbstractStore<ResponsibilityState, Responsibil
             touchstones: [],
             currentTouchstone: null,
 
-            responsibilitySets: null,
+            responsibilitySets: new ResponsibilitySetManager(),
             currentResponsibility: null,
 
             currentModellingGroup: null,
@@ -105,30 +109,35 @@ class ResponsibilityStore extends AbstractStore<ResponsibilityState, Responsibil
     }
 
     handleSetCurrentResponsibility(scenarioId: string) {
-        if (this.responsibilitySets != null) {
-            this.currentResponsibility = getCurrentResponsibilitySet(this.getState()).getResponsibilityByScenario(scenarioId);
+        const set = getCurrentResponsibilitySet(this.getState());
+        if (set != null) {
+            this.currentResponsibility = set.getResponsibilityByScenario(scenarioId);
         }
     }
+
     handleSetCurrentTouchstone(touchstoneId: string) {
         this.currentTouchstone = this.touchstones.find(x => x.id == touchstoneId);
     }
+
     handleSetCurrentModellingGroup(modellingGroupId: string) {
         this.currentModellingGroup = mainStore.getGroupById(modellingGroupId);
     }
 
     handleBeginTouchstoneFetch() {
         this.touchstones = [];
-        this.responsibilitySets = null;
         this.ready = false;
     }
+
     handleBeginResponsibilityFetch() {
-        new Dict(this.responsibilitySets).remove(this.currentTouchstone.id);
+        this.responsibilitySets.clearSet(this.currentModellingGroup, this.currentTouchstone);
         this.ready = false;
         this.currentDiseaseId = null;
     }
+
     handleBeginFetchCoverageSets() {
         this.ready = false;
     }
+
     handleClearUsedToken() {
         this.coverageOneTimeToken = null;
     }
@@ -140,20 +149,24 @@ class ResponsibilityStore extends AbstractStore<ResponsibilityState, Responsibil
             this.currentModellingGroup = groups.find(g => g.id == membership[0].id);
         }
     }
+
     handleUpdateResponsibilities(responsibilities: Responsibilities) {
         const touchstone = this.touchstones.find(x => x.id == responsibilities.touchstone);
         const set = new ExtendedResponsibilitySet(responsibilities, touchstone, this.currentModellingGroup);
-        this.responsibilitySets[this.currentTouchstone.id] = set;
+        this.responsibilitySets.addSet(set);
         this.ready = true;
     }
+
     handleUpdateTouchstones(touchstones: Array<Touchstone>) {
         this.touchstones = touchstones;
         this.ready = true;
     }
+
     handleUpdateCoverageSets(data: ScenarioTouchstoneAndCoverageSets) {
         getCurrentResponsibilitySet(this.getState()).addCoverageSets(data.scenario.id, data.coverage_sets);
         this.ready = true;
     }
+
     handleUpdateCoverageToken(url: string) {
         this.coverageOneTimeToken = url;
     }
