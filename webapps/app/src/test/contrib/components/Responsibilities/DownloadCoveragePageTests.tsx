@@ -35,10 +35,10 @@ describe('DownloadCoveragePage', () => {
         checkAsync(done, (afterWait) => {
             expectOneAction(spy, { action: "ModellingGroupActions.setCurrentModellingGroup", payload: "group-1" }, 0);
             expect(fetchTouchstones.called).to.equal(true, "Expected fetchTouchstones to be called");
-            afterWait(() => {
+            afterWait(done, () => {
                 expectOneAction(spy, { action: "TouchstoneActions.setCurrentTouchstone", payload: "touchstone-1" }, 1);
                 expect(fetchResponsibilities.called).to.equal(true, "Expected fetchResponsibilities to be called");
-                afterWait(() => {
+                afterWait(done, () => {
                     expectOneAction(spy, { action: "ResponsibilityActions.setCurrentResponsibility", payload: "scenario-1" }, 2);
                     expect(fetchCoverageSets.called).to.be.equal(true, "Expected fetchCoverageSets to be called");
                     expect(fetchOneTimeCoverageToken.called).to.equal(true, "Expected fetchOneTimeCoverageToken to be called");
