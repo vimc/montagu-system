@@ -10,6 +10,7 @@ import org.vaccineimpact.api.app.ActionContext
 import org.vaccineimpact.api.app.controllers.AbstractController
 import org.vaccineimpact.api.app.controllers.ControllerContext
 import org.vaccineimpact.api.app.repositories.Repositories
+import org.vaccineimpact.api.app.repositories.SimpleObjectsRepository
 import org.vaccineimpact.api.app.repositories.TokenRepository
 import org.vaccineimpact.api.security.WebTokenHelper
 import org.vaccineimpact.api.test_helpers.MontaguTests
@@ -25,6 +26,7 @@ abstract class ControllerTests<out TController : AbstractController> : MontaguTe
     {
         return mockControllerContext(repository, webTokenHelper = null)
     }
+
     protected fun mockControllerContext(
             vararg repositoryMocks: RepositoryMock<*>,
             webTokenHelper: WebTokenHelper?
