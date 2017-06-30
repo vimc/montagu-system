@@ -8,9 +8,9 @@ export class UserRole extends React.Component<RoleAssignment, undefined> {
         if (this.props.scope_prefix && this.props.scope_prefix.length > 0) {
             scope = " / " + this.props.scope_prefix + ":" + this.props.scope_id;
         }
-        return <div>
-                { this.props.name }{ scope }
-            </div>
+        return  <div>
+                    { this.props.name }{ scope }
+                </div>
 
     }
 }
