@@ -11,7 +11,8 @@ export class ModellingGroupSource extends Source<MainState> {
         super();
         this.fetchModellingGroups = () => this.doFetch(_ => "/modelling-groups/", {
             success: modellingGroupActions.update,
-            loading: modellingGroupActions.beginFetch
+            loading: modellingGroupActions.beginFetch,
+            isCached: state => state.modellingGroups.loaded
         });
     }
 }

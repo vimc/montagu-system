@@ -11,7 +11,8 @@ export class TouchstoneSource extends Source<ResponsibilityState> {
         super();
         this.fetchTouchstones = () => this.doFetch(_ => "/touchstones/", {
             success: touchstoneActions.update,
-            loading: touchstoneActions.beginFetch
+            loading: touchstoneActions.beginFetch,
+            isCached: state => state.touchstones != null && state.touchstones.length > 0
         });
     }
 }

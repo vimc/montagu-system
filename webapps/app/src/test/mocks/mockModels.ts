@@ -40,11 +40,11 @@ export function mockModellingGroupDetails(properties?: any) {
     return Object.assign(template, properties);
 }
 
-export function mockResponsibility(properties?: any, scenarioProperties?: any): models.Responsibility {
+export function mockResponsibility(properties?: any, scenario?: models.Scenario): models.Responsibility {
     const template: models.Responsibility = {
         current_estimate: null,
         problems: [],
-        scenario: mockScenario(scenarioProperties),
+        scenario: scenario || mockScenario(),
         status: "empty"
     };
     return Object.assign(template, properties);
@@ -81,20 +81,22 @@ export function mockResponsibilitySet(properties?: any,
         responsibilities: responsibilities,
         status: "incomplete",
         touchstone: "touchstone-1"
-    }
+    };
     return Object.assign(template, properties);
 }
 
 export function mockExtendedResponsibilitySet(
     properties?: any,
     responsibilities?: Array<models.Responsibility>,
-    touchstone?: models.Touchstone
+    touchstone?: models.Touchstone,
+    modellingGroup?: models.ModellingGroup
 ): ExtendedResponsibilitySet
 {
     touchstone = touchstone || mockTouchstone();
-    properties = Object.assign(properties, { touchstone: touchstone.id });
+    modellingGroup = modellingGroup || mockModellingGroup();
+    properties = Object.assign(properties || {}, { touchstone: touchstone.id });
     const values = mockResponsibilitySet(properties, responsibilities);
-    return new ExtendedResponsibilitySet(values, touchstone);
+    return new ExtendedResponsibilitySet(values, touchstone, modellingGroup);
 }
 
 export function mockCoverageSet(properties?: any): models.CoverageSet {

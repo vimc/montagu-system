@@ -10,17 +10,19 @@ import {
 import { authActions } from "../actions/AuthActions";
 import AltStore = AltJS.AltStore;
 
-interface ActionProps<T> {
-    success: (data: T) => void;
-    loading: (x: any) => void
+interface FetchConfig<TState, TModel> {
+    success: (data: TModel) => void;
+    loading: (x: any) => void;
+    isCached: CacheCheck<TState>;
 }
 
 type UrlBuilder<TState> = (state: TState) => string;
+type CacheCheck<TState> = (state: TState, ...args: any[]) => boolean;
 
 export abstract class Source<TState> {
-    protected doFetch<TModel>(urlFragment: UrlBuilder<TState>, actions: ActionProps<TModel>): AltJS.SourceModel<TModel> {
+    protected doFetch<TModel>(urlFragment: UrlBuilder<TState>, config: FetchConfig<TState, TModel>): AltJS.SourceModel<TModel> {
         const handler = this.processResponse;
-        return {
+        const source: AltJS.SourceModel<TModel> = {
             remote(state: TState) {
                 return handler(fetcher.fetcher.fetch(urlFragment(state)))
                     .catch((error: any) => {
@@ -34,13 +36,15 @@ export abstract class Source<TState> {
                         }
                     });
             },
-            local(state: TState) {
-                return null;
+            local(state: TState): any {
+                return Promise.resolve(true);
             },
-            success: actions.success,
-            loading: actions.loading,
+            success: config.success,
+            loading: config.loading,
             error: notificationActions.notify,
         };
+        source.shouldFetch = ((state: TState) => !config.isCached(state)) as any;
+        return source;
     }
 
     protected processResponse<TModel>(promise: Promise<Response>): Promise<any> {

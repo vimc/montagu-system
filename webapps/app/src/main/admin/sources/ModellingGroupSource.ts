@@ -13,11 +13,13 @@ export class ModellingGroupSource extends Source<GroupState>
         super();
         this.fetchGroups = () => this.doFetch(_ => "/modelling-groups/", {
             success: modellingGroupActions.updateGroups,
-            loading: modellingGroupActions.beginFetchGroups
+            loading: modellingGroupActions.beginFetchGroups,
+            isCached: s => s.groups && s.groups.length > 0
         });
         this.fetchGroupDetails = () => this.doFetch(s => `/modelling-groups/${s.currentGroupId}/`, {
             success: modellingGroupActions.updateGroupDetails,
-            loading: modellingGroupActions.beginFetchDetails
+            loading: modellingGroupActions.beginFetchDetails,
+            isCached: s => s.groupDetails.hasOwnProperty(s.currentGroupId)
         });
     }
 }
