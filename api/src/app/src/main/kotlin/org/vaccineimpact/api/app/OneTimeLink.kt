@@ -23,7 +23,8 @@ data class OneTimeLink(val action: OneTimeAction, val payload: Map<String, Strin
         return when (action)
         {
             OneTimeAction.COVERAGE -> {
-                c -> controllers.modellingGroup.getCoverageData(c, repos.modellingGroup(c.db))
+                val repo = repos.modellingGroup
+                { c -> controllers.modellingGroup.getCoverageData(c, repo(c.db)) }
             }
         }
     }

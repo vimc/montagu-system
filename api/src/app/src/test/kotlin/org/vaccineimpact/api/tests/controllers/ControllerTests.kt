@@ -21,24 +21,17 @@ data class RepositoryMock<out TRepository : Any>(
 
 abstract class ControllerTests<out TController : AbstractController> : MontaguTests()
 {
-    protected fun mockControllerContext(repository: RepositoryMock<*>) : ControllerContext
-    {
-        return mockControllerContext(repository, webTokenHelper = null)
-    }
     protected fun mockControllerContext(
-            vararg repositoryMocks: RepositoryMock<*>,
-            webTokenHelper: WebTokenHelper?
+            repositories: Repositories? = null,
+            webTokenHelper: WebTokenHelper? = null
     )
             : ControllerContext
     {
-        val mockRepositories = mock<Repositories> {
-            for (repositoryMock in repositoryMocks)
-            {
-                on { repositoryMock.chooseRepo(this) } doReturn { repositoryMock.repository }
-            }
-        }
         return mock {
-            on { repositories } doReturn mockRepositories
+            if (repositories != null)
+            {
+                on { this.repositories } doReturn repositories
+            }
             if (webTokenHelper != null)
             {
                 on { tokenHelper } doReturn webTokenHelper
@@ -61,13 +54,12 @@ abstract class ControllerTests<out TController : AbstractController> : MontaguTe
         }
         val tokenRepo = mock<TokenRepository>()
         val controllerContext = mockControllerContext(
-                RepositoryMock({ it.token }, tokenRepo),
                 webTokenHelper = tokenHelper
         )
 
         // Behaviour under test
         val controller = makeController(controllerContext)
-        controller.getOneTimeLinkToken(context, OneTimeAction.COVERAGE)
+        controller.getOneTimeLinkToken(context, tokenRepo, OneTimeAction.COVERAGE)
 
         // Expectations
         verify(tokenHelper).generateOneTimeActionToken("coverage", parameters)
