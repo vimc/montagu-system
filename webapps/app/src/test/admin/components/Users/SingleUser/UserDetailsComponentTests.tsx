@@ -12,7 +12,7 @@ describe("UserDetailsComponent", () => {
         alt.bootstrap(JSON.stringify({
             UserStore: {
                 currentUsername: "testuser",
-                userDetails: {
+                usersLookup: {
                     "testuser": user,
                 }
             }

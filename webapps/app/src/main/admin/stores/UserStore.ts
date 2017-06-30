@@ -10,36 +10,34 @@ import { ILookup } from "../../shared/models/Lookup";
 export interface UserStoreState extends RemoteContent {
     users: User[];
     currentUsername: string;
-    userDetails: ILookup<User>;
+    usersLookup: ILookup<User>;
 }
 
 export interface UserStoreInterface extends AltJS.AltStore<UserStoreState> {
     fetchUsers(): Promise<User[]>;
     getCurrentUserDetails(): User;
-    fetchUserDetails(): Promise<User>;
 }
 
 class UserStore
     extends AbstractStore<UserStoreState, UserStoreInterface> {
     users: User[];
     ready: boolean;
-    userDetails: ILookup<User>;
+    usersLookup: ILookup<User>;
     currentUsername: string;
 
     constructor() {
         super();
         this.bindListeners({
-            handleBeginFetchUsers: userActions.beginFetch,
-            handleUpdateUsers: userActions.update,
+            handleBeginFetchUsers: userActions.beginFetchUsers,
+            handleUpdateUsers: userActions.updateUsers,
             handleSetCurrentUser: userActions.setCurrentUser,
-            handleUpdateUserDetails: userActions.updateUserDetails,
 
         });
         this.registerAsync(new UserSource());
         this.exportPublicMethods({
             getCurrentUserDetails: () => {
-                if (this.currentUsername && this.userDetails.hasOwnProperty(this.currentUsername)) {
-                    return this.userDetails[this.currentUsername]
+                if (this.currentUsername && this.usersLookup.hasOwnProperty(this.currentUsername)) {
+                    return this.usersLookup[this.currentUsername]
                 } else {
                     return null;
                 }
@@ -49,7 +47,7 @@ class UserStore
 
     initialState(): UserStoreState {
         return {
-            userDetails: {},
+            usersLookup: {},
             currentUsername: null,
             users: [],
             ready: false
@@ -59,16 +57,16 @@ class UserStore
     handleBeginFetchUsers() {
         this.ready = false;
         this.users = [];
+        this.usersLookup = {};
     }
 
     handleUpdateUsers(users: User[]) {
         this.ready = true;
         this.users = users;
-    }
 
-    handleUpdateUserDetails(user: User) {
-        this.ready = true;
-        this.userDetails[user.username] = user;
+        users.forEach(u => {
+            this.usersLookup[u.username] = u;
+        });
     }
 
     handleSetCurrentUser(username: string) {

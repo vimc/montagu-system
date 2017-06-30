@@ -11,12 +11,8 @@ export class UserSource extends Source<UserStoreState> {
     constructor() {
         super();
         this.fetchUsers = () => this.doFetch(() => "/users/", {
-            loading: userActions.beginFetch,
-            success: userActions.update
-        });
-        this.fetchUserDetails = () => this.doFetch(s => `/users/${s.currentUsername}/`, {
-            success: userActions.updateUserDetails,
-            loading: userActions.beginFetchDetails
+            loading: userActions.beginFetchUsers,
+            success: userActions.updateUsers
         });
     }
 }

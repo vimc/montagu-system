@@ -16,7 +16,6 @@ export class ViewUserDetailsPage extends AdminPageWithHeader<UserDetailsPageProp
         setTimeout(() => {
             userStore.fetchUsers().catch(doNothing).then(() => {
                 userActions.setCurrentUser(this.props.location.params.username);
-                userStore.fetchUserDetails().catch(doNothing);
             });
         });
     }

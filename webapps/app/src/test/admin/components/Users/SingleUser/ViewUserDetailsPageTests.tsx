@@ -17,7 +17,6 @@ describe("ViewUserDetailsPage", () => {
 
     it("triggers fetch on load", (done: DoneCallback) => {
         const fetchUsers = sandbox.sinon.stub(userStore, "fetchUsers").returns(Promise.resolve(true));
-        const fetchUserDetails = sandbox.sinon.stub(userStore, "fetchUserDetails");
         const dispatchSpy = sandbox.dispatchSpy();
 
         const location = mockLocation<UserDetailsPageProps>({ username: "testuser" });
@@ -27,8 +26,7 @@ describe("ViewUserDetailsPage", () => {
             expect(fetchUsers.called).to.equal(true, "Expected userStore.fetchUsers to be triggered");
             afterWait(done, () => {
                 expectOneAction(dispatchSpy, { action: "UserActions.setCurrentUser", payload: "testuser" });
-                expect(fetchUserDetails.called).to.equal(true, "Expected userStore.fetchUserDetails to be triggered");
-            });
+             });
         });
     });
 });
