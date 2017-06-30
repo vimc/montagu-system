@@ -6,6 +6,8 @@ import org.vaccineimpact.api.app.security.PermissionRequirement
 import org.vaccineimpact.api.app.security.TokenVerifyingConfigFactory
 import spark.Spark
 
+// Adds an additional setup step to adding this endpoint. This additional
+// steps checks the user has a valid token and has all the required permissions
 fun <TRoute> Endpoint<TRoute>.secured(permissions: Set<String> = emptySet()): Endpoint<TRoute>
 {
     return this.withAdditionalSetup({ url, tokenHelper ->

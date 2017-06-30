@@ -7,6 +7,10 @@ import org.vaccineimpact.api.db.JooqContext
 import spark.Route
 import spark.route.HttpMethod
 
+// This endpoint expects the handler to take two arguments: An ActionContext and
+// a repository. This function expects a repository factory: A function tha takes
+// a Jooq database context and returns a repository instance. This endpoint then
+// takes care of instantiating the repository and passing it into the handler.
 fun <TRepository> oneRepoEndpoint(
         urlFragment: String,
         route: (ActionContext, TRepository) -> Any,

@@ -6,6 +6,7 @@ import org.vaccineimpact.api.app.DirectActionContext
 import spark.Route
 import spark.route.HttpMethod
 
+// For endpoints that just need an ActionContext and nothing else
 fun basicEndpoint(
         urlFragment: String,
         route: (ActionContext) -> Any,
