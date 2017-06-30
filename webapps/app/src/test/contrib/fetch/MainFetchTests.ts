@@ -5,7 +5,7 @@ import { mainStore } from "../../../main/contrib/stores/MainStore";
 import { Disease, ModellingGroup } from "../../../main/shared/models/Generated";
 import { doNothing } from "../../../main/shared/Helpers";
 import { diseaseActions } from "../../../main/contrib/actions/DiseaseActions";
-import { modellingGroupActions } from "../../../main/contrib/actions/ModellingGroupActions";
+import { modellingGroupActions } from "../../../main/shared/actions/ModellingGroupActions";
 
 describe("MainStore.fetchDiseases", () => {
     new FetchHelper<Disease[]>({
@@ -21,7 +21,7 @@ describe("MainStore.fetchModellingGroups", () => {
     new FetchHelper<ModellingGroup[]>({
         triggerFetch: () => mainStore.fetchModellingGroups(),
         prepareForFetch: doNothing,
-        prepareForCachedFetch: () => modellingGroupActions.update([ mockModellingGroup() ]),
+        prepareForCachedFetch: () => modellingGroupActions.updateGroups([ mockModellingGroup() ]),
         makePayload: () => [ mockModellingGroup(), mockModellingGroup() ],
         expectedURL: "/modelling-groups/"
     }).addTestsToMocha();

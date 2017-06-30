@@ -2,7 +2,7 @@ import { Source } from "../../shared/sources/Source";
 import { ModellingGroup, ModellingGroupDetails } from "../../shared/models/Generated";
 import { GroupState } from "../stores/GroupStore";
 import SourceModel = AltJS.SourceModel;
-import { modellingGroupActions } from "../actions/ModellingGroupActions";
+import { modellingGroupActions } from "../../shared/actions/ModellingGroupActions";
 
 export class ModellingGroupSource extends Source<GroupState> {
     fetchGroups: () => SourceModel<ModellingGroup[]>;

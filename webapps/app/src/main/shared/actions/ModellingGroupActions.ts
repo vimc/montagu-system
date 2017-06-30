@@ -1,6 +1,6 @@
-import alt from "../../shared/alt";
-import { FetchActions, FetchActionsInterface } from "../../shared/actions/FetchActions";
-import { ModellingGroup, ModellingGroupDetails } from "../../shared/models/Generated";
+import alt from "../alt";
+import { FetchActions, FetchActionsInterface } from "./FetchActions";
+import { ModellingGroup, ModellingGroupDetails } from "../models/Generated";
 
 interface Actions {
     beginFetchGroups(): boolean;

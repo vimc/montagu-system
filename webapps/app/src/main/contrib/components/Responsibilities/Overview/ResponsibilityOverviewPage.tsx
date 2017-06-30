@@ -4,9 +4,9 @@ import { settings } from "../../../../shared/Settings";
 import { ResponsibilityOverviewTitle } from "./ResponsibilityOverviewTitle";
 import { touchstoneActions } from "../../../actions/TouchstoneActions";
 import { responsibilityStore } from "../../../stores/ResponsibilityStore";
-import { modellingGroupActions } from "../../../actions/ModellingGroupActions";
 import { PageWithHeaderAndNav } from "../../PageWithHeader/PageWithHeaderAndNav";
 import { doNothing } from "../../../../shared/Helpers";
+import {modellingGroupActions} from "../../../../shared/actions/ModellingGroupActions";
 
 interface LocationProps {
     groupId: string;
@@ -16,7 +16,7 @@ interface LocationProps {
 export class ResponsibilityOverviewPage extends PageWithHeaderAndNav<LocationProps> {
     componentDidMount() {
         setTimeout(() => {
-            modellingGroupActions.setCurrentModellingGroup(this.props.location.params.groupId);
+            modellingGroupActions.setCurrentGroup(this.props.location.params.groupId);
             responsibilityStore.fetchTouchstones().catch(doNothing).then(() => {
                 touchstoneActions.setCurrentTouchstone(this.props.location.params.touchstoneId);
                 responsibilityStore.fetchResponsibilities().catch(doNothing);

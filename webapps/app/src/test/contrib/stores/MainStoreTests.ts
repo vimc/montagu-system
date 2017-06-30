@@ -5,11 +5,9 @@ import { mockDisease, mockModellingGroup } from "../../mocks/mockModels";
 
 import { mainStore } from "../../../main/contrib/stores/MainStore";
 import { diseaseActions } from "../../../main/contrib/actions/DiseaseActions";
-import { responsibilityStore } from "../../../main/contrib/stores/ResponsibilityStore";
 import { Disease, ModellingGroup } from "../../../main/shared/models/Generated";
 import { emptyLookup } from "../../../main/contrib/stores/Loadable";
-import { modellingGroupActions } from "../../../main/contrib/actions/ModellingGroupActions";
-import { checkAsync } from "../../testHelpers";
+import {modellingGroupActions} from "../../../main/shared/actions/ModellingGroupActions";
 
 describe("MainStore", () => {
     const sandbox = new Sandbox();
@@ -54,7 +52,7 @@ describe("MainStore", () => {
     it("modellingGroupActions.update sets modelling groups", () => {
         const group1 = mockModellingGroup({ id: "g1" });
         const group2 = mockModellingGroup({ id: "g2" });
-        modellingGroupActions.update([ group1, group2 ]);
+        modellingGroupActions.updateGroups([ group1, group2 ]);
 
         const state = mainStore.getState();
         expect(state).to.eql({

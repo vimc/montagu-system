@@ -4,7 +4,7 @@ import { responsibilityActions } from "../../../actions/ResponsibilityActions";
 import { DownloadCoverageTitle } from "./DownloadCoverageTitle";
 import { responsibilityStore } from "../../../stores/ResponsibilityStore";
 import { DownloadCoverageContent } from "./DownloadCoverageContent";
-import { modellingGroupActions } from "../../../actions/ModellingGroupActions";
+import { modellingGroupActions } from "../../../../shared/actions/ModellingGroupActions";
 import { PageWithHeaderAndNav } from "../../PageWithHeader/PageWithHeaderAndNav";
 import { doNothing } from "../../../../shared/Helpers";
 
@@ -17,7 +17,7 @@ interface LocationProps {
 export class DownloadCoveragePage extends PageWithHeaderAndNav<LocationProps> {
     componentDidMount() {
         setTimeout(() => {
-            modellingGroupActions.setCurrentModellingGroup(this.props.location.params.groupId);
+            modellingGroupActions.setCurrentGroup(this.props.location.params.groupId);
             responsibilityStore.fetchTouchstones().catch(doNothing).then(() => {
                 touchstoneActions.setCurrentTouchstone(this.props.location.params.touchstoneId);
                 responsibilityStore.fetchResponsibilities().catch(doNothing).then(() => {
