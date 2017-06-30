@@ -6,22 +6,24 @@ import org.pac4j.sparkjava.SecurityFilter
 import org.vaccineimpact.api.app.ActionContext
 import org.vaccineimpact.api.app.HTMLForm
 import org.vaccineimpact.api.app.HTMLFormHelpers
-import org.vaccineimpact.api.app.controllers.endpoints.BasicEndpoint
+import org.vaccineimpact.api.app.controllers.endpoints.basicEndpoint
+import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.security.SkipOptionsMatcher
 import org.vaccineimpact.api.app.security.USER_OBJECT
 import org.vaccineimpact.api.models.AuthenticationResponse
 import org.vaccineimpact.api.models.FailedAuthentication
 import org.vaccineimpact.api.models.SuccessfulAuthentication
 import org.vaccineimpact.api.security.MontaguUser
+import org.vaccineimpact.api.security.WebTokenHelper
 import spark.Spark.before
 import spark.route.HttpMethod
 
 class AuthenticationController(context: ControllerContext) : AbstractController(context)
 {
     override val urlComponent = "/"
-    override val endpoints = listOf(
-            BasicEndpoint("authenticate/", this::authenticate, HttpMethod.post,
-                    additionalSetupCallback = this::setupSecurity)
+    override fun endpoints(repos: Repositories) = listOf(
+            basicEndpoint("authenticate/", this::authenticate,  HttpMethod.post)
+                    .withAdditionalSetup(this::setupSecurity)
     )
 
     fun authenticate(context: ActionContext): AuthenticationResponse
@@ -40,7 +42,7 @@ class AuthenticationController(context: ControllerContext) : AbstractController(
         }
     }
 
-    private fun setupSecurity(fullUrl: String)
+    private fun setupSecurity(fullUrl: String, tokenHelper: WebTokenHelper)
     {
         val config = TokenIssuingConfigFactory().build()
         before(fullUrl, SecurityFilter(

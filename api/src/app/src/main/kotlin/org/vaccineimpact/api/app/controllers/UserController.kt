@@ -1,7 +1,10 @@
 package org.vaccineimpact.api.app.controllers
 
 import org.vaccineimpact.api.app.ActionContext
-import org.vaccineimpact.api.app.controllers.endpoints.SecuredEndpoint
+import org.vaccineimpact.api.app.controllers.endpoints.oneRepoEndpoint
+import org.vaccineimpact.api.app.controllers.endpoints.secured
+import org.vaccineimpact.api.app.repositories.Repositories
+import org.vaccineimpact.api.app.repositories.UserRepository
 import org.vaccineimpact.api.models.Scope
 import org.vaccineimpact.api.models.User
 import org.vaccineimpact.api.models.encompass
@@ -10,20 +13,20 @@ import org.vaccineimpact.api.models.permissions.RoleAssignment
 class UserController(context: ControllerContext) : AbstractController(context)
 {
     override val urlComponent = "/users"
-    override val endpoints = listOf(
-            SecuredEndpoint("/:username/", this::getUser, setOf("*/users.read")),
-            SecuredEndpoint("/", this::getUsers, setOf("*/users.read"))
+    override fun endpoints(repos: Repositories) = listOf(
+            oneRepoEndpoint("/:username/", this::getUser, repos.user).secured(setOf("*/users.read")),
+            oneRepoEndpoint("/", this::getUsers, repos.user).secured(setOf("*/users.read"))
     )
 
-    fun getUser(context: ActionContext): User
+    fun getUser(context: ActionContext, repo: UserRepository): User
     {
         val userName = userName(context)
         val roleReadingScopes = roleReadingScopes(context)
 
-        val user = repos.user().use { it.getUserByUsername(userName) }
+        val user = repo.getUserByUsername(userName)
         if (roleReadingScopes.any())
         {
-            val allRoles = repos.user().use { it.getRolesForUser(userName) }
+            val allRoles = repo.getRolesForUser(userName)
             val roles = filteredRoles(allRoles, roleReadingScopes)
             return user.copy(roles = roles)
         }
@@ -33,13 +36,13 @@ class UserController(context: ControllerContext) : AbstractController(context)
         }
     }
 
-    fun getUsers(context: ActionContext): List<User>
+    fun getUsers(context: ActionContext, repo: UserRepository): List<User>
     {
         val roleReadingScopes = roleReadingScopes(context)
 
         if (roleReadingScopes.any())
         {
-            val users = repos.user().use { it.allWithRoles().toList() }
+            val users = repo.allWithRoles().toList()
 
             return users.map {
                 it.copy(roles = filteredRoles(it.roles, roleReadingScopes))
@@ -47,9 +50,8 @@ class UserController(context: ControllerContext) : AbstractController(context)
         }
         else
         {
-            return repos.user().use { it.all().toList() }
+            return repo.all().toList()
         }
-
     }
 
     private fun userName(context: ActionContext): String = context.params(":username")

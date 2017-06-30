@@ -3,48 +3,47 @@ package org.vaccineimpact.api.app.controllers
 import org.slf4j.LoggerFactory
 import org.vaccineimpact.api.OneTimeAction
 import org.vaccineimpact.api.app.ActionContext
-import org.vaccineimpact.api.app.DirectActionContext
 import org.vaccineimpact.api.app.controllers.endpoints.EndpointDefinition
 import org.vaccineimpact.api.app.errors.UnsupportedValueException
+import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.TokenRepository
 import org.vaccineimpact.api.app.serialization.Serializer
 import org.vaccineimpact.api.security.WebTokenHelper
-import spark.Request
-import spark.Response
 import spark.Spark
 import spark.route.HttpMethod
 
-abstract class AbstractController<TContext: ActionContext>(controllerContext: ControllerContext)
+abstract class AbstractController(controllerContext: ControllerContext)
 {
     protected val logger = LoggerFactory.getLogger(AbstractController::class.java)
     protected val repos = controllerContext.repositories
     val tokenHelper = controllerContext.tokenHelper
 
     abstract val urlComponent: String
-    abstract val endpoints: Iterable<EndpointDefinition>
+    abstract fun endpoints(repos: Repositories): Iterable<EndpointDefinition<*>>
 
     fun mapEndpoints(urlBase: String): List<String>
     {
-        return endpoints.map { mapEndpoint(it, urlBase, tokenHelper) }
+        return endpoints(repos).map { mapEndpoint(it, urlBase, tokenHelper) }
     }
 
-    fun getOneTimeLinkToken(context: ActionContext, action: OneTimeAction): String
+    fun getOneTimeLinkToken(context: ActionContext, repo: TokenRepository, action: OneTimeAction): String
     {
         val actionAsString = Serializer.instance.serializeEnum(action)
         val params = context.params()
         val token = tokenHelper.generateOneTimeActionToken(actionAsString, params)
-        context.repo<TokenRepository>().storeToken(token)
+        repo.storeToken(token)
         return token
     }
 
     private fun mapEndpoint(
-            endpoint: EndpointDefinition,
+            weakEndpoint: EndpointDefinition<*>,
             urlBase: String,
             tokenHelper: WebTokenHelper): String
     {
+        val endpoint = weakEndpoint as EndpointDefinition<Any>
         val transformer = endpoint::transform
         val fullUrl = urlBase + urlComponent + endpoint.urlFragment
-        val route = wrapRoute(endpoint.route)
+        val route = endpoint.routeWrapper(endpoint.route)::handle
         val contentType = endpoint.contentType
 
         logger.info("Mapping $fullUrl")
@@ -59,12 +58,5 @@ abstract class AbstractController<TContext: ActionContext>(controllerContext: Co
         }
         endpoint.additionalSetup(fullUrl, tokenHelper)
         return fullUrl
-    }
-
-    protected open fun wrapRoute(route: (TContext) -> Any): (Request, Response) -> Any
-    {
-        return { req: Request, res: Response ->
-            DirectActionContext(req, res, repos).use { route(it) }
-        }
     }
 }

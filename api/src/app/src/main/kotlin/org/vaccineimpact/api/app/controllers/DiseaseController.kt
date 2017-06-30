@@ -1,28 +1,28 @@
 package org.vaccineimpact.api.app.controllers
 
 import org.vaccineimpact.api.app.ActionContext
-import org.vaccineimpact.api.app.controllers.endpoints.SecuredEndpoint
-import org.vaccineimpact.api.app.getRepo
+import org.vaccineimpact.api.app.controllers.endpoints.oneRepoEndpoint
+import org.vaccineimpact.api.app.controllers.endpoints.secured
+import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.SimpleObjectsRepository
-import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.models.Disease
 
 class DiseaseController(context: ControllerContext) : AbstractController(context)
 {
     override val urlComponent = "/diseases"
-    override val endpoints = listOf(
-            SecuredEndpoint("/", this::getDiseases, emptySet()),
-            SecuredEndpoint("/:id/", this::getDisease, emptySet())
+    override fun endpoints(repos: Repositories) = listOf(
+            oneRepoEndpoint("/", this::getDiseases, repos.simpleObjects).secured(),
+            oneRepoEndpoint("/:id/", this::getDisease, repos.simpleObjects).secured()
     )
 
-    fun getDiseases(context: ActionContext): List<Disease>
+    fun getDiseases(context: ActionContext, repo: SimpleObjectsRepository): List<Disease>
     {
-        return context.getRepo<SimpleObjectsRepository>().diseases.all().toList()
+        return repo.diseases.all().toList()
     }
 
-    fun getDisease(context: ActionContext): Disease
+    fun getDisease(context: ActionContext, repo: SimpleObjectsRepository): Disease
     {
-        return context.getRepo<SimpleObjectsRepository>().diseases.get(diseaseId(context))
+        return repo.diseases.get(diseaseId(context))
     }
 
     private fun diseaseId(context: ActionContext): String = context.params(":id")
