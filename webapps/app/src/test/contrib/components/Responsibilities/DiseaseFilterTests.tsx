@@ -3,7 +3,7 @@ import { Sandbox } from "../../../Sandbox";
 import * as mocks from "../../../mocks/mocks";
 import { shallow } from "enzyme";
 import { expect } from "chai";
-import { mockExtendedResponsibilitySet, mockResponsibility } from "../../../mocks/mockModels";
+import { mockExtendedResponsibilitySet, mockResponsibility, mockScenario } from "../../../mocks/mockModels";
 
 import { DiseaseFilter } from "../../../../main/contrib/components/Responsibilities/Overview/DiseaseFilter";
 import { OptionSelector } from "../../../../main/contrib/components/OptionSelector/OptionSelector";
@@ -36,8 +36,8 @@ describe("DiseaseFilter", () => {
             ]
         });
         const set = mockExtendedResponsibilitySet({}, [
-            mockResponsibility({}, { disease: "d1" }),
-            mockResponsibility({}, { disease: "d2" })
+            mockResponsibility({}, mockScenario({ disease: "d1" })),
+            mockResponsibility({}, mockScenario({ disease: "d2" }))
         ]);
         const rendered = shallow(<DiseaseFilter {...set} />);
         const selector = rendered.find(OptionSelector).at(0);

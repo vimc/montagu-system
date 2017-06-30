@@ -11,7 +11,8 @@ export class UserSource extends Source<UserStoreState> {
         super();
         this.fetchUsers = () => this.doFetch(() => "/users/", {
             loading: userActions.beginFetch,
-            success: userActions.update
+            success: userActions.update,
+            isCached: s => s.users && s.users.length > 0
         });
     }
 }
