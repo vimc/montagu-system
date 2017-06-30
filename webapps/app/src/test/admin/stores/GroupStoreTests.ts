@@ -1,6 +1,6 @@
 import { alt } from "../../../main/shared/alt";
 import { expect } from "chai";
-import { modellingGroupActions } from "../../../main/admin/actions/ModellingGroupActions";
+import { modellingGroupActions } from "../../../main/shared/actions/ModellingGroupActions";
 import { mockModellingGroup, mockModellingGroupDetails } from "../../mocks/mockModels";
 import { groupStore } from "../../../main/admin/stores/GroupStore";
 

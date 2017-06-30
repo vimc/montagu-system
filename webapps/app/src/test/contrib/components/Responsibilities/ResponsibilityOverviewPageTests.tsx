@@ -32,7 +32,7 @@ describe('ResponsibilityOverviewPage', () => {
         sandbox.mount(<ResponsibilityOverviewPage location={ location }/>);
 
         checkAsync(done, (afterWait) => {
-            expectOneAction(spy, { action: "ModellingGroupActions.setCurrentModellingGroup", payload: "group-id" }, 0);
+            expectOneAction(spy, { action: "ModellingGroupActions.setCurrentGroup", payload: "group-id" }, 0);
             expect(fetchTouchstones.called).to.equal(true, "Expected fetchTouchstones to be called");
             afterWait(done, () => {
                 expectOneAction(spy, { action: "TouchstoneActions.setCurrentTouchstone", payload: "touchstone-id" }, 1);

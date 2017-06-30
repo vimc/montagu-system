@@ -13,7 +13,7 @@ import { touchstoneActions } from "../actions/TouchstoneActions";
 import { ExtendedResponsibility, ExtendedResponsibilitySet } from "../models/ResponsibilitySet";
 import { coverageSetActions } from "../actions/CoverageSetActions";
 import { coverageTokenActions } from "../actions/CoverageActions";
-import { modellingGroupActions } from "../actions/ModellingGroupActions";
+import { modellingGroupActions } from "../../shared/actions/ModellingGroupActions";
 import { contribAuthStore } from "./ContribAuthStore";
 import { ResponsibilitySource } from "../sources/ResponsibilitySource";
 import { TouchstoneSource } from "../sources/TouchstoneSource";
@@ -67,8 +67,8 @@ class ResponsibilityStore extends AbstractStore<ResponsibilityState, Responsibil
         this.registerAsync(new CoverageTokenSource());
 
         this.bindListeners({
-            handleSetCurrentModellingGroup: modellingGroupActions.setCurrentModellingGroup,
-            handleUpdateModellingGroups: modellingGroupActions.update,
+            handleSetCurrentModellingGroup: modellingGroupActions.setCurrentGroup,
+            handleUpdateModellingGroups: modellingGroupActions.updateGroups,
 
             handleBeginTouchstoneFetch: touchstoneActions.beginFetch,
             handleUpdateTouchstones: touchstoneActions.update,

@@ -16,7 +16,7 @@ import { responsibilityActions } from "../../../main/contrib/actions/Responsibil
 import { responsibilityStore } from "../../../main/contrib/stores/ResponsibilityStore";
 import { coverageSetActions } from "../../../main/contrib/actions/CoverageSetActions";
 import { coverageTokenActions } from "../../../main/contrib/actions/CoverageActions";
-import { modellingGroupActions } from "../../../main/contrib/actions/ModellingGroupActions";
+import { modellingGroupActions } from "../../../main/shared/actions/ModellingGroupActions";
 import { makeLookup } from "../../../main/contrib/stores/Loadable";
 import { ModellingGroup } from "../../../main/shared/models/Generated";
 
@@ -49,28 +49,28 @@ describe("ResponsibilityStore", () => {
         alt.bootstrap(JSON.stringify({
             MainStore: { modellingGroups: makeLookup<ModellingGroup>([ group ]) }
         }));
-        modellingGroupActions.setCurrentModellingGroup(group.id);
+        modellingGroupActions.setCurrentGroup(group.id);
         expect(responsibilityStore.getState().currentModellingGroup).to.eql(group);
     });
 
     it("modellingGroupActions.update sets current modelling group if only a member of one", () => {
         // User has no membership of any group
         const group = mockModellingGroup();
-        modellingGroupActions.update([ group ]);
+        modellingGroupActions.updateGroups([ group ]);
         expect(responsibilityStore.getState().currentModellingGroup).to.be.null;
 
         // User has membership of multiple groups
         alt.bootstrap(JSON.stringify({
             ContribAuthStore: { modellingGroupIds: [ group.id, "another-id" ] }
         }));
-        modellingGroupActions.update([ group ]);
+        modellingGroupActions.updateGroups([ group ]);
         expect(responsibilityStore.getState().currentModellingGroup).to.be.null;
 
         // User has membership of just one group
         alt.bootstrap(JSON.stringify({
             ContribAuthStore: { modellingGroupIds: [ group.id ] }
         }));
-        modellingGroupActions.update([ group ]);
+        modellingGroupActions.updateGroups([ group ]);
         expect(responsibilityStore.getState().currentModellingGroup).to.eql(group);
     });
 
@@ -127,7 +127,7 @@ describe("ResponsibilityStore", () => {
             }
         }));
         // Clear out the current one
-        modellingGroupActions.setCurrentModellingGroup(groupA.id);
+        modellingGroupActions.setCurrentGroup(groupA.id);
         touchstoneActions.setCurrentTouchstone(touchstoneA.id);
         responsibilityActions.beginFetch();
 

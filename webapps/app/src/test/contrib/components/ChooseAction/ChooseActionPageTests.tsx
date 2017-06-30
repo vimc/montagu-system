@@ -24,7 +24,7 @@ describe("ChooseActionPage", () => {
             expect(fetchTouchstones.called).to.equal(true, "Expected responsibilityStore.fetchTouchstones to be called");
             afterWait(done, () => {
                 expectOneAction(spy, {
-                    action: "ModellingGroupActions.setCurrentModellingGroup",
+                    action: "ModellingGroupActions.setCurrentGroup",
                     payload: "gId"
                 });
             });

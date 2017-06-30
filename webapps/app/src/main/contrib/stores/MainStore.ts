@@ -6,11 +6,11 @@ import { emptyLookup, getFromLookup, ILoadable, makeLookup } from "./Loadable";
 import { diseaseActions } from "../actions/DiseaseActions";
 import { RemoteContent } from "../../shared/models/RemoteContent";
 import { responsibilityStore } from "./ResponsibilityStore";
-import { modellingGroupActions } from "../actions/ModellingGroupActions";
 import { DiseaseSource } from "../sources/DiseaseSource";
 import { ModellingGroupSource } from "../sources/ModellingGroupSource";
 import { doNothing } from "../../shared/Helpers";
 import StoreModel = AltJS.StoreModel;
+import {modellingGroupActions} from "../../shared/actions/ModellingGroupActions";
 
 export interface MainState extends RemoteContent {
     diseases: ILoadable<Disease>;
@@ -46,7 +46,7 @@ class MainStore extends AbstractStore<MainState, Interface> {
         super();
         this.bindListeners({
             handleDiseases: diseaseActions.update,
-            handleModellingGroups: modellingGroupActions.update,
+            handleModellingGroups: modellingGroupActions.updateGroups,
         });
         this.registerAsync(new DiseaseSource());
         this.registerAsync(new ModellingGroupSource());

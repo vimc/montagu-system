@@ -3,7 +3,7 @@ import { connectToStores } from "../../../../../shared/alt";
 import { ModellingGroupTitle, TitleProps } from "../ModellingGroupTitle";
 import { AdminPageWithHeader } from "../../../AdminPageWithHeader";
 import { groupStore } from "../../../../stores/GroupStore";
-import { modellingGroupActions } from "../../../../actions/ModellingGroupActions";
+import { modellingGroupActions } from "../../../../../shared/actions/ModellingGroupActions";
 import { GroupAdminContent } from "./GroupAdminContent";
 import { doNothing } from "../../../../../shared/Helpers";
 import { userStore } from "../../../../stores/UserStore";

@@ -33,7 +33,7 @@ describe('DownloadCoveragePage', () => {
         sandbox.mount(<DownloadCoveragePage location={ location }/>);
 
         checkAsync(done, (afterWait) => {
-            expectOneAction(spy, { action: "ModellingGroupActions.setCurrentModellingGroup", payload: "group-1" }, 0);
+            expectOneAction(spy, { action: "ModellingGroupActions.setCurrentGroup", payload: "group-1" }, 0);
             expect(fetchTouchstones.called).to.equal(true, "Expected fetchTouchstones to be called");
             afterWait(done, () => {
                 expectOneAction(spy, { action: "TouchstoneActions.setCurrentTouchstone", payload: "touchstone-1" }, 1);

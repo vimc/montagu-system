@@ -2,7 +2,7 @@ import alt from "../../shared/alt";
 import { LogInProperties } from "../../shared/actions/AuthActions";
 import { mainStore } from "./MainStore";
 import { ModellingGroup } from "../../shared/models/Generated";
-import { modellingGroupActions } from "../actions/ModellingGroupActions";
+import { modellingGroupActions } from "../../shared/actions/ModellingGroupActions";
 import { AuthStateBase, AuthStore, AuthStoreBaseInterface } from "../../shared/stores/AuthStoreBase";
 import StoreModel = AltJS.StoreModel;
 
@@ -27,7 +27,7 @@ class ContribAuthStore extends AuthStore<ContribAuthState, ContribAuthStoreInter
     constructor() {
         super();
         this.bindListeners({
-            handleModellingGroups: modellingGroupActions.update
+            handleModellingGroups: modellingGroupActions.updateGroups
         });
     }
 
