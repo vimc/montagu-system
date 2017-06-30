@@ -4,6 +4,7 @@ import org.slf4j.LoggerFactory
 import org.vaccineimpact.api.OneTimeAction
 import org.vaccineimpact.api.app.ActionContext
 import org.vaccineimpact.api.app.controllers.endpoints.EndpointDefinition
+import org.vaccineimpact.api.app.controllers.endpoints.getWrappedRoute
 import org.vaccineimpact.api.app.errors.UnsupportedValueException
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.TokenRepository
@@ -36,14 +37,13 @@ abstract class AbstractController(controllerContext: ControllerContext)
     }
 
     private fun mapEndpoint(
-            weakEndpoint: EndpointDefinition<*>,
+            endpoint: EndpointDefinition<*>,
             urlBase: String,
             tokenHelper: WebTokenHelper): String
     {
-        val endpoint = weakEndpoint as EndpointDefinition<Any>
         val transformer = endpoint::transform
         val fullUrl = urlBase + urlComponent + endpoint.urlFragment
-        val route = endpoint.routeWrapper(endpoint.route)::handle
+        val route = endpoint.getWrappedRoute()::handle
         val contentType = endpoint.contentType
 
         logger.info("Mapping $fullUrl")

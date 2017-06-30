@@ -15,3 +15,8 @@ interface EndpointDefinition<TRoute>
     fun additionalSetup(url: String, tokenHelper: WebTokenHelper)
     fun transform(x: Any): String
 }
+
+fun <TRoute> EndpointDefinition<TRoute>.getWrappedRoute(): Route
+{
+    return this.routeWrapper(this.route)
+}
