@@ -24,37 +24,40 @@ export class UserDetailsContentComponent extends RemoteContentComponent<Props> {
         };
     }
 
+    rolesRow() {
+        return <tr>
+                    <td>Roles</td>
+                    <td>
+                        {this.props.user.roles.map(r =>
+                            <UserRole key={ r.name + r.scope_prefix + r.scope_id } {...r} />)}
+                    </td>
+                </tr>;
+    }
+
     renderContent(props: Props) {
 
         let roles;
-        if (props.user.roles != null)
-            roles =
-                <tr>
-                    <td>Roles</td>
-                    <td>
-                        {props.user.roles
-                            .map(r =>
-                                <UserRole key={ r.name + r.scope_prefix + r.scope_id } {...r} />)}
-                    </td>
-                </tr>;
+        if (props.user.roles != null) {
+            roles = this.rolesRow()
+        }
 
         return <table className={ commonStyles.specialColumn }>
-                    <tbody>
-                        <tr>
-                            <td>Username</td>
-                            <td>{ props.user.username }</td>
-                        </tr>
-                        <tr>
-                            <td>Email</td>
-                            <td>{ props.user.email }</td>
-                        </tr>
-                        <tr>
-                            <td>Last logged in</td>
-                            <td>{ props.user.last_logged_in || "never" }</td>
-                        </tr>
-                        { roles }
-                    </tbody>
-                </table>
+            <tbody>
+            <tr>
+                <td>Username</td>
+                <td>{ props.user.username }</td>
+            </tr>
+            <tr>
+                <td>Email</td>
+                <td>{ props.user.email }</td>
+            </tr>
+            <tr>
+                <td>Last logged in</td>
+                <td>{ props.user.last_logged_in || "never" }</td>
+            </tr>
+            { roles }
+            </tbody>
+        </table>
     }
 }
 
