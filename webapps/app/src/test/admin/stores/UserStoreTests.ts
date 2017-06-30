@@ -13,6 +13,7 @@ describe("UserStore", () => {
         const users = [ testUser, anotherTestUser ];
 
         userActions.updateUsers(users);
+
         expect(userStore.getState().users).to.eql(users);
         expect(userStore.getState().usersLookup).to.eql({
             "testUser" : testUser,
@@ -29,4 +30,37 @@ describe("UserStore", () => {
         expect(userStore.getState().usersLookup).to.eql({});
         expect(userStore.getState().ready).to.be.false;
     });
+
+    it("has a current username after userActions.setCurrentUser", () => {
+
+        userActions.setCurrentUser("testUser");
+        expect(userStore.getState().currentUsername).to.eql("testUser")
+
+    });
+
+    it("gets current user details when users and currentUsername exist", () => {
+        const testUser = mockUser({username: "testUser"});
+        const anotherTestUser = mockUser({username: "anotherTestUser"});
+        const users = [ testUser, anotherTestUser ];
+
+        userActions.updateUsers(users);
+        userActions.setCurrentUser("testUser");
+
+        const currentUserResult = userStore.getCurrentUserDetails();
+        expect(currentUserResult).to.eql(testUser)
+
+    });
+
+    it("returns null for user details when currentUsername not set", () => {
+        const testUser = mockUser({username: "testUser"});
+        const anotherTestUser = mockUser({username: "anotherTestUser"});
+        const users = [ testUser, anotherTestUser ];
+
+        userActions.updateUsers(users);
+
+        const currentUserResult = userStore.getCurrentUserDetails();
+        expect(currentUserResult).to.eql(null)
+
+    });
+
 });
