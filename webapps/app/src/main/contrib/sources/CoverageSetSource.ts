@@ -2,6 +2,7 @@ import { ScenarioTouchstoneAndCoverageSets } from "../../shared/models/Generated
 import { coverageSetActions } from "../actions/CoverageSetActions";
 import { CoverageSource } from "./CoverageSource";
 import SourceModel = AltJS.SourceModel;
+import { responsibilityStore } from "../stores/ResponsibilityStore";
 
 export class CoverageSetSource extends CoverageSource {
     fetchCoverageSets: () => SourceModel<ScenarioTouchstoneAndCoverageSets>;
@@ -14,7 +15,7 @@ export class CoverageSetSource extends CoverageSource {
             success: coverageSetActions.update,
             loading: coverageSetActions.beginFetch,
             isCached: state => {
-                const set = state.responsibilitySet;
+                const set = responsibilityStore.getCurrentResponsibilitySet();
                 if (set != null) {
                     const coverageSets = set.getCoverageSets(state.currentResponsibility.scenario.id);
                     return coverageSets != null && coverageSets.length > 0;

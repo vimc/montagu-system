@@ -88,13 +88,15 @@ export function mockResponsibilitySet(properties?: any,
 export function mockExtendedResponsibilitySet(
     properties?: any,
     responsibilities?: Array<models.Responsibility>,
-    touchstone?: models.Touchstone
+    touchstone?: models.Touchstone,
+    modellingGroup?: models.ModellingGroup
 ): ExtendedResponsibilitySet
 {
     touchstone = touchstone || mockTouchstone();
+    modellingGroup = modellingGroup || mockModellingGroup();
     properties = Object.assign(properties || {}, { touchstone: touchstone.id });
     const values = mockResponsibilitySet(properties, responsibilities);
-    return new ExtendedResponsibilitySet(values, touchstone);
+    return new ExtendedResponsibilitySet(values, touchstone, modellingGroup);
 }
 
 export function mockCoverageSet(properties?: any): models.CoverageSet {

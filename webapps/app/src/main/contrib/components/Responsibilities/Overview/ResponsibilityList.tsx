@@ -26,7 +26,7 @@ export class ResponsibilityListComponent extends RemoteContentComponent<Responsi
     static getPropsFromStores(): ResponsibilityListComponentProps {
         const state = responsibilityStore.getState();
         return {
-            responsibilitySet: state.responsibilitySet,
+            responsibilitySet: responsibilityStore.getCurrentResponsibilitySet(),
             ready: state.ready,
             currentDiseaseId: state.currentDiseaseId,
             modellingGroup: state.currentModellingGroup

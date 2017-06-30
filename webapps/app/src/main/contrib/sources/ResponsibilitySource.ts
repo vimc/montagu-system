@@ -13,7 +13,7 @@ export class ResponsibilitySource extends Source<ResponsibilityState> {
             return this.doFetch(s => `/modelling-groups/${s.currentModellingGroup.id}/responsibilities/${s.currentTouchstone.id}/`, {
                 success: responsibilityActions.update,
                 loading: responsibilityActions.beginFetch,
-                isCached: s => false
+                isCached: s => responsibilityStore.responsibilitySetManager().hasSet(s.currentModellingGroup, s.currentTouchstone)
             });
         };
     }

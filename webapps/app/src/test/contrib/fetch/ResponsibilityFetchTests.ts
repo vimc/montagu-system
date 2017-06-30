@@ -21,6 +21,15 @@ describe("ResponsibilityStore.fetchResponsibilities", () => {
                     currentModellingGroup: group
                 }
             }));
+        },
+        prepareForCachedFetch: () => {
+            alt.bootstrap(JSON.stringify({
+                ResponsibilityStore: {
+                    currentTouchstone: touchstone,
+                    currentModellingGroup: group,
+                    responsibilitySets: [ mockExtendedResponsibilitySet(null, null, touchstone, group) ]
+                }
+            }));
         }
     }).addTestsToMocha();
 });
