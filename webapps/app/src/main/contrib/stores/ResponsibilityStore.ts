@@ -112,7 +112,6 @@ class ResponsibilityStore extends AbstractStore<ResponsibilityState, Responsibil
     }
 
     handleSetCurrentResponsibility(scenarioId: string) {
-        const instance = this.getInstance();
         const set = this.getInstance().getCurrentResponsibilitySet();
         if (set != null) {
             this.currentResponsibility = set.getResponsibilityByScenario(scenarioId);
