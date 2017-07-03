@@ -7,6 +7,7 @@ import org.junit.Test
 import org.vaccineimpact.api.app.ActionContext
 import org.vaccineimpact.api.app.controllers.ControllerContext
 import org.vaccineimpact.api.app.controllers.ModelController
+import org.vaccineimpact.api.app.repositories.ModelRepository
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.SimpleDataSet
 import org.vaccineimpact.api.app.repositories.SimpleObjectsRepository
@@ -24,7 +25,7 @@ class ModelControllerTests : ControllerTests<ModelController>()
     {
         val models = listOf(Model("test", "test name", "test@test.com", ""))
 
-        val modelRepo = mock<SimpleDataSet<Model, String>>{
+        val modelRepo = mock<ModelRepository>{
             on {this.all()} doReturn models
         }
 
@@ -39,7 +40,7 @@ class ModelControllerTests : ControllerTests<ModelController>()
         val modelId = "testId"
         val model = Model(modelId, "test name", "test@test.com", "")
 
-        val modelRepo = mock<SimpleDataSet<Model, String>>{
+        val modelRepo = mock<ModelRepository>{
             on {this.get(modelId)} doReturn model
         }
 
@@ -52,17 +53,6 @@ class ModelControllerTests : ControllerTests<ModelController>()
         assertThat(sut.getModel(actionContext)).isEqualTo(model)
     }
 
-    private fun createSut(modelRepo: SimpleDataSet<Model, String>) : ModelController{
-
-        val simpleRepoMock = mock<SimpleObjectsRepository>{
-            on { this.models } doReturn modelRepo
-        }
-
-        val reposMock = RepositoryMock<SimpleObjectsRepository>(
-                { it.simpleObjects }, simpleRepoMock
-        )
-
-       return ModelController(mockControllerContext(reposMock))
-    }
-
+    private fun createSut(repo: ModelRepository)
+            = ModelController(mockControllerContext(RepositoryMock({ it.model }, repo)))
 }
