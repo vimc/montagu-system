@@ -15,12 +15,12 @@ class ModelController(context: ControllerContext) : AbstractController(context)
 
     fun getModels(context: ActionContext): List<Model>
     {
-        return repos.simpleObjects().use { it.models.all() }.toList()
+        return repos.model().use { it.all() }.toList()
     }
 
     fun getModel(context: ActionContext): Model
     {
-        return repos.simpleObjects().use { it.models.get(modelId(context)) }
+        return repos.model().use { it.get(modelId(context)) }
     }
 
     private fun modelId(context: ActionContext): String = context.params(":id")

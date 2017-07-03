@@ -12,10 +12,6 @@ class JooqSimpleObjectsRepository : JooqRepository(), SimpleObjectsRepository
 {
     override val diseases = JooqSimpleDataSet.new(dsl, DISEASE, { it.ID }, this::mapDisease)
 
-    override val models = JooqSimpleDataSet.new(dsl, MODEL, { it.ID }, this::mapModel)
-
     private fun mapDisease(record: DiseaseRecord): Disease = record.into(Disease::class.java)
-
-    private fun mapModel(record: ModelRecord): Model = record.into(Model::class.java)
 
 }
