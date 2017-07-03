@@ -8,7 +8,8 @@ open class Repositories(
         open val token: () -> TokenRepository,
         open val touchstone: () -> TouchstoneRepository,
         open val scenario: () -> ScenarioRepository,
-        open val modellingGroup: () -> ModellingGroupRepository
+        open val modellingGroup: () -> ModellingGroupRepository,
+        open val model: () -> ModelRepository
 )
 
 fun makeRepositories(): Repositories
@@ -19,12 +20,15 @@ fun makeRepositories(): Repositories
     val scenarioRepository = { JooqScenarioRepository() }
     val touchstoneRepository = { JooqTouchstoneRepository(scenarioRepository) }
     val modellingGroupRepository = { JooqModellingGroupRepository(touchstoneRepository, scenarioRepository) }
+    val modelRepository = { JooqModelRepository() }
+
     return Repositories(
             simpleObjectsRepository,
             userRepository,
             tokenRepository,
             touchstoneRepository,
             scenarioRepository,
-            modellingGroupRepository
+            modellingGroupRepository,
+            modelRepository
     )
 }

@@ -17,7 +17,6 @@ import org.vaccineimpact.api.db.fromJoinPath
 import org.vaccineimpact.api.db.joinPath
 import org.vaccineimpact.api.db.tables.records.TouchstoneRecord
 import org.vaccineimpact.api.models.*
-import uk.ac.imperial.vimc.demo.app.repositories.jooq.JooqSimpleDataSet
 
 class JooqTouchstoneRepository(private val scenarioRepository: () -> JooqScenarioRepository)
     : JooqRepository(), TouchstoneRepository

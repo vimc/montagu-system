@@ -87,9 +87,7 @@ class JooqUserRepository : JooqRepository(), UserRepository
     private fun getUser(username: String): AppUserRecord
     {
         val user = dsl.fetchAny(APP_USER, caseInsensitiveUsernameMatch(username))
-
-        if (user == null)
-            throw UnknownObjectError(username, "Username")
+                ?: throw UnknownObjectError(username, "Username")
 
         return user
     }
