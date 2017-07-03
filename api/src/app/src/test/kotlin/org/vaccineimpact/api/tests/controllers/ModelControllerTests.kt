@@ -7,6 +7,7 @@ import org.junit.Test
 import org.vaccineimpact.api.app.ActionContext
 import org.vaccineimpact.api.app.controllers.ControllerContext
 import org.vaccineimpact.api.app.controllers.ModelController
+import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.SimpleDataSet
 import org.vaccineimpact.api.app.repositories.SimpleObjectsRepository
 import org.vaccineimpact.api.models.Model
@@ -23,22 +24,45 @@ class ModelControllerTests : ControllerTests<ModelController>()
     {
         val models = listOf(Model("test", "test name", "test@test.com", ""))
 
-        val permissionSet = PermissionSet()
-
         val modelRepo = mock<SimpleDataSet<Model, String>>{
             on {this.all()} doReturn models
         }
 
-        val controllerContext = mockControllerContext(mock<SimpleObjectsRepository> {
-            on { this.models } doReturn modelRepo
-        })
+        val sut = createSut(modelRepo)
 
-        val context = mock<ActionContext> {
-            on { permissions } doReturn permissionSet
+        assertThat(sut.getModels(mock<ActionContext>())).isEqualTo(models)
+    }
+
+    @Test
+    fun `getModel returns model`()
+    {
+        val modelId = "testId"
+        val model = Model(modelId, "test name", "test@test.com", "")
+
+        val modelRepo = mock<SimpleDataSet<Model, String>>{
+            on {this.get(modelId)} doReturn model
         }
 
-        val controller = ModelController(controllerContext)
-        assertThat(controller.getModels(context))
+        val sut = createSut(modelRepo)
+
+        val actionContext = mock<ActionContext>(){
+            on {this.params(":id")} doReturn modelId
+
+        }
+        assertThat(sut.getModel(actionContext)).isEqualTo(model)
+    }
+
+    private fun createSut(modelRepo: SimpleDataSet<Model, String>) : ModelController{
+
+        val simpleRepoMock = mock<SimpleObjectsRepository>{
+            on { this.models } doReturn modelRepo
+        }
+
+        val reposMock = RepositoryMock<SimpleObjectsRepository>(
+                { it.simpleObjects }, simpleRepoMock
+        )
+
+       return ModelController(mockControllerContext(reposMock))
     }
 
 }
