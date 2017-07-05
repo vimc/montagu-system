@@ -4,35 +4,20 @@ import org.pac4j.core.profile.CommonProfile
 import org.pac4j.core.profile.ProfileManager
 import org.pac4j.sparkjava.SparkWebContext
 import org.vaccineimpact.api.app.errors.MissingRequiredPermissionError
-import org.vaccineimpact.api.app.errors.UnableToConnectToDatabaseError
-import org.vaccineimpact.api.app.repositories.Repositories
-import org.vaccineimpact.api.app.repositories.Repository
 import org.vaccineimpact.api.app.security.montaguPermissions
-import org.vaccineimpact.api.db.JooqContext
-import org.vaccineimpact.api.db.UnableToConnectToDatabase
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import spark.Request
 import spark.Response
-import java.io.Closeable
 
 open class DirectActionContext(private val context: SparkWebContext): ActionContext
 {
-    constructor(request: Request, response: Response)
-            : this(SparkWebContext(request, response))
-
     private val request
             get() = context.sparkRequest
     private val response
             get() = context.sparkResponse
 
-    override val permissions by lazy {
-        userProfile.montaguPermissions()
-    }
-
-    override val userProfile: CommonProfile by lazy {
-        val manager = ProfileManager<CommonProfile>(context)
-        manager.getAll(false).single()
-    }
+    constructor(request: Request, response: Response)
+        : this(SparkWebContext(request, response))
 
     override fun contentType(): String = request.contentType()
     override fun queryParams(key: String): String? = request.queryParams(key)
@@ -52,5 +37,14 @@ open class DirectActionContext(private val context: SparkWebContext): ActionCont
         {
             throw MissingRequiredPermissionError(setOf(requirement.toString()))
         }
+    }
+
+    override val permissions by lazy {
+        userProfile.montaguPermissions()
+    }
+
+    override val userProfile: CommonProfile by lazy {
+        val manager = ProfileManager<CommonProfile>(context)
+        manager.getAll(false).single()
     }
 }

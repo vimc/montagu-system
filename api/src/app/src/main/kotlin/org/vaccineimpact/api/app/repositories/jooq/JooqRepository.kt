@@ -3,10 +3,10 @@ package org.vaccineimpact.api.app.repositories.jooq
 import org.vaccineimpact.api.Deserializer
 import org.vaccineimpact.api.UnknownEnumValue
 import org.vaccineimpact.api.app.errors.BadDatabaseConstant
-import org.vaccineimpact.api.app.repositories.Repository
 import org.vaccineimpact.api.db.JooqContext
+import java.io.Closeable
 
-abstract class JooqRepository(protected val db: JooqContext): Repository
+abstract class JooqRepository(protected val db: JooqContext): Closeable
 {
     val deserializer = Deserializer()
     val dsl get() = db.dsl
