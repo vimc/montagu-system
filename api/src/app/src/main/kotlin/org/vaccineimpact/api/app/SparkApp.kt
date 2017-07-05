@@ -6,17 +6,11 @@ import org.vaccineimpact.api.app.controllers.HomeController
 import org.vaccineimpact.api.app.controllers.MontaguControllers
 import org.vaccineimpact.api.app.controllers.OneTimeLinkController
 import org.vaccineimpact.api.app.repositories.Repositories
-import org.vaccineimpact.api.app.repositories.jooq.*
 import org.vaccineimpact.api.app.repositories.makeRepositories
 import org.vaccineimpact.api.db.Config
 import org.vaccineimpact.api.security.WebTokenHelper
-import java.io.File
 import java.net.BindException
-import java.net.ConnectException
 import java.net.ServerSocket
-import java.net.Socket
-import java.time.Duration
-import java.time.Instant
 import kotlin.system.exitProcess
 import spark.Spark as spk
 
@@ -35,7 +29,7 @@ class MontaguApi
 
     fun run(repositories: Repositories)
     {
-        setupSSL()
+        //setupSSL()
         setupPort()
         spk.redirect.get("/", urlBase)
         spk.before("*", ::addTrailingSlashes)
@@ -53,7 +47,7 @@ class MontaguApi
         HomeController(endpoints, controllerContext).mapEndpoints(urlBase)
     }
 
-    private fun setupSSL()
+    /*private fun setupSSL()
     {
         val path = Config["ssl.keystore.path"]
         val password = Config["ssl.keystore.password"]
@@ -66,7 +60,7 @@ class MontaguApi
             }
         }
         spark.Spark.secure(path, password, null, null)
-    }
+    }*/
 
     private fun setupPort()
     {

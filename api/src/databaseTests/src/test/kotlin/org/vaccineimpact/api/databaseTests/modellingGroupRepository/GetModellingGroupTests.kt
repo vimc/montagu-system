@@ -1,19 +1,29 @@
 package org.vaccineimpact.api.databaseTests.modellingGroupRepository
 
+import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
+import org.junit.Test
 import org.vaccineimpact.api.db.direct.addGroup
+import org.vaccineimpact.api.db.direct.addModel
+import org.vaccineimpact.api.db.direct.addUserWithRoles
+import org.vaccineimpact.api.models.ModellingGroup
+import org.vaccineimpact.api.models.ModellingGroupDetails
+import org.vaccineimpact.api.models.ResearchModel
+import org.vaccineimpact.api.models.Scope
+import org.vaccineimpact.api.models.permissions.ReifiedRole
 
 class GetModellingGroupTests : ModellingGroupRepositoryTests()
 {
-    @org.junit.Test
+    @Test
     fun `no modelling groups are returned if table is empty`()
     {
         givenABlankDatabase() check { repo ->
             val groups = repo.getModellingGroups()
-            org.assertj.core.api.Assertions.assertThat(groups).isEmpty()
+            assertThat(groups).isEmpty()
         }
     }
 
-    @org.junit.Test
+    @Test
     fun `can get all modelling groups`()
     {
         given {
@@ -22,14 +32,14 @@ class GetModellingGroupTests : ModellingGroupRepositoryTests()
         } check {
             repo ->
             val groups = repo.getModellingGroups()
-            org.assertj.core.api.Assertions.assertThat(groups).hasSameElementsAs(listOf(
-                    org.vaccineimpact.api.models.ModellingGroup("a", "description a"),
-                    org.vaccineimpact.api.models.ModellingGroup("b", "description b")
+            assertThat(groups).hasSameElementsAs(listOf(
+                    ModellingGroup("a", "description a"),
+                    ModellingGroup("b", "description b")
             ))
         }
     }
 
-    @org.junit.Test
+    @Test
     fun `only most recent version of modelling groups is returned`()
     {
         given {
@@ -39,14 +49,14 @@ class GetModellingGroupTests : ModellingGroupRepositoryTests()
         } check {
             repo ->
             val groups = repo.getModellingGroups()
-            org.assertj.core.api.Assertions.assertThat(groups).hasSameElementsAs(listOf(
-                    org.vaccineimpact.api.models.ModellingGroup("a2", "description a version 2"),
-                    org.vaccineimpact.api.models.ModellingGroup("b", "description b")
+            assertThat(groups).hasSameElementsAs(listOf(
+                    ModellingGroup("a2", "description a version 2"),
+                    ModellingGroup("b", "description b")
             ))
         }
     }
 
-    @org.junit.Test
+    @Test
     fun `can get modelling group by ID`()
     {
         given {
@@ -54,31 +64,77 @@ class GetModellingGroupTests : ModellingGroupRepositoryTests()
         } check {
             repo ->
             var group = repo.getModellingGroup("a")
-            org.assertj.core.api.Assertions.assertThat(group).isEqualTo(org.vaccineimpact.api.models.ModellingGroup("a", "description a"))
+            assertThat(group).isEqualTo(ModellingGroup("a", "description a"))
         }
     }
 
-    @org.junit.Test
+    @Test
     fun `can get modelling group by any ID in its history`()
     {
-        val expected = org.vaccineimpact.api.models.ModellingGroup("a2", "description version 2")
+        val expected = ModellingGroup("a2", "description version 2")
         given {
             it.addGroup("a2", "description version 2")
             it.addGroup("a1", "description version 1", current = "a2")
         } check { repo ->
             val group1 = repo.getModellingGroup("a2")
-            org.assertj.core.api.Assertions.assertThat(group1).isEqualTo(expected)
+            assertThat(group1).isEqualTo(expected)
 
             val group2 = repo.getModellingGroup("a1")
-            org.assertj.core.api.Assertions.assertThat(group2).isEqualTo(expected)
+            assertThat(group2).isEqualTo(expected)
         }
     }
 
-    @org.junit.Test
+    @Test
+    fun `can get modelling group details`()
+    {
+        val expected = ModellingGroupDetails("new-id", "description", listOf(
+                ResearchModel("a2", "description A2", "citation A2", modellingGroup = "new-id"),
+                ResearchModel("b", "description B", "citation B", modellingGroup = "new-id")
+        ), emptyList())
+        given {
+            it.addGroup("new-id", "description")
+            it.addGroup("old-id", "old description", current = "new-id")
+            it.addModel("a2", "new-id", "description A2", "citation A2")
+            it.addModel("a1", "new-id", "description A1", "citation A1", current = "a2")
+            it.addModel("b", "new-id", "description B", "citation B")
+        } check { repo ->
+            assertThat(repo.getModellingGroupDetails("old-id")).isEqualTo(expected)
+            assertThat(repo.getModellingGroupDetails("new-id")).isEqualTo(expected)
+        }
+    }
+
+    @Test
+    fun `can get admin users for modelling group`()
+    {
+        val expected = ModellingGroupDetails("new-id", "description", emptyList(), listOf(
+                "user.a",
+                "user.b"
+        ))
+        given {
+            it.addGroup("new-id", "description")
+            it.addGroup("old-id", "old description", current = "new-id")
+            val role = ReifiedRole("member", Scope.parse("modelling-group:new-id"))
+            it.addUserWithRoles("user.a", role)
+            it.addUserWithRoles("user.b", role)
+        } check { repo ->
+            assertThat(repo.getModellingGroupDetails("old-id")).isEqualTo(expected)
+            assertThat(repo.getModellingGroupDetails("new-id")).isEqualTo(expected)
+        }
+    }
+
+    @Test
     fun `exception is thrown for non-existent modelling group ID`()
     {
         givenABlankDatabase() check { repo ->
-            org.assertj.core.api.Assertions.assertThatThrownBy { repo.getModellingGroup("a") }.isInstanceOf(org.vaccineimpact.api.app.errors.UnknownObjectError::class.java)
+            assertThatThrownBy { repo.getModellingGroup("a") }.isInstanceOf(org.vaccineimpact.api.app.errors.UnknownObjectError::class.java)
+        }
+    }
+
+    @Test
+    fun `exception is thrown when getting details for non-existent modelling group ID`()
+    {
+        givenABlankDatabase() check { repo ->
+            assertThatThrownBy { repo.getModellingGroupDetails("a") }.isInstanceOf(org.vaccineimpact.api.app.errors.UnknownObjectError::class.java)
         }
     }
 

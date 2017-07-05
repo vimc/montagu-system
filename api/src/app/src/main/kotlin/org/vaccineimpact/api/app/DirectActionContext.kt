@@ -30,6 +30,7 @@ open class DirectActionContext(private val context: SparkWebContext): ActionCont
 
     override fun hasPermission(requirement: ReifiedPermission)
             = permissions.any { requirement.satisfiedBy(it) }
+
     override fun requirePermission(requirement: ReifiedPermission)
     {
         if (!hasPermission(requirement))

@@ -25,6 +25,7 @@ abstract class ControllerTests<out TController : AbstractController> : MontaguTe
     {
         return mockControllerContext(repository, webTokenHelper = null)
     }
+
     protected fun mockControllerContext(
             vararg repositoryMocks: RepositoryMock<*>,
             webTokenHelper: WebTokenHelper?

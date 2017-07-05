@@ -17,7 +17,6 @@ import org.vaccineimpact.api.db.fromJoinPath
 import org.vaccineimpact.api.db.joinPath
 import org.vaccineimpact.api.db.tables.records.TouchstoneRecord
 import org.vaccineimpact.api.models.*
-import uk.ac.imperial.vimc.demo.app.repositories.jooq.JooqSimpleDataSet
 
 class JooqTouchstoneRepository(private val scenarioRepository: () -> JooqScenarioRepository)
     : JooqRepository(), TouchstoneRepository
@@ -133,7 +132,7 @@ class JooqTouchstoneRepository(private val scenarioRepository: () -> JooqScenari
     fun mapCoverageRow(record: Record, scenarioDescriptionId: String) = CoverageRow(
             scenarioDescriptionId,
             record[COVERAGE_SET.ID],
-            record[SCENARIO_COVERAGE_SET.ORDER],
+            record[SCENARIO_COVERAGE_SET.ORDER] + 1, // index from 1 for human readability
             record[COVERAGE_SET.NAME],
             record[COVERAGE_SET.VACCINE],
             mapEnum(record[COVERAGE_SET.GAVI_SUPPORT_LEVEL]),

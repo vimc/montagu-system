@@ -2,7 +2,7 @@
 set -e
 git_id=$(git rev-parse --short HEAD)
 git_branch=$(git symbolic-ref --short HEAD)
-registry=montagu.dide.ic.ac.uk:5000
+registry=docker.montagu.dide.ic.ac.uk:5000
 name=montagu-generate-self-signed-cert
 
 branch_tag=$registry/$name:$git_branch

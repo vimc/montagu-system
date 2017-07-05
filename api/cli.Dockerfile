@@ -2,7 +2,7 @@ FROM montagu-api-build-environment
 
 ARG git_id='UNKNOWN'
 ARG git_branch='UNKNOWN'
-ARG registry=montagu.dide.ic.ac.uk:5000
+ARG registry=docker.montagu.dide.ic.ac.uk:5000
 ARG name=montagu-cli
 
 ENV GIT_ID $git_id

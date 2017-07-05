@@ -8,11 +8,11 @@
     		"type": "array",
     		"items": { "$ref": "Model.schema.json" }
     	},
-        "responsibilities": {
-        	"type": "array",
-        	"items": { "$ref": "StandardIdentifier.schema.json" }
+        "admins": {
+            "type": "array",
+            "items": { "$ref": "Username.schema.json" }
         }
 	},
 	"additionalProperties": false,
-	"required": [ "id", "description", "models", "responsibilities" ]
+	"required": [ "id", "description", "models" ]
 }

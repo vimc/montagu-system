@@ -6,7 +6,10 @@ open class MontaguControllers(context: ControllerContext)
     open val disease = DiseaseController(context)
     open val touchstone = TouchstoneController(context)
     open val modellingGroup = ModellingGroupController(context)
+    open val user = UserController(context)
+    open val model = ModelController(context)
 
     val all
-        get() = listOf(auth, disease, touchstone, modellingGroup)
+        get() = listOf(auth, disease, touchstone, modellingGroup,
+                user, model)
 }

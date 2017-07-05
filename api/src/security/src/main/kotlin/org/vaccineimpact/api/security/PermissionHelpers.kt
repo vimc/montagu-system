@@ -1,8 +1,9 @@
-package org.vaccineimpact.api.db.direct
+package org.vaccineimpact.api.security
 
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.Tables.*
 import org.vaccineimpact.api.db.fieldsAsList
+import org.vaccineimpact.api.models.permissions.ReifiedRole
 
 fun JooqContext.givePermissionsToUserUsingTestRole(
         username: String,
@@ -20,20 +21,8 @@ fun JooqContext.clearRolesForUser(username: String)
     dsl.deleteFrom(USER_ROLE).where(USER_ROLE.USERNAME.eq(username)).execute()
 }
 
-fun JooqContext.createPermissions(permissions: List<String>)
+fun JooqContext.setRolePermissions(roleId: Int, permissions: List<String>)
 {
-    val records = permissions.map {
-        dsl.newRecord(PERMISSION).apply { name = it }
-    }
-    dsl.batchStore(records).execute()
-}
-
-fun JooqContext.setRolePermissions(roleId: Int, permissions: List<String>, createPermissions: Boolean = false)
-{
-    if (createPermissions)
-    {
-        createPermissions(permissions)
-    }
     dsl.deleteFrom(ROLE_PERMISSION).where(ROLE_PERMISSION.ROLE.eq(roleId)).execute()
     val records = permissions.map { permission ->
         dsl.newRecord(ROLE_PERMISSION).apply {
@@ -85,6 +74,7 @@ fun JooqContext.ensureUserHasRole(username: String, roleId: Int, scopeId: String
             .from(USER_ROLE)
             .where(USER_ROLE.USERNAME.eq(username))
             .and(USER_ROLE.ROLE.eq(roleId))
+            .and(USER_ROLE.SCOPE_ID.eq(scopeId))
             .fetchAny()
     if (roleMapping == null)
     {
@@ -94,4 +84,11 @@ fun JooqContext.ensureUserHasRole(username: String, roleId: Int, scopeId: String
             this.scopeId = scopeId
         }.store()
     }
+}
+
+fun JooqContext.ensureUserHasRole(username: String, role: ReifiedRole)
+{
+    val roleId = this.getRole(role.name, role.scope.databaseScopePrefix)
+        ?: throw UnknownRoleException(role.name, role.scope.databaseScopePrefix.toString())
+    this.ensureUserHasRole(username, roleId, role.scope.databaseScopeId)
 }
