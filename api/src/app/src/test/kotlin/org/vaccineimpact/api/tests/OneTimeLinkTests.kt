@@ -5,14 +5,12 @@ import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.fail
 import org.junit.Test
 import org.vaccineimpact.api.OneTimeAction
-import org.vaccineimpact.api.app.ActionContext
 import org.vaccineimpact.api.app.OneTimeLink
 import org.vaccineimpact.api.app.OneTimeLinkActionContext
 import org.vaccineimpact.api.app.controllers.ModellingGroupController
 import org.vaccineimpact.api.app.controllers.MontaguControllers
 import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.Repositories
-import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.test_helpers.MontaguTests
 
 class OneTimeLinkTests : MontaguTests()
@@ -41,16 +39,13 @@ class OneTimeLinkTests : MontaguTests()
         val controllers = mock<MontaguControllers> {
             on { modellingGroup } doReturn modelling
         }
-        val context = mock<ActionContext> {
-            on { db } doReturn mock<JooqContext>()
-        }
         val repos =  mock<Repositories> {
             on { modellingGroup } doReturn { mock<ModellingGroupRepository>() }
         }
 
         // Object under test
         val link = OneTimeLink(OneTimeAction.COVERAGE, mapOf(":key" to "value"))
-        link.perform(controllers, context, repos)
+        link.perform(controllers, mock(), repos)
 
         // Expectations
         verify(modelling).getCoverageData(check {

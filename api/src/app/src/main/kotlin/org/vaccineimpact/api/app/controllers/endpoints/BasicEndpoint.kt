@@ -25,7 +25,5 @@ fun basicEndpoint(
 
 private fun basicWrapper(route: (ActionContext) -> Any): Route
 {
-    return Route({ req, res ->
-        DirectActionContext(req, res).use { route(it) }
-    })
+    return Route({ req, res -> route(DirectActionContext(req, res)) })
 }

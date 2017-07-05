@@ -37,3 +37,5 @@ class JooqScenarioRepository(db: JooqContext) : JooqRepository(db), ScenarioRepo
         }
     }
 }
+
+fun makeScenarioRepository(db: JooqContext) = JooqScenarioRepository(db)

@@ -14,11 +14,6 @@ import org.vaccineimpact.api.app.repositories.TokenRepository
 import org.vaccineimpact.api.security.WebTokenHelper
 import org.vaccineimpact.api.test_helpers.MontaguTests
 
-data class RepositoryMock<out TRepository : Any>(
-        val chooseRepo: (Repositories) -> (() -> TRepository),
-        val repository: TRepository
-)
-
 abstract class ControllerTests<out TController : AbstractController> : MontaguTests()
 {
     protected fun mockControllerContext(

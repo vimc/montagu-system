@@ -4,26 +4,44 @@ import org.vaccineimpact.api.app.repositories.jooq.*
 import org.vaccineimpact.api.db.JooqContext
 
 open class Repositories(
-        open val simpleObjects: (JooqContext) -> SimpleObjectsRepository,
-        open val user: (JooqContext) -> UserRepository,
-        open val token: (JooqContext) -> TokenRepository,
-        open val touchstone: (JooqContext) -> TouchstoneRepository,
-        open val scenario: (JooqContext) -> ScenarioRepository,
-        open val modellingGroup: (JooqContext) -> ModellingGroupRepository
+        open val simpleObjects: () -> SimpleObjectsRepository,
+        open val user: () -> UserRepository,
+        open val token: () -> TokenRepository,
+        open val modelRepository: () -> ModelRepository,
+        open val touchstone: () -> TouchstoneRepository,
+        open val scenario: () -> ScenarioRepository,
+        open val modellingGroup: () -> ModellingGroupRepository
 )
 
 fun makeRepositories(): Repositories
 {
-    val scenarioRepository: (JooqContext) -> ScenarioRepository = { JooqScenarioRepository(it) }
-    val touchstoneRepository: (JooqContext) -> TouchstoneRepository = {
-        JooqTouchstoneRepository(it, scenarioRepository(it))
-    }
+    fun simpleObjects(db: JooqContext) = JooqSimpleObjectsRepository(db)
+    fun user(db: JooqContext) = JooqUserRepository(db)
+    fun token(db: JooqContext) = JooqTokenRepository(db)
+    fun model(db: JooqContext) = JooqModelRepository(db)
+    fun scenario(db: JooqContext) = JooqScenarioRepository(db)
+    fun touchstone(db: JooqContext) = JooqTouchstoneRepository(db, scenario(db))
+    fun modellingGroup(db: JooqContext) = JooqModellingGroupRepository(db, touchstone(db), scenario(db))
+
     return Repositories(
-            { JooqSimpleObjectsRepository(it) },
-            { JooqUserRepository(it) },
-            { JooqTokenRepository(it) },
-            touchstoneRepository,
-            scenarioRepository,
-            { JooqModellingGroupRepository(it, touchstoneRepository(it), scenarioRepository(it)) }
+            wrapRepository(::simpleObjects),
+            wrapRepository(::user),
+            wrapRepository(::token),
+            wrapRepository(::model),
+            wrapRepository(::touchstone),
+            wrapRepository(::scenario),
+            wrapRepository(::modellingGroup)
     )
+}
+
+/** Given that we have a repository 'factory' - a function that constructs a repository
+ * using a JooqContext - this gives us a new, parameter-less function.
+ * Every time this new function is invoked, a new instance of the repository is returned
+ * with a new JooqContext instance.
+ * It is up to the consumer of the repository to close the repository (and thus the
+ * JooqContext
+ */
+private fun <T : Repository> wrapRepository(factory: (JooqContext) -> T): () -> T
+{
+    return { factory(JooqContext()) }
 }

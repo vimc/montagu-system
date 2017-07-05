@@ -15,9 +15,7 @@ import spark.Request
 import spark.Response
 import java.io.Closeable
 
-open class DirectActionContext(
-        private val context: SparkWebContext
-): ActionContext, Closeable
+open class DirectActionContext(private val context: SparkWebContext): ActionContext
 {
     constructor(request: Request, response: Response)
             : this(SparkWebContext(request, response))
@@ -26,18 +24,6 @@ open class DirectActionContext(
             get() = context.sparkRequest
     private val response
             get() = context.sparkResponse
-
-    private var dbConnection: JooqContext? = null
-
-    override val db: JooqContext
-        get()
-        {
-            if (dbConnection == null)
-            {
-                dbConnection = makeContext()
-            }
-            return dbConnection!!
-        }
 
     override val permissions by lazy {
         userProfile.montaguPermissions()
@@ -66,22 +52,5 @@ open class DirectActionContext(
         {
             throw MissingRequiredPermissionError(setOf(requirement.toString()))
         }
-    }
-
-    private fun makeContext(): JooqContext
-    {
-        try
-        {
-            return JooqContext()
-        }
-        catch (e: UnableToConnectToDatabase)
-        {
-            throw UnableToConnectToDatabaseError(e.url)
-        }
-    }
-
-    override fun close()
-    {
-        dbConnection?.close()
     }
 }
