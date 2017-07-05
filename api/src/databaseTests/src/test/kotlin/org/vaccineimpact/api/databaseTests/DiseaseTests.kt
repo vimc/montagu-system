@@ -4,6 +4,7 @@ import org.assertj.core.api.Assertions
 import org.junit.Test
 import org.vaccineimpact.api.app.repositories.SimpleObjectsRepository
 import org.vaccineimpact.api.app.repositories.jooq.JooqSimpleObjectsRepository
+import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.direct.addDisease
 import org.vaccineimpact.api.models.Disease
 
@@ -47,5 +48,5 @@ class DiseaseTests : RepositoryTests<SimpleObjectsRepository>()
         }
     }
 
-    override fun makeRepository() = JooqSimpleObjectsRepository()
+    override fun makeRepository(db: JooqContext) = JooqSimpleObjectsRepository(db)
 }

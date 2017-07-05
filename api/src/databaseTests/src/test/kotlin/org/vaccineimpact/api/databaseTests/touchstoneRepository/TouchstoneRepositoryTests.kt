@@ -14,10 +14,10 @@ abstract class TouchstoneRepositoryTests : RepositoryTests<TouchstoneRepository>
     val touchstoneId = "$touchstoneName-$touchstoneVersion"
     val scenarioId = "yf-1"
 
-    override fun makeRepository(): TouchstoneRepository
+    override fun makeRepository(db: JooqContext): TouchstoneRepository
     {
-        val scenarioRepository = { JooqScenarioRepository() }
-        return JooqTouchstoneRepository(scenarioRepository)
+        val scenarioRepository = JooqScenarioRepository(db)
+        return JooqTouchstoneRepository(db, scenarioRepository)
     }
 
     protected fun createTouchstoneAndScenarioDescriptions(it: JooqContext)

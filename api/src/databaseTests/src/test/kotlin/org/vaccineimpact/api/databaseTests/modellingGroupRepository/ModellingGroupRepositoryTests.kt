@@ -5,13 +5,14 @@ import org.vaccineimpact.api.app.repositories.jooq.JooqModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.jooq.JooqScenarioRepository
 import org.vaccineimpact.api.app.repositories.jooq.JooqTouchstoneRepository
 import org.vaccineimpact.api.databaseTests.RepositoryTests
+import org.vaccineimpact.api.db.JooqContext
 
 abstract class ModellingGroupRepositoryTests : RepositoryTests<ModellingGroupRepository>()
 {
-    override fun makeRepository(): ModellingGroupRepository
+    override fun makeRepository(db: JooqContext): ModellingGroupRepository
     {
-        val scenarioRepository = { JooqScenarioRepository() }
-        val touchstoneRepository = { JooqTouchstoneRepository(scenarioRepository) }
-        return JooqModellingGroupRepository(touchstoneRepository, scenarioRepository)
+        val scenarioRepository = JooqScenarioRepository(db)
+        val touchstoneRepository = JooqTouchstoneRepository(db, scenarioRepository)
+        return JooqModellingGroupRepository(db, touchstoneRepository, scenarioRepository)
     }
 }

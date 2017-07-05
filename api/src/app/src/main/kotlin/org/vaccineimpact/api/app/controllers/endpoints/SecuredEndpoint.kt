@@ -1,26 +1,16 @@
 package org.vaccineimpact.api.app.controllers.endpoints
 
 import org.pac4j.sparkjava.SecurityFilter
-import org.vaccineimpact.api.app.ActionContext
-import org.vaccineimpact.api.ContentTypes
-import org.vaccineimpact.api.app.security.*
-import org.vaccineimpact.api.security.WebTokenHelper
+import org.vaccineimpact.api.app.security.MontaguAuthorizer
+import org.vaccineimpact.api.app.security.PermissionRequirement
+import org.vaccineimpact.api.app.security.TokenVerifyingConfigFactory
 import spark.Spark
-import spark.route.HttpMethod
 
-open class SecuredEndpoint(
-        urlFragment: String,
-        route: (ActionContext) -> Any,
-        val permissions: Set<String>,
-        method: HttpMethod = HttpMethod.get,
-        contentType: String = ContentTypes.json,
-        additionalSetupCallback: ((String) -> Unit)? = null
-) : BasicEndpoint(urlFragment, route, method, contentType, additionalSetupCallback)
+// Adds an additional setup step to adding this endpoint. This additional
+// steps checks the user has a valid token and has all the required permissions
+fun <TRoute> Endpoint<TRoute>.secured(permissions: Set<String> = emptySet()): Endpoint<TRoute>
 {
-
-    override fun additionalSetup(url: String, tokenHelper: WebTokenHelper)
-    {
-        super.additionalSetup(url, tokenHelper)
+    return this.withAdditionalSetup({ url, tokenHelper ->
         val allPermissions = (permissions + "*/can-login").map {
             PermissionRequirement.parse(it)
         }
@@ -32,5 +22,5 @@ open class SecuredEndpoint(
                 MontaguAuthorizer::class.java.simpleName,
                 "SkipOptions"
         ))
-    }
+    })
 }

@@ -24,19 +24,19 @@ class ModellingGroupControllersTests : ControllerTests<ModellingGroupController>
                 Responsibilities("tId", "", null, emptyList()),
                 TouchstoneStatus.FINISHED
         )
-        val controllerContext = mockRepository(mock {
+        val repo = mock<ModellingGroupRepository> {
             on { getResponsibilities(any(), any(), any()) } doReturn data
-        })
+        }
         val context = mock<ActionContext> {
             on { it.params(":group-id") } doReturn "gId"
             on { it.params(":touchstone-id") } doReturn "tId"
             on { hasPermission(any()) } doReturn true
         }
 
-        val controller = ModellingGroupController(controllerContext)
-        controller.getResponsibilities(context)
+        val controller = ModellingGroupController(mockControllerContext())
+        controller.getResponsibilities(context, repo)
 
-        verify(getRepository(controllerContext)).getResponsibilities(eq("gId"), eq("tId"), any())
+        verify(repo).getResponsibilities(eq("gId"), eq("tId"), any())
     }
 
     @Test
@@ -46,89 +46,82 @@ class ModellingGroupControllersTests : ControllerTests<ModellingGroupController>
                 Responsibilities("tId", "", null, emptyList()),
                 TouchstoneStatus.IN_PREPARATION
         )
-        val controllerContext = mockRepository(mock {
+        val repo = mock<ModellingGroupRepository> {
             on { getResponsibilities(any(), any(), any()) } doReturn data
-        })
+        }
         val context = mock<ActionContext> {
             on { it.params(":group-id") } doReturn "gId"
             on { it.params(":touchstone-id") } doReturn "tId"
             on { hasPermission(any()) } doReturn false
         }
 
-        val controller = ModellingGroupController(controllerContext)
+        val controller = ModellingGroupController(mockControllerContext())
         assertThatThrownBy {
-            controller.getResponsibilities(context)
+            controller.getResponsibilities(context, repo)
         }.hasMessageContaining("Unknown touchstone")
     }
 
     @Test
     fun `getResponsibility gets parameters from URL`()
     {
-        val controllerContext = makeRepoMockingGetResponsibility(TouchstoneStatus.OPEN)
+        val repo = makeRepoMockingGetResponsibility(TouchstoneStatus.OPEN)
         val context = mockContextForSpecificResponsibility(true)
-        val controller = ModellingGroupController(controllerContext)
-        controller.getResponsibility(context)
+        val controller = ModellingGroupController(mockControllerContext())
+        controller.getResponsibility(context, repo)
 
-        verify(getRepository(controllerContext)).getResponsibility(eq("gId"), eq("tId"), eq("sId"))
+        verify(repo).getResponsibility(eq("gId"), eq("tId"), eq("sId"))
     }
 
     @Test
     fun `getResponsibility returns error if user does not have permission to see in-preparation touchstone`()
     {
-        val controllerContext = makeRepoMockingGetResponsibility(TouchstoneStatus.IN_PREPARATION)
+        val repo = makeRepoMockingGetResponsibility(TouchstoneStatus.IN_PREPARATION)
         val context = mockContextForSpecificResponsibility(false)
-        val controller = ModellingGroupController(controllerContext)
-        assertThatThrownBy { controller.getResponsibility(context) }
+        val controller = ModellingGroupController(mockControllerContext())
+        assertThatThrownBy { controller.getResponsibility(context, repo) }
                 .hasMessageContaining("Unknown touchstone")
     }
 
     @Test
     fun `getCoverageSets gets parameters from URL`()
     {
-        val controllerContext = makeRepoMockingGetCoverageSets(TouchstoneStatus.IN_PREPARATION)
+        val repo = makeRepoMockingGetCoverageSets(TouchstoneStatus.IN_PREPARATION)
         val context = mockContextForSpecificResponsibility(true)
-        val controller = ModellingGroupController(controllerContext)
-        controller.getCoverageSets(context)
+        val controller = ModellingGroupController(mockControllerContext())
+        controller.getCoverageSets(context, repo)
 
-        verify(getRepository(controllerContext)).getCoverageSets(eq("gId"), eq("tId"), eq("sId"))
+        verify(repo).getCoverageSets(eq("gId"), eq("tId"), eq("sId"))
     }
 
     @Test
     fun `getCoverageSets returns error if user does not have permission to see in-preparation touchstone`()
     {
-        val controllerContext = makeRepoMockingGetCoverageSets(TouchstoneStatus.IN_PREPARATION)
+        val repo = makeRepoMockingGetCoverageSets(TouchstoneStatus.IN_PREPARATION)
         val context = mockContextForSpecificResponsibility(false)
-        val controller = ModellingGroupController(controllerContext)
-        assertThatThrownBy { controller.getCoverageSets(context) }
+        val controller = ModellingGroupController(mockControllerContext())
+        assertThatThrownBy { controller.getCoverageSets(context, repo) }
                 .hasMessageContaining("Unknown touchstone")
     }
 
     @Test
     fun `getCoverageData gets parameters from URL`()
     {
-        val controllerContext = makeRepoMockingGetCoverageData(TouchstoneStatus.IN_PREPARATION)
+        val repo = makeRepoMockingGetCoverageData(TouchstoneStatus.IN_PREPARATION)
         val context = mockContextForSpecificResponsibility(true)
-        val controller = ModellingGroupController(controllerContext)
-        controller.getCoverageData(context)
-        verify(getRepository(controllerContext)).getCoverageData(eq("gId"), eq("tId"), eq("sId"))
+        val controller = ModellingGroupController(mockControllerContext())
+        controller.getCoverageData(context, repo)
+        verify(repo).getCoverageData(eq("gId"), eq("tId"), eq("sId"))
     }
 
     @Test
     fun `getCoverageData returns error if user does not have permission to see in-preparation touchstone`()
     {
-        val controllerContext = makeRepoMockingGetCoverageData(TouchstoneStatus.IN_PREPARATION)
+        val repo = makeRepoMockingGetCoverageData(TouchstoneStatus.IN_PREPARATION)
         val context = mockContextForSpecificResponsibility(false)
-        val controller = ModellingGroupController(controllerContext)
-        assertThatThrownBy { controller.getCoverageData(context) }
+        val controller = ModellingGroupController(mockControllerContext())
+        assertThatThrownBy { controller.getCoverageData(context, repo) }
                 .hasMessageContaining("Unknown touchstone")
     }
-
-    private fun mockRepository(repo: ModellingGroupRepository): ControllerContext
-    {
-        return mockControllerContext(RepositoryMock({ it.modellingGroup }, repo))
-    }
-
-    private fun getRepository(controllerContext: ControllerContext) = controllerContext.repositories.modellingGroup()
 
     private fun mockContextForSpecificResponsibility(hasPermissions: Boolean): ActionContext
     {
@@ -141,7 +134,7 @@ class ModellingGroupControllersTests : ControllerTests<ModellingGroupController>
         return context
     }
 
-    private fun makeRepoMockingGetResponsibility(status: TouchstoneStatus): ControllerContext
+    private fun makeRepoMockingGetResponsibility(status: TouchstoneStatus): ModellingGroupRepository
     {
         val data = ResponsibilityAndTouchstone(
                 Touchstone("tId", "t", 1, "desc", YearRange(1900, 2000), status),
@@ -150,26 +143,25 @@ class ModellingGroupControllersTests : ControllerTests<ModellingGroupController>
                         ResponsibilityStatus.EMPTY, emptyList(), null
                 )
         )
-        return mockRepository(mock {
+        return mock {
             on { getResponsibility(any(), any(), any()) } doReturn data
-        })
+        }
     }
 
-    private fun makeRepoMockingGetCoverageSets(status: TouchstoneStatus) = mockRepository(mock {
+    private fun makeRepoMockingGetCoverageSets(status: TouchstoneStatus) = mock<ModellingGroupRepository> {
         on { getCoverageSets(any(), any(), any()) } doReturn mockCoverageSetsData(status)
-    })
+    }
 
-    private fun makeRepoMockingGetCoverageData(status: TouchstoneStatus): ControllerContext
+    private fun makeRepoMockingGetCoverageData(status: TouchstoneStatus): ModellingGroupRepository
     {
         val coverageSets = mockCoverageSetsData(status)
         val data = SplitData(coverageSets, DataTable.new(listOf(
                 CoverageRow("sId", 1, 0, "name", "vaccine", GAVISupportLevel.WITH, ActivityType.CAMPAIGN,
                         "ABC", 2000, BigDecimal.ZERO, BigDecimal.TEN, "0-10", null, BigDecimal("67.88"))
         )))
-        return mockRepository(mock {
+        return mock {
             on { getCoverageData(any(), any(), any()) } doReturn data
-        })
-    }
+        }    }
 
     private fun mockCoverageSetsData(status: TouchstoneStatus) = ScenarioTouchstoneAndCoverageSets(
             Touchstone("tId", "t", 1, "desc", YearRange(1900, 2000), status),

@@ -4,11 +4,12 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.vaccineimpact.api.app.repositories.TokenRepository
 import org.vaccineimpact.api.app.repositories.jooq.JooqTokenRepository
+import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.Tables.ONETIME_TOKEN
 
 class TokenRepositoryTests : RepositoryTests<TokenRepository>()
 {
-    override fun makeRepository() = JooqTokenRepository()
+    override fun makeRepository(db: JooqContext) = JooqTokenRepository(db)
 
     @Test
     fun `can store token`()

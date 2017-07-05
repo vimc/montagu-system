@@ -1,18 +1,14 @@
 package org.vaccineimpact.api.tests.controllers
 
 import com.nhaarman.mockito_kotlin.doReturn
-import org.assertj.core.api.Assertions.assertThat
 import com.nhaarman.mockito_kotlin.mock
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.vaccineimpact.api.app.ActionContext
 import org.vaccineimpact.api.app.controllers.ControllerContext
 import org.vaccineimpact.api.app.controllers.ModelController
 import org.vaccineimpact.api.app.repositories.ModelRepository
-import org.vaccineimpact.api.app.repositories.Repositories
-import org.vaccineimpact.api.app.repositories.SimpleDataSet
-import org.vaccineimpact.api.app.repositories.SimpleObjectsRepository
 import org.vaccineimpact.api.models.Model
-import org.vaccineimpact.api.models.permissions.PermissionSet
 
 
 class ModelControllerTests : ControllerTests<ModelController>()
@@ -29,9 +25,9 @@ class ModelControllerTests : ControllerTests<ModelController>()
             on {this.all()} doReturn models
         }
 
-        val sut = createSut(modelRepo)
+        val sut = ModelController(mockControllerContext())
 
-        assertThat(sut.getModels(mock<ActionContext>())).isEqualTo(models)
+        assertThat(sut.getModels(mock<ActionContext>(), modelRepo)).isEqualTo(models)
     }
 
     @Test
@@ -44,15 +40,11 @@ class ModelControllerTests : ControllerTests<ModelController>()
             on {this.get(modelId)} doReturn model
         }
 
-        val sut = createSut(modelRepo)
+        val sut = ModelController(mockControllerContext())
 
-        val actionContext = mock<ActionContext>(){
+        val actionContext = mock<ActionContext> {
             on {this.params(":id")} doReturn modelId
-
         }
-        assertThat(sut.getModel(actionContext)).isEqualTo(model)
+        assertThat(sut.getModel(actionContext, modelRepo)).isEqualTo(model)
     }
-
-    private fun createSut(repo: ModelRepository)
-            = ModelController(mockControllerContext(RepositoryMock({ it.model }, repo)))
 }
