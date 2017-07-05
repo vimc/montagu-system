@@ -1,7 +1,28 @@
 import { alt } from "../../shared/alt";
-import { FetchActions, FetchActionsInterface } from "../../shared/actions/FetchActions";
+import { FetchActions } from "../../shared/actions/FetchActions";
 import { User } from "../../shared/models/Generated";
 
-export const userActions = alt.createActions<FetchActionsInterface<User[]>>(
-    class extends FetchActions<User[]> {}
-);
+interface Actions {
+    setCurrentUser(username: string): string;
+    beginFetchUsers() : boolean;
+    updateUsers(users: User[]) : User[]
+}
+
+class UserActions extends FetchActions<User[]> implements Actions {
+
+    setCurrentUser(username: string): string {
+        return username;
+    }
+
+    updateUsers(data: User[]) {
+        return data;
+    }
+
+    beginFetchUsers(): boolean {
+        return true;
+    }
+
+}
+
+export const userActions =
+    alt.createActions<Actions>(UserActions);

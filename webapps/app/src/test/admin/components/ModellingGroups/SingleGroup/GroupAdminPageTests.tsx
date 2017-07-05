@@ -5,7 +5,7 @@ import { userStore } from "../../../../../main/admin/stores/UserStore";
 import { groupStore } from "../../../../../main/admin/stores/GroupStore";
 import { mockLocation } from "../../../../mocks/mocks";
 import { GroupAdminPage } from "../../../../../main/admin/components/ModellingGroups/SingleGroup/Admin/GroupAdminPage";
-import { PageProps } from "../../../../../main/admin/components/ModellingGroups/SingleGroup/Details/ViewModellingGroupDetailsPage";
+import { ModellingGroupDetailsPageProps } from "../../../../../main/admin/components/ModellingGroups/SingleGroup/Details/ViewModellingGroupDetailsPage";
 import { checkAsync } from "../../../../testHelpers";
 import { expectOneAction } from "../../../../actionHelpers";
 import { alt } from "../../../../../main/shared/alt";
@@ -22,7 +22,7 @@ describe("GroupAdminPage", () => {
         const fetchGroupDetails = sandbox.sinon.stub(groupStore, "fetchGroupDetails");
         const dispatchSpy = sandbox.dispatchSpy();
 
-        const location = mockLocation<PageProps>({ groupId: "gId" });
+        const location = mockLocation<ModellingGroupDetailsPageProps>({ groupId: "gId" });
         sandbox.mount(<GroupAdminPage location={ location }/>);
 
         checkAsync(done, (afterWait) => {

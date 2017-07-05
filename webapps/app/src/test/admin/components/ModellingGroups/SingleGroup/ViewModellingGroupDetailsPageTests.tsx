@@ -4,7 +4,7 @@ import { groupStore } from "../../../../../main/admin/stores/GroupStore";
 import { mockLocation } from "../../../../mocks/mocks";
 import * as React from "react";
 import {
-    PageProps,
+    ModellingGroupDetailsPageProps,
     ViewModellingGroupDetailsPage
 } from "../../../../../main/admin/components/ModellingGroups/SingleGroup/Details/ViewModellingGroupDetailsPage";
 import { expectOneAction } from "../../../../actionHelpers";
@@ -22,7 +22,7 @@ describe("ViewModelingGroupDetailsPage", () => {
         const fetchGroupDetails = sandbox.sinon.stub(groupStore, "fetchGroupDetails");
         const dispatchSpy = sandbox.dispatchSpy();
 
-        const location = mockLocation<PageProps>({ groupId: "gId" });
+        const location = mockLocation<ModellingGroupDetailsPageProps>({ groupId: "gId" });
         sandbox.mount(<ViewModellingGroupDetailsPage location={ location }/>);
 
         checkAsync(done, (afterWait) => {

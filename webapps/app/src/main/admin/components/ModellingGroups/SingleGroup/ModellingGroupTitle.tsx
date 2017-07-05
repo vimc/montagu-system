@@ -4,15 +4,15 @@ import { groupStore } from "../../../stores/GroupStore";
 import { RemoteContent } from "../../../../shared/models/RemoteContent";
 import { RemoteContentComponent } from "../../../../shared/components/RemoteContentComponent/RemoteContentComponent";
 
-export interface TitleProps extends RemoteContent {
+export interface GroupTitleProps extends RemoteContent {
     group: ModellingGroup;
 }
 
-export abstract class ModellingGroupTitle extends RemoteContentComponent<TitleProps> {
+export abstract class ModellingGroupTitle extends RemoteContentComponent<GroupTitleProps> {
     static getStores() {
         return [ groupStore ];
     }
-    static getPropsFromStores(): TitleProps {
+    static getPropsFromStores(): GroupTitleProps {
         const group = groupStore.getCurrentGroupDetails();
         return {
             group: group,

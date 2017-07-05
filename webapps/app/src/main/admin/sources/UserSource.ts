@@ -6,12 +6,13 @@ import { userActions } from "../actions/UserActions";
 
 export class UserSource extends Source<UserStoreState> {
     fetchUsers: () => SourceModel<User[]>;
+    fetchUserDetails: () => SourceModel<User>;
 
     constructor() {
         super();
         this.fetchUsers = () => this.doFetch(() => "/users/", {
-            loading: userActions.beginFetch,
-            success: userActions.update,
+            loading: userActions.beginFetchUsers,
+            success: userActions.updateUsers,
             isCached: s => s.users && s.users.length > 0
         });
     }
