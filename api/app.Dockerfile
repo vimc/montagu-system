@@ -10,13 +10,14 @@ ENV APP_DOCKER_TAG $registry/$name
 ENV APP_DOCKER_COMMIT_TAG $registry/$name:$git_id
 ENV APP_DOCKER_BRANCH_TAG $registry/$name:$git_branch
 
-CMD curl https://download.libsodium.org/libsodium/releases/libsodium-1.0.12.tar.gz \
+RUN apt-get install -y build-essential
+
+RUN curl https://download.libsodium.org/libsodium/releases/libsodium-1.0.12.tar.gz \
     | tar xz --directory lib/
-CMD pushd lib/libsodium-1.0.12/
-CMD ./configure
-CMD make && make check
-CMD sudo make install
-CMD popd
+RUN cd lib/libsodium-1.0.12/ \
+	&& ./configure \
+	&& make && make check \
+	&& make install
 
 CMD ./gradlew testLibrary :app:distDocker -i -Pdocker_version=$GIT_ID -Pdocker_name=$APP_DOCKER_TAG \
     && docker tag $APP_DOCKER_COMMIT_TAG $APP_DOCKER_BRANCH_TAG \
