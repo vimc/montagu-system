@@ -4,7 +4,7 @@ set -e
 
 # Setup the database on a named network
 docker network create test-data
-docker run -d --rm --name db --network=test-data -p "8000:5432" montagu.dide.ic.ac.uk:5000/montagu-db:master
+docker run -d --rm --name db --network=test-data -p "8000:5432" docker.montagu.dide.ic.ac.uk:5000/montagu-db:master
 
 # Generate the test data
 docker build --tag montagu-test-data-build -f generate-test-data.Dockerfile .

@@ -1,5 +1,26 @@
 # Montagu API
 
+## Running the app locally
+System requirements:
+* openjdk 8
+* Docker
+
+Install Docker and add your user to the Docker group (e.g. https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-16-04.) You may need to restart your machine for changes to take effect.
+
+Configure your Docker client to use our registry by following instructions here:
+https://github.com/vimc/montagu-ci#configuring-docker-clients-to-use-the-registry
+
+Start the database by navigating to the `src` folder and running
+
+    ./gradlew :startDatabase
+
+Run the app
+
+    ./gradlew :run
+    
+## Running tests
+To run the Blackbox tests, you will need to start the database and run the app as described above. Note that if you want to run individual tests through IntelliJ, you will need to manually run the `copySpec` Gradle task first.
+
 ## Project anatomy
 At the top level we have four folders of note:
 * `src/`: The source code of the application and its tests and helpers
@@ -27,8 +48,8 @@ This is what the CI system does:
 ## Docker run
 To make use of a built image, run:
 
-    docker pull montagu.dide.ic.ac.uk:5000/montagu-api:master
-    docker run --rm -p 8080:8080 montagu.dide.ic.ac.uk:5000/montagu-api:master
+    docker pull docker.montagu.dide.ic.ac.uk:5000/montagu-api:master
+    docker run --rm -p 8080:8080 docker.montagu.dide.ic.ac.uk:5000/montagu-api:master
 
 Subsitute a different branch or 7-character commit hash in place of 'master' to get a different version.
 

@@ -8,12 +8,12 @@
         	"type": "string",
         	"format": "email"
         },
-        "last_logged_in": { "$ref": "Timestamp.schema.json" },
+        "last_logged_in": { "$ref": "NullableTimestamp.schema.json" },
         "roles": { 
         	"type": "array",
         	"items": { "$ref": "RoleAssignment.schema.json" }
         }
 	},
     "additionalProperties": false,
-    "required": [ "username", "name", "email", "last_logged_in", "roles" ]
+    "required": [ "username", "name", "email", "last_logged_in" ]
 }

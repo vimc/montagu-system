@@ -23,8 +23,7 @@ class TokenVerifyingConfigFactory(
 ) : ConfigFactory
 {
     private val clients = listOf(
-            JWTHeaderClient(tokenHelper),
-            JWTParameterClient(tokenHelper)
+            JWTHeaderClient(tokenHelper)
     )
 
     override fun build(vararg parameters: Any?): Config
@@ -58,7 +57,10 @@ class TokenActionAdapter : DefaultHttpActionAdapter()
     val unauthorizedResponse: String = Serializer.instance.toJson(Result(
             ResultStatus.FAILURE,
             null,
-            listOf(ErrorInfo("bearer-token-missing", "Bearer token not supplied in Authorization header"))
+            listOf(ErrorInfo(
+                    "bearer-token-invalid",
+                    "Bearer token not supplied in Authorization header, or bearer token was invalid"
+            ))
     ))
 
     fun forbiddenResponse(missingPermissions: Set<String>): String = Serializer.instance.toJson(Result(

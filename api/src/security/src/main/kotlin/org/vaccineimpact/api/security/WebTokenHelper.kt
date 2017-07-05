@@ -4,7 +4,6 @@ import org.pac4j.core.profile.CommonProfile
 import org.pac4j.jwt.config.signature.RSASignatureConfiguration
 import org.pac4j.jwt.profile.JwtGenerator
 import org.vaccineimpact.api.db.Config
-import org.vaccineimpact.api.models.User
 import java.security.KeyPair
 import java.security.KeyPairGenerator
 import java.security.SecureRandom
@@ -24,7 +23,7 @@ open class WebTokenHelper
 
     //val publicKey: String = Base64.getUrlEncoder().encodeToString(keyPair.public.encoded)
 
-    fun generateToken(user: User): String
+    fun generateToken(user: MontaguUser): String
     {
         return generator.generate(claims(user))
     }
@@ -40,7 +39,7 @@ open class WebTokenHelper
         ))
     }
 
-    fun claims(user: User): Map<String, Any>
+    fun claims(user: MontaguUser): Map<String, Any>
     {
         return mapOf(
                 "iss" to issuer,

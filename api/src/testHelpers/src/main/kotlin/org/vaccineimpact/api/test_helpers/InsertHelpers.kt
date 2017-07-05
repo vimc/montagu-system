@@ -6,16 +6,37 @@ import org.vaccineimpact.api.db.Tables.*
 import org.vaccineimpact.api.db.fromJoinPath
 import org.vaccineimpact.api.db.nextDecimal
 import org.vaccineimpact.api.db.tables.records.CoverageRecord
+import org.vaccineimpact.api.models.permissions.ReifiedRole
+import org.vaccineimpact.api.models.permissions.Role
+import org.vaccineimpact.api.security.UserHelper
+import org.vaccineimpact.api.security.ensureUserHasRole
 import java.math.BigDecimal
 import java.util.*
 
 private val random = Random(0)
 
-fun JooqContext.addGroup(id: String, description: String, current: String? = null)
+fun JooqContext.addGroup(id: String, description: String = id, current: String? = null)
 {
     this.dsl.newRecord(MODELLING_GROUP).apply {
         this.id = id
         this.description = description
+        this.current = current
+    }.store()
+}
+
+fun JooqContext.addModel(
+        id: String,
+        groupId: String,
+        description: String = id,
+        citation: String = "Unknown citation",
+        current: String? = null
+)
+{
+    this.dsl.newRecord(MODEL).apply {
+        this.id = id
+        this.modellingGroup = groupId
+        this.description = description
+        this.citation = citation
         this.current = current
     }.store()
 }
@@ -325,4 +346,23 @@ private fun JooqContext.newCoverageRowRecord(coverageSetId: Int, country: String
     this.target = target
     this.coverage = coverage
     this.gaviSupport = false
+}
+
+fun JooqContext.addUserForTesting(
+        username: String,
+        name: String = "Test User",
+        email: String = "$username@example.com",
+        password: String = "password"
+)
+{
+    UserHelper.saveUser(this.dsl, username, name, email, password)
+}
+
+fun JooqContext.addUserWithRoles(username: String, vararg roles: ReifiedRole)
+{
+    this.addUserForTesting(username)
+    for (role in roles)
+    {
+        this.ensureUserHasRole(username, role)
+    }
 }

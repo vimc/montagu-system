@@ -1,12 +1,10 @@
 package org.vaccineimpact.api.blackboxTests.helpers
 
 import org.vaccineimpact.api.db.JooqContext
-import org.vaccineimpact.api.db.direct.clearRolesForUser
-import org.vaccineimpact.api.db.direct.createPermissions
-import org.vaccineimpact.api.db.direct.givePermissionsToUserUsingTestRole
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
-import org.vaccineimpact.api.models.permissions.allPermissions
 import org.vaccineimpact.api.security.UserHelper
+import org.vaccineimpact.api.security.clearRolesForUser
+import org.vaccineimpact.api.security.givePermissionsToUserUsingTestRole
 
 class TestUserHelper
 {
@@ -18,7 +16,6 @@ class TestUserHelper
     fun setupTestUser(db: JooqContext)
     {
         UserHelper.saveUser(db.dsl, testUsername, "Test User", testUserEmail, testUserPassword)
-        db.createPermissions(allPermissions)
     }
 
     fun getTokenForTestUser(permissions: Set<ReifiedPermission>): TokenLiteral

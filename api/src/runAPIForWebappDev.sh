@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 ./gradlew :stopDatabase
 
-./gradlew :startDatabase :blackboxTests:run \
+./gradlew :startDatabase :generateTestData \
 && ./user.sh add "Test User" test.user test@example.com password \
 && ./user.sh addRole test.user user \
-&& ./user.sh addRole test.user member modelling-group IC-Garske \
+&& ./user.sh addUserToGroup test.user ALL \
 && ./gradlew :run

@@ -17,7 +17,6 @@ open class ModellingGroupController(context: ControllerContext)
     private val groupScope = "modelling-group:<group-id>"
     val responsibilityPermissions = setOf(
             "*/scenarios.read",
-            "$groupScope/responsibilities.read",
             "$groupScope/responsibilities.read"
     )
     val coveragePermissions = responsibilityPermissions + "$groupScope/coverage.read"
@@ -27,6 +26,7 @@ open class ModellingGroupController(context: ControllerContext)
 
     override val endpoints = listOf(
             SecuredEndpoint("/", this::getModellingGroups, setOf("*/modelling-groups.read")),
+            SecuredEndpoint("/:group-id/", this::getModellingGroup, setOf("*/modelling-groups.read", "*/models.read")),
             SecuredEndpoint("$responsibilitiesURL/", this::getResponsibilities, responsibilityPermissions),
             SecuredEndpoint("$scenarioURL/", this::getResponsibility, responsibilityPermissions),
             SecuredEndpoint("$scenarioURL/coverage_sets/", this::getCoverageSets, coveragePermissions),
@@ -38,6 +38,12 @@ open class ModellingGroupController(context: ControllerContext)
     fun getModellingGroups(context: ActionContext): List<ModellingGroup>
     {
         return db().use { it.getModellingGroups() }.toList()
+    }
+
+    fun getModellingGroup(context: ActionContext): ModellingGroupDetails
+    {
+        val groupId = groupId(context)
+        return db().use { it.getModellingGroupDetails(groupId) }
     }
 
     fun getResponsibilities(context: ActionContext): Responsibilities
