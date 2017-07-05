@@ -13,8 +13,9 @@ ENV APP_DOCKER_BRANCH_TAG $registry/$name:$git_branch
 RUN apt-get install -y build-essential
 
 RUN curl https://download.libsodium.org/libsodium/releases/libsodium-1.0.12.tar.gz \
-    | tar xz --directory lib/
-RUN cd lib/libsodium-1.0.12/ \
+    | tar xz 
+
+RUN cd libsodium-1.0.12/ \
 	&& ./configure \
 	&& make && make check \
 	&& make install
