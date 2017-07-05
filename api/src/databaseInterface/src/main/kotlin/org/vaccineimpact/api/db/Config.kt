@@ -1,11 +1,17 @@
 package org.vaccineimpact.api.db
 
+import java.io.File
 import java.util.*
 
 object Config
 {
     private val properties = Properties().apply {
         load(getResource("config.properties").openStream())
+        val global = File("/etc/montagu/api/config.properties")
+        if (global.exists())
+        {
+            global.inputStream().use { load(it) }
+        }
     }
 
     operator fun get(key: String): String
