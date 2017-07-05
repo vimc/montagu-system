@@ -3,6 +3,7 @@ package org.vaccineimpact.api.app.repositories.jooq
 import org.jooq.Record
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.repositories.UserRepository
+import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.Tables.*
 import org.vaccineimpact.api.db.fromJoinPath
 import org.vaccineimpact.api.db.tables.records.AppUserRecord
@@ -14,7 +15,7 @@ import org.vaccineimpact.api.models.permissions.RoleAssignment
 import org.vaccineimpact.api.security.MontaguUser
 import org.vaccineimpact.api.security.UserProperties
 
-class JooqUserRepository : JooqRepository(), UserRepository
+class JooqUserRepository(db: JooqContext) : JooqRepository(db), UserRepository
 {
     override fun getMontaguUserByEmail(email: String): MontaguUser?
     {

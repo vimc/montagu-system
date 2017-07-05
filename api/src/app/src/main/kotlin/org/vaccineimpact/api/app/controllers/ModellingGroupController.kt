@@ -2,9 +2,13 @@ package org.vaccineimpact.api.app.controllers
 
 import org.vaccineimpact.api.OneTimeAction
 import org.vaccineimpact.api.app.ActionContext
-import org.vaccineimpact.api.app.controllers.endpoints.SecuredEndpoint
+import org.vaccineimpact.api.app.controllers.endpoints.EndpointDefinition
+import org.vaccineimpact.api.app.controllers.endpoints.oneRepoEndpoint
+import org.vaccineimpact.api.app.controllers.endpoints.secured
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
+import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
+import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.serialization.DataTable
 import org.vaccineimpact.api.app.serialization.SplitData
 import org.vaccineimpact.api.models.*
@@ -24,58 +28,62 @@ open class ModellingGroupController(context: ControllerContext)
     val scenarioURL = "$responsibilitiesURL/:scenario-id"
     val coverageURL = "$scenarioURL/coverage"
 
-    override val endpoints = listOf(
-            SecuredEndpoint("/", this::getModellingGroups, setOf("*/modelling-groups.read")),
-            SecuredEndpoint("/:group-id/", this::getModellingGroup, setOf("*/modelling-groups.read", "*/models.read")),
-            SecuredEndpoint("$responsibilitiesURL/", this::getResponsibilities, responsibilityPermissions),
-            SecuredEndpoint("$scenarioURL/", this::getResponsibility, responsibilityPermissions),
-            SecuredEndpoint("$scenarioURL/coverage_sets/", this::getCoverageSets, coveragePermissions),
-            SecuredEndpoint("$coverageURL/", this::getCoverageDataAndMetadata, coveragePermissions, contentType = "application/json"),
-            SecuredEndpoint("$coverageURL/", this::getCoverageData, coveragePermissions, contentType = "text/csv"),
-            SecuredEndpoint("$coverageURL/get_onetime_link/", { c -> getOneTimeLinkToken(c, OneTimeAction.COVERAGE) }, coveragePermissions)
-    )
-
-    fun getModellingGroups(context: ActionContext): List<ModellingGroup>
+    override fun endpoints(repos: Repositories): Iterable<EndpointDefinition<*>>
     {
-        return db().use { it.getModellingGroups() }.toList()
+        val repo = repos.modellingGroup
+        return listOf(
+                oneRepoEndpoint("/",                           this::getModellingGroups, repo).secured(setOf("*/modelling-groups.read")),
+                oneRepoEndpoint("/:group-id/",                 this::getModellingGroup, repo).secured(setOf("*/modelling-groups.read", "*/models.read")),
+                oneRepoEndpoint("$responsibilitiesURL/",       this::getResponsibilities, repo).secured(responsibilityPermissions),
+                oneRepoEndpoint("$scenarioURL/",               this::getResponsibility, repo).secured(responsibilityPermissions),
+                oneRepoEndpoint("$scenarioURL/coverage_sets/", this::getCoverageSets, repo).secured(coveragePermissions),
+                oneRepoEndpoint("$coverageURL/",               this::getCoverageDataAndMetadata, repo, contentType = "application/json").secured(coveragePermissions),
+                oneRepoEndpoint("$coverageURL/",               this::getCoverageData, repo, contentType = "text/csv").secured(coveragePermissions),
+                oneRepoEndpoint("$coverageURL/get_onetime_link/", { c, r -> getOneTimeLinkToken(c, r, OneTimeAction.COVERAGE) }, repos.token).secured(coveragePermissions)
+        )
     }
 
-    fun getModellingGroup(context: ActionContext): ModellingGroupDetails
+    fun getModellingGroups(context: ActionContext, repo: ModellingGroupRepository): List<ModellingGroup>
+    {
+        return repo.getModellingGroups().toList()
+    }
+
+    fun getModellingGroup(context: ActionContext, repo: ModellingGroupRepository): ModellingGroupDetails
     {
         val groupId = groupId(context)
-        return db().use { it.getModellingGroupDetails(groupId) }
+        return repo.getModellingGroupDetails(groupId)
     }
 
-    fun getResponsibilities(context: ActionContext): Responsibilities
+    fun getResponsibilities(context: ActionContext, repo: ModellingGroupRepository): Responsibilities
     {
         val groupId = groupId(context)
         val touchstoneId = context.params(":touchstone-id")
         val filterParameters = ScenarioFilterParameters.fromContext(context)
 
-        val data = db().use { it.getResponsibilities(groupId, touchstoneId, filterParameters) }
+        val data = repo.getResponsibilities(groupId, touchstoneId, filterParameters)
         checkTouchstoneStatus(data.touchstoneStatus, touchstoneId, context)
         return data.responsibilities
     }
 
-    fun getResponsibility(context: ActionContext): ResponsibilityAndTouchstone
+    fun getResponsibility(context: ActionContext, repo: ModellingGroupRepository): ResponsibilityAndTouchstone
     {
         val path = ResponsibilityPath(context)
-        val data = db().use { it.getResponsibility(path.groupId, path.touchstoneId, path.scenarioId)}
+        val data = repo.getResponsibility(path.groupId, path.touchstoneId, path.scenarioId)
         checkTouchstoneStatus(data.touchstone.status, path.touchstoneId, context)
         return data
     }
 
-    fun getCoverageSets(context: ActionContext): ScenarioTouchstoneAndCoverageSets
+    fun getCoverageSets(context: ActionContext, repo: ModellingGroupRepository): ScenarioTouchstoneAndCoverageSets
     {
         val path = ResponsibilityPath(context)
-        val data = db().use { it.getCoverageSets(path.groupId, path.touchstoneId, path.scenarioId) }
+        val data = repo.getCoverageSets(path.groupId, path.touchstoneId, path.scenarioId)
         checkTouchstoneStatus(data.touchstone.status, path.touchstoneId, context)
         return data
     }
 
-    open fun getCoverageData(context: ActionContext): DataTable<CoverageRow>
+    open fun getCoverageData(context: ActionContext, repo: ModellingGroupRepository): DataTable<CoverageRow>
     {
-        val data = getCoverageDataAndMetadata(context)
+        val data = getCoverageDataAndMetadata(context, repo)
         val metadata = data.structuredMetadata
         val filename = "coverage_${metadata.touchstone.id}_${metadata.scenario.id}.csv"
         context.addResponseHeader("Content-Disposition", """attachment; filename="$filename"""")
@@ -84,15 +92,13 @@ open class ModellingGroupController(context: ControllerContext)
 
     // TODO: https://vimc.myjetbrains.com/youtrack/issue/VIMC-307
     // Use streams to speed up this process of sending large data
-    fun getCoverageDataAndMetadata(context: ActionContext): SplitData<ScenarioTouchstoneAndCoverageSets, CoverageRow>
+    fun getCoverageDataAndMetadata(context: ActionContext, repo: ModellingGroupRepository): SplitData<ScenarioTouchstoneAndCoverageSets, CoverageRow>
     {
         val path = ResponsibilityPath(context)
-        val data = db().use { it.getCoverageData(path.groupId, path.touchstoneId, path.scenarioId) }
+        val data = repo.getCoverageData(path.groupId, path.touchstoneId, path.scenarioId)
         checkTouchstoneStatus(data.structuredMetadata.touchstone.status, path.touchstoneId, context)
         return data
     }
-
-    private fun db() = repos.modellingGroup()
 
     private fun checkTouchstoneStatus(
             touchstoneStatus: TouchstoneStatus,
@@ -114,5 +120,5 @@ open class ModellingGroupController(context: ControllerContext)
 data class ResponsibilityPath(val groupId: String, val touchstoneId: String, val scenarioId: String)
 {
     constructor(context: ActionContext)
-        : this(context.params(":group-id"), context.params(":touchstone-id"), context.params(":scenario-id"))
+            : this(context.params(":group-id"), context.params(":touchstone-id"), context.params(":scenario-id"))
 }

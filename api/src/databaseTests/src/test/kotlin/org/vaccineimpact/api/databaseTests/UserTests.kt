@@ -19,7 +19,7 @@ class UserTests : RepositoryTests<UserRepository>()
 {
     val username = "test.user"
     val email = "test@example.com"
-    override fun makeRepository() = JooqUserRepository()
+    override fun makeRepository(db: JooqContext) = JooqUserRepository(db)
 
     private fun addTestUser(db: JooqContext)
     {

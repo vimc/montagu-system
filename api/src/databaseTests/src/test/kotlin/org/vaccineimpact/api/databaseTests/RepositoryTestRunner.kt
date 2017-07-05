@@ -4,7 +4,7 @@ import org.vaccineimpact.api.app.repositories.Repository
 import org.vaccineimpact.api.db.JooqContext
 
 data class RepositoryTestConfig<TRepository : Repository>(
-        val makeRepository: () -> TRepository,
+        val makeRepository: (JooqContext) -> TRepository,
         val populateDatabase: ((JooqContext) -> Unit),
         val checkRepository: ((TRepository) -> Unit)? = null,
         val changeViaRepository: ((TRepository) -> Unit)? = null,
@@ -42,15 +42,18 @@ class RepositoryTestRunner<TRepository : Repository>(config: RepositoryTestConfi
     fun run()
     {
         JooqContext().use { populateDatabase(it) }
-        makeRepository().use {
-            changeViaRepository(it)
-            checkRepository(it)
+        JooqContext().use {
+            val repo = makeRepository(it)
+            changeViaRepository(repo)
+            checkRepository(repo)
         }
         JooqContext().use { checkDatabase(it) }
     }
 
-    infix fun check(withRepository: (TRepository) -> Unit)
+    /*infix fun check(withRepository: (TRepository) -> Unit)
     {
-        makeRepository().use { withRepository(it) }
-    }
+        JooqContext().use {
+            withRepository(makeRepository(it))
+        }
+    }*/
 }

@@ -3,21 +3,32 @@ package org.vaccineimpact.api.app
 import org.vaccineimpact.api.Deserializer
 import org.vaccineimpact.api.OneTimeAction
 import org.vaccineimpact.api.app.controllers.MontaguControllers
+import org.vaccineimpact.api.app.repositories.Repositories
 
 data class OneTimeLink(val action: OneTimeAction, val payload: Map<String, String>)
 {
-    fun perform(controllers: MontaguControllers, actionContext: ActionContext): Any
+    fun perform(controllers: MontaguControllers, actionContext: ActionContext, repos: Repositories): Any
     {
-        val callback = getCallback(action, controllers)
+        val callback = getCallback(action, controllers, repos)
         val context = OneTimeLinkActionContext(payload, actionContext)
         return callback.invoke(context)
     }
 
-    private fun getCallback(action: OneTimeAction, controllers: MontaguControllers): (ActionContext) -> Any
+    private fun getCallback(
+            action: OneTimeAction,
+            controllers: MontaguControllers,
+            repos: Repositories
+    ): (ActionContext) -> Any
     {
         return when (action)
         {
-            OneTimeAction.COVERAGE -> controllers.modellingGroup::getCoverageData
+            OneTimeAction.COVERAGE -> {
+                { c ->
+                    repos.modellingGroup().use {
+                        controllers.modellingGroup.getCoverageData(c, it)
+                    }
+                }
+            }
         }
     }
 

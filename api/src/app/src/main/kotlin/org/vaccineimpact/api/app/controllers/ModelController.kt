@@ -1,26 +1,28 @@
 package org.vaccineimpact.api.app.controllers
 
 import org.vaccineimpact.api.app.ActionContext
-import org.vaccineimpact.api.app.controllers.endpoints.SecuredEndpoint
-import org.vaccineimpact.api.models.Disease
+import org.vaccineimpact.api.app.controllers.endpoints.oneRepoEndpoint
+import org.vaccineimpact.api.app.controllers.endpoints.secured
+import org.vaccineimpact.api.app.repositories.ModelRepository
+import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.models.Model
 
 class ModelController(context: ControllerContext) : AbstractController(context)
 {
     override val urlComponent = "/models"
-    override val endpoints = listOf(
-            SecuredEndpoint("/", this::getModels, setOf("*/models.read")),
-            SecuredEndpoint("/:id/", this::getModel, setOf("*/models.read"))
+    override fun endpoints(repos: Repositories) = listOf(
+            oneRepoEndpoint("/", this::getModels, repos.modelRepository).secured(setOf("*/models.read")),
+            oneRepoEndpoint("/:id/", this::getModel, repos.modelRepository).secured(setOf("*/models.read"))
     )
 
-    fun getModels(context: ActionContext): List<Model>
+    fun getModels(context: ActionContext, repo: ModelRepository): List<Model>
     {
-        return repos.model().use { it.all() }.toList()
+        return repo.all().toList()
     }
 
-    fun getModel(context: ActionContext): Model
+    fun getModel(context: ActionContext, repo: ModelRepository): Model
     {
-        return repos.model().use { it.get(modelId(context)) }
+        return repo.get(modelId(context))
     }
 
     private fun modelId(context: ActionContext): String = context.params(":id")

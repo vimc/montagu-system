@@ -1,7 +1,8 @@
 package org.vaccineimpact.api.app.controllers
 
 import org.vaccineimpact.api.app.ActionContext
-import org.vaccineimpact.api.app.controllers.endpoints.BasicEndpoint
+import org.vaccineimpact.api.app.controllers.endpoints.basicEndpoint
+import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.db.Config
 
 class HomeController(
@@ -10,8 +11,8 @@ class HomeController(
 ) : AbstractController(context)
 {
     override val urlComponent = ""
-    override val endpoints = listOf(
-            BasicEndpoint("/", this::index)
+    override fun endpoints(repos: Repositories) = listOf(
+            basicEndpoint("/", this::index)
     )
 
     fun index(context: ActionContext) = Index("montagu", Config["app.version"], otherEndpoints)

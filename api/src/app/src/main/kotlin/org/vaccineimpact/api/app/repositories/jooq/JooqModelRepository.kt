@@ -2,10 +2,11 @@ package org.vaccineimpact.api.app.repositories.jooq
 
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.repositories.ModelRepository
-import org.vaccineimpact.api.db.Tables.*
+import org.vaccineimpact.api.db.JooqContext
+import org.vaccineimpact.api.db.Tables.MODEL
 import org.vaccineimpact.api.models.Model
 
-class JooqModelRepository : JooqRepository(), ModelRepository
+class JooqModelRepository(db: JooqContext) : JooqRepository(db), ModelRepository
 {
     override fun all(): List<Model>
     {

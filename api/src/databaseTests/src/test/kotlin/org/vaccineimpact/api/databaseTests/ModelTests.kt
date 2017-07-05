@@ -4,6 +4,7 @@ import org.assertj.core.api.Assertions
 import org.junit.Test
 import org.vaccineimpact.api.app.repositories.ModelRepository
 import org.vaccineimpact.api.app.repositories.jooq.JooqModelRepository
+import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.direct.addGroup
 import org.vaccineimpact.api.db.direct.addModel
 import org.vaccineimpact.api.models.Model
@@ -51,5 +52,5 @@ class ModelTests : RepositoryTests<ModelRepository>()
         }
     }
 
-    override fun makeRepository() = JooqModelRepository()
+    override fun makeRepository(db: JooqContext) = JooqModelRepository(db)
 }

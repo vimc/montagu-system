@@ -17,5 +17,5 @@ abstract class RepositoryTests<TRepository: Repository> : DatabaseTest()
         return RepositoryTestConfig(this::makeRepository, populateDatabase = {})
     }
 
-    protected abstract fun makeRepository(): TRepository
+    protected abstract fun makeRepository(db: JooqContext): TRepository
 }
