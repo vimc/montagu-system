@@ -4,7 +4,8 @@ import org.vaccineimpact.api.security.SodiumPasswordEncoder
 
 class SodiumTests {
     @Test
-    fun `hashes password`() {
+    fun `hashes password`()
+    {
 
         val encoder = SodiumPasswordEncoder()
         val testPassword = "this is a password"
