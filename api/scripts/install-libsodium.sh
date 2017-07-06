@@ -10,6 +10,6 @@ cd lib/libsodium-1.0.12/
 ./configure
 make
 make check
-sudo make install
+make install
 
 cd -
