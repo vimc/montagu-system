@@ -11,7 +11,7 @@ docker build --tag montagu-test-data-build -f generate-test-data.Dockerfile .
 docker run --rm --network=test-data montagu-test-data-build
 
 # Dump the test data to an SQL file
-docker exec db pg_dump -h localhost -U vimc -d montagu --data-only > ./test-data.sql
+docker exec db pg_dump -h localhost -U vimc -d montagu > ./test-data.sql
 
 docker stop db
 docker network rm test-data
