@@ -1,4 +1,4 @@
-package eden.martin.webapi.security
+package org.vaccineimpact.api.app.security
 
 import org.pac4j.core.config.Config
 import org.pac4j.core.config.ConfigFactory
@@ -7,7 +7,6 @@ import org.pac4j.http.client.direct.DirectBasicAuthClient
 import org.pac4j.sparkjava.DefaultHttpActionAdapter
 import org.pac4j.sparkjava.SparkWebContext
 import org.vaccineimpact.api.app.addDefaultResponseHeaders
-import org.vaccineimpact.api.app.security.SkipOptionsMatcher
 import org.vaccineimpact.api.app.serialization.Serializer
 import org.vaccineimpact.api.models.FailedAuthentication
 import spark.Spark as spk

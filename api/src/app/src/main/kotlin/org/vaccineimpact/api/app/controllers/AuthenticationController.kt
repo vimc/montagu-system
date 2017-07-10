@@ -1,6 +1,6 @@
 package org.vaccineimpact.api.app.controllers
 
-import eden.martin.webapi.security.TokenIssuingConfigFactory
+import org.vaccineimpact.api.app.security.TokenIssuingConfigFactory
 import org.pac4j.http.client.direct.DirectBasicAuthClient
 import org.pac4j.sparkjava.SecurityFilter
 import org.vaccineimpact.api.app.ActionContext
