@@ -15,12 +15,6 @@ RUN add-apt-repository \
 RUN apt-get update
 RUN apt-get install -y docker-ce=17.03.0~ce-0~debian-jessie
 
-# Install libsodium
-RUN apt-get install -y build-essential
-
-COPY ./scripts/install-libsodium.sh .
-RUN ./install-libsodium.sh
-
 # Setup gradle
 COPY src/gradlew /api/src/
 COPY src/gradle /api/src/gradle/
