@@ -23,10 +23,6 @@ dependencies {
     testCompile project(":testHelpers")
 }
 
-docker {
-    baseImage = "openjdk:8u121-jre"
-}
-
 def cli_docker_version = 'UNKNOWN'
 if (hasProperty('docker_version')) {
     cli_docker_version = docker_version
@@ -36,12 +32,12 @@ if (hasProperty('docker_name')) {
     cli_docker_name = docker_name
 }
 
-task cliDocker(type: Docker) {
+distDocker {
+    baseImage = "libsodium"
     dependsOn = [build]
     push = true
     tag = cli_docker_name
     tagVersion = cli_docker_version
-    dockerfile = "../../cliApp.Dockerfile"
 }
 
 test.dependsOn ':startDatabase'
