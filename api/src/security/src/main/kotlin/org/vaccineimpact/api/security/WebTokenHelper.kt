@@ -4,8 +4,6 @@ import org.pac4j.core.profile.CommonProfile
 import org.pac4j.jwt.config.signature.RSASignatureConfiguration
 import org.pac4j.jwt.profile.JwtGenerator
 import org.vaccineimpact.api.db.Config
-import java.security.KeyPair
-import java.security.KeyPairGenerator
 import java.security.SecureRandom
 import java.time.Duration
 import java.time.Instant
@@ -15,13 +13,10 @@ open class WebTokenHelper
 {
     val lifeSpan: Duration = Duration.ofSeconds(Config["token.lifespan"].toLong())
     val oneTimeLinkLifeSpan: Duration = Duration.ofMinutes(10)
-    private val keyPair = generateKeyPair()
     val issuer = Config["token.issuer"]
-    val signatureConfiguration = RSASignatureConfiguration(keyPair)
+    val signatureConfiguration = RSASignatureConfiguration(KeyHelper.keyPair)
     val generator = JwtGenerator<CommonProfile>(signatureConfiguration)
     private val random = SecureRandom()
-
-    //val publicKey: String = Base64.getUrlEncoder().encodeToString(keyPair.public.encoded)
 
     fun generateToken(user: MontaguUser): String
     {
@@ -57,14 +52,6 @@ open class WebTokenHelper
         val bytes = ByteArray(32)
         random.nextBytes(bytes)
         return Base64.getEncoder().encodeToString(bytes)
-    }
-
-    private fun generateKeyPair(): KeyPair
-    {
-        val generator = KeyPairGenerator.getInstance("RSA").apply {
-            initialize(1024)
-        }
-        return generator.generateKeyPair()
     }
 
     companion object
