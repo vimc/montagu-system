@@ -7,7 +7,6 @@ import org.vaccineimpact.api.db.fromJoinPath
 import org.vaccineimpact.api.db.nextDecimal
 import org.vaccineimpact.api.db.tables.records.CoverageRecord
 import org.vaccineimpact.api.models.permissions.ReifiedRole
-import org.vaccineimpact.api.models.permissions.Role
 import org.vaccineimpact.api.security.UserHelper
 import org.vaccineimpact.api.security.ensureUserHasRole
 import java.math.BigDecimal
@@ -62,7 +61,6 @@ fun JooqContext.addTouchstone(
         version: Int,
         description: String = "Description",
         status: String = "open",
-        yearRange: IntRange = 1900..2000,
         addName: Boolean = false,
         addStatus: Boolean = false)
 {
@@ -80,8 +78,6 @@ fun JooqContext.addTouchstone(
         this.version = version
         this.description = description
         this.status = status
-        this.yearStart = yearRange.start
-        this.yearEnd = yearRange.endInclusive
     }.store()
 }
 
@@ -345,7 +341,6 @@ private fun JooqContext.newCoverageRowRecord(coverageSetId: Int, country: String
     this.ageRangeVerbatim = ageRangeVerbatim
     this.target = target
     this.coverage = coverage
-    this.gaviSupport = false
 }
 
 fun JooqContext.addUserForTesting(

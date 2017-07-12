@@ -11,7 +11,7 @@ class GetResponsibilityTests : ModellingGroupRepositoryTests()
     fun `getResponsibility throws error for unknown modelling group`()
     {
         given {
-            it.addTouchstone("touchstone", 1, "description", "status", 1900..2000, addName = true, addStatus = true)
+            it.addTouchstone("touchstone", 1, "description", "status", addName = true, addStatus = true)
             it.addScenarioDescription("scenario-1", "description", "disease", addDisease = true)
         } check { repo ->
             assertThatThrownBy { repo.getResponsibility("group-1", "touchstone-1", "scenario-1") }
@@ -38,7 +38,7 @@ class GetResponsibilityTests : ModellingGroupRepositoryTests()
     {
         given {
             it.addGroup("group-1", "description")
-            it.addTouchstone("touchstone", 1, "description", "open", 1900..2000, addName = true, addStatus = true)
+            it.addTouchstone("touchstone", 1, "description", "open", addName = true, addStatus = true)
             it.addScenarioDescription("scenario-1", "description", "disease", addDisease = true)
         } check { repo ->
             assertThatThrownBy { repo.getResponsibility("group-1", "touchstone-1", "scenario-1") }
@@ -52,7 +52,7 @@ class GetResponsibilityTests : ModellingGroupRepositoryTests()
     {
         given {
             it.addGroup("group-1", "description")
-            it.addTouchstone("touchstone", 1, "description", "open", 1900..2000, addName = true, addStatus = true)
+            it.addTouchstone("touchstone", 1, "description", "open", addName = true, addStatus = true)
             it.addScenarioDescription("scenario-1", "description", "disease", addDisease = true)
             it.addResponsibilitySet("group-1", "touchstone-1", "incomplete", addStatus = true)
         } check { repo ->
@@ -67,7 +67,7 @@ class GetResponsibilityTests : ModellingGroupRepositoryTests()
     {
         given {
             it.addGroup("group-1", "description")
-            it.addTouchstone("touchstone", 1, "description", "open", 1900..2000, addName = true, addStatus = true)
+            it.addTouchstone("touchstone", 1, "description", "open", addName = true, addStatus = true)
             it.addDisease("disease")
             it.addScenarioDescription("scenario-1", "description", "disease")
             it.addScenarioDescription("scenario-2", "description", "disease")
@@ -85,14 +85,14 @@ class GetResponsibilityTests : ModellingGroupRepositoryTests()
     {
         given {
             it.addGroup("group-1", "description")
-            it.addTouchstone("touchstone", 1, "description", "open", 1900..2000, addName = true, addStatus = true)
+            it.addTouchstone("touchstone", 1, "description", "open", addName = true, addStatus = true)
             it.addScenarioDescription("scenario-1", "description", "disease", addDisease = true)
             val setId = it.addResponsibilitySet("group-1", "touchstone-1", "incomplete", addStatus = true)
             it.addResponsibility(setId, "touchstone-1", "scenario-1")
         } check { repo ->
             val data = repo.getResponsibility("group-1", "touchstone-1", "scenario-1")
             assertThat(data).isEqualTo(org.vaccineimpact.api.models.ResponsibilityAndTouchstone(
-                    Touchstone("touchstone-1", "touchstone", 1, "description", YearRange(1900, 2000), TouchstoneStatus.OPEN),
+                    Touchstone("touchstone-1", "touchstone", 1, "description", TouchstoneStatus.OPEN),
                     Responsibility(
                             Scenario("scenario-1", "description", "disease", listOf("touchstone-1")),
                             ResponsibilityStatus.EMPTY, emptyList(), null

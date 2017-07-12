@@ -3,7 +3,6 @@ package org.vaccineimpact.api.generateTestData
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.StandardRoles
 import org.vaccineimpact.api.db.direct.*
-import org.vaccineimpact.api.models.permissions.Role
 
 /** The more important source set here is blackboxTests/src/test - that actually contains the
  * Black box tests. This "main" source set is just a place to put a little script you can
@@ -21,8 +20,8 @@ fun main(args: Array<String>) {
         db.addScenarioDescription("yf-campaign", "Yellow Fever, campaign", "YF")
 
         db.addTouchstoneName("op-2017", "Operational Forecast 2017")
-        db.addTouchstone("op-2017", 1, "Operational Forecast 2017 (v1)", "finished", 1900..2000, addStatus = true)
-        db.addTouchstone("op-2017", 2, "Operational Forecast 2017 (v2)", "open", 1900..2000, addStatus = true)
+        db.addTouchstone("op-2017", 1, "Operational Forecast 2017 (v1)", "finished", addStatus = true)
+        db.addTouchstone("op-2017", 2, "Operational Forecast 2017 (v2)", "open", addStatus = true)
         val yfRoutine = db.addScenarioToTouchstone("op-2017-2", "yf-routine")
         val yfCampaign = db.addScenarioToTouchstone("op-2017-2", "yf-campaign")
 
