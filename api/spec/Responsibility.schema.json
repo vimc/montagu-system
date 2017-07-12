@@ -7,8 +7,20 @@
         "problems": { "$ref": "ProblemsArray.schema.json" },
         "current_estimate": {
             "type": [ "integer", "null" ]
-        }
+        },
+        "countries": { 
+            "type": "array",
+            "items": { "$ref": "CountryId.schema.json" }
+        },
+        "years": { "$ref": "YearRange.schema.json" }
     },
     "additionalProperties": false,
-    "required": [ "scenario", "status", "problems", "current_estimate" ]
+    "required": [ 
+        "scenario", 
+        "status", 
+        "problems", 
+        "current_estimate", 
+        "countries", 
+        "years" 
+    ]
 }

@@ -4,7 +4,6 @@
     "properties": {
         "id": { "$ref": "StandardIdentifier.schema.json" },        
         "description": { "type": "string" },
-        "years": { "$ref": "YearRange.schema.json" },
         "status": { "$ref": "TouchstoneStatus.schema.json" },
         "allowed_state_changes": {
             "type": "array",
@@ -25,7 +24,6 @@
     "required": [ 
         "id", 
         "description",
-        "years", 
         "status", 
         "allowed_state_changes",
         "sections"
