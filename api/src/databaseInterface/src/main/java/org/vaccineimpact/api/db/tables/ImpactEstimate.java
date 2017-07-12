@@ -36,7 +36,7 @@ import org.vaccineimpact.api.db.tables.records.ImpactEstimateRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ImpactEstimate extends TableImpl<ImpactEstimateRecord> {
 
-    private static final long serialVersionUID = 55370677;
+    private static final long serialVersionUID = 1412490709;
 
     /**
      * The reference instance of <code>public.impact_estimate</code>
@@ -59,12 +59,12 @@ public class ImpactEstimate extends TableImpl<ImpactEstimateRecord> {
     /**
      * The column <code>public.impact_estimate.impact_estimate_set</code>.
      */
-    public final TableField<ImpactEstimateRecord, Integer> IMPACT_ESTIMATE_SET = createField("impact_estimate_set", org.jooq.impl.SQLDataType.INTEGER, this, "");
+    public final TableField<ImpactEstimateRecord, Integer> IMPACT_ESTIMATE_SET = createField("impact_estimate_set", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * The column <code>public.impact_estimate.year</code>.
      */
-    public final TableField<ImpactEstimateRecord, Integer> YEAR = createField("year", org.jooq.impl.SQLDataType.INTEGER, this, "");
+    public final TableField<ImpactEstimateRecord, Integer> YEAR = createField("year", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * The column <code>public.impact_estimate.country</code>.

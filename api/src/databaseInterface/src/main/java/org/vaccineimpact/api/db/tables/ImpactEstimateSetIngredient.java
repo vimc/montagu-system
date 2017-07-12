@@ -35,7 +35,7 @@ import org.vaccineimpact.api.db.tables.records.ImpactEstimateSetIngredientRecord
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ImpactEstimateSetIngredient extends TableImpl<ImpactEstimateSetIngredientRecord> {
 
-    private static final long serialVersionUID = 1044223926;
+    private static final long serialVersionUID = 2085145238;
 
     /**
      * The reference instance of <code>public.impact_estimate_set_ingredient</code>
@@ -58,7 +58,7 @@ public class ImpactEstimateSetIngredient extends TableImpl<ImpactEstimateSetIngr
     /**
      * The column <code>public.impact_estimate_set_ingredient.impact_estimate_set</code>.
      */
-    public final TableField<ImpactEstimateSetIngredientRecord, Integer> IMPACT_ESTIMATE_SET = createField("impact_estimate_set", org.jooq.impl.SQLDataType.INTEGER, this, "");
+    public final TableField<ImpactEstimateSetIngredientRecord, Integer> IMPACT_ESTIMATE_SET = createField("impact_estimate_set", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * The column <code>public.impact_estimate_set_ingredient.impact_estimate_ingredient</code>.
@@ -68,7 +68,7 @@ public class ImpactEstimateSetIngredient extends TableImpl<ImpactEstimateSetIngr
     /**
      * The column <code>public.impact_estimate_set_ingredient.burden_estimate_set</code>.
      */
-    public final TableField<ImpactEstimateSetIngredientRecord, Integer> BURDEN_ESTIMATE_SET = createField("burden_estimate_set", org.jooq.impl.SQLDataType.INTEGER, this, "");
+    public final TableField<ImpactEstimateSetIngredientRecord, Integer> BURDEN_ESTIMATE_SET = createField("burden_estimate_set", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * Create a <code>public.impact_estimate_set_ingredient</code> table reference
