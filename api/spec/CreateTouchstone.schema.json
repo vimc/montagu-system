@@ -5,9 +5,8 @@
         "id": { "$ref": "StandardIdentifier.schema.json" },
         "name": { "$ref": "StandardIdentifier.schema.json" },
         "version": { "type": "integer" },
-        "description": { "type": "string" },
-        "years": { "$ref": "YearRange.schema.json" }
+        "description": { "type": "string" }
     },
     "additionalProperties": false,
-    "required": [ "id", "description", "years" ]
+    "required": [ "id", "name", "version", "description" ]
 }

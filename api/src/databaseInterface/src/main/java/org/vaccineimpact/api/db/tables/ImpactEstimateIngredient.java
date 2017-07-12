@@ -35,7 +35,7 @@ import org.vaccineimpact.api.db.tables.records.ImpactEstimateIngredientRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ImpactEstimateIngredient extends TableImpl<ImpactEstimateIngredientRecord> {
 
-    private static final long serialVersionUID = 1863883669;
+    private static final long serialVersionUID = 863169652;
 
     /**
      * The reference instance of <code>public.impact_estimate_ingredient</code>
@@ -68,7 +68,7 @@ public class ImpactEstimateIngredient extends TableImpl<ImpactEstimateIngredient
     /**
      * The column <code>public.impact_estimate_ingredient.burden_outcome</code>.
      */
-    public final TableField<ImpactEstimateIngredientRecord, Integer> BURDEN_OUTCOME = createField("burden_outcome", org.jooq.impl.SQLDataType.INTEGER, this, "");
+    public final TableField<ImpactEstimateIngredientRecord, Integer> BURDEN_OUTCOME = createField("burden_outcome", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * The column <code>public.impact_estimate_ingredient.name</code>.

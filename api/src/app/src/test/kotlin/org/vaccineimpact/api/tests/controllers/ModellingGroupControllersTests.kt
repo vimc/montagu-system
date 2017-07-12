@@ -137,7 +137,7 @@ class ModellingGroupControllersTests : ControllerTests<ModellingGroupController>
     private fun makeRepoMockingGetResponsibility(status: TouchstoneStatus): ModellingGroupRepository
     {
         val data = ResponsibilityAndTouchstone(
-                Touchstone("tId", "t", 1, "desc", YearRange(1900, 2000), status),
+                Touchstone("tId", "t", 1, "desc", status),
                 Responsibility(
                         Scenario("sId", "scDesc", "disease", listOf("t-1")),
                         ResponsibilityStatus.EMPTY, emptyList(), null
@@ -164,7 +164,7 @@ class ModellingGroupControllersTests : ControllerTests<ModellingGroupController>
         }    }
 
     private fun mockCoverageSetsData(status: TouchstoneStatus) = ScenarioTouchstoneAndCoverageSets(
-            Touchstone("tId", "t", 1, "desc", YearRange(1900, 2000), status),
+            Touchstone("tId", "t", 1, "desc", status),
             Scenario("sId", "scDesc", "disease", listOf("t-1")),
             listOf(
                     CoverageSet(1, "tId", "name", "vaccine", GAVISupportLevel.WITH, ActivityType.CAMPAIGN)

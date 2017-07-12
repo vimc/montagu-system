@@ -10,6 +10,7 @@ import org.jooq.Configuration;
 import org.jooq.Field;
 import org.jooq.Result;
 import org.jooq.impl.DSL;
+import org.vaccineimpact.api.db.tables.SelectBurdenData1;
 import org.vaccineimpact.api.db.tables.SelectBurdenData2;
 import org.vaccineimpact.api.db.tables.SelectBurdenData3;
 import org.vaccineimpact.api.db.tables.SelectBurdenData4;
@@ -18,6 +19,7 @@ import org.vaccineimpact.api.db.tables.SelectBurdenData6;
 import org.vaccineimpact.api.db.tables.SelectBurdenData7;
 import org.vaccineimpact.api.db.tables.SelectBurdenData8;
 import org.vaccineimpact.api.db.tables.SelectBurdenDataCol;
+import org.vaccineimpact.api.db.tables.records.SelectBurdenData1Record;
 import org.vaccineimpact.api.db.tables.records.SelectBurdenData2Record;
 import org.vaccineimpact.api.db.tables.records.SelectBurdenData3Record;
 import org.vaccineimpact.api.db.tables.records.SelectBurdenData4Record;
@@ -40,6 +42,27 @@ import org.vaccineimpact.api.db.tables.records.SelectBurdenDataColRecord;
 )
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Routines {
+
+    /**
+     * Call <code>public.select_burden_data1</code>.
+     */
+    public static Result<SelectBurdenData1Record> selectBurdenData1(Configuration configuration, Integer set1, Integer outcome1) {
+        return DSL.using(configuration).selectFrom(SelectBurdenData1.SELECT_BURDEN_DATA1.call(set1, outcome1)).fetch();
+    }
+
+    /**
+     * Get <code>public.select_burden_data1</code> as a table.
+     */
+    public static SelectBurdenData1 selectBurdenData1(Integer set1, Integer outcome1) {
+        return SelectBurdenData1.SELECT_BURDEN_DATA1.call(set1, outcome1);
+    }
+
+    /**
+     * Get <code>public.select_burden_data1</code> as a table.
+     */
+    public static SelectBurdenData1 selectBurdenData1(Field<Integer> set1, Field<Integer> outcome1) {
+        return SelectBurdenData1.SELECT_BURDEN_DATA1.call(set1, outcome1);
+    }
 
     /**
      * Call <code>public.select_burden_data2</code>.

@@ -35,7 +35,7 @@ import org.vaccineimpact.api.db.tables.records.TouchstoneCountryRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TouchstoneCountry extends TableImpl<TouchstoneCountryRecord> {
 
-    private static final long serialVersionUID = 912244992;
+    private static final long serialVersionUID = 773256673;
 
     /**
      * The reference instance of <code>public.touchstone_country</code>
@@ -66,19 +66,9 @@ public class TouchstoneCountry extends TableImpl<TouchstoneCountryRecord> {
     public final TableField<TouchstoneCountryRecord, String> COUNTRY = createField("country", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
 
     /**
-     * The column <code>public.touchstone_country.who_region</code>.
+     * The column <code>public.touchstone_country.disease</code>.
      */
-    public final TableField<TouchstoneCountryRecord, String> WHO_REGION = createField("who_region", org.jooq.impl.SQLDataType.CLOB.nullable(false).defaultValue(org.jooq.impl.DSL.field("'NULL'::text", org.jooq.impl.SQLDataType.CLOB)), this, "");
-
-    /**
-     * The column <code>public.touchstone_country.gavi73</code>.
-     */
-    public final TableField<TouchstoneCountryRecord, Boolean> GAVI73 = createField("gavi73", org.jooq.impl.SQLDataType.BOOLEAN.nullable(false), this, "");
-
-    /**
-     * The column <code>public.touchstone_country.wuenic</code>.
-     */
-    public final TableField<TouchstoneCountryRecord, Boolean> WUENIC = createField("wuenic", org.jooq.impl.SQLDataType.BOOLEAN.nullable(false), this, "");
+    public final TableField<TouchstoneCountryRecord, String> DISEASE = createField("disease", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * Create a <code>public.touchstone_country</code> table reference
@@ -139,7 +129,7 @@ public class TouchstoneCountry extends TableImpl<TouchstoneCountryRecord> {
      */
     @Override
     public List<ForeignKey<TouchstoneCountryRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<TouchstoneCountryRecord, ?>>asList(Keys.TOUCHSTONE_COUNTRY__TOUCHSTONE_COUNTRY_TOUCHSTONE_FKEY, Keys.TOUCHSTONE_COUNTRY__TOUCHSTONE_COUNTRY_COUNTRY_FKEY);
+        return Arrays.<ForeignKey<TouchstoneCountryRecord, ?>>asList(Keys.TOUCHSTONE_COUNTRY__TOUCHSTONE_COUNTRY_TOUCHSTONE_FKEY, Keys.TOUCHSTONE_COUNTRY__TOUCHSTONE_COUNTRY_COUNTRY_FKEY, Keys.TOUCHSTONE_COUNTRY__TOUCHSTONE_COUNTRY_DISEASE_FKEY);
     }
 
     /**

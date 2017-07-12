@@ -6,9 +6,8 @@
 		"name": { "$ref": "StandardIdentifier.schema.json" },
 		"version": { "type": "integer" },
 		"description": { "type": "string" },
-		"years": { "$ref": "YearRange.schema.json" },
 		"status": { "$ref": "TouchstoneStatus.schema.json" }
 	},
 	"additionalProperties": false,
-	"required": [ "id", "name", "version", "description", "years", "status" ]
+	"required": [ "id", "name", "version", "description", "status" ]
 }
