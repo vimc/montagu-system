@@ -13,7 +13,7 @@ class TouchstoneTests : DatabaseTest()
 {
     private fun JooqContext.setupTouchstones()
     {
-        addTouchstone("open", 6, "description-1", "open",addName = true, addStatus = true)
+        addTouchstone("open", 6, "description-1", "open", addName = true, addStatus = true)
         addTouchstone("prep", 1, "description-2", "in-preparation", addName = true, addStatus = true)
     }
 
@@ -32,7 +32,6 @@ class TouchstoneTests : DatabaseTest()
                                 "name" to "open",
                                 "version" to 6,
                                 "status" to "open",
-                                "years" to obj("start" to 1990, "end" to 2070),
                                 "description" to "description-1"
                         )
                 )
@@ -55,7 +54,6 @@ class TouchstoneTests : DatabaseTest()
                         "name" to "open",
                         "version" to 6,
                         "status" to "open",
-                        "years" to obj("start" to 1990, "end" to 2070),
                         "description" to "description-1"
                 )
             })
@@ -65,7 +63,6 @@ class TouchstoneTests : DatabaseTest()
                         "name" to "prep",
                         "version" to 1,
                         "status" to "in-preparation",
-                        "years" to obj("start" to 1899, "end" to 2100),
                         "description" to "description-2"
                 )
             })
