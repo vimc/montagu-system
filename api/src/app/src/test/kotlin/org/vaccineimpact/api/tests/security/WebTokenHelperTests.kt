@@ -23,7 +23,6 @@ class WebTokenHelperTests : MontaguTests()
             name = "Test User",
             email = "test@example.com",
             passwordHash = "",
-            salt = "",
             lastLoggedIn = null
     )
     val roles = listOf(
