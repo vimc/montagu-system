@@ -35,7 +35,7 @@ import org.vaccineimpact.api.db.tables.records.ImpactEstimateRecipeRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ImpactEstimateRecipe extends TableImpl<ImpactEstimateRecipeRecord> {
 
-    private static final long serialVersionUID = -1904079263;
+    private static final long serialVersionUID = -2021959795;
 
     /**
      * The reference instance of <code>public.impact_estimate_recipe</code>
@@ -106,6 +106,16 @@ public class ImpactEstimateRecipe extends TableImpl<ImpactEstimateRecipeRecord> 
     public final TableField<ImpactEstimateRecipeRecord, String> VACCINE = createField("vaccine", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
 
     /**
+     * The column <code>public.impact_estimate_recipe.focal_ingredient</code>.
+     */
+    public final TableField<ImpactEstimateRecipeRecord, Integer> FOCAL_INGREDIENT = createField("focal_ingredient", org.jooq.impl.SQLDataType.INTEGER, this, "");
+
+    /**
+     * The column <code>public.impact_estimate_recipe.current_impact_estimate_set</code>.
+     */
+    public final TableField<ImpactEstimateRecipeRecord, Integer> CURRENT_IMPACT_ESTIMATE_SET = createField("current_impact_estimate_set", org.jooq.impl.SQLDataType.INTEGER, this, "");
+
+    /**
      * Create a <code>public.impact_estimate_recipe</code> table reference
      */
     public ImpactEstimateRecipe() {
@@ -164,7 +174,7 @@ public class ImpactEstimateRecipe extends TableImpl<ImpactEstimateRecipeRecord> 
      */
     @Override
     public List<ForeignKey<ImpactEstimateRecipeRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<ImpactEstimateRecipeRecord, ?>>asList(Keys.IMPACT_ESTIMATE_RECIPE__IMPACT_ESTIMATE_RECIPE_RESPONSIBILITY_SET_FKEY, Keys.IMPACT_ESTIMATE_RECIPE__IMPACT_ESTIMATE_RECIPE_IMPACT_OUTCOME_FKEY, Keys.IMPACT_ESTIMATE_RECIPE__IMPACT_ESTIMATE_RECIPE_ACTIVITY_TYPE_FKEY, Keys.IMPACT_ESTIMATE_RECIPE__IMPACT_ESTIMATE_RECIPE_SUPPORT_TYPE_FKEY, Keys.IMPACT_ESTIMATE_RECIPE__IMPACT_ESTIMATE_RECIPE_DISEASE_FKEY, Keys.IMPACT_ESTIMATE_RECIPE__IMPACT_ESTIMATE_RECIPE_VACCINE_FKEY);
+        return Arrays.<ForeignKey<ImpactEstimateRecipeRecord, ?>>asList(Keys.IMPACT_ESTIMATE_RECIPE__IMPACT_ESTIMATE_RECIPE_RESPONSIBILITY_SET_FKEY, Keys.IMPACT_ESTIMATE_RECIPE__IMPACT_ESTIMATE_RECIPE_IMPACT_OUTCOME_FKEY, Keys.IMPACT_ESTIMATE_RECIPE__IMPACT_ESTIMATE_RECIPE_ACTIVITY_TYPE_FKEY, Keys.IMPACT_ESTIMATE_RECIPE__IMPACT_ESTIMATE_RECIPE_SUPPORT_TYPE_FKEY, Keys.IMPACT_ESTIMATE_RECIPE__IMPACT_ESTIMATE_RECIPE_DISEASE_FKEY, Keys.IMPACT_ESTIMATE_RECIPE__IMPACT_ESTIMATE_RECIPE_VACCINE_FKEY, Keys.IMPACT_ESTIMATE_RECIPE__IMPACT_ESTIMATE_RECIPE_FOCAL_INGREDIENT_FKEY, Keys.IMPACT_ESTIMATE_RECIPE__IMPACT_ESTIMATE_RECIPE_CURRENT_IMPACT_ESTIMATE_SET_FKEY);
     }
 
     /**

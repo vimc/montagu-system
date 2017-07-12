@@ -17,10 +17,17 @@ import org.vaccineimpact.api.db.tables.BurdenEstimateSet;
 import org.vaccineimpact.api.db.tables.BurdenEstimateSetProblem;
 import org.vaccineimpact.api.db.tables.BurdenOutcome;
 import org.vaccineimpact.api.db.tables.Country;
+import org.vaccineimpact.api.db.tables.CountryMetadata;
+import org.vaccineimpact.api.db.tables.CountryVaccineMetadata;
 import org.vaccineimpact.api.db.tables.Coverage;
 import org.vaccineimpact.api.db.tables.CoverageSet;
+import org.vaccineimpact.api.db.tables.DemographicStatistic;
+import org.vaccineimpact.api.db.tables.DemographicStatisticType;
+import org.vaccineimpact.api.db.tables.DisabilityWeight;
 import org.vaccineimpact.api.db.tables.Disease;
+import org.vaccineimpact.api.db.tables.GaviFocalModel;
 import org.vaccineimpact.api.db.tables.GaviSupportLevel;
+import org.vaccineimpact.api.db.tables.Gender;
 import org.vaccineimpact.api.db.tables.ImpactEstimate;
 import org.vaccineimpact.api.db.tables.ImpactEstimateIngredient;
 import org.vaccineimpact.api.db.tables.ImpactEstimateRecipe;
@@ -32,6 +39,7 @@ import org.vaccineimpact.api.db.tables.ModelVersion;
 import org.vaccineimpact.api.db.tables.ModellingGroup;
 import org.vaccineimpact.api.db.tables.OnetimeToken;
 import org.vaccineimpact.api.db.tables.Permission;
+import org.vaccineimpact.api.db.tables.ProjectionVariant;
 import org.vaccineimpact.api.db.tables.Responsibility;
 import org.vaccineimpact.api.db.tables.ResponsibilitySet;
 import org.vaccineimpact.api.db.tables.ResponsibilitySetStatus;
@@ -40,6 +48,7 @@ import org.vaccineimpact.api.db.tables.RolePermission;
 import org.vaccineimpact.api.db.tables.Scenario;
 import org.vaccineimpact.api.db.tables.ScenarioCoverageSet;
 import org.vaccineimpact.api.db.tables.ScenarioDescription;
+import org.vaccineimpact.api.db.tables.SelectBurdenData1;
 import org.vaccineimpact.api.db.tables.SelectBurdenData2;
 import org.vaccineimpact.api.db.tables.SelectBurdenData3;
 import org.vaccineimpact.api.db.tables.SelectBurdenData4;
@@ -48,15 +57,19 @@ import org.vaccineimpact.api.db.tables.SelectBurdenData6;
 import org.vaccineimpact.api.db.tables.SelectBurdenData7;
 import org.vaccineimpact.api.db.tables.SelectBurdenData8;
 import org.vaccineimpact.api.db.tables.SelectBurdenDataCol;
+import org.vaccineimpact.api.db.tables.Source;
 import org.vaccineimpact.api.db.tables.SupportType;
 import org.vaccineimpact.api.db.tables.Touchstone;
 import org.vaccineimpact.api.db.tables.TouchstoneCountry;
+import org.vaccineimpact.api.db.tables.TouchstoneDemographicSource;
 import org.vaccineimpact.api.db.tables.TouchstoneName;
 import org.vaccineimpact.api.db.tables.TouchstoneStatus;
+import org.vaccineimpact.api.db.tables.TouchstoneYears;
 import org.vaccineimpact.api.db.tables.UserRole;
 import org.vaccineimpact.api.db.tables.VCoverageInfo;
 import org.vaccineimpact.api.db.tables.VResponsibilityInfo;
 import org.vaccineimpact.api.db.tables.Vaccine;
+import org.vaccineimpact.api.db.tables.records.SelectBurdenData1Record;
 import org.vaccineimpact.api.db.tables.records.SelectBurdenData2Record;
 import org.vaccineimpact.api.db.tables.records.SelectBurdenData3Record;
 import org.vaccineimpact.api.db.tables.records.SelectBurdenData4Record;
@@ -116,6 +129,16 @@ public class Tables {
     public static final Country COUNTRY = org.vaccineimpact.api.db.tables.Country.COUNTRY;
 
     /**
+     * The table <code>public.country_metadata</code>.
+     */
+    public static final CountryMetadata COUNTRY_METADATA = org.vaccineimpact.api.db.tables.CountryMetadata.COUNTRY_METADATA;
+
+    /**
+     * The table <code>public.country_vaccine_metadata</code>.
+     */
+    public static final CountryVaccineMetadata COUNTRY_VACCINE_METADATA = org.vaccineimpact.api.db.tables.CountryVaccineMetadata.COUNTRY_VACCINE_METADATA;
+
+    /**
      * The table <code>public.coverage</code>.
      */
     public static final Coverage COVERAGE = org.vaccineimpact.api.db.tables.Coverage.COVERAGE;
@@ -126,14 +149,39 @@ public class Tables {
     public static final CoverageSet COVERAGE_SET = org.vaccineimpact.api.db.tables.CoverageSet.COVERAGE_SET;
 
     /**
+     * The table <code>public.demographic_statistic</code>.
+     */
+    public static final DemographicStatistic DEMOGRAPHIC_STATISTIC = org.vaccineimpact.api.db.tables.DemographicStatistic.DEMOGRAPHIC_STATISTIC;
+
+    /**
+     * The table <code>public.demographic_statistic_type</code>.
+     */
+    public static final DemographicStatisticType DEMOGRAPHIC_STATISTIC_TYPE = org.vaccineimpact.api.db.tables.DemographicStatisticType.DEMOGRAPHIC_STATISTIC_TYPE;
+
+    /**
+     * The table <code>public.disability_weight</code>.
+     */
+    public static final DisabilityWeight DISABILITY_WEIGHT = org.vaccineimpact.api.db.tables.DisabilityWeight.DISABILITY_WEIGHT;
+
+    /**
      * The table <code>public.disease</code>.
      */
     public static final Disease DISEASE = org.vaccineimpact.api.db.tables.Disease.DISEASE;
 
     /**
+     * The table <code>public.gavi_focal_model</code>.
+     */
+    public static final GaviFocalModel GAVI_FOCAL_MODEL = org.vaccineimpact.api.db.tables.GaviFocalModel.GAVI_FOCAL_MODEL;
+
+    /**
      * Enum table. Possible values: none (No vaccination), without (Vaccination without GAVI support), with (Vaccination with GAVI support)
      */
     public static final GaviSupportLevel GAVI_SUPPORT_LEVEL = org.vaccineimpact.api.db.tables.GaviSupportLevel.GAVI_SUPPORT_LEVEL;
+
+    /**
+     * The table <code>public.gender</code>.
+     */
+    public static final Gender GENDER = org.vaccineimpact.api.db.tables.Gender.GENDER;
 
     /**
      * The table <code>public.impact_estimate</code>.
@@ -191,6 +239,11 @@ public class Tables {
     public static final Permission PERMISSION = org.vaccineimpact.api.db.tables.Permission.PERMISSION;
 
     /**
+     * The table <code>public.projection_variant</code>.
+     */
+    public static final ProjectionVariant PROJECTION_VARIANT = org.vaccineimpact.api.db.tables.ProjectionVariant.PROJECTION_VARIANT;
+
+    /**
      * The table <code>public.responsibility</code>.
      */
     public static final Responsibility RESPONSIBILITY = org.vaccineimpact.api.db.tables.Responsibility.RESPONSIBILITY;
@@ -229,6 +282,32 @@ public class Tables {
      * The table <code>public.scenario_description</code>.
      */
     public static final ScenarioDescription SCENARIO_DESCRIPTION = org.vaccineimpact.api.db.tables.ScenarioDescription.SCENARIO_DESCRIPTION;
+
+    /**
+     * The table <code>public.select_burden_data1</code>.
+     */
+    public static final SelectBurdenData1 SELECT_BURDEN_DATA1 = org.vaccineimpact.api.db.tables.SelectBurdenData1.SELECT_BURDEN_DATA1;
+
+    /**
+     * Call <code>public.select_burden_data1</code>.
+     */
+    public static Result<SelectBurdenData1Record> SELECT_BURDEN_DATA1(Configuration configuration, Integer set1, Integer outcome1) {
+        return DSL.using(configuration).selectFrom(SelectBurdenData1.SELECT_BURDEN_DATA1.call(set1, outcome1)).fetch();
+    }
+
+    /**
+     * Get <code>public.select_burden_data1</code> as a table.
+     */
+    public static SelectBurdenData1 SELECT_BURDEN_DATA1(Integer set1, Integer outcome1) {
+        return SelectBurdenData1.SELECT_BURDEN_DATA1.call(set1, outcome1);
+    }
+
+    /**
+     * Get <code>public.select_burden_data1</code> as a table.
+     */
+    public static SelectBurdenData1 SELECT_BURDEN_DATA1(Field<Integer> set1, Field<Integer> outcome1) {
+        return SelectBurdenData1.SELECT_BURDEN_DATA1.call(set1, outcome1);
+    }
 
     /**
      * The table <code>public.select_burden_data2</code>.
@@ -439,6 +518,11 @@ public class Tables {
     }
 
     /**
+     * The table <code>public.source</code>.
+     */
+    public static final Source SOURCE = org.vaccineimpact.api.db.tables.Source.SOURCE;
+
+    /**
      * The table <code>public.support_type</code>.
      */
     public static final SupportType SUPPORT_TYPE = org.vaccineimpact.api.db.tables.SupportType.SUPPORT_TYPE;
@@ -454,6 +538,11 @@ public class Tables {
     public static final TouchstoneCountry TOUCHSTONE_COUNTRY = org.vaccineimpact.api.db.tables.TouchstoneCountry.TOUCHSTONE_COUNTRY;
 
     /**
+     * The table <code>public.touchstone_demographic_source</code>.
+     */
+    public static final TouchstoneDemographicSource TOUCHSTONE_DEMOGRAPHIC_SOURCE = org.vaccineimpact.api.db.tables.TouchstoneDemographicSource.TOUCHSTONE_DEMOGRAPHIC_SOURCE;
+
+    /**
      * The table <code>public.touchstone_name</code>.
      */
     public static final TouchstoneName TOUCHSTONE_NAME = org.vaccineimpact.api.db.tables.TouchstoneName.TOUCHSTONE_NAME;
@@ -462,6 +551,11 @@ public class Tables {
      * Valid values: {in-preparation, open, finished}
      */
     public static final TouchstoneStatus TOUCHSTONE_STATUS = org.vaccineimpact.api.db.tables.TouchstoneStatus.TOUCHSTONE_STATUS;
+
+    /**
+     * The table <code>public.touchstone_years</code>.
+     */
+    public static final TouchstoneYears TOUCHSTONE_YEARS = org.vaccineimpact.api.db.tables.TouchstoneYears.TOUCHSTONE_YEARS;
 
     /**
      * The table <code>public.user_role</code>.

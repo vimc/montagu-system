@@ -79,7 +79,7 @@ class GetResponsibilityCoverageSetsTests : ModellingGroupRepositoryTests()
     {
         assertThat(result.touchstone).isEqualTo(Touchstone(
                 touchstoneId, touchstoneName, touchstoneVersion,
-                "description", YearRange(1900, 2000), TouchstoneStatus.OPEN
+                "description", TouchstoneStatus.OPEN
         ))
         assertThat(result.scenario).isEqualTo(Scenario(
                 scenarioId, "Yellow Fever Scenario", "YF", listOf(touchstoneId)
@@ -93,7 +93,7 @@ class GetResponsibilityCoverageSetsTests : ModellingGroupRepositoryTests()
     private fun createGroupAndSupportingObjects(db: JooqContext)
     {
         db.addGroup(groupId, "description")
-        db.addTouchstone(touchstoneName, touchstoneVersion, "description", "open", 1900..2000,
+        db.addTouchstone(touchstoneName, touchstoneVersion, "description", "open",
                 addName = true, addStatus = true)
         db.addScenarioDescription(scenarioId, "Yellow Fever Scenario", "YF", addDisease = true)
 

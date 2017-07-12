@@ -486,7 +486,6 @@ Schema: [`Touchstones.schema.json`](Touchstones.schema.json)
             "name": "op-2017",
             "version": 1,            
             "description": "2017 Operational Forecast",
-            "years": { "start": 1996, "end": 2017 },
             "status": "finished"
         },
         { 
@@ -494,7 +493,6 @@ Schema: [`Touchstones.schema.json`](Touchstones.schema.json)
             "name": "wuenic-2017",
             "version": 1,
             "description": "2017 Wuenic Update",
-            "years": { "start": 1996, "end": 2081 },
             "status": "open"
         }
     ]
@@ -511,8 +509,7 @@ Schema: [`CreateTouchstone.schema.json`](CreateTouchstone.schema.json)
          "id": "an-id",
          "name": "a-name",
          "version": 1,
-         "description": "A description",
-         "years": { "start": 2000, "end": 2100 }
+         "description": "A description"
     }
 
 Fails if there is an existing touchstone with that ID.
@@ -611,7 +608,6 @@ Schema: [`ScenarioAndCoverageSets.schema.json`](ScenarioAndCoverageSets.schema.j
             "name": "2017-op",
             "version": 1,            
             "description": "2017 Operational Forecast",
-            "years": { "start": 1996, "end": 2017 },
             "status": "finished"
         },
         "scenario": {
@@ -649,7 +645,6 @@ Schema: [`ScenarioAndCoverageSets.schema.json`](ScenarioAndCoverageSets.schema.j
             "name": "2017-op",
             "version": 1,            
             "description": "2017 Operational Forecast",
-            "years": { "start": 1996, "end": 2017 },
             "status": "finished"
         },
         "scenario": {
@@ -1295,6 +1290,11 @@ Schema: [`ResponsibilitySet.schema.json`](ResponsibilitySet.schema.json)
                     "description": "Menigitis A, No vaccination",
                     "disease": "MenA"
                 },
+                "countries": ["AFG", "AGO"],
+                "years": {
+                    "start": 1900,
+                    "end": 2050
+                },
                 "status": "empty",
                 "problems": [ "No burden estimates have been uploaded" ],
                 "current_estimate": null
@@ -1305,6 +1305,11 @@ Schema: [`ResponsibilitySet.schema.json`](ResponsibilitySet.schema.json)
                     "touchstones": [ "2017-wuenic-1", "2017-op-1" ],
                     "description": "Yellow Fever, Reactive campaign, SDF coverage without GAVI support",
                     "disease": "YF"
+                },
+                "countries": ["AFG", "AGO"],
+                "years": {
+                    "start": 1900,
+                    "end": 2050
                 },
                 "status": "invalid",
                 "problems": [
@@ -1379,7 +1384,6 @@ Schema: [`ResponsibilityAndTouchstone.schema.json`](ResponsibilityAndTouchstone.
             "name": "2017-op",
             "version": 1,            
             "description": "2017 Operational Forecast",
-            "years": { "start": 1996, "end": 2017 },
             "status": "finished"
         },
         "responsibility": {
@@ -1388,6 +1392,11 @@ Schema: [`ResponsibilityAndTouchstone.schema.json`](ResponsibilityAndTouchstone.
                 "touchstones": [ "2016-op-1", "2017-wuenic-1", "2017-op-1" ],
                 "description": "Menigitis A, No vaccination",
                 "disease": "MenA"
+            },
+            "countries": ["AFG", "AGO"],
+            "years": {
+                "start": 1900,
+                "end": 2050
             },
             "status": "empty",
             "problems": [ "No burden estimates have been uploaded" ],
@@ -1412,7 +1421,6 @@ Schema: [`ScenarioAndCoverageSets.schema.json`](ScenarioAndCoverageSets.schema.j
             "name": "2017-op",
             "version": 1,            
             "description": "2017 Operational Forecast",
-            "years": { "start": 1996, "end": 2017 },
             "status": "finished"
         },
         "scenario": {
@@ -1464,7 +1472,6 @@ Schema: [`ScenarioAndCoverageSets.schema.json`](ScenarioAndCoverageSets.schema.j
             "name": "2017-op",
             "version": 1,            
             "description": "2017 Operational Forecast",
-            "years": { "start": 1996, "end": 2017 },
             "status": "finished"
         },
         "scenario": {
@@ -1571,7 +1578,6 @@ Schema: [`TouchstoneOverview.schema.json`](TouchstoneOverview.schema.json)
     {
         "id": "2017-op-1",
         "description": "2017 Operational Forecast",
-        "years": { "start": 1996, "end": 2081 },
         "status": "in-preparation",
         "allowed_state_changes": [],
         "sections": {
@@ -1632,7 +1638,6 @@ Schema: [`TouchstoneOverview.schema.json`](TouchstoneOverview.schema.json)
     {
         "id": "2017-op-1",
         "description": "2017 Operational Forecast",
-        "years": { "start": 1996, "end": 2081 },
         "status": "open",
         "allowed_state_changes": [],
         "sections": {

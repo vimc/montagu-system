@@ -4,14 +4,14 @@ import org.jooq.JoinType
 import org.jooq.Record
 import org.jooq.Result
 import org.jooq.SelectConditionStep
-import org.vaccineimpact.api.app.serialization.DataTable
-import org.vaccineimpact.api.app.serialization.SplitData
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
 import org.vaccineimpact.api.app.filters.whereMatchesFilter
 import org.vaccineimpact.api.app.repositories.ScenarioRepository
 import org.vaccineimpact.api.app.repositories.SimpleDataSet
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
+import org.vaccineimpact.api.app.serialization.DataTable
+import org.vaccineimpact.api.app.serialization.SplitData
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.Tables.*
 import org.vaccineimpact.api.db.fieldsAsList
@@ -119,7 +119,6 @@ class JooqTouchstoneRepository(
             record.touchstoneName,
             record.version,
             record.description,
-            YearRange(record.yearStart, record.yearEnd),
             mapEnum(record.status)
     )
 
