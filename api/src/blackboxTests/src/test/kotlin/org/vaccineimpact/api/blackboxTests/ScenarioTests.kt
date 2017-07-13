@@ -63,7 +63,6 @@ class ScenarioTests : DatabaseTest()
                             "name" to "touchstone",
                             "version" to 1,
                             "description" to "Description",
-                            "years" to obj("start" to 1900, "end" to 2000),
                             "status" to "open"
                     ),
                     "scenario" to expectedScenario(),
