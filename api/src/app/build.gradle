@@ -64,17 +64,3 @@ distDocker {
 }
 
 copyConfig.finalizedBy 'showConfig'
-processResources.finalizedBy 'generateKeyPair'
-
-task generateKeyPair() {
-    doFirst {
-        exec {
-            def path = new File('build/classes/main/token_key')
-            path.mkdirs()
-            commandLine 'docker', 'run',
-                    '-v=' + path.getAbsolutePath() + ':/workspace',
-                    'docker.montagu.dide.ic.ac.uk:5000/montagu-cert-tool:6a7e736', 'gen-keypair', '/workspace'
-        }
-    }
-    outputs.upToDateWhen { false }
-}

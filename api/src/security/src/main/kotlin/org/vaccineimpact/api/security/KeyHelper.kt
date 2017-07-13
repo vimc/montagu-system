@@ -1,36 +1,46 @@
 package org.vaccineimpact.api.security
 
-import org.vaccineimpact.api.db.getResource
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.io.File
-import java.security.KeyFactory
-import java.security.KeyPair
-import java.security.PrivateKey
-import java.security.PublicKey
+import java.security.*
 import java.security.spec.PKCS8EncodedKeySpec
 import java.security.spec.X509EncodedKeySpec
+import java.util.*
 
 object KeyHelper
 {
     private val keyFactory = KeyFactory.getInstance("RSA")
+    private val keyPath = "/etc/montagu/api/token_key"
+    private val logger: Logger = LoggerFactory.getLogger(KeyHelper::class.java)
 
     val keyPair by lazy {
-        val path = firstPathThatExistsFrom(listOf(
-                "/etc/montagu/api/token_key",
-                getResource("").path + "token_key"
-        ))
-        KeyPair(loadPublicKey(path), loadPrivateKey(path))
+        if (File(keyPath).exists())
+        {
+            loadKeyPair()
+        }
+        else
+        {
+            generateKeyPair()
+        }
     }
 
-    private fun loadPublicKey(path: String): PublicKey
+    private fun loadKeyPair(): KeyPair
     {
-        val keyBytes = File(path, "public_key.der").readBytes()
+        logger.info("Loading token signing keypair from $keyPath")
+        return KeyPair(loadPublicKey(), loadPrivateKey())
+    }
+
+    private fun loadPublicKey(): PublicKey
+    {
+        val keyBytes = File(keyPath, "public_key.der").readBytes()
         val spec = X509EncodedKeySpec(keyBytes)
         return keyFactory.generatePublic(spec)
     }
 
-    private fun loadPrivateKey(path: String): PrivateKey
+    private fun loadPrivateKey(): PrivateKey
     {
-        val file = File(path, "private_key.der")
+        val file = File(keyPath, "private_key.der")
         try
         {
             val keyBytes = file.readBytes()
@@ -44,9 +54,17 @@ object KeyHelper
         }
     }
 
-    private fun firstPathThatExistsFrom(paths: List<String>): String
+    private fun generateKeyPair(): KeyPair
     {
-        return paths.firstOrNull { File(it, "public_key.der").exists() }
-            ?: throw MissingTokenKeyPairException(paths)
+        logger.info("Unable to find a token keypair at $keyPath. Generating a new")
+        logger.info("RSA keypair for token signing. If other applications need to")
+        logger.info("verify tokens they should use the following public key:")
+        val generator = KeyPairGenerator.getInstance("RSA").apply {
+            initialize(1024)
+        }
+        val keypair = generator.generateKeyPair()
+        val publicKey = Base64.getEncoder().encode(keypair.public.encoded)
+        logger.info("Public key for token verification: " + publicKey)
+        return keypair
     }
 }
