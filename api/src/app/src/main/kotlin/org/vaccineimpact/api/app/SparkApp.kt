@@ -9,6 +9,7 @@ import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.makeRepositories
 import org.vaccineimpact.api.db.Config
 import org.vaccineimpact.api.security.WebTokenHelper
+import java.io.File
 import java.net.BindException
 import java.net.ServerSocket
 import kotlin.system.exitProcess
@@ -16,6 +17,7 @@ import spark.Spark as spk
 
 fun main(args: Array<String>)
 {
+    waitForGoSignal()
     val api = MontaguApi()
     api.run(makeRepositories())
 }
@@ -93,4 +95,17 @@ class MontaguApi
             return false
         }
     }
+}
+
+private fun waitForGoSignal()
+{
+    val path = File("/etc/montagu/api/go_signal")
+    println("Waiting for signal file at $path.")
+    println("(In development environments, run `sudo touch $path`)")
+
+    while (!path.exists())
+    {
+        Thread.sleep(2000)
+    }
+    println("Go signal detected. Running API")
 }
