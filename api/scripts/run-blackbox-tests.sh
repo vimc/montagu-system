@@ -6,6 +6,7 @@ cert_tool_version=59657b2
 # Run API and DB
 docker-compose pull
 docker-compose --project-name montagu up -d
+docker exec montagu_api_1 mkdir -p /etc/montagu/api/
 docker exec montagu_api_1 touch /etc/montagu/api/go_signal
 
 # Build and run image that can run blackbox tests
