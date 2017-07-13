@@ -20,7 +20,7 @@ class TouchstoneControllerTests : ControllerTests<TouchstoneController>()
     fun `getTouchstones returns touchstones`()
     {
         val touchstones = listOf(
-                Touchstone("t-1", "t", 1, "description", YearRange(2000, 2010), TouchstoneStatus.OPEN)
+                Touchstone("t-1", "t", 1, "description", TouchstoneStatus.OPEN)
         )
         val repo = mock<TouchstoneRepository> {
             on { this.touchstones } doReturn InMemoryDataSet(touchstones)
@@ -37,8 +37,8 @@ class TouchstoneControllerTests : ControllerTests<TouchstoneController>()
     fun `getTouchstones filters out in-preparation touchstones if the user doesn't have the permissions`()
     {
         val touchstones = listOf(
-                Touchstone("t-1", "t", 1, "description", YearRange(2000, 2010), TouchstoneStatus.OPEN),
-                Touchstone("t-2", "t", 2, "description", YearRange(2000, 2010), TouchstoneStatus.IN_PREPARATION)
+                Touchstone("t-1", "t", 1, "description", TouchstoneStatus.OPEN),
+                Touchstone("t-2", "t", 2, "description", TouchstoneStatus.IN_PREPARATION)
         )
         val repo = mock<TouchstoneRepository> {
             on { this.touchstones } doReturn InMemoryDataSet(touchstones)
@@ -59,7 +59,7 @@ class TouchstoneControllerTests : ControllerTests<TouchstoneController>()
     @Test
     fun `getScenario fetches from repository`()
     {
-        val touchstone = Touchstone("t-1", "t", 1, "description", YearRange(2000, 2010), TouchstoneStatus.OPEN)
+        val touchstone = Touchstone("t-1", "t", 1, "description", TouchstoneStatus.OPEN)
         val scenario = Scenario("id", "desc", "disease", listOf("t1, t2"))
         val coverageSets = listOf(CoverageSet(1, "t1", "name", "vaccine", GAVISupportLevel.WITH, ActivityType.CAMPAIGN))
         val result = ScenarioAndCoverageSets(scenario, coverageSets)
@@ -86,7 +86,7 @@ class TouchstoneControllerTests : ControllerTests<TouchstoneController>()
     @Test
     fun `getScenario requires touchstones prepare permission for in-preparation touchstone`()
     {
-        val touchstone = Touchstone("t-1", "t", 1, "description", YearRange(2000, 2010), TouchstoneStatus.IN_PREPARATION)
+        val touchstone = Touchstone("t-1", "t", 1, "description", TouchstoneStatus.IN_PREPARATION)
         val scenario = Scenario("id", "desc", "disease", listOf("t1, t2"))
         val repo = mock<TouchstoneRepository> {
             on { touchstones } doReturn InMemoryDataSet(listOf(touchstone))

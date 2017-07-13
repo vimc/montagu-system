@@ -35,7 +35,7 @@ import org.vaccineimpact.api.db.tables.records.ScenarioRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Scenario extends TableImpl<ScenarioRecord> {
 
-    private static final long serialVersionUID = 391950543;
+    private static final long serialVersionUID = 1281267281;
 
     /**
      * The reference instance of <code>public.scenario</code>
@@ -64,6 +64,11 @@ public class Scenario extends TableImpl<ScenarioRecord> {
      * The column <code>public.scenario.scenario_description</code>.
      */
     public final TableField<ScenarioRecord, String> SCENARIO_DESCRIPTION = createField("scenario_description", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+
+    /**
+     * The column <code>public.scenario.focal_coverage_set</code>.
+     */
+    public final TableField<ScenarioRecord, Integer> FOCAL_COVERAGE_SET = createField("focal_coverage_set", org.jooq.impl.SQLDataType.INTEGER, this, "");
 
     /**
      * Create a <code>public.scenario</code> table reference
@@ -124,7 +129,7 @@ public class Scenario extends TableImpl<ScenarioRecord> {
      */
     @Override
     public List<ForeignKey<ScenarioRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<ScenarioRecord, ?>>asList(Keys.SCENARIO__SCENARIO_TOUCHSTONE_FKEY, Keys.SCENARIO__SCENARIO_SCENARIO_DESCRIPTION_FKEY);
+        return Arrays.<ForeignKey<ScenarioRecord, ?>>asList(Keys.SCENARIO__SCENARIO_TOUCHSTONE_FKEY, Keys.SCENARIO__SCENARIO_SCENARIO_DESCRIPTION_FKEY, Keys.SCENARIO__SCENARIO_FOCAL_COVERAGE_SET_FKEY);
     }
 
     /**

@@ -1,4 +1,4 @@
-package eden.martin.webapi.security
+package org.vaccineimpact.api.app.security
 
 import org.pac4j.core.context.WebContext
 import org.pac4j.core.credentials.UsernamePasswordCredentials
@@ -7,7 +7,6 @@ import org.pac4j.core.exception.CredentialsException
 import org.pac4j.core.profile.CommonProfile
 import org.pac4j.core.util.CommonHelper
 import org.vaccineimpact.api.app.repositories.jooq.JooqUserRepository
-import org.vaccineimpact.api.app.security.USER_OBJECT
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.security.MontaguUser
 import org.vaccineimpact.api.security.UserHelper

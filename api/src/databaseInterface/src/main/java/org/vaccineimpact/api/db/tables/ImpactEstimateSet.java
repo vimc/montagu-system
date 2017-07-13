@@ -36,7 +36,7 @@ import org.vaccineimpact.api.db.tables.records.ImpactEstimateSetRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ImpactEstimateSet extends TableImpl<ImpactEstimateSetRecord> {
 
-    private static final long serialVersionUID = -1029489402;
+    private static final long serialVersionUID = -930413188;
 
     /**
      * The reference instance of <code>public.impact_estimate_set</code>
@@ -59,12 +59,22 @@ public class ImpactEstimateSet extends TableImpl<ImpactEstimateSetRecord> {
     /**
      * The column <code>public.impact_estimate_set.impact_estimate_recipe</code>.
      */
-    public final TableField<ImpactEstimateSetRecord, Integer> IMPACT_ESTIMATE_RECIPE = createField("impact_estimate_recipe", org.jooq.impl.SQLDataType.INTEGER, this, "");
+    public final TableField<ImpactEstimateSetRecord, Integer> IMPACT_ESTIMATE_RECIPE = createField("impact_estimate_recipe", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * The column <code>public.impact_estimate_set.computed_on</code>.
      */
     public final TableField<ImpactEstimateSetRecord, Timestamp> COMPUTED_ON = createField("computed_on", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("now()", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>public.impact_estimate_set.recipe_touchstone</code>.
+     */
+    public final TableField<ImpactEstimateSetRecord, String> RECIPE_TOUCHSTONE = createField("recipe_touchstone", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+
+    /**
+     * The column <code>public.impact_estimate_set.coverage_touchstone</code>.
+     */
+    public final TableField<ImpactEstimateSetRecord, String> COVERAGE_TOUCHSTONE = createField("coverage_touchstone", org.jooq.impl.SQLDataType.CLOB, this, "");
 
     /**
      * Create a <code>public.impact_estimate_set</code> table reference
@@ -125,7 +135,7 @@ public class ImpactEstimateSet extends TableImpl<ImpactEstimateSetRecord> {
      */
     @Override
     public List<ForeignKey<ImpactEstimateSetRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<ImpactEstimateSetRecord, ?>>asList(Keys.IMPACT_ESTIMATE_SET__IMPACT_ESTIMATE_SET_IMPACT_ESTIMATE_RECIPE_FKEY);
+        return Arrays.<ForeignKey<ImpactEstimateSetRecord, ?>>asList(Keys.IMPACT_ESTIMATE_SET__IMPACT_ESTIMATE_SET_IMPACT_ESTIMATE_RECIPE_FKEY, Keys.IMPACT_ESTIMATE_SET__IMPACT_ESTIMATE_SET_RECIPE_TOUCHSTONE_FKEY, Keys.IMPACT_ESTIMATE_SET__IMPACT_ESTIMATE_SET_COVERAGE_TOUCHSTONE_FKEY);
     }
 
     /**

@@ -15,9 +15,13 @@ class TokenFetcher
         {
             return TokenResponse.Error(json["error"] as String)
         }
-        else
+        else if (json.containsKey("access_token"))
         {
             return TokenResponse.Token(TokenLiteral(json["access_token"] as String))
+        }
+        else
+        {
+            throw Exception("Malformed response from authentication endpoint: " + response.text)
         }
     }
 
