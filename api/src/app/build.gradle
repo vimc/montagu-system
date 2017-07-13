@@ -52,11 +52,8 @@ dependencies {
     testCompile project(":testHelpers")
 }
 
-docker {
-    baseImage = "openjdk:8u121-jre"
-}
-
 distDocker {
+    baseImage = "libsodium"
     dependsOn = [build]
     push = true
     tag = api_docker_name
