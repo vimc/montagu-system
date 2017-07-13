@@ -3,8 +3,7 @@ cert_tool_version=59657b2
 
 docker-compose pull
 docker-compose --project-name montagu up -d
-docker run docker.montagu.dide.ic.ac.uk:5000/montagu-cert-tool:$cert_tool_version gen-self-signed password > keystore
-./scripts/add-certificate-to-docker.sh keystore montagu_api_1
+docker exec montagu_api_1 touch /etc/montagu/api/go_signal
 
 docker build -f blackbox.Dockerfile -t montagu-api-blackbox-tests .
 docker run --network montagu_default montagu-api-blackbox-tests

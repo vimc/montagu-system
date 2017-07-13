@@ -6,11 +6,8 @@ import org.junit.Before
 import org.junit.Test
 import org.vaccineimpact.api.models.permissions.ReifiedRole
 import org.vaccineimpact.api.models.Scope
-import org.vaccineimpact.api.security.MontaguUser
-import org.vaccineimpact.api.security.UserProperties
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
-import org.vaccineimpact.api.security.MontaguTokenAuthenticator
-import org.vaccineimpact.api.security.WebTokenHelper
+import org.vaccineimpact.api.security.*
 import org.vaccineimpact.api.test_helpers.MontaguTests
 import java.time.Instant
 import java.util.*
@@ -37,7 +34,7 @@ class WebTokenHelperTests : MontaguTests()
     @Before
     fun createHelper()
     {
-        helper = WebTokenHelper()
+        helper = WebTokenHelper(KeyHelper.keyPair)
     }
 
     @Test
@@ -92,7 +89,7 @@ class WebTokenHelperTests : MontaguTests()
     @Test
     fun `token fails validation when token is signed by wrong key`()
     {
-        val sauron = WebTokenHelper()
+        val sauron = WebTokenHelper(KeyHelper.generateKeyPair())
         val evilToken = sauron.generateToken(MontaguUser(properties, roles, permissions))
         val verifier = MontaguTokenAuthenticator(helper)
         assertThat(verifier.validateToken(evilToken)).isNull()

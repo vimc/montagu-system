@@ -54,7 +54,7 @@ object KeyHelper
         }
     }
 
-    private fun generateKeyPair(): KeyPair
+    fun generateKeyPair(): KeyPair
     {
         logger.info("Unable to find a token keypair at $keyPath. Generating a new")
         logger.info("RSA keypair for token signing. If other applications need to")
