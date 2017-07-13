@@ -80,7 +80,6 @@ class ResponsibilityTests : DatabaseTest()
                                 "name" to "touchstone",
                                 "version" to 1,
                                 "description" to "description",
-                                "years" to obj("start" to 1900, "end" to 2000),
                                 "status" to "open"
                         ),
                         "responsibility" to obj(
@@ -132,7 +131,6 @@ class ResponsibilityTests : DatabaseTest()
                                 "name" to "touchstone",
                                 "version" to 1,
                                 "description" to "description",
-                                "years" to obj("start" to 1900, "end" to 2000),
                                 "status" to "open"
                         ),
                         "scenario" to obj(

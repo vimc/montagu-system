@@ -19,8 +19,6 @@
         "scenario", 
         "status", 
         "problems", 
-        "current_estimate", 
-        "countries", 
-        "years" 
+        "current_estimate"
     ]
 }
