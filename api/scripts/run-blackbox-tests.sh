@@ -1,3 +1,5 @@
+set -e
+
 export MONTAGU_API_VERSION=$(git rev-parse --short HEAD)
 cert_tool_version=59657b2
 
