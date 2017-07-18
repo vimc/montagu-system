@@ -15,6 +15,7 @@ mainClassName = "org.vaccineimpact.api.security.AppKt"
 
 dependencies {
     compile "org.slf4j:slf4j-simple:1.7.21"
+    compile "org.simplejavamail:simple-java-mail:4.2.3"
     compile project(":security")
 
     testCompile "org.assertj:assertj-core:3.6.2"
