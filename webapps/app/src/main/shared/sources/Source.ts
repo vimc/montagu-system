@@ -20,6 +20,7 @@ type UrlBuilder<TState> = (state: TState) => string;
 type CacheCheck<TState> = (state: TState, ...args: any[]) => boolean;
 
 export abstract class Source<TState> {
+
     protected doFetch<TModel>(urlFragment: UrlBuilder<TState>, config: FetchConfig<TState, TModel>): AltJS.SourceModel<TModel> {
         const handler = this.processResponse;
         const source: AltJS.SourceModel<TModel> = {
