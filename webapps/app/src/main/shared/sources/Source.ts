@@ -10,13 +10,13 @@ import {
 import { authActions } from "../actions/AuthActions";
 import AltStore = AltJS.AltStore;
 
-interface FetchConfig<TState, TModel> {
+export interface FetchConfig<TState, TModel> {
     success: (data: TModel) => void;
     loading: (x: any) => void;
     isCached: CacheCheck<TState>;
 }
 
-type UrlBuilder<TState> = (state: TState) => string;
+export type UrlBuilder<TState> = (state: TState) => string;
 type CacheCheck<TState> = (state: TState, ...args: any[]) => boolean;
 
 export abstract class Source<TState> {

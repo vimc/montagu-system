@@ -9,8 +9,19 @@ export class ReportingFetcher extends Fetcher {
         return reportingAuthStore.getState().bearerToken;
     }
 
-    buildURL(urlFragment: string): string {
+    buildReportingURL(urlFragment: string): string {
         return settings.reportingApiUrl() + urlFragment;
+    }
+
+    fetchFromReportingApi(urlFragment: string, options?: FetchOptions, includeToken: boolean = true): Promise<Response> {
+        const url = this.buildReportingURL(urlFragment);
+        console.log(`Fetching from ${url}`);
+        options = options || {};
+        options.headers = options.headers || {};
+        if (includeToken) {
+            options.headers["Authorization"] = `Bearer ${this.getBearerToken()}`;
+        }
+        return fetch(url, options);
     }
 
 }

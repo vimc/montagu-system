@@ -1,10 +1,9 @@
-import { Source } from "../../shared/sources/Source";
 import SourceModel = AltJS.SourceModel;
 import { reportActions } from "../actions/ReportActions";
-import {ReportingFetcher} from "./ReportingFetcher";
 import {ReportStoreState} from "../stores/ReportStore";
+import {ReportingSource} from "./ReportingSource";
 
-export class ReportSource extends Source<ReportStoreState> {
+export class ReportSource extends ReportingSource<ReportStoreState> {
 
     fetchReports: () => SourceModel<string[]>;
 
