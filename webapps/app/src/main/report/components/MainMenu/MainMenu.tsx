@@ -11,18 +11,6 @@ export class MainMenu extends ReportingPageWithHeader<undefined> {
 
     renderPageContent() {
         return <div>
-            All reports:
-            <ol className={ menuStyles.menu }>
-                <li>
-                    <ButtonLink href="/modelling-groups/">Modelling groups</ButtonLink>
-                </li>
-                <li>
-                    <ButtonLink href="/touchstones/">Touchstones</ButtonLink>
-                </li>
-                <li>
-                    <ButtonLink href="/users/">Users and permissions</ButtonLink>
-                </li>
-            </ol>
         </div>;
     }
 }
