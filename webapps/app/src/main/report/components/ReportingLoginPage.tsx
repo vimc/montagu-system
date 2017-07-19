@@ -13,6 +13,7 @@ export class ReportingLoginPage extends ReportingPageWithHeader<undefined> {
     }
 
     renderPageContent(): JSX.Element {
+
         return <LoginForm />;
     }
 }

@@ -11,7 +11,7 @@ export class MainMenu extends ReportingPageWithHeader<undefined> {
 
     renderPageContent() {
         return <div>
-            Please select which area of Montagu you would like to manage:
+            All reports:
             <ol className={ menuStyles.menu }>
                 <li>
                     <ButtonLink href="/modelling-groups/">Modelling groups</ButtonLink>

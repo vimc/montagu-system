@@ -8,7 +8,8 @@
     "//": "This is a comment: To run just one test, or a subset, use run-test.sh, e.g. ./run-test src/test/components/ErrorLogTests.tsx",
     "test": "mocha-webpack --webpack-config webpack-test.config.js \"src/test/**/*\"",
     "admin": "serve out/admin",
-    "contrib": "serve out/contrib"
+    "contrib": "serve out/contrib",
+    "report": "serve out/report"
   },
   "repository": {
     "type": "git",
