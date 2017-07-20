@@ -35,7 +35,7 @@ import org.vaccineimpact.api.db.tables.records.TouchstoneDemographicSourceRecord
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TouchstoneDemographicSource extends TableImpl<TouchstoneDemographicSourceRecord> {
 
-    private static final long serialVersionUID = -691349187;
+    private static final long serialVersionUID = 1706284130;
 
     /**
      * The reference instance of <code>public.touchstone_demographic_source</code>
@@ -63,7 +63,7 @@ public class TouchstoneDemographicSource extends TableImpl<TouchstoneDemographic
     /**
      * The column <code>public.touchstone_demographic_source.source</code>.
      */
-    public final TableField<TouchstoneDemographicSourceRecord, String> SOURCE = createField("source", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<TouchstoneDemographicSourceRecord, Integer> SOURCE = createField("source", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * Create a <code>public.touchstone_demographic_source</code> table reference

@@ -10,6 +10,7 @@ import java.util.List;
 import javax.annotation.Generated;
 
 import org.jooq.Field;
+import org.jooq.Identity;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -33,7 +34,7 @@ import org.vaccineimpact.api.db.tables.records.ProjectionVariantRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProjectionVariant extends TableImpl<ProjectionVariantRecord> {
 
-    private static final long serialVersionUID = 1181721208;
+    private static final long serialVersionUID = 1938308876;
 
     /**
      * The reference instance of <code>public.projection_variant</code>
@@ -51,7 +52,12 @@ public class ProjectionVariant extends TableImpl<ProjectionVariantRecord> {
     /**
      * The column <code>public.projection_variant.id</code>.
      */
-    public final TableField<ProjectionVariantRecord, String> ID = createField("id", org.jooq.impl.SQLDataType.CLOB.nullable(false).defaultValue(org.jooq.impl.DSL.field("'NULL'::text", org.jooq.impl.SQLDataType.CLOB)), this, "");
+    public final TableField<ProjectionVariantRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('projection_variant_id_seq'::regclass)", org.jooq.impl.SQLDataType.INTEGER)), this, "");
+
+    /**
+     * The column <code>public.projection_variant.code</code>.
+     */
+    public final TableField<ProjectionVariantRecord, String> CODE = createField("code", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.projection_variant.name</code>.
@@ -86,6 +92,14 @@ public class ProjectionVariant extends TableImpl<ProjectionVariantRecord> {
     @Override
     public Schema getSchema() {
         return Public.PUBLIC;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Identity<ProjectionVariantRecord, Integer> getIdentity() {
+        return Keys.IDENTITY_PROJECTION_VARIANT;
     }
 
     /**

@@ -69,6 +69,11 @@ public class Sequences {
     public static final Sequence<Long> DEMOGRAPHIC_STATISTIC_ID_SEQ = new SequenceImpl<Long>("demographic_statistic_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
     /**
+     * The sequence <code>public.demographic_statistic_type_id_seq</code>
+     */
+    public static final Sequence<Long> DEMOGRAPHIC_STATISTIC_TYPE_ID_SEQ = new SequenceImpl<Long>("demographic_statistic_type_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
      * The sequence <code>public.disability_weight_id_seq</code>
      */
     public static final Sequence<Long> DISABILITY_WEIGHT_ID_SEQ = new SequenceImpl<Long>("disability_weight_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
@@ -77,6 +82,11 @@ public class Sequences {
      * The sequence <code>public.gavi_focal_model_id_seq</code>
      */
     public static final Sequence<Long> GAVI_FOCAL_MODEL_ID_SEQ = new SequenceImpl<Long>("gavi_focal_model_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
+     * The sequence <code>public.gender_id_seq</code>
+     */
+    public static final Sequence<Long> GENDER_ID_SEQ = new SequenceImpl<Long>("gender_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
     /**
      * The sequence <code>public.impact_estimate_id_seq</code>
@@ -109,6 +119,11 @@ public class Sequences {
     public static final Sequence<Long> MODEL_VERSION_ID_SEQ = new SequenceImpl<Long>("model_version_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
     /**
+     * The sequence <code>public.projection_variant_id_seq</code>
+     */
+    public static final Sequence<Long> PROJECTION_VARIANT_ID_SEQ = new SequenceImpl<Long>("projection_variant_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
      * The sequence <code>public.responsibility_id_seq</code>
      */
     public static final Sequence<Long> RESPONSIBILITY_ID_SEQ = new SequenceImpl<Long>("responsibility_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
@@ -132,6 +147,11 @@ public class Sequences {
      * The sequence <code>public.scenario_id_seq</code>
      */
     public static final Sequence<Long> SCENARIO_ID_SEQ = new SequenceImpl<Long>("scenario_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
+     * The sequence <code>public.source_id_seq</code>
+     */
+    public static final Sequence<Long> SOURCE_ID_SEQ = new SequenceImpl<Long>("source_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
     /**
      * The sequence <code>public.touchstone_country_id_seq</code>
