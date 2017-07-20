@@ -36,7 +36,7 @@ import org.vaccineimpact.api.db.tables.records.TouchstoneRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Touchstone extends TableImpl<TouchstoneRecord> {
 
-    private static final long serialVersionUID = -353449349;
+    private static final long serialVersionUID = 1687834613;
 
     /**
      * The reference instance of <code>public.touchstone</code>
@@ -75,6 +75,11 @@ public class Touchstone extends TableImpl<TouchstoneRecord> {
      * The column <code>public.touchstone.status</code>.
      */
     public final TableField<TouchstoneRecord, String> STATUS = createField("status", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+
+    /**
+     * The column <code>public.touchstone.comment</code>.
+     */
+    public final TableField<TouchstoneRecord, String> COMMENT = createField("comment", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * Create a <code>public.touchstone</code> table reference
