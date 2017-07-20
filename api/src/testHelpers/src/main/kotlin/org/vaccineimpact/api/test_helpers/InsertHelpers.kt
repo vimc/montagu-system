@@ -47,7 +47,6 @@ fun JooqContext.addTouchstoneName(id: String, description: String)
     this.dsl.newRecord(TOUCHSTONE_NAME).apply {
         this.id = id
         this.description = description
-        this.comment = "Comment"
     }.store()
 }
 
