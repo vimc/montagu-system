@@ -20,6 +20,8 @@ fun JooqContext.addGroup(id: String, description: String = id, current: String? 
         this.id = id
         this.description = description
         this.current = current
+        this.institution = "Some institution"
+        this.pi = "Some PI"
     }.store()
 }
 
