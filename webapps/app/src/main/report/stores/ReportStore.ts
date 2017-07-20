@@ -21,7 +21,8 @@ class ReportStore
     constructor() {
         super();
         this.bindListeners({
-            handleBeginFetchReports: reportActions.beginFetchReports
+            handleBeginFetchReports: reportActions.beginFetchReports,
+            handleUpdateReports: reportActions.updateReports,
         });
         this.registerAsync(new ReportSource());
     }
@@ -37,6 +38,12 @@ class ReportStore
         this.ready = false;
         this.reports = [];
     }
+
+    handleUpdateReports(reports: string[]) {
+        this.ready = true;
+        this.reports = reports;
+    }
+
 
 }
 

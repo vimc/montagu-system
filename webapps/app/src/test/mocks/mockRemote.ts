@@ -24,6 +24,7 @@ export function mockFetcherResponse<T>(data?: Result, errorMessage?: string) {
             resolve(promiseJSON(data));
         }
     });
+
     mockFetcher(promise);
 }
 

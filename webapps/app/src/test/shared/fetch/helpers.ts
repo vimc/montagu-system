@@ -7,7 +7,7 @@ import { mockFetcher, mockFetcherResponse, mockResult } from "../../mocks/mockRe
 import fetcher from "../../../main/shared/sources/Fetcher";
 import { Notification } from "../../../main/shared/actions/NotificationActions";
 
-interface FetchHelperConfig<TPayload> {
+export interface FetchHelperConfig<TPayload> {
     prepareForFetch: () => void;
     prepareForCachedFetch?: () => void;
     triggerFetch: () => Promise<TPayload>,
@@ -15,7 +15,7 @@ interface FetchHelperConfig<TPayload> {
     expectedURL: string;
 }
 
-interface FetchTestConfig {
+export interface FetchTestConfig {
     done: DoneCallback;
     payload: Result;
     errorMessage: string;
