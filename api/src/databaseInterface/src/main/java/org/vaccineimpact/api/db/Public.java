@@ -101,7 +101,7 @@ import org.vaccineimpact.api.db.tables.records.SelectBurdenDataColRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = -586186775;
+    private static final long serialVersionUID = 1051699561;
 
     /**
      * The reference instance of <code>public</code>
@@ -626,19 +626,23 @@ public class Public extends SchemaImpl {
             Sequences.COVERAGE_ID_SEQ,
             Sequences.COVERAGE_SET_ID_SEQ,
             Sequences.DEMOGRAPHIC_STATISTIC_ID_SEQ,
+            Sequences.DEMOGRAPHIC_STATISTIC_TYPE_ID_SEQ,
             Sequences.DISABILITY_WEIGHT_ID_SEQ,
             Sequences.GAVI_FOCAL_MODEL_ID_SEQ,
+            Sequences.GENDER_ID_SEQ,
             Sequences.IMPACT_ESTIMATE_ID_SEQ,
             Sequences.IMPACT_ESTIMATE_INGREDIENT_ID_SEQ,
             Sequences.IMPACT_ESTIMATE_RECIPE_ID_SEQ,
             Sequences.IMPACT_ESTIMATE_SET_ID_SEQ,
             Sequences.IMPACT_ESTIMATE_SET_INGREDIENT_ID_SEQ,
             Sequences.MODEL_VERSION_ID_SEQ,
+            Sequences.PROJECTION_VARIANT_ID_SEQ,
             Sequences.RESPONSIBILITY_ID_SEQ,
             Sequences.RESPONSIBILITY_SET_ID_SEQ,
             Sequences.ROLE_ID_SEQ,
             Sequences.SCENARIO_COVERAGE_SET_ID_SEQ,
             Sequences.SCENARIO_ID_SEQ,
+            Sequences.SOURCE_ID_SEQ,
             Sequences.TOUCHSTONE_COUNTRY_ID_SEQ,
             Sequences.TOUCHSTONE_DEMOGRAPHIC_SOURCE_ID_SEQ,
             Sequences.TOUCHSTONE_YEARS_ID_SEQ);

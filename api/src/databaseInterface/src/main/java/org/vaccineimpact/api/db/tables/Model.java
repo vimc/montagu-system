@@ -35,7 +35,7 @@ import org.vaccineimpact.api.db.tables.records.ModelRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Model extends TableImpl<ModelRecord> {
 
-    private static final long serialVersionUID = 1637175979;
+    private static final long serialVersionUID = -1536394646;
 
     /**
      * The reference instance of <code>public.model</code>
@@ -68,7 +68,7 @@ public class Model extends TableImpl<ModelRecord> {
     /**
      * The column <code>public.model.citation</code>.
      */
-    public final TableField<ModelRecord, String> CITATION = createField("citation", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<ModelRecord, String> CITATION = createField("citation", org.jooq.impl.SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.model.current</code>.

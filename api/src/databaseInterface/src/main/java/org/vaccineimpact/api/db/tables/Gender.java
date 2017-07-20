@@ -10,6 +10,7 @@ import java.util.List;
 import javax.annotation.Generated;
 
 import org.jooq.Field;
+import org.jooq.Identity;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -33,7 +34,7 @@ import org.vaccineimpact.api.db.tables.records.GenderRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Gender extends TableImpl<GenderRecord> {
 
-    private static final long serialVersionUID = 1668745430;
+    private static final long serialVersionUID = 1392722181;
 
     /**
      * The reference instance of <code>public.gender</code>
@@ -51,7 +52,12 @@ public class Gender extends TableImpl<GenderRecord> {
     /**
      * The column <code>public.gender.id</code>.
      */
-    public final TableField<GenderRecord, String> ID = createField("id", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<GenderRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('gender_id_seq'::regclass)", org.jooq.impl.SQLDataType.INTEGER)), this, "");
+
+    /**
+     * The column <code>public.gender.code</code>.
+     */
+    public final TableField<GenderRecord, String> CODE = createField("code", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.gender.name</code>.
@@ -86,6 +92,14 @@ public class Gender extends TableImpl<GenderRecord> {
     @Override
     public Schema getSchema() {
         return Public.PUBLIC;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Identity<GenderRecord, Integer> getIdentity() {
+        return Keys.IDENTITY_GENDER;
     }
 
     /**

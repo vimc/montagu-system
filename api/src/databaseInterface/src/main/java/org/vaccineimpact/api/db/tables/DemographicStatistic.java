@@ -37,7 +37,7 @@ import org.vaccineimpact.api.db.tables.records.DemographicStatisticRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DemographicStatistic extends TableImpl<DemographicStatisticRecord> {
 
-    private static final long serialVersionUID = -670263179;
+    private static final long serialVersionUID = 1141735621;
 
     /**
      * The reference instance of <code>public.demographic_statistic</code>
@@ -85,12 +85,12 @@ public class DemographicStatistic extends TableImpl<DemographicStatisticRecord> 
     /**
      * The column <code>public.demographic_statistic.projection_variant</code>.
      */
-    public final TableField<DemographicStatisticRecord, String> PROJECTION_VARIANT = createField("projection_variant", org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<DemographicStatisticRecord, Integer> PROJECTION_VARIANT = createField("projection_variant", org.jooq.impl.SQLDataType.INTEGER, this, "");
 
     /**
      * The column <code>public.demographic_statistic.gender</code>.
      */
-    public final TableField<DemographicStatisticRecord, String> GENDER = createField("gender", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<DemographicStatisticRecord, Integer> GENDER = createField("gender", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * The column <code>public.demographic_statistic.country</code>.
@@ -100,12 +100,12 @@ public class DemographicStatistic extends TableImpl<DemographicStatisticRecord> 
     /**
      * The column <code>public.demographic_statistic.source</code>.
      */
-    public final TableField<DemographicStatisticRecord, String> SOURCE = createField("source", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<DemographicStatisticRecord, Integer> SOURCE = createField("source", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * The column <code>public.demographic_statistic.demographic_statistic_type</code>.
      */
-    public final TableField<DemographicStatisticRecord, String> DEMOGRAPHIC_STATISTIC_TYPE = createField("demographic_statistic_type", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<DemographicStatisticRecord, Integer> DEMOGRAPHIC_STATISTIC_TYPE = createField("demographic_statistic_type", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * Create a <code>public.demographic_statistic</code> table reference

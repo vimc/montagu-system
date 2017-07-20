@@ -10,6 +10,7 @@ import java.util.List;
 import javax.annotation.Generated;
 
 import org.jooq.Field;
+import org.jooq.Identity;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -33,7 +34,7 @@ import org.vaccineimpact.api.db.tables.records.SourceRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Source extends TableImpl<SourceRecord> {
 
-    private static final long serialVersionUID = 231993929;
+    private static final long serialVersionUID = 1491109562;
 
     /**
      * The reference instance of <code>public.source</code>
@@ -51,7 +52,12 @@ public class Source extends TableImpl<SourceRecord> {
     /**
      * The column <code>public.source.id</code>.
      */
-    public final TableField<SourceRecord, String> ID = createField("id", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<SourceRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('source_id_seq'::regclass)", org.jooq.impl.SQLDataType.INTEGER)), this, "");
+
+    /**
+     * The column <code>public.source.code</code>.
+     */
+    public final TableField<SourceRecord, String> CODE = createField("code", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.source.name</code>.
@@ -86,6 +92,14 @@ public class Source extends TableImpl<SourceRecord> {
     @Override
     public Schema getSchema() {
         return Public.PUBLIC;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Identity<SourceRecord, Integer> getIdentity() {
+        return Keys.IDENTITY_SOURCE;
     }
 
     /**

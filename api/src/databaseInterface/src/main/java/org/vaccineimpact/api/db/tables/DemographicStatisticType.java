@@ -10,6 +10,7 @@ import java.util.List;
 import javax.annotation.Generated;
 
 import org.jooq.Field;
+import org.jooq.Identity;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -33,7 +34,7 @@ import org.vaccineimpact.api.db.tables.records.DemographicStatisticTypeRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DemographicStatisticType extends TableImpl<DemographicStatisticTypeRecord> {
 
-    private static final long serialVersionUID = 424906946;
+    private static final long serialVersionUID = -2096141597;
 
     /**
      * The reference instance of <code>public.demographic_statistic_type</code>
@@ -51,7 +52,12 @@ public class DemographicStatisticType extends TableImpl<DemographicStatisticType
     /**
      * The column <code>public.demographic_statistic_type.id</code>.
      */
-    public final TableField<DemographicStatisticTypeRecord, String> ID = createField("id", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<DemographicStatisticTypeRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('demographic_statistic_type_id_seq'::regclass)", org.jooq.impl.SQLDataType.INTEGER)), this, "");
+
+    /**
+     * The column <code>public.demographic_statistic_type.code</code>.
+     */
+    public final TableField<DemographicStatisticTypeRecord, String> CODE = createField("code", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.demographic_statistic_type.age_interpretation</code>.
@@ -91,6 +97,14 @@ public class DemographicStatisticType extends TableImpl<DemographicStatisticType
     @Override
     public Schema getSchema() {
         return Public.PUBLIC;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Identity<DemographicStatisticTypeRecord, Integer> getIdentity() {
+        return Keys.IDENTITY_DEMOGRAPHIC_STATISTIC_TYPE;
     }
 
     /**
