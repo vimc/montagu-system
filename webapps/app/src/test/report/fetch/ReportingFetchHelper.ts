@@ -1,9 +1,9 @@
 import { FetchTestConfig, FetchHelperConfig} from "../../shared/fetch/helpers";
 import { expect } from "chai";
 import {expectNoActions, getActions} from "../../actionHelpers";
-import { promiseJSON} from "../../mocks/mockRemote";
+import {mockResult, promiseJSON} from "../../mocks/mockRemote";
 import {Sandbox} from "../../Sandbox";
-import {ErrorInfo, Result, ResultStatus} from "../../../main/shared/models/Generated";
+import {ErrorInfo, Result } from "../../../main/shared/models/Generated";
 import { Notification } from "../../../main/shared/actions/NotificationActions";
 import {ReportingFetcher} from "../../../main/report/sources/ReportingFetcher";
 import fetcher, { FetchOptions } from "../../../main/shared/sources/Fetcher";
@@ -23,19 +23,11 @@ function mockFetcherResponse<T>(data?: Result, errorMessage?: string) {
         }
     });
 
-    mockFetcher(promise);
+    mockReportingFetcher(promise);
 }
 
-function mockResult<T>(data: T,
-                              errors?: Array<ErrorInfo>,
-                              status?: ResultStatus): Result {
-    errors = errors || [];
-    status = status || "success";
 
-    return { data, errors, status };
-}
-
-function mockFetcher(promise: Promise<Response>) {
+function mockReportingFetcher(promise: Promise<Response>) {
     fetcher.fetcher = new ReportingFetcher();
     fetcher.fetcher.fetchFromReportingApi = function(urlFragment: string, options?: FetchOptions, includeToken: boolean = true) {
         return promise;
