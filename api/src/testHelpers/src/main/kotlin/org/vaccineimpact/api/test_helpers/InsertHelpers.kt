@@ -81,6 +81,7 @@ fun JooqContext.addTouchstone(
         this.version = version
         this.description = description
         this.status = status
+        this.comment = "Comment"
     }.store()
 }
 
