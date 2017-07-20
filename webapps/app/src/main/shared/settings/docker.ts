@@ -1,4 +1,5 @@
 export const settings: Settings = {
+    reportingApiUrl: () => "https://" + window.location.host + "/reportingapi/v1",
     apiUrl: () => "https://" + window.location.host + "/api/v1",
     supportContact: "t.garske@imperial.ac.uk",
     teamcityServiceMessages: false,
@@ -9,5 +10,9 @@ export const settings: Settings = {
     contrib: {
         publicPath: "/contribution",
         requiresModellingGroupMembership: true
+    },
+    report: {
+        publicPath: "/reporting",
+        requiresModellingGroupMembership: false
     }
 };

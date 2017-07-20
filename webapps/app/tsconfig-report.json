@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+        "outDir": "./out/build/report",
+        "sourceMap": true,
+        "noImplicitAny": true,
+        "module": "commonjs",
+        "target": "es6",
+        "jsx": "react"
+    },
+    "include": [
+        "./src/@types/**/*",
+        "./src/main/report/*",
+        "./src/main/shared/*"
+    ]
+}
