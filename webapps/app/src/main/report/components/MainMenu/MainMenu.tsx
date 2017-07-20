@@ -2,7 +2,7 @@ import * as React from "react";
 import { ReportingPageWithHeader } from "../ReportingPageWithHeader";
 import {reportStore} from "../../stores/ReportStore";
 import {doNothing} from "../../../shared/Helpers";
-import {ReportList} from "../ReportList";
+import {ReportList} from "../Reports/ReportList";
 
 const menuStyles = require("./MainMenu.css");
 
@@ -14,7 +14,7 @@ export class MainMenu extends ReportingPageWithHeader<undefined> {
     }
 
     title() {
-        return <span>Main menu</span>;
+        return <span>Choose a report to view</span>;
     }
 
     renderPageContent() {
