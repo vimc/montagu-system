@@ -1,6 +1,6 @@
 import { alt } from "../../shared/alt";
 import { FetchActions } from "../../shared/actions/FetchActions";
-import {Version} from "../../shared/models/Report";
+import {Version} from "../../shared/models/reports/Report";
 
 interface Actions {
     setCurrentReport(name: string): string;

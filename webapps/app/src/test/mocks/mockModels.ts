@@ -1,6 +1,6 @@
 import * as models from "../../main/shared/models/Generated";
 import { ExtendedResponsibility, ExtendedResponsibilitySet } from "../../main/contrib/models/ResponsibilitySet";
-import {Version} from "../../main/shared/models/Report";
+import {Version} from "../../main/shared/models/reports/Report";
 
 let counter = 0;
 export function mockDisease(properties?: any): models.Disease {

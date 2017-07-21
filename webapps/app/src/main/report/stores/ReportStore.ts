@@ -5,7 +5,7 @@ import StoreModel = AltJS.StoreModel;
 import {reportActions} from "../actions/ReportActions";
 import {ReportSource} from "../sources/ReportSource";
 import {ILookup} from "../../shared/models/Lookup";
-import {Version} from "../../shared/models/Report";
+import {Version} from "../../shared/models/reports/Report";
 
 export interface ReportStoreState extends RemoteContent {
     reports: string[];

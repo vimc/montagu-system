@@ -2,7 +2,7 @@ import SourceModel = AltJS.SourceModel;
 import { reportActions } from "../actions/ReportActions";
 import {ReportStoreState} from "../stores/ReportStore";
 import {ReportingSource} from "./ReportingSource";
-import {Version} from "../../shared/models/Report";
+import {Version} from "../../shared/models/reports/Report";
 
 export class ReportSource extends ReportingSource<ReportStoreState> {
 

@@ -1,7 +1,7 @@
 import { alt } from "../../../main/shared/alt";
 import {reportStore} from "../../../main/report/stores/ReportStore";
 import {ReportingFetchHelper} from "./ReportingFetchHelper";
-import {Version} from "../../../main/shared/models/Report";
+import {Version} from "../../../main/shared/models/reports/Report";
 import {mockVersion} from "../../mocks/mockModels";
 
 describe("ReportStore.fetchReports", () => {

@@ -6,6 +6,7 @@ import { MainMenu } from "./MainMenu/MainMenu";
 import { ReportingNoRouteFoundPage} from "./ReportingNoRouteFoundPage";
 import {ReportingLoginPage} from "./ReportingLoginPage";
 import {ViewVersionsPage} from "./Versions/ViewVersionsPage";
+import {VersionInfoPage} from "./Versions/VersionInfoPage";
 
 interface RouterProps {
     loggedIn: boolean;
@@ -20,6 +21,7 @@ export class ReportingRouter extends Router<RouterProps> {
         if (props.loggedIn) {
             map('/', MainMenu);
             map('/:name/', ViewVersionsPage);
+            map('/:report/:version', VersionInfoPage);
             map('*', ReportingNoRouteFoundPage);
         } else {
             map('*', ReportingLoginPage);
