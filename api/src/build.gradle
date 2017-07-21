@@ -63,7 +63,9 @@ task loadPropertiesTask() {
 task startDatabase(dependsOn: ':loadPropertiesTask') {
     doLast {
         String portBinding = rootProject.ext.props.get('testdb_external_port') + ':' +  rootProject.ext.props.get('testdb_exposed_port')
-        String image = rootProject.ext.props.get('testdb_image')
+        String dbVersion = file("config/db_version").text
+        String image = rootProject.ext.props.get('testdb_image') + ":" + dbVersion
+        println "Database image: " + image
         exec {
             commandLine 'docker', 'pull', image
         }
