@@ -20,6 +20,7 @@ object StandardRoles
                 Role("coverage-provider", null, "Upload coverage data", listOf("coverage.read", "coverage.write")),
                 Role("user-manager", null, "Manage users and permissions", listOf("users.create", "users.edit-all", "roles.read", "roles.write", "modelling-groups.write")),
                 Role("estimates-reviewer", null, "Review uploaded burden estimates", listOf("estimates.review", "estimates.read-unfinished")),
+                Role("reports-reviewer", null, "Choose which reports to publish (and can view unpublished reports)", listOf("reports.read", "reports.review")),
                 Role("member", "modelling-group", "Member of the group", listOf("estimates.read-unfinished", "coverage.read")),
                 Role("uploader", "modelling-group", "Upload burden estimates", listOf("estimates.write")),
                 Role("submitter", "modelling-group", "Mark burden estimates as complete", listOf("estimates.submit")),
