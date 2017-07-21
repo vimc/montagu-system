@@ -2,6 +2,8 @@ set -ex
 # Make the build environment image that is shared between multiple build targets
 ./scripts/make-build-env.sh
 
+echo "Working dir: $PWD"
+
 # Setup the database on a named network
 db_version=$(<src/config/db_version)
 docker network create test-data
