@@ -1,4 +1,4 @@
-set -e
+set -ex
 # Make the build environment image that is shared between multiple build targets
 ./scripts/make-build-env.sh
 
