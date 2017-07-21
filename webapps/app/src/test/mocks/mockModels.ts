@@ -150,10 +150,12 @@ export function mockVersion(properties?: any): Version {
 
     const template: Version = {
         id: "vId",
-        name: "touchstone",
+        name: "testname",
+        displayname : "testdisplayname",
         date: "2017-01-01",
         data: {},
-        artefacts: {},
+        hash_data: {},
+        artefacts: [{}],
         resources: {},
         parameters: {}
     };
