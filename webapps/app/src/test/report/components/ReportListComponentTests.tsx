@@ -3,8 +3,8 @@ import { expect } from "chai";
 import { shallow } from "enzyme";
 
 import {ReportListComponent} from "../../../main/report/components/Reports/ReportList";
-import {alt} from "../../../../../contrib/src/main/shared/alt";
 import {ReportListItem} from "../../../main/report/components/Reports/ReportListItem";
+import {alt} from "../../../main/shared/alt";
 
 describe("ReportListComponent", () => {
     it("can get props from stores", () => {
