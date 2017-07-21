@@ -1,5 +1,5 @@
 import * as React from "react";
-import {mount, shallow} from "enzyme";
+import {mount} from "enzyme";
 import {VersionListItem} from "../../../main/report/components/Versions/VersionListItem";
 import {expect} from "chai";
 

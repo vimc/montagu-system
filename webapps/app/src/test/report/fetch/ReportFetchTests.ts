@@ -1,4 +1,3 @@
-import { doNothing } from "../../../main/shared/Helpers";
 import { alt } from "../../../main/shared/alt";
 import {reportStore} from "../../../main/report/stores/ReportStore";
 import {ReportingFetchHelper} from "./ReportingFetchHelper";

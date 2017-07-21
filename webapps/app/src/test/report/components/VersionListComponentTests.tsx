@@ -1,6 +1,6 @@
 import * as React from "react";
 import { expect } from "chai";
-import {alt} from "../../../../../contrib/src/main/shared/alt";
+import {alt} from "../../../main/shared/alt";
 import {VersionListComponent} from "../../../main/report/components/Versions/VersionList";
 
 describe("VersionListComponent", () => {
