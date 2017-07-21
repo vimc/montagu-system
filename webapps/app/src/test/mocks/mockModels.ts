@@ -1,5 +1,6 @@
 import * as models from "../../main/shared/models/Generated";
 import { ExtendedResponsibility, ExtendedResponsibilitySet } from "../../main/contrib/models/ResponsibilitySet";
+import {Version} from "../../main/shared/models/Report";
 
 let counter = 0;
 export function mockDisease(properties?: any): models.Disease {
@@ -143,4 +144,18 @@ export function mockUser(properties?: any): models.User {
         roles: [ mockRole(), mockRole() ],
         last_logged_in: null
     }, properties);
+}
+
+export function mockVersion(properties?: any): Version {
+
+    const template: Version = {
+        id: "vId",
+        name: "touchstone",
+        date: "2017-01-01",
+        data: {},
+        artefacts: {},
+        resources: {},
+        parameters: {}
+    };
+    return Object.assign(template, properties);
 }

@@ -1,12 +1,18 @@
 import { alt } from "../../shared/alt";
 import { FetchActions } from "../../shared/actions/FetchActions";
+import {Version} from "../../shared/models/Report";
 
 interface Actions {
     setCurrentReport(name: string): string;
     beginFetchReports() : boolean;
-    updateReports(reports: string[]) : string[]
+    updateReports(reports: string[]) : string[];
+
     beginFetchVersions() : boolean;
-    updateVersions(versions: string[]) : string[]
+    updateVersions(versions: string[]) : string[];
+    setCurrentVersion(version: string) : string;
+    beginFetchVersionDetails(): boolean;
+    updateVersionDetails(versionDetails: Version): Version;
+
 }
 
 class ReportActions extends FetchActions<string[]> implements Actions {
@@ -29,6 +35,18 @@ class ReportActions extends FetchActions<string[]> implements Actions {
 
     updateVersions(data: string[]) {
         return data;
+    }
+
+    setCurrentVersion(version: string){
+        return version;
+    }
+
+    beginFetchVersionDetails(){
+        return true;
+    }
+
+    updateVersionDetails(versionDetails: Version){
+        return versionDetails;
     }
 
 }
