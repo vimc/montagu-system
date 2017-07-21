@@ -19,7 +19,7 @@ export class VersionInfoPage extends ReportingPageWithHeader<VersionInfoPageProp
     }
 
     title() {
-        return <span>{this.props.location.params.report}: {this.props.location.params.version}</span>;
+        return <span>{this.props.location.params.report}</span>;
     }
 
     renderPageContent() {
