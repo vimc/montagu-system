@@ -2,8 +2,6 @@ import * as React from "react";
 import {mount} from "enzyme";
 import {expect} from "chai";
 import {settings} from "../../../../main/shared/Settings";
-import {ArtefactsList} from "../../../../main/report/components/Artefacts/ArtefactsList";
-import {mockArtefact} from "../../../mocks/mockModels";
 import {DataLinks} from "../../../../main/report/components/Data/DataLinks";
 
 describe("DataLinks", () => {
