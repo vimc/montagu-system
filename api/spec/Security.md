@@ -26,6 +26,11 @@ This is manually kept in sync with [spec.md](Spec.md).
 * `users.create`
 * `vaccines.write`
 
+And for the reports API:
+
+* `reports.read`
+* `reports.review`
+
 ## Roles
 A role is defined by a `scope_prefix` and a `name`.
 
@@ -48,7 +53,7 @@ also with a numeric primary key.
             "name": "user",
             "scope_prefix": null,
             "description": "Log in",
-            "permissions": [ "can-login", "scenarios.read", "countries.read", "modelling-groups.read", "models.read", "touchstones.read", "responsibilities.read", "users.read", "estimates.read" ]
+            "permissions": [ "can-login", "scenarios.read", "countries.read", "modelling-groups.read", "models.read", "touchstones.read", "responsibilities.read", "users.read", "estimates.read", "reports.read" ]
         },
         {
             "name": "touchstone-preparer",
@@ -79,6 +84,12 @@ also with a numeric primary key.
             "scope_prefix": null,
             "description": "Review uploaded burden estimates",
             "permissions": [ "estimates.review", "estimates.read-unfinished" ]
+        },
+        {
+            "name": "reports-reviewer",
+            "scope_prefix": null,
+            "description": "Choose which reports to publish (and can view unpublished reports)",
+            "permissions": [ "reports.read", "reports.review" ]
         },
         {
             "name": "member",
