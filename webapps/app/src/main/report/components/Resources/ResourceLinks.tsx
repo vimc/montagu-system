@@ -2,26 +2,33 @@ import * as React from "react";
 import {ILookup} from "../../../shared/models/Lookup";
 import {settings} from "../../../shared/Settings";
 
-export class ResourceLinks extends React.Component<ILookup<string>, undefined> {
+interface ResourceLinksProps{
+    resources: ILookup<string>,
+    report: string,
+    version: string
+}
 
-    static buildUrl(type: string, hash: string): string {
-        return settings.reportingApiUrl() + "/data/"
-            + type + "/"
-            + hash;
+export class ResourceLinks extends React.Component<ResourceLinksProps, undefined> {
+
+    buildUrl(resource: string): string {
+        return settings.reportingApiUrl() + "/reports/"
+            + this.props.report + "/"
+            + this.props.version + "/resources/"
+            + resource
     }
 
     render() {
 
-        const keys = Object.getOwnPropertyNames(this.props);
+        const keys = Object.getOwnPropertyNames(this.props.resources);
 
         const links =
-            keys.map((key) => <div key={key}>
-                <a href={ResourceLinks.buildUrl("csv", key)}>{}</a>
-            </div>);
+            keys.map((key) => <li key={key}>
+                <a href={this.buildUrl(key)}>{key}</a>
+            </li>);
 
         if (links.length == 0)
             return <div>none</div>;
 
-        return <div>{links}</div>;
+        return <ul>{links}</ul>;
     }
 }

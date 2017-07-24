@@ -37,6 +37,8 @@ export class VersionDetailsComponent extends RemoteContentComponent<VersionProps
             + props.report + "/"
             + props.versionDetails.id + "/all/";
 
+        const version = props.versionDetails.id;
+
         return <table>
             <thead>
             <tr>
@@ -57,10 +59,10 @@ export class VersionDetailsComponent extends RemoteContentComponent<VersionProps
                 <td>{(new Date(props.versionDetails.date)).toISOString().slice(0, 10)}</td>
                 <td><ParameterList {...props.versionDetails.parameters} /></td>
                 <td><DataLinks {...props.versionDetails.hash_data} /></td>
-                <td><ResourceLinks {...props.versionDetails.resources}/></td>
+                <td><ResourceLinks resources={props.versionDetails.resources} report={props.report} version={version}/></td>
                 <td><ArtefactsList artefacts={props.versionDetails.artefacts}
                                    report={props.report}
-                                   version={props.versionDetails.id}/></td>
+                                   version={version}/></td>
             </tr>
             </tbody>
         </table>;

@@ -15,11 +15,11 @@ export class DataLinks extends React.Component<ILookup<string>, undefined> {
         const keys = Object.getOwnPropertyNames(this.props);
 
         const links =
-            keys.map((key) => <div key={key}>{key}
+            keys.map((key) => <li key={key}>{key}
                 <div> <a href={DataLinks.buildUrl("csv", this.props[key])}>Download csv</a></div>
                 <div><a href={DataLinks.buildUrl("rds", this.props[key])}>Download rds</a></div>
-            </div>);
+            </li>);
 
-        return <div>{links}</div>;
+        return <ul>{links}</ul>;
     }
 }
