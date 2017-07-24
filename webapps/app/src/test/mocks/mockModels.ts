@@ -1,6 +1,7 @@
 import * as models from "../../main/shared/models/Generated";
 import { ExtendedResponsibility, ExtendedResponsibilitySet } from "../../main/contrib/models/ResponsibilitySet";
 import {Version} from "../../main/shared/models/reports/Report";
+import {Artefact} from "../../main/shared/models/reports/Artefact";
 
 let counter = 0;
 export function mockDisease(properties?: any): models.Disease {
@@ -159,5 +160,15 @@ export function mockVersion(properties?: any): Version {
         resources: {},
         parameters: {}
     };
+    return Object.assign(template, properties);
+}
+
+export function mockArtefact(properties?: any): Artefact{
+
+    const template: Artefact = {
+        filename : "filename.csv",
+        description: "description"
+    };
+
     return Object.assign(template, properties);
 }

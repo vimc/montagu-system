@@ -17,9 +17,9 @@ export class ArtefactItem extends React.Component<ArtefactProps, undefined> {
             + this.props.version + "/artefacts/"
             + this.props.filename;
 
-        return <div><a key={this.props.filename}
+        return <li><a key={this.props.filename}
                        href={url}>{this.props.filename}</a>
-            <div>({this.props.description})</div></div>
+            <div>({this.props.description})</div></li>
 
     }
 }

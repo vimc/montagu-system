@@ -1,8 +1,8 @@
 import * as React from "react";
 import {mount} from "enzyme";
 import {expect} from "chai";
-import {ResourceLinks} from "../../../main/report/components/Resources/ResourceLinks";
-import {settings} from "../../../main/shared/Settings";
+import {ResourceLinks} from "../../../../main/report/components/Resources/ResourceLinks";
+import {settings} from "../../../../main/shared/Settings";
 
 describe("ResourceLinks", () => {
     it("can render", () => {
