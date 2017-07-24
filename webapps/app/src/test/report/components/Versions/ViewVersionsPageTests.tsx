@@ -5,7 +5,6 @@ import { mockLocation } from "../../../mocks/mocks";
 import { checkAsync } from "../../../testHelpers";
 import {ViewVersionsPage, ViewVersionsPageProps} from "../../../../main/report/components/Versions/ViewVersionsPage";
 import {reportStore} from "../../../../main/report/stores/ReportStore";
-import {reportActions} from "../../../../main/report/actions/ReportActions";
 import {expectOneAction} from "../../../actionHelpers";
 
 describe("ViewVersionsPage", () => {
