@@ -31,7 +31,6 @@ describe("ViewVersionsPage", () => {
 
 
     it("triggers fetchVersions on load", (done: DoneCallback) => {
-        const spy = sandbox.dispatchSpy();
         const fetchVersions = sandbox.sinon
             .stub(reportStore, "fetchVersions")
             .returns(Promise.resolve(null));

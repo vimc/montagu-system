@@ -5,17 +5,17 @@ import {reportStore} from "../../stores/ReportStore";
 import {connectToStores} from "../../../shared/alt";
 import {VersionListItem} from "./VersionListItem";
 
-interface VersionProps extends RemoteContent {
+export interface VersionListProps extends RemoteContent {
     versions: string[],
     report: string
 }
 
-export class VersionListComponent extends RemoteContentComponent<VersionProps> {
+export class VersionListComponent extends RemoteContentComponent<VersionListProps> {
     static getStores() {
         return [reportStore];
     }
 
-    static getPropsFromStores(): VersionProps {
+    static getPropsFromStores(): VersionListProps {
 
         const s = reportStore.getState();
 
@@ -26,7 +26,7 @@ export class VersionListComponent extends RemoteContentComponent<VersionProps> {
         };
     }
 
-    renderContent(props: VersionProps) {
+    renderContent(props: VersionListProps) {
 
         const items = props.versions
             .sort((a, b) => a.localeCompare(b))
