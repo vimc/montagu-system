@@ -10,7 +10,7 @@ import {ResourceLinks} from "../Resources/ResourceLinks";
 import {settings} from "../../../shared/Settings";
 import {ArtefactsList} from "../Artefacts/ArtefactsList";
 
-interface VersionProps extends RemoteContent {
+export interface VersionProps extends RemoteContent {
     versionDetails: Version,
     report: string
 }
