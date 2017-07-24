@@ -1,6 +1,9 @@
-set -e
+#!/usr/bin/env bash
+set -ex
 
 export MONTAGU_API_VERSION=$(git rev-parse --short HEAD)
+export MONTAGU_DB_VERSION=$(<src/config/db_version)
+
 cert_tool_version=59657b2
 
 # Run API and DB
