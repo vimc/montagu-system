@@ -15,7 +15,7 @@ object KeyHelper
     private val logger: Logger = LoggerFactory.getLogger(KeyHelper::class.java)
 
     val keyPair by lazy {
-        if (File(keyPath).exists())
+        if (File(keyPath, "private_key.der").exists())
         {
             loadKeyPair()
         }

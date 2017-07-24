@@ -1,29 +1,20 @@
 #!/usr/bin/env bash
-./gradlew :stopDatabase
+set -ex
 
-# create directory if it doesnt already exist
-if [ ! -d "/etc/montagu/api/token_key" ] 
+# delete directory if it already exists
+if [ -d "/etc/montagu/api/token_key" ] 
 then
-	mkdir /etc/montagu/api/token_key
+   rm /etc/montagu/api/token_key -r
 fi
 
-# create key if it doesnt already exist
-if [ ! -f "/etc/montagu/api/token_key/mykey.pem" ]
-then 
-	openssl genrsa -out /etc/montagu/api/token_key/mykey.pem 512
-fi
+mkdir /etc/montagu/api/token_key
 
-# create RSA DER format private key
-if [ ! -f "/etc/montagu/api/token_key/private_key.der" ]
-then 
-openssl pkcs8 -topk8 -inform PEM -outform DER -in  /etc/montagu/api/token_key/mykey.pem -out  /etc/montagu/api/token_key/private_key.der -nocrypt
-fi
+docker run --rm \
+    -v /etc/montagu/api/token_key:/workspace \
+    docker.montagu.dide.ic.ac.uk:5000/montagu-cert-tool:master \
+    gen-keypair /workspace
 
-# create RSA DER format public key
-if [ ! -f "/etc/montagu/api/token_key/public_key.der" ]
-then 
-openssl rsa -in /etc/montagu/api/token_key/mykey.pem -pubout -outform DER -out /etc/montagu/api/token_key/public_key.der
-fi
+./gradlew :stopDatabase
 
 ./gradlew :startDatabase :generateTestData \
 && ./user.sh add "Test User" test.user test@example.com password \
