@@ -1,15 +1,11 @@
-import { FetchTestConfig, FetchHelperConfig, FetchHelper } from "../../shared/fetch/helpers";
-import { expect } from "chai";
-import {expectNoActions, getActions} from "../../actionHelpers";
-import {mockResult, promiseJSON} from "../../mocks/mockRemote";
-import {Sandbox} from "../../Sandbox";
-import {ErrorInfo, Result } from "../../../main/shared/models/Generated";
-import { Notification } from "../../../main/shared/actions/NotificationActions";
-import {ReportingFetcher} from "../../../main/report/sources/ReportingFetcher";
+import { FetchHelper, FetchHelperConfig } from "../../shared/fetch/helpers";
+import { promiseJSON } from "../../mocks/mockRemote";
+import { Result } from "../../../main/shared/models/Generated";
+import { ReportingFetcher } from "../../../main/report/sources/ReportingFetcher";
 import fetcher, { FetchOptions } from "../../../main/shared/sources/Fetcher";
 import { SinonSpy } from "sinon";
 
-function mockFetcherResponse<T>(data?: Result, errorMessage?: string) {
+function mockReportingFetcherResponse<T>(data?: Result, errorMessage?: string) {
     data = data || {
             status: "success",
             data: {},
@@ -42,5 +38,9 @@ export class ReportingFetchHelper<TPayload> extends FetchHelper<TPayload> {
 
     getFetcherSpy(): SinonSpy {
         return this.sandbox.sinon.spy(fetcher.fetcher, "fetchFromReportingApi");
+    }
+
+    mockFetcherResponse(payload: Result, errorMessage?: string) {
+        mockReportingFetcherResponse(payload, errorMessage);
     }
 }

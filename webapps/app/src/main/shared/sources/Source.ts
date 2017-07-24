@@ -50,7 +50,7 @@ export abstract class Source<TState> {
     }
 
     protected fetchRemoteData(url: string): Promise<Response> {
-        return fetcher.fetcher.fetch()
+        return fetcher.fetcher.fetch(url)
     }
 
     protected processResponse<TModel>(promise: Promise<Response>): Promise<any> {
