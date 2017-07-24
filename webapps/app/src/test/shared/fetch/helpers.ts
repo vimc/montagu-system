@@ -6,6 +6,7 @@ import { expectNoActions, getActions } from "../../actionHelpers";
 import { mockFetcher, mockFetcherResponse, mockResult } from "../../mocks/mockRemote";
 import fetcher from "../../../main/shared/sources/Fetcher";
 import { Notification } from "../../../main/shared/actions/NotificationActions";
+import { SinonSpy, SinonSpyStatic } from "sinon";
 
 export interface FetchHelperConfig<TPayload> {
     prepareForFetch: () => void;
@@ -32,7 +33,7 @@ export class FetchHelper<TPayload> {
 
     testFetchWithMockedResponse({ done, payload, errorMessage, expectedAction }: FetchTestConfig) {
         mockFetcherResponse(payload, errorMessage);
-        const fetcherSpy = this.sandbox.sinon.spy(fetcher.fetcher, "fetch");
+        const fetcherSpy = this.getFetcherSpy();
         const dispatchSpy = this.sandbox.dispatchSpy();
         const handler = () => {
             try {
@@ -48,6 +49,10 @@ export class FetchHelper<TPayload> {
             }
         };
         this.config.triggerFetch().then(handler, handler);
+    }
+
+    getFetcherSpy(): SinonSpy {
+        return this.sandbox.sinon.spy(fetcher.fetcher, "fetch");
     }
 
     addTestsToMocha() {
@@ -129,7 +134,7 @@ export class FetchHelper<TPayload> {
         if (this.config.prepareForCachedFetch) {
             it("does not fetch when data is present in cache", (done: DoneCallback) => {
                 mockFetcherResponse(mockResult(true));
-                const fetcherSpy = this.sandbox.sinon.spy(fetcher.fetcher, "fetch");
+                const fetcherSpy = this.getFetcherSpy();
 
                 this.config.prepareForCachedFetch();
                 const dispatchSpy = this.sandbox.dispatchSpy();
