@@ -7,7 +7,7 @@ then
    rm /etc/montagu/api/token_key -r
 fi
 
-mkdir /etc/montagu/api/token_key
+mkdir -p /etc/montagu/api/token_key
 
 docker run --rm \
     -v /etc/montagu/api/token_key:/workspace \
