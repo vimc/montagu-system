@@ -10,21 +10,23 @@ import {
 import { authActions } from "../actions/AuthActions";
 import AltStore = AltJS.AltStore;
 
-interface FetchConfig<TState, TModel> {
+export interface FetchConfig<TState, TModel> {
     success: (data: TModel) => void;
     loading: (x: any) => void;
     isCached: CacheCheck<TState>;
 }
 
-type UrlBuilder<TState> = (state: TState) => string;
+export type UrlBuilder<TState> = (state: TState) => string;
 type CacheCheck<TState> = (state: TState, ...args: any[]) => boolean;
 
 export abstract class Source<TState> {
+
     protected doFetch<TModel>(urlFragment: UrlBuilder<TState>, config: FetchConfig<TState, TModel>): AltJS.SourceModel<TModel> {
         const handler = this.processResponse;
+        const remoteFetch = this.fetchRemoteData;
         const source: AltJS.SourceModel<TModel> = {
             remote(state: TState) {
-                return handler(fetcher.fetcher.fetch(urlFragment(state)))
+                return handler(remoteFetch(urlFragment(state)))
                     .catch((error: any) => {
                         // Because of transpilation to ES5, we cannot test for instanceof NotificationException
                         if (error.hasOwnProperty("notification")) {
@@ -45,6 +47,10 @@ export abstract class Source<TState> {
         };
         source.shouldFetch = ((state: TState) => !config.isCached(state)) as any;
         return source;
+    }
+
+    protected fetchRemoteData(url: string): Promise<Response> {
+        return fetcher.fetcher.fetch(url)
     }
 
     protected processResponse<TModel>(promise: Promise<Response>): Promise<any> {
