@@ -4,10 +4,10 @@ import {settings} from "../../../shared/Settings";
 
 export class DataLinks extends React.Component<ILookup<string>, undefined> {
 
-    static buildUrl(type: string, hash: string): string {
+    buildUrl(type: string, key: string): string {
         return settings.reportingApiUrl() + "/data/"
             + type + "/"
-            + hash;
+            + this.props[key];
     }
 
     render() {
@@ -16,8 +16,8 @@ export class DataLinks extends React.Component<ILookup<string>, undefined> {
 
         const links =
             keys.map((key) => <li key={key}>{key}
-                <div> <a href={DataLinks.buildUrl("csv", this.props[key])}>Download csv</a></div>
-                <div><a href={DataLinks.buildUrl("rds", this.props[key])}>Download rds</a></div>
+                <div> <a href={this.buildUrl("csv", key)}>Download csv</a></div>
+                <div><a href={this.buildUrl("rds", key)}>Download rds</a></div>
             </li>);
 
         return <ul>{links}</ul>;

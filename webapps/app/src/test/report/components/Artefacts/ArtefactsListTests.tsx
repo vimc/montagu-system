@@ -1,12 +1,12 @@
 import * as React from "react";
-import {mount} from "enzyme";
+import {shallow} from "enzyme";
 import {expect} from "chai";
 import {settings} from "../../../../main/shared/Settings";
 import {ArtefactsList} from "../../../../main/report/components/Artefacts/ArtefactsList";
 import {mockArtefact} from "../../../mocks/mockModels";
 
 describe("ArtefactsList", () => {
-    it("can render", () => {
+    it("renders list of ArtefactItems", () => {
 
         const fakeArtefactsArray = [
             {
@@ -16,20 +16,15 @@ describe("ArtefactsList", () => {
                 "csv": mockArtefact()
             }];
 
-        const rendered = mount(<ArtefactsList report="reportname"
-                                              version="versionname"
+        const rendered = shallow(<ArtefactsList report="reportname"
+                                              version="v1"
                                               artefacts={fakeArtefactsArray}/>);
 
-        expect(rendered.find("li").length).to.eq(2);
+        expect(rendered.find("ArtefactItem").length).to.eq(2);
+        expect(rendered.find("ArtefactItem").at(0).prop("filename")).to.eq("file.csv");
+        expect(rendered.find("ArtefactItem").at(0).prop("description")).to.eq("a file");
+        expect(rendered.find("ArtefactItem").at(0).prop("version")).to.eq("v1");
 
-        const item = rendered.find("li").at(0);
-        const firstLink = item.find("a");
-
-        expect(firstLink.prop("href")).to.eq(settings.reportingApiUrl() + "/reports/reportname/versionname/artefacts/file.csv");
-        expect(firstLink.text()).to.eq("file.csv");
-
-        const firstDescription = item.find("div");
-        expect(firstDescription.text()).to.eq("(a file)");
 
     });
 

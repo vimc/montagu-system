@@ -15,19 +15,12 @@ describe("ParametersList", () => {
         const renderedInnerDivs = mount(<ParameterList {...fakeParams}/>).find("div > div");
 
         expect(renderedInnerDivs.length).to.eq(2);
-
-        const first = renderedInnerDivs.at(0);
-        expect(first.text()).to.eq("nmin : 0");
-
-        const second = renderedInnerDivs.at(1);
-        expect(second.text()).to.eq("nmax : 1000");
+        expect(renderedInnerDivs.at(0).text()).to.eq("nmin : 0");
+        expect(renderedInnerDivs.at(1).text()).to.eq("nmax : 1000");
     });
 
     it("show 'none' if no params", () => {
-
-
         const rendered = mount(<ParameterList {...{}}/>);
-
         expect(rendered.text()).to.eq("none");
     });
 

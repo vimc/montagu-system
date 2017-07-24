@@ -1,5 +1,5 @@
 import * as sinon from 'sinon';
-import {mount, shallow, MountRendererProps, ReactWrapper, ShallowWrapper} from "enzyme";
+import {mount, MountRendererProps, ReactWrapper} from "enzyme";
 import { ReactElement } from "react";
 import { alt } from "../main/shared/alt";
 
