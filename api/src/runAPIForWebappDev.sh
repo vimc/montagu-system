@@ -14,7 +14,7 @@ docker run --rm \
     docker.montagu.dide.ic.ac.uk:5000/montagu-cert-tool:master \
     gen-keypair /workspace
 
-./gradlew :stopDatabase
+./gradlew :stopDatabase || true
 
 ./gradlew :startDatabase :generateTestData
 
