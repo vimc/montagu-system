@@ -1,7 +1,20 @@
 #!/usr/bin/env bash
 set -ex
 
-./gradlew :stopDatabase
+# delete directory if it already exists
+if [ -d "/etc/montagu/api/token_key" ] 
+then
+   rm /etc/montagu/api/token_key -r
+fi
+
+mkdir -p /etc/montagu/api/token_key
+
+docker run --rm \
+    -v /etc/montagu/api/token_key:/workspace \
+    docker.montagu.dide.ic.ac.uk:5000/montagu-cert-tool:master \
+    gen-keypair /workspace
+
+./gradlew :stopDatabase || true
 
 ./gradlew :startDatabase :generateTestData
 
