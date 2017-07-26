@@ -31,10 +31,13 @@ docker build -f docker/run.dockerfile \
     --build-arg APP_NAME=admin \
     .
 
-id=$registry/$contrib_name:$git_id
-echo "Pushing $id"
-docker push $id
+function push {
+	id=$1
+	echo "Pushing $id"
+	docker push $id
+}
 
-id=$registry/$admin_name:$git_id
-echo "Pushing $id"
-docker push $id
+push $registry/$contrib_name:$git_id
+push $registry/$contrib_name:$git_branch
+push $registry/$admin_name:$git_id
+push $registry/$admin_name:$git_branch
