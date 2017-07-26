@@ -1,6 +1,8 @@
 import { alt } from "../../../main/shared/alt";
 import {reportStore} from "../../../main/report/stores/ReportStore";
 import {ReportingFetchHelper} from "./ReportingFetchHelper";
+import {Version} from "../../../main/shared/models/reports/Report";
+import {mockVersion} from "../../mocks/mockModels";
 
 describe("ReportStore.fetchReports", () => {
     new ReportingFetchHelper<string[]>({
@@ -47,6 +49,34 @@ describe("ReportStore.fetchVersions", () => {
         },
         triggerFetch: () => reportStore.fetchVersions(),
         expectedURL: "/reports/testname/"
+    }).addTestsToMocha();
+
+});
+
+
+describe("ReportStore.fetchVersionDetails", () => {
+    new ReportingFetchHelper<Version>({
+        makePayload: () => mockVersion(),
+        prepareForFetch:() => {
+            alt.bootstrap(JSON.stringify({
+                ReportStore: {
+                    currentReport: "testname",
+                    currentVersion: "testversion",
+                    versionDetails: {}
+                }
+            }));
+        },
+        prepareForCachedFetch: () => {
+            alt.bootstrap(JSON.stringify({
+                ReportStore: {
+                    currentReport: "testname",
+                    currentVersion: "testversion",
+                    versionDetails: { "testversion": mockVersion() }
+                }
+            }))
+        },
+        triggerFetch: () => reportStore.fetchVersionDetails(),
+        expectedURL: "/reports/testname/testversion/"
     }).addTestsToMocha();
 
 });

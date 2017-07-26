@@ -1,6 +1,6 @@
 import * as React from "react";
 import {InternalLink} from "../../../shared/components/InternalLink";
-import {ReportName} from "../../../shared/models/Report";
+import {ReportName} from "../../../shared/models/reports/Report";
 
 export class ReportListItem extends React.Component<ReportName, undefined> {
     render() {

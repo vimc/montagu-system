@@ -5,23 +5,29 @@ import StoreModel = AltJS.StoreModel;
 import {reportActions} from "../actions/ReportActions";
 import {ReportSource} from "../sources/ReportSource";
 import {ILookup} from "../../shared/models/Lookup";
+import {Version} from "../../shared/models/reports/Report";
 
 export interface ReportStoreState extends RemoteContent {
     reports: string[];
     versions: ILookup<string[]>;
     currentReport: string;
+    currentVersion: string;
+    versionDetails: ILookup<Version>;
 }
 
 export interface ReportStoreInterface extends AltJS.AltStore<ReportStoreState> {
     fetchReports(): Promise<string[]>;
     fetchVersions(): Promise<string[]>;
+    fetchVersionDetails(): Promise<Version>;
 }
 
 class ReportStore
     extends AbstractStore<ReportStoreState, ReportStoreInterface> {
     reports: string[];
     versions: ILookup<string[]>;
+    versionDetails: ILookup<Version>;
     currentReport: string;
+    currentVersion: string;
     ready: boolean;
 
     constructor() {
@@ -29,9 +35,14 @@ class ReportStore
         this.bindListeners({
             handleBeginFetchReports: reportActions.beginFetchReports,
             handleUpdateReports: reportActions.updateReports,
+            handleSetCurrentReport: reportActions.setCurrentReport,
+
             handleBeginFetchVersions: reportActions.beginFetchVersions,
             handleUpdateVersions: reportActions.updateVersions,
-            handleSetCurrentReport: reportActions.setCurrentReport
+            handleSetCurrentVersion: reportActions.setCurrentVersion,
+
+            handleBeginFetchVersionDetails: reportActions.beginFetchVersionDetails,
+            handleUpdateVersionDetails: reportActions.updateVersionDetails
         });
         this.registerAsync(new ReportSource());
     }
@@ -41,6 +52,8 @@ class ReportStore
             reports: [],
             versions: {},
             currentReport: null,
+            currentVersion: null,
+            versionDetails: {},
             ready: false
         };
     }
@@ -56,17 +69,33 @@ class ReportStore
     }
 
     handleSetCurrentReport(name: string) {
+
         this.currentReport = name;
     }
 
-    handleBeginFetchVersions(name: string) {
+    handleBeginFetchVersions() {
         this.ready = false;
-        delete this.versions[name];
+        delete this.versions[this.currentReport];
     }
 
     handleUpdateVersions(versions: string[]) {
         this.versions[this.currentReport] = versions;
         this.ready = true;
+    }
+
+    handleSetCurrentVersion(version: string) {
+        this.currentVersion = version;
+    }
+
+    handleBeginFetchVersionDetails(){
+        this.ready = false;
+        delete this.versionDetails[this.currentVersion];
+    }
+
+    handleUpdateVersionDetails(versionDetails: Version){
+        this.versionDetails[this.currentVersion] = versionDetails;
+        this.ready = true;
+
     }
 
 

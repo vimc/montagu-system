@@ -1,6 +1,6 @@
 import * as React from "react";
 import {InternalLink} from "../../../shared/components/InternalLink";
-import { VersionName} from "../../../shared/models/Report";
+import { VersionName} from "../../../shared/models/reports/Report";
 
 export class VersionListItem extends React.Component<VersionName, undefined> {
     render() {
