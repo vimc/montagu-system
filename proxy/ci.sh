@@ -12,3 +12,4 @@ branch_tag=$registry/$name:$git_branch
 
 docker build -t $commit_tag -t $branch_tag .
 docker push $commit_tag
+docker push $branch_tag
