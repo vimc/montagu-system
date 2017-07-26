@@ -6,6 +6,7 @@ git_id=$2
 registry=docker.montagu.dide.ic.ac.uk:5000
 contrib_name=montagu-contrib-portal
 admin_name=montagu-admin-portal
+report_name=montagu-report-portal
 
 echo "Beginning webapp build with:"
 echo "Branch: $git_branch"
@@ -17,19 +18,20 @@ npm run test
 export MONTAGU_PORTAL_PROFILE=docker
 webpack
 
-echo "Building contribution portal image"
-docker build -f docker/run.dockerfile \
-    -t $registry/$contrib_name:$git_id \
-    -t $registry/$contrib_name:$git_branch \
-    --build-arg APP_NAME=contrib \
-    .
+function build {
+    image_name=$1
+    app_name=$2
+    echo "Building $app_name portal image"
+    docker build -f docker/run.dockerfile \
+        -t $registry/$image_name:$git_id \
+        -t $registry/$image_name:$git_branch \
+        --build-arg APP_NAME=$app_name \
+        .
+}
 
-echo "Building admin portal image"
-docker build -f docker/run.dockerfile \
-    -t $registry/$admin_name:$git_id \
-    -t $registry/$admin_name:$git_branch \
-    --build-arg APP_NAME=admin \
-    .
+build $contrib_name contrib
+build $admin_name admin
+build $report_name report
 
 function push {
 	id=$1
@@ -41,3 +43,5 @@ push $registry/$contrib_name:$git_id
 push $registry/$contrib_name:$git_branch
 push $registry/$admin_name:$git_id
 push $registry/$admin_name:$git_branch
+push $registry/$report_name:$git_id
+push $registry/$report_name:$git_branch
