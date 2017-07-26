@@ -16,11 +16,12 @@ docker build -t reverse-proxy .
 docker run -d \
 	-p "443:443" -p "80:80" \
 	--name reverse-proxy \
-	reverse-proxy 443
+	reverse-proxy 443 localhost
 
 docker cp workspace/certificate.pem reverse-proxy:/etc/montagu/proxy/
 docker cp workspace/ssl_key.pem reverse-proxy:/etc/montagu/proxy/
 rm -rf workspace
 
-echo "Reverse proxy is now running on port 443."
+sleep 2s
+docker logs reverse-proxy
 echo "Run 'docker stop reverse-proxy' to stop"

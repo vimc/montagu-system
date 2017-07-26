@@ -1,14 +1,19 @@
 #!/usr/bin/env bash
 set -e
 
-if [[ $# -eq 0 ]] ; then
-    echo "Please provide a port to listen on"
+if [ "$#" -eq 2 ]; then
+	port=$1
+	host=$2
+else
+    echo "Usage: PORT HOSTNAME"
+    echo "e.g. docker run ... 443 montagu.vaccineimpact.org"
     exit -1
 fi
 
-port=$1
-echo "Will listen on port $port"
-sed "s/_PORT_/$port/g" /etc/nginx/conf.d/montagu.conf.template > /etc/nginx/conf.d/montagu.conf
+echo "Will listen on port $port with hostname $host"
+sed -e "s/_PORT_/$port/g" \
+	-e "s/_HOST_/$host/g" \
+	/etc/nginx/conf.d/montagu.conf.template > /etc/nginx/conf.d/montagu.conf
 
 root="/etc/montagu/proxy"
 mkdir -p $root
