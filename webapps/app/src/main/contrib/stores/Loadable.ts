@@ -38,7 +38,3 @@ export function getFromLookup<T>(lookup: ILoadable<T>, index: string) {
         return null;
     }
 }
-import { getFromLookup, ILookup } from "../../shared/models/Lookup";
-export function getFromLoadable<T>(lookup: ILoadable<T>, index: string) {
-    if (lookup.loaded) {
-        return getFromLookup(lookup.content, index);
