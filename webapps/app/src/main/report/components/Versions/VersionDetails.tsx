@@ -9,6 +9,7 @@ import {DataLinks} from "../Data/DataLinks";
 import {ResourceLinks} from "../Resources/ResourceLinks";
 import {settings} from "../../../shared/Settings";
 import {ArtefactsList} from "../Artefacts/ArtefactsList";
+import { FileDownloadLink } from "../FileDownloadLink";
 
 export interface VersionProps extends RemoteContent {
     versionDetails: Version,
@@ -32,11 +33,8 @@ export class VersionDetailsComponent extends RemoteContentComponent<VersionProps
     }
 
     renderContent(props: VersionProps) {
-
-        const url = settings.reportingApiUrl() + "/reports/"
-            + props.report + "/"
-            + props.versionDetails.id + "/all/";
-
+        const p = props;
+        const url = `/reports/${p.report}/${p.versionDetails.id}/all/`;
         const version = props.versionDetails.id;
 
         return <table>
@@ -54,7 +52,7 @@ export class VersionDetailsComponent extends RemoteContentComponent<VersionProps
             <tr>
                 <td>
                     {props.versionDetails.id}
-                    <div><a href={url}>Download zip</a></div>
+                    <div><FileDownloadLink href={url}>Download zip</FileDownloadLink></div>
                 </td>
                 <td>{(new Date(props.versionDetails.date)).toISOString().slice(0, 10)}</td>
                 <td><ParameterList {...props.versionDetails.parameters} /></td>

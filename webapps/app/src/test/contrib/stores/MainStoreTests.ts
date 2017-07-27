@@ -6,7 +6,7 @@ import { mockDisease, mockModellingGroup } from "../../mocks/mockModels";
 import { mainStore } from "../../../main/contrib/stores/MainStore";
 import { diseaseActions } from "../../../main/contrib/actions/DiseaseActions";
 import { Disease, ModellingGroup } from "../../../main/shared/models/Generated";
-import { emptyLookup } from "../../../main/contrib/stores/Loadable";
+import { emptyLoadable } from "../../../main/contrib/stores/Loadable";
 import {modellingGroupActions} from "../../../main/shared/actions/ModellingGroupActions";
 
 describe("MainStore", () => {
@@ -25,8 +25,8 @@ describe("MainStore", () => {
         const state = mainStore.getState();
         expect(state).to.eql({
             ready: false,
-            diseases: emptyLookup<Disease>(),
-            modellingGroups: emptyLookup<ModellingGroup>()
+            diseases: emptyLoadable<Disease>(),
+            modellingGroups: emptyLoadable<ModellingGroup>()
         });
     });
 
@@ -45,7 +45,7 @@ describe("MainStore", () => {
                     d2: disease2,
                 }
             },
-            modellingGroups: emptyLookup<ModellingGroup>()
+            modellingGroups: emptyLoadable<ModellingGroup>()
         });
     });
 
@@ -57,7 +57,7 @@ describe("MainStore", () => {
         const state = mainStore.getState();
         expect(state).to.eql({
             ready: false,
-            diseases: emptyLookup<Disease>(),
+            diseases: emptyLoadable<Disease>(),
             modellingGroups: {
                 loaded: true,
                 content: {

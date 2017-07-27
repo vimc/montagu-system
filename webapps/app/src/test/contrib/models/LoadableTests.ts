@@ -1,13 +1,13 @@
 import { expect } from "chai";
 
-import { emptyLookup, getFromLookup, makeLookup } from "../../../main/contrib/stores/Loadable";
+import { emptyLoadable, getFromLoadable, makeLoadable } from "../../../main/contrib/stores/Loadable";
 import { mockDisease } from "../../mocks/mockModels";
 import { Disease } from "../../../main/shared/models/Generated";
 
 describe("Loadable", () => {
     it("can make lookup from array", () => {
         const diseases = [ mockDisease({ id: "d0" }), mockDisease({ id: "d1" }) ];
-        const x = makeLookup(diseases);
+        const x = makeLoadable(diseases);
         expect(x).to.eql({
             content: {
                 d0: diseases[0],
@@ -17,19 +17,19 @@ describe("Loadable", () => {
         });
     });
 
-    it("getFromLookup returns null if lookup is unloaded", () => {
-        const x = emptyLookup<Disease>();
-        expect(getFromLookup(x, "d0")).to.be.null;
+    it("getFromLoadable returns null if lookup is unloaded", () => {
+        const x = emptyLoadable<Disease>();
+        expect(getFromLoadable(x, "d0")).to.be.null;
     });
 
-    it("getFromLookup returns null if key doesn't exist", () => {
-        const x = makeLookup([ mockDisease({ id: "d0" }) ]);
-        expect(getFromLookup(x, "d1")).to.be.null;
+    it("getFromLoadable returns null if key doesn't exist", () => {
+        const x = makeLoadable([ mockDisease({ id: "d0" }) ]);
+        expect(getFromLoadable(x, "d1")).to.be.null;
     });
 
-    it("getFromLookup returns object with matching key", () => {
+    it("getFromLoadable returns object with matching key", () => {
         const disease = mockDisease({ id: "d0" });
-        const x = makeLookup([ disease ]);
-        expect(getFromLookup(x, "d0")).to.equal(disease);
+        const x = makeLoadable([ disease ]);
+        expect(getFromLoadable(x, "d0")).to.equal(disease);
     });
 });

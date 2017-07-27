@@ -17,7 +17,7 @@ import { responsibilityStore } from "../../../main/contrib/stores/Responsibility
 import { coverageSetActions } from "../../../main/contrib/actions/CoverageSetActions";
 import { coverageTokenActions } from "../../../main/contrib/actions/CoverageActions";
 import { modellingGroupActions } from "../../../main/shared/actions/ModellingGroupActions";
-import { makeLookup } from "../../../main/contrib/stores/Loadable";
+import { makeLoadable } from "../../../main/contrib/stores/Loadable";
 import { ModellingGroup } from "../../../main/shared/models/Generated";
 
 describe("ResponsibilityStore", () => {
@@ -47,7 +47,7 @@ describe("ResponsibilityStore", () => {
     it("modellingGroupActions.setCurrentModellingGroup sets current modelling group", () => {
         const group = mockModellingGroup();
         alt.bootstrap(JSON.stringify({
-            MainStore: { modellingGroups: makeLookup<ModellingGroup>([ group ]) }
+            MainStore: { modellingGroups: makeLoadable<ModellingGroup>([ group ]) }
         }));
         modellingGroupActions.setCurrentGroup(group.id);
         expect(responsibilityStore.getState().currentModellingGroup).to.eql(group);
@@ -114,7 +114,7 @@ describe("ResponsibilityStore", () => {
         const touchstoneB = mockTouchstone();
         alt.bootstrap(JSON.stringify({
             MainStore: {
-                modellingGroups: makeLookup([ groupA, groupB ])
+                modellingGroups: makeLoadable([ groupA, groupB ])
             },
             ResponsibilityStore: {
                 touchstones: [ touchstoneA, touchstoneB ],
@@ -191,7 +191,7 @@ describe("ResponsibilityStore", () => {
         const responsibility = mockExtendedResponsibility({}, scenario);
         const responsibilities = [ responsibility, mockResponsibility() ];
         alt.bootstrap(JSON.stringify({
-            MainStore: { modellingGroups: makeLookup([group]) },
+            MainStore: { modellingGroups: makeLoadable([group]) },
             ResponsibilityStore: {
                 touchstones: [ touchstone ],
                 currentModellingGroup: group,

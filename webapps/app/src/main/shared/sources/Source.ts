@@ -1,4 +1,3 @@
-import SourceModel = AltJS.SourceModel;
 import { ErrorInfo, Result } from "../models/Generated";
 import fetcher from "./Fetcher";
 import {
@@ -8,7 +7,6 @@ import {
     NotificationException
 } from "../actions/NotificationActions";
 import { authActions } from "../actions/AuthActions";
-import AltStore = AltJS.AltStore;
 
 export interface FetchConfig<TState, TModel> {
     success: (data: TModel) => void;

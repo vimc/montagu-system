@@ -1,23 +1,23 @@
-import {alt} from "../../shared/alt";
-import {FetchActions} from "../../shared/actions/FetchActions";
+import { alt } from "../../shared/alt";
+import { FetchActions } from "../../shared/actions/FetchActions";
+import { decodeOnetimeToken, OnetimeToken } from "../models/OnetimeToken";
 
 interface Actions {
-
-    beginFetchToken(url: string): boolean;
-    updateToken(token: string, url: string): any;
+    beginFetchToken(): boolean;
+    receiveToken(token: string): OnetimeToken;
 }
 
 class OnetimeTokenActions extends FetchActions<string[]> implements Actions {
-
-    beginFetchToken(url: string): boolean {
+    beginFetchToken(): boolean {
         return true;
     }
 
-    updateToken(token: string): any {
-        return token;
+    receiveToken(token: string): OnetimeToken {
+        return {
+            raw: token,
+            data: decodeOnetimeToken(token)
+        };
     }
-
-
 }
 
 export const onetimeTokenActions =
