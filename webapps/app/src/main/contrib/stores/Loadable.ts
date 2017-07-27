@@ -1,5 +1,5 @@
 import { HasId } from "../models/HasId"
-import { ILookup, getFromLookup } from "../../shared/models/Lookup";
+import { ILookup } from "../../shared/models/Lookup";
 
 export interface ILoadable<T> {
     content: ILookup<T>;
@@ -26,11 +26,19 @@ export function makeLoadable<T extends HasId>(items: T[]) {
     };
 }
 
-export function getFromLoadable<T>(loadable: ILoadable<T>, index: string) {
-    if (loadable.loaded) {
-        return getFromLookup(loadable.content, index);
+export function getFromLookup<T>(lookup: ILoadable<T>, index: string) {
+    if (lookup.loaded) {
+        if (lookup.content.hasOwnProperty(index)) {
+            return lookup.content[index];
+        } else {
+            return null;
+        }
     } else {
         console.warn(`Attempted to retrieve '${index}' from unloaded lookup`);
         return null;
     }
 }
+import { getFromLookup, ILookup } from "../../shared/models/Lookup";
+export function getFromLoadable<T>(lookup: ILoadable<T>, index: string) {
+    if (lookup.loaded) {
+        return getFromLookup(lookup.content, index);
