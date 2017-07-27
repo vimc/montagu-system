@@ -5,7 +5,7 @@ import { ContribFetcher } from "./sources/ContribFetcher";
 import fetcher from "../shared/sources/Fetcher";
 import { contribAuthStore } from "./stores/ContribAuthStore";
 
-require('file-loader?name=[name].[ext]!./index.html');
+require('./index.html');
 require('../shared/styles/fonts.css');
 require('../shared/styles/buttons.css');
 require('../shared/styles/common.css');

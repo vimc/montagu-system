@@ -1,5 +1,5 @@
 export const settings: Settings = {
-    reportingApiUrl: () => "https://" + window.location.host + "/reportingapi/v1",
+    reportingApiUrl: () => "https://" + window.location.host + "/reports/api/v1",
     apiUrl: () => "https://" + window.location.host + "/api/v1",
     supportContact: "t.garske@imperial.ac.uk",
     teamcityServiceMessages: false,
@@ -12,7 +12,7 @@ export const settings: Settings = {
         requiresModellingGroupMembership: true
     },
     report: {
-        publicPath: "/reporting",
+        publicPath: "/reports",
         requiresModellingGroupMembership: false
     }
 };

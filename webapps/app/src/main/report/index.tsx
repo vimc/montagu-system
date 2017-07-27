@@ -5,7 +5,7 @@ import fetcher from "../shared/sources/Fetcher";
 import { ReportingFetcher } from "./sources/ReportingFetcher";
 import { reportingAuthStore } from "./stores/ReportingAuthStore";
 
-require('file-loader?name=[name].[ext]!./index.html');
+require('./index.html');
 require('../shared/styles/fonts.css');
 require('../shared/styles/buttons.css');
 require('../shared/styles/common.css');
