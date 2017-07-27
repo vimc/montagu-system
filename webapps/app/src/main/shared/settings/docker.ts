@@ -12,7 +12,7 @@ export const settings: Settings = {
         requiresModellingGroupMembership: true
     },
     report: {
-        publicPath: "/reporting",
+        publicPath: "/reports",
         requiresModellingGroupMembership: false
     }
 };
