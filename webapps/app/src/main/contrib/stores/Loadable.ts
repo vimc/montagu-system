@@ -1,19 +1,19 @@
 import { HasId } from "../models/HasId"
-import { ILookup } from "../../shared/models/Lookup";
+import { getFromLookup, ILookup } from "../../shared/models/Lookup";
 
 export interface ILoadable<T> {
     content: ILookup<T>;
     loaded: boolean;
 }
 
-export function emptyLookup<T>(): ILoadable<T> {
+export function emptyLoadable<T>(): ILoadable<T> {
     return {
         content: null,
         loaded: false
     };
 }
 
-export function makeLookup<T extends HasId>(items: T[]) {
+export function makeLoadable<T extends HasId>(items: T[]) {
     const content: { [index: string]: T } = {};
     if (items) {
         items.forEach(x => {
@@ -26,13 +26,9 @@ export function makeLookup<T extends HasId>(items: T[]) {
     };
 }
 
-export function getFromLookup<T>(lookup: ILoadable<T>, index: string) {
+export function getFromLoadable<T>(lookup: ILoadable<T>, index: string) {
     if (lookup.loaded) {
-        if (lookup.content.hasOwnProperty(index)) {
-            return lookup.content[index];
-        } else {
-            return null;
-        }
+        return getFromLookup(lookup.content, index);
     } else {
         console.warn(`Attempted to retrieve '${index}' from unloaded lookup`);
         return null;
