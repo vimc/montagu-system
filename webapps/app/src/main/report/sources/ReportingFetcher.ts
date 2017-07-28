@@ -11,7 +11,7 @@ export class ReportingFetcher extends Fetcher {
 
     buildReportingURL(urlFragment: string): string {
         if (urlFragment.startsWith("/v1")) {
-            urlFragment = urlFragment.substring(3);
+            urlFragment = urlFragment.substring("/v1".length);
         }
         return settings.reportingApiUrl() + urlFragment;
     }

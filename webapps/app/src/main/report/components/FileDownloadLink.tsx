@@ -17,6 +17,9 @@ interface Props extends PublicProps {
     token: OneTimeToken;
 }
 
+// This is a component that needs to get data from its parent component (the 'href' prop) but also
+// from the stores (the 'token' prop). So in `getPropsFromStores` we pass through the `href` prop
+// unchanged, and also use it to determine which token to retrieve from the store.
 export class FileDownloadLinkComponent extends React.Component<Props, undefined> {
     static getStores() {
         return [oneTimeTokenStore]
@@ -76,4 +79,6 @@ export class FileDownloadLinkComponent extends React.Component<Props, undefined>
     }
 }
 
+// We cast this to a component with props of type `PublicProps`, as these are the subset of the props
+// that are not filled in from the stores
 export const FileDownloadLink = connectToStores(FileDownloadLinkComponent) as ComponentConstructor<PublicProps, any>;
