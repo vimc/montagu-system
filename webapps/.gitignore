@@ -2,8 +2,9 @@
 *.iml
 app/.tmp/*
 app/\.awcache/
-app/\.idea/misc.xml
+app/\.idea/dictionaries/
 app/\.idea/inspectionProfiles
+app/\.idea/misc.xml
 app/\.idea/modules.xml
 app/\.idea/typescript-compiler.xml
 app/\.idea/vcs.xml

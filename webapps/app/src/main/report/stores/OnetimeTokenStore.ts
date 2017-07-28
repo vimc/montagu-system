@@ -20,6 +20,9 @@ export interface OnetimeTokenStoreInterface extends AltJS.AltStore<OnetimeTokenS
 
 class OnetimeTokenStore extends AbstractStore<OnetimeTokenStoreState, OnetimeTokenStoreInterface> {
     tokens: ILookup<OnetimeToken>;
+    // This is a bit of a hack. Essentially, the Alt.JS Source system only lets us fetch based on store state,
+    // so we have this bit of state that we set just before invoking _fetchToken, so we can communicate which
+    // token we want to fetch.
     urlToFetchTokenFor: string;
 
     constructor() {
@@ -41,6 +44,8 @@ class OnetimeTokenStore extends AbstractStore<OnetimeTokenStoreState, OnetimeTok
 
     getToken(state: OnetimeTokenStoreState, url: string): OnetimeToken {
         url = ReportingFetcher.buildRelativeReportingURL(url);
+        console.log("DEBUG: Looking for " + url);
+        console.log("DEBUG: Lookup " + JSON.stringify(state.tokens));
         return getFromLookup(state.tokens, url);
     }
 
@@ -53,13 +58,12 @@ class OnetimeTokenStore extends AbstractStore<OnetimeTokenStoreState, OnetimeTok
 
     handleBeginFetchToken() {
         const url = this.urlToFetchTokenFor;
-        console.log("Beginning to get token for " + url);
         delete this.tokens[url];
     }
 
     handleReceiveToken(token: OnetimeToken){
         this.tokens[token.data.url] = token;
-        console.log("Got onetime token for " + token.data.url);
+        console.log("DEBUG: After receive: " + JSON.stringify(this.tokens));
     }
 }
 

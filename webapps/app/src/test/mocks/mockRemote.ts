@@ -1,6 +1,7 @@
 import { ErrorInfo, Result, ResultStatus } from "../../main/shared/models/Generated";
 import fetcher, { FetchOptions } from "../../main/shared/sources/Fetcher";
 import { AdminFetcher } from "../../main/admin/sources/AdminFetcher";
+import { ReportingFetcher } from "../../main/report/sources/ReportingFetcher";
 
 export function promiseJSON(data: any): Response {
     return {
@@ -10,22 +11,24 @@ export function promiseJSON(data: any): Response {
     } as Response;
 }
 
-export function mockFetcherResponse<T>(data?: Result, errorMessage?: string) {
+export function mockResponse(data?: Result, errorMessage?: string): Promise<Response> {
     data = data || {
         status: "success",
         data: {},
         errors: []
     };
 
-    const promise = new Promise<Response>(function (resolve, reject) {
+    return new Promise<Response>(function (resolve, reject) {
         if (errorMessage) {
             reject(errorMessage);
         } else {
             resolve(promiseJSON(data));
         }
     });
+}
 
-    mockFetcher(promise);
+export function mockFetcherResponse<T>(promise?: Promise<Response>, reportingPromise?: Promise<Response>) {
+    mockFetcher(promise || mockResponse(), reportingPromise || mockResponse());
 }
 
 export function mockResult<T>(data: T,
@@ -37,9 +40,12 @@ export function mockResult<T>(data: T,
     return { data, errors, status };
 }
 
-export function mockFetcher(promise: Promise<Response>) {
-    fetcher.fetcher = new AdminFetcher();
+export function mockFetcher(promise: Promise<Response>, reportingPromise?: Promise<Response>) {
+    fetcher.fetcher = new ReportingFetcher();
     fetcher.fetcher.fetch = function(urlFragment: string, options?: FetchOptions, includeToken: boolean = true) {
         return promise;
+    };
+    fetcher.fetcher.fetchFromReportingApi = function(urlFragment: string, options?: FetchOptions, includeToken: boolean = true) {
+        return reportingPromise || mockResponse();
     };
 }

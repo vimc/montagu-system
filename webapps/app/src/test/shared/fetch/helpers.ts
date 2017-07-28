@@ -3,10 +3,10 @@ import { Sandbox } from "../../Sandbox";
 import { ErrorInfo, Result } from "../../../main/shared/models/Generated";
 import * as actionHelpers from "../../actionHelpers";
 import { expectNoActions, getActions } from "../../actionHelpers";
-import { mockFetcher, mockFetcherResponse, mockResult } from "../../mocks/mockRemote";
+import { mockFetcherResponse, mockResponse, mockResult } from "../../mocks/mockRemote";
 import fetcher from "../../../main/shared/sources/Fetcher";
 import { Notification } from "../../../main/shared/actions/NotificationActions";
-import { SinonSpy, SinonSpyStatic } from "sinon";
+import { SinonSpy } from "sinon";
 
 export interface FetchHelperConfig<TPayload> {
     prepareForFetch: () => void;
@@ -56,7 +56,7 @@ export class FetchHelper<TPayload> {
     }
 
     mockFetcherResponse(payload: Result, errorMessage?: string) {
-        mockFetcherResponse(payload, errorMessage);
+        mockFetcherResponse(mockResponse(payload, errorMessage), null);
     }
 
     addTestsToMocha() {
