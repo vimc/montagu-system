@@ -4,7 +4,7 @@ import { oneTimeTokenActions } from "../../../main/report/actions/OneTimeTokenAc
 import { oneTimeTokenStore } from "../../../main/report/stores/OneTimeTokenStore";
 import { ReportingFetcher } from "../../../main/report/sources/ReportingFetcher";
 import { decodeOneTimeToken } from "../../../main/report/models/OneTimeToken";
-import { bootstrapStore } from "../../StoreHelpers";
+import { bootstrapOneTimeTokenStore } from "../../StoreHelpers";
 
 const jwt = require("jsonwebtoken");
 
@@ -23,16 +23,7 @@ describe("OneTimeTokenStore", () => {
     });
 
     it("handles beginFetchToken", () => {
-        const setupStore = () => {
-            const lookup: any = {};
-            lookup[qualifiedUrl] = decodeOneTimeToken(token);
-            bootstrapStore(oneTimeTokenStore, {
-                tokens: lookup,
-                urlToFetchTokenFor: qualifiedUrl,
-            });
-        };
-
-        setupStore();
+        bootstrapOneTimeTokenStore([ decodeOneTimeToken(token) ], qualifiedUrl);
         let retrieved = oneTimeTokenStore.getToken(oneTimeTokenStore.getState(), url);
         expect(retrieved.data.url).to.eq(qualifiedUrl);
         oneTimeTokenActions.beginFetchToken();

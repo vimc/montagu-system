@@ -13,7 +13,7 @@ interface Props extends PublicProps {
     token: OneTimeToken;
 }
 
-class FileDownloadLinkComponent extends React.Component<Props, undefined> {
+export class FileDownloadLinkComponent extends React.Component<Props, undefined> {
     static getStores() {
         return [oneTimeTokenStore]
     }
