@@ -26,7 +26,7 @@ export function makeLoadable<T extends HasId>(items: T[]) {
     };
 }
 
-export function getFromLookup<T>(lookup: ILoadable<T>, index: string) {
+export function getFromLoadable<T>(lookup: ILoadable<T>, index: string) {
     if (lookup.loaded) {
         if (lookup.content.hasOwnProperty(index)) {
             return lookup.content[index];
