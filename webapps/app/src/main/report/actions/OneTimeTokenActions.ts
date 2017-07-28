@@ -5,6 +5,7 @@ import { decodeOneTimeToken, OneTimeToken } from "../models/OneTimeToken";
 interface Actions {
     beginFetchToken(): boolean;
     receiveToken(token: string): OneTimeToken;
+    clearUsedToken(url: string): string;
 }
 
 class OneTimeTokenActions extends FetchActions<string[]> implements Actions {
@@ -14,6 +15,10 @@ class OneTimeTokenActions extends FetchActions<string[]> implements Actions {
 
     receiveToken(token: string): OneTimeToken {
         return decodeOneTimeToken(token);
+    }
+
+    clearUsedToken(url: string): string {
+        return url;
     }
 }
 

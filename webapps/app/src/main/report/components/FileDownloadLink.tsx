@@ -4,6 +4,7 @@ import { oneTimeTokenStore } from "../stores/OneTimeTokenStore";
 import fetcher from "../../shared/sources/Fetcher";
 import { connectToStores } from "../../shared/alt";
 import { doNothing } from "../../shared/Helpers";
+import { oneTimeTokenActions } from "../actions/OneTimeTokenActions";
 
 interface PublicProps {
     href: string;
@@ -25,11 +26,23 @@ export class FileDownloadLinkComponent extends React.Component<Props, undefined>
         }
     }
 
+    constructor() {
+        super();
+        this.refreshToken = this.refreshToken.bind(this);
+    }
+
     componentDidMount() {
         setTimeout(() => {
             if (this.props.token == null) {
                 oneTimeTokenStore.fetchToken(this.props.href).catch(doNothing);
             }
+        });
+    }
+
+    refreshToken(e: React.MouseEvent<HTMLAnchorElement>): void {
+        setTimeout(() => {
+            oneTimeTokenActions.clearUsedToken(this.props.href);
+            oneTimeTokenStore.fetchToken(this.props.href).catch(doNothing);
         });
     }
 
@@ -41,7 +54,7 @@ export class FileDownloadLinkComponent extends React.Component<Props, undefined>
             disabled = false;
         }
 
-        return <a href={href} disabled={disabled}>
+        return <a href={href} disabled={disabled} onClick={this.refreshToken}>
             {this.props.children}
         </a>;
     }

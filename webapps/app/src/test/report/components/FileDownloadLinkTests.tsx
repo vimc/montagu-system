@@ -1,4 +1,4 @@
-import { shallow } from "enzyme";
+import { ReactWrapper, shallow } from "enzyme";
 import { expect } from "chai";
 import { FileDownloadLink, FileDownloadLinkComponent } from "../../../main/report/components/FileDownloadLink";
 import * as React from "react";
@@ -10,6 +10,7 @@ import { ReportingFetcher } from "../../../main/report/sources/ReportingFetcher"
 import { Sandbox } from "../../Sandbox";
 import { bootstrapOneTimeTokenStore } from "../../StoreHelpers";
 import { checkAsync } from "../../testHelpers";
+import { expectOneAction } from "../../actionHelpers";
 
 describe("FileDownloadLink", () => {
     const sandbox = new Sandbox();
@@ -53,7 +54,7 @@ describe("FileDownloadLink", () => {
     });
 
     it("triggers fetchToken on mount", (done: DoneCallback) => {
-        const fetchToken = sandbox.sinon.stub(oneTimeTokenStore, "_fetchToken").returns(Promise.resolve(true));
+        const fetchToken = mockFetchToken();
         bootstrapOneTimeTokenStore([]);
         sandbox.mount(<FileDownloadLink href="/panda" />);
 
@@ -63,14 +64,36 @@ describe("FileDownloadLink", () => {
     });
 
     it("it does not trigger fetchToken on mount if token is in cache", (done: DoneCallback) => {
-        const fetchToken = sandbox.sinon.stub(oneTimeTokenStore, "_fetchToken").returns(Promise.resolve(true));
+        const fetchToken = mockFetchToken();
         const url = "/bamboo";
         const qualifiedUrl = ReportingFetcher.buildRelativeReportingURL(url);
-        bootstrapOneTimeTokenStore([mockOneTimeToken(qualifiedUrl)]);
+        bootstrapOneTimeTokenStore([ mockOneTimeToken(qualifiedUrl) ]);
         sandbox.mount(<FileDownloadLink href={url} />);
-
         checkAsync(done, () => {
             expect(fetchToken.called).to.equal(false, "Expected _fetchToken to not be called");
         });
     });
+
+    it("clicking link triggers token refresh", (done: DoneCallback) => {
+        const dispatchSpy = sandbox.dispatchSpy();
+        const fetchToken = mockFetchToken();
+        const url = "/bamboo";
+        const qualifiedUrl = ReportingFetcher.buildRelativeReportingURL(url);
+        const element = shallow(<FileDownloadLinkComponent token={ mockOneTimeToken(qualifiedUrl) } href={ url } />);
+
+        element.find("a").simulate("click");
+        checkAsync(done, (afterWait) => {
+            afterWait(done, () => {
+                expectOneAction(dispatchSpy, {
+                    action: "OneTimeTokenActions.clearUsedToken",
+                    payload: url
+                });
+                expect(fetchToken.called).to.equal(true, "Expected _fetchToken to be called");
+            });
+        });
+    });
+
+    function mockFetchToken() {
+        return sandbox.sinon.stub(oneTimeTokenStore, "_fetchToken").returns(Promise.resolve(true));
+    }
 });

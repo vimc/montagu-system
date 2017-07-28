@@ -31,4 +31,13 @@ describe("OneTimeTokenStore", () => {
         expect(retrieved).to.be.null;
     });
 
+    it("handles clearUsedToken", () => {
+        bootstrapOneTimeTokenStore([ decodeOneTimeToken(token) ]);
+        let retrieved = oneTimeTokenStore.getToken(oneTimeTokenStore.getState(), url);
+        expect(retrieved.data.url).to.eq(qualifiedUrl);
+        oneTimeTokenActions.clearUsedToken(url);
+        retrieved = oneTimeTokenStore.getToken(oneTimeTokenStore.getState(), url);
+        expect(retrieved).to.be.null;
+    });
+
 });

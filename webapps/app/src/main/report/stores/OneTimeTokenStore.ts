@@ -29,7 +29,8 @@ class OneTimeTokenStore extends AbstractStore<OneTimeTokenStoreState, OneTimeTok
         super();
         this.bindListeners({
             handleBeginFetchToken: oneTimeTokenActions.beginFetchToken,
-            handleReceiveToken: oneTimeTokenActions.receiveToken
+            handleReceiveToken: oneTimeTokenActions.receiveToken,
+            handleClearUsedToken: oneTimeTokenActions.clearUsedToken
         });
 
         this.registerAsync(new OneTimeTokenSource());
@@ -38,7 +39,7 @@ class OneTimeTokenStore extends AbstractStore<OneTimeTokenStoreState, OneTimeTok
             fetchToken: (url: string) => {
                 this.urlToFetchTokenFor = ReportingFetcher.buildRelativeReportingURL(url);
                 return this.getInstance()._fetchToken();
-            }
+            },
         });
     }
 
@@ -61,6 +62,11 @@ class OneTimeTokenStore extends AbstractStore<OneTimeTokenStoreState, OneTimeTok
 
     handleReceiveToken(token: OneTimeToken){
         this.tokens[token.data.url] = token;
+    }
+
+    handleClearUsedToken(url: string) {
+        url = ReportingFetcher.buildRelativeReportingURL(url);
+        delete this.tokens[url];
     }
 }
 
