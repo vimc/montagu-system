@@ -3,6 +3,7 @@ import * as models from "../../main/shared/models/Generated";
 import { alt } from "../../main/shared/alt";
 import { makeLoadable } from "../../main/contrib/stores/Loadable";
 import { ILookup } from "../../main/shared/models/Lookup";
+import { emptyOneTimeTokenData, OneTimeTokenData } from "../../main/report/models/OneTimeToken";
 
 export function mockLocation<T>(params?: T): Location<T> {
     return {
@@ -56,4 +57,8 @@ export function withMockLocalStorage(contents: ILookup<string>, test: () => void
         delete mutableGlobal.Storage;
         delete mutableGlobal.localStorage;
     }
+}
+
+export function mockOneTimeTokenData(props: any): OneTimeTokenData {
+    return Object.assign(emptyOneTimeTokenData(), props);
 }

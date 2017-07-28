@@ -5,7 +5,7 @@ import {Version} from "../../../main/shared/models/reports/Report";
 import {mockVersion} from "../../mocks/mockModels";
 
 describe("ReportStore.fetchReports", () => {
-    new ReportingFetchHelper<string[]>({
+    new ReportingFetchHelper<string[], string[]>({
         makePayload: () => [ "report1", "report2" ],
         prepareForFetch: () => {
             alt.bootstrap(JSON.stringify({
@@ -29,7 +29,7 @@ describe("ReportStore.fetchReports", () => {
 });
 
 describe("ReportStore.fetchVersions", () => {
-    new ReportingFetchHelper<string[]>({
+    new ReportingFetchHelper<string[], string[]>({
         makePayload: () => [ "version1", "version2" ],
         prepareForFetch:() => {
             alt.bootstrap(JSON.stringify({
@@ -55,7 +55,7 @@ describe("ReportStore.fetchVersions", () => {
 
 
 describe("ReportStore.fetchVersionDetails", () => {
-    new ReportingFetchHelper<Version>({
+    new ReportingFetchHelper<Version, Version>({
         makePayload: () => mockVersion(),
         prepareForFetch:() => {
             alt.bootstrap(JSON.stringify({

@@ -1,6 +1,6 @@
 import * as React from "react";
-import { OnetimeToken } from "../models/OnetimeToken";
-import { onetimeTokenStore } from "../stores/OnetimeTokenStore";
+import { OneTimeToken } from "../models/OneTimeToken";
+import { oneTimeTokenStore } from "../stores/OneTimeTokenStore";
 import fetcher from "../../shared/sources/Fetcher";
 import { connectToStores } from "../../shared/alt";
 import { doNothing } from "../../shared/Helpers";
@@ -10,25 +10,25 @@ interface PublicProps {
 }
 
 interface Props extends PublicProps {
-    token: OnetimeToken;
+    token: OneTimeToken;
 }
 
 class FileDownloadLinkComponent extends React.Component<Props, undefined> {
     static getStores() {
-        return [onetimeTokenStore]
+        return [oneTimeTokenStore]
     }
 
     static getPropsFromStores(props: Props): Props {
         return {
             href: props.href,
-            token: onetimeTokenStore.getToken(onetimeTokenStore.getState(), props.href)
+            token: oneTimeTokenStore.getToken(oneTimeTokenStore.getState(), props.href)
         }
     }
 
     componentDidMount() {
         setTimeout(() => {
             if (this.props.token == null) {
-                onetimeTokenStore.fetchToken(this.props.href).catch(doNothing);
+                oneTimeTokenStore.fetchToken(this.props.href).catch(doNothing);
             }
         });
     }

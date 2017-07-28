@@ -1,11 +1,12 @@
 import {
-    mockExtendedResponsibilitySet, mockModellingGroup, mockResponsibilitySet,
+    mockExtendedResponsibilitySet,
+    mockModellingGroup,
+    mockResponsibilitySet,
     mockTouchstone
 } from "../../mocks/mockModels";
 import { FetchHelper } from "../../shared/fetch/helpers";
 import { responsibilityStore } from "../../../main/contrib/stores/ResponsibilityStore";
 import { alt } from "../../../main/shared/alt";
-import { doNothing } from "../../../main/shared/Helpers";
 
 describe("ResponsibilityStore.fetchResponsibilities", () => {
     const group = mockModellingGroup({ id: "group-id" });

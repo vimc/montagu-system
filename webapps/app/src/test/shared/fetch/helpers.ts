@@ -8,12 +8,16 @@ import fetcher from "../../../main/shared/sources/Fetcher";
 import { Notification } from "../../../main/shared/actions/NotificationActions";
 import { SinonSpy } from "sinon";
 
-export interface FetchHelperConfig<TPayload> {
+export interface FetchHelperConfig<TPayload, TActionPayload> {
     prepareForFetch: () => void;
     prepareForCachedFetch?: () => void;
     triggerFetch: () => Promise<TPayload>,
     makePayload: () => TPayload;
     expectedURL: string;
+    expectedSuccessResult?: {
+        action: string,
+        payload: TActionPayload
+    }
 }
 
 export interface FetchTestConfig {
@@ -23,11 +27,18 @@ export interface FetchTestConfig {
     expectedAction: actionHelpers.ActionExpectation;
 }
 
-export class FetchHelper<TPayload> {
-    config: FetchHelperConfig<TPayload>;
+// The two type arguments mean:
+// TPayload: The type returned by the remote endpoint, which is passed through to the success action
+// TActionPayload: The type that the action transforms the payload into. For most actions, this is the same.
+// e.g. TouchstoneActions.setCurrentTouchstone takes a string and returns a string. But some actions transform
+// from one data type to another. e.g. OneTimeTokenActions.receiveToken decodes the token.
+// If you are using an action that transforms the type you will also have to specify `expectedSuccessResult`
+// explicitly in the config.
+export class FetchHelper<TPayload, TActionPayload> {
+    config: FetchHelperConfig<TPayload, TActionPayload>;
     sandbox: Sandbox;
 
-    constructor(config: FetchHelperConfig<TPayload>) {
+    constructor(config: FetchHelperConfig<TPayload, TActionPayload>) {
         this.config = config;
     }
 
@@ -70,7 +81,7 @@ export class FetchHelper<TPayload> {
                 done,
                 payload: mockResult(payload),
                 errorMessage: null,
-                expectedAction: {
+                expectedAction: this.config.expectedSuccessResult || {
                     action: "update",
                     payload: payload
                 }

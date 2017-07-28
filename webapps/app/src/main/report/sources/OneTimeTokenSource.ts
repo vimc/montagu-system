@@ -1,16 +1,16 @@
 import {ReportingSource} from "./ReportingSource";
-import {OnetimeTokenStoreState} from "../stores/OnetimeTokenStore";
+import {OneTimeTokenStoreState} from "../stores/OneTimeTokenStore";
 import SourceModel = AltJS.SourceModel;
-import {onetimeTokenActions} from "../actions/OnetimeTokenActions";
+import {oneTimeTokenActions} from "../actions/OneTimeTokenActions";
 
-export class OnetimeTokenSource extends ReportingSource<OnetimeTokenStoreState> {
+export class OneTimeTokenSource extends ReportingSource<OneTimeTokenStoreState> {
     _fetchToken: (url: string) => SourceModel<string>;
 
     constructor() {
         super();
         this._fetchToken = () => this.doFetch(s => "/onetime_token/?url=" + encodeURI(s.urlToFetchTokenFor), {
-            loading: onetimeTokenActions.beginFetchToken,
-            success: onetimeTokenActions.receiveToken,
+            loading: oneTimeTokenActions.beginFetchToken,
+            success: oneTimeTokenActions.receiveToken,
             isCached: s => s.tokens && s.tokens.hasOwnProperty(s.urlToFetchTokenFor)
         });
     }

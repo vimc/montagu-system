@@ -1,11 +1,11 @@
 const jwt_decode = require('jwt-decode');
 
-export interface OnetimeToken {
+export interface OneTimeToken {
     raw: string;
-    data: OnetimeTokenData;
+    data: OneTimeTokenData;
 }
 
-export interface OnetimeTokenData {
+export interface OneTimeTokenData {
     iss: string;
     sub: string;
     exp: number;
@@ -15,20 +15,26 @@ export interface OnetimeTokenData {
     nonce: string;
 }
 
-export function decodeOnetimeToken(token: string): OnetimeTokenData {
+export function decodeOneTimeToken(token: string): OneTimeToken {
     try {
-        return jwt_decode(token);
+        return {
+            raw: token,
+            data: jwt_decode(token),
+        };
     } catch (e) {
         console.log("Onetime token decoding failed, token is malformed: " + token);
-        return emptyOnetimeToken();
+        return {
+            raw: token,
+            data: emptyOneTimeTokenData()
+        };
     }
 }
 
-export function emptyOnetimeToken(): OnetimeTokenData {
+export function emptyOneTimeTokenData(): OneTimeTokenData {
     return {
         iss: null,
         sub: null,
-        exp: null,
+        exp: 0,
         permissions: [],
         roles: [],
         url: null,

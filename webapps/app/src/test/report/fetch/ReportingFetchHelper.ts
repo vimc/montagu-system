@@ -5,8 +5,8 @@ import { ReportingFetcher } from "../../../main/report/sources/ReportingFetcher"
 import fetcher, { FetchOptions } from "../../../main/shared/sources/Fetcher";
 import { SinonSpy } from "sinon";
 
-export class ReportingFetchHelper<TPayload> extends FetchHelper<TPayload> {
-    constructor(config: FetchHelperConfig<TPayload>) {
+export class ReportingFetchHelper<TPayload, TActionPayload> extends FetchHelper<TPayload, TActionPayload> {
+    constructor(config: FetchHelperConfig<TPayload, TActionPayload>) {
         super(config)
     }
 
