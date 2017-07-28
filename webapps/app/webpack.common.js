@@ -1,4 +1,5 @@
 const path = require('path');
+const stringReplacePlugin = require("string-replace-webpack-plugin");
 
 function commonConfig(name, public_path) {
     return {
@@ -60,6 +61,19 @@ function commonConfig(name, public_path) {
                                 localIdentName: "[name]_[local]",
                             }
                         }
+                    ]
+                },
+                // Substitute paths into index.html
+                {
+                    test: /index.html$/,
+                    loaders: [
+                        {
+                            loader: "file-loader",
+                            options: { name: "index.html" }
+                        },
+                        stringReplacePlugin.replace({
+                            replacements: [{ pattern: /_SITE_ROOT_\//g, replacement: () => public_path }]
+                        })
                     ]
                 },
                 {
