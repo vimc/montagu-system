@@ -51,18 +51,15 @@ export class FileDownloadLinkComponent extends React.Component<Props, undefined>
 
     render() {
         let href: string;
-        let disabled: boolean;
         let className: string;
         let loader: JSX.Element;
 
         if (this.props.token != null) {
             href = fetcher.fetcher.buildReportingURL(this.props.token.data.url) + "?access_token=" + this.props.token.raw;
-            disabled = false;
             className = null;
             loader = null;
         } else {
             href = null;
-            disabled = true;
             className = styles.disabledLink;
             loader = <img src={loaderAnimation}/>;
         }
@@ -70,7 +67,6 @@ export class FileDownloadLinkComponent extends React.Component<Props, undefined>
         return <span>
             <a
                 href={href}
-                disabled={disabled}
                 onClick={this.refreshToken}
                 className={className}>
                 {this.props.children}

@@ -22,7 +22,6 @@ describe("FileDownloadLink", () => {
         const rendered = shallow(<FileDownloadLinkComponent href="/grapefruit" token={null}/>);
         const a = rendered.find("a");
         expect(a.prop('href')).to.equal(null);
-        expect(a.prop('disabled')).to.be.true;
     });
 
     it("renders enabled link when token is present", () => {
@@ -30,7 +29,6 @@ describe("FileDownloadLink", () => {
         const rendered = shallow(<FileDownloadLinkComponent href="/grapefruit" token={token}/>);
         const a = rendered.find("a");
         expect(a.prop('href')).to.equal(settings.reportingApiUrl() + "/mango?access_token=TOKEN");
-        expect(a.prop('disabled')).to.be.false;
     });
 
     it("can get properties from empty store", () => {
