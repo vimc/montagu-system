@@ -4,7 +4,7 @@ import SourceModel = AltJS.SourceModel;
 import {oneTimeTokenActions} from "../actions/OneTimeTokenActions";
 
 export class OneTimeTokenSource extends ReportingSource<OneTimeTokenStoreState> {
-    _fetchToken: (url: string) => SourceModel<string>;
+    _fetchToken: () => SourceModel<string>;
 
     constructor() {
         super();
