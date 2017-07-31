@@ -7,7 +7,7 @@ describe("ResponsibilityStore.fetchOneTimeCoverageToken", () => {
     const group = mockModellingGroup({ id: "group-id" });
     const touchstone = mockTouchstone({ id: "touchstone-id" });
     const responsibility = mockResponsibility({}, mockScenario({ id: "scenario-id"}));
-    new FetchHelper<string>({
+    new FetchHelper<string, string>({
         expectedURL: "/modelling-groups/group-id/responsibilities/touchstone-id/scenario-id/coverage/get_onetime_link/",
         prepareForFetch: () => {
             alt.bootstrap(JSON.stringify({

@@ -1,9 +1,13 @@
 import * as React from "react";
-import {mount} from "enzyme";
 import {expect} from "chai";
 import {ParameterList} from "../../../../main/report/components/Parameters/ParameterList";
+import { Sandbox } from "../../../Sandbox";
 
 describe("ParametersList", () => {
+    const sandbox = new Sandbox();
+
+    afterEach(() => sandbox.restore());
+
     it("can render", () => {
 
         const fakeParams =
@@ -12,7 +16,7 @@ describe("ParametersList", () => {
                 "nmax": "1000"
             };
 
-        const renderedInnerDivs = mount(<ParameterList {...fakeParams}/>).find("div > div");
+        const renderedInnerDivs = sandbox.mount(<ParameterList {...fakeParams}/>).find("div > div");
 
         expect(renderedInnerDivs.length).to.eq(2);
         expect(renderedInnerDivs.at(0).text()).to.eq("nmin : 0");
@@ -20,7 +24,7 @@ describe("ParametersList", () => {
     });
 
     it("show 'none' if no params", () => {
-        const rendered = mount(<ParameterList {...{}}/>);
+        const rendered = sandbox.mount(<ParameterList {...{}}/>);
         expect(rendered.text()).to.eq("none");
     });
 

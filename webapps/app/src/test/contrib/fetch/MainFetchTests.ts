@@ -8,7 +8,7 @@ import { diseaseActions } from "../../../main/contrib/actions/DiseaseActions";
 import { modellingGroupActions } from "../../../main/shared/actions/ModellingGroupActions";
 
 describe("MainStore.fetchDiseases", () => {
-    new FetchHelper<Disease[]>({
+    new FetchHelper<Disease[], Disease[]>({
         triggerFetch: () => mainStore.fetchDiseases(),
         prepareForFetch: doNothing,
         prepareForCachedFetch: () => diseaseActions.update([ mockDisease() ]),
@@ -18,7 +18,7 @@ describe("MainStore.fetchDiseases", () => {
 });
 
 describe("MainStore.fetchModellingGroups", () => {
-    new FetchHelper<ModellingGroup[]>({
+    new FetchHelper<ModellingGroup[], ModellingGroup[]>({
         triggerFetch: () => mainStore.fetchModellingGroups(),
         prepareForFetch: doNothing,
         prepareForCachedFetch: () => modellingGroupActions.updateGroups([ mockModellingGroup() ]),

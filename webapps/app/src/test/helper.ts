@@ -18,12 +18,16 @@ beforeEach(function () {
     handleTeamCityEvent('before', fullTestName(this.currentTest), null);
 });
 afterEach(function () {
-    const testName: string = fullTestName(this.currentTest);
-    if (this.currentTest.state == "failed") {
-        handleTeamCityEvent('failed', testName, {
-            message: this.currentTest.err.toString(),
-            details: this.currentTest.err.stack
-        });
+    if (this.currentTest != null) {
+        const testName: string = fullTestName(this.currentTest);
+        if (this.currentTest.state == "failed") {
+            handleTeamCityEvent('failed', testName, {
+                message: this.currentTest.err.toString(),
+                details: this.currentTest.err.stack
+            });
+        }
+        handleTeamCityEvent('after', testName, null);
+    } else {
+        throw Error("Something has gone wrong: 'this.currentTest' is null.");
     }
-    handleTeamCityEvent('after', testName, null);
 });

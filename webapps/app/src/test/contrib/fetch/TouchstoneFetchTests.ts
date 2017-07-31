@@ -7,7 +7,7 @@ import { doNothing } from "../../../main/shared/Helpers";
 import { touchstoneActions } from "../../../main/contrib/actions/TouchstoneActions";
 
 describe("ResponsibilityStore.fetchTouchstones", () => {
-    new FetchHelper<Touchstone[]>({
+    new FetchHelper<Touchstone[], Touchstone[]>({
         expectedURL: "/touchstones/",
         triggerFetch: () => responsibilityStore.fetchTouchstones(),
         makePayload: () => [ mockTouchstone(), mockTouchstone() ],

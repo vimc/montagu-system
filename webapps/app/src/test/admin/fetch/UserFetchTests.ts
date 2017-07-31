@@ -6,7 +6,7 @@ import { doNothing } from "../../../main/shared/Helpers";
 import { alt } from "../../../main/shared/alt";
 
 describe("UserStore.fetchUsers", () => {
-    new FetchHelper<User[]>({
+    new FetchHelper<User[], User[]>({
         makePayload: () => [ mockUser(), mockUser() ],
         prepareForFetch: doNothing,
         prepareForCachedFetch: () => {

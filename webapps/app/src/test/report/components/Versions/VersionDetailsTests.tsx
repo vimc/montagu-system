@@ -2,11 +2,9 @@ import * as React from "react";
 import {shallow} from "enzyme";
 import {expect} from "chai";
 import {alt} from "../../../../main/shared/alt";
-import {VersionListComponent} from "../../../../main/report/components/Versions/VersionList";
-import {VersionListItem} from "../../../../main/report/components/Versions/VersionListItem";
 import {VersionDetailsComponent, VersionProps} from "../../../../main/report/components/Versions/VersionDetails";
 import {mockVersion} from "../../../mocks/mockModels";
-import {settings} from "../../../../main/shared/Settings";
+import { FileDownloadLink } from "../../../../main/report/components/FileDownloadLink";
 
 describe("VersionDetails", () => {
 
@@ -39,7 +37,7 @@ describe("VersionDetails", () => {
 
     it("renders zip download link", () => {
         const rendered = shallow(<VersionDetailsComponent versionDetails={mockVersion({id: "v1"})} report="reportname" ready={true}/>);
-        expect(rendered.find('td').at(0).find("a").at(0).prop("href")).to.eq(settings.reportingApiUrl() + "/reports/reportname/v1/all/");
+        expect(rendered.find('td').at(0).find(FileDownloadLink).at(0).prop("href")).to.eq("/reports/reportname/v1/all/");
     });
 
 });

@@ -42,3 +42,8 @@ table tr th, :local(.specialColumn) td:first-child {
 :local(.gapAbove) {
     margin-top: 20px;
 }
+
+:local(.disabledLink) {
+    color: rgb(127, 127, 127);
+    text-decoration: underline;
+}

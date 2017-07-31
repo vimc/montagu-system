@@ -1,7 +1,6 @@
 import * as React from "react";
 import {shallow} from "enzyme";
 import {expect} from "chai";
-import {settings} from "../../../../main/shared/Settings";
 import {ArtefactsList} from "../../../../main/report/components/Artefacts/ArtefactsList";
 import {mockArtefact} from "../../../mocks/mockModels";
 

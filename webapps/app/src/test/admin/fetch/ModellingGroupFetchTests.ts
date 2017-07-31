@@ -6,7 +6,7 @@ import { alt } from "../../../main/shared/alt";
 import { doNothing } from "../../../main/shared/Helpers";
 
 describe("GroupStore.fetch", () => {
-    new FetchHelper<ModellingGroup[]>({
+    new FetchHelper<ModellingGroup[], ModellingGroup[]>({
         expectedURL: "/modelling-groups/",
         prepareForFetch: doNothing,
         prepareForCachedFetch: () => {
@@ -20,7 +20,7 @@ describe("GroupStore.fetch", () => {
         makePayload: () => [ mockModellingGroup() ]
     }).addTestsToMocha();
 
-    new FetchHelper<ModellingGroupDetails>({
+    new FetchHelper<ModellingGroupDetails, ModellingGroupDetails>({
         expectedURL: "/modelling-groups/gId/",
         prepareForFetch: () => {
             alt.bootstrap(JSON.stringify({
