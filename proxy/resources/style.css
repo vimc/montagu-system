@@ -48,16 +48,11 @@ a:hover, a:focus {
     padding: 0 20px;
 }
 
-.header .vimc {
-
-}
-
 .header .montagu {
     border-left: 1px solid rgb(38, 51, 121);
     font-variant-caps: all-petite-caps;;
     color: rgb(27, 111, 177);
     padding-top: 4px;
-    font-family: 'Palatino', 'Open Sans', 'Lato', Helvetica, Arial, sans-serif;
     font-size: 48pt;
     font-weight: 800;
 }
@@ -76,7 +71,7 @@ a.button {
     text-align: center;
     text-decoration: none;
     display: inline-block;
-    width: 260px;
+    width: 300px;
     height: 40px;
     padding: 10px;
     background-color: rgb(169, 224, 250);
