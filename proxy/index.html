@@ -1,15 +1,68 @@
 <html>
     <head>
-        <title>Montagu</title>
+        <title>Vaccine Impact Modelling Consortium - Montagu</title>
+        <link rel="stylesheet" href="./resources/style.css" />
     </head>
     <body>
-        <p>If you can see this page, Montagu is running.</p>
-        <ul>
-            <li><a href="/api/">API</a></li>
-            <li><a href="/reports/api/">Reporting API</a></li>
-            <li><a href="/admin/">Admin portal</a></li>
-            <li><a href="/contribution/">Modellers' contribution portal</a></li>
-            <li><a href="/reports/">Reporting portal</a></li>
-        </ul>
+
+        <div id="content">
+            <table class="header">
+                <tr>
+                    <td class="vimc">
+                        <a href="https://vaccineimpact.org">
+                            <img src="./resources/logo.png" alt="Vaccine Impact Modelling Consortium" />
+                        </a>
+                    </td>
+                    <td class="montagu">Montagu</td>
+                </tr>
+            </table>
+
+            <p>
+                Montagu is the VIMC's digital delivery platform. Authorised 
+                users can access Montagu through user-facing portals, and 
+                programmatically through REST APIs.
+            </p>
+            <p>
+                Click <a href="https://vaccineimpact.org">here</a> to return to 
+                VIMC home page
+            </p>
+
+            <div class="portals">
+                <h1>Portals</h1>
+                <table>
+                    <tr>
+                        <td><a class="button" href="/reports/">Reporting portal</a></td>
+                        <td>
+                            Access reports and figures summarising results, as well
+                            as the underlying data.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><a class="button" href="/contribution/">Modellers' contribution portal</a></td>
+                        <td>
+                            Focused on modellers and modelling groups, this portal
+                            allows you to download coverage and demographic data,
+                            and to upload burden estimates.
+                        </td> 
+                    </tr>
+                    <tr>
+                        <td><a class="button" href="/admin/">Admin portal</a></td>
+                        <td>
+                            For internal use by the consortium admin staff.
+                        </td> 
+                    </tr>
+                </table>
+            </div>
+
+            <div class="apis">
+                <h1>APIs</h1>
+                <table>
+                    <tr>
+                        <td><a class="button" href="/api/">Montagu API</a></td>
+                        <td><a class="button" href="/reports/api/">Reports API</a></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
     </body>
 </html>

@@ -1,0 +1,89 @@
+body {    
+    font-family: 'Palatino', 'Open Sans', 'Lato', Helvetica, Arial, sans-serif;
+    font-size: 18px;
+    color: #333;
+    position: relative;
+    background: #FFF;
+    background-image: url(./background.png);
+    background-repeat: no-repeat;
+}
+
+p {
+    line-height: 1.5;
+    margin: 30px 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Palatino', 'Open Sans', 'Lato', Helvetica, Arial, sans-serif;
+    font-weight: 800;
+}
+
+a, a:visited {
+  color: #008AFF;
+  text-decoration: none;
+}
+
+a:hover, a:focus {
+  color: #0085a1;
+  text-decoration: underline;
+}
+
+#content {
+    position: absolute;
+    width: 800px;
+    margin-left: -400px;
+    left: 50%;
+    right: 50%;
+    top: 100px;
+    bottom: 50%;
+}
+
+.header {
+    width: 600px;
+    margin: 0 100px;
+}
+
+.header .vimc, .header .montagu {  
+    height: 100px;
+    padding: 0 20px;
+}
+
+.header .vimc {
+
+}
+
+.header .montagu {
+    border-left: 1px solid rgb(38, 51, 121);
+    font-variant-caps: all-petite-caps;;
+    color: rgb(27, 111, 177);
+    padding-top: 4px;
+    font-family: 'Palatino', 'Open Sans', 'Lato', Helvetica, Arial, sans-serif;
+    font-size: 48pt;
+    font-weight: 800;
+}
+
+table td {
+    padding: 10px 0;
+}
+
+table td:first-child {
+    padding-right: 40px;
+}
+
+a.button {
+    color: rgb(0, 0, 0);
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    width: 260px;
+    height: 40px;
+    padding: 10px;
+    background-color: rgb(169, 224, 250);
+    border: 2px outset rgb(56, 154, 232);
+    box-sizing: border-box;
+}
+
+a.button:hover {
+    background-color: rgb(191, 235, 255);
+}
