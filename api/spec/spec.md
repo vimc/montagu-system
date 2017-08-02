@@ -24,8 +24,7 @@ the standard response format, so that the `data` property holds the payload.
 ## Success
 Schema: [`Response.schema.json`](Response.schema.json)
 
-Example
-
+### Example
     {
         "status": "success",
         "data": {},
@@ -35,8 +34,7 @@ Example
 ## Error
 Schema: [`Response.schema.json`](Response.schema.json)
 
-Example
-
+### Example
     {
         "status": "failure",
         "data": null,
@@ -162,6 +160,7 @@ Schema: [`Users.schema.json`](Users.schema.json)
 Returns a particular user.
 
 Required permissions: `users.read`. Additionally, the `roles` section is not included unless the logged in user has the `roles.read` permission. If the user has `roles.read` in a specific scope, only roles with a matching scope are returned.
+
 Schema: [`User.schema.json`](User.schema.json)
 
 ### Example

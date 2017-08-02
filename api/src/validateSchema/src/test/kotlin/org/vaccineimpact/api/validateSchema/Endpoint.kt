@@ -46,13 +46,18 @@ class Endpoint(val method: String, val urlTemplate: String, contents: List<Node>
         {
             if (node is Heading)
             {
-                val match = endpointRegex.find(node.text())
+                val headingText = node.text()
+                val match = endpointRegex.find(headingText)
+                val contents = node.siblings().takeWhile { it !is Heading || it.level > node.level }
                 if (match != null)
                 {
                     val method = match.groups["method"]!!.value
                     val urlTemplate = match.groups["urlTemplate"]!!.value
-                    val contents = node.siblings().takeWhile { it !is Heading || it.level > node.level }
                     return Endpoint(method, urlTemplate, contents.toList())
+                }
+                else if (headingText == "Standard response format")
+                {
+                    return Endpoint("", "<Standard response format>", contents.toList())
                 }
             }
             return null
