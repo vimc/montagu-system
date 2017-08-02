@@ -1,0 +1,12 @@
+{
+	"id": "DemographicDataSet",
+	"type": "object",
+    "properties": {
+        "id": { "$ref": "StandardIdentifier.schema.json" },
+        "code": { "type": "string" },
+        "name": { "type": "string" },
+        "gender_is_applicable": { "type": "boolean" }
+    },
+    "additionalProperties": false,
+    "required": [ "id", "code", "name", "gender_is_applicable" ]
+}
