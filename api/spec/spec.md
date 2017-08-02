@@ -1701,19 +1701,17 @@ Schema: [`Demographics.schema.json`](Demographics.schema.json)
 
 ### Example
     [{ 
-        "id": "STAT-TYPE-ID",
         "code" : "as_fert"
         "name": "Age-specific fertility",
         "gender_is_applicable": false
      },
      { 
-        "id": "STAT-TYPE-ID-2",
         "code" : "tot_pop",
         "name" : "Total population
         "gender_is_applicable": true,
      }]
 
-## GET /touchstones/{touchstone-id}/demographics/{demographic-type-id}/
+## GET /touchstones/{touchstone-id}/demographics/{demographic-type-code}/
 
 Returns the data set with given type, in `long` CSV format.
 
@@ -1752,7 +1750,7 @@ Optional. The gender to return, either `female`, `male`, or `both`. Defaults to 
 Optional. A format to return the CSV in, either `wide` or `long`. Defaults to `long`.
 
 ### Example
-`/touchstones/2017-op-1/demographics/12/?format=wide&gender=female`
+`/touchstones/2017-op-1/demographics/tot_pop/?format=wide&gender=female`
 
 Total population:
 
