@@ -3,7 +3,7 @@ package org.vaccineimpact.api.validateSchema
 data class SchemaDefinition(val schemaPath: String, val example: String)
 {
     val schema by lazy {
-        val resource = SchemaValidator.getResource("spec/" + schemaPath)
+        val resource = ResourceHelper.getResource("spec/" + schemaPath)
         resource.readText()
     }
 

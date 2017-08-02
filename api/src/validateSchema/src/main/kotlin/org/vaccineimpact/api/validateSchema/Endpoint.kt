@@ -40,7 +40,7 @@ class Endpoint(val method: String, val urlTemplate: String, contents: List<Node>
     {
         val methods = listOf("GET", "POST", "PATCH", "PUT")
         val methodPattern = methods.joinToString("|")
-        val endpointRegex = Regex("(?<method>$methodPattern) (?<urlTemplate>.+)")
+        val endpointRegex = Regex("(?<method>${methodPattern}) (?<urlTemplate>.+)")
 
         fun asEndpoint(node: Node): Endpoint?
         {

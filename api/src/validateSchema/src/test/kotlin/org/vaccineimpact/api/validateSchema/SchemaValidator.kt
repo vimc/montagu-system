@@ -2,8 +2,6 @@ package org.vaccineimpact.api.validateSchema
 
 import org.commonmark.parser.Parser
 import org.junit.Test
-import java.io.InputStream
-import java.net.URL
 
 class SchemaValidator
 {
@@ -11,7 +9,7 @@ class SchemaValidator
     fun run()
     {
         val parser = Parser.builder().build()
-        val spec = getResourceAsStream("spec/spec.md").use {
+        val spec = ResourceHelper.getResourceAsStream("spec/spec.md").use {
             parser.parseReader(it.reader())
         }
 
@@ -26,12 +24,5 @@ class SchemaValidator
                 validator.validateExampleAgainstSchema(requestSchema.example, requestSchema.schema)
             }
         }
-    }
-
-    companion object
-    {
-        private val loader = SchemaValidator::class.java.classLoader
-        fun getResource(path: String): URL = loader.getResource(path)
-        fun getResourceAsStream(path: String): InputStream = loader.getResourceAsStream(path)
     }
 }
