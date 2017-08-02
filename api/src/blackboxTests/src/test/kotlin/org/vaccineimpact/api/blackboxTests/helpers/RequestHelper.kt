@@ -31,10 +31,7 @@ class RequestHelper
 
     fun post(url: String, data: JsonObject, token: TokenLiteral? = null): Response
     {
-        return khttp.post(url,
-                data = data,
-                headers = standardHeaders(ContentTypes.json, token)
-        )
+        return post(url, standardHeaders(ContentTypes.json, token), data)
     }
 
     private fun standardHeaders(contentType: String, token: TokenLiteral?): Map<String, String>
@@ -50,11 +47,17 @@ class RequestHelper
         return headers
     }
 
+    private fun post(url: String, headers: Map<String, String>, data: Any?) = khttp.post(
+            EndpointBuilder.build(url),
+            data = data,
+            headers = headers
+    )
+
     private fun get(url: String, headers: Map<String, String>)
             = khttp.get(EndpointBuilder.build(url), headers)
 }
 
-fun <T> Response.montaguData() : T?
+fun <T> Response.montaguData(): T?
 {
     val data = this.json()["data"]
     if (data != "")
@@ -67,4 +70,5 @@ fun <T> Response.montaguData() : T?
         return null
     }
 }
+
 fun Response.json() = Parser().parse(StringBuilder(text)) as JsonObject
