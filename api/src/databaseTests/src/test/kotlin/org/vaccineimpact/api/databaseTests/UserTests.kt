@@ -79,6 +79,15 @@ class UserTests : RepositoryTests<UserRepository>()
     }
 
     @Test
+    fun `can update last logged in`()
+    {
+        given(this::addTestUser).check { repo ->
+            repo.updateLastLoggedIn(username)
+            assertThat(repo.getUserByUsername(username).lastLoggedIn).isNotNull()
+        }
+    }
+
+    @Test
     fun `can retrieve roles for user`()
     {
         given {
