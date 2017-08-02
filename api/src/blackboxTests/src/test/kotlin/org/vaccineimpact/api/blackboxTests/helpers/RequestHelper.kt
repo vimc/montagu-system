@@ -26,6 +26,19 @@ class RequestHelper
 
     fun get(url: String, token: TokenLiteral? = null, contentType: String = ContentTypes.json): Response
     {
+        return get(url, standardHeaders(contentType, token))
+    }
+
+    fun post(url: String, data: JsonObject, token: TokenLiteral? = null): Response
+    {
+        return khttp.post(url,
+                data = data,
+                headers = standardHeaders(ContentTypes.json, token)
+        )
+    }
+
+    private fun standardHeaders(contentType: String, token: TokenLiteral?): Map<String, String>
+    {
         var headers = mapOf(
                 "Accept" to contentType,
                 "Accept-Encoding" to "gzip"
@@ -34,7 +47,7 @@ class RequestHelper
         {
             headers += mapOf("Authorization" to "Bearer $token")
         }
-        return get(url, headers)
+        return headers
     }
 
     private fun get(url: String, headers: Map<String, String>)
