@@ -95,7 +95,7 @@ If the username and password are correct, and the user has the `can-login` permi
 
 Schema: [`LoginSuccessful.schema.json`](LoginSuccessful.schema.json)
 
-Example
+#### Example
 
     {
         "access_token": "2YotnFZFEjr1zCsicMWpAA",

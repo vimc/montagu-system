@@ -13,6 +13,7 @@ demo/build/*
 demo/out
 lib/
 src/*/build/*
+src/*/out/
 src/.gradle
 src/.idea/.name
 src/.idea/compiler.xml
