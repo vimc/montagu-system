@@ -14,4 +14,6 @@ class SplitSchema(json: String, csv: String) : Schema
         jsonSchema.validate(splitText.json)
         csvSchema.validate(splitText.csv)
     }
+
+    override fun validateRequest(request: String) = TODO("We don't (so far) need to post split JSON/CSV data")
 }

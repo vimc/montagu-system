@@ -31,7 +31,7 @@ class RequestHelper
 
     fun post(url: String, data: JsonObject, token: TokenLiteral? = null): Response
     {
-        return post(url, standardHeaders(ContentTypes.json, token), data)
+        return post(url, standardHeaders(ContentTypes.json, token), data.toJsonString(prettyPrint = true))
     }
 
     private fun standardHeaders(contentType: String, token: TokenLiteral?): Map<String, String>

@@ -7,5 +7,8 @@ class JSONSchema(val schemaName: String) : Schema
     override val validator = JSONValidator()
 
     override fun validate(response: String)
-        = validator.validateAgainstSchema(response, schemaName)
+        = validator.validateAgainstSchema(response, schemaName, wrappedInStandardResponseSchema = true)
+
+    override fun validateRequest(request: String)
+        = validator.validateAgainstSchema(request, schemaName, wrappedInStandardResponseSchema = false)
 }

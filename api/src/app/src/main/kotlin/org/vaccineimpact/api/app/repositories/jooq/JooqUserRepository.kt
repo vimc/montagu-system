@@ -76,6 +76,15 @@ class JooqUserRepository(db: JooqContext) : JooqRepository(db), UserRepository
                 .map(this::mapUserWithRoles)
     }
 
+    override fun addUser(user: User)
+    {
+        dsl.newRecord(APP_USER).apply {
+            username = user.username
+            name = user.name
+            email = user.email
+        }.insert()
+    }
+
     private fun mapUserWithRoles(entry: Map.Entry<AppUserRecord, org.jooq.Result<Record>>): User
     {
         val user = entry.key.into(User::class.java)

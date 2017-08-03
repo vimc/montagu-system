@@ -6,4 +6,5 @@ interface Schema
 {
     val validator: Validator
     fun validate(response: String): Unit
+    fun validateRequest(request: String): Unit
 }
