@@ -43,13 +43,16 @@ class TestUserHelper
 
     companion object
     {
+        fun setupTestUser()
+        {
+            JooqContext().use {
+                TestUserHelper().setupTestUser(it)
+            }
+        }
         fun setupTestUserAndGetToken(permissions: Set<ReifiedPermission>): TokenLiteral
         {
-            val helper = TestUserHelper()
-            JooqContext().use {
-                helper.setupTestUser(it)
-            }
-            return helper.getTokenForTestUser(permissions)
+            setupTestUser()
+            return TestUserHelper().getTokenForTestUser(permissions)
         }
     }
 }

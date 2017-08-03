@@ -4,6 +4,7 @@ import org.vaccineimpact.api.app.ActionContext
 import org.vaccineimpact.api.app.postData
 import org.vaccineimpact.api.app.controllers.endpoints.oneRepoEndpoint
 import org.vaccineimpact.api.app.controllers.endpoints.secured
+import org.vaccineimpact.api.app.models.CreateUser
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.UserRepository
 import org.vaccineimpact.api.models.Scope
@@ -59,7 +60,7 @@ class UserController(context: ControllerContext) : AbstractController(context)
 
     fun createUser(context: ActionContext, repo: UserRepository): String
     {
-        val user = context.postData<User>()
+        val user = context.postData<CreateUser>()
         repo.addUser(user)
         return objectCreation(context, "/${user.username}/")
     }
