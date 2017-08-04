@@ -20,8 +20,8 @@ class AbstractControllerTests : MontaguTests()
     fun `can build public URL`()
     {
         val c = Controller()
-        assertThat(c.buildPublicUrl("/fragment/")).isEqualTo(
-            "http://localhost:8080/v6/test/fragment/"
+        assertThat(c.buildPublicUrl("/fragment/")).endsWith(
+            "/v6/test/fragment/"
         )
     }
 }
