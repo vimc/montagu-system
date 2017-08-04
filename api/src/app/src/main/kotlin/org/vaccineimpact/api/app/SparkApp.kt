@@ -35,7 +35,6 @@ class MontaguApi
         setupPort()
         spk.redirect.get("/", urlBase)
         spk.before("*", ::addTrailingSlashes)
-        spk.before("*", { req, res -> logger.info(req.requestMethod() + " " + req.pathInfo()) })
         spk.options("*", { _, res ->
             res.header("Access-Control-Allow-Headers", "Authorization")
         })

@@ -62,7 +62,7 @@ abstract class AbstractController(controllerContext: ControllerContext)
         return fullUrl
     }
 
-    protected fun objectCreation(context: ActionContext, urlFragment: String): String
+    fun objectCreation(context: ActionContext, urlFragment: String): String
     {
         val url = buildPublicUrl(urlFragment)
         context.addResponseHeader("Location", url)
@@ -70,5 +70,5 @@ abstract class AbstractController(controllerContext: ControllerContext)
         return url
     }
 
-    private fun buildPublicUrl(urlFragment: String) = Config["app.url"] + urlBase + urlComponent + urlFragment
+    fun buildPublicUrl(urlFragment: String) = Config["app.url"] + urlBase + urlComponent + urlFragment
 }

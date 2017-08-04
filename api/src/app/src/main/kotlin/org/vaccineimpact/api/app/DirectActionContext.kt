@@ -5,7 +5,7 @@ import org.pac4j.core.profile.ProfileManager
 import org.pac4j.sparkjava.SparkWebContext
 import org.vaccineimpact.api.app.errors.MissingRequiredPermissionError
 import org.vaccineimpact.api.app.security.montaguPermissions
-import org.vaccineimpact.api.app.serialization.PostDataHelper
+import org.vaccineimpact.api.app.serialization.ModelBinder
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import spark.Request
 import spark.Response
@@ -26,7 +26,7 @@ open class DirectActionContext(private val context: SparkWebContext): ActionCont
     override fun params(key: String): String = request.params(key)
     override fun <T: Any> postData(klass: Class<T>): T
     {
-        return PostDataHelper().deserialize(request.body(), klass)
+        return ModelBinder().deserialize(request.body(), klass)
     }
 
     override fun setResponseStatus(status: Int)
