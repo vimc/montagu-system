@@ -24,6 +24,6 @@ class CreateUserTests : UserControllerTests()
         val controller = UserController(mockControllerContext())
         val location = controller.createUser(context, repo)
         verify(repo).addUser(any())
-        Assertions.assertThat(location).isEqualTo("unit_test_root/v1/users/user.name/")
+        Assertions.assertThat(location).isEqualTo("http://localhost:8080/v1/users/user.name/")
     }
 }
