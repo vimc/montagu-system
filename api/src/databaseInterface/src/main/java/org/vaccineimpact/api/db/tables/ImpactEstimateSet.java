@@ -36,7 +36,7 @@ import org.vaccineimpact.api.db.tables.records.ImpactEstimateSetRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ImpactEstimateSet extends TableImpl<ImpactEstimateSetRecord> {
 
-    private static final long serialVersionUID = -930413188;
+    private static final long serialVersionUID = -682149756;
 
     /**
      * The reference instance of <code>public.impact_estimate_set</code>
@@ -75,6 +75,16 @@ public class ImpactEstimateSet extends TableImpl<ImpactEstimateSetRecord> {
      * The column <code>public.impact_estimate_set.coverage_touchstone</code>.
      */
     public final TableField<ImpactEstimateSetRecord, String> COVERAGE_TOUCHSTONE = createField("coverage_touchstone", org.jooq.impl.SQLDataType.CLOB, this, "");
+
+    /**
+     * The column <code>public.impact_estimate_set.focal_coverage_set</code>.
+     */
+    public final TableField<ImpactEstimateSetRecord, Integer> FOCAL_COVERAGE_SET = createField("focal_coverage_set", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+
+    /**
+     * The column <code>public.impact_estimate_set.focal_burden_estimate_set</code>.
+     */
+    public final TableField<ImpactEstimateSetRecord, Integer> FOCAL_BURDEN_ESTIMATE_SET = createField("focal_burden_estimate_set", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * Create a <code>public.impact_estimate_set</code> table reference
@@ -135,7 +145,7 @@ public class ImpactEstimateSet extends TableImpl<ImpactEstimateSetRecord> {
      */
     @Override
     public List<ForeignKey<ImpactEstimateSetRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<ImpactEstimateSetRecord, ?>>asList(Keys.IMPACT_ESTIMATE_SET__IMPACT_ESTIMATE_SET_IMPACT_ESTIMATE_RECIPE_FKEY, Keys.IMPACT_ESTIMATE_SET__IMPACT_ESTIMATE_SET_RECIPE_TOUCHSTONE_FKEY, Keys.IMPACT_ESTIMATE_SET__IMPACT_ESTIMATE_SET_COVERAGE_TOUCHSTONE_FKEY);
+        return Arrays.<ForeignKey<ImpactEstimateSetRecord, ?>>asList(Keys.IMPACT_ESTIMATE_SET__IMPACT_ESTIMATE_SET_IMPACT_ESTIMATE_RECIPE_FKEY, Keys.IMPACT_ESTIMATE_SET__IMPACT_ESTIMATE_SET_RECIPE_TOUCHSTONE_FKEY, Keys.IMPACT_ESTIMATE_SET__IMPACT_ESTIMATE_SET_COVERAGE_TOUCHSTONE_FKEY, Keys.IMPACT_ESTIMATE_SET__IMPACT_ESTIMATE_SET_FOCAL_COVERAGE_SET_FKEY, Keys.IMPACT_ESTIMATE_SET__IMPACT_ESTIMATE_SET_FOCAL_BURDEN_ESTIMATE_SET_FKEY);
     }
 
     /**

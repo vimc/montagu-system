@@ -35,7 +35,7 @@ import org.vaccineimpact.api.db.tables.records.TouchstoneDemographicSourceRecord
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TouchstoneDemographicSource extends TableImpl<TouchstoneDemographicSourceRecord> {
 
-    private static final long serialVersionUID = 1706284130;
+    private static final long serialVersionUID = 1969488150;
 
     /**
      * The reference instance of <code>public.touchstone_demographic_source</code>
@@ -61,9 +61,9 @@ public class TouchstoneDemographicSource extends TableImpl<TouchstoneDemographic
     public final TableField<TouchstoneDemographicSourceRecord, String> TOUCHSTONE = createField("touchstone", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
 
     /**
-     * The column <code>public.touchstone_demographic_source.source</code>.
+     * The column <code>public.touchstone_demographic_source.demographic_source</code>.
      */
-    public final TableField<TouchstoneDemographicSourceRecord, Integer> SOURCE = createField("source", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<TouchstoneDemographicSourceRecord, Integer> DEMOGRAPHIC_SOURCE = createField("demographic_source", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * Create a <code>public.touchstone_demographic_source</code> table reference
@@ -124,7 +124,7 @@ public class TouchstoneDemographicSource extends TableImpl<TouchstoneDemographic
      */
     @Override
     public List<ForeignKey<TouchstoneDemographicSourceRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<TouchstoneDemographicSourceRecord, ?>>asList(Keys.TOUCHSTONE_DEMOGRAPHIC_SOURCE__TOUCHSTONE_DEMOGRAPHIC_SOURCE_TOUCHSTONE_FKEY, Keys.TOUCHSTONE_DEMOGRAPHIC_SOURCE__TOUCHSTONE_DEMOGRAPHIC_SOURCE_SOURCE_FKEY);
+        return Arrays.<ForeignKey<TouchstoneDemographicSourceRecord, ?>>asList(Keys.TOUCHSTONE_DEMOGRAPHIC_SOURCE__TOUCHSTONE_DEMOGRAPHIC_SOURCE_TOUCHSTONE_FKEY, Keys.TOUCHSTONE_DEMOGRAPHIC_SOURCE__TOUCHSTONE_DEMOGRAPHIC_SOURCE_DEMOGRAPHIC_SOURCE_FKEY);
     }
 
     /**
