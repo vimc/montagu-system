@@ -5,7 +5,6 @@ package org.vaccineimpact.api.db.tables;
 
 
 import java.math.BigDecimal;
-import java.sql.Date;
 import java.util.Arrays;
 import java.util.List;
 
@@ -37,7 +36,7 @@ import org.vaccineimpact.api.db.tables.records.DemographicStatisticRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DemographicStatistic extends TableImpl<DemographicStatisticRecord> {
 
-    private static final long serialVersionUID = 1141735621;
+    private static final long serialVersionUID = -1980593512;
 
     /**
      * The reference instance of <code>public.demographic_statistic</code>
@@ -73,19 +72,14 @@ public class DemographicStatistic extends TableImpl<DemographicStatisticRecord> 
     public final TableField<DemographicStatisticRecord, BigDecimal> VALUE = createField("value", org.jooq.impl.SQLDataType.NUMERIC.nullable(false), this, "");
 
     /**
-     * The column <code>public.demographic_statistic.date_start</code>.
+     * The column <code>public.demographic_statistic.year</code>.
      */
-    public final TableField<DemographicStatisticRecord, Date> DATE_START = createField("date_start", org.jooq.impl.SQLDataType.DATE.nullable(false), this, "");
+    public final TableField<DemographicStatisticRecord, Integer> YEAR = createField("year", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
-     * The column <code>public.demographic_statistic.date_end</code>.
+     * The column <code>public.demographic_statistic.demographic_variant</code>.
      */
-    public final TableField<DemographicStatisticRecord, Date> DATE_END = createField("date_end", org.jooq.impl.SQLDataType.DATE.nullable(false), this, "");
-
-    /**
-     * The column <code>public.demographic_statistic.projection_variant</code>.
-     */
-    public final TableField<DemographicStatisticRecord, Integer> PROJECTION_VARIANT = createField("projection_variant", org.jooq.impl.SQLDataType.INTEGER, this, "");
+    public final TableField<DemographicStatisticRecord, Integer> DEMOGRAPHIC_VARIANT = createField("demographic_variant", org.jooq.impl.SQLDataType.INTEGER, this, "");
 
     /**
      * The column <code>public.demographic_statistic.gender</code>.
@@ -98,9 +92,9 @@ public class DemographicStatistic extends TableImpl<DemographicStatisticRecord> 
     public final TableField<DemographicStatisticRecord, String> COUNTRY = createField("country", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
 
     /**
-     * The column <code>public.demographic_statistic.source</code>.
+     * The column <code>public.demographic_statistic.demographic_source</code>.
      */
-    public final TableField<DemographicStatisticRecord, Integer> SOURCE = createField("source", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<DemographicStatisticRecord, Integer> DEMOGRAPHIC_SOURCE = createField("demographic_source", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * The column <code>public.demographic_statistic.demographic_statistic_type</code>.
@@ -166,7 +160,7 @@ public class DemographicStatistic extends TableImpl<DemographicStatisticRecord> 
      */
     @Override
     public List<ForeignKey<DemographicStatisticRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<DemographicStatisticRecord, ?>>asList(Keys.DEMOGRAPHIC_STATISTIC__DEMOGRAPHIC_STATISTIC_PROJECTION_VARIANT_FKEY, Keys.DEMOGRAPHIC_STATISTIC__DEMOGRAPHIC_STATISTIC_GENDER_FKEY, Keys.DEMOGRAPHIC_STATISTIC__DEMOGRAPHIC_STATISTIC_COUNTRY_FKEY, Keys.DEMOGRAPHIC_STATISTIC__DEMOGRAPHIC_STATISTIC_SOURCE_FKEY, Keys.DEMOGRAPHIC_STATISTIC__DEMOGRAPHIC_STATISTIC_DEMOGRAPHIC_STATISTIC_TYPE_FKEY);
+        return Arrays.<ForeignKey<DemographicStatisticRecord, ?>>asList(Keys.DEMOGRAPHIC_STATISTIC__DEMOGRAPHIC_STATISTIC_DEMOGRAPHIC_VARIANT_FKEY, Keys.DEMOGRAPHIC_STATISTIC__DEMOGRAPHIC_STATISTIC_GENDER_FKEY, Keys.DEMOGRAPHIC_STATISTIC__DEMOGRAPHIC_STATISTIC_COUNTRY_FKEY, Keys.DEMOGRAPHIC_STATISTIC__DEMOGRAPHIC_STATISTIC_DEMOGRAPHIC_SOURCE_FKEY, Keys.DEMOGRAPHIC_STATISTIC__DEMOGRAPHIC_STATISTIC_DEMOGRAPHIC_STATISTIC_TYPE_FKEY);
     }
 
     /**
