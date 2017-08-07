@@ -24,6 +24,7 @@ class JooqUserRepository(db: JooqContext) : JooqRepository(db), UserRepository
     {
         dsl.update(APP_USER)
                 .set(APP_USER.LAST_LOGGED_IN, Timestamp.from(Instant.now()))
+                .where(APP_USER.USERNAME.eq(username))
                 .execute()
     }
 
