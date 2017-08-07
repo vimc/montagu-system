@@ -1714,7 +1714,7 @@ Schema: [`Demographics.schema.json`](Demographics.schema.json)
 
 Returns the data set with given type, in `long` CSV format.
 
-### Example
+Example:
 Age-specific fertility:
     
     "country",  "age of mother (years)",  "year", "avg births/mother"
@@ -1729,7 +1729,7 @@ Age-specific fertility:
         "AFG",                  "15-19",    1990,                 1.1 
         "AFG",                  "15-19",    1995,                 1.1 
          
-### Example
+Example:
 Total population:
          
      "country", "age (years)",  "gender",  "year",   "people"
@@ -1748,7 +1748,7 @@ Optional. The gender to return, either `female`, `male`, or `both`. Defaults to 
 #### format
 Optional. A format to return the CSV in, either `wide` or `long`. Defaults to `long`.
 
-### Example
+Example:
 `/touchstones/2017-op-1/demographics/tot_pop/?format=wide&gender=female`
 
 Total population:
