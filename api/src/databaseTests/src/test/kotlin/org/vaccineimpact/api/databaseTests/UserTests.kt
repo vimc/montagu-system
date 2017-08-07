@@ -14,6 +14,8 @@ import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import org.vaccineimpact.api.models.permissions.ReifiedRole
 import org.vaccineimpact.api.models.permissions.RoleAssignment
 import org.vaccineimpact.api.security.*
+import java.sql.Timestamp
+import java.util.*
 
 class UserTests : RepositoryTests<UserRepository>()
 {
@@ -82,8 +84,11 @@ class UserTests : RepositoryTests<UserRepository>()
     fun `can update last logged in`()
     {
         given(this::addTestUser).check { repo ->
+            val then = Date(System.currentTimeMillis())
             repo.updateLastLoggedIn(username)
-            assertThat(repo.getUserByUsername(username).lastLoggedIn).isNotNull()
+            val lastLoggedIn = repo.getUserByUsername(username).lastLoggedIn
+            assertThat(lastLoggedIn).isNotNull()
+            assertThat(lastLoggedIn).isBetween(then, Date(System.currentTimeMillis()))
         }
     }
 
