@@ -9,7 +9,6 @@ import org.vaccineimpact.api.app.HTMLFormHelpers
 import org.vaccineimpact.api.app.controllers.endpoints.oneRepoEndpoint
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.UserRepository
-import org.vaccineimpact.api.app.security.SkipOptionsMatcher
 import org.vaccineimpact.api.app.security.TokenIssuingConfigFactory
 import org.vaccineimpact.api.app.security.USER_OBJECT
 import org.vaccineimpact.api.models.AuthenticationResponse
