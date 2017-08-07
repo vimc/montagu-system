@@ -1700,13 +1700,13 @@ Schema: [`Demographics.schema.json`](Demographics.schema.json)
 
 ### Example
     [{ 
-        "code" : "as_fert",
+        "code" : "as-fert",
         "name": "Age-specific fertility",
         "gender_is_applicable": false
      },
      { 
-        "code" : "tot_pop",
-        "name" : "Total population,
+        "code" : "tot-pop",
+        "name" : "Total population",
         "gender_is_applicable": true
      }]
 
