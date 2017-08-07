@@ -16,7 +16,7 @@ class JSONValidator : Validator
     fun validateAgainstSchema(text: String, schemaName: String,
                               wrappedInStandardResponseSchema: Boolean = true)
     {
-        val json = parseJson(text)
+        val json = parseJson(text, "request/response")
         val data = if (wrappedInStandardResponseSchema)
         {
             checkResultSchema(json, text, "success")
