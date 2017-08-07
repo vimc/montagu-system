@@ -66,9 +66,9 @@ task startDatabase(dependsOn: ':loadPropertiesTask') {
         String dbVersion = file("config/db_version").text
         String image = rootProject.ext.props.get('testdb_image') + ":" + dbVersion
         println "Database image: " + image
-        exec {
-            commandLine 'docker', 'pull', image
-        }
+//        exec {
+//            commandLine 'docker', 'pull', image
+//        }
         exec {
             commandLine 'docker', 'run', '-d', '--rm', '-p', portBinding, '--name', 'montagu-api-test_database', image
         }

@@ -7,7 +7,9 @@ import org.vaccineimpact.api.app.ActionContext
 import org.vaccineimpact.api.app.HTMLForm
 import org.vaccineimpact.api.app.HTMLFormHelpers
 import org.vaccineimpact.api.app.controllers.endpoints.basicEndpoint
+import org.vaccineimpact.api.app.controllers.endpoints.oneRepoEndpoint
 import org.vaccineimpact.api.app.repositories.Repositories
+import org.vaccineimpact.api.app.repositories.UserRepository
 import org.vaccineimpact.api.app.security.SkipOptionsMatcher
 import org.vaccineimpact.api.app.security.USER_OBJECT
 import org.vaccineimpact.api.models.AuthenticationResponse
@@ -22,11 +24,11 @@ class AuthenticationController(context: ControllerContext) : AbstractController(
 {
     override val urlComponent = "/"
     override fun endpoints(repos: Repositories) = listOf(
-            basicEndpoint("authenticate/", this::authenticate,  HttpMethod.post)
+            oneRepoEndpoint("authenticate/", this::authenticate, repos.user, HttpMethod.post)
                     .withAdditionalSetup(this::setupSecurity)
     )
 
-    fun authenticate(context: ActionContext): AuthenticationResponse
+    fun authenticate(context: ActionContext, repo: UserRepository): AuthenticationResponse
     {
         val validationResult = HTMLFormHelpers.checkForm(context,
                 mapOf("grant_type" to "client_credentials")
@@ -36,6 +38,7 @@ class AuthenticationController(context: ControllerContext) : AbstractController(
             is HTMLForm.ValidForm -> {
                 val user = getUserFromUserProfile(context)
                 val token = tokenHelper.generateToken(user)
+                repo.updateLastLoggedIn(user.username)
                 return SuccessfulAuthentication(token, tokenHelper.lifeSpan)
             }
             is HTMLForm.InvalidForm -> FailedAuthentication(validationResult.problem)
