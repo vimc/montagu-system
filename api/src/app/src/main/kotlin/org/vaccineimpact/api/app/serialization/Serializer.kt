@@ -7,8 +7,8 @@ import com.google.gson.GsonBuilder
 import com.google.gson.JsonPrimitive
 import org.vaccineimpact.api.models.*
 import java.text.SimpleDateFormat
-import java.time.temporal.Temporal
-import java.util.*
+import java.time.Instant
+import java.time.LocalDate
 
 open class Serializer
 {
@@ -17,9 +17,8 @@ open class Serializer
         val instance = Serializer()
     }
 
-    private val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
-    private val toDateStringSerializer = jsonSerializer<Date> {
-        JsonPrimitive(dateFormat.format(it.src))
+    private val toDateStringSerializer = jsonSerializer<Any> {
+        JsonPrimitive(it.src.toString())
     }
     private val enumSerializer = jsonSerializer<Any> { JsonPrimitive(serializeEnum(it.src)) }
 
@@ -32,7 +31,8 @@ open class Serializer
                 .disableHtmlEscaping()
                 .setFieldNamingStrategy { convertFieldName(it.name) }
                 .serializeNulls()
-                .registerTypeAdapter<Date>(toDateStringSerializer)
+                .registerTypeAdapter<LocalDate>(toDateStringSerializer)
+                .registerTypeAdapter<Instant>(toDateStringSerializer)
                 .registerTypeAdapter<ResultStatus>(enumSerializer)
                 .registerTypeAdapter<ResponsibilitySetStatus>(enumSerializer)
                 .registerTypeAdapter<ResponsibilityStatus>(enumSerializer)

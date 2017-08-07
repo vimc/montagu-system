@@ -16,15 +16,15 @@ import org.vaccineimpact.api.models.permissions.RoleAssignment
 import org.vaccineimpact.api.security.MontaguUser
 import org.vaccineimpact.api.security.UserProperties
 import java.sql.Timestamp
+import java.time.Instant
 
 class JooqUserRepository(db: JooqContext) : JooqRepository(db), UserRepository
 {
     override fun updateLastLoggedIn(username: String)
     {
         dsl.update(APP_USER)
-                .set(APP_USER.LAST_LOGGED_IN, Timestamp(System.currentTimeMillis()))
+                .set(APP_USER.LAST_LOGGED_IN, Timestamp.from(Instant.now()))
                 .execute()
-
     }
 
     override fun getMontaguUserByEmail(email: String): MontaguUser?
