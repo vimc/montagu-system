@@ -1,5 +1,8 @@
 package org.vaccineimpact.api.blackboxTests.validators
 
+import org.vaccineimpact.api.validateSchema.JSONValidator
+import org.vaccineimpact.api.validateSchema.Validator
+
 data class SplitText(val json: String, val csv: String)
 
 class SplitValidator : Validator
