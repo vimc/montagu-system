@@ -117,7 +117,7 @@ class ScenarioTests : DatabaseTest()
                 "touchstone" to "touchstone-1",
                 "name" to "Set 1",
                 "vaccine" to "vaccine",
-                "gavi_support_level" to "none",
+                "gavi_support_level" to "no vaccine",
                 "activity_type" to "routine"
         ))
     }

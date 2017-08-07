@@ -144,7 +144,7 @@ class ResponsibilityTests : DatabaseTest()
                                 "touchstone" to touchstoneId,
                                 "name" to "coverage set name",
                                 "vaccine" to "vaccine-1",
-                                "gavi_support_level" to "without",
+                                "gavi_support_level" to "no gavi",
                                 "activity_type" to "routine"
                         ))
                 )
