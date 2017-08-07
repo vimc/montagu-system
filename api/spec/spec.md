@@ -1707,7 +1707,7 @@ Schema: [`Demographics.schema.json`](Demographics.schema.json)
      { 
         "code" : "tot_pop",
         "name" : "Total population,
-        "gender_is_applicable": true,
+        "gender_is_applicable": true
      }]
 
 ## GET /touchstones/{touchstone-id}/demographics/{demographic-type-code}/
