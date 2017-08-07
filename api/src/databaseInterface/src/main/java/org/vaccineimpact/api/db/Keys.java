@@ -21,8 +21,12 @@ import org.vaccineimpact.api.db.tables.CountryMetadata;
 import org.vaccineimpact.api.db.tables.CountryVaccineMetadata;
 import org.vaccineimpact.api.db.tables.Coverage;
 import org.vaccineimpact.api.db.tables.CoverageSet;
+import org.vaccineimpact.api.db.tables.DemographicSource;
 import org.vaccineimpact.api.db.tables.DemographicStatistic;
 import org.vaccineimpact.api.db.tables.DemographicStatisticType;
+import org.vaccineimpact.api.db.tables.DemographicStatisticTypeVariant;
+import org.vaccineimpact.api.db.tables.DemographicValueUnit;
+import org.vaccineimpact.api.db.tables.DemographicVariant;
 import org.vaccineimpact.api.db.tables.DisabilityWeight;
 import org.vaccineimpact.api.db.tables.Disease;
 import org.vaccineimpact.api.db.tables.GaviFocalModel;
@@ -39,7 +43,6 @@ import org.vaccineimpact.api.db.tables.ModelVersion;
 import org.vaccineimpact.api.db.tables.ModellingGroup;
 import org.vaccineimpact.api.db.tables.OnetimeToken;
 import org.vaccineimpact.api.db.tables.Permission;
-import org.vaccineimpact.api.db.tables.ProjectionVariant;
 import org.vaccineimpact.api.db.tables.Responsibility;
 import org.vaccineimpact.api.db.tables.ResponsibilitySet;
 import org.vaccineimpact.api.db.tables.ResponsibilitySetStatus;
@@ -48,7 +51,6 @@ import org.vaccineimpact.api.db.tables.RolePermission;
 import org.vaccineimpact.api.db.tables.Scenario;
 import org.vaccineimpact.api.db.tables.ScenarioCoverageSet;
 import org.vaccineimpact.api.db.tables.ScenarioDescription;
-import org.vaccineimpact.api.db.tables.Source;
 import org.vaccineimpact.api.db.tables.SupportType;
 import org.vaccineimpact.api.db.tables.Touchstone;
 import org.vaccineimpact.api.db.tables.TouchstoneCountry;
@@ -58,6 +60,7 @@ import org.vaccineimpact.api.db.tables.TouchstoneStatus;
 import org.vaccineimpact.api.db.tables.TouchstoneYears;
 import org.vaccineimpact.api.db.tables.UserRole;
 import org.vaccineimpact.api.db.tables.Vaccine;
+import org.vaccineimpact.api.db.tables.VaccineRoutineAge;
 import org.vaccineimpact.api.db.tables.records.ActivityTypeRecord;
 import org.vaccineimpact.api.db.tables.records.AppUserRecord;
 import org.vaccineimpact.api.db.tables.records.BurdenEstimateRecord;
@@ -69,8 +72,12 @@ import org.vaccineimpact.api.db.tables.records.CountryRecord;
 import org.vaccineimpact.api.db.tables.records.CountryVaccineMetadataRecord;
 import org.vaccineimpact.api.db.tables.records.CoverageRecord;
 import org.vaccineimpact.api.db.tables.records.CoverageSetRecord;
+import org.vaccineimpact.api.db.tables.records.DemographicSourceRecord;
 import org.vaccineimpact.api.db.tables.records.DemographicStatisticRecord;
 import org.vaccineimpact.api.db.tables.records.DemographicStatisticTypeRecord;
+import org.vaccineimpact.api.db.tables.records.DemographicStatisticTypeVariantRecord;
+import org.vaccineimpact.api.db.tables.records.DemographicValueUnitRecord;
+import org.vaccineimpact.api.db.tables.records.DemographicVariantRecord;
 import org.vaccineimpact.api.db.tables.records.DisabilityWeightRecord;
 import org.vaccineimpact.api.db.tables.records.DiseaseRecord;
 import org.vaccineimpact.api.db.tables.records.GaviFocalModelRecord;
@@ -87,7 +94,6 @@ import org.vaccineimpact.api.db.tables.records.ModelVersionRecord;
 import org.vaccineimpact.api.db.tables.records.ModellingGroupRecord;
 import org.vaccineimpact.api.db.tables.records.OnetimeTokenRecord;
 import org.vaccineimpact.api.db.tables.records.PermissionRecord;
-import org.vaccineimpact.api.db.tables.records.ProjectionVariantRecord;
 import org.vaccineimpact.api.db.tables.records.ResponsibilityRecord;
 import org.vaccineimpact.api.db.tables.records.ResponsibilitySetRecord;
 import org.vaccineimpact.api.db.tables.records.ResponsibilitySetStatusRecord;
@@ -96,7 +102,6 @@ import org.vaccineimpact.api.db.tables.records.RoleRecord;
 import org.vaccineimpact.api.db.tables.records.ScenarioCoverageSetRecord;
 import org.vaccineimpact.api.db.tables.records.ScenarioDescriptionRecord;
 import org.vaccineimpact.api.db.tables.records.ScenarioRecord;
-import org.vaccineimpact.api.db.tables.records.SourceRecord;
 import org.vaccineimpact.api.db.tables.records.SupportTypeRecord;
 import org.vaccineimpact.api.db.tables.records.TouchstoneCountryRecord;
 import org.vaccineimpact.api.db.tables.records.TouchstoneDemographicSourceRecord;
@@ -106,6 +111,7 @@ import org.vaccineimpact.api.db.tables.records.TouchstoneStatusRecord;
 import org.vaccineimpact.api.db.tables.records.TouchstoneYearsRecord;
 import org.vaccineimpact.api.db.tables.records.UserRoleRecord;
 import org.vaccineimpact.api.db.tables.records.VaccineRecord;
+import org.vaccineimpact.api.db.tables.records.VaccineRoutineAgeRecord;
 
 
 /**
@@ -134,8 +140,11 @@ public class Keys {
     public static final Identity<CountryVaccineMetadataRecord, Integer> IDENTITY_COUNTRY_VACCINE_METADATA = Identities0.IDENTITY_COUNTRY_VACCINE_METADATA;
     public static final Identity<CoverageRecord, Integer> IDENTITY_COVERAGE = Identities0.IDENTITY_COVERAGE;
     public static final Identity<CoverageSetRecord, Integer> IDENTITY_COVERAGE_SET = Identities0.IDENTITY_COVERAGE_SET;
+    public static final Identity<DemographicSourceRecord, Integer> IDENTITY_DEMOGRAPHIC_SOURCE = Identities0.IDENTITY_DEMOGRAPHIC_SOURCE;
     public static final Identity<DemographicStatisticRecord, Integer> IDENTITY_DEMOGRAPHIC_STATISTIC = Identities0.IDENTITY_DEMOGRAPHIC_STATISTIC;
     public static final Identity<DemographicStatisticTypeRecord, Integer> IDENTITY_DEMOGRAPHIC_STATISTIC_TYPE = Identities0.IDENTITY_DEMOGRAPHIC_STATISTIC_TYPE;
+    public static final Identity<DemographicValueUnitRecord, Integer> IDENTITY_DEMOGRAPHIC_VALUE_UNIT = Identities0.IDENTITY_DEMOGRAPHIC_VALUE_UNIT;
+    public static final Identity<DemographicVariantRecord, Integer> IDENTITY_DEMOGRAPHIC_VARIANT = Identities0.IDENTITY_DEMOGRAPHIC_VARIANT;
     public static final Identity<DisabilityWeightRecord, Integer> IDENTITY_DISABILITY_WEIGHT = Identities0.IDENTITY_DISABILITY_WEIGHT;
     public static final Identity<GaviFocalModelRecord, Integer> IDENTITY_GAVI_FOCAL_MODEL = Identities0.IDENTITY_GAVI_FOCAL_MODEL;
     public static final Identity<GenderRecord, Integer> IDENTITY_GENDER = Identities0.IDENTITY_GENDER;
@@ -145,16 +154,15 @@ public class Keys {
     public static final Identity<ImpactEstimateSetRecord, Integer> IDENTITY_IMPACT_ESTIMATE_SET = Identities0.IDENTITY_IMPACT_ESTIMATE_SET;
     public static final Identity<ImpactEstimateSetIngredientRecord, Integer> IDENTITY_IMPACT_ESTIMATE_SET_INGREDIENT = Identities0.IDENTITY_IMPACT_ESTIMATE_SET_INGREDIENT;
     public static final Identity<ModelVersionRecord, Integer> IDENTITY_MODEL_VERSION = Identities0.IDENTITY_MODEL_VERSION;
-    public static final Identity<ProjectionVariantRecord, Integer> IDENTITY_PROJECTION_VARIANT = Identities0.IDENTITY_PROJECTION_VARIANT;
     public static final Identity<ResponsibilityRecord, Integer> IDENTITY_RESPONSIBILITY = Identities0.IDENTITY_RESPONSIBILITY;
     public static final Identity<ResponsibilitySetRecord, Integer> IDENTITY_RESPONSIBILITY_SET = Identities0.IDENTITY_RESPONSIBILITY_SET;
     public static final Identity<RoleRecord, Integer> IDENTITY_ROLE = Identities0.IDENTITY_ROLE;
     public static final Identity<ScenarioRecord, Integer> IDENTITY_SCENARIO = Identities0.IDENTITY_SCENARIO;
     public static final Identity<ScenarioCoverageSetRecord, Integer> IDENTITY_SCENARIO_COVERAGE_SET = Identities0.IDENTITY_SCENARIO_COVERAGE_SET;
-    public static final Identity<SourceRecord, Integer> IDENTITY_SOURCE = Identities0.IDENTITY_SOURCE;
     public static final Identity<TouchstoneCountryRecord, Integer> IDENTITY_TOUCHSTONE_COUNTRY = Identities0.IDENTITY_TOUCHSTONE_COUNTRY;
     public static final Identity<TouchstoneDemographicSourceRecord, Integer> IDENTITY_TOUCHSTONE_DEMOGRAPHIC_SOURCE = Identities0.IDENTITY_TOUCHSTONE_DEMOGRAPHIC_SOURCE;
     public static final Identity<TouchstoneYearsRecord, Integer> IDENTITY_TOUCHSTONE_YEARS = Identities0.IDENTITY_TOUCHSTONE_YEARS;
+    public static final Identity<VaccineRoutineAgeRecord, Integer> IDENTITY_VACCINE_ROUTINE_AGE = Identities0.IDENTITY_VACCINE_ROUTINE_AGE;
 
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
@@ -173,8 +181,12 @@ public class Keys {
     public static final UniqueKey<CountryVaccineMetadataRecord> COUNTRY_VACCINE_METADATA_PKEY = UniqueKeys0.COUNTRY_VACCINE_METADATA_PKEY;
     public static final UniqueKey<CoverageRecord> COVERAGE_PKEY = UniqueKeys0.COVERAGE_PKEY;
     public static final UniqueKey<CoverageSetRecord> COVERAGE_SET_PKEY = UniqueKeys0.COVERAGE_SET_PKEY;
+    public static final UniqueKey<DemographicSourceRecord> DEMOGRAPHIC_SOURCE_PKEY = UniqueKeys0.DEMOGRAPHIC_SOURCE_PKEY;
     public static final UniqueKey<DemographicStatisticRecord> DEMOGRAPHIC_STATISTIC_PKEY = UniqueKeys0.DEMOGRAPHIC_STATISTIC_PKEY;
     public static final UniqueKey<DemographicStatisticTypeRecord> DEMOGRAPHIC_STATISTIC_TYPE_PKEY = UniqueKeys0.DEMOGRAPHIC_STATISTIC_TYPE_PKEY;
+    public static final UniqueKey<DemographicStatisticTypeVariantRecord> DEMOGRAPHIC_STATISTIC_TYPE_VARIANT_PKEY = UniqueKeys0.DEMOGRAPHIC_STATISTIC_TYPE_VARIANT_PKEY;
+    public static final UniqueKey<DemographicValueUnitRecord> DEMOGRAPHIC_VALUE_UNIT_PKEY = UniqueKeys0.DEMOGRAPHIC_VALUE_UNIT_PKEY;
+    public static final UniqueKey<DemographicVariantRecord> DEMOGRAPHIC_VARIANT_PKEY = UniqueKeys0.DEMOGRAPHIC_VARIANT_PKEY;
     public static final UniqueKey<DisabilityWeightRecord> DISABILITY_WEIGHT_PKEY = UniqueKeys0.DISABILITY_WEIGHT_PKEY;
     public static final UniqueKey<DiseaseRecord> DISEASE_PKEY = UniqueKeys0.DISEASE_PKEY;
     public static final UniqueKey<GaviFocalModelRecord> GAVI_FOCAL_MODEL_PKEY = UniqueKeys0.GAVI_FOCAL_MODEL_PKEY;
@@ -193,7 +205,6 @@ public class Keys {
     public static final UniqueKey<ModellingGroupRecord> MODELLING_GROUP_PKEY = UniqueKeys0.MODELLING_GROUP_PKEY;
     public static final UniqueKey<OnetimeTokenRecord> ONETIME_TOKEN_PKEY = UniqueKeys0.ONETIME_TOKEN_PKEY;
     public static final UniqueKey<PermissionRecord> PERMISSION_PKEY = UniqueKeys0.PERMISSION_PKEY;
-    public static final UniqueKey<ProjectionVariantRecord> PROJECTION_VARIANT_PKEY = UniqueKeys0.PROJECTION_VARIANT_PKEY;
     public static final UniqueKey<ResponsibilityRecord> RESPONSIBILITY_PKEY = UniqueKeys0.RESPONSIBILITY_PKEY;
     public static final UniqueKey<ResponsibilityRecord> RESPONSIBILITY_RESPONSIBILITY_SET_SCENARIO_KEY = UniqueKeys0.RESPONSIBILITY_RESPONSIBILITY_SET_SCENARIO_KEY;
     public static final UniqueKey<ResponsibilitySetRecord> RESPONSIBILITY_SET_PKEY = UniqueKeys0.RESPONSIBILITY_SET_PKEY;
@@ -206,7 +217,6 @@ public class Keys {
     public static final UniqueKey<ScenarioCoverageSetRecord> SCENARIO_COVERAGE_SET_PKEY = UniqueKeys0.SCENARIO_COVERAGE_SET_PKEY;
     public static final UniqueKey<ScenarioCoverageSetRecord> SCENARIO_COVERAGE_SET_SCENARIO_ORDER_KEY = UniqueKeys0.SCENARIO_COVERAGE_SET_SCENARIO_ORDER_KEY;
     public static final UniqueKey<ScenarioDescriptionRecord> SCENARIO_DESCRIPTION_PKEY = UniqueKeys0.SCENARIO_DESCRIPTION_PKEY;
-    public static final UniqueKey<SourceRecord> SOURCE_PKEY = UniqueKeys0.SOURCE_PKEY;
     public static final UniqueKey<SupportTypeRecord> SUPPORT_TYPE_PKEY = UniqueKeys0.SUPPORT_TYPE_PKEY;
     public static final UniqueKey<TouchstoneRecord> TOUCHSTONE_PKEY = UniqueKeys0.TOUCHSTONE_PKEY;
     public static final UniqueKey<TouchstoneRecord> TOUCHSTONE_TOUCHSTONE_NAME_VERSION_KEY = UniqueKeys0.TOUCHSTONE_TOUCHSTONE_NAME_VERSION_KEY;
@@ -217,6 +227,7 @@ public class Keys {
     public static final UniqueKey<TouchstoneYearsRecord> TOUCHSTONE_YEARS_PKEY = UniqueKeys0.TOUCHSTONE_YEARS_PKEY;
     public static final UniqueKey<UserRoleRecord> USER_ROLE_PKEY = UniqueKeys0.USER_ROLE_PKEY;
     public static final UniqueKey<VaccineRecord> VACCINE_PKEY = UniqueKeys0.VACCINE_PKEY;
+    public static final UniqueKey<VaccineRoutineAgeRecord> VACCINE_ROUTINE_AGE_PKEY = UniqueKeys0.VACCINE_ROUTINE_AGE_PKEY;
 
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
@@ -240,11 +251,15 @@ public class Keys {
     public static final ForeignKey<CoverageSetRecord, VaccineRecord> COVERAGE_SET__COVERAGE_SET_VACCINE_FKEY = ForeignKeys0.COVERAGE_SET__COVERAGE_SET_VACCINE_FKEY;
     public static final ForeignKey<CoverageSetRecord, GaviSupportLevelRecord> COVERAGE_SET__COVERAGE_SET_GAVI_SUPPORT_LEVEL_FKEY = ForeignKeys0.COVERAGE_SET__COVERAGE_SET_GAVI_SUPPORT_LEVEL_FKEY;
     public static final ForeignKey<CoverageSetRecord, ActivityTypeRecord> COVERAGE_SET__COVERAGE_SET_ACTIVITY_TYPE_FKEY = ForeignKeys0.COVERAGE_SET__COVERAGE_SET_ACTIVITY_TYPE_FKEY;
-    public static final ForeignKey<DemographicStatisticRecord, ProjectionVariantRecord> DEMOGRAPHIC_STATISTIC__DEMOGRAPHIC_STATISTIC_PROJECTION_VARIANT_FKEY = ForeignKeys0.DEMOGRAPHIC_STATISTIC__DEMOGRAPHIC_STATISTIC_PROJECTION_VARIANT_FKEY;
+    public static final ForeignKey<DemographicStatisticRecord, DemographicVariantRecord> DEMOGRAPHIC_STATISTIC__DEMOGRAPHIC_STATISTIC_DEMOGRAPHIC_VARIANT_FKEY = ForeignKeys0.DEMOGRAPHIC_STATISTIC__DEMOGRAPHIC_STATISTIC_DEMOGRAPHIC_VARIANT_FKEY;
     public static final ForeignKey<DemographicStatisticRecord, GenderRecord> DEMOGRAPHIC_STATISTIC__DEMOGRAPHIC_STATISTIC_GENDER_FKEY = ForeignKeys0.DEMOGRAPHIC_STATISTIC__DEMOGRAPHIC_STATISTIC_GENDER_FKEY;
     public static final ForeignKey<DemographicStatisticRecord, CountryRecord> DEMOGRAPHIC_STATISTIC__DEMOGRAPHIC_STATISTIC_COUNTRY_FKEY = ForeignKeys0.DEMOGRAPHIC_STATISTIC__DEMOGRAPHIC_STATISTIC_COUNTRY_FKEY;
-    public static final ForeignKey<DemographicStatisticRecord, SourceRecord> DEMOGRAPHIC_STATISTIC__DEMOGRAPHIC_STATISTIC_SOURCE_FKEY = ForeignKeys0.DEMOGRAPHIC_STATISTIC__DEMOGRAPHIC_STATISTIC_SOURCE_FKEY;
+    public static final ForeignKey<DemographicStatisticRecord, DemographicSourceRecord> DEMOGRAPHIC_STATISTIC__DEMOGRAPHIC_STATISTIC_DEMOGRAPHIC_SOURCE_FKEY = ForeignKeys0.DEMOGRAPHIC_STATISTIC__DEMOGRAPHIC_STATISTIC_DEMOGRAPHIC_SOURCE_FKEY;
     public static final ForeignKey<DemographicStatisticRecord, DemographicStatisticTypeRecord> DEMOGRAPHIC_STATISTIC__DEMOGRAPHIC_STATISTIC_DEMOGRAPHIC_STATISTIC_TYPE_FKEY = ForeignKeys0.DEMOGRAPHIC_STATISTIC__DEMOGRAPHIC_STATISTIC_DEMOGRAPHIC_STATISTIC_TYPE_FKEY;
+    public static final ForeignKey<DemographicStatisticTypeRecord, DemographicValueUnitRecord> DEMOGRAPHIC_STATISTIC_TYPE__DEMOGRAPHIC_STATISTIC_TYPE_DEMOGRAPHIC_VALUE_UNIT_FKEY = ForeignKeys0.DEMOGRAPHIC_STATISTIC_TYPE__DEMOGRAPHIC_STATISTIC_TYPE_DEMOGRAPHIC_VALUE_UNIT_FKEY;
+    public static final ForeignKey<DemographicStatisticTypeRecord, DemographicVariantRecord> DEMOGRAPHIC_STATISTIC_TYPE__DEMOGRAPHIC_STATISTIC_TYPE_DEFAULT_VARIANT_FKEY = ForeignKeys0.DEMOGRAPHIC_STATISTIC_TYPE__DEMOGRAPHIC_STATISTIC_TYPE_DEFAULT_VARIANT_FKEY;
+    public static final ForeignKey<DemographicStatisticTypeVariantRecord, DemographicStatisticTypeRecord> DEMOGRAPHIC_STATISTIC_TYPE_VARIANT__DEMOGRAPHIC_STATISTIC_TYPE_VARI_DEMOGRAPHIC_STATISTIC_TYPE_FKEY = ForeignKeys0.DEMOGRAPHIC_STATISTIC_TYPE_VARIANT__DEMOGRAPHIC_STATISTIC_TYPE_VARI_DEMOGRAPHIC_STATISTIC_TYPE_FKEY;
+    public static final ForeignKey<DemographicStatisticTypeVariantRecord, DemographicVariantRecord> DEMOGRAPHIC_STATISTIC_TYPE_VARIANT__DEMOGRAPHIC_STATISTIC_TYPE_VARIANT_DEMOGRAPHIC_VARIANT_FKEY = ForeignKeys0.DEMOGRAPHIC_STATISTIC_TYPE_VARIANT__DEMOGRAPHIC_STATISTIC_TYPE_VARIANT_DEMOGRAPHIC_VARIANT_FKEY;
     public static final ForeignKey<DisabilityWeightRecord, TouchstoneRecord> DISABILITY_WEIGHT__DISABILITY_WEIGHT_TOUCHSTONE_FKEY = ForeignKeys0.DISABILITY_WEIGHT__DISABILITY_WEIGHT_TOUCHSTONE_FKEY;
     public static final ForeignKey<DisabilityWeightRecord, DiseaseRecord> DISABILITY_WEIGHT__DISABILITY_WEIGHT_DISEASE_FKEY = ForeignKeys0.DISABILITY_WEIGHT__DISABILITY_WEIGHT_DISEASE_FKEY;
     public static final ForeignKey<GaviFocalModelRecord, ModelRecord> GAVI_FOCAL_MODEL__GAVI_FOCAL_MODEL_MODEL_FKEY = ForeignKeys0.GAVI_FOCAL_MODEL__GAVI_FOCAL_MODEL_MODEL_FKEY;
@@ -266,6 +281,8 @@ public class Keys {
     public static final ForeignKey<ImpactEstimateSetRecord, ImpactEstimateRecipeRecord> IMPACT_ESTIMATE_SET__IMPACT_ESTIMATE_SET_IMPACT_ESTIMATE_RECIPE_FKEY = ForeignKeys0.IMPACT_ESTIMATE_SET__IMPACT_ESTIMATE_SET_IMPACT_ESTIMATE_RECIPE_FKEY;
     public static final ForeignKey<ImpactEstimateSetRecord, TouchstoneRecord> IMPACT_ESTIMATE_SET__IMPACT_ESTIMATE_SET_RECIPE_TOUCHSTONE_FKEY = ForeignKeys0.IMPACT_ESTIMATE_SET__IMPACT_ESTIMATE_SET_RECIPE_TOUCHSTONE_FKEY;
     public static final ForeignKey<ImpactEstimateSetRecord, TouchstoneRecord> IMPACT_ESTIMATE_SET__IMPACT_ESTIMATE_SET_COVERAGE_TOUCHSTONE_FKEY = ForeignKeys0.IMPACT_ESTIMATE_SET__IMPACT_ESTIMATE_SET_COVERAGE_TOUCHSTONE_FKEY;
+    public static final ForeignKey<ImpactEstimateSetRecord, CoverageSetRecord> IMPACT_ESTIMATE_SET__IMPACT_ESTIMATE_SET_FOCAL_COVERAGE_SET_FKEY = ForeignKeys0.IMPACT_ESTIMATE_SET__IMPACT_ESTIMATE_SET_FOCAL_COVERAGE_SET_FKEY;
+    public static final ForeignKey<ImpactEstimateSetRecord, BurdenEstimateSetRecord> IMPACT_ESTIMATE_SET__IMPACT_ESTIMATE_SET_FOCAL_BURDEN_ESTIMATE_SET_FKEY = ForeignKeys0.IMPACT_ESTIMATE_SET__IMPACT_ESTIMATE_SET_FOCAL_BURDEN_ESTIMATE_SET_FKEY;
     public static final ForeignKey<ImpactEstimateSetIngredientRecord, ImpactEstimateSetRecord> IMPACT_ESTIMATE_SET_INGREDIENT__IMPACT_ESTIMATE_SET_INGREDIENT_IMPACT_ESTIMATE_SET_FKEY = ForeignKeys0.IMPACT_ESTIMATE_SET_INGREDIENT__IMPACT_ESTIMATE_SET_INGREDIENT_IMPACT_ESTIMATE_SET_FKEY;
     public static final ForeignKey<ImpactEstimateSetIngredientRecord, ImpactEstimateIngredientRecord> IMPACT_ESTIMATE_SET_INGREDIENT__IMPACT_ESTIMATE_SET_INGREDIENT_IMPACT_ESTIMATE_INGREDIENT_FKEY = ForeignKeys0.IMPACT_ESTIMATE_SET_INGREDIENT__IMPACT_ESTIMATE_SET_INGREDIENT_IMPACT_ESTIMATE_INGREDIENT_FKEY;
     public static final ForeignKey<ImpactEstimateSetIngredientRecord, BurdenEstimateSetRecord> IMPACT_ESTIMATE_SET_INGREDIENT__IMPACT_ESTIMATE_SET_INGREDIENT_BURDEN_ESTIMATE_SET_FKEY = ForeignKeys0.IMPACT_ESTIMATE_SET_INGREDIENT__IMPACT_ESTIMATE_SET_INGREDIENT_BURDEN_ESTIMATE_SET_FKEY;
@@ -293,11 +310,12 @@ public class Keys {
     public static final ForeignKey<TouchstoneCountryRecord, CountryRecord> TOUCHSTONE_COUNTRY__TOUCHSTONE_COUNTRY_COUNTRY_FKEY = ForeignKeys0.TOUCHSTONE_COUNTRY__TOUCHSTONE_COUNTRY_COUNTRY_FKEY;
     public static final ForeignKey<TouchstoneCountryRecord, DiseaseRecord> TOUCHSTONE_COUNTRY__TOUCHSTONE_COUNTRY_DISEASE_FKEY = ForeignKeys0.TOUCHSTONE_COUNTRY__TOUCHSTONE_COUNTRY_DISEASE_FKEY;
     public static final ForeignKey<TouchstoneDemographicSourceRecord, TouchstoneRecord> TOUCHSTONE_DEMOGRAPHIC_SOURCE__TOUCHSTONE_DEMOGRAPHIC_SOURCE_TOUCHSTONE_FKEY = ForeignKeys0.TOUCHSTONE_DEMOGRAPHIC_SOURCE__TOUCHSTONE_DEMOGRAPHIC_SOURCE_TOUCHSTONE_FKEY;
-    public static final ForeignKey<TouchstoneDemographicSourceRecord, SourceRecord> TOUCHSTONE_DEMOGRAPHIC_SOURCE__TOUCHSTONE_DEMOGRAPHIC_SOURCE_SOURCE_FKEY = ForeignKeys0.TOUCHSTONE_DEMOGRAPHIC_SOURCE__TOUCHSTONE_DEMOGRAPHIC_SOURCE_SOURCE_FKEY;
+    public static final ForeignKey<TouchstoneDemographicSourceRecord, DemographicSourceRecord> TOUCHSTONE_DEMOGRAPHIC_SOURCE__TOUCHSTONE_DEMOGRAPHIC_SOURCE_DEMOGRAPHIC_SOURCE_FKEY = ForeignKeys0.TOUCHSTONE_DEMOGRAPHIC_SOURCE__TOUCHSTONE_DEMOGRAPHIC_SOURCE_DEMOGRAPHIC_SOURCE_FKEY;
     public static final ForeignKey<TouchstoneYearsRecord, TouchstoneRecord> TOUCHSTONE_YEARS__TOUCHSTONE_YEARS_TOUCHSTONE_FKEY = ForeignKeys0.TOUCHSTONE_YEARS__TOUCHSTONE_YEARS_TOUCHSTONE_FKEY;
     public static final ForeignKey<TouchstoneYearsRecord, DiseaseRecord> TOUCHSTONE_YEARS__TOUCHSTONE_YEARS_DISEASE_FKEY = ForeignKeys0.TOUCHSTONE_YEARS__TOUCHSTONE_YEARS_DISEASE_FKEY;
     public static final ForeignKey<UserRoleRecord, AppUserRecord> USER_ROLE__USER_ROLE_USERNAME_FKEY = ForeignKeys0.USER_ROLE__USER_ROLE_USERNAME_FKEY;
     public static final ForeignKey<UserRoleRecord, RoleRecord> USER_ROLE__USER_ROLE_ROLE_FKEY = ForeignKeys0.USER_ROLE__USER_ROLE_ROLE_FKEY;
+    public static final ForeignKey<VaccineRoutineAgeRecord, VaccineRecord> VACCINE_ROUTINE_AGE__VACCINE_ROUTINE_AGE_VACCINE_FKEY = ForeignKeys0.VACCINE_ROUTINE_AGE__VACCINE_ROUTINE_AGE_VACCINE_FKEY;
 
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb
@@ -312,8 +330,11 @@ public class Keys {
         public static Identity<CountryVaccineMetadataRecord, Integer> IDENTITY_COUNTRY_VACCINE_METADATA = createIdentity(CountryVaccineMetadata.COUNTRY_VACCINE_METADATA, CountryVaccineMetadata.COUNTRY_VACCINE_METADATA.ID);
         public static Identity<CoverageRecord, Integer> IDENTITY_COVERAGE = createIdentity(Coverage.COVERAGE, Coverage.COVERAGE.ID);
         public static Identity<CoverageSetRecord, Integer> IDENTITY_COVERAGE_SET = createIdentity(CoverageSet.COVERAGE_SET, CoverageSet.COVERAGE_SET.ID);
+        public static Identity<DemographicSourceRecord, Integer> IDENTITY_DEMOGRAPHIC_SOURCE = createIdentity(DemographicSource.DEMOGRAPHIC_SOURCE, DemographicSource.DEMOGRAPHIC_SOURCE.ID);
         public static Identity<DemographicStatisticRecord, Integer> IDENTITY_DEMOGRAPHIC_STATISTIC = createIdentity(DemographicStatistic.DEMOGRAPHIC_STATISTIC, DemographicStatistic.DEMOGRAPHIC_STATISTIC.ID);
         public static Identity<DemographicStatisticTypeRecord, Integer> IDENTITY_DEMOGRAPHIC_STATISTIC_TYPE = createIdentity(DemographicStatisticType.DEMOGRAPHIC_STATISTIC_TYPE, DemographicStatisticType.DEMOGRAPHIC_STATISTIC_TYPE.ID);
+        public static Identity<DemographicValueUnitRecord, Integer> IDENTITY_DEMOGRAPHIC_VALUE_UNIT = createIdentity(DemographicValueUnit.DEMOGRAPHIC_VALUE_UNIT, DemographicValueUnit.DEMOGRAPHIC_VALUE_UNIT.ID);
+        public static Identity<DemographicVariantRecord, Integer> IDENTITY_DEMOGRAPHIC_VARIANT = createIdentity(DemographicVariant.DEMOGRAPHIC_VARIANT, DemographicVariant.DEMOGRAPHIC_VARIANT.ID);
         public static Identity<DisabilityWeightRecord, Integer> IDENTITY_DISABILITY_WEIGHT = createIdentity(DisabilityWeight.DISABILITY_WEIGHT, DisabilityWeight.DISABILITY_WEIGHT.ID);
         public static Identity<GaviFocalModelRecord, Integer> IDENTITY_GAVI_FOCAL_MODEL = createIdentity(GaviFocalModel.GAVI_FOCAL_MODEL, GaviFocalModel.GAVI_FOCAL_MODEL.ID);
         public static Identity<GenderRecord, Integer> IDENTITY_GENDER = createIdentity(Gender.GENDER, Gender.GENDER.ID);
@@ -323,16 +344,15 @@ public class Keys {
         public static Identity<ImpactEstimateSetRecord, Integer> IDENTITY_IMPACT_ESTIMATE_SET = createIdentity(ImpactEstimateSet.IMPACT_ESTIMATE_SET, ImpactEstimateSet.IMPACT_ESTIMATE_SET.ID);
         public static Identity<ImpactEstimateSetIngredientRecord, Integer> IDENTITY_IMPACT_ESTIMATE_SET_INGREDIENT = createIdentity(ImpactEstimateSetIngredient.IMPACT_ESTIMATE_SET_INGREDIENT, ImpactEstimateSetIngredient.IMPACT_ESTIMATE_SET_INGREDIENT.ID);
         public static Identity<ModelVersionRecord, Integer> IDENTITY_MODEL_VERSION = createIdentity(ModelVersion.MODEL_VERSION, ModelVersion.MODEL_VERSION.ID);
-        public static Identity<ProjectionVariantRecord, Integer> IDENTITY_PROJECTION_VARIANT = createIdentity(ProjectionVariant.PROJECTION_VARIANT, ProjectionVariant.PROJECTION_VARIANT.ID);
         public static Identity<ResponsibilityRecord, Integer> IDENTITY_RESPONSIBILITY = createIdentity(Responsibility.RESPONSIBILITY, Responsibility.RESPONSIBILITY.ID);
         public static Identity<ResponsibilitySetRecord, Integer> IDENTITY_RESPONSIBILITY_SET = createIdentity(ResponsibilitySet.RESPONSIBILITY_SET, ResponsibilitySet.RESPONSIBILITY_SET.ID);
         public static Identity<RoleRecord, Integer> IDENTITY_ROLE = createIdentity(Role.ROLE, Role.ROLE.ID);
         public static Identity<ScenarioRecord, Integer> IDENTITY_SCENARIO = createIdentity(Scenario.SCENARIO, Scenario.SCENARIO.ID);
         public static Identity<ScenarioCoverageSetRecord, Integer> IDENTITY_SCENARIO_COVERAGE_SET = createIdentity(ScenarioCoverageSet.SCENARIO_COVERAGE_SET, ScenarioCoverageSet.SCENARIO_COVERAGE_SET.ID);
-        public static Identity<SourceRecord, Integer> IDENTITY_SOURCE = createIdentity(Source.SOURCE, Source.SOURCE.ID);
         public static Identity<TouchstoneCountryRecord, Integer> IDENTITY_TOUCHSTONE_COUNTRY = createIdentity(TouchstoneCountry.TOUCHSTONE_COUNTRY, TouchstoneCountry.TOUCHSTONE_COUNTRY.ID);
         public static Identity<TouchstoneDemographicSourceRecord, Integer> IDENTITY_TOUCHSTONE_DEMOGRAPHIC_SOURCE = createIdentity(TouchstoneDemographicSource.TOUCHSTONE_DEMOGRAPHIC_SOURCE, TouchstoneDemographicSource.TOUCHSTONE_DEMOGRAPHIC_SOURCE.ID);
         public static Identity<TouchstoneYearsRecord, Integer> IDENTITY_TOUCHSTONE_YEARS = createIdentity(TouchstoneYears.TOUCHSTONE_YEARS, TouchstoneYears.TOUCHSTONE_YEARS.ID);
+        public static Identity<VaccineRoutineAgeRecord, Integer> IDENTITY_VACCINE_ROUTINE_AGE = createIdentity(VaccineRoutineAge.VACCINE_ROUTINE_AGE, VaccineRoutineAge.VACCINE_ROUTINE_AGE.ID);
     }
 
     private static class UniqueKeys0 extends AbstractKeys {
@@ -349,8 +369,12 @@ public class Keys {
         public static final UniqueKey<CountryVaccineMetadataRecord> COUNTRY_VACCINE_METADATA_PKEY = createUniqueKey(CountryVaccineMetadata.COUNTRY_VACCINE_METADATA, "country_vaccine_metadata_pkey", CountryVaccineMetadata.COUNTRY_VACCINE_METADATA.ID);
         public static final UniqueKey<CoverageRecord> COVERAGE_PKEY = createUniqueKey(Coverage.COVERAGE, "coverage_pkey", Coverage.COVERAGE.ID);
         public static final UniqueKey<CoverageSetRecord> COVERAGE_SET_PKEY = createUniqueKey(CoverageSet.COVERAGE_SET, "coverage_set_pkey", CoverageSet.COVERAGE_SET.ID);
+        public static final UniqueKey<DemographicSourceRecord> DEMOGRAPHIC_SOURCE_PKEY = createUniqueKey(DemographicSource.DEMOGRAPHIC_SOURCE, "demographic_source_pkey", DemographicSource.DEMOGRAPHIC_SOURCE.ID);
         public static final UniqueKey<DemographicStatisticRecord> DEMOGRAPHIC_STATISTIC_PKEY = createUniqueKey(DemographicStatistic.DEMOGRAPHIC_STATISTIC, "demographic_statistic_pkey", DemographicStatistic.DEMOGRAPHIC_STATISTIC.ID);
         public static final UniqueKey<DemographicStatisticTypeRecord> DEMOGRAPHIC_STATISTIC_TYPE_PKEY = createUniqueKey(DemographicStatisticType.DEMOGRAPHIC_STATISTIC_TYPE, "demographic_statistic_type_pkey", DemographicStatisticType.DEMOGRAPHIC_STATISTIC_TYPE.ID);
+        public static final UniqueKey<DemographicStatisticTypeVariantRecord> DEMOGRAPHIC_STATISTIC_TYPE_VARIANT_PKEY = createUniqueKey(DemographicStatisticTypeVariant.DEMOGRAPHIC_STATISTIC_TYPE_VARIANT, "demographic_statistic_type_variant_pkey", DemographicStatisticTypeVariant.DEMOGRAPHIC_STATISTIC_TYPE_VARIANT.DEMOGRAPHIC_STATISTIC_TYPE, DemographicStatisticTypeVariant.DEMOGRAPHIC_STATISTIC_TYPE_VARIANT.DEMOGRAPHIC_VARIANT);
+        public static final UniqueKey<DemographicValueUnitRecord> DEMOGRAPHIC_VALUE_UNIT_PKEY = createUniqueKey(DemographicValueUnit.DEMOGRAPHIC_VALUE_UNIT, "demographic_value_unit_pkey", DemographicValueUnit.DEMOGRAPHIC_VALUE_UNIT.ID);
+        public static final UniqueKey<DemographicVariantRecord> DEMOGRAPHIC_VARIANT_PKEY = createUniqueKey(DemographicVariant.DEMOGRAPHIC_VARIANT, "demographic_variant_pkey", DemographicVariant.DEMOGRAPHIC_VARIANT.ID);
         public static final UniqueKey<DisabilityWeightRecord> DISABILITY_WEIGHT_PKEY = createUniqueKey(DisabilityWeight.DISABILITY_WEIGHT, "disability_weight_pkey", DisabilityWeight.DISABILITY_WEIGHT.ID);
         public static final UniqueKey<DiseaseRecord> DISEASE_PKEY = createUniqueKey(Disease.DISEASE, "disease_pkey", Disease.DISEASE.ID);
         public static final UniqueKey<GaviFocalModelRecord> GAVI_FOCAL_MODEL_PKEY = createUniqueKey(GaviFocalModel.GAVI_FOCAL_MODEL, "gavi_focal_model_pkey", GaviFocalModel.GAVI_FOCAL_MODEL.ID);
@@ -369,7 +393,6 @@ public class Keys {
         public static final UniqueKey<ModellingGroupRecord> MODELLING_GROUP_PKEY = createUniqueKey(ModellingGroup.MODELLING_GROUP, "modelling_group_pkey", ModellingGroup.MODELLING_GROUP.ID);
         public static final UniqueKey<OnetimeTokenRecord> ONETIME_TOKEN_PKEY = createUniqueKey(OnetimeToken.ONETIME_TOKEN, "onetime_token_pkey", OnetimeToken.ONETIME_TOKEN.TOKEN);
         public static final UniqueKey<PermissionRecord> PERMISSION_PKEY = createUniqueKey(Permission.PERMISSION, "permission_pkey", Permission.PERMISSION.NAME);
-        public static final UniqueKey<ProjectionVariantRecord> PROJECTION_VARIANT_PKEY = createUniqueKey(ProjectionVariant.PROJECTION_VARIANT, "projection_variant_pkey", ProjectionVariant.PROJECTION_VARIANT.ID);
         public static final UniqueKey<ResponsibilityRecord> RESPONSIBILITY_PKEY = createUniqueKey(Responsibility.RESPONSIBILITY, "responsibility_pkey", Responsibility.RESPONSIBILITY.ID);
         public static final UniqueKey<ResponsibilityRecord> RESPONSIBILITY_RESPONSIBILITY_SET_SCENARIO_KEY = createUniqueKey(Responsibility.RESPONSIBILITY, "responsibility_responsibility_set_scenario_key", Responsibility.RESPONSIBILITY.RESPONSIBILITY_SET, Responsibility.RESPONSIBILITY.SCENARIO);
         public static final UniqueKey<ResponsibilitySetRecord> RESPONSIBILITY_SET_PKEY = createUniqueKey(ResponsibilitySet.RESPONSIBILITY_SET, "responsibility_set_pkey", ResponsibilitySet.RESPONSIBILITY_SET.ID);
@@ -382,7 +405,6 @@ public class Keys {
         public static final UniqueKey<ScenarioCoverageSetRecord> SCENARIO_COVERAGE_SET_PKEY = createUniqueKey(ScenarioCoverageSet.SCENARIO_COVERAGE_SET, "scenario_coverage_set_pkey", ScenarioCoverageSet.SCENARIO_COVERAGE_SET.ID);
         public static final UniqueKey<ScenarioCoverageSetRecord> SCENARIO_COVERAGE_SET_SCENARIO_ORDER_KEY = createUniqueKey(ScenarioCoverageSet.SCENARIO_COVERAGE_SET, "scenario_coverage_set_scenario_order_key", ScenarioCoverageSet.SCENARIO_COVERAGE_SET.SCENARIO, ScenarioCoverageSet.SCENARIO_COVERAGE_SET.ORDER);
         public static final UniqueKey<ScenarioDescriptionRecord> SCENARIO_DESCRIPTION_PKEY = createUniqueKey(ScenarioDescription.SCENARIO_DESCRIPTION, "scenario_description_pkey", ScenarioDescription.SCENARIO_DESCRIPTION.ID);
-        public static final UniqueKey<SourceRecord> SOURCE_PKEY = createUniqueKey(Source.SOURCE, "source_pkey", Source.SOURCE.ID);
         public static final UniqueKey<SupportTypeRecord> SUPPORT_TYPE_PKEY = createUniqueKey(SupportType.SUPPORT_TYPE, "support_type_pkey", SupportType.SUPPORT_TYPE.ID);
         public static final UniqueKey<TouchstoneRecord> TOUCHSTONE_PKEY = createUniqueKey(Touchstone.TOUCHSTONE, "touchstone_pkey", Touchstone.TOUCHSTONE.ID);
         public static final UniqueKey<TouchstoneRecord> TOUCHSTONE_TOUCHSTONE_NAME_VERSION_KEY = createUniqueKey(Touchstone.TOUCHSTONE, "touchstone_touchstone_name_version_key", Touchstone.TOUCHSTONE.TOUCHSTONE_NAME, Touchstone.TOUCHSTONE.VERSION);
@@ -393,6 +415,7 @@ public class Keys {
         public static final UniqueKey<TouchstoneYearsRecord> TOUCHSTONE_YEARS_PKEY = createUniqueKey(TouchstoneYears.TOUCHSTONE_YEARS, "touchstone_years_pkey", TouchstoneYears.TOUCHSTONE_YEARS.ID);
         public static final UniqueKey<UserRoleRecord> USER_ROLE_PKEY = createUniqueKey(UserRole.USER_ROLE, "user_role_pkey", UserRole.USER_ROLE.USERNAME, UserRole.USER_ROLE.ROLE, UserRole.USER_ROLE.SCOPE_ID);
         public static final UniqueKey<VaccineRecord> VACCINE_PKEY = createUniqueKey(Vaccine.VACCINE, "vaccine_pkey", Vaccine.VACCINE.ID);
+        public static final UniqueKey<VaccineRoutineAgeRecord> VACCINE_ROUTINE_AGE_PKEY = createUniqueKey(VaccineRoutineAge.VACCINE_ROUTINE_AGE, "vaccine_routine_age_pkey", VaccineRoutineAge.VACCINE_ROUTINE_AGE.ID);
     }
 
     private static class ForeignKeys0 extends AbstractKeys {
@@ -414,11 +437,15 @@ public class Keys {
         public static final ForeignKey<CoverageSetRecord, VaccineRecord> COVERAGE_SET__COVERAGE_SET_VACCINE_FKEY = createForeignKey(org.vaccineimpact.api.db.Keys.VACCINE_PKEY, CoverageSet.COVERAGE_SET, "coverage_set__coverage_set_vaccine_fkey", CoverageSet.COVERAGE_SET.VACCINE);
         public static final ForeignKey<CoverageSetRecord, GaviSupportLevelRecord> COVERAGE_SET__COVERAGE_SET_GAVI_SUPPORT_LEVEL_FKEY = createForeignKey(org.vaccineimpact.api.db.Keys.GAVI_SUPPORT_LEVEL_PKEY, CoverageSet.COVERAGE_SET, "coverage_set__coverage_set_gavi_support_level_fkey", CoverageSet.COVERAGE_SET.GAVI_SUPPORT_LEVEL);
         public static final ForeignKey<CoverageSetRecord, ActivityTypeRecord> COVERAGE_SET__COVERAGE_SET_ACTIVITY_TYPE_FKEY = createForeignKey(org.vaccineimpact.api.db.Keys.ACTIVITY_TYPE_PKEY, CoverageSet.COVERAGE_SET, "coverage_set__coverage_set_activity_type_fkey", CoverageSet.COVERAGE_SET.ACTIVITY_TYPE);
-        public static final ForeignKey<DemographicStatisticRecord, ProjectionVariantRecord> DEMOGRAPHIC_STATISTIC__DEMOGRAPHIC_STATISTIC_PROJECTION_VARIANT_FKEY = createForeignKey(org.vaccineimpact.api.db.Keys.PROJECTION_VARIANT_PKEY, DemographicStatistic.DEMOGRAPHIC_STATISTIC, "demographic_statistic__demographic_statistic_projection_variant_fkey", DemographicStatistic.DEMOGRAPHIC_STATISTIC.PROJECTION_VARIANT);
+        public static final ForeignKey<DemographicStatisticRecord, DemographicVariantRecord> DEMOGRAPHIC_STATISTIC__DEMOGRAPHIC_STATISTIC_DEMOGRAPHIC_VARIANT_FKEY = createForeignKey(org.vaccineimpact.api.db.Keys.DEMOGRAPHIC_VARIANT_PKEY, DemographicStatistic.DEMOGRAPHIC_STATISTIC, "demographic_statistic__demographic_statistic_demographic_variant_fkey", DemographicStatistic.DEMOGRAPHIC_STATISTIC.DEMOGRAPHIC_VARIANT);
         public static final ForeignKey<DemographicStatisticRecord, GenderRecord> DEMOGRAPHIC_STATISTIC__DEMOGRAPHIC_STATISTIC_GENDER_FKEY = createForeignKey(org.vaccineimpact.api.db.Keys.GENDER_PKEY, DemographicStatistic.DEMOGRAPHIC_STATISTIC, "demographic_statistic__demographic_statistic_gender_fkey", DemographicStatistic.DEMOGRAPHIC_STATISTIC.GENDER);
         public static final ForeignKey<DemographicStatisticRecord, CountryRecord> DEMOGRAPHIC_STATISTIC__DEMOGRAPHIC_STATISTIC_COUNTRY_FKEY = createForeignKey(org.vaccineimpact.api.db.Keys.COUNTRY_PKEY, DemographicStatistic.DEMOGRAPHIC_STATISTIC, "demographic_statistic__demographic_statistic_country_fkey", DemographicStatistic.DEMOGRAPHIC_STATISTIC.COUNTRY);
-        public static final ForeignKey<DemographicStatisticRecord, SourceRecord> DEMOGRAPHIC_STATISTIC__DEMOGRAPHIC_STATISTIC_SOURCE_FKEY = createForeignKey(org.vaccineimpact.api.db.Keys.SOURCE_PKEY, DemographicStatistic.DEMOGRAPHIC_STATISTIC, "demographic_statistic__demographic_statistic_source_fkey", DemographicStatistic.DEMOGRAPHIC_STATISTIC.SOURCE);
+        public static final ForeignKey<DemographicStatisticRecord, DemographicSourceRecord> DEMOGRAPHIC_STATISTIC__DEMOGRAPHIC_STATISTIC_DEMOGRAPHIC_SOURCE_FKEY = createForeignKey(org.vaccineimpact.api.db.Keys.DEMOGRAPHIC_SOURCE_PKEY, DemographicStatistic.DEMOGRAPHIC_STATISTIC, "demographic_statistic__demographic_statistic_demographic_source_fkey", DemographicStatistic.DEMOGRAPHIC_STATISTIC.DEMOGRAPHIC_SOURCE);
         public static final ForeignKey<DemographicStatisticRecord, DemographicStatisticTypeRecord> DEMOGRAPHIC_STATISTIC__DEMOGRAPHIC_STATISTIC_DEMOGRAPHIC_STATISTIC_TYPE_FKEY = createForeignKey(org.vaccineimpact.api.db.Keys.DEMOGRAPHIC_STATISTIC_TYPE_PKEY, DemographicStatistic.DEMOGRAPHIC_STATISTIC, "demographic_statistic__demographic_statistic_demographic_statistic_type_fkey", DemographicStatistic.DEMOGRAPHIC_STATISTIC.DEMOGRAPHIC_STATISTIC_TYPE);
+        public static final ForeignKey<DemographicStatisticTypeRecord, DemographicValueUnitRecord> DEMOGRAPHIC_STATISTIC_TYPE__DEMOGRAPHIC_STATISTIC_TYPE_DEMOGRAPHIC_VALUE_UNIT_FKEY = createForeignKey(org.vaccineimpact.api.db.Keys.DEMOGRAPHIC_VALUE_UNIT_PKEY, DemographicStatisticType.DEMOGRAPHIC_STATISTIC_TYPE, "demographic_statistic_type__demographic_statistic_type_demographic_value_unit_fkey", DemographicStatisticType.DEMOGRAPHIC_STATISTIC_TYPE.DEMOGRAPHIC_VALUE_UNIT);
+        public static final ForeignKey<DemographicStatisticTypeRecord, DemographicVariantRecord> DEMOGRAPHIC_STATISTIC_TYPE__DEMOGRAPHIC_STATISTIC_TYPE_DEFAULT_VARIANT_FKEY = createForeignKey(org.vaccineimpact.api.db.Keys.DEMOGRAPHIC_VARIANT_PKEY, DemographicStatisticType.DEMOGRAPHIC_STATISTIC_TYPE, "demographic_statistic_type__demographic_statistic_type_default_variant_fkey", DemographicStatisticType.DEMOGRAPHIC_STATISTIC_TYPE.DEFAULT_VARIANT);
+        public static final ForeignKey<DemographicStatisticTypeVariantRecord, DemographicStatisticTypeRecord> DEMOGRAPHIC_STATISTIC_TYPE_VARIANT__DEMOGRAPHIC_STATISTIC_TYPE_VARI_DEMOGRAPHIC_STATISTIC_TYPE_FKEY = createForeignKey(org.vaccineimpact.api.db.Keys.DEMOGRAPHIC_STATISTIC_TYPE_PKEY, DemographicStatisticTypeVariant.DEMOGRAPHIC_STATISTIC_TYPE_VARIANT, "demographic_statistic_type_variant__demographic_statistic_type_vari_demographic_statistic_type_fkey", DemographicStatisticTypeVariant.DEMOGRAPHIC_STATISTIC_TYPE_VARIANT.DEMOGRAPHIC_STATISTIC_TYPE);
+        public static final ForeignKey<DemographicStatisticTypeVariantRecord, DemographicVariantRecord> DEMOGRAPHIC_STATISTIC_TYPE_VARIANT__DEMOGRAPHIC_STATISTIC_TYPE_VARIANT_DEMOGRAPHIC_VARIANT_FKEY = createForeignKey(org.vaccineimpact.api.db.Keys.DEMOGRAPHIC_VARIANT_PKEY, DemographicStatisticTypeVariant.DEMOGRAPHIC_STATISTIC_TYPE_VARIANT, "demographic_statistic_type_variant__demographic_statistic_type_variant_demographic_variant_fkey", DemographicStatisticTypeVariant.DEMOGRAPHIC_STATISTIC_TYPE_VARIANT.DEMOGRAPHIC_VARIANT);
         public static final ForeignKey<DisabilityWeightRecord, TouchstoneRecord> DISABILITY_WEIGHT__DISABILITY_WEIGHT_TOUCHSTONE_FKEY = createForeignKey(org.vaccineimpact.api.db.Keys.TOUCHSTONE_PKEY, DisabilityWeight.DISABILITY_WEIGHT, "disability_weight__disability_weight_touchstone_fkey", DisabilityWeight.DISABILITY_WEIGHT.TOUCHSTONE);
         public static final ForeignKey<DisabilityWeightRecord, DiseaseRecord> DISABILITY_WEIGHT__DISABILITY_WEIGHT_DISEASE_FKEY = createForeignKey(org.vaccineimpact.api.db.Keys.DISEASE_PKEY, DisabilityWeight.DISABILITY_WEIGHT, "disability_weight__disability_weight_disease_fkey", DisabilityWeight.DISABILITY_WEIGHT.DISEASE);
         public static final ForeignKey<GaviFocalModelRecord, ModelRecord> GAVI_FOCAL_MODEL__GAVI_FOCAL_MODEL_MODEL_FKEY = createForeignKey(org.vaccineimpact.api.db.Keys.MODEL_PKEY, GaviFocalModel.GAVI_FOCAL_MODEL, "gavi_focal_model__gavi_focal_model_model_fkey", GaviFocalModel.GAVI_FOCAL_MODEL.MODEL);
@@ -440,6 +467,8 @@ public class Keys {
         public static final ForeignKey<ImpactEstimateSetRecord, ImpactEstimateRecipeRecord> IMPACT_ESTIMATE_SET__IMPACT_ESTIMATE_SET_IMPACT_ESTIMATE_RECIPE_FKEY = createForeignKey(org.vaccineimpact.api.db.Keys.IMPACT_ESTIMATE_RECIPE_PKEY, ImpactEstimateSet.IMPACT_ESTIMATE_SET, "impact_estimate_set__impact_estimate_set_impact_estimate_recipe_fkey", ImpactEstimateSet.IMPACT_ESTIMATE_SET.IMPACT_ESTIMATE_RECIPE);
         public static final ForeignKey<ImpactEstimateSetRecord, TouchstoneRecord> IMPACT_ESTIMATE_SET__IMPACT_ESTIMATE_SET_RECIPE_TOUCHSTONE_FKEY = createForeignKey(org.vaccineimpact.api.db.Keys.TOUCHSTONE_PKEY, ImpactEstimateSet.IMPACT_ESTIMATE_SET, "impact_estimate_set__impact_estimate_set_recipe_touchstone_fkey", ImpactEstimateSet.IMPACT_ESTIMATE_SET.RECIPE_TOUCHSTONE);
         public static final ForeignKey<ImpactEstimateSetRecord, TouchstoneRecord> IMPACT_ESTIMATE_SET__IMPACT_ESTIMATE_SET_COVERAGE_TOUCHSTONE_FKEY = createForeignKey(org.vaccineimpact.api.db.Keys.TOUCHSTONE_PKEY, ImpactEstimateSet.IMPACT_ESTIMATE_SET, "impact_estimate_set__impact_estimate_set_coverage_touchstone_fkey", ImpactEstimateSet.IMPACT_ESTIMATE_SET.COVERAGE_TOUCHSTONE);
+        public static final ForeignKey<ImpactEstimateSetRecord, CoverageSetRecord> IMPACT_ESTIMATE_SET__IMPACT_ESTIMATE_SET_FOCAL_COVERAGE_SET_FKEY = createForeignKey(org.vaccineimpact.api.db.Keys.COVERAGE_SET_PKEY, ImpactEstimateSet.IMPACT_ESTIMATE_SET, "impact_estimate_set__impact_estimate_set_focal_coverage_set_fkey", ImpactEstimateSet.IMPACT_ESTIMATE_SET.FOCAL_COVERAGE_SET);
+        public static final ForeignKey<ImpactEstimateSetRecord, BurdenEstimateSetRecord> IMPACT_ESTIMATE_SET__IMPACT_ESTIMATE_SET_FOCAL_BURDEN_ESTIMATE_SET_FKEY = createForeignKey(org.vaccineimpact.api.db.Keys.BURDEN_ESTIMATE_SET_PKEY, ImpactEstimateSet.IMPACT_ESTIMATE_SET, "impact_estimate_set__impact_estimate_set_focal_burden_estimate_set_fkey", ImpactEstimateSet.IMPACT_ESTIMATE_SET.FOCAL_BURDEN_ESTIMATE_SET);
         public static final ForeignKey<ImpactEstimateSetIngredientRecord, ImpactEstimateSetRecord> IMPACT_ESTIMATE_SET_INGREDIENT__IMPACT_ESTIMATE_SET_INGREDIENT_IMPACT_ESTIMATE_SET_FKEY = createForeignKey(org.vaccineimpact.api.db.Keys.IMPACT_ESTIMATE_SET_PKEY, ImpactEstimateSetIngredient.IMPACT_ESTIMATE_SET_INGREDIENT, "impact_estimate_set_ingredient__impact_estimate_set_ingredient_impact_estimate_set_fkey", ImpactEstimateSetIngredient.IMPACT_ESTIMATE_SET_INGREDIENT.IMPACT_ESTIMATE_SET);
         public static final ForeignKey<ImpactEstimateSetIngredientRecord, ImpactEstimateIngredientRecord> IMPACT_ESTIMATE_SET_INGREDIENT__IMPACT_ESTIMATE_SET_INGREDIENT_IMPACT_ESTIMATE_INGREDIENT_FKEY = createForeignKey(org.vaccineimpact.api.db.Keys.IMPACT_ESTIMATE_INGREDIENT_PKEY, ImpactEstimateSetIngredient.IMPACT_ESTIMATE_SET_INGREDIENT, "impact_estimate_set_ingredient__impact_estimate_set_ingredient_impact_estimate_ingredient_fkey", ImpactEstimateSetIngredient.IMPACT_ESTIMATE_SET_INGREDIENT.IMPACT_ESTIMATE_INGREDIENT);
         public static final ForeignKey<ImpactEstimateSetIngredientRecord, BurdenEstimateSetRecord> IMPACT_ESTIMATE_SET_INGREDIENT__IMPACT_ESTIMATE_SET_INGREDIENT_BURDEN_ESTIMATE_SET_FKEY = createForeignKey(org.vaccineimpact.api.db.Keys.BURDEN_ESTIMATE_SET_PKEY, ImpactEstimateSetIngredient.IMPACT_ESTIMATE_SET_INGREDIENT, "impact_estimate_set_ingredient__impact_estimate_set_ingredient_burden_estimate_set_fkey", ImpactEstimateSetIngredient.IMPACT_ESTIMATE_SET_INGREDIENT.BURDEN_ESTIMATE_SET);
@@ -467,10 +496,11 @@ public class Keys {
         public static final ForeignKey<TouchstoneCountryRecord, CountryRecord> TOUCHSTONE_COUNTRY__TOUCHSTONE_COUNTRY_COUNTRY_FKEY = createForeignKey(org.vaccineimpact.api.db.Keys.COUNTRY_PKEY, TouchstoneCountry.TOUCHSTONE_COUNTRY, "touchstone_country__touchstone_country_country_fkey", TouchstoneCountry.TOUCHSTONE_COUNTRY.COUNTRY);
         public static final ForeignKey<TouchstoneCountryRecord, DiseaseRecord> TOUCHSTONE_COUNTRY__TOUCHSTONE_COUNTRY_DISEASE_FKEY = createForeignKey(org.vaccineimpact.api.db.Keys.DISEASE_PKEY, TouchstoneCountry.TOUCHSTONE_COUNTRY, "touchstone_country__touchstone_country_disease_fkey", TouchstoneCountry.TOUCHSTONE_COUNTRY.DISEASE);
         public static final ForeignKey<TouchstoneDemographicSourceRecord, TouchstoneRecord> TOUCHSTONE_DEMOGRAPHIC_SOURCE__TOUCHSTONE_DEMOGRAPHIC_SOURCE_TOUCHSTONE_FKEY = createForeignKey(org.vaccineimpact.api.db.Keys.TOUCHSTONE_PKEY, TouchstoneDemographicSource.TOUCHSTONE_DEMOGRAPHIC_SOURCE, "touchstone_demographic_source__touchstone_demographic_source_touchstone_fkey", TouchstoneDemographicSource.TOUCHSTONE_DEMOGRAPHIC_SOURCE.TOUCHSTONE);
-        public static final ForeignKey<TouchstoneDemographicSourceRecord, SourceRecord> TOUCHSTONE_DEMOGRAPHIC_SOURCE__TOUCHSTONE_DEMOGRAPHIC_SOURCE_SOURCE_FKEY = createForeignKey(org.vaccineimpact.api.db.Keys.SOURCE_PKEY, TouchstoneDemographicSource.TOUCHSTONE_DEMOGRAPHIC_SOURCE, "touchstone_demographic_source__touchstone_demographic_source_source_fkey", TouchstoneDemographicSource.TOUCHSTONE_DEMOGRAPHIC_SOURCE.SOURCE);
+        public static final ForeignKey<TouchstoneDemographicSourceRecord, DemographicSourceRecord> TOUCHSTONE_DEMOGRAPHIC_SOURCE__TOUCHSTONE_DEMOGRAPHIC_SOURCE_DEMOGRAPHIC_SOURCE_FKEY = createForeignKey(org.vaccineimpact.api.db.Keys.DEMOGRAPHIC_SOURCE_PKEY, TouchstoneDemographicSource.TOUCHSTONE_DEMOGRAPHIC_SOURCE, "touchstone_demographic_source__touchstone_demographic_source_demographic_source_fkey", TouchstoneDemographicSource.TOUCHSTONE_DEMOGRAPHIC_SOURCE.DEMOGRAPHIC_SOURCE);
         public static final ForeignKey<TouchstoneYearsRecord, TouchstoneRecord> TOUCHSTONE_YEARS__TOUCHSTONE_YEARS_TOUCHSTONE_FKEY = createForeignKey(org.vaccineimpact.api.db.Keys.TOUCHSTONE_PKEY, TouchstoneYears.TOUCHSTONE_YEARS, "touchstone_years__touchstone_years_touchstone_fkey", TouchstoneYears.TOUCHSTONE_YEARS.TOUCHSTONE);
         public static final ForeignKey<TouchstoneYearsRecord, DiseaseRecord> TOUCHSTONE_YEARS__TOUCHSTONE_YEARS_DISEASE_FKEY = createForeignKey(org.vaccineimpact.api.db.Keys.DISEASE_PKEY, TouchstoneYears.TOUCHSTONE_YEARS, "touchstone_years__touchstone_years_disease_fkey", TouchstoneYears.TOUCHSTONE_YEARS.DISEASE);
         public static final ForeignKey<UserRoleRecord, AppUserRecord> USER_ROLE__USER_ROLE_USERNAME_FKEY = createForeignKey(org.vaccineimpact.api.db.Keys.APP_USER_PKEY, UserRole.USER_ROLE, "user_role__user_role_username_fkey", UserRole.USER_ROLE.USERNAME);
         public static final ForeignKey<UserRoleRecord, RoleRecord> USER_ROLE__USER_ROLE_ROLE_FKEY = createForeignKey(org.vaccineimpact.api.db.Keys.ROLE_PKEY, UserRole.USER_ROLE, "user_role__user_role_role_fkey", UserRole.USER_ROLE.ROLE);
+        public static final ForeignKey<VaccineRoutineAgeRecord, VaccineRecord> VACCINE_ROUTINE_AGE__VACCINE_ROUTINE_AGE_VACCINE_FKEY = createForeignKey(org.vaccineimpact.api.db.Keys.VACCINE_PKEY, VaccineRoutineAge.VACCINE_ROUTINE_AGE, "vaccine_routine_age__vaccine_routine_age_vaccine_fkey", VaccineRoutineAge.VACCINE_ROUTINE_AGE.VACCINE);
     }
 }

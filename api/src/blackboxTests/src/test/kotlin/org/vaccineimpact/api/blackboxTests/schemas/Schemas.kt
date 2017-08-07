@@ -1,6 +1,6 @@
 package org.vaccineimpact.api.blackboxTests.schemas
 
-import org.vaccineimpact.api.blackboxTests.validators.Validator
+import org.vaccineimpact.api.validateSchema.Validator
 
 interface Schema
 {

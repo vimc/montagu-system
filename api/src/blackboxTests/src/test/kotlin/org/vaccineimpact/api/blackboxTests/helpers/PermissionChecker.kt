@@ -2,11 +2,11 @@ package org.vaccineimpact.api.blackboxTests.helpers
 
 import com.beust.klaxon.JsonObject
 import org.vaccineimpact.api.ContentTypes
-import org.vaccineimpact.api.blackboxTests.validators.JSONValidator
-import org.vaccineimpact.api.blackboxTests.validators.Validator
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.models.Scope
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
+import org.vaccineimpact.api.validateSchema.JSONValidator
+import org.vaccineimpact.api.validateSchema.Validator
 import spark.route.HttpMethod
 
 data class ExpectedProblem(val errorCode: String, val errorTextContains: String)

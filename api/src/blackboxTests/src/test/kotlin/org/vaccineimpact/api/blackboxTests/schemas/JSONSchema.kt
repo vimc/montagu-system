@@ -1,6 +1,6 @@
 package org.vaccineimpact.api.blackboxTests.schemas
 
-import org.vaccineimpact.api.blackboxTests.validators.JSONValidator
+import org.vaccineimpact.api.validateSchema.JSONValidator
 
 class JSONSchema(val schemaName: String) : Schema
 {
@@ -11,4 +11,5 @@ class JSONSchema(val schemaName: String) : Schema
 
     override fun validateRequest(request: String)
         = validator.validateAgainstSchema(request, schemaName, wrappedInStandardResponseSchema = false)
+        = validator.validateResponseAgainstSchema(response, schemaName)
 }
