@@ -18,7 +18,8 @@ fun validate(url: String, method: HttpMethod = HttpMethod.get)
 data class FluentValidationConfig(
         val url: String,
         val method: HttpMethod,
-        val schema: Schema? = null,
+        private val requestSchema: Schema? = null,
+        private val responseSchema: Schema? = null,
         val prepareDatabase: ((JooqContext) -> Unit)? = null,
         val checkRequiredPermissions: Set<ReifiedPermission>? = null,
         val ownedPermissions: Set<ReifiedPermission>? = null,
@@ -26,8 +27,8 @@ data class FluentValidationConfig(
         val postData: JsonObject? = null
 )
 {
-    infix fun against(schemaName: String) = this.copy(schema = JSONSchema(schemaName))
-    infix fun against(schema: Schema) = this.copy(schema = schema)
+    infix fun against(schemaName: String) = this.copy(responseSchema = JSONSchema(schemaName))
+    infix fun against(schema: Schema) = this.copy(responseSchema = schema)
 
     infix fun given(prepareDatabase: (JooqContext) -> Unit) = this.copy(prepareDatabase = prepareDatabase)
 
@@ -40,6 +41,7 @@ data class FluentValidationConfig(
     infix fun acceptingContentType(contentType: String) = this.copy(acceptsContentType = contentType)
 
     infix fun sending(postData: () -> JsonObject) = this.copy(postData = postData())
+    infix fun withRequestSchema(schemaName: String) = this.copy(requestSchema = JSONSchema(schemaName))
 
     infix fun andCheck(additionalChecks: (JsonObject) -> Unit)
     {
@@ -72,13 +74,27 @@ data class FluentValidationConfig(
     }
 
     private fun finalized() = FluentValidation(this)
+
+    fun getRequestSchema() = requestSchema ?: when (method)
+    {
+        HttpMethod.get -> null
+        HttpMethod.post -> throw Exception("Missing 'withRequestSchema' clause in fluent validation builder")
+        else -> throw Exception("Unsupported request method '$method'")
+    }
+    fun getResponseSchema() = responseSchema ?: when (method)
+    {
+        HttpMethod.get -> throw Exception("Missing 'against' clause in fluent validation builder")
+        HttpMethod.post -> JSONSchema("Create_Response")
+        else -> throw Exception("Unsupported request method '$method'")
+    }
 }
 
 class FluentValidation(config: FluentValidationConfig)
 {
     val url = config.url
     val method = config.method
-    val schema = config.schema ?: throw Exception("Missing 'against' clause in fluent validation builder")
+    val requestSchema = config.getRequestSchema()
+    val responseSchema = config.getResponseSchema()
     val prepareDatabase = getDatabasePreparationScript(config)
     val requiredPermissions: Set<ReifiedPermission> = config.checkRequiredPermissions ?: PermissionSet("*/can-login")
     val ownedPermissions: Set<ReifiedPermission> = config.ownedPermissions ?: requiredPermissions
@@ -105,7 +121,7 @@ class FluentValidation(config: FluentValidationConfig)
         // Check that the auth token is required
         println("Checking that auth token is required for $url")
         val badResponse = makeRequest(acceptContentType)
-        schema.validator.validateError(badResponse.text)
+        responseSchema.validator.validateError(badResponse.text)
 
         // Check the permissions
         if (requiredPermissions.any())
@@ -122,16 +138,11 @@ class FluentValidation(config: FluentValidationConfig)
 
     private fun validate(response: Response)
     {
-        when (method)
+        if (method == HttpMethod.post && requestSchema != null && postData != null)
         {
-            HttpMethod.get -> schema.validateResponse(response.text)
-            HttpMethod.post ->
-            {
-                schema.validateRequest(postData!!.toJsonString(prettyPrint = true))
-                JSONSchema("Create_Response").validateResponse(response.text)
-            }
-            else -> throw Exception("Validating $method is not supported")
+            requestSchema.validateRequest(postData.toJsonString(prettyPrint = true))
         }
+        responseSchema.validateResponse(response.text)
     }
 
     private fun makeRequest(contentType: String, token: TokenLiteral? = null): Response = when (method)
@@ -143,7 +154,7 @@ class FluentValidation(config: FluentValidationConfig)
 
     private fun checkPermissions(url: String)
     {
-        val checker = PermissionChecker(url, allPermissions, schema.validator, acceptContentType,
+        val checker = PermissionChecker(url, allPermissions, responseSchema.validator, acceptContentType,
                 method = method,
                 postData = postData)
         for (permission in requiredPermissions)
@@ -154,12 +165,13 @@ class FluentValidation(config: FluentValidationConfig)
 
     private fun getDatabasePreparationScript(config: FluentValidationConfig): (JooqContext) -> Unit
     {
-        return config.prepareDatabase ?: when(config.method)
+        return config.prepareDatabase ?: when (config.method)
         {
             HttpMethod.post -> this::noDatabasePrep
             else -> throw Exception("Missing 'given' clause in fluent validation builder")
         }
     }
+
     private fun noDatabasePrep(db: JooqContext)
     {
     }

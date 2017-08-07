@@ -26,9 +26,9 @@ class CreateUserTests : DatabaseTest()
     {
         val objectUrl = "/users/gandalf.grey/"
 
-        validate("/users/", HttpMethod.post) against "CreateUser" sending {
+        validate("/users/", HttpMethod.post) sending {
             postData.toJsonObject()
-        } requiringPermissions {
+        } withRequestSchema "CreateUser" requiringPermissions {
             creationPermissions
         } andCheckObjectCreation objectUrl
 
