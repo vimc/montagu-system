@@ -18,7 +18,7 @@ class TokenIssuingConfigFactory : ConfigFactory
         val authClient = DirectBasicAuthClient(DatabasePasswordAuthenticator())
         return Config(authClient).apply {
             httpActionAdapter = BasicAuthActionAdapter()
-            addMatcher(SkipOptionsMatcher.name, SkipOptionsMatcher)
+            addMethodMatchers()
         }
     }
 }

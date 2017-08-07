@@ -1,11 +1,13 @@
 package org.vaccineimpact.api.blackboxTests.helpers
 
+import com.beust.klaxon.JsonObject
 import org.vaccineimpact.api.ContentTypes
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.models.Scope
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import org.vaccineimpact.api.validateSchema.JSONValidator
 import org.vaccineimpact.api.validateSchema.Validator
+import spark.route.HttpMethod
 
 data class ExpectedProblem(val errorCode: String, val errorTextContains: String)
 
@@ -13,7 +15,9 @@ class PermissionChecker(
         val url: String,
         val allRequiredPermissions: Set<ReifiedPermission>,
         val validator: Validator = JSONValidator(),
-        val acceptContentType: String = ContentTypes.json
+        val acceptContentType: String = ContentTypes.json,
+        val method: HttpMethod = HttpMethod.get,
+        val postData: JsonObject? = null
 )
 {
     val helper = TestUserHelper()
@@ -102,9 +106,10 @@ class PermissionChecker(
         validator.validateSuccess(response, assertionText = assertionText)
     }
 
-    private fun getResponse(token: TokenLiteral): String
+    private fun getResponse(token: TokenLiteral) = when (method)
     {
-        val response = requestHelper.get(url, token, acceptContentType)
-        return response.text
+        HttpMethod.get -> requestHelper.get(url, token, acceptContentType).text
+        HttpMethod.post -> requestHelper.post(url, postData!!, token).text
+        else -> throw Exception("PermissionChecker does not support method $method")
     }
 }

@@ -2,6 +2,7 @@ package org.vaccineimpact.api.app.repositories.jooq
 
 import org.jooq.Record
 import org.vaccineimpact.api.app.errors.UnknownObjectError
+import org.vaccineimpact.api.app.models.CreateUser
 import org.vaccineimpact.api.app.repositories.UserRepository
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.Tables.*
@@ -74,6 +75,15 @@ class JooqUserRepository(db: JooqContext) : JooqRepository(db), UserRepository
                 .on(ROLE.ID.eq(USER_ROLE.ROLE))
                 .fetchGroups(APP_USER)
                 .map(this::mapUserWithRoles)
+    }
+
+    override fun addUser(user: CreateUser)
+    {
+        dsl.newRecord(APP_USER).apply {
+            username = user.username
+            name = user.name
+            email = user.email
+        }.insert()
     }
 
     private fun mapUserWithRoles(entry: Map.Entry<AppUserRecord, org.jooq.Result<Record>>): User

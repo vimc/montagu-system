@@ -13,16 +13,24 @@ class JSONValidator : Validator
     private val schemaFactory = makeSchemaFactory()
     private val responseSchema = readSchema("Response")
 
-    fun validateResponseAgainstSchema(response: String, schemaName: String)
+    fun validateAgainstSchema(text: String, schemaName: String,
+                              wrappedInStandardResponseSchema: Boolean = true)
     {
-        val json = parseJson(response, "response")
-        // Everything must meet the basic response schema
-        checkResultSchema(json, response, "success")
-        // Then use the more specific schema on the data portion
-        val data = json["data"]
+        val json = parseJson(text, "request/response")
+        val data = if (wrappedInStandardResponseSchema)
+        {
+            checkResultSchema(json, text, "success")
+            // The part to verify against schemaName is the data part of the standard response schema
+            json["data"]
+        }
+        else
+        {
+            json
+        }
         val schema = readSchema(schemaName)
         assertValidates(schema, data)
     }
+
     fun validateExampleAgainstSchema(example: String, schema: String)
     {
         val json = parseJson(example, "example")
