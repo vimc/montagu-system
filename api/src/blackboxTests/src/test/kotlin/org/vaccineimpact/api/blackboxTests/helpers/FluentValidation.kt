@@ -2,7 +2,6 @@ package org.vaccineimpact.api.blackboxTests.helpers
 
 import com.beust.klaxon.JsonArray
 import com.beust.klaxon.JsonObject
-import jdk.nashorn.internal.scripts.JO
 import khttp.responses.Response
 import org.assertj.core.api.Assertions.assertThat
 import org.vaccineimpact.api.ContentTypes
@@ -125,11 +124,11 @@ class FluentValidation(config: FluentValidationConfig)
     {
         when (method)
         {
-            HttpMethod.get -> schema.validate(response.text)
+            HttpMethod.get -> schema.validateResponse(response.text)
             HttpMethod.post ->
             {
                 schema.validateRequest(postData!!.toJsonString(prettyPrint = true))
-                JSONSchema("Create_Response").validate(response.text)
+                JSONSchema("Create_Response").validateResponse(response.text)
             }
             else -> throw Exception("Validating $method is not supported")
         }
