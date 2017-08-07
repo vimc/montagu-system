@@ -6,6 +6,9 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonPrimitive
 import org.vaccineimpact.api.models.*
+import java.text.SimpleDateFormat
+import java.time.temporal.Temporal
+import java.util.*
 
 open class Serializer
 {
@@ -14,7 +17,10 @@ open class Serializer
         val instance = Serializer()
     }
 
-    private val toStringSerializer = jsonSerializer<Any> { JsonPrimitive(it.src.toString()) }
+    private val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
+    private val toDateStringSerializer = jsonSerializer<Date> {
+        JsonPrimitive(dateFormat.format(it.src))
+    }
     private val enumSerializer = jsonSerializer<Any> { JsonPrimitive(serializeEnum(it.src)) }
 
     val gson: Gson
@@ -22,18 +28,17 @@ open class Serializer
     init
     {
         val common = GsonBuilder()
-            .setPrettyPrinting()
-            .disableHtmlEscaping()
-            .setFieldNamingStrategy { convertFieldName(it.name) }
-            .serializeNulls()
-            .registerTypeAdapter<java.time.LocalDate>(toStringSerializer)
-            .registerTypeAdapter<java.time.Instant>(toStringSerializer)
-            .registerTypeAdapter<ResultStatus>(enumSerializer)
-            .registerTypeAdapter<ResponsibilitySetStatus>(enumSerializer)
-            .registerTypeAdapter<ResponsibilityStatus>(enumSerializer)
-            .registerTypeAdapter<TouchstoneStatus>(enumSerializer)
-            .registerTypeAdapter<GAVISupportLevel>(enumSerializer)
-            .registerTypeAdapter<ActivityType>(enumSerializer)
+                .setPrettyPrinting()
+                .disableHtmlEscaping()
+                .setFieldNamingStrategy { convertFieldName(it.name) }
+                .serializeNulls()
+                .registerTypeAdapter<Date>(toDateStringSerializer)
+                .registerTypeAdapter<ResultStatus>(enumSerializer)
+                .registerTypeAdapter<ResponsibilitySetStatus>(enumSerializer)
+                .registerTypeAdapter<ResponsibilityStatus>(enumSerializer)
+                .registerTypeAdapter<TouchstoneStatus>(enumSerializer)
+                .registerTypeAdapter<GAVISupportLevel>(enumSerializer)
+                .registerTypeAdapter<ActivityType>(enumSerializer)
 
         // Some serializers for complex objects need to recurse back to the default
         // serialization strategy. So we separate out a Gson object that has all the
@@ -64,5 +69,6 @@ open class Serializer
         }
         return builder.toString().trim('_')
     }
+
     fun serializeEnum(value: Any) = value.toString().toLowerCase().replace('_', '-')
 }
