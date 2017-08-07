@@ -29,8 +29,12 @@ import org.vaccineimpact.api.db.tables.CountryMetadata;
 import org.vaccineimpact.api.db.tables.CountryVaccineMetadata;
 import org.vaccineimpact.api.db.tables.Coverage;
 import org.vaccineimpact.api.db.tables.CoverageSet;
+import org.vaccineimpact.api.db.tables.DemographicSource;
 import org.vaccineimpact.api.db.tables.DemographicStatistic;
 import org.vaccineimpact.api.db.tables.DemographicStatisticType;
+import org.vaccineimpact.api.db.tables.DemographicStatisticTypeVariant;
+import org.vaccineimpact.api.db.tables.DemographicValueUnit;
+import org.vaccineimpact.api.db.tables.DemographicVariant;
 import org.vaccineimpact.api.db.tables.DisabilityWeight;
 import org.vaccineimpact.api.db.tables.Disease;
 import org.vaccineimpact.api.db.tables.GaviFocalModel;
@@ -47,7 +51,6 @@ import org.vaccineimpact.api.db.tables.ModelVersion;
 import org.vaccineimpact.api.db.tables.ModellingGroup;
 import org.vaccineimpact.api.db.tables.OnetimeToken;
 import org.vaccineimpact.api.db.tables.Permission;
-import org.vaccineimpact.api.db.tables.ProjectionVariant;
 import org.vaccineimpact.api.db.tables.Responsibility;
 import org.vaccineimpact.api.db.tables.ResponsibilitySet;
 import org.vaccineimpact.api.db.tables.ResponsibilitySetStatus;
@@ -65,7 +68,6 @@ import org.vaccineimpact.api.db.tables.SelectBurdenData6;
 import org.vaccineimpact.api.db.tables.SelectBurdenData7;
 import org.vaccineimpact.api.db.tables.SelectBurdenData8;
 import org.vaccineimpact.api.db.tables.SelectBurdenDataCol;
-import org.vaccineimpact.api.db.tables.Source;
 import org.vaccineimpact.api.db.tables.SupportType;
 import org.vaccineimpact.api.db.tables.Touchstone;
 import org.vaccineimpact.api.db.tables.TouchstoneCountry;
@@ -77,6 +79,7 @@ import org.vaccineimpact.api.db.tables.UserRole;
 import org.vaccineimpact.api.db.tables.VCoverageInfo;
 import org.vaccineimpact.api.db.tables.VResponsibilityInfo;
 import org.vaccineimpact.api.db.tables.Vaccine;
+import org.vaccineimpact.api.db.tables.VaccineRoutineAge;
 import org.vaccineimpact.api.db.tables.records.SelectBurdenData1Record;
 import org.vaccineimpact.api.db.tables.records.SelectBurdenData2Record;
 import org.vaccineimpact.api.db.tables.records.SelectBurdenData3Record;
@@ -101,7 +104,7 @@ import org.vaccineimpact.api.db.tables.records.SelectBurdenDataColRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = 1051699561;
+    private static final long serialVersionUID = 601143871;
 
     /**
      * The reference instance of <code>public</code>
@@ -164,6 +167,11 @@ public class Public extends SchemaImpl {
     public final CoverageSet COVERAGE_SET = org.vaccineimpact.api.db.tables.CoverageSet.COVERAGE_SET;
 
     /**
+     * The table <code>public.demographic_source</code>.
+     */
+    public final DemographicSource DEMOGRAPHIC_SOURCE = org.vaccineimpact.api.db.tables.DemographicSource.DEMOGRAPHIC_SOURCE;
+
+    /**
      * The table <code>public.demographic_statistic</code>.
      */
     public final DemographicStatistic DEMOGRAPHIC_STATISTIC = org.vaccineimpact.api.db.tables.DemographicStatistic.DEMOGRAPHIC_STATISTIC;
@@ -172,6 +180,21 @@ public class Public extends SchemaImpl {
      * The table <code>public.demographic_statistic_type</code>.
      */
     public final DemographicStatisticType DEMOGRAPHIC_STATISTIC_TYPE = org.vaccineimpact.api.db.tables.DemographicStatisticType.DEMOGRAPHIC_STATISTIC_TYPE;
+
+    /**
+     * The table <code>public.demographic_statistic_type_variant</code>.
+     */
+    public final DemographicStatisticTypeVariant DEMOGRAPHIC_STATISTIC_TYPE_VARIANT = org.vaccineimpact.api.db.tables.DemographicStatisticTypeVariant.DEMOGRAPHIC_STATISTIC_TYPE_VARIANT;
+
+    /**
+     * The table <code>public.demographic_value_unit</code>.
+     */
+    public final DemographicValueUnit DEMOGRAPHIC_VALUE_UNIT = org.vaccineimpact.api.db.tables.DemographicValueUnit.DEMOGRAPHIC_VALUE_UNIT;
+
+    /**
+     * The table <code>public.demographic_variant</code>.
+     */
+    public final DemographicVariant DEMOGRAPHIC_VARIANT = org.vaccineimpact.api.db.tables.DemographicVariant.DEMOGRAPHIC_VARIANT;
 
     /**
      * The table <code>public.disability_weight</code>.
@@ -252,11 +275,6 @@ public class Public extends SchemaImpl {
      * The table <code>public.permission</code>.
      */
     public final Permission PERMISSION = org.vaccineimpact.api.db.tables.Permission.PERMISSION;
-
-    /**
-     * The table <code>public.projection_variant</code>.
-     */
-    public final ProjectionVariant PROJECTION_VARIANT = org.vaccineimpact.api.db.tables.ProjectionVariant.PROJECTION_VARIANT;
 
     /**
      * The table <code>public.responsibility</code>.
@@ -533,11 +551,6 @@ public class Public extends SchemaImpl {
     }
 
     /**
-     * The table <code>public.source</code>.
-     */
-    public final Source SOURCE = org.vaccineimpact.api.db.tables.Source.SOURCE;
-
-    /**
      * The table <code>public.support_type</code>.
      */
     public final SupportType SUPPORT_TYPE = org.vaccineimpact.api.db.tables.SupportType.SUPPORT_TYPE;
@@ -593,6 +606,11 @@ public class Public extends SchemaImpl {
     public final Vaccine VACCINE = org.vaccineimpact.api.db.tables.Vaccine.VACCINE;
 
     /**
+     * The table <code>public.vaccine_routine_age</code>.
+     */
+    public final VaccineRoutineAge VACCINE_ROUTINE_AGE = org.vaccineimpact.api.db.tables.VaccineRoutineAge.VACCINE_ROUTINE_AGE;
+
+    /**
      * No further instances allowed
      */
     private Public() {
@@ -625,8 +643,11 @@ public class Public extends SchemaImpl {
             Sequences.COUNTRY_VACCINE_METADATA_ID_SEQ,
             Sequences.COVERAGE_ID_SEQ,
             Sequences.COVERAGE_SET_ID_SEQ,
+            Sequences.DEMOGRAPHIC_SOURCE_ID_SEQ,
             Sequences.DEMOGRAPHIC_STATISTIC_ID_SEQ,
             Sequences.DEMOGRAPHIC_STATISTIC_TYPE_ID_SEQ,
+            Sequences.DEMOGRAPHIC_VALUE_UNIT_ID_SEQ,
+            Sequences.DEMOGRAPHIC_VARIANT_ID_SEQ,
             Sequences.DISABILITY_WEIGHT_ID_SEQ,
             Sequences.GAVI_FOCAL_MODEL_ID_SEQ,
             Sequences.GENDER_ID_SEQ,
@@ -636,16 +657,15 @@ public class Public extends SchemaImpl {
             Sequences.IMPACT_ESTIMATE_SET_ID_SEQ,
             Sequences.IMPACT_ESTIMATE_SET_INGREDIENT_ID_SEQ,
             Sequences.MODEL_VERSION_ID_SEQ,
-            Sequences.PROJECTION_VARIANT_ID_SEQ,
             Sequences.RESPONSIBILITY_ID_SEQ,
             Sequences.RESPONSIBILITY_SET_ID_SEQ,
             Sequences.ROLE_ID_SEQ,
             Sequences.SCENARIO_COVERAGE_SET_ID_SEQ,
             Sequences.SCENARIO_ID_SEQ,
-            Sequences.SOURCE_ID_SEQ,
             Sequences.TOUCHSTONE_COUNTRY_ID_SEQ,
             Sequences.TOUCHSTONE_DEMOGRAPHIC_SOURCE_ID_SEQ,
-            Sequences.TOUCHSTONE_YEARS_ID_SEQ);
+            Sequences.TOUCHSTONE_YEARS_ID_SEQ,
+            Sequences.VACCINE_ROUTINE_AGE_ID_SEQ);
     }
 
     @Override
@@ -668,8 +688,12 @@ public class Public extends SchemaImpl {
             CountryVaccineMetadata.COUNTRY_VACCINE_METADATA,
             Coverage.COVERAGE,
             CoverageSet.COVERAGE_SET,
+            DemographicSource.DEMOGRAPHIC_SOURCE,
             DemographicStatistic.DEMOGRAPHIC_STATISTIC,
             DemographicStatisticType.DEMOGRAPHIC_STATISTIC_TYPE,
+            DemographicStatisticTypeVariant.DEMOGRAPHIC_STATISTIC_TYPE_VARIANT,
+            DemographicValueUnit.DEMOGRAPHIC_VALUE_UNIT,
+            DemographicVariant.DEMOGRAPHIC_VARIANT,
             DisabilityWeight.DISABILITY_WEIGHT,
             Disease.DISEASE,
             GaviFocalModel.GAVI_FOCAL_MODEL,
@@ -686,7 +710,6 @@ public class Public extends SchemaImpl {
             ModellingGroup.MODELLING_GROUP,
             OnetimeToken.ONETIME_TOKEN,
             Permission.PERMISSION,
-            ProjectionVariant.PROJECTION_VARIANT,
             Responsibility.RESPONSIBILITY,
             ResponsibilitySet.RESPONSIBILITY_SET,
             ResponsibilitySetStatus.RESPONSIBILITY_SET_STATUS,
@@ -704,7 +727,6 @@ public class Public extends SchemaImpl {
             SelectBurdenData7.SELECT_BURDEN_DATA7,
             SelectBurdenData8.SELECT_BURDEN_DATA8,
             SelectBurdenDataCol.SELECT_BURDEN_DATA_COL,
-            Source.SOURCE,
             SupportType.SUPPORT_TYPE,
             Touchstone.TOUCHSTONE,
             TouchstoneCountry.TOUCHSTONE_COUNTRY,
@@ -715,6 +737,7 @@ public class Public extends SchemaImpl {
             UserRole.USER_ROLE,
             VCoverageInfo.V_COVERAGE_INFO,
             VResponsibilityInfo.V_RESPONSIBILITY_INFO,
-            Vaccine.VACCINE);
+            Vaccine.VACCINE,
+            VaccineRoutineAge.VACCINE_ROUTINE_AGE);
     }
 }

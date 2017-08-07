@@ -10,11 +10,17 @@ interface ActionContext
     val userProfile: CommonProfile
 
     fun contentType(): String
+
     fun queryParams(key: String): String?
     fun params(): Map<String, String>
     fun params(key: String): String
+    fun <T: Any> postData(klass: Class<T>): T
+
     fun addResponseHeader(key: String, value: String): Unit
+    fun setResponseStatus(status: Int): Unit
 
     fun hasPermission(requirement: ReifiedPermission): Boolean
     fun requirePermission(requirement: ReifiedPermission): Unit
 }
+
+inline fun <reified T: Any> ActionContext.postData() = this.postData(T::class.java)

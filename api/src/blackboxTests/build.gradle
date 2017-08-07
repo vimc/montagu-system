@@ -13,6 +13,7 @@ dependencies {
     testCompile project(":testHelpers")
     testCompile project(":databaseInterface")
     testCompile project(":security")
+    testCompile project(":validateSchema")
 }
 
 task copySpec(type: Copy) {

@@ -8,6 +8,7 @@ include 'app',
         'generateTestData',
         'userCLI',
 
+        'validateSchema',
         'testHelpers',
         'databaseTests',
         'blackboxTests'

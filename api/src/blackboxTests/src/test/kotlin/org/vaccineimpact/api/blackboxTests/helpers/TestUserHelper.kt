@@ -40,4 +40,19 @@ class TestUserHelper
             is TokenFetcher.TokenResponse.Error -> throw Exception("Unable to obtain auth token: '${token.message}'")
         }
     }
+
+    companion object
+    {
+        fun setupTestUser()
+        {
+            JooqContext().use {
+                TestUserHelper().setupTestUser(it)
+            }
+        }
+        fun setupTestUserAndGetToken(permissions: Set<ReifiedPermission>): TokenLiteral
+        {
+            setupTestUser()
+            return TestUserHelper().getTokenForTestUser(permissions)
+        }
+    }
 }

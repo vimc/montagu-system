@@ -30,7 +30,7 @@ data class Endpoint<TRoute>(
 
     override fun additionalSetup(url: String, tokenHelper: WebTokenHelper)
     {
-        Spark.after(url, contentType, DefaultHeadersFilter(contentType))
+        Spark.after(url, contentType, DefaultHeadersFilter(contentType, method))
         additionalSetupCallback?.invoke(url, tokenHelper)
     }
 

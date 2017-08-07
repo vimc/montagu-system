@@ -35,7 +35,7 @@ import org.vaccineimpact.api.db.tables.records.CountryMetadataRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CountryMetadata extends TableImpl<CountryMetadataRecord> {
 
-    private static final long serialVersionUID = 515780579;
+    private static final long serialVersionUID = -1720875073;
 
     /**
      * The reference instance of <code>public.country_metadata</code>
@@ -79,6 +79,16 @@ public class CountryMetadata extends TableImpl<CountryMetadataRecord> {
      * The column <code>public.country_metadata.wuenic_coverage</code>.
      */
     public final TableField<CountryMetadataRecord, Boolean> WUENIC_COVERAGE = createField("wuenic_coverage", org.jooq.impl.SQLDataType.BOOLEAN.nullable(false), this, "");
+
+    /**
+     * The column <code>public.country_metadata.continent</code>.
+     */
+    public final TableField<CountryMetadataRecord, String> CONTINENT = createField("continent", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+
+    /**
+     * The column <code>public.country_metadata.region</code>.
+     */
+    public final TableField<CountryMetadataRecord, String> REGION = createField("region", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * Create a <code>public.country_metadata</code> table reference

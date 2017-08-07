@@ -11,6 +11,6 @@ class IndexTests : MontaguTests()
     fun `can read index`()
     {
         val response = RequestHelper().get("/")
-        JSONSchema("Index").validate(response.text)
+        JSONSchema("Index").validateResponse(response.text)
     }
 }

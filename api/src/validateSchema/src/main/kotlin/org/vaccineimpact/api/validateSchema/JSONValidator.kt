@@ -1,4 +1,4 @@
-package org.vaccineimpact.api.blackboxTests.validators
+package org.vaccineimpact.api.validateSchema
 
 import com.fasterxml.jackson.core.JsonParseException
 import com.fasterxml.jackson.databind.JsonNode
@@ -13,15 +13,29 @@ class JSONValidator : Validator
     private val schemaFactory = makeSchemaFactory()
     private val responseSchema = readSchema("Response")
 
-    fun validateAgainstSchema(response: String, schemaName: String)
+    fun validateAgainstSchema(text: String, schemaName: String,
+                              wrappedInStandardResponseSchema: Boolean = true)
     {
-        val json = parseJson(response)
-        // Everything must meet the basic response schema
-        checkResultSchema(json, response, "success")
-        // Then use the more specific schema on the data portion
-        val data = json["data"]
+        val json = parseJson(text, "request/response")
+        val data = if (wrappedInStandardResponseSchema)
+        {
+            checkResultSchema(json, text, "success")
+            // The part to verify against schemaName is the data part of the standard response schema
+            json["data"]
+        }
+        else
+        {
+            json
+        }
         val schema = readSchema(schemaName)
         assertValidates(schema, data)
+    }
+
+    fun validateExampleAgainstSchema(example: String, schema: String)
+    {
+        val json = parseJson(example, "example")
+        val schema = JsonLoader.fromString(schema)
+        assertValidates(schema, json)
     }
 
     override fun validateError(response: String,
@@ -29,7 +43,7 @@ class JSONValidator : Validator
                                expectedErrorText: String?,
                                assertionText: String?)
     {
-        val json = parseJson(response)
+        val json = parseJson(response, "response")
         checkResultSchema(json, response, "failure", assertionText = assertionText)
         val error = json["errors"].first()
         if (expectedErrorCode != null)
@@ -45,7 +59,7 @@ class JSONValidator : Validator
     }
     override fun validateSuccess(response: String, assertionText: String?)
     {
-        val json = parseJson(response)
+        val json = parseJson(response, "response")
         checkResultSchema(json, response, "success", assertionText = assertionText)
     }
 
@@ -85,7 +99,7 @@ class JSONValidator : Validator
                 .freeze()
     }
 
-    private fun parseJson(jsonAsString: String): JsonNode
+    private fun parseJson(jsonAsString: String, kindOfText: String): JsonNode
     {
         return try
         {
@@ -93,7 +107,7 @@ class JSONValidator : Validator
         }
         catch (e: JsonParseException)
         {
-            throw Exception("Failed to parse text as JSON.\nText was: $jsonAsString\n\n$e")
+            throw Exception("Failed to parse $kindOfText text as JSON.\nText was: $jsonAsString\n\n$e")
         }
     }
 }

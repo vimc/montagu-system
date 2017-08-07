@@ -1,22 +1,18 @@
-package org.vaccineimpact.api.tests.controllers
+package org.vaccineimpact.api.tests.controllers.userController
 
 import com.nhaarman.mockito_kotlin.doReturn
 import com.nhaarman.mockito_kotlin.mock
-import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions
 import org.junit.Test
 import org.vaccineimpact.api.app.ActionContext
-import org.vaccineimpact.api.app.controllers.ControllerContext
 import org.vaccineimpact.api.app.controllers.UserController
 import org.vaccineimpact.api.app.repositories.UserRepository
 import org.vaccineimpact.api.models.User
 import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.models.permissions.RoleAssignment
 
-class UserControllerTests : ControllerTests<UserController>()
+class GetUserTests : UserControllerTests()
 {
-    override fun makeController(controllerContext: ControllerContext)
-            = UserController(controllerContext)
-
     @Test
     fun `getUser returns user without roles`()
     {
@@ -35,7 +31,7 @@ class UserControllerTests : ControllerTests<UserController>()
         }
 
         val controller = UserController(mockControllerContext())
-        assertThat(controller.getUser(context, repo)).isEqualToComparingFieldByField(user)
+        Assertions.assertThat(controller.getUser(context, repo)).isEqualToComparingFieldByField(user)
     }
 
     @Test
@@ -63,7 +59,7 @@ class UserControllerTests : ControllerTests<UserController>()
 
         val controller = UserController(mockControllerContext())
         val actualRoles = controller.getUser(context, repo).roles
-        assertThat(actualRoles).hasSameElementsAs(expectedRoles)
+        Assertions.assertThat(actualRoles).hasSameElementsAs(expectedRoles)
     }
 
     @Test
@@ -96,7 +92,7 @@ class UserControllerTests : ControllerTests<UserController>()
         val controller = UserController(mockControllerContext())
         val actualRoles = controller.getUser(context, repo).roles
 
-        assertThat(actualRoles).hasSameElementsAs(expectedRoles)
+        Assertions.assertThat(actualRoles).hasSameElementsAs(expectedRoles)
     }
 
     @Test
@@ -115,7 +111,7 @@ class UserControllerTests : ControllerTests<UserController>()
         val controller = UserController(mockControllerContext())
         val actualUsers = controller.getUsers(context, repo)
 
-        assertThat(actualUsers).hasSameElementsAs(users)
+        Assertions.assertThat(actualUsers).hasSameElementsAs(users)
     }
 
     @Test
@@ -139,7 +135,7 @@ class UserControllerTests : ControllerTests<UserController>()
 
         val controller = UserController(mockControllerContext())
         val actualRoles = controller.getUsers(context, repo)[0].roles
-        assertThat(actualRoles).hasSameElementsAs(expectedRoles)
+        Assertions.assertThat(actualRoles).hasSameElementsAs(expectedRoles)
     }
 
     @Test
@@ -168,6 +164,6 @@ class UserControllerTests : ControllerTests<UserController>()
         val controller = UserController(mockControllerContext())
         val actualRoles = controller.getUsers(context, repo)[0].roles
 
-        assertThat(actualRoles).hasSameElementsAs(expectedRoles)
+        Assertions.assertThat(actualRoles).hasSameElementsAs(expectedRoles)
     }
 }
