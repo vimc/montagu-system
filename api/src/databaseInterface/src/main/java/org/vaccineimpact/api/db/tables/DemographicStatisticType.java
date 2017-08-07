@@ -4,12 +4,14 @@
 package org.vaccineimpact.api.db.tables;
 
 
+import java.sql.Date;
 import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.Generated;
 
 import org.jooq.Field;
+import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Schema;
 import org.jooq.Table;
@@ -34,7 +36,7 @@ import org.vaccineimpact.api.db.tables.records.DemographicStatisticTypeRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DemographicStatisticType extends TableImpl<DemographicStatisticTypeRecord> {
 
-    private static final long serialVersionUID = -2096141597;
+    private static final long serialVersionUID = 290400680;
 
     /**
      * The reference instance of <code>public.demographic_statistic_type</code>
@@ -68,6 +70,31 @@ public class DemographicStatisticType extends TableImpl<DemographicStatisticType
      * The column <code>public.demographic_statistic_type.name</code>.
      */
     public final TableField<DemographicStatisticTypeRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.nullable(false), this, "");
+
+    /**
+     * The column <code>public.demographic_statistic_type.year_step_size</code>.
+     */
+    public final TableField<DemographicStatisticTypeRecord, Integer> YEAR_STEP_SIZE = createField("year_step_size", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+
+    /**
+     * The column <code>public.demographic_statistic_type.reference_date</code>.
+     */
+    public final TableField<DemographicStatisticTypeRecord, Date> REFERENCE_DATE = createField("reference_date", org.jooq.impl.SQLDataType.DATE.nullable(false), this, "");
+
+    /**
+     * The column <code>public.demographic_statistic_type.gender_is_applicable</code>.
+     */
+    public final TableField<DemographicStatisticTypeRecord, Boolean> GENDER_IS_APPLICABLE = createField("gender_is_applicable", org.jooq.impl.SQLDataType.BOOLEAN.nullable(false), this, "");
+
+    /**
+     * The column <code>public.demographic_statistic_type.demographic_value_unit</code>.
+     */
+    public final TableField<DemographicStatisticTypeRecord, Integer> DEMOGRAPHIC_VALUE_UNIT = createField("demographic_value_unit", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+
+    /**
+     * The column <code>public.demographic_statistic_type.default_variant</code>.
+     */
+    public final TableField<DemographicStatisticTypeRecord, Integer> DEFAULT_VARIANT = createField("default_variant", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * Create a <code>public.demographic_statistic_type</code> table reference
@@ -121,6 +148,14 @@ public class DemographicStatisticType extends TableImpl<DemographicStatisticType
     @Override
     public List<UniqueKey<DemographicStatisticTypeRecord>> getKeys() {
         return Arrays.<UniqueKey<DemographicStatisticTypeRecord>>asList(Keys.DEMOGRAPHIC_STATISTIC_TYPE_PKEY);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<ForeignKey<DemographicStatisticTypeRecord, ?>> getReferences() {
+        return Arrays.<ForeignKey<DemographicStatisticTypeRecord, ?>>asList(Keys.DEMOGRAPHIC_STATISTIC_TYPE__DEMOGRAPHIC_STATISTIC_TYPE_DEMOGRAPHIC_VALUE_UNIT_FKEY, Keys.DEMOGRAPHIC_STATISTIC_TYPE__DEMOGRAPHIC_STATISTIC_TYPE_DEFAULT_VARIANT_FKEY);
     }
 
     /**

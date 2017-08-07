@@ -55,7 +55,8 @@ class AuthenticationController(context: ControllerContext, htmlFormHelpers: Form
                 config,
                 DirectBasicAuthClient::class.java.simpleName,
                 null,
-                SkipOptionsMatcher.name))
+                "method:${HttpMethod.post}"
+        ))
     }
 
     private fun getUserFromUserProfile(context: ActionContext)

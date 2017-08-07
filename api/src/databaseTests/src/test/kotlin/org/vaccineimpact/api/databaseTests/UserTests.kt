@@ -4,6 +4,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
 import org.vaccineimpact.api.app.errors.UnknownObjectError
+import org.vaccineimpact.api.app.models.CreateUser
 import org.vaccineimpact.api.app.repositories.UserRepository
 import org.vaccineimpact.api.app.repositories.jooq.JooqUserRepository
 import org.vaccineimpact.api.db.JooqContext
@@ -202,6 +203,18 @@ class UserTests : RepositoryTests<UserRepository>()
                     ReifiedPermission("p3", Scope.Specific("prefixB", "idB"))
             )
             checkUser(getUser(repo, email), roles, permissions)
+        }
+    }
+
+    @Test
+    fun `can add user`()
+    {
+        givenABlankDatabase() makeTheseChanges { repo ->
+            repo.addUser(CreateUser("user.name", "Full Name", "email@example.com"))
+        } andCheck { repo ->
+            assertThat(repo.getUserByUsername("user.name")).isEqualTo(
+                    User("user.name", "Full Name", "email@example.com", null)
+            )
         }
     }
 

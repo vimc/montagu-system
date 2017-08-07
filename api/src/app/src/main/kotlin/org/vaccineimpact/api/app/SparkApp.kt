@@ -32,7 +32,6 @@ class MontaguApi
 
     fun run(repositories: Repositories)
     {
-        //setupSSL()
         setupPort()
         spk.redirect.get("/", urlBase)
         spk.before("*", ::addTrailingSlashes)
@@ -41,29 +40,14 @@ class MontaguApi
         })
         ErrorHandler.setup()
 
-        val controllerContext = ControllerContext(repositories, tokenHelper)
+        val controllerContext = ControllerContext(urlBase, repositories, tokenHelper)
         val standardControllers = MontaguControllers(controllerContext)
         val oneTimeLink = OneTimeLinkController(controllerContext, standardControllers)
         val endpoints = (standardControllers.all + oneTimeLink).flatMap {
-            it.mapEndpoints(urlBase)
+            it.mapEndpoints()
         }
-        HomeController(endpoints, controllerContext).mapEndpoints(urlBase)
+        HomeController(endpoints, controllerContext).mapEndpoints()
     }
-
-    /*private fun setupSSL()
-    {
-        val path = Config["ssl.keystore.path"]
-        val password = Config["ssl.keystore.password"]
-        if (!File(path).exists())
-        {
-            logger.info("Waiting for SSL keystore to be present at $path...")
-            while (!File(path).exists())
-            {
-                Thread.sleep(1000)
-            }
-        }
-        spark.Spark.secure(path, password, null, null)
-    }*/
 
     private fun setupPort()
     {

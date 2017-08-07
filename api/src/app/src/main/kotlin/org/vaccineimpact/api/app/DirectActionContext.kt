@@ -5,6 +5,7 @@ import org.pac4j.core.profile.ProfileManager
 import org.pac4j.sparkjava.SparkWebContext
 import org.vaccineimpact.api.app.errors.MissingRequiredPermissionError
 import org.vaccineimpact.api.app.security.montaguPermissions
+import org.vaccineimpact.api.app.serialization.ModelBinder
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import spark.Request
 import spark.Response
@@ -23,6 +24,15 @@ open class DirectActionContext(private val context: SparkWebContext): ActionCont
     override fun queryParams(key: String): String? = request.queryParams(key)
     override fun params(): Map<String, String> = request.params()
     override fun params(key: String): String = request.params(key)
+    override fun <T: Any> postData(klass: Class<T>): T
+    {
+        return ModelBinder().deserialize(request.body(), klass)
+    }
+
+    override fun setResponseStatus(status: Int)
+    {
+        response.status(status)
+    }
     override fun addResponseHeader(key: String, value: String)
     {
         response.header(key, value)
