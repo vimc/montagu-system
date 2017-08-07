@@ -20,7 +20,7 @@ fun <TRoute> Endpoint<TRoute>.secured(permissions: Set<String> = emptySet()): En
                 tokenVerifier,
                 configFactory.allClients(),
                 MontaguAuthorizer::class.java.simpleName,
-                "SkipOptions"
+                "method:$method"
         ))
     })
 }

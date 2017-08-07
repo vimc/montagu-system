@@ -8,7 +8,6 @@ import org.vaccineimpact.api.app.HTMLForm
 import org.vaccineimpact.api.app.HTMLFormHelpers
 import org.vaccineimpact.api.app.controllers.endpoints.basicEndpoint
 import org.vaccineimpact.api.app.repositories.Repositories
-import org.vaccineimpact.api.app.security.SkipOptionsMatcher
 import org.vaccineimpact.api.app.security.USER_OBJECT
 import org.vaccineimpact.api.models.AuthenticationResponse
 import org.vaccineimpact.api.models.FailedAuthentication
@@ -49,7 +48,8 @@ class AuthenticationController(context: ControllerContext) : AbstractController(
                 config,
                 DirectBasicAuthClient::class.java.simpleName,
                 null,
-                SkipOptionsMatcher.name))
+                "method:${HttpMethod.post}"
+        ))
     }
 
     private fun getUserFromUserProfile(context: ActionContext)
