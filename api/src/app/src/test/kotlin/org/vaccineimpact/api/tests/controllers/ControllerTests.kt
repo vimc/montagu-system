@@ -23,6 +23,7 @@ abstract class ControllerTests<out TController : AbstractController> : MontaguTe
             : ControllerContext
     {
         return mock {
+            on { urlBase } doReturn "/v1"
             if (repositories != null)
             {
                 on { this.repositories } doReturn repositories

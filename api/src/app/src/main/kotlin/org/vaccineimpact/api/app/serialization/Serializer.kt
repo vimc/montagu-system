@@ -47,6 +47,7 @@ open class Serializer
 
     open fun toResult(data: Any?): String = toJson(Result(ResultStatus.SUCCESS, data, emptyList()))
     open fun toJson(result: Result): String = gson.toJson(result)
+    fun <T> fromJson(json: String, klass: Class<T>): T = gson.fromJson(json, klass)
 
     fun convertFieldName(name: String): String
     {

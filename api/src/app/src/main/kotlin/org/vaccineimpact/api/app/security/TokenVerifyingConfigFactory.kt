@@ -33,7 +33,7 @@ class TokenVerifyingConfigFactory(
         }
         return Config(clients).apply {
             setAuthorizer(MontaguAuthorizer(requiredPermissions))
-            addMatcher(SkipOptionsMatcher.name, SkipOptionsMatcher)
+            addMethodMatchers()
             httpActionAdapter = TokenActionAdapter()
         }
     }

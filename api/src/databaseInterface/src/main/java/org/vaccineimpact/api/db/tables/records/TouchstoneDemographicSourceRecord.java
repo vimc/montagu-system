@@ -27,7 +27,7 @@ import org.vaccineimpact.api.db.tables.TouchstoneDemographicSource;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TouchstoneDemographicSourceRecord extends UpdatableRecordImpl<TouchstoneDemographicSourceRecord> implements Record3<Integer, String, Integer> {
 
-    private static final long serialVersionUID = 1297254418;
+    private static final long serialVersionUID = 2091222920;
 
     /**
      * Setter for <code>public.touchstone_demographic_source.id</code>.
@@ -58,16 +58,16 @@ public class TouchstoneDemographicSourceRecord extends UpdatableRecordImpl<Touch
     }
 
     /**
-     * Setter for <code>public.touchstone_demographic_source.source</code>.
+     * Setter for <code>public.touchstone_demographic_source.demographic_source</code>.
      */
-    public void setSource(Integer value) {
+    public void setDemographicSource(Integer value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>public.touchstone_demographic_source.source</code>.
+     * Getter for <code>public.touchstone_demographic_source.demographic_source</code>.
      */
-    public Integer getSource() {
+    public Integer getDemographicSource() {
         return (Integer) get(2);
     }
 
@@ -124,7 +124,7 @@ public class TouchstoneDemographicSourceRecord extends UpdatableRecordImpl<Touch
      */
     @Override
     public Field<Integer> field3() {
-        return TouchstoneDemographicSource.TOUCHSTONE_DEMOGRAPHIC_SOURCE.SOURCE;
+        return TouchstoneDemographicSource.TOUCHSTONE_DEMOGRAPHIC_SOURCE.DEMOGRAPHIC_SOURCE;
     }
 
     /**
@@ -148,7 +148,7 @@ public class TouchstoneDemographicSourceRecord extends UpdatableRecordImpl<Touch
      */
     @Override
     public Integer value3() {
-        return getSource();
+        return getDemographicSource();
     }
 
     /**
@@ -174,7 +174,7 @@ public class TouchstoneDemographicSourceRecord extends UpdatableRecordImpl<Touch
      */
     @Override
     public TouchstoneDemographicSourceRecord value3(Integer value) {
-        setSource(value);
+        setDemographicSource(value);
         return this;
     }
 
@@ -203,11 +203,11 @@ public class TouchstoneDemographicSourceRecord extends UpdatableRecordImpl<Touch
     /**
      * Create a detached, initialised TouchstoneDemographicSourceRecord
      */
-    public TouchstoneDemographicSourceRecord(Integer id, String touchstone, Integer source) {
+    public TouchstoneDemographicSourceRecord(Integer id, String touchstone, Integer demographicSource) {
         super(TouchstoneDemographicSource.TOUCHSTONE_DEMOGRAPHIC_SOURCE);
 
         set(0, id);
         set(1, touchstone);
-        set(2, source);
+        set(2, demographicSource);
     }
 }

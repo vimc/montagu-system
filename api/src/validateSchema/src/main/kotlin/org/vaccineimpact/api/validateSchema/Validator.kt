@@ -1,4 +1,4 @@
-package org.vaccineimpact.api.blackboxTests.validators
+package org.vaccineimpact.api.validateSchema
 
 interface Validator
 {
