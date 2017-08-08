@@ -1687,3 +1687,47 @@ Schema: [`TouchstoneOverview.schema.json`](TouchstoneOverview.schema.json)
             }
         }
     }
+
+# Demographics
+## GET /touchstones/{touchstone-id}/demographics/
+
+Returns a list of available demographic data sets for this touchstone, including for each data set, 
+available variants and available genders.
+
+## GET /touchstones/{touchstone-id}/demographics/{demographic-type-id}/
+
+Returns the data set with given type, in CSV format.
+
+### Query parameters:
+
+#### variant
+Optional. The variant to return, either `L`, `M`, or `H`. Defaults to `M`.
+
+#### gender
+Optional. The gender to return, either `F`, `M`, or `B`. Defaults to `B`.
+
+#### format
+Optional. A format to return the CSV in, either `wide` or `long`. Defaults to `wide`.
+
+Example: `/touchstones/2017-op-1/demographics/12/?format=long&variant=H`
+
+## POST /touchstones/{touchstone-id}/demographics/bundle/
+
+Creates a bundle of demographic data sets for this touchstone, 
+given type, variant, gender and format preferences. Defaults are as above.
+
+### Example
+    [{ 
+        "stat_type": "STAT-TYPE-ID",
+        "variant": "L",
+        "gender": "F",
+        "format" : "long"
+     },
+     { 
+         "stat_type": "STAT-TYPE-ID2",
+         "format": "long"
+     }]
+
+## GET /touchstones/{touchstone-id}/demographics/bundle/{bundle-id}
+
+Returns a zip file containing all the demographic data sets in the requested bundle, in CSV format.
