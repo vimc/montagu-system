@@ -26,6 +26,16 @@ class JooqTouchstoneRepository(
 )
     : JooqRepository(db), TouchstoneRepository
 {
+    override fun getDemographicStatisticTypes(touchstoneId: String): List<DemographicStatisticType>
+    {
+        val records = getDemographicStatisticTypesQuery(touchstoneId)
+                .fetch()
+
+        return records.map {
+            mapDemographicStatisticType(it)
+        }
+    }
+
     override val touchstones: SimpleDataSet<Touchstone, String>
         get() = JooqSimpleDataSet.new(dsl, TOUCHSTONE, { it.ID }, { mapTouchstone(it) })
 
@@ -46,7 +56,7 @@ class JooqTouchstoneRepository(
     {
         val records = getCoverageSetsForScenario(touchstoneId, scenarioDescId, includeCoverageData = false)
         val scenario = getScenariosFromRecords(records).singleOrNull()
-            ?: throw UnknownObjectError(scenarioDescId, "scenario")
+                ?: throw UnknownObjectError(scenarioDescId, "scenario")
         return ScenarioAndCoverageSets(scenario, getCoverageSetsFromRecord(records, scenario))
     }
 
@@ -102,6 +112,32 @@ class JooqTouchstoneRepository(
         return fromQuery.where(TOUCHSTONE.ID.eq(touchstoneId))
     }
 
+
+    private fun getDemographicStatisticTypesQuery(touchstoneId: String): SelectConditionStep<Record>
+    {
+        val selectQuery = dsl
+                .selectDistinct(
+                        DEMOGRAPHIC_STATISTIC_TYPE.ID,
+                        DEMOGRAPHIC_STATISTIC_TYPE.CODE,
+                        DEMOGRAPHIC_STATISTIC_TYPE.NAME,
+                        DEMOGRAPHIC_STATISTIC_TYPE.GENDER_IS_APPLICABLE)
+                .select(DEMOGRAPHIC_SOURCE.ID, DEMOGRAPHIC_SOURCE.NAME)
+
+        val fromQuery = selectQuery
+                .from(TOUCHSTONE_DEMOGRAPHIC_SOURCE)
+                .join(DEMOGRAPHIC_SOURCE)
+                .on(DEMOGRAPHIC_SOURCE.ID.eq(TOUCHSTONE_DEMOGRAPHIC_SOURCE.DEMOGRAPHIC_SOURCE))
+                .join(DEMOGRAPHIC_STATISTIC)
+                .on(DEMOGRAPHIC_STATISTIC.DEMOGRAPHIC_SOURCE.eq(DEMOGRAPHIC_SOURCE.ID))
+                .join(DEMOGRAPHIC_STATISTIC_TYPE)
+                .on(DEMOGRAPHIC_STATISTIC_TYPE.ID.eq(DEMOGRAPHIC_STATISTIC.DEMOGRAPHIC_STATISTIC_TYPE))
+                .join(TOUCHSTONE_COUNTRY)
+                .on(TOUCHSTONE_COUNTRY.COUNTRY.eq(DEMOGRAPHIC_STATISTIC.COUNTRY))
+                .and(TOUCHSTONE_COUNTRY.TOUCHSTONE.eq(touchstoneId))
+
+        return fromQuery.where(TOUCHSTONE_DEMOGRAPHIC_SOURCE.TOUCHSTONE.eq(touchstoneId))
+    }
+
     private fun getScenariosFromRecords(records: Result<Record>): List<Scenario>
     {
         val scenarioIds = records.map { it[SCENARIO_DESCRIPTION.ID] }
@@ -110,9 +146,9 @@ class JooqTouchstoneRepository(
 
     private fun getCoverageSetsFromRecord(records: Result<Record>, scenario: Scenario) =
             records
-                .filter { it[SCENARIO_DESCRIPTION.ID] == scenario.id && it[COVERAGE_SET.ID] != null }
-                .distinctBy { it[COVERAGE_SET.ID]  }
-                .map { mapCoverageSet(it) }
+                    .filter { it[SCENARIO_DESCRIPTION.ID] == scenario.id && it[COVERAGE_SET.ID] != null }
+                    .distinctBy { it[COVERAGE_SET.ID] }
+                    .map { mapCoverageSet(it) }
 
     fun mapTouchstone(record: TouchstoneRecord) = Touchstone(
             record.id,
@@ -121,6 +157,29 @@ class JooqTouchstoneRepository(
             record.description,
             mapEnum(record.status)
     )
+
+    fun mapDemographicStatisticType(record: Record): DemographicStatisticType
+    {
+        val variants = dsl.selectDistinct(DEMOGRAPHIC_VARIANT.NAME)
+                .fromJoinPath(DEMOGRAPHIC_VARIANT,DEMOGRAPHIC_STATISTIC)
+                .where(DEMOGRAPHIC_STATISTIC.DEMOGRAPHIC_STATISTIC_TYPE
+                        .eq(record[DEMOGRAPHIC_STATISTIC_TYPE.ID]))
+                .fetchInto(String::class.java)
+
+        val countries = dsl.selectDistinct(COUNTRY.ID)
+                .fromJoinPath(COUNTRY, DEMOGRAPHIC_STATISTIC)
+                .where(DEMOGRAPHIC_STATISTIC.DEMOGRAPHIC_SOURCE.eq(record[DEMOGRAPHIC_SOURCE.ID]))
+                .fetchInto(String::class.java)
+
+        return DemographicStatisticType(
+                record[DEMOGRAPHIC_STATISTIC_TYPE.CODE],
+                record[DEMOGRAPHIC_STATISTIC_TYPE.NAME],
+                variants,
+                record[DEMOGRAPHIC_STATISTIC_TYPE.GENDER_IS_APPLICABLE],
+                countries,
+                record[DEMOGRAPHIC_SOURCE.NAME]
+        )
+    }
 
     fun mapCoverageSet(record: Record) = CoverageSet(
             record[COVERAGE_SET.ID],
