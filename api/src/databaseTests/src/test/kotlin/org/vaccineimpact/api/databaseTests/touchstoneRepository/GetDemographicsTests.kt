@@ -148,7 +148,7 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
             Assertions.assertThat(populationType.id).isEqualTo("tot-pop")
             Assertions.assertThat(populationType.isByGender).isFalse()
             Assertions.assertThat(populationType.source).isEqualTo(_sources.first() + " descriptive name")
-            Assertions.assertThat(populationType.variants).isEqualTo(_variants.subList(0, 1))
+            Assertions.assertThat(populationType.variants).hasSameElementsAs(_variants)
             Assertions.assertThat(fertilityType.countries).hasSameElementsAs(_countries)
         }
     }
