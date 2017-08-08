@@ -125,6 +125,17 @@ class JooqTouchstoneRepository(
                         DEMOGRAPHIC_STATISTIC_TYPE.GENDER_IS_APPLICABLE)
                 .select(DEMOGRAPHIC_SOURCE.ID, DEMOGRAPHIC_SOURCE.NAME)
                 .select(TOUCHSTONE_COUNTRY.COUNTRY)
+        
+
+        dsl.with("a").`as`(selectQuery)
+
+//        dsl.with("a").`as`(select(
+//                `val`(1).`as`("x"),
+//                `val`("a").`as`("y")
+//        ))
+//                .select()
+//                .from(table(name("a")))
+//                .fetch()
 
         val fromQuery = selectQuery
                 .from(TOUCHSTONE_DEMOGRAPHIC_SOURCE)
