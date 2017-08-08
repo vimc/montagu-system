@@ -21,7 +21,7 @@ object StandardRoles
                 Role("user-manager", null, "Manage users and permissions", listOf("users.create", "users.edit-all", "roles.read", "roles.write", "modelling-groups.write")),
                 Role("estimates-reviewer", null, "Review uploaded burden estimates", listOf("estimates.review", "estimates.read-unfinished")),
                 Role("reports-reviewer", null, "Choose which reports to publish (and can view unpublished reports)", listOf("reports.read", "reports.review")),
-                Role("member", "modelling-group", "Member of the group", listOf("estimates.read-unfinished", "coverage.read")),
+                Role("member", "modelling-group", "Member of the group", listOf("estimates.read-unfinished", "coverage.read", "demographics.read")),
                 Role("uploader", "modelling-group", "Upload burden estimates", listOf("estimates.write")),
                 Role("submitter", "modelling-group", "Mark burden estimates as complete", listOf("estimates.submit")),
                 Role("user-manager", "modelling-group", "Manage group members and permissions", listOf("modelling-groups.manage-members", "users.create", "roles.write")),
@@ -32,6 +32,7 @@ object StandardRoles
         }
         db.dsl.batchStore(permissions).execute()
 
+        for (role in roles)
         for (role in roles)
         {
             val record = db.dsl.newRecord(ROLE).apply {

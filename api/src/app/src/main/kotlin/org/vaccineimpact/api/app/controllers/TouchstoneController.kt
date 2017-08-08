@@ -14,15 +14,18 @@ class TouchstoneController(context: ControllerContext) : AbstractController(cont
 {
     private val permissions = setOf("*/touchstones.read")
     private val scenarioPermissions = permissions + setOf("*/scenarios.read", "*/coverage.read")
+    private val demographicPermissions = permissions + setOf("*/demographics.read")
 
     override val urlComponent: String = "/touchstones"
     override fun endpoints(repos: Repositories): Iterable<EndpointDefinition<*>>
     {
         val repo = repos.touchstone
         return listOf(
-                oneRepoEndpoint("/",                                       this::getTouchstones, repo).secured(permissions),
-                oneRepoEndpoint("/:touchstone-id/scenarios/",              this::getScenarios, repo).secured(scenarioPermissions),
-                oneRepoEndpoint("/:touchstone-id/scenarios/:scenario-id/", this::getScenario, repo).secured(scenarioPermissions)
+                oneRepoEndpoint("/", this::getTouchstones, repo).secured(permissions),
+                oneRepoEndpoint("/:touchstone-id/scenarios/", this::getScenarios, repo).secured(scenarioPermissions),
+                oneRepoEndpoint("/:touchstone-id/scenarios/:scenario-id/", this::getScenario, repo).secured(scenarioPermissions),
+                oneRepoEndpoint("/:touchstone-id/demographics/", this::getDemographicTypes, repo).secured(demographicPermissions)
+
         )
     }
 
@@ -43,6 +46,13 @@ class TouchstoneController(context: ControllerContext) : AbstractController(cont
         val touchstone = touchstone(context, repo)
         val filterParameters = ScenarioFilterParameters.fromContext(context)
         return repo.scenarios(touchstone.id, filterParameters)
+    }
+
+
+    fun getDemographicTypes(context: ActionContext, repo: TouchstoneRepository): List<DemographicStatisticType>
+    {
+        val touchstone = touchstone(context, repo)
+        return repo.getDemographicStatisticTypes(touchstone.id)
     }
 
     fun getScenario(context: ActionContext, repo: TouchstoneRepository): ScenarioTouchstoneAndCoverageSets
