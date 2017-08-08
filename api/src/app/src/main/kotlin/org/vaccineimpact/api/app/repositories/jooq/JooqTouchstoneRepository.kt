@@ -31,7 +31,9 @@ class JooqTouchstoneRepository(
         val records = getDemographicStatisticTypesQuery(touchstoneId)
                 .fetch()
 
-        return records.map {
+        val recordsGroupedByType = records.groupBy { it[DEMOGRAPHIC_STATISTIC_TYPE.ID] }
+
+        return recordsGroupedByType.values.map {
             mapDemographicStatisticType(it)
         }
     }
@@ -122,6 +124,7 @@ class JooqTouchstoneRepository(
                         DEMOGRAPHIC_STATISTIC_TYPE.NAME,
                         DEMOGRAPHIC_STATISTIC_TYPE.GENDER_IS_APPLICABLE)
                 .select(DEMOGRAPHIC_SOURCE.ID, DEMOGRAPHIC_SOURCE.NAME)
+                .select(TOUCHSTONE_COUNTRY.COUNTRY)
 
         val fromQuery = selectQuery
                 .from(TOUCHSTONE_DEMOGRAPHIC_SOURCE)
@@ -133,9 +136,9 @@ class JooqTouchstoneRepository(
                 .on(DEMOGRAPHIC_STATISTIC_TYPE.ID.eq(DEMOGRAPHIC_STATISTIC.DEMOGRAPHIC_STATISTIC_TYPE))
                 .join(TOUCHSTONE_COUNTRY)
                 .on(TOUCHSTONE_COUNTRY.COUNTRY.eq(DEMOGRAPHIC_STATISTIC.COUNTRY))
-                .and(TOUCHSTONE_COUNTRY.TOUCHSTONE.eq(touchstoneId))
 
         return fromQuery.where(TOUCHSTONE_DEMOGRAPHIC_SOURCE.TOUCHSTONE.eq(touchstoneId))
+                .and(TOUCHSTONE_COUNTRY.TOUCHSTONE.eq(touchstoneId))
     }
 
     private fun getScenariosFromRecords(records: Result<Record>): List<Scenario>
@@ -158,17 +161,14 @@ class JooqTouchstoneRepository(
             mapEnum(record.status)
     )
 
-    fun mapDemographicStatisticType(record: Record): DemographicStatisticType
+    fun mapDemographicStatisticType(records: List<Record>): DemographicStatisticType
     {
+        val record = records[0]
+
         val variants = dsl.selectDistinct(DEMOGRAPHIC_VARIANT.NAME)
-                .fromJoinPath(DEMOGRAPHIC_VARIANT,DEMOGRAPHIC_STATISTIC)
+                .fromJoinPath(DEMOGRAPHIC_VARIANT, DEMOGRAPHIC_STATISTIC)
                 .where(DEMOGRAPHIC_STATISTIC.DEMOGRAPHIC_STATISTIC_TYPE
                         .eq(record[DEMOGRAPHIC_STATISTIC_TYPE.ID]))
-                .fetchInto(String::class.java)
-
-        val countries = dsl.selectDistinct(COUNTRY.ID)
-                .fromJoinPath(COUNTRY, DEMOGRAPHIC_STATISTIC)
-                .where(DEMOGRAPHIC_STATISTIC.DEMOGRAPHIC_SOURCE.eq(record[DEMOGRAPHIC_SOURCE.ID]))
                 .fetchInto(String::class.java)
 
         return DemographicStatisticType(
@@ -176,7 +176,7 @@ class JooqTouchstoneRepository(
                 record[DEMOGRAPHIC_STATISTIC_TYPE.NAME],
                 variants,
                 record[DEMOGRAPHIC_STATISTIC_TYPE.GENDER_IS_APPLICABLE],
-                countries,
+                records.map { it[TOUCHSTONE_COUNTRY.COUNTRY] },
                 record[DEMOGRAPHIC_SOURCE.NAME]
         )
     }

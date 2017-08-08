@@ -103,24 +103,25 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
             Assertions.assertThat(types.count()).isEqualTo(2)
         }
     }
-//
-//    @Test
-//    fun `only gets statistic types for touchstone countries()`()
-//    {
-//        given {
-//
-//            setUpSupportingTables(it)
-//
-//            it.addTouchstone(touchstoneName, touchstoneVersion, addName = true, addStatus = true)
-//            it.addTouchstoneCountries(touchstoneId, _countries.subList(0,1))
-//
-//            addFertility(it)
-//
-//        } check {
-//            val types = it.getDemographicStatisticTypes(touchstoneId)
-//            Assertions.assertThat(types[0].countries).isEqualTo(_countries.subList(0,1))
-//        }
-//    }
+
+    @Test
+    fun `only gets statistic types for touchstone countries()`()
+    {
+        given {
+
+            setUpSupportingTables(it)
+
+            it.addTouchstone(touchstoneName, touchstoneVersion, addName = true, addStatus = true)
+            it.addTouchstoneCountries(touchstoneId, _countries.subList(0,1))
+            it.addDemographicSourcesToTouchstone(touchstoneId, _sourceIds)
+
+            addFertility(it)
+
+        } check {
+            val types = it.getDemographicStatisticTypes(touchstoneId)
+            Assertions.assertThat(types[0].countries).isEqualTo(_countries.subList(0,1))
+        }
+    }
 
     @Test
     fun `gets demographic statistic type properties`()
