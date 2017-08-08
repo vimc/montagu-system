@@ -4,6 +4,7 @@ This is manually kept in sync with [spec.md](Spec.md).
 * `can-login`
 * `countries.[read|write]`
 * `coverage.[read|write]`
+* `demographics.read`
 * `diseases.write`
 * `estimates.read`
 * `estimates.read-unfinished`
@@ -95,7 +96,7 @@ also with a numeric primary key.
             "name": "member",
             "scope_prefix": "modelling-group",            
             "description": "Member of the group",
-            "permissions": [ "estimates.read-unfinished", "coverage.read" ]
+            "permissions": [ "estimates.read-unfinished", "coverage.read", "demographics.read" ]
         },
         {
             "name": "uploader",

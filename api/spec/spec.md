@@ -1691,43 +1691,72 @@ Schema: [`TouchstoneOverview.schema.json`](TouchstoneOverview.schema.json)
 # Demographics
 ## GET /touchstones/{touchstone-id}/demographics/
 
-Returns a list of available demographic data sets for this touchstone, including for each data set, 
-available variants and available genders.
+Returns a list of available demographic data sets for this touchstone, including for each data set
+whether multiple gender options are available.
 
-## GET /touchstones/{touchstone-id}/demographics/{demographic-type-id}/
+Required permissions: `demographics.read`.
 
-Returns the data set with given type, in CSV format.
-
-### Query parameters:
-
-#### variant
-Optional. The variant to return, either `L`, `M`, or `H`. Defaults to `M`.
-
-#### gender
-Optional. The gender to return, either `F`, `M`, or `B`. Defaults to `B`.
-
-#### format
-Optional. A format to return the CSV in, either `wide` or `long`. Defaults to `wide`.
-
-Example: `/touchstones/2017-op-1/demographics/12/?format=long&variant=H`
-
-## POST /touchstones/{touchstone-id}/demographics/bundle/
-
-Creates a bundle of demographic data sets for this touchstone, 
-given type, variant, gender and format preferences. Defaults are as above.
+Schema: [`Demographics.schema.json`](Demographics.schema.json)
 
 ### Example
     [{ 
-        "stat_type": "STAT-TYPE-ID",
-        "variant": "L",
-        "gender": "F",
-        "format" : "long"
+        "code" : "as-fert",
+        "name": "Age-specific fertility",
+        "gender_is_applicable": false
      },
      { 
-         "stat_type": "STAT-TYPE-ID2",
-         "format": "long"
+        "code" : "tot-pop",
+        "name" : "Total population",
+        "gender_is_applicable": true
      }]
 
-## GET /touchstones/{touchstone-id}/demographics/bundle/{bundle-id}
+## GET /touchstones/{touchstone-id}/demographics/{demographic-type-code}/
 
-Returns a zip file containing all the demographic data sets in the requested bundle, in CSV format.
+Returns the data set with given type, in `long` CSV format.
+
+Example:
+Age-specific fertility:
+    
+    "country",  "age of mother (years)",  "year", "avg births/mother"
+        "AFG",                  "15-19",    1950,                 1.2
+        "AFG",                  "15-19",    1955,                 1.2
+        "AFG",                  "15-19",    1960,                 1.2   
+        "AFG",                  "15-19",    1965,                 1.1   
+        "AFG",                  "15-19",    1970,                 1.1   
+        "AFG",                  "15-19",    1975,                 1.1  
+        "AFG",                  "15-19",    1980,                 1.1  
+        "AFG",                  "15-19",    1985,                 1.1  
+        "AFG",                  "15-19",    1990,                 1.1 
+        "AFG",                  "15-19",    1995,                 1.1 
+         
+Example:
+Total population:
+         
+     "country", "age (years)",  "gender",  "year",   "people"
+         "AFG",       "0-0",    "both",    1950,      82724
+         "AFG",       "0-0",    "both",    1951,      84699
+         "AFG",       "0-0",    "both",    1952,      87807
+         "AFG",       "0-0",    "both",    1953,      89014
+         "AFG",       "0-0",    "both",    1954,      89993
+                
+
+### Query parameters:
+
+#### gender
+Optional. The gender to return, either `female`, `male`, or `both`. Defaults to `both`.
+
+#### format
+Optional. A format to return the CSV in, either `wide` or `long`. Defaults to `long`.
+
+Example:
+`/touchstones/2017-op-1/demographics/tot_pop/?format=wide&gender=female`
+
+Total population:
+
+                "",       "",      "", "people"
+         "country", "gender",   "age",    1950,    1951,    1952,    1953,    1954, ...                             
+         "AFG",     "female",   "0-0",   82724,    84699,   87807,   89014,  89993, ... 
+         "AFG",     "female",   "1-1",   88021,    89725,   91720,   91726,  91727, ...   
+         "AFG",     "female",   "2-2",   91720,    91784,   91884,   91920,  92679, ...   
+         "AFG",     "female",   "3-3",   95671,    95612,   95700,   95724,  95780, ...   
+         "AFG",     "female",   "4-4",   96103,    97724,   99720,  100120, 101103, ...   
