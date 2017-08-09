@@ -1700,7 +1700,7 @@ Schema: [`Demographics.schema.json`](Demographics.schema.json)
     [{ 
         "id" : "as-fert",
         "name": "Age-specific fertility",
-        "variants" : ["low", "medium"],
+        "variants" : ["unwpp_estimates_unwpp_low_variant","unwpp_estimates_unwpp_medium_variant", "unwpp_estimates_unwpp_high_variant"],
         "source" : "UNWPP",
         "countries" : ["AFG"],
         "gender_is_applicable": false
@@ -1716,10 +1716,32 @@ Schema: [`Demographics.schema.json`](Demographics.schema.json)
 
 ## GET /touchstones/{touchstone-id}/demographics/{demographic-type-code}/
 
-Returns the data set with given type, in `long` CSV format.
+Returns the data set with given type. This data is returned in two parts: First the metadata, then the coverage in CSV format.
 
-Example:
-Age-specific fertility:
+### Metadata
+Schema: [`ScenarioAndCoverageSets.schema.json`](ScenarioAndCoverageSets.schema.json)
+
+#### Example
+    {
+        "touchstone": { 
+            "id": "2017-op-1",
+            "name": "2017-op",
+            "version": 1,            
+            "description": "2017 Operational Forecast",
+            "status": "finished"
+        },
+        "demographic_statistic":  { 
+            "id" : "as-fert",
+            "name": "Age-specific fertility",
+            "variant" : "UNWPP Estimates + UNWPP Medium Variant",
+            "source" : "UNWPP 2015",
+            "countries" : ["AFG"],
+            "age_interpretation": "age of mother (years)"
+            "unit" : "avg births/mother"
+        }
+    }
+    
+### CSV
     
     "country",  "age of mother (years)",  "year", "avg births/mother"
         "AFG",                  "15-19",    1950,                 1.2
@@ -1733,7 +1755,27 @@ Age-specific fertility:
         "AFG",                  "15-19",    1990,                 1.1 
         "AFG",                  "15-19",    1995,                 1.1 
          
-Example:
+### Example
+    {
+        "touchstone": { 
+            "id": "2017-op-1",
+            "name": "2017-op",
+            "version": 1,            
+            "description": "2017 Operational Forecast",
+            "status": "finished"
+        },
+        "demographic_statistic":  { 
+            "id" : "tot-pop",
+            "name": "Total population",
+            "variant" : "UNWPP Estimates + UNWPP Medium Variant",
+            "source" : "UNWPP 2015",
+            "countries" : ["AFG"],
+            "age_interpretation": "age (years)"
+            "unit" : "people",
+            "gender" : "both"
+        }
+    }
+    
 Total population:
          
      "country", "age (years)",  "gender",  "year",   "people"
