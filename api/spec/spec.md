@@ -1719,7 +1719,7 @@ Schema: [`Demographics.schema.json`](Demographics.schema.json)
 Returns the data set with given type. This data is returned in two parts: First the metadata, then the coverage in CSV format.
 
 ### Metadata
-Schema: [`ScenarioAndCoverageSets.schema.json`](ScenarioAndCoverageSets.schema.json)
+Schema: [`DemographicDatasetForTouchstone.schema.json`](DemographicDatasetForTouchstone.schema.json)
 
 #### Example
     {
@@ -1730,13 +1730,13 @@ Schema: [`ScenarioAndCoverageSets.schema.json`](ScenarioAndCoverageSets.schema.j
             "description": "2017 Operational Forecast",
             "status": "finished"
         },
-        "demographic_statistic":  { 
+        "demographic_data":  { 
             "id" : "as-fert",
             "name": "Age-specific fertility",
             "variant" : "UNWPP Estimates + UNWPP Medium Variant",
             "source" : "UNWPP 2015",
             "countries" : ["AFG"],
-            "age_interpretation": "age of mother (years)"
+            "age_interpretation": "age of mother (years)",
             "unit" : "avg births/mother"
         }
     }
@@ -1764,13 +1764,13 @@ Schema: [`ScenarioAndCoverageSets.schema.json`](ScenarioAndCoverageSets.schema.j
             "description": "2017 Operational Forecast",
             "status": "finished"
         },
-        "demographic_statistic":  { 
+        "demographic_data":  { 
             "id" : "tot-pop",
             "name": "Total population",
             "variant" : "UNWPP Estimates + UNWPP Medium Variant",
             "source" : "UNWPP 2015",
             "countries" : ["AFG"],
-            "age_interpretation": "age (years)"
+            "age_interpretation": "age (years)",
             "unit" : "people",
             "gender" : "both"
         }
