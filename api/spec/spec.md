@@ -1700,7 +1700,6 @@ Schema: [`Demographics.schema.json`](Demographics.schema.json)
     [{ 
         "id" : "as-fert",
         "name": "Age-specific fertility",
-        "variants" : ["unwpp_estimates_unwpp_low_variant","unwpp_estimates_unwpp_medium_variant", "unwpp_estimates_unwpp_high_variant"],
         "source" : "UNWPP",
         "countries" : ["AFG"],
         "gender_is_applicable": false
@@ -1708,7 +1707,6 @@ Schema: [`Demographics.schema.json`](Demographics.schema.json)
      { 
         "id" : "tot-pop",
         "name" : "Total population",
-        "variants" : ["low"],
         "source" : "UNWPP",
         "countries" : ["AFG"],
         "gender_is_applicable": true
