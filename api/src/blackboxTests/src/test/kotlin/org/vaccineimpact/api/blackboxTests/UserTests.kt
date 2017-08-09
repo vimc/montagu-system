@@ -1,5 +1,6 @@
 package org.vaccineimpact.api.blackboxTests
 
+import com.beust.klaxon.JsonObject
 import com.beust.klaxon.json
 import org.assertj.core.api.Assertions
 import org.junit.Test
@@ -27,14 +28,15 @@ class UserTests : DatabaseTest()
         } requiringPermissions {
             PermissionSet("*/users.read")
         } andCheck {
-            Assertions.assertThat(it).isEqualTo(json {
+            val expected = json {
                 obj(
                         "username" to "testuser",
                         "name" to "Test User",
                         "email" to "testuser@example.com",
                         "last_logged_in" to null
                 )
-            })
+            }
+            Assertions.assertThat(it).isEqualTo(expected)
         }
     }
 
@@ -49,6 +51,7 @@ class UserTests : DatabaseTest()
         } withPermissions {
             PermissionSet("*/users.read", "*/roles.read")
         } andCheck {
+
             Assertions.assertThat(it).isEqualTo(json {
                 obj(
                         "username" to "testuser",
@@ -89,6 +92,7 @@ class UserTests : DatabaseTest()
         } withPermissions {
             PermissionSet("*/users.read", "modelling-group:group/roles.read")
         } andCheck {
+
             Assertions.assertThat(it).isEqualTo(json {
                 obj(
                         "username" to "someotheruser",
