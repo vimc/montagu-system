@@ -67,7 +67,6 @@ task startDatabase(dependsOn: ':loadPropertiesTask') {
         String dbVersion = file("config/db_version").text
         String image = rootProject.ext.props.get('testdb_image') + ":" + dbVersion
         String container = rootProject.ext.props.get('testdb_container')
-        String configPath = file("config/postgresql.test.conf").absolutePath
         println "Database image: " + image
         exec {
             commandLine 'docker', 'pull', image
@@ -76,10 +75,11 @@ task startDatabase(dependsOn: ':loadPropertiesTask') {
             commandLine 'docker', 'run',
                     '-d',
                     '--rm',
-                    '-v',  "$configPath:/pgdata/postgresql.conf",
                     '-p', portBinding,
                     '--name', container,
-                    image
+                    "--entrypoint", "start-with-config.sh",
+                    image,
+                    "/postgresql.test.conf"
         }
     }
 }
