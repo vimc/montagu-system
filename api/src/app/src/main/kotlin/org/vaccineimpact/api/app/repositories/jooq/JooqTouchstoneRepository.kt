@@ -117,12 +117,11 @@ class JooqTouchstoneRepository(
 
 
     private fun getDemographicStatisticTypesQuery(touchstoneId: String):
-            SelectOnConditionStep<Record7<Int, String, String, Boolean, String, String, String>>
+            SelectOnConditionStep<Record6<Int, String, String, Boolean, String, String>>
     {
         val statsInTouchstoneCountriesAndSources =
                 dsl.selectDistinct(DEMOGRAPHIC_SOURCE.NAME.`as`("sourceName"),
                         DEMOGRAPHIC_STATISTIC.DEMOGRAPHIC_STATISTIC_TYPE.`as`("typeId"),
-                        DEMOGRAPHIC_STATISTIC.DEMOGRAPHIC_VARIANT.`as`("variantId"),
                         TOUCHSTONE_COUNTRY.COUNTRY.`as`("country"))
                         .from(DEMOGRAPHIC_STATISTIC)
                         .join(TOUCHSTONE_COUNTRY)
@@ -141,14 +140,11 @@ class JooqTouchstoneRepository(
                         DEMOGRAPHIC_STATISTIC_TYPE.CODE,
                         DEMOGRAPHIC_STATISTIC_TYPE.NAME,
                         DEMOGRAPHIC_STATISTIC_TYPE.GENDER_IS_APPLICABLE,
-                        DEMOGRAPHIC_VARIANT.NAME,
                         field(name("s", "sourceName"), String::class.java),
                         field(name("s", "country"), String::class.java))
                 .from(table(name("s")))
                 .join(DEMOGRAPHIC_STATISTIC_TYPE)
                 .on(DEMOGRAPHIC_STATISTIC_TYPE.ID.eq(field(name("s", "typeId"), Int::class.java)))
-                .join(DEMOGRAPHIC_VARIANT)
-                .on(DEMOGRAPHIC_VARIANT.ID.eq(field(name("s", "variantId"), Int::class.java)))
     }
 
     private fun getScenariosFromRecords(records: Result<Record>): List<Scenario>
