@@ -13,24 +13,5 @@ dependencies {
     testCompile project(":testHelpers")
 }
 
-task patchDatabaseConfig(dependsOn: [':loadPropertiesTask', ':startDatabase']) {
-    doLast {
-        def container = rootProject.ext.props.get('testdb_container')
-        exec {
-            def localPath = "src/test/resources/postgresql.tests.conf.patch"
-            println("Copying $localPath to this container: $container")
-            commandLine 'docker', 'cp', localPath, container + ":/conf.patch"
-        }
-        exec {
-            def localPath = "src/test/resources/patch-db-config.sh"
-            println("Copying $localPath to this container: $container")
-            commandLine 'docker', 'cp', localPath, container + ":/patch-db-config.sh"
-        }
-        exec {
-            commandLine 'docker', 'exec', container, "bash", "/patch-db-config.sh"
-        }
-    }
-}
-
-test.dependsOn ':databaseTests:patchDatabaseConfig'
+test.dependsOn ':startDatabase'
 test.finalizedBy ':stopDatabase'
