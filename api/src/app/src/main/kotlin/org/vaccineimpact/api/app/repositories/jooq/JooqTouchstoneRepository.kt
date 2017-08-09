@@ -30,7 +30,9 @@ class JooqTouchstoneRepository(
         val records = getDemographicStatisticTypesQuery(touchstoneId)
                 .fetch()
 
-        val recordsGroupedByType = records.groupBy { it[DEMOGRAPHIC_STATISTIC_TYPE.ID] }
+        val recordsGroupedByType = records.groupBy {
+            it[DEMOGRAPHIC_STATISTIC_TYPE.ID]
+        }
 
         return recordsGroupedByType.values.map {
             mapDemographicStatisticType(it)
