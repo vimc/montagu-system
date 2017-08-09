@@ -402,6 +402,7 @@ fun JooqContext.generateDemographicData(
         ageRange: IntProgression = 0..80 step 5)
 {
     val records = mutableListOf<DemographicStatisticRecord>()
+    var i = 0
     for (country in countries)
     {
         for (year in yearRange)
@@ -417,11 +418,14 @@ fun JooqContext.generateDemographicData(
                         age + ageRange.step,
                         genderId = genderId,
                         variant = variantId,
-                        value = random.nextDecimal(0, 100, numberOfDecimalPlaces = 2)
+                        value = random.nextDecimal(1000, 10000, numberOfDecimalPlaces = 2)
                 ))
+
+                i++
             }
         }
     }
+
     this.dsl.batchStore(records).execute()
 }
 

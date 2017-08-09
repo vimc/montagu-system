@@ -18,6 +18,7 @@ import org.vaccineimpact.api.db.fromJoinPath
 import org.vaccineimpact.api.db.joinPath
 import org.vaccineimpact.api.db.tables.records.TouchstoneRecord
 import org.vaccineimpact.api.models.*
+import java.math.BigDecimal
 
 class JooqTouchstoneRepository(
         db: JooqContext,
@@ -25,6 +26,33 @@ class JooqTouchstoneRepository(
 )
     : JooqRepository(db), TouchstoneRepository
 {
+    override fun getDemographicDataset(statisticType: String, touchstoneId: String): SplitData<DemographicDataForTouchstone, DemographicRow>
+    {
+        val touchstone = touchstones.get(touchstoneId)
+        val rows = getDemographicStatistics(touchstoneId, statisticType)
+                .fetch()
+                .map {
+                    mapDemographicRow(it)
+                }
+
+        val dataset =
+                if (rows.count() == 0)
+                {
+                    null
+                }
+                else
+                {
+                    val statType = getDemographicStatisticTypeQuery(touchstoneId, statisticType)
+                            .fetch()
+
+                    mapDemographicStatisticType(statType)
+                }
+
+        val metadata = DemographicDataForTouchstone(touchstone, dataset)
+
+        return SplitData(metadata, DataTable.new(rows))
+    }
+
     override fun getDemographicStatisticTypes(touchstoneId: String): List<DemographicStatisticType>
     {
         val records = getDemographicStatisticTypesQuery(touchstoneId)
@@ -151,6 +179,48 @@ class JooqTouchstoneRepository(
                 .on(DEMOGRAPHIC_VARIANT.ID.eq(field(name("s", "variantId"), Int::class.java)))
     }
 
+    private fun getDemographicStatisticTypeQuery(touchstoneId: String, typeId: String):
+            SelectConditionStep<Record7<Int, String, String, Boolean, String, String, String>>
+    {
+
+        return getDemographicStatisticTypesQuery(touchstoneId)
+                .where(DEMOGRAPHIC_STATISTIC_TYPE.CODE.eq(typeId))
+    }
+
+    private fun getDemographicStatistics(touchstoneId: String, typeId: String):
+            SelectConditionStep<Record6<Int, Int, String, Int, BigDecimal, String>>
+    {
+        // we are hard coding this here for now - need to revisit data model longer term
+        val variants = listOf("unwpp_estimates", "unwpp_medium_variant", "cm_median")
+
+        return dsl.select(DEMOGRAPHIC_STATISTIC.AGE_FROM,
+                DEMOGRAPHIC_STATISTIC.AGE_TO,
+                DEMOGRAPHIC_STATISTIC.COUNTRY,
+                DEMOGRAPHIC_STATISTIC.YEAR,
+                DEMOGRAPHIC_STATISTIC.VALUE,
+                GENDER.NAME)
+                .from(DEMOGRAPHIC_STATISTIC)
+                .join(TOUCHSTONE_COUNTRY)
+                .on(DEMOGRAPHIC_STATISTIC.COUNTRY.eq(TOUCHSTONE_COUNTRY.COUNTRY))
+                .join(DEMOGRAPHIC_SOURCE)
+                .on(DEMOGRAPHIC_SOURCE.ID.eq(DEMOGRAPHIC_STATISTIC.DEMOGRAPHIC_SOURCE))
+                .join(TOUCHSTONE_DEMOGRAPHIC_SOURCE)
+                .on(DEMOGRAPHIC_SOURCE.ID.eq(TOUCHSTONE_DEMOGRAPHIC_SOURCE.DEMOGRAPHIC_SOURCE))
+                .join(DEMOGRAPHIC_STATISTIC_TYPE)
+                .on(DEMOGRAPHIC_STATISTIC_TYPE.ID.eq(DEMOGRAPHIC_STATISTIC.DEMOGRAPHIC_STATISTIC_TYPE))
+                .join(DEMOGRAPHIC_VARIANT)
+                .on(DEMOGRAPHIC_VARIANT.ID.eq(DEMOGRAPHIC_STATISTIC.DEMOGRAPHIC_VARIANT))
+                .join(DEMOGRAPHIC_VALUE_UNIT)
+                .on(DEMOGRAPHIC_VALUE_UNIT.ID.eq(DEMOGRAPHIC_STATISTIC_TYPE.DEMOGRAPHIC_VALUE_UNIT))
+                .join(GENDER)
+                .on(GENDER.ID.eq(DEMOGRAPHIC_STATISTIC.GENDER))
+                .where(TOUCHSTONE_COUNTRY.TOUCHSTONE.eq(touchstoneId))
+                .and(TOUCHSTONE_DEMOGRAPHIC_SOURCE.TOUCHSTONE.eq(touchstoneId))
+                .and(DEMOGRAPHIC_VARIANT.CODE.`in`(variants))
+                .and(DEMOGRAPHIC_STATISTIC_TYPE.CODE.eq(typeId))
+
+    }
+
     private fun getScenariosFromRecords(records: Result<Record>): List<Scenario>
     {
         val scenarioIds = records.map { it[SCENARIO_DESCRIPTION.ID] }
@@ -207,5 +277,13 @@ class JooqTouchstoneRepository(
             record[COVERAGE.AGE_RANGE_VERBATIM],
             record[COVERAGE.TARGET],
             record[COVERAGE.COVERAGE_]
+    )
+
+    fun mapDemographicRow(record: Record) = DemographicRow(
+            record[DEMOGRAPHIC_STATISTIC.COUNTRY],
+            "${record[DEMOGRAPHIC_STATISTIC.AGE_FROM]} - ${record[DEMOGRAPHIC_STATISTIC.AGE_TO]}",
+            record[DEMOGRAPHIC_STATISTIC.YEAR],
+            record[GENDER.NAME],
+            record[DEMOGRAPHIC_STATISTIC.VALUE]
     )
 }
