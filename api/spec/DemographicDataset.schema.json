@@ -9,5 +9,5 @@
         "gender_is_applicable": { "type": "boolean" }
     },
     "additionalProperties": false,
-    "required": [ "id", "source", "name", "gender_is_applicable", "countries", "variants" ]
+    "required": [ "id", "source", "name", "gender_is_applicable", "countries" ]
 }
