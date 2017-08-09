@@ -4,6 +4,11 @@ import org.assertj.core.api.Assertions
 import org.junit.Test
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.direct.*
+import org.vaccineimpact.api.db.toDecimal
+import org.vaccineimpact.api.db.toDecimalOrNull
+import org.vaccineimpact.api.models.ActivityType
+import org.vaccineimpact.api.models.CoverageRow
+import org.vaccineimpact.api.models.GAVISupportLevel
 
 class GetDemographicsTests : TouchstoneRepositoryTests()
 {
@@ -150,6 +155,20 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
             Assertions.assertThat(populationType.source).isEqualTo(_sources.first() + " descriptive name")
             Assertions.assertThat(populationType.variants).hasSameElementsAs(_variants.subList(0,1))
             Assertions.assertThat(fertilityType.countries).hasSameElementsAs(_countries)
+        }
+
+        @Test
+        fun `gets demographic data for type and touchstone`()
+        {
+            given {
+                setUpSupportingTables(it)
+                setUpTouchstone(it)
+                addPopulation(it)
+                addFertility(it)
+
+            } check {
+                val result = it.getDemographicDataset("tot-pop", touchstoneId)
+            }
         }
     }
 }
