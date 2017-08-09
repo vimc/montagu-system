@@ -178,7 +178,6 @@ class JooqTouchstoneRepository(
         return DemographicStatisticType(
                 record[DEMOGRAPHIC_STATISTIC_TYPE.CODE],
                 record[DEMOGRAPHIC_STATISTIC_TYPE.NAME],
-                records.map { it[DEMOGRAPHIC_VARIANT.NAME] }.distinct(),
                 record[DEMOGRAPHIC_STATISTIC_TYPE.GENDER_IS_APPLICABLE],
                 records.map { it[TOUCHSTONE_COUNTRY.COUNTRY] }.distinct(),
                 record[field(name("s", "sourceName"), String::class.java)]
