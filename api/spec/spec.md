@@ -550,7 +550,7 @@ Schema: [`ScenariosInTouchstone.schema.json`](ScenariosInTouchstone.schema.json)
                     "touchstone": "2017-op-1",
                     "name": "Menigitis no vaccination",
                     "vaccine": "MenA",
-                    "gavi_support_level": "none",
+                    "gavi_support": "no vaccine",
                     "activity_type": "none"
                 }
             ]
@@ -568,7 +568,7 @@ Schema: [`ScenariosInTouchstone.schema.json`](ScenariosInTouchstone.schema.json)
                     "touchstone": "2017-op-1",
                     "name": "Yellow fever birth dose (with GAVI support)",
                     "vaccine": "YF",
-                    "gavi_support_level": "with",
+                    "gavi_support": "total",
                     "activity_type": "routine"
                 },
                 { 
@@ -576,7 +576,7 @@ Schema: [`ScenariosInTouchstone.schema.json`](ScenariosInTouchstone.schema.json)
                     "touchstone": "2017-op-1",
                     "name": "Yellow fever reactive campaign (with GAVI support)",
                     "vaccine": "YF",
-                    "gavi_support_level": "with",
+                    "gavi_support": "total",
                     "activity_type": "campaign"
                 }
             ]
@@ -621,7 +621,7 @@ Schema: [`ScenarioAndCoverageSets.schema.json`](ScenarioAndCoverageSets.schema.j
                 "touchstone": "2017-op-1",
                 "name": "Menigitis no vaccination",
                 "vaccine": "MenA",
-                "gavi_support_level": "none",
+                "gavi_support": "no vaccine",
                 "activity_type": "none"
             }
         ]
@@ -658,7 +658,7 @@ Schema: [`ScenarioAndCoverageSets.schema.json`](ScenarioAndCoverageSets.schema.j
                 "touchstone": "2017-op-1",
                 "name": "Menigitis without GAVI support",
                 "vaccine": "MenA",
-                "gavi_support_level": "without",
+                "gavi_support": "no gavi",
                 "activity_type": "routine"
             },
             { 
@@ -666,7 +666,7 @@ Schema: [`ScenarioAndCoverageSets.schema.json`](ScenarioAndCoverageSets.schema.j
                 "touchstone": "2017-op-1",
                 "name": "Menigitis with GAVI support",
                 "vaccine": "MenA",
-                "gavi_support_level": "with",
+                "gavi_support": "total",
                 "activity_type": "routine"
             }
         ]
@@ -822,7 +822,7 @@ Schema: [`CoverageSets.schema.json`](CoverageSets.schema.json)
             "name": "Measles 1st Dose (without GAVI support)",
             "activity_type": "routine",
             "vaccine": "MCV1",
-            "gavi_support_level": "without"
+            "gavi_support": "no gavi"
         },
         {
             "id": 278,
@@ -830,7 +830,7 @@ Schema: [`CoverageSets.schema.json`](CoverageSets.schema.json)
             "name": "Measles 2nd Dose (without GAVI support)",
             "activity_type": "routine",
             "vaccine": "MCV2",
-            "gavi_support_level": "without"
+            "gavi_support": "no gavi"
         },
         {
             "id": 290,
@@ -838,7 +838,7 @@ Schema: [`CoverageSets.schema.json`](CoverageSets.schema.json)
             "name": "Yellow Fever reactive campaign (with GAVI support)",
             "activity_type": "campaign",
             "vaccine": "YF",
-            "gavi_support_level": "with"
+            "gavi_support": "total"
         }
     ]
 
@@ -874,7 +874,7 @@ Schema: [`CoverageSet.schema.json`](CoverageSet.schema.json)
         "touchstone": "2017-op-1",        
         "name": "Measles 1st Dose (With GAVI support)",
         "vaccine": "Measles",
-        "gavi_support_level": "with",        
+        "gavi_support": "total",        
         "activity_type": "routine"
     }
 
@@ -908,7 +908,7 @@ Schema: [`CreateCoverageSet.schema.json`](CreateCoverageSet.schema.json)
     {
         "name": "Measles 1st dose",
         "vaccine": "MCV1",
-        "gavi_support_level": "with",
+        "gavi_support": "total",
         "activity_type": "routine"
     }
 
@@ -941,7 +941,7 @@ Schema: [`CreateCoverageSet.schema.json`](CreateCoverageSet.schema.json)
     {
         "name": "Measles 1st dose",
         "vaccine": "MCV1",
-        "gavi_support_level": "with",        
+        "gavi_support": "total",        
         "activity_type": "routine"
     }
 
@@ -1433,7 +1433,7 @@ Schema: [`ScenarioAndCoverageSets.schema.json`](ScenarioAndCoverageSets.schema.j
                 "touchstone": "2017-op-1",
                 "name": "Menigitis without GAVI support",
                 "vaccine": "MenA",
-                "gavi_support_level": "without",
+                "gavi_support": "no gavi",
                 "activity_type": "routine"
             },
             { 
@@ -1441,7 +1441,7 @@ Schema: [`ScenarioAndCoverageSets.schema.json`](ScenarioAndCoverageSets.schema.j
                 "touchstone": "2017-op-1",
                 "name": "Menigitis with GAVI support",
                 "vaccine": "MenA",
-                "gavi_support_level": "with",
+                "gavi_support": "total",
                 "activity_type": "routine"
             }
         ]
@@ -1484,7 +1484,7 @@ Schema: [`ScenarioAndCoverageSets.schema.json`](ScenarioAndCoverageSets.schema.j
                 "touchstone": "2017-op-1",
                 "name": "Menigitis without GAVI support",
                 "vaccine": "MenA",
-                "gavi_support_level": "without",
+                "gavi_support": "no gavi",
                 "activity_type": "routine"
             },
             { 
@@ -1492,7 +1492,7 @@ Schema: [`ScenarioAndCoverageSets.schema.json`](ScenarioAndCoverageSets.schema.j
                 "touchstone": "2017-op-1",
                 "name": "Menigitis with GAVI support",
                 "vaccine": "MenA",
-                "gavi_support_level": "with",
+                "gavi_support": "total",
                 "activity_type": "routine"
             }
         ]

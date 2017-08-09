@@ -7,7 +7,7 @@
         "name": { "type": "string" },
 		"activity_type": { "$ref": "ActivityType.schema.json" },
 		"vaccine": { "$ref": "StandardIdentifier.schema.json" },
-		"gavi_support_level": { "$ref": "GaviSupportLevel.schema.json" }
+		"gavi_support": { "$ref": "GaviSupportLevel.schema.json" }
 	},
 	"additionalProperties": false,
 	"required": [ 
@@ -16,6 +16,6 @@
 		"name", 
 		"activity_type", 
 		"vaccine", 
-		"gavi_support_level" 
+		"gavi_support" 
 	]
 }
