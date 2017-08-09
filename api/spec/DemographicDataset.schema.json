@@ -6,7 +6,6 @@
         "name": { "type": "string" },
         "source": { "type": "string" },
         "countries": { "type": "array", "items": { "$ref": "CountryId.schema.json"  } },
-        "variants": { "type": "array", "items": { "type": "string" } },
         "gender_is_applicable": { "type": "boolean" }
     },
     "additionalProperties": false,
