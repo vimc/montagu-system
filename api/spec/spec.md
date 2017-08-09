@@ -550,7 +550,7 @@ Schema: [`ScenariosInTouchstone.schema.json`](ScenariosInTouchstone.schema.json)
                     "touchstone": "2017-op-1",
                     "name": "Menigitis no vaccination",
                     "vaccine": "MenA",
-                    "gavi_support_level": "none",
+                    "gavi_support": "no vaccine",
                     "activity_type": "none"
                 }
             ]
@@ -568,7 +568,7 @@ Schema: [`ScenariosInTouchstone.schema.json`](ScenariosInTouchstone.schema.json)
                     "touchstone": "2017-op-1",
                     "name": "Yellow fever birth dose (with GAVI support)",
                     "vaccine": "YF",
-                    "gavi_support_level": "with",
+                    "gavi_support": "total",
                     "activity_type": "routine"
                 },
                 { 
@@ -576,7 +576,7 @@ Schema: [`ScenariosInTouchstone.schema.json`](ScenariosInTouchstone.schema.json)
                     "touchstone": "2017-op-1",
                     "name": "Yellow fever reactive campaign (with GAVI support)",
                     "vaccine": "YF",
-                    "gavi_support_level": "with",
+                    "gavi_support": "total",
                     "activity_type": "campaign"
                 }
             ]
@@ -621,7 +621,7 @@ Schema: [`ScenarioAndCoverageSets.schema.json`](ScenarioAndCoverageSets.schema.j
                 "touchstone": "2017-op-1",
                 "name": "Menigitis no vaccination",
                 "vaccine": "MenA",
-                "gavi_support_level": "none",
+                "gavi_support": "no vaccine",
                 "activity_type": "none"
             }
         ]
@@ -658,7 +658,7 @@ Schema: [`ScenarioAndCoverageSets.schema.json`](ScenarioAndCoverageSets.schema.j
                 "touchstone": "2017-op-1",
                 "name": "Menigitis without GAVI support",
                 "vaccine": "MenA",
-                "gavi_support_level": "without",
+                "gavi_support": "no gavi",
                 "activity_type": "routine"
             },
             { 
@@ -666,7 +666,7 @@ Schema: [`ScenarioAndCoverageSets.schema.json`](ScenarioAndCoverageSets.schema.j
                 "touchstone": "2017-op-1",
                 "name": "Menigitis with GAVI support",
                 "vaccine": "MenA",
-                "gavi_support_level": "with",
+                "gavi_support": "total",
                 "activity_type": "routine"
             }
         ]
@@ -677,25 +677,24 @@ Coverage sets are returned in the order they are to be applied.
 ### Coverage data
 CSV data in this format:
 
-       "scenario", "set_id", "set_order",                        "set_name", "vaccine", "gavi_support_level", "activity_type", country",    "year","age_from","age_to","coverage"
-    "menA-novacc",      101,           1,  "Menigitis without GAVI support",    "MenA",            "without",       "routine",    "AFG",      2006,         0,       2,        NA
-    "menA-novacc",      101,           1,  "Menigitis without GAVI support",    "MenA",            "without",       "routine",    "AFG",      2007,         0,       2,      64.0
-    "menA-novacc",      101,           1,  "Menigitis without GAVI support",    "MenA",            "without",       "routine",    "AFG",      2008,         0,       2,      63.0
-    "menA-novacc",      101,           1,  "Menigitis without GAVI support",    "MenA",            "without",       "routine",    "AGO",      2006,         0,       1,       0.0
-    "menA-novacc",      101,           1,  "Menigitis without GAVI support",    "MenA",            "without",       "routine",    "AGO",      2007,         0,       1,      83.0
-    "menA-novacc",      101,           1,  "Menigitis without GAVI support",    "MenA",            "without",       "routine",    "AGO",      2008,         0,       1,      81.0
-    "menA-novacc",      136,           2,     "Menigitis with GAVI support",    "MenA",               "with",       "routine",    "AFG",      2006,         0,       2,        NA
-    "menA-novacc",      136,           2,     "Menigitis with GAVI support",    "MenA",               "with",       "routine",    "AFG",      2007,         0,       2,      80.0
-    "menA-novacc",      136,           2,     "Menigitis with GAVI support",    "MenA",               "with",       "routine",    "AFG",      2008,         0,       2,      90.0
-    "menA-novacc",      136,           2,     "Menigitis with GAVI support",    "MenA",               "with",       "routine",    "AGO",      2006,         0,       1,      20.0
-    "menA-novacc",      136,           2,     "Menigitis with GAVI support",    "MenA",               "with",       "routine",    "AGO",      2007,         0,       1,      90.0
-    "menA-novacc",      136,           2,     "Menigitis with GAVI support",    "MenA",               "with",       "routine",    "AGO",      2008,         0,       1,      95.0
+       "scenario",                       "set_name", "vaccine", "gavi_support", "activity_type", country",    "year","age_first","age_last",  "age_range_verbatim", "target", coverage"
+    "menA-novacc", "Menigitis without GAVI support",    "MenA",      "no gavi",       "routine",    "AFG",      2006,          0,         2,                    NA,       NA,        NA
+    "menA-novacc", "Menigitis without GAVI support",    "MenA",      "no gavi",       "routine",    "AFG",      2007,          0,         2,                    NA,       NA,      64.0
+    "menA-novacc", "Menigitis without GAVI support",    "MenA",      "no gavi",       "routine",    "AFG",      2008,          0,         2,                    NA,       NA,      63.0
+    "menA-novacc", "Menigitis without GAVI support",    "MenA",      "no gavi",       "routine",    "AGO",      2006,          0,         1,                    NA,       NA,       0.0
+    "menA-novacc", "Menigitis without GAVI support",    "MenA",      "no gavi",       "routine",    "AGO",      2007,          0,         1,"school aged children",  1465824,      83.0
+    "menA-novacc", "Menigitis without GAVI support",    "MenA",      "no gavi",       "routine",    "AGO",      2008,          0,         1,                    NA,       NA,      81.0
+    "menA-novacc",    "Menigitis with GAVI support",    "MenA",        "total",       "routine",    "AFG",      2006,          0,         2,                    NA,       NA,        NA
+    "menA-novacc",    "Menigitis with GAVI support",    "MenA",        "total",       "routine",    "AFG",      2007,          0,         2,                    NA,       NA,      80.0
+    "menA-novacc",    "Menigitis with GAVI support",    "MenA",        "total",       "routine",    "AFG",      2008,          0,         2,                    NA,       NA,      80.0
+    "menA-novacc",    "Menigitis with GAVI support",    "MenA",        "total",       "routine",    "AGO",      2006,          0,         1,                    NA,       NA,      20.0
+    "menA-novacc",    "Menigitis with GAVI support",    "MenA",        "total",       "routine",    "AGO",      2007,          0,         1,                    NA,       NA,      90.0
+    "menA-novacc",    "Menigitis with GAVI support",    "MenA",        "total",       "routine",    "AGO",      2008,          0,         1,                    NA,       NA,      95.0
 
-The coverage sets are de-normalized and merged into this single table. You can identify 
-which coverage set a line is from using either the `set_id` or `set_order` columns. 
-
-* `set_id:` The unique ID of the coverage set the line is from
-* `set_order`: The order that this set has within the scenario. Coverage data is applied in this order, and it matches the order of the coverage sets in the metadata above
+The coverage sets are de-normalized and merged into this single table. You can 
+identify which coverage set a line is from using `scenario` plus `vaccine`, 
+`gavi_support` and `activity_type`. Note that we don't expect the modellers to
+need to know which coverage set the data is from.
 
 ## POST /touchstones/{touchstone-id}/actions/associate_scenario/
 Associate or unassociate a scenario with a touchstone.
@@ -823,7 +822,7 @@ Schema: [`CoverageSets.schema.json`](CoverageSets.schema.json)
             "name": "Measles 1st Dose (without GAVI support)",
             "activity_type": "routine",
             "vaccine": "MCV1",
-            "gavi_support_level": "without"
+            "gavi_support": "no gavi"
         },
         {
             "id": 278,
@@ -831,7 +830,7 @@ Schema: [`CoverageSets.schema.json`](CoverageSets.schema.json)
             "name": "Measles 2nd Dose (without GAVI support)",
             "activity_type": "routine",
             "vaccine": "MCV2",
-            "gavi_support_level": "without"
+            "gavi_support": "no gavi"
         },
         {
             "id": 290,
@@ -839,7 +838,7 @@ Schema: [`CoverageSets.schema.json`](CoverageSets.schema.json)
             "name": "Yellow Fever reactive campaign (with GAVI support)",
             "activity_type": "campaign",
             "vaccine": "YF",
-            "gavi_support_level": "with"
+            "gavi_support": "total"
         }
     ]
 
@@ -875,7 +874,7 @@ Schema: [`CoverageSet.schema.json`](CoverageSet.schema.json)
         "touchstone": "2017-op-1",        
         "name": "Measles 1st Dose (With GAVI support)",
         "vaccine": "Measles",
-        "gavi_support_level": "with",        
+        "gavi_support": "total",        
         "activity_type": "routine"
     }
 
@@ -909,7 +908,7 @@ Schema: [`CreateCoverageSet.schema.json`](CreateCoverageSet.schema.json)
     {
         "name": "Measles 1st dose",
         "vaccine": "MCV1",
-        "gavi_support_level": "with",
+        "gavi_support": "total",
         "activity_type": "routine"
     }
 
@@ -942,7 +941,7 @@ Schema: [`CreateCoverageSet.schema.json`](CreateCoverageSet.schema.json)
     {
         "name": "Measles 1st dose",
         "vaccine": "MCV1",
-        "gavi_support_level": "with",        
+        "gavi_support": "total",        
         "activity_type": "routine"
     }
 
@@ -1434,7 +1433,7 @@ Schema: [`ScenarioAndCoverageSets.schema.json`](ScenarioAndCoverageSets.schema.j
                 "touchstone": "2017-op-1",
                 "name": "Menigitis without GAVI support",
                 "vaccine": "MenA",
-                "gavi_support_level": "without",
+                "gavi_support": "no gavi",
                 "activity_type": "routine"
             },
             { 
@@ -1442,7 +1441,7 @@ Schema: [`ScenarioAndCoverageSets.schema.json`](ScenarioAndCoverageSets.schema.j
                 "touchstone": "2017-op-1",
                 "name": "Menigitis with GAVI support",
                 "vaccine": "MenA",
-                "gavi_support_level": "with",
+                "gavi_support": "total",
                 "activity_type": "routine"
             }
         ]
@@ -1485,7 +1484,7 @@ Schema: [`ScenarioAndCoverageSets.schema.json`](ScenarioAndCoverageSets.schema.j
                 "touchstone": "2017-op-1",
                 "name": "Menigitis without GAVI support",
                 "vaccine": "MenA",
-                "gavi_support_level": "without",
+                "gavi_support": "no gavi",
                 "activity_type": "routine"
             },
             { 
@@ -1493,7 +1492,7 @@ Schema: [`ScenarioAndCoverageSets.schema.json`](ScenarioAndCoverageSets.schema.j
                 "touchstone": "2017-op-1",
                 "name": "Menigitis with GAVI support",
                 "vaccine": "MenA",
-                "gavi_support_level": "with",
+                "gavi_support": "total",
                 "activity_type": "routine"
             }
         ]
@@ -1504,25 +1503,24 @@ Coverage sets are returned in the order they are to be applied.
 ### CSV table data
 CSV data in this format:
 
-    "set_id", "set_order",                        "set_name", "vaccine", "gavi_support_level", "activity_type", country",    "year","age_from","age_to",   "age_range_verbatim", "target", coverage"
-         101,           1,  "Menigitis without GAVI support",    "MenA",            "without",       "routine",    "AFG",      2006,         0,       2,                     NA,       NA,        NA
-         101,           1,  "Menigitis without GAVI support",    "MenA",            "without",       "routine",    "AFG",      2007,         0,       2,                     NA,       NA,      64.0
-         101,           1,  "Menigitis without GAVI support",    "MenA",            "without",       "routine",    "AFG",      2008,         0,       2,                     NA,       NA,      63.0
-         101,           1,  "Menigitis without GAVI support",    "MenA",            "without",       "routine",    "AGO",      2006,         0,       1,                     NA,       NA,       0.0
-         101,           1,  "Menigitis without GAVI support",    "MenA",            "without",       "routine",    "AGO",      2007,         0,       1, "school aged children",  1465824,      83.0
-         101,           1,  "Menigitis without GAVI support",    "MenA",            "without",       "routine",    "AGO",      2008,         0,       1,                     NA,       NA,      81.0
-         136,           2,     "Menigitis with GAVI support",    "MenA",               "with",       "routine",    "AFG",      2006,         0,       2,                     NA,       NA,        NA
-         136,           2,     "Menigitis with GAVI support",    "MenA",               "with",       "routine",    "AFG",      2007,         0,       2,                     NA,       NA,      80.0
-         136,           2,     "Menigitis with GAVI support",    "MenA",               "with",       "routine",    "AFG",      2008,         0,       2,                     NA,       NA,      90.0
-         136,           2,     "Menigitis with GAVI support",    "MenA",               "with",       "routine",    "AGO",      2006,         0,       1,                     NA,       NA,      20.0
-         136,           2,     "Menigitis with GAVI support",    "MenA",               "with",       "routine",    "AGO",      2007,         0,       1,                     NA,       NA,      90.0
-         136,           2,     "Menigitis with GAVI support",    "MenA",               "with",       "routine",    "AGO",      2008,         0,       1                      NA,       NA,      95.0
+       "scenario",                       "set_name", "vaccine", "gavi_support", "activity_type", country",    "year","age_first","age_last",  "age_range_verbatim", "target", coverage"
+    "menA-novacc", "Menigitis without GAVI support",    "MenA",      "no gavi",       "routine",    "AFG",      2006,          0,         2,                    NA,       NA,        NA
+    "menA-novacc", "Menigitis without GAVI support",    "MenA",      "no gavi",       "routine",    "AFG",      2007,          0,         2,                    NA,       NA,      64.0
+    "menA-novacc", "Menigitis without GAVI support",    "MenA",      "no gavi",       "routine",    "AFG",      2008,          0,         2,                    NA,       NA,      63.0
+    "menA-novacc", "Menigitis without GAVI support",    "MenA",      "no gavi",       "routine",    "AGO",      2006,          0,         1,                    NA,       NA,       0.0
+    "menA-novacc", "Menigitis without GAVI support",    "MenA",      "no gavi",       "routine",    "AGO",      2007,          0,         1,"school aged children",  1465824,      83.0
+    "menA-novacc", "Menigitis without GAVI support",    "MenA",      "no gavi",       "routine",    "AGO",      2008,          0,         1,                    NA,       NA,      81.0
+    "menA-novacc",    "Menigitis with GAVI support",    "MenA",        "total",       "routine",    "AFG",      2006,          0,         2,                    NA,       NA,        NA
+    "menA-novacc",    "Menigitis with GAVI support",    "MenA",        "total",       "routine",    "AFG",      2007,          0,         2,                    NA,       NA,      80.0
+    "menA-novacc",    "Menigitis with GAVI support",    "MenA",        "total",       "routine",    "AFG",      2008,          0,         2,                    NA,       NA,      80.0
+    "menA-novacc",    "Menigitis with GAVI support",    "MenA",        "total",       "routine",    "AGO",      2006,          0,         1,                    NA,       NA,      20.0
+    "menA-novacc",    "Menigitis with GAVI support",    "MenA",        "total",       "routine",    "AGO",      2007,          0,         1,                    NA,       NA,      90.0
+    "menA-novacc",    "Menigitis with GAVI support",    "MenA",        "total",       "routine",    "AGO",      2008,          0,         1,                    NA,       NA,      95.0
 
-The coverage sets are de-normalized and merged into this single table. You can identify 
-which coverage set a line is from using either the `set_id` or `set_order` columns. 
-
-* `set_id:` The unique ID of the coverage set the line is from
-* `set_order`: The order that this set has within the scenario. Coverage data is applied in this order, and it matches the order of the coverage sets in the metadata above
+The coverage sets are de-normalized and merged into this single table. You can 
+identify which coverage set a line is from using `scenario` plus `vaccine`, 
+`gavi_support` and `activity_type`. Note that we don't expect the modellers to
+need to know which coverage set the data is from.
 
 ### Onetime Link
 A client may make a GET request to 

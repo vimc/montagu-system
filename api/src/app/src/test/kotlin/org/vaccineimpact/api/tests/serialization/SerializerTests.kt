@@ -104,9 +104,9 @@ class SerializerTests : MontaguTests()
     @Test
     fun `can serialize GAVISupportLevel`()
     {
-        val actual = GAVISupportLevel.WITH
-        val expected = "\"with\""
-        checkSerializedForm(expected, actual)
+        checkSerializedForm("\"no vaccine\"", GAVISupportLevel.NONE)
+        checkSerializedForm("\"no gavi\"", GAVISupportLevel.WITHOUT)
+        checkSerializedForm("\"total\"", GAVISupportLevel.WITH)
     }
 
     @Test

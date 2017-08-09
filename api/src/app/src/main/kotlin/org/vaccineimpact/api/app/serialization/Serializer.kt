@@ -70,6 +70,23 @@ open class Serializer
         }
         return builder.toString().trim('_')
     }
+    fun serializeEnum(value: Any): String
+    {
+        val text = when (value)
+        {
+            is GAVISupportLevel -> mapGAVISupportLevel(value)
+            else -> value.toString()
+        }
+        return text.toLowerCase().replace('_', '-')
+    }
 
-    fun serializeEnum(value: Any) = value.toString().toLowerCase().replace('_', '-')
+    private fun mapGAVISupportLevel(value: GAVISupportLevel): String
+    {
+        return when (value)
+        {
+            GAVISupportLevel.NONE -> "no vaccine"
+            GAVISupportLevel.WITHOUT -> "no gavi"
+            GAVISupportLevel.WITH -> "total"
+        }
+    }
 }
