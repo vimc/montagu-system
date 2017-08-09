@@ -1698,13 +1698,19 @@ Schema: [`Demographics.schema.json`](Demographics.schema.json)
 
 ### Example
     [{ 
-        "code" : "as-fert",
+        "id" : "as-fert",
         "name": "Age-specific fertility",
+        "variants" : ["low", "medium"],
+        "source" : "UNWPP",
+        "countries" : ["AFG"],
         "gender_is_applicable": false
      },
      { 
-        "code" : "tot-pop",
+        "id" : "tot-pop",
         "name" : "Total population",
+        "variants" : ["low"],
+        "source" : "UNWPP",
+        "countries" : ["AFG"],
         "gender_is_applicable": true
      }]
 
