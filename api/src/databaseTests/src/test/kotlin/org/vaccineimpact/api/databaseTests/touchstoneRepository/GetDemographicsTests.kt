@@ -140,7 +140,6 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
             Assertions.assertThat(fertilityType.id).isEqualTo("as-fert")
             Assertions.assertThat(fertilityType.genderIsApplicable).isTrue()
             Assertions.assertThat(fertilityType.source).isEqualTo(_sources.first() + " descriptive name")
-            Assertions.assertThat(fertilityType.variants).hasSameElementsAs(_variants)
             Assertions.assertThat(fertilityType.countries).hasSameElementsAs(_countries)
 
             val populationType = types.sortedBy { it.name }[1]
@@ -148,7 +147,6 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
             Assertions.assertThat(populationType.id).isEqualTo("tot-pop")
             Assertions.assertThat(populationType.genderIsApplicable).isFalse()
             Assertions.assertThat(populationType.source).isEqualTo(_sources.first() + " descriptive name")
-            Assertions.assertThat(populationType.variants).hasSameElementsAs(_variants.subList(0,1))
             Assertions.assertThat(fertilityType.countries).hasSameElementsAs(_countries)
         }
     }
