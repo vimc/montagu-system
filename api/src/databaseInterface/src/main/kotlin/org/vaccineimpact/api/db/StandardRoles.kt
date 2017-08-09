@@ -33,7 +33,6 @@ object StandardRoles
         db.dsl.batchStore(permissions).execute()
 
         for (role in roles)
-        for (role in roles)
         {
             val record = db.dsl.newRecord(ROLE).apply {
                 name = role.name
