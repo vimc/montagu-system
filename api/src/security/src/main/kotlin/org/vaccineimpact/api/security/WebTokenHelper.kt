@@ -12,14 +12,14 @@ import java.util.*
 
 open class WebTokenHelper(keyPair: KeyPair)
 {
-    val lifeSpan: Duration = Duration.ofSeconds(Config["token.lifespan"].toLong())
+    open val lifeSpan: Duration = Duration.ofSeconds(Config["token.lifespan"].toLong())
     val oneTimeLinkLifeSpan: Duration = Duration.ofMinutes(10)
     val issuer = Config["token.issuer"]
     val signatureConfiguration = RSASignatureConfiguration(keyPair)
     val generator = JwtGenerator<CommonProfile>(signatureConfiguration)
     private val random = SecureRandom()
 
-    fun generateToken(user: MontaguUser): String
+    open fun generateToken(user: MontaguUser): String
     {
         return generator.generate(claims(user))
     }
