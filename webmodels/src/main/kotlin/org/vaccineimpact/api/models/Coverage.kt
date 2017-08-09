@@ -7,7 +7,7 @@ data class CoverageSet(
         val touchstone: String,
         val name: String,
         val vaccine: String,
-        val gaviSupportLevel: GAVISupportLevel,
+        val gaviSupport: GAVISupportLevel,
         val activityType: ActivityType
 ): HasKey<Int>
 
@@ -24,16 +24,14 @@ data class ScenarioTouchstoneAndCoverageSets(
 
 data class CoverageRow(
         val scenario: String,   //This is the scenario description ID
-        val setId: Int,
-        val setOrder: Int,
         val setName: String,
         val vaccine: String,
-        val gaviSupportLevel: GAVISupportLevel,
+        val gaviSupport: GAVISupportLevel,
         val activityType: ActivityType,
         val country: String,
         val year: Int,
-        val ageFrom: BigDecimal?,
-        val ageTo: BigDecimal?,
+        val ageFirst: BigDecimal?,
+        val ageLast: BigDecimal?,
         val ageRangeVerbatim: String?,
         val target: BigDecimal?,
         val coverage: BigDecimal?

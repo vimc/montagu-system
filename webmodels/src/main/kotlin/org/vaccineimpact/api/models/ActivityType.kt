@@ -4,5 +4,6 @@ enum class ActivityType
 {
     NONE,
     ROUTINE,
-    CAMPAIGN
+    CAMPAIGN,
+    CAMPAIGN_REACTIVE
 }
