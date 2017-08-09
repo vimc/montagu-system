@@ -17,6 +17,7 @@ buildscript {
 task run(dependsOn: ':app:run')
 task generateDatabaseInterface(dependsOn: ':generateDatabaseInterface:run')
 task generateTestData(dependsOn: ':generateTestData:run')
+task validateSchema(dependsOn: ':validateSchema:test')
 // 'testLibrary' runs things that can be tested without a running API.
 // i.e. everything other than blackboxTests.
 task testLibrary(dependsOn: [':app:test', ':databaseTests:test', ':userCLI:test', ':security:test'])

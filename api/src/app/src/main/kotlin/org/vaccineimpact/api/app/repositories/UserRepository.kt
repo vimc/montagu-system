@@ -1,7 +1,6 @@
 package org.vaccineimpact.api.app.repositories
 
-import org.jooq.Record
-import org.vaccineimpact.api.db.tables.records.AppUserRecord
+import org.vaccineimpact.api.app.models.CreateUser
 import org.vaccineimpact.api.models.User
 import org.vaccineimpact.api.models.permissions.RoleAssignment
 import org.vaccineimpact.api.security.MontaguUser
@@ -13,4 +12,7 @@ interface UserRepository : Repository
     fun getRolesForUser(username: String): List<RoleAssignment>
     fun all(): Iterable<User>
     fun allWithRoles(): List<User>
+    fun updateLastLoggedIn(username: String)
+
+    fun addUser(user: CreateUser)
 }

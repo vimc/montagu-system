@@ -1,6 +1,8 @@
 package org.vaccineimpact.api.app
 
 import com.google.gson.JsonSyntaxException
+import org.jooq.exception.DataAccessException
+import org.postgresql.util.PSQLException
 import org.slf4j.LoggerFactory
 import org.vaccineimpact.api.app.errors.MontaguError
 import org.vaccineimpact.api.app.errors.UnableToParseJsonError
@@ -10,28 +12,32 @@ import spark.Request
 import spark.Response
 import spark.Spark as spk
 
-class ErrorHandler
+@Suppress("RemoveExplicitTypeArguments")
+open class ErrorHandler
 {
     private val logger = LoggerFactory.getLogger(ErrorHandler::class.java)
+    private val postgresHandler = PostgresErrorHandler()
 
     init
     {
-        @Suppress("RemoveExplicitTypeArguments")
         sparkException<MontaguError>(this::handleError)
         sparkException<JsonSyntaxException> { e, req, res -> handleError(UnableToParseJsonError(e), req, res) }
-        sparkException<Exception> {
-            e, req, res ->
-            logger.error("An unhandled exception occurred", e)
-            handleError(UnexpectedError(), req, res)
-        }
+        sparkException<DataAccessException> { e, req, res -> postgresHandler.handleException(e, req, res, this) }
+        sparkException<Exception>(this::handleUnexpectedError)
     }
 
-    fun handleError(error: MontaguError, req: Request, res: Response)
+    open fun handleError(error: MontaguError, req: Request, res: Response)
     {
         logger.warn("For request ${req.uri()}, a ${error::class.simpleName} occurred with the following problems: ${error.problems}")
         res.body(Serializer.instance.toJson(error.asResult()))
         res.status(error.httpStatus)
         addDefaultResponseHeaders(res)
+    }
+
+    open fun handleUnexpectedError(exception: Exception, req: Request, res: Response)
+    {
+        logger.error("An unhandled exception occurred", exception)
+        handleError(UnexpectedError(), req, res)
     }
 
     // Just a helper to let us call Spark.exception using generic type parameters

@@ -15,7 +15,7 @@ interface UserPropertiesInterface {
     val username: String
     val name: String
     val email: String
-    val passwordHash: String
+    val passwordHash: String?
     val lastLoggedIn: Timestamp?
 }
 
@@ -25,6 +25,6 @@ constructor(
         override val username: String,
         override val name: String,
         override val email: String,
-        override val passwordHash: String,
+        override val passwordHash: String?,
         override val lastLoggedIn: Timestamp?
 ): UserPropertiesInterface

@@ -5,12 +5,12 @@ import org.junit.Test
 import org.vaccineimpact.api.blackboxTests.helpers.*
 import org.vaccineimpact.api.blackboxTests.schemas.CSVSchema
 import org.vaccineimpact.api.blackboxTests.schemas.SplitSchema
-import org.vaccineimpact.api.blackboxTests.validators.JSONValidator
 import org.vaccineimpact.api.blackboxTests.validators.SplitValidator
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.direct.*
 import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.test_helpers.DatabaseTest
+import org.vaccineimpact.api.validateSchema.JSONValidator
 
 class CoverageTests : DatabaseTest()
 {
