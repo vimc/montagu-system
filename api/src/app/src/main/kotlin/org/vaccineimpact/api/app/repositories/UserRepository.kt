@@ -12,6 +12,7 @@ interface UserRepository : Repository
     fun getRolesForUser(username: String): List<RoleAssignment>
     fun all(): Iterable<User>
     fun allWithRoles(): List<User>
+    fun updateLastLoggedIn(username: String)
 
     fun addUser(user: CreateUser)
 }

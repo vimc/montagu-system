@@ -1,7 +1,6 @@
 package org.vaccineimpact.api.databaseTests.touchstoneRepository
 
 import org.assertj.core.api.Assertions
-import org.assertj.core.api.Assertions.`in`
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.vaccineimpact.api.app.errors.UnknownObjectError
@@ -67,9 +66,9 @@ class GetScenarioTests : TouchstoneRepositoryTests()
             val result = it.getScenarioAndCoverageData(touchstoneId, scenarioId)
             checkScenarioIsAsExpected(result.structuredMetadata)
             assertThat(result.tableData.data).containsExactlyElementsOf(listOf(
-                    CoverageRow(scenarioId, setA, 1, "YF without", "YF", GAVISupportLevel.WITHOUT, ActivityType.CAMPAIGN,
+                    CoverageRow(scenarioId, "YF without", "YF", GAVISupportLevel.WITHOUT, ActivityType.CAMPAIGN,
                             "AAA", 2000, 10.toDecimal(), 20.toDecimal(), "10-20", 100.toDecimal(), "50.50".toDecimalOrNull()),
-                    CoverageRow(scenarioId, setB, 5, "YF with", "YF", GAVISupportLevel.WITH, ActivityType.CAMPAIGN,
+                    CoverageRow(scenarioId, "YF with", "YF", GAVISupportLevel.WITH, ActivityType.CAMPAIGN,
                             "BBB", 2001, 11.toDecimal(), 21.toDecimal(), null, null, null)
             ))
         }

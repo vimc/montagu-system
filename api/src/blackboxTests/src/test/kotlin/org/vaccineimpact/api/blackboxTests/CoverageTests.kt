@@ -1,6 +1,5 @@
 package org.vaccineimpact.api.blackboxTests
 
-import org.assertj.core.api.Assertions
 import org.junit.Test
 import org.vaccineimpact.api.blackboxTests.helpers.*
 import org.vaccineimpact.api.blackboxTests.schemas.CSVSchema
@@ -73,25 +72,6 @@ class CoverageTests : DatabaseTest()
         checker.checkPermissionIsRequired(permission,
                 given = { addCoverageData(it, touchstoneStatus = "in-preparation") },
                 expectedProblem = ExpectedProblem("unknown-touchstone", touchstoneId))
-    }
-
-    @Test
-    fun `coverage sets are indexed from one`()
-    {
-        val schema = CSVSchema("MergedCoverageData")
-        val userHelper = TestUserHelper()
-        val requestHelper = RequestHelper()
-
-        JooqContext().use {
-            addCoverageData(it, touchstoneStatus = "open")
-            userHelper.setupTestUser(it)
-        }
-
-        val response = requestHelper.get(url, minimumPermissions, contentType = "text/csv")
-        var csvRows = schema.validate(response.text)
-
-        Assertions.assertThat(csvRows.first()[2]).isEqualTo("1")
-
     }
 
     private fun addCoverageData(db: JooqContext, touchstoneStatus: String)

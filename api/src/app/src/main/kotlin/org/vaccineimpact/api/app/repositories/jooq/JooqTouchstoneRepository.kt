@@ -194,8 +194,6 @@ class JooqTouchstoneRepository(
 
     fun mapCoverageRow(record: Record, scenarioDescriptionId: String) = CoverageRow(
             scenarioDescriptionId,
-            record[COVERAGE_SET.ID],
-            record[SCENARIO_COVERAGE_SET.ORDER] + 1, // index from 1 for human readability
             record[COVERAGE_SET.NAME],
             record[COVERAGE_SET.VACCINE],
             mapEnum(record[COVERAGE_SET.GAVI_SUPPORT_LEVEL]),

@@ -15,9 +15,19 @@ import org.vaccineimpact.api.models.permissions.ReifiedRole
 import org.vaccineimpact.api.models.permissions.RoleAssignment
 import org.vaccineimpact.api.security.MontaguUser
 import org.vaccineimpact.api.security.UserProperties
+import java.sql.Timestamp
+import java.time.Instant
 
 class JooqUserRepository(db: JooqContext) : JooqRepository(db), UserRepository
 {
+    override fun updateLastLoggedIn(username: String)
+    {
+        dsl.update(APP_USER)
+                .set(APP_USER.LAST_LOGGED_IN, Timestamp.from(Instant.now()))
+                .where(APP_USER.USERNAME.eq(username))
+                .execute()
+    }
+
     override fun getMontaguUserByEmail(email: String): MontaguUser?
     {
         val user = dsl.fetchAny(APP_USER, caseInsensitiveEmailMatch(email))

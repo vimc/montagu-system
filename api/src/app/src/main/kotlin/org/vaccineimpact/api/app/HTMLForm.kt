@@ -1,10 +1,15 @@
 package org.vaccineimpact.api.app
 
-object HTMLFormHelpers
+interface FormHelpers
+{
+    fun checkForm(context: ActionContext, expectedContents: Map<String, String>): HTMLForm
+}
+
+class HTMLFormHelpers: FormHelpers
 {
     val requiredContentType = "application/x-www-form-urlencoded"
 
-    fun checkForm(context: ActionContext, expectedContents: Map<String, String>): HTMLForm
+    override fun checkForm(context: ActionContext, expectedContents: Map<String, String>): HTMLForm
     {
         if (!isHTMLForm(context))
         {
