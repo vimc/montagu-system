@@ -66,7 +66,7 @@ class DemographicTestData(val db: JooqContext)
 {
     val sources = listOf("unwpp2015", "unwpp2017")
     val variants = listOf("low", "medium", "high")
-    val statisticTypeIds = listOf("tot-pop", "tot-births")
+    val statisticTypeIds = listOf("tot-pop" to "Total population", "tot-births" to "Total births")
     val countries = db.generateCountries(3)
     val sourceIds = db.generateDemographicSources(sources)
     val variantIds = db.generateDemographicVariants(variants)
@@ -81,9 +81,9 @@ class DemographicTestData(val db: JooqContext)
             db.addTouchstoneCountries(touchstoneId, countries, disease)
         }
 
-        for (typeId in statisticTypeIds)
+        for ((typeId, name) in statisticTypeIds)
         {
-            val type = db.addDemographicStatisticType(typeId, variantIds, units)
+            val type = db.addDemographicStatisticType(typeId, variantIds, units, name = name)
             for (sourceId in sourceIds)
             {
                 for (gender in genderIds)

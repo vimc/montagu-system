@@ -369,11 +369,12 @@ fun JooqContext.addDemographicStatisticType(type: String,
                                             units: List<Int>,
                                             ageInterpretation: String = "age",
                                             genderIsApplicable: Boolean = false,
-                                            yearStepSize: Int = 5): Int
+                                            yearStepSize: Int = 5,
+                                            name: String = "$type descriptive name"): Int
 {
     val record = this.dsl.newRecord(DEMOGRAPHIC_STATISTIC_TYPE).apply {
         this.code = type
-        this.name = "$type descriptive name"
+        this.name = name
         this.defaultVariant = variants.first()
         this.demographicValueUnit = units.first()
         this.genderIsApplicable = genderIsApplicable
