@@ -5,12 +5,11 @@ import { Disease, ModellingGroup } from "../../shared/models/Generated";
 import { emptyLoadable, getFromLoadable, ILoadable, makeLoadable } from "./Loadable";
 import { diseaseActions } from "../actions/DiseaseActions";
 import { RemoteContent } from "../../shared/models/RemoteContent";
-import { responsibilityStore } from "./ResponsibilityStore";
 import { DiseaseSource } from "../sources/DiseaseSource";
 import { ModellingGroupSource } from "../sources/ModellingGroupSource";
 import { doNothing } from "../../shared/Helpers";
+import { modellingGroupActions } from "../../shared/actions/ModellingGroupActions";
 import StoreModel = AltJS.StoreModel;
-import {modellingGroupActions} from "../../shared/actions/ModellingGroupActions";
 
 export interface MainState extends RemoteContent {
     diseases: ILoadable<Disease>;

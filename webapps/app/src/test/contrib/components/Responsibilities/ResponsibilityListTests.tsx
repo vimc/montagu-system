@@ -5,7 +5,7 @@ import { mockModellingGroup, mockResponsibility, mockScenario, mockTouchstone } 
 
 import { ResponsibilityListComponent, ResponsibilityListComponentProps } from "../../../../main/contrib/components/Responsibilities/Overview/ResponsibilityList";
 import { ResponsibilityComponent } from "../../../../main/contrib/components/Responsibilities/Overview/ResponsibilityComponent";
-import { DiseaseFilter } from "../../../../main/contrib/components/Responsibilities/Overview/DiseaseFilter";
+import { DiseaseFilter } from "../../../../main/contrib/components/Responsibilities/Overview/List/DiseaseFilter";
 import { Responsibility } from "../../../../main/shared/models/Generated";
 import { ExtendedResponsibilitySet } from "../../../../main/contrib/models/ResponsibilitySet";
 

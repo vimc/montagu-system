@@ -1,8 +1,8 @@
 import * as React from "react";
-import { mainStore } from "../../../stores/MainStore";
-import { Option, OptionSelector } from "../../OptionSelector/OptionSelector";
-import { responsibilityActions } from "../../../actions/ResponsibilityActions";
-import { IExtendedResponsibilitySet } from "../../../models/ResponsibilitySet";
+import { mainStore } from "../../../../stores/MainStore";
+import { Option, OptionSelector } from "../../../OptionSelector/OptionSelector";
+import { responsibilityActions } from "../../../../actions/ResponsibilityActions";
+import { IExtendedResponsibilitySet } from "../../../../models/ResponsibilitySet";
 
 export class DiseaseFilter extends React.Component<IExtendedResponsibilitySet, undefined> {
     render(): JSX.Element {

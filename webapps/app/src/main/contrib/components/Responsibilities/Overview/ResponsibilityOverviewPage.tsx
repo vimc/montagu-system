@@ -1,5 +1,4 @@
 import * as React from "react";
-import { ResponsibilityList } from "./ResponsibilityList";
 import { settings } from "../../../../shared/Settings";
 import { ResponsibilityOverviewTitle } from "./ResponsibilityOverviewTitle";
 import { touchstoneActions } from "../../../actions/TouchstoneActions";
@@ -7,6 +6,7 @@ import { responsibilityStore } from "../../../stores/ResponsibilityStore";
 import { PageWithHeaderAndNav } from "../../PageWithHeader/PageWithHeaderAndNav";
 import { doNothing } from "../../../../shared/Helpers";
 import {modellingGroupActions} from "../../../../shared/actions/ModellingGroupActions";
+import { ResponsibilityOverviewContent } from "./ResponsibilityOverviewContent";
 
 interface LocationProps {
     groupId: string;
@@ -44,7 +44,7 @@ export class ResponsibilityOverviewPage extends PageWithHeaderAndNav<LocationPro
                 </li>
                 <li>Track progress towards providing impact estimates for all your scenarios</li>
             </ol>
-            <ResponsibilityList />
+            <ResponsibilityOverviewContent />
         </div>
     }
 }
