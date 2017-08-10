@@ -26,7 +26,8 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
     private fun setUpTouchstone(it: JooqContext){
         it.addTouchstone(touchstoneName, touchstoneVersion, addName = true, addStatus = true)
         it.addDemographicSourcesToTouchstone(touchstoneId, sourceIds)
-        it.addTouchstoneCountries(touchstoneId, countries)
+        it.addDisease("measles", "Measles")
+        it.addTouchstoneCountries(touchstoneId, countries, "measles")
     }
 
     private fun addPopulation(it: JooqContext)
@@ -81,7 +82,8 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
             setUpSupportingTables(it)
 
             it.addTouchstone(touchstoneName, touchstoneVersion, addName = true, addStatus = true)
-            it.addTouchstoneCountries(touchstoneId, countries)
+            it.addDisease("measles", "Measles")
+            it.addTouchstoneCountries(touchstoneId, countries, "measles")
 
             addFertility(it)
             addPopulation(it)
@@ -115,7 +117,8 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
             setUpSupportingTables(it)
 
             it.addTouchstone(touchstoneName, touchstoneVersion, addName = true, addStatus = true)
-            it.addTouchstoneCountries(touchstoneId, countries.subList(0,1))
+            it.addDisease("measles", "Measles")
+            it.addTouchstoneCountries(touchstoneId, countries.subList(0,1), "measles")
             it.addDemographicSourcesToTouchstone(touchstoneId, sourceIds)
 
             addFertility(it)
