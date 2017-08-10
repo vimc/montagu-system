@@ -1,9 +1,8 @@
 package org.vaccineimpact.api.app.repositories.jooq
 
-import org.jooq.JoinType
-import org.jooq.Record
+import org.jooq.*
 import org.jooq.Result
-import org.jooq.SelectConditionStep
+import org.jooq.impl.DSL.*
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
 import org.vaccineimpact.api.app.filters.whereMatchesFilter
@@ -26,6 +25,20 @@ class JooqTouchstoneRepository(
 )
     : JooqRepository(db), TouchstoneRepository
 {
+    override fun getDemographicStatisticTypes(touchstoneId: String): List<DemographicStatisticType>
+    {
+        val records = getDemographicStatisticTypesQuery(touchstoneId)
+                .fetch()
+
+        val recordsGroupedByType = records.groupBy {
+            it[DEMOGRAPHIC_STATISTIC_TYPE.ID]
+        }
+
+        return recordsGroupedByType.values.map {
+            mapDemographicStatisticType(it)
+        }
+    }
+
     override val touchstones: SimpleDataSet<Touchstone, String>
         get() = JooqSimpleDataSet.new(dsl, TOUCHSTONE, { it.ID }, { mapTouchstone(it) })
 
@@ -46,7 +59,7 @@ class JooqTouchstoneRepository(
     {
         val records = getCoverageSetsForScenario(touchstoneId, scenarioDescId, includeCoverageData = false)
         val scenario = getScenariosFromRecords(records).singleOrNull()
-            ?: throw UnknownObjectError(scenarioDescId, "scenario")
+                ?: throw UnknownObjectError(scenarioDescId, "scenario")
         return ScenarioAndCoverageSets(scenario, getCoverageSetsFromRecord(records, scenario))
     }
 
@@ -102,6 +115,38 @@ class JooqTouchstoneRepository(
         return fromQuery.where(TOUCHSTONE.ID.eq(touchstoneId))
     }
 
+
+    private fun getDemographicStatisticTypesQuery(touchstoneId: String):
+            SelectOnConditionStep<Record6<Int, String, String, Boolean, String, String>>
+    {
+        val statsInTouchstoneCountriesAndSources =
+                dsl.selectDistinct(DEMOGRAPHIC_SOURCE.NAME.`as`("sourceName"),
+                        DEMOGRAPHIC_STATISTIC.DEMOGRAPHIC_STATISTIC_TYPE.`as`("typeId"),
+                        TOUCHSTONE_COUNTRY.COUNTRY.`as`("country"))
+                        .from(DEMOGRAPHIC_STATISTIC)
+                        .join(TOUCHSTONE_COUNTRY)
+                        .on(DEMOGRAPHIC_STATISTIC.COUNTRY.eq(TOUCHSTONE_COUNTRY.COUNTRY))
+                        .join(DEMOGRAPHIC_SOURCE)
+                        .on(DEMOGRAPHIC_SOURCE.ID.eq(DEMOGRAPHIC_STATISTIC.DEMOGRAPHIC_SOURCE))
+                        .join(TOUCHSTONE_DEMOGRAPHIC_SOURCE)
+                        .on(DEMOGRAPHIC_SOURCE.ID.eq(TOUCHSTONE_DEMOGRAPHIC_SOURCE.DEMOGRAPHIC_SOURCE))
+                        .where(TOUCHSTONE_COUNTRY.TOUCHSTONE.eq(touchstoneId))
+                        .and(TOUCHSTONE_DEMOGRAPHIC_SOURCE.TOUCHSTONE.eq(touchstoneId))
+
+        return dsl.with("s")
+                .`as`(statsInTouchstoneCountriesAndSources)
+                .selectDistinct(
+                        DEMOGRAPHIC_STATISTIC_TYPE.ID,
+                        DEMOGRAPHIC_STATISTIC_TYPE.CODE,
+                        DEMOGRAPHIC_STATISTIC_TYPE.NAME,
+                        DEMOGRAPHIC_STATISTIC_TYPE.GENDER_IS_APPLICABLE,
+                        field(name("s", "sourceName"), String::class.java),
+                        field(name("s", "country"), String::class.java))
+                .from(table(name("s")))
+                .join(DEMOGRAPHIC_STATISTIC_TYPE)
+                .on(DEMOGRAPHIC_STATISTIC_TYPE.ID.eq(field(name("s", "typeId"), Int::class.java)))
+    }
+
     private fun getScenariosFromRecords(records: Result<Record>): List<Scenario>
     {
         val scenarioIds = records.map { it[SCENARIO_DESCRIPTION.ID] }
@@ -110,9 +155,9 @@ class JooqTouchstoneRepository(
 
     private fun getCoverageSetsFromRecord(records: Result<Record>, scenario: Scenario) =
             records
-                .filter { it[SCENARIO_DESCRIPTION.ID] == scenario.id && it[COVERAGE_SET.ID] != null }
-                .distinctBy { it[COVERAGE_SET.ID]  }
-                .map { mapCoverageSet(it) }
+                    .filter { it[SCENARIO_DESCRIPTION.ID] == scenario.id && it[COVERAGE_SET.ID] != null }
+                    .distinctBy { it[COVERAGE_SET.ID] }
+                    .map { mapCoverageSet(it) }
 
     fun mapTouchstone(record: TouchstoneRecord) = Touchstone(
             record.id,
@@ -121,6 +166,23 @@ class JooqTouchstoneRepository(
             record.description,
             mapEnum(record.status)
     )
+
+    fun mapDemographicStatisticType(records: List<Record>): DemographicStatisticType
+    {
+        val countries = records.map { it[TOUCHSTONE_COUNTRY.COUNTRY] }.distinct()
+
+        // all other properties are the same for all records
+        // so read all other properties from the first record
+        val record = records.first()
+
+        return DemographicStatisticType(
+                record[DEMOGRAPHIC_STATISTIC_TYPE.CODE],
+                record[DEMOGRAPHIC_STATISTIC_TYPE.NAME],
+                record[DEMOGRAPHIC_STATISTIC_TYPE.GENDER_IS_APPLICABLE],
+                countries,
+                record[field(name("s", "sourceName"), String::class.java)]
+        )
+    }
 
     fun mapCoverageSet(record: Record) = CoverageSet(
             record[COVERAGE_SET.ID],
