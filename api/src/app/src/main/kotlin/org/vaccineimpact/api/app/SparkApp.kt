@@ -35,7 +35,7 @@ class MontaguApi
         setupPort()
         spk.redirect.get("/", urlBase)
         spk.before("*", ::addTrailingSlashes)
-        spk.after("*", { _, res ->
+        spk.before("*", { _, res ->
             res.header("Access-Control-Allow-Origin", "*")
         })
         spk.options("*", { _, res ->
