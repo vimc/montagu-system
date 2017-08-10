@@ -14,7 +14,7 @@ object StandardRoles
     fun insertInto(db: JooqContext)
     {
         val roles = listOf(
-                Role("user", null, "Log in", listOf("can-login", "scenarios.read", "countries.read", "modelling-groups.read", "models.read", "touchstones.read", "responsibilities.read", "users.read", "estimates.read")),
+                Role("user", null, "Log in", listOf("can-login", "scenarios.read", "countries.read", "modelling-groups.read", "models.read", "touchstones.read", "responsibilities.read", "users.read", "estimates.read", "demographics.read")),
                 Role("touchstone-preparer", null, "Prepare touchstones", listOf("diseases.write", "vaccines.write", "scenarios.write", "countries.write", "touchstones.prepare", "responsibilities.write", "coverage.read")),
                 Role("touchstone-reviewer", null, "Review touchstones before marking as 'open'", listOf("touchstones.open", "coverage.read")),
                 Role("coverage-provider", null, "Upload coverage data", listOf("coverage.read", "coverage.write")),

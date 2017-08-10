@@ -57,7 +57,8 @@ class DemographicTests: DatabaseTest()
     private fun setUpTouchstone(it: JooqContext){
         it.addTouchstone(touchstoneName, touchstoneVersion, addName = true, addStatus = true)
         it.addDemographicSourcesToTouchstone(touchstoneId, sourceIds)
-        it.addTouchstoneCountries(touchstoneId, countries)
+        it.addDisease("measles", "Measles")
+        it.addTouchstoneCountries(touchstoneId, countries, "measles")
     }
 
     private fun addPopulation(it: JooqContext)

@@ -282,15 +282,13 @@ fun JooqContext.addCountries(ids: List<String>)
     this.dsl.batchStore(records).execute()
 }
 
-fun JooqContext.addTouchstoneCountries(touchstoneId: String, ids: List<String>)
+fun JooqContext.addTouchstoneCountries(touchstoneId: String, ids: List<String>, disease: String)
 {
-    addDisease("Measles", "Measles")
-
     val records = ids.map {
         this.dsl.newRecord(TOUCHSTONE_COUNTRY).apply {
             this.touchstone = touchstoneId
             this.country = it
-            this.disease = "Measles"
+            this.disease = disease
         }
     }
     this.dsl.batchStore(records).execute()
@@ -348,7 +346,7 @@ fun JooqContext.generateDemographicUnits(): List<Int>
             .fetchInto(Int::class.java)
 }
 
-fun JooqContext.generateGenders()
+fun JooqContext.generateGenders(): List<Int>
 {
     val sources = listOf("M", "F", "B")
     val records = sources.map {
@@ -358,6 +356,12 @@ fun JooqContext.generateGenders()
         }
     }
     this.dsl.batchStore(records).execute()
+
+    // JOOQ batchStore doesn't populate generated keys (https://github.com/jOOQ/jOOQ/issues/3327)
+    // so have to read these back out
+    return this.dsl.select(GENDER.ID)
+            .from(GENDER)
+            .fetchInto(Int::class.java)
 }
 
 fun JooqContext.addDemographicStatisticType(type: String,
@@ -365,11 +369,12 @@ fun JooqContext.addDemographicStatisticType(type: String,
                                             units: List<Int>,
                                             ageInterpretation: String = "age",
                                             genderIsApplicable: Boolean = false,
-                                            yearStepSize: Int = 5): Int
+                                            yearStepSize: Int = 5,
+                                            name: String = "$type descriptive name"): Int
 {
     val record = this.dsl.newRecord(DEMOGRAPHIC_STATISTIC_TYPE).apply {
         this.code = type
-        this.name = "$type descriptive name"
+        this.name = name
         this.defaultVariant = variants.first()
         this.demographicValueUnit = units.first()
         this.genderIsApplicable = genderIsApplicable
