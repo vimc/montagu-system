@@ -63,12 +63,8 @@ export function mockTouchstone(properties?: any): models.Touchstone {
         name: "touchstone",
         version: 1,
         description: "Description",
-        status: "open",
-        years: {
-            start: 1970,
-            end: 2100
-        }
-    }
+        status: "open"
+    };
     return Object.assign(template, properties);
 }
 
@@ -106,7 +102,7 @@ export function mockCoverageSet(properties?: any): models.CoverageSet {
         id: 100,
         name: "Coverage set name",
         activity_type: "routine",
-        gavi_support_level: "without",
+        gavi_support: "without",
         touchstone: "touchstone-1",
         vaccine: "some-vaccine"
     };

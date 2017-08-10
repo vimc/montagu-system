@@ -3,23 +3,25 @@ import { shallow } from "enzyme";
 import { expect } from "chai";
 import { mockModellingGroup, mockTouchstone } from "../../../mocks/mockModels";
 
-import { DownloadCoverageTitleComponent } from "../../../../main/contrib/components/Responsibilities/Coverage/DownloadCoverageTitle";
+import { DownloadDataTitleComponent } from "../../../../main/contrib/components/Responsibilities/DownloadDataTitle";
 import { InternalLink } from "../../../../main/shared/components/InternalLink";
 
-describe("DownloadCoverageTitleComponent", () => {
+describe("DownloadDataTitleComponent", () => {
     it("renders title", () => {
-        const rendered = shallow(<DownloadCoverageTitleComponent
+        const rendered = shallow(<DownloadDataTitleComponent
             modellingGroup={ mockModellingGroup() }
-            touchstone={ mockTouchstone() } />)
-        expect(rendered.text()).to.contain("Download coverage data");
+            touchstone={ mockTouchstone() }
+            title="A title" />);
+        expect(rendered.text()).to.contain("A title");
     });
 
     it("renders return link", () => {
         const group = mockModellingGroup({ id: "group-id" });
         const touchstone = mockTouchstone({ id: "some-id" });
-        const rendered = shallow(<DownloadCoverageTitleComponent
+        const rendered = shallow(<DownloadDataTitleComponent
             touchstone={ touchstone }
-            modellingGroup={ group } />)
+            modellingGroup={ group }
+            title="A title" />);
         const link = rendered.find(InternalLink);
         expect(link.prop("href")).to.equal("/group-id/responsibilities/some-id/");
     });

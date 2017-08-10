@@ -11,7 +11,7 @@ describe("CoverageSetComponent", () => {
             name: "my-name",
             vaccine: "my-vaccine",
             activity_type: "campaign",
-            gavi_support_level: "none"
+            gavi_support: "none"
         });
         const rendered = shallow(<CoverageSetComponent order={ 0 } set={ set } />);
         const cells = rendered.find("td");
