@@ -239,13 +239,17 @@ class JooqTouchstoneRepository(
 
     fun mapDemographicStatisticType(records: List<Record>): DemographicStatisticType
     {
-        val record = records[0]
+        val countries = records.map { it[TOUCHSTONE_COUNTRY.COUNTRY] }.distinct()
+
+        // all other properties are the same for all records
+        // so read all other properties from the first record
+        val record = records.first()
 
         return DemographicStatisticType(
                 record[DEMOGRAPHIC_STATISTIC_TYPE.CODE],
                 record[DEMOGRAPHIC_STATISTIC_TYPE.NAME],
                 record[DEMOGRAPHIC_STATISTIC_TYPE.GENDER_IS_APPLICABLE],
-                records.map { it[TOUCHSTONE_COUNTRY.COUNTRY] }.distinct(),
+                countries,
                 record[field(name("s", "sourceName"), String::class.java)]
         )
     }

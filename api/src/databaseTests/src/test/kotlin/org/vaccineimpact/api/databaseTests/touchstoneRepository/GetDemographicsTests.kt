@@ -8,49 +8,49 @@ import org.vaccineimpact.api.models.TouchstoneStatus
 
 class GetDemographicsTests : TouchstoneRepositoryTests()
 {
-    private var _countries: List<String> = listOf()
-    private var _sourceIds: List<Int> = listOf()
-    private var _sources: List<String> = listOf("UNWPP2015", "UNWPP2017", "SOMETHINGELSE")
-    private var _variantIds: List<Int> = listOf()
-    private var _variants = listOf("unwpp_estimates", "unwpp_low_variant", "unwpp_medium_variant", "unwpp_high_variant")
-    private var _units: List<Int> = listOf()
+    private var countries: List<String> = listOf()
+    private var sourceIds: List<Int> = listOf()
+    private var sources: List<String> = listOf("UNWPP2015", "UNWPP2017", "SOMETHINGELSE")
+    private var variantIds: List<Int> = listOf()
+    private var variants = listOf("unwppestimates", "unwpplowvariant", "unwppmediumvariant", "unwpphighvariant")
+    private var units: List<Int> = listOf()
 
     private fun setUpSupportingTables(it: JooqContext)
     {
-        _countries = it.generateCountries(3)
-        _sourceIds = it.generateDemographicSources(_sources)
-        _variantIds = it.generateDemographicVariants(_variants)
-        _units = it.generateDemographicUnits()
+        countries = it.generateCountries(3)
+        sourceIds = it.generateDemographicSources(sources)
+        variantIds = it.generateDemographicVariants(variants)
+        units = it.generateDemographicUnits()
         it.generateGenders()
     }
 
     private fun setUpTouchstone(it: JooqContext){
         it.addTouchstone(touchstoneName, touchstoneVersion, addName = true, addStatus = true)
-        it.addDemographicSourcesToTouchstone(touchstoneId, _sourceIds)
-        it.addTouchstoneCountries(touchstoneId, _countries)
+        it.addDemographicSourcesToTouchstone(touchstoneId, sourceIds)
+        it.addTouchstoneCountries(touchstoneId, countries)
     }
 
-    private fun addPopulation(it: JooqContext, sourceId: Int = _sourceIds.first())
+    private fun addPopulation(it: JooqContext, sourceId: Int = sourceIds.first())
     {
-        val pop = it.addDemographicStatisticType("tot-pop", _variantIds, _units)
+        val pop = it.addDemographicStatisticType("tot-pop", variantIds, units)
 
         it.generateDemographicData(sourceId, pop, genderId = 1,
-                variantId = _variantIds.first(), countries = _countries)
+                variantId = variantIds.first(), countries = countries)
         it.generateDemographicData(sourceId, pop, genderId = 1,
-                variantId = _variantIds[1], countries = _countries, yearRange = 2000..2050 step 5)
+                variantId = variantIds[1], countries = countries, yearRange = 2000..2050 step 5)
         it.generateDemographicData(sourceId, pop, genderId = 1,
-                variantId = _variantIds[2], countries = _countries, yearRange = 2000..2050 step 5)
+                variantId = variantIds[2], countries = countries, yearRange = 2000..2050 step 5)
     }
 
     private fun addFertility(it: JooqContext)
     {
-        val fert = it.addDemographicStatisticType("as-fert", _variantIds, _units, "age of mother", true)
+        val fert = it.addDemographicStatisticType("as-fert", variantIds, units, "age of mother", true)
 
-        it.generateDemographicData(_sourceIds.first(), fert, genderId = 1,
-                variantId = _variantIds.first(), countries = _countries)
+        it.generateDemographicData(sourceIds.first(), fert, genderId = 1,
+                variantId = variantIds.first(), countries = countries)
 
-        it.generateDemographicData(_sourceIds.first(), fert, genderId = 1,
-                variantId = _variantIds[1], countries = _countries)
+        it.generateDemographicData(sourceIds.first(), fert, genderId = 1,
+                variantId = variantIds[1], countries = countries)
 
     }
 
@@ -62,7 +62,7 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
             setUpSupportingTables(it)
 
             it.addTouchstone(touchstoneName, touchstoneVersion, addName = true, addStatus = true)
-            it.addDemographicSourcesToTouchstone(touchstoneId, _sourceIds)
+            it.addDemographicSourcesToTouchstone(touchstoneId, sourceIds)
 
             addFertility(it)
             addPopulation(it)
@@ -81,7 +81,7 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
             setUpSupportingTables(it)
 
             it.addTouchstone(touchstoneName, touchstoneVersion, addName = true, addStatus = true)
-            it.addTouchstoneCountries(touchstoneId, _countries)
+            it.addTouchstoneCountries(touchstoneId, countries)
 
             addFertility(it)
             addPopulation(it)
@@ -115,14 +115,14 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
             setUpSupportingTables(it)
 
             it.addTouchstone(touchstoneName, touchstoneVersion, addName = true, addStatus = true)
-            it.addTouchstoneCountries(touchstoneId, _countries.subList(0,1))
-            it.addDemographicSourcesToTouchstone(touchstoneId, _sourceIds)
+            it.addTouchstoneCountries(touchstoneId, countries.subList(0,1))
+            it.addDemographicSourcesToTouchstone(touchstoneId, sourceIds)
 
             addFertility(it)
 
         } check {
             val types = it.getDemographicStatisticTypes(touchstoneId)
-            Assertions.assertThat(types[0].countries).isEqualTo(_countries.subList(0,1))
+            Assertions.assertThat(types[0].countries).isEqualTo(countries.subList(0,1))
         }
     }
 
@@ -142,15 +142,15 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
             Assertions.assertThat(fertilityType.name).isEqualTo("as-fert descriptive name")
             Assertions.assertThat(fertilityType.id).isEqualTo("as-fert")
             Assertions.assertThat(fertilityType.genderIsApplicable).isTrue()
-            Assertions.assertThat(fertilityType.source).isEqualTo(_sources.first() + " descriptive name")
-            Assertions.assertThat(fertilityType.countries).hasSameElementsAs(_countries)
+            Assertions.assertThat(fertilityType.source).isEqualTo(sources.first() + " descriptive name")
+            Assertions.assertThat(fertilityType.countries).hasSameElementsAs(countries)
 
             val populationType = types.sortedBy { it.name }[1]
             Assertions.assertThat(populationType.name).isEqualTo("tot-pop descriptive name")
             Assertions.assertThat(populationType.id).isEqualTo("tot-pop")
             Assertions.assertThat(populationType.genderIsApplicable).isFalse()
-            Assertions.assertThat(populationType.source).isEqualTo(_sources.first() + " descriptive name")
-            Assertions.assertThat(fertilityType.countries).hasSameElementsAs(_countries)
+            Assertions.assertThat(populationType.source).isEqualTo(sources.first() + " descriptive name")
+            Assertions.assertThat(fertilityType.countries).hasSameElementsAs(countries)
         }
     }
 
@@ -181,19 +181,19 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
             it.addTouchstone(touchstoneName, touchstoneVersion, addName = true, addStatus = true)
 
             // add first 2 sources to touchstone
-            it.addDemographicSourcesToTouchstone(touchstoneId, _sourceIds.subList(0,2))
+            it.addDemographicSourcesToTouchstone(touchstoneId, sourceIds.subList(0,2))
 
             // add first 3 countries to touchstone
-            it.addTouchstoneCountries(touchstoneId, _countries.subList(0,3))
+            it.addTouchstoneCountries(touchstoneId, countries.subList(0,3))
 
             // add population data for all countries, multiple variants and a source that is in the touchstone
-            addPopulation(it, _sourceIds[1])
+            addPopulation(it, sourceIds[1])
 
             // add data for another stat type
             addFertility(it)
 
             // add data for all countries, multiple variants and a source that isn't in the touchstone
-            addPopulation(it, _sourceIds[2])
+            addPopulation(it, sourceIds[2])
 
         } check {
 
@@ -217,15 +217,15 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
             it.addTouchstone(touchstoneName, touchstoneVersion, addName = true, addStatus = true)
 
             // add first 2 sources to touchstone
-            it.addDemographicSourcesToTouchstone(touchstoneId, _sourceIds.subList(0,2))
+            it.addDemographicSourcesToTouchstone(touchstoneId, sourceIds.subList(0,2))
 
-            it.addTouchstoneCountries(touchstoneId, _countries)
+            it.addTouchstoneCountries(touchstoneId, countries)
 
             // add data for another stat type
             addFertility(it)
 
             // add data for all countries, multiple variants and a source that isn't in the touchstone
-            addPopulation(it, _sourceIds[2])
+            addPopulation(it, sourceIds[2])
 
         } check {
 
