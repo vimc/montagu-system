@@ -10,9 +10,9 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
 {
     private var countries: List<String> = listOf()
     private var sourceIds: List<Int> = listOf()
-    private var sources: List<String> = listOf("UNWPP2015", "UNWPP2017", "SOMETHINGELSE")
+    private var sources: List<String> = listOf("UNWPP2015", "UNWPP2017")
     private var variantIds: List<Int> = listOf()
-    private var variants = listOf("unwppestimates", "unwpplowvariant", "unwppmediumvariant", "unwpphighvariant")
+    private var variants = listOf("unwpp_estimates", "unwpp_low_variant", "unwpp_medium_variant", "unwpp_high_variant")
     private var units: List<Int> = listOf()
 
     private fun setUpSupportingTables(it: JooqContext)
@@ -24,22 +24,28 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
         it.generateGenders()
     }
 
-    private fun setUpTouchstone(it: JooqContext){
+    private fun setUpTouchstone(it: JooqContext)
+    {
         it.addTouchstone(touchstoneName, touchstoneVersion, addName = true, addStatus = true)
         it.addDemographicSourcesToTouchstone(touchstoneId, sourceIds)
         it.addTouchstoneCountries(touchstoneId, countries)
     }
 
-    private fun addPopulation(it: JooqContext, sourceId: Int = sourceIds.first())
+    private fun addPopulation(it: JooqContext,
+                              sources: List<Int> = sourceIds,
+                              variants: List<Int> = variantIds,
+                              countries: List<String> = this.countries)
     {
         val pop = it.addDemographicStatisticType("tot-pop", variantIds, units)
 
-        it.generateDemographicData(sourceId, pop, genderId = 1,
-                variantId = variantIds.first(), countries = countries)
-        it.generateDemographicData(sourceId, pop, genderId = 1,
-                variantId = variantIds[1], countries = countries, yearRange = 2000..2050 step 5)
-        it.generateDemographicData(sourceId, pop, genderId = 1,
-                variantId = variantIds[2], countries = countries, yearRange = 2000..2050 step 5)
+        for (source in sources)
+        {
+            for (variant in variants)
+            {
+                it.generateDemographicData(source, pop, genderId = 1,
+                        variantId = variant, countries = countries, yearRange = 1950..2050 step 5)
+            }
+        }
     }
 
     private fun addFertility(it: JooqContext)
@@ -115,14 +121,14 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
             setUpSupportingTables(it)
 
             it.addTouchstone(touchstoneName, touchstoneVersion, addName = true, addStatus = true)
-            it.addTouchstoneCountries(touchstoneId, countries.subList(0,1))
+            it.addTouchstoneCountries(touchstoneId, countries.subList(0, 1))
             it.addDemographicSourcesToTouchstone(touchstoneId, sourceIds)
 
             addFertility(it)
 
         } check {
             val types = it.getDemographicStatisticTypes(touchstoneId)
-            Assertions.assertThat(types[0].countries).isEqualTo(countries.subList(0,1))
+            Assertions.assertThat(types[0].countries).isEqualTo(countries.subList(0, 1))
         }
     }
 
@@ -181,30 +187,34 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
             it.addTouchstone(touchstoneName, touchstoneVersion, addName = true, addStatus = true)
 
             // add first 2 sources to touchstone
-            it.addDemographicSourcesToTouchstone(touchstoneId, sourceIds.subList(0,2))
+            val sourcesInTouchstone = sourceIds.subList(0, 1)
+            it.addDemographicSourcesToTouchstone(touchstoneId, sourcesInTouchstone)
 
             // add first 3 countries to touchstone
-            it.addTouchstoneCountries(touchstoneId, countries.subList(0,3))
+            val countriesInTouchstone = countries.subList(0, 3)
+            it.addTouchstoneCountries(touchstoneId, countriesInTouchstone)
 
-            // add population data for all countries, multiple variants and a source that is in the touchstone
-            addPopulation(it, sourceIds[1])
+            // add population data for a source that is in the touchstone
+            addPopulation(it, sources = sourcesInTouchstone.subList(0, 1))
 
             // add data for another stat type
             addFertility(it)
 
-            // add data for all countries, multiple variants and a source that isn't in the touchstone
-            addPopulation(it, sourceIds[2])
+            // add data for a source that isn't in the touchstone
+            addPopulation(it, sources = sourceIds.subList(1, 2))
 
         } check {
 
             val data = it.getDemographicDataset("tot-pop", touchstoneId).tableData.data
 
-            val numYears = 11
+            val numYears = 21
             val numAges = 17
             val numCountries = 3
+
+            // should only ever be 2 variants - unwpp_estimates and unwpp_medium_variant
             val numVariants = 2
             val numSources = 1
-            Assertions.assertThat(data.count()).isEqualTo(numAges*numYears*numCountries*numVariants*numSources)
+            Assertions.assertThat(data.count()).isEqualTo(numAges * numYears * numCountries * numVariants * numSources)
         }
     }
 
@@ -217,7 +227,7 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
             it.addTouchstone(touchstoneName, touchstoneVersion, addName = true, addStatus = true)
 
             // add first 2 sources to touchstone
-            it.addDemographicSourcesToTouchstone(touchstoneId, sourceIds.subList(0,2))
+            it.addDemographicSourcesToTouchstone(touchstoneId, sourceIds.subList(0, 2))
 
             it.addTouchstoneCountries(touchstoneId, countries)
 
@@ -225,7 +235,7 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
             addFertility(it)
 
             // add data for all countries, multiple variants and a source that isn't in the touchstone
-            addPopulation(it, sourceIds[2])
+            addPopulation(it, sourceIds.subList(2, 3))
 
         } check {
 

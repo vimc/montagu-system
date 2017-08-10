@@ -176,7 +176,7 @@ class JooqTouchstoneRepository(
     }
 
     private fun getDemographicStatisticTypeQuery(touchstoneId: String, typeId: String):
-            SelectConditionStep<Record7<Int, String, String, Boolean, String, String, String>>
+            SelectConditionStep<Record6<Int, String, String, Boolean, String, String>>
     {
 
         return getDemographicStatisticTypesQuery(touchstoneId)

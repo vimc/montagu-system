@@ -33,7 +33,7 @@ class DemographicTests: DatabaseTest()
                     "name" to "tot-pop descriptive name",
                     "source" to "UNWPP2015 descriptive name",
                     "countries" to array(countries.sortedBy { it }),
-                    "genderisapplicable" to false
+                    "gender_is_applicable" to false
             )})
         }
     }
