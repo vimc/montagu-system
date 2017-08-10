@@ -7,7 +7,7 @@ import org.vaccineimpact.api.blackboxTests.helpers.validate
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.direct.*
 import org.vaccineimpact.api.models.permissions.PermissionSet
-import org.vaccineimpact.api.test_helpers.DatabaseTest
+import org.vaccineimpact.api.testhelpers.DatabaseTest
 
 class DemographicTests: DatabaseTest()
 {
@@ -32,39 +32,39 @@ class DemographicTests: DatabaseTest()
                     "id" to "tot-pop",
                     "name" to "tot-pop descriptive name",
                     "source" to "UNWPP2015 descriptive name",
-                    "countries" to array(_countries.sortedBy { it }),
-                    "gender_is_applicable" to false
+                    "countries" to array(countries.sortedBy { it }),
+                    "genderisapplicable" to false
             )})
         }
     }
 
-    private var _countries: List<String> = listOf()
-    private var _sourceIds: List<Int> = listOf()
-    private var _sources: List<String> = listOf("UNWPP2015", "UNWPP2017")
-    private var _variantIds: List<Int> = listOf()
-    private var _variants = listOf("low", "medium", "high")
-    private var _units: List<Int> = listOf()
+    private var countries: List<String> = listOf()
+    private var sourceIds: List<Int> = listOf()
+    private var sources: List<String> = listOf("UNWPP2015", "UNWPP2017")
+    private var variantIds: List<Int> = listOf()
+    private var variants = listOf("low", "medium", "high")
+    private var units: List<Int> = listOf()
 
     private fun setUpSupportingTables(it: JooqContext)
     {
-        _countries = it.generateCountries(3)
-        _sourceIds = it.generateDemographicSources(_sources)
-        _variantIds = it.generateDemographicVariants(_variants)
-        _units = it.generateDemographicUnits()
+        countries = it.generateCountries(3)
+        sourceIds = it.generateDemographicSources(sources)
+        variantIds = it.generateDemographicVariants(variants)
+        units = it.generateDemographicUnits()
         it.generateGenders()
     }
 
     private fun setUpTouchstone(it: JooqContext){
         it.addTouchstone(touchstoneName, touchstoneVersion, addName = true, addStatus = true)
-        it.addDemographicSourcesToTouchstone(touchstoneId, _sourceIds)
-        it.addTouchstoneCountries(touchstoneId, _countries)
+        it.addDemographicSourcesToTouchstone(touchstoneId, sourceIds)
+        it.addTouchstoneCountries(touchstoneId, countries)
     }
 
     private fun addPopulation(it: JooqContext)
     {
-        val pop = it.addDemographicStatisticType("tot-pop", _variantIds, _units)
+        val pop = it.addDemographicStatisticType("tot-pop", variantIds, units)
 
-        it.generateDemographicData(_sourceIds.first(), pop, genderId = 1,
-                variantId = _variantIds.first(), countries = _countries)
+        it.generateDemographicData(sourceIds.first(), pop, genderId = 1,
+                variantId = variantIds.first(), countries = countries)
     }
 }
