@@ -60,8 +60,9 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
         {
             for (variant in variants)
             {
-                it.generateDemographicData(sourceIds.first(), fert, genderId = 1,
-                        variantId = variantIds.first(), countries = countries)
+                it.generateDemographicData(source, fert, genderId = 1,
+                        variantId = variant, countries = countries,
+                        yearRange = 1950..2000 step 5)
 
             }
         }
@@ -187,48 +188,49 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
     }
 
     @Test
-    fun `gets right number of demographic rows`()
+    fun `gets demographic data`()
     {
         given {
+
             setUpSupportingTables(it)
-
-            it.addTouchstone(touchstoneName, touchstoneVersion, addName = true, addStatus = true)
-
-            // add first 2 sources to touchstone
-            val sourcesInTouchstone = sourceIds.subList(0, 1)
-            it.addDemographicSourcesToTouchstone(touchstoneId, sourcesInTouchstone)
-
-            // add first 3 countries to touchstone
-            val countriesInTouchstone = countries.subList(0, 3)
-            it.addTouchstoneCountries(touchstoneId, countriesInTouchstone)
-
-            // add population data for a source that is in the touchstone
-            addPopulation(it, sources = sourcesInTouchstone.subList(0, 1))
-
-            // add data for another stat type
+            setUpTouchstone(it)
+            addPopulation(it)
             addFertility(it)
-
-            // add data for a source that isn't in the touchstone
-            addPopulation(it, sources = sourceIds.subList(1, 2))
 
         } check {
 
             val data = it.getDemographicDataset("tot-pop", sources[0], touchstoneId)
                     .tableData.data
 
-            val numYears = 21
+            // 1950..2050 step 5 means 21 year steps
+            var numYears = 21
+
+            // 0..80 step 5 means 17 age steps
             val numAges = 17
-            val numCountries = 3
 
             // should only ever be 2 variants - unwpp_estimates and unwpp_medium_variant
             val numVariants = 2
+
+            // should return data for a single source
             val numSources = 1
+            val numCountries = countries.count()
+
             Assertions.assertThat(data.count()).isEqualTo(numAges * numYears * numCountries * numVariants * numSources)
+
+            val fertilityData = it.getDemographicDataset("as-fert", sources[0], touchstoneId)
+                    .tableData.data
+
+            // 1950..2000 step 5 means 21 year steps
+            numYears = 11
+
+            Assertions.assertThat(fertilityData.count())
+                    .isEqualTo(numAges * numYears * numCountries * numVariants * numSources)
+
         }
     }
 
     @Test
-    fun `throw unknown object error if touchstone doesn't exist`()
+    fun `throws unknown object error if touchstone doesn't exist`()
     {
         given {
             setUpSupportingTables(it)
@@ -247,7 +249,7 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
         given {
             setUpSupportingTables(it)
             setUpTouchstone(it)
-            addPopulation(it, sourceIds.subList(0,1))
+            addPopulation(it, sourceIds.subList(0, 1))
 
         } check {
 
