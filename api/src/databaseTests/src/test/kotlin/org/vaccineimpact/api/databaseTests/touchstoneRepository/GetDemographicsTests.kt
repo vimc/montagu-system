@@ -35,6 +35,9 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
 
         it.generateDemographicData(sourceIds.first(), pop, genderId = 1,
                 variantId = variantIds.first(), countries = countries)
+
+        it.generateDemographicData(sourceIds[1], pop, genderId = 1,
+                variantId = variantIds.first(), countries = countries)
     }
 
     private fun addFertility(it: JooqContext)
@@ -139,14 +142,14 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
             Assertions.assertThat(fertilityType.name).isEqualTo("as-fert descriptive name")
             Assertions.assertThat(fertilityType.id).isEqualTo("as-fert")
             Assertions.assertThat(fertilityType.genderIsApplicable).isTrue()
-            Assertions.assertThat(fertilityType.source).isEqualTo(sources.first() + " descriptive name")
+            Assertions.assertThat(fertilityType.sources).isEqualTo(sources.subList(0,1))
             Assertions.assertThat(fertilityType.countries).hasSameElementsAs(countries)
 
             val populationType = types.sortedBy { it.name }[1]
             Assertions.assertThat(populationType.name).isEqualTo("tot-pop descriptive name")
             Assertions.assertThat(populationType.id).isEqualTo("tot-pop")
             Assertions.assertThat(populationType.genderIsApplicable).isFalse()
-            Assertions.assertThat(populationType.source).isEqualTo(sources.first() + " descriptive name")
+            Assertions.assertThat(populationType.sources).isEqualTo(sources)
             Assertions.assertThat(fertilityType.countries).hasSameElementsAs(countries)
         }
     }

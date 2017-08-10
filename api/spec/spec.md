@@ -1700,19 +1700,19 @@ Schema: [`Demographics.schema.json`](Demographics.schema.json)
     [{ 
         "id" : "as-fert",
         "name": "Age-specific fertility",
-        "source" : "UNWPP",
+        "sources" : ["unwpp2015", "unwpp2017"],
         "countries" : ["AFG"],
         "gender_is_applicable": false
      },
      { 
         "id" : "tot-pop",
-        "name" : "Total population",
-        "source" : "UNWPP",
+        "name" : "Total population",        
+        "sources" : ["unwpp2015"],
         "countries" : ["AFG"],
         "gender_is_applicable": true
      }]
 
-## GET /touchstones/{touchstone-id}/demographics/{demographic-type-code}/
+## GET /touchstones/{touchstone-id}/demographics/{source-code}/{demographic-type-code}/
 
 Returns the data set with given type, in `long` CSV format.
 
@@ -1751,7 +1751,7 @@ Optional. The gender to return, either `female`, `male`, or `both`. Defaults to 
 Optional. A format to return the CSV in, either `wide` or `long`. Defaults to `long`.
 
 Example:
-`/touchstones/2017-op-1/demographics/tot_pop/?format=wide&gender=female`
+`/touchstones/2017-op-1/demographics/unwpp2015/tot_pop/?format=wide&gender=female`
 
 Total population:
 

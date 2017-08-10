@@ -31,7 +31,7 @@ class DemographicTests: DatabaseTest()
             Assertions.assertThat(it).contains(json { obj(
                     "id" to "tot-pop",
                     "name" to "tot-pop descriptive name",
-                    "source" to "UNWPP2015 descriptive name",
+                    "sources" to array("unwpp2015"),
                     "countries" to array(countries.sortedBy { it }),
                     "gender_is_applicable" to false
             )})
@@ -40,7 +40,7 @@ class DemographicTests: DatabaseTest()
 
     private var countries: List<String> = listOf()
     private var sourceIds: List<Int> = listOf()
-    private var sources: List<String> = listOf("UNWPP2015", "UNWPP2017")
+    private var sources: List<String> = listOf("unwpp2015", "unwpp2017")
     private var variantIds: List<Int> = listOf()
     private var variants = listOf("low", "medium", "high")
     private var units: List<Int> = listOf()
