@@ -44,3 +44,7 @@
 :local(.actions) button {
     margin-right: 10px;
 }
+
+:local(.demographics) li {
+    margin-bottom: 10px;
+}
