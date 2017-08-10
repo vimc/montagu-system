@@ -6,6 +6,7 @@ import { RemoteContentComponent } from "../../../../shared/components/RemoteCont
 import { responsibilityStore } from "../../../stores/ResponsibilityStore";
 import { ResponsibilityList } from "./List/ResponsibilityList";
 import { connectToStores } from "../../../../shared/alt";
+import { ButtonLink } from "../../../../shared/components/ButtonLink";
 
 const commonStyles = require("../../../../shared/styles/common.css");
 
@@ -22,16 +23,23 @@ export class ResponsibilityOverviewContentComponent extends RemoteContentCompone
 
     static getPropsFromStores(): ResponsibilityOverviewComponentProps {
         const state = responsibilityStore.getState();
+        const set = responsibilityStore.getCurrentResponsibilitySet();
         return {
-            responsibilitySet: responsibilityStore.getCurrentResponsibilitySet(),
-            ready: state.ready,
+            responsibilitySet: set,
+            ready: state.ready && set != null,
             currentDiseaseId: state.currentDiseaseId,
             modellingGroup: state.currentModellingGroup
         }
     }
 
     renderContent(props: ResponsibilityOverviewComponentProps) {
+        const demographyUrl = `/${props.modellingGroup.id}/responsibilities/${props.responsibilitySet.touchstone.id}/demographics/`;
         return <div>
+            <div className={ commonStyles.largeSectionTitle }>Demographic data</div>
+            <div className={ commonStyles.gapAbove }>
+                <ButtonLink href={ demographyUrl }>Download demographic data</ButtonLink>
+            </div>
+
             <div className={ commonStyles.largeSectionTitle }>Scenarios</div>
             <ResponsibilityList
                 modellingGroup={ props.modellingGroup }

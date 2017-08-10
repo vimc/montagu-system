@@ -14,7 +14,7 @@ interface Props {
 export class ResponsibilityComponent extends React.Component<Props, undefined> {
     render() {
         const item = this.props.responsibility;
-        const downloadUrl = `/${ this.props.modellingGroup.id }/responsibilities/${ this.props.touchstone.id }/${ item.scenario.id }/`;
+        const downloadUrl = `/${this.props.modellingGroup.id}/responsibilities/${this.props.touchstone.id}/coverage/${item.scenario.id}/`;
 
         return <li className={ styles.scenario }>
             <div className={ styles.header }>

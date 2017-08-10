@@ -1,23 +1,28 @@
 import * as React from "react";
-import { connectToStores } from "../../../../shared/alt";
-import { ModellingGroup, Touchstone } from "../../../../shared/models/Generated";
-import { responsibilityStore } from "../../../stores/ResponsibilityStore";
-import { InternalLink } from "../../../../shared/components/InternalLink";
+import { InternalLink } from "../../../shared/components/InternalLink";
+import { ModellingGroup, Touchstone } from "../../../shared/models/Generated";
+import { responsibilityStore } from "../../stores/ResponsibilityStore";
+import { connectToStores } from "../../../shared/alt";
 
-const headerStyles = require("../../../../shared/components/PageWithHeader/PageWithHeader.css");
+const headerStyles = require("../../../shared/components/PageWithHeader/PageWithHeader.css");
 
-interface Props {
+
+interface PublicProps {
+    title: string;
+}
+interface Props extends PublicProps {
     touchstone: Touchstone;
     modellingGroup: ModellingGroup;
 }
 
-export class DownloadCoverageTitleComponent extends React.Component<Props, undefined> {
+export class DownloadDataTitleComponent extends React.Component<Props, undefined> {
     static getStores() {
         return [ responsibilityStore ];
     }
-    static getPropsFromStores() {
+    static getPropsFromStores(props: Props): Props {
         const state = responsibilityStore.getState();
         return {
+            title: props.title,
             touchstone: state.currentTouchstone,
             modellingGroup: state.currentModellingGroup
         };
@@ -36,9 +41,10 @@ export class DownloadCoverageTitleComponent extends React.Component<Props, undef
 
     render() {
         return <span>
-            Download coverage data
+            { this.props.title }
             { this.renderReturnLink() }
         </span>;
     }
 }
-export const DownloadCoverageTitle = connectToStores(DownloadCoverageTitleComponent);
+export const DownloadDataTitle =
+    connectToStores(DownloadDataTitleComponent) as ComponentConstructor<PublicProps, undefined>;

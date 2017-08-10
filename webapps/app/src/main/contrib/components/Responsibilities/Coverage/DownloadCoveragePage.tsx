@@ -1,12 +1,12 @@
 import * as React from "react";
 import { touchstoneActions } from "../../../actions/TouchstoneActions";
 import { responsibilityActions } from "../../../actions/ResponsibilityActions";
-import { DownloadCoverageTitle } from "./DownloadCoverageTitle";
 import { responsibilityStore } from "../../../stores/ResponsibilityStore";
 import { DownloadCoverageContent } from "./DownloadCoverageContent";
 import { modellingGroupActions } from "../../../../shared/actions/ModellingGroupActions";
 import { PageWithHeaderAndNav } from "../../PageWithHeader/PageWithHeaderAndNav";
 import { doNothing } from "../../../../shared/Helpers";
+import { DownloadDataTitle } from "../DownloadDataTitle";
 
 interface LocationProps {
     groupId: string;
@@ -30,7 +30,7 @@ export class DownloadCoveragePage extends PageWithHeaderAndNav<LocationProps> {
     }
 
     title() {
-        return <DownloadCoverageTitle />
+        return <DownloadDataTitle title="Download coverage data" />
     }
 
     renderPageContent() {
