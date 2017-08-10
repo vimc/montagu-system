@@ -4,6 +4,33 @@ open class Question(val fieldName: String, val default: String? = null)
 {
     protected open fun getLine(): String? = readLine()
 
+    fun ask(): String
+    {
+        var answer: String? = null
+        while (answer == null || answer.isBlank())
+        {
+            answer = getAnswerOrDefault()
+        }
+        return answer
+    }
+
+    private fun getAnswerOrDefault(): String?
+    {
+        val answer = getAnswer()
+        if (answer == null || answer.isBlank())
+        {
+            if (default != null)
+            {
+                return default
+            }
+            else
+            {
+                println("'$fieldName' cannot be blank")
+            }
+        }
+        return answer
+    }
+
     private fun getAnswer(): String?
     {
         print(fieldName)
@@ -13,24 +40,6 @@ open class Question(val fieldName: String, val default: String? = null)
         }
         print(": ")
         return getLine()
-    }
-
-    fun ask(): String
-    {
-        var answer: String? = null
-        while (answer.isNullOrEmpty())
-        {
-            answer = getAnswer()
-            if (default != null)
-            {
-                answer = default
-            }
-            else if (answer.isNullOrEmpty())
-            {
-                println("'$fieldName' cannot be blank")
-            }
-        }
-        return answer!!
     }
 }
 

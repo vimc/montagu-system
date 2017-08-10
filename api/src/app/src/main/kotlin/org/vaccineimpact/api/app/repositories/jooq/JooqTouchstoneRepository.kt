@@ -153,7 +153,7 @@ class JooqTouchstoneRepository(
             SelectOnConditionStep<Record6<Int, String, String, Boolean, String, String>>
     {
         val statsInTouchstoneCountriesAndSources =
-                dsl.selectDistinct(DEMOGRAPHIC_SOURCE.NAME.`as`("sourceName"),
+                dsl.selectDistinct(DEMOGRAPHIC_SOURCE.CODE.`as`("sourceCode"),
                         DEMOGRAPHIC_STATISTIC.DEMOGRAPHIC_STATISTIC_TYPE.`as`("typeId"),
                         TOUCHSTONE_COUNTRY.COUNTRY.`as`("country"))
                         .from(DEMOGRAPHIC_STATISTIC)
@@ -173,7 +173,7 @@ class JooqTouchstoneRepository(
                         DEMOGRAPHIC_STATISTIC_TYPE.CODE,
                         DEMOGRAPHIC_STATISTIC_TYPE.NAME,
                         DEMOGRAPHIC_STATISTIC_TYPE.GENDER_IS_APPLICABLE,
-                        field(name("s", "sourceName"), String::class.java),
+                        field(name("s", "sourceCode"), String::class.java),
                         field(name("s", "country"), String::class.java))
                 .from(table(name("s")))
                 .join(DEMOGRAPHIC_STATISTIC_TYPE)
@@ -248,6 +248,7 @@ class JooqTouchstoneRepository(
     fun mapDemographicStatisticType(records: List<Record>): DemographicStatisticType
     {
         val countries = records.map { it[TOUCHSTONE_COUNTRY.COUNTRY] }.distinct()
+        val sources = records.map { it[field(name("s", "sourceCode"), String::class.java)] }.distinct()
 
         // all other properties are the same for all records
         // so read all other properties from the first record
@@ -258,7 +259,7 @@ class JooqTouchstoneRepository(
                 record[DEMOGRAPHIC_STATISTIC_TYPE.NAME],
                 record[DEMOGRAPHIC_STATISTIC_TYPE.GENDER_IS_APPLICABLE],
                 countries,
-                record[field(name("s", "sourceName"), String::class.java)]
+                sources
         )
     }
 

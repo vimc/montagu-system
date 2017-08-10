@@ -29,7 +29,8 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
     {
         it.addTouchstone(touchstoneName, touchstoneVersion, addName = true, addStatus = true)
         it.addDemographicSourcesToTouchstone(touchstoneId, sourceIds)
-        it.addTouchstoneCountries(touchstoneId, countries)
+        it.addDisease("measles", "Measles")
+        it.addTouchstoneCountries(touchstoneId, countries, "measles")
     }
 
     private fun addPopulation(it: JooqContext,
@@ -96,7 +97,8 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
             setUpSupportingTables(it)
 
             it.addTouchstone(touchstoneName, touchstoneVersion, addName = true, addStatus = true)
-            it.addTouchstoneCountries(touchstoneId, countries)
+            it.addDisease("measles", "Measles")
+            it.addTouchstoneCountries(touchstoneId, countries, "measles")
 
             addFertility(it)
             addPopulation(it)
@@ -157,14 +159,14 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
             Assertions.assertThat(fertilityType.name).isEqualTo("as-fert descriptive name")
             Assertions.assertThat(fertilityType.id).isEqualTo("as-fert")
             Assertions.assertThat(fertilityType.genderIsApplicable).isTrue()
-            Assertions.assertThat(fertilityType.source).isEqualTo(sources.first() + " descriptive name")
+            Assertions.assertThat(fertilityType.sources).isEqualTo(sources.subList(0,1))
             Assertions.assertThat(fertilityType.countries).hasSameElementsAs(countries)
 
             val populationType = types.sortedBy { it.name }[1]
             Assertions.assertThat(populationType.name).isEqualTo("tot-pop descriptive name")
             Assertions.assertThat(populationType.id).isEqualTo("tot-pop")
             Assertions.assertThat(populationType.genderIsApplicable).isFalse()
-            Assertions.assertThat(populationType.source).isEqualTo(sources.first() + " descriptive name")
+            Assertions.assertThat(populationType.sources).isEqualTo(sources)
             Assertions.assertThat(fertilityType.countries).hasSameElementsAs(countries)
         }
     }
