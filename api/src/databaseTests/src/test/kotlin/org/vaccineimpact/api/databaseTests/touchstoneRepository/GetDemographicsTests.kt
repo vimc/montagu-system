@@ -2,6 +2,7 @@ package org.vaccineimpact.api.databaseTests.touchstoneRepository
 
 import org.assertj.core.api.Assertions
 import org.junit.Test
+import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.direct.*
 import org.vaccineimpact.api.models.TouchstoneStatus
@@ -42,21 +43,28 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
         {
             for (variant in variants)
             {
-                it.generateDemographicData(source, pop, genderId = 1,
+                it.generateDemographicData(source, pop, 1,
                         variantId = variant, countries = countries, yearRange = 1950..2050 step 5)
             }
         }
     }
 
-    private fun addFertility(it: JooqContext)
+    private fun addFertility(it: JooqContext,
+                             sources: List<Int> = sourceIds,
+                             variants: List<Int> = variantIds,
+                             countries: List<String> = this.countries)
     {
         val fert = it.addDemographicStatisticType("as-fert", variantIds, units, "age of mother", true)
 
-        it.generateDemographicData(sourceIds.first(), fert, genderId = 1,
-                variantId = variantIds.first(), countries = countries)
+        for (source in sources)
+        {
+            for (variant in variants)
+            {
+                it.generateDemographicData(sourceIds.first(), fert, genderId = 1,
+                        variantId = variantIds.first(), countries = countries)
 
-        it.generateDemographicData(sourceIds.first(), fert, genderId = 1,
-                variantId = variantIds[1], countries = countries)
+            }
+        }
 
     }
 
@@ -170,7 +178,7 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
             addFertility(it)
 
         } check {
-            val touchstone = it.getDemographicDataset("tot-pop", touchstoneId).structuredMetadata.touchstone
+            val touchstone = it.getDemographicDataset("tot-pop", sources[0], touchstoneId).structuredMetadata.touchstone
             Assertions.assertThat(touchstone.name).isEqualTo(touchstoneName)
             Assertions.assertThat(touchstone.description).isEqualTo("Description")
             Assertions.assertThat(touchstone.status).isEqualTo(TouchstoneStatus.OPEN)
@@ -205,7 +213,8 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
 
         } check {
 
-            val data = it.getDemographicDataset("tot-pop", touchstoneId).tableData.data
+            val data = it.getDemographicDataset("tot-pop", sources[0], touchstoneId)
+                    .tableData.data
 
             val numYears = 21
             val numAges = 17
@@ -219,29 +228,104 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
     }
 
     @Test
-    fun `demographic data is null if no rows`()
+    fun `throw unknown object error if touchstone doesn't exist`()
     {
         given {
             setUpSupportingTables(it)
 
-            it.addTouchstone(touchstoneName, touchstoneVersion, addName = true, addStatus = true)
+        } check {
 
-            // add first 2 sources to touchstone
-            it.addDemographicSourcesToTouchstone(touchstoneId, sourceIds.subList(0, 2))
+            Assertions.assertThatThrownBy {
+                it.getDemographicDataset("tot-pop", sources[1], touchstoneId)
+            }.isInstanceOf(UnknownObjectError::class.java)
+        }
+    }
 
-            it.addTouchstoneCountries(touchstoneId, countries)
-
-            // add data for another stat type
-            addFertility(it)
-
-            // add data for all countries, multiple variants and a source that isn't in the touchstone
-            addPopulation(it, sourceIds.subList(2, 3))
+    @Test
+    fun `only returns data for given source`()
+    {
+        given {
+            setUpSupportingTables(it)
+            setUpTouchstone(it)
+            addPopulation(it, sourceIds.subList(0,1))
 
         } check {
 
-            val result = it.getDemographicDataset("tot-pop", touchstoneId)
+            val source = sources[1]
+            val result = it.getDemographicDataset("tot-pop", source, touchstoneId)
             Assertions.assertThat(result.structuredMetadata.demographicData).isNull()
             Assertions.assertThat(result.tableData.data.count()).isEqualTo(0)
         }
     }
+
+    @Test
+    fun `only returns data for given type`()
+    {
+        given {
+
+            setUpSupportingTables(it)
+            setUpTouchstone(it)
+            addFertility(it)
+
+        } check {
+
+            val result = it.getDemographicDataset("tot-pop", sources[1], touchstoneId)
+            Assertions.assertThat(result.structuredMetadata.demographicData).isNull()
+            Assertions.assertThat(result.tableData.data.count()).isEqualTo(0)
+        }
+    }
+
+    @Test
+    fun `only returns data for given touchstone countries`()
+    {
+        val anotherTouchstoneName = "anothertouchstone"
+        val anotherTouchstoneId = "$anotherTouchstoneName-$touchstoneVersion"
+
+        given {
+
+            setUpSupportingTables(it)
+            setUpTouchstone(it)
+
+            it.addTouchstone(anotherTouchstoneName, touchstoneVersion, addName = true, addStatus = false)
+            it.addDemographicSourcesToTouchstone(anotherTouchstoneId, sourceIds)
+            it.addTouchstoneCountries(anotherTouchstoneId, it.generateCountries(2), addDisease = false)
+
+            addPopulation(it)
+
+        } check {
+
+            val result = it.getDemographicDataset("tot-pop", sources[1], anotherTouchstoneId)
+            Assertions.assertThat(result.structuredMetadata.demographicData).isNull()
+            Assertions.assertThat(result.tableData.data.count()).isEqualTo(0)
+        }
+    }
+
+    @Test
+    fun `only returns data for source in given touchstone`()
+    {
+        val anotherTouchstoneName = "anothertouchstone"
+        val anotherTouchstoneId = "$anotherTouchstoneName-$touchstoneVersion"
+
+        given {
+
+            setUpSupportingTables(it)
+            setUpTouchstone(it)
+
+            val newSources = listOf("anothersource", "moresource")
+            val newSourceIds = it.generateDemographicSources(newSources)
+
+            it.addTouchstone(anotherTouchstoneName, touchstoneVersion, addName = true, addStatus = false)
+            it.addDemographicSourcesToTouchstone(anotherTouchstoneId, newSourceIds)
+            it.addTouchstoneCountries(anotherTouchstoneId, countries, addDisease = false)
+
+            addPopulation(it)
+
+        } check {
+
+            val result = it.getDemographicDataset("tot-pop", sources[1], anotherTouchstoneId)
+            Assertions.assertThat(result.structuredMetadata.demographicData).isNull()
+            Assertions.assertThat(result.tableData.data.count()).isEqualTo(0)
+        }
+    }
+
 }

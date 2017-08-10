@@ -282,10 +282,12 @@ fun JooqContext.addCountries(ids: List<String>)
     this.dsl.batchStore(records).execute()
 }
 
-fun JooqContext.addTouchstoneCountries(touchstoneId: String, ids: List<String>)
+fun JooqContext.addTouchstoneCountries(touchstoneId: String, ids: List<String>, addDisease: Boolean = true)
 {
-    addDisease("Measles", "Measles")
-
+    if (addDisease)
+    {
+        addDisease("Measles", "Measles")
+    }
     val records = ids.map {
         this.dsl.newRecord(TOUCHSTONE_COUNTRY).apply {
             this.touchstone = touchstoneId
@@ -311,6 +313,7 @@ fun JooqContext.generateDemographicSources(sources: List<String>): List<Int>
     // so have to read these back out
     return this.dsl.select(DEMOGRAPHIC_SOURCE.ID)
             .from(DEMOGRAPHIC_SOURCE)
+            .where(DEMOGRAPHIC_SOURCE.CODE.`in`(sources))
             .fetchInto(Int::class.java)
 }
 

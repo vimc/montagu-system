@@ -26,10 +26,15 @@ class JooqTouchstoneRepository(
 )
     : JooqRepository(db), TouchstoneRepository
 {
-    override fun getDemographicDataset(statisticType: String, touchstoneId: String): SplitData<DemographicDataForTouchstone, DemographicRow>
+    override fun getDemographicDataset(statisticTypeCode: String,
+                                       source: String,
+                                       touchstoneId: String): SplitData<DemographicDataForTouchstone, DemographicRow>
     {
         val touchstone = touchstones.get(touchstoneId)
-        val rows = getDemographicStatistics(touchstoneId, statisticType)
+        val rows = getDemographicStatistics(
+                touchstoneId,
+                statisticTypeCode,
+                source)
                 .fetch()
                 .map {
                     mapDemographicRow(it)
@@ -42,7 +47,7 @@ class JooqTouchstoneRepository(
                 }
                 else
                 {
-                    val statType = getDemographicStatisticTypeQuery(touchstoneId, statisticType)
+                    val statType = getDemographicStatisticTypeQuery(touchstoneId, statisticTypeCode)
                             .fetch()
 
                     mapDemographicStatisticType(statType)
@@ -183,7 +188,9 @@ class JooqTouchstoneRepository(
                 .where(DEMOGRAPHIC_STATISTIC_TYPE.CODE.eq(typeId))
     }
 
-    private fun getDemographicStatistics(touchstoneId: String, typeId: String):
+    private fun getDemographicStatistics(touchstoneId: String,
+                                         typeCode: String,
+                                         source: String):
             SelectConditionStep<Record6<Int, Int, String, Int, BigDecimal, String>>
     {
         // we are hard coding this here for now - need to revisit data model longer term
@@ -200,8 +207,10 @@ class JooqTouchstoneRepository(
                 .on(DEMOGRAPHIC_STATISTIC.COUNTRY.eq(TOUCHSTONE_COUNTRY.COUNTRY))
                 .join(DEMOGRAPHIC_SOURCE)
                 .on(DEMOGRAPHIC_SOURCE.ID.eq(DEMOGRAPHIC_STATISTIC.DEMOGRAPHIC_SOURCE))
+                .and(DEMOGRAPHIC_SOURCE.CODE.eq(source))
                 .join(TOUCHSTONE_DEMOGRAPHIC_SOURCE)
-                .on(DEMOGRAPHIC_SOURCE.ID.eq(TOUCHSTONE_DEMOGRAPHIC_SOURCE.DEMOGRAPHIC_SOURCE))
+                .on(DEMOGRAPHIC_STATISTIC.DEMOGRAPHIC_SOURCE.eq(TOUCHSTONE_DEMOGRAPHIC_SOURCE.DEMOGRAPHIC_SOURCE))
+                .and(TOUCHSTONE_DEMOGRAPHIC_SOURCE.TOUCHSTONE.eq(touchstoneId))
                 .join(DEMOGRAPHIC_STATISTIC_TYPE)
                 .on(DEMOGRAPHIC_STATISTIC_TYPE.ID.eq(DEMOGRAPHIC_STATISTIC.DEMOGRAPHIC_STATISTIC_TYPE))
                 .join(DEMOGRAPHIC_VARIANT)
@@ -211,9 +220,8 @@ class JooqTouchstoneRepository(
                 .join(GENDER)
                 .on(GENDER.ID.eq(DEMOGRAPHIC_STATISTIC.GENDER))
                 .where(TOUCHSTONE_COUNTRY.TOUCHSTONE.eq(touchstoneId))
-                .and(TOUCHSTONE_DEMOGRAPHIC_SOURCE.TOUCHSTONE.eq(touchstoneId))
                 .and(DEMOGRAPHIC_VARIANT.CODE.`in`(variants))
-                .and(DEMOGRAPHIC_STATISTIC_TYPE.CODE.eq(typeId))
+                .and(DEMOGRAPHIC_STATISTIC_TYPE.CODE.eq(typeCode))
 
     }
 
