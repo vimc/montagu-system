@@ -54,7 +54,7 @@ also with a numeric primary key.
             "name": "user",
             "scope_prefix": null,
             "description": "Log in",
-            "permissions": [ "can-login", "scenarios.read", "countries.read", "modelling-groups.read", "models.read", "touchstones.read", "responsibilities.read", "users.read", "estimates.read", "reports.read" ]
+            "permissions": [ "can-login", "scenarios.read", "countries.read", "modelling-groups.read", "models.read", "touchstones.read", "responsibilities.read", "users.read", "estimates.read" ]
         },
         {
             "name": "touchstone-preparer",
@@ -85,6 +85,12 @@ also with a numeric primary key.
             "scope_prefix": null,
             "description": "Review uploaded burden estimates",
             "permissions": [ "estimates.review", "estimates.read-unfinished" ]
+        },
+        {
+            "name": "reports-reader",
+            "scope_prefix": null,
+            "description": "Can access the reporting portal and view all published reports",
+            "permissions": [ "reports.read" ]
         },
         {
             "name": "reports-reviewer",
