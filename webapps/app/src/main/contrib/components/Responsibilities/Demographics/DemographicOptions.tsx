@@ -32,7 +32,7 @@ export class DemographicOptions extends React.Component<Props, undefined> {
         const selectedId = props.selectedDataSet != null ? props.selectedDataSet.id : "";
         return <table className={ styles.options }>
             <tbody>
-            <tr  className={ commonStyles.specialColumn }>
+            <tr className={ commonStyles.specialColumn }>
                 <td>Statistic type</td>
                 <td>
                     <select

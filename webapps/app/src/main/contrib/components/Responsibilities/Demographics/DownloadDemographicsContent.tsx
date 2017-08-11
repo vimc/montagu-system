@@ -11,19 +11,19 @@ import { DemographicOptions } from "./DemographicOptions";
 const commonStyles = require("../../../../shared/styles/common.css");
 const styles = require("../Responsibilities.css");
 
-interface Props extends RemoteContent {
+export interface DownloadDemographicsContentProps extends RemoteContent {
     dataSets: DemographicStatisticType[];
     selectedDataSet: DemographicStatisticType;
     selectedGender: string;
     touchstone: Touchstone;
 }
 
-class DownloadDemographicsContentComponent extends RemoteContentComponent<Props> {
+export class DownloadDemographicsContentComponent extends RemoteContentComponent<DownloadDemographicsContentProps> {
     static getStores() {
         return [demographicStore, responsibilityStore];
     }
 
-    static getPropsFromStores(props: Props): Props {
+    static getPropsFromStores(props: DownloadDemographicsContentProps): DownloadDemographicsContentProps {
         const demographicState = demographicStore.getState();
         const responsibilityState = responsibilityStore.getState();
         if (demographicState.currentTouchstone != null) {
@@ -45,10 +45,8 @@ class DownloadDemographicsContentComponent extends RemoteContentComponent<Props>
         }
     }
 
-    renderContent(props: Props) {
-        const canDownload = props.selectedDataSet != null
-            && (!props.selectedDataSet.gender_is_applicable || props.selectedGender != null);
-
+    renderContent(props: DownloadDemographicsContentProps) {
+        const canDownload = DownloadDemographicsContentComponent.canDownload(props);
         return <div className={styles.demographics}>
             <div className={commonStyles.sectionTitle}>
                 Demographic data for {props.touchstone.description}
@@ -64,6 +62,11 @@ class DownloadDemographicsContentComponent extends RemoteContentComponent<Props>
                 selectedGender={props.selectedGender} />
             <ButtonLink href="#" disabled={ !canDownload }>Download data set</ButtonLink>
         </div>;
+    }
+
+    static canDownload(props: DownloadDemographicsContentProps) {
+        return props.selectedDataSet != null
+            && (!props.selectedDataSet.gender_is_applicable || props.selectedGender != null);
     }
 }
 

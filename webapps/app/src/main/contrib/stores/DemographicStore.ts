@@ -14,11 +14,11 @@ export interface DemographicState {
     selectedGender: string;
 }
 
-interface Interface extends AltJS.AltStore<DemographicState> {
+export interface DemographicStoreInterface extends AltJS.AltStore<DemographicState> {
     fetchDataSets(): Promise<DemographicStatisticType[]>;
 }
 
-class DemographicStore extends AbstractStore<DemographicState, Interface> {
+class DemographicStore extends AbstractStore<DemographicState, DemographicStoreInterface> {
     dataSets: ILookup<DemographicStatisticType[]>;
     currentTouchstone: string;
     selectedDataSet: DemographicStatisticType;
@@ -69,4 +69,6 @@ class DemographicStore extends AbstractStore<DemographicState, Interface> {
     }
 }
 
-export const demographicStore = alt.createStore<DemographicState>(DemographicStore as StoreModel<DemographicState>) as Interface;
+export const demographicStore = alt.createStore<DemographicState>(
+    DemographicStore as StoreModel<DemographicState>
+) as DemographicStoreInterface;

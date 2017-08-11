@@ -29,8 +29,8 @@ export class DownloadDataTitleComponent extends React.Component<Props, undefined
     }
 
     renderReturnLink() {
-        if (this.props.touchstone) {
-            const url = `/${this.props.modellingGroup.id}/responsibilities/${this.props.touchstone.id}/`
+        if (this.props.touchstone && this.props.modellingGroup) {
+            const url = `/${this.props.modellingGroup.id}/responsibilities/${this.props.touchstone.id}/`;
             return <span className={ headerStyles.titleAddition }>
                 <InternalLink href={ url }>Return to responsibilities list</InternalLink>
             </span>;
