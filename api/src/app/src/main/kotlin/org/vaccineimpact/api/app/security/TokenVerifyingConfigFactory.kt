@@ -80,7 +80,7 @@ class TokenActionAdapter : DefaultHttpActionAdapter()
         {
             addDefaultResponseHeaders(context.response)
             val profile = DirectActionContext(context).userProfile
-            val missingPermissions = profile.getAttributeOrDefault(MISSING_PERMISSIONS, mutableSetOf<String>())
+            val missingPermissions = profile!!.getAttributeOrDefault(MISSING_PERMISSIONS, mutableSetOf<String>())
             spark.Spark.halt(code, forbiddenResponse(missingPermissions))
         }
         else -> super.adapt(code, context)

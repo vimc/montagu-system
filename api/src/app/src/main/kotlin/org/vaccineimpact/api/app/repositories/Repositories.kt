@@ -7,6 +7,7 @@ open class Repositories(
         open val simpleObjects: () -> SimpleObjectsRepository,
         open val user: () -> UserRepository,
         open val token: () -> TokenRepository,
+        open val accessLogRepository: () -> AccessLogRepository,
         open val modelRepository: () -> ModelRepository,
         open val touchstone: () -> TouchstoneRepository,
         open val scenario: () -> ScenarioRepository,
@@ -18,6 +19,7 @@ fun makeRepositories(): Repositories
     fun simpleObjects(db: JooqContext) = JooqSimpleObjectsRepository(db)
     fun user(db: JooqContext) = JooqUserRepository(db)
     fun token(db: JooqContext) = JooqTokenRepository(db)
+    fun accessLogRepository(db: JooqContext) = JooqAccessLogRepository(db)
     fun model(db: JooqContext) = JooqModelRepository(db)
     fun scenario(db: JooqContext) = JooqScenarioRepository(db)
     fun touchstone(db: JooqContext) = JooqTouchstoneRepository(db, scenario(db))
@@ -27,6 +29,7 @@ fun makeRepositories(): Repositories
             wrapRepository(::simpleObjects),
             wrapRepository(::user),
             wrapRepository(::token),
+            wrapRepository(::accessLogRepository),
             wrapRepository(::model),
             wrapRepository(::touchstone),
             wrapRepository(::scenario),

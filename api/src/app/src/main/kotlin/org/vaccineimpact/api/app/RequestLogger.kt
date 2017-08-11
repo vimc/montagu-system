@@ -7,14 +7,17 @@ import spark.Request
 import spark.Response
 import java.time.Instant
 
-class RequestLogger(val accessLogRepository: AccessLogRepository)
+class RequestLogger(val accessLogRepository: () -> AccessLogRepository)
 {
     fun log(req: Request, res: Response)
     {
         val principal = getPrincipal(req, res)
         val timestamp = Instant.now()
         val resource = req.pathInfo()
-        accessLogRepository.log(principal, timestamp, resource)
+        val statusCode = res.status()
+        accessLogRepository().use {
+            it.log(principal, timestamp, resource, statusCode)
+        }
     }
 
     private fun getPrincipal(req: Request, res: Response): String?
@@ -29,6 +32,14 @@ class RequestLogger(val accessLogRepository: AccessLogRepository)
         else
         {
             return null
+        }
+    }
+
+    class Filter : spark.Filter
+    {
+        override fun handle(request: Request?, response: Response?)
+        {
+            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
         }
     }
 }

@@ -27,12 +27,13 @@ class MontaguApi
 {
     private val urlBase = "/v1"
     private val tokenHelper = WebTokenHelper(KeyHelper.keyPair)
-    private val requestLogger = RequestLogger()
 
     private val logger = LoggerFactory.getLogger(MontaguApi::class.java)
 
     fun run(repositories: Repositories)
     {
+        val requestLogger = RequestLogger(repositories.accessLogRepository)
+
         setupPort()
         spk.redirect.get("/", urlBase)
         spk.before("*", ::addTrailingSlashes)
