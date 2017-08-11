@@ -5,10 +5,8 @@ import { demographicStore } from "../../../stores/DemographicStore";
 import { DemographicStatisticType, Touchstone } from "../../../../shared/models/Generated";
 import { connectToStores } from "../../../../shared/alt";
 import { responsibilityStore } from "../../../stores/ResponsibilityStore";
-import { demographicActions } from "../../../actions/DemographicActions";
-import ReactRadioButtonGroup, { RadioButtonOption } from "react-radio-button-group";
-import { GenderControl } from "./GenderControl";
 import { ButtonLink } from "../../../../shared/components/ButtonLink";
+import { DemographicOptions } from "./DemographicOptions";
 
 const commonStyles = require("../../../../shared/styles/common.css");
 const styles = require("../Responsibilities.css");
@@ -47,48 +45,6 @@ class DownloadDemographicsContentComponent extends RemoteContentComponent<Props>
         }
     }
 
-    onSelectDataSet(e: React.ChangeEvent<HTMLSelectElement>) {
-        demographicActions.selectDataSet(e.target.value);
-    }
-
-    onSelectGender(gender: string) {
-        demographicActions.selectGender(gender);
-    }
-
-    renderOptions(props: Props) {
-        const statisticTypes = props.dataSets.map(x =>
-            <option key={x.id} value={x.id}>
-                {x.name}
-            </option>
-        );
-
-        const selectedId = props.selectedDataSet != null ? props.selectedDataSet.id : "";
-        return <table className={ styles.options }>
-            <tbody>
-            <tr  className={ commonStyles.specialColumn }>
-                <td>Statistic type</td>
-                <td>
-                    <select
-                        className={styles.dataSet}
-                        onChange={this.onSelectDataSet}
-                        value={selectedId}>
-                        <option value="">- Select -</option>
-                        {statisticTypes}
-                    </select>
-                </td>
-            </tr>
-            <tr className={ commonStyles.specialColumn }>
-                <td>Gender</td>
-                <td><GenderControl
-                    dataSet={props.selectedDataSet}
-                    value={props.selectedGender}
-                    onSelectGender={this.onSelectGender} />
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    }
-
     renderContent(props: Props) {
         const canDownload = props.selectedDataSet != null
             && (!props.selectedDataSet.gender_is_applicable || props.selectedGender != null);
@@ -102,8 +58,10 @@ class DownloadDemographicsContentComponent extends RemoteContentComponent<Props>
                 for this touchstone.
                 Not all data sets are expected to be relevant to all modellers.
             </div>
-            { this.renderOptions(props) }
-
+            <DemographicOptions
+                dataSets={props.dataSets}
+                selectedDataSet={props.selectedDataSet}
+                selectedGender={props.selectedGender} />
             <ButtonLink href="#" disabled={ !canDownload }>Download data set</ButtonLink>
         </div>;
     }
