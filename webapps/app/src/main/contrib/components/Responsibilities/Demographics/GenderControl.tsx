@@ -15,13 +15,13 @@ export class GenderControl extends React.Component<Props, undefined> {
         super();
     }
 
-    genderApplicable(): boolean {
-        return this.props.dataSet != null
-            && this.props.dataSet.gender_is_applicable
+    static genderApplicable(dataSet: DemographicStatisticType): boolean {
+        return dataSet != null
+            && dataSet.gender_is_applicable
     }
 
     render() {
-        if (this.genderApplicable()) {
+        if (GenderControl.genderApplicable(this.props.dataSet)) {
             const genders: RadioButtonOption[] = [
                 { value: "both", label: "Both" },
                 { value: "male", label: "Male" },
