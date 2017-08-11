@@ -189,6 +189,38 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
     }
 
     @Test
+    fun `gets demographic dataset metadata`()
+    {
+        given {
+            setUpSupportingTables(it)
+            setUpTouchstone(it)
+            addPopulation(it)
+            addFertility(it)
+
+        } check {
+            var metadata = it.getDemographicDataset("tot-pop", sources[0], touchstoneId)
+                    .structuredMetadata.demographicData!!
+            Assertions.assertThat(metadata.id).isEqualTo("tot-pop")
+            Assertions.assertThat(metadata.name).isEqualTo("tot-pop descriptive name")
+            Assertions.assertThat(metadata.gender).isNull()
+            Assertions.assertThat(metadata.source).isEqualTo("UNWPP2015 descriptive name")
+            Assertions.assertThat(metadata.ageInterpretation).isEqualTo("age")
+            Assertions.assertThat(metadata.unit).isEqualTo("people")
+            Assertions.assertThat(metadata.countries).hasSameElementsAs(countries)
+
+            metadata = it.getDemographicDataset("as-fert", sources[0], touchstoneId)
+                    .structuredMetadata.demographicData!!
+            Assertions.assertThat(metadata.id).isEqualTo("as-fert")
+            Assertions.assertThat(metadata.name).isEqualTo("as-fert descriptive name")
+            Assertions.assertThat(metadata.gender).isEqualTo("both")
+            Assertions.assertThat(metadata.source).isEqualTo("UNWPP2015 descriptive name")
+            Assertions.assertThat(metadata.ageInterpretation).isEqualTo("age of mother")
+            Assertions.assertThat(metadata.unit).isEqualTo("people")
+            Assertions.assertThat(metadata.countries).hasSameElementsAs(countries)
+        }
+    }
+
+    @Test
     fun `gets demographic data`()
     {
         given {

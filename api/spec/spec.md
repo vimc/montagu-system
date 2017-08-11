@@ -1731,7 +1731,6 @@ Schema: [`DemographicDatasetForTouchstone.schema.json`](DemographicDatasetForTou
         "demographic_data":  { 
             "id" : "as-fert",
             "name": "Age-specific fertility",
-            "variant" : "UNWPP Estimates + UNWPP Medium Variant",
             "source" : "UNWPP 2015",
             "countries" : ["AFG"],
             "age_interpretation": "age of mother (years)",
@@ -1765,7 +1764,6 @@ Schema: [`DemographicDatasetForTouchstone.schema.json`](DemographicDatasetForTou
         "demographic_data":  { 
             "id" : "tot-pop",
             "name": "Total population",
-            "variant" : "UNWPP Estimates + UNWPP Medium Variant",
             "source" : "UNWPP 2015",
             "countries" : ["AFG"],
             "age_interpretation": "age (years)",

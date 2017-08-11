@@ -31,12 +31,13 @@ class JooqTouchstoneRepository(
                                        touchstoneId: String): SplitData<DemographicDataForTouchstone, DemographicRow>
     {
         val touchstone = touchstones.get(touchstoneId)
-        val rows = getDemographicStatistics(
+        val records = getDemographicStatistics(
                 touchstoneId,
                 statisticTypeCode,
                 source)
                 .fetch()
-                .map {
+
+        val rows = records.map {
                     mapDemographicRow(it)
                 }
 
@@ -47,15 +48,45 @@ class JooqTouchstoneRepository(
                 }
                 else
                 {
-                    val statType = getDemographicStatisticTypeQuery(touchstoneId, statisticTypeCode)
-                            .fetch()
+                    val statType = getDemographicDatasetMetadata(statisticTypeCode)
+                            .fetchAny()
 
-                    mapDemographicStatisticType(statType)
+                    val referenceRecord = records.first()
+
+                    mapDemographicDatasetMetadata(statType[DEMOGRAPHIC_STATISTIC_TYPE.CODE],
+                            statType[DEMOGRAPHIC_STATISTIC_TYPE.NAME],
+                            referenceRecord[GENDER.NAME],
+                            statType[DEMOGRAPHIC_STATISTIC_TYPE.GENDER_IS_APPLICABLE],
+                            statType[DEMOGRAPHIC_VALUE_UNIT.NAME],
+                            statType[DEMOGRAPHIC_STATISTIC_TYPE.AGE_INTERPRETATION],
+                            referenceRecord[DEMOGRAPHIC_SOURCE.NAME],
+                            rows.map{ it.country }.distinct())
                 }
 
         val metadata = DemographicDataForTouchstone(touchstone, dataset)
 
         return SplitData(metadata, DataTable.new(rows))
+    }
+
+    fun mapDemographicDatasetMetadata(id: String,
+                                      name: String,
+                                      gender: String,
+                                      genderIsApplicable: Boolean,
+                                      unit: String,
+                                      ageInterpretation: String,
+                                      source: String,
+                                      countries: List<String>): DemographicDataset
+    {
+        val nullableGender: String? =
+                if (genderIsApplicable)
+                {
+                    gender
+                }
+                else
+                {
+                    null
+                }
+        return DemographicDataset(id, name, nullableGender, countries, unit, ageInterpretation, source)
     }
 
     override fun getDemographicStatisticTypes(touchstoneId: String): List<DemographicStatisticType>
@@ -180,18 +211,26 @@ class JooqTouchstoneRepository(
                 .on(DEMOGRAPHIC_STATISTIC_TYPE.ID.eq(field(name("s", "typeId"), Int::class.java)))
     }
 
-    private fun getDemographicStatisticTypeQuery(touchstoneId: String, typeId: String):
-            SelectConditionStep<Record6<Int, String, String, Boolean, String, String>>
+    private fun getDemographicDatasetMetadata(typeCode: String):
+            Select<Record5<String, String, String, String, Boolean>>
     {
+        return dsl.select(
+                DEMOGRAPHIC_STATISTIC_TYPE.CODE,
+                DEMOGRAPHIC_STATISTIC_TYPE.NAME,
+                DEMOGRAPHIC_STATISTIC_TYPE.AGE_INTERPRETATION,
+                DEMOGRAPHIC_VALUE_UNIT.NAME,
+                DEMOGRAPHIC_STATISTIC_TYPE.GENDER_IS_APPLICABLE)
+                .from(DEMOGRAPHIC_STATISTIC_TYPE)
+                .join(DEMOGRAPHIC_VALUE_UNIT)
+                .on(DEMOGRAPHIC_STATISTIC_TYPE.DEMOGRAPHIC_VALUE_UNIT.eq(DEMOGRAPHIC_VALUE_UNIT.ID))
+                .where(DEMOGRAPHIC_STATISTIC_TYPE.CODE.eq(typeCode))
 
-        return getDemographicStatisticTypesQuery(touchstoneId)
-                .where(DEMOGRAPHIC_STATISTIC_TYPE.CODE.eq(typeId))
     }
 
     private fun getDemographicStatistics(touchstoneId: String,
                                          typeCode: String,
                                          sourceCode: String):
-            Select<Record6<Int, Int, String, Int, BigDecimal, String>>
+            Select<Record7<Int, Int, String, Int, BigDecimal, String, String>>
     {
         // we are hard coding this here for now - need to revisit data model longer term
         val variants = listOf("unwpp_estimates", "unwpp_medium_variant", "cm_median")
@@ -204,6 +243,7 @@ class JooqTouchstoneRepository(
                 DEMOGRAPHIC_STATISTIC.COUNTRY,
                 DEMOGRAPHIC_STATISTIC.YEAR,
                 DEMOGRAPHIC_STATISTIC.VALUE,
+                DEMOGRAPHIC_SOURCE.NAME,
                 GENDER.NAME)
                 .from(DEMOGRAPHIC_STATISTIC)
                 .join(GENDER)
