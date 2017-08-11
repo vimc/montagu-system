@@ -17,8 +17,6 @@ import org.vaccineimpact.api.test_helpers.DatabaseTest
 
 class AuthenticationTests : DatabaseTest()
 {
-    val url = EndpointBuilder.build("/authenticate/")
-
     @Before
     fun addUser()
     {
@@ -117,13 +115,18 @@ class AuthenticationTests : DatabaseTest()
         }
     }
 
-    private fun post(username: String, password: String, includeAuth: Boolean = true): JsonObject
+    companion object
     {
-        val auth = if (includeAuth) BasicAuthorization(username, password) else null
-        val text = post(url,
-                data = mapOf("grant_type" to "client_credentials"),
-                auth = auth).text
-        println(text)
-        return Parser().parse(StringBuilder(text)) as JsonObject
+        val url = EndpointBuilder.build("/authenticate/")
+
+        fun post(username: String, password: String, includeAuth: Boolean = true): JsonObject
+        {
+            val auth = if (includeAuth) BasicAuthorization(username, password) else null
+            val text = post(url,
+                    data = mapOf("grant_type" to "client_credentials"),
+                    auth = auth).text
+            println(text)
+            return Parser().parse(StringBuilder(text)) as JsonObject
+        }
     }
 }
