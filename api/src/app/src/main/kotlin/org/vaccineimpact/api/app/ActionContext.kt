@@ -7,7 +7,7 @@ import org.vaccineimpact.api.models.permissions.ReifiedPermission
 interface ActionContext
 {
     val permissions: PermissionSet
-    val userProfile: CommonProfile
+    val userProfile: CommonProfile?
 
     fun contentType(): String
 

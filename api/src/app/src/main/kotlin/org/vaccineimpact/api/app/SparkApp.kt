@@ -27,6 +27,7 @@ class MontaguApi
 {
     private val urlBase = "/v1"
     private val tokenHelper = WebTokenHelper(KeyHelper.keyPair)
+    private val requestLogger = RequestLogger()
 
     private val logger = LoggerFactory.getLogger(MontaguApi::class.java)
 
@@ -35,6 +36,7 @@ class MontaguApi
         setupPort()
         spk.redirect.get("/", urlBase)
         spk.before("*", ::addTrailingSlashes)
+        spk.after("*", requestLogger::log)
         spk.options("*", { _, res ->
             res.header("Access-Control-Allow-Headers", "Authorization")
         })

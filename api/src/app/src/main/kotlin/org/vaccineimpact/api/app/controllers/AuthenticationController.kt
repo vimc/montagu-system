@@ -59,5 +59,5 @@ class AuthenticationController(context: ControllerContext, htmlFormHelpers: Form
     }
 
     private fun getUserFromUserProfile(context: ActionContext)
-            = context.userProfile.getAttribute(USER_OBJECT) as MontaguUser
+            = context.userProfile!!.getAttribute(USER_OBJECT) as MontaguUser
 }
