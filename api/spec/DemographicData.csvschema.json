@@ -1,0 +1,9 @@
+{
+    "columns": {
+        "country": "String",
+        "age": "String",
+        "year": "Int",
+        "gender": "String",
+        "value": "Decimal"
+    }
+}

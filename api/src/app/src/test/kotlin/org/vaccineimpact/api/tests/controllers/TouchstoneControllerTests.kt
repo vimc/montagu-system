@@ -8,6 +8,8 @@ import org.vaccineimpact.api.app.controllers.ControllerContext
 import org.vaccineimpact.api.app.controllers.TouchstoneController
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.app.repositories.inmemory.InMemoryDataSet
+import org.vaccineimpact.api.app.serialization.DataTable
+import org.vaccineimpact.api.app.serialization.SplitData
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 
@@ -99,5 +101,37 @@ class TouchstoneControllerTests : ControllerTests<TouchstoneController>()
         val controller = TouchstoneController(mockControllerContext())
         controller.getScenario(context, repo)
         verify(context).requirePermission(ReifiedPermission("touchstones.prepare", Scope.Global()))
+    }
+
+
+    @Test
+    fun `getDemographicData fetches from repository`()
+    {
+        val touchstone = Touchstone("t-1", "t", 1, "description", TouchstoneStatus.OPEN)
+
+        val source = "test-source"
+        val type = "test-type"
+
+        val demographicMetadata = DemographicDataForTouchstone(touchstone,
+                DemographicDataset("id", "name", null, listOf(), "people", "age", source))
+
+
+        val repo = mock<TouchstoneRepository> {
+            on { getDemographicDataset(type, source, touchstone.id) } doReturn
+                    SplitData(demographicMetadata, DataTable.new(listOf()))
+            on { touchstones } doReturn InMemoryDataSet(listOf(touchstone))
+        }
+        val context = mock<ActionContext> {
+            on { hasPermission(any()) } doReturn true
+            on { params(":touchstone-id") } doReturn touchstone.id
+            on { params(":type-code") } doReturn type
+            on { params(":source-code") } doReturn source
+        }
+
+        val controller = TouchstoneController(mockControllerContext())
+        val data = controller.getDemographicData(context, repo)
+
+        assertThat(data.structuredMetadata).isEqualTo(demographicMetadata)
+
     }
 }

@@ -1,12 +1,15 @@
 package org.vaccineimpact.api.app.controllers
 
+import org.vaccineimpact.api.OneTimeAction
 import org.vaccineimpact.api.app.ActionContext
 import org.vaccineimpact.api.app.controllers.endpoints.EndpointDefinition
 import org.vaccineimpact.api.app.controllers.endpoints.oneRepoEndpoint
 import org.vaccineimpact.api.app.controllers.endpoints.secured
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
+import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
+import org.vaccineimpact.api.app.serialization.SplitData
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 
@@ -24,7 +27,9 @@ class TouchstoneController(context: ControllerContext) : AbstractController(cont
                 oneRepoEndpoint("/", this::getTouchstones, repo).secured(permissions),
                 oneRepoEndpoint("/:touchstone-id/scenarios/", this::getScenarios, repo).secured(scenarioPermissions),
                 oneRepoEndpoint("/:touchstone-id/scenarios/:scenario-id/", this::getScenario, repo).secured(scenarioPermissions),
-                oneRepoEndpoint("/:touchstone-id/demographics/", this::getDemographicTypes, repo).secured(demographicPermissions)
+                oneRepoEndpoint("/:touchstone-id/demographics/", this::getDemographicTypes, repo).secured(demographicPermissions),
+                oneRepoEndpoint("/:touchstone-id/demographics/:source-code/:type-code/", this::getDemographicData, repo).secured(demographicPermissions),
+                oneRepoEndpoint("/:touchstone-id/demographics/:source-code/:type-code/get_onetime_link/", { c, r -> getOneTimeLinkToken(c, r, OneTimeAction.DEMOGRAPHY) }, repos.token).secured(demographicPermissions)
 
         )
     }
@@ -53,6 +58,17 @@ class TouchstoneController(context: ControllerContext) : AbstractController(cont
     {
         val touchstone = touchstone(context, repo)
         return repo.getDemographicStatisticTypes(touchstone.id)
+    }
+
+    fun getDemographicData(context: ActionContext, repo: TouchstoneRepository):
+            SplitData<DemographicDataForTouchstone, DemographicRow>
+    {
+        val touchstone = touchstone(context, repo)
+        val source = context.params(":source-code")
+        val type = context.params(":type-code")
+        logger.info("looking for stats of type $type")
+        logger.info("looking for stats from source $source")
+        return repo.getDemographicDataset(type, source, touchstone.id)
     }
 
     fun getScenario(context: ActionContext, repo: TouchstoneRepository): ScenarioTouchstoneAndCoverageSets

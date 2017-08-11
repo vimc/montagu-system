@@ -408,7 +408,6 @@ fun JooqContext.generateDemographicData(
         ageRange: IntProgression = 0..80 step 5)
 {
     val records = mutableListOf<DemographicStatisticRecord>()
-    var i = 0
     for (country in countries)
     {
         for (year in yearRange)
@@ -427,7 +426,6 @@ fun JooqContext.generateDemographicData(
                         value = random.nextDecimal(1000, 10000, numberOfDecimalPlaces = 2)
                 ))
 
-                i++
             }
         }
     }

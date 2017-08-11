@@ -2,5 +2,6 @@ package org.vaccineimpact.api
 
 enum class OneTimeAction
 {
-    COVERAGE
+    COVERAGE,
+    DEMOGRAPHY
 }

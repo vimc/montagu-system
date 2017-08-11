@@ -29,6 +29,14 @@ data class OneTimeLink(val action: OneTimeAction, val payload: Map<String, Strin
                     }
                 }
             }
+
+            OneTimeAction.DEMOGRAPHY -> {
+                { d ->
+                    repos.touchstone().use {
+                        controllers.touchstone.getDemographicData(d, it)
+                    }
+                }
+            }
         }
     }
 

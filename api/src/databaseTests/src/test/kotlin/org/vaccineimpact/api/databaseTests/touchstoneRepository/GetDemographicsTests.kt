@@ -212,7 +212,7 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
                     .structuredMetadata.demographicData!!
             Assertions.assertThat(metadata.id).isEqualTo("as-fert")
             Assertions.assertThat(metadata.name).isEqualTo("as-fert descriptive name")
-            Assertions.assertThat(metadata.gender).isEqualTo("both")
+            Assertions.assertThat(metadata.gender).isEqualTo("")
             Assertions.assertThat(metadata.source).isEqualTo("UNWPP2015 descriptive name")
             Assertions.assertThat(metadata.ageInterpretation).isEqualTo("age of mother")
             Assertions.assertThat(metadata.unit).isEqualTo("people")
