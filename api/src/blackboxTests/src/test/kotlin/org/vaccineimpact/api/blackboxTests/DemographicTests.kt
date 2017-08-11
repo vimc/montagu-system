@@ -75,7 +75,7 @@ class DemographicTests : DatabaseTest()
         }
 
         val validator = SplitValidator()
-        val response = requestHelper.get("/touchstones/$touchstoneId/demographics/unwpp2015/tot-pop/",
+        val response = requestHelper.get("/touchstones/$touchstoneId/demographics/${sources[0]}/tot-pop/",
                 requiredPermissions)
 
         val json = validator.getSplitText(response.text).json
