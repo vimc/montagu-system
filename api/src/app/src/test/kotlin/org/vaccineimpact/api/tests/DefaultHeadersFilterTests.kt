@@ -30,7 +30,6 @@ class DefaultHeadersFilterTests : MontaguTests()
         val filter = DefaultHeadersFilter(contentType, HttpMethod.get)
         val mockResponse = filter.handleMockRequest(HttpMethod.get)
         verify(mockResponse).addHeader("Content-Encoding", "gzip")
-        verify(mockResponse).addHeader("Access-Control-Allow-Origin", "*")
     }
 
     @Test
