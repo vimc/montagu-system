@@ -66,12 +66,16 @@ class DemographicTestData(val db: JooqContext)
 {
     val sources = listOf("unwpp2015", "unwpp2017")
     val variants = listOf("low", "medium", "high")
-    val statisticTypes = listOf("tot-pop" to "Total population", "tot-births" to "Total births")
     val countries = db.generateCountries(3)
     val sourceIds = db.generateDemographicSources(sources)
     val variantIds = db.generateDemographicVariants(variants)
     val units = db.generateDemographicUnits()
     val genderIds = db.generateGenders()
+    val statisticTypes = addStatisticTypes(listOf(
+            "tot-pop" to "Total population",
+            "tot-births" to
+                    "Total births")
+    )
 
     fun generate(touchstoneId: String, diseases: List<String>)
     {
@@ -81,21 +85,16 @@ class DemographicTestData(val db: JooqContext)
             db.addTouchstoneCountries(touchstoneId, countries, disease)
         }
 
-        for ((index, statisticTypeDefinition) in statisticTypes.withIndex())
+        for ((typeCode, typeId) in statisticTypes)
         {
-            val (typeId, name) = statisticTypeDefinition
-            val type = db.addDemographicStatisticType(typeId, variantIds,
-                    units,
-                    name = name,
-                    genderIsApplicable = index % 2 == 0)
             for (sourceId in sourceIds)
             {
                 for (gender in genderIds)
                 {
                     for (variant in variantIds)
                     {
-                        println("Generating demographic data for $touchstoneId/$name/$sourceId/$variant")
-                        db.generateDemographicData(sourceId, type,
+                        println("Generating demographic data for $touchstoneId/$typeCode/$sourceId/$variant")
+                        db.generateDemographicData(sourceId, typeId,
                                 genderId = gender,
                                 variantId = variant,
                                 countries = countries
@@ -103,6 +102,21 @@ class DemographicTestData(val db: JooqContext)
                     }
                 }
             }
+        }
+    }
+
+    fun addStatisticTypes(definitions: List<Pair<String, String>>): List<Pair<String, Int>>
+    {
+        return definitions.withIndex().map { (index, definition) ->
+            val (code, name) = definition
+            val id = db.addDemographicStatisticType(
+                    code,
+                    variantIds,
+                    units,
+                    name = name,
+                    genderIsApplicable = index % 2 == 0
+            )
+            code to id
         }
     }
 }
