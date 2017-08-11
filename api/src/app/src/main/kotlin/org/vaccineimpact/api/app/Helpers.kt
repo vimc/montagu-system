@@ -29,7 +29,6 @@ fun addDefaultResponseHeaders(res: HttpServletResponse, contentType: String = "$
 {
     res.contentType = contentType
     res.addHeader("Content-Encoding", "gzip")
-    res.addHeader("Access-Control-Allow-Origin", "*")
 }
 
 class DefaultHeadersFilter(val contentType: String, val method: HttpMethod) : Filter
