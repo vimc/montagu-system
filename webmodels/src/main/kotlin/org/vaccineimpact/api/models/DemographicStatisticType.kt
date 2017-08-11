@@ -12,8 +12,7 @@ data class DemographicStatisticType(
 data class DemographicDataset(
         override val id: String,
         val name: String,
-        val variant: String,
-        val gender: String,
+        val gender: String?,
         val countries: List<String>,
         val unit: String,
         val ageInterpretation: String,
@@ -21,7 +20,7 @@ data class DemographicDataset(
 
 data class DemographicDataForTouchstone(
         val touchstone: Touchstone,
-        val demographicData: DemographicStatisticType?
+        val demographicData: DemographicDataset?
 )
 
 data class DemographicRow(
