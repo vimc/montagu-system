@@ -1,6 +1,7 @@
 package org.vaccineimpact.api.blackboxTests
 
 import com.beust.klaxon.json
+import com.github.fge.jackson.JsonLoader
 import org.assertj.core.api.Assertions
 import org.junit.Test
 import org.vaccineimpact.api.blackboxTests.helpers.RequestHelper
@@ -78,14 +79,19 @@ class DemographicTests : DatabaseTest()
         val response = requestHelper.get("/touchstones/$touchstoneId/demographics/${sources[0]}/tot-pop/",
                 requiredPermissions)
 
-        val json = validator.getSplitText(response.text).json
-        val expectedDemographicMetadata = json { obj(
-                "id" to "tot-pop",
-                "name" to "tot-pop descriptive name",
-                "age_interpretation" to "age",
-                "source" to "unwpp2015 descriptive name",
-                "unit" to "people"
-        )}
+
+        val json = JsonLoader.fromString(validator.getSplitText(response.text).json)
+        val demographyJson = json["data"]["demographic_data"]
+
+        Assertions.assertThat(demographyJson.isNull).isFalse()
+
+//        val expectedDemographicMetadata = json { obj(
+//                "id" to "tot-pop",
+//                "name" to "tot-pop descriptive name",
+//                "age_interpretation" to "age",
+//                "source" to "unwpp2015 descriptive name",
+//                "unit" to "people"
+//        )}
 
     }
 
