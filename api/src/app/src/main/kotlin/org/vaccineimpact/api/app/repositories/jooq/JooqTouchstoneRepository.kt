@@ -190,39 +190,48 @@ class JooqTouchstoneRepository(
 
     private fun getDemographicStatistics(touchstoneId: String,
                                          typeCode: String,
-                                         source: String):
-            SelectConditionStep<Record6<Int, Int, String, Int, BigDecimal, String>>
+                                         sourceCode: String):
+            Select<Record6<Int, Int, String, Int, BigDecimal, String>>
     {
         // we are hard coding this here for now - need to revisit data model longer term
         val variants = listOf("unwpp_estimates", "unwpp_medium_variant", "cm_median")
 
-        return dsl.select(DEMOGRAPHIC_STATISTIC.AGE_FROM,
+        var selectQuery = dsl.select(DEMOGRAPHIC_STATISTIC.AGE_FROM,
                 DEMOGRAPHIC_STATISTIC.AGE_TO,
                 DEMOGRAPHIC_STATISTIC.COUNTRY,
                 DEMOGRAPHIC_STATISTIC.YEAR,
                 DEMOGRAPHIC_STATISTIC.VALUE,
                 GENDER.NAME)
                 .from(DEMOGRAPHIC_STATISTIC)
-                .join(TOUCHSTONE_COUNTRY)
+                .join(GENDER)
+                .on(GENDER.ID.eq(DEMOGRAPHIC_STATISTIC.GENDER))
+
+        // only select for countries in given touchstone
+        selectQuery = selectQuery.join(TOUCHSTONE_COUNTRY)
                 .on(DEMOGRAPHIC_STATISTIC.COUNTRY.eq(TOUCHSTONE_COUNTRY.COUNTRY))
-                .join(DEMOGRAPHIC_SOURCE)
+                .and(TOUCHSTONE_COUNTRY.TOUCHSTONE.eq(touchstoneId))
+
+        // only select for given source and source in given touchstone
+        selectQuery = selectQuery.join(DEMOGRAPHIC_SOURCE)
                 .on(DEMOGRAPHIC_SOURCE.ID.eq(DEMOGRAPHIC_STATISTIC.DEMOGRAPHIC_SOURCE))
-                .and(DEMOGRAPHIC_SOURCE.CODE.eq(source))
+                .and(DEMOGRAPHIC_SOURCE.CODE.eq(sourceCode))
                 .join(TOUCHSTONE_DEMOGRAPHIC_SOURCE)
                 .on(DEMOGRAPHIC_STATISTIC.DEMOGRAPHIC_SOURCE.eq(TOUCHSTONE_DEMOGRAPHIC_SOURCE.DEMOGRAPHIC_SOURCE))
                 .and(TOUCHSTONE_DEMOGRAPHIC_SOURCE.TOUCHSTONE.eq(touchstoneId))
-                .join(DEMOGRAPHIC_STATISTIC_TYPE)
-                .on(DEMOGRAPHIC_STATISTIC_TYPE.ID.eq(DEMOGRAPHIC_STATISTIC.DEMOGRAPHIC_STATISTIC_TYPE))
+
+        // only select default variants
+        selectQuery = selectQuery
                 .join(DEMOGRAPHIC_VARIANT)
                 .on(DEMOGRAPHIC_VARIANT.ID.eq(DEMOGRAPHIC_STATISTIC.DEMOGRAPHIC_VARIANT))
-                .join(DEMOGRAPHIC_VALUE_UNIT)
-                .on(DEMOGRAPHIC_VALUE_UNIT.ID.eq(DEMOGRAPHIC_STATISTIC_TYPE.DEMOGRAPHIC_VALUE_UNIT))
-                .join(GENDER)
-                .on(GENDER.ID.eq(DEMOGRAPHIC_STATISTIC.GENDER))
-                .where(TOUCHSTONE_COUNTRY.TOUCHSTONE.eq(touchstoneId))
                 .and(DEMOGRAPHIC_VARIANT.CODE.`in`(variants))
-                .and(DEMOGRAPHIC_STATISTIC_TYPE.CODE.eq(typeCode))
 
+        // only select for the given type
+        selectQuery = selectQuery
+                .join(DEMOGRAPHIC_STATISTIC_TYPE)
+                .on(DEMOGRAPHIC_STATISTIC_TYPE.ID.eq(DEMOGRAPHIC_STATISTIC.DEMOGRAPHIC_STATISTIC_TYPE))
+                and(DEMOGRAPHIC_STATISTIC_TYPE.CODE.eq(typeCode))
+
+        return selectQuery
     }
 
     private fun getScenariosFromRecords(records: Result<Record>): List<Scenario>
