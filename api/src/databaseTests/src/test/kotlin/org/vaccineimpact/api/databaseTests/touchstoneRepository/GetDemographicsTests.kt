@@ -23,13 +23,13 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
         variantIds = it.generateDemographicVariants(variants)
         units = it.generateDemographicUnits()
         it.generateGenders()
+        it.addDisease("measles", "Measles")
     }
 
     private fun setUpTouchstone(it: JooqContext)
     {
         it.addTouchstone(touchstoneName, touchstoneVersion, addName = true, addStatus = true)
         it.addDemographicSourcesToTouchstone(touchstoneId, sourceIds)
-        it.addDisease("measles", "Measles")
         it.addTouchstoneCountries(touchstoneId, countries, "measles")
     }
 
@@ -97,7 +97,6 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
             setUpSupportingTables(it)
 
             it.addTouchstone(touchstoneName, touchstoneVersion, addName = true, addStatus = true)
-            it.addDisease("measles", "Measles")
             it.addTouchstoneCountries(touchstoneId, countries, "measles")
 
             addFertility(it)
@@ -132,7 +131,7 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
             setUpSupportingTables(it)
 
             it.addTouchstone(touchstoneName, touchstoneVersion, addName = true, addStatus = true)
-            it.addTouchstoneCountries(touchstoneId, countries.subList(0, 1))
+            it.addTouchstoneCountries(touchstoneId, countries.subList(0, 1), "measles")
             it.addDemographicSourcesToTouchstone(touchstoneId, sourceIds)
 
             addFertility(it)
@@ -150,7 +149,7 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
             setUpSupportingTables(it)
             setUpTouchstone(it)
             addPopulation(it)
-            addFertility(it)
+            addFertility(it, sources = sourceIds.subList(0,1))
 
         } check {
             val types = it.getDemographicStatisticTypes(touchstoneId)
@@ -292,7 +291,7 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
 
             it.addTouchstone(anotherTouchstoneName, touchstoneVersion, addName = true, addStatus = false)
             it.addDemographicSourcesToTouchstone(anotherTouchstoneId, sourceIds)
-            it.addTouchstoneCountries(anotherTouchstoneId, it.generateCountries(2), addDisease = false)
+            it.addTouchstoneCountries(anotherTouchstoneId, it.generateCountries(2), "measles")
 
             addPopulation(it)
 
@@ -320,7 +319,7 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
 
             it.addTouchstone(anotherTouchstoneName, touchstoneVersion, addName = true, addStatus = false)
             it.addDemographicSourcesToTouchstone(anotherTouchstoneId, newSourceIds)
-            it.addTouchstoneCountries(anotherTouchstoneId, countries, addDisease = false)
+            it.addTouchstoneCountries(anotherTouchstoneId, countries, "measles")
 
             addPopulation(it)
 

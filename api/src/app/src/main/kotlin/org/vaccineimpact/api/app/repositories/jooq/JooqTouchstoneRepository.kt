@@ -196,6 +196,9 @@ class JooqTouchstoneRepository(
         // we are hard coding this here for now - need to revisit data model longer term
         val variants = listOf("unwpp_estimates", "unwpp_medium_variant", "cm_median")
 
+        // hard coding for now
+        val gender: String = "B"
+
         var selectQuery = dsl.select(DEMOGRAPHIC_STATISTIC.AGE_FROM,
                 DEMOGRAPHIC_STATISTIC.AGE_TO,
                 DEMOGRAPHIC_STATISTIC.COUNTRY,
@@ -209,29 +212,31 @@ class JooqTouchstoneRepository(
         // only select for countries in given touchstone
         selectQuery = selectQuery.join(TOUCHSTONE_COUNTRY)
                 .on(DEMOGRAPHIC_STATISTIC.COUNTRY.eq(TOUCHSTONE_COUNTRY.COUNTRY))
-                .and(TOUCHSTONE_COUNTRY.TOUCHSTONE.eq(touchstoneId))
+
 
         // only select for given source and source in given touchstone
         selectQuery = selectQuery.join(DEMOGRAPHIC_SOURCE)
                 .on(DEMOGRAPHIC_SOURCE.ID.eq(DEMOGRAPHIC_STATISTIC.DEMOGRAPHIC_SOURCE))
-                .and(DEMOGRAPHIC_SOURCE.CODE.eq(sourceCode))
                 .join(TOUCHSTONE_DEMOGRAPHIC_SOURCE)
                 .on(DEMOGRAPHIC_STATISTIC.DEMOGRAPHIC_SOURCE.eq(TOUCHSTONE_DEMOGRAPHIC_SOURCE.DEMOGRAPHIC_SOURCE))
-                .and(TOUCHSTONE_DEMOGRAPHIC_SOURCE.TOUCHSTONE.eq(touchstoneId))
 
         // only select default variants
         selectQuery = selectQuery
                 .join(DEMOGRAPHIC_VARIANT)
                 .on(DEMOGRAPHIC_VARIANT.ID.eq(DEMOGRAPHIC_STATISTIC.DEMOGRAPHIC_VARIANT))
-                .and(DEMOGRAPHIC_VARIANT.CODE.`in`(variants))
 
         // only select for the given type
         selectQuery = selectQuery
                 .join(DEMOGRAPHIC_STATISTIC_TYPE)
                 .on(DEMOGRAPHIC_STATISTIC_TYPE.ID.eq(DEMOGRAPHIC_STATISTIC.DEMOGRAPHIC_STATISTIC_TYPE))
-                and(DEMOGRAPHIC_STATISTIC_TYPE.CODE.eq(typeCode))
 
         return selectQuery
+                .where(DEMOGRAPHIC_STATISTIC_TYPE.CODE.eq(typeCode))
+                .and(TOUCHSTONE_COUNTRY.TOUCHSTONE.eq(touchstoneId))
+                .and(TOUCHSTONE_DEMOGRAPHIC_SOURCE.TOUCHSTONE.eq(touchstoneId))
+                .and(DEMOGRAPHIC_SOURCE.CODE.eq(sourceCode))
+                .and(DEMOGRAPHIC_VARIANT.CODE.`in`(variants))
+                .and(GENDER.CODE.eq(gender))
     }
 
     private fun getScenariosFromRecords(records: Result<Record>): List<Scenario>
