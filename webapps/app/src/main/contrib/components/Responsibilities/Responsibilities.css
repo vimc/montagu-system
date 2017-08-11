@@ -45,6 +45,28 @@
     margin-right: 10px;
 }
 
-:local(.demographics) li {
-    margin-bottom: 10px;
+:local(.demographics) select {
+    display: inline-block;
+}
+
+:local(.demographics) :local(.dataSet) {
+    width: 300px;
+    margin-right: 20px;
+}
+
+:local(.demographics) :local(.options) {
+    margin: 20px 0;
+}
+
+:local(.demographics) :local(.options) td {
+    padding: 10px;
+}
+
+:local(.demographics) :local(.radioOptions) {
+    display: inline-block;
+}
+
+:local(.demographics) :local(.radioOptions) div {
+    display: inline-block;
+    margin: 0 5px;
 }
