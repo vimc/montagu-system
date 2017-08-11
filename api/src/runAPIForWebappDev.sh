@@ -4,7 +4,7 @@ set -ex
 # delete directory if it already exists
 if [ -d "/etc/montagu/api/token_key" ] 
 then
-   rm /etc/montagu/api/token_key -r
+   sudo rm /etc/montagu/api/token_key -r
 fi
 
 mkdir -p /etc/montagu/api/token_key

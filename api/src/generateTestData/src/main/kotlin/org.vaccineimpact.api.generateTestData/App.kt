@@ -3,7 +3,6 @@ package org.vaccineimpact.api.generateTestData
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.StandardRoles
 import org.vaccineimpact.api.db.direct.*
-import javax.print.DocFlavor
 
 /** The more important source set here is blackboxTests/src/test - that actually contains the
  * Black box tests. This "main" source set is just a place to put a little script you can
@@ -24,8 +23,9 @@ fun main(args: Array<String>) {
         db.addTouchstone("op-2017", 1, "Operational Forecast 2017 (v1)", "finished", addStatus = true)
         db.addTouchstone("op-2017", 2, "Operational Forecast 2017 (v2)", "open", addStatus = true)
 
-        DemographicTestData(db).generate("op-2017-1", listOf("YF"))
-        DemographicTestData(db).generate("op-2017-2", listOf("YF"))
+        val demographicTestData = DemographicTestData(db)
+        demographicTestData.generate("op-2017-1", listOf("YF"))
+        demographicTestData.generate("op-2017-2", listOf("YF"))
 
         val yfRoutine = db.addScenarioToTouchstone("op-2017-2", "yf-routine")
         val yfCampaign = db.addScenarioToTouchstone("op-2017-2", "yf-campaign")
@@ -66,7 +66,7 @@ class DemographicTestData(val db: JooqContext)
 {
     val sources = listOf("unwpp2015", "unwpp2017")
     val variants = listOf("low", "medium", "high")
-    val statisticTypeIds = listOf("tot-pop" to "Total population", "tot-births" to "Total births")
+    val statisticTypes = listOf("tot-pop" to "Total population", "tot-births" to "Total births")
     val countries = db.generateCountries(3)
     val sourceIds = db.generateDemographicSources(sources)
     val variantIds = db.generateDemographicVariants(variants)
@@ -81,15 +81,20 @@ class DemographicTestData(val db: JooqContext)
             db.addTouchstoneCountries(touchstoneId, countries, disease)
         }
 
-        for ((typeId, name) in statisticTypeIds)
+        for ((index, statisticTypeDefinition) in statisticTypes.withIndex())
         {
-            val type = db.addDemographicStatisticType(typeId, variantIds, units, name = name)
+            val (typeId, name) = statisticTypeDefinition
+            val type = db.addDemographicStatisticType(typeId, variantIds,
+                    units,
+                    name = name,
+                    genderIsApplicable = index % 2 == 0)
             for (sourceId in sourceIds)
             {
                 for (gender in genderIds)
                 {
                     for (variant in variantIds)
                     {
+                        println("Generating demographic data for $touchstoneId/$name/$sourceId/$variant")
                         db.generateDemographicData(sourceId, type,
                                 genderId = gender,
                                 variantId = variant,
