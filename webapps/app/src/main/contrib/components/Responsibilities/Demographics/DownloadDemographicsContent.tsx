@@ -98,7 +98,8 @@ class DownloadDemographicsContentComponent extends RemoteContentComponent<Props>
                 Demographic data for {props.touchstone.description}
             </div>
             <div>
-                Click to download a CSV file containing demographic data for this touchstone.
+                Select the following options to download a CSV file containing demographic data
+                for this touchstone.
                 Not all data sets are expected to be relevant to all modellers.
             </div>
             { this.renderOptions(props) }
