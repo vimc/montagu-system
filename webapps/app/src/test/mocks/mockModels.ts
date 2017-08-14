@@ -157,7 +157,7 @@ export function mockVersion(properties?: any): Version {
         data: {},
         hash_data: {},
         artefacts: [{}],
-        resources: {},
+        resources: [],
         parameters: {}
     };
     return Object.assign(template, properties);
