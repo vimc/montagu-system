@@ -1,16 +1,13 @@
 package org.vaccineimpact.api.blackboxTests
 
-import com.beust.klaxon.JsonObject
 import com.beust.klaxon.json
 import com.github.fge.jackson.JsonLoader
 import org.assertj.core.api.Assertions
 import org.junit.Test
 import org.vaccineimpact.api.blackboxTests.helpers.RequestHelper
 import org.vaccineimpact.api.blackboxTests.helpers.TestUserHelper
-import org.vaccineimpact.api.blackboxTests.helpers.toJsonObject
 import org.vaccineimpact.api.blackboxTests.helpers.validate
 import org.vaccineimpact.api.blackboxTests.schemas.CSVSchema
-import org.vaccineimpact.api.blackboxTests.schemas.JSONSchema
 import org.vaccineimpact.api.blackboxTests.schemas.SplitSchema
 import org.vaccineimpact.api.blackboxTests.validators.SplitValidator
 import org.vaccineimpact.api.db.JooqContext
@@ -81,21 +78,58 @@ class DemographicTests : DatabaseTest()
         val response = requestHelper.get("/touchstones/$touchstoneId/demographics/unwpp2015/tot-pop/",
                 requiredPermissions)
 
-
         val json = JsonLoader.fromString(validator.getSplitText(response.text).json)
-        val demographyJson =  json["data"]["demographic_data"]
+        val demographyJson = json["data"]["demographic_data"]
 
-        val expectedDemographicMetadata = JsonLoader.fromString(json { obj(
-                "id" to "tot-pop",
-                "name" to "tot-pop descriptive name",
-                "age_interpretation" to "age",
-                "source" to "unwpp2015 descriptive name",
-                "unit" to "people",
-                "gender" to null,
-                "countries" to array(countries.sortedBy { it })
-        )}.toJsonString())
+        val expectedDemographicMetadata = JsonLoader.fromString(json {
+            obj(
+                    "id" to "tot-pop",
+                    "name" to "tot-pop descriptive name",
+                    "age_interpretation" to "age",
+                    "source" to "unwpp2015 descriptive name",
+                    "unit" to "people",
+                    "gender" to null,
+                    "countries" to array(countries.sortedBy { it })
+            )
+        }.toJsonString())
 
         Assertions.assertThat(demographyJson).isEqualTo(expectedDemographicMetadata)
+    }
+
+
+    @Test
+    fun `returns demographic data csv`()
+    {
+        val userHelper = TestUserHelper()
+        val requestHelper = RequestHelper()
+
+        JooqContext().use {
+            setUpSupportingTables(it)
+            setUpTouchstone(it)
+            addPopulation(it)
+            userHelper.setupTestUser(it)
+        }
+
+        val validator = SplitValidator()
+        val response = requestHelper.get("/touchstones/$touchstoneId/demographics/unwpp2015/tot-pop/",
+                requiredPermissions)
+
+        val csv = validator.getSplitText(response.text).csv
+        val CSVSchema = CSVSchema("DemographicData")
+        val body = CSVSchema.validate(csv)
+
+        // 1950..2050 step 5 means 21 year steps
+        val numYears = 21
+
+        // 0..80 step 5 means 17 age steps
+        val numAges = 17
+
+        // should only ever be 2 variants - unwpp_estimates and unwpp_medium_variant
+        val numVariants = 2
+
+        val numCountries = countries.count()
+
+        Assertions.assertThat(body.count()).isEqualTo(numAges * numYears * numCountries * numVariants)
     }
 
     private var countries: List<String> = listOf()
@@ -141,5 +175,6 @@ class DemographicTests : DatabaseTest()
                 }
             }
         }
+
     }
 }

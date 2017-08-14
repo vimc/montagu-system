@@ -244,11 +244,9 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
             // should only ever be 2 variants - unwpp_estimates and unwpp_medium_variant
             val numVariants = 2
 
-            // should return data for a single source
-            val numSources = 1
             val numCountries = countries.count()
 
-            Assertions.assertThat(data.count()).isEqualTo(numAges * numYears * numCountries * numVariants * numSources)
+            Assertions.assertThat(data.count()).isEqualTo(numAges * numYears * numCountries * numVariants)
 
             val fertilityData = it.getDemographicDataset("as-fert", sources[0], touchstoneId)
                     .tableData.data
@@ -257,7 +255,7 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
             numYears = 11
 
             Assertions.assertThat(fertilityData.count())
-                    .isEqualTo(numAges * numYears * numCountries * numVariants * numSources)
+                    .isEqualTo(numAges * numYears * numCountries * numVariants)
 
         }
     }
