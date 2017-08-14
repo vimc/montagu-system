@@ -12,10 +12,10 @@ describe("ResourceLinks", () => {
 
     it("can render", () => {
 
-        const testResources = {
-            "someresource.csv": "23774uhkjhjk",
-            "someother.rds": "480ujkdnsckjkl;"
-        };
+        const testResources = [
+            "someresource.csv",
+            "someother.rds"
+        ];
 
         const rendered = sandbox.mount(<ResourceLinks resources={testResources} report="reportname" version="versionname" />);
         const links = rendered.find('li').find(FileDownloadLink);
@@ -26,7 +26,7 @@ describe("ResourceLinks", () => {
 
     it("shows 'none' if no resources", () => {
 
-        const rendered = sandbox.mount(<ResourceLinks resources={{}} report="reportname" version="versioname" />);
+        const rendered = sandbox.mount(<ResourceLinks resources={[]} report="reportname" version="versioname" />);
         expect(rendered.text()).to.eq("none");
 
     });
