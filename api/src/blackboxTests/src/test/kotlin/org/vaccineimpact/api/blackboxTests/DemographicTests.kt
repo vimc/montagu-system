@@ -1,11 +1,13 @@
 package org.vaccineimpact.api.blackboxTests
 
+import com.beust.klaxon.JsonObject
 import com.beust.klaxon.json
 import com.github.fge.jackson.JsonLoader
 import org.assertj.core.api.Assertions
 import org.junit.Test
 import org.vaccineimpact.api.blackboxTests.helpers.RequestHelper
 import org.vaccineimpact.api.blackboxTests.helpers.TestUserHelper
+import org.vaccineimpact.api.blackboxTests.helpers.toJsonObject
 import org.vaccineimpact.api.blackboxTests.helpers.validate
 import org.vaccineimpact.api.blackboxTests.schemas.CSVSchema
 import org.vaccineimpact.api.blackboxTests.schemas.JSONSchema
@@ -81,18 +83,19 @@ class DemographicTests : DatabaseTest()
 
 
         val json = JsonLoader.fromString(validator.getSplitText(response.text).json)
-        val demographyJson = json["data"]["demographic_data"]
+        val demographyJson =  json["data"]["demographic_data"]
 
-        Assertions.assertThat(demographyJson.isNull).isFalse()
+        val expectedDemographicMetadata = JsonLoader.fromString(json { obj(
+                "id" to "tot-pop",
+                "name" to "tot-pop descriptive name",
+                "age_interpretation" to "age",
+                "source" to "unwpp2015 descriptive name",
+                "unit" to "people",
+                "gender" to null,
+                "countries" to array(countries.sortedBy { it })
+        )}.toJsonString())
 
-//        val expectedDemographicMetadata = json { obj(
-//                "id" to "tot-pop",
-//                "name" to "tot-pop descriptive name",
-//                "age_interpretation" to "age",
-//                "source" to "unwpp2015 descriptive name",
-//                "unit" to "people"
-//        )}
-
+        Assertions.assertThat(demographyJson).isEqualTo(expectedDemographicMetadata)
     }
 
     private var countries: List<String> = listOf()

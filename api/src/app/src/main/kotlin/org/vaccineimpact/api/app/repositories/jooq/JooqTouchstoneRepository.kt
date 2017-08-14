@@ -60,7 +60,7 @@ class JooqTouchstoneRepository(
                             statType[DEMOGRAPHIC_VALUE_UNIT.NAME],
                             statType[DEMOGRAPHIC_STATISTIC_TYPE.AGE_INTERPRETATION],
                             referenceRecord[DEMOGRAPHIC_SOURCE.NAME],
-                            rows.map{ it.country }.distinct())
+                            rows.map{ it.country }.distinct().sortedBy { it })
                 }
 
         val metadata = DemographicDataForTouchstone(touchstone, dataset)
@@ -301,7 +301,7 @@ class JooqTouchstoneRepository(
 
     fun mapDemographicStatisticType(records: List<Record>): DemographicStatisticType
     {
-        val countries = records.map { it[TOUCHSTONE_COUNTRY.COUNTRY] }.distinct()
+        val countries = records.map { it[TOUCHSTONE_COUNTRY.COUNTRY] }.distinct().sortedBy { it }
         val sources = records.map { it[field(name("s", "sourceCode"), String::class.java)] }.distinct()
 
         // all other properties are the same for all records
