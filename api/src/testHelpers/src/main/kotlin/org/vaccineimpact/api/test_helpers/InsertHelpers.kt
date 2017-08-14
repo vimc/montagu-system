@@ -282,7 +282,7 @@ fun JooqContext.addCountries(ids: List<String>)
     this.dsl.batchStore(records).execute()
 }
 
-fun JooqContext.addTouchstoneCountries(touchstoneId: String, ids: List<String>, disease: String)
+fun JooqContext. addTouchstoneCountries(touchstoneId: String, ids: List<String>, disease: String)
 {
     val records = ids.map {
         this.dsl.newRecord(TOUCHSTONE_COUNTRY).apply {
@@ -352,8 +352,8 @@ fun JooqContext.generateGenders(): List<Int>
     val sources = listOf("B" to "both", "F" to "female", "M" to "male")
     val records = sources.map {
         this.dsl.newRecord(GENDER).apply {
-            this.name = it.second
             this.code = it.first
+            this.name = it.second
         }
     }
     this.dsl.batchStore(records).execute()
@@ -365,7 +365,7 @@ fun JooqContext.generateGenders(): List<Int>
             .fetchInto(Int::class.java)
 }
 
-fun JooqContext.addDemographicStatisticType(type: String,
+fun JooqContext. addDemographicStatisticType(type: String,
                                             variants: List<Int>,
                                             units: List<Int>,
                                             ageInterpretation: String = "age",

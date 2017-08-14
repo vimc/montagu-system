@@ -39,7 +39,7 @@ class DemographicTests : DatabaseTest()
                 obj(
                         "id" to "tot-pop",
                         "name" to "tot-pop descriptive name",
-                        "sources" to array("unwpp2015"),
+                        "sources" to array("unwpp2015", "unwpp2017"),
                         "countries" to array(countries.sortedBy { it }),
                         "gender_is_applicable" to false
                 )
@@ -76,7 +76,7 @@ class DemographicTests : DatabaseTest()
         }
 
         val validator = SplitValidator()
-        val response = requestHelper.get("/touchstones/$touchstoneId/demographics/${sources[0]}/tot-pop/",
+        val response = requestHelper.get("/touchstones/$touchstoneId/demographics/unwpp2015/tot-pop/",
                 requiredPermissions)
 
 
@@ -99,7 +99,7 @@ class DemographicTests : DatabaseTest()
     private var sourceIds: List<Int> = listOf()
     private var sources: List<String> = listOf("unwpp2015", "unwpp2017")
     private var variantIds: List<Int> = listOf()
-    private var variants = listOf("low", "medium", "high")
+    private var variants = listOf("unwpp_estimates", "unwpp_medium_variant", "unwpp_medium_variant", "unwpp_high_variant")
     private var units: List<Int> = listOf()
     private var genders: List<Int> = listOf()
 
@@ -109,7 +109,7 @@ class DemographicTests : DatabaseTest()
         sourceIds = it.generateDemographicSources(sources)
         variantIds = it.generateDemographicVariants(variants)
         units = it.generateDemographicUnits()
-        it.generateGenders()
+        genders = it.generateGenders()
         it.addDisease("measles", "Measles")
     }
 
@@ -125,7 +125,7 @@ class DemographicTests : DatabaseTest()
                               variants: List<Int> = variantIds,
                               countries: List<String> = this.countries)
     {
-        val pop = it.addDemographicStatisticType("tot-pop", variantIds, units)
+        val pop = it.addDemographicStatisticType("tot-pop", variants, units)
 
         for (source in sources)
         {
