@@ -22,7 +22,7 @@ export class ArtefactsList extends React.Component<ArtefactsListProps, undefined
         const artefactItems = this.props.artefacts
             .map((artefact)=> {
                 const key = Object.getOwnPropertyNames(artefact)[0];
-                return <ArtefactItem key={key} report={this.props.report} version={this.props.version} {...artefact[key]} />;
+                return <ArtefactItem key={artefact[key].filename} report={this.props.report} version={this.props.version} {...artefact[key]} />;
             });
 
         return <ul>{artefactItems}</ul>;
