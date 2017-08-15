@@ -1,38 +1,20 @@
 import * as React from "react";
-import { RemoteContentComponent } from "../../../../shared/components/RemoteContentComponent/RemoteContentComponent";
 import { DiseaseFilter } from "./DiseaseFilter";
 import { ResponsibilityComponent } from "./ResponsibilityComponent";
-import { responsibilityStore } from "../../../stores/ResponsibilityStore";
-import { ModellingGroup, Responsibility } from "../../../../shared/models/Generated";
-import { connectToStores } from "../../../../shared/alt";
-import { RemoteContent } from "../../../../shared/models/RemoteContent";
-import { IExtendedResponsibilitySet } from "../../../models/ResponsibilitySet";
+import { IExtendedResponsibilitySet } from "../../../../models/ResponsibilitySet";
+import { ModellingGroup, Responsibility } from "../../../../../shared/models/Generated";
 
-const styles = require("../Responsibilities.css");
-const messageStyles = require("../../../../shared/styles/messages.css");
-const commonStyles = require("../../../../shared/styles/common.css");
+const styles = require("../../Responsibilities.css");
+const messageStyles = require("../../../../../shared/styles/messages.css");
+const commonStyles = require("../../../../../shared/styles/common.css");
 
-export interface ResponsibilityListComponentProps extends RemoteContent {
+export interface ResponsibilityListComponentProps {
     responsibilitySet: IExtendedResponsibilitySet;
     currentDiseaseId: string;
     modellingGroup: ModellingGroup;
 }
 
-export class ResponsibilityListComponent extends RemoteContentComponent<ResponsibilityListComponentProps> {
-    static getStores() {
-        return [ responsibilityStore ];
-    }
-
-    static getPropsFromStores(): ResponsibilityListComponentProps {
-        const state = responsibilityStore.getState();
-        return {
-            responsibilitySet: responsibilityStore.getCurrentResponsibilitySet(),
-            ready: state.ready,
-            currentDiseaseId: state.currentDiseaseId,
-            modellingGroup: state.currentModellingGroup
-        }
-    }
-
+export class ResponsibilityList extends React.Component<ResponsibilityListComponentProps, undefined> {
     getResponsibilities(props: ResponsibilityListComponentProps): Responsibility[] {
         const set = props.responsibilitySet;
         if (set) {
@@ -46,7 +28,8 @@ export class ResponsibilityListComponent extends RemoteContentComponent<Responsi
         }
     }
 
-    renderContent(props: ResponsibilityListComponentProps): JSX.Element {
+    render(): JSX.Element {
+        const props = this.props;
         const reps = this.getResponsibilities(props);
         if (reps.length) {
             const items = reps.map((item: Responsibility) =>
@@ -69,5 +52,3 @@ export class ResponsibilityListComponent extends RemoteContentComponent<Responsi
         }
     }
 }
-
-export const ResponsibilityList = connectToStores(ResponsibilityListComponent);

@@ -1,9 +1,11 @@
 import * as models from "../../main/shared/models/Generated";
 import { ExtendedResponsibility, ExtendedResponsibilitySet } from "../../main/contrib/models/ResponsibilitySet";
-import {Version} from "../../main/shared/models/reports/Report";
-import {Artefact} from "../../main/shared/models/reports/Artefact";
+import { Version } from "../../main/shared/models/reports/Report";
+import { Artefact } from "../../main/shared/models/reports/Artefact";
+import { DemographicStatisticType } from "../../main/shared/models/Generated";
 
 let counter = 0;
+
 export function mockDisease(properties?: any): models.Disease {
     counter++;
     return Object.assign({
@@ -63,12 +65,8 @@ export function mockTouchstone(properties?: any): models.Touchstone {
         name: "touchstone",
         version: 1,
         description: "Description",
-        status: "open",
-        years: {
-            start: 1970,
-            end: 2100
-        }
-    }
+        status: "open"
+    };
     return Object.assign(template, properties);
 }
 
@@ -106,7 +104,7 @@ export function mockCoverageSet(properties?: any): models.CoverageSet {
         id: 100,
         name: "Coverage set name",
         activity_type: "routine",
-        gavi_support_level: "without",
+        gavi_support: "without",
         touchstone: "touchstone-1",
         vaccine: "some-vaccine"
     };
@@ -163,12 +161,24 @@ export function mockVersion(properties?: any): Version {
     return Object.assign(template, properties);
 }
 
-export function mockArtefact(properties?: any): Artefact{
+export function mockArtefact(properties?: any): Artefact {
 
     const template: Artefact = {
-        filename : "filename.csv",
+        filename: "filename.csv",
         description: "description"
     };
 
+    return Object.assign(template, properties);
+}
+
+export function mockDemographicStatisticType(properties?: any): models.DemographicStatisticType {
+    counter++;
+    const template: DemographicStatisticType = {
+        id: "type-" + counter,
+        name: "Type " + counter,
+        gender_is_applicable: true,
+        countries: [ "AFG", "AGO" ],
+        sources: [ "source1", "source2" ]
+    };
     return Object.assign(template, properties);
 }

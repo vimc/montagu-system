@@ -5,7 +5,7 @@ import { shallow } from "enzyme";
 import { expect } from "chai";
 import { mockExtendedResponsibilitySet, mockResponsibility, mockScenario } from "../../../mocks/mockModels";
 
-import { DiseaseFilter } from "../../../../main/contrib/components/Responsibilities/Overview/DiseaseFilter";
+import { DiseaseFilter } from "../../../../main/contrib/components/Responsibilities/Overview/List/DiseaseFilter";
 import { OptionSelector } from "../../../../main/contrib/components/OptionSelector/OptionSelector";
 import { expectOrderedActions } from "../../../actionHelpers";
 

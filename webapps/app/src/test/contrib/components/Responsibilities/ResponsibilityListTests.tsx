@@ -3,11 +3,14 @@ import { expect } from "chai";
 import { shallow } from "enzyme";
 import { mockModellingGroup, mockResponsibility, mockScenario, mockTouchstone } from "../../../mocks/mockModels";
 
-import { ResponsibilityListComponent, ResponsibilityListComponentProps } from "../../../../main/contrib/components/Responsibilities/Overview/ResponsibilityList";
-import { ResponsibilityComponent } from "../../../../main/contrib/components/Responsibilities/Overview/ResponsibilityComponent";
-import { DiseaseFilter } from "../../../../main/contrib/components/Responsibilities/Overview/DiseaseFilter";
+import { DiseaseFilter } from "../../../../main/contrib/components/Responsibilities/Overview/List/DiseaseFilter";
 import { Responsibility } from "../../../../main/shared/models/Generated";
 import { ExtendedResponsibilitySet } from "../../../../main/contrib/models/ResponsibilitySet";
+import {
+    ResponsibilityList,
+    ResponsibilityListComponentProps
+} from "../../../../main/contrib/components/Responsibilities/Overview/List/ResponsibilityList";
+import { ResponsibilityComponent } from "../../../../main/contrib/components/Responsibilities/Overview/List/ResponsibilityComponent";
 
 function makeProps(responsibilities: Array<Responsibility>,
                         currentDiseaseId?: string): ResponsibilityListComponentProps {
@@ -21,15 +24,14 @@ function makeProps(responsibilities: Array<Responsibility>,
             status: null,
             touchstone: touchstone.id,
             responsibilities
-        }, touchstone, modellingGroup),
-        ready: true
+        }, touchstone, modellingGroup)
     };
 }
 
-describe('ResponsibilityListComponent', () => {
+describe('ResponsibilityList', () => {
     it("renders message when there are no responsibilities", () => {
         const props = makeProps([]);
-        const rendered = shallow(<ResponsibilityListComponent {...props} />);
+        const rendered = shallow(<ResponsibilityList {...props} />);
         expect(rendered.text()).to.contain("This modelling group has no responsibilities in this touchstone");
     });
 
@@ -38,7 +40,7 @@ describe('ResponsibilityListComponent', () => {
             mockResponsibility({}, mockScenario({ id: "scenario-1", disease: "d1" })),
             mockResponsibility({}, mockScenario({ id: "scenario-2", disease: "d2" }))
         ]);
-        const rendered = shallow(<ResponsibilityListComponent {...props} />);
+        const rendered = shallow(<ResponsibilityList {...props} />);
         const children = rendered.find(ResponsibilityComponent);
         expect(children).to.have.length(2);
         expect(children.at(0).key()).to.equal("scenario-1");
@@ -47,7 +49,7 @@ describe('ResponsibilityListComponent', () => {
 
     it("renders disease filter", () => {
         const props = makeProps([ mockResponsibility() ]);
-        const rendered = shallow(<ResponsibilityListComponent {...props} />);
+        const rendered = shallow(<ResponsibilityList {...props} />);
         expect(rendered.find(DiseaseFilter)).to.have.length(1, "Expected to render DiseaseFilter");
     });
 
@@ -56,7 +58,7 @@ describe('ResponsibilityListComponent', () => {
             mockResponsibility({}, mockScenario({ id: "scenario-1", disease: "d1" })),
             mockResponsibility({}, mockScenario({ id: "scenario-2", disease: "d2" }))
         ], "d2");
-        const rendered = shallow(<ResponsibilityListComponent {...props} />);
+        const rendered = shallow(<ResponsibilityList {...props} />);
         const children = rendered.find(ResponsibilityComponent);
         expect(children).to.have.length(1);
         expect(children.at(0).key()).to.equal("scenario-2");

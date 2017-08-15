@@ -5,8 +5,8 @@ import { mockModellingGroup, mockResponsibility, mockScenario, mockTouchstone } 
 import { setupMainStore } from "../../../mocks/mocks";
 import { Sandbox } from "../../../Sandbox";
 
-import { ResponsibilityComponent } from "../../../../main/contrib/components/Responsibilities/Overview/ResponsibilityComponent";
 import { ButtonLink } from "../../../../main/shared/components/ButtonLink";
+import { ResponsibilityComponent } from "../../../../main/contrib/components/Responsibilities/Overview/List/ResponsibilityComponent";
 
 const styles = require("../../../../main/contrib/components/Responsibilities/Responsibilities.css");
 
@@ -46,7 +46,7 @@ describe('ResponsibilityComponent', () => {
     });
 
     it("renders the coverage download link", () => {
-        const link = rendered.findWhere(e => e.is(ButtonLink) && e.children().text() == "Download input data");
-        expect(link.prop("href")).to.equal(`/group-1/responsibilities/touchstone-1/scenario-1/`);
+        const link = rendered.findWhere(e => e.is(ButtonLink) && e.children().text() == "Download coverage data");
+        expect(link.prop("href")).to.equal(`/group-1/responsibilities/touchstone-1/coverage/scenario-1/`);
     });
 });

@@ -14,7 +14,7 @@ export class CoverageSetComponent extends React.Component<CoverageSetComponentPr
             <td>{ this.props.set.name }</td>
             <td>{ this.props.set.vaccine }</td>
             <td>{ this.props.set.activity_type }</td>
-            <td>{ this.props.set.gavi_support_level }</td>
+            <td>{ this.props.set.gavi_support }</td>
         </tr>;
     }
 }
