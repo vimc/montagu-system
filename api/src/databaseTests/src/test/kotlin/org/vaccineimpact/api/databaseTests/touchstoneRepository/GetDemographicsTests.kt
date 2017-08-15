@@ -199,7 +199,7 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
 
         } check {
             var metadata = it.getDemographicDataset("tot-pop", sources[0], touchstoneId)
-                    .structuredMetadata.demographicData!!
+                    .structuredMetadata.demographicData
             Assertions.assertThat(metadata.id).isEqualTo("tot-pop")
             Assertions.assertThat(metadata.name).isEqualTo("tot-pop descriptive name")
             Assertions.assertThat(metadata.gender).isNull()
@@ -209,7 +209,7 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
             Assertions.assertThat(metadata.countries).hasSameElementsAs(countries)
 
             metadata = it.getDemographicDataset("as-fert", sources[0], touchstoneId)
-                    .structuredMetadata.demographicData!!
+                    .structuredMetadata.demographicData
             Assertions.assertThat(metadata.id).isEqualTo("as-fert")
             Assertions.assertThat(metadata.name).isEqualTo("as-fert descriptive name")
             Assertions.assertThat(metadata.gender).isEqualTo("both")
@@ -288,7 +288,8 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
 
             val source = sources[1]
             val result = it.getDemographicDataset("tot-pop", source, touchstoneId)
-            Assertions.assertThat(result.structuredMetadata.demographicData).isNull()
+            Assertions.assertThat(result.structuredMetadata.demographicData.countries.count()).isEqualTo(0)
+            Assertions.assertThat(result.structuredMetadata.demographicData.source).isNull()
             Assertions.assertThat(result.tableData.data.count()).isEqualTo(0)
         }
     }
@@ -304,9 +305,9 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
 
         } check {
 
-            val result = it.getDemographicDataset("tot-pop", sources[1], touchstoneId)
-            Assertions.assertThat(result.structuredMetadata.demographicData).isNull()
-            Assertions.assertThat(result.tableData.data.count()).isEqualTo(0)
+            Assertions.assertThatThrownBy {  it.getDemographicDataset("tot-pop", sources[1], touchstoneId)}
+                    .isInstanceOf(UnknownObjectError::class.java)
+
         }
     }
 
@@ -330,7 +331,8 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
         } check {
 
             val result = it.getDemographicDataset("tot-pop", sources[1], anotherTouchstoneId)
-            Assertions.assertThat(result.structuredMetadata.demographicData).isNull()
+            Assertions.assertThat(result.structuredMetadata.demographicData.countries.count()).isEqualTo(0)
+            Assertions.assertThat(result.structuredMetadata.demographicData.source).isNull()
             Assertions.assertThat(result.tableData.data.count()).isEqualTo(0)
         }
     }
@@ -358,7 +360,7 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
         } check {
 
             val result = it.getDemographicDataset("tot-pop", sources[1], anotherTouchstoneId)
-            Assertions.assertThat(result.structuredMetadata.demographicData).isNull()
+            Assertions.assertThat(result.structuredMetadata.demographicData.countries.count()).isEqualTo(0)
             Assertions.assertThat(result.tableData.data.count()).isEqualTo(0)
         }
     }
