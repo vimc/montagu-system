@@ -36,7 +36,7 @@ import org.vaccineimpact.api.db.tables.records.ApiAccessLogRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ApiAccessLog extends TableImpl<ApiAccessLogRecord> {
 
-    private static final long serialVersionUID = 60759821;
+    private static final long serialVersionUID = 1983065565;
 
     /**
      * The reference instance of <code>public.api_access_log</code>
@@ -62,9 +62,9 @@ public class ApiAccessLog extends TableImpl<ApiAccessLogRecord> {
     public final TableField<ApiAccessLogRecord, String> WHO = createField("who", org.jooq.impl.SQLDataType.CLOB, this, "");
 
     /**
-     * The column <code>public.api_access_log.when</code>.
+     * The column <code>public.api_access_log.timestamp</code>.
      */
-    public final TableField<ApiAccessLogRecord, Timestamp> WHEN = createField("when", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false), this, "");
+    public final TableField<ApiAccessLogRecord, Timestamp> TIMESTAMP = createField("timestamp", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false), this, "");
 
     /**
      * The column <code>public.api_access_log.what</code>.

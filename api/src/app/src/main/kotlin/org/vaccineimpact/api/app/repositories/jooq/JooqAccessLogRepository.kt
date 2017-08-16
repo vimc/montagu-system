@@ -12,7 +12,7 @@ class JooqAccessLogRepository(db: JooqContext) : JooqRepository(db), AccessLogRe
     {
         dsl.newRecord(API_ACCESS_LOG).apply {
             this.who = principal
-            this.`when` = Timestamp.from(timestamp)
+            this.timestamp = Timestamp.from(timestamp)
             this.what = resource
             this.result = responseStatus
             this.ipAddress = ipAddress

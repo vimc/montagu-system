@@ -88,6 +88,6 @@ class AccessLogTests : DatabaseTest()
     }
 
     data class Entry
-    @ConstructorProperties("who", "when", "what", "result", "ipAddress")
-    constructor(val who: String?, val `when`: Timestamp, val what: String, val result: Int?, val ipAddress: String?)
+    @ConstructorProperties("who", "timestamp", "what", "result", "ipAddress")
+    constructor(val who: String?, val timestamp: Timestamp, val what: String, val result: Int?, val ipAddress: String?)
 }

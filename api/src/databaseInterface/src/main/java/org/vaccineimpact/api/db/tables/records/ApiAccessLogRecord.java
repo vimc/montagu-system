@@ -29,7 +29,7 @@ import org.vaccineimpact.api.db.tables.ApiAccessLog;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ApiAccessLogRecord extends UpdatableRecordImpl<ApiAccessLogRecord> implements Record6<Integer, String, Timestamp, String, Integer, String> {
 
-    private static final long serialVersionUID = 296972010;
+    private static final long serialVersionUID = -260798654;
 
     /**
      * Setter for <code>public.api_access_log.id</code>.
@@ -60,16 +60,16 @@ public class ApiAccessLogRecord extends UpdatableRecordImpl<ApiAccessLogRecord> 
     }
 
     /**
-     * Setter for <code>public.api_access_log.when</code>.
+     * Setter for <code>public.api_access_log.timestamp</code>.
      */
-    public void setWhen(Timestamp value) {
+    public void setTimestamp(Timestamp value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>public.api_access_log.when</code>.
+     * Getter for <code>public.api_access_log.timestamp</code>.
      */
-    public Timestamp getWhen() {
+    public Timestamp getTimestamp() {
         return (Timestamp) get(2);
     }
 
@@ -168,7 +168,7 @@ public class ApiAccessLogRecord extends UpdatableRecordImpl<ApiAccessLogRecord> 
      */
     @Override
     public Field<Timestamp> field3() {
-        return ApiAccessLog.API_ACCESS_LOG.WHEN;
+        return ApiAccessLog.API_ACCESS_LOG.TIMESTAMP;
     }
 
     /**
@@ -216,7 +216,7 @@ public class ApiAccessLogRecord extends UpdatableRecordImpl<ApiAccessLogRecord> 
      */
     @Override
     public Timestamp value3() {
-        return getWhen();
+        return getTimestamp();
     }
 
     /**
@@ -266,7 +266,7 @@ public class ApiAccessLogRecord extends UpdatableRecordImpl<ApiAccessLogRecord> 
      */
     @Override
     public ApiAccessLogRecord value3(Timestamp value) {
-        setWhen(value);
+        setTimestamp(value);
         return this;
     }
 
@@ -325,12 +325,12 @@ public class ApiAccessLogRecord extends UpdatableRecordImpl<ApiAccessLogRecord> 
     /**
      * Create a detached, initialised ApiAccessLogRecord
      */
-    public ApiAccessLogRecord(Integer id, String who, Timestamp when, String what, Integer result, String ipAddress) {
+    public ApiAccessLogRecord(Integer id, String who, Timestamp timestamp, String what, Integer result, String ipAddress) {
         super(ApiAccessLog.API_ACCESS_LOG);
 
         set(0, id);
         set(1, who);
-        set(2, when);
+        set(2, timestamp);
         set(3, what);
         set(4, result);
         set(5, ipAddress);
