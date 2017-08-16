@@ -259,13 +259,17 @@ class JooqTouchstoneRepository(
                 .join(DEMOGRAPHIC_STATISTIC_TYPE)
                 .on(DEMOGRAPHIC_STATISTIC_TYPE.ID.eq(DEMOGRAPHIC_STATISTIC.DEMOGRAPHIC_STATISTIC_TYPE))
 
+        // if gender is not applicable for this statistic type, ignore passed genderCode parameter and match on "B"
+        val genderMatchesOrShouldBeDefault = (GENDER.CODE.eq("B").andNot(DEMOGRAPHIC_STATISTIC_TYPE.GENDER_IS_APPLICABLE))
+                .or(GENDER.CODE.eq(genderCode))
+
         return selectQuery
                 .where(DEMOGRAPHIC_STATISTIC_TYPE.CODE.eq(typeCode))
                 .and(TOUCHSTONE_COUNTRY.TOUCHSTONE.eq(touchstoneId))
                 .and(TOUCHSTONE_DEMOGRAPHIC_SOURCE.TOUCHSTONE.eq(touchstoneId))
                 .and(DEMOGRAPHIC_SOURCE.CODE.eq(sourceCode))
                 .and(DEMOGRAPHIC_VARIANT.CODE.`in`(variants))
-                .and(GENDER.CODE.eq(genderCode).orNot(DEMOGRAPHIC_STATISTIC_TYPE.GENDER_IS_APPLICABLE))
+                .and(genderMatchesOrShouldBeDefault)
     }
 
     private fun getScenariosFromRecords(records: Result<Record>): List<Scenario>
