@@ -6,13 +6,11 @@ import org.vaccineimpact.api.db.Tables.*
 import org.vaccineimpact.api.db.fromJoinPath
 import org.vaccineimpact.api.db.nextDecimal
 import org.vaccineimpact.api.db.tables.records.CoverageRecord
-import org.vaccineimpact.api.db.tables.records.DemographicSourceRecord
 import org.vaccineimpact.api.db.tables.records.DemographicStatisticRecord
 import org.vaccineimpact.api.models.permissions.ReifiedRole
 import org.vaccineimpact.api.security.UserHelper
 import org.vaccineimpact.api.security.ensureUserHasRole
 import java.math.BigDecimal
-import java.sql.Timestamp
 import java.util.*
 
 private val random = Random(0)
@@ -282,7 +280,7 @@ fun JooqContext.addCountries(ids: List<String>)
     this.dsl.batchStore(records).execute()
 }
 
-fun JooqContext. addTouchstoneCountries(touchstoneId: String, ids: List<String>, disease: String)
+fun JooqContext.addTouchstoneCountries(touchstoneId: String, ids: List<String>, disease: String)
 {
     val records = ids.map {
         this.dsl.newRecord(TOUCHSTONE_COUNTRY).apply {
@@ -365,7 +363,7 @@ fun JooqContext.generateGenders(): List<Int>
             .fetchInto(Int::class.java)
 }
 
-fun JooqContext. addDemographicStatisticType(type: String,
+fun JooqContext.addDemographicStatisticType(type: String,
                                             variants: List<Int>,
                                             units: List<Int>,
                                             ageInterpretation: String = "age",
