@@ -4,7 +4,8 @@ import { FileDownloadLink } from "../FileDownloadLink";
 
 export class DataLinks extends React.Component<ILookup<string>, undefined> {
     buildUrl(type: string, key: string): string {
-        return `/data/${type}/${this.props[key]}/`;
+        let data = encodeURIComponent(this.props[key]);
+        return `/data/${type}/${data}/`;
     }
 
     render() {
