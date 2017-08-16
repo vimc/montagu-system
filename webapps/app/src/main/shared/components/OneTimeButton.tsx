@@ -1,6 +1,8 @@
 import * as React from "react";
 import fetcher from "../sources/Fetcher";
 
+const loaderAnimation = require("../resources/link-loader.gif");
+
 interface Props {
     token: string
     enabled?: boolean;
@@ -21,6 +23,14 @@ export class OneTimeButton extends React.Component<Props, undefined> {
         setTimeout(this.props.refreshToken);
     }
 
+    renderAnimation() {
+        if (this.props.enabled && this.props.token == null) {
+            return <img src={ loaderAnimation } />;
+        } else {
+            return null;
+        }
+    }
+
     render() {
         const props = this.props;
         const url = fetcher.fetcher.buildOneTimeLink(props.token);
@@ -31,6 +41,7 @@ export class OneTimeButton extends React.Component<Props, undefined> {
                     type="submit">
                 { this.props.children }
             </button>
+            { this.renderAnimation() }
         </form>;
     }
 }

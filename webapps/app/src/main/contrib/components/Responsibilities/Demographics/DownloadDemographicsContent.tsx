@@ -82,7 +82,6 @@ export class DownloadDemographicsContentComponent extends RemoteContentComponent
     static canDownload(props: DownloadDemographicsContentProps) {
         return props.selectedDataSet != null
             && (!props.selectedDataSet.gender_is_applicable || props.selectedGender != null)
-            && props.token != null;
     }
     static downloadUrl(props: DownloadDemographicsContentProps) {
         return fetcher.fetcher.buildOneTimeLink(props.token);

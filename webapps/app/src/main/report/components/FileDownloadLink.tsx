@@ -7,7 +7,7 @@ import { doNothing } from "../../shared/Helpers";
 import { oneTimeTokenActions } from "../actions/OneTimeTokenActions";
 
 const styles = require("../../shared/styles/common.css");
-const loaderAnimation = require("./link-loader.gif");
+const loaderAnimation = require("../../shared/resources/link-loader.gif");
 
 interface PublicProps {
     href: string;
