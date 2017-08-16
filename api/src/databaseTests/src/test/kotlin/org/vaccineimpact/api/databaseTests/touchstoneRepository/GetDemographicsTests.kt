@@ -160,6 +160,7 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
         } check {
             var metadata = it.getDemographicDataset("tot-pop", sources[0], touchstoneId)
                     .structuredMetadata.demographicData
+
             Assertions.assertThat(metadata.id).isEqualTo("tot-pop")
             Assertions.assertThat(metadata.name).isEqualTo("tot-pop descriptive name")
             Assertions.assertThat(metadata.gender).isNull()
@@ -170,6 +171,7 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
 
             metadata = it.getDemographicDataset("as-fert", sources[0], touchstoneId)
                     .structuredMetadata.demographicData
+
             Assertions.assertThat(metadata.id).isEqualTo("as-fert")
             Assertions.assertThat(metadata.name).isEqualTo("as-fert descriptive name")
             Assertions.assertThat(metadata.gender).isEqualTo("both")

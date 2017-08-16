@@ -77,6 +77,8 @@ class JooqTouchstoneRepository(
                     listOf()
                 }
 
+        val source = referenceRecord?.get(DEMOGRAPHIC_SOURCE.NAME)
+
         return DemographicDataset(statType[DEMOGRAPHIC_STATISTIC_TYPE.CODE],
                 statType[DEMOGRAPHIC_STATISTIC_TYPE.NAME],
                 gender,
@@ -227,7 +229,7 @@ class JooqTouchstoneRepository(
     private fun getDemographicStatistics(touchstoneId: String,
                                          typeCode: String,
                                          sourceCode: String):
-            SelectConditionStep<Record7<Int, Int, String, Int, BigDecimal, Int, String>>
+            SelectConditionStep<Record7<Int, Int, String, Int, BigDecimal, String, String>>
     {
         // we are hard coding this here for now - need to revisit data model longer term
         val variants = listOf("unwpp_estimates", "unwpp_medium_variant", "cm_median")
@@ -240,7 +242,7 @@ class JooqTouchstoneRepository(
                 DEMOGRAPHIC_STATISTIC.COUNTRY,
                 DEMOGRAPHIC_STATISTIC.YEAR,
                 DEMOGRAPHIC_STATISTIC.VALUE,
-                DEMOGRAPHIC_STATISTIC.DEMOGRAPHIC_SOURCE,
+                DEMOGRAPHIC_SOURCE.NAME,
                 GENDER.NAME)
                 .from(DEMOGRAPHIC_STATISTIC)
                 .join(GENDER)

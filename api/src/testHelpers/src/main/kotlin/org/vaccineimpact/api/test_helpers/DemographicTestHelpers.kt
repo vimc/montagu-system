@@ -43,7 +43,8 @@ class DemographicDummyData(val it: JooqContext,
             {
                 for (gender in genders)
                 {
-                    it.generateDemographicData(source,
+                    it.generateDemographicData(
+                            source,
                             pop,
                             gender,
                             variantId = variant,
