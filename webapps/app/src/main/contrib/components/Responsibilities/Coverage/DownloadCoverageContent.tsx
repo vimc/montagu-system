@@ -7,6 +7,8 @@ import { CoverageSetList } from "./CoverageSetList";
 import { responsibilityStore } from "../../../stores/ResponsibilityStore";
 import fetcher from "../../../../shared/sources/Fetcher";
 import { coverageTokenActions } from "../../../actions/CoverageActions";
+import { OneTimeButton } from "../../../../shared/components/OneTimeButton";
+
 const commonStyles = require("../../../../shared/styles/common.css");
 
 export interface DownloadCoverageComponentProps extends RemoteContent {
@@ -43,17 +45,13 @@ export class DownloadCoverageContentComponent extends RemoteContentComponent<Dow
         }
     }
 
-    refreshToken(e: React.MouseEvent<HTMLButtonElement>): void {
-        setTimeout(() => {
-            coverageTokenActions.clearUsedToken();
-            responsibilityStore.fetchOneTimeCoverageToken();
-        });
+    refreshToken() {
+        coverageTokenActions.clearUsedToken();
+        responsibilityStore.fetchOneTimeCoverageToken();
     }
 
     renderContent(props: DownloadCoverageComponentProps) {
         const data = props.props;
-        const url = fetcher.fetcher.buildURL(`/onetime_link/${data.coverageToken}/`);
-        const downloadDisabled = data.coverageToken == null;
         return <div>
             <table className={ commonStyles.specialColumn }>
                 <tbody>
@@ -63,13 +61,9 @@ export class DownloadCoverageContentComponent extends RemoteContentComponent<Dow
             </table>
             <CoverageSetList coverageSets={ data.coverageSets } />
             <div className={ commonStyles.gapAbove }>
-                <form action={ url }>
-                    <button onClick={ this.refreshToken }
-                            disabled={ downloadDisabled }
-                            type="submit">
-                        Download combined coverage set data in CSV format
-                    </button>
-                </form>
+                <OneTimeButton token={ data.coverageToken } refreshToken={ this.refreshToken }>
+                    Download combined coverage set data in CSV format
+                </OneTimeButton>
             </div>
         </div>;
     }

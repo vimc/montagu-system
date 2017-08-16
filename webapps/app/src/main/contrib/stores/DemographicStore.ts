@@ -12,10 +12,12 @@ export interface DemographicState {
     currentTouchstone: string;
     selectedDataSet: DemographicStatisticType;
     selectedGender: string;
+    token: string
 }
 
 export interface DemographicStoreInterface extends AltJS.AltStore<DemographicState> {
     fetchDataSets(): Promise<DemographicStatisticType[]>;
+    fetchOneTimeToken(): Promise<string>;
 }
 
 class DemographicStore extends AbstractStore<DemographicState, DemographicStoreInterface> {
@@ -23,17 +25,32 @@ class DemographicStore extends AbstractStore<DemographicState, DemographicStoreI
     currentTouchstone: string;
     selectedDataSet: DemographicStatisticType;
     selectedGender: string;
+    token: string;
 
     constructor() {
         super();
         this.bindListeners({
             handleSetCurrentTouchstone: touchstoneActions.setCurrentTouchstone,
+
             handleBeginFetchDataSets: demographicActions.beginFetch,
             handleUpdateDataSets: demographicActions.update,
             handleSelectDataSet: demographicActions.selectDataSet,
-            handleSelectGender: demographicActions.selectGender
+            handleSelectGender: demographicActions.selectGender,
+
+            handleBeginFetchToken: demographicActions.beginFetchToken,
+            handleUpdateToken: demographicActions.updateToken,
+            handleClearUsedToken: demographicActions.clearUsedToken,
         });
         this.registerAsync(new DemographicSource());
+        this.exportPublicMethods({
+            fetchOneTimeToken: () => {
+                if (this.selectedDataSet != null) {
+                    return (this.getInstance() as any)._fetchOneTimeToken();
+                } else {
+                    return Promise.reject("Cannot fetch token without selecting all options first");
+                }
+            }
+        });
     }
 
     initialState(): DemographicState {
@@ -41,7 +58,8 @@ class DemographicStore extends AbstractStore<DemographicState, DemographicStoreI
             dataSets: {},
             currentTouchstone: null,
             selectedDataSet: null,
-            selectedGender: "both"
+            selectedGender: "both",
+            token: null,
         };
     }
 
@@ -63,9 +81,19 @@ class DemographicStore extends AbstractStore<DemographicState, DemographicStoreI
         } else {
             this.selectedDataSet = null;
         }
+        this.token = null;
     }
     handleSelectGender(gender: string) {
         this.selectedGender = gender;
+    }
+    handleUpdateToken(token: string) {
+        this.token = token;
+    }
+    handleBeginFetchToken() {
+        this.token = null;
+    }
+    handleClearUsedToken() {
+        this.token = null;
     }
 }
 
