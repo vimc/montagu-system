@@ -30,13 +30,15 @@ class JooqTouchstoneRepository(
 {
     override fun getDemographicDataset(statisticTypeCode: String,
                                        source: String,
-                                       touchstoneId: String): SplitData<DemographicDataForTouchstone, DemographicRow>
+                                       touchstoneId: String,
+                                       genderCode: String): SplitData<DemographicDataForTouchstone, DemographicRow>
     {
         val touchstone = touchstones.get(touchstoneId)
         val records = getDemographicStatistics(
                 touchstoneId,
                 statisticTypeCode,
-                source)
+                source,
+                genderCode)
                 .fetch()
 
         val rows = records.map {
@@ -76,8 +78,6 @@ class JooqTouchstoneRepository(
                 {
                     listOf()
                 }
-
-        val source = referenceRecord?.get(DEMOGRAPHIC_SOURCE.NAME)
 
         return DemographicDataset(statType[DEMOGRAPHIC_STATISTIC_TYPE.CODE],
                 statType[DEMOGRAPHIC_STATISTIC_TYPE.NAME],
@@ -228,14 +228,12 @@ class JooqTouchstoneRepository(
 
     private fun getDemographicStatistics(touchstoneId: String,
                                          typeCode: String,
-                                         sourceCode: String):
+                                         sourceCode: String,
+                                         genderCode: String = "B"):
             SelectConditionStep<Record7<Int, Int, String, Int, BigDecimal, String, String>>
     {
         // we are hard coding this here for now - need to revisit data model longer term
         val variants = listOf("unwpp_estimates", "unwpp_medium_variant", "cm_median")
-
-        // hard coding for now
-        val gender: String = "B"
 
         var selectQuery = dsl.select(DEMOGRAPHIC_STATISTIC.AGE_FROM,
                 DEMOGRAPHIC_STATISTIC.AGE_TO,
@@ -274,7 +272,7 @@ class JooqTouchstoneRepository(
                 .and(TOUCHSTONE_DEMOGRAPHIC_SOURCE.TOUCHSTONE.eq(touchstoneId))
                 .and(DEMOGRAPHIC_SOURCE.CODE.eq(sourceCode))
                 .and(DEMOGRAPHIC_VARIANT.CODE.`in`(variants))
-                .and(GENDER.CODE.eq(gender))
+                .and(GENDER.CODE.eq(genderCode).orNot(DEMOGRAPHIC_STATISTIC_TYPE.GENDER_IS_APPLICABLE))
     }
 
     private fun getScenariosFromRecords(records: Result<Record>): List<Scenario>

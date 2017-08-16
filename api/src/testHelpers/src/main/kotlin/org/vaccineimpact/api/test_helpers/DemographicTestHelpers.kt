@@ -32,10 +32,11 @@ class DemographicDummyData(val it: JooqContext,
     fun withPopulation(sources: List<Int> = sourceIds,
                        variants: List<Int> = variantIds,
                        countries: List<String> = this.countries,
+                       genderIsApplicable: Boolean = false,
                        yearRange: IntProgression = 1950..1970 step 5,
                        ageRange: IntProgression = 10..30 step 5): DemographicDummyData
     {
-        val pop = it.addDemographicStatisticType("tot-pop", variantIds, units)
+        val pop = it.addDemographicStatisticType("tot-pop", variantIds, units, genderIsApplicable = genderIsApplicable)
 
         for (source in sources)
         {
