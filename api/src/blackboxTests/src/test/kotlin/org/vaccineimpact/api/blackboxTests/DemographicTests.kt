@@ -98,7 +98,7 @@ class DemographicTests : DatabaseTest()
                     "age_interpretation" to "age",
                     "source" to "unwpp2015 descriptive name",
                     "unit" to "people",
-                    "gender" to null,
+                    "gender" to "both",
                     "countries" to array(countries.sortedBy { it })
             )
         }.toJsonString())
