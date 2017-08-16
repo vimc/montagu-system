@@ -1,6 +1,7 @@
 package org.vaccineimpact.api.blackboxTests
 
 import org.assertj.core.api.Assertions.assertThat
+import org.bouncycastle.util.IPAddress
 import org.junit.Test
 import org.vaccineimpact.api.blackboxTests.helpers.RequestHelper
 import org.vaccineimpact.api.blackboxTests.helpers.TestUserHelper
@@ -83,9 +84,10 @@ class AccessLogTests : DatabaseTest()
 
         assertThat(entry.what).`as`("What").isEqualTo("/v1" + what)
         assertThat(entry.result).`as`("Result").isEqualTo(result)
+        assertThat(IPAddress.isValid(entry.ipAddress)).`as`("IP Address is valid").isTrue()
     }
 
     data class Entry
-    @ConstructorProperties("who", "when", "what", "result")
-    constructor(val who: String?, val `when`: Timestamp, val what: String, val result: Int?)
+    @ConstructorProperties("who", "when", "what", "result", "ipAddress")
+    constructor(val who: String?, val `when`: Timestamp, val what: String, val result: Int?, val ipAddress: String?)
 }

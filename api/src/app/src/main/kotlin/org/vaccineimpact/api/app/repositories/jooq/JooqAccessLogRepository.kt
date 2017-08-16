@@ -8,13 +8,14 @@ import java.time.Instant
 
 class JooqAccessLogRepository(db: JooqContext) : JooqRepository(db), AccessLogRepository
 {
-    override fun log(principal: String?, timestamp: Instant, resource: String, responseStatus: Int)
+    override fun log(principal: String?, timestamp: Instant, resource: String, responseStatus: Int, ipAddress: String)
     {
         dsl.newRecord(API_ACCESS_LOG).apply {
-            who = principal
-            `when` = Timestamp.from(timestamp)
-            what = resource
-            result = responseStatus
+            this.who = principal
+            this.`when` = Timestamp.from(timestamp)
+            this.what = resource
+            this.result = responseStatus
+            this.ipAddress = ipAddress
         }.insert()
     }
 }

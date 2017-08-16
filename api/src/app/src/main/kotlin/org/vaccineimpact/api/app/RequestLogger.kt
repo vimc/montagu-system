@@ -2,10 +2,7 @@ package org.vaccineimpact.api.app
 
 import org.pac4j.sparkjava.SparkWebContext
 import org.vaccineimpact.api.app.repositories.AccessLogRepository
-import org.vaccineimpact.api.app.security.USER_OBJECT
-import org.vaccineimpact.api.app.security.getAttributeOrDefault
 import org.vaccineimpact.api.app.security.montaguUser
-import org.vaccineimpact.api.security.MontaguUser
 import spark.Request
 import spark.Response
 import java.time.Instant
@@ -18,8 +15,9 @@ class RequestLogger(val accessLogRepository: () -> AccessLogRepository)
         val timestamp = Instant.now()
         val resource = req.pathInfo()
         val statusCode = res.status()
+        val ip = req.ip()
         accessLogRepository().use {
-            it.log(principal, timestamp, resource, statusCode)
+            it.log(principal, timestamp, resource, statusCode, ip)
         }
     }
     fun log(context: SparkWebContext)
@@ -40,13 +38,5 @@ class RequestLogger(val accessLogRepository: () -> AccessLogRepository)
         // case, and only what's in the token in the second case.
         return profile?.montaguUser()?.username
                 ?: profile?.id
-    }
-
-    class Filter : spark.Filter
-    {
-        override fun handle(request: Request?, response: Response?)
-        {
-            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-        }
     }
 }

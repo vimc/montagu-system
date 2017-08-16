@@ -36,7 +36,7 @@ import org.vaccineimpact.api.db.tables.records.ApiAccessLogRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ApiAccessLog extends TableImpl<ApiAccessLogRecord> {
 
-    private static final long serialVersionUID = 2118366871;
+    private static final long serialVersionUID = 60759821;
 
     /**
      * The reference instance of <code>public.api_access_log</code>
@@ -75,6 +75,11 @@ public class ApiAccessLog extends TableImpl<ApiAccessLogRecord> {
      * The column <code>public.api_access_log.result</code>. The HTTP status code returned by the API
      */
     public final TableField<ApiAccessLogRecord, Integer> RESULT = createField("result", org.jooq.impl.SQLDataType.INTEGER, this, "The HTTP status code returned by the API");
+
+    /**
+     * The column <code>public.api_access_log.ip_address</code>.
+     */
+    public final TableField<ApiAccessLogRecord, String> IP_ADDRESS = createField("ip_address", org.jooq.impl.SQLDataType.CLOB, this, "");
 
     /**
      * Create a <code>public.api_access_log</code> table reference
