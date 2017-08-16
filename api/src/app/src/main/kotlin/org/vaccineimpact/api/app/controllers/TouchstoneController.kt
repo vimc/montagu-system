@@ -76,7 +76,7 @@ class TouchstoneController(context: ControllerContext) : AbstractController(cont
     {
         val data = getDemographicDataAndMetadata(context, repo)
         val metadata = data.structuredMetadata
-        val filename = "${metadata.touchstone.id}_${metadata.demographicData.source}_${metadata.demographicData.id}.csv"
+        val filename = "${metadata.touchstone.id}_${context.params(":source-code")}_${metadata.demographicData.id}.csv"
         context.addResponseHeader("Content-Disposition", """attachment; filename="$filename"""")
         return data.tableData
     }
