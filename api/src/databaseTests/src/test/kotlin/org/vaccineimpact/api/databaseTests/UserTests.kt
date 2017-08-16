@@ -4,6 +4,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
 import org.vaccineimpact.api.app.errors.UnknownObjectError
+import org.vaccineimpact.api.app.models.CreateUser
 import org.vaccineimpact.api.app.repositories.UserRepository
 import org.vaccineimpact.api.app.repositories.jooq.JooqUserRepository
 import org.vaccineimpact.api.db.JooqContext
@@ -14,6 +15,10 @@ import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import org.vaccineimpact.api.models.permissions.ReifiedRole
 import org.vaccineimpact.api.models.permissions.RoleAssignment
 import org.vaccineimpact.api.security.*
+import java.sql.Time
+import java.sql.Timestamp
+import java.time.Instant
+import java.util.*
 
 class UserTests : RepositoryTests<UserRepository>()
 {
@@ -75,6 +80,18 @@ class UserTests : RepositoryTests<UserRepository>()
 
             assertThat(results.count()).isEqualTo(2)
             assertThat(results[0]).isEqualToComparingFieldByField(expectedUser)
+        }
+    }
+
+    @Test
+    fun `can update last logged in`()
+    {
+        given(this::addTestUser).check { repo ->
+            val then = Instant.now()
+            repo.updateLastLoggedIn(username)
+            val lastLoggedIn = repo.getUserByUsername(username).lastLoggedIn
+            assertThat(lastLoggedIn).isNotNull()
+            assertThat(lastLoggedIn).isBetween(then, Instant.now())
         }
     }
 
@@ -188,6 +205,18 @@ class UserTests : RepositoryTests<UserRepository>()
                     ReifiedPermission("p3", Scope.Specific("prefixB", "idB"))
             )
             checkUser(getUser(repo, email), roles, permissions)
+        }
+    }
+
+    @Test
+    fun `can add user`()
+    {
+        givenABlankDatabase() makeTheseChanges { repo ->
+            repo.addUser(CreateUser("user.name", "Full Name", "email@example.com"))
+        } andCheck { repo ->
+            assertThat(repo.getUserByUsername("user.name")).isEqualTo(
+                    User("user.name", "Full Name", "email@example.com", null)
+            )
         }
     }
 

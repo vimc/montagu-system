@@ -17,6 +17,7 @@ buildscript {
 task run(dependsOn: ':app:run')
 task generateDatabaseInterface(dependsOn: ':generateDatabaseInterface:run')
 task generateTestData(dependsOn: ':generateTestData:run')
+task validateSchema(dependsOn: ':validateSchema:test')
 // 'testLibrary' runs things that can be tested without a running API.
 // i.e. everything other than blackboxTests.
 task testLibrary(dependsOn: [':app:test', ':databaseTests:test', ':userCLI:test', ':security:test'])
@@ -65,18 +66,27 @@ task startDatabase(dependsOn: ':loadPropertiesTask') {
         String portBinding = rootProject.ext.props.get('testdb_external_port') + ':' +  rootProject.ext.props.get('testdb_exposed_port')
         String dbVersion = file("config/db_version").text
         String image = rootProject.ext.props.get('testdb_image') + ":" + dbVersion
+        String container = rootProject.ext.props.get('testdb_container')
         println "Database image: " + image
         exec {
             commandLine 'docker', 'pull', image
         }
         exec {
-            commandLine 'docker', 'run', '-d', '--rm', '-p', portBinding, '--name', 'montagu-api-test_database', image
+            commandLine 'docker', 'run',
+                    '-d',
+                    '--rm',
+                    '-p', portBinding,
+                    '--name', container,
+                    "--entrypoint", "start-with-config.sh",
+                    image,
+                    "/postgresql.test.conf"
         }
     }
 }
 
-task stopDatabase(type: Exec) {
-    commandLine 'docker', 'stop', 'montagu-api-test_database'
+task stopDatabase(type: Exec, dependsOn: ':loadPropertiesTask') {
+    String container = rootProject.ext.props.get('testdb_container')
+    commandLine 'docker', 'stop', container
 }
 
 subprojects {
@@ -130,5 +140,13 @@ subprojects {
             println("This is the config being used:")
             println(file("build/classes/test/config.properties").text)
         }
+    }
+
+    task copySpec(type: Copy) {
+        from 'src/test/resources/spec'
+        include '*.schema.json'
+        include '*.csvschema.json'
+        into 'build/classes/test/spec'
+        outputs.upToDateWhen { false }
     }
 }

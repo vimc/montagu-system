@@ -50,6 +50,10 @@ class DatabasePasswordAuthenticator : Authenticator<UsernamePasswordCredentials>
             }
             else
             {
+                if (user.passwordHash == null)
+                {
+                    throwsException("User does not have a password")
+                }
                 if (!UserHelper.encoder.matches(password, user.passwordHash))
                 {
                     throwsException("Provided password does not match password on record")

@@ -1,9 +1,12 @@
 package org.vaccineimpact.api.blackboxTests.helpers
 
+import com.beust.klaxon.JsonArray
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
 import khttp.responses.Response
 import org.vaccineimpact.api.ContentTypes
+import org.vaccineimpact.api.Deserializer
+import org.vaccineimpact.api.models.ErrorInfo
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 
 data class TokenLiteral(val value: String)
@@ -26,6 +29,22 @@ class RequestHelper
 
     fun get(url: String, token: TokenLiteral? = null, contentType: String = ContentTypes.json): Response
     {
+        return get(url, standardHeaders(contentType, token))
+    }
+
+    fun post(url: String, permissions: Set<ReifiedPermission>, data: JsonObject): Response
+    {
+        val token = TestUserHelper().getTokenForTestUser(permissions)
+        return post(url, data, token = token)
+    }
+
+    fun post(url: String, data: JsonObject, token: TokenLiteral? = null): Response
+    {
+        return post(url, standardHeaders(ContentTypes.json, token), data.toJsonString(prettyPrint = true))
+    }
+
+    private fun standardHeaders(contentType: String, token: TokenLiteral?): Map<String, String>
+    {
         var headers = mapOf(
                 "Accept" to contentType,
                 "Accept-Encoding" to "gzip"
@@ -34,14 +53,20 @@ class RequestHelper
         {
             headers += mapOf("Authorization" to "Bearer $token")
         }
-        return get(url, headers)
+        return headers
     }
+
+    private fun post(url: String, headers: Map<String, String>, data: Any?) = khttp.post(
+            EndpointBuilder.build(url),
+            data = data,
+            headers = headers
+    )
 
     private fun get(url: String, headers: Map<String, String>)
             = khttp.get(EndpointBuilder.build(url), headers)
 }
 
-fun <T> Response.montaguData() : T?
+fun <T> Response.montaguData(): T?
 {
     val data = this.json()["data"]
     if (data != "")
@@ -54,4 +79,20 @@ fun <T> Response.montaguData() : T?
         return null
     }
 }
+
+fun Response.montaguErrors(): List<ErrorInfo>
+{
+    val errors = json()["errors"]
+    if (errors is JsonArray<*>)
+    {
+        return errors.filterIsInstance<JsonObject>().map {
+            ErrorInfo(it["code"] as String, it["message"] as String)
+        }
+    }
+    else
+    {
+        throw Exception("Unable to get error collection from this response: " + this.text)
+    }
+}
+
 fun Response.json() = Parser().parse(StringBuilder(text)) as JsonObject

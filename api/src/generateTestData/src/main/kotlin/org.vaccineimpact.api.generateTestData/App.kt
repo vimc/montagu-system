@@ -22,6 +22,11 @@ fun main(args: Array<String>) {
         db.addTouchstoneName("op-2017", "Operational Forecast 2017")
         db.addTouchstone("op-2017", 1, "Operational Forecast 2017 (v1)", "finished", addStatus = true)
         db.addTouchstone("op-2017", 2, "Operational Forecast 2017 (v2)", "open", addStatus = true)
+
+        val demographicTestData = DemographicTestData(db)
+        demographicTestData.generate("op-2017-1", listOf("YF"))
+        demographicTestData.generate("op-2017-2", listOf("YF"))
+
         val yfRoutine = db.addScenarioToTouchstone("op-2017-2", "yf-routine")
         val yfCampaign = db.addScenarioToTouchstone("op-2017-2", "yf-campaign")
 
@@ -54,5 +59,64 @@ fun main(args: Array<String>) {
         // note these roles are the real standard roles for the live db, not just test data!
         StandardRoles.insertInto(db)
 
+    }
+}
+
+class DemographicTestData(val db: JooqContext)
+{
+    val sources = listOf("unwpp2015", "unwpp2017")
+    val variants = listOf("low", "medium", "high")
+    val countries = db.generateCountries(3)
+    val sourceIds = db.generateDemographicSources(sources)
+    val variantIds = db.generateDemographicVariants(variants)
+    val units = db.generateDemographicUnits()
+    val genderIds = db.generateGenders()
+    val statisticTypes = addStatisticTypes(listOf(
+            "tot-pop" to "Total population",
+            "tot-births" to
+                    "Total births")
+    )
+
+    fun generate(touchstoneId: String, diseases: List<String>)
+    {
+        db.addDemographicSourcesToTouchstone(touchstoneId, sourceIds)
+        for (disease in diseases)
+        {
+            db.addTouchstoneCountries(touchstoneId, countries, disease)
+        }
+
+        for ((typeCode, typeId) in statisticTypes)
+        {
+            for (sourceId in sourceIds)
+            {
+                for (gender in genderIds)
+                {
+                    for (variant in variantIds)
+                    {
+                        println("Generating demographic data for $touchstoneId/$typeCode/$sourceId/$variant")
+                        db.generateDemographicData(sourceId, typeId,
+                                genderId = gender,
+                                variantId = variant,
+                                countries = countries
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    fun addStatisticTypes(definitions: List<Pair<String, String>>): List<Pair<String, Int>>
+    {
+        return definitions.withIndex().map { (index, definition) ->
+            val (code, name) = definition
+            val id = db.addDemographicStatisticType(
+                    code,
+                    variantIds,
+                    units,
+                    name = name,
+                    genderIsApplicable = index % 2 == 0
+            )
+            code to id
+        }
     }
 }

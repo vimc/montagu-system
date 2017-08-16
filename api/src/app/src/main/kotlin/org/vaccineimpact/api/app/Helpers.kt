@@ -4,6 +4,7 @@ import org.vaccineimpact.api.ContentTypes
 import spark.Filter
 import spark.Request
 import spark.Response
+import spark.route.HttpMethod
 import javax.servlet.http.HttpServletResponse
 
 // The idea is that as this file grows, I'll group helpers and split them off into files/classes with more
@@ -28,13 +29,15 @@ fun addDefaultResponseHeaders(res: HttpServletResponse, contentType: String = "$
 {
     res.contentType = contentType
     res.addHeader("Content-Encoding", "gzip")
-    res.addHeader("Access-Control-Allow-Origin", "*")
 }
 
-class DefaultHeadersFilter(val contentType: String) : Filter
+class DefaultHeadersFilter(val contentType: String, val method: HttpMethod) : Filter
 {
     override fun handle(request: Request, response: Response)
     {
-        addDefaultResponseHeaders(response, contentType)
+        if (request.requestMethod() == method.toString())
+        {
+            addDefaultResponseHeaders(response, contentType)
+        }
     }
 }

@@ -17,7 +17,7 @@ class HTMLFormHelpersTests : MontaguTests()
         val context = mock<ActionContext> {
             on { contentType() } doReturn "bad"
         }
-        val result = HTMLFormHelpers.checkForm(context, emptyMap())
+        val result = HTMLFormHelpers().checkForm(context, emptyMap())
         assertThat(result).isInstanceOf(HTMLForm.InvalidForm::class.java)
     }
 
@@ -28,7 +28,7 @@ class HTMLFormHelpersTests : MontaguTests()
             on { contentType() } doReturn "application/x-www-form-urlencoded"
             on { queryParams("key") } doReturn(null as String?)
         }
-        val result = HTMLFormHelpers.checkForm(context, mapOf("key" to "value"))
+        val result = HTMLFormHelpers().checkForm(context, mapOf("key" to "value"))
         assertThat(result).isInstanceOf(HTMLForm.InvalidForm::class.java)
     }
 
@@ -39,7 +39,7 @@ class HTMLFormHelpersTests : MontaguTests()
             on { contentType() } doReturn "application/x-www-form-urlencoded"
             on { queryParams("key") } doReturn "bad"
         }
-        val result = HTMLFormHelpers.checkForm(context, mapOf("key" to "value"))
+        val result = HTMLFormHelpers().checkForm(context, mapOf("key" to "value"))
         assertThat(result).isInstanceOf(HTMLForm.InvalidForm::class.java)
     }
 
@@ -50,7 +50,7 @@ class HTMLFormHelpersTests : MontaguTests()
             on { contentType() } doReturn "application/x-www-form-urlencoded"
             on { queryParams("key") } doReturn "value"
         }
-        val result = HTMLFormHelpers.checkForm(context, mapOf("key" to "value"))
+        val result = HTMLFormHelpers().checkForm(context, mapOf("key" to "value"))
         assertThat(result).isEqualTo(HTMLForm.ValidForm())
     }
 }

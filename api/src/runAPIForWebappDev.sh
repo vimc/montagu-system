@@ -4,7 +4,7 @@ set -ex
 # delete directory if it already exists
 if [ -d "/etc/montagu/api/token_key" ] 
 then
-   rm /etc/montagu/api/token_key -r
+   sudo rm /etc/montagu/api/token_key -r
 fi
 
 mkdir -p /etc/montagu/api/token_key
@@ -23,6 +23,7 @@ docker run --rm \
 ./user.sh addUserToGroup test.user ALL
 
 ./user.sh add "Report reviewer" report.reviewer report.reviewer@example.com password
+./user.sh addRole report.reviewer user
 ./user.sh addRole report.reviewer reports-reviewer
 
 ./gradlew :run
