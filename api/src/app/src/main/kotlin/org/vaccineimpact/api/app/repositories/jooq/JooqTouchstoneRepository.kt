@@ -55,18 +55,6 @@ class JooqTouchstoneRepository(
 
     fun mapDemographicDatasetMetadata(statType: Record, records: List<Record>): DemographicDataset
     {
-
-        val referenceRecord = records.firstOrNull()
-        val gender: String? =
-                if (statType[DEMOGRAPHIC_STATISTIC_TYPE.GENDER_IS_APPLICABLE])
-                {
-                    referenceRecord?.get(GENDER.NAME)
-                }
-                else
-                {
-                    null
-                }
-
         val countries =
                 if (records.any())
                 {
@@ -77,7 +65,10 @@ class JooqTouchstoneRepository(
                     listOf()
                 }
 
+        val referenceRecord = records.firstOrNull()
+
         val source = referenceRecord?.get(DEMOGRAPHIC_SOURCE.NAME)
+        val gender =  referenceRecord?.get(GENDER.NAME)
 
         return DemographicDataset(statType[DEMOGRAPHIC_STATISTIC_TYPE.CODE],
                 statType[DEMOGRAPHIC_STATISTIC_TYPE.NAME],
@@ -85,7 +76,7 @@ class JooqTouchstoneRepository(
                 countries,
                 statType[DEMOGRAPHIC_VALUE_UNIT.NAME],
                 statType[DEMOGRAPHIC_STATISTIC_TYPE.AGE_INTERPRETATION],
-                referenceRecord?.get(DEMOGRAPHIC_SOURCE.NAME))
+                source)
     }
 
     override fun getDemographicStatisticTypes(touchstoneId: String): List<DemographicStatisticType>
