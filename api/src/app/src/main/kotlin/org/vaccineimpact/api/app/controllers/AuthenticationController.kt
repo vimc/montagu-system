@@ -27,7 +27,9 @@ class AuthenticationController(context: ControllerContext, htmlFormHelpers: Form
             oneRepoEndpoint("authenticate/", this::authenticate, repos.user, HttpMethod.post)
                     .withAdditionalSetup(this::setupSecurity)
     )
-    private val accessLogRepository = context.repositories.accessLogRepository
+    private val accessLogRepository by lazy {
+        context.repositories.accessLogRepository
+    }
     private val htmlFormHelpers = htmlFormHelpers ?: HTMLFormHelpers()
 
     fun authenticate(context: ActionContext, repo: UserRepository): AuthenticationResponse
