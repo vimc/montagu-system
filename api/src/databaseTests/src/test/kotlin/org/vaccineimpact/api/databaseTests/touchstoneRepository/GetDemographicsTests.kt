@@ -163,7 +163,7 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
 
             Assertions.assertThat(metadata.id).isEqualTo("tot-pop")
             Assertions.assertThat(metadata.name).isEqualTo("tot-pop descriptive name")
-            Assertions.assertThat(metadata.gender).isNull()
+            Assertions.assertThat(metadata.gender).isEqualTo("both")
             Assertions.assertThat(metadata.source).isEqualTo("unwpp2015 descriptive name")
             Assertions.assertThat(metadata.ageInterpretation).isEqualTo("age")
             Assertions.assertThat(metadata.unit).isEqualTo("people")
