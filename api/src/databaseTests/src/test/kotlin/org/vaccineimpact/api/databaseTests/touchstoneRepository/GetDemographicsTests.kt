@@ -11,10 +11,11 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
 {
     private var countries: List<String> = listOf()
     private var sourceIds: List<Int> = listOf()
-    private var sources: List<String> = listOf("UNWPP2015", "UNWPP2017")
+    private var sources: List<String> = listOf("unwpp2015", "unwpp2017")
     private var variantIds: List<Int> = listOf()
     private var variants = listOf("unwpp_estimates", "unwpp_low_variant", "unwpp_medium_variant", "unwpp_high_variant")
     private var units: List<Int> = listOf()
+    private var genders: List<Int> = listOf()
 
     private fun setUpSupportingTables(it: JooqContext)
     {
@@ -22,7 +23,7 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
         sourceIds = it.generateDemographicSources(sources)
         variantIds = it.generateDemographicVariants(variants)
         units = it.generateDemographicUnits()
-        it.generateGenders()
+        genders = it.generateGenders()
         it.addDisease("measles", "Measles")
     }
 
@@ -44,8 +45,12 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
         {
             for (variant in variants)
             {
-                it.generateDemographicData(source, pop, 1,
-                        variantId = variant, countries = countries, yearRange = 1950..2050 step 5)
+                for (gender in genders)
+                {
+                    it.generateDemographicData(source, pop, gender,
+                            variantId = variant, countries = countries, yearRange = 1950..2050 step 5)
+                }
+
             }
         }
     }
@@ -149,7 +154,7 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
             setUpSupportingTables(it)
             setUpTouchstone(it)
             addPopulation(it)
-            addFertility(it, sources = sourceIds.subList(0,1))
+            addFertility(it, sources = sourceIds.subList(0, 1))
 
         } check {
             val types = it.getDemographicStatisticTypes(touchstoneId)
@@ -158,7 +163,7 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
             Assertions.assertThat(fertilityType.name).isEqualTo("as-fert descriptive name")
             Assertions.assertThat(fertilityType.id).isEqualTo("as-fert")
             Assertions.assertThat(fertilityType.genderIsApplicable).isTrue()
-            Assertions.assertThat(fertilityType.sources).isEqualTo(sources.subList(0,1))
+            Assertions.assertThat(fertilityType.sources).isEqualTo(sources.subList(0, 1))
             Assertions.assertThat(fertilityType.countries).hasSameElementsAs(countries)
 
             val populationType = types.sortedBy { it.name }[1]
@@ -199,21 +204,21 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
 
         } check {
             var metadata = it.getDemographicDataset("tot-pop", sources[0], touchstoneId)
-                    .structuredMetadata.demographicData!!
+                    .structuredMetadata.demographicData
             Assertions.assertThat(metadata.id).isEqualTo("tot-pop")
             Assertions.assertThat(metadata.name).isEqualTo("tot-pop descriptive name")
             Assertions.assertThat(metadata.gender).isNull()
-            Assertions.assertThat(metadata.source).isEqualTo("UNWPP2015 descriptive name")
+            Assertions.assertThat(metadata.source).isEqualTo("unwpp2015 descriptive name")
             Assertions.assertThat(metadata.ageInterpretation).isEqualTo("age")
             Assertions.assertThat(metadata.unit).isEqualTo("people")
             Assertions.assertThat(metadata.countries).hasSameElementsAs(countries)
 
             metadata = it.getDemographicDataset("as-fert", sources[0], touchstoneId)
-                    .structuredMetadata.demographicData!!
+                    .structuredMetadata.demographicData
             Assertions.assertThat(metadata.id).isEqualTo("as-fert")
             Assertions.assertThat(metadata.name).isEqualTo("as-fert descriptive name")
             Assertions.assertThat(metadata.gender).isEqualTo("both")
-            Assertions.assertThat(metadata.source).isEqualTo("UNWPP2015 descriptive name")
+            Assertions.assertThat(metadata.source).isEqualTo("unwpp2015 descriptive name")
             Assertions.assertThat(metadata.ageInterpretation).isEqualTo("age of mother")
             Assertions.assertThat(metadata.unit).isEqualTo("people")
             Assertions.assertThat(metadata.countries).hasSameElementsAs(countries)
@@ -286,7 +291,8 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
 
             val source = sources[1]
             val result = it.getDemographicDataset("tot-pop", source, touchstoneId)
-            Assertions.assertThat(result.structuredMetadata.demographicData).isNull()
+            Assertions.assertThat(result.structuredMetadata.demographicData.countries.count()).isEqualTo(0)
+            Assertions.assertThat(result.structuredMetadata.demographicData.source).isNull()
             Assertions.assertThat(result.tableData.data.count()).isEqualTo(0)
         }
     }
@@ -302,9 +308,9 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
 
         } check {
 
-            val result = it.getDemographicDataset("tot-pop", sources[1], touchstoneId)
-            Assertions.assertThat(result.structuredMetadata.demographicData).isNull()
-            Assertions.assertThat(result.tableData.data.count()).isEqualTo(0)
+            Assertions.assertThatThrownBy { it.getDemographicDataset("tot-pop", sources[1], touchstoneId) }
+                    .isInstanceOf(UnknownObjectError::class.java)
+
         }
     }
 
@@ -328,7 +334,8 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
         } check {
 
             val result = it.getDemographicDataset("tot-pop", sources[1], anotherTouchstoneId)
-            Assertions.assertThat(result.structuredMetadata.demographicData).isNull()
+            Assertions.assertThat(result.structuredMetadata.demographicData.countries.count()).isEqualTo(0)
+            Assertions.assertThat(result.structuredMetadata.demographicData.source).isNull()
             Assertions.assertThat(result.tableData.data.count()).isEqualTo(0)
         }
     }
@@ -356,7 +363,7 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
         } check {
 
             val result = it.getDemographicDataset("tot-pop", sources[1], anotherTouchstoneId)
-            Assertions.assertThat(result.structuredMetadata.demographicData).isNull()
+            Assertions.assertThat(result.structuredMetadata.demographicData.countries.count()).isEqualTo(0)
             Assertions.assertThat(result.tableData.data.count()).isEqualTo(0)
         }
     }

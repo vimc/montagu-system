@@ -14,6 +14,7 @@ import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.direct.*
 import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.test_helpers.DatabaseTest
+import org.vaccineimpact.api.validateSchema.JSONValidator
 
 class DemographicTests : DatabaseTest()
 {
@@ -21,6 +22,7 @@ class DemographicTests : DatabaseTest()
     val touchstoneId = "touchstone-1"
     val touchstoneName = "touchstone"
     val touchstoneVersion = 1
+    val url = "/touchstones/$touchstoneId/demographics/unwpp2015/tot-pop/"
 
     @Test
     fun `can get demographic stat types for touchstone`()
@@ -50,7 +52,7 @@ class DemographicTests : DatabaseTest()
     fun `can get demographic data`()
     {
         val schema = SplitSchema(json = "DemographicDatasetForTouchstone", csv = "DemographicData")
-        val test = validate("/touchstones/$touchstoneId/demographics/unwpp2015/tot-pop/") against (schema) given {
+        val test = validate(url) against (schema) given {
 
             setUpSupportingTables(it)
             setUpTouchstone(it)
@@ -75,8 +77,7 @@ class DemographicTests : DatabaseTest()
         }
 
         val validator = SplitValidator()
-        val response = requestHelper.get("/touchstones/$touchstoneId/demographics/unwpp2015/tot-pop/",
-                requiredPermissions)
+        val response = requestHelper.get(url, requiredPermissions)
 
         val json = JsonLoader.fromString(validator.getSplitText(response.text).json)
         val demographyJson = json["data"]["demographic_data"]
@@ -95,6 +96,44 @@ class DemographicTests : DatabaseTest()
 
         Assertions.assertThat(demographyJson).isEqualTo(expectedDemographicMetadata)
     }
+
+    @Test
+    fun `can get pure CSV demographic data for touchstone`()
+    {
+        val schema = CSVSchema("DemographicData")
+        val userHelper = TestUserHelper()
+        val requestHelper = RequestHelper()
+
+        JooqContext().use {
+            setUpSupportingTables(it)
+            setUpTouchstone(it)
+            addPopulation(it)
+            userHelper.setupTestUser(it)
+        }
+
+        val response = requestHelper.get(url, requiredPermissions, contentType = "text/csv")
+        schema.validate(response.text)
+    }
+
+    @Test
+    fun `can get pure CSV demographic data via one time link`()
+    {
+        validate("$url/get_onetime_link/") against "Token" given {
+            setUpSupportingTables(it)
+            setUpTouchstone(it)
+            addPopulation(it)
+        } requiringPermissions { requiredPermissions } andCheckString { token ->
+            val oneTimeURL = "/onetime_link/$token/"
+            val schema = CSVSchema("DemographicData")
+            val requestHelper = RequestHelper()
+            val response = requestHelper.get(oneTimeURL)
+            schema.validate(response.text)
+
+            val badResponse =  requestHelper.get(oneTimeURL)
+            JSONValidator().validateError(badResponse.text, expectedErrorCode = "invalid-token-used")
+        }
+    }
+
 
 
     @Test

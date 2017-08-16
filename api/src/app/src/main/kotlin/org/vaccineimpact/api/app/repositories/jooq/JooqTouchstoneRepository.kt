@@ -3,6 +3,8 @@ package org.vaccineimpact.api.app.repositories.jooq
 import org.jooq.*
 import org.jooq.Result
 import org.jooq.impl.DSL.*
+import org.slf4j.LoggerFactory
+import org.vaccineimpact.api.app.controllers.AbstractController
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
 import org.vaccineimpact.api.app.filters.whereMatchesFilter
@@ -38,55 +40,54 @@ class JooqTouchstoneRepository(
                 .fetch()
 
         val rows = records.map {
-                    mapDemographicRow(it)
-                }
+            mapDemographicRow(it)
+        }
 
-        val dataset =
-                if (rows.count() == 0)
-                {
-                    null
-                }
-                else
-                {
-                    val statType = getDemographicDatasetMetadata(statisticTypeCode)
-                            .fetchAny()
+        val statType = getDemographicDatasetMetadata(statisticTypeCode)
+                .fetchAny() ?: throw UnknownObjectError(statisticTypeCode, "demographic-statistic-type")
 
-                    val referenceRecord = records.first()
-
-                    mapDemographicDatasetMetadata(statType[DEMOGRAPHIC_STATISTIC_TYPE.CODE],
-                            statType[DEMOGRAPHIC_STATISTIC_TYPE.NAME],
-                            referenceRecord[GENDER.NAME],
-                            statType[DEMOGRAPHIC_STATISTIC_TYPE.GENDER_IS_APPLICABLE],
-                            statType[DEMOGRAPHIC_VALUE_UNIT.NAME],
-                            statType[DEMOGRAPHIC_STATISTIC_TYPE.AGE_INTERPRETATION],
-                            referenceRecord[DEMOGRAPHIC_SOURCE.NAME],
-                            rows.map{ it.country }.distinct().sortedBy { it })
-                }
+        val dataset = mapDemographicDatasetMetadata(statType, records)
 
         val metadata = DemographicDataForTouchstone(touchstone, dataset)
+
+
+        val logger = LoggerFactory.getLogger(AbstractController::class.java)
+        logger.info("$statisticTypeCode, $source, $touchstoneId, ${records.count()}")
 
         return SplitData(metadata, DataTable.new(rows))
     }
 
-    fun mapDemographicDatasetMetadata(id: String,
-                                      name: String,
-                                      gender: String,
-                                      genderIsApplicable: Boolean,
-                                      unit: String,
-                                      ageInterpretation: String,
-                                      source: String,
-                                      countries: List<String>): DemographicDataset
+    fun mapDemographicDatasetMetadata(statType: Record, records: List<Record>): DemographicDataset
     {
-        val nullableGender: String? =
-                if (genderIsApplicable)
+
+        val referenceRecord = records.firstOrNull()
+        val gender: String? =
+                if (statType[DEMOGRAPHIC_STATISTIC_TYPE.GENDER_IS_APPLICABLE])
                 {
-                    gender
+                    referenceRecord?.get(GENDER.NAME)
                 }
                 else
                 {
                     null
                 }
-        return DemographicDataset(id, name, nullableGender, countries, unit, ageInterpretation, source)
+
+        val countries =
+                if (records.any())
+                {
+                    records.map { it[DEMOGRAPHIC_STATISTIC.COUNTRY] }.distinct().sortedBy { it }
+                }
+                else
+                {
+                    listOf()
+                }
+
+        return DemographicDataset(statType[DEMOGRAPHIC_STATISTIC_TYPE.CODE],
+                statType[DEMOGRAPHIC_STATISTIC_TYPE.NAME],
+                gender,
+                countries,
+                statType[DEMOGRAPHIC_VALUE_UNIT.NAME],
+                statType[DEMOGRAPHIC_STATISTIC_TYPE.AGE_INTERPRETATION],
+                referenceRecord?.get(DEMOGRAPHIC_SOURCE.NAME))
     }
 
     override fun getDemographicStatisticTypes(touchstoneId: String): List<DemographicStatisticType>
