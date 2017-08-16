@@ -14,6 +14,7 @@ import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.direct.*
 import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.test_helpers.DatabaseTest
+import org.vaccineimpact.api.test_helpers.DemographicDummyData
 import org.vaccineimpact.api.validateSchema.JSONValidator
 
 class DemographicTests : DatabaseTest()
@@ -27,10 +28,14 @@ class DemographicTests : DatabaseTest()
     @Test
     fun `can get demographic stat types for touchstone`()
     {
+        var countries: List<String> = listOf()
+
         validate("/touchstones/$touchstoneId/demographics/") against "Demographics" given {
-            setUpSupportingTables(it)
-            setUpTouchstone(it)
-            addPopulation(it)
+
+            countries = DemographicDummyData(it)
+                    .withTouchstone(touchstoneName, touchstoneVersion)
+                    .withPopulation()
+                    .countries
 
         } requiringPermissions {
             requiredPermissions
@@ -54,9 +59,9 @@ class DemographicTests : DatabaseTest()
         val schema = SplitSchema(json = "DemographicDatasetForTouchstone", csv = "DemographicData")
         val test = validate(url) against (schema) given {
 
-            setUpSupportingTables(it)
-            setUpTouchstone(it)
-            addPopulation(it)
+            DemographicDummyData(it)
+                    .withTouchstone(touchstoneName, touchstoneVersion)
+                    .withPopulation()
 
         } requiringPermissions { requiredPermissions }
 
@@ -68,11 +73,15 @@ class DemographicTests : DatabaseTest()
     {
         val userHelper = TestUserHelper()
         val requestHelper = RequestHelper()
+        var countries: List<String> = listOf()
 
         JooqContext().use {
-            setUpSupportingTables(it)
-            setUpTouchstone(it)
-            addPopulation(it)
+
+            countries = DemographicDummyData(it)
+                    .withTouchstone(touchstoneName, touchstoneVersion)
+                    .withPopulation()
+                    .countries
+
             userHelper.setupTestUser(it)
         }
 
@@ -105,9 +114,11 @@ class DemographicTests : DatabaseTest()
         val requestHelper = RequestHelper()
 
         JooqContext().use {
-            setUpSupportingTables(it)
-            setUpTouchstone(it)
-            addPopulation(it)
+
+            DemographicDummyData(it)
+                    .withTouchstone(touchstoneName, touchstoneVersion)
+                    .withPopulation()
+
             userHelper.setupTestUser(it)
         }
 
@@ -119,9 +130,11 @@ class DemographicTests : DatabaseTest()
     fun `can get pure CSV demographic data via one time link`()
     {
         validate("$url/get_onetime_link/") against "Token" given {
-            setUpSupportingTables(it)
-            setUpTouchstone(it)
-            addPopulation(it)
+
+            DemographicDummyData(it)
+                    .withTouchstone(touchstoneName, touchstoneVersion)
+                    .withPopulation()
+
         } requiringPermissions { requiredPermissions } andCheckString { token ->
             val oneTimeURL = "/onetime_link/$token/"
             val schema = CSVSchema("DemographicData")
@@ -141,12 +154,25 @@ class DemographicTests : DatabaseTest()
     {
         val userHelper = TestUserHelper()
         val requestHelper = RequestHelper()
+        var expectedRows = 0
 
         JooqContext().use {
-            setUpSupportingTables(it)
-            setUpTouchstone(it)
-            addPopulation(it)
+
+            val data = DemographicDummyData(it)
+                    .withTouchstone(touchstoneName, touchstoneVersion)
+                    .withPopulation(yearRange = 1950..1955 step 5, ageRange = 10..15 step 5)
+
             userHelper.setupTestUser(it)
+
+            val numYears = 2
+            val numAges = 2
+
+            // should only ever be 2 variants - unwpp_estimates and unwpp_medium_variant
+            val numVariants = 2
+
+            val numCountries = data.countries.count()
+
+            expectedRows = numAges * numYears * numCountries * numVariants
         }
 
         val validator = SplitValidator()
@@ -157,63 +183,7 @@ class DemographicTests : DatabaseTest()
         val CSVSchema = CSVSchema("DemographicData")
         val body = CSVSchema.validate(csv)
 
-        // 1950..2050 step 5 means 21 year steps
-        val numYears = 21
-
-        // 0..80 step 5 means 17 age steps
-        val numAges = 17
-
-        // should only ever be 2 variants - unwpp_estimates and unwpp_medium_variant
-        val numVariants = 2
-
-        val numCountries = countries.count()
-
-        Assertions.assertThat(body.count()).isEqualTo(numAges * numYears * numCountries * numVariants)
+        Assertions.assertThat(body.count()).isEqualTo(expectedRows)
     }
 
-    private var countries: List<String> = listOf()
-    private var sourceIds: List<Int> = listOf()
-    private var sources: List<String> = listOf("unwpp2015", "unwpp2017")
-    private var variantIds: List<Int> = listOf()
-    private var variants = listOf("unwpp_estimates", "unwpp_medium_variant", "unwpp_medium_variant", "unwpp_high_variant")
-    private var units: List<Int> = listOf()
-    private var genders: List<Int> = listOf()
-
-    private fun setUpSupportingTables(it: JooqContext)
-    {
-        countries = it.generateCountries(3)
-        sourceIds = it.generateDemographicSources(sources)
-        variantIds = it.generateDemographicVariants(variants)
-        units = it.generateDemographicUnits()
-        genders = it.generateGenders()
-        it.addDisease("measles", "Measles")
-    }
-
-    private fun setUpTouchstone(it: JooqContext)
-    {
-        it.addTouchstone(touchstoneName, touchstoneVersion, addName = true, addStatus = true)
-        it.addDemographicSourcesToTouchstone(touchstoneId, sourceIds)
-        it.addTouchstoneCountries(touchstoneId, countries, "measles")
-    }
-
-    private fun addPopulation(it: JooqContext,
-                              sources: List<Int> = sourceIds,
-                              variants: List<Int> = variantIds,
-                              countries: List<String> = this.countries)
-    {
-        val pop = it.addDemographicStatisticType("tot-pop", variants, units)
-
-        for (source in sources)
-        {
-            for (variant in variants)
-            {
-                for (gender in genders)
-                {
-                    it.generateDemographicData(source, pop, gender,
-                            variantId = variant, countries = countries, yearRange = 1950..2050 step 5)
-                }
-            }
-        }
-
-    }
 }

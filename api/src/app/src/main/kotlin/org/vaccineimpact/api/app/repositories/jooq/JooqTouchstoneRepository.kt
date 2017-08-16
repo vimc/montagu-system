@@ -50,10 +50,6 @@ class JooqTouchstoneRepository(
 
         val metadata = DemographicDataForTouchstone(touchstone, dataset)
 
-
-        val logger = LoggerFactory.getLogger(AbstractController::class.java)
-        logger.info("$statisticTypeCode, $source, $touchstoneId, ${records.count()}")
-
         return SplitData(metadata, DataTable.new(rows))
     }
 
@@ -231,7 +227,7 @@ class JooqTouchstoneRepository(
     private fun getDemographicStatistics(touchstoneId: String,
                                          typeCode: String,
                                          sourceCode: String):
-            Select<Record7<Int, Int, String, Int, BigDecimal, String, String>>
+            SelectConditionStep<Record7<Int, Int, String, Int, BigDecimal, Int, String>>
     {
         // we are hard coding this here for now - need to revisit data model longer term
         val variants = listOf("unwpp_estimates", "unwpp_medium_variant", "cm_median")
@@ -244,7 +240,7 @@ class JooqTouchstoneRepository(
                 DEMOGRAPHIC_STATISTIC.COUNTRY,
                 DEMOGRAPHIC_STATISTIC.YEAR,
                 DEMOGRAPHIC_STATISTIC.VALUE,
-                DEMOGRAPHIC_SOURCE.NAME,
+                DEMOGRAPHIC_STATISTIC.DEMOGRAPHIC_SOURCE,
                 GENDER.NAME)
                 .from(DEMOGRAPHIC_STATISTIC)
                 .join(GENDER)
@@ -253,7 +249,6 @@ class JooqTouchstoneRepository(
         // only select for countries in given touchstone
         selectQuery = selectQuery.join(TOUCHSTONE_COUNTRY)
                 .on(DEMOGRAPHIC_STATISTIC.COUNTRY.eq(TOUCHSTONE_COUNTRY.COUNTRY))
-
 
         // only select for given source and source in given touchstone
         selectQuery = selectQuery.join(DEMOGRAPHIC_SOURCE)
