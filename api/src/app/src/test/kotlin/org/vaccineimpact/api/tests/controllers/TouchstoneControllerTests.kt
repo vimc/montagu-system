@@ -129,7 +129,7 @@ class TouchstoneControllerTests : ControllerTests<TouchstoneController>()
         }
 
         val controller = TouchstoneController(mockControllerContext())
-        val data = controller.getDemographicData(context, repo)
+        val data = controller.getDemographicDataAndMetadata(context, repo)
 
         assertThat(data.structuredMetadata).isEqualTo(demographicMetadata)
 
