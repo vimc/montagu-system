@@ -72,7 +72,7 @@ class AccessLogTests : DatabaseTest()
         val entry = JooqContext().use { db ->
             db.dsl.select(API_ACCESS_LOG.fieldsAsList())
                     .from(API_ACCESS_LOG)
-                    .orderBy(API_ACCESS_LOG.WHEN.desc())
+                    .orderBy(API_ACCESS_LOG.TIMESTAMP.desc())
                     .fetchInto(Entry::class.java)
                     .first()
         }
