@@ -433,33 +433,6 @@ fun JooqContext.generateDemographicData(
     this.dsl.batchStore(records).execute()
 }
 
-fun JooqContext.addDemographicRecord( sourceId: Int,
-                                      typeId: Int,
-                                      genderId: Int,
-                                      variantId: Int,
-                                      country: String,
-                                      year: Int,
-                                      ageStart: Int,
-                                      ageTo: Int,
-                                      value: BigDecimal)
-{
-    val records = mutableListOf<DemographicStatisticRecord>()
-
-    records.add(this.newDemographicRowRecord(
-                        sourceId,
-                        typeId,
-                        country,
-                        year,
-                        ageStart,
-                        ageTo,
-                        genderId = genderId,
-                        variant = variantId,
-                        value = value
-                ))
-
-    this.dsl.batchStore(records).execute()
-}
-
 fun JooqContext.addDemographicSourcesToTouchstone(touchstoneId: String, sources: List<Int>)
 {
     val records = sources.map {
