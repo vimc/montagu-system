@@ -11,6 +11,7 @@ import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.UserRepository
 import org.vaccineimpact.api.app.security.TokenIssuingConfigFactory
 import org.vaccineimpact.api.app.security.USER_OBJECT
+import org.vaccineimpact.api.app.security.montaguUser
 import org.vaccineimpact.api.models.AuthenticationResponse
 import org.vaccineimpact.api.models.FailedAuthentication
 import org.vaccineimpact.api.models.SuccessfulAuthentication
@@ -26,8 +27,8 @@ class AuthenticationController(context: ControllerContext, htmlFormHelpers: Form
             oneRepoEndpoint("authenticate/", this::authenticate, repos.user, HttpMethod.post)
                     .withAdditionalSetup(this::setupSecurity)
     )
-
-    val htmlFormHelpers = htmlFormHelpers ?: HTMLFormHelpers()
+    private val accessLogRepository = context.repositories.accessLogRepository
+    private val htmlFormHelpers = htmlFormHelpers ?: HTMLFormHelpers()
 
     fun authenticate(context: ActionContext, repo: UserRepository): AuthenticationResponse
     {
@@ -38,7 +39,7 @@ class AuthenticationController(context: ControllerContext, htmlFormHelpers: Form
         {
             is HTMLForm.ValidForm ->
             {
-                val user = getUserFromUserProfile(context)
+                val user = context.userProfile!!.montaguUser()!!
                 val token = tokenHelper.generateToken(user)
                 repo.updateLastLoggedIn(user.username)
                 return SuccessfulAuthentication(token, tokenHelper.lifeSpan)
@@ -47,9 +48,9 @@ class AuthenticationController(context: ControllerContext, htmlFormHelpers: Form
         }
     }
 
-    private fun setupSecurity(fullUrl: String, tokenHelper: WebTokenHelper)
+    private fun setupSecurity(fullUrl: String, tokenHelper: WebTokenHelper, repos: Repositories)
     {
-        val config = TokenIssuingConfigFactory().build()
+        val config = TokenIssuingConfigFactory(accessLogRepository).build()
         before(fullUrl, SecurityFilter(
                 config,
                 DirectBasicAuthClient::class.java.simpleName,
@@ -57,7 +58,4 @@ class AuthenticationController(context: ControllerContext, htmlFormHelpers: Form
                 "method:${HttpMethod.post}"
         ))
     }
-
-    private fun getUserFromUserProfile(context: ActionContext)
-            = context.userProfile!!.getAttribute(USER_OBJECT) as MontaguUser
 }

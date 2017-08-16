@@ -1,5 +1,6 @@
 package org.vaccineimpact.api.app.controllers.endpoints
 
+import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.security.WebTokenHelper
 import spark.Route
 import spark.route.HttpMethod
@@ -12,7 +13,7 @@ interface EndpointDefinition<TRoute>
     val method: HttpMethod
     val contentType: String
 
-    fun additionalSetup(url: String, tokenHelper: WebTokenHelper)
+    fun additionalSetup(url: String, tokenHelper: WebTokenHelper, repos: Repositories)
     fun transform(x: Any): String
 }
 
