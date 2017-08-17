@@ -13,14 +13,14 @@ describe("ResourceLinks", () => {
     it("can render", () => {
 
         const testResources = [
-            "someresource.csv",
+            "R/someresource.csv",
             "someother.rds"
         ];
 
         const rendered = sandbox.mount(<ResourceLinks resources={testResources} report="reportname" version="versionname" />);
         const links = rendered.find('li').find(FileDownloadLink);
 
-        expect(links.at(0).prop("href")).to.eq("/reports/reportname/versionname/resources/someresource.csv/");
+        expect(links.at(0).prop("href")).to.eq("/reports/reportname/versionname/resources/R:someresource.csv/");
         expect(links.at(1).prop("href")).to.eq("/reports/reportname/versionname/resources/someother.rds/");
     });
 
