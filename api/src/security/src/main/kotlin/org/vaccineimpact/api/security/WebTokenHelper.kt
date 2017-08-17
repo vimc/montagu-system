@@ -33,7 +33,7 @@ open class WebTokenHelper(keyPair: KeyPair)
                 "exp" to Date.from(Instant.now().plus(oneTimeLinkLifeSpan)),
                 "action" to action,
                 "payload" to params.map { "${it.key}=${it.value}" }.joinToString("&"),
-                "query" to (queryString ?: ""),
+                "query" to queryString,
                 "nonce" to getNonce()
         ))
     }

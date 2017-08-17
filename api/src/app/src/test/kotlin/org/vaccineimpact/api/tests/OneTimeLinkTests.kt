@@ -37,6 +37,24 @@ class OneTimeLinkTests : MontaguTests()
     }
 
     @Test
+    fun `return empty map of query params when query string is null`()
+    {
+        val actual = OneTimeLink.parseClaims(mapOf(
+                "action" to "coverage",
+                "payload" to "a=1&b=2",
+                "query" to ""
+        ))
+        assertThat(actual).isEqualTo(OneTimeLink(
+                action = OneTimeAction.COVERAGE,
+                payload = mapOf(
+                        "a" to "1",
+                        "b" to "2"
+                ),
+                queryParams = mapOf()
+        ))
+    }
+
+    @Test
     fun `perform invokes callback with OneTimeLinkActionContext`()
     {
         // Mocks

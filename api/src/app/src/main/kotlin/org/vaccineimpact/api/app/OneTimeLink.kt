@@ -51,23 +51,23 @@ data class OneTimeLink(val action: OneTimeAction,
             val rawAction = claims["action"].toString()
             val action = Deserializer().parseEnum<OneTimeAction>(rawAction)
             val rawPayload = claims["payload"].toString()
-            val rawQueryParams = claims["query"]
+            val rawQueryParams = claims["query"]?.toString()
             val payload = rawPayload
                     .split('&')
                     .map { it.split('=') }
                     .associateBy({ it[0] }, { it[1] })
 
             val queryParams =
-                    if (rawQueryParams != null)
+                    if (rawQueryParams.isNullOrEmpty())
                     {
-                        rawQueryParams.toString()
-                                .split("&")
-                                .map { it.split('=') }
-                                .associateBy({ it[0] }, { it[1] })
+                        mapOf()
                     }
                     else
                     {
-                        mapOf()
+                        rawQueryParams!!
+                                .split("&")
+                                .map { it.split('=') }
+                                .associateBy({ it[0] }, { it[1] })
                     }
 
             return OneTimeLink(action, payload, queryParams)
