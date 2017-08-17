@@ -2,6 +2,8 @@ import * as React from "react";
 import { demographicActions } from "../../../actions/DemographicActions";
 import { GenderControl } from "./GenderControl";
 import { DemographicStatisticType } from "../../../../shared/models/Generated";
+import { demographicStore } from "../../../stores/DemographicStore";
+import { doNothing } from "../../../../shared/Helpers";
 
 const commonStyles = require("../../../../shared/styles/common.css");
 const styles = require("../Responsibilities.css");
@@ -15,6 +17,7 @@ interface Props {
 export class DemographicOptions extends React.Component<Props, undefined> {
     onSelectDataSet(e: React.ChangeEvent<HTMLSelectElement>) {
         demographicActions.selectDataSet(e.target.value);
+        demographicStore.fetchOneTimeToken().catch(doNothing);
     }
 
     onSelectGender(gender: string) {

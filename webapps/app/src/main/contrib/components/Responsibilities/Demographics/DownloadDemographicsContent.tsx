@@ -5,8 +5,11 @@ import { demographicStore } from "../../../stores/DemographicStore";
 import { DemographicStatisticType, Touchstone } from "../../../../shared/models/Generated";
 import { connectToStores } from "../../../../shared/alt";
 import { responsibilityStore } from "../../../stores/ResponsibilityStore";
-import { ButtonLink } from "../../../../shared/components/ButtonLink";
 import { DemographicOptions } from "./DemographicOptions";
+import fetcher from "../../../../shared/sources/Fetcher";
+import { OneTimeButton } from "../../../../shared/components/OneTimeButton";
+import { demographicActions } from "../../../actions/DemographicActions";
+import { doNothing } from "../../../../shared/Helpers";
 
 const commonStyles = require("../../../../shared/styles/common.css");
 const styles = require("../Responsibilities.css");
@@ -16,6 +19,7 @@ export interface DownloadDemographicsContentProps extends RemoteContent {
     selectedDataSet: DemographicStatisticType;
     selectedGender: string;
     touchstone: Touchstone;
+    token: string;
 }
 
 export class DownloadDemographicsContentComponent extends RemoteContentComponent<DownloadDemographicsContentProps> {
@@ -32,6 +36,7 @@ export class DownloadDemographicsContentComponent extends RemoteContentComponent
                 selectedDataSet: demographicState.selectedDataSet,
                 selectedGender: demographicState.selectedGender,
                 dataSets: demographicState.dataSets[demographicState.currentTouchstone],
+                token: demographicState.token,
                 touchstone: responsibilityState.currentTouchstone
             };
         } else {
@@ -40,13 +45,20 @@ export class DownloadDemographicsContentComponent extends RemoteContentComponent
                 selectedDataSet: null,
                 selectedGender: null,
                 dataSets: null,
+                token: null,
                 touchstone: null
             }
         }
     }
 
+    refreshToken() {
+        demographicActions.clearUsedToken();
+        demographicStore.fetchOneTimeToken().catch(doNothing);
+    }
+
     renderContent(props: DownloadDemographicsContentProps) {
         const canDownload = DownloadDemographicsContentComponent.canDownload(props);
+
         return <div className={styles.demographics}>
             <div className={commonStyles.sectionTitle}>
                 Demographic data for {props.touchstone.description}
@@ -60,13 +72,15 @@ export class DownloadDemographicsContentComponent extends RemoteContentComponent
                 dataSets={props.dataSets}
                 selectedDataSet={props.selectedDataSet}
                 selectedGender={props.selectedGender} />
-            <ButtonLink href="#" disabled={ !canDownload }>Download data set</ButtonLink>
+            <OneTimeButton token={ props.token } refreshToken={ this.refreshToken } enabled={ canDownload }>
+                Download data set
+            </OneTimeButton>
         </div>;
     }
 
     static canDownload(props: DownloadDemographicsContentProps) {
         return props.selectedDataSet != null
-            && (!props.selectedDataSet.gender_is_applicable || props.selectedGender != null);
+            && (!props.selectedDataSet.gender_is_applicable || props.selectedGender != null)
     }
 }
 

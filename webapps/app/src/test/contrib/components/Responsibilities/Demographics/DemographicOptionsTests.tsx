@@ -6,6 +6,7 @@ import { mockDemographicStatisticType } from "../../../../mocks/mockModels";
 import { Sandbox } from "../../../../Sandbox";
 import { expectOneAction } from "../../../../actionHelpers";
 import { GenderControl } from "../../../../../main/contrib/components/Responsibilities/Demographics/GenderControl";
+import { demographicStore } from "../../../../../main/contrib/stores/DemographicStore";
 
 describe("DemographicOptions", () => {
     const sandbox = new Sandbox();
@@ -55,9 +56,11 @@ describe("DemographicOptions", () => {
 
     it("emits action when statistic type is selected", () => {
         const spy = sandbox.dispatchSpy();
+        const fetchOneTimeToken = sandbox.sinon.stub(demographicStore, "fetchOneTimeToken").returns(Promise.resolve(true));
         const rendered = shallow(<DemographicOptions dataSets={[]} selectedDataSet={null} selectedGender=""/>);
         getStatisticType(rendered).simulate("change", { target: { value: "a" } });
         expectOneAction(spy, { action: "DemographicActions.selectDataSet", payload: "a" });
+        expect(fetchOneTimeToken.called).to.be.true;
     });
 
     it("emits action when gender is selected", () => {

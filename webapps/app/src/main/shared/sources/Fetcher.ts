@@ -13,6 +13,9 @@ export abstract class Fetcher {
     buildURL(urlFragment: string): string {
         return settings.apiUrl() + urlFragment;
     }
+    buildOneTimeLink(token: string): string {
+        return this.buildURL(`/onetime_link/${token}/`);
+    }
 
     fetch(urlFragment: string, options?: FetchOptions, includeToken: boolean = true): Promise<Response> {
         const url = this.buildURL(urlFragment);

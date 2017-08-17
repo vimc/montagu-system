@@ -6,6 +6,7 @@ import SourceModel = AltJS.SourceModel;
 
 export class DemographicSource extends Source<DemographicState> {
     fetchDataSets: () => SourceModel<DemographicStatisticType[]>;
+    _fetchOneTimeToken: () => SourceModel<string>;
 
     constructor() {
         super();
@@ -13,6 +14,16 @@ export class DemographicSource extends Source<DemographicState> {
             success: demographicActions.update,
             loading: demographicActions.beginFetch,
             isCached: state => state.currentTouchstone in state.dataSets
+        });
+        this._fetchOneTimeToken = () => this.doFetch(s => {
+            const dataSet = s.selectedDataSet;
+            const source = dataSet.sources[0];
+            const type = dataSet.id;
+            return `/touchstones/${s.currentTouchstone}/demographics/${source}/${type}/get_onetime_link/`;
+        }, {
+            success: demographicActions.updateToken,
+            loading: demographicActions.beginFetchToken,
+            isCached: state => false
         });
     }
 }

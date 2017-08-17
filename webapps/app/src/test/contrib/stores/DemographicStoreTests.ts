@@ -61,4 +61,21 @@ describe("DemographicStore", () => {
         demographicActions.selectGender("gender");
         expect(demographicStore.getState().selectedGender).to.equal("gender");
     });
+
+    it("records onetime token", () => {
+        demographicActions.updateToken("TOKEN");
+        expect(demographicStore.getState().token).to.equal("TOKEN");
+    });
+
+    it("clears token on beginFetchToken", () => {
+        demographicActions.updateToken("TOKEN");
+        demographicActions.beginFetchToken();
+        expect(demographicStore.getState().token).to.be.null;
+    });
+
+    it("clears token on clearUsedToken", () => {
+        demographicActions.updateToken("TOKEN");
+        demographicActions.clearUsedToken();
+        expect(demographicStore.getState().token).to.be.null;
+    });
 });
