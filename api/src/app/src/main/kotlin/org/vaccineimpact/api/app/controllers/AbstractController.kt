@@ -1,5 +1,6 @@
 package org.vaccineimpact.api.app.controllers
 
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.vaccineimpact.api.OneTimeAction
 import org.vaccineimpact.api.app.ActionContext
@@ -16,7 +17,7 @@ import spark.route.HttpMethod
 
 abstract class AbstractController(controllerContext: ControllerContext)
 {
-    protected val logger = LoggerFactory.getLogger(AbstractController::class.java)
+    protected val logger: Logger = LoggerFactory.getLogger(AbstractController::class.java)
     protected val repos = controllerContext.repositories
     private val urlBase = controllerContext.urlBase
     val tokenHelper = controllerContext.tokenHelper

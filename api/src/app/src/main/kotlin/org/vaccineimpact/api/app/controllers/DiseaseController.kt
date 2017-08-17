@@ -15,6 +15,7 @@ class DiseaseController(context: ControllerContext) : AbstractController(context
             oneRepoEndpoint("/:id/", this::getDisease, repos.simpleObjects).secured()
     )
 
+    @Suppress("UNUSED_PARAMETER")
     fun getDiseases(context: ActionContext, repo: SimpleObjectsRepository): List<Disease>
     {
         return repo.diseases.all().toList()

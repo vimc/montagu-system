@@ -15,6 +15,7 @@ class ModelController(context: ControllerContext) : AbstractController(context)
             oneRepoEndpoint("/:id/", this::getModel, repos.modelRepository).secured(setOf("*/models.read"))
     )
 
+    @Suppress("UNUSED_PARAMETER")
     fun getModels(context: ActionContext, repo: ModelRepository): List<Model>
     {
         return repo.all().toList()

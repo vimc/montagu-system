@@ -45,17 +45,17 @@ data class FluentValidationConfig(
 
     infix fun andCheck(additionalChecks: (JsonObject) -> Unit)
     {
-        this.finalized().runWithCheck({ data: JsonObject, response -> additionalChecks(data) })
+        this.finalized().runWithCheck({ data: JsonObject, _ -> additionalChecks(data) })
     }
 
     infix fun andCheckArray(additionalChecks: (JsonArray<Any>) -> Unit)
     {
-        this.finalized().runWithCheck({ data: JsonArray<Any>, response -> additionalChecks(data) })
+        this.finalized().runWithCheck({ data: JsonArray<Any>, _ -> additionalChecks(data) })
     }
 
     infix fun andCheckString(additionalChecks: (String) -> Unit)
     {
-        this.finalized().runWithCheck({ data: String, response -> additionalChecks(data) })
+        this.finalized().runWithCheck({ data: String, _ -> additionalChecks(data) })
     }
 
     infix fun andCheckObjectCreation(expectedLocation: String)
@@ -172,6 +172,7 @@ class FluentValidation(config: FluentValidationConfig)
         }
     }
 
+    @Suppress("UNUSED_PARAMETER")
     private fun noDatabasePrep(db: JooqContext)
     {
     }
