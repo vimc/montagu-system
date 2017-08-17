@@ -64,10 +64,9 @@ fun main(args: Array<String>) {
 
 class DemographicTestData(val db: JooqContext)
 {
-    val sources = listOf("unwpp2015", "unwpp2017")
     val variants = listOf("unwpp_estimates", "unwpp_medium_variant", "unwpp_high_variant")
     val countries = db.generateCountries(3)
-    val sourceIds = db.generateDemographicSources(sources)
+    val sources = db.generateDemographicSources(listOf("unwpp2015", "unwpp2017"))
     val variantIds = db.generateDemographicVariants(variants)
     val units = db.generateDemographicUnits()
     val genderIds = db.generateGenders()
@@ -79,7 +78,7 @@ class DemographicTestData(val db: JooqContext)
 
     fun generate(touchstoneId: String, diseases: List<String>)
     {
-        db.addDemographicSourcesToTouchstone(touchstoneId, sourceIds)
+        db.addDemographicSourcesToTouchstone(touchstoneId, sources.map { (_, id) -> id })
         for (disease in diseases)
         {
             db.addTouchstoneCountries(touchstoneId, countries, disease)
@@ -87,7 +86,7 @@ class DemographicTestData(val db: JooqContext)
 
         for ((typeCode, typeId) in statisticTypes)
         {
-            for (sourceId in sourceIds)
+            for ((_, sourceId) in sources.filter { (code, _) -> sourceIsRelevantToType(code, typeCode) })
             {
                 for (gender in genderIds)
                 {
@@ -104,6 +103,9 @@ class DemographicTestData(val db: JooqContext)
             }
         }
     }
+
+    private fun sourceIsRelevantToType(source: String, type: String) =
+            type == "tot-pop" || source == "unwpp2017"
 
     fun addStatisticTypes(definitions: List<Pair<String, String>>): List<Pair<String, Int>>
     {

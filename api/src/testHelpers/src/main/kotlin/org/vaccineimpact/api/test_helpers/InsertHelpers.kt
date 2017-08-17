@@ -293,7 +293,7 @@ fun JooqContext.addTouchstoneCountries(touchstoneId: String, ids: List<String>, 
 }
 
 
-fun JooqContext.generateDemographicSources(sources: List<String>): List<Int>
+fun JooqContext.generateDemographicSources(sources: List<String>): List<Pair<String, Int>>
 {
     val records = sources.map {
         this.dsl.newRecord(DEMOGRAPHIC_SOURCE).apply {
@@ -305,10 +305,11 @@ fun JooqContext.generateDemographicSources(sources: List<String>): List<Int>
 
     // JOOQ batchStore doesn't populate generated keys (https://github.com/jOOQ/jOOQ/issues/3327)
     // so have to read these back out
-    return this.dsl.select(DEMOGRAPHIC_SOURCE.ID)
+    return this.dsl.select(DEMOGRAPHIC_SOURCE.ID, DEMOGRAPHIC_SOURCE.CODE)
             .from(DEMOGRAPHIC_SOURCE)
             .where(DEMOGRAPHIC_SOURCE.CODE.`in`(sources))
-            .fetchInto(Int::class.java)
+            .fetch()
+            .map { it[DEMOGRAPHIC_SOURCE.CODE] to it[DEMOGRAPHIC_SOURCE.ID] }
 }
 
 fun JooqContext.generateDemographicVariants(variants: List<String>): List<Int>

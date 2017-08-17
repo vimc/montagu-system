@@ -333,7 +333,7 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
                     .countries
 
             val newSources = listOf("anothersource", "moresource")
-            val newSourceIds = it.generateDemographicSources(newSources)
+            val newSourceIds = it.generateDemographicSources(newSources).map { (_, id) -> id }
 
             it.addTouchstone(anotherTouchstoneName, touchstoneVersion, addName = true, addStatus = false)
             it.addDemographicSourcesToTouchstone(anotherTouchstoneId, newSourceIds)
