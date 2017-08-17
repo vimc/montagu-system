@@ -7,7 +7,6 @@ import org.vaccineimpact.api.app.errors.MissingRequiredPermissionError
 import org.vaccineimpact.api.app.security.montaguPermissions
 import org.vaccineimpact.api.app.serialization.ModelBinder
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
-import spark.QueryParamsMap
 import spark.Request
 import spark.Response
 
