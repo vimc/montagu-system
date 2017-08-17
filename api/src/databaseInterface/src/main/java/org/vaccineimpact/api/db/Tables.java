@@ -11,6 +11,7 @@ import org.jooq.Field;
 import org.jooq.Result;
 import org.jooq.impl.DSL;
 import org.vaccineimpact.api.db.tables.ActivityType;
+import org.vaccineimpact.api.db.tables.ApiAccessLog;
 import org.vaccineimpact.api.db.tables.AppUser;
 import org.vaccineimpact.api.db.tables.BurdenEstimate;
 import org.vaccineimpact.api.db.tables.BurdenEstimateSet;
@@ -100,6 +101,11 @@ public class Tables {
      * This is mostly "none", "routine" or "campaign" but with a few extras
      */
     public static final ActivityType ACTIVITY_TYPE = org.vaccineimpact.api.db.tables.ActivityType.ACTIVITY_TYPE;
+
+    /**
+     * The table <code>public.api_access_log</code>.
+     */
+    public static final ApiAccessLog API_ACCESS_LOG = org.vaccineimpact.api.db.tables.ApiAccessLog.API_ACCESS_LOG;
 
     /**
      * The table <code>public.app_user</code>.

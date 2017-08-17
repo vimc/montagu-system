@@ -19,6 +19,7 @@ import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.jooq.impl.SchemaImpl;
 import org.vaccineimpact.api.db.tables.ActivityType;
+import org.vaccineimpact.api.db.tables.ApiAccessLog;
 import org.vaccineimpact.api.db.tables.AppUser;
 import org.vaccineimpact.api.db.tables.BurdenEstimate;
 import org.vaccineimpact.api.db.tables.BurdenEstimateSet;
@@ -104,7 +105,7 @@ import org.vaccineimpact.api.db.tables.records.SelectBurdenDataColRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = 601143871;
+    private static final long serialVersionUID = -739307487;
 
     /**
      * The reference instance of <code>public</code>
@@ -115,6 +116,11 @@ public class Public extends SchemaImpl {
      * This is mostly "none", "routine" or "campaign" but with a few extras
      */
     public final ActivityType ACTIVITY_TYPE = org.vaccineimpact.api.db.tables.ActivityType.ACTIVITY_TYPE;
+
+    /**
+     * The table <code>public.api_access_log</code>.
+     */
+    public final ApiAccessLog API_ACCESS_LOG = org.vaccineimpact.api.db.tables.ApiAccessLog.API_ACCESS_LOG;
 
     /**
      * The table <code>public.app_user</code>.
@@ -635,6 +641,7 @@ public class Public extends SchemaImpl {
 
     private final List<Sequence<?>> getSequences0() {
         return Arrays.<Sequence<?>>asList(
+            Sequences.API_ACCESS_LOG_ID_SEQ,
             Sequences.BURDEN_ESTIMATE_ID_SEQ,
             Sequences.BURDEN_ESTIMATE_SET_ID_SEQ,
             Sequences.BURDEN_ESTIMATE_SET_PROBLEM_ID_SEQ,
@@ -678,6 +685,7 @@ public class Public extends SchemaImpl {
     private final List<Table<?>> getTables0() {
         return Arrays.<Table<?>>asList(
             ActivityType.ACTIVITY_TYPE,
+            ApiAccessLog.API_ACCESS_LOG,
             AppUser.APP_USER,
             BurdenEstimate.BURDEN_ESTIMATE,
             BurdenEstimateSet.BURDEN_ESTIMATE_SET,

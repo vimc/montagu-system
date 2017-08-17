@@ -2,6 +2,7 @@ package org.vaccineimpact.api.app.controllers.endpoints
 
 import org.vaccineimpact.api.ContentTypes
 import org.vaccineimpact.api.app.DefaultHeadersFilter
+import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.serialization.DataTable
 import org.vaccineimpact.api.app.serialization.Serializer
 import org.vaccineimpact.api.app.serialization.SplitData
@@ -11,13 +12,15 @@ import spark.Route
 import spark.Spark
 import spark.route.HttpMethod
 
+typealias SetupCallback = (String, WebTokenHelper, Repositories) -> Unit
+
 data class Endpoint<TRoute>(
         override val urlFragment: String,
         override val route: TRoute,
         override val routeWrapper: (TRoute) -> Route,
         override val method: HttpMethod = HttpMethod.get,
         override val contentType: String = ContentTypes.json,
-        private val additionalSetupCallback: ((String, WebTokenHelper) -> Unit)? = null
+        private val additionalSetupCallback: SetupCallback? = null
 ) : EndpointDefinition<TRoute>
 {
     init
@@ -28,10 +31,10 @@ data class Endpoint<TRoute>(
         }
     }
 
-    override fun additionalSetup(url: String, tokenHelper: WebTokenHelper)
+    override fun additionalSetup(url: String, tokenHelper: WebTokenHelper, repos: Repositories)
     {
         Spark.after(url, contentType, DefaultHeadersFilter(contentType, method))
-        additionalSetupCallback?.invoke(url, tokenHelper)
+        additionalSetupCallback?.invoke(url, tokenHelper, repos)
     }
 
     override fun transform(x: Any) = when (x)
@@ -42,11 +45,11 @@ data class Endpoint<TRoute>(
         else -> Serializer.instance.toResult(x)
     }
 
-    fun withAdditionalSetup(newCallback: (String, WebTokenHelper) -> Unit): Endpoint<TRoute>
+    fun withAdditionalSetup(newCallback: SetupCallback): Endpoint<TRoute>
     {
-        return this.copy(additionalSetupCallback = { url, tokenHelper ->
-            this.additionalSetupCallback?.invoke(url, tokenHelper)
-            newCallback(url, tokenHelper)
+        return this.copy(additionalSetupCallback = { url, tokenHelper, repos ->
+            this.additionalSetupCallback?.invoke(url, tokenHelper, repos)
+            newCallback(url, tokenHelper, repos)
         })
     }
 }

@@ -8,8 +8,10 @@ import org.pac4j.jwt.profile.JwtProfile
 import org.pac4j.sparkjava.DefaultHttpActionAdapter
 import org.pac4j.sparkjava.SparkWebContext
 import org.vaccineimpact.api.app.DirectActionContext
+import org.vaccineimpact.api.app.RequestLogger
 import org.vaccineimpact.api.app.addDefaultResponseHeaders
 import org.vaccineimpact.api.app.errors.MissingRequiredPermissionError
+import org.vaccineimpact.api.app.repositories.AccessLogRepository
 import org.vaccineimpact.api.app.serialization.Serializer
 import org.vaccineimpact.api.models.ErrorInfo
 import org.vaccineimpact.api.models.Result
@@ -19,7 +21,8 @@ import org.vaccineimpact.api.security.WebTokenHelper
 
 class TokenVerifyingConfigFactory(
         tokenHelper: WebTokenHelper,
-        val requiredPermissions: Set<PermissionRequirement>
+        val requiredPermissions: Set<PermissionRequirement>,
+        private val accessLogRepository: () -> AccessLogRepository
 ) : ConfigFactory
 {
     private val clients = listOf(
@@ -34,7 +37,7 @@ class TokenVerifyingConfigFactory(
         return Config(clients).apply {
             setAuthorizer(MontaguAuthorizer(requiredPermissions))
             addMethodMatchers()
-            httpActionAdapter = TokenActionAdapter()
+            httpActionAdapter = TokenActionAdapter(accessLogRepository)
         }
     }
 
@@ -52,36 +55,28 @@ class TokenVerifyingConfigFactory(
     }
 }
 
-class TokenActionAdapter : DefaultHttpActionAdapter()
+class TokenActionAdapter(accessLogRepository: () -> AccessLogRepository)
+    : MontaguHttpActionAdapter(accessLogRepository)
 {
-    val unauthorizedResponse: String = Serializer.instance.toJson(Result(
-            ResultStatus.FAILURE,
-            null,
-            listOf(ErrorInfo(
-                    "bearer-token-invalid",
-                    "Bearer token not supplied in Authorization header, or bearer token was invalid"
-            ))
+    private val unauthorizedResponse = listOf(ErrorInfo(
+            "bearer-token-invalid",
+            "Bearer token not supplied in Authorization header, or bearer token was invalid"
     ))
-
-    fun forbiddenResponse(missingPermissions: Set<String>): String = Serializer.instance.toJson(Result(
-            ResultStatus.FAILURE,
-            null,
-            MissingRequiredPermissionError(missingPermissions).problems
-    ))
+    private fun forbiddenResponse(missingPermissions: Set<String>)
+            = MissingRequiredPermissionError(missingPermissions).problems
 
     override fun adapt(code: Int, context: SparkWebContext): Any? = when (code)
     {
         HttpConstants.UNAUTHORIZED ->
         {
-            addDefaultResponseHeaders(context.response)
-            spark.Spark.halt(code, unauthorizedResponse)
+            haltWithError(code, context, unauthorizedResponse)
         }
         HttpConstants.FORBIDDEN ->
         {
-            addDefaultResponseHeaders(context.response)
             val profile = DirectActionContext(context).userProfile
-            val missingPermissions = profile.getAttributeOrDefault(MISSING_PERMISSIONS, mutableSetOf<String>())
-            spark.Spark.halt(code, forbiddenResponse(missingPermissions))
+            val missingPermissions = profile!!.getAttributeOrDefault(MISSING_PERMISSIONS, mutableSetOf<String>())
+            val response = forbiddenResponse(missingPermissions).toList()
+            haltWithError(code, context, response)
         }
         else -> super.adapt(code, context)
     }

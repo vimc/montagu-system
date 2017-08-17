@@ -10,11 +10,11 @@ import spark.Spark
 // steps checks the user has a valid token and has all the required permissions
 fun <TRoute> Endpoint<TRoute>.secured(permissions: Set<String> = emptySet()): Endpoint<TRoute>
 {
-    return this.withAdditionalSetup({ url, tokenHelper ->
+    return this.withAdditionalSetup({ url, tokenHelper, repos ->
         val allPermissions = (permissions + "*/can-login").map {
             PermissionRequirement.parse(it)
         }
-        val configFactory = TokenVerifyingConfigFactory(tokenHelper, allPermissions.toSet())
+        val configFactory = TokenVerifyingConfigFactory(tokenHelper, allPermissions.toSet(), repos.accessLogRepository)
         val tokenVerifier = configFactory.build()
         Spark.before(url, SecurityFilter(
                 tokenVerifier,

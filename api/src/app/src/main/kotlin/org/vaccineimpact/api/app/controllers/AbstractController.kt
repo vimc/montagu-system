@@ -59,7 +59,7 @@ abstract class AbstractController(controllerContext: ControllerContext)
             HttpMethod.delete -> Spark.delete(fullUrl, contentType, route, transformer)
             else -> throw UnsupportedValueException(endpoint.method)
         }
-        endpoint.additionalSetup(fullUrl, tokenHelper)
+        endpoint.additionalSetup(fullUrl, tokenHelper, repos)
         return fullUrl
     }
 

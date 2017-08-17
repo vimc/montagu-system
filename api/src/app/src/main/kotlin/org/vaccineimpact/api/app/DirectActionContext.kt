@@ -55,11 +55,11 @@ open class DirectActionContext(private val context: SparkWebContext): ActionCont
     }
 
     override val permissions by lazy {
-        userProfile.montaguPermissions()
+        userProfile!!.montaguPermissions()
     }
 
-    override val userProfile: CommonProfile by lazy {
+    override val userProfile: CommonProfile? by lazy {
         val manager = ProfileManager<CommonProfile>(context)
-        manager.getAll(false).single()
+        manager.getAll(false).singleOrNull()
     }
 }
