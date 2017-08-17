@@ -78,7 +78,7 @@ class AccessLogTests : DatabaseTest()
         }
         assertThat(entry.who).`as`("Who").isEqualTo(who)
 
-        val timestamp = entry.`when`.toInstant()
+        val timestamp = entry.timestamp.toInstant()
         assertThat(timestamp).isGreaterThanOrEqualTo(before)
         assertThat(timestamp).isLessThanOrEqualTo(Instant.now())
 
