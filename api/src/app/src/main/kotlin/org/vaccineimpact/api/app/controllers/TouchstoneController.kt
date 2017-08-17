@@ -68,7 +68,6 @@ class TouchstoneController(context: ControllerContext) : AbstractController(cont
         val touchstone = touchstone(context, repo)
         val source = context.params(":source-code")
         val type = context.params(":type-code")
-        logger.info("$type, $source, ${touchstone.id}")
         return repo.getDemographicDataset(type, source, touchstone.id)
     }
 
@@ -76,8 +75,9 @@ class TouchstoneController(context: ControllerContext) : AbstractController(cont
     {
         val data = getDemographicDataAndMetadata(context, repo)
         val metadata = data.structuredMetadata
-        val filename = "${metadata.touchstone.id}_${context.params(":source-code")}_${metadata.demographicData.id}.csv"
-        context.addResponseHeader("Content-Disposition", """attachment; filename="$filename"""")
+        val source = context.params(":source-code")
+        val filename = "${metadata.touchstone.id}_${source}_${metadata.demographicData.id}.csv"
+        context.addAttachmentHeader(filename)
         return data.tableData
     }
 
