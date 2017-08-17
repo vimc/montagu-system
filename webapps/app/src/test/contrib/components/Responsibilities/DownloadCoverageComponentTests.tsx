@@ -13,6 +13,7 @@ import { Sandbox } from "../../../Sandbox";
 import { expectOneAction } from "../../../actionHelpers";
 import { responsibilityStore } from "../../../../main/contrib/stores/ResponsibilityStore";
 import fetcher from "../../../../main/shared/sources/Fetcher";
+import { OneTimeButton } from "../../../../main/shared/components/OneTimeButton";
 
 describe("DownloadCoverageContentComponent", () => {
     const sandbox = new Sandbox();
@@ -37,33 +38,23 @@ describe("DownloadCoverageContentComponent", () => {
         expect(rendered.find(CoverageSetList).props()).to.eql({ coverageSets: sets });
     });
 
-    it("renders form with onetime URL", () => {
+    it("renders OnetimeButton", () => {
         const props = makeProps({ coverageToken: "TOKEN" });
         const rendered = shallow(<DownloadCoverageContentComponent {...props} />);
-        expect(rendered.find("form").prop("action")).to.equal(fetcher.fetcher.buildURL("/onetime_link/TOKEN/"));
-    });
-
-    it("clicking download coverage data button triggers token refresh", (done: DoneCallback) => {
-        const spy = sandbox.dispatchSpy();
-        const fetchNewToken = sandbox.sinon.stub(responsibilityStore, "fetchOneTimeCoverageToken");
-
-        const props = makeProps({ coverageToken: "TOKEN" });
-        const rendered = shallow(<DownloadCoverageContentComponent {...props} />);
-        const button = rendered.find("form").find("button");
-        expect(button.prop("disabled")).to.be.false;
-        button.simulate("click");
-        setTimeout(() => {
-            expectOneAction(spy, { action: "CoverageTokenActions.clearUsedToken" });
-            expect(fetchNewToken.called).to.be.true;
-            done();
+        expect(rendered.find(OneTimeButton).props()).to.eql({
+            token: "TOKEN",
+            refreshToken: (rendered.instance() as DownloadCoverageContentComponent).refreshToken,
+            enabled: true,
+            children: "Download combined coverage set data in CSV format"
         });
     });
 
-    it("download coverage data button is disabled when token is null", () => {
-        const props = makeProps({ coverageToken: null });
-        const rendered = shallow(<DownloadCoverageContentComponent {...props} />);
-        const button = rendered.find("form").find("button");
-        expect(button.prop("disabled")).to.be.true;
+    it("refreshToken triggers token refresh", () => {
+        const spy = sandbox.dispatchSpy();
+        const fetchNewToken = sandbox.sinon.stub(responsibilityStore, "fetchOneTimeCoverageToken");
+        new DownloadCoverageContentComponent().refreshToken();
+        expectOneAction(spy, { action: "CoverageTokenActions.clearUsedToken" });
+        expect(fetchNewToken.called).to.be.true;
     });
 });
 

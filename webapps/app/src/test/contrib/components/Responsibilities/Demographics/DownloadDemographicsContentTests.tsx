@@ -30,7 +30,8 @@ describe("DownloadDemographicsContent", () => {
             currentTouchstone: touchstone.id,
             selectedGender: "gender",
             dataSets: { tId: [dataSet] },
-            selectedDataSet: dataSet
+            selectedDataSet: dataSet,
+            token: null
         });
         const props = DownloadDemographicsContentComponent.getPropsFromStores(null);
         expect(props).to.eql({
@@ -38,7 +39,8 @@ describe("DownloadDemographicsContent", () => {
             selectedDataSet: dataSet,
             selectedGender: "gender",
             dataSets: [dataSet],
-            touchstone: touchstone
+            touchstone: touchstone,
+            token: null
         });
     });
 
@@ -48,7 +50,8 @@ describe("DownloadDemographicsContent", () => {
             currentTouchstone: touchstone.id,
             selectedGender: "gender",
             dataSets: { someOtherTouchstone: [ mockDemographicStatisticType() ]},
-            selectedDataSet: null
+            selectedDataSet: null,
+            token: "token"
         });
         const props = DownloadDemographicsContentComponent.getPropsFromStores(null);
         expect(props).to.eql({
@@ -56,7 +59,8 @@ describe("DownloadDemographicsContent", () => {
             selectedDataSet: null,
             selectedGender: "gender",
             dataSets: undefined,
-            touchstone: touchstone
+            touchstone: touchstone,
+            token: "token"
         });
     });
 
@@ -65,7 +69,8 @@ describe("DownloadDemographicsContent", () => {
             currentTouchstone: null,
             selectedGender: "gender",
             dataSets: { someOtherTouchstone: [ mockDemographicStatisticType() ]},
-            selectedDataSet: null
+            selectedDataSet: null,
+            token: "token"
         });
         const props = DownloadDemographicsContentComponent.getPropsFromStores(null);
         expect(props).to.eql({
@@ -73,7 +78,8 @@ describe("DownloadDemographicsContent", () => {
             selectedDataSet: null,
             selectedGender: null,
             dataSets: null,
-            touchstone: null
+            touchstone: null,
+            token: null
         });
     });
 
@@ -85,6 +91,7 @@ describe("DownloadDemographicsContent", () => {
             selectedDataSet={set}
             selectedGender="x"
             ready={true}
+            token={null}
         />);
         expect(rendered.find(DemographicOptions).props()).to.eql({
             dataSets: [set],
@@ -101,7 +108,8 @@ describe("DownloadDemographicsContent", () => {
             selectedDataSet: null,
             touchstone: mockTouchstone(),
             ready: true,
-            selectedGender: null
+            selectedGender: null,
+            token: null
         };
         const f = DownloadDemographicsContentComponent.canDownload;
 
