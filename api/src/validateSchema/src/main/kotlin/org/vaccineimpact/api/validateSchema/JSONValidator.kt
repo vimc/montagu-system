@@ -31,10 +31,10 @@ class JSONValidator : Validator
         assertValidates(schema, data)
     }
 
-    fun validateExampleAgainstSchema(example: String, schema: String)
+    fun validateExampleAgainstSchema(example: String, schemaAsString: String)
     {
         val json = parseJson(example, "example")
-        val schema = JsonLoader.fromString(schema)
+        val schema = JsonLoader.fromString(schemaAsString)
         assertValidates(schema, json)
     }
 
@@ -65,9 +65,10 @@ class JSONValidator : Validator
 
     private fun checkResultSchema(json: JsonNode, jsonAsString: String, expectedStatus: String, assertionText: String? = null)
     {
+        @Suppress("NAME_SHADOWING")
+        val assertionText = assertionText ?: "Check that the response has status '$expectedStatus'"
         assertValidates(responseSchema, json)
         val status = json["status"].textValue()
-        val assertionText = assertionText ?: "Check that the response has status '$expectedStatus'"
         Assertions.assertThat(status)
                 .`as`("$assertionText in $jsonAsString")
                 .isEqualTo(expectedStatus)

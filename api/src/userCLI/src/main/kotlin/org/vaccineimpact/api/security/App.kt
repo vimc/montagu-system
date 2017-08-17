@@ -7,13 +7,13 @@ fun main(args: Array<String>)
     val action = getAction(args)
     try
     {
-        val args = args.drop(1)
+        val remainder = args.drop(1)
         when (action)
         {
-            Action.add -> addUser(args)
-            Action.addRole -> addRole(args)
-            Action.addUserToGroup -> addToGroup(args)
-            Action.sendTestEmail -> sendTestEmail(args)
+            Action.add -> addUser(remainder)
+            Action.addRole -> addRole(remainder)
+            Action.addUserToGroup -> addToGroup(remainder)
+            Action.sendTestEmail -> sendTestEmail(remainder)
         }
     }
     catch (e: ActionException)

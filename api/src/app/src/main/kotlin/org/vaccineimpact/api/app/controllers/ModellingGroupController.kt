@@ -43,6 +43,7 @@ open class ModellingGroupController(context: ControllerContext)
         )
     }
 
+    @Suppress("UNUSED_PARAMETER")
     fun getModellingGroups(context: ActionContext, repo: ModellingGroupRepository): List<ModellingGroup>
     {
         return repo.getModellingGroups().toList()
