@@ -31,6 +31,7 @@ class ModelBinder
 
     fun verify(property: KProperty1<Any, *>, model: Any): List<ErrorInfo>
     {
+        @Suppress("UNCHECKED_CAST")
         val klass = model::class as KClass<Any>
         val errors = mutableListOf<ErrorInfo>()
         val name = property.name

@@ -1,7 +1,8 @@
 {
     "columns": {
         "country": "String",
-        "age": "String",
+        "age_from": "Int",
+        "age_to": "Int",
         "year": "Int",
         "gender": "String",
         "value": "Decimal"

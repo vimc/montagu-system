@@ -17,6 +17,7 @@ interface ActionContext
     fun <T: Any> postData(klass: Class<T>): T
 
     fun addResponseHeader(key: String, value: String): Unit
+    fun addAttachmentHeader(filename: String): Unit
     fun setResponseStatus(status: Int): Unit
 
     fun hasPermission(requirement: ReifiedPermission): Boolean

@@ -38,6 +38,11 @@ open class DirectActionContext(private val context: SparkWebContext): ActionCont
         response.header(key, value)
     }
 
+    override fun addAttachmentHeader(filename: String)
+    {
+        addResponseHeader("Content-Disposition", """attachment; filename="$filename"""")
+    }
+
     override fun hasPermission(requirement: ReifiedPermission)
             = permissions.any { requirement.satisfiedBy(it) }
 

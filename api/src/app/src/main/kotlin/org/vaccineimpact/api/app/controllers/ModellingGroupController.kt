@@ -43,6 +43,7 @@ open class ModellingGroupController(context: ControllerContext)
         )
     }
 
+    @Suppress("UNUSED_PARAMETER")
     fun getModellingGroups(context: ActionContext, repo: ModellingGroupRepository): List<ModellingGroup>
     {
         return repo.getModellingGroups().toList()
@@ -86,7 +87,7 @@ open class ModellingGroupController(context: ControllerContext)
         val data = getCoverageDataAndMetadata(context, repo)
         val metadata = data.structuredMetadata
         val filename = "coverage_${metadata.touchstone.id}_${metadata.scenario.id}.csv"
-        context.addResponseHeader("Content-Disposition", """attachment; filename="$filename"""")
+        context.addAttachmentHeader(filename)
         return data.tableData
     }
 
