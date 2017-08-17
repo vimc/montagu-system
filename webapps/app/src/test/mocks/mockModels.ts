@@ -171,7 +171,7 @@ export function mockArtefact(properties?: any): Artefact {
     return Object.assign(template, properties);
 }
 
-export function mockDemographicStatisticType(properties?: any): models.DemographicStatisticType {
+export function mockDemographicStatisticType(properties?: Partial<models.DemographicStatisticType>): models.DemographicStatisticType {
     counter++;
     const template: DemographicStatisticType = {
         id: "type-" + counter,

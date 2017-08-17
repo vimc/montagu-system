@@ -95,9 +95,11 @@ describe("DemographicOptions", () => {
 
     it("emits action when gender is selected", () => {
         const spy = sandbox.dispatchSpy();
+        const fetchOneTimeToken = sandbox.stubFetch(demographicStore, "fetchOneTimeToken");
         const rendered = shallow(<DemographicOptions
             dataSets={[]} selectedDataSet={null} selectedGender="" selectedSource=""/>);
         getGender(rendered).simulate("selectGender", "x");
         expectOneAction(spy, { action: "DemographicActions.selectGender", payload: "x" });
+        expect(fetchOneTimeToken.called).to.be.true;
     });
 });
