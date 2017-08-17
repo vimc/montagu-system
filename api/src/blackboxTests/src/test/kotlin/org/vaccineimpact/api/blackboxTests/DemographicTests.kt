@@ -107,6 +107,44 @@ class DemographicTests : DatabaseTest()
     }
 
     @Test
+    fun `returns gendered data when gender query parameter passed`()
+    {
+        val userHelper = TestUserHelper()
+        val requestHelper = RequestHelper()
+        var countries: List<String> = listOf()
+
+        JooqContext().use {
+
+            countries = DemographicDummyData(it)
+                    .withTouchstone(touchstoneName, touchstoneVersion)
+                    .withPopulation(genderIsApplicable = true)
+                    .countries
+
+            userHelper.setupTestUser(it)
+        }
+
+        val validator = SplitValidator()
+        val response = requestHelper.get("$url?gender=F", requiredPermissions)
+
+        val json = JsonLoader.fromString(validator.getSplitText(response.text).json)
+        val demographyJson = json["data"]["demographic_data"]
+
+        val expectedDemographicMetadata = JsonLoader.fromString(json {
+            obj(
+                    "id" to "tot-pop",
+                    "name" to "tot-pop descriptive name",
+                    "age_interpretation" to "age",
+                    "source" to "unwpp2015 descriptive name",
+                    "unit" to "people",
+                    "gender" to "female",
+                    "countries" to array(countries.sortedBy { it })
+            )
+        }.toJsonString())
+
+        Assertions.assertThat(demographyJson).isEqualTo(expectedDemographicMetadata)
+    }
+
+    @Test
     fun `can get pure CSV demographic data for touchstone`()
     {
         val schema = CSVSchema("DemographicData")

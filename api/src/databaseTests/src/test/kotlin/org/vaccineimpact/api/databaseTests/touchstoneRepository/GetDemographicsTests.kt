@@ -223,6 +223,67 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
     }
 
     @Test
+    fun `gets both genders if no option provided`()
+    {
+
+        given {
+
+            DemographicDummyData(it, sources)
+                    .withTouchstone(touchstoneName, touchstoneVersion)
+                    .withPopulation(yearRange = 1950..1955 step 5,
+                            ageRange = 10..15 step 5,
+                            genderIsApplicable = true)
+
+        } check {
+
+            val data = it.getDemographicDataset("tot-pop", sources[0], touchstoneId)
+            Assertions.assertThat(data.structuredMetadata.demographicData.gender).isEqualTo("both")
+            Assertions.assertThat(data.tableData.data.any { it.gender == "both" }).isTrue()
+
+        }
+    }
+
+    @Test
+    fun `gets both genders if gender is not applicable`()
+    {
+
+        given {
+
+            DemographicDummyData(it, sources)
+                    .withTouchstone(touchstoneName, touchstoneVersion)
+                    .withPopulation(yearRange = 1950..1955 step 5,
+                            ageRange = 10..15 step 5,
+                            genderIsApplicable = false)
+
+        } check {
+
+            val data = it.getDemographicDataset("tot-pop", sources[0], touchstoneId, "F")
+            Assertions.assertThat(data.structuredMetadata.demographicData.gender).isEqualTo("both")
+            Assertions.assertThat(data.tableData.data.any { it.gender == "both" }).isTrue()
+        }
+    }
+
+    @Test
+    fun `gets supplied gender if gender is applicable`()
+    {
+
+        given {
+
+            DemographicDummyData(it, sources)
+                    .withTouchstone(touchstoneName, touchstoneVersion)
+                    .withPopulation(yearRange = 1950..1955 step 5,
+                            ageRange = 10..15 step 5,
+                            genderIsApplicable = true)
+
+        } check {
+
+            val data = it.getDemographicDataset("tot-pop", sources[0], touchstoneId, "F")
+            Assertions.assertThat(data.structuredMetadata.demographicData.gender).isEqualTo("female")
+            Assertions.assertThat(data.tableData.data.any { it.gender == "female" }).isTrue()
+        }
+    }
+
+    @Test
     fun `throws unknown object error if touchstone doesn't exist`()
     {
         given {
