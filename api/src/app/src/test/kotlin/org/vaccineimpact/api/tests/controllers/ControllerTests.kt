@@ -37,28 +37,4 @@ abstract class ControllerTests<out TController : AbstractController> : MontaguTe
 
     protected abstract fun makeController(controllerContext: ControllerContext): TController
 
-    @Test
-    fun `can get onetime link token`()
-    {
-        // Mocks
-        val parameters = mapOf(":a" to "1",  ":b" to "2")
-        val context = mock<ActionContext> {
-            on { params() } doReturn parameters
-        }
-        val tokenHelper = mock<WebTokenHelper> {
-            on { generateOneTimeActionToken(any(), any()) } doReturn "MY-TOKEN"
-        }
-        val tokenRepo = mock<TokenRepository>()
-        val controllerContext = mockControllerContext(
-                webTokenHelper = tokenHelper
-        )
-
-        // Behaviour under test
-        val controller = makeController(controllerContext)
-        controller.getOneTimeLinkToken(context, tokenRepo, OneTimeAction.COVERAGE)
-
-        // Expectations
-        verify(tokenHelper).generateOneTimeActionToken("coverage", parameters)
-        verify(tokenRepo).storeToken("MY-TOKEN")
-    }
 }

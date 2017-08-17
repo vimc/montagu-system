@@ -5,12 +5,14 @@ import org.vaccineimpact.api.OneTimeAction
 import org.vaccineimpact.api.app.controllers.MontaguControllers
 import org.vaccineimpact.api.app.repositories.Repositories
 
-data class OneTimeLink(val action: OneTimeAction, val payload: Map<String, String>)
+data class OneTimeLink(val action: OneTimeAction,
+                       val payload: Map<String, String>,
+                       val queryParams: Map<String, String>)
 {
     fun perform(controllers: MontaguControllers, actionContext: ActionContext, repos: Repositories): Any
     {
         val callback = getCallback(action, controllers, repos)
-        val context = OneTimeLinkActionContext(payload, actionContext)
+        val context = OneTimeLinkActionContext(payload, queryParams, actionContext)
         return callback.invoke(context)
     }
 
@@ -22,18 +24,20 @@ data class OneTimeLink(val action: OneTimeAction, val payload: Map<String, Strin
     {
         return when (action)
         {
-            OneTimeAction.COVERAGE -> {
-                { c ->
+            OneTimeAction.COVERAGE ->
+            {
+                { context ->
                     repos.modellingGroup().use {
-                        controllers.modellingGroup.getCoverageData(c, it)
+                        controllers.modellingGroup.getCoverageData(context, it)
                     }
                 }
             }
 
-            OneTimeAction.DEMOGRAPHY -> {
-                { d ->
+            OneTimeAction.DEMOGRAPHY ->
+            {
+                { context ->
                     repos.touchstone().use {
-                        controllers.touchstone.getDemographicData(d, it)
+                        controllers.touchstone.getDemographicData(context, it)
                     }
                 }
             }
@@ -47,11 +51,26 @@ data class OneTimeLink(val action: OneTimeAction, val payload: Map<String, Strin
             val rawAction = claims["action"].toString()
             val action = Deserializer().parseEnum<OneTimeAction>(rawAction)
             val rawPayload = claims["payload"].toString()
+            val rawQueryParams = claims["query"]
             val payload = rawPayload
                     .split('&')
                     .map { it.split('=') }
                     .associateBy({ it[0] }, { it[1] })
-            return OneTimeLink(action, payload)
+
+            val queryParams =
+                    if (rawQueryParams != null)
+                    {
+                        rawQueryParams.toString()
+                                .split("&")
+                                .map { it.split('=') }
+                                .associateBy({ it[0] }, { it[1] })
+                    }
+                    else
+                    {
+                        mapOf()
+                    }
+
+            return OneTimeLink(action, payload, queryParams)
         }
     }
 }

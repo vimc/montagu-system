@@ -4,6 +4,7 @@ import com.beust.klaxon.json
 import com.github.fge.jackson.JsonLoader
 import org.assertj.core.api.Assertions
 import org.junit.Test
+import org.vaccineimpact.api.app.main
 import org.vaccineimpact.api.blackboxTests.helpers.RequestHelper
 import org.vaccineimpact.api.blackboxTests.helpers.TestUserHelper
 import org.vaccineimpact.api.blackboxTests.helpers.validate
@@ -185,6 +186,26 @@ class DemographicTests : DatabaseTest()
         }
     }
 
+
+    @Test
+    fun `can get gendered CSV demographic data via one time link`()
+    {
+        validate("$url/get_onetime_link/?gender=F") against "Token" given {
+
+            DemographicDummyData(it)
+                    .withTouchstone(touchstoneName, touchstoneVersion)
+                    .withPopulation(genderIsApplicable = true)
+
+        } requiringPermissions { requiredPermissions } andCheckString { token ->
+            val oneTimeURL = "/onetime_link/$token/"
+            val schema = CSVSchema("DemographicData")
+            val requestHelper = RequestHelper()
+            val response = requestHelper.get(oneTimeURL)
+            val body = schema.validate(response.text)
+
+            Assertions.assertThat(body.all{ it[4] == "female" }).isTrue()
+        }
+    }
 
 
     @Test

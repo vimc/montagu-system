@@ -4,6 +4,7 @@ import org.pac4j.core.profile.CommonProfile
 import org.pac4j.jwt.config.signature.RSASignatureConfiguration
 import org.pac4j.jwt.profile.JwtGenerator
 import org.vaccineimpact.api.db.Config
+import spark.QueryParamsMap
 import java.security.KeyPair
 import java.security.SecureRandom
 import java.time.Duration
@@ -23,7 +24,9 @@ open class WebTokenHelper(keyPair: KeyPair)
     {
         return generator.generate(claims(user))
     }
-    open fun generateOneTimeActionToken(action: String, params: Map<String, String>): String
+    open fun generateOneTimeActionToken(action: String,
+                                        params: Map<String, String>,
+                                        queryString: String?): String
     {
         return generator.generate(mapOf(
                 "iss" to issuer,
@@ -31,6 +34,7 @@ open class WebTokenHelper(keyPair: KeyPair)
                 "exp" to Date.from(Instant.now().plus(oneTimeLinkLifeSpan)),
                 "action" to action,
                 "payload" to params.map { "${it.key}=${it.value}" }.joinToString("&"),
+                "query" to (queryString ?: ""),
                 "nonce" to getNonce()
         ))
     }

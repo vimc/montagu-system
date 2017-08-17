@@ -20,13 +20,18 @@ class OneTimeLinkTests : MontaguTests()
     {
         val actual = OneTimeLink.parseClaims(mapOf(
                 "action" to "coverage",
-                "payload" to "a=1&b=2"
+                "payload" to "a=1&b=2",
+                "query" to "q=3&z=4"
         ))
         assertThat(actual).isEqualTo(OneTimeLink(
                 action = OneTimeAction.COVERAGE,
                 payload = mapOf(
                         "a" to "1",
                         "b" to "2"
+                ),
+                queryParams = mapOf(
+                        "q" to "3",
+                        "z" to "4"
                 )
         ))
     }
@@ -44,7 +49,7 @@ class OneTimeLinkTests : MontaguTests()
         }
 
         // Object under test
-        val link = OneTimeLink(OneTimeAction.COVERAGE, mapOf(":key" to "value"))
+        val link = OneTimeLink(OneTimeAction.COVERAGE, mapOf(":key" to "value"), mapOf(":queryKey" to "queryValue"))
         link.perform(controllers, mock(), repos)
 
         // Expectations

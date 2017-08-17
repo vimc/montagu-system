@@ -3,6 +3,7 @@ package org.vaccineimpact.api.app
 import org.pac4j.core.profile.CommonProfile
 import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
+import spark.QueryParamsMap
 
 interface ActionContext
 {
@@ -12,6 +13,7 @@ interface ActionContext
     fun contentType(): String
 
     fun queryParams(key: String): String?
+    fun queryString(): String
     fun params(): Map<String, String>
     fun params(key: String): String
     fun <T: Any> postData(klass: Class<T>): T
