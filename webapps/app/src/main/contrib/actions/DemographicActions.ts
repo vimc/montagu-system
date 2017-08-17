@@ -4,7 +4,9 @@ import { DemographicStatisticType } from "../../shared/models/Generated";
 
 interface Actions extends FetchActionsInterface<DemographicStatisticType[]> {
     selectDataSet(dataSetId: string): string;
+    selectSource(source: string): string;
     selectGender(gender: string): string;
+
     updateToken(token: string): string;
     beginFetchToken(): boolean;
     clearUsedToken(): boolean;
@@ -14,9 +16,13 @@ class DemographicActions extends FetchActions<DemographicStatisticType[]> implem
     selectDataSet(dataSetId: string): string {
         return dataSetId;
     }
+    selectSource(source: string): string {
+        return source;
+    }
     selectGender(gender: string): string {
         return gender;
     }
+
     updateToken(token: string): string {
         return token;
     }

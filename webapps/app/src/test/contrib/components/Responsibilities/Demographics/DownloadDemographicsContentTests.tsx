@@ -32,15 +32,17 @@ describe("DownloadDemographicsContent", () => {
         const touchstone = mockTouchstone({ id: "tId" });
         setupStore(touchstone, {
             currentTouchstone: touchstone.id,
-            selectedGender: "gender",
             dataSets: { tId: [dataSet] },
             selectedDataSet: dataSet,
+            selectedSource: "source",
+            selectedGender: "gender",
             token: null
         });
         const props = DownloadDemographicsContentComponent.getPropsFromStores(null);
         expect(props).to.eql({
             ready: true,
             selectedDataSet: dataSet,
+            selectedSource: "source",
             selectedGender: "gender",
             dataSets: [dataSet],
             touchstone: touchstone,
@@ -52,15 +54,17 @@ describe("DownloadDemographicsContent", () => {
         const touchstone = mockTouchstone({ id: "tId" });
         setupStore(touchstone, {
             currentTouchstone: touchstone.id,
-            selectedGender: "gender",
             dataSets: { someOtherTouchstone: [ mockDemographicStatisticType() ]},
             selectedDataSet: null,
+            selectedSource: "source",
+            selectedGender: "gender",
             token: "token"
         });
         const props = DownloadDemographicsContentComponent.getPropsFromStores(null);
         expect(props).to.eql({
             ready: false,
             selectedDataSet: null,
+            selectedSource: "source",
             selectedGender: "gender",
             dataSets: undefined,
             touchstone: touchstone,
@@ -71,19 +75,15 @@ describe("DownloadDemographicsContent", () => {
     it("no props are retrieved from stores when current touchstone is not set", () => {
         setupStore(mockTouchstone(), {
             currentTouchstone: null,
-            selectedGender: "gender",
             dataSets: { someOtherTouchstone: [ mockDemographicStatisticType() ]},
             selectedDataSet: null,
+            selectedSource: "source",
+            selectedGender: "gender",
             token: "token"
         });
         const props = DownloadDemographicsContentComponent.getPropsFromStores(null);
         expect(props).to.eql({
-            ready: false,
-            selectedDataSet: null,
-            selectedGender: null,
-            dataSets: null,
-            touchstone: null,
-            token: null
+            ready: false
         });
     });
 
@@ -93,6 +93,7 @@ describe("DownloadDemographicsContent", () => {
             dataSets={[set]}
             touchstone={mockTouchstone()}
             selectedDataSet={set}
+            selectedSource="source"
             selectedGender="x"
             ready={true}
             token={null}
@@ -100,6 +101,7 @@ describe("DownloadDemographicsContent", () => {
         expect(rendered.find(DemographicOptions).props()).to.eql({
             dataSets: [set],
             selectedDataSet: set,
+            selectedSource: "source",
             selectedGender: "x"
         });
     });
@@ -110,9 +112,10 @@ describe("DownloadDemographicsContent", () => {
         const base: DownloadDemographicsContentProps = {
             dataSets: [setA, setB],
             selectedDataSet: null,
+            selectedSource: null,
+            selectedGender: null,
             touchstone: mockTouchstone(),
             ready: true,
-            selectedGender: null,
             token: null
         };
         const f = DownloadDemographicsContentComponent.canDownload;
@@ -120,10 +123,13 @@ describe("DownloadDemographicsContent", () => {
         expect(f(base))
             .to.be.equal(false, "Shouldn't be able to download with no data set selected");
         expect(f(Object.assign({}, base, { selectedDataSet: setA })))
+            .to.equal(false, "Shouldn't be able to download with no source selected");
+        expect(f(Object.assign({}, base, { selectedDataSet: setA, selectedSource: "source" })))
             .to.equal(true, "Should be able to download with set that doesn't required gender selected");
-        expect(f(Object.assign({}, base, { selectedDataSet: setB })))
+
+        expect(f(Object.assign({}, base, { selectedDataSet: setB, selectedSource: "source" })))
             .to.equal(false, "Shouldn't be able to download with set that requires gender, without selecting gender");
-        expect(f(Object.assign({}, base, { selectedDataSet: setB, selectedGender: "x" })))
+        expect(f(Object.assign({}, base, { selectedDataSet: setB, selectedSource: "source", selectedGender: "x" })))
             .to.be.equal(true, "Should be able to download with set that requires gender, after selecting gender");
     });
 
@@ -133,6 +139,7 @@ describe("DownloadDemographicsContent", () => {
             dataSets: [set],
             touchstone: mockTouchstone(),
             selectedDataSet: set,
+            selectedSource: "source",
             selectedGender: "x",
             ready: true,
             token: "TOKEN"
