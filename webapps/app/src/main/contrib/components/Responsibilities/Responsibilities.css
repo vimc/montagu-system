@@ -49,7 +49,8 @@
     display: inline-block;
 }
 
-:local(.demographics) :local(.dataSet) {
+:local(.demographics) :local(.dataSet),
+:local(.demographics) :local(.source) {
     width: 300px;
     margin-right: 20px;
 }

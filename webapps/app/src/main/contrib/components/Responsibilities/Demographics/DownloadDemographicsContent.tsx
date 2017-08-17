@@ -6,7 +6,6 @@ import { DemographicStatisticType, Touchstone } from "../../../../shared/models/
 import { connectToStores } from "../../../../shared/alt";
 import { responsibilityStore } from "../../../stores/ResponsibilityStore";
 import { DemographicOptions } from "./DemographicOptions";
-import fetcher from "../../../../shared/sources/Fetcher";
 import { OneTimeButton } from "../../../../shared/components/OneTimeButton";
 import { demographicActions } from "../../../actions/DemographicActions";
 import { doNothing } from "../../../../shared/Helpers";
@@ -17,6 +16,7 @@ const styles = require("../Responsibilities.css");
 export interface DownloadDemographicsContentProps extends RemoteContent {
     dataSets: DemographicStatisticType[];
     selectedDataSet: DemographicStatisticType;
+    selectedSource: string;
     selectedGender: string;
     touchstone: Touchstone;
     token: string;
@@ -27,13 +27,14 @@ export class DownloadDemographicsContentComponent extends RemoteContentComponent
         return [demographicStore, responsibilityStore];
     }
 
-    static getPropsFromStores(props: DownloadDemographicsContentProps): DownloadDemographicsContentProps {
+    static getPropsFromStores(props: DownloadDemographicsContentProps): Partial<DownloadDemographicsContentProps> {
         const demographicState = demographicStore.getState();
         const responsibilityState = responsibilityStore.getState();
         if (demographicState.currentTouchstone != null) {
             return {
                 ready: demographicState.currentTouchstone in demographicState.dataSets,
                 selectedDataSet: demographicState.selectedDataSet,
+                selectedSource: demographicState.selectedSource,
                 selectedGender: demographicState.selectedGender,
                 dataSets: demographicState.dataSets[demographicState.currentTouchstone],
                 token: demographicState.token,
@@ -41,12 +42,7 @@ export class DownloadDemographicsContentComponent extends RemoteContentComponent
             };
         } else {
             return {
-                ready: false,
-                selectedDataSet: null,
-                selectedGender: null,
-                dataSets: null,
-                token: null,
-                touchstone: null
+                ready: false
             }
         }
     }
@@ -71,6 +67,7 @@ export class DownloadDemographicsContentComponent extends RemoteContentComponent
             <DemographicOptions
                 dataSets={props.dataSets}
                 selectedDataSet={props.selectedDataSet}
+                selectedSource={props.selectedSource}
                 selectedGender={props.selectedGender} />
             <OneTimeButton token={ props.token } refreshToken={ this.refreshToken } enabled={ canDownload }>
                 Download data set
@@ -78,9 +75,10 @@ export class DownloadDemographicsContentComponent extends RemoteContentComponent
         </div>;
     }
 
-    static canDownload(props: DownloadDemographicsContentProps) {
+    static canDownload(props: DownloadDemographicsContentProps): boolean {
         return props.selectedDataSet != null
             && (!props.selectedDataSet.gender_is_applicable || props.selectedGender != null)
+            && !!props.selectedSource
     }
 }
 

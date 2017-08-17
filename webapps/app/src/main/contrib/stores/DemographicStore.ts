@@ -12,6 +12,7 @@ export interface DemographicState {
     currentTouchstone: string;
     selectedDataSet: DemographicStatisticType;
     selectedGender: string;
+    selectedSource: string;
     token: string
 }
 
@@ -25,6 +26,7 @@ class DemographicStore extends AbstractStore<DemographicState, DemographicStoreI
     currentTouchstone: string;
     selectedDataSet: DemographicStatisticType;
     selectedGender: string;
+    selectedSource: string;
     token: string;
 
     constructor() {
@@ -34,7 +36,9 @@ class DemographicStore extends AbstractStore<DemographicState, DemographicStoreI
 
             handleBeginFetchDataSets: demographicActions.beginFetch,
             handleUpdateDataSets: demographicActions.update,
+
             handleSelectDataSet: demographicActions.selectDataSet,
+            handleSelectSource: demographicActions.selectSource,
             handleSelectGender: demographicActions.selectGender,
 
             handleBeginFetchToken: demographicActions.beginFetchToken,
@@ -44,7 +48,7 @@ class DemographicStore extends AbstractStore<DemographicState, DemographicStoreI
         this.registerAsync(new DemographicSource());
         this.exportPublicMethods({
             fetchOneTimeToken: () => {
-                if (this.selectedDataSet != null) {
+                if (this.selectedDataSet != null && this.selectedSource) {
                     return (this.getInstance() as any)._fetchOneTimeToken();
                 } else {
                     return Promise.reject("Cannot fetch token without selecting all options first");
@@ -59,6 +63,7 @@ class DemographicStore extends AbstractStore<DemographicState, DemographicStoreI
             currentTouchstone: null,
             selectedDataSet: null,
             selectedGender: "both",
+            selectedSource: "",
             token: null,
         };
     }
@@ -82,6 +87,9 @@ class DemographicStore extends AbstractStore<DemographicState, DemographicStoreI
             this.selectedDataSet = null;
         }
         this.token = null;
+    }
+    handleSelectSource(source: string) {
+        this.selectedSource = source;
     }
     handleSelectGender(gender: string) {
         this.selectedGender = gender;
