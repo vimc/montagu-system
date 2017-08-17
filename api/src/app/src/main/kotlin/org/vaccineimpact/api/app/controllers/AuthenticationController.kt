@@ -25,7 +25,7 @@ class AuthenticationController(context: ControllerContext, htmlFormHelpers: Form
     override val urlComponent = "/"
     override fun endpoints(repos: Repositories) = listOf(
             oneRepoEndpoint("authenticate/", this::authenticate, repos.user, HttpMethod.post)
-                    .withAdditionalSetup({ url, _ -> setupSecurity(url) })
+                    .withAdditionalSetup({ url, _, _ -> setupSecurity(url) })
     )
     private val accessLogRepository by lazy {
         context.repositories.accessLogRepository
