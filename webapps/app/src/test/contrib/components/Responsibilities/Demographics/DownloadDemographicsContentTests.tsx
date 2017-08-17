@@ -1,6 +1,6 @@
 import * as React from "react";
 import { expect } from "chai";
-import { DemographicState } from "../../../../../main/contrib/stores/DemographicStore";
+import { DemographicState, demographicStore } from "../../../../../main/contrib/stores/DemographicStore";
 import { mockDemographicStatisticType, mockTouchstone } from "../../../../mocks/mockModels";
 import { Touchstone } from "../../../../../main/shared/models/Generated";
 import { alt } from "../../../../../main/shared/alt";
@@ -10,9 +10,13 @@ import {
 } from "../../../../../main/contrib/components/Responsibilities/Demographics/DownloadDemographicsContent";
 import { shallow } from "enzyme";
 import { DemographicOptions } from "../../../../../main/contrib/components/Responsibilities/Demographics/DemographicOptions";
+import { OneTimeButton } from "../../../../../main/shared/components/OneTimeButton";
+import { Sandbox } from "../../../../Sandbox";
+import { expectOneAction } from "../../../../actionHelpers";
 
 describe("DownloadDemographicsContent", () => {
-    afterEach(() => alt.recycle());
+    const sandbox = new Sandbox();
+    afterEach(() => sandbox.restore());
 
     function setupStore(touchstone: Touchstone, state: DemographicState) {
         alt.bootstrap(JSON.stringify({
@@ -97,7 +101,7 @@ describe("DownloadDemographicsContent", () => {
             dataSets: [set],
             selectedDataSet: set,
             selectedGender: "x"
-        })
+        });
     });
 
     it("can download when all required options are filled", () => {
@@ -121,5 +125,34 @@ describe("DownloadDemographicsContent", () => {
             .to.equal(false, "Shouldn't be able to download with set that requires gender, without selecting gender");
         expect(f(Object.assign({}, base, { selectedDataSet: setB, selectedGender: "x" })))
             .to.be.equal(true, "Should be able to download with set that requires gender, after selecting gender");
+    });
+
+    it("renders OneTimeButton", () => {
+        const set = mockDemographicStatisticType();
+        const props: DownloadDemographicsContentProps = {
+            dataSets: [set],
+            touchstone: mockTouchstone(),
+            selectedDataSet: set,
+            selectedGender: "x",
+            ready: true,
+            token: "TOKEN"
+        };
+        const rendered = shallow(<DownloadDemographicsContentComponent {...props} />);
+        expect(rendered.find(OneTimeButton).props()).to.eql({
+            token: "TOKEN",
+            enabled: DownloadDemographicsContentComponent.canDownload(props),
+            refreshToken: (rendered.instance() as DownloadDemographicsContentComponent).refreshToken,
+            children: "Download data set"
+        });
+    });
+
+    it("refreshToken causes token to refresh", () => {
+        const spy = sandbox.dispatchSpy();
+        const fetchOneTimeToken = sandbox.stubFetch(demographicStore, "fetchOneTimeToken");
+
+        new DownloadDemographicsContentComponent().refreshToken();
+
+        expectOneAction(spy, { action: "DemographicActions.clearUsedToken" });
+        expect(fetchOneTimeToken.called).to.be.equal(true, "Expected to trigger fetchOneTimeToken");
     });
 });

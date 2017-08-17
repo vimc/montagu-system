@@ -51,7 +51,7 @@ describe("DownloadCoverageContentComponent", () => {
 
     it("refreshToken triggers token refresh", () => {
         const spy = sandbox.dispatchSpy();
-        const fetchNewToken = sandbox.sinon.stub(responsibilityStore, "fetchOneTimeCoverageToken");
+        const fetchNewToken = sandbox.stubFetch(responsibilityStore, "fetchOneTimeCoverageToken");
         new DownloadCoverageContentComponent().refreshToken();
         expectOneAction(spy, { action: "CoverageTokenActions.clearUsedToken" });
         expect(fetchNewToken.called).to.be.true;

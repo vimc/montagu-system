@@ -33,4 +33,8 @@ export class Sandbox {
     dispatchSpy(): sinon.SinonSpy {
         return this.sinon.spy(alt, "dispatch");
     }
+
+    stubFetch(obj: any, method: string): sinon.SinonStub {
+        return this.sinon.stub(obj, method).returns(Promise.resolve(true));
+    }
 }

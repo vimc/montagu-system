@@ -58,7 +58,6 @@ export class DownloadDemographicsContentComponent extends RemoteContentComponent
 
     renderContent(props: DownloadDemographicsContentProps) {
         const canDownload = DownloadDemographicsContentComponent.canDownload(props);
-        const url = DownloadDemographicsContentComponent.downloadUrl(props);
 
         return <div className={styles.demographics}>
             <div className={commonStyles.sectionTitle}>
@@ -82,9 +81,6 @@ export class DownloadDemographicsContentComponent extends RemoteContentComponent
     static canDownload(props: DownloadDemographicsContentProps) {
         return props.selectedDataSet != null
             && (!props.selectedDataSet.gender_is_applicable || props.selectedGender != null)
-    }
-    static downloadUrl(props: DownloadDemographicsContentProps) {
-        return fetcher.fetcher.buildOneTimeLink(props.token);
     }
 }
 
