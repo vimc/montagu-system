@@ -274,11 +274,26 @@ Required permissions: `roles.write` with scope matching scope in URL.
 For example, to remove all permissions from user `martin` for modelling group `IC-YellowFever`, the URL
 would be `/users/martin/actions/remove_all_access/modelling-group:IC-YellowFever/`
 
-## POST /users/{username}/actions/reset_password/
-Changes the password for the user to a new random password and emails it to the
-user's email address.
+## POST /user/set_password/
+Changes the password for the currently logged in user.
 
 Required permissions: `can-login`.
+
+Schema: [`SetPassword.schema.json`](SetPassword.schema.json)
+
+### Example
+    {
+        "password": "new_password"
+    }
+
+## GET /user/request_password_link?email={email}
+If the email provided is associated with a user account, sends an email to the 
+provided email address. This email contains a link to the set password page in 
+the portal and includes as a query string parameter a onetime token for the 
+`/user/set_password/` endpoint that allows the portal to make the change without
+the user being logged in.
+
+Required permissions: None. You do not need to be logged in to use this endpoint.
 
 # Diseases
 ## GET /diseases/
