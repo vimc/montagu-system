@@ -18,7 +18,7 @@ export interface Version{
     hash_data : ILookup<string>;
     data: ILookup<string>;
     parameters: ILookup<string>,
-    resources: ILookup<string>;
+    resources: string[];
     artefacts: ILookup<Artefact>[];
 
 }
