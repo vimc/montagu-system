@@ -4,7 +4,6 @@ import com.beust.klaxon.json
 import com.github.fge.jackson.JsonLoader
 import org.assertj.core.api.Assertions
 import org.junit.Test
-import org.vaccineimpact.api.app.main
 import org.vaccineimpact.api.blackboxTests.helpers.RequestHelper
 import org.vaccineimpact.api.blackboxTests.helpers.TestUserHelper
 import org.vaccineimpact.api.blackboxTests.helpers.validate
@@ -12,7 +11,6 @@ import org.vaccineimpact.api.blackboxTests.schemas.CSVSchema
 import org.vaccineimpact.api.blackboxTests.schemas.SplitSchema
 import org.vaccineimpact.api.blackboxTests.validators.SplitValidator
 import org.vaccineimpact.api.db.JooqContext
-import org.vaccineimpact.api.db.direct.*
 import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.test_helpers.DatabaseTest
 import org.vaccineimpact.api.test_helpers.DemographicDummyData
