@@ -16,11 +16,11 @@ data class DemographicDataset(
         val countries: List<String>,
         val unit: String,
         val ageInterpretation: String,
-        val source: String) : HasKey<String>
+        val source: String?) : HasKey<String>
 
 data class DemographicDataForTouchstone(
         val touchstone: Touchstone,
-        val demographicData: DemographicDataset?
+        val demographicData: DemographicDataset
 )
 
 data class DemographicRow(
