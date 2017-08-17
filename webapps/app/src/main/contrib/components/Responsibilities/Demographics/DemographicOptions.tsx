@@ -59,7 +59,7 @@ export class DemographicOptions extends React.Component<Props, undefined> {
                 <td>
                     <SourceControl
                         dataSet={props.selectedDataSet}
-                        onSelect={this.onSelectSource}
+                        onSelectSource={this.onSelectSource}
                         selected={props.selectedSource} />
                 </td>
             </tr>

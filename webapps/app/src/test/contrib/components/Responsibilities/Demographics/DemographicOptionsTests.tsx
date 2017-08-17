@@ -7,6 +7,7 @@ import { Sandbox } from "../../../../Sandbox";
 import { expectOneAction } from "../../../../actionHelpers";
 import { GenderControl } from "../../../../../main/contrib/components/Responsibilities/Demographics/GenderControl";
 import { demographicStore } from "../../../../../main/contrib/stores/DemographicStore";
+import { SourceControl } from "../../../../../main/contrib/components/Responsibilities/Demographics/SourceControl";
 
 describe("DemographicOptions", () => {
     const sandbox = new Sandbox();
@@ -14,6 +15,9 @@ describe("DemographicOptions", () => {
 
     function getStatisticType(rendered: ShallowWrapper<any, any>) {
         return rendered.find("table").find("tr").at(0).find("select");
+    }
+    function getSource(rendered: ShallowWrapper<any, any>) {
+        return rendered.find("table").find("tr").at(1).find(SourceControl);
     }
     function getGender(rendered: ShallowWrapper<any, any>) {
         return rendered.find("table").find("tr").at(2).find(GenderControl);
@@ -47,6 +51,18 @@ describe("DemographicOptions", () => {
         expect(getStatisticType(rendered).prop("value")).to.equal("b");
     });
 
+    it("renders source control", () => {
+        const set = mockDemographicStatisticType({ sources: ["s1", "s2"] });
+        const rendered = shallow(<DemographicOptions
+            dataSets={[set]} selectedDataSet={set} selectedGender="x" selectedSource="s2" />);
+        const control = getSource(rendered);
+        expect(control.props()).to.eql({
+            dataSet: set,
+            selected: "s2",
+            onSelectSource: (rendered.instance() as DemographicOptions).onSelectSource
+        });
+    });
+
     it("renders gender control", () => {
         const setA = mockDemographicStatisticType({ id: "a"});
         const setB = mockDemographicStatisticType({ id: "b" });
@@ -59,11 +75,21 @@ describe("DemographicOptions", () => {
 
     it("emits action when statistic type is selected", () => {
         const spy = sandbox.dispatchSpy();
-        const fetchOneTimeToken = sandbox.sinon.stub(demographicStore, "fetchOneTimeToken").returns(Promise.resolve(true));
+        const fetchOneTimeToken = sandbox.stubFetch(demographicStore, "fetchOneTimeToken");
         const rendered = shallow(<DemographicOptions
             dataSets={[]} selectedDataSet={null} selectedGender="" selectedSource=""/>);
         getStatisticType(rendered).simulate("change", { target: { value: "a" } });
         expectOneAction(spy, { action: "DemographicActions.selectDataSet", payload: "a" });
+        expect(fetchOneTimeToken.called).to.be.true;
+    });
+
+    it("emits action when source is selected", () => {
+        const spy = sandbox.dispatchSpy();
+        const fetchOneTimeToken = sandbox.stubFetch(demographicStore, "fetchOneTimeToken");
+        const rendered = shallow(<DemographicOptions
+            dataSets={[]} selectedDataSet={null} selectedGender="" selectedSource=""/>);
+        getSource(rendered).simulate("selectSource", { target: { value: "x" } });
+        expectOneAction(spy, { action: "DemographicActions.selectSource", payload: "x" });
         expect(fetchOneTimeToken.called).to.be.true;
     });
 

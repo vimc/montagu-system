@@ -27,7 +27,7 @@ describe("DemographicStore.fetchDataSets", () => {
 describe("DemographicStore.fetchOneTimeToken", () => {
     const touchstone = mockTouchstone({ id: "touchstoneId" });
     const dataSet = mockDemographicStatisticType({
-        sources: ["sourceId"],
+        sources: ["source1", "source2"],
         id: "typeId"
     });
     const helper = new FetchHelper<string, string>({
@@ -36,10 +36,10 @@ describe("DemographicStore.fetchOneTimeToken", () => {
             touchstoneActions.setCurrentTouchstone(touchstone.id);
             demographicActions.update([dataSet]);
             demographicActions.selectDataSet(dataSet.id);
-            demographicActions.selectSource(dataSet.sources[0]);
+            demographicActions.selectSource("source2");
         },
         makePayload: () => "TOKEN",
-        expectedURL: "/touchstones/touchstoneId/demographics/sourceId/typeId/get_onetime_link/"
+        expectedURL: "/touchstones/touchstoneId/demographics/source2/typeId/get_onetime_link/"
     });
 
     helper.addTestsToMocha();

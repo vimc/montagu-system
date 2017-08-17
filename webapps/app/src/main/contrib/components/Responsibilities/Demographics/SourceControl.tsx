@@ -6,7 +6,7 @@ const styles = require("../Responsibilities.css");
 
 interface Props {
     dataSet: DemographicStatisticType;
-    onSelect: EventHandler<ChangeEvent<HTMLSelectElement>>;
+    onSelectSource: EventHandler<ChangeEvent<HTMLSelectElement>>;
     selected: string;
 }
 
@@ -20,7 +20,7 @@ export class SourceControl extends React.Component<Props, undefined> {
 
         return <select
             className={styles.source}
-            onChange={props.onSelect}
+            onChange={props.onSelectSource}
             value={props.selected}
             disabled={sources.length == 0}
         >
