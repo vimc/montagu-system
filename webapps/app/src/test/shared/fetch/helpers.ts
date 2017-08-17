@@ -48,6 +48,7 @@ export class FetchHelper<TPayload, TActionPayload> {
         const dispatchSpy = this.sandbox.dispatchSpy();
         const handler = () => {
             try {
+                expect(fetcherSpy.args).to.have.length(1, "Fetch method was not invoked");
                 expect(fetcherSpy.args[0][0]).to.equal(this.config.expectedURL);
                 const actions = getActions(dispatchSpy);
                 expect(actions[0].action).to.contain("beginFetch");

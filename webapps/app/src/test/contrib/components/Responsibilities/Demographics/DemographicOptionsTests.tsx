@@ -16,7 +16,7 @@ describe("DemographicOptions", () => {
         return rendered.find("table").find("tr").at(0).find("select");
     }
     function getGender(rendered: ShallowWrapper<any, any>) {
-        return rendered.find("table").find("tr").at(1).find(GenderControl);
+        return rendered.find("table").find("tr").at(2).find(GenderControl);
     }
 
     it("renders statistic type options", () => {
@@ -24,7 +24,8 @@ describe("DemographicOptions", () => {
             mockDemographicStatisticType({ id: "a", name: "AA" }),
             mockDemographicStatisticType({ id: "b", name: "BB" })
         ];
-        const rendered = shallow(<DemographicOptions dataSets={sets} selectedDataSet={null} selectedGender=""/>);
+        const rendered = shallow(<DemographicOptions
+            dataSets={sets} selectedDataSet={null} selectedGender="" selectedSource="" />);
         const options = getStatisticType(rendered).find("option");
         expect(options.map(x => {
             return {
@@ -41,14 +42,16 @@ describe("DemographicOptions", () => {
     it("selected statistic type is selected", () => {
         const setA = mockDemographicStatisticType({ id: "a" });
         const setB = mockDemographicStatisticType({ id: "b" });
-        const rendered = shallow(<DemographicOptions dataSets={[setA, setB]} selectedDataSet={setB} selectedGender=""/>);
+        const rendered = shallow(<DemographicOptions
+            dataSets={[setA, setB]} selectedDataSet={setB} selectedGender="" selectedSource=""/>);
         expect(getStatisticType(rendered).prop("value")).to.equal("b");
     });
 
     it("renders gender control", () => {
         const setA = mockDemographicStatisticType({ id: "a"});
         const setB = mockDemographicStatisticType({ id: "b" });
-        const rendered = shallow(<DemographicOptions dataSets={[setA, setB]} selectedDataSet={setA} selectedGender="x" />);
+        const rendered = shallow(<DemographicOptions
+            dataSets={[setA, setB]} selectedDataSet={setA} selectedGender="x" selectedSource="" />);
         const control = getGender(rendered);
         expect(control.prop("dataSet")).to.equal(setA);
         expect(control.prop("value")).to.equal("x");
@@ -57,7 +60,8 @@ describe("DemographicOptions", () => {
     it("emits action when statistic type is selected", () => {
         const spy = sandbox.dispatchSpy();
         const fetchOneTimeToken = sandbox.sinon.stub(demographicStore, "fetchOneTimeToken").returns(Promise.resolve(true));
-        const rendered = shallow(<DemographicOptions dataSets={[]} selectedDataSet={null} selectedGender=""/>);
+        const rendered = shallow(<DemographicOptions
+            dataSets={[]} selectedDataSet={null} selectedGender="" selectedSource=""/>);
         getStatisticType(rendered).simulate("change", { target: { value: "a" } });
         expectOneAction(spy, { action: "DemographicActions.selectDataSet", payload: "a" });
         expect(fetchOneTimeToken.called).to.be.true;
@@ -65,7 +69,8 @@ describe("DemographicOptions", () => {
 
     it("emits action when gender is selected", () => {
         const spy = sandbox.dispatchSpy();
-        const rendered = shallow(<DemographicOptions dataSets={[]} selectedDataSet={null} selectedGender=""/>);
+        const rendered = shallow(<DemographicOptions
+            dataSets={[]} selectedDataSet={null} selectedGender="" selectedSource=""/>);
         getGender(rendered).simulate("selectGender", "x");
         expectOneAction(spy, { action: "DemographicActions.selectGender", payload: "x" });
     });
