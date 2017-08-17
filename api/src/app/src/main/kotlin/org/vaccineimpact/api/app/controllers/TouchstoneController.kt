@@ -69,7 +69,6 @@ class TouchstoneController(context: ControllerContext) : AbstractController(cont
         val source = context.params(":source-code")
         val type = context.params(":type-code")
         val gender = context.queryParams("gender")
-        logger.info(gender)
         return repo.getDemographicDataset(type, source, touchstone.id, gender?: "B")
     }
 
