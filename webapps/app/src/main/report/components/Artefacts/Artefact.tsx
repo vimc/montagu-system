@@ -13,7 +13,8 @@ interface ArtefactProps
 export class ArtefactItem extends React.Component<ArtefactProps, undefined> {
     render() {
         const p = this.props;
-        const url = `/reports/${p.report}/${p.version}/artefacts/${p.filename}/`;
+        const filename = p.filename.replace("/", ":");
+        const url = `/reports/${p.report}/${p.version}/artefacts/${filename}/`;
         return <li>
             <FileDownloadLink key={this.props.filename} href={url}>
                 {p.filename}
