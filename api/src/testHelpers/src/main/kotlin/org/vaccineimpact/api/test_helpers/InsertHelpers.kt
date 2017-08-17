@@ -6,13 +6,11 @@ import org.vaccineimpact.api.db.Tables.*
 import org.vaccineimpact.api.db.fromJoinPath
 import org.vaccineimpact.api.db.nextDecimal
 import org.vaccineimpact.api.db.tables.records.CoverageRecord
-import org.vaccineimpact.api.db.tables.records.DemographicSourceRecord
 import org.vaccineimpact.api.db.tables.records.DemographicStatisticRecord
 import org.vaccineimpact.api.models.permissions.ReifiedRole
 import org.vaccineimpact.api.security.UserHelper
 import org.vaccineimpact.api.security.ensureUserHasRole
 import java.math.BigDecimal
-import java.sql.Timestamp
 import java.util.*
 
 private val random = Random(0)
@@ -309,6 +307,7 @@ fun JooqContext.generateDemographicSources(sources: List<String>): List<Int>
     // so have to read these back out
     return this.dsl.select(DEMOGRAPHIC_SOURCE.ID)
             .from(DEMOGRAPHIC_SOURCE)
+            .where(DEMOGRAPHIC_SOURCE.CODE.`in`(sources))
             .fetchInto(Int::class.java)
 }
 
@@ -348,11 +347,11 @@ fun JooqContext.generateDemographicUnits(): List<Int>
 
 fun JooqContext.generateGenders(): List<Int>
 {
-    val sources = listOf("M", "F", "B")
+    val sources = listOf("B" to "both", "F" to "female", "M" to "male")
     val records = sources.map {
         this.dsl.newRecord(GENDER).apply {
-            this.name = it
-            this.code = it
+            this.code = it.first
+            this.name = it.second
         }
     }
     this.dsl.batchStore(records).execute()
@@ -407,6 +406,7 @@ fun JooqContext.generateDemographicData(
         ageRange: IntProgression = 0..80 step 5)
 {
     val records = mutableListOf<DemographicStatisticRecord>()
+
     for (country in countries)
     {
         for (year in yearRange)
@@ -422,8 +422,9 @@ fun JooqContext.generateDemographicData(
                         age + ageRange.step,
                         genderId = genderId,
                         variant = variantId,
-                        value = random.nextDecimal(0, 100, numberOfDecimalPlaces = 2)
+                        value = random.nextDecimal(1000, 10000, numberOfDecimalPlaces = 2)
                 ))
+
             }
         }
     }

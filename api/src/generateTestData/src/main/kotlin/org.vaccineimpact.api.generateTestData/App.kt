@@ -65,7 +65,7 @@ fun main(args: Array<String>) {
 class DemographicTestData(val db: JooqContext)
 {
     val sources = listOf("unwpp2015", "unwpp2017")
-    val variants = listOf("low", "medium", "high")
+    val variants = listOf("unwpp_estimates", "unwpp_medium_variant", "unwpp_high_variant")
     val countries = db.generateCountries(3)
     val sourceIds = db.generateDemographicSources(sources)
     val variantIds = db.generateDemographicVariants(variants)

@@ -3,6 +3,8 @@ package org.vaccineimpact.api.app.repositories.jooq
 import org.jooq.*
 import org.jooq.Result
 import org.jooq.impl.DSL.*
+import org.slf4j.LoggerFactory
+import org.vaccineimpact.api.app.controllers.AbstractController
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
 import org.vaccineimpact.api.app.filters.whereMatchesFilter
@@ -18,6 +20,7 @@ import org.vaccineimpact.api.db.fromJoinPath
 import org.vaccineimpact.api.db.joinPath
 import org.vaccineimpact.api.db.tables.records.TouchstoneRecord
 import org.vaccineimpact.api.models.*
+import java.math.BigDecimal
 
 class JooqTouchstoneRepository(
         db: JooqContext,
@@ -25,6 +28,57 @@ class JooqTouchstoneRepository(
 )
     : JooqRepository(db), TouchstoneRepository
 {
+    override fun getDemographicDataset(statisticTypeCode: String,
+                                       source: String,
+                                       touchstoneId: String): SplitData<DemographicDataForTouchstone, DemographicRow>
+    {
+        val touchstone = touchstones.get(touchstoneId)
+        val records = getDemographicStatistics(
+                touchstoneId,
+                statisticTypeCode,
+                source)
+                .fetch()
+
+        val rows = records.map {
+            mapDemographicRow(it)
+        }
+
+        val statType = getDemographicDatasetMetadata(statisticTypeCode)
+                .fetchAny() ?: throw UnknownObjectError(statisticTypeCode, "demographic-statistic-type")
+
+        val dataset = mapDemographicDatasetMetadata(statType, records)
+
+        val metadata = DemographicDataForTouchstone(touchstone, dataset)
+
+        return SplitData(metadata, DataTable.new(rows))
+    }
+
+    fun mapDemographicDatasetMetadata(statType: Record, records: List<Record>): DemographicDataset
+    {
+        val countries =
+                if (records.any())
+                {
+                    records.map { it[DEMOGRAPHIC_STATISTIC.COUNTRY] }.distinct().sortedBy { it }
+                }
+                else
+                {
+                    listOf()
+                }
+
+        val referenceRecord = records.firstOrNull()
+
+        val source = referenceRecord?.get(DEMOGRAPHIC_SOURCE.NAME)
+        val gender =  referenceRecord?.get(GENDER.NAME)
+
+        return DemographicDataset(statType[DEMOGRAPHIC_STATISTIC_TYPE.CODE],
+                statType[DEMOGRAPHIC_STATISTIC_TYPE.NAME],
+                gender,
+                countries,
+                statType[DEMOGRAPHIC_VALUE_UNIT.NAME],
+                statType[DEMOGRAPHIC_STATISTIC_TYPE.AGE_INTERPRETATION],
+                source)
+    }
+
     override fun getDemographicStatisticTypes(touchstoneId: String): List<DemographicStatisticType>
     {
         val records = getDemographicStatisticTypesQuery(touchstoneId)
@@ -147,6 +201,73 @@ class JooqTouchstoneRepository(
                 .on(DEMOGRAPHIC_STATISTIC_TYPE.ID.eq(field(name("s", "typeId"), Int::class.java)))
     }
 
+    private fun getDemographicDatasetMetadata(typeCode: String):
+            Select<Record5<String, String, String, String, Boolean>>
+    {
+        return dsl.select(
+                DEMOGRAPHIC_STATISTIC_TYPE.CODE,
+                DEMOGRAPHIC_STATISTIC_TYPE.NAME,
+                DEMOGRAPHIC_STATISTIC_TYPE.AGE_INTERPRETATION,
+                DEMOGRAPHIC_VALUE_UNIT.NAME,
+                DEMOGRAPHIC_STATISTIC_TYPE.GENDER_IS_APPLICABLE)
+                .from(DEMOGRAPHIC_STATISTIC_TYPE)
+                .join(DEMOGRAPHIC_VALUE_UNIT)
+                .on(DEMOGRAPHIC_STATISTIC_TYPE.DEMOGRAPHIC_VALUE_UNIT.eq(DEMOGRAPHIC_VALUE_UNIT.ID))
+                .where(DEMOGRAPHIC_STATISTIC_TYPE.CODE.eq(typeCode))
+
+    }
+
+    private fun getDemographicStatistics(touchstoneId: String,
+                                         typeCode: String,
+                                         sourceCode: String):
+            SelectConditionStep<Record7<Int, Int, String, Int, BigDecimal, String, String>>
+    {
+        // we are hard coding this here for now - need to revisit data model longer term
+        val variants = listOf("unwpp_estimates", "unwpp_medium_variant", "cm_median")
+
+        // hard coding for now
+        val gender: String = "B"
+
+        var selectQuery = dsl.select(DEMOGRAPHIC_STATISTIC.AGE_FROM,
+                DEMOGRAPHIC_STATISTIC.AGE_TO,
+                DEMOGRAPHIC_STATISTIC.COUNTRY,
+                DEMOGRAPHIC_STATISTIC.YEAR,
+                DEMOGRAPHIC_STATISTIC.VALUE,
+                DEMOGRAPHIC_SOURCE.NAME,
+                GENDER.NAME)
+                .from(DEMOGRAPHIC_STATISTIC)
+                .join(GENDER)
+                .on(GENDER.ID.eq(DEMOGRAPHIC_STATISTIC.GENDER))
+
+        // only select for countries in given touchstone
+        selectQuery = selectQuery.join(TOUCHSTONE_COUNTRY)
+                .on(DEMOGRAPHIC_STATISTIC.COUNTRY.eq(TOUCHSTONE_COUNTRY.COUNTRY))
+
+        // only select for given source and source in given touchstone
+        selectQuery = selectQuery.join(DEMOGRAPHIC_SOURCE)
+                .on(DEMOGRAPHIC_SOURCE.ID.eq(DEMOGRAPHIC_STATISTIC.DEMOGRAPHIC_SOURCE))
+                .join(TOUCHSTONE_DEMOGRAPHIC_SOURCE)
+                .on(DEMOGRAPHIC_STATISTIC.DEMOGRAPHIC_SOURCE.eq(TOUCHSTONE_DEMOGRAPHIC_SOURCE.DEMOGRAPHIC_SOURCE))
+
+        // only select default variants
+        selectQuery = selectQuery
+                .join(DEMOGRAPHIC_VARIANT)
+                .on(DEMOGRAPHIC_VARIANT.ID.eq(DEMOGRAPHIC_STATISTIC.DEMOGRAPHIC_VARIANT))
+
+        // only select for the given type
+        selectQuery = selectQuery
+                .join(DEMOGRAPHIC_STATISTIC_TYPE)
+                .on(DEMOGRAPHIC_STATISTIC_TYPE.ID.eq(DEMOGRAPHIC_STATISTIC.DEMOGRAPHIC_STATISTIC_TYPE))
+
+        return selectQuery
+                .where(DEMOGRAPHIC_STATISTIC_TYPE.CODE.eq(typeCode))
+                .and(TOUCHSTONE_COUNTRY.TOUCHSTONE.eq(touchstoneId))
+                .and(TOUCHSTONE_DEMOGRAPHIC_SOURCE.TOUCHSTONE.eq(touchstoneId))
+                .and(DEMOGRAPHIC_SOURCE.CODE.eq(sourceCode))
+                .and(DEMOGRAPHIC_VARIANT.CODE.`in`(variants))
+                .and(GENDER.CODE.eq(gender))
+    }
+
     private fun getScenariosFromRecords(records: Result<Record>): List<Scenario>
     {
         val scenarioIds = records.map { it[SCENARIO_DESCRIPTION.ID] }
@@ -169,7 +290,7 @@ class JooqTouchstoneRepository(
 
     fun mapDemographicStatisticType(records: List<Record>): DemographicStatisticType
     {
-        val countries = records.map { it[TOUCHSTONE_COUNTRY.COUNTRY] }.distinct()
+        val countries = records.map { it[TOUCHSTONE_COUNTRY.COUNTRY] }.distinct().sortedBy { it }
         val sources = records.map { it[field(name("s", "sourceCode"), String::class.java)] }.distinct()
 
         // all other properties are the same for all records
@@ -207,5 +328,14 @@ class JooqTouchstoneRepository(
             record[COVERAGE.AGE_RANGE_VERBATIM],
             record[COVERAGE.TARGET],
             record[COVERAGE.COVERAGE_]
+    )
+
+    fun mapDemographicRow(record: Record) = DemographicRow(
+            record[DEMOGRAPHIC_STATISTIC.COUNTRY],
+            record[DEMOGRAPHIC_STATISTIC.AGE_FROM],
+            record[DEMOGRAPHIC_STATISTIC.AGE_TO],
+            record[DEMOGRAPHIC_STATISTIC.YEAR],
+            record[GENDER.NAME],
+            record[DEMOGRAPHIC_STATISTIC.VALUE]
     )
 }

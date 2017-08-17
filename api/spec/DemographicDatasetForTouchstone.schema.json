@@ -1,0 +1,11 @@
+{
+    "id": "DemographicDatasetForTouchstone",
+    "type": "object",
+    "properties": {
+        "touchstone": { "$ref": "Touchstone.schema.json" },
+        "demographic_data":
+            { "$ref" : "DemographicDatasetMetadata.schema.json" }
+    },
+    "additionalProperties": false,
+    "required": [ "touchstone", "demographic_data" ]
+}

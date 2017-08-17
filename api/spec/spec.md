@@ -1714,10 +1714,31 @@ Schema: [`Demographics.schema.json`](Demographics.schema.json)
 
 ## GET /touchstones/{touchstone-id}/demographics/{source-code}/{demographic-type-code}/
 
-Returns the data set with given type, in `long` CSV format.
+Returns the data set with given type. This data is returned in two parts: First the metadata, then the coverage in CSV format.
 
-Example:
-Age-specific fertility:
+### Metadata
+Schema: [`DemographicDatasetForTouchstone.schema.json`](DemographicDatasetForTouchstone.schema.json)
+
+#### Example
+    {
+        "touchstone": { 
+            "id": "2017-op-1",
+            "name": "2017-op",
+            "version": 1,            
+            "description": "2017 Operational Forecast",
+            "status": "finished"
+        },
+        "demographic_data":  { 
+            "id" : "as-fert",
+            "name": "Age-specific fertility",
+            "source" : "UNWPP 2015",
+            "countries" : ["AFG"],
+            "age_interpretation": "age of mother (years)",
+            "unit" : "avg births/mother"
+        }
+    }
+    
+### CSV
     
     "country",  "age of mother (years)",  "year", "avg births/mother"
         "AFG",                  "15-19",    1950,                 1.2
@@ -1731,7 +1752,26 @@ Age-specific fertility:
         "AFG",                  "15-19",    1990,                 1.1 
         "AFG",                  "15-19",    1995,                 1.1 
          
-Example:
+### Example
+    {
+        "touchstone": { 
+            "id": "2017-op-1",
+            "name": "2017-op",
+            "version": 1,            
+            "description": "2017 Operational Forecast",
+            "status": "finished"
+        },
+        "demographic_data":  { 
+            "id" : "tot-pop",
+            "name": "Total population",
+            "source" : "UNWPP 2015",
+            "countries" : ["AFG"],
+            "age_interpretation": "age (years)",
+            "unit" : "people",
+            "gender" : "both"
+        }
+    }
+    
 Total population:
          
      "country", "age (years)",  "gender",  "year",   "people"

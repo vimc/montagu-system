@@ -1,0 +1,15 @@
+{
+    "id": "DemographicDatasetMetadata",
+    "type": "object",
+    "properties": {
+        "id": { "$ref": "StandardIdentifier.schema.json" },
+        "name": { "type": "string" },
+        "source": { "anyOf": [ {"type": "string"}, {"type": "null"} ]},
+        "countries": { "type": "array", "items": { "$ref": "CountryId.schema.json"  } },
+        "age_interpretation": { "type": "string" },
+        "unit": { "type": "string" },
+        "gender": { "anyOf": [ {"type": "string"}, {"type": "null"} ]}
+    },
+    "additionalProperties": false,
+    "required": [ "id", "source", "name", "countries", "age_interpretation", "unit" ]
+}
