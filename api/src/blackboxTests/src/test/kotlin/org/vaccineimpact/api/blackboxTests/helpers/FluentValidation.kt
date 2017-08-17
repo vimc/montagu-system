@@ -142,7 +142,7 @@ class FluentValidation(config: FluentValidationConfig)
         {
             requestSchema.validateRequest(postData.toJsonString(prettyPrint = true))
         }
-        responseSchema.validateResponse(response.text)
+        responseSchema.validateResponse(response.text, response.headers["Content-Type"])
     }
 
     private fun makeRequest(contentType: String, token: TokenLiteral? = null): Response = when (method)

@@ -35,7 +35,7 @@ class DefaultHeadersFilter(val contentType: String, val method: HttpMethod) : Fi
 {
     override fun handle(request: Request, response: Response)
     {
-        if (request.requestMethod() == method.toString())
+        if (request.requestMethod().equals(method.toString(), ignoreCase = true))
         {
             addDefaultResponseHeaders(response, contentType)
         }

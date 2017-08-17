@@ -8,10 +8,10 @@ class SplitSchema(json: String, csv: String) : Schema
     private val csvSchema = CSVSchema(csv)
     override val validator = SplitValidator()
 
-    override fun validateResponse(response: String)
+    override fun validateResponse(response: String, contentType: String?)
     {
         val splitText = validator.getSplitText(response)
-        jsonSchema.validateResponse(splitText.json)
+        jsonSchema.validateResponse(splitText.json, contentType)
         csvSchema.validate(splitText.csv)
     }
 

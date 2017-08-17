@@ -12,6 +12,6 @@ class IndexTests : DatabaseTest()
     fun `can read index`()
     {
         val response = RequestHelper().get("/")
-        JSONSchema("Index").validateResponse(response.text)
+        JSONSchema("Index").validateResponse(response.text, response.headers["Content-Type"])
     }
 }
