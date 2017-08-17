@@ -61,6 +61,7 @@ class PermissionChecker(
             expectedProblem: ExpectedProblem? = null
     )
     {
+        @Suppress("NAME_SHADOWING")
         val expectedProblem = expectedProblem ?: ExpectedProblem("forbidden", permission.toString())
         val assertionText = "Expected permission '$permission' to be required for $url"
         val limitedPermissions = allRequiredPermissions - permission

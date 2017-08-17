@@ -15,6 +15,7 @@ class HomeController(
             basicEndpoint("/", this::index)
     )
 
+    @Suppress("UNUSED_PARAMETER")
     fun index(context: ActionContext) = Index("montagu", Config["app.version"], otherEndpoints)
 
     data class Index(val name: String, val version: String, val endpoints: List<String>)

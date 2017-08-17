@@ -29,13 +29,14 @@ class JoinPath(tables: Iterable<TableImpl<*>>, val joinType: JoinType)
     }
 }
 
+@Suppress("UNCHECKED_CAST")
 class JoinPathStep(
         private val from: TableImpl<*>,
         private val to: TableImpl<*>,
-        val joinType: JoinType = JoinType.JOIN)
+        private val joinType: JoinType = JoinType.JOIN)
 {
-    val foreignKeyField: TableField<*, Any>
-    val primaryKeyField: Field<Any>
+    private val foreignKeyField: TableField<*, Any>
+    private val primaryKeyField: Field<Any>
 
     init
     {
@@ -43,6 +44,7 @@ class JoinPathStep(
                 to.keys.flatMap { it.references }.filter { it.table == from }
         val reference = references.singleOrNull()
                 ?: throwKeyProblem(references)
+
         foreignKeyField = reference.fields.single() as TableField<*, Any>
         val targetTable = foreignKeyField.table.getOther(from, to)
         primaryKeyField = targetTable.primaryKey.fields.single() as Field<Any>

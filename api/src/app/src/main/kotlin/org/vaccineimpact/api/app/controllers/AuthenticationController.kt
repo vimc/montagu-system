@@ -24,7 +24,7 @@ class AuthenticationController(context: ControllerContext, htmlFormHelpers: Form
     override val urlComponent = "/"
     override fun endpoints(repos: Repositories) = listOf(
             oneRepoEndpoint("authenticate/", this::authenticate, repos.user, HttpMethod.post)
-                    .withAdditionalSetup(this::setupSecurity)
+                    .withAdditionalSetup({ url, _ -> setupSecurity(url) })
     )
 
     val htmlFormHelpers = htmlFormHelpers ?: HTMLFormHelpers()
@@ -47,7 +47,7 @@ class AuthenticationController(context: ControllerContext, htmlFormHelpers: Form
         }
     }
 
-    private fun setupSecurity(fullUrl: String, tokenHelper: WebTokenHelper)
+    private fun setupSecurity(fullUrl: String)
     {
         val config = TokenIssuingConfigFactory().build()
         before(fullUrl, SecurityFilter(
