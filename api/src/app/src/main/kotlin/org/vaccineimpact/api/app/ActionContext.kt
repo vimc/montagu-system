@@ -3,7 +3,6 @@ package org.vaccineimpact.api.app
 import org.pac4j.core.profile.CommonProfile
 import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
-import spark.QueryParamsMap
 
 interface ActionContext
 {
