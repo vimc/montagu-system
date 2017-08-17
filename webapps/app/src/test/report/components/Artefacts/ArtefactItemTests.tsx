@@ -11,13 +11,13 @@ describe("ArtefactItem", () => {
 
     it("renders link", () => {
 
-        const rendered = sandbox.mount(<ArtefactItem report="reportname" version="versionname" filename="filename.csv" description="a file" />);
+        const rendered = sandbox.mount(<ArtefactItem report="reportname" version="versionname" filename="subdir/filename.csv" description="a file" />);
         const item = rendered.find("li").at(0);
         const link = item.find(FileDownloadLink);
 
         expect(rendered.find("li").length).to.eq(1);
-        expect(link.prop("href")).to.eq("/reports/reportname/versionname/artefacts/filename.csv/");
-        expect(link.text()).to.eq("filename.csv");
+        expect(link.prop("href")).to.eq("/reports/reportname/versionname/artefacts/subdir:filename.csv/");
+        expect(link.text()).to.eq("subdir/filename.csv");
 
     });
 
