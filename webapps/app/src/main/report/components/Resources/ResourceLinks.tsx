@@ -13,7 +13,7 @@ export class ResourceLinks extends React.Component<ResourceLinksProps, undefined
     buildUrl(resource: string): string {
         resource = resource.replace("/", ":");
         const p = this.props;
-        return `/reports/${p.report}/${p.version}/resources/${encodeURIComponent(resource)}/`;
+        return `/reports/${p.report}/${p.version}/resources/${resource}/`;
     }
 
     render() {
