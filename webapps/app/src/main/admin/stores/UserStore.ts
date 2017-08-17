@@ -15,7 +15,7 @@ export interface UserStoreState extends RemoteContent {
 }
 
 export interface UserStoreInterface extends AltJS.AltStore<UserStoreState> {
-    fetchUsers(): Promise<User[]>;
+    fetchUsers(force?: boolean): Promise<User[]>;
     getCurrentUserDetails(): User;
 }
 
@@ -37,6 +37,12 @@ class UserStore
         });
         this.registerAsync(new UserSource());
         this.exportPublicMethods({
+            fetchUsers: (force?: boolean) => {
+                if (force == true) {
+                    this.users = [];
+                }
+                return (this.getInstance() as any)._fetchUsers();
+            },
             getCurrentUserDetails: () => {
                 if (this.currentUsername && this.usersLookup.hasOwnProperty(this.currentUsername)) {
                     return this.usersLookup[this.currentUsername]

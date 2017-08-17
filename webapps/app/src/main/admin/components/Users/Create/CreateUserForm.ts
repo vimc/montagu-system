@@ -1,8 +1,11 @@
 import AltReform, { Reform } from "alt-reform";
 import { alt } from "../../../../shared/alt";
-import { AuthStoreBaseInterface } from "../../../../shared/stores/AuthStoreBase";
 import FormActions from "../../../../shared/FormActions";
 import * as Validation from "../../../../shared/Validation";
+import fetcher from "../../../../shared/sources/Fetcher";
+import { processResponseAndNotifyOnErrors } from "../../../../shared/sources/Source";
+import { NotificationException } from "../../../../shared/actions/NotificationActions";
+import { userStore } from "../../../stores/UserStore";
 
 export interface CreateUserFields {
     name: string;
@@ -18,26 +21,21 @@ export function createUserForm(): Reform<CreateUserFields> {
         fields: {
             name: Validation.required("Full name"),
             email: Validation.required("Email address"),
-            username: Validation.multi("Username", [ Validation.required, Validation.usernameFormat ]),
+            username: Validation.multi("Username", [Validation.required, Validation.usernameFormat]),
             errors: () => {
             },
         },
-        onSubmit: (state: CreateUserFields) => {
-            // send to server
-        },
-        onSubmitSuccess: (response: any) => {
-            /*response.json().then((json: any) => {
-                if (json.error) {
-                    alt.dispatch(submitFailed("Your username or password is incorrect"));
-                } else if (json.access_token) {
-                    authStore.logIn(json.access_token);
-                } else {
-                    // This case catches the situation where the server has an internal error, but
-                    // still returns something in the standard format
-                    console.log("Error logging in: " + JSON.stringify(json));
-                    alt.dispatch(submitFailed("An error occurred logging in"));
-                }
-            });*/
+        onSubmit: (state: CreateUserFields) => fetcher.fetcher.fetch("/users/", {
+            method: "post",
+            body: JSON.stringify(state)
+        }),
+        onSubmitSuccess: (response: Response) => {
+            return processResponseAndNotifyOnErrors(response)
+                .then(() => userStore.fetchUsers(true))
+                .catch(e => {
+                    const n = e as NotificationException;
+                    alt.dispatch(submitFailed(n.notification.message));
+                });
         },
         onSubmitFail: (response: any) => {
             console.log("Error creating user: " + response);

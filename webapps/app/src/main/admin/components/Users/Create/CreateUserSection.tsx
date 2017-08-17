@@ -76,6 +76,8 @@ class CreateUserFormComponent extends React.Component<ReformProps, undefined> {
             </table>
             <div className={commonStyles.gapAbove}>
                 <ValidationError message={this.props.store.state.submitError}/>
+            </div>
+            <div className={commonStyles.gapAbove}>
                 <button type="submit">Save user</button>
             </div>
         </form>;
