@@ -4,6 +4,7 @@ import { alt } from "../../alt";
 import fetcher from "../../sources/Fetcher";
 import FormActions from "../../FormActions";
 import * as Validation from "../../Validation";
+import { FormErrors } from "../../FormHelpers";
 
 export interface LoginFields {
     email: string;
@@ -21,7 +22,7 @@ export function loginForm(name: string, authStore: AuthStoreBaseInterface<any>):
             errors: () => {
             },
         },
-        onSubmit: (state: LoginFields) => {
+        onSubmit: (state: LoginFields & FormErrors) => {
             const data = "grant_type=client_credentials";
             return fetcher.fetcher.fetch("/authenticate/", {
                 method: "POST",

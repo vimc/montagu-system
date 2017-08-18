@@ -6,6 +6,7 @@ import fetcher from "../../../../shared/sources/Fetcher";
 import { NotificationException } from "../../../../shared/actions/NotificationActions";
 import { userStore } from "../../../stores/UserStore";
 import { processResponseAndNotifyOnErrors } from "../../../../shared/sources/Source";
+import { FormErrors, justState } from "../../../../shared/FormHelpers";
 
 export interface CreateUserFields {
     name: string;
@@ -13,8 +14,8 @@ export interface CreateUserFields {
     username: string;
 }
 
-export function createUserForm(): Reform<CreateUserFields> {
-    const qualifiedName = "CreateUser";
+export function createUserForm(name?: string): Reform<CreateUserFields> {
+    const qualifiedName = "CreateUser_" + (name || "main");
     const { submitFailed } = FormActions(qualifiedName);
 
     return AltReform(qualifiedName, alt, {
@@ -25,9 +26,9 @@ export function createUserForm(): Reform<CreateUserFields> {
             errors: () => {
             },
         },
-        onSubmit: (state: CreateUserFields) => fetcher.fetcher.fetch("/users/", {
-            method: "post",
-            body: JSON.stringify(state)
+        onSubmit: (state: CreateUserFields & FormErrors) => fetcher.fetcher.fetch("/users/", {
+                method: "post",
+                body: JSON.stringify(justState(state))
         }),
         onSubmitSuccess: (response: Response) => {
             return processResponseAndNotifyOnErrors(response)

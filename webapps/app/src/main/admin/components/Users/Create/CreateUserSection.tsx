@@ -50,7 +50,7 @@ class CreateUserSectionComponent extends React.Component<Props, undefined> {
     }
 }
 
-class CreateUserFormComponent extends React.Component<ReformProps, undefined> {
+export class CreateUserFormComponent extends React.Component<ReformProps, undefined> {
     render() {
         const fields = this.props.fields as CreateUserFields;
         return <form className={commonStyles.gapAbove} onSubmit={this.props.submit}>
