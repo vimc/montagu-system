@@ -4,14 +4,17 @@ import { expect } from "chai";
 import { shallow } from "enzyme";
 import * as sinon from "sinon";
 import { Sandbox } from "../../../../Sandbox";
-import { CreateUserFields, createUserForm } from "../../../../../main/admin/components/Users/Create/CreateUserForm";
-import { CreateUserFormComponent } from "../../../../../main/admin/components/Users/Create/CreateUserSection";
 import { mockFormProperties, numberOfSubmissionActions } from "../../../../mocks/mockForm";
 import { ValidationError } from "../../../../../main/shared/components/Login/ValidationError";
 import { mockFetcher, mockResponse, mockResult } from "../../../../mocks/mockRemote";
 import { userStore } from "../../../../../main/admin/stores/UserStore";
 import { mockEvent } from "../../../../mocks/mocks";
 import { expectOrderedActions } from "../../../../actionHelpers";
+import {
+    CreateUserFields,
+    createUserFormStore
+} from "../../../../../main/admin/components/Users/Create/CreateUserFormStore";
+import { CreateUserFormComponent } from "../../../../../main/admin/components/Users/Create/CreateUserForm";
 
 function checkSubmit(form: Reform<CreateUserFields>,
                      done: DoneCallback,
@@ -31,7 +34,7 @@ describe("CreateUserForm", () => {
     let form: Reform<CreateUserFields>;
 
     before(() => {
-        form = createUserForm("test");
+        form = createUserFormStore("test");
     });
 
     afterEach(() => {

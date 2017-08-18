@@ -14,7 +14,7 @@ export interface CreateUserFields {
     username: string;
 }
 
-export function createUserForm(name?: string): Reform<CreateUserFields> {
+export function createUserFormStore(name?: string): Reform<CreateUserFields> {
     const qualifiedName = "CreateUser_" + (name || "main");
     const { submitFailed } = FormActions(qualifiedName);
 
