@@ -14,6 +14,7 @@ import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import org.vaccineimpact.api.models.permissions.ReifiedRole
 import org.vaccineimpact.api.models.permissions.RoleAssignment
 import org.vaccineimpact.api.security.MontaguUser
+import org.vaccineimpact.api.security.UserHelper
 import org.vaccineimpact.api.security.UserProperties
 import java.sql.Timestamp
 import java.time.Instant
@@ -94,6 +95,14 @@ class JooqUserRepository(db: JooqContext) : JooqRepository(db), UserRepository
             name = user.name
             email = user.email
         }.insert()
+    }
+
+    override fun setPassword(username: String, plainPassword: String)
+    {
+        val hashedPassword = UserHelper.hashedPassword(plainPassword)
+        dsl.update(APP_USER).set(APP_USER.PASSWORD_HASH, hashedPassword)
+                .where(APP_USER.USERNAME.eq(username))
+                .execute()
     }
 
     private fun mapUserWithRoles(entry: Map.Entry<AppUserRecord, org.jooq.Result<Record>>): User

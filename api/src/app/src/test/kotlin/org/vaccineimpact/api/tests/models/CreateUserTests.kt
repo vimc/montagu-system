@@ -3,13 +3,10 @@ package org.vaccineimpact.api.tests.models
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.vaccineimpact.api.app.models.CreateUser
-import org.vaccineimpact.api.app.serialization.ModelBinder
-import org.vaccineimpact.api.test_helpers.MontaguTests
 
-class CreateUserTests : MontaguTests()
+class CreateUserTests : ValidationTests()
 {
-    val model = CreateUser("user.name", "Full Name", "email@example.com")
-    val binder = ModelBinder()
+    private val model = CreateUser("user.name", "Full Name", "email@example.com")
 
     @Test
     fun `valid model verifies`()
@@ -44,21 +41,5 @@ class CreateUserTests : MontaguTests()
     fun `name is required`()
     {
         assertCausesTheseErrors(model.copy(name = ""), "invalid-field:name:blank")
-    }
-
-    private fun assertCausesTheseErrors(badModel: CreateUser, vararg codes: String)
-    {
-        val actual = binder.verify(badModel)
-        val actualCodes = actual.map { it.code }.joinToString()
-        assertThat(actual.size)
-                .`as`("Expected these errors: ${codes.joinToString()} for this model: $badModel.\nActual: $actualCodes")
-                .isEqualTo(codes.size)
-        for (code in codes)
-        {
-            val matching = actual.filter { it.code == code }
-            assertThat(matching)
-                    .`as`("Expected this error '$code' for this model: $badModel. These errors were present: $actualCodes")
-                    .isNotEmpty
-        }
     }
 }

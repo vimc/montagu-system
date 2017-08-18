@@ -15,4 +15,5 @@ interface UserRepository : Repository
     fun updateLastLoggedIn(username: String)
 
     fun addUser(user: CreateUser)
+    fun setPassword(username: String, plainPassword: String)
 }

@@ -9,16 +9,15 @@ import org.vaccineimpact.api.app.repositories.UserRepository
 import org.vaccineimpact.api.app.repositories.jooq.JooqUserRepository
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.Tables
+import org.vaccineimpact.api.db.Tables.APP_USER
+import org.vaccineimpact.api.db.direct.addUserWithRoles
 import org.vaccineimpact.api.models.Scope
 import org.vaccineimpact.api.models.User
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import org.vaccineimpact.api.models.permissions.ReifiedRole
 import org.vaccineimpact.api.models.permissions.RoleAssignment
 import org.vaccineimpact.api.security.*
-import java.sql.Time
-import java.sql.Timestamp
 import java.time.Instant
-import java.util.*
 
 class UserTests : RepositoryTests<UserRepository>()
 {
@@ -217,6 +216,22 @@ class UserTests : RepositoryTests<UserRepository>()
             assertThat(repo.getUserByUsername("user.name")).isEqualTo(
                     User("user.name", "Full Name", "email@example.com", null)
             )
+        }
+    }
+
+    @Test
+    fun `can set password`()
+    {
+        given {
+            it.addUserWithRoles("will")
+        } makeTheseChanges {
+            it.setPassword("will", "newpassword")
+        } andCheckDatabase {
+            val hash = it.dsl.select(APP_USER.PASSWORD_HASH)
+                    .from(APP_USER)
+                    .where(APP_USER.USERNAME.eq("will"))
+                    .fetchOne().value1()
+            assertThat(UserHelper.encoder.matches("newpassword", hash)).isTrue()
         }
     }
 
