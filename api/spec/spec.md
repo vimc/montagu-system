@@ -286,7 +286,7 @@ Schema: [`SetPassword.schema.json`](SetPassword.schema.json)
         "password": "new_password"
     }
 
-## GET /password/request_link?email={email}
+## POST /password/request_link?email={email}
 If the email provided is associated with a user account, sends an email to the 
 provided email address. This email contains a link to the set password page in 
 the portal and includes as a query string parameter a onetime token for the 
