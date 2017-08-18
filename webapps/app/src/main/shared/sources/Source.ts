@@ -22,8 +22,10 @@ export abstract class Source<TState> {
         const remoteFetch = this.fetchRemoteData;
         const source: AltJS.SourceModel<TModel> = {
             remote(state: TState) {
-                return remoteFetch(urlFragment(state))
-                    .then((response: Response) => processResponseAndNotifyOnErrors<TModel>(response));
+                const promise: Promise<Response> = remoteFetch(urlFragment(state));
+                return promise
+                    .then(response => processResponse<TModel>(response))
+                    .catch(notifyOnErrors);
             },
             local(state: TState): any {
                 return Promise.resolve(true);
@@ -42,20 +44,10 @@ export abstract class Source<TState> {
 }
 
 export function processResponseAndNotifyOnErrors<TModel>(response: Response): Promise<TModel> {
-    return processResponse(response)
-        .catch((error: any) => {
-            // Because of transpilation to ES5, we cannot test for instanceof NotificationException
-            if (error.hasOwnProperty("notification")) {
-                throw error;
-            } else if (error instanceof Error) {
-                throw makeNotificationException(error.message, "error");
-            } else {
-                throw makeNotificationException(error, "error");
-            }
-        });
+    return processResponse(response).catch(notifyOnErrors);
 }
 
-export function processResponse<TModel>(response: Response): Promise<any> {
+function processResponse<TModel>(response: Response): Promise<TModel> {
     const handleError = (error: ErrorInfo) => {
         switch (error.code) {
             case "bearer-token-invalid":
@@ -84,4 +76,14 @@ export function processResponse<TModel>(response: Response): Promise<any> {
                         + response.toString(), "error");
             }
         });
+}
+
+function notifyOnErrors(error: any) {
+    if (error.hasOwnProperty("notification")) {
+        throw error;
+    } else if (error instanceof Error) {
+        throw makeNotificationException(error.message, "error");
+    } else {
+        throw makeNotificationException(error, "error");
+    }
 }

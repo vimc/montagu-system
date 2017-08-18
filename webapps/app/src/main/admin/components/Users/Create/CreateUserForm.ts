@@ -3,9 +3,9 @@ import { alt } from "../../../../shared/alt";
 import FormActions from "../../../../shared/FormActions";
 import * as Validation from "../../../../shared/Validation";
 import fetcher from "../../../../shared/sources/Fetcher";
-import { processResponseAndNotifyOnErrors } from "../../../../shared/sources/Source";
 import { NotificationException } from "../../../../shared/actions/NotificationActions";
 import { userStore } from "../../../stores/UserStore";
+import { processResponseAndNotifyOnErrors } from "../../../../shared/sources/Source";
 
 export interface CreateUserFields {
     name: string;
