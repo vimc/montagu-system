@@ -23,7 +23,7 @@ export abstract class Source<TState> {
         const source: AltJS.SourceModel<TModel> = {
             remote(state: TState) {
                 return remoteFetch(urlFragment(state))
-                    .then((response: Response) => processResponseAndNotifyOnErrors(response));
+                    .then((response: Response) => processResponseAndNotifyOnErrors<TModel>(response));
             },
             local(state: TState): any {
                 return Promise.resolve(true);
@@ -41,7 +41,7 @@ export abstract class Source<TState> {
     }
 }
 
-export function processResponseAndNotifyOnErrors(response: Response): Promise<any> {
+export function processResponseAndNotifyOnErrors<TModel>(response: Response): Promise<TModel> {
     return processResponse(response)
         .catch((error: any) => {
             // Because of transpilation to ES5, we cannot test for instanceof NotificationException
