@@ -57,6 +57,11 @@ describe("DemographicStore", () => {
         expect(demographicStore.getState().selectedDataSet).to.eql(null);
     });
 
+    it("records selected source", () => {
+        demographicActions.selectSource("source");
+        expect(demographicStore.getState().selectedSource).to.equal("source");
+    });
+
     it("records selected gender", () => {
         demographicActions.selectGender("gender");
         expect(demographicStore.getState().selectedGender).to.equal("gender");

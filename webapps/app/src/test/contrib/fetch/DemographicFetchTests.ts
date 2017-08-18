@@ -27,7 +27,7 @@ describe("DemographicStore.fetchDataSets", () => {
 describe("DemographicStore.fetchOneTimeToken", () => {
     const touchstone = mockTouchstone({ id: "touchstoneId" });
     const dataSet = mockDemographicStatisticType({
-        sources: ["sourceId"],
+        sources: ["source1", "source2"],
         id: "typeId"
     });
     const helper = new FetchHelper<string, string>({
@@ -36,14 +36,15 @@ describe("DemographicStore.fetchOneTimeToken", () => {
             touchstoneActions.setCurrentTouchstone(touchstone.id);
             demographicActions.update([dataSet]);
             demographicActions.selectDataSet(dataSet.id);
+            demographicActions.selectSource("source2");
         },
         makePayload: () => "TOKEN",
-        expectedURL: "/touchstones/touchstoneId/demographics/sourceId/typeId/get_onetime_link/"
+        expectedURL: "/touchstones/touchstoneId/demographics/source2/typeId/get_onetime_link/"
     });
 
     helper.addTestsToMocha();
 
-    it("does not fetch when selected data set is null", () => {
+    it("does not fetch until all required options are selected", () => {
         const stub = helper.sandbox.stubFetch(demographicStore, "_fetchOneTimeToken");
         const touchstone = mockTouchstone({ id: "touchstoneId" });
         const dataSet = mockDemographicStatisticType({
@@ -58,8 +59,13 @@ describe("DemographicStore.fetchOneTimeToken", () => {
         demographicStore.fetchOneTimeToken().catch(doNothing);
         expect(stub.called).to.equal(false, "Fetched token even though data set was not selected");
 
-        // Next, select a data set and show that this makes the difference
+        // Next, show that it does nothing if no source is selected
         demographicActions.selectDataSet(dataSet.id);
+        demographicStore.fetchOneTimeToken().catch(doNothing);
+        expect(stub.called).to.equal(false, "Fetched token even though data set was not selected");
+
+        // Next, select a source as well and show that this makes the difference
+        demographicActions.selectSource(dataSet.sources[0]);
         demographicStore.fetchOneTimeToken().catch(doNothing);
         expect(stub.called).to.equal(true, "Did not fetch token even though data set was selected");
     });

@@ -4,6 +4,7 @@ import { GenderControl } from "./GenderControl";
 import { DemographicStatisticType } from "../../../../shared/models/Generated";
 import { demographicStore } from "../../../stores/DemographicStore";
 import { doNothing } from "../../../../shared/Helpers";
+import { SourceControl } from "./SourceControl";
 
 const commonStyles = require("../../../../shared/styles/common.css");
 const styles = require("../Responsibilities.css");
@@ -12,11 +13,17 @@ interface Props {
     dataSets: DemographicStatisticType[];
     selectedDataSet: DemographicStatisticType;
     selectedGender: string;
+    selectedSource: string;
 }
 
 export class DemographicOptions extends React.Component<Props, undefined> {
     onSelectDataSet(e: React.ChangeEvent<HTMLSelectElement>) {
         demographicActions.selectDataSet(e.target.value);
+        demographicStore.fetchOneTimeToken().catch(doNothing);
+    }
+
+    onSelectSource(e: React.ChangeEvent<HTMLSelectElement>) {
+        demographicActions.selectSource(e.target.value);
         demographicStore.fetchOneTimeToken().catch(doNothing);
     }
 
@@ -45,6 +52,15 @@ export class DemographicOptions extends React.Component<Props, undefined> {
                         <option value="">- Select -</option>
                         {statisticTypes}
                     </select>
+                </td>
+            </tr>
+            <tr className={ commonStyles.specialColumn }>
+                <td>Source</td>
+                <td>
+                    <SourceControl
+                        dataSet={props.selectedDataSet}
+                        onSelectSource={this.onSelectSource}
+                        selected={props.selectedSource} />
                 </td>
             </tr>
             <tr className={ commonStyles.specialColumn }>

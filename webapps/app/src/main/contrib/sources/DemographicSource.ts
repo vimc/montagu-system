@@ -17,7 +17,7 @@ export class DemographicSource extends Source<DemographicState> {
         });
         this._fetchOneTimeToken = () => this.doFetch(s => {
             const dataSet = s.selectedDataSet;
-            const source = dataSet.sources[0];
+            const source = s.selectedSource;
             const type = dataSet.id;
             return `/touchstones/${s.currentTouchstone}/demographics/${source}/${type}/get_onetime_link/`;
         }, {
