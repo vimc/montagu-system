@@ -189,7 +189,7 @@ class DemographicTests : DatabaseTest()
     @Test
     fun `can get gendered CSV demographic data via one time link`()
     {
-        validate("$url/get_onetime_link/?gender=F") against "Token" given {
+        validate("$url/get_onetime_link/?gender=female") against "Token" given {
 
             DemographicDummyData(it)
                     .withTouchstone(touchstoneName, touchstoneVersion)

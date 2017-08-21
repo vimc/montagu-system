@@ -31,14 +31,14 @@ class JooqTouchstoneRepository(
     override fun getDemographicDataset(statisticTypeCode: String,
                                        source: String,
                                        touchstoneId: String,
-                                       genderCode: String): SplitData<DemographicDataForTouchstone, DemographicRow>
+                                       gender: String): SplitData<DemographicDataForTouchstone, DemographicRow>
     {
         val touchstone = touchstones.get(touchstoneId)
         val records = getDemographicStatistics(
                 touchstoneId,
                 statisticTypeCode,
                 source,
-                genderCode)
+                gender)
                 .fetch()
 
         val rows = records.map {
@@ -222,7 +222,7 @@ class JooqTouchstoneRepository(
     private fun getDemographicStatistics(touchstoneId: String,
                                          typeCode: String,
                                          sourceCode: String,
-                                         genderCode: String = "B"):
+                                         gender: String = "both"):
             SelectConditionStep<Record7<Int, Int, String, Int, BigDecimal, String, String>>
     {
         // we are hard coding this here for now - need to revisit data model longer term
@@ -259,9 +259,9 @@ class JooqTouchstoneRepository(
                 .join(DEMOGRAPHIC_STATISTIC_TYPE)
                 .on(DEMOGRAPHIC_STATISTIC_TYPE.ID.eq(DEMOGRAPHIC_STATISTIC.DEMOGRAPHIC_STATISTIC_TYPE))
 
-        // if gender is not applicable for this statistic type, ignore passed genderCode parameter and match on "B"
+        // if gender is not applicable for this statistic type, ignore passed gender parameter and match on "B"
         val genderMatchesOrShouldBeDefault = (GENDER.CODE.eq("B").andNot(DEMOGRAPHIC_STATISTIC_TYPE.GENDER_IS_APPLICABLE))
-                .or(GENDER.CODE.eq(genderCode))
+                .or(GENDER.NAME.eq(gender))
 
         return selectQuery
                 .where(DEMOGRAPHIC_STATISTIC_TYPE.CODE.eq(typeCode))
