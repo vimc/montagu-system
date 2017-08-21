@@ -105,7 +105,7 @@ subprojects {
     task copyConfig(type: Copy, dependsOn: ':loadPropertiesTask') {
         from 'src/main/resources'
         include '*'
-        into 'out/production/classes/'
+        into 'build/classes/main'
         expand(rootProject.ext.props)
         outputs.upToDateWhen { false }
     }
@@ -122,7 +122,7 @@ subprojects {
     task copyTestConfig(type: Copy, dependsOn: ':loadPropertiesTask') {
         from 'src/test/resources'
         include '*'
-        into 'out/test/classes/'
+        into 'build/classes/test'
         expand(rootProject.ext.props)
     }
 
