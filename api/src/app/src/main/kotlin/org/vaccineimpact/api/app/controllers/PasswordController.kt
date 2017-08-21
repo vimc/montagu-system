@@ -10,11 +10,15 @@ import org.vaccineimpact.api.app.models.SetPassword
 import org.vaccineimpact.api.app.postData
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.UserRepository
+import org.vaccineimpact.api.emails.EmailManager
 import org.vaccineimpact.api.emails.PasswordSetEmail
 import org.vaccineimpact.api.emails.getEmailManager
 import spark.route.HttpMethod
 
-class PasswordController(context: ControllerContext) : AbstractController(context)
+class PasswordController(
+        context: ControllerContext,
+        val emailManager: EmailManager = getEmailManager()
+) : AbstractController(context)
 {
     override val urlComponent = "/password"
 
@@ -23,7 +27,7 @@ class PasswordController(context: ControllerContext) : AbstractController(contex
             oneRepoEndpoint("/request_link/", this::requestLink, repos.user, HttpMethod.post)
     )
 
-    private val tokenRepoFactory = context.repositories.token
+    private val tokenRepoFactory by lazy { context.repositories.token }
 
     fun setPassword(context: ActionContext, repo: UserRepository): String
     {
@@ -45,7 +49,7 @@ class PasswordController(context: ControllerContext) : AbstractController(contex
         {
             val token = getSetPasswordToken(user.username, context)
             val email = PasswordSetEmail(token, user.name)
-            getEmailManager().sendEmail(email, user)
+            emailManager.sendEmail(email, user)
         }
         else
         {

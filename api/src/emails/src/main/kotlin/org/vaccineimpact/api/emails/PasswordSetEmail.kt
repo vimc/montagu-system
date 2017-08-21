@@ -1,6 +1,6 @@
 package org.vaccineimpact.api.emails
 
-class PasswordSetEmail(token: String, recipientName: String): MustacheEmail()
+class PasswordSetEmail(val token: String, val recipientName: String): MustacheEmail()
 {
     override val subject = "Password change"
     override val textTemplate = "password-set.txt"
