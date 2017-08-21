@@ -52,6 +52,7 @@ export abstract class AuthStore<TState extends AuthStateBase, TInterface extends
         this.bindListeners({
             handleLogIn: authActions.logIn,
             handleLogOut: authActions.logOut,
+            handlePasswordResetRequest: authActions.sendPasswordResetEmail
         });
         this.exportPublicMethods({
             logIn: accessToken => this.doLogIn(accessToken),
@@ -103,5 +104,9 @@ export abstract class AuthStore<TState extends AuthStateBase, TInterface extends
         if (typeof(Storage) !== "undefined") {
             localStorage.clear();
         }
+    }
+
+    handlePasswordResetRequest(email: string) {
+
     }
 }
