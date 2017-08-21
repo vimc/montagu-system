@@ -10,8 +10,8 @@ import org.vaccineimpact.api.app.models.SetPassword
 import org.vaccineimpact.api.app.postData
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.UserRepository
-import org.vaccineimpact.api.emails.EmailManager
 import org.vaccineimpact.api.emails.PasswordSetEmail
+import org.vaccineimpact.api.emails.getEmailManager
 import spark.route.HttpMethod
 
 class PasswordController(context: ControllerContext) : AbstractController(context)
@@ -45,7 +45,7 @@ class PasswordController(context: ControllerContext) : AbstractController(contex
         {
             val token = getSetPasswordToken(user.username, context)
             val email = PasswordSetEmail(token, user.name)
-            EmailManager().sendEmail(email, user)
+            getEmailManager().sendEmail(email, user)
         }
         else
         {

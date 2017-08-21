@@ -4,11 +4,9 @@ import com.beust.klaxon.json
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
-import org.vaccineimpact.api.blackboxTests.helpers.TestUserHelper
-import org.vaccineimpact.api.blackboxTests.helpers.TokenLiteral
-import org.vaccineimpact.api.blackboxTests.helpers.validate
+import org.vaccineimpact.api.blackboxTests.helpers.*
+import org.vaccineimpact.api.emails.WriteToDiskEmailManager
 import org.vaccineimpact.api.models.permissions.PermissionSet
-import org.vaccineimpact.api.security.UserHelper
 import org.vaccineimpact.api.test_helpers.DatabaseTest
 import spark.route.HttpMethod
 
@@ -26,20 +24,45 @@ class PasswordTests : DatabaseTest()
         } andCheckString {
             assertThat(it).isEqualTo("OK")
 
-            assertThatThrownBy { TestUserHelper().getTokenForTestUser() }
-            assertThat(TestUserHelper("new_password").getTokenForTestUser())
-                    .isInstanceOf(TokenLiteral::class.java)
+            checkPasswordHasChangedForTestUser("new_password")
         }
     }
 
     @Test
     fun `can request set password link`()
     {
-        val url = "/password/request_link/?email=martin.eden@imperial.ac.uk"
-        validate(url, HttpMethod.post).withoutToken() given {
-            UserHelper.saveUser(it.dsl, "martin.eden", "Martin Eden", "martin.eden@imperial.ac.uk", "password")
-        } andCheckString {
-            assertThat(it).isEqualTo("OK")
-        }
+        TestUserHelper.setupTestUser()
+        WriteToDiskEmailManager.cleanOutputDirectory()
+        val requestHelper = RequestHelper()
+
+        // Request the link via (fake) email
+        val url = "/password/request_link/?email=${TestUserHelper.email}"
+        val response = requestHelper.post(url, null)
+        val data = response.montaguData<String>()
+        assertThat(data).isEqualTo("OK")
+
+        // Use the token to change the password
+        val token = getTokenFromFakeEmail()
+        requestHelper.post("/onetime_link/$token/", json {
+            obj("password" to "new_password")
+        })
+
+        checkPasswordHasChangedForTestUser("new_password")
+    }
+
+    private fun getTokenFromFakeEmail(): String
+    {
+        val emailFile = WriteToDiskEmailManager.outputDirectory.listFiles().single()
+        val text = emailFile.readText()
+        val match = Regex("""token=([^\n]+)\n""").find(text)
+        return match?.groups?.get(1)?.value
+            ?: throw Exception("Unable to find token in $text")
+    }
+
+    private fun checkPasswordHasChangedForTestUser(password: String)
+    {
+        assertThatThrownBy { TestUserHelper().getTokenForTestUser() }
+        assertThat(TestUserHelper(password).getTokenForTestUser())
+                .isInstanceOf(TokenLiteral::class.java)
     }
 }
