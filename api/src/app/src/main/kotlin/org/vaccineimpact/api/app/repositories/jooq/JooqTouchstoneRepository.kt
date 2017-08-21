@@ -222,7 +222,7 @@ class JooqTouchstoneRepository(
     private fun getDemographicStatistics(touchstoneId: String,
                                          typeCode: String,
                                          sourceCode: String,
-                                         gender: String = "both"):
+                                         gender: String):
             SelectConditionStep<Record7<Int, Int, String, Int, BigDecimal, String, String>>
     {
         // we are hard coding this here for now - need to revisit data model longer term
