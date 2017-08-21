@@ -24,8 +24,7 @@ data class FluentValidationConfig(
         val checkRequiredPermissions: Set<ReifiedPermission>? = null,
         val ownedPermissions: Set<ReifiedPermission>? = null,
         val acceptsContentType: String? = null,
-        val postData: JsonObject? = null,
-        val requiresToken: Boolean = true
+        val postData: JsonObject? = null
 )
 {
     infix fun against(schemaName: String) = this.copy(responseSchema = JSONSchema(schemaName))
@@ -38,8 +37,6 @@ data class FluentValidationConfig(
 
     infix fun withPermissions(ownedPermissions: () -> PermissionSet)
             = this.copy(ownedPermissions = PermissionSet("*/can-login") + ownedPermissions())
-
-    fun withoutToken() = this.copy(requiresToken = false)
 
     infix fun acceptingContentType(contentType: String) = this.copy(acceptsContentType = contentType)
 
@@ -81,17 +78,7 @@ data class FluentValidationConfig(
     fun getRequestSchema() = requestSchema ?: when (method)
     {
         HttpMethod.get -> null
-        HttpMethod.post ->
-        {
-            if (postData != null)
-            {
-                throw Exception("Missing 'withRequestSchema' clause in fluent validation builder")
-            }
-            else
-            {
-                null
-            }
-        }
+        HttpMethod.post -> throw Exception("Missing 'withRequestSchema' clause in fluent validation builder")
         else -> throw Exception("Unsupported request method '$method'")
     }
 
@@ -115,7 +102,6 @@ class FluentValidation(config: FluentValidationConfig)
     val allPermissions = requiredPermissions + ownedPermissions
     val acceptContentType = config.acceptsContentType ?: ContentTypes.json
     val postData = config.postData
-    val requiresToken = config.requiresToken
 
     val userHelper = TestUserHelper()
     val requestHelper = RequestHelper()
@@ -134,17 +120,14 @@ class FluentValidation(config: FluentValidationConfig)
         }
 
         // Check that the auth token is required
-        if (requiresToken)
-        {
-            println("Checking that auth token is required for $url")
-            val badResponse = makeRequest(acceptContentType)
-            responseSchema.validator.validateError(badResponse.text)
+        println("Checking that auth token is required for $url")
+        val badResponse = makeRequest(acceptContentType)
+        responseSchema.validator.validateError(badResponse.text)
 
-            // Check the permissions
-            if (requiredPermissions.any())
-            {
-                checkPermissions(url)
-            }
+        // Check the permissions
+        if (requiredPermissions.any())
+        {
+            checkPermissions(url)
         }
 
         // Check the actual response
