@@ -10,5 +10,4 @@ class PasswordSetEmail(token: String, recipientName: String): MustacheEmail()
             "name" to recipientName,
             "token" to token
     )
-
 }

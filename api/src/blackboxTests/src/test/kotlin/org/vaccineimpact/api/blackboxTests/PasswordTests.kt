@@ -8,6 +8,7 @@ import org.vaccineimpact.api.blackboxTests.helpers.TestUserHelper
 import org.vaccineimpact.api.blackboxTests.helpers.TokenLiteral
 import org.vaccineimpact.api.blackboxTests.helpers.validate
 import org.vaccineimpact.api.models.permissions.PermissionSet
+import org.vaccineimpact.api.security.UserHelper
 import org.vaccineimpact.api.test_helpers.DatabaseTest
 import spark.route.HttpMethod
 
@@ -28,6 +29,17 @@ class PasswordTests : DatabaseTest()
             assertThatThrownBy { TestUserHelper().getTokenForTestUser() }
             assertThat(TestUserHelper("new_password").getTokenForTestUser())
                     .isInstanceOf(TokenLiteral::class.java)
+        }
+    }
+
+    @Test
+    fun `can request set password link`()
+    {
+        val url = "/password/request_link/?email=martin.eden@imperial.ac.uk"
+        validate(url, HttpMethod.post).withoutToken() given {
+            UserHelper.saveUser(it.dsl, "martin.eden", "Martin Eden", "martin.eden@imperial.ac.uk", "password")
+        } andCheckString {
+            assertThat(it).isEqualTo("OK")
         }
     }
 }

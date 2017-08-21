@@ -18,10 +18,10 @@ class EmailManager
         )
         val email = Email().apply {
             addRecipient(recipient.name, recipient.email, Message.RecipientType.TO)
-            setFromAddress("Montagu notifications", "montagu@imperial.ac.uk")
+            setFromAddress("Montagu notifications", sender)
             subject = data.subject
-            text = data.text
-            textHTML = data.html
+            text = data.text()
+            textHTML = data.html()
         }
         mailer.sendMail(email)
     }
@@ -30,6 +30,7 @@ class EmailManager
     {
         val server = Config["email.server"]
         val port = Config.getInt("email.port")
+        val sender = Config["email.sender"]
         val username = Config["email.username"]
         val password = Config["email.password"]
     }

@@ -1,6 +1,8 @@
 package org.vaccineimpact.api.app.controllers
 
+import org.vaccineimpact.api.OneTimeAction
 import org.vaccineimpact.api.app.ActionContext
+import org.vaccineimpact.api.app.OneTimeLinkActionContext
 import org.vaccineimpact.api.app.controllers.endpoints.oneRepoEndpoint
 import org.vaccineimpact.api.app.controllers.endpoints.secured
 import org.vaccineimpact.api.app.errors.MissingRequiredParameterError
@@ -21,10 +23,16 @@ class PasswordController(context: ControllerContext) : AbstractController(contex
             oneRepoEndpoint("/request_link/", this::requestLink, repos.user, HttpMethod.post)
     )
 
+    private val tokenRepoFactory = context.repositories.token
+
     fun setPassword(context: ActionContext, repo: UserRepository): String
     {
+        return setPasswordForUser(context, repo, context.username!!)
+    }
+    fun setPasswordForUser(context: ActionContext, repo: UserRepository, username: String): String
+    {
         val password = context.postData<SetPassword>().password
-        repo.setPassword(context.username!!, password)
+        repo.setPassword(username, password)
         return okayResponse()
     }
 
@@ -35,7 +43,8 @@ class PasswordController(context: ControllerContext) : AbstractController(contex
         val user = repo.getMontaguUserByEmail(address)
         if (user != null)
         {
-            val email = PasswordSetEmail("TOKEN", "Full Name")
+            val token = getSetPasswordToken(user.username, context)
+            val email = PasswordSetEmail(token, user.name)
             EmailManager().sendEmail(email, user)
         }
         else
@@ -43,5 +52,14 @@ class PasswordController(context: ControllerContext) : AbstractController(contex
             logger.warn("Requested set password email for unknown user '$address'")
         }
         return okayResponse()
+    }
+
+    private fun getSetPasswordToken(username: String, context: ActionContext): String
+    {
+        return tokenRepoFactory().use { repo ->
+            val params = mapOf(":username" to username)
+            val contextWithParams = OneTimeLinkActionContext(params, context)
+            getOneTimeLinkToken(contextWithParams, repo, OneTimeAction.SET_PASSWORD)
+        }
     }
 }

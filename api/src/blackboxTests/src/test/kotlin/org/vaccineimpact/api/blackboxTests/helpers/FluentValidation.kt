@@ -24,7 +24,8 @@ data class FluentValidationConfig(
         val checkRequiredPermissions: Set<ReifiedPermission>? = null,
         val ownedPermissions: Set<ReifiedPermission>? = null,
         val acceptsContentType: String? = null,
-        val postData: JsonObject? = null
+        val postData: JsonObject? = null,
+        val requiresToken: Boolean = true
 )
 {
     infix fun against(schemaName: String) = this.copy(responseSchema = JSONSchema(schemaName))
@@ -37,6 +38,8 @@ data class FluentValidationConfig(
 
     infix fun withPermissions(ownedPermissions: () -> PermissionSet)
             = this.copy(ownedPermissions = PermissionSet("*/can-login") + ownedPermissions())
+
+    fun withoutToken() = this.copy(requiresToken = false)
 
     infix fun acceptingContentType(contentType: String) = this.copy(acceptsContentType = contentType)
 
@@ -78,9 +81,20 @@ data class FluentValidationConfig(
     fun getRequestSchema() = requestSchema ?: when (method)
     {
         HttpMethod.get -> null
-        HttpMethod.post -> throw Exception("Missing 'withRequestSchema' clause in fluent validation builder")
+        HttpMethod.post ->
+        {
+            if (postData != null)
+            {
+                throw Exception("Missing 'withRequestSchema' clause in fluent validation builder")
+            }
+            else
+            {
+                null
+            }
+        }
         else -> throw Exception("Unsupported request method '$method'")
     }
+
     fun getResponseSchema() = responseSchema ?: when (method)
     {
         HttpMethod.get -> throw Exception("Missing 'against' clause in fluent validation builder")
@@ -101,6 +115,7 @@ class FluentValidation(config: FluentValidationConfig)
     val allPermissions = requiredPermissions + ownedPermissions
     val acceptContentType = config.acceptsContentType ?: ContentTypes.json
     val postData = config.postData
+    val requiresToken = config.requiresToken
 
     val userHelper = TestUserHelper()
     val requestHelper = RequestHelper()
@@ -119,14 +134,17 @@ class FluentValidation(config: FluentValidationConfig)
         }
 
         // Check that the auth token is required
-        println("Checking that auth token is required for $url")
-        val badResponse = makeRequest(acceptContentType)
-        responseSchema.validator.validateError(badResponse.text)
-
-        // Check the permissions
-        if (requiredPermissions.any())
+        if (requiresToken)
         {
-            checkPermissions(url)
+            println("Checking that auth token is required for $url")
+            val badResponse = makeRequest(acceptContentType)
+            responseSchema.validator.validateError(badResponse.text)
+
+            // Check the permissions
+            if (requiredPermissions.any())
+            {
+                checkPermissions(url)
+            }
         }
 
         // Check the actual response
@@ -148,7 +166,7 @@ class FluentValidation(config: FluentValidationConfig)
     private fun makeRequest(contentType: String, token: TokenLiteral? = null): Response = when (method)
     {
         HttpMethod.get -> requestHelper.get(url, token = token, contentType = contentType)
-        HttpMethod.post -> requestHelper.post(url, postData!!, token = token)
+        HttpMethod.post -> requestHelper.post(url, postData, token = token)
         else -> throw Exception("Requests of type $method are not supported")
     }
 

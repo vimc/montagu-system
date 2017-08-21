@@ -22,19 +22,19 @@ data class OneTimeLink(val action: OneTimeAction, val payload: Map<String, Strin
     {
         return when (action)
         {
-            OneTimeAction.COVERAGE -> {
-                { c ->
-                    repos.modellingGroup().use {
-                        controllers.modellingGroup.getCoverageData(c, it)
-                    }
+            OneTimeAction.COVERAGE -> { context ->
+                repos.modellingGroup().use {
+                    controllers.modellingGroup.getCoverageData(context, it)
                 }
             }
-
-            OneTimeAction.DEMOGRAPHY -> {
-                { d ->
-                    repos.touchstone().use {
-                        controllers.touchstone.getDemographicData(d, it)
-                    }
+            OneTimeAction.DEMOGRAPHY -> { context ->
+                repos.touchstone().use {
+                    controllers.touchstone.getDemographicData(context, it)
+                }
+            }
+            OneTimeAction.SET_PASSWORD -> { context ->
+                repos.user().use {
+                    controllers.password.setPasswordForUser(context, it, context.params("username"))
                 }
             }
         }

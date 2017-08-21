@@ -10,8 +10,8 @@ abstract class MustacheEmail : EmailData
     abstract val htmlTemplate: String
     abstract val values: Map<String, String>
 
-    override final val text = realize(textTemplate)
-    override final val html = realize(htmlTemplate)
+    override final fun text() = realize(textTemplate)
+    override final fun html() = realize(htmlTemplate)
 
     private fun realize(templateFileName: String): String
     {
