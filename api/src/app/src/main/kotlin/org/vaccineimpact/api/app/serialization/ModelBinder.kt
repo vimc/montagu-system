@@ -1,18 +1,17 @@
 package org.vaccineimpact.api.app.serialization
 
 import org.vaccineimpact.api.app.errors.ValidationError
+import org.vaccineimpact.api.app.serialization.validation.CanBeBlank
+import org.vaccineimpact.api.app.serialization.validation.applyRule
 import org.vaccineimpact.api.models.ErrorInfo
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty1
 import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.memberProperties
 
-annotation class CanBeBlank
-annotation class AllowedFormat(val pattern: String, val example: String)
-
 class ModelBinder
 {
-    fun <T: Any> deserialize(body: String, klass: Class<T>): T
+    fun <T : Any> deserialize(body: String, klass: Class<T>): T
     {
         val model = Serializer.instance.fromJson(body, klass)
         val errors = verify(model)
@@ -51,28 +50,22 @@ class ModelBinder
                     "You have supplied an empty or blank string for field '$name'"
             )
         }
-        val format = property.findAnnotationAnywhere<AllowedFormat>(klass)
-        if (format != null && value is String && !value.isBlank())
-        {
-            val regex = Regex(format.pattern)
-            if (!regex.matches(value))
-            {
-                errors += ErrorInfo(
-                        "invalid-field:$name:bad-format",
-                        "The '$name' field must be in the form '${format.example}'"
-                )
-            }
-        }
+        errors += property.allAnnotations(klass).map { applyRule(it, value, name) }.filterNotNull()
         return errors
     }
 
     private inline fun <reified TAnnotation : Annotation>
             KProperty1<Any, *>.findAnnotationAnywhere(klass: KClass<Any>): TAnnotation?
     {
-        return findAnnotation<TAnnotation>()
-            ?: klass.constructors
-                .flatMap { it.parameters }
-                .singleOrNull { it.name == name }
-                ?.findAnnotation<TAnnotation>()
+        return findAnnotation()
+                ?: matchingConstructorParameter(klass)?.findAnnotation()
     }
+
+    private fun KProperty1<Any, *>.allAnnotations(klass: KClass<Any>): List<Annotation> =
+            this.annotations + (this.matchingConstructorParameter(klass)?.annotations ?: emptyList())
+
+    private fun KProperty1<Any, *>.matchingConstructorParameter(klass: KClass<Any>) =
+            klass.constructors
+                    .flatMap { it.parameters }
+                    .singleOrNull { it.name == name }
 }

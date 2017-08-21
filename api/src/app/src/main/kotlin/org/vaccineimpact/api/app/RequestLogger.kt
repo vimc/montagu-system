@@ -37,6 +37,6 @@ class RequestLogger(val accessLogRepository: () -> AccessLogRepository)
         // the two cases: We have the full user retrieved from the db in the first
         // case, and only what's in the token in the second case.
         return profile?.montaguUser()?.username
-                ?: profile?.id
+                ?: context.username
     }
 }

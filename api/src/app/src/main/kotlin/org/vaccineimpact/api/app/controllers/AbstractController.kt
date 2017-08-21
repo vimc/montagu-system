@@ -70,6 +70,7 @@ abstract class AbstractController(controllerContext: ControllerContext)
         context.setResponseStatus(201)
         return url
     }
+    fun okayResponse() = "OK"
 
     fun buildPublicUrl(urlFragment: String) = Config["app.url"] + urlBase + urlComponent + urlFragment
 }

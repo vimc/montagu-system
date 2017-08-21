@@ -8,8 +8,16 @@ open class MontaguControllers(context: ControllerContext)
     open val modellingGroup = ModellingGroupController(context)
     open val user = UserController(context)
     open val model = ModelController(context)
+    open val password = PasswordController(context)
 
     val all
-        get() = listOf(auth, disease, touchstone, modellingGroup,
-                user, model)
+        get() = listOf(
+                auth,
+                disease,
+                touchstone,
+                modellingGroup,
+                user,
+                model,
+                password
+        )
 }

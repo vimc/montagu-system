@@ -18,7 +18,7 @@ object UserHelper
         }.store()
     }
 
-    private fun hashedPassword(plainPassword: String) = encoder.encode(plainPassword)
+    fun hashedPassword(plainPassword: String) = encoder.encode(plainPassword)
 
     fun suggestUsername(name: String): String
     {

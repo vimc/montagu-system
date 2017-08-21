@@ -62,4 +62,5 @@ open class DirectActionContext(private val context: SparkWebContext): ActionCont
         val manager = ProfileManager<CommonProfile>(context)
         manager.getAll(false).singleOrNull()
     }
+    override val username = userProfile?.id
 }

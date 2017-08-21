@@ -1,6 +1,6 @@
 package org.vaccineimpact.api.app.models
 
-import org.vaccineimpact.api.app.serialization.AllowedFormat
+import org.vaccineimpact.api.app.serialization.validation.AllowedFormat
 
 private const val usernameChars = """[a-z]"""
 

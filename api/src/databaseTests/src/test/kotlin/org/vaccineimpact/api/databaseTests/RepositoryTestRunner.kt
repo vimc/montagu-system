@@ -49,11 +49,4 @@ class RepositoryTestRunner<TRepository : Repository>(config: RepositoryTestConfi
         }
         JooqContext().use { checkDatabase(it) }
     }
-
-    /*infix fun check(withRepository: (TRepository) -> Unit)
-    {
-        JooqContext().use {
-            withRepository(makeRepository(it))
-        }
-    }*/
 }

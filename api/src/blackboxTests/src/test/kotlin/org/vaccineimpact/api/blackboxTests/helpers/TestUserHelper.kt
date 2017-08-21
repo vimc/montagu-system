@@ -6,34 +6,31 @@ import org.vaccineimpact.api.security.UserHelper
 import org.vaccineimpact.api.security.clearRolesForUser
 import org.vaccineimpact.api.security.givePermissionsToUserUsingTestRole
 
-class TestUserHelper
+class TestUserHelper(private val password: String = TestUserHelper.defaultPassword)
 {
-    val testUsername = "test.user"
-    val testUserEmail = "user@test.com"
-    val testUserPassword = "test"
     private val tokenFetcher = TokenFetcher()
 
     fun setupTestUser(db: JooqContext)
     {
-        UserHelper.saveUser(db.dsl, testUsername, "Test User", testUserEmail, testUserPassword)
+        UserHelper.saveUser(db.dsl, username, "Test User", email, password)
     }
 
-    fun getTokenForTestUser(permissions: Set<ReifiedPermission>): TokenLiteral
+    fun getTokenForTestUser(permissions: Set<ReifiedPermission> = emptySet()): TokenLiteral
     {
         JooqContext().use {
-            it.clearRolesForUser(testUsername)
+            it.clearRolesForUser(username)
             for ((scope, subset) in permissions.groupBy { it.scope })
             {
                 val names = subset.map { it.name }
                 it.givePermissionsToUserUsingTestRole(
-                        testUsername,
+                        username,
                         scope.databaseScopePrefix,
                         scope.databaseScopeId,
                         names
                 )
             }
         }
-        val token = tokenFetcher.getToken(testUserEmail, testUserPassword)
+        val token = tokenFetcher.getToken(email, password)
         return when (token)
         {
             is TokenFetcher.TokenResponse.Token -> token.token
@@ -43,6 +40,10 @@ class TestUserHelper
 
     companion object
     {
+        val username = "test.user"
+        val email = "user@test.com"
+        val defaultPassword = "test"
+
         fun setupTestUser()
         {
             JooqContext().use {
