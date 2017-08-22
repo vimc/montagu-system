@@ -2,7 +2,10 @@ import AltReform, { Reform } from "alt-reform";
 import { alt } from "../../../../shared/alt";
 import FormActions from "../../../../shared/FormActions";
 import * as Validation from "../../../../shared/Validation";
-import { NotificationException } from "../../../../shared/actions/NotificationActions";
+import {
+    makeNotification, notificationActions,
+    NotificationException
+} from "../../../../shared/actions/NotificationActions";
 import { processResponseAndNotifyOnErrors } from "../../../../shared/sources/Source";
 import { FormErrors, justState } from "../../../../shared/FormHelpers";
 import fetcher from "../../../../shared/sources/Fetcher";
@@ -23,11 +26,12 @@ export function resetPasswordFormStore(token: string): Reform<ResetPasswordField
             },
         },
         onSubmit: (state: ResetPasswordFields & FormErrors) => fetcher.fetcher.fetch(url, {
-                method: "post",
-                body: JSON.stringify(justState(state))
+            method: "post",
+            body: JSON.stringify(justState(state))
         }),
         onSubmitSuccess: (response: Response) => {
             return processResponseAndNotifyOnErrors(response)
+                .then(() => notificationActions.notify(makeNotification("Your password has been reset. Please log in with your new password to continue", "info")))
                 .catch(e => {
                     const n = e as NotificationException;
                     alt.dispatch(submitFailed(n.notification.message));
