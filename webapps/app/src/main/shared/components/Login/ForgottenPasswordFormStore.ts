@@ -3,8 +3,9 @@ import { alt } from "../../alt";
 import fetcher from "../../sources/Fetcher";
 import FormActions from "../../FormActions";
 import * as Validation from "../../Validation";
-import { FormErrors, justState } from "../../FormHelpers";
-import { makeNotification, notificationActions } from "../../actions/NotificationActions";
+import { FormErrors } from "../../FormHelpers";
+import { makeNotification, notificationActions, NotificationException } from "../../actions/NotificationActions";
+import { processResponseAndNotifyOnErrors } from "../../sources/Source";
 
 export interface ForgottenPasswordFields {
     email: string;
@@ -26,14 +27,12 @@ export function forgottenPasswordFormStore(name: string): Reform<ForgottenPasswo
             }, false);
         },
         onSubmitSuccess: (response: any) => {
-            response.json().then((json: any) => {
-                if (json.error) {
-                    alt.dispatch(submitFailed("Error requesting password reset"));
-                } else {
-                    notificationActions.notify(
-                        makeNotification("Thank you. If we have an account registered for this email address you will receive a reset password link", "info"));
-                }
-            });
+            return processResponseAndNotifyOnErrors(response)
+                .then(() => notificationActions.notify(makeNotification("Thank you. If we have an account registered for this email address you will receive a reset password link", "info")))
+                .catch(e => {
+                    const n = e as NotificationException;
+                    alt.dispatch(submitFailed(n.notification.message));
+                });
         },
         onSubmitFail: (response: any) => {
             console.log("Error requesting password reset: " + response);
