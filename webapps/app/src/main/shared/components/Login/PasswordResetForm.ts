@@ -3,7 +3,7 @@ import { alt } from "../../alt";
 import fetcher from "../../sources/Fetcher";
 import FormActions from "../../FormActions";
 import * as Validation from "../../Validation";
-import { FormErrors } from "../../FormHelpers";
+import { FormErrors, justState } from "../../FormHelpers";
 import { makeNotification, notificationActions } from "../../actions/NotificationActions";
 
 export interface PasswordResetFields {
@@ -21,13 +21,9 @@ export function passwordResetForm(name: string): Reform<PasswordResetFields> {
             }
         },
         onSubmit: (state: PasswordResetFields & FormErrors) => {
-            return fetcher.fetcher.fetch("/password/request_email?email=" + encodeURI(state.email), {
-                method: "POST",
-                headers: {
-                    "Accept" : "application/json",
-                    "Accept-Encoding": "gzip"
-                },
-                body: null
+            return fetcher.fetcher.fetch("/password/request_link/?email=" + encodeURI(state.email), {
+                method: "post",
+                body: JSON.stringify(justState(state))
             }, false);
         },
         onSubmitSuccess: (response: any) => {
