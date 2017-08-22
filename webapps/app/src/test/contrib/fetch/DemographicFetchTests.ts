@@ -7,6 +7,7 @@ import { mockDemographicStatisticType, mockTouchstone } from "../../mocks/mockMo
 import { demographicActions } from "../../../main/contrib/actions/DemographicActions";
 import { alt } from "../../../main/shared/alt";
 import { doNothing } from "../../../main/shared/Helpers";
+import { checkAsync } from "../../testHelpers";
 
 describe("DemographicStore.fetchDataSets", () => {
     const touchstone = mockTouchstone();
@@ -28,7 +29,8 @@ describe("DemographicStore.fetchOneTimeToken", () => {
     const touchstone = mockTouchstone({ id: "touchstoneId" });
     const dataSet = mockDemographicStatisticType({
         sources: ["source1", "source2"],
-        id: "typeId"
+        id: "typeId",
+        gender_is_applicable: true
     });
     const helper = new FetchHelper<string, string>({
         triggerFetch: () => demographicStore.fetchOneTimeToken(),
@@ -37,12 +39,29 @@ describe("DemographicStore.fetchOneTimeToken", () => {
             demographicActions.update([dataSet]);
             demographicActions.selectDataSet(dataSet.id);
             demographicActions.selectSource("source2");
+            demographicActions.selectGender("female");
         },
         makePayload: () => "TOKEN",
-        expectedURL: "/touchstones/touchstoneId/demographics/source2/typeId/get_onetime_link/"
+        expectedURL: "/touchstones/touchstoneId/demographics/source2/typeId/get_onetime_link/?gender=female"
     });
 
     helper.addTestsToMocha();
+
+    it("does not include gender parameter where it is not applicable", (done: DoneCallback) => {
+        const touchstone = mockTouchstone({ id: "touchstoneId" });
+        const dataSet = mockDemographicStatisticType({ id: "typeId", gender_is_applicable: false });
+        touchstoneActions.setCurrentTouchstone(touchstone.id);
+        demographicActions.update([dataSet]);
+        demographicActions.selectDataSet(dataSet.id);
+        demographicActions.selectSource("sourceId");
+
+        const fetcherSpy = helper.getFetcherSpy();
+        demographicStore.fetchOneTimeToken().catch(doNothing);
+        checkAsync(done, () => {
+            expect(fetcherSpy.args).to.have.length(1, "Fetch method was not invoked");
+            expect(fetcherSpy.args[0][0]).to.equal("/touchstones/touchstoneId/demographics/sourceId/typeId/get_onetime_link/");
+        });
+    });
 
     it("does not fetch until all required options are selected", () => {
         const stub = helper.sandbox.stubFetch(demographicStore, "_fetchOneTimeToken");

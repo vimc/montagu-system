@@ -19,7 +19,11 @@ export class DemographicSource extends Source<DemographicState> {
             const dataSet = s.selectedDataSet;
             const source = s.selectedSource;
             const type = dataSet.id;
-            return `/touchstones/${s.currentTouchstone}/demographics/${source}/${type}/get_onetime_link/`;
+            let url = `/touchstones/${s.currentTouchstone}/demographics/${source}/${type}/get_onetime_link/`;
+            if (dataSet.gender_is_applicable) {
+                url += `?gender=${s.selectedGender}`
+            }
+            return url;
         }, {
             success: demographicActions.updateToken,
             loading: demographicActions.beginFetchToken,
