@@ -4,7 +4,7 @@ import { ValidationError } from "./ValidationError";
 
 const formStyles = require("../../styles/forms.css");
 
-export class PasswordResetFormComponent extends React.Component<ReformProps, undefined> {
+export class ForgottenPasswordFormComponent extends React.Component<ReformProps, undefined> {
 
     render() {
 

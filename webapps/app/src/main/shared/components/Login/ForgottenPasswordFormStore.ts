@@ -6,11 +6,11 @@ import * as Validation from "../../Validation";
 import { FormErrors, justState } from "../../FormHelpers";
 import { makeNotification, notificationActions } from "../../actions/NotificationActions";
 
-export interface PasswordResetFields {
+export interface ForgottenPasswordFields {
     email: string;
 }
 
-export function passwordResetForm(name: string): Reform<PasswordResetFields> {
+export function forgottenPasswordFormStore(name: string): Reform<ForgottenPasswordFields> {
     const qualifiedName = "Password_reset_" + name;
     const { submitFailed } = FormActions(qualifiedName);
 
@@ -20,7 +20,7 @@ export function passwordResetForm(name: string): Reform<PasswordResetFields> {
             errors: () => {
             }
         },
-        onSubmit: (state: PasswordResetFields & FormErrors) => {
+        onSubmit: (state: ForgottenPasswordFields & FormErrors) => {
             return fetcher.fetcher.fetch("/password/request_link/?email=" + encodeURI(state.email), {
                 method: "post"
             }, false);

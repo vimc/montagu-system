@@ -3,16 +3,19 @@ import { Reform } from "alt-reform";
 import { expect } from "chai";
 import { shallow } from "enzyme";
 import * as sinon from "sinon";
-import { PasswordResetFields, passwordResetForm } from "../../../main/shared/components/Login/PasswordResetForm";
-import { PasswordResetFormComponent } from "../../../main/shared/components/Login/PasswordResetFormComponent";
 import { Sandbox } from "../../Sandbox";
 import { mockEvent } from "../../mocks/mocks";
 import { mockFormProperties, numberOfSubmissionActions } from "../../mocks/mockForm";
 import { mockFetcher, mockResponse, mockResult } from "../../mocks/mockRemote";
 import { ValidationError } from "../../../main/shared/components/Login/ValidationError";
 import { expectOrderedActions } from "../../actionHelpers";
+import { ForgottenPasswordFormComponent } from "../../../main/shared/components/Login/ForgottenPasswordForm";
+import {
+    ForgottenPasswordFields,
+    forgottenPasswordFormStore
+} from "../../../main/shared/components/Login/ForgottenPasswordFormStore";
 
-function checkSubmit(form: Reform<PasswordResetFields>,
+function checkSubmit(form: Reform<ForgottenPasswordFields>,
                      done: DoneCallback,
                      sandbox: Sandbox,
                      callback: (spy: sinon.SinonSpy) => void) {
@@ -27,10 +30,10 @@ function checkSubmit(form: Reform<PasswordResetFields>,
 
 describe("PasswordResetForm", () => {
     const sandbox = new Sandbox();
-    let form: Reform<PasswordResetFields>;
+    let form: Reform<ForgottenPasswordFields>;
 
     before(() => {
-        form = passwordResetForm("test");
+        form = forgottenPasswordFormStore("test");
     });
 
     afterEach(() => {
@@ -42,7 +45,7 @@ describe("PasswordResetForm", () => {
             email: "saruman@isengard"
         });
 
-        const rendered = shallow(<PasswordResetFormComponent {...mockFormProperties(form)} />);
+        const rendered = shallow(<ForgottenPasswordFormComponent {...mockFormProperties(form)} />);
         expect(rendered.find({ name: "email" }).prop("value")).to.equal("saruman@isengard");
     });
 
@@ -50,7 +53,7 @@ describe("PasswordResetForm", () => {
         const errors = {
             email: "Blah blah"
         };
-        const rendered = shallow(<PasswordResetFormComponent {...mockFormProperties(form, errors)} />);
+        const rendered = shallow(<ForgottenPasswordFormComponent {...mockFormProperties(form, errors)} />);
         const validationErrors = rendered.find(ValidationError);
         let hasMessage: boolean = false;
         validationErrors.forEach(x => {

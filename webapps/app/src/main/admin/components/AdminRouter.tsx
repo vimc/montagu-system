@@ -10,7 +10,7 @@ import { ViewModellingGroupDetailsPage } from "./ModellingGroups/SingleGroup/Det
 import { GroupAdminPage } from "./ModellingGroups/SingleGroup/Admin/GroupAdminPage";
 import {ViewAllUsersPage} from "./Users/List/ViewAllUsersPage";
 import {ViewUserDetailsPage} from "./Users/SingleUser/ViewUserDetailsPage";
-import { AdminPasswordResetPage } from "./AdminPasswordResetPage";
+import { AdminForgottenPasswordPage } from "./AdminForgottenPasswordPage";
 
 interface RouterProps {
     loggedIn: boolean;
@@ -31,7 +31,7 @@ export class AdminRouter extends Router<RouterProps> {
             map('/users/:username', ViewUserDetailsPage);
             map('*', AdminNoRouteFoundPage);
         } else {
-            map('/forgotten-password', AdminPasswordResetPage);
+            map('/forgotten-password', AdminForgottenPasswordPage);
             map('*', AdminLoginPage);
         }
     }
