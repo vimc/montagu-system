@@ -6,6 +6,7 @@ interface Actions {
     setCurrentUser(username: string): string;
     beginFetchUsers() : boolean;
     updateUsers(users: User[]) : User[]
+    setShowCreateUser(show: boolean): boolean
 }
 
 class UserActions extends FetchActions<User[]> implements Actions {
@@ -22,6 +23,9 @@ class UserActions extends FetchActions<User[]> implements Actions {
         return true;
     }
 
+    setShowCreateUser(show: boolean) {
+        return show;
+    }
 }
 
 export const userActions =

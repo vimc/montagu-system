@@ -63,4 +63,11 @@ describe("UserStore", () => {
 
     });
 
+    it("sets showCreateUser", () => {
+        userActions.setShowCreateUser(true);
+        expect(userStore.getState().showCreateUser).to.equal(true);
+        userActions.setShowCreateUser(false);
+        expect(userStore.getState().showCreateUser).to.equal(false);
+    });
+
 });

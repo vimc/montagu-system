@@ -20,11 +20,12 @@ export interface FetchHelperConfig<TPayload, TActionPayload> {
     }
 }
 
-export interface FetchTestConfig {
+export interface FetchTestConfig<TPayload> {
     done: DoneCallback;
     payload: Result;
     errorMessage: string;
     expectedAction: actionHelpers.ActionExpectation;
+    triggerFetch: () => Promise<TPayload>;
 }
 
 // The two type arguments mean:
@@ -42,7 +43,7 @@ export class FetchHelper<TPayload, TActionPayload> {
         this.config = config;
     }
 
-    testFetchWithMockedResponse({ done, payload, errorMessage, expectedAction }: FetchTestConfig) {
+    testFetchWithMockedResponse<TPayload>({ done, payload, errorMessage, expectedAction, triggerFetch }: FetchTestConfig<TPayload>) {
         this.mockFetcherResponse(payload, errorMessage);
         const fetcherSpy = this.getFetcherSpy();
         const dispatchSpy = this.sandbox.dispatchSpy();
@@ -60,7 +61,7 @@ export class FetchHelper<TPayload, TActionPayload> {
                 done(e);
             }
         };
-        this.config.triggerFetch().then(handler, handler);
+        triggerFetch().then(handler, handler);
     }
 
     getFetcherSpy(): SinonSpy {
@@ -69,6 +70,13 @@ export class FetchHelper<TPayload, TActionPayload> {
 
     mockFetcherResponse(payload: Result, errorMessage?: string) {
         mockFetcherResponse(mockResponse(payload, errorMessage), null);
+    }
+
+    defaultSuccessResult<T>(payload: T) {
+        return {
+            action: "update",
+            payload: payload
+        };
     }
 
     addTestsToMocha() {
@@ -82,10 +90,8 @@ export class FetchHelper<TPayload, TActionPayload> {
                 done,
                 payload: mockResult(payload),
                 errorMessage: null,
-                expectedAction: this.config.expectedSuccessResult || {
-                    action: "update",
-                    payload: payload
-                }
+                expectedAction: this.config.expectedSuccessResult || this.defaultSuccessResult(payload),
+                triggerFetch: this.config.triggerFetch
             });
         });
 
@@ -106,7 +112,8 @@ export class FetchHelper<TPayload, TActionPayload> {
                 expectedAction: {
                     action: "NotificationActions.notify",
                     payload: expectedNotification
-                }
+                },
+                triggerFetch: this.config.triggerFetch
             });
         });
 
@@ -124,7 +131,8 @@ export class FetchHelper<TPayload, TActionPayload> {
                 expectedAction: {
                     action: "NotificationActions.notify",
                     payload: expectedNotification
-                }
+                },
+                triggerFetch: this.config.triggerFetch
             });
         });
 
@@ -143,7 +151,8 @@ export class FetchHelper<TPayload, TActionPayload> {
                 expectedAction: {
                     action: "AuthActions.logOut",
                     payload: true
-                }
+                },
+                triggerFetch: this.config.triggerFetch
             });
         });
 

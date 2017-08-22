@@ -19,7 +19,13 @@ export abstract class Fetcher {
 
     fetch(urlFragment: string, options?: FetchOptions, includeToken: boolean = true): Promise<Response> {
         const url = this.buildURL(urlFragment);
-        console.log(`Fetching from ${url}`);
+
+        let methodText = "";
+        if (options && options.method) {
+            methodText = ` (method: ${options.method})`;
+        }
+        console.log(`Fetching from ${url}${methodText}`);
+
         options = options || {};
         options.headers = options.headers || {};
         if (includeToken) {

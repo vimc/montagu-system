@@ -11,10 +11,11 @@ export interface UserStoreState extends RemoteContent {
     users: User[];
     currentUsername: string;
     usersLookup: ILookup<User>;
+    showCreateUser: boolean;
 }
 
 export interface UserStoreInterface extends AltJS.AltStore<UserStoreState> {
-    fetchUsers(): Promise<User[]>;
+    fetchUsers(force?: boolean): Promise<User[]>;
     getCurrentUserDetails(): User;
 }
 
@@ -24,6 +25,7 @@ class UserStore
     ready: boolean;
     usersLookup: ILookup<User>;
     currentUsername: string;
+    showCreateUser: boolean;
 
     constructor() {
         super();
@@ -31,10 +33,16 @@ class UserStore
             handleBeginFetchUsers: userActions.beginFetchUsers,
             handleUpdateUsers: userActions.updateUsers,
             handleSetCurrentUser: userActions.setCurrentUser,
-
+            handleSetShowCreateUser: userActions.setShowCreateUser,
         });
         this.registerAsync(new UserSource());
         this.exportPublicMethods({
+            fetchUsers: (force?: boolean) => {
+                if (force == true) {
+                    this.users = [];
+                }
+                return (this.getInstance() as any)._fetchUsers();
+            },
             getCurrentUserDetails: () => {
                 if (this.currentUsername && this.usersLookup.hasOwnProperty(this.currentUsername)) {
                     return this.usersLookup[this.currentUsername]
@@ -50,7 +58,8 @@ class UserStore
             usersLookup: {},
             currentUsername: null,
             users: [],
-            ready: false
+            ready: false,
+            showCreateUser: false
         };
     }
 
@@ -71,6 +80,10 @@ class UserStore
 
     handleSetCurrentUser(username: string) {
         this.currentUsername = username;
+    }
+
+    handleSetShowCreateUser(show: boolean) {
+        this.showCreateUser = show;
     }
 }
 

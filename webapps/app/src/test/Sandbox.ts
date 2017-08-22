@@ -2,6 +2,7 @@ import * as sinon from 'sinon';
 import {mount, MountRendererProps, ReactWrapper} from "enzyme";
 import { ReactElement } from "react";
 import { alt } from "../main/shared/alt";
+import fetcher from "../main/shared/sources/Fetcher";
 
 export class Sandbox {
     sinon: sinon.SinonSandbox;
@@ -32,6 +33,9 @@ export class Sandbox {
 
     dispatchSpy(): sinon.SinonSpy {
         return this.sinon.spy(alt, "dispatch");
+    }
+    fetcherSpy(): sinon.SinonSpy {
+        return this.sinon.spy(fetcher.fetcher, "fetch");
     }
 
     stubFetch(obj: any, method: string): sinon.SinonStub {
