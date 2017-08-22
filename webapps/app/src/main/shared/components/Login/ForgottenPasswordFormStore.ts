@@ -12,7 +12,7 @@ export interface ForgottenPasswordFields {
 }
 
 export function forgottenPasswordFormStore(name: string): Reform<ForgottenPasswordFields> {
-    const qualifiedName = "Password_reset_" + name;
+    const qualifiedName = "ForgottenPassword_" + name;
     const { submitFailed } = FormActions(qualifiedName);
 
     return AltReform(qualifiedName, alt, {

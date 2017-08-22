@@ -15,7 +15,6 @@ import {
     forgottenPasswordFormStore
 } from "../../../main/shared/components/Login/ForgottenPasswordFormStore";
 import { makeNotification, notificationActions } from "../../../main/shared/actions/NotificationActions";
-import { Result } from "../../../main/shared/models/Generated";
 
 function checkSubmit(form: Reform<ForgottenPasswordFields>,
                      done: DoneCallback,
@@ -30,7 +29,7 @@ function checkSubmit(form: Reform<ForgottenPasswordFields>,
     });
 }
 
-describe("PasswordResetForm", () => {
+describe("ForgottenPasswordForm", () => {
     const sandbox = new Sandbox();
     let form: Reform<ForgottenPasswordFields>;
 
@@ -88,7 +87,7 @@ describe("PasswordResetForm", () => {
         checkSubmit(form, done, sandbox, spy => {
             expectOrderedActions(
                 spy,
-                [{ action: "Password_reset_test/submitFailed", payload: "An error occurred sending password reset email" }],
+                [{ action: "ForgottenPassword_test/submitFailed", payload: "An error occurred sending password reset email" }],
                 numberOfSubmissionActions
             );
         });
@@ -121,7 +120,7 @@ describe("PasswordResetForm", () => {
         checkSubmit(form, done, sandbox, spy => {
             expectOrderedActions(
                 spy,
-                [{ action: "Password_reset_test/submitFailed", payload: "some error message" }],
+                [{ action: "ForgottenPassword_test/submitFailed", payload: "some error message" }],
                 numberOfSubmissionActions
             );
         });
