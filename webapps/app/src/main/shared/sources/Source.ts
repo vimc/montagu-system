@@ -43,11 +43,11 @@ export abstract class Source<TState> {
     }
 }
 
-export function processResponseAndNotifyOnErrors<TModel>(response: Response): Promise<TModel> {
-    return processResponse(response).catch(notifyOnErrors);
+export function processResponseAndNotifyOnErrors<TModel>(response: Response): Promise<any> {
+    return processResponse<TModel>(response).catch(notifyOnErrors);
 }
 
-function processResponse<TModel>(response: Response): Promise<TModel> {
+function processResponse<TModel>(response: Response): Promise<any> {
     const handleError = (error: ErrorInfo) => {
         switch (error.code) {
             case "bearer-token-invalid":
