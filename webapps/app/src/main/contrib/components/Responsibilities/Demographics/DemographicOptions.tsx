@@ -29,6 +29,7 @@ export class DemographicOptions extends React.Component<Props, undefined> {
 
     onSelectGender(gender: string) {
         demographicActions.selectGender(gender);
+        demographicStore.fetchOneTimeToken().catch(doNothing);
     }
 
     render() {
