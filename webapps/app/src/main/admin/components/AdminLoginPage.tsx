@@ -16,7 +16,6 @@ export class AdminLoginPage extends AdminPageWithHeader<undefined> {
     renderPageContent(): JSX.Element {
         return <div>
                     <LoginForm/>
-                    Forgotten your password? <InternalLink href={"/forgotten-password"}>Click here</InternalLink>
                 </div>;
     }
 }

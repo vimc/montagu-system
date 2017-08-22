@@ -9,6 +9,7 @@ import { ContribNoRouteFoundPage } from "./ContribNoRouteFoundPage";
 import { appSettings } from "../../shared/Settings";
 import { ChooseGroupPage } from "./ChooseGroup/ChooseGroupPage";
 import { DownloadDemographicsPage } from "./Responsibilities/Demographics/DownloadDemographicsPage";
+import { ContribPasswordResetPage } from "./ContribPasswordResetPage";
 
 interface RoutingProperties {
     loggedIn: boolean;
@@ -34,6 +35,7 @@ export class ContribRouter extends Router<RoutingProperties> {
                 map("*", LoadingPage);
             }
         } else {
+            map('/forgotten-password', ContribPasswordResetPage);
             map('*', ContribLoginPage);
         }
     }
