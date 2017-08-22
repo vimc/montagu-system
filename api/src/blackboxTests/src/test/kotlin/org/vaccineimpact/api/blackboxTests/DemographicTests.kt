@@ -123,7 +123,7 @@ class DemographicTests : DatabaseTest()
         }
 
         val validator = SplitValidator()
-        val response = requestHelper.get("$url?gender=F", requiredPermissions)
+        val response = requestHelper.get("$url?gender=female", requiredPermissions)
 
         val json = JsonLoader.fromString(validator.getSplitText(response.text).json)
         val demographyJson = json["data"]["demographic_data"]
