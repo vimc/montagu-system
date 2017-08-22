@@ -13,6 +13,6 @@ export class AdminLoginPage extends AdminPageWithHeader<undefined> {
     }
 
     renderPageContent(): JSX.Element {
-        return <LoginForm/>;
+        return <LoginForm />;
     }
 }
