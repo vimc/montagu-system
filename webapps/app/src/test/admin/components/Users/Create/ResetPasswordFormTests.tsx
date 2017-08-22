@@ -6,7 +6,7 @@ import * as sinon from "sinon";
 import { Sandbox } from "../../../../Sandbox";
 import { mockFormProperties, numberOfSubmissionActions } from "../../../../mocks/mockForm";
 import { ValidationError } from "../../../../../main/shared/components/Login/ValidationError";
-import { mockFetcher, mockResponse, mockResult } from "../../../../mocks/mockRemote";
+import { mockFetcher, mockResponse, mockResult, promiseJSON } from "../../../../mocks/mockRemote";
 import { mockEvent } from "../../../../mocks/mocks";
 import { expectOrderedActions } from "../../../../actionHelpers";
 import {
@@ -14,6 +14,7 @@ import {
     resetPasswordFormStore
 } from "../../../../../main/admin/components/Users/Account/ResetPasswordFormStore";
 import { ResetPasswordFormComponent } from "../../../../../main/admin/components/Users/Account/ResetPasswordForm";
+import { makeNotification, notificationActions } from "../../../../../main/shared/actions/NotificationActions";
 
 function checkSubmit(form: Reform<ResetPasswordFields>,
                      done: DoneCallback,
@@ -88,6 +89,39 @@ describe("ResetPasswordForm", () => {
             expectOrderedActions(
                 spy,
                 [{ action: "ResetPassword/submitFailed", payload: "An error occurred setting the password" }],
+                numberOfSubmissionActions
+            );
+        });
+    });
+
+    it("notifies when response is success", (done: DoneCallback) => {
+
+        const spy = sandbox.sinon.spy(notificationActions, "notify");
+
+        mockFetcher(Promise.resolve(promiseJSON({status: "success", errors: [], data: "OK"})));
+        form.change({
+            password: "sometestpassword"
+        });
+
+        const expectedNotification = makeNotification("Your password has been reset. Please log in with your new password to continue", "info")
+
+        checkSubmit(form, done, sandbox, _ => {
+            expect(spy.calledWith(expectedNotification)).to.be.true;
+        });
+
+    });
+
+    it("displays error when response is failure", (done: DoneCallback) => {
+
+        mockFetcher(Promise.resolve(promiseJSON({status: "failure", errors: [{code: "code", message: "some error message"}], data: null})));
+        form.change({
+            password: "sometestpassword"
+        });
+
+        checkSubmit(form, done, sandbox, spy => {
+            expectOrderedActions(
+                spy,
+                [{ action: "ResetPassword/submitFailed", payload: "some error message" }],
                 numberOfSubmissionActions
             );
         });
