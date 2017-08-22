@@ -1,5 +1,5 @@
 import { FormConnector, ReformProps } from "alt-reform";
-import { CreateUserFields, createUserFormStore } from "./CreateUserFormStore";
+import { CreateUserFields, createUserFormStore, suggestUsername } from "./CreateUserFormStore";
 import { ValidationError } from "../../../../shared/components/Login/ValidationError";
 import * as React from "react";
 
@@ -7,6 +7,18 @@ const commonStyles = require("../../../../shared/styles/common.css");
 const formStyles = require("../../../../shared/styles/forms.css");
 
 export class CreateUserFormComponent extends React.Component<ReformProps, undefined> {
+    constructor() {
+        super();
+        this.changeName = this.changeName.bind(this);
+    }
+
+    changeName(e: React.ChangeEvent<HTMLInputElement>) {
+        this.props.fields.name.onChange(e);
+        this.props.change({
+            username: suggestUsername(e.target.value)
+        });
+    }
+
     render() {
         const fields = this.props.fields as CreateUserFields;
         return <form className={commonStyles.gapAbove} onSubmit={this.props.submit}>
@@ -15,7 +27,7 @@ export class CreateUserFormComponent extends React.Component<ReformProps, undefi
                 <tbody>
                 <tr>
                     <td>Full name</td>
-                    <td><input name="name" type="string" {...fields.name} /></td>
+                    <td><input name="name" type="string" {...fields.name} onChange={this.changeName} /></td>
                     <td><ValidationError message={this.props.errors.name}/></td>
                 </tr>
                 <tr>

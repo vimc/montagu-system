@@ -44,3 +44,16 @@ export function createUserFormStore(name?: string): Reform<CreateUserFields> {
         }
     });
 }
+
+function processName(name: string) {
+    return name.toLowerCase().replace(/[^a-z]/gi, "");
+}
+
+export function suggestUsername(name: string): string {
+    const names = name.split(" ");
+    let username = processName(names[0]);
+    if (names.length > 1) {
+        username += ("." + processName(names[names.length - 1]));
+    }
+    return username;
+}
