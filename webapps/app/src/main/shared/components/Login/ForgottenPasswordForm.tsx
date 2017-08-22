@@ -18,8 +18,10 @@ export class ForgottenPasswordFormComponent extends React.Component<ReformProps,
                 <ValidationError message={ this.props.store.state.submitError } />
             </div>
             <button type="submit"
-                    disabled={ disabled }>Send password reset email ➡
+                    disabled={ disabled }>Send password reset email
             </button>
         </form>;
     }
 }
+
+export const ForgottenPasswordPageTitle: JSX.Element = <span>Forgotten your password?</span>;
