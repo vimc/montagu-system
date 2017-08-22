@@ -7,9 +7,7 @@ const formStyles = require("../../styles/forms.css");
 export class PasswordResetFormComponent extends React.Component<ReformProps, undefined> {
 
     render() {
-        const buttonStyle = {
-            width: 140
-        };
+
         const disabled = this.props.loading;
         return <form className={ formStyles.form } onSubmit={ this.props.submit }>
             <div className={ formStyles.fields }>
@@ -20,8 +18,7 @@ export class PasswordResetFormComponent extends React.Component<ReformProps, und
                 <ValidationError message={ this.props.store.state.submitError } />
             </div>
             <button type="submit"
-                    style={ buttonStyle }
-                    disabled={ disabled }>Log in ➡
+                    disabled={ disabled }>Send password reset email ➡
             </button>
         </form>;
     }

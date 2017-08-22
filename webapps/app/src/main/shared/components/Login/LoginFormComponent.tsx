@@ -1,8 +1,6 @@
 import * as React from "react";
 import { ReformProps } from "alt-reform";
 import { ValidationError } from "./ValidationError";
-import {InternalLink} from "../InternalLink";
-import {authActions} from "../../actions/AuthActions";
 
 const formStyles = require("../../styles/forms.css");
 
@@ -29,7 +27,6 @@ export class LoginFormComponent extends React.Component<ReformProps, undefined> 
                     style={ buttonStyle }
                     disabled={ disabled }>Log in ➡
             </button>
-            Forgotten your password? <InternalLink href={"#"}>Click here</InternalLink>
         </form>;
     }
 }
