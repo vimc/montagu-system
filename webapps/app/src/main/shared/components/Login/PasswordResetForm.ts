@@ -22,8 +22,7 @@ export function passwordResetForm(name: string): Reform<PasswordResetFields> {
         },
         onSubmit: (state: PasswordResetFields & FormErrors) => {
             return fetcher.fetcher.fetch("/password/request_link/?email=" + encodeURI(state.email), {
-                method: "post",
-                body: JSON.stringify(justState(state))
+                method: "post"
             }, false);
         },
         onSubmitSuccess: (response: any) => {
