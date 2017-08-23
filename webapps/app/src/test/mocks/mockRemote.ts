@@ -11,6 +11,15 @@ export function promiseJSON(data: any): Response {
     } as Response;
 }
 
+
+export function rejectedPromiseJSON(data: any): Response {
+    return {
+        json: () => new Promise<any>(function (resolve, reject) {
+            reject(data);
+        })
+    } as Response;
+}
+
 export function mockResponse(data?: Result, errorMessage?: string): Promise<Response> {
     data = data || {
         status: "success",

@@ -6,7 +6,10 @@ import * as sinon from "sinon";
 import { Sandbox } from "../../../../Sandbox";
 import { mockFormProperties, numberOfSubmissionActions } from "../../../../mocks/mockForm";
 import { ValidationError } from "../../../../../main/shared/components/Login/ValidationError";
-import { mockFetcher, mockFetcherNonJson, mockResponse, mockResult, promiseJSON } from "../../../../mocks/mockRemote";
+import {
+    mockFetcher, mockFetcherNonJson, mockResponse, mockResult, promiseJSON,
+    rejectedPromiseJSON
+} from "../../../../mocks/mockRemote";
 import { mockEvent } from "../../../../mocks/mocks";
 import { expectOrderedActions } from "../../../../actionHelpers";
 import {
@@ -133,7 +136,8 @@ describe("ResetPasswordForm", () => {
 
     it("displays error when response is not json", (done: DoneCallback) => {
 
-        mockFetcherNonJson(Promise.resolve(promiseJSON("arbitrarytext")));
+        mockFetcherNonJson(Promise.reject(rejectedPromiseJSON("something")));
+
         form.change({
             password: "sometestpassword"
         });
