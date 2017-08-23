@@ -3,7 +3,7 @@ import { AbstractActions } from "../../shared/actions/AbstractActions";
 
 interface Actions {
     setPasswordResetToken(token: string): string;
-    passwordResetTokenExpired(): void;
+    passwordResetTokenExpired(): boolean;
 }
 
 class AccountActions extends AbstractActions implements Actions {

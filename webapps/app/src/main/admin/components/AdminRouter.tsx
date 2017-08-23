@@ -25,7 +25,7 @@ export class AdminRouter extends Router<RouterProps> {
 
         map('/forgotten-password', AdminForgottenPasswordPage);
         map("/reset-password/:token", ResetPasswordPage);
-        
+
         if (props.loggedIn) {
             map('/', MainMenu);
             map('/modelling-groups/', ViewAllModellingGroupsPage);
