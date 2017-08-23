@@ -163,7 +163,7 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
 
             Assertions.assertThat(metadata.id).isEqualTo("tot-pop")
             Assertions.assertThat(metadata.name).isEqualTo("tot-pop descriptive name")
-            Assertions.assertThat(metadata.gender).isEqualTo("both")
+            Assertions.assertThat(metadata.gender).isEqualTo("Both")
             Assertions.assertThat(metadata.source).isEqualTo("unwpp2015 descriptive name")
             Assertions.assertThat(metadata.ageInterpretation).isEqualTo("age")
             Assertions.assertThat(metadata.unit).isEqualTo("people")
@@ -174,7 +174,7 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
 
             Assertions.assertThat(metadata.id).isEqualTo("as-fert")
             Assertions.assertThat(metadata.name).isEqualTo("as-fert descriptive name")
-            Assertions.assertThat(metadata.gender).isEqualTo("both")
+            Assertions.assertThat(metadata.gender).isEqualTo("Both")
             Assertions.assertThat(metadata.source).isEqualTo("unwpp2015 descriptive name")
             Assertions.assertThat(metadata.ageInterpretation).isEqualTo("age of mother")
             Assertions.assertThat(metadata.unit).isEqualTo("people")
@@ -238,7 +238,7 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
 
             val data = it.getDemographicDataset("tot-pop", sources[0], touchstoneId)
             Assertions.assertThat(data.structuredMetadata.demographicData.gender).isEqualTo("both")
-            Assertions.assertThat(data.tableData.data.any { it.gender == "both" }).isTrue()
+            Assertions.assertThat(data.tableData.data.any { it.gender == "Both" }).isTrue()
 
         }
     }
@@ -259,7 +259,7 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
 
             val data = it.getDemographicDataset("tot-pop", sources[0], touchstoneId, "female")
             Assertions.assertThat(data.structuredMetadata.demographicData.gender).isEqualTo("both")
-            Assertions.assertThat(data.tableData.data.any { it.gender == "both" }).isTrue()
+            Assertions.assertThat(data.tableData.data.any { it.gender == "Both" }).isTrue()
         }
     }
 
@@ -279,7 +279,7 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
 
             val data = it.getDemographicDataset("tot-pop", sources[0], touchstoneId, "female")
             Assertions.assertThat(data.structuredMetadata.demographicData.gender).isEqualTo("female")
-            Assertions.assertThat(data.tableData.data.any { it.gender == "female" }).isTrue()
+            Assertions.assertThat(data.tableData.data.any { it.gender == "Female" }).isTrue()
         }
     }
 
