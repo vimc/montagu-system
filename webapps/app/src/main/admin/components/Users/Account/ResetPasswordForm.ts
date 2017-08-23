@@ -46,7 +46,7 @@ export function resetPasswordForm(accountStore: AccountStoreInterface, name?: st
                 .then((response: any) => {
                     const apiResponse = <Result>response;
                     if (apiResponse.status === "success") {
-                        notificationActions.notify(makeNotification("Your password has been reset. Please log in with your new password to continue", "info"))
+                        notificationActions.notify(makeNotification("Your password has been set. Please log in with your new password to continue", "info"))
                     } else if (apiResponse.status === "failure") {
                         handleError(apiResponse.errors[0])
                     } else {

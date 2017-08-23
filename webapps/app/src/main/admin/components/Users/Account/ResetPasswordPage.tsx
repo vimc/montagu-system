@@ -30,7 +30,10 @@ export class ResetPasswordPage extends AdminPageWithHeader<ResetPasswordPageProp
 
     renderPageContent(): JSX.Element {
 
-        return <div><ResetPasswordForm/><ResetPasswordButton /></div>;
+        return <div>
+            <ResetPasswordForm/>
+            <ResetPasswordButton />
+        </div>;
     }
 }
 
@@ -51,8 +54,9 @@ class ResetPasswordButtonComponent extends React.Component<RequestResetButtonPro
             return this.props.tokenExpired ? { "display": "block" } : { "display": "none" };
         };
 
-        return <div style={forgottenPasswordLinkStyle()}><InternalLink href="/forgotten-password"><button>Request new reset password link
-            </button>
+        return <div style={forgottenPasswordLinkStyle()}>
+            <InternalLink href="/forgotten-password">
+                <button>Request new reset password link</button>
             </InternalLink>
         </div>
 
