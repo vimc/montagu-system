@@ -100,7 +100,7 @@ class PasswordControllerTests : ControllerTests<PasswordController>()
     {
         return PasswordController(
                 context = mockControllerContext(
-                        webTokenHelper = mock { on { generateOneTimeActionToken(any(), any()) } doReturn "TOKEN" }
+                        webTokenHelper = mock { on { generateOneTimeActionToken(any(), any(), any()) } doReturn "TOKEN" }
                 ),
                 emailManager = emailManager
         )

@@ -5,12 +5,13 @@ import org.simplejavamail.mailer.Mailer
 import org.simplejavamail.mailer.config.ServerConfig
 import org.simplejavamail.mailer.config.TransportStrategy
 import org.vaccineimpact.api.db.Config
+import org.vaccineimpact.api.security.BasicUserProperties
 import org.vaccineimpact.api.security.MontaguUser
 import javax.mail.Message
 
 class RealEmailManager : EmailManager
 {
-    override fun sendEmail(data: EmailData, recipient: MontaguUser)
+    override fun sendEmail(data: EmailData, recipient: BasicUserProperties)
     {
         val mailer = Mailer(
                 ServerConfig(server, port, username, password),

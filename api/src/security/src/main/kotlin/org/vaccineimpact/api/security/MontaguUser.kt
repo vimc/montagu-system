@@ -11,10 +11,15 @@ data class MontaguUser(
         val permissions: List<ReifiedPermission>
 ): UserPropertiesInterface by properties
 
-interface UserPropertiesInterface {
+interface BasicUserProperties
+{
     val username: String
     val name: String
     val email: String
+}
+
+interface UserPropertiesInterface : BasicUserProperties
+{
     val passwordHash: String?
     val lastLoggedIn: Timestamp?
 }

@@ -25,12 +25,13 @@ open class WebTokenHelper(keyPair: KeyPair)
     }
     open fun generateOneTimeActionToken(action: String,
                                         params: Map<String, String>,
-                                        queryString: String?): String
+                                        queryString: String?,
+                                        lifeSpan: Duration = oneTimeLinkLifeSpan): String
     {
         return generator.generate(mapOf(
                 "iss" to issuer,
                 "sub" to oneTimeActionSubject,
-                "exp" to Date.from(Instant.now().plus(oneTimeLinkLifeSpan)),
+                "exp" to Date.from(Instant.now().plus(lifeSpan)),
                 "action" to action,
                 "payload" to params.map { "${it.key}=${it.value}" }.joinToString("&"),
                 "query" to queryString,

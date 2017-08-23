@@ -1,8 +1,6 @@
 package org.vaccineimpact.api.app.controllers
 
-import org.vaccineimpact.api.OneTimeAction
 import org.vaccineimpact.api.app.ActionContext
-import org.vaccineimpact.api.app.OneTimeLinkActionContext
 import org.vaccineimpact.api.app.controllers.endpoints.Endpoint
 import org.vaccineimpact.api.app.controllers.endpoints.multiRepoEndpoint
 import org.vaccineimpact.api.app.controllers.endpoints.oneRepoEndpoint
@@ -11,7 +9,6 @@ import org.vaccineimpact.api.app.errors.MissingRequiredParameterError
 import org.vaccineimpact.api.app.models.SetPassword
 import org.vaccineimpact.api.app.postData
 import org.vaccineimpact.api.app.repositories.Repositories
-import org.vaccineimpact.api.app.repositories.TokenRepository
 import org.vaccineimpact.api.app.repositories.UserRepository
 import org.vaccineimpact.api.emails.EmailManager
 import org.vaccineimpact.api.emails.PasswordSetEmail
@@ -62,12 +59,5 @@ class PasswordController(
                 return okayResponse()
             }
         }
-    }
-
-    private fun getSetPasswordToken(username: String, context: ActionContext, repo: TokenRepository): String
-    {
-        val params = mapOf(":username" to username)
-        val contextWithParams = OneTimeLinkActionContext(params, context)
-        return getOneTimeLinkToken(contextWithParams, repo, OneTimeAction.SET_PASSWORD)
     }
 }
