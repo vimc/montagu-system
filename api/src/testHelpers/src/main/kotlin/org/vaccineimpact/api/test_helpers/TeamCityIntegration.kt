@@ -19,7 +19,7 @@ class TeamCityIntegration : org.junit.rules.TestWatcher()
     {
         val stackTrace = StringWriter().use { it
             e.printStackTrace(PrintWriter(it))
-            toString()
+            it.toString()
         }
         println("##teamcity[testFailed name='${escape(description.name())}' " +
                 "message='${escape(e.message)}' " +
