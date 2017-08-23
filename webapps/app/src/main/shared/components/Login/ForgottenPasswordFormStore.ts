@@ -37,8 +37,8 @@ export function forgottenPasswordFormStore(name: string): Reform<ForgottenPasswo
                         case "failure":
                             return alt.dispatch(submitFailed(apiResponse.errors[0].message));
                         default:
-                            return alt.dispatch("The server response was not correctly formatted: "
-                                + response.toString(), "error");
+                            return alt.dispatch(submitFailed("The server response was not correctly formatted: "
+                                + response.toString(), "error"));
                     }
                 });
         },

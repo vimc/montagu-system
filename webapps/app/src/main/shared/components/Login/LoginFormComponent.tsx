@@ -12,7 +12,7 @@ export class LoginFormComponent extends React.Component<ReformProps, undefined> 
             width: 140
         };
         const disabled = this.props.loading;
-        return <form className={ formStyles.form } onSubmit={ this.props.submit }>
+        return <div><form className={ formStyles.form } onSubmit={ this.props.submit }>
             <div className={ formStyles.fields }>
                 <input name="email" type="email" placeholder="Email address"
                        disabled={ disabled }
@@ -28,7 +28,8 @@ export class LoginFormComponent extends React.Component<ReformProps, undefined> 
                     style={ buttonStyle }
                     disabled={ disabled }>Log in ➡
             </button>
+        </form>
             <div>Forgotten your password? <InternalLink href={"/forgotten-password"}>Click here</InternalLink></div>
-        </form>;
+        </div>;
     }
 }

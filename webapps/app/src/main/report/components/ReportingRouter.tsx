@@ -19,13 +19,14 @@ export class ReportingRouter extends Router<RouterProps> {
             _map(appSettings.publicPath + url, component);
         };
 
+        map('/forgotten-password', ReportingForgottenPasswordPage);
+
         if (props.loggedIn) {
             map('/', MainMenu);
             map('/:name/', ViewVersionsPage);
             map('/:report/:version', VersionInfoPage);
             map('*', ReportingNoRouteFoundPage);
         } else {
-            map('/forgotten-password', ReportingForgottenPasswordPage);
             map('*', ReportingLoginPage);
         }
     }

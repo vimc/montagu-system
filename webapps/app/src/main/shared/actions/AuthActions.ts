@@ -15,7 +15,6 @@ export interface LogInProperties {
 interface Actions {
     logIn(token: string): LogInProperties;
     logOut(): boolean;
-    sendPasswordResetEmail(): void;
 }
 
 class AuthActions extends AbstractActions implements Actions {
@@ -43,10 +42,6 @@ class AuthActions extends AbstractActions implements Actions {
 
     logOut(): boolean {
         return true;
-    }
-
-    sendPasswordResetEmail() : void {
-
     }
 }
 

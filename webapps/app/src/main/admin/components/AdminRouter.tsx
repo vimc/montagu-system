@@ -22,6 +22,8 @@ export class AdminRouter extends Router<RouterProps> {
             _map(appSettings.publicPath + url, component);
         };
 
+        map('/forgotten-password', AdminForgottenPasswordPage);
+
         if (props.loggedIn) {
             map('/', MainMenu);
             map('/modelling-groups/', ViewAllModellingGroupsPage);
@@ -31,7 +33,6 @@ export class AdminRouter extends Router<RouterProps> {
             map('/users/:username', ViewUserDetailsPage);
             map('*', AdminNoRouteFoundPage);
         } else {
-            map('/forgotten-password', AdminForgottenPasswordPage);
             map('*', AdminLoginPage);
         }
     }

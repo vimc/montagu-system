@@ -23,6 +23,8 @@ export class ContribRouter extends Router<RoutingProperties> {
             _map(appSettings.publicPath + urlFragment, component);
         };
 
+        map('/forgotten-password', ContribForgottenPasswordPage);
+
         if (loggedIn) {
             if (loaded) {
                 map('/', ChooseGroupPage);
@@ -35,7 +37,6 @@ export class ContribRouter extends Router<RoutingProperties> {
                 map("*", LoadingPage);
             }
         } else {
-            map('/forgotten-password', ContribForgottenPasswordPage);
             map('*', ContribLoginPage);
         }
     }
