@@ -260,8 +260,8 @@ class JooqTouchstoneRepository(
                 .on(DEMOGRAPHIC_STATISTIC_TYPE.ID.eq(DEMOGRAPHIC_STATISTIC.DEMOGRAPHIC_STATISTIC_TYPE))
 
         // if gender is not applicable for this statistic type, ignore passed gender parameter and match on "B"
-        val genderMatchesOrShouldBeDefault = (GENDER.CODE.eq("B").andNot(DEMOGRAPHIC_STATISTIC_TYPE.GENDER_IS_APPLICABLE))
-                .or(GENDER.NAME.eq(gender))
+        val genderMatchesOrShouldBeDefault = (GENDER.CODE.eq("both").andNot(DEMOGRAPHIC_STATISTIC_TYPE.GENDER_IS_APPLICABLE))
+                .or(GENDER.CODE.eq(gender))
 
         return selectQuery
                 .where(DEMOGRAPHIC_STATISTIC_TYPE.CODE.eq(typeCode))

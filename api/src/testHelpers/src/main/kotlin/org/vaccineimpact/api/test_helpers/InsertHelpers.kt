@@ -347,7 +347,7 @@ fun JooqContext.generateDemographicUnits(): List<Int>
 
 fun JooqContext.generateGenders(): List<Int>
 {
-    val sources = listOf("B" to "both", "F" to "female", "M" to "male")
+    val sources = listOf("both" to "Both", "female" to "Female", "male" to "Male")
     val records = sources.map {
         this.dsl.newRecord(GENDER).apply {
             this.code = it.first
