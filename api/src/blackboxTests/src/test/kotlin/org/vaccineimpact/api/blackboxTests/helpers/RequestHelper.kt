@@ -98,4 +98,11 @@ fun Response.montaguErrors(): List<ErrorInfo>
     }
 }
 
-fun Response.json() = Parser().parse(StringBuilder(text)) as JsonObject
+fun Response.json() = try
+{
+    Parser().parse(StringBuilder(text)) as JsonObject
+}
+catch (e: RuntimeException)
+{
+    throw Exception("Unable to parse response as JSON: $text")
+}

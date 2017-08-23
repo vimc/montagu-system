@@ -24,7 +24,10 @@ class WriteToDiskEmailManager : EmailManager
 
         fun cleanOutputDirectory()
         {
-            outputDirectory.listFiles().forEach { it.delete() }
+            outputDirectory.mkdirs()
+            outputDirectory.listFiles().forEach {
+                it.delete()
+            }
         }
     }
 }
