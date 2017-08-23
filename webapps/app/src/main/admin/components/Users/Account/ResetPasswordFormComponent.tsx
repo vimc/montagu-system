@@ -5,6 +5,7 @@ import * as React from "react";
 const formStyles = require("../../../../shared/styles/forms.css");
 
 export class ResetPasswordFormComponent extends React.Component<ReformProps, undefined> {
+
     render() {
 
         return <form className={ formStyles.form } onSubmit={ this.props.submit }>

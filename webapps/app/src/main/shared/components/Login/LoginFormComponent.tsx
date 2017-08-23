@@ -1,6 +1,7 @@
 import * as React from "react";
 import { ReformProps } from "alt-reform";
 import { ValidationError } from "./ValidationError";
+import { InternalLink } from "../InternalLink";
 
 const formStyles = require("../../styles/forms.css");
 

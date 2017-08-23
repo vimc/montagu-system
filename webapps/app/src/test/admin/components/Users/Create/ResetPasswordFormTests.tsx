@@ -11,10 +11,12 @@ import { mockEvent } from "../../../../mocks/mocks";
 import { expectOrderedActions } from "../../../../actionHelpers";
 import {
     ResetPasswordFields,
-    resetPasswordFormStore
-} from "../../../../../main/admin/components/Users/Account/ResetPasswordFormStore";
-import { ResetPasswordFormComponent } from "../../../../../main/admin/components/Users/Account/ResetPasswordForm";
+    resetPasswordForm
+} from "../../../../../main/admin/components/Users/Account/ResetPasswordForm";
+import { ResetPasswordFormComponent } from "../../../../../main/admin/components/Users/Account/ResetPasswordFormComponent";
 import { makeNotification, notificationActions } from "../../../../../main/shared/actions/NotificationActions";
+import { accountStore } from "../../../../../main/admin/stores/AccountStore";
+import { accountActions } from "../../../../../main/admin/actions/AccountActions";
 
 function checkSubmit(form: Reform<ResetPasswordFields>,
                      done: DoneCallback,
@@ -34,7 +36,7 @@ describe("ResetPasswordForm", () => {
     let form: Reform<ResetPasswordFields>;
 
     before(() => {
-        form = resetPasswordFormStore("testtoken");
+        form = resetPasswordForm(accountStore, "test");
     });
 
     afterEach(() => {
@@ -69,6 +71,8 @@ describe("ResetPasswordForm", () => {
         const data = {
             password: "sometestpassword"
         };
+
+        accountActions.setPasswordResetToken("testtoken");
         form.change(data);
         checkSubmit(form, done, sandbox, _ => {
             expect(spy.called).to.be.true;
@@ -88,7 +92,7 @@ describe("ResetPasswordForm", () => {
         checkSubmit(form, done, sandbox, spy => {
             expectOrderedActions(
                 spy,
-                [{ action: "ResetPassword/submitFailed", payload: "An error occurred setting the password" }],
+                [{ action: "ResetPassword_test/submitFailed", payload: "An error occurred setting the password" }],
                 numberOfSubmissionActions
             );
         });
@@ -121,7 +125,24 @@ describe("ResetPasswordForm", () => {
         checkSubmit(form, done, sandbox, spy => {
             expectOrderedActions(
                 spy,
-                [{ action: "ResetPassword/submitFailed", payload: "some error message" }],
+                [{ action: "ResetPassword_test/submitFailed", payload: "some error message" }],
+                numberOfSubmissionActions
+            );
+        });
+    });
+
+    it("displays message when token is invalid", (done: DoneCallback) => {
+
+        mockFetcher(Promise.resolve(promiseJSON({status: "failure", errors: [{code: "invalid-token-used", message: "some error message"}], data: null})));
+        form.change({
+            password: "sometestpassword"
+        });
+
+        checkSubmit(form, done, sandbox, spy => {
+            expectOrderedActions(
+                spy,
+                [{action: "AccountActions.passwordResetTokenExpired"},
+                    { action: "ResetPassword_test/submitFailed", payload: "This password reset link has expired. Please request a new one." }],
                 numberOfSubmissionActions
             );
         });
