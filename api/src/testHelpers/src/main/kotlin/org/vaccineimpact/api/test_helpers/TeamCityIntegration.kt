@@ -1,5 +1,8 @@
 package org.vaccineimpact.api.test_helpers
 
+import java.io.PrintWriter
+import java.io.StringWriter
+
 class TeamCityIntegration : org.junit.rules.TestWatcher()
 {
     override fun starting(description: org.junit.runner.Description)
@@ -14,9 +17,13 @@ class TeamCityIntegration : org.junit.rules.TestWatcher()
 
     override fun failed(e: Throwable, description: org.junit.runner.Description)
     {
+        val stackTrace = StringWriter().use { it
+            e.printStackTrace(PrintWriter(it))
+            toString()
+        }
         println("##teamcity[testFailed name='${escape(description.name())}' " +
                 "message='${escape(e.message)}' " +
-                "details='${escape(e.toString())}']")
+                "details='${escape(stackTrace)}']")
     }
 
     private fun org.junit.runner.Description.name() = "${this.className}.${this.methodName}"
