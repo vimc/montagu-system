@@ -8,6 +8,7 @@ import org.vaccineimpact.api.app.controllers.ControllerContext
 import org.vaccineimpact.api.app.controllers.PasswordController
 import org.vaccineimpact.api.app.errors.MissingRequiredParameterError
 import org.vaccineimpact.api.app.models.SetPassword
+import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.UserRepository
 import org.vaccineimpact.api.emails.EmailManager
 import org.vaccineimpact.api.emails.PasswordSetEmail
@@ -70,32 +71,39 @@ class PasswordControllerTests : ControllerTests<PasswordController>()
     {
         val emailManager = mock<EmailManager>()
         val controller = makeControllerForLinkRequest(emailManager)
-        assertThatThrownBy { controller.requestLink(mock(), mock()) }
+        assertThatThrownBy { controller.requestLink(mock(), mockRepositories(null)) }
                 .isInstanceOf(MissingRequiredParameterError::class.java)
         verify(emailManager, never()).sendEmail(any(), any())
     }
 
     private fun requestLinkWithThisUser(controller: PasswordController, user: MontaguUser?): String
     {
-        val repo = mock<UserRepository> {
-            on { getMontaguUserByEmail("fake@example.com") } doReturn user
-        }
+        val repo = mockRepositories(user)
         val context = mock<ActionContext> {
             on { queryParams("email") } doReturn "fake@example.com"
         }
         return controller.requestLink(context, repo)
     }
 
+    private fun mockRepositories(user: MontaguUser?): Repositories
+    {
+        val userRepo = mock<UserRepository> {
+            on { getMontaguUserByEmail("fake@example.com") } doReturn user
+        }
+        return mock {
+            on { this.user } doReturn { userRepo }
+            on { this.token } doReturn { mock() }
+        }
+    }
+
     private fun makeControllerForLinkRequest(emailManager: EmailManager): PasswordController
     {
-        val controller = PasswordController(
+        return PasswordController(
                 context = mockControllerContext(
-                        repositories = mock { on { token } doReturn { mock() } },
                         webTokenHelper = mock { on { generateOneTimeActionToken(any(), any()) } doReturn "TOKEN" }
                 ),
                 emailManager = emailManager
         )
-        return controller
     }
 
     private fun setupUserRepository(username: String) = MontaguUser(
