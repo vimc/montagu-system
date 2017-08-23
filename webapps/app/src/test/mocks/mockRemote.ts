@@ -49,3 +49,13 @@ export function mockFetcher(promise: Promise<Response>, reportingPromise?: Promi
         return reportingPromise || mockResponse();
     };
 }
+
+export function mockFetcherNonJson(promise: Promise<any>, reportingPromise?: Promise<any>) {
+    fetcher.fetcher = new ReportingFetcher();
+    fetcher.fetcher.fetch = function(urlFragment: string, options?: FetchOptions, includeToken: boolean = true) {
+        return promise;
+    };
+    fetcher.fetcher.fetchFromReportingApi = function(urlFragment: string, options?: FetchOptions, includeToken: boolean = true) {
+        return reportingPromise || mockResponse();
+    };
+}

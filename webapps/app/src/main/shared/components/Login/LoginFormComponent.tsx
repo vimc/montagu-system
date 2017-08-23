@@ -30,6 +30,7 @@ export class LoginFormComponent extends React.Component<ReformProps, undefined> 
             </button>
         </form>
             <div>Forgotten your password? <InternalLink href={"/forgotten-password"}>Click here</InternalLink></div>
+            <div>Forgotten your password? <InternalLink href={"/reset-password/47289137987"}>Click here</InternalLink></div>
         </div>;
     }
 }

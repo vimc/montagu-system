@@ -6,7 +6,7 @@ import * as sinon from "sinon";
 import { Sandbox } from "../../../../Sandbox";
 import { mockFormProperties, numberOfSubmissionActions } from "../../../../mocks/mockForm";
 import { ValidationError } from "../../../../../main/shared/components/Login/ValidationError";
-import { mockFetcher, mockResponse, mockResult, promiseJSON } from "../../../../mocks/mockRemote";
+import { mockFetcher, mockFetcherNonJson, mockResponse, mockResult, promiseJSON } from "../../../../mocks/mockRemote";
 import { mockEvent } from "../../../../mocks/mocks";
 import { expectOrderedActions } from "../../../../actionHelpers";
 import {
@@ -107,7 +107,7 @@ describe("ResetPasswordForm", () => {
             password: "sometestpassword"
         });
 
-        const expectedNotification = makeNotification("Your password has been reset. Please log in with your new password to continue", "info")
+        const expectedNotification = makeNotification("Your password has been set. Please log in with your new password to continue", "info")
 
         checkSubmit(form, done, sandbox, _ => {
             expect(spy.calledWith(expectedNotification)).to.be.true;
@@ -126,6 +126,22 @@ describe("ResetPasswordForm", () => {
             expectOrderedActions(
                 spy,
                 [{ action: "ResetPassword_test/submitFailed", payload: "some error message" }],
+                numberOfSubmissionActions
+            );
+        });
+    });
+
+    it("displays error when response is not json", (done: DoneCallback) => {
+
+        mockFetcherNonJson(Promise.resolve(promiseJSON("arbitrarytext")));
+        form.change({
+            password: "sometestpassword"
+        });
+
+        checkSubmit(form, done, sandbox, spy => {
+            expectOrderedActions(
+                spy,
+                [{ action: "ResetPassword_test/submitFailed", payload: "An error occurred setting the password" }],
                 numberOfSubmissionActions
             );
         });

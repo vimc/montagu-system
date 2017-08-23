@@ -51,10 +51,12 @@ export function resetPasswordForm(accountStore: AccountStoreInterface, name?: st
                         handleError(apiResponse.errors[0])
                     } else {
                         alt.dispatch(submitFailed("The server response was not correctly formatted: "
-                            + response.toString(), "error"));
+                            + response.toString()));
                     }
-                });
-
+                })
+                .catch(() => {
+                    alt.dispatch(submitFailed("An error occurred setting the password"));
+                })
         },
         onSubmitFail: (response: any) => {
             response = typeof response == "string" ? response : "An error occurred setting the password";
