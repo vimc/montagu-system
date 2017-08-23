@@ -20,6 +20,16 @@ export function resetPasswordForm(accountStore: AccountStoreInterface, name?: st
     const qualifiedName = "ResetPassword_" + (name || "main");
     const { submitFailed } = FormActions(qualifiedName);
 
+    const handleError = (apiResponse: Result) => {
+        if (apiResponse.errors[0].code == "invalid-token-used") {
+            accountActions.passwordResetTokenExpired();
+            alt.dispatch(submitFailed("This password reset link has expired. Please request a new one."));
+        }
+        else {
+            alt.dispatch(submitFailed(apiResponse.errors[0].message));
+        }
+    };
+
     return AltReform(qualifiedName, alt, {
         fields: {
             password: Validation.multi("Password", [Validation.required, (name: string) => Validation.minLength(name, 8)]),
@@ -38,13 +48,7 @@ export function resetPasswordForm(accountStore: AccountStoreInterface, name?: st
                     if (apiResponse.status === "success") {
                         notificationActions.notify(makeNotification("Your password has been reset. Please log in with your new password to continue", "info"))
                     } else if (apiResponse.status === "failure") {
-                        if (apiResponse.errors[0].code == "invalid-token-used") {
-                            accountActions.passwordResetTokenExpired();
-                            alt.dispatch(submitFailed("This password reset link has expired. Please request a new one."));
-                        }
-                        else {
-                            alt.dispatch(submitFailed(apiResponse.errors[0].message));
-                        }
+                        handleError(apiResponse)
                     } else {
                         alt.dispatch(submitFailed("The server response was not correctly formatted: "
                             + response.toString(), "error"));
