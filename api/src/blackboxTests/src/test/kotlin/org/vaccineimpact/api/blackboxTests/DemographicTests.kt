@@ -11,7 +11,6 @@ import org.vaccineimpact.api.blackboxTests.schemas.CSVSchema
 import org.vaccineimpact.api.blackboxTests.schemas.SplitSchema
 import org.vaccineimpact.api.blackboxTests.validators.SplitValidator
 import org.vaccineimpact.api.db.JooqContext
-import org.vaccineimpact.api.db.direct.*
 import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.test_helpers.DatabaseTest
 import org.vaccineimpact.api.test_helpers.DemographicDummyData
@@ -124,7 +123,7 @@ class DemographicTests : DatabaseTest()
         }
 
         val validator = SplitValidator()
-        val response = requestHelper.get("$url?gender=F", requiredPermissions)
+        val response = requestHelper.get("$url?gender=female", requiredPermissions)
 
         val json = JsonLoader.fromString(validator.getSplitText(response.text).json)
         val demographyJson = json["data"]["demographic_data"]
@@ -178,13 +177,34 @@ class DemographicTests : DatabaseTest()
             val schema = CSVSchema("DemographicData")
             val requestHelper = RequestHelper()
             val response = requestHelper.get(oneTimeURL)
-            schema.validate(response.text)
+            val body = schema.validate(response.text)
+            Assertions.assertThat(body.count()).isGreaterThan(0)
 
             val badResponse =  requestHelper.get(oneTimeURL)
             JSONValidator().validateError(badResponse.text, expectedErrorCode = "invalid-token-used")
         }
     }
 
+
+    @Test
+    fun `can get gendered CSV demographic data via one time link`()
+    {
+        validate("$url/get_onetime_link/?gender=female") against "Token" given {
+
+            DemographicDummyData(it)
+                    .withTouchstone(touchstoneName, touchstoneVersion)
+                    .withPopulation(genderIsApplicable = true)
+
+        } requiringPermissions { requiredPermissions } andCheckString { token ->
+            val oneTimeURL = "/onetime_link/$token/"
+            val schema = CSVSchema("DemographicData")
+            val requestHelper = RequestHelper()
+            val response = requestHelper.get(oneTimeURL)
+            val body = schema.validate(response.text)
+
+            Assertions.assertThat(body.all{ it[4] == "female" }).isTrue()
+        }
+    }
 
 
     @Test

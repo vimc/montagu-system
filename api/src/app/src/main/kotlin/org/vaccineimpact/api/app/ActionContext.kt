@@ -16,6 +16,7 @@ interface ActionContext
     fun contentType(): String
 
     fun queryParams(key: String): String?
+    fun queryString(): String?
     fun params(): Map<String, String>
     fun params(key: String): String
     fun <T: Any> postData(klass: Class<T>): T

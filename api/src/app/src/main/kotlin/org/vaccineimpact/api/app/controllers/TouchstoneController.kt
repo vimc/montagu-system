@@ -69,7 +69,7 @@ class TouchstoneController(context: ControllerContext) : AbstractController(cont
         val source = context.params(":source-code")
         val type = context.params(":type-code")
         val gender = context.queryParams("gender")
-        return repo.getDemographicDataset(type, source, touchstone.id, gender?: "B")
+        return repo.getDemographicDataset(type, source, touchstone.id, gender?: "both")
     }
 
     fun getDemographicData(context: ActionContext, repo: TouchstoneRepository): DataTable<DemographicRow>
