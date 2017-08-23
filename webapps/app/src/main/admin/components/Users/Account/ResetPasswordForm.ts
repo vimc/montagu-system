@@ -57,7 +57,7 @@ export function resetPasswordForm(accountStore: AccountStoreInterface, name?: st
 
         },
         onSubmitFail: (response: any) => {
-            response = response != true || "An error occurred setting the password";
+            response = typeof response == "string" ? response : "An error occurred setting the password";
             alt.dispatch(submitFailed(response));
         }
     });
