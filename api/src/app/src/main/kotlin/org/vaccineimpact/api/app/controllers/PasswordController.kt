@@ -60,11 +60,4 @@ class PasswordController(
             }
         }
     }
-
-    private fun getSetPasswordToken(username: String, context: ActionContext, repo: TokenRepository): String
-    {
-        val params = mapOf(":username" to username)
-        val contextWithParams = OneTimeLinkActionContext(params, emptyMap(), context)
-        return getOneTimeLinkToken(contextWithParams, repo, OneTimeAction.SET_PASSWORD)
-    }
 }
