@@ -21,7 +21,7 @@ export class AdminRouter extends Router<RouterProps> {
         const map: RouteMap = function (url: string, component: ComponentConstructor<any, any>) {
             _map(appSettings.publicPath + url, component);
         };
-
+        map("/reset-password/:token", ResetPasswordPage);
         if (props.loggedIn) {
             map('/', MainMenu);
             map('/modelling-groups/', ViewAllModellingGroupsPage);
@@ -31,7 +31,6 @@ export class AdminRouter extends Router<RouterProps> {
             map('/users/:username', ViewUserDetailsPage);
             map('*', AdminNoRouteFoundPage);
         } else {
-            map("/reset-password/:token", ResetPasswordPage);
             map('*', AdminLoginPage);
         }
     }
