@@ -97,7 +97,7 @@ class DemographicTests : DatabaseTest()
                     "age_interpretation" to "age",
                     "source" to "unwpp2015 descriptive name",
                     "unit" to "people",
-                    "gender" to "both",
+                    "gender" to "Both",
                     "countries" to array(countries.sortedBy { it })
             )
         }.toJsonString())
@@ -135,7 +135,7 @@ class DemographicTests : DatabaseTest()
                     "age_interpretation" to "age",
                     "source" to "unwpp2015 descriptive name",
                     "unit" to "people",
-                    "gender" to "female",
+                    "gender" to "Female",
                     "countries" to array(countries.sortedBy { it })
             )
         }.toJsonString())
@@ -202,7 +202,7 @@ class DemographicTests : DatabaseTest()
             val response = requestHelper.get(oneTimeURL)
             val body = schema.validate(response.text)
 
-            Assertions.assertThat(body.all{ it[4] == "female" }).isTrue()
+            Assertions.assertThat(body.all{ it[4] == "Female" }).isTrue()
         }
     }
 
