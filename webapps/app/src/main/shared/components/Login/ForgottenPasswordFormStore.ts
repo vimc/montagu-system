@@ -6,6 +6,7 @@ import * as Validation from "../../Validation";
 import { FormErrors } from "../../FormHelpers";
 import { makeNotification, notificationActions, NotificationException } from "../../actions/NotificationActions";
 import { processResponseAndNotifyOnErrors } from "../../sources/Source";
+import {Result} from "../../models/Generated";
 
 export interface ForgottenPasswordFields {
     email: string;
@@ -27,11 +28,18 @@ export function forgottenPasswordFormStore(name: string): Reform<ForgottenPasswo
             }, false);
         },
         onSubmitSuccess: (response: any) => {
-            return processResponseAndNotifyOnErrors(response)
-                .then(() => notificationActions.notify(makeNotification("Thank you. If we have an account registered for this email address you will receive a reset password link", "info")))
-                .catch(e => {
-                    const n = e as NotificationException;
-                    alt.dispatch(submitFailed(n.notification.message));
+            response.json()
+                .then((response: any) => {
+                    const apiResponse = <Result>response;
+                    switch (apiResponse.status) {
+                        case "success":
+                            return notificationActions.notify(makeNotification("Thank you. If we have an account registered for this email address you will receive a reset password link", "info"));
+                        case "failure":
+                            return alt.dispatch(submitFailed(apiResponse.errors[0].message));
+                        default:
+                            return alt.dispatch("The server response was not correctly formatted: "
+                                + response.toString(), "error");
+                    }
                 });
         },
         onSubmitFail: (response: any) => {
