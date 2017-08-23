@@ -14,6 +14,7 @@ import org.vaccineimpact.api.emails.EmailManager
 import org.vaccineimpact.api.emails.PasswordSetEmail
 import org.vaccineimpact.api.security.MontaguUser
 import org.vaccineimpact.api.security.UserProperties
+import org.vaccineimpact.api.security.WebTokenHelper
 
 class PasswordControllerTests : ControllerTests<PasswordController>()
 {
@@ -98,10 +99,11 @@ class PasswordControllerTests : ControllerTests<PasswordController>()
 
     private fun makeControllerForLinkRequest(emailManager: EmailManager): PasswordController
     {
+        val tokenHelper = mock<WebTokenHelper> {
+            on { generateOneTimeActionToken(any(), any(), anyOrNull()) } doReturn "TOKEN"
+        }
         return PasswordController(
-                context = mockControllerContext(
-                        webTokenHelper = mock { on { generateOneTimeActionToken(any(), any(), any()) } doReturn "TOKEN" }
-                ),
+                context = mockControllerContext(webTokenHelper = tokenHelper),
                 emailManager = emailManager
         )
     }
