@@ -51,7 +51,7 @@ export abstract class AuthStore<TState extends AuthStateBase, TInterface extends
         super();
         this.bindListeners({
             handleLogIn: authActions.logIn,
-            handleLogOut: authActions.logOut,
+            handleLogOut: authActions.logOut
         });
         this.exportPublicMethods({
             logIn: accessToken => this.doLogIn(accessToken),
@@ -104,4 +104,5 @@ export abstract class AuthStore<TState extends AuthStateBase, TInterface extends
             localStorage.clear();
         }
     }
+    
 }

@@ -12,9 +12,12 @@ import { mockEvent } from "../../../../mocks/mocks";
 import { expectOrderedActions } from "../../../../actionHelpers";
 import {
     CreateUserFields,
-    createUserFormStore
+    createUserFormStore, suggestUsername
 } from "../../../../../main/admin/components/Users/Create/CreateUserFormStore";
-import { CreateUserFormComponent } from "../../../../../main/admin/components/Users/Create/CreateUserForm";
+import {
+    CreateUserForm,
+    CreateUserFormComponent
+} from "../../../../../main/admin/components/Users/Create/CreateUserForm";
 
 function checkSubmit(form: Reform<CreateUserFields>,
                      done: DoneCallback,
@@ -101,6 +104,38 @@ describe("CreateUserForm", () => {
                 [{ action: "CreateUser_test/submitFailed", payload: "An error occurred creating the user" }],
                 numberOfSubmissionActions
             );
+        });
+    });
+
+    it("sets username to suggestion when name changes", () => {
+        const props = mockFormProperties(form);
+        const baseCallbackSpy = sandbox.sinon.stub(props.fields.name, "onChange");
+        const changeSpy = sandbox.sinon.stub(props, "change");
+
+        const rendered = shallow(<CreateUserFormComponent {...props} />);
+        const event = { target: { value: "Joe Bloggs" } };
+        rendered.find({ name: "name" }).simulate("change", event);
+        expect(baseCallbackSpy.args[0][0]).to.eql(event);
+        expect(changeSpy.args[0][0]).to.eql({
+            username: "joe.bloggs"
+        });
+    });
+
+    describe("username suggestor", () => {
+        it("can handle one word", () => {
+            expect(suggestUsername("joe")).to.equal("joe");
+        });
+        it("can handle two words", () => {
+            expect(suggestUsername("joe bloggs")).to.equal("joe.bloggs");
+        });
+        it("can handle many words", () => {
+            expect(suggestUsername("joe samuel stephen bloggs")).to.equal("joe.bloggs");
+        });
+        it("converts to lower case", () => {
+            expect(suggestUsername("Joe Bloggs")).to.equal("joe.bloggs");
+        });
+        it("strips out bad characters", () => {
+            expect(suggestUsername("j_1-o=%_e_")).to.equal("joe");
         });
     });
 });
