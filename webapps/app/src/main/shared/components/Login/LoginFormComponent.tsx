@@ -1,16 +1,18 @@
 import * as React from "react";
 import { ReformProps } from "alt-reform";
 import { ValidationError } from "./ValidationError";
+import { InternalLink } from "../InternalLink";
 
 const formStyles = require("../../styles/forms.css");
 
 export class LoginFormComponent extends React.Component<ReformProps, undefined> {
+
     render() {
         const buttonStyle = {
             width: 140
         };
         const disabled = this.props.loading;
-        return <form className={ formStyles.form } onSubmit={ this.props.submit }>
+        return <div><form className={ formStyles.form } onSubmit={ this.props.submit }>
             <div className={ formStyles.fields }>
                 <input name="email" type="email" placeholder="Email address"
                        disabled={ disabled }
@@ -26,6 +28,8 @@ export class LoginFormComponent extends React.Component<ReformProps, undefined> 
                     style={ buttonStyle }
                     disabled={ disabled }>Log in ➡
             </button>
-        </form>;
+        </form>
+            <div>Forgotten your password? <InternalLink href={"/forgotten-password"}>Click here</InternalLink></div>
+        </div>;
     }
 }

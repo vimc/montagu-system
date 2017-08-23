@@ -10,6 +10,7 @@ import { ViewModellingGroupDetailsPage } from "./ModellingGroups/SingleGroup/Det
 import { GroupAdminPage } from "./ModellingGroups/SingleGroup/Admin/GroupAdminPage";
 import {ViewAllUsersPage} from "./Users/List/ViewAllUsersPage";
 import {ViewUserDetailsPage} from "./Users/SingleUser/ViewUserDetailsPage";
+import { AdminForgottenPasswordPage } from "./AdminForgottenPasswordPage";
 
 interface RouterProps {
     loggedIn: boolean;
@@ -20,6 +21,8 @@ export class AdminRouter extends Router<RouterProps> {
         const map: RouteMap = function (url: string, component: ComponentConstructor<any, any>) {
             _map(appSettings.publicPath + url, component);
         };
+
+        map('/forgotten-password', AdminForgottenPasswordPage);
 
         if (props.loggedIn) {
             map('/', MainMenu);

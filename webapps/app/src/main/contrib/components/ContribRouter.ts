@@ -9,6 +9,7 @@ import { ContribNoRouteFoundPage } from "./ContribNoRouteFoundPage";
 import { appSettings } from "../../shared/Settings";
 import { ChooseGroupPage } from "./ChooseGroup/ChooseGroupPage";
 import { DownloadDemographicsPage } from "./Responsibilities/Demographics/DownloadDemographicsPage";
+import { ContribForgottenPasswordPage } from "./ContribForgottenPasswordPage";
 
 interface RoutingProperties {
     loggedIn: boolean;
@@ -21,6 +22,8 @@ export class ContribRouter extends Router<RoutingProperties> {
         const map: RouteMap = function (urlFragment: string, component: ComponentConstructor<any, any>) {
             _map(appSettings.publicPath + urlFragment, component);
         };
+
+        map('/forgotten-password', ContribForgottenPasswordPage);
 
         if (loggedIn) {
             if (loaded) {
