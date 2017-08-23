@@ -17,7 +17,7 @@ docker build --tag libsodium -f libsodium.Dockerfile .
 docker build -f blackbox.Dockerfile -t montagu-api-blackbox-tests .
 docker run \
   --network montagu_default \
-  -v emails:/tmp/montagu_emails \
+  -v montagu_emails:/tmp/montagu_emails \
   montagu-api-blackbox-tests
 
 # Tear down
