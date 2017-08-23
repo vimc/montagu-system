@@ -9,7 +9,7 @@ import {
 import { FormErrors, justState } from "../../../../shared/FormHelpers";
 import fetcher from "../../../../shared/sources/Fetcher";
 import { AccountStoreInterface } from "../../../stores/AccountStore";
-import { Result } from "../../../../shared/models/Generated";
+import { ErrorInfo, Result } from "../../../../shared/models/Generated";
 import { accountActions } from "../../../actions/AccountActions";
 
 export interface ResetPasswordFields {
@@ -20,13 +20,13 @@ export function resetPasswordForm(accountStore: AccountStoreInterface, name?: st
     const qualifiedName = "ResetPassword_" + (name || "main");
     const { submitFailed } = FormActions(qualifiedName);
 
-    const handleError = (apiResponse: Result) => {
-        if (apiResponse.errors[0].code == "invalid-token-used") {
+    const handleError = (error: ErrorInfo) => {
+        if (error.code == "invalid-token-used") {
             accountActions.passwordResetTokenExpired();
             alt.dispatch(submitFailed("This password reset link has expired. Please request a new one."));
         }
         else {
-            alt.dispatch(submitFailed(apiResponse.errors[0].message));
+            alt.dispatch(submitFailed(error.message));
         }
     };
 
@@ -48,7 +48,7 @@ export function resetPasswordForm(accountStore: AccountStoreInterface, name?: st
                     if (apiResponse.status === "success") {
                         notificationActions.notify(makeNotification("Your password has been reset. Please log in with your new password to continue", "info"))
                     } else if (apiResponse.status === "failure") {
-                        handleError(apiResponse)
+                        handleError(apiResponse.errors[0])
                     } else {
                         alt.dispatch(submitFailed("The server response was not correctly formatted: "
                             + response.toString(), "error"));
