@@ -53,10 +53,11 @@ class WebTokenHelperTests : MontaguTests()
     @Test
     fun `can generate onetime action token`()
     {
+        val queryString = "query=answer"
         val token = helper.generateOneTimeActionToken("test-action", mapOf(
                 ":a" to "1",
                 ":b" to "2"
-        ))
+        ), queryString)
         val claims = helper.verify(token)
 
         assertThat(claims["iss"]).isEqualTo("vaccineimpact.org")
@@ -64,6 +65,24 @@ class WebTokenHelperTests : MontaguTests()
         assertThat(claims["exp"]).isInstanceOf(Date::class.java)
         assertThat(claims["action"]).isEqualTo("test-action")
         assertThat(claims["payload"]).isEqualTo(":a=1&:b=2")
+        assertThat(claims["query"]).isEqualTo(queryString)
+    }
+
+    @Test
+    fun `can generate onetime action token with null query string`()
+    {
+        val token = helper.generateOneTimeActionToken("test-action", mapOf(
+                ":a" to "1",
+                ":b" to "2"
+        ), null)
+        val claims = helper.verify(token)
+
+        assertThat(claims["iss"]).isEqualTo("vaccineimpact.org")
+        assertThat(claims["sub"]).isEqualTo("onetime_link")
+        assertThat(claims["exp"]).isInstanceOf(Date::class.java)
+        assertThat(claims["action"]).isEqualTo("test-action")
+        assertThat(claims["payload"]).isEqualTo(":a=1&:b=2")
+        assertThat(claims["query"]).isNull()
     }
 
     @Test
