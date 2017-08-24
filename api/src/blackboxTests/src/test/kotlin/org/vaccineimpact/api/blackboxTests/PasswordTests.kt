@@ -50,20 +50,23 @@ class PasswordTests : DatabaseTest()
         checkPasswordHasChangedForTestUser("new_password")
     }
 
-    private fun getTokenFromFakeEmail(): String
+    companion object
     {
-        val emailFile = WriteToDiskEmailManager.outputDirectory.listFiles().singleOrNull()
-            ?: throw Exception("No emails were found in ${WriteToDiskEmailManager.outputDirectory}")
-        val text = emailFile.readText()
-        val match = Regex("""token=([^\n]+)\n""").find(text)
-        return match?.groups?.get(1)?.value
-            ?: throw Exception("Unable to find token in $text")
-    }
+        fun getTokenFromFakeEmail(): String
+        {
+            val emailFile = WriteToDiskEmailManager.outputDirectory.listFiles().single()
+                    ?: throw Exception("No emails were found in ${WriteToDiskEmailManager.outputDirectory}")
+            val text = emailFile.readText()
+            val match = Regex("""token=([^\n]+)\n""").find(text)
+            return match?.groups?.get(1)?.value
+                    ?: throw Exception("Unable to find token in $text")
+        }
 
-    private fun checkPasswordHasChangedForTestUser(password: String)
-    {
-        assertThatThrownBy { TestUserHelper().getTokenForTestUser() }
-        assertThat(TestUserHelper(password).getTokenForTestUser())
-                .isInstanceOf(TokenLiteral::class.java)
+        fun checkPasswordHasChangedForTestUser(password: String)
+        {
+            assertThatThrownBy { TestUserHelper().getTokenForTestUser() }
+            assertThat(TestUserHelper(password).getTokenForTestUser())
+                    .isInstanceOf(TokenLiteral::class.java)
+        }
     }
 }

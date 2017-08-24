@@ -4,6 +4,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.vaccineimpact.api.OneTimeAction
 import org.vaccineimpact.api.app.ActionContext
+import org.vaccineimpact.api.app.OneTimeLinkActionContext
 import org.vaccineimpact.api.app.controllers.endpoints.EndpointDefinition
 import org.vaccineimpact.api.app.controllers.endpoints.getWrappedRoute
 import org.vaccineimpact.api.app.errors.UnsupportedValueException
@@ -14,6 +15,7 @@ import org.vaccineimpact.api.db.Config
 import org.vaccineimpact.api.security.WebTokenHelper
 import spark.Spark
 import spark.route.HttpMethod
+import java.time.Duration
 
 abstract class AbstractController(controllerContext: ControllerContext)
 {
@@ -30,14 +32,26 @@ abstract class AbstractController(controllerContext: ControllerContext)
         return endpoints(repos).map { mapEndpoint(it, urlBase, tokenHelper) }
     }
 
-    fun getOneTimeLinkToken(context: ActionContext, repo: TokenRepository, action: OneTimeAction): String
+    fun getOneTimeLinkToken(
+            context: ActionContext,
+            repo: TokenRepository,
+            action: OneTimeAction,
+            duration: Duration = tokenHelper.oneTimeLinkLifeSpan
+    ): String
     {
         val actionAsString = Serializer.instance.serializeEnum(action)
         val params = context.params()
         val queryString = context.queryString()
-        val token = tokenHelper.generateOneTimeActionToken(actionAsString, params, queryString)
+        val token = tokenHelper.generateOneTimeActionToken(actionAsString, params, queryString, duration)
         repo.storeToken(token)
         return token
+    }
+
+    fun getSetPasswordToken(username: String, context: ActionContext, repo: TokenRepository): String
+    {
+        val params = mapOf(":username" to username)
+        val contextWithParams = OneTimeLinkActionContext(params, emptyMap(), context)
+        return getOneTimeLinkToken(contextWithParams, repo, OneTimeAction.SET_PASSWORD, duration = Duration.ofDays(1))
     }
 
     private fun mapEndpoint(

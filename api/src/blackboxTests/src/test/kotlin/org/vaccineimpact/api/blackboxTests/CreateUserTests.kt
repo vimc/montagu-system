@@ -5,6 +5,9 @@ import com.beust.klaxon.json
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.vaccineimpact.api.blackboxTests.helpers.*
+import org.vaccineimpact.api.db.JooqContext
+import org.vaccineimpact.api.db.Tables.APP_USER
+import org.vaccineimpact.api.emails.WriteToDiskEmailManager
 import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.test_helpers.DatabaseTest
 import org.vaccineimpact.api.validateSchema.JSONValidator
@@ -15,10 +18,12 @@ class CreateUserTests : DatabaseTest()
     val requestHelper = RequestHelper()
     val validator = JSONValidator()
     val creationPermissions = PermissionSet("*/can-login", "*/users.create")
-    val postData = mapOf(
-            "username" to "gandalf.grey",
+    private val username = "gandalf.grey"
+    private val email = "gandalf@example.com"
+    private val postData = mapOf(
+            "username" to username,
             "name" to "Gandalf the Grey",
-            "email" to "gandalf@example.com"
+            "email" to email
     )
 
     @Test
@@ -35,6 +40,31 @@ class CreateUserTests : DatabaseTest()
         val permissions = PermissionSet("*/users.read", "*/can-login")
         val user = RequestHelper().get(objectUrl, permissions).montaguData<JsonObject>()
         assertThat(user).isEqualTo((postData + mapOf("last_logged_in" to null)).toJsonObject())
+    }
+
+    @Test
+    fun `can use token from new user email to set password for the first time`()
+    {
+        WriteToDiskEmailManager.cleanOutputDirectory()
+        val token = TestUserHelper.setupTestUserAndGetToken(creationPermissions)
+        requestHelper.post("/users/", token = token, data = postData.toJsonObject())
+
+        // User doesn't have a password at this point
+        JooqContext().use {
+            val hash = it.dsl.select(APP_USER.PASSWORD_HASH)
+                    .from(APP_USER)
+                    .where(APP_USER.USERNAME.eq(username))
+                    .fetchOne().value1()
+            assertThat(hash).isNull()
+        }
+
+        val onetimeToken = PasswordTests.getTokenFromFakeEmail()
+        requestHelper.post("/onetime_link/$onetimeToken/", json {
+            obj("password" to "first_password")
+        })
+
+        assertThat(TokenFetcher().getToken(email, "first_password"))
+                .isInstanceOf(TokenFetcher.TokenResponse.Token::class.java)
     }
 
     @Test

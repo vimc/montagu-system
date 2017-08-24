@@ -1,11 +1,11 @@
 package org.vaccineimpact.api.emails
 
 import org.vaccineimpact.api.db.Config
-import org.vaccineimpact.api.security.MontaguUser
+import org.vaccineimpact.api.security.BasicUserProperties
 
 interface EmailManager
 {
-    fun sendEmail(data: EmailData, recipient: MontaguUser)
+    fun sendEmail(data: EmailData, recipient: BasicUserProperties)
 }
 
 fun getEmailManager(): EmailManager

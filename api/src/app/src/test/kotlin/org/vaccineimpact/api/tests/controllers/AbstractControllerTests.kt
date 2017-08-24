@@ -10,7 +10,7 @@ import org.vaccineimpact.api.app.controllers.ControllerContext
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.TokenRepository
 import org.vaccineimpact.api.security.WebTokenHelper
-import org.vaccineimpact.api.test_helpers.MontaguTests
+import java.time.Duration
 
 class AbstractControllerTests : ControllerTests<AbstractController>()
 {
@@ -30,7 +30,7 @@ class AbstractControllerTests : ControllerTests<AbstractController>()
     {
         val c = Controller(ControllerContext("/v6", mock(), mock()))
         assertThat(c.buildPublicUrl("/fragment/")).endsWith(
-            "/v6/test/fragment/"
+                "/v6/test/fragment/"
         )
     }
 
@@ -38,24 +38,39 @@ class AbstractControllerTests : ControllerTests<AbstractController>()
     fun `can get onetime link token`()
     {
         // Mocks
-        val parameters = mapOf(":a" to "1",  ":b" to "2")
+        val parameters = mapOf(":a" to "1", ":b" to "2")
         val context = mock<ActionContext> {
             on { params() } doReturn parameters
         }
-        val tokenHelper = mock<WebTokenHelper> {
-            on { generateOneTimeActionToken(any(), any(), anyOrNull()) } doReturn "MY-TOKEN"
-        }
         val tokenRepo = mock<TokenRepository>()
-        val controllerContext = mockControllerContext(
-                webTokenHelper = tokenHelper
-        )
+        val tokenHelper = tokenHelperThatCanGenerateOnetimeTokens()
 
         // Behaviour under test
-        val controller = makeController(controllerContext)
+        val controller = makeController(mockControllerContext(webTokenHelper = tokenHelper))
         controller.getOneTimeLinkToken(context, tokenRepo, OneTimeAction.COVERAGE)
 
         // Expectations
         verify(tokenHelper).generateOneTimeActionToken("coverage", parameters, null)
         verify(tokenRepo).storeToken("MY-TOKEN")
+    }
+
+    @Test
+    fun `can get set password onetime token`()
+    {
+        val tokenHelper = tokenHelperThatCanGenerateOnetimeTokens()
+        val controllerContext = mockControllerContext(webTokenHelper = tokenHelper)
+        val controller = makeController(controllerContext)
+        controller.getSetPasswordToken("user", mock(), mock())
+        verify(tokenHelper).generateOneTimeActionToken(
+                eq("set-password"),
+                argThat { this[":username"] == "user" },
+                eq(null),
+                eq(Duration.ofDays(1))
+        )
+    }
+
+    private fun tokenHelperThatCanGenerateOnetimeTokens() = mock<WebTokenHelper> {
+        on { generateOneTimeActionToken(any(), any(), anyOrNull(), any()) } doReturn "MY-TOKEN"
+        on { oneTimeLinkLifeSpan } doReturn Duration.ofSeconds(30)
     }
 }

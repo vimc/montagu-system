@@ -2,13 +2,13 @@ package org.vaccineimpact.api.emails
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.vaccineimpact.api.security.MontaguUser
+import org.vaccineimpact.api.security.BasicUserProperties
 import java.io.File
 import java.time.Instant
 
 class WriteToDiskEmailManager : EmailManager
 {
-    override fun sendEmail(data: EmailData, recipient: MontaguUser)
+    override fun sendEmail(data: EmailData, recipient: BasicUserProperties)
     {
         val text = data.text()
         outputDirectory.mkdirs()

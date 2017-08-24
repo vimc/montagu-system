@@ -100,7 +100,7 @@ class PasswordControllerTests : ControllerTests<PasswordController>()
     private fun makeControllerForLinkRequest(emailManager: EmailManager): PasswordController
     {
         val tokenHelper = mock<WebTokenHelper> {
-            on { generateOneTimeActionToken(any(), any(), anyOrNull()) } doReturn "TOKEN"
+            on { generateOneTimeActionToken(any(), any(), anyOrNull(), any()) } doReturn "TOKEN"
         }
         return PasswordController(
                 context = mockControllerContext(webTokenHelper = tokenHelper),

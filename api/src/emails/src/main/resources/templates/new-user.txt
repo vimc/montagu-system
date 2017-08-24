@@ -1,0 +1,20 @@
+Hello {{name}},
+
+This is an automated email from Montagu. You are receiving this
+email because a new account has been created for you on Montagu,
+the digital delivery platform for the Vaccine Impact Modelling
+Consortium.
+
+If you go to the following address, you can set a password for
+your account:
+
+https://montagu.vaccineimpact.org/admin/set-password/?token={{token}}
+
+Welcome to Montagu. If you need any help using Montagu, or if you
+encounter any bugs, you can contact us using the #montagu-help
+channel on Slack, or by emailing us at {{support_address}}.
+
+Best wishes,
+
+The Montagu Team
+

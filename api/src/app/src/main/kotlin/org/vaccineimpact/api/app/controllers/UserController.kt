@@ -1,25 +1,33 @@
 package org.vaccineimpact.api.app.controllers
 
 import org.vaccineimpact.api.app.ActionContext
-import org.vaccineimpact.api.app.postData
+import org.vaccineimpact.api.app.controllers.endpoints.Endpoint
+import org.vaccineimpact.api.app.controllers.endpoints.multiRepoEndpoint
 import org.vaccineimpact.api.app.controllers.endpoints.oneRepoEndpoint
 import org.vaccineimpact.api.app.controllers.endpoints.secured
 import org.vaccineimpact.api.app.models.CreateUser
+import org.vaccineimpact.api.app.postData
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.UserRepository
+import org.vaccineimpact.api.emails.EmailManager
+import org.vaccineimpact.api.emails.NewUserEmail
+import org.vaccineimpact.api.emails.getEmailManager
 import org.vaccineimpact.api.models.Scope
 import org.vaccineimpact.api.models.User
 import org.vaccineimpact.api.models.encompass
 import org.vaccineimpact.api.models.permissions.RoleAssignment
 import spark.route.HttpMethod
 
-class UserController(context: ControllerContext) : AbstractController(context)
+class UserController(
+        context: ControllerContext,
+        private val emailManager: EmailManager = getEmailManager()
+) : AbstractController(context)
 {
     override val urlComponent = "/users"
-    override fun endpoints(repos: Repositories) = listOf(
+    override fun endpoints(repos: Repositories): List<Endpoint<*>> = listOf(
             oneRepoEndpoint("/:username/", this::getUser, repos.user).secured(setOf("*/users.read")),
             oneRepoEndpoint("/", this::getUsers, repos.user).secured(setOf("*/users.read")),
-            oneRepoEndpoint("/", this::createUser, repos.user, method = HttpMethod.post).secured(setOf("*/users.create"))
+            multiRepoEndpoint("/", this::createUser, repos, method = HttpMethod.post).secured(setOf("*/users.create"))
     )
 
     fun getUser(context: ActionContext, repo: UserRepository): User
@@ -58,11 +66,19 @@ class UserController(context: ControllerContext) : AbstractController(context)
         }
     }
 
-    fun createUser(context: ActionContext, repo: UserRepository): String
+    fun createUser(context: ActionContext, repos: Repositories): String
     {
-        val user = context.postData<CreateUser>()
-        repo.addUser(user)
-        return objectCreation(context, "/${user.username}/")
+        repos.user().use { userRepo ->
+            repos.token().use { tokenRepo ->
+                val user = context.postData<CreateUser>()
+                userRepo.addUser(user)
+
+                val token = getSetPasswordToken(user.username, context, tokenRepo)
+                emailManager.sendEmail(NewUserEmail(user, token), user)
+
+                return objectCreation(context, "/${user.username}/")
+            }
+        }
     }
 
     private fun userName(context: ActionContext): String = context.params(":username")
