@@ -1,6 +1,7 @@
 interface Settings {
     reportingApiUrl: () => string;
     apiUrl: () => string;
+    montaguUrl: () => string;
     supportContact: string;
     teamcityServiceMessages: boolean;
     admin: AdminSettings;

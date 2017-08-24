@@ -11,6 +11,7 @@ import fetcher from "../../../../shared/sources/Fetcher";
 import { AccountStoreInterface } from "../../../stores/AccountStore";
 import { ErrorInfo, Result } from "../../../../shared/models/Generated";
 import { accountActions } from "../../../actions/AccountActions";
+import {settings} from "../../../../shared/Settings";
 
 export interface ResetPasswordFields {
     password: string;
@@ -46,7 +47,8 @@ export function resetPasswordForm(accountStore: AccountStoreInterface, name?: st
                 .then((response: any) => {
                     const apiResponse = <Result>response;
                     if (apiResponse.status === "success") {
-                        notificationActions.notify(makeNotification("Your password has been set. Please log in with your new password to continue", "info"))
+                        notificationActions.notify(makeNotification("Your password has been set. You are now being redirected to the Montagu homepage...", "info"))
+                        window.location.replace(settings.montaguUrl());
                     } else if (apiResponse.status === "failure") {
                         handleError(apiResponse.errors[0])
                     } else {
