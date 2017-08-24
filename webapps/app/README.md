@@ -4,8 +4,8 @@
    curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
    sudo apt-get install -y nodejs
    ```
-1. Run `npm install` to get dependencies and `npm install webpack --global` to 
-   install webpack
+1. Run `npm install` to get dependencies
+1. Run `sudo npm install webpack --global` to install webpack
 2. Run `webpack` to build, or `webpack --watch` to continuously monitor files 
    and rebuild as needed.
 3. Run `npm run SHORT_NAME` to run a development server serving one of the three
