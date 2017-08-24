@@ -24,21 +24,19 @@ data class OneTimeLink(val action: OneTimeAction,
     {
         return when (action)
         {
-            OneTimeAction.COVERAGE ->
-            {
-                { context ->
-                    repos.modellingGroup().use {
-                        controllers.modellingGroup.getCoverageData(context, it)
-                    }
+            OneTimeAction.COVERAGE -> { context ->
+                repos.modellingGroup().use {
+                    controllers.modellingGroup.getCoverageData(context, it)
                 }
             }
-
-            OneTimeAction.DEMOGRAPHY ->
-            {
-                { context ->
-                    repos.touchstone().use {
-                        controllers.touchstone.getDemographicData(context, it)
-                    }
+            OneTimeAction.DEMOGRAPHY -> { context ->
+                repos.touchstone().use {
+                    controllers.touchstone.getDemographicData(context, it)
+                }
+            }
+            OneTimeAction.SET_PASSWORD -> { context ->
+                repos.user().use {
+                    controllers.password.setPasswordForUser(context, it, context.params("username"))
                 }
             }
         }

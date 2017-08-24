@@ -110,7 +110,7 @@ class PermissionChecker(
     private fun getResponse(token: TokenLiteral) = when (method)
     {
         HttpMethod.get -> requestHelper.get(url, token, acceptContentType).text
-        HttpMethod.post -> requestHelper.post(url, postData!!, token).text
+        HttpMethod.post -> requestHelper.post(url, postData, token).text
         else -> throw Exception("PermissionChecker does not support method $method")
     }
 }

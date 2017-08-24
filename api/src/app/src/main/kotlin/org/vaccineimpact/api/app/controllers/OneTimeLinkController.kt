@@ -7,6 +7,7 @@ import org.vaccineimpact.api.app.errors.InvalidOneTimeLinkToken
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.TokenRepository
 import org.vaccineimpact.api.security.WebTokenHelper
+import spark.route.HttpMethod
 
 class OneTimeLinkController(
         val context: ControllerContext,
@@ -15,8 +16,11 @@ class OneTimeLinkController(
     : AbstractController(context)
 {
     override val urlComponent = ""
+    val url = "/onetime_link/:token/"
+
     override fun endpoints(repos: Repositories) = listOf(
-            oneRepoEndpoint("/onetime_link/:token/", this::onetimeLink, repos.token)
+            oneRepoEndpoint(url, this::onetimeLink, repos.token, method = HttpMethod.get),
+            oneRepoEndpoint(url, this::onetimeLink, repos.token, method = HttpMethod.post)
     )
 
     fun onetimeLink(context: ActionContext, repo: TokenRepository): Any
