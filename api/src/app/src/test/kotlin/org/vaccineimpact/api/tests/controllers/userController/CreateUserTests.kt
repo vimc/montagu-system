@@ -1,12 +1,10 @@
 package org.vaccineimpact.api.tests.controllers.userController
 
-import com.nhaarman.mockito_kotlin.any
-import com.nhaarman.mockito_kotlin.doReturn
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.verify
+import com.nhaarman.mockito_kotlin.*
 import org.assertj.core.api.Assertions
 import org.junit.Test
 import org.vaccineimpact.api.app.ActionContext
+import org.vaccineimpact.api.app.controllers.ControllerContext
 import org.vaccineimpact.api.app.controllers.UserController
 import org.vaccineimpact.api.app.models.CreateUser
 import org.vaccineimpact.api.app.repositories.Repositories
@@ -27,9 +25,16 @@ class CreateUserTests : UserControllerTests()
         val context = mock<ActionContext> {
             on { postData(CreateUser::class.java) } doReturn model
         }
-        val controller = UserController(mockControllerContext())
+        val controller = UserController(controllerContext())
         val location = controller.createUser(context, repos)
         verify(userRepo).addUser(any())
         Assertions.assertThat(location).endsWith("/v1/users/user.name/")
+    }
+
+    private fun controllerContext(): ControllerContext
+    {
+        return mockControllerContext(webTokenHelper = mock {
+            on { generateOneTimeActionToken(any(), any(), anyOrNull(), any()) } doReturn "TOKEN"
+        })
     }
 }

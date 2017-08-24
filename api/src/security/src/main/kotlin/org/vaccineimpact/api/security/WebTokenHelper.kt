@@ -13,7 +13,7 @@ import java.util.*
 open class WebTokenHelper(keyPair: KeyPair)
 {
     open val lifeSpan: Duration = Duration.ofSeconds(Config["token.lifespan"].toLong())
-    val oneTimeLinkLifeSpan: Duration = Duration.ofMinutes(10)
+    open val oneTimeLinkLifeSpan: Duration = Duration.ofMinutes(10)
     val issuer = Config["token.issuer"]
     val signatureConfiguration = RSASignatureConfiguration(keyPair)
     val generator = JwtGenerator<CommonProfile>(signatureConfiguration)
