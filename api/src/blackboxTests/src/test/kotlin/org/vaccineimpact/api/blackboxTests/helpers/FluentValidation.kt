@@ -81,6 +81,7 @@ data class FluentValidationConfig(
         HttpMethod.post -> throw Exception("Missing 'withRequestSchema' clause in fluent validation builder")
         else -> throw Exception("Unsupported request method '$method'")
     }
+
     fun getResponseSchema() = responseSchema ?: when (method)
     {
         HttpMethod.get -> throw Exception("Missing 'against' clause in fluent validation builder")
@@ -148,7 +149,7 @@ class FluentValidation(config: FluentValidationConfig)
     private fun makeRequest(contentType: String, token: TokenLiteral? = null): Response = when (method)
     {
         HttpMethod.get -> requestHelper.get(url, token = token, contentType = contentType)
-        HttpMethod.post -> requestHelper.post(url, postData!!, token = token)
+        HttpMethod.post -> requestHelper.post(url, postData, token = token)
         else -> throw Exception("Requests of type $method are not supported")
     }
 

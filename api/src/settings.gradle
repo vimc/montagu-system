@@ -3,6 +3,7 @@ include 'app',
         'models',
         'security',
         'databaseInterface',
+        'emails',
 
         'generateDatabaseInterface',
         'generateTestData',

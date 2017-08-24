@@ -5,7 +5,6 @@ import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
 import khttp.responses.Response
 import org.vaccineimpact.api.ContentTypes
-import org.vaccineimpact.api.Deserializer
 import org.vaccineimpact.api.models.ErrorInfo
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 
@@ -38,9 +37,13 @@ class RequestHelper
         return post(url, data, token = token)
     }
 
-    fun post(url: String, data: JsonObject, token: TokenLiteral? = null): Response
+    fun post(url: String, data: JsonObject?, token: TokenLiteral? = null): Response
     {
-        return post(url, standardHeaders(ContentTypes.json, token), data.toJsonString(prettyPrint = true))
+        return post(
+                url,
+                standardHeaders(ContentTypes.json, token),
+                data?.toJsonString(prettyPrint = true)
+        )
     }
 
     private fun standardHeaders(contentType: String, token: TokenLiteral?): Map<String, String>
@@ -95,4 +98,11 @@ fun Response.montaguErrors(): List<ErrorInfo>
     }
 }
 
-fun Response.json() = Parser().parse(StringBuilder(text)) as JsonObject
+fun Response.json() = try
+{
+    Parser().parse(StringBuilder(text)) as JsonObject
+}
+catch (e: RuntimeException)
+{
+    throw Exception("Unable to parse response as JSON: $text")
+}

@@ -6,5 +6,10 @@ services:
       - "8080:8080"
     depends_on:
       - db
+    volumes:
+      - emails:/tmp/montagu_emails
   db:
     image: docker.montagu.dide.ic.ac.uk:5000/montagu-db:${MONTAGU_DB_VERSION}
+
+volumes:
+  emails:

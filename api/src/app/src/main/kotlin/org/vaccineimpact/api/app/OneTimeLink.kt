@@ -5,12 +5,14 @@ import org.vaccineimpact.api.OneTimeAction
 import org.vaccineimpact.api.app.controllers.MontaguControllers
 import org.vaccineimpact.api.app.repositories.Repositories
 
-data class OneTimeLink(val action: OneTimeAction, val payload: Map<String, String>)
+data class OneTimeLink(val action: OneTimeAction,
+                       val payload: Map<String, String>,
+                       val queryParams: Map<String, String>)
 {
     fun perform(controllers: MontaguControllers, actionContext: ActionContext, repos: Repositories): Any
     {
         val callback = getCallback(action, controllers, repos)
-        val context = OneTimeLinkActionContext(payload, actionContext)
+        val context = OneTimeLinkActionContext(payload, queryParams, actionContext)
         return callback.invoke(context)
     }
 
@@ -22,19 +24,19 @@ data class OneTimeLink(val action: OneTimeAction, val payload: Map<String, Strin
     {
         return when (action)
         {
-            OneTimeAction.COVERAGE -> {
-                { c ->
-                    repos.modellingGroup().use {
-                        controllers.modellingGroup.getCoverageData(c, it)
-                    }
+            OneTimeAction.COVERAGE -> { context ->
+                repos.modellingGroup().use {
+                    controllers.modellingGroup.getCoverageData(context, it)
                 }
             }
-
-            OneTimeAction.DEMOGRAPHY -> {
-                { d ->
-                    repos.touchstone().use {
-                        controllers.touchstone.getDemographicData(d, it)
-                    }
+            OneTimeAction.DEMOGRAPHY -> { context ->
+                repos.touchstone().use {
+                    controllers.touchstone.getDemographicData(context, it)
+                }
+            }
+            OneTimeAction.SET_PASSWORD -> { context ->
+                repos.user().use {
+                    controllers.password.setPasswordForUser(context, it, context.params("username"))
                 }
             }
         }
@@ -42,16 +44,32 @@ data class OneTimeLink(val action: OneTimeAction, val payload: Map<String, Strin
 
     companion object
     {
+        private fun parseParams(params: String): Map<String, String>
+        {
+            return params.split('&')
+                    .map { it.split('=') }
+                    .associateBy({ it[0] }, { it[1] })
+        }
+
         fun parseClaims(claims: Map<String, Any>): OneTimeLink
         {
             val rawAction = claims["action"].toString()
             val action = Deserializer().parseEnum<OneTimeAction>(rawAction)
             val rawPayload = claims["payload"].toString()
-            val payload = rawPayload
-                    .split('&')
-                    .map { it.split('=') }
-                    .associateBy({ it[0] }, { it[1] })
-            return OneTimeLink(action, payload)
+            val rawQueryParams = claims["query"]?.toString()
+            val payload = parseParams(rawPayload)
+
+            val queryParams =
+                    if (rawQueryParams == null || rawQueryParams == "")
+                    {
+                        mapOf()
+                    }
+                    else
+                    {
+                        parseParams(rawQueryParams)
+                    }
+
+            return OneTimeLink(action, payload, queryParams)
         }
     }
 }

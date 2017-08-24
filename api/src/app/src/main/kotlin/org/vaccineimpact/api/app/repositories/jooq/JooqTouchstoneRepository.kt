@@ -30,14 +30,14 @@ class JooqTouchstoneRepository(
     override fun getDemographicDataset(statisticTypeCode: String,
                                        source: String,
                                        touchstoneId: String,
-                                       genderCode: String): SplitData<DemographicDataForTouchstone, DemographicRow>
+                                       gender: String): SplitData<DemographicDataForTouchstone, DemographicRow>
     {
         val touchstone = touchstones.get(touchstoneId)
         val records = getDemographicStatistics(
                 touchstoneId,
                 statisticTypeCode,
                 source,
-                genderCode)
+                gender)
                 .fetch()
 
         val rows = records.map {
@@ -239,9 +239,9 @@ class JooqTouchstoneRepository(
     }
 
     private fun getDemographicStatistics(touchstoneId: String,
-                                 typeCode: String,
-                                 sourceCode: String,
-                                 genderCode: String = "B"):
+                                         typeCode: String,
+                                         sourceCode: String,
+                                         gender: String):
             SelectConditionStep<Record7<Int, Int, String, Int, BigDecimal, String, String>>
     {
         // we are hard coding this here for now - need to revisit data model longer term
@@ -286,7 +286,7 @@ class JooqTouchstoneRepository(
                 .on(DEMOGRAPHIC_STATISTIC.DEMOGRAPHIC_STATISTIC_TYPE.eq(field(name("t", "id"), Int::class.java)))
 
         // if gender is not applicable for this statistic type, ignore passed genderCode parameter and match on "B"
-        val genderMatchesOrShouldBeDefault = (GENDER.CODE.eq("B")
+        val genderMatchesOrShouldBeDefault = (GENDER.CODE.eq("both")
                 .andNot(field(name("t", "gender_is_applicable"), Boolean::class.java)))
                 .or(GENDER.CODE.eq(genderCode))
 

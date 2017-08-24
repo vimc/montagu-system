@@ -15,7 +15,10 @@ docker exec montagu_api_1 touch /etc/montagu/api/go_signal
 # Build and run image that can run blackbox tests
 docker build --tag libsodium -f libsodium.Dockerfile .
 docker build -f blackbox.Dockerfile -t montagu-api-blackbox-tests .
-docker run --network montagu_default montagu-api-blackbox-tests
+docker run \
+  --network montagu_default \
+  -v montagu_emails:/tmp/montagu_emails \
+  montagu-api-blackbox-tests
 
 # Tear down
 docker-compose --project-name montagu down

@@ -34,7 +34,8 @@ abstract class AbstractController(controllerContext: ControllerContext)
     {
         val actionAsString = Serializer.instance.serializeEnum(action)
         val params = context.params()
-        val token = tokenHelper.generateOneTimeActionToken(actionAsString, params)
+        val queryString = context.queryString()
+        val token = tokenHelper.generateOneTimeActionToken(actionAsString, params, queryString)
         repo.storeToken(token)
         return token
     }
