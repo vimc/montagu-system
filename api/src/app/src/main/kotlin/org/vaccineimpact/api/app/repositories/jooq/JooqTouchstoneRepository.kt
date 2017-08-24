@@ -172,35 +172,43 @@ class JooqTouchstoneRepository(
     }
 
 
-    private fun getDemographicStatisticTypesQuery(touchstoneId: String):
-            SelectOnConditionStep<Record6<Int, String, String, Boolean, String, String>>
+    fun getDemographicStatisticTypesQuery(touchstoneId: String):
+            SelectConditionStep<Record6<Int, String, String, Boolean, String, String>>
     {
-        val statsInTouchstoneCountriesAndSources =
-                dsl.selectDistinct(DEMOGRAPHIC_SOURCE.CODE.`as`("sourceCode"),
-                        DEMOGRAPHIC_STATISTIC.DEMOGRAPHIC_STATISTIC_TYPE.`as`("typeId"),
-                        TOUCHSTONE_COUNTRY.COUNTRY.`as`("country"))
-                        .from(DEMOGRAPHIC_STATISTIC)
-                        .join(TOUCHSTONE_COUNTRY)
-                        .on(DEMOGRAPHIC_STATISTIC.COUNTRY.eq(TOUCHSTONE_COUNTRY.COUNTRY))
-                        .join(DEMOGRAPHIC_SOURCE)
-                        .on(DEMOGRAPHIC_SOURCE.ID.eq(DEMOGRAPHIC_STATISTIC.DEMOGRAPHIC_SOURCE))
-                        .join(TOUCHSTONE_DEMOGRAPHIC_SOURCE)
-                        .on(DEMOGRAPHIC_SOURCE.ID.eq(TOUCHSTONE_DEMOGRAPHIC_SOURCE.DEMOGRAPHIC_SOURCE))
-                        .where(TOUCHSTONE_COUNTRY.TOUCHSTONE.eq(touchstoneId))
-                        .and(TOUCHSTONE_DEMOGRAPHIC_SOURCE.TOUCHSTONE.eq(touchstoneId))
 
-        return dsl.with("s")
-                .`as`(statsInTouchstoneCountriesAndSources)
+        val touchstoneSources = dsl.select(DEMOGRAPHIC_SOURCE.ID, DEMOGRAPHIC_SOURCE.CODE.`as`("sourceCode"))
+                .from(DEMOGRAPHIC_SOURCE)
+                .join(TOUCHSTONE_DEMOGRAPHIC_SOURCE)
+                .on(DEMOGRAPHIC_SOURCE.ID.eq(TOUCHSTONE_DEMOGRAPHIC_SOURCE.DEMOGRAPHIC_SOURCE))
+                .where(TOUCHSTONE_DEMOGRAPHIC_SOURCE.TOUCHSTONE.eq(touchstoneId))
+
+        val statsInTouchstoneSources = dsl.selectDistinct(DEMOGRAPHIC_STATISTIC.DEMOGRAPHIC_SOURCE,
+                        DEMOGRAPHIC_STATISTIC.DEMOGRAPHIC_STATISTIC_TYPE.`as`("typeId"),
+                        DEMOGRAPHIC_STATISTIC.COUNTRY.`as`("country"), field(name("s", "sourceCode"), String::class.java))
+                        .from(DEMOGRAPHIC_STATISTIC)
+                        .join(table(name("s")))
+                        .on(DEMOGRAPHIC_STATISTIC.DEMOGRAPHIC_SOURCE.eq(field(name("s", "id"), Int::class.java)))
+
+        val countriesInTouchstone =
+                dsl.select(TOUCHSTONE_COUNTRY.COUNTRY)
+                        .from(TOUCHSTONE_COUNTRY)
+                        .where(TOUCHSTONE_COUNTRY.TOUCHSTONE.eq(touchstoneId))
+
+        return dsl.with("s").`as`(touchstoneSources)
+                .with("sts")
+                .`as`(statsInTouchstoneSources)
                 .selectDistinct(
                         DEMOGRAPHIC_STATISTIC_TYPE.ID,
                         DEMOGRAPHIC_STATISTIC_TYPE.CODE,
                         DEMOGRAPHIC_STATISTIC_TYPE.NAME,
                         DEMOGRAPHIC_STATISTIC_TYPE.GENDER_IS_APPLICABLE,
-                        field(name("s", "sourceCode"), String::class.java),
-                        field(name("s", "country"), String::class.java))
-                .from(table(name("s")))
+                        field(name("sts", "sourceCode"), String::class.java),
+                        field(name("sts", "country"), String::class.java))
+                .from(table(name("sts")))
                 .join(DEMOGRAPHIC_STATISTIC_TYPE)
-                .on(DEMOGRAPHIC_STATISTIC_TYPE.ID.eq(field(name("s", "typeId"), Int::class.java)))
+                .on(DEMOGRAPHIC_STATISTIC_TYPE.ID.eq(field(name("sts", "typeId"), Int::class.java)))
+                .where(field(name("sts", "country"), String::class.java)
+                        .`in`(countriesInTouchstone))
     }
 
     private fun getDemographicDatasetMetadata(typeCode: String):
@@ -219,7 +227,7 @@ class JooqTouchstoneRepository(
 
     }
 
-    private fun getDemographicStatistics(touchstoneId: String,
+    fun getDemographicStatistics(touchstoneId: String,
                                          typeCode: String,
                                          sourceCode: String,
                                          genderCode: String = "B"):
