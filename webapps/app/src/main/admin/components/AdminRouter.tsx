@@ -23,8 +23,8 @@ export class AdminRouter extends Router<RouterProps> {
             _map(appSettings.publicPath + url, component);
         };
 
-        map('/forgotten-password', AdminForgottenPasswordPage);
-        map("/reset-password/:token", ResetPasswordPage);
+        map('/forgotten-password/', AdminForgottenPasswordPage);
+        map("/set-password/", ResetPasswordPage);
 
         if (props.loggedIn) {
             map('/', MainMenu);

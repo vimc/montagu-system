@@ -7,6 +7,7 @@ import { resetPasswordForm } from "./ResetPasswordForm";
 import { accountStore } from "../../../stores/AccountStore";
 import { connectToStores } from "../../../../shared/alt";
 import { InternalLink } from "../../../../shared/components/InternalLink";
+import { queryStringAsObject } from "../../../../shared/Helpers";
 
 export interface ResetPasswordPageProps {
     token: string;
@@ -19,19 +20,17 @@ interface RequestResetButtonProps {
 const ResetPasswordForm = FormConnector(resetPasswordForm(accountStore))(ResetPasswordFormComponent);
 
 export class ResetPasswordPage extends AdminPageWithHeader<ResetPasswordPageProps> {
-
     title(): JSX.Element {
         return <span>Reset your password</span>
     }
 
     componentDidMount() {
-        accountActions.setPasswordResetToken(this.props.location.params.token);
+        accountActions.setPasswordResetToken(queryStringAsObject().token);
     }
 
     renderPageContent(): JSX.Element {
-
         return <div>
-            <ResetPasswordForm/>
+            <ResetPasswordForm  />
             <ResetPasswordButton />
         </div>;
     }
@@ -55,7 +54,7 @@ class ResetPasswordButtonComponent extends React.Component<RequestResetButtonPro
         };
 
         return <div style={forgottenPasswordLinkStyle()}>
-            <InternalLink href="/forgotten-password">
+            <InternalLink href="/forgotten-password/">
                 <button>Request new reset password link</button>
             </InternalLink>
         </div>
