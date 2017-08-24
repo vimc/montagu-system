@@ -1,3 +1,25 @@
+# Development
+1. Install Node.js: 
+   ```
+   curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
+   sudo apt-get install -y nodejs
+   ```
+1. Run `npm install` to get dependencies and `npm install webpack --global` to 
+   install webpack
+2. Run `webpack` to build, or `webpack --watch` to continuously monitor files 
+   and rebuild as needed.
+3. Run `npm run SHORT_NAME` to run a development server serving one of the three
+   portals on port 5000.
+
+# Dockerised build & run
+1. Make a containerised build environment: `scripts/make-build-env.sh`
+2. Use the build environment to build (and push) a containerised app: `scripts/run-build.sh`
+3. Run the containerised app
+   ```
+   docker run -p 8080:80 montagu.dide.ic.ac.uk/montagu-contrib-portal:CURRENT_GIT_BRANCH
+   ```
+4. Browse to `http://localhost:8080/`
+
 # Portals
 There are three portals.
 
@@ -19,25 +41,3 @@ Short name: `report`
 
 This portal makes Orderly reports available to funders and modellers. Staff can
 also review and publish unpublished reports.
-
-# Build & run
-1. Make a containerised build environment: `scripts/make-build-env.sh`
-2. Use the build environment to build (and push) a containerised app: `scripts/run-build.sh`
-3. Run the containerised app
-   ```
-   docker run -p 8080:80 montagu.dide.ic.ac.uk/montagu-contrib-portal:CURRENT_GIT_BRANCH
-   ```
-4. Browse to `http://localhost:8080/`
-
-# Development
-1. Install Node.js: 
-   ```
-   curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
-   sudo apt-get install -y nodejs
-   ```
-1. Run `npm install` to get dependencies and `npm install webpack --global` to 
-   install webpack
-2. Run `webpack` to build, or `webpack --watch` to continuously monitor files 
-   and rebuild as needed.
-3. Run `npm run SHORT_NAME` to run a development server serving one of the three
-   portals on port 5000.
