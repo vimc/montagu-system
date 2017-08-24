@@ -29,7 +29,7 @@ export class LoginFormComponent extends React.Component<ReformProps, undefined> 
                     disabled={ disabled }>Log in ➡
             </button>
         </form>
-            <div>Forgotten your password? <InternalLink href={"/forgotten-password"}>Click here</InternalLink></div>
+            <div style={{"clear": "both"}}>Forgotten your password? <InternalLink href={"/forgotten-password"}>Click here</InternalLink></div>
         </div>;
     }
 }
