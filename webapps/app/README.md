@@ -30,6 +30,11 @@ also review and publish unpublished reports.
 4. Browse to `http://localhost:8080/`
 
 # Development
+1. Install Node.js: 
+   ```
+   curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
+   sudo apt-get install -y nodejs
+   ```
 1. Run `npm install` to get dependencies and `npm install webpack --global` to 
    install webpack
 2. Run `webpack` to build, or `webpack --watch` to continuously monitor files 
