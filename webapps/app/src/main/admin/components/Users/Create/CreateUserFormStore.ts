@@ -3,7 +3,7 @@ import { alt } from "../../../../shared/alt";
 import FormActions from "../../../../shared/FormActions";
 import * as Validation from "../../../../shared/Validation";
 import fetcher from "../../../../shared/sources/Fetcher";
-import { NotificationException } from "../../../../shared/actions/NotificationActions";
+import { notificationActions, NotificationException } from "../../../../shared/actions/NotificationActions";
 import { userStore } from "../../../stores/UserStore";
 import { processResponseAndNotifyOnErrors } from "../../../../shared/sources/Source";
 import { FormErrors, justState } from "../../../../shared/FormHelpers";
@@ -35,7 +35,7 @@ export function createUserFormStore(name?: string): Reform<CreateUserFields> {
                 .then(() => userStore.fetchUsers(true))
                 .catch(e => {
                     const n = e as NotificationException;
-                    alt.dispatch(submitFailed(n.notification.message));
+                    notificationActions.notify(n.notification);
                 });
         },
         onSubmitFail: (response: any) => {
