@@ -288,7 +288,7 @@ class JooqTouchstoneRepository(
         // if gender is not applicable for this statistic type, ignore passed genderCode parameter and match on "B"
         val genderMatchesOrShouldBeDefault = (GENDER.CODE.eq("both")
                 .andNot(field(name("t", "gender_is_applicable"), Boolean::class.java)))
-                .or(GENDER.CODE.eq(genderCode))
+                .or(GENDER.CODE.eq(gender))
 
         return selectQuery
                 .where(genderMatchesOrShouldBeDefault)
