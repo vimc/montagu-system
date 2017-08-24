@@ -68,7 +68,7 @@ class JooqTouchstoneRepository(
 
         val referenceRecord = records.firstOrNull()
 
-        val source = referenceRecord?.get(field(name("s", "sourceCode"), String::class.java))
+        val source = referenceRecord?.getField<String>(name(TOUCHSTONE_SOURCES, "sourceCode"))
         val gender = referenceRecord?.get(GENDER.NAME)
 
         return DemographicDataset(statType[DEMOGRAPHIC_STATISTIC_TYPE.CODE],
@@ -170,6 +170,9 @@ class JooqTouchstoneRepository(
         return fromQuery.where(TOUCHSTONE.ID.eq(touchstoneId))
     }
 
+    private val TOUCHSTONE_SOURCES = "touchstoneSources"
+    private val STATS_IN_SOURCES = "statsInTouchstoneSources"
+
     private fun countriesInTouchstone(touchstoneId: String): SelectConditionStep<Record1<String>>
     {
         return dsl.select(TOUCHSTONE_COUNTRY.COUNTRY)
@@ -198,27 +201,27 @@ class JooqTouchstoneRepository(
 
         val statsInTouchstoneSources = dsl.selectDistinct(DEMOGRAPHIC_STATISTIC.DEMOGRAPHIC_SOURCE,
                 DEMOGRAPHIC_STATISTIC.DEMOGRAPHIC_STATISTIC_TYPE.`as`("typeId"),
-                DEMOGRAPHIC_STATISTIC.COUNTRY.`as`("country"), field(name("s", "sourceCode"), String::class.java))
+                DEMOGRAPHIC_STATISTIC.COUNTRY.`as`("country"), field(name(TOUCHSTONE_SOURCES, "sourceCode"), String::class.java))
                 .from(DEMOGRAPHIC_STATISTIC)
-                .join(table(name("s")))
-                .on(DEMOGRAPHIC_STATISTIC.DEMOGRAPHIC_SOURCE.eq(field(name("s", "id"), Int::class.java)))
+                .join(table(name(TOUCHSTONE_SOURCES)))
+                .on(DEMOGRAPHIC_STATISTIC.DEMOGRAPHIC_SOURCE.eq(field(name(TOUCHSTONE_SOURCES, "id"), Int::class.java)))
 
         val countriesInTouchstone = countriesInTouchstone(touchstoneId)
 
-        return dsl.with("s").`as`(touchstoneSources)
-                .with("sts")
+        return dsl.with(TOUCHSTONE_SOURCES).`as`(touchstoneSources)
+                .with(STATS_IN_SOURCES)
                 .`as`(statsInTouchstoneSources)
                 .selectDistinct(
                         DEMOGRAPHIC_STATISTIC_TYPE.ID,
                         DEMOGRAPHIC_STATISTIC_TYPE.CODE,
                         DEMOGRAPHIC_STATISTIC_TYPE.NAME,
                         DEMOGRAPHIC_STATISTIC_TYPE.GENDER_IS_APPLICABLE,
-                        field(name("sts", "sourceCode"), String::class.java),
-                        field(name("sts", "country"), String::class.java))
-                .from(table(name("sts")))
+                        field(name(STATS_IN_SOURCES, "sourceCode"), String::class.java),
+                        field<String>(name(STATS_IN_SOURCES, "country"), String::class.java))
+                .from(table(name(STATS_IN_SOURCES)))
                 .join(DEMOGRAPHIC_STATISTIC_TYPE)
-                .on(DEMOGRAPHIC_STATISTIC_TYPE.ID.eq(field(name("sts", "typeId"), Int::class.java)))
-                .where(field(name("sts", "country"), String::class.java)
+                .on(DEMOGRAPHIC_STATISTIC_TYPE.ID.eq(field(name(STATS_IN_SOURCES, "typeId"), Int::class.java)))
+                .where(field(name(STATS_IN_SOURCES, "country"), String::class.java)
                         .`in`(countriesInTouchstone))
     }
 
@@ -261,7 +264,7 @@ class JooqTouchstoneRepository(
                 .where(DEMOGRAPHIC_STATISTIC_TYPE.CODE.eq(typeCode))
 
         var selectQuery = dsl
-                .with("s").`as`(sources)
+                .with(TOUCHSTONE_SOURCES).`as`(sources)
                 .with("v").`as`(variants)
                 .with("t").`as`(types)
                 .with("c").`as`(countriesInTouchstone)
@@ -270,15 +273,15 @@ class JooqTouchstoneRepository(
                         DEMOGRAPHIC_STATISTIC.COUNTRY,
                         DEMOGRAPHIC_STATISTIC.YEAR,
                         DEMOGRAPHIC_STATISTIC.VALUE,
-                        field(name("s", "sourceCode"), String::class.java),
+                        field(name(TOUCHSTONE_SOURCES, "sourceCode"), String::class.java),
                         GENDER.NAME)
                 .from(DEMOGRAPHIC_STATISTIC)
                 .join(GENDER)
                 .on(GENDER.ID.eq(DEMOGRAPHIC_STATISTIC.GENDER))
 
         // only select for given source and source in given touchstone
-        selectQuery = selectQuery.join(table(name("s")))
-                .on(DEMOGRAPHIC_STATISTIC.DEMOGRAPHIC_SOURCE.eq(field(name("s", "id"), Int::class.java)))
+        selectQuery = selectQuery.join(table(name(TOUCHSTONE_SOURCES)))
+                .on(DEMOGRAPHIC_STATISTIC.DEMOGRAPHIC_SOURCE.eq(field(name(TOUCHSTONE_SOURCES, "id"), Int::class.java)))
 
         // only select for the given type
         selectQuery = selectQuery
@@ -316,10 +319,12 @@ class JooqTouchstoneRepository(
             mapEnum(record.status)
     )
 
+    inline fun <reified T: Any?> Record.getField(name: Name): T = this.get(name, T::class.java)
+
     fun mapDemographicStatisticType(records: List<Record>): DemographicStatisticType
     {
         val countries = records.map { it[TOUCHSTONE_COUNTRY.COUNTRY] }.distinct().sortedBy { it }
-        val sources = records.map { it[field(name("s", "sourceCode"), String::class.java)] }.distinct()
+        val sources = records.map { it.getField<String>(name(TOUCHSTONE_SOURCES, "sourceCode")) }.distinct()
 
         // all other properties are the same for all records
         // so read all other properties from the first record
