@@ -48,7 +48,7 @@ export function resetPasswordForm(accountStore: AccountStoreInterface, name?: st
                     const apiResponse = <Result>response;
                     if (apiResponse.status === "success") {
                         notificationActions.notify(makeNotification("Your password has been set. You are now being redirected to the Montagu homepage...", "info"))
-                        window.location.replace(settings.montaguUrl());
+                        setTimeout(() => window.location.replace(settings.montaguUrl()), 3000);
                     } else if (apiResponse.status === "failure") {
                         handleError(apiResponse.errors[0])
                     } else {
