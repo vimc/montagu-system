@@ -22,6 +22,13 @@ table tr th, :local(.specialColumn) td:first-child {
     vertical-align: top;
 }
 
+fieldset {
+    display: inline;
+    border: none;
+    margin: 0;
+    padding: 0;
+}
+
 :local(.largeSectionTitle) {
     font-family: header;
     font-size: 24pt;
