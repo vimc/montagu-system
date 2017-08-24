@@ -110,7 +110,7 @@ describe("ResetPasswordForm", () => {
             password: "sometestpassword"
         });
 
-        const expectedNotification = makeNotification("Your password has been set. Please log in with your new password to continue", "info")
+        const expectedNotification = makeNotification("Your password has been set. You are now being redirected to the Montagu homepage...", "info")
 
         checkSubmit(form, done, sandbox, _ => {
             expect(spy.calledWith(expectedNotification)).to.be.true;
