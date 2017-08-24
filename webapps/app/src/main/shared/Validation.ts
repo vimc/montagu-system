@@ -16,6 +16,14 @@ export function required(name: string): Validator {
     };
 }
 
+export function minLength(name: string, length: number): Validator {
+    return (value: string) => {
+        if (value == null || value.trim().length < length) {
+            throw Error(`${name} must be at least ${length} characters`);
+        }
+    };
+}
+
 export function usernameFormat(name: string): Validator {
     const pattern = /^[a-z]+(\.[a-z]+)*$/;
     return (value: string) => {

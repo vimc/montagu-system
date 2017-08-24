@@ -11,6 +11,7 @@ import { GroupAdminPage } from "./ModellingGroups/SingleGroup/Admin/GroupAdminPa
 import {ViewAllUsersPage} from "./Users/List/ViewAllUsersPage";
 import {ViewUserDetailsPage} from "./Users/SingleUser/ViewUserDetailsPage";
 import { AdminForgottenPasswordPage } from "./AdminForgottenPasswordPage";
+import { ResetPasswordPage } from "./Users/Account/ResetPasswordPage";
 
 interface RouterProps {
     loggedIn: boolean;
@@ -23,6 +24,7 @@ export class AdminRouter extends Router<RouterProps> {
         };
 
         map('/forgotten-password', AdminForgottenPasswordPage);
+        map("/reset-password/:token", ResetPasswordPage);
 
         if (props.loggedIn) {
             map('/', MainMenu);
