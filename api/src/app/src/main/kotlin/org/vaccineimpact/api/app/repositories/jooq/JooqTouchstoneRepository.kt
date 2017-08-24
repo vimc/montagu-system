@@ -25,8 +25,7 @@ import java.math.BigDecimal
 class JooqTouchstoneRepository(
         db: JooqContext,
         private val scenarioRepository: ScenarioRepository
-)
-    : JooqRepository(db), TouchstoneRepository
+) : JooqRepository(db), TouchstoneRepository
 {
     override fun getDemographicDataset(statisticTypeCode: String,
                                        source: String,
@@ -69,8 +68,8 @@ class JooqTouchstoneRepository(
 
         val referenceRecord = records.firstOrNull()
 
-        val source = referenceRecord?.get(DEMOGRAPHIC_SOURCE.NAME)
-        val gender =  referenceRecord?.get(GENDER.NAME)
+        val source = referenceRecord?.get(field(name("s", "sourceCode"), String::class.java))
+        val gender = referenceRecord?.get(GENDER.NAME)
 
         return DemographicDataset(statType[DEMOGRAPHIC_STATISTIC_TYPE.CODE],
                 statType[DEMOGRAPHIC_STATISTIC_TYPE.NAME],
@@ -171,8 +170,23 @@ class JooqTouchstoneRepository(
         return fromQuery.where(TOUCHSTONE.ID.eq(touchstoneId))
     }
 
+    private fun countriesInTouchstone(touchstoneId: String): SelectConditionStep<Record1<String>>
+    {
+        return dsl.select(TOUCHSTONE_COUNTRY.COUNTRY)
+                .from(TOUCHSTONE_COUNTRY)
+                .where(TOUCHSTONE_COUNTRY.TOUCHSTONE.eq(touchstoneId))
+    }
 
-    fun getDemographicStatisticTypesQuery(touchstoneId: String):
+    private fun touchstoneSources(touchstoneId: String): SelectConditionStep<Record2<Int, String>>
+    {
+        return dsl.select(DEMOGRAPHIC_SOURCE.ID, DEMOGRAPHIC_SOURCE.CODE.`as`("sourceCode"))
+                .from(DEMOGRAPHIC_SOURCE)
+                .join(TOUCHSTONE_DEMOGRAPHIC_SOURCE)
+                .on(DEMOGRAPHIC_SOURCE.ID.eq(TOUCHSTONE_DEMOGRAPHIC_SOURCE.DEMOGRAPHIC_SOURCE))
+                .where(TOUCHSTONE_DEMOGRAPHIC_SOURCE.TOUCHSTONE.eq(touchstoneId))
+    }
+
+    private fun getDemographicStatisticTypesQuery(touchstoneId: String):
             SelectConditionStep<Record6<Int, String, String, Boolean, String, String>>
     {
 
@@ -183,16 +197,13 @@ class JooqTouchstoneRepository(
                 .where(TOUCHSTONE_DEMOGRAPHIC_SOURCE.TOUCHSTONE.eq(touchstoneId))
 
         val statsInTouchstoneSources = dsl.selectDistinct(DEMOGRAPHIC_STATISTIC.DEMOGRAPHIC_SOURCE,
-                        DEMOGRAPHIC_STATISTIC.DEMOGRAPHIC_STATISTIC_TYPE.`as`("typeId"),
-                        DEMOGRAPHIC_STATISTIC.COUNTRY.`as`("country"), field(name("s", "sourceCode"), String::class.java))
-                        .from(DEMOGRAPHIC_STATISTIC)
-                        .join(table(name("s")))
-                        .on(DEMOGRAPHIC_STATISTIC.DEMOGRAPHIC_SOURCE.eq(field(name("s", "id"), Int::class.java)))
+                DEMOGRAPHIC_STATISTIC.DEMOGRAPHIC_STATISTIC_TYPE.`as`("typeId"),
+                DEMOGRAPHIC_STATISTIC.COUNTRY.`as`("country"), field(name("s", "sourceCode"), String::class.java))
+                .from(DEMOGRAPHIC_STATISTIC)
+                .join(table(name("s")))
+                .on(DEMOGRAPHIC_STATISTIC.DEMOGRAPHIC_SOURCE.eq(field(name("s", "id"), Int::class.java)))
 
-        val countriesInTouchstone =
-                dsl.select(TOUCHSTONE_COUNTRY.COUNTRY)
-                        .from(TOUCHSTONE_COUNTRY)
-                        .where(TOUCHSTONE_COUNTRY.TOUCHSTONE.eq(touchstoneId))
+        val countriesInTouchstone = countriesInTouchstone(touchstoneId)
 
         return dsl.with("s").`as`(touchstoneSources)
                 .with("sts")
@@ -227,57 +238,62 @@ class JooqTouchstoneRepository(
 
     }
 
-    fun getDemographicStatistics(touchstoneId: String,
-                                         typeCode: String,
-                                         sourceCode: String,
-                                         genderCode: String = "B"):
+    private fun getDemographicStatistics(touchstoneId: String,
+                                 typeCode: String,
+                                 sourceCode: String,
+                                 genderCode: String = "B"):
             SelectConditionStep<Record7<Int, Int, String, Int, BigDecimal, String, String>>
     {
         // we are hard coding this here for now - need to revisit data model longer term
-        val variants = listOf("unwpp_estimates", "unwpp_medium_variant", "cm_median")
+        val variantNames = listOf("unwpp_estimates", "unwpp_medium_variant", "wpp_cm_hybrid")
 
-        var selectQuery = dsl.select(DEMOGRAPHIC_STATISTIC.AGE_FROM,
-                DEMOGRAPHIC_STATISTIC.AGE_TO,
-                DEMOGRAPHIC_STATISTIC.COUNTRY,
-                DEMOGRAPHIC_STATISTIC.YEAR,
-                DEMOGRAPHIC_STATISTIC.VALUE,
-                DEMOGRAPHIC_SOURCE.NAME,
-                GENDER.NAME)
+        val countriesInTouchstone = countriesInTouchstone(touchstoneId)
+
+        val sources = touchstoneSources(touchstoneId)
+                .and(DEMOGRAPHIC_SOURCE.CODE.eq(sourceCode))
+
+        val variants = dsl.select(DEMOGRAPHIC_VARIANT.ID)
+                .from(DEMOGRAPHIC_VARIANT)
+                .where(DEMOGRAPHIC_VARIANT.CODE.`in`(variantNames))
+
+        val types = dsl.select(DEMOGRAPHIC_STATISTIC_TYPE.ID, DEMOGRAPHIC_STATISTIC_TYPE.GENDER_IS_APPLICABLE)
+                .from(DEMOGRAPHIC_STATISTIC_TYPE)
+                .where(DEMOGRAPHIC_STATISTIC_TYPE.CODE.eq(typeCode))
+
+        var selectQuery = dsl
+                .with("s").`as`(sources)
+                .with("v").`as`(variants)
+                .with("t").`as`(types)
+                .with("c").`as`(countriesInTouchstone)
+                .select(DEMOGRAPHIC_STATISTIC.AGE_FROM,
+                        DEMOGRAPHIC_STATISTIC.AGE_TO,
+                        DEMOGRAPHIC_STATISTIC.COUNTRY,
+                        DEMOGRAPHIC_STATISTIC.YEAR,
+                        DEMOGRAPHIC_STATISTIC.VALUE,
+                        field(name("s", "sourceCode"), String::class.java),
+                        GENDER.NAME)
                 .from(DEMOGRAPHIC_STATISTIC)
                 .join(GENDER)
                 .on(GENDER.ID.eq(DEMOGRAPHIC_STATISTIC.GENDER))
 
-        // only select for countries in given touchstone
-        selectQuery = selectQuery.join(TOUCHSTONE_COUNTRY)
-                .on(DEMOGRAPHIC_STATISTIC.COUNTRY.eq(TOUCHSTONE_COUNTRY.COUNTRY))
-
         // only select for given source and source in given touchstone
-        selectQuery = selectQuery.join(DEMOGRAPHIC_SOURCE)
-                .on(DEMOGRAPHIC_SOURCE.ID.eq(DEMOGRAPHIC_STATISTIC.DEMOGRAPHIC_SOURCE))
-                .join(TOUCHSTONE_DEMOGRAPHIC_SOURCE)
-                .on(DEMOGRAPHIC_STATISTIC.DEMOGRAPHIC_SOURCE.eq(TOUCHSTONE_DEMOGRAPHIC_SOURCE.DEMOGRAPHIC_SOURCE))
-
-        // only select default variants
-        selectQuery = selectQuery
-                .join(DEMOGRAPHIC_VARIANT)
-                .on(DEMOGRAPHIC_VARIANT.ID.eq(DEMOGRAPHIC_STATISTIC.DEMOGRAPHIC_VARIANT))
+        selectQuery = selectQuery.join(table(name("s")))
+                .on(DEMOGRAPHIC_STATISTIC.DEMOGRAPHIC_SOURCE.eq(field(name("s", "id"), Int::class.java)))
 
         // only select for the given type
         selectQuery = selectQuery
-                .join(DEMOGRAPHIC_STATISTIC_TYPE)
-                .on(DEMOGRAPHIC_STATISTIC_TYPE.ID.eq(DEMOGRAPHIC_STATISTIC.DEMOGRAPHIC_STATISTIC_TYPE))
+                .join(table(name("t")))
+                .on(DEMOGRAPHIC_STATISTIC.DEMOGRAPHIC_STATISTIC_TYPE.eq(field(name("t", "id"), Int::class.java)))
 
         // if gender is not applicable for this statistic type, ignore passed genderCode parameter and match on "B"
-        val genderMatchesOrShouldBeDefault = (GENDER.CODE.eq("B").andNot(DEMOGRAPHIC_STATISTIC_TYPE.GENDER_IS_APPLICABLE))
+        val genderMatchesOrShouldBeDefault = (GENDER.CODE.eq("B")
+                .andNot(field(name("t", "gender_is_applicable"), Boolean::class.java)))
                 .or(GENDER.CODE.eq(genderCode))
 
         return selectQuery
-                .where(DEMOGRAPHIC_STATISTIC_TYPE.CODE.eq(typeCode))
-                .and(TOUCHSTONE_COUNTRY.TOUCHSTONE.eq(touchstoneId))
-                .and(TOUCHSTONE_DEMOGRAPHIC_SOURCE.TOUCHSTONE.eq(touchstoneId))
-                .and(DEMOGRAPHIC_SOURCE.CODE.eq(sourceCode))
-                .and(DEMOGRAPHIC_VARIANT.CODE.`in`(variants))
-                .and(genderMatchesOrShouldBeDefault)
+                .where(genderMatchesOrShouldBeDefault)
+                .and(DEMOGRAPHIC_STATISTIC.DEMOGRAPHIC_VARIANT.`in`(variants))
+                .and(DEMOGRAPHIC_STATISTIC.COUNTRY.`in`(countriesInTouchstone))
     }
 
     private fun getScenariosFromRecords(records: Result<Record>): List<Scenario>
