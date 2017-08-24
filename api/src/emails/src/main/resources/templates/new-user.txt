@@ -8,7 +8,7 @@ Consortium.
 If you go to the following address, you can set a password for
 your account:
 
-https://montagu.vaccineimpact.org/admin/set_password?token={{token}}
+https://montagu.vaccineimpact.org/admin/set-password/?token={{token}}
 
 Welcome to Montagu. If you need any help using Montagu, or if you
 encounter any bugs, you can contact us using the #montagu-help
