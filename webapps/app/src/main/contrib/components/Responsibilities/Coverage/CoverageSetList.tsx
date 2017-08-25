@@ -16,11 +16,9 @@ export class CoverageSetList extends React.Component<Props, undefined> {
                 <CoverageSetComponent key={ order } order={ order } set={ x }/>
             );
             return <div className={[styles.coverageSets, commonStyles.gapAbove].join(" ")}>
-                <div>These coverage sets must be applied in the following order:</div>
                 <table>
                     <thead>
                     <tr>
-                        <th>Order</th>
                         <th>Description</th>
                         <th>Vaccine</th>
                         <th>Activity type</th>
