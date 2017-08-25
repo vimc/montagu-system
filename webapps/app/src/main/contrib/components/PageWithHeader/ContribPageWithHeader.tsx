@@ -8,6 +8,6 @@ export abstract class ContribPageWithHeader<TLocationProps> extends PageWithHead
     }
 
     siteTitle() {
-        return "Contribution portal";
+        return "Modellers' contribution portal";
     }
 }
