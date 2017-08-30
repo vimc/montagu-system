@@ -15,7 +15,7 @@ export class CoverageSetList extends React.Component<Props, undefined> {
             const coverageSets = this.props.coverageSets.map((x, order) =>
                 <CoverageSetComponent key={ order } order={ order } set={ x }/>
             );
-            return <div className={[styles.coverageSets, commonStyles.gapAbove].join(" ")}>
+            return <div className={styles.coverageSets}>
                 <table>
                     <thead>
                     <tr>

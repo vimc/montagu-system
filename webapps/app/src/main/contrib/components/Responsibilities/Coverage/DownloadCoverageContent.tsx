@@ -53,13 +53,25 @@ export class DownloadCoverageContentComponent extends RemoteContentComponent<Dow
     renderContent(props: DownloadCoverageComponentProps) {
         const data = props.props;
         return <div>
+            <p>
+                Each scenario is based on vaccination coverage from up to 3 different
+                coverage sets (eg. routine and campaign). The datasets to download
+                here contain data on all coverage sets to be included in a particular
+                scenario. Note that there are no coverage sets included in the no
+                vaccination scenario, and therefore the coverage file does not
+                contain any data apart from the header row.
+            </p>
             <table className={ commonStyles.specialColumn }>
                 <tbody>
                     <tr><td>Touchstone</td><td>{ data.touchstone.description }</td></tr>
                     <tr><td>Scenario</td><td>{ data.scenario.description }</td></tr>
                 </tbody>
             </table>
-            <CoverageSetList coverageSets={ data.coverageSets } />
+
+            <div className={ commonStyles.gapAbove }>
+                <div className={ commonStyles.smallTitle }>Coverage sets included</div>
+                <CoverageSetList coverageSets={ data.coverageSets } />
+            </div>
             <div className={ commonStyles.gapAbove }>
                 <OneTimeButton token={ data.coverageToken } refreshToken={ this.refreshToken }>
                     Download combined coverage set data in CSV format
