@@ -11,7 +11,7 @@ describe("ArtefactItem", () => {
 
     it("renders link", () => {
 
-        const rendered = sandbox.mount(<ArtefactItem report="reportname" version="versionname" filename="subdir/filename.csv" description="a file" />);
+        const rendered = sandbox.mount(<ArtefactItem report="reportname" version="versionname" filenames={["subdir/filename.csv"]} description="a file" />);
         const item = rendered.find("li").at(0);
         const link = item.find(FileDownloadLink);
 
@@ -23,7 +23,7 @@ describe("ArtefactItem", () => {
 
     it("renders description", () => {
 
-        const rendered = sandbox.mount(<ArtefactItem report="reportname" version="versionname" filename="filename.csv" description="a file" />);
+        const rendered = sandbox.mount(<ArtefactItem report="reportname" version="versionname" filenames={["filename.csv"]} description="a file" />);
         const item = rendered.find("li").at(0);
         const description = item.find("div");
 
