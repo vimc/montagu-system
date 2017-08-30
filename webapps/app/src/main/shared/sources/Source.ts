@@ -47,7 +47,7 @@ export function processResponseAndNotifyOnErrors<TModel>(response: Response): Pr
     return processResponse<TModel>(response).catch(notifyOnErrors);
 }
 
-function processResponse<TModel>(response: Response): Promise<TModel> {
+function processResponse<TModel>(response: Response): Promise<any> {
     const handleError = (error: ErrorInfo) => {
         switch (error.code) {
             case "bearer-token-invalid":
