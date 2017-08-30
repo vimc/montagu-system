@@ -60,9 +60,17 @@ export class DownloadDemographicsContentComponent extends RemoteContentComponent
                 Demographic data for {props.touchstone.description}
             </div>
             <div>
-                Select the following options to download a CSV file containing demographic data
-                for this touchstone.
-                Not all data sets are expected to be relevant to all modellers.
+                <p>
+                    All available datasets are based on the UNWPP 2017 release, with the
+                    exception of neonatal (28 day) mortality which is a hybrid between the
+                    UNWPP infant mortality (available 1950 to 2100) and neonatal mortality
+                    from IGME/childmortality.org.
+                </p>
+                <p>
+                    Select the following options to download a CSV file containing
+                    demographic data for this touchstone. Not all data sets are expected
+                    to be relevant to all modellers.
+                </p>
             </div>
             <DemographicOptions
                 dataSets={props.dataSets}

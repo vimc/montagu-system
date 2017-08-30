@@ -86,6 +86,13 @@ class DemographicStore extends AbstractStore<DemographicState, DemographicStoreI
         } else {
             this.selectedDataSet = null;
         }
+
+        if (this.selectedDataSet != null && this.selectedDataSet.sources.length == 1) {
+            this.selectedSource = this.selectedDataSet.sources[0];
+        } else {
+            this.selectedSource = null;
+        }
+
         this.token = null;
     }
     handleSelectSource(source: string) {

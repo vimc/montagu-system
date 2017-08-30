@@ -32,6 +32,23 @@ export class DemographicOptions extends React.Component<Props, undefined> {
         demographicStore.fetchOneTimeToken().catch(doNothing);
     }
 
+    renderSourceSelect(): JSX.Element {
+        const props = this.props;
+        if (props.selectedDataSet != null && props.selectedDataSet.sources.length > 1) {
+            return <tr className={commonStyles.specialColumn}>
+                <td>Source</td>
+                <td>
+                    <SourceControl
+                        dataSet={props.selectedDataSet}
+                        onSelectSource={this.onSelectSource}
+                        selected={props.selectedSource}/>
+                </td>
+            </tr>;
+        } else {
+            return null;
+        }
+    }
+
     render() {
         const props = this.props;
         const statisticTypes = props.dataSets.map(x =>
@@ -55,16 +72,8 @@ export class DemographicOptions extends React.Component<Props, undefined> {
                     </select>
                 </td>
             </tr>
-            <tr className={ commonStyles.specialColumn }>
-                <td>Source</td>
-                <td>
-                    <SourceControl
-                        dataSet={props.selectedDataSet}
-                        onSelectSource={this.onSelectSource}
-                        selected={props.selectedSource} />
-                </td>
-            </tr>
-            <tr className={ commonStyles.specialColumn }>
+            { this.renderSourceSelect() }
+            <tr className={commonStyles.specialColumn}>
                 <td>Gender</td>
                 <td><GenderControl
                     dataSet={props.selectedDataSet}

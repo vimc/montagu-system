@@ -48,6 +48,13 @@ fieldset {
     color: rgb(127, 127, 127);
 }
 
+:local(.smallTitle) {
+    font-family: header;
+    font-size: 12pt;
+    margin: 20px 0 5px 0;
+    color: rgb(127, 127, 127);
+}
+
 :local(.control) {
     font-size: 16pt;
 }

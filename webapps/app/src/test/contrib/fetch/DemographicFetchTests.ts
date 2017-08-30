@@ -67,7 +67,7 @@ describe("DemographicStore.fetchOneTimeToken", () => {
         const stub = helper.sandbox.stubFetch(demographicStore, "_fetchOneTimeToken");
         const touchstone = mockTouchstone({ id: "touchstoneId" });
         const dataSet = mockDemographicStatisticType({
-            sources: ["sourceId"],
+            sources: ["source1", "source2"],
             id: "typeId"
         });
 
