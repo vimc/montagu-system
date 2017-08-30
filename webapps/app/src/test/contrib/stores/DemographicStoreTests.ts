@@ -41,6 +41,19 @@ describe("DemographicStore", () => {
         expect(demographicStore.getState().selectedDataSet).to.eql(set);
     });
 
+    it("sets source automatically when there is only one in the data set", () => {
+        function setDataSetWithTheseSources(sources: string[]) {
+            const set = mockDemographicStatisticType({ sources });
+            touchstoneActions.setCurrentTouchstone("fish");
+            demographicActions.update([ set ]);
+            demographicActions.selectDataSet(set.id);
+            return demographicStore.getState().selectedSource;
+        }
+        expect(setDataSetWithTheseSources([])).to.eql(null);
+        expect(setDataSetWithTheseSources(["a"])).to.eql("a");
+        expect(setDataSetWithTheseSources(["a", "b"])).to.eql(null);
+    });
+
     it("sets selected data set to null, when no data exists for current touchstone", () => {
         const set = mockDemographicStatisticType();
         touchstoneActions.setCurrentTouchstone("fish");

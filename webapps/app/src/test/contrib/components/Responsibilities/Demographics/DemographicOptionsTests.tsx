@@ -13,14 +13,18 @@ describe("DemographicOptions", () => {
     const sandbox = new Sandbox();
     afterEach(() => sandbox.restore());
 
+    function findRowByLabel(rendered: ShallowWrapper<any, any>, label: string) {
+        return rendered.find("table").find(`td[children="${label}"]`).parent();
+    }
+
     function getStatisticType(rendered: ShallowWrapper<any, any>) {
-        return rendered.find("table").find("tr").at(0).find("select");
+        return findRowByLabel(rendered, "Statistic type").find("select");
     }
     function getSource(rendered: ShallowWrapper<any, any>) {
-        return rendered.find("table").find("tr").at(1).find(SourceControl);
+        return findRowByLabel(rendered, "Source").find(SourceControl);
     }
     function getGender(rendered: ShallowWrapper<any, any>) {
-        return rendered.find("table").find("tr").at(2).find(GenderControl);
+        return findRowByLabel(rendered, "Gender").find(GenderControl);
     }
 
     it("renders statistic type options", () => {
@@ -63,6 +67,14 @@ describe("DemographicOptions", () => {
         });
     });
 
+    it("hides source control when there is only one source", () => {
+        const set = mockDemographicStatisticType({ sources: ["s1"] });
+        const rendered = shallow(<DemographicOptions
+            dataSets={[set]} selectedDataSet={set} selectedGender="x" selectedSource="s2" />);
+        const control = getSource(rendered);
+        expect(control).to.have.length(0);
+    });
+
     it("renders gender control", () => {
         const setA = mockDemographicStatisticType({ id: "a"});
         const setB = mockDemographicStatisticType({ id: "b" });
@@ -86,8 +98,9 @@ describe("DemographicOptions", () => {
     it("emits action when source is selected", () => {
         const spy = sandbox.dispatchSpy();
         const fetchOneTimeToken = sandbox.stubFetch(demographicStore, "fetchOneTimeToken");
+        const set = mockDemographicStatisticType();
         const rendered = shallow(<DemographicOptions
-            dataSets={[]} selectedDataSet={null} selectedGender="" selectedSource=""/>);
+            dataSets={[]} selectedDataSet={set} selectedGender="" selectedSource=""/>);
         getSource(rendered).simulate("selectSource", { target: { value: "x" } });
         expectOneAction(spy, { action: "DemographicActions.selectSource", payload: "x" });
         expect(fetchOneTimeToken.called).to.be.true;

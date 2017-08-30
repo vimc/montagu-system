@@ -73,7 +73,7 @@ export class DemographicOptions extends React.Component<Props, undefined> {
                 </td>
             </tr>
             { this.renderSourceSelect() }
-            <tr className={ commonStyles.specialColumn }>
+            <tr className={commonStyles.specialColumn}>
                 <td>Gender</td>
                 <td><GenderControl
                     dataSet={props.selectedDataSet}

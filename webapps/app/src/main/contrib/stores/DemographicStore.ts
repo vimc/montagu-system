@@ -89,6 +89,8 @@ class DemographicStore extends AbstractStore<DemographicState, DemographicStoreI
 
         if (this.selectedDataSet != null && this.selectedDataSet.sources.length == 1) {
             this.selectedSource = this.selectedDataSet.sources[0];
+        } else {
+            this.selectedSource = null;
         }
 
         this.token = null;
