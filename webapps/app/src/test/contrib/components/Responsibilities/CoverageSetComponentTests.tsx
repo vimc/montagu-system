@@ -16,7 +16,6 @@ describe("CoverageSetComponent", () => {
         const rendered = shallow(<CoverageSetComponent order={ 0 } set={ set } />);
         const cells = rendered.find("td");
         const expectedCellContentsInOrder = [
-            "1",  // User-displayed order is 1-indexed
             "my-name",
             "my-vaccine",
             "campaign",
