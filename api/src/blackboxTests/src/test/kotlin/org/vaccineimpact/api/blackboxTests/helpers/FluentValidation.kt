@@ -61,10 +61,10 @@ data class FluentValidationConfig(
     infix fun andCheckObjectCreation(expectedLocation: String)
     {
         this.finalized().runWithCheck<String> { body, response ->
-            val expectedUrl = EndpointBuilder.build(expectedLocation)
+            val expectedPath = EndpointBuilder.buildPath(expectedLocation)
             assertThat(response.statusCode).`as`("Status code").isEqualTo(201)
-            assertThat(response.headers["Location"]).`as`("Location header").isEqualTo(expectedUrl)
-            assertThat(body).`as`("Body").isEqualTo(expectedUrl)
+            assertThat(response.headers["Location"]).`as`("Location header").endsWith(expectedPath)
+            assertThat(body).`as`("Body").endsWith(expectedPath)
         }
     }
 
