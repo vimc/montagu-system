@@ -7,6 +7,7 @@ import { GroupList } from "./GroupList";
 import { RemoteContentComponent } from "../../../shared/components/RemoteContentComponent/RemoteContentComponent";
 import { RemoteContent } from "../../../shared/models/RemoteContent";
 import { InternalLink } from "../../../shared/components/InternalLink";
+import { ButtonLink } from "../../../shared/components/ButtonLink";
 
 const commonStyles = require("../../../shared/styles/common.css");
 
@@ -46,10 +47,10 @@ export class ChooseGroupContentComponent extends RemoteContentComponent<ChooseGr
                 </div>
             </div>;
         } else {
+            // This is a placeholder until we have automatic redirection working
             const url = `/${props.groups[0].id}/`;
             return <span>
-                <InternalLink href={ url }>Click here</InternalLink>
-                &nbsp;(this is a placeholder until we have automatic redirection working)
+                <ButtonLink href={ url }>Next</ButtonLink>
             </span>;
         }
     }

@@ -7,6 +7,7 @@ import { TouchstoneList } from "./TouchstoneList";
 import { RemoteContent } from "../../../shared/models/RemoteContent";
 import { RemoteContentComponent } from "../../../shared/components/RemoteContentComponent/RemoteContentComponent";
 import { isNullOrUndefined } from "util";
+import { InternalLink } from "../../../shared/components/InternalLink";
 
 const commonStyles = require("../../../shared/styles/common.css");
 
@@ -30,11 +31,17 @@ export class ChooseActionContentComponent extends RemoteContentComponent<ChooseA
 
     renderTouchstoneChoice(props: ChooseActionContentProps): JSX.Element {
         return <div>
-            <div className={ commonStyles.sectionTitle }>View modelling responsibilities</div>
-            <div>
-                Which touchstone do you want to view responsibilities for? You can select either the current
-                open touchstone, if there is one, or a past touchstone that is now closed.
-            </div>
+            <div className={ commonStyles.sectionTitle }>Your responsibilities</div>
+            <p>
+                Click on any of the past and open touchstones below to view your
+                group's responsibilities in that touchstone and to download
+                vaccination coverage and demographic input datasets for each
+                responsibility. Additionally, for open touchstones, you will
+                be able to upload the estimates associated with each responsibility.
+            </p>
+            <p>
+                <InternalLink href="/help/touchstones/">What is a touchstone?</InternalLink>
+            </p>
             <TouchstoneList touchstones={ props.touchstones }
                             group={ props.group }
                             ready={ props.ready } />
