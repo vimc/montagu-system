@@ -1,6 +1,7 @@
 FROM montagu-api-build-environment
 
 RUN ./gradlew :generateTestData:compileKotlin
+RUN ./gradlew :userCLI:installDist
 
 CMD ./gradlew :generateTestData \
   && ./user.sh add "Test User" test.user test.user@imperial.ac.uk password \
