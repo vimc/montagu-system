@@ -5,7 +5,7 @@ import { encodeFilename } from "../../../shared/Helpers";
 
 interface ArtefactProps
 {
-    filename: string,
+    filenames: string[],
     description: string;
     report: string;
     version: string;
@@ -14,11 +14,11 @@ interface ArtefactProps
 export class ArtefactItem extends React.Component<ArtefactProps, undefined> {
     render() {
         const p = this.props;
-        const filename = encodeFilename(p.filename);
-        const url = `/reports/${p.report}/${p.version}/artefacts/${filename}/`;
+        const filename = p.filenames[0];
+        const url = `/reports/${p.report}/${p.version}/artefacts/${encodeFilename(filename)}/`;
         return <li>
-            <FileDownloadLink key={this.props.filename} href={url}>
-                {p.filename}
+            <FileDownloadLink key={filename} href={url}>
+                {filename}
             </FileDownloadLink>
             <div>({p.description})</div>
         </li>;

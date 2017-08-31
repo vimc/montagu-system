@@ -164,7 +164,7 @@ export function mockVersion(properties?: any): Version {
 export function mockArtefact(properties?: any): Artefact {
 
     const template: Artefact = {
-        filename: "filename.csv",
+        filenames: [ "filename1.csv", "filename2.html" ],
         description: "description"
     };
 
