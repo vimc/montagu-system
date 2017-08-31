@@ -15,4 +15,5 @@ RUN ./gradlew
 
 # Do our build
 COPY . /api
+RUN ./gradlew :blackboxTests:compileKotlin
 CMD ./gradlew :blackboxTests:test -i

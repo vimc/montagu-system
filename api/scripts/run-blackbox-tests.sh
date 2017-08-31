@@ -3,8 +3,7 @@ set -ex
 
 export MONTAGU_API_VERSION=$(git rev-parse --short HEAD)
 export MONTAGU_DB_VERSION=$(<src/config/db_version)
-
-cert_tool_version=59657b2
+MONTAGU_API_BRANCH=$(git symbolic-ref --short HEAD)
 
 # Run API and DB
 docker-compose pull
@@ -22,3 +21,16 @@ docker run \
 
 # Tear down
 docker-compose --project-name montagu down
+
+# Push blackbox tests so they can be reused
+registry=docker.montagu.dide.ic.ac.uk:5000
+name=montagu-api-blackbox-tests
+docker_tag=$registry/$name
+commit_tag=$registry/$name:$MONTAGU_API_VERSION
+branch_tag=$registry/$name:$MONTAGU_API_BRANCH
+
+docker tag montagu-api-blackbox-tests $commit_tag
+docker tag montagu-api-blackbox-tests $branch_tag
+docker push $commit_tag 
+docker push $branch_tag
+
