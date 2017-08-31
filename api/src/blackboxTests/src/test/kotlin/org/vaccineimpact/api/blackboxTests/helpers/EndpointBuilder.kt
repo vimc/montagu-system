@@ -9,4 +9,5 @@ object EndpointBuilder
     val root = "$hostUrl/$baseUrl"
 
     fun build(url: String) = root + url
+    fun buildPath(url: String) = "/$baseUrl" + url
 }
