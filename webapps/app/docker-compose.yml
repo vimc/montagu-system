@@ -14,5 +14,9 @@ services:
       - "8081:8081"
     volumes:
       - ${TOKEN_KEY_PATH}:/etc/montagu/reports_api/token_key
+      - orderly_volume:/orderly
   db:
     image: docker.montagu.dide.ic.ac.uk:5000/montagu-db:${MONTAGU_DB_VERSION}
+
+volumes:
+  orderly_volume:

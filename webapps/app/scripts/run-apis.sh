@@ -33,6 +33,13 @@ docker exec montagu_api_1 touch /etc/montagu/api/go_signal
 docker exec montagu_reporting_api_1 mkdir -p /etc/montagu/reports_api
 docker exec montagu_reporting_api_1 touch /etc/montagu/reports_api/go_signal
 
+# Generate report test data      
+docker run --rm \
+    --entrypoint create_orderly_demo.sh \
+    -v montagu_orderly_volume:/orderly \
+    $registry/orderly:master \
+    /orderly
+
 # Generate test data
 docker run --rm --network=montagu_default \
     $registry/montagu-generate-test-data:i608
