@@ -6,10 +6,12 @@
    ```
 1. Run `npm install` to get dependencies
 1. Run `sudo npm install webpack --global` to install webpack
-2. Run `webpack` to build, or `webpack --watch` to continuously monitor files 
+1. Run `webpack` to build, or `webpack --watch` to continuously monitor files 
    and rebuild as needed.
-3. Run `npm run SHORT_NAME` to run a development server serving one of the three
+1. Run `npm run SHORT_NAME` to run a development server serving one of the three
    portals on port 5000.
+1. Run `./scripts/run-apis.sh` to run both APIs (main and reporting) with a 
+   shared key, and with test data.
 
 # Dockerised build & run
 1. Make a containerised build environment: `scripts/make-build-env.sh`
