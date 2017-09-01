@@ -10,8 +10,8 @@
    and rebuild as needed.
 1. Run `npm run SHORT_NAME` to run a development server serving one of the three
    portals on port 5000.
-1. Run `./scripts/run-apis.sh` to run both APIs (main and reporting) with a 
-   shared key, and with test data.
+1. Run `./scripts/run-development-apis.sh` to run both APIs (main and reporting) 
+   with a shared key, and with test data.
 
 # Dockerised build & run
 1. Make a containerised build environment: `scripts/make-build-env.sh`
