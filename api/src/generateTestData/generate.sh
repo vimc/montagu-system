@@ -6,6 +6,6 @@
 set -ex
 
 ./generateTestData/build/install/generateTestData/bin/generateTestData $1
-./user.sh add "Test User" test.user test.user@imperial.ac.uk password
-./user.sh addRole test.user user
-./user.sh addUserToGroup test.user IC-Garske
+./userCLI/build/install/userCLI/bin/userCLI add "Test User" test.user test.user@imperial.ac.uk password
+./userCLI/build/install/userCLI/bin/userCLI addRole test.user user
+./userCLI/build/install/userCLI/bin/userCLI addUserToGroup test.user IC-Garske
