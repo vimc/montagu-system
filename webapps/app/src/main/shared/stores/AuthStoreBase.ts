@@ -12,7 +12,7 @@ export interface AuthStateBase {
 }
 
 export interface AuthStoreBaseInterface<TState> extends AltJS.AltStore<TState> {
-    logIn(access_token: string): void;
+    logIn(access_token: string, triggered_by_user: boolean): void;
     loadAccessToken(): void;
 }
 
@@ -54,11 +54,13 @@ export abstract class AuthStore<TState extends AuthStateBase, TInterface extends
             handleLogOut: authActions.logOut
         });
         this.exportPublicMethods({
-            logIn: accessToken => this.doLogIn(accessToken),
+            logIn: (accessToken: string, triggeredByUser: boolean) => {
+                this.doLogIn(accessToken, triggeredByUser);
+            },
             loadAccessToken: () => {
                 const token = tokenStorageHelper.loadToken();
                 if (token != null) {
-                    this.doLogIn(token);
+                    this.doLogIn(token, true);
                 }
             }
         })
@@ -73,8 +75,8 @@ export abstract class AuthStore<TState extends AuthStateBase, TInterface extends
         };
     }
 
-    protected doLogIn(accessToken: string) {
-        authActions.logIn(accessToken);
+    protected doLogIn(accessToken: string, triggeredByUser: boolean) {
+        authActions.logIn(accessToken, triggeredByUser);
     }
 
     protected canLogIn(props: LogInProperties) {

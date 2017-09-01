@@ -9,16 +9,17 @@ export interface LogInProperties {
     isAccountActive: boolean,
     isModeller: boolean,
     permissions: string[],
-    modellingGroups: string[]
+    modellingGroups: string[],
+    triggeredByUser: boolean
 }
 
 interface Actions {
-    logIn(token: string): LogInProperties;
+    logIn(token: string, triggeredByUser: boolean): LogInProperties;
     logOut(): boolean;
 }
 
 class AuthActions extends AbstractActions implements Actions {
-    logIn(token: string): LogInProperties {
+    logIn(token: string, triggeredByUser: boolean): LogInProperties {
         const decoded: Token = decodeToken(token);
         const permissions = decoded.permissions.split(",").filter(x => x.length > 0);
         const modellingGroups = decoded.roles
@@ -36,7 +37,8 @@ class AuthActions extends AbstractActions implements Actions {
             isAccountActive,
             isModeller,
             permissions,
-            modellingGroups
+            modellingGroups,
+            triggeredByUser
         };
     }
 

@@ -31,9 +31,9 @@ class ContribAuthStore extends AuthStore<ContribAuthState, ContribAuthStoreInter
         });
     }
 
-    doLogIn(accessToken: string) {
-        super.doLogIn(accessToken);
-        if (this.loggedIn) {
+    doLogIn(accessToken: string, triggeredByUser: boolean) {
+        super.doLogIn(accessToken, triggeredByUser);
+        if (this.loggedIn && triggeredByUser) {
             mainStore.load();
         }
     }

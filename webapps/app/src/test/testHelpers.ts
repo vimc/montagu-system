@@ -20,3 +20,17 @@ export function checkAsync(done: DoneCallback, checks: (afterWait: AfterWaitCall
         }
     });
 }
+
+export function checkPromise<T>(done: DoneCallback, promise: Promise<T>, checks?: (afterWait: AfterWaitCallback, data: T) => void) {
+    setTimeout(() => {
+        promise
+            .then(data => {
+                if (checks) {
+                    checks(afterWait, data);
+                }
+                done();
+            })
+            .catch(error => done(error));
+    });
+}
+

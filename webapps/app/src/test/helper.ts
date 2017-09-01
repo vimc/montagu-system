@@ -1,6 +1,5 @@
 import { handleTeamCityEvent } from "./TeamCityIntegration";
 import { mockFetcherResponse } from "./mocks/mockRemote";
-import "isomorphic-fetch";
 
 function fullTestName(test: TestContext): string {
     if (test != null) {

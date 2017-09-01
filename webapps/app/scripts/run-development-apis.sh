@@ -7,8 +7,7 @@ source $here/run-apis.sh
 # From now on, if the user presses Ctrl+C we should teardown gracefully
 trap on_interrupt INT
 function on_interrupt() {
-    docker-compose --project-name montagu down --volumes
-    docker-compose --project-name montagu rm
+    $here/stop-apis.sh
 }
 
 # Generate report test data      
