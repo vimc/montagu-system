@@ -6,25 +6,31 @@ import {mockArtefact} from "../../../mocks/mockModels";
 
 describe("ArtefactsList", () => {
     it("renders list of ArtefactItems", () => {
-
         const fakeArtefactsArray = [
             {
-                "staticgraph": mockArtefact({filename: "file.csv", description: "a file"})
+                "staticgraph": mockArtefact({
+                    description: "a graph",
+                    filenames: ["file.png"],
+                })
+            },
+            {
+                "staticgraph": mockArtefact({
+                    description: "a different graph",
+                    filenames: ["file2.png"],
+                })
             },
             {
                 "csv": mockArtefact()
-            }];
+            }
+        ];
 
         const rendered = shallow(<ArtefactsList report="reportname"
                                               version="v1"
                                               artefacts={fakeArtefactsArray}/>);
 
-        expect(rendered.find("ArtefactItem").length).to.eq(2);
-        expect(rendered.find("ArtefactItem").at(0).prop("filename")).to.eq("file.csv");
-        expect(rendered.find("ArtefactItem").at(0).prop("description")).to.eq("a file");
+        expect(rendered.find("ArtefactItem").length).to.eq(3);
+        expect(rendered.find("ArtefactItem").at(0).prop("filenames")).to.eql(["file.png"]);
+        expect(rendered.find("ArtefactItem").at(0).prop("description")).to.eq("a graph");
         expect(rendered.find("ArtefactItem").at(0).prop("version")).to.eq("v1");
-
-
     });
-
 });

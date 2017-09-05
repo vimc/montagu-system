@@ -161,7 +161,7 @@ export function mockVersion(properties?: any): Version {
     return Object.assign(template, properties);
 }
 
-export function mockArtefact(properties?: any): Artefact {
+export function mockArtefact(properties?: Partial<Artefact>): Artefact {
 
     const template: Artefact = {
         filenames: [ "filename1.csv", "filename2.html" ],
