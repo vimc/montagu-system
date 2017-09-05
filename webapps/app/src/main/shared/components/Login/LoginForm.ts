@@ -27,15 +27,11 @@ export function loginForm(name: string, authStore: AuthStoreBaseInterface<any>):
             return requestAuthToken(state.email, state.password);
         },
         onSubmitSuccess: (response: any) => {
-            processLoginResponse(response, authStore, true);
+            return processLoginResponse(response, authStore, true, err => alt.dispatch(submitFailed(err)));
         },
-        onSubmitFail: (error: any) => {
-            if (typeof(error) == "string") {
-                alt.dispatch(submitFailed(error));
-            } else {
-                console.log("Error logging in: " + error);
-                alt.dispatch(submitFailed("An error occurred logging in"));
-            }
+        onSubmitFail: (response: Response) => {
+            console.log("Error logging in: " + response);
+            alt.dispatch(submitFailed("An error occurred logging in"));
         }
     });
 }

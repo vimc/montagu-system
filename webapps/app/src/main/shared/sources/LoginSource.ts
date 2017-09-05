@@ -16,18 +16,19 @@ export function requestAuthToken(email: string, password: string): Promise<Respo
 export function processLoginResponse(
     response: Response,
     authStore: AuthStoreBaseInterface<any>,
-    triggeredByUser: boolean
+    triggeredByUser: boolean,
+    handleError: (error: string) => void
 ): Promise<any> {
     return response.json().then((json: any) => {
         if (json.error) {
-            throw Error("Your username or password is incorrect");
+            handleError("Your username or password is incorrect");
         } else if (json.access_token) {
             authStore.logIn(json.access_token, triggeredByUser);
         } else {
             // This case catches the situation where the server has an internal error, but
             // still returns something in the standard format
             console.log("Error logging in: " + JSON.stringify(json));
-            throw Error("An error occurred logging in");
+            handleError("An error occurred logging in");
         }
     });
 }
@@ -39,5 +40,5 @@ export function logIn(
      triggeredByUser: boolean
 ): Promise<any> {
     return requestAuthToken(email, password)
-        .then((response: Response) => processLoginResponse(response, authStore, triggeredByUser))
+        .then((response: Response) => processLoginResponse(response, authStore, triggeredByUser, err => new Error(err)))
 }

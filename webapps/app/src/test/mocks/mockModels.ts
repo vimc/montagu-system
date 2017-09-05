@@ -2,7 +2,6 @@ import * as models from "../../main/shared/models/Generated";
 import { ExtendedResponsibility, ExtendedResponsibilitySet } from "../../main/contrib/models/ResponsibilitySet";
 import { Version } from "../../main/shared/models/reports/Report";
 import { Artefact } from "../../main/shared/models/reports/Artefact";
-import { DemographicStatisticType } from "../../main/shared/models/Generated";
 
 let counter = 0;
 
@@ -24,7 +23,7 @@ export function mockScenario(properties?: any): models.Scenario {
     return Object.assign(template, properties);
 }
 
-export function mockModellingGroup(properties?: any) {
+export function mockModellingGroup(properties?: Partial<models.ModellingGroup>) {
     counter++;
     const template: models.ModellingGroup = {
         id: "group-" + counter,
@@ -173,7 +172,7 @@ export function mockArtefact(properties?: any): Artefact {
 
 export function mockDemographicStatisticType(properties?: Partial<models.DemographicStatisticType>): models.DemographicStatisticType {
     counter++;
-    const template: DemographicStatisticType = {
+    const template: models.DemographicStatisticType = {
         id: "type-" + counter,
         name: "Type " + counter,
         gender_is_applicable: true,
