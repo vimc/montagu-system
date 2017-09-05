@@ -31,6 +31,7 @@ RUN apt-get install -y docker-ce=17.03.0~ce-0~debian-jessie
 # Install Docker Compose
 RUN curl -L https://github.com/docker/compose/releases/download/1.16.1/docker-compose-`uname -s`-`uname -m` \
     -o /usr/local/bin/docker-compose
+RUN chmod 744 /usr/local/bin/docker-compose
 
 # Install webpack
 RUN npm install webpack --global
