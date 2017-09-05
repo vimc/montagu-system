@@ -1,10 +1,10 @@
 import * as React from "react";
-import {settings} from "../../../shared/Settings";
 import { FileDownloadLink } from "../FileDownloadLink";
 import { encodeFilename } from "../../../shared/Helpers";
 
-interface ArtefactProps
-{
+const styles = require("../../styles/reports.css");
+
+interface ArtefactProps {
     filenames: string[],
     description: string;
     report: string;
@@ -16,11 +16,15 @@ export class ArtefactItem extends React.Component<ArtefactProps, undefined> {
         const p = this.props;
         const filename = p.filenames[0];
         const url = `/reports/${p.report}/${p.version}/artefacts/${encodeFilename(filename)}/`;
-        return <li>
-            <FileDownloadLink key={filename} href={url}>
-                {filename}
-            </FileDownloadLink>
-            <div>({p.description})</div>
+        return <li className={styles.artefact}>
+            <div>{p.description}</div>
+            <ul>
+                <li>
+                    <FileDownloadLink key={filename} href={url}>
+                        {filename}
+                    </FileDownloadLink>
+                </li>
+            </ul>
         </li>;
     }
 }
