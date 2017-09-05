@@ -104,7 +104,7 @@ export function mockCoverageSet(properties?: any): models.CoverageSet {
         id: 100,
         name: "Coverage set name",
         activity_type: "routine",
-        gavi_support: "without",
+        gavi_support: "no gavi",
         touchstone: "touchstone-1",
         vaccine: "some-vaccine"
     };

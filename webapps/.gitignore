@@ -9,9 +9,11 @@ app/\.idea/modules.xml
 app/\.idea/typescript-compiler.xml
 app/\.idea/vcs.xml
 app/\.idea/workspace.xml
+app/api\.log
 app/node_modules/*
 app/npm-debug\.log
 app/out/*
+app/reporting_api\.log
 app/src/main/Models\.ts
 app/src/webmodels/.gradle/**
 app/src/webmodels/build/**

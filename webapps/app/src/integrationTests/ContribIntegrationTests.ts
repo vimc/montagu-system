@@ -7,21 +7,43 @@ import { expect } from "chai";
 import { checkPromise } from "../test/testHelpers";
 import { Client } from "pg";
 import { responsibilityStore } from "../main/contrib/stores/ResponsibilityStore";
-import { Touchstone } from "../main/shared/models/Generated";
+import {
+    Disease, ModellingGroup, Responsibilities, ScenarioTouchstoneAndCoverageSets,
+    Touchstone
+} from "../main/shared/models/Generated";
 import { alt } from "../main/shared/alt";
 import { touchstoneActions } from "../main/contrib/actions/TouchstoneActions";
 import { modellingGroupActions } from "../main/shared/actions/ModellingGroupActions";
-import { ExtendedResponsibilitySet } from "../main/contrib/models/ResponsibilitySet";
+import { responsibilityActions } from "../main/contrib/actions/ResponsibilityActions";
+import * as QueryString from 'querystring';
+const jwt_decode = require('jwt-decode');
 
 // This group (IC-Garske) must match the one the logged in user belongs to
 const groupId = "IC-Garske";
 const touchstoneId = "test-1";
+const scenarioId = "yf-1";
+
+const dbName = process.env.PGDATABASE;
+const dbTemplateName = process.env.PGTEMPLATE;
 
 describe("Contribution portal", () => {
-    const db = new Client({});
+    let db: Client;
 
-    before(() => db.connect());
-    after(() => db.end());
+    beforeEach((done: DoneCallback) => {
+        queryAgainstRootDb(`CREATE DATABASE ${dbName} TEMPLATE ${dbTemplateName};`)
+            .then(() => {
+                db = new Client({});
+                db.connect();
+                done();
+            })
+            .catch(e => done(e));
+    });
+    afterEach((done: DoneCallback) => {
+        db.end();
+        queryAgainstRootDb(`DROP DATABASE ${dbName};`)
+            .then(() => done())
+            .catch(e => done(e));
+    });
 
     beforeEach((done: DoneCallback) => {
         (global as any).fetch = require('node-fetch');
@@ -36,28 +58,22 @@ describe("Contribution portal", () => {
             INSERT INTO disease (id, name) VALUES ('d2', 'Disease 2');
         `).then(() => mainStore.fetchDiseases());
 
-        checkPromise(done, promise, () => {
-            expect(mainStore.getState().diseases).to.eql({
-                loaded: true,
-                content: {
-                    d1: { id: "d1", name: "Disease 1" },
-                    d2: { id: "d2", name: "Disease 2" }
-                }
-            });
+        checkPromise(done, promise, (diseases) => {
+            expectIsEqual<Disease[]>(diseases, [
+                    { id: "d1", name: "Disease 1" },
+                    { id: "d2", name: "Disease 2" }
+            ]);
         });
     });
 
     it("fetches modelling groups", (done: DoneCallback) => {
         const promise = addGroups(db).then(() => mainStore.fetchModellingGroups());
 
-        checkPromise(done, promise, () => {
-            expect(mainStore.getState().modellingGroups).to.eql({
-                loaded: true,
-                content: {
-                    "IC-Garske": { id: groupId, description: "Group 1" },
-                    Fake: { id: "Fake", description: "Group 2" }
-                }
-            });
+        checkPromise(done, promise, (groups) => {
+            expectIsEqual<ModellingGroup[]>(groups, [
+                { id: groupId, description: "Group 1" },
+                { id: "Fake", description: "Group 2" }
+            ]);
         });
     });
 
@@ -72,39 +88,84 @@ describe("Contribution portal", () => {
             status: "open"
         };
 
-        checkPromise(done, promise, () => expect(responsibilityStore.getState().touchstones).to.eql([expected]));
+        checkPromise(done, promise, (touchstones) => expectIsEqual<Touchstone[]>(touchstones, [expected]));
     });
 
     it("fetches responsibilities", (done: DoneCallback) => {
         const promise = addTouchstone(db)
             .then(() => addGroups(db))
             .then(() => addResponsibilities(db))
-            .then(() => touchstoneActions.setCurrentTouchstone(touchstoneId))
-            .then(() => modellingGroupActions.setCurrentGroup(groupId))
-            .then(() => responsibilityStore.fetchResponsibilities());
-        checkPromise(done, promise, () => {
-            const set: ExtendedResponsibilitySet = responsibilityStore.getCurrentResponsibilitySet();
-            expect(set).to.eql({
-                problems: "",
-                responsibilities: [{
-                    current_estimate: null,
-                    problems: [],
-                    scenario: {
-                        description: "Yellow Fever scenario",
-                        disease: "yf",
-                        id: "yf-1",
-                        touchstones: ["test-1"]
-                    },
-                    status: "empty",
-                    coverageSets: []
-                }],
-                status: "incomplete",
-                touchstone: {},
-                modellingGroup: {
-                    id: groupId,
-                    description: "Group 1"
-                }
+            .then(() => {
+                setTouchstoneAndGroup(touchstoneId, groupId);
+                return responsibilityStore.fetchResponsibilities();
             });
+        checkPromise(done, promise, (responsibilities) => {
+            expectIsEqual<Responsibilities>(responsibilities, expectedResponsibilitiesResponse());
+        });
+    });
+
+    it("fetches coverage sets", (done: DoneCallback) => {
+        let coverageSetId: number;
+        const promise = addTouchstone(db)
+            .then(() => addGroups(db))
+            .then(() => addResponsibilities(db))
+            .then(() => addCoverageSets(db))
+            .then(id => coverageSetId = id)
+            .then(() => {
+                setTouchstoneAndGroup(touchstoneId, groupId);
+                responsibilityActions.update(expectedResponsibilitiesResponse());
+                responsibilityActions.setCurrentResponsibility(scenarioId);
+                return responsibilityStore.fetchCoverageSets()
+            });
+        checkPromise(done, promise, data => {
+            expectIsEqual<ScenarioTouchstoneAndCoverageSets>(data, {
+                scenario: {
+                    id: scenarioId,
+                    description: "Yellow Fever scenario",
+                    disease: "yf",
+                    touchstones: [touchstoneId]
+                },
+                touchstone: {
+                    id: touchstoneId,
+                    name: "test",
+                    version: 1,
+                    description: "Testing version 1",
+                    status: "open"
+                },
+                coverage_sets: [
+                    {
+                        id: coverageSetId,
+                        name: "Test set",
+                        touchstone: touchstoneId,
+                        activity_type: "none",
+                        vaccine: "yf",
+                        gavi_support: "no vaccine"
+                    }
+                ]
+            });
+        })
+    });
+
+    it("fetches coverage one time token", (done: DoneCallback) => {
+        const promise = addTouchstone(db)
+            .then(() => addGroups(db))
+            .then(() => addResponsibilities(db))
+            .then(() => addCoverageSets(db))
+            .then(() => {
+                setTouchstoneAndGroup(touchstoneId, groupId);
+                responsibilityActions.update(expectedResponsibilitiesResponse());
+                responsibilityActions.setCurrentResponsibility(scenarioId);
+                return responsibilityStore.fetchOneTimeCoverageToken()
+            });
+        checkPromise(done, promise, token => {
+            const decoded = jwt_decode(token);
+            expect(decoded.action).to.equal("coverage");
+            const payload = QueryString.parse(decoded.payload);
+            expect(payload).to.eql(JSON.parse(`{
+                ":group-id": "${groupId}",
+                ":touchstone-id": "${touchstoneId}",
+                ":scenario-id": "${scenarioId}"
+            }`));
         });
     });
 });
@@ -128,20 +189,92 @@ function addGroups(db: Client): Promise<any> {
 
 function addResponsibilities(db: Client): Promise<any> {
     return db.query(`
-        INSERT INTO disease (id, name) VALUES ('yf', 'Yellow Fever');
-        INSERT INTO scenario_description (id, description, disease)
-        VALUES ('yf-1', 'Yellow Fever scenario', 'yf');
-        INSERT INTO scenario (touchstone, scenario_description)
-        VALUES ('${touchstoneId}', 'yf-1')
-        RETURNING id scenario_id;
+        DO $$
+            DECLARE scenario_id integer;
+            DECLARE set_id integer;
+        BEGIN
+            INSERT INTO disease (id, name) VALUES ('yf', 'Yellow Fever');
+            INSERT INTO scenario_description (id, description, disease)
+            VALUES ('${scenarioId}', 'Yellow Fever scenario', 'yf');
+            INSERT INTO scenario (touchstone, scenario_description)
+            VALUES ('${touchstoneId}', '${scenarioId}')
+            RETURNING id INTO scenario_id;
+                    
+            INSERT INTO responsibility_set_status (id, name) VALUES ('incomplete', 'Incomplete');
     
-        INSERT INTO responsibility_set_status (id, name) VALUES ('incomplete', 'Incomplete');
+            INSERT INTO responsibility_set (modelling_group, touchstone, status)
+            VALUES ('${groupId}', '${touchstoneId}', 'incomplete')
+            RETURNING id INTO set_id;
+            
+            INSERT INTO responsibility (responsibility_set, scenario)
+            VALUES (set_id, scenario_id);
+        END $$;
+    `)
+}
+
+function addCoverageSets(db: Client): Promise<number> {
+    return db.query(`
+        DO $$
+            DECLARE coverage_set_id integer;
+            DECLARE scenario_id integer;
+        BEGIN
+            INSERT INTO vaccine            (id, name) VALUES ('yf', 'Yellow Fever vaccine');
+            INSERT INTO gavi_support_level (id, name) VALUES ('none', 'None');
+            INSERT INTO activity_type      (id, name) VALUES ('none', 'None');
         
-        INSERT INTO responsibility_set (modelling_group, touchstone, status)
-        VALUES ('${groupId}', '${touchstoneId}', 'incomplete')
-        RETURNING id INTO set_id;
-        
-        INSERT INTO responsibility (responsibility_set, scenario)
-        VALUES (set_id, scenario_id)
-    `);
+            INSERT INTO coverage_set (      name,        touchstone, vaccine, gavi_support_level, activity_type)
+                              VALUES ('Test set', '${touchstoneId}',    'yf',             'none',        'none')
+                              RETURNING id INTO coverage_set_id;
+                              
+            SELECT id FROM scenario INTO scenario_id;
+            
+            INSERT INTO scenario_coverage_set (   scenario,    coverage_set, "order") 
+                                       VALUES (scenario_id, coverage_set_id,       0);
+        END $$;
+    `)
+        .then(() => db.query(`SELECT id FROM coverage_set`))
+        .then(result => result.rows[0].id);
+}
+
+function queryAgainstRootDb(query: string): Promise<void> {
+    const db = new Client({ database: "postgres" });
+    db.connect();
+    return db.query(query)
+        .then(() => db.end());
+}
+
+function setTouchstoneAndGroup(touchstoneId: string, groupId: string) {
+    touchstoneActions.update([
+        { id: touchstoneId, description: "Touchstone", status: "open", version: 1, name: "test" }
+    ]);
+    touchstoneActions.setCurrentTouchstone(touchstoneId);
+    modellingGroupActions.updateGroups([
+        { id: groupId, description: "Group 1" }
+    ]);
+    modellingGroupActions.setCurrentGroup(groupId);
+}
+
+function expectedResponsibilitiesResponse(): Responsibilities {
+    return {
+        status: "incomplete",
+        touchstone: touchstoneId,
+        problems: "",
+        responsibilities: [
+            {
+                problems: [],
+                status: "empty",
+                current_estimate: null,
+                scenario: {
+                    id: scenarioId,
+                    description: "Yellow Fever scenario",
+                    disease: "yf",
+                    touchstones: [touchstoneId]
+                }
+            }
+        ]
+    };
+}
+
+function expectIsEqual<T>(actual: T, expected: T) {
+    expect(actual).to.eql(expected);
 }

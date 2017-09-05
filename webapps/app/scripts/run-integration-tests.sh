@@ -12,13 +12,20 @@ docker pull $registry/montagu-generate-test-data:$MONTAGU_API_VERSION
 docker run --rm --network=montagu_default \
     $registry/montagu-generate-test-data:$MONTAGU_API_VERSION justRoles
 
-# Run the tests
+# Set database variables (the names here are used by the Node pg library,
+# and shouldn't be changed)
 export PGUSER=vimc
 export PGHOST=localhost
 export PGPASSWORD=changeme
 export PGDATABASE=montagu
+export PGTEMPLATE=montagu_template
 export PGPORT=5432
 
+# Setup template database
+docker exec montagu_db_1 psql -U vimc -d postgres -c \
+    "ALTER DATABASE $PGDATABASE RENAME TO $PGTEMPLATE"
+
+# Run the tests
 set +e
 mocha-webpack --webpack-config webpack-test.config.js "src/integrationTests/**/*"
 result=$?

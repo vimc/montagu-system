@@ -3,7 +3,7 @@
 
 export type ActivityType = "none" | "routine" | "campaign" | "campaign-reactive";
 
-export type GAVISupportLevel = "none" | "without" | "with";
+export type GAVISupportLevel = "no vaccine" | "no gavi" | "total";
 
 export interface CoverageSet {
     activity_type: ActivityType;
