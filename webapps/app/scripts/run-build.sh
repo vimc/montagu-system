@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 docker run \
     -v /var/run/docker.sock:/var/run/docker.sock \
-    --network host
+    --network=host \
     montagu-portal-build-env
