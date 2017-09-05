@@ -12,6 +12,9 @@ docker pull $registry/montagu-generate-test-data:$MONTAGU_API_VERSION
 docker run --rm --network=montagu_default \
     $registry/montagu-generate-test-data:$MONTAGU_API_VERSION justRoles
 
+# Add some extra roles needed for testing
+$here/cli.sh addRole test.user user-manager
+
 # Set database variables (the names here are used by the Node pg library,
 # and shouldn't be changed)
 export PGUSER=vimc

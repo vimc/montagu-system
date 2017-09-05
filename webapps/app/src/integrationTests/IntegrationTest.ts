@@ -41,6 +41,8 @@ export abstract class IntegrationTestSuite {
             beforeEach((done: DoneCallback) => {
                 (global as any).fetch = require('node-fetch');
                 fetcher.fetcher = this.makeFetcher();
+                // Note that this will always trigger an authActions.logIn, which will result in all three login
+                // stores recording the user to some extent
                 checkPromise(done, logIn("test.user@imperial.ac.uk", "password", this.authStore(), false));
             });
             afterEach(() => alt.recycle());

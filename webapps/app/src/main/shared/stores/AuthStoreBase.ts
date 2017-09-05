@@ -3,6 +3,9 @@ import * as AltJS from "alt";
 import { AbstractStore } from "./AbstractStore";
 import { authActions, LogInProperties } from "../actions/AuthActions";
 import { decodeToken } from "../Token";
+import { contribAuthStore } from "../../contrib/stores/ContribAuthStore";
+import { adminAuthStore } from "../../admin/stores/AdminAuthStore";
+import { reportingAuthStore } from "../../report/stores/ReportingAuthStore";
 
 export interface AuthStateBase {
     loggedIn: boolean;
