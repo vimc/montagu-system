@@ -6,7 +6,6 @@ import { userActions } from "../actions/UserActions";
 
 export class UserSource extends Source<UserStoreState> {
     _fetchUsers: () => SourceModel<User[]>;
-    fetchUserDetails: () => SourceModel<User>;
 
     constructor() {
         super();

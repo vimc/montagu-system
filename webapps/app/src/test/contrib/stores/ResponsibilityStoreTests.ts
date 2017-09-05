@@ -55,23 +55,24 @@ describe("ResponsibilityStore", () => {
 
     it("modellingGroupActions.update sets current modelling group if only a member of one", () => {
         // User has no membership of any group
-        const group = mockModellingGroup();
-        modellingGroupActions.updateGroups([ group ]);
+        const group1 = mockModellingGroup({ id: "g1" });
+        const group2 = mockModellingGroup({ id: "g2" });
+        modellingGroupActions.updateGroups([ group1, group2 ]);
         expect(responsibilityStore.getState().currentModellingGroup).to.be.null;
 
         // User has membership of multiple groups
         alt.bootstrap(JSON.stringify({
-            ContribAuthStore: { modellingGroupIds: [ group.id, "another-id" ] }
+            ContribAuthStore: { modellingGroupIds: [ group1.id, group2.id ] }
         }));
-        modellingGroupActions.updateGroups([ group ]);
+        modellingGroupActions.updateGroups([ group1, group2 ]);
         expect(responsibilityStore.getState().currentModellingGroup).to.be.null;
 
         // User has membership of just one group
         alt.bootstrap(JSON.stringify({
-            ContribAuthStore: { modellingGroupIds: [ group.id ] }
+            ContribAuthStore: { modellingGroupIds: [ group1.id ] }
         }));
-        modellingGroupActions.updateGroups([ group ]);
-        expect(responsibilityStore.getState().currentModellingGroup).to.eql(group);
+        modellingGroupActions.updateGroups([ group1, group2 ]);
+        expect(responsibilityStore.getState().currentModellingGroup).to.eql(group1);
     });
 
     it("responsibilityActions.update sets current responsibility set", () => {

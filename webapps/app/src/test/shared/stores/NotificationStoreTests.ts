@@ -85,7 +85,7 @@ describe("NotificationStore", () => {
             permissions: "*/can-login",
             roles: "modelling-group:group/member"
         }, "secret");
-        authActions.logIn(token);
+        authActions.logIn(token, false);
 
         const state = notificationStore.getState();
         expect(state.errors).to.be.empty;
@@ -97,7 +97,7 @@ describe("NotificationStore", () => {
             permissions: "",
             roles: "modelling-group:group/member"
         }, "secret");
-        authActions.logIn(token);
+        authActions.logIn(token, false);
 
         const state = notificationStore.getState();
         expect(state.errors[0]).to.contain("Your account has been deactivated");
@@ -109,7 +109,7 @@ describe("NotificationStore", () => {
             permissions: "*/can-login",
             roles: ""
         }, "secret");
-        authActions.logIn(token);
+        authActions.logIn(token, false);
 
         const state = notificationStore.getState();
         expect(state.errors[0]).to.contain("Only members of modelling groups");

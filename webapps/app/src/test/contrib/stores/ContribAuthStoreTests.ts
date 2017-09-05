@@ -63,7 +63,7 @@ class ContribAuthStoreTests extends AuthStoreBaseTests<ContribAuthState, Contrib
                 permissions: "*/can-login,*/other",
                 roles: "r1,modelling-group:test.group/member"
             }, 'secret');
-            contribAuthStore.logIn(token);
+            contribAuthStore.logIn(token, true);
             expectOrderedActions(spy, [ { action: "AuthActions.logIn" } ], 0);
             expect(storeLoad.called).to.be.true;
             storeLoad.restore();

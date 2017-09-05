@@ -31,9 +31,9 @@ class ContribAuthStore extends AuthStore<ContribAuthState, ContribAuthStoreInter
         });
     }
 
-    doLogIn(accessToken: string) {
-        super.doLogIn(accessToken);
-        if (this.loggedIn) {
+    doLogIn(accessToken: string, triggeredByUser: boolean) {
+        super.doLogIn(accessToken, triggeredByUser);
+        if (this.loggedIn && triggeredByUser) {
             mainStore.load();
         }
     }
@@ -52,7 +52,9 @@ class ContribAuthStore extends AuthStore<ContribAuthState, ContribAuthStoreInter
     }
 
     handleModellingGroups(groups: ModellingGroup[]) {
-        this.modellingGroups = this.modellingGroupIds.map(id => groups.find(g => g.id == id));
+        this.modellingGroups = this.modellingGroupIds
+            .map(id => groups.find(g => g.id == id))
+            .filter(x => !!x);  // Filters out 'falsey' values, like null
     }
 }
 

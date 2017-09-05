@@ -42,14 +42,14 @@ export abstract class AuthStoreBaseTests<TState, TInterface extends AuthStoreBas
         }, 'secret');
 
         it("handles logIn event", () => {
-            authActions.logIn(goodToken);
+            authActions.logIn(goodToken, true);
             expect(this.getStoreState()).to.eql(this.expectedStateAfterLogin(goodToken));
         });
 
         it("on logIn event, saves token to localStorage", () => {
             const lookup: ILookup<string> = {};
             withMockLocalStorage(lookup, () => {
-                authActions.logIn(goodToken);
+                authActions.logIn(goodToken, true);
             });
             expect(lookup["accessToken"]).to.equal(goodToken);
         });
@@ -86,14 +86,15 @@ export abstract class AuthStoreBaseTests<TState, TInterface extends AuthStoreBas
         it("logIn invokes logIn action", () => {
             const spy = this.sandbox.dispatchSpy();
             const token = "TOKEN";
-            this.getStore().logIn(token);
+            this.getStore().logIn(token, true);
             const expectedPayload: LogInProperties = {
                 token: "TOKEN",
                 username: null,
                 modellingGroups: [],
                 permissions: [],
                 isModeller: false,
-                isAccountActive: false
+                isAccountActive: false,
+                triggeredByUser: true
             };
             expectOrderedActions(spy, [{ action: "AuthActions.logIn", payload: expectedPayload }], 0);
         });

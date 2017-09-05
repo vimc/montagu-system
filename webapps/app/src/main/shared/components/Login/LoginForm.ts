@@ -5,6 +5,7 @@ import fetcher from "../../sources/Fetcher";
 import FormActions from "../../FormActions";
 import * as Validation from "../../Validation";
 import { FormErrors } from "../../FormHelpers";
+import { requestAuthToken, processLoginResponse } from "../../sources/LoginSource";
 
 export interface LoginFields {
     email: string;
@@ -23,31 +24,12 @@ export function loginForm(name: string, authStore: AuthStoreBaseInterface<any>):
             },
         },
         onSubmit: (state: LoginFields & FormErrors) => {
-            const data = "grant_type=client_credentials";
-            return fetcher.fetcher.fetch("/authenticate/", {
-                method: "POST",
-                headers: {
-                    'Authorization': 'Basic ' + btoa(`${state.email}:${state.password}`),
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                body: data
-            }, false);
+            return requestAuthToken(state.email, state.password);
         },
         onSubmitSuccess: (response: any) => {
-            response.json().then((json: any) => {
-                if (json.error) {
-                    alt.dispatch(submitFailed("Your username or password is incorrect"));
-                } else if (json.access_token) {
-                    authStore.logIn(json.access_token);
-                } else {
-                    // This case catches the situation where the server has an internal error, but
-                    // still returns something in the standard format
-                    console.log("Error logging in: " + JSON.stringify(json));
-                    alt.dispatch(submitFailed("An error occurred logging in"));
-                }
-            });
+            return processLoginResponse(response, authStore, true, err => alt.dispatch(submitFailed(err)));
         },
-        onSubmitFail: (response: any) => {
+        onSubmitFail: (response: Response) => {
             console.log("Error logging in: " + response);
             alt.dispatch(submitFailed("An error occurred logging in"));
         }
