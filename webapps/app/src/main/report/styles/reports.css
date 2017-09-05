@@ -1,0 +1,21 @@
+:local(.artefactColumn) {
+    padding: 0;
+}
+
+:local(.artefactList) {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+
+:local(.artefact) {
+    padding: 5px 5px 10px 5px;
+    border-bottom: 1px solid black;
+}
+:local(.artefactList) li:last-child {
+    border-bottom: none;
+}
+
+:local(.description) {
+    font-weight: bold;
+}

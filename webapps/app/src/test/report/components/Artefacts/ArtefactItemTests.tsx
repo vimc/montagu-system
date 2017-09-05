@@ -4,6 +4,8 @@ import { ArtefactItem } from "../../../../main/report/components/Artefacts/Artef
 import { FileDownloadLink } from "../../../../main/report/components/FileDownloadLink";
 import { Sandbox } from "../../../Sandbox";
 
+const styles = require("../../../../main/report/styles/reports.css");
+
 describe("ArtefactItem", () => {
     const sandbox = new Sandbox();
 
@@ -15,7 +17,7 @@ describe("ArtefactItem", () => {
         const item = rendered.find("li").at(0);
         const link = item.find(FileDownloadLink);
 
-        expect(rendered.find("li").length).to.eq(1);
+        expect(rendered.find("li." + styles.artefact).length).to.eq(1);
         expect(link.prop("href")).to.eq("/reports/reportname/versionname/artefacts/subdir:filename.csv/");
         expect(link.text()).to.eq("subdir/filename.csv");
 
@@ -27,7 +29,7 @@ describe("ArtefactItem", () => {
         const item = rendered.find("li").at(0);
         const description = item.find("div");
 
-        expect(description.text()).to.eq("(a file)");
+        expect(description.text()).to.eq("a file");
 
     });
 
