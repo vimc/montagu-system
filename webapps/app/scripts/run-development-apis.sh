@@ -2,6 +2,7 @@
 set -ex
 
 here=$(dirname $0)
+$here/clear-docker.sh
 source $here/run-apis.sh
 
 # From now on, if the user presses Ctrl+C we should teardown gracefully

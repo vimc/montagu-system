@@ -1,9 +1,6 @@
 #!/usr/bin/env bash
 set -ex
 
-here=$(dirname $0)
-$here/clear-docker.sh
-
 export MONTAGU_API_VERSION=$(<config/api_version)
 export MONTAGU_REPORTING_API_VERSION=$(<config/reporting_api_version)
 export MONTAGU_DB_VERSION=$(<config/db_version)
