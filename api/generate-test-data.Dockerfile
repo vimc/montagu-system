@@ -1,6 +1,6 @@
 FROM montagu-api-build-environment
 
-CMD ./gradlew :generateTestData \
-  && ./user.sh add "Test User" test.user test.user@imperial.ac.uk password \
-  && ./user.sh addRole test.user user \
-  && ./user.sh addUserToGroup test.user IC-Garske
+RUN ./gradlew :generateTestData:installDist
+RUN ./gradlew :userCLI:installDist
+
+ENTRYPOINT ["bash", "./generateTestData/generate.sh"]

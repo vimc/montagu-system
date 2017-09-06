@@ -9,116 +9,79 @@ import org.vaccineimpact.api.db.direct.*
  * run to set up the database in a given state for manual testing. It's expected this code
  * changes frequently to allow developers to run arbitrary code against their development db.
  */
-fun main(args: Array<String>) {
+fun main(args: Array<String>)
+{
+    val mode = if (args.isNotEmpty())
+    {
+        enumValueOf(args[0])
+    }
+    else
+    {
+        TestDataMode.full
+    }
+    println("Running with test data mode $mode")
+
     JooqContext().use { db ->
-        db.addDisease("YF", "Yellow Fever")
-        db.addVaccine("YF", "Yellow Fever")
-        db.addSupportLevels("none", "without", "with")
-        db.addActivityTypes("none", "routine", "campaign")
-
-        db.addScenarioDescription("yf-routine", "Yellow Fever, routine", "YF")
-        db.addScenarioDescription("yf-campaign", "Yellow Fever, campaign", "YF")
-
-        db.addTouchstoneName("op-2017", "Operational Forecast 2017")
-        db.addTouchstone("op-2017", 1, "Operational Forecast 2017 (v1)", "finished", addStatus = true)
-        db.addTouchstone("op-2017", 2, "Operational Forecast 2017 (v2)", "open", addStatus = true)
-
-        val demographicTestData = DemographicTestData(db)
-        demographicTestData.generate("op-2017-1", listOf("YF"))
-        demographicTestData.generate("op-2017-2", listOf("YF"))
-
-        val yfRoutine = db.addScenarioToTouchstone("op-2017-2", "yf-routine")
-        val yfCampaign = db.addScenarioToTouchstone("op-2017-2", "yf-campaign")
-
-        val yfNoVacc = db.addCoverageSet("op-2017-2", "Yellow Fever, no vaccination", "YF", "none", "none")
-        val yfRoutineWithout = db.addCoverageSet("op-2017-2", "Yellow Fever, routine, without GAVI", "YF", "without", "routine")
-        val yfRoutineWith = db.addCoverageSet("op-2017-2", "Yellow Fever, routine, with GAVI", "YF", "with", "routine")
-        val yfCampaignWithout = db.addCoverageSet("op-2017-2", "Yellow Fever, campaign, without GAVI", "YF", "without", "campaign")
-        val yfCampaignWith = db.addCoverageSet("op-2017-2", "Yellow Fever, campaign, with GAVI", "YF", "with", "campaign")
-        db.generateCoverageData(yfNoVacc)
-        db.generateCoverageData(yfRoutineWithout)
-        db.generateCoverageData(yfRoutineWith)
-        db.generateCoverageData(yfCampaignWithout)
-        db.generateCoverageData(yfCampaignWith)
-
-        db.addCoverageSetToScenario("yf-routine", "op-2017-2", yfNoVacc, 0)
-        db.addCoverageSetToScenario("yf-routine", "op-2017-2", yfRoutineWithout, 1)
-        db.addCoverageSetToScenario("yf-routine", "op-2017-2", yfRoutineWith, 2)
-        db.addCoverageSetToScenario("yf-campaign", "op-2017-2", yfNoVacc, 0)
-        db.addCoverageSetToScenario("yf-campaign", "op-2017-2", yfRoutineWithout, 1)
-        db.addCoverageSetToScenario("yf-campaign", "op-2017-2", yfRoutineWith, 2)
-        db.addCoverageSetToScenario("yf-campaign", "op-2017-2", yfCampaignWithout, 3)
-        db.addCoverageSetToScenario("yf-campaign", "op-2017-2", yfCampaignWith, 4)
-
-        db.addGroup("IC-Garske", "Imperial Yellow Fever modelling group")
-        db.addGroup("IC-Imaginary", "Imperial speculative modelling group")
-        val setId = db.addResponsibilitySet("IC-Garske", "op-2017-2", "incomplete", addStatus = true)
-        db.addResponsibility(setId, yfRoutine)
-        db.addResponsibility(setId, yfCampaign)
+        if (mode == TestDataMode.full)
+        {
+            addFullTestData(db)
+        }
 
         // note these roles are the real standard roles for the live db, not just test data!
         StandardRoles.insertInto(db)
-
     }
 }
 
-class DemographicTestData(val db: JooqContext)
+private fun addFullTestData(db: JooqContext)
 {
-    val variants = listOf("unwpp_estimates", "unwpp_medium_variant", "unwpp_high_variant")
-    val countries = db.generateCountries(3)
-    val sources = db.generateDemographicSources(listOf("unwpp2015", "unwpp2017"))
-    val variantIds = db.generateDemographicVariants(variants)
-    val units = db.generateDemographicUnits()
-    val genderIds = db.generateGenders()
-    val statisticTypes = addStatisticTypes(listOf(
-            "tot-pop" to "Total population",
-            "tot-births" to
-                    "Total births")
-    )
+    db.addDisease("YF", "Yellow Fever")
+    db.addVaccine("YF", "Yellow Fever")
+    db.addSupportLevels("none", "without", "with")
+    db.addActivityTypes("none", "routine", "campaign")
 
-    fun generate(touchstoneId: String, diseases: List<String>)
-    {
-        db.addDemographicSourcesToTouchstone(touchstoneId, sources.map { (_, id) -> id })
-        for (disease in diseases)
-        {
-            db.addTouchstoneCountries(touchstoneId, countries, disease)
-        }
+    db.addScenarioDescription("yf-routine", "Yellow Fever, routine", "YF")
+    db.addScenarioDescription("yf-campaign", "Yellow Fever, campaign", "YF")
 
-        for ((typeCode, typeId) in statisticTypes)
-        {
-            for ((_, sourceId) in sources.filter { (code, _) -> sourceIsRelevantToType(code, typeCode) })
-            {
-                for (gender in genderIds)
-                {
-                    for (variant in variantIds)
-                    {
-                        println("Generating demographic data for $touchstoneId/$typeCode/$sourceId/$variant")
-                        db.generateDemographicData(sourceId, typeId,
-                                genderId = gender,
-                                variantId = variant,
-                                countries = countries
-                        )
-                    }
-                }
-            }
-        }
-    }
+    db.addTouchstoneName("op-2017", "Operational Forecast 2017")
+    db.addTouchstone("op-2017", 1, "Operational Forecast 2017 (v1)", "finished", addStatus = true)
+    db.addTouchstone("op-2017", 2, "Operational Forecast 2017 (v2)", "open", addStatus = true)
 
-    private fun sourceIsRelevantToType(source: String, type: String) =
-            type == "tot-pop" || source == "unwpp2017"
+    val demographicTestData = DemographicTestData(db)
+    demographicTestData.generate("op-2017-1", listOf("YF"))
+    demographicTestData.generate("op-2017-2", listOf("YF"))
 
-    fun addStatisticTypes(definitions: List<Pair<String, String>>): List<Pair<String, Int>>
-    {
-        return definitions.withIndex().map { (index, definition) ->
-            val (code, name) = definition
-            val id = db.addDemographicStatisticType(
-                    code,
-                    variantIds,
-                    units,
-                    name = name,
-                    genderIsApplicable = index % 2 == 0
-            )
-            code to id
-        }
-    }
+    val yfRoutine = db.addScenarioToTouchstone("op-2017-2", "yf-routine")
+    val yfCampaign = db.addScenarioToTouchstone("op-2017-2", "yf-campaign")
+
+    val yfNoVacc = db.addCoverageSet("op-2017-2", "Yellow Fever, no vaccination", "YF", "none", "none")
+    val yfRoutineWithout = db.addCoverageSet("op-2017-2", "Yellow Fever, routine, without GAVI", "YF", "without", "routine")
+    val yfRoutineWith = db.addCoverageSet("op-2017-2", "Yellow Fever, routine, with GAVI", "YF", "with", "routine")
+    val yfCampaignWithout = db.addCoverageSet("op-2017-2", "Yellow Fever, campaign, without GAVI", "YF", "without", "campaign")
+    val yfCampaignWith = db.addCoverageSet("op-2017-2", "Yellow Fever, campaign, with GAVI", "YF", "with", "campaign")
+    db.generateCoverageData(yfNoVacc)
+    db.generateCoverageData(yfRoutineWithout)
+    db.generateCoverageData(yfRoutineWith)
+    db.generateCoverageData(yfCampaignWithout)
+    db.generateCoverageData(yfCampaignWith)
+
+    db.addCoverageSetToScenario("yf-routine", "op-2017-2", yfNoVacc, 0)
+    db.addCoverageSetToScenario("yf-routine", "op-2017-2", yfRoutineWithout, 1)
+    db.addCoverageSetToScenario("yf-routine", "op-2017-2", yfRoutineWith, 2)
+    db.addCoverageSetToScenario("yf-campaign", "op-2017-2", yfNoVacc, 0)
+    db.addCoverageSetToScenario("yf-campaign", "op-2017-2", yfRoutineWithout, 1)
+    db.addCoverageSetToScenario("yf-campaign", "op-2017-2", yfRoutineWith, 2)
+    db.addCoverageSetToScenario("yf-campaign", "op-2017-2", yfCampaignWithout, 3)
+    db.addCoverageSetToScenario("yf-campaign", "op-2017-2", yfCampaignWith, 4)
+
+    db.addGroup("IC-Garske", "Imperial Yellow Fever modelling group")
+    db.addGroup("IC-Imaginary", "Imperial speculative modelling group")
+    val setId = db.addResponsibilitySet("IC-Garske", "op-2017-2", "incomplete", addStatus = true)
+    db.addResponsibility(setId, yfRoutine)
+    db.addResponsibility(setId, yfCampaign)
+}
+
+enum class TestDataMode
+{
+    full,
+    justRoles
 }
