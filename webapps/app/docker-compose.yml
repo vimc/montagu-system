@@ -19,6 +19,11 @@ services:
     image: docker.montagu.dide.ic.ac.uk:5000/montagu-db:${MONTAGU_DB_VERSION}
     ports:
       - "5432:5432"
+  migrations:
+    image: docker.montagu.dide.ic.ac.uk:5000/montagu-migrate:${MONTAGU_DB_VERSION}
+    command: migrate -baselineOnMigrate=true -baselineVersion=0
+    depends_on:
+      - db
 
 volumes:
   orderly_volume:
