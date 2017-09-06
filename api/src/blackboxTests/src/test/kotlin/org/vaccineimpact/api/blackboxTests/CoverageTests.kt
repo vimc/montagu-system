@@ -78,11 +78,11 @@ class CoverageTests : DatabaseTest()
     {
         db.addGroup(groupId, "description")
         db.addScenarioDescription(scenarioId, "description 1", "disease-1", addDisease = true)
-        db.addTouchstone("touchstone", 1, "description", touchstoneStatus, addName = true, addStatus = true)
-        val setId = db.addResponsibilitySet(groupId, touchstoneId, "submitted", addStatus = true)
+        db.addTouchstone("touchstone", 1, "description", touchstoneStatus, addName = true)
+        val setId = db.addResponsibilitySet(groupId, touchstoneId, "submitted")
         db.addResponsibility(setId, touchstoneId, scenarioId)
         db.addCoverageSet(touchstoneId, "coverage set name", "vaccine-1", "without", "routine", coverageSetId,
-                addVaccine = true, addActivityType = true, addSupportLevel = true)
+                addVaccine = true)
         db.addCoverageSetToScenario(scenarioId, touchstoneId, coverageSetId, 0)
         db.generateCoverageData(coverageSetId, countryCount = 2, yearRange = 1995..2000, ageRange = 0..20 step 5)
     }

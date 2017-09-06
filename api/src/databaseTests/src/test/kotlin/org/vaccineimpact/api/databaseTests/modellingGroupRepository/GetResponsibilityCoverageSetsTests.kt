@@ -24,7 +24,7 @@ class GetResponsibilityCoverageSetsTests : ModellingGroupRepositoryTests()
     {
         given {
             createGroupAndSupportingObjects(it)
-            it.addResponsibilitySet(groupId, touchstoneId, "incomplete", addStatus = true)
+            it.addResponsibilitySet(groupId, touchstoneId, "incomplete")
         } check {
             assertThatThrownBy { it.getCoverageSets(groupId, touchstoneId, scenarioId) }
                     .isInstanceOf(org.vaccineimpact.api.app.errors.UnknownObjectError::class.java)
@@ -49,7 +49,7 @@ class GetResponsibilityCoverageSetsTests : ModellingGroupRepositoryTests()
     {
         given {
             createGroupAndSupportingObjects(it)
-            it.addResponsibilitySet(groupId, touchstoneId, "incomplete", addStatus = true)
+            it.addResponsibilitySet(groupId, touchstoneId, "incomplete")
         } check {
             assertThatThrownBy { it.getCoverageData(groupId, touchstoneId, scenarioId) }
                     .isInstanceOf(org.vaccineimpact.api.app.errors.UnknownObjectError::class.java)
@@ -94,17 +94,14 @@ class GetResponsibilityCoverageSetsTests : ModellingGroupRepositoryTests()
     {
         db.addGroup(groupId, "description")
         db.addTouchstone(touchstoneName, touchstoneVersion, "description", "open",
-                addName = true, addStatus = true)
+                addName = true)
         db.addScenarioDescription(scenarioId, "Yellow Fever Scenario", "YF", addDisease = true)
-
-        db.addSupportLevels("none", "without", "with")
-        db.addActivityTypes("none", "routine", "campaign")
         db.addVaccine("YF", "Yellow Fever")
     }
 
     private fun giveCoverageSetsToResponsibility(db: JooqContext, includeCoverageData: Boolean)
     {
-        val setId = db.addResponsibilitySet(groupId, touchstoneId, "incomplete", addStatus = true)
+        val setId = db.addResponsibilitySet(groupId, touchstoneId, "incomplete")
         db.addResponsibility(setId, touchstoneId, scenarioId)
         db.addCoverageSet(touchstoneId, "First", "YF", "without", "campaign", id = setA)
         db.addCoverageSet(touchstoneId, "Second", "YF", "with", "campaign", id = setB)

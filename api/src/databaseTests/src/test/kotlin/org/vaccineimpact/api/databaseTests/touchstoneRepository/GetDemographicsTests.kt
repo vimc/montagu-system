@@ -21,7 +21,7 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
                     .withFertility()
                     .sourceIds
 
-            it.addTouchstone(touchstoneName, touchstoneVersion, addName = true, addStatus = true)
+            it.addTouchstone(touchstoneName, touchstoneVersion, addName = true)
             it.addDemographicSourcesToTouchstone(touchstoneId, sourceIds)
 
 
@@ -41,7 +41,7 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
                     .withFertility()
                     .countries
 
-            it.addTouchstone(touchstoneName, touchstoneVersion, addName = true, addStatus = true)
+            it.addTouchstone(touchstoneName, touchstoneVersion, addName = true)
             it.addTouchstoneCountries(touchstoneId, countries, "measles")
 
 
@@ -79,7 +79,7 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
 
             expectedCountries = data.countries.subList(0, 1)
 
-            it.addTouchstone(touchstoneName, touchstoneVersion, addName = true, addStatus = true)
+            it.addTouchstone(touchstoneName, touchstoneVersion, addName = true)
             it.addTouchstoneCountries(touchstoneId, expectedCountries, "measles")
             it.addDemographicSourcesToTouchstone(touchstoneId, data.sourceIds)
 
@@ -166,7 +166,7 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
             Assertions.assertThat(metadata.gender).isEqualTo("Both")
             Assertions.assertThat(metadata.source).isEqualTo("unwpp2015")
             Assertions.assertThat(metadata.ageInterpretation).isEqualTo("age")
-            Assertions.assertThat(metadata.unit).isEqualTo("people")
+            Assertions.assertThat(metadata.unit).isEqualTo("Number of people")
             Assertions.assertThat(metadata.countries).hasSameElementsAs(countries)
 
             metadata = it.getDemographicDataset("as-fert", sources[0], touchstoneId)
@@ -177,7 +177,7 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
             Assertions.assertThat(metadata.gender).isEqualTo("Both")
             Assertions.assertThat(metadata.source).isEqualTo("unwpp2015")
             Assertions.assertThat(metadata.ageInterpretation).isEqualTo("age of mother")
-            Assertions.assertThat(metadata.unit).isEqualTo("people")
+            Assertions.assertThat(metadata.unit).isEqualTo("Births per woman")
             Assertions.assertThat(metadata.countries).hasSameElementsAs(countries)
         }
     }
@@ -366,7 +366,7 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
                     .withPopulation()
                     .sourceIds
 
-            it.addTouchstone(anotherTouchstoneName, touchstoneVersion, addName = true, addStatus = false)
+            it.addTouchstone(anotherTouchstoneName, touchstoneVersion, addName = true)
             it.addDemographicSourcesToTouchstone(anotherTouchstoneId, sourceIds)
             it.addTouchstoneCountries(anotherTouchstoneId, it.generateCountries(2), "measles")
 
@@ -396,7 +396,7 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
             val newSources = listOf("anothersource", "moresource")
             val newSourceIds = it.generateDemographicSources(newSources).map { (_, id) -> id }
 
-            it.addTouchstone(anotherTouchstoneName, touchstoneVersion, addName = true, addStatus = false)
+            it.addTouchstone(anotherTouchstoneName, touchstoneVersion, addName = true)
             it.addDemographicSourcesToTouchstone(anotherTouchstoneId, newSourceIds)
             it.addTouchstoneCountries(anotherTouchstoneId, countries, "measles")
 

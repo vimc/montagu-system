@@ -12,7 +12,8 @@ class DemographicDummyData(val it: JooqContext,
     val sourceIds: List<Int> = it.generateDemographicSources(this.sources).map { (code, id) -> id }
     val variants = variants ?: listOf("unwpp_estimates", "unwpp_low_variant", "unwpp_medium_variant", "unwpp_high_variant")
     val variantIds: List<Int> = it.generateDemographicVariants(this.variants)
-    val units: List<Int> = it.fetchDemographicUnitIds()
+    val peopleUnitId: Int = it.fetchDemographicUnitId("Number of people")
+    val birthsUnitId: Int = it.fetchDemographicUnitId("Births per woman")
     val genders: List<Int> = it.generateGenders()
 
     init
@@ -22,7 +23,7 @@ class DemographicDummyData(val it: JooqContext,
 
     fun withTouchstone(touchstoneName: String, touchstoneVersion: Int): DemographicDummyData
     {
-        it.addTouchstone(touchstoneName, touchstoneVersion, addName = true, addStatus = true)
+        it.addTouchstone(touchstoneName, touchstoneVersion, addName = true)
         it.addDemographicSourcesToTouchstone("$touchstoneName-$touchstoneVersion", sourceIds)
         it.addTouchstoneCountries("$touchstoneName-$touchstoneVersion", countries, "measles")
 
@@ -36,7 +37,7 @@ class DemographicDummyData(val it: JooqContext,
                        yearRange: IntProgression = 1950..1970 step 5,
                        ageRange: IntProgression = 10..30 step 5): DemographicDummyData
     {
-        val pop = it.addDemographicStatisticType("tot-pop", variantIds, units, genderIsApplicable = genderIsApplicable)
+        val pop = it.addDemographicStatisticType("tot-pop", variantIds, peopleUnitId, genderIsApplicable = genderIsApplicable)
 
         for (source in sources)
         {
@@ -66,7 +67,7 @@ class DemographicDummyData(val it: JooqContext,
                       yearRange: IntProgression = 1950..1970 step 5,
                       ageRange: IntProgression = 10..30 step 5): DemographicDummyData
     {
-        val fert = it.addDemographicStatisticType("as-fert", variantIds, units, "age of mother", true)
+        val fert = it.addDemographicStatisticType("as-fert", variantIds, birthsUnitId, "age of mother", true)
 
         for (source in sources)
         {

@@ -119,7 +119,7 @@ class ResponsibilityTests : DatabaseTest()
         validate("/modelling-groups/$groupId/responsibilities/$touchstoneId/$scenarioId/coverage_sets/") against "ScenarioAndCoverageSets" given {
             addResponsibilities(it, touchstoneStatus = "open")
             it.addCoverageSet(touchstoneId, "coverage set name", "vaccine-1", "without", "routine", coverageSetId,
-                    addVaccine = true, addActivityType = true, addSupportLevel = true)
+                    addVaccine = true)
             it.addCoverageSetToScenario(scenarioId, touchstoneId, coverageSetId, 0)
         } requiringPermissions {
             PermissionSet("*/scenarios.read", "$groupScope/responsibilities.read", "$groupScope/coverage.read")
@@ -172,8 +172,8 @@ class ResponsibilityTests : DatabaseTest()
         db.addGroup(groupId, "description")
         db.addScenarioDescription(scenarioId, "description 1", "disease-1", addDisease = true)
         db.addScenarioDescription("scenario-2", "description 2", "disease-2", addDisease = true)
-        db.addTouchstone("touchstone", 1, "description", touchstoneStatus, addName = true, addStatus = true)
-        val setId = db.addResponsibilitySet(groupId, touchstoneId, "submitted", addStatus = true)
+        db.addTouchstone("touchstone", 1, "description", touchstoneStatus, addName = true)
+        val setId = db.addResponsibilitySet(groupId, touchstoneId, "submitted")
         db.addResponsibility(setId, touchstoneId, scenarioId)
         db.addResponsibility(setId, touchstoneId, "scenario-2")
     }

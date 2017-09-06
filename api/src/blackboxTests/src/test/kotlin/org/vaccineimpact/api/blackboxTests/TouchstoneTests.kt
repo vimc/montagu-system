@@ -13,8 +13,8 @@ class TouchstoneTests : DatabaseTest()
 {
     private fun JooqContext.setupTouchstones()
     {
-        addTouchstone("open", 6, "description-1", "open", addName = true, addStatus = true)
-        addTouchstone("prep", 1, "description-2", "in-preparation", addName = true, addStatus = true)
+        addTouchstone("open", 6, "description-1", "open", addName = true)
+        addTouchstone("prep", 1, "description-2", "in-preparation", addName = true)
     }
 
     @Test
