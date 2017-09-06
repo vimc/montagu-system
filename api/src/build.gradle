@@ -61,28 +61,18 @@ task loadPropertiesTask() {
     }
 }
 
-task startDatabase(dependsOn: ':loadPropertiesTask') {
-    doLast {
-        String portBinding = rootProject.ext.props.get('testdb_external_port') + ':' +  rootProject.ext.props.get('testdb_exposed_port')
+task startDatabase(type: Exec, dependsOn: ':loadPropertiesTask') {
+    doFirst {
         String dbVersion = file("config/db_version").text
-        String image = rootProject.ext.props.get('testdb_image') + ":" + dbVersion
-        String container = rootProject.ext.props.get('testdb_container')
-        println "Database image: " + image
-        exec {
-            commandLine 'docker', 'pull', image
-        }
-        exec {
-            commandLine 'docker', 'run',
-                    '-d',
-                    '--rm',
-                    '-p', portBinding,
-                    '--name', container,
-                    "--entrypoint", "start-with-config.sh",
-                    image,
-                    "/postgresql.test.conf"
-        }
+        environment([
+                'DB_VERSION': dbVersion,
+                'DB_PORT': rootProject.ext.props.get('testdb_external_port'),
+                'NAME': rootProject.ext.props.get('testdb_container')
+        ])
     }
+    commandLine 'bash', '../scripts/start-database.sh'
 }
+
 
 task stopDatabase(type: Exec, dependsOn: ':loadPropertiesTask') {
     String container = rootProject.ext.props.get('testdb_container')
