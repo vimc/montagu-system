@@ -329,20 +329,12 @@ fun JooqContext.generateDemographicVariants(variants: List<String>): List<Int>
             .fetchInto(Int::class.java)
 }
 
-fun JooqContext.generateDemographicUnits(): List<Int>
+fun JooqContext.fetchDemographicUnitIds(): List<Int>
 {
-    val sources = listOf("people", "deaths", "births per mother")
-    val records = sources.map {
-        this.dsl.newRecord(DEMOGRAPHIC_VALUE_UNIT).apply {
-            this.name = it
-        }
-    }
-    this.dsl.batchStore(records).execute()
-
-    // JOOQ batchStore doesn't populate generated keys (https://github.com/jOOQ/jOOQ/issues/3327)
-    // so have to read these back out
+    val sources = listOf("Number of people", "Number of deaths", "Births per woman")
     return this.dsl.select(DEMOGRAPHIC_VALUE_UNIT.ID)
             .from(DEMOGRAPHIC_VALUE_UNIT)
+            .where(DEMOGRAPHIC_VALUE_UNIT.NAME.`in`(sources))
             .fetchInto(Int::class.java)
 }
 
