@@ -22,13 +22,9 @@ docker run -d --rm -p "$DB_PORT:5432" --name $NAME \
     --entrypoint start-with-config.sh \
     $db_image /postgresql.test.conf
 
-echo "Baselining"
-docker run --rm --network=host \
-    $migrations_image baseline -baselineVersion=0 -url=$url
-
 echo "Migrating"
-docker run --rm --network=host \
-    $migrations_image migrate -url=$url
+docker run --rm --network=host $migrations_image \
+    migrate -url=$url -baselineVersion=0 -baselineOnMigrate=true
 
 echo "----------------------------------------"
 echo "Database is now running on port $DB_PORT"
