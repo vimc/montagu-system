@@ -1,6 +1,5 @@
 package org.vaccineimpact.api.db.direct
 
-import org.apache.commons.lang3.RandomStringUtils
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.Tables.*
 import org.vaccineimpact.api.db.fromJoinPath
@@ -218,12 +217,12 @@ fun JooqContext.addCountries(ids: List<String>)
     this.dsl.batchStore(records).execute()
 }
 
-fun JooqContext.addTouchstoneCountries(touchstoneId: String, ids: List<String>, disease: String)
+fun JooqContext.addTouchstoneCountries(touchstoneId: String, countryIds: List<String>, disease: String)
 {
-    val records = ids.map {
+    val records = countryIds.map { country ->
         this.dsl.newRecord(TOUCHSTONE_COUNTRY).apply {
             this.touchstone = touchstoneId
-            this.country = it
+            this.country = country
             this.disease = disease
         }
     }

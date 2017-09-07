@@ -21,11 +21,11 @@ class DemographicDummyData(val it: JooqContext,
         it.addDisease("measles", "Measles")
     }
 
-    fun withTouchstone(touchstoneName: String, touchstoneVersion: Int): DemographicDummyData
+    fun withTouchstone(touchstoneName: String, touchstoneVersion: Int, countries: List<String>? = null): DemographicDummyData
     {
         it.addTouchstone(touchstoneName, touchstoneVersion, addName = true)
         it.addDemographicSourcesToTouchstone("$touchstoneName-$touchstoneVersion", sourceIds)
-        it.addTouchstoneCountries("$touchstoneName-$touchstoneVersion", countries, "measles")
+        it.addTouchstoneCountries("$touchstoneName-$touchstoneVersion", countries ?: this.countries, "measles")
 
         return this
     }

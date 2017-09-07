@@ -1,6 +1,7 @@
 package org.vaccineimpact.api.databaseTests.touchstoneRepository
 
 import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.db.direct.*
@@ -358,25 +359,24 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
     {
         val anotherTouchstoneName = "anothertouchstone"
         val anotherTouchstoneId = "$anotherTouchstoneName-$touchstoneVersion"
+        var countries = emptyList<String>()
 
         given {
-
-            val sourceIds = DemographicDummyData(it, sources)
-                    .withTouchstone(touchstoneName, touchstoneVersion)
-                    .withPopulation()
-                    .sourceIds
-
-            it.addTouchstone(anotherTouchstoneName, touchstoneVersion, addName = true)
-            it.addDemographicSourcesToTouchstone(anotherTouchstoneId, sourceIds)
-            it.addTouchstoneCountries(anotherTouchstoneId, it.fetchCountries(2), "measles")
-
-
+            countries = it.fetchCountries(4)
+            DemographicDummyData(it, sources)
+                    .withTouchstone(touchstoneName, touchstoneVersion, countries)
+                    .withTouchstone(anotherTouchstoneName, touchstoneVersion, countries.take(2))
+                    .withPopulation(countries = countries)
         } check {
+            val source = sources.first()
+            val expectedCountries = countries.take(2)
 
-            val result = it.getDemographicDataset("tot-pop", sources[1], anotherTouchstoneId)
-            Assertions.assertThat(result.structuredMetadata.demographicData.countries.count()).isEqualTo(0)
-            Assertions.assertThat(result.structuredMetadata.demographicData.source).isNull()
-            Assertions.assertThat(result.tableData.data.count()).isEqualTo(0)
+            val result = it.getDemographicDataset("tot-pop", source, anotherTouchstoneId)
+            val metadata = result.structuredMetadata.demographicData
+            
+            assertThat(metadata.countries).isEqualTo(expectedCountries)
+            assertThat(metadata.source).isEqualTo(source)
+            assertThat(result.tableData.data.map { it.country }.distinct()).isEqualTo(expectedCountries)
         }
     }
 
