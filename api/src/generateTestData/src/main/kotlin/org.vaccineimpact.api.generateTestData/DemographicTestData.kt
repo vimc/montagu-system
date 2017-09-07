@@ -11,7 +11,7 @@ class DemographicTestData(val db: JooqContext)
     val sources = db.generateDemographicSources(listOf("unwpp2015", "unwpp2017"))
     val variantIds = db.generateDemographicVariants(variants)
     val unit = db.fetchDemographicUnitIds().first()
-    val genderIds = db.generateGenders()
+    val genderIds = db.fetchGenders()
     val statisticTypes = addStatisticTypes(listOf(
             "tot-pop" to "Total population",
             "tot-births" to

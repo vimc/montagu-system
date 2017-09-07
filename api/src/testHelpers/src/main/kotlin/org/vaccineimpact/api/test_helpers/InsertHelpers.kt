@@ -283,19 +283,8 @@ fun JooqContext.fetchDemographicUnitId(name: String): Int
             .fetchOne().value1()
 }
 
-fun JooqContext.generateGenders(): List<Int>
+fun JooqContext.fetchGenders(): List<Int>
 {
-    val sources = listOf("both" to "Both", "female" to "Female", "male" to "Male")
-    val records = sources.map {
-        this.dsl.newRecord(GENDER).apply {
-            this.code = it.first
-            this.name = it.second
-        }
-    }
-    this.dsl.batchStore(records).execute()
-
-    // JOOQ batchStore doesn't populate generated keys (https://github.com/jOOQ/jOOQ/issues/3327)
-    // so have to read these back out
     return this.dsl.select(GENDER.ID)
             .from(GENDER)
             .fetchInto(Int::class.java)
