@@ -2,7 +2,7 @@ import * as React from "react";
 import {ILookup} from "../../../shared/models/Lookup";
 import {settings} from "../../../shared/Settings";
 import {Artefact} from "../../../shared/models/reports/Artefact";
-import {ArtefactItem} from "./Artefact";
+import {ArtefactItem} from "./ArtefactItem";
 
 const styles = require("../../styles/reports.css");
 
