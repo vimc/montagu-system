@@ -22,10 +22,7 @@ docker run --rm \
 docker run --rm --network=montagu_default \
     $registry/montagu-generate-test-data:$MONTAGU_API_VERSION
 
-# Add test user account that is not in the generated test data
-$here/cli.sh add "Report reviewer" report.reviewer report.reviewer@example.com password
-$here/cli.sh addRole report.reviewer user
-$here/cli.sh addRole report.reviewer reports-reviewer
+
 
 # Wait for Ctrl+C
 echo "Ready to use. Press Ctrl+C to teardown."
