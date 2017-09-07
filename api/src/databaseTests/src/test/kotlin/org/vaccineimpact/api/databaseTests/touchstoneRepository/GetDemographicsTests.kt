@@ -368,7 +368,7 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
 
             it.addTouchstone(anotherTouchstoneName, touchstoneVersion, addName = true)
             it.addDemographicSourcesToTouchstone(anotherTouchstoneId, sourceIds)
-            it.addTouchstoneCountries(anotherTouchstoneId, it.generateCountries(2), "measles")
+            it.addTouchstoneCountries(anotherTouchstoneId, it.fetchCountries(2), "measles")
 
 
         } check {

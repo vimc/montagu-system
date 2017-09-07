@@ -381,14 +381,12 @@ fun JooqContext.addDemographicSourcesToTouchstone(touchstoneId: String, sources:
     this.dsl.batchStore(records).execute()
 }
 
-fun JooqContext.generateCountries(count: Int): List<String>
+fun JooqContext.fetchCountries(count: Int): List<String>
 {
-    val letters = "ABCDEFGHIJKLMNOPQSTUVWXYZ".toCharArray()
-    val countries = (0..count).map {
-        RandomStringUtils.random(3, 0, letters.size, true, false, letters, random).toUpperCase()
-    }
-    this.addCountries(countries)
-    return countries
+    return dsl.select(COUNTRY.ID)
+            .from(COUNTRY)
+            .limit(count)
+            .fetchInto(String::class.java)
 }
 
 fun JooqContext.generateCoverageData(
@@ -398,7 +396,7 @@ fun JooqContext.generateCoverageData(
         ageRange: IntProgression = 0..80 step 5)
 {
     val records = mutableListOf<CoverageRecord>()
-    val countries = this.generateCountries(countryCount)
+    val countries = this.fetchCountries(countryCount)
     for (country in countries)
     {
         for (year in yearRange)

@@ -7,7 +7,7 @@ import org.vaccineimpact.api.db.direct.*
 class DemographicTestData(val db: JooqContext)
 {
     val variants = listOf("unwpp_estimates", "unwpp_medium_variant", "unwpp_high_variant")
-    val countries = db.generateCountries(3)
+    val countries = db.fetchCountries(3)
     val sources = db.generateDemographicSources(listOf("unwpp2015", "unwpp2017"))
     val variantIds = db.generateDemographicVariants(variants)
     val unit = db.fetchDemographicUnitIds().first()
