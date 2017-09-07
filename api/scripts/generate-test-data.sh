@@ -18,8 +18,7 @@ docker run -d --rm \
   -p "8000:5432" \
   $registry/montagu-db:$db_version
 
-docker run --rm --network=test-data $registry/montagu-migrate:$db_version \
-    migrate -baselineOnMigrate=true -baselineVersion=0
+docker run --rm --network=test-data $registry/montagu-migrate:$db_version
 
 # Generate the test data
 docker build --tag $name -f generate-test-data.Dockerfile .
