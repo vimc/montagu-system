@@ -23,8 +23,7 @@ import { demographicActions } from "../main/contrib/actions/DemographicActions";
 
 const jwt_decode = require('jwt-decode');
 
-// This group (IC-Garske) must match the one the logged in user belongs to
-const groupId = "IC-Garske";
+const groupId = "test-group"; // This group must match the one the logged in user belongs to
 const touchstoneId = "test-1";
 const scenarioId = "yf-1";
 
@@ -144,7 +143,14 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
         });
 
         it("fetches demographic data sets", (done: DoneCallback) => {
-            const promise = addDemographicDataSets(this.db)
+            const promise = this.db.query("SELECT * FROM gender")
+                .then((querySet: QueryResult) => {
+                    console.log("Here's the contents of gender table: ");
+                    querySet.rows.forEach(row => {
+                       console.log(JSON.stringify(row));
+                    });
+                    return addDemographicDataSets(this.db)
+                })
                 .then(() => {
                     touchstoneActions.setCurrentTouchstone(touchstoneId);
                     return demographicStore.fetchDataSets();
@@ -192,7 +198,6 @@ function addTouchstone(db: Client): Promise<QueryResult> {
     return db.query(`
         INSERT INTO touchstone_name (id,     description, comment) 
         VALUES ('test', 'Testing',   '');
-        INSERT INTO touchstone_status (id, name) VALUES ('open', 'Open');
         INSERT INTO touchstone (id,       touchstone_name, version, description,         status, comment) 
         VALUES ('${touchstoneId}', 'test',          1,       'Testing version 1', 'open',      '');
     `);
@@ -219,8 +224,6 @@ function addResponsibilities(db: Client): Promise<QueryResult> {
                 INSERT INTO scenario (touchstone, scenario_description)
                 VALUES ('${touchstoneId}', '${scenarioId}')
                 RETURNING id INTO scenario_id;
-                        
-                INSERT INTO responsibility_set_status (id, name) VALUES ('incomplete', 'Incomplete');
         
                 INSERT INTO responsibility_set (modelling_group, touchstone, status)
                 VALUES ('${groupId}', '${touchstoneId}', 'incomplete')
@@ -240,8 +243,6 @@ function addCoverageSets(db: Client): Promise<number> {
                 DECLARE scenario_id integer;
             BEGIN
                 INSERT INTO vaccine            (id, name) VALUES ('yf', 'Yellow Fever vaccine');
-                INSERT INTO gavi_support_level (id, name) VALUES ('none', 'None');
-                INSERT INTO activity_type      (id, name) VALUES ('none', 'None');
             
                 INSERT INTO coverage_set (      name,        touchstone, vaccine, gavi_support_level, activity_type)
                                   VALUES ('Test set', '${touchstoneId}',    'yf',             'none',        'none')
@@ -269,15 +270,14 @@ function addDemographicDataSets(db: Client): Promise<QueryResult> {
             BEGIN
                 INSERT INTO country (id, name) VALUES ('ATL', 'Atlantis');
                 INSERT INTO disease (id, name) VALUES ('yf', 'Yellow Fever');
-                INSERT INTO gender (code, name) VALUES ('both', 'Both')
-                    RETURNING id INTO gender_id;
                 
                 INSERT INTO demographic_source (code, name) VALUES ('source', 'A great source')
                     RETURNING id INTO source_id;
                 INSERT INTO demographic_variant (code, name) VALUES ('variant', 'A so-so variant')
                     RETURNING id INTO variant_id;
-                INSERT INTO demographic_value_unit (name) VALUES ('people')
-                    RETURNING id INTO unit_id;                    
+                    
+                SELECT id INTO unit_id FROM demographic_value_unit WHERE name = 'Number of people';
+                SELECT id INTO gender_id FROM gender WHERE code = 'both';
                 
                 INSERT INTO demographic_statistic_type 
                        (      code,              name, default_variant, demographic_value_unit, gender_is_applicable, age_interpretation, year_step_size, reference_date) 
