@@ -14,17 +14,18 @@ interface ArtefactProps {
 export class ArtefactItem extends React.Component<ArtefactProps, undefined> {
     render() {
         const p = this.props;
-        const filename = p.filenames[0];
-        const url = `/reports/${p.report}/${p.version}/artefacts/${encodeFilename(filename)}/`;
+        const links = p.filenames.map(filename => {
+            const url = `/reports/${p.report}/${p.version}/artefacts/${encodeFilename(filename)}/`;
+            return <li>
+                <FileDownloadLink key={filename} href={url}>
+                    {filename}
+                </FileDownloadLink>
+            </li>;
+        });
+
         return <li className={styles.artefact}>
             <div>{p.description}</div>
-            <ul>
-                <li>
-                    <FileDownloadLink key={filename} href={url}>
-                        {filename}
-                    </FileDownloadLink>
-                </li>
-            </ul>
+            <ul>{links}</ul>
         </li>;
     }
 }
