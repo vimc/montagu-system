@@ -27,7 +27,6 @@ export abstract class IntegrationTestSuite {
                     .then(() => {
                         this.db = new Client({});
                         this.db.connect();
-                        console.log("Connected to application database");
                         done();
                     })
                     .catch(e => done(e));
@@ -44,7 +43,7 @@ export abstract class IntegrationTestSuite {
                 fetcher.fetcher = this.makeFetcher();
                 // Note that this will always trigger an authActions.logIn, which will result in all three login
                 // stores recording the user to some extent
-                checkPromise(done, logIn("test.user@imperial.ac.uk", "password", this.authStore(), false));
+                checkPromise(done, logIn("test@example.com", "password", this.authStore(), false));
             });
             afterEach(() => alt.recycle());
 
@@ -56,10 +55,8 @@ export abstract class IntegrationTestSuite {
 function queryAgainstRootDb(query: string): Promise<void> {
     const db = new Client({ database: "postgres" });
     db.connect();
-    console.log("Connected to root database");
     return db.query(query)
         .then(() => {
-            console.log("Ran against root database: " + query);
             db.end();
         });
 }

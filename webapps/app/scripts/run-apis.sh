@@ -24,3 +24,18 @@ docker exec montagu_api_1 mkdir -p /etc/montagu/api/
 docker exec montagu_api_1 touch /etc/montagu/api/go_signal
 docker exec montagu_reporting_api_1 mkdir -p /etc/montagu/reports_api
 docker exec montagu_reporting_api_1 touch /etc/montagu/reports_api/go_signal
+
+# Migrate the database
+migrate_image=$registry/montagu-migrate:$MONTAGU_DB_VERSION
+docker pull $migrate_image
+docker run --network=montagu_default $migrate_image
+
+# Add test accounts
+$here/cli.sh add "Test User" test.user test@example.com password
+$here/cli.sh addRole test.user user
+$here/cli.sh addRole test.user user-manager
+$here/cli.sh addUserToGroup test.user test-group
+
+$here/cli.sh add "Report reviewer" report.reviewer report.reviewer@example.com password
+$here/cli.sh addRole report.reviewer user
+$here/cli.sh addRole report.reviewer reports-reviewer
