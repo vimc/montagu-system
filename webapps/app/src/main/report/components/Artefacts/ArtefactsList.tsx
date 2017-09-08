@@ -4,6 +4,8 @@ import {settings} from "../../../shared/Settings";
 import {Artefact} from "../../../shared/models/reports/Artefact";
 import {ArtefactItem} from "./Artefact";
 
+const styles = require("../../styles/reports.css");
+
 interface ArtefactsListProps{
     artefacts: ILookup<Artefact>[],
     report: string,
@@ -18,13 +20,15 @@ export class ArtefactsList extends React.Component<ArtefactsListProps, undefined
     }
 
     render() {
-
         const artefactItems = this.props.artefacts
-            .map((artefact)=> {
-                const key = Object.getOwnPropertyNames(artefact)[0];
-                return <ArtefactItem key={key} report={this.props.report} version={this.props.version} {...artefact[key]} />;
+            .map((artefactLookup)=> {
+                const type = Object.getOwnPropertyNames(artefactLookup)[0];
+                const artefact: Artefact = artefactLookup[type];
+                return <ArtefactItem key={artefact.description} report={this.props.report} version={this.props.version} {...artefact} />;
             });
 
-        return <ul>{artefactItems}</ul>;
+        return <ul className={styles.artefactList}>
+            {artefactItems}
+        </ul>;
     }
 }

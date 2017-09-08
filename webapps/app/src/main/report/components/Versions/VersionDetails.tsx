@@ -7,9 +7,10 @@ import {Version} from "../../../shared/models/reports/Report";
 import {ParameterList} from "../Parameters/ParameterList";
 import {DataLinks} from "../Data/DataLinks";
 import {ResourceLinks} from "../Resources/ResourceLinks";
-import {settings} from "../../../shared/Settings";
 import {ArtefactsList} from "../Artefacts/ArtefactsList";
 import { FileDownloadLink } from "../FileDownloadLink";
+
+const styles = require("../../styles/reports.css");
 
 export interface VersionProps extends RemoteContent {
     versionDetails: Version,
@@ -37,7 +38,7 @@ export class VersionDetailsComponent extends RemoteContentComponent<VersionProps
         const url = `/reports/${p.report}/${p.versionDetails.id}/all/`;
         const version = props.versionDetails.id;
 
-        return <table>
+        return <table className={styles.versionDetails}>
             <thead>
             <tr>
                 <th>Version</th>
@@ -58,9 +59,11 @@ export class VersionDetailsComponent extends RemoteContentComponent<VersionProps
                 <td><ParameterList {...props.versionDetails.parameters} /></td>
                 <td><DataLinks {...props.versionDetails.hash_data} /></td>
                 <td><ResourceLinks resources={props.versionDetails.resources} report={props.report} version={version}/></td>
-                <td><ArtefactsList artefacts={props.versionDetails.artefacts}
+                <td className={styles.artefactColumn}>
+                    <ArtefactsList artefacts={props.versionDetails.artefacts}
                                    report={props.report}
-                                   version={version}/></td>
+                                   version={version}/>
+                </td>
             </tr>
             </tbody>
         </table>;
