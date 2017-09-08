@@ -16,7 +16,9 @@ docker run -d --rm \
   --name db \
   --network=test-data \
   -p "8000:5432" \
-  docker.montagu.dide.ic.ac.uk:5000/montagu-db:$db_version
+  $registry/montagu-db:$db_version
+
+docker run --rm --network=test-data $registry/montagu-migrate:$db_version
 
 # Generate the test data
 docker build --tag $name -f generate-test-data.Dockerfile .

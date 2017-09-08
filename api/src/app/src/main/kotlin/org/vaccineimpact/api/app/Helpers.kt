@@ -28,7 +28,10 @@ fun addDefaultResponseHeaders(res: Response, contentType: String = "${ContentTyp
 fun addDefaultResponseHeaders(res: HttpServletResponse, contentType: String = "${ContentTypes.json}; charset=utf-8")
 {
     res.contentType = contentType
-    res.addHeader("Content-Encoding", "gzip")
+    if (res.getHeader("Content-Encoding") != "gzip")
+    {
+        res.addHeader("Content-Encoding", "gzip")
+    }
 }
 
 class DefaultHeadersFilter(val contentType: String, val method: HttpMethod) : Filter

@@ -96,7 +96,7 @@ class DemographicTests : DatabaseTest()
                     "name" to "tot-pop descriptive name",
                     "age_interpretation" to "age",
                     "source" to "unwpp2015",
-                    "unit" to "people",
+                    "unit" to "Number of people",
                     "gender" to "Both",
                     "countries" to array(countries.sortedBy { it })
             )
@@ -134,7 +134,7 @@ class DemographicTests : DatabaseTest()
                     "name" to "tot-pop descriptive name",
                     "age_interpretation" to "age",
                     "source" to "unwpp2015",
-                    "unit" to "people",
+                    "unit" to "Number of people",
                     "gender" to "Female",
                     "countries" to array(countries.sortedBy { it })
             )

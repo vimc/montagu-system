@@ -14,7 +14,7 @@
             <name>org.jooq.util.postgres.PostgresDatabase</name>
             <inputSchema>public</inputSchema>
             <includes>.*</includes>
-            <excludes/>
+            <excludes>schema_version</excludes>
         </database>
 
         <target>

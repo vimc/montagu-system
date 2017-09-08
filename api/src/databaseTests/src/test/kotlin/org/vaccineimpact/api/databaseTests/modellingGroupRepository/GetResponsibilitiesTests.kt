@@ -14,7 +14,7 @@ class GetResponsibilitiesTests : ModellingGroupRepositoryTests()
     fun `getResponsibilities throws error for unknown modelling group`()
     {
         given {
-            it.addTouchstone("touchstone", 1, "description", "status", addName = true, addStatus = true)
+            it.addTouchstone("touchstone", 1, "description", "open", addName = true)
         } check { repo ->
             assertThatThrownBy { repo.getResponsibilities("group", "touchstone-1", ScenarioFilterParameters()) }
                     .isInstanceOf(UnknownObjectError::class.java)
@@ -39,7 +39,7 @@ class GetResponsibilitiesTests : ModellingGroupRepositoryTests()
     {
         given {
             it.addGroup("group", "description")
-            it.addTouchstone("touchstone", 1, "description", "open", addName = true, addStatus = true)
+            it.addTouchstone("touchstone", 1, "description", "open", addName = true)
         } check { repo ->
             val set = repo.getResponsibilities("group", "touchstone-1", ScenarioFilterParameters()).responsibilities
             assertThat(set.touchstone).isEqualTo("touchstone-1")
@@ -55,9 +55,9 @@ class GetResponsibilitiesTests : ModellingGroupRepositoryTests()
         given {
             it.addGroup("group", "description")
             it.addTouchstoneName("touchstone", "description")
-            it.addTouchstone("touchstone", 1, "desc", "open", addStatus = true)
-            it.addTouchstone("touchstone", 2, "desc", "finished", addStatus = true)
-            it.addTouchstone("touchstone", 3, "desc", "in-preparation", addStatus = true)
+            it.addTouchstone("touchstone", 1, "desc", "open")
+            it.addTouchstone("touchstone", 2, "desc", "finished")
+            it.addTouchstone("touchstone", 3, "desc", "in-preparation")
         } check { repo ->
             val filter = ScenarioFilterParameters()
             val getStatus = { id: String ->
@@ -74,8 +74,8 @@ class GetResponsibilitiesTests : ModellingGroupRepositoryTests()
     {
         given {
             it.addGroup("group", "description")
-            it.addTouchstone("touchstone", 1, "description", "open", addName = true, addStatus = true)
-            it.addResponsibilitySet("group", "touchstone-1", "incomplete", addStatus = true)
+            it.addTouchstone("touchstone", 1, "description", "open", addName = true)
+            it.addResponsibilitySet("group", "touchstone-1", "incomplete")
         } check { repo ->
             val set = repo.getResponsibilities("group", "touchstone-1", ScenarioFilterParameters()).responsibilities
             assertThat(set.touchstone).isEqualTo("touchstone-1")
@@ -92,8 +92,8 @@ class GetResponsibilitiesTests : ModellingGroupRepositoryTests()
             it.addGroup("group", "description")
             it.addScenarioDescription("scenario-1", "description 1", "disease 1", addDisease = true)
             it.addScenarioDescription("scenario-2", "description 2", "disease 2", addDisease = true)
-            it.addTouchstone("touchstone", 1, "description", "open", addName = true, addStatus = true)
-            val setId = it.addResponsibilitySet("group", "touchstone-1", "submitted", addStatus = true)
+            it.addTouchstone("touchstone", 1, "description", "open", addName = true)
+            val setId = it.addResponsibilitySet("group", "touchstone-1", "submitted")
             it.addResponsibility(setId, "touchstone-1", "scenario-1")
             it.addResponsibility(setId, "touchstone-1", "scenario-2")
         } check { repo ->
@@ -126,9 +126,9 @@ class GetResponsibilitiesTests : ModellingGroupRepositoryTests()
             it.addGroup("group2", "description")
             it.addScenarioDescription("scenario-1", "description 1", "disease 1", addDisease = true)
             it.addScenarioDescription("scenario-2", "description 2", "disease 2", addDisease = true)
-            it.addTouchstone("touchstone", 1, "description", "open", addName = true, addStatus = true)
-            val group1Set = it.addResponsibilitySet("group1", "touchstone-1", "submitted", addStatus = true)
-            val group2Set = it.addResponsibilitySet("group2", "touchstone-1", "incomplete", addStatus = true)
+            it.addTouchstone("touchstone", 1, "description", "open", addName = true)
+            val group1Set = it.addResponsibilitySet("group1", "touchstone-1", "submitted")
+            val group2Set = it.addResponsibilitySet("group2", "touchstone-1", "incomplete")
             it.addResponsibility(group1Set, "touchstone-1", "scenario-1")
             it.addResponsibility(group2Set, "touchstone-1", "scenario-2")
         } check { repo ->
@@ -154,10 +154,10 @@ class GetResponsibilitiesTests : ModellingGroupRepositoryTests()
             it.addGroup("group", "description")
             it.addScenarioDescription("scenario-1", "description 1", "disease 1", addDisease = true)
             it.addScenarioDescription("scenario-2", "description 2", "disease 2", addDisease = true)
-            it.addTouchstone("touchstone", 1, "description", "open", addName = true, addStatus = true)
+            it.addTouchstone("touchstone", 1, "description", "open", addName = true)
             it.addTouchstone("touchstone", 2, "description", "open")
-            val set1 = it.addResponsibilitySet("group", "touchstone-1", "submitted", addStatus = true)
-            val set2 = it.addResponsibilitySet("group", "touchstone-2", "incomplete", addStatus = true)
+            val set1 = it.addResponsibilitySet("group", "touchstone-1", "submitted")
+            val set2 = it.addResponsibilitySet("group", "touchstone-2", "incomplete")
 
             // Both scenarios appear in both touchstones - but the group is only responsible for
             // scenario 1 in touchstone 1, and scenario 2 in touchstone 2
@@ -191,8 +191,8 @@ class GetResponsibilitiesTests : ModellingGroupRepositoryTests()
             it.addGroup("group", "description")
             it.addScenarioDescription("scenario-1", "description 1", "disease 1", addDisease = true)
             it.addScenarioDescription("scenario-2", "description 2", "disease 2", addDisease = true)
-            it.addTouchstone("touchstone", 1, "description", "open", addName = true, addStatus = true)
-            val setId = it.addResponsibilitySet("group", "touchstone-1", "submitted", addStatus = true)
+            it.addTouchstone("touchstone", 1, "description", "open", addName = true)
+            val setId = it.addResponsibilitySet("group", "touchstone-1", "submitted")
             it.addResponsibility(setId, "touchstone-1", "scenario-1")
             it.addResponsibility(setId, "touchstone-1", "scenario-2")
         } check { repo ->

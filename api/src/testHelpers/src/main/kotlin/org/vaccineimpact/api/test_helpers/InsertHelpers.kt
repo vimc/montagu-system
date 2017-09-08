@@ -1,6 +1,5 @@
 package org.vaccineimpact.api.db.direct
 
-import org.apache.commons.lang3.RandomStringUtils
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.Tables.*
 import org.vaccineimpact.api.db.fromJoinPath
@@ -52,29 +51,16 @@ fun JooqContext.addTouchstoneName(id: String, description: String)
     }.store()
 }
 
-fun JooqContext.addTouchstoneStatus(id: String, name: String? = null)
-{
-    this.dsl.newRecord(TOUCHSTONE_STATUS).apply {
-        this.id = id
-        this.name = name ?: id
-    }.store()
-}
-
 fun JooqContext.addTouchstone(
         name: String,
         version: Int,
         description: String = "Description",
         status: String = "open",
-        addName: Boolean = false,
-        addStatus: Boolean = false)
+        addName: Boolean = false)
 {
     if (addName)
     {
         addTouchstoneName(name, description)
-    }
-    if (addStatus)
-    {
-        addTouchstoneStatus(status)
     }
     this.dsl.newRecord(TOUCHSTONE).apply {
         this.id = "$name-$version"
@@ -100,32 +86,6 @@ fun JooqContext.addVaccine(id: String, name: String? = null)
         this.id = id
         this.name = name ?: id
     }.store()
-}
-
-fun JooqContext.addSupportLevel(id: String, name: String? = null)
-{
-    this.dsl.newRecord(GAVI_SUPPORT_LEVEL).apply {
-        this.id = id
-        this.name = name ?: id
-    }.store()
-}
-
-fun JooqContext.addSupportLevels(vararg ids: String)
-{
-    ids.forEach { this.addSupportLevel(it) }
-}
-
-fun JooqContext.addActivityType(id: String, name: String? = null)
-{
-    this.dsl.newRecord(ACTIVITY_TYPE).apply {
-        this.id = id
-        this.name = name ?: id
-    }.store()
-}
-
-fun JooqContext.addActivityTypes(vararg ids: String)
-{
-    ids.forEach { this.addActivityType(it) }
 }
 
 fun JooqContext.addScenarioDescription(id: String, description: String, disease: String, addDisease: Boolean = false)
@@ -162,25 +122,12 @@ fun JooqContext.addScenarios(touchstone: String, vararg scenarioDescriptions: St
     return scenarioDescriptions.map { this.addScenarioToTouchstone(touchstone, it) }
 }
 
-fun JooqContext.addResponsibilitySetStatus(id: String, name: String? = null)
-{
-    this.dsl.newRecord(RESPONSIBILITY_SET_STATUS).apply {
-        this.id = id
-        this.name = name ?: id
-    }.store()
-}
-
 fun JooqContext.addResponsibilitySet(
         modellingGroup: String,
         touchstone: String,
-        status: String,
-        addStatus: Boolean = false
+        status: String
 ): Int
 {
-    if (addStatus)
-    {
-        this.addResponsibilitySetStatus(status)
-    }
     val record = this.dsl.newRecord(RESPONSIBILITY_SET).apply {
         this.modellingGroup = modellingGroup
         this.touchstone = touchstone
@@ -215,22 +162,12 @@ fun JooqContext.addCoverageSet(
         supportLevel: String,
         activityType: String,
         id: Int? = null,
-        addVaccine: Boolean = false,
-        addSupportLevel: Boolean = false,
-        addActivityType: Boolean = false
+        addVaccine: Boolean = false
 ): Int
 {
     if (addVaccine)
     {
         this.addVaccine(vaccine)
-    }
-    if (addSupportLevel)
-    {
-        this.addSupportLevel(supportLevel)
-    }
-    if (addActivityType)
-    {
-        this.addActivityType(activityType)
     }
 
     val record = this.dsl.newRecord(COVERAGE_SET).apply {
@@ -280,12 +217,12 @@ fun JooqContext.addCountries(ids: List<String>)
     this.dsl.batchStore(records).execute()
 }
 
-fun JooqContext.addTouchstoneCountries(touchstoneId: String, ids: List<String>, disease: String)
+fun JooqContext.addTouchstoneCountries(touchstoneId: String, countryIds: List<String>, disease: String)
 {
-    val records = ids.map {
+    val records = countryIds.map { country ->
         this.dsl.newRecord(TOUCHSTONE_COUNTRY).apply {
             this.touchstone = touchstoneId
-            this.country = it
+            this.country = country
             this.disease = disease
         }
     }
@@ -329,36 +266,25 @@ fun JooqContext.generateDemographicVariants(variants: List<String>): List<Int>
             .fetchInto(Int::class.java)
 }
 
-fun JooqContext.generateDemographicUnits(): List<Int>
+fun JooqContext.fetchDemographicUnitIds(): List<Int>
 {
-    val sources = listOf("people", "deaths", "births per mother")
-    val records = sources.map {
-        this.dsl.newRecord(DEMOGRAPHIC_VALUE_UNIT).apply {
-            this.name = it
-        }
-    }
-    this.dsl.batchStore(records).execute()
-
-    // JOOQ batchStore doesn't populate generated keys (https://github.com/jOOQ/jOOQ/issues/3327)
-    // so have to read these back out
+    val sources = listOf("Number of people", "Number of deaths", "births per mother")
     return this.dsl.select(DEMOGRAPHIC_VALUE_UNIT.ID)
             .from(DEMOGRAPHIC_VALUE_UNIT)
+            .where(DEMOGRAPHIC_VALUE_UNIT.NAME.`in`(sources))
             .fetchInto(Int::class.java)
 }
 
-fun JooqContext.generateGenders(): List<Int>
+fun JooqContext.fetchDemographicUnitId(name: String): Int
 {
-    val sources = listOf("both" to "Both", "female" to "Female", "male" to "Male")
-    val records = sources.map {
-        this.dsl.newRecord(GENDER).apply {
-            this.code = it.first
-            this.name = it.second
-        }
-    }
-    this.dsl.batchStore(records).execute()
+    return this.dsl.select(DEMOGRAPHIC_VALUE_UNIT.ID)
+            .from(DEMOGRAPHIC_VALUE_UNIT)
+            .where(DEMOGRAPHIC_VALUE_UNIT.NAME.eq(name))
+            .fetchOne().value1()
+}
 
-    // JOOQ batchStore doesn't populate generated keys (https://github.com/jOOQ/jOOQ/issues/3327)
-    // so have to read these back out
+fun JooqContext.fetchGenders(): List<Int>
+{
     return this.dsl.select(GENDER.ID)
             .from(GENDER)
             .fetchInto(Int::class.java)
@@ -366,7 +292,7 @@ fun JooqContext.generateGenders(): List<Int>
 
 fun JooqContext.addDemographicStatisticType(type: String,
                                             variants: List<Int>,
-                                            units: List<Int>,
+                                            unit: Int,
                                             ageInterpretation: String = "age",
                                             genderIsApplicable: Boolean = false,
                                             yearStepSize: Int = 5,
@@ -376,7 +302,7 @@ fun JooqContext.addDemographicStatisticType(type: String,
         this.code = type
         this.name = name
         this.defaultVariant = variants.first()
-        this.demographicValueUnit = units.first()
+        this.demographicValueUnit = unit
         this.genderIsApplicable = genderIsApplicable
         this.ageInterpretation = ageInterpretation
         this.yearStepSize = yearStepSize
@@ -443,14 +369,12 @@ fun JooqContext.addDemographicSourcesToTouchstone(touchstoneId: String, sources:
     this.dsl.batchStore(records).execute()
 }
 
-fun JooqContext.generateCountries(count: Int): List<String>
+fun JooqContext.fetchCountries(count: Int): List<String>
 {
-    val letters = "ABCDEFGHIJKLMNOPQSTUVWXYZ".toCharArray()
-    val countries = (0..count).map {
-        RandomStringUtils.random(3, 0, letters.size, true, false, letters, random).toUpperCase()
-    }
-    this.addCountries(countries)
-    return countries
+    return dsl.select(COUNTRY.ID)
+            .from(COUNTRY)
+            .limit(count)
+            .fetchInto(String::class.java)
 }
 
 fun JooqContext.generateCoverageData(
@@ -460,7 +384,7 @@ fun JooqContext.generateCoverageData(
         ageRange: IntProgression = 0..80 step 5)
 {
     val records = mutableListOf<CoverageRecord>()
-    val countries = this.generateCountries(countryCount)
+    val countries = this.fetchCountries(countryCount)
     for (country in countries)
     {
         for (year in yearRange)
