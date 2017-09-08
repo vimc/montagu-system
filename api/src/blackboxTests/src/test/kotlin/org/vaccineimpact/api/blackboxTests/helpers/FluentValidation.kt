@@ -24,7 +24,7 @@ data class FluentValidationConfig(
         val checkRequiredPermissions: Set<ReifiedPermission>? = null,
         val ownedPermissions: Set<ReifiedPermission>? = null,
         val acceptsContentType: String? = null,
-        val postData: JsonObject? = null
+        val postData: String? = null
 )
 {
     infix fun against(schemaName: String) = this.copy(responseSchema = JSONSchema(schemaName))
@@ -40,8 +40,11 @@ data class FluentValidationConfig(
 
     infix fun acceptingContentType(contentType: String) = this.copy(acceptsContentType = contentType)
 
-    infix fun sending(postData: () -> JsonObject) = this.copy(postData = postData())
+    infix fun sendingJSON(postData: () -> JsonObject) = this.copy(postData = postData().toJsonString(prettyPrint = true))
+    infix fun sending(postData: () -> String) = this.copy(postData = postData())
+
     infix fun withRequestSchema(schemaName: String) = this.copy(requestSchema = JSONSchema(schemaName))
+    infix fun withRequestSchema(schema: () -> Schema) = this.copy(requestSchema = schema())
 
     infix fun andCheck(additionalChecks: (JsonObject) -> Unit)
     {
@@ -101,7 +104,7 @@ class FluentValidation(config: FluentValidationConfig)
     val ownedPermissions: Set<ReifiedPermission> = config.ownedPermissions ?: requiredPermissions
     val allPermissions = requiredPermissions + ownedPermissions
     val acceptContentType = config.acceptsContentType ?: ContentTypes.json
-    val postData = config.postData
+    val postData: String? = config.postData
 
     val userHelper = TestUserHelper()
     val requestHelper = RequestHelper()
@@ -141,7 +144,7 @@ class FluentValidation(config: FluentValidationConfig)
     {
         if (method == HttpMethod.post && requestSchema != null && postData != null)
         {
-            requestSchema.validateRequest(postData.toJsonString(prettyPrint = true))
+            requestSchema.validateRequest(postData)
         }
         responseSchema.validateResponse(response.text, response.headers["Content-Type"])
     }

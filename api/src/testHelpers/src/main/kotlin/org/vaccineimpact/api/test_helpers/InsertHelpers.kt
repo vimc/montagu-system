@@ -125,7 +125,7 @@ fun JooqContext.addScenarios(touchstone: String, vararg scenarioDescriptions: St
 fun JooqContext.addResponsibilitySet(
         modellingGroup: String,
         touchstone: String,
-        status: String
+        status: String = "incomplete"
 ): Int
 {
     val record = this.dsl.newRecord(RESPONSIBILITY_SET).apply {

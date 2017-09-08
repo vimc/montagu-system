@@ -37,12 +37,12 @@ class RequestHelper
         return post(url, data, token = token)
     }
 
-    fun post(url: String, data: JsonObject?, token: TokenLiteral? = null): Response
+    fun post(url: String, data: Any?, token: TokenLiteral? = null): Response
     {
         return post(
                 url,
                 standardHeaders(ContentTypes.json, token),
-                data?.toJsonString(prettyPrint = true)
+                data
         )
     }
 
