@@ -143,14 +143,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
         });
 
         it("fetches demographic data sets", (done: DoneCallback) => {
-            const promise = this.db.query("SELECT * FROM gender")
-                .then((querySet: QueryResult) => {
-                    console.log("Here's the contents of gender table: ");
-                    querySet.rows.forEach(row => {
-                       console.log(JSON.stringify(row));
-                    });
-                    return addDemographicDataSets(this.db)
-                })
+            const promise = addDemographicDataSets(this.db)
                 .then(() => {
                     touchstoneActions.setCurrentTouchstone(touchstoneId);
                     return demographicStore.fetchDataSets();
