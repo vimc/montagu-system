@@ -3,8 +3,6 @@ package org.vaccineimpact.api.app.repositories.jooq
 import org.jooq.*
 import org.jooq.Result
 import org.jooq.impl.DSL.*
-import org.slf4j.LoggerFactory
-import org.vaccineimpact.api.app.controllers.AbstractController
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
 import org.vaccineimpact.api.app.filters.whereMatchesFilter
@@ -24,8 +22,9 @@ import java.math.BigDecimal
 
 class JooqTouchstoneRepository(
         db: JooqContext,
+        config: Configuration,
         private val scenarioRepository: ScenarioRepository
-) : JooqRepository(db), TouchstoneRepository
+) : JooqRepository(db, config), TouchstoneRepository
 {
     override fun getDemographicDataset(statisticTypeCode: String,
                                        source: String,

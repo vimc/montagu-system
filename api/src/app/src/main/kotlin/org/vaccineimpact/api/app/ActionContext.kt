@@ -3,6 +3,7 @@ package org.vaccineimpact.api.app
 import org.pac4j.core.profile.CommonProfile
 import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
+import kotlin.reflect.KClass
 
 interface ActionContext
 {
@@ -20,6 +21,7 @@ interface ActionContext
     fun params(): Map<String, String>
     fun params(key: String): String
     fun <T: Any> postData(klass: Class<T>): T
+    fun <T: Any> csvData(klass: KClass<T>): List<T>
 
     fun addResponseHeader(key: String, value: String): Unit
     fun addAttachmentHeader(filename: String): Unit
@@ -30,3 +32,4 @@ interface ActionContext
 }
 
 inline fun <reified T: Any> ActionContext.postData() = this.postData(T::class.java)
+inline fun <reified T: Any> ActionContext.csvData() = this.csvData(T::class)

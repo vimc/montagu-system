@@ -1,5 +1,6 @@
 package org.vaccineimpact.api.app.repositories.jooq
 
+import org.jooq.Configuration
 import org.jooq.Record1
 import org.jooq.SelectConditionStep
 import org.vaccineimpact.api.app.errors.UnknownObjectError
@@ -20,10 +21,11 @@ import org.vaccineimpact.api.models.*
 
 class JooqModellingGroupRepository(
         db: JooqContext,
+        config: Configuration,
         private val touchstoneRepository: TouchstoneRepository,
         private val scenarioRepository: ScenarioRepository
 )
-    : JooqRepository(db), ModellingGroupRepository
+    : JooqRepository(db, config), ModellingGroupRepository
 {
     override fun getModellingGroups(): Iterable<ModellingGroup>
     {

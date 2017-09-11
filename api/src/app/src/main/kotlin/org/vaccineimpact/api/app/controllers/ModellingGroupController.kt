@@ -5,6 +5,7 @@ import org.vaccineimpact.api.app.ActionContext
 import org.vaccineimpact.api.app.controllers.endpoints.EndpointDefinition
 import org.vaccineimpact.api.app.controllers.endpoints.oneRepoEndpoint
 import org.vaccineimpact.api.app.controllers.endpoints.secured
+import org.vaccineimpact.api.app.csvData
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
@@ -108,7 +109,13 @@ open class ModellingGroupController(context: ControllerContext)
     open fun addBurdenEstimate(context: ActionContext, estimateRepository: BurdenEstimateRepository): String
     {
         val path = ResponsibilityPath(context)
-        val data = context.getCSVData<BurdenEstimateSet>()
+
+        // First check if we're allowed to see this touchstone
+        val touchstone = estimateRepository.touchstoneRepository.touchstones.get(path.touchstoneId)
+        checkTouchstoneStatus(touchstone.status, path.touchstoneId, context)
+
+        // Then add the burden estimates
+        val data = BurdenEstimateSet(context.csvData())
         val id = estimateRepository.addBurdenEstimateSet(
                 path.groupId, path.touchstoneId, path.scenarioId,
                 data,

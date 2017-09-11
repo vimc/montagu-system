@@ -19,7 +19,7 @@ class JooqBurdenEstimateRepository(
         db: JooqContext,
         config: Configuration,
         private val scenarioRepository: ScenarioRepository,
-        private val touchstoneRepository: TouchstoneRepository,
+        override val touchstoneRepository: TouchstoneRepository,
         private val modellingGroupRepository: ModellingGroupRepository
 ) : JooqRepository(db, config), BurdenEstimateRepository
 {
