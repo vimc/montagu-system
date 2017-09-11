@@ -34,6 +34,7 @@ export class ResponsibilityOverviewContentComponent extends RemoteContentCompone
 
     renderContent(props: ResponsibilityOverviewComponentProps) {
         const demographyUrl = `/${props.modellingGroup.id}/responsibilities/${props.responsibilitySet.touchstone.id}/demographics/`;
+        const templateUrl = `/templates/${props.currentDiseaseId}.csv`;
         return <div>
             <div className={ commonStyles.largeSectionTitle }>Demographic data</div>
             <div className={ commonStyles.gapAbove }>
@@ -41,6 +42,9 @@ export class ResponsibilityOverviewContentComponent extends RemoteContentCompone
             </div>
 
             <div className={ commonStyles.largeSectionTitle }>Scenarios</div>
+            <div className={ commonStyles.gapAbove }>
+                <ButtonLink href={ demographyUrl }>Download burden estimate template</ButtonLink>
+            </div>
             <ResponsibilityList
                 modellingGroup={ props.modellingGroup }
                 responsibilitySet={ props.responsibilitySet}
