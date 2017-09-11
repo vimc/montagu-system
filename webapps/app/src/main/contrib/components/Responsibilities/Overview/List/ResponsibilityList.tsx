@@ -3,6 +3,8 @@ import { DiseaseFilter } from "./DiseaseFilter";
 import { ResponsibilityComponent } from "./ResponsibilityComponent";
 import { IExtendedResponsibilitySet } from "../../../../models/ResponsibilitySet";
 import { ModellingGroup, Responsibility } from "../../../../../shared/models/Generated";
+import { ButtonLink } from "../../../../../shared/components/ButtonLink";
+import { TemplateLinks } from "./TemplateLinks";
 
 const styles = require("../../Responsibilities.css");
 const messageStyles = require("../../../../../shared/styles/messages.css");
@@ -43,6 +45,7 @@ export class ResponsibilityList extends React.Component<ResponsibilityListCompon
             return <div>
                 <div className={ commonStyles.control }>
                     <DiseaseFilter { ...props.responsibilitySet } />
+                    <TemplateLinks { ...props.responsibilitySet } />
                 </div>
                 <ul className={ styles.responsibilities }>{ items }</ul>
             </div>;
