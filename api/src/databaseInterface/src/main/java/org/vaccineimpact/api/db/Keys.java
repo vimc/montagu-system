@@ -175,7 +175,7 @@ public class Keys {
     public static final UniqueKey<ApiAccessLogRecord> API_ACCESS_LOG_PKEY = UniqueKeys0.API_ACCESS_LOG_PKEY;
     public static final UniqueKey<AppUserRecord> APP_USER_PKEY = UniqueKeys0.APP_USER_PKEY;
     public static final UniqueKey<BurdenEstimateRecord> BURDEN_ESTIMATE_PKEY = UniqueKeys0.BURDEN_ESTIMATE_PKEY;
-    public static final UniqueKey<BurdenEstimateRecord> BURDEN_ESTIMATE_BURDEN_ESTIMATE_SET_COUNTRY_YEAR_BURDEN_OUT_KEY = UniqueKeys0.BURDEN_ESTIMATE_BURDEN_ESTIMATE_SET_COUNTRY_YEAR_BURDEN_OUT_KEY;
+    public static final UniqueKey<BurdenEstimateRecord> BURDEN_ESTIMATE_UNIQUE = UniqueKeys0.BURDEN_ESTIMATE_UNIQUE;
     public static final UniqueKey<BurdenEstimateSetRecord> BURDEN_ESTIMATE_SET_PKEY = UniqueKeys0.BURDEN_ESTIMATE_SET_PKEY;
     public static final UniqueKey<BurdenEstimateSetProblemRecord> BURDEN_ESTIMATE_SET_PROBLEM_PKEY = UniqueKeys0.BURDEN_ESTIMATE_SET_PROBLEM_PKEY;
     public static final UniqueKey<BurdenOutcomeRecord> BURDEN_OUTCOME_PKEY = UniqueKeys0.BURDEN_OUTCOME_PKEY;
@@ -366,7 +366,7 @@ public class Keys {
         public static final UniqueKey<ApiAccessLogRecord> API_ACCESS_LOG_PKEY = createUniqueKey(ApiAccessLog.API_ACCESS_LOG, "api_access_log_pkey", ApiAccessLog.API_ACCESS_LOG.ID);
         public static final UniqueKey<AppUserRecord> APP_USER_PKEY = createUniqueKey(AppUser.APP_USER, "app_user_pkey", AppUser.APP_USER.USERNAME);
         public static final UniqueKey<BurdenEstimateRecord> BURDEN_ESTIMATE_PKEY = createUniqueKey(BurdenEstimate.BURDEN_ESTIMATE, "burden_estimate_pkey", BurdenEstimate.BURDEN_ESTIMATE.ID);
-        public static final UniqueKey<BurdenEstimateRecord> BURDEN_ESTIMATE_BURDEN_ESTIMATE_SET_COUNTRY_YEAR_BURDEN_OUT_KEY = createUniqueKey(BurdenEstimate.BURDEN_ESTIMATE, "burden_estimate_burden_estimate_set_country_year_burden_out_key", BurdenEstimate.BURDEN_ESTIMATE.BURDEN_ESTIMATE_SET, BurdenEstimate.BURDEN_ESTIMATE.COUNTRY, BurdenEstimate.BURDEN_ESTIMATE.YEAR, BurdenEstimate.BURDEN_ESTIMATE.BURDEN_OUTCOME);
+        public static final UniqueKey<BurdenEstimateRecord> BURDEN_ESTIMATE_UNIQUE = createUniqueKey(BurdenEstimate.BURDEN_ESTIMATE, "burden_estimate_unique", BurdenEstimate.BURDEN_ESTIMATE.BURDEN_ESTIMATE_SET, BurdenEstimate.BURDEN_ESTIMATE.COUNTRY, BurdenEstimate.BURDEN_ESTIMATE.YEAR, BurdenEstimate.BURDEN_ESTIMATE.AGE, BurdenEstimate.BURDEN_ESTIMATE.BURDEN_OUTCOME);
         public static final UniqueKey<BurdenEstimateSetRecord> BURDEN_ESTIMATE_SET_PKEY = createUniqueKey(BurdenEstimateSet.BURDEN_ESTIMATE_SET, "burden_estimate_set_pkey", BurdenEstimateSet.BURDEN_ESTIMATE_SET.ID);
         public static final UniqueKey<BurdenEstimateSetProblemRecord> BURDEN_ESTIMATE_SET_PROBLEM_PKEY = createUniqueKey(BurdenEstimateSetProblem.BURDEN_ESTIMATE_SET_PROBLEM, "burden_estimate_set_problem_pkey", BurdenEstimateSetProblem.BURDEN_ESTIMATE_SET_PROBLEM.ID);
         public static final UniqueKey<BurdenOutcomeRecord> BURDEN_OUTCOME_PKEY = createUniqueKey(BurdenOutcome.BURDEN_OUTCOME, "burden_outcome_pkey", BurdenOutcome.BURDEN_OUTCOME.ID);

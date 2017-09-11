@@ -1,5 +1,6 @@
 package org.vaccineimpact.api.app.repositories
 
+import org.jooq.Configuration
 import org.vaccineimpact.api.app.repositories.jooq.*
 import org.vaccineimpact.api.db.JooqContext
 
@@ -11,19 +12,21 @@ open class Repositories(
         open val modelRepository: () -> ModelRepository,
         open val touchstone: () -> TouchstoneRepository,
         open val scenario: () -> ScenarioRepository,
-        open val modellingGroup: () -> ModellingGroupRepository
+        open val modellingGroup: () -> ModellingGroupRepository,
+        open val burdenEstimates: () -> BurdenEstimateRepository
 )
 
 fun makeRepositories(): Repositories
 {
-    fun simpleObjects(db: JooqContext) = JooqSimpleObjectsRepository(db)
-    fun user(db: JooqContext) = JooqUserRepository(db)
-    fun token(db: JooqContext) = JooqTokenRepository(db)
-    fun accessLogRepository(db: JooqContext) = JooqAccessLogRepository(db)
-    fun model(db: JooqContext) = JooqModelRepository(db)
-    fun scenario(db: JooqContext) = JooqScenarioRepository(db)
-    fun touchstone(db: JooqContext) = JooqTouchstoneRepository(db, scenario(db))
-    fun modellingGroup(db: JooqContext) = JooqModellingGroupRepository(db, touchstone(db), scenario(db))
+    fun simpleObjects(db: JooqContext, cfg: Configuration) = JooqSimpleObjectsRepository(db, cfg)
+    fun user(db: JooqContext, cfg: Configuration) = JooqUserRepository(db, cfg)
+    fun token(db: JooqContext, cfg: Configuration) = JooqTokenRepository(db, cfg)
+    fun accessLogRepository(db: JooqContext, cfg: Configuration) = JooqAccessLogRepository(db, cfg)
+    fun model(db: JooqContext, cfg: Configuration) = JooqModelRepository(db, cfg)
+    fun scenario(db: JooqContext, cfg: Configuration) = JooqScenarioRepository(db, cfg)
+    fun touchstone(db: JooqContext, cfg: Configuration) = JooqTouchstoneRepository(db, scenario(db, cfg))
+    fun modellingGroup(db: JooqContext, cfg: Configuration) = JooqModellingGroupRepository(db, touchstone(db, cfg), scenario(db, cfg))
+    fun burdenEstimates(db: JooqContext, cfg: Configuration) = JooqBurdenEstimateRepository(db, cfg, modellingGroup(db, cfg))
 
     return Repositories(
             wrapRepository(::simpleObjects),
@@ -33,7 +36,8 @@ fun makeRepositories(): Repositories
             wrapRepository(::model),
             wrapRepository(::touchstone),
             wrapRepository(::scenario),
-            wrapRepository(::modellingGroup)
+            wrapRepository(::modellingGroup),
+            wrapRepository(::burdenEstimates)
     )
 }
 
@@ -44,7 +48,15 @@ fun makeRepositories(): Repositories
  * It is up to the consumer of the repository to close the repository (and thus the
  * JooqContext
  */
-private fun <T : Repository> wrapRepository(factory: (JooqContext) -> T): () -> T
+private fun <T : Repository> wrapRepository(factory: (JooqContext, Configuration) -> T): () -> T
 {
-    return { factory(JooqContext()) }
+    return {
+        val db = JooqContext()
+        var result: T? = null
+        db.dsl.transaction { config ->
+            result = factory(db, config)
+            //Implicitly committed, unless an exception is thrown
+        }
+        result!!
+    }
 }

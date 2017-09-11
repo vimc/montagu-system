@@ -1,12 +1,13 @@
 package org.vaccineimpact.api.app.repositories.jooq
 
+import org.jooq.Configuration
 import org.vaccineimpact.api.app.repositories.AccessLogRepository
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.Tables.API_ACCESS_LOG
 import java.sql.Timestamp
 import java.time.Instant
 
-class JooqAccessLogRepository(db: JooqContext) : JooqRepository(db), AccessLogRepository
+class JooqAccessLogRepository(db: JooqContext, config: Configuration) : JooqRepository(db, config), AccessLogRepository
 {
     override fun log(principal: String?, timestamp: Instant, resource: String, responseStatus: Int, ipAddress: String)
     {

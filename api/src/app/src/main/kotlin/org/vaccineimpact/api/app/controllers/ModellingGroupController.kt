@@ -7,12 +7,14 @@ import org.vaccineimpact.api.app.controllers.endpoints.oneRepoEndpoint
 import org.vaccineimpact.api.app.controllers.endpoints.secured
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
+import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
 import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.serialization.DataTable
 import org.vaccineimpact.api.app.serialization.SplitData
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
+import java.time.Instant
 
 open class ModellingGroupController(context: ControllerContext)
     : AbstractController(context)
@@ -39,7 +41,9 @@ open class ModellingGroupController(context: ControllerContext)
                 oneRepoEndpoint("$scenarioURL/coverage_sets/", this::getCoverageSets, repo).secured(coveragePermissions),
                 oneRepoEndpoint("$coverageURL/",               this::getCoverageDataAndMetadata, repo, contentType = "application/json").secured(coveragePermissions),
                 oneRepoEndpoint("$coverageURL/",               this::getCoverageData, repo, contentType = "text/csv").secured(coveragePermissions),
-                oneRepoEndpoint("$coverageURL/get_onetime_link/", { c, r -> getOneTimeLinkToken(c, r, OneTimeAction.COVERAGE) }, repos.token).secured(coveragePermissions)
+                oneRepoEndpoint("$coverageURL/get_onetime_link/", { c, r -> getOneTimeLinkToken(c, r, OneTimeAction.COVERAGE) }, repos.token).secured(coveragePermissions),
+                oneRepoEndpoint("$scenarioURL/estimates/",     this::addBurdenEstimate, repos.burdenEstimates)
+                        .secured(setOf("$groupScope/estimates.write", "$groupScope/responsibilities.read"))
         )
     }
 
@@ -99,6 +103,20 @@ open class ModellingGroupController(context: ControllerContext)
         val data = repo.getCoverageData(path.groupId, path.touchstoneId, path.scenarioId)
         checkTouchstoneStatus(data.structuredMetadata.touchstone.status, path.touchstoneId, context)
         return data
+    }
+
+    open fun addBurdenEstimate(context: ActionContext, estimateRepository: BurdenEstimateRepository): String
+    {
+        val path = ResponsibilityPath(context)
+        val data = context.getCSVData<BurdenEstimateSet>()
+        val id = estimateRepository.addBurdenEstimateSet(
+                path.groupId, path.touchstoneId, path.scenarioId,
+                data,
+                uploader = context.username!!,
+                timestamp = Instant.now()
+        )
+        val url = "/modelling-groups/${path.groupId}/responsibilities/${path.touchstoneId}/${path.scenarioId}/estimates/$id/"
+        return objectCreation(context, url)
     }
 
     private fun checkTouchstoneStatus(

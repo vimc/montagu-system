@@ -1,5 +1,6 @@
 package org.vaccineimpact.api.app.repositories.jooq
 
+import org.jooq.Configuration
 import org.jooq.Record
 import org.vaccineimpact.api.app.repositories.ScenarioRepository
 import org.vaccineimpact.api.db.JooqContext
@@ -9,7 +10,7 @@ import org.vaccineimpact.api.db.fieldsAsList
 import org.vaccineimpact.api.db.fromJoinPath
 import org.vaccineimpact.api.models.Scenario
 
-class JooqScenarioRepository(db: JooqContext) : JooqRepository(db), ScenarioRepository
+class JooqScenarioRepository(db: JooqContext, config: Configuration) : JooqRepository(db, config), ScenarioRepository
 {
     override fun getScenarios(descriptionIds: Iterable<String>): List<Scenario>
     {
