@@ -2,6 +2,7 @@ package org.vaccineimpact.api.app.repositories.jooq
 
 import org.jooq.Configuration
 import org.jooq.Record
+import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.repositories.ScenarioRepository
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.Tables.SCENARIO
@@ -12,6 +13,14 @@ import org.vaccineimpact.api.models.Scenario
 
 class JooqScenarioRepository(db: JooqContext, config: Configuration) : JooqRepository(db, config), ScenarioRepository
 {
+    override fun checkScenarioDescriptionExists(id: String)
+    {
+        if (!dsl.fetchExists(SCENARIO_DESCRIPTION, SCENARIO_DESCRIPTION.ID.eq(id)))
+        {
+            throw UnknownObjectError(id, "scenario-description")
+        }
+    }
+
     override fun getScenarios(descriptionIds: Iterable<String>): List<Scenario>
     {
         return dsl.select(SCENARIO_DESCRIPTION.fieldsAsList())
@@ -39,4 +48,4 @@ class JooqScenarioRepository(db: JooqContext, config: Configuration) : JooqRepos
     }
 }
 
-fun makeScenarioRepository(db: JooqContext) = JooqScenarioRepository(db)
+fun makeScenarioRepository(db: JooqContext) = JooqScenarioRepository(db, db.dsl.configuration())

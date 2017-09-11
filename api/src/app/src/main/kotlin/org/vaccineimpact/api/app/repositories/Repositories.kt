@@ -26,7 +26,12 @@ fun makeRepositories(): Repositories
     fun scenario(db: JooqContext, cfg: Configuration) = JooqScenarioRepository(db, cfg)
     fun touchstone(db: JooqContext, cfg: Configuration) = JooqTouchstoneRepository(db, scenario(db, cfg))
     fun modellingGroup(db: JooqContext, cfg: Configuration) = JooqModellingGroupRepository(db, touchstone(db, cfg), scenario(db, cfg))
-    fun burdenEstimates(db: JooqContext, cfg: Configuration) = JooqBurdenEstimateRepository(db, cfg, modellingGroup(db, cfg))
+    fun burdenEstimates(db: JooqContext, cfg: Configuration) = JooqBurdenEstimateRepository(
+            db, cfg,
+            scenario(db, cfg),
+            touchstone(db, cfg),
+            modellingGroup(db, cfg)
+    )
 
     return Repositories(
             wrapRepository(::simpleObjects),
