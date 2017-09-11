@@ -43,7 +43,7 @@ export class ResponsibilityOverviewContentComponent extends RemoteContentCompone
 
             <div className={ commonStyles.largeSectionTitle }>Scenarios</div>
             <div className={ commonStyles.gapAbove }>
-                <ButtonLink href={ demographyUrl }>Download burden estimate template</ButtonLink>
+                <ButtonLink href={ templateUrl }>Download burden estimate template</ButtonLink>
             </div>
             <ResponsibilityList
                 modellingGroup={ props.modellingGroup }
