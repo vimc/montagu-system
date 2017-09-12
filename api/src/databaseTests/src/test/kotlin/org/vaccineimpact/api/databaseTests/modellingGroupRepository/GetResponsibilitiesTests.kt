@@ -119,6 +119,29 @@ class GetResponsibilitiesTests : ModellingGroupRepositoryTests()
     }
 
     @Test
+    fun `returns burden estimate`()
+    {
+        var burdenEstimateId = 0
+        given {
+            it.addUserForTesting("test.user")
+            it.addGroup("group", "description")
+            it.addScenarioDescription("scenario-1", "description 1", "disease 1", addDisease = true)
+            it.addTouchstone("touchstone", 1, "description", "open", addName = true)
+            val setId = it.addResponsibilitySet("group", "touchstone-1", "submitted")
+            val responsibilityId = it.addResponsibility(setId, "touchstone-1", "scenario-1")
+            val modelId = it.addModel("model", "group")
+            val version = it.addModelVersion(modelId)
+            burdenEstimateId = it.addBurdenEstimateSet(responsibilityId, version)
+            it.updateCurrentEstimate(responsibilityId, burdenEstimateId)
+        } check { repo ->
+            val set = repo.getResponsibilities("group", "touchstone-1", ScenarioFilterParameters())
+                    .responsibilities
+            assertThat(set.responsibilities.first().currentEstimate!!.id).isEqualTo(burdenEstimateId)
+            assertThat(set.responsibilities.first().status).isEqualTo(ResponsibilityStatus.VALID)
+        }
+    }
+
+    @Test
     fun `responsibilities from other groups are not returned`()
     {
         given {
