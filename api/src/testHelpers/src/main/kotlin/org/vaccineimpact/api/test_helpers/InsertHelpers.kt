@@ -168,6 +168,15 @@ fun JooqContext.addBurdenEstimateSet(responsibilityId: Int, modelId: Int): Int
     return record.id
 }
 
+fun JooqContext.addBurdenEstimateProblem(problem: String, burdenId: Int)
+{
+    val record = this.dsl.newRecord(BURDEN_ESTIMATE_SET_PROBLEM).apply {
+        this.burdenEstimateSet = burdenId
+        this.problem = problem
+    }
+    record.store()
+}
+
 fun JooqContext.updateCurrentEstimate(responsibilityId: Int, burdenId: Int)
 {
     this.dsl.update(RESPONSIBILITY)

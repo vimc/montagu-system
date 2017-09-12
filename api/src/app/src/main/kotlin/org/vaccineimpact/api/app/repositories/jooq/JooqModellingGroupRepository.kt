@@ -171,7 +171,9 @@ class JooqModellingGroupRepository(
     {
         val records = dsl.select(BURDEN_ESTIMATE_SET_PROBLEM.PROBLEM)
                 .select(BURDEN_ESTIMATE_SET.UPLOADED_ON, BURDEN_ESTIMATE_SET.ID)
-                .fromJoinPath(BURDEN_ESTIMATE_SET, BURDEN_ESTIMATE_SET_PROBLEM)
+                .from(BURDEN_ESTIMATE_SET)
+                .leftJoin(BURDEN_ESTIMATE_SET_PROBLEM)
+                .on(BURDEN_ESTIMATE_SET_PROBLEM.BURDEN_ESTIMATE_SET.eq(BURDEN_ESTIMATE_SET.ID))
                 .join(RESPONSIBILITY)
                 .on(RESPONSIBILITY.CURRENT_BURDEN_ESTIMATE_SET.eq(BURDEN_ESTIMATE_SET.ID))
                 .where(RESPONSIBILITY.ID.eq(responsibilityId))
@@ -191,7 +193,8 @@ class JooqModellingGroupRepository(
         return BurdenEstimate(
                 id = first[BURDEN_ESTIMATE_SET.ID],
                 uploadedOn = first[BURDEN_ESTIMATE_SET.UPLOADED_ON].toInstant(),
-                problems = input.map { it[BURDEN_ESTIMATE_SET_PROBLEM.PROBLEM] }
+                problems = input.filter{ it[BURDEN_ESTIMATE_SET_PROBLEM.PROBLEM] != null }
+                        .map { it[BURDEN_ESTIMATE_SET_PROBLEM.PROBLEM] }
         )
     }
 
