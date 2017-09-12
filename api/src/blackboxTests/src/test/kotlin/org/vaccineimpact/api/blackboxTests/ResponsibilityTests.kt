@@ -46,8 +46,8 @@ class ResponsibilityTests : DatabaseTest()
                 )
             })
             assertThat(responsibility["status"]).isEqualTo("empty")
-            assertThat(responsibility["problems"]).isEqualTo(json { array() })
-            assertThat(responsibility["current_estimate"]).isEqualTo(null)
+            assertThat(responsibility["problems"]).isEqualTo(json { array("problem") })
+            assertThat(responsibility["current_estimate"]).isNotNull()
         }
     }
 
@@ -169,12 +169,18 @@ class ResponsibilityTests : DatabaseTest()
 
     private fun addResponsibilities(db: JooqContext, touchstoneStatus: String)
     {
+        db.addUserForTesting("model.user")
         db.addGroup(groupId, "description")
         db.addScenarioDescription(scenarioId, "description 1", "disease-1", addDisease = true)
         db.addScenarioDescription("scenario-2", "description 2", "disease-2", addDisease = true)
         db.addTouchstone("touchstone", 1, "description", touchstoneStatus, addName = true)
         val setId = db.addResponsibilitySet(groupId, touchstoneId, "submitted")
-        db.addResponsibility(setId, touchstoneId, scenarioId)
+        val responsibilityId = db.addResponsibility(setId, touchstoneId, scenarioId)
         db.addResponsibility(setId, touchstoneId, "scenario-2")
+        val modelId = db.addModel("model", groupId)
+        val version = db.addModelVersion(modelId)
+        val burdenEstimateId = db.addBurdenEstimateSet(responsibilityId, version, "model.user")
+        db.updateCurrentEstimate(responsibilityId, burdenEstimateId)
+        db.addBurdenEstimateProblem("problem", burdenEstimateId)
     }
 }

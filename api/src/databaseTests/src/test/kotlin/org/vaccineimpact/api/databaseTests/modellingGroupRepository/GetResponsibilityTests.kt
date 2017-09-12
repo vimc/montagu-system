@@ -48,7 +48,7 @@ class GetResponsibilityTests : ModellingGroupRepositoryTests()
             val responsibilityId = it.addResponsibility(setId, "touchstone-1", "scenario-1")
             val modelId = it.addModel("model", "group")
             val version = it.addModelVersion(modelId)
-            burdenEstimateId = it.addBurdenEstimateSet(responsibilityId, version)
+            burdenEstimateId = it.addBurdenEstimateSet(responsibilityId, version, "test.user")
             it.updateCurrentEstimate(responsibilityId, burdenEstimateId)
             it.addBurdenEstimateProblem("problem", burdenEstimateId)
         } check { repo ->
@@ -72,13 +72,14 @@ class GetResponsibilityTests : ModellingGroupRepositoryTests()
             val responsibilityId = it.addResponsibility(setId, "touchstone-1", "scenario-1")
             val modelId = it.addModel("model", "group")
             val version = it.addModelVersion(modelId)
-            burdenEstimateId = it.addBurdenEstimateSet(responsibilityId, version)
+            burdenEstimateId = it.addBurdenEstimateSet(responsibilityId, version, "test.user")
             it.updateCurrentEstimate(responsibilityId, burdenEstimateId)
         } check { repo ->
             val responsibility = repo.getResponsibility("group", "touchstone-1", "scenario-1")
                     .responsibility
             assertThat(responsibility.currentEstimate!!.id).isEqualTo(burdenEstimateId)
             assertThat(responsibility.status).isEqualTo(ResponsibilityStatus.VALID)
+            assertThat(responsibility.currentEstimate!!.uploadedOn).isNotNull()
         }
     }
 

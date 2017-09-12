@@ -9,5 +9,5 @@
         "uploaded_on": { "$ref": "Timestamp.schema.json" }
     },
     "additionalProperties": false,
-    "required": [ "id", "scenario", "responsible_group", "uploaded_by", "uploaded_on" ]
+    "required": [ "id", "uploaded_on" ]
 }
