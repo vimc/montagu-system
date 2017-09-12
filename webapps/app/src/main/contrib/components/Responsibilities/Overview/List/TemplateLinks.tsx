@@ -6,6 +6,7 @@ import { ButtonLink } from "../../../../../shared/components/ButtonLink";
 export class TemplateLinks extends React.Component<IExtendedResponsibilitySet, undefined> {
     render(): JSX.Element {
         const diseaseIds = [ ...new Set(this.props.responsibilities.map(x => x.scenario.disease)) ];
+
         if (diseaseIds.length > 0) {
             const links = diseaseIds
                 .map(id => mainStore.getDiseaseById(id))
