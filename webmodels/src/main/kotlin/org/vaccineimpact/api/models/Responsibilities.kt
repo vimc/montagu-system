@@ -23,7 +23,7 @@ data class Responsibility(
         val scenario: Scenario,
         val status: ResponsibilityStatus,
         val problems: List<String>,
-        val currentEstimate: BurdenEstimate?
+        val currentEstimate: BurdenEstimateSet?
 )
 
 enum class ResponsibilitySetStatus
