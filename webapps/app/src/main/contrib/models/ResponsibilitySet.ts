@@ -1,12 +1,12 @@
 import {
-    BurdenEstimate, CoverageSet, ModellingGroup, Responsibilities, Responsibility, ResponsibilitySetStatus,
+    BurdenEstimateSet, CoverageSet, ModellingGroup, Responsibilities, Responsibility, ResponsibilitySetStatus,
     ResponsibilityStatus,
     Scenario,
     Touchstone
 } from "../../shared/models/Generated";
 
 export class ExtendedResponsibility {
-    current_estimate: BurdenEstimate | null;
+    current_estimate: BurdenEstimateSet | null;
     problems: string[];
     scenario: Scenario;
     status: ResponsibilityStatus;

@@ -7,7 +7,7 @@ import { Sandbox } from "../../../Sandbox";
 
 import { ButtonLink } from "../../../../main/shared/components/ButtonLink";
 import { ResponsibilityComponent } from "../../../../main/contrib/components/Responsibilities/Overview/List/ResponsibilityComponent";
-import { ResponsibilitySetStatus } from "../../../../main/shared/models/Generated";
+import { BurdenEstimateSet, ResponsibilitySetStatus } from "../../../../main/shared/models/Generated";
 
 const styles = require("../../../../main/contrib/components/Responsibilities/Responsibilities.css");
 
@@ -15,7 +15,7 @@ describe('ResponsibilityComponent', () => {
     let rendered: ShallowWrapper<any, any>;
     const sandbox = new Sandbox();
 
-    function setUpComponent(responsibilitySetStatus: ResponsibilitySetStatus){
+    function setUpComponent(responsibilitySetStatus: ResponsibilitySetStatus, burdenEstimateSet?: BurdenEstimateSet){
         setupMainStore({
             diseases: [
                 { id: "disease-id", name: "Disease name" }
@@ -23,7 +23,8 @@ describe('ResponsibilityComponent', () => {
         });
 
         const responsibility = mockResponsibility({
-            status: "empty"
+            status: "empty",
+            current_estimate: burdenEstimateSet
         }, mockScenario({
             id: "scenario-1",
             description: "Description",
@@ -60,6 +61,16 @@ describe('ResponsibilityComponent', () => {
         setUpComponent("incomplete");
         expect(rendered.find(`.${styles.actions} button`).last().text()).to.eq("Upload a new burden estimate set");
         expect(rendered.find(`.${styles.actions} button`).last().prop("disabled")).to.eq(false);
+    });
+
+    it("displays no estimates message if current estimate is null", () => {
+        setUpComponent("incomplete");
+        expect(rendered.find(`.${styles.estimates}`).text()).to.eq("You have not uploaded any burden estimate sets.")
+    });
+
+    it("displays last uploaded estimate date if current estimate is populated", () => {
+        setUpComponent("incomplete", { id: 1, problems: [], uploaded_on : "2017-07-13 13:55:29 +0100"});
+        expect(rendered.find(`.${styles.estimates}`).text()).to.eq("You last uploaded an estimate on 2017-07-13 13:55:29 +0100.")
     });
 
     it("renders the coverage download link", () => {

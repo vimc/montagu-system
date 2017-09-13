@@ -46,7 +46,22 @@ export interface ModellingGroupDetails {
     models: ResearchModel[];
 }
 
-export interface BurdenEstimate {
+export interface TemporalAccessor {
+}
+
+export interface Temporal extends TemporalAccessor {
+}
+
+export interface TemporalAdjuster {
+}
+
+export interface Instant extends Temporal, TemporalAdjuster {
+}
+
+export interface BurdenEstimateSet {
+    id: number;
+    problems: string[];
+    uploaded_on: Instant;
 }
 
 export interface Scenario {
@@ -59,7 +74,7 @@ export interface Scenario {
 export type ResponsibilityStatus = "empty" | "invalid" | "valid";
 
 export interface Responsibility {
-    current_estimate: BurdenEstimate | null;
+    current_estimate: BurdenEstimateSet | null;
     problems: string[];
     scenario: Scenario;
     status: ResponsibilityStatus;
@@ -106,18 +121,6 @@ export interface ScenarioTouchstoneAndCoverageSets {
     coverage_sets: CoverageSet[];
     scenario: Scenario;
     touchstone: Touchstone;
-}
-
-export interface TemporalAccessor {
-}
-
-export interface Temporal extends TemporalAccessor {
-}
-
-export interface TemporalAdjuster {
-}
-
-export interface Instant extends Temporal, TemporalAdjuster {
 }
 
 export interface RoleAssignment {
