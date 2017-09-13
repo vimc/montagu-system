@@ -31,15 +31,32 @@ fun JooqContext.addModel(
         description: String = id,
         citation: String = "Unknown citation",
         current: String? = null
-)
+): String
 {
-    this.dsl.newRecord(MODEL).apply {
+    val record = this.dsl.newRecord(MODEL).apply {
         this.id = id
         this.modellingGroup = groupId
         this.description = description
         this.citation = citation
         this.current = current
-    }.store()
+    }
+
+    record.store()
+    return record.id
+}
+
+
+fun JooqContext.addModelVersion(
+        modelId: String
+): Int
+{
+    val record = this.dsl.newRecord(MODEL_VERSION).apply {
+        this.model = modelId
+        this.version = "version"
+    }
+
+    record.store()
+    return record.id
 }
 
 fun JooqContext.addTouchstoneName(id: String, description: String)
@@ -137,12 +154,43 @@ fun JooqContext.addResponsibilitySet(
     return record.id
 }
 
-/** Creates both a responsibility, assuming the referenced scenario already exists **/
-fun JooqContext.addResponsibility(responsibilitySetId: Int, scenarioId: Int): Int
+fun JooqContext.addBurdenEstimateSet(responsibilityId: Int, modelId: Int): Int
+{
+    val record = this.dsl.newRecord(BURDEN_ESTIMATE_SET).apply {
+        this.responsibility = responsibilityId
+        this.modelVersion = modelId
+        this.uploadedBy = "test.user"
+        this.runInfo = ""
+        this.interpolated = false
+        this.complete = false
+    }
+    record.store()
+    return record.id
+}
+
+fun JooqContext.addBurdenEstimateProblem(problem: String, burdenId: Int)
+{
+    val record = this.dsl.newRecord(BURDEN_ESTIMATE_SET_PROBLEM).apply {
+        this.burdenEstimateSet = burdenId
+        this.problem = problem
+    }
+    record.store()
+}
+
+fun JooqContext.updateCurrentEstimate(responsibilityId: Int, burdenId: Int)
+{
+    this.dsl.update(RESPONSIBILITY)
+            .set(RESPONSIBILITY.CURRENT_BURDEN_ESTIMATE_SET,burdenId)
+            .where(RESPONSIBILITY.ID.eq(responsibilityId))
+            .execute()
+}
+
+fun JooqContext.addResponsibility(responsibilitySetId: Int, scenarioId: Int, burdenId: Int? = null): Int
 {
     val record = this.dsl.newRecord(RESPONSIBILITY).apply {
         responsibilitySet = responsibilitySetId
         scenario = scenarioId
+        currentBurdenEstimateSet = burdenId
     }
     record.store()
     return record.id
