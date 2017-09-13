@@ -12,75 +12,54 @@ import kotlin.reflect.KType
 import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.primaryConstructor
 
-class HeaderDefinition(name: String, val type: KType, serializer: Serializer)
-{
-    val name = serializer.convertFieldName(name)
-}
+class HeaderDefinition(val name: String, val type: KType)
 
-data class TableDefinition<out T>(
-        val fixedHeaders: List<HeaderDefinition>,
-        val constructor: KFunction<T>,
-        val flexibleType: KType? = null
+open class DataTableDeserializer<out T>(
+        protected val headers: List<HeaderDefinition>,
+        protected val constructor: KFunction<T>
 )
 {
-    val flexible = flexibleType != null
-    val headerCount = fixedHeaders.size
+    protected val headerCount = headers.size
+    protected open val extraHeadersAllowed = false
 
-    fun getExtraHeaders(headers: List<String>) = headers.drop(this.fixedHeaders.size)
-}
-
-class DataTableDeserializer
-{
-    fun <T : Any> deserialize(body: String, type: KClass<T>, serializer: Serializer): Sequence<T>
+    fun deserialize(body: String): Sequence<T>
     {
-        val definition = getTableDefinition(type, serializer)
-        val constructor = definition.constructor
         val reader = CSVReader(StringReader(body.trim()))
 
         var row = reader.readNext()
         val headers = row.toList()
-        val headerProblems = checkHeaders(definition, headers)
-        if (headerProblems.any())
-        {
-            throw ValidationError(headerProblems)
-        }
-        val extraHeaders = definition.getExtraHeaders(headers)
-
+        checkHeaders(headers)
+        val actualHeaders = getActualHeaderDefinitions(headers)
         val rows = generateSequence { reader.readNext() }
         return rows.withIndex().map { (i, row) ->
-            deserializeRow(row.toList(), definition, extraHeaders, constructor, i)
+            deserializeRow(row.toList(), actualHeaders, i)
         }
     }
 
-    private fun <T> deserializeRow(
+    private fun deserializeRow(
             row: List<String>,
-            definition: TableDefinition<T>,
-            flexibleHeaders: List<String>,
-            constructor: KFunction<T>,
+            actualHeaders: List<HeaderDefinition>,
             rowIndex: Int
     ): T
     {
         val problems = mutableListOf<ErrorInfo>()
-        if (row.size != definition.headerCount + flexibleHeaders.size)
+        if (row.size != actualHeaders.size)
         {
             problems.add(ErrorInfo("csv-wrong-row-length:$rowIndex", "Row $rowIndex has a different number of columns from the header row"))
         }
-        var args = row.zip(definition.fixedHeaders).map { (raw, header) ->
+        val values = row.zip(actualHeaders).map { (raw, header) ->
             deserialize(raw, header.type, rowIndex, header.name, problems)
-        }
-        if (definition.flexibleType != null)
-        {
-            val map = row.drop(definition.headerCount).zip(flexibleHeaders).map({ (raw, key) ->
-                val value = deserialize(raw, definition.flexibleType, rowIndex, key, problems)
-                key to value
-            }).toMap()
-            args += map
         }
         if (problems.any())
         {
             throw ValidationError(problems)
         }
-        return constructor.call(*args.toTypedArray())
+        return constructor.call(*prepareValuesForConstructor(values, actualHeaders).toTypedArray())
+    }
+
+    protected open fun prepareValuesForConstructor(values: List<Any?>, actualHeaders: List<HeaderDefinition>): List<Any?>
+    {
+        return values
     }
 
     private fun deserialize(raw: String, targetType: KType,
@@ -102,16 +81,13 @@ class DataTableDeserializer
         }
     }
 
-    private fun checkHeaders(
-            definition: TableDefinition<*>,
-            actualHeaders: List<String>
-    ): List<ErrorInfo>
+    private fun checkHeaders(actualHeaders: List<String>): List<HeaderDefinition>
     {
         val problems = mutableListOf<ErrorInfo>()
         var index = 0
-        while (index < maxOf(definition.headerCount, actualHeaders.size))
+        while (index < maxOf(headerCount, actualHeaders.size))
         {
-            val expected = definition.fixedHeaders.getOrNull(index)
+            val expected = headers.getOrNull(index)
             val actual = actualHeaders.getOrNull(index)?.trim()
 
             if (expected != null)
@@ -129,31 +105,49 @@ class DataTableDeserializer
                     problems.add(ErrorInfo("csv-missing-header", "Not enough column headers were provided. Expected a '$expectedName' header."))
                 }
             }
-            else if (actual != null && !definition.flexible)
+            else if (actual != null && !extraHeadersAllowed)
             {
                 problems.add(ErrorInfo("csv-unexpected-header", "Too many column headers were provided. Unexpected '$actual' header."))
             }
             index += 1
         }
-        return problems
+
+        if (problems.any())
+        {
+            throw ValidationError(problems)
+        }
+        return headers
     }
 
-    private fun <T: Any> getTableDefinition(type: KClass<T>, serializer: Serializer): TableDefinition<T>
+    protected open fun getActualHeaderDefinitions(actualHeaders: List<String>): List<HeaderDefinition>
     {
-        val constructor = type.primaryConstructor
-            ?: throw Exception("Cannot deserialize to type ${type.simpleName} - it has no primary constructor")
-        val headers = constructor.parameters
-                    .map { HeaderDefinition(it.name!!, it.type, serializer) }
+        return headers
+    }
 
-        return if (type.findAnnotation<FlexibleColumns>() != null)
+    companion object
+    {
+        fun <T : Any> deserialize(body: String, type: KClass<T>, serializer: Serializer): Sequence<T>
         {
-            // If the last argument is a map, get the type of the values the map stores
-            val flexibleType = constructor.parameters.last().type.arguments.last().type
-            TableDefinition(headers.dropLast(1), constructor, flexibleType)
+            return getDeserializer(type, serializer).deserialize(body)
         }
-        else
+
+        private fun <T: Any> getDeserializer(type: KClass<T>, serializer: Serializer): DataTableDeserializer<T>
         {
-            TableDefinition(headers, constructor)
+            val constructor = type.primaryConstructor
+                    ?: throw Exception("Cannot deserialize to type ${type.simpleName} - it has no primary constructor")
+            val headers = constructor.parameters
+                    .map { HeaderDefinition(serializer.convertFieldName(it.name!!), it.type) }
+
+            return if (type.findAnnotation<FlexibleColumns>() != null)
+            {
+                // If the last argument is a map, get the type of the values the map stores
+                val flexibleType = constructor.parameters.last().type.arguments.last().type!!
+                FlexibleDataTableDeserializer(headers.dropLast(1), constructor, flexibleType)
+            }
+            else
+            {
+                DataTableDeserializer(headers, constructor)
+            }
         }
     }
 }

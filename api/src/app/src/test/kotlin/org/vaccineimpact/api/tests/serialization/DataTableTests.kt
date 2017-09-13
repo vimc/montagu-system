@@ -77,7 +77,7 @@ NA,NA,NA""")
             text,int,dec
             "joe",1,6.53
             "bob",2,2.0"""
-        val rows = DataTableDeserializer().deserialize(csv, MixedTypes::class, Serializer.instance).toList()
+        val rows = DataTableDeserializer.deserialize(csv, MixedTypes::class, Serializer.instance).toList()
         assertThat(rows).containsExactlyElementsOf(listOf(
                 MixedTypes("joe", 1, BigDecimal.valueOf(6.53)),
                 MixedTypes("bob", 2, BigDecimal.valueOf(2.0))
@@ -91,7 +91,7 @@ NA,NA,NA""")
             a,b,c,d
             1,2,3,4"""
         checkValidationError("csv-unexpected-header") {
-            DataTableDeserializer().deserialize(csv, ABC::class, Serializer.instance).toList()
+            DataTableDeserializer.deserialize(csv, ABC::class, Serializer.instance).toList()
         }
     }
 
@@ -103,7 +103,7 @@ NA,NA,NA""")
             1,2,3
             1,2,3,4"""
         checkValidationError("csv-wrong-row-length:1") {
-            DataTableDeserializer().deserialize(csv, ABC::class, Serializer.instance).toList()
+            DataTableDeserializer.deserialize(csv, ABC::class, Serializer.instance).toList()
         }
     }
 
@@ -115,7 +115,7 @@ NA,NA,NA""")
             1,2,3
             1,2"""
         checkValidationError("csv-wrong-row-length:1") {
-            DataTableDeserializer().deserialize(csv, ABC::class, Serializer.instance).toList()
+            DataTableDeserializer.deserialize(csv, ABC::class, Serializer.instance).toList()
         }
     }
 
@@ -127,7 +127,7 @@ NA,NA,NA""")
             "joe",1,3.14
             "sam",2.6,1"""
         checkValidationError("csv-bad-data-type:1:int") {
-            DataTableDeserializer().deserialize(csv, MixedTypes::class, Serializer.instance).toList()
+            DataTableDeserializer.deserialize(csv, MixedTypes::class, Serializer.instance).toList()
         }
     }
 
@@ -138,7 +138,7 @@ NA,NA,NA""")
             a,b,x,y,z
             1,"joe",1,2,3
             2,"bob",4,5,6"""
-        val rows = DataTableDeserializer().deserialize(csv, Flexible::class, Serializer.instance).toList()
+        val rows = DataTableDeserializer.deserialize(csv, Flexible::class, Serializer.instance).toList()
         assertThat(rows).containsExactlyElementsOf(listOf(
                 Flexible(1, "joe", mapOf("x" to 1, "y" to 2, "z" to 3)),
                 Flexible(2, "bob", mapOf("x" to 4, "y" to 5, "z" to 6))
@@ -153,7 +153,7 @@ NA,NA,NA""")
             1,2,3
             3,4,5"""
         checkValidationError("csv-unexpected-header") {
-            DataTableDeserializer().deserialize(csv, Flexible::class, Serializer.instance).toList()
+            DataTableDeserializer.deserialize(csv, Flexible::class, Serializer.instance).toList()
         }
     }
 
@@ -165,7 +165,7 @@ NA,NA,NA""")
             0,"p",1,2,3
             0,"q",1,2"""
         checkValidationError("csv-wrong-row-length:1") {
-            DataTableDeserializer().deserialize(csv, Flexible::class, Serializer.instance).toList()
+            DataTableDeserializer.deserialize(csv, Flexible::class, Serializer.instance).toList()
         }
     }
 
@@ -177,7 +177,7 @@ NA,NA,NA""")
             0,"p",1,2,3
             0,"q",1,2,3,4"""
         checkValidationError("csv-wrong-row-length:1") {
-            DataTableDeserializer().deserialize(csv, Flexible::class, Serializer.instance).toList()
+            DataTableDeserializer.deserialize(csv, Flexible::class, Serializer.instance).toList()
         }
     }
 
@@ -189,7 +189,7 @@ NA,NA,NA""")
             0,"p",1,2,3
             0,"q",1,2,3.5"""
         checkValidationError("csv-bad-data-type:1:z") {
-            DataTableDeserializer().deserialize(csv, Flexible::class, Serializer.instance).toList()
+            DataTableDeserializer.deserialize(csv, Flexible::class, Serializer.instance).toList()
         }
     }
 

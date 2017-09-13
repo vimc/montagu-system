@@ -35,7 +35,7 @@ open class DirectActionContext(private val context: SparkWebContext): ActionCont
 
     override fun <T : Any> csvData(klass: KClass<T>): List<T>
     {
-        return DataTableDeserializer().deserialize(request.body(), klass, Serializer.instance).toList()
+        return DataTableDeserializer.deserialize(request.body(), klass, Serializer.instance).toList()
     }
 
     override fun setResponseStatus(status: Int)
