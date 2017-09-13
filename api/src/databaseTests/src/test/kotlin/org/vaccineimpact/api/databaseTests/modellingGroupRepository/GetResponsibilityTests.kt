@@ -3,7 +3,6 @@ package org.vaccineimpact.api.databaseTests.modellingGroupRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
-import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
 import org.vaccineimpact.api.db.direct.*
 import org.vaccineimpact.api.models.*
 
@@ -54,7 +53,7 @@ class GetResponsibilityTests : ModellingGroupRepositoryTests()
         } check { repo ->
             val responsibility = repo.getResponsibility("group", "touchstone-1", "scenario-1")
                     .responsibility
-            assertThat(responsibility.currentEstimate!!.id).isEqualTo(burdenEstimateId)
+            assertThat(responsibility.currentEstimateSet!!.id).isEqualTo(burdenEstimateId)
             assertThat(responsibility.status).isEqualTo(ResponsibilityStatus.INVALID)
         }
     }
@@ -77,9 +76,9 @@ class GetResponsibilityTests : ModellingGroupRepositoryTests()
         } check { repo ->
             val responsibility = repo.getResponsibility("group", "touchstone-1", "scenario-1")
                     .responsibility
-            assertThat(responsibility.currentEstimate!!.id).isEqualTo(burdenEstimateId)
+            assertThat(responsibility.currentEstimateSet!!.id).isEqualTo(burdenEstimateId)
             assertThat(responsibility.status).isEqualTo(ResponsibilityStatus.VALID)
-            assertThat(responsibility.currentEstimate!!.uploadedOn).isNotNull()
+            assertThat(responsibility.currentEstimateSet!!.uploadedOn).isNotNull()
         }
     }
 

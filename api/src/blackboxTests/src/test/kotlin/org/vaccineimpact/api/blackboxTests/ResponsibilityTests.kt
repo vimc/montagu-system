@@ -47,7 +47,7 @@ class ResponsibilityTests : DatabaseTest()
             })
             assertThat(responsibility["status"]).isEqualTo("invalid")
             assertThat(responsibility["problems"]).isEqualTo(json { array("problem") })
-            assertThat(responsibility["current_estimate"]).isNotNull()
+            assertThat(responsibility["current_estimate_set"]).isNotNull()
         }
     }
 
@@ -94,7 +94,7 @@ class ResponsibilityTests : DatabaseTest()
                                 )})
             assertThat(responsibility["status"]).isEqualTo("invalid")
             assertThat(responsibility["problems"]).isEqualTo(json{array("problem")})
-            assertThat(responsibility["current_estimate"]).isNotNull()
+            assertThat(responsibility["current_estimate_set"]).isNotNull()
         }
     }
 

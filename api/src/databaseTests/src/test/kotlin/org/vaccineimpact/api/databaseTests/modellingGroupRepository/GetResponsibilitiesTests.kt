@@ -136,7 +136,7 @@ class GetResponsibilitiesTests : ModellingGroupRepositoryTests()
         } check { repo ->
             val set = repo.getResponsibilities("group", "touchstone-1", ScenarioFilterParameters())
                     .responsibilities
-            assertThat(set.responsibilities.first().currentEstimate!!.id).isEqualTo(burdenEstimateId)
+            assertThat(set.responsibilities.first().currentEstimateSet!!.id).isEqualTo(burdenEstimateId)
             assertThat(set.responsibilities.first().status).isEqualTo(ResponsibilityStatus.VALID)
         }
     }
@@ -160,7 +160,7 @@ class GetResponsibilitiesTests : ModellingGroupRepositoryTests()
         } check { repo ->
             val set = repo.getResponsibilities("group", "touchstone-1", ScenarioFilterParameters())
                     .responsibilities
-            assertThat(set.responsibilities.first().currentEstimate!!.id).isEqualTo(burdenEstimateId)
+            assertThat(set.responsibilities.first().currentEstimateSet!!.id).isEqualTo(burdenEstimateId)
             assertThat(set.responsibilities.first().status).isEqualTo(ResponsibilityStatus.INVALID)
             assertThat(set.responsibilities.first().problems).hasSameElementsAs(listOf("problem"))
         }

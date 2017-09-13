@@ -1,14 +1,11 @@
 {
-    "id": "BurdenEstimate",
+    "id": "BurdenEstimateSetMinimal",
     "type": "object",
     "properties": {
         "id": { "type": "integer" },
-        "scenario": { "$ref": "Scenario.schema.json" },
-        "responsible_group": { "$ref": "ModellingGroup.schema.json" },
-        "uploaded_by": { "$ref": "Username.schema.json" },
         "uploaded_on": { "$ref": "Timestamp.schema.json" },
         "problems": { "type": "array","items": { "type": "string" } }
     },
     "additionalProperties": false,
-    "required": [ "id", "uploaded_on" ]
+    "required": [ "id", "uploaded_on", "problems" ]
 }

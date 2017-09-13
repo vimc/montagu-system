@@ -1,9 +1,6 @@
 package org.vaccineimpact.api.app.repositories.jooq
 
-import com.nimbusds.jwt.util.DateUtils
-import com.sun.org.apache.regexp.internal.RE
 import org.jooq.Record
-import org.jooq.Record1
 import org.jooq.Record2
 import org.jooq.SelectConditionStep
 import org.vaccineimpact.api.app.errors.UnknownObjectError
@@ -21,9 +18,6 @@ import org.vaccineimpact.api.db.fromJoinPath
 import org.vaccineimpact.api.db.tables.records.ModellingGroupRecord
 import org.vaccineimpact.api.db.tables.records.ResponsibilitySetRecord
 import org.vaccineimpact.api.models.*
-import java.time.Instant
-import java.time.temporal.ChronoField
-import java.util.*
 
 class JooqModellingGroupRepository(
         db: JooqContext,
@@ -170,7 +164,7 @@ class JooqModellingGroupRepository(
         return Responsibility(scenario, status, problems, burdenEstimate)
     }
 
-    private fun getCurrentBurdenEstimate(responsibilityId: Int): BurdenEstimate?
+    private fun getCurrentBurdenEstimate(responsibilityId: Int): BurdenEstimateSet?
     {
         val records = dsl.select(BURDEN_ESTIMATE_SET_PROBLEM.PROBLEM)
                 .select(BURDEN_ESTIMATE_SET.UPLOADED_ON, BURDEN_ESTIMATE_SET.ID)
@@ -185,7 +179,7 @@ class JooqModellingGroupRepository(
         return mapBurdenEstimateSet(records)
     }
 
-    private fun mapBurdenEstimateSet(input: List<Record>): BurdenEstimate?
+    private fun mapBurdenEstimateSet(input: List<Record>): BurdenEstimateSet?
     {
         if (!input.any())
         {
@@ -194,7 +188,7 @@ class JooqModellingGroupRepository(
 
         val first = input.first()
         val uploadedOn = first[BURDEN_ESTIMATE_SET.UPLOADED_ON].toInstant()
-        return BurdenEstimate(
+        return BurdenEstimateSet(
                 id = first[BURDEN_ESTIMATE_SET.ID],
                 uploadedOn = uploadedOn,
                 problems = input.filter{ it[BURDEN_ESTIMATE_SET_PROBLEM.PROBLEM] != null }

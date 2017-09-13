@@ -5,8 +5,8 @@
         "scenario": { "$ref": "Scenario.schema.json" },
         "status": { "$ref": "ResponsibilityStatus.schema.json" },
         "problems": { "$ref": "ProblemsArray.schema.json" },
-        "current_estimate": {
-            "anyOf": [ {"$ref": "BurdenEstimate.schema.json"}, {"type": "null"} ]
+        "current_estimate_set": {
+            "anyOf": [ {"$ref": "BurdenEstimateSetMinimal.schema.json"}, {"type": "null"} ]
         },
         "countries": { 
             "type": "array",
@@ -19,6 +19,6 @@
         "scenario", 
         "status", 
         "problems", 
-        "current_estimate"
+        "current_estimate_set"
     ]
 }
