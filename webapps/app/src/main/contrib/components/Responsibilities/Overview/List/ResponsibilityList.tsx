@@ -40,6 +40,7 @@ export class ResponsibilityList extends React.Component<ResponsibilityListCompon
                     responsibility={ item }
                     touchstone={ props.responsibilitySet.touchstone }
                     modellingGroup={ props.modellingGroup }
+                    responsibilitySetStatus={props.responsibilitySet.status}
                 />
             );
             return <div>
