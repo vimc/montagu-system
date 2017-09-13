@@ -45,7 +45,7 @@ class ResponsibilityTests : DatabaseTest()
                         "touchstones" to array("touchstone-1")
                 )
             })
-            assertThat(responsibility["status"]).isEqualTo("empty")
+            assertThat(responsibility["status"]).isEqualTo("invalid")
             assertThat(responsibility["problems"]).isEqualTo(json { array("problem") })
             assertThat(responsibility["current_estimate"]).isNotNull()
         }
@@ -73,28 +73,28 @@ class ResponsibilityTests : DatabaseTest()
         } requiringPermissions {
             PermissionSet("$groupScope/responsibilities.read", "*/scenarios.read")
         } andCheck {
-            assertThat(it).isEqualTo(json {
-                obj(
-                        "touchstone" to obj(
+            val touchstone = it["touchstone"] as JsonObject
+            val responsibility = it["responsibility"] as JsonObject
+            val scenario = responsibility["scenario"] as JsonObject
+            assertThat(touchstone).isEqualTo(json {
+               obj(
                                 "id" to touchstoneId,
                                 "name" to "touchstone",
                                 "version" to 1,
                                 "description" to "description",
                                 "status" to "open"
-                        ),
-                        "responsibility" to obj(
-                                "scenario" to obj(
+                        )})
+
+            assertThat(scenario).isEqualTo(json{
+                                obj(
                                         "id" to scenarioId,
                                         "description" to "description 1",
                                         "disease" to "disease-1",
                                         "touchstones" to array("touchstone-1")
-                                ),
-                                "status" to "empty",
-                                "problems" to array(),
-                                "current_estimate" to null
-                        )
-                )
-            })
+                                )})
+            assertThat(responsibility["status"]).isEqualTo("invalid")
+            assertThat(responsibility["problems"]).isEqualTo(json{array("problem")})
+            assertThat(responsibility["current_estimate"]).isNotNull()
         }
     }
 
