@@ -75,7 +75,7 @@ open class DataTableDeserializer<out T>(
         {
             problems.add(ErrorInfo(
                     "csv-bad-data-type:$row:$column",
-                    "Unable to parse '$raw' as $targetType (Row $row, column $column)"
+                    "Unable to parse '${raw.trim()}' as ${targetType.javaClass.simpleName} (Row $row, column $column)"
             ))
             null
         }

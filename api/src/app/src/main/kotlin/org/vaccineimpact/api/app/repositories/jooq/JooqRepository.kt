@@ -10,7 +10,7 @@ import org.vaccineimpact.api.db.JooqContext
 import java.io.Closeable
 
 abstract class JooqRepository(
-        protected val db: JooqContext,
+        private val db: JooqContext,
         private val config: Configuration? = null
 ): Closeable
 {

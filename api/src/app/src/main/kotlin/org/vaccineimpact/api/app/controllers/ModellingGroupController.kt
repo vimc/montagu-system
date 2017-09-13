@@ -15,6 +15,7 @@ import org.vaccineimpact.api.app.serialization.DataTable
 import org.vaccineimpact.api.app.serialization.SplitData
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
+import spark.route.HttpMethod
 import java.time.Instant
 
 open class ModellingGroupController(context: ControllerContext)
@@ -43,7 +44,7 @@ open class ModellingGroupController(context: ControllerContext)
                 oneRepoEndpoint("$coverageURL/",               this::getCoverageDataAndMetadata, repo, contentType = "application/json").secured(coveragePermissions),
                 oneRepoEndpoint("$coverageURL/",               this::getCoverageData, repo, contentType = "text/csv").secured(coveragePermissions),
                 oneRepoEndpoint("$coverageURL/get_onetime_link/", { c, r -> getOneTimeLinkToken(c, r, OneTimeAction.COVERAGE) }, repos.token).secured(coveragePermissions),
-                oneRepoEndpoint("$scenarioURL/estimates/",     this::addBurdenEstimate, repos.burdenEstimates)
+                oneRepoEndpoint("$scenarioURL/estimates/",     this::addBurdenEstimate, repos.burdenEstimates, method = HttpMethod.post)
                         .secured(setOf("$groupScope/estimates.write", "$groupScope/responsibilities.read"))
         )
     }
@@ -115,7 +116,7 @@ open class ModellingGroupController(context: ControllerContext)
         checkTouchstoneStatus(touchstone.status, path.touchstoneId, context)
 
         // Then add the burden estimates
-        val data = BurdenEstimateSet(context.csvData())
+        val data = context.csvData<BurdenEstimate>()
         val id = estimateRepository.addBurdenEstimateSet(
                 path.groupId, path.touchstoneId, path.scenarioId,
                 data,

@@ -19,7 +19,7 @@ class BurdenEstimateTests : DatabaseTest()
     @Test
     fun `can upload burden estimate`()
     {
-        validate("url", method = HttpMethod.post) sending {
+        validate(url, method = HttpMethod.post) sending {
             csvData
         } given { db ->
             db.addTouchstone("touchstone", 1, "Touchstone 1", addName = true)
