@@ -162,8 +162,6 @@ fun JooqContext.addBurdenEstimateSet(responsibilityId: Int, modelId: Int, userna
         this.responsibility = responsibilityId
         this.modelVersion = modelId
         this.uploadedBy = username
-        // nb if you rely on the database default for uploadedOn, the date format will be to too high a precision
-        this.uploadedOn = Timestamp.from(Instant.now())
         this.runInfo = ""
         this.interpolated = false
         this.complete = false
