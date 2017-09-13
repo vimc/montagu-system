@@ -5,7 +5,7 @@ import org.pac4j.core.profile.ProfileManager
 import org.pac4j.sparkjava.SparkWebContext
 import org.vaccineimpact.api.app.errors.MissingRequiredPermissionError
 import org.vaccineimpact.api.app.security.montaguPermissions
-import org.vaccineimpact.api.app.serialization.DataTable
+import org.vaccineimpact.api.app.serialization.DataTableDeserializer
 import org.vaccineimpact.api.app.serialization.ModelBinder
 import org.vaccineimpact.api.app.serialization.Serializer
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
@@ -35,7 +35,7 @@ open class DirectActionContext(private val context: SparkWebContext): ActionCont
 
     override fun <T : Any> csvData(klass: KClass<T>): List<T>
     {
-        return DataTable.deserialize(request.body(), klass, Serializer.instance).toList()
+        return DataTableDeserializer().deserialize(request.body(), klass, Serializer.instance).toList()
     }
 
     override fun setResponseStatus(status: Int)
