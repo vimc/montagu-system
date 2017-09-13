@@ -1419,7 +1419,7 @@ Schema: [`ResponsibilityAndTouchstone.schema.json`](ResponsibilityAndTouchstone.
             },
             "status": "empty",
             "problems": [ "No burden estimates have been uploaded" ],
-            "current_estimate": null
+            "current_estimate_set": null
         }
     }
 
