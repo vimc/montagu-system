@@ -3,6 +3,8 @@ package org.vaccineimpact.api
 import java.lang.UnsupportedOperationException
 import java.math.BigDecimal
 import kotlin.reflect.KType
+import kotlin.reflect.full.createType
+import kotlin.reflect.full.withNullability
 
 class Deserializer
 {
@@ -13,16 +15,25 @@ class Deserializer
                 ?: throw UnknownEnumValue(name, T::class.simpleName ?: "[unknown]")
     }
 
-    fun <T> deserialize(raw: String, targetType: KType): T
+    fun deserialize(raw: String, targetType: KType): Any? = if (targetType.isMarkedNullable)
     {
-        val result: Any = when (targetType)
+        if (raw == "NA")
         {
-            String::class -> raw
-            Int::class -> raw.toInt()
-            BigDecimal::class.java -> BigDecimal(raw)
+            null
+        }
+        else
+        {
+            deserialize(raw, targetType.withNullability(false))
+        }
+    }
+    else
+    {
+        when (targetType)
+        {
+            String::class.createType() -> raw
+            Int::class.createType() -> raw.toInt()
+            BigDecimal::class.createType() -> BigDecimal(raw)
             else -> throw UnsupportedOperationException("Deserializer does not support target type $targetType")
         }
-        @Suppress("UNCHECKED_CAST")
-        return result as T
     }
 }
