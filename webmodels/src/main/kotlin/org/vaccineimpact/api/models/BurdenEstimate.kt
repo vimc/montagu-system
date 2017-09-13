@@ -1,7 +1,9 @@
 package org.vaccineimpact.api.models
 
+import org.vaccineimpact.api.models.helpers.FlexibleColumns
 import java.math.BigDecimal
 
+@FlexibleColumns
 data class BurdenEstimate(
         val disease: String,
         val year: Int,
