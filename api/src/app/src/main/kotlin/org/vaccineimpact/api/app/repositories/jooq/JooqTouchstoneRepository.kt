@@ -22,8 +22,8 @@ import java.math.BigDecimal
 
 class JooqTouchstoneRepository(
         db: JooqContext,
-        config: Configuration,
-        private val scenarioRepository: ScenarioRepository
+        private val scenarioRepository: ScenarioRepository,
+        config: Configuration? = null
 ) : JooqRepository(db, config), TouchstoneRepository
 {
     override fun getDemographicDataset(statisticTypeCode: String,

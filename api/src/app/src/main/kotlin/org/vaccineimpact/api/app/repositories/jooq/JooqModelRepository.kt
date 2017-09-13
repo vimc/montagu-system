@@ -7,7 +7,7 @@ import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.Tables.MODEL
 import org.vaccineimpact.api.models.Model
 
-class JooqModelRepository(db: JooqContext, config: Configuration) : JooqRepository(db, config), ModelRepository
+class JooqModelRepository(db: JooqContext, config: Configuration? = null) : JooqRepository(db, config), ModelRepository
 {
     override fun all(): List<Model>
     {

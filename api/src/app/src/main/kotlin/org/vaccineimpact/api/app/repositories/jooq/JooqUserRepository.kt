@@ -20,7 +20,10 @@ import org.vaccineimpact.api.security.UserProperties
 import java.sql.Timestamp
 import java.time.Instant
 
-class JooqUserRepository(db: JooqContext, config: Configuration) : JooqRepository(db, config), UserRepository
+class JooqUserRepository(
+        db: JooqContext,
+        config: Configuration? = null
+) : JooqRepository(db, config), UserRepository
 {
     override fun updateLastLoggedIn(username: String)
     {

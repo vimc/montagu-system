@@ -9,10 +9,13 @@ import org.vaccineimpact.api.app.errors.BadDatabaseConstant
 import org.vaccineimpact.api.db.JooqContext
 import java.io.Closeable
 
-abstract class JooqRepository(protected val db: JooqContext, private val config: Configuration): Closeable
+abstract class JooqRepository(
+        protected val db: JooqContext,
+        private val config: Configuration? = null
+): Closeable
 {
     val deserializer = Deserializer()
-    val dsl: DSLContext = DSL.using(config)
+    val dsl: DSLContext = DSL.using(config ?: db.dsl.configuration())
 
     protected inline fun <reified T: Enum<T>> mapEnum(raw: String): T
     {

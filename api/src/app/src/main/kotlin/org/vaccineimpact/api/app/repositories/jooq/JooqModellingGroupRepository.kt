@@ -21,9 +21,9 @@ import org.vaccineimpact.api.models.*
 
 class JooqModellingGroupRepository(
         db: JooqContext,
-        config: Configuration,
         private val touchstoneRepository: TouchstoneRepository,
-        private val scenarioRepository: ScenarioRepository
+        private val scenarioRepository: ScenarioRepository,
+        config: Configuration? = null
 )
     : JooqRepository(db, config), ModellingGroupRepository
 {

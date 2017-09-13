@@ -11,7 +11,8 @@ import org.vaccineimpact.api.db.fieldsAsList
 import org.vaccineimpact.api.db.fromJoinPath
 import org.vaccineimpact.api.models.Scenario
 
-class JooqScenarioRepository(db: JooqContext, config: Configuration) : JooqRepository(db, config), ScenarioRepository
+class JooqScenarioRepository(db: JooqContext, config: Configuration? = null)
+    : JooqRepository(db, config), ScenarioRepository
 {
     override fun checkScenarioDescriptionExists(id: String)
     {

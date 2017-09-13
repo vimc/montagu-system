@@ -16,10 +16,10 @@ class HeaderDefinition(val name: String, val type: KType)
 
 open class DataTableDeserializer<out T>(
         protected val headers: List<HeaderDefinition>,
-        protected val constructor: KFunction<T>
+        private val constructor: KFunction<T>
 )
 {
-    protected val headerCount = headers.size
+    private val headerCount = headers.size
     protected open val extraHeadersAllowed = false
 
     fun deserialize(body: String): Sequence<T>

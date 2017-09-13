@@ -24,11 +24,12 @@ fun makeRepositories(): Repositories
     fun accessLogRepository(db: JooqContext, cfg: Configuration) = JooqAccessLogRepository(db, cfg)
     fun model(db: JooqContext, cfg: Configuration) = JooqModelRepository(db, cfg)
     fun scenario(db: JooqContext, cfg: Configuration) = JooqScenarioRepository(db, cfg)
-    fun touchstone(db: JooqContext, cfg: Configuration) = JooqTouchstoneRepository(db, cfg, scenario(db, cfg))
+    fun touchstone(db: JooqContext, cfg: Configuration) = JooqTouchstoneRepository(db, scenario(db, cfg), cfg)
     fun modellingGroup(db: JooqContext, cfg: Configuration) = JooqModellingGroupRepository(
-            db, cfg,
+            db,
             touchstone(db, cfg),
-            scenario(db, cfg)
+            scenario(db, cfg),
+            cfg
     )
     fun burdenEstimates(db: JooqContext, cfg: Configuration) = JooqBurdenEstimateRepository(
             db, cfg,

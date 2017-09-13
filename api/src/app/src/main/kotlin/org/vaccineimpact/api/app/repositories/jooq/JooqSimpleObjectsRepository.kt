@@ -8,10 +8,7 @@ import org.vaccineimpact.api.db.tables.records.DiseaseRecord
 import org.vaccineimpact.api.models.Disease
 
 
-class JooqSimpleObjectsRepository(
-        db: JooqContext,
-        config: Configuration
-) : JooqRepository(db, config), SimpleObjectsRepository
+class JooqSimpleObjectsRepository(db: JooqContext, config: Configuration? = null) : JooqRepository(db, config), SimpleObjectsRepository
 {
     override val diseases = JooqSimpleDataSet.new(dsl, DISEASE, { it.ID }, this::mapDisease)
 
