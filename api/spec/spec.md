@@ -1015,7 +1015,8 @@ Schema: [`BurdenEstimates.schema.json`](BurdenEstimates.schema.json)
                 "description": "Imperial College, Yellow Fever, PI: Tini Garske"
             },
             "uploaded_by": "tgarske",
-            "uploaded_on": "2017-10-06T11:18:06Z"
+            "uploaded_on": "2017-10-06T11:18:06Z",
+            "problems": []
         }
     ]
 
