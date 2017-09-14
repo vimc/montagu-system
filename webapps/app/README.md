@@ -4,21 +4,26 @@
    curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
    sudo apt-get install -y nodejs
    ```
-1. Run `npm install` to get dependencies
-1. Run `sudo npm install webpack --global` to install webpack
-1. Run `webpack` to build, or `webpack --watch` to continuously monitor files 
+2. Run `npm install` to get dependencies
+3. Run `sudo npm install webpack --global` to install webpack
+4. Run `webpack` to build, or `webpack --watch` to continuously monitor files 
    and rebuild as needed.
-1. Run `npm run SHORT_NAME` to run a development server serving one of the three
+5. Run `npm run SHORT_NAME` to run a development server serving one of the three
    portals on port 5000.
-1. Run `./scripts/run-development-apis.sh` to run both APIs (main and reporting) 
+6. Run `./scripts/run-development-apis.sh` to run both APIs (main and reporting) 
    with a shared key, and with test data.
+
+# Integration tests
+1. Install `mocha` and `mocha-webpack` globally by running `sudo npm install mocha-webpack mocha -g`
+2. Run `./scripts/run-integration-tests.sh` to run all integration tests
 
 # Dockerised build & run
 1. Make a containerised build environment: `scripts/make-build-env.sh`
 2. Use the build environment to build (and push) a containerised app: `scripts/run-build.sh`
 3. Run the containerised app
    ```
-   docker run -p 8080:80 montagu.dide.ic.ac.uk/montagu-contrib-portal:CURRENT_GIT_BRANCH
+   docker run -p 8080:80 montagu.dide.ic.ac.uk/montagu-contrib-portal:CURRENT_GIT_BRANCHgit status
+   g
    ```
 4. Browse to `http://localhost:8080/`
 
