@@ -26,11 +26,21 @@ const jwt_decode = require('jwt-decode');
 const groupId = "test-group"; // This group must match the one the logged in user belongs to
 const touchstoneId = "test-1";
 const scenarioId = "yf-1";
+const modelId = "model-1";
+const modelVersion = "v1";
 
 class ContributionPortalIntegrationTests extends IntegrationTestSuite {
-    description() { return "Contribution portal"; }
-    authStore() { return contribAuthStore; }
-    makeFetcher() { return new ContribFetcher(); }
+    description() {
+        return "Contribution portal";
+    }
+
+    authStore() {
+        return contribAuthStore;
+    }
+
+    makeFetcher() {
+        return new ContribFetcher();
+    }
 
     addTestsToMocha() {
         it("fetches diseases", (done: DoneCallback) => {
@@ -74,10 +84,17 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
 
         it("fetches responsibilities", (done: DoneCallback) => {
             const promise = addResponsibilities(this.db)
+                .then((id) => {
+                    return addModel(this.db)
+                        .then((modelVersionId) => {
+                            return addBurdenEstimateSet(this.db, id, modelVersionId)
+                        })
+                })
                 .then(() => {
                     setTouchstoneAndGroup(touchstoneId, groupId);
                     return responsibilityStore.fetchResponsibilities();
                 });
+
             checkPromise(done, promise, (responsibilities) => {
                 expectIsEqual<Responsibilities>(responsibilities, expectedResponsibilitiesResponse());
             });
@@ -203,7 +220,7 @@ function addGroups(db: Client): Promise<QueryResult> {
     `);
 }
 
-function addResponsibilities(db: Client): Promise<QueryResult> {
+function addResponsibilities(db: Client): Promise<number> {
     return addTouchstone(db)
         .then(() => addGroups(db))
         .then(() => db.query(`
@@ -225,7 +242,23 @@ function addResponsibilities(db: Client): Promise<QueryResult> {
                 INSERT INTO responsibility (responsibility_set, scenario)
                 VALUES (set_id, scenario_id);
             END $$;
-    `));
+    `))
+        .then(() => db.query(`SELECT id FROM responsibility`))
+        .then(result => result.rows[0].id);
+}
+
+function addModel(db: Client): Promise<number> {
+    return db.query(`
+        INSERT INTO model (id, modelling_group, description, citation) VALUES ('${modelId}', '${groupId}', 'a model', 'citation');        
+        INSERT INTO model_version (model, version) VALUES ('${modelId}', '${modelVersion}');`)
+        .then(()=> db.query(`SELECT id FROM model_version;`))
+        .then(result => result.rows[0].id);
+}
+
+function addBurdenEstimateSet(db: Client, responsibilityId: number, modelVersionId: number): Promise<QueryResult> {
+    return db.query(`INSERT INTO burden_estimate_set (responsibility, model_version, uploaded_by, run_info, interpolated, complete)
+        VALUES ('${responsibilityId}', '${modelVersionId}', 'test.user', '', false, false);
+    `);
 }
 
 function addCoverageSets(db: Client): Promise<number> {
