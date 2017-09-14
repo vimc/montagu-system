@@ -13,5 +13,3 @@ data class BurdenEstimate(
         val cohortSize: Int,
         val outcomes: Map<String, BigDecimal?>
 )
-
-class BurdenEstimateSet(val estimates: List<BurdenEstimate>)
