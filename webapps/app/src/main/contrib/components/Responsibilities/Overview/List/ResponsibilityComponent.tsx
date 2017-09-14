@@ -1,14 +1,11 @@
 import * as React from "react";
 import {
-    BurdenEstimateSet,
     ModellingGroup, Responsibility, ResponsibilitySetStatus,
     Touchstone
 } from "../../../../../shared/models/Generated";
 import { mainStore } from "../../../../stores/MainStore";
 import { ButtonLink } from "../../../../../shared/components/ButtonLink";
-import { FormConnector } from "alt-reform";
-import { uploadFormStore } from "../UploadFormStore";
-import { UploadFormComponent } from "../UploadForm";
+import { UploadForm } from "../UploadForm";
 
 const styles = require("../../Responsibilities.css");
 
@@ -24,17 +21,6 @@ export class ResponsibilityComponent extends React.Component<Props, undefined> {
         const item = this.props.responsibility;
         const downloadUrl = `/${this.props.modellingGroup.id}/responsibilities/${this.props.touchstone.id}/coverage/${item.scenario.id}/`;
         const canUploadBurdenEstimate = this.props.responsibilitySetStatus == "incomplete";
-        const hasUploadedEstimate = this.props.responsibility.current_estimate_set != null;
-        const uploadText = canUploadBurdenEstimate ? "Upload a new burden estimate set" : "No more burden estimates can be uploaded";
-
-        const estimates = hasUploadedEstimate ?
-            <div className={ styles.estimates }>You last uploaded an estimate on {this.props.responsibility.current_estimate_set.uploaded_on}.</div>
-            : <div className={ styles.estimates }>
-            You have not uploaded any burden estimate sets.
-        </div>;
-
-
-        const UploadForm = FormConnector(uploadFormStore(this.props.responsibility.scenario.id, this.props.modellingGroup.id))(UploadFormComponent);
 
         return <li className={ styles.scenario }>
             <div className={ styles.header }>
@@ -50,10 +36,10 @@ export class ResponsibilityComponent extends React.Component<Props, undefined> {
                     </div>
                     <div className={ styles.actions }>
                         <ButtonLink href={ downloadUrl }>Download coverage data</ButtonLink>
-                        <UploadForm />
-                        <button disabled={ this.props.responsibilitySetStatus != "incomplete" }>{uploadText}</button>
+                        <UploadForm canUpload={ canUploadBurdenEstimate }
+                                    groupId={ this.props.modellingGroup.id }
+                                    responsibility={ this.props.responsibility }/>
                     </div>
-                    {estimates}
                 </div>
             </div>
         </li>
