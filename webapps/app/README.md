@@ -16,6 +16,7 @@
 # Integration tests
 1. Install `mocha` and `mocha-webpack` globally by running `sudo npm install mocha-webpack mocha -g`
 2. Run `./scripts/run-integration-tests.sh` to run all integration tests
+3. The version of the API that tests are run against is stored in `./app/config/api_version`
 
 # Dockerised build & run
 1. Make a containerised build environment: `scripts/make-build-env.sh`
