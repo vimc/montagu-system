@@ -32,10 +32,11 @@ fun makeRepositories(): Repositories
             cfg
     )
     fun burdenEstimates(db: JooqContext, cfg: Configuration) = JooqBurdenEstimateRepository(
-            db, cfg,
+            db,
             scenario(db, cfg),
             touchstone(db, cfg),
-            modellingGroup(db, cfg)
+            modellingGroup(db, cfg),
+            cfg
     )
 
     return Repositories(

@@ -36,7 +36,7 @@ class BurdenEstimateTests : DatabaseTest()
                     "$groupScope/estimates.write",
                     "$groupScope/responsibilities.read"
             )
-        } andCheckObjectCreation LocationContraint("$url", unknownId = true)
+        } andCheckObjectCreation LocationContraint(url, unknownId = true)
     }
 
     val csvData = """

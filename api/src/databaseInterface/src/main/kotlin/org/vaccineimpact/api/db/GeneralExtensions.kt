@@ -20,6 +20,7 @@ fun Random.nextDecimal(min: Int = 0, max: Int = 1, numberOfDecimalPlaces: Int = 
 
 fun Int.toDecimal(): BigDecimal = this.toLong().toDecimal()
 fun Long.toDecimal(): BigDecimal = BigDecimal.valueOf(this)
+fun Double.toDecimal(): BigDecimal = BigDecimal.valueOf(this)
 
 fun String.toDecimalOrNull(): BigDecimal?
 {

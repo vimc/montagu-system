@@ -52,14 +52,16 @@ fun JooqContext.addModelVersion(
     version: String,
     note: String = "Some note",
     fingerprint: String = "Some fingerprint"
-)
+): Int
 {
-    this.dsl.newRecord(MODEL_VERSION).apply {
+    val record = this.dsl.newRecord(MODEL_VERSION).apply {
         this.model = modelId
         this.version = version
         this.note = note
         this.fingerprint = fingerprint
-    }.store()
+    }
+    record.store()
+    return record.id
 }
 
 fun JooqContext.addTouchstoneName(id: String, description: String)

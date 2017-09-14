@@ -126,7 +126,11 @@ open class DataTableDeserializer<out T>(
 
     companion object
     {
-        fun <T : Any> deserialize(body: String, type: KClass<T>, serializer: Serializer): Sequence<T>
+        fun <T : Any> deserialize(
+                body: String,
+                type: KClass<T>,
+                serializer: Serializer = Serializer.instance
+        ): Sequence<T>
         {
             return getDeserializer(type, serializer).deserialize(body)
         }
