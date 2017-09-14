@@ -34,3 +34,4 @@ src/config/users/current_user
 src/out
 test-data\.sql
 src/config/users/martin\.properties
+spec/.idea/*

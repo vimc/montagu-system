@@ -10,6 +10,8 @@ import org.vaccineimpact.api.models.permissions.ReifiedRole
 import org.vaccineimpact.api.security.UserHelper
 import org.vaccineimpact.api.security.ensureUserHasRole
 import java.math.BigDecimal
+import java.sql.Timestamp
+import java.time.Instant
 import java.util.*
 
 private val random = Random(0)
@@ -154,12 +156,12 @@ fun JooqContext.addResponsibilitySet(
     return record.id
 }
 
-fun JooqContext.addBurdenEstimateSet(responsibilityId: Int, modelId: Int): Int
+fun JooqContext.addBurdenEstimateSet(responsibilityId: Int, modelId: Int, username: String): Int
 {
     val record = this.dsl.newRecord(BURDEN_ESTIMATE_SET).apply {
         this.responsibility = responsibilityId
         this.modelVersion = modelId
-        this.uploadedBy = "test.user"
+        this.uploadedBy = username
         this.runInfo = ""
         this.interpolated = false
         this.complete = false

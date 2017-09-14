@@ -119,6 +119,54 @@ class GetResponsibilitiesTests : ModellingGroupRepositoryTests()
     }
 
     @Test
+    fun `returns burden estimate`()
+    {
+        var burdenEstimateId = 0
+        given {
+            it.addUserForTesting("test.user")
+            it.addGroup("group", "description")
+            it.addScenarioDescription("scenario-1", "description 1", "disease 1", addDisease = true)
+            it.addTouchstone("touchstone", 1, "description", "open", addName = true)
+            val setId = it.addResponsibilitySet("group", "touchstone-1", "submitted")
+            val responsibilityId = it.addResponsibility(setId, "touchstone-1", "scenario-1")
+            val modelId = it.addModel("model", "group")
+            val version = it.addModelVersion(modelId)
+            burdenEstimateId = it.addBurdenEstimateSet(responsibilityId, version, "test.user")
+            it.updateCurrentEstimate(responsibilityId, burdenEstimateId)
+        } check { repo ->
+            val set = repo.getResponsibilities("group", "touchstone-1", ScenarioFilterParameters())
+                    .responsibilities
+            assertThat(set.responsibilities.first().currentEstimateSet!!.id).isEqualTo(burdenEstimateId)
+            assertThat(set.responsibilities.first().status).isEqualTo(ResponsibilityStatus.VALID)
+        }
+    }
+
+    @Test
+    fun `responsibility status is invalid if burden estimate has problems`()
+    {
+        var burdenEstimateId = 0
+        given {
+            it.addUserForTesting("test.user")
+            it.addGroup("group", "description")
+            it.addScenarioDescription("scenario-1", "description 1", "disease 1", addDisease = true)
+            it.addTouchstone("touchstone", 1, "description", "open", addName = true)
+            val setId = it.addResponsibilitySet("group", "touchstone-1", "submitted")
+            val responsibilityId = it.addResponsibility(setId, "touchstone-1", "scenario-1")
+            val modelId = it.addModel("model", "group")
+            val version = it.addModelVersion(modelId)
+            burdenEstimateId = it.addBurdenEstimateSet(responsibilityId, version, "test.user")
+            it.updateCurrentEstimate(responsibilityId, burdenEstimateId)
+            it.addBurdenEstimateProblem("problem", burdenEstimateId)
+        } check { repo ->
+            val set = repo.getResponsibilities("group", "touchstone-1", ScenarioFilterParameters())
+                    .responsibilities
+            assertThat(set.responsibilities.first().currentEstimateSet!!.id).isEqualTo(burdenEstimateId)
+            assertThat(set.responsibilities.first().status).isEqualTo(ResponsibilityStatus.INVALID)
+            assertThat(set.responsibilities.first().problems).hasSameElementsAs(listOf("problem"))
+        }
+    }
+
+    @Test
     fun `responsibilities from other groups are not returned`()
     {
         given {

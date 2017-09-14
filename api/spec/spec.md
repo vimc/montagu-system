@@ -1015,7 +1015,8 @@ Schema: [`BurdenEstimates.schema.json`](BurdenEstimates.schema.json)
                 "description": "Imperial College, Yellow Fever, PI: Tini Garske"
             },
             "uploaded_by": "tgarske",
-            "uploaded_on": "2017-10-06T11:18:06Z"
+            "uploaded_on": "2017-10-06T11:18:06Z",
+            "problems": []
         }
     ]
 
@@ -1039,7 +1040,7 @@ Required permissions: `estimates.read`, `scenarios.read`, `modelling-groups.read
 Returns HTTP multipart data with two sections. The first section has `Content-Type: application/json`
 and conforms to this schema.
 
-Schema: [`BurdenEstimate.schema.json`](BurdenEstimate.schema.json)
+Schema: [`BurdenEstimateSet.schema.json`](BurdenEstimateSet.schema.json)
 
 ### Example
     {
@@ -1055,7 +1056,8 @@ Schema: [`BurdenEstimate.schema.json`](BurdenEstimate.schema.json)
             "description": "Imperial College, Yellow Fever, PI: Tini Garske"
         },
         "uploaded_by": "tgarske",
-        "uploaded_on": "2017-10-06T11:18:06Z"
+        "uploaded_on": "2017-10-06T11:18:06Z",
+        "problems": []
     }
 
 The second section has `Content-Type: text/csv`, and returns CSV data with headers:
@@ -1310,7 +1312,7 @@ Schema: [`ResponsibilitySet.schema.json`](ResponsibilitySet.schema.json)
                 },
                 "status": "empty",
                 "problems": [ "No burden estimates have been uploaded" ],
-                "current_estimate": null
+                "current_estimate_set": null
             },        
             {
                 "scenario": {
@@ -1329,7 +1331,11 @@ Schema: [`ResponsibilitySet.schema.json`](ResponsibilitySet.schema.json)
                     "Missing data for these countries: AFG",
                     "There are negative burden numbers for some outcomes."
                 ],
-                "current_estimate": 37
+                "current_estimate_set": {                    
+                    "id": 1,                  
+                    "uploaded_on": "2017-10-06T11:18:06Z",
+                    "problems": []                    
+                }
             }
         ]
     }
@@ -1413,7 +1419,7 @@ Schema: [`ResponsibilityAndTouchstone.schema.json`](ResponsibilityAndTouchstone.
             },
             "status": "empty",
             "problems": [ "No burden estimates have been uploaded" ],
-            "current_estimate": null
+            "current_estimate_set": null
         }
     }
 
