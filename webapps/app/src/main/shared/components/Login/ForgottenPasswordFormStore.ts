@@ -4,8 +4,7 @@ import fetcher from "../../sources/Fetcher";
 import FormActions from "../../FormActions";
 import * as Validation from "../../Validation";
 import { FormErrors } from "../../FormHelpers";
-import { makeNotification, notificationActions, NotificationException } from "../../actions/NotificationActions";
-import { processResponseAndNotifyOnErrors } from "../../sources/Source";
+import { makeNotification, notificationActions } from "../../actions/NotificationActions";
 import {Result} from "../../models/Generated";
 
 export interface ForgottenPasswordFields {

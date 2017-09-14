@@ -5,6 +5,9 @@ import {
 } from "../../../../../shared/models/Generated";
 import { mainStore } from "../../../../stores/MainStore";
 import { ButtonLink } from "../../../../../shared/components/ButtonLink";
+import { FormConnector } from "alt-reform";
+import { uploadFormStore } from "../UploadFormStore";
+import { UploadFormComponent } from "../UploadForm";
 
 const styles = require("../../Responsibilities.css");
 
@@ -22,6 +25,9 @@ export class ResponsibilityComponent extends React.Component<Props, undefined> {
 
         const canUploadBurdenEstimate = this.props.responsibilitySetStatus == "incomplete";
         const uploadText = canUploadBurdenEstimate ? "Upload a new burden estimate set" : "No more burden estimates can be uploaded";
+
+        const UploadForm = FormConnector(uploadFormStore(this.props.responsibility.scenario.id, this.props.modellingGroup.id))(UploadFormComponent);
+
         return <li className={ styles.scenario }>
             <div className={ styles.header }>
                 <span className={ styles.name }>{ item.scenario.description }</span>
@@ -36,6 +42,7 @@ export class ResponsibilityComponent extends React.Component<Props, undefined> {
                     </div>
                     <div className={ styles.actions }>
                         <ButtonLink href={ downloadUrl }>Download coverage data</ButtonLink>
+                        <UploadForm />
                         <button disabled={ this.props.responsibilitySetStatus != "incomplete" }>{uploadText}</button>
                     </div>
                     <div className={ styles.estimates }>
