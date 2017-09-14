@@ -24,7 +24,7 @@ describe('ResponsibilityComponent', () => {
 
         const responsibility = mockResponsibility({
             status: "empty",
-            current_estimate: burdenEstimateSet
+            current_estimate_set: burdenEstimateSet
         }, mockScenario({
             id: "scenario-1",
             description: "Description",
