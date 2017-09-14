@@ -1,5 +1,6 @@
 package org.vaccineimpact.api.app.repositories.jooq
 
+import org.jooq.JoinType
 import org.jooq.Record
 import org.jooq.Record2
 import org.jooq.SelectConditionStep
@@ -143,17 +144,17 @@ class JooqModellingGroupRepository(
 
     private fun convertScenarioToResponsibility(scenario: Scenario, responsibilityId: Int): Responsibility
     {
-        val burdenEstimate = getCurrentBurdenEstimate(responsibilityId)
+        val burdenEstimateSet = getCurrentBurdenEstimate(responsibilityId)
         val problems: MutableList<String> = mutableListOf()
-        val status = if (burdenEstimate == null)
+        val status = if (burdenEstimateSet == null)
         {
             ResponsibilityStatus.EMPTY
         }
         else
         {
-            if (burdenEstimate.problems.any())
+            if (burdenEstimateSet.problems.any())
             {
-                problems.addAll(burdenEstimate.problems)
+                problems.addAll(burdenEstimateSet.problems)
                 ResponsibilityStatus.INVALID
             }
             else
@@ -161,16 +162,14 @@ class JooqModellingGroupRepository(
                 ResponsibilityStatus.VALID
             }
         }
-        return Responsibility(scenario, status, problems, burdenEstimate)
+        return Responsibility(scenario, status, problems, burdenEstimateSet)
     }
 
     private fun getCurrentBurdenEstimate(responsibilityId: Int): BurdenEstimateSet?
     {
         val records = dsl.select(BURDEN_ESTIMATE_SET_PROBLEM.PROBLEM)
                 .select(BURDEN_ESTIMATE_SET.UPLOADED_ON, BURDEN_ESTIMATE_SET.ID)
-                .from(BURDEN_ESTIMATE_SET)
-                .leftJoin(BURDEN_ESTIMATE_SET_PROBLEM)
-                .on(BURDEN_ESTIMATE_SET_PROBLEM.BURDEN_ESTIMATE_SET.eq(BURDEN_ESTIMATE_SET.ID))
+                .fromJoinPath(BURDEN_ESTIMATE_SET, BURDEN_ESTIMATE_SET_PROBLEM, joinType = JoinType.LEFT_OUTER_JOIN)
                 .join(RESPONSIBILITY)
                 .on(RESPONSIBILITY.CURRENT_BURDEN_ESTIMATE_SET.eq(BURDEN_ESTIMATE_SET.ID))
                 .where(RESPONSIBILITY.ID.eq(responsibilityId))
