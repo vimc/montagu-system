@@ -992,6 +992,112 @@ An error occurs (and no changes are made) if:
 * The coverage set has a different vaccine than the scenario.
 * The coverage set is `campaign` and the scenario is `routine`. (All other combinations are acceptable)
 
+# Burden estimates
+## GET /touchstone/{touchstone-id}/estimates/
+Returns all burden estimates that have been uploaded for this touchstone.
+
+Required permissions: `estimates.read`, `scenarios.read`, `modelling-groups.read`. If the estimates belong to a touchstone that is `open` then they are only returned if the user has `estimates.read-unfinished` scoped to the uploading modelling group (or to the more permissive * scope)
+
+Schema: [`BurdenEstimates.schema.json`](BurdenEstimates.schema.json)
+
+### Example
+    [
+        {
+            "id": 1,
+            "scenario": {
+                "id": "menA-novacc",
+                "touchstones": [ "2016-op-1", "2017-wuenic-1", "2017-op-1" ],
+                "description": "Menigitis A, No vaccination",
+                "disease": "MenA"
+            },
+            "responsible_group": {
+                "id": "IC-YellowFever",
+                "description": "Imperial College, Yellow Fever, PI: Tini Garske"
+            },
+            "uploaded_by": "tgarske",
+            "uploaded_on": "2017-10-06T11:18:06Z",
+            "problems": []
+        }
+    ]
+
+### Query parameters
+#### scenario
+Filter by scenario. e.g. GET /touchstone/2017-op-1/estimates/?scenario=menA-novacc
+
+#### responsible_group
+Filter by responsible group. e.g. GET /touchstone/2017-op-1/estimates/?responsible_group=IC-YellowFever
+
+## GET /touchstone/{touchstone-id}/estimates/{estimate-id}/
+Returns the full burden estimate data.
+
+If the touchstone is `open` then users without appropriate admin permissions can only 
+see estimates that their modelling group has uploaded. If the touchstone is `finished` 
+then all users can see all estimates. There should not be any estimates if
+the touchstone is `in-preparation`.
+
+Required permissions: `estimates.read`, `scenarios.read`, `modelling-groups.read`. If the estimate belongs to a touchstone that is `open` then it are only returned if the user has `estimates.read-unfinished` scoped to the uploading modelling group (or to the more permissive * scope)
+
+Returns HTTP multipart data with two sections. The first section has `Content-Type: application/json`
+and conforms to this schema.
+
+Schema: [`BurdenEstimateSet.schema.json`](BurdenEstimateSet.schema.json)
+
+### Example
+    {
+        "id": 1,
+        "scenario": {
+            "id": "menA-novacc",
+            "touchstones": [ "2016-op-1", "2017-wuenic-1", "2017-op-1" ],
+            "description": "Menigitis A, No vaccination",
+            "disease": "MenA"
+        },
+        "responsible_group": {
+            "id": "IC-YellowFever",
+            "description": "Imperial College, Yellow Fever, PI: Tini Garske"
+        },
+        "uploaded_by": "tgarske",
+        "uploaded_on": "2017-10-06T11:18:06Z",
+        "problems": []
+    }
+
+The second section has `Content-Type: text/csv`, and returns CSV data with headers:
+
+    "country","year","deaths","cases","dalys"
+        "AFG",  1996,    1000,   2000,    NA
+        "AFG",  1997,     900,   2000,    NA
+        "AGO",  1996,    1000,     NA,  5670
+        "AGO",  1997,    1200,     NA,  5870
+
+## POST /touchstone/{touchstone-id}/estimates/
+Adds a new burden estimate.
+
+Can only by invoked if:
+
+* The touchstone is `open`
+* The modelling group is responsible for the given scenario in the touchstone
+* The relevant responsibility set is `incomplete`
+
+Required permissions: `estimates.write`, scoped to the responsible group (or the more permissive * scope)
+
+Takes HTTP multipart data with two sections. The first section must have
+`Content-Type: application/json` and must conform to this schema.
+
+Schema: [`CreateBurdenEstimate.schema.json`](CreateBurdenEstimate.schema.json)
+
+### Example
+    {
+        "scenario_id": "menA-novacc",
+        "responsible_group": "IC-YellowFever"
+    }
+
+The second section must have `Content-Type: text\csv` and requires CSV data with headers:
+
+    "country","year","deaths","cases","dalys"
+        "AFG",  1996,    1000,   2000,    NA
+        "AFG",  1997,     900,   2000,    NA
+        "AGO",  1996,    1000,     NA,  5670
+        "AGO",  1997,    1200,     NA,  5870
+
 # Modelling groups
 ## GET /modelling-groups/
 Returns an enumeration of all modelling groups.
@@ -1206,7 +1312,7 @@ Schema: [`ResponsibilitySet.schema.json`](ResponsibilitySet.schema.json)
                 },
                 "status": "empty",
                 "problems": [ "No burden estimates have been uploaded" ],
-                "current_estimate": null
+                "current_estimate_set": null
             },        
             {
                 "scenario": {
@@ -1225,7 +1331,11 @@ Schema: [`ResponsibilitySet.schema.json`](ResponsibilitySet.schema.json)
                     "Missing data for these countries: AFG",
                     "There are negative burden numbers for some outcomes."
                 ],
-                "current_estimate": 37
+                "current_estimate_set": {                    
+                    "id": 1,                  
+                    "uploaded_on": "2017-10-06T11:18:06Z",
+                    "problems": []                    
+                }
             }
         ]
     }
@@ -1309,7 +1419,7 @@ Schema: [`ResponsibilityAndTouchstone.schema.json`](ResponsibilityAndTouchstone.
             },
             "status": "empty",
             "problems": [ "No burden estimates have been uploaded" ],
-            "current_estimate": null
+            "current_estimate_set": null
         }
     }
 

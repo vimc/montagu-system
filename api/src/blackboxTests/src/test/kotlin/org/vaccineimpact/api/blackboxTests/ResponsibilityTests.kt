@@ -45,9 +45,9 @@ class ResponsibilityTests : DatabaseTest()
                         "touchstones" to array("touchstone-1")
                 )
             })
-            assertThat(responsibility["status"]).isEqualTo("empty")
-            assertThat(responsibility["problems"]).isEqualTo(json { array() })
-            assertThat(responsibility["current_estimate"]).isEqualTo(null)
+            assertThat(responsibility["status"]).isEqualTo("invalid")
+            assertThat(responsibility["problems"]).isEqualTo(json { array("problem") })
+            assertThat(responsibility["current_estimate_set"]).isNotNull()
         }
     }
 
@@ -73,28 +73,28 @@ class ResponsibilityTests : DatabaseTest()
         } requiringPermissions {
             PermissionSet("$groupScope/responsibilities.read", "*/scenarios.read")
         } andCheck {
-            assertThat(it).isEqualTo(json {
-                obj(
-                        "touchstone" to obj(
+            val touchstone = it["touchstone"] as JsonObject
+            val responsibility = it["responsibility"] as JsonObject
+            val scenario = responsibility["scenario"] as JsonObject
+            assertThat(touchstone).isEqualTo(json {
+               obj(
                                 "id" to touchstoneId,
                                 "name" to "touchstone",
                                 "version" to 1,
                                 "description" to "description",
                                 "status" to "open"
-                        ),
-                        "responsibility" to obj(
-                                "scenario" to obj(
+                        )})
+
+            assertThat(scenario).isEqualTo(json{
+                                obj(
                                         "id" to scenarioId,
                                         "description" to "description 1",
                                         "disease" to "disease-1",
                                         "touchstones" to array("touchstone-1")
-                                ),
-                                "status" to "empty",
-                                "problems" to array(),
-                                "current_estimate" to null
-                        )
-                )
-            })
+                                )})
+            assertThat(responsibility["status"]).isEqualTo("invalid")
+            assertThat(responsibility["problems"]).isEqualTo(json{array("problem")})
+            assertThat(responsibility["current_estimate_set"]).isNotNull()
         }
     }
 
@@ -169,12 +169,18 @@ class ResponsibilityTests : DatabaseTest()
 
     private fun addResponsibilities(db: JooqContext, touchstoneStatus: String)
     {
+        db.addUserForTesting("model.user")
         db.addGroup(groupId, "description")
         db.addScenarioDescription(scenarioId, "description 1", "disease-1", addDisease = true)
         db.addScenarioDescription("scenario-2", "description 2", "disease-2", addDisease = true)
         db.addTouchstone("touchstone", 1, "description", touchstoneStatus, addName = true)
         val setId = db.addResponsibilitySet(groupId, touchstoneId, "submitted")
-        db.addResponsibility(setId, touchstoneId, scenarioId)
+        val responsibilityId = db.addResponsibility(setId, touchstoneId, scenarioId)
         db.addResponsibility(setId, touchstoneId, "scenario-2")
+        val modelId = db.addModel("model", groupId)
+        val version = db.addModelVersion(modelId)
+        val burdenEstimateId = db.addBurdenEstimateSet(responsibilityId, version, "model.user")
+        db.updateCurrentEstimate(responsibilityId, burdenEstimateId)
+        db.addBurdenEstimateProblem("problem", burdenEstimateId)
     }
 }

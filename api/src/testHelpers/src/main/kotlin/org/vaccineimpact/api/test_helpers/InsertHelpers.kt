@@ -10,6 +10,8 @@ import org.vaccineimpact.api.models.permissions.ReifiedRole
 import org.vaccineimpact.api.security.UserHelper
 import org.vaccineimpact.api.security.ensureUserHasRole
 import java.math.BigDecimal
+import java.sql.Timestamp
+import java.time.Instant
 import java.util.*
 
 private val random = Random(0)
@@ -34,7 +36,7 @@ fun JooqContext.addModel(
         versions: List<String> = emptyList()
 )
 {
-    this.dsl.newRecord(MODEL).apply {
+    val record = this.dsl.newRecord(MODEL).apply {
         this.id = id
         this.modellingGroup = groupId
         this.description = description
@@ -159,12 +161,43 @@ fun JooqContext.addResponsibilitySet(
     return record.id
 }
 
-/** Creates both a responsibility, assuming the referenced scenario already exists **/
-fun JooqContext.addResponsibility(responsibilitySetId: Int, scenarioId: Int): Int
+fun JooqContext.addBurdenEstimateSet(responsibilityId: Int, modelId: Int, username: String): Int
+{
+    val record = this.dsl.newRecord(BURDEN_ESTIMATE_SET).apply {
+        this.responsibility = responsibilityId
+        this.modelVersion = modelId
+        this.uploadedBy = username
+        this.runInfo = ""
+        this.interpolated = false
+        this.complete = false
+    }
+    record.store()
+    return record.id
+}
+
+fun JooqContext.addBurdenEstimateProblem(problem: String, burdenId: Int)
+{
+    val record = this.dsl.newRecord(BURDEN_ESTIMATE_SET_PROBLEM).apply {
+        this.burdenEstimateSet = burdenId
+        this.problem = problem
+    }
+    record.store()
+}
+
+fun JooqContext.updateCurrentEstimate(responsibilityId: Int, burdenId: Int)
+{
+    this.dsl.update(RESPONSIBILITY)
+            .set(RESPONSIBILITY.CURRENT_BURDEN_ESTIMATE_SET,burdenId)
+            .where(RESPONSIBILITY.ID.eq(responsibilityId))
+            .execute()
+}
+
+fun JooqContext.addResponsibility(responsibilitySetId: Int, scenarioId: Int, burdenId: Int? = null): Int
 {
     val record = this.dsl.newRecord(RESPONSIBILITY).apply {
         responsibilitySet = responsibilitySetId
         scenario = scenarioId
+        currentBurdenEstimateSet = burdenId
     }
     record.store()
     return record.id

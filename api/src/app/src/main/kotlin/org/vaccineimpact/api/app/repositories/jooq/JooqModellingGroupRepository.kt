@@ -1,5 +1,8 @@
 package org.vaccineimpact.api.app.repositories.jooq
 
+import org.jooq.JoinType
+import org.jooq.Record
+import org.jooq.Record2
 import org.jooq.Configuration
 import org.jooq.Record1
 import org.jooq.SelectConditionStep
@@ -108,11 +111,10 @@ class JooqModellingGroupRepository(
         val responsibilitySet = getResponsibilitySet(groupId, touchstoneId)
         if (responsibilitySet != null)
         {
-            val scenario = getScenariosInResponsibilitySet(
+            val responsibility = getResponsibilitiesInResponsibilitySet(
                     responsibilitySet,
                     { this.and(SCENARIO_DESCRIPTION.ID.eq(scenarioId)) }
             ).singleOrNull() ?: throw UnknownObjectError(scenarioId, "responsibility")
-            val responsibility = convertScenarioToResponsibility(scenario)
             return ResponsibilityAndTouchstone(touchstone, responsibility)
         }
         else
@@ -144,9 +146,57 @@ class JooqModellingGroupRepository(
         ), scenarioAndData.tableData)
     }
 
-    private fun convertScenarioToResponsibility(scenario: Scenario): Responsibility
+    private fun convertScenarioToResponsibility(scenario: Scenario, responsibilityId: Int): Responsibility
     {
-        return Responsibility(scenario, ResponsibilityStatus.EMPTY, emptyList(), null)
+        val burdenEstimateSet = getCurrentBurdenEstimate(responsibilityId)
+        val problems: MutableList<String> = mutableListOf()
+        val status = if (burdenEstimateSet == null)
+        {
+            ResponsibilityStatus.EMPTY
+        }
+        else
+        {
+            if (burdenEstimateSet.problems.any())
+            {
+                problems.addAll(burdenEstimateSet.problems)
+                ResponsibilityStatus.INVALID
+            }
+            else
+            {
+                ResponsibilityStatus.VALID
+            }
+        }
+        return Responsibility(scenario, status, problems, burdenEstimateSet)
+    }
+
+    private fun getCurrentBurdenEstimate(responsibilityId: Int): BurdenEstimateSet?
+    {
+        val records = dsl.select(BURDEN_ESTIMATE_SET_PROBLEM.PROBLEM)
+                .select(BURDEN_ESTIMATE_SET.UPLOADED_ON, BURDEN_ESTIMATE_SET.ID)
+                .fromJoinPath(BURDEN_ESTIMATE_SET, BURDEN_ESTIMATE_SET_PROBLEM, joinType = JoinType.LEFT_OUTER_JOIN)
+                .join(RESPONSIBILITY)
+                .on(RESPONSIBILITY.CURRENT_BURDEN_ESTIMATE_SET.eq(BURDEN_ESTIMATE_SET.ID))
+                .where(RESPONSIBILITY.ID.eq(responsibilityId))
+                .fetch()
+
+        return mapBurdenEstimateSet(records)
+    }
+
+    private fun mapBurdenEstimateSet(input: List<Record>): BurdenEstimateSet?
+    {
+        if (!input.any())
+        {
+            return null
+        }
+
+        val first = input.first()
+        val uploadedOn = first[BURDEN_ESTIMATE_SET.UPLOADED_ON].toInstant()
+        return BurdenEstimateSet(
+                id = first[BURDEN_ESTIMATE_SET.ID],
+                uploadedOn = uploadedOn,
+                problems = input.filter{ it[BURDEN_ESTIMATE_SET_PROBLEM.PROBLEM] != null }
+                        .map { it[BURDEN_ESTIMATE_SET_PROBLEM.PROBLEM] }
+        )
     }
 
     private fun getResponsibilities(responsibilitySet: ResponsibilitySetRecord?,
@@ -155,11 +205,10 @@ class JooqModellingGroupRepository(
     {
         if (responsibilitySet != null)
         {
-            val scenarios = getScenariosInResponsibilitySet(
+            val responsibilities = getResponsibilitiesInResponsibilitySet(
                     responsibilitySet,
                     { this.whereMatchesFilter(JooqScenarioFilter(), scenarioFilterParameters) }
             )
-            val responsibilities = scenarios.map(this::convertScenarioToResponsibility)
             val status = mapEnum<ResponsibilitySetStatus>(responsibilitySet.status)
             return Responsibilities(touchstoneId, "", status, responsibilities)
         }
@@ -169,19 +218,23 @@ class JooqModellingGroupRepository(
         }
     }
 
-    private fun getScenariosInResponsibilitySet(
+    private fun getResponsibilitiesInResponsibilitySet(
             responsibilitySet: ResponsibilitySetRecord,
-            applyWhereFilter: SelectConditionStep<Record1<String>>.() -> SelectConditionStep<Record1<String>>)
-            : List<Scenario>
+            applyWhereFilter: SelectConditionStep<Record2<String, Int>>.() -> SelectConditionStep<Record2<String, Int>>)
+            : List<Responsibility>
     {
         val records = dsl
-                .select(SCENARIO_DESCRIPTION.ID)
+                .select(SCENARIO_DESCRIPTION.ID, RESPONSIBILITY.ID)
                 .fromJoinPath(RESPONSIBILITY_SET, RESPONSIBILITY, SCENARIO, SCENARIO_DESCRIPTION)
                 .where(RESPONSIBILITY.RESPONSIBILITY_SET.eq(responsibilitySet.id))
                 .applyWhereFilter()
                 .fetch()
-        val scenarioIds = records.map { it.getValue(SCENARIO_DESCRIPTION.ID) }
-        return scenarioRepository.getScenarios(scenarioIds)
+                .intoMap(SCENARIO_DESCRIPTION.ID)
+
+        val scenarioIds = records.keys
+        val scenarios = scenarioRepository.getScenarios(scenarioIds)
+        return scenarios.map{
+            convertScenarioToResponsibility(it, records[it.id]!![RESPONSIBILITY.ID]) }
     }
 
     private fun getResponsibilitySet(groupId: String, touchstoneId: String): ResponsibilitySetRecord?
