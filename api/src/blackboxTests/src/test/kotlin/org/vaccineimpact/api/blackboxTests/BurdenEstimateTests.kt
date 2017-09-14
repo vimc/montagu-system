@@ -1,6 +1,7 @@
 package org.vaccineimpact.api.blackboxTests
 
 import org.junit.Test
+import org.vaccineimpact.api.blackboxTests.helpers.LocationContraint
 import org.vaccineimpact.api.blackboxTests.helpers.validate
 import org.vaccineimpact.api.blackboxTests.schemas.CSVSchema
 import org.vaccineimpact.api.db.direct.*
@@ -25,6 +26,7 @@ class BurdenEstimateTests : DatabaseTest()
             db.addTouchstone("touchstone", 1, "Touchstone 1", addName = true)
             db.addScenarioDescription(scenarioId, "Test scenario", "Hib3", addDisease = true)
             db.addGroup(groupId, "Test group")
+            db.addModel("model-1", groupId, versions = listOf("version-1"))
             val setId = db.addResponsibilitySet(groupId, touchstoneId)
             db.addResponsibility(setId, touchstoneId, scenarioId)
         } withRequestSchema {
@@ -34,7 +36,7 @@ class BurdenEstimateTests : DatabaseTest()
                     "$groupScope/estimates.write",
                     "$groupScope/responsibilities.read"
             )
-        } andCheckObjectCreation "$url/1"
+        } andCheckObjectCreation LocationContraint("$url", unknownId = true)
     }
 
     val csvData = """

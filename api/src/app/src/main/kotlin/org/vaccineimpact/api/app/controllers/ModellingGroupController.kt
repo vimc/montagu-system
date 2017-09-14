@@ -123,7 +123,7 @@ open class ModellingGroupController(context: ControllerContext)
                 uploader = context.username!!,
                 timestamp = Instant.now()
         )
-        val url = "/modelling-groups/${path.groupId}/responsibilities/${path.touchstoneId}/${path.scenarioId}/estimates/$id/"
+        val url = "/${path.groupId}/responsibilities/${path.touchstoneId}/${path.scenarioId}/estimates/$id/"
         return objectCreation(context, url)
     }
 

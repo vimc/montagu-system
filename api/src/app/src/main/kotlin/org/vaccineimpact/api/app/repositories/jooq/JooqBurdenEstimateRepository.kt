@@ -1,6 +1,7 @@
 package org.vaccineimpact.api.app.repositories.jooq
 
 import org.jooq.Configuration
+import org.vaccineimpact.api.app.errors.DatabaseContentsError
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
 import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
@@ -40,16 +41,17 @@ class JooqBurdenEstimateRepository(
             ?: throw Exception("Modelling group $groupId does not have any models/model versions in the database")
 
         val setId = addSet(responsibilityId, uploader, timestamp, latestModelVersion)
-        addEstimatesToSet(estimates, setId, outcomeLookup)
+        val cohortSizeId = outcomeLookup["cohort_size"]
+            ?: throw DatabaseContentsError("Expected a value with code 'cohort_size' in burden_outcome table")
+        addEstimatesToSet(estimates, setId, outcomeLookup, cohortSizeId)
         return setId
     }
 
-    private fun addEstimatesToSet(estimates: List<BurdenEstimate>, setId: Int, outcomeLookup: Map<Any, Int>)
+    private fun addEstimatesToSet(estimates: List<BurdenEstimate>, setId: Int,
+                                  outcomeLookup: Map<String, Int>, cohortSizeId: Int)
     {
         val records = estimates.flatMap { estimate ->
-            val cohortSize = newBurdenEstimateRecord(setId,
-                    estimate,
-                    outcomeLookup["cohort-size"]!!,
+            val cohortSize = newBurdenEstimateRecord(setId, estimate, cohortSizeId,
                     BigDecimal.valueOf(estimate.cohortSize.toLong())
             )
             val otherOutcomes = estimate.outcomes.map { outcome ->
@@ -87,17 +89,19 @@ class JooqBurdenEstimateRepository(
             this.responsibility = responsibilityId
             this.uploadedBy = uploader
             this.uploadedOn = Timestamp.from(timestamp)
+            this.runInfo = "Not provided"
+            this.interpolated = false
         }
         setRecord.insert()
         return setRecord.id
     }
 
-    private fun getOutcomesAsLookup(): Map<Any, Int>
+    private fun getOutcomesAsLookup(): Map<String, Int>
     {
-        return dsl.select(BURDEN_OUTCOME.NAME, BURDEN_OUTCOME.ID)
+        return dsl.select(BURDEN_OUTCOME.CODE, BURDEN_OUTCOME.ID)
                 .from(BURDEN_OUTCOME)
                 .fetch()
-                .associateBy({ it.value1() }, { it.value2() })
+                .intoMap(BURDEN_OUTCOME.CODE, BURDEN_OUTCOME.ID)
     }
 
     private fun getResponsibility(groupId: String, touchstoneId: String, scenarioId: String): Int

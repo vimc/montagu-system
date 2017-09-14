@@ -30,7 +30,8 @@ fun JooqContext.addModel(
         groupId: String,
         description: String = id,
         citation: String = "Unknown citation",
-        current: String? = null
+        current: String? = null,
+        versions: List<String> = emptyList()
 )
 {
     this.dsl.newRecord(MODEL).apply {
@@ -39,6 +40,25 @@ fun JooqContext.addModel(
         this.description = description
         this.citation = citation
         this.current = current
+    }.store()
+    for (version in versions)
+    {
+        addModelVersion(id, version)
+    }
+}
+
+fun JooqContext.addModelVersion(
+    modelId: String,
+    version: String,
+    note: String = "Some note",
+    fingerprint: String = "Some fingerprint"
+)
+{
+    this.dsl.newRecord(MODEL_VERSION).apply {
+        this.model = modelId
+        this.version = version
+        this.note = note
+        this.fingerprint = fingerprint
     }.store()
 }
 
