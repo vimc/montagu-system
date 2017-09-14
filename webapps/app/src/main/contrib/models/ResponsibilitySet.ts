@@ -1,19 +1,19 @@
 import {
-    BurdenEstimate, CoverageSet, ModellingGroup, Responsibilities, Responsibility, ResponsibilitySetStatus,
+    BurdenEstimateSet, CoverageSet, ModellingGroup, Responsibilities, Responsibility, ResponsibilitySetStatus,
     ResponsibilityStatus,
     Scenario,
     Touchstone
 } from "../../shared/models/Generated";
 
 export class ExtendedResponsibility {
-    current_estimate: BurdenEstimate | null;
+    current_estimate_set: BurdenEstimateSet | null;
     problems: string[];
     scenario: Scenario;
     status: ResponsibilityStatus;
     coverageSets: CoverageSet[];
 
     constructor(x: Responsibility) {
-        this.current_estimate = x.current_estimate;
+        this.current_estimate_set = x.current_estimate_set;
         this.problems = x.problems;
         this.scenario = x.scenario;
         this.status = x.status;

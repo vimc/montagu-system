@@ -1,5 +1,6 @@
 import * as React from "react";
 import {
+    BurdenEstimateSet,
     ModellingGroup, Responsibility, ResponsibilitySetStatus,
     Touchstone
 } from "../../../../../shared/models/Generated";
@@ -22,9 +23,16 @@ export class ResponsibilityComponent extends React.Component<Props, undefined> {
     render() {
         const item = this.props.responsibility;
         const downloadUrl = `/${this.props.modellingGroup.id}/responsibilities/${this.props.touchstone.id}/coverage/${item.scenario.id}/`;
-
         const canUploadBurdenEstimate = this.props.responsibilitySetStatus == "incomplete";
+        const hasUploadedEstimate = this.props.responsibility.current_estimate_set != null;
         const uploadText = canUploadBurdenEstimate ? "Upload a new burden estimate set" : "No more burden estimates can be uploaded";
+
+        const estimates = hasUploadedEstimate ?
+            <div className={ styles.estimates }>You last uploaded an estimate on {this.props.responsibility.current_estimate_set.uploaded_on}.</div>
+            : <div className={ styles.estimates }>
+            You have not uploaded any burden estimate sets.
+        </div>;
+
 
         const UploadForm = FormConnector(uploadFormStore(this.props.responsibility.scenario.id, this.props.modellingGroup.id))(UploadFormComponent);
 
@@ -45,9 +53,7 @@ export class ResponsibilityComponent extends React.Component<Props, undefined> {
                         <UploadForm />
                         <button disabled={ this.props.responsibilitySetStatus != "incomplete" }>{uploadText}</button>
                     </div>
-                    <div className={ styles.estimates }>
-                        You have not uploaded any burden estimate sets.
-                    </div>
+                    {estimates}
                 </div>
             </div>
         </li>
