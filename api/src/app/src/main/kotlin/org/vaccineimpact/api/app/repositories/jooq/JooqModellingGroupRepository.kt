@@ -1,11 +1,6 @@
 package org.vaccineimpact.api.app.repositories.jooq
 
-import org.jooq.JoinType
-import org.jooq.Record
-import org.jooq.Record2
-import org.jooq.Configuration
-import org.jooq.Record1
-import org.jooq.SelectConditionStep
+import org.jooq.*
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
 import org.vaccineimpact.api.app.filters.whereMatchesFilter
