@@ -311,7 +311,7 @@ function expectedResponsibilitiesResponse(): Responsibilities {
             {
                 problems: [],
                 status: "empty",
-                current_estimate: null,
+                current_estimate_set: null,
                 scenario: {
                     id: scenarioId,
                     description: "Yellow Fever scenario",

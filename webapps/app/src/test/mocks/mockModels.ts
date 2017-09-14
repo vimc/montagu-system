@@ -45,7 +45,7 @@ export function mockModellingGroupDetails(properties?: any) {
 
 export function mockResponsibility(properties?: any, scenario?: models.Scenario): models.Responsibility {
     const template: models.Responsibility = {
-        current_estimate: null,
+        current_estimate_set: null,
         problems: [],
         scenario: scenario || mockScenario(),
         status: "empty"

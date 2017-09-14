@@ -74,7 +74,7 @@ export interface Scenario {
 export type ResponsibilityStatus = "empty" | "invalid" | "valid";
 
 export interface Responsibility {
-    current_estimate: BurdenEstimateSet | null;
+    current_estimate_set: BurdenEstimateSet | null;
     problems: string[];
     scenario: Scenario;
     status: ResponsibilityStatus;
