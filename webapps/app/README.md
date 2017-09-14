@@ -24,7 +24,7 @@
 3. Run the containerised app
    ```
    docker run -p 8080:80 montagu.dide.ic.ac.uk/montagu-contrib-portal:CURRENT_GIT_BRANCH
-   g
+   
    ```
 4. Browse to `http://localhost:8080/`
 
