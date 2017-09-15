@@ -85,29 +85,30 @@ open class DataTableDeserializer<out T>(
     {
         val problems = mutableListOf<ErrorInfo>()
         var index = 0
-        val maxHeaderCount = maxOf(headerCount, actualHeaders.size)
-        while (index < maxHeaderCount)
+        while (index < maxOf(headerCount, actualHeaders.size))
         {
             val expected = headers.getOrNull(index)
             val actual = actualHeaders.getOrNull(index)?.trim()
 
-            if (actual == null)
+            if (expected != null)
             {
-                // at most one of actual and expected can be null, so we can infer here that expected is not null
-                problems.add(ErrorInfo("csv-missing-header", "Not enough column headers were provided. Expected a '${expected!!.name}' header."))
-            }
-            else if (expected == null)
-            {
-                if (!extraHeadersAllowed)
+                val expectedName = expected.name
+                if (actual != null)
                 {
-                    problems.add(ErrorInfo("csv-unexpected-header", "Too many column headers were provided. Unexpected '$actual' header."))
+                    if (expectedName != actual)
+                    {
+                        problems.add(ErrorInfo("csv-unexpected-header", "Expected column header '$expectedName'; found '$actual' instead (column $index)"))
+                    }
+                }
+                else
+                {
+                    problems.add(ErrorInfo("csv-missing-header", "Not enough column headers were provided. Expected a '$expectedName' header."))
                 }
             }
-            else if (actual != expected.name)
+            else if (actual != null && !extraHeadersAllowed)
             {
-                problems.add(ErrorInfo("csv-unexpected-header", "Expected column header '${expected.name}'; found '$actual' instead (column $index)"))
+                problems.add(ErrorInfo("csv-unexpected-header", "Too many column headers were provided. Unexpected '$actual' header."))
             }
-
             index += 1
         }
 
