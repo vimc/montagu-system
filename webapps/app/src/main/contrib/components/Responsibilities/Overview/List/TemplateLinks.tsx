@@ -17,10 +17,9 @@ export class TemplateLinks extends React.Component<TemplateLinksProps, undefined
             const links = diseaseIds
                 .map(id => mainStore.getDiseaseById(id))
                 .map(disease => <ButtonLink key={disease.id}
-                                            href={`/templates/${this.props.groupId}-${disease.id}.csv`}>{disease.name}</ButtonLink>);
+                                            href={`/templates/burden_template_${disease.id.trim()}-${this.props.groupId.trim()}.csv`}>{disease.name}</ButtonLink>);
 
-            return <div>
-                Download burden estimate templates:<br/>
+            return <div>Download burden estimate templates:<br/>
                 {links}
             </div>;
         } else {

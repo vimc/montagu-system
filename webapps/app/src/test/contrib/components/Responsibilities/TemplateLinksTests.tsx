@@ -37,7 +37,7 @@ describe("TemplateLinks", () => {
         const rendered = shallow(<TemplateLinks responsibilities={set.responsibilities} groupId="grpid" />);
         const buttons = rendered.find(ButtonLink);
         expect(buttons.length).to.eq(2);
-        expect(buttons.first().prop("href")).to.eq("/templates/grpid-d1.csv")
+        expect(buttons.first().prop("href")).to.eq("/templates/burden_template_d1-grpid.csv")
 
     });
 
