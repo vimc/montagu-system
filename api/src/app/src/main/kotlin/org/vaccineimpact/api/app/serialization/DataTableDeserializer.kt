@@ -143,13 +143,27 @@ open class DataTableDeserializer<out T>(
 
             return if (type.findAnnotation<FlexibleColumns>() != null)
             {
-                // If the last argument is a map, get the type of the values the map stores
-                val flexibleType = constructor.parameters.last().type.arguments.last().type!!
+                val flexibleType = getFlexibleColumnType(constructor, type)
                 FlexibleDataTableDeserializer(headers.dropLast(1), constructor, flexibleType)
             }
             else
             {
                 DataTableDeserializer(headers, constructor)
+            }
+        }
+
+        private fun <T : Any> getFlexibleColumnType(constructor: KFunction<T>, type: KClass<T>): KType
+        {
+            // If the last argument is a map, get the type of the values the map stores
+            return try
+            {
+                constructor.parameters.last().type.arguments.last().type!!
+            }
+            catch (e: Exception)
+            {
+                throw Exception("Type '$type' was marked with the @FlexibleColumns annotation, but something " +
+                        "went wrong finding out the type of flexible data. The last parameter in the constructor " +
+                        "should be of type Map<String, *>, where * can be whatever you like.", e)
             }
         }
     }
