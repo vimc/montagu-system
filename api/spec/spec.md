@@ -1567,7 +1567,8 @@ Schema: [`BurdenEstimates.schema.json`](BurdenEstimates.schema.json)
                 "description": "Imperial College, Yellow Fever, PI: Tini Garske"
             },
             "uploaded_by": "tgarske",
-            "uploaded_on": "2017-10-06T11:18:06Z"
+            "uploaded_on": "2017-10-06T11:18:06Z",
+            "problems": []
         }
     ]
 
@@ -1589,7 +1590,7 @@ section is JSON metadata; the second section is CSV data. If the client sends
 an Accept header of `text/csv` only the CSV data is returned.
 
 ### JSON metadata
-Schema: [`BurdenEstimate.schema.json`](BurdenEstimate.schema.json)
+Schema: [`BurdenEstimateSet.schema.json`](BurdenEstimateSet.schema.json)
 
 ### Example
     {
@@ -1605,7 +1606,8 @@ Schema: [`BurdenEstimate.schema.json`](BurdenEstimate.schema.json)
             "description": "Imperial College, Yellow Fever, PI: Tini Garske"
         },
         "uploaded_by": "tgarske",
-        "uploaded_on": "2017-10-06T11:18:06Z"
+        "uploaded_on": "2017-10-06T11:18:06Z",
+        "problems": []
     }
 
 ### CSV data
