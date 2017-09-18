@@ -47,7 +47,8 @@ export class UploadForm extends React.Component<UploadFormProps, UploadState> {
 
         return <div>
             <button onClick={this.handleClick.bind(this)}
-                    className={this.state.display ? buttonStyles.arrowup : buttonStyles.arrowdown}>{uploadText}</button>
+                    className={this.state.display ? buttonStyles.arrowup : buttonStyles.arrowdown}
+                    disabled={!this.props.canUpload}>{uploadText}</button>
             <form className={formStyles.form} style={{ display: this.state.display ? "block" : "none" }} action={href}
                   method="POST">
                 <div>

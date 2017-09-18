@@ -51,18 +51,6 @@ describe('ResponsibilityComponent', () => {
         expect(rendered.find(`.${styles.header}`).text()).to.contain("empty");
     });
 
-    it("disables the upload button if status of set is locked", () => {
-        setUpComponent("approved");
-        expect(rendered.find(`.${styles.actions} button`).last().text()).to.eq("No more burden estimates can be uploaded");
-        expect(rendered.find(`.${styles.actions} button`).last().prop("disabled")).to.eq(true);
-    });
-
-    it("allows uploads if status of set is incomplete", () => {
-        setUpComponent("incomplete");
-        expect(rendered.find(`.${styles.actions} button`).last().text()).to.eq("Upload a new burden estimate set");
-        expect(rendered.find(`.${styles.actions} button`).last().prop("disabled")).to.eq(false);
-    });
-
     it("displays no estimates message if current estimate is null", () => {
         setUpComponent("incomplete");
         expect(rendered.find(`.${styles.estimates}`).text()).to.eq("You have not uploaded any burden estimate sets.")
