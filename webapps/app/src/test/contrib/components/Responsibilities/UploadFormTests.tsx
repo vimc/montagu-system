@@ -7,7 +7,7 @@ import { setupMainStore } from "../../../mocks/mocks";
 import { BurdenEstimateSet, ResponsibilitySetStatus } from "../../../../main/shared/models/Generated";
 import { Sandbox } from "../../../Sandbox";
 
-const styles = require("../../../../main/contrib/components/Responsibilities/Responsibilities.css");
+const buttonStyles = require("../../../../main/shared/styles/buttons.css");
 
 describe('ResponsibilityComponent', () => {
     let rendered: ShallowWrapper<any, any>;
@@ -31,21 +31,25 @@ describe('ResponsibilityComponent', () => {
         rendered = shallow(<UploadForm
             canUpload={canUpload}
             groupId={"group-1"}
-            responsibility={responsibility}/>);
+            scenarioId={responsibility.scenario.id}
+            currentEstimateSet={responsibility.current_estimate_set}/>);
     }
 
     afterEach(() => sandbox.restore());
 
-    it("disables the upload button if canUpload is false", () => {
+    it("disables the choose file button if canUpload is false", () => {
         setUpComponent(false);
-        expect(rendered.find(`button`).first().text()).to.eq("No more burden estimates can be uploaded");
-        expect(rendered.find(`button`).first().prop("disabled")).to.eq(true);
+        const chooseFileButton = rendered.find(`.${buttonStyles.button}`).first();
+        expect(chooseFileButton.text()).to.eq("No more burden estimates can be uploaded");
+        expect(chooseFileButton.hasClass(buttonStyles.disabled)).to.eq(true);
     });
 
-    it("allows uploads if canUpload is true", () => {
+    it("enables choose file button if canUpload is true", () => {
         setUpComponent(true);
-        expect(rendered.find(`button`).first().text()).to.eq("Upload a new burden estimate set");
-        expect(rendered.find(`button`).first().prop("disabled")).to.eq(false);
+
+        const chooseFileButton = rendered.find(`.${buttonStyles.button}`).first();
+        expect(chooseFileButton.text()).to.eq("Choose a new burden estimate set");
+        expect(chooseFileButton.hasClass(buttonStyles.disabled)).to.eq(false);
     });
 
 });

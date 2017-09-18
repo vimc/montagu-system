@@ -5,7 +5,6 @@ import {
 } from "../../../../../shared/models/Generated";
 import { mainStore } from "../../../../stores/MainStore";
 import { ButtonLink } from "../../../../../shared/components/ButtonLink";
-import { UploadForm } from "../UploadForm";
 
 const styles = require("../../Responsibilities.css");
 
@@ -20,8 +19,7 @@ export class ResponsibilityComponent extends React.Component<Props, undefined> {
     render() {
         const item = this.props.responsibility;
         const downloadUrl = `/${this.props.modellingGroup.id}/responsibilities/${this.props.touchstone.id}/coverage/${item.scenario.id}/`;
-        const canUploadBurdenEstimate = this.props.responsibilitySetStatus == "incomplete";
-
+        const uploadUrl = `/${this.props.modellingGroup.id}/responsibilities/${this.props.touchstone.id}/burdens/${item.scenario.id}/`;
         const hasUploadedEstimate = this.props.responsibility.current_estimate_set != null;
         const estimates = hasUploadedEstimate ?
             <div className={ styles.estimates }>You last uploaded an estimate on {this.props.responsibility.current_estimate_set.uploaded_on}.</div>
@@ -43,9 +41,7 @@ export class ResponsibilityComponent extends React.Component<Props, undefined> {
                     </div>
                     <div className={ styles.actions }>
                         <ButtonLink href={ downloadUrl }>Download coverage data</ButtonLink>
-                        <UploadForm canUpload={ canUploadBurdenEstimate }
-                                    groupId={ this.props.modellingGroup.id }
-                                    responsibility={ this.props.responsibility }/>
+                        <ButtonLink href={ uploadUrl }>Upload burden estimates</ButtonLink>
                         {estimates}
                     </div>
                 </div>

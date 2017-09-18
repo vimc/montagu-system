@@ -1,14 +1,20 @@
 button, .button {
     display: inline-block;
-    background-color: rgb(0, 173, 239);
     border: none;
-    outline: rgb(200, 200, 200) outset 1px;
+    background-color: rgb(0, 173, 239);
     color: white;
     font-family: inherit;
     font-size: 12pt;
     font-weight: bold;
     padding: 6px 20px 5px 20px;
     vertical-align: top;
+    outline: rgb(200, 200, 200) outset 1px;
+}
+
+button[type=submit], .submit{
+    color: #fff;
+    background-color: #5cb85c;
+    outline-color: #4cae4c;
 }
 
 button:hover, .button:hover {
@@ -19,7 +25,7 @@ button:active {
     outline-style: inset;
 }
 
-button:disabled, .button:disabled {
+button:disabled, .button.disabled {
     cursor: not-allowed;
     filter: alpha(opacity=65);
     -webkit-box-shadow: none;
@@ -30,25 +36,25 @@ button:disabled, .button:disabled {
     border-color: #8c8c8c;
 }
 
-button:disabled:hover, .button:disabled:hover {
+button:disabled:hover, .button.disabled:hover {
     outline-width: 1px;
 }
 
-:local(.arrowdown:before){
+:local(.arrowDown:before){
 
     content: "\25be";
     float:right;
     color: #ffffff;
 }
 
-:local(.arrowup:before){
+:local(.arrowUp:before){
 
     content: "\25b4";
     float:right;
     color: #ffffff;
 }
 
-:local(.arrowup:after), :local(.arrowdown:after)
+:local(.arrowUp:after), :local(.arrowDown:after)
 {
     content: "";
     margin:0 0.5em;

@@ -1,0 +1,85 @@
+import * as React from "react";
+import { connectToStores } from "../../../../shared/alt";
+import { ModellingGroup, Responsibility, Scenario, Touchstone } from "../../../../shared/models/Generated";
+import { RemoteContent } from "../../../../shared/models/RemoteContent";
+import { RemoteContentComponent } from "../../../../shared/components/RemoteContentComponent/RemoteContentComponent";
+import { responsibilityStore } from "../../../stores/ResponsibilityStore";
+import { UploadForm } from "../Overview/UploadForm";
+import { TemplateLink } from "../Overview/List/TemplateLinks";
+
+const commonStyles = require("../../../../shared/styles/common.css");
+
+export interface UploadBurdenEstimatesContentComponentProps extends RemoteContent {
+    props: {
+        touchstone: Touchstone;
+        scenario: Scenario;
+        group: ModellingGroup;
+        responsibilitySetStatus: string;
+        responsibility: Responsibility;
+    };
+}
+
+export class UploadBurdenEstimatesContentComponent extends RemoteContentComponent<UploadBurdenEstimatesContentComponentProps> {
+    static getStores() {
+        return [responsibilityStore];
+    }
+
+    static getPropsFromStores(): UploadBurdenEstimatesContentComponentProps {
+        const state = responsibilityStore.getState();
+        const r = state.currentResponsibility;
+
+        if (r != null) {
+            return {
+                ready: state.ready,
+                props: {
+                    touchstone: state.currentTouchstone,
+                    scenario: r.scenario,
+                    group: state.currentModellingGroup,
+                    responsibility: r,
+                    responsibilitySetStatus: responsibilityStore.getCurrentResponsibilitySet().status
+                }
+            };
+        } else {
+            return {
+                ready: false,
+                props: null
+            };
+        }
+    }
+
+    renderContent(props: UploadBurdenEstimatesContentComponentProps) {
+        const data = props.props;
+        const canUploadBurdenEstimate = data.responsibilitySetStatus == "incomplete";
+
+        return <div>
+            <p>
+                On this page you can upload burden estimates for the following scenario:
+            </p>
+            <table className={commonStyles.specialColumn}>
+                <tbody>
+                <tr>
+                    <td>Touchstone</td>
+                    <td>{data.touchstone.description}</td>
+                </tr>
+                <tr>
+                    <td>Scenario</td>
+                    <td>{data.scenario.description}</td>
+                </tr>
+                <tr>
+                    <td>Burden estimates template</td>
+                    <td><TemplateLink diseaseId={data.scenario.disease} groupId={data.group.id}/></td>
+                </tr>
+                </tbody>
+            </table>
+
+            <div className={commonStyles.gapAbove}>
+                <UploadForm groupId={data.group.id}
+                            canUpload={canUploadBurdenEstimate}
+                            currentEstimateSet={data.responsibility.current_estimate_set}
+                            scenarioId={data.scenario.id}/>
+            </div>
+        </div>;
+    }
+}
+
+export const UploadBurdenEstimatesContent = connectToStores(UploadBurdenEstimatesContentComponent);

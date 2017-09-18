@@ -1,20 +1,22 @@
 import * as React from "react";
-import { Responsibility } from "../../../../shared/models/Generated";
+import { BurdenEstimateSet } from "../../../../shared/models/Generated";
+import { settings } from "../../../../shared/Settings";
 
 const formStyles = require("../../../../shared/styles/forms.css");
 const commonStyles = require("../../../../shared/styles/common.css");
 const buttonStyles = require("../../../../shared/styles/buttons.css");
 const styles = require("../Responsibilities.css");
+const messageStyles = require("../../../../shared/styles/messages.css");
 
 export interface UploadFormProps {
     groupId: string;
     canUpload: boolean;
-    responsibility: Responsibility;
+    scenarioId: string;
+    currentEstimateSet: BurdenEstimateSet;
 }
 
 interface UploadState {
     fileSelected: boolean;
-    display: boolean;
     fileName: string;
 }
 
@@ -24,7 +26,6 @@ export class UploadForm extends React.Component<UploadFormProps, UploadState> {
         super();
         this.state = {
             fileSelected: false,
-            display: false,
             fileName: ""
         };
     }
@@ -36,32 +37,43 @@ export class UploadForm extends React.Component<UploadFormProps, UploadState> {
         });
     }
 
-    handleClick() {
-        this.setState({ display: !this.state.display });
-    }
-
     render() {
 
-        const uploadText = this.props.canUpload ? "Upload a new burden estimate set" : "No more burden estimates can be uploaded";
-        const href = `/${this.props.groupId}/${this.props.responsibility.scenario.id}`;
+        const uploadText = this.props.canUpload ? "Choose a new burden estimate set" : "No more burden estimates can be uploaded";
+        const href = `/${this.props.groupId}/${this.props.scenarioId}`;
+
+        const lastUploadedText = this.props.currentEstimateSet != null ?
+            `You last uploaded an estimate on ${this.props.currentEstimateSet.uploaded_on}.`
+            :
+                "You have not uploaded any burden estimate sets.";
+
+        const supportEmail = `mailto:${settings.supportContact}`;
+        const helperText = !this.props.canUpload ?
+            <p>The burden estimates uploaded by your modelling group have been reviewed
+                and approved.
+                You cannot upload any new estimates. If you need to upload new estimates (e.g. for corrections) please
+                contact us <a href={supportEmail}>here</a>.</p>
+
+            : "";
 
         return <div>
-            <button onClick={this.handleClick.bind(this)}
-                    className={this.state.display ? buttonStyles.arrowup : buttonStyles.arrowdown}
-                    disabled={!this.props.canUpload}>{uploadText}</button>
-            <form className={formStyles.form} style={{ display: this.state.display ? "block" : "none" }} action={href}
+            <div className={messageStyles.info}>{lastUploadedText} <br/> {helperText}</div>
+            <form className={formStyles.form} action={href}
                   method="POST">
                 <div>
                     <label className={formStyles.customFileUpload}>
-                        <input value={this.state.fileName} name="file" type="file" onChange={this.handleChange.bind(this)}
+                        <input name="file" type="file" onChange={this.handleChange.bind(this)}
                                disabled={!this.props.canUpload}/>
-                        <div className={`${buttonStyles.button} ${styles.button} ${commonStyles.mt5} ${commonStyles.mb5}`}>
-                            Choose file
+                        <div className={`${buttonStyles.button} ${styles.button} ${commonStyles.mt5} ${commonStyles.mb5}
+                        ${!this.props.canUpload ? buttonStyles.disabled : ""}`}>
+                            {uploadText}
                         </div>
-                        <div className={`${commonStyles.mr10}`}>{this.state.fileSelected ? "File selected: " + this.state.fileName : ""}</div>
+                        <div
+                            className={`${commonStyles.mr10}`}>{this.state.fileSelected ? "File selected: " + this.state.fileName : ""}</div>
                     </label>
                 </div>
                 <button type="submit"
+                        style={{ display: this.props.canUpload ? "block" : "none" }}
                         disabled={!this.props.canUpload || !this.state.fileSelected}>Upload
                 </button>
             </form>
