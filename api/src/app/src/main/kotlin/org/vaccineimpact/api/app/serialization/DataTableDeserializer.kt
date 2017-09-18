@@ -15,21 +15,21 @@ import kotlin.reflect.full.primaryConstructor
 class HeaderDefinition(val name: String, val type: KType)
 
 open class DataTableDeserializer<out T>(
-        protected val headers: List<HeaderDefinition>,
+        protected val headerDefinitions: List<HeaderDefinition>,
         private val constructor: KFunction<T>
 )
 {
-    private val headerCount = headers.size
+    private val headerCount = headerDefinitions.size
     protected open val extraHeadersAllowed = false
 
     fun deserialize(body: String): Sequence<T>
     {
         val reader = CSVReader(StringReader(body.trim()))
 
-        var row = reader.readNext()
-        val headers = row.toList()
-        checkHeaders(headers)
-        val actualHeaders = getActualHeaderDefinitions(headers)
+        val row = reader.readNext()
+        val actualHeaderNames = row.toList()
+        checkHeaders(actualHeaderNames)
+        val actualHeaders = getActualHeaderDefinitions(actualHeaderNames)
         val rows = generateSequence { reader.readNext() }
         return rows.withIndex().map { (i, row) ->
             deserializeRow(row.toList(), actualHeaders, i)
@@ -87,7 +87,7 @@ open class DataTableDeserializer<out T>(
         var index = 0
         while (index < maxOf(headerCount, actualHeaders.size))
         {
-            val expected = headers.getOrNull(index)
+            val expected = headerDefinitions.getOrNull(index)
             val actual = actualHeaders.getOrNull(index)?.trim()
 
             if (expected != null)
@@ -116,12 +116,12 @@ open class DataTableDeserializer<out T>(
         {
             throw ValidationError(problems)
         }
-        return headers
+        return headerDefinitions
     }
 
     protected open fun getActualHeaderDefinitions(actualHeaders: List<String>): List<HeaderDefinition>
     {
-        return headers
+        return headerDefinitions
     }
 
     companion object

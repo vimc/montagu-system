@@ -15,16 +15,16 @@ class FlexibleDataTableDeserializer<out T>(
     {
         // So currently we have values like this: 1,2,3,4
         // But our target data type expects 1 and 2 as "fixed" columns, and then a map that has 3 and 4 as values.
-        val fixed = values.take(headers.size)
-        val extraValues = values.drop(headers.size)
-        val extraHeaders = actualHeaders.drop(headers.size)
+        val fixed = values.take(headerDefinitions.size)
+        val extraValues = values.drop(headerDefinitions.size)
+        val extraHeaders = actualHeaders.drop(headerDefinitions.size)
         val flexibleAsMap = extraHeaders.zip(extraValues).map { (header, value) -> header.name to value }.toMap()
         return fixed + flexibleAsMap
     }
 
     override fun getActualHeaderDefinitions(actualHeaders: List<String>): List<HeaderDefinition>
     {
-        val extraHeaders = actualHeaders.drop(headers.size)
-        return headers + extraHeaders.map { HeaderDefinition(it, flexibleType) }
+        val extraHeaders = actualHeaders.drop(headerDefinitions.size)
+        return headerDefinitions + extraHeaders.map { HeaderDefinition(it, flexibleType) }
     }
 }
