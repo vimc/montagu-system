@@ -48,5 +48,3 @@ class JooqScenarioRepository(db: JooqContext, config: Configuration? = null)
         }
     }
 }
-
-fun makeScenarioRepository(db: JooqContext) = JooqScenarioRepository(db, db.dsl.configuration())
