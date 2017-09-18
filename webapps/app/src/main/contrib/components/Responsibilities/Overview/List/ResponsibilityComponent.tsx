@@ -22,6 +22,13 @@ export class ResponsibilityComponent extends React.Component<Props, undefined> {
         const downloadUrl = `/${this.props.modellingGroup.id}/responsibilities/${this.props.touchstone.id}/coverage/${item.scenario.id}/`;
         const canUploadBurdenEstimate = this.props.responsibilitySetStatus == "incomplete";
 
+        const hasUploadedEstimate = this.props.responsibility.current_estimate_set != null;
+        const estimates = hasUploadedEstimate ?
+            <div className={ styles.estimates }>You last uploaded an estimate on {this.props.responsibility.current_estimate_set.uploaded_on}.</div>
+            : <div className={ styles.estimates }>
+                You have not uploaded any burden estimate sets.
+            </div>;
+
         return <li className={ styles.scenario }>
             <div className={ styles.header }>
                 <span className={ styles.name }>{ item.scenario.description }</span>
@@ -39,6 +46,7 @@ export class ResponsibilityComponent extends React.Component<Props, undefined> {
                         <UploadForm canUpload={ canUploadBurdenEstimate }
                                     groupId={ this.props.modellingGroup.id }
                                     responsibility={ this.props.responsibility }/>
+                        {estimates}
                     </div>
                 </div>
             </div>
