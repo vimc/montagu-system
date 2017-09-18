@@ -1,19 +1,41 @@
 package org.vaccineimpact.api.app.repositories
 
 import org.jooq.DSLContext
+import org.jooq.exception.DataAccessException
 import org.jooq.impl.DSL
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.vaccineimpact.api.app.repositories.jooq.*
 import org.vaccineimpact.api.db.JooqContext
 
 open class RepositoryFactory
 {
+    private val logger: Logger = LoggerFactory.getLogger(javaClass)
+
     open fun <T> inTransaction(work: (Repositories) -> T): T
     {
         var result: T? = null
         JooqContext().use { db ->
-            db.dsl.transaction { config ->
-                val dsl = DSL.using(config)
-                result = work(Repositories(dsl))
+            try
+            {
+                db.dsl.transaction { config ->
+                    val dsl = DSL.using(config)
+                    result = work(Repositories(dsl))
+                }
+            }
+            catch (e: DataAccessException)
+            {
+                // We don't want our custom exceptions getting wrapped in a
+                // Jooq rollback warning, so we rethrow the cause
+                if (e.message == "Rollback caused")
+                {
+                    logger.info("Rollback caused by: ${e.cause}")
+                    throw e.cause ?: e
+                }
+                else
+                {
+                    throw e
+                }
             }
         }
         return result!!

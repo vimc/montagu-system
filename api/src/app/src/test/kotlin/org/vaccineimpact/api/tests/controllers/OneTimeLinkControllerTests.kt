@@ -13,7 +13,6 @@ import org.vaccineimpact.api.app.errors.InvalidOneTimeLinkToken
 import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.TokenRepository
-import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.security.WebTokenHelper
 
 class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
@@ -78,7 +77,7 @@ class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
         val helper = makeTokenHelper(allowToken = helperAllowToken, claims = claims)
         val controllerContext = mockControllerContext(
                 webTokenHelper = helper,
-                repositories = repos ?: Repositories(JooqContext().dsl)
+                repositories = repos ?: mock()
         )
         val otherController = modellingGroupController ?: mock<ModellingGroupController>()
         val otherControllers = mock<MontaguControllers> {
