@@ -12,6 +12,7 @@ import org.vaccineimpact.api.app.controllers.MontaguControllers
 import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.test_helpers.MontaguTests
+import org.vaccineimpact.api.tests.mocks.asFactory
 
 class OneTimeLinkTests : MontaguTests()
 {
@@ -63,12 +64,12 @@ class OneTimeLinkTests : MontaguTests()
             on { modellingGroup } doReturn modelling
         }
         val repos =  mock<Repositories> {
-            on { modellingGroup } doReturn { mock<ModellingGroupRepository>() }
+            on { modellingGroup } doReturn mock<ModellingGroupRepository>()
         }
 
         // Object under test
         val link = OneTimeLink(OneTimeAction.COVERAGE, mapOf(":key" to "value"), mapOf(":queryKey" to "queryValue"))
-        link.perform(controllers, mock(), repos)
+        link.perform(controllers, mock(), repos.asFactory())
 
         // Expectations
         verify(modelling).getCoverageData(check {

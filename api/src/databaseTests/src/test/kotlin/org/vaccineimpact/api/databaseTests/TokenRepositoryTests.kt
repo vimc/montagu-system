@@ -9,7 +9,7 @@ import org.vaccineimpact.api.db.Tables.ONETIME_TOKEN
 
 class TokenRepositoryTests : RepositoryTests<TokenRepository>()
 {
-    override fun makeRepository(db: JooqContext) = JooqTokenRepository(db)
+    override fun makeRepository(db: JooqContext) = JooqTokenRepository(db.dsl)
 
     @Test
     fun `can store token`()

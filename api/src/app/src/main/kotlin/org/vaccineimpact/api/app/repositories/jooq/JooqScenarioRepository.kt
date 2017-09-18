@@ -1,18 +1,16 @@
 package org.vaccineimpact.api.app.repositories.jooq
 
-import org.jooq.Configuration
+import org.jooq.DSLContext
 import org.jooq.Record
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.repositories.ScenarioRepository
-import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.Tables.SCENARIO
 import org.vaccineimpact.api.db.Tables.SCENARIO_DESCRIPTION
 import org.vaccineimpact.api.db.fieldsAsList
 import org.vaccineimpact.api.db.fromJoinPath
 import org.vaccineimpact.api.models.Scenario
 
-class JooqScenarioRepository(db: JooqContext, config: Configuration? = null)
-    : JooqRepository(db, config), ScenarioRepository
+class JooqScenarioRepository(dsl: DSLContext) : JooqRepository(dsl), ScenarioRepository
 {
     override fun checkScenarioDescriptionExists(id: String)
     {

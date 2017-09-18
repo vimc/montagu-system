@@ -18,12 +18,11 @@ import org.vaccineimpact.api.db.tables.records.ResponsibilitySetRecord
 import org.vaccineimpact.api.models.*
 
 class JooqModellingGroupRepository(
-        db: JooqContext,
+        dsl: DSLContext,
         private val touchstoneRepository: TouchstoneRepository,
-        private val scenarioRepository: ScenarioRepository,
-        config: Configuration? = null
+        private val scenarioRepository: ScenarioRepository
 )
-    : JooqRepository(db, config), ModellingGroupRepository
+    : JooqRepository(dsl), ModellingGroupRepository
 {
     override fun getModellingGroups(): Iterable<ModellingGroup>
     {

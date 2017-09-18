@@ -8,7 +8,7 @@ import org.vaccineimpact.api.app.OneTimeLinkActionContext
 import org.vaccineimpact.api.app.controllers.endpoints.EndpointDefinition
 import org.vaccineimpact.api.app.controllers.endpoints.getWrappedRoute
 import org.vaccineimpact.api.app.errors.UnsupportedValueException
-import org.vaccineimpact.api.app.repositories.Repositories
+import org.vaccineimpact.api.app.repositories.RepositoryFactory
 import org.vaccineimpact.api.app.repositories.TokenRepository
 import org.vaccineimpact.api.app.serialization.Serializer
 import org.vaccineimpact.api.db.Config
@@ -20,12 +20,12 @@ import java.time.Duration
 abstract class AbstractController(controllerContext: ControllerContext)
 {
     protected val logger: Logger = LoggerFactory.getLogger(AbstractController::class.java)
-    protected val repos = controllerContext.repositories
+    protected val repos = controllerContext.repositoryFactory
     private val urlBase = controllerContext.urlBase
     val tokenHelper = controllerContext.tokenHelper
 
     abstract val urlComponent: String
-    abstract fun endpoints(repos: Repositories): Iterable<EndpointDefinition<*>>
+    abstract fun endpoints(repos: RepositoryFactory): Iterable<EndpointDefinition<*>>
 
     fun mapEndpoints(): List<String>
     {

@@ -19,8 +19,8 @@ abstract class TouchstoneRepositoryTests : RepositoryTests<TouchstoneRepository>
 
     override fun makeRepository(db: JooqContext): TouchstoneRepository
     {
-        val scenarioRepository = JooqScenarioRepository(db)
-        return JooqTouchstoneRepository(db, scenarioRepository)
+        val scenarioRepository = JooqScenarioRepository(db.dsl)
+        return JooqTouchstoneRepository(db.dsl, scenarioRepository)
     }
 
     protected fun createTouchstoneAndScenarioDescriptions(it: JooqContext)
