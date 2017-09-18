@@ -32,7 +32,7 @@ export class UploadForm extends React.Component<UploadFormProps, UploadState> {
     handleChange(e: any) {
         this.setState({
             fileSelected: true,
-            fileName: e.target.value
+            fileName: e.target.value.replace("C:\\fakepath\\", "")
         });
     }
 

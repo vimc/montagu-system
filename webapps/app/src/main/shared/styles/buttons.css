@@ -38,14 +38,14 @@ button:disabled:hover, .button:disabled:hover {
 
     content: "\25be";
     float:right;
-    color:gray;
+    color: #ffffff;
 }
 
 :local(.arrowup:before){
 
     content: "\25b4";
     float:right;
-    color:gray;
+    color: #ffffff;
 }
 
 :local(.arrowup:after), :local(.arrowdown:after)
