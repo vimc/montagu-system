@@ -19,7 +19,7 @@ export class TemplateLink extends React.Component<TemplateLinkProps, undefined> 
     render(): JSX.Element {
 
         const disease = mainStore.getDiseaseById(this.props.diseaseId);
-        const href = `/templates/burden_template_${disease.id}-${this.props.groupId}.csv`;
+        const href = `/contribution/templates/burden_template_${disease.id}-${this.props.groupId}.csv`;
 
         return <a key={disease.id}
                            href={href}>{disease.name}</a>;

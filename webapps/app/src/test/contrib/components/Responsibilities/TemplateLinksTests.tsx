@@ -56,6 +56,6 @@ describe("TemplateLink", () => {
         const rendered = shallow(<TemplateLink groupId="grpid" diseaseId="d1"/>);
         const links = rendered.find("a");
         expect(links.length).to.eq(1);
-        expect(links.first().prop("href")).to.eq("/templates/burden_template_d1-grpid.csv");
+        expect(links.first().prop("href")).to.eq("/contribution/templates/burden_template_d1-grpid.csv");
     });
 });
