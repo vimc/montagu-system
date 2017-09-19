@@ -50,7 +50,7 @@ class AbstractControllerTests : ControllerTests<AbstractController>()
         controller.getOneTimeLinkToken(context, tokenRepo, OneTimeAction.COVERAGE)
 
         // Expectations
-        verify(tokenHelper).generateOneTimeActionToken("coverage", parameters, null)
+        verify(tokenHelper).generateOneTimeActionToken("coverage", parameters, null, username = "test.user")
         verify(tokenRepo).storeToken("MY-TOKEN")
     }
 
@@ -65,12 +65,13 @@ class AbstractControllerTests : ControllerTests<AbstractController>()
                 eq("set-password"),
                 argThat { this[":username"] == "user" },
                 eq(null),
-                eq(Duration.ofDays(1))
+                eq(Duration.ofDays(1)),
+                username = "test.user"
         )
     }
 
     private fun tokenHelperThatCanGenerateOnetimeTokens() = mock<WebTokenHelper> {
-        on { generateOneTimeActionToken(any(), any(), anyOrNull(), any()) } doReturn "MY-TOKEN"
+        on { generateOneTimeActionToken(any(), any(), anyOrNull(), any(), username = "test.user") } doReturn "MY-TOKEN"
         on { oneTimeLinkLifeSpan } doReturn Duration.ofSeconds(30)
     }
 }

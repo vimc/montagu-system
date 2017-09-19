@@ -57,7 +57,7 @@ class WebTokenHelperTests : MontaguTests()
         val token = helper.generateOneTimeActionToken("test-action", mapOf(
                 ":a" to "1",
                 ":b" to "2"
-        ), queryString)
+        ), queryString, username = "test.user")
         val claims = helper.verify(token)
 
         assertThat(claims["iss"]).isEqualTo("vaccineimpact.org")
@@ -66,6 +66,7 @@ class WebTokenHelperTests : MontaguTests()
         assertThat(claims["action"]).isEqualTo("test-action")
         assertThat(claims["payload"]).isEqualTo(":a=1&:b=2")
         assertThat(claims["query"]).isEqualTo(queryString)
+        assertThat(claims["username"]).isEqualTo("test.user")
     }
 
     @Test
@@ -74,7 +75,7 @@ class WebTokenHelperTests : MontaguTests()
         val token = helper.generateOneTimeActionToken("test-action", mapOf(
                 ":a" to "1",
                 ":b" to "2"
-        ), null)
+        ), null, username = "test.user")
         val claims = helper.verify(token)
 
         assertThat(claims["iss"]).isEqualTo("vaccineimpact.org")
@@ -83,6 +84,7 @@ class WebTokenHelperTests : MontaguTests()
         assertThat(claims["action"]).isEqualTo("test-action")
         assertThat(claims["payload"]).isEqualTo(":a=1&:b=2")
         assertThat(claims["query"]).isNull()
+        assertThat(claims["username"]).isEqualTo("test.user")
     }
 
     @Test
