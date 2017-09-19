@@ -22,6 +22,7 @@ export class UploadBurdenEstimatesPage extends PageWithHeaderAndNav<LocationProp
                 touchstoneActions.setCurrentTouchstone(this.props.location.params.touchstoneId);
                 responsibilityStore.fetchResponsibilities().catch(doNothing).then(() => {
                     responsibilityActions.setCurrentResponsibility(this.props.location.params.scenarioId);
+                    responsibilityStore.fetchOneTimeEstimatesToken().catch(doNothing)
                 });
             });
         });

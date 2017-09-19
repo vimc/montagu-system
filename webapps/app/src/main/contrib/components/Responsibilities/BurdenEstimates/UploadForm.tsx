@@ -1,6 +1,9 @@
 import * as React from "react";
 import { BurdenEstimateSet } from "../../../../shared/models/Generated";
 import { settings } from "../../../../shared/Settings";
+import { estimateTokenActions } from "../../../actions/EstimateActions";
+import { responsibilityStore } from "../../../stores/ResponsibilityStore";
+import fetcher from "../../../../shared/sources/Fetcher";
 
 const formStyles = require("../../../../shared/styles/forms.css");
 const commonStyles = require("../../../../shared/styles/common.css");
@@ -13,6 +16,7 @@ export interface UploadFormProps {
     canUpload: boolean;
     scenarioId: string;
     currentEstimateSet: BurdenEstimateSet;
+    token: string;
 }
 
 interface UploadState {
@@ -40,7 +44,6 @@ export class UploadForm extends React.Component<UploadFormProps, UploadState> {
     render() {
 
         const uploadText = this.props.canUpload ? "Choose a new burden estimate set" : "No more burden estimates can be uploaded";
-        const href = `/${this.props.groupId}/${this.props.scenarioId}`;
 
         const lastUploadedText = this.props.currentEstimateSet != null ?
             `You last uploaded an estimate on ${this.props.currentEstimateSet.uploaded_on}.`
@@ -56,9 +59,13 @@ export class UploadForm extends React.Component<UploadFormProps, UploadState> {
 
             : "";
 
+        const props = this.props;
+        const url = fetcher.fetcher.buildOneTimeLink(props.token);
+        const enabled = props.token != null;
+
         return <div>
             <div className={messageStyles.info}>{lastUploadedText} <br/> {helperText}</div>
-            <form className={formStyles.form} action={href}
+            <form className={formStyles.form} action={url}
                   method="POST">
                 <div>
                     <label className={formStyles.customFileUpload}>
@@ -74,7 +81,7 @@ export class UploadForm extends React.Component<UploadFormProps, UploadState> {
                 </div>
                 <button type="submit"
                         style={{ display: this.props.canUpload ? "block" : "none" }}
-                        disabled={!this.props.canUpload || !this.state.fileSelected}>Upload
+                        disabled={!this.props.canUpload || !this.state.fileSelected || !enabled}>Upload
                 </button>
             </form>
         </div>;

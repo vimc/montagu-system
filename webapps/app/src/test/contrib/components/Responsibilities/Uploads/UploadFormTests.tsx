@@ -30,6 +30,7 @@ describe('UploadForm', () => {
         }));
 
         rendered = shallow(<UploadForm
+            token={"TOKEN"}
             canUpload={canUpload}
             groupId={"group-1"}
             scenarioId={responsibility.scenario.id}

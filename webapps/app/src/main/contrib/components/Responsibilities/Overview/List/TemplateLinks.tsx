@@ -3,6 +3,7 @@ import { mainStore } from "../../../../stores/MainStore";
 import { ExtendedResponsibility } from "../../../../models/ResponsibilitySet";
 import { ButtonLink } from "../../../../../shared/components/ButtonLink";
 import { Link } from "simple-react-router";
+import { appSettings } from "../../../../../shared/Settings";
 
 export interface TemplateLinksProps {
     responsibilities: ExtendedResponsibility[];
@@ -14,28 +15,14 @@ export interface TemplateLinkProps{
     groupId: string;
 }
 
-const buttonStyles = require("../../../../../shared/styles/buttons.css");
-
 export class TemplateLink extends React.Component<TemplateLinkProps, undefined> {
-    render(): JSX.Element {
-
-        const disease = mainStore.getDiseaseById(this.props.diseaseId);
-        const href = `/templates/${this.props.groupId}-${disease.id}.csv`;
-
-        return <Link key={disease.id}
-                           href={href}>{disease.name}</Link>;
-    }
-}
-
-export class TemplateButtonLink extends React.Component<TemplateLinkProps, undefined> {
     render(): JSX.Element {
 
         const disease = mainStore.getDiseaseById(this.props.diseaseId);
         const href = `/templates/burden_template_${disease.id}-${this.props.groupId}.csv`;
 
-        return <ButtonLink key={disease.id}
-                           className={buttonStyles.submit}
-                           href={href}>{disease.name}</ButtonLink>;
+        return <a key={disease.id}
+                           href={href}>{disease.name}</a>;
     }
 }
 
@@ -46,7 +33,8 @@ export class TemplateLinks extends React.Component<TemplateLinksProps, undefined
 
         if (diseaseIds.length > 0) {
             const links = diseaseIds
-                .map(id => <TemplateButtonLink diseaseId={id} groupId={this.props.groupId}/>);
+                .map(id =>
+                    <TemplateLink key={id} diseaseId={id} groupId={this.props.groupId}/>);
 
             return <div>Download burden estimate templates:<br/>
                 {links}
