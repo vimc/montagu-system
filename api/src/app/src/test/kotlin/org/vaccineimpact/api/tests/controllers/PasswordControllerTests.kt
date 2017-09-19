@@ -9,6 +9,7 @@ import org.vaccineimpact.api.app.controllers.PasswordController
 import org.vaccineimpact.api.app.errors.MissingRequiredParameterError
 import org.vaccineimpact.api.app.models.SetPassword
 import org.vaccineimpact.api.app.repositories.Repositories
+import org.vaccineimpact.api.app.repositories.TokenRepository
 import org.vaccineimpact.api.app.repositories.UserRepository
 import org.vaccineimpact.api.emails.EmailManager
 import org.vaccineimpact.api.emails.PasswordSetEmail
@@ -92,8 +93,8 @@ class PasswordControllerTests : ControllerTests<PasswordController>()
             on { getMontaguUserByEmail("fake@example.com") } doReturn user
         }
         return mock {
-            on { this.user } doReturn { userRepo }
-            on { this.token } doReturn { mock() }
+            on { this.user } doReturn userRepo
+            on { this.token } doReturn mock<TokenRepository>()
         }
     }
 

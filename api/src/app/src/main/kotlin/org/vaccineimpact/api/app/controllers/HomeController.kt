@@ -2,7 +2,7 @@ package org.vaccineimpact.api.app.controllers
 
 import org.vaccineimpact.api.app.ActionContext
 import org.vaccineimpact.api.app.controllers.endpoints.basicEndpoint
-import org.vaccineimpact.api.app.repositories.Repositories
+import org.vaccineimpact.api.app.repositories.RepositoryFactory
 import org.vaccineimpact.api.db.Config
 
 class HomeController(
@@ -11,7 +11,7 @@ class HomeController(
 ) : AbstractController(context)
 {
     override val urlComponent = ""
-    override fun endpoints(repos: Repositories) = listOf(
+    override fun endpoints(repos: RepositoryFactory) = listOf(
             basicEndpoint("/", this::index)
     )
 

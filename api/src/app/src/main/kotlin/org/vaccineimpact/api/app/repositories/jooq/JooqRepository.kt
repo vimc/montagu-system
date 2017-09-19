@@ -1,15 +1,14 @@
 package org.vaccineimpact.api.app.repositories.jooq
 
+import org.jooq.DSLContext
 import org.vaccineimpact.api.Deserializer
 import org.vaccineimpact.api.UnknownEnumValue
 import org.vaccineimpact.api.app.errors.BadDatabaseConstant
-import org.vaccineimpact.api.db.JooqContext
-import java.io.Closeable
+import org.vaccineimpact.api.app.repositories.Repository
 
-abstract class JooqRepository(protected val db: JooqContext): Closeable
+abstract class JooqRepository(val dsl: DSLContext): Repository
 {
     val deserializer = Deserializer()
-    val dsl get() = db.dsl
 
     protected inline fun <reified T: Enum<T>> mapEnum(raw: String): T
     {
@@ -21,10 +20,5 @@ abstract class JooqRepository(protected val db: JooqContext): Closeable
         {
             throw BadDatabaseConstant(e.name, e.type)
         }
-    }
-
-    override fun close()
-    {
-        db.close()
     }
 }

@@ -10,9 +10,9 @@ import org.vaccineimpact.api.app.controllers.ModellingGroupController
 import org.vaccineimpact.api.app.controllers.MontaguControllers
 import org.vaccineimpact.api.app.controllers.OneTimeLinkController
 import org.vaccineimpact.api.app.errors.InvalidOneTimeLinkToken
+import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.TokenRepository
-import org.vaccineimpact.api.app.repositories.makeRepositories
 import org.vaccineimpact.api.security.WebTokenHelper
 
 class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
@@ -59,7 +59,7 @@ class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
                         "payload" to ":group-id=gId&:touchstone-id=tId&:scenario-id=sId"
                 ),
                 repos = mock {
-                    on { modellingGroup } doReturn { mock() }
+                    on { modellingGroup } doReturn mock<ModellingGroupRepository>()
                 }
         )
         controller.onetimeLink(actionContext(), makeRepository())
@@ -77,7 +77,7 @@ class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
         val helper = makeTokenHelper(allowToken = helperAllowToken, claims = claims)
         val controllerContext = mockControllerContext(
                 webTokenHelper = helper,
-                repositories = repos ?: makeRepositories()
+                repositories = repos ?: mock()
         )
         val otherController = modellingGroupController ?: mock<ModellingGroupController>()
         val otherControllers = mock<MontaguControllers> {

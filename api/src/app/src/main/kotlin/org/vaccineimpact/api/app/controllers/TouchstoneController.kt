@@ -6,8 +6,8 @@ import org.vaccineimpact.api.app.controllers.endpoints.EndpointDefinition
 import org.vaccineimpact.api.app.controllers.endpoints.oneRepoEndpoint
 import org.vaccineimpact.api.app.controllers.endpoints.secured
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
-import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.Repositories
+import org.vaccineimpact.api.app.repositories.RepositoryFactory
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.app.serialization.DataTable
 import org.vaccineimpact.api.app.serialization.SplitData
@@ -21,17 +21,17 @@ class TouchstoneController(context: ControllerContext) : AbstractController(cont
     private val demographicPermissions = permissions + setOf("*/demographics.read")
 
     override val urlComponent: String = "/touchstones"
-    override fun endpoints(repos: Repositories): Iterable<EndpointDefinition<*>>
+    override fun endpoints(repos: RepositoryFactory): Iterable<EndpointDefinition<*>>
     {
-        val repo = repos.touchstone
+        val repo: (Repositories) -> TouchstoneRepository = { it.touchstone }
         return listOf(
-                oneRepoEndpoint("/", this::getTouchstones, repo).secured(permissions),
-                oneRepoEndpoint("/:touchstone-id/scenarios/", this::getScenarios, repo).secured(scenarioPermissions),
-                oneRepoEndpoint("/:touchstone-id/scenarios/:scenario-id/", this::getScenario, repo).secured(scenarioPermissions),
-                oneRepoEndpoint("/:touchstone-id/demographics/", this::getDemographicTypes, repo).secured(demographicPermissions),
-                oneRepoEndpoint("/:touchstone-id/demographics/:source-code/:type-code/", this::getDemographicDataAndMetadata, repo, contentType = "application/json").secured(demographicPermissions),
-                oneRepoEndpoint("/:touchstone-id/demographics/:source-code/:type-code/", this::getDemographicData, repo, contentType = "text/csv").secured(demographicPermissions),
-                oneRepoEndpoint("/:touchstone-id/demographics/:source-code/:type-code/get_onetime_link/", { c, r -> getOneTimeLinkToken(c, r, OneTimeAction.DEMOGRAPHY) }, repos.token).secured(demographicPermissions)
+                oneRepoEndpoint("/", this::getTouchstones, repos, repo).secured(permissions),
+                oneRepoEndpoint("/:touchstone-id/scenarios/", this::getScenarios, repos, repo).secured(scenarioPermissions),
+                oneRepoEndpoint("/:touchstone-id/scenarios/:scenario-id/", this::getScenario, repos, repo).secured(scenarioPermissions),
+                oneRepoEndpoint("/:touchstone-id/demographics/", this::getDemographicTypes, repos, repo).secured(demographicPermissions),
+                oneRepoEndpoint("/:touchstone-id/demographics/:source-code/:type-code/", this::getDemographicDataAndMetadata, repos, repo, contentType = "application/json").secured(demographicPermissions),
+                oneRepoEndpoint("/:touchstone-id/demographics/:source-code/:type-code/", this::getDemographicData, repos, repo, contentType = "text/csv").secured(demographicPermissions),
+                oneRepoEndpoint("/:touchstone-id/demographics/:source-code/:type-code/get_onetime_link/", { c, r -> getOneTimeLinkToken(c, r, OneTimeAction.DEMOGRAPHY) }, repos, { it.token }).secured(demographicPermissions)
 
         )
     }

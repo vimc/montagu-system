@@ -7,7 +7,7 @@ import org.vaccineimpact.api.OneTimeAction
 import org.vaccineimpact.api.app.ActionContext
 import org.vaccineimpact.api.app.controllers.AbstractController
 import org.vaccineimpact.api.app.controllers.ControllerContext
-import org.vaccineimpact.api.app.repositories.Repositories
+import org.vaccineimpact.api.app.repositories.RepositoryFactory
 import org.vaccineimpact.api.app.repositories.TokenRepository
 import org.vaccineimpact.api.security.WebTokenHelper
 import java.time.Duration
@@ -22,7 +22,7 @@ class AbstractControllerTests : ControllerTests<AbstractController>()
     private class Controller(context: ControllerContext) : AbstractController(context)
     {
         override val urlComponent = "/test"
-        override fun endpoints(repos: Repositories) = throw NotImplementedError("Not needed for tests")
+        override fun endpoints(repos: RepositoryFactory) = throw NotImplementedError("Not needed for tests")
     }
 
     @Test

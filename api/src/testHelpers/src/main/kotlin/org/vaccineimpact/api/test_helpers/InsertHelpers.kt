@@ -32,8 +32,9 @@ fun JooqContext.addModel(
         groupId: String,
         description: String = id,
         citation: String = "Unknown citation",
-        current: String? = null
-): String
+        current: String? = null,
+        versions: List<String> = emptyList()
+)
 {
     val record = this.dsl.newRecord(MODEL).apply {
         this.id = id
@@ -41,22 +42,26 @@ fun JooqContext.addModel(
         this.description = description
         this.citation = citation
         this.current = current
+    }.store()
+    for (version in versions)
+    {
+        addModelVersion(id, version)
     }
-
-    record.store()
-    return record.id
 }
 
-
 fun JooqContext.addModelVersion(
-        modelId: String
+    modelId: String,
+    version: String,
+    note: String = "Some note",
+    fingerprint: String = "Some fingerprint"
 ): Int
 {
     val record = this.dsl.newRecord(MODEL_VERSION).apply {
         this.model = modelId
-        this.version = "version"
+        this.version = version
+        this.note = note
+        this.fingerprint = fingerprint
     }
-
     record.store()
     return record.id
 }
@@ -144,7 +149,7 @@ fun JooqContext.addScenarios(touchstone: String, vararg scenarioDescriptions: St
 fun JooqContext.addResponsibilitySet(
         modellingGroup: String,
         touchstone: String,
-        status: String
+        status: String = "incomplete"
 ): Int
 {
     val record = this.dsl.newRecord(RESPONSIBILITY_SET).apply {

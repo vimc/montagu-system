@@ -34,7 +34,7 @@ import org.vaccineimpact.api.db.tables.records.BurdenOutcomeRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class BurdenOutcome extends TableImpl<BurdenOutcomeRecord> {
 
-    private static final long serialVersionUID = -931261455;
+    private static final long serialVersionUID = 971196974;
 
     /**
      * The reference instance of <code>public.burden_outcome</code>
@@ -62,7 +62,7 @@ public class BurdenOutcome extends TableImpl<BurdenOutcomeRecord> {
     /**
      * The column <code>public.burden_outcome.name</code>.
      */
-    public final TableField<BurdenOutcomeRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(32).nullable(false), this, "");
+    public final TableField<BurdenOutcomeRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * Create a <code>public.burden_outcome</code> table reference

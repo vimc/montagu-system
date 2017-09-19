@@ -9,6 +9,7 @@ import org.vaccineimpact.api.app.errors.MissingRequiredParameterError
 import org.vaccineimpact.api.app.models.SetPassword
 import org.vaccineimpact.api.app.postData
 import org.vaccineimpact.api.app.repositories.Repositories
+import org.vaccineimpact.api.app.repositories.RepositoryFactory
 import org.vaccineimpact.api.app.repositories.UserRepository
 import org.vaccineimpact.api.emails.EmailManager
 import org.vaccineimpact.api.emails.PasswordSetEmail
@@ -22,8 +23,8 @@ class PasswordController(
 {
     override val urlComponent = "/password"
 
-    override fun endpoints(repos: Repositories): List<Endpoint<*>> = listOf(
-            oneRepoEndpoint("/set/", this::setPassword, repos.user, HttpMethod.post).secured(),
+    override fun endpoints(repos: RepositoryFactory): List<Endpoint<*>> = listOf(
+            oneRepoEndpoint("/set/", this::setPassword, repos, { it.user }, HttpMethod.post).secured(),
             multiRepoEndpoint("/request_link/", this::requestLink, repos, HttpMethod.post)
     )
 
@@ -41,23 +42,19 @@ class PasswordController(
 
     fun requestLink(context: ActionContext, repos: Repositories): String
     {
-        repos.user().use { userRepo ->
-            repos.token().use { tokenRepo ->
-                val address = context.queryParams("email")
-                        ?: throw MissingRequiredParameterError("email")
-                val user = userRepo.getMontaguUserByEmail(address)
-                if (user != null)
-                {
-                    val token = getSetPasswordToken(user.username, context, tokenRepo)
-                    val email = PasswordSetEmail(token, user.name)
-                    emailManager.sendEmail(email, user)
-                }
-                else
-                {
-                    logger.warn("Requested set password email for unknown user '$address'")
-                }
-                return okayResponse()
-            }
+        val address = context.queryParams("email")
+                ?: throw MissingRequiredParameterError("email")
+        val user = repos.user.getMontaguUserByEmail(address)
+        if (user != null)
+        {
+            val token = getSetPasswordToken(user.username, context, repos.token)
+            val email = PasswordSetEmail(token, user.name)
+            emailManager.sendEmail(email, user)
         }
+        else
+        {
+            logger.warn("Requested set password email for unknown user '$address'")
+        }
+        return okayResponse()
     }
 }

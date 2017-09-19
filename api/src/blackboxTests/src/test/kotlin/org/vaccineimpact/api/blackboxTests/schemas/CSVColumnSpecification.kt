@@ -19,12 +19,12 @@ data class CSVColumnSpecification(val name: String, val type: CSVColumnType)
 
         when (typeToCheck)
         {
-            is CSVColumnType.IntColumn -> actual.toIntOrNull() ?: failAssert("Not an integer")
+            is CSVColumnType.IntColumn -> actual.trim().toIntOrNull() ?: failAssert("Not an integer")
             is CSVColumnType.StringColumn -> if (actual.isNullOrBlank())
             {
                 failAssert("Column is required")
             }
-            is CSVColumnType.DecimalColumn -> actual.toDecimalOrNull() ?: failAssert("Not a decimal")
+            is CSVColumnType.DecimalColumn -> actual.trim().toDecimalOrNull() ?: failAssert("Not a decimal")
             is CSVColumnType.MaybeColumn -> if (actual != "NA")
             {
                 assertMatches(actual, rowIndex, typeToCheck.wrapped)

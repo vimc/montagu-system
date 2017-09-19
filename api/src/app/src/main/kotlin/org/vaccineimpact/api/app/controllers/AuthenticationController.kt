@@ -7,29 +7,23 @@ import org.vaccineimpact.api.app.FormHelpers
 import org.vaccineimpact.api.app.HTMLForm
 import org.vaccineimpact.api.app.HTMLFormHelpers
 import org.vaccineimpact.api.app.controllers.endpoints.oneRepoEndpoint
-import org.vaccineimpact.api.app.repositories.Repositories
+import org.vaccineimpact.api.app.repositories.RepositoryFactory
 import org.vaccineimpact.api.app.repositories.UserRepository
 import org.vaccineimpact.api.app.security.TokenIssuingConfigFactory
-import org.vaccineimpact.api.app.security.USER_OBJECT
 import org.vaccineimpact.api.app.security.montaguUser
 import org.vaccineimpact.api.models.AuthenticationResponse
 import org.vaccineimpact.api.models.FailedAuthentication
 import org.vaccineimpact.api.models.SuccessfulAuthentication
-import org.vaccineimpact.api.security.MontaguUser
-import org.vaccineimpact.api.security.WebTokenHelper
 import spark.Spark.before
 import spark.route.HttpMethod
 
 class AuthenticationController(context: ControllerContext, htmlFormHelpers: FormHelpers? = null) : AbstractController(context)
 {
     override val urlComponent = "/"
-    override fun endpoints(repos: Repositories) = listOf(
-            oneRepoEndpoint("authenticate/", this::authenticate, repos.user, HttpMethod.post)
-                    .withAdditionalSetup({ url, _, _ -> setupSecurity(url) })
+    override fun endpoints(repos: RepositoryFactory) = listOf(
+            oneRepoEndpoint("authenticate/", this::authenticate, repos, { it.user }, HttpMethod.post)
+                    .withAdditionalSetup({ url, _, repoFactory -> setupSecurity(url, repoFactory) })
     )
-    private val accessLogRepository by lazy {
-        context.repositories.accessLogRepository
-    }
     private val htmlFormHelpers = htmlFormHelpers ?: HTMLFormHelpers()
 
     fun authenticate(context: ActionContext, repo: UserRepository): AuthenticationResponse
@@ -50,9 +44,9 @@ class AuthenticationController(context: ControllerContext, htmlFormHelpers: Form
         }
     }
 
-    private fun setupSecurity(fullUrl: String)
+    private fun setupSecurity(fullUrl: String, repositoryFactory: RepositoryFactory)
     {
-        val config = TokenIssuingConfigFactory(accessLogRepository).build()
+        val config = TokenIssuingConfigFactory(repositoryFactory).build()
         before(fullUrl, SecurityFilter(
                 config,
                 DirectBasicAuthClient::class.java.simpleName,

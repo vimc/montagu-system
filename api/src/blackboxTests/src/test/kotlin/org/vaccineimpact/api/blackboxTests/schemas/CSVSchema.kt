@@ -2,56 +2,66 @@ package org.vaccineimpact.api.blackboxTests.schemas
 
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
-import com.opencsv.CSVReader
-import org.assertj.core.api.Assertions.assertThat
-import org.assertj.core.api.Assertions.fail
 import org.vaccineimpact.api.db.getResource
-import java.io.StringReader
+import org.vaccineimpact.api.validateSchema.Validator
 
-class CSVSchema(schemaFileName: String)
+class CSVSchema(schemaFileName: String) : Schema
 {
-    val columns = parseSchema(schemaFileName)
+    private val specification: CSVSpecification = parseSchema(schemaFileName)
 
-    fun validate(csvAsString: String): Iterable<Array<String>>
+    override val validator: Validator
+        get() = throw Exception("CSV only responses cannot communicate errors")
+
+    override fun validateRequest(request: String)
     {
-        val trimmedText = csvAsString.trim()
-        if (trimmedText.startsWith("{") || trimmedText.startsWith("["))
-        {
-            fail("Expected CSV data, but this looks a lot like JSON: $csvAsString")
-        }
-
-        val csv = StringReader(trimmedText)
-                .use { CSVReader(it).readAll() }
-        val headers = csv.first()
-        val body = csv.drop(1)
-        assertThat(headers).containsExactlyElementsOf(columns.map { it.name })
-        for ((index, row) in body.withIndex())
-        {
-            validate(row, index)
-        }
-
-        return body
+        specification.validateRow(request)
+    }
+    override fun validateResponse(response: String, contentType: String?)
+    {
+        specification.validateRow(response)
     }
 
-    private fun validate(row: Array<String>, rowIndex: Int)
-    {
-        if (row.size != columns.size)
-        {
-            fail("Row $rowIndex had the wrong number of columns. It had ${row.size}, but we expected ${columns.size}")
-        }
-        for ((spec, actual) in columns.zip(row))
-        {
-            spec.assertMatches(actual, rowIndex)
-        }
-    }
+    fun validate(csvAsString: String) = specification.validateRow(csvAsString)
 
-    private fun parseSchema(schemaFileName: String): List<CSVColumnSpecification>
+    private fun parseSchema(schemaFileName: String): CSVSpecification
     {
         val schemaPath = getResource("spec/$schemaFileName.csvschema.json")
         val schema = Parser().parse(schemaPath.file) as JsonObject
-        val columns = schema["columns"] as JsonObject
-        return columns.map { (key, value) ->
+        val columns = (schema["columns"] as JsonObject).map { (key, value) ->
             CSVColumnSpecification(key, CSVColumnType.parse(value))
+        }
+        val additionalColumnsAllowed = schema.getValue("additionalColumnsAllowed", default = false)
+        return if (additionalColumnsAllowed)
+        {
+            FlexibleCSVSpecification(columns)
+        }
+        else
+        {
+            CSVSpecification(columns)
+        }
+    }
+
+    private inline fun <reified T> JsonObject.getValue(key: String, default: T? = null): T
+    {
+        if (key in this)
+        {
+            val value = this[key]
+            if (value is T)
+            {
+                return value
+            }
+            else
+            {
+                throw Exception("Unable to parse value '$value' for key '$key' as '${T::class.simpleName}'")
+            }
+        }
+        else if (default != null)
+        {
+            return default
+        }
+        else
+        {
+            throw Exception("No value found for mandatory key '$key'")
         }
     }
 }

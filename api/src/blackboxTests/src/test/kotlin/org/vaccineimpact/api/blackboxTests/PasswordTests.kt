@@ -15,7 +15,7 @@ class PasswordTests : DatabaseTest()
     @Test
     fun `can set password`()
     {
-        validate("/password/set/", HttpMethod.post) sending {
+        validate("/password/set/", HttpMethod.post) sendingJSON {
             json {
                 obj("password" to "new_password")
             }

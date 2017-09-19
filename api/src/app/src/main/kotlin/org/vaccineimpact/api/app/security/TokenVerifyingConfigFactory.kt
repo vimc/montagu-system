@@ -5,24 +5,18 @@ import org.pac4j.core.config.ConfigFactory
 import org.pac4j.core.context.HttpConstants
 import org.pac4j.core.profile.CommonProfile
 import org.pac4j.jwt.profile.JwtProfile
-import org.pac4j.sparkjava.DefaultHttpActionAdapter
 import org.pac4j.sparkjava.SparkWebContext
 import org.vaccineimpact.api.app.DirectActionContext
-import org.vaccineimpact.api.app.RequestLogger
-import org.vaccineimpact.api.app.addDefaultResponseHeaders
 import org.vaccineimpact.api.app.errors.MissingRequiredPermissionError
-import org.vaccineimpact.api.app.repositories.AccessLogRepository
-import org.vaccineimpact.api.app.serialization.Serializer
+import org.vaccineimpact.api.app.repositories.RepositoryFactory
 import org.vaccineimpact.api.models.ErrorInfo
-import org.vaccineimpact.api.models.Result
-import org.vaccineimpact.api.models.ResultStatus
 import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.security.WebTokenHelper
 
 class TokenVerifyingConfigFactory(
         tokenHelper: WebTokenHelper,
         val requiredPermissions: Set<PermissionRequirement>,
-        private val accessLogRepository: () -> AccessLogRepository
+        private val repositoryFactory: RepositoryFactory
 ) : ConfigFactory
 {
     private val clients = listOf(
@@ -37,7 +31,7 @@ class TokenVerifyingConfigFactory(
         return Config(clients).apply {
             setAuthorizer(MontaguAuthorizer(requiredPermissions))
             addMethodMatchers()
-            httpActionAdapter = TokenActionAdapter(accessLogRepository)
+            httpActionAdapter = TokenActionAdapter(repositoryFactory)
         }
     }
 
@@ -55,8 +49,8 @@ class TokenVerifyingConfigFactory(
     }
 }
 
-class TokenActionAdapter(accessLogRepository: () -> AccessLogRepository)
-    : MontaguHttpActionAdapter(accessLogRepository)
+class TokenActionAdapter(repositoryFactory: RepositoryFactory)
+    : MontaguHttpActionAdapter(repositoryFactory)
 {
     private val unauthorizedResponse = listOf(ErrorInfo(
             "bearer-token-invalid",

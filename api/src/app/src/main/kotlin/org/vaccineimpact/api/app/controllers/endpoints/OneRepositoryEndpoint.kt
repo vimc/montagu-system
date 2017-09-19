@@ -3,7 +3,9 @@ package org.vaccineimpact.api.app.controllers.endpoints
 import org.vaccineimpact.api.ContentTypes
 import org.vaccineimpact.api.app.ActionContext
 import org.vaccineimpact.api.app.DirectActionContext
+import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.Repository
+import org.vaccineimpact.api.app.repositories.RepositoryFactory
 import spark.Route
 import spark.route.HttpMethod
 
@@ -14,7 +16,8 @@ import spark.route.HttpMethod
 fun <TRepository : Repository> oneRepoEndpoint(
         urlFragment: String,
         route: (ActionContext, TRepository) -> Any,
-        repository: () -> TRepository,
+        repositories: RepositoryFactory,
+        repository: (Repositories) -> TRepository,
         method: HttpMethod = HttpMethod.get,
         contentType: String = ContentTypes.json
 ): Endpoint<(ActionContext, TRepository) -> Any>
@@ -22,7 +25,7 @@ fun <TRepository : Repository> oneRepoEndpoint(
     return Endpoint(
             urlFragment,
             route,
-            { wrapRoute(it, repository) },
+            { wrapRoute(it, repositories, repository) },
             method,
             contentType
     )
@@ -30,12 +33,14 @@ fun <TRepository : Repository> oneRepoEndpoint(
 
 private fun <TRepository : Repository> wrapRoute(
         route: (ActionContext, TRepository) -> Any,
-        repository: () -> TRepository
+        repoFactory: RepositoryFactory,
+        repository: (Repositories) -> TRepository
 )
         : Route
 {
     return Route({ req, res ->
-        repository().use { repo ->
+        repoFactory.inTransaction { repos ->
+            val repo = repository(repos)
             route(DirectActionContext(req, res), repo)
         }
     })

@@ -17,7 +17,7 @@ class PermissionChecker(
         val validator: Validator = JSONValidator(),
         val acceptContentType: String = ContentTypes.json,
         val method: HttpMethod = HttpMethod.get,
-        val postData: JsonObject? = null
+        val postData: String? = null
 )
 {
     val helper = TestUserHelper()

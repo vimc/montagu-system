@@ -5,14 +5,20 @@ import org.vaccineimpact.api.app.ActionContext
 import org.vaccineimpact.api.app.controllers.endpoints.EndpointDefinition
 import org.vaccineimpact.api.app.controllers.endpoints.oneRepoEndpoint
 import org.vaccineimpact.api.app.controllers.endpoints.secured
+import org.vaccineimpact.api.app.csvData
+import org.vaccineimpact.api.app.errors.InconsistentDataError
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
+import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
 import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.Repositories
+import org.vaccineimpact.api.app.repositories.RepositoryFactory
 import org.vaccineimpact.api.app.serialization.DataTable
 import org.vaccineimpact.api.app.serialization.SplitData
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
+import spark.route.HttpMethod
+import java.time.Instant
 
 open class ModellingGroupController(context: ControllerContext)
     : AbstractController(context)
@@ -28,18 +34,20 @@ open class ModellingGroupController(context: ControllerContext)
     val scenarioURL = "$responsibilitiesURL/:scenario-id"
     val coverageURL = "$scenarioURL/coverage"
 
-    override fun endpoints(repos: Repositories): Iterable<EndpointDefinition<*>>
+    override fun endpoints(repos: RepositoryFactory): Iterable<EndpointDefinition<*>>
     {
-        val repo = repos.modellingGroup
+        val repo: (Repositories) -> ModellingGroupRepository = { it.modellingGroup }
         return listOf(
-                oneRepoEndpoint("/",                           this::getModellingGroups, repo).secured(setOf("*/modelling-groups.read")),
-                oneRepoEndpoint("/:group-id/",                 this::getModellingGroup, repo).secured(setOf("*/modelling-groups.read", "*/models.read")),
-                oneRepoEndpoint("$responsibilitiesURL/",       this::getResponsibilities, repo).secured(responsibilityPermissions),
-                oneRepoEndpoint("$scenarioURL/",               this::getResponsibility, repo).secured(responsibilityPermissions),
-                oneRepoEndpoint("$scenarioURL/coverage_sets/", this::getCoverageSets, repo).secured(coveragePermissions),
-                oneRepoEndpoint("$coverageURL/",               this::getCoverageDataAndMetadata, repo, contentType = "application/json").secured(coveragePermissions),
-                oneRepoEndpoint("$coverageURL/",               this::getCoverageData, repo, contentType = "text/csv").secured(coveragePermissions),
-                oneRepoEndpoint("$coverageURL/get_onetime_link/", { c, r -> getOneTimeLinkToken(c, r, OneTimeAction.COVERAGE) }, repos.token).secured(coveragePermissions)
+                oneRepoEndpoint("/",                           this::getModellingGroups, repos, repo).secured(setOf("*/modelling-groups.read")),
+                oneRepoEndpoint("/:group-id/",                 this::getModellingGroup, repos, repo).secured(setOf("*/modelling-groups.read", "*/models.read")),
+                oneRepoEndpoint("$responsibilitiesURL/",       this::getResponsibilities, repos, repo).secured(responsibilityPermissions),
+                oneRepoEndpoint("$scenarioURL/",               this::getResponsibility, repos, repo).secured(responsibilityPermissions),
+                oneRepoEndpoint("$scenarioURL/coverage_sets/", this::getCoverageSets, repos, repo).secured(coveragePermissions),
+                oneRepoEndpoint("$coverageURL/",               this::getCoverageDataAndMetadata, repos, repo, contentType = "application/json").secured(coveragePermissions),
+                oneRepoEndpoint("$coverageURL/",               this::getCoverageData, repos, repo, contentType = "text/csv").secured(coveragePermissions),
+                oneRepoEndpoint("$coverageURL/get_onetime_link/", { c, r -> getOneTimeLinkToken(c, r, OneTimeAction.COVERAGE) }, repos, { it.token }).secured(coveragePermissions),
+                oneRepoEndpoint("$scenarioURL/estimates/",     this::addBurdenEstimate, repos, { it.burdenEstimates }, method = HttpMethod.post)
+                        .secured(setOf("$groupScope/estimates.write", "$groupScope/responsibilities.read"))
         )
     }
 
@@ -99,6 +107,31 @@ open class ModellingGroupController(context: ControllerContext)
         val data = repo.getCoverageData(path.groupId, path.touchstoneId, path.scenarioId)
         checkTouchstoneStatus(data.structuredMetadata.touchstone.status, path.touchstoneId, context)
         return data
+    }
+
+    open fun addBurdenEstimate(context: ActionContext, estimateRepository: BurdenEstimateRepository): String
+    {
+        val path = ResponsibilityPath(context)
+
+        // First check if we're allowed to see this touchstone
+        val touchstone = estimateRepository.touchstoneRepository.touchstones.get(path.touchstoneId)
+        checkTouchstoneStatus(touchstone.status, path.touchstoneId, context)
+
+        // Then add the burden estimates
+        val data = context.csvData<BurdenEstimate>()
+        if (data.map { it.disease }.distinct().count() > 1)
+        {
+            throw InconsistentDataError("More than one value was present in the disease column")
+        }
+
+        val id = estimateRepository.addBurdenEstimateSet(
+                path.groupId, path.touchstoneId, path.scenarioId,
+                data,
+                uploader = context.username!!,
+                timestamp = Instant.now()
+        )
+        val url = "/${path.groupId}/responsibilities/${path.touchstoneId}/${path.scenarioId}/estimates/$id/"
+        return objectCreation(context, url)
     }
 
     private fun checkTouchstoneStatus(

@@ -19,6 +19,7 @@ class ResponsibilityTests : DatabaseTest()
     val groupId = "awesome-group"
     val groupScope = "modelling-group:$groupId"
     val scenarioId = "yf-scenario"
+    val modelId = "model-1"
 
     @Test
     fun `getResponsibilities matches schema`()
@@ -177,8 +178,8 @@ class ResponsibilityTests : DatabaseTest()
         val setId = db.addResponsibilitySet(groupId, touchstoneId, "submitted")
         val responsibilityId = db.addResponsibility(setId, touchstoneId, scenarioId)
         db.addResponsibility(setId, touchstoneId, "scenario-2")
-        val modelId = db.addModel("model", groupId)
-        val version = db.addModelVersion(modelId)
+        db.addModel(modelId, groupId)
+        val version = db.addModelVersion(modelId, "version-1")
         val burdenEstimateId = db.addBurdenEstimateSet(responsibilityId, version, "model.user")
         db.updateCurrentEstimate(responsibilityId, burdenEstimateId)
         db.addBurdenEstimateProblem("problem", burdenEstimateId)

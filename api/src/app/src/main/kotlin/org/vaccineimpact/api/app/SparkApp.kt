@@ -5,8 +5,7 @@ import org.vaccineimpact.api.app.controllers.ControllerContext
 import org.vaccineimpact.api.app.controllers.HomeController
 import org.vaccineimpact.api.app.controllers.MontaguControllers
 import org.vaccineimpact.api.app.controllers.OneTimeLinkController
-import org.vaccineimpact.api.app.repositories.Repositories
-import org.vaccineimpact.api.app.repositories.makeRepositories
+import org.vaccineimpact.api.app.repositories.RepositoryFactory
 import org.vaccineimpact.api.db.Config
 import org.vaccineimpact.api.security.KeyHelper
 import org.vaccineimpact.api.security.WebTokenHelper
@@ -20,7 +19,7 @@ fun main(args: Array<String>)
 {
     waitForGoSignal()
     val api = MontaguApi()
-    api.run(makeRepositories())
+    api.run(RepositoryFactory())
 }
 
 class MontaguApi
@@ -30,23 +29,25 @@ class MontaguApi
 
     private val logger = LoggerFactory.getLogger(MontaguApi::class.java)
 
-    fun run(repositories: Repositories)
+    fun run(repositoryFactory: RepositoryFactory)
     {
-        val requestLogger = RequestLogger(repositories.accessLogRepository)
-
         setupPort()
         spk.redirect.get("/", urlBase)
         spk.before("*", ::addTrailingSlashes)
         spk.before("*", { _, res ->
             res.header("Access-Control-Allow-Origin", "*")
         })
-        spk.after("*", requestLogger::log)
+        spk.after("*", { req, res ->
+            repositoryFactory.inTransaction { repos ->
+                RequestLogger(repos.accessLogRepository).log(req, res)
+            }
+        })
         spk.options("*", { _, res ->
             res.header("Access-Control-Allow-Headers", "Authorization")
         })
         ErrorHandler.setup()
 
-        val controllerContext = ControllerContext(urlBase, repositories, tokenHelper)
+        val controllerContext = ControllerContext(urlBase, repositoryFactory, tokenHelper)
         val standardControllers = MontaguControllers(controllerContext)
         val oneTimeLink = OneTimeLinkController(controllerContext, standardControllers)
         val endpoints = (standardControllers.all + oneTimeLink).flatMap {

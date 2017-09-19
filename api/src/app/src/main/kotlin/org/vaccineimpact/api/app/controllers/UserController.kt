@@ -8,6 +8,7 @@ import org.vaccineimpact.api.app.controllers.endpoints.secured
 import org.vaccineimpact.api.app.models.CreateUser
 import org.vaccineimpact.api.app.postData
 import org.vaccineimpact.api.app.repositories.Repositories
+import org.vaccineimpact.api.app.repositories.RepositoryFactory
 import org.vaccineimpact.api.app.repositories.UserRepository
 import org.vaccineimpact.api.emails.EmailManager
 import org.vaccineimpact.api.emails.NewUserEmail
@@ -24,9 +25,9 @@ class UserController(
 ) : AbstractController(context)
 {
     override val urlComponent = "/users"
-    override fun endpoints(repos: Repositories): List<Endpoint<*>> = listOf(
-            oneRepoEndpoint("/:username/", this::getUser, repos.user).secured(setOf("*/users.read")),
-            oneRepoEndpoint("/", this::getUsers, repos.user).secured(setOf("*/users.read")),
+    override fun endpoints(repos: RepositoryFactory): List<Endpoint<*>> = listOf(
+            oneRepoEndpoint("/:username/", this::getUser, repos, { it.user }).secured(setOf("*/users.read")),
+            oneRepoEndpoint("/", this::getUsers, repos, { it.user }).secured(setOf("*/users.read")),
             multiRepoEndpoint("/", this::createUser, repos, method = HttpMethod.post).secured(setOf("*/users.create"))
     )
 
@@ -68,17 +69,13 @@ class UserController(
 
     fun createUser(context: ActionContext, repos: Repositories): String
     {
-        repos.user().use { userRepo ->
-            repos.token().use { tokenRepo ->
-                val user = context.postData<CreateUser>()
-                userRepo.addUser(user)
+        val user = context.postData<CreateUser>()
+        repos.user.addUser(user)
 
-                val token = getSetPasswordToken(user.username, context, tokenRepo)
-                emailManager.sendEmail(NewUserEmail(user, token), user)
+        val token = getSetPasswordToken(user.username, context, repos.token)
+        emailManager.sendEmail(NewUserEmail(user, token), user)
 
-                return objectCreation(context, "/${user.username}/")
-            }
-        }
+        return objectCreation(context, "/${user.username}/")
     }
 
     private fun userName(context: ActionContext): String = context.params(":username")
