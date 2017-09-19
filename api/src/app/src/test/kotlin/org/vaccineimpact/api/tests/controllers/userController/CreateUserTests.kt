@@ -81,7 +81,7 @@ class CreateUserTests : UserControllerTests()
     private fun controllerContext(): ControllerContext
     {
         return mockControllerContext(webTokenHelper = mock {
-            on { generateOneTimeActionToken(any(), any(), anyOrNull(), any()) } doReturn fakeToken
+            on { generateOneTimeActionToken(any(), any(), anyOrNull(), any(), any()) } doReturn fakeToken
         })
     }
 }

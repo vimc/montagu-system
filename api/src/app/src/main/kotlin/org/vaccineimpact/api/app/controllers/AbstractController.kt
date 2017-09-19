@@ -42,7 +42,7 @@ abstract class AbstractController(controllerContext: ControllerContext)
         val actionAsString = Serializer.instance.serializeEnum(action)
         val params = context.params()
         val queryString = context.queryString()
-        val token = tokenHelper.generateOneTimeActionToken(actionAsString, params, queryString, duration)
+        val token = tokenHelper.generateOneTimeActionToken(actionAsString, params, queryString, duration, context.username!!)
         repo.storeToken(token)
         return token
     }
@@ -50,7 +50,7 @@ abstract class AbstractController(controllerContext: ControllerContext)
     fun getSetPasswordToken(username: String, context: ActionContext, repo: TokenRepository): String
     {
         val params = mapOf(":username" to username)
-        val contextWithParams = OneTimeLinkActionContext(params, emptyMap(), context)
+        val contextWithParams = OneTimeLinkActionContext(params, emptyMap(), context, username)
         return getOneTimeLinkToken(contextWithParams, repo, OneTimeAction.SET_PASSWORD, duration = Duration.ofDays(1))
     }
 

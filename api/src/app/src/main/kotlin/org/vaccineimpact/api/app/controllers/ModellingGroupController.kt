@@ -47,6 +47,8 @@ open class ModellingGroupController(context: ControllerContext)
                 oneRepoEndpoint("$coverageURL/",               this::getCoverageData, repos, repo, contentType = "text/csv").secured(coveragePermissions),
                 oneRepoEndpoint("$coverageURL/get_onetime_link/", { c, r -> getOneTimeLinkToken(c, r, OneTimeAction.COVERAGE) }, repos, { it.token }).secured(coveragePermissions),
                 oneRepoEndpoint("$scenarioURL/estimates/",     this::addBurdenEstimate, repos, { it.burdenEstimates }, method = HttpMethod.post)
+                        .secured(setOf("$groupScope/estimates.write", "$groupScope/responsibilities.read")),
+                oneRepoEndpoint("$scenarioURL/estimates/get_onetime_link/", { c, r -> getOneTimeLinkToken(c, r, OneTimeAction.BURDENS)}, repos, { it.token})
                         .secured(setOf("$groupScope/estimates.write", "$groupScope/responsibilities.read"))
         )
     }

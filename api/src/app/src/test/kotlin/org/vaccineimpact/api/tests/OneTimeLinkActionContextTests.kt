@@ -13,7 +13,7 @@ class OneTimeLinkActionContextTests : MontaguTests()
     fun `can retrieve parameter from payload with or without colon`()
     {
         val payload = mapOf(":key" to "value")
-        val context = OneTimeLinkActionContext(payload, mapOf(), mock())
+        val context = OneTimeLinkActionContext(payload, mapOf(), mock(), username = "test.user")
 
         assertThat(context.params("key")).isEqualTo("value")
         assertThat(context.params(":key")).isEqualTo("value")
@@ -24,7 +24,7 @@ class OneTimeLinkActionContextTests : MontaguTests()
     fun `can retrieve query params from payload`()
     {
         val queryParams = mapOf("query" to "answer")
-        val context = OneTimeLinkActionContext(mapOf(), queryParams, mock())
+        val context = OneTimeLinkActionContext(mapOf(), queryParams, mock(), username = "test.user")
 
         assertThat(context.queryParams("query")).isEqualTo("answer")
         assertThat(context.queryParams("bad key")).isNull()

@@ -7,12 +7,13 @@ import org.vaccineimpact.api.app.repositories.RepositoryFactory
 
 data class OneTimeLink(val action: OneTimeAction,
                        val payload: Map<String, String>,
-                       val queryParams: Map<String, String>)
+                       val queryParams: Map<String, String>,
+                       val username: String)
 {
     fun perform(controllers: MontaguControllers, actionContext: ActionContext, repositoryFactory: RepositoryFactory): Any
     {
         val callback = getCallback(action, controllers, repositoryFactory)
-        val context = OneTimeLinkActionContext(payload, queryParams, actionContext)
+        val context = OneTimeLinkActionContext(payload, queryParams, actionContext, username)
         return callback.invoke(context)
     }
 
@@ -26,6 +27,7 @@ data class OneTimeLink(val action: OneTimeAction,
             repoFactory.inTransaction { repos ->
                 when (action)
                 {
+                    OneTimeAction.BURDENS -> controllers.modellingGroup.addBurdenEstimate(context, repos.burdenEstimates)
                     OneTimeAction.COVERAGE -> controllers.modellingGroup.getCoverageData(context, repos.modellingGroup)
                     OneTimeAction.DEMOGRAPHY -> controllers.touchstone.getDemographicData(context, repos.touchstone)
                     OneTimeAction.SET_PASSWORD -> controllers.password.setPasswordForUser(context, repos.user, context.params("username"))
@@ -50,7 +52,7 @@ data class OneTimeLink(val action: OneTimeAction,
             val rawPayload = claims["payload"].toString()
             val rawQueryParams = claims["query"]?.toString()
             val payload = parseParams(rawPayload)
-
+            val username = claims["username"].toString()
             val queryParams =
                     if (rawQueryParams == null || rawQueryParams == "")
                     {
@@ -61,7 +63,7 @@ data class OneTimeLink(val action: OneTimeAction,
                         parseParams(rawQueryParams)
                     }
 
-            return OneTimeLink(action, payload, queryParams)
+            return OneTimeLink(action, payload, queryParams, username)
         }
     }
 }
