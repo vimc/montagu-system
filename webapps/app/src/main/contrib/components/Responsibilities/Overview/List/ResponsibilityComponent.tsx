@@ -25,7 +25,7 @@ export class ResponsibilityComponent extends React.Component<Props, undefined> {
         const hasUploadedEstimate = this.props.responsibility.current_estimate_set != null;
         const estimateText = hasUploadedEstimate ?
             `You last uploaded an estimate on ${this.props.responsibility.current_estimate_set.uploaded_on}.`
-            : " You have not uploaded any burden estimate sets.";
+            : "You have not uploaded any burden estimate sets.";
 
         const estimates = <div className={`${commonStyles.gapAbove} ${commonStyles.mr10} ${messageStyles.info}`}>
             {estimateText}</div>;
