@@ -41,6 +41,7 @@ class AbstractControllerTests : ControllerTests<AbstractController>()
         val parameters = mapOf(":a" to "1", ":b" to "2")
         val context = mock<ActionContext> {
             on { params() } doReturn parameters
+            on { username } doReturn "test.user"
         }
         val tokenRepo = mock<TokenRepository>()
         val tokenHelper = tokenHelperThatCanGenerateOnetimeTokens()
@@ -66,12 +67,12 @@ class AbstractControllerTests : ControllerTests<AbstractController>()
                 argThat { this[":username"] == "user" },
                 eq(null),
                 eq(Duration.ofDays(1)),
-                username = "test.user"
+                eq("user")
         )
     }
 
     private fun tokenHelperThatCanGenerateOnetimeTokens() = mock<WebTokenHelper> {
-        on { generateOneTimeActionToken(any(), any(), anyOrNull(), any(), username = "test.user") } doReturn "MY-TOKEN"
+        on { generateOneTimeActionToken(any(), any(), anyOrNull(), any(), any()) } doReturn "MY-TOKEN"
         on { oneTimeLinkLifeSpan } doReturn Duration.ofSeconds(30)
     }
 }
