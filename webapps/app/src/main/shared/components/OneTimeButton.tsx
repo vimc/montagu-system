@@ -2,6 +2,7 @@ import * as React from "react";
 import fetcher from "../sources/Fetcher";
 
 const loaderAnimation = require("../resources/link-loader.gif");
+const buttonStyles = require("../styles/buttons.css");
 
 interface Props {
     token: string

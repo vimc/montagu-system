@@ -1,11 +1,42 @@
 import * as React from "react";
 import { mainStore } from "../../../../stores/MainStore";
-import { ExtendedResponsibility, IExtendedResponsibilitySet } from "../../../../models/ResponsibilitySet";
+import { ExtendedResponsibility } from "../../../../models/ResponsibilitySet";
 import { ButtonLink } from "../../../../../shared/components/ButtonLink";
+import { Link } from "simple-react-router";
 
-interface TemplateLinksProps {
+export interface TemplateLinksProps {
     responsibilities: ExtendedResponsibility[];
-    groupId: String
+    groupId: string
+}
+
+export interface TemplateLinkProps{
+    diseaseId: string;
+    groupId: string;
+}
+
+const buttonStyles = require("../../../../../shared/styles/buttons.css");
+
+export class TemplateLink extends React.Component<TemplateLinkProps, undefined> {
+    render(): JSX.Element {
+
+        const disease = mainStore.getDiseaseById(this.props.diseaseId);
+        const href = `/templates/${this.props.groupId}-${disease.id}.csv`;
+
+        return <Link key={disease.id}
+                           href={href}>{disease.name}</Link>;
+    }
+}
+
+export class TemplateButtonLink extends React.Component<TemplateLinkProps, undefined> {
+    render(): JSX.Element {
+
+        const disease = mainStore.getDiseaseById(this.props.diseaseId);
+        const href = `/templates/burden_template_${disease.id}-${this.props.groupId}.csv`;
+
+        return <ButtonLink key={disease.id}
+                           className={buttonStyles.submit}
+                           href={href}>{disease.name}</ButtonLink>;
+    }
 }
 
 export class TemplateLinks extends React.Component<TemplateLinksProps, undefined> {
@@ -15,9 +46,7 @@ export class TemplateLinks extends React.Component<TemplateLinksProps, undefined
 
         if (diseaseIds.length > 0) {
             const links = diseaseIds
-                .map(id => mainStore.getDiseaseById(id))
-                .map(disease => <ButtonLink key={disease.id}
-                                            href={`/templates/burden_template_${disease.id.trim()}-${this.props.groupId.trim()}.csv`}>{disease.name}</ButtonLink>);
+                .map(id => <TemplateButtonLink diseaseId={id} groupId={this.props.groupId}/>);
 
             return <div>Download burden estimate templates:<br/>
                 {links}

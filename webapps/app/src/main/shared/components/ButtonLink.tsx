@@ -23,7 +23,7 @@ export class ButtonLink extends Link {
             this.props.onClick(event)
         }
 
-        if (event.isDefaultPrevented() || event.isPropagationStopped()) return
+        if (event.isDefaultPrevented() || event.isPropagationStopped()) return;
 
         if (!this.props.externalLink && !event.ctrlKey && !event.metaKey && !event.shiftKey && href.startsWith(location.origin)) {
             event.preventDefault();
@@ -36,6 +36,7 @@ export class ButtonLink extends Link {
         delete props.externalLink;
         props.href = props.href || '';
         props.onClick = this.onClick;
+
         return <button ref="link" {...props}>{props.children}</button>;
     }
 }
