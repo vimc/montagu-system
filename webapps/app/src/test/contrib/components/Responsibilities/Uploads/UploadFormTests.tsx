@@ -1,16 +1,16 @@
 import * as React from "react";
 import { expect } from "chai";
-import { UploadForm } from "../../../../main/contrib/components/Responsibilities/Overview/UploadForm";
+import { UploadForm } from "../../../../../main/contrib/components/Responsibilities/BurdenEstimates/UploadForm";
 import { shallow, ShallowWrapper } from "enzyme";
-import {  mockResponsibility, mockScenario } from "../../../mocks/mockModels";
-import { setupMainStore } from "../../../mocks/mocks";
-import { BurdenEstimateSet } from "../../../../main/shared/models/Generated";
-import { Sandbox } from "../../../Sandbox";
+import {  mockResponsibility, mockScenario } from "../../../../mocks/mockModels";
+import { setupMainStore } from "../../../../mocks/mocks";
+import { BurdenEstimateSet } from "../../../../../main/shared/models/Generated";
+import { Sandbox } from "../../../../Sandbox";
 
 const buttonStyles = require("../../../../main/shared/styles/buttons.css");
 const messageStyles = require("../../../../main/shared/styles/messages.css");
 
-describe('ResponsibilityComponent', () => {
+describe('UploadForm', () => {
     let rendered: ShallowWrapper<any, any>;
     const sandbox = new Sandbox();
 
