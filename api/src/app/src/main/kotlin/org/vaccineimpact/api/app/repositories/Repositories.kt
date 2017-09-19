@@ -1,73 +1,74 @@
 package org.vaccineimpact.api.app.repositories
 
-import org.jooq.Configuration
+import org.jooq.DSLContext
+import org.jooq.exception.DataAccessException
+import org.jooq.impl.DSL
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.vaccineimpact.api.app.repositories.jooq.*
 import org.vaccineimpact.api.db.JooqContext
 
-open class Repositories(
-        open val simpleObjects: () -> SimpleObjectsRepository,
-        open val user: () -> UserRepository,
-        open val token: () -> TokenRepository,
-        open val accessLogRepository: () -> AccessLogRepository,
-        open val modelRepository: () -> ModelRepository,
-        open val touchstone: () -> TouchstoneRepository,
-        open val scenario: () -> ScenarioRepository,
-        open val modellingGroup: () -> ModellingGroupRepository,
-        open val burdenEstimates: () -> BurdenEstimateRepository
-)
-
-fun makeRepositories(): Repositories
+open class RepositoryFactory
 {
-    fun simpleObjects(db: JooqContext, cfg: Configuration) = JooqSimpleObjectsRepository(db, cfg)
-    fun user(db: JooqContext, cfg: Configuration) = JooqUserRepository(db, cfg)
-    fun token(db: JooqContext, cfg: Configuration) = JooqTokenRepository(db, cfg)
-    fun accessLogRepository(db: JooqContext, cfg: Configuration) = JooqAccessLogRepository(db, cfg)
-    fun model(db: JooqContext, cfg: Configuration) = JooqModelRepository(db, cfg)
-    fun scenario(db: JooqContext, cfg: Configuration) = JooqScenarioRepository(db, cfg)
-    fun touchstone(db: JooqContext, cfg: Configuration) = JooqTouchstoneRepository(db, scenario(db, cfg), cfg)
-    fun modellingGroup(db: JooqContext, cfg: Configuration) = JooqModellingGroupRepository(
-            db,
-            touchstone(db, cfg),
-            scenario(db, cfg),
-            cfg
-    )
-    fun burdenEstimates(db: JooqContext, cfg: Configuration) = JooqBurdenEstimateRepository(
-            db,
-            scenario(db, cfg),
-            touchstone(db, cfg),
-            modellingGroup(db, cfg),
-            cfg
-    )
+    private val logger: Logger = LoggerFactory.getLogger(javaClass)
 
-    return Repositories(
-            wrapRepository(::simpleObjects),
-            wrapRepository(::user),
-            wrapRepository(::token),
-            wrapRepository(::accessLogRepository),
-            wrapRepository(::model),
-            wrapRepository(::touchstone),
-            wrapRepository(::scenario),
-            wrapRepository(::modellingGroup),
-            wrapRepository(::burdenEstimates)
-    )
+    open fun <T> inTransaction(work: (Repositories) -> T): T
+    {
+        var result: T? = null
+        JooqContext().use { db ->
+            try
+            {
+                db.dsl.transaction { config ->
+                    val dsl = DSL.using(config)
+                    result = work(Repositories(dsl))
+                }
+            }
+            catch (e: DataAccessException)
+            {
+                // We don't want our custom exceptions getting wrapped in a
+                // Jooq rollback warning, so we rethrow the cause
+                if (e.message == "Rollback caused")
+                {
+                    logger.info("Rollback caused by: ${e.cause}")
+                    throw e.cause ?: e
+                }
+                else
+                {
+                    throw e
+                }
+            }
+        }
+        return result!!
+    }
 }
 
-/** Given that we have a repository 'factory' - a function that constructs a repository
- * using a JooqContext - this gives us a new, parameter-less function.
- * Every time this new function is invoked, a new instance of the repository is returned
- * with a new JooqContext instance.
- * It is up to the consumer of the repository to close the repository (and thus the
- * JooqContext
- */
-private fun <T : Repository> wrapRepository(factory: (JooqContext, Configuration) -> T): () -> T
+open class Repositories(val dsl: DSLContext)
 {
-    return {
-        val db = JooqContext()
-        var result: T? = null
-        db.dsl.transaction { config ->
-            result = factory(db, config)
-            //Implicitly committed, unless an exception is thrown
-        }
-        result!!
+    open val simpleObjects: SimpleObjectsRepository by lazy {
+        JooqSimpleObjectsRepository(dsl)
+    }
+    open val user: UserRepository by lazy {
+        JooqUserRepository(dsl)
+    }
+    open val token: TokenRepository by lazy {
+        JooqTokenRepository(dsl)
+    }
+    open val accessLogRepository: AccessLogRepository by lazy {
+        JooqAccessLogRepository(dsl)
+    }
+    open val modelRepository: ModelRepository by lazy {
+        JooqModelRepository(dsl)
+    }
+    open val touchstone: TouchstoneRepository by lazy {
+        JooqTouchstoneRepository(dsl, scenario)
+    }
+    open val scenario: ScenarioRepository by lazy {
+        JooqScenarioRepository(dsl)
+    }
+    open val modellingGroup: ModellingGroupRepository by lazy {
+        JooqModellingGroupRepository(dsl, touchstone, scenario)
+    }
+    open val burdenEstimates: BurdenEstimateRepository by lazy {
+        JooqBurdenEstimateRepository(dsl, scenario, touchstone, modellingGroup)
     }
 }

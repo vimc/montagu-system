@@ -1,11 +1,10 @@
 package org.vaccineimpact.api.app.repositories.jooq
 
-import org.jooq.Configuration
+import org.jooq.DSLContext
 import org.jooq.Record
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.models.CreateUser
 import org.vaccineimpact.api.app.repositories.UserRepository
-import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.Tables.*
 import org.vaccineimpact.api.db.fromJoinPath
 import org.vaccineimpact.api.db.tables.records.AppUserRecord
@@ -20,10 +19,7 @@ import org.vaccineimpact.api.security.UserProperties
 import java.sql.Timestamp
 import java.time.Instant
 
-class JooqUserRepository(
-        db: JooqContext,
-        config: Configuration? = null
-) : JooqRepository(db, config), UserRepository
+class JooqUserRepository(dsl: DSLContext): JooqRepository(dsl), UserRepository
 {
     override fun updateLastLoggedIn(username: String)
     {

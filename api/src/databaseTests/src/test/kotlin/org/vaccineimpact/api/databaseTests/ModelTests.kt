@@ -52,5 +52,5 @@ class ModelTests : RepositoryTests<ModelRepository>()
         }
     }
 
-    override fun makeRepository(db: JooqContext) = JooqModelRepository(db)
+    override fun makeRepository(db: JooqContext) = JooqModelRepository(db.dsl)
 }

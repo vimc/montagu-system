@@ -20,11 +20,8 @@ import org.vaccineimpact.api.db.tables.records.TouchstoneRecord
 import org.vaccineimpact.api.models.*
 import java.math.BigDecimal
 
-class JooqTouchstoneRepository(
-        db: JooqContext,
-        private val scenarioRepository: ScenarioRepository,
-        config: Configuration? = null
-) : JooqRepository(db, config), TouchstoneRepository
+class JooqTouchstoneRepository(dsl: DSLContext, private val scenarioRepository: ScenarioRepository)
+    : JooqRepository(dsl), TouchstoneRepository
 {
     override fun getDemographicDataset(statisticTypeCode: String,
                                        source: String,

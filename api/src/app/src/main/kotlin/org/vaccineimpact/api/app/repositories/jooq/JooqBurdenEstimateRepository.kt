@@ -1,6 +1,6 @@
 package org.vaccineimpact.api.app.repositories.jooq
 
-import org.jooq.Configuration
+import org.jooq.DSLContext
 import org.vaccineimpact.api.app.errors.DatabaseContentsError
 import org.vaccineimpact.api.app.errors.InconsistentDataError
 import org.vaccineimpact.api.app.errors.UnknownObjectError
@@ -8,7 +8,6 @@ import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
 import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.ScenarioRepository
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
-import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.Tables.*
 import org.vaccineimpact.api.db.fromJoinPath
 import org.vaccineimpact.api.db.joinPath
@@ -24,12 +23,11 @@ private data class ResponsibilityInfo
 constructor(val id: Int, val disease: String)
 
 class JooqBurdenEstimateRepository(
-        db: JooqContext,
+        dsl: DSLContext,
         private val scenarioRepository: ScenarioRepository,
         override val touchstoneRepository: TouchstoneRepository,
-        private val modellingGroupRepository: ModellingGroupRepository,
-        config: Configuration? = null
-) : JooqRepository(db, config), BurdenEstimateRepository
+        private val modellingGroupRepository: ModellingGroupRepository
+) : JooqRepository(dsl), BurdenEstimateRepository
 {
     override fun addBurdenEstimateSet(groupId: String, touchstoneId: String, scenarioId: String,
                                       estimates: List<BurdenEstimate>, uploader: String, timestamp: Instant): Int

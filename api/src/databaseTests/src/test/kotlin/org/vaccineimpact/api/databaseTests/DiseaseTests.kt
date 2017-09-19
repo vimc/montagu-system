@@ -48,5 +48,5 @@ class DiseaseTests : RepositoryTests<SimpleObjectsRepository>()
         }
     }
 
-    override fun makeRepository(db: JooqContext) = JooqSimpleObjectsRepository(db)
+    override fun makeRepository(db: JooqContext) = JooqSimpleObjectsRepository(db.dsl)
 }

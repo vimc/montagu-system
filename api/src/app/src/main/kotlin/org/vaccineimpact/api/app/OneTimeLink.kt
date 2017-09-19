@@ -3,15 +3,15 @@ package org.vaccineimpact.api.app
 import org.vaccineimpact.api.Deserializer
 import org.vaccineimpact.api.OneTimeAction
 import org.vaccineimpact.api.app.controllers.MontaguControllers
-import org.vaccineimpact.api.app.repositories.Repositories
+import org.vaccineimpact.api.app.repositories.RepositoryFactory
 
 data class OneTimeLink(val action: OneTimeAction,
                        val payload: Map<String, String>,
                        val queryParams: Map<String, String>)
 {
-    fun perform(controllers: MontaguControllers, actionContext: ActionContext, repos: Repositories): Any
+    fun perform(controllers: MontaguControllers, actionContext: ActionContext, repositoryFactory: RepositoryFactory): Any
     {
-        val callback = getCallback(action, controllers, repos)
+        val callback = getCallback(action, controllers, repositoryFactory)
         val context = OneTimeLinkActionContext(payload, queryParams, actionContext)
         return callback.invoke(context)
     }
@@ -19,24 +19,16 @@ data class OneTimeLink(val action: OneTimeAction,
     private fun getCallback(
             action: OneTimeAction,
             controllers: MontaguControllers,
-            repos: Repositories
+            repoFactory: RepositoryFactory
     ): (ActionContext) -> Any
     {
-        return when (action)
-        {
-            OneTimeAction.COVERAGE -> { context ->
-                repos.modellingGroup().use {
-                    controllers.modellingGroup.getCoverageData(context, it)
-                }
-            }
-            OneTimeAction.DEMOGRAPHY -> { context ->
-                repos.touchstone().use {
-                    controllers.touchstone.getDemographicData(context, it)
-                }
-            }
-            OneTimeAction.SET_PASSWORD -> { context ->
-                repos.user().use {
-                    controllers.password.setPasswordForUser(context, it, context.params("username"))
+        return { context ->
+            repoFactory.inTransaction { repos ->
+                when (action)
+                {
+                    OneTimeAction.COVERAGE -> controllers.modellingGroup.getCoverageData(context, repos.modellingGroup)
+                    OneTimeAction.DEMOGRAPHY -> controllers.touchstone.getDemographicData(context, repos.touchstone)
+                    OneTimeAction.SET_PASSWORD -> controllers.password.setPasswordForUser(context, repos.user, context.params("username"))
                 }
             }
         }

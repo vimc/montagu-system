@@ -9,6 +9,7 @@ import org.vaccineimpact.api.app.controllers.ControllerContext
 import org.vaccineimpact.api.app.controllers.UserController
 import org.vaccineimpact.api.app.models.CreateUser
 import org.vaccineimpact.api.app.repositories.Repositories
+import org.vaccineimpact.api.app.repositories.TokenRepository
 import org.vaccineimpact.api.app.repositories.UserRepository
 import org.vaccineimpact.api.emails.EmailManager
 import org.vaccineimpact.api.emails.NewUserEmail
@@ -59,8 +60,8 @@ class CreateUserTests : UserControllerTests()
     private fun makeRepos(userRepo: UserRepository = mock()): Repositories
     {
         return mock {
-            on { user } doReturn { userRepo }
-            on { token } doReturn { mock() }
+            on { user } doReturn userRepo
+            on { token } doReturn mock<TokenRepository>()
         }
     }
 

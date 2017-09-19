@@ -1,13 +1,14 @@
 package org.vaccineimpact.api.app.repositories.jooq
 
 import org.jooq.Configuration
+import org.jooq.DSLContext
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.repositories.ModelRepository
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.Tables.MODEL
 import org.vaccineimpact.api.models.Model
 
-class JooqModelRepository(db: JooqContext, config: Configuration? = null) : JooqRepository(db, config), ModelRepository
+class JooqModelRepository(dsl: DSLContext) : JooqRepository(dsl), ModelRepository
 {
     override fun all(): List<Model>
     {

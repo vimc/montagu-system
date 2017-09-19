@@ -7,7 +7,7 @@ import spark.Request
 import spark.Response
 import java.time.Instant
 
-class RequestLogger(val accessLogRepository: () -> AccessLogRepository)
+class RequestLogger(private val accessLogRepository: AccessLogRepository)
 {
     fun log(req: Request, res: Response)
     {
@@ -16,9 +16,7 @@ class RequestLogger(val accessLogRepository: () -> AccessLogRepository)
         val resource = req.pathInfo()
         val statusCode = res.status()
         val ip = req.ip()
-        accessLogRepository().use {
-            it.log(principal, timestamp, resource, statusCode, ip)
-        }
+        accessLogRepository.log(principal, timestamp, resource, statusCode, ip)
     }
     fun log(context: SparkWebContext)
     {

@@ -29,10 +29,10 @@ class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRepository>(
 
     override fun makeRepository(db: JooqContext): BurdenEstimateRepository
     {
-        val scenario = JooqScenarioRepository(db)
-        val touchstone = JooqTouchstoneRepository(db, scenario)
-        val modellingGroup = JooqModellingGroupRepository(db, touchstone, scenario)
-        return JooqBurdenEstimateRepository(db, scenario, touchstone, modellingGroup)
+        val scenario = JooqScenarioRepository(db.dsl)
+        val touchstone = JooqTouchstoneRepository(db.dsl, scenario)
+        val modellingGroup = JooqModellingGroupRepository(db.dsl, touchstone, scenario)
+        return JooqBurdenEstimateRepository(db.dsl, scenario, touchstone, modellingGroup)
     }
 
     private val scenarioId = "scenario-1"

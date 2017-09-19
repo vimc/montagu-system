@@ -1,12 +1,11 @@
 package org.vaccineimpact.api.app.repositories.jooq
 
-import org.jooq.Configuration
+import org.jooq.DSLContext
 import org.vaccineimpact.api.app.repositories.TokenRepository
-import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.Tables.ONETIME_TOKEN
 import org.vaccineimpact.api.models.HasKey
 
-class JooqTokenRepository(db: JooqContext, config: Configuration? = null) : JooqRepository(db, config), TokenRepository
+class JooqTokenRepository(dsl: DSLContext) : JooqRepository(dsl), TokenRepository
 {
     data class OneTimeToken(override val id: String) : HasKey<String>
 
