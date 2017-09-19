@@ -993,10 +993,11 @@ An error occurs (and no changes are made) if:
 * The coverage set is `campaign` and the scenario is `routine`. (All other combinations are acceptable)
 
 # Burden estimates
-## GET /touchstone/{touchstone-id}/estimates/
-Returns all burden estimates that have been uploaded for this touchstone.
+## GET /modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}/{scenario-id}/estimates/
+Returns metadata for all burden estimates that have been uploaded for this 
+responsibility.
 
-Required permissions: `estimates.read`, `scenarios.read`, `modelling-groups.read`. If the estimates belong to a touchstone that is `open` then they are only returned if the user has `estimates.read-unfinished` scoped to the uploading modelling group (or to the more permissive * scope)
+Required permissions: Scoped to modelling group: `estimates.read`, `responsibilities.read`. If the estimates belong to a touchstone that is `open` then they are only returned if the user has `estimates.read-unfinished` (again scoped to the modelling group)
 
 Schema: [`BurdenEstimates.schema.json`](BurdenEstimates.schema.json)
 
@@ -1027,19 +1028,17 @@ Filter by scenario. e.g. GET /touchstone/2017-op-1/estimates/?scenario=menA-nova
 #### responsible_group
 Filter by responsible group. e.g. GET /touchstone/2017-op-1/estimates/?responsible_group=IC-YellowFever
 
-## GET /touchstone/{touchstone-id}/estimates/{estimate-id}/
+## GET /modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}/{scenario-id}/estimates/{estimate-id}/
 Returns the full burden estimate data.
 
-If the touchstone is `open` then users without appropriate admin permissions can only 
-see estimates that their modelling group has uploaded. If the touchstone is `finished` 
-then all users can see all estimates. There should not be any estimates if
-the touchstone is `in-preparation`.
+Required permissions: Scoped to modelling group: `estimates.read`, `responsibilities.read`. If the estimates belong to a touchstone that is `open` then they are only returned if the user has `estimates.read-unfinished` (again scoped to the modelling group)
 
-Required permissions: `estimates.read`, `scenarios.read`, `modelling-groups.read`. If the estimate belongs to a touchstone that is `open` then it are only returned if the user has `estimates.read-unfinished` scoped to the uploading modelling group (or to the more permissive * scope)
+If the client sends an Accept header of `application/json` then it returns 
+multipart data with two sections, separated by a line of three dashes. The first
+section is JSON metadata; the second section is CSV data. If the client sends
+an Accept header of `text/csv` only the CSV data is returned.
 
-Returns HTTP multipart data with two sections. The first section has `Content-Type: application/json`
-and conforms to this schema.
-
+### JSON metadata
 Schema: [`BurdenEstimateSet.schema.json`](BurdenEstimateSet.schema.json)
 
 ### Example
@@ -1060,44 +1059,37 @@ Schema: [`BurdenEstimateSet.schema.json`](BurdenEstimateSet.schema.json)
         "problems": []
     }
 
-The second section has `Content-Type: text/csv`, and returns CSV data with headers:
+### CSV data
+The last four columns will vary based on which outcomes are present in the 
+database. There may be more or fewer columns.
 
-    "country","year","deaths","cases","dalys"
-        "AFG",  1996,    1000,   2000,    NA
-        "AFG",  1997,     900,   2000,    NA
-        "AGO",  1996,    1000,     NA,  5670
-        "AGO",  1997,    1200,     NA,  5870
+    "disease", "year", "age", "country", "country_name", "cohort_size", "deaths", "cases", "dalys"
+       "Hib3",   1996,    50,     "AFG",  "Afghanistan",         10000,     1000,    2000,      NA
+       "Hib3",   1997,    50,     "AFG",  "Afghanistan",         10500,      900,    2000,      NA
+       "Hib3",   1996,    50,     "AGO",       "Angola",          5000,     1000,      NA,    5670
+       "Hib3",   1997,    50,     "AGO",       "Angola",          6000,     1200,      NA,    5870
 
-## POST /touchstone/{touchstone-id}/estimates/
+## POST /modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}/{scenario-id}/estimates/
 Adds a new burden estimate.
 
 Can only by invoked if:
 
 * The touchstone is `open`
-* The modelling group is responsible for the given scenario in the touchstone
 * The relevant responsibility set is `incomplete`
 
-Required permissions: `estimates.write`, scoped to the responsible group (or the more permissive * scope)
+Required permissions: Scoped to modelling group: `estimates.write`, `responsibilities.read`.
 
-Takes HTTP multipart data with two sections. The first section must have
-`Content-Type: application/json` and must conform to this schema.
+Takes CSV data in the following format. Note that the last four columns are
+based on which outcomes you wish to upload values for. More or fewer columns
+are allowed so long as all the outcome columns correspond to allowed burden
+outcomes in the database.
 
-Schema: [`CreateBurdenEstimate.schema.json`](CreateBurdenEstimate.schema.json)
-
-### Example
-    {
-        "scenario_id": "menA-novacc",
-        "responsible_group": "IC-YellowFever"
-    }
-
-The second section must have `Content-Type: text\csv` and requires CSV data with headers:
-
-    "country","year","deaths","cases","dalys"
-        "AFG",  1996,    1000,   2000,    NA
-        "AFG",  1997,     900,   2000,    NA
-        "AGO",  1996,    1000,     NA,  5670
-        "AGO",  1997,    1200,     NA,  5870
-
+    "disease", "year", "age", "country", "country_name", "cohort_size", "deaths", "cases", "dalys"
+       "Hib3",   1996,    50,     "AFG",  "Afghanistan",         10000,     1000,    2000,      NA
+       "Hib3",   1997,    50,     "AFG",  "Afghanistan",         10500,      900,    2000,      NA
+       "Hib3",   1996,    50,     "AGO",       "Angola",          5000,     1000,      NA,    5670
+       "Hib3",   1997,    50,     "AGO",       "Angola",          6000,     1200,      NA,    5870
+       
 # Modelling groups
 ## GET /modelling-groups/
 Returns an enumeration of all modelling groups.
@@ -1542,104 +1534,6 @@ The coverage sets are de-normalized and merged into this single table. You can
 identify which coverage set a line is from using `scenario` plus `vaccine`, 
 `gavi_support` and `activity_type`. Note that we don't expect the modellers to
 need to know which coverage set the data is from.
-
-# Burden estimates
-## GET /modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}/{scenario-id}/estimates/
-Returns metadata for all burden estimates that have been uploaded for this 
-responsibility.
-
-Required permissions: Scoped to modelling group: `estimates.read`, `responsibilities.read`. If the estimates belong to a touchstone that is `open` then they are only returned if the user has `estimates.read-unfinished` (again scoped to the modelling group)
-
-Schema: [`BurdenEstimates.schema.json`](BurdenEstimates.schema.json)
-
-### Example
-    [
-        {
-            "id": 1,
-            "scenario": {
-                "id": "menA-novacc",
-                "touchstones": [ "2016-op-1", "2017-wuenic-1", "2017-op-1" ],
-                "description": "Menigitis A, No vaccination",
-                "disease": "MenA"
-            },
-            "responsible_group": {
-                "id": "IC-YellowFever",
-                "description": "Imperial College, Yellow Fever, PI: Tini Garske"
-            },
-            "uploaded_by": "tgarske",
-            "uploaded_on": "2017-10-06T11:18:06Z",
-            "problems": []
-        }
-    ]
-
-### Query parameters
-#### scenario
-Filter by scenario. e.g. GET /touchstone/2017-op-1/estimates/?scenario=menA-novacc
-
-#### responsible_group
-Filter by responsible group. e.g. GET /touchstone/2017-op-1/estimates/?responsible_group=IC-YellowFever
-
-## GET /modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}/{scenario-id}/estimates/{estimate-id}/
-Returns the full burden estimate data.
-
-Required permissions: Scoped to modelling group: `estimates.read`, `responsibilities.read`. If the estimates belong to a touchstone that is `open` then they are only returned if the user has `estimates.read-unfinished` (again scoped to the modelling group)
-
-If the client sends an Accept header of `application/json` then it returns 
-multipart data with two sections, separated by a line of three dashes. The first
-section is JSON metadata; the second section is CSV data. If the client sends
-an Accept header of `text/csv` only the CSV data is returned.
-
-### JSON metadata
-Schema: [`BurdenEstimateSet.schema.json`](BurdenEstimateSet.schema.json)
-
-### Example
-    {
-        "id": 1,
-        "scenario": {
-            "id": "menA-novacc",
-            "touchstones": [ "2016-op-1", "2017-wuenic-1", "2017-op-1" ],
-            "description": "Menigitis A, No vaccination",
-            "disease": "MenA"
-        },
-        "responsible_group": {
-            "id": "IC-YellowFever",
-            "description": "Imperial College, Yellow Fever, PI: Tini Garske"
-        },
-        "uploaded_by": "tgarske",
-        "uploaded_on": "2017-10-06T11:18:06Z",
-        "problems": []
-    }
-
-### CSV data
-The last four columns will vary based on which outcomes are present in the 
-database. There may be more or fewer columns.
-
-    "disease", "year", "age", "country", "country_name", "cohort_size", "deaths", "cases", "dalys"
-       "Hib3",   1996,    50,     "AFG",  "Afghanistan",         10000,     1000,    2000,      NA
-       "Hib3",   1997,    50,     "AFG",  "Afghanistan",         10500,      900,    2000,      NA
-       "Hib3",   1996,    50,     "AGO",       "Angola",          5000,     1000,      NA,    5670
-       "Hib3",   1997,    50,     "AGO",       "Angola",          6000,     1200,      NA,    5870
-
-## POST /modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}/{scenario-id}/estimates/
-Adds a new burden estimate.
-
-Can only by invoked if:
-
-* The touchstone is `open`
-* The relevant responsibility set is `incomplete`
-
-Required permissions: Scoped to modelling group: `estimates.write`, `responsibilities.read`.
-
-Takes CSV data in the following format. Note that the last four columns are
-based on which outcomes you wish to upload values for. More or fewer columns
-are allowed so long as all the outcome columns correspond to allowed burden
-outcomes in the database.
-
-    "disease", "year", "age", "country", "country_name", "cohort_size", "deaths", "cases", "dalys"
-       "Hib3",   1996,    50,     "AFG",  "Afghanistan",         10000,     1000,    2000,      NA
-       "Hib3",   1997,    50,     "AFG",  "Afghanistan",         10500,      900,    2000,      NA
-       "Hib3",   1996,    50,     "AGO",       "Angola",          5000,     1000,      NA,    5670
-       "Hib3",   1997,    50,     "AGO",       "Angola",          6000,     1200,      NA,    5870
 
 ### Onetime Link
 A client may make a GET request to 
