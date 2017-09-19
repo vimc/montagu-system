@@ -3,7 +3,8 @@ package org.vaccineimpact.api.app
 class OneTimeLinkActionContext(
         private val payload: Map<String, String>,
         private val queryParams: Map<String, String>,
-        context: ActionContext
+        context: ActionContext,
+        username: String
 ) : ActionContext by context
 {
     override fun params() = payload
@@ -23,4 +24,5 @@ class OneTimeLinkActionContext(
         return queryParams[key]
     }
 
+    override val username: String? = username
 }
