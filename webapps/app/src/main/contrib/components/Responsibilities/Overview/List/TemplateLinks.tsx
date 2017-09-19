@@ -31,7 +31,7 @@ export class TemplateButtonLink extends React.Component<TemplateLinkProps, undef
     render(): JSX.Element {
 
         const disease = mainStore.getDiseaseById(this.props.diseaseId);
-        const href = `/templates/${this.props.groupId}-${disease.id}.csv`;
+        const href = `/templates/burden_template_${disease.id}-${this.props.groupId}.csv`;
 
         return <ButtonLink key={disease.id}
                            className={buttonStyles.submit}
@@ -48,8 +48,7 @@ export class TemplateLinks extends React.Component<TemplateLinksProps, undefined
             const links = diseaseIds
                 .map(id => <TemplateButtonLink diseaseId={id} groupId={this.props.groupId}/>);
 
-            return <div>
-                Download burden estimate templates:<br/>
+            return <div>Download burden estimate templates:<br/>
                 {links}
             </div>;
         } else {
