@@ -7,8 +7,8 @@ import { setupMainStore } from "../../../../mocks/mocks";
 import { BurdenEstimateSet } from "../../../../../main/shared/models/Generated";
 import { Sandbox } from "../../../../Sandbox";
 
-const buttonStyles = require("../../../../main/shared/styles/buttons.css");
-const messageStyles = require("../../../../main/shared/styles/messages.css");
+const buttonStyles = require("../../../../../main/shared/styles/buttons.css");
+const messageStyles = require("../../../../../main/shared/styles/messages.css");
 
 describe('UploadForm', () => {
     let rendered: ShallowWrapper<any, any>;
