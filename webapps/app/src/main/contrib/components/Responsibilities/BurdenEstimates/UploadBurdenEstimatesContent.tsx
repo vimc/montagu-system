@@ -4,7 +4,7 @@ import { ModellingGroup, Responsibility, Scenario, Touchstone } from "../../../.
 import { RemoteContent } from "../../../../shared/models/RemoteContent";
 import { RemoteContentComponent } from "../../../../shared/components/RemoteContentComponent/RemoteContentComponent";
 import { responsibilityStore } from "../../../stores/ResponsibilityStore";
-import { UploadForm } from "../Overview/UploadForm";
+import { UploadForm } from "./UploadForm";
 import { TemplateLink } from "../Overview/List/TemplateLinks";
 
 const commonStyles = require("../../../../shared/styles/common.css");
