@@ -1,6 +1,6 @@
-import { coverageTokenActions } from "../actions/CoverageActions";
 import { CoverageSource } from "./CoverageSource";
 import SourceModel = AltJS.SourceModel;
+import { estimateTokenActions } from "../actions/EstimateActions";
 
 export class EstimatesTokenSource extends CoverageSource {
     fetchOneTimeEstimatesToken: () => SourceModel<string>;
@@ -10,8 +10,8 @@ export class EstimatesTokenSource extends CoverageSource {
         this.fetchOneTimeEstimatesToken = () => this.doFetch(state => {
             return this.baseURL(state) + "/estimates/get_onetime_link/";
         }, {
-            success: coverageTokenActions.update,
-            loading: coverageTokenActions.beginFetch,
+            success: estimateTokenActions.update,
+            loading: estimateTokenActions.beginFetch,
             isCached: () => false   // Always get a fresh token
         });
     }

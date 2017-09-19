@@ -31,7 +31,7 @@ export class UploadBurdenEstimatesContentComponent extends RemoteContentComponen
         const state = responsibilityStore.getState();
         const r = state.currentResponsibility;
 
-        if (r != null) {
+        if (r != null && state.estimatesOneTimeToken != null) {
             return {
                 ready: state.ready,
                 props: {
@@ -49,13 +49,6 @@ export class UploadBurdenEstimatesContentComponent extends RemoteContentComponen
                 props: null
             };
         }
-    }
-
-    refreshToken() {
-        setTimeout(function () {
-            estimateTokenActions.clearUsedToken();
-            responsibilityStore.fetchOneTimeEstimatesToken();
-        });
     }
 
     renderContent(props: UploadBurdenEstimatesContentComponentProps) {
