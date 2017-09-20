@@ -21,7 +21,7 @@ fun JooqContext.addGroup(id: String, description: String = id, current: String? 
     this.dsl.newRecord(MODELLING_GROUP).apply {
         this.id = id
         this.description = description
-        this.current = current
+        this.replacedBy = current
         this.institution = "Some institution"
         this.pi = "Some PI"
     }.store()
@@ -30,9 +30,10 @@ fun JooqContext.addGroup(id: String, description: String = id, current: String? 
 fun JooqContext.addModel(
         id: String,
         groupId: String,
+        diseaseId: String,
         description: String = id,
         citation: String = "Unknown citation",
-        current: String? = null,
+        isCurrent: Boolean = true,
         versions: List<String> = emptyList()
 )
 {
@@ -41,11 +42,14 @@ fun JooqContext.addModel(
         this.modellingGroup = groupId
         this.description = description
         this.citation = citation
-        this.current = current
+        this.currentVersion = null
+        this.isCurrent = isCurrent
+        this.disease = diseaseId
     }.store()
+
     for (version in versions)
     {
-        addModelVersion(id, version)
+        addModelVersion(id, version, setCurrent = true)
     }
 }
 
@@ -53,7 +57,8 @@ fun JooqContext.addModelVersion(
     modelId: String,
     version: String,
     note: String = "Some note",
-    fingerprint: String = "Some fingerprint"
+    fingerprint: String = "Some fingerprint",
+    setCurrent: Boolean = false
 ): Int
 {
     val record = this.dsl.newRecord(MODEL_VERSION).apply {
@@ -63,6 +68,15 @@ fun JooqContext.addModelVersion(
         this.fingerprint = fingerprint
     }
     record.store()
+
+    if (setCurrent)
+    {
+        this.dsl.update(MODEL)
+                .set(MODEL.CURRENT_VERSION, record.id)
+                .where(MODEL.ID.eq(modelId))
+                .execute()
+    }
+
     return record.id
 }
 

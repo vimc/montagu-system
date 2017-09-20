@@ -4,6 +4,7 @@ import com.beust.klaxon.json
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.vaccineimpact.api.blackboxTests.helpers.validate
+import org.vaccineimpact.api.db.direct.addDisease
 import org.vaccineimpact.api.db.direct.addGroup
 import org.vaccineimpact.api.db.direct.addModel
 import org.vaccineimpact.api.db.direct.addUserWithRoles
@@ -35,8 +36,10 @@ class ModellingGroupTests : DatabaseTest()
     {
         validate("/modelling-groups/group/") against "ModellingGroupDetails" given {
             it.addGroup("group", "group description")
-            it.addModel("a", "group", "description A", "citation A")
-            it.addModel("b", "group", "description B", "citation B")
+            it.addDisease("d1")
+            it.addDisease("d2")
+            it.addModel("a", "group", "d1", "description A", "citation A")
+            it.addModel("b", "group", "d2", "description B", "citation B")
             it.addUserWithRoles("group.admin", ReifiedRole("member", Scope.Specific("modelling-group", "group")))
         } requiringPermissions {
             PermissionSet("*/modelling-groups.read", "*/models.read")

@@ -4,6 +4,7 @@ import com.beust.klaxon.json
 import org.assertj.core.api.Assertions
 import org.junit.Test
 import org.vaccineimpact.api.blackboxTests.helpers.validate
+import org.vaccineimpact.api.db.direct.addDisease
 import org.vaccineimpact.api.db.direct.addGroup
 import org.vaccineimpact.api.db.direct.addModel
 import org.vaccineimpact.api.models.permissions.PermissionSet
@@ -16,8 +17,9 @@ class ModelTests : DatabaseTest()
     {
         validate("/models/") against "Models" given {
             it.addGroup("groupId")
-            it.addModel("modelId", "groupId", "description1")
-            it.addModel("modelId2", "groupId")
+            it.addDisease("d1")
+            it.addModel("modelId", "groupId", "d1", "description1")
+            it.addModel("modelId2", "groupId", "d1", isCurrent = false)
         } requiringPermissions {
             PermissionSet("*/models.read")
         } andCheckArray {
@@ -36,8 +38,9 @@ class ModelTests : DatabaseTest()
     {
         validate("/models/modelId/") against "Model" given {
             it.addGroup("groupId")
-            it.addModel("modelId", "groupId", "description1")
-            it.addModel("modelId2", "groupId")
+            it.addDisease("d1")
+            it.addModel("modelId", "groupId", "d1", "description1")
+            it.addModel("modelId2", "groupId", "d1", isCurrent = false)
         } requiringPermissions {
             PermissionSet("*/models.read")
         } andCheck {

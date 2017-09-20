@@ -39,7 +39,7 @@ import org.vaccineimpact.api.db.tables.records.ModellingGroupRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ModellingGroup extends TableImpl<ModellingGroupRecord> {
 
-    private static final long serialVersionUID = 13276662;
+    private static final long serialVersionUID = -948035773;
 
     /**
      * The reference instance of <code>public.modelling_group</code>
@@ -80,9 +80,9 @@ public class ModellingGroup extends TableImpl<ModellingGroupRecord> {
     public final TableField<ModellingGroupRecord, String> COMMENT = createField("comment", org.jooq.impl.SQLDataType.CLOB, this, "");
 
     /**
-     * The column <code>public.modelling_group.current</code>.
+     * The column <code>public.modelling_group.replaced_by</code>.
      */
-    public final TableField<ModellingGroupRecord, String> CURRENT = createField("current", org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<ModellingGroupRecord, String> REPLACED_BY = createField("replaced_by", org.jooq.impl.SQLDataType.CLOB, this, "");
 
     /**
      * Create a <code>public.modelling_group</code> table reference
