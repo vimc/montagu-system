@@ -17,7 +17,7 @@ sealed class Groups
         {
             return db.dsl.select(MODELLING_GROUP.ID)
                     .from(MODELLING_GROUP)
-                    .where(MODELLING_GROUP.CURRENT.isNull)
+                    .where(MODELLING_GROUP.REPLACED_BY.isNull)
                     .fetch()
                     .map { it[MODELLING_GROUP.ID] }
         }
