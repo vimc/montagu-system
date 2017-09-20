@@ -35,7 +35,7 @@ import org.vaccineimpact.api.db.tables.records.ModelRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Model extends TableImpl<ModelRecord> {
 
-    private static final long serialVersionUID = -1536394646;
+    private static final long serialVersionUID = 948014422;
 
     /**
      * The reference instance of <code>public.model</code>
@@ -71,9 +71,19 @@ public class Model extends TableImpl<ModelRecord> {
     public final TableField<ModelRecord, String> CITATION = createField("citation", org.jooq.impl.SQLDataType.CLOB, this, "");
 
     /**
-     * The column <code>public.model.current</code>.
+     * The column <code>public.model.is_current</code>.
      */
-    public final TableField<ModelRecord, String> CURRENT = createField("current", org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<ModelRecord, Boolean> IS_CURRENT = createField("is_current", org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaultValue(org.jooq.impl.DSL.field("false", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
+
+    /**
+     * The column <code>public.model.current_version</code>.
+     */
+    public final TableField<ModelRecord, Integer> CURRENT_VERSION = createField("current_version", org.jooq.impl.SQLDataType.INTEGER, this, "");
+
+    /**
+     * The column <code>public.model.disease</code>.
+     */
+    public final TableField<ModelRecord, String> DISEASE = createField("disease", org.jooq.impl.SQLDataType.CLOB, this, "");
 
     /**
      * Create a <code>public.model</code> table reference
@@ -126,7 +136,7 @@ public class Model extends TableImpl<ModelRecord> {
      */
     @Override
     public List<ForeignKey<ModelRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<ModelRecord, ?>>asList(Keys.MODEL__MODEL_MODELLING_GROUP_FKEY, Keys.MODEL__MODEL_CURRENT_FKEY);
+        return Arrays.<ForeignKey<ModelRecord, ?>>asList(Keys.MODEL__MODEL_MODELLING_GROUP_FKEY, Keys.MODEL__MODEL_CURRENT_VERSION_FKEY, Keys.MODEL__MODEL_DISEASE_FKEY);
     }
 
     /**

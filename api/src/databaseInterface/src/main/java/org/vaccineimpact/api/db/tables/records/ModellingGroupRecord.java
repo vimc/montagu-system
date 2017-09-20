@@ -32,7 +32,7 @@ import org.vaccineimpact.api.db.tables.ModellingGroup;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ModellingGroupRecord extends UpdatableRecordImpl<ModellingGroupRecord> implements Record6<String, String, String, String, String, String> {
 
-    private static final long serialVersionUID = -228812408;
+    private static final long serialVersionUID = 1930676135;
 
     /**
      * Setter for <code>public.modelling_group.id</code>.
@@ -105,16 +105,16 @@ public class ModellingGroupRecord extends UpdatableRecordImpl<ModellingGroupReco
     }
 
     /**
-     * Setter for <code>public.modelling_group.current</code>.
+     * Setter for <code>public.modelling_group.replaced_by</code>.
      */
-    public void setCurrent(String value) {
+    public void setReplacedBy(String value) {
         set(5, value);
     }
 
     /**
-     * Getter for <code>public.modelling_group.current</code>.
+     * Getter for <code>public.modelling_group.replaced_by</code>.
      */
-    public String getCurrent() {
+    public String getReplacedBy() {
         return (String) get(5);
     }
 
@@ -195,7 +195,7 @@ public class ModellingGroupRecord extends UpdatableRecordImpl<ModellingGroupReco
      */
     @Override
     public Field<String> field6() {
-        return ModellingGroup.MODELLING_GROUP.CURRENT;
+        return ModellingGroup.MODELLING_GROUP.REPLACED_BY;
     }
 
     /**
@@ -243,7 +243,7 @@ public class ModellingGroupRecord extends UpdatableRecordImpl<ModellingGroupReco
      */
     @Override
     public String value6() {
-        return getCurrent();
+        return getReplacedBy();
     }
 
     /**
@@ -296,7 +296,7 @@ public class ModellingGroupRecord extends UpdatableRecordImpl<ModellingGroupReco
      */
     @Override
     public ModellingGroupRecord value6(String value) {
-        setCurrent(value);
+        setReplacedBy(value);
         return this;
     }
 
@@ -328,7 +328,7 @@ public class ModellingGroupRecord extends UpdatableRecordImpl<ModellingGroupReco
     /**
      * Create a detached, initialised ModellingGroupRecord
      */
-    public ModellingGroupRecord(String id, String institution, String pi, String description, String comment, String current) {
+    public ModellingGroupRecord(String id, String institution, String pi, String description, String comment, String replacedBy) {
         super(ModellingGroup.MODELLING_GROUP);
 
         set(0, id);
@@ -336,6 +336,6 @@ public class ModellingGroupRecord extends UpdatableRecordImpl<ModellingGroupReco
         set(2, pi);
         set(3, description);
         set(4, comment);
-        set(5, current);
+        set(5, replacedBy);
     }
 }

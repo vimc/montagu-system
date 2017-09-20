@@ -54,10 +54,13 @@ class JooqBurdenEstimateRepository(
 
         val outcomeLookup = getOutcomesAsLookup()
         val latestModelVersion = dsl.select(MODEL_VERSION.ID)
-                .fromJoinPath(MODELLING_GROUP, MODEL, MODEL_VERSION)
+                .fromJoinPath(MODELLING_GROUP, MODEL)
+                .join(MODEL_VERSION)
+                .on(MODEL_VERSION.ID.eq(MODEL.CURRENT_VERSION))
                 .where(MODELLING_GROUP.ID.eq(modellingGroup.id))
-                .and(MODEL.CURRENT.isNull)
-                .fetch().firstOrNull()?.value1()
+                .and(MODEL.DISEASE.eq(responsibilityInfo.disease))
+                .and(MODEL.IS_CURRENT)
+                .fetch().singleOrNull()?.value1()
             ?: throw DatabaseContentsError("Modelling group $groupId does not have any models/model versions in the database")
 
         val setId = addSet(responsibilityInfo.id, uploader, timestamp, latestModelVersion)

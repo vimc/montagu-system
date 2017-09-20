@@ -28,7 +28,7 @@ class JooqModellingGroupRepository(
     {
         return dsl.select(MODELLING_GROUP.fieldsAsList())
                 .from(MODELLING_GROUP)
-                .where(MODELLING_GROUP.CURRENT.isNull)
+                .where(MODELLING_GROUP.REPLACED_BY.isNull)
                 .fetchInto<ModellingGroupRecord>()
                 .map { mapModellingGroup(it) }
     }
@@ -47,9 +47,9 @@ class JooqModellingGroupRepository(
         // points at instead.
         val t1 = MODELLING_GROUP.`as`("t1")
         val t2 = MODELLING_GROUP.`as`("t2")
-        val record = dsl.select(t1.CURRENT, t1.ID, t1.DESCRIPTION, t2.ID, t2.DESCRIPTION)
+        val record = dsl.select(t1.REPLACED_BY, t1.ID, t1.DESCRIPTION, t2.ID, t2.DESCRIPTION)
                 .from(t1)
-                .leftJoin(t2).on(t1.CURRENT.eq(t2.ID))
+                .leftJoin(t2).on(t1.REPLACED_BY.eq(t2.ID))
                 .where(t1.ID.eq(id))
                 .fetchAny()
         if (record != null)
@@ -74,7 +74,7 @@ class JooqModellingGroupRepository(
         val group = getModellingGroup(groupId)
         val models = dsl.select(MODEL.fieldsAsList())
                 .from(MODEL)
-                .where(MODEL.CURRENT.isNull)
+                .where(MODEL.IS_CURRENT)
                 .and(MODEL.MODELLING_GROUP.eq(group.id))
                 .fetch()
                 .map { ResearchModel(it[MODEL.ID], it[MODEL.DESCRIPTION], it[MODEL.CITATION], group.id) }

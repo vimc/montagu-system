@@ -36,7 +36,7 @@ import org.vaccineimpact.api.db.tables.records.BurdenEstimateSetRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class BurdenEstimateSet extends TableImpl<BurdenEstimateSetRecord> {
 
-    private static final long serialVersionUID = -273839988;
+    private static final long serialVersionUID = -2032498187;
 
     /**
      * The reference instance of <code>public.burden_estimate_set</code>
@@ -99,7 +99,7 @@ public class BurdenEstimateSet extends TableImpl<BurdenEstimateSetRecord> {
     /**
      * The column <code>public.burden_estimate_set.uploaded_on</code>.
      */
-    public final TableField<BurdenEstimateSetRecord, Timestamp> UPLOADED_ON = createField("uploaded_on", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("now()", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<BurdenEstimateSetRecord, Timestamp> UPLOADED_ON = createField("uploaded_on", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("date_trunc('milliseconds'::text, now())", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
      * Create a <code>public.burden_estimate_set</code> table reference

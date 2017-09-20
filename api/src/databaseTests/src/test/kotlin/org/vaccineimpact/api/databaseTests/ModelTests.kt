@@ -5,6 +5,7 @@ import org.junit.Test
 import org.vaccineimpact.api.app.repositories.ModelRepository
 import org.vaccineimpact.api.app.repositories.jooq.JooqModelRepository
 import org.vaccineimpact.api.db.JooqContext
+import org.vaccineimpact.api.db.direct.addDisease
 import org.vaccineimpact.api.db.direct.addGroup
 import org.vaccineimpact.api.db.direct.addModel
 import org.vaccineimpact.api.models.Model
@@ -25,8 +26,9 @@ class ModelTests : RepositoryTests<ModelRepository>()
     {
         given {
             it.addGroup("a", "description a")
-            it.addModel("fakeId", "a", "some model")
-            it.addModel("fakeId2", "a", "another model")
+            it.addDisease("d1")
+            it.addModel("fakeId", "a", "d1", "some model")
+            it.addModel("fakeId2", "a", "d1", "another model", isCurrent = false)
         }.check {
             repo ->
             val models = repo.all()
@@ -42,8 +44,10 @@ class ModelTests : RepositoryTests<ModelRepository>()
     {
         given {
             it.addGroup("a", "description a")
-            it.addModel("fakeId", "a", "some model")
-            it.addModel("fakeId2", "a", "another model")
+            it.addDisease("d1")
+            it.addDisease("d2")
+            it.addModel("fakeId", "a", "d1", "some model")
+            it.addModel("fakeId2", "a", "d1", "another model", isCurrent = false)
         }.check {
             repo ->
             val model = repo.get("fakeId")

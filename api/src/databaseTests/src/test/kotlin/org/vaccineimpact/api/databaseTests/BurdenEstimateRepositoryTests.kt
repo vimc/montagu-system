@@ -166,8 +166,8 @@ class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRepository>(
         db.addGroup(groupId, "Test group")
         val modelVersionId = if (addModel)
         {
-            db.addModel(modelId, groupId)
-            db.addModelVersion(modelId, modelVersion)
+            db.addModel(modelId, groupId, "Hib3")
+            db.addModelVersion(modelId, modelVersion, setCurrent = true)
         }
         else
         {
