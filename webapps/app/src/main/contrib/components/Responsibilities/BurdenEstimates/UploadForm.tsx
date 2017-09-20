@@ -1,8 +1,6 @@
 import * as React from "react";
 import { BurdenEstimateSet } from "../../../../shared/models/Generated";
 import { settings } from "../../../../shared/Settings";
-import { estimateTokenActions } from "../../../actions/EstimateActions";
-import { responsibilityStore } from "../../../stores/ResponsibilityStore";
 import fetcher from "../../../../shared/sources/Fetcher";
 
 const formStyles = require("../../../../shared/styles/forms.css");

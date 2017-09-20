@@ -91,7 +91,6 @@ class ResponsibilityStore extends AbstractStore<ResponsibilityState, Responsibil
             handleClearUsedToken: coverageTokenActions.clearUsedToken,
 
             handleUpdateEstimatesToken: estimateTokenActions.update,
-            handleClearUsedEstimatesToken: estimateTokenActions.clearUsedToken,
 
             handleFilterByDisease: responsibilityActions.filterByDisease
         });
@@ -155,10 +154,6 @@ class ResponsibilityStore extends AbstractStore<ResponsibilityState, Responsibil
 
     handleClearUsedToken() {
         this.coverageOneTimeToken = null;
-    }
-
-    handleClearUsedEstimatesToken() {
-        this.estimatesOneTimeToken = null;
     }
 
     handleUpdateModellingGroups(groups: ModellingGroup[]) {
