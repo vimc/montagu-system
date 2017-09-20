@@ -38,14 +38,15 @@ class JooqBurdenEstimateRepository(
         val modellingGroup = modellingGroupRepository.getModellingGroup(groupId)
 
         val responsibilityInfo = getResponsibilityInfo(modellingGroup.id, touchstoneId, scenarioId)
+        val status = responsibilityInfo.setStatus.toLowerCase()
 
-        if (responsibilityInfo.setStatus.toLowerCase() == ResponsibilitySetStatus.SUBMITTED.name.toLowerCase())
+        if (status == ResponsibilitySetStatus.SUBMITTED.name.toLowerCase())
         {
             throw OperationNotAllowedError("The burden estimates uploaded for this touchstone have been submitted " +
                     "for review. You cannot upload any new estimates.")
         }
 
-        if (responsibilityInfo.setStatus.toLowerCase() == ResponsibilitySetStatus.APPROVED.name.toLowerCase())
+        if (status == ResponsibilitySetStatus.APPROVED.name.toLowerCase())
         {
             throw OperationNotAllowedError("The burden estimates uploaded for this touchstone have been reviewed" +
                     " and approved. You cannot upload any new estimates.")
