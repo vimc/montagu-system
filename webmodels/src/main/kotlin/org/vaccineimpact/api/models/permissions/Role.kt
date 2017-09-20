@@ -25,3 +25,14 @@ constructor(
         var scopePrefix: String?,
         var scopeId: String?
 )
+
+data class AssociateRole(val action: AssociateAction,
+                         val scopePrefix: String?,
+                         val name: String,
+                         val scopeId: String?)
+
+enum class AssociateAction
+{
+    ADD,
+    REMOVE
+}
