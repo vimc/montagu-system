@@ -7,6 +7,7 @@ import { PageWithHeaderAndNav } from "../../PageWithHeader/PageWithHeaderAndNav"
 import { doNothing } from "../../../../shared/Helpers";
 import { DownloadDataTitle } from "../DownloadDataTitle";
 import { UploadBurdenEstimatesContent } from "./UploadBurdenEstimatesContent";
+import { estimateTokenActions } from "../../../actions/EstimateActions";
 
 interface LocationProps {
     groupId: string;
@@ -17,11 +18,13 @@ interface LocationProps {
 export class UploadBurdenEstimatesPage extends PageWithHeaderAndNav<LocationProps> {
     componentDidMount() {
         setTimeout(() => {
+            estimateTokenActions.clearUsedToken();
             modellingGroupActions.setCurrentGroup(this.props.location.params.groupId);
             responsibilityStore.fetchTouchstones().catch(doNothing).then(() => {
                 touchstoneActions.setCurrentTouchstone(this.props.location.params.touchstoneId);
                 responsibilityStore.fetchResponsibilities().catch(doNothing).then(() => {
                     responsibilityActions.setCurrentResponsibility(this.props.location.params.scenarioId);
+                    responsibilityStore.fetchOneTimeEstimatesToken().catch(doNothing)
                 });
             });
         });

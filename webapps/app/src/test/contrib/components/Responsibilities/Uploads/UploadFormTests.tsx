@@ -14,7 +14,9 @@ describe('UploadForm', () => {
     let rendered: ShallowWrapper<any, any>;
     const sandbox = new Sandbox();
 
-    function setUpComponent(canUpload: boolean, burdenEstimateSet?: BurdenEstimateSet) {
+    function setUpComponent(canUpload: boolean,
+                            burdenEstimateSet?: BurdenEstimateSet,
+                            token: string = "TOKEN") {
         setupMainStore({
             diseases: [
                 { id: "disease-id", name: "Disease name" }
@@ -30,6 +32,7 @@ describe('UploadForm', () => {
         }));
 
         rendered = shallow(<UploadForm
+            token={token}
             canUpload={canUpload}
             groupId={"group-1"}
             scenarioId={responsibility.scenario.id}
@@ -43,6 +46,12 @@ describe('UploadForm', () => {
         const chooseFileButton = rendered.find(`.${buttonStyles.button}`).first();
         expect(chooseFileButton.text()).to.eq("No more burden estimates can be uploaded");
         expect(chooseFileButton.hasClass(buttonStyles.disabled)).to.eq(true);
+    });
+
+    it("disables the choose file button if token is null", () => {
+        setUpComponent(true, null, null);
+        const uploadButton = rendered.find(`button`).first();
+        expect(uploadButton.prop("disabled")).to.eq(true);
     });
 
     it("enables choose file button if canUpload is true", () => {

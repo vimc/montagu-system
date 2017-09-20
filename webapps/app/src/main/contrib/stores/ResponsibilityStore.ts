@@ -22,6 +22,8 @@ import { CoverageTokenSource } from "../sources/CoverageTokenSource";
 import { mainStore } from "./MainStore";
 import { ResponsibilitySetManager } from "./ResponsibilitySetManager";
 import StoreModel = AltJS.StoreModel;
+import { EstimatesTokenSource } from "../sources/EstimatesTokenSource";
+import { estimateTokenActions } from "../actions/EstimateActions";
 
 export interface ResponsibilityState extends RemoteContent {
     touchstones: Array<Touchstone>;
@@ -30,6 +32,7 @@ export interface ResponsibilityState extends RemoteContent {
     responsibilitySets: ExtendedResponsibilitySet[];
     currentResponsibility: ExtendedResponsibility;
     coverageOneTimeToken: string;
+    estimatesOneTimeToken: string;
 
     currentModellingGroup: ModellingGroup;
     currentDiseaseId: string;
@@ -40,6 +43,7 @@ interface ResponsibilityStoreInterface extends AltJS.AltStore<ResponsibilityStat
     fetchTouchstones(): Promise<Touchstone[]>;
     fetchCoverageSets(): Promise<ScenarioTouchstoneAndCoverageSets>;
     fetchOneTimeCoverageToken(): Promise<string>;
+    fetchOneTimeEstimatesToken(): Promise<string>;
     isLoading(): boolean;
 
     responsibilitySetManager(): ResponsibilitySetManager;
@@ -53,6 +57,7 @@ class ResponsibilityStore extends AbstractStore<ResponsibilityState, Responsibil
     responsibilitySets: ExtendedResponsibilitySet[];
     currentResponsibility: ExtendedResponsibility;
     coverageOneTimeToken: string;
+    estimatesOneTimeToken: string;
 
     currentModellingGroup: ModellingGroup;
     currentDiseaseId: string;
@@ -65,6 +70,7 @@ class ResponsibilityStore extends AbstractStore<ResponsibilityState, Responsibil
         this.registerAsync(new TouchstoneSource());
         this.registerAsync(new CoverageSetSource());
         this.registerAsync(new CoverageTokenSource());
+        this.registerAsync(new EstimatesTokenSource());
 
         this.bindListeners({
             handleSetCurrentModellingGroup: modellingGroupActions.setCurrentGroup,
@@ -83,6 +89,9 @@ class ResponsibilityStore extends AbstractStore<ResponsibilityState, Responsibil
 
             handleUpdateCoverageToken: coverageTokenActions.update,
             handleClearUsedToken: coverageTokenActions.clearUsedToken,
+
+            handleUpdateEstimatesToken: estimateTokenActions.update,
+            handleClearUsedEstimatesToken: estimateTokenActions.clearUsedToken,
 
             handleFilterByDisease: responsibilityActions.filterByDisease
         });
@@ -106,6 +115,8 @@ class ResponsibilityStore extends AbstractStore<ResponsibilityState, Responsibil
             currentModellingGroup: null,
             currentDiseaseId: null,
             coverageOneTimeToken: null,
+
+            estimatesOneTimeToken: null,
 
             ready: false
         };
@@ -146,6 +157,10 @@ class ResponsibilityStore extends AbstractStore<ResponsibilityState, Responsibil
         this.coverageOneTimeToken = null;
     }
 
+    handleClearUsedEstimatesToken() {
+        this.estimatesOneTimeToken = null;
+    }
+
     handleUpdateModellingGroups(groups: ModellingGroup[]) {
         this.waitFor(contribAuthStore);
         const membership = contribAuthStore.getState().modellingGroups;
@@ -171,8 +186,12 @@ class ResponsibilityStore extends AbstractStore<ResponsibilityState, Responsibil
         this.ready = true;
     }
 
-    handleUpdateCoverageToken(url: string) {
-        this.coverageOneTimeToken = url;
+    handleUpdateCoverageToken(token: string) {
+        this.coverageOneTimeToken = token;
+    }
+
+    handleUpdateEstimatesToken(token: string) {
+        this.estimatesOneTimeToken = token;
     }
 
     handleFilterByDisease(diseaseId: string) {

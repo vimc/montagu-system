@@ -6,7 +6,7 @@ import { expect } from "chai";
 import { mockExtendedResponsibilitySet, mockResponsibility, mockScenario } from "../../../mocks/mockModels";
 
 import {
-    TemplateButtonLink,
+    TemplateLink,
     TemplateLinks
 } from "../../../../main/contrib/components/Responsibilities/Overview/List/TemplateLinks";
 import { ButtonLink } from "../../../../main/shared/components/ButtonLink";
@@ -23,7 +23,7 @@ describe("TemplateLinks", () => {
         set.responsibilities = [];
 
         const rendered = shallow(<TemplateLinks responsibilities={set.responsibilities} groupId="grpid" />);
-        expect(rendered.find(TemplateButtonLink).length).to.eq(0)
+        expect(rendered.find(TemplateLink).length).to.eq(0)
     });
 
     it("renders template links", () => {
@@ -33,13 +33,13 @@ describe("TemplateLinks", () => {
             mockResponsibility({}, mockScenario({ disease: "d2" }))
         ]);
         const rendered = shallow(<TemplateLinks responsibilities={set.responsibilities} groupId="grpid" />);
-        const buttons = rendered.find(TemplateButtonLink);
+        const buttons = rendered.find(TemplateLink);
         expect(buttons.length).to.eq(2);
     });
 
 });
 
-describe("TemplateButtonLink", () => {
+describe("TemplateLink", () => {
     const sandbox = new Sandbox();
 
     afterEach(() => {
@@ -53,9 +53,9 @@ describe("TemplateButtonLink", () => {
                 { id: "d2", name: "Disease 2" },
             ]
         });
-        const rendered = shallow(<TemplateButtonLink groupId="grpid" diseaseId="d1"/>);
-        const buttons = rendered.find(ButtonLink);
-        expect(buttons.length).to.eq(1);
-        expect(buttons.first().prop("href")).to.eq("/templates/burden_template_d1-grpid.csv");
+        const rendered = shallow(<TemplateLink groupId="grpid" diseaseId="d1"/>);
+        const links = rendered.find("a");
+        expect(links.length).to.eq(1);
+        expect(links.first().prop("href")).to.eq("/contribution/templates/burden_template_d1-grpid.csv");
     });
 });

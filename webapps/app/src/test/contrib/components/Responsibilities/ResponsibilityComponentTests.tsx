@@ -10,6 +10,7 @@ import { ResponsibilityComponent } from "../../../../main/contrib/components/Res
 import { BurdenEstimateSet, ResponsibilitySetStatus } from "../../../../main/shared/models/Generated";
 
 const styles = require("../../../../main/contrib/components/Responsibilities/Responsibilities.css");
+const messageStyles = require("../../../../main/shared/styles/messages.css");
 
 describe('ResponsibilityComponent', () => {
     let rendered: ShallowWrapper<any, any>;
@@ -53,12 +54,12 @@ describe('ResponsibilityComponent', () => {
 
     it("displays no estimates message if current estimate is null", () => {
         setUpComponent("incomplete");
-        expect(rendered.find(`.${styles.estimates}`).text()).to.eq("You have not uploaded any burden estimate sets.")
+        expect(rendered.find(`.${messageStyles.info}`).text()).to.eq("You have not uploaded any burden estimate sets.")
     });
 
     it("displays last uploaded estimate date if current estimate is populated", () => {
         setUpComponent("incomplete", { id: 1, problems: [], uploaded_on : "2017-07-13 13:55:29 +0100"});
-        expect(rendered.find(`.${styles.estimates}`).text()).to.eq("You last uploaded an estimate on 2017-07-13 13:55:29 +0100.")
+        expect(rendered.find(`.${messageStyles.info}`).text()).to.eq("You last uploaded an estimate on 2017-07-13 13:55:29 +0100.")
     });
 
     it("renders the coverage download link", () => {

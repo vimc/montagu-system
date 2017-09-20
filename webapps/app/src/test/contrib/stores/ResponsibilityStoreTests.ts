@@ -19,6 +19,7 @@ import { coverageTokenActions } from "../../../main/contrib/actions/CoverageActi
 import { modellingGroupActions } from "../../../main/shared/actions/ModellingGroupActions";
 import { makeLoadable } from "../../../main/contrib/stores/Loadable";
 import { ModellingGroup } from "../../../main/shared/models/Generated";
+import { estimateTokenActions } from "../../../main/contrib/actions/EstimateActions";
 
 describe("ResponsibilityStore", () => {
     beforeEach(() => {
@@ -39,6 +40,7 @@ describe("ResponsibilityStore", () => {
             currentDiseaseId: null,
 
             coverageOneTimeToken: null,
+            estimatesOneTimeToken: null,
 
             ready: false
         });
@@ -269,5 +271,36 @@ describe("ResponsibilityStore", () => {
 
         const state = responsibilityStore.getState();
         expect(state.coverageOneTimeToken).to.equal("TOKEN");
+    });
+
+    it("estimateTokenActions.clearUsedToken sets token to null", () => {
+        alt.bootstrap(JSON.stringify({
+            ResponsibilityStore: {
+                estimatesOneTimeToken: "TOKEN",
+            }
+        }));
+        estimateTokenActions.clearUsedToken();
+
+        const state = responsibilityStore.getState();
+        expect(state.estimatesOneTimeToken).to.equal(null);
+    });
+
+    it("estimateTokenActions.clearUsedToken sets token to null", () => {
+        alt.bootstrap(JSON.stringify({
+            ResponsibilityStore: {
+                estimatesOneTimeToken: "TOKEN",
+            }
+        }));
+        estimateTokenActions.clearUsedToken();
+
+        const state = responsibilityStore.getState();
+        expect(state.estimatesOneTimeToken).to.equal(null);
+    });
+
+    it("estimateTokenActions.update sets the token", () => {
+        estimateTokenActions.update("TOKEN");
+
+        const state = responsibilityStore.getState();
+        expect(state.estimatesOneTimeToken).to.equal("TOKEN");
     });
 });

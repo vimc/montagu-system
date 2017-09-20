@@ -6,6 +6,7 @@ import { RemoteContentComponent } from "../../../../shared/components/RemoteCont
 import { responsibilityStore } from "../../../stores/ResponsibilityStore";
 import { UploadForm } from "./UploadForm";
 import { TemplateLink } from "../Overview/List/TemplateLinks";
+import { estimateTokenActions } from "../../../actions/EstimateActions";
 
 const commonStyles = require("../../../../shared/styles/common.css");
 
@@ -15,11 +16,13 @@ export interface UploadBurdenEstimatesContentComponentProps extends RemoteConten
         scenario: Scenario;
         group: ModellingGroup;
         responsibilitySetStatus: string;
+        estimatesToken: string;
         responsibility: Responsibility;
     };
 }
 
 export class UploadBurdenEstimatesContentComponent extends RemoteContentComponent<UploadBurdenEstimatesContentComponentProps> {
+
     static getStores() {
         return [responsibilityStore];
     }
@@ -28,7 +31,7 @@ export class UploadBurdenEstimatesContentComponent extends RemoteContentComponen
         const state = responsibilityStore.getState();
         const r = state.currentResponsibility;
 
-        if (r != null) {
+        if (r != null && state.estimatesOneTimeToken != null) {
             return {
                 ready: state.ready,
                 props: {
@@ -36,6 +39,7 @@ export class UploadBurdenEstimatesContentComponent extends RemoteContentComponen
                     scenario: r.scenario,
                     group: state.currentModellingGroup,
                     responsibility: r,
+                    estimatesToken: state.estimatesOneTimeToken,
                     responsibilitySetStatus: responsibilityStore.getCurrentResponsibilitySet().status
                 }
             };
@@ -74,6 +78,7 @@ export class UploadBurdenEstimatesContentComponent extends RemoteContentComponen
 
             <div className={commonStyles.gapAbove}>
                 <UploadForm groupId={data.group.id}
+                            token={data.estimatesToken}
                             canUpload={canUploadBurdenEstimate}
                             currentEstimateSet={data.responsibility.current_estimate_set}
                             scenarioId={data.scenario.id}/>
