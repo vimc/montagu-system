@@ -2,6 +2,7 @@ package org.vaccineimpact.api.app.repositories
 
 import org.vaccineimpact.api.app.models.CreateUser
 import org.vaccineimpact.api.models.User
+import org.vaccineimpact.api.models.permissions.AssociateRole
 import org.vaccineimpact.api.models.permissions.RoleAssignment
 import org.vaccineimpact.api.security.MontaguUser
 
@@ -16,4 +17,6 @@ interface UserRepository : Repository
 
     fun addUser(user: CreateUser)
     fun setPassword(username: String, plainPassword: String)
+
+    fun addRole(username: String, associateRole: AssociateRole)
 }

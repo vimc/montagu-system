@@ -10,6 +10,7 @@ import org.vaccineimpact.api.db.fromJoinPath
 import org.vaccineimpact.api.db.tables.records.AppUserRecord
 import org.vaccineimpact.api.models.Scope
 import org.vaccineimpact.api.models.User
+import org.vaccineimpact.api.models.permissions.AssociateRole
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import org.vaccineimpact.api.models.permissions.ReifiedRole
 import org.vaccineimpact.api.models.permissions.RoleAssignment
@@ -21,6 +22,11 @@ import java.time.Instant
 
 class JooqUserRepository(dsl: DSLContext): JooqRepository(dsl), UserRepository
 {
+    override fun addRole(username: String, associateRole: AssociateRole)
+    {
+        
+    }
+
     override fun updateLastLoggedIn(username: String)
     {
         dsl.update(APP_USER)
