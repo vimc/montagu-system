@@ -159,7 +159,7 @@ class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRepository>(
     }
 
     private fun setupDatabase(db: JooqContext, addModel: Boolean = true,
-                              responsibilitySetStatus: String = ResponsibilitySetStatus.INCOMPLETE.toString()): ReturnedIds
+                              responsibilitySetStatus: String = "incomplete"): ReturnedIds
     {
         db.addTouchstone("touchstone", 1, "Touchstone 1", addName = true)
         db.addScenarioDescription(scenarioId, "Test scenario", "Hib3", addDisease = true)
