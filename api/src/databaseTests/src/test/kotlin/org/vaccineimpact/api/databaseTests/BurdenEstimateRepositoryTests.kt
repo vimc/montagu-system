@@ -6,6 +6,7 @@ import org.jooq.Record
 import org.junit.Test
 import org.vaccineimpact.api.app.errors.DatabaseContentsError
 import org.vaccineimpact.api.app.errors.InconsistentDataError
+import org.vaccineimpact.api.app.errors.OperationNotAllowedError
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
 import org.vaccineimpact.api.app.repositories.jooq.JooqBurdenEstimateRepository
@@ -18,6 +19,7 @@ import org.vaccineimpact.api.db.direct.*
 import org.vaccineimpact.api.db.fromJoinPath
 import org.vaccineimpact.api.db.toDecimal
 import org.vaccineimpact.api.models.BurdenEstimate
+import org.vaccineimpact.api.models.ResponsibilitySetStatus
 import java.math.BigDecimal
 import java.time.LocalDateTime
 import java.time.Month
@@ -97,6 +99,34 @@ class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRepository>(
     }
 
     @Test
+    fun `cannot add burden estimate set if responsibility set status is submitted`()
+    {
+        JooqContext().use { db ->
+            setupDatabase(db, responsibilitySetStatus = "submitted")
+            val repo = makeRepository(db)
+            assertThatThrownBy {
+                repo.addBurdenEstimateSet(groupId, touchstoneId, scenarioId, data, username, timestamp)
+            }.isInstanceOf(OperationNotAllowedError::class.java)
+                    .hasMessage("the following problems occurred:\nThe burden estimates uploaded for this touchstone have been submitted for review." +
+                            " You cannot upload any new estimates.")
+        }
+    }
+
+    @Test
+    fun `cannot add burden estimate set if responsibility set status is approved`()
+    {
+        JooqContext().use { db ->
+            setupDatabase(db, responsibilitySetStatus = "approved")
+            val repo = makeRepository(db)
+            assertThatThrownBy {
+                repo.addBurdenEstimateSet(groupId, touchstoneId, scenarioId, data, username, timestamp)
+            }.isInstanceOf(OperationNotAllowedError::class.java)
+                    .hasMessage("the following problems occurred:\nThe burden estimates uploaded for this touchstone have been reviewed and approved." +
+                            " You cannot upload any new estimates.")
+        }
+    }
+
+    @Test
     fun `cannot add burden estimate set if touchstone doesn't exist`()
     {
         checkBadId(otherTouchstoneId = "wrong-id")
@@ -128,7 +158,8 @@ class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRepository>(
         }
     }
 
-    private fun setupDatabase(db: JooqContext, addModel: Boolean = true): ReturnedIds
+    private fun setupDatabase(db: JooqContext, addModel: Boolean = true,
+                              responsibilitySetStatus: String = ResponsibilitySetStatus.INCOMPLETE.toString()): ReturnedIds
     {
         db.addTouchstone("touchstone", 1, "Touchstone 1", addName = true)
         db.addScenarioDescription(scenarioId, "Test scenario", "Hib3", addDisease = true)
@@ -142,7 +173,7 @@ class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRepository>(
         {
             null
         }
-        val setId = db.addResponsibilitySet(groupId, touchstoneId)
+        val setId = db.addResponsibilitySet(groupId, touchstoneId, responsibilitySetStatus)
         val responsibilityId = db.addResponsibility(setId, touchstoneId, scenarioId)
         db.addUserForTesting(username)
         return ReturnedIds(modelVersionId, responsibilityId)

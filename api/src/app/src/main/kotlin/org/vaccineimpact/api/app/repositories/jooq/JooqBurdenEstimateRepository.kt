@@ -3,6 +3,7 @@ package org.vaccineimpact.api.app.repositories.jooq
 import org.jooq.DSLContext
 import org.vaccineimpact.api.app.errors.DatabaseContentsError
 import org.vaccineimpact.api.app.errors.InconsistentDataError
+import org.vaccineimpact.api.app.errors.OperationNotAllowedError
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
 import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
@@ -13,14 +14,15 @@ import org.vaccineimpact.api.db.fromJoinPath
 import org.vaccineimpact.api.db.joinPath
 import org.vaccineimpact.api.db.tables.records.BurdenEstimateRecord
 import org.vaccineimpact.api.models.BurdenEstimate
+import org.vaccineimpact.api.models.ResponsibilitySetStatus
 import java.beans.ConstructorProperties
 import java.math.BigDecimal
 import java.sql.Timestamp
 import java.time.Instant
 
 private data class ResponsibilityInfo
-@ConstructorProperties("id", "disease")
-constructor(val id: Int, val disease: String)
+@ConstructorProperties("id", "disease", "status")
+constructor(val id: Int, val disease: String, val setStatus: String)
 
 class JooqBurdenEstimateRepository(
         dsl: DSLContext,
@@ -36,6 +38,19 @@ class JooqBurdenEstimateRepository(
         val modellingGroup = modellingGroupRepository.getModellingGroup(groupId)
 
         val responsibilityInfo = getResponsibilityInfo(modellingGroup.id, touchstoneId, scenarioId)
+
+        if (responsibilityInfo.setStatus.toLowerCase() == ResponsibilitySetStatus.SUBMITTED.name.toLowerCase())
+        {
+            throw OperationNotAllowedError("The burden estimates uploaded for this touchstone have been submitted " +
+                    "for review. You cannot upload any new estimates.")
+        }
+
+        if (responsibilityInfo.setStatus.toLowerCase() == ResponsibilitySetStatus.APPROVED.name.toLowerCase())
+        {
+            throw OperationNotAllowedError("The burden estimates uploaded for this touchstone have been reviewed" +
+                    " and approved. You cannot upload any new estimates.")
+        }
+
         val outcomeLookup = getOutcomesAsLookup()
         val latestModelVersion = dsl.select(MODEL_VERSION.ID)
                 .fromJoinPath(MODELLING_GROUP, MODEL, MODEL_VERSION)
@@ -116,7 +131,7 @@ class JooqBurdenEstimateRepository(
     private fun getResponsibilityInfo(groupId: String, touchstoneId: String, scenarioId: String): ResponsibilityInfo
     {
         // Get responsibility ID
-        return dsl.select(RESPONSIBILITY.ID, SCENARIO_DESCRIPTION.DISEASE)
+        return dsl.select(RESPONSIBILITY.ID, SCENARIO_DESCRIPTION.DISEASE, RESPONSIBILITY_SET.STATUS)
                 .fromJoinPath(MODELLING_GROUP, RESPONSIBILITY_SET, RESPONSIBILITY, SCENARIO, SCENARIO_DESCRIPTION)
                 .joinPath(RESPONSIBILITY_SET, TOUCHSTONE)
                 .where(MODELLING_GROUP.ID.eq(groupId))
