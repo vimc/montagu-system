@@ -181,12 +181,12 @@ class ResponsibilityStore extends AbstractStore<ResponsibilityState, Responsibil
         this.ready = true;
     }
 
-    handleUpdateCoverageToken(url: string) {
-        this.coverageOneTimeToken = url;
+    handleUpdateCoverageToken(token: string) {
+        this.coverageOneTimeToken = token;
     }
 
-    handleUpdateEstimatesToken(url: string) {
-        this.estimatesOneTimeToken = url;
+    handleUpdateEstimatesToken(token: string) {
+        this.estimatesOneTimeToken = token;
     }
 
     handleFilterByDisease(diseaseId: string) {
