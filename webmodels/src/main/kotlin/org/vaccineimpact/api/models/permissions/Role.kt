@@ -27,8 +27,8 @@ constructor(
 )
 
 data class AssociateRole(val action: AssociateAction,
-                         val scopePrefix: String?,
                          val name: String,
+                         val scopePrefix: String?,
                          val scopeId: String?)
 
 enum class AssociateAction
