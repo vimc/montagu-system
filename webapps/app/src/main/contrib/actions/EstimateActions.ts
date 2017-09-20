@@ -1,7 +1,14 @@
 import { FetchActions, FetchActionsInterface } from "../../shared/actions/FetchActions";
 import { alt } from "../../shared/alt";
 
-class EstimateTokenActions extends FetchActions<string> implements FetchActionsInterface<string>  {
+interface Actions extends FetchActionsInterface<string> {
+    clearUsedToken(): boolean;
 }
 
-export const estimateTokenActions = alt.createActions<FetchActionsInterface<string>>(EstimateTokenActions);
+class EstimateTokenActions extends FetchActions<string> implements Actions {
+    clearUsedToken(): boolean {
+        return true;
+    }
+}
+
+export const estimateTokenActions = alt.createActions<Actions>(EstimateTokenActions);

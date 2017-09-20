@@ -7,7 +7,7 @@ function afterWait(done: DoneCallback, then: () => void): void {
         } catch (e) {
             done(e);
         }
-    });
+    }, 1000);
 }
 
 export function checkAsync(done: DoneCallback, checks: (afterWait: AfterWaitCallback) => void) {
