@@ -12,7 +12,7 @@ function on_interrupt() {
 }
 
 # Generate report test data
-#docker pull $registry/orderly:$orderly_version
+docker pull $registry/orderly:$orderly_version
 docker run --rm \
     --entrypoint create_orderly_demo.sh \
     -v montagu_orderly_volume:/orderly \
