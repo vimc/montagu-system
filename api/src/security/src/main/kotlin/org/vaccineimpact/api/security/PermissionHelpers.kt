@@ -1,5 +1,6 @@
 package org.vaccineimpact.api.security
 
+import org.jooq.DSLContext
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.Tables.*
 import org.vaccineimpact.api.db.fieldsAsList
@@ -12,7 +13,7 @@ fun JooqContext.givePermissionsToUserUsingTestRole(
         permissions: List<String>)
 {
     val testRoleId = this.getOrCreateRole("test_role_$scopeId", scopePrefix, "Test role")
-    this.ensureUserHasRole(username, testRoleId, scopeId = scopeId)
+    dsl.ensureUserHasRole(username, testRoleId, scopeId = scopeId)
     this.setRolePermissions(testRoleId, permissions)
 }
 
@@ -48,12 +49,18 @@ fun JooqContext.getOrCreateRole(name: String, scopePrefix: String?, description:
 
 fun JooqContext.getRole(name: String, scopePrefix: String?): Int?
 {
-    val role = dsl.select(ROLE.ID)
+    return dsl.getRole(name, scopePrefix)
+}
+
+fun DSLContext.getRole(name: String, scopePrefix: String?): Int?
+{
+    val role = this.select(ROLE.ID)
             .from(ROLE)
             .where(ROLE.NAME.eq(name))
             // Dealing with SQLs ternary NULL logic - this is just an equality check
             .and(ROLE.SCOPE_PREFIX.isNotDistinctFrom(scopePrefix))
             .fetchAny()
+
     return role?.get(ROLE.ID)
 }
 
@@ -70,7 +77,12 @@ fun JooqContext.createRole(name: String, scopePrefix: String?, description: Stri
 
 fun JooqContext.ensureUserHasRole(username: String, roleId: Int, scopeId: String)
 {
-    val roleMapping = dsl.select(USER_ROLE.fieldsAsList())
+   dsl.ensureUserHasRole(username, roleId, scopeId)
+}
+
+fun DSLContext.ensureUserHasRole(username: String, roleId: Int, scopeId: String)
+{
+    val roleMapping = this.select(USER_ROLE.fieldsAsList())
             .from(USER_ROLE)
             .where(USER_ROLE.USERNAME.eq(username))
             .and(USER_ROLE.ROLE.eq(roleId))
@@ -78,7 +90,7 @@ fun JooqContext.ensureUserHasRole(username: String, roleId: Int, scopeId: String
             .fetchAny()
     if (roleMapping == null)
     {
-        dsl.newRecord(USER_ROLE).apply {
+        this.newRecord(USER_ROLE).apply {
             this.username = username
             this.role = roleId
             this.scopeId = scopeId
@@ -90,5 +102,13 @@ fun JooqContext.ensureUserHasRole(username: String, role: ReifiedRole)
 {
     val roleId = this.getRole(role.name, role.scope.databaseScopePrefix)
         ?: throw UnknownRoleException(role.name, role.scope.databaseScopePrefix.toString())
+    this.ensureUserHasRole(username, roleId, role.scope.databaseScopeId)
+}
+
+fun DSLContext.ensureUserHasRole(username: String, role: ReifiedRole)
+{
+    val roleId = this.getRole(role.name, role.scope.databaseScopePrefix)
+            ?: throw UnknownRoleException(role.name, role.scope.databaseScopePrefix.toString())
+
     this.ensureUserHasRole(username, roleId, role.scope.databaseScopeId)
 }

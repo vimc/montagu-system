@@ -13,9 +13,7 @@ import org.vaccineimpact.api.db.Tables.APP_USER
 import org.vaccineimpact.api.db.direct.addUserWithRoles
 import org.vaccineimpact.api.models.Scope
 import org.vaccineimpact.api.models.User
-import org.vaccineimpact.api.models.permissions.ReifiedPermission
-import org.vaccineimpact.api.models.permissions.ReifiedRole
-import org.vaccineimpact.api.models.permissions.RoleAssignment
+import org.vaccineimpact.api.models.permissions.*
 import org.vaccineimpact.api.security.*
 import java.time.Instant
 
@@ -36,6 +34,59 @@ class UserTests : RepositoryTests<UserRepository>()
         given(this::addTestUser).check { repo ->
             checkUser(getUser(repo, email))
             checkUser(getUser(repo, email.toUpperCase()))
+        }
+    }
+
+    @Test
+    fun `can add role to user`()
+    {
+        given {
+            db ->
+            db.addUserWithRoles(username, ReifiedRole("member", Scope.parse("modelling-group:IC-Garske")))
+        } check { repo ->
+            repo.modifyUserRole(username, AssociateRole(AssociateAction.ADD, "submitter", "modelling-group", "IC-Garske"))
+
+            val roles = repo.getRolesForUser(username)
+            assertThat(roles.count()).isEqualTo(2)
+
+            val role = roles[1]
+            assertThat(role.name).isEqualTo("submitter")
+            assertThat(role.scopePrefix).isEqualTo("modelling-group")
+            assertThat(role.scopeId).isEqualTo("IC-Garske")
+        }
+    }
+
+    @Test
+    fun `can remove role from user`()
+    {
+        given {
+            db ->
+            db.addUserWithRoles(username, ReifiedRole("member", Scope.parse("modelling-group:IC-Garske")))
+        } check { repo ->
+            repo.modifyUserRole(username, AssociateRole(AssociateAction.REMOVE, "member", "modelling-group", "IC-Garske"))
+
+            val roles = repo.getRolesForUser(username)
+            assertThat(roles.count()).isEqualTo(0)
+        }
+    }
+
+    @Test
+    fun `throws unknown role error is role does not exist`()
+    {
+        given {
+            db ->
+            db.addUserWithRoles(username, ReifiedRole("member", Scope.parse("modelling-group:IC-Garske")))
+        } check { repo ->
+
+            assertThatThrownBy {
+                repo.modifyUserRole(username,
+                        AssociateRole(AssociateAction.ADD, "nonsense", "modelling-group", "IC-Garske"))
+            }.isInstanceOf(UnknownRoleException::class.java)
+
+            assertThatThrownBy {
+                repo.modifyUserRole(username,
+                        AssociateRole(AssociateAction.REMOVE, "nonsense", "modelling-group", "IC-Garske"))
+            }.isInstanceOf(UnknownRoleException::class.java)
         }
     }
 

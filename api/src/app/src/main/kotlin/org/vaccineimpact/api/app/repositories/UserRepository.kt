@@ -18,5 +18,5 @@ interface UserRepository : Repository
     fun addUser(user: CreateUser)
     fun setPassword(username: String, plainPassword: String)
 
-    fun addRole(username: String, associateRole: AssociateRole)
+    fun modifyUserRole(username: String, associateRole: AssociateRole)
 }
