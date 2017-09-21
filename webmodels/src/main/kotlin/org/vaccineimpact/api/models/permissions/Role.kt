@@ -26,13 +26,7 @@ constructor(
         var scopeId: String?
 )
 
-data class AssociateRole(val action: AssociateAction,
-                         val name: String,
-                         val scopePrefix: String?,
-                         val scopeId: String?)
-
-enum class AssociateAction
-{
-    ADD,
-    REMOVE
-}
+data class AssociateRole(val action: String,
+                     val name: String,
+                     val scopePrefix: String?,
+                     val scopeId: String?)
