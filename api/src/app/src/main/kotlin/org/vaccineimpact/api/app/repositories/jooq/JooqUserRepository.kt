@@ -10,17 +10,56 @@ import org.vaccineimpact.api.db.fromJoinPath
 import org.vaccineimpact.api.db.tables.records.AppUserRecord
 import org.vaccineimpact.api.models.Scope
 import org.vaccineimpact.api.models.User
-import org.vaccineimpact.api.models.permissions.ReifiedPermission
-import org.vaccineimpact.api.models.permissions.ReifiedRole
-import org.vaccineimpact.api.models.permissions.RoleAssignment
-import org.vaccineimpact.api.security.MontaguUser
-import org.vaccineimpact.api.security.UserHelper
-import org.vaccineimpact.api.security.UserProperties
+import org.vaccineimpact.api.models.permissions.*
+import org.vaccineimpact.api.security.*
 import java.sql.Timestamp
 import java.time.Instant
 
-class JooqUserRepository(dsl: DSLContext): JooqRepository(dsl), UserRepository
+class JooqUserRepository(dsl: DSLContext) : JooqRepository(dsl), UserRepository
 {
+    override fun modifyUserRole(username: String, associateRole: AssociateRole)
+    {
+        val role = ReifiedRole(associateRole.name,
+                Scope.parse(associateRole))
+
+        getUser(username)
+
+        when (associateRole.action)
+        {
+            "add" -> ensureUserHasRole(username, role)
+            "remove" -> removeRoleFromUser(username, role)
+        }
+    }
+
+    private fun removeRoleFromUser(username: String, role: ReifiedRole)
+    {
+        val roleId = dsl.getRole(role.name, role.scope.databaseScopePrefix)
+                ?: throw UnknownRoleException(role.name, role.scope.databaseScopePrefix.toString())
+
+        dsl.deleteFrom(USER_ROLE)
+                .where(USER_ROLE.USERNAME.eq(username))
+                .and(USER_ROLE.ROLE.eq(roleId))
+                .execute()
+    }
+
+    private fun ensureUserHasRole(username: String, role: ReifiedRole)
+    {
+        val roleId = dsl.getRole(role.name, role.scope.databaseScopePrefix)
+                ?: throw UnknownRoleException(role.name, role.scope.databaseScopePrefix.toString())
+
+        if (role.scope.databaseScopeId.isNotEmpty())
+        {
+            dsl.select(MODELLING_GROUP.ID)
+                    .from(MODELLING_GROUP)
+                    .where(MODELLING_GROUP.ID.eq(role.scope.databaseScopeId))
+                    .fetch()
+                    .singleOrNull()
+                    ?: throw UnknownObjectError(role.scope.databaseScopeId, "modelling-group")
+        }
+
+        dsl.ensureUserHasRole(username, roleId, role.scope.databaseScopeId)
+    }
+
     override fun updateLastLoggedIn(username: String)
     {
         dsl.update(APP_USER)
@@ -108,7 +147,7 @@ class JooqUserRepository(dsl: DSLContext): JooqRepository(dsl), UserRepository
     private fun mapUserWithRoles(entry: Map.Entry<AppUserRecord, org.jooq.Result<Record>>): User
     {
         val user = entry.key.into(User::class.java)
-        val roles = entry.value.filter{ r-> r[USER_ROLE.ROLE] != null }
+        val roles = entry.value.filter { r -> r[USER_ROLE.ROLE] != null }
                 .map(this::mapRoleAssignment)
 
         return user.copy(roles = roles)
