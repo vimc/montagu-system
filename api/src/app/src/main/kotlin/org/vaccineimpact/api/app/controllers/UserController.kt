@@ -32,7 +32,8 @@ class UserController(
             oneRepoEndpoint("/:username/", this::getUser, repos, { it.user }).secured(setOf("*/users.read")),
             oneRepoEndpoint("/", this::getUsers, repos, { it.user }).secured(setOf("*/users.read")),
             multiRepoEndpoint("/", this::createUser, repos, method = HttpMethod.post).secured(setOf("*/users.create")),
-            oneRepoEndpoint("/:username/actions/associate_role/", this::modifyUserRole, repos, { it.user })
+            oneRepoEndpoint("/:username/actions/associate_role/",
+                    this::modifyUserRole, repos, { it.user }, method = HttpMethod.post).secured()
     )
 
     fun modifyUserRole(context: ActionContext, repo: UserRepository): String

@@ -46,7 +46,7 @@ class UserTests : RepositoryTests<UserRepository>()
             db.addGroup("IC-Garske")
             db.addUserWithRoles(username, ReifiedRole("member", Scope.parse("modelling-group:IC-Garske")))
         } check { repo ->
-            repo.modifyUserRole(username, AssociateRole(AssociateAction.ADD, "submitter", "modelling-group", "IC-Garske"))
+            repo.modifyUserRole(username, AssociateRole("add", "submitter", "modelling-group", "IC-Garske"))
 
             val roles = repo.getRolesForUser(username)
             assertThat(roles.count()).isEqualTo(2)
@@ -65,7 +65,7 @@ class UserTests : RepositoryTests<UserRepository>()
             db ->
             db.addUserWithRoles(username, ReifiedRole("member", Scope.parse("modelling-group:IC-Garske")))
         } check { repo ->
-            repo.modifyUserRole(username, AssociateRole(AssociateAction.REMOVE, "member", "modelling-group", "IC-Garske"))
+            repo.modifyUserRole(username, AssociateRole("remove", "member", "modelling-group", "IC-Garske"))
 
             val roles = repo.getRolesForUser(username)
             assertThat(roles.count()).isEqualTo(0)
@@ -77,17 +77,18 @@ class UserTests : RepositoryTests<UserRepository>()
     {
         given {
             db ->
+            db.addGroup("IC-Garske")
             db.addUserWithRoles(username, ReifiedRole("member", Scope.parse("modelling-group:IC-Garske")))
         } check { repo ->
 
             assertThatThrownBy {
                 repo.modifyUserRole(username,
-                        AssociateRole(AssociateAction.ADD, "nonsense", "modelling-group", "IC-Garske"))
+                        AssociateRole("add", "nonsense", "modelling-group", "IC-Garske"))
             }.isInstanceOf(UnknownRoleException::class.java)
 
             assertThatThrownBy {
                 repo.modifyUserRole(username,
-                        AssociateRole(AssociateAction.REMOVE, "nonsense", "modelling-group", "IC-Garske"))
+                        AssociateRole("remove", "nonsense", "modelling-group", "IC-Garske"))
             }.isInstanceOf(UnknownRoleException::class.java)
         }
     }
@@ -102,7 +103,24 @@ class UserTests : RepositoryTests<UserRepository>()
 
             assertThatThrownBy {
                 repo.modifyUserRole(username,
-                        AssociateRole(AssociateAction.ADD, "member", "modelling-group", "nonsense"))
+                        AssociateRole("add", "member", "modelling-group", "nonsense"))
+            }.isInstanceOf(UnknownObjectError::class.java)
+
+        }
+    }
+
+    @Test
+    fun `throws unknown object error if user does not exist`()
+    {
+        given {
+            db ->
+            db.addGroup("IC-Garske")
+            db.addUserWithRoles(username, ReifiedRole("member", Scope.parse("modelling-group:IC-Garske")))
+        } check { repo ->
+
+            assertThatThrownBy {
+                repo.modifyUserRole("nonsense",
+                        AssociateRole("add", "member", "modelling-group", "IC:Garske"))
             }.isInstanceOf(UnknownObjectError::class.java)
 
         }

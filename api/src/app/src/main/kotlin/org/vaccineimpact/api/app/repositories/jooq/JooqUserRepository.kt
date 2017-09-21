@@ -22,10 +22,12 @@ class JooqUserRepository(dsl: DSLContext) : JooqRepository(dsl), UserRepository
         val role = ReifiedRole(associateRole.name,
                 Scope.parse(associateRole))
 
+        getUser(username)
+
         when (associateRole.action)
         {
-            AssociateAction.ADD -> ensureUserHasRole(username, role)
-            AssociateAction.REMOVE -> removeRoleFromUser(username, role)
+            "add" -> ensureUserHasRole(username, role)
+            "remove" -> removeRoleFromUser(username, role)
         }
     }
 

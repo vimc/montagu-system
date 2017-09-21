@@ -1,6 +1,5 @@
 package org.vaccineimpact.api.blackboxTests
 
-import com.beust.klaxon.JsonObject
 import com.beust.klaxon.json
 import org.assertj.core.api.Assertions
 import org.junit.Test
@@ -9,12 +8,16 @@ import org.vaccineimpact.api.blackboxTests.helpers.TestUserHelper
 import org.vaccineimpact.api.blackboxTests.helpers.validate
 import org.vaccineimpact.api.blackboxTests.schemas.JSONSchema
 import org.vaccineimpact.api.db.JooqContext
+import org.vaccineimpact.api.db.direct.addGroup
+import org.vaccineimpact.api.db.direct.addUserForTesting
 import org.vaccineimpact.api.db.direct.addUserWithRoles
 import org.vaccineimpact.api.models.permissions.ReifiedRole
 import org.vaccineimpact.api.models.Scope
 import org.vaccineimpact.api.models.permissions.PermissionSet
+import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import org.vaccineimpact.api.security.createRole
 import org.vaccineimpact.api.test_helpers.DatabaseTest
+import spark.route.HttpMethod
 
 class UserTests : DatabaseTest()
 {
@@ -37,6 +40,46 @@ class UserTests : DatabaseTest()
                 )
             }
             Assertions.assertThat(it).isEqualTo(expected)
+        }
+    }
+
+    @Test
+    fun `can add user role`()
+    {
+        validate("/users/testuser/actions/associate_role/", HttpMethod.post) given {
+            it.addUserForTesting("testuser")
+            it.addGroup("IC-Garske")
+        } withPermissions {
+            PermissionSet(setOf(ReifiedPermission("roles.write", Scope.parse("modelling-group:IC-Garske"))))
+        } sendingJSON {
+            json {
+                obj(    "action" to "add",
+                        "name" to "uploader",
+                        "scope_prefix" to "modelling-group",
+                        "scope_id" to "IC-Garske")
+            }
+        } withRequestSchema "AssociateRole" andCheckString {
+            Assertions.assertThat(it).isEqualTo("OK")
+        }
+    }
+
+    @Test
+    fun `can remove user role`()
+    {
+        validate("/users/testuser/actions/associate_role/", HttpMethod.post) given {
+            it.addUserForTesting("testuser")
+            it.addGroup("IC-Garske")
+        } withPermissions {
+            PermissionSet(setOf(ReifiedPermission("roles.write", Scope.parse("modelling-group:IC-Garske"))))
+        } sendingJSON {
+            json {
+                obj(    "action" to "remove",
+                        "name" to "uploader",
+                        "scope_prefix" to "modelling-group",
+                        "scope_id" to "IC-Garske")
+            }
+        } withRequestSchema "AssociateRole" andCheckString {
+            Assertions.assertThat(it).isEqualTo("OK")
         }
     }
 

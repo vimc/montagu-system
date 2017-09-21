@@ -27,7 +27,7 @@ class AssociateRoleTests : UserControllerTests()
         val mockControllerContext = mockControllerContext()
         val controller = UserController(mockControllerContext)
 
-        val model = AssociateRole(AssociateAction.ADD, "member", "modelling-group", "IC-Garske")
+        val model = AssociateRole("add", "member", "modelling-group", "IC-Garske")
         val mockActionContext = mock<ActionContext> {
             on { postData(AssociateRole::class.java) } doReturn model
             on { params(":username") } doReturn userName
@@ -47,7 +47,7 @@ class AssociateRoleTests : UserControllerTests()
         val mockControllerContext = mockControllerContext()
         val controller = UserController(mockControllerContext)
 
-        val model = AssociateRole(AssociateAction.ADD, "member", "modelling-group", "IC-Garske")
+        val model = AssociateRole("add", "member", "modelling-group", "IC-Garske")
         val mockActionContext = mock<ActionContext> {
             on { postData(AssociateRole::class.java) } doReturn model
             on { params(":username") } doReturn userName
@@ -68,7 +68,7 @@ class AssociateRoleTests : UserControllerTests()
         val mockControllerContext = mockControllerContext()
         val controller = UserController(mockControllerContext)
 
-        val model = AssociateRole(AssociateAction.ADD, "user", null, null)
+        val model = AssociateRole("add", "user", null, null)
         val mockActionContext = mock<ActionContext> {
             on { postData(AssociateRole::class.java) } doReturn model
             on { params(":username") } doReturn userName
@@ -89,7 +89,7 @@ class AssociateRoleTests : UserControllerTests()
         val mockControllerContext = mockControllerContext()
         val controller = UserController(mockControllerContext)
 
-        val model = AssociateRole(AssociateAction.ADD, "member", "modelling-group", "IC-Garske")
+        val model = AssociateRole("add", "member", "modelling-group", "IC-Garske")
         val mockActionContext = mock<ActionContext> {
             on { postData(AssociateRole::class.java) } doReturn model
             on { params(":username") } doReturn userName
