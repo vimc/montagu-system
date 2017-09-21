@@ -5,17 +5,20 @@ import org.vaccineimpact.api.app.controllers.endpoints.Endpoint
 import org.vaccineimpact.api.app.controllers.endpoints.multiRepoEndpoint
 import org.vaccineimpact.api.app.controllers.endpoints.oneRepoEndpoint
 import org.vaccineimpact.api.app.controllers.endpoints.secured
+import org.vaccineimpact.api.app.errors.MissingRequiredPermissionError
 import org.vaccineimpact.api.app.models.CreateUser
 import org.vaccineimpact.api.app.postData
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.RepositoryFactory
 import org.vaccineimpact.api.app.repositories.UserRepository
+import org.vaccineimpact.api.db.tables.records.PermissionRecord
 import org.vaccineimpact.api.emails.EmailManager
 import org.vaccineimpact.api.emails.NewUserEmail
 import org.vaccineimpact.api.emails.getEmailManager
 import org.vaccineimpact.api.models.Scope
 import org.vaccineimpact.api.models.User
 import org.vaccineimpact.api.models.encompass
+import org.vaccineimpact.api.models.permissions.AssociateRole
 import org.vaccineimpact.api.models.permissions.RoleAssignment
 import spark.route.HttpMethod
 
@@ -28,8 +31,25 @@ class UserController(
     override fun endpoints(repos: RepositoryFactory): List<Endpoint<*>> = listOf(
             oneRepoEndpoint("/:username/", this::getUser, repos, { it.user }).secured(setOf("*/users.read")),
             oneRepoEndpoint("/", this::getUsers, repos, { it.user }).secured(setOf("*/users.read")),
-            multiRepoEndpoint("/", this::createUser, repos, method = HttpMethod.post).secured(setOf("*/users.create"))
+            multiRepoEndpoint("/", this::createUser, repos, method = HttpMethod.post).secured(setOf("*/users.create")),
+            oneRepoEndpoint("/:username/actions/associate_role/", this::modifyUserRole, repos, { it.user })
     )
+
+    fun modifyUserRole(context: ActionContext, repo: UserRepository): String
+    {
+        val userName = userName(context)
+        val associateRole = context.postData<AssociateRole>()
+        val scope = Scope.parse("${associateRole.scopePrefix}:${associateRole.scopeId}")
+        val roleWritingScopes = roleWritingScopes(context)
+
+        if (!roleWritingScopes.any( { it.encompasses(scope) }))
+        {
+            throw MissingRequiredPermissionError(setOf("${scope.value}/roles.write"))
+        }
+
+        repo.modifyUserRole(userName, associateRole)
+        return okayResponse()
+    }
 
     fun getUser(context: ActionContext, repo: UserRepository): User
     {
@@ -82,6 +102,10 @@ class UserController(
 
     private fun roleReadingScopes(context: ActionContext) = context.permissions
             .filter { it.name == "roles.read" }
+            .map { it.scope }
+
+    private fun roleWritingScopes(context: ActionContext) = context.permissions
+            .filter { it.name == "roles.write" }
             .map { it.scope }
 
     private fun filteredRoles(allRoles: List<RoleAssignment>?, roleReadingScopes: Iterable<Scope>) =

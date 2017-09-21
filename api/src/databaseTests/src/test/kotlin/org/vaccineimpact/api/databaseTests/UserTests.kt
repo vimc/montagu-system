@@ -10,6 +10,7 @@ import org.vaccineimpact.api.app.repositories.jooq.JooqUserRepository
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.Tables
 import org.vaccineimpact.api.db.Tables.APP_USER
+import org.vaccineimpact.api.db.direct.addGroup
 import org.vaccineimpact.api.db.direct.addUserWithRoles
 import org.vaccineimpact.api.models.Scope
 import org.vaccineimpact.api.models.User
@@ -42,6 +43,7 @@ class UserTests : RepositoryTests<UserRepository>()
     {
         given {
             db ->
+            db.addGroup("IC-Garske")
             db.addUserWithRoles(username, ReifiedRole("member", Scope.parse("modelling-group:IC-Garske")))
         } check { repo ->
             repo.modifyUserRole(username, AssociateRole(AssociateAction.ADD, "submitter", "modelling-group", "IC-Garske"))
@@ -87,6 +89,22 @@ class UserTests : RepositoryTests<UserRepository>()
                 repo.modifyUserRole(username,
                         AssociateRole(AssociateAction.REMOVE, "nonsense", "modelling-group", "IC-Garske"))
             }.isInstanceOf(UnknownRoleException::class.java)
+        }
+    }
+
+    @Test
+    fun `throws unknown object error if scopeId is not valid group id`()
+    {
+        given {
+            db ->
+            db.addUserWithRoles(username, ReifiedRole("member", Scope.parse("modelling-group:IC-Garske")))
+        } check { repo ->
+
+            assertThatThrownBy {
+                repo.modifyUserRole(username,
+                        AssociateRole(AssociateAction.ADD, "member", "modelling-group", "nonsense"))
+            }.isInstanceOf(UnknownObjectError::class.java)
+
         }
     }
 

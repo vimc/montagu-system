@@ -24,7 +24,7 @@ class JooqUserRepository(dsl: DSLContext) : JooqRepository(dsl), UserRepository
 
         when (associateRole.action)
         {
-            AssociateAction.ADD -> dsl.ensureUserHasRole(username, role)
+            AssociateAction.ADD -> ensureUserHasRole(username, role)
             AssociateAction.REMOVE -> removeRoleFromUser(username, role)
         }
     }
@@ -38,6 +38,24 @@ class JooqUserRepository(dsl: DSLContext) : JooqRepository(dsl), UserRepository
                 .where(USER_ROLE.USERNAME.eq(username))
                 .and(USER_ROLE.ROLE.eq(roleId))
                 .execute()
+    }
+
+    private fun ensureUserHasRole(username: String, role: ReifiedRole)
+    {
+        val roleId = dsl.getRole(role.name, role.scope.databaseScopePrefix)
+                ?: throw UnknownRoleException(role.name, role.scope.databaseScopePrefix.toString())
+
+        if (role.scope.databaseScopeId.isNotEmpty())
+        {
+            dsl.select(MODELLING_GROUP.ID)
+                    .from(MODELLING_GROUP)
+                    .where(MODELLING_GROUP.ID.eq(role.scope.databaseScopeId))
+                    .fetch()
+                    .singleOrNull()
+                    ?: throw UnknownObjectError(role.scope.databaseScopeId, "modelling-group")
+        }
+
+        dsl.ensureUserHasRole(username, roleId, role.scope.databaseScopeId)
     }
 
     override fun updateLastLoggedIn(username: String)

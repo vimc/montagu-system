@@ -5,6 +5,8 @@ import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.Tables.*
 import org.vaccineimpact.api.db.fieldsAsList
 import org.vaccineimpact.api.models.permissions.ReifiedRole
+import java.rmi.activation.UnknownGroupException
+import java.rmi.activation.UnknownObjectException
 
 fun JooqContext.givePermissionsToUserUsingTestRole(
         username: String,
@@ -102,13 +104,5 @@ fun JooqContext.ensureUserHasRole(username: String, role: ReifiedRole)
 {
     val roleId = this.getRole(role.name, role.scope.databaseScopePrefix)
         ?: throw UnknownRoleException(role.name, role.scope.databaseScopePrefix.toString())
-    this.ensureUserHasRole(username, roleId, role.scope.databaseScopeId)
-}
-
-fun DSLContext.ensureUserHasRole(username: String, role: ReifiedRole)
-{
-    val roleId = this.getRole(role.name, role.scope.databaseScopePrefix)
-            ?: throw UnknownRoleException(role.name, role.scope.databaseScopePrefix.toString())
-
     this.ensureUserHasRole(username, roleId, role.scope.databaseScopeId)
 }
