@@ -34,6 +34,7 @@ class JooqTouchstoneRepository(dsl: DSLContext, private val scenarioRepository: 
                 statisticTypeCode,
                 source,
                 gender)
+                .orderBy(DEMOGRAPHIC_STATISTIC.COUNTRY, DEMOGRAPHIC_STATISTIC.YEAR, DEMOGRAPHIC_STATISTIC.AGE_FROM)
                 .fetch()
 
         val rows = records.map {
