@@ -10,7 +10,6 @@ import org.vaccineimpact.api.app.controllers.UserController
 import org.vaccineimpact.api.app.errors.MissingRequiredPermissionError
 import org.vaccineimpact.api.app.repositories.UserRepository
 import org.vaccineimpact.api.models.Scope
-import org.vaccineimpact.api.models.permissions.AssociateAction
 import org.vaccineimpact.api.models.permissions.AssociateRole
 import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
