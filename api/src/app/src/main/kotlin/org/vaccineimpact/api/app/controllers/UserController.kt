@@ -11,7 +11,6 @@ import org.vaccineimpact.api.app.postData
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.RepositoryFactory
 import org.vaccineimpact.api.app.repositories.UserRepository
-import org.vaccineimpact.api.db.tables.records.PermissionRecord
 import org.vaccineimpact.api.emails.EmailManager
 import org.vaccineimpact.api.emails.NewUserEmail
 import org.vaccineimpact.api.emails.getEmailManager
@@ -40,12 +39,21 @@ class UserController(
     {
         val userName = userName(context)
         val associateRole = context.postData<AssociateRole>()
-        val scope = Scope.parse("${associateRole.scopePrefix}:${associateRole.scopeId}")
+
+        val scope = if (associateRole.scopePrefix.isNullOrEmpty())
+        {
+            Scope.Global()
+        }
+        else
+        {
+            Scope.parse("${associateRole.scopePrefix}:${associateRole.scopeId}")
+        }
+
         val roleWritingScopes = roleWritingScopes(context)
 
-        if (!roleWritingScopes.any( { it.encompasses(scope) }))
+        if (!roleWritingScopes.any({ it.encompasses(scope) }))
         {
-            throw MissingRequiredPermissionError(setOf("${scope.value}/roles.write"))
+            throw MissingRequiredPermissionError(setOf("${scope.toString()}/roles.write"))
         }
 
         repo.modifyUserRole(userName, associateRole)

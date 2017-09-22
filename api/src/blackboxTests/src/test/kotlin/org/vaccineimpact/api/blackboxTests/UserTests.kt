@@ -84,6 +84,26 @@ class UserTests : DatabaseTest()
     }
 
     @Test
+    fun `can remove global user role`()
+    {
+        validate("/users/testuser/actions/associate_role/", HttpMethod.post) given {
+            it.addUserWithRoles("testuser", ReifiedRole("user", Scope.Global()))
+            it.addGroup("IC-Garske")
+        } withPermissions {
+            PermissionSet(setOf(ReifiedPermission("roles.write", Scope.Global())))
+        } sendingJSON {
+            json {
+                obj(    "action" to "remove",
+                        "name" to "user",
+                        "scope_prefix" to null,
+                        "scope_id" to null)
+            }
+        } withRequestSchema "AssociateRole" andCheckString {
+            Assertions.assertThat(it).isEqualTo("OK")
+        }
+    }
+
+    @Test
     fun `returns user with all roles if logged in user has global scope role read perm`()
     {
         validate("/users/testuser") against "User" given {
