@@ -24,7 +24,7 @@ export class ArtefactsList extends React.Component<ArtefactsListProps, undefined
             .map((artefactLookup)=> {
                 const type = Object.getOwnPropertyNames(artefactLookup)[0];
                 const artefact: Artefact = artefactLookup[type];
-                return <ArtefactItem key={artefact.description} report={this.props.report} version={this.props.version} {...artefact} />;
+                return <ArtefactItem key={artefact.filenames[0]} report={this.props.report} version={this.props.version} {...artefact} />;
             });
 
         return <ul className={styles.artefactList}>
