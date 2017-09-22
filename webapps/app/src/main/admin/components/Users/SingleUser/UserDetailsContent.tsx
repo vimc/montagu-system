@@ -24,24 +24,25 @@ export class UserDetailsContentComponent extends RemoteContentComponent<Props> {
         };
     }
 
-    rolesRow() {
-        return <tr>
-                    <td>Roles</td>
-                    <td>
+    roles() {
+        return <div>
+                    <h1>Manage roles</h1>
+                    <div>
                         {this.props.user.roles.map(r =>
                             <UserRole key={ r.name + r.scope_prefix + r.scope_id } {...r} />)}
-                    </td>
-                </tr>;
+                    </div>
+
+                </div>;
     }
 
     renderContent(props: Props) {
 
         let roles;
         if (props.user.roles != null) {
-            roles = this.rolesRow()
+            roles = this.roles()
         }
 
-        return <table className={ commonStyles.specialColumn }>
+        return <div><table className={ commonStyles.specialColumn }>
             <tbody>
             <tr>
                 <td>Username</td>
@@ -55,9 +56,12 @@ export class UserDetailsContentComponent extends RemoteContentComponent<Props> {
                 <td>Last logged in</td>
                 <td>{ props.user.last_logged_in || "never" }</td>
             </tr>
-            { roles }
             </tbody>
         </table>
+            <div>
+                { roles }
+            </div>
+        </div>
     }
 }
 

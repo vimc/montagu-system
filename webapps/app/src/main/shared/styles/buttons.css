@@ -17,6 +17,12 @@ button[type=submit], .submit{
     outline-color: #4cae4c;
 }
 
+button.delete, .button.delete {
+    color: #fff;
+    background-color: #d9534f;
+    border-color: #d43f3a;
+}
+
 button:hover, .button:hover {
     outline-width: 2px;
 }
