@@ -1,17 +1,54 @@
 import * as React from "react";
-import {RoleAssignment} from "../../../../shared/models/Generated";
-import { DeleteButton } from "../../../../shared/components/DeleteButton";
+import { AssociateRole, RoleAssignment } from "../../../../shared/models/Generated";
+import fetcher from "../../../../shared/sources/Fetcher";
+import { userStore } from "../../../stores/UserStore";
 
-export class UserRole extends React.Component<RoleAssignment, undefined> {
+const buttonStyles = require("../../../../shared/styles/buttons.css");
+
+interface UserRoleProps extends RoleAssignment {
+    username: string;
+}
+
+interface UserRoleState {
+    href: string;
+    associateRole: AssociateRole
+}
+
+export class UserRole extends React.Component<UserRoleProps, UserRoleState> {
+
+    componentWillMount() {
+        this.setState({
+            href: `/users/${this.props.username}/actions/associate_role/`,
+            associateRole: {
+                action: "remove",
+                name: this.props.name,
+                scope_id: this.props.scope_id,
+                scope_prefix: this.props.scope_prefix
+            }
+        })
+    }
+
+    clickHandler() {
+        fetcher.fetcher.fetch(this.state.href, {
+            method: "post",
+            body: JSON.stringify(this.state.associateRole)
+        }).then(userStore.fetchUsers(true))
+    }
+
+    renderButton() {
+        return <button ref="link" className={buttonStyles.delete} onClick={this.clickHandler.bind(this)}>
+            Remove role</button>;
+    }
 
     render() {
         let scope = "";
         if (this.props.scope_prefix && this.props.scope_prefix.length > 0) {
             scope = " / " + this.props.scope_prefix + ":" + this.props.scope_id;
         }
-        return  <div>
-            {this.props.name} {scope} <DeleteButton href={"/test"}>Remove role</DeleteButton>
-                </div>
+
+        return <div>
+            {this.props.name} {scope} {this.renderButton()}
+        </div>
 
     }
 }

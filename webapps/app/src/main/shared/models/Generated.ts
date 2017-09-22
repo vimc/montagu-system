@@ -136,3 +136,10 @@ export interface User {
     roles: RoleAssignment[] | null;
     username: string;
 }
+
+export interface AssociateRole {
+    action: string;
+    name: string;
+    scope_id: string | null;
+    scope_prefix: string | null;
+}

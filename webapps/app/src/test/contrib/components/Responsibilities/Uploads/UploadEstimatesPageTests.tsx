@@ -6,7 +6,6 @@ import { mockLocation, setupMainStore } from "../../../../mocks/mocks";
 
 import { responsibilityStore } from "../../../../../main/contrib/stores/ResponsibilityStore";
 import { mockModellingGroup } from "../../../../mocks/mockModels";
-import { DownloadCoveragePage } from "../../../../../main/contrib/components/Responsibilities/Coverage/DownloadCoveragePage";
 import { checkAsync } from "../../../../testHelpers";
 import { UploadBurdenEstimatesPage } from "../../../../../main/contrib/components/Responsibilities/BurdenEstimates/UploadBurdenEstimatesPage";
 

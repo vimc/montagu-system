@@ -24,12 +24,12 @@ export class UserDetailsContentComponent extends RemoteContentComponent<Props> {
         };
     }
 
-    roles() {
+    roles(username: string) {
         return <div>
                     <h1>Manage roles</h1>
                     <div>
                         {this.props.user.roles.map(r =>
-                            <UserRole key={ r.name + r.scope_prefix + r.scope_id } {...r} />)}
+                            <UserRole key={ r.name + r.scope_prefix + r.scope_id } {...r} username={username}/>)}
                     </div>
 
                 </div>;
@@ -39,7 +39,7 @@ export class UserDetailsContentComponent extends RemoteContentComponent<Props> {
 
         let roles;
         if (props.user.roles != null) {
-            roles = this.roles()
+            roles = this.roles(props.user.username)
         }
 
         return <div><table className={ commonStyles.specialColumn }>
