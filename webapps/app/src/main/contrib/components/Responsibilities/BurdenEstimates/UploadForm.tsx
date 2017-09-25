@@ -64,7 +64,7 @@ export class UploadForm extends React.Component<UploadFormProps, UploadState> {
         return <div>
             <div className={messageStyles.info}>{lastUploadedText} <br/> {helperText}</div>
             <form className={formStyles.form} action={url}
-                  method="POST">
+                  method="POST" encType="multipart/form-data">
                 <div>
                     <label className={formStyles.customFileUpload}>
                         <input name="file" type="file" onChange={this.handleChange.bind(this)}
