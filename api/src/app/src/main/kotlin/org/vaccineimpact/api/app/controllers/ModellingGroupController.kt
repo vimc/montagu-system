@@ -23,6 +23,7 @@ import spark.route.HttpMethod
 import java.time.Instant
 import javax.servlet.MultipartConfigElement
 
+
 open class ModellingGroupController(context: ControllerContext)
     : AbstractController(context)
 {
@@ -116,48 +117,50 @@ open class ModellingGroupController(context: ControllerContext)
 
     fun postBurdenEstimates(context: ActionContext, estimateRepository: BurdenEstimateRepository): String
     {
-        val path = ResponsibilityPath(context)
-
         // First check if we're allowed to see this touchstone
-        val touchstone = estimateRepository.touchstoneRepository.touchstones.get(path.touchstoneId)
-        checkTouchstoneStatus(touchstone.status, path.touchstoneId, context)
+        val path = getValidResponsibilityPath(context, estimateRepository)
 
-        val test = context.queryParams("file")
-        logger.info(test)
+        val request = context.request
+        if (request.raw().getAttribute("org.eclipse.jetty.multipartConfig") == null)
+        {
+            val multipartConfigElement = MultipartConfigElement(System.getProperty("java.io.tmpdir"))
+            request.raw().setAttribute("org.eclipse.jetty.multipartConfig", multipartConfigElement)
+        }
 
-        val part =  context.request.raw().getPart("file")
-        logger.info(part.name)
+        request.raw().getPart("file").inputStream.bufferedReader().use {
 
-        context.request.raw().getPart("file").inputStream.bufferedReader().use {
-
+            // Then add the burden estimates
             val data = DataTableDeserializer.deserialize(it.readText(), BurdenEstimate::class, Serializer.instance).toList()
-            if (data.map { it.disease }.distinct().count() > 1)
-            {
-                throw InconsistentDataError("More than one value was present in the disease column")
-            }
-
-            val id = estimateRepository.addBurdenEstimateSet(
-                    path.groupId, path.touchstoneId, path.scenarioId,
-                    data,
-                    uploader = context.username!!,
-                    timestamp = Instant.now()
-            )
-            val url = "/${path.groupId}/responsibilities/${path.touchstoneId}/${path.scenarioId}/estimates/$id/"
-            return objectCreation(context, url)
+            return uploadBurdenEstimates(data, estimateRepository, context, path)
         }
 
     }
 
     open fun addBurdenEstimate(context: ActionContext, estimateRepository: BurdenEstimateRepository): String
     {
-        val path = ResponsibilityPath(context)
-
         // First check if we're allowed to see this touchstone
-        val touchstone = estimateRepository.touchstoneRepository.touchstones.get(path.touchstoneId)
-        checkTouchstoneStatus(touchstone.status, path.touchstoneId, context)
+        val path = getValidResponsibilityPath(context, estimateRepository)
 
         // Then add the burden estimates
         val data = context.csvData<BurdenEstimate>()
+        return uploadBurdenEstimates(data, estimateRepository, context, path)
+    }
+
+    private fun getValidResponsibilityPath(context: ActionContext, estimateRepository: BurdenEstimateRepository): ResponsibilityPath
+    {
+        val path = ResponsibilityPath(context)
+
+        val touchstone = estimateRepository.touchstoneRepository.touchstones.get(path.touchstoneId)
+        checkTouchstoneStatus(touchstone.status, path.touchstoneId, context)
+
+        return path
+    }
+
+    private fun uploadBurdenEstimates(data: List<BurdenEstimate>,
+                                      estimateRepository: BurdenEstimateRepository,
+                                      context: ActionContext,
+                                      path: ResponsibilityPath): String
+    {
         if (data.map { it.disease }.distinct().count() > 1)
         {
             throw InconsistentDataError("More than one value was present in the disease column")

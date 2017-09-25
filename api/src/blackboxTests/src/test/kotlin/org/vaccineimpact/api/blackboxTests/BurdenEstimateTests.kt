@@ -10,6 +10,8 @@ import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.test_helpers.DatabaseTest
 import org.vaccineimpact.api.validateSchema.JSONValidator
 import spark.route.HttpMethod
+import java.io.File
+
 
 class BurdenEstimateTests : DatabaseTest()
 {
@@ -59,10 +61,18 @@ class BurdenEstimateTests : DatabaseTest()
         } andCheckString { token ->
             val oneTimeURL = "/onetime_link/$token/"
             val requestHelper = RequestHelper()
-            val response = requestHelper.post(oneTimeURL, csvData)
+
+            val file = File("file")
+            file.printWriter().use { out ->
+                out.write(csvData)
+            }
+
+            val response = requestHelper.postFile(oneTimeURL, file)
+
+            file.delete()
             assert(response.statusCode == 201)
 
-            val badResponse =  requestHelper.get(oneTimeURL)
+            val badResponse = requestHelper.get(oneTimeURL)
             JSONValidator().validateError(badResponse.text, expectedErrorCode = "invalid-token-used")
         }
     }
