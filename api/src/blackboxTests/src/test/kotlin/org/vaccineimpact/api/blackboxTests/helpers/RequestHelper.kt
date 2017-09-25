@@ -3,10 +3,14 @@ package org.vaccineimpact.api.blackboxTests.helpers
 import com.beust.klaxon.JsonArray
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
+import khttp.extensions.fileLike
 import khttp.responses.Response
+import khttp.structures.files.FileLike
 import org.vaccineimpact.api.ContentTypes
 import org.vaccineimpact.api.models.ErrorInfo
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
+import java.io.File
+import java.nio.file.Files
 
 data class TokenLiteral(val value: String)
 {
@@ -50,6 +54,16 @@ class RequestHelper
         )
     }
 
+    fun postFile(url: String, file: File): Response
+    {
+        val files = listOf<FileLike>(file.fileLike())
+        return postFiles(
+                url,
+                standardHeaders(ContentTypes.json, null),
+                files
+        )
+    }
+
     private fun standardHeaders(contentType: String, token: TokenLiteral?): Map<String, String>
     {
         var headers = mapOf(
@@ -67,6 +81,12 @@ class RequestHelper
             EndpointBuilder.build(url),
             data = data,
             headers = headers
+    )
+
+    private fun postFiles(url: String, headers: Map<String, String>, files: List<FileLike>) = khttp.post(
+            EndpointBuilder.build(url),
+            headers = headers,
+            files = files
     )
 
     private fun get(url: String, headers: Map<String, String>)
