@@ -44,7 +44,7 @@ export class ResponsibilityComponent extends React.Component<Props, undefined> {
                     </div>
                     <div className={styles.actions}>
                         <ButtonLink href={downloadUrl}>Download coverage data</ButtonLink>
-                        <ButtonLink href={uploadUrl}>Upload burden estimates</ButtonLink>
+                        <ButtonLink href={uploadUrl} disabled="disabled">Upload burden estimates</ButtonLink>
                         {estimates}
                     </div>
                 </div>

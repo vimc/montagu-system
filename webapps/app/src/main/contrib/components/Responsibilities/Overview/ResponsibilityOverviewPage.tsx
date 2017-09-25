@@ -46,6 +46,9 @@ export class ResponsibilityOverviewPage extends PageWithHeaderAndNav<LocationPro
                     know <a href={ supportEmail }>here</a> if any demographic inputs to
                     your model are missing.
                 </li>
+                <li>
+                    Download csv templates for central and stochastic burden estimates.
+                </li>
             </ol>
             <span>
                 In the future, you will also be able to:
