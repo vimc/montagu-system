@@ -22,9 +22,9 @@ export class TemplateLink extends React.Component<TemplateLinkProps, undefined> 
         const href = `/contribution/templates/deterministic_burden_template_${disease.id}-${this.props.groupId}.csv`;
         const hrefStochastic = `/contribution/templates/stochastic_burden_template_${disease.id}-${this.props.groupId}.csv`;
 
-        return <div><a key={disease.id}
+        return <div><a key={`${disease.id}-d`}
                        href={href}>{disease.name} - deterministic</a>
-            <a key={disease.id}
+            <a key={`${disease.id}-s`}
                href={hrefStochastic}>{disease.name} - stochastic</a>
         </div>;
     }
