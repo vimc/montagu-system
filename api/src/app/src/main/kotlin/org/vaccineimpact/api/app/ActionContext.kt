@@ -3,10 +3,12 @@ package org.vaccineimpact.api.app
 import org.pac4j.core.profile.CommonProfile
 import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
+import spark.Request
 import kotlin.reflect.KClass
 
 interface ActionContext
 {
+    val request: Request
     val permissions: PermissionSet
     val userProfile: CommonProfile?
     /** If the user logged in with a token this will be their username
@@ -29,6 +31,7 @@ interface ActionContext
 
     fun hasPermission(requirement: ReifiedPermission): Boolean
     fun requirePermission(requirement: ReifiedPermission): Unit
+
 }
 
 inline fun <reified T: Any> ActionContext.postData() = this.postData(T::class.java)

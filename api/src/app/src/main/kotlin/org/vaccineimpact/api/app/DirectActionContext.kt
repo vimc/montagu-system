@@ -15,7 +15,7 @@ import kotlin.reflect.KClass
 
 open class DirectActionContext(private val context: SparkWebContext): ActionContext
 {
-    private val request
+    override val request
             get() = context.sparkRequest
     private val response
             get() = context.sparkResponse

@@ -14,11 +14,14 @@ import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.RepositoryFactory
 import org.vaccineimpact.api.app.serialization.DataTable
+import org.vaccineimpact.api.app.serialization.DataTableDeserializer
+import org.vaccineimpact.api.app.serialization.Serializer
 import org.vaccineimpact.api.app.serialization.SplitData
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import spark.route.HttpMethod
 import java.time.Instant
+import javax.servlet.MultipartConfigElement
 
 open class ModellingGroupController(context: ControllerContext)
     : AbstractController(context)
@@ -38,17 +41,17 @@ open class ModellingGroupController(context: ControllerContext)
     {
         val repo: (Repositories) -> ModellingGroupRepository = { it.modellingGroup }
         return listOf(
-                oneRepoEndpoint("/",                           this::getModellingGroups, repos, repo).secured(setOf("*/modelling-groups.read")),
-                oneRepoEndpoint("/:group-id/",                 this::getModellingGroup, repos, repo).secured(setOf("*/modelling-groups.read", "*/models.read")),
-                oneRepoEndpoint("$responsibilitiesURL/",       this::getResponsibilities, repos, repo).secured(responsibilityPermissions),
-                oneRepoEndpoint("$scenarioURL/",               this::getResponsibility, repos, repo).secured(responsibilityPermissions),
+                oneRepoEndpoint("/", this::getModellingGroups, repos, repo).secured(setOf("*/modelling-groups.read")),
+                oneRepoEndpoint("/:group-id/", this::getModellingGroup, repos, repo).secured(setOf("*/modelling-groups.read", "*/models.read")),
+                oneRepoEndpoint("$responsibilitiesURL/", this::getResponsibilities, repos, repo).secured(responsibilityPermissions),
+                oneRepoEndpoint("$scenarioURL/", this::getResponsibility, repos, repo).secured(responsibilityPermissions),
                 oneRepoEndpoint("$scenarioURL/coverage_sets/", this::getCoverageSets, repos, repo).secured(coveragePermissions),
-                oneRepoEndpoint("$coverageURL/",               this::getCoverageDataAndMetadata, repos, repo, contentType = "application/json").secured(coveragePermissions),
-                oneRepoEndpoint("$coverageURL/",               this::getCoverageData, repos, repo, contentType = "text/csv").secured(coveragePermissions),
+                oneRepoEndpoint("$coverageURL/", this::getCoverageDataAndMetadata, repos, repo, contentType = "application/json").secured(coveragePermissions),
+                oneRepoEndpoint("$coverageURL/", this::getCoverageData, repos, repo, contentType = "text/csv").secured(coveragePermissions),
                 oneRepoEndpoint("$coverageURL/get_onetime_link/", { c, r -> getOneTimeLinkToken(c, r, OneTimeAction.COVERAGE) }, repos, { it.token }).secured(coveragePermissions),
-                oneRepoEndpoint("$scenarioURL/estimates/",     this::addBurdenEstimate, repos, { it.burdenEstimates }, method = HttpMethod.post)
+                oneRepoEndpoint("$scenarioURL/estimates/", this::addBurdenEstimate, repos, { it.burdenEstimates }, method = HttpMethod.post)
                         .secured(setOf("$groupScope/estimates.write", "$groupScope/responsibilities.read")),
-                oneRepoEndpoint("$scenarioURL/estimates/get_onetime_link/", { c, r -> getOneTimeLinkToken(c, r, OneTimeAction.BURDENS)}, repos, { it.token})
+                oneRepoEndpoint("$scenarioURL/estimates/get_onetime_link/", { c, r -> getOneTimeLinkToken(c, r, OneTimeAction.BURDENS) }, repos, { it.token })
                         .secured(setOf("$groupScope/estimates.write", "$groupScope/responsibilities.read"))
         )
     }
@@ -109,6 +112,40 @@ open class ModellingGroupController(context: ControllerContext)
         val data = repo.getCoverageData(path.groupId, path.touchstoneId, path.scenarioId)
         checkTouchstoneStatus(data.structuredMetadata.touchstone.status, path.touchstoneId, context)
         return data
+    }
+
+    fun postBurdenEstimates(context: ActionContext, estimateRepository: BurdenEstimateRepository): String
+    {
+        val path = ResponsibilityPath(context)
+
+        // First check if we're allowed to see this touchstone
+        val touchstone = estimateRepository.touchstoneRepository.touchstones.get(path.touchstoneId)
+        checkTouchstoneStatus(touchstone.status, path.touchstoneId, context)
+
+        val test = context.queryParams("file")
+        logger.info(test)
+
+        val part =  context.request.raw().getPart("file")
+        logger.info(part.name)
+
+        context.request.raw().getPart("file").inputStream.bufferedReader().use {
+
+            val data = DataTableDeserializer.deserialize(it.readText(), BurdenEstimate::class, Serializer.instance).toList()
+            if (data.map { it.disease }.distinct().count() > 1)
+            {
+                throw InconsistentDataError("More than one value was present in the disease column")
+            }
+
+            val id = estimateRepository.addBurdenEstimateSet(
+                    path.groupId, path.touchstoneId, path.scenarioId,
+                    data,
+                    uploader = context.username!!,
+                    timestamp = Instant.now()
+            )
+            val url = "/${path.groupId}/responsibilities/${path.touchstoneId}/${path.scenarioId}/estimates/$id/"
+            return objectCreation(context, url)
+        }
+
     }
 
     open fun addBurdenEstimate(context: ActionContext, estimateRepository: BurdenEstimateRepository): String
