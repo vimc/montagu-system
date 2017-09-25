@@ -17,15 +17,15 @@ interface UserRoleState {
 export class UserRole extends React.Component<UserRoleProps, UserRoleState> {
 
     componentWillMount() {
-        this.setState({
-            href: `/users/${this.props.username}/actions/associate_role/`,
+        this.setState((previousState, props) => ({
+            href: `/users/${props.username}/actions/associate_role/`,
             associateRole: {
                 action: "remove",
-                name: this.props.name,
-                scope_id: this.props.scope_id,
-                scope_prefix: this.props.scope_prefix
+                name: props.name,
+                scope_id: props.scope_id,
+                scope_prefix: props.scope_prefix
             }
-        })
+        }))
     }
 
     clickHandler() {

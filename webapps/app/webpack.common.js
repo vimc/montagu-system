@@ -63,6 +63,21 @@ function commonConfig(name, public_path) {
                         }
                     ]
                 },
+                // Use SCSS modules
+                {
+                    test: /\.scss$/,
+                    loaders: [
+                        "style-loader",
+                        {
+                            loader: "sass-loader",
+                            options: {
+                                modules: true,
+                                // The local name must come last so that CSSTransitionGroup can append suffixes
+                                localIdentName: "[name]_[local]",
+                            }
+                        }
+                    ]
+                },
                 // Substitute paths into index.html
                 {
                     test: /index.html$/,
