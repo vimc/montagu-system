@@ -61,6 +61,20 @@ class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRepository>(
     }
 
     @Test
+    fun `updates responsibility current estimate set`()
+    {
+        var returnedIds: ReturnedIds? = null
+        var setId: Int? = null
+        given { db ->
+            returnedIds = setupDatabase(db)
+        } makeTheseChanges { repo ->
+            setId = repo.addBurdenEstimateSet(groupId, touchstoneId, scenarioId, data, username, timestamp)
+        } andCheckDatabase { db ->
+            checkCurrentBurdenEstimateSet(db, returnedIds!!, setId!!)
+        }
+    }
+
+    @Test
     fun `cannot add burden estimates with diseases that do not match scenario`()
     {
         val badData = data.map { it.copy(disease = "YF") }
@@ -207,6 +221,16 @@ class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRepository>(
         assertThat(set[t.UPLOADED_BY]).isEqualTo(username)
         assertThat(set[t.UPLOADED_ON].toInstant()).isEqualTo(timestamp)
         return set[t.ID]
+    }
+
+    private fun checkCurrentBurdenEstimateSet(db: JooqContext, returnedIds: ReturnedIds, setId: Int)
+    {
+        val actualSetId = db.dsl.select(RESPONSIBILITY.CURRENT_BURDEN_ESTIMATE_SET)
+                .from(RESPONSIBILITY)
+                .where(RESPONSIBILITY.ID.eq(returnedIds.responsibility))
+                .fetchOneInto(Int::class.java)
+
+        assertThat(actualSetId).isEqualTo(setId)
     }
 
     private fun checkRecord(record: Record, setId: Int,
