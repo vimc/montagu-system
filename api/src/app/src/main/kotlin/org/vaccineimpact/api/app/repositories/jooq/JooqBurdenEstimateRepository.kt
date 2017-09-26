@@ -66,8 +66,20 @@ class JooqBurdenEstimateRepository(
         val setId = addSet(responsibilityInfo.id, uploader, timestamp, latestModelVersion)
         val cohortSizeId = outcomeLookup["cohort_size"]
             ?: throw DatabaseContentsError("Expected a value with code 'cohort_size' in burden_outcome table")
+
         addEstimatesToSet(estimates, setId, outcomeLookup, cohortSizeId, responsibilityInfo.disease)
+
+        updateCurrentBurdenEstimateSet(responsibilityInfo.id, setId)
+
         return setId
+    }
+
+    private fun updateCurrentBurdenEstimateSet(responsibilityId: Int, setId: Int)
+    {
+        dsl.update(RESPONSIBILITY)
+                .set(RESPONSIBILITY.CURRENT_BURDEN_ESTIMATE_SET, setId)
+                .where(RESPONSIBILITY.ID.eq(responsibilityId))
+                .execute()
     }
 
     private fun addEstimatesToSet(estimates: List<BurdenEstimate>, setId: Int,
