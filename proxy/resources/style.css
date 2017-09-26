@@ -82,3 +82,14 @@ a.button {
 a.button:hover {
     background-color: rgb(191, 235, 255);
 }
+
+.header-small{
+    font-variant-caps: all-petite-caps;;
+    color: rgb(27, 111, 177);
+    font-size: 26px;
+}
+
+ul li {
+    line-height: 1.5em;
+    margin-bottom:10px;
+}
