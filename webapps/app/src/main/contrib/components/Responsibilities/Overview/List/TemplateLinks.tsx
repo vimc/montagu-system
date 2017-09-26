@@ -19,10 +19,16 @@ export class TemplateLink extends React.Component<TemplateLinkProps, undefined> 
     render(): JSX.Element {
 
         const disease = mainStore.getDiseaseById(this.props.diseaseId);
-        const href = `/contribution/templates/burden_template_${disease.id}-${this.props.groupId}.csv`;
+        const href = `/contribution/templates/deterministic_burden_template_${disease.id}-${this.props.groupId}.csv`;
+        const hrefStochastic = `/contribution/templates/stochastic_burden_template_${disease.id}-${this.props.groupId}.csv`;
 
-        return <a key={disease.id}
-                           href={href}>{disease.name}</a>;
+        return <div><div><a key={`${disease.id}-d`}
+                            href={href}>{disease.name} - deterministic</a></div>
+            <div>
+            <a key={`${disease.id}-s`}
+               href={hrefStochastic}>{disease.name} - stochastic</a>
+            </div>
+        </div>;
     }
 }
 

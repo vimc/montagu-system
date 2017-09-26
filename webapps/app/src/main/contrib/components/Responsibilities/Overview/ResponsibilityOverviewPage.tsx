@@ -46,15 +46,22 @@ export class ResponsibilityOverviewPage extends PageWithHeaderAndNav<LocationPro
                     know <a href={ supportEmail }>here</a> if any demographic inputs to
                     your model are missing.
                 </li>
+                <li>
+                    Download csv templates for central and stochastic burden estimates.
+                </li>
+                <li>Upload central burden estimates for each scenario, and review any problems
+                    the system has detected in the uploaded data.
+                    Montagu does not yet have facilities for uploading stochastic estimates.
+                </li>
+                <li>Track progress towards providing central burden estimates for all your scenarios.</li>
             </ol>
             <span>
                 In the future, you will also be able to:
             </span>
             <ol start={4}>
-                <li>Upload burden estimates for each scenario, and review any problems
+                <li>Upload stochastic burden estimates for each scenario, and review any problems
                     the system has detected in the uploaded data.
                 </li>
-                <li>Track progress towards providing burden estimates for all your scenarios</li>
             </ol>
             <ResponsibilityOverviewContent />
         </div>

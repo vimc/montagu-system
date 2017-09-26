@@ -86,7 +86,7 @@ function addGroups(db: Client): Promise<QueryResult> {
             INSERT INTO modelling_group (id, description, institution, pi) VALUES ('g1', 'Group 1', '', '');
             INSERT INTO modelling_group (id, description, institution, pi) VALUES ('g2', 'Group 2', '', '');
             
-            INSERT INTO model (id, modelling_group, description, citation) VALUES ('model', 'g1', 'A model', 'Citation');
+            INSERT INTO model (id, modelling_group, description, citation, is_current) VALUES ('model', 'g1', 'A model', 'Citation', true);
             
             INSERT INTO app_user (username) VALUES ('bob');        
             
