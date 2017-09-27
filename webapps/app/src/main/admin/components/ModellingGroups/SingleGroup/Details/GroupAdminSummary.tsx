@@ -11,16 +11,16 @@ interface Props {
 export class GroupAdminSummary extends React.Component<Props, undefined> {
     render() {
         const url = `/modelling-groups/${this.props.group.id}/admin/`;
-        const admins = this.props.group.members.map(member => this.props.allUsers.find(u => member == u.username));
-        if (admins.length == 0) {
+        const members = this.props.group.members.map(member => this.props.allUsers.find(u => member == u.username));
+        if (members.length == 0) {
             return <span>
                 This group does not have any members.
                 Please click <InternalLink href={ url }>here</InternalLink> to add one.
             </span>;
         } else {
             return <span>
-                <ListOfUsers users={ admins } />&nbsp;
-                (<InternalLink href={ url }>change</InternalLink>)
+                <ListOfUsers users={ members } />&nbsp;
+                (<InternalLink href={ url }>edit</InternalLink>)
             </span>
         }
     }
