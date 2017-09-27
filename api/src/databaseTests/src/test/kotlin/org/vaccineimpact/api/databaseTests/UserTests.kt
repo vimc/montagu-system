@@ -127,6 +127,23 @@ class UserTests : RepositoryTests<UserRepository>()
     }
 
     @Test
+    fun `gets global roles`()
+    {
+        given {
+            db ->
+            db.addUserWithRoles(username, ReifiedRole("member", Scope.parse("modelling-group:IC-Garske")),
+                    ReifiedRole("globalrole", Scope.Global()), ReifiedRole("reports.reader", Scope.Global()))
+        } check { repo ->
+
+            val roles = repo.globalRoles()
+            assertThat(roles.count()).isEqualTo(2)
+            assertThat(roles[0]).isEqualTo("globalrole")
+            assertThat(roles[1]).isEqualTo("reports.reader")
+
+        }
+    }
+
+    @Test
     fun `cannot retrieve user with incorrect email address`()
     {
         given(this::addTestUser).check { repo ->
