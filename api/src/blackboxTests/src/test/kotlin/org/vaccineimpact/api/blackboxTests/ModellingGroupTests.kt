@@ -40,7 +40,7 @@ class ModellingGroupTests : DatabaseTest()
             it.addDisease("d2")
             it.addModel("a", "group", "d1", "description A", "citation A")
             it.addModel("b", "group", "d2", "description B", "citation B")
-            it.addUserWithRoles("group.admin", ReifiedRole("member", Scope.Specific("modelling-group", "group")))
+            it.addUserWithRoles("group.member", ReifiedRole("member", Scope.Specific("modelling-group", "group")))
         } requiringPermissions {
             PermissionSet("*/modelling-groups.read", "*/models.read")
         } andCheck {
@@ -61,7 +61,7 @@ class ModellingGroupTests : DatabaseTest()
                                     "citation" to "citation B"
                             )
                     ),
-                    "admins" to array("group.admin")
+                    "members" to array("group.member")
             )})
         }
     }

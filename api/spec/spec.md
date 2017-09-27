@@ -1129,7 +1129,7 @@ Schema: [`ModellingGroupDetails.schema.json`](ModellingGroupDetails.schema.json)
                 "modelling_group": "IC-YellowFever"
             }
         ],
-        "admins": [ "john.smith" ]
+        "members": [ "john.smith" ]
     }
 
 ## POST /modelling-groups/
