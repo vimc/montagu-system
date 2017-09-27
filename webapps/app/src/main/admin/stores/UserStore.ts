@@ -117,8 +117,8 @@ class UserStore
     }
 
     handleRemoveRole (role: RoleAssignment) {
-        const index = this.rolesLookup[this.currentUsername].indexOf(role);
-        this.rolesLookup[this.currentUsername].splice(index, 1);
+        this.rolesLookup[this.currentUsername] = this.rolesLookup[this.currentUsername]
+            .filter(r => r.name == role.name && r.scope_id == role.scope_id && r.scope_prefix == role.scope_prefix);
     }
 }
 
