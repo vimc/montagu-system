@@ -10,7 +10,7 @@ import { ListOfUsers } from "../../ListOfUsers";
 const commonStyles = require("../../../../../shared/styles/common.css");
 
 interface Props extends RemoteContent {
-    admins: Set<User>;
+    members: Set<User>;
     users: User[];
 }
 
@@ -25,28 +25,28 @@ export class GroupAdminContentComponent extends RemoteContentComponent<Props> {
         if (group != null) {
             return {
                 users: allUsers,
-                admins: new Set(group.admins.map(a => allUsers.find(u => a == u.username))),
+                members: new Set(group.members.map(a => allUsers.find(u => a == u.username))),
                 ready: group != null && userStore.getState().ready
             };
         } else {
             return {
                 users: [],
-                admins: new Set(),
+                members: new Set(),
                 ready: false
             };
         }
     }
 
     renderCurrent(props: Props): JSX.Element {
-        if (props.admins.size == 0) {
-            return <div>This group does not have an admin.</div>;
+        if (props.members.size == 0) {
+            return <div>This group does not have any members.</div>;
         } else {
-            return <ListOfUsers users={ [...props.admins] } />;
+            return <ListOfUsers users={ [...props.members] } />;
         }
     }
 
     renderAdd(props: Props): JSX.Element {
-        const options = props.users.filter(x => !props.admins.has(x))
+        const options = props.users.filter(x => !props.members.has(x))
             .map(u => <option key={ u.username } value={ u.username }>{ u.name }</option>);
         const select = {
             width: 300,
@@ -63,18 +63,10 @@ export class GroupAdminContentComponent extends RemoteContentComponent<Props> {
 
     renderContent(props: Props) {
         return <div>
-            <div>
-                <p>The group admin (or admins) manage the modelling group members in Montagu.</p>
-                <p>The admin can add new users to Montagu and grant them permission to use the contribution portal,
-                    to download coverage data and upload burden estimates for their group.</p>
-                <p>The admin can also remove users from their group, and can assign a new admin.</p>
-            </div>
-            <div>
-                <div className={ commonStyles.sectionTitle }>Current group admin</div>
+                <div className={ commonStyles.sectionTitle }>Current group members</div>
                 { this.renderCurrent(props) }
-            </div>
             <div>
-                <div className={ commonStyles.sectionTitle }>Add admin user</div>
+                <div className={ commonStyles.sectionTitle }>Add modelling group member</div>
                 { this.renderAdd(props) }
             </div>
         </div>

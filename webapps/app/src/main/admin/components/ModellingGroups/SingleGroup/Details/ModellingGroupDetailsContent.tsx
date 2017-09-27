@@ -34,7 +34,7 @@ class ModellingGroupDetailsContentComponent extends RemoteContentComponent<Props
                 <tbody>
                     <tr><td>ID</td><td>{ props.group.id }</td></tr>
                     <tr>
-                        <td>Group admin</td>
+                        <td>Group members</td>
                         <td><GroupAdminSummary group={ this.props.group } allUsers={ this.props.users } /></td>
                     </tr>
                 </tbody>

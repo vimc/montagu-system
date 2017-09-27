@@ -22,7 +22,7 @@ describe("GroupAdminContent", () => {
                 currentGroupId: "group1",
                 groupDetails: {
                     "group1": group,
-                    "group2": mockModellingGroupDetails({ admins: ["a", "b"] })
+                    "group2": mockModellingGroupDetails({ members: ["a", "b"] })
                 }
             }
         }));
@@ -30,21 +30,21 @@ describe("GroupAdminContent", () => {
         expect(props).to.eql({
             ready: true,
             users: [a, b, c],
-            admins: new Set<User>([a, b])
+            members: new Set<User>([a, b])
         });
     });
 
-    it("renders no admins if group has no admins", () => {
-        const rendered = shallow(<GroupAdminContentComponent ready={ true } users={ [] } admins={ new Set() } />);
-        expect(rendered.text()).to.contain("This group does not have an admin");
+    it("renders no members if group has no members", () => {
+        const rendered = shallow(<GroupAdminContentComponent ready={ true } users={ [] } members={ new Set() } />);
+        expect(rendered.text()).to.contain("This group does not have any members.");
     });
 
-    it("renders admins if group has admins", () => {
-        const admins = [
+    it("renders members if group has members", () => {
+        const members = [
             mockUser({ name: "Test A" }),
             mockUser({ name: "Test B" })
         ];
-        const rendered = shallow(<GroupAdminContentComponent ready={ true } users={ [] } admins={ new Set(admins) } />);
-        expect(rendered.find(ListOfUsers).prop("users")).to.eql(admins);
+        const rendered = shallow(<GroupAdminContentComponent ready={ true } users={ [] } members={ new Set(members) } />);
+        expect(rendered.find(ListOfUsers).prop("users")).to.eql(members);
     });
 });

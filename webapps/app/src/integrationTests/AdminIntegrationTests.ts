@@ -43,7 +43,7 @@ class AdminIntegrationTests extends IntegrationTestSuite {
                 expectIsEqual<ModellingGroupDetails>(details, {
                     id: "g1",
                     description: "Group 1",
-                    admins: ['bob'],
+                    members: ['bob'],
                     models: [
                         {
                             id: "model",
