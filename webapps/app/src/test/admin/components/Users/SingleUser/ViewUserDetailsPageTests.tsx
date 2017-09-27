@@ -9,6 +9,8 @@ import {
     UserDetailsPageProps,
     ViewUserDetailsPage
 } from "../../../../../main/admin/components/Users/SingleUser/ViewUserDetailsPage";
+import { alt } from "../../../../../main/shared/alt";
+import { mockUser } from "../../../../mocks/mockModels";
 
 describe("ViewUserDetailsPage", () => {
     const sandbox = new Sandbox();
@@ -16,6 +18,18 @@ describe("ViewUserDetailsPage", () => {
     afterEach(() => sandbox.restore());
 
     it("triggers fetch on load", (done: DoneCallback) => {
+
+        alt.bootstrap(JSON.stringify({
+            UserStore: {
+                currentUsername: "testuser",
+                usersLookup: {
+                    "testuser": mockUser(),
+                },
+                rolesLookup: {
+                }
+            }
+        }));
+
         const fetchUsers = sandbox.sinon.stub(userStore, "fetchUsers")
             .returns(Promise.resolve(true));
 
