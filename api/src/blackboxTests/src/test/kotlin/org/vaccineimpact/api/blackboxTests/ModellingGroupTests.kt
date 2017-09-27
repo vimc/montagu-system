@@ -61,7 +61,7 @@ class ModellingGroupTests : DatabaseTest()
                                     "citation" to "citation B"
                             )
                     ),
-                    "members" to array("group.user")
+                    "members" to array("group.member")
             )})
         }
     }
