@@ -2,6 +2,7 @@ package org.vaccineimpact.api.blackboxTests
 
 import com.beust.klaxon.json
 import org.assertj.core.api.Assertions
+import org.junit.Assert
 import org.junit.Test
 import org.vaccineimpact.api.blackboxTests.helpers.RequestHelper
 import org.vaccineimpact.api.blackboxTests.helpers.TestUserHelper
@@ -41,6 +42,22 @@ class UserTests : DatabaseTest()
             }
             Assertions.assertThat(it).isEqualTo(expected)
         }
+    }
+
+    @Test
+    fun `can get roles`()
+    {
+        val userHelper = TestUserHelper()
+
+        JooqContext().use {
+            userHelper.setupTestUser(it)
+        }
+
+        val requestHelper = RequestHelper()
+        val response = requestHelper.get("/users/roles/all/",
+                PermissionSet("*/can-login", "*/roles.read"), contentType = "application/json")
+
+        Assertions.assertThat(response.statusCode).isEqualTo(200)
     }
 
     @Test
