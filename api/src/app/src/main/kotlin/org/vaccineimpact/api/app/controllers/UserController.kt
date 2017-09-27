@@ -28,13 +28,14 @@ class UserController(
 {
     override val urlComponent = "/users"
     override fun endpoints(repos: RepositoryFactory): List<Endpoint<*>> = listOf(
+            oneRepoEndpoint("/roles/all/",
+                    this::getGlobalRoles, repos, { it.user }, method = HttpMethod.get)
+                    .secured(setOf("*/roles.read")),
             oneRepoEndpoint("/:username/", this::getUser, repos, { it.user }).secured(setOf("*/users.read")),
             oneRepoEndpoint("/", this::getUsers, repos, { it.user }).secured(setOf("*/users.read")),
             multiRepoEndpoint("/", this::createUser, repos, method = HttpMethod.post).secured(setOf("*/users.create")),
             oneRepoEndpoint("/:username/actions/associate_role/",
-                    this::modifyUserRole, repos, { it.user }, method = HttpMethod.post).secured(),
-            oneRepoEndpoint("/roles/",
-                    this::getGlobalRoles, repos, { it.user }, method = HttpMethod.post).secured()
+                    this::modifyUserRole, repos, { it.user }, method = HttpMethod.post).secured()
     )
 
     fun modifyUserRole(context: ActionContext, repo: UserRepository): String
