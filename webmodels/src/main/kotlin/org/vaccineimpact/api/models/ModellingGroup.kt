@@ -8,4 +8,4 @@ data class ModellingGroup(override val id: String,
 data class ModellingGroupDetails(override val id: String,
                                  val description: String,
                                  val models: List<ResearchModel>,
-                                 val admins: List<Username>): HasKey<String>
+                                 val members: List<Username>): HasKey<String>
