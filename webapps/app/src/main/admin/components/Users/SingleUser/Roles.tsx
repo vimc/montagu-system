@@ -19,34 +19,23 @@ export class Roles extends React.Component<RolesProps, RolesState> {
 
     componentDidMount() {
 
-
-        // fetcher.fetcher.fetch("/users/roles/")
-        //     .then((data: Result) =>
-        //         this.setState({
-        //             roles: data.data
-        //         })
-        //
-        this.setState({
-            roles: ["reports-reader", "reports-reviewer"],
-            selectedRole: "reports-reader"
-        })
-
+        fetcher.fetcher.fetch("/users/roles/all/")
+            .then((response: Response) => {
+                return response.json()
+            })
+            .then((result: Result) => {
+                this.setState({
+                    roles: result.data
+                })
+            });
     }
 
     componentWillMount() {
 
-
-        // fetcher.fetcher.fetch("/users/roles/")
-        //     .then((data: Result) =>
-        //         this.setState({
-        //             roles: data.data
-        //         })
-        //
         this.setState({
             roles: [],
             selectedRole: ""
         })
-
     }
 
     handleChange(e: any) {
