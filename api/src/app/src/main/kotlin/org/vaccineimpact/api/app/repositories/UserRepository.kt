@@ -15,6 +15,8 @@ interface UserRepository : Repository
     fun allWithRoles(): List<User>
     fun updateLastLoggedIn(username: String)
 
+    fun globalRoles(): List<String>
+
     fun addUser(user: CreateUser)
     fun setPassword(username: String, plainPassword: String)
 

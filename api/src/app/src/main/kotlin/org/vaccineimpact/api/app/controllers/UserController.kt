@@ -32,7 +32,9 @@ class UserController(
             oneRepoEndpoint("/", this::getUsers, repos, { it.user }).secured(setOf("*/users.read")),
             multiRepoEndpoint("/", this::createUser, repos, method = HttpMethod.post).secured(setOf("*/users.create")),
             oneRepoEndpoint("/:username/actions/associate_role/",
-                    this::modifyUserRole, repos, { it.user }, method = HttpMethod.post).secured()
+                    this::modifyUserRole, repos, { it.user }, method = HttpMethod.post).secured(),
+            oneRepoEndpoint("/roles/",
+                    this::getGlobalRoles, repos, { it.user }, method = HttpMethod.post).secured()
     )
 
     fun modifyUserRole(context: ActionContext, repo: UserRepository): String
@@ -94,6 +96,11 @@ class UserController(
         {
             return repo.all().toList()
         }
+    }
+
+    fun getGlobalRoles(context: ActionContext, repo: UserRepository): List<String>
+    {
+        return repo.globalRoles()
     }
 
     fun createUser(context: ActionContext, repos: Repositories): String

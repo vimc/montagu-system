@@ -127,6 +127,18 @@ class UserTests : RepositoryTests<UserRepository>()
     }
 
     @Test
+    fun `gets global roles`()
+    {
+        given {
+
+        } check { repo ->
+
+            val roles = repo.globalRoles()
+            assertThat(roles.count()).isEqualTo(8)
+        }
+    }
+
+    @Test
     fun `cannot retrieve user with incorrect email address`()
     {
         given(this::addTestUser).check { repo ->

@@ -31,6 +31,14 @@ class JooqUserRepository(dsl: DSLContext) : JooqRepository(dsl), UserRepository
         }
     }
 
+    override fun globalRoles(): List<String>
+    {
+        return dsl.select(ROLE.NAME)
+                .from(ROLE)
+                .where(ROLE.SCOPE_PREFIX.isNull)
+                .fetchInto(String::class.java)
+    }
+
     private fun removeRoleFromUser(username: String, role: ReifiedRole)
     {
         val roleId = dsl.getRole(role.name, role.scope.databaseScopePrefix)
