@@ -11,8 +11,8 @@ describe("UserRole", () => {
         const role: RoleAssignment = mockRole();
         role.scope_prefix = "";
         role.name = "rolename";
-        const rendered = shallow(<UserRole { ...role} />);
-        const text = rendered.find('div').text();
+        const rendered = shallow(<UserRole { ...role} username="testuser"/>);
+        const text = rendered.find('.role-name').text();
 
         expect(text).to.eq("rolename")
     });
@@ -23,8 +23,8 @@ describe("UserRole", () => {
         role.scope_prefix = "group";
         role.scope_id = "fake";
         role.name = "rolename";
-        const rendered = shallow(<UserRole { ...role} />);
-        const text = rendered.find('div').text();
+        const rendered = shallow(<UserRole { ...role} username="testuser"/>);
+        const text = rendered.find('.role-name').text();
 
         expect(text).to.eq("rolename / group:fake")
     });

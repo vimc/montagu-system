@@ -22,7 +22,7 @@ export abstract class PageWithHeader<TLocationProps>
                 { this.header() }
             </header>
             { this.postHeader() }
-            <article className={ styles.page }>
+            <article className={ `${styles.page} container` }>
                 <div className={ styles.pageTitle }>{ this.title() }</div>
                 <div className={ styles.pageContent }>{ this.renderPageContent() }</div>
             </article>
