@@ -1,6 +1,6 @@
 import { AbstractStore } from "../../shared/stores/AbstractStore";
 import { alt } from "../../shared/alt";
-import { User } from "../../shared/models/Generated";
+import { RoleAssignment, User } from "../../shared/models/Generated";
 import { UserSource } from "../sources/UserSource";
 import { userActions } from "../actions/UserActions";
 import { RemoteContent } from "../../shared/models/RemoteContent";
@@ -11,12 +11,20 @@ export interface UserStoreState extends RemoteContent {
     users: User[];
     currentUsername: string;
     usersLookup: ILookup<User>;
+    rolesLookup: ILookup<RoleAssignment[]>;
     showCreateUser: boolean;
 }
 
 export interface UserStoreInterface extends AltJS.AltStore<UserStoreState> {
     fetchUsers(force?: boolean): Promise<User[]>;
+
     getCurrentUserDetails(): User;
+
+    getCurrentUserRoles(): RoleAssignment[];
+
+    removeRole(name: string, scopePrefix: string | null, scopeId: string | null): void
+
+    addRole(name: string, scopePrefix: string | null, scopeId: string | null): void
 }
 
 class UserStore
@@ -24,6 +32,7 @@ class UserStore
     users: User[];
     ready: boolean;
     usersLookup: ILookup<User>;
+    rolesLookup: ILookup<RoleAssignment[]>;
     currentUsername: string;
     showCreateUser: boolean;
 
@@ -34,18 +43,28 @@ class UserStore
             handleUpdateUsers: userActions.updateUsers,
             handleSetCurrentUser: userActions.setCurrentUser,
             handleSetShowCreateUser: userActions.setShowCreateUser,
+            handleAddRole: userActions.addRole,
+            handleRemoveRole: userActions.removeRole
         });
         this.registerAsync(new UserSource());
         this.exportPublicMethods({
             fetchUsers: (force?: boolean) => {
                 if (force == true) {
                     this.users = [];
+                    this.rolesLookup = {}
                 }
                 return (this.getInstance() as any)._fetchUsers();
             },
             getCurrentUserDetails: () => {
                 if (this.currentUsername && this.usersLookup.hasOwnProperty(this.currentUsername)) {
                     return this.usersLookup[this.currentUsername]
+                } else {
+                    return null;
+                }
+            },
+            getCurrentUserRoles: () => {
+                if (this.currentUsername && this.rolesLookup.hasOwnProperty(this.currentUsername)) {
+                    return this.rolesLookup[this.currentUsername]
                 } else {
                     return null;
                 }
@@ -59,7 +78,8 @@ class UserStore
             currentUsername: null,
             users: [],
             ready: false,
-            showCreateUser: false
+            showCreateUser: false,
+            rolesLookup: {}
         };
     }
 
@@ -67,6 +87,7 @@ class UserStore
         this.ready = false;
         this.users = [];
         this.usersLookup = {};
+        this.rolesLookup = {};
     }
 
     handleUpdateUsers(users: User[]) {
@@ -75,7 +96,9 @@ class UserStore
 
         users.forEach(u => {
             this.usersLookup[u.username] = u;
+            this.rolesLookup[u.username] = u.roles;
         });
+
     }
 
     handleSetCurrentUser(username: string) {
@@ -84,6 +107,18 @@ class UserStore
 
     handleSetShowCreateUser(show: boolean) {
         this.showCreateUser = show;
+    }
+
+    handleAddRole (role: RoleAssignment) {
+        const index = this.rolesLookup[this.currentUsername].indexOf(role);
+        if (index == -1) {
+            this.rolesLookup[this.currentUsername].push(role);
+        }
+    }
+
+    handleRemoveRole (role: RoleAssignment) {
+        const index = this.rolesLookup[this.currentUsername].indexOf(role);
+        this.rolesLookup[this.currentUsername].splice(index, 1);
     }
 }
 

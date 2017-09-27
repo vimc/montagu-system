@@ -14,18 +14,22 @@ describe("UserDetailsComponent", () => {
                 currentUsername: "testuser",
                 usersLookup: {
                     "testuser": user,
+                },
+                rolesLookup: {
+                    "testuser": []
                 }
             }
         }));
 
         expect(UserDetailsContentComponent.getPropsFromStores()).to.eql({
             ready: true,
-            user: user
+            user: user,
+            roles: []
         });
     });
 
     it("can render", () => {
         const user = mockUser({username: "tets.user"});
-        shallow(<UserDetailsContentComponent ready={true} user={user}/>);
+        shallow(<UserDetailsContentComponent ready={true} user={user} roles={[]} />);
     });
 });

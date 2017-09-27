@@ -16,7 +16,9 @@ describe("ViewUserDetailsPage", () => {
     afterEach(() => sandbox.restore());
 
     it("triggers fetch on load", (done: DoneCallback) => {
-        const fetchUsers = sandbox.sinon.stub(userStore, "fetchUsers").returns(Promise.resolve(true));
+        const fetchUsers = sandbox.sinon.stub(userStore, "fetchUsers")
+            .returns(Promise.resolve(true));
+
         const dispatchSpy = sandbox.dispatchSpy();
 
         const location = mockLocation<UserDetailsPageProps>({ username: "testuser" });
