@@ -8,7 +8,7 @@
     		"type": "array",
     		"items": { "$ref": "Model.schema.json" }
     	},
-        "admins": {
+        "members": {
             "type": "array",
             "items": { "$ref": "Username.schema.json" }
         }
