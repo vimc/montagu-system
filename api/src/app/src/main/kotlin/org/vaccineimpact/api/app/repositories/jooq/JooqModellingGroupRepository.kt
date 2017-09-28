@@ -7,6 +7,7 @@ import org.vaccineimpact.api.app.filters.whereMatchesFilter
 import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.ScenarioRepository
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
+import org.vaccineimpact.api.app.repositories.UserRepository
 import org.vaccineimpact.api.app.serialization.SplitData
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.Tables.*
@@ -21,9 +22,9 @@ class JooqModellingGroupRepository(
         dsl: DSLContext,
         private val touchstoneRepository: TouchstoneRepository,
         private val scenarioRepository: ScenarioRepository
-)
-    : JooqRepository(dsl), ModellingGroupRepository
+) : JooqRepository(dsl), ModellingGroupRepository
 {
+
     override fun getModellingGroups(): Iterable<ModellingGroup>
     {
         return dsl.select(MODELLING_GROUP.fieldsAsList())
@@ -188,7 +189,7 @@ class JooqModellingGroupRepository(
         return BurdenEstimateSet(
                 id = first[BURDEN_ESTIMATE_SET.ID],
                 uploadedOn = uploadedOn,
-                problems = input.filter{ it[BURDEN_ESTIMATE_SET_PROBLEM.PROBLEM] != null }
+                problems = input.filter { it[BURDEN_ESTIMATE_SET_PROBLEM.PROBLEM] != null }
                         .map { it[BURDEN_ESTIMATE_SET_PROBLEM.PROBLEM] }
         )
     }
@@ -227,8 +228,9 @@ class JooqModellingGroupRepository(
 
         val scenarioIds = records.keys
         val scenarios = scenarioRepository.getScenarios(scenarioIds)
-        return scenarios.map{
-            convertScenarioToResponsibility(it, records[it.id]!![RESPONSIBILITY.ID]) }
+        return scenarios.map {
+            convertScenarioToResponsibility(it, records[it.id]!![RESPONSIBILITY.ID])
+        }
     }
 
     private fun getResponsibilitySet(groupId: String, touchstoneId: String): ResponsibilitySetRecord?

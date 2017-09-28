@@ -6,12 +6,16 @@ import org.junit.Test
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.models.CreateUser
 import org.vaccineimpact.api.app.repositories.UserRepository
+import org.vaccineimpact.api.app.repositories.jooq.JooqModellingGroupRepository
+import org.vaccineimpact.api.app.repositories.jooq.JooqScenarioRepository
+import org.vaccineimpact.api.app.repositories.jooq.JooqTouchstoneRepository
 import org.vaccineimpact.api.app.repositories.jooq.JooqUserRepository
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.Tables
 import org.vaccineimpact.api.db.Tables.APP_USER
 import org.vaccineimpact.api.db.direct.addGroup
 import org.vaccineimpact.api.db.direct.addUserWithRoles
+import org.vaccineimpact.api.models.AssociateUser
 import org.vaccineimpact.api.models.Scope
 import org.vaccineimpact.api.models.User
 import org.vaccineimpact.api.models.permissions.*
@@ -23,6 +27,8 @@ class UserTests : RepositoryTests<UserRepository>()
     val username = "test.user"
     val email = "test@example.com"
     override fun makeRepository(db: JooqContext) = JooqUserRepository(db.dsl)
+    fun makeGroupRepository(db: JooqContext) = JooqModellingGroupRepository(db.dsl,
+            JooqTouchstoneRepository(db.dsl, JooqScenarioRepository(db.dsl)), JooqScenarioRepository(db.dsl))
 
     private fun addTestUser(db: JooqContext)
     {
@@ -123,6 +129,53 @@ class UserTests : RepositoryTests<UserRepository>()
                         AssociateRole("add", "member", "modelling-group", "IC:Garske"))
             }.isInstanceOf(UnknownObjectError::class.java)
 
+        }
+    }
+
+
+    @Test
+    fun `adds modelling group membership`()
+    {
+        given {
+            it.addGroup("new-id", "description")
+            it.addUserWithRoles("user.a")
+
+        } check { repo ->
+            repo.modifyMembership("new-id", AssociateUser("add", "user.a"))
+            JooqContext().use{
+                val groupRepo = makeGroupRepository(it)
+                assertThat(groupRepo.getModellingGroupDetails("new-id").members.contains("user-a"))
+            }
+
+        }
+    }
+
+    @Test
+    fun `removes modelling group membership`()
+    {
+
+        given {
+            it.addGroup("new-id", "description")
+            val role = ReifiedRole("member", Scope.parse("modelling-group:new-id"))
+            it.addUserWithRoles("user.a", role)
+        } check { repo ->
+            repo.modifyMembership("new-id", AssociateUser("remove", "user.a"))
+            JooqContext().use {
+                val groupRepo = makeGroupRepository(it)
+                assertThat(!groupRepo.getModellingGroupDetails("new-id").members.contains("user-a"))
+            }
+        }
+    }
+
+    @Test
+    fun `modifyMembership throws unknown object error if username does not exist`()
+    {
+
+        given {
+            it.addGroup("new-id", "description")
+        } check { repo ->
+            assertThatThrownBy { repo.modifyMembership("new-id", AssociateUser("add", "user.a")) }
+                    .isInstanceOf(UnknownObjectError::class.java)
         }
     }
 

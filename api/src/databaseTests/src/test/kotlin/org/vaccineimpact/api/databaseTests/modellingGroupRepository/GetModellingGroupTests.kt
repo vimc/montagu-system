@@ -3,14 +3,12 @@ package org.vaccineimpact.api.databaseTests.modellingGroupRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
+import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.db.direct.addDisease
 import org.vaccineimpact.api.db.direct.addGroup
 import org.vaccineimpact.api.db.direct.addModel
 import org.vaccineimpact.api.db.direct.addUserWithRoles
-import org.vaccineimpact.api.models.ModellingGroup
-import org.vaccineimpact.api.models.ModellingGroupDetails
-import org.vaccineimpact.api.models.ResearchModel
-import org.vaccineimpact.api.models.Scope
+import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.permissions.ReifiedRole
 
 class GetModellingGroupTests : ModellingGroupRepositoryTests()
@@ -30,8 +28,7 @@ class GetModellingGroupTests : ModellingGroupRepositoryTests()
         given {
             it.addGroup("a", "description a")
             it.addGroup("b", "description b")
-        } check {
-            repo ->
+        } check { repo ->
             val groups = repo.getModellingGroups()
             assertThat(groups).hasSameElementsAs(listOf(
                     ModellingGroup("a", "description a"),
@@ -47,8 +44,7 @@ class GetModellingGroupTests : ModellingGroupRepositoryTests()
             it.addGroup("a2", "description a version 2")
             it.addGroup("a1", "description a version 1", current = "a2")
             it.addGroup("b", "description b")
-        } check {
-            repo ->
+        } check { repo ->
             val groups = repo.getModellingGroups()
             assertThat(groups).hasSameElementsAs(listOf(
                     ModellingGroup("a2", "description a version 2"),
@@ -62,8 +58,7 @@ class GetModellingGroupTests : ModellingGroupRepositoryTests()
     {
         given {
             it.addGroup("a", "description a")
-        } check {
-            repo ->
+        } check { repo ->
             val group = repo.getModellingGroup("a")
             assertThat(group).isEqualTo(ModellingGroup("a", "description a"))
         }
@@ -98,8 +93,8 @@ class GetModellingGroupTests : ModellingGroupRepositoryTests()
             it.addDisease("disease1")
             it.addDisease("disease2")
             it.addModel("a2", "new-id", "disease1", "description A2", "citation A2")
-            it.addModel("a1", "new-id","disease1", "description A1", "citation A1", isCurrent = false)
-            it.addModel("b", "new-id", "disease2","description B", "citation B")
+            it.addModel("a1", "new-id", "disease1", "description A1", "citation A1", isCurrent = false)
+            it.addModel("b", "new-id", "disease2", "description B", "citation B")
         } check { repo ->
             assertThat(repo.getModellingGroupDetails("old-id")).isEqualTo(expected)
             assertThat(repo.getModellingGroupDetails("new-id")).isEqualTo(expected)

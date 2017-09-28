@@ -9,10 +9,7 @@ import org.vaccineimpact.api.app.errors.InconsistentDataError
 import org.vaccineimpact.api.app.errors.OperationNotAllowedError
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
-import org.vaccineimpact.api.app.repositories.jooq.JooqBurdenEstimateRepository
-import org.vaccineimpact.api.app.repositories.jooq.JooqModellingGroupRepository
-import org.vaccineimpact.api.app.repositories.jooq.JooqScenarioRepository
-import org.vaccineimpact.api.app.repositories.jooq.JooqTouchstoneRepository
+import org.vaccineimpact.api.app.repositories.jooq.*
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.Tables.*
 import org.vaccineimpact.api.db.direct.*
@@ -33,6 +30,7 @@ class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRepository>(
     {
         val scenario = JooqScenarioRepository(db.dsl)
         val touchstone = JooqTouchstoneRepository(db.dsl, scenario)
+
         val modellingGroup = JooqModellingGroupRepository(db.dsl, touchstone, scenario)
         return JooqBurdenEstimateRepository(db.dsl, scenario, touchstone, modellingGroup)
     }
