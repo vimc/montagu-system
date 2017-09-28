@@ -17,40 +17,13 @@ import org.vaccineimpact.api.db.fromJoinPath
 import org.vaccineimpact.api.db.tables.records.ModellingGroupRecord
 import org.vaccineimpact.api.db.tables.records.ResponsibilitySetRecord
 import org.vaccineimpact.api.models.*
-import org.vaccineimpact.api.security.UnknownRoleException
-import org.vaccineimpact.api.security.ensureUserHasRole
-import org.vaccineimpact.api.security.getRole
 
 class JooqModellingGroupRepository(
         dsl: DSLContext,
         private val touchstoneRepository: TouchstoneRepository,
-        private val scenarioRepository: ScenarioRepository,
-        private val userRepository: UserRepository
+        private val scenarioRepository: ScenarioRepository
 ) : JooqRepository(dsl), ModellingGroupRepository
 {
-    override fun modifyMembership(groupId: String, associateUser: AssociateUser)
-    {
-        val roleId = dsl.getRole("member", "modelling-group")
-         ?: throw UnknownRoleException("member", "modelling-group")
-
-        // this throws an error if user does not exist
-        userRepository.getUserByUsername(associateUser.username)
-
-        when (associateUser.action)
-        {
-            "add" ->
-            {
-                dsl.ensureUserHasRole(associateUser.username, roleId, groupId)
-            }
-            "remove" ->
-            {
-                dsl.deleteFrom(USER_ROLE)
-                        .where(USER_ROLE.USERNAME.eq(associateUser.username))
-                        .and(USER_ROLE.ROLE.eq(roleId))
-                        .and(USER_ROLE.SCOPE_ID.eq(groupId))
-            }
-        }
-    }
 
     override fun getModellingGroups(): Iterable<ModellingGroup>
     {

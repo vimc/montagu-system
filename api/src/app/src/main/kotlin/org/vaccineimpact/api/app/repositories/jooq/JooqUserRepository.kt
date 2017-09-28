@@ -8,6 +8,7 @@ import org.vaccineimpact.api.app.repositories.UserRepository
 import org.vaccineimpact.api.db.Tables.*
 import org.vaccineimpact.api.db.fromJoinPath
 import org.vaccineimpact.api.db.tables.records.AppUserRecord
+import org.vaccineimpact.api.models.AssociateUser
 import org.vaccineimpact.api.models.Scope
 import org.vaccineimpact.api.models.User
 import org.vaccineimpact.api.models.permissions.*
@@ -150,6 +151,30 @@ class JooqUserRepository(dsl: DSLContext) : JooqRepository(dsl), UserRepository
         dsl.update(APP_USER).set(APP_USER.PASSWORD_HASH, hashedPassword)
                 .where(APP_USER.USERNAME.eq(username))
                 .execute()
+    }
+
+    override fun modifyMembership(groupId: String, associateUser: AssociateUser)
+    {
+        val roleId = dsl.getRole("member", "modelling-group")
+                ?: throw UnknownRoleException("member", "modelling-group")
+
+        // this throws an error if user does not exist
+        getUserByUsername(associateUser.username)
+
+        when (associateUser.action)
+        {
+            "add" ->
+            {
+                dsl.ensureUserHasRole(associateUser.username, roleId, groupId)
+            }
+            "remove" ->
+            {
+                dsl.deleteFrom(USER_ROLE)
+                        .where(USER_ROLE.USERNAME.eq(associateUser.username))
+                        .and(USER_ROLE.ROLE.eq(roleId))
+                        .and(USER_ROLE.SCOPE_ID.eq(groupId))
+            }
+        }
     }
 
     private fun mapUserWithRoles(entry: Map.Entry<AppUserRecord, org.jooq.Result<Record>>): User

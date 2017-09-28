@@ -30,8 +30,8 @@ class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRepository>(
     {
         val scenario = JooqScenarioRepository(db.dsl)
         val touchstone = JooqTouchstoneRepository(db.dsl, scenario)
-        val user = JooqUserRepository(db.dsl)
-        val modellingGroup = JooqModellingGroupRepository(db.dsl, touchstone, scenario, user)
+
+        val modellingGroup = JooqModellingGroupRepository(db.dsl, touchstone, scenario)
         return JooqBurdenEstimateRepository(db.dsl, scenario, touchstone, modellingGroup)
     }
 

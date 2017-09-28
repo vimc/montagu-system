@@ -11,7 +11,7 @@ import org.vaccineimpact.api.db.direct.addUserWithRoles
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.permissions.ReifiedRole
 
-class ModellingGroupTests : ModellingGroupRepositoryTests()
+class GetModellingGroupTests : ModellingGroupRepositoryTests()
 {
     @Test
     fun `no modelling groups are returned if table is empty`()
@@ -133,45 +133,6 @@ class ModellingGroupTests : ModellingGroupRepositoryTests()
     {
         givenABlankDatabase() check { repo ->
             assertThatThrownBy { repo.getModellingGroupDetails("a") }.isInstanceOf(org.vaccineimpact.api.app.errors.UnknownObjectError::class.java)
-        }
-    }
-
-    @Test
-    fun `adds modelling group membership`()
-    {
-
-        given {
-            it.addGroup("new-id", "description")
-            it.addUserWithRoles("user.a")
-        } check { repo ->
-            repo.modifyMembership("new-id", AssociateUser("add", "user.a"))
-            assertThat(repo.getModellingGroupDetails("new-id").members.contains("user-a"))
-        }
-    }
-
-    @Test
-    fun `removes modelling group membership`()
-    {
-
-        given {
-            it.addGroup("new-id", "description")
-            val role = ReifiedRole("member", Scope.parse("modelling-group:new-id"))
-            it.addUserWithRoles("user.a", role)
-        } check { repo ->
-            repo.modifyMembership("new-id", AssociateUser("remove", "user.a"))
-            assertThat(!repo.getModellingGroupDetails("new-id").members.contains("user-a"))
-        }
-    }
-
-    @Test
-    fun `throws unknown object error if user does not exist`()
-    {
-
-        given {
-            it.addGroup("new-id", "description")
-        } check { repo ->
-            assertThatThrownBy { repo.modifyMembership("new-id", AssociateUser("add", "user.a")) }
-                    .isInstanceOf(UnknownObjectError::class.java)
         }
     }
 

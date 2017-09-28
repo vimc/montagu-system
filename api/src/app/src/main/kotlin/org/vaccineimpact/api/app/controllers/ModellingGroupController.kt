@@ -136,6 +136,12 @@ open class ModellingGroupController(context: ControllerContext)
 
     }
 
+    fun modifyMembership(context: ActionContext, repo: ModellingGroupRepository)
+    {
+
+
+    }
+
     open fun addBurdenEstimate(context: ActionContext, estimateRepository: BurdenEstimateRepository): String
     {
         // First check if we're allowed to see this touchstone
