@@ -3,6 +3,7 @@ package org.vaccineimpact.api.databaseTests.modellingGroupRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
+import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.db.direct.addDisease
 import org.vaccineimpact.api.db.direct.addGroup
 import org.vaccineimpact.api.db.direct.addModel
@@ -27,8 +28,7 @@ class ModellingGroupTests : ModellingGroupRepositoryTests()
         given {
             it.addGroup("a", "description a")
             it.addGroup("b", "description b")
-        } check {
-            repo ->
+        } check { repo ->
             val groups = repo.getModellingGroups()
             assertThat(groups).hasSameElementsAs(listOf(
                     ModellingGroup("a", "description a"),
@@ -44,8 +44,7 @@ class ModellingGroupTests : ModellingGroupRepositoryTests()
             it.addGroup("a2", "description a version 2")
             it.addGroup("a1", "description a version 1", current = "a2")
             it.addGroup("b", "description b")
-        } check {
-            repo ->
+        } check { repo ->
             val groups = repo.getModellingGroups()
             assertThat(groups).hasSameElementsAs(listOf(
                     ModellingGroup("a2", "description a version 2"),
@@ -59,8 +58,7 @@ class ModellingGroupTests : ModellingGroupRepositoryTests()
     {
         given {
             it.addGroup("a", "description a")
-        } check {
-            repo ->
+        } check { repo ->
             val group = repo.getModellingGroup("a")
             assertThat(group).isEqualTo(ModellingGroup("a", "description a"))
         }
@@ -95,8 +93,8 @@ class ModellingGroupTests : ModellingGroupRepositoryTests()
             it.addDisease("disease1")
             it.addDisease("disease2")
             it.addModel("a2", "new-id", "disease1", "description A2", "citation A2")
-            it.addModel("a1", "new-id","disease1", "description A1", "citation A1", isCurrent = false)
-            it.addModel("b", "new-id", "disease2","description B", "citation B")
+            it.addModel("a1", "new-id", "disease1", "description A1", "citation A1", isCurrent = false)
+            it.addModel("b", "new-id", "disease2", "description B", "citation B")
         } check { repo ->
             assertThat(repo.getModellingGroupDetails("old-id")).isEqualTo(expected)
             assertThat(repo.getModellingGroupDetails("new-id")).isEqualTo(expected)
@@ -139,7 +137,8 @@ class ModellingGroupTests : ModellingGroupRepositoryTests()
     }
 
     @Test
-    fun `adds modelling group membership`(){
+    fun `adds modelling group membership`()
+    {
 
         given {
             it.addGroup("new-id", "description")
@@ -151,7 +150,8 @@ class ModellingGroupTests : ModellingGroupRepositoryTests()
     }
 
     @Test
-    fun `removes modelling group membership`(){
+    fun `removes modelling group membership`()
+    {
 
         given {
             it.addGroup("new-id", "description")
@@ -160,6 +160,18 @@ class ModellingGroupTests : ModellingGroupRepositoryTests()
         } check { repo ->
             repo.modifyMembership("new-id", AssociateUser("remove", "user.a"))
             assertThat(!repo.getModellingGroupDetails("new-id").members.contains("user-a"))
+        }
+    }
+
+    @Test
+    fun `throws unknown object error if user does not exist`()
+    {
+
+        given {
+            it.addGroup("new-id", "description")
+        } check { repo ->
+            assertThatThrownBy { repo.modifyMembership("new-id", AssociateUser("add", "user.a")) }
+                    .isInstanceOf(UnknownObjectError::class.java)
         }
     }
 
