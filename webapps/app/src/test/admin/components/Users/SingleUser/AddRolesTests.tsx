@@ -24,7 +24,7 @@ describe("AddRoles", () => {
 
     it("only shows role the user does not have", (done: DoneCallback) => {
         const sandbox = new Sandbox();
-        
+
         const roles = sandbox.mount(<AddRoles username={"testuser"} userRoles={["role1"]}/>);
 
         checkAsync(done, afterWait => {
