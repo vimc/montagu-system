@@ -6,10 +6,14 @@ import org.junit.Test
 import org.vaccineimpact.api.app.ActionContext
 import org.vaccineimpact.api.app.controllers.ControllerContext
 import org.vaccineimpact.api.app.controllers.ModellingGroupController
+import org.vaccineimpact.api.app.errors.MissingRequiredPermissionError
 import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
+import org.vaccineimpact.api.app.repositories.UserRepository
 import org.vaccineimpact.api.app.serialization.DataTable
 import org.vaccineimpact.api.app.serialization.SplitData
 import org.vaccineimpact.api.models.*
+import org.vaccineimpact.api.models.permissions.PermissionSet
+import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import java.math.BigDecimal
 
 class ModellingGroupControllersTests : ControllerTests<ModellingGroupController>()
@@ -121,6 +125,46 @@ class ModellingGroupControllersTests : ControllerTests<ModellingGroupController>
         val controller = ModellingGroupController(mockControllerContext())
         assertThatThrownBy { controller.getCoverageData(context, repo) }
                 .hasMessageContaining("Unknown touchstone")
+    }
+
+    @Test
+    fun `modifyMembership returns error if user does not have permission to manage members`()
+    {
+        val context = mock<ActionContext>{
+            on (it.params(":group-id")) doReturn "gId"
+            on (it.permissions) doReturn PermissionSet()
+        }
+
+        val controller = ModellingGroupController(mockControllerContext())
+        assertThatThrownBy {
+            controller.modifyMembership(context, mock<UserRepository>())
+        }.isInstanceOf(MissingRequiredPermissionError::class.java)
+    }
+
+    @Test
+    fun `can modifyMembership if user has globally scoped permission to manage members`()
+    {
+        val context = mock<ActionContext>{
+            on (it.params(":group-id")) doReturn "gId"
+            on (it.permissions) doReturn PermissionSet(
+                    setOf(ReifiedPermission("modelling-groups.manage-members",
+                            Scope.Global())))
+        }
+        val controller = ModellingGroupController(mockControllerContext())
+        controller.modifyMembership(context, mock<UserRepository>())
+    }
+
+    @Test
+    fun `can modifyMembership if user has manage members permission scoped to group`()
+    {
+        val context = mock<ActionContext>{
+            on (it.params(":group-id")) doReturn "gId"
+            on (it.permissions) doReturn PermissionSet(
+                    setOf(ReifiedPermission("modelling-groups.manage-members",
+                            Scope.Specific("modelling-group", "gId"))))
+        }
+        val controller = ModellingGroupController(mockControllerContext())
+        controller.modifyMembership(context, mock<UserRepository>())
     }
 
     private fun mockContextForSpecificResponsibility(hasPermissions: Boolean): ActionContext

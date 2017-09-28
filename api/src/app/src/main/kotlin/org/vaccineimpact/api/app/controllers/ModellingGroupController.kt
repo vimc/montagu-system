@@ -7,17 +7,17 @@ import org.vaccineimpact.api.app.controllers.endpoints.oneRepoEndpoint
 import org.vaccineimpact.api.app.controllers.endpoints.secured
 import org.vaccineimpact.api.app.csvData
 import org.vaccineimpact.api.app.errors.InconsistentDataError
+import org.vaccineimpact.api.app.errors.MissingRequiredPermissionError
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
-import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
-import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
-import org.vaccineimpact.api.app.repositories.Repositories
-import org.vaccineimpact.api.app.repositories.RepositoryFactory
+import org.vaccineimpact.api.app.postData
+import org.vaccineimpact.api.app.repositories.*
 import org.vaccineimpact.api.app.serialization.DataTable
 import org.vaccineimpact.api.app.serialization.DataTableDeserializer
 import org.vaccineimpact.api.app.serialization.Serializer
 import org.vaccineimpact.api.app.serialization.SplitData
 import org.vaccineimpact.api.models.*
+import org.vaccineimpact.api.models.permissions.AssociateRole
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import spark.route.HttpMethod
 import java.time.Instant
@@ -53,7 +53,8 @@ open class ModellingGroupController(context: ControllerContext)
                 oneRepoEndpoint("$scenarioURL/estimates/", this::addBurdenEstimate, repos, { it.burdenEstimates }, method = HttpMethod.post)
                         .secured(setOf("$groupScope/estimates.write", "$groupScope/responsibilities.read")),
                 oneRepoEndpoint("$scenarioURL/estimates/get_onetime_link/", { c, r -> getOneTimeLinkToken(c, r, OneTimeAction.BURDENS) }, repos, { it.token })
-                        .secured(setOf("$groupScope/estimates.write", "$groupScope/responsibilities.read"))
+                        .secured(setOf("$groupScope/estimates.write", "$groupScope/responsibilities.read")),
+                oneRepoEndpoint("/:group-id/actions/associate_member/", this::modifyMembership, repos, {it.user}, method = HttpMethod.post).secured()
         )
     }
 
@@ -136,11 +137,28 @@ open class ModellingGroupController(context: ControllerContext)
 
     }
 
-    fun modifyMembership(context: ActionContext, repo: ModellingGroupRepository)
+    fun modifyMembership(context: ActionContext, repo: UserRepository): String
     {
+        val associateUser = context.postData<AssociateUser>()
 
+        val groupId = context.params(":group-id")
+        val scope = Scope.parse("modelling-group:${groupId}")
 
+        val managingScopes = managingScopes(context)
+
+        if (!managingScopes.any({ it.encompasses(scope) }))
+        {
+            throw MissingRequiredPermissionError(setOf("${scope}/modelling-groups.manage-members"))
+        }
+
+        repo.modifyMembership(groupId, associateUser)
+
+        return okayResponse()
     }
+
+    private fun managingScopes(context: ActionContext) = context.permissions
+            .filter { it.name == "modelling-groups.manage-members" }
+            .map { it.scope }
 
     open fun addBurdenEstimate(context: ActionContext, estimateRepository: BurdenEstimateRepository): String
     {
