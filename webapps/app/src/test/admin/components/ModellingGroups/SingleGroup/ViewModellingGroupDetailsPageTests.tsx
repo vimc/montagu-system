@@ -19,7 +19,7 @@ describe("ViewModelingGroupDetailsPage", () => {
     it("triggers fetch on load", (done: DoneCallback) => {
         const fetchUsers = sandbox.sinon.stub(userStore, "fetchUsers").returns(Promise.resolve(true));
         const fetchGroups = sandbox.sinon.stub(groupStore, "fetchGroups").returns(Promise.resolve([]));
-        const fetchGroupDetails = sandbox.sinon.stub(groupStore, "fetchGroupDetails");
+        const fetchGroupDetails = sandbox.sinon.stub(groupStore, "fetchGroupDetails").returns(Promise.resolve({}));
         const dispatchSpy = sandbox.dispatchSpy();
 
         const location = mockLocation<ModellingGroupDetailsPageProps>({ groupId: "gId" });
