@@ -13,8 +13,7 @@ interface RolesState {
     selectedRole: string;
 }
 
-export class Roles extends React.Component<RolesProps, RolesState> {
-
+export class AddRoles extends React.Component<RolesProps, RolesState> {
 
     componentDidMount() {
 

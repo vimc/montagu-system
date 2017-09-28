@@ -5,7 +5,7 @@ import { connectToStores } from "../../../../shared/alt";
 import { RoleAssignment, User } from "../../../../shared/models/Generated";
 import { UserRole } from "./UserRoleComponent";
 import { userStore } from "../../../stores/UserStore";
-import { Roles } from "./Roles";
+import { AddRoles } from "./AddRoles";
 import { adminAuthStore } from "../../../stores/AdminAuthStore";
 
 interface Props extends RemoteContent {
@@ -34,7 +34,7 @@ export class UserDetailsContentComponent extends RemoteContentComponent<Props> {
 
         const isAdmin = adminAuthStore.getState().permissions.indexOf("*/roles.write") > -1;
         const addRoles = isAdmin ?
-            <Roles userRoles={this.props.roles.filter(r => r.scope_prefix == null).map(r => r.scope_prefix)}
+            <AddRoles userRoles={this.props.roles.filter(r => r.scope_prefix == null).map(r => r.scope_prefix)}
                    username={this.props.user.username}/>
         : "";
 
