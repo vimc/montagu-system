@@ -20,8 +20,8 @@ describe('DownloadCoveragePage', () => {
         const spy = sandbox.dispatchSpy();
         const fetchTouchstones = sandbox.sinon.stub(responsibilityStore, "fetchTouchstones").returns(Promise.resolve(true));
         const fetchResponsibilities = sandbox.sinon.stub(responsibilityStore, "fetchResponsibilities").returns(Promise.resolve(true));
-        const fetchCoverageSets = sandbox.sinon.stub(responsibilityStore, "fetchCoverageSets").returns(Promise.resolve(true));;
-        const fetchOneTimeCoverageToken = sandbox.sinon.stub(responsibilityStore, "fetchOneTimeCoverageToken").returns(Promise.resolve(true));;
+        const fetchCoverageSets = sandbox.sinon.stub(responsibilityStore, "fetchCoverageSets").returns(Promise.resolve(true));
+        const fetchOneTimeCoverageToken = sandbox.sinon.stub(responsibilityStore, "fetchOneTimeCoverageToken").returns(Promise.resolve(true));
         const location = mockLocation({
             touchstoneId: "touchstone-1",
             scenarioId: "scenario-1",
@@ -30,7 +30,7 @@ describe('DownloadCoveragePage', () => {
         const group = mockModellingGroup({ id: "group-1" });
         setupMainStore({ groups: [group] });
 
-        sandbox.mount(<DownloadCoveragePage location={ location }/>);
+        (new DownloadCoveragePage({location: location })).componentDidMount();
 
         checkAsync(done, (afterWait) => {
             expectOneAction(spy, { action: "ModellingGroupActions.setCurrentGroup", payload: "group-1" }, 0);
@@ -46,5 +46,4 @@ describe('DownloadCoveragePage', () => {
             });
         });
     });
-})
-;
+});

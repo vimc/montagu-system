@@ -23,8 +23,7 @@ describe("ViewModelingGroupDetailsPage", () => {
         const dispatchSpy = sandbox.dispatchSpy();
 
         const location = mockLocation<ModellingGroupDetailsPageProps>({ groupId: "gId" });
-        sandbox.mount(<ViewModellingGroupDetailsPage location={ location }/>);
-
+        (new ViewModellingGroupDetailsPage({location : location})).componentDidMount();
         checkAsync(done, (afterWait) => {
             expect(fetchGroups.called).to.equal(true, "Expected groupStore.fetchGroups to be triggered");
             expect(fetchUsers.called).to.equal(true, "Expected userStore.fetchUsers to be triggered");

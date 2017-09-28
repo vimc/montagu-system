@@ -6,6 +6,7 @@ import { mockLocation } from "../../../mocks/mocks";
 import { expectOneAction } from "../../../actionHelpers";
 import { checkAsync } from "../../../testHelpers";
 import { responsibilityStore } from "../../../../main/contrib/stores/ResponsibilityStore";
+import { groupStore } from "../../../../main/admin/stores/GroupStore";
 
 describe("ChooseActionPage", () => {
     const sandbox = new Sandbox();
@@ -17,7 +18,7 @@ describe("ChooseActionPage", () => {
         const fetchTouchstones = sandbox.sinon
             .stub(responsibilityStore, "fetchTouchstones")
             .returns(Promise.resolve(null));
-
+        const fetchGroupDetails = sandbox.sinon.stub(groupStore, "fetchGroupDetails").returns(Promise.resolve({}));
         const location = mockLocation<LocationProps>({ groupId: "gId" });
         sandbox.mount(<ChooseActionPage location={ location } />);
         checkAsync(done, (afterWait) => {
