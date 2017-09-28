@@ -40,9 +40,9 @@ export interface ResearchModel {
 }
 
 export interface ModellingGroupDetails {
-    admins: string[];
     description: string;
     id: string;
+    members: string[];
     models: ResearchModel[];
 }
 

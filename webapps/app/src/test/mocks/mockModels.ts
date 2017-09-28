@@ -38,7 +38,7 @@ export function mockModellingGroupDetails(properties?: any) {
         id: "group-" + counter,
         description: "Description",
         models: [],
-        admins: [ "user.a" ]
+        members: [ "user.a" ]
     };
     return Object.assign(template, properties);
 }
