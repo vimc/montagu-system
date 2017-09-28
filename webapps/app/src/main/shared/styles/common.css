@@ -10,7 +10,7 @@ select, input {
 
 table {
     border-collapse: collapse;
-    width: 780px;
+    width: inherit;
 }
 table tr td, table tr th {
     padding: 5px;
@@ -66,16 +66,4 @@ fieldset {
 :local(.disabledLink) {
     color: rgb(127, 127, 127);
     text-decoration: underline;
-}
-
-:local(.mt5){
-    margin-top: 5px;
-}
-
-:local(.mb5){
-    margin-bottom: 5px;
-}
-
-:local(.mr10){
-    margin-right: 10px;
 }

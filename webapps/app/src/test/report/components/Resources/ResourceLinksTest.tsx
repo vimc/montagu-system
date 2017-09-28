@@ -1,5 +1,5 @@
 import * as React from "react";
-import {mount} from "enzyme";
+import { mount, shallow } from "enzyme";
 import {expect} from "chai";
 import {ResourceLinks} from "../../../../main/report/components/Resources/ResourceLinks";
 import { FileDownloadLink } from "../../../../main/report/components/FileDownloadLink";
@@ -17,7 +17,7 @@ describe("ResourceLinks", () => {
             "someother.rds"
         ];
 
-        const rendered = sandbox.mount(<ResourceLinks resources={testResources} report="reportname" version="versionname" />);
+        const rendered = shallow(<ResourceLinks resources={testResources} report="reportname" version="versionname" />);
         const links = rendered.find('li').find(FileDownloadLink);
 
         expect(links.at(0).prop("href")).to.eq("/reports/reportname/versionname/resources/R:someresource.csv/");
@@ -26,7 +26,7 @@ describe("ResourceLinks", () => {
 
     it("shows 'none' if no resources", () => {
 
-        const rendered = sandbox.mount(<ResourceLinks resources={[]} report="reportname" version="versioname" />);
+        const rendered = shallow(<ResourceLinks resources={[]} report="reportname" version="versioname" />);
         expect(rendered.text()).to.eq("none");
 
     });

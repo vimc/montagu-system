@@ -39,7 +39,8 @@ fun main(args: Array<String>)
                         ScenarioTouchstoneAndCoverageSets::class,
                         Touchstone::class,
                         TouchstoneStatus::class,
-                        User::class
+                        User::class,
+                        org.vaccineimpact.api.models.permissions.AssociateRole::class
                 ),
                 mappings = mapOf(
                         LocalDateTime::class to "Date",

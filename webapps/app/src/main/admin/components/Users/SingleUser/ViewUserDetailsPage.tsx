@@ -31,6 +31,6 @@ export class ViewUserDetailsPage extends AdminPageWithHeader<UserDetailsPageProp
 
 const Title = connectToStores(class extends UserTitle {
     renderContent(props: UserTitleProps) {
-        return <span>{ props.user.name }</span>;
+        return <h1>{ props.user.name }</h1>;
     }
 });

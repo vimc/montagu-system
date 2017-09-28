@@ -34,6 +34,7 @@ export class Sandbox {
     dispatchSpy(): sinon.SinonSpy {
         return this.sinon.spy(alt, "dispatch");
     }
+
     fetcherSpy(): sinon.SinonSpy {
         return this.sinon.spy(fetcher.fetcher, "fetch");
     }
