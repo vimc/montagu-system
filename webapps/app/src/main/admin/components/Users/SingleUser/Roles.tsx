@@ -1,7 +1,6 @@
 import * as React from "react";
 import { AssociateRole, Result } from "../../../../shared/models/Generated";
 import fetcher from "../../../../shared/sources/Fetcher";
-import { userStore } from "../../../stores/UserStore";
 import { userActions } from "../../../actions/UserActions";
 
 export interface RolesProps {

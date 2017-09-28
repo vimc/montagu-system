@@ -6,6 +6,7 @@ import { RoleAssignment, User } from "../../../../shared/models/Generated";
 import { UserRole } from "./UserRoleComponent";
 import { userStore } from "../../../stores/UserStore";
 import { Roles } from "./Roles";
+import { adminAuthStore } from "../../../stores/AdminAuthStore";
 
 interface Props extends RemoteContent {
     user: User;
@@ -30,16 +31,22 @@ export class UserDetailsContentComponent extends RemoteContentComponent<Props> {
     }
 
     roles(username: string) {
+
+        const isAdmin = adminAuthStore.getState().permissions.indexOf("*/roles.write") > -1;
+        const addRoles = isAdmin ?
+            <Roles userRoles={this.props.roles.filter(r => r.scope_prefix == null).map(r => r.scope_prefix)}
+                   username={this.props.user.username}/>
+        : "";
+
         return <div className="mt-4">
             <h3>Manage roles</h3>
             <form className="form">
                 <hr/>
                 {this.props.roles.map(r =>
-                    <UserRole key={r.name + r.scope_prefix + r.scope_id} {...r} username={username}/>
+                    <UserRole key={r.name + r.scope_prefix + r.scope_id} {...r} username={username} showdelete={isAdmin}/>
                 )}
             </form>
-            <Roles userRoles={this.props.roles.filter(r => r.scope_prefix == null).map(r => r.scope_prefix)}
-                   username={this.props.user.username}/>
+            {addRoles}
         </div>;
     }
 

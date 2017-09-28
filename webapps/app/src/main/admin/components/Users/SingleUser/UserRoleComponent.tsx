@@ -5,6 +5,7 @@ import { userActions } from "../../../actions/UserActions";
 
 interface UserRoleProps extends RoleAssignment {
     username: string;
+    showdelete: boolean;
 }
 
 interface UserRoleState {
@@ -46,6 +47,10 @@ export class UserRole extends React.Component<UserRoleProps, UserRoleState> {
     }
 
     renderButton() {
+        if (!this.props.showdelete) {
+            return ""
+        }
+
         return <a href="#" className="text-danger float-right" onClick={this.clickHandler.bind(this)}>
             Remove role</a>;
     }
@@ -56,11 +61,12 @@ export class UserRole extends React.Component<UserRoleProps, UserRoleState> {
             scope = " / " + this.props.scope_prefix + ":" + this.props.scope_id;
         }
 
-        return <div><div className="form-group">
-            <span className="role-name">{this.props.name}{scope}</span>
-             {this.renderButton()}
-        </div>
-            <hr />
+        return <div>
+            <div className="form-group">
+                <span className="role-name">{this.props.name}{scope}</span>
+                {this.renderButton()}
+            </div>
+            <hr/>
         </div>
 
     }
