@@ -48,7 +48,7 @@ function commonConfig(name, public_path) {
                     test: /\.js$/,
                     loader: "source-map-loader"
                 },
-                // Use precompiled CSS
+                // Use precompiled bootstrap CSS
                 {
                     test: /\.css$/,
                     loaders: [
@@ -77,21 +77,6 @@ function commonConfig(name, public_path) {
                         }
                     ],
                     exclude: [/bootstrap.min.css/]
-                },
-                // Use SCSS modules
-                {
-                    test: /\.scss$/,
-                    loaders: [
-                        "style-loader",
-                        {
-                            loader: "sass-loader",
-                            options: {
-                                modules: true,
-                                // The local name must come last so that CSSTransitionGroup can append suffixes
-                                localIdentName: "[name]_[local]",
-                            }
-                        }
-                    ]
                 },
                 // Substitute paths into index.html
                 {
