@@ -19,3 +19,5 @@ data class User(
     constructor(username: String, name: String, email: String, lastLoggedIn: Instant?)
         : this(username, name, email, lastLoggedIn, roles = null)
 }
+
+data class AssociateUser(val action: String, val username: String)
