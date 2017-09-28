@@ -100,7 +100,12 @@ fun DSLContext.ensureUserHasRole(username: String, roleId: Int, scopeId: String)
 
 fun JooqContext.ensureUserHasRole(username: String, role: ReifiedRole)
 {
+   this.dsl.ensureUserHasRole(username, role)
+}
+
+fun DSLContext.ensureUserHasRole(username: String, role: ReifiedRole)
+{
     val roleId = this.getRole(role.name, role.scope.databaseScopePrefix)
-        ?: throw UnknownRoleException(role.name, role.scope.databaseScopePrefix.toString())
+            ?: throw UnknownRoleException(role.name, role.scope.databaseScopePrefix.toString())
     this.ensureUserHasRole(username, roleId, role.scope.databaseScopeId)
 }
