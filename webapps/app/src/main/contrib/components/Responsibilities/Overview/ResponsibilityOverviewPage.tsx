@@ -48,8 +48,7 @@ export class ResponsibilityOverviewPage extends PageWithHeaderAndNav<LocationPro
                 </li>
                 <li>
                     Download csv templates for central and stochastic burden estimates, and parameter values underlying the stochastic runs.
-                    Further guidance for generating and uploading stochastic runs is available 
-                    <a href="/contribution/templates/guidance.html">
+                    Further guidance for generating and uploading stochastic runs is available <a href="/contribution/templates/guidance.html">
                         here.</a>
                 </li>
                 <li>Upload central burden estimates for each scenario, and review any problems
