@@ -36,6 +36,7 @@ export class GroupStore extends AbstractStore<GroupState, Interface> {
 
             handleBeginFetchDetails: modellingGroupActions.beginFetchDetails,
             handleUpdateGroupDetails: modellingGroupActions.updateGroupDetails,
+            handleAddMember: modellingGroupActions.addMember
         });
         this.registerAsync(new ModellingGroupSource());
         this.exportPublicMethods({
@@ -76,6 +77,10 @@ export class GroupStore extends AbstractStore<GroupState, Interface> {
     handleUpdateGroupDetails(details: ModellingGroupDetails) {
         this.ready = true;
         this.groupDetails[details.id] = details;
+    }
+
+    handleAddMember(username: string){
+        this.groupDetails[this.currentGroupId].members.push(username)
     }
 }
 
