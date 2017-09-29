@@ -44,6 +44,10 @@ export class TemplateLinks extends React.Component<TemplateLinksProps, undefined
 
             return <div>Download burden estimate templates:<br/>
                 {links}
+                <div>
+                    <a key={"params"}
+                       href={"/contribution/templates/stochastic_template_params.csv"}>Stochastic parameters template</a>
+                </div>
             </div>;
         } else {
             return <span/>;
