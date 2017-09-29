@@ -47,7 +47,10 @@ export class ResponsibilityOverviewPage extends PageWithHeaderAndNav<LocationPro
                     your model are missing.
                 </li>
                 <li>
-                    Download csv templates for central and stochastic burden estimates.
+                    Download csv templates for central and stochastic burden estimates, and parameter values underlying the stochastic runs.
+                    Further guidance for generating and uploading stochastic runs is available
+                    <a href="/contribution/templates/guidance.html">
+                        here.</a>
                 </li>
                 <li>Upload central burden estimates for each scenario, and review any problems
                     the system has detected in the uploaded data.
@@ -58,7 +61,7 @@ export class ResponsibilityOverviewPage extends PageWithHeaderAndNav<LocationPro
             <span>
                 In the future, you will also be able to:
             </span>
-            <ol start={4}>
+            <ol start={7}>
                 <li>Upload stochastic burden estimates for each scenario, and review any problems
                     the system has detected in the uploaded data.
                 </li>
