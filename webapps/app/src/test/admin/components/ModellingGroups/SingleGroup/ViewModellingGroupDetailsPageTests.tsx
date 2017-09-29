@@ -19,12 +19,11 @@ describe("ViewModelingGroupDetailsPage", () => {
     it("triggers fetch on load", (done: DoneCallback) => {
         const fetchUsers = sandbox.sinon.stub(userStore, "fetchUsers").returns(Promise.resolve(true));
         const fetchGroups = sandbox.sinon.stub(groupStore, "fetchGroups").returns(Promise.resolve([]));
-        const fetchGroupDetails = sandbox.sinon.stub(groupStore, "fetchGroupDetails");
+        const fetchGroupDetails = sandbox.sinon.stub(groupStore, "fetchGroupDetails").returns(Promise.resolve({}));
         const dispatchSpy = sandbox.dispatchSpy();
 
         const location = mockLocation<ModellingGroupDetailsPageProps>({ groupId: "gId" });
-        sandbox.mount(<ViewModellingGroupDetailsPage location={ location }/>);
-
+        (new ViewModellingGroupDetailsPage({location : location})).componentDidMount();
         checkAsync(done, (afterWait) => {
             expect(fetchGroups.called).to.equal(true, "Expected groupStore.fetchGroups to be triggered");
             expect(fetchUsers.called).to.equal(true, "Expected userStore.fetchUsers to be triggered");

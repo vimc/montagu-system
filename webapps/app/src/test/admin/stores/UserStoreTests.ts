@@ -3,6 +3,7 @@ import { expect } from "chai";
 import { userActions } from "../../../main/admin/actions/UserActions";
 import { mockUser } from "../../mocks/mockModels";
 import { userStore } from "../../../main/admin/stores/UserStore";
+import { RoleAssignment } from "../../../main/shared/models/Generated";
 
 describe("UserStore", () => {
     beforeEach(() => alt.recycle());
@@ -68,6 +69,36 @@ describe("UserStore", () => {
         expect(userStore.getState().showCreateUser).to.equal(true);
         userActions.setShowCreateUser(false);
         expect(userStore.getState().showCreateUser).to.equal(false);
+    });
+
+
+    it("adds global role", () => {
+        const testUser = mockUser({username: "testUser"});
+        const anotherTestUser = mockUser({username: "anotherTestUser"});
+        const users = [ testUser, anotherTestUser ];
+
+        userActions.updateUsers(users);
+        userActions.setCurrentUser("testUser");
+        userActions.addRole("reports-reader", null, null);
+
+        const roles = userStore.getCurrentUserRoles();
+
+        expect(roles.length).to.eq(3);
+        expect(roles.filter(r => r.name == "reports-reader").length).to.eq(1);
+    });
+
+    it("removes global role", () => {
+        const testUser = mockUser({username: "testUser"});
+        const anotherTestUser = mockUser({username: "anotherTestUser"});
+        const users = [ testUser, anotherTestUser ];
+
+        userActions.updateUsers(users);
+        userActions.setCurrentUser("testUser");
+        userActions.addRole("reports-reader", null, null);
+        userActions.removeRole("reports-reader", null, null);
+
+        const roles = userStore.getCurrentUserRoles();
+        expect(roles.filter(r => r.name == "reports-reader").length).to.eq(1);
     });
 
 });
