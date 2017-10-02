@@ -22,22 +22,20 @@ describe("AddRoles", () => {
 
     it("populates role options", (done: DoneCallback) => {
 
-
         const fetch = sandbox.sinon.stub(fetcher.fetcher, "fetch")
             .returns(mockResponse({ status: "success", data: ["role1", "role2"], errors: [] }));
 
         const roles = shallow(<AddRoles username={"testuser"} userRoles={[]}/>);
         const instance = roles.instance();
-        const setState = sandbox.sinon.stub(instance, 'setState')
-            .withArgs({allRoles: ["role1", "role2"], availableRoles: ["role1", "role2"], selectedRole: "role1"});
-
+        const setState = sandbox.sinon.stub(instance, 'setState');
         instance.componentWillMount();
 
         checkAsync(done, afterWait => {
             expect(fetch.called).to.equal(true);
 
             afterWait(done, () => {
-                expect(setState.called).to.equal(true);
+                expect(setState
+                    .withArgs({allRoles: ["role1", "role2"]}).called).to.equal(true);
             })
 
         })
@@ -45,21 +43,18 @@ describe("AddRoles", () => {
 
     it("only shows roles the user does not have", (done: DoneCallback) => {
 
-        const fetch = sandbox.sinon.stub(fetcher.fetcher, "fetch")
-            .returns(mockResponse({ status: "success", data: ["role1", "role2"], errors: [] }));
+        const roles = shallow(<AddRoles username={"testuser"} userRoles={["role1"]}/>);
+        const instance = roles.instance();
+        instance.setState({allRoles: ["role1", "role2"]});
 
-        const roles = sandbox.mount(<AddRoles username={"testuser"} userRoles={["role1"]}/>);
-         const instance = roles.instance();
-        const setState = sandbox.sinon.stub(instance, 'setState')
-            .withArgs({allRoles: ["role1", "role2"], availableRoles: ["role2"], selectedRole: "role2"});
-
-        instance.componentWillMount();
+        const setState = sandbox.sinon.stub(instance, 'setState');
+        instance.componentWillReceiveProps({username:"testuser", userRoles:["role1"]}, null);
 
         checkAsync(done, afterWait => {
-            expect(fetch.called).to.equal(true);
-
             afterWait(done, () => {
-                expect(setState.called).to.equal(true);
+                expect(setState
+                    .withArgs({availableRoles: ["role2"], selectedRole: "role2"})
+                    .called).to.equal(true);
             })
         })
     });

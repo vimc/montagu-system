@@ -1,11 +1,11 @@
 import { AssociateUser, User } from "../../../shared/models/Generated";
 import * as React from "react";
 import { InternalLink } from "../../../shared/components/InternalLink";
-import { RemoveLink } from "../../../shared/components/RemoveLink";
 import { processResponseAndNotifyOnErrors } from "../../../shared/sources/Source";
 import { modellingGroupActions } from "../../../shared/actions/ModellingGroupActions";
 import { notificationActions, NotificationException } from "../../../shared/actions/NotificationActions";
 import fetcher from "../../../shared/sources/Fetcher";
+import { Link } from "simple-react-router";
 
 interface UserProps {
     user: User;
@@ -38,7 +38,7 @@ export class DeletableUser extends React.Component<UserProps, undefined> {
                 <InternalLink href={`/users/${this.props.user.username}/`}>
                     {this.props.user.name}
                 </InternalLink>
-                <RemoveLink clickHandler={this.clickHandler.bind(this)} text="Remove member"/>
+                <Link onClick={this.clickHandler.bind(this)} className="text-danger float-right" href="#">Remove member</Link>
             </div>
             <hr/>
         </div>;

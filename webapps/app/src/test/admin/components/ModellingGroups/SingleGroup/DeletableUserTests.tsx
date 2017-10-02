@@ -2,7 +2,6 @@ import * as React from "react";
 import { expect } from "chai";
 import { mockUser } from "../../../../mocks/mockModels";
 import { Sandbox } from "../../../../Sandbox";
-import { RemoveLink } from "../../../../../main/shared/components/RemoveLink";
 import { InternalLink } from "../../../../../main/shared/components/InternalLink";
 import { checkAsync } from "../../../../testHelpers";
 import { User } from "../../../../../main/shared/models/Generated";
@@ -10,6 +9,7 @@ import fetcher from "../../../../../main/shared/sources/Fetcher";
 import { mockResponse } from "../../../../mocks/mockRemote";
 import { expectOneAction } from "../../../../actionHelpers";
 import { DeletableUser } from "../../../../../main/admin/components/ModellingGroups/DeletableUser";
+import { Link } from "simple-react-router";
 
 
 describe("DeletableUser", () => {
@@ -30,7 +30,7 @@ describe("DeletableUser", () => {
 
         const rendered = sandbox.mount(<DeletableUser groupId="group1"
                                                       user={mockUser({ "name": "Wolfgang Amadeus Mozart" })}/>);
-        expect(rendered.find(RemoveLink).prop("text")).to.eq("Remove member")
+        expect(rendered.find(".text-danger").text()).to.eq("Remove member")
     });
 
     it("removes member", (done: DoneCallback) => {
