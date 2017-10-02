@@ -98,7 +98,7 @@ export class GroupStore extends AbstractStore<GroupState, Interface> {
 
     handleAddMember(username: string) {
 
-        if (this.currentMembers.filter(u => u != username).length == this.currentMembers.length) {
+        if (this.filteredMembers(username).length == this.currentMembers.length) {
             this.currentMembers.push(username)
         }
     }
@@ -106,8 +106,12 @@ export class GroupStore extends AbstractStore<GroupState, Interface> {
     handleRemoveMember(username: string) {
 
         this.currentMembers
-            = this.currentMembers.filter(u => u != username);
+            = this.filteredMembers(username);
 
+    }
+
+    filteredMembers(usernameToFilterOut: string){
+        return this.currentMembers.filter(u => u != usernameToFilterOut)
     }
 
 }

@@ -110,16 +110,19 @@ class UserStore
     }
 
     handleAddRole(role: RoleAssignment) {
-        if (this.rolesLookup[this.currentUsername]
-                .filter(r => r.name != role.name || r.scope_id != role.scope_id || r.scope_prefix != role.scope_prefix).length
+        if (this.filteredRoles(role).length
             == this.rolesLookup[this.currentUsername].length) {
             this.rolesLookup[this.currentUsername].push(role);
         }
     }
 
     handleRemoveRole(role: RoleAssignment) {
-        this.rolesLookup[this.currentUsername] = this.rolesLookup[this.currentUsername]
-            .filter(r => r.name != role.name || r.scope_id != role.scope_id || r.scope_prefix != role.scope_prefix);
+        this.rolesLookup[this.currentUsername] = this.filteredRoles(role);
+    }
+
+    filteredRoles(roleToFilterOut: RoleAssignment){
+        return this.rolesLookup[this.currentUsername]
+            .filter(r => r.name != roleToFilterOut.name || r.scope_id != roleToFilterOut.scope_id || r.scope_prefix != roleToFilterOut.scope_prefix)
     }
 }
 
