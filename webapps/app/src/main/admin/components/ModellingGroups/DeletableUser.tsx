@@ -35,7 +35,7 @@ export class DeletableUser extends React.Component<UserProps, undefined> {
     render() {
         return <div>
             <div className="form-group">
-                <InternalLink key={this.props.user.username} href={`/users/${this.props.user.username}/`}>
+                <InternalLink href={`/users/${this.props.user.username}/`}>
                     {this.props.user.name}
                 </InternalLink>
                 <RemoveLink clickHandler={this.clickHandler.bind(this)} text="Remove member"/>

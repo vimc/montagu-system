@@ -23,7 +23,8 @@ describe("GroupAdminContent", () => {
                 groupDetails: {
                     "group1": group,
                     "group2": mockModellingGroupDetails({ members: ["a", "b"] })
-                }
+                },
+                currentMembers: ["a", "b"]
             }
         }));
         const props = GroupAdminContentComponent.getPropsFromStores();
@@ -31,12 +32,12 @@ describe("GroupAdminContent", () => {
             groupId: "group1",
             ready: true,
             users: [a, b, c],
-            members: new Set<User>([a, b])
+            members: [a, b]
         });
     });
 
     it("renders no members if group has no members", () => {
-        const rendered = shallow(<GroupAdminContentComponent ready={ true } groupId="group1" users={ [] } members={ new Set() } />);
+        const rendered = shallow(<GroupAdminContentComponent ready={ true } groupId="group1" users={ [] } members={ [] } />);
         expect(rendered.text()).to.contain("This group does not have any members.");
     });
 
@@ -45,7 +46,7 @@ describe("GroupAdminContent", () => {
             mockUser({ name: "Test A" }),
             mockUser({ name: "Test B" })
         ];
-        const rendered = shallow(<GroupAdminContentComponent ready={ true } groupId="group1" users={ [] } members={ new Set(members) } />);
+        const rendered = shallow(<GroupAdminContentComponent ready={ true } groupId="group1" users={ [] } members={ members } />);
         expect(rendered.find(ListOfUsers).prop("users")).to.eql(members);
     });
 });

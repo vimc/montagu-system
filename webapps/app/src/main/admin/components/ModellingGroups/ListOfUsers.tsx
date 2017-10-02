@@ -9,7 +9,6 @@ interface Props {
 
 export class ListOfUsers extends React.Component<Props, undefined> {
     render() {
-
         return <div>{this.props.users.map(a => <DeletableUser key={a.username} user={a} groupId={this.props.groupId}/>)}
         </div>;
     }

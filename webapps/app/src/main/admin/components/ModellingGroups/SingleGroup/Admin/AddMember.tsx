@@ -1,12 +1,12 @@
 import * as React from "react";
-import { AssociateUser, Result, User } from "../../../../../shared/models/Generated";
+import { AssociateUser, User } from "../../../../../shared/models/Generated";
 import { modellingGroupActions } from "../../../../../shared/actions/ModellingGroupActions";
 import fetcher from "../../../../../shared/sources/Fetcher";
 import { processResponseAndNotifyOnErrors } from "../../../../../shared/sources/Source";
 import { notificationActions, NotificationException } from "../../../../../shared/actions/NotificationActions";
 
 interface Props {
-    members: Set<User>;
+    members: string[];
     users: User[];
     groupId: string;
 }
@@ -19,7 +19,11 @@ interface State {
 export class AddMember extends React.Component<Props, State> {
 
     componentWillMount() {
-        const options = this.props.users.filter(x => !this.props.members.has(x));
+        this.componentWillReceiveProps(this.props);
+    }
+
+    componentWillReceiveProps(props: Props) {
+        const options = props.users.filter(x => props.members.indexOf(x.username) == -1);
         const firstUser = options.length > 0 ? options[0].username : "";
 
         this.setState({
@@ -34,7 +38,6 @@ export class AddMember extends React.Component<Props, State> {
             selectedUser: e.target.value
         });
     }
-
 
     handleClick(e: any) {
 
@@ -76,7 +79,7 @@ export class AddMember extends React.Component<Props, State> {
                 <div className="col">
                     <select className="form-control" onChange={this.handleChange.bind(this)}>
                         {this.state.options
-                            .map(u => <option key={u.username} value={u.username}>{u.name}</option>)}
+                            .map(u => <option key={"option-" + u.username} value={u.username}>{u.name}</option>)}
                     </select>
                 </div>
                 <div className="col">

@@ -11,7 +11,8 @@ export interface RolesProps {
 }
 
 interface RolesState {
-    roles: string[];
+    allRoles: string[];
+    availableRoles: string[];
     selectedRole: string;
 }
 
@@ -20,7 +21,8 @@ export class AddRoles extends React.Component<RolesProps, RolesState> {
     componentWillMount() {
 
         this.setState({
-            roles: [],
+            allRoles: [],
+            availableRoles: [],
             selectedRole: ""
         });
 
@@ -28,14 +30,24 @@ export class AddRoles extends React.Component<RolesProps, RolesState> {
             .then((response: Response) => {
                 processResponseAndNotifyOnErrors(response)
                     .then((result: string[]) => {
-                    const roles = result.filter(r => this.props.userRoles.indexOf(r) == -1);
+
                         this.setState({
-                            roles: roles,
-                            selectedRole: roles.length > 0 ? roles[0] : ""
-                        })
+                            allRoles: result
+                        });
+
+                        this.componentWillReceiveProps(this.props);
                     })
                     .catch((e: NotificationException) => notificationActions.notify(e))
             });
+    }
+
+    componentWillReceiveProps(props: RolesProps) {
+
+        const roles = this.state.allRoles.filter(r => props.userRoles.indexOf(r) == -1);
+        this.setState({
+            availableRoles: roles,
+            selectedRole: roles.length > 0 ? roles[0] : ""
+        })
     }
 
     handleChange(e: any) {
@@ -73,11 +85,21 @@ export class AddRoles extends React.Component<RolesProps, RolesState> {
 
     render() {
 
+        if (this.state.availableRoles.length == 0) {
+            return <div className="form-group row">
+                <div className="col">
+                    <div className="alert alert-warning">
+                        This user has all possible roles.
+                    </div>
+                </div>
+            </div>
+        }
+
         return <form>
             <div className="form-group row">
                 <div className="col">
                     <select className="form-control" onChange={this.handleChange.bind(this)}>
-                        {this.state.roles
+                        {this.state.availableRoles
                             .map(r => <option value={r} key={r}>{r}</option>)}
                     </select>
                 </div>

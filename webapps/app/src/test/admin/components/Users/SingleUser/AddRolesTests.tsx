@@ -29,7 +29,7 @@ describe("AddRoles", () => {
         const roles = shallow(<AddRoles username={"testuser"} userRoles={[]}/>);
         const instance = roles.instance();
         const setState = sandbox.sinon.stub(instance, 'setState')
-            .withArgs({roles: ["role1", "role2"], selectedRole: "role1"});
+            .withArgs({allRoles: ["role1", "role2"], availableRoles: ["role1", "role2"], selectedRole: "role1"});
 
         instance.componentWillMount();
 
@@ -51,7 +51,7 @@ describe("AddRoles", () => {
         const roles = sandbox.mount(<AddRoles username={"testuser"} userRoles={["role1"]}/>);
          const instance = roles.instance();
         const setState = sandbox.sinon.stub(instance, 'setState')
-            .withArgs({roles: ["role2"], selectedRole: "role2"});
+            .withArgs({allRoles: ["role1", "role2"], availableRoles: ["role2"], selectedRole: "role2"});
 
         instance.componentWillMount();
 
@@ -104,7 +104,7 @@ describe("AddRoles", () => {
         const dispatchSpy = sandbox.dispatchSpy();
 
         const addRoles = sandbox.mount(<AddRoles username={"testuser"} userRoles={["role1"]}/>);
-        addRoles.setState({ selectedRole: "rolename", roles: ["rolename"] });
+        addRoles.setState({ selectedRole: "rolename", availableRoles: ["rolename"] });
 
         const onClick = addRoles.find("button").prop("onClick");
         onClick.call(onClick, {

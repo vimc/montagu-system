@@ -11,7 +11,7 @@ import { AddMember } from "./AddMember";
 const commonStyles = require("../../../../../shared/styles/common.css");
 
 interface Props extends RemoteContent {
-    members: Set<User>;
+    members: User[];
     users: User[];
     groupId: string;
 }
@@ -24,29 +24,30 @@ export class GroupAdminContentComponent extends RemoteContentComponent<Props> {
     static getPropsFromStores(): Props {
         const group = groupStore.getCurrentGroupDetails();
         const allUsers = userStore.getState().users;
+        const members = groupStore.getState().currentMembers;
+
         if (group != null) {
             return {
                 users: allUsers,
-                members: new Set(group.members.map(a => allUsers.find(u => a == u.username))),
+                members: members.map(a => allUsers.find(u => a == u.username)),
                 ready: group != null && userStore.getState().ready,
                 groupId: group.id
             };
         } else {
             return {
                 users: [],
-                members: new Set(),
+                members: [],
                 ready: false,
                 groupId: ""
             };
         }
     }
 
-
     renderCurrent(props: Props): JSX.Element {
-        if (props.members.size == 0) {
+        if (props.members.length == 0) {
             return <div>This group does not have any members.</div>;
         } else {
-            return <ListOfUsers users={ [...props.members] } groupId={this.props.groupId}
+            return <ListOfUsers users={ [...props.members] } groupId={props.groupId}
             />;
         }
     }
@@ -57,7 +58,7 @@ export class GroupAdminContentComponent extends RemoteContentComponent<Props> {
                 { this.renderCurrent(props) }
             <div>
                 <div className={ commonStyles.sectionTitle }>Add modelling group member</div>
-                <AddMember members={props.members} users={props.users} groupId={props.groupId}/>
+                <AddMember members={ [...props.members.map(m=>m.username)] } users={props.users} groupId={props.groupId}/>
             </div>
         </div>
     }

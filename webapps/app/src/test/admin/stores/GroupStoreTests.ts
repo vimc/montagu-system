@@ -78,4 +78,46 @@ describe("GroupStore", () => {
         modellingGroupActions.updateGroupDetails(details);
         expect(groupStore.getCurrentGroupDetails()).to.be.eql(details);
     });
+
+    it("addMember adds member", () => {const details = mockModellingGroupDetails({ id: "group1", members: [ "user1"] });
+        alt.bootstrap(JSON.stringify({
+            GroupStore: {
+                currentGroupId: "group1",
+                groups: [ {id: "group1", description: "some desc"}],
+                groupDetails: {"group1": details},
+                currentMembers: ["user1"]
+            }
+        }));
+
+        modellingGroupActions.addMember("username");
+        expect(groupStore.getState().currentMembers.indexOf("username")).to.be.greaterThan(-1);
+    });
+
+    it("addMember does not add duplicate member", () => {
+        const details = mockModellingGroupDetails({ id: "group1", members: [ "user1"] });
+        alt.bootstrap(JSON.stringify({
+            GroupStore: {
+                currentGroupId: "group1",
+                groups: [ {id: "group1", description: "some desc"}],
+                groupDetails: {"group1": details},
+                currentMembers: ["user1"]
+            }
+        }));
+        modellingGroupActions.addMember("user1");
+        expect(groupStore.getState().currentMembers.length).to.be.eq(1)
+    });
+
+    it("removeMember removes member", () => {
+        const details = mockModellingGroupDetails({ id: "group1", members: [ "user1"] });
+        alt.bootstrap(JSON.stringify({
+            GroupStore: {
+                currentGroupId: "group1",
+                groups: [ {id: "group1", description: "some desc"}],
+                groupDetails: {"group1": details},
+                currentMembers: ["user1"]
+            }
+        }));
+        modellingGroupActions.removeMember("user1");
+        expect(groupStore.getState().currentMembers.length).to.be.eq(0);
+    });
 });
