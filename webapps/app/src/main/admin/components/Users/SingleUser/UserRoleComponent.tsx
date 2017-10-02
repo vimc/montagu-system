@@ -49,8 +49,6 @@ export class UserRole extends React.Component<UserRoleProps, UserRoleState> {
         }
 
         return <RemoveLink clickHandler={this.clickHandler.bind(this)} text="Remove role"/>
-        // return <a href="#" className="text-danger float-right" onClick={this.clickHandler.bind(this)}>
-        //     Remove role</a>;
     }
 
     render() {

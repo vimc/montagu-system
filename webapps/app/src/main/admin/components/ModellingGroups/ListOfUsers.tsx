@@ -17,7 +17,7 @@ interface UserProps {
     groupId: string;
 }
 
-class DeletableUser extends React.Component<UserProps, undefined> {
+export class DeletableUser extends React.Component<UserProps, undefined> {
 
     clickHandler(){
 

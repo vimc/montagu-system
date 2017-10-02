@@ -92,13 +92,14 @@ describe("UserStore", () => {
         const anotherTestUser = mockUser({username: "anotherTestUser"});
         const users = [ testUser, anotherTestUser ];
 
+
         userActions.updateUsers(users);
         userActions.setCurrentUser("testUser");
         userActions.addRole("reports-reader", null, null);
         userActions.removeRole("reports-reader", null, null);
 
         const roles = userStore.getCurrentUserRoles();
-        expect(roles.filter(r => r.name == "reports-reader").length).to.eq(1);
+        expect(roles.filter(r => r.name == "reports-reader").length).to.eq(0);
     });
 
 });

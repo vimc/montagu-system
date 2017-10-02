@@ -4,6 +4,7 @@ import {expect} from "chai";
 import {UserRole} from "../../../../../main/admin/components/Users/SingleUser/UserRoleComponent";
 import {RoleAssignment} from "../../../../../main/shared/models/Generated";
 import {mockRole} from "../../../../mocks/mockModels";
+import { RemoveLink } from "../../../../../main/shared/components/RemoveLink";
 
 describe("UserRole", () => {
     it("does not show scope if global", () => {
@@ -37,7 +38,7 @@ describe("UserRole", () => {
         role.scope_id = "fake";
         role.name = "rolename";
         const rendered = shallow(<UserRole { ...role} username="testuser" showdelete={true}/>);
-        const text = rendered.find('.text-danger').text();
+        const text = rendered.find(RemoveLink).prop("text");
 
         expect(text).to.eq("Remove role")
     });
@@ -49,7 +50,7 @@ describe("UserRole", () => {
         role.scope_id = "fake";
         role.name = "rolename";
         const rendered = shallow(<UserRole { ...role} username="testuser" showdelete={false}/>);
-        expect(rendered.find('.text-danger').length).to.eq(0)
+        expect(rendered.find(RemoveLink).length).to.eq(0)
     });
 
 });
