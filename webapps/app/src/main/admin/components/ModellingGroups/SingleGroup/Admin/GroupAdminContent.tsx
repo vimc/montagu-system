@@ -41,11 +41,13 @@ export class GroupAdminContentComponent extends RemoteContentComponent<Props> {
         }
     }
 
+
     renderCurrent(props: Props): JSX.Element {
         if (props.members.size == 0) {
             return <div>This group does not have any members.</div>;
         } else {
-            return <ListOfUsers users={ [...props.members] } />;
+            return <ListOfUsers users={ [...props.members] } groupId={this.props.groupId}
+            />;
         }
     }
 

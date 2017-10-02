@@ -12,6 +12,7 @@ interface Actions {
     updateGroupDetails(details: ModellingGroupDetails): ModellingGroupDetails;
 
     addMember(username: string): string;
+    removeMember(username: string): string;
 }
 
 class ModellingGroupActions extends FetchActions<ModellingGroup[]> implements Actions {
@@ -34,6 +35,10 @@ class ModellingGroupActions extends FetchActions<ModellingGroup[]> implements Ac
     }
 
     addMember(username: string){
+        return username;
+    }
+
+    removeMember(username: string){
         return username;
     }
 }

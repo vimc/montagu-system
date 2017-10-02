@@ -29,7 +29,7 @@ class ModellingGroupDetailsContentComponent extends RemoteContentComponent<Props
     }
 
     renderContent(props: Props) {
-        return <div>
+        return <div className="col">
             <table className={ commonStyles.specialColumn }>
                 <tbody>
                     <tr><td>ID</td><td>{ props.group.id }</td></tr>

@@ -1,6 +1,5 @@
 import alt from "../alt";
 import { AbstractActions } from "./AbstractActions";
-import { networkInterfaces } from "os";
 
 export type MessageType = "error" | "info";
 

@@ -1,7 +1,10 @@
-import * as React from "react";
+    import * as React from "react";
 import { AssociateRole, RoleAssignment } from "../../../../shared/models/Generated";
 import fetcher from "../../../../shared/sources/Fetcher";
 import { userActions } from "../../../actions/UserActions";
+import { processResponseAndNotifyOnErrors } from "../../../../shared/sources/Source";
+import { notificationActions, NotificationException } from "../../../../shared/actions/NotificationActions";
+    import { RemoveLink } from "../../../../shared/components/RemoveLink";
 
 interface UserRoleProps extends RoleAssignment {
     username: string;
@@ -27,23 +30,17 @@ export class UserRole extends React.Component<UserRoleProps, UserRoleState> {
         }))
     }
 
-    componentDidMount() {
-        this.setState({
-            href: `/users/${this.props.username}/actions/associate_role/`,
-            associateRole: {
-                action: "remove",
-                name: this.props.name,
-                scope_id: this.props.scope_id,
-                scope_prefix: this.props.scope_prefix
-            }
-        })
-    }
-
     clickHandler() {
+        const roleName = this.state.associateRole.name;
+
         fetcher.fetcher.fetch(this.state.href, {
             method: "post",
             body: JSON.stringify(this.state.associateRole)
-        }).then(() => userActions.removeRole(this.state.associateRole.name, null, null))
+        }).then((response: Response) =>
+            processResponseAndNotifyOnErrors(response)
+                .then(() => userActions.removeRole(roleName, null, null))
+                .catch((e: NotificationException) => notificationActions.notify(e))
+        )
     }
 
     renderButton() {
@@ -51,8 +48,9 @@ export class UserRole extends React.Component<UserRoleProps, UserRoleState> {
             return ""
         }
 
-        return <a href="#" className="text-danger float-right" onClick={this.clickHandler.bind(this)}>
-            Remove role</a>;
+        return <RemoveLink clickHandler={this.clickHandler.bind(this)} text="Remove role"/>
+        // return <a href="#" className="text-danger float-right" onClick={this.clickHandler.bind(this)}>
+        //     Remove role</a>;
     }
 
     render() {

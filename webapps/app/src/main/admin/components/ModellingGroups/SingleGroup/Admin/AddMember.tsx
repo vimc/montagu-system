@@ -1,7 +1,9 @@
 import * as React from "react";
-import { AssociateUser, User } from "../../../../../shared/models/Generated";
+import { AssociateUser, Result, User } from "../../../../../shared/models/Generated";
 import { modellingGroupActions } from "../../../../../shared/actions/ModellingGroupActions";
 import fetcher from "../../../../../shared/sources/Fetcher";
+import { processResponseAndNotifyOnErrors } from "../../../../../shared/sources/Source";
+import { notificationActions, NotificationException } from "../../../../../shared/actions/NotificationActions";
 
 interface Props {
     members: Set<User>;
@@ -9,15 +11,36 @@ interface Props {
     groupId: string;
 }
 
-interface State{
+interface State {
+    options: User[];
     selectedUser: string;
 }
 
 export class AddMember extends React.Component<Props, State> {
 
-    handleClick() {
+    componentWillMount() {
+        const options = this.props.users.filter(x => !this.props.members.has(x));
+        const firstUser = options.length > 0 ? options[0].username : "";
 
-        const href = `/modelling-groups/${this.props.groupId}/actions/associate_user/`;
+        this.setState({
+            selectedUser: firstUser,
+            options: options
+        })
+    }
+
+    handleChange(e: any) {
+
+        this.setState({
+            selectedUser: e.target.value
+        });
+    }
+
+
+    handleClick(e: any) {
+
+        e.preventDefault();
+
+        const href = `/modelling-groups/${this.props.groupId}/actions/associate_member/`;
         const associateUser: AssociateUser = {
             username: this.state.selectedUser,
             action: "add"
@@ -27,23 +50,40 @@ export class AddMember extends React.Component<Props, State> {
         fetcher.fetcher.fetch(href, {
             method: "post",
             body: JSON.stringify(associateUser)
-        }).then(() => modellingGroupActions.addMember(this.state.selectedUser));
+        }).then((response: Response) => {
+            return processResponseAndNotifyOnErrors(response)
+                .then(() => {
+                    modellingGroupActions.addMember(this.state.selectedUser)
+                })
+                .catch((e: NotificationException) => notificationActions.notify(e))
+        });
     }
 
     render() {
-        const options = this.props.users.filter(x => !this.props.members.has(x))
-            .map(u => <option key={ u.username } value={ u.username }>{ u.name }</option>);
-        const select = {
-            width: 300,
-            height: 32
-        };
-        const button = {
-            marginLeft: 10
-        };
-        return <div>
-            <select style={ select }>{ options }</select>
-            <button style={ button } onClick={this.handleClick.bind(this)}>Add</button>
-        </div>;
+
+        if (this.state.options.length == 0) {
+            return <div className="form-group row">
+                <div className="col">
+                    <div className="alert alert-warning">
+                        No more users available to add. Add more users to Montagu <a href="/users/">here</a>.
+                    </div>
+                </div>
+            </div>
+        }
+
+        return <form>
+            <div className="form-group row">
+                <div className="col">
+                    <select className="form-control" onChange={this.handleChange.bind(this)}>
+                        {this.state.options
+                            .map(u => <option key={u.username} value={u.username}>{u.name}</option>)}
+                    </select>
+                </div>
+                <div className="col">
+                    <button className="btn-success" onClick={this.handleClick.bind(this)}>Add</button>
+                </div>
+            </div>
+        </form>;
     }
 
 }
