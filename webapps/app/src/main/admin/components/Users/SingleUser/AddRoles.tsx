@@ -1,5 +1,5 @@
 import * as React from "react";
-import { AssociateRole, Result } from "../../../../shared/models/Generated";
+import { AssociateRole } from "../../../../shared/models/Generated";
 import fetcher from "../../../../shared/sources/Fetcher";
 import { userActions } from "../../../actions/UserActions";
 import { processResponseAndNotifyOnErrors } from "../../../../shared/sources/Source";
@@ -28,9 +28,10 @@ export class AddRoles extends React.Component<RolesProps, RolesState> {
             .then((response: Response) => {
                 processResponseAndNotifyOnErrors(response)
                     .then((result: string[]) => {
+                    const roles = result.filter(r => this.props.userRoles.indexOf(r) == -1);
                         this.setState({
-                            roles: result,
-                            selectedRole: result[0]
+                            roles: roles,
+                            selectedRole: roles.length > 0 ? roles[0] : ""
                         })
                     })
                     .catch((e: NotificationException) => notificationActions.notify(e))
@@ -76,7 +77,7 @@ export class AddRoles extends React.Component<RolesProps, RolesState> {
             <div className="form-group row">
                 <div className="col">
                     <select className="form-control" onChange={this.handleChange.bind(this)}>
-                        {this.state.roles.filter(r => this.props.userRoles.indexOf(r) == -1)
+                        {this.state.roles
                             .map(r => <option value={r} key={r}>{r}</option>)}
                     </select>
                 </div>
