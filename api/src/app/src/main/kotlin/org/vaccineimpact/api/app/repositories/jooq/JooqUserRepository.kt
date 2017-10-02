@@ -173,6 +173,7 @@ class JooqUserRepository(dsl: DSLContext) : JooqRepository(dsl), UserRepository
                         .where(USER_ROLE.USERNAME.eq(associateUser.username))
                         .and(USER_ROLE.ROLE.eq(roleId))
                         .and(USER_ROLE.SCOPE_ID.eq(groupId))
+                        .execute()
             }
         }
     }

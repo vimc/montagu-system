@@ -162,7 +162,7 @@ class UserTests : RepositoryTests<UserRepository>()
             repo.modifyMembership("new-id", AssociateUser("remove", "user.a"))
             JooqContext().use {
                 val groupRepo = makeGroupRepository(it)
-                assertThat(!groupRepo.getModellingGroupDetails("new-id").members.contains("user-a"))
+                assertThat(!groupRepo.getModellingGroupDetails("new-id").members.contains("user.a"))
             }
         }
     }
