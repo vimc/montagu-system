@@ -11,7 +11,6 @@ import kotlin.reflect.KFunction
 import kotlin.reflect.KType
 import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.primaryConstructor
-import kotlin.reflect.jvm.javaType
 
 class HeaderDefinition(val name: String, val type: KType)
 
