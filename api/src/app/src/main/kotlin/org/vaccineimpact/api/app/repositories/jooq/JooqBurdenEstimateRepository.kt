@@ -92,8 +92,8 @@ class JooqBurdenEstimateRepository(
                 throw InconsistentDataError("Provided estimate lists disease as '${estimate.disease}' but scenario is for disease '$expectedDisease'")
             }
             val cohortSize = newBurdenEstimateRecord(setId, estimate, cohortSizeId,
-                    BigDecimal.valueOf(estimate.cohortSize.toLong())
-            )
+                   estimate.cohortSize)
+
             val otherOutcomes = estimate.outcomes.map { outcome ->
                 val outcomeId = outcomeLookup[outcome.key]
                     ?: throw UnknownObjectError(outcome.key, "burden-outcome")
