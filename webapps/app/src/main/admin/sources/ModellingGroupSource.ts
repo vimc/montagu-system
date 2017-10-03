@@ -21,5 +21,6 @@ export class ModellingGroupSource extends Source<GroupState>
             loading: modellingGroupActions.beginFetchDetails,
             isCached: s => s.groupDetails.hasOwnProperty(s.currentGroupId)
         });
+
     }
 }

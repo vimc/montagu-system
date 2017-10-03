@@ -1,17 +1,19 @@
 import * as React from "react";
 import { RemoteContentComponent } from "../../../../../shared/components/RemoteContentComponent/RemoteContentComponent";
 import { RemoteContent } from "../../../../../shared/models/RemoteContent";
-import { ModellingGroupDetails, User } from "../../../../../shared/models/Generated";
+import {  User } from "../../../../../shared/models/Generated";
 import { groupStore } from "../../../../stores/GroupStore";
 import { connectToStores } from "../../../../../shared/alt";
 import { userStore } from "../../../../stores/UserStore";
 import { ListOfUsers } from "../../ListOfUsers";
+import { AddMember } from "./AddMember";
 
 const commonStyles = require("../../../../../shared/styles/common.css");
 
 interface Props extends RemoteContent {
-    members: Set<User>;
+    members: User[];
     users: User[];
+    groupId: string;
 }
 
 export class GroupAdminContentComponent extends RemoteContentComponent<Props> {
@@ -22,43 +24,32 @@ export class GroupAdminContentComponent extends RemoteContentComponent<Props> {
     static getPropsFromStores(): Props {
         const group = groupStore.getCurrentGroupDetails();
         const allUsers = userStore.getState().users;
+        const members = groupStore.getCurrentGroupMembers();
+
         if (group != null) {
             return {
                 users: allUsers,
-                members: new Set(group.members.map(a => allUsers.find(u => a == u.username))),
-                ready: group != null && userStore.getState().ready
+                members: members.map(a => allUsers.find(u => a == u.username)),
+                ready: group != null && userStore.getState().ready,
+                groupId: group.id
             };
         } else {
             return {
                 users: [],
-                members: new Set(),
-                ready: false
+                members: [],
+                ready: false,
+                groupId: ""
             };
         }
     }
 
     renderCurrent(props: Props): JSX.Element {
-        if (props.members.size == 0) {
+        if (props.members.length == 0) {
             return <div>This group does not have any members.</div>;
         } else {
-            return <ListOfUsers users={ [...props.members] } />;
+            return <ListOfUsers users={ [...props.members] } groupId={props.groupId}
+            />;
         }
-    }
-
-    renderAdd(props: Props): JSX.Element {
-        const options = props.users.filter(x => !props.members.has(x))
-            .map(u => <option key={ u.username } value={ u.username }>{ u.name }</option>);
-        const select = {
-            width: 300,
-            height: 32
-        };
-        const button = {
-            marginLeft: 10
-        };
-        return <div>
-            <select style={ select }>{ options }</select>
-            <button style={ button }>Add</button>
-        </div>;
     }
 
     renderContent(props: Props) {
@@ -67,7 +58,7 @@ export class GroupAdminContentComponent extends RemoteContentComponent<Props> {
                 { this.renderCurrent(props) }
             <div>
                 <div className={ commonStyles.sectionTitle }>Add modelling group member</div>
-                { this.renderAdd(props) }
+                <AddMember members={ [...props.members.map(m=>m.username)] } users={props.users} groupId={props.groupId}/>
             </div>
         </div>
     }

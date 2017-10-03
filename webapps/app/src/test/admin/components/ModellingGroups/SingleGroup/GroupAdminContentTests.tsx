@@ -9,7 +9,7 @@ import { ListOfUsers } from "../../../../../main/admin/components/ModellingGroup
 
 describe("GroupAdminContent", () => {
     it("can get props from stores", () => {
-        const group = mockModellingGroupDetails();
+        const group = mockModellingGroupDetails({id: "group1", members: ["a", "b"] });
         const a = mockUser({ username: "a" });
         const b = mockUser({ username: "b" });
         const c = mockUser({ username: "c" });
@@ -22,20 +22,22 @@ describe("GroupAdminContent", () => {
                 currentGroupId: "group1",
                 groupDetails: {
                     "group1": group,
-                    "group2": mockModellingGroupDetails({ members: ["a", "b"] })
-                }
+                    "group2": mockModellingGroupDetails()
+                },
+                membersLookup: {"group1": ["a", "b"], "group2": []}
             }
         }));
         const props = GroupAdminContentComponent.getPropsFromStores();
         expect(props).to.eql({
+            groupId: "group1",
             ready: true,
             users: [a, b, c],
-            members: new Set<User>([a, b])
+            members: [a, b]
         });
     });
 
     it("renders no members if group has no members", () => {
-        const rendered = shallow(<GroupAdminContentComponent ready={ true } users={ [] } members={ new Set() } />);
+        const rendered = shallow(<GroupAdminContentComponent ready={ true } groupId="group1" users={ [] } members={ [] } />);
         expect(rendered.text()).to.contain("This group does not have any members.");
     });
 
@@ -44,7 +46,7 @@ describe("GroupAdminContent", () => {
             mockUser({ name: "Test A" }),
             mockUser({ name: "Test B" })
         ];
-        const rendered = shallow(<GroupAdminContentComponent ready={ true } users={ [] } members={ new Set(members) } />);
+        const rendered = shallow(<GroupAdminContentComponent ready={ true } groupId="group1" users={ [] } members={ members } />);
         expect(rendered.find(ListOfUsers).prop("users")).to.eql(members);
     });
 });

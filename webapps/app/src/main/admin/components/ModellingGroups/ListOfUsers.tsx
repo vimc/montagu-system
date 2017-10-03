@@ -1,17 +1,15 @@
 import { User } from "../../../shared/models/Generated";
 import * as React from "react";
-import { InternalLink } from "../../../shared/components/InternalLink";
-import { intersperse } from "../../../shared/components/Helpers";
+import { DeletableUser } from "./DeletableUser";
 
 interface Props {
     users: User[];
+    groupId: string;
 }
 
 export class ListOfUsers extends React.Component<Props, undefined> {
     render() {
-        const items = this.props.users.map(a => <InternalLink key={ a.username } href={ `/users/${a.username}/` }>
-            { a.name }
-        </InternalLink>);
-        return <span>{ intersperse(items, ", ") }</span>;
+        return <div>{this.props.users.map(a => <DeletableUser key={a.username} user={a} groupId={this.props.groupId}/>)}
+        </div>;
     }
 }

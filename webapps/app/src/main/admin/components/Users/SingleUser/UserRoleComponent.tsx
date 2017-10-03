@@ -2,6 +2,9 @@ import * as React from "react";
 import { AssociateRole, RoleAssignment } from "../../../../shared/models/Generated";
 import fetcher from "../../../../shared/sources/Fetcher";
 import { userActions } from "../../../actions/UserActions";
+import { processResponseAndNotifyOnErrors } from "../../../../shared/sources/Source";
+import { notificationActions, NotificationException } from "../../../../shared/actions/NotificationActions";
+import { Link } from "simple-react-router";
 
 interface UserRoleProps extends RoleAssignment {
     username: string;
@@ -16,18 +19,6 @@ interface UserRoleState {
 export class UserRole extends React.Component<UserRoleProps, UserRoleState> {
 
     componentWillMount() {
-        this.setState((previousState, props) => ({
-            href: `/users/${props.username}/actions/associate_role/`,
-            associateRole: {
-                action: "remove",
-                name: props.name,
-                scope_id: props.scope_id,
-                scope_prefix: props.scope_prefix
-            }
-        }))
-    }
-
-    componentDidMount() {
         this.setState({
             href: `/users/${this.props.username}/actions/associate_role/`,
             associateRole: {
@@ -40,10 +31,16 @@ export class UserRole extends React.Component<UserRoleProps, UserRoleState> {
     }
 
     clickHandler() {
+        const roleName = this.state.associateRole.name;
+
         fetcher.fetcher.fetch(this.state.href, {
             method: "post",
             body: JSON.stringify(this.state.associateRole)
-        }).then(() => userActions.removeRole(this.state.associateRole.name, null, null))
+        }).then((response: Response) =>
+            processResponseAndNotifyOnErrors(response)
+                .then(() => userActions.removeRole(roleName, null, null))
+                .catch((e: NotificationException) => notificationActions.notify(e))
+        )
     }
 
     renderButton() {
@@ -51,8 +48,7 @@ export class UserRole extends React.Component<UserRoleProps, UserRoleState> {
             return ""
         }
 
-        return <a href="#" className="text-danger float-right" onClick={this.clickHandler.bind(this)}>
-            Remove role</a>;
+        return <Link onClick={this.clickHandler.bind(this)} className="text-danger float-right" href="#">Remove role</Link>
     }
 
     render() {

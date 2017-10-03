@@ -5,25 +5,31 @@ import { AbstractStore } from "../../shared/stores/AbstractStore";
 import { modellingGroupActions } from "../../shared/actions/ModellingGroupActions";
 import { RemoteContent } from "../../shared/models/RemoteContent";
 import { ILookup } from "../../shared/models/Lookup";
+import { ModellingGroupSource } from "../sources/ModellingGroupSource";
 import StoreModel = AltJS.StoreModel;
-import {ModellingGroupSource} from "../sources/ModellingGroupSource";
 
 export interface GroupState extends RemoteContent {
     groups: ModellingGroup[];
     groupDetails: ILookup<ModellingGroupDetails>;
     currentGroupId: string;
+    membersLookup: ILookup<string[]>;
 }
 
 interface Interface extends AltJS.AltStore<GroupState> {
     fetchGroups(): Promise<ModellingGroup[]>;
+
     fetchGroupDetails(): Promise<ModellingGroupDetails>;
+
     getCurrentGroupDetails(): ModellingGroupDetails;
+
+    getCurrentGroupMembers(): string[];
 }
 
 export class GroupStore extends AbstractStore<GroupState, Interface> {
     groups: ModellingGroup[];
     groupDetails: ILookup<ModellingGroupDetails>;
     currentGroupId: string;
+    membersLookup: ILookup<string[]>;
     ready: boolean;
 
     constructor() {
@@ -36,12 +42,22 @@ export class GroupStore extends AbstractStore<GroupState, Interface> {
 
             handleBeginFetchDetails: modellingGroupActions.beginFetchDetails,
             handleUpdateGroupDetails: modellingGroupActions.updateGroupDetails,
+            handleAddMember: modellingGroupActions.addMember,
+            handleRemoveMember: modellingGroupActions.removeMember
         });
         this.registerAsync(new ModellingGroupSource());
         this.exportPublicMethods({
             getCurrentGroupDetails: () => {
                 if (this.currentGroupId && this.groupDetails.hasOwnProperty(this.currentGroupId)) {
                     return this.groupDetails[this.currentGroupId]
+                } else {
+                    return null;
+                }
+            },
+
+            getCurrentGroupMembers: () => {
+                if (this.currentGroupId && this.membersLookup.hasOwnProperty(this.currentGroupId)) {
+                    return this.membersLookup[this.currentGroupId]
                 } else {
                     return null;
                 }
@@ -54,7 +70,8 @@ export class GroupStore extends AbstractStore<GroupState, Interface> {
             groups: [],
             groupDetails: {},
             currentGroupId: null,
-            ready: false
+            ready: false,
+            membersLookup: {}
         };
     }
 
@@ -62,21 +79,45 @@ export class GroupStore extends AbstractStore<GroupState, Interface> {
         this.ready = false;
         this.groups = [];
     }
+
     handleUpdateGroups(groups: ModellingGroup[]) {
         this.ready = true;
         this.groups = groups;
     }
+
     handleSetCurrentGroup(groupId: string) {
         this.currentGroupId = groupId;
     }
+
     handleBeginFetchDetails(groupId: string) {
         this.ready = false;
         delete this.groupDetails[groupId];
     }
+
     handleUpdateGroupDetails(details: ModellingGroupDetails) {
         this.ready = true;
         this.groupDetails[details.id] = details;
+        this.membersLookup[details.id] = details.members;
     }
+
+    handleAddMember(username: string) {
+
+        if (this.filteredMembers(username).length == this.membersLookup[this.currentGroupId].length) {
+            this.membersLookup[this.currentGroupId].push(username)
+        }
+    }
+
+    handleRemoveMember(username: string) {
+
+        this.membersLookup[this.currentGroupId]
+            = this.filteredMembers(username);
+
+    }
+
+    filteredMembers(usernameToFilterOut: string){
+        return this.membersLookup[this.currentGroupId].filter(u => u != usernameToFilterOut)
+    }
+
 }
 
 export const groupStore = alt.createStore<GroupState>(GroupStore as StoreModel<GroupState>) as Interface;

@@ -7,6 +7,7 @@ import { InternalLink } from "../../../../../main/shared/components/InternalLink
 import { ListOfUsers } from "../../../../../main/admin/components/ModellingGroups/ListOfUsers";
 
 describe("GroupAdminSummary", () => {
+
     it("renders no members if group has no members", () => {
         const group = mockModellingGroupDetails({ id: "group-id", members: [] });
         const users = [ mockUser() ];
@@ -22,6 +23,6 @@ describe("GroupAdminSummary", () => {
         ];
         const group = mockModellingGroupDetails({ members: [ "test.a", "test.b" ] });
         const rendered = shallow(<GroupAdminSummary group={ group } allUsers={ users } />);
-        expect(rendered.find(ListOfUsers).prop("users")).to.eql(users);
+        expect(rendered.find(InternalLink).first().prop("href")).to.eql("/users/test.a/");
     });
 });

@@ -137,6 +137,11 @@ export interface User {
     username: string;
 }
 
+export interface AssociateUser {
+    action: string;
+    username: string;
+}
+
 export interface AssociateRole {
     action: string;
     name: string;
