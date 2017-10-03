@@ -6,15 +6,17 @@ import { modellingGroupActions } from "../../../shared/actions/ModellingGroupAct
 import { notificationActions, NotificationException } from "../../../shared/actions/NotificationActions";
 import fetcher from "../../../shared/sources/Fetcher";
 import { Link } from "simple-react-router";
+import { adminAuthStore } from "../../stores/AdminAuthStore";
 
 interface UserProps {
     user: User;
     groupId: string;
+    showDelete: boolean;
 }
 
 export class DeletableUser extends React.Component<UserProps, undefined> {
 
-    clickHandler(){
+    clickHandler() {
 
         const href = `/modelling-groups/${this.props.groupId}/actions/associate_member/`;
         const associateUser: AssociateUser = {
@@ -33,12 +35,18 @@ export class DeletableUser extends React.Component<UserProps, undefined> {
     }
 
     render() {
+
+        const deleteLink = this.props.showDelete ?
+            <Link onClick={this.clickHandler.bind(this)} className="text-danger float-right" href="#">Remove
+                member</Link>
+            : "";
+
         return <div>
             <div className="form-group">
                 <InternalLink href={`/users/${this.props.user.username}/`}>
                     {this.props.user.name}
                 </InternalLink>
-                <Link onClick={this.clickHandler.bind(this)} className="text-danger float-right" href="#">Remove member</Link>
+                {deleteLink}
             </div>
             <hr/>
         </div>;
