@@ -11,6 +11,7 @@ import kotlin.reflect.KFunction
 import kotlin.reflect.KType
 import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.primaryConstructor
+import kotlin.reflect.jvm.javaType
 
 class HeaderDefinition(val name: String, val type: KType)
 
@@ -45,7 +46,8 @@ open class DataTableDeserializer<out T>(
         val problems = mutableListOf<ErrorInfo>()
         if (row.size != actualHeaders.size)
         {
-            problems.add(ErrorInfo("csv-wrong-row-length:$rowIndex", "Row $rowIndex has a different number of columns from the header row"))
+            val oneIndexedRow = rowIndex + 1
+            problems.add(ErrorInfo("csv-wrong-row-length:$oneIndexedRow", "Row $oneIndexedRow has a different number of columns from the header row"))
         }
         val values = row.zip(actualHeaders).map { (raw, header) ->
             deserialize(raw, header.type, rowIndex, header.name, problems)
@@ -73,9 +75,10 @@ open class DataTableDeserializer<out T>(
         }
         catch (e: Exception)
         {
+            val oneIndexedRow = row + 1;
             problems.add(ErrorInfo(
-                    "csv-bad-data-type:$row:$column",
-                    "Unable to parse '${raw.trim()}' as ${targetType.javaClass.simpleName} (Row $row, column $column)"
+                    "csv-bad-data-type:$oneIndexedRow:$column",
+                    "Unable to parse '${raw.trim()}' as ${targetType.toString().replace("kotlin.", "")} (Row $oneIndexedRow, column $column)"
             ))
             null
         }
