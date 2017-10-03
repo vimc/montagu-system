@@ -15,7 +15,7 @@ export abstract class PageWithHeader<TLocationProps>
     render() {
         return <div>
             <header className={ styles.header }>
-                <img src={ logo } height="80" alt="VIMC" />
+                <a href="/"><img src={ logo } height="80" alt="VIMC" /></a>
                 <div className={ styles.siteTitle }>
                     <InternalLink href="/">{ this.siteTitle() }</InternalLink>
                 </div>
