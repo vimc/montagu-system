@@ -6,8 +6,14 @@ import { mockModellingGroupDetails, mockUser } from "../../../../mocks/mockModel
 import { alt } from "../../../../../main/shared/alt";
 import { User } from "../../../../../main/shared/models/Generated";
 import { ListOfUsers } from "../../../../../main/admin/components/ModellingGroups/ListOfUsers";
+import { AddMember } from "../../../../../main/admin/components/ModellingGroups/SingleGroup/Admin/AddMember";
 
 describe("GroupAdminContent", () => {
+
+    afterEach(() => {
+        alt.recycle();
+    });
+
     it("can get props from stores", () => {
         const group = mockModellingGroupDetails({id: "group1", members: ["a", "b"] });
         const a = mockUser({ username: "a" });
@@ -25,6 +31,9 @@ describe("GroupAdminContent", () => {
                     "group2": mockModellingGroupDetails()
                 },
                 membersLookup: {"group1": ["a", "b"], "group2": []}
+            },
+            AdminAuthStore: {
+                permissions: ["*/modelling-groups.manage-members"]
             }
         }));
         const props = GroupAdminContentComponent.getPropsFromStores();
@@ -32,12 +41,13 @@ describe("GroupAdminContent", () => {
             groupId: "group1",
             ready: true,
             users: [a, b, c],
-            members: [a, b]
+            members: [a, b],
+            isAdmin: true
         });
     });
 
     it("renders no members if group has no members", () => {
-        const rendered = shallow(<GroupAdminContentComponent ready={ true } groupId="group1" users={ [] } members={ [] } />);
+        const rendered = shallow(<GroupAdminContentComponent isAdmin={false} ready={ true } groupId="group1" users={ [] } members={ [] } />);
         expect(rendered.text()).to.contain("This group does not have any members.");
     });
 
@@ -46,7 +56,27 @@ describe("GroupAdminContent", () => {
             mockUser({ name: "Test A" }),
             mockUser({ name: "Test B" })
         ];
-        const rendered = shallow(<GroupAdminContentComponent ready={ true } groupId="group1" users={ [] } members={ members } />);
+        const rendered = shallow(<GroupAdminContentComponent isAdmin={false} ready={ true } groupId="group1" users={ [] } members={ members } />);
         expect(rendered.find(ListOfUsers).prop("users")).to.eql(members);
+    });
+
+    it("does not render add members if user does not have manage members permission", () => {
+
+        const members = [
+            mockUser({ name: "Test A" }),
+            mockUser({ name: "Test B" })
+        ];
+        const rendered = shallow(<GroupAdminContentComponent isAdmin={false} ready={ true } groupId="group1" users={ [] } members={ members } />);
+        expect(rendered.find(AddMember).length).to.eql(0);
+    });
+
+    it("renders add members if user has manage members permission", () => {
+
+        const members = [
+            mockUser({ name: "Test A" }),
+            mockUser({ name: "Test B" })
+        ];
+        const rendered = shallow(<GroupAdminContentComponent isAdmin={true} ready={ true } groupId="group1" users={ [] } members={ members } />);
+        expect(rendered.find(AddMember).length).to.eql(1);
     });
 });

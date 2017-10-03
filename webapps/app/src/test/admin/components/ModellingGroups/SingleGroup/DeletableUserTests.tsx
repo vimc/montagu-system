@@ -19,7 +19,7 @@ describe("DeletableUser", () => {
 
     it("renders link to user page", () => {
 
-        const rendered = sandbox.mount(<DeletableUser groupId="group1" user={mockUser({
+        const rendered = sandbox.mount(<DeletableUser showDelete={true} groupId="group1" user={mockUser({
             "username": "w.a.m",
             "name": "Wolfgang Amadeus Mozart"
         })}/>);
@@ -28,9 +28,16 @@ describe("DeletableUser", () => {
 
     it("renders delete link", () => {
 
-        const rendered = sandbox.mount(<DeletableUser groupId="group1"
+        const rendered = sandbox.mount(<DeletableUser showDelete={true} groupId="group1"
                                                       user={mockUser({ "name": "Wolfgang Amadeus Mozart" })}/>);
         expect(rendered.find(".text-danger").text()).to.eq("Remove member")
+    });
+
+    it("does not render delete link if showDelete is false", () => {
+
+        const rendered = sandbox.mount(<DeletableUser showDelete={false} groupId="group1"
+                                                      user={mockUser({ "name": "Wolfgang Amadeus Mozart" })}/>);
+        expect(rendered.find(".text-danger").length).to.eq(0)
     });
 
     it("removes member", (done: DoneCallback) => {
@@ -48,7 +55,7 @@ describe("DeletableUser", () => {
 
         const user: User = mockUser({ "name": "Wolfgang Amadeus Mozart", "username": "user1" });
 
-        const deletableUser = new DeletableUser({ groupId: "group1", user: user });
+        const deletableUser = new DeletableUser({ showDelete: true, groupId: "group1", user: user });
         deletableUser.clickHandler();
 
         checkAsync(done, afterWait => {
@@ -75,7 +82,7 @@ describe("DeletableUser", () => {
 
         const user: User = mockUser({ "name": "Wolfgang Amadeus Mozart", "username": "user1" });
 
-        const deletableUser = new DeletableUser({ groupId: "group1", user: user });
+        const deletableUser = new DeletableUser({ showDelete: true, groupId: "group1", user: user });
         deletableUser.clickHandler();
 
         checkAsync(done, afterWait => {
