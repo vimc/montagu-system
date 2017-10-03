@@ -12,7 +12,7 @@ export interface GroupState extends RemoteContent {
     groups: ModellingGroup[];
     groupDetails: ILookup<ModellingGroupDetails>;
     currentGroupId: string;
-    currentMembers: string[];
+    membersLookup: ILookup<string[]>;
 }
 
 interface Interface extends AltJS.AltStore<GroupState> {
@@ -21,13 +21,15 @@ interface Interface extends AltJS.AltStore<GroupState> {
     fetchGroupDetails(): Promise<ModellingGroupDetails>;
 
     getCurrentGroupDetails(): ModellingGroupDetails;
+
+    getCurrentGroupMembers(): string[];
 }
 
 export class GroupStore extends AbstractStore<GroupState, Interface> {
     groups: ModellingGroup[];
     groupDetails: ILookup<ModellingGroupDetails>;
     currentGroupId: string;
-    currentMembers: string[];
+    membersLookup: ILookup<string[]>;
     ready: boolean;
 
     constructor() {
@@ -51,6 +53,14 @@ export class GroupStore extends AbstractStore<GroupState, Interface> {
                 } else {
                     return null;
                 }
+            },
+
+            getCurrentGroupMembers: () => {
+                if (this.currentGroupId && this.membersLookup.hasOwnProperty(this.currentGroupId)) {
+                    return this.membersLookup[this.currentGroupId]
+                } else {
+                    return null;
+                }
             }
         })
     }
@@ -61,7 +71,7 @@ export class GroupStore extends AbstractStore<GroupState, Interface> {
             groupDetails: {},
             currentGroupId: null,
             ready: false,
-            currentMembers: []
+            membersLookup: {}
         };
     }
 
@@ -77,9 +87,6 @@ export class GroupStore extends AbstractStore<GroupState, Interface> {
 
     handleSetCurrentGroup(groupId: string) {
         this.currentGroupId = groupId;
-        if (this.groupDetails.hasOwnProperty(this.currentGroupId)) {
-            this.currentMembers = this.groupDetails[groupId].members;
-        }
     }
 
     handleBeginFetchDetails(groupId: string) {
@@ -90,28 +97,25 @@ export class GroupStore extends AbstractStore<GroupState, Interface> {
     handleUpdateGroupDetails(details: ModellingGroupDetails) {
         this.ready = true;
         this.groupDetails[details.id] = details;
-
-        if (this.groupDetails.hasOwnProperty(this.currentGroupId)) {
-            this.currentMembers = this.groupDetails[this.currentGroupId].members;
-        }
+        this.membersLookup[details.id] = details.members;
     }
 
     handleAddMember(username: string) {
 
-        if (this.filteredMembers(username).length == this.currentMembers.length) {
-            this.currentMembers.push(username)
+        if (this.filteredMembers(username).length == this.membersLookup[this.currentGroupId].length) {
+            this.membersLookup[this.currentGroupId].push(username)
         }
     }
 
     handleRemoveMember(username: string) {
 
-        this.currentMembers
+        this.membersLookup[this.currentGroupId]
             = this.filteredMembers(username);
 
     }
 
     filteredMembers(usernameToFilterOut: string){
-        return this.currentMembers.filter(u => u != usernameToFilterOut)
+        return this.membersLookup[this.currentGroupId].filter(u => u != usernameToFilterOut)
     }
 
 }

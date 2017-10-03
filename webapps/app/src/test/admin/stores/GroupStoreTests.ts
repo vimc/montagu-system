@@ -85,12 +85,12 @@ describe("GroupStore", () => {
                 currentGroupId: "group1",
                 groups: [ {id: "group1", description: "some desc"}],
                 groupDetails: {"group1": details},
-                currentMembers: ["user1"]
+                membersLookup: {"group1": ["user1"]}
             }
         }));
 
         modellingGroupActions.addMember("username");
-        expect(groupStore.getState().currentMembers.indexOf("username")).to.be.greaterThan(-1);
+        expect(groupStore.getState().membersLookup["group1"].indexOf("username")).to.be.greaterThan(-1);
     });
 
     it("addMember does not add duplicate member", () => {
@@ -100,11 +100,11 @@ describe("GroupStore", () => {
                 currentGroupId: "group1",
                 groups: [ {id: "group1", description: "some desc"}],
                 groupDetails: {"group1": details},
-                currentMembers: ["user1"]
+                membersLookup: {"group1": ["user1"]}
             }
         }));
         modellingGroupActions.addMember("user1");
-        expect(groupStore.getState().currentMembers.length).to.be.eq(1)
+        expect(groupStore.getState().membersLookup["group1"].length).to.be.eq(1)
     });
 
     it("removeMember removes member", () => {
@@ -114,10 +114,10 @@ describe("GroupStore", () => {
                 currentGroupId: "group1",
                 groups: [ {id: "group1", description: "some desc"}],
                 groupDetails: {"group1": details},
-                currentMembers: ["user1"]
+                membersLookup: {"group1": ["user1"]}
             }
         }));
         modellingGroupActions.removeMember("user1");
-        expect(groupStore.getState().currentMembers.length).to.be.eq(0);
+        expect(groupStore.getState().membersLookup["group1"].length).to.be.eq(0);
     });
 });

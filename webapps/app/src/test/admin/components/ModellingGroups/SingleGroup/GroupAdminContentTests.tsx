@@ -9,7 +9,7 @@ import { ListOfUsers } from "../../../../../main/admin/components/ModellingGroup
 
 describe("GroupAdminContent", () => {
     it("can get props from stores", () => {
-        const group = mockModellingGroupDetails({id: "group1"});
+        const group = mockModellingGroupDetails({id: "group1", members: ["a", "b"] });
         const a = mockUser({ username: "a" });
         const b = mockUser({ username: "b" });
         const c = mockUser({ username: "c" });
@@ -22,9 +22,9 @@ describe("GroupAdminContent", () => {
                 currentGroupId: "group1",
                 groupDetails: {
                     "group1": group,
-                    "group2": mockModellingGroupDetails({ members: ["a", "b"] })
+                    "group2": mockModellingGroupDetails()
                 },
-                currentMembers: ["a", "b"]
+                membersLookup: {"group1": ["a", "b"], "group2": []}
             }
         }));
         const props = GroupAdminContentComponent.getPropsFromStores();

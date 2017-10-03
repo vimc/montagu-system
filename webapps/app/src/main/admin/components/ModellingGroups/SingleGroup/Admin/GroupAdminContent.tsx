@@ -24,7 +24,7 @@ export class GroupAdminContentComponent extends RemoteContentComponent<Props> {
     static getPropsFromStores(): Props {
         const group = groupStore.getCurrentGroupDetails();
         const allUsers = userStore.getState().users;
-        const members = groupStore.getState().currentMembers;
+        const members = groupStore.getCurrentGroupMembers();
 
         if (group != null) {
             return {
