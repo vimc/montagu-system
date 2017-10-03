@@ -16,6 +16,7 @@ import org.vaccineimpact.api.db.toDecimal
 import org.vaccineimpact.api.models.BurdenEstimate
 import org.vaccineimpact.api.models.Touchstone
 import org.vaccineimpact.api.models.TouchstoneStatus
+import java.math.BigDecimal
 import java.time.Instant
 
 class UploadBurdenEstimateTests : ControllerTests<ModellingGroupController>()
@@ -29,11 +30,11 @@ class UploadBurdenEstimateTests : ControllerTests<ModellingGroupController>()
     fun `estimates are passed through to repository`()
     {
         val data = listOf(
-                BurdenEstimate("yf", 2000, 50, "AFG", "Afghanistan", 1000, mapOf(
+                BurdenEstimate("yf", 2000, 50, "AFG", "Afghanistan", 1000.toDecimal(), mapOf(
                         "deaths" to 10.toDecimal(),
                         "cases" to 100.toDecimal()
                 )),
-                BurdenEstimate("yf", 1980, 30, "AGO", "Angola", 2000, mapOf(
+                BurdenEstimate("yf", 1980, 30, "AGO", "Angola", 2000.toDecimal(), mapOf(
                         "deaths" to 20.toDecimal(),
                         "dalys" to 73.6.toDecimal()
                 ))
@@ -55,11 +56,11 @@ class UploadBurdenEstimateTests : ControllerTests<ModellingGroupController>()
     fun `cannot upload data with multiple diseases`()
     {
         val data = listOf(
-                BurdenEstimate("yf", 2000, 50, "AFG", "Afghanistan", 1000, mapOf(
+                BurdenEstimate("yf", 2000, 50, "AFG", "Afghanistan", 1000.toDecimal(), mapOf(
                         "deaths" to 10.toDecimal(),
                         "cases" to 100.toDecimal()
                 )),
-                BurdenEstimate("menA", 1980, 30, "AGO", "Angola", 2000, mapOf(
+                BurdenEstimate("menA", 1980, 30, "AGO", "Angola", 2000.toDecimal(), mapOf(
                         "deaths" to 20.toDecimal(),
                         "dalys" to 73.6.toDecimal()
                 ))
@@ -79,11 +80,11 @@ class UploadBurdenEstimateTests : ControllerTests<ModellingGroupController>()
         """
         val data = DataTableDeserializer.deserialize(csv, BurdenEstimate::class).toList()
         assertThat(data).containsExactlyElementsOf(listOf(
-                BurdenEstimate("yf", 2000, 50, "AFG", "Afghanistan", 1000, mapOf(
+                BurdenEstimate("yf", 2000, 50, "AFG", "Afghanistan", 1000.toDecimal(), mapOf(
                         "deaths" to 50.toDecimal(),
                         "cases" to 100.toDecimal()
                 )),
-                BurdenEstimate("yf", 2001, 50, "AFG", "Afghanistan", 1000, mapOf(
+                BurdenEstimate("yf", 2001, 50, "AFG", "Afghanistan", 1000.toDecimal(), mapOf(
                         "deaths" to 63.5.toDecimal(),
                         "cases" to 120.toDecimal()
                 ))
