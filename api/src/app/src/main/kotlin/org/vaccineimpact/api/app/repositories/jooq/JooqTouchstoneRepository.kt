@@ -88,7 +88,7 @@ class JooqTouchstoneRepository(dsl: DSLContext, private val scenarioRepository: 
 
         return recordsGroupedByType.values.map {
             mapDemographicStatisticType(it)
-        }
+        }.sortedBy { it.name }
     }
 
     override val touchstones: SimpleDataSet<Touchstone, String>
