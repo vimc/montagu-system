@@ -10,6 +10,6 @@ data class BurdenEstimate(
         val age: Int,
         val country: String,
         val countryName: String,
-        val cohortSize: Int,
+        val cohortSize: BigDecimal,
         val outcomes: Map<String, BigDecimal?>
 )
