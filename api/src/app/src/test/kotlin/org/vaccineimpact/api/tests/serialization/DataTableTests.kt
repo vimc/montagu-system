@@ -85,6 +85,20 @@ NA,NA,NA""")
     }
 
     @Test
+    fun `csv headers are case insensitive`()
+    {
+        val csv = """
+            Text,Int,dec
+            "joe",1,6.53
+            "bob",2,2.0"""
+        val rows = DataTableDeserializer.deserialize(csv, MixedTypes::class, Serializer.instance).toList()
+        assertThat(rows).containsExactlyElementsOf(listOf(
+                MixedTypes("joe", 1, BigDecimal.valueOf(6.53)),
+                MixedTypes("bob", 2, BigDecimal.valueOf(2.0))
+        ))
+    }
+
+    @Test
     fun `error if headers do not match expected`()
     {
         val csv = """

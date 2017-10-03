@@ -103,7 +103,7 @@ open class DataTableDeserializer<out T>(
                     problems.add(ErrorInfo("csv-unexpected-header", "Too many column headers were provided. Unexpected '$actual' header."))
                 }
             }
-            else if (actual != expected.name)
+            else if (!actual.equals(expected.name, ignoreCase = true))
             {
                 problems.add(ErrorInfo("csv-unexpected-header", "Expected column header '${expected.name}'; found '$actual' instead (column $index)"))
             }
