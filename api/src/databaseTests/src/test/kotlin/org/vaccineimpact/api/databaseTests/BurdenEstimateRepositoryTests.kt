@@ -245,11 +245,11 @@ class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRepository>(
     }
 
     private val data = listOf(
-            BurdenEstimate("Hib3", 2000, 50, "AFG", "Afghanistan", 1000, mapOf(
+            BurdenEstimate("Hib3", 2000, 50, "AFG", "Afghanistan", 1000.toDecimal(), mapOf(
                     "deaths" to 10.toDecimal(),
                     "cases" to 100.toDecimal()
             )),
-            BurdenEstimate("Hib3", 1980, 30, "AGO", "Angola", 2000, mapOf(
+            BurdenEstimate("Hib3", 1980, 30, "AGO", "Angola", 2000.toDecimal(), mapOf(
                     "deaths" to 20.toDecimal(),
                     "dalys" to 73.6.toDecimal()
             ))
