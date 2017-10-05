@@ -11,7 +11,6 @@ import org.vaccineimpact.api.app.repositories.SimpleDataSet
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.app.serialization.DataTable
 import org.vaccineimpact.api.app.serialization.SplitData
-import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.Tables.*
 import org.vaccineimpact.api.db.fieldsAsList
 import org.vaccineimpact.api.db.fromJoinPath
@@ -242,7 +241,7 @@ class JooqTouchstoneRepository(dsl: DSLContext, private val scenarioRepository: 
                                          typeCode: String,
                                          sourceCode: String,
                                          gender: String):
-            SelectConditionStep<Record7<Int, Int, String, Int, BigDecimal, String, String>>
+            SelectConditionStep<Record8<Int, Int, String, Int, Int, BigDecimal, String, String>>
     {
         // we are hard coding this here for now - need to revisit data model longer term
         val variantNames = listOf("unwpp_estimates", "unwpp_medium_variant", "wpp_cm_hybrid")
@@ -268,6 +267,7 @@ class JooqTouchstoneRepository(dsl: DSLContext, private val scenarioRepository: 
                 .select(DEMOGRAPHIC_STATISTIC.AGE_FROM,
                         DEMOGRAPHIC_STATISTIC.AGE_TO,
                         DEMOGRAPHIC_STATISTIC.COUNTRY,
+                        COUNTRY.NID,
                         DEMOGRAPHIC_STATISTIC.YEAR,
                         DEMOGRAPHIC_STATISTIC.VALUE,
                         field(name(TOUCHSTONE_SOURCES, "sourceCode"), String::class.java),
@@ -275,6 +275,8 @@ class JooqTouchstoneRepository(dsl: DSLContext, private val scenarioRepository: 
                 .from(DEMOGRAPHIC_STATISTIC)
                 .join(GENDER)
                 .on(GENDER.ID.eq(DEMOGRAPHIC_STATISTIC.GENDER))
+                .join(COUNTRY)
+                .on(COUNTRY.ID.eq(DEMOGRAPHIC_STATISTIC.COUNTRY))
 
         // only select for given source and source in given touchstone
         selectQuery = selectQuery.join(table(name(TOUCHSTONE_SOURCES)))
@@ -362,6 +364,7 @@ class JooqTouchstoneRepository(dsl: DSLContext, private val scenarioRepository: 
 
     fun mapDemographicRow(record: Record) = DemographicRow(
             record[DEMOGRAPHIC_STATISTIC.COUNTRY],
+            record[COUNTRY.NID],
             record[DEMOGRAPHIC_STATISTIC.AGE_FROM],
             record[DEMOGRAPHIC_STATISTIC.AGE_TO],
             record[DEMOGRAPHIC_STATISTIC.YEAR],

@@ -1,5 +1,6 @@
 {
     "columns": {
+        "country_code_numeric": "Int",
         "country": "String",
         "age_from": "Int",
         "age_to": "Int",
