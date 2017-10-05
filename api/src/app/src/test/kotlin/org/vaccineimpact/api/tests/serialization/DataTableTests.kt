@@ -116,7 +116,7 @@ NA,NA,NA""")
             a,b,c
             1,2,3
             1,2,3,4"""
-        checkValidationError("csv-wrong-row-length:1") {
+        checkValidationError("csv-wrong-row-length:2") {
             DataTableDeserializer.deserialize(csv, ABC::class, Serializer.instance).toList()
         }
     }
@@ -128,7 +128,7 @@ NA,NA,NA""")
             a,b,c
             1,2,3
             1,2"""
-        checkValidationError("csv-wrong-row-length:1") {
+        checkValidationError("csv-wrong-row-length:2") {
             DataTableDeserializer.deserialize(csv, ABC::class, Serializer.instance).toList()
         }
     }
@@ -140,7 +140,7 @@ NA,NA,NA""")
             text,int,dec
             "joe",1,3.14
             "sam",2.6,1"""
-        checkValidationError("csv-bad-data-type:1:int") {
+        checkValidationError("csv-bad-data-type:2:int", "Unable to parse '2.6' as Int? (Row 2, column int)") {
             DataTableDeserializer.deserialize(csv, MixedTypes::class, Serializer.instance).toList()
         }
     }
@@ -178,7 +178,7 @@ NA,NA,NA""")
             a,  b,x,y,z
             0,"p",1,2,3
             0,"q",1,2"""
-        checkValidationError("csv-wrong-row-length:1") {
+        checkValidationError("csv-wrong-row-length:2") {
             DataTableDeserializer.deserialize(csv, Flexible::class, Serializer.instance).toList()
         }
     }
@@ -190,7 +190,7 @@ NA,NA,NA""")
             a,  b,x,y,z
             0,"p",1,2,3
             0,"q",1,2,3,4"""
-        checkValidationError("csv-wrong-row-length:1") {
+        checkValidationError("csv-wrong-row-length:2") {
             DataTableDeserializer.deserialize(csv, Flexible::class, Serializer.instance).toList()
         }
     }
@@ -202,20 +202,24 @@ NA,NA,NA""")
             a,  b,x,y,z
             0,"p",1,2,3
             0,"q",1,2,3.5"""
-        checkValidationError("csv-bad-data-type:1:z") {
+        checkValidationError("csv-bad-data-type:2:z") {
             DataTableDeserializer.deserialize(csv, Flexible::class, Serializer.instance).toList()
         }
     }
 
     private fun serialize(table: DataTable<*>) = table.serialize(Serializer.instance).trim()
 
-    private fun checkValidationError(code: String, body: () -> Any?)
+    private fun checkValidationError(code: String, message: String? = null, body: () -> Any?)
     {
         assertThatThrownBy { body() }
                 .isInstanceOf(ValidationError::class.java)
                 .matches {
                     val error = it as ValidationError
                     assertThat(error.problems.first().code).isEqualTo(code)
+                    if (message != null)
+                    {
+                        assertThat(error.problems.first().message).isEqualTo(message)
+                    }
                     true
                 }
     }
