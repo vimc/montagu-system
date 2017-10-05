@@ -363,8 +363,8 @@ class JooqTouchstoneRepository(dsl: DSLContext, private val scenarioRepository: 
     )
 
     fun mapDemographicRow(record: Record) = DemographicRow(
-            record[DEMOGRAPHIC_STATISTIC.COUNTRY],
             record[COUNTRY.NID],
+            record[DEMOGRAPHIC_STATISTIC.COUNTRY],
             record[DEMOGRAPHIC_STATISTIC.AGE_FROM],
             record[DEMOGRAPHIC_STATISTIC.AGE_TO],
             record[DEMOGRAPHIC_STATISTIC.YEAR],
