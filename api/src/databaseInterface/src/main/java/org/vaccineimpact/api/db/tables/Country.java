@@ -33,7 +33,7 @@ import org.vaccineimpact.api.db.tables.records.CountryRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Country extends TableImpl<CountryRecord> {
 
-    private static final long serialVersionUID = -1927772168;
+    private static final long serialVersionUID = 2013426850;
 
     /**
      * The reference instance of <code>public.country</code>
@@ -57,6 +57,11 @@ public class Country extends TableImpl<CountryRecord> {
      * The column <code>public.country.name</code>.
      */
     public final TableField<CountryRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+
+    /**
+     * The column <code>public.country.nid</code>.
+     */
+    public final TableField<CountryRecord, Integer> NID = createField("nid", org.jooq.impl.SQLDataType.INTEGER, this, "");
 
     /**
      * Create a <code>public.country</code> table reference
