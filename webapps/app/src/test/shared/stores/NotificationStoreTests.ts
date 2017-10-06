@@ -79,6 +79,15 @@ describe("NotificationStore", () => {
         expect(notificationStore.getState().infos).to.eql([]);
     });
 
+    it("notificationActions.clear with type error removes all errors messages", () => {
+        notificationActions.notify({ message: "1", type: "error" });
+        notificationActions.notify({ message: "2", type: "error" });
+        notificationActions.notify({ message: "3", type: "error" });
+        expect(notificationStore.getState().errors).to.eql(["3", "2", "1"]);
+        notificationActions.clear("error");
+        expect(notificationStore.getState().errors).to.eql([]);
+    });
+
     it("logIn does not set errorMessage if user is active modeller", () => {
         const token = jwt.sign({
             sub: "user",

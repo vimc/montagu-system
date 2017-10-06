@@ -6,12 +6,12 @@ import {
 } from "../../../main/shared/actions/NotificationActions";
 
 describe("NotificationActions", () => {
-    it("does not change notification", () => {
+    it("notify passes through notification unchanged", () => {
         const notification = makeNotification("message", "info");
         expect(notificationActions.notify(notification)).to.eql(notification);
     });
 
-    it("converts NotificationException into notification", () => {
+    it("notify converts NotificationException into notification", () => {
         const exception = makeNotificationException("message", "info");
         expect(notificationActions.notify(exception)).to.eql({
             message: "message",
