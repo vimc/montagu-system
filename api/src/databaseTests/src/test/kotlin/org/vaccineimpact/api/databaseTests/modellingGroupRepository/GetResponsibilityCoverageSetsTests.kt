@@ -18,6 +18,7 @@ class GetResponsibilityCoverageSetsTests : ModellingGroupRepositoryTests()
     val scenarioId = "scenario-1"
     val setA = 1
     val setB = 2
+    val setC = 3
 
     @Test
     fun `getCoverageSets throws exception if scenario doesn't exist`()
@@ -70,7 +71,9 @@ class GetResponsibilityCoverageSetsTests : ModellingGroupRepositoryTests()
                     CoverageRow(scenarioId, "First", "YF", GAVISupportLevel.WITHOUT, ActivityType.CAMPAIGN,
                             "AAA", 2000, 10.toDecimal(), 20.toDecimal(), "10-20", 100.toDecimal(), "50.50".toDecimalOrNull()),
                     CoverageRow(scenarioId, "Second", "YF", GAVISupportLevel.WITH, ActivityType.CAMPAIGN,
-                            "BBB", 2001, 11.toDecimal(), 21.toDecimal(), null, null, null)
+                            "BBB", 2000, 11.toDecimal(), 21.toDecimal(), null, null, null),
+                    CoverageRow(scenarioId, "Third", "YF", GAVISupportLevel.BESTMINUS, ActivityType.CAMPAIGN,
+                            "BBB", 2001, 12.toDecimal(), 22.toDecimal(), null, null, null)
             ))
         }
     }
@@ -86,7 +89,8 @@ class GetResponsibilityCoverageSetsTests : ModellingGroupRepositoryTests()
         ))
         assertThat(result.coverageSets).hasSameElementsAs(listOf(
                 CoverageSet(setA, touchstoneId, "First", "YF", GAVISupportLevel.WITHOUT, ActivityType.CAMPAIGN),
-                CoverageSet(setB, touchstoneId, "Second", "YF", GAVISupportLevel.WITH, ActivityType.CAMPAIGN)
+                CoverageSet(setB, touchstoneId, "Second", "YF", GAVISupportLevel.WITH, ActivityType.CAMPAIGN),
+                CoverageSet(setC, touchstoneId, "Third", "YF", GAVISupportLevel.BESTMINUS, ActivityType.CAMPAIGN)
         ))
     }
 
@@ -105,14 +109,18 @@ class GetResponsibilityCoverageSetsTests : ModellingGroupRepositoryTests()
         db.addResponsibility(setId, touchstoneId, scenarioId)
         db.addCoverageSet(touchstoneId, "First", "YF", "without", "campaign", id = setA)
         db.addCoverageSet(touchstoneId, "Second", "YF", "with", "campaign", id = setB)
+        db.addCoverageSet(touchstoneId, "Third", "YF", "bestminus", "campaign", id = setC)
+        // Deliberately out of order, to check ordering logic later
         db.addCoverageSetToScenario(scenarioId, touchstoneId, setB, 1)
         db.addCoverageSetToScenario(scenarioId, touchstoneId, setA, 0)
+        db.addCoverageSetToScenario(scenarioId, touchstoneId, setC, 2)
 
         if (includeCoverageData)
         {
             db.addCountries(listOf("AAA", "BBB"))
             db.addCoverageRow(setA, "AAA", 2000, 10.toDecimal(), 20.toDecimal(), "10-20", 100.toDecimal(), "50.50".toDecimalOrNull())
-            db.addCoverageRow(setB, "BBB", 2001, 11.toDecimal(), 21.toDecimal(), null, null, null)
+            db.addCoverageRow(setB, "BBB", 2000, 11.toDecimal(), 21.toDecimal(), null, null, null)
+            db.addCoverageRow(setC, "BBB", 2001, 12.toDecimal(), 22.toDecimal(), null, null, null)
         }
     }
 }

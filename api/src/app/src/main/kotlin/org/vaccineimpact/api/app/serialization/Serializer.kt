@@ -6,7 +6,6 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonPrimitive
 import org.vaccineimpact.api.models.*
-import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.LocalDate
 
@@ -87,6 +86,9 @@ open class Serializer
             GAVISupportLevel.NONE -> "no vaccine"
             GAVISupportLevel.WITHOUT -> "no gavi"
             GAVISupportLevel.WITH -> "total"
+            // Legacy values
+            GAVISupportLevel.BESTMINUS -> "best minus"
+            GAVISupportLevel.HOLD2010 -> "hold 2010"
         }
     }
 }
