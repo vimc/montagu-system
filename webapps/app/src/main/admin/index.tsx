@@ -9,7 +9,6 @@ require('./index.html');
 require('../shared/styles/fonts.css');
 require('../shared/styles/buttons.css');
 require('../shared/styles/common.css');
-import '../shared/styles/bootstrap.min.css';
 
 fetcher.fetcher = new AdminFetcher();
 adminAuthStore.loadAccessToken();

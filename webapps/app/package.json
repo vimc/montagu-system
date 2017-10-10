@@ -66,6 +66,7 @@
     "alt-form": "^5.0.0",
     "alt-reform": "^1.0.1",
     "alt-utils": "^1.0.0",
+    "bootstrap": "^4.0.0-beta",
     "jsonwebtoken": "^7.4.0",
     "jwt-decode": "^2.2.0",
     "react": "^15.4.2",
