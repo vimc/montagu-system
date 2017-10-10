@@ -241,7 +241,7 @@ class JooqTouchstoneRepository(dsl: DSLContext, private val scenarioRepository: 
                                          typeCode: String,
                                          sourceCode: String,
                                          gender: String):
-            SelectConditionStep<Record8<Int, Int, String, Int, Int, BigDecimal, String, String>>
+            SelectConditionStep<Record9<Int, Int, String, Int, String, Int, BigDecimal, String, String>>
     {
         // we are hard coding this here for now - need to revisit data model longer term
         val variantNames = listOf("unwpp_estimates", "unwpp_medium_variant", "wpp_cm_hybrid")
@@ -268,6 +268,7 @@ class JooqTouchstoneRepository(dsl: DSLContext, private val scenarioRepository: 
                         DEMOGRAPHIC_STATISTIC.AGE_TO,
                         DEMOGRAPHIC_STATISTIC.COUNTRY,
                         COUNTRY.NID,
+                        COUNTRY.NAME,
                         DEMOGRAPHIC_STATISTIC.YEAR,
                         DEMOGRAPHIC_STATISTIC.VALUE,
                         field(name(TOUCHSTONE_SOURCES, "sourceCode"), String::class.java),
@@ -365,6 +366,7 @@ class JooqTouchstoneRepository(dsl: DSLContext, private val scenarioRepository: 
     fun mapDemographicRow(record: Record) = DemographicRow(
             record[COUNTRY.NID],
             record[DEMOGRAPHIC_STATISTIC.COUNTRY],
+            record[COUNTRY.NAME],
             record[DEMOGRAPHIC_STATISTIC.AGE_FROM],
             record[DEMOGRAPHIC_STATISTIC.AGE_TO],
             record[DEMOGRAPHIC_STATISTIC.YEAR],
