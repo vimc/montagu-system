@@ -1753,17 +1753,17 @@ Schema: [`DemographicDatasetForTouchstone.schema.json`](DemographicDatasetForTou
     
 ### CSV
     
-    "country_code_numeric", "country",  "age of mother (years)",  "year", "avg births/mother"
-    004,                    "AFG",                  "15-19",    1950,                 1.2
-    004,                    "AFG",                  "15-19",    1955,                 1.2
-    004,                    "AFG",                  "15-19",    1960,                 1.2   
-    004,                    "AFG",                  "15-19",    1965,                 1.1   
-    004,                    "AFG",                  "15-19",    1970,                 1.1   
-    004,                    "AFG",                  "15-19",    1975,                 1.1  
-    004,                    "AFG",                  "15-19",    1980,                 1.1  
-    004,                    "AFG",                  "15-19",    1985,                 1.1  
-    004,                    "AFG",                  "15-19",    1990,                 1.1 
-    004,                    "AFG",                  "15-19",    1995,                 1.1 
+    "country_code_numeric", "country_code", "country","age of mother (years)",  "year", "avg births/mother"
+    004,                    "AFG",          "Afghanistan",           "15-19",    1950,                 1.2
+    004,                    "AFG",          "Afghanistan",           "15-19",    1955,                 1.2
+    004,                    "AFG",          "Afghanistan",           "15-19",    1960,                 1.2   
+    004,                    "AFG",          "Afghanistan",           "15-19",    1965,                 1.1   
+    004,                    "AFG",          "Afghanistan",           "15-19",    1970,                 1.1   
+    004,                    "AFG",          "Afghanistan",           "15-19",    1975,                 1.1  
+    004,                    "AFG",          "Afghanistan",           "15-19",    1980,                 1.1  
+    004,                    "AFG",          "Afghanistan",           "15-19",    1985,                 1.1  
+    004,                    "AFG",          "Afghanistan",           "15-19",    1990,                 1.1 
+    004,                    "AFG",          "Afghanistan",           "15-19",    1995,                 1.1 
          
 ### Example
     {
@@ -1787,12 +1787,12 @@ Schema: [`DemographicDatasetForTouchstone.schema.json`](DemographicDatasetForTou
     
 Total population:
          
-     "country_code_numeric", "country", "age (years)",  "gender",  "year",   "people"
-      004,                   "AFG",       "0-0",    "both",    1950,      82724
-      004,                   "AFG",       "0-0",    "both",    1951,      84699
-      004,                   "AFG",       "0-0",    "both",    1952,      87807
-      004,                   "AFG",       "0-0",    "both",    1953,      89014
-      004,                   "AFG",       "0-0",    "both",    1954,      89993
+     "country_code_numeric", "country_code", "country",     "age (years)",  "gender",  "year",   "people"
+      004,                   "AFG",          "Afghanistan", "0-0",    "both",    1950,      82724
+      004,                   "AFG",          "Afghanistan", "0-0",    "both",    1951,      84699
+      004,                   "AFG",          "Afghanistan", "0-0",    "both",    1952,      87807
+      004,                   "AFG",          "Afghanistan", "0-0",    "both",    1953,      89014
+      004,                   "AFG",          "Afghanistan", "0-0",    "both",    1954,      89993
                 
 
 ### Query parameters:
@@ -1809,9 +1809,9 @@ Example:
 Total population:
 
                 "",       "",      "", "people"
-         "country_code_numeric", "country", "gender",   "age",    1950,    1951,    1952,    1953,    1954, ...                             
-         004,                    "AFG",     "female",   "0-0",   82724,    84699,   87807,   89014,  89993, ... 
-         004,                    "AFG",     "female",   "1-1",   88021,    89725,   91720,   91726,  91727, ...   
-         004,                    "AFG",     "female",   "2-2",   91720,    91784,   91884,   91920,  92679, ...   
-         004,                    "AFG",     "female",   "3-3",   95671,    95612,   95700,   95724,  95780, ...   
-         004,                    "AFG",     "female",   "4-4",   96103,    97724,   99720,  100120, 101103, ...   
+         "country_code_numeric", "country_code", "country",     "gender",   "age",    1950,    1951,    1952,    1953,    1954, ...                             
+         004,                    "AFG",          "Afghanistan", "female",   "0-0",   82724,    84699,   87807,   89014,  89993, ... 
+         004,                    "AFG",          "Afghanistan", "female",   "1-1",   88021,    89725,   91720,   91726,  91727, ...   
+         004,                    "AFG",          "Afghanistan", "female",   "2-2",   91720,    91784,   91884,   91920,  92679, ...   
+         004,                    "AFG",          "Afghanistan", "female",   "3-3",   95671,    95612,   95700,   95724,  95780, ...   
+         004,                    "AFG",          "Afghanistan", "female",   "4-4",   96103,    97724,   99720,  100120, 101103, ...   

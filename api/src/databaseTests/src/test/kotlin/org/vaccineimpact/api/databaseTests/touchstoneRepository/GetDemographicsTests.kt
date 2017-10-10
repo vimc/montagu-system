@@ -376,7 +376,7 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
             
             assertThat(metadata.countries).isEqualTo(expectedCountries)
             assertThat(metadata.source).isEqualTo(source)
-            assertThat(result.tableData.data.map { it.country }.distinct()).isEqualTo(expectedCountries)
+            assertThat(result.tableData.data.map { it.countryCode }.distinct()).isEqualTo(expectedCountries)
         }
     }
 
