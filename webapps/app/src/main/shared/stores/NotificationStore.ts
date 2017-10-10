@@ -51,6 +51,9 @@ class NotificationStore extends AbstractStore<NotificationState, AltJS.AltStore<
             case "info":
                 this.infos = this.infos.slice(1);
                 break;
+            case "error":
+                this.errors = [];
+                break;
         }
     }
 
