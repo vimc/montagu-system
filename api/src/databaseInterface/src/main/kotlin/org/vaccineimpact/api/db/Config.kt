@@ -13,7 +13,9 @@ object Config
             global.inputStream().use { load(it) }
         }
     }
-    val authEnabled = getBool("app.auth")
+    val authEnabled by lazy {
+        getBool("app.auth")
+    }
 
     operator fun get(key: String): String
     {
