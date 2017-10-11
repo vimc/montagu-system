@@ -1,5 +1,6 @@
 package org.vaccineimpact.api.app.serialization
 
+import com.opencsv.CSVWriter
 import java.io.StringWriter
 import java.io.Writer
 import kotlin.reflect.KClass
@@ -26,7 +27,7 @@ open class DataTable<T : Any>(val data: Iterable<T>, val type: KClass<T>)
     private fun toCSV(target: Writer, serializer: Serializer)
     {
         val headers = getHeaders(type, serializer)
-        MontaguCSVWriter(target).use { csv ->
+        CSVWriter(target).use { csv ->
             csv.writeNext(headers.map { it.name }.toTypedArray())
             for (line in data)
             {
@@ -41,7 +42,7 @@ open class DataTable<T : Any>(val data: Iterable<T>, val type: KClass<T>)
 
     private fun serializeValue(value: Any?, serializer: Serializer) = when (value)
     {
-        null -> MontaguCSVWriter.Companion.NoValue
+        null -> noValue
         is Enum<*> -> serializer.serializeEnum(value)
         else -> value.toString()
     }
@@ -69,5 +70,6 @@ open class DataTable<T : Any>(val data: Iterable<T>, val type: KClass<T>)
     {
         // Simple helper to get around JVM type erasure
         inline fun <reified R : Any> new(data: Iterable<R>) = DataTable(data, R::class)
+        const val noValue = "<NA>"
     }
 }
