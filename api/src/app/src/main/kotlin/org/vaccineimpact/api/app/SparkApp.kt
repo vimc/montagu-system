@@ -54,11 +54,23 @@ class MontaguApi
             it.mapEndpoints()
         }
         HomeController(endpoints, controllerContext).mapEndpoints()
+
+        if (!Config.authEnabled)
+        {
+            logger.warn("WARNING: AUTHENTICATION IS DISABLED")
+        }
     }
 
     private fun setupPort()
     {
-        val port = Config.getInt("app.port")
+        val port = if (Config.authEnabled)
+        {
+            Config.getInt("app.port")
+        }
+        else
+        {
+            8888
+        }
         var attempts = 5
         spk.port(port)
 
