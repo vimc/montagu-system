@@ -27,14 +27,11 @@ class DemographicTests : DatabaseTest()
     @Test
     fun `can get demographic stat types for touchstone`()
     {
-        var countries: List<String> = listOf()
-
         validate("/touchstones/$touchstoneId/demographics/") against "Demographics" given {
 
-            countries = DemographicDummyData(it)
-                    .withTouchstone(touchstoneName, touchstoneVersion)
+           DemographicDummyData(it, touchstoneName, touchstoneVersion)
+                    .withTouchstone()
                     .withPopulation()
-                    .countries
 
         } requiringPermissions {
             requiredPermissions
@@ -44,8 +41,7 @@ class DemographicTests : DatabaseTest()
                 obj(
                         "id" to "tot-pop",
                         "name" to "tot-pop descriptive name",
-                        "sources" to array("unwpp2015", "unwpp2017"),
-                        "countries" to array(countries.sortedBy { it }),
+                        "source" to "unwpp2015",
                         "gender_is_applicable" to false
                 )
             })
@@ -58,8 +54,8 @@ class DemographicTests : DatabaseTest()
         val schema = SplitSchema(json = "DemographicDatasetForTouchstone", csv = "DemographicData")
         val test = validate(url) against (schema) given {
 
-            DemographicDummyData(it)
-                    .withTouchstone(touchstoneName, touchstoneVersion)
+            DemographicDummyData(it, touchstoneName, touchstoneVersion)
+                    .withTouchstone()
                     .withPopulation()
 
         } requiringPermissions { requiredPermissions }
@@ -76,8 +72,8 @@ class DemographicTests : DatabaseTest()
 
         JooqContext().use {
 
-            countries = DemographicDummyData(it)
-                    .withTouchstone(touchstoneName, touchstoneVersion)
+            countries = DemographicDummyData(it, touchstoneName, touchstoneVersion)
+                    .withTouchstone()
                     .withPopulation()
                     .countries
 
@@ -114,8 +110,8 @@ class DemographicTests : DatabaseTest()
 
         JooqContext().use {
 
-            countries = DemographicDummyData(it)
-                    .withTouchstone(touchstoneName, touchstoneVersion)
+            countries = DemographicDummyData(it, touchstoneName, touchstoneVersion)
+                    .withTouchstone()
                     .withPopulation(genderIsApplicable = true)
                     .countries
 
@@ -152,8 +148,8 @@ class DemographicTests : DatabaseTest()
 
         JooqContext().use {
 
-            DemographicDummyData(it)
-                    .withTouchstone(touchstoneName, touchstoneVersion)
+            DemographicDummyData(it, touchstoneName, touchstoneVersion)
+                    .withTouchstone()
                     .withPopulation()
 
             userHelper.setupTestUser(it)
@@ -168,8 +164,8 @@ class DemographicTests : DatabaseTest()
     {
         validate("$url/get_onetime_link/") against "Token" given {
 
-            DemographicDummyData(it)
-                    .withTouchstone(touchstoneName, touchstoneVersion)
+            DemographicDummyData(it, touchstoneName, touchstoneVersion)
+                    .withTouchstone()
                     .withPopulation()
 
         } requiringPermissions { requiredPermissions } andCheckString { token ->
@@ -191,8 +187,8 @@ class DemographicTests : DatabaseTest()
     {
         validate("$url/get_onetime_link/?gender=female") against "Token" given {
 
-            DemographicDummyData(it)
-                    .withTouchstone(touchstoneName, touchstoneVersion)
+            DemographicDummyData(it, touchstoneName, touchstoneVersion)
+                    .withTouchstone()
                     .withPopulation(genderIsApplicable = true)
 
         } requiringPermissions { requiredPermissions } andCheckString { token ->
@@ -216,8 +212,8 @@ class DemographicTests : DatabaseTest()
 
         JooqContext().use {
 
-            val data = DemographicDummyData(it)
-                    .withTouchstone(touchstoneName, touchstoneVersion)
+            val data = DemographicDummyData(it, touchstoneName, touchstoneVersion)
+                    .withTouchstone()
                     .withPopulation(yearRange = 1950..1955 step 5, ageRange = 10..15 step 5)
 
             userHelper.setupTestUser(it)
