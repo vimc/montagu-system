@@ -4,9 +4,9 @@
     "properties": {
         "id": { "$ref": "StandardIdentifier.schema.json" },
         "name": { "type": "string" },
-        "source": {"anyOf": ["string", "null"]},
-        "sources": {"anyOf": [{ "type": "array", "items": { "type" : "string" } }, "null" ]},
-        "countries": {"anyOf" : [{ "type": "array", "items": { "$ref": "CountryId.schema.json"  } }, "null" ]},
+        "source": { "anyOf": [ {"type": "string"}, {"type": "null"} ]},
+        "sources": {"anyOf": [{ "type": "array", "items": { "type" : "string" } }, { "type": "null" } ]},
+        "countries": {"anyOf" : [{ "type": "array", "items": { "$ref": "CountryId.schema.json"  } }, {"type" : "null"} ]},
         "gender_is_applicable": { "type": "boolean" }
     },
     "additionalProperties": false,
