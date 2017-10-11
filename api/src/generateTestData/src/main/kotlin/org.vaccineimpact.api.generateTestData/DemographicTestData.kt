@@ -43,7 +43,7 @@ class DemographicTestData(val db: JooqContext)
                         )
                     }
                 }
-                
+
                 db.addDemographicDatasetsToTouchstone(touchstoneId, sourceId, typeId)
             }
 
