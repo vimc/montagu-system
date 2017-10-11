@@ -21,7 +21,6 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
                     .withTouchstone()
                     .withPopulation(addDataset = false)
                     .withFertility(addDataset = false)
-                    .countri
 
         } check {
             val types = it.getDemographicStatisticTypes(touchstoneId)
@@ -142,7 +141,8 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
 
         } check {
 
-            val data = it.getDemographicDataset("tot-pop", source, touchstoneId)
+            val all = it.getDemographicDataset("tot-pop", source, touchstoneId)
+            val data = all
                     .tableData.data
 
             var numYears = 2

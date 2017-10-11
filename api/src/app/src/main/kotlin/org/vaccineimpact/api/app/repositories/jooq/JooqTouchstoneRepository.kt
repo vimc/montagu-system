@@ -219,8 +219,11 @@ class JooqTouchstoneRepository(dsl: DSLContext, private val scenarioRepository: 
 
         val touchstoneSources = dsl.select(DEMOGRAPHIC_SOURCE.ID, DEMOGRAPHIC_SOURCE.CODE)
                 .fromJoinPath(DEMOGRAPHIC_SOURCE, DEMOGRAPHIC_DATASET, TOUCHSTONE_DEMOGRAPHIC_DATASET)
+                .join(DEMOGRAPHIC_STATISTIC_TYPE)
+                .on(DEMOGRAPHIC_STATISTIC_TYPE.ID.eq(DEMOGRAPHIC_DATASET.DEMOGRAPHIC_STATISTIC_TYPE))
                 .where(TOUCHSTONE_DEMOGRAPHIC_DATASET.TOUCHSTONE.eq(touchstoneId))
                 .and(DEMOGRAPHIC_SOURCE.CODE.eq(sourceCode))
+                .and(DEMOGRAPHIC_STATISTIC_TYPE.CODE.eq(typeCode))
 
         val variants = dsl.select(DEMOGRAPHIC_VARIANT.ID)
                 .from(DEMOGRAPHIC_VARIANT)
