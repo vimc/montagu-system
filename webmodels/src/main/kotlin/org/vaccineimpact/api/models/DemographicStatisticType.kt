@@ -6,9 +6,9 @@ data class DemographicStatisticType(
         override val id: String,
         val name: String,
         val genderIsApplicable: Boolean,
-        val source: String?,
-        val countries: List<String>?,
-        val sources: List<String>?) : HasKey<String>
+        val source: String? = null,
+        val countries: List<String>? = null,
+        val sources: List<String>? = null) : HasKey<String>
 
 data class DemographicDataset(
         override val id: String,
