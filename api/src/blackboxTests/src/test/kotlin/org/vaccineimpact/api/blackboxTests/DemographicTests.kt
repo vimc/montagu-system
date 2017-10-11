@@ -202,7 +202,7 @@ class DemographicTests : DatabaseTest()
             val response = requestHelper.get(oneTimeURL)
             val body = schema.validate(response.text)
 
-            Assertions.assertThat(body.all{ it[5] == "Female" }).isTrue()
+            Assertions.assertThat(body.all{ it[6] == "Female" }).isTrue()
         }
     }
 
