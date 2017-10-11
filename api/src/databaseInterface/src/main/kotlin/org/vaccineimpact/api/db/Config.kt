@@ -13,6 +13,7 @@ object Config
             global.inputStream().use { load(it) }
         }
     }
+    val authEnabled = getBool("app.auth")
 
     operator fun get(key: String): String
     {
@@ -33,6 +34,7 @@ object Config
     }
 
     fun getInt(key: String) = get(key).toInt()
+    fun getBool(key: String) = get(key).toBoolean()
 }
 
 class MissingConfiguration(key: String): Exception("Detected a value like \${foo} for key '$key' in the configuration. This probably means that the config template has not been processed. Try running ./gradlew :PROJECT:copy[Test]Config")
