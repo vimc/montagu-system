@@ -8,6 +8,7 @@ import org.vaccineimpact.api.app.security.montaguPermissions
 import org.vaccineimpact.api.app.serialization.DataTableDeserializer
 import org.vaccineimpact.api.app.serialization.ModelBinder
 import org.vaccineimpact.api.app.serialization.Serializer
+import org.vaccineimpact.api.db.Config
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import spark.Request
 import spark.Response
@@ -52,8 +53,17 @@ open class DirectActionContext(private val context: SparkWebContext): ActionCont
         addResponseHeader("Content-Disposition", """attachment; filename="$filename"""")
     }
 
-    override fun hasPermission(requirement: ReifiedPermission)
-            = permissions.any { requirement.satisfiedBy(it) }
+    override fun hasPermission(requirement: ReifiedPermission): Boolean
+    {
+        return if (Config.authEnabled)
+        {
+            permissions.any { requirement.satisfiedBy(it) }
+        }
+        else
+        {
+            true
+        }
+    }
 
     override fun requirePermission(requirement: ReifiedPermission)
     {
