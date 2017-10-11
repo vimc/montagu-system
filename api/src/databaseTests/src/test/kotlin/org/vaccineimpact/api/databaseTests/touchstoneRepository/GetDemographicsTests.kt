@@ -21,7 +21,7 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
                     .withTouchstone()
                     .withPopulation(addDataset = false)
                     .withFertility(addDataset = false)
-                    .countries
+                    .countri
 
         } check {
             val types = it.getDemographicStatisticTypes(touchstoneId)

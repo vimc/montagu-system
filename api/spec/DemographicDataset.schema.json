@@ -4,10 +4,11 @@
     "properties": {
         "id": { "$ref": "StandardIdentifier.schema.json" },
         "name": { "type": "string" },
-        "sources": { "type": "array", "items": { "type" : "string" } },
-        "countries": { "type": "array", "items": { "$ref": "CountryId.schema.json"  } },
+        "source": {"anyOf": ["string", "null"]},
+        "sources": {"anyOf": [{ "type": "array", "items": { "type" : "string" } }, "null" ]},
+        "countries": {"anyOf" : [{ "type": "array", "items": { "$ref": "CountryId.schema.json"  } }, "null" ]},
         "gender_is_applicable": { "type": "boolean" }
     },
     "additionalProperties": false,
-    "required": [ "id", "sources", "name", "gender_is_applicable", "countries" ]
+    "required": [ "id", "name", "gender_is_applicable" ]
 }

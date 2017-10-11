@@ -23,13 +23,14 @@ class DemographicTests : DatabaseTest()
     val touchstoneName = "touchstone"
     val touchstoneVersion = 1
     val url = "/touchstones/$touchstoneId/demographics/unwpp2015/tot-pop/"
+    val fertilityUrl = "/touchstones/$touchstoneId/demographics/unwpp2015/as-fert/"
 
     @Test
     fun `can get demographic stat types for touchstone`()
     {
         validate("/touchstones/$touchstoneId/demographics/") against "Demographics" given {
 
-           DemographicDummyData(it, touchstoneName, touchstoneVersion)
+            DemographicDummyData(it, touchstoneName, touchstoneVersion)
                     .withTouchstone()
                     .withPopulation()
 
@@ -112,25 +113,25 @@ class DemographicTests : DatabaseTest()
 
             countries = DemographicDummyData(it, touchstoneName, touchstoneVersion)
                     .withTouchstone()
-                    .withPopulation(genderIsApplicable = true)
+                    .withFertility()
                     .countries
 
             userHelper.setupTestUser(it)
         }
 
         val validator = SplitValidator()
-        val response = requestHelper.get("$url?gender=female", requiredPermissions)
+        val response = requestHelper.get("$fertilityUrl?gender=female", requiredPermissions)
 
         val json = JsonLoader.fromString(validator.getSplitText(response.text).json)
         val demographyJson = json["data"]["demographic_data"]
 
         val expectedDemographicMetadata = JsonLoader.fromString(json {
             obj(
-                    "id" to "tot-pop",
-                    "name" to "tot-pop descriptive name",
-                    "age_interpretation" to "age",
+                    "id" to "as-fert",
+                    "name" to "as-fert descriptive name",
+                    "age_interpretation" to "age of mother",
                     "source" to "unwpp2015",
-                    "unit" to "Number of people",
+                    "unit" to "Births per woman",
                     "gender" to "Female",
                     "countries" to array(countries.sortedBy { it })
             )
@@ -176,7 +177,7 @@ class DemographicTests : DatabaseTest()
             val body = schema.validate(response.text)
             Assertions.assertThat(body.count()).isGreaterThan(0)
 
-            val badResponse =  requestHelper.get(oneTimeURL)
+            val badResponse = requestHelper.get(oneTimeURL)
             JSONValidator().validateError(badResponse.text, expectedErrorCode = "invalid-token-used")
         }
     }
@@ -185,11 +186,11 @@ class DemographicTests : DatabaseTest()
     @Test
     fun `can get gendered CSV demographic data via one time link`()
     {
-        validate("$url/get_onetime_link/?gender=female") against "Token" given {
+        validate("$fertilityUrl/get_onetime_link/?gender=female") against "Token" given {
 
             DemographicDummyData(it, touchstoneName, touchstoneVersion)
                     .withTouchstone()
-                    .withPopulation(genderIsApplicable = true)
+                    .withFertility()
 
         } requiringPermissions { requiredPermissions } andCheckString { token ->
             val oneTimeURL = "/onetime_link/$token/"
@@ -198,7 +199,7 @@ class DemographicTests : DatabaseTest()
             val response = requestHelper.get(oneTimeURL)
             val body = schema.validate(response.text)
 
-            Assertions.assertThat(body.all{ it[6] == "Female" }).isTrue()
+            Assertions.assertThat(body.all { it[6] == "Female" }).isTrue()
         }
     }
 
