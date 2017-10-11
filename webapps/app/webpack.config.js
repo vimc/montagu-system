@@ -45,7 +45,9 @@ function makePortalConfig(name, urlPrefix) {
         plugins: [
             new CopyWebpackPlugin([
                 { from: 'node_modules/react/dist/react.js', to: 'react.js' },
-                { from: 'node_modules/react-dom/dist/react-dom.js', to: 'react-dom.js' }
+                { from: 'node_modules/react-dom/dist/react-dom.js', to: 'react-dom.js' },
+                { from: 'node_modules/bootstrap/dist/css/bootstrap.min.css', to: 'bootstrap.min.css' },
+                { from: 'node_modules/bootstrap/dist/css/bootstrap.min.css.map', to: 'bootstrap.min.css.map' }
             ])
         ]
     }, helper.commonConfig(name, public_path));

@@ -48,20 +48,6 @@ function commonConfig(name, public_path) {
                     test: /\.js$/,
                     loader: "source-map-loader"
                 },
-                // Use precompiled bootstrap CSS
-                {
-                    test: /\.css$/,
-                    loaders: [
-                        "style-loader",
-                        {
-                            loader: "css-loader",
-                            options: {
-                                modules: false
-                            }
-                        }
-                    ],
-                    include: [/bootstrap.min.css/]
-                },
                 // Use CSS modules
                 {
                     test: /\.css$/,
@@ -75,8 +61,7 @@ function commonConfig(name, public_path) {
                                 localIdentName: "[name]_[local]",
                             }
                         }
-                    ],
-                    exclude: [/bootstrap.min.css/]
+                    ]
                 },
                 // Substitute paths into index.html
                 {
