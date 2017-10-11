@@ -25,6 +25,7 @@ data class DemographicDataForTouchstone(
 
 data class DemographicRow(
         val countryCodeNumeric: Int,
+        val countryCode: String,
         val country: String,
         val ageFrom: Int,
         val ageTo: Int,
