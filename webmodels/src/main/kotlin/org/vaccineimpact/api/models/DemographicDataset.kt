@@ -2,7 +2,7 @@ package org.vaccineimpact.api.models
 
 import java.math.BigDecimal
 
-data class DemographicStatisticType(
+data class DemographicDataset(
         override val id: String,
         val name: String,
         val genderIsApplicable: Boolean,
@@ -10,7 +10,7 @@ data class DemographicStatisticType(
         val countries: List<String>? = null,
         val sources: List<String>? = null) : HasKey<String>
 
-data class DemographicDataset(
+data class DemographicData(
         override val id: String,
         val name: String,
         val gender: String?,
@@ -21,7 +21,7 @@ data class DemographicDataset(
 
 data class DemographicDataForTouchstone(
         val touchstone: Touchstone,
-        val demographicData: DemographicDataset
+        val demographicData: DemographicData
 )
 
 data class DemographicRow(
