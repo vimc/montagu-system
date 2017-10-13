@@ -1732,7 +1732,7 @@ Schema: [`Demographics.schema.json`](Demographics.schema.json)
 Returns the data set with given type. This data is returned in two parts: First the metadata, then the coverage in CSV format.
 
 ### Metadata
-Schema: [`DemographicDataForTouchstone.schema.json`](DemographicDatasetForTouchstone.schema.json)
+Schema: [`DemographicDataForTouchstone.schema.json`](DemographicDataForTouchstone.schema.json)
 
 #### Example
     {

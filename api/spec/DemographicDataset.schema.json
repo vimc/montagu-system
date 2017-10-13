@@ -1,5 +1,5 @@
 {
-    "id": "DemographicDataSet",
+    "id": "DemographicDataset",
     "type": "object",
     "properties": {
         "id": { "$ref": "StandardIdentifier.schema.json" },
