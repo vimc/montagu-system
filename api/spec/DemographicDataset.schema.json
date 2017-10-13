@@ -4,9 +4,11 @@
     "properties": {
         "id": { "$ref": "StandardIdentifier.schema.json" },
         "name": { "type": "string" },
-        "source": { "type": "string" },
+        "source": { "type": "string"},
+        "sources": { "type": "array", "items": { "type" : "string" } },
+        "countries":{ "type": "array", "items": { "$ref": "CountryId.schema.json"  } },
         "gender_is_applicable": { "type": "boolean" }
     },
     "additionalProperties": false,
-    "required": [ "id", "name", "gender_is_applicable" ]
+    "required": [ "id", "name", "countries", "sources", "source", "gender_is_applicable" ]
 }
