@@ -1720,6 +1720,8 @@ Schema: [`Demographics.schema.json`](Demographics.schema.json)
         "id" : "tot-pop",
         "name" : "Total population",        
         "source" : "unwpp2015",
+        "sources": ["unwpp2015"],
+        "countries": [],
         "gender_is_applicable": true
      }]
 
