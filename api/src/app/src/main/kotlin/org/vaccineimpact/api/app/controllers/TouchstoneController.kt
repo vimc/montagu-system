@@ -56,7 +56,7 @@ class TouchstoneController(context: ControllerContext) : AbstractController(cont
     }
 
 
-    fun getDemographicTypes(context: ActionContext, repo: TouchstoneRepository): List<DemographicStatisticType>
+    fun getDemographicTypes(context: ActionContext, repo: TouchstoneRepository): List<DemographicDataset>
     {
         val touchstone = touchstone(context, repo)
         return repo.getDemographicStatisticTypes(touchstone.id)

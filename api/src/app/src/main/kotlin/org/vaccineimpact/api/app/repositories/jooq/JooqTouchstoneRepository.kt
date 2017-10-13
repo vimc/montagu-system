@@ -50,7 +50,7 @@ class JooqTouchstoneRepository(dsl: DSLContext, private val scenarioRepository: 
         return SplitData(metadata, DataTable.new(rows))
     }
 
-    fun mapDemographicDatasetMetadata(statType: Record, records: List<Record>): DemographicDataset
+    fun mapDemographicDatasetMetadata(statType: Record, records: List<Record>): DemographicData
     {
         val countries =
                 if (records.any())
@@ -67,7 +67,7 @@ class JooqTouchstoneRepository(dsl: DSLContext, private val scenarioRepository: 
         val source = referenceRecord?.getField<String>(name(TOUCHSTONE_SOURCES, "code"))
         val gender = referenceRecord?.get(GENDER.NAME)
 
-        return DemographicDataset(statType[DEMOGRAPHIC_STATISTIC_TYPE.CODE],
+        return DemographicData(statType[DEMOGRAPHIC_STATISTIC_TYPE.CODE],
                 statType[DEMOGRAPHIC_STATISTIC_TYPE.NAME],
                 gender,
                 countries,
@@ -76,7 +76,7 @@ class JooqTouchstoneRepository(dsl: DSLContext, private val scenarioRepository: 
                 source)
     }
 
-    override fun getDemographicStatisticTypes(touchstoneId: String): List<DemographicStatisticType>
+    override fun getDemographicStatisticTypes(touchstoneId: String): List<DemographicDataset>
     {
         val records = getDemographicStatisticTypesQuery(touchstoneId)
                 .fetch()
@@ -295,9 +295,9 @@ class JooqTouchstoneRepository(dsl: DSLContext, private val scenarioRepository: 
 
     inline fun <reified T : Any?> Record.getField(name: Name): T = this.get(name, T::class.java)
 
-    fun mapDemographicStatisticType(record: Record): DemographicStatisticType
+    fun mapDemographicStatisticType(record: Record): DemographicDataset
     {
-        return DemographicStatisticType(
+        return DemographicDataset(
                 record[DEMOGRAPHIC_STATISTIC_TYPE.CODE],
                 record[DEMOGRAPHIC_STATISTIC_TYPE.NAME],
                 record[DEMOGRAPHIC_STATISTIC_TYPE.GENDER_IS_APPLICABLE],
