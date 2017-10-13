@@ -1713,15 +1713,13 @@ Schema: [`Demographics.schema.json`](Demographics.schema.json)
     [{ 
         "id" : "as-fert",
         "name": "Age-specific fertility",
-        "sources" : ["unwpp2015", "unwpp2017"],
-        "countries" : ["AFG"],
+        "source" : "unwpp2015",
         "gender_is_applicable": false
      },
      { 
         "id" : "tot-pop",
         "name" : "Total population",        
-        "sources" : ["unwpp2015"],
-        "countries" : ["AFG"],
+        "source" : "unwpp2015",
         "gender_is_applicable": true
      }]
 
