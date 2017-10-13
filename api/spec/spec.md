@@ -1716,7 +1716,7 @@ Schema: [`Demographics.schema.json`](Demographics.schema.json)
         "source" : "unwpp2015",
         "sources": ["unwpp2015"],
         "countries": [],
-        "gender_is_applicable": false,
+        "gender_is_applicable": false
      },
      { 
         "id" : "tot-pop",
