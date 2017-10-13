@@ -21,7 +21,7 @@ data class DemographicMetadata(
 
 data class DemographicDataForTouchstone(
         val touchstone: Touchstone,
-        val demographicMetadata: DemographicMetadata
+        val demographicData: DemographicMetadata
 )
 
 data class DemographicRow(
