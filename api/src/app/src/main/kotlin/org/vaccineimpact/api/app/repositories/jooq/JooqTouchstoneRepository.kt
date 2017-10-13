@@ -1,4 +1,3 @@
-
 package org.vaccineimpact.api.app.repositories.jooq
 
 import org.jooq.*
@@ -296,10 +295,12 @@ class JooqTouchstoneRepository(dsl: DSLContext, private val scenarioRepository: 
     inline fun <reified T : Any?> Record.getField(name: Name): T = this.get(name, T::class.java)
 
     private fun mapDemographicDataset(record: Record) = DemographicDataset(
-                record[DEMOGRAPHIC_STATISTIC_TYPE.CODE],
-                record[DEMOGRAPHIC_STATISTIC_TYPE.NAME],
-                record[DEMOGRAPHIC_STATISTIC_TYPE.GENDER_IS_APPLICABLE],
-                record[DEMOGRAPHIC_SOURCE.CODE])
+            record[DEMOGRAPHIC_STATISTIC_TYPE.CODE],
+            record[DEMOGRAPHIC_STATISTIC_TYPE.NAME],
+            record[DEMOGRAPHIC_STATISTIC_TYPE.GENDER_IS_APPLICABLE],
+            record[DEMOGRAPHIC_SOURCE.CODE],
+            listOf(),
+            listOf(record[DEMOGRAPHIC_SOURCE.CODE]))
 
     private fun mapCoverageSet(record: Record) = CoverageSet(
             record[COVERAGE_SET.ID],
