@@ -7,8 +7,8 @@ data class DemographicDataset(
         val name: String,
         val genderIsApplicable: Boolean,
         val source: String? = null,
-        val countries: List<String>? = null,
-        val sources: List<String>? = null) : HasKey<String>
+        val countries: List<String>,
+        val sources: List<String>) : HasKey<String>
 
 data class DemographicMetadata(
         override val id: String,
