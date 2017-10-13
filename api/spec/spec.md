@@ -1714,7 +1714,9 @@ Schema: [`Demographics.schema.json`](Demographics.schema.json)
         "id" : "as-fert",
         "name": "Age-specific fertility",
         "source" : "unwpp2015",
-        "gender_is_applicable": false
+        "sources": ["unwpp2015"],
+        "countries": [],
+        "gender_is_applicable": false,
      },
      { 
         "id" : "tot-pop",
