@@ -10,7 +10,7 @@ data class DemographicDataset(
         val countries: List<String>? = null,
         val sources: List<String>? = null) : HasKey<String>
 
-data class DemographicData(
+data class DemographicMetadata(
         override val id: String,
         val name: String,
         val gender: String?,
@@ -21,7 +21,7 @@ data class DemographicData(
 
 data class DemographicDataForTouchstone(
         val touchstone: Touchstone,
-        val demographicData: DemographicData
+        val demographicMetadata: DemographicMetadata
 )
 
 data class DemographicRow(
