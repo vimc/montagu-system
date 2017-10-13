@@ -44,8 +44,8 @@ class DemographicTests : DatabaseTest()
                         "name" to "tot-pop descriptive name",
                         "source" to "unwpp2015",
                         "gender_is_applicable" to false,
-                        "sources" to null,
-                        "countries" to null
+                        "sources" to array("unwpp2015"),
+                        "countries" to array()
                 )
             })
         }
