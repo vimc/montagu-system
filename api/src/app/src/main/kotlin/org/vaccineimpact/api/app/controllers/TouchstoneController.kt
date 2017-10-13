@@ -59,7 +59,7 @@ class TouchstoneController(context: ControllerContext) : AbstractController(cont
     fun getDemographicTypes(context: ActionContext, repo: TouchstoneRepository): List<DemographicDataset>
     {
         val touchstone = touchstone(context, repo)
-        return repo.getDemographicStatisticTypes(touchstone.id)
+        return repo.getDemographicDatasets(touchstone.id)
     }
 
     fun getDemographicDataAndMetadata(context: ActionContext, repo: TouchstoneRepository):
@@ -69,7 +69,7 @@ class TouchstoneController(context: ControllerContext) : AbstractController(cont
         val source = context.params(":source-code")
         val type = context.params(":type-code")
         val gender = context.queryParams("gender")
-        return repo.getDemographicDataset(type, source, touchstone.id, gender?: "both")
+        return repo.getDemographicData(type, source, touchstone.id, gender?: "both")
     }
 
     fun getDemographicData(context: ActionContext, repo: TouchstoneRepository): DataTable<DemographicRow>
@@ -78,7 +78,7 @@ class TouchstoneController(context: ControllerContext) : AbstractController(cont
         val metadata = data.structuredMetadata
         val source = context.params(":source-code")
         val gender = context.queryParams("gender")?: "both"
-        val filename = "${metadata.touchstone.id}_${source}_${metadata.demographicData.id}_${gender}.csv"
+        val filename = "${metadata.touchstone.id}_${source}_${metadata.demographicMetadata.id}_${gender}.csv"
         context.addAttachmentHeader(filename)
         return data.tableData
     }

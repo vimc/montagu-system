@@ -54,7 +54,7 @@ class DemographicTests : DatabaseTest()
     @Test
     fun `can get demographic data`()
     {
-        val schema = SplitSchema(json = "DemographicDatasetForTouchstone", csv = "DemographicData")
+        val schema = SplitSchema(json = "DemographicDataForTouchstone", csv = "DemographicData")
         val test = validate(url) against (schema) given {
 
             DemographicDummyData(it, touchstoneName, touchstoneVersion)

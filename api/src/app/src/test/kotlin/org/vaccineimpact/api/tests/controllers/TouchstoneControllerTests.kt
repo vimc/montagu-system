@@ -113,11 +113,11 @@ class TouchstoneControllerTests : ControllerTests<TouchstoneController>()
         val type = "test-type"
 
         val demographicMetadata = DemographicDataForTouchstone(touchstone,
-                DemographicData("id", "name", null, listOf(), "people", "age", source))
+                DemographicMetadata("id", "name", null, listOf(), "people", "age", source))
 
 
         val repo = mock<TouchstoneRepository> {
-            on { getDemographicDataset(type, source, touchstone.id) } doReturn
+            on { getDemographicData(type, source, touchstone.id) } doReturn
                     SplitData(demographicMetadata, DataTable.new(listOf()))
             on { touchstones } doReturn InMemoryDataSet(listOf(touchstone))
         }
