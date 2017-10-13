@@ -4,9 +4,7 @@
     "properties": {
         "id": { "$ref": "StandardIdentifier.schema.json" },
         "name": { "type": "string" },
-        "source": { "anyOf": [ {"type": "string"}, {"type": "null"} ]},
-        "sources": {"anyOf": [{ "type": "array", "items": { "type" : "string" } }, { "type": "null" } ]},
-        "countries": {"anyOf" : [{ "type": "array", "items": { "$ref": "CountryId.schema.json"  } }, {"type" : "null"} ]},
+        "source": { "type": "string" },
         "gender_is_applicable": { "type": "boolean" }
     },
     "additionalProperties": false,
