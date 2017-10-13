@@ -28,7 +28,7 @@ class TouchstoneController(context: ControllerContext) : AbstractController(cont
                 oneRepoEndpoint("/", this::getTouchstones, repos, repo).secured(permissions),
                 oneRepoEndpoint("/:touchstone-id/scenarios/", this::getScenarios, repos, repo).secured(scenarioPermissions),
                 oneRepoEndpoint("/:touchstone-id/scenarios/:scenario-id/", this::getScenario, repos, repo).secured(scenarioPermissions),
-                oneRepoEndpoint("/:touchstone-id/demographics/", this::getDemographicTypes, repos, repo).secured(demographicPermissions),
+                oneRepoEndpoint("/:touchstone-id/demographics/", this::getDemographicDatasets, repos, repo).secured(demographicPermissions),
                 oneRepoEndpoint("/:touchstone-id/demographics/:source-code/:type-code/", this::getDemographicDataAndMetadata, repos, repo, contentType = "application/json").secured(demographicPermissions),
                 oneRepoEndpoint("/:touchstone-id/demographics/:source-code/:type-code/", this::getDemographicData, repos, repo, contentType = "text/csv").secured(demographicPermissions),
                 oneRepoEndpoint("/:touchstone-id/demographics/:source-code/:type-code/get_onetime_link/", { c, r -> getOneTimeLinkToken(c, r, OneTimeAction.DEMOGRAPHY) }, repos, { it.token }).secured(demographicPermissions)
@@ -56,7 +56,7 @@ class TouchstoneController(context: ControllerContext) : AbstractController(cont
     }
 
 
-    fun getDemographicTypes(context: ActionContext, repo: TouchstoneRepository): List<DemographicDataset>
+    fun getDemographicDatasets(context: ActionContext, repo: TouchstoneRepository): List<DemographicDataset>
     {
         val touchstone = touchstone(context, repo)
         return repo.getDemographicDatasets(touchstone.id)
