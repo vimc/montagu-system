@@ -4,87 +4,90 @@ import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.direct.*
 
 class DemographicDummyData(val it: JooqContext,
-                           sources: List<String>? = null,
+                           val touchstoneName: String,
+                           val touchstoneVersion: Int,
+                           source: String? = null,
                            variants: List<String>? = null)
 {
     val countries: List<String> = it.fetchCountries(1)
-    val sources: List<String> = sources ?: listOf("unwpp2015", "unwpp2017")
-    val sourceIds: List<Int> = it.generateDemographicSources(this.sources).map { (code, id) -> id }
+    val source: String = source ?: "unwpp2015"
+    val sourceId: Int = it.generateDemographicSource(this.source)
     val variants = variants ?: listOf("unwpp_estimates", "unwpp_low_variant", "unwpp_medium_variant", "unwpp_high_variant")
     val variantIds: List<Int> = it.generateDemographicVariants(this.variants)
     val peopleUnitId: Int = it.fetchDemographicUnitId("Number of people")
     val birthsUnitId: Int = it.fetchDemographicUnitId("Births per woman")
     val genders: List<Int> = it.fetchGenders()
+    val fert = it.addDemographicStatisticType("as-fert", variantIds, birthsUnitId, "age of mother", true)
+    val pop = it.addDemographicStatisticType("tot-pop", variantIds, peopleUnitId, genderIsApplicable = false)
 
     init
     {
         it.addDisease("measles", "Measles")
     }
 
-    fun withTouchstone(touchstoneName: String, touchstoneVersion: Int, countries: List<String>? = null): DemographicDummyData
+    fun withTouchstone(countries: List<String>? = null): DemographicDummyData
     {
-        it.addTouchstone(touchstoneName, touchstoneVersion, addName = true)
-        it.addDemographicSourcesToTouchstone("$touchstoneName-$touchstoneVersion", sourceIds)
+        it.addTouchstone(this.touchstoneName, this.touchstoneVersion, addName = true)
         it.addTouchstoneCountries("$touchstoneName-$touchstoneVersion", countries ?: this.countries, "measles")
 
         return this
     }
 
-    fun withPopulation(sources: List<Int> = sourceIds,
+    fun withPopulation(source: Int = sourceId,
                        variants: List<Int> = variantIds,
                        countries: List<String> = this.countries,
-                       genderIsApplicable: Boolean = false,
                        yearRange: IntProgression = 1950..1970 step 5,
-                       ageRange: IntProgression = 10..30 step 5): DemographicDummyData
+                       ageRange: IntProgression = 10..30 step 5,
+                       addDataset: Boolean = true): DemographicDummyData
     {
-        val pop = it.addDemographicStatisticType("tot-pop", variantIds, peopleUnitId, genderIsApplicable = genderIsApplicable)
-
-        for (source in sources)
+        for (variant in variants)
         {
-            for (variant in variants)
+            for (gender in genders)
             {
-                for (gender in genders)
-                {
-                    it.generateDemographicData(
-                            source,
-                            pop,
-                            gender,
-                            variantId = variant,
-                            countries = countries,
-                            yearRange = yearRange,
-                            ageRange = ageRange)
-                }
-
+                it.generateDemographicData(
+                        source,
+                        pop,
+                        gender,
+                        variantId = variant,
+                        countries = countries,
+                        yearRange = yearRange,
+                        ageRange = ageRange)
             }
+
         }
 
+        if (addDataset)
+        {
+            it.addDemographicDatasetsToTouchstone("$touchstoneName-$touchstoneVersion", source, pop)
+        }
         return this
     }
 
-    fun withFertility(sources: List<Int> = sourceIds,
+    fun withFertility(source: Int = sourceId,
                       variants: List<Int> = variantIds,
                       countries: List<String> = this.countries,
                       yearRange: IntProgression = 1950..1970 step 5,
-                      ageRange: IntProgression = 10..30 step 5): DemographicDummyData
+                      ageRange: IntProgression = 10..30 step 5,
+                      addDataset: Boolean = true): DemographicDummyData
     {
-        val fert = it.addDemographicStatisticType("as-fert", variantIds, birthsUnitId, "age of mother", true)
-
-        for (source in sources)
+        for (variant in variants)
         {
-            for (variant in variants)
+            for (gender in genders)
             {
-                for (gender in genders)
-                {
-                    it.generateDemographicData(source,
-                            fert,
-                            gender,
-                            variantId = variant,
-                            countries = countries,
-                            yearRange = yearRange,
-                            ageRange = ageRange)
-                }
-
+                it.generateDemographicData(source,
+                        fert,
+                        gender,
+                        variantId = variant,
+                        countries = countries,
+                        yearRange = yearRange,
+                        ageRange = ageRange)
             }
+
+        }
+
+        if (addDataset)
+        {
+            it.addDemographicDatasetsToTouchstone("$touchstoneName-$touchstoneVersion", source, fert)
         }
 
         return this

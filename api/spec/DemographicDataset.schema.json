@@ -1,13 +1,14 @@
 {
-    "id": "DemographicDataSet",
+    "id": "DemographicDataset",
     "type": "object",
     "properties": {
         "id": { "$ref": "StandardIdentifier.schema.json" },
         "name": { "type": "string" },
+        "source": { "type": "string"},
         "sources": { "type": "array", "items": { "type" : "string" } },
         "countries": { "type": "array", "items": { "$ref": "CountryId.schema.json"  } },
         "gender_is_applicable": { "type": "boolean" }
     },
     "additionalProperties": false,
-    "required": [ "id", "sources", "name", "gender_is_applicable", "countries" ]
+    "required": [ "id", "sources", "name", "gender_is_applicable", "countries", "source" ]
 }

@@ -10,8 +10,6 @@ import org.vaccineimpact.api.models.permissions.ReifiedRole
 import org.vaccineimpact.api.security.UserHelper
 import org.vaccineimpact.api.security.ensureUserHasRole
 import java.math.BigDecimal
-import java.sql.Timestamp
-import java.time.Instant
 import java.util.*
 
 private val random = Random(0)
@@ -54,11 +52,11 @@ fun JooqContext.addModel(
 }
 
 fun JooqContext.addModelVersion(
-    modelId: String,
-    version: String,
-    note: String = "Some note",
-    fingerprint: String = "Some fingerprint",
-    setCurrent: Boolean = false
+        modelId: String,
+        version: String,
+        note: String = "Some note",
+        fingerprint: String = "Some fingerprint",
+        setCurrent: Boolean = false
 ): Int
 {
     val record = this.dsl.newRecord(MODEL_VERSION).apply {
@@ -201,7 +199,7 @@ fun JooqContext.addBurdenEstimateProblem(problem: String, burdenId: Int)
 fun JooqContext.updateCurrentEstimate(responsibilityId: Int, burdenId: Int)
 {
     this.dsl.update(RESPONSIBILITY)
-            .set(RESPONSIBILITY.CURRENT_BURDEN_ESTIMATE_SET,burdenId)
+            .set(RESPONSIBILITY.CURRENT_BURDEN_ESTIMATE_SET, burdenId)
             .where(RESPONSIBILITY.ID.eq(responsibilityId))
             .execute()
 }
@@ -299,23 +297,16 @@ fun JooqContext.addTouchstoneCountries(touchstoneId: String, countryIds: List<St
 }
 
 
-fun JooqContext.generateDemographicSources(sources: List<String>): List<Pair<String, Int>>
+fun JooqContext.generateDemographicSource(source: String): Int
 {
-    val records = sources.map {
-        this.dsl.newRecord(DEMOGRAPHIC_SOURCE).apply {
-            this.code = it
-            this.name = "$it descriptive name"
-        }
-    }
-    this.dsl.batchStore(records).execute()
+    val record =
+            this.dsl.newRecord(DEMOGRAPHIC_SOURCE).apply {
+                this.code = source
+                this.name = "$source descriptive name"
+            }
+    record.store()
 
-    // JOOQ batchStore doesn't populate generated keys (https://github.com/jOOQ/jOOQ/issues/3327)
-    // so have to read these back out
-    return this.dsl.select(DEMOGRAPHIC_SOURCE.ID, DEMOGRAPHIC_SOURCE.CODE)
-            .from(DEMOGRAPHIC_SOURCE)
-            .where(DEMOGRAPHIC_SOURCE.CODE.`in`(sources))
-            .fetch()
-            .map { it[DEMOGRAPHIC_SOURCE.CODE] to it[DEMOGRAPHIC_SOURCE.ID] }
+    return record.id
 }
 
 fun JooqContext.generateDemographicVariants(variants: List<String>): List<Int>
@@ -427,15 +418,25 @@ fun JooqContext.generateDemographicData(
     this.dsl.batchStore(records).execute()
 }
 
-fun JooqContext.addDemographicSourcesToTouchstone(touchstoneId: String, sources: List<Int>)
+fun JooqContext.addDemographicDatasetsToTouchstone(touchstoneId: String,
+                                                   source: Int,
+                                                   type: Int)
 {
-    val records = sources.map {
-        this.dsl.newRecord(TOUCHSTONE_DEMOGRAPHIC_SOURCE).apply {
-            this.touchstone = touchstoneId
-            this.demographicSource = it
-        }
+    val set = this.dsl.newRecord(DEMOGRAPHIC_DATASET).apply{
+        this.demographicSource = source
+        this.demographicStatisticType = type
+        this.description = "some dataset"
     }
-    this.dsl.batchStore(records).execute()
+
+    set.store()
+
+    val record =
+            this.dsl.newRecord(TOUCHSTONE_DEMOGRAPHIC_DATASET).apply {
+                this.touchstone = touchstoneId
+                this.demographicDataset = set.id
+            }
+
+    record.store()
 }
 
 fun JooqContext.fetchCountries(count: Int): List<String>
