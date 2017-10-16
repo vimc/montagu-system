@@ -69,6 +69,11 @@ public class Sequences {
     public static final Sequence<Long> COVERAGE_SET_ID_SEQ = new SequenceImpl<Long>("coverage_set_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
     /**
+     * The sequence <code>public.demographic_dataset_id_seq</code>
+     */
+    public static final Sequence<Long> DEMOGRAPHIC_DATASET_ID_SEQ = new SequenceImpl<Long>("demographic_dataset_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
      * The sequence <code>public.demographic_source_id_seq</code>
      */
     public static final Sequence<Long> DEMOGRAPHIC_SOURCE_ID_SEQ = new SequenceImpl<Long>("demographic_source_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
@@ -167,6 +172,11 @@ public class Sequences {
      * The sequence <code>public.touchstone_country_id_seq</code>
      */
     public static final Sequence<Long> TOUCHSTONE_COUNTRY_ID_SEQ = new SequenceImpl<Long>("touchstone_country_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
+     * The sequence <code>public.touchstone_demographic_dataset_id_seq</code>
+     */
+    public static final Sequence<Long> TOUCHSTONE_DEMOGRAPHIC_DATASET_ID_SEQ = new SequenceImpl<Long>("touchstone_demographic_dataset_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
     /**
      * The sequence <code>public.touchstone_demographic_source_id_seq</code>

@@ -30,6 +30,7 @@ import org.vaccineimpact.api.db.tables.CountryMetadata;
 import org.vaccineimpact.api.db.tables.CountryVaccineMetadata;
 import org.vaccineimpact.api.db.tables.Coverage;
 import org.vaccineimpact.api.db.tables.CoverageSet;
+import org.vaccineimpact.api.db.tables.DemographicDataset;
 import org.vaccineimpact.api.db.tables.DemographicSource;
 import org.vaccineimpact.api.db.tables.DemographicStatistic;
 import org.vaccineimpact.api.db.tables.DemographicStatisticType;
@@ -72,6 +73,7 @@ import org.vaccineimpact.api.db.tables.SelectBurdenDataCol;
 import org.vaccineimpact.api.db.tables.SupportType;
 import org.vaccineimpact.api.db.tables.Touchstone;
 import org.vaccineimpact.api.db.tables.TouchstoneCountry;
+import org.vaccineimpact.api.db.tables.TouchstoneDemographicDataset;
 import org.vaccineimpact.api.db.tables.TouchstoneDemographicSource;
 import org.vaccineimpact.api.db.tables.TouchstoneName;
 import org.vaccineimpact.api.db.tables.TouchstoneStatus;
@@ -105,7 +107,7 @@ import org.vaccineimpact.api.db.tables.records.SelectBurdenDataColRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = -739307487;
+    private static final long serialVersionUID = -517173592;
 
     /**
      * The reference instance of <code>public</code>
@@ -171,6 +173,11 @@ public class Public extends SchemaImpl {
      * The table <code>public.coverage_set</code>.
      */
     public final CoverageSet COVERAGE_SET = org.vaccineimpact.api.db.tables.CoverageSet.COVERAGE_SET;
+
+    /**
+     * The table <code>public.demographic_dataset</code>.
+     */
+    public final DemographicDataset DEMOGRAPHIC_DATASET = org.vaccineimpact.api.db.tables.DemographicDataset.DEMOGRAPHIC_DATASET;
 
     /**
      * The table <code>public.demographic_source</code>.
@@ -572,6 +579,11 @@ public class Public extends SchemaImpl {
     public final TouchstoneCountry TOUCHSTONE_COUNTRY = org.vaccineimpact.api.db.tables.TouchstoneCountry.TOUCHSTONE_COUNTRY;
 
     /**
+     * The table <code>public.touchstone_demographic_dataset</code>.
+     */
+    public final TouchstoneDemographicDataset TOUCHSTONE_DEMOGRAPHIC_DATASET = org.vaccineimpact.api.db.tables.TouchstoneDemographicDataset.TOUCHSTONE_DEMOGRAPHIC_DATASET;
+
+    /**
      * The table <code>public.touchstone_demographic_source</code>.
      */
     public final TouchstoneDemographicSource TOUCHSTONE_DEMOGRAPHIC_SOURCE = org.vaccineimpact.api.db.tables.TouchstoneDemographicSource.TOUCHSTONE_DEMOGRAPHIC_SOURCE;
@@ -650,6 +662,7 @@ public class Public extends SchemaImpl {
             Sequences.COUNTRY_VACCINE_METADATA_ID_SEQ,
             Sequences.COVERAGE_ID_SEQ,
             Sequences.COVERAGE_SET_ID_SEQ,
+            Sequences.DEMOGRAPHIC_DATASET_ID_SEQ,
             Sequences.DEMOGRAPHIC_SOURCE_ID_SEQ,
             Sequences.DEMOGRAPHIC_STATISTIC_ID_SEQ,
             Sequences.DEMOGRAPHIC_STATISTIC_TYPE_ID_SEQ,
@@ -670,6 +683,7 @@ public class Public extends SchemaImpl {
             Sequences.SCENARIO_COVERAGE_SET_ID_SEQ,
             Sequences.SCENARIO_ID_SEQ,
             Sequences.TOUCHSTONE_COUNTRY_ID_SEQ,
+            Sequences.TOUCHSTONE_DEMOGRAPHIC_DATASET_ID_SEQ,
             Sequences.TOUCHSTONE_DEMOGRAPHIC_SOURCE_ID_SEQ,
             Sequences.TOUCHSTONE_YEARS_ID_SEQ,
             Sequences.VACCINE_ROUTINE_AGE_ID_SEQ);
@@ -696,6 +710,7 @@ public class Public extends SchemaImpl {
             CountryVaccineMetadata.COUNTRY_VACCINE_METADATA,
             Coverage.COVERAGE,
             CoverageSet.COVERAGE_SET,
+            DemographicDataset.DEMOGRAPHIC_DATASET,
             DemographicSource.DEMOGRAPHIC_SOURCE,
             DemographicStatistic.DEMOGRAPHIC_STATISTIC,
             DemographicStatisticType.DEMOGRAPHIC_STATISTIC_TYPE,
@@ -738,6 +753,7 @@ public class Public extends SchemaImpl {
             SupportType.SUPPORT_TYPE,
             Touchstone.TOUCHSTONE,
             TouchstoneCountry.TOUCHSTONE_COUNTRY,
+            TouchstoneDemographicDataset.TOUCHSTONE_DEMOGRAPHIC_DATASET,
             TouchstoneDemographicSource.TOUCHSTONE_DEMOGRAPHIC_SOURCE,
             TouchstoneName.TOUCHSTONE_NAME,
             TouchstoneStatus.TOUCHSTONE_STATUS,

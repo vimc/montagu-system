@@ -10,44 +10,20 @@ import org.vaccineimpact.api.test_helpers.DemographicDummyData
 
 class GetDemographicsTests : TouchstoneRepositoryTests()
 {
-    val sources: List<String> = listOf("unwpp2015", "unwpp2017")
+    val source: String = "unwpp2015"
 
     @Test
-    fun `no demographic statistic types are returned if touchstone has no countries()`()
+    fun `no demographic statistic types are returned if touchstone has no datasets()`()
     {
         given {
 
-            val sourceIds = DemographicDummyData(it)
-                    .withPopulation()
-                    .withFertility()
-                    .sourceIds
-
-            it.addTouchstone(touchstoneName, touchstoneVersion, addName = true)
-            it.addDemographicSourcesToTouchstone(touchstoneId, sourceIds)
-
+            DemographicDummyData(it, touchstoneName, touchstoneVersion)
+                    .withTouchstone()
+                    .withPopulation(addDataset = false)
+                    .withFertility(addDataset = false)
 
         } check {
-            val types = it.getDemographicStatisticTypes(touchstoneId)
-            Assertions.assertThat(types).isEmpty()
-        }
-    }
-
-    @Test
-    fun `no demographic statistic types are returned if touchstone has no sources()`()
-    {
-        given {
-
-            val countries = DemographicDummyData(it)
-                    .withPopulation()
-                    .withFertility()
-                    .countries
-
-            it.addTouchstone(touchstoneName, touchstoneVersion, addName = true)
-            it.addTouchstoneCountries(touchstoneId, countries, "measles")
-
-
-        } check {
-            val types = it.getDemographicStatisticTypes(touchstoneId)
+            val types = it.getDemographicDatasets(touchstoneId)
             Assertions.assertThat(types).isEmpty()
         }
     }
@@ -56,74 +32,40 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
     fun `can fetch demographic statistic types in touchstone`()
     {
         given {
-            DemographicDummyData(it)
-                    .withTouchstone(touchstoneName, touchstoneVersion)
+            DemographicDummyData(it,touchstoneName, touchstoneVersion)
+                    .withTouchstone()
                     .withPopulation()
                     .withFertility()
 
         } check {
-            val types = it.getDemographicStatisticTypes(touchstoneId)
+            val types = it.getDemographicDatasets(touchstoneId)
             Assertions.assertThat(types.count()).isEqualTo(2)
-        }
-    }
-
-    @Test
-    fun `only gets statistic types for touchstone countries()`()
-    {
-        var expectedCountries: List<String> = listOf()
-
-        given {
-
-            val data = DemographicDummyData(it)
-                    .withPopulation()
-                    .withFertility()
-
-            expectedCountries = data.countries.subList(0, 1)
-
-            it.addTouchstone(touchstoneName, touchstoneVersion, addName = true)
-            it.addTouchstoneCountries(touchstoneId, expectedCountries, "measles")
-            it.addDemographicSourcesToTouchstone(touchstoneId, data.sourceIds)
-
-
-        } check {
-            val types = it.getDemographicStatisticTypes(touchstoneId)
-            Assertions.assertThat(types[0].countries).isEqualTo(expectedCountries)
         }
     }
 
     @Test
     fun `gets demographic statistic type properties`()
     {
-        var expectedCountries: List<String> = listOf()
-        val expectedPopulationSources: List<String> = sources
-        val expectedFertilitySources: List<String> = sources.subList(0, 1)
-
         given {
-            val data = DemographicDummyData(it, sources)
-                    .withTouchstone(touchstoneName, touchstoneVersion)
+            DemographicDummyData(it, touchstoneName, touchstoneVersion, source)
+                    .withTouchstone()
                     .withPopulation()
-
-            expectedCountries = data.countries
-
-            data.withFertility(sources = data.sourceIds.subList(0, 1))
-
+                    .withFertility()
 
         } check {
-            val types = it.getDemographicStatisticTypes(touchstoneId)
+            val types = it.getDemographicDatasets(touchstoneId)
 
             val fertilityType = types.sortedBy { it.name }.first()
             Assertions.assertThat(fertilityType.name).isEqualTo("as-fert descriptive name")
             Assertions.assertThat(fertilityType.id).isEqualTo("as-fert")
             Assertions.assertThat(fertilityType.genderIsApplicable).isTrue()
-            Assertions.assertThat(fertilityType.sources).isEqualTo(expectedFertilitySources)
-            Assertions.assertThat(fertilityType.countries).hasSameElementsAs(expectedCountries)
+            Assertions.assertThat(fertilityType.source).isEqualTo(source)
 
             val populationType = types.sortedBy { it.name }[1]
             Assertions.assertThat(populationType.name).isEqualTo("tot-pop descriptive name")
             Assertions.assertThat(populationType.id).isEqualTo("tot-pop")
             Assertions.assertThat(populationType.genderIsApplicable).isFalse()
-            Assertions.assertThat(populationType.sources).isEqualTo(expectedPopulationSources)
-            Assertions.assertThat(fertilityType.countries).hasSameElementsAs(expectedCountries)
+            Assertions.assertThat(populationType.source).isEqualTo(source)
         }
     }
 
@@ -131,13 +73,13 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
     fun `gets touchstone metadata`()
     {
         given {
-            DemographicDummyData(it)
-                    .withTouchstone(touchstoneName, touchstoneVersion)
+            DemographicDummyData(it,touchstoneName, touchstoneVersion)
+                    .withTouchstone()
                     .withPopulation()
                     .withFertility()
 
         } check {
-            val touchstone = it.getDemographicDataset("tot-pop", sources[0], touchstoneId).structuredMetadata.touchstone
+            val touchstone = it.getDemographicData("tot-pop", source, touchstoneId).structuredMetadata.touchstone
             Assertions.assertThat(touchstone.name).isEqualTo(touchstoneName)
             Assertions.assertThat(touchstone.description).isEqualTo("Description")
             Assertions.assertThat(touchstone.status).isEqualTo(TouchstoneStatus.OPEN)
@@ -152,14 +94,14 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
 
         given {
 
-            countries = DemographicDummyData(it, sources)
-                    .withTouchstone(touchstoneName, touchstoneVersion)
+            countries = DemographicDummyData(it, touchstoneName, touchstoneVersion, source)
+                    .withTouchstone()
                     .withPopulation()
                     .withFertility()
                     .countries
 
         } check {
-            var metadata = it.getDemographicDataset("tot-pop", sources[0], touchstoneId)
+            var metadata = it.getDemographicData("tot-pop", source, touchstoneId)
                     .structuredMetadata.demographicData
 
             Assertions.assertThat(metadata.id).isEqualTo("tot-pop")
@@ -170,7 +112,7 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
             Assertions.assertThat(metadata.unit).isEqualTo("Number of people")
             Assertions.assertThat(metadata.countries).hasSameElementsAs(countries)
 
-            metadata = it.getDemographicDataset("as-fert", sources[0], touchstoneId)
+            metadata = it.getDemographicData("as-fert", source, touchstoneId)
                     .structuredMetadata.demographicData
 
             Assertions.assertThat(metadata.id).isEqualTo("as-fert")
@@ -191,15 +133,16 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
 
         given {
 
-            countries = DemographicDummyData(it, sources)
-                    .withTouchstone(touchstoneName, touchstoneVersion)
+            countries = DemographicDummyData(it, touchstoneName, touchstoneVersion, source)
+                    .withTouchstone()
                     .withPopulation(yearRange = 1950..1955 step 5, ageRange = 10..15 step 5)
                     .withFertility(yearRange = 1950..1960 step 5, ageRange = 10..15 step 5)
                     .countries
 
         } check {
 
-            val data = it.getDemographicDataset("tot-pop", sources[0], touchstoneId)
+            val all = it.getDemographicData("tot-pop", source, touchstoneId)
+            val data = all
                     .tableData.data
 
             var numYears = 2
@@ -212,7 +155,7 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
 
             Assertions.assertThat(data.count()).isEqualTo(numAges * numYears * numCountries * numVariants)
 
-            val fertilityData = it.getDemographicDataset("as-fert", sources[0], touchstoneId)
+            val fertilityData = it.getDemographicData("as-fert", source, touchstoneId)
                     .tableData.data
 
             numYears = 3
@@ -229,15 +172,14 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
 
         given {
 
-            DemographicDummyData(it, sources)
-                    .withTouchstone(touchstoneName, touchstoneVersion)
-                    .withPopulation(yearRange = 1950..1955 step 5,
-                            ageRange = 10..15 step 5,
-                            genderIsApplicable = true)
+            DemographicDummyData(it, touchstoneName, touchstoneVersion, source)
+                    .withTouchstone()
+                    .withFertility(yearRange = 1950..1955 step 5,
+                            ageRange = 10..15 step 5)
 
         } check {
 
-            val data = it.getDemographicDataset("tot-pop", sources[0], touchstoneId)
+            val data = it.getDemographicData("as-fert", source, touchstoneId)
             Assertions.assertThat(data.structuredMetadata.demographicData.gender).isEqualTo("Both")
             Assertions.assertThat(data.tableData.data.any { it.gender == "Both" }).isTrue()
 
@@ -250,15 +192,14 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
 
         given {
 
-            DemographicDummyData(it, sources)
-                    .withTouchstone(touchstoneName, touchstoneVersion)
+            DemographicDummyData(it, touchstoneName, touchstoneVersion, source)
+                    .withTouchstone()
                     .withPopulation(yearRange = 1950..1955 step 5,
-                            ageRange = 10..15 step 5,
-                            genderIsApplicable = false)
+                            ageRange = 10..15 step 5)
 
         } check {
 
-            val data = it.getDemographicDataset("tot-pop", sources[0], touchstoneId, "female")
+            val data = it.getDemographicData("tot-pop", source, touchstoneId, "female")
             Assertions.assertThat(data.structuredMetadata.demographicData.gender).isEqualTo("Both")
             Assertions.assertThat(data.tableData.data.any { it.gender == "Both" }).isTrue()
         }
@@ -270,15 +211,14 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
 
         given {
 
-            DemographicDummyData(it, sources)
-                    .withTouchstone(touchstoneName, touchstoneVersion)
-                    .withPopulation(yearRange = 1950..1955 step 5,
-                            ageRange = 10..15 step 5,
-                            genderIsApplicable = true)
+            DemographicDummyData(it, touchstoneName, touchstoneVersion, source)
+                    .withTouchstone()
+                    .withFertility(yearRange = 1950..1955 step 5,
+                            ageRange = 10..15 step 5)
 
         } check {
 
-            val data = it.getDemographicDataset("tot-pop", sources[0], touchstoneId, "female")
+            val data = it.getDemographicData("as-fert", source, touchstoneId, "female")
             Assertions.assertThat(data.structuredMetadata.demographicData.gender).isEqualTo("Female")
             Assertions.assertThat(data.tableData.data.any { it.gender == "Female" }).isTrue()
         }
@@ -289,12 +229,12 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
     {
         given {
 
-           DemographicDummyData(it, sources)
+           DemographicDummyData(it, touchstoneName, touchstoneVersion, source)
 
         } check {
 
             Assertions.assertThatThrownBy {
-                it.getDemographicDataset("tot-pop", sources[1], touchstoneId)
+                it.getDemographicData("tot-pop", source, touchstoneId)
             }.isInstanceOf(UnknownObjectError::class.java)
         }
     }
@@ -303,19 +243,38 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
     fun `only returns data for given source`()
     {
         given {
-            val data = DemographicDummyData(it, sources)
-                    .withTouchstone(touchstoneName, touchstoneVersion)
-                    .withFertility()
+            val newSource = "anothersource"
+            val newSourceId = it.generateDemographicSource(newSource)
 
-            data.withPopulation(data.sourceIds.subList(0, 1))
+           DemographicDummyData(it, touchstoneName, touchstoneVersion, source)
+                    .withTouchstone()
+                    .withFertility()
+                    .withPopulation(source = newSourceId, addDataset = false)
 
         } check {
 
-            val source = sources[1]
-            val result = it.getDemographicDataset("tot-pop", source, touchstoneId)
+            val result = it.getDemographicData("tot-pop", source, touchstoneId)
             Assertions.assertThat(result.structuredMetadata.demographicData.countries.count()).isEqualTo(0)
             Assertions.assertThat(result.structuredMetadata.demographicData.source).isNull()
             Assertions.assertThat(result.tableData.data.count()).isEqualTo(0)
+        }
+    }
+
+    @Test
+    fun `throws unknown type error for nonexistent type`()
+    {
+        given {
+
+            it.addDisease("measles", "Measles")
+            it.addTouchstone(this.touchstoneName, this.touchstoneVersion, addName = true)
+            it.addTouchstoneCountries("$touchstoneName-$touchstoneVersion", it.fetchCountries(1), "measles")
+
+        } check {
+
+            Assertions.assertThatThrownBy { it.getDemographicData("tot-pop", source, touchstoneId) }
+                    .isInstanceOf(UnknownObjectError::class.java)
+                    .matches { (it as UnknownObjectError).typeName == "demographic-statistic-type" }
+
         }
     }
 
@@ -324,14 +283,15 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
     {
         given {
 
-            DemographicDummyData(it, sources)
-                    .withTouchstone(touchstoneName, touchstoneVersion)
+            DemographicDummyData(it, touchstoneName, touchstoneVersion, source)
+                    .withTouchstone()
                     .withFertility()
-
         } check {
 
-            Assertions.assertThatThrownBy { it.getDemographicDataset("tot-pop", sources[1], touchstoneId) }
-                    .isInstanceOf(UnknownObjectError::class.java)
+            val result = it.getDemographicData("tot-pop", source, touchstoneId)
+            Assertions.assertThat(result.structuredMetadata.demographicData.countries.count()).isEqualTo(0)
+            Assertions.assertThat(result.structuredMetadata.demographicData.source).isNull()
+            Assertions.assertThat(result.tableData.data.count()).isEqualTo(0)
 
         }
     }
@@ -341,13 +301,13 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
     {
         given {
 
-            DemographicDummyData(it, sources, listOf("unwpp_low_variant", "fake_variant", "unwpp_high_variant"))
-                    .withTouchstone(touchstoneName, touchstoneVersion)
+            DemographicDummyData(it, touchstoneName, touchstoneVersion, source, listOf("unwpp_low_variant", "fake_variant", "unwpp_high_variant"))
+                    .withTouchstone()
                     .withPopulation()
 
         } check {
 
-            val result = it.getDemographicDataset("tot-pop", sources[1], touchstoneId)
+            val result = it.getDemographicData("tot-pop", source, touchstoneId)
             Assertions.assertThat(result.structuredMetadata.demographicData.countries.count()).isEqualTo(0)
             Assertions.assertThat(result.structuredMetadata.demographicData.source).isNull()
             Assertions.assertThat(result.tableData.data.count()).isEqualTo(0)
@@ -363,15 +323,19 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
 
         given {
             countries = it.fetchCountries(4)
-            DemographicDummyData(it, sources)
-                    .withTouchstone(touchstoneName, touchstoneVersion, countries)
-                    .withTouchstone(anotherTouchstoneName, touchstoneVersion, countries.take(2))
+            val data = DemographicDummyData(it, touchstoneName, touchstoneVersion, source)
+                    .withTouchstone(countries)
                     .withPopulation(countries = countries)
+                    .withPopulation(countries = countries.take(2), addDataset = false)
+
+            it.addTouchstone(anotherTouchstoneName, touchstoneVersion, source, addName = true)
+            it.addTouchstoneCountries("$anotherTouchstoneName-$touchstoneVersion", countries.take(2), "measles")
+            it.addDemographicDatasetsToTouchstone("$anotherTouchstoneName-$touchstoneVersion", data.sourceId, data.pop)
+
         } check {
-            val source = sources.first()
             val expectedCountries = countries.take(2)
 
-            val result = it.getDemographicDataset("tot-pop", source, anotherTouchstoneId)
+            val result = it.getDemographicData("tot-pop", source, anotherTouchstoneId)
             val metadata = result.structuredMetadata.demographicData
             
             assertThat(metadata.countries).isEqualTo(expectedCountries)
@@ -385,27 +349,32 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
     {
         val anotherTouchstoneName = "anothertouchstone"
         val anotherTouchstoneId = "$anotherTouchstoneName-$touchstoneVersion"
+        val newSource = "anothersource"
 
         given {
 
-            val countries = DemographicDummyData(it, sources)
-                    .withTouchstone(touchstoneName, touchstoneVersion)
-                    .withPopulation()
-                    .countries
+            val newSourceId = it.generateDemographicSource(newSource)
 
-            val newSources = listOf("anothersource", "moresource")
-            val newSourceIds = it.generateDemographicSources(newSources).map { (_, id) -> id }
+            val data = DemographicDummyData(it, touchstoneName, touchstoneVersion, source)
+                    .withTouchstone()
+                    .withPopulation()
+                    .withPopulation(source = newSourceId, addDataset = false)
 
             it.addTouchstone(anotherTouchstoneName, touchstoneVersion, addName = true)
-            it.addDemographicSourcesToTouchstone(anotherTouchstoneId, newSourceIds)
-            it.addTouchstoneCountries(anotherTouchstoneId, countries, "measles")
+            it.addTouchstoneCountries("$anotherTouchstoneName-$touchstoneVersion", data.countries, "measles")
+            it.addDemographicDatasetsToTouchstone("$anotherTouchstoneName-$touchstoneVersion",
+                    newSourceId, data.pop)
 
 
         } check {
 
-            val result = it.getDemographicDataset("tot-pop", sources[1], anotherTouchstoneId)
+            var result = it.getDemographicData("tot-pop", source, anotherTouchstoneId)
             Assertions.assertThat(result.structuredMetadata.demographicData.countries.count()).isEqualTo(0)
             Assertions.assertThat(result.tableData.data.count()).isEqualTo(0)
+
+            result = it.getDemographicData("tot-pop", newSource, anotherTouchstoneId)
+            Assertions.assertThat(result.structuredMetadata.demographicData.countries.count()).isGreaterThan(0)
+            Assertions.assertThat(result.tableData.data.count()).isGreaterThan(0)
         }
     }
 

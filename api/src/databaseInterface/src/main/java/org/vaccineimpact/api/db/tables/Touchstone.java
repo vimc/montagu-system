@@ -36,7 +36,7 @@ import org.vaccineimpact.api.db.tables.records.TouchstoneRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Touchstone extends TableImpl<TouchstoneRecord> {
 
-    private static final long serialVersionUID = 1687834613;
+    private static final long serialVersionUID = -2097180221;
 
     /**
      * The reference instance of <code>public.touchstone</code>
@@ -80,6 +80,11 @@ public class Touchstone extends TableImpl<TouchstoneRecord> {
      * The column <code>public.touchstone.comment</code>.
      */
     public final TableField<TouchstoneRecord, String> COMMENT = createField("comment", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+
+    /**
+     * The column <code>public.touchstone.touchstone_demographic_dataset</code>.
+     */
+    public final TableField<TouchstoneRecord, Integer> TOUCHSTONE_DEMOGRAPHIC_DATASET = createField("touchstone_demographic_dataset", org.jooq.impl.SQLDataType.INTEGER, this, "");
 
     /**
      * Create a <code>public.touchstone</code> table reference
@@ -132,7 +137,7 @@ public class Touchstone extends TableImpl<TouchstoneRecord> {
      */
     @Override
     public List<ForeignKey<TouchstoneRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<TouchstoneRecord, ?>>asList(Keys.TOUCHSTONE__TOUCHSTONE_TOUCHSTONE_NAME_FKEY, Keys.TOUCHSTONE__TOUCHSTONE_STATUS_FKEY);
+        return Arrays.<ForeignKey<TouchstoneRecord, ?>>asList(Keys.TOUCHSTONE__TOUCHSTONE_TOUCHSTONE_NAME_FKEY, Keys.TOUCHSTONE__TOUCHSTONE_STATUS_FKEY, Keys.TOUCHSTONE__TOUCHSTONE_TOUCHSTONE_DEMOGRAPHIC_DATASET_FKEY);
     }
 
     /**
