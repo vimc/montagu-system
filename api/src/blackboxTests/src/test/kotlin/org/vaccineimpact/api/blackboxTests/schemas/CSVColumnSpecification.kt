@@ -25,7 +25,7 @@ data class CSVColumnSpecification(val name: String, val type: CSVColumnType)
                 failAssert("Column is required")
             }
             is CSVColumnType.DecimalColumn -> actual.trim().toDecimalOrNull() ?: failAssert("Not a decimal")
-            is CSVColumnType.MaybeColumn -> if (actual != "NA")
+            is CSVColumnType.MaybeColumn -> if (actual != "<NA>")
             {
                 assertMatches(actual, rowIndex, typeToCheck.wrapped)
             }

@@ -273,6 +273,7 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
 
             Assertions.assertThatThrownBy { it.getDemographicData("tot-pop", source, touchstoneId) }
                     .isInstanceOf(UnknownObjectError::class.java)
+                    .matches { (it as UnknownObjectError).typeName == "demographic-statistic-type" }
 
         }
     }
