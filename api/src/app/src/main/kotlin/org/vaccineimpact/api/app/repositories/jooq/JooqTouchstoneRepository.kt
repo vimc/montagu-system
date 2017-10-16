@@ -257,7 +257,7 @@ class JooqTouchstoneRepository(dsl: DSLContext, private val scenarioRepository: 
         val statisticType = dsl.fetchOne(
                 DEMOGRAPHIC_STATISTIC_TYPE,
                 DEMOGRAPHIC_STATISTIC_TYPE.CODE.eq(typeCode)
-        )
+        ) ?: throw UnknownObjectError(typeCode, "demographic-statistic-type")
         val genderId = getGenderId(statisticType, gender)
 
         return dsl
