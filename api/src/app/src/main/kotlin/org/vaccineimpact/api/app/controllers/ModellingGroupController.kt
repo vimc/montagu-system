@@ -12,10 +12,7 @@ import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
 import org.vaccineimpact.api.app.postData
 import org.vaccineimpact.api.app.repositories.*
-import org.vaccineimpact.api.app.serialization.DataTable
-import org.vaccineimpact.api.app.serialization.DataTableDeserializer
-import org.vaccineimpact.api.app.serialization.Serializer
-import org.vaccineimpact.api.app.serialization.SplitData
+import org.vaccineimpact.api.app.serialization.*
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.permissions.AssociateRole
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
@@ -97,7 +94,7 @@ open class ModellingGroupController(context: ControllerContext)
         return data
     }
 
-    open fun getCoverageData(context: ActionContext, repo: ModellingGroupRepository): DataTable<CoverageRow>
+    open fun getCoverageData(context: ActionContext, repo: ModellingGroupRepository): Serialisable<CoverageRow>
     {
         val data = getCoverageDataAndMetadata(context, repo)
         val metadata = data.structuredMetadata

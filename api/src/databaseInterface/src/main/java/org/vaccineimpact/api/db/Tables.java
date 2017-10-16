@@ -22,6 +22,7 @@ import org.vaccineimpact.api.db.tables.CountryMetadata;
 import org.vaccineimpact.api.db.tables.CountryVaccineMetadata;
 import org.vaccineimpact.api.db.tables.Coverage;
 import org.vaccineimpact.api.db.tables.CoverageSet;
+import org.vaccineimpact.api.db.tables.DemographicDataset;
 import org.vaccineimpact.api.db.tables.DemographicSource;
 import org.vaccineimpact.api.db.tables.DemographicStatistic;
 import org.vaccineimpact.api.db.tables.DemographicStatisticType;
@@ -64,6 +65,7 @@ import org.vaccineimpact.api.db.tables.SelectBurdenDataCol;
 import org.vaccineimpact.api.db.tables.SupportType;
 import org.vaccineimpact.api.db.tables.Touchstone;
 import org.vaccineimpact.api.db.tables.TouchstoneCountry;
+import org.vaccineimpact.api.db.tables.TouchstoneDemographicDataset;
 import org.vaccineimpact.api.db.tables.TouchstoneDemographicSource;
 import org.vaccineimpact.api.db.tables.TouchstoneName;
 import org.vaccineimpact.api.db.tables.TouchstoneStatus;
@@ -156,6 +158,11 @@ public class Tables {
      * The table <code>public.coverage_set</code>.
      */
     public static final CoverageSet COVERAGE_SET = org.vaccineimpact.api.db.tables.CoverageSet.COVERAGE_SET;
+
+    /**
+     * The table <code>public.demographic_dataset</code>.
+     */
+    public static final DemographicDataset DEMOGRAPHIC_DATASET = org.vaccineimpact.api.db.tables.DemographicDataset.DEMOGRAPHIC_DATASET;
 
     /**
      * The table <code>public.demographic_source</code>.
@@ -555,6 +562,11 @@ public class Tables {
      * The table <code>public.touchstone_country</code>.
      */
     public static final TouchstoneCountry TOUCHSTONE_COUNTRY = org.vaccineimpact.api.db.tables.TouchstoneCountry.TOUCHSTONE_COUNTRY;
+
+    /**
+     * The table <code>public.touchstone_demographic_dataset</code>.
+     */
+    public static final TouchstoneDemographicDataset TOUCHSTONE_DEMOGRAPHIC_DATASET = org.vaccineimpact.api.db.tables.TouchstoneDemographicDataset.TOUCHSTONE_DEMOGRAPHIC_DATASET;
 
     /**
      * The table <code>public.touchstone_demographic_source</code>.

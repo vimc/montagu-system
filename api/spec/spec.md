@@ -1709,19 +1709,23 @@ Required permissions: `demographics.read`.
 
 Schema: [`Demographics.schema.json`](Demographics.schema.json)
 
+Fields `sources` and `countries` are deprecated.
+
 ### Example
     [{ 
         "id" : "as-fert",
         "name": "Age-specific fertility",
-        "sources" : ["unwpp2015", "unwpp2017"],
-        "countries" : ["AFG"],
+        "source" : "unwpp2015",
+        "sources": ["unwpp2015"],
+        "countries": [],
         "gender_is_applicable": false
      },
      { 
         "id" : "tot-pop",
         "name" : "Total population",        
-        "sources" : ["unwpp2015"],
-        "countries" : ["AFG"],
+        "source" : "unwpp2015",
+        "sources": ["unwpp2015"],
+        "countries": [],
         "gender_is_applicable": true
      }]
 
@@ -1730,7 +1734,7 @@ Schema: [`Demographics.schema.json`](Demographics.schema.json)
 Returns the data set with given type. This data is returned in two parts: First the metadata, then the coverage in CSV format.
 
 ### Metadata
-Schema: [`DemographicDatasetForTouchstone.schema.json`](DemographicDatasetForTouchstone.schema.json)
+Schema: [`DemographicDataForTouchstone.schema.json`](DemographicDataForTouchstone.schema.json)
 
 #### Example
     {

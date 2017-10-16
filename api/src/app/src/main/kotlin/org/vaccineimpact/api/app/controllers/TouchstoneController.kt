@@ -10,6 +10,7 @@ import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.RepositoryFactory
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.app.serialization.DataTable
+import org.vaccineimpact.api.app.serialization.Serialisable
 import org.vaccineimpact.api.app.serialization.SplitData
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
@@ -28,7 +29,7 @@ class TouchstoneController(context: ControllerContext) : AbstractController(cont
                 oneRepoEndpoint("/", this::getTouchstones, repos, repo).secured(permissions),
                 oneRepoEndpoint("/:touchstone-id/scenarios/", this::getScenarios, repos, repo).secured(scenarioPermissions),
                 oneRepoEndpoint("/:touchstone-id/scenarios/:scenario-id/", this::getScenario, repos, repo).secured(scenarioPermissions),
-                oneRepoEndpoint("/:touchstone-id/demographics/", this::getDemographicTypes, repos, repo).secured(demographicPermissions),
+                oneRepoEndpoint("/:touchstone-id/demographics/", this::getDemographicDatasets, repos, repo).secured(demographicPermissions),
                 oneRepoEndpoint("/:touchstone-id/demographics/:source-code/:type-code/", this::getDemographicDataAndMetadata, repos, repo, contentType = "application/json").secured(demographicPermissions),
                 oneRepoEndpoint("/:touchstone-id/demographics/:source-code/:type-code/", this::getDemographicData, repos, repo, contentType = "text/csv").secured(demographicPermissions),
                 oneRepoEndpoint("/:touchstone-id/demographics/:source-code/:type-code/get_onetime_link/", { c, r -> getOneTimeLinkToken(c, r, OneTimeAction.DEMOGRAPHY) }, repos, { it.token }).secured(demographicPermissions)
@@ -56,10 +57,10 @@ class TouchstoneController(context: ControllerContext) : AbstractController(cont
     }
 
 
-    fun getDemographicTypes(context: ActionContext, repo: TouchstoneRepository): List<DemographicStatisticType>
+    fun getDemographicDatasets(context: ActionContext, repo: TouchstoneRepository): List<DemographicDataset>
     {
         val touchstone = touchstone(context, repo)
-        return repo.getDemographicStatisticTypes(touchstone.id)
+        return repo.getDemographicDatasets(touchstone.id)
     }
 
     fun getDemographicDataAndMetadata(context: ActionContext, repo: TouchstoneRepository):
@@ -69,10 +70,10 @@ class TouchstoneController(context: ControllerContext) : AbstractController(cont
         val source = context.params(":source-code")
         val type = context.params(":type-code")
         val gender = context.queryParams("gender")
-        return repo.getDemographicDataset(type, source, touchstone.id, gender?: "both")
+        return repo.getDemographicData(type, source, touchstone.id, gender?: "both")
     }
 
-    fun getDemographicData(context: ActionContext, repo: TouchstoneRepository): DataTable<DemographicRow>
+    fun getDemographicData(context: ActionContext, repo: TouchstoneRepository): Serialisable<DemographicRow>
     {
         val data = getDemographicDataAndMetadata(context, repo)
         val metadata = data.structuredMetadata

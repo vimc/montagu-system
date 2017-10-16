@@ -6,7 +6,6 @@ import org.junit.Test
 import org.vaccineimpact.api.app.ActionContext
 import org.vaccineimpact.api.app.controllers.ControllerContext
 import org.vaccineimpact.api.app.controllers.TouchstoneController
-import org.vaccineimpact.api.app.main
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.app.repositories.inmemory.InMemoryDataSet
 import org.vaccineimpact.api.app.serialization.DataTable
@@ -114,11 +113,11 @@ class TouchstoneControllerTests : ControllerTests<TouchstoneController>()
         val type = "test-type"
 
         val demographicMetadata = DemographicDataForTouchstone(touchstone,
-                DemographicDataset("id", "name", null, listOf(), "people", "age", source))
+                DemographicMetadata("id", "name", null, listOf(), "people", "age", source))
 
 
         val repo = mock<TouchstoneRepository> {
-            on { getDemographicDataset(type, source, touchstone.id) } doReturn
+            on { getDemographicData(type, source, touchstone.id) } doReturn
                     SplitData(demographicMetadata, DataTable.new(listOf()))
             on { touchstones } doReturn InMemoryDataSet(listOf(touchstone))
         }

@@ -7,7 +7,13 @@ import kotlin.reflect.KProperty1
 import kotlin.reflect.full.declaredMemberProperties
 import kotlin.reflect.full.primaryConstructor
 
-open class DataTable<T : Any>(val data: Iterable<T>, val type: KClass<T>)
+interface Serialisable<T>
+{
+    fun serialize(serializer: Serializer): String
+    val data: Iterable<T>
+}
+
+open class DataTable<T : Any>(override val data: Iterable<T>, val type: KClass<T>): Serialisable<T>
 {
     class Header<T>(name: String, val property: KProperty1<T, *>, serializer: Serializer)
     {
@@ -15,7 +21,7 @@ open class DataTable<T : Any>(val data: Iterable<T>, val type: KClass<T>)
         override fun toString() = name
     }
 
-    open fun serialize(serializer: Serializer): String
+    override fun serialize(serializer: Serializer): String
     {
         return StringWriter().use {
             toCSV(it, serializer)
@@ -23,7 +29,7 @@ open class DataTable<T : Any>(val data: Iterable<T>, val type: KClass<T>)
         }
     }
 
-    private fun toCSV(target: Writer, serializer: Serializer)
+    protected open fun toCSV(target: Writer, serializer: Serializer)
     {
         val headers = getHeaders(type, serializer)
         MontaguCSVWriter(target).use { csv ->
@@ -39,14 +45,14 @@ open class DataTable<T : Any>(val data: Iterable<T>, val type: KClass<T>)
         }
     }
 
-    private fun serializeValue(value: Any?, serializer: Serializer) = when (value)
+    protected fun serializeValue(value: Any?, serializer: Serializer) = when (value)
     {
         null -> MontaguCSVWriter.Companion.NoValue
         is Enum<*> -> serializer.serializeEnum(value)
         else -> value.toString()
     }
 
-    private fun getHeaders(type: KClass<T>, serializer: Serializer): Iterable<Header<T>>
+    protected open fun getHeaders(type: KClass<T>, serializer: Serializer): Iterable<Header<T>>
     {
         // We prefer to use the primary constructor parameters, if available, as they
         // remember their order

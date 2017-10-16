@@ -2,7 +2,7 @@ package org.vaccineimpact.api.app.serialization
 
 data class SplitData<out Metadata, DataRow : Any>(
         val structuredMetadata: Metadata,
-        val tableData: DataTable<DataRow>
+        val tableData: Serialisable<DataRow>
 )
 {
     // TODO: https://vimc.myjetbrains.com/youtrack/issue/VIMC-307

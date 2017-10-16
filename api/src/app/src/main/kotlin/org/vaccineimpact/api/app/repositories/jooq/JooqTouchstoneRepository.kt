@@ -10,6 +10,7 @@ import org.vaccineimpact.api.app.repositories.ScenarioRepository
 import org.vaccineimpact.api.app.repositories.SimpleDataSet
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.app.serialization.DataTable
+import org.vaccineimpact.api.app.serialization.FlexibleDataTable
 import org.vaccineimpact.api.app.serialization.SplitData
 import org.vaccineimpact.api.db.Tables.*
 import org.vaccineimpact.api.db.fieldsAsList
@@ -22,10 +23,10 @@ import java.math.BigDecimal
 class JooqTouchstoneRepository(dsl: DSLContext, private val scenarioRepository: ScenarioRepository)
     : JooqRepository(dsl), TouchstoneRepository
 {
-    override fun getDemographicDataset(statisticTypeCode: String,
-                                       source: String,
-                                       touchstoneId: String,
-                                       gender: String): SplitData<DemographicDataForTouchstone, DemographicRow>
+    override fun getDemographicData(statisticTypeCode: String,
+                                    source: String,
+                                    touchstoneId: String,
+                                    gender: String): SplitData<DemographicDataForTouchstone, DemographicRow>
     {
         val touchstone = touchstones.get(touchstoneId)
         val records = getDemographicStatistics(
@@ -40,17 +41,53 @@ class JooqTouchstoneRepository(dsl: DSLContext, private val scenarioRepository: 
             mapDemographicRow(it)
         }
 
-        val statType = getDemographicDatasetMetadata(statisticTypeCode)
+        val statType = getDemographicStatisticType(statisticTypeCode)
                 .fetchAny() ?: throw UnknownObjectError(statisticTypeCode, "demographic-statistic-type")
 
-        val dataset = mapDemographicDatasetMetadata(statType, records)
+        val demographicMetadata = mapDemographicMetadata(statType, records)
 
-        val metadata = DemographicDataForTouchstone(touchstone, dataset)
+        val metadata = DemographicDataForTouchstone(touchstone, demographicMetadata)
 
         return SplitData(metadata, DataTable.new(rows))
     }
 
-    fun mapDemographicDatasetMetadata(statType: Record, records: List<Record>): DemographicDataset
+
+    override fun getWideDemographicData(statisticTypeCode: String,
+                               source: String,
+                               touchstoneId: String,
+                               gender: String): SplitData<DemographicDataForTouchstone, WideDemographicRow>
+    {
+        val touchstone = touchstones.get(touchstoneId)
+        val records = getDemographicStatistics(
+                touchstoneId,
+                statisticTypeCode,
+                source,
+                gender)
+                .orderBy(DEMOGRAPHIC_STATISTIC.COUNTRY, DEMOGRAPHIC_STATISTIC.YEAR, DEMOGRAPHIC_STATISTIC.AGE_FROM)
+                .fetch()
+
+        val groupedRows = records
+                .groupBy { it[DEMOGRAPHIC_STATISTIC.COUNTRY] + it[DEMOGRAPHIC_STATISTIC.AGE_FROM]
+                    + it[DEMOGRAPHIC_STATISTIC.AGE_TO] }
+
+         val rows = groupedRows.values
+                .map {
+                    mapWideDemographicRow(it)
+                }
+
+        val years = rows.first().valuesPerYear.keys.toList()
+
+        val statType = getDemographicStatisticType(statisticTypeCode)
+                .fetchAny() ?: throw UnknownObjectError(statisticTypeCode, "demographic-statistic-type")
+
+        val demographicMetadata = mapDemographicMetadata(statType, records)
+
+        val metadata = DemographicDataForTouchstone(touchstone, demographicMetadata)
+
+        return SplitData(metadata, FlexibleDataTable.new(rows, years))
+    }
+
+    private fun mapDemographicMetadata(statType: Record, records: List<Record>): DemographicMetadata
     {
         val countries =
                 if (records.any())
@@ -67,7 +104,7 @@ class JooqTouchstoneRepository(dsl: DSLContext, private val scenarioRepository: 
         val source = referenceRecord?.getField<String>(name(TOUCHSTONE_SOURCES, "sourceCode"))
         val gender = referenceRecord?.get(GENDER.NAME)
 
-        return DemographicDataset(statType[DEMOGRAPHIC_STATISTIC_TYPE.CODE],
+        return DemographicMetadata(statType[DEMOGRAPHIC_STATISTIC_TYPE.CODE],
                 statType[DEMOGRAPHIC_STATISTIC_TYPE.NAME],
                 gender,
                 countries,
@@ -76,17 +113,13 @@ class JooqTouchstoneRepository(dsl: DSLContext, private val scenarioRepository: 
                 source)
     }
 
-    override fun getDemographicStatisticTypes(touchstoneId: String): List<DemographicStatisticType>
+    override fun getDemographicDatasets(touchstoneId: String): List<DemographicDataset>
     {
-        val records = getDemographicStatisticTypesQuery(touchstoneId)
+        val records = getDemographicDatasetsForTouchstone(touchstoneId)
                 .fetch()
 
-        val recordsGroupedByType = records.groupBy {
-            it[DEMOGRAPHIC_STATISTIC_TYPE.ID]
-        }
-
-        return recordsGroupedByType.values.map {
-            mapDemographicStatisticType(it)
+        return records.map {
+            mapDemographicDataset(it)
         }.sortedBy { it.name }
     }
 
@@ -167,7 +200,6 @@ class JooqTouchstoneRepository(dsl: DSLContext, private val scenarioRepository: 
     }
 
     private val TOUCHSTONE_SOURCES = "touchstoneSources"
-    private val STATS_IN_SOURCES = "statsInTouchstoneSources"
 
     private fun countriesInTouchstone(touchstoneId: String): SelectConditionStep<Record1<String>>
     {
@@ -176,52 +208,25 @@ class JooqTouchstoneRepository(dsl: DSLContext, private val scenarioRepository: 
                 .where(TOUCHSTONE_COUNTRY.TOUCHSTONE.eq(touchstoneId))
     }
 
-    private fun touchstoneSources(touchstoneId: String): SelectConditionStep<Record2<Int, String>>
-    {
-        return dsl.select(DEMOGRAPHIC_SOURCE.ID, DEMOGRAPHIC_SOURCE.CODE.`as`("sourceCode"))
-                .from(DEMOGRAPHIC_SOURCE)
-                .join(TOUCHSTONE_DEMOGRAPHIC_SOURCE)
-                .on(DEMOGRAPHIC_SOURCE.ID.eq(TOUCHSTONE_DEMOGRAPHIC_SOURCE.DEMOGRAPHIC_SOURCE))
-                .where(TOUCHSTONE_DEMOGRAPHIC_SOURCE.TOUCHSTONE.eq(touchstoneId))
-    }
-
-    private fun getDemographicStatisticTypesQuery(touchstoneId: String):
-            SelectConditionStep<Record6<Int, String, String, Boolean, String, String>>
+    private fun getDemographicDatasetsForTouchstone(touchstoneId: String):
+            SelectConditionStep<Record5<Int, String, String, Boolean, String>>
     {
 
-        val touchstoneSources = dsl.select(DEMOGRAPHIC_SOURCE.ID, DEMOGRAPHIC_SOURCE.CODE.`as`("sourceCode"))
-                .from(DEMOGRAPHIC_SOURCE)
-                .join(TOUCHSTONE_DEMOGRAPHIC_SOURCE)
-                .on(DEMOGRAPHIC_SOURCE.ID.eq(TOUCHSTONE_DEMOGRAPHIC_SOURCE.DEMOGRAPHIC_SOURCE))
-                .where(TOUCHSTONE_DEMOGRAPHIC_SOURCE.TOUCHSTONE.eq(touchstoneId))
+        return dsl.select(DEMOGRAPHIC_STATISTIC_TYPE.ID,
+                DEMOGRAPHIC_STATISTIC_TYPE.CODE,
+                DEMOGRAPHIC_STATISTIC_TYPE.NAME,
+                DEMOGRAPHIC_STATISTIC_TYPE.GENDER_IS_APPLICABLE,
+                DEMOGRAPHIC_SOURCE.CODE)
+                .fromJoinPath(DEMOGRAPHIC_STATISTIC_TYPE,
+                        DEMOGRAPHIC_DATASET,
+                        TOUCHSTONE_DEMOGRAPHIC_DATASET)
+                .join(DEMOGRAPHIC_SOURCE)
+                .on(DEMOGRAPHIC_SOURCE.ID.eq(DEMOGRAPHIC_DATASET.DEMOGRAPHIC_SOURCE))
+                .where(TOUCHSTONE_DEMOGRAPHIC_DATASET.TOUCHSTONE.eq(touchstoneId))
 
-        val statsInTouchstoneSources = dsl.selectDistinct(DEMOGRAPHIC_STATISTIC.DEMOGRAPHIC_SOURCE,
-                DEMOGRAPHIC_STATISTIC.DEMOGRAPHIC_STATISTIC_TYPE.`as`("typeId"),
-                DEMOGRAPHIC_STATISTIC.COUNTRY.`as`("country"), field(name(TOUCHSTONE_SOURCES, "sourceCode"), String::class.java))
-                .from(DEMOGRAPHIC_STATISTIC)
-                .join(table(name(TOUCHSTONE_SOURCES)))
-                .on(DEMOGRAPHIC_STATISTIC.DEMOGRAPHIC_SOURCE.eq(field(name(TOUCHSTONE_SOURCES, "id"), Int::class.java)))
-
-        val countriesInTouchstone = countriesInTouchstone(touchstoneId)
-
-        return dsl.with(TOUCHSTONE_SOURCES).`as`(touchstoneSources)
-                .with(STATS_IN_SOURCES)
-                .`as`(statsInTouchstoneSources)
-                .selectDistinct(
-                        DEMOGRAPHIC_STATISTIC_TYPE.ID,
-                        DEMOGRAPHIC_STATISTIC_TYPE.CODE,
-                        DEMOGRAPHIC_STATISTIC_TYPE.NAME,
-                        DEMOGRAPHIC_STATISTIC_TYPE.GENDER_IS_APPLICABLE,
-                        field(name(STATS_IN_SOURCES, "sourceCode"), String::class.java),
-                        field<String>(name(STATS_IN_SOURCES, "country"), String::class.java))
-                .from(table(name(STATS_IN_SOURCES)))
-                .join(DEMOGRAPHIC_STATISTIC_TYPE)
-                .on(DEMOGRAPHIC_STATISTIC_TYPE.ID.eq(field(name(STATS_IN_SOURCES, "typeId"), Int::class.java)))
-                .where(field(name(STATS_IN_SOURCES, "country"), String::class.java)
-                        .`in`(countriesInTouchstone))
     }
 
-    private fun getDemographicDatasetMetadata(typeCode: String):
+    private fun getDemographicStatisticType(typeCode: String):
             Select<Record5<String, String, String, String, Boolean>>
     {
         return dsl.select(
@@ -248,8 +253,13 @@ class JooqTouchstoneRepository(dsl: DSLContext, private val scenarioRepository: 
 
         val countriesInTouchstone = countriesInTouchstone(touchstoneId)
 
-        val sources = touchstoneSources(touchstoneId)
+        val touchstoneSources = dsl.select(DEMOGRAPHIC_SOURCE.ID, DEMOGRAPHIC_SOURCE.CODE.`as`("sourceCode"))
+                .fromJoinPath(DEMOGRAPHIC_SOURCE, DEMOGRAPHIC_DATASET, TOUCHSTONE_DEMOGRAPHIC_DATASET)
+                .join(DEMOGRAPHIC_STATISTIC_TYPE)
+                .on(DEMOGRAPHIC_STATISTIC_TYPE.ID.eq(DEMOGRAPHIC_DATASET.DEMOGRAPHIC_STATISTIC_TYPE))
+                .where(TOUCHSTONE_DEMOGRAPHIC_DATASET.TOUCHSTONE.eq(touchstoneId))
                 .and(DEMOGRAPHIC_SOURCE.CODE.eq(sourceCode))
+                .and(DEMOGRAPHIC_STATISTIC_TYPE.CODE.eq(typeCode))
 
         val variants = dsl.select(DEMOGRAPHIC_VARIANT.ID)
                 .from(DEMOGRAPHIC_VARIANT)
@@ -260,7 +270,7 @@ class JooqTouchstoneRepository(dsl: DSLContext, private val scenarioRepository: 
                 .where(DEMOGRAPHIC_STATISTIC_TYPE.CODE.eq(typeCode))
 
         var selectQuery = dsl
-                .with(TOUCHSTONE_SOURCES).`as`(sources)
+                .with(TOUCHSTONE_SOURCES).`as`(touchstoneSources)
                 .with("v").`as`(variants)
                 .with("t").`as`(types)
                 .with("c").`as`(countriesInTouchstone)
@@ -311,7 +321,7 @@ class JooqTouchstoneRepository(dsl: DSLContext, private val scenarioRepository: 
                     .distinctBy { it[COVERAGE_SET.ID] }
                     .map { mapCoverageSet(it) }
 
-    fun mapTouchstone(record: TouchstoneRecord) = Touchstone(
+    private fun mapTouchstone(record: TouchstoneRecord) = Touchstone(
             record.id,
             record.touchstoneName,
             record.version,
@@ -319,27 +329,17 @@ class JooqTouchstoneRepository(dsl: DSLContext, private val scenarioRepository: 
             mapEnum(record.status)
     )
 
-    inline fun <reified T: Any?> Record.getField(name: Name): T = this.get(name, T::class.java)
+    inline fun <reified T : Any?> Record.getField(name: Name): T = this.get(name, T::class.java)
 
-    fun mapDemographicStatisticType(records: List<Record>): DemographicStatisticType
-    {
-        val countries = records.map { it[TOUCHSTONE_COUNTRY.COUNTRY] }.distinct().sortedBy { it }
-        val sources = records.map { it.getField<String>(name(TOUCHSTONE_SOURCES, "sourceCode")) }.distinct()
+    private fun mapDemographicDataset(record: Record) = DemographicDataset(
+            record[DEMOGRAPHIC_STATISTIC_TYPE.CODE],
+            record[DEMOGRAPHIC_STATISTIC_TYPE.NAME],
+            record[DEMOGRAPHIC_STATISTIC_TYPE.GENDER_IS_APPLICABLE],
+            record[DEMOGRAPHIC_SOURCE.CODE],
+            listOf(),
+            listOf(record[DEMOGRAPHIC_SOURCE.CODE]))
 
-        // all other properties are the same for all records
-        // so read all other properties from the first record
-        val record = records.first()
-
-        return DemographicStatisticType(
-                record[DEMOGRAPHIC_STATISTIC_TYPE.CODE],
-                record[DEMOGRAPHIC_STATISTIC_TYPE.NAME],
-                record[DEMOGRAPHIC_STATISTIC_TYPE.GENDER_IS_APPLICABLE],
-                countries,
-                sources
-        )
-    }
-
-    fun mapCoverageSet(record: Record) = CoverageSet(
+    private fun mapCoverageSet(record: Record) = CoverageSet(
             record[COVERAGE_SET.ID],
             record[TOUCHSTONE.ID],
             record[COVERAGE_SET.NAME],
@@ -348,7 +348,7 @@ class JooqTouchstoneRepository(dsl: DSLContext, private val scenarioRepository: 
             mapEnum(record[COVERAGE_SET.ACTIVITY_TYPE])
     )
 
-    fun mapCoverageRow(record: Record, scenarioDescriptionId: String) = CoverageRow(
+    private fun mapCoverageRow(record: Record, scenarioDescriptionId: String) = CoverageRow(
             scenarioDescriptionId,
             record[COVERAGE_SET.NAME],
             record[COVERAGE_SET.VACCINE],
@@ -363,7 +363,7 @@ class JooqTouchstoneRepository(dsl: DSLContext, private val scenarioRepository: 
             record[COVERAGE.COVERAGE_]
     )
 
-    fun mapDemographicRow(record: Record) = DemographicRow(
+    private fun mapDemographicRow(record: Record) = DemographicRow(
             record[COUNTRY.NID],
             record[DEMOGRAPHIC_STATISTIC.COUNTRY],
             record[COUNTRY.NAME],
@@ -373,4 +373,23 @@ class JooqTouchstoneRepository(dsl: DSLContext, private val scenarioRepository: 
             record[GENDER.NAME],
             record[DEMOGRAPHIC_STATISTIC.VALUE]
     )
+
+    private fun mapWideDemographicRow(records: List<Record9<Int, Int, String, Int, String, Int, BigDecimal, String, String>>)
+            : WideDemographicRow
+    {
+        // all records have same country, gender, age_from and age_to, so can look at first one for these
+        val reference = records.first()
+
+        val valuesPerYear = records.associateBy(
+                { it[DEMOGRAPHIC_STATISTIC.YEAR] },
+                { it[DEMOGRAPHIC_STATISTIC.VALUE] })
+
+        return WideDemographicRow(reference[COUNTRY.NID],
+                reference[DEMOGRAPHIC_STATISTIC.COUNTRY],
+                reference[COUNTRY.NAME],
+                reference[DEMOGRAPHIC_STATISTIC.AGE_FROM],
+                reference[DEMOGRAPHIC_STATISTIC.AGE_TO],
+                reference[GENDER.NAME],
+                valuesPerYear)
+    }
 }

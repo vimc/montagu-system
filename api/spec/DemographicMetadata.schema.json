@@ -1,5 +1,5 @@
 {
-    "id": "DemographicDatasetMetadata",
+    "id": "DemographicMetadata",
     "type": "object",
     "properties": {
         "id": { "$ref": "StandardIdentifier.schema.json" },
