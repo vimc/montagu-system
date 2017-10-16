@@ -42,14 +42,6 @@ data class WideDemographicRow(
         val ageFrom: Int,
         val ageTo: Int,
         val gender: String,
-        val valuesPerYear: Map<String, BigDecimal>
+        @property: FlexibleProperty
+        val valuesPerYear: Map<Int, BigDecimal>
 )
-
-data class WideDemographicData(override val rows: List<WideDemographicRow>,
-                               override val flexibleHeaders: List<String>) : FlexibleData<WideDemographicRow>
-
-interface FlexibleData<T>
-{
-    val rows: Iterable<T>
-    val flexibleHeaders: Iterable<String>
-}
