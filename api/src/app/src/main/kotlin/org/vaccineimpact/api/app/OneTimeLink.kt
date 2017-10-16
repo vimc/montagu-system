@@ -27,7 +27,7 @@ data class OneTimeLink(val action: OneTimeAction,
             repoFactory.inTransaction { repos ->
                 when (action)
                 {
-                    OneTimeAction.BURDENS -> controllers.modellingGroup.postBurdenEstimates(context, repos.burdenEstimates)
+                    OneTimeAction.BURDENS -> controllers.modellingGroup.addBurdenEstimatesFromHTMLForm(context, repos.burdenEstimates)
                     OneTimeAction.COVERAGE -> controllers.modellingGroup.getCoverageData(context, repos.modellingGroup)
                     OneTimeAction.DEMOGRAPHY -> controllers.touchstone.getDemographicData(context, repos.touchstone)
                     OneTimeAction.SET_PASSWORD -> controllers.password.setPasswordForUser(context, repos.user, context.params("username"))
