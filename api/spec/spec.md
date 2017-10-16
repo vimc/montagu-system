@@ -1709,6 +1709,8 @@ Required permissions: `demographics.read`.
 
 Schema: [`Demographics.schema.json`](Demographics.schema.json)
 
+Fields `sources` and `countries` are deprecated.
+
 ### Example
     [{ 
         "id" : "as-fert",
