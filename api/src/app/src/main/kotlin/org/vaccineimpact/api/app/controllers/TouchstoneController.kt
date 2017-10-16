@@ -2,6 +2,7 @@ package org.vaccineimpact.api.app.controllers
 
 import org.vaccineimpact.api.OneTimeAction
 import org.vaccineimpact.api.app.ActionContext
+import org.vaccineimpact.api.app.StreamedResponse
 import org.vaccineimpact.api.app.controllers.endpoints.EndpointDefinition
 import org.vaccineimpact.api.app.controllers.endpoints.oneRepoEndpoint
 import org.vaccineimpact.api.app.controllers.endpoints.secured
@@ -9,7 +10,7 @@ import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.RepositoryFactory
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
-import org.vaccineimpact.api.app.serialization.DataTable
+import org.vaccineimpact.api.app.serialization.Serializer
 import org.vaccineimpact.api.app.serialization.SplitData
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
@@ -62,7 +63,7 @@ class TouchstoneController(context: ControllerContext) : AbstractController(cont
         return repo.getDemographicStatisticTypes(touchstone.id)
     }
 
-    fun getDemographicDataAndMetadata(context: ActionContext, repo: TouchstoneRepository):
+    private fun getDemographicDataAndMetadata(context: ActionContext, repo: TouchstoneRepository):
             SplitData<DemographicDataForTouchstone, DemographicRow>
     {
         val touchstone = touchstone(context, repo)
@@ -72,15 +73,25 @@ class TouchstoneController(context: ControllerContext) : AbstractController(cont
         return repo.getDemographicDataset(type, source, touchstone.id, gender?: "both")
     }
 
-    fun getDemographicData(context: ActionContext, repo: TouchstoneRepository): DataTable<DemographicRow>
+    fun getDemographicDataAndMetadataAsStream(context: ActionContext, repo: TouchstoneRepository): StreamedResponse
+    {
+        return context.streamedResponse { stream ->
+            getDemographicDataAndMetadata(context, repo).serialize(stream, Serializer.instance)
+        }
+    }
+
+    fun getDemographicData(context: ActionContext, repo: TouchstoneRepository): StreamedResponse
     {
         val data = getDemographicDataAndMetadata(context, repo)
         val metadata = data.structuredMetadata
         val source = context.params(":source-code")
         val gender = context.queryParams("gender")?: "both"
-        val filename = "${metadata.touchstone.id}_${source}_${metadata.demographicData.id}_${gender}.csv"
+        val filename = "${metadata.touchstone.id}_${source}_${metadata.demographicData.id}_$gender.csv"
         context.addAttachmentHeader(filename)
-        return data.tableData
+
+        return context.streamedResponse { stream ->
+            data.tableData.serialize(stream, Serializer.instance)
+        }
     }
 
     fun getScenario(context: ActionContext, repo: TouchstoneRepository): ScenarioTouchstoneAndCoverageSets

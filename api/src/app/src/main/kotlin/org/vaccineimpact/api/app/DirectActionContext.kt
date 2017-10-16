@@ -84,6 +84,9 @@ open class DirectActionContext(private val context: SparkWebContext): ActionCont
     }
     override val username = userProfile?.id
 
-    override val responseStream: OutputStream
-        get() = response.raw().outputStream
+    override fun streamedResponse(work: (OutputStream) -> Unit): StreamedResponse
+    {
+        work(response.raw().outputStream)
+        return StreamedResponse()
+    }
 }

@@ -16,7 +16,6 @@ interface ActionContext
      *  Otherwise it is null
      */
     val username: String?
-    val responseStream: OutputStream
 
     fun contentType(): String
 
@@ -30,11 +29,13 @@ interface ActionContext
     fun addResponseHeader(key: String, value: String): Unit
     fun addAttachmentHeader(filename: String): Unit
     fun setResponseStatus(status: Int): Unit
+    fun streamedResponse(work: (OutputStream) -> Unit): StreamedResponse
 
     fun hasPermission(requirement: ReifiedPermission): Boolean
     fun requirePermission(requirement: ReifiedPermission): Unit
-
 }
 
 inline fun <reified T: Any> ActionContext.postData() = this.postData(T::class.java)
 inline fun <reified T: Any> ActionContext.csvData() = this.csvData(T::class)
+
+class StreamedResponse
