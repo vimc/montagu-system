@@ -64,7 +64,7 @@ class JooqTouchstoneRepository(dsl: DSLContext, private val scenarioRepository: 
 
         val referenceRecord = records.firstOrNull()
 
-        val source = referenceRecord?.getField<String>(name(TOUCHSTONE_SOURCES, "code"))
+        val source = referenceRecord?.getField<String>(name(TOUCHSTONE_SOURCES, "sourceCode"))
         val gender = referenceRecord?.get(GENDER.NAME)
 
         return DemographicMetadata(statType[DEMOGRAPHIC_STATISTIC_TYPE.CODE],
@@ -244,7 +244,7 @@ class JooqTouchstoneRepository(dsl: DSLContext, private val scenarioRepository: 
                         COUNTRY.NAME,
                         DEMOGRAPHIC_STATISTIC.YEAR,
                         DEMOGRAPHIC_STATISTIC.VALUE,
-                        field(name(TOUCHSTONE_SOURCES, "code"), String::class.java),
+                        field(name(TOUCHSTONE_SOURCES, "sourceCode"), String::class.java),
                         GENDER.NAME)
                 .from(DEMOGRAPHIC_STATISTIC)
                 .join(GENDER)
