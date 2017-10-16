@@ -23,18 +23,16 @@ class DemographicTests : DatabaseTest()
     val touchstoneName = "touchstone"
     val touchstoneVersion = 1
     val url = "/touchstones/$touchstoneId/demographics/unwpp2015/tot-pop/"
+    val fertilityUrl = "/touchstones/$touchstoneId/demographics/unwpp2015/as-fert/"
 
     @Test
     fun `can get demographic stat types for touchstone`()
     {
-        var countries: List<String> = listOf()
-
         validate("/touchstones/$touchstoneId/demographics/") against "Demographics" given {
 
-            countries = DemographicDummyData(it)
-                    .withTouchstone(touchstoneName, touchstoneVersion)
+            DemographicDummyData(it, touchstoneName, touchstoneVersion)
+                    .withTouchstone()
                     .withPopulation()
-                    .countries
 
         } requiringPermissions {
             requiredPermissions
@@ -44,9 +42,10 @@ class DemographicTests : DatabaseTest()
                 obj(
                         "id" to "tot-pop",
                         "name" to "tot-pop descriptive name",
-                        "sources" to array("unwpp2015", "unwpp2017"),
-                        "countries" to array(countries.sortedBy { it }),
-                        "gender_is_applicable" to false
+                        "source" to "unwpp2015",
+                        "gender_is_applicable" to false,
+                        "sources" to array("unwpp2015"),
+                        "countries" to array()
                 )
             })
         }
@@ -55,11 +54,11 @@ class DemographicTests : DatabaseTest()
     @Test
     fun `can get demographic data`()
     {
-        val schema = SplitSchema(json = "DemographicDatasetForTouchstone", csv = "DemographicData")
+        val schema = SplitSchema(json = "DemographicDataForTouchstone", csv = "DemographicData")
         val test = validate(url) against (schema) given {
 
-            DemographicDummyData(it)
-                    .withTouchstone(touchstoneName, touchstoneVersion)
+            DemographicDummyData(it, touchstoneName, touchstoneVersion)
+                    .withTouchstone()
                     .withPopulation()
 
         } requiringPermissions { requiredPermissions }
@@ -76,8 +75,8 @@ class DemographicTests : DatabaseTest()
 
         JooqContext().use {
 
-            countries = DemographicDummyData(it)
-                    .withTouchstone(touchstoneName, touchstoneVersion)
+            countries = DemographicDummyData(it, touchstoneName, touchstoneVersion)
+                    .withTouchstone()
                     .withPopulation()
                     .countries
 
@@ -114,27 +113,27 @@ class DemographicTests : DatabaseTest()
 
         JooqContext().use {
 
-            countries = DemographicDummyData(it)
-                    .withTouchstone(touchstoneName, touchstoneVersion)
-                    .withPopulation(genderIsApplicable = true)
+            countries = DemographicDummyData(it, touchstoneName, touchstoneVersion)
+                    .withTouchstone()
+                    .withFertility()
                     .countries
 
             userHelper.setupTestUser(it)
         }
 
         val validator = SplitValidator()
-        val response = requestHelper.get("$url?gender=female", requiredPermissions)
+        val response = requestHelper.get("$fertilityUrl?gender=female", requiredPermissions)
 
         val json = JsonLoader.fromString(validator.getSplitText(response.text).json)
         val demographyJson = json["data"]["demographic_data"]
 
         val expectedDemographicMetadata = JsonLoader.fromString(json {
             obj(
-                    "id" to "tot-pop",
-                    "name" to "tot-pop descriptive name",
-                    "age_interpretation" to "age",
+                    "id" to "as-fert",
+                    "name" to "as-fert descriptive name",
+                    "age_interpretation" to "age of mother",
                     "source" to "unwpp2015",
-                    "unit" to "Number of people",
+                    "unit" to "Births per woman",
                     "gender" to "Female",
                     "countries" to array(countries.sortedBy { it })
             )
@@ -152,8 +151,8 @@ class DemographicTests : DatabaseTest()
 
         JooqContext().use {
 
-            DemographicDummyData(it)
-                    .withTouchstone(touchstoneName, touchstoneVersion)
+            DemographicDummyData(it, touchstoneName, touchstoneVersion)
+                    .withTouchstone()
                     .withPopulation()
 
             userHelper.setupTestUser(it)
@@ -168,8 +167,8 @@ class DemographicTests : DatabaseTest()
     {
         validate("$url/get_onetime_link/") against "Token" given {
 
-            DemographicDummyData(it)
-                    .withTouchstone(touchstoneName, touchstoneVersion)
+            DemographicDummyData(it, touchstoneName, touchstoneVersion)
+                    .withTouchstone()
                     .withPopulation()
 
         } requiringPermissions { requiredPermissions } andCheckString { token ->
@@ -180,7 +179,7 @@ class DemographicTests : DatabaseTest()
             val body = schema.validate(response.text)
             Assertions.assertThat(body.count()).isGreaterThan(0)
 
-            val badResponse =  requestHelper.get(oneTimeURL)
+            val badResponse = requestHelper.get(oneTimeURL)
             JSONValidator().validateError(badResponse.text, expectedErrorCode = "invalid-token-used")
         }
     }
@@ -189,11 +188,11 @@ class DemographicTests : DatabaseTest()
     @Test
     fun `can get gendered CSV demographic data via one time link`()
     {
-        validate("$url/get_onetime_link/?gender=female") against "Token" given {
+        validate("$fertilityUrl/get_onetime_link/?gender=female") against "Token" given {
 
-            DemographicDummyData(it)
-                    .withTouchstone(touchstoneName, touchstoneVersion)
-                    .withPopulation(genderIsApplicable = true)
+            DemographicDummyData(it, touchstoneName, touchstoneVersion)
+                    .withTouchstone()
+                    .withFertility()
 
         } requiringPermissions { requiredPermissions } andCheckString { token ->
             val oneTimeURL = "/onetime_link/$token/"
@@ -202,7 +201,7 @@ class DemographicTests : DatabaseTest()
             val response = requestHelper.get(oneTimeURL)
             val body = schema.validate(response.text)
 
-            Assertions.assertThat(body.all{ it[6] == "Female" }).isTrue()
+            Assertions.assertThat(body.all { it[6] == "Female" }).isTrue()
         }
     }
 
@@ -216,8 +215,8 @@ class DemographicTests : DatabaseTest()
 
         JooqContext().use {
 
-            val data = DemographicDummyData(it)
-                    .withTouchstone(touchstoneName, touchstoneVersion)
+            val data = DemographicDummyData(it, touchstoneName, touchstoneVersion)
+                    .withTouchstone()
                     .withPopulation(yearRange = 1950..1955 step 5, ageRange = 10..15 step 5)
 
             userHelper.setupTestUser(it)

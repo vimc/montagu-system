@@ -8,7 +8,7 @@ class DemographicTestData(val db: JooqContext)
 {
     val variants = listOf("unwpp_estimates", "unwpp_medium_variant", "unwpp_high_variant")
     val countries = db.fetchCountries(3)
-    val sources = db.generateDemographicSources(listOf("unwpp2015", "unwpp2017"))
+    val sourceNames = listOf("unwpp2015", "unwpp2017")
     val variantIds = db.generateDemographicVariants(variants)
     val unit = db.fetchDemographicUnitIds().first()
     val genderIds = db.fetchGenders()
@@ -20,7 +20,8 @@ class DemographicTestData(val db: JooqContext)
 
     fun generate(touchstoneId: String, diseases: List<String>)
     {
-        db.addDemographicSourcesToTouchstone(touchstoneId, sources.map { (_, id) -> id })
+        val sources = sourceNames.map { Pair<String, Int>(it, db.generateDemographicSource(it)) }
+
         for (disease in diseases)
         {
             db.addTouchstoneCountries(touchstoneId, countries, disease)
@@ -42,7 +43,10 @@ class DemographicTestData(val db: JooqContext)
                         )
                     }
                 }
+
+                db.addDemographicDatasetsToTouchstone(touchstoneId, sourceId, typeId)
             }
+
         }
     }
 

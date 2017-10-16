@@ -36,7 +36,7 @@ import org.vaccineimpact.api.db.tables.records.DemographicStatisticRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DemographicStatistic extends TableImpl<DemographicStatisticRecord> {
 
-    private static final long serialVersionUID = -1980593512;
+    private static final long serialVersionUID = -912488561;
 
     /**
      * The reference instance of <code>public.demographic_statistic</code>
@@ -102,6 +102,11 @@ public class DemographicStatistic extends TableImpl<DemographicStatisticRecord> 
     public final TableField<DemographicStatisticRecord, Integer> DEMOGRAPHIC_STATISTIC_TYPE = createField("demographic_statistic_type", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
+     * The column <code>public.demographic_statistic.demographic_dataset</code>.
+     */
+    public final TableField<DemographicStatisticRecord, Integer> DEMOGRAPHIC_DATASET = createField("demographic_dataset", org.jooq.impl.SQLDataType.INTEGER, this, "");
+
+    /**
      * Create a <code>public.demographic_statistic</code> table reference
      */
     public DemographicStatistic() {
@@ -160,7 +165,7 @@ public class DemographicStatistic extends TableImpl<DemographicStatisticRecord> 
      */
     @Override
     public List<ForeignKey<DemographicStatisticRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<DemographicStatisticRecord, ?>>asList(Keys.DEMOGRAPHIC_STATISTIC__DEMOGRAPHIC_STATISTIC_DEMOGRAPHIC_VARIANT_FKEY, Keys.DEMOGRAPHIC_STATISTIC__DEMOGRAPHIC_STATISTIC_GENDER_FKEY, Keys.DEMOGRAPHIC_STATISTIC__DEMOGRAPHIC_STATISTIC_COUNTRY_FKEY, Keys.DEMOGRAPHIC_STATISTIC__DEMOGRAPHIC_STATISTIC_DEMOGRAPHIC_SOURCE_FKEY, Keys.DEMOGRAPHIC_STATISTIC__DEMOGRAPHIC_STATISTIC_DEMOGRAPHIC_STATISTIC_TYPE_FKEY);
+        return Arrays.<ForeignKey<DemographicStatisticRecord, ?>>asList(Keys.DEMOGRAPHIC_STATISTIC__DEMOGRAPHIC_STATISTIC_DEMOGRAPHIC_VARIANT_FKEY, Keys.DEMOGRAPHIC_STATISTIC__DEMOGRAPHIC_STATISTIC_GENDER_FKEY, Keys.DEMOGRAPHIC_STATISTIC__DEMOGRAPHIC_STATISTIC_COUNTRY_FKEY, Keys.DEMOGRAPHIC_STATISTIC__DEMOGRAPHIC_STATISTIC_DEMOGRAPHIC_SOURCE_FKEY, Keys.DEMOGRAPHIC_STATISTIC__DEMOGRAPHIC_STATISTIC_DEMOGRAPHIC_STATISTIC_TYPE_FKEY, Keys.DEMOGRAPHIC_STATISTIC__DEMOGRAPHIC_STATISTIC_DEMOGRAPHIC_DATASET_FKEY);
     }
 
     /**
