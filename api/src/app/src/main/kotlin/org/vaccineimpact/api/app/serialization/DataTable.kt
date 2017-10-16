@@ -1,8 +1,7 @@
 package org.vaccineimpact.api.app.serialization
 
 import com.opencsv.CSVWriter
-import java.io.StringWriter
-import java.io.Writer
+import java.io.OutputStream
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty1
 import kotlin.reflect.full.declaredMemberProperties
@@ -16,18 +15,10 @@ open class DataTable<T : Any>(val data: Iterable<T>, val type: KClass<T>)
         override fun toString() = name
     }
 
-    open fun serialize(serializer: Serializer): String
-    {
-        return StringWriter().use {
-            toCSV(it, serializer)
-            it.toString()
-        }
-    }
-
-    private fun toCSV(target: Writer, serializer: Serializer)
+    open fun serialize(stream: OutputStream, serializer: Serializer)
     {
         val headers = getHeaders(type, serializer)
-        CSVWriter(target).use { csv ->
+        CSVWriter(stream.writer()).use { csv ->
             csv.writeNext(headers.map { it.name }.toTypedArray())
             for (line in data)
             {

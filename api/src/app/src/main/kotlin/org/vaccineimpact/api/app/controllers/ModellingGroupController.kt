@@ -12,12 +12,10 @@ import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
 import org.vaccineimpact.api.app.postData
 import org.vaccineimpact.api.app.repositories.*
-import org.vaccineimpact.api.app.serialization.DataTable
 import org.vaccineimpact.api.app.serialization.DataTableDeserializer
 import org.vaccineimpact.api.app.serialization.Serializer
 import org.vaccineimpact.api.app.serialization.SplitData
 import org.vaccineimpact.api.models.*
-import org.vaccineimpact.api.models.permissions.AssociateRole
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import spark.route.HttpMethod
 import java.time.Instant
@@ -97,13 +95,16 @@ open class ModellingGroupController(context: ControllerContext)
         return data
     }
 
-    open fun getCoverageData(context: ActionContext, repo: ModellingGroupRepository): DataTable<CoverageRow>
+    open fun getCoverageData(context: ActionContext, repo: ModellingGroupRepository): Boolean
     {
         val data = getCoverageDataAndMetadata(context, repo)
         val metadata = data.structuredMetadata
         val filename = "coverage_${metadata.touchstone.id}_${metadata.scenario.id}.csv"
         context.addAttachmentHeader(filename)
-        return data.tableData
+
+        val stream = context.responseStream
+        data.tableData.serialize(stream, Serializer.instance)
+        return true
     }
 
     // TODO: https://vimc.myjetbrains.com/youtrack/issue/VIMC-307

@@ -4,6 +4,7 @@ import org.pac4j.core.profile.CommonProfile
 import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import spark.Request
+import java.io.OutputStream
 import kotlin.reflect.KClass
 
 interface ActionContext
@@ -15,6 +16,7 @@ interface ActionContext
      *  Otherwise it is null
      */
     val username: String?
+    val responseStream: OutputStream
 
     fun contentType(): String
 
