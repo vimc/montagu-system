@@ -28,7 +28,8 @@ open class DataTable<T : Any>(val data: Iterable<T>, val type: KClass<T>)
     {
         val headers = getHeaders(type, serializer)
         CSVWriter(target).use { csv ->
-            csv.writeNext(headers.map { it.name }.toTypedArray())
+            val headerArray = headers.map { it.name }.toTypedArray()
+            csv.writeNext(headerArray, false)
             for (line in data)
             {
                 val asArray = headers
