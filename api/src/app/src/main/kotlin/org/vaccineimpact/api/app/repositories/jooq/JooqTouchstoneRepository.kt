@@ -160,7 +160,7 @@ class JooqTouchstoneRepository(dsl: DSLContext, private val scenarioRepository: 
         {
             // We don't mind if there are 0 rows of coverage data, so do a left join
             fromQuery = fromQuery.joinPath(COVERAGE_SET, COVERAGE, joinType = JoinType.LEFT_OUTER_JOIN)
-                    .joinPath(COVERAGE, COUNTRY)
+                    .joinPath(COVERAGE, COUNTRY,  joinType = JoinType.LEFT_OUTER_JOIN)
         }
         return fromQuery.where(TOUCHSTONE.ID.eq(touchstoneId))
     }
