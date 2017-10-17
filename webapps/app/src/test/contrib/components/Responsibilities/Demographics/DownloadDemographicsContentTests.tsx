@@ -1,11 +1,10 @@
 import * as React from "react";
 import { expect } from "chai";
 import { DemographicState, demographicStore } from "../../../../../main/contrib/stores/DemographicStore";
-import { mockDemographicStatisticType, mockTouchstone } from "../../../../mocks/mockModels";
+import { mockDemographicDataset, mockTouchstone } from "../../../../mocks/mockModels";
 import { Touchstone } from "../../../../../main/shared/models/Generated";
 import { alt } from "../../../../../main/shared/alt";
 import {
-    DownloadDemographicsContent,
     DownloadDemographicsContentComponent, DownloadDemographicsContentProps
 } from "../../../../../main/contrib/components/Responsibilities/Demographics/DownloadDemographicsContent";
 import { shallow } from "enzyme";
@@ -28,13 +27,12 @@ describe("DownloadDemographicsContent", () => {
     }
 
     it("can get props from stores when touchstone and data set are present", () => {
-        const dataSet = mockDemographicStatisticType();
+        const dataSet = mockDemographicDataset();
         const touchstone = mockTouchstone({ id: "tId" });
         setupStore(touchstone, {
             currentTouchstone: touchstone.id,
             dataSets: { tId: [dataSet] },
             selectedDataSet: dataSet,
-            selectedSource: "source",
             selectedGender: "gender",
             token: null
         });
@@ -42,7 +40,6 @@ describe("DownloadDemographicsContent", () => {
         expect(props).to.eql({
             ready: true,
             selectedDataSet: dataSet,
-            selectedSource: "source",
             selectedGender: "gender",
             dataSets: [dataSet],
             touchstone: touchstone,
@@ -54,9 +51,8 @@ describe("DownloadDemographicsContent", () => {
         const touchstone = mockTouchstone({ id: "tId" });
         setupStore(touchstone, {
             currentTouchstone: touchstone.id,
-            dataSets: { someOtherTouchstone: [ mockDemographicStatisticType() ]},
+            dataSets: { someOtherTouchstone: [ mockDemographicDataset() ]},
             selectedDataSet: null,
-            selectedSource: "source",
             selectedGender: "gender",
             token: "token"
         });
@@ -64,7 +60,6 @@ describe("DownloadDemographicsContent", () => {
         expect(props).to.eql({
             ready: false,
             selectedDataSet: null,
-            selectedSource: "source",
             selectedGender: "gender",
             dataSets: undefined,
             touchstone: touchstone,
@@ -75,9 +70,8 @@ describe("DownloadDemographicsContent", () => {
     it("no props are retrieved from stores when current touchstone is not set", () => {
         setupStore(mockTouchstone(), {
             currentTouchstone: null,
-            dataSets: { someOtherTouchstone: [ mockDemographicStatisticType() ]},
+            dataSets: { someOtherTouchstone: [ mockDemographicDataset() ]},
             selectedDataSet: null,
-            selectedSource: "source",
             selectedGender: "gender",
             token: "token"
         });
@@ -88,12 +82,11 @@ describe("DownloadDemographicsContent", () => {
     });
 
     it("renders options", () => {
-        const set = mockDemographicStatisticType();
+        const set = mockDemographicDataset();
         const rendered = shallow(<DownloadDemographicsContentComponent
             dataSets={[set]}
             touchstone={mockTouchstone()}
             selectedDataSet={set}
-            selectedSource="source"
             selectedGender="x"
             ready={true}
             token={null}
@@ -101,18 +94,16 @@ describe("DownloadDemographicsContent", () => {
         expect(rendered.find(DemographicOptions).props()).to.eql({
             dataSets: [set],
             selectedDataSet: set,
-            selectedSource: "source",
             selectedGender: "x"
         });
     });
 
     it("can download when all required options are filled", () => {
-        const setA = mockDemographicStatisticType({ id: "a", gender_is_applicable: false });
-        const setB = mockDemographicStatisticType({ id: "a", gender_is_applicable: true });
+        const setA = mockDemographicDataset({ id: "a", gender_is_applicable: false });
+        const setB = mockDemographicDataset({ id: "a", gender_is_applicable: true });
         const base: DownloadDemographicsContentProps = {
             dataSets: [setA, setB],
             selectedDataSet: null,
-            selectedSource: null,
             selectedGender: null,
             touchstone: mockTouchstone(),
             ready: true,
@@ -122,24 +113,23 @@ describe("DownloadDemographicsContent", () => {
 
         expect(f(base))
             .to.be.equal(false, "Shouldn't be able to download with no data set selected");
+
         expect(f(Object.assign({}, base, { selectedDataSet: setA })))
-            .to.equal(false, "Shouldn't be able to download with no source selected");
-        expect(f(Object.assign({}, base, { selectedDataSet: setA, selectedSource: "source" })))
             .to.equal(true, "Should be able to download with set that doesn't required gender selected");
 
-        expect(f(Object.assign({}, base, { selectedDataSet: setB, selectedSource: "source" })))
+        expect(f(Object.assign({}, base, { selectedDataSet: setB })))
             .to.equal(false, "Shouldn't be able to download with set that requires gender, without selecting gender");
-        expect(f(Object.assign({}, base, { selectedDataSet: setB, selectedSource: "source", selectedGender: "x" })))
+
+        expect(f(Object.assign({}, base, { selectedDataSet: setB, selectedGender: "x" })))
             .to.be.equal(true, "Should be able to download with set that requires gender, after selecting gender");
     });
 
     it("renders OneTimeButton", () => {
-        const set = mockDemographicStatisticType();
+        const set = mockDemographicDataset();
         const props: DownloadDemographicsContentProps = {
             dataSets: [set],
             touchstone: mockTouchstone(),
             selectedDataSet: set,
-            selectedSource: "source",
             selectedGender: "x",
             ready: true,
             token: "TOKEN"

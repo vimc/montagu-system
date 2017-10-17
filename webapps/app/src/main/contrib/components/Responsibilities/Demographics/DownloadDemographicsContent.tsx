@@ -2,7 +2,7 @@ import * as React from 'react';
 import { RemoteContentComponent } from "../../../../shared/components/RemoteContentComponent/RemoteContentComponent";
 import { RemoteContent } from "../../../../shared/models/RemoteContent";
 import { demographicStore } from "../../../stores/DemographicStore";
-import { DemographicStatisticType, Touchstone } from "../../../../shared/models/Generated";
+import { DemographicDataset, Touchstone } from "../../../../shared/models/Generated";
 import { connectToStores } from "../../../../shared/alt";
 import { responsibilityStore } from "../../../stores/ResponsibilityStore";
 import { DemographicOptions } from "./DemographicOptions";
@@ -14,9 +14,8 @@ const commonStyles = require("../../../../shared/styles/common.css");
 const styles = require("../Responsibilities.css");
 
 export interface DownloadDemographicsContentProps extends RemoteContent {
-    dataSets: DemographicStatisticType[];
-    selectedDataSet: DemographicStatisticType;
-    selectedSource: string;
+    dataSets: DemographicDataset[];
+    selectedDataSet: DemographicDataset;
     selectedGender: string;
     touchstone: Touchstone;
     token: string;
@@ -34,7 +33,6 @@ export class DownloadDemographicsContentComponent extends RemoteContentComponent
             return {
                 ready: demographicState.currentTouchstone in demographicState.dataSets,
                 selectedDataSet: demographicState.selectedDataSet,
-                selectedSource: demographicState.selectedSource,
                 selectedGender: demographicState.selectedGender,
                 dataSets: demographicState.dataSets[demographicState.currentTouchstone],
                 token: demographicState.token,
@@ -75,7 +73,6 @@ export class DownloadDemographicsContentComponent extends RemoteContentComponent
             <DemographicOptions
                 dataSets={props.dataSets}
                 selectedDataSet={props.selectedDataSet}
-                selectedSource={props.selectedSource}
                 selectedGender={props.selectedGender} />
             <OneTimeButton token={ props.token } refreshToken={ this.refreshToken } enabled={ canDownload }>
                 Download data set
@@ -86,7 +83,6 @@ export class DownloadDemographicsContentComponent extends RemoteContentComponent
     static canDownload(props: DownloadDemographicsContentProps): boolean {
         return props.selectedDataSet != null
             && (!props.selectedDataSet.gender_is_applicable || props.selectedGender != null)
-            && !!props.selectedSource
     }
 }
 

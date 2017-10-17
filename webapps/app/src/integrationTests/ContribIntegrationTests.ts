@@ -4,7 +4,7 @@ import { checkPromise } from "../test/testHelpers";
 import { Client, QueryResult } from "pg";
 import { responsibilityStore } from "../main/contrib/stores/ResponsibilityStore";
 import {
-    DemographicStatisticType,
+    DemographicDataset,
     Disease,
     ModellingGroup,
     Responsibilities,
@@ -165,13 +165,14 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
                     touchstoneActions.setCurrentTouchstone(touchstoneId);
                     return demographicStore.fetchDataSets();
                 });
-            checkPromise(done, promise, (dataSets: DemographicStatisticType[]) => {
-                expectIsEqual<DemographicStatisticType[]>(dataSets, [
+            checkPromise(done, promise, (dataSets: DemographicDataset[]) => {
+                expectIsEqual<DemographicDataset[]>(dataSets, [
                     {
                         id: "statistic",
                         name: "Some statistic",
-                        countries: ["ATL"],
                         gender_is_applicable: false,
+                        source: "source",
+                        countries: [],
                         sources: ["source"]
                     }
                 ]);
