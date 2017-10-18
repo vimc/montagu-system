@@ -29,7 +29,7 @@ interface ActionContext
     fun addResponseHeader(key: String, value: String): Unit
     fun addAttachmentHeader(filename: String): Unit
     fun setResponseStatus(status: Int): Unit
-    fun streamedResponse(work: (OutputStream) -> Unit): Unit
+    fun streamedResponse(contentType: String, work: (OutputStream) -> Unit): Unit
 
     fun hasPermission(requirement: ReifiedPermission): Boolean
     fun requirePermission(requirement: ReifiedPermission): Unit

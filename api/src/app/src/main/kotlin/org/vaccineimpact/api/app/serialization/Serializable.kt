@@ -4,5 +4,6 @@ import java.io.OutputStream
 
 interface StreamSerializable
 {
-    fun serialize(stream: OutputStream, serializer: Serializer): Unit
+    val contentType: String
+    fun serialize(stream: OutputStream, serializer: Serializer)
 }

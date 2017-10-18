@@ -9,7 +9,7 @@ fun <TRepository> ((ActionContext, TRepository) -> StreamSerializable).streamed(
 {
     return { context, repo ->
         val data = this(context, repo)
-        context.streamedResponse { stream ->
+        context.streamedResponse(data.contentType) { stream ->
             data.serialize(stream, Serializer.instance)
         }
     }
