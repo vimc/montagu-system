@@ -76,6 +76,10 @@ describe("DemographicStore.fetchOneTimeToken", () => {
         demographicStore.fetchOneTimeToken().catch(doNothing);
         expect(stub.called).to.equal(false, "Fetched token even though data set was not selected");
 
+        // Next, select a dataset as well and show that it does fetch
+        demographicActions.selectDataSet(dataSet.id);
+        demographicStore.fetchOneTimeToken().catch(doNothing);
+        expect(stub.called).to.equal(false, "Did not fetch token even though data set was selected");
 
     });
 });
