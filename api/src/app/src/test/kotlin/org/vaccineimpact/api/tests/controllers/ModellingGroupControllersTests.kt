@@ -201,7 +201,7 @@ class ModellingGroupControllersTests : ControllerTests<ModellingGroupController>
         val coverageSets = mockCoverageSetsData(status)
         val data = SplitData(coverageSets, DataTable.new(listOf(
                 CoverageRow("sId", "name", "vaccine", GAVISupportLevel.WITH, ActivityType.CAMPAIGN,
-                        "ABC", 2000, BigDecimal.ZERO, BigDecimal.TEN, "0-10", null, BigDecimal("67.88"))
+                        "ABC", "ABC-Name", 2000, BigDecimal.ZERO, BigDecimal.TEN, "0-10", null, BigDecimal("67.88"))
         )))
         return mock {
             on { getCoverageData(any(), any(), any()) } doReturn data

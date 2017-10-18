@@ -148,6 +148,7 @@ class JooqTouchstoneRepository(dsl: DSLContext, private val scenarioRepository: 
         {
             selectQuery = selectQuery
                     .select(COVERAGE.fieldsAsList())
+                    .select(COUNTRY.NAME)
                     .select(SCENARIO_COVERAGE_SET.ORDER)
         }
         var fromQuery = selectQuery
@@ -159,6 +160,7 @@ class JooqTouchstoneRepository(dsl: DSLContext, private val scenarioRepository: 
         {
             // We don't mind if there are 0 rows of coverage data, so do a left join
             fromQuery = fromQuery.joinPath(COVERAGE_SET, COVERAGE, joinType = JoinType.LEFT_OUTER_JOIN)
+                    .joinPath(COVERAGE, COUNTRY,  joinType = JoinType.LEFT_OUTER_JOIN)
         }
         return fromQuery.where(TOUCHSTONE.ID.eq(touchstoneId))
     }
@@ -321,6 +323,7 @@ class JooqTouchstoneRepository(dsl: DSLContext, private val scenarioRepository: 
             mapEnum(record[COVERAGE_SET.GAVI_SUPPORT_LEVEL]),
             mapEnum(record[COVERAGE_SET.ACTIVITY_TYPE]),
             record[COVERAGE.COUNTRY],
+            record[COUNTRY.NAME],
             record[COVERAGE.YEAR],
             record[COVERAGE.AGE_FROM],
             record[COVERAGE.AGE_TO],

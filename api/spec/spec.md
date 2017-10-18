@@ -692,19 +692,19 @@ Coverage sets are returned in the order they are to be applied.
 ### Coverage data
 CSV data in this format:
 
-       "scenario",                       "set_name", "vaccine", "gavi_support", "activity_type", country",    "year","age_first","age_last",  "age_range_verbatim", "target", coverage"
-    "menA-novacc", "Menigitis without GAVI support",    "MenA",      "no gavi",       "routine",    "AFG",      2006,          0,         2,                    NA,       NA,        NA
-    "menA-novacc", "Menigitis without GAVI support",    "MenA",      "no gavi",       "routine",    "AFG",      2007,          0,         2,                    NA,       NA,      64.0
-    "menA-novacc", "Menigitis without GAVI support",    "MenA",      "no gavi",       "routine",    "AFG",      2008,          0,         2,                    NA,       NA,      63.0
-    "menA-novacc", "Menigitis without GAVI support",    "MenA",      "no gavi",       "routine",    "AGO",      2006,          0,         1,                    NA,       NA,       0.0
-    "menA-novacc", "Menigitis without GAVI support",    "MenA",      "no gavi",       "routine",    "AGO",      2007,          0,         1,"school aged children",  1465824,      83.0
-    "menA-novacc", "Menigitis without GAVI support",    "MenA",      "no gavi",       "routine",    "AGO",      2008,          0,         1,                    NA,       NA,      81.0
-    "menA-novacc",    "Menigitis with GAVI support",    "MenA",        "total",       "routine",    "AFG",      2006,          0,         2,                    NA,       NA,        NA
-    "menA-novacc",    "Menigitis with GAVI support",    "MenA",        "total",       "routine",    "AFG",      2007,          0,         2,                    NA,       NA,      80.0
-    "menA-novacc",    "Menigitis with GAVI support",    "MenA",        "total",       "routine",    "AFG",      2008,          0,         2,                    NA,       NA,      80.0
-    "menA-novacc",    "Menigitis with GAVI support",    "MenA",        "total",       "routine",    "AGO",      2006,          0,         1,                    NA,       NA,      20.0
-    "menA-novacc",    "Menigitis with GAVI support",    "MenA",        "total",       "routine",    "AGO",      2007,          0,         1,                    NA,       NA,      90.0
-    "menA-novacc",    "Menigitis with GAVI support",    "MenA",        "total",       "routine",    "AGO",      2008,          0,         1,                    NA,       NA,      95.0
+       "scenario",                       "set_name", "vaccine", "gavi_support", "activity_type", country_code", "country",    "year","age_first","age_last",  "age_range_verbatim", "target", coverage"
+    "menA-novacc", "Menigitis without GAVI support",    "MenA",      "no gavi",       "routine",    "AFG",      "Afghanistan", 2006,          0,         2,                    NA,       NA,        NA
+    "menA-novacc", "Menigitis without GAVI support",    "MenA",      "no gavi",       "routine",    "AFG",      "Afghanistan", 2007,          0,         2,                    NA,       NA,      64.0
+    "menA-novacc", "Menigitis without GAVI support",    "MenA",      "no gavi",       "routine",    "AFG",      "Afghanistan", 2008,          0,         2,                    NA,       NA,      63.0
+    "menA-novacc", "Menigitis without GAVI support",    "MenA",      "no gavi",       "routine",    "AGO",      "Angola",      2006,          0,         1,                    NA,       NA,       0.0
+    "menA-novacc", "Menigitis without GAVI support",    "MenA",      "no gavi",       "routine",    "AGO",      "Angola",      2007,          0,         1,"school aged children",  1465824,      83.0
+    "menA-novacc", "Menigitis without GAVI support",    "MenA",      "no gavi",       "routine",    "AGO",      "Angola",      2008,          0,         1,                    NA,       NA,      81.0
+    "menA-novacc",    "Menigitis with GAVI support",    "MenA",        "total",       "routine",    "AFG",      "Afghanistan", 2006,          0,         2,                    NA,       NA,        NA
+    "menA-novacc",    "Menigitis with GAVI support",    "MenA",        "total",       "routine",    "AFG",      "Afghanistan", 2007,          0,         2,                    NA,       NA,      80.0
+    "menA-novacc",    "Menigitis with GAVI support",    "MenA",        "total",       "routine",    "AFG",      "Afghanistan", 2008,          0,         2,                    NA,       NA,      80.0
+    "menA-novacc",    "Menigitis with GAVI support",    "MenA",        "total",       "routine",    "AGO",      "Angola",      2006,          0,         1,                    NA,       NA,      20.0
+    "menA-novacc",    "Menigitis with GAVI support",    "MenA",        "total",       "routine",    "AGO",      "Angola",      2007,          0,         1,                    NA,       NA,      90.0
+    "menA-novacc",    "Menigitis with GAVI support",    "MenA",        "total",       "routine",    "AGO",      "Angola",      2008,          0,         1,                    NA,       NA,      95.0
 
 The coverage sets are de-normalized and merged into this single table. You can 
 identify which coverage set a line is from using `scenario` plus `vaccine`, 
