@@ -13,13 +13,14 @@ interface Serialisable<T>
     val data: Iterable<T>
 }
 
-open class DataTable<T : Any>(override val data: Iterable<T>, val type: KClass<T>): Serialisable<T>
+class TableHeader<T>(name: String, val property: KProperty1<T, *>, serializer: Serializer)
 {
-    class Header<T>(name: String, val property: KProperty1<T, *>, serializer: Serializer)
-    {
-        val name = serializer.convertFieldName(name)
-        override fun toString() = name
-    }
+    val name = serializer.convertFieldName(name)
+    override fun toString() = name
+}
+
+class DataTable<T : Any>(override val data: Iterable<T>, val type: KClass<T>): Serialisable<T>
+{
 
     override fun serialize(serializer: Serializer): String
     {
@@ -29,7 +30,7 @@ open class DataTable<T : Any>(override val data: Iterable<T>, val type: KClass<T
         }
     }
 
-    protected open fun toCSV(target: Writer, serializer: Serializer)
+    private fun toCSV(target: Writer, serializer: Serializer)
     {
         val headers = getHeaders(type, serializer)
         MontaguCSVWriter(target).use { csv ->
@@ -38,21 +39,14 @@ open class DataTable<T : Any>(override val data: Iterable<T>, val type: KClass<T
             {
                 val asArray = headers
                         .map { it.property.get(line) }
-                        .map { serializeValue(it, serializer) }
+                        .map { serializer.serializeValue(it) }
                         .toTypedArray()
                 csv.writeNext(asArray, false)
             }
         }
     }
 
-    protected fun serializeValue(value: Any?, serializer: Serializer) = when (value)
-    {
-        null -> MontaguCSVWriter.Companion.NoValue
-        is Enum<*> -> serializer.serializeEnum(value)
-        else -> value.toString()
-    }
-
-    protected open fun getHeaders(type: KClass<T>, serializer: Serializer): Iterable<Header<T>>
+    private fun getHeaders(type: KClass<T>, serializer: Serializer): Iterable<TableHeader<T>>
     {
         // We prefer to use the primary constructor parameters, if available, as they
         // remember their order
@@ -63,11 +57,11 @@ open class DataTable<T : Any>(override val data: Iterable<T>, val type: KClass<T
             return constructor.parameters
                     .map { it.name }
                     .filterNotNull()
-                    .map { name -> Header(name, properties.single { name == it.name }, serializer) }
+                    .map { name -> TableHeader(name, properties.single { name == it.name }, serializer) }
         }
         else
         {
-            return properties.map { Header(it.name, it, serializer) }
+            return properties.map { TableHeader(it.name, it, serializer) }
         }
     }
 

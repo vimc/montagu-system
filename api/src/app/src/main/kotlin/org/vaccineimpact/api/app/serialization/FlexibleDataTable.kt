@@ -1,6 +1,7 @@
 package org.vaccineimpact.api.app.serialization
 
 import org.vaccineimpact.api.models.FlexibleProperty
+import java.io.StringWriter
 import java.io.Writer
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty1
@@ -8,10 +9,10 @@ import kotlin.reflect.full.declaredMemberProperties
 import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.primaryConstructor
 
-class FlexibleDataTable<T : Any>(data: Iterable<T>,
+class FlexibleDataTable<T : Any>(override val data: Iterable<T>,
                                  private val flexibleHeaders: Iterable<Any>,
-                                 type: KClass<T>)
-    : DataTable<T>(data, type)
+                                 val type: KClass<T>)
+    : Serialisable<T>
 {
     private val flexibleProperty: KProperty1<T, *>
     private val properties = type.declaredMemberProperties
@@ -22,20 +23,29 @@ class FlexibleDataTable<T : Any>(data: Iterable<T>,
                 ?: throw Exception("No property marked as flexible." +
                 " Use the DataTable class to serialise data with fixed headers.")
 
-        flexibleProperty.returnType.arguments.lastOrNull()?:
-            throw Exception("Properties marked as flexible must be of " +
-                    "type Map<*, *>, where * can be whatever you like.")
+        flexibleProperty.returnType.arguments.lastOrNull() ?:
+                throw Exception("Properties marked as flexible must be of " +
+                        "type Map<*, *>, where * can be whatever you like.")
 
 
         this.flexibleProperty = flexibleProperty
     }
 
-    override fun toCSV(target: Writer, serializer: Serializer)
+    override fun serialize(serializer: Serializer): String
+    {
+        return StringWriter().use {
+            toCSV(it, serializer)
+            it.toString()
+        }
+    }
+
+    private fun toCSV(target: Writer, serializer: Serializer)
     {
         val headers = getHeaders(type, serializer)
         val flexibleHeaders = flexibleHeaders
 
         MontaguCSVWriter(target).use { csv ->
+
             val allHeaders = headers.map { it.name }.toTypedArray()
                     .plus(flexibleHeaders.map { it.toString() })
 
@@ -43,27 +53,34 @@ class FlexibleDataTable<T : Any>(data: Iterable<T>,
 
             for (line in data)
             {
-                val basicValuesAsArray = headers
-                        .map { it.property.get(line) }
-                        .map { serializeValue(it, serializer) }
-                        .toTypedArray()
-
-                val flexibleValuesAsArray = flexibleHeaders
-                        .map {
-                            val map = flexibleProperty.get(line) as Map<*, *>
-                            map[it]
-                        }
-                        .map { serializeValue(it, serializer) }
-                        .toTypedArray()
-
-                val allAsArray = basicValuesAsArray.plus(flexibleValuesAsArray)
-
+                val allAsArray = allValuesAsArray(headers, line, serializer)
                 csv.writeNext(allAsArray, false)
             }
         }
     }
 
-    override fun getHeaders(type: KClass<T>, serializer: Serializer): Iterable<Header<T>>
+    private fun allValuesAsArray(headers: Iterable<TableHeader<T>>, line: T, serializer: Serializer): Array<String>
+    {
+        val basicValuesAsArray = headers
+                .map { it.property.get(line) }
+                .map { serializer.serializeValue(it) }
+                .toTypedArray()
+
+        val flexibleValuesAsArray = flexibleHeaders
+                .map { getFlexibleValue(it, line) }
+                .map { serializer.serializeValue(it) }
+                .toTypedArray()
+
+        return basicValuesAsArray.plus(flexibleValuesAsArray)
+    }
+
+    private fun getFlexibleValue(key: Any, line: T): Any?
+    {
+        val map = flexibleProperty.get(line) as Map<*, *>
+        return map[key]
+    }
+
+    private fun getHeaders(type: KClass<T>, serializer: Serializer): Iterable<TableHeader<T>>
     {
         // We prefer to use the primary constructor parameters, if available, as they
         // remember their order
@@ -74,13 +91,13 @@ class FlexibleDataTable<T : Any>(data: Iterable<T>,
             return constructor.parameters
                     .filter { it.name != flexibleProperty.name }
                     .mapNotNull { it.name }
-                    .map { name -> Header(name, properties.single { name == it.name }, serializer) }
+                    .map { name -> TableHeader(name, properties.single { name == it.name }, serializer) }
         }
         else
         {
             return properties
                     .filter { it != flexibleProperty }
-                    .map { Header(it.name, it, serializer) }.dropLast(1)
+                    .map { TableHeader(it.name, it, serializer) }.dropLast(1)
         }
     }
 

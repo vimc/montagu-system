@@ -29,24 +29,25 @@ class JooqTouchstoneRepository(dsl: DSLContext, private val scenarioRepository: 
                                     gender: String): SplitData<DemographicDataForTouchstone, DemographicRow>
     {
         val touchstone = touchstones.get(touchstoneId)
+
+        val statType = getDemographicStatisticType(statisticTypeCode)
+                .fetchAny() ?: throw UnknownObjectError(statisticTypeCode, "demographic-statistic-type")
+
         val records = getDemographicStatistics(
                 touchstoneId,
                 statisticTypeCode,
                 source,
                 gender)
-                .orderBy(DEMOGRAPHIC_STATISTIC.COUNTRY, DEMOGRAPHIC_STATISTIC.YEAR, DEMOGRAPHIC_STATISTIC.AGE_FROM)
+                .orderBy(DEMOGRAPHIC_STATISTIC.COUNTRY,
+                        DEMOGRAPHIC_STATISTIC.YEAR,
+                        DEMOGRAPHIC_STATISTIC.AGE_FROM)
                 .fetch()
+
+        val metadata = mapDemographicMetadata(statType, records, touchstone)
 
         val rows = records.map {
             mapDemographicRow(it)
         }
-
-        val statType = getDemographicStatisticType(statisticTypeCode)
-                .fetchAny() ?: throw UnknownObjectError(statisticTypeCode, "demographic-statistic-type")
-
-        val demographicMetadata = mapDemographicMetadata(statType, records)
-
-        val metadata = DemographicDataForTouchstone(touchstone, demographicMetadata)
 
         return SplitData(metadata, DataTable.new(rows))
     }
@@ -58,36 +59,38 @@ class JooqTouchstoneRepository(dsl: DSLContext, private val scenarioRepository: 
                                gender: String): SplitData<DemographicDataForTouchstone, WideDemographicRow>
     {
         val touchstone = touchstones.get(touchstoneId)
+
+        val statType = getDemographicStatisticType(statisticTypeCode)
+                .fetchAny() ?: throw UnknownObjectError(statisticTypeCode, "demographic-statistic-type")
+
         val records = getDemographicStatistics(
                 touchstoneId,
                 statisticTypeCode,
                 source,
                 gender)
-                .orderBy(DEMOGRAPHIC_STATISTIC.COUNTRY, DEMOGRAPHIC_STATISTIC.YEAR, DEMOGRAPHIC_STATISTIC.AGE_FROM)
+                .orderBy(DEMOGRAPHIC_STATISTIC.COUNTRY, DEMOGRAPHIC_STATISTIC.AGE_FROM)
                 .fetch()
 
         val groupedRows = records
                 .groupBy { "${it[DEMOGRAPHIC_STATISTIC.COUNTRY]} ${it[DEMOGRAPHIC_STATISTIC.AGE_FROM]} " +
                         "${it[DEMOGRAPHIC_STATISTIC.AGE_TO]}" }
 
+        val metadata = mapDemographicMetadata(statType, records, touchstone)
+
          val rows = groupedRows.values
                 .map {
                     mapWideDemographicRow(it)
                 }
 
+        // all the rows should have the same number of years, so we just look at the first row
         val years = rows.first().valuesPerYear.keys.toList()
-
-        val statType = getDemographicStatisticType(statisticTypeCode)
-                .fetchAny() ?: throw UnknownObjectError(statisticTypeCode, "demographic-statistic-type")
-
-        val demographicMetadata = mapDemographicMetadata(statType, records)
-
-        val metadata = DemographicDataForTouchstone(touchstone, demographicMetadata)
 
         return SplitData(metadata, FlexibleDataTable.new(rows, years))
     }
 
-    private fun mapDemographicMetadata(statType: Record, records: List<Record>): DemographicMetadata
+    private fun mapDemographicMetadata(statType: Record,
+                                       records: List<Record>,
+                                       touchstone: Touchstone): DemographicDataForTouchstone
     {
         val countries =
                 if (records.any())
@@ -104,13 +107,15 @@ class JooqTouchstoneRepository(dsl: DSLContext, private val scenarioRepository: 
         val source = referenceRecord?.getField<String>(name(TOUCHSTONE_SOURCES, "sourceCode"))
         val gender = referenceRecord?.get(GENDER.NAME)
 
-        return DemographicMetadata(statType[DEMOGRAPHIC_STATISTIC_TYPE.CODE],
+        val metadata = DemographicMetadata(statType[DEMOGRAPHIC_STATISTIC_TYPE.CODE],
                 statType[DEMOGRAPHIC_STATISTIC_TYPE.NAME],
                 gender,
                 countries,
                 statType[DEMOGRAPHIC_VALUE_UNIT.NAME],
                 statType[DEMOGRAPHIC_STATISTIC_TYPE.AGE_INTERPRETATION],
                 source)
+
+        return DemographicDataForTouchstone(touchstone, metadata)
     }
 
     override fun getDemographicDatasets(touchstoneId: String): List<DemographicDataset>

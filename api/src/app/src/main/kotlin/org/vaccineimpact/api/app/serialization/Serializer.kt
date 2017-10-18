@@ -79,6 +79,13 @@ open class Serializer
         return text.toLowerCase().replace('_', '-')
     }
 
+    fun serializeValue(value: Any?) = when (value)
+    {
+        null -> MontaguCSVWriter.Companion.NoValue
+        is Enum<*> -> serializeEnum(value)
+        else -> value.toString()
+    }
+
     private fun mapGAVISupportLevel(value: GAVISupportLevel): String
     {
         return when (value)
