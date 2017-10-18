@@ -29,7 +29,7 @@ interface ActionContext
     fun addResponseHeader(key: String, value: String): Unit
     fun addAttachmentHeader(filename: String): Unit
     fun setResponseStatus(status: Int): Unit
-    fun streamedResponse(work: (OutputStream) -> Unit): StreamedResponse
+    fun streamedResponse(contentType: String, work: (OutputStream) -> Unit): Unit
 
     fun hasPermission(requirement: ReifiedPermission): Boolean
     fun requirePermission(requirement: ReifiedPermission): Unit
@@ -37,5 +37,3 @@ interface ActionContext
 
 inline fun <reified T: Any> ActionContext.postData() = this.postData(T::class.java)
 inline fun <reified T: Any> ActionContext.csvData() = this.csvData(T::class)
-
-class StreamedResponse

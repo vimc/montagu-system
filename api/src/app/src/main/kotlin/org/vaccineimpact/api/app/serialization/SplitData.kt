@@ -1,18 +1,25 @@
 package org.vaccineimpact.api.app.serialization
 
+import org.vaccineimpact.api.ContentTypes
 import java.io.OutputStream
 
 data class SplitData<out Metadata, DataRow : Any>(
         val structuredMetadata: Metadata,
         val tableData: DataTable<DataRow>
-)
+): StreamSerializable
 {
-    fun serialize(stream: OutputStream, serializer: Serializer)
+    override val contentType = ContentTypes.json
+
+    override fun serialize(stream: OutputStream, serializer: Serializer)
     {
         val metadata = serializer.toResult(structuredMetadata)
-        val writer = stream.writer()
-        writer.appendln(metadata)
-        writer.appendln("---")
+        stream.writer().let {
+            it.appendln(metadata)
+            it.appendln("---")
+            // We want to flush this writer, but we don't want to close the underlying stream, as there
+            // be more to write to it
+            it.flush()
+        }
         tableData.serialize(stream, serializer)
     }
 }
