@@ -8,15 +8,15 @@ import kotlin.reflect.KProperty1
 import kotlin.reflect.full.declaredMemberProperties
 import kotlin.reflect.full.primaryConstructor
 
-open class DataTable<T : Any>(val data: Iterable<T>, val type: KClass<T>): StreamSerializable
+class DataTableHeader<T>(name: String, val property: KProperty1<T, *>, serializer: Serializer)
+{
+    val name = serializer.convertFieldName(name)
+    override fun toString() = name
+}
+
+class DataTable<T : Any>(override val data: Iterable<T>, val type: KClass<T>): StreamSerializable<T>
 {
     override val contentType = ContentTypes.csv
-
-    class Header<T>(name: String, val property: KProperty1<T, *>, serializer: Serializer)
-    {
-        val name = serializer.convertFieldName(name)
-        override fun toString() = name
-    }
 
     override fun serialize(stream: OutputStream, serializer: Serializer)
     {
@@ -29,7 +29,7 @@ open class DataTable<T : Any>(val data: Iterable<T>, val type: KClass<T>): Strea
                 {
                     val asArray = headers
                             .map { it.property.get(line) }
-                            .map { serializeValue(it, serializer) }
+                            .map { serializer.serializeValue(it) }
                             .toTypedArray()
                     csv.writeNext(asArray, false)
                 }
@@ -40,36 +40,22 @@ open class DataTable<T : Any>(val data: Iterable<T>, val type: KClass<T>): Strea
         }
     }
 
-    private fun serializeValue(value: Any?, serializer: Serializer) = when (value)
+    private fun getHeaders(type: KClass<T>, serializer: Serializer): Iterable<DataTableHeader<T>>
     {
-        null -> noValue
-        is Enum<*> -> serializer.serializeEnum(value)
-        else -> value.toString()
-    }
-
-    private fun getHeaders(type: KClass<T>, serializer: Serializer): Iterable<Header<T>>
-    {
-        // We prefer to use the primary constructor parameters, if available, as they
-        // remember their order
-        val properties = type.declaredMemberProperties
+        // We assume headers are primary constructor parameters
         val constructor = type.primaryConstructor
-        if (constructor != null)
-        {
-            return constructor.parameters
-                    .map { it.name }
-                    .filterNotNull()
-                    .map { name -> Header(name, properties.single { name == it.name }, serializer) }
-        }
-        else
-        {
-            return properties.map { Header(it.name, it, serializer) }
-        }
+                ?: throw Exception("Data type must have a primary constructor.")
+
+        val properties = type.declaredMemberProperties
+
+        return constructor.parameters
+                .mapNotNull { it.name }
+                .map { name -> DataTableHeader(name, properties.single { name == it.name }, serializer) }
     }
 
     companion object
     {
         // Simple helper to get around JVM type erasure
         inline fun <reified R : Any> new(data: Iterable<R>) = DataTable(data, R::class)
-        const val noValue = "<NA>"
     }
 }

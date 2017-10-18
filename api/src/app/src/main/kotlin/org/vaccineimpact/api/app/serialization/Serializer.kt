@@ -14,6 +14,7 @@ open class Serializer
     companion object
     {
         val instance = Serializer()
+        const val noValue = "<NA>"
     }
 
     private val toDateStringSerializer = jsonSerializer<Any> {
@@ -77,6 +78,13 @@ open class Serializer
             else -> value.toString()
         }
         return text.toLowerCase().replace('_', '-')
+    }
+
+    fun serializeValue(value: Any?) = when (value)
+    {
+        null -> noValue
+        is Enum<*> -> serializeEnum(value)
+        else -> value.toString()
     }
 
     private fun mapGAVISupportLevel(value: GAVISupportLevel): String

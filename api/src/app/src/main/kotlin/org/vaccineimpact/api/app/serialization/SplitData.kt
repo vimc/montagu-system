@@ -6,9 +6,11 @@ import java.io.OutputStream
 data class SplitData<out Metadata, DataRow : Any>(
         val structuredMetadata: Metadata,
         val tableData: DataTable<DataRow>
-): StreamSerializable
+): StreamSerializable<DataRow>
 {
     override val contentType = ContentTypes.json
+
+    override val data = tableData.data
 
     override fun serialize(stream: OutputStream, serializer: Serializer)
     {
