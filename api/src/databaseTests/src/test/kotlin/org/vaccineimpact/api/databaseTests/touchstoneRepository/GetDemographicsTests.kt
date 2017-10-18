@@ -126,34 +126,6 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
     }
 
     @Test
-    fun `gets wide demographic data`()
-    {
-        given {
-
-             DemographicDummyData(it, touchstoneName, touchstoneVersion,
-                     source, numCountries = 2,
-                     variants = listOf("unwpp_estimates"))
-                    .withTouchstone()
-                    .withPopulation(yearRange = 1950..1955 step 5, ageRange = 10..15 step 5)
-
-        } check {
-
-            val all = it.getWideDemographicData("tot-pop", source, touchstoneId)
-            val data = all
-                    .tableData.data
-
-            val numAges = 2
-            val numCountries = 2
-
-            Assertions.assertThat(data.count()).isEqualTo(numAges * numCountries)
-            Assertions.assertThat(data.all{ it.valuesPerYear.keys.count() == 3
-                    && it.valuesPerYear.keys.contains(1950) &&
-                    it.valuesPerYear.keys.contains(1955) && it.valuesPerYear.keys.contains(1960)})
-
-        }
-    }
-
-    @Test
     fun `gets demographic data`()
     {
         given {
