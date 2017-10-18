@@ -7,10 +7,10 @@ import org.junit.Test
 import org.vaccineimpact.api.OneTimeAction
 import org.vaccineimpact.api.app.OneTimeLink
 import org.vaccineimpact.api.app.OneTimeLinkActionContext
-import org.vaccineimpact.api.app.controllers.ModellingGroupController
 import org.vaccineimpact.api.app.controllers.MontaguControllers
-import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
+import org.vaccineimpact.api.app.controllers.PasswordController
 import org.vaccineimpact.api.app.repositories.Repositories
+import org.vaccineimpact.api.app.repositories.UserRepository
 import org.vaccineimpact.api.test_helpers.MontaguTests
 import org.vaccineimpact.api.tests.mocks.asFactory
 
@@ -63,28 +63,28 @@ class OneTimeLinkTests : MontaguTests()
     fun `perform invokes callback with OneTimeLinkActionContext`()
     {
         // Mocks
-        val modelling = mock<ModellingGroupController>()
+        val modelling = mock<PasswordController>()
         val controllers = mock<MontaguControllers> {
-            on { modellingGroup } doReturn modelling
+            on { password } doReturn modelling
         }
         val repos =  mock<Repositories> {
-            on { modellingGroup } doReturn mock<ModellingGroupRepository>()
+            on { user } doReturn mock<UserRepository>()
         }
 
         // Object under test
-        val link = OneTimeLink(OneTimeAction.COVERAGE, mapOf(":key" to "value"), mapOf(":queryKey" to "queryValue"), "test.user")
+        val link = OneTimeLink(OneTimeAction.SET_PASSWORD, mapOf(":username" to "user"), mapOf(":queryKey" to "queryValue"), "test.user")
         link.perform(controllers, mock(), repos.asFactory())
 
         // Expectations
-        verify(modelling).getCoverageData(check {
+        verify(modelling).setPasswordForUser(check {
             if (it is OneTimeLinkActionContext)
             {
-                assertThat(it.params(":key")).isEqualTo("value")
+                assertThat(it.params(":username")).isEqualTo("user")
             }
             else
             {
                 fail("Expected $it to be ${OneTimeLinkActionContext::class.simpleName}")
             }
-        }, any())
+        }, any(), any())
     }
 }
