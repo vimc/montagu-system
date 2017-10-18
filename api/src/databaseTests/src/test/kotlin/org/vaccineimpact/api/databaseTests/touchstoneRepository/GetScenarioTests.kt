@@ -67,9 +67,9 @@ class GetScenarioTests : TouchstoneRepositoryTests()
             checkScenarioIsAsExpected(result.structuredMetadata)
             assertThat(result.tableData.data).containsExactlyElementsOf(listOf(
                     CoverageRow(scenarioId, "YF without", "YF", GAVISupportLevel.WITHOUT, ActivityType.CAMPAIGN,
-                            "AAA", 2000, 10.toDecimal(), 20.toDecimal(), "10-20", 100.toDecimal(), "50.50".toDecimalOrNull()),
+                            "AAA", "AAA-Name",2000, 10.toDecimal(), 20.toDecimal(), "10-20", 100.toDecimal(), "50.50".toDecimalOrNull()),
                     CoverageRow(scenarioId, "YF with", "YF", GAVISupportLevel.WITH, ActivityType.CAMPAIGN,
-                            "BBB", 2001, 11.toDecimal(), 21.toDecimal(), null, null, null)
+                            "BBB", "BBB-Name", 2001, 11.toDecimal(), 21.toDecimal(), null, null, null)
             ))
         }
     }

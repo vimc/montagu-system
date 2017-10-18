@@ -16,7 +16,7 @@ import org.vaccineimpact.api.emails.PasswordSetEmail
 import org.vaccineimpact.api.emails.getEmailManager
 import spark.route.HttpMethod
 
-class PasswordController(
+open class PasswordController(
         context: ControllerContext,
         val emailManager: EmailManager = getEmailManager()
 ) : AbstractController(context)
@@ -33,7 +33,7 @@ class PasswordController(
         return setPasswordForUser(context, repo, context.username!!)
     }
 
-    fun setPasswordForUser(context: ActionContext, repo: UserRepository, username: String): String
+    open fun setPasswordForUser(context: ActionContext, repo: UserRepository, username: String): String
     {
         val password = context.postData<SetPassword>().password
         repo.setPassword(username, password)

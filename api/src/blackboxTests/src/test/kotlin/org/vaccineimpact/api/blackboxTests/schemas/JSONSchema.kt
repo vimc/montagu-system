@@ -9,7 +9,7 @@ class JSONSchema(val schemaName: String) : Schema
 
     override fun validateResponse(response: String, contentType: String?)
     {
-        assertThat(contentType).contains("application/json")
+        assertThat(contentType).`as`("Content type").contains("application/json")
         validator.validateAgainstSchema(response, schemaName, wrappedInStandardResponseSchema = true)
     }
 

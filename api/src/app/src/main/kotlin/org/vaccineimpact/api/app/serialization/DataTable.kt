@@ -1,52 +1,46 @@
 package org.vaccineimpact.api.app.serialization
 
-import java.io.StringWriter
-import java.io.Writer
+import com.opencsv.CSVWriter
+import org.vaccineimpact.api.ContentTypes
+import java.io.OutputStream
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty1
 import kotlin.reflect.full.declaredMemberProperties
 import kotlin.reflect.full.primaryConstructor
 
-interface Serialisable<out T>
-{
-    fun serialize(serializer: Serializer): String
-    val data: Iterable<T>
-}
-
-class TableHeader<T>(name: String, val property: KProperty1<T, *>, serializer: Serializer)
+class DataTableHeader<T>(name: String, val property: KProperty1<T, *>, serializer: Serializer)
 {
     val name = serializer.convertFieldName(name)
     override fun toString() = name
 }
 
-class DataTable<T : Any>(override val data: Iterable<T>, val type: KClass<T>) : Serialisable<T>
+class DataTable<T : Any>(override val data: Iterable<T>, val type: KClass<T>): StreamSerializable<T>
 {
+    override val contentType = ContentTypes.csv
 
-    override fun serialize(serializer: Serializer): String
-    {
-        return StringWriter().use {
-            toCSV(it, serializer)
-            it.toString()
-        }
-    }
-
-    private fun toCSV(target: Writer, serializer: Serializer)
+    override fun serialize(stream: OutputStream, serializer: Serializer)
     {
         val headers = getHeaders(type, serializer)
-        MontaguCSVWriter(target).use { csv ->
-            csv.writeNext(headers.map { it.name }.toTypedArray())
-            for (line in data)
-            {
-                val asArray = headers
-                        .map { it.property.get(line) }
-                        .map { serializer.serializeValue(it) }
-                        .toTypedArray()
-                csv.writeNext(asArray, false)
+        stream.writer().let { writer ->
+            CSVWriter(writer).let { csv ->
+                val headerArray = headers.map { it.name }.toTypedArray()
+                csv.writeNext(headerArray, false)
+                for (line in data)
+                {
+                    val asArray = headers
+                            .map { it.property.get(line) }
+                            .map { serializer.serializeValue(it) }
+                            .toTypedArray()
+                    csv.writeNext(asArray, false)
+                }
             }
+            // We want to flush this writer, but we don't want to close the underlying stream, as there
+            // be more to write to it
+            writer.flush()
         }
     }
 
-    private fun getHeaders(type: KClass<T>, serializer: Serializer): Iterable<TableHeader<T>>
+    private fun getHeaders(type: KClass<T>, serializer: Serializer): Iterable<DataTableHeader<T>>
     {
         // We assume headers are primary constructor parameters
         val constructor = type.primaryConstructor
@@ -56,8 +50,7 @@ class DataTable<T : Any>(override val data: Iterable<T>, val type: KClass<T>) : 
 
         return constructor.parameters
                 .mapNotNull { it.name }
-                .map { name -> TableHeader(name, properties.single { name == it.name }, serializer) }
-
+                .map { name -> DataTableHeader(name, properties.single { name == it.name }, serializer) }
     }
 
     companion object

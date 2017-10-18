@@ -12,6 +12,8 @@ import org.vaccineimpact.api.db.Config
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import spark.Request
 import spark.Response
+import java.io.OutputStream
+import java.util.zip.GZIPOutputStream
 import kotlin.reflect.KClass
 
 open class DirectActionContext(private val context: SparkWebContext): ActionContext
@@ -82,4 +84,18 @@ open class DirectActionContext(private val context: SparkWebContext): ActionCont
         manager.getAll(false).singleOrNull()
     }
     override val username = userProfile?.id
+
+    override fun streamedResponse(contentType: String, work: (OutputStream) -> Unit)
+    {
+        addDefaultResponseHeaders(response, contentType)
+        val stream = response.raw().outputStream
+        GZIPOutputStream(stream, BUFFER_SIZE).use { zipStream ->
+            work(zipStream)
+        }
+    }
 }
+
+// https://stackoverflow.com/a/19032439/777939
+// This is the default buffer size for BufferedOutputStream; GZipOutputStream uses a smaller value
+// by default, and this leads to worse performance.
+private const val BUFFER_SIZE = 8000

@@ -10,6 +10,7 @@ import org.vaccineimpact.api.app.serialization.Serializer
 import org.vaccineimpact.api.models.TouchstoneStatus
 import org.vaccineimpact.api.models.helpers.FlexibleColumns
 import org.vaccineimpact.api.test_helpers.MontaguTests
+import org.vaccineimpact.api.test_helpers.serializeToStreamAndGetAsString
 import java.math.BigDecimal
 
 class DataTableTests : MontaguTests()
@@ -24,7 +25,7 @@ class DataTableTests : MontaguTests()
     fun `headers are written in order of constructor`()
     {
         val table = DataTable.new<ABC>(emptyList())
-        assertThat(serialize(table)).isEqualTo(""""a","b","c"""")
+        assertThat(serialize(table)).isEqualTo("""a,b,c""")
     }
 
     @Test
@@ -34,19 +35,33 @@ class DataTableTests : MontaguTests()
                 ABC("g", "h", "i"),
                 ABC("x", "y", "z")
         ))
-        assertThat(serialize(table)).isEqualTo(""""a","b","c"
-"g","h","i"
-"x","y","z"""")
+        assertThat(serialize(table)).isEqualTo("""a,b,c
+g,h,i
+x,y,z""")
     }
 
     @Test
-    fun `numbers are not quoted`()
+    fun `special characters are escaped`()
+    {
+        val table = DataTable.new(listOf(
+                ABC("g", "h", "i"),
+                ABC("x", "y", "z"),
+                ABC("with, commas", """with "quotes" and no commas""", """both "quotes" and ,commas,""")
+        ))
+        assertThat(serialize(table)).isEqualTo("""a,b,c
+g,h,i
+x,y,z
+"with, commas","with ""quotes"" and no commas","both ""quotes"" and ,commas,"""")
+    }
+
+    @Test
+    fun `mixed types are written out`()
     {
         val table = DataTable.new(listOf(
                 MixedTypes("text", 123, BigDecimal("3.1415"))
         ))
-        assertThat(serialize(table)).isEqualTo(""""text","int","dec"
-"text",123,3.1415""")
+        assertThat(serialize(table)).isEqualTo("""text,int,dec
+text,123,3.1415""")
     }
 
     @Test
@@ -55,8 +70,8 @@ class DataTableTests : MontaguTests()
         val table = DataTable.new(listOf(
                 MixedTypes(null, null, null)
         ))
-        assertThat(serialize(table)).isEqualTo(""""text","int","dec"
-NA,NA,NA""")
+        assertThat(serialize(table)).isEqualTo("""text,int,dec
+<NA>,<NA>,<NA>""")
     }
 
     @Test
@@ -65,8 +80,8 @@ NA,NA,NA""")
         val table = DataTable.new(listOf(
                 WithEnums("free text", TouchstoneStatus.IN_PREPARATION)
         ))
-        assertThat(serialize(table)).isEqualTo(""""text","enum"
-"free text","in-preparation"""")
+        assertThat(serialize(table)).isEqualTo("""text,enum
+free text,in-preparation""")
     }
 
 
@@ -207,7 +222,9 @@ NA,NA,NA""")
         }
     }
 
-    private fun serialize(table: DataTable<*>) = table.serialize(Serializer.instance).trim()
+    private fun serialize(table: DataTable<*>) = serializeToStreamAndGetAsString {
+        table.serialize(it, Serializer.instance)
+    }
 
     private fun checkValidationError(code: String, message: String? = null, body: () -> Any?)
     {

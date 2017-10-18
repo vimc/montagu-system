@@ -16,7 +16,6 @@ import org.vaccineimpact.api.db.toDecimal
 import org.vaccineimpact.api.models.BurdenEstimate
 import org.vaccineimpact.api.models.Touchstone
 import org.vaccineimpact.api.models.TouchstoneStatus
-import java.math.BigDecimal
 import java.time.Instant
 
 class UploadBurdenEstimateTests : ControllerTests<ModellingGroupController>()
@@ -44,7 +43,7 @@ class UploadBurdenEstimateTests : ControllerTests<ModellingGroupController>()
 
         val before = Instant.now()
         val controller = ModellingGroupController(mockControllerContext())
-        controller.addBurdenEstimate(mockActionContext(data), repo)
+        controller.addBurdenEstimates(mockActionContext(data), repo)
         val after = Instant.now()
         verify(touchstoneSet).get("touchstone-1")
         verify(repo).addBurdenEstimateSet(
@@ -66,7 +65,7 @@ class UploadBurdenEstimateTests : ControllerTests<ModellingGroupController>()
                 ))
         )
         val controller = ModellingGroupController(mockControllerContext())
-        assertThatThrownBy { controller.addBurdenEstimate(mockActionContext(data), mockRepository()) }
+        assertThatThrownBy { controller.addBurdenEstimates(mockActionContext(data), mockRepository()) }
                 .isInstanceOf(InconsistentDataError::class.java)
     }
 

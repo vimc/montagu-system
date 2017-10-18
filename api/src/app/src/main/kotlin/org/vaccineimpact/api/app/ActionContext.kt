@@ -4,6 +4,7 @@ import org.pac4j.core.profile.CommonProfile
 import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import spark.Request
+import java.io.OutputStream
 import kotlin.reflect.KClass
 
 interface ActionContext
@@ -28,10 +29,10 @@ interface ActionContext
     fun addResponseHeader(key: String, value: String): Unit
     fun addAttachmentHeader(filename: String): Unit
     fun setResponseStatus(status: Int): Unit
+    fun streamedResponse(contentType: String, work: (OutputStream) -> Unit): Unit
 
     fun hasPermission(requirement: ReifiedPermission): Boolean
     fun requirePermission(requirement: ReifiedPermission): Unit
-
 }
 
 inline fun <reified T: Any> ActionContext.postData() = this.postData(T::class.java)

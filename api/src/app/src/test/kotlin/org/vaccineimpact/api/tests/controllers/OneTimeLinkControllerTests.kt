@@ -6,13 +6,13 @@ import org.junit.Test
 import org.vaccineimpact.api.app.ActionContext
 import org.vaccineimpact.api.app.OneTimeLinkActionContext
 import org.vaccineimpact.api.app.controllers.ControllerContext
-import org.vaccineimpact.api.app.controllers.ModellingGroupController
 import org.vaccineimpact.api.app.controllers.MontaguControllers
 import org.vaccineimpact.api.app.controllers.OneTimeLinkController
+import org.vaccineimpact.api.app.controllers.PasswordController
 import org.vaccineimpact.api.app.errors.InvalidOneTimeLinkToken
-import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.TokenRepository
+import org.vaccineimpact.api.app.repositories.UserRepository
 import org.vaccineimpact.api.security.WebTokenHelper
 
 class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
@@ -50,26 +50,26 @@ class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
     @Test
     fun `performs action if token is valid`()
     {
-        val otherController = mock<ModellingGroupController>()
+        val otherController = mock<PasswordController>()
         val controller = makeController(
-                modellingGroupController = otherController,
+                passwordController = otherController,
                 claims = mapOf(
                         "sub" to WebTokenHelper.oneTimeActionSubject,
-                        "action" to "coverage",
-                        "payload" to ":group-id=gId&:touchstone-id=tId&:scenario-id=sId"
+                        "action" to "set-password",
+                        "payload" to ":username=test.user"
                 ),
                 repos = mock {
-                    on { modellingGroup } doReturn mock<ModellingGroupRepository>()
+                    on { user } doReturn mock<UserRepository>()
                 }
         )
         controller.onetimeLink(actionContext(), makeRepository())
-        verify(otherController).getCoverageData(any<OneTimeLinkActionContext>(), any())
+        verify(otherController).setPasswordForUser(any<OneTimeLinkActionContext>(), any(), any())
     }
 
     private fun makeController(
             helperAllowToken: Boolean = true,
             claims: Map<String, Any> = mapOf("sub" to WebTokenHelper.oneTimeActionSubject),
-            modellingGroupController: ModellingGroupController? = null,
+            passwordController: PasswordController? = null,
             repos: Repositories? = null
     )
             : OneTimeLinkController
@@ -79,9 +79,9 @@ class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
                 webTokenHelper = helper,
                 repositories = repos ?: mock()
         )
-        val otherController = modellingGroupController ?: mock<ModellingGroupController>()
+        val otherController = passwordController ?: mock()
         val otherControllers = mock<MontaguControllers> {
-            on { modellingGroup } doReturn otherController
+            on { password } doReturn otherController
         }
         return OneTimeLinkController(controllerContext, otherControllers)
     }

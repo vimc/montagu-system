@@ -16,6 +16,7 @@ import org.vaccineimpact.api.db.Tables.*
 import org.vaccineimpact.api.db.fieldsAsList
 import org.vaccineimpact.api.db.fromJoinPath
 import org.vaccineimpact.api.db.joinPath
+import org.vaccineimpact.api.db.tables.records.DemographicStatisticTypeRecord
 import org.vaccineimpact.api.db.tables.records.TouchstoneRecord
 import org.vaccineimpact.api.models.*
 import java.math.BigDecimal
@@ -153,6 +154,7 @@ class JooqTouchstoneRepository(dsl: DSLContext, private val scenarioRepository: 
         {
             selectQuery = selectQuery
                     .select(COVERAGE.fieldsAsList())
+                    .select(COUNTRY.NAME)
                     .select(SCENARIO_COVERAGE_SET.ORDER)
         }
         var fromQuery = selectQuery
@@ -164,6 +166,7 @@ class JooqTouchstoneRepository(dsl: DSLContext, private val scenarioRepository: 
         {
             // We don't mind if there are 0 rows of coverage data, so do a left join
             fromQuery = fromQuery.joinPath(COVERAGE_SET, COVERAGE, joinType = JoinType.LEFT_OUTER_JOIN)
+                    .joinPath(COVERAGE, COUNTRY,  joinType = JoinType.LEFT_OUTER_JOIN)
         }
         return fromQuery.where(TOUCHSTONE.ID.eq(touchstoneId))
     }
@@ -220,8 +223,6 @@ class JooqTouchstoneRepository(dsl: DSLContext, private val scenarioRepository: 
         // we are hard coding this here for now - need to revisit data model longer term
         val variantNames = listOf("unwpp_estimates", "unwpp_medium_variant", "wpp_cm_hybrid")
 
-        val countriesInTouchstone = countriesInTouchstone(touchstoneId)
-
         val touchstoneSources = dsl.select(DEMOGRAPHIC_SOURCE.ID, DEMOGRAPHIC_SOURCE.CODE.`as`("sourceCode"))
                 .fromJoinPath(DEMOGRAPHIC_SOURCE, DEMOGRAPHIC_DATASET, TOUCHSTONE_DEMOGRAPHIC_DATASET)
                 .join(DEMOGRAPHIC_STATISTIC_TYPE)
@@ -234,15 +235,15 @@ class JooqTouchstoneRepository(dsl: DSLContext, private val scenarioRepository: 
                 .from(DEMOGRAPHIC_VARIANT)
                 .where(DEMOGRAPHIC_VARIANT.CODE.`in`(variantNames))
 
-        val types = dsl.select(DEMOGRAPHIC_STATISTIC_TYPE.ID, DEMOGRAPHIC_STATISTIC_TYPE.GENDER_IS_APPLICABLE)
-                .from(DEMOGRAPHIC_STATISTIC_TYPE)
-                .where(DEMOGRAPHIC_STATISTIC_TYPE.CODE.eq(typeCode))
+        val statisticType = dsl.fetchOne(
+                DEMOGRAPHIC_STATISTIC_TYPE,
+                DEMOGRAPHIC_STATISTIC_TYPE.CODE.eq(typeCode)
+        ) ?: throw UnknownObjectError(typeCode, "demographic-statistic-type")
+        val genderId = getGenderId(statisticType, gender)
 
-        var selectQuery = dsl
+        return dsl
                 .with(TOUCHSTONE_SOURCES).`as`(touchstoneSources)
                 .with("v").`as`(variants)
-                .with("t").`as`(types)
-                .with("c").`as`(countriesInTouchstone)
                 .select(DEMOGRAPHIC_STATISTIC.AGE_FROM,
                         DEMOGRAPHIC_STATISTIC.AGE_TO,
                         DEMOGRAPHIC_STATISTIC.COUNTRY,
@@ -257,25 +258,29 @@ class JooqTouchstoneRepository(dsl: DSLContext, private val scenarioRepository: 
                 .on(GENDER.ID.eq(DEMOGRAPHIC_STATISTIC.GENDER))
                 .join(COUNTRY)
                 .on(COUNTRY.ID.eq(DEMOGRAPHIC_STATISTIC.COUNTRY))
-
-        // only select for given source and source in given touchstone
-        selectQuery = selectQuery.join(table(name(TOUCHSTONE_SOURCES)))
+                .join(TOUCHSTONE_COUNTRY)
+                .on(TOUCHSTONE_COUNTRY.COUNTRY.eq(DEMOGRAPHIC_STATISTIC.COUNTRY))
+                .join(table(name(TOUCHSTONE_SOURCES)))
                 .on(DEMOGRAPHIC_STATISTIC.DEMOGRAPHIC_SOURCE.eq(field(name(TOUCHSTONE_SOURCES, "id"), Int::class.java)))
+                .join(table(name("v")))
+                .on(DEMOGRAPHIC_STATISTIC.DEMOGRAPHIC_VARIANT.eq(field(name("v", "id"), Int::class.java)))
+                .where(DEMOGRAPHIC_STATISTIC.DEMOGRAPHIC_STATISTIC_TYPE.eq(statisticType.id))
+                .and(DEMOGRAPHIC_STATISTIC.GENDER.eq(genderId))
+                .and(TOUCHSTONE_COUNTRY.TOUCHSTONE.eq(touchstoneId))
+    }
 
-        // only select for the given type
-        selectQuery = selectQuery
-                .join(table(name("t")))
-                .on(DEMOGRAPHIC_STATISTIC.DEMOGRAPHIC_STATISTIC_TYPE.eq(field(name("t", "id"), Int::class.java)))
-
-        // if gender is not applicable for this statistic type, ignore passed genderCode parameter and match on "B"
-        val genderMatchesOrShouldBeDefault = (GENDER.CODE.eq("both")
-                .andNot(field(name("t", "gender_is_applicable"), Boolean::class.java)))
-                .or(GENDER.CODE.eq(gender))
-
-        return selectQuery
-                .where(genderMatchesOrShouldBeDefault)
-                .and(DEMOGRAPHIC_STATISTIC.DEMOGRAPHIC_VARIANT.`in`(variants))
-                .and(DEMOGRAPHIC_STATISTIC.COUNTRY.`in`(countriesInTouchstone))
+    private fun getGenderId(statisticType: DemographicStatisticTypeRecord, gender: String): Int
+    {
+        val genderFilter = if (statisticType[DEMOGRAPHIC_STATISTIC_TYPE.GENDER_IS_APPLICABLE])
+        {
+            GENDER.CODE.eq(gender)
+        }
+        else
+        {
+            GENDER.CODE.eq("both")
+        }
+        val gender = dsl.fetchOne(GENDER, genderFilter)
+        return gender.id
     }
 
     private fun getScenariosFromRecords(records: Result<Record>): List<Scenario>
@@ -324,6 +329,7 @@ class JooqTouchstoneRepository(dsl: DSLContext, private val scenarioRepository: 
             mapEnum(record[COVERAGE_SET.GAVI_SUPPORT_LEVEL]),
             mapEnum(record[COVERAGE_SET.ACTIVITY_TYPE]),
             record[COVERAGE.COUNTRY],
+            record[COUNTRY.NAME],
             record[COVERAGE.YEAR],
             record[COVERAGE.AGE_FROM],
             record[COVERAGE.AGE_TO],

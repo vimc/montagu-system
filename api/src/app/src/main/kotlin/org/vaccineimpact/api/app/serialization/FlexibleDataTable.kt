@@ -1,8 +1,9 @@
 package org.vaccineimpact.api.app.serialization
 
-import org.vaccineimpact.api.models.FlexibleProperty
-import java.io.StringWriter
-import java.io.Writer
+import com.opencsv.CSVWriter
+import org.vaccineimpact.api.ContentTypes
+import org.vaccineimpact.api.models.helpers.FlexibleProperty
+import java.io.OutputStream
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 import kotlin.reflect.KParameter
@@ -13,8 +14,10 @@ import kotlin.reflect.full.primaryConstructor
 class FlexibleDataTable<T : Any>(override val data: Iterable<T>,
                                  private val flexibleHeaders: Iterable<Any>,
                                  val type: KClass<T>)
-    : Serialisable<T>
+    : StreamSerializable<T>
 {
+    override val contentType = ContentTypes.csv
+
     private val constructor: KFunction<T> = type.primaryConstructor
             ?: throw Exception("Data type must have a primary constructor.")
 
@@ -37,35 +40,32 @@ class FlexibleDataTable<T : Any>(override val data: Iterable<T>,
                         "type Map<*, *>, where * can be whatever you like.")
     }
 
-    override fun serialize(serializer: Serializer): String
-    {
-        return StringWriter().use {
-            toCSV(it, serializer)
-            it.toString()
-        }
-    }
-
-    private fun toCSV(target: Writer, serializer: Serializer)
+    override fun serialize(stream: OutputStream, serializer: Serializer)
     {
         val headers = getHeaders(type, serializer)
         val flexibleHeaders = flexibleHeaders
 
-        MontaguCSVWriter(target).use { csv ->
+        stream.writer().let { writer ->
+            CSVWriter(writer).let { csv ->
 
-            val allHeaders = headers.map { it.name }.toTypedArray()
-                    .plus(flexibleHeaders.map { it.toString() })
+                val allHeaders = headers.map { it.name }.toTypedArray()
+                        .plus(flexibleHeaders.map { it.toString() })
 
-            csv.writeNext(allHeaders)
+                csv.writeNext(allHeaders, false)
 
-            for (line in data)
-            {
-                val allAsArray = allValuesAsArray(headers, line, serializer)
-                csv.writeNext(allAsArray, false)
+                for (line in data)
+                {
+                    val allAsArray = allValuesAsArray(headers, line, serializer)
+                    csv.writeNext(allAsArray, false)
+                }
             }
+            // We want to flush this writer, but we don't want to close the underlying stream, as there
+            // be more to write to it
+            writer.flush()
         }
     }
 
-    private fun allValuesAsArray(headers: Iterable<TableHeader<T>>, line: T, serializer: Serializer): Array<String>
+    private fun allValuesAsArray(headers: Iterable<DataTableHeader<T>>, line: T, serializer: Serializer): Array<String>
     {
         val basicValuesAsArray = headers
                 .map { it.property.get(line) }
@@ -86,7 +86,7 @@ class FlexibleDataTable<T : Any>(override val data: Iterable<T>,
         return map[key]
     }
 
-    private fun getHeaders(type: KClass<T>, serializer: Serializer): Iterable<TableHeader<T>>
+    private fun getHeaders(type: KClass<T>, serializer: Serializer): Iterable<DataTableHeader<T>>
     {
         // We assume headers are primary constructor parameters
         val constructor = type.primaryConstructor
@@ -95,7 +95,7 @@ class FlexibleDataTable<T : Any>(override val data: Iterable<T>,
         return constructor.parameters
                 .filter { it != flexibleParameter }
                 .mapNotNull { it.name }
-                .map { name -> TableHeader(name, properties.single { name == it.name }, serializer) }
+                .map { name -> DataTableHeader(name, properties.single { name == it.name }, serializer) }
 
     }
 

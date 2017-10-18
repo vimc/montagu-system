@@ -10,8 +10,10 @@ import org.vaccineimpact.api.app.serialization.DataTable
 import org.vaccineimpact.api.app.serialization.Serialisable
 import org.vaccineimpact.api.app.serialization.Serializer
 import org.vaccineimpact.api.app.serialization.SplitData
+import org.vaccineimpact.api.app.serialization.StreamSerializable
 import org.vaccineimpact.api.test_helpers.MontaguTests
-import java.io.Writer
+import org.vaccineimpact.api.test_helpers.serializeToStreamAndGetAsString
+import java.io.OutputStream
 
 class SplitDataTests : MontaguTests()
 {
@@ -21,11 +23,18 @@ class SplitDataTests : MontaguTests()
         val serializer = mock<Serializer> {
             on { it.toResult(any()) } doReturn "METADATA"
         }
-        val table = mock<Serialisable<Any>> {
-            on { it.serialize(any()) } doReturn "ROWS"
+        val table = mock<StreamSerializable<Any>> {
+            on { it.serialize(any(), any()) } doAnswer { invocationOnMock ->
+                val stream = invocationOnMock.getArgument<OutputStream>(0)
+                stream.bufferedWriter().use {
+                    writer -> writer.write("ROWS")
+                }
+            }
         }
         val data = SplitData(1, table)
-        val actual = data.serialize(serializer).trim()
+        val actual = serializeToStreamAndGetAsString { stream ->
+            data.serialize(stream, serializer)
+        }
         assertThat(actual).isEqualTo("METADATA\n---\nROWS")
     }
 }

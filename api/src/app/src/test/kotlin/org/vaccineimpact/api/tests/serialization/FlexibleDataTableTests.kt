@@ -4,8 +4,9 @@ import org.assertj.core.api.Assertions
 import org.junit.Test
 import org.vaccineimpact.api.app.serialization.FlexibleDataTable
 import org.vaccineimpact.api.app.serialization.Serializer
-import org.vaccineimpact.api.models.FlexibleProperty
+import org.vaccineimpact.api.models.helpers.FlexibleProperty
 import org.vaccineimpact.api.test_helpers.MontaguTests
+import org.vaccineimpact.api.test_helpers.serializeToStreamAndGetAsString
 
 class FlexibleDataTableTests : MontaguTests()
 {
@@ -17,7 +18,7 @@ class FlexibleDataTableTests : MontaguTests()
     fun `headers are written in order of constructor`()
     {
         val table = FlexibleDataTable.new<ABC>(listOf(), listOf())
-        Assertions.assertThat(serialize(table)).isEqualTo(""""a","b"""")
+        Assertions.assertThat(serialize(table)).isEqualTo("""a,b""")
     }
 
     @Test
@@ -25,7 +26,7 @@ class FlexibleDataTableTests : MontaguTests()
     {
         Assertions.assertThatThrownBy { FlexibleDataTable.new<XYZ>(listOf(), listOf()) }
                 .hasMessage("No property marked as flexible." +
-                " Use the DataTable class to serialise data with fixed headers.")
+                        " Use the DataTable class to serialise data with fixed headers.")
     }
 
     @Test
@@ -33,14 +34,14 @@ class FlexibleDataTableTests : MontaguTests()
     {
         Assertions.assertThatThrownBy { FlexibleDataTable.new<DEF>(listOf(), listOf()) }
                 .hasMessage("Properties marked as flexible must be of " +
-                "type Map<*, *>, where * can be whatever you like.")
+                        "type Map<*, *>, where * can be whatever you like.")
     }
 
     @Test
     fun `extra headers are written at the end`()
     {
         val table = FlexibleDataTable.new<ABC>(listOf(), listOf("extra1", "extra2"))
-        Assertions.assertThat(serialize(table)).isEqualTo(""""a","b","extra1","extra2"""")
+        Assertions.assertThat(serialize(table)).isEqualTo("""a,b,extra1,extra2""")
     }
 
     @Test
@@ -52,11 +53,12 @@ class FlexibleDataTableTests : MontaguTests()
         )
         val table = FlexibleDataTable.new<ABC>(data, listOf("extra1", "extra2"))
 
-        Assertions.assertThat(serialize(table)).isEqualTo(""""a","b","extra1","extra2"
-"g","h","i","j"
-"x","y","z","w"""")
+        Assertions.assertThat(serialize(table)).isEqualTo("""a,b,extra1,extra2
+g,h,i,j
+x,y,z,w""")
     }
 
-    private fun serialize(table: FlexibleDataTable<*>) = table.serialize(Serializer.instance).trim()
-
+    private fun serialize(table: FlexibleDataTable<*>) = serializeToStreamAndGetAsString {
+        table.serialize(it, Serializer.instance)
+    }
 }

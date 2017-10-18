@@ -14,6 +14,7 @@ open class Serializer
     companion object
     {
         val instance = Serializer()
+        const val noValue = "<NA>"
     }
 
     private val toDateStringSerializer = jsonSerializer<Any> {
@@ -81,7 +82,7 @@ open class Serializer
 
     fun serializeValue(value: Any?) = when (value)
     {
-        null -> MontaguCSVWriter.Companion.NoValue
+        null -> noValue
         is Enum<*> -> serializeEnum(value)
         else -> value.toString()
     }
