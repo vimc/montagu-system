@@ -78,12 +78,12 @@ class TouchstoneController(context: ControllerContext) : AbstractController(cont
 
         return if (format == "wide")
         {
-            SplitData<DemographicDataForTouchstone, DemographicRow>(splitData.structuredMetadata,
+            SplitData<DemographicDataForTouchstone, WideDemographicRow>(splitData.structuredMetadata,
                     getWideDemographicDatatable(splitData.tableData.data))
         }
         else
         {
-            SplitData<DemographicDataForTouchstone, DemographicRow>(splitData.structuredMetadata,
+            SplitData<DemographicDataForTouchstone, LongDemographicRow>(splitData.structuredMetadata,
                     splitData.tableData)
         }
     }
