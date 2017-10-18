@@ -9,9 +9,9 @@ import org.vaccineimpact.api.test_helpers.MontaguTests
 
 class FlexibleDataTableTests : MontaguTests()
 {
-    data class ABC(val a: String, val b: String, @property: FlexibleProperty val c: Map<String, String>)
+    data class ABC(val a: String, val b: String, @FlexibleProperty val c: Map<String, String>)
     data class XYZ(val x: String, val y: String, val z: Map<String, String>)
-    data class DEF(val d: String, val e: String, @property: FlexibleProperty val f: String)
+    data class DEF(val d: String, val e: String, @FlexibleProperty val f: String)
 
     @Test
     fun `headers are written in order of constructor`()

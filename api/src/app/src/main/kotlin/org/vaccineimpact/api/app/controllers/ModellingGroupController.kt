@@ -157,7 +157,7 @@ open class ModellingGroupController(context: ControllerContext)
             .filter { it.name == "modelling-groups.manage-members" }
             .map { it.scope }
 
-    open fun addBurdenEstimate(context: ActionContext, estimateRepository: BurdenEstimateRepository): String
+    fun addBurdenEstimate(context: ActionContext, estimateRepository: BurdenEstimateRepository): String
     {
         // First check if we're allowed to see this touchstone
         val path = getValidResponsibilityPath(context, estimateRepository)

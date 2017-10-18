@@ -19,7 +19,7 @@ class TableHeader<T>(name: String, val property: KProperty1<T, *>, serializer: S
     override fun toString() = name
 }
 
-class DataTable<T : Any>(override val data: Iterable<T>, val type: KClass<T>): Serialisable<T>
+class DataTable<T : Any>(override val data: Iterable<T>, val type: KClass<T>) : Serialisable<T>
 {
 
     override fun serialize(serializer: Serializer): String
@@ -48,21 +48,16 @@ class DataTable<T : Any>(override val data: Iterable<T>, val type: KClass<T>): S
 
     private fun getHeaders(type: KClass<T>, serializer: Serializer): Iterable<TableHeader<T>>
     {
-        // We prefer to use the primary constructor parameters, if available, as they
-        // remember their order
-        val properties = type.declaredMemberProperties
+        // We assume headers are primary constructor parameters
         val constructor = type.primaryConstructor
-        if (constructor != null)
-        {
-            return constructor.parameters
-                    .map { it.name }
-                    .filterNotNull()
-                    .map { name -> TableHeader(name, properties.single { name == it.name }, serializer) }
-        }
-        else
-        {
-            return properties.map { TableHeader(it.name, it, serializer) }
-        }
+                ?: throw Exception("Data type must have a primary constructor.")
+
+        val properties = type.declaredMemberProperties
+
+        return constructor.parameters
+                .mapNotNull { it.name }
+                .map { name -> TableHeader(name, properties.single { name == it.name }, serializer) }
+
     }
 
     companion object

@@ -7,6 +7,7 @@ import com.nhaarman.mockito_kotlin.mock
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.vaccineimpact.api.app.serialization.DataTable
+import org.vaccineimpact.api.app.serialization.Serialisable
 import org.vaccineimpact.api.app.serialization.Serializer
 import org.vaccineimpact.api.app.serialization.SplitData
 import org.vaccineimpact.api.test_helpers.MontaguTests
@@ -20,7 +21,7 @@ class SplitDataTests : MontaguTests()
         val serializer = mock<Serializer> {
             on { it.toResult(any()) } doReturn "METADATA"
         }
-        val table = mock<DataTable<Any>> {
+        val table = mock<Serialisable<Any>> {
             on { it.serialize(any()) } doReturn "ROWS"
         }
         val data = SplitData(1, table)
