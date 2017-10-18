@@ -89,11 +89,28 @@ class JooqBurdenEstimateRepository(
                                   outcomeLookup: Map<String, Int>, cohortSizeId: Int,
                                   expectedDisease: String)
     {
+        val countries = dsl.select(COUNTRY.ID)
+                .from(COUNTRY)
+                .fetch()
+                .map { it[COUNTRY.ID] }
+                .toHashSet()
+
+        val constraints = BURDEN_ESTIMATE.references.map { it.constraint() }
+        for (constraint in constraints)
+        {
+            dsl.alterTable(BURDEN_ESTIMATE).drop(constraint).execute()
+        }
+
         val records = estimates.asSequence().flatMap { estimate ->
             if (estimate.disease != expectedDisease)
             {
                 throw InconsistentDataError("Provided estimate lists disease as '${estimate.disease}' but scenario is for disease '$expectedDisease'")
             }
+            if (estimate.country !in countries)
+            {
+                throw UnknownObjectError(estimate.country, "country")
+            }
+
             val cohortSize = newBurdenEstimateRecord(setId, estimate, cohortSizeId,
                     estimate.cohortSize)
 
@@ -125,6 +142,11 @@ class JooqBurdenEstimateRepository(
                                   (burden_estimate_set, country, year, age, stochastic, burden_outcome, value)
                                   FROM STDIN""", stream)
             }
+        }
+
+        for (constraint in constraints)
+        {
+            dsl.alterTable(BURDEN_ESTIMATE).add(constraint).execute()
         }
     }
 
