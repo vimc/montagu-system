@@ -1,6 +1,6 @@
 package org.vaccineimpact.api.app.serialization
 
-data class SplitData<out Metadata, DataRow : Any>(
+data class SplitData<out Metadata, out DataRow : Any>(
         val structuredMetadata: Metadata,
         val tableData: Serialisable<DataRow>
 )

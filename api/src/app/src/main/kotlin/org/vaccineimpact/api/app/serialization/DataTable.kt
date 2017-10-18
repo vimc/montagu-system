@@ -7,7 +7,7 @@ import kotlin.reflect.KProperty1
 import kotlin.reflect.full.declaredMemberProperties
 import kotlin.reflect.full.primaryConstructor
 
-interface Serialisable<T>
+interface Serialisable<out T>
 {
     fun serialize(serializer: Serializer): String
     val data: Iterable<T>

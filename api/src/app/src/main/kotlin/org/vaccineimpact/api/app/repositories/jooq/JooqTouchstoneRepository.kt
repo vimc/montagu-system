@@ -26,7 +26,7 @@ class JooqTouchstoneRepository(dsl: DSLContext, private val scenarioRepository: 
     override fun getDemographicData(statisticTypeCode: String,
                                     source: String,
                                     touchstoneId: String,
-                                    gender: String): SplitData<DemographicDataForTouchstone, DemographicRow>
+                                    gender: String): SplitData<DemographicDataForTouchstone, LongDemographicRow>
     {
         val touchstone = touchstones.get(touchstoneId)
 
@@ -49,43 +49,7 @@ class JooqTouchstoneRepository(dsl: DSLContext, private val scenarioRepository: 
             mapDemographicRow(it)
         }
 
-        return SplitData(metadata, DataTable.new(rows))
-    }
-
-
-    override fun getWideDemographicData(statisticTypeCode: String,
-                               source: String,
-                               touchstoneId: String,
-                               gender: String): SplitData<DemographicDataForTouchstone, WideDemographicRow>
-    {
-        val touchstone = touchstones.get(touchstoneId)
-
-        val statType = getDemographicStatisticType(statisticTypeCode)
-                .fetchAny() ?: throw UnknownObjectError(statisticTypeCode, "demographic-statistic-type")
-
-        val records = getDemographicStatistics(
-                touchstoneId,
-                statisticTypeCode,
-                source,
-                gender)
-                .orderBy(DEMOGRAPHIC_STATISTIC.COUNTRY, DEMOGRAPHIC_STATISTIC.AGE_FROM)
-                .fetch()
-
-        val groupedRows = records
-                .groupBy { "${it[DEMOGRAPHIC_STATISTIC.COUNTRY]} ${it[DEMOGRAPHIC_STATISTIC.AGE_FROM]} " +
-                        "${it[DEMOGRAPHIC_STATISTIC.AGE_TO]}" }
-
-        val metadata = mapDemographicMetadata(statType, records, touchstone)
-
-         val rows = groupedRows.values
-                .map {
-                    mapWideDemographicRow(it)
-                }
-
-        // all the rows should have the same number of years, so we just look at the first row
-        val years = rows.first().valuesPerYear.keys.toList()
-
-        return SplitData(metadata, FlexibleDataTable.new(rows, years))
+        return SplitData<DemographicDataForTouchstone, LongDemographicRow>(metadata, DataTable.new(rows))
     }
 
     private fun mapDemographicMetadata(statType: Record,
@@ -368,7 +332,7 @@ class JooqTouchstoneRepository(dsl: DSLContext, private val scenarioRepository: 
             record[COVERAGE.COVERAGE_]
     )
 
-    private fun mapDemographicRow(record: Record) = DemographicRow(
+    private fun mapDemographicRow(record: Record) = LongDemographicRow(
             record[COUNTRY.NID],
             record[DEMOGRAPHIC_STATISTIC.COUNTRY],
             record[COUNTRY.NAME],
@@ -379,22 +343,4 @@ class JooqTouchstoneRepository(dsl: DSLContext, private val scenarioRepository: 
             record[DEMOGRAPHIC_STATISTIC.VALUE]
     )
 
-    private fun mapWideDemographicRow(records: List<Record9<Int, Int, String, Int, String, Int, BigDecimal, String, String>>)
-            : WideDemographicRow
-    {
-        // all records have same country, gender, age_from and age_to, so can look at first one for these
-        val reference = records.first()
-
-        val valuesPerYear = records.associateBy(
-                { it[DEMOGRAPHIC_STATISTIC.YEAR] },
-                { it[DEMOGRAPHIC_STATISTIC.VALUE] })
-
-        return WideDemographicRow(reference[COUNTRY.NID],
-                reference[DEMOGRAPHIC_STATISTIC.COUNTRY],
-                reference[COUNTRY.NAME],
-                reference[DEMOGRAPHIC_STATISTIC.AGE_FROM],
-                reference[DEMOGRAPHIC_STATISTIC.AGE_TO],
-                reference[GENDER.NAME],
-                valuesPerYear)
-    }
 }

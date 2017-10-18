@@ -11,8 +11,7 @@ interface TouchstoneRepository : Repository
     fun getScenario(touchstoneId: String, scenarioDescId: String): ScenarioAndCoverageSets
     fun getScenarioAndCoverageData(touchstoneId: String, scenarioDescId: String): SplitData<ScenarioAndCoverageSets, CoverageRow>
     fun getDemographicDatasets(touchstoneId: String): List<DemographicDataset>
-    fun getWideDemographicData(statisticTypeCode: String, source: String, touchstoneId: String,
-                               gender: String = "both"): SplitData<DemographicDataForTouchstone, WideDemographicRow>
     fun getDemographicData(statisticTypeCode: String, source: String, touchstoneId: String,
-                           gender: String = "both"): SplitData<DemographicDataForTouchstone, DemographicRow>
+                           gender: String = "both"): SplitData<DemographicDataForTouchstone, LongDemographicRow>
+
 }
