@@ -24,7 +24,7 @@ data class DemographicDataForTouchstone(
         val demographicData: DemographicMetadata
 )
 
-data class DemographicRow(
+data class LongDemographicRow(
         val countryCodeNumeric: Int,
         val countryCode: String,
         val country: String,
@@ -33,7 +33,7 @@ data class DemographicRow(
         val year: Int,
         val gender: String,
         val value: BigDecimal
-)
+) : DemographicRow
 
 data class WideDemographicRow(
         val countryCodeNumeric: Int,
@@ -44,4 +44,6 @@ data class WideDemographicRow(
         val gender: String,
         @FlexibleProperty
         val valuesPerYear: Map<Int, BigDecimal>
-)
+): DemographicRow
+
+interface DemographicRow
