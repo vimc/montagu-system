@@ -10,6 +10,7 @@ import org.vaccineimpact.api.app.serialization.Serializer
 import org.vaccineimpact.api.models.TouchstoneStatus
 import org.vaccineimpact.api.models.helpers.FlexibleColumns
 import org.vaccineimpact.api.test_helpers.MontaguTests
+import org.vaccineimpact.api.test_helpers.serializeToStreamAndGetAsString
 import java.math.BigDecimal
 
 class DataTableTests : MontaguTests()
@@ -221,7 +222,9 @@ free text,in-preparation""")
         }
     }
 
-    private fun serialize(table: DataTable<*>) = table.serialize(Serializer.instance).trim()
+    private fun serialize(table: DataTable<*>) = serializeToStreamAndGetAsString {
+        table.serialize(it, Serializer.instance)
+    }
 
     private fun checkValidationError(code: String, message: String? = null, body: () -> Any?)
     {

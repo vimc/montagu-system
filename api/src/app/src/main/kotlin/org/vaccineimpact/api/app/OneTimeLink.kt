@@ -3,6 +3,7 @@ package org.vaccineimpact.api.app
 import org.vaccineimpact.api.Deserializer
 import org.vaccineimpact.api.OneTimeAction
 import org.vaccineimpact.api.app.controllers.MontaguControllers
+import org.vaccineimpact.api.app.controllers.endpoints.stream
 import org.vaccineimpact.api.app.repositories.RepositoryFactory
 
 data class OneTimeLink(val action: OneTimeAction,
@@ -27,9 +28,9 @@ data class OneTimeLink(val action: OneTimeAction,
             repoFactory.inTransaction { repos ->
                 when (action)
                 {
-                    OneTimeAction.BURDENS -> controllers.modellingGroup.postBurdenEstimates(context, repos.burdenEstimates)
-                    OneTimeAction.COVERAGE -> controllers.modellingGroup.getCoverageData(context, repos.modellingGroup)
-                    OneTimeAction.DEMOGRAPHY -> controllers.touchstone.getDemographicData(context, repos.touchstone)
+                    OneTimeAction.BURDENS -> controllers.modellingGroup.addBurdenEstimatesFromHTMLForm(context, repos.burdenEstimates)
+                    OneTimeAction.COVERAGE -> stream(controllers.modellingGroup.getCoverageData(context, repos.modellingGroup), context)
+                    OneTimeAction.DEMOGRAPHY -> stream(controllers.touchstone.getDemographicData(context, repos.touchstone), context)
                     OneTimeAction.SET_PASSWORD -> controllers.password.setPasswordForUser(context, repos.user, context.params("username"))
                 }
             }

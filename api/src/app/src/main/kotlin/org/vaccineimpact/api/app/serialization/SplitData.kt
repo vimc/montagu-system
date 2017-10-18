@@ -1,16 +1,25 @@
 package org.vaccineimpact.api.app.serialization
 
+import org.vaccineimpact.api.ContentTypes
+import java.io.OutputStream
+
 data class SplitData<out Metadata, DataRow : Any>(
         val structuredMetadata: Metadata,
         val tableData: DataTable<DataRow>
-)
+): StreamSerializable
 {
-    // TODO: https://vimc.myjetbrains.com/youtrack/issue/VIMC-307
-    // Use streams to speed up this process of sending large data
-    fun serialize(serializer: Serializer): String
+    override val contentType = ContentTypes.json
+
+    override fun serialize(stream: OutputStream, serializer: Serializer)
     {
         val metadata = serializer.toResult(structuredMetadata)
-        val data = tableData.serialize(serializer)
-        return "$metadata\n---\n$data"
+        stream.writer().let {
+            it.appendln(metadata)
+            it.appendln("---")
+            // We want to flush this writer, but we don't want to close the underlying stream, as there
+            // be more to write to it
+            it.flush()
+        }
+        tableData.serialize(stream, serializer)
     }
 }
