@@ -67,8 +67,8 @@ class JooqTouchstoneRepository(dsl: DSLContext, private val scenarioRepository: 
                 .fetch()
 
         val groupedRows = records
-                .groupBy { it[DEMOGRAPHIC_STATISTIC.COUNTRY] + it[DEMOGRAPHIC_STATISTIC.AGE_FROM]
-                    + it[DEMOGRAPHIC_STATISTIC.AGE_TO] }
+                .groupBy { "${it[DEMOGRAPHIC_STATISTIC.COUNTRY]} ${it[DEMOGRAPHIC_STATISTIC.AGE_FROM]} " +
+                        "${it[DEMOGRAPHIC_STATISTIC.AGE_TO]}" }
 
          val rows = groupedRows.values
                 .map {

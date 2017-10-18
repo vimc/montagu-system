@@ -130,7 +130,9 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
     {
         given {
 
-             DemographicDummyData(it, touchstoneName, touchstoneVersion, source, numCountries = 2)
+             DemographicDummyData(it, touchstoneName, touchstoneVersion,
+                     source, numCountries = 2,
+                     variants = listOf("unwpp_estimates"))
                     .withTouchstone()
                     .withPopulation(yearRange = 1950..1955 step 5, ageRange = 10..15 step 5)
 
@@ -141,7 +143,6 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
                     .tableData.data
 
             val numAges = 2
-
             val numCountries = 2
 
             Assertions.assertThat(data.count()).isEqualTo(numAges * numCountries)
