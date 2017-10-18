@@ -12,6 +12,7 @@ import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.db.Tables.*
 import org.vaccineimpact.api.db.fromJoinPath
 import org.vaccineimpact.api.db.joinPath
+import org.vaccineimpact.api.db.tables.records.BurdenEstimateRecord
 import org.vaccineimpact.api.models.BurdenEstimate
 import org.vaccineimpact.api.models.ResponsibilitySetStatus
 import java.beans.ConstructorProperties
@@ -85,8 +86,6 @@ class JooqBurdenEstimateRepository(
                                   outcomeLookup: Map<String, Int>, cohortSizeId: Int,
                                   expectedDisease: String)
     {
-        dsl.query("select top 0 * into #temp from burden_estimate").execute()
-
         val records = estimates.asSequence().flatMap { estimate ->
             if (estimate.disease != expectedDisease)
             {
@@ -105,12 +104,20 @@ class JooqBurdenEstimateRepository(
         }
         val t = BURDEN_ESTIMATE
         val iterator = records.iterator()
-        var statement = dsl.insertInto("#temp",
+        var statement = dsl.insertInto(t,
                 t.BURDEN_ESTIMATE_SET, t.COUNTRY, t.YEAR, t.AGE, t.STOCHASTIC, t.BURDEN_OUTCOME, t.VALUE)
         while (iterator.hasNext())
         {
             val row = iterator.next()
-            statement.values(row[0] as Int, row[1] as String, row[2] as Int, row[3] as Int, row[4] as Boolean, row[5] as Int, row[6] as BigDecimal?)
+            statement.values(
+                    row[t.BURDEN_ESTIMATE_SET],
+                    row[t.COUNTRY],
+                    row[t.YEAR],
+                    row[t.AGE],
+                    row[t.STOCHASTIC],
+                    row[t.BURDEN_OUTCOME],
+                    row[t.VALUE]
+            )
         }
         statement.execute()
     }
@@ -120,17 +127,17 @@ class JooqBurdenEstimateRepository(
             estimate: BurdenEstimate,
             outcomeId: Int,
             outcomeValue: BigDecimal?
-    ): Array<Any?>
+    ): BurdenEstimateRecord
     {
-        return arrayOf(
-            setId,
-            estimate.country,
-            estimate.year,
-            estimate.age,
-            false,
-            outcomeId,
-            outcomeValue
-        )
+        return dsl.newRecord(BURDEN_ESTIMATE).apply {
+            burdenEstimateSet = setId
+            country = estimate.country
+            year = estimate.year
+            age = estimate.age
+            stochastic = false
+            burdenOutcome = outcomeId
+            value = outcomeValue
+        }
     }
 
     private fun addSet(responsibilityId: Int, uploader: String, timestamp: Instant, modelVersion: Int): Int
