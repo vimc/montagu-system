@@ -3,7 +3,7 @@
 
 export type ActivityType = "none" | "routine" | "campaign" | "campaign-reactive";
 
-export type GAVISupportLevel = "no vaccine" | "no gavi" | "total";
+export type GAVISupportLevel = "no vaccine" | "no gavi" | "total" | "hold2010" | "bestminus";
 
 export interface CoverageSet {
     activity_type: ActivityType;
@@ -19,12 +19,13 @@ export interface Disease {
     name: string;
 }
 
-export interface DemographicStatisticType {
-    countries: string[];
+export interface DemographicDataset {
+    countries: string[]; //deprecated
     gender_is_applicable: boolean;
     id: string;
     name: string;
-    sources: string[];
+    source: string;
+    sources: string[]; //deprecated
 }
 
 export interface ModellingGroup {

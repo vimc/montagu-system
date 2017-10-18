@@ -170,14 +170,15 @@ export function mockArtefact(properties?: Partial<Artefact>): Artefact {
     return Object.assign(template, properties);
 }
 
-export function mockDemographicStatisticType(properties?: Partial<models.DemographicStatisticType>): models.DemographicStatisticType {
+export function mockDemographicDataset(properties?: Partial<models.DemographicDataset>): models.DemographicDataset {
     counter++;
-    const template: models.DemographicStatisticType = {
+    const template: models.DemographicDataset = {
         id: "type-" + counter,
         name: "Type " + counter,
         gender_is_applicable: true,
-        countries: [ "AFG", "AGO" ],
-        sources: [ "source1", "source2" ]
+        countries: [  ],
+        sources: [ "source1" ],
+        source: "source1"
     };
     return Object.assign(template, properties);
 }

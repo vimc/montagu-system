@@ -4,7 +4,7 @@ import { checkPromise } from "../test/testHelpers";
 import { Client, QueryResult } from "pg";
 import { responsibilityStore } from "../main/contrib/stores/ResponsibilityStore";
 import {
-    DemographicStatisticType,
+    DemographicDataset,
     Disease,
     ModellingGroup,
     Responsibilities,
@@ -165,13 +165,14 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
                     touchstoneActions.setCurrentTouchstone(touchstoneId);
                     return demographicStore.fetchDataSets();
                 });
-            checkPromise(done, promise, (dataSets: DemographicStatisticType[]) => {
-                expectIsEqual<DemographicStatisticType[]>(dataSets, [
+            checkPromise(done, promise, (dataSets: DemographicDataset[]) => {
+                expectIsEqual<DemographicDataset[]>(dataSets, [
                     {
                         id: "statistic",
                         name: "Some statistic",
-                        countries: ["ATL"],
                         gender_is_applicable: false,
+                        source: "source",
+                        countries: [],
                         sources: ["source"]
                     }
                 ]);
@@ -293,6 +294,7 @@ function addDemographicDataSets(db: Client): Promise<QueryResult> {
                 DECLARE variant_id integer;
                 DECLARE unit_id integer;
                 DECLARE type_id integer;
+                DECLARE dataset_id integer;
             BEGIN
                 INSERT INTO country (id, name) VALUES ('ATL', 'Atlantis');
                 INSERT INTO disease (id, name) VALUES ('yf', 'Yellow Fever');
@@ -310,8 +312,12 @@ function addDemographicDataSets(db: Client): Promise<QueryResult> {
                 VALUES ('statistic', 'Some statistic',     variant_id,                unit_id,                false,            'people',            5,   '2017-01-01')
                 RETURNING id INTO type_id;
                 
-                INSERT INTO touchstone_demographic_source (touchstone, demographic_source)
-                VALUES ('${touchstoneId}', source_id);
+                INSERT INTO demographic_dataset (demographic_source, demographic_statistic_type, description)
+                VALUES (source_id, type_id, 'some dataset')
+                RETURNING id into dataset_id;
+                
+                INSERT INTO touchstone_demographic_dataset (touchstone, demographic_dataset)
+                VALUES ('${touchstoneId}', dataset_id);
                 
                 INSERT INTO touchstone_country (touchstone, country, disease)
                 VALUES ('${touchstoneId}', 'ATL', 'yf');

@@ -1,11 +1,11 @@
 import { Source } from "../../shared/sources/Source";
 import { DemographicState } from "../stores/DemographicStore";
-import { DemographicStatisticType } from "../../shared/models/Generated";
+import { DemographicDataset } from "../../shared/models/Generated";
 import { demographicActions } from "../actions/DemographicActions";
 import SourceModel = AltJS.SourceModel;
 
 export class DemographicSource extends Source<DemographicState> {
-    fetchDataSets: () => SourceModel<DemographicStatisticType[]>;
+    fetchDataSets: () => SourceModel<DemographicDataset[]>;
     _fetchOneTimeToken: () => SourceModel<string>;
 
     constructor() {
@@ -17,7 +17,7 @@ export class DemographicSource extends Source<DemographicState> {
         });
         this._fetchOneTimeToken = () => this.doFetch(s => {
             const dataSet = s.selectedDataSet;
-            const source = s.selectedSource;
+            const source = s.selectedDataSet.source;
             const type = dataSet.id;
             let url = `/touchstones/${s.currentTouchstone}/demographics/${source}/${type}/get_onetime_link/`;
             if (dataSet.gender_is_applicable) {

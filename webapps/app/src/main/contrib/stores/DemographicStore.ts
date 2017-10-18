@@ -1,5 +1,5 @@
 import { ILookup } from "../../shared/models/Lookup";
-import { DemographicStatisticType } from "../../shared/models/Generated";
+import { DemographicDataset } from "../../shared/models/Generated";
 import { AbstractStore } from "../../shared/stores/AbstractStore";
 import { alt } from "../../shared/alt";
 import { touchstoneActions } from "../actions/TouchstoneActions";
@@ -8,25 +8,23 @@ import StoreModel = AltJS.StoreModel;
 import { DemographicSource } from "../sources/DemographicSource";
 
 export interface DemographicState {
-    dataSets: ILookup<DemographicStatisticType[]>;
+    dataSets: ILookup<DemographicDataset[]>;
     currentTouchstone: string;
-    selectedDataSet: DemographicStatisticType;
+    selectedDataSet: DemographicDataset;
     selectedGender: string;
-    selectedSource: string;
     token: string
 }
 
 export interface DemographicStoreInterface extends AltJS.AltStore<DemographicState> {
-    fetchDataSets(): Promise<DemographicStatisticType[]>;
+    fetchDataSets(): Promise<DemographicDataset[]>;
     fetchOneTimeToken(): Promise<string>;
 }
 
 class DemographicStore extends AbstractStore<DemographicState, DemographicStoreInterface> {
-    dataSets: ILookup<DemographicStatisticType[]>;
+    dataSets: ILookup<DemographicDataset[]>;
     currentTouchstone: string;
-    selectedDataSet: DemographicStatisticType;
+    selectedDataSet: DemographicDataset;
     selectedGender: string;
-    selectedSource: string;
     token: string;
 
     constructor() {
@@ -38,7 +36,6 @@ class DemographicStore extends AbstractStore<DemographicState, DemographicStoreI
             handleUpdateDataSets: demographicActions.update,
 
             handleSelectDataSet: demographicActions.selectDataSet,
-            handleSelectSource: demographicActions.selectSource,
             handleSelectGender: demographicActions.selectGender,
 
             handleBeginFetchToken: demographicActions.beginFetchToken,
@@ -48,7 +45,7 @@ class DemographicStore extends AbstractStore<DemographicState, DemographicStoreI
         this.registerAsync(new DemographicSource());
         this.exportPublicMethods({
             fetchOneTimeToken: () => {
-                if (this.selectedDataSet != null && this.selectedSource) {
+                if (this.selectedDataSet != null && this.selectedDataSet.source) {
                     return (this.getInstance() as any)._fetchOneTimeToken();
                 } else {
                     return Promise.reject("Cannot fetch token without selecting all options first");
@@ -63,7 +60,6 @@ class DemographicStore extends AbstractStore<DemographicState, DemographicStoreI
             currentTouchstone: null,
             selectedDataSet: null,
             selectedGender: "both",
-            selectedSource: "",
             token: null,
         };
     }
@@ -74,7 +70,7 @@ class DemographicStore extends AbstractStore<DemographicState, DemographicStoreI
     handleBeginFetchDataSets() {
         delete this.dataSets[this.currentTouchstone];
     }
-    handleUpdateDataSets(dataSets: DemographicStatisticType[]) {
+    handleUpdateDataSets(dataSets: DemographicDataset[]) {
         this.dataSets[this.currentTouchstone] = dataSets;
     }
     handleSelectDataSet(dataSetId: string) {
@@ -87,16 +83,7 @@ class DemographicStore extends AbstractStore<DemographicState, DemographicStoreI
             this.selectedDataSet = null;
         }
 
-        if (this.selectedDataSet != null && this.selectedDataSet.sources.length == 1) {
-            this.selectedSource = this.selectedDataSet.sources[0];
-        } else {
-            this.selectedSource = null;
-        }
-
         this.token = null;
-    }
-    handleSelectSource(source: string) {
-        this.selectedSource = source;
     }
     handleSelectGender(gender: string) {
         this.selectedGender = gender;

@@ -1,10 +1,9 @@
 import { FetchActions, FetchActionsInterface } from "../../shared/actions/FetchActions";
 import { alt } from "../../shared/alt";
-import { DemographicStatisticType } from "../../shared/models/Generated";
+import { DemographicDataset } from "../../shared/models/Generated";
 
-interface Actions extends FetchActionsInterface<DemographicStatisticType[]> {
+interface Actions extends FetchActionsInterface<DemographicDataset[]> {
     selectDataSet(dataSetId: string): string;
-    selectSource(source: string): string;
     selectGender(gender: string): string;
 
     updateToken(token: string): string;
@@ -12,13 +11,11 @@ interface Actions extends FetchActionsInterface<DemographicStatisticType[]> {
     clearUsedToken(): boolean;
 }
 
-class DemographicActions extends FetchActions<DemographicStatisticType[]> implements Actions {
+class DemographicActions extends FetchActions<DemographicDataset[]> implements Actions {
     selectDataSet(dataSetId: string): string {
         return dataSetId;
     }
-    selectSource(source: string): string {
-        return source;
-    }
+
     selectGender(gender: string): string {
         return gender;
     }

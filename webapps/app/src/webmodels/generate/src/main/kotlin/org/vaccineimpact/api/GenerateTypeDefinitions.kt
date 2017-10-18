@@ -29,7 +29,7 @@ fun main(args: Array<String>)
                 rootClasses = setOf(
                         CoverageSet::class,
                         Disease::class,
-                        DemographicStatisticType::class,
+                        DemographicDataset::class,
                         ModellingGroup::class,
                         ModellingGroupDetails::class,
                         Responsibilities::class,
