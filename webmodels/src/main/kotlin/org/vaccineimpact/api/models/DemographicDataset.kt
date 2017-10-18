@@ -42,6 +42,6 @@ data class WideDemographicRow(
         val ageFrom: Int,
         val ageTo: Int,
         val gender: String,
-        @property: FlexibleProperty
+        @FlexibleProperty
         val valuesPerYear: Map<Int, BigDecimal>
 )
