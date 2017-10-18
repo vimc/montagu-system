@@ -28,6 +28,7 @@ data class CoverageRow(
         val vaccine: String,
         val gaviSupport: GAVISupportLevel,
         val activityType: ActivityType,
+        val countryCode: String,
         val country: String,
         val year: Int,
         val ageFirst: BigDecimal?,
