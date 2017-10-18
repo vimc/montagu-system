@@ -12,6 +12,7 @@ import org.vaccineimpact.api.app.repositories.RepositoryFactory
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.app.serialization.DataTable
 import org.vaccineimpact.api.app.serialization.SplitData
+import org.vaccineimpact.api.app.serialization.StreamSerializable
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 
@@ -74,7 +75,7 @@ class TouchstoneController(context: ControllerContext) : AbstractController(cont
         return repo.getDemographicData(type, source, touchstone.id, gender?: "both")
     }
 
-    fun getDemographicData(context: ActionContext, repo: TouchstoneRepository): DataTable<DemographicRow>
+    fun getDemographicData(context: ActionContext, repo: TouchstoneRepository): StreamSerializable<DemographicRow>
     {
         val data = getDemographicDataAndMetadata(context, repo)
         val metadata = data.structuredMetadata

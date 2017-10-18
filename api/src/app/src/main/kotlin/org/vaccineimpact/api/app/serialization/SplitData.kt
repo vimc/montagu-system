@@ -3,9 +3,9 @@ package org.vaccineimpact.api.app.serialization
 import org.vaccineimpact.api.ContentTypes
 import java.io.OutputStream
 
-data class SplitData<out Metadata, DataRow : Any>(
+data class SplitData<out Metadata, out DataRow : Any>(
         val structuredMetadata: Metadata,
-        val tableData: DataTable<DataRow>
+        val tableData: StreamSerializable<DataRow>
 ): StreamSerializable<DataRow>
 {
     override val contentType = ContentTypes.json

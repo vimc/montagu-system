@@ -9,6 +9,7 @@ import org.junit.Test
 import org.vaccineimpact.api.app.serialization.DataTable
 import org.vaccineimpact.api.app.serialization.Serializer
 import org.vaccineimpact.api.app.serialization.SplitData
+import org.vaccineimpact.api.app.serialization.StreamSerializable
 import org.vaccineimpact.api.test_helpers.MontaguTests
 import org.vaccineimpact.api.test_helpers.serializeToStreamAndGetAsString
 import java.io.OutputStream
@@ -21,7 +22,7 @@ class SplitDataTests : MontaguTests()
         val serializer = mock<Serializer> {
             on { it.toResult(any()) } doReturn "METADATA"
         }
-        val table = mock<DataTable<Any>> {
+        val table = mock<StreamSerializable<Any>> {
             on { it.serialize(any(), any()) } doAnswer { invocationOnMock ->
                 val stream = invocationOnMock.getArgument<OutputStream>(0)
                 stream.bufferedWriter().use {
