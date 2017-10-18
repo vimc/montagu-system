@@ -7,7 +7,7 @@ import kotlin.reflect.KProperty1
 import kotlin.reflect.full.declaredMemberProperties
 import kotlin.reflect.full.primaryConstructor
 
-open class DataTable<T : Any>(val data: Iterable<T>, val type: KClass<T>)
+open class DataTable<T : Any>(val data: Iterable<T>, val type: KClass<T>): StreamSerializable
 {
     class Header<T>(name: String, val property: KProperty1<T, *>, serializer: Serializer)
     {
@@ -15,19 +15,21 @@ open class DataTable<T : Any>(val data: Iterable<T>, val type: KClass<T>)
         override fun toString() = name
     }
 
-    open fun serialize(stream: OutputStream, serializer: Serializer)
+    override fun serialize(stream: OutputStream, serializer: Serializer)
     {
         val headers = getHeaders(type, serializer)
-        CSVWriter(stream.writer()).use { csv ->
-            val headerArray = headers.map { it.name }.toTypedArray()
-            csv.writeNext(headerArray, false)
-            for (line in data)
-            {
-                val asArray = headers
-                        .map { it.property.get(line) }
-                        .map { serializeValue(it, serializer) }
-                        .toTypedArray()
-                csv.writeNext(asArray, false)
+        stream.writer().use { writer ->
+            CSVWriter(writer).use { csv ->
+                val headerArray = headers.map { it.name }.toTypedArray()
+                csv.writeNext(headerArray, false)
+                for (line in data)
+                {
+                    val asArray = headers
+                            .map { it.property.get(line) }
+                            .map { serializeValue(it, serializer) }
+                            .toTypedArray()
+                    csv.writeNext(asArray, false)
+                }
             }
         }
     }

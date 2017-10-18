@@ -5,14 +5,15 @@ import java.io.OutputStream
 data class SplitData<out Metadata, DataRow : Any>(
         val structuredMetadata: Metadata,
         val tableData: DataTable<DataRow>
-)
+): StreamSerializable
 {
-    fun serialize(stream: OutputStream, serializer: Serializer)
+    override fun serialize(stream: OutputStream, serializer: Serializer)
     {
         val metadata = serializer.toResult(structuredMetadata)
-        val writer = stream.writer()
-        writer.appendln(metadata)
-        writer.appendln("---")
+        stream.writer().use {
+            it.appendln(metadata)
+            it.appendln("---")
+        }
         tableData.serialize(stream, serializer)
     }
 }
