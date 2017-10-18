@@ -71,7 +71,7 @@ class FlexibleDataTable<T : Any>(data: Iterable<T>,
         if (constructor != null)
         {
             return constructor.parameters
-                    .filter { it != flexibleProperty }
+                    .filter { it.name != flexibleProperty.name }
                     .mapNotNull { it.name }
                     .map { name -> Header(name, properties.single { name == it.name }, serializer) }
         }

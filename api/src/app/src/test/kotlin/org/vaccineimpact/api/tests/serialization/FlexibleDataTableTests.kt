@@ -4,15 +4,22 @@ import org.assertj.core.api.Assertions
 import org.junit.Test
 import org.vaccineimpact.api.app.serialization.FlexibleDataTable
 import org.vaccineimpact.api.app.serialization.Serializer
-import org.vaccineimpact.api.models.FlexibleData
+import org.vaccineimpact.api.models.FlexibleProperty
 import org.vaccineimpact.api.test_helpers.MontaguTests
 
 class FlexibleDataTableTests : MontaguTests()
 {
-    data class ABC(val a: String, val b: String, val c: Map<String, String>)
+    data class ABC(val a: String, val b: String, @property: FlexibleProperty val c: Map<String, String>)
 
     @Test
     fun `headers are written in order of constructor`()
+    {
+        val table = FlexibleDataTable.new<ABC>(listOf(), listOf())
+        Assertions.assertThat(serialize(table)).isEqualTo(""""a","b"""")
+    }
+
+    @Test
+    fun `throws error if no property marked as flexible`()
     {
         val table = FlexibleDataTable.new<ABC>(listOf(), listOf())
         Assertions.assertThat(serialize(table)).isEqualTo(""""a","b"""")
