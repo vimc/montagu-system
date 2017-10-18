@@ -22,9 +22,10 @@ class FlexibleDataTable<T : Any>(data: Iterable<T>,
                 ?: throw Exception("No property marked as flexible." +
                 " Use the DataTable class to serialise data with fixed headers.")
 
-        flexibleProperty.returnType.arguments.last().type
-                ?: throw Exception("Properties marked as flexible must be of " +
-                "type Map<*, *>, where * can be whatever you like.")
+        flexibleProperty.returnType.arguments.lastOrNull()?:
+            throw Exception("Properties marked as flexible must be of " +
+                    "type Map<*, *>, where * can be whatever you like.")
+
 
         this.flexibleProperty = flexibleProperty
     }

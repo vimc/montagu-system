@@ -10,6 +10,8 @@ import org.vaccineimpact.api.test_helpers.MontaguTests
 class FlexibleDataTableTests : MontaguTests()
 {
     data class ABC(val a: String, val b: String, @property: FlexibleProperty val c: Map<String, String>)
+    data class XYZ(val x: String, val y: String, val z: Map<String, String>)
+    data class DEF(val d: String, val e: String, @property: FlexibleProperty val f: String)
 
     @Test
     fun `headers are written in order of constructor`()
@@ -21,8 +23,17 @@ class FlexibleDataTableTests : MontaguTests()
     @Test
     fun `throws error if no property marked as flexible`()
     {
-        val table = FlexibleDataTable.new<ABC>(listOf(), listOf())
-        Assertions.assertThat(serialize(table)).isEqualTo(""""a","b"""")
+        Assertions.assertThatThrownBy { FlexibleDataTable.new<XYZ>(listOf(), listOf()) }
+                .hasMessage("No property marked as flexible." +
+                " Use the DataTable class to serialise data with fixed headers.")
+    }
+
+    @Test
+    fun `throws error if flexible property is not a map`()
+    {
+        Assertions.assertThatThrownBy { FlexibleDataTable.new<DEF>(listOf(), listOf()) }
+                .hasMessage("Properties marked as flexible must be of " +
+                "type Map<*, *>, where * can be whatever you like.")
     }
 
     @Test
