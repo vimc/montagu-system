@@ -95,11 +95,16 @@ class JooqBurdenEstimateRepository(
                 .map { it[COUNTRY.ID] }
                 .toHashSet()
 
-        val constraints = BURDEN_ESTIMATE.references.map { it.constraint() }
-        for (constraint in constraints)
+        // https://www.postgresql.org/docs/9.1/static/catalog-pg-trigger.html
+        val triggers = dsl.fetch("""select tgname from pg_trigger
+join pg_class pg_class_native  on pg_trigger.tgrelid = pg_class_native.oid
+join pg_class pg_class_foreign on pg_trigger.tgconstrrelid = pg_class_foreign.oid
+where pg_class_native.relname = 'burden_estimate'""").map { it["tgname"] as String }
+        for (trigger in triggers)
         {
-            dsl.alterTable(BURDEN_ESTIMATE).drop(constraint).execute()
+            dsl.execute("""alter table burden_estimate disable trigger "$trigger"""")
         }
+
 
         val records = estimates.asSequence().flatMap { estimate ->
             if (estimate.disease != expectedDisease)
@@ -144,9 +149,9 @@ class JooqBurdenEstimateRepository(
             }
         }
 
-        for (constraint in constraints)
+        for (trigger in triggers)
         {
-            dsl.alterTable(BURDEN_ESTIMATE).add(constraint).execute()
+            dsl.execute("""alter table burden_estimate enable trigger "$trigger"""")
         }
     }
 
