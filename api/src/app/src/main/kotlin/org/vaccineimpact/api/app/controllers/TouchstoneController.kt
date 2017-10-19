@@ -79,10 +79,11 @@ class TouchstoneController(context: ControllerContext) : AbstractController(cont
 
         val splitData = repo.getDemographicData(type, source, touchstone.id, gender ?: "both")
 
-        val tableData = when(format){
+        val tableData = when (format)
+        {
 
             "wide" -> getWideDemographicDatatable(splitData.tableData.data)
-            "long" -> splitData.tableData
+            "long", null -> splitData.tableData
             else -> throw BadRequest("Format '$format' not a valid csv format. Available formats are 'long' " +
                     "and 'wide'.")
         }
@@ -95,7 +96,7 @@ class TouchstoneController(context: ControllerContext) : AbstractController(cont
             FlexibleDataTable<WideDemographicRow>
     {
         val groupedRows = data
-                    .groupBy { Triple(it.countryCode, it.ageFrom, it.ageTo) }
+                .groupBy { Triple(it.countryCode, it.ageFrom, it.ageTo) }
 
         val rows = groupedRows.values
                 .map {
