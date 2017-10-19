@@ -1,10 +1,9 @@
 #!/usr/bin/env bash
 set -ex
 
-here=$(dirname $0)
-
-# Run the APIs
-source $here/run-apis.sh
+# Either specify a portal with "Admin" or "Contrib", or fall back to *, which 
+# will run all tests
+export portal=${1:-*}
 
 # Set database variables (the names here are used by the Node pg library,
 # and shouldn't be changed)
@@ -21,11 +20,13 @@ docker exec montagu_db_1 psql -U vimc -d postgres -c \
 
 # Run the tests
 set +e
-mocha-webpack --webpack-config webpack-test.config.js --timeout 5000 "src/integrationTests/**/*"
+./node_modules/mocha-webpack/bin/mocha-webpack \
+    --webpack-config webpack-test.config.js \
+    --timeout 5000 \
+    "src/integrationTests/${portal}IntegrationTests.ts"
 result=$?
 
 # Teardown
 docker logs montagu_api_1 > api.log 2> api.log
 docker logs montagu_reporting_api_1 > reporting_api.log 2> reporting_api.log
-$here/stop-apis.sh
 exit $result
