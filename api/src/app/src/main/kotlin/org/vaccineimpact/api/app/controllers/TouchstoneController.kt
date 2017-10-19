@@ -95,11 +95,8 @@ class TouchstoneController(context: ControllerContext) : AbstractController(cont
             FlexibleDataTable<WideDemographicRow>
     {
         val groupedRows = data
-                .groupBy {
-                    "${it.countryCode} ${it.ageFrom} " +
-                            "${it.ageTo}"
-                }
-
+                    .groupBy { Triple(it.countryCode, it.ageFrom, it.ageTo) }
+                
         val rows = groupedRows.values
                 .map {
                     mapWideDemographicRow(it)
