@@ -11,17 +11,12 @@ import kotlin.reflect.full.declaredMemberProperties
 import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.primaryConstructor
 
-class FlexibleDataTable<T : Any>(override val data: Iterable<T>,
+class FlexibleDataTable<T : Any>(data: Iterable<T>,
                                  private val flexibleHeaders: Iterable<Any>,
-                                 val type: KClass<T>)
-    : StreamSerializable<T>
+                                 type: KClass<T>)
+    : DataTable<T>(data, type)
 {
     override val contentType = ContentTypes.csv
-
-    private val constructor: KFunction<T> = type.primaryConstructor
-            ?: throw Exception("Data type must have a primary constructor.")
-
-    private val properties = type.declaredMemberProperties
 
     private val flexibleParameter: KParameter = constructor.parameters.firstOrNull {
         it.findAnnotation<FlexibleProperty>() != null
@@ -40,32 +35,13 @@ class FlexibleDataTable<T : Any>(override val data: Iterable<T>,
                         "type Map<*, *>, where * can be whatever you like.")
     }
 
-    override fun serialize(stream: OutputStream, serializer: Serializer)
+    override fun prepareHeadersForCSV(headers:  Iterable<DataTableHeader<T>>): Array<String>
     {
-        val headers = getHeaders(serializer)
-        val flexibleHeaders = flexibleHeaders
-
-        stream.writer().let { writer ->
-            CSVWriter(writer).let { csv ->
-
-                val allHeaders = headers.map { it.name }.toTypedArray()
-                        .plus(flexibleHeaders.map { it.toString() })
-
-                csv.writeNext(allHeaders, false)
-
-                for (line in data)
-                {
-                    val allAsArray = allValuesAsArray(headers, line, serializer)
-                    csv.writeNext(allAsArray, false)
-                }
-            }
-            // We want to flush this writer, but we don't want to close the underlying stream, as there
-            // be more to write to it
-            writer.flush()
-        }
+       return headers.map { it.name }.toTypedArray()
+                .plus(flexibleHeaders.map { it.toString() })
     }
 
-    private fun allValuesAsArray(headers: Iterable<DataTableHeader<T>>, line: T, serializer: Serializer): Array<String>
+    override fun allValuesAsArray(headers: Iterable<DataTableHeader<T>>, line: T, serializer: Serializer): Array<String>
     {
         val values = headers.map { it.property.get(line) }
                 .plus(flexibleHeaders.map { getFlexibleValue(it, line) })
@@ -81,7 +57,7 @@ class FlexibleDataTable<T : Any>(override val data: Iterable<T>,
         return map[key]
     }
 
-    private fun getHeaders(serializer: Serializer): Iterable<DataTableHeader<T>>
+    override fun getHeaders(serializer: Serializer): Iterable<DataTableHeader<T>>
     {
         return constructor.parameters
                 .filter { it != flexibleParameter }
