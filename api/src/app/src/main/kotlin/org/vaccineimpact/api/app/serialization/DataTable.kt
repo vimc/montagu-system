@@ -4,33 +4,38 @@ import com.opencsv.CSVWriter
 import org.vaccineimpact.api.ContentTypes
 import java.io.OutputStream
 import kotlin.reflect.KClass
+import kotlin.reflect.KFunction
 import kotlin.reflect.KProperty1
 import kotlin.reflect.full.declaredMemberProperties
 import kotlin.reflect.full.primaryConstructor
 
-open class DataTable<T : Any>(val data: Iterable<T>, val type: KClass<T>): StreamSerializable
+open class DataTable<T : Any>(override val data: Iterable<T>, val type: KClass<T>) : StreamSerializable<T>
 {
-    override val contentType = ContentTypes.csv
-
-    class Header<T>(name: String, val property: KProperty1<T, *>, serializer: Serializer)
+    class DataTableHeader<T>(name: String, val property: KProperty1<T, *>, serializer: Serializer)
     {
         val name = serializer.convertFieldName(name)
         override fun toString() = name
     }
 
+    override val contentType = ContentTypes.csv
+
+    protected val constructor: KFunction<T> = type.primaryConstructor
+            ?: throw Exception("Data type must have a primary constructor.")
+
+    protected val properties = type.declaredMemberProperties
+
     override fun serialize(stream: OutputStream, serializer: Serializer)
     {
-        val headers = getHeaders(type, serializer)
+        val headers = getHeaders(serializer)
         stream.writer().let { writer ->
             CSVWriter(writer).let { csv ->
-                val headerArray = headers.map { it.name }.toTypedArray()
+
+                val headerArray = prepareHeadersForCSV(headers)
                 csv.writeNext(headerArray, false)
+
                 for (line in data)
                 {
-                    val asArray = headers
-                            .map { it.property.get(line) }
-                            .map { serializeValue(it, serializer) }
-                            .toTypedArray()
+                    val asArray = allValuesAsArray(headers, line, serializer)
                     csv.writeNext(asArray, false)
                 }
             }
@@ -40,36 +45,29 @@ open class DataTable<T : Any>(val data: Iterable<T>, val type: KClass<T>): Strea
         }
     }
 
-    private fun serializeValue(value: Any?, serializer: Serializer) = when (value)
+    open protected fun prepareHeadersForCSV(headers: Iterable<DataTableHeader<T>>): Array<String>
     {
-        null -> noValue
-        is Enum<*> -> serializer.serializeEnum(value)
-        else -> value.toString()
+        return headers.map { it.name }.toTypedArray()
     }
 
-    private fun getHeaders(type: KClass<T>, serializer: Serializer): Iterable<Header<T>>
+    open protected fun allValuesAsArray(headers: Iterable<DataTableHeader<T>>, line: T, serializer: Serializer): Array<String>
     {
-        // We prefer to use the primary constructor parameters, if available, as they
-        // remember their order
-        val properties = type.declaredMemberProperties
-        val constructor = type.primaryConstructor
-        if (constructor != null)
-        {
-            return constructor.parameters
-                    .map { it.name }
-                    .filterNotNull()
-                    .map { name -> Header(name, properties.single { name == it.name }, serializer) }
-        }
-        else
-        {
-            return properties.map { Header(it.name, it, serializer) }
-        }
+        return headers
+                .map { it.property.get(line) }
+                .map { serializer.serializeValueForCSV(it) }
+                .toTypedArray()
+    }
+
+    open protected fun getHeaders(serializer: Serializer): Iterable<DataTableHeader<T>>
+    {
+        return constructor.parameters
+                .mapNotNull { it.name }
+                .map { name -> DataTableHeader(name, properties.single { name == it.name }, serializer) }
     }
 
     companion object
     {
         // Simple helper to get around JVM type erasure
         inline fun <reified R : Any> new(data: Iterable<R>) = DataTable(data, R::class)
-        const val noValue = "<NA>"
     }
 }
