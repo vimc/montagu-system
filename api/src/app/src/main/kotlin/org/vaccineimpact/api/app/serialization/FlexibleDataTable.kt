@@ -42,7 +42,7 @@ class FlexibleDataTable<T : Any>(override val data: Iterable<T>,
 
     override fun serialize(stream: OutputStream, serializer: Serializer)
     {
-        val headers = getHeaders(type, serializer)
+        val headers = getHeaders(serializer)
         val flexibleHeaders = flexibleHeaders
 
         stream.writer().let { writer ->
@@ -67,17 +67,12 @@ class FlexibleDataTable<T : Any>(override val data: Iterable<T>,
 
     private fun allValuesAsArray(headers: Iterable<DataTableHeader<T>>, line: T, serializer: Serializer): Array<String>
     {
-        val basicValuesAsArray = headers
-                .map { it.property.get(line) }
+        val values = headers.map { it.property.get(line) }
+                .plus(flexibleHeaders.map { getFlexibleValue(it, line) })
+
+        return values
                 .map { serializer.serializeValue(it) }
                 .toTypedArray()
-
-        val flexibleValuesAsArray = flexibleHeaders
-                .map { getFlexibleValue(it, line) }
-                .map { serializer.serializeValue(it) }
-                .toTypedArray()
-
-        return basicValuesAsArray.plus(flexibleValuesAsArray)
     }
 
     private fun getFlexibleValue(key: Any, line: T): Any?
@@ -86,12 +81,8 @@ class FlexibleDataTable<T : Any>(override val data: Iterable<T>,
         return map[key]
     }
 
-    private fun getHeaders(type: KClass<T>, serializer: Serializer): Iterable<DataTableHeader<T>>
+    private fun getHeaders(serializer: Serializer): Iterable<DataTableHeader<T>>
     {
-        // We assume headers are primary constructor parameters
-        val constructor = type.primaryConstructor
-                ?: throw Exception("Data type must have a primary constructor.")
-
         return constructor.parameters
                 .filter { it != flexibleParameter }
                 .mapNotNull { it.name }
