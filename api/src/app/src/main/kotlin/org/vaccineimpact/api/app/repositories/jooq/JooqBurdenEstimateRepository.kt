@@ -11,14 +11,14 @@ import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
 import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.ScenarioRepository
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
+import org.vaccineimpact.api.db.*
 import org.vaccineimpact.api.db.Tables.*
-import org.vaccineimpact.api.db.fromJoinPath
-import org.vaccineimpact.api.db.joinPath
 import org.vaccineimpact.api.models.BurdenEstimate
 import org.vaccineimpact.api.models.ResponsibilitySetStatus
 import java.beans.ConstructorProperties
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
+import java.io.Writer
 import java.math.BigDecimal
 import java.sql.Timestamp
 import java.time.Instant
@@ -89,93 +89,83 @@ class JooqBurdenEstimateRepository(
                                   outcomeLookup: Map<String, Int>, cohortSizeId: Int,
                                   expectedDisease: String)
     {
-        val countries = dsl.select(COUNTRY.ID)
-                .from(COUNTRY)
-                .fetch()
-                .map { it[COUNTRY.ID] }
-                .toHashSet()
+        val countries = getAllCountryIds()
 
-        // https://www.postgresql.org/docs/9.1/static/catalog-pg-trigger.html
-        val triggers = dsl.fetch("""select tgname from pg_trigger
-join pg_class pg_class_native  on pg_trigger.tgrelid = pg_class_native.oid
-join pg_class pg_class_foreign on pg_trigger.tgconstrrelid = pg_class_foreign.oid
-where pg_class_native.relname = 'burden_estimate'""").map { it["tgname"] as String }
-        for (trigger in triggers)
-        {
-            dsl.execute("""alter table burden_estimate disable trigger "$trigger"""")
-        }
+        // The only foreign keys are:
+        // * burden_estimate_set, which is the same for every row, and it's the one we just created and know exists
+        // * country, which we check below, per row of the CSV (and each row represents multiple rows in the database
+        //   so this is an effort saving).
+        // * burden_outcome, which we check below (currently we check for every row, but given these are set in the
+        //   columns and don't vary by row this could be made more efficient)
+        dsl.withoutCheckingForeignKeyConstraints(BURDEN_ESTIMATE) {
 
+            // Currently we write everything to a byte array in memory and then later feed that stream to CopyManager.
+            // Obviously this could be made more performant by chaining those two together somehow.
+            val data = ByteArrayOutputStream().use { stream ->
+                PostgresCopyWriter(stream).use { writer ->
+                    for (estimate in estimates)
+                    {
+                        if (estimate.disease != expectedDisease)
+                        {
+                            throw InconsistentDataError("Provided estimate lists disease as '${estimate.disease}' but scenario is for disease '$expectedDisease'")
+                        }
+                        if (estimate.country !in countries)
+                        {
+                            throw UnknownObjectError(estimate.country, "country")
+                        }
 
-        val records = estimates.asSequence().flatMap { estimate ->
-            if (estimate.disease != expectedDisease)
-            {
-                throw InconsistentDataError("Provided estimate lists disease as '${estimate.disease}' but scenario is for disease '$expectedDisease'")
-            }
-            if (estimate.country !in countries)
-            {
-                throw UnknownObjectError(estimate.country, "country")
-            }
-
-            val cohortSize = newBurdenEstimateRecord(setId, estimate, cohortSizeId,
-                    estimate.cohortSize)
-
-            val otherOutcomes = estimate.outcomes.map { outcome ->
-                val outcomeId = outcomeLookup[outcome.key]
-                        ?: throw UnknownObjectError(outcome.key, "burden-outcome")
-                newBurdenEstimateRecord(setId, estimate, outcomeId, outcome.value)
-            }
-            val outcomes = listOf(cohortSize) + otherOutcomes
-            outcomes.asSequence()
-        }
-
-        val data = ByteArrayOutputStream().use { stream ->
-            stream.writer().use { writer ->
-                for (record in records)
-                {
-                    writer.write(record.map(this::escapeForCopy).joinToString("\t"))
-                    writer.write("\n")
+                        writer.writeRecord(newBurdenEstimateRecord(setId, estimate, cohortSizeId, estimate.cohortSize))
+                        for (outcome in estimate.outcomes)
+                        {
+                            val outcomeId = outcomeLookup[outcome.key]
+                                    ?: throw UnknownObjectError(outcome.key, "burden-outcome")
+                            writer.writeRecord(newBurdenEstimateRecord(setId, estimate, outcomeId, outcome.value))
+                        }
+                    }
                 }
-                writer.write("""\.""" + "\n")
+                stream.toByteArray()
             }
-            stream.toByteArray()
-        }
 
-        dsl.connection { connection ->
-            ByteArrayInputStream(data).use { stream ->
-                val manager = CopyManager(connection as BaseConnection)
-                manager.copyIn("""COPY burden_estimate
-                                  (burden_estimate_set, country, year, age, stochastic, burden_outcome, value)
-                                  FROM STDIN""", stream)
+            // We use dsl.connection to drop down from jOOQ to the JDBC level so we can use CopyManager.
+            dsl.connection { connection ->
+                ByteArrayInputStream(data).use { stream ->
+                    val t = BURDEN_ESTIMATE
+                    val manager = CopyManager(connection as BaseConnection)
+                    manager.copyInto(BURDEN_ESTIMATE, stream, listOf(
+                            t.BURDEN_ESTIMATE_SET,
+                            t.COUNTRY,
+                            t.YEAR,
+                            t.AGE,
+                            t.STOCHASTIC,
+                            t.BURDEN_OUTCOME,
+                            t.VALUE
+                    ))
+                }
             }
-        }
-
-        for (trigger in triggers)
-        {
-            dsl.execute("""alter table burden_estimate enable trigger "$trigger"""")
         }
     }
 
-    fun escapeForCopy(value: Any?) = when (value)
-    {
-        null -> """\N"""
-        else -> value
-    }
+    private fun getAllCountryIds() = dsl.select(COUNTRY.ID)
+            .from(COUNTRY)
+            .fetch()
+            .map { it[COUNTRY.ID] }
+            .toHashSet()
 
     private fun newBurdenEstimateRecord(
             setId: Int,
             estimate: BurdenEstimate,
             outcomeId: Int,
             outcomeValue: BigDecimal?
-    ): Array<Any?>
+    ): List<Any?>
     {
-        return arrayOf(
-            setId,
-            estimate.country,
-            estimate.year,
-            estimate.age,
-            false,
-            outcomeId,
-            outcomeValue
+        return listOf(
+                setId,
+                estimate.country,
+                estimate.year,
+                estimate.age,
+                false, /* stochastic */
+                outcomeId,
+                outcomeValue
         )
     }
 
