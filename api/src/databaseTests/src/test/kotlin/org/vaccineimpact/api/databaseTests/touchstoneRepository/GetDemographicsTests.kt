@@ -125,19 +125,15 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
         }
     }
 
-
     @Test
     fun `gets demographic data`()
     {
-        var countries: List<String> = listOf()
-
         given {
 
-            countries = DemographicDummyData(it, touchstoneName, touchstoneVersion, source)
+            DemographicDummyData(it, touchstoneName, touchstoneVersion, source, numCountries = 2)
                     .withTouchstone()
                     .withPopulation(yearRange = 1950..1955 step 5, ageRange = 10..15 step 5)
                     .withFertility(yearRange = 1950..1960 step 5, ageRange = 10..15 step 5)
-                    .countries
 
         } check {
 
@@ -151,7 +147,7 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
             // should only ever be 2 variants - unwpp_estimates and unwpp_medium_variant
             val numVariants = 2
 
-            val numCountries = countries.count()
+            val numCountries = 2
 
             Assertions.assertThat(data.count()).isEqualTo(numAges * numYears * numCountries * numVariants)
 

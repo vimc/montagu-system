@@ -15,7 +15,7 @@ class FlexibleDataTable<T : Any>(data: Iterable<T>,
     private val flexibleParameter: KParameter = constructor.parameters.firstOrNull {
         it.findAnnotation<FlexibleProperty>() != null
     }
-            ?: throw Exception("No property marked as flexible." +
+            ?: throw Exception("No parameter marked as flexible." +
             " Use the DataTable class to serialise data with fixed headers.")
 
     private val flexibleProperty = properties.firstOrNull { it.name == flexibleParameter.name }

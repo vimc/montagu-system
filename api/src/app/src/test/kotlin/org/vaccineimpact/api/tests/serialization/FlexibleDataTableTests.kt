@@ -25,7 +25,7 @@ class FlexibleDataTableTests : MontaguTests()
     fun `throws error if no property marked as flexible`()
     {
         Assertions.assertThatThrownBy { FlexibleDataTable.new<XYZ>(listOf(), listOf()) }
-                .hasMessage("No property marked as flexible." +
+                .hasMessage("No parameter marked as flexible." +
                         " Use the DataTable class to serialise data with fixed headers.")
     }
 

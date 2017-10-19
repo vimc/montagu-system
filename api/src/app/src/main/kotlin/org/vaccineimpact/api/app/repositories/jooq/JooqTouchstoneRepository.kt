@@ -26,7 +26,7 @@ class JooqTouchstoneRepository(dsl: DSLContext, private val scenarioRepository: 
     override fun getDemographicData(statisticTypeCode: String,
                                     source: String,
                                     touchstoneId: String,
-                                    gender: String): SplitData<DemographicDataForTouchstone, DemographicRow>
+                                    gender: String): SplitData<DemographicDataForTouchstone, LongDemographicRow>
     {
         val touchstone = touchstones.get(touchstoneId)
         val records = getDemographicStatistics(
@@ -332,7 +332,7 @@ class JooqTouchstoneRepository(dsl: DSLContext, private val scenarioRepository: 
             record[COVERAGE.COVERAGE_]
     )
 
-    private fun mapDemographicRow(record: Record) = DemographicRow(
+    private fun mapDemographicRow(record: Record) = LongDemographicRow(
             record[COUNTRY.NID],
             record[DEMOGRAPHIC_STATISTIC.COUNTRY],
             record[COUNTRY.NAME],
