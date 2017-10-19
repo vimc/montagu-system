@@ -58,6 +58,34 @@ g,h,i,j
 x,y,z,w""")
     }
 
+    @Test
+    fun `cell is null if row does not contain value for flexible header`()
+    {
+        val data = listOf(
+                ABC("g", "h", mapOf("extra1" to "i", "extra2" to "j")),
+                ABC("x", "y", mapOf("extra2" to "w"))
+        )
+        val table = FlexibleDataTable.new<ABC>(data, listOf("extra1", "extra2"))
+
+        Assertions.assertThat(serialize(table)).isEqualTo("""a,b,extra1,extra2
+g,h,i,j
+x,y,<NA>,w""")
+    }
+
+    @Test
+    fun `flexible values do not get serialised if header not explicitly provided`()
+    {
+        val data = listOf(
+                ABC("g", "h", mapOf("extra1" to "i", "extra2" to "j")),
+                ABC("x", "y", mapOf("extra2" to "w"))
+        )
+        val table = FlexibleDataTable.new<ABC>(data, listOf("extra1"))
+
+        Assertions.assertThat(serialize(table)).isEqualTo("""a,b,extra1
+g,h,i
+x,y,<NA>""")
+    }
+
     private fun serialize(table: FlexibleDataTable<*>) = serializeToStreamAndGetAsString {
         table.serialize(it, Serializer.instance)
     }
