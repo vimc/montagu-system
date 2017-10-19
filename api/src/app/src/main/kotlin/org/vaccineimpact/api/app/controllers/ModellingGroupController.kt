@@ -182,7 +182,7 @@ open class ModellingGroupController(context: ControllerContext)
         val id = estimateRepository.addBurdenEstimateSet(
                 path.groupId, path.touchstoneId, path.scenarioId,
                 data,
-                uploader = context.username ?: "testing",
+                uploader = context.username!!,
                 timestamp = Instant.now()
         )
         val url = "/${path.groupId}/responsibilities/${path.touchstoneId}/${path.scenarioId}/estimates/$id/"
