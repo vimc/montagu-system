@@ -6,6 +6,9 @@ import org.vaccineimpact.api.app.controllers.endpoints.EndpointDefinition
 import org.vaccineimpact.api.app.controllers.endpoints.oneRepoEndpoint
 import org.vaccineimpact.api.app.controllers.endpoints.secured
 import org.vaccineimpact.api.app.controllers.endpoints.streamed
+import org.vaccineimpact.api.app.errors.BadRequest
+import org.vaccineimpact.api.app.errors.InconsistentDataError
+import org.vaccineimpact.api.app.errors.OperationNotAllowedError
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.RepositoryFactory
@@ -76,16 +79,16 @@ class TouchstoneController(context: ControllerContext) : AbstractController(cont
 
         val splitData = repo.getDemographicData(type, source, touchstone.id, gender ?: "both")
 
-        return if (format == "wide")
-        {
-            SplitData<DemographicDataForTouchstone, WideDemographicRow>(splitData.structuredMetadata,
-                    getWideDemographicDatatable(splitData.tableData.data))
+        val tableData = when(format){
+
+            "wide" -> getWideDemographicDatatable(splitData.tableData.data)
+            "long" -> splitData.tableData
+            else -> throw BadRequest("Format '$format' not a valid csv format. Available formats are 'long' " +
+                    "and 'wide'.")
         }
-        else
-        {
-            SplitData<DemographicDataForTouchstone, LongDemographicRow>(splitData.structuredMetadata,
-                    splitData.tableData)
-        }
+
+        return SplitData(splitData.structuredMetadata, tableData)
+
     }
 
     private fun getWideDemographicDatatable(data: Iterable<LongDemographicRow>):
