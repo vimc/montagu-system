@@ -9,14 +9,14 @@ import kotlin.reflect.KProperty1
 import kotlin.reflect.full.declaredMemberProperties
 import kotlin.reflect.full.primaryConstructor
 
-class DataTableHeader<T>(name: String, val property: KProperty1<T, *>, serializer: Serializer)
-{
-    val name = serializer.convertFieldName(name)
-    override fun toString() = name
-}
-
 open class DataTable<T : Any>(override val data: Iterable<T>, val type: KClass<T>) : StreamSerializable<T>
 {
+    class DataTableHeader<T>(name: String, val property: KProperty1<T, *>, serializer: Serializer)
+    {
+        val name = serializer.convertFieldName(name)
+        override fun toString() = name
+    }
+    
     override val contentType = ContentTypes.csv
 
     protected val constructor: KFunction<T> = type.primaryConstructor
