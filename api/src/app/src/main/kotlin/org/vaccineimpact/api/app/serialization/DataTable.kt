@@ -29,7 +29,7 @@ class DataTable<T : Any>(override val data: Iterable<T>, val type: KClass<T>): S
                 {
                     val asArray = headers
                             .map { it.property.get(line) }
-                            .map { serializer.serializeValue(it) }
+                            .map { serializer.serializeValueForCSV(it) }
                             .toTypedArray()
                     csv.writeNext(asArray, false)
                 }

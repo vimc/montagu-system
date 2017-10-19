@@ -71,7 +71,7 @@ class FlexibleDataTable<T : Any>(override val data: Iterable<T>,
                 .plus(flexibleHeaders.map { getFlexibleValue(it, line) })
 
         return values
-                .map { serializer.serializeValue(it) }
+                .map { serializer.serializeValueForCSV(it) }
                 .toTypedArray()
     }
 

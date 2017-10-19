@@ -80,7 +80,7 @@ open class Serializer
         return text.toLowerCase().replace('_', '-')
     }
 
-    fun serializeValue(value: Any?) = when (value)
+    fun serializeValueForCSV(value: Any?) = when (value)
     {
         null -> noValue
         is Enum<*> -> serializeEnum(value)
