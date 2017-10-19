@@ -96,7 +96,7 @@ class TouchstoneController(context: ControllerContext) : AbstractController(cont
     {
         val groupedRows = data
                     .groupBy { Triple(it.countryCode, it.ageFrom, it.ageTo) }
-                
+
         val rows = groupedRows.values
                 .map {
                     mapWideDemographicRow(it)
