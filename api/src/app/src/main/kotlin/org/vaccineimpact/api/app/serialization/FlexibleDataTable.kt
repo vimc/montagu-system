@@ -1,15 +1,10 @@
 package org.vaccineimpact.api.app.serialization
 
-import com.opencsv.CSVWriter
 import org.vaccineimpact.api.ContentTypes
 import org.vaccineimpact.api.models.helpers.FlexibleProperty
-import java.io.OutputStream
 import kotlin.reflect.KClass
-import kotlin.reflect.KFunction
 import kotlin.reflect.KParameter
-import kotlin.reflect.full.declaredMemberProperties
 import kotlin.reflect.full.findAnnotation
-import kotlin.reflect.full.primaryConstructor
 
 class FlexibleDataTable<T : Any>(data: Iterable<T>,
                                  private val flexibleHeaders: Iterable<Any>,

@@ -16,7 +16,7 @@ open class DataTable<T : Any>(override val data: Iterable<T>, val type: KClass<T
         val name = serializer.convertFieldName(name)
         override fun toString() = name
     }
-    
+
     override val contentType = ContentTypes.csv
 
     protected val constructor: KFunction<T> = type.primaryConstructor
