@@ -57,7 +57,9 @@ export class UploadBurdenEstimatesContentComponent extends RemoteContentComponen
 
         return <div>
             <p>
-                On this page you can upload burden estimates for the following scenario:
+                On this page you can upload burden estimates for the following scenario. We expect estimates which
+                cover 96 countries, 100 years, and 100 age bands to take around 1 minute to process. So don't worry if
+                it takes a little while!
             </p>
             <table className={commonStyles.specialColumn}>
                 <tbody>
