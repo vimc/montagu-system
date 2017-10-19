@@ -11,7 +11,6 @@ class FlexibleDataTable<T : Any>(data: Iterable<T>,
                                  type: KClass<T>)
     : DataTable<T>(data, type)
 {
-    override val contentType = ContentTypes.csv
 
     private val flexibleParameter: KParameter = constructor.parameters.firstOrNull {
         it.findAnnotation<FlexibleProperty>() != null
