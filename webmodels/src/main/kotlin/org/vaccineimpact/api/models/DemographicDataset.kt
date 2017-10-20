@@ -1,6 +1,7 @@
 package org.vaccineimpact.api.models
 
 import java.math.BigDecimal
+import org.vaccineimpact.api.models.helpers.FlexibleProperty
 
 data class DemographicDataset(
         override val id: String,
@@ -24,7 +25,7 @@ data class DemographicDataForTouchstone(
         val demographicData: DemographicMetadata
 )
 
-data class DemographicRow(
+data class LongDemographicRow(
         val countryCodeNumeric: Int,
         val countryCode: String,
         val country: String,
@@ -33,4 +34,17 @@ data class DemographicRow(
         val year: Int,
         val gender: String,
         val value: BigDecimal
-)
+) : DemographicRow
+
+data class WideDemographicRow(
+        val countryCodeNumeric: Int,
+        val countryCode: String,
+        val country: String,
+        val ageFrom: Int,
+        val ageTo: Int,
+        val gender: String,
+        @FlexibleProperty
+        val valuesPerYear: Map<Int, BigDecimal>
+) : DemographicRow
+
+interface DemographicRow
