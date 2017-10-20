@@ -32,6 +32,16 @@ class CoverageTests : DatabaseTest()
     }
 
     @Test
+    fun `can get wide coverage data for responsibility`()
+    {
+        val schema = SplitSchema(json = "ScenarioAndCoverageSets", csv = "MergedWideCoverageData")
+        val test = validate("$url?format=wide") against (schema) given {
+            addCoverageData(it, touchstoneStatus = "open")
+        } requiringPermissions { minimumPermissions }
+        test.run()
+    }
+
+    @Test
     fun `can get pure CSV coverage data for responsibility`()
     {
         val schema = CSVSchema("MergedCoverageData")

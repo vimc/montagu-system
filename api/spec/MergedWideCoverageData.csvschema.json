@@ -1,0 +1,17 @@
+{
+    "columns": {
+        "scenario": "String",
+        "set_name": "String",
+        "vaccine": "String",
+        "gavi_support": ["no vaccine", "no gavi", "total"],
+        "activity_type": ["none", "routine", "campaign", "campaign-reactive"],
+        "country_code": "String",
+        "country": "String",
+        "age_first": "Int",
+        "age_last": "Int",
+        "age_range_verbatim": "String?",
+        "target": "Decimal?"
+    },
+
+    "additionalColumnsAllowed": true
+}
