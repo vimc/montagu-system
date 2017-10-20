@@ -19,13 +19,8 @@ dependencies {
 
 test.dependsOn 'copySpec'
 test.finalizedBy 'restoreDatabase'
-copyTestConfig.finalizedBy 'showTestConfig'
+// We run the tests as a suite (see RepositoryTestSuite)
+// This line prevents them being run individually as well
+test.exclude "**/org/vaccineimpact/api/blackboxTests/tests/**"
 
-task restoreDatabase(type: Exec) {
-    environment([
-            'DB_HOST':          rootProject.ext.props.get('db_host'),
-            'TEMPLATE_DB_NAME': rootProject.ext.props.get('testdb_template_name'),
-            'DB_NAME':          rootProject.ext.props.get('db_name')
-    ])
-    commandLine 'bash', '../../scripts/restore-database-from-template.sh'
-}
+copyTestConfig.finalizedBy 'showTestConfig'
