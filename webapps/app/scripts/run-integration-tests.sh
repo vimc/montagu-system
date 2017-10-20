@@ -29,7 +29,11 @@ set +e
     "src/integrationTests/${portal}IntegrationTests.ts"
 result=$?
 
-# Teardown
+# ------- Teardown -----------
+# Restore the database
+docker exec montagu_db_1 psql -U vimc -d postgres -c \
+    "ALTER DATABASE $PGTEMPLATE RENAME TO $PGDATABASE"
+
 docker logs montagu_api_1 > api.log 2> api.log
 docker logs montagu_reporting_api_1 > reporting_api.log 2> reporting_api.log
 exit $result
