@@ -67,6 +67,21 @@ class DemographicTests : DatabaseTest()
     }
 
     @Test
+    fun `can get wide demographic data`()
+    {
+        val schema = SplitSchema(json = "DemographicDataForTouchstone", csv = "WideDemographicData")
+        val test = validate("$url?format=wide") against (schema) given {
+
+            DemographicDummyData(it, touchstoneName, touchstoneVersion)
+                    .withTouchstone()
+                    .withPopulation()
+
+        } requiringPermissions { requiredPermissions }
+
+        test.run()
+    }
+
+    @Test
     fun `returns demographic metadata`()
     {
         val userHelper = TestUserHelper()

@@ -6,12 +6,16 @@ import org.vaccineimpact.api.app.controllers.endpoints.EndpointDefinition
 import org.vaccineimpact.api.app.controllers.endpoints.oneRepoEndpoint
 import org.vaccineimpact.api.app.controllers.endpoints.secured
 import org.vaccineimpact.api.app.controllers.endpoints.streamed
+import org.vaccineimpact.api.app.errors.BadRequest
+import org.vaccineimpact.api.app.errors.InconsistentDataError
+import org.vaccineimpact.api.app.errors.OperationNotAllowedError
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.RepositoryFactory
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
-import org.vaccineimpact.api.app.serialization.DataTable
+import org.vaccineimpact.api.app.serialization.FlexibleDataTable
 import org.vaccineimpact.api.app.serialization.SplitData
+import org.vaccineimpact.api.app.serialization.StreamSerializable
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 
@@ -71,19 +75,70 @@ class TouchstoneController(context: ControllerContext) : AbstractController(cont
         val source = context.params(":source-code")
         val type = context.params(":type-code")
         val gender = context.queryParams("gender")
-        return repo.getDemographicData(type, source, touchstone.id, gender?: "both")
+        val format = context.queryParams("format")
+
+        val splitData = repo.getDemographicData(type, source, touchstone.id, gender ?: "both")
+
+        val tableData = when (format)
+        {
+
+            "wide" -> getWideDemographicDatatable(splitData.tableData.data)
+            "long", null -> splitData.tableData
+            else -> throw BadRequest("Format '$format' not a valid csv format. Available formats are 'long' " +
+                    "and 'wide'.")
+        }
+
+        return SplitData(splitData.structuredMetadata, tableData)
+
     }
 
-    fun getDemographicData(context: ActionContext, repo: TouchstoneRepository): DataTable<DemographicRow>
+    private fun getWideDemographicDatatable(data: Iterable<LongDemographicRow>):
+            FlexibleDataTable<WideDemographicRow>
+    {
+        val groupedRows = data
+                .groupBy { Triple(it.countryCode, it.ageFrom, it.ageTo) }
+
+        val rows = groupedRows.values
+                .map {
+                    mapWideDemographicRow(it)
+                }
+
+        // all the rows should have the same number of years, so we just look at the first row
+        val years = rows.first().valuesPerYear.keys.toList()
+
+        return FlexibleDataTable.new(rows, years)
+    }
+
+    fun getDemographicData(context: ActionContext, repo: TouchstoneRepository)
+            : StreamSerializable<DemographicRow>
     {
         val data = getDemographicDataAndMetadata(context, repo)
         val metadata = data.structuredMetadata
         val source = context.params(":source-code")
-        val gender = context.queryParams("gender")?: "both"
+        val gender = context.queryParams("gender") ?: "both"
         val filename = "${metadata.touchstone.id}_${source}_${metadata.demographicData.id}_$gender.csv"
         context.addAttachmentHeader(filename)
 
         return data.tableData
+    }
+
+    private fun mapWideDemographicRow(records: List<LongDemographicRow>)
+            : WideDemographicRow
+    {
+        // all records have same country, gender, age_from and age_to, so can look at first one for these
+        val reference = records.first()
+
+        val valuesPerYear = records.associateBy(
+                { it.year },
+                { it.value })
+
+        return WideDemographicRow(reference.countryCodeNumeric,
+                reference.countryCode,
+                reference.country,
+                reference.ageFrom,
+                reference.ageTo,
+                reference.gender,
+                valuesPerYear)
     }
 
     fun getScenario(context: ActionContext, repo: TouchstoneRepository): ScenarioTouchstoneAndCoverageSets
