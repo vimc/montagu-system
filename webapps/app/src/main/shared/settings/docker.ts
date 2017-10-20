@@ -1,9 +1,8 @@
-export const settings: Settings = {
+export const settings: Partial<Settings> = {
     reportingApiUrl: () => "https://" + window.location.host + "/reports/api/v1",
     apiUrl: () => "https://" + window.location.host + "/api/v1",
     montaguUrl: () => "https://" + window.location.host + "/",
-    supportContact: "montagu-help@imperial.ac.uk",
-    teamcityServiceMessages: false,
+
     admin: {
         publicPath: "/admin",
         requiresModellingGroupMembership: false

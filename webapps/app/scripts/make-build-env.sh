@@ -19,9 +19,8 @@ docker build -f ./docker/build.dockerfile \
 # Package up integration tests as a docker image for later rerunning
 registry=docker.montagu.dide.ic.ac.uk:5000
 name=$registry/montagu-portal-integration-tests
-git_id=local
 
 docker build -f ./docker/integration-tests.dockerfile -t $name:$git_id .
 docker tag $name:$git_id $name:$git_branch
-#docker push $name:$git_id
-#docker push $name:$git_branch
+docker push $name:$git_id
+docker push $name:$git_branch

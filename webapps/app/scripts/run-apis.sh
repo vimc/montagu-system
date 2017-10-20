@@ -31,13 +31,4 @@ docker pull $migrate_image
 docker run --network=montagu_default $migrate_image
 
 # Add test accounts
-$here/cli.sh add "Test User" test.user test@example.com password
-$here/cli.sh addRole test.user user
-$here/cli.sh addRole test.user user-manager
-$here/cli.sh addRole test.user uploader modelling-group:IC-Garske
-$here/cli.sh addRole test.user user-manager modelling-group:IC-Garske
-$here/cli.sh addUserToGroup test.user test-group
-
-$here/cli.sh add "Report reviewer" report.reviewer report.reviewer@example.com password
-$here/cli.sh addRole report.reviewer user
-$here/cli.sh addRole report.reviewer reports-reviewer
+$here/add-test-accounts-for-integration-tests.sh
