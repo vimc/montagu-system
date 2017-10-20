@@ -1,4 +1,4 @@
-package org.vaccineimpact.api.security
+package org.vaccineimpact.api.security.tests
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
@@ -7,6 +7,8 @@ import org.vaccineimpact.api.db.Tables.*
 import org.vaccineimpact.api.db.direct.addGroup
 import org.vaccineimpact.api.db.direct.addUserForTesting
 import org.vaccineimpact.api.db.fromJoinPath
+import org.vaccineimpact.api.security.AddUserToGroupOptions
+import org.vaccineimpact.api.security.Groups
 import org.vaccineimpact.api.test_helpers.DatabaseTest
 
 class AddUserToGroupTests : DatabaseTest()

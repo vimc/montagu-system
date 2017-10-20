@@ -1,8 +1,11 @@
-package org.vaccineimpact.api.security
+package org.vaccineimpact.api.security.tests
 
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
+import org.vaccineimpact.api.security.ActionException
+import org.vaccineimpact.api.security.AddUserToGroupOptions
+import org.vaccineimpact.api.security.Groups
 import org.vaccineimpact.api.test_helpers.MontaguTests
 
 class AddUserToGroupOptionsTests : MontaguTests()

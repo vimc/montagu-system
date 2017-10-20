@@ -1,7 +1,8 @@
-package org.vaccineimpact.api.security
+package org.vaccineimpact.api.security.tests
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
+import org.vaccineimpact.api.security.Question
 import org.vaccineimpact.api.test_helpers.MontaguTests
 
 class QuestionTests : MontaguTests()
