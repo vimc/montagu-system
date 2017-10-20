@@ -1,5 +1,6 @@
 package org.vaccineimpact.api.models
 
+import org.vaccineimpact.api.models.helpers.FlexibleProperty
 import java.math.BigDecimal
 
 data class CoverageSet(
@@ -36,4 +37,22 @@ data class CoverageRow(
         val ageRangeVerbatim: String?,
         val target: BigDecimal?,
         val coverage: BigDecimal?
-)
+): Coverage
+
+data class WideCoverageRow(
+        val scenario: String,   //This is the scenario description ID
+        val setName: String,
+        val vaccine: String,
+        val gaviSupport: GAVISupportLevel,
+        val activityType: ActivityType,
+        val countryCode: String,
+        val country: String,
+        val ageFirst: BigDecimal?,
+        val ageLast: BigDecimal?,
+        val ageRangeVerbatim: String?,
+        val target: BigDecimal?,
+        @FlexibleProperty
+        val coveragePerYear: Map<Int, BigDecimal?>
+) : Coverage
+
+interface Coverage
