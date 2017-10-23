@@ -24,8 +24,9 @@ import { ResponsibilitySetManager } from "./ResponsibilitySetManager";
 import StoreModel = AltJS.StoreModel;
 import { EstimatesTokenSource } from "../sources/EstimatesTokenSource";
 import { estimateTokenActions } from "../actions/EstimateActions";
+import { HasFormatState } from "./DemographicStore";
 
-export interface ResponsibilityState extends RemoteContent {
+export interface ResponsibilityState extends RemoteContent, HasFormatState {
     touchstones: Array<Touchstone>;
     currentTouchstone: Touchstone;
 
@@ -61,6 +62,7 @@ class ResponsibilityStore extends AbstractStore<ResponsibilityState, Responsibil
 
     currentModellingGroup: ModellingGroup;
     currentDiseaseId: string;
+    selectedFormat: string;
 
     ready: boolean;
 
@@ -89,6 +91,7 @@ class ResponsibilityStore extends AbstractStore<ResponsibilityState, Responsibil
 
             handleUpdateCoverageToken: coverageTokenActions.update,
             handleClearUsedToken: coverageTokenActions.clearUsedToken,
+            handleSelectFormat: coverageSetActions.selectFormat,
 
             handleUpdateEstimatesToken: estimateTokenActions.update,
             handleClearUsedEstimatesToken: estimateTokenActions.clearUsedToken,
@@ -117,6 +120,8 @@ class ResponsibilityStore extends AbstractStore<ResponsibilityState, Responsibil
             coverageOneTimeToken: null,
 
             estimatesOneTimeToken: null,
+
+            selectedFormat: null,
 
             ready: false
         };
@@ -196,6 +201,10 @@ class ResponsibilityStore extends AbstractStore<ResponsibilityState, Responsibil
 
     handleFilterByDisease(diseaseId: string) {
         this.currentDiseaseId = diseaseId;
+    }
+
+    handleSelectFormat(format: string) {
+        this.selectedFormat = format;
     }
 }
 

@@ -7,7 +7,7 @@ import { Sandbox } from "../../../../Sandbox";
 import { expectOneAction } from "../../../../actionHelpers";
 import { GenderControl } from "../../../../../main/contrib/components/Responsibilities/Demographics/GenderControl";
 import { demographicStore } from "../../../../../main/contrib/stores/DemographicStore";
-import { FormatControl } from "../../../../../main/contrib/components/Responsibilities/Demographics/FormatControl";
+import { FormatControl } from "../../../../../main/contrib/components/Responsibilities/FormatControl";
 
 describe("DemographicOptions", () => {
     const sandbox = new Sandbox();

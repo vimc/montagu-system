@@ -7,13 +7,16 @@ import { demographicActions } from "../actions/DemographicActions";
 import StoreModel = AltJS.StoreModel;
 import { DemographicSource } from "../sources/DemographicSource";
 
-export interface DemographicState {
+export interface DemographicState extends HasFormatState {
     dataSets: ILookup<DemographicDataset[]>;
     currentTouchstone: string;
     selectedDataSet: DemographicDataset;
     selectedGender: string;
-    selectedFormat: string;
     token: string
+}
+
+export interface HasFormatState{
+    selectedFormat: string;
 }
 
 export interface DemographicStoreInterface extends AltJS.AltStore<DemographicState> {

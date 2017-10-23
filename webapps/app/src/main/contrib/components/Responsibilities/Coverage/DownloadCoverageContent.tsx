@@ -5,19 +5,25 @@ import { RemoteContent } from "../../../../shared/models/RemoteContent";
 import { RemoteContentComponent } from "../../../../shared/components/RemoteContentComponent/RemoteContentComponent";
 import { CoverageSetList } from "./CoverageSetList";
 import { responsibilityStore } from "../../../stores/ResponsibilityStore";
-import fetcher from "../../../../shared/sources/Fetcher";
 import { coverageTokenActions } from "../../../actions/CoverageActions";
 import { OneTimeButton } from "../../../../shared/components/OneTimeButton";
-
+import { FormatControl } from "../FormatControl";
+import { HasFormatOption } from "../Demographics/DemographicOptions";
+import { doNothing } from "../../../../shared/Helpers";
+import { responsibilityActions } from "../../../actions/ResponsibilityActions";
+import { coverageSetActions } from "../../../actions/CoverageSetActions";
 const commonStyles = require("../../../../shared/styles/common.css");
+const styles = require("../Responsibilities.css");
 
 export interface DownloadCoverageComponentProps extends RemoteContent {
-    props: {
-        touchstone: Touchstone;
-        scenario: Scenario;
-        coverageSets: CoverageSet[];
-        coverageToken: string;
-    };
+    props: Props
+}
+
+interface Props extends HasFormatOption {
+    touchstone: Touchstone;
+    scenario: Scenario;
+    coverageSets: CoverageSet[];
+    coverageToken: string;
 }
 
 export class DownloadCoverageContentComponent extends RemoteContentComponent<DownloadCoverageComponentProps> {
@@ -34,7 +40,8 @@ export class DownloadCoverageContentComponent extends RemoteContentComponent<Dow
                     touchstone: state.currentTouchstone,
                     scenario: r.scenario,
                     coverageSets: r.coverageSets,
-                    coverageToken: state.coverageOneTimeToken
+                    coverageToken: state.coverageOneTimeToken,
+                    selectedFormat: state.selectedFormat
                 }
             };
         } else {
@@ -43,6 +50,12 @@ export class DownloadCoverageContentComponent extends RemoteContentComponent<Dow
                 props: null
             };
         }
+    }
+
+
+    onSelectFormat(format: string) {
+        coverageSetActions.selectFormat(format);
+        responsibilityStore.fetchOneTimeCoverageToken().catch(doNothing);
     }
 
     refreshToken() {
@@ -72,6 +85,18 @@ export class DownloadCoverageContentComponent extends RemoteContentComponent<Dow
                 <div className={ commonStyles.smallTitle }>Coverage sets included</div>
                 <CoverageSetList coverageSets={ data.coverageSets } />
             </div>
+            <table className={ styles.options }>
+                <tbody>
+                <tr className={ commonStyles.specialColumn }>
+                    <td>Format</td>
+                    <td><FormatControl
+                        value={props.props.selectedFormat}
+                        onSelectFormat={this.onSelectFormat} />
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
             <div className={ commonStyles.gapAbove }>
                 <OneTimeButton token={ data.coverageToken } refreshToken={ this.refreshToken }>
                     Download combined coverage set data in CSV format

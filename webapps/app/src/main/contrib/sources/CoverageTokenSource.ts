@@ -8,7 +8,7 @@ export class CoverageTokenSource extends CoverageSource {
     constructor() {
         super();
         this.fetchOneTimeCoverageToken = () => this.doFetch(state => {
-            return this.baseURL(state) + "/coverage/get_onetime_link/";
+            return this.baseURL(state) + `/coverage/get_onetime_link/?format=${state.selectedFormat}`;
         }, {
             success: coverageTokenActions.update,
             loading: coverageTokenActions.beginFetch,
