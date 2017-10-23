@@ -179,8 +179,12 @@ class ModellingGroupControllersTests : ControllerTests<ModellingGroupController>
         val expectedHeaders = listOf("1985_coverage", "1990_coverage", "1995_coverage", "2000_coverage",
                 "1985_target", "1990_target", "1995_target", "2000_target")
 
-        Assertions.assertThat((data.first() as WideCoverageRow).coverageAndTargetPerYear.keys)
-                .hasSameElementsAs(expectedHeaders)
+        val firstRow = (data.first() as WideCoverageRow)
+        val values = firstRow.coverageAndTargetPerYear.values
+        val headers = firstRow.coverageAndTargetPerYear.keys
+
+        Assertions.assertThat(headers).hasSameElementsAs(expectedHeaders)
+        Assertions.assertThat(values.distinct().count() == values.count())
     }
 
     private val years = listOf(1985, 1990, 1995, 2000)
