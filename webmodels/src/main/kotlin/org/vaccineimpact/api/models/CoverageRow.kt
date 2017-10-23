@@ -23,7 +23,7 @@ data class ScenarioTouchstoneAndCoverageSets(
         val coverageSets: List<CoverageSet>
 )
 
-data class CoverageRow(
+data class LongCoverageRow(
         val scenario: String, //This is the scenario description ID
         val setName: String,
         val vaccine: String,
@@ -37,7 +37,7 @@ data class CoverageRow(
         val ageRangeVerbatim: String?,
         val target: BigDecimal?,
         val coverage: BigDecimal?
-) : Coverage
+) : CoverageRow
 
 data class WideCoverageRow(
         val scenario: String, //This is the scenario description ID
@@ -52,6 +52,6 @@ data class WideCoverageRow(
         val ageRangeVerbatim: String?,
         @FlexibleProperty
         val coverageAndTargetPerYear: Map<String, BigDecimal?>
-) : Coverage
+) : CoverageRow
 
-interface Coverage
+interface CoverageRow
