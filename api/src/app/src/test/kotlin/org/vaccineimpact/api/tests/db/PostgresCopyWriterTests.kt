@@ -53,7 +53,7 @@ class PostgresCopyWriterTests
     {
         val text = serializeToStreamAndGetAsString { stream ->
             PostgresCopyWriter(stream).use {
-                it.writeRecord(listOf(1, 2, 3))
+                it.writeRow(listOf(1, 2, 3))
             }
         }.replace("\t", "---")
         assertThat(text).isEqualTo("""1---2---3
@@ -64,7 +64,7 @@ class PostgresCopyWriterTests
     private fun write(value: Any?) = write(listOf(value))
     private fun write(values: Iterable<Any?>) = serializeToStreamAndGetAsString { stream ->
         PostgresCopyWriter(stream).run {
-            writeRecord(values)
+            writeRow(values)
             flush()
         }
     }.dropLast(1)   // Strip off the new line added by writeln

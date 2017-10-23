@@ -20,7 +20,7 @@ class PostgresCopyWriter(private val wrapped: Writer) : Flushable by wrapped, Cl
     // delimiter character."
     private val illegalCharacters = Regex("""\\|\n|\r|\t""")
 
-    fun writeRecord(values: Iterable<Any?>)
+    fun writeRow(values: Iterable<Any?>)
     {
         writeln(values.joinToString("\t", transform = this::escape))
     }

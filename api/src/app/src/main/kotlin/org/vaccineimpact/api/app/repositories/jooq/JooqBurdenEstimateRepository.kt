@@ -18,7 +18,6 @@ import org.vaccineimpact.api.models.ResponsibilitySetStatus
 import java.beans.ConstructorProperties
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
-import java.io.Writer
 import java.math.BigDecimal
 import java.sql.Timestamp
 import java.time.Instant
@@ -114,12 +113,12 @@ class JooqBurdenEstimateRepository(
                             throw UnknownObjectError(estimate.country, "country")
                         }
 
-                        writer.writeRecord(newBurdenEstimateRecord(setId, estimate, cohortSizeId, estimate.cohortSize))
+                        writer.writeRow(newBurdenEstimateRow(setId, estimate, cohortSizeId, estimate.cohortSize))
                         for (outcome in estimate.outcomes)
                         {
                             val outcomeId = outcomeLookup[outcome.key]
                                     ?: throw UnknownObjectError(outcome.key, "burden-outcome")
-                            writer.writeRecord(newBurdenEstimateRecord(setId, estimate, outcomeId, outcome.value))
+                            writer.writeRow(newBurdenEstimateRow(setId, estimate, outcomeId, outcome.value))
                         }
                     }
                 }
@@ -151,7 +150,7 @@ class JooqBurdenEstimateRepository(
             .map { it[COUNTRY.ID] }
             .toHashSet()
 
-    private fun newBurdenEstimateRecord(
+    private fun newBurdenEstimateRow(
             setId: Int,
             estimate: BurdenEstimate,
             outcomeId: Int,
