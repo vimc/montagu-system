@@ -7,6 +7,7 @@ import { Sandbox } from "../../../../Sandbox";
 import { expectOneAction } from "../../../../actionHelpers";
 import { GenderControl } from "../../../../../main/contrib/components/Responsibilities/Demographics/GenderControl";
 import { demographicStore } from "../../../../../main/contrib/stores/DemographicStore";
+import { FormatControl } from "../../../../../main/contrib/components/Responsibilities/Demographics/FormatControl";
 
 describe("DemographicOptions", () => {
     const sandbox = new Sandbox();
@@ -24,13 +25,17 @@ describe("DemographicOptions", () => {
         return findRowByLabel(rendered, "Gender").find(GenderControl);
     }
 
+    function getFormat(rendered: ShallowWrapper<any, any>) {
+        return findRowByLabel(rendered, "Format").find(FormatControl);
+    }
+
     it("renders statistic type options", () => {
         const sets = [
             mockDemographicDataset({ id: "a", name: "AA" }),
             mockDemographicDataset({ id: "b", name: "BB" })
         ];
         const rendered = shallow(<DemographicOptions
-            dataSets={sets} selectedDataSet={null} selectedGender="" />);
+            dataSets={sets} selectedDataSet={null} selectedGender="" selectedFormat=""/>);
         const options = getStatisticType(rendered).find("option");
         expect(options.map(x => {
             return {
@@ -48,7 +53,7 @@ describe("DemographicOptions", () => {
         const setA = mockDemographicDataset({ id: "a" });
         const setB = mockDemographicDataset({ id: "b" });
         const rendered = shallow(<DemographicOptions
-            dataSets={[setA, setB]} selectedDataSet={setB} selectedGender=""/>);
+            dataSets={[setA, setB]} selectedDataSet={setB} selectedGender="" selectedFormat=""/>);
         expect(getStatisticType(rendered).prop("value")).to.equal("b");
     });
 
@@ -56,9 +61,18 @@ describe("DemographicOptions", () => {
         const setA = mockDemographicDataset({ id: "a"});
         const setB = mockDemographicDataset({ id: "b" });
         const rendered = shallow(<DemographicOptions
-            dataSets={[setA, setB]} selectedDataSet={setA} selectedGender="x"/>);
+            dataSets={[setA, setB]} selectedDataSet={setA} selectedGender="x" selectedFormat=""/>);
         const control = getGender(rendered);
         expect(control.prop("dataSet")).to.equal(setA);
+        expect(control.prop("value")).to.equal("x");
+    });
+
+    it("renders format control", () => {
+        const setA = mockDemographicDataset({ id: "a"});
+        const setB = mockDemographicDataset({ id: "b" });
+        const rendered = shallow(<DemographicOptions
+            dataSets={[setA, setB]} selectedDataSet={setA} selectedGender="" selectedFormat="x"/>);
+        const control = getFormat(rendered);
         expect(control.prop("value")).to.equal("x");
     });
 
@@ -66,20 +80,29 @@ describe("DemographicOptions", () => {
         const spy = sandbox.dispatchSpy();
         const fetchOneTimeToken = sandbox.stubFetch(demographicStore, "fetchOneTimeToken");
         const rendered = shallow(<DemographicOptions
-            dataSets={[]} selectedDataSet={null} selectedGender="" />);
+            dataSets={[]} selectedDataSet={null} selectedGender="" selectedFormat="" />);
         getStatisticType(rendered).simulate("change", { target: { value: "a" } });
         expectOneAction(spy, { action: "DemographicActions.selectDataSet", payload: "a" });
         expect(fetchOneTimeToken.called).to.be.true;
     });
 
-
     it("emits action when gender is selected", () => {
         const spy = sandbox.dispatchSpy();
         const fetchOneTimeToken = sandbox.stubFetch(demographicStore, "fetchOneTimeToken");
         const rendered = shallow(<DemographicOptions
-            dataSets={[]} selectedDataSet={null} selectedGender="" />);
+            dataSets={[]} selectedDataSet={null} selectedGender="" selectedFormat=""/>);
         getGender(rendered).simulate("selectGender", "x");
         expectOneAction(spy, { action: "DemographicActions.selectGender", payload: "x" });
+        expect(fetchOneTimeToken.called).to.be.true;
+    });
+
+    it("emits action when format is selected", () => {
+        const spy = sandbox.dispatchSpy();
+        const fetchOneTimeToken = sandbox.stubFetch(demographicStore, "fetchOneTimeToken");
+        const rendered = shallow(<DemographicOptions
+            dataSets={[]} selectedDataSet={null} selectedGender="" selectedFormat=""/>);
+        getFormat(rendered).simulate("selectFormat", "x");
+        expectOneAction(spy, { action: "DemographicActions.selectFormat", payload: "x" });
         expect(fetchOneTimeToken.called).to.be.true;
     });
 });

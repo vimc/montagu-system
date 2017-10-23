@@ -12,6 +12,7 @@ export interface DemographicState {
     currentTouchstone: string;
     selectedDataSet: DemographicDataset;
     selectedGender: string;
+    selectedFormat: string;
     token: string
 }
 
@@ -25,6 +26,7 @@ class DemographicStore extends AbstractStore<DemographicState, DemographicStoreI
     currentTouchstone: string;
     selectedDataSet: DemographicDataset;
     selectedGender: string;
+    selectedFormat: string;
     token: string;
 
     constructor() {
@@ -37,6 +39,7 @@ class DemographicStore extends AbstractStore<DemographicState, DemographicStoreI
 
             handleSelectDataSet: demographicActions.selectDataSet,
             handleSelectGender: demographicActions.selectGender,
+            handleSelectFormat: demographicActions.selectFormat,
 
             handleBeginFetchToken: demographicActions.beginFetchToken,
             handleUpdateToken: demographicActions.updateToken,
@@ -60,6 +63,7 @@ class DemographicStore extends AbstractStore<DemographicState, DemographicStoreI
             currentTouchstone: null,
             selectedDataSet: null,
             selectedGender: "both",
+            selectedFormat: "long",
             token: null,
         };
     }
@@ -87,6 +91,9 @@ class DemographicStore extends AbstractStore<DemographicState, DemographicStoreI
     }
     handleSelectGender(gender: string) {
         this.selectedGender = gender;
+    }
+    handleSelectFormat(format: string) {
+        this.selectedFormat = format;
     }
     handleUpdateToken(token: string) {
         this.token = token;

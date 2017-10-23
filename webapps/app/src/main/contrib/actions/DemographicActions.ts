@@ -5,10 +5,12 @@ import { DemographicDataset } from "../../shared/models/Generated";
 interface Actions extends FetchActionsInterface<DemographicDataset[]> {
     selectDataSet(dataSetId: string): string;
     selectGender(gender: string): string;
+    selectFormat(format: string): string;
 
     updateToken(token: string): string;
     beginFetchToken(): boolean;
     clearUsedToken(): boolean;
+
 }
 
 class DemographicActions extends FetchActions<DemographicDataset[]> implements Actions {
@@ -18,6 +20,10 @@ class DemographicActions extends FetchActions<DemographicDataset[]> implements A
 
     selectGender(gender: string): string {
         return gender;
+    }
+
+    selectFormat(format: string): string {
+        return format;
     }
 
     updateToken(token: string): string {

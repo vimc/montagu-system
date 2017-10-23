@@ -4,6 +4,7 @@ import { GenderControl } from "./GenderControl";
 import { DemographicDataset } from "../../../../shared/models/Generated";
 import { demographicStore } from "../../../stores/DemographicStore";
 import { doNothing } from "../../../../shared/Helpers";
+import { FormatControl } from "./FormatControl";
 
 const commonStyles = require("../../../../shared/styles/common.css");
 const styles = require("../Responsibilities.css");
@@ -12,6 +13,7 @@ interface Props {
     dataSets: DemographicDataset[];
     selectedDataSet: DemographicDataset;
     selectedGender: string;
+    selectedFormat: string;
 }
 
 export class DemographicOptions extends React.Component<Props, undefined> {
@@ -22,6 +24,11 @@ export class DemographicOptions extends React.Component<Props, undefined> {
 
     onSelectGender(gender: string) {
         demographicActions.selectGender(gender);
+        demographicStore.fetchOneTimeToken().catch(doNothing);
+    }
+
+    onSelectFormat(format: string) {
+        demographicActions.selectFormat(format);
         demographicStore.fetchOneTimeToken().catch(doNothing);
     }
 
@@ -54,6 +61,13 @@ export class DemographicOptions extends React.Component<Props, undefined> {
                     dataSet={props.selectedDataSet}
                     value={props.selectedGender}
                     onSelectGender={this.onSelectGender} />
+                </td>
+            </tr>
+            <tr className={commonStyles.specialColumn}>
+                <td>Format</td>
+                <td><FormatControl
+                    value={props.selectedFormat}
+                    onSelectFormat={this.onSelectFormat} />
                 </td>
             </tr>
             </tbody>
