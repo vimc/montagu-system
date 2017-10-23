@@ -1,6 +1,8 @@
 package org.vaccineimpact.api.app.repositories.jooq
 
 import org.jooq.DSLContext
+import org.postgresql.copy.CopyManager
+import org.postgresql.core.BaseConnection
 import org.vaccineimpact.api.app.errors.DatabaseContentsError
 import org.vaccineimpact.api.app.errors.InconsistentDataError
 import org.vaccineimpact.api.app.errors.OperationNotAllowedError
@@ -9,13 +11,13 @@ import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
 import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.ScenarioRepository
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
+import org.vaccineimpact.api.db.*
 import org.vaccineimpact.api.db.Tables.*
-import org.vaccineimpact.api.db.fromJoinPath
-import org.vaccineimpact.api.db.joinPath
-import org.vaccineimpact.api.db.tables.records.BurdenEstimateRecord
 import org.vaccineimpact.api.models.BurdenEstimate
 import org.vaccineimpact.api.models.ResponsibilitySetStatus
 import java.beans.ConstructorProperties
+import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
 import java.math.BigDecimal
 import java.sql.Timestamp
 import java.time.Instant
@@ -86,40 +88,84 @@ class JooqBurdenEstimateRepository(
                                   outcomeLookup: Map<String, Int>, cohortSizeId: Int,
                                   expectedDisease: String)
     {
-        val records = estimates.flatMap { estimate ->
-            if (estimate.disease != expectedDisease)
-            {
-                throw InconsistentDataError("Provided estimate lists disease as '${estimate.disease}' but scenario is for disease '$expectedDisease'")
-            }
-            val cohortSize = newBurdenEstimateRecord(setId, estimate, cohortSizeId,
-                   estimate.cohortSize)
+        val countries = getAllCountryIds()
 
-            val otherOutcomes = estimate.outcomes.map { outcome ->
-                val outcomeId = outcomeLookup[outcome.key]
-                    ?: throw UnknownObjectError(outcome.key, "burden-outcome")
-                newBurdenEstimateRecord(setId, estimate, outcomeId, outcome.value)
+        // The only foreign keys are:
+        // * burden_estimate_set, which is the same for every row, and it's the one we just created and know exists
+        // * country, which we check below, per row of the CSV (and each row represents multiple rows in the database
+        //   so this is an effort saving).
+        // * burden_outcome, which we check below (currently we check for every row, but given these are set in the
+        //   columns and don't vary by row this could be made more efficient)
+        dsl.withoutCheckingForeignKeyConstraints(BURDEN_ESTIMATE) {
+
+            // Currently we write everything to a byte array in memory and then later feed that stream to CopyManager.
+            // Obviously this could be made more performant by chaining those two together somehow.
+            val data = ByteArrayOutputStream().use { stream ->
+                PostgresCopyWriter(stream).use { writer ->
+                    for (estimate in estimates)
+                    {
+                        if (estimate.disease != expectedDisease)
+                        {
+                            throw InconsistentDataError("Provided estimate lists disease as '${estimate.disease}' but scenario is for disease '$expectedDisease'")
+                        }
+                        if (estimate.country !in countries)
+                        {
+                            throw UnknownObjectError(estimate.country, "country")
+                        }
+
+                        writer.writeRow(newBurdenEstimateRow(setId, estimate, cohortSizeId, estimate.cohortSize))
+                        for (outcome in estimate.outcomes)
+                        {
+                            val outcomeId = outcomeLookup[outcome.key]
+                                    ?: throw UnknownObjectError(outcome.key, "burden-outcome")
+                            writer.writeRow(newBurdenEstimateRow(setId, estimate, outcomeId, outcome.value))
+                        }
+                    }
+                }
+                stream.toByteArray()
             }
-            listOf(cohortSize) + otherOutcomes
+
+            // We use dsl.connection to drop down from jOOQ to the JDBC level so we can use CopyManager.
+            dsl.connection { connection ->
+                ByteArrayInputStream(data).use { stream ->
+                    val t = BURDEN_ESTIMATE
+                    val manager = CopyManager(connection as BaseConnection)
+                    manager.copyInto(BURDEN_ESTIMATE, stream, listOf(
+                            t.BURDEN_ESTIMATE_SET,
+                            t.COUNTRY,
+                            t.YEAR,
+                            t.AGE,
+                            t.STOCHASTIC,
+                            t.BURDEN_OUTCOME,
+                            t.VALUE
+                    ))
+                }
+            }
         }
-        dsl.batchStore(records).execute()
     }
 
-    private fun newBurdenEstimateRecord(
+    private fun getAllCountryIds() = dsl.select(COUNTRY.ID)
+            .from(COUNTRY)
+            .fetch()
+            .map { it[COUNTRY.ID] }
+            .toHashSet()
+
+    private fun newBurdenEstimateRow(
             setId: Int,
             estimate: BurdenEstimate,
             outcomeId: Int,
             outcomeValue: BigDecimal?
-    ): BurdenEstimateRecord
+    ): List<Any?>
     {
-        return dsl.newRecord(BURDEN_ESTIMATE).apply {
-            burdenEstimateSet = setId
-            country = estimate.country
-            year = estimate.year
-            age = estimate.age
-            stochastic = false
-            burdenOutcome = outcomeId
-            value = outcomeValue
-        }
+        return listOf(
+                setId,
+                estimate.country,
+                estimate.year,
+                estimate.age,
+                false, /* stochastic */
+                outcomeId,
+                outcomeValue
+        )
     }
 
     private fun addSet(responsibilityId: Int, uploader: String, timestamp: Instant, modelVersion: Int): Int
