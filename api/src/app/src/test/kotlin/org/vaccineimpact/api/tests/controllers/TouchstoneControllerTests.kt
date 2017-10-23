@@ -21,11 +21,17 @@ class TouchstoneControllerTests : ControllerTests<TouchstoneController>()
     override fun makeController(controllerContext: ControllerContext)
             = TouchstoneController(controllerContext)
 
+    private val openTouchstone = Touchstone("t-1", "t", 1, "description", TouchstoneStatus.OPEN)
+    private val inPrepTouchstone =  Touchstone("t-2", "t", 2, "description", TouchstoneStatus.IN_PREPARATION)
+    private val source = "test-source"
+    private val type = "test-type"
+    private val scenario = Scenario("id", "desc", "disease", listOf("t1, t2"))
+
     @Test
     fun `getTouchstones returns touchstones`()
     {
         val touchstones = listOf(
-                Touchstone("t-1", "t", 1, "description", TouchstoneStatus.OPEN)
+                openTouchstone
         )
         val repo = mock<TouchstoneRepository> {
             on { this.touchstones } doReturn InMemoryDataSet(touchstones)
@@ -42,8 +48,7 @@ class TouchstoneControllerTests : ControllerTests<TouchstoneController>()
     fun `getTouchstones filters out in-preparation touchstones if the user doesn't have the permissions`()
     {
         val touchstones = listOf(
-                Touchstone("t-1", "t", 1, "description", TouchstoneStatus.OPEN),
-                Touchstone("t-2", "t", 2, "description", TouchstoneStatus.IN_PREPARATION)
+                openTouchstone, inPrepTouchstone
         )
         val repo = mock<TouchstoneRepository> {
             on { this.touchstones } doReturn InMemoryDataSet(touchstones)
@@ -53,37 +58,38 @@ class TouchstoneControllerTests : ControllerTests<TouchstoneController>()
         val permissiveContext = mock<ActionContext> {
             on { hasPermission(any()) } doReturn true
         }
+
         assertThat(controller.getTouchstones(permissiveContext, repo)).hasSize(2)
 
         val limitedContext = mock<ActionContext> {
             on { hasPermission(any()) } doReturn false
         }
+
         assertThat(controller.getTouchstones(limitedContext, repo)).hasSize(1)
     }
 
     @Test
     fun `getScenario fetches from repository`()
     {
-        val touchstone = Touchstone("t-1", "t", 1, "description", TouchstoneStatus.OPEN)
-        val scenario = Scenario("id", "desc", "disease", listOf("t1, t2"))
         val coverageSets = listOf(CoverageSet(1, "t1", "name", "vaccine", GAVISupportLevel.WITH, ActivityType.CAMPAIGN))
         val result = ScenarioAndCoverageSets(scenario, coverageSets)
 
         val repo = mock<TouchstoneRepository> {
             on { getScenario(any(), any()) } doReturn result
-            on { touchstones } doReturn InMemoryDataSet(listOf(touchstone))
+            on { touchstones } doReturn InMemoryDataSet(listOf(openTouchstone))
         }
+
         val context = mock<ActionContext> {
             on { hasPermission(any()) } doReturn true
-            on { params(":touchstone-id") } doReturn touchstone.id
+            on { params(":touchstone-id") } doReturn openTouchstone.id
             on { params(":scenario-id") } doReturn scenario.id
         }
 
         val controller = TouchstoneController(mockControllerContext())
         val data = controller.getScenario(context, repo)
 
-        verify(repo).getScenario(eq(touchstone.id), eq(scenario.id))
-        assertThat(data.touchstone).isEqualTo(touchstone)
+        verify(repo).getScenario(eq(openTouchstone.id), eq(scenario.id))
+        assertThat(data.touchstone).isEqualTo(openTouchstone)
         assertThat(data.scenario).isEqualTo(scenario)
         assertThat(data.coverageSets).hasSameElementsAs(coverageSets)
     }
@@ -91,14 +97,12 @@ class TouchstoneControllerTests : ControllerTests<TouchstoneController>()
     @Test
     fun `getScenario requires touchstones prepare permission for in-preparation touchstone`()
     {
-        val touchstone = Touchstone("t-1", "t", 1, "description", TouchstoneStatus.IN_PREPARATION)
-        val scenario = Scenario("id", "desc", "disease", listOf("t1, t2"))
         val repo = mock<TouchstoneRepository> {
-            on { touchstones } doReturn InMemoryDataSet(listOf(touchstone))
+            on { touchstones } doReturn InMemoryDataSet(listOf(inPrepTouchstone))
             on { getScenario(any(), any()) } doReturn ScenarioAndCoverageSets(scenario, emptyList())
         }
         val context = mock<ActionContext> {
-            on { params(":touchstone-id") } doReturn touchstone.id
+            on { params(":touchstone-id") } doReturn inPrepTouchstone.id
             on { params(":scenario-id") } doReturn scenario.id
         }
         val controller = TouchstoneController(mockControllerContext())
@@ -110,22 +114,18 @@ class TouchstoneControllerTests : ControllerTests<TouchstoneController>()
     @Test
     fun `getDemographicData fetches from repository`()
     {
-        val touchstone = Touchstone("t-1", "t", 1, "description", TouchstoneStatus.OPEN)
-
-        val source = "test-source"
-        val type = "test-type"
-
-        val demographicMetadata = DemographicDataForTouchstone(touchstone,
+        val demographicMetadata = DemographicDataForTouchstone(openTouchstone,
                 DemographicMetadata("id", "name", null, listOf(), "people", "age", source))
 
         val repo = mock<TouchstoneRepository> {
-            on { getDemographicData(type, source, touchstone.id) } doReturn
+            on { getDemographicData(type, source, openTouchstone.id) } doReturn
                     SplitData(demographicMetadata, DataTable.new(listOf()))
-            on { touchstones } doReturn InMemoryDataSet(listOf(touchstone))
+            on { touchstones } doReturn InMemoryDataSet(listOf(openTouchstone))
         }
+
         val context = mock<ActionContext> {
             on { hasPermission(any()) } doReturn true
-            on { params(":touchstone-id") } doReturn touchstone.id
+            on { params(":touchstone-id") } doReturn openTouchstone.id
             on { params(":type-code") } doReturn type
             on { params(":source-code") } doReturn source
         }
@@ -140,30 +140,11 @@ class TouchstoneControllerTests : ControllerTests<TouchstoneController>()
     @Test
     fun `gets wide demographic data`()
     {
-        val touchstone = Touchstone("t-1", "t", 1, "description", TouchstoneStatus.OPEN)
+        val repo = getRepoWithDemographicData()
 
-        val source = "test-source"
-        val type = "test-type"
-
-        val demographicMetadata = DemographicDataForTouchstone(touchstone,
-                DemographicMetadata("id", "name", null, listOf(), "people", "age", source))
-
-        val fakeRows = listOf(
-                LongDemographicRow(123, "ABC", "ABC-country", 0, 5, 1980, "F", BigDecimal(1200)),
-                LongDemographicRow(123, "ABC", "ABC-country", 0, 5, 1985, "F", BigDecimal(1300)),
-                LongDemographicRow(123, "ABC", "ABC-country", 0, 5, 1990, "F", BigDecimal(1400)),
-                LongDemographicRow(123, "ABC", "ABC-country", 5, 10, 1980, "F", BigDecimal(1500)),
-                LongDemographicRow(456, "DEF", "DEF-country", 0, 5, 1980, "F", BigDecimal(2200)),
-                LongDemographicRow(456, "DEF", "DEF-country", 0, 5, 1985, "F", BigDecimal(2300)))
-
-        val repo = mock<TouchstoneRepository> {
-            on { getDemographicData(type, source, touchstone.id) } doReturn
-                    SplitData(demographicMetadata, DataTable.new(fakeRows))
-            on { touchstones } doReturn InMemoryDataSet(listOf(touchstone))
-        }
         val context = mock<ActionContext> {
             on { hasPermission(any()) } doReturn true
-            on { params(":touchstone-id") } doReturn touchstone.id
+            on { params(":touchstone-id") } doReturn openTouchstone.id
             on { params(":type-code") } doReturn type
             on { params(":source-code") } doReturn source
             on { queryParams("format") } doReturn "wide"
@@ -190,22 +171,11 @@ class TouchstoneControllerTests : ControllerTests<TouchstoneController>()
     @Test
     fun `gets long demographic data if format=long`()
     {
-        val touchstone = Touchstone("t-1", "t", 1, "description", TouchstoneStatus.OPEN)
+        val repo = getRepoWithDemographicData()
 
-        val source = "test-source"
-        val type = "test-type"
-
-        val demographicMetadata = DemographicDataForTouchstone(touchstone,
-                DemographicMetadata("id", "name", null, listOf(), "people", "age", source))
-
-        val repo = mock<TouchstoneRepository> {
-            on { getDemographicData(type, source, touchstone.id) } doReturn
-                    SplitData(demographicMetadata, DataTable.new(listOf()))
-            on { touchstones } doReturn InMemoryDataSet(listOf(touchstone))
-        }
         val context = mock<ActionContext> {
             on { hasPermission(any()) } doReturn true
-            on { params(":touchstone-id") } doReturn touchstone.id
+            on { params(":touchstone-id") } doReturn openTouchstone.id
             on { params(":type-code") } doReturn type
             on { params(":source-code") } doReturn source
             on { queryParams("format") } doReturn "long"
@@ -220,22 +190,11 @@ class TouchstoneControllerTests : ControllerTests<TouchstoneController>()
     @Test
     fun `throws error if supplied format is invalid`()
     {
-        val touchstone = Touchstone("t-1", "t", 1, "description", TouchstoneStatus.OPEN)
+        val repo = getRepoWithDemographicData()
 
-        val source = "test-source"
-        val type = "test-type"
-
-        val demographicMetadata = DemographicDataForTouchstone(touchstone,
-                DemographicMetadata("id", "name", null, listOf(), "people", "age", source))
-
-        val repo = mock<TouchstoneRepository> {
-            on { getDemographicData(type, source, touchstone.id) } doReturn
-                    SplitData(demographicMetadata, DataTable.new(listOf()))
-            on { touchstones } doReturn InMemoryDataSet(listOf(touchstone))
-        }
         val context = mock<ActionContext> {
             on { hasPermission(any()) } doReturn true
-            on { params(":touchstone-id") } doReturn touchstone.id
+            on { params(":touchstone-id") } doReturn openTouchstone.id
             on { params(":type-code") } doReturn type
             on { params(":source-code") } doReturn source
             on { queryParams("format") } doReturn "678hj"
@@ -243,7 +202,27 @@ class TouchstoneControllerTests : ControllerTests<TouchstoneController>()
 
         val controller = TouchstoneController(mockControllerContext())
 
-        Assertions.assertThatThrownBy {  controller.getDemographicDataAndMetadata(context, repo) }
+        Assertions.assertThatThrownBy { controller.getDemographicDataAndMetadata(context, repo) }
                 .isInstanceOf(BadRequest::class.java)
+    }
+
+    private fun getRepoWithDemographicData(): TouchstoneRepository
+    {
+        val demographicMetadata = DemographicDataForTouchstone(openTouchstone,
+                DemographicMetadata("id", "name", null, listOf(), "people", "age", source))
+
+        val fakeRows = listOf(
+                LongDemographicRow(123, "ABC", "ABC-country", 0, 5, 1980, "F", BigDecimal(1200)),
+                LongDemographicRow(123, "ABC", "ABC-country", 0, 5, 1985, "F", BigDecimal(1300)),
+                LongDemographicRow(123, "ABC", "ABC-country", 0, 5, 1990, "F", BigDecimal(1400)),
+                LongDemographicRow(123, "ABC", "ABC-country", 5, 10, 1980, "F", BigDecimal(1500)),
+                LongDemographicRow(456, "DEF", "DEF-country", 0, 5, 1980, "F", BigDecimal(2200)),
+                LongDemographicRow(456, "DEF", "DEF-country", 0, 5, 1985, "F", BigDecimal(2300)))
+
+        return mock<TouchstoneRepository> {
+            on { getDemographicData(type, source, openTouchstone.id) } doReturn
+                    SplitData(demographicMetadata, DataTable.new(fakeRows))
+            on { touchstones } doReturn InMemoryDataSet(listOf(openTouchstone))
+        }
     }
 }
