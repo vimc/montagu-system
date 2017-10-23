@@ -52,7 +52,7 @@ open class ModellingGroupController(context: ControllerContext)
                         .secured(setOf("$groupScope/estimates.write", "$groupScope/responsibilities.read")),
                 oneRepoEndpoint("$scenarioURL/estimates/get_onetime_link/", { c, r -> getOneTimeLinkToken(c, r, OneTimeAction.BURDENS) }, repos, { it.token })
                         .secured(setOf("$groupScope/estimates.write", "$groupScope/responsibilities.read")),
-                oneRepoEndpoint("/:group-id/actions/associate_member/", this::modifyMembership, repos, {it.user}, method = HttpMethod.post).secured()
+                oneRepoEndpoint("/:group-id/actions/associate_member/", this::modifyMembership, repos, { it.user }, method = HttpMethod.post).secured()
         )
     }
 
@@ -131,11 +131,13 @@ open class ModellingGroupController(context: ControllerContext)
             FlexibleDataTable<WideCoverageRow>
     {
         val groupedRows = data
-                .groupBy { hashSetOf(
-                        it.countryCode, it.setName,
-                        it.ageFirst, it.ageLast,
-                        it.vaccine, it.gaviSupport, it.activityType
-                )}
+                .groupBy {
+                    hashSetOf(
+                            it.countryCode, it.setName,
+                            it.ageFirst, it.ageLast,
+                            it.vaccine, it.gaviSupport, it.activityType
+                    )
+                }
 
         val rows = groupedRows.values
                 .map {
@@ -154,11 +156,9 @@ open class ModellingGroupController(context: ControllerContext)
         // all records have same country, gender, age_from and age_to, so can look at first one for these
         val reference = records.first()
 
-        val coverageAndTargetPerYear = records.associateBy(
-                { "${it.year}_coverage" },
-                { it.coverage }).plus(records.associateBy(
-                { "${it.year}_target" },
-                { it.coverage }))
+        val coverageAndTargetPerYear =
+                records.associateBy({ "${it.year}_coverage" }, { it.coverage }) +
+                records.associateBy({ "${it.year}_target" }, { it.target })
 
         return WideCoverageRow(reference.scenario,
                 reference.setName,
