@@ -18,7 +18,7 @@ class PostgresCopyWriter(private val wrapped: Writer) : Flushable by wrapped, Cl
     // From the documentation: "In particular, the following characters must be preceded by a backslash
     // if they appear as part of a column value: backslash itself, newline, carriage return, and the current
     // delimiter character."
-    private val illegalCharacters = Regex("\\|\n|\r|\t")
+    private val illegalCharacters = Regex("""\\|\n|\r|\t""")
 
     fun writeRecord(values: Iterable<Any?>)
     {
