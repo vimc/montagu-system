@@ -131,7 +131,9 @@ open class ModellingGroupController(context: ControllerContext)
             FlexibleDataTable<WideCoverageRow>
     {
         val groupedRows = data
-                .groupBy { Triple(it.countryCode, it.ageFirst, it.ageLast) }
+                .groupBy { hashSetOf(it.countryCode, it.setName,
+                        it.ageFirst, it.ageLast,
+                        it.vaccine, it.gaviSupport, it.activityType) }//
 
         val rows = groupedRows.values
                 .map {
@@ -139,7 +141,7 @@ open class ModellingGroupController(context: ControllerContext)
                 }
 
         // all the rows should have the same number of years, so we just look at the first row
-        val years = rows.first().coveragePerYear.keys.toList()
+        val years = rows.first().coverageAndTargetPerYear.keys.toList()
 
         return FlexibleDataTable.new(rows, years)
     }
@@ -150,9 +152,11 @@ open class ModellingGroupController(context: ControllerContext)
         // all records have same country, gender, age_from and age_to, so can look at first one for these
         val reference = records.first()
 
-        val coveragePerYear = records.associateBy(
-                { it.year },
-                { it.coverage })
+        val coverageAndTargetPerYear = records.associateBy(
+                { "${it.year}_coverage" },
+                { it.coverage }).plus(records.associateBy(
+                { "${it.year}_target" },
+                { it.coverage }))
 
         return WideCoverageRow(reference.scenario,
                 reference.setName,
@@ -164,8 +168,7 @@ open class ModellingGroupController(context: ControllerContext)
                 reference.ageFirst,
                 reference.ageLast,
                 reference.ageRangeVerbatim,
-                reference.target,
-                coveragePerYear)
+                coverageAndTargetPerYear)
     }
 
     fun modifyMembership(context: ActionContext, repo: UserRepository): String

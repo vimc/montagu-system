@@ -13,11 +13,12 @@ import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.UserRepository
 import org.vaccineimpact.api.app.serialization.DataTable
 import org.vaccineimpact.api.app.serialization.SplitData
-import org.vaccineimpact.api.app.serialization.StreamSerializable
+import org.vaccineimpact.api.db.nextDecimal
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import java.math.BigDecimal
+import java.util.*
 
 class ModellingGroupControllersTests : ControllerTests<ModellingGroupController>()
 {
@@ -128,7 +129,7 @@ class ModellingGroupControllersTests : ControllerTests<ModellingGroupController>
             on { it.params(":group-id") } doReturn "gId"
             on { it.params(":touchstone-id") } doReturn "tId"
             on { it.params(":scenario-id") } doReturn "sId"
-            on { it.queryParams("format")} doReturn "long"
+            on { it.queryParams("format") } doReturn "long"
             on { hasPermission(any()) } doReturn true
         }
 
@@ -145,7 +146,13 @@ class ModellingGroupControllersTests : ControllerTests<ModellingGroupController>
 
         val controller = ModellingGroupController(mockControllerContext())
         val data = controller.getCoverageData(context, repo).data
+
+        // test data includes 4 years
+        // there are 7 other variable properties, test data includes 2 of each
+        val expectedRowCount = Math.pow(2.toDouble(), 7.toDouble())*4
+
         Assertions.assertThat(data.first() is CoverageRow).isTrue()
+        Assertions.assertThat(data.count()).isEqualTo(expectedRowCount.toInt())
     }
 
     @Test
@@ -156,7 +163,7 @@ class ModellingGroupControllersTests : ControllerTests<ModellingGroupController>
             on { it.params(":group-id") } doReturn "gId"
             on { it.params(":touchstone-id") } doReturn "tId"
             on { it.params(":scenario-id") } doReturn "sId"
-            on { it.queryParams("format")} doReturn "wide"
+            on { it.queryParams("format") } doReturn "wide"
             on { hasPermission(any()) } doReturn true
         }
 
@@ -164,6 +171,10 @@ class ModellingGroupControllersTests : ControllerTests<ModellingGroupController>
         val data = controller.getCoverageData(context, repo).data
 
         Assertions.assertThat(data.first() is WideCoverageRow).isTrue()
+
+        // there are 7 variable properties, test data includes 2 of each
+        val expectedRowCount = Math.pow(2.toDouble(), 7.toDouble())
+        Assertions.assertThat(data.count()).isEqualTo(expectedRowCount.toInt())
     }
 
 
@@ -175,13 +186,13 @@ class ModellingGroupControllersTests : ControllerTests<ModellingGroupController>
             on { it.params(":group-id") } doReturn "gId"
             on { it.params(":touchstone-id") } doReturn "tId"
             on { it.params(":scenario-id") } doReturn "sId"
-            on { it.queryParams("format")} doReturn "78493hfjk"
+            on { it.queryParams("format") } doReturn "78493hfjk"
             on { hasPermission(any()) } doReturn true
         }
 
         val controller = ModellingGroupController(mockControllerContext())
 
-        Assertions.assertThatThrownBy {  controller.getCoverageData(context, repo) }
+        Assertions.assertThatThrownBy { controller.getCoverageData(context, repo) }
                 .isInstanceOf(BadRequest::class.java)
     }
 
@@ -199,9 +210,9 @@ class ModellingGroupControllersTests : ControllerTests<ModellingGroupController>
     @Test
     fun `modifyMembership returns error if user does not have permission to manage members`()
     {
-        val context = mock<ActionContext>{
-            on (it.params(":group-id")) doReturn "gId"
-            on (it.permissions) doReturn PermissionSet()
+        val context = mock<ActionContext> {
+            on(it.params(":group-id")) doReturn "gId"
+            on(it.permissions) doReturn PermissionSet()
         }
 
         val controller = ModellingGroupController(mockControllerContext())
@@ -213,9 +224,9 @@ class ModellingGroupControllersTests : ControllerTests<ModellingGroupController>
     @Test
     fun `can modifyMembership if user has globally scoped permission to manage members`()
     {
-        val context = mock<ActionContext>{
-            on (it.params(":group-id")) doReturn "gId"
-            on (it.permissions) doReturn PermissionSet(
+        val context = mock<ActionContext> {
+            on(it.params(":group-id")) doReturn "gId"
+            on(it.permissions) doReturn PermissionSet(
                     setOf(ReifiedPermission("modelling-groups.manage-members",
                             Scope.Global())))
         }
@@ -226,9 +237,9 @@ class ModellingGroupControllersTests : ControllerTests<ModellingGroupController>
     @Test
     fun `can modifyMembership if user has manage members permission scoped to group`()
     {
-        val context = mock<ActionContext>{
-            on (it.params(":group-id")) doReturn "gId"
-            on (it.permissions) doReturn PermissionSet(
+        val context = mock<ActionContext> {
+            on(it.params(":group-id")) doReturn "gId"
+            on(it.permissions) doReturn PermissionSet(
                     setOf(ReifiedPermission("modelling-groups.manage-members",
                             Scope.Specific("modelling-group", "gId"))))
         }
@@ -268,13 +279,12 @@ class ModellingGroupControllersTests : ControllerTests<ModellingGroupController>
     private fun makeRepoMockingGetCoverageData(status: TouchstoneStatus): ModellingGroupRepository
     {
         val coverageSets = mockCoverageSetsData(status)
-        val data = SplitData(coverageSets, DataTable.new(listOf(
-                CoverageRow("sId", "name", "vaccine", GAVISupportLevel.WITH, ActivityType.CAMPAIGN,
-                        "ABC", "ABC-Name", 2000, BigDecimal.ZERO, BigDecimal.TEN, "0-10", null, BigDecimal("67.88"))
-        )))
+        val fakeRows = generateCoverageRows()
+        val data = SplitData(coverageSets, DataTable.new(fakeRows))
         return mock {
             on { getCoverageData(any(), any(), any()) } doReturn data
-        }    }
+        }
+    }
 
     private fun mockCoverageSetsData(status: TouchstoneStatus) = ScenarioTouchstoneAndCoverageSets(
             Touchstone("tId", "t", 1, "desc", status),
@@ -283,4 +293,52 @@ class ModellingGroupControllersTests : ControllerTests<ModellingGroupController>
                     CoverageSet(1, "tId", "name", "vaccine", GAVISupportLevel.WITH, ActivityType.CAMPAIGN)
             )
     )
+
+    private fun generateCoverageRows(): List<CoverageRow>
+    {
+        val countries = listOf("ABC", "DEF")
+        val setNames = listOf("set1", "set2")
+        val vaccines = listOf("vaccine1", "vaccine2")
+        val supportLevels = listOf(GAVISupportLevel.WITHOUT, GAVISupportLevel.WITH)
+        val ageFroms = listOf(BigDecimal.ZERO, BigDecimal(5))
+        val ageTos = listOf(BigDecimal.TEN, BigDecimal(5))
+        val activityTypes = listOf(ActivityType.CAMPAIGN, ActivityType.NONE)
+        val years = listOf(1985, 1990, 1995, 2000)
+
+        val listToReturn = mutableListOf<CoverageRow>()
+
+        for (country in countries)
+        {
+            for (set in setNames)
+            {
+                for (vaccine in vaccines)
+                {
+                    for (support in supportLevels)
+                    {
+                        for (ageFrom in ageFroms)
+                        {
+                            for (ageTo in ageTos)
+                            {
+                                for (activity in activityTypes)
+                                {
+                                    for (year in years)
+                                    {
+                                        listToReturn.add(CoverageRow("sId", set, vaccine, support, activity,
+                                                country, "$country-Name", year, ageFrom, ageTo, "$ageFrom-$ageTo",
+                                                random.nextDecimal(1000, 10000, numberOfDecimalPlaces = 2),
+                                                random.nextDecimal(1000, 10000, numberOfDecimalPlaces = 2)))
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return listToReturn
+    }
+
+
+    private val random = Random(0)
 }
