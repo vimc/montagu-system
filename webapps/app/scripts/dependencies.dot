@@ -1,0 +1,20 @@
+digraph {
+    "add-test-accounts-for-integration-tests.sh";
+    "cli.sh";
+    "run-apis.sh";
+    "run-development-apis.sh";
+    "run-integration-tests.sh";
+    "run-integration-in-container.sh";
+    "run-integration-with-apis.sh";
+    "stop-apis.sh";
+
+    "add-test-accounts-for-integration-tests.sh" -> "cli.sh";
+    "run-apis.sh" -> "add-test-accounts-for-integration-tests.sh";
+    "run-development-apis.sh" -> "run-apis.sh";
+    "run-development-apis.sh" -> "stop-apis.sh";
+    "run-integration-in-container.sh" -> "add-test-accounts-for-integration-tests.sh";
+    "run-integration-in-container.sh" -> "run-integration-tests.sh";
+    "run-integration-with-apis.sh" -> "run-apis.sh";
+    "run-integration-with-apis.sh" -> "stop-apis.sh";
+    "run-integration-with-apis.sh" -> "run-integration-tests.sh";
+}
