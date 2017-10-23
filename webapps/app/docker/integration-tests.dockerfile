@@ -1,4 +1,4 @@
-FROM montagu-portal-build-env
+FROM montagu-portal-shared-build-env
 
 ENV PGHOST db
 ENV MONTAGU_PORTAL_PROFILE packaged_integration_tests
