@@ -3,15 +3,31 @@ package org.vaccineimpact.api.security
 import org.vaccineimpact.api.db.JooqContext
 import kotlin.system.exitProcess
 
-data class NewUser(val name: String, val username: String, val email: String, val password: String)
+data class NewUser(
+        val name: String,
+        val username: String,
+        val email: String,
+        val password: String,
+        val alwaysCreate: Boolean = true
+)
+{
+    companion object
+    {
+        fun fromArgs(args: List<String>): NewUser
+        {
+            val conditionalCreate = args.size == 5 && args[4] == "--if-not-exists"
+            return NewUser(args[0], args[1], args[2], args[3], !conditionalCreate)
+        }
+    }
+}
 
 fun addUser(args: List<String>)
 {
     val user = when (args.size) {
         0 -> getInteractively()
-        4 -> NewUser(args[0], args[1], args[2], args[3])
+        4,5 -> NewUser.fromArgs(args)
         else -> {
-            println("Usage: ./user.sh add [FULL_NAME USERNAME EMAIL PASSWORD]")
+            println("Usage: ./user.sh add [FULL_NAME USERNAME EMAIL PASSWORD [--if-not-exists]]")
             println("Leave off all arguments to add user interactively")
             exitProcess(0)
         }
@@ -20,9 +36,16 @@ fun addUser(args: List<String>)
     try
     {
         JooqContext().use {
-            UserHelper.saveUser(it.dsl, user.username, user.name, user.email, user.password)
+            if (user.alwaysCreate || !UserHelper.userExists(it.dsl, user.username))
+            {
+                UserHelper.saveUser(it.dsl, user.username, user.name, user.email, user.password)
+                println("Saved user '${user.username}' to the database")
+            }
+            else
+            {
+                println("User with username '${user.username}' already exists; no changes made")
+            }
         }
-        println("Saved user '${user.username}' to the database")
     }
     catch (e: Exception)
     {
