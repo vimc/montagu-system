@@ -68,11 +68,11 @@ class GetResponsibilityCoverageSetsTests : ModellingGroupRepositoryTests()
             val result = it.getCoverageData(groupId, touchstoneId, scenarioId)
             checkMetadataIsAsExpected(result.structuredMetadata)
             assertThat(result.tableData.data).containsExactlyElementsOf(listOf(
-                    CoverageRow(scenarioId, "First", "YF", GAVISupportLevel.WITHOUT, ActivityType.CAMPAIGN,
+                    LongCoverageRow(scenarioId, "First", "YF", GAVISupportLevel.WITHOUT, ActivityType.CAMPAIGN,
                             "AAA", "AAA-Name", 2000, 10.toDecimal(), 20.toDecimal(), "10-20", 100.toDecimal(), "50.50".toDecimalOrNull()),
-                    CoverageRow(scenarioId, "Second", "YF", GAVISupportLevel.WITH, ActivityType.CAMPAIGN,
+                    LongCoverageRow(scenarioId, "Second", "YF", GAVISupportLevel.WITH, ActivityType.CAMPAIGN,
                             "BBB", "BBB-Name", 2000, 11.toDecimal(), 21.toDecimal(), null, null, null),
-                    CoverageRow(scenarioId, "Third", "YF", GAVISupportLevel.BESTMINUS, ActivityType.CAMPAIGN,
+                    LongCoverageRow(scenarioId, "Third", "YF", GAVISupportLevel.BESTMINUS, ActivityType.CAMPAIGN,
                             "BBB", "BBB-Name", 2001, 12.toDecimal(), 22.toDecimal(), null, null, null)
             ))
         }

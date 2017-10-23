@@ -114,7 +114,7 @@ class JooqTouchstoneRepository(dsl: DSLContext, private val scenarioRepository: 
     override fun getScenarioAndCoverageData(
             touchstoneId: String,
             scenarioDescId: String
-    ): SplitData<ScenarioAndCoverageSets, CoverageRow>
+    ): SplitData<ScenarioAndCoverageSets, LongCoverageRow>
     {
         val records = getCoverageSetsForScenario(touchstoneId, scenarioDescId, includeCoverageData = true)
         val scenario = getScenariosFromRecords(records).singleOrNull()
@@ -316,7 +316,7 @@ class JooqTouchstoneRepository(dsl: DSLContext, private val scenarioRepository: 
             mapEnum(record[COVERAGE_SET.ACTIVITY_TYPE])
     )
 
-    private fun mapCoverageRow(record: Record, scenarioDescriptionId: String) = CoverageRow(
+    private fun mapCoverageRow(record: Record, scenarioDescriptionId: String) = LongCoverageRow(
             scenarioDescriptionId,
             record[COVERAGE_SET.NAME],
             record[COVERAGE_SET.VACCINE],

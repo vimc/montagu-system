@@ -95,7 +95,7 @@ open class ModellingGroupController(context: ControllerContext)
         return data
     }
 
-    open fun getCoverageData(context: ActionContext, repo: ModellingGroupRepository): StreamSerializable<Coverage>
+    open fun getCoverageData(context: ActionContext, repo: ModellingGroupRepository): StreamSerializable<CoverageRow>
     {
         val data = getCoverageDataAndMetadata(context, repo)
         val metadata = data.structuredMetadata
@@ -107,7 +107,7 @@ open class ModellingGroupController(context: ControllerContext)
     // TODO: https://vimc.myjetbrains.com/youtrack/issue/VIMC-307
     // Use streams to speed up this process of sending large data
     fun getCoverageDataAndMetadata(context: ActionContext, repo: ModellingGroupRepository):
-            SplitData<ScenarioTouchstoneAndCoverageSets, Coverage>
+            SplitData<ScenarioTouchstoneAndCoverageSets, CoverageRow>
     {
         val path = ResponsibilityPath(context)
         val splitData = repo.getCoverageData(path.groupId, path.touchstoneId, path.scenarioId)
@@ -127,7 +127,7 @@ open class ModellingGroupController(context: ControllerContext)
         return SplitData(splitData.structuredMetadata, tableData)
     }
 
-    private fun getWideDatatable(data: Iterable<CoverageRow>):
+    private fun getWideDatatable(data: Iterable<LongCoverageRow>):
             FlexibleDataTable<WideCoverageRow>
     {
         val groupedRows = data
@@ -146,7 +146,7 @@ open class ModellingGroupController(context: ControllerContext)
         return FlexibleDataTable.new(rows, years)
     }
 
-    private fun mapWideCoverageRow(records: List<CoverageRow>)
+    private fun mapWideCoverageRow(records: List<LongCoverageRow>)
             : WideCoverageRow
     {
         // all records have same country, gender, age_from and age_to, so can look at first one for these

@@ -135,7 +135,7 @@ class ModellingGroupControllersTests : ControllerTests<ModellingGroupController>
 
         val controller = ModellingGroupController(mockControllerContext())
         val data = controller.getCoverageData(context, repo).data
-        Assertions.assertThat(data.first() is CoverageRow).isTrue()
+        Assertions.assertThat(data.first() is LongCoverageRow).isTrue()
     }
 
     @Test
@@ -151,7 +151,7 @@ class ModellingGroupControllersTests : ControllerTests<ModellingGroupController>
         // there are 7 other variable properties, test data includes 2 of each
         val expectedRowCount = 4 * Math.pow(2.toDouble(), 7.toDouble())
 
-        Assertions.assertThat(data.first() is CoverageRow).isTrue()
+        Assertions.assertThat(data.first() is LongCoverageRow).isTrue()
         Assertions.assertThat(data.count()).isEqualTo(expectedRowCount.toInt())
     }
 
@@ -301,7 +301,7 @@ class ModellingGroupControllersTests : ControllerTests<ModellingGroupController>
             )
     )
 
-    private fun generateCoverageRows(): List<CoverageRow>
+    private fun generateCoverageRows(): List<LongCoverageRow>
     {
         val countries = listOf("ABC", "DEF")
         val setNames = listOf("set1", "set2")
@@ -311,7 +311,7 @@ class ModellingGroupControllersTests : ControllerTests<ModellingGroupController>
         val ageTos = listOf(BigDecimal.TEN, BigDecimal(5))
         val activityTypes = listOf(ActivityType.CAMPAIGN, ActivityType.NONE)
 
-        val listToReturn = mutableListOf<CoverageRow>()
+        val listToReturn = mutableListOf<LongCoverageRow>()
 
         for (country in countries)
         {
@@ -329,7 +329,7 @@ class ModellingGroupControllersTests : ControllerTests<ModellingGroupController>
                                 {
                                     for (year in years)
                                     {
-                                        listToReturn.add(CoverageRow("sId", set, vaccine, support, activity,
+                                        listToReturn.add(LongCoverageRow("sId", set, vaccine, support, activity,
                                                 country, "$country-Name", year, ageFrom, ageTo, "$ageFrom-$ageTo",
                                                 random.nextDecimal(1000, 10000, numberOfDecimalPlaces = 2),
                                                 random.nextDecimal(1000, 10000, numberOfDecimalPlaces = 2)))
