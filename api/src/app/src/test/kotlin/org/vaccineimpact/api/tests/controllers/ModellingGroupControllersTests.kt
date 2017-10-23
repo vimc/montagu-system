@@ -149,7 +149,7 @@ class ModellingGroupControllersTests : ControllerTests<ModellingGroupController>
 
         // test data includes 4 years
         // there are 7 other variable properties, test data includes 2 of each
-        val expectedRowCount = Math.pow(2.toDouble(), 7.toDouble())*4
+        val expectedRowCount = 4 * Math.pow(2.toDouble(), 7.toDouble())
 
         Assertions.assertThat(data.first() is CoverageRow).isTrue()
         Assertions.assertThat(data.count()).isEqualTo(expectedRowCount.toInt())
@@ -175,8 +175,15 @@ class ModellingGroupControllersTests : ControllerTests<ModellingGroupController>
         // there are 7 variable properties, test data includes 2 of each
         val expectedRowCount = Math.pow(2.toDouble(), 7.toDouble())
         Assertions.assertThat(data.count()).isEqualTo(expectedRowCount.toInt())
+
+        val expectedHeaders = listOf("1985_coverage", "1990_coverage", "1995_coverage", "2000_coverage",
+                "1985_target", "1990_target", "1995_target", "2000_target")
+
+        Assertions.assertThat((data.first() as WideCoverageRow).coverageAndTargetPerYear.keys)
+                .hasSameElementsAs(expectedHeaders)
     }
 
+    private val years = listOf(1985, 1990, 1995, 2000)
 
     @Test
     fun `getCoverageData throw error if supplied format param is invalid`()
@@ -303,7 +310,6 @@ class ModellingGroupControllersTests : ControllerTests<ModellingGroupController>
         val ageFroms = listOf(BigDecimal.ZERO, BigDecimal(5))
         val ageTos = listOf(BigDecimal.TEN, BigDecimal(5))
         val activityTypes = listOf(ActivityType.CAMPAIGN, ActivityType.NONE)
-        val years = listOf(1985, 1990, 1995, 2000)
 
         val listToReturn = mutableListOf<CoverageRow>()
 
