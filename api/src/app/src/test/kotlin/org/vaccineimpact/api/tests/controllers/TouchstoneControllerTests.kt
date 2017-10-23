@@ -7,13 +7,13 @@ import org.junit.Test
 import org.vaccineimpact.api.app.ActionContext
 import org.vaccineimpact.api.app.controllers.ControllerContext
 import org.vaccineimpact.api.app.controllers.TouchstoneController
+import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.app.repositories.inmemory.InMemoryDataSet
 import org.vaccineimpact.api.app.serialization.DataTable
 import org.vaccineimpact.api.app.serialization.SplitData
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
-import org.vaccineimpact.api.test_helpers.DemographicDummyData
 import java.math.BigDecimal
 
 class TouchstoneControllerTests : ControllerTests<TouchstoneController>()
@@ -185,5 +185,65 @@ class TouchstoneControllerTests : ControllerTests<TouchstoneController>()
         assertThat(second.valuesPerYear.keys.count() == 1)
         assertThat(third.valuesPerYear.keys.count() == 2)
 
+    }
+
+    @Test
+    fun `gets long demographic data if format=long`()
+    {
+        val touchstone = Touchstone("t-1", "t", 1, "description", TouchstoneStatus.OPEN)
+
+        val source = "test-source"
+        val type = "test-type"
+
+        val demographicMetadata = DemographicDataForTouchstone(touchstone,
+                DemographicMetadata("id", "name", null, listOf(), "people", "age", source))
+
+        val repo = mock<TouchstoneRepository> {
+            on { getDemographicData(type, source, touchstone.id) } doReturn
+                    SplitData(demographicMetadata, DataTable.new(listOf()))
+            on { touchstones } doReturn InMemoryDataSet(listOf(touchstone))
+        }
+        val context = mock<ActionContext> {
+            on { hasPermission(any()) } doReturn true
+            on { params(":touchstone-id") } doReturn touchstone.id
+            on { params(":type-code") } doReturn type
+            on { params(":source-code") } doReturn source
+            on { queryParams("format") } doReturn "long"
+        }
+
+        val controller = TouchstoneController(mockControllerContext())
+        val data = controller.getDemographicDataAndMetadata(context, repo).data
+
+        Assertions.assertThat(data.first() is LongDemographicRow).isTrue()
+    }
+
+    @Test
+    fun `throws error if supplied format is invalid`()
+    {
+        val touchstone = Touchstone("t-1", "t", 1, "description", TouchstoneStatus.OPEN)
+
+        val source = "test-source"
+        val type = "test-type"
+
+        val demographicMetadata = DemographicDataForTouchstone(touchstone,
+                DemographicMetadata("id", "name", null, listOf(), "people", "age", source))
+
+        val repo = mock<TouchstoneRepository> {
+            on { getDemographicData(type, source, touchstone.id) } doReturn
+                    SplitData(demographicMetadata, DataTable.new(listOf()))
+            on { touchstones } doReturn InMemoryDataSet(listOf(touchstone))
+        }
+        val context = mock<ActionContext> {
+            on { hasPermission(any()) } doReturn true
+            on { params(":touchstone-id") } doReturn touchstone.id
+            on { params(":type-code") } doReturn type
+            on { params(":source-code") } doReturn source
+            on { queryParams("format") } doReturn "678hj"
+        }
+
+        val controller = TouchstoneController(mockControllerContext())
+
+        Assertions.assertThatThrownBy {  controller.getDemographicDataAndMetadata(context, repo) }
+                .isInstanceOf(BadRequest::class.java)
     }
 }

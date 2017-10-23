@@ -1,16 +1,19 @@
 package org.vaccineimpact.api.tests.controllers
 
 import com.nhaarman.mockito_kotlin.*
+import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
 import org.vaccineimpact.api.app.ActionContext
 import org.vaccineimpact.api.app.controllers.ControllerContext
 import org.vaccineimpact.api.app.controllers.ModellingGroupController
+import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.errors.MissingRequiredPermissionError
 import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.UserRepository
 import org.vaccineimpact.api.app.serialization.DataTable
 import org.vaccineimpact.api.app.serialization.SplitData
+import org.vaccineimpact.api.app.serialization.StreamSerializable
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
@@ -118,10 +121,76 @@ class ModellingGroupControllersTests : ControllerTests<ModellingGroupController>
     }
 
     @Test
+    fun `getCoverageData returns long format if format=long`()
+    {
+        val repo = makeRepoMockingGetCoverageData(TouchstoneStatus.IN_PREPARATION)
+        val context = mock<ActionContext> {
+            on { it.params(":group-id") } doReturn "gId"
+            on { it.params(":touchstone-id") } doReturn "tId"
+            on { it.params(":scenario-id") } doReturn "sId"
+            on { it.queryParams("format")} doReturn "long"
+            on { hasPermission(any()) } doReturn true
+        }
+
+        val controller = ModellingGroupController(mockControllerContext())
+        val data = controller.getCoverageData(context, repo).data
+        Assertions.assertThat(data.first() is CoverageRow).isTrue()
+    }
+
+    @Test
+    fun `getCoverageData returns long format as default`()
+    {
+        val repo = makeRepoMockingGetCoverageData(TouchstoneStatus.IN_PREPARATION)
+        val context = mockContextForSpecificResponsibility(true)
+
+        val controller = ModellingGroupController(mockControllerContext())
+        val data = controller.getCoverageData(context, repo).data
+        Assertions.assertThat(data.first() is CoverageRow).isTrue()
+    }
+
+    @Test
+    fun `getCoverageData returns wide format if format=wide`()
+    {
+        val repo = makeRepoMockingGetCoverageData(TouchstoneStatus.IN_PREPARATION)
+        val context = mock<ActionContext> {
+            on { it.params(":group-id") } doReturn "gId"
+            on { it.params(":touchstone-id") } doReturn "tId"
+            on { it.params(":scenario-id") } doReturn "sId"
+            on { it.queryParams("format")} doReturn "wide"
+            on { hasPermission(any()) } doReturn true
+        }
+
+        val controller = ModellingGroupController(mockControllerContext())
+        val data = controller.getCoverageData(context, repo).data
+
+        Assertions.assertThat(data.first() is WideCoverageRow).isTrue()
+    }
+
+
+    @Test
+    fun `getCoverageData throw error if supplied format param is invalid`()
+    {
+        val repo = makeRepoMockingGetCoverageData(TouchstoneStatus.IN_PREPARATION)
+        val context = mock<ActionContext> {
+            on { it.params(":group-id") } doReturn "gId"
+            on { it.params(":touchstone-id") } doReturn "tId"
+            on { it.params(":scenario-id") } doReturn "sId"
+            on { it.queryParams("format")} doReturn "78493hfjk"
+            on { hasPermission(any()) } doReturn true
+        }
+
+        val controller = ModellingGroupController(mockControllerContext())
+
+        Assertions.assertThatThrownBy {  controller.getCoverageData(context, repo) }
+                .isInstanceOf(BadRequest::class.java)
+    }
+
+    @Test
     fun `getCoverageData returns error if user does not have permission to see in-preparation touchstone`()
     {
         val repo = makeRepoMockingGetCoverageData(TouchstoneStatus.IN_PREPARATION)
         val context = mockContextForSpecificResponsibility(false)
+
         val controller = ModellingGroupController(mockControllerContext())
         assertThatThrownBy { controller.getCoverageData(context, repo) }
                 .hasMessageContaining("Unknown touchstone")
