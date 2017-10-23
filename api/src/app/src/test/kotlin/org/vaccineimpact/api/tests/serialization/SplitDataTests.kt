@@ -32,7 +32,7 @@ class SplitDataTests : MontaguTests()
         val data = SplitData(1, table)
         val actual = serializeToStreamAndGetAsString { stream ->
             data.serialize(stream, serializer)
-        }
+        }.trim()
         assertThat(actual).isEqualTo("METADATA\n---\nROWS")
     }
 }

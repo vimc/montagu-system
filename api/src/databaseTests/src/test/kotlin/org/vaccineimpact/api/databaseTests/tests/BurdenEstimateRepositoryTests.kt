@@ -9,7 +9,10 @@ import org.vaccineimpact.api.app.errors.InconsistentDataError
 import org.vaccineimpact.api.app.errors.OperationNotAllowedError
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
-import org.vaccineimpact.api.app.repositories.jooq.*
+import org.vaccineimpact.api.app.repositories.jooq.JooqBurdenEstimateRepository
+import org.vaccineimpact.api.app.repositories.jooq.JooqModellingGroupRepository
+import org.vaccineimpact.api.app.repositories.jooq.JooqScenarioRepository
+import org.vaccineimpact.api.app.repositories.jooq.JooqTouchstoneRepository
 import org.vaccineimpact.api.databaseTests.RepositoryTests
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.Tables.*
@@ -82,6 +85,21 @@ class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRepository>(
             assertThatThrownBy {
                 repo.addBurdenEstimateSet(groupId, touchstoneId, scenarioId, badData, username, timestamp)
             }.isInstanceOf(InconsistentDataError::class.java)
+        }
+    }
+
+    @Test
+    fun `cannot add burden estimates with non-existent countries`()
+    {
+        val badData = data.map { it.copy(country = "FAKE") }
+        JooqContext().use { db ->
+            setupDatabase(db)
+            val repo = makeRepository(db)
+            assertThatThrownBy {
+                repo.addBurdenEstimateSet(groupId, touchstoneId, scenarioId, badData, username, timestamp)
+            }.isInstanceOf(UnknownObjectError::class.java).matches {
+                (it as UnknownObjectError).typeName == "country"
+            }
         }
     }
 
