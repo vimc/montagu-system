@@ -18,6 +18,11 @@ object UserHelper
         }.store()
     }
 
+    fun userExists(db: DSLContext, username: String): Boolean
+    {
+        return db.fetchOne(APP_USER, APP_USER.USERNAME.eq(username)) != null
+    }
+
     fun hashedPassword(plainPassword: String) = encoder.encode(plainPassword)
 
     fun suggestUsername(name: String): String

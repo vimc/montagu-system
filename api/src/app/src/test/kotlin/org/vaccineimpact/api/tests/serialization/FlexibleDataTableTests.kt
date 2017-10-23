@@ -88,5 +88,5 @@ x,y,<NA>""")
 
     private fun serialize(table: FlexibleDataTable<*>) = serializeToStreamAndGetAsString {
         table.serialize(it, Serializer.instance)
-    }
+    }.trim()
 }

@@ -18,4 +18,8 @@ dependencies {
 }
 
 test.dependsOn 'copySpec'
+// We run the tests as a suite (see RepositoryTestSuite)
+// This line prevents them being run individually as well
+test.exclude "**/org/vaccineimpact/api/blackboxTests/tests/**"
+
 copyTestConfig.finalizedBy 'showTestConfig'

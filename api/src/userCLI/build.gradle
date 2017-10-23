@@ -43,3 +43,6 @@ distDocker {
 
 test.dependsOn ':startDatabase'
 test.finalizedBy ':stopDatabase'
+// We run the tests as a suite (see UserCLITestSuite)
+// This line prevents them being run individually as well
+test.exclude "**/org/vaccineimpact/api/security/tests/**"

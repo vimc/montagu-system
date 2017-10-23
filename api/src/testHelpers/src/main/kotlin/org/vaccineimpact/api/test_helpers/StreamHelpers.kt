@@ -8,6 +8,6 @@ fun serializeToStreamAndGetAsString(work: (OutputStream) -> Unit): String
 {
     return ByteArrayOutputStream().use {
         work(it)
-        String(it.toByteArray(), Charset.defaultCharset()).trim()
+        String(it.toByteArray(), Charset.defaultCharset())
     }
 }

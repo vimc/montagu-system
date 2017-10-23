@@ -224,7 +224,7 @@ free text,in-preparation""")
 
     private fun serialize(table: DataTable<*>) = serializeToStreamAndGetAsString {
         table.serialize(it, Serializer.instance)
-    }
+    }.trim()
 
     private fun checkValidationError(code: String, message: String? = null, body: () -> Any?)
     {
