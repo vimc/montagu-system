@@ -10,7 +10,7 @@ data class CoverageSet(
         val vaccine: String,
         val gaviSupport: GAVISupportLevel,
         val activityType: ActivityType
-): HasKey<Int>
+) : HasKey<Int>
 
 data class ScenarioAndCoverageSets(
         val scenario: Scenario,
@@ -24,7 +24,7 @@ data class ScenarioTouchstoneAndCoverageSets(
 )
 
 data class CoverageRow(
-        val scenario: String,   //This is the scenario description ID
+        val scenario: String, //This is the scenario description ID
         val setName: String,
         val vaccine: String,
         val gaviSupport: GAVISupportLevel,
@@ -37,10 +37,10 @@ data class CoverageRow(
         val ageRangeVerbatim: String?,
         val target: BigDecimal?,
         val coverage: BigDecimal?
-): Coverage
+) : Coverage
 
 data class WideCoverageRow(
-        val scenario: String,   //This is the scenario description ID
+        val scenario: String, //This is the scenario description ID
         val setName: String,
         val vaccine: String,
         val gaviSupport: GAVISupportLevel,
@@ -50,9 +50,8 @@ data class WideCoverageRow(
         val ageFirst: BigDecimal?,
         val ageLast: BigDecimal?,
         val ageRangeVerbatim: String?,
-        val target: BigDecimal?,
         @FlexibleProperty
-        val coveragePerYear: Map<Int, BigDecimal?>
+        val coverageAndTargetPerYear: Map<String, BigDecimal?>
 ) : Coverage
 
 interface Coverage
