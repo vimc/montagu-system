@@ -1,4 +1,4 @@
-package org.vaccineimpact.api.databaseTests
+package org.vaccineimpact.api.databaseTests.tests
 
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.jooq.exception.DataAccessException

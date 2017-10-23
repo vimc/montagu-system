@@ -25,6 +25,7 @@ import org.vaccineimpact.api.test_helpers.DatabaseCreationHelper
         ModelTests::class,
         TokenRepositoryTests::class,
         TransactionalityTests::class,
+        TriggerTests::class,
         UserTests::class
 )
 class RepositoryTestSuite
