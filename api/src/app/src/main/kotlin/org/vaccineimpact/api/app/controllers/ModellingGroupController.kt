@@ -131,9 +131,11 @@ open class ModellingGroupController(context: ControllerContext)
             FlexibleDataTable<WideCoverageRow>
     {
         val groupedRows = data
-                .groupBy { hashSetOf(it.countryCode, it.setName,
+                .groupBy { hashSetOf(
+                        it.countryCode, it.setName,
                         it.ageFirst, it.ageLast,
-                        it.vaccine, it.gaviSupport, it.activityType) }//
+                        it.vaccine, it.gaviSupport, it.activityType
+                )}
 
         val rows = groupedRows.values
                 .map {
