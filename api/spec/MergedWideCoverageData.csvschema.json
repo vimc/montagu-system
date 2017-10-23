@@ -9,8 +9,7 @@
         "country": "String",
         "age_first": "Int",
         "age_last": "Int",
-        "age_range_verbatim": "String?",
-        "target": "Decimal?"
+        "age_range_verbatim": "String?"
     },
 
     "additionalColumnsAllowed": true
