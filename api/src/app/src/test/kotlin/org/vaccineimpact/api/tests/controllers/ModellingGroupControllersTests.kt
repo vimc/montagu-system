@@ -158,7 +158,13 @@ class ModellingGroupControllersTests : ControllerTests<ModellingGroupController>
     @Test
     fun `getCoverageData returns wide format if format=wide`()
     {
-        val repo = makeRepoMockingGetCoverageData(TouchstoneStatus.IN_PREPARATION)
+        val testYear = 1970
+        val testTarget = BigDecimal(123.123)
+        val testCoverage = BigDecimal(456.456)
+
+        val repo = makeRepoMockingGetCoverageData(TouchstoneStatus.IN_PREPARATION,
+                testYear, testTarget, testCoverage)
+
         val context = mock<ActionContext> {
             on { it.params(":group-id") } doReturn "gId"
             on { it.params(":touchstone-id") } doReturn "tId"
@@ -176,15 +182,16 @@ class ModellingGroupControllersTests : ControllerTests<ModellingGroupController>
         val expectedRowCount = Math.pow(2.toDouble(), 7.toDouble())
         Assertions.assertThat(data.count()).isEqualTo(expectedRowCount.toInt())
 
-        val expectedHeaders = listOf("1985_coverage", "1990_coverage", "1995_coverage", "2000_coverage",
+        val expectedHeaders = listOf("${testYear}_target", "${testYear}_coverage",
+                "1985_coverage", "1990_coverage", "1995_coverage", "2000_coverage",
                 "1985_target", "1990_target", "1995_target", "2000_target")
 
         val firstRow = (data.first() as WideCoverageRow)
-        val values = firstRow.coverageAndTargetPerYear.values
         val headers = firstRow.coverageAndTargetPerYear.keys
 
         Assertions.assertThat(headers).hasSameElementsAs(expectedHeaders)
-        Assertions.assertThat(values.distinct().count() == values.count())
+        Assertions.assertThat(firstRow.coverageAndTargetPerYear["${testYear}_target"] == testTarget)
+        Assertions.assertThat(firstRow.coverageAndTargetPerYear["${testYear}_coverage"] == testCoverage)
     }
 
     private val years = listOf(1985, 1990, 1995, 2000)
@@ -287,10 +294,13 @@ class ModellingGroupControllersTests : ControllerTests<ModellingGroupController>
         on { getCoverageSets(any(), any(), any()) } doReturn mockCoverageSetsData(status)
     }
 
-    private fun makeRepoMockingGetCoverageData(status: TouchstoneStatus): ModellingGroupRepository
+    private fun makeRepoMockingGetCoverageData(status: TouchstoneStatus,
+                                               testYear: Int = 1970,
+                                               target: BigDecimal = BigDecimal(123.123),
+                                               coverage: BigDecimal = BigDecimal(456.456)): ModellingGroupRepository
     {
         val coverageSets = mockCoverageSetsData(status)
-        val fakeRows = generateCoverageRows()
+        val fakeRows = generateCoverageRows(testYear, target, coverage)
         val data = SplitData(coverageSets, DataTable.new(fakeRows))
         return mock {
             on { getCoverageData(any(), any(), any()) } doReturn data
@@ -305,7 +315,7 @@ class ModellingGroupControllersTests : ControllerTests<ModellingGroupController>
             )
     )
 
-    private fun generateCoverageRows(): List<LongCoverageRow>
+    private fun generateCoverageRows(testYear: Int, target: BigDecimal, coverage: BigDecimal): List<LongCoverageRow>
     {
         val countries = listOf("ABC", "DEF")
         val setNames = listOf("set1", "set2")
@@ -338,6 +348,11 @@ class ModellingGroupControllersTests : ControllerTests<ModellingGroupController>
                                                 random.nextDecimal(1000, 10000, numberOfDecimalPlaces = 2),
                                                 random.nextDecimal(1000, 10000, numberOfDecimalPlaces = 2)))
                                     }
+
+                                    listToReturn.add(LongCoverageRow("sId", set, vaccine, support, activity,
+                                            country, "$country-Name", testYear, ageFrom, ageTo, "$ageFrom-$ageTo",
+                                            target,
+                                            coverage))
                                 }
                             }
                         }
