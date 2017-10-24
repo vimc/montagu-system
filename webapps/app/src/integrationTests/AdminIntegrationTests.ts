@@ -3,14 +3,12 @@ import { expectIsEqual, IntegrationTestSuite } from "./IntegrationTest";
 import { adminAuthStore } from "../main/admin/stores/AdminAuthStore";
 import { AdminFetcher } from "../main/admin/sources/AdminFetcher";
 import { groupStore } from "../main/admin/stores/GroupStore";
-import { checkAsync, checkPromise } from "../test/testHelpers";
+import { checkPromise } from "../test/testHelpers";
 import { expect } from "chai";
 import { Client, QueryResult } from "pg";
 import { ModellingGroup, ModellingGroupDetails, User } from "../main/shared/models/Generated";
 import { modellingGroupActions } from "../main/shared/actions/ModellingGroupActions";
 import { userStore } from "../main/admin/stores/UserStore";
-import { AddRoles } from "../main/admin/components/Users/SingleUser/AddRoles";
-import { Sandbox } from "../test/Sandbox";
 
 class AdminIntegrationTests extends IntegrationTestSuite {
     description() {

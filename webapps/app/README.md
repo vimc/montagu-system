@@ -14,9 +14,24 @@
    with a shared key, and with test data.
 
 # Integration tests
-1. Install `mocha` and `mocha-webpack` globally by running `sudo npm install mocha-webpack mocha -g`
-2. Run `./scripts/run-integration-tests.sh` to run all integration tests
-3. The version of the API that tests are run against is stored in `./app/config/api_version`
+Run `npm run integration_tests` to run all integration tests. The version of 
+the API that tests are run against is stored in `./app/config/api_version`.
+
+The integration tests get run in three different ways:
+
+1. During development, using the method above.
+2. During the Webapp TeamCity build configuration. This runs the tests in 
+   exactly the same way, but does so inside a Docker container that gives a
+   consistent build environment. Additionally, during this same build, another
+   Docker image is built that can be used to run the integration tests 
+   separately from the Webapp build environment.
+3. This reusable image is used in the Montagu TeamCity build configuration. It
+   is slightly different, in that it is running as part of a Docker network, and
+   so connects to the APIs and database at different URLs (e.g. `api` as 
+   opposed to `localhost`). Also, because we want the ability for the portals to
+   be pinned at different versions, we run the integration test container once
+   per portal, running just the subset of tests applicable to that portal, and
+   using (potentially) a different version of the image each time.
 
 # Dockerised build & run
 1. Make a containerised build environment: `scripts/make-build-env.sh`
