@@ -274,6 +274,11 @@ describe("ResponsibilityStore", () => {
         expect(state.coverageOneTimeToken).to.equal("TOKEN");
     });
 
+    it("records selected format", () => {
+        coverageSetActions.selectFormat("wide");
+        expect(responsibilityStore.getState().selectedFormat).to.equal("wide");
+    });
+
     it("estimateTokenActions.clearUsedToken sets token to null", () => {
         alt.bootstrap(JSON.stringify({
             ResponsibilityStore: {
