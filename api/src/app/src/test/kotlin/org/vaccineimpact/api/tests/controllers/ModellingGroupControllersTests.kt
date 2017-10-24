@@ -147,9 +147,9 @@ class ModellingGroupControllersTests : ControllerTests<ModellingGroupController>
         val controller = ModellingGroupController(mockControllerContext())
         val data = controller.getCoverageData(context, repo).data
 
-        // test data includes 4 years
+        // test data includes 5 years
         // there are 7 other variable properties, test data includes 2 of each
-        val expectedRowCount = 4 * Math.pow(2.toDouble(), 7.toDouble())
+        val expectedRowCount = 5 * Math.pow(2.toDouble(), 7.toDouble())
 
         Assertions.assertThat(data.first() is LongCoverageRow).isTrue()
         Assertions.assertThat(data.count()).isEqualTo(expectedRowCount.toInt())
