@@ -1542,7 +1542,7 @@ Optional. A format to return the CSV in, either `wide` or `long`. Defaults to `l
 
 Example wide format:
 
-       "scenario",                       "set_name", "vaccine", "gavi_support", "activity_type", country",    "age_first","age_last",  "age_range_verbatim", "2006_target", "2006_coverage", "2007_target", "2007_coverage"
+       "scenario",                       "set_name", "vaccine", "gavi_support", "activity_type", country",    "age_first","age_last",  "age_range_verbatim", "target_2006", "coverage_2006", "target_2007", "coverage_2007"
     "menA-novacc", "Menigitis without GAVI support",    "MenA",      "no gavi",       "routine",    "AFG",    0,         2,                    NA,                      NA,            83.1,          80.0,            79.1
     "menA-novacc", "Menigitis without GAVI support",    "MenA",      "no gavi",       "routine",    "AFG",    0,         1,                    NA,                      NA,            86.5,          88.3             82.2
     "menA-novacc",    "Menigitis with GAVI support",    "MenA",        "total",       "routine",    "AFG",    0,         2,                    NA,                      NA,            84.5,          89.4             82.4
