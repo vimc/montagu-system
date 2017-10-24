@@ -157,8 +157,8 @@ open class ModellingGroupController(context: ControllerContext)
         val reference = records.first()
 
         val coverageAndTargetPerYear =
-                records.associateBy({ "${it.year}_coverage" }, { it.coverage }) +
-                records.associateBy({ "${it.year}_target" }, { it.target })
+                records.associateBy({ "coverage_${it.year}" }, { it.coverage }) +
+                records.associateBy({ "target_${it.year}" }, { it.target })
 
         return WideCoverageRow(reference.scenario,
                 reference.setName,

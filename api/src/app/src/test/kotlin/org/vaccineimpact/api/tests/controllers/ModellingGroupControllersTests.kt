@@ -182,16 +182,16 @@ class ModellingGroupControllersTests : ControllerTests<ModellingGroupController>
         val expectedRowCount = Math.pow(2.toDouble(), 7.toDouble())
         Assertions.assertThat(data.count()).isEqualTo(expectedRowCount.toInt())
 
-        val expectedHeaders = listOf("${testYear}_target", "${testYear}_coverage",
-                "1985_coverage", "1990_coverage", "1995_coverage", "2000_coverage",
-                "1985_target", "1990_target", "1995_target", "2000_target")
+        val expectedHeaders = listOf("target_$testYear", "coverage_$testYear",
+                "coverage_1985", "coverage_1990", "coverage_1995", "coverage_2000",
+                "target_1985", "target_1990", "target_1995", "target_2000")
 
         val firstRow = (data.first() as WideCoverageRow)
         val headers = firstRow.coverageAndTargetPerYear.keys
 
         Assertions.assertThat(headers).hasSameElementsAs(expectedHeaders)
-        Assertions.assertThat(firstRow.coverageAndTargetPerYear["${testYear}_target"] == testTarget)
-        Assertions.assertThat(firstRow.coverageAndTargetPerYear["${testYear}_coverage"] == testCoverage)
+        Assertions.assertThat(firstRow.coverageAndTargetPerYear["target_$testYear"] == testTarget)
+        Assertions.assertThat(firstRow.coverageAndTargetPerYear["coverage_$testYear"] == testCoverage)
     }
 
     private val years = listOf(1985, 1990, 1995, 2000)
