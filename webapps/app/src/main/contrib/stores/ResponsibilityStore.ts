@@ -121,7 +121,7 @@ class ResponsibilityStore extends AbstractStore<ResponsibilityState, Responsibil
 
             estimatesOneTimeToken: null,
 
-            selectedFormat: null,
+            selectedFormat: "long",
 
             ready: false
         };
