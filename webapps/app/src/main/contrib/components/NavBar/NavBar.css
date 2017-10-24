@@ -1,9 +1,4 @@
 :local(.navbar) {
-    position: absolute;
-    top: 110px;
-    left: 0;
-    right: 0;
-    height: 20px;
     background-color: rgb(200, 200, 200);
     padding: 5px 10px;
     color: black;

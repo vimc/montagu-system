@@ -25,7 +25,10 @@ export class FormatControl extends React.Component<Props, undefined> {
             options={formats}
             value={this.props.value}
             onChange={this.props.onSelectFormat}
-            groupClassName={styles.radioOptions}
+            groupClassName="col"
+            itemClassName="form-check-label form-check-inline"
+            inputClassName="form-check-input"
+            labelClassName="mb-0"
         />;
     }
 }

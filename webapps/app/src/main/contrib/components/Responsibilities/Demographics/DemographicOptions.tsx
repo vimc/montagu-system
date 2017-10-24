@@ -37,6 +37,7 @@ export class DemographicOptions extends React.Component<Props, undefined> {
 
     render() {
         const props = this.props;
+
         const statisticTypes = props.dataSets.map(x =>
             <option key={x.id} value={x.id}>
                 {x.name}
@@ -47,19 +48,29 @@ export class DemographicOptions extends React.Component<Props, undefined> {
         return <table className={styles.options}>
             <tbody>
             <tr className={commonStyles.specialColumn}>
-                <td>Statistic type</td>
                 <td>
-                    <select
-                        className={styles.dataSet}
-                        onChange={this.onSelectDataSet}
-                        value={selectedId}>
-                        <option value="">- Select -</option>
-                        {statisticTypes}
-                    </select>
+                    <label className="col-form-label">
+                        Statistic type
+                    </label>
+                </td>
+                <td>
+                    <div className="col">
+                        <select
+                            className="form-control"
+                            onChange={this.onSelectDataSet}
+                            value={selectedId}>
+                            <option value="">- Select -</option>
+                            {statisticTypes}
+                        </select>
+                    </div>
                 </td>
             </tr>
             <tr className={commonStyles.specialColumn}>
-                <td>Gender</td>
+                <td>
+                    <label className="col-form-label">
+                        Gender
+                    </label>
+                </td>
                 <td><GenderControl
                     dataSet={props.selectedDataSet}
                     value={props.selectedGender}
@@ -67,7 +78,11 @@ export class DemographicOptions extends React.Component<Props, undefined> {
                 </td>
             </tr>
             <tr className={commonStyles.specialColumn}>
-                <td>Format</td>
+                <td>
+                    <label className="col-form-label">
+                        Format
+                    </label>
+                </td>
                 <td><FormatControl
                     value={props.selectedFormat}
                     onSelectFormat={this.onSelectFormat}/>
