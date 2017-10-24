@@ -14,7 +14,7 @@ describe("DemographicOptions", () => {
     afterEach(() => sandbox.restore());
 
     function findRowByLabel(rendered: ShallowWrapper<any, any>, label: string) {
-        return rendered.find("table").find(`td[children="${label}"]`).parent();
+        return rendered.find("table").find(`label[children="${label}"]`).closest("tr");
     }
 
     function getStatisticType(rendered: ShallowWrapper<any, any>) {
@@ -78,7 +78,7 @@ describe("DemographicOptions", () => {
 
     it("emits action when statistic type is selected", () => {
         const spy = sandbox.dispatchSpy();
-        const fetchOneTimeToken = sandbox.stubFetch(demographicStore, "fetchOneTimeToken");
+            const fetchOneTimeToken = sandbox.stubFetch(demographicStore, "fetchOneTimeToken");
         const rendered = shallow(<DemographicOptions
             dataSets={[]} selectedDataSet={null} selectedGender="" selectedFormat="" />);
         getStatisticType(rendered).simulate("change", { target: { value: "a" } });

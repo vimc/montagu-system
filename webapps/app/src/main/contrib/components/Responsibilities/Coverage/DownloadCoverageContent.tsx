@@ -87,7 +87,7 @@ export class DownloadCoverageContentComponent extends RemoteContentComponent<Dow
                                 </div>
                             </td>
                             <td>
-                                <div className="col"> {data.touchstone.description}</div>
+                                <div className="col">{data.touchstone.description}</div>
                             </td>
                         </tr>
                         <tr>
@@ -97,7 +97,7 @@ export class DownloadCoverageContentComponent extends RemoteContentComponent<Dow
                                 </div>
                             </td>
                             <td>
-                                <div className="col"> {data.scenario.description}</div>
+                                <div className="col">{data.scenario.description}</div>
                             </td>
                         </tr>
                         </tbody>

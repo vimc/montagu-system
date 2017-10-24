@@ -81,8 +81,9 @@ describe("DownloadCoverageContentComponent", () => {
     }
 
     function findRowByLabel(rendered: ShallowWrapper<any, any>, label: string) {
-        return rendered.find("table").find(`td[children="${label}"]`).parent();
+        return rendered.find("table").find(`label[children="${label}"]`).closest("tr");
     }
+
 });
 
 function makeProps(props: any): DownloadCoverageComponentProps {
