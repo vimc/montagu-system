@@ -1,6 +1,5 @@
 package org.vaccineimpact.api.app.serialization
 
-import org.vaccineimpact.api.ContentTypes
 import org.vaccineimpact.api.models.helpers.FlexibleProperty
 import kotlin.reflect.KClass
 import kotlin.reflect.KParameter

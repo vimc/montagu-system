@@ -7,11 +7,10 @@
         "activity_type": ["none", "routine", "campaign", "campaign-reactive"],
         "country_code": "String",
         "country": "String",
-        "year": "Int",
         "age_first": "Int",
         "age_last": "Int",
-        "age_range_verbatim": "String?",
-        "target": "Decimal?",
-        "coverage": "Decimal?"
-    }
+        "age_range_verbatim": "String?"
+    },
+
+    "additionalColumnsAllowed": true
 }
