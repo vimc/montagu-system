@@ -31,19 +31,21 @@ export class DownloadDataTitleComponent extends React.Component<Props, undefined
     renderReturnLink() {
         if (this.props.touchstone && this.props.modellingGroup) {
             const url = `/${this.props.modellingGroup.id}/responsibilities/${this.props.touchstone.id}/`;
-            return <span className={ headerStyles.titleAddition }>
+            return <div className={ `${headerStyles.titleAddition} d-inline-block` }>
                 <InternalLink href={ url }>Return to responsibilities list</InternalLink>
-            </span>;
+            </div>;
         } else {
             return null;
         }
     }
 
     render() {
-        return <span>
+        return <div>
+            <div className="mr-3 d-inline-block">
             { this.props.title }
+            </div>
             { this.renderReturnLink() }
-        </span>;
+        </div>;
     }
 }
 export const DownloadDataTitle =

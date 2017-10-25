@@ -1,7 +1,7 @@
 import * as React from "react";
 import { expect } from "chai";
 import { mockCoverageSet, mockScenario, mockTouchstone } from "../../../mocks/mockModels";
-import { shallow } from "enzyme";
+import { shallow, ShallowWrapper } from "enzyme";
 
 import {
     DownloadCoverageContentComponent,
@@ -14,6 +14,7 @@ import { expectOneAction } from "../../../actionHelpers";
 import { responsibilityStore } from "../../../../main/contrib/stores/ResponsibilityStore";
 import fetcher from "../../../../main/shared/sources/Fetcher";
 import { OneTimeButton } from "../../../../main/shared/components/OneTimeButton";
+import { FormatControl } from "../../../../main/contrib/components/Responsibilities/FormatControl";
 
 describe("DownloadCoverageContentComponent", () => {
     const sandbox = new Sandbox();
@@ -56,6 +57,33 @@ describe("DownloadCoverageContentComponent", () => {
         expectOneAction(spy, { action: "CoverageTokenActions.clearUsedToken" });
         expect(fetchNewToken.called).to.be.true;
     });
+
+    it("renders format control", () => {
+        const props = makeProps({ selectedFormat: "x" });
+        const rendered = shallow(<DownloadCoverageContentComponent {...props} />);
+
+        const control = getFormat(rendered);
+        expect(control.prop("value")).to.equal("x");
+    });
+
+    it("emits action when format is selected", () => {
+        const fetchOneTimeToken = sandbox.stubFetch(responsibilityStore, "fetchOneTimeCoverageToken");
+        const spy = sandbox.dispatchSpy();
+        const props = makeProps({ coverageToken: "TOKEN" });
+        const rendered = shallow(<DownloadCoverageContentComponent {...props} />);
+        getFormat(rendered).simulate("selectFormat", "x");
+        expectOneAction(spy, { action: "CoverageSetActions.selectFormat", payload: "x" });
+        expect(fetchOneTimeToken.called).to.be.true;
+    });
+
+    function getFormat(rendered: ShallowWrapper<any, any>) {
+        return findRowByLabel(rendered, "Format").find(FormatControl);
+    }
+
+    function findRowByLabel(rendered: ShallowWrapper<any, any>, label: string) {
+        return rendered.find("table").find(`label[children="${label}"]`).closest("tr");
+    }
+
 });
 
 function makeProps(props: any): DownloadCoverageComponentProps {

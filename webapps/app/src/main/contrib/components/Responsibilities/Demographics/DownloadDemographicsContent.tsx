@@ -17,6 +17,7 @@ export interface DownloadDemographicsContentProps extends RemoteContent {
     dataSets: DemographicDataset[];
     selectedDataSet: DemographicDataset;
     selectedGender: string;
+    selectedFormat: string;
     touchstone: Touchstone;
     token: string;
 }
@@ -34,6 +35,7 @@ export class DownloadDemographicsContentComponent extends RemoteContentComponent
                 ready: demographicState.currentTouchstone in demographicState.dataSets,
                 selectedDataSet: demographicState.selectedDataSet,
                 selectedGender: demographicState.selectedGender,
+                selectedFormat: demographicState.selectedFormat,
                 dataSets: demographicState.dataSets[demographicState.currentTouchstone],
                 token: demographicState.token,
                 touchstone: responsibilityState.currentTouchstone
@@ -72,9 +74,10 @@ export class DownloadDemographicsContentComponent extends RemoteContentComponent
             </div>
             <DemographicOptions
                 dataSets={props.dataSets}
+                selectedFormat={props.selectedFormat}
                 selectedDataSet={props.selectedDataSet}
-                selectedGender={props.selectedGender} />
-            <OneTimeButton token={ props.token } refreshToken={ this.refreshToken } enabled={ canDownload }>
+                selectedGender={props.selectedGender}/>
+            <OneTimeButton token={props.token} refreshToken={this.refreshToken} enabled={canDownload}>
                 Download data set
             </OneTimeButton>
         </div>;

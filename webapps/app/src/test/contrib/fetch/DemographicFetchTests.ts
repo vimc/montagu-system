@@ -41,7 +41,7 @@ describe("DemographicStore.fetchOneTimeToken", () => {
             demographicActions.selectGender("female");
         },
         makePayload: () => "TOKEN",
-        expectedURL: "/touchstones/touchstoneId/demographics/sourceId/typeId/get_onetime_link/?gender=female"
+        expectedURL: "/touchstones/touchstoneId/demographics/sourceId/typeId/get_onetime_link/?format=long&gender=female"
     });
 
     helper.addTestsToMocha();
@@ -57,7 +57,7 @@ describe("DemographicStore.fetchOneTimeToken", () => {
         demographicStore.fetchOneTimeToken().catch(doNothing);
         checkAsync(done, () => {
             expect(fetcherSpy.args).to.have.length(1, "Fetch method was not invoked");
-            expect(fetcherSpy.args[0][0]).to.equal("/touchstones/touchstoneId/demographics/source1/typeId/get_onetime_link/");
+            expect(fetcherSpy.args[0][0]).to.equal("/touchstones/touchstoneId/demographics/source1/typeId/get_onetime_link/?format=long");
         });
     });
 

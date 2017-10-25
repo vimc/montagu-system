@@ -1,17 +1,16 @@
 :local(.header) {
-    position: relative;
     padding: 10px;
     background-color: rgb(38, 50, 122);
     border-bottom: 2px solid white;
     color: white;
-    margin-bottom: 40px;
 }
 
 :local(.siteTitle) {
-    position: absolute;
-    top: 38px;
-    left: 280px;
-    font-family: header;
+    display: inline-block;
+    margin-bottom: 4px;
+    margin-left: 5px;
+    vertical-align: bottom;
+    font-family: header, sans-serif;
     font-size: 24pt;
     font-variant-caps: small-caps;
 }
@@ -22,19 +21,17 @@
 }
 
 :local(.titleAddition) {
-    font-family: body;
+    font-family: body, sans-serif;
     font-size: 10pt;
-    margin-left: 20px;
 }
 
 :local(.page) {
     margin: 0 auto;
-    width: 1000px;
     padding: 20px;
 }
 
 :local(.pageTitle) {
-    font-family: header;
+    font-family: header, sans-serif;
     font-size: 24pt;
     margin-bottom: 30px;
     border-bottom: 1px dashed;

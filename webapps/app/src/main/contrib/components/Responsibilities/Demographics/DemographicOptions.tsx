@@ -4,14 +4,19 @@ import { GenderControl } from "./GenderControl";
 import { DemographicDataset } from "../../../../shared/models/Generated";
 import { demographicStore } from "../../../stores/DemographicStore";
 import { doNothing } from "../../../../shared/Helpers";
+import { FormatControl } from "../FormatControl";
 
 const commonStyles = require("../../../../shared/styles/common.css");
 const styles = require("../Responsibilities.css");
 
-interface Props {
+interface Props extends HasFormatOption {
     dataSets: DemographicDataset[];
     selectedDataSet: DemographicDataset;
     selectedGender: string;
+}
+
+export interface HasFormatOption {
+    selectedFormat: string;
 }
 
 export class DemographicOptions extends React.Component<Props, undefined> {
@@ -25,8 +30,14 @@ export class DemographicOptions extends React.Component<Props, undefined> {
         demographicStore.fetchOneTimeToken().catch(doNothing);
     }
 
+    onSelectFormat(format: string) {
+        demographicActions.selectFormat(format);
+        demographicStore.fetchOneTimeToken().catch(doNothing);
+    }
+
     render() {
         const props = this.props;
+
         const statisticTypes = props.dataSets.map(x =>
             <option key={x.id} value={x.id}>
                 {x.name}
@@ -34,26 +45,47 @@ export class DemographicOptions extends React.Component<Props, undefined> {
         );
 
         const selectedId = props.selectedDataSet != null ? props.selectedDataSet.id : "";
-        return <table className={ styles.options }>
+        return <table className={styles.options}>
             <tbody>
-            <tr className={ commonStyles.specialColumn }>
-                <td>Statistic type</td>
+            <tr className={commonStyles.specialColumn}>
                 <td>
-                    <select
-                        className={styles.dataSet}
-                        onChange={this.onSelectDataSet}
-                        value={selectedId}>
-                        <option value="">- Select -</option>
-                        {statisticTypes}
-                    </select>
+                    <label className="col-form-label">
+                        Statistic type
+                    </label>
+                </td>
+                <td>
+                    <div className="col">
+                        <select
+                            className="form-control"
+                            onChange={this.onSelectDataSet}
+                            value={selectedId}>
+                            <option value="">- Select -</option>
+                            {statisticTypes}
+                        </select>
+                    </div>
                 </td>
             </tr>
             <tr className={commonStyles.specialColumn}>
-                <td>Gender</td>
+                <td>
+                    <label className="col-form-label">
+                        Gender
+                    </label>
+                </td>
                 <td><GenderControl
                     dataSet={props.selectedDataSet}
                     value={props.selectedGender}
-                    onSelectGender={this.onSelectGender} />
+                    onSelectGender={this.onSelectGender}/>
+                </td>
+            </tr>
+            <tr className={commonStyles.specialColumn}>
+                <td>
+                    <label className="col-form-label">
+                        Format
+                    </label>
+                </td>
+                <td><FormatControl
+                    value={props.selectedFormat}
+                    onSelectFormat={this.onSelectFormat}/>
                 </td>
             </tr>
             </tbody>

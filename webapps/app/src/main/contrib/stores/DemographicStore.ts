@@ -7,12 +7,16 @@ import { demographicActions } from "../actions/DemographicActions";
 import StoreModel = AltJS.StoreModel;
 import { DemographicSource } from "../sources/DemographicSource";
 
-export interface DemographicState {
+export interface DemographicState extends HasFormatState {
     dataSets: ILookup<DemographicDataset[]>;
     currentTouchstone: string;
     selectedDataSet: DemographicDataset;
     selectedGender: string;
     token: string
+}
+
+export interface HasFormatState{
+    selectedFormat: string;
 }
 
 export interface DemographicStoreInterface extends AltJS.AltStore<DemographicState> {
@@ -25,6 +29,7 @@ class DemographicStore extends AbstractStore<DemographicState, DemographicStoreI
     currentTouchstone: string;
     selectedDataSet: DemographicDataset;
     selectedGender: string;
+    selectedFormat: string;
     token: string;
 
     constructor() {
@@ -37,6 +42,7 @@ class DemographicStore extends AbstractStore<DemographicState, DemographicStoreI
 
             handleSelectDataSet: demographicActions.selectDataSet,
             handleSelectGender: demographicActions.selectGender,
+            handleSelectFormat: demographicActions.selectFormat,
 
             handleBeginFetchToken: demographicActions.beginFetchToken,
             handleUpdateToken: demographicActions.updateToken,
@@ -60,6 +66,7 @@ class DemographicStore extends AbstractStore<DemographicState, DemographicStoreI
             currentTouchstone: null,
             selectedDataSet: null,
             selectedGender: "both",
+            selectedFormat: "long",
             token: null,
         };
     }
@@ -87,6 +94,9 @@ class DemographicStore extends AbstractStore<DemographicState, DemographicStoreI
     }
     handleSelectGender(gender: string) {
         this.selectedGender = gender;
+    }
+    handleSelectFormat(format: string) {
+        this.selectedFormat = format;
     }
     handleUpdateToken(token: string) {
         this.token = token;

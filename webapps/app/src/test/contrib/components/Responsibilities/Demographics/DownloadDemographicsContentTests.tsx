@@ -34,6 +34,7 @@ describe("DownloadDemographicsContent", () => {
             dataSets: { tId: [dataSet] },
             selectedDataSet: dataSet,
             selectedGender: "gender",
+            selectedFormat: "long",
             token: null
         });
         const props = DownloadDemographicsContentComponent.getPropsFromStores(null);
@@ -41,6 +42,7 @@ describe("DownloadDemographicsContent", () => {
             ready: true,
             selectedDataSet: dataSet,
             selectedGender: "gender",
+            selectedFormat: "long",
             dataSets: [dataSet],
             touchstone: touchstone,
             token: null
@@ -54,6 +56,7 @@ describe("DownloadDemographicsContent", () => {
             dataSets: { someOtherTouchstone: [ mockDemographicDataset() ]},
             selectedDataSet: null,
             selectedGender: "gender",
+            selectedFormat: "long",
             token: "token"
         });
         const props = DownloadDemographicsContentComponent.getPropsFromStores(null);
@@ -61,6 +64,7 @@ describe("DownloadDemographicsContent", () => {
             ready: false,
             selectedDataSet: null,
             selectedGender: "gender",
+            selectedFormat: "long",
             dataSets: undefined,
             touchstone: touchstone,
             token: "token"
@@ -73,6 +77,7 @@ describe("DownloadDemographicsContent", () => {
             dataSets: { someOtherTouchstone: [ mockDemographicDataset() ]},
             selectedDataSet: null,
             selectedGender: "gender",
+            selectedFormat: "long",
             token: "token"
         });
         const props = DownloadDemographicsContentComponent.getPropsFromStores(null);
@@ -88,13 +93,15 @@ describe("DownloadDemographicsContent", () => {
             touchstone={mockTouchstone()}
             selectedDataSet={set}
             selectedGender="x"
+            selectedFormat="y"
             ready={true}
             token={null}
         />);
         expect(rendered.find(DemographicOptions).props()).to.eql({
             dataSets: [set],
             selectedDataSet: set,
-            selectedGender: "x"
+            selectedGender: "x",
+            selectedFormat: "y"
         });
     });
 
@@ -105,6 +112,7 @@ describe("DownloadDemographicsContent", () => {
             dataSets: [setA, setB],
             selectedDataSet: null,
             selectedGender: null,
+            selectedFormat: null,
             touchstone: mockTouchstone(),
             ready: true,
             token: null
@@ -131,6 +139,7 @@ describe("DownloadDemographicsContent", () => {
             touchstone: mockTouchstone(),
             selectedDataSet: set,
             selectedGender: "x",
+            selectedFormat: "y",
             ready: true,
             token: "TOKEN"
         };

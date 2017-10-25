@@ -19,9 +19,9 @@ export class DemographicSource extends Source<DemographicState> {
             const dataSet = s.selectedDataSet;
             const source = s.selectedDataSet.source;
             const type = dataSet.id;
-            let url = `/touchstones/${s.currentTouchstone}/demographics/${source}/${type}/get_onetime_link/`;
+            let url = `/touchstones/${s.currentTouchstone}/demographics/${source}/${type}/get_onetime_link/?format=${s.selectedFormat}`;
             if (dataSet.gender_is_applicable) {
-                url += `?gender=${s.selectedGender}`
+                url += `&gender=${s.selectedGender}`
             }
             return url;
         }, {

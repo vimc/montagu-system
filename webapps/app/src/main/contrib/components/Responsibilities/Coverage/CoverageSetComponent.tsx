@@ -10,10 +10,10 @@ export interface CoverageSetComponentProps {
 export class CoverageSetComponent extends React.Component<CoverageSetComponentProps, undefined> {
     render() {
         return <tr>
-            <td>{ this.props.set.name }</td>
-            <td>{ this.props.set.vaccine }</td>
-            <td>{ this.props.set.activity_type }</td>
-            <td>{ this.props.set.gavi_support }</td>
+            <td><div className="col py-2">{ this.props.set.name }</div></td>
+            <td><div className="col py-2">{ this.props.set.vaccine }</div></td>
+            <td><div className="col py-2">{ this.props.set.activity_type }</div></td>
+            <td><div className="col py-2">{ this.props.set.gavi_support }</div></td>
         </tr>;
     }
 }
