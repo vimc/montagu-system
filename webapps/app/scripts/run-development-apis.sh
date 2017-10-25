@@ -11,6 +11,10 @@ function on_interrupt() {
     $here/stop-apis.sh
 }
 
+# Generate test data
+docker run --rm --network=montagu_default \
+    $registry/montagu-generate-test-data:$MONTAGU_API_VERSION
+
 # Wait for Ctrl+C
 echo "Ready to use. Press Ctrl+C to teardown."
 sleep infinity

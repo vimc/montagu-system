@@ -4,7 +4,7 @@ set -ex
 export MONTAGU_API_VERSION=$(<config/api_version)
 export MONTAGU_REPORTING_API_VERSION=$(<config/reporting_api_version)
 export MONTAGU_DB_VERSION=$(<config/db_version)
-export TOKEN_KEY_PATH=$pwd/token_key
+export TOKEN_KEY_PATH=$PWD/token_key
 cert_tool_version=master
 orderly_version=master
 registry=docker.montagu.dide.ic.ac.uk:5000
@@ -15,24 +15,21 @@ docker run --rm \
     $registry/montagu-cert-tool:$cert_tool_version \
     gen-keypair /workspace
 
+docker volume prune -f
+
 # Run the APIs and database
 docker-compose pull
 docker-compose --project-name montagu up -d
 
 # Generate report test data
-rm $PWD/demo -rf
-rm $PWD/demo -rf
-
 docker pull $registry/orderly:$orderly_version
 docker run --rm \
     --entrypoint create_orderly_demo.sh \
-    -u $UID \
-    -v $PWD:/orderly \
-    -w /orderly \
+    -v montagu_orderly_volume:/orderly \
     $registry/orderly:$orderly_version \
-    .
+    /orderly
 
-docker cp $PWD/demo/. montagu_reporting_api_1:/orderly/
+docker exec montagu_reporting_api_1 sh -c 'cp /orderly/demo/. /orderly/ -r'
 
 # Start the APIs
 docker exec montagu_api_1 mkdir -p /etc/montagu/api/
