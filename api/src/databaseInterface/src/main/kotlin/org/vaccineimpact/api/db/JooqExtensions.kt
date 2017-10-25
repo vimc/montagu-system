@@ -47,12 +47,12 @@ WHERE pg_class_native.relname = '${table.name}'"""
 
 private fun DSLContext.setTriggerEnabled(table: TableImpl<*>, triggerName: String, action: Toggle)
 {
-    val actionText = when (action)
+    val functionName = when (action)
     {
-        Toggle.Enable -> "ENABLE"
-        Toggle.Disable -> "DISABLE"
+        Toggle.Enable -> "enable_trigger"
+        Toggle.Disable -> "disable_trigger"
     }
-    this.execute("""ALTER TABLE ${table.name} $actionText TRIGGER "$triggerName"""")
+    this.execute("""SELECT FROM $functionName('${table.name}', '$triggerName')""")
 }
 
 enum class Toggle
