@@ -19,6 +19,21 @@ docker run --rm \
 docker-compose pull
 docker-compose --project-name montagu up -d
 
+# Generate report test data
+rm $PWD/demo -rf
+rm $PWD/demo -rf
+
+docker pull $registry/orderly:$orderly_version
+docker run --rm \
+    --entrypoint create_orderly_demo.sh \
+    -u $UID \
+    -v $PWD:/orderly \
+    -w /orderly \
+    $registry/orderly:$orderly_version \
+    .
+
+docker cp $PWD/demo/. montagu_reporting_api_1:/orderly/
+
 # Start the APIs
 docker exec montagu_api_1 mkdir -p /etc/montagu/api/
 docker exec montagu_api_1 touch /etc/montagu/api/go_signal
