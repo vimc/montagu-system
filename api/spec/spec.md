@@ -1725,23 +1725,17 @@ Required permissions: `demographics.read`.
 
 Schema: [`Demographics.schema.json`](Demographics.schema.json)
 
-Fields `sources` and `countries` are deprecated.
-
 ### Example
     [{ 
         "id" : "as-fert",
         "name": "Age-specific fertility",
         "source" : "unwpp2015",
-        "sources": ["unwpp2015"],
-        "countries": [],
         "gender_is_applicable": false
      },
      { 
         "id" : "tot-pop",
         "name" : "Total population",        
         "source" : "unwpp2015",
-        "sources": ["unwpp2015"],
-        "countries": [],
         "gender_is_applicable": true
      }]
 
