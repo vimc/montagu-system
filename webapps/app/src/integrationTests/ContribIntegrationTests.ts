@@ -171,9 +171,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
                         id: "statistic",
                         name: "Some statistic",
                         gender_is_applicable: false,
-                        source: "source",
-                        countries: [],
-                        sources: ["source"]
+                        source: "source"
                     }
                 ]);
             });

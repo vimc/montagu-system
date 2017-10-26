@@ -176,8 +176,6 @@ export function mockDemographicDataset(properties?: Partial<models.DemographicDa
         id: "type-" + counter,
         name: "Type " + counter,
         gender_is_applicable: true,
-        countries: [  ],
-        sources: [ "source1" ],
         source: "source1"
     };
     return Object.assign(template, properties);

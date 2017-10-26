@@ -20,12 +20,10 @@ export interface Disease {
 }
 
 export interface DemographicDataset {
-    countries: string[]; //deprecated
     gender_is_applicable: boolean;
     id: string;
     name: string;
     source: string;
-    sources: string[]; //deprecated
 }
 
 export interface ModellingGroup {
