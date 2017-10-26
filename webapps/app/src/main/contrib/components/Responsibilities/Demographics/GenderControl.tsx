@@ -32,10 +32,13 @@ export class GenderControl extends React.Component<Props, undefined> {
                 options={genders}
                 value={this.props.value}
                 onChange={this.props.onSelectGender}
-                groupClassName={styles.radioOptions}
+                groupClassName="col"
+                itemClassName="form-check-label form-check-inline"
+                inputClassName="form-check-input"
+                labelClassName="mb-0"
             />;
         } else {
-            return <span>Gender is not applicable / no gender options available</span>;
+            return <div className="col">Gender is not applicable / no gender options available</div>;
         }
     }
 }

@@ -62,6 +62,11 @@ describe("DemographicStore", () => {
         expect(demographicStore.getState().selectedGender).to.equal("gender");
     });
 
+    it("records selected format", () => {
+        demographicActions.selectFormat("wide");
+        expect(demographicStore.getState().selectedFormat).to.equal("wide");
+    });
+
     it("records onetime token", () => {
         demographicActions.updateToken("TOKEN");
         expect(demographicStore.getState().token).to.equal("TOKEN");

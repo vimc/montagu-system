@@ -5,25 +5,33 @@ import { RemoteContent } from "../../../../shared/models/RemoteContent";
 import { RemoteContentComponent } from "../../../../shared/components/RemoteContentComponent/RemoteContentComponent";
 import { CoverageSetList } from "./CoverageSetList";
 import { responsibilityStore } from "../../../stores/ResponsibilityStore";
-import fetcher from "../../../../shared/sources/Fetcher";
 import { coverageTokenActions } from "../../../actions/CoverageActions";
 import { OneTimeButton } from "../../../../shared/components/OneTimeButton";
+import { FormatControl } from "../FormatControl";
+import { HasFormatOption } from "../Demographics/DemographicOptions";
+import { doNothing } from "../../../../shared/Helpers";
+import { responsibilityActions } from "../../../actions/ResponsibilityActions";
+import { coverageSetActions } from "../../../actions/CoverageSetActions";
 
 const commonStyles = require("../../../../shared/styles/common.css");
+const styles = require("../Responsibilities.css");
 
 export interface DownloadCoverageComponentProps extends RemoteContent {
-    props: {
-        touchstone: Touchstone;
-        scenario: Scenario;
-        coverageSets: CoverageSet[];
-        coverageToken: string;
-    };
+    props: Props
+}
+
+interface Props extends HasFormatOption {
+    touchstone: Touchstone;
+    scenario: Scenario;
+    coverageSets: CoverageSet[];
+    coverageToken: string;
 }
 
 export class DownloadCoverageContentComponent extends RemoteContentComponent<DownloadCoverageComponentProps> {
     static getStores() {
-        return [ responsibilityStore ];
+        return [responsibilityStore];
     }
+
     static getPropsFromStores(): DownloadCoverageComponentProps {
         const state = responsibilityStore.getState();
         const r = state.currentResponsibility;
@@ -34,7 +42,8 @@ export class DownloadCoverageContentComponent extends RemoteContentComponent<Dow
                     touchstone: state.currentTouchstone,
                     scenario: r.scenario,
                     coverageSets: r.coverageSets,
-                    coverageToken: state.coverageOneTimeToken
+                    coverageToken: state.coverageOneTimeToken,
+                    selectedFormat: state.selectedFormat
                 }
             };
         } else {
@@ -43,6 +52,12 @@ export class DownloadCoverageContentComponent extends RemoteContentComponent<Dow
                 props: null
             };
         }
+    }
+
+
+    onSelectFormat(format: string) {
+        coverageSetActions.selectFormat(format);
+        responsibilityStore.fetchOneTimeCoverageToken().catch(doNothing);
     }
 
     refreshToken() {
@@ -61,19 +76,63 @@ export class DownloadCoverageContentComponent extends RemoteContentComponent<Dow
                 vaccination scenario, and therefore the coverage file does not
                 contain any data apart from the header row.
             </p>
-            <table className={ commonStyles.specialColumn }>
-                <tbody>
-                    <tr><td>Touchstone</td><td>{ data.touchstone.description }</td></tr>
-                    <tr><td>Scenario</td><td>{ data.scenario.description }</td></tr>
-                </tbody>
-            </table>
-
-            <div className={ commonStyles.gapAbove }>
-                <div className={ commonStyles.smallTitle }>Coverage sets included</div>
-                <CoverageSetList coverageSets={ data.coverageSets } />
+            <div className="row mt-3">
+                <div className="col-12 col-md-8 col-lg-6">
+                    <table className={commonStyles.specialColumn}>
+                        <tbody>
+                        <tr>
+                            <td>
+                                <div className="col">
+                                    <label className="col-form-label">Touchstone</label>
+                                </div>
+                            </td>
+                            <td>
+                                <div className="col">{data.touchstone.description}</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div className="col">
+                                    <label className="col-form-label">Scenario</label>
+                                </div>
+                            </td>
+                            <td>
+                                <div className="col">{data.scenario.description}</div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-            <div className={ commonStyles.gapAbove }>
-                <OneTimeButton token={ data.coverageToken } refreshToken={ this.refreshToken }>
+            <div className="row mt-2">
+                <div className="col-12">
+                    <div className={commonStyles.smallTitle}>Coverage sets included</div>
+                    <CoverageSetList coverageSets={data.coverageSets}/>
+                </div>
+            </div>
+            <div className="row mt-4">
+                <div className="col-12 col-md-6">
+                    <table className={styles.options}>
+                        <tbody>
+                        <tr className={commonStyles.specialColumn}>
+                            <td>
+                                <div className="col">
+                                    <label className="col-form-label">
+                                        Format
+                                    </label>
+                                </div>
+                            </td>
+                            <td><FormatControl
+                                value={props.props.selectedFormat}
+                                onSelectFormat={this.onSelectFormat}/>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div className="mt-4">
+                <OneTimeButton token={data.coverageToken} refreshToken={this.refreshToken}>
                     Download combined coverage set data in CSV format
                 </OneTimeButton>
             </div>
