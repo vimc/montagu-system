@@ -76,7 +76,7 @@ describe("ReportStore.fetchVersionDetails", () => {
             }))
         },
         triggerFetch: () => reportStore.fetchVersionDetails(),
-        expectedURL: "/reports/testname/testversion/"
+        expectedURL: "/reports/testname/versions/testversion/"
     }).addTestsToMocha();
 
 });
