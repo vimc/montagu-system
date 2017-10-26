@@ -15,7 +15,7 @@ docker run --rm \
     $registry/montagu-cert-tool:$cert_tool_version \
     gen-keypair /workspace
 
-docker volume prune -f
+docker volume rm montagu_orderly_volume -f
 
 # Run the APIs and database
 docker-compose pull
