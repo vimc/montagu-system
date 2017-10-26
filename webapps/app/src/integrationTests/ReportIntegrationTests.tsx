@@ -13,6 +13,7 @@ import { Sandbox } from "../test/Sandbox";
 import { ArtefactItem } from "../main/report/components/Artefacts/ArtefactItem";
 import { FileDownloadLink } from "../main/report/components/FileDownloadLink";
 import { ResourceLinks } from "../main/report/components/Resources/ResourceLinks";
+import { VersionDetails, VersionDetailsComponent } from "../main/report/components/Versions/VersionDetails";
 
 const jwt_decode = require('jwt-decode');
 
@@ -110,8 +111,28 @@ class ReportIntegrationTests extends IntegrationTestSuite {
                 .then((version: string) => {
 
                     const rendered = shallow(<ResourceLinks report={reportName} version={version}
-                                                           resources={["meta/data.csv"]}
-                                                           />);
+                                                            resources={["meta/data.csv"]}/>);
+
+                    const link = rendered.find(FileDownloadLink).first();
+
+                    const url = link.prop("href");
+                    return fetcher.fetchFromReportingApi(url)
+
+                });
+
+            checkPromise(done, promise, (response) => {
+                expect(response.status).to.equal(200)
+            });
+        });
+
+        it("downloads zipped report", (done: DoneCallback) => {
+
+            const reportName = "minimal";
+
+            const promise = getVersionDetails(reportName)
+                .then((versionDetails: Version) => {
+
+                    const rendered = shallow(<VersionDetailsComponent ready={true} report={reportName} versionDetails={versionDetails}/>);
 
                     const link = rendered.find(FileDownloadLink).first();
 
@@ -129,6 +150,15 @@ class ReportIntegrationTests extends IntegrationTestSuite {
             reportActions.setCurrentReport(reportName);
             return reportStore.fetchVersions()
                 .then((versions) => versions[0]);
+        }
+
+        function getVersionDetails(reportName: string) {
+            reportActions.setCurrentReport(reportName);
+            return reportStore.fetchVersions()
+                .then((versions) => {
+                    reportActions.setCurrentVersion(versions[0]);
+                    return reportStore.fetchVersionDetails()
+                });
         }
 
     }
