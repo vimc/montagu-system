@@ -1,4 +1,6 @@
 import { expect } from "chai";
+import * as React from "react";
+import { shallow } from "enzyme";
 import { expectIsEqual, expectSameElements, IntegrationTestSuite } from "./IntegrationTest";
 import { reportingAuthStore } from "../main/report/stores/ReportingAuthStore";
 import { ReportingFetcher } from "../main/report/sources/ReportingFetcher";
@@ -7,6 +9,9 @@ import { checkPromise } from "../test/testHelpers";
 import { reportActions } from "../main/report/actions/ReportActions";
 import { oneTimeTokenStore } from "../main/report/stores/OneTimeTokenStore";
 import { Version } from "../main/shared/models/reports/Report";
+import { Sandbox } from "../test/Sandbox";
+import { ArtefactItem } from "../main/report/components/Artefacts/ArtefactItem";
+import { FileDownloadLink } from "../main/report/components/FileDownloadLink";
 
 const jwt_decode = require('jwt-decode');
 
@@ -24,6 +29,11 @@ class ReportIntegrationTests extends IntegrationTestSuite {
     }
 
     addTestsToMocha() {
+
+        const sandbox = new Sandbox();
+        const fetcher = new ReportingFetcher();
+
+        afterEach(() => sandbox.restore());
 
         it("fetches reports", (done: DoneCallback) => {
             const promise = reportStore.fetchReports();
@@ -56,7 +66,7 @@ class ReportIntegrationTests extends IntegrationTestSuite {
 
             const promise = reportStore.fetchVersions()
                 .then((versions) => {
-                version = versions[0];
+                    version = versions[0];
 
                     reportActions.setCurrentVersion(version);
                     return reportStore.fetchVersionDetails()
@@ -67,9 +77,36 @@ class ReportIntegrationTests extends IntegrationTestSuite {
             checkPromise(done, promise, token => {
                 const decoded = jwt_decode(token);
                 expect(decoded.url).to.equal(`/v1/reports/minimal/${version}/artefacts/`);
-
             });
         });
+
+        it("downloads artefact", (done: DoneCallback) => {
+
+            const reportName = "multi-artefact";
+            const promise = getVersion(reportName)
+                .then((version: string) => {
+
+                    const rendered = shallow(<ArtefactItem report={reportName} version={version}
+                                                           filenames={["all.csv", "all.png"]}
+                                                           description="all things"/>);
+
+                    const link = rendered.find(FileDownloadLink).first();
+
+                    const url = link.prop("href");
+                    return fetcher.fetchFromReportingApi(url)
+
+                });
+
+            checkPromise(done, promise, (response) => {
+                expect(response.status).to.equal(200)
+            });
+        });
+
+        function getVersion(reportName: string) {
+            reportActions.setCurrentReport(reportName);
+            return reportStore.fetchVersions()
+                .then((versions) => versions[0]);
+        }
 
     }
 }
