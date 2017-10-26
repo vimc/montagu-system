@@ -12,6 +12,7 @@ import { Version } from "../main/shared/models/reports/Report";
 import { Sandbox } from "../test/Sandbox";
 import { ArtefactItem } from "../main/report/components/Artefacts/ArtefactItem";
 import { FileDownloadLink } from "../main/report/components/FileDownloadLink";
+import { ResourceLinks } from "../main/report/components/Resources/ResourceLinks";
 
 const jwt_decode = require('jwt-decode');
 
@@ -89,6 +90,28 @@ class ReportIntegrationTests extends IntegrationTestSuite {
                     const rendered = shallow(<ArtefactItem report={reportName} version={version}
                                                            filenames={["all.csv", "all.png"]}
                                                            description="all things"/>);
+
+                    const link = rendered.find(FileDownloadLink).first();
+
+                    const url = link.prop("href");
+                    return fetcher.fetchFromReportingApi(url)
+
+                });
+
+            checkPromise(done, promise, (response) => {
+                expect(response.status).to.equal(200)
+            });
+        });
+
+        it("downloads resource", (done: DoneCallback) => {
+
+            const reportName = "use_resource";
+            const promise = getVersion(reportName)
+                .then((version: string) => {
+
+                    const rendered = shallow(<ResourceLinks report={reportName} version={version}
+                                                           resources={["meta/data.csv"]}
+                                                           />);
 
                     const link = rendered.find(FileDownloadLink).first();
 
