@@ -11,14 +11,6 @@ function on_interrupt() {
     $here/stop-apis.sh
 }
 
-# Generate report test data
-docker pull $registry/orderly:$orderly_version
-docker run --rm \
-    --entrypoint create_orderly_demo.sh \
-    -v montagu_orderly_volume:/orderly \
-    $registry/orderly:$orderly_version \
-    /orderly
-
 # Generate test data
 image=$registry/montagu-generate-test-data:$MONTAGU_API_VERSION
 docker pull $image

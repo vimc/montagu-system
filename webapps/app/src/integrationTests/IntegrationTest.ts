@@ -64,3 +64,8 @@ function queryAgainstRootDb(query: string): Promise<void> {
 export function expectIsEqual<T>(actual: T, expected: T) {
     expect(actual).to.eql(expected);
 }
+
+export function expectSameElements<Any>(actual: Any[], expected: Any[]) {
+    expect(actual).to.have.members(expected);
+    expect(expected).to.have.members(actual);
+}
