@@ -1,7 +1,5 @@
 *.dropbox.attr
 *.iml
-demo/
-git/
 app/.tmp/*
 app/\.awcache/
 app/\.idea/dictionaries/
