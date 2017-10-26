@@ -20,10 +20,9 @@ docker run --rm \
     /orderly
 
 # Generate test data
-docker run --rm --network=montagu_default \
-    $registry/montagu-generate-test-data:$MONTAGU_API_VERSION
-
-
+image=$registry/montagu-generate-test-data:$MONTAGU_API_VERSION
+docker pull $image
+docker run --rm --network=montagu_default $image
 
 # Wait for Ctrl+C
 echo "Ready to use. Press Ctrl+C to teardown."
