@@ -6,5 +6,5 @@ interface StreamSerializable<out T>
 {
     val contentType: String
     fun serialize(stream: OutputStream, serializer: Serializer)
-    val data: Iterable<T>
+    val data: Sequence<T>
 }

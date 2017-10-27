@@ -17,14 +17,14 @@ class FlexibleDataTableTests : MontaguTests()
     @Test
     fun `headers are written in order of constructor`()
     {
-        val table = FlexibleDataTable.new<ABC>(listOf(), listOf())
+        val table = FlexibleDataTable.new<ABC>(emptySequence(), listOf())
         Assertions.assertThat(serialize(table)).isEqualTo("""a,b""")
     }
 
     @Test
     fun `throws error if no property marked as flexible`()
     {
-        Assertions.assertThatThrownBy { FlexibleDataTable.new<XYZ>(listOf(), listOf()) }
+        Assertions.assertThatThrownBy { FlexibleDataTable.new<XYZ>(emptySequence(), listOf()) }
                 .hasMessage("No parameter marked as flexible." +
                         " Use the DataTable class to serialise data with fixed headers.")
     }
@@ -32,7 +32,7 @@ class FlexibleDataTableTests : MontaguTests()
     @Test
     fun `throws error if flexible property is not a map`()
     {
-        Assertions.assertThatThrownBy { FlexibleDataTable.new<DEF>(listOf(), listOf()) }
+        Assertions.assertThatThrownBy { FlexibleDataTable.new<DEF>(emptySequence(), listOf()) }
                 .hasMessage("Properties marked as flexible must be of " +
                         "type Map<*, *>, where * can be whatever you like.")
     }
@@ -40,14 +40,14 @@ class FlexibleDataTableTests : MontaguTests()
     @Test
     fun `extra headers are written at the end`()
     {
-        val table = FlexibleDataTable.new<ABC>(listOf(), listOf("extra1", "extra2"))
+        val table = FlexibleDataTable.new<ABC>(emptySequence(), listOf("extra1", "extra2"))
         Assertions.assertThat(serialize(table)).isEqualTo("""a,b,extra1,extra2""")
     }
 
     @Test
     fun `data is written out line by line`()
     {
-        val data = listOf(
+        val data = sequenceOf(
                 ABC("g", "h", mapOf("extra1" to "i", "extra2" to "j")),
                 ABC("x", "y", mapOf("extra1" to "z", "extra2" to "w"))
         )
@@ -61,7 +61,7 @@ x,y,z,w""")
     @Test
     fun `cell is null if row does not contain value for flexible header`()
     {
-        val data = listOf(
+        val data = sequenceOf(
                 ABC("g", "h", mapOf("extra1" to "i", "extra2" to "j")),
                 ABC("x", "y", mapOf("extra2" to "w"))
         )
@@ -75,7 +75,7 @@ x,y,<NA>,w""")
     @Test
     fun `flexible values do not get serialised if header not explicitly provided`()
     {
-        val data = listOf(
+        val data = sequenceOf(
                 ABC("g", "h", mapOf("extra1" to "i", "extra2" to "j")),
                 ABC("x", "y", mapOf("extra2" to "w"))
         )

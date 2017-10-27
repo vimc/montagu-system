@@ -89,10 +89,9 @@ class TouchstoneController(context: ControllerContext) : AbstractController(cont
         }
 
         return SplitData(splitData.structuredMetadata, tableData)
-
     }
 
-    private fun getWideDemographicDatatable(data: Iterable<LongDemographicRow>):
+    private fun getWideDemographicDatatable(data: Sequence<LongDemographicRow>):
             FlexibleDataTable<WideDemographicRow>
     {
         val groupedRows = data
@@ -106,7 +105,7 @@ class TouchstoneController(context: ControllerContext) : AbstractController(cont
         // all the rows should have the same number of years, so we just look at the first row
         val years = rows.first().valuesPerYear.keys.toList()
 
-        return FlexibleDataTable.new(rows, years)
+        return FlexibleDataTable.new(rows.asSequence(), years)
     }
 
     fun getDemographicData(context: ActionContext, repo: TouchstoneRepository)

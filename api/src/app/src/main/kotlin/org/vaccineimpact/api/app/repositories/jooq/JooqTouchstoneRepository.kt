@@ -12,6 +12,7 @@ import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.app.serialization.DataTable
 import org.vaccineimpact.api.app.serialization.SplitData
 import org.vaccineimpact.api.db.Tables.*
+import org.vaccineimpact.api.db.fetchSequence
 import org.vaccineimpact.api.db.fieldsAsList
 import org.vaccineimpact.api.db.fromJoinPath
 import org.vaccineimpact.api.db.joinPath
@@ -19,6 +20,9 @@ import org.vaccineimpact.api.db.tables.records.DemographicStatisticTypeRecord
 import org.vaccineimpact.api.db.tables.records.TouchstoneRecord
 import org.vaccineimpact.api.models.*
 import java.math.BigDecimal
+import java.time.Duration
+import java.time.Instant
+import java.time.LocalDateTime
 
 class JooqTouchstoneRepository(dsl: DSLContext, private val scenarioRepository: ScenarioRepository)
     : JooqRepository(dsl), TouchstoneRepository
@@ -29,51 +33,30 @@ class JooqTouchstoneRepository(dsl: DSLContext, private val scenarioRepository: 
                                     gender: String): SplitData<DemographicDataForTouchstone, LongDemographicRow>
     {
         val touchstone = touchstones.get(touchstoneId)
-        val records = getDemographicStatistics(
+        val statisticType = getDemographicStatisticType(statisticTypeCode)
+                .fetchAny() ?: throw UnknownObjectError(statisticTypeCode, "demographic-statistic-type")
+
+        val query = getDemographicStatistics(
                 touchstoneId,
                 statisticTypeCode,
                 source,
                 gender)
                 .orderBy(DEMOGRAPHIC_STATISTIC.COUNTRY, DEMOGRAPHIC_STATISTIC.YEAR, DEMOGRAPHIC_STATISTIC.AGE_FROM)
-                .fetch()
 
-        val rows = records.map {
-            mapDemographicRow(it)
-        }
-
-        val statType = getDemographicStatisticType(statisticTypeCode)
-                .fetchAny() ?: throw UnknownObjectError(statisticTypeCode, "demographic-statistic-type")
-
-        val demographicMetadata = mapDemographicMetadata(statType, records)
-
+        val demographicMetadata = mapDemographicMetadata(statisticType, gender, source, emptyList())
         val metadata = DemographicDataForTouchstone(touchstone, demographicMetadata)
-
+        val rows = query.fetchSequence().map { mapDemographicRow(it) }
         return SplitData(metadata, DataTable.new(rows))
     }
 
-    private fun mapDemographicMetadata(statType: Record, records: List<Record>): DemographicMetadata
+    private fun mapDemographicMetadata(statisticType: Record, gender: String, source: String, countries: List<String>): DemographicMetadata
     {
-        val countries =
-                if (records.any())
-                {
-                    records.map { it[DEMOGRAPHIC_STATISTIC.COUNTRY] }.distinct().sortedBy { it }
-                }
-                else
-                {
-                    listOf()
-                }
-
-        val referenceRecord = records.firstOrNull()
-
-        val source = referenceRecord?.getField<String>(name(TOUCHSTONE_SOURCES, "sourceCode"))
-        val gender = referenceRecord?.get(GENDER.NAME)
-
-        return DemographicMetadata(statType[DEMOGRAPHIC_STATISTIC_TYPE.CODE],
-                statType[DEMOGRAPHIC_STATISTIC_TYPE.NAME],
+        return DemographicMetadata(statisticType[DEMOGRAPHIC_STATISTIC_TYPE.CODE],
+                statisticType[DEMOGRAPHIC_STATISTIC_TYPE.NAME],
                 gender,
                 countries,
-                statType[DEMOGRAPHIC_VALUE_UNIT.NAME],
-                statType[DEMOGRAPHIC_STATISTIC_TYPE.AGE_INTERPRETATION],
+                statisticType[DEMOGRAPHIC_VALUE_UNIT.NAME],
+                statisticType[DEMOGRAPHIC_STATISTIC_TYPE.AGE_INTERPRETATION],
                 source)
     }
 
@@ -123,7 +106,7 @@ class JooqTouchstoneRepository(dsl: DSLContext, private val scenarioRepository: 
         val coverageRows = records
                 .filter { it[COVERAGE.ID] != null }
                 .map { mapCoverageRow(it, scenarioDescId) }
-        return SplitData(metadata, DataTable.new(coverageRows))
+        return SplitData(metadata, DataTable.new(coverageRows.asSequence()))
     }
 
     private fun getCoverageSetsForScenario(

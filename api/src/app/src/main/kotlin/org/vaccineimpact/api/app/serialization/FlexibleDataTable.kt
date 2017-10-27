@@ -5,7 +5,7 @@ import kotlin.reflect.KClass
 import kotlin.reflect.KParameter
 import kotlin.reflect.full.findAnnotation
 
-class FlexibleDataTable<T : Any>(data: Iterable<T>,
+class FlexibleDataTable<T : Any>(data: Sequence<T>,
                                  private val flexibleHeaders: Iterable<Any>,
                                  type: KClass<T>)
     : DataTable<T>(data, type)
@@ -62,7 +62,7 @@ class FlexibleDataTable<T : Any>(data: Iterable<T>,
     companion object
     {
         // Simple helper to get around JVM type erasure
-        inline fun <reified R : Any> new(data: Iterable<R>, flexibleHeaders: Iterable<Any>)
+        inline fun <reified R : Any> new(data: Sequence<R>, flexibleHeaders: Iterable<Any>)
                 = FlexibleDataTable(data, flexibleHeaders, R::class)
     }
 }
