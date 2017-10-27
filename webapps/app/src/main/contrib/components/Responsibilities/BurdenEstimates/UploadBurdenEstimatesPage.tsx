@@ -8,6 +8,8 @@ import { DownloadDataTitle } from "../DownloadDataTitle";
 import { UploadBurdenEstimatesContent } from "./UploadBurdenEstimatesContent";
 import { estimateTokenActions } from "../../../actions/EstimateActions";
 import {ContribPageWithHeader} from "../../PageWithHeader/ContribPageWithHeader";
+import {IPageWithParent} from "../../../../shared/models/Breadcrumb";
+import {ResponsibilityOverviewPage} from "../Overview/ResponsibilityOverviewPage";
 
 interface LocationProps {
     groupId: string;
@@ -17,7 +19,6 @@ interface LocationProps {
 
 export class UploadBurdenEstimatesPage extends ContribPageWithHeader<LocationProps> {
     componentDidMount() {
-        super.componentDidMount();
         setTimeout(() => {
             estimateTokenActions.clearUsedToken();
             modellingGroupActions.setCurrentGroup(this.props.location.params.groupId);
@@ -25,7 +26,8 @@ export class UploadBurdenEstimatesPage extends ContribPageWithHeader<LocationPro
                 touchstoneActions.setCurrentTouchstone(this.props.location.params.touchstoneId);
                 responsibilityStore.fetchResponsibilities().catch(doNothing).then(() => {
                     responsibilityActions.setCurrentResponsibility(this.props.location.params.scenarioId);
-                    responsibilityStore.fetchOneTimeEstimatesToken().catch(doNothing)
+                    responsibilityStore.fetchOneTimeEstimatesToken().catch(doNothing);
+                    super.componentDidMount();
                 });
             });
         });
@@ -37,6 +39,15 @@ export class UploadBurdenEstimatesPage extends ContribPageWithHeader<LocationPro
 
     title() {
         return <DownloadDataTitle title="Upload burden estimates"/>
+    }
+
+    urlFragment(): string {
+        const r = responsibilityStore.getState();
+        return `burdens/${r.currentResponsibility.scenario.id}`;
+    }
+
+    parent(): IPageWithParent {
+        return new ResponsibilityOverviewPage();
     }
 
     renderPageContent() {

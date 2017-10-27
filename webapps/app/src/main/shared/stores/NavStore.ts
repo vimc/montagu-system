@@ -6,18 +6,24 @@ import {Breadcrumb} from "../models/Breadcrumb";
 
 export interface NavState {
     crumbs: Breadcrumb[];
+    isInitialized: boolean;
 }
 
 function initialState(): NavState {
-    return { crumbs: [] };
+    return {
+        crumbs: [],
+        isInitialized: false
+    };
 }
 
 class NavStore extends AbstractStore<NavState, AltJS.AltStore<NavState>> {
     crumbs: Breadcrumb[];
+    isInitialized: boolean;
 
     constructor() {
         super();
         this.bindListeners({
+            handleInitialize: navActions.initialize,
             handleNavigate: navActions.navigate,
             handlePop: navActions.pop
         });
@@ -27,8 +33,12 @@ class NavStore extends AbstractStore<NavState, AltJS.AltStore<NavState>> {
         return initialState();
     }
 
+    handleInitialize(breadcrumbs: Breadcrumb[]) {
+        this.isInitialized = true;
+        this.crumbs = breadcrumbs;
+    }
+
     handleNavigate(breadcrumb: Breadcrumb) {
-        console.log("Navigated to: " + JSON.stringify(breadcrumb));
         const i = this.crumbs.findIndex(c => c.url == breadcrumb.url);
         if (i >= 0) {
             this.crumbs.splice(i + 1);

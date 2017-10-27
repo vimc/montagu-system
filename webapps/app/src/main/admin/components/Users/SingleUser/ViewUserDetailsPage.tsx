@@ -6,6 +6,8 @@ import {UserTitle, UserTitleProps} from "./UserTitle";
 import {UserDetailsContent} from "./UserDetailsContent";
 import {userActions} from "../../../actions/UserActions";
 import {userStore} from "../../../stores/UserStore";
+import {IPageWithParent} from "../../../../shared/models/Breadcrumb";
+import {ViewAllUsersPage} from "../List/ViewAllUsersPage";
 
 export interface UserDetailsPageProps {
     username: string;
@@ -13,10 +15,10 @@ export interface UserDetailsPageProps {
 
 export class ViewUserDetailsPage extends AdminPageWithHeader<UserDetailsPageProps> {
     componentDidMount() {
-        super.componentDidMount();
         setTimeout(() => {
             userStore.fetchUsers().catch(doNothing).then(() => {
                 userActions.setCurrentUser(this.props.location.params.username);
+                super.componentDidMount();
             });
         });
     }
@@ -27,6 +29,15 @@ export class ViewUserDetailsPage extends AdminPageWithHeader<UserDetailsPageProp
 
     title(): JSX.Element {
         return <Title />;
+    }
+
+    urlFragment(): string {
+        const s = userStore.getState();
+        return `${s.currentUsername}/`;
+    }
+
+    parent(): IPageWithParent {
+        return new ViewAllUsersPage();
     }
 
     renderPageContent(): JSX.Element {

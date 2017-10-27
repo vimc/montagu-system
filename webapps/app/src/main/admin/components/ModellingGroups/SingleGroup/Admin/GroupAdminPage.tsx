@@ -7,6 +7,8 @@ import { modellingGroupActions } from "../../../../../shared/actions/ModellingGr
 import { GroupAdminContent } from "./GroupAdminContent";
 import { doNothing } from "../../../../../shared/Helpers";
 import { userStore } from "../../../../stores/UserStore";
+import {IPageWithParent} from "../../../../../shared/models/Breadcrumb";
+import {ViewModellingGroupDetailsPage} from "../Details/ViewModellingGroupDetailsPage";
 
 interface PageProps {
     groupId: string;
@@ -14,11 +16,12 @@ interface PageProps {
 
 export class GroupAdminPage extends AdminPageWithHeader<PageProps> {
     componentDidMount() {
-        super.componentDidMount();
         setTimeout(() => {
             groupStore.fetchGroups().catch(doNothing).then(() => {
                 modellingGroupActions.setCurrentGroup(this.props.location.params.groupId);
-                groupStore.fetchGroupDetails().catch(doNothing);
+                groupStore.fetchGroupDetails().catch(doNothing).then(() => {
+                    super.componentDidMount();
+                });
             });
             userStore.fetchUsers().catch(doNothing);
         });
@@ -30,6 +33,14 @@ export class GroupAdminPage extends AdminPageWithHeader<PageProps> {
 
     title(): JSX.Element {
         return <Title />;
+    }
+
+    urlFragment(): string {
+        return `admin/`;
+    }
+
+    parent(): IPageWithParent {
+        return new ViewModellingGroupDetailsPage();
     }
 
     renderPageContent(): JSX.Element {

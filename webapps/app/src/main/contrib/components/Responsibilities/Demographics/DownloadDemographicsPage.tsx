@@ -7,6 +7,8 @@ import { doNothing } from "../../../../shared/Helpers";
 import { demographicStore } from "../../../stores/DemographicStore";
 import { DownloadDemographicsContent } from "./DownloadDemographicsContent";
 import {ContribPageWithHeader} from "../../PageWithHeader/ContribPageWithHeader";
+import {IPageWithParent} from "../../../../shared/models/Breadcrumb";
+import {ResponsibilityOverviewPage} from "../Overview/ResponsibilityOverviewPage";
 
 interface LocationProps {
     groupId: string;
@@ -15,12 +17,13 @@ interface LocationProps {
 
 export class DownloadDemographicsPage extends ContribPageWithHeader<LocationProps> {
     componentDidMount() {
-        super.componentDidMount();
         setTimeout(() => {
             modellingGroupActions.setCurrentGroup(this.props.location.params.groupId);
             responsibilityStore.fetchTouchstones().catch(doNothing).then(() => {
                 touchstoneActions.setCurrentTouchstone(this.props.location.params.touchstoneId);
-                demographicStore.fetchDataSets().catch(doNothing);
+                demographicStore.fetchDataSets().catch(doNothing).then(() => {
+                    super.componentDidMount();
+                });
             });
         });
     }
@@ -31,6 +34,14 @@ export class DownloadDemographicsPage extends ContribPageWithHeader<LocationProp
 
     title(): JSX.Element {
         return <DownloadDataTitle title="Download demographic data sets" />
+    }
+
+    urlFragment(): string {
+        return "demographics/";
+    }
+
+    parent(): IPageWithParent {
+        return new ResponsibilityOverviewPage();
     }
 
     renderPageContent(): JSX.Element {

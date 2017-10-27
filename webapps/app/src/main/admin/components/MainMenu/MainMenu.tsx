@@ -1,12 +1,21 @@
 import * as React from "react";
 import { AdminPageWithHeader } from "../AdminPageWithHeader";
 import { ButtonLink } from "../../../shared/components/ButtonLink";
+import {IPageWithParent} from "../../../shared/models/Breadcrumb";
 
 const menuStyles = require("./MainMenu.css");
 
 export class MainMenu extends AdminPageWithHeader<undefined> {
-    name() {
+    name(): string {
         return "Main menu";
+    }
+
+    urlFragment(): string {
+        return "/";
+    }
+
+    parent(): IPageWithParent {
+        return null;
     }
 
     renderPageContent() {

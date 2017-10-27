@@ -7,6 +7,8 @@ import { modellingGroupActions } from "../../../../shared/actions/ModellingGroup
 import { doNothing } from "../../../../shared/Helpers";
 import { DownloadDataTitle } from "../DownloadDataTitle";
 import {ContribPageWithHeader} from "../../PageWithHeader/ContribPageWithHeader";
+import {ResponsibilityOverviewPage} from "../Overview/ResponsibilityOverviewPage";
+import {IPageWithParent} from "../../../../shared/models/Breadcrumb";
 
 interface LocationProps {
     groupId: string;
@@ -16,7 +18,6 @@ interface LocationProps {
 
 export class DownloadCoveragePage extends ContribPageWithHeader<LocationProps> {
     componentDidMount() {
-        super.componentDidMount();
         setTimeout(() => {
             modellingGroupActions.setCurrentGroup(this.props.location.params.groupId);
             responsibilityStore.fetchTouchstones().catch(doNothing).then(() => {
@@ -24,7 +25,9 @@ export class DownloadCoveragePage extends ContribPageWithHeader<LocationProps> {
                 responsibilityStore.fetchResponsibilities().catch(doNothing).then(() => {
                     responsibilityActions.setCurrentResponsibility(this.props.location.params.scenarioId);
                     responsibilityStore.fetchCoverageSets().catch(doNothing);
-                    responsibilityStore.fetchOneTimeCoverageToken().catch(doNothing);
+                    responsibilityStore.fetchOneTimeCoverageToken().catch(doNothing).then(() => {
+                        super.componentDidMount();
+                    });
                 });
             });
         });
@@ -36,6 +39,15 @@ export class DownloadCoveragePage extends ContribPageWithHeader<LocationProps> {
 
     title() {
         return <DownloadDataTitle title="Download coverage data" />
+    }
+
+    urlFragment(): string {
+        const s = responsibilityStore.getState();
+        return `coverage/${s.currentResponsibility.scenario.id}/`;
+    }
+
+    parent(): IPageWithParent {
+        return new ResponsibilityOverviewPage();
     }
 
     renderPageContent() {

@@ -3,6 +3,9 @@ import {reportActions} from "../../actions/ReportActions";
 import {ReportingPageWithHeader} from "../ReportingPageWithHeader";
 import {VersionDetails} from "./VersionDetails";
 import {reportStore} from "../../stores/ReportStore";
+import {doNothing} from "../../../shared/Helpers";
+import {IPageWithParent} from "../../../shared/models/Breadcrumb";
+import {ViewVersionsPage} from "./ViewVersionsPage";
 
 export interface VersionInfoPageProps {
     report: string;
@@ -11,16 +14,27 @@ export interface VersionInfoPageProps {
 
 export class VersionInfoPage extends ReportingPageWithHeader<VersionInfoPageProps> {
     componentDidMount() {
-        super.componentDidMount();
         setTimeout(() => {
             reportActions.setCurrentReport(this.props.location.params.report);
             reportActions.setCurrentVersion(this.props.location.params.version);
-            reportStore.fetchVersionDetails();
+            reportStore.fetchVersionDetails().catch(doNothing).then(() => {
+                super.componentDidMount();
+            });
         });
     }
 
-    name() {
-        return this.props.location.params.report;
+    name(): string {
+        const s = reportStore.getState();
+        return s.currentVersion;
+    }
+
+    urlFragment(): string {
+        const s = reportStore.getState();
+        return `${s.currentVersion}/`;
+    }
+
+    parent(): IPageWithParent {
+        return new ViewVersionsPage();
     }
 
     renderPageContent() {

@@ -7,6 +7,8 @@ import { doNothing } from "../../../../shared/Helpers";
 import {modellingGroupActions} from "../../../../shared/actions/ModellingGroupActions";
 import { ResponsibilityOverviewContent } from "./ResponsibilityOverviewContent";
 import {ContribPageWithHeader} from "../../PageWithHeader/ContribPageWithHeader";
+import {ChooseActionPage} from "../../ChooseAction/ChooseActionPage";
+import {IPageWithParent} from "../../../../shared/models/Breadcrumb";
 
 interface LocationProps {
     groupId: string;
@@ -15,12 +17,13 @@ interface LocationProps {
 
 export class ResponsibilityOverviewPage extends ContribPageWithHeader<LocationProps> {
     componentDidMount() {
-        super.componentDidMount();
         setTimeout(() => {
             modellingGroupActions.setCurrentGroup(this.props.location.params.groupId);
             responsibilityStore.fetchTouchstones().catch(doNothing).then(() => {
                 touchstoneActions.setCurrentTouchstone(this.props.location.params.touchstoneId);
-                responsibilityStore.fetchResponsibilities().catch(doNothing);
+                responsibilityStore.fetchResponsibilities().catch(doNothing).then(() => {
+                    super.componentDidMount();
+                });
             });
         });
     }
@@ -31,6 +34,15 @@ export class ResponsibilityOverviewPage extends ContribPageWithHeader<LocationPr
 
     title() {
         return <ResponsibilityOverviewTitle />
+    }
+
+    urlFragment(): string {
+        const s = responsibilityStore.getState();
+        return `responsibilities/${s.currentTouchstone.id}/`;
+    }
+
+    parent(): IPageWithParent {
+        return new ChooseActionPage();
     }
 
     renderPageContent() {
