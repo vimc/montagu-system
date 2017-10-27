@@ -8,8 +8,12 @@ import { ContribPageWithHeader } from "../PageWithHeader/ContribPageWithHeader";
 const LoginForm = FormConnector(loginForm("contrib", contribAuthStore))(LoginFormComponent);
 
 export class ContribLoginPage extends ContribPageWithHeader<undefined> {
-    title(): JSX.Element {
-        return <span>Log in</span>;
+    name(): string {
+        return "Log in";
+    }
+
+    includeInBreadcrumbs(): boolean {
+        return false;
     }
 
     renderPageContent(): JSX.Element {

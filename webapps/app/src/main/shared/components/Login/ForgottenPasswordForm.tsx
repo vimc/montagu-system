@@ -24,4 +24,4 @@ export class ForgottenPasswordFormComponent extends React.Component<ReformProps,
     }
 }
 
-export const ForgottenPasswordPageTitle: JSX.Element = <span>Forgotten your password?</span>;
+export const ForgottenPasswordPageTitle: string = "Forgotten your password?";

@@ -14,6 +14,7 @@ export interface ModellingGroupDetailsPageProps {
 
 export class ViewModellingGroupDetailsPage extends AdminPageWithHeader<ModellingGroupDetailsPageProps> {
     componentDidMount() {
+        super.componentDidMount();
         setTimeout(() => {
             groupStore.fetchGroups().catch(doNothing).then(() => {
                 modellingGroupActions.setCurrentGroup(this.props.location.params.groupId);
@@ -21,6 +22,10 @@ export class ViewModellingGroupDetailsPage extends AdminPageWithHeader<Modelling
             });
             userStore.fetchUsers().catch(doNothing);
         });
+    }
+
+    name(): string {
+        return "Group details";
     }
 
     title(): JSX.Element {

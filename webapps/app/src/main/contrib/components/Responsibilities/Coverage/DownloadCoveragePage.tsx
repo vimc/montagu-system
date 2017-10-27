@@ -4,9 +4,9 @@ import { responsibilityActions } from "../../../actions/ResponsibilityActions";
 import { responsibilityStore } from "../../../stores/ResponsibilityStore";
 import { DownloadCoverageContent } from "./DownloadCoverageContent";
 import { modellingGroupActions } from "../../../../shared/actions/ModellingGroupActions";
-import { PageWithHeaderAndNav } from "../../PageWithHeader/PageWithHeaderAndNav";
 import { doNothing } from "../../../../shared/Helpers";
 import { DownloadDataTitle } from "../DownloadDataTitle";
+import {ContribPageWithHeader} from "../../PageWithHeader/ContribPageWithHeader";
 
 interface LocationProps {
     groupId: string;
@@ -14,8 +14,9 @@ interface LocationProps {
     scenarioId: string;
 }
 
-export class DownloadCoveragePage extends PageWithHeaderAndNav<LocationProps> {
+export class DownloadCoveragePage extends ContribPageWithHeader<LocationProps> {
     componentDidMount() {
+        super.componentDidMount();
         setTimeout(() => {
             modellingGroupActions.setCurrentGroup(this.props.location.params.groupId);
             responsibilityStore.fetchTouchstones().catch(doNothing).then(() => {
@@ -27,6 +28,10 @@ export class DownloadCoveragePage extends PageWithHeaderAndNav<LocationProps> {
                 });
             });
         });
+    }
+
+    name() {
+        return "Download coverage data";
     }
 
     title() {

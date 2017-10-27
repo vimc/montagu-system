@@ -11,14 +11,15 @@ export interface ViewVersionsPageProps {
 
 export class ViewVersionsPage extends ReportingPageWithHeader<ViewVersionsPageProps> {
     componentDidMount() {
+        super.componentDidMount();
         setTimeout(() => {
             reportActions.setCurrentReport(this.props.location.params.name);
             reportStore.fetchVersions().catch(doNothing);
         });
     }
 
-    title() {
-        return <span>Select a version of {this.props.location.params.name}:</span>;
+    name() {
+        return `Select a version of ${this.props.location.params.name}`;
     }
 
     renderPageContent() {

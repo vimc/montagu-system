@@ -8,12 +8,15 @@ import { reportingAuthStore } from "../stores/ReportingAuthStore";
 const LoginForm = FormConnector(loginForm("reporting", reportingAuthStore))(LoginFormComponent);
 
 export class ReportingLoginPage extends ReportingPageWithHeader<undefined> {
-    title(): JSX.Element {
-        return <span>Log in</span>;
+    name(): string {
+        return "Log in";
+    }
+
+    includeInBreadcrumbs(): boolean {
+        return false;
     }
 
     renderPageContent(): JSX.Element {
-
         return <LoginForm />;
     }
 }

@@ -11,6 +11,7 @@ export interface VersionInfoPageProps {
 
 export class VersionInfoPage extends ReportingPageWithHeader<VersionInfoPageProps> {
     componentDidMount() {
+        super.componentDidMount();
         setTimeout(() => {
             reportActions.setCurrentReport(this.props.location.params.report);
             reportActions.setCurrentVersion(this.props.location.params.version);
@@ -18,8 +19,8 @@ export class VersionInfoPage extends ReportingPageWithHeader<VersionInfoPageProp
         });
     }
 
-    title() {
-        return <span>{this.props.location.params.report}</span>;
+    name() {
+        return this.props.location.params.report;
     }
 
     renderPageContent() {

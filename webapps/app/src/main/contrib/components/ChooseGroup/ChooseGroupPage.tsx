@@ -3,8 +3,12 @@ import { ChooseGroupContent } from "./ChooseGroupContent";
 import { ContribPageWithHeader } from "../PageWithHeader/ContribPageWithHeader";
 
 export class ChooseGroupPage extends ContribPageWithHeader<undefined> {
-    title() {
-        return <span>Modellers' contribution portal</span>;
+    componentDidMount() {
+        super.componentDidMount();
+    }
+
+    name() {
+        return "Modellers' contribution portal";
     }
 
     renderPageContent() {

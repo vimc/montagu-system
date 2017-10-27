@@ -3,7 +3,7 @@ import { NoRouteFound } from "../../shared/components/NoRouteFound";
 import { ContribPageWithHeader } from "./PageWithHeader/ContribPageWithHeader";
 
 export class ContribNoRouteFoundPage extends ContribPageWithHeader<undefined> {
-    title(): JSX.Element {
+    name(): string {
         return NoRouteFound.title();
     }
 

@@ -5,8 +5,8 @@ import { ButtonLink } from "../../../shared/components/ButtonLink";
 const menuStyles = require("./MainMenu.css");
 
 export class MainMenu extends AdminPageWithHeader<undefined> {
-    title() {
-        return <span>Main menu</span>;
+    name() {
+        return "Main menu";
     }
 
     renderPageContent() {

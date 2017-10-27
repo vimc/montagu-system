@@ -8,13 +8,14 @@ const menuStyles = require("./MainMenu.css");
 
 export class MainMenu extends ReportingPageWithHeader<undefined> {
     componentDidMount() {
+        super.componentDidMount();
         setTimeout(() => {
             reportStore.fetchReports().catch(doNothing);
         });
     }
 
-    title() {
-        return <span>Choose a report to view</span>;
+    name() {
+        return "Choose a report to view";
     }
 
     renderPageContent() {

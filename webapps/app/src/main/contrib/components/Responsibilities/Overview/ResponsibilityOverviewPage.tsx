@@ -3,18 +3,19 @@ import { settings } from "../../../../shared/Settings";
 import { ResponsibilityOverviewTitle } from "./ResponsibilityOverviewTitle";
 import { touchstoneActions } from "../../../actions/TouchstoneActions";
 import { responsibilityStore } from "../../../stores/ResponsibilityStore";
-import { PageWithHeaderAndNav } from "../../PageWithHeader/PageWithHeaderAndNav";
 import { doNothing } from "../../../../shared/Helpers";
 import {modellingGroupActions} from "../../../../shared/actions/ModellingGroupActions";
 import { ResponsibilityOverviewContent } from "./ResponsibilityOverviewContent";
+import {ContribPageWithHeader} from "../../PageWithHeader/ContribPageWithHeader";
 
 interface LocationProps {
     groupId: string;
     touchstoneId: string;
 }
 
-export class ResponsibilityOverviewPage extends PageWithHeaderAndNav<LocationProps> {
+export class ResponsibilityOverviewPage extends ContribPageWithHeader<LocationProps> {
     componentDidMount() {
+        super.componentDidMount();
         setTimeout(() => {
             modellingGroupActions.setCurrentGroup(this.props.location.params.groupId);
             responsibilityStore.fetchTouchstones().catch(doNothing).then(() => {
@@ -22,6 +23,10 @@ export class ResponsibilityOverviewPage extends PageWithHeaderAndNav<LocationPro
                 responsibilityStore.fetchResponsibilities().catch(doNothing);
             });
         });
+    }
+
+    name() {
+        return "Responsibilities";
     }
 
     title() {

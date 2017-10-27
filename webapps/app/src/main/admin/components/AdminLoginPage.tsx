@@ -8,8 +8,12 @@ import { adminAuthStore } from "../stores/AdminAuthStore";
 const LoginForm = FormConnector(loginForm("admin", adminAuthStore))(LoginFormComponent);
 
 export class AdminLoginPage extends AdminPageWithHeader<undefined> {
-    title(): JSX.Element {
-        return <span>Log in</span>;
+    name(): string {
+        return "Log in";
+    }
+
+    includeInBreadcrumbs(): boolean {
+        return false;
     }
 
     renderPageContent(): JSX.Element {

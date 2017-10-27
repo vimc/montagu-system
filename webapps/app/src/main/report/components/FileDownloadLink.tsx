@@ -38,6 +38,7 @@ export class FileDownloadLinkComponent extends React.Component<Props, undefined>
     }
 
     componentDidMount() {
+        super.componentDidMount();
         setTimeout(() => {
             if (this.props.token == null) {
                 oneTimeTokenStore.fetchToken(this.props.href).catch(doNothing);

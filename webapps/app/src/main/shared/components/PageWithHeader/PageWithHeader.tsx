@@ -1,6 +1,8 @@
 import * as React from "react";
 import { Location } from "simple-react-router";
 import { InternalLink } from "../InternalLink";
+import { navActions } from "../../actions/NavActions";
+import {NavBar} from "../NavBar/NavBar";
 
 const logo = require("./logo.png");
 const styles = require('./PageWithHeader.css');
@@ -8,9 +10,24 @@ const styles = require('./PageWithHeader.css');
 export abstract class PageWithHeader<TLocationProps>
     extends React.Component<PageProperties<TLocationProps>, undefined> {
 
-    abstract title(): JSX.Element;
+    abstract name(): string;
+    includeInBreadcrumbs(): boolean {
+        return true;
+    }
+
+    title(): JSX.Element {
+        return <span>{this.name()}</span>;
+    }
     abstract siteTitle(): string;
     abstract renderPageContent(): JSX.Element;
+
+    componentDidMount() {
+        console.log("Mounted " + this.name());
+        if (this.includeInBreadcrumbs()) {
+            console.log("Fire event");
+            setTimeout(() => navActions.navigate(window.location.pathname, this.name()));
+        }
+    }
 
     render() {
         return <div>
@@ -21,6 +38,7 @@ export abstract class PageWithHeader<TLocationProps>
                 </div>
                 { this.header() }
             </header>
+            <NavBar />
             { this.postHeader() }
             <article className={ `${styles.page} container` }>
                 <div className={ styles.pageTitle }>{ this.title() }</div>

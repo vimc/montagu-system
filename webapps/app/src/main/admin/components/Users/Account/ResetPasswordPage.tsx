@@ -20,11 +20,12 @@ interface RequestResetButtonProps {
 const ResetPasswordForm = FormConnector(resetPasswordForm(accountStore))(ResetPasswordFormComponent);
 
 export class ResetPasswordPage extends AdminPageWithHeader<ResetPasswordPageProps> {
-    title(): JSX.Element {
-        return <span>Reset your password</span>
+    name(): string {
+        return "Reset your password";
     }
 
     componentDidMount() {
+        super.componentDidMount();
         accountActions.setPasswordResetToken(queryStringAsObject().token);
     }
 

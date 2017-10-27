@@ -6,13 +6,14 @@ import { doNothing } from "../../../../shared/Helpers";
 
 export class ViewAllModellingGroupsPage extends AdminPageWithHeader<undefined> {
     componentDidMount() {
+        super.componentDidMount();
         setTimeout(() => {
             groupStore.fetchGroups().catch(doNothing);
         });
     }
 
-    title() {
-        return <span>Modelling groups</span>
+    name() {
+        return "Modelling groups";
     }
 
     renderPageContent() {

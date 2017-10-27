@@ -14,6 +14,7 @@ interface PageProps {
 
 export class GroupAdminPage extends AdminPageWithHeader<PageProps> {
     componentDidMount() {
+        super.componentDidMount();
         setTimeout(() => {
             groupStore.fetchGroups().catch(doNothing).then(() => {
                 modellingGroupActions.setCurrentGroup(this.props.location.params.groupId);
@@ -21,6 +22,10 @@ export class GroupAdminPage extends AdminPageWithHeader<PageProps> {
             });
             userStore.fetchUsers().catch(doNothing);
         });
+    }
+
+    name(): string {
+        return "Manage group admin users";
     }
 
     title(): JSX.Element {

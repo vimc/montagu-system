@@ -3,11 +3,11 @@ import { touchstoneActions } from "../../../actions/TouchstoneActions";
 import { responsibilityActions } from "../../../actions/ResponsibilityActions";
 import { responsibilityStore } from "../../../stores/ResponsibilityStore";
 import { modellingGroupActions } from "../../../../shared/actions/ModellingGroupActions";
-import { PageWithHeaderAndNav } from "../../PageWithHeader/PageWithHeaderAndNav";
 import { doNothing } from "../../../../shared/Helpers";
 import { DownloadDataTitle } from "../DownloadDataTitle";
 import { UploadBurdenEstimatesContent } from "./UploadBurdenEstimatesContent";
 import { estimateTokenActions } from "../../../actions/EstimateActions";
+import {ContribPageWithHeader} from "../../PageWithHeader/ContribPageWithHeader";
 
 interface LocationProps {
     groupId: string;
@@ -15,8 +15,9 @@ interface LocationProps {
     scenarioId: string;
 }
 
-export class UploadBurdenEstimatesPage extends PageWithHeaderAndNav<LocationProps> {
+export class UploadBurdenEstimatesPage extends ContribPageWithHeader<LocationProps> {
     componentDidMount() {
+        super.componentDidMount();
         setTimeout(() => {
             estimateTokenActions.clearUsedToken();
             modellingGroupActions.setCurrentGroup(this.props.location.params.groupId);
@@ -28,6 +29,10 @@ export class UploadBurdenEstimatesPage extends PageWithHeaderAndNav<LocationProp
                 });
             });
         });
+    }
+
+    name() {
+        return "Upload burden estimates";
     }
 
     title() {

@@ -10,7 +10,7 @@ import {
 const ForgottenPasswordForm = FormConnector(forgottenPasswordFormStore("contrib"))(ForgottenPasswordFormComponent);
 
 export class ContribForgottenPasswordPage extends ContribPageWithHeader<undefined> {
-    title(): JSX.Element {
+    name(): string {
         return ForgottenPasswordPageTitle;
     }
 

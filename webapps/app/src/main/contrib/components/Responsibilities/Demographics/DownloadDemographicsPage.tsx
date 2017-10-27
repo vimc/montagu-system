@@ -1,5 +1,4 @@
 import * as React from "react";
-import { PageWithHeaderAndNav } from "../../PageWithHeader/PageWithHeaderAndNav";
 import { DownloadDataTitle } from "../DownloadDataTitle";
 import { modellingGroupActions } from "../../../../shared/actions/ModellingGroupActions";
 import { responsibilityStore } from "../../../stores/ResponsibilityStore";
@@ -7,14 +6,16 @@ import { touchstoneActions } from "../../../actions/TouchstoneActions";
 import { doNothing } from "../../../../shared/Helpers";
 import { demographicStore } from "../../../stores/DemographicStore";
 import { DownloadDemographicsContent } from "./DownloadDemographicsContent";
+import {ContribPageWithHeader} from "../../PageWithHeader/ContribPageWithHeader";
 
 interface LocationProps {
     groupId: string;
     touchstoneId: string;
 }
 
-export class DownloadDemographicsPage extends PageWithHeaderAndNav<LocationProps> {
+export class DownloadDemographicsPage extends ContribPageWithHeader<LocationProps> {
     componentDidMount() {
+        super.componentDidMount();
         setTimeout(() => {
             modellingGroupActions.setCurrentGroup(this.props.location.params.groupId);
             responsibilityStore.fetchTouchstones().catch(doNothing).then(() => {
@@ -22,6 +23,10 @@ export class DownloadDemographicsPage extends PageWithHeaderAndNav<LocationProps
                 demographicStore.fetchDataSets().catch(doNothing);
             });
         });
+    }
+
+    name() {
+        return "Download demographic data sets";
     }
 
     title(): JSX.Element {

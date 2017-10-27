@@ -9,13 +9,14 @@ const commonStyles = require("../../../../shared/styles/common.css");
 
 export class ViewAllUsersPage extends AdminPageWithHeader<undefined> {
     componentDidMount() {
+        super.componentDidMount();
         setTimeout(() => {
             userStore.fetchUsers().catch(doNothing);
         });
     }
 
-    title() {
-        return <span>Users</span>
+    name() {
+        return "Users"
     }
 
     renderPageContent() {

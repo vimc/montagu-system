@@ -4,8 +4,12 @@ import { ContribPageWithHeader } from "./PageWithHeader/ContribPageWithHeader";
 const spinner = require("../../shared/components/RemoteContentComponent/spinner.gif");
 
 export class LoadingPage extends ContribPageWithHeader<undefined> {
-    title(): JSX.Element {
-        return <span>Loading...</span>;
+    name(): string {
+        return "Loading...";
+    }
+
+    includeInBreadcrumbs(): boolean {
+        return false;
     }
 
     renderPageContent(): JSX.Element {

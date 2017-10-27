@@ -3,7 +3,7 @@ import { ReportingPageWithHeader } from "./ReportingPageWithHeader";
 import { NoRouteFound } from "../../shared/components/NoRouteFound";
 
 export class ReportingNoRouteFoundPage extends ReportingPageWithHeader<undefined> {
-    title(): JSX.Element {
+    name(): string {
         return NoRouteFound.title();
     }
 
