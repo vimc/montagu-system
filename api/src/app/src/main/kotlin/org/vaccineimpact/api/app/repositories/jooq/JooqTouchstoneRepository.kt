@@ -1,6 +1,5 @@
 package org.vaccineimpact.api.app.repositories.jooq
 
-import Gender
 import org.jooq.*
 import org.jooq.Result
 import org.jooq.impl.DSL.*
