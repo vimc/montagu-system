@@ -29,10 +29,11 @@ export abstract class PageWithHeader<TLocationProps>
     componentDidMount() {
         setTimeout(() => {
             if (this.includeInBreadcrumbs()) {
-                if (!navStore.getState().isInitialized) {
+                if (navStore.getState().isInitialized) {
+                    navActions.navigate(this.url(), this.name());
+                } else {
                     navActions.initialize(this);
                 }
-                navActions.navigate(this.url(), this.name());
             }
             this.load();
         });
