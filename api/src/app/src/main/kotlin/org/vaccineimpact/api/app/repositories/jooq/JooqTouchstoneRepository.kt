@@ -1,5 +1,6 @@
 package org.vaccineimpact.api.app.repositories.jooq
 
+import Gender
 import org.jooq.*
 import org.jooq.Result
 import org.jooq.impl.DSL.*
@@ -53,13 +54,14 @@ class JooqTouchstoneRepository(dsl: DSLContext, private val scenarioRepository: 
                 .fetch()
                 .map { it.value1() }
 
+        val type = DEMOGRAPHIC_STATISTIC_TYPE
         val metadata = DemographicMetadata(
-                statisticType[DEMOGRAPHIC_STATISTIC_TYPE.CODE],
-                statisticType[DEMOGRAPHIC_STATISTIC_TYPE.NAME],
-                gender,
+                statisticType[type.CODE],
+                statisticType[type.NAME],
+                Gender.ifApplicable(gender, statisticType[type.GENDER_IS_APPLICABLE]),
                 countries,
                 statisticType[DEMOGRAPHIC_VALUE_UNIT.NAME],
-                statisticType[DEMOGRAPHIC_STATISTIC_TYPE.AGE_INTERPRETATION],
+                statisticType[type.AGE_INTERPRETATION],
                 source
         )
         return DemographicDataForTouchstone(touchstone, metadata)
