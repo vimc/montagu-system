@@ -12,12 +12,10 @@ export interface LocationProps {
 }
 
 export class ChooseActionPage extends ContribPageWithHeader<LocationProps> {
-    componentDidMount() {
-        setTimeout(() => {
-            responsibilityStore.fetchTouchstones().catch(doNothing).then(() => {
-                modellingGroupActions.setCurrentGroup(this.props.location.params.groupId);
-                super.componentDidMount();
-            });
+    load() {
+        super.load();
+        responsibilityStore.fetchTouchstones().catch(doNothing).then(() => {
+            modellingGroupActions.setCurrentGroup(this.props.location.params.groupId);
         });
     }
 

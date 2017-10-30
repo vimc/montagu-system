@@ -4,10 +4,6 @@ import { ContribPageWithHeader } from "../PageWithHeader/ContribPageWithHeader";
 import {IPageWithParent} from "../../../shared/models/Breadcrumb";
 
 export class ChooseGroupPage extends ContribPageWithHeader<undefined> {
-    componentDidMount() {
-        super.componentDidMount();
-    }
-
     name() {
         return "Modellers' contribution portal";
     }

@@ -13,14 +13,11 @@ export interface VersionInfoPageProps {
 }
 
 export class VersionInfoPage extends ReportingPageWithHeader<VersionInfoPageProps> {
-    componentDidMount() {
-        setTimeout(() => {
-            reportActions.setCurrentReport(this.props.location.params.report);
-            reportActions.setCurrentVersion(this.props.location.params.version);
-            reportStore.fetchVersionDetails().catch(doNothing).then(() => {
-                super.componentDidMount();
-            });
-        });
+    load() {
+        super.load();
+        reportActions.setCurrentReport(this.props.location.params.report);
+        reportActions.setCurrentVersion(this.props.location.params.version);
+        reportStore.fetchVersionDetails().catch(doNothing);
     }
 
     name(): string {

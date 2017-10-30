@@ -27,14 +27,19 @@ export abstract class PageWithHeader<TLocationProps>
     }
 
     componentDidMount() {
-        if (this.includeInBreadcrumbs()) {
-            setTimeout(() => {
+        setTimeout(() => {
+            if (this.includeInBreadcrumbs()) {
                 if (!navStore.getState().isInitialized) {
                     navActions.initialize(this);
                 }
                 navActions.navigate(this.url(), this.name());
-            });
-        }
+            }
+            this.load();
+        });
+    }
+
+    load() {
+        //do nothing
     }
 
     render() {

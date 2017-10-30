@@ -7,11 +7,9 @@ import {IPageWithParent} from "../../../../shared/models/Breadcrumb";
 import {MainMenu} from "../../MainMenu/MainMenu";
 
 export class ViewAllModellingGroupsPage extends AdminPageWithHeader<undefined> {
-    componentDidMount() {
-        super.componentDidMount();
-        setTimeout(() => {
-            groupStore.fetchGroups().catch(doNothing);
-        });
+    load() {
+        super.load();
+        groupStore.fetchGroups().catch(doNothing);
     }
 
     name(): string {

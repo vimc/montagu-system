@@ -16,15 +16,12 @@ interface LocationProps {
 }
 
 export class DownloadDemographicsPage extends ContribPageWithHeader<LocationProps> {
-    componentDidMount() {
-        setTimeout(() => {
-            modellingGroupActions.setCurrentGroup(this.props.location.params.groupId);
-            responsibilityStore.fetchTouchstones().catch(doNothing).then(() => {
-                touchstoneActions.setCurrentTouchstone(this.props.location.params.touchstoneId);
-                demographicStore.fetchDataSets().catch(doNothing).then(() => {
-                    super.componentDidMount();
-                });
-            });
+    load() {
+        super.load();
+        modellingGroupActions.setCurrentGroup(this.props.location.params.groupId);
+        responsibilityStore.fetchTouchstones().catch(doNothing).then(() => {
+            touchstoneActions.setCurrentTouchstone(this.props.location.params.touchstoneId);
+            demographicStore.fetchDataSets().catch(doNothing);
         });
     }
 

@@ -14,12 +14,10 @@ export interface UserDetailsPageProps {
 }
 
 export class ViewUserDetailsPage extends AdminPageWithHeader<UserDetailsPageProps> {
-    componentDidMount() {
-        setTimeout(() => {
-            userStore.fetchUsers().catch(doNothing).then(() => {
-                userActions.setCurrentUser(this.props.location.params.username);
-                super.componentDidMount();
-            });
+    load() {
+        super.load();
+        userStore.fetchUsers().catch(doNothing).then(() => {
+            userActions.setCurrentUser(this.props.location.params.username);
         });
     }
 

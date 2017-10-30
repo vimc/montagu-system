@@ -10,11 +10,9 @@ import {MainMenu} from "../../MainMenu/MainMenu";
 const commonStyles = require("../../../../shared/styles/common.css");
 
 export class ViewAllUsersPage extends AdminPageWithHeader<undefined> {
-    componentDidMount() {
-        super.componentDidMount();
-        setTimeout(() => {
-            userStore.fetchUsers().catch(doNothing);
-        });
+    load() {
+        super.load();
+        userStore.fetchUsers().catch(doNothing);
     }
 
     name(): string {

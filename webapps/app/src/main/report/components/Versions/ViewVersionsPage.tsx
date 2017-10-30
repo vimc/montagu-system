@@ -12,13 +12,10 @@ export interface ViewVersionsPageProps {
 }
 
 export class ViewVersionsPage extends ReportingPageWithHeader<ViewVersionsPageProps> {
-    componentDidMount() {
-        setTimeout(() => {
-            reportActions.setCurrentReport(this.props.location.params.name);
-            reportStore.fetchVersions().catch(doNothing).then(() => {
-                super.componentDidMount();
-            });
-        });
+    load() {
+        super.load();
+        reportActions.setCurrentReport(this.props.location.params.name);
+        reportStore.fetchVersions().catch(doNothing);
     }
 
     title(): JSX.Element {

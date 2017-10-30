@@ -8,11 +8,9 @@ import {IPageWithParent} from "../../../shared/models/Breadcrumb";
 const menuStyles = require("./MainMenu.css");
 
 export class MainMenu extends ReportingPageWithHeader<undefined> {
-    componentDidMount() {
-        super.componentDidMount();
-        setTimeout(() => {
-            reportStore.fetchReports().catch(doNothing);
-        });
+    load() {
+        super.load();
+        reportStore.fetchReports().catch(doNothing);
     }
 
     name() {

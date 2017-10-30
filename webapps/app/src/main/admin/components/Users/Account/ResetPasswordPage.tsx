@@ -34,8 +34,8 @@ export class ResetPasswordPage extends AdminPageWithHeader<ResetPasswordPageProp
         return new MainMenu();
     }
 
-    componentDidMount() {
-        super.componentDidMount();
+    load() {
+        super.load();
         accountActions.setPasswordResetToken(queryStringAsObject().token);
     }
 

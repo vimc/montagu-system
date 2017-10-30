@@ -4,12 +4,38 @@ import { shallow, ShallowWrapper } from "enzyme";
 import { mockLocation } from "../../mocks/mocks";
 
 import { PageWithHeader } from "../../../main/shared/components/PageWithHeader/PageWithHeader";
+import {IPageWithParent} from "../../../main/shared/models/Breadcrumb";
+import {Sandbox} from "../../Sandbox";
+import {checkAsync} from "../../testHelpers";
 
 const styles = require('../../../main/shared/components/PageWithHeader/PageWithHeader.css');
 
 class DummyPage extends PageWithHeader<undefined> {
+    loaded: boolean;
+
+    constructor() {
+        super();
+        this.loaded = false;
+    }
+
     siteTitle() {
         return "LOTR";
+    }
+
+    name() {
+        return "Dummy";
+    }
+
+    parent(): IPageWithParent {
+        return null;
+    }
+
+    urlFragment() {
+        return "/lotr/";
+    }
+
+    load() {
+        this.loaded = true;
     }
 
     title(): JSX.Element {
@@ -23,10 +49,12 @@ class DummyPage extends PageWithHeader<undefined> {
 
 describe('PageWithHeader', () => {
     let rendered: ShallowWrapper<any, any>;
+    const sandbox = new Sandbox();
 
     beforeEach(() => {
         rendered = shallow(<DummyPage location={ mockLocation<undefined>() } />);
     });
+    afterEach(() => sandbox.restore());
 
     it("renders the application title", () => {
         expect(rendered.find(`.${styles.siteTitle}`).render().text()).to.equal("LOTR");
@@ -38,5 +66,14 @@ describe('PageWithHeader', () => {
 
     it("renders the content", () => {
         expect(rendered.find(`.${styles.pageContent}`).text()).to.equal("Content");
+    });
+
+    it("loads on mount after timeout", (done: DoneCallback) => {
+        const page = sandbox.mount(<DummyPage location={mockLocation<undefined>()} />)
+            .instance() as DummyPage;
+        expect(page.loaded).to.be.false;
+        checkAsync(done, () => {
+            expect(page.loaded).to.be.true;
+        });
     });
 });
