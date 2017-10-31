@@ -196,7 +196,7 @@ open class ModellingGroupController(context: ControllerContext)
             .filter { it.name == "modelling-groups.manage-members" }
             .map { it.scope }
 
-    fun addBurdenEstimatesFromHTMLForm(context: ActionContext, estimateRepository: BurdenEstimateRepository): String
+    fun addBurdenEstimatesFromHTMLForm(context: ActionContext, estimateRepository: BurdenEstimateRepository)
     {
         // First check if we're allowed to see this touchstone
         val path = getValidResponsibilityPath(context, estimateRepository)
@@ -216,7 +216,7 @@ open class ModellingGroupController(context: ControllerContext)
         }
     }
 
-    open fun addBurdenEstimates(context: ActionContext, estimateRepository: BurdenEstimateRepository): String
+    open fun addBurdenEstimates(context: ActionContext, estimateRepository: BurdenEstimateRepository)
     {
         // First check if we're allowed to see this touchstone
         val path = getValidResponsibilityPath(context, estimateRepository)
@@ -229,7 +229,7 @@ open class ModellingGroupController(context: ControllerContext)
     private fun saveBurdenEstimates(data: List<BurdenEstimate>,
                                     estimateRepository: BurdenEstimateRepository,
                                     context: ActionContext,
-                                    path: ResponsibilityPath): String
+                                    path: ResponsibilityPath)
     {
         if (data.map { it.disease }.distinct().count() > 1)
         {
@@ -243,7 +243,8 @@ open class ModellingGroupController(context: ControllerContext)
                 timestamp = Instant.now()
         )
         val url = "/${path.groupId}/responsibilities/${path.touchstoneId}/${path.scenarioId}/estimates/$id/"
-        return objectCreation(context, url)
+        context.redirect("www.google.com")
+        // return objectCreation(context, url)
     }
 
     private fun getValidResponsibilityPath(context: ActionContext, estimateRepository: BurdenEstimateRepository): ResponsibilityPath
