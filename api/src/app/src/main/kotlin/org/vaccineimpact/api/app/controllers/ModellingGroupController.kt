@@ -231,19 +231,20 @@ open class ModellingGroupController(context: ControllerContext)
                                     context: ActionContext,
                                     path: ResponsibilityPath)
     {
-        if (data.map { it.disease }.distinct().count() > 1)
-        {
-            throw InconsistentDataError("More than one value was present in the disease column")
-        }
-
-        val id = estimateRepository.addBurdenEstimateSet(
-                path.groupId, path.touchstoneId, path.scenarioId,
-                data,
-                uploader = context.username!!,
-                timestamp = Instant.now()
-        )
-        val url = "/${path.groupId}/responsibilities/${path.touchstoneId}/${path.scenarioId}/estimates/$id/"
         context.redirect("www.google.com")
+//        if (data.map { it.disease }.distinct().count() > 1)
+//        {
+//            throw InconsistentDataError("More than one value was present in the disease column")
+//        }
+//
+//        val id = estimateRepository.addBurdenEstimateSet(
+//                path.groupId, path.touchstoneId, path.scenarioId,
+//                data,
+//                uploader = context.username!!,
+//                timestamp = Instant.now()
+//        )
+//        val url = "/${path.groupId}/responsibilities/${path.touchstoneId}/${path.scenarioId}/estimates/$id/"
+
         // return objectCreation(context, url)
     }
 
