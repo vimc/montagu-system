@@ -14,6 +14,7 @@ import { ArtefactItem } from "../main/report/components/Artefacts/ArtefactItem";
 import { FileDownloadLink } from "../main/report/components/FileDownloadLink";
 import { ResourceLinks } from "../main/report/components/Resources/ResourceLinks";
 import { VersionDetails, VersionDetailsComponent } from "../main/report/components/Versions/VersionDetails";
+import { DataLinks } from "../main/report/components/Data/DataLinks";
 
 const jwt_decode = require('jwt-decode');
 
@@ -112,6 +113,27 @@ class ReportIntegrationTests extends IntegrationTestSuite {
 
                     const rendered = shallow(<ResourceLinks report={reportName} version={version}
                                                             resources={["meta/data.csv"]}/>);
+
+                    const link = rendered.find(FileDownloadLink).first();
+
+                    const url = link.prop("href");
+                    return fetcher.fetchFromReportingApi(url)
+
+                });
+
+            checkPromise(done, promise, (response) => {
+                expect(response.status).to.equal(200)
+            });
+        });
+
+        it("downloads data", (done: DoneCallback) => {
+
+            const reportName = "minimal";
+
+            const promise = getVersionDetails(reportName)
+                .then((versionDetails: Version) => {
+
+                    const rendered = shallow(<DataLinks {...versionDetails.hash_data}/>);
 
                     const link = rendered.find(FileDownloadLink).first();
 
