@@ -8,7 +8,8 @@ class DemographicDummyData(val it: JooqContext,
                            val touchstoneVersion: Int,
                            source: String? = null,
                            variants: List<String>? = null,
-                           numCountries: Int = 1)
+                           numCountries: Int = 1,
+                           val diseases: List<String> = listOf("measles", "hepB"))
 {
     val countries: List<String> = it.fetchCountries(numCountries)
     val source: String = source ?: "unwpp2015"
@@ -23,13 +24,20 @@ class DemographicDummyData(val it: JooqContext,
 
     init
     {
-        it.addDisease("measles", "Measles")
+        for (disease in diseases)
+        {
+            it.addDisease(disease, disease)
+        }
     }
 
     fun withTouchstone(countries: List<String>? = null): DemographicDummyData
     {
         it.addTouchstone(this.touchstoneName, this.touchstoneVersion, addName = true)
-        it.addTouchstoneCountries("$touchstoneName-$touchstoneVersion", countries ?: this.countries, "measles")
+
+        for (disease in diseases)
+        {
+            it.addTouchstoneCountries("$touchstoneName-$touchstoneVersion", countries ?: this.countries, disease)
+        }
 
         return this
     }
