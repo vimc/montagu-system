@@ -10,7 +10,7 @@ import {checkAsync} from "../../testHelpers";
 
 const styles = require('../../../main/shared/components/PageWithHeader/PageWithHeader.css');
 
-export class DummyPage extends PageWithHeader<undefined> {
+class DummyPage extends PageWithHeader<undefined> {
     loaded: boolean;
 
     constructor() {

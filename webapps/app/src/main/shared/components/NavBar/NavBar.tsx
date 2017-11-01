@@ -6,19 +6,13 @@ import {Breadcrumb} from "../../models/Breadcrumb";
 
 const styles = require("./NavBar.css");
 
-interface Props {
-    crumbs: Breadcrumb[];
-}
-
-export class NavBarComponent extends React.Component<Props, undefined> {
+class NavBarComponent extends React.Component<NavState, undefined> {
     static getStores() {
         return [navStore];
     }
 
-    static getPropsFromStores(): Props {
-        return {
-            crumbs: navStore.getState().crumbs
-        };
+    static getPropsFromStores(): NavState {
+        return navStore.getState();
     }
 
     private makeLink(crumb: Breadcrumb): JSX.Element {
