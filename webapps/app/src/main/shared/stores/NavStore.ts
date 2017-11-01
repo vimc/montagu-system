@@ -24,8 +24,7 @@ class NavStore extends AbstractStore<NavState, AltJS.AltStore<NavState>> {
         super();
         this.bindListeners({
             handleInitialize: navActions.initialize,
-            handleNavigate: navActions.navigate,
-            handlePop: navActions.pop
+            handleNavigate: navActions.navigate
         });
     }
 
@@ -45,10 +44,6 @@ class NavStore extends AbstractStore<NavState, AltJS.AltStore<NavState>> {
         } else {
             this.crumbs.push(breadcrumb);
         }
-    }
-
-    handlePop() {
-        this.crumbs.pop();
     }
 }
 
