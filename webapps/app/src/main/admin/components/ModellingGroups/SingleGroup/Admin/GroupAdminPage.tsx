@@ -25,7 +25,7 @@ export class GroupAdminPage extends AdminPageWithHeader<PageProps> {
     }
 
     name(): string {
-        return "Manage group admin users";
+        return "Manage group members";
     }
 
     title(): JSX.Element {
