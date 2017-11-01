@@ -78,7 +78,6 @@ class ReportIntegrationTests extends IntegrationTestSuite {
                 });
 
             checkPromise(done, promise, token => {
-                checkSuccessful(done, promise);
                 const decoded = jwt_decode(token);
                 expect(decoded.url).to.equal(`/v1/reports/minimal/${version}/artefacts/`);
             });
