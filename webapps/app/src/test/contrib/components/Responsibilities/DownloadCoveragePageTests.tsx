@@ -30,7 +30,7 @@ describe('DownloadCoveragePage', () => {
         const group = mockModellingGroup({ id: "group-1" });
         setupMainStore({ groups: [group] });
 
-        (new DownloadCoveragePage({location: location })).componentDidMount();
+        (new DownloadCoveragePage({location: location })).load();
 
         checkAsync(done, (afterWait) => {
             expectOneAction(spy, { action: "ModellingGroupActions.setCurrentGroup", payload: "group-1" }, 0);

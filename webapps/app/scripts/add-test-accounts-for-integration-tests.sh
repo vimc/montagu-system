@@ -7,6 +7,7 @@ $here/cli.sh add "Test User" test.user \
     --if-not-exists
 $here/cli.sh addRole test.user user
 $here/cli.sh addRole test.user user-manager
+$here/cli.sh addRole test.user reports-reader
 $here/cli.sh addRole test.user uploader modelling-group:IC-Garske
 $here/cli.sh addRole test.user user-manager modelling-group:IC-Garske
 $here/cli.sh addUserToGroup test.user test-group

@@ -19,7 +19,7 @@ describe("ViewVersionsPage", () => {
             .returns(Promise.resolve(null));
 
         const pageProps = mockLocation<ViewVersionsPageProps>({ name: "reportname" });
-        sandbox.mount(<ViewVersionsPage location={pageProps} />);
+        new ViewVersionsPage({location: pageProps}).load();
         checkAsync(done, () => {
             expectOneAction(spy, {
                 action: "ReportActions.setCurrentReport",

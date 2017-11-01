@@ -36,7 +36,7 @@ describe("ViewUserDetailsPage", () => {
         const dispatchSpy = sandbox.dispatchSpy();
 
         const location = mockLocation<UserDetailsPageProps>({ username: "testuser" });
-        sandbox.mount(<ViewUserDetailsPage location={ location }/>);
+        new ViewUserDetailsPage({location: location}).load();
 
         checkAsync(done, (afterWait) => {
             expect(fetchUsers.called).to.equal(true, "Expected userStore.fetchUsers to be triggered");
