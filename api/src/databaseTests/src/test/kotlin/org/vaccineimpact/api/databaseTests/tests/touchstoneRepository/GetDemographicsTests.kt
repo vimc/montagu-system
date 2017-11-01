@@ -250,8 +250,6 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
         } check {
 
             val result = it.getDemographicData("tot-pop", source, touchstoneId)
-            Assertions.assertThat(result.structuredMetadata.demographicData.countries.count()).isEqualTo(0)
-            Assertions.assertThat(result.structuredMetadata.demographicData.source).isNull()
             Assertions.assertThat(result.tableData.data.count()).isEqualTo(0)
         }
     }
@@ -285,8 +283,6 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
         } check {
 
             val result = it.getDemographicData("tot-pop", source, touchstoneId)
-            Assertions.assertThat(result.structuredMetadata.demographicData.countries.count()).isEqualTo(0)
-            Assertions.assertThat(result.structuredMetadata.demographicData.source).isNull()
             Assertions.assertThat(result.tableData.data.count()).isEqualTo(0)
 
         }
@@ -304,8 +300,6 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
         } check {
 
             val result = it.getDemographicData("tot-pop", source, touchstoneId)
-            Assertions.assertThat(result.structuredMetadata.demographicData.countries.count()).isEqualTo(0)
-            Assertions.assertThat(result.structuredMetadata.demographicData.source).isNull()
             Assertions.assertThat(result.tableData.data.count()).isEqualTo(0)
         }
     }
@@ -365,11 +359,9 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
         } check {
 
             var result = it.getDemographicData("tot-pop", source, anotherTouchstoneId)
-            Assertions.assertThat(result.structuredMetadata.demographicData.countries.count()).isEqualTo(0)
             Assertions.assertThat(result.tableData.data.count()).isEqualTo(0)
 
             result = it.getDemographicData("tot-pop", newSource, anotherTouchstoneId)
-            Assertions.assertThat(result.structuredMetadata.demographicData.countries.count()).isGreaterThan(0)
             Assertions.assertThat(result.tableData.data.count()).isGreaterThan(0)
         }
     }
