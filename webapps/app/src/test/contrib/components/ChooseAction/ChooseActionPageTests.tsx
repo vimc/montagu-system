@@ -20,7 +20,7 @@ describe("ChooseActionPage", () => {
             .returns(Promise.resolve(null));
         const fetchGroupDetails = sandbox.sinon.stub(groupStore, "fetchGroupDetails").returns(Promise.resolve({}));
         const location = mockLocation<LocationProps>({ groupId: "gId" });
-        new ChooseActionPage({location: location}).load();
+        sandbox.mount(<ChooseActionPage location={ location } />);
         checkAsync(done, (afterWait) => {
             expect(fetchTouchstones.called).to.equal(true, "Expected responsibilityStore.fetchTouchstones to be called");
             afterWait(done, () => {

@@ -24,7 +24,7 @@ export class ReportingRouter extends Router<RouterProps> {
         if (props.loggedIn) {
             map('/', MainMenu);
             map('/:name/', ViewVersionsPage);
-            map('/:report/:version/', VersionInfoPage);
+            map('/:report/:version', VersionInfoPage);
             map('*', ReportingNoRouteFoundPage);
         } else {
             map('*', ReportingLoginPage);

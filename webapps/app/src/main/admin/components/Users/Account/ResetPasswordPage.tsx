@@ -8,8 +8,6 @@ import { accountStore } from "../../../stores/AccountStore";
 import { connectToStores } from "../../../../shared/alt";
 import { InternalLink } from "../../../../shared/components/InternalLink";
 import { queryStringAsObject } from "../../../../shared/Helpers";
-import {IPageWithParent} from "../../../../shared/models/Breadcrumb";
-import {MainMenu} from "../../MainMenu/MainMenu";
 
 export interface ResetPasswordPageProps {
     token: string;
@@ -22,20 +20,11 @@ interface RequestResetButtonProps {
 const ResetPasswordForm = FormConnector(resetPasswordForm(accountStore))(ResetPasswordFormComponent);
 
 export class ResetPasswordPage extends AdminPageWithHeader<ResetPasswordPageProps> {
-    name(): string {
-        return "Reset your password";
+    title(): JSX.Element {
+        return <span>Reset your password</span>
     }
 
-    urlFragment(): string {
-        return "set-password/";
-    }
-
-    parent(): IPageWithParent {
-        return new MainMenu();
-    }
-
-    load() {
-        super.load();
+    componentDidMount() {
         accountActions.setPasswordResetToken(queryStringAsObject().token);
     }
 

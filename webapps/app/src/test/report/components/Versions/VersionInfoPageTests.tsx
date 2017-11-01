@@ -34,7 +34,7 @@ describe("VersionInfoPage", () => {
             .returns(Promise.resolve(null));
 
         const pageProps = mockLocation<VersionInfoPageProps>({ report: "reportname", version: "versionname" });
-        new VersionInfoPage({location: pageProps}).load();
+        sandbox.mount(<VersionInfoPage location={pageProps} />);
 
         checkAsync(done, () => {
             expectOrderedActions(spy, [{

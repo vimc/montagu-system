@@ -1,20 +1,11 @@
 import * as React from "react";
-import {ContribPageWithHeader} from "./PageWithHeader/ContribPageWithHeader";
-import {ChooseActionPage} from "./ChooseAction/ChooseActionPage";
+import { PageWithHeaderAndNav } from "./PageWithHeader/PageWithHeaderAndNav";
 
 const commonStyles = require("../../shared/styles/common.css");
 
-export class TouchstoneHelp extends ContribPageWithHeader<undefined> {
-    name() {
-        return "Touchstones";
-    }
-
-    urlFragment() {
-        return "/help/touchstones/";
-    }
-
-    parent() {
-        return new ChooseActionPage();
+export class TouchstoneHelp extends PageWithHeaderAndNav<undefined> {
+    title() {
+        return <span>Touchstones</span>;
     }
 
     renderPageContent() {

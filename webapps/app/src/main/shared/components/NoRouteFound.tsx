@@ -5,8 +5,8 @@ import { InternalLink } from "./InternalLink";
 const styles = require("../styles/common.css");
 
 export class NoRouteFound {
-    static title(): string {
-        return "Page not found";
+    static title(): JSX.Element {
+        return <span>Page not found</span>;
     }
 
     static renderPageContent(): JSX.Element {
