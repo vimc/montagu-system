@@ -12,8 +12,7 @@ import spark.route.HttpMethod
 class OneTimeLinkController(
         val context: ControllerContext,
         val controllers: MontaguControllers
-)
-    : AbstractController(context)
+) : AbstractController(context)
 {
     override val urlComponent = ""
     val url = "/onetime_link/:token/"
@@ -25,10 +24,34 @@ class OneTimeLinkController(
 
     fun onetimeLink(context: ActionContext, repo: TokenRepository): Any
     {
-        val token = context.params(":token")
-        val claims = verifyToken(token, repo)
-        val link = OneTimeLink.parseClaims(claims)
-        return link.perform(controllers, context, repos)
+        val redirectUrl = context.queryParams("redirectUrl")
+        try
+        {
+            val token = context.params(":token")
+            val claims = verifyToken(token, repo)
+            val link = OneTimeLink.parseClaims(claims)
+
+            val result = link.perform(controllers, context, repos)
+            if (redirectUrl.isNullOrEmpty())
+            {
+                return result
+            }
+            else
+            {
+                // TODO encode response
+                val encodedResponse = ""
+                return context.redirect("$redirectUrl?result=$encodedResponse")
+            }
+        }
+        catch (e: Exception)
+        {
+            if (redirectUrl.isNullOrEmpty())
+                throw e
+
+            // TODO encode errorresponse
+            val encodedError = ""
+            return context.redirect("$redirectUrl?result=$encodedError")
+        }
     }
 
     private fun verifyToken(token: String, repo: TokenRepository): Map<String, Any>

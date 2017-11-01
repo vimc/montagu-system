@@ -158,7 +158,7 @@ open class ModellingGroupController(context: ControllerContext)
 
         val coverageAndTargetPerYear =
                 records.associateBy({ "coverage_${it.year}" }, { it.coverage }) +
-                records.associateBy({ "target_${it.year}" }, { it.target })
+                        records.associateBy({ "target_${it.year}" }, { it.target })
 
         return WideCoverageRow(reference.scenario,
                 reference.setName,
@@ -196,7 +196,7 @@ open class ModellingGroupController(context: ControllerContext)
             .filter { it.name == "modelling-groups.manage-members" }
             .map { it.scope }
 
-    fun addBurdenEstimatesFromHTMLForm(context: ActionContext, estimateRepository: BurdenEstimateRepository)
+    fun addBurdenEstimatesFromHTMLForm(context: ActionContext, estimateRepository: BurdenEstimateRepository): String
     {
         // First check if we're allowed to see this touchstone
         val path = getValidResponsibilityPath(context, estimateRepository)
@@ -216,7 +216,7 @@ open class ModellingGroupController(context: ControllerContext)
         }
     }
 
-    open fun addBurdenEstimates(context: ActionContext, estimateRepository: BurdenEstimateRepository)
+    open fun addBurdenEstimates(context: ActionContext, estimateRepository: BurdenEstimateRepository): String
     {
         // First check if we're allowed to see this touchstone
         val path = getValidResponsibilityPath(context, estimateRepository)
@@ -229,23 +229,30 @@ open class ModellingGroupController(context: ControllerContext)
     private fun saveBurdenEstimates(data: List<BurdenEstimate>,
                                     estimateRepository: BurdenEstimateRepository,
                                     context: ActionContext,
-                                    path: ResponsibilityPath)
+                                    path: ResponsibilityPath): String
     {
-        context.redirect("www.google.com")
-//        if (data.map { it.disease }.distinct().count() > 1)
-//        {
-//            throw InconsistentDataError("More than one value was present in the disease column")
-//        }
-//
-//        val id = estimateRepository.addBurdenEstimateSet(
-//                path.groupId, path.touchstoneId, path.scenarioId,
-//                data,
-//                uploader = context.username!!,
-//                timestamp = Instant.now()
-//        )
-//        val url = "/${path.groupId}/responsibilities/${path.touchstoneId}/${path.scenarioId}/estimates/$id/"
+        if (data.map { it.disease }.distinct().count() > 1)
+        {
+            throw InconsistentDataError("More than one value was present in the disease column")
+        }
 
-        // return objectCreation(context, url)
+        val id = estimateRepository.addBurdenEstimateSet(
+                path.groupId, path.touchstoneId, path.scenarioId,
+                data,
+                uploader = context.username!!,
+                timestamp = Instant.now()
+        )
+        val url = "/${path.groupId}/responsibilities/${path.touchstoneId}/${path.scenarioId}/estimates/$id/"
+
+        val response = objectCreation(context, url)
+        val redirectUrl = context.queryParams("redirectUrl")
+        if (!redirectUrl.isNullOrEmpty())
+        {
+            // TODO encode response
+            val encodedResponse = ""
+            context.redirect("$redirectUrl?result=$encodedResponse")
+        }
+        return response
     }
 
     private fun getValidResponsibilityPath(context: ActionContext, estimateRepository: BurdenEstimateRepository): ResponsibilityPath
