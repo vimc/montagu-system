@@ -4,16 +4,28 @@ import { ReportingPageWithHeader } from "./ReportingPageWithHeader";
 import { loginForm } from "../../shared/components/Login/LoginForm";
 import { LoginFormComponent } from "../../shared/components/Login/LoginFormComponent";
 import { reportingAuthStore } from "../stores/ReportingAuthStore";
+import {IPageWithParent} from "../../shared/models/Breadcrumb";
 
 const LoginForm = FormConnector(loginForm("reporting", reportingAuthStore))(LoginFormComponent);
 
 export class ReportingLoginPage extends ReportingPageWithHeader<undefined> {
-    title(): JSX.Element {
-        return <span>Log in</span>;
+    name(): string {
+        return "Log in";
+    }
+
+    includeInBreadcrumbs(): boolean {
+        return false;
+    }
+
+    urlFragment(): string {
+        return "/";
+    }
+
+    parent(): IPageWithParent {
+        return null;
     }
 
     renderPageContent(): JSX.Element {
-
         return <LoginForm />;
     }
 }

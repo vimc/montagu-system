@@ -7,7 +7,7 @@ describe("UserListItem", () => {
     it("renders internal link", () => {
         const rendered = shallow(<VersionListItem version={"v"} report={"reportname"} />);
 
-        expect(rendered.find('InternalLink').at(0).prop("href")).to.eq("/reportname/v");
+        expect(rendered.find('InternalLink').at(0).prop("href")).to.eq("/reportname/v/");
 
     });
 });
