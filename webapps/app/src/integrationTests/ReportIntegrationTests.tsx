@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import * as React from "react";
-import { shallow } from "enzyme";
+import { shallow, ShallowWrapper } from "enzyme";
 import { expectIsEqual, expectSameElements, IntegrationTestSuite } from "./IntegrationTest";
 import { reportingAuthStore } from "../main/report/stores/ReportingAuthStore";
 import { ReportingFetcher } from "../main/report/sources/ReportingFetcher";
@@ -77,10 +77,7 @@ class ReportIntegrationTests extends IntegrationTestSuite {
                             oneTimeTokenStore.fetchToken(`/reports/minimal/${version}/artefacts/`))
                 });
 
-            checkPromise(done, promise, token => {
-                const decoded = jwt_decode(token);
-                expect(decoded.url).to.equal(`/v1/reports/minimal/${version}/artefacts/`);
-            });
+            checkSuccessful(done, promise);
         });
 
         it("downloads artefact", (done: DoneCallback) => {
@@ -93,16 +90,11 @@ class ReportIntegrationTests extends IntegrationTestSuite {
                                                            filenames={["all.csv", "all.png"]}
                                                            description="all things"/>);
 
-                    const link = rendered.find(FileDownloadLink).first();
-
-                    const url = link.prop("href");
-                    return fetcher.fetchFromReportingApi(url)
+                    return firstDownloadPromise(rendered)
 
                 });
 
-            checkPromise(done, promise, (response) => {
-                expect(response.status).to.equal(200)
-            });
+            checkSuccessful(done, promise);
         });
 
         it("downloads resource", (done: DoneCallback) => {
@@ -114,16 +106,11 @@ class ReportIntegrationTests extends IntegrationTestSuite {
                     const rendered = shallow(<ResourceLinks report={reportName} version={version}
                                                             resources={["meta/data.csv"]}/>);
 
-                    const link = rendered.find(FileDownloadLink).first();
-
-                    const url = link.prop("href");
-                    return fetcher.fetchFromReportingApi(url)
+                    return firstDownloadPromise(rendered)
 
                 });
 
-            checkPromise(done, promise, (response) => {
-                expect(response.status).to.equal(200)
-            });
+            checkSuccessful(done, promise);
         });
 
         it("downloads data", (done: DoneCallback) => {
@@ -135,16 +122,11 @@ class ReportIntegrationTests extends IntegrationTestSuite {
 
                     const rendered = shallow(<DataLinks {...versionDetails.hash_data}/>);
 
-                    const link = rendered.find(FileDownloadLink).first();
-
-                    const url = link.prop("href");
-                    return fetcher.fetchFromReportingApi(url)
+                    return firstDownloadPromise(rendered)
 
                 });
 
-            checkPromise(done, promise, (response) => {
-                expect(response.status).to.equal(200)
-            });
+            checkSuccessful(done, promise);
         });
 
         it("downloads zipped report", (done: DoneCallback) => {
@@ -155,18 +137,18 @@ class ReportIntegrationTests extends IntegrationTestSuite {
                 .then((versionDetails: Version) => {
 
                     const rendered = shallow(<VersionDetailsComponent ready={true} report={reportName} versionDetails={versionDetails}/>);
-
-                    const link = rendered.find(FileDownloadLink).first();
-
-                    const url = link.prop("href");
-                    return fetcher.fetchFromReportingApi(url)
-
+                    return firstDownloadPromise(rendered)
                 });
 
-            checkPromise(done, promise, (response) => {
-                expect(response.status).to.equal(200)
-            });
+            checkSuccessful(done, promise);
         });
+
+        function firstDownloadPromise(rendered: ShallowWrapper<any, any>){
+            const link = rendered.find(FileDownloadLink).first();
+
+            const url = link.prop("href");
+            return fetcher.fetchFromReportingApi(url)
+        }
 
         function getVersion(reportName: string) {
             reportActions.setCurrentReport(reportName);
@@ -181,6 +163,12 @@ class ReportIntegrationTests extends IntegrationTestSuite {
                     reportActions.setCurrentVersion(versions[0]);
                     return reportStore.fetchVersionDetails()
                 });
+        }
+
+        function checkSuccessful(done: DoneCallback, promise: Promise<any>){
+            checkPromise(done, promise, (response) => {
+                expect(response.status).to.equal(200)
+            });
         }
 
     }
