@@ -77,7 +77,11 @@ class ReportIntegrationTests extends IntegrationTestSuite {
                             oneTimeTokenStore.fetchToken(`/reports/minimal/${version}/artefacts/`))
                 });
 
-            checkSuccessful(done, promise);
+            checkPromise(done, promise, token => {
+                checkSuccessful(done, promise);
+                const decoded = jwt_decode(token);
+                expect(decoded.url).to.equal(`/v1/reports/minimal/${version}/artefacts/`);
+            });
         });
 
         it("downloads artefact", (done: DoneCallback) => {
@@ -136,14 +140,15 @@ class ReportIntegrationTests extends IntegrationTestSuite {
             const promise = getVersionDetails(reportName)
                 .then((versionDetails: Version) => {
 
-                    const rendered = shallow(<VersionDetailsComponent ready={true} report={reportName} versionDetails={versionDetails}/>);
+                    const rendered = shallow(<VersionDetailsComponent ready={true} report={reportName}
+                                                                      versionDetails={versionDetails}/>);
                     return firstDownloadPromise(rendered)
                 });
 
             checkSuccessful(done, promise);
         });
 
-        function firstDownloadPromise(rendered: ShallowWrapper<any, any>){
+        function firstDownloadPromise(rendered: ShallowWrapper<any, any>) {
             const link = rendered.find(FileDownloadLink).first();
 
             const url = link.prop("href");
@@ -165,7 +170,7 @@ class ReportIntegrationTests extends IntegrationTestSuite {
                 });
         }
 
-        function checkSuccessful(done: DoneCallback, promise: Promise<any>){
+        function checkSuccessful(done: DoneCallback, promise: Promise<any>) {
             checkPromise(done, promise, (response) => {
                 expect(response.status).to.equal(200)
             });
