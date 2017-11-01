@@ -156,13 +156,6 @@ class JooqTouchstoneRepository(dsl: DSLContext, private val scenarioRepository: 
 
     private val TOUCHSTONE_SOURCES = "touchstoneSources"
 
-    private fun countriesInTouchstone(touchstoneId: String): SelectConditionStep<Record1<String>>
-    {
-        return dsl.select(TOUCHSTONE_COUNTRY.COUNTRY)
-                .from(TOUCHSTONE_COUNTRY)
-                .where(TOUCHSTONE_COUNTRY.TOUCHSTONE.eq(touchstoneId))
-    }
-
     private fun getDemographicDatasetsForTouchstone(touchstoneId: String):
             SelectConditionStep<Record5<Int, String, String, Boolean, String>>
     {
@@ -235,7 +228,7 @@ class JooqTouchstoneRepository(dsl: DSLContext, private val scenarioRepository: 
                         DEMOGRAPHIC_STATISTIC.YEAR,
                         DEMOGRAPHIC_STATISTIC.VALUE,
                         field(name(TOUCHSTONE_SOURCES, "sourceCode"), String::class.java),
-                        GENDER.NAME)
+                        GENDER.CODE)
                 .from(DEMOGRAPHIC_STATISTIC)
                 .join(GENDER)
                 .on(GENDER.ID.eq(DEMOGRAPHIC_STATISTIC.GENDER))
@@ -325,7 +318,7 @@ class JooqTouchstoneRepository(dsl: DSLContext, private val scenarioRepository: 
             record[DEMOGRAPHIC_STATISTIC.AGE_FROM],
             record[DEMOGRAPHIC_STATISTIC.AGE_TO],
             record[DEMOGRAPHIC_STATISTIC.YEAR],
-            record[GENDER.NAME],
+            record[GENDER.CODE],
             record[DEMOGRAPHIC_STATISTIC.VALUE]
     )
 }

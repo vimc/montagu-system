@@ -109,7 +109,7 @@ class DemographicTests : DatabaseTest()
                     "age_interpretation" to "age",
                     "source" to "unwpp2015",
                     "unit" to "Number of people",
-                    "gender" to "Both",
+                    "gender" to "both",
                     "countries" to array(countries.sortedBy { it })
             )
         }.toJsonString())
@@ -147,7 +147,7 @@ class DemographicTests : DatabaseTest()
                     "age_interpretation" to "age of mother",
                     "source" to "unwpp2015",
                     "unit" to "Births per woman",
-                    "gender" to "Female",
+                    "gender" to "female",
                     "countries" to array(countries.sortedBy { it })
             )
         }.toJsonString())
