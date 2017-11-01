@@ -9,10 +9,9 @@ interface Actions {
 
 function getParentsInOrderFromTopToBottom(page: IPageWithParent): IPageWithParent[] {
     let parents: IPageWithParent[] = [];
-    let parent = page.parent();
-    while (parent != null) {
-        parents.unshift(parent); // adds at the beginning
-        parent = parent.parent();
+    while (page != null) {
+        parents.unshift(page); // adds at the beginning
+        page = page.parent();
     }
     return parents;
 }

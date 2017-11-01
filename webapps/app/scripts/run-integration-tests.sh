@@ -26,7 +26,7 @@ set +e
 ./node_modules/mocha-webpack/bin/mocha-webpack \
     --webpack-config webpack-test.config.js \
     --timeout 5000 \
-    "src/integrationTests/{helper,${portal}IntegrationTests}.ts"
+    "src/integrationTests/{helper,${portal}IntegrationTests}.tsx"
 result=$?
 
 # ------- Teardown -----------
