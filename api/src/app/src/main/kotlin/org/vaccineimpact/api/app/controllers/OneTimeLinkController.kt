@@ -44,7 +44,7 @@ class OneTimeLinkController(
             else
             {
                 val result = Result(ResultStatus.SUCCESS, data, emptyList())
-                return redirectWithResult(context, result, redirectUrl!!)
+                redirectWithResult(context, result, redirectUrl!!)
             }
         }
         catch (e: Exception)
