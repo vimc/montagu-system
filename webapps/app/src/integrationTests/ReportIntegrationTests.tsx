@@ -40,9 +40,16 @@ class ReportIntegrationTests extends IntegrationTestSuite {
 
         it("fetches reports", (done: DoneCallback) => {
             const promise = reportStore.fetchReports();
-            const expected: string[] = ["minimal", "multi-artefact", "multifile-artefact", "other", "use_resource"];
+            const expectedNames: string[] = ["minimal", "multi-artefact", "multifile-artefact", "other", "use_resource"];
 
-            checkPromise(done, promise, (reports) => expectSameElements<string>(reports, expected));
+            checkPromise(done, promise, (reports) => {
+                const names = reports.map((item) => item.name);
+                const versions = reports.filter((item) => item.latest_version.length > 0);
+
+                expectSameElements<string>(names, expectedNames);
+                expect(reports[3].display_name).to.equal("another report");
+                expect(versions.length).to.equal(reports.length);
+            });
         });
 
         it("fetches report versions", (done: DoneCallback) => {

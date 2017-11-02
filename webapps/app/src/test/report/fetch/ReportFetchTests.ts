@@ -2,11 +2,12 @@ import { alt } from "../../../main/shared/alt";
 import {reportStore} from "../../../main/report/stores/ReportStore";
 import {ReportingFetchHelper} from "./ReportingFetchHelper";
 import {Version} from "../../../main/shared/models/reports/Report";
-import {mockVersion} from "../../mocks/mockModels";
+import { mockReport, mockVersion } from "../../mocks/mockModels";
+import { Report } from "../../../main/shared/models/Generated";
 
 describe("ReportStore.fetchReports", () => {
-    new ReportingFetchHelper<string[], string[]>({
-        makePayload: () => [ "report1", "report2" ],
+    new ReportingFetchHelper<Report[], Report[]>({
+        makePayload: () => [ mockReport({"name": "report1"}), mockReport({"name": "report2"})],
         prepareForFetch: () => {
             alt.bootstrap(JSON.stringify({
                 ReportStore: {
@@ -19,7 +20,7 @@ describe("ReportStore.fetchReports", () => {
         prepareForCachedFetch: () => {
             alt.bootstrap(JSON.stringify({
                 ReportStore: {
-                    reports: [ "report1", "report2" ]
+                    reports: [ mockReport({"name": "report1"}), mockReport({"name": "report2"})]
                 }
             }))
         },

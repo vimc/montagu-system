@@ -40,6 +40,7 @@ fun main(args: Array<String>)
                         Touchstone::class,
                         TouchstoneStatus::class,
                         User::class,
+                        Report::class,
                         AssociateUser::class,
                         org.vaccineimpact.api.models.permissions.AssociateRole::class
                 ),
