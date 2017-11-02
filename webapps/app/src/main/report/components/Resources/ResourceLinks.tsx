@@ -1,6 +1,4 @@
 import * as React from "react";
-import {ILookup} from "../../../shared/models/Lookup";
-import {settings} from "../../../shared/Settings";
 import { FileDownloadLink } from "../FileDownloadLink";
 import { encodeFilename } from "../../../shared/Helpers";
 
@@ -14,7 +12,7 @@ export class ResourceLinks extends React.Component<ResourceLinksProps, undefined
     buildUrl(resource: string): string {
         resource = encodeFilename(resource);
         const p = this.props;
-        return `/reports/${p.report}/${p.version}/resources/${resource}/`;
+        return `/reports/${p.report}/versions/${p.version}/resources/${resource}/`;
     }
 
     render() {

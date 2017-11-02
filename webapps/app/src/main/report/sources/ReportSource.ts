@@ -25,7 +25,7 @@ export class ReportSource extends ReportingSource<ReportStoreState> {
             isCached: s => s.versions.hasOwnProperty(s.currentReport)
         });
 
-        this.fetchVersionDetails = () => this.doFetch(s => `/reports/${s.currentReport}/${s.currentVersion}/`, {
+        this.fetchVersionDetails = () => this.doFetch(s => `/reports/${s.currentReport}/versions/${s.currentVersion}/`, {
             loading: reportActions.beginFetchVersionDetails,
             success: reportActions.updateVersionDetails,
             isCached: s => s.versionDetails.hasOwnProperty(s.currentVersion)

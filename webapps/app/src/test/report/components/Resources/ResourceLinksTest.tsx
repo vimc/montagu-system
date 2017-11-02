@@ -20,8 +20,8 @@ describe("ResourceLinks", () => {
         const rendered = shallow(<ResourceLinks resources={testResources} report="reportname" version="versionname" />);
         const links = rendered.find('li').find(FileDownloadLink);
 
-        expect(links.at(0).prop("href")).to.eq("/reports/reportname/versionname/resources/R:someresource.csv/");
-        expect(links.at(1).prop("href")).to.eq("/reports/reportname/versionname/resources/someother.rds/");
+        expect(links.at(0).prop("href")).to.eq("/reports/reportname/versions/versionname/resources/R:someresource.csv/");
+        expect(links.at(1).prop("href")).to.eq("/reports/reportname/versions/versionname/resources/someother.rds/");
     });
 
     it("shows 'none' if no resources", () => {
