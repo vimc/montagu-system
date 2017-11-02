@@ -1,19 +1,10 @@
 import * as React from "react";
 import { ChooseGroupContent } from "./ChooseGroupContent";
 import { ContribPageWithHeader } from "../PageWithHeader/ContribPageWithHeader";
-import {IPageWithParent} from "../../../shared/models/Breadcrumb";
 
 export class ChooseGroupPage extends ContribPageWithHeader<undefined> {
-    name() {
-        return "Modellers' contribution portal";
-    }
-
-    urlFragment(): string {
-        return "/";
-    }
-
-    parent(): IPageWithParent {
-        return null;
+    title() {
+        return <span>Modellers' contribution portal</span>;
     }
 
     renderPageContent() {

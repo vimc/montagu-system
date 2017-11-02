@@ -4,11 +4,9 @@ import { responsibilityActions } from "../../../actions/ResponsibilityActions";
 import { responsibilityStore } from "../../../stores/ResponsibilityStore";
 import { DownloadCoverageContent } from "./DownloadCoverageContent";
 import { modellingGroupActions } from "../../../../shared/actions/ModellingGroupActions";
+import { PageWithHeaderAndNav } from "../../PageWithHeader/PageWithHeaderAndNav";
 import { doNothing } from "../../../../shared/Helpers";
 import { DownloadDataTitle } from "../DownloadDataTitle";
-import {ContribPageWithHeader} from "../../PageWithHeader/ContribPageWithHeader";
-import {ResponsibilityOverviewPage} from "../Overview/ResponsibilityOverviewPage";
-import {IPageWithParent} from "../../../../shared/models/Breadcrumb";
 
 interface LocationProps {
     groupId: string;
@@ -16,35 +14,23 @@ interface LocationProps {
     scenarioId: string;
 }
 
-export class DownloadCoveragePage extends ContribPageWithHeader<LocationProps> {
-    load() {
-        super.load();
-        modellingGroupActions.setCurrentGroup(this.props.location.params.groupId);
-        responsibilityStore.fetchTouchstones().catch(doNothing).then(() => {
-            touchstoneActions.setCurrentTouchstone(this.props.location.params.touchstoneId);
-            responsibilityStore.fetchResponsibilities().catch(doNothing).then(() => {
-                responsibilityActions.setCurrentResponsibility(this.props.location.params.scenarioId);
-                responsibilityStore.fetchCoverageSets().catch(doNothing);
-                responsibilityStore.fetchOneTimeCoverageToken().catch(doNothing);
+export class DownloadCoveragePage extends PageWithHeaderAndNav<LocationProps> {
+    componentDidMount() {
+        setTimeout(() => {
+            modellingGroupActions.setCurrentGroup(this.props.location.params.groupId);
+            responsibilityStore.fetchTouchstones().catch(doNothing).then(() => {
+                touchstoneActions.setCurrentTouchstone(this.props.location.params.touchstoneId);
+                responsibilityStore.fetchResponsibilities().catch(doNothing).then(() => {
+                    responsibilityActions.setCurrentResponsibility(this.props.location.params.scenarioId);
+                    responsibilityStore.fetchCoverageSets().catch(doNothing);
+                    responsibilityStore.fetchOneTimeCoverageToken().catch(doNothing);
+                });
             });
         });
     }
 
-    name() {
-        return "Download coverage data";
-    }
-
     title() {
         return <DownloadDataTitle title="Download coverage data" />
-    }
-
-    urlFragment(): string {
-        const s = responsibilityStore.getState();
-        return `coverage/${s.currentResponsibility.scenario.id}/`;
-    }
-
-    parent(): IPageWithParent {
-        return new ResponsibilityOverviewPage();
     }
 
     renderPageContent() {

@@ -6,22 +6,12 @@ import {
     ForgottenPasswordFormComponent,
     ForgottenPasswordPageTitle
 } from "../../shared/components/Login/ForgottenPasswordForm";
-import {IPageWithParent} from "../../shared/models/Breadcrumb";
-import {ChooseGroupPage} from "./ChooseGroup/ChooseGroupPage";
 
 const ForgottenPasswordForm = FormConnector(forgottenPasswordFormStore("contrib"))(ForgottenPasswordFormComponent);
 
 export class ContribForgottenPasswordPage extends ContribPageWithHeader<undefined> {
-    name(): string {
+    title(): JSX.Element {
         return ForgottenPasswordPageTitle;
-    }
-
-    urlFragment(): string {
-        return "/forgotten-password/";
-    }
-
-    parent(): IPageWithParent {
-        return new ChooseGroupPage();
     }
 
     renderPageContent(): JSX.Element {
