@@ -13,7 +13,7 @@ import { Sandbox } from "../test/Sandbox";
 import { ArtefactItem } from "../main/report/components/Artefacts/ArtefactItem";
 import { FileDownloadLink } from "../main/report/components/FileDownloadLink";
 import { ResourceLinks } from "../main/report/components/Resources/ResourceLinks";
-import { VersionDetails, VersionDetailsComponent } from "../main/report/components/Versions/VersionDetails";
+import { VersionDetailsComponent } from "../main/report/components/Versions/VersionDetails";
 import { DataLinks } from "../main/report/components/Data/DataLinks";
 
 const jwt_decode = require('jwt-decode');
