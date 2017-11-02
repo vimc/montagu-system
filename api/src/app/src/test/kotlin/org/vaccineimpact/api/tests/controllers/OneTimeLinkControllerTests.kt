@@ -111,6 +111,28 @@ class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
     }
 
     @Test
+    fun `does not redirect if redirect url query parameter is empty`()
+    {
+        val otherController = mock<PasswordController>()
+        val controller = makeController(
+                passwordController = otherController,
+                claims = mapOf(
+                        "sub" to WebTokenHelper.oneTimeActionSubject,
+                        "action" to "set-password",
+                        "payload" to ":username=test.user",
+                        "query" to "redirectUrl="
+                ),
+                repos = mock {
+                    on { user } doReturn mock<UserRepository>()
+                }
+        )
+
+        val fakeContext = actionContext()
+        controller.onetimeLink(fakeContext, makeRepository())
+        verify(fakeContext, times(0)).redirect(any())
+    }
+
+    @Test
     fun `redirects on error if redirect url query parameter exists`()
     {
         val otherController = mock<PasswordController> {
