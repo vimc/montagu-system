@@ -19,3 +19,12 @@ export function queryStringAsObject(url: string = window.location.href): any {
     });
     return obj;
 }
+
+export function longTimestamp(date: Date) {
+    return `${longDate(date)}, ${date.getHours()}:${date.getMinutes()}`;
+}
+
+// We use this format as it is unambiguous between USA and UK
+export function longDate(date: Date) {
+    return date.toDateString();
+}

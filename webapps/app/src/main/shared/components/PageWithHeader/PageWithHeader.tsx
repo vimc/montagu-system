@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Location } from "simple-react-router";
+import {Location, Router} from "simple-react-router";
 import { InternalLink } from "../InternalLink";
 
 const logo = require("./logo.png");
@@ -35,4 +35,5 @@ export abstract class PageWithHeader<TLocationProps>
 
 export interface PageProperties<T> {
     location: Location<T>;
+    router: Router<any>;
 }
