@@ -29,7 +29,6 @@ class OneTimeLinkController(
 
     fun onetimeLink(context: ActionContext, repo: TokenRepository): Any
     {
-
         val token = context.params(":token")
         val claims = verifyToken(token, repo)
         val link = OneTimeLink.parseClaims(claims)

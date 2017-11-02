@@ -244,15 +244,7 @@ open class ModellingGroupController(context: ControllerContext)
         )
         val url = "/${path.groupId}/responsibilities/${path.touchstoneId}/${path.scenarioId}/estimates/$id/"
 
-        val response = objectCreation(context, url)
-        val redirectUrl = context.queryParams("redirectUrl")
-        if (!redirectUrl.isNullOrEmpty())
-        {
-            // TODO encode response
-            val encodedResponse = ""
-            context.redirect("$redirectUrl?result=$encodedResponse")
-        }
-        return response
+        return objectCreation(context, url)
     }
 
     private fun getValidResponsibilityPath(context: ActionContext, estimateRepository: BurdenEstimateRepository): ResponsibilityPath
