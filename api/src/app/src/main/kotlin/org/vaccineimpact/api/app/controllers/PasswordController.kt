@@ -33,6 +33,7 @@ open class PasswordController(
         return setPasswordForUser(context, repo, context.username!!)
     }
 
+    @Throws(Exception::class)
     open fun setPasswordForUser(context: ActionContext, repo: UserRepository, username: String): String
     {
         val password = context.postData<SetPassword>().password

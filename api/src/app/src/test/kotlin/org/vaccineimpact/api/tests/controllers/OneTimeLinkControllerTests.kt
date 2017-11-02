@@ -10,6 +10,7 @@ import org.vaccineimpact.api.app.controllers.MontaguControllers
 import org.vaccineimpact.api.app.controllers.OneTimeLinkController
 import org.vaccineimpact.api.app.controllers.PasswordController
 import org.vaccineimpact.api.app.errors.InvalidOneTimeLinkToken
+import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.TokenRepository
 import org.vaccineimpact.api.app.repositories.UserRepository
@@ -66,6 +67,74 @@ class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
         verify(otherController).setPasswordForUser(any<OneTimeLinkActionContext>(), any(), any())
     }
 
+    @Test
+    fun `redirects if redirect url query parameter exists`()
+    {
+        val otherController = mock<PasswordController>()
+        val controller = makeController(
+                passwordController = otherController,
+                claims = mapOf(
+                        "sub" to WebTokenHelper.oneTimeActionSubject,
+                        "action" to "set-password",
+                        "payload" to ":username=test.user",
+                        "query" to "redirectUrl=http://redirect.com"
+                ),
+                repos = mock {
+                    on { user } doReturn mock<UserRepository>()
+                }
+        )
+
+        val fakeContext = actionContext()
+        controller.onetimeLink(fakeContext, makeRepository())
+        verify(fakeContext, times(1)).redirect("http://redirect.com?result=encoded")
+    }
+
+    @Test
+    fun `does not redirect if redirect url query parameter does not exist`()
+    {
+        val otherController = mock<PasswordController>()
+        val controller = makeController(
+                passwordController = otherController,
+                claims = mapOf(
+                        "sub" to WebTokenHelper.oneTimeActionSubject,
+                        "action" to "set-password",
+                        "payload" to ":username=test.user"
+                ),
+                repos = mock {
+                    on { user } doReturn mock<UserRepository>()
+                }
+        )
+
+        val fakeContext = actionContext()
+        controller.onetimeLink(fakeContext, makeRepository())
+        verify(fakeContext, times(0)).redirect(any())
+    }
+
+    @Test
+    fun `redirects on error if redirect url query parameter exists`()
+    {
+        val otherController = mock<PasswordController> {
+            on(it.setPasswordForUser(any(), any(), any())) doThrow Exception()
+        }
+
+        val controller = makeController(
+                passwordController = otherController,
+                claims = mapOf(
+                        "sub" to WebTokenHelper.oneTimeActionSubject,
+                        "action" to "set-password",
+                        "payload" to ":username=test.user",
+                        "query" to "redirectUrl=http://redirect.com"
+                ),
+                repos = mock {
+                    on { user } doReturn mock<UserRepository>()
+                }
+        )
+
+        val fakeContext = actionContext()
+        controller.onetimeLink(fakeContext, makeRepository())
+        verify(fakeContext, times(1)).redirect("http://redirect.com?result=encoded")
+    }
+
     private fun makeController(
             helperAllowToken: Boolean = true,
             claims: Map<String, Any> = mapOf("sub" to WebTokenHelper.oneTimeActionSubject),
@@ -88,13 +157,16 @@ class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
 
     private fun makeTokenHelper(allowToken: Boolean, claims: Map<String, Any>): WebTokenHelper
     {
-        return if (allowToken)
-        {
-            mock { on { verify(any()) } doReturn claims }
-        }
-        else
-        {
-            mock { on { verify(any()) } doThrow RuntimeException("X") }
+        return mock<WebTokenHelper> {
+            on(it.encodeResult(any<String>())) doReturn "encoded"
+            if (allowToken)
+            {
+                on(it.verify(any())) doReturn claims
+            }
+            else
+            {
+                on(it.verify(any())) doThrow RuntimeException("X")
+            }
         }
     }
 
