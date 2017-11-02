@@ -9,7 +9,7 @@ import kotlin.reflect.KProperty1
 import kotlin.reflect.full.declaredMemberProperties
 import kotlin.reflect.full.primaryConstructor
 
-open class DataTable<T : Any>(override val data: Iterable<T>, val type: KClass<T>) : StreamSerializable<T>
+open class DataTable<T : Any>(override val data: Sequence<T>, val type: KClass<T>) : StreamSerializable<T>
 {
     class DataTableHeader<T>(name: String, val property: KProperty1<T, *>, serializer: Serializer)
     {
@@ -68,6 +68,6 @@ open class DataTable<T : Any>(override val data: Iterable<T>, val type: KClass<T
     companion object
     {
         // Simple helper to get around JVM type erasure
-        inline fun <reified R : Any> new(data: Iterable<R>) = DataTable(data, R::class)
+        inline fun <reified R : Any> new(data: Sequence<R>) = DataTable(data, R::class)
     }
 }

@@ -65,7 +65,7 @@ class GetScenarioTests : TouchstoneRepositoryTests()
         } check {
             val result = it.getScenarioAndCoverageData(touchstoneId, scenarioId)
             checkScenarioIsAsExpected(result.structuredMetadata)
-            assertThat(result.tableData.data).containsExactlyElementsOf(listOf(
+            assertThat(result.tableData.data.toList()).containsExactlyElementsOf(listOf(
                     LongCoverageRow(scenarioId, "YF without", "YF", GAVISupportLevel.WITHOUT, ActivityType.CAMPAIGN,
                             "AAA", "AAA-Name",2000, 10.toDecimal(), 20.toDecimal(), "10-20", 100.toDecimal(), "50.50".toDecimalOrNull()),
                     LongCoverageRow(scenarioId, "YF with", "YF", GAVISupportLevel.WITH, ActivityType.CAMPAIGN,
@@ -84,7 +84,7 @@ class GetScenarioTests : TouchstoneRepositoryTests()
         } check {
             val result = it.getScenarioAndCoverageData(touchstoneId, scenarioId)
             checkScenarioIsAsExpected(result.structuredMetadata)
-            assertThat(result.tableData.data).isEmpty()
+            assertThat(result.tableData.data.toList()).isEmpty()
         }
     }
 

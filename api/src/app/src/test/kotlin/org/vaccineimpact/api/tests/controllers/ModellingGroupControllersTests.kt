@@ -301,7 +301,7 @@ class ModellingGroupControllersTests : ControllerTests<ModellingGroupController>
     {
         val coverageSets = mockCoverageSetsData(status)
         val fakeRows = generateCoverageRows(testYear, target, coverage)
-        val data = SplitData(coverageSets, DataTable.new(fakeRows))
+        val data = SplitData(coverageSets, DataTable.new(fakeRows.asSequence()))
         return mock {
             on { getCoverageData(any(), any(), any()) } doReturn data
         }

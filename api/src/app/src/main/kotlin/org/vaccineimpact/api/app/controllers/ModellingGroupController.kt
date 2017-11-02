@@ -127,7 +127,7 @@ open class ModellingGroupController(context: ControllerContext)
         return SplitData(splitData.structuredMetadata, tableData)
     }
 
-    private fun getWideDatatable(data: Iterable<LongCoverageRow>):
+    private fun getWideDatatable(data: Sequence<LongCoverageRow>):
             FlexibleDataTable<WideCoverageRow>
     {
         val groupedRows = data
@@ -147,7 +147,7 @@ open class ModellingGroupController(context: ControllerContext)
         // all the rows should have the same number of years, so we just look at the first row
         val years = rows.first().coverageAndTargetPerYear.keys.toList()
 
-        return FlexibleDataTable.new(rows, years)
+        return FlexibleDataTable.new(rows.asSequence(), years)
     }
 
     private fun mapWideCoverageRow(records: List<LongCoverageRow>)
