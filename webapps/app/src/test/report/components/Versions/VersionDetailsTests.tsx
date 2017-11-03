@@ -37,7 +37,7 @@ describe("VersionDetails", () => {
 
     it("renders zip download link", () => {
         const rendered = shallow(<VersionDetailsComponent versionDetails={mockVersion({id: "v1"})} report="reportname" ready={true}/>);
-        expect(rendered.find('td').at(0).find(FileDownloadLink).at(0).prop("href")).to.eq("/reports/reportname/v1/all/");
+        expect(rendered.find('td').at(0).find(FileDownloadLink).at(0).prop("href")).to.eq("/reports/reportname/versions/v1/all/");
     });
 
 });

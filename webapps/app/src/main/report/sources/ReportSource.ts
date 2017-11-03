@@ -3,10 +3,11 @@ import { reportActions } from "../actions/ReportActions";
 import {ReportStoreState} from "../stores/ReportStore";
 import {ReportingSource} from "./ReportingSource";
 import {Version} from "../../shared/models/reports/Report";
+import { Report } from "../../shared/models/Generated";
 
 export class ReportSource extends ReportingSource<ReportStoreState> {
 
-    fetchReports: () => SourceModel<string[]>;
+    fetchReports: () => SourceModel<Report[]>;
     fetchVersions: () => SourceModel<string[]>;
     fetchVersionDetails: () => SourceModel<Version>;
 
@@ -24,7 +25,7 @@ export class ReportSource extends ReportingSource<ReportStoreState> {
             isCached: s => s.versions.hasOwnProperty(s.currentReport)
         });
 
-        this.fetchVersionDetails = () => this.doFetch(s => `/reports/${s.currentReport}/${s.currentVersion}/`, {
+        this.fetchVersionDetails = () => this.doFetch(s => `/reports/${s.currentReport}/versions/${s.currentVersion}/`, {
             loading: reportActions.beginFetchVersionDetails,
             success: reportActions.updateVersionDetails,
             isCached: s => s.versionDetails.hasOwnProperty(s.currentVersion)

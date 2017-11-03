@@ -136,6 +136,12 @@ export interface User {
     username: string;
 }
 
+export interface Report {
+    display_name: string | null;
+    latest_version: string;
+    name: string;
+}
+
 export interface AssociateUser {
     action: string;
     username: string;
