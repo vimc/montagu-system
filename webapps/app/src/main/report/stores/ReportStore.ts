@@ -6,9 +6,10 @@ import {reportActions} from "../actions/ReportActions";
 import {ReportSource} from "../sources/ReportSource";
 import {ILookup} from "../../shared/models/Lookup";
 import {Version} from "../../shared/models/reports/Report";
+import { Report } from "../../shared/models/Generated";
 
 export interface ReportStoreState extends RemoteContent {
-    reports: string[];
+    reports: Report[];
     versions: ILookup<string[]>;
     currentReport: string;
     currentVersion: string;
@@ -16,14 +17,14 @@ export interface ReportStoreState extends RemoteContent {
 }
 
 export interface ReportStoreInterface extends AltJS.AltStore<ReportStoreState> {
-    fetchReports(): Promise<string[]>;
+    fetchReports(): Promise<Report[]>;
     fetchVersions(): Promise<string[]>;
     fetchVersionDetails(): Promise<Version>;
 }
 
 class ReportStore
     extends AbstractStore<ReportStoreState, ReportStoreInterface> {
-    reports: string[];
+    reports: Report[];
     versions: ILookup<string[]>;
     versionDetails: ILookup<Version>;
     currentReport: string;
@@ -63,13 +64,12 @@ class ReportStore
         this.reports = [];
     }
 
-    handleUpdateReports(reports: string[]) {
+    handleUpdateReports(reports: Report[]) {
         this.reports = reports;
         this.ready = true;
     }
 
     handleSetCurrentReport(name: string) {
-
         this.currentReport = name;
     }
 
