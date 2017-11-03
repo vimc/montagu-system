@@ -66,9 +66,9 @@ fun parseQueryParams(rawQueryParams: String?): Map<String, String>
 }
 
 
-class RedirectValidator
+open class RedirectValidator
 {
-    fun validateRedirectUrl(redirectUrl: String?)
+    open fun validateRedirectUrl(redirectUrl: String?)
     {
         if (redirectUrl == null || redirectUrl.isEmpty()
                 || redirectUrlIsValid(redirectUrl))
