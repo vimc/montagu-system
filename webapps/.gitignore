@@ -18,6 +18,7 @@ app/src/main/Models\.ts
 app/src/webmodels/.gradle/**
 app/src/webmodels/build/**
 app/src/webmodels/generate/build/**
+app/token_key/*
 contrib/.tmp/*
 contrib/\.idea/*
 contrib/node_modules/*
@@ -31,4 +32,3 @@ nohup\.out
 react-prototype/dist/*
 react-prototype/node_modules/*
 react-prototype/npm-debug\.log
-token_key/*
