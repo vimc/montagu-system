@@ -66,6 +66,7 @@ export function expectIsEqual<T>(actual: T, expected: T) {
 }
 
 export function expectSameElements<Any>(actual: Any[], expected: Any[]) {
-    expect(actual).to.have.members(expected);
-    expect(expected).to.have.members(actual);
+    const failMessage = `Expected ${JSON.stringify(actual, null, 4)} to have same members as ${JSON.stringify(expected, null, 4)}`
+    expect(actual).to.have.members(expected, failMessage);
+    expect(expected).to.have.members(actual, failMessage);
 }
