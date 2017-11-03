@@ -4,7 +4,8 @@ import {expect} from "chai";
 import {alt} from "../../../../main/shared/alt";
 import {VersionDetailsComponent, VersionProps} from "../../../../main/report/components/Versions/VersionDetails";
 import {mockVersion} from "../../../mocks/mockModels";
-import { FileDownloadLink } from "../../../../main/report/components/FileDownloadLink";
+import {FileDownloadLink} from "../../../../main/report/components/FileDownloadLink";
+import {mockRouter} from "../../../mocks/mockRouter";
 
 describe("VersionDetails", () => {
 
@@ -14,29 +15,49 @@ describe("VersionDetails", () => {
                 versionDetails: {"v1": mockVersion()},
                 currentReport: "reportname",
                 currentVersion: "v1",
+                versions: {
+                    reportname: ["v1", "v2", "v3"],
+                    otherReport: ["v4", "v5", "v6"]
+                },
                 ready: true
             },
             ReportingAuthStore: {loggedIn: true}
         }));
 
-        const expected: VersionProps = {
+        const router = mockRouter();
+        const inputProps = {router};
 
+        const expected: VersionProps = {
             report: "reportname",
             versionDetails: mockVersion(),
-            ready: true
+            ready: true,
+            otherVersions: ["v1", "v2", "v3"],
+            router: router
         };
 
-        expect(VersionDetailsComponent.getPropsFromStores()).to.eql(expected);
+        expect(VersionDetailsComponent.getPropsFromStores(inputProps)).to.eql(expected);
     });
 
 
     it("renders date", () => {
-        const rendered = shallow(<VersionDetailsComponent versionDetails={mockVersion({ date: "2015-03-25" })} report="reportname" ready={true}/>);
+        const rendered = shallow(<VersionDetailsComponent
+            versionDetails={mockVersion({date: "2015-03-25"})}
+            report="reportname"
+            otherVersions={[]}
+            router={null}
+            ready={true}
+        />);
         expect(rendered.find('td').at(1).text()).to.eq("2015-03-25");
     });
 
     it("renders zip download link", () => {
-        const rendered = shallow(<VersionDetailsComponent versionDetails={mockVersion({id: "v1"})} report="reportname" ready={true}/>);
+        const rendered = shallow(<VersionDetailsComponent
+            versionDetails={mockVersion({id: "v1"})}
+            report="reportname"
+            otherVersions={[]}
+            router={null}
+            ready={true}
+        />);
         expect(rendered.find('td').at(0).find(FileDownloadLink).at(0).prop("href")).to.eq("/reports/reportname/v1/all/");
     });
 

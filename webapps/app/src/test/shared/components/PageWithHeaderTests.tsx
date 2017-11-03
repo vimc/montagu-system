@@ -1,9 +1,9 @@
 import * as React from "react";
-import { expect } from "chai";
-import { shallow, ShallowWrapper } from "enzyme";
-import { mockLocation } from "../../mocks/mocks";
+import {expect} from "chai";
+import {shallow, ShallowWrapper} from "enzyme";
+import {mockLocation} from "../../mocks/mocks";
 
-import { PageWithHeader } from "../../../main/shared/components/PageWithHeader/PageWithHeader";
+import {PageWithHeader} from "../../../main/shared/components/PageWithHeader/PageWithHeader";
 
 const styles = require('../../../main/shared/components/PageWithHeader/PageWithHeader.css');
 
@@ -25,7 +25,7 @@ describe('PageWithHeader', () => {
     let rendered: ShallowWrapper<any, any>;
 
     beforeEach(() => {
-        rendered = shallow(<DummyPage location={ mockLocation<undefined>() } />);
+        rendered = shallow(<DummyPage location={mockLocation<undefined>()} router={null} />);
     });
 
     it("renders the application title", () => {

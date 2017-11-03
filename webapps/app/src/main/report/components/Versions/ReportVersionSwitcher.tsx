@@ -1,7 +1,7 @@
 import * as React from "react";
 import {VersionIdentifier} from "../../models/VersionIdentifier";
 import {longTimestamp} from "../../../shared/Helpers";
-import {Router} from "simple-react-router";
+import {IRouter, Router} from "simple-react-router";
 import {VersionInfoPage} from "./VersionInfoPage";
 
 const styles = require("../../styles/reports.css");
@@ -10,7 +10,7 @@ interface Props {
     report: string;
     currentVersion: string;
     versions: string[];
-    router: Router<any>;
+    router: IRouter;
 }
 
 export class ReportVersionSwitcher extends React.Component<Props, undefined> {

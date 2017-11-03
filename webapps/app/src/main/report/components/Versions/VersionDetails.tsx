@@ -10,12 +10,12 @@ import {ResourceLinks} from "../Resources/ResourceLinks";
 import {ArtefactsList} from "../Artefacts/ArtefactsList";
 import {FileDownloadLink} from "../FileDownloadLink";
 import {ReportVersionSwitcher} from "./ReportVersionSwitcher";
-import {Router} from "simple-react-router";
+import {IRouter} from "simple-react-router";
 
 const styles = require("../../styles/reports.css");
 
 interface PublicProps {
-    router: Router<any>;
+    router: IRouter;
 }
 
 export interface VersionProps extends RemoteContent, PublicProps {
@@ -29,7 +29,7 @@ export class VersionDetailsComponent extends RemoteContentComponent<VersionProps
         return [reportStore];
     }
 
-    static getPropsFromStores(props: VersionProps): VersionProps {
+    static getPropsFromStores(props: Partial<VersionProps>): VersionProps {
         const s = reportStore.getState();
         return {
             versionDetails: s.versionDetails[s.currentVersion],

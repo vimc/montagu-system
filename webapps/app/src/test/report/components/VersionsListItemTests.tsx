@@ -13,7 +13,7 @@ describe("VersionListItem", () => {
         const rendered = sandbox.mount(<VersionListItem version={ "versionname" } report={ "reportname" } />);
 
         const href = rendered.find('a').at(0).prop("href");
-        expect(href).to.eq("/reportname/versionname");
+        expect(href).to.eq("/reportname/versionname/");
     });
 
 });

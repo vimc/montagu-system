@@ -4,7 +4,7 @@ import {ReportingPageWithHeader} from "../ReportingPageWithHeader";
 import {VersionDetails} from "./VersionDetails";
 import {reportStore} from "../../stores/ReportStore";
 import {doNothing} from "../../../shared/Helpers";
-import {Router} from "simple-react-router";
+import {IRouter} from "simple-react-router";
 
 export interface VersionInfoPageProps {
     report: string;
@@ -27,7 +27,7 @@ export class VersionInfoPage extends ReportingPageWithHeader<VersionInfoPageProp
         });
     }
 
-    static changeVersion(report: string, version: string, router: Router<any>) {
+    static changeVersion(report: string, version: string, router: IRouter) {
         router.redirectTo(`/${report}/${version}/`, false);
         VersionInfoPage.load(report, version);
     }

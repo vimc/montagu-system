@@ -3,7 +3,11 @@ declare module "simple-react-router" {
 
     export type RouteMap = (path: string, component: ComponentConstructor<any, any>, params?: any) => void;
 
-    export abstract class Router<RoutingProperties> extends Component<RoutingProperties, any> {
+    export interface IRouter {
+        redirectTo(href: String, replace: Boolean): void;
+    }
+
+    export abstract class Router<RoutingProperties> extends Component<RoutingProperties, any> implements IRouter {
         component: Component<any, any>;
 
         routes(map: RouteMap): void;
