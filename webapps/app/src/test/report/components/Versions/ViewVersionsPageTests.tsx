@@ -19,7 +19,7 @@ describe("ViewVersionsPage", () => {
             .returns(Promise.resolve(null));
 
         const pageProps = mockLocation<ViewVersionsPageProps>({ name: "reportname" });
-        new ViewVersionsPage({location: pageProps, router: null).load();
+        new ViewVersionsPage({location: pageProps, router: null}).load();
         checkAsync(done, () => {
             expectOneAction(spy, {
                 action: "ReportActions.setCurrentReport",
@@ -35,7 +35,7 @@ describe("ViewVersionsPage", () => {
             .returns(Promise.resolve(null));
 
         const pageProps = mockLocation<ViewVersionsPageProps>({ name: "reportname" });
-        new ViewVersionsPage({location: pageProps, router: null).load();
+        new ViewVersionsPage({location: pageProps, router: null}).load();
         checkAsync(done, () => {
             expect(fetchVersions.called).to.equal(true);
         });
