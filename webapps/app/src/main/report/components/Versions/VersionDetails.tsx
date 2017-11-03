@@ -42,7 +42,7 @@ export class VersionDetailsComponent extends RemoteContentComponent<VersionProps
     }
 
     private renderTable(props: VersionProps) {
-        const url = `/reports/${props.report}/${props.versionDetails.id}/all/`;
+        const url = `/reports/${props.report}/versions/${props.versionDetails.id}/all/`;
         const version = props.versionDetails.id;
 
         return <table className={styles.versionDetails}>
