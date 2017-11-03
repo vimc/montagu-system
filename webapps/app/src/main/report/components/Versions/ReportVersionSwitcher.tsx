@@ -30,7 +30,7 @@ export class ReportVersionSwitcher extends React.Component<Props, undefined> {
                 {longTimestamp(v.timestamp)}
             </option>
         });
-        return <div className={"mb-3 row justify-content-end " + styles.versionSwitcher}>
+        return <div className={"mb-3 row " + styles.versionSwitcher}>
             <div className="col-12 col-md-6">
                 <label htmlFor="report-version-switcher">Report version</label>
                 <select
