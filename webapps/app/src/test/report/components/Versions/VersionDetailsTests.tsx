@@ -62,7 +62,7 @@ describe("VersionDetails", () => {
             onChangeVersion={null}
             ready={true}
         />);
-        expect(rendered.find('td').at(0).find(FileDownloadLink).at(0).prop("href")).to.eq("/reports/reportname/versions/v1/all/");
+        expect(rendered.find('td').at(0).find(FileDownloadLink).at(0).prop("href")).to.eq("/reports/reportname/v1/all/");
     });
 
     it("renders report version switcher", () => {
