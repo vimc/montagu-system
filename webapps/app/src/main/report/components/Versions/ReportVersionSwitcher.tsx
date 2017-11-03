@@ -10,7 +10,7 @@ interface Props {
     report: string;
     currentVersion: string;
     versions: string[];
-    router: IRouter;
+    onChangeVersion: (version: string) => void;
 }
 
 export class ReportVersionSwitcher extends React.Component<Props, undefined> {
@@ -20,7 +20,7 @@ export class ReportVersionSwitcher extends React.Component<Props, undefined> {
     }
 
     onSelect(e: React.ChangeEvent<HTMLSelectElement>) {
-        VersionInfoPage.changeVersion(this.props.report, e.target.value, this.props.router);
+        this.props.onChangeVersion(e.target.value);
     }
 
     render() {

@@ -144,7 +144,7 @@ class ReportIntegrationTests extends IntegrationTestSuite {
                         report={reportName}
                         versionDetails={versionDetails}
                         otherVersions={[]}
-                        router={null}
+                        onChangeVersion={null}
                     />);
                     return firstDownloadPromise(rendered)
                 });

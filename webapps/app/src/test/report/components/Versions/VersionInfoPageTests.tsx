@@ -45,14 +45,14 @@ describe("VersionInfoPage", () => {
 
     it("triggers actions on mount", (done: DoneCallback) => {
         checkExpectedActionsWhen(done, () => {
-            const pageProps = mockLocation<VersionInfoPageProps>({report: "reportname", version: "versionname"});
-            new VersionInfoPage({location: pageProps, router: null}).componentDidMount();
+            const location = mockLocation<VersionInfoPageProps>({report: "reportname", version: "versionname"});
+            new VersionInfoPage({location: location, router: null}).componentDidMount();
         });
     });
 
     it("triggers actions on load", (done: DoneCallback) => {
         checkExpectedActionsWhen(done, () => {
-            VersionInfoPage.load("reportname", "versionname");
+            new VersionInfoPage({location: null, router: null}).load("reportname", "versionname");
         });
     });
 
@@ -61,7 +61,8 @@ describe("VersionInfoPage", () => {
         const router: IRouter = { redirectTo };
 
         checkExpectedActionsWhen(done, () => {
-            VersionInfoPage.changeVersion("reportname", "versionname", router);
+            const location = mockLocation<VersionInfoPageProps>({report: "reportname", version: "oldVersion"});
+            new VersionInfoPage({location: location, router: router}).changeVersion("versionname");
             expect(redirectTo.called).to.equal(true, "Expected redirectTo to be called");
             expect(redirectTo.calledWith("/reportname/versionname/"));
         });

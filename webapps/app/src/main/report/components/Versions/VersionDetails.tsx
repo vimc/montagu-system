@@ -15,7 +15,7 @@ import {IRouter} from "simple-react-router";
 const styles = require("../../styles/reports.css");
 
 interface PublicProps {
-    router: IRouter;
+    onChangeVersion: (version: string) => void;
 }
 
 export interface VersionProps extends RemoteContent, PublicProps {
@@ -37,7 +37,7 @@ export class VersionDetailsComponent extends RemoteContentComponent<VersionProps
             otherVersions: s.versions[s.currentReport],
             ready: s.ready && s.versionDetails[s.currentVersion] != null,
 
-            router: props.router
+            onChangeVersion: props.onChangeVersion
         };
     }
 
@@ -83,7 +83,7 @@ export class VersionDetailsComponent extends RemoteContentComponent<VersionProps
                 report={props.report}
                 currentVersion={props.versionDetails.id}
                 versions={props.otherVersions}
-                router={props.router}
+                onChangeVersion={props.onChangeVersion}
             />
             {this.renderTable(props)}
         </div>

@@ -6,8 +6,11 @@ import {VersionDetailsComponent, VersionProps} from "../../../../main/report/com
 import {mockVersion} from "../../../mocks/mockModels";
 import {FileDownloadLink} from "../../../../main/report/components/FileDownloadLink";
 import {mockRouter} from "../../../mocks/mockRouter";
+import {Sandbox} from "../../../Sandbox";
 
 describe("VersionDetails", () => {
+    const sandbox = new Sandbox();
+    afterEach(() => sandbox.restore());
 
     it("can get props from stores", () => {
         alt.bootstrap(JSON.stringify({
@@ -24,15 +27,15 @@ describe("VersionDetails", () => {
             ReportingAuthStore: {loggedIn: true}
         }));
 
-        const router = mockRouter();
-        const inputProps = {router};
+        const onChangeVersion = sandbox.sinon.stub();
+        const inputProps = { onChangeVersion };
 
         const expected: VersionProps = {
             report: "reportname",
             versionDetails: mockVersion(),
             ready: true,
             otherVersions: ["v1", "v2", "v3"],
-            router: router
+            onChangeVersion: onChangeVersion
         };
 
         expect(VersionDetailsComponent.getPropsFromStores(inputProps)).to.eql(expected);
@@ -44,7 +47,7 @@ describe("VersionDetails", () => {
             versionDetails={mockVersion({date: "2015-03-25"})}
             report="reportname"
             otherVersions={[]}
-            router={null}
+            onChangeVersion={null}
             ready={true}
         />);
         expect(rendered.find('td').at(1).text()).to.eq("2015-03-25");
@@ -55,7 +58,7 @@ describe("VersionDetails", () => {
             versionDetails={mockVersion({id: "v1"})}
             report="reportname"
             otherVersions={[]}
-            router={null}
+            onChangeVersion={null}
             ready={true}
         />);
         expect(rendered.find('td').at(0).find(FileDownloadLink).at(0).prop("href")).to.eq("/reports/reportname/v1/all/");

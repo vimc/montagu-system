@@ -4,7 +4,7 @@ import {ReportingPageWithHeader} from "../ReportingPageWithHeader";
 import {VersionDetails} from "./VersionDetails";
 import {reportStore} from "../../stores/ReportStore";
 import {doNothing} from "../../../shared/Helpers";
-import {IRouter} from "simple-react-router";
+import {PageProperties} from "../../../shared/components/PageWithHeader/PageWithHeader";
 
 export interface VersionInfoPageProps {
     report: string;
@@ -12,14 +12,19 @@ export interface VersionInfoPageProps {
 }
 
 export class VersionInfoPage extends ReportingPageWithHeader<VersionInfoPageProps> {
+    constructor(props: PageProperties<VersionInfoPageProps>) {
+        super(props);
+        this.changeVersion = this.changeVersion.bind(this);
+    }
+
     componentDidMount() {
         setTimeout(() => {
             const p = this.props.location.params;
-            VersionInfoPage.load(p.report, p.version);
+            this.load(p.report, p.version);
         });
     }
 
-    static load(report: string, version: string) {
+    load(report: string, version: string) {
         reportActions.setCurrentReport(report);
         reportStore.fetchVersions().catch(doNothing).then(() => {
             reportActions.setCurrentVersion(version);
@@ -27,9 +32,10 @@ export class VersionInfoPage extends ReportingPageWithHeader<VersionInfoPageProp
         });
     }
 
-    static changeVersion(report: string, version: string, router: IRouter) {
-        router.redirectTo(`/${report}/${version}/`, false);
-        VersionInfoPage.load(report, version);
+    changeVersion(version: string) {
+        const report = this.props.location.params.report;
+        this.props.router.redirectTo(`/${report}/${version}/`, false);
+        this.load(report, version);
     }
 
     title() {
@@ -37,6 +43,6 @@ export class VersionInfoPage extends ReportingPageWithHeader<VersionInfoPageProp
     }
 
     renderPageContent() {
-        return <VersionDetails router={this.props.router} />;
+        return <VersionDetails onChangeVersion={this.changeVersion} />;
     }
 }
