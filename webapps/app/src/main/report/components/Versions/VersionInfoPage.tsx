@@ -28,7 +28,7 @@ export class VersionInfoPage extends ReportingPageWithHeader<VersionInfoPageProp
     }
 
     static changeVersion(report: string, version: string, router: Router<any>) {
-        router.redirectTo(`/${report}/${version}`, false);
+        router.redirectTo(`/${report}/${version}/`, false);
         VersionInfoPage.load(report, version);
     }
 
