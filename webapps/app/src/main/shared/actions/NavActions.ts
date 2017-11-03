@@ -18,11 +18,15 @@ function getParentsInOrderFromTopToBottom(page: IPageWithParent): IPageWithParen
 
 class NavActions extends AbstractActions implements Actions {
     initialize(page: IPageWithParent): Breadcrumb[] {
-        const parents = getParentsInOrderFromTopToBottom(page);
-        return parents.map(p => ({
-            url: p.url(),
-            name: p.name()
-        }));
+        if (page != null) {
+            const parents = getParentsInOrderFromTopToBottom(page);
+            return parents.map(p => ({
+                url: p.url(),
+                name: p.name()
+            }));
+        } else {
+            return [];
+        }
     }
 
     navigate(url: string, name: string): Breadcrumb {

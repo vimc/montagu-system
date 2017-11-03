@@ -66,9 +66,16 @@ export abstract class PageWithHeader<TLocationProps>
 
     url(): string {
         let url = this.urlFragment();
+        if (url === undefined) {
+            return undefined;
+        }
         let p = this.parent();
         while (p != null) {
-            url = p.urlFragment() + url;
+            const fragment = p.urlFragment();
+            if (fragment === undefined) {
+                return undefined;
+            }
+            url = fragment + url;
             p = p.parent();
         }
         return url;
