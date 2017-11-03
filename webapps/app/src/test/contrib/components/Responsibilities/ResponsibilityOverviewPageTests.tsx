@@ -29,7 +29,7 @@ describe('ResponsibilityOverviewPage', () => {
         const group = mockModellingGroup({ id: "group-id" });
         setupMainStore({ groups: [group] });
 
-        new ResponsibilityOverviewPage({location: location}).load();
+        sandbox.mount(<ResponsibilityOverviewPage location={location} router={null} />);
 
         checkAsync(done, (afterWait) => {
             expectOneAction(spy, { action: "ModellingGroupActions.setCurrentGroup", payload: "group-id" }, 0);

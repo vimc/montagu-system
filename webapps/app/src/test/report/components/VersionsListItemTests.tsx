@@ -1,7 +1,8 @@
 import * as React from "react";
+import {mount} from "enzyme";
 import {VersionListItem} from "../../../main/report/components/Versions/VersionListItem";
 import {expect} from "chai";
-import {Sandbox} from "../../Sandbox";
+import { Sandbox } from "../../Sandbox";
 
 describe("VersionListItem", () => {
     const sandbox = new Sandbox();

@@ -13,7 +13,7 @@ import { Sandbox } from "../test/Sandbox";
 import { ArtefactItem } from "../main/report/components/Artefacts/ArtefactItem";
 import { FileDownloadLink } from "../main/report/components/FileDownloadLink";
 import { ResourceLinks } from "../main/report/components/Resources/ResourceLinks";
-import { VersionDetails, VersionDetailsComponent } from "../main/report/components/Versions/VersionDetails";
+import { VersionDetailsComponent } from "../main/report/components/Versions/VersionDetails";
 import { DataLinks } from "../main/report/components/Data/DataLinks";
 
 const jwt_decode = require('jwt-decode');
@@ -40,9 +40,18 @@ class ReportIntegrationTests extends IntegrationTestSuite {
 
         it("fetches reports", (done: DoneCallback) => {
             const promise = reportStore.fetchReports();
-            const expected: string[] = ["minimal", "multi-artefact", "multifile-artefact", "other", "use_resource"];
+            const expectedNames: string[] = ["minimal", "multi-artefact", "multifile-artefact", "other", "use_resource"];
 
-            checkPromise(done, promise, (reports) => expectSameElements<string>(reports, expected));
+            checkPromise(done, promise, (reports) => {
+                const names = reports.map((item) => item.name);
+                const versions = reports.filter((item) => item.latest_version.length > 0);
+                const otherReport = reports.filter((item) => item.name == "other");
+
+                expectSameElements<string>(names, expectedNames);
+
+                expect(otherReport[0].display_name).to.equal("another report");
+                expect(versions.length).to.equal(reports.length);
+            });
         });
 
         it("fetches report versions", (done: DoneCallback) => {
@@ -139,8 +148,13 @@ class ReportIntegrationTests extends IntegrationTestSuite {
             const promise = getVersionDetails(reportName)
                 .then((versionDetails: Version) => {
 
-                    const rendered = shallow(<VersionDetailsComponent ready={true} report={reportName}
-                                                                      versionDetails={versionDetails}/>);
+                    const rendered = shallow(<VersionDetailsComponent
+                        ready={true}
+                        report={reportName}
+                        versionDetails={versionDetails}
+                        allVersions={[]}
+                        onChangeVersion={null}
+                    />);
                     return firstDownloadPromise(rendered)
                 });
 

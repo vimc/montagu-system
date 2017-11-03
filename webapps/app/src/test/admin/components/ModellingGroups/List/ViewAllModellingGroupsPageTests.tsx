@@ -11,9 +11,11 @@ describe("ViewAllModellingGroupsPageTests", () => {
 
     afterEach(() => sandbox.restore());
 
-    it("triggers fetch on load", () => {
+    it("triggers fetch on load", (done: DoneCallback) => {
         const fetchGroups = sandbox.sinon.spy(groupStore, "fetchGroups");
-        (new ViewAllModellingGroupsPage({ location: mockLocation<undefined>() })).load();
-        expect(fetchGroups.called).to.equal(true, "Expected groupStore.fetchGroups to be triggered");
+        (new ViewAllModellingGroupsPage({ location: mockLocation<undefined>(), router: null })).componentDidMount();
+        checkAsync(done, () => {
+            expect(fetchGroups.called).to.equal(true, "Expected groupStore.fetchGroups to be triggered");
+        });
     });
 });

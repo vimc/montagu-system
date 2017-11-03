@@ -9,8 +9,7 @@ export interface VersionName {
     version: string;
 }
 
-export interface Version{
-
+export interface Version {
     name: string;
     displayname: string;
     id: string;

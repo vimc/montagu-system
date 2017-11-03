@@ -2,6 +2,7 @@ import * as models from "../../main/shared/models/Generated";
 import { ExtendedResponsibility, ExtendedResponsibilitySet } from "../../main/contrib/models/ResponsibilitySet";
 import { Version } from "../../main/shared/models/reports/Report";
 import { Artefact } from "../../main/shared/models/reports/Artefact";
+import { Report } from "../../main/shared/models/Generated";
 
 let counter = 0;
 
@@ -165,6 +166,17 @@ export function mockArtefact(properties?: Partial<Artefact>): Artefact {
     const template: Artefact = {
         filenames: [ "filename1.csv", "filename2.html" ],
         description: "description"
+    };
+
+    return Object.assign(template, properties);
+}
+
+export function mockReport(properties?: Partial<Report>): Report{
+
+    const template: Report = {
+        name: "report" ,
+        display_name: "display name",
+        latest_version: "e62871eydhsjkh"
     };
 
     return Object.assign(template, properties);

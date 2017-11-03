@@ -19,3 +19,19 @@ export function queryStringAsObject(url: string = window.location.href): any {
     });
     return obj;
 }
+
+export function longTimestamp(date: Date) {
+    const hours = padZero(date.getHours());
+    const minutes = padZero(date.getMinutes());
+    return `${longDate(date)}, ${hours}:${minutes}`;
+}
+
+// We use this format as it is unambiguous between USA and UK
+export function longDate(date: Date) {
+    return date.toDateString();
+}
+
+export function padZero(number: number) {
+    // This always sticks a zero on the front and then takes the last two digits
+    return ('0' + number).slice(-2);
+}

@@ -29,7 +29,7 @@ describe('UploadEstimatesPage', () => {
         const group = mockModellingGroup({ id: "group-1" });
         setupMainStore({ groups: [group] });
 
-        (new UploadBurdenEstimatesPage({ location: location })).load();
+        (new UploadBurdenEstimatesPage({location: location, router: null})).componentDidMount();
 
         checkAsync(done, (afterWait) => {
             afterWait(done, () => {

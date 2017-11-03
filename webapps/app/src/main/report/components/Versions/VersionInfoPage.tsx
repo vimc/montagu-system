@@ -4,8 +4,7 @@ import {ReportingPageWithHeader} from "../ReportingPageWithHeader";
 import {VersionDetails} from "./VersionDetails";
 import {reportStore} from "../../stores/ReportStore";
 import {doNothing} from "../../../shared/Helpers";
-import {IPageWithParent} from "../../../shared/models/Breadcrumb";
-import {ViewVersionsPage} from "./ViewVersionsPage";
+import {PageProperties} from "../../../shared/components/PageWithHeader/PageWithHeader";
 
 export interface VersionInfoPageProps {
     report: string;
@@ -13,28 +12,37 @@ export interface VersionInfoPageProps {
 }
 
 export class VersionInfoPage extends ReportingPageWithHeader<VersionInfoPageProps> {
-    load() {
-        super.load();
-        reportActions.setCurrentReport(this.props.location.params.report);
-        reportActions.setCurrentVersion(this.props.location.params.version);
-        reportStore.fetchVersionDetails().catch(doNothing);
+    constructor(props: PageProperties<VersionInfoPageProps>) {
+        super(props);
+        this.changeVersion = this.changeVersion.bind(this);
     }
 
-    name(): string {
-        const s = reportStore.getState();
-        return s.currentVersion;
+    componentDidMount() {
+        setTimeout(() => {
+            const p = this.props.location.params;
+            this.load(p.report, p.version);
+        });
     }
 
-    urlFragment(): string {
-        const s = reportStore.getState();
-        return `${s.currentVersion}/`;
+    load(report: string, version: string) {
+        reportActions.setCurrentReport(report);
+        reportStore.fetchVersions().catch(doNothing).then(() => {
+            reportActions.setCurrentVersion(version);
+            reportStore.fetchVersionDetails().catch(doNothing);
+        });
     }
 
-    parent(): IPageWithParent {
-        return new ViewVersionsPage();
+    changeVersion(version: string) {
+        const report = this.props.location.params.report;
+        this.props.router.redirectTo(`/${report}/${version}/`, false);
+        this.load(report, version);
+    }
+
+    title() {
+        return <span>{this.props.location.params.report}</span>;
     }
 
     renderPageContent() {
-        return <VersionDetails />;
+        return <VersionDetails onChangeVersion={this.changeVersion} />;
     }
 }

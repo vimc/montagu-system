@@ -1,3 +1,7 @@
+:local(.versionDetails) {
+    width: 100%;
+}
+
 :local(.artefactColumn) {
     padding: 0;
 }
@@ -18,4 +22,8 @@
 
 :local(.description) {
     font-weight: bold;
+}
+
+:local(.versionSwitcher) {
+    font-size: larger;
 }
