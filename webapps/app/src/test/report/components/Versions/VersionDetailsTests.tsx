@@ -35,7 +35,7 @@ describe("VersionDetails", () => {
             report: "reportname",
             versionDetails: mockVersion(),
             ready: true,
-            otherVersions: ["v1", "v2", "v3"],
+            allVersions: ["v1", "v2", "v3"],
             onChangeVersion: onChangeVersion
         };
 
@@ -47,7 +47,7 @@ describe("VersionDetails", () => {
         const rendered = shallow(<VersionDetailsComponent
             versionDetails={mockVersion({date: "2015-03-25"})}
             report="reportname"
-            otherVersions={[]}
+            allVersions={[]}
             onChangeVersion={null}
             ready={true}
         />);
@@ -58,7 +58,7 @@ describe("VersionDetails", () => {
         const rendered = shallow(<VersionDetailsComponent
             versionDetails={mockVersion({id: "v1"})}
             report="reportname"
-            otherVersions={[]}
+            allVersions={[]}
             onChangeVersion={null}
             ready={true}
         />);
@@ -70,7 +70,7 @@ describe("VersionDetails", () => {
         const rendered = shallow(<VersionDetailsComponent
             versionDetails={mockVersion({id: "v1"})}
             report="reportname"
-            otherVersions={["v1", "v2"]}
+            allVersions={["v1", "v2"]}
             onChangeVersion={handler}
             ready={true}
         />);
@@ -86,7 +86,7 @@ describe("VersionDetails", () => {
         const rendered = shallow(<VersionDetailsComponent
             versionDetails={mockVersion({id: "v1"})}
             report="reportname"
-            otherVersions={["v1", "v2"]}
+            allVersions={["v1", "v2"]}
             onChangeVersion={handler}
             ready={true}
         />);

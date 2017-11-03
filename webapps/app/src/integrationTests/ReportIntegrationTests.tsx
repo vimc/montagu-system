@@ -152,7 +152,7 @@ class ReportIntegrationTests extends IntegrationTestSuite {
                         ready={true}
                         report={reportName}
                         versionDetails={versionDetails}
-                        otherVersions={[]}
+                        allVersions={[]}
                         onChangeVersion={null}
                     />);
                     return firstDownloadPromise(rendered)
