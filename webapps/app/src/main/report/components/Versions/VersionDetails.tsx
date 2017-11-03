@@ -35,7 +35,7 @@ export class VersionDetailsComponent extends RemoteContentComponent<VersionProps
             versionDetails: s.versionDetails[s.currentVersion],
             report: s.currentReport,
             otherVersions: s.versions[s.currentReport],
-            ready: s.ready && s.versionDetails[s.currentVersion] != null,
+            ready: s.ready && s.versionDetails[s.currentVersion] != null && s.versions[s.currentReport] !== undefined,
 
             onChangeVersion: props.onChangeVersion
         };
