@@ -13,7 +13,7 @@ import { Sandbox } from "../test/Sandbox";
 import { ArtefactItem } from "../main/report/components/Artefacts/ArtefactItem";
 import { FileDownloadLink } from "../main/report/components/FileDownloadLink";
 import { ResourceLinks } from "../main/report/components/Resources/ResourceLinks";
-import { VersionDetails, VersionDetailsComponent } from "../main/report/components/Versions/VersionDetails";
+import { VersionDetailsComponent } from "../main/report/components/Versions/VersionDetails";
 import { DataLinks } from "../main/report/components/Data/DataLinks";
 
 const jwt_decode = require('jwt-decode');
@@ -45,9 +45,11 @@ class ReportIntegrationTests extends IntegrationTestSuite {
             checkPromise(done, promise, (reports) => {
                 const names = reports.map((item) => item.name);
                 const versions = reports.filter((item) => item.latest_version.length > 0);
+                const otherReport = reports.filter((item) => item.name == "other");
 
                 expectSameElements<string>(names, expectedNames);
-                expect(reports[3].display_name).to.equal("another report");
+
+                expect(otherReport[0].display_name).to.equal("another report");
                 expect(versions.length).to.equal(reports.length);
             });
         });
