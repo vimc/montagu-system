@@ -80,7 +80,6 @@ export class VersionDetailsComponent extends RemoteContentComponent<VersionProps
     renderContent(props: VersionProps) {
         return <div>
             <ReportVersionSwitcher
-                report={props.report}
                 currentVersion={props.versionDetails.id}
                 versions={props.otherVersions}
                 onChangeVersion={props.onChangeVersion}

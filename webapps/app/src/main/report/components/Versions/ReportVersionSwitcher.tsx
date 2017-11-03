@@ -7,7 +7,6 @@ import {VersionInfoPage} from "./VersionInfoPage";
 const styles = require("../../styles/reports.css");
 
 interface Props {
-    report: string;
     currentVersion: string;
     versions: string[];
     onChangeVersion: (version: string) => void;
