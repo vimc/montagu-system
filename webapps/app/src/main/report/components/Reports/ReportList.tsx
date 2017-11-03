@@ -4,9 +4,10 @@ import {RemoteContentComponent} from "../../../shared/components/RemoteContentCo
 import {reportStore} from "../../stores/ReportStore";
 import {connectToStores} from "../../../shared/alt";
 import {ReportListItem} from "./ReportListItem";
+import { Report } from "../../../shared/models/Generated";
 
 interface ReportProps extends RemoteContent {
-    reports: string[]
+    reports: Report[]
 }
 
 export class ReportListComponent extends RemoteContentComponent<ReportProps> {
@@ -24,8 +25,8 @@ export class ReportListComponent extends RemoteContentComponent<ReportProps> {
 
     renderContent(props: ReportProps) {
         const items = props.reports
-            .sort((a, b) => a.localeCompare(b))
-            .map((name) => <ReportListItem key={ name } name={ name } />);
+            .sort((a, b) => a.name.localeCompare(b.name))
+            .map((report) => <ReportListItem key={ report.name } name={ report.name } />);
 
         return <ul>
             {items}

@@ -2,13 +2,13 @@ import {alt} from "../../../main/shared/alt";
 import {expect} from "chai";
 import {reportActions} from "../../../main/report/actions/ReportActions";
 import {reportStore} from "../../../main/report/stores/ReportStore";
-import {mockVersion} from "../../mocks/mockModels";
+import { mockReport, mockVersion } from "../../mocks/mockModels";
 
 describe("ReportStore", () => {
     beforeEach(() => alt.recycle());
 
     it("has reports reportActions.updateReports", () => {
-        const reports = ["testreport", "anothertestreport"];
+        const reports = [mockReport({"name": "testreport"}), mockReport({"name": "anothertestreport"})];
 
         reportActions.updateReports(reports);
 
@@ -17,7 +17,8 @@ describe("ReportStore", () => {
     });
 
     it("is blank after reportActions.beginFetchReports", () => {
-        reportActions.updateReports(["report1", "report2"]);
+        const reports = [mockReport({"name": "testreport"}), mockReport({"name": "anothertestreport"})];
+        reportActions.updateReports(reports);
         reportActions.beginFetchReports();
 
         expect(reportStore.getState().reports).to.eql([]);

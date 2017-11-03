@@ -5,6 +5,8 @@ import { shallow } from "enzyme";
 import {ReportListComponent} from "../../../main/report/components/Reports/ReportList";
 import {ReportListItem} from "../../../main/report/components/Reports/ReportListItem";
 import {alt} from "../../../main/shared/alt";
+import { mockResponse } from "../../mocks/mockRemote";
+import { mockReport } from "../../mocks/mockModels";
 
 describe("ReportListComponent", () => {
     it("can get props from stores", () => {
@@ -23,7 +25,7 @@ describe("ReportListComponent", () => {
     });
 
     it("renders items alphabetically", () => {
-        const reports = [ "b", "c", "a" ];
+        const reports = [ mockReport({"name": "b"}), mockReport({"name": "c"}), mockReport({"name": "a"}) ];
         const rendered = shallow(<ReportListComponent ready={ true } reports={ reports } />);
         const items = rendered.find(ReportListItem);
         expect(items).to.have.length(3);
