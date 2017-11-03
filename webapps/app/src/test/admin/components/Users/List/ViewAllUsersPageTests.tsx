@@ -13,7 +13,7 @@ describe("ViewAllUsersPageTests", () => {
 
     it("triggers fetch on load", (done: DoneCallback) => {
         const spy = sandbox.sinon.spy(userStore, "fetchUsers");
-        sandbox.mount(<ViewAllUsersPage location={ mockLocation<undefined>() } />);
+        sandbox.mount(<ViewAllUsersPage location={ mockLocation<undefined>() } router={null} />);
         checkAsync(done, () => {
             expect(spy.called).to.equal(true, "Expected usersStore.fetchUsers to be triggered");
         });

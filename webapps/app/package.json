@@ -73,7 +73,7 @@
     "react-dom": "^15.4.2",
     "react-radio-button-group": "1.2.5",
     "react-transition-group": "^1.2.0",
-    "simple-react-router": "0.0.13",
+    "simple-react-router": "0.0.14",
     "whatwg-fetch": "^2.0.3"
   }
 }

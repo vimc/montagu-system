@@ -32,7 +32,7 @@ export class ButtonLink extends Link {
     };
 
     render() {
-        const props = Object.assign({}, this.props);
+        const props = Object.assign({}, this.props) as any;
         delete props.externalLink;
         props.href = props.href || '';
         props.onClick = this.onClick;
