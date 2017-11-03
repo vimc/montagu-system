@@ -21,7 +21,7 @@ interface PublicProps {
 export interface VersionProps extends RemoteContent, PublicProps {
     versionDetails: Version;
     report: string;
-    otherVersions: string[];
+    allVersions: string[];
 }
 
 export class VersionDetailsComponent extends RemoteContentComponent<VersionProps> {
@@ -34,7 +34,7 @@ export class VersionDetailsComponent extends RemoteContentComponent<VersionProps
         return {
             versionDetails: s.versionDetails[s.currentVersion],
             report: s.currentReport,
-            otherVersions: s.versions[s.currentReport],
+            allVersions: s.versions[s.currentReport],
             ready: s.ready && s.versionDetails[s.currentVersion] != null,
 
             onChangeVersion: props.onChangeVersion
@@ -81,7 +81,7 @@ export class VersionDetailsComponent extends RemoteContentComponent<VersionProps
         return <div>
             <ReportVersionSwitcher
                 currentVersion={props.versionDetails.id}
-                versions={props.otherVersions}
+                versions={props.allVersions}
                 onChangeVersion={props.onChangeVersion}
             />
             {this.renderTable(props)}
