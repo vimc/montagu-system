@@ -24,7 +24,7 @@ describe("DownloadDemographicsPage", () => {
         const group = mockModellingGroup({ id: "group-1" });
         setupMainStore({ groups: [group] });
 
-        sandbox.mount(<DownloadDemographicsPage location={ location }/>);
+        sandbox.mount(<DownloadDemographicsPage location={location} router={null} />);
 
         checkAsync(done, (afterWait) => {
             expectOneAction(spy, { action: "ModellingGroupActions.setCurrentGroup", payload: "group-1" }, 0);

@@ -8,13 +8,20 @@ import {ParameterList} from "../Parameters/ParameterList";
 import {DataLinks} from "../Data/DataLinks";
 import {ResourceLinks} from "../Resources/ResourceLinks";
 import {ArtefactsList} from "../Artefacts/ArtefactsList";
-import { FileDownloadLink } from "../FileDownloadLink";
+import {FileDownloadLink} from "../FileDownloadLink";
+import {ReportVersionSwitcher} from "./ReportVersionSwitcher";
+import {IRouter} from "simple-react-router";
 
 const styles = require("../../styles/reports.css");
 
-export interface VersionProps extends RemoteContent {
-    versionDetails: Version,
-    report: string
+interface PublicProps {
+    onChangeVersion: (version: string) => void;
+}
+
+export interface VersionProps extends RemoteContent, PublicProps {
+    versionDetails: Version;
+    report: string;
+    allVersions: string[];
 }
 
 export class VersionDetailsComponent extends RemoteContentComponent<VersionProps> {
@@ -22,20 +29,20 @@ export class VersionDetailsComponent extends RemoteContentComponent<VersionProps
         return [reportStore];
     }
 
-    static getPropsFromStores(): VersionProps {
-
+    static getPropsFromStores(props: Partial<VersionProps>): VersionProps {
         const s = reportStore.getState();
-
         return {
             versionDetails: s.versionDetails[s.currentVersion],
             report: s.currentReport,
-            ready: s.ready && s.versionDetails[s.currentVersion] != null
+            allVersions: s.versions[s.currentReport],
+            ready: s.ready && s.versionDetails[s.currentVersion] != null,
+
+            onChangeVersion: props.onChangeVersion
         };
     }
 
-    renderContent(props: VersionProps) {
-        const p = props;
-        const url = `/reports/${p.report}/versions/${p.versionDetails.id}/all/`;
+    private renderTable(props: VersionProps) {
+        const url = `/reports/${props.report}/versions/${props.versionDetails.id}/all/`;
         const version = props.versionDetails.id;
 
         return <table className={styles.versionDetails}>
@@ -58,7 +65,8 @@ export class VersionDetailsComponent extends RemoteContentComponent<VersionProps
                 <td>{(new Date(props.versionDetails.date)).toISOString().slice(0, 10)}</td>
                 <td><ParameterList {...props.versionDetails.parameters} /></td>
                 <td><DataLinks {...props.versionDetails.hash_data} /></td>
-                <td><ResourceLinks resources={props.versionDetails.resources} report={props.report} version={version}/></td>
+                <td><ResourceLinks resources={props.versionDetails.resources} report={props.report} version={version}/>
+                </td>
                 <td className={styles.artefactColumn}>
                     <ArtefactsList artefacts={props.versionDetails.artefacts}
                                    report={props.report}
@@ -68,6 +76,17 @@ export class VersionDetailsComponent extends RemoteContentComponent<VersionProps
             </tbody>
         </table>;
     }
+
+    renderContent(props: VersionProps) {
+        return <div>
+            <ReportVersionSwitcher
+                currentVersion={props.versionDetails.id}
+                versions={props.allVersions}
+                onChangeVersion={props.onChangeVersion}
+            />
+            {this.renderTable(props)}
+        </div>
+    }
 }
 
-export const VersionDetails = connectToStores(VersionDetailsComponent);
+export const VersionDetails = connectToStores(VersionDetailsComponent) as ComponentConstructor<PublicProps, undefined>;

@@ -13,7 +13,7 @@ describe("ViewAllModellingGroupsPageTests", () => {
 
     it("triggers fetch on load", (done: DoneCallback) => {
         const fetchGroups = sandbox.sinon.spy(groupStore, "fetchGroups");
-        (new ViewAllModellingGroupsPage({ location: mockLocation<undefined>() })).componentDidMount();
+        (new ViewAllModellingGroupsPage({ location: mockLocation<undefined>(), router: null })).componentDidMount();
         checkAsync(done, () => {
             expect(fetchGroups.called).to.equal(true, "Expected groupStore.fetchGroups to be triggered");
         });

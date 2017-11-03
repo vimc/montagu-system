@@ -19,7 +19,7 @@ describe("ViewVersionsPage", () => {
             .returns(Promise.resolve(null));
 
         const pageProps = mockLocation<ViewVersionsPageProps>({ name: "reportname" });
-        sandbox.mount(<ViewVersionsPage location={pageProps} />);
+        sandbox.mount(<ViewVersionsPage location={pageProps} router={null} />);
         checkAsync(done, () => {
             expectOneAction(spy, {
                 action: "ReportActions.setCurrentReport",
@@ -35,7 +35,7 @@ describe("ViewVersionsPage", () => {
             .returns(Promise.resolve(null));
 
         const pageProps = mockLocation<ViewVersionsPageProps>({ name: "reportname" });
-        sandbox.mount(<ViewVersionsPage location={pageProps} />);
+        sandbox.mount(<ViewVersionsPage location={pageProps} router={null} />);
         checkAsync(done, () => {
             expect(fetchVersions.called).to.equal(true);
         });

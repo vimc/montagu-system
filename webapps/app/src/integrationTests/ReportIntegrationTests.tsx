@@ -148,8 +148,13 @@ class ReportIntegrationTests extends IntegrationTestSuite {
             const promise = getVersionDetails(reportName)
                 .then((versionDetails: Version) => {
 
-                    const rendered = shallow(<VersionDetailsComponent ready={true} report={reportName}
-                                                                      versionDetails={versionDetails}/>);
+                    const rendered = shallow(<VersionDetailsComponent
+                        ready={true}
+                        report={reportName}
+                        versionDetails={versionDetails}
+                        allVersions={[]}
+                        onChangeVersion={null}
+                    />);
                     return firstDownloadPromise(rendered)
                 });
 
