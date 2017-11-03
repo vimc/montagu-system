@@ -4,7 +4,7 @@ import {Report} from "../../../shared/models/Generated";
 
 export class ReportListItem extends React.Component<Report, undefined> {
     render() {
-        const url = `/${ this.props.name }/`;
+        const url = `/${this.props.name}/${this.props.latest_version}/`;
         let name = this.props.name;
         if (this.props.display_name) {
             name = this.props.display_name;
