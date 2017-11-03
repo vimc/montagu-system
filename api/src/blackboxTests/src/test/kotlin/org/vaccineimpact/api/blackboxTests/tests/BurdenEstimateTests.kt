@@ -80,7 +80,7 @@ class BurdenEstimateTests : DatabaseTest()
     @Test
     fun `can upload burden estimate via onetime link and redirect`()
     {
-        validate("$url/get_onetime_link/?redirectUrl=https://localhost.com") against "Token" given { db ->
+        validate("$url/get_onetime_link/?redirectUrl=https://support.montagu.dide.ic.ac.uk:10443/") against "Token" given { db ->
             setUp(db)
         } requiringPermissions {
             requiredPermissions
@@ -95,9 +95,9 @@ class BurdenEstimateTests : DatabaseTest()
 
             val response = requestHelper.postFile(oneTimeURL, file)
             val url = response.url
-            val encodedResult = url.substring(26)
+            val encodedResult = url.substring(44)
 
-            Assertions.assertThat(url).contains("https://localhost.com?result=")
+            Assertions.assertThat(url).contains("https://support.montagu.dide.ic.ac.uk:10443/?result=")
             Assertions.assertThat(encodedResult).isNotEmpty()
 
             file.delete()

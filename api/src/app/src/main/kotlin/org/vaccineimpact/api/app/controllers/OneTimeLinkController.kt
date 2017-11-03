@@ -65,7 +65,7 @@ class OneTimeLinkController(
     {
         val json = Serializer.instance.toJson(result)
         val encodedResult = tokenHelper.encodeResult(json)
-        return context.redirect("$redirectUrl?result=$encodedResult")
+        context.redirect("$redirectUrl?result=$encodedResult")
     }
 
     private fun verifyToken(token: String, repo: TokenRepository): Map<String, Any>
