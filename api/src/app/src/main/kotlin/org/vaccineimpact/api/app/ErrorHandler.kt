@@ -26,7 +26,7 @@ open class ErrorHandler(private val logger: Logger = LoggerFactory.getLogger(Err
         sparkException<Exception>(this::handleUnexpectedError)
     }
 
-    fun logExceptionAndReturnMontaguError(exception: kotlin.Exception, req: Request): MontaguError
+    open fun logExceptionAndReturnMontaguError(exception: kotlin.Exception, req: Request): MontaguError
     {
         val error = when (exception)
         {

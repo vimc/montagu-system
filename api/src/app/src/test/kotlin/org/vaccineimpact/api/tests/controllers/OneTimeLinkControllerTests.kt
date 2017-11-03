@@ -4,17 +4,19 @@ import com.nhaarman.mockito_kotlin.*
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
 import org.vaccineimpact.api.app.ActionContext
+import org.vaccineimpact.api.app.ErrorHandler
 import org.vaccineimpact.api.app.OneTimeLinkActionContext
 import org.vaccineimpact.api.app.controllers.ControllerContext
 import org.vaccineimpact.api.app.controllers.MontaguControllers
 import org.vaccineimpact.api.app.controllers.OneTimeLinkController
 import org.vaccineimpact.api.app.controllers.PasswordController
 import org.vaccineimpact.api.app.errors.InvalidOneTimeLinkToken
-import org.vaccineimpact.api.app.errors.UnknownObjectError
+import org.vaccineimpact.api.app.errors.UnexpectedError
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.TokenRepository
 import org.vaccineimpact.api.app.repositories.UserRepository
 import org.vaccineimpact.api.security.WebTokenHelper
+import spark.Request
 
 class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
 {
@@ -139,6 +141,10 @@ class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
             on(it.setPasswordForUser(any(), any(), any())) doThrow Exception()
         }
 
+        val mockErrorHandler = mock<ErrorHandler>(){
+            on { logExceptionAndReturnMontaguError(any(), any())} doReturn UnexpectedError()
+        }
+
         val controller = makeController(
                 passwordController = otherController,
                 claims = mapOf(
@@ -149,7 +155,8 @@ class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
                 ),
                 repos = mock {
                     on { user } doReturn mock<UserRepository>()
-                }
+                },
+                errorHandler = mockErrorHandler
         )
 
         val fakeContext = actionContext()
@@ -157,11 +164,41 @@ class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
         verify(fakeContext, times(1)).redirect("http://redirect.com?result=encoded")
     }
 
+    @Test
+    fun `logs error if redirect url query parameter exists`()
+    {
+        val otherController = mock<PasswordController> {
+            on(it.setPasswordForUser(any(), any(), any())) doThrow Exception()
+        }
+
+        val mockErrorHandler = mock<ErrorHandler>(){
+            on { logExceptionAndReturnMontaguError(any(), any())} doReturn UnexpectedError()
+        }
+
+        val controller = makeController(
+                passwordController = otherController,
+                claims = mapOf(
+                        "sub" to WebTokenHelper.oneTimeActionSubject,
+                        "action" to "set-password",
+                        "payload" to ":username=test.user",
+                        "query" to "redirectUrl=http://redirect.com"
+                ),
+                repos = mock {
+                    on { user } doReturn mock<UserRepository>()
+                },
+                errorHandler = mockErrorHandler
+        )
+
+        controller.onetimeLink(actionContext(), makeRepository())
+        verify(mockErrorHandler, times(1)).logExceptionAndReturnMontaguError(any(), any())
+    }
+
     private fun makeController(
             helperAllowToken: Boolean = true,
             claims: Map<String, Any> = mapOf("sub" to WebTokenHelper.oneTimeActionSubject),
             passwordController: PasswordController? = null,
-            repos: Repositories? = null
+            repos: Repositories? = null,
+            errorHandler: ErrorHandler = mock<ErrorHandler>()
     )
             : OneTimeLinkController
     {
@@ -174,7 +211,7 @@ class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
         val otherControllers = mock<MontaguControllers> {
             on { password } doReturn otherController
         }
-        return OneTimeLinkController(controllerContext, otherControllers)
+        return OneTimeLinkController(controllerContext, otherControllers, errorHandler)
     }
 
     private fun makeTokenHelper(allowToken: Boolean, claims: Map<String, Any>): WebTokenHelper
@@ -198,5 +235,6 @@ class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
 
     private fun actionContext() = mock<ActionContext> {
         on { params(":token") } doReturn "TOKEN"
+        on { request } doReturn mock<Request>()
     }
 }
