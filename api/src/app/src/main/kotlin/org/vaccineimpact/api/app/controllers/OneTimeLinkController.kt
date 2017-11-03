@@ -1,11 +1,10 @@
 package org.vaccineimpact.api.app.controllers
 
 import org.vaccineimpact.api.app.ActionContext
+import org.vaccineimpact.api.app.ErrorHandler
 import org.vaccineimpact.api.app.OneTimeLink
 import org.vaccineimpact.api.app.controllers.endpoints.oneRepoEndpoint
 import org.vaccineimpact.api.app.errors.InvalidOneTimeLinkToken
-import org.vaccineimpact.api.app.errors.MontaguError
-import org.vaccineimpact.api.app.errors.UnexpectedError
 import org.vaccineimpact.api.app.repositories.RepositoryFactory
 import org.vaccineimpact.api.app.repositories.TokenRepository
 import org.vaccineimpact.api.app.serialization.Serializer
@@ -16,7 +15,8 @@ import spark.route.HttpMethod
 
 class OneTimeLinkController(
         val context: ControllerContext,
-        val controllers: MontaguControllers
+        val controllers: MontaguControllers,
+        val errorHandler: ErrorHandler = ErrorHandler()
 ) : AbstractController(context)
 {
     override val urlComponent = ""
@@ -34,33 +34,25 @@ class OneTimeLinkController(
         val link = OneTimeLink.parseClaims(claims)
         val redirectUrl = link.queryParams["redirectUrl"]
 
-        try
+        return if (redirectUrl == null || redirectUrl.isEmpty())
         {
-            val data = link.perform(controllers, context, repos)
-            return if (redirectUrl.isNullOrEmpty())
-            {
-                data
-            }
-            else
-            {
-                val result = Result(ResultStatus.SUCCESS, data, emptyList())
-                redirectWithResult(context, result, redirectUrl!!)
-            }
+            link.perform(controllers, context, repos)
         }
-        catch (e: Exception)
+        else
         {
-            if (redirectUrl.isNullOrEmpty())
+            try
             {
-                throw e
-            }
+                val data = link.perform(controllers, context, repos)
+                val result = Result(ResultStatus.SUCCESS, data, emptyList())
+                redirectWithResult(context, result, redirectUrl)
 
-            val error = when (e)
+            }
+            catch (e: Exception)
             {
-                is MontaguError -> e.asResult()
-                else -> UnexpectedError().asResult()
-            }
+                val error = errorHandler.logExceptionAndReturnMontaguError(e, context.request)
+                redirectWithResult(context, error.asResult(), redirectUrl)
 
-            return redirectWithResult(context, error, redirectUrl!!)
+            }
         }
     }
 

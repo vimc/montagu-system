@@ -2,7 +2,7 @@ package org.vaccineimpact.api.app
 
 import com.google.gson.JsonSyntaxException
 import org.jooq.exception.DataAccessException
-import org.postgresql.util.PSQLException
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.vaccineimpact.api.app.errors.MontaguError
 import org.vaccineimpact.api.app.errors.UnableToParseJsonError
@@ -13,10 +13,10 @@ import spark.Response
 import spark.Spark as spk
 
 @Suppress("RemoveExplicitTypeArguments")
-open class ErrorHandler
+open class ErrorHandler(private val logger: Logger = LoggerFactory.getLogger(ErrorHandler::class.java),
+                        private val postgresHandler: PostgresErrorHandler = PostgresErrorHandler())
 {
-    private val logger = LoggerFactory.getLogger(ErrorHandler::class.java)
-    private val postgresHandler = PostgresErrorHandler()
+    private val unhandledExceptionMessage = "An unhandled exception occurred"
 
     init
     {
@@ -26,9 +26,30 @@ open class ErrorHandler
         sparkException<Exception>(this::handleUnexpectedError)
     }
 
-    open fun handleError(error: MontaguError, req: Request, res: Response)
+    fun logExceptionAndReturnMontaguError(exception: kotlin.Exception, req: Request): MontaguError
+    {
+        val error = when (exception)
+        {
+            is MontaguError -> exception
+            else ->
+            {
+                logger.error(unhandledExceptionMessage, exception)
+                UnexpectedError()
+            }
+        }
+
+        logMontaguError(error, req)
+        return error
+    }
+
+    private fun logMontaguError(error: MontaguError, req: Request)
     {
         logger.warn("For request ${req.uri()}, a ${error::class.simpleName} occurred with the following problems: ${error.problems}")
+    }
+
+    open fun handleError(error: MontaguError, req: Request, res: Response)
+    {
+        logMontaguError(error, req)
         res.body(Serializer.instance.toJson(error.asResult()))
         res.status(error.httpStatus)
         addDefaultResponseHeaders(res)
@@ -36,7 +57,7 @@ open class ErrorHandler
 
     open fun handleUnexpectedError(exception: Exception, req: Request, res: Response)
     {
-        logger.error("An unhandled exception occurred", exception)
+        logger.error(unhandledExceptionMessage, exception)
         handleError(UnexpectedError(), req, res)
     }
 
@@ -45,8 +66,7 @@ open class ErrorHandler
             noinline handler: (exception: TException,
                                req: Request, res: Response) -> Unit)
     {
-        return spark.Spark.exception(TException::class.java) {
-            e, req, res ->
+        return spark.Spark.exception(TException::class.java) { e, req, res ->
             handler(e as TException, req, res)
         }
     }
