@@ -20,7 +20,6 @@ export class VersionInfoPage extends ReportingPageWithHeader<VersionInfoPageProp
     }
 
     load() {
-        super.load();
         const p = this.props.location.params;
         this.loadVersion(p.report, p.version);
     }
@@ -29,7 +28,9 @@ export class VersionInfoPage extends ReportingPageWithHeader<VersionInfoPageProp
         reportActions.setCurrentReport(report);
         reportStore.fetchVersions().catch(doNothing).then(() => {
             reportActions.setCurrentVersion(version);
-            reportStore.fetchVersionDetails().catch(doNothing);
+            reportStore.fetchVersionDetails().catch(doNothing).then(() => {
+                super.load();
+            });
         });
     }
 

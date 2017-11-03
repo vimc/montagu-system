@@ -19,7 +19,6 @@ interface LocationProps {
 
 export class UploadBurdenEstimatesPage extends ContribPageWithHeader<LocationProps> {
     load() {
-        super.load();
         estimateTokenActions.clearUsedToken();
         modellingGroupActions.setCurrentGroup(this.props.location.params.groupId);
         responsibilityStore.fetchTouchstones().catch(doNothing).then(() => {
@@ -27,6 +26,7 @@ export class UploadBurdenEstimatesPage extends ContribPageWithHeader<LocationPro
             responsibilityStore.fetchResponsibilities().catch(doNothing).then(() => {
                 responsibilityActions.setCurrentResponsibility(this.props.location.params.scenarioId);
                 responsibilityStore.fetchOneTimeEstimatesToken().catch(doNothing);
+                super.load();
             });
         });
     }

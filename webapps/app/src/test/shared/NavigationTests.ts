@@ -6,10 +6,14 @@ import {Breadcrumb} from "../../main/shared/models/Breadcrumb";
 import {checkAsync} from "../testHelpers";
 import {navActions} from "../../main/shared/actions/NavActions";
 
-export function addNavigationTests(page: PageWithHeader<any>, sandbox: Sandbox) {
+export function addNavigationTests(page: PageWithHeader<any>, sandbox: Sandbox, setup?: () => void) {
     const testCrumbIsAsExpected = function(done: DoneCallback, getCrumbsFromAction: (action: Action) => Breadcrumb[]) {
+        if (setup) {
+            setup();
+        }
+
         const spy = sandbox.dispatchSpy();
-        page.componentDidMount();
+        page.load();
         checkAsync(done, () => {
             const actions = getActions(spy);
             expect(actions).to.have.length.greaterThan(0, "No actions were emitted");

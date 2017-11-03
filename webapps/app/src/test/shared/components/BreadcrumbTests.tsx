@@ -3,7 +3,6 @@ import {DummyPage} from "./PageWithHeaderTests";
 import {Sandbox} from "../../Sandbox";
 import {navStore} from "../../../main/shared/stores/NavStore";
 import {checkAsync} from "../../testHelpers";
-import {navActions} from "../../../main/shared/actions/NavActions";
 
 describe("Breadcrumbs", () => {
     const sandbox = new Sandbox();

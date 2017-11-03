@@ -20,12 +20,16 @@ export function rejectedPromiseJSON(data: any): Response {
     } as Response;
 }
 
-export function mockResponse(data?: Result, errorMessage?: string): Promise<Response> {
-    data = data || {
+export function successResult(data: any): Result {
+    return {
         status: "success",
-        data: {},
+        data: data,
         errors: []
     };
+}
+
+export function mockResponse(data?: Result, errorMessage?: string): Promise<Response> {
+    data = data || successResult({});
 
     return new Promise<Response>(function (resolve, reject) {
         if (errorMessage) {
@@ -66,5 +70,23 @@ export function mockFetcherNonJson(promise: Promise<any>, reportingPromise?: Pro
     };
     fetcher.fetcher.fetchFromReportingApi = function(urlFragment: string, options?: FetchOptions, includeToken: boolean = true) {
         return reportingPromise || mockResponse();
+    };
+}
+
+interface FakeEndpoint {
+    urlFragment: RegExp;
+    result: Result;
+}
+
+export function mockFetcherForMultipleResponses(responses: FakeEndpoint[]) {
+    fetcher.fetcher = new ReportingFetcher();
+    fetcher.fetcher.fetch = function(urlFragment: string, options?: FetchOptions, includeToken: boolean = true) {
+        const response = responses.find(r => urlFragment.match(r.urlFragment).length > 0);
+        if (response) {
+            console.log("Returned fake response for " + urlFragment);
+            return mockResponse(response.result);
+        } else {
+            return mockResponse(null, "Unsupported URL for mock fetcher: " + urlFragment);
+        }
     };
 }

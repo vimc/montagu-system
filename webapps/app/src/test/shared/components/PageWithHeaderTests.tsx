@@ -36,6 +36,7 @@ export class DummyPage extends PageWithHeader<undefined> {
 
     load() {
         this.loaded = true;
+        super.load();
     }
 
     title(): JSX.Element {

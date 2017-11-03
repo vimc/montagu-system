@@ -13,9 +13,9 @@ export interface LocationProps {
 
 export class ChooseActionPage extends ContribPageWithHeader<LocationProps> {
     load() {
-        super.load();
         responsibilityStore.fetchTouchstones().catch(doNothing).then(() => {
             modellingGroupActions.setCurrentGroup(this.props.location.params.groupId);
+            super.load();
         });
     }
 
