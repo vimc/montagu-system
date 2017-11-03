@@ -16,7 +16,8 @@ import spark.route.HttpMethod
 class OneTimeLinkController(
         val context: ControllerContext,
         val controllers: MontaguControllers,
-        val errorHandler: ErrorHandler = ErrorHandler()
+        val errorHandler: ErrorHandler = ErrorHandler(),
+        val redirectValidator: RedirectValidator = RedirectValidator()
 ) : AbstractController(context)
 {
     override val urlComponent = ""
@@ -34,7 +35,7 @@ class OneTimeLinkController(
         val link = OneTimeLink.parseClaims(claims)
         val redirectUrl = link.queryParams["redirectUrl"]
 
-        return if (redirectUrl == null || redirectUrl.isEmpty())
+        return if (redirectUrl == null || !redirectValidator.redirectUrlIsValid(redirectUrl))
         {
             link.perform(controllers, context, repos)
         }
@@ -86,5 +87,16 @@ class OneTimeLinkController(
             throw InvalidOneTimeLinkToken("subject", "Expected 'sub' claim to be ${WebTokenHelper.oneTimeActionSubject}")
         }
         return claims
+    }
+}
+
+
+open class RedirectValidator()
+{
+    open fun redirectUrlIsValid(redirectUrl: String): Boolean
+    {
+        val validRedirectUrlPattern =
+                Regex("(https://)(montagu.vaccineimpact.org|support.montagu.dide.ic.ac.uk|localhost).*")
+        return validRedirectUrlPattern.matches(redirectUrl)
     }
 }

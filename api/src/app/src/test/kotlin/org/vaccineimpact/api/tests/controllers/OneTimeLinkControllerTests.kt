@@ -6,10 +6,7 @@ import org.junit.Test
 import org.vaccineimpact.api.app.ActionContext
 import org.vaccineimpact.api.app.ErrorHandler
 import org.vaccineimpact.api.app.OneTimeLinkActionContext
-import org.vaccineimpact.api.app.controllers.ControllerContext
-import org.vaccineimpact.api.app.controllers.MontaguControllers
-import org.vaccineimpact.api.app.controllers.OneTimeLinkController
-import org.vaccineimpact.api.app.controllers.PasswordController
+import org.vaccineimpact.api.app.controllers.*
 import org.vaccineimpact.api.app.errors.InvalidOneTimeLinkToken
 import org.vaccineimpact.api.app.errors.UnexpectedError
 import org.vaccineimpact.api.app.repositories.Repositories
@@ -79,7 +76,7 @@ class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
                         "sub" to WebTokenHelper.oneTimeActionSubject,
                         "action" to "set-password",
                         "payload" to ":username=test.user",
-                        "query" to "redirectUrl=http://redirect.com"
+                        "query" to "redirectUrl=https://localhost"
                 ),
                 repos = mock {
                     on { user } doReturn mock<UserRepository>()
@@ -88,7 +85,7 @@ class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
 
         val fakeContext = actionContext()
         controller.onetimeLink(fakeContext, makeRepository())
-        verify(fakeContext, times(1)).redirect("http://redirect.com?result=encoded")
+        verify(fakeContext, times(1)).redirect("https://localhost?result=encoded")
     }
 
     @Test
@@ -135,14 +132,37 @@ class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
     }
 
     @Test
+    fun `does not redirect if redirect url not valid`()
+    {
+        val otherController = mock<PasswordController>()
+        val controller = makeController(
+                passwordController = otherController,
+                claims = mapOf(
+                        "sub" to WebTokenHelper.oneTimeActionSubject,
+                        "action" to "set-password",
+                        "payload" to ":username=test.user",
+                        "query" to "redirectUrl=www.something.com"
+                ),
+                repos = mock {
+                    on { user } doReturn mock<UserRepository>()
+                },
+                allowRedirect = false
+        )
+
+        val fakeContext = actionContext()
+        controller.onetimeLink(fakeContext, makeRepository())
+        verify(fakeContext, times(0)).redirect(any())
+    }
+
+    @Test
     fun `redirects on error if redirect url query parameter exists`()
     {
         val otherController = mock<PasswordController> {
             on(it.setPasswordForUser(any(), any(), any())) doThrow Exception()
         }
 
-        val mockErrorHandler = mock<ErrorHandler>(){
-            on { logExceptionAndReturnMontaguError(any(), any())} doReturn UnexpectedError()
+        val mockErrorHandler = mock<ErrorHandler>() {
+            on { logExceptionAndReturnMontaguError(any(), any()) } doReturn UnexpectedError()
         }
 
         val controller = makeController(
@@ -151,7 +171,7 @@ class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
                         "sub" to WebTokenHelper.oneTimeActionSubject,
                         "action" to "set-password",
                         "payload" to ":username=test.user",
-                        "query" to "redirectUrl=http://redirect.com"
+                        "query" to "redirectUrl=https://localhost"
                 ),
                 repos = mock {
                     on { user } doReturn mock<UserRepository>()
@@ -161,7 +181,7 @@ class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
 
         val fakeContext = actionContext()
         controller.onetimeLink(fakeContext, makeRepository())
-        verify(fakeContext, times(1)).redirect("http://redirect.com?result=encoded")
+        verify(fakeContext, times(1)).redirect("https://localhost?result=encoded")
     }
 
     @Test
@@ -171,8 +191,8 @@ class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
             on(it.setPasswordForUser(any(), any(), any())) doThrow Exception()
         }
 
-        val mockErrorHandler = mock<ErrorHandler>(){
-            on { logExceptionAndReturnMontaguError(any(), any())} doReturn UnexpectedError()
+        val mockErrorHandler = mock<ErrorHandler>() {
+            on { logExceptionAndReturnMontaguError(any(), any()) } doReturn UnexpectedError()
         }
 
         val controller = makeController(
@@ -181,7 +201,7 @@ class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
                         "sub" to WebTokenHelper.oneTimeActionSubject,
                         "action" to "set-password",
                         "payload" to ":username=test.user",
-                        "query" to "redirectUrl=http://redirect.com"
+                        "query" to "redirectUrl=https://localhost"
                 ),
                 repos = mock {
                     on { user } doReturn mock<UserRepository>()
@@ -198,6 +218,7 @@ class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
             claims: Map<String, Any> = mapOf("sub" to WebTokenHelper.oneTimeActionSubject),
             passwordController: PasswordController? = null,
             repos: Repositories? = null,
+            allowRedirect: Boolean = true,
             errorHandler: ErrorHandler = mock<ErrorHandler>()
     )
             : OneTimeLinkController
@@ -210,6 +231,9 @@ class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
         val otherController = passwordController ?: mock()
         val otherControllers = mock<MontaguControllers> {
             on { password } doReturn otherController
+        }
+        val redirectValidator = mock<RedirectValidator> {
+            on { redirectUrlIsValid(any()) } doReturn allowRedirect
         }
         return OneTimeLinkController(controllerContext, otherControllers, errorHandler)
     }
