@@ -26,7 +26,7 @@ export class ReportListComponent extends RemoteContentComponent<ReportProps> {
     renderContent(props: ReportProps) {
         const items = props.reports
             .sort((a, b) => a.name.localeCompare(b.name))
-            .map((report) => <ReportListItem key={ report.name } name={ report.name } />);
+            .map((report) => <ReportListItem key={ report.name } {...report} />);
 
         return <ul>
             {items}
