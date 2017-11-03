@@ -3,6 +3,7 @@ package org.vaccineimpact.api.app.controllers
 import org.vaccineimpact.api.app.ActionContext
 import org.vaccineimpact.api.app.ErrorHandler
 import org.vaccineimpact.api.app.OneTimeLink
+import org.vaccineimpact.api.app.RedirectValidator
 import org.vaccineimpact.api.app.controllers.endpoints.oneRepoEndpoint
 import org.vaccineimpact.api.app.errors.InvalidOneTimeLinkToken
 import org.vaccineimpact.api.app.repositories.RepositoryFactory
@@ -16,8 +17,8 @@ import spark.route.HttpMethod
 class OneTimeLinkController(
         val context: ControllerContext,
         val controllers: MontaguControllers,
-        val errorHandler: ErrorHandler = ErrorHandler(),
-        val redirectValidator: RedirectValidator = RedirectValidator()
+        private val errorHandler: ErrorHandler = ErrorHandler(),
+        private val redirectValidator: RedirectValidator = RedirectValidator()
 ) : AbstractController(context)
 {
     override val urlComponent = ""
@@ -35,12 +36,16 @@ class OneTimeLinkController(
         val link = OneTimeLink.parseClaims(claims)
         val redirectUrl = link.queryParams["redirectUrl"]
 
-        return if (redirectUrl == null || !redirectValidator.redirectUrlIsValid(redirectUrl))
+        return if (redirectUrl == null || redirectUrl.isEmpty())
         {
             link.perform(controllers, context, repos)
         }
         else
         {
+            // This should never fail, as we only issue tokens for valid redirect urls,
+            // but just in case
+            redirectValidator.validateRedirectUrl(redirectUrl)
+
             try
             {
                 val data = link.perform(controllers, context, repos)
@@ -52,7 +57,6 @@ class OneTimeLinkController(
             {
                 val error = errorHandler.logExceptionAndReturnMontaguError(e, context.request)
                 redirectWithResult(context, error.asResult(), redirectUrl)
-
             }
         }
     }
@@ -87,16 +91,5 @@ class OneTimeLinkController(
             throw InvalidOneTimeLinkToken("subject", "Expected 'sub' claim to be ${WebTokenHelper.oneTimeActionSubject}")
         }
         return claims
-    }
-}
-
-
-open class RedirectValidator()
-{
-    open fun redirectUrlIsValid(redirectUrl: String): Boolean
-    {
-        val validRedirectUrlPattern =
-                Regex("(https://)(montagu.vaccineimpact.org|support.montagu.dide.ic.ac.uk|localhost).*")
-        return validRedirectUrlPattern.matches(redirectUrl)
     }
 }

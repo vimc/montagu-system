@@ -1,6 +1,7 @@
 package org.vaccineimpact.api.app
 
 import org.vaccineimpact.api.ContentTypes
+import org.vaccineimpact.api.app.errors.BadRequest
 import spark.Filter
 import spark.Request
 import spark.Response
@@ -42,5 +43,45 @@ class DefaultHeadersFilter(val contentType: String, val method: HttpMethod) : Fi
         {
             addDefaultResponseHeaders(response, contentType)
         }
+    }
+}
+
+fun parseParams(params: String): Map<String, String>
+{
+    return params.split('&')
+            .map { it.split('=') }
+            .associateBy({ it[0] }, { it[1] })
+}
+
+fun parseQueryParams(rawQueryParams: String?): Map<String, String>
+{
+    return if (rawQueryParams == null || rawQueryParams == "")
+    {
+        mapOf()
+    }
+    else
+    {
+        parseParams(rawQueryParams)
+    }
+}
+
+
+class RedirectValidator
+{
+    fun validateRedirectUrl(redirectUrl: String?)
+    {
+        if (redirectUrl == null || redirectUrl.isEmpty()
+                || redirectUrlIsValid(redirectUrl))
+            return
+
+        throw BadRequest("Redirect url domain must be one of https://localhost," +
+                " https://support.montagu.dide.ic.ac.uk, https://montagu.vaccineimpact.org")
+    }
+
+    private fun redirectUrlIsValid(redirectUrl: String): Boolean
+    {
+        val validRedirectUrlPattern =
+                Regex("(https://)(montagu.vaccineimpact.org|support.montagu.dide.ic.ac.uk|localhost).*")
+        return validRedirectUrlPattern.matches(redirectUrl)
     }
 }

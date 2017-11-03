@@ -5,9 +5,11 @@ import org.slf4j.LoggerFactory
 import org.vaccineimpact.api.OneTimeAction
 import org.vaccineimpact.api.app.ActionContext
 import org.vaccineimpact.api.app.OneTimeLinkActionContext
+import org.vaccineimpact.api.app.RedirectValidator
 import org.vaccineimpact.api.app.controllers.endpoints.EndpointDefinition
 import org.vaccineimpact.api.app.controllers.endpoints.getWrappedRoute
 import org.vaccineimpact.api.app.errors.UnsupportedValueException
+import org.vaccineimpact.api.app.parseQueryParams
 import org.vaccineimpact.api.app.repositories.RepositoryFactory
 import org.vaccineimpact.api.app.repositories.TokenRepository
 import org.vaccineimpact.api.app.serialization.Serializer
@@ -17,7 +19,8 @@ import spark.Spark
 import spark.route.HttpMethod
 import java.time.Duration
 
-abstract class AbstractController(controllerContext: ControllerContext)
+abstract class AbstractController(controllerContext: ControllerContext,
+                                  private val redirectValidator: RedirectValidator = RedirectValidator())
 {
     protected val logger: Logger = LoggerFactory.getLogger(AbstractController::class.java)
     protected val repos = controllerContext.repositoryFactory
@@ -42,6 +45,9 @@ abstract class AbstractController(controllerContext: ControllerContext)
         val actionAsString = Serializer.instance.serializeEnum(action)
         val params = context.params()
         val queryString = context.queryString()
+        val queryParams = parseQueryParams(queryString)
+        val redirectUrl = queryParams["redirectUrl"]
+        redirectValidator.validateRedirectUrl(redirectUrl)
         val token = tokenHelper.generateOneTimeActionToken(actionAsString, params, queryString, duration, context.username!!)
         repo.storeToken(token)
         return token
@@ -85,6 +91,7 @@ abstract class AbstractController(controllerContext: ControllerContext)
         context.setResponseStatus(201)
         return url
     }
+
     fun okayResponse() = "OK"
 
     fun buildPublicUrl(urlFragment: String) = Config["app.url"] + urlBase + urlComponent + urlFragment

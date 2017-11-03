@@ -39,13 +39,6 @@ data class OneTimeLink(val action: OneTimeAction,
 
     companion object
     {
-        private fun parseParams(params: String): Map<String, String>
-        {
-            return params.split('&')
-                    .map { it.split('=') }
-                    .associateBy({ it[0] }, { it[1] })
-        }
-
         fun parseClaims(claims: Map<String, Any>): OneTimeLink
         {
             val rawAction = claims["action"].toString()
@@ -54,15 +47,7 @@ data class OneTimeLink(val action: OneTimeAction,
             val rawQueryParams = claims["query"]?.toString()
             val payload = parseParams(rawPayload)
             val username = claims["username"].toString()
-            val queryParams =
-                    if (rawQueryParams == null || rawQueryParams == "")
-                    {
-                        mapOf()
-                    }
-                    else
-                    {
-                        parseParams(rawQueryParams)
-                    }
+            val queryParams = parseQueryParams(rawQueryParams)
 
             return OneTimeLink(action, payload, queryParams, username)
         }

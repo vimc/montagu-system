@@ -6,7 +6,9 @@ import org.junit.Test
 import org.vaccineimpact.api.app.ActionContext
 import org.vaccineimpact.api.app.ErrorHandler
 import org.vaccineimpact.api.app.OneTimeLinkActionContext
+import org.vaccineimpact.api.app.RedirectValidator
 import org.vaccineimpact.api.app.controllers.*
+import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.errors.InvalidOneTimeLinkToken
 import org.vaccineimpact.api.app.errors.UnexpectedError
 import org.vaccineimpact.api.app.repositories.Repositories
@@ -72,12 +74,7 @@ class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
         val otherController = mock<PasswordController>()
         val controller = makeController(
                 passwordController = otherController,
-                claims = mapOf(
-                        "sub" to WebTokenHelper.oneTimeActionSubject,
-                        "action" to "set-password",
-                        "payload" to ":username=test.user",
-                        "query" to "redirectUrl=https://localhost"
-                ),
+                claims = claimsWithRedirectUrl,
                 repos = mock {
                     on { user } doReturn mock<UserRepository>()
                 }
@@ -85,7 +82,7 @@ class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
 
         val fakeContext = actionContext()
         controller.onetimeLink(fakeContext, makeRepository())
-        verify(fakeContext, times(1)).redirect("https://localhost?result=encoded")
+        verify(fakeContext, times(1)).redirect("$redirectUrl?result=encoded")
     }
 
     @Test
@@ -137,21 +134,17 @@ class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
         val otherController = mock<PasswordController>()
         val controller = makeController(
                 passwordController = otherController,
-                claims = mapOf(
-                        "sub" to WebTokenHelper.oneTimeActionSubject,
-                        "action" to "set-password",
-                        "payload" to ":username=test.user",
-                        "query" to "redirectUrl=www.something.com"
-                ),
+                claims = claimsWithRedirectUrl,
                 repos = mock {
                     on { user } doReturn mock<UserRepository>()
                 },
-                allowRedirect = false
+                redirectValidator = mock<RedirectValidator>{
+                    on { validateRedirectUrl(any()) } doThrow BadRequest("bad request")
+                }
         )
 
-        val fakeContext = actionContext()
-        controller.onetimeLink(fakeContext, makeRepository())
-        verify(fakeContext, times(0)).redirect(any())
+        assertThatThrownBy { controller.onetimeLink(actionContext(), makeRepository()) }
+                .isInstanceOf(BadRequest::class.java)
     }
 
     @Test
@@ -167,12 +160,7 @@ class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
 
         val controller = makeController(
                 passwordController = otherController,
-                claims = mapOf(
-                        "sub" to WebTokenHelper.oneTimeActionSubject,
-                        "action" to "set-password",
-                        "payload" to ":username=test.user",
-                        "query" to "redirectUrl=https://localhost"
-                ),
+                claims = claimsWithRedirectUrl,
                 repos = mock {
                     on { user } doReturn mock<UserRepository>()
                 },
@@ -181,8 +169,19 @@ class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
 
         val fakeContext = actionContext()
         controller.onetimeLink(fakeContext, makeRepository())
-        verify(fakeContext, times(1)).redirect("https://localhost?result=encoded")
+        verify(fakeContext, times(1)).redirect("$redirectUrl?result=encoded")
     }
+
+    private val redirectUrl = "https://localhost"
+
+    private val claimsWithRedirectUrl =
+            mapOf(
+                    "sub" to WebTokenHelper.oneTimeActionSubject,
+                    "action" to "set-password",
+                    "payload" to ":username=test.user",
+                    "query" to "redirectUrl=$redirectUrl"
+            )
+
 
     @Test
     fun `logs error if redirect url query parameter exists`()
@@ -197,12 +196,7 @@ class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
 
         val controller = makeController(
                 passwordController = otherController,
-                claims = mapOf(
-                        "sub" to WebTokenHelper.oneTimeActionSubject,
-                        "action" to "set-password",
-                        "payload" to ":username=test.user",
-                        "query" to "redirectUrl=https://localhost"
-                ),
+                claims = claimsWithRedirectUrl,
                 repos = mock {
                     on { user } doReturn mock<UserRepository>()
                 },
@@ -218,7 +212,7 @@ class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
             claims: Map<String, Any> = mapOf("sub" to WebTokenHelper.oneTimeActionSubject),
             passwordController: PasswordController? = null,
             repos: Repositories? = null,
-            allowRedirect: Boolean = true,
+            redirectValidator: RedirectValidator = mock<RedirectValidator>(),
             errorHandler: ErrorHandler = mock<ErrorHandler>()
     )
             : OneTimeLinkController
@@ -232,9 +226,7 @@ class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
         val otherControllers = mock<MontaguControllers> {
             on { password } doReturn otherController
         }
-        val redirectValidator = mock<RedirectValidator> {
-            on { redirectUrlIsValid(any()) } doReturn allowRedirect
-        }
+
         return OneTimeLinkController(controllerContext, otherControllers, errorHandler)
     }
 
