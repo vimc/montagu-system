@@ -16,7 +16,7 @@ describe('DownloadCoveragePage', () => {
         sandbox.restore();
     });
 
-    it("triggers actions when it mounts", (done: DoneCallback) => {
+    it("triggers actions when it loads", (done: DoneCallback) => {
         const spy = sandbox.dispatchSpy();
         const fetchTouchstones = sandbox.sinon.stub(responsibilityStore, "fetchTouchstones").returns(Promise.resolve(true));
         const fetchResponsibilities = sandbox.sinon.stub(responsibilityStore, "fetchResponsibilities").returns(Promise.resolve(true));
@@ -30,7 +30,7 @@ describe('DownloadCoveragePage', () => {
         const group = mockModellingGroup({ id: "group-1" });
         setupMainStore({ groups: [group] });
 
-        (new DownloadCoveragePage({location: location, router: null})).componentDidMount();
+        new DownloadCoveragePage({location: location, router: null}).load();
 
         checkAsync(done, (afterWait) => {
             expectOneAction(spy, { action: "ModellingGroupActions.setCurrentGroup", payload: "group-1" }, 0);

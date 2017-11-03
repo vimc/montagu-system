@@ -45,10 +45,10 @@ describe("VersionInfoPage", () => {
         });
     };
 
-    it("triggers actions on mount", (done: DoneCallback) => {
+    it("triggers actions when it loads", (done: DoneCallback) => {
         checkExpectedActionsWhen(done, () => {
             const location = mockLocation<VersionInfoPageProps>({report: "reportname", version: "versionname"});
-            new VersionInfoPage({location: location, router: null}).componentDidMount();
+            new VersionInfoPage({location: location, router: null}).load();
         });
     });
 

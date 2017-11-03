@@ -5,6 +5,8 @@ import {VersionDetails} from "./VersionDetails";
 import {reportStore} from "../../stores/ReportStore";
 import {doNothing} from "../../../shared/Helpers";
 import {PageProperties} from "../../../shared/components/PageWithHeader/PageWithHeader";
+import {MainMenu} from "../MainMenu/MainMenu";
+import {ViewVersionsPage} from "./ViewVersionsPage";
 
 export interface VersionInfoPageProps {
     report: string;
@@ -17,14 +19,13 @@ export class VersionInfoPage extends ReportingPageWithHeader<VersionInfoPageProp
         this.changeVersion = this.changeVersion.bind(this);
     }
 
-    componentDidMount() {
-        setTimeout(() => {
-            const p = this.props.location.params;
-            this.load(p.report, p.version);
-        });
+    load() {
+        super.load();
+        const p = this.props.location.params;
+        this.loadVersion(p.report, p.version);
     }
 
-    load(report: string, version: string) {
+    loadVersion(report: string, version: string) {
         reportActions.setCurrentReport(report);
         reportStore.fetchVersions().catch(doNothing).then(() => {
             reportActions.setCurrentVersion(version);
@@ -35,11 +36,19 @@ export class VersionInfoPage extends ReportingPageWithHeader<VersionInfoPageProp
     changeVersion(version: string) {
         const report = this.props.location.params.report;
         this.props.router.redirectTo(`/${report}/${version}/`, false);
-        this.load(report, version);
+        this.loadVersion(report, version);
     }
 
-    title() {
-        return <span>{this.props.location.params.report}</span>;
+    parent() {
+        return new ViewVersionsPage();
+    }
+
+    name() {
+        return this.props.location.params.version;
+    }
+
+    urlFragment() {
+        return `${this.name()}/`;
     }
 
     renderPageContent() {

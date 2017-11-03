@@ -52,7 +52,7 @@ describe('PageWithHeader', () => {
     const sandbox = new Sandbox();
 
     beforeEach(() => {
-        rendered = shallow(<DummyPage location={ mockLocation<undefined>() } />);
+        rendered = shallow(<DummyPage location={mockLocation<undefined>()} router={null} />);
     });
     afterEach(() => sandbox.restore());
 
@@ -69,7 +69,7 @@ describe('PageWithHeader', () => {
     });
 
     it("loads on mount after timeout", (done: DoneCallback) => {
-        const page = sandbox.mount(<DummyPage location={mockLocation<undefined>()} />)
+        const page = sandbox.mount(<DummyPage location={mockLocation<undefined>()} router={null} />)
             .instance() as DummyPage;
         expect(page.loaded).to.be.false;
         checkAsync(done, () => {

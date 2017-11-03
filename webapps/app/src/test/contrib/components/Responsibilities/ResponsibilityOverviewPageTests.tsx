@@ -18,7 +18,7 @@ describe('ResponsibilityOverviewPage', () => {
         sandbox.restore();
     });
 
-    it("triggers actions when it mounts", (done: DoneCallback) => {
+    it("triggers actions when it loads", (done: DoneCallback) => {
         const spy = sandbox.dispatchSpy();
         const fetchTouchstones = sandbox.sinon.stub(responsibilityStore, "fetchTouchstones").returns(Promise.resolve(true));
         const fetchResponsibilities = sandbox.sinon.stub(responsibilityStore, "fetchResponsibilities").returns(Promise.resolve(true));
@@ -29,7 +29,7 @@ describe('ResponsibilityOverviewPage', () => {
         const group = mockModellingGroup({ id: "group-id" });
         setupMainStore({ groups: [group] });
 
-        sandbox.mount(<ResponsibilityOverviewPage location={location} router={null} />);
+        new ResponsibilityOverviewPage({location: location, router: null}).load();
 
         checkAsync(done, (afterWait) => {
             expectOneAction(spy, { action: "ModellingGroupActions.setCurrentGroup", payload: "group-id" }, 0);

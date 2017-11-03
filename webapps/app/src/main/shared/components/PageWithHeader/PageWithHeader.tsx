@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Location } from "simple-react-router";
+import {IRouter, Location} from "simple-react-router";
 import { InternalLink } from "../InternalLink";
 import { navActions } from "../../actions/NavActions";
 import {NavBar} from "../NavBar/NavBar";
@@ -77,4 +77,5 @@ export abstract class PageWithHeader<TLocationProps>
 
 export interface PageProperties<T> {
     location: Location<T>;
+    router: IRouter;
 }

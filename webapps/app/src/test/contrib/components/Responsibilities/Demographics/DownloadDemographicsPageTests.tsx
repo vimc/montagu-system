@@ -13,7 +13,7 @@ describe("DownloadDemographicsPage", () => {
     const sandbox = new Sandbox();
     afterEach(() => sandbox.restore());
 
-    it("triggers actions on mount", (done: DoneCallback) => {
+    it("triggers actions on load", (done: DoneCallback) => {
         const spy = sandbox.dispatchSpy();
         const fetchTouchstones = sandbox.sinon.stub(responsibilityStore, "fetchTouchstones").returns(Promise.resolve(true));
         const fetchDataSets = sandbox.sinon.stub(demographicStore, "fetchDataSets").returns(Promise.resolve(true));
@@ -24,7 +24,7 @@ describe("DownloadDemographicsPage", () => {
         const group = mockModellingGroup({ id: "group-1" });
         setupMainStore({ groups: [group] });
 
-        sandbox.mount(<DownloadDemographicsPage location={location} router={null} />);
+        new DownloadDemographicsPage({location: location, router: null).load();
 
         checkAsync(done, (afterWait) => {
             expectOneAction(spy, { action: "ModellingGroupActions.setCurrentGroup", payload: "group-1" }, 0);

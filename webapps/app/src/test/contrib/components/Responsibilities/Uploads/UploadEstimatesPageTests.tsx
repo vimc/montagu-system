@@ -16,7 +16,7 @@ describe('UploadEstimatesPage', () => {
         sandbox.restore();
     });
 
-    it("triggers actions when it mounts", (done: DoneCallback) => {
+    it("triggers actions when it loads", (done: DoneCallback) => {
         const spy = sandbox.dispatchSpy();
         const fetchTouchstones = sandbox.sinon.stub(responsibilityStore, "fetchTouchstones").returns(Promise.resolve(true));
         const fetchResponsibilities = sandbox.sinon.stub(responsibilityStore, "fetchResponsibilities").returns(Promise.resolve(true));
@@ -29,7 +29,7 @@ describe('UploadEstimatesPage', () => {
         const group = mockModellingGroup({ id: "group-1" });
         setupMainStore({ groups: [group] });
 
-        (new UploadBurdenEstimatesPage({location: location, router: null})).componentDidMount();
+        new UploadBurdenEstimatesPage({location: location, router: null}).load();
 
         checkAsync(done, (afterWait) => {
             afterWait(done, () => {

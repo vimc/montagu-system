@@ -23,7 +23,7 @@ describe("GroupAdminPage", () => {
         const dispatchSpy = sandbox.dispatchSpy();
 
         const location = mockLocation<ModellingGroupDetailsPageProps>({ groupId: "gId" });
-        (new GroupAdminPage({location: location, router: null})).componentDidMount();
+        (new GroupAdminPage({location: location, router: null})).load();
 
         checkAsync(done, (afterWait) => {
             expect(fetchGroups.called).to.equal(true, "Expected groupStore.fetchGroups to be triggered");
