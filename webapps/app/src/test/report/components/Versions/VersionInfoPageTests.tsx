@@ -1,4 +1,5 @@
 import * as React from "react";
+import {shallow} from "enzyme";
 import {expect} from "chai";
 import {Sandbox} from "../../../Sandbox";
 import {mockLocation} from "../../../mocks/mocks";
@@ -8,6 +9,7 @@ import {expectOneAction} from "../../../actionHelpers";
 import {VersionInfoPage, VersionInfoPageProps} from "../../../../main/report/components/Versions/VersionInfoPage";
 import {alt} from "../../../../main/shared/alt";
 import {IRouter} from "simple-react-router";
+import {VersionDetails} from "../../../../main/report/components/Versions/VersionDetails";
 
 describe("VersionInfoPage", () => {
     const sandbox = new Sandbox();
@@ -26,7 +28,7 @@ describe("VersionInfoPage", () => {
         }));
     });
 
-    const checkExpectedActionsWhen = function(done: DoneCallback, action: () => void) {
+    const checkExpectedActionsWhen = function (done: DoneCallback, action: () => void) {
         const spy = sandbox.dispatchSpy();
         const fetchVersions = sandbox.sinon.stub(reportStore, "fetchVersions").returns(Promise.resolve(null));
         const fetchVersionDetails = sandbox.sinon.stub(reportStore, "fetchVersionDetails").returns(Promise.resolve(null));
@@ -34,10 +36,10 @@ describe("VersionInfoPage", () => {
         action();
 
         checkAsync(done, (afterWait) => {
-            expectOneAction(spy, { action:  "ReportActions.setCurrentReport", payload: "reportname"}, 0);
+            expectOneAction(spy, {action: "ReportActions.setCurrentReport", payload: "reportname"}, 0);
             expect(fetchVersions.called).to.equal(true, "Expected fetchVersions to be called");
             afterWait(done, () => {
-                expectOneAction(spy, { action:  "ReportActions.setCurrentVersion", payload: "versionname"}, 1);
+                expectOneAction(spy, {action: "ReportActions.setCurrentVersion", payload: "versionname"}, 1);
                 expect(fetchVersionDetails.called).to.equal(true, "Expected fetchVersionDetails to be called");
             });
         });
@@ -50,19 +52,14 @@ describe("VersionInfoPage", () => {
         });
     });
 
-    it("triggers actions on load", (done: DoneCallback) => {
-        checkExpectedActionsWhen(done, () => {
-            new VersionInfoPage({location: null, router: null}).load("reportname", "versionname");
-        });
-    });
-
-    it("triggers actions and redirect on changeVersion", (done: DoneCallback) => {
+    it("triggers actions and redirect when child triggers changeVersion", (done: DoneCallback) => {
         const redirectTo = sandbox.sinon.stub();
-        const router: IRouter = { redirectTo };
+        const router: IRouter = {redirectTo};
 
         checkExpectedActionsWhen(done, () => {
             const location = mockLocation<VersionInfoPageProps>({report: "reportname", version: "oldVersion"});
-            new VersionInfoPage({location: location, router: router}).changeVersion("versionname");
+            const rendered = shallow(<VersionInfoPage location={location} router={router} />);
+            rendered.find(VersionDetails).simulate("changeVersion", "versionname");
             expect(redirectTo.called).to.equal(true, "Expected redirectTo to be called");
             expect(redirectTo.calledWith("/reportname/versionname/"));
         });
