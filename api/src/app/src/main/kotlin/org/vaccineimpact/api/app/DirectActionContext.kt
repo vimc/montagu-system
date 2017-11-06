@@ -6,9 +6,12 @@ import org.pac4j.sparkjava.SparkWebContext
 import org.vaccineimpact.api.app.errors.MissingRequiredPermissionError
 import org.vaccineimpact.api.app.security.montaguPermissions
 import org.vaccineimpact.api.app.errors.ValidationError
+import org.vaccineimpact.api.serialization.ModelBinder
+import org.vaccineimpact.api.serialization.MontaguSerializer
 import org.vaccineimpact.api.db.Config
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
-import org.vaccineimpact.api.serialization.*
+import org.vaccineimpact.api.serialization.DataTableDeserializer
+import org.vaccineimpact.api.serialization.Serializer
 import spark.Request
 import spark.Response
 import org.vaccineimpact.api.serialization.validation.ValidationException
@@ -17,7 +20,7 @@ import java.util.zip.GZIPOutputStream
 import kotlin.reflect.KClass
 
 open class DirectActionContext(private val context: SparkWebContext,
-                               private val serializer: Serializer = MontaguSerializer.instance) : ActionContext
+                               private val serializer: Serializer = MontaguSerializer.instance): ActionContext
 {
     override val request
         get() = context.sparkRequest

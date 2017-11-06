@@ -108,7 +108,7 @@ class MontaguSerializer: Serializer
             GAVISupportLevel.NONE -> "no vaccine"
             GAVISupportLevel.WITHOUT -> "no gavi"
             GAVISupportLevel.WITH -> "total"
-            // Legacy values
+        // Legacy values
             GAVISupportLevel.BESTMINUS -> "best minus"
             GAVISupportLevel.HOLD2010 -> "hold 2010"
         }

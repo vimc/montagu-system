@@ -12,7 +12,7 @@ import org.vaccineimpact.api.serialization.MontaguSerializer
 import org.vaccineimpact.api.serialization.Serializer
 
 abstract class MontaguHttpActionAdapter(private val repositoryFactory: RepositoryFactory,
-                                        private val serializer: Serializer = MontaguSerializer.instance)
+                                        protected val serializer: Serializer = MontaguSerializer.instance)
     : DefaultHttpActionAdapter()
 {
     protected fun haltWithError(code: Int, context: SparkWebContext, errors: List<ErrorInfo>)
