@@ -14,11 +14,11 @@ export class ReportPageTitleComponent extends React.Component<Props, undefined> 
 
     static getPropsFromStores(): Props {
         const s = reportStore.getState();
-        const props = {
+        const props: Props = {
             name: s.currentReport,
             displayName: null
         };
-        const details = s.versionDetails[s.currentVersion];
+        const details = s.versionDetails[s.currentReport];
         if (details) {
             props.displayName = details.displayname;
         }
