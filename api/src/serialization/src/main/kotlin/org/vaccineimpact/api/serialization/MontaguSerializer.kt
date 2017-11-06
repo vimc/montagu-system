@@ -19,57 +19,24 @@ interface Serializer
     fun serializeEnum(value: Any): String
 
     fun serializeValueForCSV(value: Any?): String
+
+    val gson: Gson
 }
 
-class MontaguSerializerWrapper: Serializer
+class MontaguSerializer: Serializer
 {
-    override fun toJson(result: Result): String
-    {
-        return MontaguSerializer.instance.toJson(result)
-    }
-
-    override fun <T> fromJson(json: String, klass: Class<T>): T
-    {
-        return MontaguSerializer.instance.fromJson(json, klass)
-    }
-
-    override fun convertFieldName(name: String): String
-    {
-        return MontaguSerializer.instance.convertFieldName(name)
-    }
-
-    override fun serializeEnum(value: Any): String
-    {
-        return MontaguSerializer.instance.serializeEnum(value)
-    }
-
-    override fun serializeValueForCSV(value: Any?): String
-    {
-        return MontaguSerializer.instance.serializeValueForCSV(value)
-    }
-
-    override fun toResult(data: Any?): String
-    {
-        return MontaguSerializer.instance.toResult(data)
-    }
-
-}
-
-open class MontaguSerializer
-    : Serializer
-{
-    companion object
-    {
-        val instance = MontaguSerializer()
-        const val noValue = "<NA>"
-    }
-
     private val toDateStringSerializer = jsonSerializer<Any> {
         JsonPrimitive(it.src.toString())
     }
     private val enumSerializer = jsonSerializer<Any> { JsonPrimitive(serializeEnum(it.src)) }
 
-    val gson: Gson
+    companion object
+    {
+        val instance: Serializer = MontaguSerializer()
+        const val noValue = "<NA>"
+    }
+
+    override val gson: Gson
 
     init
     {

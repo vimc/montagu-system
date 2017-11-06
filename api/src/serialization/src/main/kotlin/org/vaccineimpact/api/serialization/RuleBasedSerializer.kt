@@ -34,6 +34,6 @@ fun <T> removeFieldIfNull(original: T, json: JsonObject, property: KProperty1<T,
 {
     if (property.get(original) == null)
     {
-        json.remove(MontaguSerializer.instance.convertFieldName(property.name))
+        json.remove(MontaguSerializer().convertFieldName(property.name))
     }
 }

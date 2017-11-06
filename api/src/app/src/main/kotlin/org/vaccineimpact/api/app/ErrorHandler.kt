@@ -8,13 +8,15 @@ import org.vaccineimpact.api.app.errors.MontaguError
 import org.vaccineimpact.api.app.errors.UnableToParseJsonError
 import org.vaccineimpact.api.app.errors.UnexpectedError
 import org.vaccineimpact.api.serialization.MontaguSerializer
+import org.vaccineimpact.api.serialization.Serializer
 import spark.Request
 import spark.Response
 import spark.Spark as spk
 
 @Suppress("RemoveExplicitTypeArguments")
 open class ErrorHandler(private val logger: Logger = LoggerFactory.getLogger(ErrorHandler::class.java),
-                        private val postgresHandler: PostgresErrorHandler = PostgresErrorHandler())
+                        private val postgresHandler: PostgresErrorHandler = PostgresErrorHandler(),
+                        private val serializer: Serializer = MontaguSerializer.instance)
 {
     private val unhandledExceptionMessage = "An unhandled exception occurred"
 
@@ -50,7 +52,7 @@ open class ErrorHandler(private val logger: Logger = LoggerFactory.getLogger(Err
     open fun handleError(error: MontaguError, req: Request, res: Response)
     {
         logMontaguError(error, req)
-        res.body(MontaguSerializer.instance.toJson(error.asResult()))
+        res.body(serializer.toJson(error.asResult()))
         res.status(error.httpStatus)
         addDefaultResponseHeaders(res)
     }

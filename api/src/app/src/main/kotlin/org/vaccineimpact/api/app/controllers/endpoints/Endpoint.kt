@@ -3,9 +3,10 @@ package org.vaccineimpact.api.app.controllers.endpoints
 import org.vaccineimpact.api.models.helpers.ContentTypes
 import org.vaccineimpact.api.app.DefaultHeadersFilter
 import org.vaccineimpact.api.app.repositories.RepositoryFactory
-import org.vaccineimpact.api.serialization.MontaguSerializer
 import org.vaccineimpact.api.models.AuthenticationResponse
 import org.vaccineimpact.api.security.WebTokenHelper
+import org.vaccineimpact.api.serialization.MontaguSerializer
+import org.vaccineimpact.api.serialization.Serializer
 import spark.Route
 import spark.Spark
 import spark.route.HttpMethod
@@ -18,7 +19,8 @@ data class Endpoint<TRoute>(
         override val routeWrapper: (TRoute) -> Route,
         override val method: HttpMethod = HttpMethod.get,
         override val contentType: String = ContentTypes.json,
-        private val additionalSetupCallback: SetupCallback? = null
+        private val additionalSetupCallback: SetupCallback? = null,
+        protected val serializer: Serializer = MontaguSerializer.instance
 ) : EndpointDefinition<TRoute>
 {
     init
@@ -37,8 +39,8 @@ data class Endpoint<TRoute>(
 
     override fun transform(x: Any) = when (x)
     {
-        is AuthenticationResponse -> MontaguSerializer.instance.gson.toJson(x)!!
-        else -> MontaguSerializer.instance.toResult(x)
+        is AuthenticationResponse -> serializer.gson.toJson(x)!!
+        else -> serializer.toResult(x)
     }
 
     fun withAdditionalSetup(newCallback: SetupCallback): Endpoint<TRoute>

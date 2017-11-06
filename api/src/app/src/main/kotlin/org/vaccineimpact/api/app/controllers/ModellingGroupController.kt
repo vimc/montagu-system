@@ -211,7 +211,7 @@ open class ModellingGroupController(context: ControllerContext)
         request.raw().getPart("file").inputStream.bufferedReader().use {
 
             // Then add the burden estimates
-            val data = DataTableDeserializer.deserialize(it.readText(), BurdenEstimate::class, MontaguSerializer.instance).toList()
+            val data = DataTableDeserializer.deserialize(it.readText(), BurdenEstimate::class, serializer).toList()
             return saveBurdenEstimates(data, estimateRepository, context, path)
         }
     }

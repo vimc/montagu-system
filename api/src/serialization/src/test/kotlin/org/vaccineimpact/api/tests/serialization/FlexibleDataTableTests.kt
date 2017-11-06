@@ -5,6 +5,7 @@ import org.junit.Test
 import org.vaccineimpact.api.serialization.FlexibleDataTable
 import org.vaccineimpact.api.serialization.Serializer
 import org.vaccineimpact.api.models.helpers.FlexibleProperty
+import org.vaccineimpact.api.serialization.MontaguSerializer
 import org.vaccineimpact.api.test_helpers.MontaguTests
 import org.vaccineimpact.api.test_helpers.serializeToStreamAndGetAsString
 
@@ -87,6 +88,6 @@ x,y,<NA>""")
     }
 
     private fun serialize(table: FlexibleDataTable<*>) = serializeToStreamAndGetAsString {
-        table.serialize(it, Serializer.instance)
+        table.serialize(it, MontaguSerializer.instance)
     }.trim()
 }
