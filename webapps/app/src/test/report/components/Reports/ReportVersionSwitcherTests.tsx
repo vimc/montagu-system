@@ -1,7 +1,7 @@
 import {shallow} from "enzyme";
 import {expect} from "chai";
 import * as React from "react";
-import {ReportVersionSwitcher} from "../../../../main/report/components/Versions/ReportVersionSwitcher";
+import {ReportVersionSwitcher} from "./ReportVersionSwitcher";
 import {Sandbox} from "../../../Sandbox";
 
 describe("ReportVersionSwitcher", () => {

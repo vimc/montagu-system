@@ -1,19 +1,19 @@
 import * as React from "react";
 import {reportActions} from "../../actions/ReportActions";
 import {ReportingPageWithHeader} from "../ReportingPageWithHeader";
-import {VersionDetails} from "./VersionDetails";
+import {ReportDetails} from "./ReportDetails";
 import {reportStore} from "../../stores/ReportStore";
 import {doNothing} from "../../../shared/Helpers";
 import {PageProperties} from "../../../shared/components/PageWithHeader/PageWithHeader";
 import {appSettings} from "../../../shared/Settings";
 
-export interface VersionInfoPageProps {
+export interface ReportPageProps {
     report: string;
     version: string;
 }
 
-export class VersionInfoPage extends ReportingPageWithHeader<VersionInfoPageProps> {
-    constructor(props: PageProperties<VersionInfoPageProps>) {
+export class ReportPage extends ReportingPageWithHeader<ReportPageProps> {
+    constructor(props: PageProperties<ReportPageProps>) {
         super(props);
         this.changeVersion = this.changeVersion.bind(this);
     }
@@ -44,6 +44,6 @@ export class VersionInfoPage extends ReportingPageWithHeader<VersionInfoPageProp
     }
 
     renderPageContent() {
-        return <VersionDetails onChangeVersion={this.changeVersion} />;
+        return <ReportDetails onChangeVersion={this.changeVersion} />;
     }
 }

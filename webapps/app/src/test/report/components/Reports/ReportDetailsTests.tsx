@@ -2,15 +2,14 @@ import * as React from "react";
 import {shallow} from "enzyme";
 import {expect} from "chai";
 import {alt} from "../../../../main/shared/alt";
-import {VersionDetailsComponent, VersionProps} from "../../../../main/report/components/Versions/VersionDetails";
+import {ReportDetailsComponent, VersionProps} from "./ReportDetails";
 import {mockVersion} from "../../../mocks/mockModels";
 import {FileDownloadLink} from "../../../../main/report/components/FileDownloadLink";
-import {mockRouter} from "../../../mocks/mockRouter";
 import {Sandbox} from "../../../Sandbox";
-import {ReportVersionSwitcher} from "../../../../main/report/components/Versions/ReportVersionSwitcher";
+import {ReportVersionSwitcher} from "./ReportVersionSwitcher";
 import {ReportStoreState} from "../../../../main/report/stores/ReportStore";
 
-describe("VersionDetails", () => {
+describe("ReportDetails", () => {
     const sandbox = new Sandbox();
     afterEach(() => sandbox.restore());
 
@@ -34,7 +33,7 @@ describe("VersionDetails", () => {
         };
 
         const assertIsNotReady = function() {
-            expect(VersionDetailsComponent.getPropsFromStores({}).ready).to.equal(false);
+            expect(ReportDetailsComponent.getPropsFromStores({}).ready).to.equal(false);
         };
 
         it("is ready when state is correct", () => {
@@ -49,7 +48,7 @@ describe("VersionDetails", () => {
                 allVersions: ["v1", "v2", "v3"],
                 onChangeVersion: onChangeVersion
             };
-            expect(VersionDetailsComponent.getPropsFromStores(inputProps)).to.eql(expected);
+            expect(ReportDetailsComponent.getPropsFromStores(inputProps)).to.eql(expected);
         });
 
         it("is not ready if store is not ready", () => {
@@ -69,7 +68,7 @@ describe("VersionDetails", () => {
     });
 
     it("renders date", () => {
-        const rendered = shallow(<VersionDetailsComponent
+        const rendered = shallow(<ReportDetailsComponent
             versionDetails={mockVersion({date: "2015-03-25"})}
             report="reportname"
             allVersions={[]}
@@ -80,7 +79,7 @@ describe("VersionDetails", () => {
     });
 
     it("renders zip download link", () => {
-        const rendered = shallow(<VersionDetailsComponent
+        const rendered = shallow(<ReportDetailsComponent
             versionDetails={mockVersion({id: "v1"})}
             report="reportname"
             allVersions={[]}
@@ -92,7 +91,7 @@ describe("VersionDetails", () => {
 
     it("renders report version switcher", () => {
         const handler = sandbox.sinon.stub();
-        const rendered = shallow(<VersionDetailsComponent
+        const rendered = shallow(<ReportDetailsComponent
             versionDetails={mockVersion({id: "v1"})}
             report="reportname"
             allVersions={["v1", "v2"]}
@@ -108,7 +107,7 @@ describe("VersionDetails", () => {
 
     it("emits onChangeVersion when switcher triggers it", () => {
         const handler = sandbox.sinon.stub();
-        const rendered = shallow(<VersionDetailsComponent
+        const rendered = shallow(<ReportDetailsComponent
             versionDetails={mockVersion({id: "v1"})}
             report="reportname"
             allVersions={["v1", "v2"]}

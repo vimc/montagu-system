@@ -24,7 +24,7 @@ export interface VersionProps extends RemoteContent, PublicProps {
     allVersions: string[];
 }
 
-export class VersionDetailsComponent extends RemoteContentComponent<VersionProps> {
+export class ReportDetailsComponent extends RemoteContentComponent<VersionProps> {
     static getStores() {
         return [reportStore];
     }
@@ -91,4 +91,4 @@ export class VersionDetailsComponent extends RemoteContentComponent<VersionProps
     }
 }
 
-export const VersionDetails = connectToStores(VersionDetailsComponent) as ComponentConstructor<PublicProps, undefined>;
+export const ReportDetails = connectToStores(ReportDetailsComponent) as ComponentConstructor<PublicProps, undefined>;

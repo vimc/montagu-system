@@ -1,8 +1,6 @@
 import * as React from "react";
 import {VersionIdentifier} from "../../models/VersionIdentifier";
 import {longTimestamp} from "../../../shared/Helpers";
-import {IRouter, Router} from "simple-react-router";
-import {VersionInfoPage} from "./VersionInfoPage";
 
 const styles = require("../../styles/reports.css");
 

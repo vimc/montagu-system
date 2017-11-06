@@ -13,7 +13,7 @@ import { Sandbox } from "../test/Sandbox";
 import { ArtefactItem } from "../main/report/components/Artefacts/ArtefactItem";
 import { FileDownloadLink } from "../main/report/components/FileDownloadLink";
 import { ResourceLinks } from "../main/report/components/Resources/ResourceLinks";
-import { VersionDetailsComponent } from "../main/report/components/Versions/VersionDetails";
+import { ReportDetailsComponent } from "../main/report/components/Reports/ReportDetails";
 import { DataLinks } from "../main/report/components/Data/DataLinks";
 
 const jwt_decode = require('jwt-decode');
@@ -148,7 +148,7 @@ class ReportIntegrationTests extends IntegrationTestSuite {
             const promise = getVersionDetails(reportName)
                 .then((versionDetails: Version) => {
 
-                    const rendered = shallow(<VersionDetailsComponent
+                    const rendered = shallow(<ReportDetailsComponent
                         ready={true}
                         report={reportName}
                         versionDetails={versionDetails}

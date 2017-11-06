@@ -1,9 +1,9 @@
 import * as React from "react";
 import {expect} from "chai";
 import {shallow} from "enzyme";
-import {ReportListItem} from "../../../main/report/components/Reports/ReportListItem";
-import {Report} from "../../../main/shared/models/Generated";
-import {InternalLink} from "../../../main/shared/components/InternalLink";
+import {ReportListItem} from "./ReportListItem";
+import {Report} from "../../../../main/shared/models/Generated";
+import {InternalLink} from "../../../../main/shared/components/InternalLink";
 
 interface LinkProps {
     url: string;
