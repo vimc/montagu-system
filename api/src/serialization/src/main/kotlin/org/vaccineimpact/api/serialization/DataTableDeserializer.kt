@@ -129,7 +129,7 @@ open class DataTableDeserializer<out T>(
         fun <T : Any> deserialize(
                 body: String,
                 type: KClass<T>,
-                serializer: Serializer = Serializer.instance
+                serializer: Serializer = MontaguSerializer.instance
         ): Sequence<T>
         {
             return getDeserializer(type, serializer).deserialize(body)

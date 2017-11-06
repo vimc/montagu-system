@@ -5,7 +5,7 @@ import com.beust.klaxon.Parser
 import com.beust.klaxon.json
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
-import org.vaccineimpact.api.serialization.Serializer
+import org.vaccineimpact.api.serialization.MontaguSerializer
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.test_helpers.MontaguTests
 import java.time.LocalDate
@@ -14,7 +14,7 @@ import java.time.ZoneId
 
 class SerializerTests : MontaguTests()
 {
-    private val serializer = Serializer.instance
+    private val serializer = MontaguSerializer.instance
 
     @Test
     fun `convertFieldName handles empty string`()

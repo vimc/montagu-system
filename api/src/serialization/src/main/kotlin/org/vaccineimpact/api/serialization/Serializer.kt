@@ -9,20 +9,34 @@ import org.vaccineimpact.api.models.*
 import java.time.Instant
 import java.time.LocalDate
 
-open class Serializer
+interface Serializer
 {
-    companion object
-    {
-        val instance = Serializer()
-        const val noValue = "<NA>"
-    }
+    fun toResult(data: Any?): String
+    fun toJson(result: Result): String
+    fun <T> fromJson(json: String, klass: Class<T>): T
+    fun convertFieldName(name: String): String
 
+    fun serializeEnum(value: Any): String
+
+    fun serializeValueForCSV(value: Any?): String
+
+    val gson: Gson
+}
+
+class MontaguSerializer: Serializer
+{
     private val toDateStringSerializer = jsonSerializer<Any> {
         JsonPrimitive(it.src.toString())
     }
     private val enumSerializer = jsonSerializer<Any> { JsonPrimitive(serializeEnum(it.src)) }
 
-    val gson: Gson
+    companion object
+    {
+        val instance: Serializer = MontaguSerializer()
+        const val noValue = "<NA>"
+    }
+
+    override val gson: Gson
 
     init
     {
@@ -50,11 +64,11 @@ open class Serializer
                 .create()
     }
 
-    open fun toResult(data: Any?): String = toJson(Result(ResultStatus.SUCCESS, data, emptyList()))
-    open fun toJson(result: Result): String = gson.toJson(result)
-    fun <T> fromJson(json: String, klass: Class<T>): T = gson.fromJson(json, klass)
+    override fun toResult(data: Any?): String = toJson(Result(ResultStatus.SUCCESS, data, emptyList()))
+    override fun toJson(result: Result): String = gson.toJson(result)
+    override fun <T> fromJson(json: String, klass: Class<T>): T = gson.fromJson(json, klass)
 
-    fun convertFieldName(name: String): String
+    override fun convertFieldName(name: String): String
     {
         val builder = StringBuilder()
         for (char in name)
@@ -70,7 +84,7 @@ open class Serializer
         }
         return builder.toString().trim('_')
     }
-    fun serializeEnum(value: Any): String
+    override fun serializeEnum(value: Any): String
     {
         val text = when (value)
         {
@@ -80,7 +94,7 @@ open class Serializer
         return text.toLowerCase().replace('_', '-')
     }
 
-    fun serializeValueForCSV(value: Any?) = when (value)
+    override fun serializeValueForCSV(value: Any?) = when (value)
     {
         null -> noValue
         is Enum<*> -> serializeEnum(value)
@@ -94,7 +108,7 @@ open class Serializer
             GAVISupportLevel.NONE -> "no vaccine"
             GAVISupportLevel.WITHOUT -> "no gavi"
             GAVISupportLevel.WITH -> "total"
-            // Legacy values
+        // Legacy values
             GAVISupportLevel.BESTMINUS -> "best minus"
             GAVISupportLevel.HOLD2010 -> "hold 2010"
         }
