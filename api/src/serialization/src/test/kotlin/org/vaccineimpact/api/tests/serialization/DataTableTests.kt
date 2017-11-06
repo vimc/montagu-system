@@ -3,12 +3,12 @@ package org.vaccineimpact.api.tests.serialization
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
-import org.vaccineimpact.api.app.errors.ValidationError
-import DataTable
 import org.vaccineimpact.api.serialization.DataTableDeserializer
 import org.vaccineimpact.api.serialization.Serializer
 import org.vaccineimpact.api.models.TouchstoneStatus
 import org.vaccineimpact.api.models.helpers.FlexibleColumns
+import org.vaccineimpact.api.serialization.DataTable
+import org.vaccineimpact.api.serialization.validation.ValidationException
 import org.vaccineimpact.api.test_helpers.MontaguTests
 import org.vaccineimpact.api.test_helpers.serializeToStreamAndGetAsString
 import java.math.BigDecimal
@@ -229,13 +229,13 @@ free text,in-preparation""")
     private fun checkValidationError(code: String, message: String? = null, body: () -> Any?)
     {
         assertThatThrownBy { body() }
-                .isInstanceOf(ValidationError::class.java)
+                .isInstanceOf(ValidationException::class.java)
                 .matches {
-                    val error = it as ValidationError
-                    assertThat(error.problems.first().code).isEqualTo(code)
+                    val error = it as ValidationException
+                    assertThat(error.errors.first().code).isEqualTo(code)
                     if (message != null)
                     {
-                        assertThat(error.problems.first().message).isEqualTo(message)
+                        assertThat(error.errors.first().message).isEqualTo(message)
                     }
                     true
                 }
