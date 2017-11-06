@@ -1,7 +1,8 @@
 import * as React from "react";
 import {FileDownloadLink} from "../FileDownloadLink";
-import {ArtefactsList} from "../Artefacts/ArtefactsList";
+import {ArtefactsList} from "./ArtefactsList";
 import {Version} from "../../../shared/models/reports/Report";
+import {ArtefactRow} from "./ArtefactRow";
 
 const styles = require("../../../shared/styles/common.css");
 
@@ -19,18 +20,13 @@ export class ArtefactsSection extends React.Component<Props, undefined> {
                 <div className={"col-12 " + styles.sectionTitle}>Artefacts</div>
             </div>
 
-            <div className="row">
-                <div className="col-12 col-md-3">All artefacts as zip bundle</div>
-                <div className="col-12 col-md-9">
-                    <ul>
-                        <li>
-                            <FileDownloadLink href={bundleUrl}>
-                                {this.props.report}-{version}.zip
-                            </FileDownloadLink>
-                        </li>
-                    </ul>
-                </div>
-            </div>
+            <ArtefactRow description="All artefacts as zip bundle">
+                <li>
+                    <FileDownloadLink href={bundleUrl}>
+                        {this.props.report}-{version}.zip
+                    </FileDownloadLink>
+                </li>
+            </ArtefactRow>
             <ArtefactsList artefacts={this.props.versionDetails.artefacts}
                            report={this.props.report}
                            version={version}/>

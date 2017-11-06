@@ -8,7 +8,7 @@ import {ParameterList} from "../Parameters/ParameterList";
 import {DataLinks} from "../Data/DataLinks";
 import {ResourceLinks} from "../Resources/ResourceLinks";
 import {ReportVersionSwitcher} from "./ReportVersionSwitcher";
-import {ArtefactsSection} from "./ArtefactsSection";
+import {ArtefactsSection} from "../Artefacts/ArtefactsSection";
 
 const styles = require("../../../shared/styles/common.css");
 
