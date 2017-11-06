@@ -1,15 +1,21 @@
 import * as React from "react";
-import { Sandbox } from "../../../Sandbox";
-import { expect } from "chai";
-import { shallow } from "enzyme";
-import { mockLocation, setupMainStore } from "../../../mocks/mocks";
-import { expectOneAction } from "../../../actionHelpers";
+import {Sandbox} from "../../../Sandbox";
+import {expect} from "chai";
+import {shallow} from "enzyme";
+import {mockLocation, setupMainStore} from "../../../mocks/mocks";
+import {expectOneAction} from "../../../actionHelpers";
 
-import { responsibilityStore } from "../../../../main/contrib/stores/ResponsibilityStore";
-import { mockModellingGroup, mockTouchstone } from "../../../mocks/mockModels";
-import { ResponsibilityOverviewPage } from "../../../../main/contrib/components/Responsibilities/Overview/ResponsibilityOverviewPage";
-import { ResponsibilityOverviewTitleComponent } from "../../../../main/contrib/components/Responsibilities/Overview/ResponsibilityOverviewTitle";
-import { checkAsync } from "../../../testHelpers";
+import {responsibilityStore} from "../../../../main/contrib/stores/ResponsibilityStore";
+import {mockModellingGroup, mockResponsibility, mockTouchstone} from "../../../mocks/mockModels";
+import {ResponsibilityOverviewPage} from "../../../../main/contrib/components/Responsibilities/Overview/ResponsibilityOverviewPage";
+import {ResponsibilityOverviewTitleComponent} from "../../../../main/contrib/components/Responsibilities/Overview/ResponsibilityOverviewTitle";
+import {checkAsync} from "../../../testHelpers";
+import {addNavigationTests} from "../../../shared/NavigationTests";
+import {makeLoadable} from "../../../../main/contrib/stores/Loadable";
+import {mainStore} from "../../../../main/contrib/stores/MainStore";
+import {bootstrapStore} from "../../../StoreHelpers";
+import {successResult} from "../../../mocks/mockRemote";
+import {mockFetcherForMultipleResponses} from "../../../mocks/mockMultipleEndpoints";
 
 describe('ResponsibilityOverviewPage', () => {
     const sandbox = new Sandbox();
@@ -26,26 +32,49 @@ describe('ResponsibilityOverviewPage', () => {
             touchstoneId: "touchstone-id",
             groupId: "group-id"
         });
-        const group = mockModellingGroup({ id: "group-id" });
-        setupMainStore({ groups: [group] });
+        const group = mockModellingGroup({id: "group-id"});
+        setupMainStore({groups: [group]});
 
         new ResponsibilityOverviewPage({location: location, router: null}).load();
 
         checkAsync(done, (afterWait) => {
-            expectOneAction(spy, { action: "ModellingGroupActions.setCurrentGroup", payload: "group-id" }, 0);
+            expectOneAction(spy, {action: "ModellingGroupActions.setCurrentGroup", payload: "group-id"}, 0);
             expect(fetchTouchstones.called).to.equal(true, "Expected fetchTouchstones to be called");
             afterWait(done, () => {
-                expectOneAction(spy, { action: "TouchstoneActions.setCurrentTouchstone", payload: "touchstone-id" }, 1);
+                expectOneAction(spy, {action: "TouchstoneActions.setCurrentTouchstone", payload: "touchstone-id"}, 1);
                 expect(fetchResponsibilities.called).to.equal(true, "Expected fetchResponsibilities to be called");
             });
         });
+    });
+
+    const page = new ResponsibilityOverviewPage({
+        location: mockLocation({
+            touchstoneId: "touchstone-1",
+            groupId: "group-1"
+        }),
+        router: null
+    });
+    addNavigationTests(page, sandbox, () => {
+        bootstrapStore(mainStore, {
+            modellingGroups: makeLoadable([ mockModellingGroup({id: "group-1"}) ])
+        });
+        mockFetcherForMultipleResponses([
+            {
+                urlFragment: new RegExp("/touchstones/"),
+                result: successResult([ mockTouchstone({ id: "touchstone-1" }) ])
+            },
+            {
+                urlFragment: new RegExp("/modelling-groups/group-1/responsibilities/touchstone-1/"),
+                result: successResult([ mockResponsibility() ])
+            }
+        ]);
     });
 });
 
 describe("ResponsibilityOverviewTitleComponent", () => {
     it("renders title based on touchstoneId", () => {
-        const touchstone = mockTouchstone({ description: "Fizzy pop" });
-        const rendered = shallow(<ResponsibilityOverviewTitleComponent touchstone={ touchstone } />);
+        const touchstone = mockTouchstone({description: "Fizzy pop"});
+        const rendered = shallow(<ResponsibilityOverviewTitleComponent touchstone={touchstone}/>);
         const titleText = rendered.text();
         expect(titleText).to.contain("Responsibilities in Fizzy pop");
     });

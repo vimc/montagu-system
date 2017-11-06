@@ -9,8 +9,9 @@ const menuStyles = require("./MainMenu.css");
 
 export class MainMenu extends ReportingPageWithHeader<undefined> {
     load() {
-        super.load();
-        reportStore.fetchReports().catch(doNothing);
+        reportStore.fetchReports().catch(doNothing).then(() => {
+            super.load();
+        });
     }
 
     name() {

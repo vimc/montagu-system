@@ -1,6 +1,5 @@
 import { ErrorInfo, Result, ResultStatus } from "../../main/shared/models/Generated";
 import fetcher, { FetchOptions } from "../../main/shared/sources/Fetcher";
-import { AdminFetcher } from "../../main/admin/sources/AdminFetcher";
 import { ReportingFetcher } from "../../main/report/sources/ReportingFetcher";
 
 export function promiseJSON(data: any): Response {
@@ -70,23 +69,5 @@ export function mockFetcherNonJson(promise: Promise<any>, reportingPromise?: Pro
     };
     fetcher.fetcher.fetchFromReportingApi = function(urlFragment: string, options?: FetchOptions, includeToken: boolean = true) {
         return reportingPromise || mockResponse();
-    };
-}
-
-interface FakeEndpoint {
-    urlFragment: RegExp;
-    result: Result;
-}
-
-export function mockFetcherForMultipleResponses(responses: FakeEndpoint[]) {
-    fetcher.fetcher = new ReportingFetcher();
-    fetcher.fetcher.fetch = function(urlFragment: string, options?: FetchOptions, includeToken: boolean = true) {
-        const response = responses.find(r => urlFragment.match(r.urlFragment).length > 0);
-        if (response) {
-            console.log("Returned fake response for " + urlFragment);
-            return mockResponse(response.result);
-        } else {
-            return mockResponse(null, "Unsupported URL for mock fetcher: " + urlFragment);
-        }
     };
 }
