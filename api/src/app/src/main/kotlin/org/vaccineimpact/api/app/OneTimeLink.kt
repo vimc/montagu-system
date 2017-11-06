@@ -1,10 +1,10 @@
 package org.vaccineimpact.api.app
 
-import org.vaccineimpact.api.serialization.Deserializer
-import org.vaccineimpact.api.models.helpers.OneTimeAction
 import org.vaccineimpact.api.app.controllers.MontaguControllers
 import org.vaccineimpact.api.app.controllers.endpoints.stream
 import org.vaccineimpact.api.app.repositories.RepositoryFactory
+import org.vaccineimpact.api.models.helpers.OneTimeAction
+import org.vaccineimpact.api.serialization.Deserializer
 
 data class OneTimeLink(val action: OneTimeAction,
                        val payload: Map<String, String>,
@@ -47,18 +47,6 @@ data class OneTimeLink(val action: OneTimeAction,
                     .associateBy({ it[0] }, { it[1] })
         }
 
-        private fun parseQueryParams(rawQueryParams: String?): Map<String, String>
-        {
-            return if (rawQueryParams == null || rawQueryParams == "")
-            {
-                mapOf()
-            }
-            else
-            {
-                parseParams(rawQueryParams)
-            }
-        }
-
         fun parseClaims(claims: Map<String, Any>): OneTimeLink
         {
             val rawAction = claims["action"].toString()
@@ -67,7 +55,15 @@ data class OneTimeLink(val action: OneTimeAction,
             val rawQueryParams = claims["query"]?.toString()
             val payload = parseParams(rawPayload)
             val username = claims["username"].toString()
-            val queryParams = parseQueryParams(rawQueryParams)
+            val queryParams =
+                    if (rawQueryParams == null || rawQueryParams == "")
+                    {
+                        mapOf()
+                    }
+                    else
+                    {
+                        parseParams(rawQueryParams)
+                    }
 
             return OneTimeLink(action, payload, queryParams, username)
         }
