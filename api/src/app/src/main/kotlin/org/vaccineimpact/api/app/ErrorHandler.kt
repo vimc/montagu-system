@@ -2,12 +2,11 @@ package org.vaccineimpact.api.app
 
 import com.google.gson.JsonSyntaxException
 import org.jooq.exception.DataAccessException
-import org.postgresql.util.PSQLException
 import org.slf4j.LoggerFactory
 import org.vaccineimpact.api.app.errors.MontaguError
 import org.vaccineimpact.api.app.errors.UnableToParseJsonError
 import org.vaccineimpact.api.app.errors.UnexpectedError
-import org.vaccineimpact.api.app.serialization.Serializer
+import org.vaccineimpact.api.serialization.Serializer
 import spark.Request
 import spark.Response
 import spark.Spark as spk

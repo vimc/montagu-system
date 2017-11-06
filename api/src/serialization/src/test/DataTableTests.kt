@@ -4,9 +4,9 @@ import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
 import org.vaccineimpact.api.app.errors.ValidationError
-import org.vaccineimpact.api.app.serialization.DataTable
-import org.vaccineimpact.api.app.serialization.DataTableDeserializer
-import org.vaccineimpact.api.app.serialization.Serializer
+import DataTable
+import org.vaccineimpact.api.serialization.DataTableDeserializer
+import org.vaccineimpact.api.serialization.Serializer
 import org.vaccineimpact.api.models.TouchstoneStatus
 import org.vaccineimpact.api.models.helpers.FlexibleColumns
 import org.vaccineimpact.api.test_helpers.MontaguTests

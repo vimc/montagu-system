@@ -1,6 +1,6 @@
 package org.vaccineimpact.api.app.controllers
 
-import org.vaccineimpact.api.OneTimeAction
+import org.vaccineimpact.api.models.helpers.OneTimeAction
 import org.vaccineimpact.api.app.ActionContext
 import org.vaccineimpact.api.app.controllers.endpoints.EndpointDefinition
 import org.vaccineimpact.api.app.controllers.endpoints.oneRepoEndpoint
@@ -14,8 +14,8 @@ import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
 import org.vaccineimpact.api.app.postData
 import org.vaccineimpact.api.app.repositories.*
-import org.vaccineimpact.api.app.serialization.*
 import org.vaccineimpact.api.models.*
+import org.vaccineimpact.api.serialization.*
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import spark.route.HttpMethod
 import java.time.Instant

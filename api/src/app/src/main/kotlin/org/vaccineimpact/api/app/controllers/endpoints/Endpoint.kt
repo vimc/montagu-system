@@ -1,9 +1,9 @@
 package org.vaccineimpact.api.app.controllers.endpoints
 
-import org.vaccineimpact.api.ContentTypes
+import org.vaccineimpact.api.models.helpers.ContentTypes
 import org.vaccineimpact.api.app.DefaultHeadersFilter
 import org.vaccineimpact.api.app.repositories.RepositoryFactory
-import org.vaccineimpact.api.app.serialization.Serializer
+import org.vaccineimpact.api.serialization.Serializer
 import org.vaccineimpact.api.models.AuthenticationResponse
 import org.vaccineimpact.api.security.WebTokenHelper
 import spark.Route

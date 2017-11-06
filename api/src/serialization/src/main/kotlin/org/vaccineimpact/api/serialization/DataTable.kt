@@ -1,7 +1,7 @@
-package org.vaccineimpact.api.app.serialization
+package org.vaccineimpact.api.serialization
 
 import com.opencsv.CSVWriter
-import org.vaccineimpact.api.ContentTypes
+import org.vaccineimpact.api.models.helpers.ContentTypes
 import java.io.OutputStream
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction

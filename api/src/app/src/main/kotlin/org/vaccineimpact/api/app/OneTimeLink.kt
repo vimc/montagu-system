@@ -1,7 +1,7 @@
 package org.vaccineimpact.api.app
 
-import org.vaccineimpact.api.Deserializer
-import org.vaccineimpact.api.OneTimeAction
+import org.vaccineimpact.api.serialization.Deserializer
+import org.vaccineimpact.api.models.helpers.OneTimeAction
 import org.vaccineimpact.api.app.controllers.MontaguControllers
 import org.vaccineimpact.api.app.controllers.endpoints.stream
 import org.vaccineimpact.api.app.repositories.RepositoryFactory

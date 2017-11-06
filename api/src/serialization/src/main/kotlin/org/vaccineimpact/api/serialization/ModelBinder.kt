@@ -1,9 +1,9 @@
-package org.vaccineimpact.api.app.serialization
+package org.vaccineimpact.api.serialization
 
-import org.vaccineimpact.api.app.errors.ValidationError
-import org.vaccineimpact.api.app.serialization.validation.CanBeBlank
-import org.vaccineimpact.api.app.serialization.validation.applyRule
 import org.vaccineimpact.api.models.ErrorInfo
+import org.vaccineimpact.api.serialization.validation.CanBeBlank
+import org.vaccineimpact.api.serialization.validation.ValidationException
+import org.vaccineimpact.api.serialization.validation.applyRule
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty1
 import kotlin.reflect.full.findAnnotation
@@ -17,7 +17,7 @@ class ModelBinder
         val errors = verify(model)
         if (errors.any())
         {
-            throw ValidationError(errors)
+            throw ValidationException(errors)
         }
         return model
     }

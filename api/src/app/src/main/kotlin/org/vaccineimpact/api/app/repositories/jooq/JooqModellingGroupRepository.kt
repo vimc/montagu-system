@@ -7,7 +7,7 @@ import org.vaccineimpact.api.app.filters.whereMatchesFilter
 import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.ScenarioRepository
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
-import org.vaccineimpact.api.app.serialization.SplitData
+import org.vaccineimpact.api.serialization.SplitData
 import org.vaccineimpact.api.db.Tables.*
 import org.vaccineimpact.api.db.fetchInto
 import org.vaccineimpact.api.db.fieldsAsList

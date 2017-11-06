@@ -5,7 +5,7 @@ import org.pac4j.sparkjava.SparkWebContext
 import org.vaccineimpact.api.app.RequestLogger
 import org.vaccineimpact.api.app.addDefaultResponseHeaders
 import org.vaccineimpact.api.app.repositories.RepositoryFactory
-import org.vaccineimpact.api.app.serialization.Serializer
+import org.vaccineimpact.api.serialization.Serializer
 import org.vaccineimpact.api.models.ErrorInfo
 import org.vaccineimpact.api.models.Result
 import org.vaccineimpact.api.models.ResultStatus

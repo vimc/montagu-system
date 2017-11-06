@@ -6,11 +6,10 @@ import com.beust.klaxon.Parser
 import khttp.extensions.fileLike
 import khttp.responses.Response
 import khttp.structures.files.FileLike
-import org.vaccineimpact.api.ContentTypes
+import org.vaccineimpact.api.models.helpers.ContentTypes
 import org.vaccineimpact.api.models.ErrorInfo
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import java.io.File
-import java.nio.file.Files
 
 data class TokenLiteral(val value: String)
 {
