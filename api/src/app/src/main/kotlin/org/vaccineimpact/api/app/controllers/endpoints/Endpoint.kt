@@ -20,7 +20,7 @@ data class Endpoint<TRoute>(
         override val method: HttpMethod = HttpMethod.get,
         override val contentType: String = ContentTypes.json,
         private val additionalSetupCallback: SetupCallback? = null,
-        protected val serializer: Serializer = MontaguSerializer.instance
+        private val serializer: Serializer = MontaguSerializer.instance
 ) : EndpointDefinition<TRoute>
 {
     init
