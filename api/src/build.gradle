@@ -20,7 +20,7 @@ task generateTestData(dependsOn: ':generateTestData:run')
 task validateSchema(dependsOn: ':validateSchema:test')
 // 'testLibrary' runs things that can be tested without a running API.
 // i.e. everything other than blackboxTests.
-task testLibrary(dependsOn: [':app:test', ':databaseTests:test', ':userCLI:test', ':security:test'])
+task testLibrary(dependsOn: [':app:test', 'serialization:test', ':databaseTests:test', ':userCLI:test', ':security:test'])
 
 
 def loadPropertiesFile(path) {
