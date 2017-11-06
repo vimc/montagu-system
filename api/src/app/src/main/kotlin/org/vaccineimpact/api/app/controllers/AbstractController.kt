@@ -9,7 +9,6 @@ import org.vaccineimpact.api.app.RedirectValidator
 import org.vaccineimpact.api.app.controllers.endpoints.EndpointDefinition
 import org.vaccineimpact.api.app.controllers.endpoints.getWrappedRoute
 import org.vaccineimpact.api.app.errors.UnsupportedValueException
-import org.vaccineimpact.api.app.parseQueryParams
 import org.vaccineimpact.api.app.repositories.RepositoryFactory
 import org.vaccineimpact.api.app.repositories.TokenRepository
 import org.vaccineimpact.api.db.Config
@@ -47,9 +46,10 @@ abstract class AbstractController(controllerContext: ControllerContext,
         val actionAsString = serializer.serializeEnum(action)
         val params = context.params()
         val queryString = context.queryString()
-        val queryParams = parseQueryParams(queryString)
-        val redirectUrl = queryParams["redirectUrl"]
+        val redirectUrl = context.queryParams("redirectUrl")
+
         redirectValidator.validateRedirectUrl(redirectUrl)
+
         val token = tokenHelper.generateOneTimeActionToken(actionAsString, params, queryString, duration, context.username!!)
         repo.storeToken(token)
         return token
