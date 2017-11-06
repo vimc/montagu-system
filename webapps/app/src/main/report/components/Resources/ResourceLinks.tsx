@@ -1,8 +1,10 @@
 import * as React from "react";
-import { FileDownloadLink } from "../FileDownloadLink";
-import { encodeFilename } from "../../../shared/Helpers";
+import {FileDownloadLink} from "../FileDownloadLink";
+import {encodeFilename} from "../../../shared/Helpers";
 
-interface ResourceLinksProps{
+const styles = require("../../../shared/styles/common.css");
+
+interface ResourceLinksProps {
     resources: string[],
     report: string,
     version: string
@@ -16,15 +18,23 @@ export class ResourceLinks extends React.Component<ResourceLinksProps, undefined
     }
 
     render() {
+        if (this.props.resources.length == 0) {
+            return null;
+        }
 
-        const links =
-            this.props.resources.map((resource) => <li key={resource}>
+        const links = this.props.resources.map((resource) =>
+            <li key={resource}>
                 <FileDownloadLink href={this.buildUrl(resource)}>{resource}</FileDownloadLink>
-            </li>);
+            </li>
+        );
 
-        if (links.length == 0)
-            return <div>none</div>;
-
-        return <ul>{links}</ul>;
+        return <div>
+            <div className="row">
+                <div className={"col-12 " + styles.sectionTitle}>Resources used as inputs to the report</div>
+            </div>
+            <ul className="row">
+                {links}
+            </ul>
+        </div>;
     }
 }

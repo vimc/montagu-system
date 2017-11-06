@@ -23,9 +23,11 @@ export class ArtefactItem extends React.Component<ArtefactProps, undefined> {
             </li>;
         });
 
-        return <li className={styles.artefact}>
-            <div>{p.description}</div>
-            <ul>{links}</ul>
-        </li>;
+        return <div className="row">
+            <div className="col-12 col-md-3">{p.description}</div>
+            <div className="col-12 col-md-9">
+                <ul>{links}</ul>
+            </div>
+        </div>;
     }
 }
