@@ -20,8 +20,9 @@ export class DownloadDemographicsPage extends ContribPageWithHeader<LocationProp
         modellingGroupActions.setCurrentGroup(this.props.location.params.groupId);
         responsibilityStore.fetchTouchstones().catch(doNothing).then(() => {
             touchstoneActions.setCurrentTouchstone(this.props.location.params.touchstoneId);
-            demographicStore.fetchDataSets().catch(doNothing);
-            super.load();
+            demographicStore.fetchDataSets().catch(doNothing).then(() => {
+                super.load();
+            });
         });
     }
 

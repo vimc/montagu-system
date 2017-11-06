@@ -11,8 +11,9 @@ const commonStyles = require("../../../../shared/styles/common.css");
 
 export class ViewAllUsersPage extends AdminPageWithHeader<undefined> {
     load() {
-        super.load();
-        userStore.fetchUsers().catch(doNothing);
+        userStore.fetchUsers().catch(doNothing).then(() => {
+            super.load();
+        });
     }
 
     name(): string {
