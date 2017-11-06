@@ -63,8 +63,7 @@ class OneTimeLinkController(
 
     private fun redirectWithResult(context: ActionContext, result: Result, redirectUrl: String)
     {
-        val json = Serializer.instance.toJson(result)
-        val encodedResult = tokenHelper.encodeResult(json)
+        val encodedResult = tokenHelper.encodeResult(result)
         context.redirect("$redirectUrl?result=$encodedResult")
     }
 

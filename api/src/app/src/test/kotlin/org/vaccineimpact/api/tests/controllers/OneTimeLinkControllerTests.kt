@@ -263,7 +263,7 @@ class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
     private fun makeTokenHelper(allowToken: Boolean, claims: Map<String, Any>): WebTokenHelper
     {
         return mock<WebTokenHelper> {
-            on(it.encodeResult(any<String>())) doReturn "encoded"
+            on(it.encodeResult(any())) doReturn "encoded"
             if (allowToken)
             {
                 on(it.verify(any())) doReturn claims

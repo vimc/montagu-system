@@ -2,8 +2,12 @@ package org.vaccineimpact.api.tests.security
 
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
+import net.minidev.json.JSONArray
 import org.junit.Before
 import org.junit.Test
+import org.vaccineimpact.api.models.ErrorInfo
+import org.vaccineimpact.api.models.Result
+import org.vaccineimpact.api.models.ResultStatus
 import org.vaccineimpact.api.models.permissions.ReifiedRole
 import org.vaccineimpact.api.models.Scope
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
@@ -14,7 +18,7 @@ import java.util.*
 
 class WebTokenHelperTests : MontaguTests()
 {
-    lateinit var helper: WebTokenHelper
+    lateinit var sut: WebTokenHelper
     val properties = UserProperties(
             username = "test.user",
             name = "Test User",
@@ -34,14 +38,14 @@ class WebTokenHelperTests : MontaguTests()
     @Before
     fun createHelper()
     {
-        helper = WebTokenHelper(KeyHelper.keyPair)
+        sut = WebTokenHelper(KeyHelper.keyPair)
     }
 
     @Test
     fun `can generate token`()
     {
-        val token = helper.generateToken(MontaguUser(properties, roles, permissions))
-        val claims = helper.verify(token)
+        val token = sut.generateToken(MontaguUser(properties, roles, permissions))
+        val claims = sut.verify(token)
 
         assertThat(claims["iss"]).isEqualTo("vaccineimpact.org")
         assertThat(claims["sub"]).isEqualTo("test.user")
@@ -54,11 +58,11 @@ class WebTokenHelperTests : MontaguTests()
     fun `can generate onetime action token`()
     {
         val queryString = "query=answer"
-        val token = helper.generateOneTimeActionToken("test-action", mapOf(
+        val token = sut.generateOneTimeActionToken("test-action", mapOf(
                 ":a" to "1",
                 ":b" to "2"
         ), queryString, username = "test.user")
-        val claims = helper.verify(token)
+        val claims = sut.verify(token)
 
         assertThat(claims["iss"]).isEqualTo("vaccineimpact.org")
         assertThat(claims["sub"]).isEqualTo("onetime_link")
@@ -72,11 +76,11 @@ class WebTokenHelperTests : MontaguTests()
     @Test
     fun `can generate onetime action token with null query string`()
     {
-        val token = helper.generateOneTimeActionToken("test-action", mapOf(
+        val token = sut.generateOneTimeActionToken("test-action", mapOf(
                 ":a" to "1",
                 ":b" to "2"
         ), null, username = "test.user")
-        val claims = helper.verify(token)
+        val claims = sut.verify(token)
 
         assertThat(claims["iss"]).isEqualTo("vaccineimpact.org")
         assertThat(claims["sub"]).isEqualTo("onetime_link")
@@ -90,21 +94,21 @@ class WebTokenHelperTests : MontaguTests()
     @Test
     fun `token fails validation when issuer is wrong`()
     {
-        val claims = helper.claims(MontaguUser(properties, roles, permissions))
-        val badToken = helper.generator.generate(claims.plus("iss" to "unexpected.issuer"))
-        val verifier = MontaguTokenAuthenticator(helper)
+        val claims = sut.claims(MontaguUser(properties, roles, permissions))
+        val badToken = sut.generator.generate(claims.plus("iss" to "unexpected.issuer"))
+        val verifier = MontaguTokenAuthenticator(sut)
         assertThat(verifier.validateToken(badToken)).isNull()
-        assertThatThrownBy { helper.verify(badToken) }
+        assertThatThrownBy { sut.verify(badToken) }
     }
 
     @Test
     fun `token fails validation when token is old`()
     {
-        val claims = helper.claims(MontaguUser(properties, roles, permissions))
-        val badToken = helper.generator.generate(claims.plus("exp" to Date.from(Instant.now())))
-        val verifier = MontaguTokenAuthenticator(helper)
+        val claims = sut.claims(MontaguUser(properties, roles, permissions))
+        val badToken = sut.generator.generate(claims.plus("exp" to Date.from(Instant.now())))
+        val verifier = MontaguTokenAuthenticator(sut)
         assertThat(verifier.validateToken(badToken)).isNull()
-        assertThatThrownBy { helper.verify(badToken) }
+        assertThatThrownBy { sut.verify(badToken) }
     }
 
     @Test
@@ -112,8 +116,37 @@ class WebTokenHelperTests : MontaguTests()
     {
         val sauron = WebTokenHelper(KeyHelper.generateKeyPair())
         val evilToken = sauron.generateToken(MontaguUser(properties, roles, permissions))
-        val verifier = MontaguTokenAuthenticator(helper)
+        val verifier = MontaguTokenAuthenticator(sut)
         assertThat(verifier.validateToken(evilToken)).isNull()
-        assertThatThrownBy { helper.verify(evilToken) }
+        assertThatThrownBy { sut.verify(evilToken) }
     }
+
+    @Test
+    fun `can encode result token`()
+    {
+        val result = Result(ResultStatus.SUCCESS, "OK", listOf())
+        val token = sut.encodeResult(result)
+        val claims = sut.verify(token)
+
+        assertThat(claims["sub"]).isEqualTo("api_response")
+        assertThat(claims["status"]).isEqualTo("SUCCESS")
+        assertThat(claims["data"]).isEqualTo("OK")
+        assertThat(claims["errors"]).isEqualTo(JSONArray())
+    }
+
+//    @Test
+//    fun `can encode error result token`()
+//    {
+//        val result = Result(ResultStatus.FAILURE, null,
+//                listOf(ErrorInfo("some-code", "some message")))
+//        val token = sut.encodeResult(result)
+//        val claims = sut.verify(token)
+//
+//        assertThat(claims["sub"]).isEqualTo("api_response")
+//        assertThat(claims["status"]).isEqualTo("FAILURE")
+//        assertThat(claims["data"]).isEqualTo("")
+//
+//        val error = (claims["errors"]as JSONArray).first()
+//        assertThat(error).isEqualTo(ErrorInfo("some-code", "some message"))
+//    }
 }

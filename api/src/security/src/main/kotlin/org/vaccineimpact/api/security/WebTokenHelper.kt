@@ -4,6 +4,7 @@ import org.pac4j.core.profile.CommonProfile
 import org.pac4j.jwt.config.signature.RSASignatureConfiguration
 import org.pac4j.jwt.profile.JwtGenerator
 import org.vaccineimpact.api.db.Config
+import org.vaccineimpact.api.models.Result
 import java.security.KeyPair
 import java.security.SecureRandom
 import java.time.Duration
@@ -42,9 +43,14 @@ open class WebTokenHelper(keyPair: KeyPair)
         ))
     }
 
-    open fun encodeResult(json: String): String
+    open fun encodeResult(result: Result): String
     {
-        return generator.generate(mapOf("result" to json))
+        return generator.generate(
+                mapOf("sub" to apiResponseSubject,
+                        "iss" to issuer,
+                        "status" to result.status,
+                        "data" to result.data,
+                        "errors" to result.errors.joinToString { it.message}))
     }
 
     fun claims(user: MontaguUser): Map<String, Any>
@@ -70,5 +76,6 @@ open class WebTokenHelper(keyPair: KeyPair)
     companion object
     {
         val oneTimeActionSubject = "onetime_link"
+        val apiResponseSubject = "api_response"
     }
 }
