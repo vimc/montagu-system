@@ -10,6 +10,7 @@ import org.junit.Test
 import org.slf4j.Logger
 import org.vaccineimpact.api.app.ErrorHandler
 import org.vaccineimpact.api.app.errors.MontaguError
+import org.vaccineimpact.api.app.errors.UnexpectedError
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.models.ErrorInfo
 import org.vaccineimpact.api.models.Result
@@ -88,21 +89,25 @@ class ErrorHandlerTests : MontaguTests()
     {
         val error = UnknownObjectError("id", "type")
 
-        handler.logExceptionAndReturnMontaguError(error, request)
+        val result = handler.logExceptionAndReturnMontaguError(error, request)
 
         verify(logger, times(0)).error(any())
         verify(logger).warn("For request www.url.com, a UnknownObjectError occurred with the following problems: [Unknown type with id 'id']")
+
+        assertThat(result).isEqualTo(error)
     }
 
     @Test
-    fun `logExceptionAndReturnMontaguError logs error if exception is not a MontaguError`()
+    fun `logExceptionAndReturnMontaguError logs error and returns unexpected error if exception is not a MontaguError`()
     {
         val error = Exception("message")
 
-        handler.logExceptionAndReturnMontaguError(error, request)
+        val result = handler.logExceptionAndReturnMontaguError(error, request)
 
         verify(logger).error("An unhandled exception occurred", error)
         verify(logger).warn(any())
+
+        assertThat(result is UnexpectedError).isTrue()
     }
 
     private fun getBodyAsJson(): JsonObject
