@@ -8,14 +8,15 @@ import {FileDownloadLink} from "../../../../main/report/components/FileDownloadL
 import {mockRouter} from "../../../mocks/mockRouter";
 import {Sandbox} from "../../../Sandbox";
 import {ReportVersionSwitcher} from "../../../../main/report/components/Versions/ReportVersionSwitcher";
+import {ReportStoreState} from "../../../../main/report/stores/ReportStore";
 
 describe("VersionDetails", () => {
     const sandbox = new Sandbox();
     afterEach(() => sandbox.restore());
 
-    it("can get props from stores", () => {
-        alt.bootstrap(JSON.stringify({
-            ReportStore: {
+    describe("getPropsFromStores", () => {
+        const setupStore = function (extraState?: Partial<ReportStoreState>) {
+            const state = Object.assign({
                 versionDetails: {"v1": mockVersion()},
                 currentReport: "reportname",
                 currentVersion: "v1",
@@ -24,24 +25,48 @@ describe("VersionDetails", () => {
                     otherReport: ["v4", "v5", "v6"]
                 },
                 ready: true
-            },
-            ReportingAuthStore: {loggedIn: true}
-        }));
+            }, extraState);
 
-        const onChangeVersion = sandbox.sinon.stub();
-        const inputProps = { onChangeVersion };
-
-        const expected: VersionProps = {
-            report: "reportname",
-            versionDetails: mockVersion(),
-            ready: true,
-            allVersions: ["v1", "v2", "v3"],
-            onChangeVersion: onChangeVersion
+            alt.bootstrap(JSON.stringify({
+                ReportStore: state,
+                ReportingAuthStore: {loggedIn: true}
+            }));
         };
 
-        expect(VersionDetailsComponent.getPropsFromStores(inputProps)).to.eql(expected);
-    });
+        const assertIsNotReady = function() {
+            expect(VersionDetailsComponent.getPropsFromStores({}).ready).to.equal(false);
+        };
 
+        it("is ready when state is correct", () => {
+            setupStore();
+            const onChangeVersion = sandbox.sinon.stub();
+            const inputProps = {onChangeVersion};
+
+            const expected: VersionProps = {
+                report: "reportname",
+                versionDetails: mockVersion(),
+                ready: true,
+                allVersions: ["v1", "v2", "v3"],
+                onChangeVersion: onChangeVersion
+            };
+            expect(VersionDetailsComponent.getPropsFromStores(inputProps)).to.eql(expected);
+        });
+
+        it("is not ready if store is not ready", () => {
+            setupStore({ready: false});
+            assertIsNotReady();
+        });
+
+        it("is not ready if versions have not been fetched", () => {
+            setupStore({versions: {}});
+            assertIsNotReady();
+        });
+
+        it("is not ready if version details have not been fetched", () => {
+            setupStore({versionDetails: {}});
+            assertIsNotReady();
+        });
+    });
 
     it("renders date", () => {
         const rendered = shallow(<VersionDetailsComponent
