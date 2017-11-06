@@ -1,10 +1,10 @@
 package org.vaccineimpact.api.app
 
+import org.vaccineimpact.api.serialization.Deserializer
+import org.vaccineimpact.api.models.helpers.OneTimeAction
 import org.vaccineimpact.api.app.controllers.MontaguControllers
 import org.vaccineimpact.api.app.controllers.endpoints.stream
 import org.vaccineimpact.api.app.repositories.RepositoryFactory
-import org.vaccineimpact.api.models.helpers.OneTimeAction
-import org.vaccineimpact.api.serialization.Deserializer
 
 data class OneTimeLink(val action: OneTimeAction,
                        val payload: Map<String, String>,
@@ -36,8 +36,7 @@ data class OneTimeLink(val action: OneTimeAction,
             }
         }
     }
-
-
+    
     companion object
     {
         private fun parseParams(params: String): Map<String, String>
