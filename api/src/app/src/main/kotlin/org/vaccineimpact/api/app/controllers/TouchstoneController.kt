@@ -1,21 +1,19 @@
 package org.vaccineimpact.api.app.controllers
 
-import org.vaccineimpact.api.OneTimeAction
+import org.vaccineimpact.api.models.helpers.OneTimeAction
 import org.vaccineimpact.api.app.ActionContext
 import org.vaccineimpact.api.app.controllers.endpoints.EndpointDefinition
 import org.vaccineimpact.api.app.controllers.endpoints.oneRepoEndpoint
 import org.vaccineimpact.api.app.controllers.endpoints.secured
 import org.vaccineimpact.api.app.controllers.endpoints.streamed
 import org.vaccineimpact.api.app.errors.BadRequest
-import org.vaccineimpact.api.app.errors.InconsistentDataError
-import org.vaccineimpact.api.app.errors.OperationNotAllowedError
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.RepositoryFactory
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
-import org.vaccineimpact.api.app.serialization.FlexibleDataTable
-import org.vaccineimpact.api.app.serialization.SplitData
-import org.vaccineimpact.api.app.serialization.StreamSerializable
+import org.vaccineimpact.api.serialization.FlexibleDataTable
+import org.vaccineimpact.api.serialization.SplitData
+import org.vaccineimpact.api.serialization.StreamSerializable
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 
@@ -89,10 +87,9 @@ class TouchstoneController(context: ControllerContext) : AbstractController(cont
         }
 
         return SplitData(splitData.structuredMetadata, tableData)
-
     }
 
-    private fun getWideDemographicDatatable(data: Iterable<LongDemographicRow>):
+    private fun getWideDemographicDatatable(data: Sequence<LongDemographicRow>):
             FlexibleDataTable<WideDemographicRow>
     {
         val groupedRows = data
@@ -106,7 +103,7 @@ class TouchstoneController(context: ControllerContext) : AbstractController(cont
         // all the rows should have the same number of years, so we just look at the first row
         val years = rows.first().valuesPerYear.keys.toList()
 
-        return FlexibleDataTable.new(rows, years)
+        return FlexibleDataTable.new(rows.asSequence(), years)
     }
 
     fun getDemographicData(context: ActionContext, repo: TouchstoneRepository)

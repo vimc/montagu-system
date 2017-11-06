@@ -1,6 +1,6 @@
 package org.vaccineimpact.api.app.models
 
-import org.vaccineimpact.api.app.serialization.validation.MinimumLength
+import org.vaccineimpact.api.serialization.validation.MinimumLength
 
 data class SetPassword(
         @MinimumLength(8)

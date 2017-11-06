@@ -3,6 +3,7 @@ package org.vaccineimpact.api.blackboxTests.tests
 import com.beust.klaxon.json
 import com.github.fge.jackson.JsonLoader
 import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.vaccineimpact.api.blackboxTests.helpers.RequestHelper
 import org.vaccineimpact.api.blackboxTests.helpers.TestUserHelper
@@ -109,7 +110,7 @@ class DemographicTests : DatabaseTest()
                     "age_interpretation" to "age",
                     "source" to "unwpp2015",
                     "unit" to "Number of people",
-                    "gender" to "Both",
+                    "gender" to "both",
                     "countries" to array(countries.sortedBy { it })
             )
         }.toJsonString())
@@ -147,7 +148,7 @@ class DemographicTests : DatabaseTest()
                     "age_interpretation" to "age of mother",
                     "source" to "unwpp2015",
                     "unit" to "Births per woman",
-                    "gender" to "Female",
+                    "gender" to "female",
                     "countries" to array(countries.sortedBy { it })
             )
         }.toJsonString())
@@ -214,7 +215,7 @@ class DemographicTests : DatabaseTest()
             val response = requestHelper.get(oneTimeURL)
             val body = schema.validate(response.text)
 
-            Assertions.assertThat(body.all { it[6] == "Female" }).isTrue()
+            assertThat(body).allMatch { it[6] == "female" }
         }
     }
 

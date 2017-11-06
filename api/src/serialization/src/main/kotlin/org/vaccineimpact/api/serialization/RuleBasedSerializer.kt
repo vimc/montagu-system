@@ -1,4 +1,4 @@
-package org.vaccineimpact.api.app.serialization
+package org.vaccineimpact.api.serialization
 
 import com.github.salomonbrys.kotson.SerializerArg
 import com.github.salomonbrys.kotson.jsonSerializer
@@ -34,6 +34,6 @@ fun <T> removeFieldIfNull(original: T, json: JsonObject, property: KProperty1<T,
 {
     if (property.get(original) == null)
     {
-        json.remove(Serializer.instance.convertFieldName(property.name))
+        json.remove(MontaguSerializer.instance.convertFieldName(property.name))
     }
 }

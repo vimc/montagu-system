@@ -1,4 +1,4 @@
-package org.vaccineimpact.api.app.serialization
+package org.vaccineimpact.api.serialization
 
 import kotlin.reflect.KFunction
 import kotlin.reflect.KType

@@ -11,12 +11,12 @@ import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.errors.MissingRequiredPermissionError
 import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.UserRepository
-import org.vaccineimpact.api.app.serialization.DataTable
-import org.vaccineimpact.api.app.serialization.SplitData
+import org.vaccineimpact.api.serialization.SplitData
 import org.vaccineimpact.api.db.nextDecimal
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
+import org.vaccineimpact.api.serialization.DataTable
 import java.math.BigDecimal
 import java.util.*
 
@@ -301,7 +301,7 @@ class ModellingGroupControllersTests : ControllerTests<ModellingGroupController>
     {
         val coverageSets = mockCoverageSetsData(status)
         val fakeRows = generateCoverageRows(testYear, target, coverage)
-        val data = SplitData(coverageSets, DataTable.new(fakeRows))
+        val data = SplitData(coverageSets, DataTable.new(fakeRows.asSequence()))
         return mock {
             on { getCoverageData(any(), any(), any()) } doReturn data
         }

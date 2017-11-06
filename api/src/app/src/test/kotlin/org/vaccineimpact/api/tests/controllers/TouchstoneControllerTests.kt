@@ -10,10 +10,10 @@ import org.vaccineimpact.api.app.controllers.TouchstoneController
 import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.app.repositories.inmemory.InMemoryDataSet
-import org.vaccineimpact.api.app.serialization.DataTable
-import org.vaccineimpact.api.app.serialization.SplitData
+import org.vaccineimpact.api.serialization.SplitData
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
+import org.vaccineimpact.api.serialization.DataTable
 import java.math.BigDecimal
 
 class TouchstoneControllerTests : ControllerTests<TouchstoneController>()
@@ -119,7 +119,7 @@ class TouchstoneControllerTests : ControllerTests<TouchstoneController>()
 
         val repo = mock<TouchstoneRepository> {
             on { getDemographicData(type, source, openTouchstone.id) } doReturn
-                    SplitData(demographicMetadata, DataTable.new(listOf()))
+                    SplitData(demographicMetadata, DataTable.new(emptySequence()))
             on { touchstones } doReturn InMemoryDataSet(listOf(openTouchstone))
         }
 
@@ -211,13 +211,14 @@ class TouchstoneControllerTests : ControllerTests<TouchstoneController>()
         val demographicMetadata = DemographicDataForTouchstone(openTouchstone,
                 DemographicMetadata("id", "name", null, listOf(), "people", "age", source))
 
-        val fakeRows = listOf(
+        val fakeRows = sequenceOf(
                 LongDemographicRow(123, "ABC", "ABC-country", 0, 5, 1980, "F", BigDecimal(1200)),
                 LongDemographicRow(123, "ABC", "ABC-country", 0, 5, 1985, "F", BigDecimal(1300)),
                 LongDemographicRow(123, "ABC", "ABC-country", 0, 5, 1990, "F", BigDecimal(1400)),
                 LongDemographicRow(123, "ABC", "ABC-country", 5, 10, 1980, "F", BigDecimal(1500)),
                 LongDemographicRow(456, "DEF", "DEF-country", 0, 5, 1980, "F", BigDecimal(2200)),
-                LongDemographicRow(456, "DEF", "DEF-country", 0, 5, 1985, "F", BigDecimal(2300)))
+                LongDemographicRow(456, "DEF", "DEF-country", 0, 5, 1985, "F", BigDecimal(2300))
+        )
 
         return mock<TouchstoneRepository> {
             on { getDemographicData(type, source, openTouchstone.id) } doReturn

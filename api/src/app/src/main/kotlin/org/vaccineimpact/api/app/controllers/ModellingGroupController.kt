@@ -1,6 +1,6 @@
 package org.vaccineimpact.api.app.controllers
 
-import org.vaccineimpact.api.OneTimeAction
+import org.vaccineimpact.api.models.helpers.OneTimeAction
 import org.vaccineimpact.api.app.ActionContext
 import org.vaccineimpact.api.app.controllers.endpoints.EndpointDefinition
 import org.vaccineimpact.api.app.controllers.endpoints.oneRepoEndpoint
@@ -14,8 +14,8 @@ import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
 import org.vaccineimpact.api.app.postData
 import org.vaccineimpact.api.app.repositories.*
-import org.vaccineimpact.api.app.serialization.*
 import org.vaccineimpact.api.models.*
+import org.vaccineimpact.api.serialization.*
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import spark.route.HttpMethod
 import java.time.Instant
@@ -127,7 +127,7 @@ open class ModellingGroupController(context: ControllerContext)
         return SplitData(splitData.structuredMetadata, tableData)
     }
 
-    private fun getWideDatatable(data: Iterable<LongCoverageRow>):
+    private fun getWideDatatable(data: Sequence<LongCoverageRow>):
             FlexibleDataTable<WideCoverageRow>
     {
         val groupedRows = data
@@ -147,7 +147,7 @@ open class ModellingGroupController(context: ControllerContext)
         // all the rows should have the same number of years, so we just look at the first row
         val years = rows.first().coverageAndTargetPerYear.keys.toList()
 
-        return FlexibleDataTable.new(rows, years)
+        return FlexibleDataTable.new(rows.asSequence(), years)
     }
 
     private fun mapWideCoverageRow(records: List<LongCoverageRow>)
@@ -211,7 +211,7 @@ open class ModellingGroupController(context: ControllerContext)
         request.raw().getPart("file").inputStream.bufferedReader().use {
 
             // Then add the burden estimates
-            val data = DataTableDeserializer.deserialize(it.readText(), BurdenEstimate::class, Serializer.instance).toList()
+            val data = DataTableDeserializer.deserialize(it.readText(), BurdenEstimate::class, MontaguSerializer.instance).toList()
             return saveBurdenEstimates(data, estimateRepository, context, path)
         }
     }

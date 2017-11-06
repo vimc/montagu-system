@@ -4,8 +4,8 @@ import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Before
 import org.junit.Test
-import org.vaccineimpact.api.Deserializer
-import org.vaccineimpact.api.UnknownEnumValue
+import org.vaccineimpact.api.serialization.Deserializer
+import org.vaccineimpact.api.serialization.UnknownEnumValue
 import org.vaccineimpact.api.models.TouchstoneStatus
 import org.vaccineimpact.api.test_helpers.MontaguTests
 

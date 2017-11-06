@@ -1,6 +1,6 @@
 package org.vaccineimpact.api.app
 
-import org.vaccineimpact.api.ContentTypes
+import org.vaccineimpact.api.models.helpers.ContentTypes
 import org.vaccineimpact.api.app.errors.BadRequest
 import spark.Filter
 import spark.Request

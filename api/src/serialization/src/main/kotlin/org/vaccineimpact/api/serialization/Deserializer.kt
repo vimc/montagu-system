@@ -1,4 +1,4 @@
-package org.vaccineimpact.api
+package org.vaccineimpact.api.serialization
 
 import java.lang.UnsupportedOperationException
 import java.math.BigDecimal
@@ -33,7 +33,7 @@ class Deserializer
             String::class.createType() -> raw
             Int::class.createType() -> raw.toInt()
             BigDecimal::class.createType() -> BigDecimal(raw)
-            else -> throw UnsupportedOperationException("Deserializer does not support target type $targetType")
+            else -> throw UnsupportedOperationException("org.vaccineimpact.api.serialization.Deserializer does not support target type $targetType")
         }
     }
 }

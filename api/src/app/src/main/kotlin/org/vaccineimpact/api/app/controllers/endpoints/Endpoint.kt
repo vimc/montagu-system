@@ -1,9 +1,9 @@
 package org.vaccineimpact.api.app.controllers.endpoints
 
-import org.vaccineimpact.api.ContentTypes
+import org.vaccineimpact.api.models.helpers.ContentTypes
 import org.vaccineimpact.api.app.DefaultHeadersFilter
 import org.vaccineimpact.api.app.repositories.RepositoryFactory
-import org.vaccineimpact.api.app.serialization.Serializer
+import org.vaccineimpact.api.serialization.MontaguSerializer
 import org.vaccineimpact.api.models.AuthenticationResponse
 import org.vaccineimpact.api.security.WebTokenHelper
 import spark.Route
@@ -37,8 +37,8 @@ data class Endpoint<TRoute>(
 
     override fun transform(x: Any) = when (x)
     {
-        is AuthenticationResponse -> Serializer.instance.gson.toJson(x)!!
-        else -> Serializer.instance.toResult(x)
+        is AuthenticationResponse -> MontaguSerializer.instance.gson.toJson(x)!!
+        else -> MontaguSerializer.instance.toResult(x)
     }
 
     fun withAdditionalSetup(newCallback: SetupCallback): Endpoint<TRoute>

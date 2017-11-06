@@ -48,9 +48,7 @@ open class WebTokenHelper(keyPair: KeyPair)
         return generator.generate(
                 mapOf("sub" to apiResponseSubject,
                         "iss" to issuer,
-                        "status" to result.status,
-                        "data" to result.data,
-                        "errors" to result.errors.joinToString { it.message}))
+                        "status" to result))
     }
 
     fun claims(user: MontaguUser): Map<String, Any>

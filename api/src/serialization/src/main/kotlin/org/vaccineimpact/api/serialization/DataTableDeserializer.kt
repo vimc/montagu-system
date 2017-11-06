@@ -1,10 +1,9 @@
-package org.vaccineimpact.api.app.serialization
+package org.vaccineimpact.api.serialization
 
 import com.opencsv.CSVReader
-import org.vaccineimpact.api.Deserializer
-import org.vaccineimpact.api.app.errors.ValidationError
 import org.vaccineimpact.api.models.ErrorInfo
 import org.vaccineimpact.api.models.helpers.FlexibleColumns
+import org.vaccineimpact.api.serialization.validation.ValidationException
 import java.io.StringReader
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
@@ -53,7 +52,7 @@ open class DataTableDeserializer<out T>(
         }
         if (problems.any())
         {
-            throw ValidationError(problems)
+            throw ValidationException(problems)
         }
         return constructor.call(*prepareValuesForConstructor(values, actualHeaders).toTypedArray())
     }
@@ -115,7 +114,7 @@ open class DataTableDeserializer<out T>(
 
         if (problems.any())
         {
-            throw ValidationError(problems)
+            throw ValidationException(problems)
         }
         return headerDefinitions
     }
@@ -130,7 +129,7 @@ open class DataTableDeserializer<out T>(
         fun <T : Any> deserialize(
                 body: String,
                 type: KClass<T>,
-                serializer: Serializer = Serializer.instance
+                serializer: Serializer = MontaguSerializer.instance
         ): Sequence<T>
         {
             return getDeserializer(type, serializer).deserialize(body)

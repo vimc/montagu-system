@@ -2,7 +2,7 @@ package org.vaccineimpact.api.app.controllers
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.vaccineimpact.api.OneTimeAction
+import org.vaccineimpact.api.models.helpers.OneTimeAction
 import org.vaccineimpact.api.app.ActionContext
 import org.vaccineimpact.api.app.OneTimeLinkActionContext
 import org.vaccineimpact.api.app.RedirectValidator
@@ -12,7 +12,7 @@ import org.vaccineimpact.api.app.errors.UnsupportedValueException
 import org.vaccineimpact.api.app.parseQueryParams
 import org.vaccineimpact.api.app.repositories.RepositoryFactory
 import org.vaccineimpact.api.app.repositories.TokenRepository
-import org.vaccineimpact.api.app.serialization.Serializer
+import org.vaccineimpact.api.serialization.MontaguSerializer
 import org.vaccineimpact.api.db.Config
 import org.vaccineimpact.api.security.WebTokenHelper
 import spark.Spark
@@ -42,7 +42,7 @@ abstract class AbstractController(controllerContext: ControllerContext,
             duration: Duration = tokenHelper.oneTimeLinkLifeSpan
     ): String
     {
-        val actionAsString = Serializer.instance.serializeEnum(action)
+        val actionAsString = MontaguSerializer.instance.serializeEnum(action)
         val params = context.params()
         val queryString = context.queryString()
         val queryParams = parseQueryParams(queryString)

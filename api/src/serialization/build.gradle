@@ -1,8 +1,14 @@
 dependencies {
+    compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
     compile 'org.pac4j:spark-pac4j:2.0.0'
     compile 'org.pac4j:pac4j-jwt:2.0.0'
     compile 'commons-codec:commons-codec:1.10'
     compile 'org.abstractj.kalium:kalium:0.6.0'
+    compile "com.opencsv:opencsv:3.9"
+    compile "com.google.code.gson:gson:2.2.4"
+    compile "com.github.salomonbrys.kotson:kotson:2.5.0"
+
+    compile project(":models")
 
     testCompile "junit:junit:4.12"
     testCompile "org.mockito:mockito-core:2.+"
@@ -11,19 +17,4 @@ dependencies {
     testCompile "com.beust:klaxon:0.31"
     testCompile project(":testHelpers")
 
-    compile project(":models")
-    compile project(":databaseInterface")
-    compile project(":serialization")
-
-}
-
-task install_libsodium() {
-    def file = file("/usr/local/lib/libsodium.so.18.2.0")
-    if (!file.exists()) {
-        throw new Exception("libsodium is not installed. Please run ./scripts/install-libsodium.sh as root")
-    }
-}
-
-build {
-    dependsOn 'install_libsodium'
 }

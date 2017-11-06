@@ -4,9 +4,9 @@ import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
 import org.vaccineimpact.api.app.errors.ValidationError
-import org.vaccineimpact.api.app.serialization.DataTable
-import org.vaccineimpact.api.app.serialization.DataTableDeserializer
-import org.vaccineimpact.api.app.serialization.Serializer
+import DataTable
+import org.vaccineimpact.api.serialization.DataTableDeserializer
+import org.vaccineimpact.api.serialization.Serializer
 import org.vaccineimpact.api.models.TouchstoneStatus
 import org.vaccineimpact.api.models.helpers.FlexibleColumns
 import org.vaccineimpact.api.test_helpers.MontaguTests
@@ -24,14 +24,14 @@ class DataTableTests : MontaguTests()
     @Test
     fun `headers are written in order of constructor`()
     {
-        val table = DataTable.new<ABC>(emptyList())
+        val table = DataTable.new<ABC>(emptySequence())
         assertThat(serialize(table)).isEqualTo("""a,b,c""")
     }
 
     @Test
     fun `data is written out line by line`()
     {
-        val table = DataTable.new(listOf(
+        val table = DataTable.new(sequenceOf(
                 ABC("g", "h", "i"),
                 ABC("x", "y", "z")
         ))
@@ -43,7 +43,7 @@ x,y,z""")
     @Test
     fun `special characters are escaped`()
     {
-        val table = DataTable.new(listOf(
+        val table = DataTable.new(sequenceOf(
                 ABC("g", "h", "i"),
                 ABC("x", "y", "z"),
                 ABC("with, commas", """with "quotes" and no commas""", """both "quotes" and ,commas,""")
@@ -57,7 +57,7 @@ x,y,z
     @Test
     fun `mixed types are written out`()
     {
-        val table = DataTable.new(listOf(
+        val table = DataTable.new(sequenceOf(
                 MixedTypes("text", 123, BigDecimal("3.1415"))
         ))
         assertThat(serialize(table)).isEqualTo("""text,int,dec
@@ -67,7 +67,7 @@ text,123,3.1415""")
     @Test
     fun `null is converted to NA`()
     {
-        val table = DataTable.new(listOf(
+        val table = DataTable.new(sequenceOf(
                 MixedTypes(null, null, null)
         ))
         assertThat(serialize(table)).isEqualTo("""text,int,dec
@@ -77,7 +77,7 @@ text,123,3.1415""")
     @Test
     fun `enum is converted to lowercase with hyphens`()
     {
-        val table = DataTable.new(listOf(
+        val table = DataTable.new(sequenceOf(
                 WithEnums("free text", TouchstoneStatus.IN_PREPARATION)
         ))
         assertThat(serialize(table)).isEqualTo("""text,enum
