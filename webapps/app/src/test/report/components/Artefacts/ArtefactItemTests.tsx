@@ -4,6 +4,7 @@ import {  shallow } from "enzyme";
 import { FileDownloadLink } from "../../../../main/report/components/FileDownloadLink";
 import { Sandbox } from "../../../Sandbox";
 import { ArtefactItem } from "../../../../main/report/components/Artefacts/ArtefactItem";
+import {ArtefactRow} from "../../../../main/report/components/Artefacts/ArtefactRow";
 
 const styles = require("../../../../main/report/styles/reports.css");
 
@@ -19,8 +20,7 @@ describe("ArtefactItem", () => {
         ];
         const rendered = shallow(<ArtefactItem report="reportname" version="versionname"
                                                      filenames={filenames} description="a file"/>);
-        const item = rendered.find(`.${styles.artefact}`).at(0);
-        const links = item.find(FileDownloadLink);
+        const links = rendered.find(ArtefactRow).children().find(FileDownloadLink);
 
         expect(links).to.have.length(2);
         expect(links.at(0).prop("href")).to.eq("/reports/reportname/versions/versionname/artefacts/file1.txt/");
@@ -31,14 +31,10 @@ describe("ArtefactItem", () => {
     });
 
     it("renders description", () => {
-
         const rendered = shallow(<ArtefactItem report="reportname" version="versionname"
                                                      filenames={["filename.csv"]} description="a file"/>);
-        const item = rendered.find(`.${styles.artefact}`).at(0);
-        const description = item.find("div");
-
-        expect(description.text()).to.eq("a file");
-
+        const row = rendered.find(ArtefactRow);
+        expect(row.prop("description")).to.equal("a file");
     });
 
 });

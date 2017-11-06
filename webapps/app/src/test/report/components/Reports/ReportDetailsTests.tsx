@@ -67,17 +67,6 @@ describe("ReportDetails", () => {
         });
     });
 
-    it("renders date", () => {
-        const rendered = shallow(<ReportDetailsComponent
-            versionDetails={mockVersion({date: "2015-03-25"})}
-            report="reportname"
-            allVersions={[]}
-            onChangeVersion={null}
-            ready={true}
-        />);
-        expect(rendered.find('td').at(1).text()).to.eq("2015-03-25");
-    });
-
     it("renders zip download link", () => {
         const rendered = shallow(<ReportDetailsComponent
             versionDetails={mockVersion({id: "v1"})}

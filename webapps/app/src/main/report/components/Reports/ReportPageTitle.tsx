@@ -4,20 +4,20 @@ import * as React from "react";
 
 const headerStyles = require("../../../shared/components/PageWithHeader/PageWithHeader.css");
 
-interface Props {
+export interface ReportPageTitleProps {
     name: string;
     displayName: string;
     version: string;
 }
 
-export class ReportPageTitleComponent extends React.Component<Props, undefined> {
+export class ReportPageTitleComponent extends React.Component<ReportPageTitleProps, undefined> {
     static getStores() {
         return [reportStore];
     }
 
-    static getPropsFromStores(): Props {
+    static getPropsFromStores(): ReportPageTitleProps {
         const s = reportStore.getState();
-        const props: Props = {
+        const props: ReportPageTitleProps = {
             name: s.currentReport,
             version: s.currentVersion,
             displayName: null
@@ -32,7 +32,7 @@ export class ReportPageTitleComponent extends React.Component<Props, undefined> 
     render() {
         const title = this.props.displayName || this.props.name;
         return <span>
-            {title}
+            <div>{title}</div>
             <div className={ `${headerStyles.titleAddition}` }>
                 Version: {this.props.version}
             </div>
