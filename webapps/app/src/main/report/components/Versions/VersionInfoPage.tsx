@@ -5,6 +5,7 @@ import {VersionDetails} from "./VersionDetails";
 import {reportStore} from "../../stores/ReportStore";
 import {doNothing} from "../../../shared/Helpers";
 import {PageProperties} from "../../../shared/components/PageWithHeader/PageWithHeader";
+import {appSettings} from "../../../shared/Settings";
 
 export interface VersionInfoPageProps {
     report: string;
@@ -34,7 +35,7 @@ export class VersionInfoPage extends ReportingPageWithHeader<VersionInfoPageProp
 
     changeVersion(version: string) {
         const report = this.props.location.params.report;
-        this.props.router.redirectTo(`/${report}/${version}/`, false);
+        this.props.router.redirectTo(`${appSettings.publicPath}/${report}/${version}/`, false);
         this.load(report, version);
     }
 
