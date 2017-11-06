@@ -3,9 +3,9 @@ package org.vaccineimpact.api.app.controllers.endpoints
 import org.vaccineimpact.api.models.helpers.ContentTypes
 import org.vaccineimpact.api.app.DefaultHeadersFilter
 import org.vaccineimpact.api.app.repositories.RepositoryFactory
+import org.vaccineimpact.api.serialization.MontaguSerializer
 import org.vaccineimpact.api.models.AuthenticationResponse
 import org.vaccineimpact.api.security.WebTokenHelper
-import org.vaccineimpact.api.serialization.MontaguSerializer
 import org.vaccineimpact.api.serialization.Serializer
 import spark.Route
 import spark.Spark

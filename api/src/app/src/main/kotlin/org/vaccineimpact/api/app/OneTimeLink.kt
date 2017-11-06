@@ -36,7 +36,7 @@ data class OneTimeLink(val action: OneTimeAction,
             }
         }
     }
-    
+
     companion object
     {
         private fun parseParams(params: String): Map<String, String>
