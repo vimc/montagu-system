@@ -7,7 +7,6 @@ import {doNothing} from "../../../shared/Helpers";
 import {PageProperties} from "../../../shared/components/PageWithHeader/PageWithHeader";
 import {appSettings} from "../../../shared/Settings";
 import {MainMenu} from "../MainMenu/MainMenu";
-import {ViewVersionsPage} from "./ViewVersionsPage";
 
 export interface VersionInfoPageProps {
     report: string;
@@ -42,7 +41,7 @@ export class VersionInfoPage extends ReportingPageWithHeader<VersionInfoPageProp
     }
 
     parent() {
-        return new ViewVersionsPage();
+        return new MainMenu();
     }
 
     name() {
