@@ -6,10 +6,10 @@ import {mockLocation} from "../../../mocks/mocks";
 import {checkAsync} from "../../../testHelpers";
 import {reportStore} from "../../../../main/report/stores/ReportStore";
 import {expectOneAction} from "../../../actionHelpers";
-import {ReportPage, ReportPageProps} from "./ReportPage";
 import {alt} from "../../../../main/shared/alt";
 import {IRouter} from "simple-react-router";
-import {ReportDetails} from "./ReportDetails";
+import {ReportPage, ReportPageProps} from "../../../../main/report/components/Reports/ReportPage";
+import {ReportDetails} from "../../../../main/report/components/Reports/ReportDetails";
 
 describe("ReportPage", () => {
     const sandbox = new Sandbox();

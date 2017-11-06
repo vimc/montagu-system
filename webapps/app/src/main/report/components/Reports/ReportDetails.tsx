@@ -18,18 +18,18 @@ interface PublicProps {
     onChangeVersion: (version: string) => void;
 }
 
-export interface VersionProps extends RemoteContent, PublicProps {
+export interface ReportDetailsProps extends RemoteContent, PublicProps {
     versionDetails: Version;
     report: string;
     allVersions: string[];
 }
 
-export class ReportDetailsComponent extends RemoteContentComponent<VersionProps> {
+export class ReportDetailsComponent extends RemoteContentComponent<ReportDetailsProps> {
     static getStores() {
         return [reportStore];
     }
 
-    static getPropsFromStores(props: Partial<VersionProps>): VersionProps {
+    static getPropsFromStores(props: Partial<ReportDetailsProps>): ReportDetailsProps {
         const s = reportStore.getState();
         return {
             versionDetails: s.versionDetails[s.currentVersion],
@@ -43,7 +43,7 @@ export class ReportDetailsComponent extends RemoteContentComponent<VersionProps>
         };
     }
 
-    private renderTable(props: VersionProps) {
+    private renderTable(props: ReportDetailsProps) {
         const url = `/reports/${props.report}/versions/${props.versionDetails.id}/all/`;
         const version = props.versionDetails.id;
 
@@ -79,7 +79,7 @@ export class ReportDetailsComponent extends RemoteContentComponent<VersionProps>
         </table>;
     }
 
-    renderContent(props: VersionProps) {
+    renderContent(props: ReportDetailsProps) {
         return <div>
             <ReportVersionSwitcher
                 currentVersion={props.versionDetails.id}

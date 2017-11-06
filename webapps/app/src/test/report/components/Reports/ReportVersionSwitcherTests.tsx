@@ -1,8 +1,8 @@
 import {shallow} from "enzyme";
 import {expect} from "chai";
 import * as React from "react";
-import {ReportVersionSwitcher} from "./ReportVersionSwitcher";
 import {Sandbox} from "../../../Sandbox";
+import {ReportVersionSwitcher} from "../../../../main/report/components/Reports/ReportVersionSwitcher";
 
 describe("ReportVersionSwitcher", () => {
     const sandbox = new Sandbox();
