@@ -9,13 +9,13 @@ import { DownloadDataTitle } from "../DownloadDataTitle";
 import { UploadBurdenEstimatesContent } from "./UploadBurdenEstimatesContent";
 import { estimateTokenActions } from "../../../actions/EstimateActions";
 
-interface LocationProps {
+export interface UploadEstimatesProps {
     groupId: string;
     touchstoneId: string;
     scenarioId: string;
 }
 
-export class UploadBurdenEstimatesPage extends PageWithHeaderAndNav<LocationProps> {
+export class UploadBurdenEstimatesPage extends PageWithHeaderAndNav<UploadEstimatesProps> {
     componentDidMount() {
         setTimeout(() => {
             estimateTokenActions.clearUsedToken();
@@ -24,6 +24,7 @@ export class UploadBurdenEstimatesPage extends PageWithHeaderAndNav<LocationProp
                 touchstoneActions.setCurrentTouchstone(this.props.location.params.touchstoneId);
                 responsibilityStore.fetchResponsibilities().catch(doNothing).then(() => {
                     responsibilityActions.setCurrentResponsibility(this.props.location.params.scenarioId);
+                    responsibilityActions.setRedirectUrl(this.props.location.pathName);
                     responsibilityStore.fetchOneTimeEstimatesToken().catch(doNothing)
                 });
             });

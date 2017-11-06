@@ -1,6 +1,7 @@
 import { CoverageSource } from "./CoverageSource";
 import SourceModel = AltJS.SourceModel;
 import { estimateTokenActions } from "../actions/EstimateActions";
+import {appSettings} from "../../shared/Settings";
 
 export class EstimatesTokenSource extends CoverageSource {
     fetchOneTimeEstimatesToken: () => SourceModel<string>;
@@ -8,7 +9,8 @@ export class EstimatesTokenSource extends CoverageSource {
     constructor() {
         super();
         this.fetchOneTimeEstimatesToken = () => this.doFetch(state => {
-            return this.baseURL(state) + "/estimates/get_onetime_link/";
+            const redirectUrl = encodeURI(state.redirectUrl);
+            return this.baseURL(state) + `/estimates/get_onetime_link/?redirectUrl=${redirectUrl}/`;
         }, {
             success: estimateTokenActions.update,
             loading: estimateTokenActions.beginFetch,

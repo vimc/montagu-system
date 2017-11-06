@@ -1,30 +1,30 @@
 import alt from "../../shared/alt";
 import * as AltJS from "alt";
-import { RemoteContent } from "../../shared/models/RemoteContent";
-import { responsibilityActions } from "../actions/ResponsibilityActions";
-import { AbstractStore } from "../../shared/stores/AbstractStore";
+import {RemoteContent} from "../../shared/models/RemoteContent";
+import {responsibilityActions} from "../actions/ResponsibilityActions";
+import {AbstractStore} from "../../shared/stores/AbstractStore";
 import {
     ModellingGroup,
     Responsibilities,
     ScenarioTouchstoneAndCoverageSets,
     Touchstone
 } from "../../shared/models/Generated";
-import { touchstoneActions } from "../actions/TouchstoneActions";
-import { ExtendedResponsibility, ExtendedResponsibilitySet } from "../models/ResponsibilitySet";
-import { coverageSetActions } from "../actions/CoverageSetActions";
-import { coverageTokenActions } from "../actions/CoverageActions";
-import { modellingGroupActions } from "../../shared/actions/ModellingGroupActions";
-import { contribAuthStore } from "./ContribAuthStore";
-import { ResponsibilitySource } from "../sources/ResponsibilitySource";
-import { TouchstoneSource } from "../sources/TouchstoneSource";
-import { CoverageSetSource } from "../sources/CoverageSetSource";
-import { CoverageTokenSource } from "../sources/CoverageTokenSource";
-import { mainStore } from "./MainStore";
-import { ResponsibilitySetManager } from "./ResponsibilitySetManager";
+import {touchstoneActions} from "../actions/TouchstoneActions";
+import {ExtendedResponsibility, ExtendedResponsibilitySet} from "../models/ResponsibilitySet";
+import {coverageSetActions} from "../actions/CoverageSetActions";
+import {coverageTokenActions} from "../actions/CoverageActions";
+import {modellingGroupActions} from "../../shared/actions/ModellingGroupActions";
+import {contribAuthStore} from "./ContribAuthStore";
+import {ResponsibilitySource} from "../sources/ResponsibilitySource";
+import {TouchstoneSource} from "../sources/TouchstoneSource";
+import {CoverageSetSource} from "../sources/CoverageSetSource";
+import {CoverageTokenSource} from "../sources/CoverageTokenSource";
+import {mainStore} from "./MainStore";
+import {ResponsibilitySetManager} from "./ResponsibilitySetManager";
+import {EstimatesTokenSource} from "../sources/EstimatesTokenSource";
+import {estimateTokenActions} from "../actions/EstimateActions";
+import {HasFormatState} from "./DemographicStore";
 import StoreModel = AltJS.StoreModel;
-import { EstimatesTokenSource } from "../sources/EstimatesTokenSource";
-import { estimateTokenActions } from "../actions/EstimateActions";
-import { HasFormatState } from "./DemographicStore";
 
 export interface ResponsibilityState extends RemoteContent, HasFormatState {
     touchstones: Array<Touchstone>;
@@ -37,17 +37,24 @@ export interface ResponsibilityState extends RemoteContent, HasFormatState {
 
     currentModellingGroup: ModellingGroup;
     currentDiseaseId: string;
+    redirectUrl: string;
 }
 
 interface ResponsibilityStoreInterface extends AltJS.AltStore<ResponsibilityState> {
     fetchResponsibilities(): Promise<Responsibilities>;
+
     fetchTouchstones(): Promise<Touchstone[]>;
+
     fetchCoverageSets(): Promise<ScenarioTouchstoneAndCoverageSets>;
+
     fetchOneTimeCoverageToken(): Promise<string>;
+
     fetchOneTimeEstimatesToken(): Promise<string>;
+
     isLoading(): boolean;
 
     responsibilitySetManager(): ResponsibilitySetManager;
+
     getCurrentResponsibilitySet(): ExtendedResponsibilitySet;
 }
 
@@ -63,6 +70,7 @@ class ResponsibilityStore extends AbstractStore<ResponsibilityState, Responsibil
     currentModellingGroup: ModellingGroup;
     currentDiseaseId: string;
     selectedFormat: string;
+    redirectUrl: string;
 
     ready: boolean;
 
@@ -96,7 +104,9 @@ class ResponsibilityStore extends AbstractStore<ResponsibilityState, Responsibil
             handleUpdateEstimatesToken: estimateTokenActions.update,
             handleClearUsedEstimatesToken: estimateTokenActions.clearUsedToken,
 
-            handleFilterByDisease: responsibilityActions.filterByDisease
+            handleFilterByDisease: responsibilityActions.filterByDisease,
+
+            handleSetRedirectUrl: responsibilityActions.setRedirectUrl
         });
         this.exportPublicMethods({
             responsibilitySetManager: () => new ResponsibilitySetManager(this.responsibilitySets),
@@ -122,7 +132,7 @@ class ResponsibilityStore extends AbstractStore<ResponsibilityState, Responsibil
             estimatesOneTimeToken: null,
 
             selectedFormat: "long",
-
+            redirectUrl: null,
             ready: false
         };
     }
@@ -205,6 +215,10 @@ class ResponsibilityStore extends AbstractStore<ResponsibilityState, Responsibil
 
     handleSelectFormat(format: string) {
         this.selectedFormat = format;
+    }
+
+    handleSetRedirectUrl(url: string) {
+        this.redirectUrl = url;
     }
 }
 
