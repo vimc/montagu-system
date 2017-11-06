@@ -6,11 +6,14 @@ import org.pac4j.core.context.HttpConstants
 import org.pac4j.http.client.direct.DirectBasicAuthClient
 import org.pac4j.sparkjava.SparkWebContext
 import org.vaccineimpact.api.app.repositories.RepositoryFactory
-import org.vaccineimpact.api.serialization.Serializer
+import org.vaccineimpact.api.serialization.MontaguSerializer
 import org.vaccineimpact.api.models.FailedAuthentication
+import org.vaccineimpact.api.serialization.Serializer
+import org.vaccineimpact.api.serialization.ruleBasedSerializer
 import spark.Spark as spk
 
-class TokenIssuingConfigFactory(private val repositoryFactory: RepositoryFactory) : ConfigFactory
+class TokenIssuingConfigFactory(private val repositoryFactory: RepositoryFactory,
+                                private val serializer: Serializer = MontaguSerializer.instance) : ConfigFactory
 {
     override fun build(vararg parameters: Any?): Config
     {
@@ -22,11 +25,11 @@ class TokenIssuingConfigFactory(private val repositoryFactory: RepositoryFactory
     }
 }
 
-class BasicAuthActionAdapter(repositoryFactory: RepositoryFactory)
-    : MontaguHttpActionAdapter(repositoryFactory)
+class BasicAuthActionAdapter(repositoryFactory: RepositoryFactory, serializer: Serializer = MontaguSerializer.instance)
+    : MontaguHttpActionAdapter(repositoryFactory, serializer)
 {
     private val unauthorizedResponse: String
-            = Serializer.instance.gson.toJson(FailedAuthentication("Bad credentials"))
+            = serializer.gson.toJson(FailedAuthentication("Bad credentials"))
 
     override fun adapt(code: Int, context: SparkWebContext): Any? = when (code)
     {

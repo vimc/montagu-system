@@ -6,13 +6,14 @@ import org.slf4j.LoggerFactory
 import org.vaccineimpact.api.app.errors.MontaguError
 import org.vaccineimpact.api.app.errors.UnableToParseJsonError
 import org.vaccineimpact.api.app.errors.UnexpectedError
+import org.vaccineimpact.api.serialization.MontaguSerializer
 import org.vaccineimpact.api.serialization.Serializer
 import spark.Request
 import spark.Response
 import spark.Spark as spk
 
 @Suppress("RemoveExplicitTypeArguments")
-open class ErrorHandler
+open class ErrorHandler(private val serializer: Serializer = MontaguSerializer.instance)
 {
     private val logger = LoggerFactory.getLogger(ErrorHandler::class.java)
     private val postgresHandler = PostgresErrorHandler()
@@ -28,7 +29,7 @@ open class ErrorHandler
     open fun handleError(error: MontaguError, req: Request, res: Response)
     {
         logger.warn("For request ${req.uri()}, a ${error::class.simpleName} occurred with the following problems: ${error.problems}")
-        res.body(Serializer.instance.toJson(error.asResult()))
+        res.body(serializer.toJson(error.asResult()))
         res.status(error.httpStatus)
         addDefaultResponseHeaders(res)
     }

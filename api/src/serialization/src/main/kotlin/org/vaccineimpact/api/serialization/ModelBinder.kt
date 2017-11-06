@@ -9,11 +9,11 @@ import kotlin.reflect.KProperty1
 import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.memberProperties
 
-class ModelBinder
+class ModelBinder(private val serializer: Serializer = MontaguSerializer.instance)
 {
     fun <T : Any> deserialize(body: String, klass: Class<T>): T
     {
-        val model = Serializer.instance.fromJson(body, klass)
+        val model = serializer.fromJson(body, klass)
         val errors = verify(model)
         if (errors.any())
         {
