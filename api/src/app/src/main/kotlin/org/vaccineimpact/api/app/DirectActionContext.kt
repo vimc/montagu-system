@@ -35,7 +35,14 @@ open class DirectActionContext(private val context: SparkWebContext): ActionCont
     override fun params(key: String): String = request.params(key)
     override fun <T: Any> postData(klass: Class<T>): T
     {
-        return ModelBinder().deserialize(request.body(), klass)
+        return try
+        {
+            ModelBinder().deserialize(request.body(), klass)
+        }
+        catch(e: ValidationException)
+        {
+            throw ValidationError(e.errors)
+        }
     }
 
     override fun <T : Any> csvData(klass: KClass<T>): List<T>
