@@ -44,22 +44,3 @@ class DefaultHeadersFilter(val contentType: String, val method: HttpMethod) : Fi
         }
     }
 }
-
-fun parseParams(params: String): Map<String, String>
-{
-    return params.split('&')
-            .map { it.split('=') }
-            .associateBy({ it[0] }, { it[1] })
-}
-
-fun parseQueryParams(rawQueryParams: String?): Map<String, String>
-{
-    return if (rawQueryParams == null || rawQueryParams == "")
-    {
-        mapOf()
-    }
-    else
-    {
-        parseParams(rawQueryParams)
-    }
-}
