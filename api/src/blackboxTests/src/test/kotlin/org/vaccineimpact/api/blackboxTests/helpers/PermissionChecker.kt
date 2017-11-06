@@ -1,7 +1,6 @@
 package org.vaccineimpact.api.blackboxTests.helpers
 
-import com.beust.klaxon.JsonObject
-import org.vaccineimpact.api.ContentTypes
+import org.vaccineimpact.api.models.helpers.ContentTypes
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.models.Scope
 import org.vaccineimpact.api.models.permissions.ReifiedPermission

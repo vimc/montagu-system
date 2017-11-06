@@ -1,4 +1,4 @@
-package org.vaccineimpact.api.app.serialization.validation
+package org.vaccineimpact.api.serialization.validation
 
 import org.vaccineimpact.api.models.ErrorInfo
 

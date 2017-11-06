@@ -1,7 +1,7 @@
 package org.vaccineimpact.api.tests.models
 
 import org.assertj.core.api.Assertions
-import org.vaccineimpact.api.app.serialization.ModelBinder
+import org.vaccineimpact.api.serialization.ModelBinder
 import org.vaccineimpact.api.test_helpers.MontaguTests
 
 abstract class ValidationTests : MontaguTests()

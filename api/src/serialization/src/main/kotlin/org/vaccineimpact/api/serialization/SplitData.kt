@@ -1,6 +1,6 @@
-package org.vaccineimpact.api.app.serialization
+package org.vaccineimpact.api.serialization
 
-import org.vaccineimpact.api.ContentTypes
+import org.vaccineimpact.api.models.helpers.ContentTypes
 import java.io.OutputStream
 
 data class SplitData<out Metadata, out DataRow : Any>(

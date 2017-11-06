@@ -28,10 +28,6 @@ dependencies {
 
     compile "com.sparkjava:spark-core:2.5.4"
 
-    compile "com.google.code.gson:gson:2.2.4"
-    compile "com.github.salomonbrys.kotson:kotson:2.5.0"
-    compile "com.opencsv:opencsv:3.9"
-
     compile "org.postgresql:postgresql:9.4.1212.jre7"
     compile "org.jooq:jooq:3.9.1"
     compile "org.jooq:jooq-meta:3.9.1"
@@ -43,6 +39,7 @@ dependencies {
     compile project(":models")
     compile project(":security")
     compile project(":emails")
+    compile project(":serialization")
 
     testCompile "junit:junit:4.12"
     testCompile "org.mockito:mockito-core:2.+"

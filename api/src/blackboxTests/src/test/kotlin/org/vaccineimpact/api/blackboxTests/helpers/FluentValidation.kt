@@ -4,7 +4,7 @@ import com.beust.klaxon.JsonArray
 import com.beust.klaxon.JsonObject
 import khttp.responses.Response
 import org.assertj.core.api.Assertions.assertThat
-import org.vaccineimpact.api.ContentTypes
+import org.vaccineimpact.api.models.helpers.ContentTypes
 import org.vaccineimpact.api.blackboxTests.schemas.JSONSchema
 import org.vaccineimpact.api.blackboxTests.schemas.Schema
 import org.vaccineimpact.api.db.JooqContext

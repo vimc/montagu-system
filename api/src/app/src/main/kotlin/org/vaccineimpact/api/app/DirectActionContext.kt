@@ -5,13 +5,15 @@ import org.pac4j.core.profile.ProfileManager
 import org.pac4j.sparkjava.SparkWebContext
 import org.vaccineimpact.api.app.errors.MissingRequiredPermissionError
 import org.vaccineimpact.api.app.security.montaguPermissions
-import org.vaccineimpact.api.app.serialization.DataTableDeserializer
-import org.vaccineimpact.api.app.serialization.ModelBinder
-import org.vaccineimpact.api.app.serialization.Serializer
+import org.vaccineimpact.api.serialization.DataTableDeserializer
+import org.vaccineimpact.api.app.errors.ValidationError
+import org.vaccineimpact.api.serialization.ModelBinder
+import org.vaccineimpact.api.serialization.Serializer
 import org.vaccineimpact.api.db.Config
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import spark.Request
 import spark.Response
+import org.vaccineimpact.api.serialization.validation.ValidationException
 import java.io.OutputStream
 import java.util.zip.GZIPOutputStream
 import kotlin.reflect.KClass
@@ -33,12 +35,26 @@ open class DirectActionContext(private val context: SparkWebContext): ActionCont
     override fun params(key: String): String = request.params(key)
     override fun <T: Any> postData(klass: Class<T>): T
     {
-        return ModelBinder().deserialize(request.body(), klass)
+        return try
+        {
+            ModelBinder().deserialize(request.body(), klass)
+        }
+        catch(e: ValidationException)
+        {
+            throw ValidationError(e.errors)
+        }
     }
 
     override fun <T : Any> csvData(klass: KClass<T>): List<T>
     {
-        return DataTableDeserializer.deserialize(request.body(), klass, Serializer.instance).toList()
+        return try
+        {
+            DataTableDeserializer.deserialize(request.body(), klass, Serializer.instance).toList()
+        }
+        catch(e: ValidationException)
+        {
+            throw ValidationError(e.errors)
+        }
     }
 
     override fun setResponseStatus(status: Int)
