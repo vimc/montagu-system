@@ -30,22 +30,22 @@ class MontaguSerializerWrapper: Serializer
 
     override fun <T> fromJson(json: String, klass: Class<T>): T
     {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return MontaguSerializer.instance.fromJson(json, klass)
     }
 
     override fun convertFieldName(name: String): String
     {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return MontaguSerializer.instance.convertFieldName(name)
     }
 
     override fun serializeEnum(value: Any): String
     {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return MontaguSerializer.instance.serializeEnum(value)
     }
 
     override fun serializeValueForCSV(value: Any?): String
     {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return MontaguSerializer.instance.serializeValueForCSV(value)
     }
 
     override fun toResult(data: Any?): String
