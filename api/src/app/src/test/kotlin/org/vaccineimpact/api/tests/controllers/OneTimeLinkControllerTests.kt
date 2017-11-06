@@ -17,6 +17,7 @@ import org.vaccineimpact.api.app.errors.UnexpectedError
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.TokenRepository
 import org.vaccineimpact.api.app.repositories.UserRepository
+import org.vaccineimpact.api.models.ResultStatus
 import org.vaccineimpact.api.security.WebTokenHelper
 import spark.Request
 
@@ -107,7 +108,7 @@ class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
 
         val fakeContext = actionContext()
         controller.onetimeLink(fakeContext, makeRepository())
-        verify(fakeContext, times(1)).redirect("$redirectUrl?result=encoded")
+        verify(fakeContext, times(1)).redirect("$redirectUrl?result=successtoken")
     }
 
     @Test
@@ -192,7 +193,7 @@ class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
 
         val fakeContext = actionContext()
         controller.onetimeLink(fakeContext, makeRepository())
-        verify(fakeContext, times(1)).redirect("$redirectUrl?result=encoded")
+        verify(fakeContext, times(1)).redirect("$redirectUrl?result=errortoken")
     }
 
     @Test
@@ -263,7 +264,8 @@ class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
     private fun makeTokenHelper(allowToken: Boolean, claims: Map<String, Any>): WebTokenHelper
     {
         return mock<WebTokenHelper> {
-            on(it.encodeResult(any())) doReturn "encoded"
+            on(it.encodeResult(argThat { status == ResultStatus.FAILURE })) doReturn "errortoken"
+            on(it.encodeResult(argThat { status == ResultStatus.SUCCESS })) doReturn "successtoken"
             if (allowToken)
             {
                 on(it.verify(any())) doReturn claims

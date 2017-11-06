@@ -1,17 +1,20 @@
 package org.vaccineimpact.api.tests.security
 
+import com.nhaarman.mockito_kotlin.argThat
+import com.nhaarman.mockito_kotlin.doReturn
+import com.nhaarman.mockito_kotlin.mock
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
-import net.minidev.json.JSONArray
 import org.junit.Before
 import org.junit.Test
 import org.vaccineimpact.api.models.ErrorInfo
 import org.vaccineimpact.api.models.Result
 import org.vaccineimpact.api.models.ResultStatus
-import org.vaccineimpact.api.models.permissions.ReifiedRole
 import org.vaccineimpact.api.models.Scope
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
+import org.vaccineimpact.api.models.permissions.ReifiedRole
 import org.vaccineimpact.api.security.*
+import org.vaccineimpact.api.serialization.Serializer
 import org.vaccineimpact.api.test_helpers.MontaguTests
 import java.time.Instant
 import java.util.*
@@ -27,8 +30,8 @@ class WebTokenHelperTests : MontaguTests()
             lastLoggedIn = null
     )
     val roles = listOf(
-        ReifiedRole("roleA", Scope.Global()),
-        ReifiedRole("roleB", Scope.Specific("prefix", "id"))
+            ReifiedRole("roleA", Scope.Global()),
+            ReifiedRole("roleB", Scope.Specific("prefix", "id"))
     )
     val permissions = listOf(
             ReifiedPermission("p1", Scope.Global()),
@@ -36,9 +39,14 @@ class WebTokenHelperTests : MontaguTests()
     )
 
     @Before
-    fun createHelper()
+    fun setUp()
     {
-        sut = WebTokenHelper(KeyHelper.keyPair)
+        createHelper()
+    }
+
+    private fun createHelper(serializer: Serializer = mock<Serializer>())
+    {
+        sut = WebTokenHelper(KeyHelper.keyPair, serializer)
     }
 
     @Test
@@ -124,29 +132,34 @@ class WebTokenHelperTests : MontaguTests()
     @Test
     fun `can encode result token`()
     {
+        val serializer = mock<Serializer> {
+            on { toJson(argThat { status == ResultStatus.SUCCESS }) } doReturn "successResult"
+        }
+
+        createHelper(serializer)
         val result = Result(ResultStatus.SUCCESS, "OK", listOf())
         val token = sut.encodeResult(result)
         val claims = sut.verify(token)
 
         assertThat(claims["sub"]).isEqualTo("api_response")
-        assertThat(claims["status"]).isEqualTo("SUCCESS")
-        assertThat(claims["data"]).isEqualTo("OK")
-        assertThat(claims["errors"]).isEqualTo(JSONArray())
+        assertThat(claims["result"]).isEqualTo("successResult")
+
     }
 
-//    @Test
-//    fun `can encode error result token`()
-//    {
-//        val result = Result(ResultStatus.FAILURE, null,
-//                listOf(ErrorInfo("some-code", "some message")))
-//        val token = sut.encodeResult(result)
-//        val claims = sut.verify(token)
-//
-//        assertThat(claims["sub"]).isEqualTo("api_response")
-//        assertThat(claims["status"]).isEqualTo("FAILURE")
-//        assertThat(claims["data"]).isEqualTo("")
-//
-//        val error = (claims["errors"]as JSONArray).first()
-//        assertThat(error).isEqualTo(ErrorInfo("some-code", "some message"))
-//    }
+    @Test
+    fun `can encode error result token`()
+    {
+        val serializer = mock<Serializer> {
+            on { toJson(argThat { status == ResultStatus.FAILURE }) } doReturn "errorResult"
+        }
+
+        createHelper(serializer)
+        val result = Result(ResultStatus.FAILURE, null,
+                listOf(ErrorInfo("some-code", "some message")))
+        val token = sut.encodeResult(result)
+        val claims = sut.verify(token)
+
+        assertThat(claims["sub"]).isEqualTo("api_response")
+        assertThat(claims["result"]).isEqualTo("errorResult")
+    }
 }

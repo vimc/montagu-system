@@ -5,13 +5,16 @@ import org.pac4j.jwt.config.signature.RSASignatureConfiguration
 import org.pac4j.jwt.profile.JwtGenerator
 import org.vaccineimpact.api.db.Config
 import org.vaccineimpact.api.models.Result
+import org.vaccineimpact.api.serialization.MontaguSerializerWrapper
+import org.vaccineimpact.api.serialization.Serializer
 import java.security.KeyPair
 import java.security.SecureRandom
 import java.time.Duration
 import java.time.Instant
 import java.util.*
 
-open class WebTokenHelper(keyPair: KeyPair)
+open class WebTokenHelper(keyPair: KeyPair,
+                          private val serializer: Serializer = MontaguSerializerWrapper())
 {
     open val lifeSpan: Duration = Duration.ofSeconds(Config["token.lifespan"].toLong())
     open val oneTimeLinkLifeSpan: Duration = Duration.ofMinutes(10)
@@ -45,10 +48,11 @@ open class WebTokenHelper(keyPair: KeyPair)
 
     open fun encodeResult(result: Result): String
     {
+        val json = serializer.toJson(result)
         return generator.generate(
                 mapOf("sub" to apiResponseSubject,
                         "iss" to issuer,
-                        "status" to result))
+                        "result" to json))
     }
 
     fun claims(user: MontaguUser): Map<String, Any>
