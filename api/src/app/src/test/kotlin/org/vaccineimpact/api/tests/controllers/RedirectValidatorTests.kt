@@ -8,12 +8,9 @@ import org.vaccineimpact.api.test_helpers.MontaguTests
 class RedirectValidatorTests : MontaguTests()
 {
     @Test
-    fun `redirect urls without https are not valid`()
+    fun `support and prod redirect urls without https are not valid`()
     {
         val redirectValidator = RedirectValidator()
-        Assertions.assertThatThrownBy {
-            redirectValidator.validateRedirectUrl("http://localhost")
-        }
 
         Assertions.assertThatThrownBy {
             redirectValidator.validateRedirectUrl("http://montagu.vaccineimpact.org")
@@ -38,20 +35,28 @@ class RedirectValidatorTests : MontaguTests()
     }
 
     @Test
+    fun `localhost is valid`()
+    {
+        val redirectValidator = RedirectValidator()
+
+        redirectValidator.validateRedirectUrl("http://localhost")
+    }
+
+    @Test
     fun `random redirect urls are not valid`()
     {
         val redirectValidator = RedirectValidator()
 
         Assertions.assertThatThrownBy {
-            redirectValidator.validateRedirectUrl("http://localhost")
+            redirectValidator.validateRedirectUrl("https://google.com")
         }
 
         Assertions.assertThatThrownBy {
-            redirectValidator.validateRedirectUrl("http://somethingelse.vaccineimpact.org")
+            redirectValidator.validateRedirectUrl("https://somethingelse.vaccineimpact.org")
         }
 
         Assertions.assertThatThrownBy {
-            redirectValidator.validateRedirectUrl("http://nonsense.montagu.dide.ic.ac.uk")
+            redirectValidator.validateRedirectUrl("https://nonsense.montagu.dide.ic.ac.uk")
         }
     }
 

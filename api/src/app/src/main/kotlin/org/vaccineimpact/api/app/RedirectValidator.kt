@@ -11,14 +11,14 @@ open class RedirectValidator
                 || redirectUrlIsValid(redirectUrl))
             return
 
-        throw BadRequest("Redirect url domain must be one of https://localhost," +
+        throw BadRequest("Redirect url domain must be one of http://localhost," +
                 " https://support.montagu.dide.ic.ac.uk, https://montagu.vaccineimpact.org")
     }
 
     private fun redirectUrlIsValid(redirectUrl: String): Boolean
     {
         val validRedirectUrlPattern =
-                Regex("(https://)(montagu.vaccineimpact.org|support.montagu.dide.ic.ac.uk|localhost).*")
+                Regex("(((https://)(montagu.vaccineimpact.org|support.montagu.dide.ic.ac.uk|localhost))|(http://localhost)).*")
         return validRedirectUrlPattern.matches(redirectUrl)
     }
 }
