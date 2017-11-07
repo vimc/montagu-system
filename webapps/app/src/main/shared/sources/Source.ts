@@ -55,12 +55,8 @@ export function processEncodedResultAndNotifyOnErrors<TModel>(queryAsObject: any
         const result = JSON.parse(decoded.result);
         return processResult<TModel>(result, decoded)
     } catch (e) {
-        try {
-            notifyOnErrors(e)
-        }
-        catch(e){
-            notificationActions.notify(e)
-        }
+        const error = errorToNotificationException(e);
+        notificationActions.notify(error)
     }
 }
 
@@ -100,12 +96,16 @@ function processResult<TModel>(result: Result, response: any): TModel | void {
     }
 }
 
-export function notifyOnErrors(error: any) {
+function notifyOnErrors(error: any) {
+    throw errorToNotificationException(error)
+}
+
+function errorToNotificationException(error: any): NotificationException {
     if (error.hasOwnProperty("notification")) {
-        throw error;
+        return error;
     } else if (error instanceof Error) {
-        throw makeNotificationException(error.message, "error");
+        return makeNotificationException(error.message, "error");
     } else {
-        throw makeNotificationException(error, "error");
+        return makeNotificationException(error, "error");
     }
 }
