@@ -55,7 +55,12 @@ export function processEncodedResultAndNotifyOnErrors<TModel>(queryAsObject: any
         const result = JSON.parse(decoded.result);
         return processResult<TModel>(result, decoded)
     } catch (e) {
-        notificationActions.notify(e)
+        try {
+            notifyOnErrors(e)
+        }
+        catch(e){
+            notificationActions.notify(e)
+        }
     }
 }
 
