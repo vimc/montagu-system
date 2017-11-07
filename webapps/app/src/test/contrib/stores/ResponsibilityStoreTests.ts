@@ -99,6 +99,25 @@ describe("ResponsibilityStore", () => {
         expect(responsibilityStore.getCurrentResponsibilitySet()).to.eql(expectedSet);
     });
 
+
+    it("responsibilityActions.setRedirectUrl sets redirect url", () => {
+        const touchstone = mockTouchstone();
+        const group = mockModellingGroup();
+        alt.bootstrap(JSON.stringify({
+            ResponsibilityStore: {
+                touchstones: [ touchstone ],
+                currentTouchstone: touchstone,
+                currentModellingGroup: group,
+                responsibilitySets: [],
+                redirectUrl: null
+            }
+        }));
+        responsibilityActions.setRedirectUrl("/local/path");
+
+        const state = responsibilityStore.getState();
+        expect(state.redirectUrl).to.equal("/local/path");
+    });
+
     it("touchstoneActions.setCurrentTouchstone sets touchstone", () => {
         const touchstone = mockTouchstone();
         alt.bootstrap(JSON.stringify({

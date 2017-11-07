@@ -7,15 +7,14 @@ describe("ResponsibilityStore.fetchOneTimeEstimatesToken", () => {
     const group = mockModellingGroup({ id: "group-id" });
     const touchstone = mockTouchstone({ id: "touchstone-id" });
     const responsibility = mockResponsibility({}, mockScenario({ id: "scenario-id"}));
-    new FetchHelper<string, string>({
-        expectedURL: "/modelling-groups/group-id/responsibilities/touchstone-id/scenario-id/estimatesd/get_onetime_link/?redirectUrl=http://localhost:5000/some/path/",
+    new FetchHelper<string, string>({expectedURL: "/modelling-groups/group-id/responsibilities/touchstone-id/scenario-id/estimates/get_onetime_link/?redirectUrl=http://localhost:5000/redirect/to/",
         prepareForFetch: () => {
             alt.bootstrap(JSON.stringify({
                 ResponsibilityStore: {
                     currentTouchstone: touchstone,
                     currentModellingGroup: group,
                     currentResponsibility: responsibility,
-                    redirectUrl: "/some/path"
+                    redirectUrl: "/redirect/to"
                 }
             }));
         },
