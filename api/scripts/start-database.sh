@@ -22,6 +22,8 @@ docker run -d --rm -p "$DB_PORT:5432" --name $NAME \
     --entrypoint start-with-config.sh \
     $db_image /postgresql.test.conf
 
+docker exec $NAME montagu-wait.sh
+
 echo "Migrating"
 docker run --rm --network=host $migrations_image migrate -url=$url
 
