@@ -42,6 +42,7 @@ describe("ResponsibilityStore", () => {
             coverageOneTimeToken: null,
             estimatesOneTimeToken: null,
             selectedFormat: "long",
+            redirectUrl: null,
 
             ready: false
         });
