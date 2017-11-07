@@ -18,6 +18,8 @@ docker run -d --rm \
   -p "8000:5432" \
   $registry/montagu-db:$db_version
 
+docker exec db montagu-wait.sh
+
 docker run --rm --network=test-data $registry/montagu-migrate:$db_version
 
 # Generate the test data
