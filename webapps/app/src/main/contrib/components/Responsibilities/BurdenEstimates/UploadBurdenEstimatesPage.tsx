@@ -22,11 +22,8 @@ export interface UploadEstimatesProps {
 export class UploadBurdenEstimatesPage extends PageWithHeaderAndNav<UploadEstimatesProps> {
     componentDidMount() {
         setTimeout(() => {
-            const query = queryStringAsObject();
 
-            if (query && query.result && query.result.length > 0) {
-                processEncodedResultAndNotifyOnErrors<string>(query.result)
-            }
+            processEncodedResultAndNotifyOnErrors<string>(queryStringAsObject());
 
             estimateTokenActions.clearUsedToken();
             modellingGroupActions.setCurrentGroup(this.props.location.params.groupId);

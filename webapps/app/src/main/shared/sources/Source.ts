@@ -7,8 +7,7 @@ import {
     NotificationException
 } from "../actions/NotificationActions";
 import {authActions} from "../actions/AuthActions";
-
-const jwt_decode = require('jwt-decode');
+import {jwtDecoder} from "./JwtDecoder";
 
 export interface FetchConfig<TState, TModel> {
     success: (data: TModel) => void;
@@ -49,12 +48,12 @@ export function processResponseAndNotifyOnErrors<TModel>(response: Response): Pr
     return processResponse<TModel>(response).catch(notifyOnErrors);
 }
 
-export function processEncodedResultAndNotifyOnErrors<TModel>(encodedResult: string): TModel | void {
+export function processEncodedResultAndNotifyOnErrors<TModel>(queryAsObject: any): TModel | void {
 
-    const decoded = jwt_decode(encodedResult);
-    const result = JSON.parse(decoded.result);
     try {
-        return processResult<TModel>(result, encodedResult)
+        const decoded = jwtDecoder.jwtDecode(queryAsObject.result);
+        const result = JSON.parse(decoded.result);
+        return processResult<TModel>(result, decoded)
     } catch (e) {
         notificationActions.notify(e)
     }

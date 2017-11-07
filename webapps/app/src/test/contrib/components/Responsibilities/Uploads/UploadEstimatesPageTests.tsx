@@ -44,5 +44,4 @@ describe('UploadEstimatesPage', () => {
             });
         });
     });
-})
-;
+});
