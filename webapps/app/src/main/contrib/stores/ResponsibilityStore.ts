@@ -25,6 +25,7 @@ import {EstimatesTokenSource} from "../sources/EstimatesTokenSource";
 import {estimateTokenActions} from "../actions/EstimateActions";
 import {HasFormatState} from "./DemographicStore";
 import StoreModel = AltJS.StoreModel;
+import {settings} from "../../shared/Settings";
 
 export interface ResponsibilityState extends RemoteContent, HasFormatState {
     touchstones: Array<Touchstone>;
@@ -37,7 +38,7 @@ export interface ResponsibilityState extends RemoteContent, HasFormatState {
 
     currentModellingGroup: ModellingGroup;
     currentDiseaseId: string;
-    redirectUrl: string;
+    redirectPath: string;
 }
 
 interface ResponsibilityStoreInterface extends AltJS.AltStore<ResponsibilityState> {
@@ -70,7 +71,7 @@ class ResponsibilityStore extends AbstractStore<ResponsibilityState, Responsibil
     currentModellingGroup: ModellingGroup;
     currentDiseaseId: string;
     selectedFormat: string;
-    redirectUrl: string;
+    redirectPath: string;
 
     ready: boolean;
 
@@ -106,7 +107,7 @@ class ResponsibilityStore extends AbstractStore<ResponsibilityState, Responsibil
 
             handleFilterByDisease: responsibilityActions.filterByDisease,
 
-            handleSetRedirectUrl: responsibilityActions.setRedirectUrl
+            handleSetRedirectPath: responsibilityActions.setRedirectPath
         });
         this.exportPublicMethods({
             responsibilitySetManager: () => new ResponsibilitySetManager(this.responsibilitySets),
@@ -132,7 +133,7 @@ class ResponsibilityStore extends AbstractStore<ResponsibilityState, Responsibil
             estimatesOneTimeToken: null,
 
             selectedFormat: "long",
-            redirectUrl: null,
+            redirectPath: null,
             ready: false
         };
     }
@@ -217,8 +218,8 @@ class ResponsibilityStore extends AbstractStore<ResponsibilityState, Responsibil
         this.selectedFormat = format;
     }
 
-    handleSetRedirectUrl(url: string) {
-        this.redirectUrl = url;
+    handleSetRedirectPath(path: string) {
+        this.redirectPath = path;
     }
 }
 

@@ -1,8 +1,8 @@
-import { mainStore } from "../main/contrib/stores/MainStore";
-import { expect } from "chai";
-import { checkPromise } from "../test/testHelpers";
-import { Client, QueryResult } from "pg";
-import { responsibilityStore } from "../main/contrib/stores/ResponsibilityStore";
+import {mainStore} from "../main/contrib/stores/MainStore";
+import {expect} from "chai";
+import {checkPromise} from "../test/testHelpers";
+import {Client, QueryResult} from "pg";
+import {responsibilityStore} from "../main/contrib/stores/ResponsibilityStore";
 import {
     DemographicDataset,
     Disease,
@@ -11,15 +11,15 @@ import {
     ScenarioTouchstoneAndCoverageSets,
     Touchstone
 } from "../main/shared/models/Generated";
-import { touchstoneActions } from "../main/contrib/actions/TouchstoneActions";
-import { modellingGroupActions } from "../main/shared/actions/ModellingGroupActions";
-import { responsibilityActions } from "../main/contrib/actions/ResponsibilityActions";
+import {touchstoneActions} from "../main/contrib/actions/TouchstoneActions";
+import {modellingGroupActions} from "../main/shared/actions/ModellingGroupActions";
+import {responsibilityActions} from "../main/contrib/actions/ResponsibilityActions";
 import * as QueryString from 'querystring';
-import { demographicStore } from "../main/contrib/stores/DemographicStore";
-import { expectIsEqual, IntegrationTestSuite } from "./IntegrationTest";
-import { contribAuthStore } from "../main/contrib/stores/ContribAuthStore";
-import { ContribFetcher } from "../main/contrib/sources/ContribFetcher";
-import { demographicActions } from "../main/contrib/actions/DemographicActions";
+import {demographicStore} from "../main/contrib/stores/DemographicStore";
+import {expectIsEqual, IntegrationTestSuite} from "./IntegrationTest";
+import {contribAuthStore} from "../main/contrib/stores/ContribAuthStore";
+import {ContribFetcher} from "../main/contrib/sources/ContribFetcher";
+import {demographicActions} from "../main/contrib/actions/DemographicActions";
 
 const jwt_decode = require('jwt-decode');
 
@@ -51,8 +51,8 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
 
             checkPromise(done, promise, (diseases) => {
                 expectIsEqual<Disease[]>(diseases, [
-                    { id: "d1", name: "Disease 1" },
-                    { id: "d2", name: "Disease 2" }
+                    {id: "d1", name: "Disease 1"},
+                    {id: "d2", name: "Disease 2"}
                 ]);
             });
         });
@@ -62,8 +62,8 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
 
             checkPromise(done, promise, (groups) => {
                 expectIsEqual<ModellingGroup[]>(groups, [
-                    { id: groupId, description: "Group 1" },
-                    { id: "Fake", description: "Group 2" }
+                    {id: groupId, description: "Group 1"},
+                    {id: "Fake", description: "Group 2"}
                 ]);
             });
         });
@@ -198,6 +198,47 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
                 }`));
             });
         });
+
+        it("fetches one time estimates token", (done: DoneCallback) => {
+
+            setTouchstoneAndGroup(touchstoneId, groupId);
+            responsibilityActions.update(expectedResponsibilitiesResponse());
+            responsibilityActions.setCurrentResponsibility(scenarioId);
+
+            const promise = responsibilityStore.fetchOneTimeEstimatesToken();
+
+            checkPromise(done, promise, token => {
+                const decoded = jwt_decode(token);
+                expect(decoded.action).to.equal("burdens");
+                const payload = QueryString.parse(decoded.payload);
+                expect(payload).to.eql(JSON.parse(`{
+                    ":group-id": "${groupId}",
+                    ":touchstone-id": "${touchstoneId}",
+                    ":scenario-id": "${scenarioId}"
+                }`));
+            });
+        });
+
+        it("fetches one time estimates token with redirect url", (done: DoneCallback) => {
+
+            setTouchstoneAndGroup(touchstoneId, groupId);
+            responsibilityActions.update(expectedResponsibilitiesResponse());
+            responsibilityActions.setCurrentResponsibility(scenarioId);
+            responsibilityActions.setRedirectPath("/redirect/back");
+
+            const promise = responsibilityStore.fetchOneTimeEstimatesToken();
+
+            checkPromise(done, promise, token => {
+                const decoded = jwt_decode(token);
+                expect(decoded.action).to.equal("burdens");
+                const payload = QueryString.parse(decoded.payload);
+                expect(payload).to.eql(JSON.parse(`{
+                    ":group-id": "${groupId}",
+                    ":touchstone-id": "${touchstoneId}",
+                    ":scenario-id": "${scenarioId}"
+                }`));
+            });
+        });
     }
 }
 
@@ -250,7 +291,7 @@ function addModel(db: Client): Promise<number> {
     return db.query(`
         INSERT INTO model (id, modelling_group, description, citation) VALUES ('${modelId}', '${groupId}', 'a model', 'citation');        
         INSERT INTO model_version (model, version) VALUES ('${modelId}', '${modelVersion}');`)
-        .then(()=> db.query(`SELECT id FROM model_version;`))
+        .then(() => db.query(`SELECT id FROM model_version;`))
         .then(result => result.rows[0].id);
 }
 
@@ -330,11 +371,11 @@ function addDemographicDataSets(db: Client): Promise<QueryResult> {
 
 function setTouchstoneAndGroup(touchstoneId: string, groupId: string) {
     touchstoneActions.update([
-        { id: touchstoneId, description: "Touchstone", status: "open", version: 1, name: "test" }
+        {id: touchstoneId, description: "Touchstone", status: "open", version: 1, name: "test"}
     ]);
     touchstoneActions.setCurrentTouchstone(touchstoneId);
     modellingGroupActions.updateGroups([
-        { id: groupId, description: "Group 1" }
+        {id: groupId, description: "Group 1"}
     ]);
     modellingGroupActions.setCurrentGroup(groupId);
 }

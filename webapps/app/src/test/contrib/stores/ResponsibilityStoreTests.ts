@@ -42,7 +42,7 @@ describe("ResponsibilityStore", () => {
             coverageOneTimeToken: null,
             estimatesOneTimeToken: null,
             selectedFormat: "long",
-            redirectUrl: null,
+            redirectPath: null,
 
             ready: false
         });
@@ -100,7 +100,7 @@ describe("ResponsibilityStore", () => {
     });
 
 
-    it("responsibilityActions.setRedirectUrl sets redirect url", () => {
+    it("responsibilityActions.setredirectPath sets redirect path", () => {
         const touchstone = mockTouchstone();
         const group = mockModellingGroup();
         alt.bootstrap(JSON.stringify({
@@ -109,13 +109,13 @@ describe("ResponsibilityStore", () => {
                 currentTouchstone: touchstone,
                 currentModellingGroup: group,
                 responsibilitySets: [],
-                redirectUrl: null
+                redirectPath: null
             }
         }));
-        responsibilityActions.setRedirectUrl("/local/path");
+        responsibilityActions.setRedirectPath("/local/path");
 
         const state = responsibilityStore.getState();
-        expect(state.redirectUrl).to.equal("/local/path");
+        expect(state.redirectPath).to.equal("/local/path");
     });
 
     it("touchstoneActions.setCurrentTouchstone sets touchstone", () => {

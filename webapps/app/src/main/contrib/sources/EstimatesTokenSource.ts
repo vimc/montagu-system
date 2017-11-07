@@ -1,8 +1,8 @@
-import { CoverageSource } from "./CoverageSource";
+import {CoverageSource} from "./CoverageSource";
 import SourceModel = AltJS.SourceModel;
-import { estimateTokenActions } from "../actions/EstimateActions";
+import {estimateTokenActions} from "../actions/EstimateActions";
 import {appSettings} from "../../shared/Settings";
-import { settings } from "../../shared/Settings";
+import {settings} from "../../shared/Settings";
 
 export class EstimatesTokenSource extends CoverageSource {
     fetchOneTimeEstimatesToken: () => SourceModel<string>;
@@ -10,8 +10,11 @@ export class EstimatesTokenSource extends CoverageSource {
     constructor() {
         super();
         this.fetchOneTimeEstimatesToken = () => this.doFetch(state => {
-            const redirectUrl = encodeURI(settings.montaguUrl() + appSettings.publicPath + state.redirectUrl);
-            return this.baseURL(state) + `/estimates/get_onetime_link/?redirectUrl=${redirectUrl}/`;
+            let queryString = "";
+            if (state.redirectPath && state.redirectPath.length > 0) {
+                queryString = "?redirectUrl=" + encodeURI(settings.montaguUrl() + appSettings.publicPath + state.redirectPath);
+            }
+            return this.baseURL(state) + `/estimates/get_onetime_link/${queryString}`;
         }, {
             success: estimateTokenActions.update,
             loading: estimateTokenActions.beginFetch,

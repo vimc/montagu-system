@@ -1,4 +1,4 @@
-import { ErrorInfo, Result } from "../models/Generated";
+import {ErrorInfo, Result} from "../models/Generated";
 import fetcher from "./Fetcher";
 import {
     makeNotificationException,
@@ -6,7 +6,9 @@ import {
     notificationActions,
     NotificationException
 } from "../actions/NotificationActions";
-import { authActions } from "../actions/AuthActions";
+import {authActions} from "../actions/AuthActions";
+
+const jwt_decode = require('jwt-decode');
 
 export interface FetchConfig<TState, TModel> {
     success: (data: TModel) => void;
@@ -47,38 +49,54 @@ export function processResponseAndNotifyOnErrors<TModel>(response: Response): Pr
     return processResponse<TModel>(response).catch(notifyOnErrors);
 }
 
+export function processEncodedResultAndNotifyOnErrors<TModel>(encodedResult: string): TModel | void {
+
+    const decoded = jwt_decode(encodedResult);
+    const result = JSON.parse(decoded.result);
+    try {
+        return processResult<TModel>(result, encodedResult)
+    } catch (e) {
+        notificationActions.notify(e)
+    }
+}
+
 function processResponse<TModel>(response: Response): Promise<any> {
-    const handleError = (error: ErrorInfo) => {
-        switch (error.code) {
-            case "bearer-token-invalid":
-                console.log("Access token has expired or is otherwise invalid: Logging out.");
-                authActions.logOut();
-                const notification: Notification = {
-                    message: "Your session has expired. You will need to log in again",
-                    type: "info"
-                };
-                throw new NotificationException(notification);
-            default:
-                throw makeNotificationException(error.message, "error");
-        }
-    };
 
     return response.json()
         .then((response: any) => {
             const apiResponse = <Result>response;
-            switch (apiResponse.status) {
-                case "success":
-                    return apiResponse.data as TModel;
-                case "failure":
-                    return apiResponse.errors.forEach(handleError);
-                default:
-                    throw makeNotificationException("The server response was not correctly formatted: "
-                        + response.toString(), "error");
-            }
+            return processResult(apiResponse, response);
         });
 }
 
-function notifyOnErrors(error: any) {
+function handleError(error: ErrorInfo) {
+    switch (error.code) {
+        case "bearer-token-invalid":
+            console.log("Access token has expired or is otherwise invalid: Logging out.");
+            authActions.logOut();
+            const notification: Notification = {
+                message: "Your session has expired. You will need to log in again",
+                type: "info"
+            };
+            throw new NotificationException(notification);
+        default:
+            throw makeNotificationException(error.message, "error");
+    }
+}
+
+function processResult<TModel>(result: Result, response: any): TModel | void {
+    switch (result.status) {
+        case "success":
+            return result.data as TModel;
+        case "failure":
+            return result.errors.forEach(handleError);
+        default:
+            throw makeNotificationException("The server response was not correctly formatted: "
+                + response.toString(), "error");
+    }
+}
+
+export function notifyOnErrors(error: any) {
     if (error.hasOwnProperty("notification")) {
         throw error;
     } else if (error instanceof Error) {

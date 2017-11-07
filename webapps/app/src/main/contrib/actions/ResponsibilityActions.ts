@@ -6,7 +6,7 @@ import {UploadEstimatesProps} from "../components/Responsibilities/BurdenEstimat
 interface Actions extends FetchActionsInterface<Responsibilities> {
     filterByDisease(diseaseId: string): string;
     setCurrentResponsibility(scenarioId: string): string;
-    setRedirectUrl(redirectUrl: string): string;
+    setRedirectPath(redirectUrl: string): string;
 }
 
 class ResponsibilityActions extends FetchActions<Responsibilities> implements Actions {
@@ -16,7 +16,7 @@ class ResponsibilityActions extends FetchActions<Responsibilities> implements Ac
     setCurrentResponsibility(scenarioId: string): string {
         return scenarioId;
     }
-    setRedirectUrl(redirectUrl: string): string {
+    setRedirectPath(redirectUrl: string): string {
         return redirectUrl;
     }
 }
