@@ -15,7 +15,7 @@
 
 # Testing
 1. `npm test` runs all the tests
-2. `npm watch_tests` keeps watching the source for changes, and reruns only 
+2. `npm run watch_tests` keeps watching the source for changes, and reruns only 
    those tests that have changed.
 
 ## Integration tests
