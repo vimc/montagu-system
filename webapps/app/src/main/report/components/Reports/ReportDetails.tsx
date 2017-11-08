@@ -11,6 +11,7 @@ import {ArtefactsList} from "../Artefacts/ArtefactsList";
 import {FileDownloadLink} from "../FileDownloadLink";
 import {ReportVersionSwitcher} from "./ReportVersionSwitcher";
 import {IRouter} from "simple-react-router";
+import {DraftStamp} from "../DraftStamp";
 
 const styles = require("../../styles/reports.css");
 
@@ -81,6 +82,7 @@ export class ReportDetailsComponent extends RemoteContentComponent<ReportDetails
 
     renderContent(props: ReportDetailsProps) {
         return <div>
+            <DraftStamp published={props.versionDetails.published} />
             <ReportVersionSwitcher
                 currentVersion={props.versionDetails.id}
                 versions={props.allVersions}
