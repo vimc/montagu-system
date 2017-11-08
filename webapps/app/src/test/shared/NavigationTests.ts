@@ -7,6 +7,14 @@ import {checkAsync} from "../testHelpers";
 import {navActions} from "../../main/shared/actions/NavActions";
 import {isNullOrUndefined} from "util";
 
+function checkString(value: string, name: string, context: string) {
+    expect(value).not.to.equal("", `Expected ${name} not to be empty in ${context}`);
+    expect(value).not.to.equal(null, `Expected ${name} not to be null in ${context}`);
+    expect(value === undefined).to.equal(false, `Expected ${name} not to be null in ${context}`);
+    expect(value).not.to.contain("null", `Expected ${name} not to contain 'null' in ${context}`);
+    expect(value).not.to.contain("undefined", `Expected ${name} not to contain 'undefined' in ${context}`);
+}
+
 export function addNavigationTests(page: PageWithHeader<any>, sandbox: Sandbox, setup?: () => void) {
     const testCrumbIsAsExpected = function(done: DoneCallback, getCrumbsFromActions: (actions: Action[]) => Breadcrumb[]) {
         if (setup) {
@@ -22,10 +30,8 @@ export function addNavigationTests(page: PageWithHeader<any>, sandbox: Sandbox, 
             const crumbs = getCrumbsFromActions(actions);
             const asString = JSON.stringify(crumbs, null, 4);
             crumbs.forEach(crumb => {
-                expect(crumb.name !== null).to.equal(true, "Expected name not to be null in " + asString);
-                expect(crumb.url !== null).to.equal(true, "Expected URL not to be null in " + asString);
-                expect(crumb.name !== undefined).to.equal(true, "Expected name not to be undefined in " + asString);
-                expect(crumb.url !== undefined).to.equal(true, "Expected URL not to be undefined in " + asString);
+                checkString(crumb.name, "name", asString);
+                checkString(crumb.url, "URL", asString);
             });
             //console.log("Last crumb: " + JSON.stringify(crumbs[crumbs.length - 1]));
         });
