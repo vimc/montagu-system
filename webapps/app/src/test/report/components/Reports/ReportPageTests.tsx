@@ -6,12 +6,12 @@ import {mockLocation} from "../../../mocks/mocks";
 import {checkAsync} from "../../../testHelpers";
 import {reportStore} from "../../../../main/report/stores/ReportStore";
 import {expectOneAction} from "../../../actionHelpers";
-import {VersionInfoPage, VersionInfoPageProps} from "../../../../main/report/components/Versions/VersionInfoPage";
 import {alt} from "../../../../main/shared/alt";
 import {IRouter} from "simple-react-router";
-import {VersionDetails} from "../../../../main/report/components/Versions/VersionDetails";
+import {ReportPage, ReportPageProps} from "../../../../main/report/components/Reports/ReportPage";
+import {ReportDetails} from "../../../../main/report/components/Reports/ReportDetails";
 
-describe("VersionInfoPage", () => {
+describe("ReportPage", () => {
     const sandbox = new Sandbox();
 
     afterEach(() => sandbox.restore());
@@ -45,10 +45,10 @@ describe("VersionInfoPage", () => {
         });
     };
 
-    it("triggers actions when it loads", (done: DoneCallback) => {
+    it("triggers actions on mount", (done: DoneCallback) => {
         checkExpectedActionsWhen(done, () => {
-            const location = mockLocation<VersionInfoPageProps>({report: "reportname", version: "versionname"});
-            new VersionInfoPage({location: location, router: null}).load();
+            const location = mockLocation<ReportPageProps>({report: "reportname", version: "versionname"});
+            new ReportPage({location: location, router: null}).componentDidMount();
         });
     });
 
@@ -57,9 +57,9 @@ describe("VersionInfoPage", () => {
         const router: IRouter = {redirectTo};
 
         checkExpectedActionsWhen(done, () => {
-            const location = mockLocation<VersionInfoPageProps>({report: "reportname", version: "oldVersion"});
-            const rendered = shallow(<VersionInfoPage location={location} router={router} />);
-            rendered.find(VersionDetails).simulate("changeVersion", "versionname");
+            const location = mockLocation<ReportPageProps>({report: "reportname", version: "oldVersion"});
+            const rendered = shallow(<ReportPage location={location} router={router} />);
+            rendered.find(ReportDetails).simulate("changeVersion", "versionname");
             expect(redirectTo.called).to.equal(true, "Expected redirectTo to be called");
             expect(redirectTo.calledWith("/reportname/versionname/"));
         });

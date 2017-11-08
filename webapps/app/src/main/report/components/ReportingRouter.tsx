@@ -5,7 +5,7 @@ import {appSettings} from "../../shared/Settings";
 import {MainMenu} from "./MainMenu/MainMenu";
 import {ReportingNoRouteFoundPage} from "./ReportingNoRouteFoundPage";
 import {ReportingLoginPage} from "./ReportingLoginPage";
-import {VersionInfoPage} from "./Versions/VersionInfoPage";
+import {ReportPage} from "./Reports/ReportPage";
 import {ReportingForgottenPasswordPage} from "./ReportingForgottenPasswordPage";
 
 interface RouterProps {
@@ -22,7 +22,7 @@ export class ReportingRouter extends Router<RouterProps> {
 
         if (props.loggedIn) {
             map('/', MainMenu);
-            map('/:report/:version/', VersionInfoPage);
+            map('/:report/:version/', ReportPage);
             map('*', ReportingNoRouteFoundPage);
         } else {
             map('*', ReportingLoginPage);
