@@ -6,7 +6,7 @@ const commonStyles = require("../../shared/styles/common.css");
 
 export class TouchstoneHelp extends ContribPageWithHeader<undefined> {
     name() {
-        return "Touchstones";
+        return "Touchstones Help";
     }
 
     urlFragment() {
