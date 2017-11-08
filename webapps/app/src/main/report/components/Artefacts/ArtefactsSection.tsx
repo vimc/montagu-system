@@ -20,16 +20,17 @@ export class ArtefactsSection extends React.Component<Props, undefined> {
                 <div className={"col-12 " + styles.sectionTitle}>Artefacts</div>
             </div>
 
-            <ArtefactRow description="All artefacts as zip bundle">
+            <ArtefactsList artefacts={this.props.versionDetails.artefacts}
+                           report={this.props.report}
+                           version={version}/>
+
+            <ArtefactRow description="All files as zip bundle">
                 <li>
                     <FileDownloadLink href={bundleUrl}>
                         {this.props.report}-{version}.zip
                     </FileDownloadLink>
                 </li>
             </ArtefactRow>
-            <ArtefactsList artefacts={this.props.versionDetails.artefacts}
-                           report={this.props.report}
-                           version={version}/>
         </div>;
     }
 }

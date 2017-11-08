@@ -30,7 +30,7 @@ export class ResourceLinks extends React.Component<ResourceLinksProps, undefined
 
         return <div>
             <div className="row">
-                <div className={"col-12 " + styles.sectionTitle}>Resources used as inputs to the report</div>
+                <div className={"col-12 " + styles.sectionTitle}>Resources</div>
             </div>
             <ul className="row">
                 {links}
