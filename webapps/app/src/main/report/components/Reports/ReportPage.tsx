@@ -25,11 +25,13 @@ export class ReportPage extends ReportingPageWithHeader<ReportPageProps> {
     }
 
     loadVersion(report: string, version: string) {
-        reportActions.setCurrentReport(report);
-        reportStore.fetchVersions().catch(doNothing).then(() => {
-            reportActions.setCurrentVersion(version);
-            reportStore.fetchVersionDetails().catch(doNothing).then(() => {
-                super.load();
+        reportStore.fetchReports().catch(doNothing).then(() => {
+            reportActions.setCurrentReport(report);
+            reportStore.fetchVersions().catch(doNothing).then(() => {
+                reportActions.setCurrentVersion(version);
+                reportStore.fetchVersionDetails().catch(doNothing).then(() => {
+                    super.load();
+                });
             });
         });
     }

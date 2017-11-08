@@ -8,8 +8,9 @@ import {MainMenu} from "../../MainMenu/MainMenu";
 
 export class ViewAllModellingGroupsPage extends AdminPageWithHeader<undefined> {
     load() {
-        super.load();
-        groupStore.fetchGroups().catch(doNothing);
+        groupStore.fetchGroups().catch(doNothing).then(() => {
+            super.load();
+        });
     }
 
     name(): string {

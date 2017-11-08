@@ -16,6 +16,7 @@ import {mainStore} from "../../../../main/contrib/stores/MainStore";
 import {bootstrapStore} from "../../../StoreHelpers";
 import {successResult} from "../../../mocks/mockRemote";
 import {mockFetcherForMultipleResponses} from "../../../mocks/mockMultipleEndpoints";
+import {mockResponsibilitiesEndpoint, mockTouchstonesEndpoint} from "../../../mocks/mockEndpoints";
 
 describe('ResponsibilityOverviewPage', () => {
     const sandbox = new Sandbox();
@@ -56,17 +57,11 @@ describe('ResponsibilityOverviewPage', () => {
     });
     addNavigationTests(page, sandbox, () => {
         bootstrapStore(mainStore, {
-            modellingGroups: makeLoadable([ mockModellingGroup({id: "group-1"}) ])
+            modellingGroups: makeLoadable([mockModellingGroup({id: "group-1"})])
         });
         mockFetcherForMultipleResponses([
-            {
-                urlFragment: new RegExp("/touchstones/"),
-                result: successResult([ mockTouchstone({ id: "touchstone-1" }) ])
-            },
-            {
-                urlFragment: new RegExp("/modelling-groups/group-1/responsibilities/touchstone-1/"),
-                result: successResult([ mockResponsibility() ])
-            }
+            mockTouchstonesEndpoint([mockTouchstone({id: "touchstone-1"})]),
+            mockResponsibilitiesEndpoint(["scenario-1"])
         ]);
     });
 });

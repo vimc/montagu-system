@@ -8,7 +8,7 @@ export enum APIType {
     Reporting
 }
 
-interface FakeEndpoint {
+export interface FakeEndpoint {
     urlFragment: RegExp;
     result: Result;
     api?: APIType

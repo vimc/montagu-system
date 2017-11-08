@@ -1,17 +1,24 @@
 import * as React from "react";
-import { expect } from "chai";
-import { Sandbox } from "../../../../Sandbox";
-import { userStore } from "../../../../../main/admin/stores/UserStore";
-import { groupStore } from "../../../../../main/admin/stores/GroupStore";
-import { mockLocation } from "../../../../mocks/mocks";
-import { GroupAdminPage } from "../../../../../main/admin/components/ModellingGroups/SingleGroup/Admin/GroupAdminPage";
-import { ModellingGroupDetailsPageProps } from "../../../../../main/admin/components/ModellingGroups/SingleGroup/Details/ViewModellingGroupDetailsPage";
-import { checkAsync } from "../../../../testHelpers";
-import { expectOneAction } from "../../../../actionHelpers";
-import { alt } from "../../../../../main/shared/alt";
+import {expect} from "chai";
+import {Sandbox} from "../../../../Sandbox";
+import {userStore} from "../../../../../main/admin/stores/UserStore";
+import {groupStore} from "../../../../../main/admin/stores/GroupStore";
+import {mockLocation} from "../../../../mocks/mocks";
+import {GroupAdminPage} from "../../../../../main/admin/components/ModellingGroups/SingleGroup/Admin/GroupAdminPage";
+import {ModellingGroupDetailsPageProps} from "../../../../../main/admin/components/ModellingGroups/SingleGroup/Details/ViewModellingGroupDetailsPage";
+import {checkAsync} from "../../../../testHelpers";
+import {expectOneAction} from "../../../../actionHelpers";
+import {alt} from "../../../../../main/shared/alt";
+import {addNavigationTests} from "../../../../shared/NavigationTests";
+import {mockFetcherForMultipleResponses} from "../../../../mocks/mockMultipleEndpoints";
+import {successResult} from "../../../../mocks/mockRemote";
+import {mockModellingGroup, mockModellingGroupDetails, mockUser} from "../../../../mocks/mockModels";
+import {mockGroupDetailsEndpoint, mockGroupsEndpoint, mockUsersEndpoint} from "../../../../mocks/mockEndpoints";
 
 describe("GroupAdminPage", () => {
     const sandbox = new Sandbox();
+    const groupId = "group-1";
+    const location = mockLocation<ModellingGroupDetailsPageProps>({groupId: groupId});
 
     beforeEach(() => alt.recycle());
     afterEach(() => sandbox.restore());
@@ -22,16 +29,24 @@ describe("GroupAdminPage", () => {
         const fetchGroupDetails = sandbox.sinon.stub(groupStore, "fetchGroupDetails").returns(Promise.resolve({}));
         const dispatchSpy = sandbox.dispatchSpy();
 
-        const location = mockLocation<ModellingGroupDetailsPageProps>({ groupId: "gId" });
         (new GroupAdminPage({location: location, router: null})).load();
 
         checkAsync(done, (afterWait) => {
             expect(fetchGroups.called).to.equal(true, "Expected groupStore.fetchGroups to be triggered");
             expect(fetchUsers.called).to.equal(true, "Expected userStore.fetchUsers to be triggered");
             afterWait(done, () => {
-                expectOneAction(dispatchSpy, { action: "ModellingGroupActions.setCurrentGroup", payload: "gId" });
+                expectOneAction(dispatchSpy, {action: "ModellingGroupActions.setCurrentGroup", payload: groupId});
                 expect(fetchGroupDetails.called).to.equal(true, "Expected groupStore.fetchGroupDetails to be triggered");
             });
         });
+    });
+
+    const page = new GroupAdminPage({location: location, router: null});
+    addNavigationTests(page, sandbox, () => {
+        mockFetcherForMultipleResponses([
+            mockUsersEndpoint([mockUser()]),
+            mockGroupsEndpoint([mockModellingGroup({id: groupId})]),
+            mockGroupDetailsEndpoint(mockModellingGroupDetails())
+        ]);
     });
 });

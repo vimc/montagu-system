@@ -14,6 +14,7 @@ import {bootstrapStore} from "../../../StoreHelpers";
 import {mainStore} from "../../../../main/contrib/stores/MainStore";
 import {makeLoadable} from "../../../../main/contrib/stores/Loadable";
 import {mockFetcherForMultipleResponses} from "../../../mocks/mockMultipleEndpoints";
+import {mockTouchstonesEndpoint} from "../../../mocks/mockEndpoints";
 
 describe("ChooseActionPage", () => {
     const sandbox = new Sandbox();
@@ -48,12 +49,7 @@ describe("ChooseActionPage", () => {
             ])
         });
         mockFetcherForMultipleResponses([
-            {
-                urlFragment: new RegExp("/touchstones/"),
-                result: successResult([
-                    mockTouchstone(), mockTouchstone()
-                ])
-            }
+            mockTouchstonesEndpoint([mockTouchstone(), mockTouchstone()])
         ]);
     });
 });

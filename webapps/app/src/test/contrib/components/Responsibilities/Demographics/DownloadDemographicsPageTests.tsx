@@ -13,7 +13,7 @@ import {bootstrapStore} from "../../../../StoreHelpers";
 import {mainStore} from "../../../../../main/contrib/stores/MainStore";
 import {makeLoadable} from "../../../../../main/contrib/stores/Loadable";
 import {mockFetcherForMultipleResponses} from "../../../../mocks/mockMultipleEndpoints";
-import {successResult} from "../../../../mocks/mockRemote";
+import {mockDemographicDatasetsEndpoint, mockTouchstonesEndpoint} from "../../../../mocks/mockEndpoints";
 
 describe("DownloadDemographicsPage", () => {
     const sandbox = new Sandbox();
@@ -50,14 +50,8 @@ describe("DownloadDemographicsPage", () => {
             modellingGroups: makeLoadable([mockModellingGroup({id: "group-1"})])
         });
         mockFetcherForMultipleResponses([
-            {
-                urlFragment: new RegExp("/touchstones/"),
-                result: successResult([mockTouchstone({ id: "touchstone-1" })])
-            },
-            {
-                urlFragment: new RegExp("/touchstones/touchstone-1/demographics/"),
-                result: successResult([mockDemographicDataset()])
-            }
+            mockTouchstonesEndpoint([mockTouchstone({ id: "touchstone-1" })]),
+            mockDemographicDatasetsEndpoint([mockDemographicDataset()])
         ])
     });
 });
