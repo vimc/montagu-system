@@ -230,17 +230,20 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
             checkPromise(done, promise, token => {
                 const decoded = jwt_decode(token);
                 expect(decoded.action).to.equal("burdens");
-                const payload = QueryString.parse(decoded.payload);
-                expect(payload).to.eql(JSON.parse(`{
-                    ":group-id": "${groupId}",
-                    ":touchstone-id": "${touchstoneId}",
-                    ":scenario-id": "${scenarioId}"                    
-                }`));
+
                 const query = QueryString.parse(decoded.query);
                 expect(query).to.eql(JSON.parse(`{
                     "redirectUrl": "http://localhost:5000/redirect/back"                   
                 }`
                 ));
+
+                const payload = QueryString.parse(decoded.payload);
+                expect(payload).to.eql(JSON.parse(`{
+                    ":group-id": "${groupId}",
+                    ":touchstone-id": "${touchstoneId}",
+                    ":scenario-id": "${scenarioId}"
+                }`));
+
             });
         });
     }
