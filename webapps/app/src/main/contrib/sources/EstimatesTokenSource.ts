@@ -12,7 +12,7 @@ export class EstimatesTokenSource extends CoverageSource {
         this._fetchOneTimeEstimatesToken = () => this.doFetch(state => {
             let queryString = "";
             if (state.redirectPath && state.redirectPath.length > 0) {
-                queryString = "?redirectUrl=" + encodeURI(settings.montaguUrl() + appSettings.publicPath + state.redirectPath);
+                queryString = "?redirectUrl=" + encodeURI(settings.montaguUrl() + state.redirectPath);
             }
             return this.baseURL(state) + `/estimates/get_onetime_link/${queryString}`;
         }, {
