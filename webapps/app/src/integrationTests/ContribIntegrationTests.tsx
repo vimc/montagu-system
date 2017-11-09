@@ -235,8 +235,13 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
                 expect(payload).to.eql(JSON.parse(`{
                     ":group-id": "${groupId}",
                     ":touchstone-id": "${touchstoneId}",
-                    ":scenario-id": "${scenarioId}"
+                    ":scenario-id": "${scenarioId}"                    
                 }`));
+                const query = QueryString.parse(decoded.query);
+                expect(query).to.eql(JSON.parse(`{
+                    "redirectUrl": "http://localhost:5000/redirect/back"                   
+                }`
+                ));
             });
         });
     }
