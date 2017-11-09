@@ -6,6 +6,7 @@ import {reportStore} from "../../stores/ReportStore";
 import {doNothing} from "../../../shared/Helpers";
 import {PageProperties} from "../../../shared/components/PageWithHeader/PageWithHeader";
 import {appSettings} from "../../../shared/Settings";
+import {ReportPageTitle} from "./ReportPageTitle";
 
 export interface ReportPageProps {
     report: string;
@@ -40,7 +41,7 @@ export class ReportPage extends ReportingPageWithHeader<ReportPageProps> {
     }
 
     title() {
-        return <span>{this.props.location.params.report}</span>;
+        return <ReportPageTitle />;
     }
 
     renderPageContent() {
