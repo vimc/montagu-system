@@ -1,7 +1,6 @@
 import {CoverageSource} from "./CoverageSource";
 import SourceModel = AltJS.SourceModel;
 import {estimateTokenActions} from "../actions/EstimateActions";
-import {appSettings} from "../../shared/Settings";
 import {settings} from "../../shared/Settings";
 
 export class EstimatesTokenSource extends CoverageSource {
