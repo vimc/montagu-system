@@ -146,7 +146,6 @@ export function mockUser(properties?: any): models.User {
 }
 
 export function mockVersion(properties?: any): Version {
-
     const template: Version = {
         id: "vId",
         name: "testname",
@@ -156,7 +155,8 @@ export function mockVersion(properties?: any): Version {
         hash_data: {},
         artefacts: [{}],
         resources: [],
-        parameters: {}
+        parameters: {},
+        published: true
     };
     return Object.assign(template, properties);
 }
