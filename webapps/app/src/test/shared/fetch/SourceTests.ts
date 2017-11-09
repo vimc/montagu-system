@@ -4,7 +4,7 @@ import {Sandbox} from "../../Sandbox";
 import {jwtDecoder} from "../../../main/shared/sources/JwtDecoder";
 import {mockResult} from "../../mocks/mockRemote";
 import {makeNotificationException} from "../../../main/shared/actions/NotificationActions";
-import {expectOneAction} from "../../actionHelpers";
+import {expectNoActions, expectOneAction} from "../../actionHelpers";
 
 describe("processEncodedResultAndNotifyOnErrors", () => {
 
@@ -39,6 +39,15 @@ describe("processEncodedResultAndNotifyOnErrors", () => {
             action: "NotificationActions.notify",
             payload: { type: "error", message: "an error" }
         });
+    });
+
+    it("does nothing if result does not exist", () => {
+        const spy = sandbox.dispatchSpy();
+
+        const obj = {} as any;
+        processEncodedResultAndNotifyOnErrors<string>(obj);
+
+        expectNoActions(spy);
     });
 
 });
