@@ -25,7 +25,6 @@ open class ErrorHandler(private val logger: Logger = LoggerFactory.getLogger(Err
         sparkException<MontaguError>(this::handleError)
         sparkException<JsonSyntaxException> { e, req, res -> handleError(UnableToParseJsonError(e), req, res) }
         sparkException<DataAccessException> { e, req, res -> postgresHandler.handleException(e, req, res, this) }
-        sparkException<Exception>(this::handleUnexpectedError)
     }
 
     open fun logExceptionAndReturnMontaguError(exception: kotlin.Exception, req: Request): MontaguError
@@ -40,27 +39,17 @@ open class ErrorHandler(private val logger: Logger = LoggerFactory.getLogger(Err
             }
         }
 
-        logMontaguError(error, req)
+        logger.warn("For request ${req.uri()}, a ${error::class.simpleName} occurred with the following problems: ${error.problems}")
+
         return error
     }
 
-    private fun logMontaguError(error: MontaguError, req: Request)
+    open fun handleError(exception: Exception, req: Request, res: Response)
     {
-        logger.warn("For request ${req.uri()}, a ${error::class.simpleName} occurred with the following problems: ${error.problems}")
-    }
-
-    open fun handleError(error: MontaguError, req: Request, res: Response)
-    {
-        logMontaguError(error, req)
+        val error = logExceptionAndReturnMontaguError(exception, req)
         res.body(serializer.toJson(error.asResult()))
         res.status(error.httpStatus)
         addDefaultResponseHeaders(res)
-    }
-
-    open fun handleUnexpectedError(exception: Exception, req: Request, res: Response)
-    {
-        logger.error(unhandledExceptionMessage, exception)
-        handleError(UnexpectedError(), req, res)
     }
 
     // Just a helper to let us call Spark.exception using generic type parameters

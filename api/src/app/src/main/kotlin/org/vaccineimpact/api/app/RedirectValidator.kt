@@ -7,11 +7,10 @@ open class RedirectValidator
     @Throws(BadRequest::class)
     open fun validateRedirectUrl(redirectUrl: String)
     {
-        if (redirectUrlIsValid(redirectUrl))
-            return
-
-        throw BadRequest("Redirect url domain must be one of http://localhost," +
-                " https://support.montagu.dide.ic.ac.uk, https://montagu.vaccineimpact.org")
+        if (!redirectUrlIsValid(redirectUrl))
+        {
+            throw BadRequest("Redirect url domain must be one of ${allowedDomains.joinToString()}")
+        }
     }
 
     private fun redirectUrlIsValid(redirectUrl: String): Boolean
