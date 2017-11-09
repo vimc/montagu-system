@@ -1,4 +1,4 @@
-import { ErrorInfo, Result } from "../models/Generated";
+import {ErrorInfo, Result} from "../models/Generated";
 import fetcher from "./Fetcher";
 import {
     makeNotificationException,
@@ -6,7 +6,8 @@ import {
     notificationActions,
     NotificationException
 } from "../actions/NotificationActions";
-import { authActions } from "../actions/AuthActions";
+import {authActions} from "../actions/AuthActions";
+import {jwtDecoder} from "./JwtDecoder";
 
 export interface FetchConfig<TState, TModel> {
     success: (data: TModel) => void;
@@ -47,7 +48,29 @@ export function processResponseAndNotifyOnErrors<TModel>(response: Response): Pr
     return processResponse<TModel>(response).catch(notifyOnErrors);
 }
 
+export function processEncodedResultAndNotifyOnErrors<TModel>(queryAsObject: any): TModel | void {
+
+    try {
+        const decoded = jwtDecoder.jwtDecode(queryAsObject.result);
+        const result = JSON.parse(decoded.result);
+        return processResult<TModel>(result, decoded)
+    } catch (e) {
+        const error = errorToNotificationException(e);
+        notificationActions.notify(error)
+    }
+}
+
 function processResponse<TModel>(response: Response): Promise<any> {
+
+    return response.json()
+        .then((response: any) => {
+            const apiResponse = <Result>response;
+            return processResult(apiResponse, response);
+        });
+}
+
+function processResult<TModel>(result: Result, response: any): TModel | void {
+
     const handleError = (error: ErrorInfo) => {
         switch (error.code) {
             case "bearer-token-invalid":
@@ -61,29 +84,29 @@ function processResponse<TModel>(response: Response): Promise<any> {
             default:
                 throw makeNotificationException(error.message, "error");
         }
-    };
+    }
 
-    return response.json()
-        .then((response: any) => {
-            const apiResponse = <Result>response;
-            switch (apiResponse.status) {
-                case "success":
-                    return apiResponse.data as TModel;
-                case "failure":
-                    return apiResponse.errors.forEach(handleError);
-                default:
-                    throw makeNotificationException("The server response was not correctly formatted: "
-                        + response.toString(), "error");
-            }
-        });
+    switch (result.status) {
+        case "success":
+            return result.data as TModel;
+        case "failure":
+            return result.errors.forEach(handleError);
+        default:
+            throw makeNotificationException("The server response was not correctly formatted: "
+                + response.toString(), "error");
+    }
 }
 
 function notifyOnErrors(error: any) {
+    throw errorToNotificationException(error)
+}
+
+function errorToNotificationException(error: any): NotificationException {
     if (error.hasOwnProperty("notification")) {
-        throw error;
+        return error;
     } else if (error instanceof Error) {
-        throw makeNotificationException(error.message, "error");
+        return makeNotificationException(error.message, "error");
     } else {
-        throw makeNotificationException(error, "error");
+        return makeNotificationException(error, "error");
     }
 }

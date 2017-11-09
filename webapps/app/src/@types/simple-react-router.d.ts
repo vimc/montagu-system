@@ -23,7 +23,7 @@ declare module "simple-react-router" {
     export interface Location<T> {
         hash: string;
         params: T;
-        pathName: string;
+        pathname: string;
         query: any;
     }
 }

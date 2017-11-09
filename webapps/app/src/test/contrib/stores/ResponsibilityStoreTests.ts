@@ -42,6 +42,7 @@ describe("ResponsibilityStore", () => {
             coverageOneTimeToken: null,
             estimatesOneTimeToken: null,
             selectedFormat: "long",
+            redirectPath: null,
 
             ready: false
         });
@@ -97,6 +98,7 @@ describe("ResponsibilityStore", () => {
         const expectedSet = new ExtendedResponsibilitySet(responsibilitySet, touchstone, group);
         expect(responsibilityStore.getCurrentResponsibilitySet()).to.eql(expectedSet);
     });
+
 
     it("touchstoneActions.setCurrentTouchstone sets touchstone", () => {
         const touchstone = mockTouchstone();

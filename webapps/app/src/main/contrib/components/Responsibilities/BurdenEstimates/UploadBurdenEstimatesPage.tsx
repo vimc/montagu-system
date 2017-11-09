@@ -1,30 +1,37 @@
 import * as React from "react";
-import { touchstoneActions } from "../../../actions/TouchstoneActions";
-import { responsibilityActions } from "../../../actions/ResponsibilityActions";
-import { responsibilityStore } from "../../../stores/ResponsibilityStore";
-import { modellingGroupActions } from "../../../../shared/actions/ModellingGroupActions";
-import { PageWithHeaderAndNav } from "../../PageWithHeader/PageWithHeaderAndNav";
-import { doNothing } from "../../../../shared/Helpers";
-import { DownloadDataTitle } from "../DownloadDataTitle";
-import { UploadBurdenEstimatesContent } from "./UploadBurdenEstimatesContent";
-import { estimateTokenActions } from "../../../actions/EstimateActions";
+import {touchstoneActions} from "../../../actions/TouchstoneActions";
+import {responsibilityActions} from "../../../actions/ResponsibilityActions";
+import {responsibilityStore} from "../../../stores/ResponsibilityStore";
+import {modellingGroupActions} from "../../../../shared/actions/ModellingGroupActions";
+import {PageWithHeaderAndNav} from "../../PageWithHeader/PageWithHeaderAndNav";
+import {doNothing} from "../../../../shared/Helpers";
+import {DownloadDataTitle} from "../DownloadDataTitle";
+import {UploadBurdenEstimatesContent} from "./UploadBurdenEstimatesContent";
+import {estimateTokenActions} from "../../../actions/EstimateActions";
+import {
+    processEncodedResultAndNotifyOnErrors
+} from "../../../../shared/sources/Source";
+import {queryStringAsObject} from "../../../../shared/Helpers";
 
-interface LocationProps {
+export interface UploadEstimatesProps {
     groupId: string;
     touchstoneId: string;
     scenarioId: string;
 }
 
-export class UploadBurdenEstimatesPage extends PageWithHeaderAndNav<LocationProps> {
+export class UploadBurdenEstimatesPage extends PageWithHeaderAndNav<UploadEstimatesProps> {
     componentDidMount() {
         setTimeout(() => {
+
+            processEncodedResultAndNotifyOnErrors<string>(queryStringAsObject());
+
             estimateTokenActions.clearUsedToken();
             modellingGroupActions.setCurrentGroup(this.props.location.params.groupId);
             responsibilityStore.fetchTouchstones().catch(doNothing).then(() => {
                 touchstoneActions.setCurrentTouchstone(this.props.location.params.touchstoneId);
                 responsibilityStore.fetchResponsibilities().catch(doNothing).then(() => {
                     responsibilityActions.setCurrentResponsibility(this.props.location.params.scenarioId);
-                    responsibilityStore.fetchOneTimeEstimatesToken().catch(doNothing)
+                    responsibilityStore.fetchOneTimeEstimatesToken(this.props.location.pathname).catch(doNothing)
                 });
             });
         });
@@ -35,6 +42,6 @@ export class UploadBurdenEstimatesPage extends PageWithHeaderAndNav<LocationProp
     }
 
     renderPageContent() {
-        return <UploadBurdenEstimatesContent />
+        return <UploadBurdenEstimatesContent/>
     }
 }

@@ -8,6 +8,8 @@ import { responsibilityStore } from "../../../../../main/contrib/stores/Responsi
 import { mockModellingGroup } from "../../../../mocks/mockModels";
 import { checkAsync } from "../../../../testHelpers";
 import { UploadBurdenEstimatesPage } from "../../../../../main/contrib/components/Responsibilities/BurdenEstimates/UploadBurdenEstimatesPage";
+import {jwtDecoder} from "../../../../../main/shared/sources/JwtDecoder";
+import {mockResult} from "../../../../mocks/mockRemote";
 
 describe('UploadEstimatesPage', () => {
     const sandbox = new Sandbox();
@@ -27,6 +29,8 @@ describe('UploadEstimatesPage', () => {
             groupId: "group-1",
         });
         const group = mockModellingGroup({ id: "group-1" });
+        sandbox.sinon.stub(jwtDecoder, "jwtDecode").returns({result: JSON.stringify(mockResult("OK"))});
+
         setupMainStore({ groups: [group] });
 
         (new UploadBurdenEstimatesPage({location: location, router: null})).componentDidMount();
@@ -44,5 +48,4 @@ describe('UploadEstimatesPage', () => {
             });
         });
     });
-})
-;
+});

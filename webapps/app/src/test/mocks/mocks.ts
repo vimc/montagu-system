@@ -9,7 +9,7 @@ export function mockLocation<T>(params?: T): Location<T> {
     return {
         hash: "hash",
         params: params || null,
-        pathName: "/some/path",
+        pathname: "/some/path",
         query: null
     };
 }
