@@ -22,9 +22,9 @@ open class ErrorHandler(private val logger: Logger = LoggerFactory.getLogger(Err
 
     init
     {
-        sparkException<MontaguError>(this::handleError)
         sparkException<JsonSyntaxException> { e, req, res -> handleError(UnableToParseJsonError(e), req, res) }
         sparkException<DataAccessException> { e, req, res -> postgresHandler.handleException(e, req, res, this) }
+        sparkException<Exception>(this::handleError)
     }
 
     open fun logExceptionAndReturnMontaguError(exception: kotlin.Exception, req: Request): MontaguError
