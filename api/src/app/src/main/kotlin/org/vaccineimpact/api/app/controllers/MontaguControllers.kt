@@ -6,6 +6,7 @@ open class MontaguControllers(context: ControllerContext)
     open val disease = DiseaseController(context)
     open val touchstone = TouchstoneController(context)
     open val modellingGroup = ModellingGroupController(context)
+    open val groupBurdenEstimates = GroupBurdenEstimatesController(context)
     open val user = UserController(context)
     open val model = ModelController(context)
     open val password = PasswordController(context)
@@ -16,6 +17,7 @@ open class MontaguControllers(context: ControllerContext)
                 disease,
                 touchstone,
                 modellingGroup,
+                groupBurdenEstimates,
                 user,
                 model,
                 password
