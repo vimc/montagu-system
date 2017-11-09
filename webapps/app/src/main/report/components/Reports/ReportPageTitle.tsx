@@ -2,20 +2,24 @@ import {reportStore} from "../../stores/ReportStore";
 import {connectToStores} from "../../../shared/alt";
 import * as React from "react";
 
-interface Props {
+const headerStyles = require("../../../shared/components/PageWithHeader/PageWithHeader.css");
+
+export interface ReportPageTitleProps {
     name: string;
     displayName: string;
+    version: string;
 }
 
-export class ReportPageTitleComponent extends React.Component<Props, undefined> {
+export class ReportPageTitleComponent extends React.Component<ReportPageTitleProps, undefined> {
     static getStores() {
         return [reportStore];
     }
 
-    static getPropsFromStores(): Props {
+    static getPropsFromStores(): ReportPageTitleProps {
         const s = reportStore.getState();
-        const props: Props = {
+        const props: ReportPageTitleProps = {
             name: s.currentReport,
+            version: s.currentVersion,
             displayName: null
         };
         const details = s.versionDetails[s.currentReport];
@@ -27,7 +31,12 @@ export class ReportPageTitleComponent extends React.Component<Props, undefined> 
 
     render() {
         const title = this.props.displayName || this.props.name;
-        return <span>{title}</span>;
+        return <span>
+            <div>{title}</div>
+            <div className={ `${headerStyles.titleAddition}` }>
+                Version: {this.props.version}
+            </div>
+        </span>;
     }
 }
 

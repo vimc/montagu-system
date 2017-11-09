@@ -24,11 +24,9 @@ describe("ResourceLinks", () => {
         expect(links.at(1).prop("href")).to.eq("/reports/reportname/versions/versionname/resources/someother.rds/");
     });
 
-    it("shows 'none' if no resources", () => {
-
+    it("renders nothing if no resources", () => {
         const rendered = shallow(<ResourceLinks resources={[]} report="reportname" version="versioname" />);
-        expect(rendered.text()).to.eq("none");
-
+        expect(rendered.html()).to.be.null;
     });
 
 });

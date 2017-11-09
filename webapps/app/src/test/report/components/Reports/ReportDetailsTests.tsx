@@ -3,12 +3,15 @@ import {shallow} from "enzyme";
 import {expect} from "chai";
 import {alt} from "../../../../main/shared/alt";
 import {mockVersion} from "../../../mocks/mockModels";
-import {FileDownloadLink} from "../../../../main/report/components/FileDownloadLink";
 import {Sandbox} from "../../../Sandbox";
 import {ReportStoreState} from "../../../../main/report/stores/ReportStore";
 import {ReportDetailsComponent, ReportDetailsProps} from "../../../../main/report/components/Reports/ReportDetails";
 import {ReportVersionSwitcher} from "../../../../main/report/components/Reports/ReportVersionSwitcher";
 import {DraftStamp} from "../../../../main/report/components/DraftStamp";
+import {ArtefactsSection} from "../../../../main/report/components/Artefacts/ArtefactsSection";
+import {DataLinks} from "../../../../main/report/components/Data/DataLinks";
+import {ResourceLinks} from "../../../../main/report/components/Resources/ResourceLinks";
+import {ParameterList} from "../../../../main/report/components/Parameters/ParameterList";
 
 describe("ReportDetails", () => {
     const sandbox = new Sandbox();
@@ -33,7 +36,7 @@ describe("ReportDetails", () => {
             }));
         };
 
-        const assertIsNotReady = function() {
+        const assertIsNotReady = function () {
             expect(ReportDetailsComponent.getPropsFromStores({}).ready).to.equal(false);
         };
 
@@ -68,26 +71,36 @@ describe("ReportDetails", () => {
         });
     });
 
-    it("renders date", () => {
+    it("renders sub-components", () => {
+        const details = mockVersion({
+            id: "v1",
+            hash_data: {foo: "bar"},
+            resources: ["a", "b", "c"],
+            parameters: {a: "1", b: "2"}
+        });
         const rendered = shallow(<ReportDetailsComponent
-            versionDetails={mockVersion({date: "2015-03-25"})}
+            versionDetails={details}
             report="reportname"
             allVersions={[]}
             onChangeVersion={null}
             ready={true}
         />);
-        expect(rendered.find('td').at(1).text()).to.eq("2015-03-25");
-    });
-
-    it("renders zip download link", () => {
-        const rendered = shallow(<ReportDetailsComponent
-            versionDetails={mockVersion({id: "v1"})}
-            report="reportname"
-            allVersions={[]}
-            onChangeVersion={null}
-            ready={true}
-        />);
-        expect(rendered.find('td').at(0).find(FileDownloadLink).at(0).prop("href")).to.eq("/reports/reportname/versions/v1/all/");
+        expect(rendered.find(ArtefactsSection).props()).to.eql({
+            report: "reportname",
+            versionDetails: details
+        });
+        expect(rendered.find(DataLinks).props()).to.eql({
+            foo: "bar"
+        });
+        expect(rendered.find(ResourceLinks).props()).to.eql({
+            resources: ["a", "b", "c"],
+            report: "reportname",
+            version: "v1"
+        });
+        expect(rendered.find(ParameterList).props()).to.eql({
+            a: "1",
+            b: "2"
+        });
     });
 
     it("renders report version switcher", () => {

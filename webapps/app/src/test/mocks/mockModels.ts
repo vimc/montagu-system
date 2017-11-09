@@ -145,7 +145,8 @@ export function mockUser(properties?: any): models.User {
     }, properties);
 }
 
-export function mockVersion(properties?: any): Version {
+export function mockVersion(properties?: Partial<Version>): Version {
+
     const template: Version = {
         id: "vId",
         name: "testname",

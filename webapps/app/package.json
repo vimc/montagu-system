@@ -7,6 +7,7 @@
     "generate-models": "cd ./src/webmodels && ./gradlew generateTypeDefinitions",
     "//": "This is a comment: To run just one test, or a subset, use run-test.sh, e.g. ./run-test src/test/components/ErrorLogTests.tsx",
     "test": "mocha-webpack --webpack-config webpack-test.config.js \"src/test/**/*\"",
+    "watch_tests": "mocha-webpack --watch --webpack-config webpack-test.config.js \"src/test/**/*\"",
     "integration_tests": "./scripts/run-integration-tests-with-apis.sh",
     "admin": "serve out/admin --single",
     "contrib": "serve out/contrib --single",

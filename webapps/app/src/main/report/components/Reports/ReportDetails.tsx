@@ -7,13 +7,12 @@ import {Version} from "../../../shared/models/reports/Report";
 import {ParameterList} from "../Parameters/ParameterList";
 import {DataLinks} from "../Data/DataLinks";
 import {ResourceLinks} from "../Resources/ResourceLinks";
-import {ArtefactsList} from "../Artefacts/ArtefactsList";
-import {FileDownloadLink} from "../FileDownloadLink";
 import {ReportVersionSwitcher} from "./ReportVersionSwitcher";
+import {ArtefactsSection} from "../Artefacts/ArtefactsSection";
 import {IRouter} from "simple-react-router";
 import {DraftStamp} from "../DraftStamp";
 
-const styles = require("../../styles/reports.css");
+const styles = require("../../../shared/styles/common.css");
 
 interface PublicProps {
     onChangeVersion: (version: string) => void;
@@ -44,43 +43,8 @@ export class ReportDetailsComponent extends RemoteContentComponent<ReportDetails
         };
     }
 
-    private renderTable(props: ReportDetailsProps) {
-        const url = `/reports/${props.report}/versions/${props.versionDetails.id}/all/`;
-        const version = props.versionDetails.id;
-
-        return <table className={styles.versionDetails}>
-            <thead>
-            <tr>
-                <th>Version</th>
-                <th>Date created</th>
-                <th>Parameters</th>
-                <th>Data</th>
-                <th>Resources</th>
-                <th>Artefacts</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td>
-                    {props.versionDetails.id}
-                    <div><FileDownloadLink href={url}>Download zip</FileDownloadLink></div>
-                </td>
-                <td>{(new Date(props.versionDetails.date)).toISOString().slice(0, 10)}</td>
-                <td><ParameterList {...props.versionDetails.parameters} /></td>
-                <td><DataLinks {...props.versionDetails.hash_data} /></td>
-                <td><ResourceLinks resources={props.versionDetails.resources} report={props.report} version={version}/>
-                </td>
-                <td className={styles.artefactColumn}>
-                    <ArtefactsList artefacts={props.versionDetails.artefacts}
-                                   report={props.report}
-                                   version={version}/>
-                </td>
-            </tr>
-            </tbody>
-        </table>;
-    }
-
     renderContent(props: ReportDetailsProps) {
+        const version = props.versionDetails.id;
         return <div>
             <DraftStamp published={props.versionDetails.published} />
             <ReportVersionSwitcher
@@ -88,7 +52,10 @@ export class ReportDetailsComponent extends RemoteContentComponent<ReportDetails
                 versions={props.allVersions}
                 onChangeVersion={props.onChangeVersion}
             />
-            {this.renderTable(props)}
+            <ArtefactsSection report={this.props.report} versionDetails={this.props.versionDetails} />
+            <DataLinks {...props.versionDetails.hash_data} />
+            <ResourceLinks resources={props.versionDetails.resources} report={props.report} version={version}/>
+            <ParameterList {...props.versionDetails.parameters} />
         </div>
     }
 }

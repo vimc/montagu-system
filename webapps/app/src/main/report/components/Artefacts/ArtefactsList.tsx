@@ -27,8 +27,8 @@ export class ArtefactsList extends React.Component<ArtefactsListProps, undefined
                 return <ArtefactItem key={artefact.filenames[0]} report={this.props.report} version={this.props.version} {...artefact} />;
             });
 
-        return <ul className={styles.artefactList}>
+        return <div>
             {artefactItems}
-        </ul>;
+        </div>;
     }
 }
