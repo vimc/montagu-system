@@ -16,8 +16,8 @@ class ResponsibilityActions extends FetchActions<Responsibilities> implements Ac
     setCurrentResponsibility(scenarioId: string): string {
         return scenarioId;
     }
-    setRedirectPath(redirectUrl: string): string {
-        return redirectUrl;
+    setRedirectPath(redirectPath: string): string {
+        return redirectPath;
     }
 }
 
