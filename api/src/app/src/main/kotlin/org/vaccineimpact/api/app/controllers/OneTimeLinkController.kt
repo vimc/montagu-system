@@ -1,19 +1,24 @@
 package org.vaccineimpact.api.app.controllers
 
 import org.vaccineimpact.api.app.ActionContext
+import org.vaccineimpact.api.app.ErrorHandler
 import org.vaccineimpact.api.app.OneTimeLink
+import org.vaccineimpact.api.app.RedirectValidator
 import org.vaccineimpact.api.app.controllers.endpoints.oneRepoEndpoint
 import org.vaccineimpact.api.app.errors.InvalidOneTimeLinkToken
 import org.vaccineimpact.api.app.repositories.RepositoryFactory
 import org.vaccineimpact.api.app.repositories.TokenRepository
+import org.vaccineimpact.api.models.Result
+import org.vaccineimpact.api.models.ResultStatus
 import org.vaccineimpact.api.security.WebTokenHelper
 import spark.route.HttpMethod
 
 class OneTimeLinkController(
         val context: ControllerContext,
-        val controllers: MontaguControllers
-)
-    : AbstractController(context)
+        val controllers: MontaguControllers,
+        private val errorHandler: ErrorHandler = ErrorHandler(),
+        private val redirectValidator: RedirectValidator = RedirectValidator()
+) : AbstractController(context)
 {
     override val urlComponent = ""
     val url = "/onetime_link/:token/"
@@ -28,7 +33,37 @@ class OneTimeLinkController(
         val token = context.params(":token")
         val claims = verifyToken(token, repo)
         val link = OneTimeLink.parseClaims(claims)
-        return link.perform(controllers, context, repos)
+        val redirectUrl = link.queryParams["redirectUrl"]
+
+        return if (redirectUrl == null || redirectUrl.isEmpty())
+        {
+            link.perform(controllers, context, repos)
+        }
+        else
+        {
+            // This should never fail, as we only issue tokens for valid redirect urls,
+            // but just in case
+            redirectValidator.validateRedirectUrl(redirectUrl)
+
+            try
+            {
+                val data = link.perform(controllers, context, repos)
+                val result = Result(ResultStatus.SUCCESS, data, emptyList())
+                redirectWithResult(context, result, redirectUrl)
+
+            }
+            catch (e: Exception)
+            {
+                val error = errorHandler.logExceptionAndReturnMontaguError(e, context.request)
+                redirectWithResult(context, error.asResult(), redirectUrl)
+            }
+        }
+    }
+
+    private fun redirectWithResult(context: ActionContext, result: Result, redirectUrl: String)
+    {
+        val encodedResult = tokenHelper.encodeResult(result)
+        context.redirect("$redirectUrl?result=$encodedResult")
     }
 
     private fun verifyToken(token: String, repo: TokenRepository): Map<String, Any>

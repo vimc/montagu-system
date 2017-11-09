@@ -158,7 +158,7 @@ open class ModellingGroupController(context: ControllerContext)
 
         val coverageAndTargetPerYear =
                 records.associateBy({ "coverage_${it.year}" }, { it.coverage }) +
-                records.associateBy({ "target_${it.year}" }, { it.target })
+                        records.associateBy({ "target_${it.year}" }, { it.target })
 
         return WideCoverageRow(reference.scenario,
                 reference.setName,
@@ -211,8 +211,7 @@ open class ModellingGroupController(context: ControllerContext)
         request.raw().getPart("file").inputStream.bufferedReader().use {
 
             // Then add the burden estimates
-            val data = DataTableDeserializer.deserialize(it.readText(), BurdenEstimate::class,
-                    serializer).toList()
+            val data = DataTableDeserializer.deserialize(it.readText(), BurdenEstimate::class, serializer).toList()
             return saveBurdenEstimates(data, estimateRepository, context, path)
         }
     }
@@ -244,6 +243,7 @@ open class ModellingGroupController(context: ControllerContext)
                 timestamp = Instant.now()
         )
         val url = "/${path.groupId}/responsibilities/${path.touchstoneId}/${path.scenarioId}/estimates/$id/"
+
         return objectCreation(context, url)
     }
 

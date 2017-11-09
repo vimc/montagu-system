@@ -5,12 +5,12 @@ import org.pac4j.core.profile.ProfileManager
 import org.pac4j.sparkjava.SparkWebContext
 import org.vaccineimpact.api.app.errors.MissingRequiredPermissionError
 import org.vaccineimpact.api.app.security.montaguPermissions
-import org.vaccineimpact.api.serialization.DataTableDeserializer
 import org.vaccineimpact.api.app.errors.ValidationError
 import org.vaccineimpact.api.serialization.ModelBinder
 import org.vaccineimpact.api.serialization.MontaguSerializer
 import org.vaccineimpact.api.db.Config
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
+import org.vaccineimpact.api.serialization.DataTableDeserializer
 import org.vaccineimpact.api.serialization.Serializer
 import spark.Request
 import spark.Response
@@ -23,19 +23,19 @@ open class DirectActionContext(private val context: SparkWebContext,
                                private val serializer: Serializer = MontaguSerializer.instance): ActionContext
 {
     override val request
-            get() = context.sparkRequest
+        get() = context.sparkRequest
     private val response
-            get() = context.sparkResponse
+        get() = context.sparkResponse
 
     constructor(request: Request, response: Response)
-        : this(SparkWebContext(request, response))
+            : this(SparkWebContext(request, response))
 
     override fun contentType(): String = request.contentType()
     override fun queryParams(key: String): String? = request.queryParams(key)
     override fun queryString(): String? = request.queryString()
     override fun params(): Map<String, String> = request.params()
     override fun params(key: String): String = request.params(key)
-    override fun <T: Any> postData(klass: Class<T>): T
+    override fun <T : Any> postData(klass: Class<T>): T
     {
         return try
         {
@@ -63,6 +63,7 @@ open class DirectActionContext(private val context: SparkWebContext,
     {
         response.status(status)
     }
+
     override fun addResponseHeader(key: String, value: String)
     {
         response.header(key, value)
@@ -110,6 +111,11 @@ open class DirectActionContext(private val context: SparkWebContext,
         GZIPOutputStream(stream, BUFFER_SIZE).use { zipStream ->
             work(zipStream)
         }
+    }
+
+    override fun redirect(url: String)
+    {
+        this.response.redirect(url)
     }
 }
 
