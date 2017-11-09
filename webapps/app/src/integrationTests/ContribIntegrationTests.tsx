@@ -224,9 +224,8 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
             setTouchstoneAndGroup(touchstoneId, groupId);
             responsibilityActions.update(expectedResponsibilitiesResponse());
             responsibilityActions.setCurrentResponsibility(scenarioId);
-            responsibilityActions.setRedirectPath("/redirect/back");
 
-            const promise = responsibilityStore.fetchOneTimeEstimatesToken();
+            const promise = responsibilityStore.fetchOneTimeEstimatesToken("/redirect/back");
 
             checkPromise(done, promise, token => {
                 const decoded = jwt_decode(token);

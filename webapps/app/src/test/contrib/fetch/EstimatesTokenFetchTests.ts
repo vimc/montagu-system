@@ -14,11 +14,11 @@ describe("ResponsibilityStore.fetchOneTimeEstimatesToken", () => {
                     currentTouchstone: touchstone,
                     currentModellingGroup: group,
                     currentResponsibility: responsibility,
-                    redirectPath: "/redirect/to"
+                    redirectPath: null
                 }
             }));
         },
-        triggerFetch: () => responsibilityStore.fetchOneTimeEstimatesToken(),
+        triggerFetch: () => responsibilityStore.fetchOneTimeEstimatesToken("/redirect/to"),
         makePayload: () => "TOKEN"
     }).addTestsToMocha();
 });

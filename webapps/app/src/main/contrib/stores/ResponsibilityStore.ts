@@ -25,7 +25,6 @@ import {EstimatesTokenSource} from "../sources/EstimatesTokenSource";
 import {estimateTokenActions} from "../actions/EstimateActions";
 import {HasFormatState} from "./DemographicStore";
 import StoreModel = AltJS.StoreModel;
-import {settings} from "../../shared/Settings";
 
 export interface ResponsibilityState extends RemoteContent, HasFormatState {
     touchstones: Array<Touchstone>;
@@ -50,7 +49,9 @@ interface ResponsibilityStoreInterface extends AltJS.AltStore<ResponsibilityStat
 
     fetchOneTimeCoverageToken(): Promise<string>;
 
-    fetchOneTimeEstimatesToken(): Promise<string>;
+    fetchOneTimeEstimatesToken(redirectPath?: string): Promise<string>;
+
+    _fetchOneTimeEstimatesToken(): Promise<string>;
 
     isLoading(): boolean;
 
@@ -105,15 +106,17 @@ class ResponsibilityStore extends AbstractStore<ResponsibilityState, Responsibil
             handleUpdateEstimatesToken: estimateTokenActions.update,
             handleClearUsedEstimatesToken: estimateTokenActions.clearUsedToken,
 
-            handleFilterByDisease: responsibilityActions.filterByDisease,
-
-            handleSetRedirectPath: responsibilityActions.setRedirectPath
+            handleFilterByDisease: responsibilityActions.filterByDisease
         });
         this.exportPublicMethods({
             responsibilitySetManager: () => new ResponsibilitySetManager(this.responsibilitySets),
             getCurrentResponsibilitySet: () => {
                 const manager = this.getInstance().responsibilitySetManager();
                 return manager.getSet(this.currentModellingGroup, this.currentTouchstone);
+            },
+            fetchOneTimeEstimatesToken: (redirectPath: string) => {
+                this.redirectPath = redirectPath;
+                return this.getInstance()._fetchOneTimeEstimatesToken();
             }
         });
     }
@@ -218,9 +221,6 @@ class ResponsibilityStore extends AbstractStore<ResponsibilityState, Responsibil
         this.selectedFormat = format;
     }
 
-    handleSetRedirectPath(path: string) {
-        this.redirectPath = path;
-    }
 }
 
 export const responsibilityStore =

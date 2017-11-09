@@ -5,11 +5,11 @@ import {appSettings} from "../../shared/Settings";
 import {settings} from "../../shared/Settings";
 
 export class EstimatesTokenSource extends CoverageSource {
-    fetchOneTimeEstimatesToken: () => SourceModel<string>;
+    _fetchOneTimeEstimatesToken: () => SourceModel<string>;
 
     constructor() {
         super();
-        this.fetchOneTimeEstimatesToken = () => this.doFetch(state => {
+        this._fetchOneTimeEstimatesToken = () => this.doFetch(state => {
             let queryString = "";
             if (state.redirectPath && state.redirectPath.length > 0) {
                 queryString = "?redirectUrl=" + encodeURI(settings.montaguUrl() + appSettings.publicPath + state.redirectPath);

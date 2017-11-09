@@ -100,24 +100,6 @@ describe("ResponsibilityStore", () => {
     });
 
 
-    it("responsibilityActions.setredirectPath sets redirect path", () => {
-        const touchstone = mockTouchstone();
-        const group = mockModellingGroup();
-        alt.bootstrap(JSON.stringify({
-            ResponsibilityStore: {
-                touchstones: [ touchstone ],
-                currentTouchstone: touchstone,
-                currentModellingGroup: group,
-                responsibilitySets: [],
-                redirectPath: null
-            }
-        }));
-        responsibilityActions.setRedirectPath("/local/path");
-
-        const state = responsibilityStore.getState();
-        expect(state.redirectPath).to.equal("/local/path");
-    });
-
     it("touchstoneActions.setCurrentTouchstone sets touchstone", () => {
         const touchstone = mockTouchstone();
         alt.bootstrap(JSON.stringify({
