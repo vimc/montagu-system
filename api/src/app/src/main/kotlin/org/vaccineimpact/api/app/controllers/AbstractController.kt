@@ -48,7 +48,10 @@ abstract class AbstractController(controllerContext: ControllerContext,
         val queryString = context.queryString()
         val redirectUrl = context.queryParams("redirectUrl")
 
-        redirectValidator.validateRedirectUrl(redirectUrl)
+        if (redirectUrl != null && !redirectUrl.isEmpty())
+        {
+            redirectValidator.validateRedirectUrl(redirectUrl)
+        }
 
         val token = tokenHelper.generateOneTimeActionToken(actionAsString, params, queryString, duration, context.username!!)
         repo.storeToken(token)
