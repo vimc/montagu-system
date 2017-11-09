@@ -50,6 +50,10 @@ export function processResponseAndNotifyOnErrors<TModel>(response: Response): Pr
 
 export function processEncodedResultAndNotifyOnErrors<TModel>(queryAsObject: any): TModel | void {
 
+    if (!queryAsObject.result){
+        return
+    }
+
     try {
         const decoded = jwtDecoder.jwtDecode(queryAsObject.result);
         const result = JSON.parse(decoded.result);
