@@ -186,6 +186,7 @@ class JooqModellingGroupRepository(
         val uploadedOn = first[BURDEN_ESTIMATE_SET.UPLOADED_ON].toInstant()
         return BurdenEstimateSet(
                 id = first[BURDEN_ESTIMATE_SET.ID],
+                uploadedBy = first[BURDEN_ESTIMATE_SET.UPLOADED_BY],
                 uploadedOn = uploadedOn,
                 problems = input.filter { it[BURDEN_ESTIMATE_SET_PROBLEM.PROBLEM] != null }
                         .map { it[BURDEN_ESTIMATE_SET_PROBLEM.PROBLEM] }
