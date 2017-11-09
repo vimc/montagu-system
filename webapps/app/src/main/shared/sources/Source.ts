@@ -69,7 +69,7 @@ function processResponse<TModel>(response: Response): Promise<any> {
         });
 }
 
-function handleError(error: ErrorInfo) {
+const handleError = (error: ErrorInfo) => {
     switch (error.code) {
         case "bearer-token-invalid":
             console.log("Access token has expired or is otherwise invalid: Logging out.");
