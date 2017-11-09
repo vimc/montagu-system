@@ -8,6 +8,7 @@ import {Sandbox} from "../../../Sandbox";
 import {ReportStoreState} from "../../../../main/report/stores/ReportStore";
 import {ReportDetailsComponent, ReportDetailsProps} from "../../../../main/report/components/Reports/ReportDetails";
 import {ReportVersionSwitcher} from "../../../../main/report/components/Reports/ReportVersionSwitcher";
+import {DraftStamp} from "../../../../main/report/components/DraftStamp";
 
 describe("ReportDetails", () => {
     const sandbox = new Sandbox();
@@ -116,5 +117,18 @@ describe("ReportDetails", () => {
         />);
         rendered.find(ReportVersionSwitcher).simulate("changeVersion", "v3");
         expect(handler.calledWith("v3"));
+    });
+
+    it("renders draft stamp", () => {
+        const rendered = shallow(<ReportDetailsComponent
+            versionDetails={mockVersion({ published: false })}
+            report="report"
+            allVersions={[]}
+            onChangeVersion={null}
+            ready={true}
+        />);
+        expect(rendered.find(DraftStamp).props()).to.eql({
+            published: false
+        });
     });
 });
