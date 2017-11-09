@@ -69,22 +69,23 @@ function processResponse<TModel>(response: Response): Promise<any> {
         });
 }
 
-const handleError = (error: ErrorInfo) => {
-    switch (error.code) {
-        case "bearer-token-invalid":
-            console.log("Access token has expired or is otherwise invalid: Logging out.");
-            authActions.logOut();
-            const notification: Notification = {
-                message: "Your session has expired. You will need to log in again",
-                type: "info"
-            };
-            throw new NotificationException(notification);
-        default:
-            throw makeNotificationException(error.message, "error");
-    }
-}
-
 function processResult<TModel>(result: Result, response: any): TModel | void {
+
+    const handleError = (error: ErrorInfo) => {
+        switch (error.code) {
+            case "bearer-token-invalid":
+                console.log("Access token has expired or is otherwise invalid: Logging out.");
+                authActions.logOut();
+                const notification: Notification = {
+                    message: "Your session has expired. You will need to log in again",
+                    type: "info"
+                };
+                throw new NotificationException(notification);
+            default:
+                throw makeNotificationException(error.message, "error");
+        }
+    }
+
     switch (result.status) {
         case "success":
             return result.data as TModel;
