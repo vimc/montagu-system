@@ -67,11 +67,6 @@ fun Endpoint.secure(permissions: Set<String> = setOf()): Endpoint
     return this.copy(requiredPermissions = allPermissions)
 }
 
-fun Endpoint.transform(): Endpoint
-{
-    return this.copy(transform = true)
-}
-
 fun Endpoint.json(): Endpoint
 {
     return this.copy(contentType = ContentTypes.json)

@@ -7,6 +7,7 @@ import org.vaccineimpact.api.app.app_start.route_config.RouteConfig
 import org.vaccineimpact.api.app.errors.UnsupportedValueException
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.RepositoryFactory
+import org.vaccineimpact.api.models.AuthenticationResponse
 import org.vaccineimpact.api.security.WebTokenHelper
 import org.vaccineimpact.api.serialization.Serializer
 import spark.Route
@@ -25,20 +26,20 @@ class Router(val config: RouteConfig,
         val urls: MutableList<String> = mutableListOf()
     }
 
-    fun transform(x: Any) = serializer.toResult(x)
-
     fun mapEndpoints(urlBase: String)
     {
         urls.addAll(config.endpoints.map {
-            when (it.transform)
-            {
-                true -> mapTransformedEndpoint(it, urlBase)
-                false -> mapEndpoint(it, urlBase)
-            }
+           mapEndpoint(it, urlBase)
         })
     }
 
-    private fun mapTransformedEndpoint(
+    private fun transform(x: Any) = when (x)
+    {
+        is AuthenticationResponse -> serializer.gson.toJson(x)!!
+        else -> serializer.toResult(x)
+    }
+
+    private fun mapEndpoint(
             endpoint: EndpointDefinition,
             urlBase: String): String
     {
@@ -60,31 +61,6 @@ class Router(val config: RouteConfig,
         endpoint.additionalSetup(fullUrl, webTokenHelper, repositoryFactory)
         return fullUrl
     }
-
-    private fun mapEndpoint(
-            endpoint: EndpointDefinition,
-            urlBase: String): String
-    {
-
-        val fullUrl = urlBase + endpoint.urlFragment
-        val route = getWrappedRoute(endpoint)::handle
-        val contentType = endpoint.contentType
-
-        logger.info("Mapping $fullUrl to ${endpoint.actionName} on ${endpoint.controllerName}Controller")
-        when (endpoint.method)
-        {
-            HttpMethod.get -> Spark.get(fullUrl, contentType, route)
-            HttpMethod.post -> Spark.post(fullUrl, contentType, route)
-            HttpMethod.put -> Spark.put(fullUrl, contentType, route)
-            HttpMethod.patch -> Spark.patch(fullUrl, contentType, route)
-            HttpMethod.delete -> Spark.delete(fullUrl, contentType, route)
-            else -> throw UnsupportedValueException(endpoint.method)
-        }
-
-        endpoint.additionalSetup(fullUrl, webTokenHelper, repositoryFactory)
-        return fullUrl
-    }
-
 
     private fun getWrappedRoute(endpoint: EndpointDefinition): Route
     {
