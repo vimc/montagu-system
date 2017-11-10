@@ -11,7 +11,8 @@ import {estimateTokenActions} from "../../../actions/EstimateActions";
 import {
     processEncodedResultAndNotifyOnErrors
 } from "../../../../shared/sources/Source";
-import {queryStringAsObject} from "../../../../shared/Helpers";
+import {helpers} from "../../../../shared/Helpers";
+import {makeNotification, notificationActions} from "../../../../shared/actions/NotificationActions";
 
 export interface UploadEstimatesProps {
     groupId: string;
@@ -23,7 +24,11 @@ export class UploadBurdenEstimatesPage extends PageWithHeaderAndNav<UploadEstima
     componentDidMount() {
         setTimeout(() => {
 
-            processEncodedResultAndNotifyOnErrors<string>(queryStringAsObject());
+            if (processEncodedResultAndNotifyOnErrors<string>(helpers.queryStringAsObject()))
+            {
+                const notification = makeNotification("Success! You have uploaded a new set of burden estimates.", "info")
+                notificationActions.notify(notification)
+            }
 
             estimateTokenActions.clearUsedToken();
             modellingGroupActions.setCurrentGroup(this.props.location.params.groupId);

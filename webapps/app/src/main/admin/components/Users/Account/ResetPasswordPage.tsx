@@ -7,7 +7,7 @@ import { resetPasswordForm } from "./ResetPasswordForm";
 import { accountStore } from "../../../stores/AccountStore";
 import { connectToStores } from "../../../../shared/alt";
 import { InternalLink } from "../../../../shared/components/InternalLink";
-import { queryStringAsObject } from "../../../../shared/Helpers";
+import { helpers } from "../../../../shared/Helpers";
 
 export interface ResetPasswordPageProps {
     token: string;
@@ -25,7 +25,7 @@ export class ResetPasswordPage extends AdminPageWithHeader<ResetPasswordPageProp
     }
 
     componentDidMount() {
-        accountActions.setPasswordResetToken(queryStringAsObject().token);
+        accountActions.setPasswordResetToken(helpers.queryStringAsObject().token);
     }
 
     renderPageContent(): JSX.Element {
