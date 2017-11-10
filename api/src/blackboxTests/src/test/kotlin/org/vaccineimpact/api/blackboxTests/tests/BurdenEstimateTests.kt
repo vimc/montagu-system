@@ -1,7 +1,7 @@
 package org.vaccineimpact.api.blackboxTests.tests
 
 import org.junit.Test
-import org.vaccineimpact.api.blackboxTests.helpers.LocationContraint
+import org.vaccineimpact.api.blackboxTests.helpers.LocationConstraint
 import org.vaccineimpact.api.blackboxTests.helpers.RequestHelper
 import org.vaccineimpact.api.blackboxTests.helpers.validate
 import org.vaccineimpact.api.blackboxTests.schemas.CSVSchema
@@ -40,7 +40,7 @@ class BurdenEstimateTests : DatabaseTest()
                     "$groupScope/estimates.write",
                     "$groupScope/responsibilities.read"
             )
-        } andCheckObjectCreation LocationContraint(url, unknownId = true)
+        } andCheckObjectCreation LocationConstraint(url, unknownId = true)
     }
 
     @Test
