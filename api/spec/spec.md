@@ -1306,6 +1306,7 @@ Schema: [`ResponsibilitySet.schema.json`](ResponsibilitySet.schema.json)
                 "current_estimate_set": {                    
                     "id": 1,                  
                     "uploaded_on": "2017-10-06T11:18:06Z",
+                    "uploaded_by": "tini.garske",
                     "problems": []                    
                 }
             }
