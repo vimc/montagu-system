@@ -5,6 +5,7 @@ import org.vaccineimpact.api.app.ActionContext
 import org.vaccineimpact.api.app.DirectActionContext
 import org.vaccineimpact.api.app.app_start.route_config.RouteConfig
 import org.vaccineimpact.api.app.errors.UnsupportedValueException
+import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.RepositoryFactory
 import org.vaccineimpact.api.security.WebTokenHelper
 import org.vaccineimpact.api.serialization.Serializer
@@ -87,10 +88,15 @@ class Router(val config: RouteConfig,
 
     private fun getWrappedRoute(endpoint: EndpointDefinition): Route
     {
-        return Route({ req, res -> invokeControllerAction(endpoint, DirectActionContext(req, res)) })
+        return Route({ req, res ->
+            repositoryFactory.inTransaction { repos ->
+                invokeControllerAction(endpoint, DirectActionContext(req, res), repos)
+            }
+        })
     }
 
-    private fun invokeControllerAction(endpoint: EndpointDefinition, context: ActionContext): Any?
+    private fun invokeControllerAction(endpoint: EndpointDefinition, context: ActionContext,
+                                       repositories: Repositories): Any?
     {
         val controllerName = endpoint.controllerName
         val actionName = endpoint.actionName
@@ -98,7 +104,7 @@ class Router(val config: RouteConfig,
         val controllerType = Class.forName("org.vaccineimpact.api.controllers.${controllerName}Controller")
 
         val controller = controllerType.getConstructor(ActionContext::class.java)
-                .newInstance(context) as Controller
+                .newInstance(context, repositories) as Controller
         val action = controllerType.getMethod(actionName)
 
         return action.invoke(controller)
