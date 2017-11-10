@@ -1,5 +1,6 @@
 package org.vaccineimpact.api.app.app_start
 
+import org.pac4j.sparkjava.SecurityFilter
 import org.vaccineimpact.api.app.DefaultHeadersFilter
 import org.vaccineimpact.api.app.repositories.RepositoryFactory
 import org.vaccineimpact.api.app.security.MontaguAuthorizer
@@ -52,7 +53,7 @@ data class Endpoint(
                 config,
                 configFactory.allClients(),
                 MontaguAuthorizer::class.java.simpleName,
-                "SkipOptions"
+                "method:$method"
         ))
     }
 

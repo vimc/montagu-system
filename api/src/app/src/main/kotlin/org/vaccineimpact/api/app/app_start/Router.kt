@@ -101,7 +101,7 @@ class Router(val config: RouteConfig,
         val controllerName = endpoint.controllerName
         val actionName = endpoint.actionName
 
-        val controllerType = Class.forName("org.vaccineimpact.api.controllers.${controllerName}Controller")
+        val controllerType = Class.forName("org.vaccineimpact.api.app.controllers.${controllerName}Controller")
 
         val controller = controllerType.getConstructor(ActionContext::class.java)
                 .newInstance(context, repositories) as Controller
