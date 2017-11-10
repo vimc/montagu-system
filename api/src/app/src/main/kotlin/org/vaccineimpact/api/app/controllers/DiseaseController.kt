@@ -13,6 +13,8 @@ class DiseaseController(context: ActionContext,
     constructor(context: ActionContext, repositories: Repositories)
             : this(context, repositories.simpleObjects)
 
+    private val diseaseId: String = context.params(":id")
+
     fun getDiseases(): List<Disease>
     {
         return simpleObjectsRepository.diseases.all().toList()
@@ -20,8 +22,6 @@ class DiseaseController(context: ActionContext,
 
     fun getDisease(): Disease
     {
-        return simpleObjectsRepository.diseases.get(diseaseId(context))
+        return simpleObjectsRepository.diseases.get(diseaseId)
     }
-
-    private fun diseaseId(context: ActionContext): String = context.params(":id")
 }
