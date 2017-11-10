@@ -13,7 +13,6 @@ class DiseaseController(context: ActionContext,
     constructor(context: ActionContext, repositories: Repositories)
             : this(context, repositories.simpleObjects)
 
-    @Suppress("UNUSED_PARAMETER")
     fun getDiseases(): List<Disease>
     {
         return simpleObjectsRepository.diseases.all().toList()
