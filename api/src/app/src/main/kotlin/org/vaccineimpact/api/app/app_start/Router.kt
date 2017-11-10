@@ -70,7 +70,7 @@ class Router(val config: RouteConfig,
         val route = getWrappedRoute(endpoint)::handle
         val contentType = endpoint.contentType
 
-        logger.info("Mapping $fullUrl to ${endpoint.actionName} on Controller ${endpoint.controllerName}")
+        logger.info("Mapping $fullUrl to ${endpoint.actionName} on ${endpoint.controllerName}Controller")
         when (endpoint.method)
         {
             HttpMethod.get -> Spark.get(fullUrl, contentType, route)
@@ -103,7 +103,7 @@ class Router(val config: RouteConfig,
 
         val controllerType = Class.forName("org.vaccineimpact.api.app.controllers.${controllerName}Controller")
 
-        val controller = controllerType.getConstructor(ActionContext::class.java)
+        val controller = controllerType.getConstructor(ActionContext::class.java, Repositories::class.java)
                 .newInstance(context, repositories) as Controller
         val action = controllerType.getMethod(actionName)
 
