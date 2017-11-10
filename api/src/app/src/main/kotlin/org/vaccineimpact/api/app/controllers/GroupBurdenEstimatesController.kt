@@ -9,7 +9,10 @@ import org.vaccineimpact.api.app.errors.InconsistentDataError
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
 import org.vaccineimpact.api.app.repositories.RepositoryFactory
 import org.vaccineimpact.api.app.security.checkIsAllowedToSeeTouchstone
-import org.vaccineimpact.api.models.*
+import org.vaccineimpact.api.models.BurdenEstimate
+import org.vaccineimpact.api.models.BurdenEstimateSet
+import org.vaccineimpact.api.models.Scope
+import org.vaccineimpact.api.models.TouchstoneStatus
 import org.vaccineimpact.api.models.helpers.OneTimeAction
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import org.vaccineimpact.api.serialization.DataTableDeserializer
@@ -92,8 +95,8 @@ open class GroupBurdenEstimatesController(context: ControllerContext) : Abstract
                 uploader = context.username!!,
                 timestamp = Instant.now()
         )
-        val url = "/${path.groupId}/responsibilities/${path.touchstoneId}/${path.scenarioId}/estimates/$id/"
-        return objectCreation(context, url)
+        val url = "/modelling-groups/${path.groupId}/responsibilities/${path.touchstoneId}/${path.scenarioId}/estimates/$id/"
+        return objectCreation(context, url, useControllerURL = false)
     }
 
     private fun getValidResponsibilityPath(
