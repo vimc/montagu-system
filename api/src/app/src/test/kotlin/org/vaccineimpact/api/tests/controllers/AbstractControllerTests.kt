@@ -4,7 +4,6 @@ import com.nhaarman.mockito_kotlin.*
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
-import org.vaccineimpact.api.models.helpers.OneTimeAction
 import org.vaccineimpact.api.app.ActionContext
 import org.vaccineimpact.api.app.RedirectValidator
 import org.vaccineimpact.api.app.controllers.AbstractController
@@ -12,6 +11,7 @@ import org.vaccineimpact.api.app.controllers.ControllerContext
 import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.repositories.RepositoryFactory
 import org.vaccineimpact.api.app.repositories.TokenRepository
+import org.vaccineimpact.api.models.helpers.OneTimeAction
 import org.vaccineimpact.api.security.WebTokenHelper
 import java.time.Duration
 
@@ -35,7 +35,7 @@ class AbstractControllerTests : ControllerTests<AbstractController>()
     {
         val c = Controller(ControllerContext("/v6", mock(), mock()))
         assertThat(c.buildPublicUrl("/fragment/")).endsWith(
-                "/v6/test/fragment/"
+                "/v6/fragment/"
         )
     }
 

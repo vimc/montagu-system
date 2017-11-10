@@ -79,7 +79,7 @@ open class GroupBurdenEstimatesController(context: ControllerContext) : Abstract
                 timestamp = Instant.now()
         )
         val url = "/modelling-groups/${path.groupId}/responsibilities/${path.touchstoneId}/${path.scenarioId}/estimates/$id/"
-        return objectCreation(context, url, useControllerURL = false)
+        return objectCreation(context, url)
     }
 
     private fun getValidResponsibilityPath(context: ActionContext, estimateRepository: BurdenEstimateRepository): ResponsibilityPath

@@ -89,13 +89,9 @@ abstract class AbstractController(controllerContext: ControllerContext,
         return fullUrl
     }
 
-    fun objectCreation(
-            context: ActionContext,
-            urlFragment: String,
-            useControllerURL: Boolean = true
-    ): String
+    fun objectCreation(context: ActionContext, urlFragment: String): String
     {
-        val url = buildPublicUrl(urlFragment, useControllerURL)
+        val url = buildPublicUrl(urlFragment)
         context.addResponseHeader("Location", url)
         context.setResponseStatus(201)
         return url
@@ -103,14 +99,5 @@ abstract class AbstractController(controllerContext: ControllerContext,
 
     fun okayResponse() = "OK"
 
-    fun buildPublicUrl(urlFragment: String, useControllerURL: Boolean = true): String
-    {
-        var url = Config["app.url"] + urlBase
-        if (useControllerURL)
-        {
-            url += urlComponent
-        }
-        url += urlFragment
-        return url
-    }
+    fun buildPublicUrl(urlFragment: String) = Config["app.url"] + urlBase + urlFragment
 }
