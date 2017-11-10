@@ -1,6 +1,7 @@
 import * as React from "react";
-import { FileDownloadLink } from "../FileDownloadLink";
-import { encodeFilename } from "../../../shared/Helpers";
+import {FileDownloadLink} from "../FileDownloadLink";
+import {encodeFilename} from "../../../shared/Helpers";
+import {ArtefactRow} from "./ArtefactRow";
 
 const styles = require("../../styles/reports.css");
 
@@ -23,9 +24,8 @@ export class ArtefactItem extends React.Component<ArtefactProps, undefined> {
             </li>;
         });
 
-        return <li className={styles.artefact}>
-            <div>{p.description}</div>
-            <ul>{links}</ul>
-        </li>;
+        return <ArtefactRow description={p.description}>
+            {links}
+        </ArtefactRow>;
     }
 }

@@ -13,7 +13,12 @@
 6. Run `./scripts/run-development-apis.sh` to run both APIs (main and reporting) 
    with a shared key, and with test data.
 
-# Integration tests
+# Testing
+1. `npm test` runs all the tests
+2. `npm run watch_tests` keeps watching the source for changes, and reruns only 
+   those tests that have changed.
+
+## Integration tests
 Run `npm run integration_tests` to run all integration tests. The version of 
 the API that tests are run against is stored in `./app/config/api_version`.
 

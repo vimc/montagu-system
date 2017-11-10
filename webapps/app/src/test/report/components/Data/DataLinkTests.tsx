@@ -21,18 +21,17 @@ describe("DataLinks", () => {
 
         const rendered = shallow(<DataLinks {...fakeData}/>);
 
-        const item = rendered.find("li").at(0);
-        const firstLink = item.find(FileDownloadLink).at(0);
-        const secondLink = item.find(FileDownloadLink).at(1);
+        const links = rendered.find(FileDownloadLink);
+        const firstLink = links.at(0);
+        const secondLink = links.at(1);
 
-        expect(rendered.find("li").length).to.eq(2);
+        expect(links.length).to.eq(4);
 
         expect(firstLink.prop("href")).to.eq(`/data/csv/${fakeHash}/`);
         expect(firstLink.children().first().text()).to.eq("Download csv");
 
         expect(secondLink.prop("href")).to.eq(`/data/rds/${fakeHash}/`);
         expect(secondLink.children().first().text()).to.eq("Download rds");
-
     });
 
 });

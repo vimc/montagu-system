@@ -19,5 +19,5 @@ export interface Version {
     parameters: ILookup<string>,
     resources: string[];
     artefacts: ILookup<Artefact>[];
-
+    published: boolean;
 }

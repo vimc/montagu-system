@@ -1,14 +1,19 @@
-import { CoverageSource } from "./CoverageSource";
+import {CoverageSource} from "./CoverageSource";
 import SourceModel = AltJS.SourceModel;
-import { estimateTokenActions } from "../actions/EstimateActions";
+import {estimateTokenActions} from "../actions/EstimateActions";
+import {settings} from "../../shared/Settings";
 
 export class EstimatesTokenSource extends CoverageSource {
-    fetchOneTimeEstimatesToken: () => SourceModel<string>;
+    _fetchOneTimeEstimatesToken: () => SourceModel<string>;
 
     constructor() {
         super();
-        this.fetchOneTimeEstimatesToken = () => this.doFetch(state => {
-            return this.baseURL(state) + "/estimates/get_onetime_link/";
+        this._fetchOneTimeEstimatesToken = () => this.doFetch(state => {
+            let queryString = "";
+            if (state.redirectPath && state.redirectPath.length > 0) {
+                queryString = "?redirectUrl=" + encodeURI(settings.montaguUrl() + state.redirectPath);
+            }
+            return this.baseURL(state) + `/estimates/get_onetime_link/${queryString}`;
         }, {
             success: estimateTokenActions.update,
             loading: estimateTokenActions.beginFetch,

@@ -7,6 +7,7 @@ import {doNothing} from "../../../shared/Helpers";
 import {PageProperties} from "../../../shared/components/PageWithHeader/PageWithHeader";
 import {appSettings} from "../../../shared/Settings";
 import {MainMenu} from "../MainMenu/MainMenu";
+import {ReportPageTitle} from "./ReportPageTitle";
 
 export interface ReportPageProps {
     report: string;
@@ -44,6 +45,10 @@ export class ReportPage extends ReportingPageWithHeader<ReportPageProps> {
 
     parent() {
         return new MainMenu();
+    }
+    
+    title() {
+        return <ReportPageTitle />;
     }
 
     name() {

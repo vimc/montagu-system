@@ -16,6 +16,8 @@ import {checkAsync} from "../../../../testHelpers";
 import {UploadBurdenEstimatesPage} from "../../../../../main/contrib/components/Responsibilities/BurdenEstimates/UploadBurdenEstimatesPage";
 import {addNavigationTests} from "../../../../shared/NavigationTests";
 import {mockFetcherForMultipleResponses} from "../../../../mocks/mockMultipleEndpoints";
+import {jwtDecoder} from "../../../../../main/shared/sources/JwtDecoder";
+import {mockResult} from "../../../../mocks/mockRemote";
 import {successResult} from "../../../../mocks/mockRemote";
 import {bootstrapStore} from "../../../../StoreHelpers";
 import {mainStore} from "../../../../../main/contrib/stores/MainStore";
@@ -39,6 +41,8 @@ describe('UploadEstimatesPage', () => {
         const fetchOneTimeEstimatesToken = sandbox.sinon.stub(responsibilityStore, "fetchOneTimeEstimatesToken").returns(Promise.resolve(true));
 
         const group = mockModellingGroup({id: "group-1"});
+        sandbox.sinon.stub(jwtDecoder, "jwtDecode").returns({result: JSON.stringify(mockResult("OK"))});
+
         setupMainStore({groups: [group]});
 
         new UploadBurdenEstimatesPage({location: location, router: null}).load();

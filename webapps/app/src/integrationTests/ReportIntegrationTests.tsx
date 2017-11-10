@@ -15,6 +15,7 @@ import { FileDownloadLink } from "../main/report/components/FileDownloadLink";
 import { ResourceLinks } from "../main/report/components/Resources/ResourceLinks";
 import { ReportDetailsComponent } from "../main/report/components/Reports/ReportDetails";
 import { DataLinks } from "../main/report/components/Data/DataLinks";
+import {ArtefactsSection} from "../main/report/components/Artefacts/ArtefactsSection";
 
 const jwt_decode = require('jwt-decode');
 
@@ -148,12 +149,9 @@ class ReportIntegrationTests extends IntegrationTestSuite {
             const promise = getVersionDetails(reportName)
                 .then((versionDetails: Version) => {
 
-                    const rendered = shallow(<ReportDetailsComponent
-                        ready={true}
+                    const rendered = shallow(<ArtefactsSection
                         report={reportName}
                         versionDetails={versionDetails}
-                        allVersions={[]}
-                        onChangeVersion={null}
                     />);
                     return firstDownloadPromise(rendered)
                 });

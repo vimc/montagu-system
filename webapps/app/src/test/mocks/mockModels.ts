@@ -145,7 +145,7 @@ export function mockUser(properties?: any): models.User {
     }, properties);
 }
 
-export function mockVersion(properties?: any): Version {
+export function mockVersion(properties?: Partial<Version>): Version {
 
     const template: Version = {
         id: "vId",
@@ -156,7 +156,8 @@ export function mockVersion(properties?: any): Version {
         hash_data: {},
         artefacts: [{}],
         resources: [],
-        parameters: {}
+        parameters: {},
+        published: true
     };
     return Object.assign(template, properties);
 }
