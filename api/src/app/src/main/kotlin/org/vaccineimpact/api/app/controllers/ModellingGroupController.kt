@@ -149,7 +149,7 @@ open class ModellingGroupController(context: ControllerContext)
 
         val coverageAndTargetPerYear =
                 records.associateBy({ "coverage_${it.year}" }, { it.coverage }) +
-                records.associateBy({ "target_${it.year}" }, { it.target })
+                        records.associateBy({ "target_${it.year}" }, { it.target })
 
         return WideCoverageRow(reference.scenario,
                 reference.setName,
@@ -186,6 +186,7 @@ open class ModellingGroupController(context: ControllerContext)
     private fun managingScopes(context: ActionContext) = context.permissions
             .filter { it.name == "modelling-groups.manage-members" }
             .map { it.scope }
+
 
     // We are sure that this will be non-null, as its part of the URL,
     // and Spark wouldn't have mapped us here if it were blank

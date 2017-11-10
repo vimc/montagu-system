@@ -4,6 +4,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.vaccineimpact.api.app.ActionContext
 import org.vaccineimpact.api.app.OneTimeLinkActionContext
+import org.vaccineimpact.api.app.RedirectValidator
 import org.vaccineimpact.api.app.controllers.endpoints.EndpointDefinition
 import org.vaccineimpact.api.app.controllers.endpoints.getWrappedRoute
 import org.vaccineimpact.api.app.errors.UnsupportedValueException
@@ -19,6 +20,7 @@ import spark.route.HttpMethod
 import java.time.Duration
 
 abstract class AbstractController(controllerContext: ControllerContext,
+                                  private val redirectValidator: RedirectValidator = RedirectValidator(),
                                   protected val serializer: Serializer = MontaguSerializer.instance)
 {
     protected val logger: Logger = LoggerFactory.getLogger(AbstractController::class.java)
@@ -44,6 +46,13 @@ abstract class AbstractController(controllerContext: ControllerContext,
         val actionAsString = serializer.serializeEnum(action)
         val params = context.params()
         val queryString = context.queryString()
+        val redirectUrl = context.queryParams("redirectUrl")
+
+        if (redirectUrl != null && !redirectUrl.isEmpty())
+        {
+            redirectValidator.validateRedirectUrl(redirectUrl)
+        }
+
         val token = tokenHelper.generateOneTimeActionToken(actionAsString, params, queryString, duration, context.username!!)
         repo.storeToken(token)
         return token
@@ -91,6 +100,7 @@ abstract class AbstractController(controllerContext: ControllerContext,
         context.setResponseStatus(201)
         return url
     }
+
     fun okayResponse() = "OK"
 
     fun buildPublicUrl(urlFragment: String, useControllerURL: Boolean = true): String
