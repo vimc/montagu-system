@@ -2,6 +2,7 @@ import * as sinon from "sinon";
 import { expect } from "chai";
 import { alt } from "../main/shared/alt";
 import { Sandbox } from "./Sandbox";
+import {isNullOrUndefined} from "util";
 
 export interface ActionExpectation {
     action: string;
@@ -22,6 +23,12 @@ export function getActions(spy: sinon.SinonSpy): Action[] {
             return { action: action[0].type, payload: action[0].payload };
         }
     });
+}
+
+export function findActionWithName(actions: Action[], name: string): Action {
+    const action = actions.find(a => a.action == name);
+    expect(isNullOrUndefined(action)).to.equal(false, `Could not find an action '${name}'`);
+    return action;
 }
 
 export function expectOrderedActions(spy: sinon.SinonSpy, expectations: Array<ActionExpectation>, startIndex: number = 0) {

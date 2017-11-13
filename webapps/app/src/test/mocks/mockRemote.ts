@@ -1,6 +1,5 @@
 import { ErrorInfo, Result, ResultStatus } from "../../main/shared/models/Generated";
 import fetcher, { FetchOptions } from "../../main/shared/sources/Fetcher";
-import { AdminFetcher } from "../../main/admin/sources/AdminFetcher";
 import { ReportingFetcher } from "../../main/report/sources/ReportingFetcher";
 
 export function promiseJSON(data: any): Response {
@@ -20,12 +19,16 @@ export function rejectedPromiseJSON(data: any): Response {
     } as Response;
 }
 
-export function mockResponse(data?: Result, errorMessage?: string): Promise<Response> {
-    data = data || {
+export function successResult(data: any): Result {
+    return {
         status: "success",
-        data: {},
+        data: data,
         errors: []
     };
+}
+
+export function mockResponse(data?: Result, errorMessage?: string): Promise<Response> {
+    data = data || successResult({});
 
     return new Promise<Response>(function (resolve, reject) {
         if (errorMessage) {

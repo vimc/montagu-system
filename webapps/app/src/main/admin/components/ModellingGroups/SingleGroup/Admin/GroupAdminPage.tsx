@@ -7,24 +7,38 @@ import { modellingGroupActions } from "../../../../../shared/actions/ModellingGr
 import { GroupAdminContent } from "./GroupAdminContent";
 import { doNothing } from "../../../../../shared/Helpers";
 import { userStore } from "../../../../stores/UserStore";
+import {IPageWithParent} from "../../../../../shared/models/Breadcrumb";
+import {ViewModellingGroupDetailsPage} from "../Details/ViewModellingGroupDetailsPage";
 
 interface PageProps {
     groupId: string;
 }
 
 export class GroupAdminPage extends AdminPageWithHeader<PageProps> {
-    componentDidMount() {
-        setTimeout(() => {
-            groupStore.fetchGroups().catch(doNothing).then(() => {
-                modellingGroupActions.setCurrentGroup(this.props.location.params.groupId);
-                groupStore.fetchGroupDetails().catch(doNothing);
+    load() {
+        userStore.fetchUsers().catch(doNothing);
+        groupStore.fetchGroups().catch(doNothing).then(() => {
+            modellingGroupActions.setCurrentGroup(this.props.location.params.groupId);
+            groupStore.fetchGroupDetails().catch(doNothing).then(() => {
+                super.load();
             });
-            userStore.fetchUsers().catch(doNothing);
         });
+    }
+
+    name(): string {
+        return "Manage group members";
     }
 
     title(): JSX.Element {
         return <Title />;
+    }
+
+    urlFragment(): string {
+        return `admin/`;
+    }
+
+    parent(): IPageWithParent {
+        return new ViewModellingGroupDetailsPage();
     }
 
     renderPageContent(): JSX.Element {
