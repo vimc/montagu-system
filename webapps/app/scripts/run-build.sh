@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 # This is the path for teamcity agents. If running locally, pass in your own docker config location
+# i.e. /home/{user}/.docker/config.json
 docker_auth_path=${1:-/opt/teamcity-agent/.docker/config.json}
 
 docker run \
