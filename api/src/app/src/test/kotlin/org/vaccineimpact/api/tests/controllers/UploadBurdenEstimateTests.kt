@@ -6,6 +6,7 @@ import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
 import org.vaccineimpact.api.app.ActionContext
 import org.vaccineimpact.api.app.controllers.ControllerContext
+import org.vaccineimpact.api.app.controllers.GroupBurdenEstimatesController
 import org.vaccineimpact.api.app.controllers.ModellingGroupController
 import org.vaccineimpact.api.app.errors.InconsistentDataError
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
@@ -18,11 +19,11 @@ import org.vaccineimpact.api.models.Touchstone
 import org.vaccineimpact.api.models.TouchstoneStatus
 import java.time.Instant
 
-class UploadBurdenEstimateTests : ControllerTests<ModellingGroupController>()
+class UploadBurdenEstimateTests : ControllerTests<GroupBurdenEstimatesController>()
 {
-    override fun makeController(controllerContext: ControllerContext): ModellingGroupController
+    override fun makeController(controllerContext: ControllerContext): GroupBurdenEstimatesController
     {
-        return ModellingGroupController(controllerContext)
+        return GroupBurdenEstimatesController(controllerContext)
     }
 
     @Test
@@ -42,7 +43,7 @@ class UploadBurdenEstimateTests : ControllerTests<ModellingGroupController>()
         val repo = mockRepository(touchstoneSet)
 
         val before = Instant.now()
-        val controller = ModellingGroupController(mockControllerContext())
+        val controller = GroupBurdenEstimatesController(mockControllerContext())
         controller.addBurdenEstimates(mockActionContext(data), repo)
         val after = Instant.now()
         verify(touchstoneSet).get("touchstone-1")
@@ -64,7 +65,7 @@ class UploadBurdenEstimateTests : ControllerTests<ModellingGroupController>()
                         "dalys" to 73.6.toDecimal()
                 ))
         )
-        val controller = ModellingGroupController(mockControllerContext())
+        val controller = GroupBurdenEstimatesController(mockControllerContext())
         assertThatThrownBy { controller.addBurdenEstimates(mockActionContext(data), mockRepository()) }
                 .isInstanceOf(InconsistentDataError::class.java)
     }

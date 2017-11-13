@@ -112,7 +112,7 @@ class UserController(
         val token = getSetPasswordToken(user.username, context, repos.token)
         emailManager.sendEmail(NewUserEmail(user, token), user)
 
-        return objectCreation(context, "/${user.username}/")
+        return objectCreation(context, urlComponent + "/${user.username}/")
     }
 
     private fun userName(context: ActionContext): String = context.params(":username")

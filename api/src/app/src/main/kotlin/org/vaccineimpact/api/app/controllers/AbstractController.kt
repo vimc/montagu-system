@@ -2,7 +2,6 @@ package org.vaccineimpact.api.app.controllers
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.vaccineimpact.api.models.helpers.OneTimeAction
 import org.vaccineimpact.api.app.ActionContext
 import org.vaccineimpact.api.app.OneTimeLinkActionContext
 import org.vaccineimpact.api.app.RedirectValidator
@@ -12,6 +11,7 @@ import org.vaccineimpact.api.app.errors.UnsupportedValueException
 import org.vaccineimpact.api.app.repositories.RepositoryFactory
 import org.vaccineimpact.api.app.repositories.TokenRepository
 import org.vaccineimpact.api.db.Config
+import org.vaccineimpact.api.models.helpers.OneTimeAction
 import org.vaccineimpact.api.security.WebTokenHelper
 import org.vaccineimpact.api.serialization.MontaguSerializer
 import org.vaccineimpact.api.serialization.Serializer
@@ -99,5 +99,5 @@ abstract class AbstractController(controllerContext: ControllerContext,
 
     fun okayResponse() = "OK"
 
-    fun buildPublicUrl(urlFragment: String) = Config["app.url"] + urlBase + urlComponent + urlFragment
+    fun buildPublicUrl(urlFragment: String) = Config["app.url"] + urlBase + urlFragment
 }

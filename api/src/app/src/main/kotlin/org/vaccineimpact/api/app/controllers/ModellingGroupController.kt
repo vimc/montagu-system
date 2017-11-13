@@ -6,20 +6,15 @@ import org.vaccineimpact.api.app.controllers.endpoints.EndpointDefinition
 import org.vaccineimpact.api.app.controllers.endpoints.oneRepoEndpoint
 import org.vaccineimpact.api.app.controllers.endpoints.secured
 import org.vaccineimpact.api.app.controllers.endpoints.streamed
-import org.vaccineimpact.api.app.csvData
 import org.vaccineimpact.api.app.errors.BadRequest
-import org.vaccineimpact.api.app.errors.InconsistentDataError
 import org.vaccineimpact.api.app.errors.MissingRequiredPermissionError
-import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
 import org.vaccineimpact.api.app.postData
 import org.vaccineimpact.api.app.repositories.*
+import org.vaccineimpact.api.app.security.checkIsAllowedToSeeTouchstone
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.serialization.*
-import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import spark.route.HttpMethod
-import java.time.Instant
-import javax.servlet.MultipartConfigElement
 
 
 open class ModellingGroupController(context: ControllerContext)
@@ -48,10 +43,6 @@ open class ModellingGroupController(context: ControllerContext)
                 oneRepoEndpoint("$coverageURL/", this::getCoverageDataAndMetadata.streamed(), repos, repo, contentType = "application/json").secured(coveragePermissions),
                 oneRepoEndpoint("$coverageURL/", this::getCoverageData.streamed(), repos, repo, contentType = "text/csv").secured(coveragePermissions),
                 oneRepoEndpoint("$coverageURL/get_onetime_link/", { c, r -> getOneTimeLinkToken(c, r, OneTimeAction.COVERAGE) }, repos, { it.token }).secured(coveragePermissions),
-                oneRepoEndpoint("$scenarioURL/estimates/", this::addBurdenEstimates, repos, { it.burdenEstimates }, method = HttpMethod.post)
-                        .secured(setOf("$groupScope/estimates.write", "$groupScope/responsibilities.read")),
-                oneRepoEndpoint("$scenarioURL/estimates/get_onetime_link/", { c, r -> getOneTimeLinkToken(c, r, OneTimeAction.BURDENS) }, repos, { it.token })
-                        .secured(setOf("$groupScope/estimates.write", "$groupScope/responsibilities.read")),
                 oneRepoEndpoint("/:group-id/actions/associate_member/", this::modifyMembership, repos, { it.user }, method = HttpMethod.post).secured()
         )
     }
@@ -75,7 +66,7 @@ open class ModellingGroupController(context: ControllerContext)
         val filterParameters = ScenarioFilterParameters.fromContext(context)
 
         val data = repo.getResponsibilities(groupId, touchstoneId, filterParameters)
-        checkTouchstoneStatus(data.touchstoneStatus, touchstoneId, context)
+        context.checkIsAllowedToSeeTouchstone(touchstoneId, data.touchstoneStatus)
         return data.responsibilities
     }
 
@@ -83,7 +74,7 @@ open class ModellingGroupController(context: ControllerContext)
     {
         val path = ResponsibilityPath(context)
         val data = repo.getResponsibility(path.groupId, path.touchstoneId, path.scenarioId)
-        checkTouchstoneStatus(data.touchstone.status, path.touchstoneId, context)
+        context.checkIsAllowedToSeeTouchstone(path.touchstoneId, data.touchstone.status)
         return data
     }
 
@@ -91,7 +82,7 @@ open class ModellingGroupController(context: ControllerContext)
     {
         val path = ResponsibilityPath(context)
         val data = repo.getCoverageSets(path.groupId, path.touchstoneId, path.scenarioId)
-        checkTouchstoneStatus(data.touchstone.status, path.touchstoneId, context)
+        context.checkIsAllowedToSeeTouchstone(path.touchstoneId, data.touchstone.status)
         return data
     }
 
@@ -111,7 +102,7 @@ open class ModellingGroupController(context: ControllerContext)
     {
         val path = ResponsibilityPath(context)
         val splitData = repo.getCoverageData(path.groupId, path.touchstoneId, path.scenarioId)
-        checkTouchstoneStatus(splitData.structuredMetadata.touchstone.status, path.touchstoneId, context)
+        context.checkIsAllowedToSeeTouchstone(path.touchstoneId, splitData.structuredMetadata.touchstone.status)
 
         val format = context.queryParams("format")
 
@@ -196,78 +187,6 @@ open class ModellingGroupController(context: ControllerContext)
             .filter { it.name == "modelling-groups.manage-members" }
             .map { it.scope }
 
-    fun addBurdenEstimatesFromHTMLForm(context: ActionContext, estimateRepository: BurdenEstimateRepository): String
-    {
-        // First check if we're allowed to see this touchstone
-        val path = getValidResponsibilityPath(context, estimateRepository)
-
-        val request = context.request
-        if (request.raw().getAttribute("org.eclipse.jetty.multipartConfig") == null)
-        {
-            val multipartConfigElement = MultipartConfigElement(System.getProperty("java.io.tmpdir"))
-            request.raw().setAttribute("org.eclipse.jetty.multipartConfig", multipartConfigElement)
-        }
-
-        request.raw().getPart("file").inputStream.bufferedReader().use {
-
-            // Then add the burden estimates
-            val data = DataTableDeserializer.deserialize(it.readText(), BurdenEstimate::class, serializer).toList()
-            return saveBurdenEstimates(data, estimateRepository, context, path)
-        }
-    }
-
-    open fun addBurdenEstimates(context: ActionContext, estimateRepository: BurdenEstimateRepository): String
-    {
-        // First check if we're allowed to see this touchstone
-        val path = getValidResponsibilityPath(context, estimateRepository)
-
-        // Then add the burden estimates
-        val data = context.csvData<BurdenEstimate>()
-        return saveBurdenEstimates(data, estimateRepository, context, path)
-    }
-
-    private fun saveBurdenEstimates(data: List<BurdenEstimate>,
-                                    estimateRepository: BurdenEstimateRepository,
-                                    context: ActionContext,
-                                    path: ResponsibilityPath): String
-    {
-        if (data.map { it.disease }.distinct().count() > 1)
-        {
-            throw InconsistentDataError("More than one value was present in the disease column")
-        }
-
-        val id = estimateRepository.addBurdenEstimateSet(
-                path.groupId, path.touchstoneId, path.scenarioId,
-                data,
-                uploader = context.username!!,
-                timestamp = Instant.now()
-        )
-        val url = "/${path.groupId}/responsibilities/${path.touchstoneId}/${path.scenarioId}/estimates/$id/"
-
-        return objectCreation(context, url)
-    }
-
-    private fun getValidResponsibilityPath(context: ActionContext, estimateRepository: BurdenEstimateRepository): ResponsibilityPath
-    {
-        val path = ResponsibilityPath(context)
-        val touchstoneId = path.touchstoneId
-        val touchstones = estimateRepository.touchstoneRepository.touchstones
-        val touchstone = touchstones.get(touchstoneId)
-        checkTouchstoneStatus(touchstone.status, path.touchstoneId, context)
-
-        return path
-    }
-
-    private fun checkTouchstoneStatus(
-            touchstoneStatus: TouchstoneStatus,
-            touchstoneId: String,
-            context: ActionContext)
-    {
-        if (touchstoneStatus == TouchstoneStatus.IN_PREPARATION && !context.hasPermission(ReifiedPermission("touchstones.prepare", Scope.Global())))
-        {
-            throw UnknownObjectError(touchstoneId, "Touchstone")
-        }
-    }
 
     // We are sure that this will be non-null, as its part of the URL,
     // and Spark wouldn't have mapped us here if it were blank
