@@ -1,5 +1,5 @@
 set -e
-git_id=$(git rev-parse --short HEAD)
+git_id=$(git rev-parse --short=7 HEAD)
 git_branch=$(git symbolic-ref --short HEAD)
 
 # This is the path for teamcity agents. If running locally, pass in your own docker config location
