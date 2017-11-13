@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -ex
-git_id=$(git rev-parse --short HEAD)
+git_id=$(git rev-parse --short=7 HEAD)
 git_branch=$(git symbolic-ref --short HEAD)
 
 # Shared build env between the main build (being executed now) and the 
