@@ -7,7 +7,7 @@ import { resetPasswordForm } from "./ResetPasswordForm";
 import { accountStore } from "../../../stores/AccountStore";
 import { connectToStores } from "../../../../shared/alt";
 import { InternalLink } from "../../../../shared/components/InternalLink";
-import { queryStringAsObject } from "../../../../shared/Helpers";
+import { helpers } from "../../../../shared/Helpers";
 import {IPageWithParent} from "../../../../shared/models/Breadcrumb";
 import {MainMenu} from "../../MainMenu/MainMenu";
 
@@ -36,7 +36,7 @@ export class ResetPasswordPage extends AdminPageWithHeader<ResetPasswordPageProp
 
     load() {
         super.load();
-        accountActions.setPasswordResetToken(queryStringAsObject().token);
+        accountActions.setPasswordResetToken(helpers.queryStringAsObject().token);
     }
 
     renderPageContent(): JSX.Element {

@@ -1,28 +1,22 @@
 import * as React from "react";
-import {Sandbox} from "../../../../Sandbox";
 import {expect} from "chai";
-import {expectOrderedActions} from "../../../../actionHelpers";
-import {mockLocation, setupMainStore} from "../../../../mocks/mocks";
-
 import {responsibilityStore} from "../../../../../main/contrib/stores/ResponsibilityStore";
-import {
-    mockModellingGroup,
-    mockResponsibility,
-    mockResponsibilitySet,
-    mockScenario,
-    mockTouchstone
-} from "../../../../mocks/mockModels";
+import {mockModellingGroup, mockTouchstone} from "../../../../mocks/mockModels";
 import {checkAsync} from "../../../../testHelpers";
 import {UploadBurdenEstimatesPage} from "../../../../../main/contrib/components/Responsibilities/BurdenEstimates/UploadBurdenEstimatesPage";
 import {addNavigationTests} from "../../../../shared/NavigationTests";
 import {mockFetcherForMultipleResponses} from "../../../../mocks/mockMultipleEndpoints";
 import {jwtDecoder} from "../../../../../main/shared/sources/JwtDecoder";
 import {mockResult} from "../../../../mocks/mockRemote";
-import {successResult} from "../../../../mocks/mockRemote";
+import {helpers} from "../../../../../main/shared/Helpers";
+import {Notification} from "../../../../../main/shared/actions/NotificationActions";
 import {bootstrapStore} from "../../../../StoreHelpers";
 import {mainStore} from "../../../../../main/contrib/stores/MainStore";
 import {makeLoadable} from "../../../../../main/contrib/stores/Loadable";
 import {mockResponsibilitiesEndpoint, mockTouchstonesEndpoint} from "../../../../mocks/mockEndpoints";
+import {mockLocation, setupMainStore} from "../../../../mocks/mocks";
+import {expectOrderedActions} from "../../../../actionHelpers";
+import {Sandbox} from "../../../../Sandbox";
 
 describe('UploadEstimatesPage', () => {
     const sandbox = new Sandbox();
@@ -42,6 +36,7 @@ describe('UploadEstimatesPage', () => {
 
         const group = mockModellingGroup({id: "group-1"});
         sandbox.sinon.stub(jwtDecoder, "jwtDecode").returns({result: JSON.stringify(mockResult("OK"))});
+        sandbox.sinon.stub(helpers, "queryStringAsObject").returns({result: "blahblahblah"});
 
         setupMainStore({groups: [group]});
 
@@ -49,7 +44,13 @@ describe('UploadEstimatesPage', () => {
 
         checkAsync(done, (afterWait) => {
             afterWait(done, () => {
-                expectOrderedActions(spy, [{action: "EstimateTokenActions.clearUsedToken", payload: true},
+
+                const successNotification: Notification = {
+                    message: "Success! You have uploaded a new set of burden estimates.",
+                    type: "info"
+                };
+                expectOrderedActions(spy, [{action: "NotificationActions.notify", payload: successNotification},
+                    {action: "EstimateTokenActions.clearUsedToken", payload: true},
                     {action: "ModellingGroupActions.setCurrentGroup", payload: "group-1"},
                     {action: "TouchstoneActions.setCurrentTouchstone", payload: "touchstone-1"},
                     {action: "ResponsibilityActions.setCurrentResponsibility", payload: "scenario-1"}
