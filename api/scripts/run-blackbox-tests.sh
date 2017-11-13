@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -ex
 
-export MONTAGU_API_VERSION=$(git rev-parse --short HEAD)
+export MONTAGU_API_VERSION=$(git rev-parse --short=7 HEAD)
 export MONTAGU_DB_VERSION=$(<src/config/db_version)
 MONTAGU_API_BRANCH=$(git symbolic-ref --short HEAD)
 registry=docker.montagu.dide.ic.ac.uk:5000
