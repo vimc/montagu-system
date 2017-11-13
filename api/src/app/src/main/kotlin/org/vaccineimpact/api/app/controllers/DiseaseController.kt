@@ -1,30 +1,27 @@
 package org.vaccineimpact.api.app.controllers
 
 import org.vaccineimpact.api.app.ActionContext
-import org.vaccineimpact.api.app.controllers.endpoints.oneRepoEndpoint
-import org.vaccineimpact.api.app.controllers.endpoints.secured
-import org.vaccineimpact.api.app.repositories.RepositoryFactory
+import org.vaccineimpact.api.app.app_start.Controller
+import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.SimpleObjectsRepository
 import org.vaccineimpact.api.models.Disease
 
-class DiseaseController(context: ControllerContext) : AbstractController(context)
+class DiseaseController(context: ActionContext,
+                        private val simpleObjectsRepository: SimpleObjectsRepository)
+    : Controller(context)
 {
-    override val urlComponent = "/diseases"
-    override fun endpoints(repos: RepositoryFactory) = listOf(
-            oneRepoEndpoint("/", this::getDiseases, repos, { it.simpleObjects }).secured(),
-            oneRepoEndpoint("/:id/", this::getDisease, repos, { it.simpleObjects }).secured()
-    )
+    constructor(context: ActionContext, repositories: Repositories)
+            : this(context, repositories.simpleObjects)
 
-    @Suppress("UNUSED_PARAMETER")
-    fun getDiseases(context: ActionContext, repo: SimpleObjectsRepository): List<Disease>
+
+    fun getDiseases(): List<Disease>
     {
-        return repo.diseases.all().toList()
+        return simpleObjectsRepository.diseases.all().toList()
     }
 
-    fun getDisease(context: ActionContext, repo: SimpleObjectsRepository): Disease
+    fun getDisease(): Disease
     {
-        return repo.diseases.get(diseaseId(context))
+        val diseaseId = context.params(":id")
+        return simpleObjectsRepository.diseases.get(diseaseId)
     }
-
-    private fun diseaseId(context: ActionContext): String = context.params(":id")
 }

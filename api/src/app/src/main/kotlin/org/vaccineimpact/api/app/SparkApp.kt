@@ -1,6 +1,8 @@
 package org.vaccineimpact.api.app
 
 import org.slf4j.LoggerFactory
+import org.vaccineimpact.api.app.app_start.Router
+import org.vaccineimpact.api.app.app_start.route_config.MontaguRouteConfig
 import org.vaccineimpact.api.app.controllers.ControllerContext
 import org.vaccineimpact.api.app.controllers.HomeController
 import org.vaccineimpact.api.app.controllers.MontaguControllers
@@ -9,6 +11,7 @@ import org.vaccineimpact.api.app.repositories.RepositoryFactory
 import org.vaccineimpact.api.db.Config
 import org.vaccineimpact.api.security.KeyHelper
 import org.vaccineimpact.api.security.WebTokenHelper
+import org.vaccineimpact.api.serialization.MontaguSerializer
 import java.io.File
 import java.net.BindException
 import java.net.ServerSocket
@@ -54,6 +57,10 @@ class MontaguApi
             it.mapEndpoints()
         }
         HomeController(endpoints, controllerContext).mapEndpoints()
+
+        Router(MontaguRouteConfig, MontaguSerializer.instance,
+                tokenHelper, repositoryFactory)
+                .mapEndpoints(urlBase)
 
         if (!Config.authEnabled)
         {
