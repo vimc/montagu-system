@@ -5,6 +5,8 @@ import { mockLocation } from "../../../../mocks/mocks";
 import { checkAsync } from "../../../../testHelpers";
 import {ViewAllUsersPage} from "../../../../../main/admin/components/Users/List/ViewAllUsersPage";
 import {userStore} from "../../../../../main/admin/stores/UserStore";
+import {addNavigationTests} from "../../../../shared/NavigationTests";
+import {doNothing} from "../../../../../main/shared/Helpers";
 
 describe("ViewAllUsersPageTests", () => {
     const sandbox = new Sandbox();
@@ -18,4 +20,6 @@ describe("ViewAllUsersPageTests", () => {
             expect(spy.called).to.equal(true, "Expected usersStore.fetchUsers to be triggered");
         });
     });
+
+    addNavigationTests(new ViewAllUsersPage(), sandbox, doNothing);
 });

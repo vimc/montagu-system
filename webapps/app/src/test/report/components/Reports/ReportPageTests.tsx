@@ -10,6 +10,10 @@ import {alt} from "../../../../main/shared/alt";
 import {IRouter} from "simple-react-router";
 import {ReportPage, ReportPageProps} from "../../../../main/report/components/Reports/ReportPage";
 import {ReportDetails} from "../../../../main/report/components/Reports/ReportDetails";
+import {addNavigationTests} from "../../../shared/NavigationTests";
+import {mockFetcherForMultipleResponses} from "../../../mocks/mockMultipleEndpoints";
+import {mockReportsEndpoint} from "../../../mocks/mockEndpoints";
+import {mockReport} from "../../../mocks/mockModels";
 
 describe("ReportPage", () => {
     const sandbox = new Sandbox();
@@ -30,17 +34,21 @@ describe("ReportPage", () => {
 
     const checkExpectedActionsWhen = function (done: DoneCallback, action: () => void) {
         const spy = sandbox.dispatchSpy();
+        const fetchReports = sandbox.sinon.stub(reportStore, "fetchReports").returns(Promise.resolve(null));
         const fetchVersions = sandbox.sinon.stub(reportStore, "fetchVersions").returns(Promise.resolve(null));
         const fetchVersionDetails = sandbox.sinon.stub(reportStore, "fetchVersionDetails").returns(Promise.resolve(null));
 
         action();
 
         checkAsync(done, (afterWait) => {
-            expectOneAction(spy, {action: "ReportActions.setCurrentReport", payload: "reportname"}, 0);
-            expect(fetchVersions.called).to.equal(true, "Expected fetchVersions to be called");
+            expect(fetchReports.called).to.equal(true, "Expected fetchReports to be called");
             afterWait(done, () => {
-                expectOneAction(spy, {action: "ReportActions.setCurrentVersion", payload: "versionname"}, 1);
-                expect(fetchVersionDetails.called).to.equal(true, "Expected fetchVersionDetails to be called");
+                expectOneAction(spy, {action: "ReportActions.setCurrentReport", payload: "reportname"}, 0);
+                expect(fetchVersions.called).to.equal(true, "Expected fetchVersions to be called");
+                afterWait(done, () => {
+                    expectOneAction(spy, {action: "ReportActions.setCurrentVersion", payload: "versionname"}, 1);
+                    expect(fetchVersionDetails.called).to.equal(true, "Expected fetchVersionDetails to be called");
+                });
             });
         });
     };
@@ -63,5 +71,13 @@ describe("ReportPage", () => {
             expect(redirectTo.called).to.equal(true, "Expected redirectTo to be called");
             expect(redirectTo.calledWith("/reportname/versionname/"));
         });
+    });
+
+    const location = mockLocation<ReportPageProps>({report: "report", version: "v1"});
+    const page = new ReportPage({location: location, router: null});
+    addNavigationTests(page, sandbox, () => {
+        mockFetcherForMultipleResponses([
+            mockReportsEndpoint([mockReport({name: "report"})])
+        ])
     });
 });

@@ -11,14 +11,18 @@ import {
 } from "../../../../../main/admin/components/Users/SingleUser/ViewUserDetailsPage";
 import { alt } from "../../../../../main/shared/alt";
 import { mockUser } from "../../../../mocks/mockModels";
+import {addNavigationTests} from "../../../../shared/NavigationTests";
+import {mockFetcherForMultipleResponses} from "../../../../mocks/mockMultipleEndpoints";
+import {successResult} from "../../../../mocks/mockRemote";
+import {mockUsersEndpoint} from "../../../../mocks/mockEndpoints";
 
 describe("ViewUserDetailsPage", () => {
     const sandbox = new Sandbox();
-
     afterEach(() => sandbox.restore());
 
-    it("triggers fetch on load", (done: DoneCallback) => {
+    const location = mockLocation<UserDetailsPageProps>({ username: "testuser" });
 
+    it("triggers fetch on load", (done: DoneCallback) => {
         alt.bootstrap(JSON.stringify({
             UserStore: {
                 currentUsername: "testuser",
@@ -29,14 +33,11 @@ describe("ViewUserDetailsPage", () => {
                 }
             }
         }));
-
         const fetchUsers = sandbox.sinon.stub(userStore, "fetchUsers")
             .returns(Promise.resolve(true));
-
         const dispatchSpy = sandbox.dispatchSpy();
 
-        const location = mockLocation<UserDetailsPageProps>({ username: "testuser" });
-        sandbox.mount(<ViewUserDetailsPage location={ location } router={null} />);
+        new ViewUserDetailsPage({location: location, router: null}).load();
 
         checkAsync(done, (afterWait) => {
             expect(fetchUsers.called).to.equal(true, "Expected userStore.fetchUsers to be triggered");
@@ -44,5 +45,12 @@ describe("ViewUserDetailsPage", () => {
                 expectOneAction(dispatchSpy, { action: "UserActions.setCurrentUser", payload: "testuser" });
              });
         });
+    });
+
+    const page = new ViewUserDetailsPage({location: location, router: null});
+    addNavigationTests(page, sandbox, () => {
+        mockFetcherForMultipleResponses([
+            mockUsersEndpoint([mockUser()])
+        ]);
     });
 });
