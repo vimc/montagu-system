@@ -33,7 +33,6 @@ export function addNavigationTests(page: PageWithHeader<any>, sandbox: Sandbox, 
                 checkString(crumb.name, "name", asString);
                 checkString(crumb.url, "URL", asString);
             });
-            //console.log("Last crumb: " + JSON.stringify(crumbs[crumbs.length - 1]));
         });
     };
 
