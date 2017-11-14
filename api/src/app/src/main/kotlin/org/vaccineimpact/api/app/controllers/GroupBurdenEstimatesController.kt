@@ -18,15 +18,19 @@ import javax.servlet.MultipartConfigElement
 
 open class GroupBurdenEstimatesController(context: ControllerContext) : AbstractController(context)
 {
-    override val urlComponent = "/modelling-groups/:group-id/responsibilities/:touchstone-id/:scenario-id/estimates"
+    override val urlComponent = "/modelling-groups/:group-id/responsibilities/:touchstone-id/:scenario-id"
     private val groupScope = "modelling-group:<group-id>"
 
     override fun endpoints(repos: RepositoryFactory): Iterable<EndpointDefinition<*>>
     {
         return listOf(
-                oneRepoEndpoint("/", this::addBurdenEstimates, repos, { it.burdenEstimates }, method = HttpMethod.post)
+                oneRepoEndpoint("/estimates/", this::addBurdenEstimates, repos, { it.burdenEstimates }, method = HttpMethod.post)
                         .secured(setOf("$groupScope/estimates.write", "$groupScope/responsibilities.read")),
-                oneRepoEndpoint("/get_onetime_link/", { c, r -> getOneTimeLinkToken(c, r, OneTimeAction.BURDENS) }, repos, { it.token })
+                oneRepoEndpoint("/estimate-set/", this::createBurdenEstimateSet, repos, { it.burdenEstimates }, method = HttpMethod.post)
+                        .secured(setOf("$groupScope/estimates.write", "$groupScope/responsibilities.read")),
+                oneRepoEndpoint("/estimate-set/:set-id/", this::populateBurdenEstimateSet, repos, { it.burdenEstimates }, method = HttpMethod.post)
+                        .secured(setOf("$groupScope/estimates.write", "$groupScope/responsibilities.read")),
+                oneRepoEndpoint("/estimates/get_onetime_link/", { c, r -> getOneTimeLinkToken(c, r, OneTimeAction.BURDENS) }, repos, { it.token })
                         .secured(setOf("$groupScope/estimates.write", "$groupScope/responsibilities.read"))
         )
     }
