@@ -66,9 +66,9 @@ class UploadBurdenEstimateTests : ControllerTests<GroupBurdenEstimatesController
             on { params(":touchstone-id") } doReturn "touchstone-1"
             on { params(":scenario-id") } doReturn "scenario-1"
         }
-        val id = controller.createBurdenEstimateSet(mockContext, repo)
+        val url = controller.createBurdenEstimateSet(mockContext, repo)
         val after = Instant.now()
-        assertThat(id).isEqualTo(1)
+        assertThat(url).endsWith("/modelling-groups/group-1/responsibilities/touchstone-1/scenario-1/estimates/1/")
         verify(touchstoneSet).get("touchstone-1")
         verify(repo).createBurdenEstimateSet(
                 eq("group-1"), eq("touchstone-1"), eq("scenario-1"),
