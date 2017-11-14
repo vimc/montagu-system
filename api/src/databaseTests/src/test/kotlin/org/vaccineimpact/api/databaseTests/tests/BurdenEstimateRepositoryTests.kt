@@ -56,8 +56,22 @@ class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRepository>(
         } makeTheseChanges { repo ->
             repo.createBurdenEstimateSet(groupId, touchstoneId, scenarioId, username, timestamp)
         } andCheckDatabase { db ->
-            val setId = checkBurdenEstimateSetMetadata(db, returnedIds!!)
-            checkBurdenEstimates(db, setId)
+            checkBurdenEstimateSetMetadata(db, returnedIds!!)
+        }
+    }
+
+    @Test
+    fun `can populate burden estimate set`()
+    {
+        var setId: Int? = null
+
+        given { db ->
+            setupDatabase(db)
+        } makeTheseChanges { repo ->
+            setId = repo.createBurdenEstimateSet(groupId, touchstoneId, scenarioId, username, timestamp)
+            repo.populateBurdenEstimateSet(setId!!, groupId, touchstoneId, scenarioId, data)
+        } andCheckDatabase { db ->
+            checkBurdenEstimates(db, setId!!)
         }
     }
 
