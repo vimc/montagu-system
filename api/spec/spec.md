@@ -1070,10 +1070,23 @@ database. There may be more or fewer columns.
        "Hib3",   1997,    50,     "AGO",       "Angola",          6000,     1200,      NA,    5870
 
 ## POST /modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}/{scenario-id}/estimates/
-Adds a new burden estimate.
+Creates a new, empty burden estimate set.
 
 Can only by invoked if:
 
+* The touchstone is `open`
+* The relevant responsibility set is `incomplete`
+
+Required permissions: Scoped to modelling group: `estimates.write`, `responsibilities.read`.
+
+Returns the integer id of the new set.
+
+## POST /modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}/{scenario-id}/estimates/{set-id}/
+Populates an empty burden estimate set.
+
+Can only by invoked if:
+
+* The set status is `empty`
 * The touchstone is `open`
 * The relevant responsibility set is `incomplete`
 
