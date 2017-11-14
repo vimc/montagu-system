@@ -56,7 +56,7 @@ class BurdenEstimateTests : DatabaseTest()
         }
 
         val response = requestHelper.post("$setUrl/$setId", token = token, data = csvData)
-        Assertions.assertThat(response.statusCode).isEqualTo(201)
+        Assertions.assertThat(response.statusCode).isEqualTo(200)
     }
 
 
