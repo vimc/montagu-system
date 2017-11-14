@@ -35,14 +35,17 @@ open class GroupBurdenEstimatesController(context: ControllerContext) : Abstract
         )
     }
 
-    fun createBurdenEstimateSet(context: ActionContext, estimateRepository: BurdenEstimateRepository): Int
+    fun createBurdenEstimateSet(context: ActionContext, estimateRepository: BurdenEstimateRepository): String
     {
         // First check if we're allowed to see this touchstone
         val path = getValidResponsibilityPath(context, estimateRepository)
 
-        return estimateRepository.createBurdenEstimateSet(path.groupId, path.touchstoneId, path.scenarioId,
+        val id = estimateRepository.createBurdenEstimateSet(path.groupId, path.touchstoneId, path.scenarioId,
                 uploader = context.username!!,
                 timestamp = Instant.now())
+
+        val url = "/modelling-groups/${path.groupId}/responsibilities/${path.touchstoneId}/${path.scenarioId}/estimates/$id/"
+        return objectCreation(context, url)
     }
 
     fun addBurdenEstimatesFromHTMLForm(context: ActionContext, estimateRepository: BurdenEstimateRepository): String
@@ -79,13 +82,13 @@ open class GroupBurdenEstimatesController(context: ControllerContext) : Abstract
             throw InconsistentDataError("More than one value was present in the disease column")
         }
 
-        val id = estimateRepository.populateBurdenEstimateSet(
+        estimateRepository.populateBurdenEstimateSet(
                 context.params(":set-id").toInt(),
                 path.groupId, path.touchstoneId, path.scenarioId,
                 data
         )
-        val url = "/modelling-groups/${path.groupId}/responsibilities/${path.touchstoneId}/${path.scenarioId}/estimates/$id/"
-        return objectCreation(context, url)
+
+        return okayResponse()
     }
 
     open fun addBurdenEstimates(context: ActionContext, estimateRepository: BurdenEstimateRepository): String

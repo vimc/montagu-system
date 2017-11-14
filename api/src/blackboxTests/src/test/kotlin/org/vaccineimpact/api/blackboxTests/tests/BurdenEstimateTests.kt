@@ -2,10 +2,12 @@ package org.vaccineimpact.api.blackboxTests.tests
 
 import org.assertj.core.api.Assertions
 import org.junit.Test
-import org.vaccineimpact.api.blackboxTests.helpers.*
+import org.vaccineimpact.api.blackboxTests.helpers.LocationContraint
+import org.vaccineimpact.api.blackboxTests.helpers.RequestHelper
+import org.vaccineimpact.api.blackboxTests.helpers.TestUserHelper
+import org.vaccineimpact.api.blackboxTests.helpers.validate
 import org.vaccineimpact.api.blackboxTests.schemas.CSVSchema
 import org.vaccineimpact.api.db.JooqContext
-import org.vaccineimpact.api.db.Tables
 import org.vaccineimpact.api.db.direct.*
 import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.test_helpers.DatabaseTest
@@ -30,13 +32,15 @@ class BurdenEstimateTests : DatabaseTest()
     @Test
     fun `can create burden estimate`()
     {
-        validate(setUrl, method = HttpMethod.post) sending {
-            csvData
-        } given { db ->
-            setUp(db)
-        } requiringPermissions {
-            requiredPermissions
-        } andCheckObjectCreation LocationContraint(url, unknownId = true)
+        val requestHelper = RequestHelper()
+        val token = TestUserHelper.setupTestUserAndGetToken(requiredPermissions.plus(PermissionSet("*/can-login")))
+
+        JooqContext().use {
+            setUp(it)
+        }
+
+        val response = requestHelper.post(setUrl, token = token, data = csvData)
+        Assertions.assertThat(response.statusCode).isEqualTo(201)
     }
 
 
@@ -52,7 +56,7 @@ class BurdenEstimateTests : DatabaseTest()
         }
 
         val response = requestHelper.post("$setUrl/$setId", token = token, data = csvData)
-        Assertions.assertThat(response.statusCode).isEqualTo(200)
+        Assertions.assertThat(response.statusCode).isEqualTo(201)
     }
 
 
@@ -66,7 +70,7 @@ class BurdenEstimateTests : DatabaseTest()
         } withRequestSchema {
             CSVSchema("BurdenEstimate")
         } requiringPermissions {
-           requiredPermissions
+            requiredPermissions
         } andCheckObjectCreation LocationContraint(url, unknownId = true)
     }
 
