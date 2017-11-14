@@ -33,7 +33,7 @@ fun JooqContext.addModel(
         citation: String = "Unknown citation",
         isCurrent: Boolean = true,
         versions: List<String> = emptyList()
-)
+): Int
 {
     val record = this.dsl.newRecord(MODEL).apply {
         this.id = id
@@ -45,10 +45,13 @@ fun JooqContext.addModel(
         this.disease = diseaseId
     }.store()
 
+    var versionId = 0
     for (version in versions)
     {
-        addModelVersion(id, version, setCurrent = true)
+        versionId = addModelVersion(id, version, setCurrent = true)
     }
+
+    return versionId
 }
 
 fun JooqContext.addModelVersion(
