@@ -36,6 +36,32 @@ class JooqBurdenEstimateRepository(
     override fun addBurdenEstimateSet(groupId: String, touchstoneId: String, scenarioId: String,
                                       estimates: List<BurdenEstimate>, uploader: String, timestamp: Instant): Int
     {
+        val setId = createBurdenEstimateSet(groupId, touchstoneId, scenarioId, uploader, timestamp)
+        populateBurdenEstimateSet(setId, groupId, touchstoneId, scenarioId, estimates)
+        return setId
+    }
+
+    override fun populateBurdenEstimateSet(setId: Int, groupId: String, touchstoneId: String, scenarioId: String,
+                                      estimates: List<BurdenEstimate>)
+    {
+        val outcomeLookup = getOutcomesAsLookup()
+        val cohortSizeId = outcomeLookup["cohort_size"]
+                ?: throw DatabaseContentsError("Expected a value with code 'cohort_size' in burden_outcome table")
+
+        // Dereference modelling group IDs
+        val modellingGroup = modellingGroupRepository.getModellingGroup(groupId)
+
+        val responsibilityInfo = getResponsibilityInfo(modellingGroup.id, touchstoneId, scenarioId)
+
+        addEstimatesToSet(estimates, setId, outcomeLookup, cohortSizeId, responsibilityInfo.disease)
+
+        updateCurrentBurdenEstimateSet(responsibilityInfo.id, setId)
+    }
+
+
+    override fun createBurdenEstimateSet(groupId: String, touchstoneId: String, scenarioId: String,
+                                          uploader: String, timestamp: Instant): Int
+    {
         // Dereference modelling group IDs
         val modellingGroup = modellingGroupRepository.getModellingGroup(groupId)
 
@@ -54,7 +80,6 @@ class JooqBurdenEstimateRepository(
                     " and approved. You cannot upload any new estimates.")
         }
 
-        val outcomeLookup = getOutcomesAsLookup()
         val latestModelVersion = dsl.select(MODEL_VERSION.ID)
                 .fromJoinPath(MODELLING_GROUP, MODEL)
                 .join(MODEL_VERSION)
@@ -63,18 +88,11 @@ class JooqBurdenEstimateRepository(
                 .and(MODEL.DISEASE.eq(responsibilityInfo.disease))
                 .and(MODEL.IS_CURRENT)
                 .fetch().singleOrNull()?.value1()
-            ?: throw DatabaseContentsError("Modelling group $groupId does not have any models/model versions in the database")
+                ?: throw DatabaseContentsError("Modelling group $groupId does not have any models/model versions in the database")
 
-        val setId = addSet(responsibilityInfo.id, uploader, timestamp, latestModelVersion)
-        val cohortSizeId = outcomeLookup["cohort_size"]
-            ?: throw DatabaseContentsError("Expected a value with code 'cohort_size' in burden_outcome table")
-
-        addEstimatesToSet(estimates, setId, outcomeLookup, cohortSizeId, responsibilityInfo.disease)
-
-        updateCurrentBurdenEstimateSet(responsibilityInfo.id, setId)
-
-        return setId
+        return addSet(responsibilityInfo.id, uploader, timestamp, latestModelVersion)
     }
+
 
     private fun updateCurrentBurdenEstimateSet(responsibilityId: Int, setId: Int)
     {

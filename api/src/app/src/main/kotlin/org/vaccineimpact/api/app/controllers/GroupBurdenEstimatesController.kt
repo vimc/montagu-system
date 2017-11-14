@@ -31,6 +31,10 @@ open class GroupBurdenEstimatesController(context: ControllerContext) : Abstract
         )
     }
 
+    fun createBurdenEstimateSet(context: ActionContext, estimateRepository: BurdenEstimateRepository){
+
+    }
+
     fun addBurdenEstimatesFromHTMLForm(context: ActionContext, estimateRepository: BurdenEstimateRepository): String
     {
         // First check if we're allowed to see this touchstone
