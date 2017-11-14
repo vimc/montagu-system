@@ -31,8 +31,14 @@ open class GroupBurdenEstimatesController(context: ControllerContext) : Abstract
         )
     }
 
-    fun createBurdenEstimateSet(context: ActionContext, estimateRepository: BurdenEstimateRepository){
+    fun createBurdenEstimateSet(context: ActionContext, estimateRepository: BurdenEstimateRepository): Int
+    {
+        // First check if we're allowed to see this touchstone
+        val path = getValidResponsibilityPath(context, estimateRepository)
 
+        return estimateRepository.createBurdenEstimateSet(path.groupId, path.touchstoneId, path.scenarioId,
+                uploader = context.username!!,
+                timestamp = Instant.now())
     }
 
     fun addBurdenEstimatesFromHTMLForm(context: ActionContext, estimateRepository: BurdenEstimateRepository): String
@@ -54,6 +60,28 @@ open class GroupBurdenEstimatesController(context: ControllerContext) : Abstract
                     serializer).toList()
             return saveBurdenEstimates(data, estimateRepository, context, path)
         }
+    }
+
+    fun populateBurdenEstimateSet(context: ActionContext, estimateRepository: BurdenEstimateRepository): String
+    {
+        // First check if we're allowed to see this touchstone
+        val path = getValidResponsibilityPath(context, estimateRepository)
+
+        // Then add the burden estimates
+        val data = context.csvData<BurdenEstimate>()
+
+        if (data.map { it.disease }.distinct().count() > 1)
+        {
+            throw InconsistentDataError("More than one value was present in the disease column")
+        }
+
+        val id = estimateRepository.populateBurdenEstimateSet(
+                context.params(":set-id").toInt(),
+                path.groupId, path.touchstoneId, path.scenarioId,
+                data
+        )
+        val url = "/modelling-groups/${path.groupId}/responsibilities/${path.touchstoneId}/${path.scenarioId}/estimates/$id/"
+        return objectCreation(context, url)
     }
 
     open fun addBurdenEstimates(context: ActionContext, estimateRepository: BurdenEstimateRepository): String
@@ -96,4 +124,5 @@ open class GroupBurdenEstimatesController(context: ControllerContext) : Abstract
 
         return path
     }
+
 }
