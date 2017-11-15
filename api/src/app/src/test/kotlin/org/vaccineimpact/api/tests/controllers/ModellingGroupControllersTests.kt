@@ -10,6 +10,7 @@ import org.vaccineimpact.api.app.controllers.ModellingGroupController
 import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.errors.MissingRequiredPermissionError
 import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
+import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.app.repositories.UserRepository
 import org.vaccineimpact.api.serialization.SplitData
 import org.vaccineimpact.api.db.nextDecimal
@@ -192,6 +193,29 @@ class ModellingGroupControllersTests : ControllerTests<ModellingGroupController>
         Assertions.assertThat(headers).hasSameElementsAs(expectedHeaders)
         Assertions.assertThat(firstRow.coverageAndTargetPerYear["target_$testYear"] == testTarget)
         Assertions.assertThat(firstRow.coverageAndTargetPerYear["coverage_$testYear"] == testCoverage)
+    }
+
+    @Test
+    fun `wide format table is empty if long format is`()
+    {
+        val coverageSets = mockCoverageSetsData(TouchstoneStatus.IN_PREPARATION)
+        val splitData = SplitData(coverageSets, DataTable.new(listOf<LongCoverageRow>().asSequence()))
+        val repo = mock<ModellingGroupRepository> {
+            on { getCoverageData(any(), any(), any()) } doReturn splitData
+        }
+
+        val context = mock<ActionContext> {
+            on { it.params(":group-id") } doReturn "gId"
+            on { it.params(":touchstone-id") } doReturn "tId"
+            on { it.params(":scenario-id") } doReturn "sId"
+            on { it.queryParams("format") } doReturn "wide"
+            on { hasPermission(any()) } doReturn true
+        }
+
+        val controller = ModellingGroupController(mockControllerContext())
+        val data = controller.getCoverageData(context, repo).data
+
+        Assertions.assertThat(data.count()).isEqualTo(0)
     }
 
     private val years = listOf(1985, 1990, 1995, 2000)
