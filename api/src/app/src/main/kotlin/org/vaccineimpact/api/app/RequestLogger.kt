@@ -1,6 +1,7 @@
 package org.vaccineimpact.api.app
 
 import org.pac4j.sparkjava.SparkWebContext
+import org.vaccineimpact.api.app.context.DirectActionContext
 import org.vaccineimpact.api.app.repositories.AccessLogRepository
 import org.vaccineimpact.api.app.security.montaguUser
 import spark.Request

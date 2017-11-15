@@ -1,5 +1,7 @@
 package org.vaccineimpact.api.app
 
+import org.vaccineimpact.api.app.context.ActionContext
+import org.vaccineimpact.api.app.context.OneTimeLinkActionContext
 import org.vaccineimpact.api.serialization.Deserializer
 import org.vaccineimpact.api.models.helpers.OneTimeAction
 import org.vaccineimpact.api.app.controllers.MontaguControllers

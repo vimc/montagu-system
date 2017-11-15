@@ -1,6 +1,6 @@
 package org.vaccineimpact.api.app.controllers
 
-import org.vaccineimpact.api.app.ActionContext
+import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.controllers.endpoints.basicEndpoint
 import org.vaccineimpact.api.app.repositories.RepositoryFactory
 import org.vaccineimpact.api.db.Config

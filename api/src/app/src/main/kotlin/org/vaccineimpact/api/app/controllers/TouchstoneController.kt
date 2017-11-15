@@ -1,7 +1,7 @@
 package org.vaccineimpact.api.app.controllers
 
 import org.vaccineimpact.api.models.helpers.OneTimeAction
-import org.vaccineimpact.api.app.ActionContext
+import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.controllers.endpoints.EndpointDefinition
 import org.vaccineimpact.api.app.controllers.endpoints.oneRepoEndpoint
 import org.vaccineimpact.api.app.controllers.endpoints.secured
