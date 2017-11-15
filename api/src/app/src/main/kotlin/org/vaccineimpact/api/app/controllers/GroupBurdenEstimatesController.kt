@@ -1,6 +1,7 @@
 package org.vaccineimpact.api.app.controllers
 
 import org.vaccineimpact.api.app.context.ActionContext
+import org.vaccineimpact.api.app.context.RequestBodySource
 import org.vaccineimpact.api.app.controllers.endpoints.EndpointDefinition
 import org.vaccineimpact.api.app.controllers.endpoints.oneRepoEndpoint
 import org.vaccineimpact.api.app.controllers.endpoints.secured
@@ -31,34 +32,20 @@ open class GroupBurdenEstimatesController(context: ControllerContext) : Abstract
         )
     }
 
-    fun addBurdenEstimatesFromHTMLForm(context: ActionContext, estimateRepository: BurdenEstimateRepository): String
-    {
-        // First check if we're allowed to see this touchstone
-        val path = getValidResponsibilityPath(context, estimateRepository)
+    open fun addBurdenEstimates(context: ActionContext, estimateRepository: BurdenEstimateRepository)
+        = addBurdenEstimates(context, estimateRepository, RequestBodySource.Simple())
 
-        val request = context.request
-        if (request.raw().getAttribute("org.eclipse.jetty.multipartConfig") == null)
-        {
-            val multipartConfigElement = MultipartConfigElement(System.getProperty("java.io.tmpdir"))
-            request.raw().setAttribute("org.eclipse.jetty.multipartConfig", multipartConfigElement)
-        }
-
-        request.raw().getPart("file").inputStream.bufferedReader().use {
-
-            // Then add the burden estimates
-            val data = DataTableDeserializer.deserialize(it.readText(), BurdenEstimate::class,
-                    serializer).toList()
-            return saveBurdenEstimates(data, estimateRepository, context, path)
-        }
-    }
-
-    open fun addBurdenEstimates(context: ActionContext, estimateRepository: BurdenEstimateRepository): String
+    open fun addBurdenEstimates(
+            context: ActionContext,
+            estimateRepository: BurdenEstimateRepository,
+            source: RequestBodySource
+    ): String
     {
         // First check if we're allowed to see this touchstone
         val path = getValidResponsibilityPath(context, estimateRepository)
 
         // Then add the burden estimates
-        val data = context.csvData<BurdenEstimate>()
+        val data = context.csvData<BurdenEstimate>(from = source)
         return saveBurdenEstimates(data, estimateRepository, context, path)
     }
 
