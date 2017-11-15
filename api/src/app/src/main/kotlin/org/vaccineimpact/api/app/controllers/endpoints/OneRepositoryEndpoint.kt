@@ -1,8 +1,8 @@
 package org.vaccineimpact.api.app.controllers.endpoints
 
 import org.vaccineimpact.api.models.helpers.ContentTypes
-import org.vaccineimpact.api.app.ActionContext
-import org.vaccineimpact.api.app.DirectActionContext
+import org.vaccineimpact.api.app.context.ActionContext
+import org.vaccineimpact.api.app.context.DirectActionContext
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.Repository
 import org.vaccineimpact.api.app.repositories.RepositoryFactory

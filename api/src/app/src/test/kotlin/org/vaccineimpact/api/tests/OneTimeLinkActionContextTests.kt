@@ -4,7 +4,7 @@ import com.nhaarman.mockito_kotlin.mock
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
-import org.vaccineimpact.api.app.OneTimeLinkActionContext
+import org.vaccineimpact.api.app.context.OneTimeLinkActionContext
 import org.vaccineimpact.api.test_helpers.MontaguTests
 
 class OneTimeLinkActionContextTests : MontaguTests()

@@ -4,7 +4,7 @@ import org.pac4j.core.authorization.authorizer.AbstractRequireAllAuthorizer
 import org.pac4j.core.context.WebContext
 import org.pac4j.core.profile.CommonProfile
 import org.pac4j.sparkjava.SparkWebContext
-import org.vaccineimpact.api.app.DirectActionContext
+import org.vaccineimpact.api.app.context.DirectActionContext
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 
 class MontaguAuthorizer(requiredPermissions: Set<PermissionRequirement>)

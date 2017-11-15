@@ -1,6 +1,6 @@
 package org.vaccineimpact.api.app.controllers
 
-import org.vaccineimpact.api.app.ActionContext
+import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.controllers.endpoints.EndpointDefinition
 import org.vaccineimpact.api.app.controllers.endpoints.oneRepoEndpoint
 import org.vaccineimpact.api.app.controllers.endpoints.secured
@@ -8,7 +8,7 @@ import org.vaccineimpact.api.app.controllers.endpoints.streamed
 import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.errors.MissingRequiredPermissionError
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
-import org.vaccineimpact.api.app.postData
+import org.vaccineimpact.api.app.context.postData
 import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.RepositoryFactory

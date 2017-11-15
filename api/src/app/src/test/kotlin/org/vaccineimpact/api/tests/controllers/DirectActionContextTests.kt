@@ -9,8 +9,8 @@ import org.junit.Test
 import org.pac4j.core.context.Pac4jConstants
 import org.pac4j.core.profile.CommonProfile
 import org.pac4j.sparkjava.SparkWebContext
-import org.vaccineimpact.api.app.DirectActionContext
-import org.vaccineimpact.api.app.postData
+import org.vaccineimpact.api.app.context.DirectActionContext
+import org.vaccineimpact.api.app.context.postData
 import org.vaccineimpact.api.app.security.PERMISSIONS
 import org.vaccineimpact.api.models.Scope
 import org.vaccineimpact.api.models.permissions.PermissionSet
