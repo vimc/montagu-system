@@ -24,6 +24,7 @@ import org.vaccineimpact.api.db.tables.AppUser;
 import org.vaccineimpact.api.db.tables.BurdenEstimate;
 import org.vaccineimpact.api.db.tables.BurdenEstimateSet;
 import org.vaccineimpact.api.db.tables.BurdenEstimateSetProblem;
+import org.vaccineimpact.api.db.tables.BurdenEstimateSetStatus;
 import org.vaccineimpact.api.db.tables.BurdenOutcome;
 import org.vaccineimpact.api.db.tables.Country;
 import org.vaccineimpact.api.db.tables.CountryMetadata;
@@ -107,7 +108,7 @@ import org.vaccineimpact.api.db.tables.records.SelectBurdenDataColRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = -517173592;
+    private static final long serialVersionUID = -1070320126;
 
     /**
      * The reference instance of <code>public</code>
@@ -143,6 +144,11 @@ public class Public extends SchemaImpl {
      * The table <code>public.burden_estimate_set_problem</code>.
      */
     public final BurdenEstimateSetProblem BURDEN_ESTIMATE_SET_PROBLEM = org.vaccineimpact.api.db.tables.BurdenEstimateSetProblem.BURDEN_ESTIMATE_SET_PROBLEM;
+
+    /**
+     * The table <code>public.burden_estimate_set_status</code>.
+     */
+    public final BurdenEstimateSetStatus BURDEN_ESTIMATE_SET_STATUS = org.vaccineimpact.api.db.tables.BurdenEstimateSetStatus.BURDEN_ESTIMATE_SET_STATUS;
 
     /**
      * The table <code>public.burden_outcome</code>.
@@ -704,6 +710,7 @@ public class Public extends SchemaImpl {
             BurdenEstimate.BURDEN_ESTIMATE,
             BurdenEstimateSet.BURDEN_ESTIMATE_SET,
             BurdenEstimateSetProblem.BURDEN_ESTIMATE_SET_PROBLEM,
+            BurdenEstimateSetStatus.BURDEN_ESTIMATE_SET_STATUS,
             BurdenOutcome.BURDEN_OUTCOME,
             Country.COUNTRY,
             CountryMetadata.COUNTRY_METADATA,

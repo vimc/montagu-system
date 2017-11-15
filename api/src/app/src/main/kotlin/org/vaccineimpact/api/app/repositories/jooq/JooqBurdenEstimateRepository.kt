@@ -160,6 +160,11 @@ class JooqBurdenEstimateRepository(
                 }
             }
         }
+
+        dsl.update(BURDEN_ESTIMATE_SET)
+                .set(BURDEN_ESTIMATE_SET.STATUS, "complete")
+                .where(BURDEN_ESTIMATE_SET.ID.eq(setId))
+                .execute()
     }
 
     private fun getAllCountryIds() = dsl.select(COUNTRY.ID)
@@ -195,6 +200,7 @@ class JooqBurdenEstimateRepository(
             this.uploadedOn = Timestamp.from(timestamp)
             this.runInfo = "Not provided"
             this.interpolated = false
+            this.status = "empty"
         }
         setRecord.insert()
         return setRecord.id

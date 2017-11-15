@@ -47,16 +47,17 @@ class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRepository>(
     private val timestamp = LocalDateTime.of(2017, Month.JUNE, 13, 12, 30).toInstant(ZoneOffset.UTC)
 
     @Test
-    fun `can add burden estimate set`()
+    fun `can add burden estimate set with empty status`()
     {
         var returnedIds: ReturnedIds? = null
+        var setId: Int? = null
 
         given { db ->
             returnedIds = setupDatabase(db)
         } makeTheseChanges { repo ->
-            repo.createBurdenEstimateSet(groupId, touchstoneId, scenarioId, username, timestamp)
+            setId = repo.createBurdenEstimateSet(groupId, touchstoneId, scenarioId, username, timestamp)
         } andCheckDatabase { db ->
-            checkBurdenEstimateSetMetadata(db, returnedIds!!)
+            checkBurdenEstimateSetMetadata(db, setId!!, returnedIds!!, "empty")
         }
     }
 
@@ -64,14 +65,16 @@ class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRepository>(
     fun `can populate burden estimate set`()
     {
         var setId: Int? = null
+        var returnedIds: ReturnedIds? = null
 
         given { db ->
-            setupDatabase(db)
+            returnedIds = setupDatabase(db)
         } makeTheseChanges { repo ->
             setId = repo.createBurdenEstimateSet(groupId, touchstoneId, scenarioId, username, timestamp)
             repo.populateBurdenEstimateSet(setId!!, groupId, touchstoneId, scenarioId, data)
         } andCheckDatabase { db ->
             checkBurdenEstimates(db, setId!!)
+            checkBurdenEstimateSetMetadata(db, setId!!, returnedIds!!, "complete")
         }
     }
 
@@ -113,7 +116,8 @@ class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRepository>(
             val repo = makeRepository(db)
             assertThatThrownBy {
                 val setId = repo.createBurdenEstimateSet(groupId, touchstoneId, scenarioId, username, timestamp)
-                repo.populateBurdenEstimateSet(setId, groupId, touchstoneId, scenarioId, badData)            }.isInstanceOf(UnknownObjectError::class.java).matches {
+                repo.populateBurdenEstimateSet(setId, groupId, touchstoneId, scenarioId, badData)
+            }.isInstanceOf(UnknownObjectError::class.java).matches {
                 (it as UnknownObjectError).typeName == "country"
             }
         }
@@ -245,14 +249,18 @@ class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRepository>(
         checkRecord(records[5], setId, 1980, 30, "AGO", "deaths", 20.toDecimal())
     }
 
-    private fun checkBurdenEstimateSetMetadata(db: JooqContext, returnedIds: ReturnedIds): Int
+    private fun checkBurdenEstimateSetMetadata(db: JooqContext,
+                                               setId: Int,
+                                               returnedIds: ReturnedIds,
+                                               expectedStatus: String): Int
     {
         val t = BURDEN_ESTIMATE_SET
-        val set = db.dsl.fetchOne(t)
+        val set = db.dsl.selectFrom(t).where(t.ID.eq(setId)).fetchOne()
         assertThat(set[t.MODEL_VERSION]).isEqualTo(returnedIds.modelVersion!!)
         assertThat(set[t.RESPONSIBILITY]).isEqualTo(returnedIds.responsibility)
         assertThat(set[t.UPLOADED_BY]).isEqualTo(username)
         assertThat(set[t.UPLOADED_ON].toInstant()).isEqualTo(timestamp)
+        assertThat(set[t.STATUS]).isEqualTo(expectedStatus)
         return set[t.ID]
     }
 
