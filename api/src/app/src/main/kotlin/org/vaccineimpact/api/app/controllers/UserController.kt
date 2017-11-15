@@ -1,13 +1,13 @@
 package org.vaccineimpact.api.app.controllers
 
-import org.vaccineimpact.api.app.ActionContext
+import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.controllers.endpoints.Endpoint
 import org.vaccineimpact.api.app.controllers.endpoints.multiRepoEndpoint
 import org.vaccineimpact.api.app.controllers.endpoints.oneRepoEndpoint
 import org.vaccineimpact.api.app.controllers.endpoints.secured
 import org.vaccineimpact.api.app.errors.MissingRequiredPermissionError
 import org.vaccineimpact.api.app.models.CreateUser
-import org.vaccineimpact.api.app.postData
+import org.vaccineimpact.api.app.context.postData
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.RepositoryFactory
 import org.vaccineimpact.api.app.repositories.UserRepository

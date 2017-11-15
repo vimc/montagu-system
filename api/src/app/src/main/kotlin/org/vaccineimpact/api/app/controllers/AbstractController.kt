@@ -2,8 +2,8 @@ package org.vaccineimpact.api.app.controllers
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.vaccineimpact.api.app.ActionContext
-import org.vaccineimpact.api.app.OneTimeLinkActionContext
+import org.vaccineimpact.api.app.context.ActionContext
+import org.vaccineimpact.api.app.context.OneTimeLinkActionContext
 import org.vaccineimpact.api.app.RedirectValidator
 import org.vaccineimpact.api.app.controllers.endpoints.EndpointDefinition
 import org.vaccineimpact.api.app.controllers.endpoints.getWrappedRoute

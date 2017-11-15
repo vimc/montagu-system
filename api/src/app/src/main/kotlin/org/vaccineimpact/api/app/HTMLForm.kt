@@ -1,5 +1,7 @@
 package org.vaccineimpact.api.app
 
+import org.vaccineimpact.api.app.context.ActionContext
+
 interface FormHelpers
 {
     fun checkForm(context: ActionContext, expectedContents: Map<String, String>): HTMLForm

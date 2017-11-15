@@ -2,7 +2,7 @@ package org.vaccineimpact.api.app.controllers
 
 import org.pac4j.http.client.direct.DirectBasicAuthClient
 import org.pac4j.sparkjava.SecurityFilter
-import org.vaccineimpact.api.app.ActionContext
+import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.FormHelpers
 import org.vaccineimpact.api.app.HTMLForm
 import org.vaccineimpact.api.app.HTMLFormHelpers

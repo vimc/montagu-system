@@ -3,7 +3,7 @@ package org.vaccineimpact.api.tests.controllers
 import com.nhaarman.mockito_kotlin.*
 import org.assertj.core.api.Assertions.*
 import org.junit.Test
-import org.vaccineimpact.api.app.ActionContext
+import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.controllers.ControllerContext
 import org.vaccineimpact.api.app.controllers.PasswordController
 import org.vaccineimpact.api.app.errors.MissingRequiredParameterError
