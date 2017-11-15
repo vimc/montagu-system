@@ -16,6 +16,7 @@ import org.vaccineimpact.api.db.tables.AppUser;
 import org.vaccineimpact.api.db.tables.BurdenEstimate;
 import org.vaccineimpact.api.db.tables.BurdenEstimateSet;
 import org.vaccineimpact.api.db.tables.BurdenEstimateSetProblem;
+import org.vaccineimpact.api.db.tables.BurdenEstimateSetStatus;
 import org.vaccineimpact.api.db.tables.BurdenOutcome;
 import org.vaccineimpact.api.db.tables.Country;
 import org.vaccineimpact.api.db.tables.CountryMetadata;
@@ -70,6 +71,7 @@ import org.vaccineimpact.api.db.tables.records.AppUserRecord;
 import org.vaccineimpact.api.db.tables.records.BurdenEstimateRecord;
 import org.vaccineimpact.api.db.tables.records.BurdenEstimateSetProblemRecord;
 import org.vaccineimpact.api.db.tables.records.BurdenEstimateSetRecord;
+import org.vaccineimpact.api.db.tables.records.BurdenEstimateSetStatusRecord;
 import org.vaccineimpact.api.db.tables.records.BurdenOutcomeRecord;
 import org.vaccineimpact.api.db.tables.records.CountryMetadataRecord;
 import org.vaccineimpact.api.db.tables.records.CountryRecord;
@@ -184,6 +186,7 @@ public class Keys {
     public static final UniqueKey<BurdenEstimateRecord> BURDEN_ESTIMATE_UNIQUE = UniqueKeys0.BURDEN_ESTIMATE_UNIQUE;
     public static final UniqueKey<BurdenEstimateSetRecord> BURDEN_ESTIMATE_SET_PKEY = UniqueKeys0.BURDEN_ESTIMATE_SET_PKEY;
     public static final UniqueKey<BurdenEstimateSetProblemRecord> BURDEN_ESTIMATE_SET_PROBLEM_PKEY = UniqueKeys0.BURDEN_ESTIMATE_SET_PROBLEM_PKEY;
+    public static final UniqueKey<BurdenEstimateSetStatusRecord> BURDEN_ESTIMATE_SET_STATUS_PKEY = UniqueKeys0.BURDEN_ESTIMATE_SET_STATUS_PKEY;
     public static final UniqueKey<BurdenOutcomeRecord> BURDEN_OUTCOME_PKEY = UniqueKeys0.BURDEN_OUTCOME_PKEY;
     public static final UniqueKey<BurdenOutcomeRecord> BURDEN_OUTCOME_CODE_KEY = UniqueKeys0.BURDEN_OUTCOME_CODE_KEY;
     public static final UniqueKey<CountryRecord> COUNTRY_PKEY = UniqueKeys0.COUNTRY_PKEY;
@@ -252,6 +255,7 @@ public class Keys {
     public static final ForeignKey<BurdenEstimateSetRecord, ModelVersionRecord> BURDEN_ESTIMATE_SET__BURDEN_ESTIMATE_SET_MODEL_VERSION_FKEY = ForeignKeys0.BURDEN_ESTIMATE_SET__BURDEN_ESTIMATE_SET_MODEL_VERSION_FKEY;
     public static final ForeignKey<BurdenEstimateSetRecord, ResponsibilityRecord> BURDEN_ESTIMATE_SET__BURDEN_ESTIMATE_SET_RESPONSIBILITY_FKEY = ForeignKeys0.BURDEN_ESTIMATE_SET__BURDEN_ESTIMATE_SET_RESPONSIBILITY_FKEY;
     public static final ForeignKey<BurdenEstimateSetRecord, AppUserRecord> BURDEN_ESTIMATE_SET__BURDEN_ESTIMATE_SET_UPLOADED_BY_FKEY = ForeignKeys0.BURDEN_ESTIMATE_SET__BURDEN_ESTIMATE_SET_UPLOADED_BY_FKEY;
+    public static final ForeignKey<BurdenEstimateSetRecord, BurdenEstimateSetStatusRecord> BURDEN_ESTIMATE_SET__BURDEN_ESTIMATE_SET_STATUS_FKEY = ForeignKeys0.BURDEN_ESTIMATE_SET__BURDEN_ESTIMATE_SET_STATUS_FKEY;
     public static final ForeignKey<BurdenEstimateSetProblemRecord, BurdenEstimateSetRecord> BURDEN_ESTIMATE_SET_PROBLEM__BURDEN_ESTIMATE_SET_PROBLEM_BURDEN_ESTIMATE_SET_FKEY = ForeignKeys0.BURDEN_ESTIMATE_SET_PROBLEM__BURDEN_ESTIMATE_SET_PROBLEM_BURDEN_ESTIMATE_SET_FKEY;
     public static final ForeignKey<CountryMetadataRecord, TouchstoneRecord> COUNTRY_METADATA__COUNTRY_METADATA_TOUCHSTONE_FKEY = ForeignKeys0.COUNTRY_METADATA__COUNTRY_METADATA_TOUCHSTONE_FKEY;
     public static final ForeignKey<CountryMetadataRecord, CountryRecord> COUNTRY_METADATA__COUNTRY_METADATA_COUNTRY_FKEY = ForeignKeys0.COUNTRY_METADATA__COUNTRY_METADATA_COUNTRY_FKEY;
@@ -260,6 +264,7 @@ public class Keys {
     public static final ForeignKey<CountryVaccineMetadataRecord, VaccineRecord> COUNTRY_VACCINE_METADATA__COUNTRY_VACCINE_METADATA_VACCINE_FKEY = ForeignKeys0.COUNTRY_VACCINE_METADATA__COUNTRY_VACCINE_METADATA_VACCINE_FKEY;
     public static final ForeignKey<CoverageRecord, CoverageSetRecord> COVERAGE__COVERAGE_COVERAGE_SET_FKEY = ForeignKeys0.COVERAGE__COVERAGE_COVERAGE_SET_FKEY;
     public static final ForeignKey<CoverageRecord, CountryRecord> COVERAGE__COVERAGE_COUNTRY_FKEY = ForeignKeys0.COVERAGE__COVERAGE_COUNTRY_FKEY;
+    public static final ForeignKey<CoverageRecord, GenderRecord> COVERAGE__COVERAGE_GENDER_FKEY = ForeignKeys0.COVERAGE__COVERAGE_GENDER_FKEY;
     public static final ForeignKey<CoverageSetRecord, TouchstoneRecord> COVERAGE_SET__COVERAGE_SET_TOUCHSTONE_FKEY = ForeignKeys0.COVERAGE_SET__COVERAGE_SET_TOUCHSTONE_FKEY;
     public static final ForeignKey<CoverageSetRecord, VaccineRecord> COVERAGE_SET__COVERAGE_SET_VACCINE_FKEY = ForeignKeys0.COVERAGE_SET__COVERAGE_SET_VACCINE_FKEY;
     public static final ForeignKey<CoverageSetRecord, GaviSupportLevelRecord> COVERAGE_SET__COVERAGE_SET_GAVI_SUPPORT_LEVEL_FKEY = ForeignKeys0.COVERAGE_SET__COVERAGE_SET_GAVI_SUPPORT_LEVEL_FKEY;
@@ -385,6 +390,7 @@ public class Keys {
         public static final UniqueKey<BurdenEstimateRecord> BURDEN_ESTIMATE_UNIQUE = createUniqueKey(BurdenEstimate.BURDEN_ESTIMATE, "burden_estimate_unique", BurdenEstimate.BURDEN_ESTIMATE.BURDEN_ESTIMATE_SET, BurdenEstimate.BURDEN_ESTIMATE.COUNTRY, BurdenEstimate.BURDEN_ESTIMATE.YEAR, BurdenEstimate.BURDEN_ESTIMATE.AGE, BurdenEstimate.BURDEN_ESTIMATE.BURDEN_OUTCOME);
         public static final UniqueKey<BurdenEstimateSetRecord> BURDEN_ESTIMATE_SET_PKEY = createUniqueKey(BurdenEstimateSet.BURDEN_ESTIMATE_SET, "burden_estimate_set_pkey", BurdenEstimateSet.BURDEN_ESTIMATE_SET.ID);
         public static final UniqueKey<BurdenEstimateSetProblemRecord> BURDEN_ESTIMATE_SET_PROBLEM_PKEY = createUniqueKey(BurdenEstimateSetProblem.BURDEN_ESTIMATE_SET_PROBLEM, "burden_estimate_set_problem_pkey", BurdenEstimateSetProblem.BURDEN_ESTIMATE_SET_PROBLEM.ID);
+        public static final UniqueKey<BurdenEstimateSetStatusRecord> BURDEN_ESTIMATE_SET_STATUS_PKEY = createUniqueKey(BurdenEstimateSetStatus.BURDEN_ESTIMATE_SET_STATUS, "burden_estimate_set_status_pkey", BurdenEstimateSetStatus.BURDEN_ESTIMATE_SET_STATUS.CODE);
         public static final UniqueKey<BurdenOutcomeRecord> BURDEN_OUTCOME_PKEY = createUniqueKey(BurdenOutcome.BURDEN_OUTCOME, "burden_outcome_pkey", BurdenOutcome.BURDEN_OUTCOME.ID);
         public static final UniqueKey<BurdenOutcomeRecord> BURDEN_OUTCOME_CODE_KEY = createUniqueKey(BurdenOutcome.BURDEN_OUTCOME, "burden_outcome_code_key", BurdenOutcome.BURDEN_OUTCOME.CODE);
         public static final UniqueKey<CountryRecord> COUNTRY_PKEY = createUniqueKey(Country.COUNTRY, "country_pkey", Country.COUNTRY.ID);
@@ -451,6 +457,7 @@ public class Keys {
         public static final ForeignKey<BurdenEstimateSetRecord, ModelVersionRecord> BURDEN_ESTIMATE_SET__BURDEN_ESTIMATE_SET_MODEL_VERSION_FKEY = createForeignKey(org.vaccineimpact.api.db.Keys.MODEL_VERSION_PKEY, BurdenEstimateSet.BURDEN_ESTIMATE_SET, "burden_estimate_set__burden_estimate_set_model_version_fkey", BurdenEstimateSet.BURDEN_ESTIMATE_SET.MODEL_VERSION);
         public static final ForeignKey<BurdenEstimateSetRecord, ResponsibilityRecord> BURDEN_ESTIMATE_SET__BURDEN_ESTIMATE_SET_RESPONSIBILITY_FKEY = createForeignKey(org.vaccineimpact.api.db.Keys.RESPONSIBILITY_PKEY, BurdenEstimateSet.BURDEN_ESTIMATE_SET, "burden_estimate_set__burden_estimate_set_responsibility_fkey", BurdenEstimateSet.BURDEN_ESTIMATE_SET.RESPONSIBILITY);
         public static final ForeignKey<BurdenEstimateSetRecord, AppUserRecord> BURDEN_ESTIMATE_SET__BURDEN_ESTIMATE_SET_UPLOADED_BY_FKEY = createForeignKey(org.vaccineimpact.api.db.Keys.APP_USER_PKEY, BurdenEstimateSet.BURDEN_ESTIMATE_SET, "burden_estimate_set__burden_estimate_set_uploaded_by_fkey", BurdenEstimateSet.BURDEN_ESTIMATE_SET.UPLOADED_BY);
+        public static final ForeignKey<BurdenEstimateSetRecord, BurdenEstimateSetStatusRecord> BURDEN_ESTIMATE_SET__BURDEN_ESTIMATE_SET_STATUS_FKEY = createForeignKey(org.vaccineimpact.api.db.Keys.BURDEN_ESTIMATE_SET_STATUS_PKEY, BurdenEstimateSet.BURDEN_ESTIMATE_SET, "burden_estimate_set__burden_estimate_set_status_fkey", BurdenEstimateSet.BURDEN_ESTIMATE_SET.STATUS);
         public static final ForeignKey<BurdenEstimateSetProblemRecord, BurdenEstimateSetRecord> BURDEN_ESTIMATE_SET_PROBLEM__BURDEN_ESTIMATE_SET_PROBLEM_BURDEN_ESTIMATE_SET_FKEY = createForeignKey(org.vaccineimpact.api.db.Keys.BURDEN_ESTIMATE_SET_PKEY, BurdenEstimateSetProblem.BURDEN_ESTIMATE_SET_PROBLEM, "burden_estimate_set_problem__burden_estimate_set_problem_burden_estimate_set_fkey", BurdenEstimateSetProblem.BURDEN_ESTIMATE_SET_PROBLEM.BURDEN_ESTIMATE_SET);
         public static final ForeignKey<CountryMetadataRecord, TouchstoneRecord> COUNTRY_METADATA__COUNTRY_METADATA_TOUCHSTONE_FKEY = createForeignKey(org.vaccineimpact.api.db.Keys.TOUCHSTONE_PKEY, CountryMetadata.COUNTRY_METADATA, "country_metadata__country_metadata_touchstone_fkey", CountryMetadata.COUNTRY_METADATA.TOUCHSTONE);
         public static final ForeignKey<CountryMetadataRecord, CountryRecord> COUNTRY_METADATA__COUNTRY_METADATA_COUNTRY_FKEY = createForeignKey(org.vaccineimpact.api.db.Keys.COUNTRY_PKEY, CountryMetadata.COUNTRY_METADATA, "country_metadata__country_metadata_country_fkey", CountryMetadata.COUNTRY_METADATA.COUNTRY);
@@ -459,6 +466,7 @@ public class Keys {
         public static final ForeignKey<CountryVaccineMetadataRecord, VaccineRecord> COUNTRY_VACCINE_METADATA__COUNTRY_VACCINE_METADATA_VACCINE_FKEY = createForeignKey(org.vaccineimpact.api.db.Keys.VACCINE_PKEY, CountryVaccineMetadata.COUNTRY_VACCINE_METADATA, "country_vaccine_metadata__country_vaccine_metadata_vaccine_fkey", CountryVaccineMetadata.COUNTRY_VACCINE_METADATA.VACCINE);
         public static final ForeignKey<CoverageRecord, CoverageSetRecord> COVERAGE__COVERAGE_COVERAGE_SET_FKEY = createForeignKey(org.vaccineimpact.api.db.Keys.COVERAGE_SET_PKEY, Coverage.COVERAGE, "coverage__coverage_coverage_set_fkey", Coverage.COVERAGE.COVERAGE_SET);
         public static final ForeignKey<CoverageRecord, CountryRecord> COVERAGE__COVERAGE_COUNTRY_FKEY = createForeignKey(org.vaccineimpact.api.db.Keys.COUNTRY_PKEY, Coverage.COVERAGE, "coverage__coverage_country_fkey", Coverage.COVERAGE.COUNTRY);
+        public static final ForeignKey<CoverageRecord, GenderRecord> COVERAGE__COVERAGE_GENDER_FKEY = createForeignKey(org.vaccineimpact.api.db.Keys.GENDER_PKEY, Coverage.COVERAGE, "coverage__coverage_gender_fkey", Coverage.COVERAGE.GENDER);
         public static final ForeignKey<CoverageSetRecord, TouchstoneRecord> COVERAGE_SET__COVERAGE_SET_TOUCHSTONE_FKEY = createForeignKey(org.vaccineimpact.api.db.Keys.TOUCHSTONE_PKEY, CoverageSet.COVERAGE_SET, "coverage_set__coverage_set_touchstone_fkey", CoverageSet.COVERAGE_SET.TOUCHSTONE);
         public static final ForeignKey<CoverageSetRecord, VaccineRecord> COVERAGE_SET__COVERAGE_SET_VACCINE_FKEY = createForeignKey(org.vaccineimpact.api.db.Keys.VACCINE_PKEY, CoverageSet.COVERAGE_SET, "coverage_set__coverage_set_vaccine_fkey", CoverageSet.COVERAGE_SET.VACCINE);
         public static final ForeignKey<CoverageSetRecord, GaviSupportLevelRecord> COVERAGE_SET__COVERAGE_SET_GAVI_SUPPORT_LEVEL_FKEY = createForeignKey(org.vaccineimpact.api.db.Keys.GAVI_SUPPORT_LEVEL_PKEY, CoverageSet.COVERAGE_SET, "coverage_set__coverage_set_gavi_support_level_fkey", CoverageSet.COVERAGE_SET.GAVI_SUPPORT_LEVEL);
