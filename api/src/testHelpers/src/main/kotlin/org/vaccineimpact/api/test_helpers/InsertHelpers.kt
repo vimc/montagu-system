@@ -176,7 +176,8 @@ fun JooqContext.addResponsibilitySet(
     return record.id
 }
 
-fun JooqContext.addBurdenEstimateSet(responsibilityId: Int, modelId: Int, username: String): Int
+fun JooqContext.addBurdenEstimateSet(responsibilityId: Int, modelId: Int,
+                                     username: String, status: String = "empty"): Int
 {
     val record = this.dsl.newRecord(BURDEN_ESTIMATE_SET).apply {
         this.responsibility = responsibilityId
@@ -185,6 +186,7 @@ fun JooqContext.addBurdenEstimateSet(responsibilityId: Int, modelId: Int, userna
         this.runInfo = ""
         this.interpolated = false
         this.complete = false
+        this.status = status
     }
     record.store()
     return record.id

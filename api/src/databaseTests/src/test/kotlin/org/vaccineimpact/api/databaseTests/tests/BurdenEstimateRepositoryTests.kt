@@ -78,6 +78,36 @@ class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRepository>(
         }
     }
 
+
+    @Test
+    fun `cannot populate a set unless status is empty`()
+    {
+        JooqContext().use {
+            val returnedIds = setupDatabase(it)
+            val setId = it.addBurdenEstimateSet(returnedIds.responsibility, returnedIds.modelVersion!!, username, "complete")
+
+            val repo = makeRepository(it)
+            assertThatThrownBy {
+                repo.populateBurdenEstimateSet(setId, groupId, touchstoneId, scenarioId, data)
+            }.isInstanceOf(OperationNotAllowedError::class.java)
+                    .hasMessage("the following problems occurred:\nThis burden estimate set already contains estimates." +
+                            " You must create a new set if you want to upload any new estimates.")
+        }
+    }
+
+
+    @Test
+    fun `populate set throws unknown object error if set does not exist`()
+    {
+        JooqContext().use {
+            setupDatabase(it)
+            val repo = makeRepository(it)
+            assertThatThrownBy {
+                repo.populateBurdenEstimateSet(12, groupId, touchstoneId, scenarioId, data)
+            }.isInstanceOf(UnknownObjectError::class.java)
+        }
+    }
+
     @Test
     fun `updates responsibility current estimate set`()
     {

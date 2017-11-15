@@ -42,7 +42,7 @@ class JooqBurdenEstimateRepository(
     }
 
     override fun populateBurdenEstimateSet(setId: Int, groupId: String, touchstoneId: String, scenarioId: String,
-                                      estimates: List<BurdenEstimate>)
+                                           estimates: List<BurdenEstimate>)
     {
         val outcomeLookup = getOutcomesAsLookup()
         val cohortSizeId = outcomeLookup["cohort_size"]
@@ -53,6 +53,16 @@ class JooqBurdenEstimateRepository(
 
         val responsibilityInfo = getResponsibilityInfo(modellingGroup.id, touchstoneId, scenarioId)
 
+        val status = dsl.select(BURDEN_ESTIMATE_SET.STATUS)
+                .from(BURDEN_ESTIMATE_SET)
+                .where(BURDEN_ESTIMATE_SET.ID.eq(setId))
+                .singleOrNull() ?: throw UnknownObjectError(setId, "Burden Estimate Set")
+
+        if (status.into(String::class.java) != "empty")
+        {
+            throw OperationNotAllowedError("This burden estimate set already contains estimates." +
+                    " You must create a new set if you want to upload any new estimates.")
+        }
         addEstimatesToSet(estimates, setId, outcomeLookup, cohortSizeId, responsibilityInfo.disease)
 
         updateCurrentBurdenEstimateSet(responsibilityInfo.id, setId)
@@ -60,7 +70,7 @@ class JooqBurdenEstimateRepository(
 
 
     override fun createBurdenEstimateSet(groupId: String, touchstoneId: String, scenarioId: String,
-                                          uploader: String, timestamp: Instant): Int
+                                         uploader: String, timestamp: Instant): Int
     {
         // Dereference modelling group IDs
         val modellingGroup = modellingGroupRepository.getModellingGroup(groupId)
