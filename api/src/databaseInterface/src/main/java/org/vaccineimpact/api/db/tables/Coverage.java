@@ -36,7 +36,7 @@ import org.vaccineimpact.api.db.tables.records.CoverageRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Coverage extends TableImpl<CoverageRecord> {
 
-    private static final long serialVersionUID = -1017375817;
+    private static final long serialVersionUID = -706969309;
 
     /**
      * The reference instance of <code>public.coverage</code>
@@ -97,6 +97,16 @@ public class Coverage extends TableImpl<CoverageRecord> {
     public final TableField<CoverageRecord, BigDecimal> TARGET = createField("target", org.jooq.impl.SQLDataType.NUMERIC, this, "This field is valid only for campaign coverage");
 
     /**
+     * The column <code>public.coverage.gavi_support</code>.
+     */
+    public final TableField<CoverageRecord, Boolean> GAVI_SUPPORT = createField("gavi_support", org.jooq.impl.SQLDataType.BOOLEAN, this, "");
+
+    /**
+     * The column <code>public.coverage.gender</code>.
+     */
+    public final TableField<CoverageRecord, Integer> GENDER = createField("gender", org.jooq.impl.SQLDataType.INTEGER, this, "");
+
+    /**
      * Create a <code>public.coverage</code> table reference
      */
     public Coverage() {
@@ -155,7 +165,7 @@ public class Coverage extends TableImpl<CoverageRecord> {
      */
     @Override
     public List<ForeignKey<CoverageRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<CoverageRecord, ?>>asList(Keys.COVERAGE__COVERAGE_COVERAGE_SET_FKEY, Keys.COVERAGE__COVERAGE_COUNTRY_FKEY);
+        return Arrays.<ForeignKey<CoverageRecord, ?>>asList(Keys.COVERAGE__COVERAGE_COVERAGE_SET_FKEY, Keys.COVERAGE__COVERAGE_COUNTRY_FKEY, Keys.COVERAGE__COVERAGE_GENDER_FKEY);
     }
 
     /**
