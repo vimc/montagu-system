@@ -26,10 +26,19 @@ open class GroupBurdenEstimatesController(context: ControllerContext) : Abstract
         return listOf(
                 oneRepoEndpoint("/estimates/", this::addBurdenEstimates, repos, { it.burdenEstimates }, method = HttpMethod.post)
                         .secured(setOf("$groupScope/estimates.write", "$groupScope/responsibilities.read")),
+
                 oneRepoEndpoint("/estimate-set/", this::createBurdenEstimateSet, repos, { it.burdenEstimates }, method = HttpMethod.post)
                         .secured(setOf("$groupScope/estimates.write", "$groupScope/responsibilities.read")),
+
                 oneRepoEndpoint("/estimate-set/:set-id/", this::populateBurdenEstimateSet, repos, { it.burdenEstimates }, method = HttpMethod.post)
                         .secured(setOf("$groupScope/estimates.write", "$groupScope/responsibilities.read")),
+
+                oneRepoEndpoint("/estimate-set/get_onetime_link/", { c, r -> getOneTimeLinkToken(c, r, OneTimeAction.BURDENS_CREATE) }, repos, { it.token })
+                        .secured(setOf("$groupScope/estimates.write", "$groupScope/responsibilities.read")),
+
+                oneRepoEndpoint("/estimate-set/:set-id/get_onetime_link/", { c, r -> getOneTimeLinkToken(c, r, OneTimeAction.BURDENS_POPULATE) }, repos, { it.token })
+                        .secured(setOf("$groupScope/estimates.write", "$groupScope/responsibilities.read")),
+
                 oneRepoEndpoint("/estimates/get_onetime_link/", { c, r -> getOneTimeLinkToken(c, r, OneTimeAction.BURDENS) }, repos, { it.token })
                         .secured(setOf("$groupScope/estimates.write", "$groupScope/responsibilities.read"))
         )
@@ -66,6 +75,34 @@ open class GroupBurdenEstimatesController(context: ControllerContext) : Abstract
             val data = DataTableDeserializer.deserialize(it.readText(), BurdenEstimate::class,
                     serializer).toList()
             return saveBurdenEstimates(data, estimateRepository, context, path)
+        }
+    }
+
+    fun populateBurdenEstimatesFromHTMLForm(context: ActionContext, estimateRepository: BurdenEstimateRepository): String
+    {
+        // First check if we're allowed to see this touchstone
+        val path = getValidResponsibilityPath(context, estimateRepository)
+
+        val request = context.request
+        if (request.raw().getAttribute("org.eclipse.jetty.multipartConfig") == null)
+        {
+            val multipartConfigElement = MultipartConfigElement(System.getProperty("java.io.tmpdir"))
+            request.raw().setAttribute("org.eclipse.jetty.multipartConfig", multipartConfigElement)
+        }
+
+        request.raw().getPart("file").inputStream.bufferedReader().use {
+
+            // Then add the burden estimates
+            val data = DataTableDeserializer.deserialize(it.readText(), BurdenEstimate::class,
+                    serializer).toList()
+
+            estimateRepository.populateBurdenEstimateSet(
+                    context.params(":set-id").toInt(),
+                    path.groupId, path.touchstoneId, path.scenarioId,
+                    data
+            )
+
+            return okayResponse()
         }
     }
 

@@ -28,6 +28,8 @@ data class OneTimeLink(val action: OneTimeAction,
             repoFactory.inTransaction { repos ->
                 when (action)
                 {
+                    OneTimeAction.BURDENS_CREATE -> controllers.groupBurdenEstimates.createBurdenEstimateSet(context, repos.burdenEstimates)
+                    OneTimeAction.BURDENS_POPULATE -> controllers.groupBurdenEstimates.populateBurdenEstimatesFromHTMLForm(context, repos.burdenEstimates)
                     OneTimeAction.BURDENS -> controllers.groupBurdenEstimates.addBurdenEstimatesFromHTMLForm(context, repos.burdenEstimates)
                     OneTimeAction.COVERAGE -> stream(controllers.modellingGroup.getCoverageData(context, repos.modellingGroup), context)
                     OneTimeAction.DEMOGRAPHY -> stream(controllers.touchstone.getDemographicData(context, repos.touchstone), context)
