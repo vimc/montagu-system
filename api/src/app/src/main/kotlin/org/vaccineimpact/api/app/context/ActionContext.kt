@@ -1,4 +1,4 @@
-package org.vaccineimpact.api.app
+package org.vaccineimpact.api.app.context
 
 import org.pac4j.core.profile.CommonProfile
 import org.vaccineimpact.api.models.permissions.PermissionSet
@@ -33,6 +33,7 @@ interface ActionContext
 
     fun hasPermission(requirement: ReifiedPermission): Boolean
     fun requirePermission(requirement: ReifiedPermission): Unit
+    fun redirect(url: String)
 }
 
 inline fun <reified T: Any> ActionContext.postData() = this.postData(T::class.java)

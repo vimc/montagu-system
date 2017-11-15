@@ -1,6 +1,5 @@
 package org.vaccineimpact.api.app
 
-import org.jooq.exception.DataAccessException
 import org.vaccineimpact.api.app.errors.DuplicateKeyError
 import org.vaccineimpact.api.app.errors.MontaguError
 import spark.Request
@@ -23,7 +22,7 @@ class PostgresErrorHandler
                 return handler.handleError(error, req, res)
             }
         }
-        handler.handleUnexpectedError(exception, req, res)
+        handler.handleError(exception, req, res)
     }
 
     private fun handleDuplicateKeyError(text: String): MontaguError?

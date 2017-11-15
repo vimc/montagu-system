@@ -13,6 +13,8 @@ dependencies {
 
     compile project(":models")
     compile project(":databaseInterface")
+    compile project(":serialization")
+
 }
 
 task install_libsodium() {

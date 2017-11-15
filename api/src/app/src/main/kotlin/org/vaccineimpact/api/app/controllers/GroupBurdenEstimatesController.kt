@@ -1,10 +1,10 @@
 package org.vaccineimpact.api.app.controllers
 
-import org.vaccineimpact.api.app.ActionContext
+import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.controllers.endpoints.EndpointDefinition
 import org.vaccineimpact.api.app.controllers.endpoints.oneRepoEndpoint
 import org.vaccineimpact.api.app.controllers.endpoints.secured
-import org.vaccineimpact.api.app.csvData
+import org.vaccineimpact.api.app.context.csvData
 import org.vaccineimpact.api.app.errors.InconsistentDataError
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
 import org.vaccineimpact.api.app.repositories.RepositoryFactory
@@ -96,7 +96,7 @@ open class GroupBurdenEstimatesController(context: ControllerContext) : Abstract
                 timestamp = Instant.now()
         )
         val url = "/modelling-groups/${path.groupId}/responsibilities/${path.touchstoneId}/${path.scenarioId}/estimates/$id/"
-        return objectCreation(context, url, useControllerURL = false)
+        return objectCreation(context, url)
     }
 
     private fun getValidResponsibilityPath(

@@ -1,13 +1,13 @@
 package org.vaccineimpact.api.app.controllers
 
-import org.vaccineimpact.api.app.ActionContext
+import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.controllers.endpoints.Endpoint
 import org.vaccineimpact.api.app.controllers.endpoints.multiRepoEndpoint
 import org.vaccineimpact.api.app.controllers.endpoints.oneRepoEndpoint
 import org.vaccineimpact.api.app.controllers.endpoints.secured
 import org.vaccineimpact.api.app.errors.MissingRequiredParameterError
 import org.vaccineimpact.api.app.models.SetPassword
-import org.vaccineimpact.api.app.postData
+import org.vaccineimpact.api.app.context.postData
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.RepositoryFactory
 import org.vaccineimpact.api.app.repositories.UserRepository
@@ -33,6 +33,7 @@ open class PasswordController(
         return setPasswordForUser(context, repo, context.username!!)
     }
 
+    @Throws(Exception::class)
     open fun setPasswordForUser(context: ActionContext, repo: UserRepository, username: String): String
     {
         val password = context.postData<SetPassword>().password

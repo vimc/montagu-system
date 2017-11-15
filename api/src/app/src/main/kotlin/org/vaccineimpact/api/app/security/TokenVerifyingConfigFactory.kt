@@ -6,7 +6,7 @@ import org.pac4j.core.context.HttpConstants
 import org.pac4j.core.profile.CommonProfile
 import org.pac4j.jwt.profile.JwtProfile
 import org.pac4j.sparkjava.SparkWebContext
-import org.vaccineimpact.api.app.DirectActionContext
+import org.vaccineimpact.api.app.context.DirectActionContext
 import org.vaccineimpact.api.app.errors.MissingRequiredPermissionError
 import org.vaccineimpact.api.app.repositories.RepositoryFactory
 import org.vaccineimpact.api.models.ErrorInfo

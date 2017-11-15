@@ -10,6 +10,8 @@ import org.jooq.Configuration;
 import org.jooq.Field;
 import org.jooq.Result;
 import org.jooq.impl.DSL;
+import org.vaccineimpact.api.db.routines.DisableTrigger;
+import org.vaccineimpact.api.db.routines.EnableTrigger;
 import org.vaccineimpact.api.db.tables.SelectBurdenData1;
 import org.vaccineimpact.api.db.tables.SelectBurdenData2;
 import org.vaccineimpact.api.db.tables.SelectBurdenData3;
@@ -42,6 +44,28 @@ import org.vaccineimpact.api.db.tables.records.SelectBurdenDataColRecord;
 )
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Routines {
+
+    /**
+     * Call <code>public.disable_trigger</code>
+     */
+    public static void disableTrigger(Configuration configuration, String tableName, String triggerName) {
+        DisableTrigger p = new DisableTrigger();
+        p.setTableName(tableName);
+        p.setTriggerName(triggerName);
+
+        p.execute(configuration);
+    }
+
+    /**
+     * Call <code>public.enable_trigger</code>
+     */
+    public static void enableTrigger(Configuration configuration, String tableName, String triggerName) {
+        EnableTrigger p = new EnableTrigger();
+        p.setTableName(tableName);
+        p.setTriggerName(triggerName);
+
+        p.execute(configuration);
+    }
 
     /**
      * Call <code>public.select_burden_data1</code>.

@@ -6,7 +6,7 @@ import org.assertj.core.api.Assertions.fail
 import org.junit.Test
 import org.vaccineimpact.api.models.helpers.OneTimeAction
 import org.vaccineimpact.api.app.OneTimeLink
-import org.vaccineimpact.api.app.OneTimeLinkActionContext
+import org.vaccineimpact.api.app.context.OneTimeLinkActionContext
 import org.vaccineimpact.api.app.controllers.MontaguControllers
 import org.vaccineimpact.api.app.controllers.PasswordController
 import org.vaccineimpact.api.app.repositories.Repositories

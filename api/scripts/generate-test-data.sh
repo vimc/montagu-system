@@ -3,7 +3,7 @@ set -ex
 
 registry=docker.montagu.dide.ic.ac.uk:5000
 name=montagu-generate-test-data
-commit=$(git rev-parse --short HEAD)
+commit=$(git rev-parse --short=7 HEAD)
 branch=$(git symbolic-ref --short HEAD)
 
 # Make the build environment image that is shared between multiple build targets

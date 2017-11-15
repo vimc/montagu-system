@@ -6,10 +6,9 @@ import org.pac4j.core.context.HttpConstants
 import org.pac4j.http.client.direct.DirectBasicAuthClient
 import org.pac4j.sparkjava.SparkWebContext
 import org.vaccineimpact.api.app.repositories.RepositoryFactory
-import org.vaccineimpact.api.serialization.MontaguSerializer
 import org.vaccineimpact.api.models.FailedAuthentication
+import org.vaccineimpact.api.serialization.MontaguSerializer
 import org.vaccineimpact.api.serialization.Serializer
-import org.vaccineimpact.api.serialization.ruleBasedSerializer
 import spark.Spark as spk
 
 class TokenIssuingConfigFactory(private val repositoryFactory: RepositoryFactory,
@@ -19,13 +18,13 @@ class TokenIssuingConfigFactory(private val repositoryFactory: RepositoryFactory
     {
         val authClient = DirectBasicAuthClient(DatabasePasswordAuthenticator())
         return Config(authClient).apply {
-            httpActionAdapter = BasicAuthActionAdapter(repositoryFactory)
+            httpActionAdapter = BasicAuthActionAdapter(repositoryFactory, serializer)
             addMethodMatchers()
         }
     }
 }
 
-class BasicAuthActionAdapter(repositoryFactory: RepositoryFactory, serializer: Serializer = MontaguSerializer.instance)
+class BasicAuthActionAdapter(repositoryFactory: RepositoryFactory, serializer: Serializer)
     : MontaguHttpActionAdapter(repositoryFactory, serializer)
 {
     private val unauthorizedResponse: String

@@ -1,6 +1,6 @@
 package org.vaccineimpact.api.app.controllers.endpoints
 
-import org.vaccineimpact.api.app.ActionContext
+import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.serialization.MontaguSerializer
 import org.vaccineimpact.api.serialization.Serializer
 import org.vaccineimpact.api.serialization.StreamSerializable
