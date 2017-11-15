@@ -36,7 +36,7 @@ import org.vaccineimpact.api.db.tables.records.BurdenEstimateSetRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class BurdenEstimateSet extends TableImpl<BurdenEstimateSetRecord> {
 
-    private static final long serialVersionUID = -2032498187;
+    private static final long serialVersionUID = 158276812;
 
     /**
      * The reference instance of <code>public.burden_estimate_set</code>
@@ -102,6 +102,11 @@ public class BurdenEstimateSet extends TableImpl<BurdenEstimateSetRecord> {
     public final TableField<BurdenEstimateSetRecord, Timestamp> UPLOADED_ON = createField("uploaded_on", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("date_trunc('milliseconds'::text, now())", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
+     * The column <code>public.burden_estimate_set.status</code>.
+     */
+    public final TableField<BurdenEstimateSetRecord, String> STATUS = createField("status", org.jooq.impl.SQLDataType.CLOB.nullable(false).defaultValue(org.jooq.impl.DSL.field("'complete'::text", org.jooq.impl.SQLDataType.CLOB)), this, "");
+
+    /**
      * Create a <code>public.burden_estimate_set</code> table reference
      */
     public BurdenEstimateSet() {
@@ -160,7 +165,7 @@ public class BurdenEstimateSet extends TableImpl<BurdenEstimateSetRecord> {
      */
     @Override
     public List<ForeignKey<BurdenEstimateSetRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<BurdenEstimateSetRecord, ?>>asList(Keys.BURDEN_ESTIMATE_SET__BURDEN_ESTIMATE_SET_MODEL_VERSION_FKEY, Keys.BURDEN_ESTIMATE_SET__BURDEN_ESTIMATE_SET_RESPONSIBILITY_FKEY, Keys.BURDEN_ESTIMATE_SET__BURDEN_ESTIMATE_SET_UPLOADED_BY_FKEY);
+        return Arrays.<ForeignKey<BurdenEstimateSetRecord, ?>>asList(Keys.BURDEN_ESTIMATE_SET__BURDEN_ESTIMATE_SET_MODEL_VERSION_FKEY, Keys.BURDEN_ESTIMATE_SET__BURDEN_ESTIMATE_SET_RESPONSIBILITY_FKEY, Keys.BURDEN_ESTIMATE_SET__BURDEN_ESTIMATE_SET_UPLOADED_BY_FKEY, Keys.BURDEN_ESTIMATE_SET__BURDEN_ESTIMATE_SET_STATUS_FKEY);
     }
 
     /**
