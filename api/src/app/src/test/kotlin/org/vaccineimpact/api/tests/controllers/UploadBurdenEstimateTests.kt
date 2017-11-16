@@ -93,7 +93,7 @@ class UploadBurdenEstimateTests : ControllerTests<GroupBurdenEstimatesController
     private fun mockActionContext(data: List<BurdenEstimate>): ActionContext
     {
         return mock {
-            on { csvData(BurdenEstimate::class, any()) } doReturn data
+            on { csvData(eq(BurdenEstimate::class), any()) } doReturn data
             on { username } doReturn "username"
             on { params(":group-id") } doReturn "group-1"
             on { params(":touchstone-id") } doReturn "touchstone-1"
