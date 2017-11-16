@@ -7,7 +7,6 @@ import org.vaccineimpact.api.app.filters.whereMatchesFilter
 import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.ScenarioRepository
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
-import org.vaccineimpact.api.serialization.SplitData
 import org.vaccineimpact.api.db.Tables.*
 import org.vaccineimpact.api.db.fetchInto
 import org.vaccineimpact.api.db.fieldsAsList
@@ -15,6 +14,7 @@ import org.vaccineimpact.api.db.fromJoinPath
 import org.vaccineimpact.api.db.tables.records.ModellingGroupRecord
 import org.vaccineimpact.api.db.tables.records.ResponsibilitySetRecord
 import org.vaccineimpact.api.models.*
+import org.vaccineimpact.api.serialization.SplitData
 
 class JooqModellingGroupRepository(
         dsl: DSLContext,
@@ -165,7 +165,7 @@ class JooqModellingGroupRepository(
     private fun getCurrentBurdenEstimate(responsibilityId: Int): BurdenEstimateSet?
     {
         val records = dsl.select(BURDEN_ESTIMATE_SET_PROBLEM.PROBLEM)
-                .select(BURDEN_ESTIMATE_SET.UPLOADED_ON, BURDEN_ESTIMATE_SET.ID)
+                .select(BURDEN_ESTIMATE_SET.UPLOADED_ON, BURDEN_ESTIMATE_SET.UPLOADED_BY, BURDEN_ESTIMATE_SET.ID)
                 .fromJoinPath(BURDEN_ESTIMATE_SET, BURDEN_ESTIMATE_SET_PROBLEM, joinType = JoinType.LEFT_OUTER_JOIN)
                 .join(RESPONSIBILITY)
                 .on(RESPONSIBILITY.CURRENT_BURDEN_ESTIMATE_SET.eq(BURDEN_ESTIMATE_SET.ID))
@@ -186,6 +186,7 @@ class JooqModellingGroupRepository(
         val uploadedOn = first[BURDEN_ESTIMATE_SET.UPLOADED_ON].toInstant()
         return BurdenEstimateSet(
                 id = first[BURDEN_ESTIMATE_SET.ID],
+                uploadedBy = first[BURDEN_ESTIMATE_SET.UPLOADED_BY],
                 uploadedOn = uploadedOn,
                 problems = input.filter { it[BURDEN_ESTIMATE_SET_PROBLEM.PROBLEM] != null }
                         .map { it[BURDEN_ESTIMATE_SET_PROBLEM.PROBLEM] }

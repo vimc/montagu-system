@@ -1,6 +1,6 @@
 package org.vaccineimpact.api.app.security
 
-import org.vaccineimpact.api.app.ActionContext
+import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.errors.PermissionRequirementParseException
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import org.vaccineimpact.api.models.Scope

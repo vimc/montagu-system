@@ -1,4 +1,4 @@
-package org.vaccineimpact.api.app
+package org.vaccineimpact.api.app.context
 
 class OneTimeLinkActionContext(
         private val payload: Map<String, String>,

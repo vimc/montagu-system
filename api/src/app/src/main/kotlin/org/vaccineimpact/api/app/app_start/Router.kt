@@ -1,8 +1,8 @@
 package org.vaccineimpact.api.app.app_start
 
 import org.slf4j.LoggerFactory
-import org.vaccineimpact.api.app.ActionContext
-import org.vaccineimpact.api.app.DirectActionContext
+import org.vaccineimpact.api.app.context.ActionContext
+import org.vaccineimpact.api.app.context.DirectActionContext
 import org.vaccineimpact.api.app.app_start.route_config.RouteConfig
 import org.vaccineimpact.api.app.errors.UnsupportedValueException
 import org.vaccineimpact.api.app.repositories.Repositories

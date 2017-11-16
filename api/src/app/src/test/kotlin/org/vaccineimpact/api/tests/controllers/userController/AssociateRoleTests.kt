@@ -5,7 +5,7 @@ import org.assertj.core.api.Assertions.assertThatThrownBy
 import com.nhaarman.mockito_kotlin.doReturn
 import com.nhaarman.mockito_kotlin.mock
 import org.junit.Test
-import org.vaccineimpact.api.app.ActionContext
+import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.controllers.UserController
 import org.vaccineimpact.api.app.errors.MissingRequiredPermissionError
 import org.vaccineimpact.api.app.repositories.UserRepository

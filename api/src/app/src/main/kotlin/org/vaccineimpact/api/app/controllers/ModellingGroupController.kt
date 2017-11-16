@@ -1,7 +1,6 @@
 package org.vaccineimpact.api.app.controllers
 
-import org.vaccineimpact.api.models.helpers.OneTimeAction
-import org.vaccineimpact.api.app.ActionContext
+import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.controllers.endpoints.EndpointDefinition
 import org.vaccineimpact.api.app.controllers.endpoints.oneRepoEndpoint
 import org.vaccineimpact.api.app.controllers.endpoints.secured
@@ -9,11 +8,17 @@ import org.vaccineimpact.api.app.controllers.endpoints.streamed
 import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.errors.MissingRequiredPermissionError
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
-import org.vaccineimpact.api.app.postData
-import org.vaccineimpact.api.app.repositories.*
+import org.vaccineimpact.api.app.context.postData
+import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
+import org.vaccineimpact.api.app.repositories.Repositories
+import org.vaccineimpact.api.app.repositories.RepositoryFactory
+import org.vaccineimpact.api.app.repositories.UserRepository
 import org.vaccineimpact.api.app.security.checkIsAllowedToSeeTouchstone
 import org.vaccineimpact.api.models.*
-import org.vaccineimpact.api.serialization.*
+import org.vaccineimpact.api.models.helpers.OneTimeAction
+import org.vaccineimpact.api.serialization.FlexibleDataTable
+import org.vaccineimpact.api.serialization.SplitData
+import org.vaccineimpact.api.serialization.StreamSerializable
 import spark.route.HttpMethod
 
 
@@ -135,10 +140,19 @@ open class ModellingGroupController(context: ControllerContext)
                     mapWideCoverageRow(it)
                 }
 
+
         // all the rows should have the same number of years, so we just look at the first row
-        val years = rows.first().coverageAndTargetPerYear.keys.toList()
+        val years = if (rows.any())
+        {
+            rows.first().coverageAndTargetPerYear.keys.toList()
+        }
+        else
+        {
+            listOf()
+        }
 
         return FlexibleDataTable.new(rows.asSequence(), years)
+
     }
 
     private fun mapWideCoverageRow(records: List<LongCoverageRow>)

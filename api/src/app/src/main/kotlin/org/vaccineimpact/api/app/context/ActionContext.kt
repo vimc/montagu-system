@@ -1,4 +1,4 @@
-package org.vaccineimpact.api.app
+package org.vaccineimpact.api.app.context
 
 import org.pac4j.core.profile.CommonProfile
 import org.vaccineimpact.api.models.permissions.PermissionSet
@@ -24,7 +24,7 @@ interface ActionContext
     fun params(): Map<String, String>
     fun params(key: String): String
     fun <T: Any> postData(klass: Class<T>): T
-    fun <T: Any> csvData(klass: KClass<T>): List<T>
+    fun <T: Any> csvData(klass: KClass<T>, from: RequestBodySource): List<T>
 
     fun addResponseHeader(key: String, value: String): Unit
     fun addAttachmentHeader(filename: String): Unit
@@ -37,4 +37,5 @@ interface ActionContext
 }
 
 inline fun <reified T: Any> ActionContext.postData() = this.postData(T::class.java)
-inline fun <reified T: Any> ActionContext.csvData() = this.csvData(T::class)
+inline fun <reified T: Any> ActionContext.csvData(from: RequestBodySource = RequestBodySource.Simple())
+        = this.csvData(T::class, from)

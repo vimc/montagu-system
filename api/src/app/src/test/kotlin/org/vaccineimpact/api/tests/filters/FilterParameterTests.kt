@@ -4,7 +4,7 @@ import com.nhaarman.mockito_kotlin.doReturn
 import com.nhaarman.mockito_kotlin.mock
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
-import org.vaccineimpact.api.app.ActionContext
+import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
 import org.vaccineimpact.api.test_helpers.MontaguTests
 

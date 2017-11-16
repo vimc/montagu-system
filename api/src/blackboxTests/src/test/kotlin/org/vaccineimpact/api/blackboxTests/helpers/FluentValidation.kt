@@ -62,8 +62,8 @@ data class FluentValidationConfig(
     }
 
     infix fun andCheckObjectCreation(expectedLocation: String)
-        = andCheckObjectCreation(LocationContraint(expectedLocation))
-    infix fun andCheckObjectCreation(expectedLocation: LocationContraint)
+        = andCheckObjectCreation(LocationConstraint(expectedLocation))
+    infix fun andCheckObjectCreation(expectedLocation: LocationConstraint)
     {
         this.finalized().runWithCheck<String> { body, response ->
             val expectedPath = EndpointBuilder.buildPath(expectedLocation.urlFragment)

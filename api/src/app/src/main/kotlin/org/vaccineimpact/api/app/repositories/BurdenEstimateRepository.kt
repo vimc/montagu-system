@@ -1,6 +1,7 @@
 package org.vaccineimpact.api.app.repositories
 
 import org.vaccineimpact.api.models.BurdenEstimate
+import org.vaccineimpact.api.models.BurdenEstimateSet
 import java.time.Instant
 
 interface BurdenEstimateRepository : Repository
@@ -9,6 +10,8 @@ interface BurdenEstimateRepository : Repository
 
     fun createBurdenEstimateSet(groupId: String, touchstoneId: String, scenarioId: String,
                                 uploader: String, timestamp: Instant): Int
+
+    fun getBurdenEstimateSets(groupId: String, touchstoneId: String, scenarioId: String): Sequence<BurdenEstimateSet>
 
     /** Returns the database ID of the newly created burden estimate set **/
     fun addBurdenEstimateSet(groupId: String, touchstoneId: String, scenarioId: String,
