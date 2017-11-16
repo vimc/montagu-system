@@ -154,6 +154,11 @@ public class Sequences {
     public static final Sequence<Long> MODEL_RUN_PARAMETER_SET_ID_SEQ = new SequenceImpl<Long>("model_run_parameter_set_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
     /**
+     * The sequence <code>public.model_run_parameter_value_id_seq</code>
+     */
+    public static final Sequence<Long> MODEL_RUN_PARAMETER_VALUE_ID_SEQ = new SequenceImpl<Long>("model_run_parameter_value_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
      * The sequence <code>public.model_version_id_seq</code>
      */
     public static final Sequence<Long> MODEL_VERSION_ID_SEQ = new SequenceImpl<Long>("model_version_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));

@@ -45,6 +45,7 @@ import org.vaccineimpact.api.db.tables.Model;
 import org.vaccineimpact.api.db.tables.ModelRun;
 import org.vaccineimpact.api.db.tables.ModelRunParameter;
 import org.vaccineimpact.api.db.tables.ModelRunParameterSet;
+import org.vaccineimpact.api.db.tables.ModelRunParameterValue;
 import org.vaccineimpact.api.db.tables.ModelVersion;
 import org.vaccineimpact.api.db.tables.ModellingGroup;
 import org.vaccineimpact.api.db.tables.OnetimeToken;
@@ -278,6 +279,11 @@ public class Tables {
      * The table <code>public.model_run_parameter_set</code>.
      */
     public static final ModelRunParameterSet MODEL_RUN_PARAMETER_SET = org.vaccineimpact.api.db.tables.ModelRunParameterSet.MODEL_RUN_PARAMETER_SET;
+
+    /**
+     * The table <code>public.model_run_parameter_value</code>.
+     */
+    public static final ModelRunParameterValue MODEL_RUN_PARAMETER_VALUE = org.vaccineimpact.api.db.tables.ModelRunParameterValue.MODEL_RUN_PARAMETER_VALUE;
 
     /**
      * The table <code>public.model_version</code>.

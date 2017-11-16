@@ -35,7 +35,7 @@ import org.vaccineimpact.api.db.tables.records.ModelRunParameterRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ModelRunParameter extends TableImpl<ModelRunParameterRecord> {
 
-    private static final long serialVersionUID = -1156381226;
+    private static final long serialVersionUID = -2086609737;
 
     /**
      * The reference instance of <code>public.model_run_parameter</code>
@@ -56,19 +56,14 @@ public class ModelRunParameter extends TableImpl<ModelRunParameterRecord> {
     public final TableField<ModelRunParameterRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('model_run_parameter_id_seq'::regclass)", org.jooq.impl.SQLDataType.INTEGER)), this, "");
 
     /**
-     * The column <code>public.model_run_parameter.model_run</code>.
-     */
-    public final TableField<ModelRunParameterRecord, Integer> MODEL_RUN = createField("model_run", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
-
-    /**
      * The column <code>public.model_run_parameter.key</code>.
      */
     public final TableField<ModelRunParameterRecord, String> KEY = createField("key", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
 
     /**
-     * The column <code>public.model_run_parameter.value</code>.
+     * The column <code>public.model_run_parameter.model_run_parameter_set</code>.
      */
-    public final TableField<ModelRunParameterRecord, String> VALUE = createField("value", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<ModelRunParameterRecord, Integer> MODEL_RUN_PARAMETER_SET = createField("model_run_parameter_set", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * Create a <code>public.model_run_parameter</code> table reference
@@ -121,7 +116,7 @@ public class ModelRunParameter extends TableImpl<ModelRunParameterRecord> {
      */
     @Override
     public List<UniqueKey<ModelRunParameterRecord>> getKeys() {
-        return Arrays.<UniqueKey<ModelRunParameterRecord>>asList(Keys.MODEL_RUN_PARAMETER_PKEY, Keys.MODEL_RUN_PARAMETER_KEY_MODEL_RUN_KEY);
+        return Arrays.<UniqueKey<ModelRunParameterRecord>>asList(Keys.MODEL_RUN_PARAMETER_PKEY, Keys.MODEL_RUN_PARAMETER_KEY_MODEL_RUN_PARAMETER_SET_KEY);
     }
 
     /**
@@ -129,7 +124,7 @@ public class ModelRunParameter extends TableImpl<ModelRunParameterRecord> {
      */
     @Override
     public List<ForeignKey<ModelRunParameterRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<ModelRunParameterRecord, ?>>asList(Keys.MODEL_RUN_PARAMETER__MODEL_RUN_PARAMETER_MODEL_RUN_FKEY);
+        return Arrays.<ForeignKey<ModelRunParameterRecord, ?>>asList(Keys.MODEL_RUN_PARAMETER__MODEL_RUN_PARAMETER_MODEL_RUN_PARAMETER_SET_FKEY);
     }
 
     /**
