@@ -34,10 +34,10 @@ open class GroupBurdenEstimatesController(context: ControllerContext) : Abstract
                         .secured(permissions("write")),
 
                 oneRepoEndpoint("/estimate-set/", this::createBurdenEstimateSet, repos, { it.burdenEstimates }, method = HttpMethod.post)
-                        .secured(setOf("$groupScope/estimates.write", "$groupScope/responsibilities.read")),
+                        .secured(permissions("write")),
 
                 oneRepoEndpoint("/estimate-set/:set-id/", this::populateBurdenEstimateSet, repos, { it.burdenEstimates }, method = HttpMethod.post)
-                        .secured(setOf("$groupScope/estimates.write", "$groupScope/responsibilities.read"))
+                        .secured(permissions("write"))
          )
     }
 
