@@ -39,7 +39,7 @@ open class GroupBurdenEstimatesController(context: ControllerContext) : Abstract
                 oneRepoEndpoint("/estimate-set/", this::createBurdenEstimateSet, repos, { it.burdenEstimates }, method = HttpMethod.post)
                         .secured(permissions("write")),
 
-                oneRepoEndpoint("/estimate-set/:set-id/", this::populateBurdenEstimateSet, repos, { it.burdenEstimates }, method = HttpMethod.post)
+                oneRepoEndpoint("/estimate-set/:set-id/", { c, r -> populateBurdenEstimateSet(c, r, RequestBodySource.Simple()) }, repos, { it.burdenEstimates }, method = HttpMethod.post)
                         .secured(permissions("write")),
 
                 oneRepoEndpoint("/estimate-set/get_onetime_link/", { c, r -> getOneTimeLinkToken(c, r, OneTimeAction.BURDENS_CREATE) }, repos, { it.token })
@@ -89,13 +89,15 @@ open class GroupBurdenEstimatesController(context: ControllerContext) : Abstract
     }
 
     fun populateBurdenEstimateSet(context: ActionContext,
-                                  estimateRepository: BurdenEstimateRepository): String
+                                  estimateRepository: BurdenEstimateRepository,
+                                  source: RequestBodySource
+    ): String
     {
         // First check if we're allowed to see this touchstone
         val path = getValidResponsibilityPath(context, estimateRepository)
 
         // Then add the burden estimates
-        val data = context.csvData<BurdenEstimate>()
+        val data = context.csvData<BurdenEstimate>(from = source)
 
         if (data.map { it.disease }.distinct().count() > 1)
         {
