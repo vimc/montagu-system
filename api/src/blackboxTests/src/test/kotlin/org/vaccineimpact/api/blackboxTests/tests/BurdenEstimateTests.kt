@@ -2,7 +2,6 @@ package org.vaccineimpact.api.blackboxTests.tests
 
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.json
-import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.vaccineimpact.api.blackboxTests.helpers.*
@@ -126,14 +125,16 @@ class BurdenEstimateTests : DatabaseTest()
         }
     }
 
-    private fun setUp(db: JooqContext)
+    private fun setUp(db: JooqContext): ReturnedIds
     {
         db.addTouchstone("touchstone", 1, "Touchstone 1", addName = true)
         db.addScenarioDescription(scenarioId, "Test scenario", "Hib3", addDisease = true)
         db.addGroup(groupId, "Test group")
-        db.addModel("model-1", groupId, "Hib3", versions = listOf("version-1"))
+        db.addModel("model-1", groupId, "Hib3")
+        val modelVersionId = db.addModelVersion("model-1", "version-1", setCurrent = true)
         val setId = db.addResponsibilitySet(groupId, touchstoneId)
-        db.addResponsibility(setId, touchstoneId, scenarioId)
+        val responsibilityId = db.addResponsibility(setId, touchstoneId, scenarioId)
+        return ReturnedIds(responsibilityId, modelVersionId)
     }
 
     val csvData = """
