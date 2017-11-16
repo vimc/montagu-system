@@ -1,5 +1,7 @@
 package org.vaccineimpact.api.blackboxTests.tests
 
+import com.beust.klaxon.JsonObject
+import com.beust.klaxon.json
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.vaccineimpact.api.blackboxTests.helpers.*
@@ -23,6 +25,28 @@ class BurdenEstimateTests : DatabaseTest()
             "$groupScope/estimates.write",
             "$groupScope/responsibilities.read"
     )
+
+    @Test
+    fun `can get burden estimate sets`()
+    {
+        validate(url) against "BurdenEstimates" given { db ->
+            val ids = setUp(db)
+            db.addUserForTesting("some.user")
+            val setId = db.addBurdenEstimateSet(ids.responsibilityId, ids.modelVersionId, "some.user")
+            db.addBurdenEstimateProblem("a problem", setId)
+        } requiringPermissions {
+            PermissionSet(
+                    "$groupScope/estimates.read",
+                    "$groupScope/responsibilities.read"
+            )
+        } andCheckArray { data ->
+            val obj = data.first() as JsonObject
+            assertThat(obj["uploaded_by"]).isEqualTo("some.user")
+            assertThat(obj["problems"]).isEqualTo(json {
+                array("a problem")
+            })
+        }
+    }
 
     @Test
     fun `can upload burden estimate`()
@@ -101,14 +125,16 @@ class BurdenEstimateTests : DatabaseTest()
         }
     }
 
-    private fun setUp(db: JooqContext)
+    private fun setUp(db: JooqContext): ReturnedIds
     {
         db.addTouchstone("touchstone", 1, "Touchstone 1", addName = true)
         db.addScenarioDescription(scenarioId, "Test scenario", "Hib3", addDisease = true)
         db.addGroup(groupId, "Test group")
-        db.addModel("model-1", groupId, "Hib3", versions = listOf("version-1"))
+        db.addModel("model-1", groupId, "Hib3")
+        val modelVersionId = db.addModelVersion("model-1", "version-1", setCurrent = true)
         val setId = db.addResponsibilitySet(groupId, touchstoneId)
-        db.addResponsibility(setId, touchstoneId, scenarioId)
+        val responsibilityId = db.addResponsibility(setId, touchstoneId, scenarioId)
+        return ReturnedIds(responsibilityId, modelVersionId)
     }
 
     val csvData = """
@@ -119,3 +145,5 @@ class BurdenEstimateTests : DatabaseTest()
    "Hib3",   1997,    50,     "AGO",       "Angola",          6000,     1200,      NA,    5870
 """
 }
+
+data class ReturnedIds(val responsibilityId: Int, val modelVersionId: Int)
