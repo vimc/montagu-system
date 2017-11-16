@@ -12,7 +12,10 @@ import org.vaccineimpact.api.app.repositories.RepositoryFactory
 import org.vaccineimpact.api.app.security.checkIsAllowedToSeeTouchstone
 import org.vaccineimpact.api.models.BurdenEstimate
 import org.vaccineimpact.api.models.BurdenEstimateSet
+import org.vaccineimpact.api.models.Scope
+import org.vaccineimpact.api.models.TouchstoneStatus
 import org.vaccineimpact.api.models.helpers.OneTimeAction
+import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import spark.route.HttpMethod
 import java.time.Instant
 
@@ -38,7 +41,7 @@ open class GroupBurdenEstimatesController(context: ControllerContext) : Abstract
 
                 oneRepoEndpoint("/estimate-set/:set-id/", this::populateBurdenEstimateSet, repos, { it.burdenEstimates }, method = HttpMethod.post)
                         .secured(permissions("write"))
-         )
+        )
     }
 
     private fun permissions(readOrWrite: String) = setOf(
@@ -122,13 +125,24 @@ open class GroupBurdenEstimatesController(context: ControllerContext) : Abstract
         return objectCreation(context, url)
     }
 
-    private fun getValidResponsibilityPath(context: ActionContext, estimateRepository: BurdenEstimateRepository): ResponsibilityPath
+    private fun getValidResponsibilityPath(context: ActionContext,
+                                           estimateRepository: BurdenEstimateRepository,
+                                           readEstimatesRequired: Boolean = false): ResponsibilityPath
     {
         val path = ResponsibilityPath(context)
         val touchstoneId = path.touchstoneId
         val touchstones = estimateRepository.touchstoneRepository.touchstones
         val touchstone = touchstones.get(touchstoneId)
         context.checkIsAllowedToSeeTouchstone(path.touchstoneId, touchstone.status)
+        if (readEstimatesRequired)
+        {
+
+            if (touchstone.status == TouchstoneStatus.OPEN)
+            {
+                context.requirePermission(ReifiedPermission("estimates.read-unfinished",
+                        Scope.Specific("modelling-group", path.groupId)))
+            }
+        }
 
         return path
     }
