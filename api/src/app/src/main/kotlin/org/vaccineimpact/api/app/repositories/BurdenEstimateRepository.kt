@@ -1,9 +1,7 @@
 package org.vaccineimpact.api.app.repositories
 
-import org.vaccineimpact.api.db.tables.ScenarioDescription
 import org.vaccineimpact.api.models.BurdenEstimate
 import org.vaccineimpact.api.models.BurdenEstimateSet
-import org.vaccineimpact.api.models.ModelRun
 import java.time.Instant
 
 interface BurdenEstimateRepository : Repository
@@ -17,6 +15,5 @@ interface BurdenEstimateRepository : Repository
                              estimates: List<BurdenEstimate>, uploader: String, timestamp: Instant): Int
 
     fun addModelRunParameterSet(responsibilitySetId: Int, modelVersionId: Int, description: String,
-                                uploader: String, timestamp: Instant,
-                                modelRuns: List<ModelRun>)
+                                uploader: String, timestamp: Instant)
 }

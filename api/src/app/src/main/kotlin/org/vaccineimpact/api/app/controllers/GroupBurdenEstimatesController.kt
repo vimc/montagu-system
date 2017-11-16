@@ -1,18 +1,15 @@
 package org.vaccineimpact.api.app.controllers
 
 import org.vaccineimpact.api.app.context.ActionContext
+import org.vaccineimpact.api.app.context.csvData
 import org.vaccineimpact.api.app.controllers.endpoints.EndpointDefinition
 import org.vaccineimpact.api.app.controllers.endpoints.oneRepoEndpoint
 import org.vaccineimpact.api.app.controllers.endpoints.secured
-import org.vaccineimpact.api.app.context.csvData
 import org.vaccineimpact.api.app.errors.InconsistentDataError
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
 import org.vaccineimpact.api.app.repositories.RepositoryFactory
 import org.vaccineimpact.api.app.security.checkIsAllowedToSeeTouchstone
-import org.vaccineimpact.api.models.BurdenEstimate
-import org.vaccineimpact.api.models.BurdenEstimateSet
-import org.vaccineimpact.api.models.Scope
-import org.vaccineimpact.api.models.TouchstoneStatus
+import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.helpers.OneTimeAction
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import org.vaccineimpact.api.serialization.DataTableDeserializer
@@ -41,6 +38,13 @@ open class GroupBurdenEstimatesController(context: ControllerContext) : Abstract
             "$groupScope/estimates.$readOrWrite",
             "$groupScope/responsibilities.read"
     )
+
+    fun addModelRunParameters(context: ActionContext, estimateRepository: BurdenEstimateRepository)
+    {
+        val data = context.csvData<ModelRun>()
+
+
+    }
 
     fun getBurdenEstimates(context: ActionContext, estimateRepository: BurdenEstimateRepository): List<BurdenEstimateSet>
     {

@@ -1,7 +1,6 @@
 package org.vaccineimpact.api.app.repositories.jooq
 
 import org.jooq.DSLContext
-import org.jooq.Record
 import org.postgresql.copy.CopyManager
 import org.postgresql.core.BaseConnection
 import org.vaccineimpact.api.app.errors.DatabaseContentsError
@@ -16,6 +15,7 @@ import org.vaccineimpact.api.db.*
 import org.vaccineimpact.api.db.Tables.*
 import org.vaccineimpact.api.models.BurdenEstimate
 import org.vaccineimpact.api.models.BurdenEstimateSet
+import org.vaccineimpact.api.models.ModelRun
 import org.vaccineimpact.api.models.ResponsibilitySetStatus
 import java.beans.ConstructorProperties
 import java.io.ByteArrayInputStream
@@ -48,6 +48,27 @@ class JooqBurdenEstimateRepository(
                 .fetchSequenceInto()
     }
 
+    override fun addModelRunParameterSet(responsibilitySetId: Int, modelVersionId: Int, description: String,
+                                         uploader: String, timestamp: Instant)
+    {
+        val uploadInfo = dsl.newRecord(UPLOAD_INFO).apply{
+            this.uploadedBy = uploader
+            this.uploadedOn = timestamp.toString()
+        }
+
+        uploadInfo.store()
+
+        val newParameterSet = this.dsl.newRecord(MODEL_RUN_PARAMETER_SET).apply {
+            this.responsibilitySet = responsibilitySetId
+            this.description = description
+            this.modelVersion = modelVersionId
+            this.uploadInfo = uploadInfo.id
+        }
+
+        newParameterSet.store()
+
+    }
+
     override fun addBurdenEstimateSet(groupId: String, touchstoneId: String, scenarioId: String,
                                       estimates: List<BurdenEstimate>, uploader: String, timestamp: Instant): Int
     {
@@ -78,11 +99,11 @@ class JooqBurdenEstimateRepository(
                 .and(MODEL.DISEASE.eq(responsibilityInfo.disease))
                 .and(MODEL.IS_CURRENT)
                 .fetch().singleOrNull()?.value1()
-            ?: throw DatabaseContentsError("Modelling group $groupId does not have any models/model versions in the database")
+                ?: throw DatabaseContentsError("Modelling group $groupId does not have any models/model versions in the database")
 
         val setId = addSet(responsibilityInfo.id, uploader, timestamp, latestModelVersion)
         val cohortSizeId = outcomeLookup["cohort_size"]
-            ?: throw DatabaseContentsError("Expected a value with code 'cohort_size' in burden_outcome table")
+                ?: throw DatabaseContentsError("Expected a value with code 'cohort_size' in burden_outcome table")
 
         addEstimatesToSet(estimates, setId, outcomeLookup, cohortSizeId, responsibilityInfo.disease)
 
