@@ -1005,16 +1005,6 @@ Schema: [`BurdenEstimates.schema.json`](BurdenEstimates.schema.json)
     [
         {
             "id": 1,
-            "scenario": {
-                "id": "menA-novacc",
-                "touchstones": [ "2016-op-1", "2017-wuenic-1", "2017-op-1" ],
-                "description": "Menigitis A, No vaccination",
-                "disease": "MenA"
-            },
-            "responsible_group": {
-                "id": "IC-YellowFever",
-                "description": "Imperial College, Yellow Fever, PI: Tini Garske"
-            },
             "uploaded_by": "tgarske",
             "uploaded_on": "2017-10-06T11:18:06Z",
             "problems": []
@@ -1044,16 +1034,6 @@ Schema: [`BurdenEstimateSet.schema.json`](BurdenEstimateSet.schema.json)
 ### Example
     {
         "id": 1,
-        "scenario": {
-            "id": "menA-novacc",
-            "touchstones": [ "2016-op-1", "2017-wuenic-1", "2017-op-1" ],
-            "description": "Menigitis A, No vaccination",
-            "disease": "MenA"
-        },
-        "responsible_group": {
-            "id": "IC-YellowFever",
-            "description": "Imperial College, Yellow Fever, PI: Tini Garske"
-        },
         "uploaded_by": "tgarske",
         "uploaded_on": "2017-10-06T11:18:06Z",
         "problems": []
@@ -1326,6 +1306,7 @@ Schema: [`ResponsibilitySet.schema.json`](ResponsibilitySet.schema.json)
                 "current_estimate_set": {                    
                     "id": 1,                  
                     "uploaded_on": "2017-10-06T11:18:06Z",
+                    "uploaded_by": "tini.garske",
                     "problems": []                    
                 }
             }

@@ -17,7 +17,7 @@ class TeamCityIntegration : org.junit.rules.TestWatcher()
 
     override fun failed(e: Throwable, description: org.junit.runner.Description)
     {
-        val stackTrace = StringWriter().use { it
+        val stackTrace = StringWriter().use {
             e.printStackTrace(PrintWriter(it))
             it.toString()
         }

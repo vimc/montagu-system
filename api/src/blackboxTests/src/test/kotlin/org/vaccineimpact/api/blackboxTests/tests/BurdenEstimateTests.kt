@@ -35,7 +35,7 @@ class BurdenEstimateTests : DatabaseTest()
             CSVSchema("BurdenEstimate")
         } requiringPermissions {
             requiredPermissions
-        } andCheckObjectCreation LocationContraint(url, unknownId = true)
+        } andCheckObjectCreation LocationConstraint(url, unknownId = true)
     }
 
     @Test
