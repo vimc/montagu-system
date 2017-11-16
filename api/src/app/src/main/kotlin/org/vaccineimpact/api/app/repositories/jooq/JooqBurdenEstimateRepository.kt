@@ -100,7 +100,7 @@ class JooqBurdenEstimateRepository(
                 .and(MODEL.DISEASE.eq(responsibilityInfo.disease))
                 .and(MODEL.IS_CURRENT)
                 .fetch().singleOrNull()?.value1()
-                ?: throw DatabaseContentsError("Modelling group $groupId does not have any models/model versions in the database")
+                ?: throw DatabaseContentsError("Modelling group $groupId does not have a current model with a current model version in the database")
 
         val setId = addSet(responsibilityInfo.id, uploader, timestamp, latestModelVersion)
         val cohortSizeId = outcomeLookup["cohort_size"]
