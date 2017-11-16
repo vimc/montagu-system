@@ -1,6 +1,6 @@
 package org.vaccineimpact.api.blackboxTests.tests
 
-import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions
 import org.junit.Test
 import org.vaccineimpact.api.blackboxTests.helpers.*
 import org.vaccineimpact.api.blackboxTests.schemas.CSVSchema
@@ -19,6 +19,7 @@ class BurdenEstimateTests : DatabaseTest()
     private val scenarioId = "scenario-1"
     private val groupScope = "modelling-group:$groupId"
     private val url = "/modelling-groups/$groupId/responsibilities/$touchstoneId/$scenarioId/estimates/"
+    private val setUrl = "/modelling-groups/$groupId/responsibilities/$touchstoneId/$scenarioId/estimate-set/"
     private val requiredPermissions = PermissionSet(
             "$groupScope/estimates.write",
             "$groupScope/responsibilities.read"
@@ -67,8 +68,6 @@ class BurdenEstimateTests : DatabaseTest()
         } requiringPermissions {
             requiredPermissions
         } andCheckObjectCreation LocationConstraint(url, unknownId = true)
-            requiredPermissions
-        } andCheckObjectCreation LocationContraint(url, unknownId = true)
     }
 
     @Test
@@ -93,7 +92,7 @@ class BurdenEstimateTests : DatabaseTest()
             val requestHelper = RequestHelper()
 
             val response = requestHelper.postFile(oneTimeURL, csvData)
-            assertThat(response.statusCode).isEqualTo(201)
+            Assertions.assertThat(response.statusCode).isEqualTo(201)
 
             val badResponse = requestHelper.get(oneTimeURL)
             JSONValidator().validateError(badResponse.text, expectedErrorCode = "invalid-token-used")
@@ -133,17 +132,66 @@ class BurdenEstimateTests : DatabaseTest()
 
         val oneTimeURL = "/onetime_link/$onetimeToken/"
 
-        val file = File("file")
-        file.printWriter().use { out ->
-            out.write(csvData)
-        }
-
-        val response = requestHelper.postFile(oneTimeURL, file)
+        val response = requestHelper.postFile(oneTimeURL, csvData)
 
         Assertions.assertThat(response.statusCode).isEqualTo(200)
+    }
 
-        file.delete()
+    @Test
+    fun `can populate burden estimate via onetime link and redirect`()
+    {
+        val requestHelper = RequestHelper()
+        val token = TestUserHelper.setupTestUserAndGetToken(requiredPermissions.plus(PermissionSet("*/can-login")))
 
+        var setId = 0
+        JooqContext().use {
+            setId = setUpWithSet(it)
+        }
+
+        val onetimeTokenResult = requestHelper.get("$setUrl/$setId/get_onetime_link/", token)
+        val onetimeToken = onetimeTokenResult.montaguData<String>()!!
+
+        val oneTimeURL = "/onetime_link/$onetimeToken/"
+        val response = requestHelper.postFile(oneTimeURL, csvData)
+        val resultAsString = response.getResultFromRedirect(checkRedirectTarget = "http://localhost")
+        JSONValidator().validateSuccess(resultAsString)
+    }
+
+    @Test
+    fun `can create burden estimate via onetime link`()
+    {
+        validate("$setUrl/get_onetime_link/") against "Token" given { db ->
+            setUp(db)
+        } requiringPermissions {
+            requiredPermissions
+        } andCheckString { token ->
+            val oneTimeURL = "/onetime_link/$token/"
+            val requestHelper = RequestHelper()
+
+            val response = requestHelper.postFile(oneTimeURL, csvData)
+
+            assert(response.statusCode == 201)
+
+            val badResponse = requestHelper.get(oneTimeURL)
+            JSONValidator().validateError(badResponse.text, expectedErrorCode = "invalid-token-used")
+        }
+    }
+
+    @Test
+    fun `can create burden estimate via onetime link and redirect`()
+    {
+        validate("$setUrl/get_onetime_link/?redirectUrl=https://support.montagu.dide.ic.ac.uk:10443/") against "Token" given { db ->
+            setUp(db)
+        } requiringPermissions {
+            requiredPermissions
+        } andCheckString { token ->
+            val oneTimeURL = "/onetime_link/$token/"
+            val requestHelper = RequestHelper()
+
+            val response = requestHelper.postFile(oneTimeURL, csvData)
+            val resultAsString = response.getResultFromRedirect(checkRedirectTarget = "http://localhost")
+            JSONValidator().validateSuccess(resultAsString)
+        }
     }
 
     @Test
@@ -171,6 +219,17 @@ class BurdenEstimateTests : DatabaseTest()
         db.addModel("model-1", groupId, "Hib3", versions = listOf("version-1"))
         val setId = db.addResponsibilitySet(groupId, touchstoneId)
         db.addResponsibility(setId, touchstoneId, scenarioId)
+    }
+
+    private fun setUpWithSet(db: JooqContext): Int
+    {
+        db.addTouchstone("touchstone", 1, "Touchstone 1", addName = true)
+        db.addScenarioDescription(scenarioId, "Test scenario", "Hib3", addDisease = true)
+        db.addGroup(groupId, "Test group")
+        val versionId = db.addModel("model-1", groupId, "Hib3", versions = listOf("version-1"))
+        val setId = db.addResponsibilitySet(groupId, touchstoneId)
+        val responsibilityId = db.addResponsibility(setId, touchstoneId, scenarioId)
+        return db.addBurdenEstimateSet(responsibilityId, versionId, TestUserHelper.username)
     }
 
     val csvData = """
