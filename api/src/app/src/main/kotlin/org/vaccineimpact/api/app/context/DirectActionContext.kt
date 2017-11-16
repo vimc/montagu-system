@@ -1,8 +1,9 @@
-package org.vaccineimpact.api.app
+package org.vaccineimpact.api.app.context
 
 import org.pac4j.core.profile.CommonProfile
 import org.pac4j.core.profile.ProfileManager
 import org.pac4j.sparkjava.SparkWebContext
+import org.vaccineimpact.api.app.addDefaultResponseHeaders
 import org.vaccineimpact.api.app.errors.MissingRequiredPermissionError
 import org.vaccineimpact.api.app.security.montaguPermissions
 import org.vaccineimpact.api.app.errors.ValidationError
@@ -47,11 +48,11 @@ open class DirectActionContext(private val context: SparkWebContext,
         }
     }
 
-    override fun <T : Any> csvData(klass: KClass<T>): List<T>
+    override fun <T : Any> csvData(klass: KClass<T>, from: RequestBodySource): List<T>
     {
         return try
         {
-            DataTableDeserializer.deserialize(request.body(), klass, serializer).toList()
+            DataTableDeserializer.deserialize(from.getBody(this), klass, serializer).toList()
         }
         catch(e: ValidationException)
         {

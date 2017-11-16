@@ -6,7 +6,7 @@
         "status": { "$ref": "ResponsibilityStatus.schema.json" },
         "problems": { "$ref": "ProblemsArray.schema.json" },
         "current_estimate_set": {
-            "anyOf": [ {"$ref": "BurdenEstimateSetMinimal.schema.json"}, {"type": "null"} ]
+            "anyOf": [ {"$ref": "BurdenEstimateSet.schema.json"}, {"type": "null"} ]
         },
         "countries": { 
             "type": "array",

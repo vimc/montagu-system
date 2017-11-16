@@ -1,6 +1,6 @@
 package org.vaccineimpact.api.app.controllers
 
-import org.vaccineimpact.api.app.ActionContext
+import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.ErrorHandler
 import org.vaccineimpact.api.app.OneTimeLink
 import org.vaccineimpact.api.app.RedirectValidator
