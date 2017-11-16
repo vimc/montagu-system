@@ -5,6 +5,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
 import org.vaccineimpact.api.app.context.ActionContext
+import org.vaccineimpact.api.app.context.RequestBodySource
 import org.vaccineimpact.api.app.controllers.ControllerContext
 import org.vaccineimpact.api.app.controllers.GroupBurdenEstimatesController
 import org.vaccineimpact.api.app.errors.InconsistentDataError
@@ -43,7 +44,7 @@ class UploadBurdenEstimateTests : ControllerTests<GroupBurdenEstimatesController
 
         val before = Instant.now()
         val controller = GroupBurdenEstimatesController(mockControllerContext())
-        controller.addBurdenEstimates(mockActionContext(data), repo)
+        controller.addBurdenEstimates(mockActionContext(data), repo, RequestBodySource.Simple())
         val after = Instant.now()
         verify(touchstoneSet).get("touchstone-1")
         verify(repo).addBurdenEstimateSet(
@@ -65,7 +66,7 @@ class UploadBurdenEstimateTests : ControllerTests<GroupBurdenEstimatesController
                 ))
         )
         val controller = GroupBurdenEstimatesController(mockControllerContext())
-        assertThatThrownBy { controller.addBurdenEstimates(mockActionContext(data), mockRepository()) }
+        assertThatThrownBy { controller.addBurdenEstimates(mockActionContext(data), mockRepository(), RequestBodySource.Simple()) }
                 .isInstanceOf(InconsistentDataError::class.java)
     }
 
@@ -93,7 +94,7 @@ class UploadBurdenEstimateTests : ControllerTests<GroupBurdenEstimatesController
     private fun mockActionContext(data: List<BurdenEstimate>): ActionContext
     {
         return mock {
-            on { csvData(BurdenEstimate::class) } doReturn data
+            on { csvData(eq(BurdenEstimate::class), any()) } doReturn data
             on { username } doReturn "username"
             on { params(":group-id") } doReturn "group-1"
             on { params(":touchstone-id") } doReturn "touchstone-1"
