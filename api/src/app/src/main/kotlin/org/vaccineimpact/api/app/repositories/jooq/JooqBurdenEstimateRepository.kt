@@ -79,7 +79,6 @@ class JooqBurdenEstimateRepository(
                     " You must create a new set if you want to upload any new estimates.")
         }
         addEstimatesToSet(estimates, setId, outcomeLookup, cohortSizeId, responsibilityInfo.disease)
-
         updateCurrentBurdenEstimateSet(responsibilityInfo.id, setId)
     }
 
