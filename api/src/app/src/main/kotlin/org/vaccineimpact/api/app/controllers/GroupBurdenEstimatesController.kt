@@ -27,7 +27,7 @@ open class GroupBurdenEstimatesController(context: ControllerContext) : Abstract
     override fun endpoints(repos: RepositoryFactory): Iterable<EndpointDefinition<*>>
     {
         return listOf(
-                oneRepoEndpoint("/", this::getBurdenEstimates, repos, { it.burdenEstimates }, method = HttpMethod.get)
+                oneRepoEndpoint("/estimates/", this::getBurdenEstimates, repos, { it.burdenEstimates }, method = HttpMethod.get)
                         .secured(permissions("read")),
 
                 /** Deprecated **/
