@@ -53,6 +53,7 @@ import org.vaccineimpact.api.db.tables.Model;
 import org.vaccineimpact.api.db.tables.ModelRun;
 import org.vaccineimpact.api.db.tables.ModelRunParameter;
 import org.vaccineimpact.api.db.tables.ModelRunParameterSet;
+import org.vaccineimpact.api.db.tables.ModelRunParameterValue;
 import org.vaccineimpact.api.db.tables.ModelVersion;
 import org.vaccineimpact.api.db.tables.ModellingGroup;
 import org.vaccineimpact.api.db.tables.OnetimeToken;
@@ -112,7 +113,7 @@ import org.vaccineimpact.api.db.tables.records.SelectBurdenDataColRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = -697580822;
+    private static final long serialVersionUID = 47822217;
 
     /**
      * The reference instance of <code>public</code>
@@ -293,6 +294,11 @@ public class Public extends SchemaImpl {
      * The table <code>public.model_run_parameter_set</code>.
      */
     public final ModelRunParameterSet MODEL_RUN_PARAMETER_SET = org.vaccineimpact.api.db.tables.ModelRunParameterSet.MODEL_RUN_PARAMETER_SET;
+
+    /**
+     * The table <code>public.model_run_parameter_value</code>.
+     */
+    public final ModelRunParameterValue MODEL_RUN_PARAMETER_VALUE = org.vaccineimpact.api.db.tables.ModelRunParameterValue.MODEL_RUN_PARAMETER_VALUE;
 
     /**
      * The table <code>public.model_version</code>.
@@ -709,6 +715,7 @@ public class Public extends SchemaImpl {
             Sequences.MODEL_RUN_INTERNAL_ID_SEQ,
             Sequences.MODEL_RUN_PARAMETER_ID_SEQ,
             Sequences.MODEL_RUN_PARAMETER_SET_ID_SEQ,
+            Sequences.MODEL_RUN_PARAMETER_VALUE_ID_SEQ,
             Sequences.MODEL_VERSION_ID_SEQ,
             Sequences.RESPONSIBILITY_ID_SEQ,
             Sequences.RESPONSIBILITY_SET_ID_SEQ,
@@ -767,6 +774,7 @@ public class Public extends SchemaImpl {
             ModelRun.MODEL_RUN,
             ModelRunParameter.MODEL_RUN_PARAMETER,
             ModelRunParameterSet.MODEL_RUN_PARAMETER_SET,
+            ModelRunParameterValue.MODEL_RUN_PARAMETER_VALUE,
             ModelVersion.MODEL_VERSION,
             ModellingGroup.MODELLING_GROUP,
             OnetimeToken.ONETIME_TOKEN,
