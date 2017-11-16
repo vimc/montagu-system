@@ -1,6 +1,7 @@
 package org.vaccineimpact.api.app.repositories.jooq
 
 import org.jooq.DSLContext
+import org.jooq.Record
 import org.postgresql.copy.CopyManager
 import org.postgresql.core.BaseConnection
 import org.vaccineimpact.api.app.errors.DatabaseContentsError
@@ -14,6 +15,7 @@ import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.db.*
 import org.vaccineimpact.api.db.Tables.*
 import org.vaccineimpact.api.models.BurdenEstimate
+import org.vaccineimpact.api.models.BurdenEstimateSet
 import org.vaccineimpact.api.models.ResponsibilitySetStatus
 import java.beans.ConstructorProperties
 import java.io.ByteArrayInputStream
@@ -33,6 +35,19 @@ class JooqBurdenEstimateRepository(
         private val modellingGroupRepository: ModellingGroupRepository
 ) : JooqRepository(dsl), BurdenEstimateRepository
 {
+    override fun getBurdenEstimateSets(groupId: String, touchstoneId: String, scenarioId: String): Sequence<BurdenEstimateSet>
+    {
+        // Dereference modelling group IDs
+        val modellingGroup = modellingGroupRepository.getModellingGroup(groupId)
+        return dsl.select(BURDEN_ESTIMATE_SET.fieldsAsList())
+                .fromJoinPath(BURDEN_ESTIMATE_SET, RESPONSIBILITY, RESPONSIBILITY_SET, MODELLING_GROUP)
+                .joinPath(RESPONSIBILITY, SCENARIO, SCENARIO_DESCRIPTION)
+                .where(SCENARIO_DESCRIPTION.ID.eq(scenarioId))
+                .and(RESPONSIBILITY_SET.TOUCHSTONE.eq(touchstoneId))
+                .and(MODELLING_GROUP.ID.eq(modellingGroup.id))
+                .fetchSequenceInto()
+    }
+
     override fun addBurdenEstimateSet(groupId: String, touchstoneId: String, scenarioId: String,
                                       estimates: List<BurdenEstimate>, uploader: String, timestamp: Instant): Int
     {
