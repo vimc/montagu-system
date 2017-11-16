@@ -45,7 +45,7 @@ open class GroupBurdenEstimatesController(context: ControllerContext) : Abstract
     fun getBurdenEstimates(context: ActionContext, estimateRepository: BurdenEstimateRepository): List<BurdenEstimateSet>
     {
         val path = getValidResponsibilityPath(context, estimateRepository)
-        return estimateRepository.getBurdenEstimateSets(path.groupId, path.touchstoneId, path.scenarioId).toList()
+        return estimateRepository.getBurdenEstimateSets(path.groupId, path.touchstoneId, path.scenarioId)
     }
 
     fun addBurdenEstimatesFromHTMLForm(context: ActionContext, estimateRepository: BurdenEstimateRepository): String

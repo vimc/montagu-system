@@ -20,7 +20,9 @@ import org.vaccineimpact.api.db.direct.*
 import org.vaccineimpact.api.db.fromJoinPath
 import org.vaccineimpact.api.db.toDecimal
 import org.vaccineimpact.api.models.BurdenEstimate
+import org.vaccineimpact.api.models.BurdenEstimateSet
 import java.math.BigDecimal
+import java.time.Instant
 import java.time.LocalDateTime
 import java.time.Month
 import java.time.ZoneOffset
@@ -45,6 +47,37 @@ class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRepository>(
     private val modelVersion = "version-1"
     private val username = "some.user"
     private val timestamp = LocalDateTime.of(2017, Month.JUNE, 13, 12, 30).toInstant(ZoneOffset.UTC)
+
+    @Test
+    fun `can retrieve burden estimate sets`()
+    {
+        val otherUser = "some.other.user"
+        var setA = 0
+        var setB = 0
+        val before = Instant.now()
+        given { db ->
+            val ids = setupDatabase(db)
+            val modelVersionId = ids.modelVersion!!
+            db.addUserForTesting(otherUser)
+            setA = db.addBurdenEstimateSet(ids.responsibility, modelVersionId, username)
+            setB = db.addBurdenEstimateSet(ids.responsibility, modelVersionId, "some.other.user")
+            db.addBurdenEstimateProblem("some problem", setB)
+        } check { repo ->
+            val after = Instant.now()
+            val sets = repo.getBurdenEstimateSets(groupId, touchstoneId, scenarioId).toList()
+            val a = sets.single { it.id == setA }
+            assertThat(a.uploadedBy).isEqualTo(username)
+            assertThat(a.uploadedOn).isGreaterThan(before)
+            assertThat(a.uploadedOn).isLessThan(after)
+            assertThat(a.problems).isEmpty()
+
+            val b = sets.single { it.id == setB }
+            assertThat(b.uploadedBy).isEqualTo("some.other.user")
+            assertThat(b.uploadedOn).isGreaterThan(a.uploadedOn)
+            assertThat(b.uploadedOn).isLessThan(after)
+            assertThat(b.problems).hasSameElementsAs(listOf("some problem"))
+        }
+    }
 
     @Test
     fun `can add burden estimate set`()
