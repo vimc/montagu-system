@@ -1,6 +1,6 @@
 package org.vaccineimpact.api.blackboxTests.tests
 
-import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions
 import org.junit.Test
 import org.vaccineimpact.api.blackboxTests.helpers.*
 import org.vaccineimpact.api.blackboxTests.schemas.CSVSchema
@@ -19,6 +19,7 @@ class BurdenEstimateTests : DatabaseTest()
     private val scenarioId = "scenario-1"
     private val groupScope = "modelling-group:$groupId"
     private val url = "/modelling-groups/$groupId/responsibilities/$touchstoneId/$scenarioId/estimates/"
+    private val setUrl = "/modelling-groups/$groupId/responsibilities/$touchstoneId/$scenarioId/estimate-set/"
     private val requiredPermissions = PermissionSet(
             "$groupScope/estimates.write",
             "$groupScope/responsibilities.read"
@@ -67,8 +68,6 @@ class BurdenEstimateTests : DatabaseTest()
         } requiringPermissions {
             requiredPermissions
         } andCheckObjectCreation LocationConstraint(url, unknownId = true)
-            requiredPermissions
-        } andCheckObjectCreation LocationContraint(url, unknownId = true)
     }
 
     @Test
@@ -93,7 +92,7 @@ class BurdenEstimateTests : DatabaseTest()
             val requestHelper = RequestHelper()
 
             val response = requestHelper.postFile(oneTimeURL, csvData)
-            assertThat(response.statusCode).isEqualTo(201)
+            Assertions.assertThat(response.statusCode).isEqualTo(201)
 
             val badResponse = requestHelper.get(oneTimeURL)
             JSONValidator().validateError(badResponse.text, expectedErrorCode = "invalid-token-used")
@@ -115,17 +114,6 @@ class BurdenEstimateTests : DatabaseTest()
             val resultAsString = response.getResultFromRedirect(checkRedirectTarget = "http://localhost")
             JSONValidator().validateSuccess(resultAsString)
         }
-    }
-
-    private fun setUpWithSet(db: JooqContext): Int
-    {
-        db.addTouchstone("touchstone", 1, "Touchstone 1", addName = true)
-        db.addScenarioDescription(scenarioId, "Test scenario", "Hib3", addDisease = true)
-        db.addGroup(groupId, "Test group")
-        val versionId = db.addModel("model-1", groupId, "Hib3", versions = listOf("version-1"))
-        val setId = db.addResponsibilitySet(groupId, touchstoneId)
-        val responsibilityId = db.addResponsibility(setId, touchstoneId, scenarioId)
-        return db.addBurdenEstimateSet(responsibilityId, versionId, TestUserHelper.username)
     }
 
     @Test
@@ -153,6 +141,17 @@ class BurdenEstimateTests : DatabaseTest()
         db.addModel("model-1", groupId, "Hib3", versions = listOf("version-1"))
         val setId = db.addResponsibilitySet(groupId, touchstoneId)
         db.addResponsibility(setId, touchstoneId, scenarioId)
+    }
+
+    private fun setUpWithSet(db: JooqContext): Int
+    {
+        db.addTouchstone("touchstone", 1, "Touchstone 1", addName = true)
+        db.addScenarioDescription(scenarioId, "Test scenario", "Hib3", addDisease = true)
+        db.addGroup(groupId, "Test group")
+        val versionId = db.addModel("model-1", groupId, "Hib3", versions = listOf("version-1"))
+        val setId = db.addResponsibilitySet(groupId, touchstoneId)
+        val responsibilityId = db.addResponsibility(setId, touchstoneId, scenarioId)
+        return db.addBurdenEstimateSet(responsibilityId, versionId, TestUserHelper.username)
     }
 
     val csvData = """
