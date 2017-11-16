@@ -27,24 +27,18 @@ open class GroupBurdenEstimatesController(context: ControllerContext) : Abstract
                 oneRepoEndpoint("/", this::getBurdenEstimates, repos, { it.burdenEstimates }, method = HttpMethod.get)
                         .secured(permissions("read")),
 
-                oneRepoEndpoint("/", { c, r -> addBurdenEstimates(c, r, RequestBodySource.Simple()) }, repos, { it.burdenEstimates }, method = HttpMethod.post)
+                oneRepoEndpoint("/estimates/", { c, r -> addBurdenEstimates(c, r, RequestBodySource.Simple()) }, repos, { it.burdenEstimates }, method = HttpMethod.post)
                         .secured(permissions("write")),
 
-                oneRepoEndpoint("/get_onetime_link/", { c, r -> getOneTimeLinkToken(c, r, OneTimeAction.BURDENS) }, repos, { it.token })
+                oneRepoEndpoint("/estimates/get_onetime_link/", { c, r -> getOneTimeLinkToken(c, r, OneTimeAction.BURDENS) }, repos, { it.token })
                         .secured(permissions("write")),
-
-                oneRepoEndpoint("/estimates/", this::addBurdenEstimates, repos, { it.burdenEstimates }, method = HttpMethod.post)
-                        .secured(setOf("$groupScope/estimates.write", "$groupScope/responsibilities.read")),
 
                 oneRepoEndpoint("/estimate-set/", this::createBurdenEstimateSet, repos, { it.burdenEstimates }, method = HttpMethod.post)
                         .secured(setOf("$groupScope/estimates.write", "$groupScope/responsibilities.read")),
 
                 oneRepoEndpoint("/estimate-set/:set-id/", this::populateBurdenEstimateSet, repos, { it.burdenEstimates }, method = HttpMethod.post)
-                        .secured(setOf("$groupScope/estimates.write", "$groupScope/responsibilities.read")),
-
-                oneRepoEndpoint("/estimates/get_onetime_link/", { c, r -> getOneTimeLinkToken(c, r, OneTimeAction.BURDENS) }, repos, { it.token })
                         .secured(setOf("$groupScope/estimates.write", "$groupScope/responsibilities.read"))
-        )
+         )
     }
 
     private fun permissions(readOrWrite: String) = setOf(
