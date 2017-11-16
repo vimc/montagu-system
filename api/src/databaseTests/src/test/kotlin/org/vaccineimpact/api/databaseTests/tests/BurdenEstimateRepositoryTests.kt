@@ -47,7 +47,7 @@ class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRepository>(
     private val timestamp = LocalDateTime.of(2017, Month.JUNE, 13, 12, 30).toInstant(ZoneOffset.UTC)
 
     @Test
-    fun `can add burden estimate set with empty status`()
+    fun `can create burden estimate set with empty status`()
     {
         var returnedIds: ReturnedIds? = null
         var setId: Int? = null
@@ -124,7 +124,7 @@ class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRepository>(
     }
 
     @Test
-    fun `cannot add burden estimates with diseases that do not match scenario`()
+    fun `cannot create burden estimates with diseases that do not match scenario`()
     {
         val badData = data.map { it.copy(disease = "YF") }
         JooqContext().use { db ->
@@ -138,7 +138,7 @@ class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRepository>(
     }
 
     @Test
-    fun `cannot add burden estimates with non-existent countries`()
+    fun `cannot populate burden estimates with non-existent countries`()
     {
         val badData = data.map { it.copy(country = "FAKE") }
         JooqContext().use { db ->
@@ -154,7 +154,7 @@ class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRepository>(
     }
 
     @Test
-    fun `cannot add burden estimate set if group has no model`()
+    fun `cannot create burden estimate set if group has no model`()
     {
         JooqContext().use { db ->
             setupDatabase(db, addModel = false)
@@ -166,7 +166,7 @@ class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRepository>(
     }
 
     @Test
-    fun `cannot add burden estimate set if cohort_size is missing from burden_outcome table`()
+    fun `cannot populate burden estimate set if cohort_size is missing from burden_outcome table`()
     {
         JooqContext().use { db ->
             setupDatabase(db)
@@ -180,7 +180,7 @@ class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRepository>(
     }
 
     @Test
-    fun `cannot add burden estimate set if responsibility set status is submitted`()
+    fun `cannot create burden estimate set if responsibility set status is submitted`()
     {
         JooqContext().use { db ->
             setupDatabase(db, responsibilitySetStatus = "submitted")
@@ -194,13 +194,13 @@ class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRepository>(
     }
 
     @Test
-    fun `cannot add burden estimate set if responsibility set status is approved`()
+    fun `cannot create burden estimate set if responsibility set status is approved`()
     {
         JooqContext().use { db ->
             setupDatabase(db, responsibilitySetStatus = "approved")
             val repo = makeRepository(db)
             assertThatThrownBy {
-                val setId = repo.createBurdenEstimateSet(groupId, touchstoneId, scenarioId, username, timestamp)
+                repo.createBurdenEstimateSet(groupId, touchstoneId, scenarioId, username, timestamp)
             }.isInstanceOf(OperationNotAllowedError::class.java)
                     .hasMessage("the following problems occurred:\nThe burden estimates uploaded for this touchstone have been reviewed and approved." +
                             " You cannot upload any new estimates.")
@@ -208,19 +208,19 @@ class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRepository>(
     }
 
     @Test
-    fun `cannot add burden estimate set if touchstone doesn't exist`()
+    fun `cannot create burden estimate set if touchstone doesn't exist`()
     {
         checkBadId(otherTouchstoneId = "wrong-id")
     }
 
     @Test
-    fun `cannot add burden estimate set if group doesn't exist`()
+    fun `cannot create burden estimate set if group doesn't exist`()
     {
         checkBadId(otherGroupId = "wrong-id")
     }
 
     @Test
-    fun `cannot add burden estimate set if scenario doesn't exist`()
+    fun `cannot create burden estimate set if scenario doesn't exist`()
     {
         checkBadId(otherScenarioId = "wrong-id")
     }
