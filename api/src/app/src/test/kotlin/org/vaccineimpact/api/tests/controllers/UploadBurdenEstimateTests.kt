@@ -94,7 +94,7 @@ class UploadBurdenEstimateTests : ControllerTests<GroupBurdenEstimatesController
 
         val controller = GroupBurdenEstimatesController(mockControllerContext())
         val mockContext = mock<ActionContext> {
-            on { csvData(BurdenEstimate::class) } doReturn data
+            on { csvData(BurdenEstimate::class, RequestBodySource.Simple()) } doReturn data
             on { username } doReturn "username"
             on { params(":set-id") } doReturn "1"
             on { params(":group-id") } doReturn "group-1"

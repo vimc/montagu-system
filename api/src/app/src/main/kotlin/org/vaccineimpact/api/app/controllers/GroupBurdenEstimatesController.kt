@@ -79,7 +79,8 @@ open class GroupBurdenEstimatesController(context: ControllerContext) : Abstract
         return saveBurdenEstimates(data, estimateRepository, context, path)
     }
 
-    fun populateBurdenEstimateSet(context: ActionContext, estimateRepository: BurdenEstimateRepository): String
+    fun populateBurdenEstimateSet(context: ActionContext,
+                                  estimateRepository: BurdenEstimateRepository): String
     {
         // First check if we're allowed to see this touchstone
         val path = getValidResponsibilityPath(context, estimateRepository)
