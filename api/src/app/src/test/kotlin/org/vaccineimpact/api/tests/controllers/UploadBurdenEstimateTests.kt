@@ -27,7 +27,7 @@ class UploadBurdenEstimateTests : ControllerTests<GroupBurdenEstimatesController
     @Test
     fun `can get metadata for burden estimates`()
     {
-        val data = sequenceOf(
+        val data = listOf(
                 BurdenEstimateSet(1, Instant.MIN, "ThePast", emptyList()),
                 BurdenEstimateSet(2, Instant.MAX, "TheFuture", listOf("Doesn't exist yet"))
         )
