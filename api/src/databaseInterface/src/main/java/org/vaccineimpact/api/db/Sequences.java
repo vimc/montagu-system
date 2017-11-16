@@ -139,6 +139,21 @@ public class Sequences {
     public static final Sequence<Long> IMPACT_ESTIMATE_SET_INGREDIENT_ID_SEQ = new SequenceImpl<Long>("impact_estimate_set_ingredient_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
     /**
+     * The sequence <code>public.model_run_internal_id_seq</code>
+     */
+    public static final Sequence<Long> MODEL_RUN_INTERNAL_ID_SEQ = new SequenceImpl<Long>("model_run_internal_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
+     * The sequence <code>public.model_run_parameter_id_seq</code>
+     */
+    public static final Sequence<Long> MODEL_RUN_PARAMETER_ID_SEQ = new SequenceImpl<Long>("model_run_parameter_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
+     * The sequence <code>public.model_run_parameter_set_id_seq</code>
+     */
+    public static final Sequence<Long> MODEL_RUN_PARAMETER_SET_ID_SEQ = new SequenceImpl<Long>("model_run_parameter_set_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
      * The sequence <code>public.model_version_id_seq</code>
      */
     public static final Sequence<Long> MODEL_VERSION_ID_SEQ = new SequenceImpl<Long>("model_version_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
@@ -187,6 +202,11 @@ public class Sequences {
      * The sequence <code>public.touchstone_years_id_seq</code>
      */
     public static final Sequence<Long> TOUCHSTONE_YEARS_ID_SEQ = new SequenceImpl<Long>("touchstone_years_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
+     * The sequence <code>public.upload_info_id_seq</code>
+     */
+    public static final Sequence<Long> UPLOAD_INFO_ID_SEQ = new SequenceImpl<Long>("upload_info_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
     /**
      * The sequence <code>public.vaccine_routine_age_id_seq</code>

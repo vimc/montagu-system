@@ -42,6 +42,9 @@ import org.vaccineimpact.api.db.tables.ImpactEstimateSet;
 import org.vaccineimpact.api.db.tables.ImpactEstimateSetIngredient;
 import org.vaccineimpact.api.db.tables.ImpactOutcome;
 import org.vaccineimpact.api.db.tables.Model;
+import org.vaccineimpact.api.db.tables.ModelRun;
+import org.vaccineimpact.api.db.tables.ModelRunParameter;
+import org.vaccineimpact.api.db.tables.ModelRunParameterSet;
 import org.vaccineimpact.api.db.tables.ModelVersion;
 import org.vaccineimpact.api.db.tables.ModellingGroup;
 import org.vaccineimpact.api.db.tables.OnetimeToken;
@@ -71,6 +74,7 @@ import org.vaccineimpact.api.db.tables.TouchstoneDemographicSource;
 import org.vaccineimpact.api.db.tables.TouchstoneName;
 import org.vaccineimpact.api.db.tables.TouchstoneStatus;
 import org.vaccineimpact.api.db.tables.TouchstoneYears;
+import org.vaccineimpact.api.db.tables.UploadInfo;
 import org.vaccineimpact.api.db.tables.UserRole;
 import org.vaccineimpact.api.db.tables.VCoverageInfo;
 import org.vaccineimpact.api.db.tables.VResponsibilityInfo;
@@ -259,6 +263,21 @@ public class Tables {
      * With the self-referencing "current" field; we consider a model to be the current one if current is null.  See comment about recursion in modelling_group
      */
     public static final Model MODEL = org.vaccineimpact.api.db.tables.Model.MODEL;
+
+    /**
+     * The table <code>public.model_run</code>.
+     */
+    public static final ModelRun MODEL_RUN = org.vaccineimpact.api.db.tables.ModelRun.MODEL_RUN;
+
+    /**
+     * The table <code>public.model_run_parameter</code>.
+     */
+    public static final ModelRunParameter MODEL_RUN_PARAMETER = org.vaccineimpact.api.db.tables.ModelRunParameter.MODEL_RUN_PARAMETER;
+
+    /**
+     * The table <code>public.model_run_parameter_set</code>.
+     */
+    public static final ModelRunParameterSet MODEL_RUN_PARAMETER_SET = org.vaccineimpact.api.db.tables.ModelRunParameterSet.MODEL_RUN_PARAMETER_SET;
 
     /**
      * The table <code>public.model_version</code>.
@@ -593,6 +612,11 @@ public class Tables {
      * The table <code>public.touchstone_years</code>.
      */
     public static final TouchstoneYears TOUCHSTONE_YEARS = org.vaccineimpact.api.db.tables.TouchstoneYears.TOUCHSTONE_YEARS;
+
+    /**
+     * The table <code>public.upload_info</code>.
+     */
+    public static final UploadInfo UPLOAD_INFO = org.vaccineimpact.api.db.tables.UploadInfo.UPLOAD_INFO;
 
     /**
      * The table <code>public.user_role</code>.
