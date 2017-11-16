@@ -40,7 +40,13 @@ open class GroupBurdenEstimatesController(context: ControllerContext) : Abstract
                         .secured(permissions("write")),
 
                 oneRepoEndpoint("/estimate-set/:set-id/", this::populateBurdenEstimateSet, repos, { it.burdenEstimates }, method = HttpMethod.post)
-                        .secured(permissions("write"))
+                        .secured(permissions("write")),
+
+                oneRepoEndpoint("/estimate-set/get_onetime_link/", { c, r -> getOneTimeLinkToken(c, r, OneTimeAction.BURDENS_CREATE) }, repos, { it.token })
+                        .secured(setOf("$groupScope/estimates.write", "$groupScope/responsibilities.read")),
+
+                oneRepoEndpoint("/estimate-set/:set-id/get_onetime_link/", { c, r -> getOneTimeLinkToken(c, r, OneTimeAction.BURDENS_POPULATE) }, repos, { it.token })
+                        .secured(setOf("$groupScope/estimates.write", "$groupScope/responsibilities.read"))
         )
     }
 
