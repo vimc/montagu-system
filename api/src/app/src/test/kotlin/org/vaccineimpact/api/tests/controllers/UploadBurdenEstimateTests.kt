@@ -14,15 +14,37 @@ import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.serialization.DataTableDeserializer
 import org.vaccineimpact.api.db.toDecimal
 import org.vaccineimpact.api.models.BurdenEstimate
+import org.vaccineimpact.api.models.BurdenEstimateSet
 import org.vaccineimpact.api.models.Touchstone
 import org.vaccineimpact.api.models.TouchstoneStatus
 import java.time.Instant
 
 class UploadBurdenEstimateTests : ControllerTests<GroupBurdenEstimatesController>()
 {
-    override fun makeController(controllerContext: ControllerContext): GroupBurdenEstimatesController
+    override fun makeController(controllerContext: ControllerContext)
+            = GroupBurdenEstimatesController(controllerContext)
+
+    @Test
+    fun `can get metadata for burden estimates`()
     {
-        return GroupBurdenEstimatesController(controllerContext)
+        val data = sequenceOf(
+                BurdenEstimateSet(1, Instant.MIN, "ThePast", emptyList()),
+                BurdenEstimateSet(2, Instant.MAX, "TheFuture", listOf("Doesn't exist yet"))
+        )
+        val touchstoneRepo = mockTouchstoneRepository()
+        val repo = mock<BurdenEstimateRepository> {
+            on { getBurdenEstimateSets(any(), any(), any()) } doReturn data
+            on { touchstoneRepository } doReturn touchstoneRepo
+        }
+        val context = mock<ActionContext> {
+            on { params(":group-id") } doReturn "group-1"
+            on { params(":touchstone-id") } doReturn "touchstone-1"
+            on { params(":scenario-id") } doReturn "scenario-1"
+        }
+        val controller = makeController(mockControllerContext())
+        assertThat(controller.getBurdenEstimates(context, repo))
+                .hasSameElementsAs(data.toList())
+        verify(repo).getBurdenEstimateSets("group-1", "touchstone-1", "scenario-1")
     }
 
     @Test
@@ -105,11 +127,14 @@ class UploadBurdenEstimateTests : ControllerTests<GroupBurdenEstimatesController
         on { get("touchstone-1") } doReturn Touchstone("touchstone-1", "touchstone", 1, "Description", TouchstoneStatus.OPEN)
     }
 
+    private fun mockTouchstoneRepository(touchstoneSet: SimpleDataSet<Touchstone, String> = mockTouchstones()) =
+            mock<TouchstoneRepository> {
+                on { touchstones } doReturn touchstoneSet
+            }
+
     private fun mockRepository(touchstoneSet: SimpleDataSet<Touchstone, String> = mockTouchstones()): BurdenEstimateRepository
     {
-        val touchstoneRepo = mock<TouchstoneRepository> {
-            on { touchstones } doReturn touchstoneSet
-        }
+        val touchstoneRepo = mockTouchstoneRepository(touchstoneSet)
         return mock {
             on { touchstoneRepository } doReturn touchstoneRepo
         }
