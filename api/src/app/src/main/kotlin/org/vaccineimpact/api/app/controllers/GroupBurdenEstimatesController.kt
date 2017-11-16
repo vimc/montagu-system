@@ -30,6 +30,7 @@ open class GroupBurdenEstimatesController(context: ControllerContext) : Abstract
                 oneRepoEndpoint("/", this::getBurdenEstimates, repos, { it.burdenEstimates }, method = HttpMethod.get)
                         .secured(permissions("read")),
 
+                /** Deprecated **/
                 oneRepoEndpoint("/estimates/", { c, r -> addBurdenEstimates(c, r, RequestBodySource.Simple()) }, repos, { it.burdenEstimates }, method = HttpMethod.post)
                         .secured(permissions("write")),
 
@@ -68,6 +69,7 @@ open class GroupBurdenEstimatesController(context: ControllerContext) : Abstract
         return objectCreation(context, url)
     }
 
+    /** Deprecated **/
     open fun addBurdenEstimates(
             context: ActionContext,
             estimateRepository: BurdenEstimateRepository,
