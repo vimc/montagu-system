@@ -55,7 +55,8 @@ class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRepository>(
         given { db ->
             returnedIds = setupDatabase(db)
         } makeTheseChanges { repo ->
-            repo.addBurdenEstimateSet(groupId, touchstoneId, scenarioId, data, username, timestamp)
+            repo.addModelRunParameterSet(returnedIds!!.responsibility, returnedIds!!.modelVersion!!,
+                    "a test set", "test.user", timestamp)
         } andCheckDatabase { db ->
             val setId = checkBurdenEstimateSetMetadata(db, returnedIds!!)
             checkBurdenEstimates(db, setId)

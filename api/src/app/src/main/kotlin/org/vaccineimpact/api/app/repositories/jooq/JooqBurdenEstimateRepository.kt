@@ -15,7 +15,6 @@ import org.vaccineimpact.api.db.*
 import org.vaccineimpact.api.db.Tables.*
 import org.vaccineimpact.api.models.BurdenEstimate
 import org.vaccineimpact.api.models.BurdenEstimateSet
-import org.vaccineimpact.api.models.ModelRun
 import org.vaccineimpact.api.models.ResponsibilitySetStatus
 import java.beans.ConstructorProperties
 import java.io.ByteArrayInputStream
@@ -53,7 +52,7 @@ class JooqBurdenEstimateRepository(
     {
         val uploadInfo = dsl.newRecord(UPLOAD_INFO).apply{
             this.uploadedBy = uploader
-            this.uploadedOn = timestamp.toString()
+            this.uploadedOn = Timestamp.from(timestamp)
         }
 
         uploadInfo.store()
