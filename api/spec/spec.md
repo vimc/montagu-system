@@ -993,7 +993,7 @@ An error occurs (and no changes are made) if:
 * The coverage set is `campaign` and the scenario is `routine`. (All other combinations are acceptable)
 
 # Burden estimates
-## GET /modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}/{scenario-id}/estimates/
+## GET /modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}/{scenario-id}/estimate-sets/
 Returns metadata for all burden estimates that have been uploaded for this 
 responsibility.
 
@@ -1018,7 +1018,7 @@ Filter by scenario. e.g. GET /touchstone/2017-op-1/estimates/?scenario=menA-nova
 #### responsible_group
 Filter by responsible group. e.g. GET /touchstone/2017-op-1/estimates/?responsible_group=IC-YellowFever
 
-## GET /modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}/{scenario-id}/estimates/{estimate-id}/
+## GET /modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}/{scenario-id}/estimate-sets/{estimate-id}/
 Returns the full burden estimate data.
 
 Required permissions: Scoped to modelling group: `estimates.read`, `responsibilities.read`. If the estimates belong to a touchstone that is `open` then they are only returned if the user has `estimates.read-unfinished` (again scoped to the modelling group)

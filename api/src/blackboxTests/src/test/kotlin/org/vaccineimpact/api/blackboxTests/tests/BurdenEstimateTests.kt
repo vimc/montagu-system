@@ -31,7 +31,7 @@ class BurdenEstimateTests : DatabaseTest()
     @Test
     fun `can get burden estimate sets`()
     {
-        validate(url) against "BurdenEstimates" given { db ->
+        validate(setUrl) against "BurdenEstimates" given { db ->
             val ids = setUp(db)
             db.addUserForTesting("some.user")
             val setId = db.addBurdenEstimateSet(ids.responsibilityId, ids.modelVersionId, "some.user")
