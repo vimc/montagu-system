@@ -1,0 +1,9 @@
+{
+	"id": "BurdenEstimateSetType",
+	"enum": [ 
+        "central_unknown",
+        "central_single_run",
+        "central_averaged",
+        "stochastic"
+    ]
+}
