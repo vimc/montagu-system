@@ -21,13 +21,14 @@ import org.vaccineimpact.api.db.fromJoinPath
 import org.vaccineimpact.api.db.toDecimal
 import org.vaccineimpact.api.models.BurdenEstimate
 import java.math.BigDecimal
+import java.time.Instant
 import java.time.LocalDateTime
 import java.time.Month
 import java.time.ZoneOffset
 
 class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRepository>()
 {
-    private data class ReturnedIds(val modelVersion: Int?, val responsibility: Int)
+    private data class ReturnedIds(val modelVersion: Int?, val responsibility: Int, val responsibilitySetId: Int)
 
     override fun makeRepository(db: JooqContext): BurdenEstimateRepository
     {
@@ -55,11 +56,19 @@ class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRepository>(
         given { db ->
             returnedIds = setupDatabase(db)
         } makeTheseChanges { repo ->
-            repo.addModelRunParameterSet(returnedIds!!.responsibility, returnedIds!!.modelVersion!!,
+            repo.addModelRunParameterSet(returnedIds!!.responsibilitySetId, returnedIds!!.modelVersion!!,
                     "a test set", "test.user", timestamp)
         } andCheckDatabase { db ->
-            val setId = checkBurdenEstimateSetMetadata(db, returnedIds!!)
-            checkBurdenEstimates(db, setId)
+            val info = db.dsl.select()
+                    .fromJoinPath(MODEL_RUN_PARAMETER_SET, UPLOAD_INFO)
+                    .fetchOne()
+
+            assertThat(info[MODEL_RUN_PARAMETER_SET.MODEL_VERSION]).isEqualTo(returnedIds!!.modelVersion!!)
+            assertThat(info[MODEL_RUN_PARAMETER_SET.RESPONSIBILITY_SET]).isEqualTo(returnedIds!!.responsibilitySetId)
+            assertThat(info[MODEL_RUN_PARAMETER_SET.DESCRIPTION]).isEqualTo("a test set")
+
+            assertThat(info[UPLOAD_INFO.UPLOADED_BY]).isEqualTo("test.user")
+            assertThat(info[UPLOAD_INFO.UPLOADED_ON]).isEqualTo(timestamp)
         }
     }
 
@@ -224,7 +233,7 @@ class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRepository>(
         val setId = db.addResponsibilitySet(groupId, touchstoneId, responsibilitySetStatus)
         val responsibilityId = db.addResponsibility(setId, touchstoneId, scenarioId)
         db.addUserForTesting(username)
-        return ReturnedIds(modelVersionId, responsibilityId)
+        return ReturnedIds(modelVersionId, responsibilityId, setId)
     }
 
     private fun checkBurdenEstimates(db: JooqContext, setId: Int)
