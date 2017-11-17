@@ -48,7 +48,7 @@ class BurdenEstimateTests : DatabaseTest()
 
         var setId = 0
         JooqContext().use {
-            setId = setUpWithSet(it)
+            setId = setUpWithBurdenEstimateSet(it)
         }
 
         val response = requestHelper.post("$setUrl/$setId", token = token, data = csvData)
@@ -143,7 +143,7 @@ class BurdenEstimateTests : DatabaseTest()
         db.addResponsibility(setId, touchstoneId, scenarioId)
     }
 
-    private fun setUpWithSet(db: JooqContext): Int
+    private fun setUpWithBurdenEstimateSet(db: JooqContext): Int
     {
         db.addTouchstone("touchstone", 1, "Touchstone 1", addName = true)
         db.addScenarioDescription(scenarioId, "Test scenario", "Hib3", addDisease = true)
