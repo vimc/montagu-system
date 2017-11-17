@@ -66,7 +66,7 @@ class UploadBurdenEstimateTests : ControllerTests<GroupBurdenEstimatesController
 
         val before = Instant.now()
         val controller = GroupBurdenEstimatesController(mockControllerContext())
-        controller.addBurdenEstimates(mockActionContext(data), repo, RequestBodySource.Simple())
+        controller.addBurdenEstimates(mockActionContext(data), repo)
         val after = Instant.now()
         verify(touchstoneSet).get("touchstone-1")
         verify(repo).addBurdenEstimateSet(
@@ -88,7 +88,7 @@ class UploadBurdenEstimateTests : ControllerTests<GroupBurdenEstimatesController
                 ))
         )
         val controller = GroupBurdenEstimatesController(mockControllerContext())
-        assertThatThrownBy { controller.addBurdenEstimates(mockActionContext(data), mockRepository(), RequestBodySource.Simple()) }
+        assertThatThrownBy { controller.addBurdenEstimates(mockActionContext(data), mockRepository()) }
                 .isInstanceOf(InconsistentDataError::class.java)
     }
 
