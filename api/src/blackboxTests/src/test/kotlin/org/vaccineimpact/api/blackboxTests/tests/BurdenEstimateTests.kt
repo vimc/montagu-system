@@ -127,18 +127,7 @@ class BurdenEstimateTests : DatabaseTest()
     @Test
     fun `can upload burden estimate via onetime link and redirect`()
     {
-        validate("$url/get_onetime_link/?redirectUrl=http://localhost") against "Token" given { db ->
-            setUp(db)
-        } requiringPermissions {
-            requiredPermissions
-        } andCheckString { token ->
-            val oneTimeURL = "/onetime_link/$token/"
-            val requestHelper = RequestHelper()
-
-            val response = requestHelper.postFile(oneTimeURL, csvData)
-            val resultAsString = response.getResultFromRedirect(checkRedirectTarget = "http://localhost")
-            JSONValidator().validateSuccess(resultAsString)
-        }
+        validateOneTimeLinkWithRedirect(url)    
     }
 
     @Test
@@ -205,8 +194,12 @@ class BurdenEstimateTests : DatabaseTest()
     @Test
     fun `can create burden estimate via onetime link and redirect`()
     {
-        val url = "$setUrl/get_onetime_link/?redirectUrl=http://localhost/"
-        validate(url) against "Token" given { db ->
+        validateOneTimeLinkWithRedirect(setUrl)
+    }
+
+    private fun validateOneTimeLinkWithRedirect(url: String){
+
+        validate("$url/get_onetime_link/?redirectUrl=http://localhost/") against "Token" given { db ->
             setUp(db)
         } requiringPermissions {
             requiredPermissions
