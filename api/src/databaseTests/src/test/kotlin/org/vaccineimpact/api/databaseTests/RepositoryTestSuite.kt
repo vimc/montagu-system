@@ -16,6 +16,7 @@ import org.vaccineimpact.api.test_helpers.DatabaseCreationHelper
 @RunWith(Suite::class)
 @Suite.SuiteClasses(
         BurdenEstimateRepositoryTests::class,
+        BurdenEstimateRepositoryTestsDeprecated::class,
         DiseaseTests::class,
         GetDemographicsTests::class,
         GetModellingGroupTests::class,

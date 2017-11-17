@@ -2,6 +2,7 @@ package org.vaccineimpact.api.blackboxTests.tests
 
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.json
+import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.vaccineimpact.api.blackboxTests.helpers.*
@@ -21,6 +22,7 @@ class BurdenEstimateTests : DatabaseTest()
     private val scenarioId = "scenario-1"
     private val groupScope = "modelling-group:$groupId"
     private val url = "/modelling-groups/$groupId/responsibilities/$touchstoneId/$scenarioId/estimates/"
+    private val setUrl = "/modelling-groups/$groupId/responsibilities/$touchstoneId/$scenarioId/estimate-sets/"
     private val requiredPermissions = PermissionSet(
             "$groupScope/estimates.write",
             "$groupScope/responsibilities.read"
@@ -29,7 +31,7 @@ class BurdenEstimateTests : DatabaseTest()
     @Test
     fun `can get burden estimate sets`()
     {
-        validate(url) against "BurdenEstimates" given { db ->
+        validate(setUrl) against "BurdenEstimates" given { db ->
             val ids = setUp(db)
             db.addUserForTesting("some.user")
             val setId = db.addBurdenEstimateSet(ids.responsibilityId, ids.modelVersionId, "some.user")
@@ -47,6 +49,37 @@ class BurdenEstimateTests : DatabaseTest()
             })
         }
     }
+
+    @Test
+    fun `can create burden estimate`()
+    {
+        val requestHelper = RequestHelper()
+        val token = TestUserHelper.setupTestUserAndGetToken(requiredPermissions.plus(PermissionSet("*/can-login")))
+
+        JooqContext().use {
+            setUp(it)
+        }
+
+        val response = requestHelper.post(setUrl, token = token, data = csvData)
+        Assertions.assertThat(response.statusCode).isEqualTo(201)
+    }
+
+
+    @Test
+    fun `can populate burden estimate`()
+    {
+        val requestHelper = RequestHelper()
+        val token = TestUserHelper.setupTestUserAndGetToken(requiredPermissions.plus(PermissionSet("*/can-login")))
+
+        var setId = 0
+        JooqContext().use {
+            setId = setUpWithBurdenEstimateSet(it)
+        }
+
+        val response = requestHelper.post("$setUrl/$setId", token = token, data = csvData)
+        Assertions.assertThat(response.statusCode).isEqualTo(200)
+    }
+
 
     @Test
     fun `can upload burden estimate`()
@@ -84,7 +117,7 @@ class BurdenEstimateTests : DatabaseTest()
             val requestHelper = RequestHelper()
 
             val response = requestHelper.postFile(oneTimeURL, csvData)
-            assertThat(response.statusCode).isEqualTo(201)
+            Assertions.assertThat(response.statusCode).isEqualTo(201)
 
             val badResponse = requestHelper.get(oneTimeURL)
             JSONValidator().validateError(badResponse.text, expectedErrorCode = "invalid-token-used")
@@ -135,6 +168,12 @@ class BurdenEstimateTests : DatabaseTest()
         val setId = db.addResponsibilitySet(groupId, touchstoneId)
         val responsibilityId = db.addResponsibility(setId, touchstoneId, scenarioId)
         return ReturnedIds(responsibilityId, modelVersionId)
+    }
+
+    private fun setUpWithBurdenEstimateSet(db: JooqContext): Int
+    {
+        val returnedIds = setUp(db)
+        return db.addBurdenEstimateSet(returnedIds.responsibilityId, returnedIds.modelVersionId, TestUserHelper.username)
     }
 
     val csvData = """
