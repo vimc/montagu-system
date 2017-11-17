@@ -14,10 +14,7 @@ import org.vaccineimpact.api.app.repositories.SimpleDataSet
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.serialization.DataTableDeserializer
 import org.vaccineimpact.api.db.toDecimal
-import org.vaccineimpact.api.models.BurdenEstimate
-import org.vaccineimpact.api.models.BurdenEstimateSet
-import org.vaccineimpact.api.models.Touchstone
-import org.vaccineimpact.api.models.TouchstoneStatus
+import org.vaccineimpact.api.models.*
 import java.time.Instant
 
 class UploadBurdenEstimateTests : ControllerTests<GroupBurdenEstimatesController>()
@@ -29,8 +26,14 @@ class UploadBurdenEstimateTests : ControllerTests<GroupBurdenEstimatesController
     fun `can get metadata for burden estimates`()
     {
         val data = listOf(
-                BurdenEstimateSet(1, Instant.MIN, "ThePast", emptyList()),
-                BurdenEstimateSet(2, Instant.MAX, "TheFuture", listOf("Doesn't exist yet"))
+                BurdenEstimateSet(1, Instant.MIN, "ThePast",
+                        BurdenEstimateSetType(BurdenEstimateSetTypeCode.CentralAveraged, "Median"),
+                        emptyList()
+                ),
+                BurdenEstimateSet(2, Instant.MAX, "TheFuture",
+                        BurdenEstimateSetType(BurdenEstimateSetTypeCode.CentralSingleRun, null),
+                        listOf("Doesn't exist yet")
+                )
         )
         val touchstoneRepo = mockTouchstoneRepository()
         val repo = mock<BurdenEstimateRepository> {

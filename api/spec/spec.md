@@ -1007,7 +1007,10 @@ Schema: [`BurdenEstimates.schema.json`](BurdenEstimates.schema.json)
             "id": 1,
             "uploaded_by": "tgarske",
             "uploaded_on": "2017-10-06T11:18:06Z",
-            "set_type": "central_averaged",
+            "type": {
+                "type": "central_averaged",
+                "details": "Mean over all stochastic runs"
+            },
             "problems": []
         }
     ]
@@ -1037,7 +1040,10 @@ Schema: [`BurdenEstimateSet.schema.json`](BurdenEstimateSet.schema.json)
         "id": 1,
         "uploaded_by": "tgarske",
         "uploaded_on": "2017-10-06T11:18:06Z",
-        "set_type": "central_averaged",
+        "type": {
+            "type": "central_averaged",
+            "details": "Mean over all stochastic runs"
+        },
         "problems": []
     }
 
@@ -1309,7 +1315,10 @@ Schema: [`ResponsibilitySet.schema.json`](ResponsibilitySet.schema.json)
                     "id": 1,                  
                     "uploaded_on": "2017-10-06T11:18:06Z",
                     "uploaded_by": "tini.garske",
-                    "set_type": "central_averaged",
+                    "type": {
+                        "type": "central_averaged",
+                        "details": "Mean over all stochastic runs"
+                    },
                     "problems": []                    
                 }
             }

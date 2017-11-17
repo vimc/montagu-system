@@ -1,9 +1,17 @@
 {
 	"id": "BurdenEstimateSetType",
-	"enum": [ 
-        "central_unknown",
-        "central_single_run",
-        "central_averaged",
-        "stochastic"
-    ]
+    "type": "object",
+    "properties": {
+        "type": { 
+            "enum": [ 
+                "central_unknown",
+                "central_single_run",
+                "central_averaged",
+                "stochastic"
+            ] 
+        },
+        "details": { "type": [ "string", "null" ] }
+    },
+    "additionalProperties": false,
+    "required": [ "type", "details" ]
 }

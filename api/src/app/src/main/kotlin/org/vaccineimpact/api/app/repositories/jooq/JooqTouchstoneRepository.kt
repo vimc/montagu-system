@@ -278,7 +278,7 @@ class JooqTouchstoneRepository(dsl: DSLContext, private val scenarioRepository: 
             record.touchstoneName,
             record.version,
             record.description,
-            mapEnum(record.status)
+            mapper.mapEnum(record.status)
     )
 
     inline fun <reified T : Any?> Record.getField(name: Name): T = this.get(name, T::class.java)
@@ -294,16 +294,16 @@ class JooqTouchstoneRepository(dsl: DSLContext, private val scenarioRepository: 
             record[TOUCHSTONE.ID],
             record[COVERAGE_SET.NAME],
             record[COVERAGE_SET.VACCINE],
-            mapEnum(record[COVERAGE_SET.GAVI_SUPPORT_LEVEL]),
-            mapEnum(record[COVERAGE_SET.ACTIVITY_TYPE])
+            mapper.mapEnum(record[COVERAGE_SET.GAVI_SUPPORT_LEVEL]),
+            mapper.mapEnum(record[COVERAGE_SET.ACTIVITY_TYPE])
     )
 
     private fun mapCoverageRow(record: Record, scenarioDescriptionId: String) = LongCoverageRow(
             scenarioDescriptionId,
             record[COVERAGE_SET.NAME],
             record[COVERAGE_SET.VACCINE],
-            mapEnum(record[COVERAGE_SET.GAVI_SUPPORT_LEVEL]),
-            mapEnum(record[COVERAGE_SET.ACTIVITY_TYPE]),
+            mapper.mapEnum(record[COVERAGE_SET.GAVI_SUPPORT_LEVEL]),
+            mapper.mapEnum(record[COVERAGE_SET.ACTIVITY_TYPE]),
             record[COVERAGE.COUNTRY],
             record[COUNTRY.NAME],
             record[COVERAGE.YEAR],

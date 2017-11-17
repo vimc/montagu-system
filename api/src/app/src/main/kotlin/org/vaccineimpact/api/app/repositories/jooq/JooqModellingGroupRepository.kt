@@ -164,9 +164,16 @@ class JooqModellingGroupRepository(
 
     private fun getCurrentBurdenEstimate(responsibilityId: Int): BurdenEstimateSet?
     {
+        val table = BURDEN_ESTIMATE_SET
         val records = dsl.select(BURDEN_ESTIMATE_SET_PROBLEM.PROBLEM)
-                .select(BURDEN_ESTIMATE_SET.UPLOADED_ON, BURDEN_ESTIMATE_SET.UPLOADED_BY, BURDEN_ESTIMATE_SET.ID)
-                .fromJoinPath(BURDEN_ESTIMATE_SET, BURDEN_ESTIMATE_SET_PROBLEM, joinType = JoinType.LEFT_OUTER_JOIN)
+                .select(
+                        table.UPLOADED_ON,
+                        table.UPLOADED_BY,
+                        table.SET_TYPE,
+                        table.SET_TYPE_DETAILS,
+                        table.ID
+                )
+                .fromJoinPath(table, BURDEN_ESTIMATE_SET_PROBLEM, joinType = JoinType.LEFT_OUTER_JOIN)
                 .join(RESPONSIBILITY)
                 .on(RESPONSIBILITY.CURRENT_BURDEN_ESTIMATE_SET.eq(BURDEN_ESTIMATE_SET.ID))
                 .where(RESPONSIBILITY.ID.eq(responsibilityId))
@@ -188,6 +195,7 @@ class JooqModellingGroupRepository(
                 id = first[BURDEN_ESTIMATE_SET.ID],
                 uploadedBy = first[BURDEN_ESTIMATE_SET.UPLOADED_BY],
                 uploadedOn = uploadedOn,
+                type = mapper.mapBurdenEstimateSetType(first),
                 problems = input.filter { it[BURDEN_ESTIMATE_SET_PROBLEM.PROBLEM] != null }
                         .map { it[BURDEN_ESTIMATE_SET_PROBLEM.PROBLEM] }
         )
@@ -203,7 +211,7 @@ class JooqModellingGroupRepository(
                     responsibilitySet,
                     { this.whereMatchesFilter(JooqScenarioFilter(), scenarioFilterParameters) }
             )
-            val status = mapEnum<ResponsibilitySetStatus>(responsibilitySet.status)
+            val status = mapper.mapEnum<ResponsibilitySetStatus>(responsibilitySet.status)
             return Responsibilities(touchstoneId, "", status, responsibilities)
         }
         else
