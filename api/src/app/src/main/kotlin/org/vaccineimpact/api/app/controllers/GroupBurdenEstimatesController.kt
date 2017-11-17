@@ -1,6 +1,7 @@
 package org.vaccineimpact.api.app.controllers
 
 import org.vaccineimpact.api.app.context.ActionContext
+import org.vaccineimpact.api.app.context.RequestBodySource
 import org.vaccineimpact.api.app.context.csvData
 import org.vaccineimpact.api.app.controllers.endpoints.EndpointDefinition
 import org.vaccineimpact.api.app.controllers.endpoints.oneRepoEndpoint
@@ -12,24 +13,31 @@ import org.vaccineimpact.api.app.security.checkIsAllowedToSeeTouchstone
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.helpers.OneTimeAction
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
-import org.vaccineimpact.api.serialization.DataTableDeserializer
 import spark.route.HttpMethod
 import java.time.Instant
-import javax.servlet.MultipartConfigElement
 
 open class GroupBurdenEstimatesController(context: ControllerContext) : AbstractController(context)
 {
-    override val urlComponent = "/modelling-groups/:group-id/responsibilities/:touchstone-id/:scenario-id/estimates"
+    override val urlComponent = "/modelling-groups/:group-id/responsibilities/:touchstone-id/:scenario-id"
     private val groupScope = "modelling-group:<group-id>"
 
     override fun endpoints(repos: RepositoryFactory): Iterable<EndpointDefinition<*>>
     {
         return listOf(
-                oneRepoEndpoint("/", this::getBurdenEstimates, repos, { it.burdenEstimates }, method = HttpMethod.get)
+                oneRepoEndpoint("/estimate-sets/", this::getBurdenEstimates, repos, { it.burdenEstimates }, method = HttpMethod.get)
                         .secured(permissions("read")),
-                oneRepoEndpoint("/", this::addBurdenEstimates, repos, { it.burdenEstimates }, method = HttpMethod.post)
+
+                /** Deprecated **/
+                oneRepoEndpoint("/estimates/", this::addBurdenEstimates, repos, { it.burdenEstimates }, method = HttpMethod.post)
                         .secured(permissions("write")),
-                oneRepoEndpoint("/get_onetime_link/", { c, r -> getOneTimeLinkToken(c, r, OneTimeAction.BURDENS) }, repos, { it.token })
+
+                oneRepoEndpoint("/estimates/get_onetime_link/", { c, r -> getOneTimeLinkToken(c, r, OneTimeAction.BURDENS) }, repos, { it.token })
+                        .secured(permissions("write")),
+
+                oneRepoEndpoint("/estimate-sets/", this::createBurdenEstimateSet, repos, { it.burdenEstimates }, method = HttpMethod.post)
+                        .secured(permissions("write")),
+
+                oneRepoEndpoint("/estimate-sets/:set-id/", this::populateBurdenEstimateSet, repos, { it.burdenEstimates }, method = HttpMethod.post)
                         .secured(permissions("write"))
         )
     }
@@ -42,38 +50,61 @@ open class GroupBurdenEstimatesController(context: ControllerContext) : Abstract
     fun getBurdenEstimates(context: ActionContext, estimateRepository: BurdenEstimateRepository): List<BurdenEstimateSet>
     {
         val path = getValidResponsibilityPath(context, estimateRepository)
-        return estimateRepository.getBurdenEstimateSets(path.groupId, path.touchstoneId, path.scenarioId).toList()
+        return estimateRepository.getBurdenEstimateSets(path.groupId, path.touchstoneId, path.scenarioId)
     }
 
-    fun addBurdenEstimatesFromHTMLForm(context: ActionContext, estimateRepository: BurdenEstimateRepository): String
+    open fun addBurdenEstimates(context: ActionContext, estimateRepository: BurdenEstimateRepository)
+            = addBurdenEstimates(context, estimateRepository, RequestBodySource.Simple())
+
+    fun createBurdenEstimateSet(context: ActionContext, estimateRepository: BurdenEstimateRepository): String
     {
         // First check if we're allowed to see this touchstone
         val path = getValidResponsibilityPath(context, estimateRepository)
 
-        val request = context.request
-        if (request.raw().getAttribute("org.eclipse.jetty.multipartConfig") == null)
-        {
-            val multipartConfigElement = MultipartConfigElement(System.getProperty("java.io.tmpdir"))
-            request.raw().setAttribute("org.eclipse.jetty.multipartConfig", multipartConfigElement)
-        }
+        val id = estimateRepository.createBurdenEstimateSet(path.groupId, path.touchstoneId, path.scenarioId,
+                uploader = context.username!!,
+                timestamp = Instant.now())
 
-        request.raw().getPart("file").inputStream.bufferedReader().use {
-
-            // Then add the burden estimates
-            val data = DataTableDeserializer.deserialize(it.readText(), BurdenEstimate::class,
-                    serializer).toList()
-            return saveBurdenEstimates(data, estimateRepository, context, path)
-        }
+        val url = "/modelling-groups/${path.groupId}/responsibilities/${path.touchstoneId}/${path.scenarioId}/estimates/$id/"
+        return objectCreation(context, url)
     }
 
-    open fun addBurdenEstimates(context: ActionContext, estimateRepository: BurdenEstimateRepository): String
+    /** Deprecated **/
+    open fun addBurdenEstimates(
+            context: ActionContext,
+            estimateRepository: BurdenEstimateRepository,
+            source: RequestBodySource
+    ): String
+    {
+        // First check if we're allowed to see this touchstone
+        val path = getValidResponsibilityPath(context, estimateRepository)
+
+        // Then add the burden estimates
+        val data = context.csvData<BurdenEstimate>(from = source)
+        return saveBurdenEstimates(data, estimateRepository, context, path)
+    }
+
+    fun populateBurdenEstimateSet(context: ActionContext,
+                                  estimateRepository: BurdenEstimateRepository): String
     {
         // First check if we're allowed to see this touchstone
         val path = getValidResponsibilityPath(context, estimateRepository)
 
         // Then add the burden estimates
         val data = context.csvData<BurdenEstimate>()
-        return saveBurdenEstimates(data, estimateRepository, context, path)
+
+        if (data.map { it.disease }.distinct().count() > 1)
+        {
+            throw InconsistentDataError("More than one value was present in the disease column")
+        }
+
+        estimateRepository.populateBurdenEstimateSet(
+                context.params(":set-id").toInt(),
+                path.groupId, path.touchstoneId, path.scenarioId,
+                data
+        )
+
+        return okayResponse()
     }
 
     private fun saveBurdenEstimates(data: List<BurdenEstimate>,
@@ -109,6 +140,7 @@ open class GroupBurdenEstimatesController(context: ControllerContext) : Abstract
         context.checkIsAllowedToSeeTouchstone(path.touchstoneId, touchstone.status)
         if (readEstimatesRequired)
         {
+
             if (touchstone.status == TouchstoneStatus.OPEN)
             {
                 context.requirePermission(ReifiedPermission(
@@ -117,6 +149,8 @@ open class GroupBurdenEstimatesController(context: ControllerContext) : Abstract
                 ))
             }
         }
+
         return path
     }
+
 }

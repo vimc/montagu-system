@@ -8,11 +8,18 @@ interface BurdenEstimateRepository : Repository
 {
     val touchstoneRepository: TouchstoneRepository
 
-    fun getBurdenEstimateSets(groupId: String, touchstoneId: String, scenarioId: String): Sequence<BurdenEstimateSet>
-
     /** Returns the database ID of the newly created burden estimate set **/
+    fun createBurdenEstimateSet(groupId: String, touchstoneId: String, scenarioId: String,
+                                uploader: String, timestamp: Instant): Int
+
+    fun getBurdenEstimateSets(groupId: String, touchstoneId: String, scenarioId: String): List<BurdenEstimateSet>
+
+    /** Deprecated **/
     fun addBurdenEstimateSet(groupId: String, touchstoneId: String, scenarioId: String,
                              estimates: List<BurdenEstimate>, uploader: String, timestamp: Instant): Int
+
+    fun populateBurdenEstimateSet(setId: Int, groupId: String, touchstoneId: String, scenarioId: String,
+                                  estimates: List<BurdenEstimate>)
 
     fun addModelRunParameterSet(responsibilitySetId: Int, modelVersionId: Int, description: String,
                                 uploader: String, timestamp: Instant)

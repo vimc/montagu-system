@@ -7,6 +7,7 @@ dependencies {
     testCompile "khttp:khttp:0.1.0"
     testCompile "com.beust:klaxon:0.31"
     testCompile "com.opencsv:opencsv:3.9"
+    testCompile "com.auth0:java-jwt:3.3.0"
 
     testCompile "com.github.fge:json-schema-validator:2.2.6"
 

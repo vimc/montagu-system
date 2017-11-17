@@ -1,6 +1,7 @@
 package org.vaccineimpact.api.app.repositories.jooq
 
 import org.jooq.DSLContext
+import org.jooq.JoinType
 import org.postgresql.copy.CopyManager
 import org.postgresql.core.BaseConnection
 import org.vaccineimpact.api.app.errors.DatabaseContentsError
@@ -34,17 +35,38 @@ class JooqBurdenEstimateRepository(
         private val modellingGroupRepository: ModellingGroupRepository
 ) : JooqRepository(dsl), BurdenEstimateRepository
 {
-    override fun getBurdenEstimateSets(groupId: String, touchstoneId: String, scenarioId: String): Sequence<BurdenEstimateSet>
+    override fun getBurdenEstimateSets(groupId: String, touchstoneId: String, scenarioId: String): List<BurdenEstimateSet>
     {
         // Dereference modelling group IDs
         val modellingGroup = modellingGroupRepository.getModellingGroup(groupId)
-        return dsl.select(BURDEN_ESTIMATE_SET.fieldsAsList())
-                .fromJoinPath(BURDEN_ESTIMATE_SET, RESPONSIBILITY, RESPONSIBILITY_SET, MODELLING_GROUP)
+        val records = dsl.select(
+                BURDEN_ESTIMATE_SET.ID,
+                BURDEN_ESTIMATE_SET.UPLOADED_ON,
+                BURDEN_ESTIMATE_SET.UPLOADED_BY,
+                BURDEN_ESTIMATE_SET_PROBLEM.PROBLEM
+        )
+                .from(BURDEN_ESTIMATE_SET)
+                .joinPath(BURDEN_ESTIMATE_SET, BURDEN_ESTIMATE_SET_PROBLEM, joinType = JoinType.LEFT_OUTER_JOIN)
+                .join(RESPONSIBILITY).on(RESPONSIBILITY.ID.eq(BURDEN_ESTIMATE_SET.RESPONSIBILITY))
+                .joinPath(RESPONSIBILITY, RESPONSIBILITY_SET, MODELLING_GROUP)
                 .joinPath(RESPONSIBILITY, SCENARIO, SCENARIO_DESCRIPTION)
                 .where(SCENARIO_DESCRIPTION.ID.eq(scenarioId))
                 .and(RESPONSIBILITY_SET.TOUCHSTONE.eq(touchstoneId))
                 .and(MODELLING_GROUP.ID.eq(modellingGroup.id))
-                .fetchSequenceInto()
+                .fetch()
+
+        return records
+                .groupBy { it[BURDEN_ESTIMATE_SET.ID] }
+                .map { group ->
+                    val common = group.value.first()
+                    val problems = group.value.mapNotNull { it[BURDEN_ESTIMATE_SET_PROBLEM.PROBLEM] }
+                    BurdenEstimateSet(
+                            common[BURDEN_ESTIMATE_SET.ID],
+                            common[BURDEN_ESTIMATE_SET.UPLOADED_ON].toInstant(),
+                            common[BURDEN_ESTIMATE_SET.UPLOADED_BY],
+                            problems
+                    )
+                }
     }
 
     override fun addModelRunParameterSet(responsibilitySetId: Int, modelVersionId: Int,
@@ -70,6 +92,41 @@ class JooqBurdenEstimateRepository(
     override fun addBurdenEstimateSet(groupId: String, touchstoneId: String, scenarioId: String,
                                       estimates: List<BurdenEstimate>, uploader: String, timestamp: Instant): Int
     {
+        val setId = createBurdenEstimateSet(groupId, touchstoneId, scenarioId, uploader, timestamp)
+        populateBurdenEstimateSet(setId, groupId, touchstoneId, scenarioId, estimates)
+        return setId
+    }
+
+    override fun populateBurdenEstimateSet(setId: Int, groupId: String, touchstoneId: String, scenarioId: String,
+                                           estimates: List<BurdenEstimate>)
+    {
+        val outcomeLookup = getOutcomesAsLookup()
+        val cohortSizeId = outcomeLookup["cohort_size"]
+                ?: throw DatabaseContentsError("Expected a value with code 'cohort_size' in burden_outcome table")
+
+        // Dereference modelling group IDs
+        val modellingGroup = modellingGroupRepository.getModellingGroup(groupId)
+
+        val responsibilityInfo = getResponsibilityInfo(modellingGroup.id, touchstoneId, scenarioId)
+
+        val status = dsl.select(BURDEN_ESTIMATE_SET.STATUS)
+                .from(BURDEN_ESTIMATE_SET)
+                .where(BURDEN_ESTIMATE_SET.ID.eq(setId))
+                .singleOrNull() ?: throw UnknownObjectError(setId, "Burden Estimate Set")
+
+        if (status.into(String::class.java) != "empty")
+        {
+            throw OperationNotAllowedError("This burden estimate set already contains estimates." +
+                    " You must create a new set if you want to upload any new estimates.")
+        }
+        addEstimatesToSet(estimates, setId, outcomeLookup, cohortSizeId, responsibilityInfo.disease)
+        updateCurrentBurdenEstimateSet(responsibilityInfo.id, setId)
+    }
+
+
+    override fun createBurdenEstimateSet(groupId: String, touchstoneId: String, scenarioId: String,
+                                         uploader: String, timestamp: Instant): Int
+    {
         // Dereference modelling group IDs
         val modellingGroup = modellingGroupRepository.getModellingGroup(groupId)
 
@@ -88,7 +145,6 @@ class JooqBurdenEstimateRepository(
                     " and approved. You cannot upload any new estimates.")
         }
 
-        val outcomeLookup = getOutcomesAsLookup()
         val latestModelVersion = dsl.select(MODEL_VERSION.ID)
                 .fromJoinPath(MODELLING_GROUP, MODEL)
                 .join(MODEL_VERSION)
@@ -99,16 +155,9 @@ class JooqBurdenEstimateRepository(
                 .fetch().singleOrNull()?.value1()
                 ?: throw DatabaseContentsError("Modelling group $groupId does not have any models/model versions in the database")
 
-        val setId = addSet(responsibilityInfo.id, uploader, timestamp, latestModelVersion)
-        val cohortSizeId = outcomeLookup["cohort_size"]
-                ?: throw DatabaseContentsError("Expected a value with code 'cohort_size' in burden_outcome table")
-
-        addEstimatesToSet(estimates, setId, outcomeLookup, cohortSizeId, responsibilityInfo.disease)
-
-        updateCurrentBurdenEstimateSet(responsibilityInfo.id, setId)
-
-        return setId
+        return addSet(responsibilityInfo.id, uploader, timestamp, latestModelVersion)
     }
+
 
     private fun updateCurrentBurdenEstimateSet(responsibilityId: Int, setId: Int)
     {
@@ -176,6 +225,11 @@ class JooqBurdenEstimateRepository(
                 }
             }
         }
+
+        dsl.update(BURDEN_ESTIMATE_SET)
+                .set(BURDEN_ESTIMATE_SET.STATUS, "complete")
+                .where(BURDEN_ESTIMATE_SET.ID.eq(setId))
+                .execute()
     }
 
     private fun getAllCountryIds() = dsl.select(COUNTRY.ID)
@@ -211,6 +265,7 @@ class JooqBurdenEstimateRepository(
             this.uploadedOn = Timestamp.from(timestamp)
             this.runInfo = "Not provided"
             this.interpolated = false
+            this.status = "empty"
         }
         setRecord.insert()
         return setRecord.id

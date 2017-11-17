@@ -17,6 +17,7 @@ import org.vaccineimpact.api.db.tables.BurdenEstimate;
 import org.vaccineimpact.api.db.tables.BurdenEstimateSet;
 import org.vaccineimpact.api.db.tables.BurdenEstimateSetProblem;
 import org.vaccineimpact.api.db.tables.BurdenEstimateSetStatus;
+import org.vaccineimpact.api.db.tables.BurdenEstimateSetType;
 import org.vaccineimpact.api.db.tables.BurdenOutcome;
 import org.vaccineimpact.api.db.tables.Country;
 import org.vaccineimpact.api.db.tables.CountryMetadata;
@@ -139,6 +140,11 @@ public class Tables {
      * The table <code>public.burden_estimate_set_status</code>.
      */
     public static final BurdenEstimateSetStatus BURDEN_ESTIMATE_SET_STATUS = org.vaccineimpact.api.db.tables.BurdenEstimateSetStatus.BURDEN_ESTIMATE_SET_STATUS;
+
+    /**
+     * The table <code>public.burden_estimate_set_type</code>.
+     */
+    public static final BurdenEstimateSetType BURDEN_ESTIMATE_SET_TYPE = org.vaccineimpact.api.db.tables.BurdenEstimateSetType.BURDEN_ESTIMATE_SET_TYPE;
 
     /**
      * The table <code>public.burden_outcome</code>.
