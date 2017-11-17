@@ -31,7 +31,7 @@ open class GroupBurdenEstimatesController(context: ControllerContext) : Abstract
         return listOf(
                 oneRepoEndpoint("/", this::getBurdenEstimates, repos, { it.burdenEstimates }, method = HttpMethod.get)
                         .secured(permissions("read")),
-                oneRepoEndpoint("/",  {  c,r -> addBurdenEstimates(c,r, RequestBodySource.Simple()) }, repos, { it.burdenEstimates }, method = HttpMethod.post)
+                oneRepoEndpoint("/", this::addBurdenEstimates, repos, { it.burdenEstimates }, method = HttpMethod.post)
                         .secured(permissions("write")),
                 oneRepoEndpoint("/get_onetime_link/", { c, r -> getOneTimeLinkToken(c, r, OneTimeAction.BURDENS) }, repos, { it.token })
                         .secured(permissions("write"))
@@ -49,6 +49,8 @@ open class GroupBurdenEstimatesController(context: ControllerContext) : Abstract
         return estimateRepository.getBurdenEstimateSets(path.groupId, path.touchstoneId, path.scenarioId)
     }
 
+    open fun addBurdenEstimates(context: ActionContext, estimateRepository: BurdenEstimateRepository)
+            = addBurdenEstimates(context, estimateRepository, RequestBodySource.Simple())
 
     open fun addBurdenEstimates(
             context: ActionContext,
