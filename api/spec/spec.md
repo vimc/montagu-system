@@ -1073,7 +1073,7 @@ outcomes in the database.
        "Hib3",   1997,    50,     "AGO",       "Angola",          6000,     1200,      NA,    5870
        
        
-## POST /modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}/{scenario-id}/estimate-set/
+## POST /modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}/{scenario-id}/estimate-sets/
 Creates a new, empty burden estimate set.
 
 Can only by invoked if:
@@ -1085,7 +1085,7 @@ Required permissions: Scoped to modelling group: `estimates.write`, `responsibil
 
 Returns the integer id of the new set.
 
-## POST /modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}/{scenario-id}/estimate-set/{set-id}/
+## POST /modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}/{scenario-id}/estimate-sets/{set-id}/
 Populates an empty burden estimate set.
 
 Can only by invoked if:
