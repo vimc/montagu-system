@@ -25,7 +25,9 @@ import java.time.LocalDateTime
 import java.time.Month
 import java.time.ZoneOffset
 
-class BurdenEstimateRepositoryTestsOld : RepositoryTests<BurdenEstimateRepository>()
+// This class tests a single, deprecated method - 'addBurdenEstimateSet'
+// It can be removed entirely when the method is removed
+class BurdenEstimateRepositoryTestsDeprecated : RepositoryTests<BurdenEstimateRepository>()
 {
     private data class ReturnedIds(val modelVersion: Int?, val responsibility: Int)
 

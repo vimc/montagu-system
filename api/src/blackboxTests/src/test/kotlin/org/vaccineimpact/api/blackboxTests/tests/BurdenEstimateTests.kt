@@ -1,6 +1,9 @@
 package org.vaccineimpact.api.blackboxTests.tests
 
+import com.beust.klaxon.JsonObject
+import com.beust.klaxon.json
 import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.vaccineimpact.api.blackboxTests.helpers.*
 import org.vaccineimpact.api.blackboxTests.schemas.CSVSchema
@@ -19,11 +22,33 @@ class BurdenEstimateTests : DatabaseTest()
     private val scenarioId = "scenario-1"
     private val groupScope = "modelling-group:$groupId"
     private val url = "/modelling-groups/$groupId/responsibilities/$touchstoneId/$scenarioId/estimates/"
-    private val setUrl = "/modelling-groups/$groupId/responsibilities/$touchstoneId/$scenarioId/estimate-set/"
+    private val setUrl = "/modelling-groups/$groupId/responsibilities/$touchstoneId/$scenarioId/estimate-sets/"
     private val requiredPermissions = PermissionSet(
             "$groupScope/estimates.write",
             "$groupScope/responsibilities.read"
     )
+
+    @Test
+    fun `can get burden estimate sets`()
+    {
+        validate(url) against "BurdenEstimates" given { db ->
+            val ids = setUp(db)
+            db.addUserForTesting("some.user")
+            val setId = db.addBurdenEstimateSet(ids.responsibilityId, ids.modelVersionId, "some.user")
+            db.addBurdenEstimateProblem("a problem", setId)
+        } requiringPermissions {
+            PermissionSet(
+                    "$groupScope/estimates.read",
+                    "$groupScope/responsibilities.read"
+            )
+        } andCheckArray { data ->
+            val obj = data.first() as JsonObject
+            assertThat(obj["uploaded_by"]).isEqualTo("some.user")
+            assertThat(obj["problems"]).isEqualTo(json {
+                array("a problem")
+            })
+        }
+    }
 
     @Test
     fun `can create burden estimate`()
@@ -48,7 +73,7 @@ class BurdenEstimateTests : DatabaseTest()
 
         var setId = 0
         JooqContext().use {
-            setId = setUpWithSet(it)
+            setId = setUpWithBurdenEstimateSet(it)
         }
 
         val response = requestHelper.post("$setUrl/$setId", token = token, data = csvData)
@@ -124,7 +149,7 @@ class BurdenEstimateTests : DatabaseTest()
 
         var setId = 0
         JooqContext().use {
-            setId = setUpWithSet(it)
+            setId = setUpWithBurdenEstimateSet(it)
         }
 
         val onetimeTokenResult = requestHelper.get("$setUrl/$setId/get_onetime_link/", token)
@@ -145,10 +170,11 @@ class BurdenEstimateTests : DatabaseTest()
 
         var setId = 0
         JooqContext().use {
-            setId = setUpWithSet(it)
+            setId = setUpWithBurdenEstimateSet(it)
         }
 
-        val onetimeTokenResult = requestHelper.get("$setUrl/$setId/get_onetime_link/", token)
+        val url = "$setUrl/$setId/get_onetime_link/?redirectUrl=http://localhost/"
+        val onetimeTokenResult = requestHelper.get(url, token)
         val onetimeToken = onetimeTokenResult.montaguData<String>()!!
 
         val oneTimeURL = "/onetime_link/$onetimeToken/"
@@ -169,7 +195,6 @@ class BurdenEstimateTests : DatabaseTest()
             val requestHelper = RequestHelper()
 
             val response = requestHelper.postFile(oneTimeURL, csvData)
-
             assert(response.statusCode == 201)
 
             val badResponse = requestHelper.get(oneTimeURL)
@@ -180,7 +205,8 @@ class BurdenEstimateTests : DatabaseTest()
     @Test
     fun `can create burden estimate via onetime link and redirect`()
     {
-        validate("$setUrl/get_onetime_link/?redirectUrl=https://support.montagu.dide.ic.ac.uk:10443/") against "Token" given { db ->
+        val url = "$setUrl/get_onetime_link/?redirectUrl=http://localhost/"
+        validate(url) against "Token" given { db ->
             setUp(db)
         } requiringPermissions {
             requiredPermissions
@@ -211,25 +237,22 @@ class BurdenEstimateTests : DatabaseTest()
         }
     }
 
-    private fun setUp(db: JooqContext)
+    private fun setUp(db: JooqContext): ReturnedIds
     {
         db.addTouchstone("touchstone", 1, "Touchstone 1", addName = true)
         db.addScenarioDescription(scenarioId, "Test scenario", "Hib3", addDisease = true)
         db.addGroup(groupId, "Test group")
-        db.addModel("model-1", groupId, "Hib3", versions = listOf("version-1"))
-        val setId = db.addResponsibilitySet(groupId, touchstoneId)
-        db.addResponsibility(setId, touchstoneId, scenarioId)
-    }
-
-    private fun setUpWithSet(db: JooqContext): Int
-    {
-        db.addTouchstone("touchstone", 1, "Touchstone 1", addName = true)
-        db.addScenarioDescription(scenarioId, "Test scenario", "Hib3", addDisease = true)
-        db.addGroup(groupId, "Test group")
-        val versionId = db.addModel("model-1", groupId, "Hib3", versions = listOf("version-1"))
+        db.addModel("model-1", groupId, "Hib3")
+        val modelVersionId = db.addModelVersion("model-1", "version-1", setCurrent = true)
         val setId = db.addResponsibilitySet(groupId, touchstoneId)
         val responsibilityId = db.addResponsibility(setId, touchstoneId, scenarioId)
-        return db.addBurdenEstimateSet(responsibilityId, versionId, TestUserHelper.username)
+        return ReturnedIds(responsibilityId, modelVersionId)
+    }
+
+    private fun setUpWithBurdenEstimateSet(db: JooqContext): Int
+    {
+        val returnedIds = setUp(db)
+        return db.addBurdenEstimateSet(returnedIds.responsibilityId, returnedIds.modelVersionId, TestUserHelper.username)
     }
 
     val csvData = """
@@ -240,3 +263,5 @@ class BurdenEstimateTests : DatabaseTest()
    "Hib3",   1997,    50,     "AGO",       "Angola",          6000,     1200,      NA,    5870
 """
 }
+
+data class ReturnedIds(val responsibilityId: Int, val modelVersionId: Int)

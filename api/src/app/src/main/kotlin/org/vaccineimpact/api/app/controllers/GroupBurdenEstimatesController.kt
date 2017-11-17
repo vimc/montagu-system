@@ -27,25 +27,26 @@ open class GroupBurdenEstimatesController(context: ControllerContext) : Abstract
     override fun endpoints(repos: RepositoryFactory): Iterable<EndpointDefinition<*>>
     {
         return listOf(
-                oneRepoEndpoint("/", this::getBurdenEstimates, repos, { it.burdenEstimates }, method = HttpMethod.get)
+                oneRepoEndpoint("/estimates/", this::getBurdenEstimates, repos, { it.burdenEstimates }, method = HttpMethod.get)
                         .secured(permissions("read")),
 
-                oneRepoEndpoint("/estimates/", { c, r -> addBurdenEstimates(c, r, RequestBodySource.Simple()) }, repos, { it.burdenEstimates }, method = HttpMethod.post)
+                /** Deprecated **/
+                oneRepoEndpoint("/estimates/", this::addBurdenEstimates, repos, { it.burdenEstimates }, method = HttpMethod.post)
                         .secured(permissions("write")),
 
                 oneRepoEndpoint("/estimates/get_onetime_link/", { c, r -> getOneTimeLinkToken(c, r, OneTimeAction.BURDENS) }, repos, { it.token })
                         .secured(permissions("write")),
 
-                oneRepoEndpoint("/estimate-set/", this::createBurdenEstimateSet, repos, { it.burdenEstimates }, method = HttpMethod.post)
+                oneRepoEndpoint("/estimate-sets/", this::createBurdenEstimateSet, repos, { it.burdenEstimates }, method = HttpMethod.post)
                         .secured(permissions("write")),
 
-                oneRepoEndpoint("/estimate-set/:set-id/", { c, r -> populateBurdenEstimateSet(c, r, RequestBodySource.Simple()) }, repos, { it.burdenEstimates }, method = HttpMethod.post)
+                oneRepoEndpoint("/estimate-sets/:set-id/", this::populateBurdenEstimateSet, repos, { it.burdenEstimates }, method = HttpMethod.post)
                         .secured(permissions("write")),
 
-                oneRepoEndpoint("/estimate-set/get_onetime_link/", { c, r -> getOneTimeLinkToken(c, r, OneTimeAction.BURDENS_CREATE) }, repos, { it.token })
+                oneRepoEndpoint("/estimate-sets/get_onetime_link/", { c, r -> getOneTimeLinkToken(c, r, OneTimeAction.BURDENS_CREATE) }, repos, { it.token })
                         .secured(setOf("$groupScope/estimates.write", "$groupScope/responsibilities.read")),
 
-                oneRepoEndpoint("/estimate-set/:set-id/get_onetime_link/", { c, r -> getOneTimeLinkToken(c, r, OneTimeAction.BURDENS_POPULATE) }, repos, { it.token })
+                oneRepoEndpoint("/estimate-sets/:set-id/get_onetime_link/", { c, r -> getOneTimeLinkToken(c, r, OneTimeAction.BURDENS_POPULATE) }, repos, { it.token })
                         .secured(setOf("$groupScope/estimates.write", "$groupScope/responsibilities.read"))
         )
     }
@@ -58,8 +59,11 @@ open class GroupBurdenEstimatesController(context: ControllerContext) : Abstract
     fun getBurdenEstimates(context: ActionContext, estimateRepository: BurdenEstimateRepository): List<BurdenEstimateSet>
     {
         val path = getValidResponsibilityPath(context, estimateRepository)
-        return estimateRepository.getBurdenEstimateSets(path.groupId, path.touchstoneId, path.scenarioId).toList()
+        return estimateRepository.getBurdenEstimateSets(path.groupId, path.touchstoneId, path.scenarioId)
     }
+
+    open fun addBurdenEstimates(context: ActionContext, estimateRepository: BurdenEstimateRepository)
+            = addBurdenEstimates(context, estimateRepository, RequestBodySource.Simple())
 
     fun createBurdenEstimateSet(context: ActionContext, estimateRepository: BurdenEstimateRepository): String
     {
@@ -74,6 +78,7 @@ open class GroupBurdenEstimatesController(context: ControllerContext) : Abstract
         return objectCreation(context, url)
     }
 
+    /** Deprecated **/
     open fun addBurdenEstimates(
             context: ActionContext,
             estimateRepository: BurdenEstimateRepository,
@@ -88,9 +93,15 @@ open class GroupBurdenEstimatesController(context: ControllerContext) : Abstract
         return saveBurdenEstimates(data, estimateRepository, context, path)
     }
 
-    fun populateBurdenEstimateSet(context: ActionContext,
-                                  estimateRepository: BurdenEstimateRepository,
-                                  source: RequestBodySource
+    fun populateBurdenEstimateSet(
+            context: ActionContext,
+            estimateRepository: BurdenEstimateRepository
+    ): String = populateBurdenEstimateSet(context, estimateRepository, RequestBodySource.Simple())
+
+    fun populateBurdenEstimateSet(
+            context: ActionContext,
+            estimateRepository: BurdenEstimateRepository,
+            source: RequestBodySource
     ): String
     {
         // First check if we're allowed to see this touchstone
@@ -133,9 +144,11 @@ open class GroupBurdenEstimatesController(context: ControllerContext) : Abstract
         return objectCreation(context, url)
     }
 
-    private fun getValidResponsibilityPath(context: ActionContext,
-                                           estimateRepository: BurdenEstimateRepository,
-                                           readEstimatesRequired: Boolean = false): ResponsibilityPath
+    private fun getValidResponsibilityPath(
+            context: ActionContext,
+            estimateRepository: BurdenEstimateRepository,
+            readEstimatesRequired: Boolean = false
+    ): ResponsibilityPath
     {
         val path = ResponsibilityPath(context)
         val touchstoneId = path.touchstoneId
@@ -147,8 +160,10 @@ open class GroupBurdenEstimatesController(context: ControllerContext) : Abstract
 
             if (touchstone.status == TouchstoneStatus.OPEN)
             {
-                context.requirePermission(ReifiedPermission("estimates.read-unfinished",
-                        Scope.Specific("modelling-group", path.groupId)))
+                context.requirePermission(ReifiedPermission(
+                        "estimates.read-unfinished",
+                        Scope.Specific("modelling-group", path.groupId)
+                ))
             }
         }
 
