@@ -17,6 +17,7 @@ import org.vaccineimpact.api.db.tables.BurdenEstimate;
 import org.vaccineimpact.api.db.tables.BurdenEstimateSet;
 import org.vaccineimpact.api.db.tables.BurdenEstimateSetProblem;
 import org.vaccineimpact.api.db.tables.BurdenEstimateSetStatus;
+import org.vaccineimpact.api.db.tables.BurdenEstimateSetType;
 import org.vaccineimpact.api.db.tables.BurdenOutcome;
 import org.vaccineimpact.api.db.tables.Country;
 import org.vaccineimpact.api.db.tables.CountryMetadata;
@@ -77,6 +78,7 @@ import org.vaccineimpact.api.db.tables.records.BurdenEstimateRecord;
 import org.vaccineimpact.api.db.tables.records.BurdenEstimateSetProblemRecord;
 import org.vaccineimpact.api.db.tables.records.BurdenEstimateSetRecord;
 import org.vaccineimpact.api.db.tables.records.BurdenEstimateSetStatusRecord;
+import org.vaccineimpact.api.db.tables.records.BurdenEstimateSetTypeRecord;
 import org.vaccineimpact.api.db.tables.records.BurdenOutcomeRecord;
 import org.vaccineimpact.api.db.tables.records.CountryMetadataRecord;
 import org.vaccineimpact.api.db.tables.records.CountryRecord;
@@ -202,6 +204,7 @@ public class Keys {
     public static final UniqueKey<BurdenEstimateSetRecord> BURDEN_ESTIMATE_SET_PKEY = UniqueKeys0.BURDEN_ESTIMATE_SET_PKEY;
     public static final UniqueKey<BurdenEstimateSetProblemRecord> BURDEN_ESTIMATE_SET_PROBLEM_PKEY = UniqueKeys0.BURDEN_ESTIMATE_SET_PROBLEM_PKEY;
     public static final UniqueKey<BurdenEstimateSetStatusRecord> BURDEN_ESTIMATE_SET_STATUS_PKEY = UniqueKeys0.BURDEN_ESTIMATE_SET_STATUS_PKEY;
+    public static final UniqueKey<BurdenEstimateSetTypeRecord> BURDEN_ESTIMATE_SET_TYPE_PKEY = UniqueKeys0.BURDEN_ESTIMATE_SET_TYPE_PKEY;
     public static final UniqueKey<BurdenOutcomeRecord> BURDEN_OUTCOME_PKEY = UniqueKeys0.BURDEN_OUTCOME_PKEY;
     public static final UniqueKey<BurdenOutcomeRecord> BURDEN_OUTCOME_CODE_KEY = UniqueKeys0.BURDEN_OUTCOME_CODE_KEY;
     public static final UniqueKey<CountryRecord> COUNTRY_PKEY = UniqueKeys0.COUNTRY_PKEY;
@@ -278,6 +281,7 @@ public class Keys {
     public static final ForeignKey<BurdenEstimateSetRecord, ResponsibilityRecord> BURDEN_ESTIMATE_SET__BURDEN_ESTIMATE_SET_RESPONSIBILITY_FKEY = ForeignKeys0.BURDEN_ESTIMATE_SET__BURDEN_ESTIMATE_SET_RESPONSIBILITY_FKEY;
     public static final ForeignKey<BurdenEstimateSetRecord, AppUserRecord> BURDEN_ESTIMATE_SET__BURDEN_ESTIMATE_SET_UPLOADED_BY_FKEY = ForeignKeys0.BURDEN_ESTIMATE_SET__BURDEN_ESTIMATE_SET_UPLOADED_BY_FKEY;
     public static final ForeignKey<BurdenEstimateSetRecord, BurdenEstimateSetStatusRecord> BURDEN_ESTIMATE_SET__BURDEN_ESTIMATE_SET_STATUS_FKEY = ForeignKeys0.BURDEN_ESTIMATE_SET__BURDEN_ESTIMATE_SET_STATUS_FKEY;
+    public static final ForeignKey<BurdenEstimateSetRecord, BurdenEstimateSetTypeRecord> BURDEN_ESTIMATE_SET__BURDEN_ESTIMATE_SET_SET_TYPE_FKEY = ForeignKeys0.BURDEN_ESTIMATE_SET__BURDEN_ESTIMATE_SET_SET_TYPE_FKEY;
     public static final ForeignKey<BurdenEstimateSetProblemRecord, BurdenEstimateSetRecord> BURDEN_ESTIMATE_SET_PROBLEM__BURDEN_ESTIMATE_SET_PROBLEM_BURDEN_ESTIMATE_SET_FKEY = ForeignKeys0.BURDEN_ESTIMATE_SET_PROBLEM__BURDEN_ESTIMATE_SET_PROBLEM_BURDEN_ESTIMATE_SET_FKEY;
     public static final ForeignKey<CountryMetadataRecord, TouchstoneRecord> COUNTRY_METADATA__COUNTRY_METADATA_TOUCHSTONE_FKEY = ForeignKeys0.COUNTRY_METADATA__COUNTRY_METADATA_TOUCHSTONE_FKEY;
     public static final ForeignKey<CountryMetadataRecord, CountryRecord> COUNTRY_METADATA__COUNTRY_METADATA_COUNTRY_FKEY = ForeignKeys0.COUNTRY_METADATA__COUNTRY_METADATA_COUNTRY_FKEY;
@@ -425,6 +429,7 @@ public class Keys {
         public static final UniqueKey<BurdenEstimateSetRecord> BURDEN_ESTIMATE_SET_PKEY = createUniqueKey(BurdenEstimateSet.BURDEN_ESTIMATE_SET, "burden_estimate_set_pkey", BurdenEstimateSet.BURDEN_ESTIMATE_SET.ID);
         public static final UniqueKey<BurdenEstimateSetProblemRecord> BURDEN_ESTIMATE_SET_PROBLEM_PKEY = createUniqueKey(BurdenEstimateSetProblem.BURDEN_ESTIMATE_SET_PROBLEM, "burden_estimate_set_problem_pkey", BurdenEstimateSetProblem.BURDEN_ESTIMATE_SET_PROBLEM.ID);
         public static final UniqueKey<BurdenEstimateSetStatusRecord> BURDEN_ESTIMATE_SET_STATUS_PKEY = createUniqueKey(BurdenEstimateSetStatus.BURDEN_ESTIMATE_SET_STATUS, "burden_estimate_set_status_pkey", BurdenEstimateSetStatus.BURDEN_ESTIMATE_SET_STATUS.CODE);
+        public static final UniqueKey<BurdenEstimateSetTypeRecord> BURDEN_ESTIMATE_SET_TYPE_PKEY = createUniqueKey(BurdenEstimateSetType.BURDEN_ESTIMATE_SET_TYPE, "burden_estimate_set_type_pkey", BurdenEstimateSetType.BURDEN_ESTIMATE_SET_TYPE.CODE);
         public static final UniqueKey<BurdenOutcomeRecord> BURDEN_OUTCOME_PKEY = createUniqueKey(BurdenOutcome.BURDEN_OUTCOME, "burden_outcome_pkey", BurdenOutcome.BURDEN_OUTCOME.ID);
         public static final UniqueKey<BurdenOutcomeRecord> BURDEN_OUTCOME_CODE_KEY = createUniqueKey(BurdenOutcome.BURDEN_OUTCOME, "burden_outcome_code_key", BurdenOutcome.BURDEN_OUTCOME.CODE);
         public static final UniqueKey<CountryRecord> COUNTRY_PKEY = createUniqueKey(Country.COUNTRY, "country_pkey", Country.COUNTRY.ID);
@@ -499,6 +504,7 @@ public class Keys {
         public static final ForeignKey<BurdenEstimateSetRecord, ResponsibilityRecord> BURDEN_ESTIMATE_SET__BURDEN_ESTIMATE_SET_RESPONSIBILITY_FKEY = createForeignKey(org.vaccineimpact.api.db.Keys.RESPONSIBILITY_PKEY, BurdenEstimateSet.BURDEN_ESTIMATE_SET, "burden_estimate_set__burden_estimate_set_responsibility_fkey", BurdenEstimateSet.BURDEN_ESTIMATE_SET.RESPONSIBILITY);
         public static final ForeignKey<BurdenEstimateSetRecord, AppUserRecord> BURDEN_ESTIMATE_SET__BURDEN_ESTIMATE_SET_UPLOADED_BY_FKEY = createForeignKey(org.vaccineimpact.api.db.Keys.APP_USER_PKEY, BurdenEstimateSet.BURDEN_ESTIMATE_SET, "burden_estimate_set__burden_estimate_set_uploaded_by_fkey", BurdenEstimateSet.BURDEN_ESTIMATE_SET.UPLOADED_BY);
         public static final ForeignKey<BurdenEstimateSetRecord, BurdenEstimateSetStatusRecord> BURDEN_ESTIMATE_SET__BURDEN_ESTIMATE_SET_STATUS_FKEY = createForeignKey(org.vaccineimpact.api.db.Keys.BURDEN_ESTIMATE_SET_STATUS_PKEY, BurdenEstimateSet.BURDEN_ESTIMATE_SET, "burden_estimate_set__burden_estimate_set_status_fkey", BurdenEstimateSet.BURDEN_ESTIMATE_SET.STATUS);
+        public static final ForeignKey<BurdenEstimateSetRecord, BurdenEstimateSetTypeRecord> BURDEN_ESTIMATE_SET__BURDEN_ESTIMATE_SET_SET_TYPE_FKEY = createForeignKey(org.vaccineimpact.api.db.Keys.BURDEN_ESTIMATE_SET_TYPE_PKEY, BurdenEstimateSet.BURDEN_ESTIMATE_SET, "burden_estimate_set__burden_estimate_set_set_type_fkey", BurdenEstimateSet.BURDEN_ESTIMATE_SET.SET_TYPE);
         public static final ForeignKey<BurdenEstimateSetProblemRecord, BurdenEstimateSetRecord> BURDEN_ESTIMATE_SET_PROBLEM__BURDEN_ESTIMATE_SET_PROBLEM_BURDEN_ESTIMATE_SET_FKEY = createForeignKey(org.vaccineimpact.api.db.Keys.BURDEN_ESTIMATE_SET_PKEY, BurdenEstimateSetProblem.BURDEN_ESTIMATE_SET_PROBLEM, "burden_estimate_set_problem__burden_estimate_set_problem_burden_estimate_set_fkey", BurdenEstimateSetProblem.BURDEN_ESTIMATE_SET_PROBLEM.BURDEN_ESTIMATE_SET);
         public static final ForeignKey<CountryMetadataRecord, TouchstoneRecord> COUNTRY_METADATA__COUNTRY_METADATA_TOUCHSTONE_FKEY = createForeignKey(org.vaccineimpact.api.db.Keys.TOUCHSTONE_PKEY, CountryMetadata.COUNTRY_METADATA, "country_metadata__country_metadata_touchstone_fkey", CountryMetadata.COUNTRY_METADATA.TOUCHSTONE);
         public static final ForeignKey<CountryMetadataRecord, CountryRecord> COUNTRY_METADATA__COUNTRY_METADATA_COUNTRY_FKEY = createForeignKey(org.vaccineimpact.api.db.Keys.COUNTRY_PKEY, CountryMetadata.COUNTRY_METADATA, "country_metadata__country_metadata_country_fkey", CountryMetadata.COUNTRY_METADATA.COUNTRY);
