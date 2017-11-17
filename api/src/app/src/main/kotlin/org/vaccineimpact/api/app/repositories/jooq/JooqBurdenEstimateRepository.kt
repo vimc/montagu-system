@@ -1,6 +1,7 @@
 package org.vaccineimpact.api.app.repositories.jooq
 
 import org.jooq.DSLContext
+import org.jooq.JoinType
 import org.jooq.Record
 import org.postgresql.copy.CopyManager
 import org.postgresql.core.BaseConnection
@@ -35,17 +36,38 @@ class JooqBurdenEstimateRepository(
         private val modellingGroupRepository: ModellingGroupRepository
 ) : JooqRepository(dsl), BurdenEstimateRepository
 {
-    override fun getBurdenEstimateSets(groupId: String, touchstoneId: String, scenarioId: String): Sequence<BurdenEstimateSet>
+    override fun getBurdenEstimateSets(groupId: String, touchstoneId: String, scenarioId: String): List<BurdenEstimateSet>
     {
         // Dereference modelling group IDs
         val modellingGroup = modellingGroupRepository.getModellingGroup(groupId)
-        return dsl.select(BURDEN_ESTIMATE_SET.fieldsAsList())
-                .fromJoinPath(BURDEN_ESTIMATE_SET, RESPONSIBILITY, RESPONSIBILITY_SET, MODELLING_GROUP)
+        val records = dsl.select(
+                BURDEN_ESTIMATE_SET.ID,
+                BURDEN_ESTIMATE_SET.UPLOADED_ON,
+                BURDEN_ESTIMATE_SET.UPLOADED_BY,
+                BURDEN_ESTIMATE_SET_PROBLEM.PROBLEM
+        )
+                .from(BURDEN_ESTIMATE_SET)
+                .joinPath(BURDEN_ESTIMATE_SET, BURDEN_ESTIMATE_SET_PROBLEM, joinType = JoinType.LEFT_OUTER_JOIN)
+                .join(RESPONSIBILITY).on(RESPONSIBILITY.ID.eq(BURDEN_ESTIMATE_SET.RESPONSIBILITY))
+                .joinPath(RESPONSIBILITY, RESPONSIBILITY_SET, MODELLING_GROUP)
                 .joinPath(RESPONSIBILITY, SCENARIO, SCENARIO_DESCRIPTION)
                 .where(SCENARIO_DESCRIPTION.ID.eq(scenarioId))
                 .and(RESPONSIBILITY_SET.TOUCHSTONE.eq(touchstoneId))
                 .and(MODELLING_GROUP.ID.eq(modellingGroup.id))
-                .fetchSequenceInto()
+                .fetch()
+
+        return records
+                .groupBy { it[BURDEN_ESTIMATE_SET.ID] }
+                .map { group ->
+                    val common = group.value.first()
+                    val problems = group.value.mapNotNull { it[BURDEN_ESTIMATE_SET_PROBLEM.PROBLEM] }
+                    BurdenEstimateSet(
+                            common[BURDEN_ESTIMATE_SET.ID],
+                            common[BURDEN_ESTIMATE_SET.UPLOADED_ON].toInstant(),
+                            common[BURDEN_ESTIMATE_SET.UPLOADED_BY],
+                            problems
+                    )
+                }
     }
 
     override fun addBurdenEstimateSet(groupId: String, touchstoneId: String, scenarioId: String,

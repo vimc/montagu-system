@@ -50,6 +50,10 @@ import org.vaccineimpact.api.db.tables.ImpactEstimateSet;
 import org.vaccineimpact.api.db.tables.ImpactEstimateSetIngredient;
 import org.vaccineimpact.api.db.tables.ImpactOutcome;
 import org.vaccineimpact.api.db.tables.Model;
+import org.vaccineimpact.api.db.tables.ModelRun;
+import org.vaccineimpact.api.db.tables.ModelRunParameter;
+import org.vaccineimpact.api.db.tables.ModelRunParameterSet;
+import org.vaccineimpact.api.db.tables.ModelRunParameterValue;
 import org.vaccineimpact.api.db.tables.ModelVersion;
 import org.vaccineimpact.api.db.tables.ModellingGroup;
 import org.vaccineimpact.api.db.tables.OnetimeToken;
@@ -79,6 +83,7 @@ import org.vaccineimpact.api.db.tables.TouchstoneDemographicSource;
 import org.vaccineimpact.api.db.tables.TouchstoneName;
 import org.vaccineimpact.api.db.tables.TouchstoneStatus;
 import org.vaccineimpact.api.db.tables.TouchstoneYears;
+import org.vaccineimpact.api.db.tables.UploadInfo;
 import org.vaccineimpact.api.db.tables.UserRole;
 import org.vaccineimpact.api.db.tables.VCoverageInfo;
 import org.vaccineimpact.api.db.tables.VResponsibilityInfo;
@@ -108,7 +113,7 @@ import org.vaccineimpact.api.db.tables.records.SelectBurdenDataColRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = -1070320126;
+    private static final long serialVersionUID = 47822217;
 
     /**
      * The reference instance of <code>public</code>
@@ -274,6 +279,26 @@ public class Public extends SchemaImpl {
      * With the self-referencing "current" field; we consider a model to be the current one if current is null.  See comment about recursion in modelling_group
      */
     public final Model MODEL = org.vaccineimpact.api.db.tables.Model.MODEL;
+
+    /**
+     * The table <code>public.model_run</code>.
+     */
+    public final ModelRun MODEL_RUN = org.vaccineimpact.api.db.tables.ModelRun.MODEL_RUN;
+
+    /**
+     * The table <code>public.model_run_parameter</code>.
+     */
+    public final ModelRunParameter MODEL_RUN_PARAMETER = org.vaccineimpact.api.db.tables.ModelRunParameter.MODEL_RUN_PARAMETER;
+
+    /**
+     * The table <code>public.model_run_parameter_set</code>.
+     */
+    public final ModelRunParameterSet MODEL_RUN_PARAMETER_SET = org.vaccineimpact.api.db.tables.ModelRunParameterSet.MODEL_RUN_PARAMETER_SET;
+
+    /**
+     * The table <code>public.model_run_parameter_value</code>.
+     */
+    public final ModelRunParameterValue MODEL_RUN_PARAMETER_VALUE = org.vaccineimpact.api.db.tables.ModelRunParameterValue.MODEL_RUN_PARAMETER_VALUE;
 
     /**
      * The table <code>public.model_version</code>.
@@ -610,6 +635,11 @@ public class Public extends SchemaImpl {
     public final TouchstoneYears TOUCHSTONE_YEARS = org.vaccineimpact.api.db.tables.TouchstoneYears.TOUCHSTONE_YEARS;
 
     /**
+     * The table <code>public.upload_info</code>.
+     */
+    public final UploadInfo UPLOAD_INFO = org.vaccineimpact.api.db.tables.UploadInfo.UPLOAD_INFO;
+
+    /**
      * The table <code>public.user_role</code>.
      */
     public final UserRole USER_ROLE = org.vaccineimpact.api.db.tables.UserRole.USER_ROLE;
@@ -682,6 +712,10 @@ public class Public extends SchemaImpl {
             Sequences.IMPACT_ESTIMATE_RECIPE_ID_SEQ,
             Sequences.IMPACT_ESTIMATE_SET_ID_SEQ,
             Sequences.IMPACT_ESTIMATE_SET_INGREDIENT_ID_SEQ,
+            Sequences.MODEL_RUN_INTERNAL_ID_SEQ,
+            Sequences.MODEL_RUN_PARAMETER_ID_SEQ,
+            Sequences.MODEL_RUN_PARAMETER_SET_ID_SEQ,
+            Sequences.MODEL_RUN_PARAMETER_VALUE_ID_SEQ,
             Sequences.MODEL_VERSION_ID_SEQ,
             Sequences.RESPONSIBILITY_ID_SEQ,
             Sequences.RESPONSIBILITY_SET_ID_SEQ,
@@ -692,6 +726,7 @@ public class Public extends SchemaImpl {
             Sequences.TOUCHSTONE_DEMOGRAPHIC_DATASET_ID_SEQ,
             Sequences.TOUCHSTONE_DEMOGRAPHIC_SOURCE_ID_SEQ,
             Sequences.TOUCHSTONE_YEARS_ID_SEQ,
+            Sequences.UPLOAD_INFO_ID_SEQ,
             Sequences.VACCINE_ROUTINE_AGE_ID_SEQ);
     }
 
@@ -736,6 +771,10 @@ public class Public extends SchemaImpl {
             ImpactEstimateSetIngredient.IMPACT_ESTIMATE_SET_INGREDIENT,
             ImpactOutcome.IMPACT_OUTCOME,
             Model.MODEL,
+            ModelRun.MODEL_RUN,
+            ModelRunParameter.MODEL_RUN_PARAMETER,
+            ModelRunParameterSet.MODEL_RUN_PARAMETER_SET,
+            ModelRunParameterValue.MODEL_RUN_PARAMETER_VALUE,
             ModelVersion.MODEL_VERSION,
             ModellingGroup.MODELLING_GROUP,
             OnetimeToken.ONETIME_TOKEN,
@@ -765,6 +804,7 @@ public class Public extends SchemaImpl {
             TouchstoneName.TOUCHSTONE_NAME,
             TouchstoneStatus.TOUCHSTONE_STATUS,
             TouchstoneYears.TOUCHSTONE_YEARS,
+            UploadInfo.UPLOAD_INFO,
             UserRole.USER_ROLE,
             VCoverageInfo.V_COVERAGE_INFO,
             VResponsibilityInfo.V_RESPONSIBILITY_INFO,

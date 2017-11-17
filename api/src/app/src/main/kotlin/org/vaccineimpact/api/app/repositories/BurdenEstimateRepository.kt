@@ -12,7 +12,7 @@ interface BurdenEstimateRepository : Repository
     fun createBurdenEstimateSet(groupId: String, touchstoneId: String, scenarioId: String,
                                 uploader: String, timestamp: Instant): Int
 
-    fun getBurdenEstimateSets(groupId: String, touchstoneId: String, scenarioId: String): Sequence<BurdenEstimateSet>
+    fun getBurdenEstimateSets(groupId: String, touchstoneId: String, scenarioId: String): List<BurdenEstimateSet>
 
     /** Deprecated **/
     fun addBurdenEstimateSet(groupId: String, touchstoneId: String, scenarioId: String,

@@ -176,12 +176,12 @@ fun JooqContext.addResponsibilitySet(
     return record.id
 }
 
-fun JooqContext.addBurdenEstimateSet(responsibilityId: Int, modelId: Int,
+fun JooqContext.addBurdenEstimateSet(responsibilityId: Int, modelVersionId: Int,
                                      username: String, status: String = "empty"): Int
 {
     val record = this.dsl.newRecord(BURDEN_ESTIMATE_SET).apply {
         this.responsibility = responsibilityId
-        this.modelVersion = modelId
+        this.modelVersion = modelVersionId
         this.uploadedBy = username
         this.runInfo = ""
         this.interpolated = false
