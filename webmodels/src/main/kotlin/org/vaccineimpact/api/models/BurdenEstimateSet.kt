@@ -17,8 +17,8 @@ data class BurdenEstimateSetType(val code: BurdenEstimateSetTypeCode, val detail
 
 enum class BurdenEstimateSetTypeCode
 {
-    CentralSingleRun,
-    CentralAveraged,
-    CentralUnknown,
-    Stochastic
+    CENTRAL_SINGLE_RUN,
+    CENTRAL_AVERAGED,
+    CENTRAL_UNKNOWN,
+    STOCHASTIC
 }
