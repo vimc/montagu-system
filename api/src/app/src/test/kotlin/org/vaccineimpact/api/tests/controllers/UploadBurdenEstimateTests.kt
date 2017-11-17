@@ -5,7 +5,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
 import org.vaccineimpact.api.app.context.ActionContext
-import org.vaccineimpact.api.app.context.RequestBodySource
 import org.vaccineimpact.api.app.controllers.ControllerContext
 import org.vaccineimpact.api.app.controllers.GroupBurdenEstimatesController
 import org.vaccineimpact.api.app.errors.InconsistentDataError
@@ -27,7 +26,7 @@ class UploadBurdenEstimateTests : ControllerTests<GroupBurdenEstimatesController
     {
         val data = listOf(
                 BurdenEstimateSet(1, Instant.MIN, "ThePast",
-                        BurdenEstimateSetType(BurdenEstimateSetTypeCode.CentralAveraged, "Median"),
+                        BurdenEstimateSetType(BurdenEstimateSetTypeCode.CENTRAL_AVERAGED, "Median"),
                         emptyList()
                 ),
                 BurdenEstimateSet(2, Instant.MAX, "TheFuture",

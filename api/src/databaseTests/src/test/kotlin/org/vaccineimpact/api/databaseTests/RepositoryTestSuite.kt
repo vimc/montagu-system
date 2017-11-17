@@ -24,6 +24,7 @@ import org.vaccineimpact.api.test_helpers.DatabaseCreationHelper
         GetResponsibilityCoverageSetsTests::class,
         GetScenarioTests::class,
         ModelTests::class,
+        RetrieveBurdenEstimateSetsTests::class,
         TokenRepositoryTests::class,
         TransactionalityTests::class,
         TriggerTests::class,
