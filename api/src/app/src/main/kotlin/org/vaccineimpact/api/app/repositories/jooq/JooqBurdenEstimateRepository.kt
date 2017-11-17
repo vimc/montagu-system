@@ -73,6 +73,41 @@ class JooqBurdenEstimateRepository(
     override fun addBurdenEstimateSet(groupId: String, touchstoneId: String, scenarioId: String,
                                       estimates: List<BurdenEstimate>, uploader: String, timestamp: Instant): Int
     {
+        val setId = createBurdenEstimateSet(groupId, touchstoneId, scenarioId, uploader, timestamp)
+        populateBurdenEstimateSet(setId, groupId, touchstoneId, scenarioId, estimates)
+        return setId
+    }
+
+    override fun populateBurdenEstimateSet(setId: Int, groupId: String, touchstoneId: String, scenarioId: String,
+                                           estimates: List<BurdenEstimate>)
+    {
+        val outcomeLookup = getOutcomesAsLookup()
+        val cohortSizeId = outcomeLookup["cohort_size"]
+                ?: throw DatabaseContentsError("Expected a value with code 'cohort_size' in burden_outcome table")
+
+        // Dereference modelling group IDs
+        val modellingGroup = modellingGroupRepository.getModellingGroup(groupId)
+
+        val responsibilityInfo = getResponsibilityInfo(modellingGroup.id, touchstoneId, scenarioId)
+
+        val status = dsl.select(BURDEN_ESTIMATE_SET.STATUS)
+                .from(BURDEN_ESTIMATE_SET)
+                .where(BURDEN_ESTIMATE_SET.ID.eq(setId))
+                .singleOrNull() ?: throw UnknownObjectError(setId, "Burden Estimate Set")
+
+        if (status.into(String::class.java) != "empty")
+        {
+            throw OperationNotAllowedError("This burden estimate set already contains estimates." +
+                    " You must create a new set if you want to upload any new estimates.")
+        }
+        addEstimatesToSet(estimates, setId, outcomeLookup, cohortSizeId, responsibilityInfo.disease)
+        updateCurrentBurdenEstimateSet(responsibilityInfo.id, setId)
+    }
+
+
+    override fun createBurdenEstimateSet(groupId: String, touchstoneId: String, scenarioId: String,
+                                         uploader: String, timestamp: Instant): Int
+    {
         // Dereference modelling group IDs
         val modellingGroup = modellingGroupRepository.getModellingGroup(groupId)
 
@@ -91,7 +126,6 @@ class JooqBurdenEstimateRepository(
                     " and approved. You cannot upload any new estimates.")
         }
 
-        val outcomeLookup = getOutcomesAsLookup()
         val latestModelVersion = dsl.select(MODEL_VERSION.ID)
                 .fromJoinPath(MODELLING_GROUP, MODEL)
                 .join(MODEL_VERSION)
@@ -100,18 +134,11 @@ class JooqBurdenEstimateRepository(
                 .and(MODEL.DISEASE.eq(responsibilityInfo.disease))
                 .and(MODEL.IS_CURRENT)
                 .fetch().singleOrNull()?.value1()
-                ?: throw DatabaseContentsError("Modelling group $groupId does not have a current model with a current model version in the database")
+                ?: throw DatabaseContentsError("Modelling group $groupId does not have any models/model versions in the database")
 
-        val setId = addSet(responsibilityInfo.id, uploader, timestamp, latestModelVersion)
-        val cohortSizeId = outcomeLookup["cohort_size"]
-                ?: throw DatabaseContentsError("Expected a value with code 'cohort_size' in burden_outcome table")
-
-        addEstimatesToSet(estimates, setId, outcomeLookup, cohortSizeId, responsibilityInfo.disease)
-
-        updateCurrentBurdenEstimateSet(responsibilityInfo.id, setId)
-
-        return setId
+        return addSet(responsibilityInfo.id, uploader, timestamp, latestModelVersion)
     }
+
 
     private fun updateCurrentBurdenEstimateSet(responsibilityId: Int, setId: Int)
     {
@@ -179,6 +206,11 @@ class JooqBurdenEstimateRepository(
                 }
             }
         }
+
+        dsl.update(BURDEN_ESTIMATE_SET)
+                .set(BURDEN_ESTIMATE_SET.STATUS, "complete")
+                .where(BURDEN_ESTIMATE_SET.ID.eq(setId))
+                .execute()
     }
 
     private fun getAllCountryIds() = dsl.select(COUNTRY.ID)
@@ -214,6 +246,7 @@ class JooqBurdenEstimateRepository(
             this.uploadedOn = Timestamp.from(timestamp)
             this.runInfo = "Not provided"
             this.interpolated = false
+            this.status = "empty"
         }
         setRecord.insert()
         return setRecord.id

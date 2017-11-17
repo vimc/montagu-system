@@ -33,7 +33,7 @@ fun JooqContext.addModel(
         citation: String = "Unknown citation",
         isCurrent: Boolean = true,
         versions: List<String> = emptyList()
-)
+): Int
 {
     val record = this.dsl.newRecord(MODEL).apply {
         this.id = id
@@ -45,10 +45,13 @@ fun JooqContext.addModel(
         this.disease = diseaseId
     }.store()
 
+    var versionId = 0
     for (version in versions)
     {
-        addModelVersion(id, version, setCurrent = true)
+        versionId = addModelVersion(id, version, setCurrent = true)
     }
+
+    return versionId
 }
 
 fun JooqContext.addModelVersion(
@@ -173,7 +176,8 @@ fun JooqContext.addResponsibilitySet(
     return record.id
 }
 
-fun JooqContext.addBurdenEstimateSet(responsibilityId: Int, modelVersionId: Int, username: String): Int
+fun JooqContext.addBurdenEstimateSet(responsibilityId: Int, modelVersionId: Int,
+                                     username: String, status: String = "empty"): Int
 {
     val record = this.dsl.newRecord(BURDEN_ESTIMATE_SET).apply {
         this.responsibility = responsibilityId
@@ -182,6 +186,7 @@ fun JooqContext.addBurdenEstimateSet(responsibilityId: Int, modelVersionId: Int,
         this.runInfo = ""
         this.interpolated = false
         this.complete = false
+        this.status = status
     }
     record.store()
     return record.id

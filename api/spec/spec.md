@@ -993,7 +993,7 @@ An error occurs (and no changes are made) if:
 * The coverage set is `campaign` and the scenario is `routine`. (All other combinations are acceptable)
 
 # Burden estimates
-## GET /modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}/{scenario-id}/estimates/
+## GET /modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}/{scenario-id}/estimate-sets/
 Returns metadata for all burden estimates that have been uploaded for this 
 responsibility.
 
@@ -1018,7 +1018,7 @@ Filter by scenario. e.g. GET /touchstone/2017-op-1/estimates/?scenario=menA-nova
 #### responsible_group
 Filter by responsible group. e.g. GET /touchstone/2017-op-1/estimates/?responsible_group=IC-YellowFever
 
-## GET /modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}/{scenario-id}/estimates/{estimate-id}/
+## GET /modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}/{scenario-id}/estimate-sets/{estimate-id}/
 Returns the full burden estimate data.
 
 Required permissions: Scoped to modelling group: `estimates.read`, `responsibilities.read`. If the estimates belong to a touchstone that is `open` then they are only returned if the user has `estimates.read-unfinished` (again scoped to the modelling group)
@@ -1049,11 +1049,48 @@ database. There may be more or fewer columns.
        "Hib3",   1996,    50,     "AGO",       "Angola",          5000,     1000,      NA,    5670
        "Hib3",   1997,    50,     "AGO",       "Angola",          6000,     1200,      NA,    5870
 
+
 ## POST /modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}/{scenario-id}/estimates/
+** DEPRECATED **
 Adds a new burden estimate.
 
 Can only by invoked if:
 
+* The touchstone is `open`
+* The relevant responsibility set is `incomplete`
+
+Required permissions: Scoped to modelling group: `estimates.write`, `responsibilities.read`.
+
+Takes CSV data in the following format. Note that the last four columns are
+based on which outcomes you wish to upload values for. More or fewer columns
+are allowed so long as all the outcome columns correspond to allowed burden
+outcomes in the database.
+
+    "disease", "year", "age", "country", "country_name", "cohort_size", "deaths", "cases", "dalys"
+       "Hib3",   1996,    50,     "AFG",  "Afghanistan",         10000,     1000,    2000,      NA
+       "Hib3",   1997,    50,     "AFG",  "Afghanistan",         10500,      900,    2000,      NA
+       "Hib3",   1996,    50,     "AGO",       "Angola",          5000,     1000,      NA,    5670
+       "Hib3",   1997,    50,     "AGO",       "Angola",          6000,     1200,      NA,    5870
+       
+       
+## POST /modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}/{scenario-id}/estimate-sets/
+Creates a new, empty burden estimate set.
+
+Can only by invoked if:
+
+* The touchstone is `open`
+* The relevant responsibility set is `incomplete`
+
+Required permissions: Scoped to modelling group: `estimates.write`, `responsibilities.read`.
+
+Returns the integer id of the new set.
+
+## POST /modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}/{scenario-id}/estimate-sets/{set-id}/
+Populates an empty burden estimate set.
+
+Can only by invoked if:
+
+* The set status is `empty`
 * The touchstone is `open`
 * The relevant responsibility set is `incomplete`
 
