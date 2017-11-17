@@ -5,5 +5,7 @@ enum class OneTimeAction
     COVERAGE,
     DEMOGRAPHY,
     SET_PASSWORD,
-    BURDENS
+    BURDENS,
+    BURDENS_CREATE,
+    BURDENS_POPULATE
 }
