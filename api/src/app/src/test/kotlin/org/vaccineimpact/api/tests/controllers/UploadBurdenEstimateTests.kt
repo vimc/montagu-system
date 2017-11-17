@@ -168,12 +168,6 @@ class UploadBurdenEstimateTests : ControllerTests<GroupBurdenEstimatesController
         ))
     }
 
-    @Test
-    fun `can upload model run parameter set`()
-    {
-
-    }
-
     private fun mockActionContext(data: List<BurdenEstimate>): ActionContext
     {
         return mock {
