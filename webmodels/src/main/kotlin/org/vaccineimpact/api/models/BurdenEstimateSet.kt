@@ -9,5 +9,16 @@ constructor(
         override val id: Int,
         val uploadedOn: Instant,
         val uploadedBy: String,
+        val type: BurdenEstimateSetType,
         val problems: List<String>
 ) : HasKey<Int>
+
+data class BurdenEstimateSetType(val code: BurdenEstimateSetTypeCode, val details: String?)
+
+enum class BurdenEstimateSetTypeCode
+{
+    CentralSingleRun,
+    CentralAveraged,
+    CentralUnknown,
+    Stochastic
+}
