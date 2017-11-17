@@ -42,6 +42,10 @@ import org.vaccineimpact.api.db.tables.ImpactEstimateSet;
 import org.vaccineimpact.api.db.tables.ImpactEstimateSetIngredient;
 import org.vaccineimpact.api.db.tables.ImpactOutcome;
 import org.vaccineimpact.api.db.tables.Model;
+import org.vaccineimpact.api.db.tables.ModelRun;
+import org.vaccineimpact.api.db.tables.ModelRunParameter;
+import org.vaccineimpact.api.db.tables.ModelRunParameterSet;
+import org.vaccineimpact.api.db.tables.ModelRunParameterValue;
 import org.vaccineimpact.api.db.tables.ModelVersion;
 import org.vaccineimpact.api.db.tables.ModellingGroup;
 import org.vaccineimpact.api.db.tables.OnetimeToken;
@@ -62,6 +66,7 @@ import org.vaccineimpact.api.db.tables.TouchstoneDemographicSource;
 import org.vaccineimpact.api.db.tables.TouchstoneName;
 import org.vaccineimpact.api.db.tables.TouchstoneStatus;
 import org.vaccineimpact.api.db.tables.TouchstoneYears;
+import org.vaccineimpact.api.db.tables.UploadInfo;
 import org.vaccineimpact.api.db.tables.UserRole;
 import org.vaccineimpact.api.db.tables.Vaccine;
 import org.vaccineimpact.api.db.tables.VaccineRoutineAge;
@@ -97,6 +102,10 @@ import org.vaccineimpact.api.db.tables.records.ImpactEstimateSetIngredientRecord
 import org.vaccineimpact.api.db.tables.records.ImpactEstimateSetRecord;
 import org.vaccineimpact.api.db.tables.records.ImpactOutcomeRecord;
 import org.vaccineimpact.api.db.tables.records.ModelRecord;
+import org.vaccineimpact.api.db.tables.records.ModelRunParameterRecord;
+import org.vaccineimpact.api.db.tables.records.ModelRunParameterSetRecord;
+import org.vaccineimpact.api.db.tables.records.ModelRunParameterValueRecord;
+import org.vaccineimpact.api.db.tables.records.ModelRunRecord;
 import org.vaccineimpact.api.db.tables.records.ModelVersionRecord;
 import org.vaccineimpact.api.db.tables.records.ModellingGroupRecord;
 import org.vaccineimpact.api.db.tables.records.OnetimeTokenRecord;
@@ -117,6 +126,7 @@ import org.vaccineimpact.api.db.tables.records.TouchstoneNameRecord;
 import org.vaccineimpact.api.db.tables.records.TouchstoneRecord;
 import org.vaccineimpact.api.db.tables.records.TouchstoneStatusRecord;
 import org.vaccineimpact.api.db.tables.records.TouchstoneYearsRecord;
+import org.vaccineimpact.api.db.tables.records.UploadInfoRecord;
 import org.vaccineimpact.api.db.tables.records.UserRoleRecord;
 import org.vaccineimpact.api.db.tables.records.VaccineRecord;
 import org.vaccineimpact.api.db.tables.records.VaccineRoutineAgeRecord;
@@ -163,6 +173,10 @@ public class Keys {
     public static final Identity<ImpactEstimateRecipeRecord, Integer> IDENTITY_IMPACT_ESTIMATE_RECIPE = Identities0.IDENTITY_IMPACT_ESTIMATE_RECIPE;
     public static final Identity<ImpactEstimateSetRecord, Integer> IDENTITY_IMPACT_ESTIMATE_SET = Identities0.IDENTITY_IMPACT_ESTIMATE_SET;
     public static final Identity<ImpactEstimateSetIngredientRecord, Integer> IDENTITY_IMPACT_ESTIMATE_SET_INGREDIENT = Identities0.IDENTITY_IMPACT_ESTIMATE_SET_INGREDIENT;
+    public static final Identity<ModelRunRecord, Integer> IDENTITY_MODEL_RUN = Identities0.IDENTITY_MODEL_RUN;
+    public static final Identity<ModelRunParameterRecord, Integer> IDENTITY_MODEL_RUN_PARAMETER = Identities0.IDENTITY_MODEL_RUN_PARAMETER;
+    public static final Identity<ModelRunParameterSetRecord, Integer> IDENTITY_MODEL_RUN_PARAMETER_SET = Identities0.IDENTITY_MODEL_RUN_PARAMETER_SET;
+    public static final Identity<ModelRunParameterValueRecord, Integer> IDENTITY_MODEL_RUN_PARAMETER_VALUE = Identities0.IDENTITY_MODEL_RUN_PARAMETER_VALUE;
     public static final Identity<ModelVersionRecord, Integer> IDENTITY_MODEL_VERSION = Identities0.IDENTITY_MODEL_VERSION;
     public static final Identity<ResponsibilityRecord, Integer> IDENTITY_RESPONSIBILITY = Identities0.IDENTITY_RESPONSIBILITY;
     public static final Identity<ResponsibilitySetRecord, Integer> IDENTITY_RESPONSIBILITY_SET = Identities0.IDENTITY_RESPONSIBILITY_SET;
@@ -173,6 +187,7 @@ public class Keys {
     public static final Identity<TouchstoneDemographicDatasetRecord, Integer> IDENTITY_TOUCHSTONE_DEMOGRAPHIC_DATASET = Identities0.IDENTITY_TOUCHSTONE_DEMOGRAPHIC_DATASET;
     public static final Identity<TouchstoneDemographicSourceRecord, Integer> IDENTITY_TOUCHSTONE_DEMOGRAPHIC_SOURCE = Identities0.IDENTITY_TOUCHSTONE_DEMOGRAPHIC_SOURCE;
     public static final Identity<TouchstoneYearsRecord, Integer> IDENTITY_TOUCHSTONE_YEARS = Identities0.IDENTITY_TOUCHSTONE_YEARS;
+    public static final Identity<UploadInfoRecord, Integer> IDENTITY_UPLOAD_INFO = Identities0.IDENTITY_UPLOAD_INFO;
     public static final Identity<VaccineRoutineAgeRecord, Integer> IDENTITY_VACCINE_ROUTINE_AGE = Identities0.IDENTITY_VACCINE_ROUTINE_AGE;
 
     // -------------------------------------------------------------------------
@@ -214,6 +229,12 @@ public class Keys {
     public static final UniqueKey<ImpactEstimateSetIngredientRecord> IMPACT_ESTIMATE_SET_INGREDIENT_PKEY = UniqueKeys0.IMPACT_ESTIMATE_SET_INGREDIENT_PKEY;
     public static final UniqueKey<ImpactOutcomeRecord> IMPACT_OUTCOME_PKEY = UniqueKeys0.IMPACT_OUTCOME_PKEY;
     public static final UniqueKey<ModelRecord> MODEL_PKEY = UniqueKeys0.MODEL_PKEY;
+    public static final UniqueKey<ModelRunRecord> MODEL_RUN_PKEY = UniqueKeys0.MODEL_RUN_PKEY;
+    public static final UniqueKey<ModelRunParameterRecord> MODEL_RUN_PARAMETER_PKEY = UniqueKeys0.MODEL_RUN_PARAMETER_PKEY;
+    public static final UniqueKey<ModelRunParameterRecord> MODEL_RUN_PARAMETER_KEY_MODEL_RUN_PARAMETER_SET_KEY = UniqueKeys0.MODEL_RUN_PARAMETER_KEY_MODEL_RUN_PARAMETER_SET_KEY;
+    public static final UniqueKey<ModelRunParameterSetRecord> MODEL_RUN_PARAMETER_SET_PKEY = UniqueKeys0.MODEL_RUN_PARAMETER_SET_PKEY;
+    public static final UniqueKey<ModelRunParameterValueRecord> MODEL_RUN_PARAMETER_VALUE_PKEY = UniqueKeys0.MODEL_RUN_PARAMETER_VALUE_PKEY;
+    public static final UniqueKey<ModelRunParameterValueRecord> MODEL_RUN_PARAMETER_VALUE_MODEL_RUN_PARAMETER_MODEL_RUN_KEY = UniqueKeys0.MODEL_RUN_PARAMETER_VALUE_MODEL_RUN_PARAMETER_MODEL_RUN_KEY;
     public static final UniqueKey<ModelVersionRecord> MODEL_VERSION_PKEY = UniqueKeys0.MODEL_VERSION_PKEY;
     public static final UniqueKey<ModelVersionRecord> MODEL_VERSION_MODEL_VERSION_KEY = UniqueKeys0.MODEL_VERSION_MODEL_VERSION_KEY;
     public static final UniqueKey<ModellingGroupRecord> MODELLING_GROUP_PKEY = UniqueKeys0.MODELLING_GROUP_PKEY;
@@ -240,6 +261,7 @@ public class Keys {
     public static final UniqueKey<TouchstoneNameRecord> TOUCHSTONE_NAME_PKEY = UniqueKeys0.TOUCHSTONE_NAME_PKEY;
     public static final UniqueKey<TouchstoneStatusRecord> TOUCHSTONE_STATUS_PKEY = UniqueKeys0.TOUCHSTONE_STATUS_PKEY;
     public static final UniqueKey<TouchstoneYearsRecord> TOUCHSTONE_YEARS_PKEY = UniqueKeys0.TOUCHSTONE_YEARS_PKEY;
+    public static final UniqueKey<UploadInfoRecord> UPLOAD_INFO_PKEY = UniqueKeys0.UPLOAD_INFO_PKEY;
     public static final UniqueKey<UserRoleRecord> USER_ROLE_PKEY = UniqueKeys0.USER_ROLE_PKEY;
     public static final UniqueKey<VaccineRecord> VACCINE_PKEY = UniqueKeys0.VACCINE_PKEY;
     public static final UniqueKey<VaccineRoutineAgeRecord> VACCINE_ROUTINE_AGE_PKEY = UniqueKeys0.VACCINE_ROUTINE_AGE_PKEY;
@@ -310,6 +332,13 @@ public class Keys {
     public static final ForeignKey<ModelRecord, ModellingGroupRecord> MODEL__MODEL_MODELLING_GROUP_FKEY = ForeignKeys0.MODEL__MODEL_MODELLING_GROUP_FKEY;
     public static final ForeignKey<ModelRecord, ModelVersionRecord> MODEL__MODEL_CURRENT_VERSION_FKEY = ForeignKeys0.MODEL__MODEL_CURRENT_VERSION_FKEY;
     public static final ForeignKey<ModelRecord, DiseaseRecord> MODEL__MODEL_DISEASE_FKEY = ForeignKeys0.MODEL__MODEL_DISEASE_FKEY;
+    public static final ForeignKey<ModelRunRecord, ModelRunParameterSetRecord> MODEL_RUN__MODEL_RUN_MODEL_RUN_PARAMETER_SET_FKEY = ForeignKeys0.MODEL_RUN__MODEL_RUN_MODEL_RUN_PARAMETER_SET_FKEY;
+    public static final ForeignKey<ModelRunParameterRecord, ModelRunParameterSetRecord> MODEL_RUN_PARAMETER__MODEL_RUN_PARAMETER_MODEL_RUN_PARAMETER_SET_FKEY = ForeignKeys0.MODEL_RUN_PARAMETER__MODEL_RUN_PARAMETER_MODEL_RUN_PARAMETER_SET_FKEY;
+    public static final ForeignKey<ModelRunParameterSetRecord, ResponsibilitySetRecord> MODEL_RUN_PARAMETER_SET__MODEL_RUN_PARAMETER_SET_RESPONSIBILITY_SET_FKEY = ForeignKeys0.MODEL_RUN_PARAMETER_SET__MODEL_RUN_PARAMETER_SET_RESPONSIBILITY_SET_FKEY;
+    public static final ForeignKey<ModelRunParameterSetRecord, UploadInfoRecord> MODEL_RUN_PARAMETER_SET__MODEL_RUN_PARAMETER_SET_UPLOAD_INFO_FKEY = ForeignKeys0.MODEL_RUN_PARAMETER_SET__MODEL_RUN_PARAMETER_SET_UPLOAD_INFO_FKEY;
+    public static final ForeignKey<ModelRunParameterSetRecord, ModelVersionRecord> MODEL_RUN_PARAMETER_SET__MODEL_RUN_PARAMETER_SET_MODEL_VERSION_FKEY = ForeignKeys0.MODEL_RUN_PARAMETER_SET__MODEL_RUN_PARAMETER_SET_MODEL_VERSION_FKEY;
+    public static final ForeignKey<ModelRunParameterValueRecord, ModelRunRecord> MODEL_RUN_PARAMETER_VALUE__MODEL_RUN_PARAMETER_VALUE_MODEL_RUN_FKEY = ForeignKeys0.MODEL_RUN_PARAMETER_VALUE__MODEL_RUN_PARAMETER_VALUE_MODEL_RUN_FKEY;
+    public static final ForeignKey<ModelRunParameterValueRecord, ModelRunParameterRecord> MODEL_RUN_PARAMETER_VALUE__MODEL_RUN_PARAMETER_VALUE_MODEL_RUN_PARAMETER_FKEY = ForeignKeys0.MODEL_RUN_PARAMETER_VALUE__MODEL_RUN_PARAMETER_VALUE_MODEL_RUN_PARAMETER_FKEY;
     public static final ForeignKey<ModelVersionRecord, ModelRecord> MODEL_VERSION__MODEL_VERSION_MODEL_FKEY = ForeignKeys0.MODEL_VERSION__MODEL_VERSION_MODEL_FKEY;
     public static final ForeignKey<ModellingGroupRecord, ModellingGroupRecord> MODELLING_GROUP__MODELLING_GROUP_CURRENT_FKEY = ForeignKeys0.MODELLING_GROUP__MODELLING_GROUP_CURRENT_FKEY;
     public static final ForeignKey<ResponsibilityRecord, ResponsibilitySetRecord> RESPONSIBILITY__RESPONSIBILITY_RESPONSIBILITY_SET_FKEY = ForeignKeys0.RESPONSIBILITY__RESPONSIBILITY_RESPONSIBILITY_SET_FKEY;
@@ -369,6 +398,10 @@ public class Keys {
         public static Identity<ImpactEstimateRecipeRecord, Integer> IDENTITY_IMPACT_ESTIMATE_RECIPE = createIdentity(ImpactEstimateRecipe.IMPACT_ESTIMATE_RECIPE, ImpactEstimateRecipe.IMPACT_ESTIMATE_RECIPE.ID);
         public static Identity<ImpactEstimateSetRecord, Integer> IDENTITY_IMPACT_ESTIMATE_SET = createIdentity(ImpactEstimateSet.IMPACT_ESTIMATE_SET, ImpactEstimateSet.IMPACT_ESTIMATE_SET.ID);
         public static Identity<ImpactEstimateSetIngredientRecord, Integer> IDENTITY_IMPACT_ESTIMATE_SET_INGREDIENT = createIdentity(ImpactEstimateSetIngredient.IMPACT_ESTIMATE_SET_INGREDIENT, ImpactEstimateSetIngredient.IMPACT_ESTIMATE_SET_INGREDIENT.ID);
+        public static Identity<ModelRunRecord, Integer> IDENTITY_MODEL_RUN = createIdentity(ModelRun.MODEL_RUN, ModelRun.MODEL_RUN.INTERNAL_ID);
+        public static Identity<ModelRunParameterRecord, Integer> IDENTITY_MODEL_RUN_PARAMETER = createIdentity(ModelRunParameter.MODEL_RUN_PARAMETER, ModelRunParameter.MODEL_RUN_PARAMETER.ID);
+        public static Identity<ModelRunParameterSetRecord, Integer> IDENTITY_MODEL_RUN_PARAMETER_SET = createIdentity(ModelRunParameterSet.MODEL_RUN_PARAMETER_SET, ModelRunParameterSet.MODEL_RUN_PARAMETER_SET.ID);
+        public static Identity<ModelRunParameterValueRecord, Integer> IDENTITY_MODEL_RUN_PARAMETER_VALUE = createIdentity(ModelRunParameterValue.MODEL_RUN_PARAMETER_VALUE, ModelRunParameterValue.MODEL_RUN_PARAMETER_VALUE.ID);
         public static Identity<ModelVersionRecord, Integer> IDENTITY_MODEL_VERSION = createIdentity(ModelVersion.MODEL_VERSION, ModelVersion.MODEL_VERSION.ID);
         public static Identity<ResponsibilityRecord, Integer> IDENTITY_RESPONSIBILITY = createIdentity(Responsibility.RESPONSIBILITY, Responsibility.RESPONSIBILITY.ID);
         public static Identity<ResponsibilitySetRecord, Integer> IDENTITY_RESPONSIBILITY_SET = createIdentity(ResponsibilitySet.RESPONSIBILITY_SET, ResponsibilitySet.RESPONSIBILITY_SET.ID);
@@ -379,6 +412,7 @@ public class Keys {
         public static Identity<TouchstoneDemographicDatasetRecord, Integer> IDENTITY_TOUCHSTONE_DEMOGRAPHIC_DATASET = createIdentity(TouchstoneDemographicDataset.TOUCHSTONE_DEMOGRAPHIC_DATASET, TouchstoneDemographicDataset.TOUCHSTONE_DEMOGRAPHIC_DATASET.ID);
         public static Identity<TouchstoneDemographicSourceRecord, Integer> IDENTITY_TOUCHSTONE_DEMOGRAPHIC_SOURCE = createIdentity(TouchstoneDemographicSource.TOUCHSTONE_DEMOGRAPHIC_SOURCE, TouchstoneDemographicSource.TOUCHSTONE_DEMOGRAPHIC_SOURCE.ID);
         public static Identity<TouchstoneYearsRecord, Integer> IDENTITY_TOUCHSTONE_YEARS = createIdentity(TouchstoneYears.TOUCHSTONE_YEARS, TouchstoneYears.TOUCHSTONE_YEARS.ID);
+        public static Identity<UploadInfoRecord, Integer> IDENTITY_UPLOAD_INFO = createIdentity(UploadInfo.UPLOAD_INFO, UploadInfo.UPLOAD_INFO.ID);
         public static Identity<VaccineRoutineAgeRecord, Integer> IDENTITY_VACCINE_ROUTINE_AGE = createIdentity(VaccineRoutineAge.VACCINE_ROUTINE_AGE, VaccineRoutineAge.VACCINE_ROUTINE_AGE.ID);
     }
 
@@ -418,6 +452,12 @@ public class Keys {
         public static final UniqueKey<ImpactEstimateSetIngredientRecord> IMPACT_ESTIMATE_SET_INGREDIENT_PKEY = createUniqueKey(ImpactEstimateSetIngredient.IMPACT_ESTIMATE_SET_INGREDIENT, "impact_estimate_set_ingredient_pkey", ImpactEstimateSetIngredient.IMPACT_ESTIMATE_SET_INGREDIENT.ID);
         public static final UniqueKey<ImpactOutcomeRecord> IMPACT_OUTCOME_PKEY = createUniqueKey(ImpactOutcome.IMPACT_OUTCOME, "impact_outcome_pkey", ImpactOutcome.IMPACT_OUTCOME.ID);
         public static final UniqueKey<ModelRecord> MODEL_PKEY = createUniqueKey(Model.MODEL, "model_pkey", Model.MODEL.ID);
+        public static final UniqueKey<ModelRunRecord> MODEL_RUN_PKEY = createUniqueKey(ModelRun.MODEL_RUN, "model_run_pkey", ModelRun.MODEL_RUN.INTERNAL_ID);
+        public static final UniqueKey<ModelRunParameterRecord> MODEL_RUN_PARAMETER_PKEY = createUniqueKey(ModelRunParameter.MODEL_RUN_PARAMETER, "model_run_parameter_pkey", ModelRunParameter.MODEL_RUN_PARAMETER.ID);
+        public static final UniqueKey<ModelRunParameterRecord> MODEL_RUN_PARAMETER_KEY_MODEL_RUN_PARAMETER_SET_KEY = createUniqueKey(ModelRunParameter.MODEL_RUN_PARAMETER, "model_run_parameter_key_model_run_parameter_set_key", ModelRunParameter.MODEL_RUN_PARAMETER.KEY, ModelRunParameter.MODEL_RUN_PARAMETER.MODEL_RUN_PARAMETER_SET);
+        public static final UniqueKey<ModelRunParameterSetRecord> MODEL_RUN_PARAMETER_SET_PKEY = createUniqueKey(ModelRunParameterSet.MODEL_RUN_PARAMETER_SET, "model_run_parameter_set_pkey", ModelRunParameterSet.MODEL_RUN_PARAMETER_SET.ID);
+        public static final UniqueKey<ModelRunParameterValueRecord> MODEL_RUN_PARAMETER_VALUE_PKEY = createUniqueKey(ModelRunParameterValue.MODEL_RUN_PARAMETER_VALUE, "model_run_parameter_value_pkey", ModelRunParameterValue.MODEL_RUN_PARAMETER_VALUE.ID);
+        public static final UniqueKey<ModelRunParameterValueRecord> MODEL_RUN_PARAMETER_VALUE_MODEL_RUN_PARAMETER_MODEL_RUN_KEY = createUniqueKey(ModelRunParameterValue.MODEL_RUN_PARAMETER_VALUE, "model_run_parameter_value_model_run_parameter_model_run_key", ModelRunParameterValue.MODEL_RUN_PARAMETER_VALUE.MODEL_RUN_PARAMETER, ModelRunParameterValue.MODEL_RUN_PARAMETER_VALUE.MODEL_RUN);
         public static final UniqueKey<ModelVersionRecord> MODEL_VERSION_PKEY = createUniqueKey(ModelVersion.MODEL_VERSION, "model_version_pkey", ModelVersion.MODEL_VERSION.ID);
         public static final UniqueKey<ModelVersionRecord> MODEL_VERSION_MODEL_VERSION_KEY = createUniqueKey(ModelVersion.MODEL_VERSION, "model_version_model_version_key", ModelVersion.MODEL_VERSION.MODEL, ModelVersion.MODEL_VERSION.VERSION);
         public static final UniqueKey<ModellingGroupRecord> MODELLING_GROUP_PKEY = createUniqueKey(ModellingGroup.MODELLING_GROUP, "modelling_group_pkey", ModellingGroup.MODELLING_GROUP.ID);
@@ -444,6 +484,7 @@ public class Keys {
         public static final UniqueKey<TouchstoneNameRecord> TOUCHSTONE_NAME_PKEY = createUniqueKey(TouchstoneName.TOUCHSTONE_NAME, "touchstone_name_pkey", TouchstoneName.TOUCHSTONE_NAME.ID);
         public static final UniqueKey<TouchstoneStatusRecord> TOUCHSTONE_STATUS_PKEY = createUniqueKey(TouchstoneStatus.TOUCHSTONE_STATUS, "touchstone_status_pkey", TouchstoneStatus.TOUCHSTONE_STATUS.ID);
         public static final UniqueKey<TouchstoneYearsRecord> TOUCHSTONE_YEARS_PKEY = createUniqueKey(TouchstoneYears.TOUCHSTONE_YEARS, "touchstone_years_pkey", TouchstoneYears.TOUCHSTONE_YEARS.ID);
+        public static final UniqueKey<UploadInfoRecord> UPLOAD_INFO_PKEY = createUniqueKey(UploadInfo.UPLOAD_INFO, "upload_info_pkey", UploadInfo.UPLOAD_INFO.ID);
         public static final UniqueKey<UserRoleRecord> USER_ROLE_PKEY = createUniqueKey(UserRole.USER_ROLE, "user_role_pkey", UserRole.USER_ROLE.USERNAME, UserRole.USER_ROLE.ROLE, UserRole.USER_ROLE.SCOPE_ID);
         public static final UniqueKey<VaccineRecord> VACCINE_PKEY = createUniqueKey(Vaccine.VACCINE, "vaccine_pkey", Vaccine.VACCINE.ID);
         public static final UniqueKey<VaccineRoutineAgeRecord> VACCINE_ROUTINE_AGE_PKEY = createUniqueKey(VaccineRoutineAge.VACCINE_ROUTINE_AGE, "vaccine_routine_age_pkey", VaccineRoutineAge.VACCINE_ROUTINE_AGE.ID);
@@ -512,6 +553,13 @@ public class Keys {
         public static final ForeignKey<ModelRecord, ModellingGroupRecord> MODEL__MODEL_MODELLING_GROUP_FKEY = createForeignKey(org.vaccineimpact.api.db.Keys.MODELLING_GROUP_PKEY, Model.MODEL, "model__model_modelling_group_fkey", Model.MODEL.MODELLING_GROUP);
         public static final ForeignKey<ModelRecord, ModelVersionRecord> MODEL__MODEL_CURRENT_VERSION_FKEY = createForeignKey(org.vaccineimpact.api.db.Keys.MODEL_VERSION_PKEY, Model.MODEL, "model__model_current_version_fkey", Model.MODEL.CURRENT_VERSION);
         public static final ForeignKey<ModelRecord, DiseaseRecord> MODEL__MODEL_DISEASE_FKEY = createForeignKey(org.vaccineimpact.api.db.Keys.DISEASE_PKEY, Model.MODEL, "model__model_disease_fkey", Model.MODEL.DISEASE);
+        public static final ForeignKey<ModelRunRecord, ModelRunParameterSetRecord> MODEL_RUN__MODEL_RUN_MODEL_RUN_PARAMETER_SET_FKEY = createForeignKey(org.vaccineimpact.api.db.Keys.MODEL_RUN_PARAMETER_SET_PKEY, ModelRun.MODEL_RUN, "model_run__model_run_model_run_parameter_set_fkey", ModelRun.MODEL_RUN.MODEL_RUN_PARAMETER_SET);
+        public static final ForeignKey<ModelRunParameterRecord, ModelRunParameterSetRecord> MODEL_RUN_PARAMETER__MODEL_RUN_PARAMETER_MODEL_RUN_PARAMETER_SET_FKEY = createForeignKey(org.vaccineimpact.api.db.Keys.MODEL_RUN_PARAMETER_SET_PKEY, ModelRunParameter.MODEL_RUN_PARAMETER, "model_run_parameter__model_run_parameter_model_run_parameter_set_fkey", ModelRunParameter.MODEL_RUN_PARAMETER.MODEL_RUN_PARAMETER_SET);
+        public static final ForeignKey<ModelRunParameterSetRecord, ResponsibilitySetRecord> MODEL_RUN_PARAMETER_SET__MODEL_RUN_PARAMETER_SET_RESPONSIBILITY_SET_FKEY = createForeignKey(org.vaccineimpact.api.db.Keys.RESPONSIBILITY_SET_PKEY, ModelRunParameterSet.MODEL_RUN_PARAMETER_SET, "model_run_parameter_set__model_run_parameter_set_responsibility_set_fkey", ModelRunParameterSet.MODEL_RUN_PARAMETER_SET.RESPONSIBILITY_SET);
+        public static final ForeignKey<ModelRunParameterSetRecord, UploadInfoRecord> MODEL_RUN_PARAMETER_SET__MODEL_RUN_PARAMETER_SET_UPLOAD_INFO_FKEY = createForeignKey(org.vaccineimpact.api.db.Keys.UPLOAD_INFO_PKEY, ModelRunParameterSet.MODEL_RUN_PARAMETER_SET, "model_run_parameter_set__model_run_parameter_set_upload_info_fkey", ModelRunParameterSet.MODEL_RUN_PARAMETER_SET.UPLOAD_INFO);
+        public static final ForeignKey<ModelRunParameterSetRecord, ModelVersionRecord> MODEL_RUN_PARAMETER_SET__MODEL_RUN_PARAMETER_SET_MODEL_VERSION_FKEY = createForeignKey(org.vaccineimpact.api.db.Keys.MODEL_VERSION_PKEY, ModelRunParameterSet.MODEL_RUN_PARAMETER_SET, "model_run_parameter_set__model_run_parameter_set_model_version_fkey", ModelRunParameterSet.MODEL_RUN_PARAMETER_SET.MODEL_VERSION);
+        public static final ForeignKey<ModelRunParameterValueRecord, ModelRunRecord> MODEL_RUN_PARAMETER_VALUE__MODEL_RUN_PARAMETER_VALUE_MODEL_RUN_FKEY = createForeignKey(org.vaccineimpact.api.db.Keys.MODEL_RUN_PKEY, ModelRunParameterValue.MODEL_RUN_PARAMETER_VALUE, "model_run_parameter_value__model_run_parameter_value_model_run_fkey", ModelRunParameterValue.MODEL_RUN_PARAMETER_VALUE.MODEL_RUN);
+        public static final ForeignKey<ModelRunParameterValueRecord, ModelRunParameterRecord> MODEL_RUN_PARAMETER_VALUE__MODEL_RUN_PARAMETER_VALUE_MODEL_RUN_PARAMETER_FKEY = createForeignKey(org.vaccineimpact.api.db.Keys.MODEL_RUN_PARAMETER_PKEY, ModelRunParameterValue.MODEL_RUN_PARAMETER_VALUE, "model_run_parameter_value__model_run_parameter_value_model_run_parameter_fkey", ModelRunParameterValue.MODEL_RUN_PARAMETER_VALUE.MODEL_RUN_PARAMETER);
         public static final ForeignKey<ModelVersionRecord, ModelRecord> MODEL_VERSION__MODEL_VERSION_MODEL_FKEY = createForeignKey(org.vaccineimpact.api.db.Keys.MODEL_PKEY, ModelVersion.MODEL_VERSION, "model_version__model_version_model_fkey", ModelVersion.MODEL_VERSION.MODEL);
         public static final ForeignKey<ModellingGroupRecord, ModellingGroupRecord> MODELLING_GROUP__MODELLING_GROUP_CURRENT_FKEY = createForeignKey(org.vaccineimpact.api.db.Keys.MODELLING_GROUP_PKEY, ModellingGroup.MODELLING_GROUP, "modelling_group__modelling_group_current_fkey", ModellingGroup.MODELLING_GROUP.REPLACED_BY);
         public static final ForeignKey<ResponsibilityRecord, ResponsibilitySetRecord> RESPONSIBILITY__RESPONSIBILITY_RESPONSIBILITY_SET_FKEY = createForeignKey(org.vaccineimpact.api.db.Keys.RESPONSIBILITY_SET_PKEY, Responsibility.RESPONSIBILITY, "responsibility__responsibility_responsibility_set_fkey", Responsibility.RESPONSIBILITY.RESPONSIBILITY_SET);
