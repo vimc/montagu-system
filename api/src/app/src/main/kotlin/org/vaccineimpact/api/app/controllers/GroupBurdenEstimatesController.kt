@@ -58,6 +58,7 @@ open class GroupBurdenEstimatesController(context: ControllerContext) : Abstract
 
     open fun addBurdenEstimates(context: ActionContext, estimateRepository: BurdenEstimateRepository)
             = addBurdenEstimates(context, estimateRepository, RequestBodySource.Simple())
+
     fun createBurdenEstimateSet(context: ActionContext, estimateRepository: BurdenEstimateRepository): String
     {
         // First check if we're allowed to see this touchstone
@@ -129,9 +130,11 @@ open class GroupBurdenEstimatesController(context: ControllerContext) : Abstract
         return objectCreation(context, url)
     }
 
-    private fun getValidResponsibilityPath(context: ActionContext,
-                                           estimateRepository: BurdenEstimateRepository,
-                                           readEstimatesRequired: Boolean = false): ResponsibilityPath
+    private fun getValidResponsibilityPath(
+            context: ActionContext,
+            estimateRepository: BurdenEstimateRepository,
+            readEstimatesRequired: Boolean = false
+    ): ResponsibilityPath
     {
         val path = ResponsibilityPath(context)
         val touchstoneId = path.touchstoneId
@@ -143,8 +146,10 @@ open class GroupBurdenEstimatesController(context: ControllerContext) : Abstract
 
             if (touchstone.status == TouchstoneStatus.OPEN)
             {
-                context.requirePermission(ReifiedPermission("estimates.read-unfinished",
-                        Scope.Specific("modelling-group", path.groupId)))
+                context.requirePermission(ReifiedPermission(
+                        "estimates.read-unfinished",
+                        Scope.Specific("modelling-group", path.groupId)
+                ))
             }
         }
 
