@@ -46,6 +46,23 @@ class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRepository>(
     private val username = "some.user"
     private val timestamp = LocalDateTime.of(2017, Month.JUNE, 13, 12, 30).toInstant(ZoneOffset.UTC)
 
+
+    @Test
+    fun `can add model run parameter set`()
+    {
+        var returnedIds: ReturnedIds? = null
+
+        given { db ->
+            returnedIds = setupDatabase(db)
+        } makeTheseChanges { repo ->
+            repo.addBurdenEstimateSet(groupId, touchstoneId, scenarioId, data, username, timestamp)
+        } andCheckDatabase { db ->
+            val setId = checkBurdenEstimateSetMetadata(db, returnedIds!!)
+            checkBurdenEstimates(db, setId)
+        }
+    }
+
+
     @Test
     fun `can add burden estimate set`()
     {

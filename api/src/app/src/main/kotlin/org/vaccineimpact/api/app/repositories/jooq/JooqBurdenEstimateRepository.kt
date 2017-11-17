@@ -48,8 +48,8 @@ class JooqBurdenEstimateRepository(
                 .fetchSequenceInto()
     }
 
-    override fun addModelRunParameterSet(responsibilitySetId: Int, modelVersionId: Int, description: String,
-                                         uploader: String, timestamp: Instant)
+    override fun addModelRunParameterSet(responsibilitySetId: Int, modelVersionId: Int,
+                                         description: String, uploader: String, timestamp: Instant)
     {
         val uploadInfo = dsl.newRecord(UPLOAD_INFO).apply{
             this.uploadedBy = uploader
@@ -66,7 +66,6 @@ class JooqBurdenEstimateRepository(
         }
 
         newParameterSet.store()
-
     }
 
     override fun addBurdenEstimateSet(groupId: String, touchstoneId: String, scenarioId: String,

@@ -39,13 +39,6 @@ open class GroupBurdenEstimatesController(context: ControllerContext) : Abstract
             "$groupScope/responsibilities.read"
     )
 
-    fun addModelRunParameters(context: ActionContext, estimateRepository: BurdenEstimateRepository)
-    {
-        val data = context.csvData<ModelRun>()
-
-
-    }
-
     fun getBurdenEstimates(context: ActionContext, estimateRepository: BurdenEstimateRepository): List<BurdenEstimateSet>
     {
         val path = getValidResponsibilityPath(context, estimateRepository)
