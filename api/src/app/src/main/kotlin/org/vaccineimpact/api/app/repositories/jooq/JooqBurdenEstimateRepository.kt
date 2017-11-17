@@ -16,6 +16,7 @@ import org.vaccineimpact.api.db.*
 import org.vaccineimpact.api.db.Tables.*
 import org.vaccineimpact.api.models.BurdenEstimate
 import org.vaccineimpact.api.models.BurdenEstimateSet
+import org.vaccineimpact.api.models.ModelRun
 import org.vaccineimpact.api.models.ResponsibilitySetStatus
 import java.beans.ConstructorProperties
 import java.io.ByteArrayInputStream
@@ -70,9 +71,13 @@ class JooqBurdenEstimateRepository(
     }
 
     override fun addModelRunParameterSet(responsibilitySetId: Int, modelVersionId: Int,
-                                         description: String, uploader: String, timestamp: Instant)
+                                         description: String, modelRuns: List<ModelRun>, uploader: String, timestamp: Instant)
     {
-        val uploadInfo = dsl.newRecord(UPLOAD_INFO).apply{
+
+        if (!modelRuns.any())
+            return
+
+        val uploadInfo = dsl.newRecord(UPLOAD_INFO).apply {
             this.uploadedBy = uploader
             this.uploadedOn = Timestamp.from(timestamp)
         }
@@ -87,6 +92,34 @@ class JooqBurdenEstimateRepository(
         }
 
         newParameterSet.store()
+
+        val parameters = modelRuns.first().parameterValues.keys
+        val parameterLookup = parameters.associateBy({ it }, {
+            val record = this.dsl.newRecord(MODEL_RUN_PARAMETER).apply {
+                this.key = it
+                this.modelRunParameterSet = newParameterSet.id
+            }
+            record.store()
+            record.id
+        })
+
+        for (run in modelRuns)
+        {
+            val record = this.dsl.newRecord(MODEL_RUN).apply {
+                this.runId = run.runId
+                this.modelRunParameterSet = newParameterSet.id
+            }
+
+            record.store()
+
+            run.parameterValues.map {
+                this.dsl.newRecord(MODEL_RUN_PARAMETER_VALUE).apply {
+                    this.modelRun = record.internalId
+                    this.modelRunParameter = parameterLookup[it.key]
+                    this.value = it.value
+                }.store()
+            }
+        }
     }
 
     override fun addBurdenEstimateSet(groupId: String, touchstoneId: String, scenarioId: String,

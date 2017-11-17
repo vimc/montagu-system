@@ -20,6 +20,7 @@ import org.vaccineimpact.api.db.direct.*
 import org.vaccineimpact.api.db.fromJoinPath
 import org.vaccineimpact.api.db.toDecimal
 import org.vaccineimpact.api.models.BurdenEstimate
+import org.vaccineimpact.api.models.ModelRun
 import java.math.BigDecimal
 import java.time.Instant
 import java.time.LocalDateTime
@@ -52,12 +53,14 @@ class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRepository>(
     fun `can add model run parameter set`()
     {
         var returnedIds: ReturnedIds? = null
+        val modelRuns = listOf(ModelRun("run1", mapOf("key1" to "value1", "key2" to "value2")),
+                ModelRun("run2", mapOf("key1" to "v1", "key2" to "v2")))
 
         given { db ->
             returnedIds = setupDatabase(db)
         } makeTheseChanges { repo ->
             repo.addModelRunParameterSet(returnedIds!!.responsibilitySetId, returnedIds!!.modelVersion!!,
-                    "a test set", "test.user", timestamp)
+                    "a test set", modelRuns, "test.user", timestamp)
         } andCheckDatabase { db ->
             val info = db.dsl.select()
                     .fromJoinPath(MODEL_RUN_PARAMETER_SET, UPLOAD_INFO)
@@ -69,6 +72,17 @@ class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRepository>(
 
             assertThat(info[UPLOAD_INFO.UPLOADED_BY]).isEqualTo("test.user")
             assertThat(info[UPLOAD_INFO.UPLOADED_ON].toInstant()).isEqualTo(timestamp)
+
+            val runs = db.dsl.selectFrom(MODEL_RUN)
+                    .fetch()
+
+            assertThat(runs.count()).isEqualTo(2)
+
+            val params = db.dsl.selectFrom(MODEL_RUN_PARAMETER)
+            assertThat(params.count()).isEqualTo(2)
+
+            val paramValues = db.dsl.selectFrom(MODEL_RUN_PARAMETER_VALUE)
+            assertThat(paramValues.count()).isEqualTo(4)
         }
     }
 
