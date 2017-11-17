@@ -2,7 +2,7 @@ group 'org.vaccineimpact'
 version '1.0-SNAPSHOT'
 
 buildscript {
-    ext.kotlin_version = '1.1.51'
+    ext.kotlin_version = '1.1.60'
 
     repositories {
         mavenCentral()
@@ -96,16 +96,6 @@ subprojects {
     task copyConfig(type: Copy, dependsOn: ':loadPropertiesTask') {
         from 'src/main/resources'
         include '*'
-        into 'build/classes/main/'
-        expand(rootProject.ext.props)
-        outputs.upToDateWhen { false }
-    }
-    //There are two different places the JVM might look for these, and it depends
-    //on whether we're running in development, or from a proper JAR distribution
-    //which one we need. So let's just do both
-    task copyConfigToResources(type: Copy, dependsOn: ':loadPropertiesTask') {
-        from 'src/main/resources'
-        include '*'
         into 'build/resources/main/'
         expand(rootProject.ext.props)
         outputs.upToDateWhen { false }
@@ -113,11 +103,11 @@ subprojects {
     task copyTestConfig(type: Copy, dependsOn: ':loadPropertiesTask') {
         from 'src/test/resources'
         include '*'
-        into 'build/classes/test/'
+        into 'build/resources/test/'
         expand(rootProject.ext.props)
     }
 
-    processResources.finalizedBy 'copyConfig', 'copyConfigToResources'
+    processResources.finalizedBy 'copyConfig'
     processTestResources.finalizedBy 'copyTestConfig'
 
     task showConfig(dependsOn: 'copyConfig') {
