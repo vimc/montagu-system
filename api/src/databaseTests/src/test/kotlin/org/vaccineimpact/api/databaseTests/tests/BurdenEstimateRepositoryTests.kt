@@ -20,7 +20,6 @@ import org.vaccineimpact.api.db.direct.*
 import org.vaccineimpact.api.db.fromJoinPath
 import org.vaccineimpact.api.db.toDecimal
 import org.vaccineimpact.api.models.BurdenEstimate
-import org.vaccineimpact.api.models.BurdenEstimateSet
 import java.math.BigDecimal
 import java.time.Instant
 import java.time.LocalDateTime
@@ -69,7 +68,7 @@ class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRepository>(
             assertThat(info[MODEL_RUN_PARAMETER_SET.DESCRIPTION]).isEqualTo("a test set")
 
             assertThat(info[UPLOAD_INFO.UPLOADED_BY]).isEqualTo("test.user")
-            assertThat(info[UPLOAD_INFO.UPLOADED_ON]).isEqualTo(timestamp)
+            assertThat(info[UPLOAD_INFO.UPLOADED_ON].toInstant()).isEqualTo(timestamp)
         }
     }
 
