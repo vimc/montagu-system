@@ -34,13 +34,13 @@ data class OneTimeLink(val action: OneTimeAction,
                     OneTimeAction.BURDENS -> controllers.groupBurdenEstimates.addBurdenEstimates(
                             context,
                             repos.burdenEstimates,
-                            RequestBodySource.HTMLMultipart(context)
+                            RequestBodySource.HTMLMultipart()
                     )
                     OneTimeAction.BURDENS_CREATE -> controllers.groupBurdenEstimates.createBurdenEstimateSet(context, repos.burdenEstimates)
                     OneTimeAction.BURDENS_POPULATE -> controllers.groupBurdenEstimates.populateBurdenEstimateSet(
                             context,
                             repos.burdenEstimates,
-                            RequestBodySource.HTMLMultipart(context)
+                            RequestBodySource.HTMLMultipart()
                     )
                     OneTimeAction.COVERAGE -> stream(controllers.modellingGroup.getCoverageData(context, repos.modellingGroup), context)
                     OneTimeAction.DEMOGRAPHY -> stream(controllers.touchstone.getDemographicData(context, repos.touchstone), context)

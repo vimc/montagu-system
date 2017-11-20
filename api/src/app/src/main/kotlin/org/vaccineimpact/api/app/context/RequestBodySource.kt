@@ -1,43 +1,47 @@
 package org.vaccineimpact.api.app.context
 
-import java.io.BufferedReader
+import java.io.IOException
 import javax.servlet.MultipartConfigElement
+import javax.servlet.ServletException
 
-sealed class RequestBodySource(val context: ActionContext)
+class HTMLMultipart(context: ActionContext)
 {
-    // Later, we should not return a string, but a stream or sequence of lines
-    abstract fun getFile(): String
+    val request = context.request
 
-    class Simple(context: ActionContext) : RequestBodySource(context)
+    init
     {
-        override fun getFile(): String
+        if (request.raw().getAttribute("org.eclipse.jetty.multipartConfig") == null)
         {
-            return context.request.body()
+            val multipartConfigElement = MultipartConfigElement(System.getProperty("java.io.tmpdir"))
+            request.raw().setAttribute("org.eclipse.jetty.multipartConfig", multipartConfigElement)
         }
     }
 
-    class HTMLMultipart(context: ActionContext) : RequestBodySource(context)
+    fun getPart(partName: String): String
     {
-        val request = context.request
-
-        init
-        {
-            if (request.raw().getAttribute("org.eclipse.jetty.multipartConfig") == null)
-            {
-                val multipartConfigElement = MultipartConfigElement(System.getProperty("java.io.tmpdir"))
-                request.raw().setAttribute("org.eclipse.jetty.multipartConfig", multipartConfigElement)
-            }
+        // HttpServletRequest.getPart() throws ServletException if this request is not of type
+        // multipart/form-data
+        return request.raw().getPart(partName).inputStream.bufferedReader().use {
+            it.readText()
         }
+    }
+}
 
-        override fun getFile(): String
-                = getPart("file")
+sealed class RequestBodySource
+{
+    // Later, we should not return a string, but a stream or sequence of lines
+    abstract fun getFile(context: ActionContext): String
 
-        fun getPart(partName: String): String
-        {
-            return request.raw().getPart(partName).inputStream.bufferedReader().use {
-                it.readText()
-            }
-        }
+    class Simple : RequestBodySource()
+    {
+        override fun getFile(context: ActionContext): String
+                = context.request.body()
+    }
+
+    class HTMLMultipart : RequestBodySource()
+    {
+        override fun getFile(context: ActionContext): String
+                = context.getPart("file")
     }
 }
 

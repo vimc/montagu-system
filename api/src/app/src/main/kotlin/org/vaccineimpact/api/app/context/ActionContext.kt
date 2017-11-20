@@ -23,6 +23,7 @@ interface ActionContext
     fun queryString(): String?
     fun params(): Map<String, String>
     fun params(key: String): String
+    fun getPart(name: String): String
     fun <T: Any> postData(klass: Class<T>): T
     fun <T: Any> csvData(klass: KClass<T>, from: RequestBodySource): List<T>
 
@@ -37,5 +38,5 @@ interface ActionContext
 }
 
 inline fun <reified T: Any> ActionContext.postData() = this.postData(T::class.java)
-inline fun <reified T: Any> ActionContext.csvData(from: RequestBodySource = RequestBodySource.Simple(this))
+inline fun <reified T: Any> ActionContext.csvData(from: RequestBodySource = RequestBodySource.Simple())
         = this.csvData(T::class, from)

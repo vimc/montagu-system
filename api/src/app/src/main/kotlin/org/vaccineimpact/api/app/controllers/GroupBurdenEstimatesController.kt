@@ -56,11 +56,10 @@ open class GroupBurdenEstimatesController(context: ControllerContext) : Abstract
     fun addModelRunParameters(context: ActionContext, estimateRepository: BurdenEstimateRepository)
     {
         val path = getValidResponsibilityPath(context, estimateRepository)
-        val multiPartData = RequestBodySource.HTMLMultipart(context)
-        val description = multiPartData.getPart("description")
+        val description = context.getPart("description")
 
         estimateRepository.addModelRunParameterSet(path.groupId, path.touchstoneId, path.scenarioId,
-                description, context.csvData<ModelRun>(multiPartData),
+                description, context.csvData<ModelRun>(RequestBodySource.HTMLMultipart()),
                 context.username!!, Instant.now())
     }
 
@@ -71,7 +70,7 @@ open class GroupBurdenEstimatesController(context: ControllerContext) : Abstract
     }
 
     open fun addBurdenEstimates(context: ActionContext, estimateRepository: BurdenEstimateRepository)
-            = addBurdenEstimates(context, estimateRepository, RequestBodySource.Simple(context))
+            = addBurdenEstimates(context, estimateRepository, RequestBodySource.Simple())
 
     fun createBurdenEstimateSet(context: ActionContext, estimateRepository: BurdenEstimateRepository): String
     {
@@ -104,7 +103,7 @@ open class GroupBurdenEstimatesController(context: ControllerContext) : Abstract
     fun populateBurdenEstimateSet(
             context: ActionContext,
             estimateRepository: BurdenEstimateRepository
-    ): String = populateBurdenEstimateSet(context, estimateRepository, RequestBodySource.Simple(context))
+    ): String = populateBurdenEstimateSet(context, estimateRepository, RequestBodySource.Simple())
 
     fun populateBurdenEstimateSet(
             context: ActionContext,

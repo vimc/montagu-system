@@ -30,27 +30,13 @@ class UploadBurdenEstimateTests : ControllerTests<GroupBurdenEstimatesController
         val params = mapOf("param1" to "value1", "param2" to "value2")
         val modelRuns = listOf<ModelRun>(ModelRun("run1", params))
 
-        val inputStream = "some description".byteInputStream()
-
-        val part = mock<Part> {
-            on { getInputStream() } doReturn inputStream
-        }
-
-        val servletRequest = mock<HttpServletRequest> {
-            on { getPart("description") } doReturn part
-        }
-
-        val mockRequest = mock<Request> {
-            on { raw() } doReturn servletRequest
-        }
-
         val mockContext = mock<ActionContext> {
             on { csvData<ModelRun>(any(), any()) } doReturn modelRuns
             on { username } doReturn "user.name"
             on { params(":group-id") } doReturn "group-1"
             on { params(":touchstone-id") } doReturn "touchstone-1"
             on { params(":scenario-id") } doReturn "scenario-1"
-            on { request } doReturn mockRequest
+            on { getPart("description") } doReturn "some description"
         }
 
         val controller = makeController(mockControllerContext())
@@ -59,6 +45,7 @@ class UploadBurdenEstimateTests : ControllerTests<GroupBurdenEstimatesController
             on { touchstoneRepository } doReturn touchstoneRepo
             on { it.addModelRunParameterSet(any(), any(), any(), any(), any(), any(), any()) }.then {}
         }
+
         controller.addModelRunParameters(mockContext, repo)
         verify(repo).addModelRunParameterSet(eq("group-1"), eq("touchstone-1"), eq("scenario-1"),
                 eq("some description"),

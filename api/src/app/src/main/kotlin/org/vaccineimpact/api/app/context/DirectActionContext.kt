@@ -20,13 +20,16 @@ import java.io.OutputStream
 import java.util.zip.GZIPOutputStream
 import kotlin.reflect.KClass
 
-open class DirectActionContext(private val context: SparkWebContext,
+class DirectActionContext(private val context: SparkWebContext,
                                private val serializer: Serializer = MontaguSerializer.instance): ActionContext
 {
-    override val request
+    override val request: Request
         get() = context.sparkRequest
     private val response
         get() = context.sparkResponse
+
+    private val multipartData
+            get() = HTMLMultipart(this)
 
     constructor(request: Request, response: Response)
             : this(SparkWebContext(request, response))
@@ -48,11 +51,14 @@ open class DirectActionContext(private val context: SparkWebContext,
         }
     }
 
+    override fun getPart(name: String): String
+            = multipartData.getPart(name)
+
     override fun <T : Any> csvData(klass: KClass<T>, from: RequestBodySource): List<T>
     {
         return try
         {
-            DataTableDeserializer.deserialize(from.getFile(), klass, serializer).toList()
+            DataTableDeserializer.deserialize(from.getFile(this), klass, serializer).toList()
         }
         catch(e: ValidationException)
         {
