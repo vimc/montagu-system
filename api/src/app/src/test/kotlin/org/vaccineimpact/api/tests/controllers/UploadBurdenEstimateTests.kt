@@ -30,7 +30,7 @@ class UploadBurdenEstimateTests : ControllerTests<GroupBurdenEstimatesController
                         emptyList()
                 ),
                 BurdenEstimateSet(2, Instant.MAX, "TheFuture",
-                        BurdenEstimateSetType(BurdenEstimateSetTypeCode.CentralSingleRun, null),
+                        BurdenEstimateSetType(BurdenEstimateSetTypeCode.CENTRAL_SINGLE_RUN, null),
                         listOf("Doesn't exist yet")
                 )
         )
