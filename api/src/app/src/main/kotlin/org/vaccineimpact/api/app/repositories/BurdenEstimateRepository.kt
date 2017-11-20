@@ -2,6 +2,7 @@ package org.vaccineimpact.api.app.repositories
 
 import org.vaccineimpact.api.models.BurdenEstimate
 import org.vaccineimpact.api.models.BurdenEstimateSet
+import org.vaccineimpact.api.models.ModelRun
 import java.time.Instant
 
 interface BurdenEstimateRepository : Repository
@@ -19,6 +20,9 @@ interface BurdenEstimateRepository : Repository
                              estimates: List<BurdenEstimate>, uploader: String, timestamp: Instant): Int
 
     fun populateBurdenEstimateSet(setId: Int, groupId: String, touchstoneId: String, scenarioId: String,
-                             estimates: List<BurdenEstimate>)
+                                  estimates: List<BurdenEstimate>)
 
+    fun addModelRunParameterSet(responsibilitySetId: Int, modelVersionId: Int, description: String,
+                                modelRuns: List<ModelRun>,
+                                uploader: String, timestamp: Instant)
 }
