@@ -1,8 +1,7 @@
 package org.vaccineimpact.api.tests.controllers
 
 import com.nhaarman.mockito_kotlin.*
-import org.assertj.core.api.Assertions.assertThat
-import org.assertj.core.api.Assertions.assertThatThrownBy
+import org.assertj.core.api.Assertions.*
 import org.junit.Test
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.controllers.ControllerContext
@@ -14,7 +13,11 @@ import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.db.toDecimal
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.serialization.DataTableDeserializer
+import spark.Request
+import java.io.InputStream
 import java.time.Instant
+import javax.servlet.http.HttpServletRequest
+import javax.servlet.http.Part
 
 class UploadBurdenEstimateTests : ControllerTests<GroupBurdenEstimatesController>()
 {
@@ -27,16 +30,25 @@ class UploadBurdenEstimateTests : ControllerTests<GroupBurdenEstimatesController
         val params = mapOf("param1" to "value1", "param2" to "value2")
         val modelRuns = listOf<ModelRun>(ModelRun("run1", params))
 
+        val mockRequest = mock<Request>{
+            on { raw() } doReturn mock<HttpServletRequest>{
+                on { getPart("description") } doReturn mock<Part> {
+                    on { inputStream } doReturn mock<InputStream>()
+                }
+            }
+        }
+
         val mockContext = mock<ActionContext> {
             on { csvData<ModelRun>(any(), any()) } doReturn modelRuns
             on { username } doReturn "user.name"
             on { params(":group-id") } doReturn "group-1"
             on { params(":touchstone-id") } doReturn "touchstone-1"
             on { params(":scenario-id") } doReturn "scenario-1"
+            on { request } doReturn mockRequest
         }
 
         val controller = makeController(mockControllerContext())
-        val repo = mock<BurdenEstimateRepository>()
+        val repo = mockRepository()
         controller.addModelRunParameters(mockContext, repo)
         verify(repo).addModelRunParameterSet("group-1", "touchstone-1", "scenario-1", "some description",
                 modelRuns, "user.name", any())
