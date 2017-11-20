@@ -1,4 +1,4 @@
-package org.vaccineimpact.api.databaseTests.tests.burdenEstimateRepository
+package org.vaccineimpact.api.databaseTests.tests
 
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
@@ -8,13 +8,26 @@ import org.vaccineimpact.api.app.errors.DatabaseContentsError
 import org.vaccineimpact.api.app.errors.InconsistentDataError
 import org.vaccineimpact.api.app.errors.OperationNotAllowedError
 import org.vaccineimpact.api.app.errors.UnknownObjectError
+import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
+import org.vaccineimpact.api.app.repositories.jooq.JooqBurdenEstimateRepository
+import org.vaccineimpact.api.app.repositories.jooq.JooqModellingGroupRepository
+import org.vaccineimpact.api.app.repositories.jooq.JooqScenarioRepository
+import org.vaccineimpact.api.app.repositories.jooq.JooqTouchstoneRepository
+import org.vaccineimpact.api.databaseTests.RepositoryTests
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.Tables.*
 import org.vaccineimpact.api.db.direct.*
 import org.vaccineimpact.api.db.fromJoinPath
 import org.vaccineimpact.api.db.toDecimal
 import org.vaccineimpact.api.models.BurdenEstimate
+import org.vaccineimpact.api.models.BurdenEstimateSet
+import org.vaccineimpact.api.models.BurdenEstimateSetType
+import org.vaccineimpact.api.models.BurdenEstimateSetTypeCode
 import java.math.BigDecimal
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.Month
+import java.time.ZoneOffset
 
 class UploadBurdenEstimateTests : BurdenEstimateRepositoryTests()
 {

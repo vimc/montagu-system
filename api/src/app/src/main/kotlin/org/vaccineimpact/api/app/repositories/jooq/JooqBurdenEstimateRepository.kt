@@ -5,19 +5,15 @@ import org.jooq.JoinType
 import org.jooq.Record
 import org.postgresql.copy.CopyManager
 import org.postgresql.core.BaseConnection
-import org.vaccineimpact.api.app.errors.DatabaseContentsError
-import org.vaccineimpact.api.app.errors.InconsistentDataError
-import org.vaccineimpact.api.app.errors.OperationNotAllowedError
-import org.vaccineimpact.api.app.errors.UnknownObjectError
+import org.vaccineimpact.api.app.errors.*
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
 import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.ScenarioRepository
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
+import org.vaccineimpact.api.app.repositories.jooq.mapping.BurdenMappingHelper
 import org.vaccineimpact.api.db.*
 import org.vaccineimpact.api.db.Tables.*
-import org.vaccineimpact.api.models.BurdenEstimate
-import org.vaccineimpact.api.models.BurdenEstimateSet
-import org.vaccineimpact.api.models.ResponsibilitySetStatus
+import org.vaccineimpact.api.models.*
 import java.beans.ConstructorProperties
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
@@ -33,22 +29,26 @@ class JooqBurdenEstimateRepository(
         dsl: DSLContext,
         private val scenarioRepository: ScenarioRepository,
         override val touchstoneRepository: TouchstoneRepository,
-        private val modellingGroupRepository: ModellingGroupRepository
+        private val modellingGroupRepository: ModellingGroupRepository,
+        private val mapper: BurdenMappingHelper = BurdenMappingHelper()
 ) : JooqRepository(dsl), BurdenEstimateRepository
 {
     override fun getBurdenEstimateSets(groupId: String, touchstoneId: String, scenarioId: String): List<BurdenEstimateSet>
     {
         // Dereference modelling group IDs
         val modellingGroup = modellingGroupRepository.getModellingGroup(groupId)
+        val table = BURDEN_ESTIMATE_SET
         val records = dsl.select(
-                BURDEN_ESTIMATE_SET.ID,
-                BURDEN_ESTIMATE_SET.UPLOADED_ON,
-                BURDEN_ESTIMATE_SET.UPLOADED_BY,
+                table.ID,
+                table.UPLOADED_ON,
+                table.UPLOADED_BY,
+                table.SET_TYPE,
+                table.SET_TYPE_DETAILS,
                 BURDEN_ESTIMATE_SET_PROBLEM.PROBLEM
         )
-                .from(BURDEN_ESTIMATE_SET)
-                .joinPath(BURDEN_ESTIMATE_SET, BURDEN_ESTIMATE_SET_PROBLEM, joinType = JoinType.LEFT_OUTER_JOIN)
-                .join(RESPONSIBILITY).on(RESPONSIBILITY.ID.eq(BURDEN_ESTIMATE_SET.RESPONSIBILITY))
+                .from(table)
+                .joinPath(table, BURDEN_ESTIMATE_SET_PROBLEM, joinType = JoinType.LEFT_OUTER_JOIN)
+                .join(RESPONSIBILITY).on(RESPONSIBILITY.ID.eq(table.RESPONSIBILITY))
                 .joinPath(RESPONSIBILITY, RESPONSIBILITY_SET, MODELLING_GROUP)
                 .joinPath(RESPONSIBILITY, SCENARIO, SCENARIO_DESCRIPTION)
                 .where(SCENARIO_DESCRIPTION.ID.eq(scenarioId))
@@ -57,14 +57,15 @@ class JooqBurdenEstimateRepository(
                 .fetch()
 
         return records
-                .groupBy { it[BURDEN_ESTIMATE_SET.ID] }
+                .groupBy { it[table.ID] }
                 .map { group ->
                     val common = group.value.first()
                     val problems = group.value.mapNotNull { it[BURDEN_ESTIMATE_SET_PROBLEM.PROBLEM] }
                     BurdenEstimateSet(
-                            common[BURDEN_ESTIMATE_SET.ID],
-                            common[BURDEN_ESTIMATE_SET.UPLOADED_ON].toInstant(),
-                            common[BURDEN_ESTIMATE_SET.UPLOADED_BY],
+                            common[table.ID],
+                            common[table.UPLOADED_ON].toInstant(),
+                            common[table.UPLOADED_BY],
+                            mapper.mapBurdenEstimateSetType(common),
                             problems
                     )
                 }

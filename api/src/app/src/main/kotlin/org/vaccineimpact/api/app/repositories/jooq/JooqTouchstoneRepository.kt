@@ -9,6 +9,7 @@ import org.vaccineimpact.api.app.filters.whereMatchesFilter
 import org.vaccineimpact.api.app.repositories.ScenarioRepository
 import org.vaccineimpact.api.app.repositories.SimpleDataSet
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
+import org.vaccineimpact.api.app.repositories.jooq.mapping.MappingHelper
 import org.vaccineimpact.api.serialization.SplitData
 import org.vaccineimpact.api.db.Tables.*
 import org.vaccineimpact.api.db.fetchSequence
@@ -21,7 +22,11 @@ import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.serialization.DataTable
 import java.math.BigDecimal
 
-class JooqTouchstoneRepository(dsl: DSLContext, private val scenarioRepository: ScenarioRepository)
+class JooqTouchstoneRepository(
+        dsl: DSLContext,
+        private val scenarioRepository: ScenarioRepository,
+        private val mapper: MappingHelper = MappingHelper()
+)
     : JooqRepository(dsl), TouchstoneRepository
 {
     override fun getDemographicData(statisticTypeCode: String,
@@ -278,7 +283,7 @@ class JooqTouchstoneRepository(dsl: DSLContext, private val scenarioRepository: 
             record.touchstoneName,
             record.version,
             record.description,
-            mapEnum(record.status)
+            mapper.mapEnum(record.status)
     )
 
     inline fun <reified T : Any?> Record.getField(name: Name): T = this.get(name, T::class.java)
@@ -294,16 +299,16 @@ class JooqTouchstoneRepository(dsl: DSLContext, private val scenarioRepository: 
             record[TOUCHSTONE.ID],
             record[COVERAGE_SET.NAME],
             record[COVERAGE_SET.VACCINE],
-            mapEnum(record[COVERAGE_SET.GAVI_SUPPORT_LEVEL]),
-            mapEnum(record[COVERAGE_SET.ACTIVITY_TYPE])
+            mapper.mapEnum(record[COVERAGE_SET.GAVI_SUPPORT_LEVEL]),
+            mapper.mapEnum(record[COVERAGE_SET.ACTIVITY_TYPE])
     )
 
     private fun mapCoverageRow(record: Record, scenarioDescriptionId: String) = LongCoverageRow(
             scenarioDescriptionId,
             record[COVERAGE_SET.NAME],
             record[COVERAGE_SET.VACCINE],
-            mapEnum(record[COVERAGE_SET.GAVI_SUPPORT_LEVEL]),
-            mapEnum(record[COVERAGE_SET.ACTIVITY_TYPE]),
+            mapper.mapEnum(record[COVERAGE_SET.GAVI_SUPPORT_LEVEL]),
+            mapper.mapEnum(record[COVERAGE_SET.ACTIVITY_TYPE]),
             record[COVERAGE.COUNTRY],
             record[COUNTRY.NAME],
             record[COVERAGE.YEAR],
