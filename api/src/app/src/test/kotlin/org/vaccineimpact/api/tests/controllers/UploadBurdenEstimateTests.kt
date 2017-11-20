@@ -1,7 +1,8 @@
 package org.vaccineimpact.api.tests.controllers
 
 import com.nhaarman.mockito_kotlin.*
-import org.assertj.core.api.Assertions.*
+import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.controllers.ControllerContext
@@ -13,10 +14,7 @@ import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.db.toDecimal
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.serialization.DataTableDeserializer
-import org.vaccineimpact.api.db.toDecimal
-import org.vaccineimpact.api.models.*
 import spark.Request
-import java.io.InputStream
 import java.time.Instant
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.Part
@@ -32,12 +30,18 @@ class UploadBurdenEstimateTests : ControllerTests<GroupBurdenEstimatesController
         val params = mapOf("param1" to "value1", "param2" to "value2")
         val modelRuns = listOf<ModelRun>(ModelRun("run1", params))
 
-        val mockRequest = mock<Request>{
-            on { raw() } doReturn mock<HttpServletRequest>{
-                on { getPart("description") } doReturn mock<Part> {
-                    on { inputStream } doReturn mock<InputStream>()
-                }
-            }
+        val inputStream = "some description".byteInputStream()
+
+        val part = mock<Part> {
+            on { getInputStream() } doReturn inputStream
+        }
+
+        val servletRequest = mock<HttpServletRequest> {
+            on { getPart("description") } doReturn part
+        }
+
+        val mockRequest = mock<Request> {
+            on { raw() } doReturn servletRequest
         }
 
         val mockContext = mock<ActionContext> {
@@ -50,10 +54,15 @@ class UploadBurdenEstimateTests : ControllerTests<GroupBurdenEstimatesController
         }
 
         val controller = makeController(mockControllerContext())
-        val repo = mockRepository()
+        val touchstoneRepo = mockTouchstoneRepository()
+        val repo = mock<BurdenEstimateRepository> {
+            on { touchstoneRepository } doReturn touchstoneRepo
+            on { it.addModelRunParameterSet(any(), any(), any(), any(), any(), any(), any()) }.then {}
+        }
         controller.addModelRunParameters(mockContext, repo)
-        verify(repo).addModelRunParameterSet("group-1", "touchstone-1", "scenario-1", "some description",
-                modelRuns, "user.name", any())
+        verify(repo).addModelRunParameterSet(eq("group-1"), eq("touchstone-1"), eq("scenario-1"),
+                eq("some description"),
+                eq(modelRuns), eq("user.name"), any())
     }
 
     @Test
