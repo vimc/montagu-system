@@ -127,7 +127,79 @@ class BurdenEstimateTests : DatabaseTest()
     @Test
     fun `can upload burden estimate via onetime link and redirect`()
     {
-        validate("$url/get_onetime_link/?redirectUrl=http://localhost") against "Token" given { db ->
+        validateOneTimeLinkWithRedirect(url)    
+    }
+
+    @Test
+    fun `can populate burden estimate via onetime link`()
+    {
+        val requestHelper = RequestHelper()
+        val token = TestUserHelper.setupTestUserAndGetToken(requiredPermissions.plus(PermissionSet("*/can-login")))
+
+        var setId = 0
+        JooqContext().use {
+            setId = setUpWithBurdenEstimateSet(it)
+        }
+
+        val onetimeTokenResult = requestHelper.get("$setUrl/$setId/get_onetime_link/", token)
+        val onetimeToken = onetimeTokenResult.montaguData<String>()!!
+
+        val oneTimeURL = "/onetime_link/$onetimeToken/"
+
+        val response = requestHelper.postFile(oneTimeURL, csvData)
+
+        Assertions.assertThat(response.statusCode).isEqualTo(200)
+    }
+
+    @Test
+    fun `can populate burden estimate via onetime link and redirect`()
+    {
+        val requestHelper = RequestHelper()
+        val token = TestUserHelper.setupTestUserAndGetToken(requiredPermissions.plus(PermissionSet("*/can-login")))
+
+        var setId = 0
+        JooqContext().use {
+            setId = setUpWithBurdenEstimateSet(it)
+        }
+
+        val url = "$setUrl/$setId/get_onetime_link/?redirectUrl=http://localhost/"
+        val onetimeTokenResult = requestHelper.get(url, token)
+        val onetimeToken = onetimeTokenResult.montaguData<String>()!!
+
+        val oneTimeURL = "/onetime_link/$onetimeToken/"
+        val response = requestHelper.postFile(oneTimeURL, csvData)
+        val resultAsString = response.getResultFromRedirect(checkRedirectTarget = "http://localhost")
+        JSONValidator().validateSuccess(resultAsString)
+    }
+
+    @Test
+    fun `can create burden estimate via onetime link`()
+    {
+        validate("$setUrl/get_onetime_link/") against "Token" given { db ->
+            setUp(db)
+        } requiringPermissions {
+            requiredPermissions
+        } andCheckString { token ->
+            val oneTimeURL = "/onetime_link/$token/"
+            val requestHelper = RequestHelper()
+
+            val response = requestHelper.postFile(oneTimeURL, csvData)
+            assert(response.statusCode == 201)
+
+            val badResponse = requestHelper.get(oneTimeURL)
+            JSONValidator().validateError(badResponse.text, expectedErrorCode = "invalid-token-used")
+        }
+    }
+
+    @Test
+    fun `can create burden estimate via onetime link and redirect`()
+    {
+        validateOneTimeLinkWithRedirect(setUrl)
+    }
+
+    private fun validateOneTimeLinkWithRedirect(url: String){
+
+        validate("$url/get_onetime_link/?redirectUrl=http://localhost/") against "Token" given { db ->
             setUp(db)
         } requiringPermissions {
             requiredPermissions

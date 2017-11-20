@@ -460,16 +460,19 @@ fun JooqContext.fetchCountries(count: Int): List<String>
 fun JooqContext.generateCoverageData(
         coverageSetId: Int,
         countryCount: Int = 5,
-        yearRange: IntProgression = 1950..2000 step 5,
-        ageRange: IntProgression = 0..80 step 5)
+        yearRange: IntProgression = 1960..2000 step 5,
+        ageRange: IntProgression = 0..80 step 5,
+        testYear: Int = 1955,
+        target: BigDecimal = BigDecimal(100.12),
+        coverage: BigDecimal = BigDecimal(200.13))
 {
     val records = mutableListOf<CoverageRecord>()
     val countries = this.fetchCountries(countryCount)
     for (country in countries)
     {
-        for (year in yearRange)
+        for (age in ageRange)
         {
-            for (age in ageRange)
+            for (year in yearRange)
             {
                 records.add(this.newCoverageRowRecord(
                         coverageSetId,
@@ -482,6 +485,17 @@ fun JooqContext.generateCoverageData(
                         coverage = random.nextDecimal(0, 100, numberOfDecimalPlaces = 2)
                 ))
             }
+
+            records.add(this.newCoverageRowRecord(
+                    coverageSetId,
+                    country,
+                    testYear,
+                    ageFrom = BigDecimal(age),
+                    ageTo = BigDecimal(age + ageRange.step),
+                    ageRangeVerbatim = null,
+                    target = target,
+                    coverage = coverage
+            ))
         }
     }
     this.dsl.batchStore(records).execute()
