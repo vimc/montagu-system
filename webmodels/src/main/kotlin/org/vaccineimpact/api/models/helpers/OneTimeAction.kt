@@ -7,5 +7,7 @@ enum class OneTimeAction
     SET_PASSWORD,
     BURDENS,
     BURDENS_CREATE,
-    BURDENS_POPULATE
+    BURDENS_POPULATE,
+
+    MODEl_RUN_PARAMETERS
 }
