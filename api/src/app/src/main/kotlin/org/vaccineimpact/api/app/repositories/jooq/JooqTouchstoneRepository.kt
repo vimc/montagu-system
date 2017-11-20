@@ -9,6 +9,7 @@ import org.vaccineimpact.api.app.filters.whereMatchesFilter
 import org.vaccineimpact.api.app.repositories.ScenarioRepository
 import org.vaccineimpact.api.app.repositories.SimpleDataSet
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
+import org.vaccineimpact.api.app.repositories.jooq.mapping.MappingHelper
 import org.vaccineimpact.api.serialization.SplitData
 import org.vaccineimpact.api.db.Tables.*
 import org.vaccineimpact.api.db.fetchSequence
@@ -21,7 +22,11 @@ import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.serialization.DataTable
 import java.math.BigDecimal
 
-class JooqTouchstoneRepository(dsl: DSLContext, private val scenarioRepository: ScenarioRepository)
+class JooqTouchstoneRepository(
+        dsl: DSLContext,
+        private val scenarioRepository: ScenarioRepository,
+        private val mapper: MappingHelper = MappingHelper()
+)
     : JooqRepository(dsl), TouchstoneRepository
 {
     override fun getDemographicData(statisticTypeCode: String,

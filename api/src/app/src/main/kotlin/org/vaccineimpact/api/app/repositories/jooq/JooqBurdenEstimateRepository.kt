@@ -10,6 +10,7 @@ import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
 import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.ScenarioRepository
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
+import org.vaccineimpact.api.app.repositories.jooq.mapping.BurdenMappingHelper
 import org.vaccineimpact.api.db.*
 import org.vaccineimpact.api.db.Tables.*
 import org.vaccineimpact.api.models.*
@@ -28,7 +29,8 @@ class JooqBurdenEstimateRepository(
         dsl: DSLContext,
         private val scenarioRepository: ScenarioRepository,
         override val touchstoneRepository: TouchstoneRepository,
-        private val modellingGroupRepository: ModellingGroupRepository
+        private val modellingGroupRepository: ModellingGroupRepository,
+        private val mapper: BurdenMappingHelper = BurdenMappingHelper()
 ) : JooqRepository(dsl), BurdenEstimateRepository
 {
     override fun getBurdenEstimateSets(groupId: String, touchstoneId: String, scenarioId: String): List<BurdenEstimateSet>

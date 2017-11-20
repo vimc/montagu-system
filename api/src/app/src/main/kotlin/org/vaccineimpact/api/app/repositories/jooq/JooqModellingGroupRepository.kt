@@ -7,6 +7,7 @@ import org.vaccineimpact.api.app.filters.whereMatchesFilter
 import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.ScenarioRepository
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
+import org.vaccineimpact.api.app.repositories.jooq.mapping.BurdenMappingHelper
 import org.vaccineimpact.api.db.Tables.*
 import org.vaccineimpact.api.db.fetchInto
 import org.vaccineimpact.api.db.fieldsAsList
@@ -19,7 +20,8 @@ import org.vaccineimpact.api.serialization.SplitData
 class JooqModellingGroupRepository(
         dsl: DSLContext,
         private val touchstoneRepository: TouchstoneRepository,
-        private val scenarioRepository: ScenarioRepository
+        private val scenarioRepository: ScenarioRepository,
+        private val mapper: BurdenMappingHelper = BurdenMappingHelper()
 ) : JooqRepository(dsl), ModellingGroupRepository
 {
 
