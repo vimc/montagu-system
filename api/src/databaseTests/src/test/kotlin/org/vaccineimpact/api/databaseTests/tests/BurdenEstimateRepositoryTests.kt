@@ -59,7 +59,7 @@ class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRepository>(
         given { db ->
             returnedIds = setupDatabase(db)
         } makeTheseChanges { repo ->
-            repo.addModelRunParameterSet(returnedIds!!.responsibilitySetId, returnedIds!!.modelVersion!!,
+            repo.addModelRunParameterSet(groupId, touchstoneId, scenarioId,
                     "a test set", modelRuns, "test.user", timestamp)
         } andCheckDatabase { db ->
             val info = db.dsl.select()

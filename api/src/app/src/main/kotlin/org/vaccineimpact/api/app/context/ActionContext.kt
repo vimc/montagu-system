@@ -37,5 +37,5 @@ interface ActionContext
 }
 
 inline fun <reified T: Any> ActionContext.postData() = this.postData(T::class.java)
-inline fun <reified T: Any> ActionContext.csvData(from: RequestBodySource = RequestBodySource.Simple())
+inline fun <reified T: Any> ActionContext.csvData(from: RequestBodySource = RequestBodySource.Simple(this))
         = this.csvData(T::class, from)

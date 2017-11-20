@@ -34,7 +34,7 @@ data class OneTimeLink(val action: OneTimeAction,
                     OneTimeAction.BURDENS -> controllers.groupBurdenEstimates.addBurdenEstimates(
                             context,
                             repos.burdenEstimates,
-                            RequestBodySource.HTMLMultipartFile()
+                            RequestBodySource.HTMLMultipart(context)
                     )
                     OneTimeAction.BURDENS_CREATE -> controllers.groupBurdenEstimates.createBurdenEstimateSet(context, repos.burdenEstimates)
                     OneTimeAction.BURDENS_POPULATE -> controllers.groupBurdenEstimates.populateBurdenEstimateSet(context, repos.burdenEstimates)

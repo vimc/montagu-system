@@ -2,31 +2,38 @@ package org.vaccineimpact.api.app.context
 
 import javax.servlet.MultipartConfigElement
 
-sealed class RequestBodySource
+sealed class RequestBodySource(val context: ActionContext)
 {
     // Later, we should not return a string, but a stream or sequence of lines
-    abstract fun getBody(context: ActionContext): String
+    abstract fun getFile(): String
 
-    class Simple : RequestBodySource()
+    class Simple(context: ActionContext) : RequestBodySource(context)
     {
-        override fun getBody(context: ActionContext): String
+        override fun getFile(): String
         {
             return context.request.body()
         }
     }
 
-    class HTMLMultipartFile : RequestBodySource()
+    class HTMLMultipart(context: ActionContext) : RequestBodySource(context)
     {
-        override fun getBody(context: ActionContext): String
+        val request = context.request
+
+        init
         {
-            val request = context.request
             if (request.raw().getAttribute("org.eclipse.jetty.multipartConfig") == null)
             {
                 val multipartConfigElement = MultipartConfigElement(System.getProperty("java.io.tmpdir"))
                 request.raw().setAttribute("org.eclipse.jetty.multipartConfig", multipartConfigElement)
             }
+        }
 
-            return request.raw().getPart("file").inputStream.bufferedReader().use {
+        override fun getFile(): String
+                = getPart("file")
+
+        fun getPart(partName: String): String
+        {
+            return request.raw().getPart(partName).inputStream.bufferedReader().use {
                 it.readText()
             }
         }

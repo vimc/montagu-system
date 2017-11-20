@@ -52,7 +52,7 @@ open class DirectActionContext(private val context: SparkWebContext,
     {
         return try
         {
-            DataTableDeserializer.deserialize(from.getBody(this), klass, serializer).toList()
+            DataTableDeserializer.deserialize(from.getFile(), klass, serializer).toList()
         }
         catch(e: ValidationException)
         {

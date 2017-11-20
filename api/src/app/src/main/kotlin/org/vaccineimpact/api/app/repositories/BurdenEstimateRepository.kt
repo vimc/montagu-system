@@ -22,7 +22,7 @@ interface BurdenEstimateRepository : Repository
     fun populateBurdenEstimateSet(setId: Int, groupId: String, touchstoneId: String, scenarioId: String,
                                   estimates: List<BurdenEstimate>)
 
-    fun addModelRunParameterSet(responsibilitySetId: Int, modelVersionId: Int, description: String,
+    fun addModelRunParameterSet(groupId: String, touchstoneId: String, scenarioId: String, description: String,
                                 modelRuns: List<ModelRun>,
                                 uploader: String, timestamp: Instant)
 }
