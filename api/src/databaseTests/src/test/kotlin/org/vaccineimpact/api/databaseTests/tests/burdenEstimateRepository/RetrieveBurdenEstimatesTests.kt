@@ -55,9 +55,9 @@ class RetrieveBurdenEstimatesTests : BurdenEstimateRepositoryTests()
         var setD = 0
         given { db ->
             val ids = setupDatabase(db)
-            setA = addBurdenEstimateSet(db, ids, setType = "central_unknown", setTypeDetails = "unknown")
-            setB = addBurdenEstimateSet(db, ids, setType = "central_single_run", setTypeDetails = null)
-            setC = addBurdenEstimateSet(db, ids, setType = "central_averaged", setTypeDetails = "mean")
+            setA = addBurdenEstimateSet(db, ids, setType = "central-unknown", setTypeDetails = "unknown")
+            setB = addBurdenEstimateSet(db, ids, setType = "central-single-run", setTypeDetails = null)
+            setC = addBurdenEstimateSet(db, ids, setType = "central-averaged", setTypeDetails = "mean")
             setD = addBurdenEstimateSet(db, ids, setType = "stochastic", setTypeDetails = null)
         } check { repo ->
             val sets = repo.getBurdenEstimateSets(groupId, touchstoneId, scenarioId)
@@ -76,7 +76,7 @@ class RetrieveBurdenEstimatesTests : BurdenEstimateRepositoryTests()
 
     private fun addBurdenEstimateSet(
             db: JooqContext, ids: ReturnedIds, username: String? = null,
-            setType: String = "central_single_run", setTypeDetails: String? = null
+            setType: String = "central-single-run", setTypeDetails: String? = null
     ): Int
     {
         return db.addBurdenEstimateSet(
