@@ -13,6 +13,8 @@ import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.db.toDecimal
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.serialization.DataTableDeserializer
+import org.vaccineimpact.api.db.toDecimal
+import org.vaccineimpact.api.models.*
 import spark.Request
 import java.io.InputStream
 import java.time.Instant
@@ -58,8 +60,14 @@ class UploadBurdenEstimateTests : ControllerTests<GroupBurdenEstimatesController
     fun `can get metadata for burden estimates`()
     {
         val data = listOf(
-                BurdenEstimateSet(1, Instant.MIN, "ThePast", emptyList()),
-                BurdenEstimateSet(2, Instant.MAX, "TheFuture", listOf("Doesn't exist yet"))
+                BurdenEstimateSet(1, Instant.MIN, "ThePast",
+                        BurdenEstimateSetType(BurdenEstimateSetTypeCode.CENTRAL_AVERAGED, "Median"),
+                        emptyList()
+                ),
+                BurdenEstimateSet(2, Instant.MAX, "TheFuture",
+                        BurdenEstimateSetType(BurdenEstimateSetTypeCode.CENTRAL_SINGLE_RUN, null),
+                        listOf("Doesn't exist yet")
+                )
         )
         val touchstoneRepo = mockTouchstoneRepository()
         val repo = mock<BurdenEstimateRepository> {

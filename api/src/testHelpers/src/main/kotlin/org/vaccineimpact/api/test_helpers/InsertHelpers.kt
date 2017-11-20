@@ -176,13 +176,18 @@ fun JooqContext.addResponsibilitySet(
     return record.id
 }
 
-fun JooqContext.addBurdenEstimateSet(responsibilityId: Int, modelVersionId: Int,
-                                     username: String, status: String = "empty"): Int
+fun JooqContext.addBurdenEstimateSet(
+        responsibilityId: Int, modelVersionId: Int,
+        username: String, status: String = "empty",
+        setType: String = "central-single-run", setTypeDetails: String? = null
+): Int
 {
     val record = this.dsl.newRecord(BURDEN_ESTIMATE_SET).apply {
         this.responsibility = responsibilityId
         this.modelVersion = modelVersionId
         this.uploadedBy = username
+        this.setType = setType
+        this.setTypeDetails = setTypeDetails
         this.runInfo = ""
         this.interpolated = false
         this.complete = false
@@ -427,7 +432,7 @@ fun JooqContext.addDemographicDatasetsToTouchstone(touchstoneId: String,
                                                    source: Int,
                                                    type: Int)
 {
-    val set = this.dsl.newRecord(DEMOGRAPHIC_DATASET).apply{
+    val set = this.dsl.newRecord(DEMOGRAPHIC_DATASET).apply {
         this.demographicSource = source
         this.demographicStatisticType = type
         this.description = "some dataset"
