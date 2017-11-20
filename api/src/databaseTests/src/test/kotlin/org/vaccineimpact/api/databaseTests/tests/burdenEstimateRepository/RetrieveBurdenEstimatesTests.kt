@@ -1,11 +1,16 @@
 package org.vaccineimpact.api.databaseTests.tests.burdenEstimateRepository
 
 import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.vaccineimpact.api.databaseTests.tests.BurdenEstimateRepositoryTests
+import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.direct.addBurdenEstimateProblem
 import org.vaccineimpact.api.db.direct.addBurdenEstimateSet
 import org.vaccineimpact.api.db.direct.addUserForTesting
+import org.vaccineimpact.api.models.BurdenEstimateSet
+import org.vaccineimpact.api.models.BurdenEstimateSetType
+import org.vaccineimpact.api.models.BurdenEstimateSetTypeCode
 import java.time.Instant
 
 class RetrieveBurdenEstimatesTests : BurdenEstimateRepositoryTests()
@@ -39,5 +44,46 @@ class RetrieveBurdenEstimatesTests : BurdenEstimateRepositoryTests()
             Assertions.assertThat(b.uploadedOn).isLessThan(after)
             Assertions.assertThat(b.problems).hasSameElementsAs(listOf("some problem"))
         }
+    }
+
+    @Test
+    fun `can retrieve burden estimate set type`()
+    {
+        var setA = 0
+        var setB = 0
+        var setC = 0
+        var setD = 0
+        given { db ->
+            val ids = setupDatabase(db)
+            setA = addBurdenEstimateSet(db, ids, setType = "central_unknown", setTypeDetails = "unknown")
+            setB = addBurdenEstimateSet(db, ids, setType = "central_single_run", setTypeDetails = null)
+            setC = addBurdenEstimateSet(db, ids, setType = "central_averaged", setTypeDetails = "mean")
+            setD = addBurdenEstimateSet(db, ids, setType = "stochastic", setTypeDetails = null)
+        } check { repo ->
+            val sets = repo.getBurdenEstimateSets(groupId, touchstoneId, scenarioId)
+            checkSetHasExpectedType(sets, setA, BurdenEstimateSetType(BurdenEstimateSetTypeCode.CENTRAL_UNKNOWN, "unknown"))
+            checkSetHasExpectedType(sets, setB, BurdenEstimateSetType(BurdenEstimateSetTypeCode.CENTRAL_SINGLE_RUN, null))
+            checkSetHasExpectedType(sets, setC, BurdenEstimateSetType(BurdenEstimateSetTypeCode.CENTRAL_AVERAGED, "mean"))
+            checkSetHasExpectedType(sets, setD, BurdenEstimateSetType(BurdenEstimateSetTypeCode.STOCHASTIC, null))
+        }
+    }
+
+    private fun checkSetHasExpectedType(sets: List<BurdenEstimateSet>, setId: Int, expectedType: BurdenEstimateSetType)
+    {
+        val set = sets.singleOrNull { it.id == setId }
+        assertThat(set?.type).isEqualTo(expectedType)
+    }
+
+    private fun addBurdenEstimateSet(
+            db: JooqContext, ids: ReturnedIds, username: String? = null,
+            setType: String = "central_single_run", setTypeDetails: String? = null
+    ): Int
+    {
+        return db.addBurdenEstimateSet(
+                ids.responsibility,
+                ids.modelVersion!!,
+                username ?: this.username,
+                setType = setType, setTypeDetails = setTypeDetails
+        )
     }
 }
