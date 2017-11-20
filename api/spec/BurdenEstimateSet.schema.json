@@ -5,8 +5,9 @@
         "id": { "type": "integer" },
         "uploaded_by": { "$ref": "Username.schema.json" },
         "uploaded_on": { "$ref": "Timestamp.schema.json" },
+        "type": { "$ref": "BurdenEstimateSetType.schema.json" },
         "problems": { "type": "array","items": { "type": "string" } }
     },
     "additionalProperties": false,
-    "required": [ "id", "uploaded_by", "uploaded_on", "problems" ]
+    "required": [ "id", "uploaded_by", "uploaded_on", "type", "problems" ]
 }

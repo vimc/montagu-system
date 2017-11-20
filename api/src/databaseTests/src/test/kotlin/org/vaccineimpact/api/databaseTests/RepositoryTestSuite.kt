@@ -5,7 +5,6 @@ import org.junit.BeforeClass
 import org.junit.runner.RunWith
 import org.junit.runners.Suite
 import org.vaccineimpact.api.databaseTests.tests.*
-import org.vaccineimpact.api.databaseTests.tests.burdenEstimateRepository.UploadBurdenEstimateTests
 import org.vaccineimpact.api.databaseTests.tests.burdenEstimateRepository.BurdenEstimateRepositoryTestsDeprecated
 import org.vaccineimpact.api.databaseTests.tests.burdenEstimateRepository.ModelParameterTests
 import org.vaccineimpact.api.databaseTests.tests.burdenEstimateRepository.RetrieveBurdenEstimatesTests

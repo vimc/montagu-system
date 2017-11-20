@@ -1,4 +1,4 @@
-package org.vaccineimpact.api.databaseTests.tests.burdenEstimateRepository
+package org.vaccineimpact.api.databaseTests.tests
 
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
 import org.vaccineimpact.api.app.repositories.jooq.JooqBurdenEstimateRepository
