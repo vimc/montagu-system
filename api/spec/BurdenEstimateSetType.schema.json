@@ -5,7 +5,7 @@
         "type": { 
             "enum": [ 
                 "central-unknown",
-                "central-single_run",
+                "central-single-run",
                 "central-averaged",
                 "stochastic"
             ] 

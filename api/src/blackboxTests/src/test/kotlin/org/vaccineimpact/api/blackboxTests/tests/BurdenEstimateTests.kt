@@ -34,7 +34,8 @@ class BurdenEstimateTests : DatabaseTest()
         validate(setUrl) against "BurdenEstimates" given { db ->
             val ids = setUp(db)
             db.addUserForTesting("some.user")
-            val setId = db.addBurdenEstimateSet(ids.responsibilityId, ids.modelVersionId, "some.user")
+            val setId = db.addBurdenEstimateSet(ids.responsibilityId, ids.modelVersionId, "some.user",
+                    setType = "central-averaged", setTypeDetails = "mean")
             db.addBurdenEstimateProblem("a problem", setId)
         } requiringPermissions {
             PermissionSet(
@@ -46,6 +47,9 @@ class BurdenEstimateTests : DatabaseTest()
             assertThat(obj["uploaded_by"]).isEqualTo("some.user")
             assertThat(obj["problems"]).isEqualTo(json {
                 array("a problem")
+            })
+            assertThat(obj["type"]).isEqualTo(json {
+                obj("type" to "central-averaged", "details" to "mean")
             })
         }
     }

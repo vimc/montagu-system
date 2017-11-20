@@ -45,14 +45,17 @@ class MontaguSerializer: Serializer
                 .disableHtmlEscaping()
                 .setFieldNamingStrategy { convertFieldName(it.name) }
                 .serializeNulls()
-                .registerTypeAdapter<LocalDate>(toDateStringSerializer)
+
                 .registerTypeAdapter<Instant>(toDateStringSerializer)
-                .registerTypeAdapter<ResultStatus>(enumSerializer)
+                .registerTypeAdapter<LocalDate>(toDateStringSerializer)
+
+                .registerTypeAdapter<ActivityType>(enumSerializer)
+                .registerTypeAdapter<BurdenEstimateSetTypeCode>(enumSerializer)
+                .registerTypeAdapter<GAVISupportLevel>(enumSerializer)
                 .registerTypeAdapter<ResponsibilitySetStatus>(enumSerializer)
                 .registerTypeAdapter<ResponsibilityStatus>(enumSerializer)
+                .registerTypeAdapter<ResultStatus>(enumSerializer)
                 .registerTypeAdapter<TouchstoneStatus>(enumSerializer)
-                .registerTypeAdapter<GAVISupportLevel>(enumSerializer)
-                .registerTypeAdapter<ActivityType>(enumSerializer)
 
         // Some serializers for complex objects need to recurse back to the default
         // serialization strategy. So we separate out a Gson object that has all the
