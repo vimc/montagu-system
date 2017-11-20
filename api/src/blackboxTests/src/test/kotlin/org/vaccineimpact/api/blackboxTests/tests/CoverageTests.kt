@@ -1,5 +1,7 @@
 package org.vaccineimpact.api.blackboxTests.tests
 
+import com.opencsv.CSVReader
+import org.assertj.core.api.Assertions
 import org.junit.Test
 import org.vaccineimpact.api.blackboxTests.helpers.*
 import org.vaccineimpact.api.blackboxTests.schemas.CSVSchema
@@ -7,9 +9,12 @@ import org.vaccineimpact.api.blackboxTests.schemas.SplitSchema
 import org.vaccineimpact.api.blackboxTests.validators.SplitValidator
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.direct.*
+import org.vaccineimpact.api.db.nextDecimal
 import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.test_helpers.DatabaseTest
 import org.vaccineimpact.api.validateSchema.JSONValidator
+import java.io.StringReader
+import java.math.BigDecimal
 
 class CoverageTests : DatabaseTest()
 {
@@ -42,6 +47,45 @@ class CoverageTests : DatabaseTest()
     }
 
     @Test
+    fun `wide format coverage year columns are sorted`()
+    {
+        val userHelper = TestUserHelper()
+        val requestHelper = RequestHelper()
+
+        val testYear = 1980
+        val testTarget = BigDecimal(123.123)
+        val testCoverage = BigDecimal(456.456)
+
+        JooqContext().use {
+            addCoverageData(it, touchstoneStatus = "open", testYear = testYear,
+                    target = testTarget, coverage = testCoverage)
+            userHelper.setupTestUser(it)
+        }
+
+        val response = requestHelper.get("$url?format=wide", minimumPermissions, contentType = "text/csv")
+
+        val csv = StringReader(response.text)
+                .use { CSVReader(it).readAll() }
+
+        val headers = csv.first().toList()
+        val firstRow = csv.drop(1).first().toList()
+
+        val expectedHeaders = listOf("scenario", "set_name","vaccine","gavi_support","activity_type",
+                "country_code", "country", "age_first", "age_last","age_range_verbatim", "coverage_$testYear",
+                "coverage_1985", "coverage_1990", "coverage_1995", "coverage_2000",
+                "target_$testYear",
+                "target_1985", "target_1990", "target_1995", "target_2000")
+
+        headers.forEachIndexed{ index, h ->
+            Assertions.assertThat(h).isEqualTo(expectedHeaders[index])
+        }
+
+        Assertions.assertThat(BigDecimal(firstRow[10])).isEqualTo(testCoverage)
+        Assertions.assertThat(BigDecimal(firstRow[15])).isEqualTo(testTarget)
+
+    }
+
+    @Test
     fun `can get pure CSV coverage data for responsibility`()
     {
         val schema = CSVSchema("MergedCoverageData")
@@ -69,7 +113,7 @@ class CoverageTests : DatabaseTest()
             val response = requestHelper.get(oneTimeURL)
             schema.validate(response.text)
 
-            val badResponse =  requestHelper.get(oneTimeURL)
+            val badResponse = requestHelper.get(oneTimeURL)
             JSONValidator().validateError(badResponse.text, expectedErrorCode = "invalid-token-used")
         }
     }
@@ -84,7 +128,10 @@ class CoverageTests : DatabaseTest()
                 expectedProblem = ExpectedProblem("unknown-touchstone", touchstoneId))
     }
 
-    private fun addCoverageData(db: JooqContext, touchstoneStatus: String)
+    private fun addCoverageData(db: JooqContext, touchstoneStatus: String,
+                                testYear: Int = 1955,
+                                target: BigDecimal = BigDecimal(100.12),
+                                coverage: BigDecimal = BigDecimal(200.13))
     {
         db.addGroup(groupId, "description")
         db.addScenarioDescription(scenarioId, "description 1", "disease-1", addDisease = true)
@@ -94,6 +141,7 @@ class CoverageTests : DatabaseTest()
         db.addCoverageSet(touchstoneId, "coverage set name", "vaccine-1", "without", "routine", coverageSetId,
                 addVaccine = true)
         db.addCoverageSetToScenario(scenarioId, touchstoneId, coverageSetId, 0)
-        db.generateCoverageData(coverageSetId, countryCount = 2, yearRange = 1995..2000, ageRange = 0..20 step 5)
+        db.generateCoverageData(coverageSetId, countryCount = 2, yearRange = 1985..2000 step 5,
+                ageRange = 0..20 step 5, testYear = testYear, target = target, coverage = coverage)
     }
 }

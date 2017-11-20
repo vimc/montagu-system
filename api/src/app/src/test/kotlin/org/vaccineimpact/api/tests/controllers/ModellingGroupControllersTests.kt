@@ -11,12 +11,12 @@ import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.errors.MissingRequiredPermissionError
 import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.UserRepository
-import org.vaccineimpact.api.serialization.SplitData
 import org.vaccineimpact.api.db.nextDecimal
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import org.vaccineimpact.api.serialization.DataTable
+import org.vaccineimpact.api.serialization.SplitData
 import java.math.BigDecimal
 import java.util.*
 
@@ -384,7 +384,8 @@ class ModellingGroupControllersTests : ControllerTests<ModellingGroupController>
             }
         }
 
-        return listToReturn
+        // sort these randomly to emulate how they come out of the db
+        return listToReturn.sortedBy { random.nextInt() }
     }
 
 
