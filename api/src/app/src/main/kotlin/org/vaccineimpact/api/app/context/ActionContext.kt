@@ -24,7 +24,7 @@ interface ActionContext
     fun params(): Map<String, String>
     fun params(key: String): String
     fun <T: Any> postData(klass: Class<T>): T
-    fun <T: Any> csvData(klass: KClass<T>, from: RequestBodySource): List<T>
+    fun <T: Any> csvData(klass: KClass<T>, from: RequestBodySource): Sequence<T>
 
     fun addResponseHeader(key: String, value: String): Unit
     fun addAttachmentHeader(filename: String): Unit

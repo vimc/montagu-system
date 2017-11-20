@@ -1,23 +1,23 @@
 package org.vaccineimpact.api.app.context
 
+import java.io.Reader
 import javax.servlet.MultipartConfigElement
 
 sealed class RequestBodySource
 {
-    // Later, we should not return a string, but a stream or sequence of lines
-    abstract fun getBody(context: ActionContext): String
+    abstract fun getBody(context: ActionContext): Reader
 
     class Simple : RequestBodySource()
     {
-        override fun getBody(context: ActionContext): String
+        override fun getBody(context: ActionContext): Reader
         {
-            return context.request.body()
+            return context.request.raw().inputStream.bufferedReader()
         }
     }
 
     class HTMLMultipartFile : RequestBodySource()
     {
-        override fun getBody(context: ActionContext): String
+        override fun getBody(context: ActionContext): Reader
         {
             val request = context.request
             if (request.raw().getAttribute("org.eclipse.jetty.multipartConfig") == null)
@@ -26,9 +26,7 @@ sealed class RequestBodySource
                 request.raw().setAttribute("org.eclipse.jetty.multipartConfig", multipartConfigElement)
             }
 
-            return request.raw().getPart("file").inputStream.bufferedReader().use {
-                it.readText()
-            }
+            return request.raw().getPart("file").inputStream.bufferedReader()
         }
     }
 }

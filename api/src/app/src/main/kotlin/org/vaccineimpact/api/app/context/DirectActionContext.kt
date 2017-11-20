@@ -48,11 +48,11 @@ open class DirectActionContext(private val context: SparkWebContext,
         }
     }
 
-    override fun <T : Any> csvData(klass: KClass<T>, from: RequestBodySource): List<T>
+    override fun <T : Any> csvData(klass: KClass<T>, from: RequestBodySource): Sequence<T>
     {
         return try
         {
-            DataTableDeserializer.deserialize(from.getBody(this), klass, serializer).toList()
+            DataTableDeserializer.deserialize(from.getBody(this), klass, serializer)
         }
         catch(e: ValidationException)
         {

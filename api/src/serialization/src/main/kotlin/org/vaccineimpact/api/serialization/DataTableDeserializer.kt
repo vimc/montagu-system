@@ -4,6 +4,7 @@ import com.opencsv.CSVReader
 import org.vaccineimpact.api.models.ErrorInfo
 import org.vaccineimpact.api.models.helpers.FlexibleColumns
 import org.vaccineimpact.api.serialization.validation.ValidationException
+import java.io.Reader
 import java.io.StringReader
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
@@ -21,9 +22,9 @@ open class DataTableDeserializer<out T>(
     private val headerCount = headerDefinitions.size
     protected open val extraHeadersAllowed = false
 
-    fun deserialize(body: String): Sequence<T>
+    fun deserialize(stream: Reader): Sequence<T>
     {
-        val reader = CSVReader(StringReader(body.trim()))
+        val reader = CSVReader(stream)
 
         val row = reader.readNext()
         val actualHeaderNames = row.toList()
@@ -127,12 +128,20 @@ open class DataTableDeserializer<out T>(
     companion object
     {
         fun <T : Any> deserialize(
-                body: String,
+                body: Reader,
                 type: KClass<T>,
                 serializer: Serializer = MontaguSerializer.instance
         ): Sequence<T>
         {
             return getDeserializer(type, serializer).deserialize(body)
+        }
+        fun <T : Any> deserialize(
+                body: String,
+                type: KClass<T>,
+                serializer: Serializer = MontaguSerializer.instance
+        ): Sequence<T>
+        {
+            return deserialize(StringReader(body), type, serializer)
         }
 
         private fun <T: Any> getDeserializer(type: KClass<T>, serializer: Serializer): DataTableDeserializer<T>

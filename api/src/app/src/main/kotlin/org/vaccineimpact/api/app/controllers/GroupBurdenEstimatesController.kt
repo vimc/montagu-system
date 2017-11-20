@@ -1,5 +1,6 @@
 package org.vaccineimpact.api.app.controllers
 
+import org.vaccineimpact.api.app.checkAllValuesAreEqual
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.context.RequestBodySource
 import org.vaccineimpact.api.app.context.csvData
@@ -124,20 +125,18 @@ open class GroupBurdenEstimatesController(context: ControllerContext) : Abstract
         return okayResponse()
     }
 
-    private fun saveBurdenEstimates(data: List<BurdenEstimate>,
+    private fun saveBurdenEstimates(data: Sequence<BurdenEstimate>,
                                     estimateRepository: BurdenEstimateRepository,
                                     context: ActionContext,
                                     path: ResponsibilityPath): String
     {
-        if (data.map { it.disease }.distinct().count() > 1)
-        {
-            throw InconsistentDataError("More than one value was present in the disease column")
-        }
+        val checkedData = data.checkAllValuesAreEqual { it.disease }
+            ?: throw InconsistentDataError("More than one value was present in the disease column")
 
         val id = estimateRepository.addBurdenEstimateSet(
                 path.groupId, path.touchstoneId, path.scenarioId,
-                data,
-                uploader = context.username!!,
+                checkedData,
+                uploader = context.username ?: "test.user",
                 timestamp = Instant.now()
         )
         val url = "/modelling-groups/${path.groupId}/responsibilities/${path.touchstoneId}/${path.scenarioId}/estimates/$id/"
