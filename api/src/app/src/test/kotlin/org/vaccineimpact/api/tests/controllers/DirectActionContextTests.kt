@@ -17,6 +17,7 @@ import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import org.vaccineimpact.api.test_helpers.MontaguTests
 import spark.Request
+import javax.servlet.http.HttpServletRequest
 
 class DirectActionContextTests : MontaguTests()
 {
@@ -87,9 +88,15 @@ class DirectActionContextTests : MontaguTests()
 
     private fun mockWebContext(profile: CommonProfile): SparkWebContext
     {
+        val mockRequest = mock<Request> {
+            on { raw() } doReturn mock<HttpServletRequest>()
+        }
+
         val webContext = mock<SparkWebContext> {
             on { getRequestAttribute(Pac4jConstants.USER_PROFILES) } doReturn profile
+            on { sparkRequest } doReturn mockRequest
         }
+
         return webContext
     }
 }

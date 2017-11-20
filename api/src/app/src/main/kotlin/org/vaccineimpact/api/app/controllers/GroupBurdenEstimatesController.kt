@@ -44,8 +44,11 @@ open class GroupBurdenEstimatesController(context: ControllerContext) : Abstract
                         .secured(setOf("$groupScope/estimates.write", "$groupScope/responsibilities.read")),
 
                 oneRepoEndpoint("/estimate-sets/:set-id/get_onetime_link/", { c, r -> getOneTimeLinkToken(c, r, OneTimeAction.BURDENS_POPULATE) }, repos, { it.token })
+                        .secured(setOf("$groupScope/estimates.write", "$groupScope/responsibilities.read")),
+
+                oneRepoEndpoint("/model-run-parameters/get_onetime_link/", { c, r -> getOneTimeLinkToken(c, r, OneTimeAction.MODEl_RUN_PARAMETERS)}, repos, { it.token })
                         .secured(setOf("$groupScope/estimates.write", "$groupScope/responsibilities.read"))
-        )
+                )
     }
 
     private fun permissions(readOrWrite: String) = setOf(
@@ -53,14 +56,16 @@ open class GroupBurdenEstimatesController(context: ControllerContext) : Abstract
             "$groupScope/responsibilities.read"
     )
 
-    fun addModelRunParameters(context: ActionContext, estimateRepository: BurdenEstimateRepository)
+    fun addModelRunParameters(context: ActionContext, estimateRepository: BurdenEstimateRepository): String
     {
         val path = getValidResponsibilityPath(context, estimateRepository)
         val description = context.getPart("description")
 
-        estimateRepository.addModelRunParameterSet(path.groupId, path.touchstoneId, path.scenarioId,
+        val id = estimateRepository.addModelRunParameterSet(path.groupId, path.touchstoneId, path.scenarioId,
                 description, context.csvData<ModelRun>(RequestBodySource.HTMLMultipart()),
                 context.username!!, Instant.now())
+
+        return objectCreation(context, urlComponent + "/model-run-parameters/$id")
     }
 
     fun getBurdenEstimates(context: ActionContext, estimateRepository: BurdenEstimateRepository): List<BurdenEstimateSet>

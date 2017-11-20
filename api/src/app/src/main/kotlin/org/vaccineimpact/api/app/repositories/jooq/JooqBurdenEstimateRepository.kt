@@ -70,19 +70,21 @@ class JooqBurdenEstimateRepository(
                 }
     }
 
-    override fun addModelRunParameterSet(groupId: String, touchstoneId: String, scenarioId: String, description: String, modelRuns: List<ModelRun>, uploader: String, timestamp: Instant)
+    override fun addModelRunParameterSet(groupId: String, touchstoneId: String, scenarioId: String,
+                                         description: String, modelRuns: List<ModelRun>,
+                                         uploader: String, timestamp: Instant): Int
     {
         // Dereference modelling group IDs
         val modellingGroup = modellingGroupRepository.getModellingGroup(groupId)
         val responsibilityInfo = getResponsibilityInfo(modellingGroup.id, touchstoneId, scenarioId)
 
         val modelVersion = getlatestModelVersion(modellingGroup.id, responsibilityInfo.disease)
-        addModelRunParameterSet(responsibilityInfo.setId, modelVersion, description, modelRuns, uploader, timestamp)
+        return addModelRunParameterSet(responsibilityInfo.setId, modelVersion, description, modelRuns, uploader, timestamp)
     }
 
     fun addModelRunParameterSet(responsibilitySetId: Int, modelVersionId: Int,
                                          description: String, modelRuns: List<ModelRun>,
-                                         uploader: String, timestamp: Instant)
+                                         uploader: String, timestamp: Instant): Int
     {
         val uploadInfoId = addUploadInfo(uploader, timestamp)
         val parameterSetId = addParameterSet(responsibilitySetId, modelVersionId, description, uploadInfoId)
@@ -92,6 +94,8 @@ class JooqBurdenEstimateRepository(
         {
             addModelRun(run, parameterSetId, parameterLookup)
         }
+
+        return parameterSetId
     }
 
     private fun addUploadInfo(uploader: String, timestamp: Instant): Int

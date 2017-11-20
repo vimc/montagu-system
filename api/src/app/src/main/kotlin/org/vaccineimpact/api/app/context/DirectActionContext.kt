@@ -5,31 +5,29 @@ import org.pac4j.core.profile.ProfileManager
 import org.pac4j.sparkjava.SparkWebContext
 import org.vaccineimpact.api.app.addDefaultResponseHeaders
 import org.vaccineimpact.api.app.errors.MissingRequiredPermissionError
-import org.vaccineimpact.api.app.security.montaguPermissions
 import org.vaccineimpact.api.app.errors.ValidationError
-import org.vaccineimpact.api.serialization.ModelBinder
-import org.vaccineimpact.api.serialization.MontaguSerializer
+import org.vaccineimpact.api.app.security.montaguPermissions
 import org.vaccineimpact.api.db.Config
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import org.vaccineimpact.api.serialization.DataTableDeserializer
+import org.vaccineimpact.api.serialization.ModelBinder
+import org.vaccineimpact.api.serialization.MontaguSerializer
 import org.vaccineimpact.api.serialization.Serializer
+import org.vaccineimpact.api.serialization.validation.ValidationException
 import spark.Request
 import spark.Response
-import org.vaccineimpact.api.serialization.validation.ValidationException
 import java.io.OutputStream
 import java.util.zip.GZIPOutputStream
+import javax.servlet.MultipartConfigElement
 import kotlin.reflect.KClass
 
 class DirectActionContext(private val context: SparkWebContext,
-                               private val serializer: Serializer = MontaguSerializer.instance): ActionContext
+                          private val serializer: Serializer = MontaguSerializer.instance) : ActionContext
 {
     override val request: Request
         get() = context.sparkRequest
     private val response
         get() = context.sparkResponse
-
-    private val multipartData
-            get() = HTMLMultipart(this)
 
     constructor(request: Request, response: Response)
             : this(SparkWebContext(request, response))
@@ -45,14 +43,26 @@ class DirectActionContext(private val context: SparkWebContext,
         {
             ModelBinder().deserialize(request.body(), klass)
         }
-        catch(e: ValidationException)
+        catch (e: ValidationException)
         {
             throw ValidationError(e.errors)
         }
     }
 
     override fun getPart(name: String): String
-            = multipartData.getPart(name)
+    {
+        if (request.raw().getAttribute("org.eclipse.jetty.multipartConfig") == null)
+        {
+            val multipartConfigElement = MultipartConfigElement(System.getProperty("java.io.tmpdir"))
+            request.raw().setAttribute("org.eclipse.jetty.multipartConfig", multipartConfigElement)
+        }
+
+        // HttpServletRequest.getPart() throws ServletException if this request is not of type
+        // multipart/form-data
+        return request.raw().getPart(name).inputStream.bufferedReader().use {
+            it.readText()
+        }
+    }
 
     override fun <T : Any> csvData(klass: KClass<T>, from: RequestBodySource): List<T>
     {
@@ -60,7 +70,7 @@ class DirectActionContext(private val context: SparkWebContext,
         {
             DataTableDeserializer.deserialize(from.getFile(this), klass, serializer).toList()
         }
-        catch(e: ValidationException)
+        catch (e: ValidationException)
         {
             throw ValidationError(e.errors)
         }

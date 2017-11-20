@@ -42,6 +42,7 @@ data class OneTimeLink(val action: OneTimeAction,
                             repos.burdenEstimates,
                             RequestBodySource.HTMLMultipart()
                     )
+                    OneTimeAction.MODEl_RUN_PARAMETERS -> controllers.groupBurdenEstimates.addModelRunParameters(context, repos.burdenEstimates)
                     OneTimeAction.COVERAGE -> stream(controllers.modellingGroup.getCoverageData(context, repos.modellingGroup), context)
                     OneTimeAction.DEMOGRAPHY -> stream(controllers.touchstone.getDemographicData(context, repos.touchstone), context)
                     OneTimeAction.SET_PASSWORD -> controllers.password.setPasswordForUser(context, repos.user, context.params("username"))
