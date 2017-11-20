@@ -15,7 +15,7 @@ import org.vaccineimpact.api.test_helpers.DatabaseCreationHelper
 // Keep these sorted alphabetically, for consistency
 @RunWith(Suite::class)
 @Suite.SuiteClasses(
-        BurdenEstimateRepositoryTests::class,
+        UploadBurdenEstimateTests::class,
         BurdenEstimateRepositoryTestsDeprecated::class,
         DiseaseTests::class,
         GetDemographicsTests::class,
