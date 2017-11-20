@@ -14,10 +14,7 @@ import org.vaccineimpact.api.app.repositories.ScenarioRepository
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.db.*
 import org.vaccineimpact.api.db.Tables.*
-import org.vaccineimpact.api.models.BurdenEstimate
-import org.vaccineimpact.api.models.BurdenEstimateSet
-import org.vaccineimpact.api.models.ModelRun
-import org.vaccineimpact.api.models.ResponsibilitySetStatus
+import org.vaccineimpact.api.models.*
 import java.beans.ConstructorProperties
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
@@ -71,12 +68,21 @@ class JooqBurdenEstimateRepository(
     }
 
     override fun addModelRunParameterSet(responsibilitySetId: Int, modelVersionId: Int,
-                                         description: String, modelRuns: List<ModelRun>, uploader: String, timestamp: Instant)
+                                         description: String, modelRuns: List<ModelRun>,
+                                         uploader: String, timestamp: Instant)
     {
+        val uploadInfoId = addUploadInfo(uploader, timestamp)
+        val parameterSetId = addParameterSet(responsibilitySetId, modelVersionId, description, uploadInfoId)
+        val parameterLookup = addParameters(modelRuns, parameterSetId)
 
-        if (!modelRuns.any())
-            return
+        for (run in modelRuns)
+        {
+            addModelRun(run, parameterSetId, parameterLookup)
+        }
+    }
 
+    private fun addUploadInfo(uploader: String, timestamp: Instant): Int
+    {
         val uploadInfo = dsl.newRecord(UPLOAD_INFO).apply {
             this.uploadedBy = uploader
             this.uploadedOn = Timestamp.from(timestamp)
@@ -84,41 +90,52 @@ class JooqBurdenEstimateRepository(
 
         uploadInfo.store()
 
+        return uploadInfo.id
+    }
+
+    private fun addParameterSet(responsibilitySetId: Int, modelVersionId: Int,
+                                description: String, uploadInfoId: Int): Int
+    {
         val newParameterSet = this.dsl.newRecord(MODEL_RUN_PARAMETER_SET).apply {
             this.responsibilitySet = responsibilitySetId
             this.description = description
             this.modelVersion = modelVersionId
-            this.uploadInfo = uploadInfo.id
+            this.uploadInfo = uploadInfoId
         }
 
         newParameterSet.store()
 
+        return newParameterSet.id
+    }
+
+    private fun addParameters(modelRuns: List<ModelRun>, modelRunParameterSetId: Int): Map<String, Int>
+    {
         val parameters = modelRuns.first().parameterValues.keys
-        val parameterLookup = parameters.associateBy({ it }, {
+        return parameters.associateBy({ it }, {
             val record = this.dsl.newRecord(MODEL_RUN_PARAMETER).apply {
                 this.key = it
-                this.modelRunParameterSet = newParameterSet.id
+                this.modelRunParameterSet = modelRunParameterSetId
             }
             record.store()
             record.id
         })
+    }
 
-        for (run in modelRuns)
-        {
-            val record = this.dsl.newRecord(MODEL_RUN).apply {
-                this.runId = run.runId
-                this.modelRunParameterSet = newParameterSet.id
-            }
+    private fun addModelRun(run: ModelRun, modelRunParameterSetId: Int, parameterIds: Map<String, Int>){
 
-            record.store()
+        val record = this.dsl.newRecord(MODEL_RUN).apply {
+            this.runId = run.runId
+            this.modelRunParameterSet = modelRunParameterSetId
+        }
 
-            run.parameterValues.map {
-                this.dsl.newRecord(MODEL_RUN_PARAMETER_VALUE).apply {
-                    this.modelRun = record.internalId
-                    this.modelRunParameter = parameterLookup[it.key]
-                    this.value = it.value
-                }.store()
-            }
+        record.store()
+
+        run.parameterValues.map {
+            this.dsl.newRecord(MODEL_RUN_PARAMETER_VALUE).apply {
+                this.modelRun = record.internalId
+                this.modelRunParameter = parameterIds[it.key]
+                this.value = it.value
+            }.store()
         }
     }
 
