@@ -2,6 +2,7 @@ package org.vaccineimpact.api.databaseTests.tests.burdenEstimateRepository
 
 import org.assertj.core.api.Assertions
 import org.junit.Test
+import org.vaccineimpact.api.databaseTests.tests.BurdenEstimateRepositoryTests
 import org.vaccineimpact.api.db.Tables
 import org.vaccineimpact.api.db.fromJoinPath
 import org.vaccineimpact.api.models.ModelRun
