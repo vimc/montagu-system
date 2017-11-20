@@ -50,8 +50,12 @@ fun main(args: Array<String>)
 
         db.addGroup("IC-Garske", "Imperial Yellow Fever modelling group")
         db.addGroup("IC-Imaginary", "Imperial speculative modelling group")
+        db.addModel("yf-model", "IC-Garske", "YF", "Yellow Fever Model", versions = listOf("v1"))
+
         val setId = db.addResponsibilitySet("IC-Garske", "op-2017-2", "incomplete")
         db.addResponsibility(setId, yfRoutine)
         db.addResponsibility(setId, yfCampaign)
+
+        db.addUserForTesting("test.user")
     }
 }
