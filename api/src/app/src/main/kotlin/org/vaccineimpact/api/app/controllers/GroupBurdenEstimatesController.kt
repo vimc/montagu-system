@@ -38,7 +38,13 @@ open class GroupBurdenEstimatesController(context: ControllerContext) : Abstract
                         .secured(permissions("write")),
 
                 oneRepoEndpoint("/estimate-sets/:set-id/", this::populateBurdenEstimateSet, repos, { it.burdenEstimates }, method = HttpMethod.post)
-                        .secured(permissions("write"))
+                        .secured(permissions("write")),
+
+                oneRepoEndpoint("/estimate-sets/get_onetime_link/", { c, r -> getOneTimeLinkToken(c, r, OneTimeAction.BURDENS_CREATE) }, repos, { it.token })
+                        .secured(setOf("$groupScope/estimates.write", "$groupScope/responsibilities.read")),
+
+                oneRepoEndpoint("/estimate-sets/:set-id/get_onetime_link/", { c, r -> getOneTimeLinkToken(c, r, OneTimeAction.BURDENS_POPULATE) }, repos, { it.token })
+                        .secured(setOf("$groupScope/estimates.write", "$groupScope/responsibilities.read"))
         )
     }
 
@@ -95,14 +101,22 @@ open class GroupBurdenEstimatesController(context: ControllerContext) : Abstract
         return saveBurdenEstimates(data, estimateRepository, context, path)
     }
 
-    fun populateBurdenEstimateSet(context: ActionContext,
-                                  estimateRepository: BurdenEstimateRepository): String
+    fun populateBurdenEstimateSet(
+            context: ActionContext,
+            estimateRepository: BurdenEstimateRepository
+    ): String = populateBurdenEstimateSet(context, estimateRepository, RequestBodySource.Simple(context))
+
+    fun populateBurdenEstimateSet(
+            context: ActionContext,
+            estimateRepository: BurdenEstimateRepository,
+            source: RequestBodySource
+    ): String
     {
         // First check if we're allowed to see this touchstone
         val path = getValidResponsibilityPath(context, estimateRepository)
 
         // Then add the burden estimates
-        val data = context.csvData<BurdenEstimate>()
+        val data = context.csvData<BurdenEstimate>(from = source)
 
         if (data.map { it.disease }.distinct().count() > 1)
         {

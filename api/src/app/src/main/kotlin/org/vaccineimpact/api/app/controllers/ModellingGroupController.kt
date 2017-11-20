@@ -151,7 +151,7 @@ open class ModellingGroupController(context: ControllerContext)
             listOf()
         }
 
-        return FlexibleDataTable.new(rows.asSequence(), years)
+        return FlexibleDataTable.new(rows.asSequence(), years.sorted())
 
     }
 

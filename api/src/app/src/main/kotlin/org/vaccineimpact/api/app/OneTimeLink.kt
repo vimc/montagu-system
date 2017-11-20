@@ -3,11 +3,11 @@ package org.vaccineimpact.api.app
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.context.OneTimeLinkActionContext
 import org.vaccineimpact.api.app.context.RequestBodySource
-import org.vaccineimpact.api.serialization.Deserializer
-import org.vaccineimpact.api.models.helpers.OneTimeAction
 import org.vaccineimpact.api.app.controllers.MontaguControllers
 import org.vaccineimpact.api.app.controllers.endpoints.stream
 import org.vaccineimpact.api.app.repositories.RepositoryFactory
+import org.vaccineimpact.api.models.helpers.OneTimeAction
+import org.vaccineimpact.api.serialization.Deserializer
 
 data class OneTimeLink(val action: OneTimeAction,
                        val payload: Map<String, String>,
@@ -37,7 +37,11 @@ data class OneTimeLink(val action: OneTimeAction,
                             RequestBodySource.HTMLMultipart(context)
                     )
                     OneTimeAction.BURDENS_CREATE -> controllers.groupBurdenEstimates.createBurdenEstimateSet(context, repos.burdenEstimates)
-                    OneTimeAction.BURDENS_POPULATE -> controllers.groupBurdenEstimates.populateBurdenEstimateSet(context, repos.burdenEstimates)
+                    OneTimeAction.BURDENS_POPULATE -> controllers.groupBurdenEstimates.populateBurdenEstimateSet(
+                            context,
+                            repos.burdenEstimates,
+                            RequestBodySource.HTMLMultipart(context)
+                    )
                     OneTimeAction.COVERAGE -> stream(controllers.modellingGroup.getCoverageData(context, repos.modellingGroup), context)
                     OneTimeAction.DEMOGRAPHY -> stream(controllers.touchstone.getDemographicData(context, repos.touchstone), context)
                     OneTimeAction.SET_PASSWORD -> controllers.password.setPasswordForUser(context, repos.user, context.params("username"))
