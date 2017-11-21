@@ -48,9 +48,9 @@ class UploadBurdenEstimateTests : ControllerTests<GroupBurdenEstimatesController
                     eq(modelRuns), eq("user.name"), any()) } doReturn 11
         }
 
-        val expectedUrl = "http://localhost:8080/v1/modelling-groups/group-1/responsibilities/touchstone-1/scenario-1/model-run-parameters/11"
+        val expectedPath = "/v1/modelling-groups/group-1/responsibilities/touchstone-1/scenario-1/model-run-parameters/11"
         val objectCreationUrl = controller.addModelRunParameters(mockContext, repo)
-        assertThat(objectCreationUrl).isEqualTo(expectedUrl)
+        assertThat(objectCreationUrl).endsWith(expectedPath)
     }
 
     @Test
