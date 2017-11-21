@@ -36,6 +36,45 @@ class ModelRunParameterTests : BurdenEstimateTests()
         }
     }
 
+    @Test
+    fun `throws BadRequest if request is not multipart`()
+    {
+        validate("$urlBase/model-run-parameters/get_onetime_link/") against "Token" given { db ->
+            setUp(db)
+        } requiringPermissions {
+            requiredWritePermissions
+        } andCheckString { token ->
+            val oneTimeURL = "/onetime_link/$token/"
+            val requestHelper = RequestHelper()
+
+            val response = requestHelper.post(oneTimeURL, modelRunParameterCSV)
+
+            JSONValidator().validateError(response.text,
+                    expectedErrorCode = "bad-request",
+                    expectedErrorText = "This endpoint expects multipart/form-data but this request is of type text/plain")
+        }
+    }
+
+    @Test
+    fun `throws BadRequest if part is missing`()
+    {
+        validate("$urlBase/model-run-parameters/get_onetime_link/") against "Token" given { db ->
+            setUp(db)
+        } requiringPermissions {
+            requiredWritePermissions
+        } andCheckString { token ->
+            val oneTimeURL = "/onetime_link/$token/"
+            val requestHelper = RequestHelper()
+
+            val response = requestHelper.postFile(oneTimeURL, modelRunParameterCSV)
+
+            JSONValidator().validateError(response.text,
+                    expectedErrorCode = "bad-request",
+                    expectedErrorText = "No value passed for required POST parameter 'description'")
+        }
+    }
+
+
 
     @Test
     fun `can upload model run parameters via onetime link and redirect`()

@@ -4,6 +4,7 @@ import org.pac4j.core.profile.CommonProfile
 import org.pac4j.core.profile.ProfileManager
 import org.pac4j.sparkjava.SparkWebContext
 import org.vaccineimpact.api.app.addDefaultResponseHeaders
+import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.errors.MissingRequiredPermissionError
 import org.vaccineimpact.api.app.errors.ValidationError
 import org.vaccineimpact.api.app.security.montaguPermissions
@@ -24,7 +25,7 @@ import kotlin.reflect.KClass
 class DirectActionContext(private val context: SparkWebContext,
                           private val serializer: Serializer = MontaguSerializer.instance) : ActionContext
 {
-    override val request: Request
+    override val request
         get() = context.sparkRequest
     private val response
         get() = context.sparkResponse
@@ -51,15 +52,21 @@ class DirectActionContext(private val context: SparkWebContext,
 
     override fun getPart(name: String): String
     {
+        val contentType = request.contentType()
+        if (!contentType.startsWith("multipart/form-data"))
+        {
+            throw BadRequest("This endpoint expects multipart/form-data but this request is of type $contentType")
+        }
+
         if (request.raw().getAttribute("org.eclipse.jetty.multipartConfig") == null)
         {
             val multipartConfigElement = MultipartConfigElement(System.getProperty("java.io.tmpdir"))
             request.raw().setAttribute("org.eclipse.jetty.multipartConfig", multipartConfigElement)
         }
 
-        // HttpServletRequest.getPart() throws ServletException if this request is not of type
-        // multipart/form-data
-        return request.raw().getPart(name).inputStream.bufferedReader().use {
+        val part = request.raw().getPart(name) ?: throw BadRequest("No value passed for required POST parameter '$name'")
+
+        return part.inputStream.bufferedReader().use {
             it.readText()
         }
     }
