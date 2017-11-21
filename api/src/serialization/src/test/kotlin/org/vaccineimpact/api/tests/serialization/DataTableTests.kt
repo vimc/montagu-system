@@ -3,6 +3,7 @@ package org.vaccineimpact.api.tests.serialization
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
+import org.vaccineimpact.api.models.ModelRun
 import org.vaccineimpact.api.serialization.DataTableDeserializer
 import org.vaccineimpact.api.serialization.MontaguSerializer
 import org.vaccineimpact.api.models.TouchstoneStatus
@@ -219,6 +220,18 @@ free text,in-preparation""")
             0,"q",1,2,3.5"""
         checkValidationError("csv-bad-data-type:2:z") {
             DataTableDeserializer.deserialize(csv, Flexible::class, MontaguSerializer.instance).toList()
+        }
+    }
+
+    @Test
+    fun `error if empty values when all columns required`()
+    {
+        val csv = """
+            run_id,p1,p2,p3
+            1,14,15.2,4
+            2,14,15.3,"""
+        checkValidationError("csv-missing-data:2:p3") {
+            DataTableDeserializer.deserialize(csv, ModelRun::class, MontaguSerializer.instance).toList()
         }
     }
 
