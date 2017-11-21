@@ -5,31 +5,18 @@ import javax.servlet.MultipartConfigElement
 sealed class RequestBodySource
 {
     // Later, we should not return a string, but a stream or sequence of lines
-    abstract fun getBody(context: ActionContext): String
+    abstract fun getFile(context: ActionContext): String
 
     class Simple : RequestBodySource()
     {
-        override fun getBody(context: ActionContext): String
-        {
-            return context.request.body()
-        }
+        override fun getFile(context: ActionContext)
+                = context.request.body()
     }
 
-    class HTMLMultipartFile : RequestBodySource()
+    class HTMLMultipart : RequestBodySource()
     {
-        override fun getBody(context: ActionContext): String
-        {
-            val request = context.request
-            if (request.raw().getAttribute("org.eclipse.jetty.multipartConfig") == null)
-            {
-                val multipartConfigElement = MultipartConfigElement(System.getProperty("java.io.tmpdir"))
-                request.raw().setAttribute("org.eclipse.jetty.multipartConfig", multipartConfigElement)
-            }
-
-            return request.raw().getPart("file").inputStream.bufferedReader().use {
-                it.readText()
-            }
-        }
+        override fun getFile(context: ActionContext)
+                = context.getPart("file")
     }
 }
 
