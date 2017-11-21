@@ -15,14 +15,13 @@ import kotlin.reflect.full.primaryConstructor
 class HeaderDefinition(val name: String, val type: KType)
 
 open class DataTableDeserializer<out T>(
-        protected val type: KClass<*>,
         protected val headerDefinitions: List<HeaderDefinition>,
-        private val constructor: KFunction<T>
+        private val constructor: KFunction<T>,
+        private val allColumnsRequired: Boolean = false
 )
 {
     private val headerCount = headerDefinitions.size
     protected open val extraHeadersAllowed = false
-    private val allColumnsRequired = type.findAnnotation<AllColumnsRequired>() != null
 
     fun deserialize(body: String): Sequence<T>
     {
@@ -155,14 +154,15 @@ open class DataTableDeserializer<out T>(
             val headers = constructor.parameters
                     .map { HeaderDefinition(serializer.convertFieldName(it.name!!), it.type) }
 
+            val allColumnsRequired = type.findAnnotation<AllColumnsRequired>() != null
             return if (type.findAnnotation<FlexibleColumns>() != null)
             {
                 val flexibleType = getFlexibleColumnType(constructor, type)
-                FlexibleDataTableDeserializer(type, headers.dropLast(1), constructor, flexibleType)
+                FlexibleDataTableDeserializer(headers.dropLast(1), constructor, flexibleType, allColumnsRequired)
             }
             else
             {
-                DataTableDeserializer(type, headers, constructor)
+                DataTableDeserializer(headers, constructor, allColumnsRequired)
             }
         }
 
