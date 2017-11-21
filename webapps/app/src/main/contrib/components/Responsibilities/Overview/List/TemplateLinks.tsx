@@ -43,7 +43,7 @@ export class TemplateLinks extends React.Component<TemplateLinksProps, undefined
                     <TemplateLink key={id} diseaseId={id} groupId={this.props.groupId}/>);
 
             return <div>Download burden estimate templates:<br/>
-                {links}
+                {/*{links}*/}
                 <div>
                     <a key={"params"}
                        href={"/contribution/templates/stochastic_template_params.csv"}>Stochastic parameters template</a>
