@@ -65,7 +65,10 @@ open class GroupBurdenEstimatesController(context: ControllerContext) : Abstract
                 description, context.csvData<ModelRun>(RequestBodySource.HTMLMultipart()),
                 context.username!!, Instant.now())
 
-        return objectCreation(context, urlComponent + "/model-run-parameters/$id")
+        return objectCreation(context, urlComponent
+                .replace(":touchstone-id", path.touchstoneId)
+                .replace(":scenario-id", path.scenarioId)
+                .replace(":group-id", path.groupId) + "/model-run-parameters/$id")
     }
 
     fun getBurdenEstimates(context: ActionContext, estimateRepository: BurdenEstimateRepository): List<BurdenEstimateSet>
