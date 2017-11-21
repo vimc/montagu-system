@@ -22,6 +22,9 @@ class DataTableTests : MontaguTests()
     @FlexibleColumns
     data class Flexible(val a: Int, val b: String, val extra: Map<String, Int>)
 
+    @FlexibleColumns
+    data class FlexibleWithStrings(val a: Int, val b: String, val extra: Map<String, String>)
+
     @Test
     fun `headers are written in order of constructor`()
     {
@@ -233,6 +236,20 @@ free text,in-preparation""")
         checkValidationError("csv-missing-data:2:p3") {
             DataTableDeserializer.deserialize(csv, ModelRun::class, MontaguSerializer.instance).toList()
         }
+    }
+
+    @Test
+    fun `no error if empty values when not all columns required`()
+    {
+        val csv = """
+            a,b,x,y
+            1,14,15.2,4
+            2,14,15.3,"""
+
+        val result =
+                DataTableDeserializer.deserialize(csv, FlexibleWithStrings::class, MontaguSerializer.instance).toList()
+
+        assertThat(result.last().extra["y"]).isEmpty()
     }
 
     private fun serialize(table: DataTable<*>) = serializeToStreamAndGetAsString {
