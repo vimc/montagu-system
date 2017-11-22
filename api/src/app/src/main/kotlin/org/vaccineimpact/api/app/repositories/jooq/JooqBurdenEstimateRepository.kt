@@ -21,8 +21,8 @@ import java.sql.Timestamp
 import java.time.Instant
 
 private data class ResponsibilityInfo
-@ConstructorProperties("id", "disease", "status")
-constructor(val id: Int, val disease: String, val setStatus: String)
+@ConstructorProperties("id", "disease", "status", "setId")
+constructor(val id: Int, val disease: String, val setStatus: String, val setId: Int)
 
 class JooqBurdenEstimateRepository(
         dsl: DSLContext,
@@ -70,9 +70,21 @@ class JooqBurdenEstimateRepository(
                 }
     }
 
-    override fun addModelRunParameterSet(responsibilitySetId: Int, modelVersionId: Int,
+    override fun addModelRunParameterSet(groupId: String, touchstoneId: String, scenarioId: String,
                                          description: String, modelRuns: List<ModelRun>,
-                                         uploader: String, timestamp: Instant)
+                                         uploader: String, timestamp: Instant): Int
+    {
+        // Dereference modelling group IDs
+        val modellingGroup = modellingGroupRepository.getModellingGroup(groupId)
+        val responsibilityInfo = getResponsibilityInfo(modellingGroup.id, touchstoneId, scenarioId)
+
+        val modelVersion = getlatestModelVersion(modellingGroup.id, responsibilityInfo.disease)
+        return addModelRunParameterSet(responsibilityInfo.setId, modelVersion, description, modelRuns, uploader, timestamp)
+    }
+
+    fun addModelRunParameterSet(responsibilitySetId: Int, modelVersionId: Int,
+                                description: String, modelRuns: List<ModelRun>,
+                                uploader: String, timestamp: Instant): Int
     {
         val uploadInfoId = addUploadInfo(uploader, timestamp)
         val parameterSetId = addParameterSet(responsibilitySetId, modelVersionId, description, uploadInfoId)
@@ -82,6 +94,8 @@ class JooqBurdenEstimateRepository(
         {
             addModelRun(run, parameterSetId, parameterLookup)
         }
+
+        return parameterSetId
     }
 
     private fun addUploadInfo(uploader: String, timestamp: Instant): Int
@@ -198,19 +212,24 @@ class JooqBurdenEstimateRepository(
                     " and approved. You cannot upload any new estimates.")
         }
 
-        val latestModelVersion = dsl.select(MODEL_VERSION.ID)
-                .fromJoinPath(MODELLING_GROUP, MODEL)
-                .join(MODEL_VERSION)
-                .on(MODEL_VERSION.ID.eq(MODEL.CURRENT_VERSION))
-                .where(MODELLING_GROUP.ID.eq(modellingGroup.id))
-                .and(MODEL.DISEASE.eq(responsibilityInfo.disease))
-                .and(MODEL.IS_CURRENT)
-                .fetch().singleOrNull()?.value1()
-                ?: throw DatabaseContentsError("Modelling group $groupId does not have any models/model versions in the database")
+        val latestModelVersion = getlatestModelVersion(modellingGroup.id, responsibilityInfo.disease)
 
         return addSet(responsibilityInfo.id, uploader, timestamp, latestModelVersion)
     }
 
+    private fun getlatestModelVersion(groupId: String, disease: String): Int
+    {
+        return dsl.select(MODEL_VERSION.ID)
+                .fromJoinPath(MODELLING_GROUP, MODEL)
+                .join(MODEL_VERSION)
+                .on(MODEL_VERSION.ID.eq(MODEL.CURRENT_VERSION))
+                .where(MODELLING_GROUP.ID.eq(groupId))
+                .and(MODEL.DISEASE.eq(disease))
+                .and(MODEL.IS_CURRENT)
+                .fetch().singleOrNull()?.value1()
+                ?: throw DatabaseContentsError("Modelling group $groupId does not have any models/model versions in the database")
+
+    }
 
     private fun updateCurrentBurdenEstimateSet(responsibilityId: Int, setId: Int)
     {
@@ -335,7 +354,7 @@ class JooqBurdenEstimateRepository(
     private fun getResponsibilityInfo(groupId: String, touchstoneId: String, scenarioId: String): ResponsibilityInfo
     {
         // Get responsibility ID
-        return dsl.select(RESPONSIBILITY.ID, SCENARIO_DESCRIPTION.DISEASE, RESPONSIBILITY_SET.STATUS)
+        return dsl.select(RESPONSIBILITY.ID, SCENARIO_DESCRIPTION.DISEASE, RESPONSIBILITY_SET.STATUS, RESPONSIBILITY_SET.ID.`as`("setId"))
                 .fromJoinPath(MODELLING_GROUP, RESPONSIBILITY_SET, RESPONSIBILITY, SCENARIO, SCENARIO_DESCRIPTION)
                 .joinPath(RESPONSIBILITY_SET, TOUCHSTONE)
                 .where(MODELLING_GROUP.ID.eq(groupId))
