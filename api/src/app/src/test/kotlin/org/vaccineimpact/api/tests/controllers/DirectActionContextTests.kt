@@ -138,8 +138,11 @@ class DirectActionContextTests : MontaguTests()
     {
         val profile = CommonProfile()
 
+        val mockPart = mock<Part>(){
+            on { inputStream } doReturn "something".byteInputStream()
+        }
         val mockServletRequest = mock<HttpServletRequest>() {
-            on { getPart("whatever") } doReturn FakePart()
+            on { getPart("whatever") } doReturn mockPart
         }
 
         val mockRequest = mock<Request> {
@@ -164,57 +167,4 @@ class DirectActionContextTests : MontaguTests()
         return webContext
     }
 
-    private class FakePart : Part
-    {
-        override fun getName(): String
-        {
-            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-        }
-
-        override fun write(fileName: String?)
-        {
-            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-        }
-
-        override fun getHeader(name: String?): String
-        {
-            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-        }
-
-        override fun getSize(): Long
-        {
-            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-        }
-
-        override fun getContentType(): String
-        {
-            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-        }
-
-        override fun getHeaders(name: String?): MutableCollection<String>
-        {
-            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-        }
-
-        override fun getHeaderNames(): MutableCollection<String>
-        {
-            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-        }
-
-        override fun getInputStream(): InputStream
-        {
-            return "something".byteInputStream()
-        }
-
-        override fun delete()
-        {
-            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-        }
-
-        override fun getSubmittedFileName(): String
-        {
-            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-        }
-
-    }
 }
