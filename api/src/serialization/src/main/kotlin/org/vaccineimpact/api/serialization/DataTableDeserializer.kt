@@ -2,8 +2,8 @@ package org.vaccineimpact.api.serialization
 
 import com.opencsv.CSVReader
 import org.vaccineimpact.api.models.ErrorInfo
-import org.vaccineimpact.api.models.helpers.AllColumnsRequired
 import org.vaccineimpact.api.models.helpers.FlexibleColumns
+import org.vaccineimpact.api.models.helpers.AllColumnsRequired
 import org.vaccineimpact.api.serialization.validation.ValidationException
 import java.io.StringReader
 import kotlin.reflect.KClass
@@ -69,14 +69,7 @@ open class DataTableDeserializer<out T>(
                             problems: MutableList<ErrorInfo>): Any?
     {
         val trimmed = raw.trim()
-        if (allColumnsRequired && trimmed.isEmpty())
-        {
-            val oneIndexedRow = row + 1;
-            problems.add(ErrorInfo(
-                    "csv-missing-data:$oneIndexedRow:$column",
-                    "Unable to parse '${raw.trim()}' as ${targetType.toString().replace("kotlin.", "")} (Row $oneIndexedRow, column $column)"
-            ))
-        }
+        checkValueIsPresentIfRequired(trimmed, targetType, row, column, problems)
 
         return try
         {
@@ -88,9 +81,23 @@ open class DataTableDeserializer<out T>(
             val oneIndexedRow = row + 1;
             problems.add(ErrorInfo(
                     "csv-bad-data-type:$oneIndexedRow:$column",
-                    "Unable to parse '${raw.trim()}' as ${targetType.toString().replace("kotlin.", "")} (Row $oneIndexedRow, column $column)"
+                    "Unable to parse '$trimmed' as ${targetType.toString().replace("kotlin.", "")} (Row $oneIndexedRow, column $column)"
             ))
             null
+        }
+    }
+
+    private fun checkValueIsPresentIfRequired(trimmed: String, targetType: KType,
+                                              row: Int, column: String,
+                                              problems: MutableList<ErrorInfo>)
+    {
+        if (allColumnsRequired && trimmed.isEmpty())
+        {
+            val oneIndexedRow = row + 1;
+            problems.add(ErrorInfo(
+                    "csv-missing-data:$oneIndexedRow:$column",
+                    "Unable to parse '$trimmed' as ${targetType.toString().replace("kotlin.", "")} (Row $oneIndexedRow, column $column)"
+            ))
         }
     }
 
