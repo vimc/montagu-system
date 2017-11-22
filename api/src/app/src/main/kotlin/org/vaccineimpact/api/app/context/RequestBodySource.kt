@@ -7,13 +7,13 @@ sealed class RequestBodySource
 
     class Simple : RequestBodySource()
     {
-        override fun getFile(context: ActionContext): String
+        override fun getFile(context: ActionContext)
                 = context.request.body()
     }
 
     class HTMLMultipart : RequestBodySource()
     {
-        override fun getFile(context: ActionContext): String
+        override fun getFile(context: ActionContext)
                 = context.getPart("file")
     }
 }

@@ -55,7 +55,7 @@ class DirectActionContext(private val context: SparkWebContext,
         val contentType = request.contentType()
         if (!contentType.startsWith("multipart/form-data"))
         {
-            throw BadRequest("This endpoint expects multipart/form-data but this request is of type $contentType")
+            throw BadRequest("Trying to extract a part from multipart/form-data but this request is of type $contentType")
         }
 
         if (request.raw().getAttribute("org.eclipse.jetty.multipartConfig") == null)
@@ -64,7 +64,8 @@ class DirectActionContext(private val context: SparkWebContext,
             request.raw().setAttribute("org.eclipse.jetty.multipartConfig", multipartConfigElement)
         }
 
-        val part = request.raw().getPart(name) ?: throw BadRequest("No value passed for required POST parameter '$name'")
+        val part = request.raw().getPart(name)
+                ?: throw BadRequest("No value passed for required POST parameter '$name'")
 
         return part.inputStream.bufferedReader().use {
             it.readText()

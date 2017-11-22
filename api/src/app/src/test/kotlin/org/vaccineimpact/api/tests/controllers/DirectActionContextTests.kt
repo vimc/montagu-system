@@ -11,13 +11,16 @@ import org.pac4j.core.profile.CommonProfile
 import org.pac4j.sparkjava.SparkWebContext
 import org.vaccineimpact.api.app.context.DirectActionContext
 import org.vaccineimpact.api.app.context.postData
+import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.security.PERMISSIONS
 import org.vaccineimpact.api.models.Scope
 import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import org.vaccineimpact.api.test_helpers.MontaguTests
 import spark.Request
+import java.io.InputStream
 import javax.servlet.http.HttpServletRequest
+import javax.servlet.http.Part
 
 class DirectActionContextTests : MontaguTests()
 {
@@ -86,6 +89,73 @@ class DirectActionContextTests : MontaguTests()
         assertThat(model).isEqualTo(Model(1, listOf("x", "y"), Model(100, listOf("z"), null)))
     }
 
+    @Test
+    fun `throw BadRequest if getPart called on non multipart request`()
+    {
+        val profile = CommonProfile()
+
+        val mockRequest = mock<Request> {
+            on { raw() } doReturn mock<HttpServletRequest>()
+            on { contentType() } doReturn "text/plain"
+        }
+
+        val webContext = mock<SparkWebContext> {
+            on { getRequestAttribute(Pac4jConstants.USER_PROFILES) } doReturn profile
+            on { sparkRequest } doReturn mockRequest
+        }
+
+        val context = DirectActionContext(webContext)
+        assertThatThrownBy {
+            context.getPart("whatever")
+        }.isInstanceOf(BadRequest::class.java)
+                .hasMessageContaining("Trying to extract a part from multipart/form-data but this request is of type text/plain")
+    }
+
+    @Test
+    fun `throw BadRequest if getPart called on non existent part`()
+    {
+        val profile = CommonProfile()
+
+        val mockRequest = mock<Request> {
+            on { raw() } doReturn mock<HttpServletRequest>()
+            on { contentType() } doReturn "multipart/form-data"
+        }
+
+        val webContext = mock<SparkWebContext> {
+            on { getRequestAttribute(Pac4jConstants.USER_PROFILES) } doReturn profile
+            on { sparkRequest } doReturn mockRequest
+        }
+
+        val context = DirectActionContext(webContext)
+        assertThatThrownBy {
+            context.getPart("whatever")
+        }.isInstanceOf(BadRequest::class.java)
+                .hasMessageContaining("No value passed for required POST parameter 'whatever'")
+    }
+
+    @Test
+    fun `can get part`()
+    {
+        val profile = CommonProfile()
+
+        val mockServletRequest = mock<HttpServletRequest>() {
+            on { getPart("whatever") } doReturn FakePart()
+        }
+
+        val mockRequest = mock<Request> {
+            on { raw() } doReturn mockServletRequest
+            on { contentType() } doReturn "multipart/form-data"
+        }
+
+        val webContext = mock<SparkWebContext> {
+            on { getRequestAttribute(Pac4jConstants.USER_PROFILES) } doReturn profile
+            on { sparkRequest } doReturn mockRequest
+        }
+
+        val context = DirectActionContext(webContext)
+        assertThat(context.getPart("whatever")).isEqualTo("something")
+    }
+
     private fun mockWebContext(profile: CommonProfile): SparkWebContext
     {
         val mockRequest = mock<Request> {
@@ -98,5 +168,59 @@ class DirectActionContextTests : MontaguTests()
         }
 
         return webContext
+    }
+
+    private class FakePart : Part
+    {
+        override fun getName(): String
+        {
+            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        }
+
+        override fun write(fileName: String?)
+        {
+            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        }
+
+        override fun getHeader(name: String?): String
+        {
+            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        }
+
+        override fun getSize(): Long
+        {
+            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        }
+
+        override fun getContentType(): String
+        {
+            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        }
+
+        override fun getHeaders(name: String?): MutableCollection<String>
+        {
+            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        }
+
+        override fun getHeaderNames(): MutableCollection<String>
+        {
+            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        }
+
+        override fun getInputStream(): InputStream
+        {
+            return "something".byteInputStream()
+        }
+
+        override fun delete()
+        {
+            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        }
+
+        override fun getSubmittedFileName(): String
+        {
+            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        }
+
     }
 }
