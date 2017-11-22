@@ -2,16 +2,13 @@ package org.vaccineimpact.api.blackboxTests.tests.BurdenEstimates
 
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.json
-import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
-import org.vaccineimpact.api.blackboxTests.helpers.*
-import org.vaccineimpact.api.blackboxTests.schemas.CSVSchema
-import org.vaccineimpact.api.db.JooqContext
-import org.vaccineimpact.api.db.direct.*
+import org.vaccineimpact.api.blackboxTests.helpers.validate
+import org.vaccineimpact.api.db.direct.addBurdenEstimateProblem
+import org.vaccineimpact.api.db.direct.addBurdenEstimateSet
+import org.vaccineimpact.api.db.direct.addUserForTesting
 import org.vaccineimpact.api.models.permissions.PermissionSet
-import org.vaccineimpact.api.validateSchema.JSONValidator
-import spark.route.HttpMethod
 
 
 class RetrieveBurdenEstimateTests : BurdenEstimateTests()

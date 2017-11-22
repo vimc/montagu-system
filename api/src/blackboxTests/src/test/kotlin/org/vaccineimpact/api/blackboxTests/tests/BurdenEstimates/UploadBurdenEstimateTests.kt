@@ -89,7 +89,7 @@ class UploadBurdenEstimateTests : BurdenEstimateTests()
     @Test
     fun `can upload burden estimate via onetime link and redirect`()
     {
-        validateOneTimeLinkWithRedirect(url)    
+        validateOneTimeLinkWithRedirect(url)
     }
 
     @Test
@@ -157,23 +157,6 @@ class UploadBurdenEstimateTests : BurdenEstimateTests()
     fun `can create burden estimate via onetime link and redirect`()
     {
         validateOneTimeLinkWithRedirect(setUrl)
-    }
-
-    @Test
-    fun `bad CSV data results in ValidationError in redirect`()
-    {
-        validate("$url/get_onetime_link/?redirectUrl=http://localhost") against "Token" given { db ->
-            setUp(db)
-        } requiringPermissions {
-            requiredWritePermissions
-        } andCheckString { token ->
-            val oneTimeURL = "/onetime_link/$token/"
-            val requestHelper = RequestHelper()
-
-            val response = requestHelper.postFile(oneTimeURL, "bad_header,year,age,country,country_name,cohort_size")
-            val resultAsString = response.getResultFromRedirect(checkRedirectTarget = "http://localhost")
-            JSONValidator().validateError(resultAsString, expectedErrorCode = "csv-unexpected-header")
-        }
     }
 
     @Test
