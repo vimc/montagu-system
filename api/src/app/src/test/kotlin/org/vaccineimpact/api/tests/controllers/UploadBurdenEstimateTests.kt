@@ -53,7 +53,7 @@ class UploadBurdenEstimateTests : ControllerTests<GroupBurdenEstimatesController
     @Test
     fun `estimates are passed through to repository`()
     {
-        val data = listOf(
+        val data = sequenceOf(
                 BurdenEstimate("yf", 2000, 50, "AFG", "Afghanistan", 1000.toDecimal(), mapOf(
                         "deaths" to 10.toDecimal(),
                         "cases" to 100.toDecimal()
@@ -105,7 +105,7 @@ class UploadBurdenEstimateTests : ControllerTests<GroupBurdenEstimatesController
         val touchstoneSet = mockTouchstones()
         val repo = mockRepository(touchstoneSet)
 
-        val data = listOf(
+        val data = sequenceOf(
                 BurdenEstimate("yf", 2000, 50, "AFG", "Afghanistan", 1000.toDecimal(), mapOf(
                         "deaths" to 10.toDecimal(),
                         "cases" to 100.toDecimal()
@@ -134,7 +134,7 @@ class UploadBurdenEstimateTests : ControllerTests<GroupBurdenEstimatesController
     @Test
     fun `cannot upload data with multiple diseases`()
     {
-        val data = listOf(
+        val data = sequenceOf(
                 BurdenEstimate("yf", 2000, 50, "AFG", "Afghanistan", 1000.toDecimal(), mapOf(
                         "deaths" to 10.toDecimal(),
                         "cases" to 100.toDecimal()
@@ -170,7 +170,7 @@ class UploadBurdenEstimateTests : ControllerTests<GroupBurdenEstimatesController
         ))
     }
 
-    private fun mockActionContext(data: List<BurdenEstimate>): ActionContext
+    private fun mockActionContext(data: Sequence<BurdenEstimate>): ActionContext
     {
         return mock {
             on { csvData(eq(BurdenEstimate::class), any()) } doReturn data
