@@ -54,7 +54,7 @@ class RequestHelper
         )
     }
 
-    fun postFile(url: String, fileContents: String, data: Map<String, String> = mapOf()): Response
+    fun postFile(url: String, fileContents: String, data: Map<String, String> = mapOf(), token: TokenLiteral? = null): Response
     {
         val file = File("file")
         try
@@ -63,7 +63,7 @@ class RequestHelper
             val files = listOf(file.fileLike())
             return postFiles(
                     url,
-                    standardHeaders(ContentTypes.json, null),
+                    standardHeaders(ContentTypes.json, token),
                     files,
                     data
             )
