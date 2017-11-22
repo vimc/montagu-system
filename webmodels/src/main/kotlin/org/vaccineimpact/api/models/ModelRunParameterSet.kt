@@ -1,5 +1,6 @@
 package org.vaccineimpact.api.models
 
+import org.vaccineimpact.api.models.helpers.AllColumnsRequired
 import org.vaccineimpact.api.models.helpers.FlexibleColumns
 
 data class ModelRunParameterSet(
@@ -10,5 +11,6 @@ data class ModelRunParameterSet(
         val modelRuns: List<ModelRun>
 )
 
+@AllColumnsRequired
 @FlexibleColumns
 data class ModelRun(val runId: String, val parameterValues: Map<String, String>)

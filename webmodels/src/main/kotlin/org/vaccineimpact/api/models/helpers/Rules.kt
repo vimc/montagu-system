@@ -7,3 +7,5 @@ enum class Rule
 {
     EXCLUDE_IF_NULL
 }
+
+annotation class AllColumnsRequired
