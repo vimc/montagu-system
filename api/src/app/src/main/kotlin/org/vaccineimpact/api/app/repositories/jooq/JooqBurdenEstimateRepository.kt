@@ -81,10 +81,6 @@ class JooqBurdenEstimateRepository(
         val modellingGroup = modellingGroupRepository.getModellingGroup(groupId)
         val responsibilityInfo = getResponsibilityInfo(modellingGroup.id, touchstoneId, scenarioId)
         val modelVersion = getlatestModelVersion(modellingGroup.id, responsibilityInfo.disease)
-        if (!modelRuns.any())
-        {
-            throw BadRequest("No model runs provided")
-        }
         return addModelRunParameterSet(responsibilityInfo.setId, modelVersion, description, modelRuns, uploader, timestamp)
     }
 
@@ -133,6 +129,11 @@ class JooqBurdenEstimateRepository(
 
     private fun addParameters(modelRuns: List<ModelRun>, modelRunParameterSetId: Int): Map<String, Int>
     {
+        if (!modelRuns.any())
+        {
+            throw BadRequest("No model runs provided")
+        }
+        
         val parameters = modelRuns.first().parameterValues.keys
         return parameters.associateBy({ it }, {
             val record = this.dsl.newRecord(MODEL_RUN_PARAMETER).apply {
