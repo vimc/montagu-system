@@ -31,6 +31,7 @@ import java.time.ZoneOffset
 
 class UploadBurdenEstimateTests : BurdenEstimateRepositoryTests()
 {
+
     @Test
     fun `can create burden estimate set with empty status`()
     {

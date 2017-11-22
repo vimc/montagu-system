@@ -2,7 +2,6 @@ package org.vaccineimpact.api.app.repositories.jooq
 
 import org.jooq.DSLContext
 import org.jooq.JoinType
-import org.jooq.Record
 import org.postgresql.copy.CopyManager
 import org.postgresql.core.BaseConnection
 import org.vaccineimpact.api.app.errors.*
@@ -70,6 +69,78 @@ class JooqBurdenEstimateRepository(
                             problems
                     )
                 }
+    }
+
+    override fun addModelRunParameterSet(responsibilitySetId: Int, modelVersionId: Int,
+                                         description: String, modelRuns: List<ModelRun>,
+                                         uploader: String, timestamp: Instant)
+    {
+        val uploadInfoId = addUploadInfo(uploader, timestamp)
+        val parameterSetId = addParameterSet(responsibilitySetId, modelVersionId, description, uploadInfoId)
+        val parameterLookup = addParameters(modelRuns, parameterSetId)
+
+        for (run in modelRuns)
+        {
+            addModelRun(run, parameterSetId, parameterLookup)
+        }
+    }
+
+    private fun addUploadInfo(uploader: String, timestamp: Instant): Int
+    {
+        val uploadInfo = dsl.newRecord(UPLOAD_INFO).apply {
+            this.uploadedBy = uploader
+            this.uploadedOn = Timestamp.from(timestamp)
+        }
+
+        uploadInfo.store()
+
+        return uploadInfo.id
+    }
+
+    private fun addParameterSet(responsibilitySetId: Int, modelVersionId: Int,
+                                description: String, uploadInfoId: Int): Int
+    {
+        val newParameterSet = this.dsl.newRecord(MODEL_RUN_PARAMETER_SET).apply {
+            this.responsibilitySet = responsibilitySetId
+            this.description = description
+            this.modelVersion = modelVersionId
+            this.uploadInfo = uploadInfoId
+        }
+
+        newParameterSet.store()
+
+        return newParameterSet.id
+    }
+
+    private fun addParameters(modelRuns: List<ModelRun>, modelRunParameterSetId: Int): Map<String, Int>
+    {
+        val parameters = modelRuns.first().parameterValues.keys
+        return parameters.associateBy({ it }, {
+            val record = this.dsl.newRecord(MODEL_RUN_PARAMETER).apply {
+                this.key = it
+                this.modelRunParameterSet = modelRunParameterSetId
+            }
+            record.store()
+            record.id
+        })
+    }
+
+    private fun addModelRun(run: ModelRun, modelRunParameterSetId: Int, parameterIds: Map<String, Int>){
+
+        val record = this.dsl.newRecord(MODEL_RUN).apply {
+            this.runId = run.runId
+            this.modelRunParameterSet = modelRunParameterSetId
+        }
+
+        record.store()
+
+        run.parameterValues.map {
+            this.dsl.newRecord(MODEL_RUN_PARAMETER_VALUE).apply {
+                this.modelRun = record.internalId
+                this.modelRunParameter = parameterIds[it.key]
+                this.value = it.value
+            }.store()
+        }
     }
 
     override fun addBurdenEstimateSet(groupId: String, touchstoneId: String, scenarioId: String,
