@@ -19,6 +19,7 @@ class GetResponsibilityCoverageSetsTests : ModellingGroupRepositoryTests()
     val setA = 1
     val setB = 2
     val setC = 3
+    val setD = 4
 
     @Test
     fun `getCoverageSets throws exception if scenario doesn't exist`()
@@ -59,7 +60,7 @@ class GetResponsibilityCoverageSetsTests : ModellingGroupRepositoryTests()
     }
 
     @Test
-    fun `can get coverage data`()
+    fun `can get ordered coverage data`()
     {
         given {
             createGroupAndSupportingObjects(it)
@@ -67,13 +68,17 @@ class GetResponsibilityCoverageSetsTests : ModellingGroupRepositoryTests()
         } check {
             val result = it.getCoverageData(groupId, touchstoneId, scenarioId)
             checkMetadataIsAsExpected(result.structuredMetadata)
+
             assertThat(result.tableData.data.toList()).containsExactlyElementsOf(listOf(
+                    LongCoverageRow(scenarioId, "Fourth", "BF", GAVISupportLevel.WITH, ActivityType.CAMPAIGN,
+                            "BBB", "BBB-Name", 2001, 12.toDecimal(), 22.toDecimal(), null, null, null),
                     LongCoverageRow(scenarioId, "First", "YF", GAVISupportLevel.WITHOUT, ActivityType.CAMPAIGN,
                             "AAA", "AAA-Name", 2000, 10.toDecimal(), 20.toDecimal(), "10-20", 100.toDecimal(), "50.50".toDecimalOrNull()),
                     LongCoverageRow(scenarioId, "Second", "YF", GAVISupportLevel.WITH, ActivityType.CAMPAIGN,
                             "BBB", "BBB-Name", 2000, 11.toDecimal(), 21.toDecimal(), null, null, null),
                     LongCoverageRow(scenarioId, "Third", "YF", GAVISupportLevel.BESTMINUS, ActivityType.CAMPAIGN,
                             "BBB", "BBB-Name", 2001, 12.toDecimal(), 22.toDecimal(), null, null, null)
+
             ))
         }
     }
@@ -87,7 +92,8 @@ class GetResponsibilityCoverageSetsTests : ModellingGroupRepositoryTests()
         assertThat(result.scenario).isEqualTo(Scenario(
                 scenarioId, "Yellow Fever Scenario", "YF", listOf(touchstoneId)
         ))
-        assertThat(result.coverageSets).hasSameElementsAs(listOf(
+        assertThat(result.coverageSets).containsExactlyElementsOf(listOf(
+                CoverageSet(setD, touchstoneId, "Fourth", "BF", GAVISupportLevel.WITH, ActivityType.CAMPAIGN),
                 CoverageSet(setA, touchstoneId, "First", "YF", GAVISupportLevel.WITHOUT, ActivityType.CAMPAIGN),
                 CoverageSet(setB, touchstoneId, "Second", "YF", GAVISupportLevel.WITH, ActivityType.CAMPAIGN),
                 CoverageSet(setC, touchstoneId, "Third", "YF", GAVISupportLevel.BESTMINUS, ActivityType.CAMPAIGN)
@@ -101,6 +107,7 @@ class GetResponsibilityCoverageSetsTests : ModellingGroupRepositoryTests()
                 addName = true)
         db.addScenarioDescription(scenarioId, "Yellow Fever Scenario", "YF", addDisease = true)
         db.addVaccine("YF", "Yellow Fever")
+        db.addVaccine("BF", "Blue Fever")
     }
 
     private fun giveCoverageSetsToResponsibility(db: JooqContext, includeCoverageData: Boolean)
@@ -110,10 +117,13 @@ class GetResponsibilityCoverageSetsTests : ModellingGroupRepositoryTests()
         db.addCoverageSet(touchstoneId, "First", "YF", "without", "campaign", id = setA)
         db.addCoverageSet(touchstoneId, "Second", "YF", "with", "campaign", id = setB)
         db.addCoverageSet(touchstoneId, "Third", "YF", "bestminus", "campaign", id = setC)
+        db.addCoverageSet(touchstoneId, "Fourth", "BF", "with", "campaign", id = setD)
+
         // Deliberately out of order, to check ordering logic later
         db.addCoverageSetToScenario(scenarioId, touchstoneId, setB, 1)
         db.addCoverageSetToScenario(scenarioId, touchstoneId, setA, 0)
         db.addCoverageSetToScenario(scenarioId, touchstoneId, setC, 2)
+        db.addCoverageSetToScenario(scenarioId, touchstoneId, setD, 3)
 
         if (includeCoverageData)
         {
@@ -121,6 +131,7 @@ class GetResponsibilityCoverageSetsTests : ModellingGroupRepositoryTests()
             db.addCoverageRow(setA, "AAA", 2000, 10.toDecimal(), 20.toDecimal(), "10-20", 100.toDecimal(), "50.50".toDecimalOrNull())
             db.addCoverageRow(setB, "BBB", 2000, 11.toDecimal(), 21.toDecimal(), null, null, null)
             db.addCoverageRow(setC, "BBB", 2001, 12.toDecimal(), 22.toDecimal(), null, null, null)
+            db.addCoverageRow(setD, "BBB", 2001, 12.toDecimal(), 22.toDecimal(), null, null, null)
         }
     }
 }

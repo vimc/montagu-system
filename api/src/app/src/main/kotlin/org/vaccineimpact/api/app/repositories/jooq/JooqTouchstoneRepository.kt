@@ -128,7 +128,7 @@ class JooqTouchstoneRepository(
     {
         return getScenariosAndCoverageSets(touchstoneId, includeCoverageData)
                 .and(SCENARIO_DESCRIPTION.ID.eq(scenarioDescriptionId))
-                .orderBy(SCENARIO_COVERAGE_SET.ORDER)
+                .orderBy(COVERAGE_SET.VACCINE, COVERAGE_SET.ACTIVITY_TYPE, COVERAGE.COUNTRY, COVERAGE.YEAR, COVERAGE.AGE_FROM, COVERAGE.AGE_TO)
                 .fetch()
     }
 
