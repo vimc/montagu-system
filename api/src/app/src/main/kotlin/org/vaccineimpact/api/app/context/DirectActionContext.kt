@@ -55,7 +55,7 @@ class DirectActionContext(private val context: SparkWebContext,
         val contentType = request.contentType()
         if (!contentType.startsWith("multipart/form-data"))
         {
-            throw BadRequest("This endpoint expects multipart/form-data but this request is of type $contentType")
+            throw BadRequest("Trying to extract a part from multipart/form-data but this request is of type $contentType")
         }
 
         if (request.raw().getAttribute("org.eclipse.jetty.multipartConfig") == null)
