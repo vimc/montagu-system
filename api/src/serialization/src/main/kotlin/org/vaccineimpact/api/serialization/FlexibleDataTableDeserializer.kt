@@ -1,13 +1,16 @@
 package org.vaccineimpact.api.serialization
 
+import org.vaccineimpact.api.models.helpers.AllColumnsRequired
+import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 import kotlin.reflect.KType
 
 class FlexibleDataTableDeserializer<out T>(
         headers: List<HeaderDefinition>,
         constructor: KFunction<T>,
-        private val flexibleType: KType
-) : DataTableDeserializer<T>(headers, constructor)
+        private val flexibleType: KType,
+        allColumnsRequired: Boolean
+) : DataTableDeserializer<T>(headers, constructor, allColumnsRequired)
 {
     override val extraHeadersAllowed = true
 

@@ -2,6 +2,7 @@ package org.vaccineimpact.api.serialization
 
 import com.opencsv.CSVReader
 import org.vaccineimpact.api.models.ErrorInfo
+import org.vaccineimpact.api.models.helpers.AllColumnsRequired
 import org.vaccineimpact.api.models.helpers.FlexibleColumns
 import org.vaccineimpact.api.serialization.validation.ValidationException
 import java.io.StringReader
@@ -15,7 +16,8 @@ class HeaderDefinition(val name: String, val type: KType)
 
 open class DataTableDeserializer<out T>(
         protected val headerDefinitions: List<HeaderDefinition>,
-        private val constructor: KFunction<T>
+        private val constructor: KFunction<T>,
+        private val allColumnsRequired: Boolean = false
 )
 {
     private val headerCount = headerDefinitions.size
@@ -66,9 +68,19 @@ open class DataTableDeserializer<out T>(
                             row: Int, column: String,
                             problems: MutableList<ErrorInfo>): Any?
     {
+        val trimmed = raw.trim()
+        if (allColumnsRequired && trimmed.isEmpty())
+        {
+            val oneIndexedRow = row + 1;
+            problems.add(ErrorInfo(
+                    "csv-missing-data:$oneIndexedRow:$column",
+                    "Unable to parse '${raw.trim()}' as ${targetType.toString().replace("kotlin.", "")} (Row $oneIndexedRow, column $column)"
+            ))
+        }
+
         return try
         {
-            val value = Deserializer().deserialize(raw.trim(), targetType)
+            val value = Deserializer().deserialize(trimmed, targetType)
             value
         }
         catch (e: Exception)
@@ -135,21 +147,22 @@ open class DataTableDeserializer<out T>(
             return getDeserializer(type, serializer).deserialize(body)
         }
 
-        private fun <T: Any> getDeserializer(type: KClass<T>, serializer: Serializer): DataTableDeserializer<T>
+        private fun <T : Any> getDeserializer(type: KClass<T>, serializer: Serializer): DataTableDeserializer<T>
         {
             val constructor = type.primaryConstructor
                     ?: throw Exception("Cannot deserialize to type ${type.simpleName} - it has no primary constructor")
             val headers = constructor.parameters
                     .map { HeaderDefinition(serializer.convertFieldName(it.name!!), it.type) }
 
+            val allColumnsRequired = type.findAnnotation<AllColumnsRequired>() != null
             return if (type.findAnnotation<FlexibleColumns>() != null)
             {
                 val flexibleType = getFlexibleColumnType(constructor, type)
-                FlexibleDataTableDeserializer(headers.dropLast(1), constructor, flexibleType)
+                FlexibleDataTableDeserializer(headers.dropLast(1), constructor, flexibleType, allColumnsRequired)
             }
             else
             {
-                DataTableDeserializer(headers, constructor)
+                DataTableDeserializer(headers, constructor, allColumnsRequired)
             }
         }
 
