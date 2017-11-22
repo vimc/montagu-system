@@ -51,7 +51,7 @@ class ModelRunParameterTests : BurdenEstimateTests()
 
             JSONValidator().validateError(response.text,
                     expectedErrorCode = "bad-request",
-                    expectedErrorText = "This endpoint expects multipart/form-data but this request is of type text/plain")
+                    expectedErrorText = "Trying to extract a part from multipart/form-data but this request is of type text/plain")
         }
     }
 
