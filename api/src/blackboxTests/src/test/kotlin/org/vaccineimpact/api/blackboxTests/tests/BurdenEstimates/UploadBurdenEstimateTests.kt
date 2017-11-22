@@ -176,23 +176,4 @@ class UploadBurdenEstimateTests : BurdenEstimateTests()
         }
     }
 
-    @Test
-    fun `can upload model run parameters`()
-    {
-        validate("$url/get_onetime_link/") against "Token" given { db ->
-            setUp(db)
-        } requiringPermissions {
-            requiredWritePermissions
-        } andCheckString { token ->
-            val oneTimeURL = "/onetime_link/$token/"
-            val requestHelper = RequestHelper()
-
-            val response = requestHelper.postFile(oneTimeURL, csvData)
-            Assertions.assertThat(response.statusCode).isEqualTo(201)
-
-            val badResponse = requestHelper.get(oneTimeURL)
-            JSONValidator().validateError(badResponse.text, expectedErrorCode = "invalid-token-used")
-        }
-    }
-
 }
