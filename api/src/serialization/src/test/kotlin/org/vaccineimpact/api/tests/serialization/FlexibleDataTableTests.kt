@@ -38,14 +38,6 @@ class FlexibleDataTableTests : MontaguTests()
     }
 
     @Test
-    fun `throws error if marked as `()
-    {
-        Assertions.assertThatThrownBy { FlexibleDataTable.new<XYZ>(emptySequence(), listOf()) }
-                .hasMessage("No parameter marked as flexible." +
-                        " Use the DataTable class to serialise data with fixed headers.")
-    }
-
-    @Test
     fun `extra headers are written at the end`()
     {
         val table = FlexibleDataTable.new<ABC>(emptySequence(), listOf("extra1", "extra2"))
