@@ -34,7 +34,9 @@ describe("TemplateLinks", () => {
         ]);
         const rendered = shallow(<TemplateLinks responsibilities={set.responsibilities} groupId="grpid" />);
         const buttons = rendered.find(TemplateLink);
-        expect(buttons.length).to.eq(2);
+
+        // right now no templates
+        expect(buttons.length).to.eq(0);
     });
 
 });
