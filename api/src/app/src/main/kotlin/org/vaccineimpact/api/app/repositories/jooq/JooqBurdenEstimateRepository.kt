@@ -12,7 +12,10 @@ import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.app.repositories.jooq.mapping.BurdenMappingHelper
 import org.vaccineimpact.api.db.*
 import org.vaccineimpact.api.db.Tables.*
-import org.vaccineimpact.api.models.*
+import org.vaccineimpact.api.models.BurdenEstimate
+import org.vaccineimpact.api.models.BurdenEstimateSet
+import org.vaccineimpact.api.models.ModelRun
+import org.vaccineimpact.api.models.ResponsibilitySetStatus
 import java.beans.ConstructorProperties
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
@@ -77,14 +80,13 @@ class JooqBurdenEstimateRepository(
         // Dereference modelling group IDs
         val modellingGroup = modellingGroupRepository.getModellingGroup(groupId)
         val responsibilityInfo = getResponsibilityInfo(modellingGroup.id, touchstoneId, scenarioId)
-
         val modelVersion = getlatestModelVersion(modellingGroup.id, responsibilityInfo.disease)
         return addModelRunParameterSet(responsibilityInfo.setId, modelVersion, description, modelRuns, uploader, timestamp)
     }
 
     fun addModelRunParameterSet(responsibilitySetId: Int, modelVersionId: Int,
-                                         description: String, modelRuns: List<ModelRun>,
-                                         uploader: String, timestamp: Instant): Int
+                                description: String, modelRuns: List<ModelRun>,
+                                uploader: String, timestamp: Instant): Int
     {
         val uploadInfoId = addUploadInfo(uploader, timestamp)
         val parameterSetId = addParameterSet(responsibilitySetId, modelVersionId, description, uploadInfoId)
@@ -127,6 +129,11 @@ class JooqBurdenEstimateRepository(
 
     private fun addParameters(modelRuns: List<ModelRun>, modelRunParameterSetId: Int): Map<String, Int>
     {
+        if (!modelRuns.any())
+        {
+            throw BadRequest("No model runs provided")
+        }
+        
         val parameters = modelRuns.first().parameterValues.keys
         return parameters.associateBy({ it }, {
             val record = this.dsl.newRecord(MODEL_RUN_PARAMETER).apply {
@@ -138,7 +145,8 @@ class JooqBurdenEstimateRepository(
         })
     }
 
-    private fun addModelRun(run: ModelRun, modelRunParameterSetId: Int, parameterIds: Map<String, Int>){
+    private fun addModelRun(run: ModelRun, modelRunParameterSetId: Int, parameterIds: Map<String, Int>)
+    {
 
         val record = this.dsl.newRecord(MODEL_RUN).apply {
             this.runId = run.runId
@@ -219,7 +227,7 @@ class JooqBurdenEstimateRepository(
 
     private fun getlatestModelVersion(groupId: String, disease: String): Int
     {
-       return dsl.select(MODEL_VERSION.ID)
+        return dsl.select(MODEL_VERSION.ID)
                 .fromJoinPath(MODELLING_GROUP, MODEL)
                 .join(MODEL_VERSION)
                 .on(MODEL_VERSION.ID.eq(MODEL.CURRENT_VERSION))

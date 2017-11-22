@@ -3,6 +3,7 @@ package org.vaccineimpact.api.databaseTests.tests.burdenEstimateRepository
 import org.assertj.core.api.Assertions
 import org.jooq.Record
 import org.junit.Test
+import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.errors.DatabaseContentsError
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.databaseTests.tests.BurdenEstimateRepositoryTests
@@ -74,23 +75,39 @@ class ModelParameterTests : BurdenEstimateRepositoryTests()
                 repo.addModelRunParameterSet(groupId, touchstoneId, scenarioId,
                         "a test set", modelRuns, username, timestamp)
             }.isInstanceOf(DatabaseContentsError::class.java)
+                    .hasMessageContaining("Modelling group $groupId does not have any models/model versions in the database")
         }
     }
 
     @Test
-    fun `cannot create burden estimate set if touchstone doesn't exist`()
+    fun `cannot create model run parameter set if no model runs provided`()
+    {
+        JooqContext().use { db ->
+            returnedIds = setupDatabase(db)
+            val repo = makeRepository(db)
+
+            Assertions.assertThatThrownBy {
+                repo.addModelRunParameterSet(groupId, touchstoneId, scenarioId,
+                        "a test set", listOf(), username, timestamp)
+            }.isInstanceOf(BadRequest::class.java)
+                    .hasMessageContaining("No model runs provided")
+        }
+    }
+
+    @Test
+    fun `cannot create model run parameter set if touchstone doesn't exist`()
     {
         checkBadId(otherTouchstoneId = "wrong-id")
     }
 
     @Test
-    fun `cannot create burden estimate set if group doesn't exist`()
+    fun `cannot create model run parameter set if group doesn't exist`()
     {
         checkBadId(otherGroupId = "wrong-id")
     }
 
     @Test
-    fun `cannot create burden estimate set if scenario doesn't exist`()
+    fun `cannot create model run parameter set if scenario doesn't exist`()
     {
         checkBadId(otherScenarioId = "wrong-id")
     }
