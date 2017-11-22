@@ -19,7 +19,7 @@ import java.time.Instant
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.Part
 
-class UploadBurdenEstimateTests : ControllerTests<GroupBurdenEstimatesController>()
+class GroupEstimatesControllerTests : ControllerTests<GroupBurdenEstimatesController>()
 {
     override fun makeController(controllerContext: ControllerContext)
             = GroupBurdenEstimatesController(controllerContext)
