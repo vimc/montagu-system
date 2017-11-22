@@ -1,6 +1,7 @@
 package org.vaccineimpact.api.tests.controllers
 
 import com.nhaarman.mockito_kotlin.*
+import org.apache.commons.collections.CollectionUtils
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
@@ -53,7 +54,7 @@ class UploadBurdenEstimateTests : ControllerTests<GroupBurdenEstimatesController
     @Test
     fun `estimates are passed through to repository`()
     {
-        val data = sequenceOf(
+        val data = listOf(
                 BurdenEstimate("yf", 2000, 50, "AFG", "Afghanistan", 1000.toDecimal(), mapOf(
                         "deaths" to 10.toDecimal(),
                         "cases" to 100.toDecimal()
@@ -68,12 +69,15 @@ class UploadBurdenEstimateTests : ControllerTests<GroupBurdenEstimatesController
 
         val before = Instant.now()
         val controller = GroupBurdenEstimatesController(mockControllerContext())
-        controller.addBurdenEstimates(mockActionContext(data), repo)
+        controller.addBurdenEstimates(mockActionContext(data.asSequence()), repo)
         val after = Instant.now()
         verify(touchstoneSet).get("touchstone-1")
         verify(repo).addBurdenEstimateSet(
                 eq("group-1"), eq("touchstone-1"), eq("scenario-1"),
-                eq(data), eq("username"), timestamp = check { it > before && it < after })
+                argWhere { it.toSet() == data.toSet() },
+                eq("username"),
+                timestamp = check { it > before && it < after }
+        )
     }
 
     @Test
@@ -105,7 +109,7 @@ class UploadBurdenEstimateTests : ControllerTests<GroupBurdenEstimatesController
         val touchstoneSet = mockTouchstones()
         val repo = mockRepository(touchstoneSet)
 
-        val data = sequenceOf(
+        val data = listOf(
                 BurdenEstimate("yf", 2000, 50, "AFG", "Afghanistan", 1000.toDecimal(), mapOf(
                         "deaths" to 10.toDecimal(),
                         "cases" to 100.toDecimal()
@@ -118,7 +122,7 @@ class UploadBurdenEstimateTests : ControllerTests<GroupBurdenEstimatesController
 
         val controller = GroupBurdenEstimatesController(mockControllerContext())
         val mockContext = mock<ActionContext> {
-            on { csvData<BurdenEstimate>(any(), any()) } doReturn data
+            on { csvData<BurdenEstimate>(any(), any()) } doReturn data.asSequence()
             on { username } doReturn "username"
             on { params(":set-id") } doReturn "1"
             on { params(":group-id") } doReturn "group-1"
@@ -128,7 +132,9 @@ class UploadBurdenEstimateTests : ControllerTests<GroupBurdenEstimatesController
         controller.populateBurdenEstimateSet(mockContext, repo)
         verify(touchstoneSet).get("touchstone-1")
         verify(repo).populateBurdenEstimateSet(eq(1),
-                eq("group-1"), eq("touchstone-1"), eq("scenario-1"), eq(data))
+                eq("group-1"), eq("touchstone-1"), eq("scenario-1"),
+                argWhere { it.toSet() == data.toSet() }
+        )
     }
 
     @Test
@@ -196,6 +202,11 @@ class UploadBurdenEstimateTests : ControllerTests<GroupBurdenEstimatesController
         return mock {
             on { touchstoneRepository } doReturn touchstoneRepo
             on { createBurdenEstimateSet(any(), any(), any(), any(), any()) } doReturn 1
+            on { addBurdenEstimateSet(any(), any(), any(), any(), any(), any()) } doAnswer { args ->
+                // Force evaluation of lazy sequence
+                args.getArgument<Sequence<BurdenEstimate>>(3).toList()
+                0 // Return a fake setId
+            }
         }
     }
 }

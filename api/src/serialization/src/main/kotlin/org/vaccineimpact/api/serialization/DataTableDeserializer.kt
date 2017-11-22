@@ -5,6 +5,7 @@ import org.vaccineimpact.api.models.ErrorInfo
 import org.vaccineimpact.api.models.helpers.FlexibleColumns
 import org.vaccineimpact.api.models.helpers.AllColumnsRequired
 import org.vaccineimpact.api.serialization.validation.ValidationException
+import java.io.FilterReader
 import java.io.Reader
 import java.io.StringReader
 import kotlin.reflect.KClass
@@ -27,13 +28,19 @@ open class DataTableDeserializer<out T>(
     fun deserialize(stream: Reader): Sequence<T>
     {
         val reader = CSVReader(stream)
+        val rows = generateSequence { reader.readNext() }.stripEmptyRows()
+        val (headerRow, content) = rows.headAndTail()
 
-        val row = reader.readNext()
-        val actualHeaderNames = row.toList()
+        if (headerRow == null)
+        {
+            throw ValidationException(listOf(ErrorInfo("csv-empty", "CSV was empty - no rows or headers were found")))
+        }
+
+        val actualHeaderNames = headerRow.toList()
         checkHeaders(actualHeaderNames)
         val actualHeaders = getActualHeaderDefinitions(actualHeaderNames)
-        val rows = generateSequence { reader.readNext() }
-        return rows.withIndex().map { (i, row) ->
+
+        return content.withIndex().map { (i, row) ->
             deserializeRow(row.toList(), actualHeaders, i)
         }
     }
@@ -144,6 +151,15 @@ open class DataTableDeserializer<out T>(
         return headerDefinitions
     }
 
+    private fun Sequence<Array<String>>.stripEmptyRows(): Sequence<Array<String>>
+    {
+        return this
+                // Skip leading empty rows
+                .dropWhile { row -> row.all { it.isBlank() } }
+                // Skip trailing empty rows
+                .takeWhile { row -> row.any { !it.isBlank() } }
+    }
+
     companion object
     {
         fun <T : Any> deserialize(
@@ -154,6 +170,7 @@ open class DataTableDeserializer<out T>(
         {
             return getDeserializer(type, serializer).deserialize(body)
         }
+
         fun <T : Any> deserialize(
                 body: String,
                 type: KClass<T>,

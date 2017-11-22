@@ -1,24 +1,16 @@
 package org.vaccineimpact.api.app
 
 fun <T, R> Sequence<T>.checkAllValuesAreEqual(
-        project: (T) -> R
-): Sequence<T>?
+        project: (T) -> R,
+        exceptionToThrow: Exception
+): Sequence<T>
 {
-    return try
-    {
-        var first: T? = null
-        this.onEach {
-            first = first ?: it
-            if (project(first!!) != project(it))
-            {
-                throw NotAllValuesEqualException()
-            }
+    var first: T? = null
+    return this.onEach {
+        first = first ?: it
+        if (project(first!!) != project(it))
+        {
+            throw exceptionToThrow
         }
     }
-    catch (e: NotAllValuesEqualException)
-    {
-        null
-    }
 }
-
-private class NotAllValuesEqualException : Exception()

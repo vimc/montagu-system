@@ -156,7 +156,7 @@ class DirectActionContextTests : MontaguTests()
         }
 
         val context = DirectActionContext(webContext)
-        assertThat(context.getPart("whatever")).isEqualTo("something")
+        assertThat(context.getPart("whatever").readText()).isEqualTo("something")
     }
 
     private fun mockWebContext(profile: CommonProfile): SparkWebContext
