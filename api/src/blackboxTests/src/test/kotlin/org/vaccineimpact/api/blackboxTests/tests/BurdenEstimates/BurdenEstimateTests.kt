@@ -14,7 +14,7 @@ abstract class BurdenEstimateTests : DatabaseTest()
     protected val touchstoneId = "touchstone-1"
     protected val scenarioId = "scenario-1"
     protected val groupScope = "modelling-group:$groupId"
-    protected val urlBase = "/modelling-groups/$groupId/responsibilities/$touchstoneId/$scenarioId/"
+    protected val urlBase = "/modelling-groups/$groupId/responsibilities/$touchstoneId/$scenarioId"
     protected val url = "$urlBase/estimates/"
     protected val setUrl = "$urlBase/estimate-sets/"
     protected val requiredWritePermissions = PermissionSet(
