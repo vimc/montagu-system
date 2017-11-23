@@ -12,10 +12,7 @@ import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.app.repositories.jooq.mapping.BurdenMappingHelper
 import org.vaccineimpact.api.db.*
 import org.vaccineimpact.api.db.Tables.*
-import org.vaccineimpact.api.models.BurdenEstimate
-import org.vaccineimpact.api.models.BurdenEstimateSet
-import org.vaccineimpact.api.models.ModelRun
-import org.vaccineimpact.api.models.ResponsibilitySetStatus
+import org.vaccineimpact.api.models.*
 import java.beans.ConstructorProperties
 import java.io.*
 import java.math.BigDecimal
@@ -36,6 +33,20 @@ class JooqBurdenEstimateRepository(
         private val mapper: BurdenMappingHelper = BurdenMappingHelper()
 ) : JooqRepository(dsl), BurdenEstimateRepository
 {
+    override fun getModelRunParameterSets(groupId: String, touchstoneId: String, scenarioId: String): List<ModelRunParameterSet>
+    {
+        // Dereference modelling group IDs
+        val modellingGroup = modellingGroupRepository.getModellingGroup(groupId)
+        val responsibilityInfo = getResponsibilityInfo(modellingGroup.id, touchstoneId, scenarioId)
+        val modelVersion = getlatestModelVersion(modellingGroup.id, responsibilityInfo.disease)
+
+        return dsl.select(MODEL_RUN_PARAMETER_SET.ID, MODEL_RUN_PARAMETER_SET.DESCRIPTION,
+                UPLOAD_INFO.UPLOADED_BY, UPLOAD_INFO.UPLOADED_ON)
+                .fromJoinPath(MODEL_RUN_PARAMETER_SET, UPLOAD_INFO)
+                .where(MODEL_RUN_PARAMETER_SET.MODEL_VERSION.eq(modelVersion))
+                .fetchInto(ModelRunParameterSet::class.java)
+    }
+
     override fun getBurdenEstimateSets(groupId: String, touchstoneId: String, scenarioId: String): List<BurdenEstimateSet>
     {
         // Dereference modelling group IDs

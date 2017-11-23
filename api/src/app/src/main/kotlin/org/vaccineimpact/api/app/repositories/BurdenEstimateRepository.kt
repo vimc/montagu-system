@@ -27,5 +27,6 @@ interface BurdenEstimateRepository : Repository
                                 modelRuns: List<ModelRun>,
                                 uploader: String, timestamp: Instant): Int
 
-    fun getModelRunParameterSets(groupId: String, touchstoneId: String, scenarioId: String): List<ModelRunParameterSet>
+    fun getModelRunParameterSets(groupId: String, touchstoneId: String,
+                                 scenarioId: String): List<ModelRunParameterSet>
 }
