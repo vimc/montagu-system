@@ -46,7 +46,6 @@ data class OneTimeLink(val action: OneTimeAction,
                     OneTimeAction.COVERAGE -> stream(controllers.modellingGroup.getCoverageData(context, repos.modellingGroup), context)
                     OneTimeAction.DEMOGRAPHY -> stream(controllers.touchstone.getDemographicData(context, repos.touchstone), context)
                     OneTimeAction.SET_PASSWORD -> controllers.password.setPasswordForUser(context, repos.user, context.params("username"))
-                    OneTimeAction.MODEl_RUN_PARAMETERS -> throw UnsupportedOperationException(OneTimeAction.MODEl_RUN_PARAMETERS.toString())
                 }
             }
         }
