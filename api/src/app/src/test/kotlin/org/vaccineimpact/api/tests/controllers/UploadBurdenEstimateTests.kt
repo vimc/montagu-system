@@ -73,7 +73,8 @@ class UploadBurdenEstimateTests : ControllerTests<GroupBurdenEstimatesController
         verify(touchstoneSet).get("touchstone-1")
         verify(repo).addBurdenEstimateSet(
                 eq("group-1"), eq("touchstone-1"), eq("scenario-1"),
-                eq(data), eq("username"), timestamp = check { it > before && it < after })
+                argWhere { it.toSet() == data.toSet() },
+                eq("username"), timestamp = check { it > before && it < after })
     }
 
     @Test
@@ -118,7 +119,7 @@ class UploadBurdenEstimateTests : ControllerTests<GroupBurdenEstimatesController
 
         val controller = GroupBurdenEstimatesController(mockControllerContext())
         val mockContext = mock<ActionContext> {
-            on { csvData<BurdenEstimate>(any(), any()) } doReturn data
+            on { csvData<BurdenEstimate>(any(), any()) } doReturn data.asSequence()
             on { username } doReturn "username"
             on { params(":set-id") } doReturn "1"
             on { params(":group-id") } doReturn "group-1"
@@ -128,7 +129,9 @@ class UploadBurdenEstimateTests : ControllerTests<GroupBurdenEstimatesController
         controller.populateBurdenEstimateSet(mockContext, repo)
         verify(touchstoneSet).get("touchstone-1")
         verify(repo).populateBurdenEstimateSet(eq(1),
-                eq("group-1"), eq("touchstone-1"), eq("scenario-1"), eq(data))
+                eq("group-1"), eq("touchstone-1"), eq("scenario-1"),
+                argWhere { it.toSet() == data.toSet() }
+        )
     }
 
     @Test
@@ -173,7 +176,7 @@ class UploadBurdenEstimateTests : ControllerTests<GroupBurdenEstimatesController
     private fun mockActionContext(data: List<BurdenEstimate>): ActionContext
     {
         return mock {
-            on { csvData(eq(BurdenEstimate::class), any()) } doReturn data
+            on { csvData(eq(BurdenEstimate::class), any()) } doReturn data.asSequence()
             on { username } doReturn "username"
             on { params(":group-id") } doReturn "group-1"
             on { params(":touchstone-id") } doReturn "touchstone-1"

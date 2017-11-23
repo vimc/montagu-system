@@ -281,7 +281,7 @@ class UploadBurdenEstimateTests : BurdenEstimateRepositoryTests()
         assertThat(record[t.VALUE]).isEqualTo(outcomeValue)
     }
 
-    private val data = listOf(
+    private val data = sequenceOf(
             BurdenEstimate("Hib3", 2000, 50, "AFG", "Afghanistan", 1000.toDecimal(), mapOf(
                     "deaths" to 10.toDecimal(),
                     "cases" to 100.toDecimal()
