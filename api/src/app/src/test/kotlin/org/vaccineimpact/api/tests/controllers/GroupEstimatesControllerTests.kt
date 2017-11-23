@@ -1,6 +1,7 @@
 package org.vaccineimpact.api.tests.controllers
 
 import com.nhaarman.mockito_kotlin.*
+import org.apache.commons.collections.CollectionUtils
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
@@ -98,13 +99,15 @@ class GroupEstimatesControllerTests : ControllerTests<GroupBurdenEstimatesContro
 
         val before = Instant.now()
         val controller = GroupBurdenEstimatesController(mockControllerContext())
-        controller.addBurdenEstimates(mockActionContext(data), repo)
+        controller.addBurdenEstimates(mockActionContext(data.asSequence()), repo)
         val after = Instant.now()
         verify(touchstoneSet).get("touchstone-1")
         verify(repo).addBurdenEstimateSet(
                 eq("group-1"), eq("touchstone-1"), eq("scenario-1"),
                 argWhere { it.toSet() == data.toSet() },
-                eq("username"), timestamp = check { it > before && it < after })
+                eq("username"),
+                timestamp = check { it > before && it < after }
+        )
     }
 
     @Test
@@ -167,7 +170,7 @@ class GroupEstimatesControllerTests : ControllerTests<GroupBurdenEstimatesContro
     @Test
     fun `cannot upload data with multiple diseases`()
     {
-        val data = listOf(
+        val data = sequenceOf(
                 BurdenEstimate("yf", 2000, 50, "AFG", "Afghanistan", 1000.toDecimal(), mapOf(
                         "deaths" to 10.toDecimal(),
                         "cases" to 100.toDecimal()
@@ -203,7 +206,7 @@ class GroupEstimatesControllerTests : ControllerTests<GroupBurdenEstimatesContro
         ))
     }
 
-    private fun mockActionContext(data: List<BurdenEstimate>): ActionContext
+    private fun mockActionContext(data: Sequence<BurdenEstimate>): ActionContext
     {
         return mock {
             on { csvData(eq(BurdenEstimate::class), any()) } doReturn data.asSequence()
@@ -232,7 +235,7 @@ class GroupEstimatesControllerTests : ControllerTests<GroupBurdenEstimatesContro
             on { addBurdenEstimateSet(any(), any(), any(), any(), any(), any()) } doAnswer { args ->
                 // Force evaluation of sequence
                 args.getArgument<Sequence<BurdenEstimate>>(3).toList()
-                0 // Fake setId
+                0 // Return a fake setId
             }
         }
     }

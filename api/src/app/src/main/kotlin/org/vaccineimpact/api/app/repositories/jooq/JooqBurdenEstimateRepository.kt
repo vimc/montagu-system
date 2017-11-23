@@ -17,11 +17,12 @@ import org.vaccineimpact.api.models.BurdenEstimateSet
 import org.vaccineimpact.api.models.ModelRun
 import org.vaccineimpact.api.models.ResponsibilitySetStatus
 import java.beans.ConstructorProperties
-import java.io.ByteArrayInputStream
-import java.io.ByteArrayOutputStream
+import java.io.*
 import java.math.BigDecimal
+import java.sql.Connection
 import java.sql.Timestamp
 import java.time.Instant
+import kotlin.concurrent.thread
 
 private data class ResponsibilityInfo
 @ConstructorProperties("id", "disease", "status", "setId")
@@ -133,7 +134,7 @@ class JooqBurdenEstimateRepository(
         {
             throw BadRequest("No model runs provided")
         }
-        
+
         val parameters = modelRuns.first().parameterValues.keys
         return parameters.associateBy({ it }, {
             val record = this.dsl.newRecord(MODEL_RUN_PARAMETER).apply {
@@ -261,48 +262,22 @@ class JooqBurdenEstimateRepository(
         //   columns and don't vary by row this could be made more efficient)
         dsl.withoutCheckingForeignKeyConstraints(BURDEN_ESTIMATE) {
 
-            // Currently we write everything to a byte array in memory and then later feed that stream to CopyManager.
-            // Obviously this could be made more performant by chaining those two together somehow.
-            val data = ByteArrayOutputStream().use { stream ->
-                PostgresCopyWriter(stream).use { writer ->
-                    for (estimate in estimates)
-                    {
-                        if (estimate.disease != expectedDisease)
-                        {
-                            throw InconsistentDataError("Provided estimate lists disease as '${estimate.disease}' but scenario is for disease '$expectedDisease'")
-                        }
-                        if (estimate.country !in countries)
-                        {
-                            throw UnknownObjectError(estimate.country, "country")
-                        }
+            PipedOutputStream().use { stream ->
+                // First, let's set up a thread to read from the stream and send
+                // it to the database. This will block if the thread is empty, and keep
+                // going until it sees the Postgres EOF marker.
+                val inputStream = PipedInputStream(stream).buffered()
+                val writeToDatabaseThread = writeStreamToDatabase(dsl, inputStream)
 
-                        writer.writeRow(newBurdenEstimateRow(setId, estimate, cohortSizeId, estimate.cohortSize))
-                        for (outcome in estimate.outcomes)
-                        {
-                            val outcomeId = outcomeLookup[outcome.key]
-                                    ?: throw UnknownObjectError(outcome.key, "burden-outcome")
-                            writer.writeRow(newBurdenEstimateRow(setId, estimate, outcomeId, outcome.value))
-                        }
-                    }
-                }
-                stream.toByteArray()
-            }
+                // In the main thread, write to piped stream, blocking if we get too far ahead of
+                // the other thread ("too far ahead" meaning the buffer on the input stream is full)
+                writeCopyData(
+                        stream, estimates, expectedDisease,
+                        countries, setId, cohortSizeId, outcomeLookup
+                )
 
-            // We use dsl.connection to drop down from jOOQ to the JDBC level so we can use CopyManager.
-            dsl.connection { connection ->
-                ByteArrayInputStream(data).use { stream ->
-                    val t = BURDEN_ESTIMATE
-                    val manager = CopyManager(connection as BaseConnection)
-                    manager.copyInto(BURDEN_ESTIMATE, stream, listOf(
-                            t.BURDEN_ESTIMATE_SET,
-                            t.COUNTRY,
-                            t.YEAR,
-                            t.AGE,
-                            t.STOCHASTIC,
-                            t.BURDEN_OUTCOME,
-                            t.VALUE
-                    ))
-                }
+                // Wait for the worker thread to finished
+                writeToDatabaseThread.join()
             }
         }
 
@@ -310,6 +285,60 @@ class JooqBurdenEstimateRepository(
                 .set(BURDEN_ESTIMATE_SET.STATUS, "complete")
                 .where(BURDEN_ESTIMATE_SET.ID.eq(setId))
                 .execute()
+    }
+
+    private fun writeStreamToDatabase(dsl: DSLContext, inputStream: BufferedInputStream): Thread
+    {
+        // Since we are in another thread here, we should be careful about what state we modify.
+        // Everything we have access to here is immutable, so we should be fine.
+        return thread(start = true) {
+            // We use dsl.connection to drop down from jOOQ to the JDBC level so we can use CopyManager.
+            dsl.connection { connection ->
+                val manager = CopyManager(connection as BaseConnection)
+                val t = BURDEN_ESTIMATE
+                // This will return once it reaches the EOF character written out by the other stream
+                manager.copyInto(BURDEN_ESTIMATE, inputStream, listOf(
+                        t.BURDEN_ESTIMATE_SET,
+                        t.COUNTRY,
+                        t.YEAR,
+                        t.AGE,
+                        t.STOCHASTIC,
+                        t.BURDEN_OUTCOME,
+                        t.VALUE
+                ))
+            }
+        }
+    }
+
+    private fun writeCopyData(
+            stream: OutputStream, estimates: Sequence<BurdenEstimate>,
+            expectedDisease: String, countries: HashSet<String>,
+            setId: Int, cohortSizeId: Int, outcomeLookup: Map<String, Int>
+    )
+    {
+        // When we exit the 'use' block the EOF character will be written out,
+        // signalling to the other thread that we are done.
+        PostgresCopyWriter(stream).use { writer ->
+            for (estimate in estimates)
+            {
+                if (estimate.disease != expectedDisease)
+                {
+                    throw InconsistentDataError("Provided estimate lists disease as '${estimate.disease}' but scenario is for disease '$expectedDisease'")
+                }
+                if (estimate.country !in countries)
+                {
+                    throw UnknownObjectError(estimate.country, "country")
+                }
+
+                writer.writeRow(newBurdenEstimateRow(setId, estimate, cohortSizeId, estimate.cohortSize))
+                for (outcome in estimate.outcomes)
+                {
+                    val outcomeId = outcomeLookup[outcome.key]
+                            ?: throw UnknownObjectError(outcome.key, "burden-outcome")
+                    writer.writeRow(newBurdenEstimateRow(setId, estimate, outcomeId, outcome.value))
+                }
+            }
+        }
     }
 
     private fun getAllCountryIds() = dsl.select(COUNTRY.ID)
