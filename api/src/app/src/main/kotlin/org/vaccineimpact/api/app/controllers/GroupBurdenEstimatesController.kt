@@ -63,11 +63,11 @@ open class GroupBurdenEstimatesController(context: ControllerContext) : Abstract
     fun addModelRunParameters(context: ActionContext, estimateRepository: BurdenEstimateRepository): String
     {
         val path = getValidResponsibilityPath(context, estimateRepository)
-        val description = context.getPart("description")
+        val description = context.getPart("description").readText()
 
+        val modelRuns = context.csvData<ModelRun>(RequestBodySource.HTMLMultipart("file"))
         val id = estimateRepository.addModelRunParameterSet(path.groupId, path.touchstoneId, path.scenarioId,
-                description, context.csvData<ModelRun>(RequestBodySource.HTMLMultipart("file")),
-                context.username!!, Instant.now())
+                description, modelRuns.toList(), context.username!!, Instant.now())
 
         return objectCreation(context, urlComponent
                 .replace(":touchstone-id", path.touchstoneId)
