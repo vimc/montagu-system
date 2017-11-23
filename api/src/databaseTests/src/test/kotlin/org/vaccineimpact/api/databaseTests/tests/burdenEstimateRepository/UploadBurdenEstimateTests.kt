@@ -28,7 +28,6 @@ import java.time.ZoneOffset
 
 class UploadBurdenEstimateTests : BurdenEstimateRepositoryTests()
 {
-
     @Test
     fun `can create burden estimate set with empty status`()
     {
@@ -41,6 +40,25 @@ class UploadBurdenEstimateTests : BurdenEstimateRepositoryTests()
             setId = repo.createBurdenEstimateSet(groupId, touchstoneId, scenarioId, defaultProperties, username, timestamp)
         } andCheckDatabase { db ->
             checkBurdenEstimateSetMetadata(db, setId!!, returnedIds!!, "empty")
+        }
+    }
+
+    @Test
+    fun `when creating burden estimate set, user supplied properties are persisted`()
+    {
+        val properties = CreateBurdenEstimateSet(
+                BurdenEstimateSetType(
+                        BurdenEstimateSetTypeCode.CENTRAL_AVERAGED,
+                        "mean"
+                )
+        )
+        given { db ->
+            setupDatabase(db)
+        } makeTheseChanges { repo ->
+            repo.createBurdenEstimateSet(groupId, touchstoneId, scenarioId, properties, username, timestamp)
+        } andCheck { repo ->
+            val set = repo.getBurdenEstimateSets(groupId, touchstoneId, scenarioId).single()
+            assertThat(set.type).isEqualTo(properties.type)
         }
     }
 
@@ -244,7 +262,8 @@ class UploadBurdenEstimateTests : BurdenEstimateRepositoryTests()
     private fun checkBurdenEstimateSetMetadata(db: JooqContext,
                                                setId: Int,
                                                returnedIds: ReturnedIds,
-                                               expectedStatus: String): Int
+                                               expectedStatus: String)
+            : Int
     {
         val t = BURDEN_ESTIMATE_SET
         val set = db.dsl.selectFrom(t).where(t.ID.eq(setId)).fetchOne()
