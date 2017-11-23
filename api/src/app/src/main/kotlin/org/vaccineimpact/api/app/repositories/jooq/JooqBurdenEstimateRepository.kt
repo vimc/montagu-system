@@ -134,7 +134,7 @@ class JooqBurdenEstimateRepository(
         {
             throw BadRequest("No model runs provided")
         }
-        
+
         val parameters = modelRuns.first().parameterValues.keys
         return parameters.associateBy({ it }, {
             val record = this.dsl.newRecord(MODEL_RUN_PARAMETER).apply {
@@ -262,28 +262,22 @@ class JooqBurdenEstimateRepository(
         //   columns and don't vary by row this could be made more efficient)
         dsl.withoutCheckingForeignKeyConstraints(BURDEN_ESTIMATE) {
 
-            // We use dsl.connection to drop down from jOOQ to the JDBC level so we can use CopyManager.
-            dsl.connection { connection ->
+            PipedOutputStream().use { stream ->
+                // First, let's set up a thread to read from the stream and send
+                // it to the database. This will block if the thread is empty, and keep
+                // going until it sees the Postgres EOF marker.
+                val inputStream = PipedInputStream(stream).buffered()
+                val writeToDatabaseThread = writeStreamToDatabase(dsl, inputStream)
 
-                PipedOutputStream().use { stream ->
+                // In the main thread, write to piped stream, blocking if we get too far ahead of
+                // the other thread ("too far ahead" meaning the buffer on the input stream is full)
+                writeCopyData(
+                        stream, estimates, expectedDisease,
+                        countries, setId, cohortSizeId, outcomeLookup
+                )
 
-                    // First, let's set up a thread to read from the stream and send
-                    // it to the database. This will block if the thread is empty, and keep
-                    // going until it sees the Postgres EOF marker.
-                    val inputStream = PipedInputStream(stream).buffered()
-                    val manager = CopyManager(connection as BaseConnection)
-                    val writeToDatabaseThread = writeStreamToDatabase(manager, inputStream)
-
-                    // In the main thread, write to piped stream, blocking if we get too far ahead of
-                    // the other thread ("too far ahead" meaning the buffer on the input stream is full)
-                    writeCopyData(
-                            stream, estimates, expectedDisease,
-                            countries, setId, cohortSizeId, outcomeLookup
-                    )
-
-                    // Wait for the worker thread has finished
-                    writeToDatabaseThread.join()
-                }
+                // Wait for the worker thread has finished
+                writeToDatabaseThread.join()
             }
         }
 
@@ -293,22 +287,26 @@ class JooqBurdenEstimateRepository(
                 .execute()
     }
 
-    private fun writeStreamToDatabase(manager: CopyManager, inputStream: BufferedInputStream): Thread
+    private fun writeStreamToDatabase(dsl: DSLContext, inputStream: BufferedInputStream): Thread
     {
         // Since we are in another thread here, we should be careful about what state we modify.
         // Everything we have access to here is immutable, so we should be fine.
         return thread(start = true) {
-            val t = BURDEN_ESTIMATE
-            // This will return once it reaches the EOF character written out by the other stream
-            manager.copyInto(BURDEN_ESTIMATE, inputStream, listOf(
-                    t.BURDEN_ESTIMATE_SET,
-                    t.COUNTRY,
-                    t.YEAR,
-                    t.AGE,
-                    t.STOCHASTIC,
-                    t.BURDEN_OUTCOME,
-                    t.VALUE
-            ))
+            // We use dsl.connection to drop down from jOOQ to the JDBC level so we can use CopyManager. 
+            dsl.connection { connection ->
+                val manager = CopyManager(connection as BaseConnection)
+                val t = BURDEN_ESTIMATE
+                // This will return once it reaches the EOF character written out by the other stream
+                manager.copyInto(BURDEN_ESTIMATE, inputStream, listOf(
+                        t.BURDEN_ESTIMATE_SET,
+                        t.COUNTRY,
+                        t.YEAR,
+                        t.AGE,
+                        t.STOCHASTIC,
+                        t.BURDEN_OUTCOME,
+                        t.VALUE
+                ))
+            }
         }
     }
 
