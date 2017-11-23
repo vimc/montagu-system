@@ -23,6 +23,7 @@ interface ActionContext
     fun queryString(): String?
     fun params(): Map<String, String>
     fun params(key: String): String
+    fun getPart(name: String): String
     fun <T: Any> postData(klass: Class<T>): T
     fun <T: Any> csvData(klass: KClass<T>, from: RequestBodySource): Sequence<T>
 

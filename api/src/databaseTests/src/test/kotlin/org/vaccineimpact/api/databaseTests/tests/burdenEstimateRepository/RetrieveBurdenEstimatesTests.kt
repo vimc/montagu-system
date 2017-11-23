@@ -34,14 +34,14 @@ class RetrieveBurdenEstimatesTests : BurdenEstimateRepositoryTests()
             val sets = repo.getBurdenEstimateSets(groupId, touchstoneId, scenarioId).toList()
             val a = sets.single { it.id == setA }
             Assertions.assertThat(a.uploadedBy).isEqualTo(username)
-            Assertions.assertThat(a.uploadedOn).isGreaterThan(before)
-            Assertions.assertThat(a.uploadedOn).isLessThan(after)
+            Assertions.assertThat(a.uploadedOn).isAfter(before)
+            Assertions.assertThat(a.uploadedOn).isBefore(after)
             Assertions.assertThat(a.problems).isEmpty()
 
             val b = sets.single { it.id == setB }
             Assertions.assertThat(b.uploadedBy).isEqualTo("some.other.user")
-            Assertions.assertThat(b.uploadedOn).isGreaterThan(a.uploadedOn)
-            Assertions.assertThat(b.uploadedOn).isLessThan(after)
+            Assertions.assertThat(b.uploadedOn).isAfter(a.uploadedOn)
+            Assertions.assertThat(b.uploadedOn).isBefore(after)
             Assertions.assertThat(b.problems).hasSameElementsAs(listOf("some problem"))
         }
     }

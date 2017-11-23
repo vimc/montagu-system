@@ -2,7 +2,6 @@ package org.vaccineimpact.api.app.repositories.jooq
 
 import org.jooq.DSLContext
 import org.jooq.JoinType
-import org.jooq.Record
 import org.postgresql.copy.CopyManager
 import org.postgresql.core.BaseConnection
 import org.vaccineimpact.api.app.errors.*
@@ -13,7 +12,10 @@ import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.app.repositories.jooq.mapping.BurdenMappingHelper
 import org.vaccineimpact.api.db.*
 import org.vaccineimpact.api.db.Tables.*
-import org.vaccineimpact.api.models.*
+import org.vaccineimpact.api.models.BurdenEstimate
+import org.vaccineimpact.api.models.BurdenEstimateSet
+import org.vaccineimpact.api.models.ModelRun
+import org.vaccineimpact.api.models.ResponsibilitySetStatus
 import java.beans.ConstructorProperties
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
@@ -22,8 +24,8 @@ import java.sql.Timestamp
 import java.time.Instant
 
 private data class ResponsibilityInfo
-@ConstructorProperties("id", "disease", "status")
-constructor(val id: Int, val disease: String, val setStatus: String)
+@ConstructorProperties("id", "disease", "status", "setId")
+constructor(val id: Int, val disease: String, val setStatus: String, val setId: Int)
 
 class JooqBurdenEstimateRepository(
         dsl: DSLContext,
@@ -69,6 +71,97 @@ class JooqBurdenEstimateRepository(
                             problems
                     )
                 }
+    }
+
+    override fun addModelRunParameterSet(groupId: String, touchstoneId: String, scenarioId: String,
+                                         description: String, modelRuns: List<ModelRun>,
+                                         uploader: String, timestamp: Instant): Int
+    {
+        // Dereference modelling group IDs
+        val modellingGroup = modellingGroupRepository.getModellingGroup(groupId)
+        val responsibilityInfo = getResponsibilityInfo(modellingGroup.id, touchstoneId, scenarioId)
+        val modelVersion = getlatestModelVersion(modellingGroup.id, responsibilityInfo.disease)
+        return addModelRunParameterSet(responsibilityInfo.setId, modelVersion, description, modelRuns, uploader, timestamp)
+    }
+
+    fun addModelRunParameterSet(responsibilitySetId: Int, modelVersionId: Int,
+                                description: String, modelRuns: List<ModelRun>,
+                                uploader: String, timestamp: Instant): Int
+    {
+        val uploadInfoId = addUploadInfo(uploader, timestamp)
+        val parameterSetId = addParameterSet(responsibilitySetId, modelVersionId, description, uploadInfoId)
+        val parameterLookup = addParameters(modelRuns, parameterSetId)
+
+        for (run in modelRuns)
+        {
+            addModelRun(run, parameterSetId, parameterLookup)
+        }
+
+        return parameterSetId
+    }
+
+    private fun addUploadInfo(uploader: String, timestamp: Instant): Int
+    {
+        val uploadInfo = dsl.newRecord(UPLOAD_INFO).apply {
+            this.uploadedBy = uploader
+            this.uploadedOn = Timestamp.from(timestamp)
+        }
+
+        uploadInfo.store()
+
+        return uploadInfo.id
+    }
+
+    private fun addParameterSet(responsibilitySetId: Int, modelVersionId: Int,
+                                description: String, uploadInfoId: Int): Int
+    {
+        val newParameterSet = this.dsl.newRecord(MODEL_RUN_PARAMETER_SET).apply {
+            this.responsibilitySet = responsibilitySetId
+            this.description = description
+            this.modelVersion = modelVersionId
+            this.uploadInfo = uploadInfoId
+        }
+
+        newParameterSet.store()
+
+        return newParameterSet.id
+    }
+
+    private fun addParameters(modelRuns: List<ModelRun>, modelRunParameterSetId: Int): Map<String, Int>
+    {
+        if (!modelRuns.any())
+        {
+            throw BadRequest("No model runs provided")
+        }
+        
+        val parameters = modelRuns.first().parameterValues.keys
+        return parameters.associateBy({ it }, {
+            val record = this.dsl.newRecord(MODEL_RUN_PARAMETER).apply {
+                this.key = it
+                this.modelRunParameterSet = modelRunParameterSetId
+            }
+            record.store()
+            record.id
+        })
+    }
+
+    private fun addModelRun(run: ModelRun, modelRunParameterSetId: Int, parameterIds: Map<String, Int>)
+    {
+
+        val record = this.dsl.newRecord(MODEL_RUN).apply {
+            this.runId = run.runId
+            this.modelRunParameterSet = modelRunParameterSetId
+        }
+
+        record.store()
+
+        run.parameterValues.map {
+            this.dsl.newRecord(MODEL_RUN_PARAMETER_VALUE).apply {
+                this.modelRun = record.internalId
+                this.modelRunParameter = parameterIds[it.key]
+                this.value = it.value
+            }.store()
+        }
     }
 
     override fun addBurdenEstimateSet(groupId: String, touchstoneId: String, scenarioId: String,
@@ -127,19 +220,24 @@ class JooqBurdenEstimateRepository(
                     " and approved. You cannot upload any new estimates.")
         }
 
-        val latestModelVersion = dsl.select(MODEL_VERSION.ID)
-                .fromJoinPath(MODELLING_GROUP, MODEL)
-                .join(MODEL_VERSION)
-                .on(MODEL_VERSION.ID.eq(MODEL.CURRENT_VERSION))
-                .where(MODELLING_GROUP.ID.eq(modellingGroup.id))
-                .and(MODEL.DISEASE.eq(responsibilityInfo.disease))
-                .and(MODEL.IS_CURRENT)
-                .fetch().singleOrNull()?.value1()
-                ?: throw DatabaseContentsError("Modelling group $groupId does not have any models/model versions in the database")
+        val latestModelVersion = getlatestModelVersion(modellingGroup.id, responsibilityInfo.disease)
 
         return addSet(responsibilityInfo.id, uploader, timestamp, latestModelVersion)
     }
 
+    private fun getlatestModelVersion(groupId: String, disease: String): Int
+    {
+        return dsl.select(MODEL_VERSION.ID)
+                .fromJoinPath(MODELLING_GROUP, MODEL)
+                .join(MODEL_VERSION)
+                .on(MODEL_VERSION.ID.eq(MODEL.CURRENT_VERSION))
+                .where(MODELLING_GROUP.ID.eq(groupId))
+                .and(MODEL.DISEASE.eq(disease))
+                .and(MODEL.IS_CURRENT)
+                .fetch().singleOrNull()?.value1()
+                ?: throw DatabaseContentsError("Modelling group $groupId does not have any models/model versions in the database")
+
+    }
 
     private fun updateCurrentBurdenEstimateSet(responsibilityId: Int, setId: Int)
     {
@@ -264,7 +362,7 @@ class JooqBurdenEstimateRepository(
     private fun getResponsibilityInfo(groupId: String, touchstoneId: String, scenarioId: String): ResponsibilityInfo
     {
         // Get responsibility ID
-        return dsl.select(RESPONSIBILITY.ID, SCENARIO_DESCRIPTION.DISEASE, RESPONSIBILITY_SET.STATUS)
+        return dsl.select(RESPONSIBILITY.ID, SCENARIO_DESCRIPTION.DISEASE, RESPONSIBILITY_SET.STATUS, RESPONSIBILITY_SET.ID.`as`("setId"))
                 .fromJoinPath(MODELLING_GROUP, RESPONSIBILITY_SET, RESPONSIBILITY, SCENARIO, SCENARIO_DESCRIPTION)
                 .joinPath(RESPONSIBILITY_SET, TOUCHSTONE)
                 .where(MODELLING_GROUP.ID.eq(groupId))

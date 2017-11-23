@@ -21,6 +21,10 @@ Run the app
 ## Running tests
 To run the Blackbox tests, you will need to start the database and run the app as described above. Note that if you want to run individual tests through IntelliJ, you will need to manually run the `copySpec` Gradle task first.
 
+To run Blackbox tests from the command line, after running the above 2 commands, from the same folder run
+
+     ./gradlew :blackboxTests:run
+
 ## Project anatomy
 At the top level we have four folders of note:
 * `src/`: The source code of the application and its tests and helpers
