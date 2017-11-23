@@ -54,7 +54,7 @@ class RequestHelper
         )
     }
 
-    fun postFile(url: String, fileContents: String): Response
+    fun postFile(url: String, fileContents: String, data: Map<String, String> = mapOf(), token: TokenLiteral? = null): Response
     {
         val file = File("file")
         try
@@ -63,8 +63,9 @@ class RequestHelper
             val files = listOf(file.fileLike())
             return postFiles(
                     url,
-                    standardHeaders(ContentTypes.json, null),
-                    files
+                    standardHeaders(ContentTypes.json, token),
+                    files,
+                    data
             )
         }
         finally
@@ -92,10 +93,11 @@ class RequestHelper
             headers = headers
     )
 
-    private fun postFiles(url: String, headers: Map<String, String>, files: List<FileLike>) = khttp.post(
+    private fun postFiles(url: String, headers: Map<String, String>, files: List<FileLike>, data: Map<String, String> = mapOf()) = khttp.post(
             EndpointBuilder.build(url),
             headers = headers,
             files = files,
+            data = data,
             allowRedirects = false
     )
 

@@ -1,7 +1,5 @@
 package org.vaccineimpact.api.app.context
 
-import javax.servlet.MultipartConfigElement
-
 sealed class RequestBodySource
 {
     // Later, we should not return a string, but a stream or sequence of lines
