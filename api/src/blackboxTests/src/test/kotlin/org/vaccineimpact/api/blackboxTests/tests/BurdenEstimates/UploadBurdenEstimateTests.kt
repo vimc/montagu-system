@@ -1,6 +1,7 @@
 package org.vaccineimpact.api.blackboxTests.tests.BurdenEstimates
 
 import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.vaccineimpact.api.blackboxTests.helpers.*
 import org.vaccineimpact.api.blackboxTests.schemas.CSVSchema
@@ -22,7 +23,7 @@ class UploadBurdenEstimateTests : BurdenEstimateTests()
             setUp(it)
         }
 
-        val response = requestHelper.post(setUrl, token = token, data = csvData)
+        val response = requestHelper.post(setUrl, token = token)
         Assertions.assertThat(response.statusCode).isEqualTo(201)
     }
 
@@ -146,7 +147,7 @@ class UploadBurdenEstimateTests : BurdenEstimateTests()
             val requestHelper = RequestHelper()
 
             val response = requestHelper.postFile(oneTimeURL, csvData)
-            assert(response.statusCode == 201)
+            assertThat(response.statusCode).isEqualTo(201)
 
             val badResponse = requestHelper.get(oneTimeURL)
             JSONValidator().validateError(badResponse.text, expectedErrorCode = "invalid-token-used")
@@ -156,6 +157,7 @@ class UploadBurdenEstimateTests : BurdenEstimateTests()
     @Test
     fun `can create burden estimate via onetime link and redirect`()
     {
+        // This test is wrong - it is trying to upload a file to an endpoint that doesn't take one
         validateOneTimeLinkWithRedirect(setUrl)
     }
 

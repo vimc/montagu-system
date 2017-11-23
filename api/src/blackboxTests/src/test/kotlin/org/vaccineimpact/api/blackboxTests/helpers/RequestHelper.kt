@@ -45,7 +45,7 @@ class RequestHelper
         return post(url, data.toJsonString(prettyPrint = true), token = token)
     }
 
-    fun post(url: String, data: String?, token: TokenLiteral? = null): Response
+    fun post(url: String, data: String? = null, token: TokenLiteral? = null): Response
     {
         return post(
                 url,
