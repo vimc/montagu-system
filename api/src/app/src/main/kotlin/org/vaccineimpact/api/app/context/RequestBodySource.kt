@@ -1,7 +1,6 @@
 package org.vaccineimpact.api.app.context
 
 import java.io.Reader
-import javax.servlet.MultipartConfigElement
 
 sealed class RequestBodySource
 {
@@ -9,13 +8,13 @@ sealed class RequestBodySource
 
     class Simple : RequestBodySource()
     {
-        override fun getContent(context: ActionContext): Reader
-            = context.request.raw().inputStream.bufferedReader()
+        override fun getContent(context: ActionContext)
+                = context.request.raw().inputStream.bufferedReader()
     }
 
     class HTMLMultipart(private val partName: String) : RequestBodySource()
     {
-        override fun getContent(context: ActionContext): Reader
+        override fun getContent(context: ActionContext)
                 = context.getPart(partName)
     }
 }

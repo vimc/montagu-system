@@ -179,7 +179,7 @@ class UploadBurdenEstimateTests : ControllerTests<GroupBurdenEstimatesController
     private fun mockActionContext(data: Sequence<BurdenEstimate>): ActionContext
     {
         return mock {
-            on { csvData(eq(BurdenEstimate::class), any()) } doReturn data
+            on { csvData(eq(BurdenEstimate::class), any()) } doReturn data.asSequence()
             on { username } doReturn "username"
             on { params(":group-id") } doReturn "group-1"
             on { params(":touchstone-id") } doReturn "touchstone-1"
@@ -203,7 +203,7 @@ class UploadBurdenEstimateTests : ControllerTests<GroupBurdenEstimatesController
             on { touchstoneRepository } doReturn touchstoneRepo
             on { createBurdenEstimateSet(any(), any(), any(), any(), any()) } doReturn 1
             on { addBurdenEstimateSet(any(), any(), any(), any(), any(), any()) } doAnswer { args ->
-                // Force evaluation of lazy sequence
+                // Force evaluation of sequence
                 args.getArgument<Sequence<BurdenEstimate>>(3).toList()
                 0 // Return a fake setId
             }
