@@ -13,7 +13,12 @@ constructor(
         val problems: List<String>
 ) : HasKey<Int>
 
-data class BurdenEstimateSetType(val type: BurdenEstimateSetTypeCode, val details: String?)
+
+data class CreateBurdenEstimateSet(
+        val type: BurdenEstimateSetType
+)
+
+data class BurdenEstimateSetType(val type: BurdenEstimateSetTypeCode, val details: String? = null)
 
 enum class BurdenEstimateSetTypeCode
 {
