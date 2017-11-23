@@ -14,10 +14,8 @@ import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.db.toDecimal
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.serialization.DataTableDeserializer
-import spark.Request
+import java.io.StringReader
 import java.time.Instant
-import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.Part
 
 class GroupEstimatesControllerTests : ControllerTests<GroupBurdenEstimatesController>()
 {
@@ -31,12 +29,12 @@ class GroupEstimatesControllerTests : ControllerTests<GroupBurdenEstimatesContro
         val modelRuns = listOf<ModelRun>(ModelRun("run1", params))
 
         val mockContext = mock<ActionContext> {
-            on { csvData<ModelRun>(any(), any()) } doReturn modelRuns
+            on { csvData<ModelRun>(any(), any()) } doReturn modelRuns.asSequence()
             on { username } doReturn "user.name"
             on { params(":group-id") } doReturn "group-1"
             on { params(":touchstone-id") } doReturn "touchstone-1"
             on { params(":scenario-id") } doReturn "scenario-1"
-            on { getPart("description") } doReturn "some description"
+            on { getPart("description") } doReturn StringReader("some description")
         }
 
         val controller = makeController(mockControllerContext())
@@ -105,7 +103,8 @@ class GroupEstimatesControllerTests : ControllerTests<GroupBurdenEstimatesContro
         verify(touchstoneSet).get("touchstone-1")
         verify(repo).addBurdenEstimateSet(
                 eq("group-1"), eq("touchstone-1"), eq("scenario-1"),
-                eq(data), eq("username"), timestamp = check { it > before && it < after })
+                argWhere { it.toSet() == data.toSet() },
+                eq("username"), timestamp = check { it > before && it < after })
     }
 
     @Test
@@ -150,7 +149,7 @@ class GroupEstimatesControllerTests : ControllerTests<GroupBurdenEstimatesContro
 
         val controller = GroupBurdenEstimatesController(mockControllerContext())
         val mockContext = mock<ActionContext> {
-            on { csvData<BurdenEstimate>(any(), any()) } doReturn data
+            on { csvData<BurdenEstimate>(any(), any()) } doReturn data.asSequence()
             on { username } doReturn "username"
             on { params(":set-id") } doReturn "1"
             on { params(":group-id") } doReturn "group-1"
@@ -160,7 +159,9 @@ class GroupEstimatesControllerTests : ControllerTests<GroupBurdenEstimatesContro
         controller.populateBurdenEstimateSet(mockContext, repo)
         verify(touchstoneSet).get("touchstone-1")
         verify(repo).populateBurdenEstimateSet(eq(1),
-                eq("group-1"), eq("touchstone-1"), eq("scenario-1"), eq(data))
+                eq("group-1"), eq("touchstone-1"), eq("scenario-1"),
+                argWhere { it.toSet() == data.toSet() }
+        )
     }
 
     @Test
@@ -205,7 +206,7 @@ class GroupEstimatesControllerTests : ControllerTests<GroupBurdenEstimatesContro
     private fun mockActionContext(data: List<BurdenEstimate>): ActionContext
     {
         return mock {
-            on { csvData(eq(BurdenEstimate::class), any()) } doReturn data
+            on { csvData(eq(BurdenEstimate::class), any()) } doReturn data.asSequence()
             on { username } doReturn "username"
             on { params(":group-id") } doReturn "group-1"
             on { params(":touchstone-id") } doReturn "touchstone-1"
@@ -228,6 +229,11 @@ class GroupEstimatesControllerTests : ControllerTests<GroupBurdenEstimatesContro
         return mock {
             on { touchstoneRepository } doReturn touchstoneRepo
             on { createBurdenEstimateSet(any(), any(), any(), any(), any()) } doReturn 1
+            on { addBurdenEstimateSet(any(), any(), any(), any(), any(), any()) } doAnswer { args ->
+                // Force evaluation of sequence
+                args.getArgument<Sequence<BurdenEstimate>>(3).toList()
+                0 // Fake setId
+            }
         }
     }
 }

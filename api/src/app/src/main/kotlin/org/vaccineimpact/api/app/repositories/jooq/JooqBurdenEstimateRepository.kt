@@ -165,7 +165,7 @@ class JooqBurdenEstimateRepository(
     }
 
     override fun addBurdenEstimateSet(groupId: String, touchstoneId: String, scenarioId: String,
-                                      estimates: List<BurdenEstimate>, uploader: String, timestamp: Instant): Int
+                                      estimates: Sequence<BurdenEstimate>, uploader: String, timestamp: Instant): Int
     {
         val setId = createBurdenEstimateSet(groupId, touchstoneId, scenarioId, uploader, timestamp)
         populateBurdenEstimateSet(setId, groupId, touchstoneId, scenarioId, estimates)
@@ -173,7 +173,7 @@ class JooqBurdenEstimateRepository(
     }
 
     override fun populateBurdenEstimateSet(setId: Int, groupId: String, touchstoneId: String, scenarioId: String,
-                                           estimates: List<BurdenEstimate>)
+                                           estimates: Sequence<BurdenEstimate>)
     {
         val outcomeLookup = getOutcomesAsLookup()
         val cohortSizeId = outcomeLookup["cohort_size"]
@@ -247,7 +247,7 @@ class JooqBurdenEstimateRepository(
                 .execute()
     }
 
-    private fun addEstimatesToSet(estimates: List<BurdenEstimate>, setId: Int,
+    private fun addEstimatesToSet(estimates: Sequence<BurdenEstimate>, setId: Int,
                                   outcomeLookup: Map<String, Int>, cohortSizeId: Int,
                                   expectedDisease: String)
     {
