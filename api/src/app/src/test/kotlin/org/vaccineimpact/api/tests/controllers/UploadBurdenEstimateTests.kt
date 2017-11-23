@@ -199,6 +199,11 @@ class UploadBurdenEstimateTests : ControllerTests<GroupBurdenEstimatesController
         return mock {
             on { touchstoneRepository } doReturn touchstoneRepo
             on { createBurdenEstimateSet(any(), any(), any(), any(), any()) } doReturn 1
+            on { addBurdenEstimateSet(any(), any(), any(), any(), any(), any()) } doAnswer { args ->
+                // Force evaluation of sequence
+                args.getArgument<Sequence<BurdenEstimate>>(3).toList()
+                0 // Fake setId
+            }
         }
     }
 }

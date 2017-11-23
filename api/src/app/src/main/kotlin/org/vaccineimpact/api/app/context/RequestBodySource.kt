@@ -1,6 +1,6 @@
 package org.vaccineimpact.api.app.context
 
-import javax.servlet.MultipartConfigElement
+import java.io.Reader
 
 sealed class RequestBodySource
 {
