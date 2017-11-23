@@ -12,15 +12,45 @@ import org.vaccineimpact.api.app.errors.InconsistentDataError
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
 import org.vaccineimpact.api.app.repositories.SimpleDataSet
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
-import org.vaccineimpact.api.serialization.DataTableDeserializer
 import org.vaccineimpact.api.db.toDecimal
 import org.vaccineimpact.api.models.*
+import org.vaccineimpact.api.serialization.DataTableDeserializer
+import java.io.StringReader
 import java.time.Instant
 
-class UploadBurdenEstimateTests : ControllerTests<GroupBurdenEstimatesController>()
+class GroupEstimatesControllerTests : ControllerTests<GroupBurdenEstimatesController>()
 {
     override fun makeController(controllerContext: ControllerContext)
             = GroupBurdenEstimatesController(controllerContext)
+
+    @Test
+    fun `can upload model run params`()
+    {
+        val params = mapOf("param1" to "value1", "param2" to "value2")
+        val modelRuns = listOf<ModelRun>(ModelRun("run1", params))
+
+        val mockContext = mock<ActionContext> {
+            on { csvData<ModelRun>(any(), any()) } doReturn modelRuns.asSequence()
+            on { username } doReturn "user.name"
+            on { params(":group-id") } doReturn "group-1"
+            on { params(":touchstone-id") } doReturn "touchstone-1"
+            on { params(":scenario-id") } doReturn "scenario-1"
+            on { getPart("description") } doReturn StringReader("some description")
+        }
+
+        val controller = makeController(mockControllerContext())
+        val touchstoneRepo = mockTouchstoneRepository()
+        val repo = mock<BurdenEstimateRepository> {
+            on { touchstoneRepository } doReturn touchstoneRepo
+            on { it.addModelRunParameterSet(eq("group-1"), eq("touchstone-1"), eq("scenario-1"),
+                    eq("some description"),
+                    eq(modelRuns), eq("user.name"), any()) } doReturn 11
+        }
+
+        val expectedPath = "/v1/modelling-groups/group-1/responsibilities/touchstone-1/scenario-1/model-run-parameters/11"
+        val objectCreationUrl = controller.addModelRunParameters(mockContext, repo)
+        assertThat(objectCreationUrl).endsWith(expectedPath)
+    }
 
     @Test
     fun `can get metadata for burden estimates`()
