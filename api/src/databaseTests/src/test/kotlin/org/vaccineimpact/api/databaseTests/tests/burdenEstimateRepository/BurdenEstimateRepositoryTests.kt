@@ -53,4 +53,5 @@ abstract class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRep
         db.addUserForTesting(username)
         return ReturnedIds(modelVersionId, responsibilityId, setId)
     }
+
 }

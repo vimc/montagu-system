@@ -127,4 +127,31 @@ class ModelParameterTests : BurdenEstimateRepositoryTests()
         }
     }
 
+    fun `cannot get model run parameter sets if group has no model`()
+    {
+        JooqContext().use { db ->
+            returnedIds = setupDatabase(db, addModel = false)
+            val repo = makeRepository(db)
+
+            Assertions.assertThatThrownBy {
+                repo.getModelRunParameterSets(groupId, touchstoneId, scenarioId)
+            }.isInstanceOf(DatabaseContentsError::class.java)
+                    .hasMessageContaining("Modelling group $groupId does not have any models/model versions in the database")
+        }
+    }
+
+    @Test
+    fun `can get model run parameter sets`()
+    {
+        given { db ->
+            returnedIds = setupDatabase(db)
+        } makeTheseChanges { repo ->
+            repo.addModelRunParameterSet(groupId, touchstoneId, scenarioId,
+                    "a test set", modelRuns, username, timestamp)
+
+        } andCheck { repo ->
+            val sets = repo.getModelRunParameterSets(groupId, touchstoneId, scenarioId)
+        }
+    }
+
 }
