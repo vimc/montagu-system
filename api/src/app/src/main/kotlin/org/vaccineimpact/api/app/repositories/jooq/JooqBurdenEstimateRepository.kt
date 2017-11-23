@@ -276,7 +276,7 @@ class JooqBurdenEstimateRepository(
                         countries, setId, cohortSizeId, outcomeLookup
                 )
 
-                // Wait for the worker thread has finished
+                // Wait for the worker thread to finished
                 writeToDatabaseThread.join()
             }
         }
