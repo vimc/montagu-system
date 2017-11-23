@@ -1010,14 +1010,6 @@ Schema: [`ModelRunParameterSets.schema.json`](ModelRunParameterSets.schema.json)
         }
     ]
 
-### Query parameters
-#### scenario
-Filter by scenario. e.g. GET /touchstone/2017-op-1/estimates/?scenario=menA-novacc
-
-#### responsible_group
-Filter by responsible group. e.g. GET /touchstone/2017-op-1/estimates/?responsible_group=IC-YellowFever
-
-
 ## GET /modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}/{scenario-id}/estimate-sets/
 Returns metadata for all burden estimates that have been uploaded for this 
 responsibility.
@@ -1039,13 +1031,6 @@ Schema: [`BurdenEstimates.schema.json`](BurdenEstimates.schema.json)
             "problems": []
         }
     ]
-
-### Query parameters
-#### scenario
-Filter by scenario. e.g. GET /touchstone/2017-op-1/estimates/?scenario=menA-novacc
-
-#### responsible_group
-Filter by responsible group. e.g. GET /touchstone/2017-op-1/estimates/?responsible_group=IC-YellowFever
 
 ## GET /modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}/{scenario-id}/estimate-sets/{estimate-id}/
 Returns the full burden estimate data.
