@@ -41,6 +41,3 @@ docker exec montagu_reporting_api_1 touch /etc/montagu/reports_api/go_signal
 migrate_image=$registry/montagu-migrate:$MONTAGU_DB_VERSION
 docker pull $migrate_image
 docker run --network=montagu_default $migrate_image
-
-# Add test accounts
-$here/add-test-accounts-for-integration-tests.sh

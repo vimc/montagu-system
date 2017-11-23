@@ -16,6 +16,11 @@ image=$registry/montagu-generate-test-data:$MONTAGU_API_VERSION
 docker pull $image
 docker run --rm --network=montagu_default $image
 
+
+# Add test accounts
+$here/add-test-accounts-for-integration-tests.sh
+
+
 # Wait for Ctrl+C
 echo "Ready to use. Press Ctrl+C to teardown."
 sleep infinity
