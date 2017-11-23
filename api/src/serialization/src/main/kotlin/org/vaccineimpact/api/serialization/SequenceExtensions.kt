@@ -1,5 +1,7 @@
 package org.vaccineimpact.api.serialization
 
+// Pulls the head (first element) off the sequence and returns that
+// and the remaining sequence elements.
 fun <T> Sequence<T>.headAndTail(): Pair<T?, Sequence<T>>
 {
     val iterator = this.iterator()
