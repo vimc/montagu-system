@@ -19,10 +19,7 @@ import org.vaccineimpact.api.db.Tables.*
 import org.vaccineimpact.api.db.direct.*
 import org.vaccineimpact.api.db.fromJoinPath
 import org.vaccineimpact.api.db.toDecimal
-import org.vaccineimpact.api.models.BurdenEstimate
-import org.vaccineimpact.api.models.BurdenEstimateSet
-import org.vaccineimpact.api.models.BurdenEstimateSetType
-import org.vaccineimpact.api.models.BurdenEstimateSetTypeCode
+import org.vaccineimpact.api.models.*
 import java.math.BigDecimal
 import java.time.Instant
 import java.time.LocalDateTime
@@ -41,7 +38,7 @@ class UploadBurdenEstimateTests : BurdenEstimateRepositoryTests()
         given { db ->
             returnedIds = setupDatabase(db)
         } makeTheseChanges { repo ->
-            setId = repo.createBurdenEstimateSet(groupId, touchstoneId, scenarioId, username, timestamp)
+            setId = repo.createBurdenEstimateSet(groupId, touchstoneId, scenarioId, defaultProperties, username, timestamp)
         } andCheckDatabase { db ->
             checkBurdenEstimateSetMetadata(db, setId!!, returnedIds!!, "empty")
         }
@@ -56,7 +53,7 @@ class UploadBurdenEstimateTests : BurdenEstimateRepositoryTests()
         given { db ->
             returnedIds = setupDatabase(db)
         } makeTheseChanges { repo ->
-            setId = repo.createBurdenEstimateSet(groupId, touchstoneId, scenarioId, username, timestamp)
+            setId = repo.createBurdenEstimateSet(groupId, touchstoneId, scenarioId, defaultProperties, username, timestamp)
             repo.populateBurdenEstimateSet(setId!!, groupId, touchstoneId, scenarioId, data)
         } andCheckDatabase { db ->
             checkBurdenEstimates(db, setId!!)
@@ -102,7 +99,7 @@ class UploadBurdenEstimateTests : BurdenEstimateRepositoryTests()
         given { db ->
             returnedIds = setupDatabase(db)
         } makeTheseChanges { repo ->
-            setId = repo.createBurdenEstimateSet(groupId, touchstoneId, scenarioId, username, timestamp)
+            setId = repo.createBurdenEstimateSet(groupId, touchstoneId, scenarioId, defaultProperties, username, timestamp)
             repo.populateBurdenEstimateSet(setId!!, groupId, touchstoneId, scenarioId, data)
         } andCheckDatabase { db ->
             checkCurrentBurdenEstimateSet(db, returnedIds!!, setId!!)
@@ -117,7 +114,7 @@ class UploadBurdenEstimateTests : BurdenEstimateRepositoryTests()
             setupDatabase(db)
             val repo = makeRepository(db)
             assertThatThrownBy {
-                val setId = repo.createBurdenEstimateSet(groupId, touchstoneId, scenarioId, username, timestamp)
+                val setId = repo.createBurdenEstimateSet(groupId, touchstoneId, scenarioId, defaultProperties, username, timestamp)
                 repo.populateBurdenEstimateSet(setId, groupId, touchstoneId, scenarioId, badData)
             }.isInstanceOf(InconsistentDataError::class.java)
         }
@@ -131,7 +128,7 @@ class UploadBurdenEstimateTests : BurdenEstimateRepositoryTests()
             setupDatabase(db)
             val repo = makeRepository(db)
             assertThatThrownBy {
-                val setId = repo.createBurdenEstimateSet(groupId, touchstoneId, scenarioId, username, timestamp)
+                val setId = repo.createBurdenEstimateSet(groupId, touchstoneId, scenarioId, defaultProperties, username, timestamp)
                 repo.populateBurdenEstimateSet(setId, groupId, touchstoneId, scenarioId, badData)
             }.isInstanceOf(UnknownObjectError::class.java).matches {
                 (it as UnknownObjectError).typeName == "country"
@@ -146,7 +143,7 @@ class UploadBurdenEstimateTests : BurdenEstimateRepositoryTests()
             setupDatabase(db, addModel = false)
             val repo = makeRepository(db)
             assertThatThrownBy {
-                repo.createBurdenEstimateSet(groupId, touchstoneId, scenarioId, username, timestamp)
+                repo.createBurdenEstimateSet(groupId, touchstoneId, scenarioId, defaultProperties, username, timestamp)
             }.isInstanceOf(DatabaseContentsError::class.java)
         }
     }
@@ -159,7 +156,7 @@ class UploadBurdenEstimateTests : BurdenEstimateRepositoryTests()
             db.dsl.deleteFrom(BURDEN_OUTCOME).where(BURDEN_OUTCOME.CODE.eq("cohort_size")).execute()
             val repo = makeRepository(db)
             assertThatThrownBy {
-                val setId = repo.createBurdenEstimateSet(groupId, touchstoneId, scenarioId, username, timestamp)
+                val setId = repo.createBurdenEstimateSet(groupId, touchstoneId, scenarioId, defaultProperties, username, timestamp)
                 repo.populateBurdenEstimateSet(setId, groupId, touchstoneId, scenarioId, data)
             }.isInstanceOf(DatabaseContentsError::class.java)
         }
@@ -172,7 +169,7 @@ class UploadBurdenEstimateTests : BurdenEstimateRepositoryTests()
             setupDatabase(db, responsibilitySetStatus = "submitted")
             val repo = makeRepository(db)
             assertThatThrownBy {
-                repo.createBurdenEstimateSet(groupId, touchstoneId, scenarioId, username, timestamp)
+                repo.createBurdenEstimateSet(groupId, touchstoneId, scenarioId, defaultProperties, username, timestamp)
             }.isInstanceOf(OperationNotAllowedError::class.java)
                     .hasMessage("the following problems occurred:\nThe burden estimates uploaded for this touchstone have been submitted for review." +
                             " You cannot upload any new estimates.")
@@ -186,7 +183,7 @@ class UploadBurdenEstimateTests : BurdenEstimateRepositoryTests()
             setupDatabase(db, responsibilitySetStatus = "approved")
             val repo = makeRepository(db)
             assertThatThrownBy {
-                repo.createBurdenEstimateSet(groupId, touchstoneId, scenarioId, username, timestamp)
+                repo.createBurdenEstimateSet(groupId, touchstoneId, scenarioId, defaultProperties, username, timestamp)
             }.isInstanceOf(OperationNotAllowedError::class.java)
                     .hasMessage("the following problems occurred:\nThe burden estimates uploaded for this touchstone have been reviewed and approved." +
                             " You cannot upload any new estimates.")
@@ -291,5 +288,9 @@ class UploadBurdenEstimateTests : BurdenEstimateRepositoryTests()
                     "deaths" to 20.toDecimal(),
                     "dalys" to 73.6.toDecimal()
             ))
+    )
+
+    private val defaultProperties = CreateBurdenEstimateSet(
+            BurdenEstimateSetType(BurdenEstimateSetTypeCode.CENTRAL_UNKNOWN)
     )
 }

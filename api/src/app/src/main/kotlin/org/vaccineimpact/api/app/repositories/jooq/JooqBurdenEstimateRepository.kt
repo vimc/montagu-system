@@ -12,10 +12,7 @@ import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.app.repositories.jooq.mapping.BurdenMappingHelper
 import org.vaccineimpact.api.db.*
 import org.vaccineimpact.api.db.Tables.*
-import org.vaccineimpact.api.models.BurdenEstimate
-import org.vaccineimpact.api.models.BurdenEstimateSet
-import org.vaccineimpact.api.models.ModelRun
-import org.vaccineimpact.api.models.ResponsibilitySetStatus
+import org.vaccineimpact.api.models.*
 import java.beans.ConstructorProperties
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
@@ -167,7 +164,11 @@ class JooqBurdenEstimateRepository(
     override fun addBurdenEstimateSet(groupId: String, touchstoneId: String, scenarioId: String,
                                       estimates: List<BurdenEstimate>, uploader: String, timestamp: Instant): Int
     {
-        val setId = createBurdenEstimateSet(groupId, touchstoneId, scenarioId, uploader, timestamp)
+        val properties = CreateBurdenEstimateSet(BurdenEstimateSetType(
+                BurdenEstimateSetTypeCode.CENTRAL_UNKNOWN,
+                "Created via deprecated method"
+        ))
+        val setId = createBurdenEstimateSet(groupId, touchstoneId, scenarioId, properties, uploader, timestamp)
         populateBurdenEstimateSet(setId, groupId, touchstoneId, scenarioId, estimates)
         return setId
     }
@@ -200,6 +201,7 @@ class JooqBurdenEstimateRepository(
 
 
     override fun createBurdenEstimateSet(groupId: String, touchstoneId: String, scenarioId: String,
+                                         properties: CreateBurdenEstimateSet,
                                          uploader: String, timestamp: Instant): Int
     {
         // Dereference modelling group IDs
@@ -222,7 +224,7 @@ class JooqBurdenEstimateRepository(
 
         val latestModelVersion = getlatestModelVersion(modellingGroup.id, responsibilityInfo.disease)
 
-        return addSet(responsibilityInfo.id, uploader, timestamp, latestModelVersion)
+        return addSet(responsibilityInfo.id, uploader, timestamp, latestModelVersion, properties)
     }
 
     private fun getlatestModelVersion(groupId: String, disease: String): Int
@@ -336,7 +338,8 @@ class JooqBurdenEstimateRepository(
         )
     }
 
-    private fun addSet(responsibilityId: Int, uploader: String, timestamp: Instant, modelVersion: Int): Int
+    private fun addSet(responsibilityId: Int, uploader: String, timestamp: Instant,
+                       modelVersion: Int, properties: CreateBurdenEstimateSet): Int
     {
         val setRecord = dsl.newRecord(BURDEN_ESTIMATE_SET).apply {
             this.modelVersion = modelVersion
@@ -346,6 +349,8 @@ class JooqBurdenEstimateRepository(
             this.runInfo = "Not provided"
             this.interpolated = false
             this.status = "empty"
+            this.setType = mapper.mapEnum(properties.type.type)
+            this.setTypeDetails = properties.type.details
         }
         setRecord.insert()
         return setRecord.id

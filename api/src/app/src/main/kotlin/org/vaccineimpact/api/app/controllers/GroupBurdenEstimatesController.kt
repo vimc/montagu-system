@@ -3,6 +3,7 @@ package org.vaccineimpact.api.app.controllers
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.context.RequestBodySource
 import org.vaccineimpact.api.app.context.csvData
+import org.vaccineimpact.api.app.context.postData
 import org.vaccineimpact.api.app.controllers.endpoints.EndpointDefinition
 import org.vaccineimpact.api.app.controllers.endpoints.oneRepoEndpoint
 import org.vaccineimpact.api.app.controllers.endpoints.secured
@@ -87,8 +88,10 @@ open class GroupBurdenEstimatesController(context: ControllerContext) : Abstract
     {
         // First check if we're allowed to see this touchstone
         val path = getValidResponsibilityPath(context, estimateRepository)
+        val properties = context.postData<CreateBurdenEstimateSet>()
 
         val id = estimateRepository.createBurdenEstimateSet(path.groupId, path.touchstoneId, path.scenarioId,
+                properties = properties,
                 uploader = context.username!!,
                 timestamp = Instant.now())
 
@@ -96,7 +99,7 @@ open class GroupBurdenEstimatesController(context: ControllerContext) : Abstract
         return objectCreation(context, url)
     }
 
-    /** Deprecated **/
+    @Deprecated("Instead use createBurdenEstimateSet and then populateBurdenEstimateSet")
     open fun addBurdenEstimates(
             context: ActionContext,
             estimateRepository: BurdenEstimateRepository,
@@ -142,6 +145,7 @@ open class GroupBurdenEstimatesController(context: ControllerContext) : Abstract
         return okayResponse()
     }
 
+    @Deprecated("Instead use createBurdenEstimateSet and then populateBurdenEstimateSet")
     private fun saveBurdenEstimates(data: List<BurdenEstimate>,
                                     estimateRepository: BurdenEstimateRepository,
                                     context: ActionContext,
