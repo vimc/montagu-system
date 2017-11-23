@@ -110,16 +110,14 @@ open class GroupBurdenEstimatesController(context: ControllerContext) : Abstract
 
         // Then add the burden estimates
         val data = context.csvData<BurdenEstimate>(from = source)
-
-        if (data.map { it.disease }.distinct().count() > 1)
-        {
-            throw InconsistentDataError("More than one value was present in the disease column")
-        }
+        val checkedData = data.checkAllValuesAreEqual({ it.disease },
+                InconsistentDataError("More than one value was present in the disease column")
+        )
 
         estimateRepository.populateBurdenEstimateSet(
                 context.params(":set-id").toInt(),
                 path.groupId, path.touchstoneId, path.scenarioId,
-                data
+                checkedData
         )
 
         return okayResponse()
@@ -130,13 +128,14 @@ open class GroupBurdenEstimatesController(context: ControllerContext) : Abstract
                                     context: ActionContext,
                                     path: ResponsibilityPath): String
     {
-        val checkedData = data.checkAllValuesAreEqual { it.disease }
-            ?: throw InconsistentDataError("More than one value was present in the disease column")
+        val checkedData = data.checkAllValuesAreEqual({ it.disease },
+                InconsistentDataError("More than one value was present in the disease column")
+        )
 
         val id = estimateRepository.addBurdenEstimateSet(
                 path.groupId, path.touchstoneId, path.scenarioId,
                 checkedData,
-                uploader = context.username ?: "test.user",
+                uploader = context.username!!,
                 timestamp = Instant.now()
         )
         val url = "/modelling-groups/${path.groupId}/responsibilities/${path.touchstoneId}/${path.scenarioId}/estimates/$id/"
