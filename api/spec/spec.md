@@ -1006,7 +1006,7 @@ Schema: [`ModelRunParameterSets.schema.json`](ModelRunParameterSets.schema.json)
             "id": 1,
             "description": "our first set of parameters",
             "uploaded_by": "tgarske",
-            "uploaded_on": "2017-10-06T11:18:06Z",         
+            "uploaded_on": "2017-10-06T11:18:06Z"   
         }
     ]
 
