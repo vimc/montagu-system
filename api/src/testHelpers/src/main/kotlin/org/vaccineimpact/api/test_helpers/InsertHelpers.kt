@@ -197,6 +197,26 @@ fun JooqContext.addBurdenEstimateSet(
     return record.id
 }
 
+fun JooqContext.addModelRunParameterSet(
+        responsibilitySetId: Int, modelVersionId: Int,
+        username: String, description: String
+): Int
+{
+    val uploadInfo = this.dsl.newRecord(UPLOAD_INFO).apply{
+        this.uploadedBy = username
+    }
+    uploadInfo.store()
+
+    val record = this.dsl.newRecord(MODEL_RUN_PARAMETER_SET).apply {
+        this.responsibilitySet = responsibilitySetId
+        this.modelVersion = modelVersionId
+        this.uploadInfo = uploadInfo.id
+        this.description = description
+    }
+    record.store()
+    return record.id
+}
+
 fun JooqContext.addBurdenEstimateProblem(problem: String, burdenId: Int)
 {
     val record = this.dsl.newRecord(BURDEN_ESTIMATE_SET_PROBLEM).apply {

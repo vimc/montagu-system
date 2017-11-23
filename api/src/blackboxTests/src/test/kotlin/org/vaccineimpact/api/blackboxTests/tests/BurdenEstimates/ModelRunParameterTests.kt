@@ -1,5 +1,7 @@
 package org.vaccineimpact.api.blackboxTests.tests.BurdenEstimates
 
+import com.beust.klaxon.JsonObject
+import com.beust.klaxon.json
 import org.assertj.core.api.Assertions
 import org.junit.Test
 import org.vaccineimpact.api.blackboxTests.helpers.RequestHelper
@@ -39,7 +41,6 @@ class ModelRunParameterTests : BurdenEstimateTests()
         Assertions.assertThat(response.headers["Location"]).`as`("Location header").contains("$urlBase/model-run-parameters/")
 
     }
-
 
     @Test
     fun `can upload model run parameter set via onetime link`()
@@ -113,6 +114,23 @@ class ModelRunParameterTests : BurdenEstimateTests()
             JSONValidator().validateError(response.text,
                     expectedErrorCode = "bad-request",
                     expectedErrorText = "No value passed for required POST parameter 'description'")
+        }
+    }
+
+    @Test
+    fun `can get model run parameters`()
+    {
+        var setId = 0
+        validate("$urlBase/model-run-parameters/") against "ModelRunParameterSets" given { db ->
+            setId = setUpWithModelRunParameterSet(db)
+        } requiringPermissions {
+            requiredWritePermissions
+        } andCheckArray { data ->
+            val obj = data.first() as JsonObject
+            Assertions.assertThat(obj["uploaded_by"]).isEqualTo("test.user")
+            Assertions.assertThat(obj["uploaded_on"]).isNotNull()
+            Assertions.assertThat(obj["id"]).isEqualTo(setId)
+            Assertions.assertThat(obj["description"]).isEqualTo("description")
         }
     }
 
