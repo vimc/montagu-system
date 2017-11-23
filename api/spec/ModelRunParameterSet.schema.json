@@ -1,0 +1,12 @@
+{
+    "id": "ModelRunParameterSet",
+    "type": "object",
+    "properties": {
+        "id": { "type": "integer" },
+        "description": { "type": "string" },
+        "uploaded_by": { "$ref": "Username.schema.json" },
+        "uploaded_on": { "$ref": "Timestamp.schema.json" }
+    },
+    "additionalProperties": false,
+    "required": [ "id", "description", "uploaded_by", "uploaded_on" ]
+}

@@ -993,6 +993,31 @@ An error occurs (and no changes are made) if:
 * The coverage set is `campaign` and the scenario is `routine`. (All other combinations are acceptable)
 
 # Burden estimates
+## GET /modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}/{scenario-id}/model_run_parameter_sets/
+Returns a list of model run parameter sets that this modelling group has uploaded for this touchstone.
+
+Required permissions: Scoped to modelling group: `responsibilities.read`.
+
+Schema: [`ModelRunParameterSet.schema.json`](ModelRunParameterSet.schema.json)
+
+### Example
+    [
+        {
+            "id": 1,
+            "description": "our first set of parameters",
+            "uploaded_by": "tgarske",
+            "uploaded_on": "2017-10-06T11:18:06Z",         
+        }
+    ]
+
+### Query parameters
+#### scenario
+Filter by scenario. e.g. GET /touchstone/2017-op-1/estimates/?scenario=menA-novacc
+
+#### responsible_group
+Filter by responsible group. e.g. GET /touchstone/2017-op-1/estimates/?responsible_group=IC-YellowFever
+
+
 ## GET /modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}/{scenario-id}/estimate-sets/
 Returns metadata for all burden estimates that have been uploaded for this 
 responsibility.
