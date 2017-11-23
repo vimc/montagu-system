@@ -998,7 +998,7 @@ Returns a list of model run parameter sets that this modelling group has uploade
 
 Required permissions: Scoped to modelling group: `responsibilities.read`.
 
-Schema: [`ModelRunParameterSet.schema.json`](ModelRunParameterSet.schema.json)
+Schema: [`ModelRunParameterSets.schema.json`](ModelRunParameterSets.schema.json)
 
 ### Example
     [
