@@ -42,12 +42,12 @@ export class TemplateLinks extends React.Component<TemplateLinksProps, undefined
                 .map(id =>
                     <TemplateLink key={id} diseaseId={id} groupId={this.props.groupId}/>);
 
-            return <div>Download burden estimate templates:<br/>
-                {links}
-                <div>
-                    <a key={"params"}
-                       href={"/contribution/templates/stochastic_template_params.csv"}>Stochastic parameters template</a>
-                </div>
+            return <div>Download burden estimate templates (available from 30th November)<br/>
+                {/*{links}*/}
+                {/*<div>*/}
+                    {/*<a key={"params"}*/}
+                       {/*href={"/contribution/templates/stochastic_template_params.csv"}>Stochastic parameters template</a>*/}
+                {/*</div>*/}
             </div>;
         } else {
             return <span/>;
