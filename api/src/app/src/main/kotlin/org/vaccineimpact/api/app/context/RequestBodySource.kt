@@ -1,14 +1,15 @@
 package org.vaccineimpact.api.app.context
 
+import java.io.Reader
+
 sealed class RequestBodySource
 {
-    // Later, we should not return a string, but a stream or sequence of lines
-    abstract fun getContent(context: ActionContext): String
+    abstract fun getContent(context: ActionContext): Reader
 
     class Simple : RequestBodySource()
     {
         override fun getContent(context: ActionContext)
-                = context.request.body()
+                = context.request.raw().inputStream.bufferedReader()
     }
 
     class HTMLMultipart(private val partName: String) : RequestBodySource()

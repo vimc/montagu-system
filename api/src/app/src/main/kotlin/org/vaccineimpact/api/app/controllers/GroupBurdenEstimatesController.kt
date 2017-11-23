@@ -1,5 +1,6 @@
 package org.vaccineimpact.api.app.controllers
 
+import org.vaccineimpact.api.app.checkAllValuesAreEqual
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.context.RequestBodySource
 import org.vaccineimpact.api.app.context.csvData
@@ -63,11 +64,11 @@ open class GroupBurdenEstimatesController(context: ControllerContext) : Abstract
     fun addModelRunParameters(context: ActionContext, estimateRepository: BurdenEstimateRepository): String
     {
         val path = getValidResponsibilityPath(context, estimateRepository)
-        val description = context.getPart("description")
+        val description = context.getPart("description").readText()
 
+        val modelRuns = context.csvData<ModelRun>(RequestBodySource.HTMLMultipart("file"))
         val id = estimateRepository.addModelRunParameterSet(path.groupId, path.touchstoneId, path.scenarioId,
-                description, context.csvData<ModelRun>(RequestBodySource.HTMLMultipart("file")),
-                context.username!!, Instant.now())
+                description, modelRuns.toList(), context.username!!, Instant.now())
 
         return objectCreation(context, urlComponent
                 .replace(":touchstone-id", path.touchstoneId)
@@ -130,35 +131,32 @@ open class GroupBurdenEstimatesController(context: ControllerContext) : Abstract
 
         // Then add the burden estimates
         val data = context.csvData<BurdenEstimate>(from = source)
-
-        if (data.map { it.disease }.distinct().count() > 1)
-        {
-            throw InconsistentDataError("More than one value was present in the disease column")
-        }
+        val checkedData = data.checkAllValuesAreEqual({ it.disease },
+                InconsistentDataError("More than one value was present in the disease column")
+        )
 
         estimateRepository.populateBurdenEstimateSet(
                 context.params(":set-id").toInt(),
                 path.groupId, path.touchstoneId, path.scenarioId,
-                data
+                checkedData
         )
 
         return okayResponse()
     }
 
     @Deprecated("Instead use createBurdenEstimateSet and then populateBurdenEstimateSet")
-    private fun saveBurdenEstimates(data: List<BurdenEstimate>,
+    private fun saveBurdenEstimates(data: Sequence<BurdenEstimate>,
                                     estimateRepository: BurdenEstimateRepository,
                                     context: ActionContext,
                                     path: ResponsibilityPath): String
     {
-        if (data.map { it.disease }.distinct().count() > 1)
-        {
-            throw InconsistentDataError("More than one value was present in the disease column")
-        }
+        val checkedData = data.checkAllValuesAreEqual({ it.disease },
+                InconsistentDataError("More than one value was present in the disease column")
+        )
 
         val id = estimateRepository.addBurdenEstimateSet(
                 path.groupId, path.touchstoneId, path.scenarioId,
-                data,
+                checkedData,
                 uploader = context.username!!,
                 timestamp = Instant.now()
         )

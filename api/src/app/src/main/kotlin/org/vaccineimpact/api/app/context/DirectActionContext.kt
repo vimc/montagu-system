@@ -18,6 +18,7 @@ import org.vaccineimpact.api.serialization.validation.ValidationException
 import spark.Request
 import spark.Response
 import java.io.OutputStream
+import java.io.Reader
 import java.util.zip.GZIPOutputStream
 import javax.servlet.MultipartConfigElement
 import kotlin.reflect.KClass
@@ -50,7 +51,7 @@ class DirectActionContext(private val context: SparkWebContext,
         }
     }
 
-    override fun getPart(name: String): String
+    override fun getPart(name: String): Reader
     {
         val contentType = request.contentType()
         if (!contentType.startsWith("multipart/form-data"))
@@ -67,16 +68,14 @@ class DirectActionContext(private val context: SparkWebContext,
         val part = request.raw().getPart(name)
                 ?: throw BadRequest("No value passed for required POST parameter '$name'")
 
-        return part.inputStream.bufferedReader().use {
-            it.readText()
-        }
+        return part.inputStream.bufferedReader()
     }
 
-    override fun <T : Any> csvData(klass: KClass<T>, from: RequestBodySource): List<T>
+    override fun <T : Any> csvData(klass: KClass<T>, from: RequestBodySource): Sequence<T>
     {
         return try
         {
-            DataTableDeserializer.deserialize(from.getContent(this), klass, serializer).toList()
+            DataTableDeserializer.deserialize(from.getContent(this), klass, serializer)
         }
         catch (e: ValidationException)
         {
