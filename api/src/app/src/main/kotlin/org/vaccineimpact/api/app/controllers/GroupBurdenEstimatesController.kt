@@ -132,7 +132,7 @@ open class GroupBurdenEstimatesController(context: ControllerContext) : Abstract
         val id = estimateRepository.addBurdenEstimateSet(
                 path.groupId, path.touchstoneId, path.scenarioId,
                 checkedData,
-                uploader = context.username ?: "test.user",
+                uploader = context.username!!,
                 timestamp = Instant.now()
         )
         val url = "/modelling-groups/${path.groupId}/responsibilities/${path.touchstoneId}/${path.scenarioId}/estimates/$id/"

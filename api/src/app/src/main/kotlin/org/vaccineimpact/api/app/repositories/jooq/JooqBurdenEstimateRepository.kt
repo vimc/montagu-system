@@ -292,7 +292,7 @@ class JooqBurdenEstimateRepository(
         // Since we are in another thread here, we should be careful about what state we modify.
         // Everything we have access to here is immutable, so we should be fine.
         return thread(start = true) {
-            // We use dsl.connection to drop down from jOOQ to the JDBC level so we can use CopyManager. 
+            // We use dsl.connection to drop down from jOOQ to the JDBC level so we can use CopyManager.
             dsl.connection { connection ->
                 val manager = CopyManager(connection as BaseConnection)
                 val t = BURDEN_ESTIMATE
