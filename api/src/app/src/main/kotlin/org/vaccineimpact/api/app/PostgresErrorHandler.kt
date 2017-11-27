@@ -2,16 +2,17 @@ package org.vaccineimpact.api.app
 
 import org.vaccineimpact.api.app.errors.DuplicateKeyError
 import org.vaccineimpact.api.app.errors.MontaguError
+import org.vaccineimpact.api.app.errors.UnexpectedError
 import spark.Request
 import spark.Response
 
-class PostgresErrorHandler
+open class PostgresErrorHandler
 {
     private val duplicateKeyRegex = Regex("duplicate key value violates unique constraint")
     private val duplicateKeyFieldsRegex = Regex("""Detail: Key \((?<field>.+)\)=\((?<value>.+)\) already exists.""")
     private val psqlFuncRegex = Regex("""\w+\((?<inner>.+)\)""")
 
-    fun handleException(exception: Exception, req: Request, res: Response, handler: ErrorHandler)
+    open fun handleException(exception: Exception): MontaguError
     {
         val text = exception.toString()
         if (duplicateKeyRegex.containsMatchIn(text))
@@ -19,10 +20,10 @@ class PostgresErrorHandler
             val error = handleDuplicateKeyError(text)
             if (error != null)
             {
-                return handler.handleError(error, req, res)
+                return error
             }
         }
-        handler.handleError(exception, req, res)
+        return UnexpectedError.new(exception)
     }
 
     private fun handleDuplicateKeyError(text: String): MontaguError?
