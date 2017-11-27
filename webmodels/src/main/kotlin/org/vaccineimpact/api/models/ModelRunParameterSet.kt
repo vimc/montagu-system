@@ -6,10 +6,11 @@ import java.beans.ConstructorProperties
 import java.time.Instant
 
 data class ModelRunParameterSet
-@ConstructorProperties("id", "description", "uploadedBy", "uploadedOn")
+@ConstructorProperties("id", "description", "model", "uploadedBy", "uploadedOn")
 constructor(
         override val id: Int,
         val description: String,
+        val model: String,
         val uploadedBy: String,
         val uploadedOn: Instant
 ): HasKey<Int>
