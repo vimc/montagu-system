@@ -12,6 +12,8 @@ import { DownloadDemographicsPage } from "./Responsibilities/Demographics/Downlo
 import { ContribForgottenPasswordPage } from "./ContribForgottenPasswordPage";
 import { TouchstoneHelp } from "./TouchstoneHelp";
 import { UploadBurdenEstimatesPage } from "./Responsibilities/BurdenEstimates/UploadBurdenEstimatesPage";
+import { ResponsibilityGuidanceModelInputs } from "./Responsibilities/Guidance/ResponsibilityGuidanceModelInputs";
+import { ResponsibilityGuidanceModelOutputs } from "./Responsibilities/Guidance/ResponsibilityGuidanceModelOutputs";
 
 interface RoutingProperties {
     loggedIn: boolean;
@@ -36,6 +38,8 @@ export class ContribRouter extends Router<RoutingProperties> {
                 map('/:groupId/responsibilities/:touchstoneId/burdens/:scenarioId', UploadBurdenEstimatesPage);
                 map('/:groupId/responsibilities/:touchstoneId/demographics', DownloadDemographicsPage);
                 map('/help/touchstones/', TouchstoneHelp);
+                map('/help/guidance-model-inputs/', ResponsibilityGuidanceModelInputs);
+                map('/help/guidance-model-outputs/', ResponsibilityGuidanceModelOutputs);
                 map('*', ContribNoRouteFoundPage);
             } else {
                 map("*", LoadingPage);

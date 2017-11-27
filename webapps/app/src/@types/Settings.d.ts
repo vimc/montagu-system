@@ -3,6 +3,7 @@ interface Settings {
     apiUrl: () => string;
     montaguUrl: () => string;
     supportContact: string;
+    slackUrl: string;
     teamcityServiceMessages: boolean;
     admin: AdminSettings;
     contrib: ContribSettings;
