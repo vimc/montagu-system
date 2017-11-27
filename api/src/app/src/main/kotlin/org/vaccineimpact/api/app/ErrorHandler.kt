@@ -7,8 +7,10 @@ import org.slf4j.LoggerFactory
 import org.vaccineimpact.api.app.errors.MontaguError
 import org.vaccineimpact.api.app.errors.UnableToParseJsonError
 import org.vaccineimpact.api.app.errors.UnexpectedError
+import org.vaccineimpact.api.app.errors.ValidationError
 import org.vaccineimpact.api.serialization.MontaguSerializer
 import org.vaccineimpact.api.serialization.Serializer
+import org.vaccineimpact.api.serialization.validation.ValidationException
 import spark.Request
 import spark.Response
 import spark.Spark as spk
@@ -24,6 +26,7 @@ open class ErrorHandler(private val logger: Logger = LoggerFactory.getLogger(Err
     {
         sparkException<JsonSyntaxException> { e, req, res -> handleError(UnableToParseJsonError(e), req, res) }
         sparkException<DataAccessException> { e, req, res -> postgresHandler.handleException(e, req, res, this) }
+        sparkException<ValidationException> { e, req, res-> handleError(ValidationError(e.errors), req, res) }
         sparkException<Exception>(this::handleError)
     }
 
