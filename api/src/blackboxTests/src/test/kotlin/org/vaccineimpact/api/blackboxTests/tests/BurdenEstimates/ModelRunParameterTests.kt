@@ -121,7 +121,7 @@ class ModelRunParameterTests : BurdenEstimateTests()
     fun `can get model run parameters`()
     {
         var setId = 0
-        validate("$urlBase/model-run-parameters/") against "ModelRunParameterSets" given { db ->
+        validate("/modelling-groups/$groupId/model-run-parameters/$touchstoneId/") against "ModelRunParameterSets" given { db ->
             setId = setUpWithModelRunParameterSet(db)
         } requiringPermissions {
             requiredWritePermissions
@@ -129,6 +129,7 @@ class ModelRunParameterTests : BurdenEstimateTests()
             val obj = data.first() as JsonObject
             Assertions.assertThat(obj["uploaded_by"]).isEqualTo("test.user")
             Assertions.assertThat(obj["uploaded_on"]).isNotNull()
+            Assertions.assertThat(obj["model"]).isEqualTo("model-1")
             Assertions.assertThat(obj["id"]).isEqualTo(setId)
             Assertions.assertThat(obj["description"]).isEqualTo("description")
         }
