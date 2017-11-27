@@ -51,9 +51,6 @@ open class GroupBurdenEstimatesController(context: ControllerContext) : Abstract
                         .secured(setOf("$groupScope/estimates.write", "$groupScope/responsibilities.read")),
 
                 oneRepoEndpoint("/model-run-parameters/get_onetime_link/", { c, r -> getOneTimeLinkToken(c, r, OneTimeAction.MODEl_RUN_PARAMETERS) }, repos, { it.token })
-                        .secured(setOf("$groupScope/estimates.write", "$groupScope/responsibilities.read")),
-
-                oneRepoEndpoint("/model-run-parameters/", this::getModelRunParameterSets, repos, { it.burdenEstimates })
                         .secured(setOf("$groupScope/estimates.write", "$groupScope/responsibilities.read"))
         )
     }
@@ -62,12 +59,6 @@ open class GroupBurdenEstimatesController(context: ControllerContext) : Abstract
             "$groupScope/estimates.$readOrWrite",
             "$groupScope/responsibilities.read"
     )
-
-    fun getModelRunParameterSets(context: ActionContext, estimateRepository: BurdenEstimateRepository): List<ModelRunParameterSet>
-    {
-        val path = getValidResponsibilityPath(context, estimateRepository)
-        return estimateRepository.getModelRunParameterSets(path.groupId, path.touchstoneId, path.scenarioId)
-    }
 
     fun addModelRunParameters(context: ActionContext, estimateRepository: BurdenEstimateRepository): String
     {

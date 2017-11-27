@@ -55,46 +55,6 @@ class GroupEstimatesControllerTests : ControllerTests<GroupBurdenEstimatesContro
     }
 
     @Test
-    fun `can get model run params`()
-    {
-        val modelRunParameterSets = listOf(ModelRunParameterSet(1, "description", "user", Instant.now()))
-
-        val mockContext = mock<ActionContext> {
-            on { params(":group-id") } doReturn "group-1"
-            on { params(":touchstone-id") } doReturn "touchstone-1"
-            on { params(":scenario-id") } doReturn "scenario-1"
-        }
-
-        val controller = makeController(mockControllerContext())
-        val touchstoneRepo = mockTouchstoneRepository()
-        val repo = mock<BurdenEstimateRepository> {
-            on { touchstoneRepository } doReturn touchstoneRepo
-            on {
-                it.getModelRunParameterSets(eq("group-1"), eq("touchstone-1"), eq("scenario-1"))
-            } doReturn modelRunParameterSets
-        }
-
-        assertThat(controller.getModelRunParameterSets(mockContext, repo)).isEqualTo(modelRunParameterSets)
-    }
-
-    @Test
-    fun `throws UnknownObjectError if touchstone is in preparation when getting model run params`()
-    {
-        val mockContext = mock<ActionContext> {
-            on { params(":group-id") } doReturn "group-1"
-            on { params(":touchstone-id") } doReturn "touchstone-bad"
-            on { params(":scenario-id") } doReturn "scenario-1"
-        }
-
-        val controller = makeController(mockControllerContext())
-        val touchstoneSet = mockTouchstones()
-        val repo = mockRepository(touchstoneSet)
-
-        assertThatThrownBy { controller.getModelRunParameterSets(mockContext, repo) }
-                .isInstanceOf(UnknownObjectError::class.java)
-    }
-
-    @Test
     fun `throws UnknownObjectError if touchstone is in preparation when adding model run params`()
     {
         val mockContext = mock<ActionContext> {

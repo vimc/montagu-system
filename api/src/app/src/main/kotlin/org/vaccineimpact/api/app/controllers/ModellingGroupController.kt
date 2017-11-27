@@ -9,13 +9,11 @@ import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.errors.MissingRequiredPermissionError
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
 import org.vaccineimpact.api.app.context.postData
-import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
-import org.vaccineimpact.api.app.repositories.Repositories
-import org.vaccineimpact.api.app.repositories.RepositoryFactory
-import org.vaccineimpact.api.app.repositories.UserRepository
+import org.vaccineimpact.api.app.repositories.*
 import org.vaccineimpact.api.app.security.checkIsAllowedToSeeTouchstone
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.helpers.OneTimeAction
+import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import org.vaccineimpact.api.serialization.FlexibleDataTable
 import org.vaccineimpact.api.serialization.SplitData
 import org.vaccineimpact.api.serialization.StreamSerializable
@@ -48,7 +46,9 @@ open class ModellingGroupController(context: ControllerContext)
                 oneRepoEndpoint("$coverageURL/", this::getCoverageDataAndMetadata.streamed(), repos, repo, contentType = "application/json").secured(coveragePermissions),
                 oneRepoEndpoint("$coverageURL/", this::getCoverageData.streamed(), repos, repo, contentType = "text/csv").secured(coveragePermissions),
                 oneRepoEndpoint("$coverageURL/get_onetime_link/", { c, r -> getOneTimeLinkToken(c, r, OneTimeAction.COVERAGE) }, repos, { it.token }).secured(coveragePermissions),
-                oneRepoEndpoint("/:group-id/actions/associate_member/", this::modifyMembership, repos, { it.user }, method = HttpMethod.post).secured()
+                oneRepoEndpoint("/:group-id/actions/associate_member/", this::modifyMembership, repos, { it.user }, method = HttpMethod.post).secured(),
+                oneRepoEndpoint("/:group-id/model-run-parameters/:touchstone-id", this::getModelRunParameterSets, repos, { it.burdenEstimates })
+                        .secured(setOf("$groupScope/estimates.write", "$groupScope/responsibilities.read"))
         )
     }
 
@@ -62,6 +62,38 @@ open class ModellingGroupController(context: ControllerContext)
     {
         val groupId = groupId(context)
         return repo.getModellingGroupDetails(groupId)
+    }
+
+    fun getModelRunParameterSets(context: ActionContext, estimateRepository: BurdenEstimateRepository): List<ModelRunParameterSet>
+    {
+        val touchstoneId = context.params(":touchstoneId")
+        val groupId = context.params(":group-id")
+        checkValidPermissions(groupId, touchstoneId, context, estimateRepository)
+        return estimateRepository.getModelRunParameterSets(groupId, touchstoneId)
+    }
+
+    private fun checkValidPermissions(
+            groupId: String,
+            touchstoneId: String,
+            context: ActionContext,
+            estimateRepository: BurdenEstimateRepository,
+            readEstimatesRequired: Boolean = false
+    )
+    {
+
+        val touchstones = estimateRepository.touchstoneRepository.touchstones
+        val touchstone = touchstones.get(touchstoneId)
+        context.checkIsAllowedToSeeTouchstone(touchstoneId, touchstone.status)
+        if (readEstimatesRequired)
+        {
+            if (touchstone.status == TouchstoneStatus.OPEN)
+            {
+                context.requirePermission(ReifiedPermission(
+                        "estimates.read-unfinished",
+                        Scope.Specific("modelling-group", groupId)
+                ))
+            }
+        }
     }
 
     fun getResponsibilities(context: ActionContext, repo: ModellingGroupRepository): Responsibilities

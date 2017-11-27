@@ -2,6 +2,7 @@ package org.vaccineimpact.api.tests.controllers
 
 import com.nhaarman.mockito_kotlin.*
 import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
 import org.vaccineimpact.api.app.context.ActionContext
@@ -9,8 +10,8 @@ import org.vaccineimpact.api.app.controllers.ControllerContext
 import org.vaccineimpact.api.app.controllers.ModellingGroupController
 import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.errors.MissingRequiredPermissionError
-import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
-import org.vaccineimpact.api.app.repositories.UserRepository
+import org.vaccineimpact.api.app.errors.UnknownObjectError
+import org.vaccineimpact.api.app.repositories.*
 import org.vaccineimpact.api.db.nextDecimal
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.permissions.PermissionSet
@@ -18,12 +19,55 @@ import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import org.vaccineimpact.api.serialization.DataTable
 import org.vaccineimpact.api.serialization.SplitData
 import java.math.BigDecimal
+import java.time.Instant
 import java.util.*
 
 class ModellingGroupControllersTests : ControllerTests<ModellingGroupController>()
 {
     override fun makeController(controllerContext: ControllerContext)
             = ModellingGroupController(controllerContext)
+
+    @Test
+    fun `can get model run params`()
+    {
+        val modelRunParameterSets = listOf(ModelRunParameterSet(1, "description", "model", "user", Instant.now()))
+
+        val mockContext = mock<ActionContext> {
+            on { params(":group-id") } doReturn "group-1"
+            on { params(":touchstone-id") } doReturn "touchstone-1"
+            on { params(":scenario-id") } doReturn "scenario-1"
+        }
+
+        val controller = makeController(mockControllerContext())
+        val touchstoneRepo = mock<TouchstoneRepository> {
+            on { touchstones } doReturn mockTouchstones()
+        }
+        val repo = mock<BurdenEstimateRepository> {
+            on { touchstoneRepository } doReturn touchstoneRepo
+            on {
+                it.getModelRunParameterSets(eq("group-1"), eq("touchstone-1"))
+            } doReturn modelRunParameterSets
+        }
+
+        assertThat(controller.getModelRunParameterSets(mockContext, repo)).isEqualTo(modelRunParameterSets)
+    }
+
+    @Test
+    fun `throws UnknownObjectError if touchstone is in preparation when getting model run params`()
+    {
+        val mockContext = mock<ActionContext> {
+            on { params(":group-id") } doReturn "group-1"
+            on { params(":touchstone-id") } doReturn "touchstone-bad"
+            on { params(":scenario-id") } doReturn "scenario-1"
+        }
+
+        val controller = makeController(mockControllerContext())
+        val touchstoneSet = mockTouchstones()
+        val repo = mockRepository(touchstoneSet)
+
+        assertThatThrownBy { controller.getModelRunParameterSets(mockContext, repo) }
+                .isInstanceOf(UnknownObjectError::class.java)
+    }
 
     @Test
     fun `getResponsibilities gets parameters from URL`()
@@ -286,6 +330,21 @@ class ModellingGroupControllersTests : ControllerTests<ModellingGroupController>
         }
         val controller = ModellingGroupController(mockControllerContext())
         controller.modifyMembership(context, mock<UserRepository>())
+    }
+
+    private fun mockRepository(touchstoneSet: SimpleDataSet<Touchstone, String> = mockTouchstones()): BurdenEstimateRepository
+    {
+        val touchstoneRepo = mock<TouchstoneRepository> {
+            on { touchstones } doReturn touchstoneSet
+        }
+        return mock {
+            on { touchstoneRepository } doReturn touchstoneRepo
+        }
+    }
+
+    private fun mockTouchstones() = mock<SimpleDataSet<Touchstone, String>> {
+        on { get("touchstone-1") } doReturn Touchstone("touchstone-1", "touchstone", 1, "Description", TouchstoneStatus.OPEN)
+        on { get("touchstone-bad") } doReturn Touchstone("touchstone-bad", "touchstone", 1, "not open", TouchstoneStatus.IN_PREPARATION)
     }
 
     private fun mockContextForSpecificResponsibility(hasPermissions: Boolean): ActionContext
