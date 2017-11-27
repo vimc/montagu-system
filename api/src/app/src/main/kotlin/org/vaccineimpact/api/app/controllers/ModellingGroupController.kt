@@ -1,6 +1,8 @@
 package org.vaccineimpact.api.app.controllers
 
 import org.vaccineimpact.api.app.context.ActionContext
+import org.vaccineimpact.api.app.context.RequestBodySource
+import org.vaccineimpact.api.app.context.csvData
 import org.vaccineimpact.api.app.controllers.endpoints.EndpointDefinition
 import org.vaccineimpact.api.app.controllers.endpoints.oneRepoEndpoint
 import org.vaccineimpact.api.app.controllers.endpoints.secured
@@ -9,10 +11,7 @@ import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.errors.MissingRequiredPermissionError
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
 import org.vaccineimpact.api.app.context.postData
-import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
-import org.vaccineimpact.api.app.repositories.Repositories
-import org.vaccineimpact.api.app.repositories.RepositoryFactory
-import org.vaccineimpact.api.app.repositories.UserRepository
+import org.vaccineimpact.api.app.repositories.*
 import org.vaccineimpact.api.app.security.checkIsAllowedToSeeTouchstone
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.helpers.OneTimeAction
@@ -20,6 +19,7 @@ import org.vaccineimpact.api.serialization.FlexibleDataTable
 import org.vaccineimpact.api.serialization.SplitData
 import org.vaccineimpact.api.serialization.StreamSerializable
 import spark.route.HttpMethod
+import java.time.Instant
 
 
 open class ModellingGroupController(context: ControllerContext)
@@ -48,8 +48,29 @@ open class ModellingGroupController(context: ControllerContext)
                 oneRepoEndpoint("$coverageURL/", this::getCoverageDataAndMetadata.streamed(), repos, repo, contentType = "application/json").secured(coveragePermissions),
                 oneRepoEndpoint("$coverageURL/", this::getCoverageData.streamed(), repos, repo, contentType = "text/csv").secured(coveragePermissions),
                 oneRepoEndpoint("$coverageURL/get_onetime_link/", { c, r -> getOneTimeLinkToken(c, r, OneTimeAction.COVERAGE) }, repos, { it.token }).secured(coveragePermissions),
-                oneRepoEndpoint("/:group-id/actions/associate_member/", this::modifyMembership, repos, { it.user }, method = HttpMethod.post).secured()
+                oneRepoEndpoint("/:group-id/actions/associate_member/", this::modifyMembership, repos, { it.user }, method = HttpMethod.post).secured(),
+                oneRepoEndpoint("/:group-id/model-run-parameters/:touchstone-id/", this::addModelRunParameters, repos, { it.burdenEstimates }, method = HttpMethod.post)
+                        .secured(setOf("$groupScope/estimates.write", "$groupScope/responsibilities.read")),
+
+                oneRepoEndpoint("/:group-id/model-run-parameters/:touchstone-id/get_onetime_link/", { c, r -> getOneTimeLinkToken(c, r, OneTimeAction.MODEl_RUN_PARAMETERS) }, repos, { it.token })
+                        .secured(setOf("$groupScope/estimates.write", "$groupScope/responsibilities.read"))
         )
+    }
+
+
+    fun addModelRunParameters(context: ActionContext, estimateRepository: BurdenEstimateRepository): String
+    {
+        val path = getValidResponsibilityPath(context, estimateRepository)
+        val description = context.getPart("description").readText()
+
+        val modelRuns = context.csvData<ModelRun>(RequestBodySource.HTMLMultipart("file"))
+        val id = estimateRepository.addModelRunParameterSet(path.groupId, path.touchstoneId, path.scenarioId,
+                description, modelRuns.toList(), context.username!!, Instant.now())
+
+        return objectCreation(context, urlComponent
+                .replace(":touchstone-id", path.touchstoneId)
+                .replace(":scenario-id", path.scenarioId)
+                .replace(":group-id", path.groupId) + "/model-run-parameters/$id")
     }
 
     @Suppress("UNUSED_PARAMETER")

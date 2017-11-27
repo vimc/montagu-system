@@ -91,15 +91,21 @@ class JooqBurdenEstimateRepository(
                 }
     }
 
-    override fun addModelRunParameterSet(groupId: String, touchstoneId: String, scenarioId: String,
+    override fun addModelRunParameterSet(groupId: String, touchstoneId: String, disease: String,
                                          description: String, modelRuns: List<ModelRun>,
                                          uploader: String, timestamp: Instant): Int
     {
         // Dereference modelling group IDs
         val modellingGroup = modellingGroupRepository.getModellingGroup(groupId)
-        val responsibilityInfo = getResponsibilityInfo(modellingGroup.id, touchstoneId, scenarioId)
-        val modelVersion = getlatestModelVersion(modellingGroup.id, responsibilityInfo.disease)
-        return addModelRunParameterSet(responsibilityInfo.setId, modelVersion, description, modelRuns, uploader, timestamp)
+        val modelVersion = getlatestModelVersion(modellingGroup.id, disease)
+
+        // We aren't checking whether the provided disease is associated with a scenario in this
+        // responsibility set but the intention is to refactor the data model so that a responsibility set
+        // is tied to a single disease, which will make this easier to do down the line
+        val setId = getResponsibilitySetId(modellingGroup.id, touchstoneId)
+
+        return addModelRunParameterSet(setId,
+                modelVersion, description, modelRuns, uploader, timestamp)
     }
 
     fun addModelRunParameterSet(responsibilitySetId: Int, modelVersionId: Int,
