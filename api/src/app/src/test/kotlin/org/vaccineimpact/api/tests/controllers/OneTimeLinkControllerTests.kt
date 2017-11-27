@@ -178,7 +178,7 @@ class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
         }
 
         val mockErrorHandler = mock<ErrorHandler>() {
-            on { logExceptionAndReturnMontaguError(any(), any()) } doReturn UnexpectedError()
+            on { logExceptionAndReturnMontaguError(any(), any()) } doReturn UnexpectedError.new(Exception())
         }
 
         val controller = makeController(
@@ -204,7 +204,7 @@ class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
         }
 
         val mockErrorHandler = mock<ErrorHandler>() {
-            on { logExceptionAndReturnMontaguError(any(), any()) } doReturn UnexpectedError()
+            on { logExceptionAndReturnMontaguError(any(), any()) } doReturn UnexpectedError.new(Exception())
         }
 
         val controller = makeController(

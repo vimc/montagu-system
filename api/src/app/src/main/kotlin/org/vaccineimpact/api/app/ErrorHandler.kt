@@ -20,13 +20,8 @@ open class ErrorHandler(private val logger: Logger = LoggerFactory.getLogger(Err
                         private val postgresHandler: PostgresErrorHandler = PostgresErrorHandler(),
                         private val serializer: Serializer = MontaguSerializer.instance)
 {
-    private val unhandledExceptionMessage = "An unhandled exception occurred"
-
     init
     {
-        sparkException<JsonSyntaxException> { e, req, res -> handleError(UnableToParseJsonError(e), req, res) }
-        sparkException<DataAccessException> { e, req, res -> postgresHandler.handleException(e, req, res, this) }
-        sparkException<ValidationException> { e, req, res-> handleError(ValidationError(e.errors), req, res) }
         sparkException<Exception>(this::handleError)
     }
 
@@ -35,15 +30,12 @@ open class ErrorHandler(private val logger: Logger = LoggerFactory.getLogger(Err
         val error = when (exception)
         {
             is MontaguError -> exception
-            else ->
-            {
-                logger.error(unhandledExceptionMessage, exception)
-                UnexpectedError()
-            }
+            is ValidationException -> ValidationError(exception)
+            is JsonSyntaxException -> UnableToParseJsonError(exception)
+            is DataAccessException -> postgresHandler.handleException(exception)
+            else -> UnexpectedError.new(exception, logger = logger)
         }
-
         logger.warn("For request ${req.uri()}, a ${error::class.simpleName} occurred with the following problems: ${error.problems}")
-
         return error
     }
 
