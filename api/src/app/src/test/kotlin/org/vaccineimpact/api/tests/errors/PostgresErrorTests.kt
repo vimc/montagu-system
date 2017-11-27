@@ -28,8 +28,7 @@ Detail: Key (lower(email))=(email@example.com) already exists."""
         val fakeException = mock<Exception> {
             on { toString() } doReturn (exceptionText)
         }
-        val parent = mock<ErrorHandler>()
-        handler.handleException(fakeException, mock(), mock(), parent)
-        verify(parent).handleError(argThat<DuplicateKeyError> { problems.first().code == "duplicate-key:email" }, any(), any())
+        val error = handler.handleException(fakeException)
+        assertThat(error).isInstanceOf(DuplicateKeyError::class.java)
     }
 }
