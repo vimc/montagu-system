@@ -58,7 +58,7 @@ describe("TemplateLink", () => {
         const rendered = shallow(<TemplateLink groupId="grpid" diseaseId="d1"/>);
         const links = rendered.find("a");
         expect(links.length).to.eq(2);
-        expect(links.first().prop("href")).to.eq("/contribution/templates/deterministic_burden_template_d1-grpid.csv");
+        expect(links.first().prop("href")).to.eq("/contribution/templates/central_burden_template_d1-grpid.csv");
         expect(links.last().prop("href")).to.eq("/contribution/templates/stochastic_burden_template_d1-grpid.csv");
     });
 });
