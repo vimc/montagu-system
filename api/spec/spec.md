@@ -1290,8 +1290,9 @@ Schema: [`CreateModelVersion.schema.json`](CreateModelVersion.schema.json)
         "fingerprint": null
     }
     
-## GET /modelling-groups/{modelling-group-id}/{touchstone-id}/model_run_parameter_sets/
-Returns a list of model run parameter sets that this modelling group has uploaded for responsibilities in thsi touchstone.
+## GET /modelling-groups/{modelling-group-id}/model_run_parameter_sets/{touchstone-id}/
+Returns a list of model run parameter sets that the given modelling group has uploaded for responsibilities in the 
+ given touchstone.
 
 Required permissions: Scoped to modelling group: `responsibilities.read`.
 
@@ -1308,7 +1309,7 @@ Schema: [`ModelRunParameterSets.schema.json`](ModelRunParameterSets.schema.json)
         }
     ]
     
-## POST /models/{model-id}/{touchstone-id}/model_run_parameter_sets/
+## POST /modelling-groups/{modelling-group-id}/model_run_parameter_sets/{touchstone-id}/{disease}/
 
 Required permissions: Scoped to modelling group: `estimates.write`.
 
