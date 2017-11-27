@@ -4,6 +4,7 @@
     "properties": {
         "id": { "type": "integer" },
         "description": { "type": "string" },
+        "model": { "type": "string"},
         "uploaded_by": { "$ref": "Username.schema.json" },
         "uploaded_on": { "$ref": "Timestamp.schema.json" }
     },
