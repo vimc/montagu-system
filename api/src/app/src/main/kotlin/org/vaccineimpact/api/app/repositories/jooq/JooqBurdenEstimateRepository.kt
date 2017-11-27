@@ -423,8 +423,7 @@ class JooqBurdenEstimateRepository(
     {
         // Get responsibility ID
         return dsl.select(RESPONSIBILITY_SET.ID)
-                .fromJoinPath(MODELLING_GROUP, RESPONSIBILITY_SET, RESPONSIBILITY, SCENARIO, SCENARIO_DESCRIPTION)
-                .joinPath(RESPONSIBILITY_SET, TOUCHSTONE)
+                .fromJoinPath(MODELLING_GROUP, RESPONSIBILITY_SET, TOUCHSTONE)
                 .where(MODELLING_GROUP.ID.eq(groupId))
                 .and(TOUCHSTONE.ID.eq(touchstoneId))
                 .fetchOneInto(Int::class.java)
