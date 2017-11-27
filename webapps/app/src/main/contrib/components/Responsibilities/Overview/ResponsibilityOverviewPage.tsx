@@ -37,7 +37,7 @@ export class ResponsibilityOverviewPage extends ContribPageWithHeader<LocationPr
 
     urlFragment(): string {
         const s = responsibilityStore.getState();
-        return `responsibilities/${s.currentTouchstone ? s.currentTouchstone.id : ''}/`;
+        return `responsibilities/${s.currentTouchstone.id}/`;
     }
 
     parent(): IPageWithParent {
