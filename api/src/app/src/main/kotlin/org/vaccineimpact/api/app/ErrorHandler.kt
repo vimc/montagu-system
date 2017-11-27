@@ -30,7 +30,7 @@ open class ErrorHandler(private val logger: Logger = LoggerFactory.getLogger(Err
         val error = when (exception)
         {
             is MontaguError -> exception
-            is ValidationException -> ValidationError(exception.errors)
+            is ValidationException -> ValidationError(exception)
             is JsonSyntaxException -> UnableToParseJsonError(exception)
             is DataAccessException -> postgresHandler.handleException(exception)
             else -> UnexpectedError.new(exception, logger = logger)
