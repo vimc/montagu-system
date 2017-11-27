@@ -1,42 +1,16 @@
 import * as React from "react";
+import { Component } from "react";
 import { settings } from "../../../../shared/Settings";
-import { RemoteContent } from "../../../../shared/models/RemoteContent";
-import { IExtendedResponsibilitySet } from "../../../models/ResponsibilitySet";
-import { ModellingGroup } from "../../../../shared/models/Generated";
 import { RemoteContentComponent } from "../../../../shared/components/RemoteContentComponent/RemoteContentComponent";
-import { responsibilityStore } from "../../../stores/ResponsibilityStore";
-import { ResponsibilityList } from "./List/ResponsibilityList";
-import { connectToStores } from "../../../../shared/alt";
-import { ButtonLink } from "../../../../shared/components/ButtonLink";
+import { InternalLink } from "../../../../shared/components/InternalLink";
 
 const commonStyles = require("../../../../shared/styles/common.css");
 const messageStyles = require("../../../../shared/styles/messages.css");
 
-export interface ResponsibilityOverviewComponentProps extends RemoteContent {
-    responsibilitySet: IExtendedResponsibilitySet;
-    currentDiseaseId: string;
-    modellingGroup: ModellingGroup;
-}
-
-export class ResponsibilityOverviewDescriptionComponent extends RemoteContentComponent<ResponsibilityOverviewComponentProps> {
-    static getStores() {
-        return [responsibilityStore];
-    }
-
-    static getPropsFromStores(): ResponsibilityOverviewComponentProps {
-        const state = responsibilityStore.getState();
-        const set = responsibilityStore.getCurrentResponsibilitySet();
-        return {
-            responsibilitySet: set,
-            ready: state.ready && set != null,
-            currentDiseaseId: state.currentDiseaseId,
-            modellingGroup: state.currentModellingGroup
-        }
-    }
-
-    renderContent(props: ResponsibilityOverviewComponentProps) {
-        const guidanceInputsUrl = `/help/guidance-model-inputs/`;
-        const guidanceOutputsUrl = `/help/guidance-model-outputs/`;
+export class ResponsibilityOverviewDescriptionComponent extends Component {
+    render() {
+        const guidanceInputsUrl = `/help/model-inputs/`;
+        const guidanceOutputsUrl = `/help/model-outputs/`;
         return <div>
             On this page you can:
             <ul>
@@ -46,21 +20,17 @@ export class ResponsibilityOverviewDescriptionComponent extends RemoteContentCom
                 </li>
                 <li>
                     Download vaccination coverage data for each scenario.&nbsp;
-                    <a
-                        href={guidanceInputsUrl}
-                    >
+                    <InternalLink href={guidanceInputsUrl}>
                         More guidance here
-                    </a>.
+                    </InternalLink>.
                 </li>
                 <li>
                     Download demographic data which applies to all scenarios.
                     Please use the demographic datasets supplied to ensure consistency
                     between all models.&nbsp;
-                    <a
-                        href={`${guidanceInputsUrl}#demography`}
-                    >
+                    <InternalLink href={`${guidanceInputsUrl}#demography`}>
                         More guidance here
-                    </a>.
+                    </InternalLink>.
                 </li>
                 <li>
                     Download csv templates for central and stochastic burden estimates,
@@ -69,19 +39,15 @@ export class ResponsibilityOverviewDescriptionComponent extends RemoteContentCom
                 <li>
                     Upload central burden estimates for each scenario, and review any
                     problems the system has detected in the uploaded data.&nbsp;
-                    <a
-                        href={guidanceOutputsUrl}
-                    >
+                    <InternalLink href={guidanceOutputsUrl}>
                         More guidance here
-                    </a>.
+                    </InternalLink>.
                 </li>
                 <li>
                     Upload your parameters file.&nbsp;
-                    <a
-                        href={guidanceOutputsUrl}
-                    >
+                    <InternalLink href={guidanceOutputsUrl}>
                         More guidance here
-                    </a>.
+                    </InternalLink>.
                 </li>
             </ul>
             <p>
@@ -93,35 +59,26 @@ export class ResponsibilityOverviewDescriptionComponent extends RemoteContentCom
             </span>
             <ul>
                 <li>
-                    <a
-                        href={guidanceInputsUrl}
-                    >
+                    <InternalLink href={guidanceInputsUrl}>
                         Guidance on model inputs: coverage and demographic data
-                    </a>
+                    </InternalLink>
                 </li>
                 <li>
-                    <a
-                        href={guidanceOutputsUrl}
-                    >
+                    <InternalLink href={guidanceOutputsUrl}>
                         Guidance on model outputs: how to generate and upload central
                         and stochastic estimates
-                    </a>
+                    </InternalLink>
                 </li>
             </ul>
             <span>
                 If you have any questions or anything is not as you expected,
                 please email&nbsp;
-                <a
-                    href={`mailto:${settings.supportContact}`}
-                >
+                <a href={`mailto:${settings.supportContact}`}>
                     {settings.supportContact}
                 </a>
                 &nbsp;or use the #montagu-help
                 channel on&nbsp;
-                <a
-                    href={settings.slackUrl}
-                    target="_blank"
-                >
+                <a href={settings.slackUrl} target="_blank">
                     Slack
                 </a>.
             </span>
@@ -129,4 +86,4 @@ export class ResponsibilityOverviewDescriptionComponent extends RemoteContentCom
     }
 }
 
-export const ResponsibilityOverviewDescription = connectToStores(ResponsibilityOverviewDescriptionComponent);
+export const ResponsibilityOverviewDescription = ResponsibilityOverviewDescriptionComponent;

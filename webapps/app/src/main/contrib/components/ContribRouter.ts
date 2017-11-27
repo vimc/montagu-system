@@ -38,8 +38,8 @@ export class ContribRouter extends Router<RoutingProperties> {
                 map('/:groupId/responsibilities/:touchstoneId/burdens/:scenarioId', UploadBurdenEstimatesPage);
                 map('/:groupId/responsibilities/:touchstoneId/demographics', DownloadDemographicsPage);
                 map('/help/touchstones/', TouchstoneHelp);
-                map('/help/guidance-model-inputs/', ResponsibilityGuidanceModelInputs);
-                map('/help/guidance-model-outputs/', ResponsibilityGuidanceModelOutputs);
+                map('/help/model-inputs/', ResponsibilityGuidanceModelInputs);
+                map('/help/model-outputs/', ResponsibilityGuidanceModelOutputs);
                 map('*', ContribNoRouteFoundPage);
             } else {
                 map("*", LoadingPage);

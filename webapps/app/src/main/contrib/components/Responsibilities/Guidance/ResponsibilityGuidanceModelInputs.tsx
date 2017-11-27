@@ -2,39 +2,18 @@ import * as React from "react";
 import ScrollableAnchor from 'react-scrollable-anchor';
 
 import {ContribPageWithHeader} from "../../PageWithHeader/ContribPageWithHeader";
-import { ResponsibilityOverviewPage } from "../Overview/ResponsibilityOverviewPage";
+import { ChooseGroupPage } from "../../ChooseGroup/ChooseGroupPage";
 import { settings } from "../../../../shared/Settings";
-
-import {modellingGroupActions} from "../../../../shared/actions/ModellingGroupActions";
-import { touchstoneActions } from "../../../actions/TouchstoneActions";
-import { responsibilityStore } from "../../../stores/ResponsibilityStore";
-import { doNothing } from "../../../../shared/Helpers";
-
 
 const commonStyles = require("../../../../shared/styles/common.css");
 
-interface LocationProps {
-    groupId: string;
-    touchstoneId: string;
-}
-
-export class ResponsibilityGuidanceModelInputs extends ContribPageWithHeader<LocationProps> {
-    load() {
-        modellingGroupActions.setCurrentGroup(this.props.location.params.groupId);
-        responsibilityStore.fetchTouchstones().catch(doNothing).then(() => {
-            touchstoneActions.setCurrentTouchstone(this.props.location.params.touchstoneId);
-            responsibilityStore.fetchResponsibilities().catch(doNothing).then(() => {
-                super.load();
-            });
-        });
-    }
-
+export class ResponsibilityGuidanceModelInputs extends ContribPageWithHeader<undefined> {
     name() {
-        return "Guidance";
+        return "Model inputs";
     }
 
     urlFragment() {
-        return "guidance-model-inputs/";
+        return "help/model-inputs/";
     }
 
     title() {
@@ -42,7 +21,7 @@ export class ResponsibilityGuidanceModelInputs extends ContribPageWithHeader<Loc
     }
 
     parent() {
-        return new ResponsibilityOverviewPage();
+        return new ChooseGroupPage();
     }
 
     renderPageContent() {
@@ -238,9 +217,9 @@ export class ResponsibilityGuidanceModelInputs extends ContribPageWithHeader<Loc
                 from the header row.
             </p>
             <ScrollableAnchor id={'demography'}>
-            <div className={ commonStyles.largeSectionTitle }>
-                Demography
-            </div>
+                <div className={ commonStyles.largeSectionTitle }>
+                    Demography
+                </div>
             </ScrollableAnchor>
             <p>
                 <b>Q. What is the source of the demographic data provided via Montagu
@@ -248,10 +227,7 @@ export class ResponsibilityGuidanceModelInputs extends ContribPageWithHeader<Loc
             </p>
             <p>
                 A. Most of the demographic data is based on the&nbsp;
-                <a
-                    href="https://esa.un.org/unpd/wpp/"
-                    target="_blank"
-                >
+                <a href="https://esa.un.org/unpd/wpp/" target="_blank">
                     UN World Population Prospects (UNWPP) 2017 Revision
                 </a>.
                 Some datasets were augmented to
@@ -306,17 +282,12 @@ export class ResponsibilityGuidanceModelInputs extends ContribPageWithHeader<Loc
             </p>
             <p>
                 A. Please contact us at&nbsp;
-                <a
-                    href={`mailto:${settings.supportContact}`}
-                >
+                <a href={`mailto:${settings.supportContact}`}>
                     {settings.supportContact}
                 </a>
                 &nbsp;or use
                 the #montagu-help channel on&nbsp;
-                <a
-                    href={settings.slackUrl}
-                    target="_blank"
-                >
+                <a href={settings.slackUrl} target="_blank">
                     Slack
                 </a>.
             </p>

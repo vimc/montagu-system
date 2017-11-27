@@ -45,7 +45,6 @@ export class ResponsibilityOverviewPage extends ContribPageWithHeader<LocationPr
     }
 
     renderPageContent() {
-        // const curUrl = `/${this.props.location.params.groupId}/responsibilities/${this.props.location.params.touchstoneId}/`
         return <div>
             <ResponsibilityOverviewDescription />
             <ResponsibilityOverviewContent />

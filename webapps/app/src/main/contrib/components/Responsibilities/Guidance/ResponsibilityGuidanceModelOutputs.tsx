@@ -1,37 +1,17 @@
 import * as React from "react";
-import {ContribPageWithHeader} from "../../PageWithHeader/ContribPageWithHeader";
-import { ResponsibilityOverviewPage } from "../Overview/ResponsibilityOverviewPage";
+import { ContribPageWithHeader } from "../../PageWithHeader/ContribPageWithHeader";
+import { ChooseGroupPage } from "../../ChooseGroup/ChooseGroupPage";
 import { settings } from "../../../../shared/Settings";
-
-import {modellingGroupActions} from "../../../../shared/actions/ModellingGroupActions";
-import { touchstoneActions } from "../../../actions/TouchstoneActions";
-import { responsibilityStore } from "../../../stores/ResponsibilityStore";
-import { doNothing } from "../../../../shared/Helpers";
 
 const commonStyles = require("../../../../shared/styles/common.css");
 
-interface LocationProps {
-    groupId: string;
-    touchstoneId: string;
-}
-
-export class ResponsibilityGuidanceModelOutputs extends ContribPageWithHeader<LocationProps> {
-    load() {
-        modellingGroupActions.setCurrentGroup(this.props.location.params.groupId);
-        responsibilityStore.fetchTouchstones().catch(doNothing).then(() => {
-            touchstoneActions.setCurrentTouchstone(this.props.location.params.touchstoneId);
-            responsibilityStore.fetchResponsibilities().catch(doNothing).then(() => {
-                super.load();
-            });
-        });
-    }
-
+export class ResponsibilityGuidanceModelOutputs extends ContribPageWithHeader<undefined> {
     name() {
-        return "Guidance";
+        return "Model outputs";
     }
 
     urlFragment() {
-        return "guidance-model-outputs/";
+        return "help/model-outputs/";
     }
 
     title() {
@@ -40,12 +20,10 @@ export class ResponsibilityGuidanceModelOutputs extends ContribPageWithHeader<Lo
     }
 
     parent() {
-        return new ResponsibilityOverviewPage();
+        return new ChooseGroupPage();
     }
 
     renderPageContent() {
-        const parentUrl = `/${this.props.location.params.groupId}/responsibilities/${this.props.location.params.touchstoneId}/`
-
         return <div>
             <div className={ commonStyles.largeSectionTitle }>
                 Required model outputs
@@ -86,10 +64,7 @@ export class ResponsibilityGuidanceModelOutputs extends ContribPageWithHeader<Lo
                 any problems with this.
             </p>
             <p>
-                Your scenarios are shown in the grey headings on&nbsp;
-                <a href={parentUrl}>
-                    this page
-                </a>.
+                Your scenarios are shown in the grey headings on Responsibility page.
                 Most modelling groups have three scenarios (routine, no
                 vaccination, campaign) but others have more or less. The
                 coverage data for each scenario may contain more than one
@@ -103,10 +78,7 @@ export class ResponsibilityGuidanceModelOutputs extends ContribPageWithHeader<Lo
             <p>
                 Once you have completed one output file for each scenario,
                 you should upload each file to Montagu, using the ‘Upload
-                burden estimates’ buttons on&nbsp;
-                <a href={parentUrl}>
-                    this page
-                </a>.
+                burden estimates’ buttons on Responsibility page.
             </p>
             <p>
                 There is no specific filename format to use. This is because
@@ -133,10 +105,8 @@ export class ResponsibilityGuidanceModelOutputs extends ContribPageWithHeader<Lo
                 we can identify them.
             </p>
             <p>
-                First, download your stochastic burden estimate template from&nbsp;
-                <a href={parentUrl}>
-                    this page
-                </a>
+                First, download your stochastic burden estimate template from
+                Responsibility page
                 (listed under ‘Scenarios’). This template is customised
                 for each model following the discussions after the test runs.
             </p>
@@ -164,18 +134,11 @@ export class ResponsibilityGuidanceModelOutputs extends ContribPageWithHeader<Lo
                 run_id, by year or even randomly), as long as the data are
                 complete, and scenarios are kept separate. The scenarios are
                 the same as for your central estimates. Please contact us (
-                <a
-                    href={`mailto:${settings.supportContact}`}
-                    className={ commonStyles.contentLink }
-                >
+                <a href={`mailto:${settings.supportContact}`}>
                     {settings.supportContact}
                 </a>
                 ) or use the #montagu-help channel on&nbsp;
-                <a
-                    href={settings.slackUrl}
-                    target="_blank"
-                    className={ commonStyles.contentLink }
-                >
+                <a href={settings.slackUrl} target="_blank">
                     Slack
                 </a>
                 &nbsp;if there are any problems with this.
@@ -201,16 +164,11 @@ export class ResponsibilityGuidanceModelOutputs extends ContribPageWithHeader<Lo
                 If your model changes between uploading your central
                 estimates and your stochastic estimates, please let us know
                 by emailing&nbsp;
-                <a
-                    href={`mailto:${settings.supportContact}`}
-                >
+                <a href={`mailto:${settings.supportContact}`}>
                     {settings.supportContact}
                 </a>
                 &nbsp;or using the #montagu-help channel on&nbsp;
-                <a
-                    href={settings.slackUrl}
-                    target="_blank"
-                >
+                <a href={settings.slackUrl} target="_blank">
                     Slack
                 </a>.
             </p>
@@ -220,11 +178,8 @@ export class ResponsibilityGuidanceModelOutputs extends ContribPageWithHeader<Lo
             <p>
                 We would like to see the parameter values underlying your
                 stochastic runs. To create this parameters file, please use
-                the ‘parameters template’ available on&nbsp;
-                <a href={parentUrl}>
-                    this page
-                </a>
-                &nbsp;(listed under ‘Scenarios’).
+                the ‘parameters template’ available on Responsibility page
+                (listed under ‘Scenarios’).
             </p>
             <p>
                 It is essential that the runs across all scenarios with the
@@ -311,17 +266,11 @@ export class ResponsibilityGuidanceModelOutputs extends ContribPageWithHeader<Lo
             <p>
                 If you have any questions or any problems uploading your
                 burden estimates, please email&nbsp;
-                <a
-                    href={`mailto:${settings.supportContact}`}
-                >
+                <a href={`mailto:${settings.supportContact}`}>
                     {settings.supportContact}
                 </a>
                 &nbsp;or use the #montagu-help channel on&nbsp;
-                <a
-                    href={settings.slackUrl}
-                    target="_blank"
-                    className={ commonStyles.contentLink }
-                >
+                <a href={settings.slackUrl} target="_blank">
                     Slack
                 </a>.
             </p>
