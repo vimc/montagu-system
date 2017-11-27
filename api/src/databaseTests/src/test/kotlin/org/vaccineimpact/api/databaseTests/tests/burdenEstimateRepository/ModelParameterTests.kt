@@ -134,16 +134,14 @@ class ModelParameterTests : BurdenEstimateRepositoryTests()
     }
 
     @Test
-    fun `cannot get model run parameter sets if group has no model`()
+    fun `gets empty get model run parameter sets if group has no model`()
     {
         JooqContext().use { db ->
             returnedIds = setupDatabase(db, addModel = false)
             val repo = makeRepository(db)
 
-            Assertions.assertThatThrownBy {
-                repo.getModelRunParameterSets(groupId, touchstoneId, scenarioId)
-            }.isInstanceOf(DatabaseContentsError::class.java)
-                    .hasMessageContaining("Modelling group $groupId does not have any models/model versions in the database")
+            val sets = repo.getModelRunParameterSets(groupId, touchstoneId)
+            Assertions.assertThat(sets.any()).isFalse()
         }
     }
 
@@ -157,7 +155,7 @@ class ModelParameterTests : BurdenEstimateRepositoryTests()
                     "a test set", modelRuns, username, timestamp)
 
         } andCheck { repo ->
-            val sets = repo.getModelRunParameterSets(groupId, touchstoneId, scenarioId)
+            val sets = repo.getModelRunParameterSets(groupId, touchstoneId)
             val set = sets.first()
 
             Assertions.assertThat(set.description).isEqualTo("a test set")
@@ -171,7 +169,7 @@ class ModelParameterTests : BurdenEstimateRepositoryTests()
     fun `cannot get model run parameter sets if touchstone doesn't exist`()
     {
         assertUnknownObjectError(work = { repo ->
-            repo.getModelRunParameterSets(groupId, "wrong-id", scenarioId)
+            repo.getModelRunParameterSets(groupId, "wrong-id")
         })
     }
 
@@ -179,15 +177,7 @@ class ModelParameterTests : BurdenEstimateRepositoryTests()
     fun `cannot get model run parameter sets if group doesn't exist`()
     {
         assertUnknownObjectError({ repo ->
-            repo.getModelRunParameterSets("wrong-id", touchstoneId, scenarioId)
-        })
-    }
-
-    @Test
-    fun `cannot get model run parameter sets if scenario doesn't exist`()
-    {
-        assertUnknownObjectError({ repo ->
-            repo.getModelRunParameterSets(groupId, touchstoneId, "wrong-id")
+            repo.getModelRunParameterSets("wrong-id", touchstoneId)
         })
     }
 

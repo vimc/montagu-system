@@ -14,9 +14,11 @@ import org.vaccineimpact.api.db.*
 import org.vaccineimpact.api.db.Tables.*
 import org.vaccineimpact.api.models.*
 import java.beans.ConstructorProperties
-import java.io.*
+import java.io.BufferedInputStream
+import java.io.OutputStream
+import java.io.PipedInputStream
+import java.io.PipedOutputStream
 import java.math.BigDecimal
-import java.sql.Connection
 import java.sql.Timestamp
 import java.time.Instant
 import kotlin.concurrent.thread
@@ -33,17 +35,21 @@ class JooqBurdenEstimateRepository(
         private val mapper: BurdenMappingHelper = BurdenMappingHelper()
 ) : JooqRepository(dsl), BurdenEstimateRepository
 {
-    override fun getModelRunParameterSets(groupId: String, touchstoneId: String, scenarioId: String): List<ModelRunParameterSet>
+    override fun getModelRunParameterSets(groupId: String, touchstoneId: String): List<ModelRunParameterSet>
     {
         // Dereference modelling group IDs
         val modellingGroup = modellingGroupRepository.getModellingGroup(groupId)
-        val responsibilityInfo = getResponsibilityInfo(modellingGroup.id, touchstoneId, scenarioId)
-        val modelVersion = getlatestModelVersion(modellingGroup.id, responsibilityInfo.disease)
+        val setId = getResponsibilitySetId(groupId, touchstoneId)
 
         return dsl.select(MODEL_RUN_PARAMETER_SET.ID, MODEL_RUN_PARAMETER_SET.DESCRIPTION,
+                MODEL.ID.`as`("model"),
                 UPLOAD_INFO.UPLOADED_BY, UPLOAD_INFO.UPLOADED_ON)
                 .fromJoinPath(MODEL_RUN_PARAMETER_SET, UPLOAD_INFO)
-                .where(MODEL_RUN_PARAMETER_SET.MODEL_VERSION.eq(modelVersion))
+                .join(MODEL)
+                .on(MODEL.CURRENT_VERSION.eq(MODEL_RUN_PARAMETER_SET.MODEL_VERSION))
+                .where(MODEL.MODELLING_GROUP.eq(modellingGroup.id))
+                .and(MODEL.IS_CURRENT)
+                .and(MODEL_RUN_PARAMETER_SET.RESPONSIBILITY_SET.eq(setId))
                 .fetchInto(ModelRunParameterSet::class.java)
     }
 
@@ -411,6 +417,18 @@ class JooqBurdenEstimateRepository(
                 .fetchOne()
                 ?.into(ResponsibilityInfo::class.java)
                 ?: findMissingObjects(touchstoneId, scenarioId)
+    }
+
+    private fun getResponsibilitySetId(groupId: String, touchstoneId: String): Int
+    {
+        // Get responsibility ID
+        return dsl.select(RESPONSIBILITY_SET.ID)
+                .fromJoinPath(MODELLING_GROUP, RESPONSIBILITY_SET, RESPONSIBILITY, SCENARIO, SCENARIO_DESCRIPTION)
+                .joinPath(RESPONSIBILITY_SET, TOUCHSTONE)
+                .where(MODELLING_GROUP.ID.eq(groupId))
+                .and(TOUCHSTONE.ID.eq(touchstoneId))
+                .fetchOneInto(Int::class.java)
+                ?: throw UnknownObjectError(touchstoneId, "touchstone")
     }
 
     private fun <T> findMissingObjects(touchstoneId: String, scenarioId: String): T
