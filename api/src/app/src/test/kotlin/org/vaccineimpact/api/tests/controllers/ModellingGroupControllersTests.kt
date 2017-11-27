@@ -39,15 +39,7 @@ class ModellingGroupControllersTests : ControllerTests<ModellingGroupController>
         }
 
         val controller = makeController(mockControllerContext())
-        val touchstoneRepo = mock<TouchstoneRepository> {
-            on { touchstones } doReturn mockTouchstones()
-        }
-        val repo = mock<BurdenEstimateRepository> {
-            on { touchstoneRepository } doReturn touchstoneRepo
-            on {
-                it.getModelRunParameterSets(eq("group-1"), eq("touchstone-1"))
-            } doReturn modelRunParameterSets
-        }
+        val repo = mockRepository(modelRunParameterSets = modelRunParameterSets)
 
         assertThat(controller.getModelRunParameterSets(mockContext, repo)).isEqualTo(modelRunParameterSets)
     }
@@ -62,8 +54,7 @@ class ModellingGroupControllersTests : ControllerTests<ModellingGroupController>
         }
 
         val controller = makeController(mockControllerContext())
-        val touchstoneSet = mockTouchstones()
-        val repo = mockRepository(touchstoneSet)
+        val repo = mockRepository()
 
         assertThatThrownBy { controller.getModelRunParameterSets(mockContext, repo) }
                 .isInstanceOf(UnknownObjectError::class.java)
@@ -332,13 +323,15 @@ class ModellingGroupControllersTests : ControllerTests<ModellingGroupController>
         controller.modifyMembership(context, mock<UserRepository>())
     }
 
-    private fun mockRepository(touchstoneSet: SimpleDataSet<Touchstone, String> = mockTouchstones()): BurdenEstimateRepository
+    private fun mockRepository(touchstoneSet: SimpleDataSet<Touchstone, String> = mockTouchstones(),
+                               modelRunParameterSets: List<ModelRunParameterSet> = listOf()): BurdenEstimateRepository
     {
         val touchstoneRepo = mock<TouchstoneRepository> {
             on { touchstones } doReturn touchstoneSet
         }
         return mock {
             on { touchstoneRepository } doReturn touchstoneRepo
+            on { it.getModelRunParameterSets(eq("group-1"), eq("touchstone-1")) } doReturn modelRunParameterSets
         }
     }
 

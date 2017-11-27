@@ -66,7 +66,7 @@ open class ModellingGroupController(context: ControllerContext)
 
     fun getModelRunParameterSets(context: ActionContext, estimateRepository: BurdenEstimateRepository): List<ModelRunParameterSet>
     {
-        val touchstoneId = context.params(":touchstoneId")
+        val touchstoneId = context.params(":touchstone-id")
         val groupId = context.params(":group-id")
         checkValidPermissions(groupId, touchstoneId, context, estimateRepository)
         return estimateRepository.getModelRunParameterSets(groupId, touchstoneId)
