@@ -77,7 +77,7 @@ function commonConfig(name, public_path) {
                     ]
                 },
                 {
-                    test: /\.(jpeg?|gif|png|svg|otf|ttf)$/,
+                    test: /\.(jpeg?|gif|png|svg|otf|ttf|pdf)$/,
                     loaders: [
                         {
                             loader: "file-loader",

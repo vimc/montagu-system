@@ -4,6 +4,7 @@ import { ChooseGroupPage } from "../../ChooseGroup/ChooseGroupPage";
 import { settings } from "../../../../shared/Settings";
 
 const commonStyles = require("../../../../shared/styles/common.css");
+const dalysPdf = require("./guidance-201710-DALYs.pdf");
 
 export class ResponsibilityGuidanceModelOutputs extends ContribPageWithHeader<undefined> {
     name() {
@@ -225,7 +226,9 @@ export class ResponsibilityGuidanceModelOutputs extends ContribPageWithHeader<un
                 <b>DALYs guidance</b>
             </p>
             <p>
-                Download report with detailed guidance on DALYs.
+                <a href={dalysPdf} target="_blank">
+                    Download report with detailed guidance on DALYs.
+                </a>
             </p>
             <p>
                 <b>Cohort size</b>
