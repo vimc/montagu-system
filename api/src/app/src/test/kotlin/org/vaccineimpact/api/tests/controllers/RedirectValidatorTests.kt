@@ -26,6 +26,8 @@ class RedirectValidatorTests : MontaguTests()
     {
         val redirectValidator = RedirectValidator()
 
+        redirectValidator.validateRedirectUrl("https://localhost")
+
         redirectValidator.validateRedirectUrl("https://montagu.vaccineimpact.org")
 
         redirectValidator.validateRedirectUrl("https://support.montagu.dide.ic.ac.uk")
