@@ -20,6 +20,7 @@ import { modellingGroupActions } from "../../../main/shared/actions/ModellingGro
 import { makeLoadable } from "../../../main/contrib/stores/Loadable";
 import { ModellingGroup } from "../../../main/shared/models/Generated";
 import { estimateTokenActions } from "../../../main/contrib/actions/EstimateActions";
+import {modelParameterActions} from "../../../main/contrib/actions/ModelParameterActions";
 
 describe("ResponsibilityStore", () => {
     beforeEach(() => {
@@ -41,6 +42,7 @@ describe("ResponsibilityStore", () => {
 
             coverageOneTimeToken: null,
             estimatesOneTimeToken: null,
+            parametersOneTimeToken: null,
             selectedFormat: "long",
             redirectPath: null,
 
@@ -310,5 +312,25 @@ describe("ResponsibilityStore", () => {
 
         const state = responsibilityStore.getState();
         expect(state.estimatesOneTimeToken).to.equal("TOKEN");
+    });
+
+
+    it("parameterTokenActions.clearUsedToken sets token to null", () => {
+        alt.bootstrap(JSON.stringify({
+            ResponsibilityStore: {
+                parametersOneTimeToken: "TOKEN",
+            }
+        }));
+        modelParameterActions.clearUsedToken();
+
+        const state = responsibilityStore.getState();
+        expect(state.parametersOneTimeToken).to.equal(null);
+    });
+
+    it("parameterTokenActions.update sets the token", () => {
+        modelParameterActions.update("TOKEN");
+
+        const state = responsibilityStore.getState();
+        expect(state.parametersOneTimeToken).to.equal("TOKEN");
     });
 });
