@@ -4,6 +4,7 @@ import ScrollableAnchor from 'react-scrollable-anchor';
 import {ContribPageWithHeader} from "../../PageWithHeader/ContribPageWithHeader";
 import { ChooseGroupPage } from "../../ChooseGroup/ChooseGroupPage";
 import { settings } from "../../../../shared/Settings";
+import { InternalLink } from "../../../../shared/components/InternalLink";
 
 const commonStyles = require("../../../../shared/styles/common.css");
 
@@ -17,7 +18,7 @@ export class ResponsibilityGuidanceModelInputs extends ContribPageWithHeader<und
     }
 
     title() {
-        return <span>Guidance on model inputs: coverage and demographic data)</span>;
+        return <span>Guidance on model inputs: coverage and demographic data</span>;
     }
 
     parent() {
@@ -236,19 +237,29 @@ export class ResponsibilityGuidanceModelInputs extends ContribPageWithHeader<und
             </p>
             <ul>
                 <li>
-                    Neonatal mortality
+                    <InternalLink href="/help/neonatal-mortality/">
+                        Neonatal mortality
+                    </InternalLink>
                 </li>
                 <li>
-                    Population for over-80-year-olds before 1990
+                    <InternalLink href="/help/over80/">
+                        Population for over-80-year-olds before 1990
+                    </InternalLink>
                 </li>
                 <li>
-                    Kosovo
+                    <InternalLink href="/help/kosovo/">
+                        Kosovo
+                    </InternalLink>
                 </li>
                 <li>
-                    Marshall Islands
+                    <InternalLink href="/help/marshall-islands/">
+                        Marshall Islands
+                    </InternalLink>
                 </li>
                 <li>
-                    Tuvalu
+                    <InternalLink href="/help/tuvalu/">
+                        Tuvalu
+                    </InternalLink>
                 </li>
             </ul>
             <p>
