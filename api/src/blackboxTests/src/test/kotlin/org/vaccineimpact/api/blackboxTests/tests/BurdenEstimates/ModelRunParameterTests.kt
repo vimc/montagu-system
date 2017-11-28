@@ -1,7 +1,6 @@
 package org.vaccineimpact.api.blackboxTests.tests.BurdenEstimates
 
 import com.beust.klaxon.JsonObject
-import com.beust.klaxon.json
 import org.assertj.core.api.Assertions
 import org.junit.Test
 import org.vaccineimpact.api.blackboxTests.helpers.RequestHelper
@@ -22,6 +21,8 @@ class ModelRunParameterTests : BurdenEstimateTests()
    "4",   997,    51
 """
 
+    private val modelRunParameterUrl = "/modelling-groups/$groupId/model-run-parameters/$touchstoneId/"
+
     @Test
     fun `can upload model run parameter set`()
     {
@@ -33,19 +34,20 @@ class ModelRunParameterTests : BurdenEstimateTests()
             setUp(it)
         }
 
-        val response = requestHelper.postFile("$urlBase/model-run-parameters/",
+        val response = requestHelper.postFile("$modelRunParameterUrl$disease/",
                 modelRunParameterCSV,
                 token = token, data = mapOf("description" to "description"))
 
         Assertions.assertThat(response.statusCode).isEqualTo(201)
-        Assertions.assertThat(response.headers["Location"]).`as`("Location header").contains("$urlBase/model-run-parameters/")
+        Assertions.assertThat(response.headers["Location"]).`as`("Location header")
+                .contains("/modelling-groups/$groupId/model-run-parameters/")
 
     }
 
     @Test
     fun `can upload model run parameter set via onetime link`()
     {
-        validate("$urlBase/model-run-parameters/get_onetime_link/") against "Token" given { db ->
+        validate("$modelRunParameterUrl$disease/get_onetime_link/") against "Token" given { db ->
             setUp(db)
         } requiringPermissions {
             requiredWritePermissions
@@ -64,7 +66,7 @@ class ModelRunParameterTests : BurdenEstimateTests()
     @Test
     fun `can upload model run parameters via onetime link and redirect`()
     {
-        validate("$urlBase/model-run-parameters/get_onetime_link/?redirectUrl=http://localhost") against "Token" given { db ->
+        validate("$modelRunParameterUrl$disease/get_onetime_link/?redirectUrl=http://localhost") against "Token" given { db ->
             setUp(db)
         } requiringPermissions {
             requiredWritePermissions
@@ -82,7 +84,7 @@ class ModelRunParameterTests : BurdenEstimateTests()
     @Test
     fun `throws BadRequest if request is not multipart`()
     {
-        validate("$urlBase/model-run-parameters/get_onetime_link/") against "Token" given { db ->
+        validate("$modelRunParameterUrl$disease/get_onetime_link/") against "Token" given { db ->
             setUp(db)
         } requiringPermissions {
             requiredWritePermissions
@@ -101,7 +103,7 @@ class ModelRunParameterTests : BurdenEstimateTests()
     @Test
     fun `throws BadRequest if part is missing`()
     {
-        validate("$urlBase/model-run-parameters/get_onetime_link/") against "Token" given { db ->
+        validate("$modelRunParameterUrl$disease/get_onetime_link/") against "Token" given { db ->
             setUp(db)
         } requiringPermissions {
             requiredWritePermissions
@@ -121,7 +123,7 @@ class ModelRunParameterTests : BurdenEstimateTests()
     fun `can get model run parameters`()
     {
         var setId = 0
-        validate("/modelling-groups/$groupId/model-run-parameters/$touchstoneId/") against "ModelRunParameterSets" given { db ->
+        validate(modelRunParameterUrl) against "ModelRunParameterSets" given { db ->
             setId = setUpWithModelRunParameterSet(db)
         } requiringPermissions {
             requiredWritePermissions

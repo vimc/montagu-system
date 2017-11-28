@@ -77,20 +77,9 @@ class ModellingGroupControllersTests : ControllerTests<ModellingGroupController>
         }
 
         val controller = makeController(mockControllerContext())
-        val touchstones = mockTouchstones()
-        val touchstoneRepo = mock<TouchstoneRepository>{
-            on { touchstones } doReturn touchstones
-        }
-        val repo = mock<BurdenEstimateRepository> {
-            on { touchstoneRepository } doReturn touchstoneRepo
-            on {
-                it.addModelRunParameterSet(eq("group-1"), eq("touchstone-1"), eq("disease-1"),
-                        eq("some description"),
-                        eq(modelRuns), eq("user.name"), any())
-            } doReturn 11
-        }
+        val repo = mockRepository(modelRuns = modelRuns)
 
-        val expectedPath = "/v1/modelling-groups/group-1/responsibilities/touchstone-1/scenario-1/model-run-parameters/11"
+        val expectedPath = "/v1/modelling-groups/group-1/model-run-parameters/11/"
         val objectCreationUrl = controller.addModelRunParameters(mockContext, repo)
         assertThat(objectCreationUrl).endsWith(expectedPath)
     }
@@ -376,6 +365,7 @@ class ModellingGroupControllersTests : ControllerTests<ModellingGroupController>
     }
 
     private fun mockRepository(touchstoneSet: SimpleDataSet<Touchstone, String> = mockTouchstones(),
+                               modelRuns: List<ModelRun> = listOf(),
                                modelRunParameterSets: List<ModelRunParameterSet> = listOf()): BurdenEstimateRepository
     {
         val touchstoneRepo = mock<TouchstoneRepository> {
@@ -384,6 +374,10 @@ class ModellingGroupControllersTests : ControllerTests<ModellingGroupController>
         return mock {
             on { touchstoneRepository } doReturn touchstoneRepo
             on { it.getModelRunParameterSets(eq("group-1"), eq("touchstone-1")) } doReturn modelRunParameterSets
+            on { it.addModelRunParameterSet(eq("group-1"), eq("touchstone-1"), eq("disease-1"),
+                        eq("some description"),
+                        eq(modelRuns), eq("user.name"), any())
+            } doReturn 11
         }
     }
 

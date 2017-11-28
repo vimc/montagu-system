@@ -36,6 +36,7 @@ open class ModellingGroupController(context: ControllerContext)
     val responsibilitiesURL = "/:group-id/responsibilities/:touchstone-id"
     val scenarioURL = "$responsibilitiesURL/:scenario-id"
     val coverageURL = "$scenarioURL/coverage"
+    val parametersURL = "/:group-id/model-run-parameters/:touchstone-id"
 
     override fun endpoints(repos: RepositoryFactory): Iterable<EndpointDefinition<*>>
     {
@@ -51,13 +52,13 @@ open class ModellingGroupController(context: ControllerContext)
                 oneRepoEndpoint("$coverageURL/get_onetime_link/", { c, r -> getOneTimeLinkToken(c, r, OneTimeAction.COVERAGE) }, repos, { it.token }).secured(coveragePermissions),
                 oneRepoEndpoint("/:group-id/actions/associate_member/", this::modifyMembership, repos, { it.user }, method = HttpMethod.post).secured(),
 
-                oneRepoEndpoint("/:group-id/model-run-parameters/:touchstone-id/", this::getModelRunParameterSets, repos, { it.burdenEstimates })
+                oneRepoEndpoint("$parametersURL/", this::getModelRunParameterSets, repos, { it.burdenEstimates })
                         .secured(setOf("$groupScope/estimates.write", "$groupScope/responsibilities.read")),
 
-                oneRepoEndpoint("/:group-id/model-run-parameters/:touchstone-id/", this::addModelRunParameters, repos, { it.burdenEstimates }, method = HttpMethod.post)
+                oneRepoEndpoint("$parametersURL/:disease/", this::addModelRunParameters, repos, { it.burdenEstimates }, method = HttpMethod.post)
                         .secured(setOf("$groupScope/estimates.write", "$groupScope/responsibilities.read")),
 
-                oneRepoEndpoint("/:group-id/model-run-parameters/:touchstone-id/get_onetime_link/", { c, r -> getOneTimeLinkToken(c, r, OneTimeAction.MODEl_RUN_PARAMETERS) }, repos, { it.token })
+                oneRepoEndpoint("$parametersURL/:disease/get_onetime_link/", { c, r -> getOneTimeLinkToken(c, r, OneTimeAction.MODEl_RUN_PARAMETERS) }, repos, { it.token })
                         .secured(setOf("$groupScope/estimates.write", "$groupScope/responsibilities.read"))
         )
     }
@@ -94,10 +95,7 @@ open class ModellingGroupController(context: ControllerContext)
         val id = estimateRepository.addModelRunParameterSet(groupId, touchstoneId, disease,
                 description, modelRuns.toList(), context.username!!, Instant.now())
 
-        return objectCreation(context, urlComponent
-                .replace(":touchstone-id", touchstoneId)
-                .replace(":scenario-id", disease)
-                .replace(":group-id", groupId) + "/model-run-parameters/$id")
+        return objectCreation(context, "$urlComponent/$groupId/model-run-parameters/$id/")
     }
 
     private fun checkValidPermissions(
