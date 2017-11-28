@@ -90,7 +90,7 @@ class ModellingGroupControllersTests : ControllerTests<ModellingGroupController>
         val mockContext = mock<ActionContext> {
             on { params(":group-id") } doReturn "group-1"
             on { params(":touchstone-id") } doReturn "touchstone-bad"
-            on { params(":scenario-id") } doReturn "scenario-1"
+            on { getPart("disease") } doReturn StringReader("disease-1")
         }
 
         val controller = makeController(mockControllerContext())
