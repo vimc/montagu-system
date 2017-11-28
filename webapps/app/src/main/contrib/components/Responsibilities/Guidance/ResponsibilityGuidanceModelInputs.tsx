@@ -208,6 +208,7 @@ export class ResponsibilityGuidanceModelInputs extends ContribPageWithHeader<und
                     </tr>
                 </tbody>
             </table>
+            <br />
             <p>
                 Each scenario is based on vaccination coverage from up to 3
                 different coverage sets (e.g. routine and campaign). The
