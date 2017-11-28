@@ -117,7 +117,7 @@ class ModelRunParameterTests : BurdenEstimateTests()
 
             JSONValidator().validateError(response.text,
                     expectedErrorCode = "bad-request",
-                    expectedErrorText = "No value passed for required POST parameter 'description'")
+                    expectedErrorText = "No value passed for required POST parameter 'disease'")
         }
     }
 
