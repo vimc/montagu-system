@@ -55,10 +55,10 @@ open class ModellingGroupController(context: ControllerContext)
                 oneRepoEndpoint("$parametersURL/", this::getModelRunParameterSets, repos, { it.burdenEstimates })
                         .secured(setOf("$groupScope/estimates.write", "$groupScope/responsibilities.read")),
 
-                oneRepoEndpoint("$parametersURL/:disease/", this::addModelRunParameters, repos, { it.burdenEstimates }, method = HttpMethod.post)
+                oneRepoEndpoint("$parametersURL/", this::addModelRunParameters, repos, { it.burdenEstimates }, method = HttpMethod.post)
                         .secured(setOf("$groupScope/estimates.write", "$groupScope/responsibilities.read")),
 
-                oneRepoEndpoint("$parametersURL/:disease/get_onetime_link/", { c, r -> getOneTimeLinkToken(c, r, OneTimeAction.MODEl_RUN_PARAMETERS) }, repos, { it.token })
+                oneRepoEndpoint("$parametersURL/get_onetime_link/", { c, r -> getOneTimeLinkToken(c, r, OneTimeAction.MODEl_RUN_PARAMETERS) }, repos, { it.token })
                         .secured(setOf("$groupScope/estimates.write", "$groupScope/responsibilities.read"))
         )
     }
@@ -87,7 +87,7 @@ open class ModellingGroupController(context: ControllerContext)
     {
         val touchstoneId = context.params(":touchstone-id")
         val groupId = context.params(":group-id")
-        val disease = context.params(":disease")
+        val disease = context.getPart("disease").readText()
         checkValidPermissions(groupId, touchstoneId, context, estimateRepository)
         val description = context.getPart("description").readText()
 

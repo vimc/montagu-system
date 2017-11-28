@@ -72,7 +72,7 @@ class ModellingGroupControllersTests : ControllerTests<ModellingGroupController>
             on { username } doReturn "user.name"
             on { params(":group-id") } doReturn "group-1"
             on { params(":touchstone-id") } doReturn "touchstone-1"
-            on { params(":disease") } doReturn "disease-1"
+            on { getPart("disease") } doReturn StringReader("disease-1")
             on { getPart("description") } doReturn StringReader("some description")
         }
 

@@ -34,9 +34,9 @@ class ModelRunParameterTests : BurdenEstimateTests()
             setUp(it)
         }
 
-        val response = requestHelper.postFile("$modelRunParameterUrl$disease/",
+        val response = requestHelper.postFile("$modelRunParameterUrl/",
                 modelRunParameterCSV,
-                token = token, data = mapOf("description" to "description"))
+                token = token, data = mapOf("description" to "description", "disease" to disease))
 
         Assertions.assertThat(response.statusCode).isEqualTo(201)
         Assertions.assertThat(response.headers["Location"]).`as`("Location header")
@@ -47,7 +47,7 @@ class ModelRunParameterTests : BurdenEstimateTests()
     @Test
     fun `can upload model run parameter set via onetime link`()
     {
-        validate("$modelRunParameterUrl$disease/get_onetime_link/") against "Token" given { db ->
+        validate("$modelRunParameterUrl/get_onetime_link/") against "Token" given { db ->
             setUp(db)
         } requiringPermissions {
             requiredWritePermissions
@@ -55,7 +55,8 @@ class ModelRunParameterTests : BurdenEstimateTests()
             val oneTimeURL = "/onetime_link/$token/"
             val requestHelper = RequestHelper()
 
-            val response = requestHelper.postFile(oneTimeURL, modelRunParameterCSV, data = mapOf("description" to "description"))
+            val response = requestHelper.postFile(oneTimeURL, modelRunParameterCSV,
+                    data = mapOf("description" to "description", "disease" to disease))
             Assertions.assertThat(response.statusCode).isEqualTo(201)
 
             val badResponse = requestHelper.get(oneTimeURL)
@@ -66,7 +67,7 @@ class ModelRunParameterTests : BurdenEstimateTests()
     @Test
     fun `can upload model run parameters via onetime link and redirect`()
     {
-        validate("$modelRunParameterUrl$disease/get_onetime_link/?redirectUrl=http://localhost") against "Token" given { db ->
+        validate("$modelRunParameterUrl/get_onetime_link/?redirectUrl=http://localhost") against "Token" given { db ->
             setUp(db)
         } requiringPermissions {
             requiredWritePermissions
@@ -74,7 +75,8 @@ class ModelRunParameterTests : BurdenEstimateTests()
             val oneTimeURL = "/onetime_link/$token/"
             val requestHelper = RequestHelper()
 
-            val response = requestHelper.postFile(oneTimeURL, modelRunParameterCSV, data = mapOf("description" to "description"))
+            val response = requestHelper.postFile(oneTimeURL, modelRunParameterCSV,
+                    data = mapOf("description" to "description", "disease" to disease))
             val resultAsString = response.getResultFromRedirect(checkRedirectTarget = "http://localhost")
             JSONValidator().validateSuccess(resultAsString)
         }
@@ -84,7 +86,7 @@ class ModelRunParameterTests : BurdenEstimateTests()
     @Test
     fun `throws BadRequest if request is not multipart`()
     {
-        validate("$modelRunParameterUrl$disease/get_onetime_link/") against "Token" given { db ->
+        validate("$modelRunParameterUrl/get_onetime_link/") against "Token" given { db ->
             setUp(db)
         } requiringPermissions {
             requiredWritePermissions
@@ -103,7 +105,7 @@ class ModelRunParameterTests : BurdenEstimateTests()
     @Test
     fun `throws BadRequest if part is missing`()
     {
-        validate("$modelRunParameterUrl$disease/get_onetime_link/") against "Token" given { db ->
+        validate("$modelRunParameterUrl/get_onetime_link/") against "Token" given { db ->
             setUp(db)
         } requiringPermissions {
             requiredWritePermissions
