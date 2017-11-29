@@ -14,6 +14,11 @@ import { TouchstoneHelp } from "./TouchstoneHelp";
 import { UploadBurdenEstimatesPage } from "./Responsibilities/BurdenEstimates/UploadBurdenEstimatesPage";
 import { ResponsibilityGuidanceModelInputs } from "./Responsibilities/Guidance/ResponsibilityGuidanceModelInputs";
 import { ResponsibilityGuidanceModelOutputs } from "./Responsibilities/Guidance/ResponsibilityGuidanceModelOutputs";
+import { ResponsibilityGuidanceNeonatalMortality } from "./Responsibilities/Guidance/Demographics/ResponsibilityGuidanceNeonatalMortality";
+import { ResponsibilityGuidanceMarshallIslands } from "./Responsibilities/Guidance/Demographics/ResponsibilityGuidanceMarshallIslands";
+import { ResponsibilityGuidanceOver80 } from "./Responsibilities/Guidance/Demographics/ResponsibilityGuidanceOver80";
+import { ResponsibilityGuidanceKosovo } from "./Responsibilities/Guidance/Demographics/ResponsibilityGuidanceKosovo";
+import { ResponsibilityGuidanceTuvalu } from "./Responsibilities/Guidance/Demographics/ResponsibilityGuidanceTuvalu";
 
 interface RoutingProperties {
     loggedIn: boolean;
@@ -40,6 +45,11 @@ export class ContribRouter extends Router<RoutingProperties> {
                 map('/help/touchstones/', TouchstoneHelp);
                 map('/help/model-inputs/', ResponsibilityGuidanceModelInputs);
                 map('/help/model-outputs/', ResponsibilityGuidanceModelOutputs);
+                map('/help/neonatal-mortality/', ResponsibilityGuidanceNeonatalMortality);
+                map('/help/marshall-islands/', ResponsibilityGuidanceMarshallIslands);
+                map('/help/over80/', ResponsibilityGuidanceOver80);
+                map('/help/kosovo/', ResponsibilityGuidanceKosovo);
+                map('/help/tuvalu/', ResponsibilityGuidanceTuvalu);
                 map('*', ContribNoRouteFoundPage);
             } else {
                 map("*", LoadingPage);
