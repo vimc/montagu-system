@@ -7,8 +7,10 @@ import org.slf4j.LoggerFactory
 import org.vaccineimpact.api.app.errors.MontaguError
 import org.vaccineimpact.api.app.errors.UnableToParseJsonError
 import org.vaccineimpact.api.app.errors.UnexpectedError
+import org.vaccineimpact.api.app.errors.ValidationError
 import org.vaccineimpact.api.serialization.MontaguSerializer
 import org.vaccineimpact.api.serialization.Serializer
+import org.vaccineimpact.api.serialization.validation.ValidationException
 import spark.Request
 import spark.Response
 import spark.Spark as spk
@@ -18,12 +20,8 @@ open class ErrorHandler(private val logger: Logger = LoggerFactory.getLogger(Err
                         private val postgresHandler: PostgresErrorHandler = PostgresErrorHandler(),
                         private val serializer: Serializer = MontaguSerializer.instance)
 {
-    private val unhandledExceptionMessage = "An unhandled exception occurred"
-
     init
     {
-        sparkException<JsonSyntaxException> { e, req, res -> handleError(UnableToParseJsonError(e), req, res) }
-        sparkException<DataAccessException> { e, req, res -> postgresHandler.handleException(e, req, res, this) }
         sparkException<Exception>(this::handleError)
     }
 
@@ -32,15 +30,12 @@ open class ErrorHandler(private val logger: Logger = LoggerFactory.getLogger(Err
         val error = when (exception)
         {
             is MontaguError -> exception
-            else ->
-            {
-                logger.error(unhandledExceptionMessage, exception)
-                UnexpectedError()
-            }
+            is ValidationException -> ValidationError(exception)
+            is JsonSyntaxException -> UnableToParseJsonError(exception)
+            is DataAccessException -> postgresHandler.handleException(exception)
+            else -> UnexpectedError.new(exception, logger = logger)
         }
-
         logger.warn("For request ${req.uri()}, a ${error::class.simpleName} occurred with the following problems: ${error.problems}")
-
         return error
     }
 
