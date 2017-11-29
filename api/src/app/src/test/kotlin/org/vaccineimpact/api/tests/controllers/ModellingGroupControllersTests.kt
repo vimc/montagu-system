@@ -18,6 +18,7 @@ import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import org.vaccineimpact.api.serialization.DataTable
 import org.vaccineimpact.api.serialization.SplitData
+import java.io.StringReader
 import java.math.BigDecimal
 import java.time.Instant
 import java.util.*
@@ -57,6 +58,46 @@ class ModellingGroupControllersTests : ControllerTests<ModellingGroupController>
         val repo = mockRepository()
 
         assertThatThrownBy { controller.getModelRunParameterSets(mockContext, repo) }
+                .isInstanceOf(UnknownObjectError::class.java)
+    }
+
+    @Test
+    fun `can upload model run params`()
+    {
+        val params = mapOf("param1" to "value1", "param2" to "value2")
+        val modelRuns = listOf<ModelRun>(ModelRun("run1", params))
+
+        val mockContext = mock<ActionContext> {
+            on { csvData<ModelRun>(any(), any()) } doReturn modelRuns.asSequence()
+            on { username } doReturn "user.name"
+            on { params(":group-id") } doReturn "group-1"
+            on { params(":touchstone-id") } doReturn "touchstone-1"
+            on { getPart("disease") } doReturn StringReader("disease-1")
+            on { getPart("description") } doReturn StringReader("some description")
+        }
+
+        val controller = makeController(mockControllerContext())
+        val repo = mockRepository(modelRuns = modelRuns)
+
+        val expectedPath = "/v1/modelling-groups/group-1/model-run-parameters/11/"
+        val objectCreationUrl = controller.addModelRunParameters(mockContext, repo)
+        assertThat(objectCreationUrl).endsWith(expectedPath)
+    }
+
+    @Test
+    fun `throws UnknownObjectError if touchstone is in preparation when adding model run params`()
+    {
+        val mockContext = mock<ActionContext> {
+            on { params(":group-id") } doReturn "group-1"
+            on { params(":touchstone-id") } doReturn "touchstone-bad"
+            on { getPart("disease") } doReturn StringReader("disease-1")
+        }
+
+        val controller = makeController(mockControllerContext())
+        val touchstoneSet = mockTouchstones()
+        val repo = mockRepository(touchstoneSet)
+
+        assertThatThrownBy { controller.addModelRunParameters(mockContext, repo) }
                 .isInstanceOf(UnknownObjectError::class.java)
     }
 
@@ -324,6 +365,7 @@ class ModellingGroupControllersTests : ControllerTests<ModellingGroupController>
     }
 
     private fun mockRepository(touchstoneSet: SimpleDataSet<Touchstone, String> = mockTouchstones(),
+                               modelRuns: List<ModelRun> = listOf(),
                                modelRunParameterSets: List<ModelRunParameterSet> = listOf()): BurdenEstimateRepository
     {
         val touchstoneRepo = mock<TouchstoneRepository> {
@@ -332,6 +374,10 @@ class ModellingGroupControllersTests : ControllerTests<ModellingGroupController>
         return mock {
             on { touchstoneRepository } doReturn touchstoneRepo
             on { it.getModelRunParameterSets(eq("group-1"), eq("touchstone-1")) } doReturn modelRunParameterSets
+            on { it.addModelRunParameterSet(eq("group-1"), eq("touchstone-1"), eq("disease-1"),
+                        eq("some description"),
+                        eq(modelRuns), eq("user.name"), any())
+            } doReturn 11
         }
     }
 

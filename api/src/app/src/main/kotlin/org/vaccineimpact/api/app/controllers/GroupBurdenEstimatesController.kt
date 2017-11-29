@@ -44,12 +44,6 @@ open class GroupBurdenEstimatesController(context: ControllerContext) : Abstract
                         .secured(setOf("$groupScope/estimates.write", "$groupScope/responsibilities.read")),
 
                 oneRepoEndpoint("/estimate-sets/:set-id/get_onetime_link/", { c, r -> getOneTimeLinkToken(c, r, OneTimeAction.BURDENS_POPULATE) }, repos, { it.token })
-                        .secured(setOf("$groupScope/estimates.write", "$groupScope/responsibilities.read")),
-
-                oneRepoEndpoint("/model-run-parameters/", this::addModelRunParameters, repos, { it.burdenEstimates }, method = HttpMethod.post)
-                        .secured(setOf("$groupScope/estimates.write", "$groupScope/responsibilities.read")),
-
-                oneRepoEndpoint("/model-run-parameters/get_onetime_link/", { c, r -> getOneTimeLinkToken(c, r, OneTimeAction.MODEl_RUN_PARAMETERS) }, repos, { it.token })
                         .secured(setOf("$groupScope/estimates.write", "$groupScope/responsibilities.read"))
         )
     }
@@ -58,21 +52,6 @@ open class GroupBurdenEstimatesController(context: ControllerContext) : Abstract
             "$groupScope/estimates.$readOrWrite",
             "$groupScope/responsibilities.read"
     )
-
-    fun addModelRunParameters(context: ActionContext, estimateRepository: BurdenEstimateRepository): String
-    {
-        val path = getValidResponsibilityPath(context, estimateRepository)
-        val description = context.getPart("description").readText()
-
-        val modelRuns = context.csvData<ModelRun>(RequestBodySource.HTMLMultipart("file"))
-        val id = estimateRepository.addModelRunParameterSet(path.groupId, path.touchstoneId, path.scenarioId,
-                description, modelRuns.toList(), context.username!!, Instant.now())
-
-        return objectCreation(context, urlComponent
-                .replace(":touchstone-id", path.touchstoneId)
-                .replace(":scenario-id", path.scenarioId)
-                .replace(":group-id", path.groupId) + "/model-run-parameters/$id")
-    }
 
     fun getBurdenEstimates(context: ActionContext, estimateRepository: BurdenEstimateRepository): List<BurdenEstimateSet>
     {

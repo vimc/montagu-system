@@ -21,13 +21,14 @@ abstract class BurdenEstimateTests : DatabaseTest()
             "$groupScope/estimates.write",
             "$groupScope/responsibilities.read"
     )
+    protected val disease = "Hib3"
 
     protected fun setUp(db: JooqContext): ReturnedIds
     {
         db.addTouchstone("touchstone", 1, "Touchstone 1", addName = true)
         db.addScenarioDescription(scenarioId, "Test scenario", "Hib3", addDisease = true)
         db.addGroup(groupId, "Test group")
-        db.addModel("model-1", groupId, "Hib3")
+        db.addModel("model-1", groupId, disease)
         val modelVersionId = db.addModelVersion("model-1", "version-1", setCurrent = true)
         val setId = db.addResponsibilitySet(groupId, touchstoneId)
         val responsibilityId = db.addResponsibility(setId, touchstoneId, scenarioId)
