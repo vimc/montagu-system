@@ -1,10 +1,6 @@
 package org.vaccineimpact.api.app.repositories
 
-import org.vaccineimpact.api.models.BurdenEstimate
-import org.vaccineimpact.api.models.BurdenEstimateSet
-import org.vaccineimpact.api.models.CreateBurdenEstimateSet
-import org.vaccineimpact.api.models.ModelRun
-import org.vaccineimpact.api.models.ModelRunParameterSet
+import org.vaccineimpact.api.models.*
 import java.time.Instant
 
 interface BurdenEstimateRepository : Repository
