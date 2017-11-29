@@ -9,6 +9,7 @@ import org.vaccineimpact.api.app.context.postData
 import org.vaccineimpact.api.app.controllers.ControllerContext
 import org.vaccineimpact.api.app.controllers.GroupBurdenEstimatesController
 import org.vaccineimpact.api.app.errors.InconsistentDataError
+import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
 import org.vaccineimpact.api.app.repositories.SimpleDataSet
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
@@ -42,14 +43,33 @@ class GroupEstimatesControllerTests : ControllerTests<GroupBurdenEstimatesContro
         val touchstoneRepo = mockTouchstoneRepository()
         val repo = mock<BurdenEstimateRepository> {
             on { touchstoneRepository } doReturn touchstoneRepo
-            on { it.addModelRunParameterSet(eq("group-1"), eq("touchstone-1"), eq("scenario-1"),
-                    eq("some description"),
-                    eq(modelRuns), eq("user.name"), any()) } doReturn 11
+            on {
+                it.addModelRunParameterSet(eq("group-1"), eq("touchstone-1"), eq("scenario-1"),
+                        eq("some description"),
+                        eq(modelRuns), eq("user.name"), any())
+            } doReturn 11
         }
 
         val expectedPath = "/v1/modelling-groups/group-1/responsibilities/touchstone-1/scenario-1/model-run-parameters/11"
         val objectCreationUrl = controller.addModelRunParameters(mockContext, repo)
         assertThat(objectCreationUrl).endsWith(expectedPath)
+    }
+
+    @Test
+    fun `throws UnknownObjectError if touchstone is in preparation when adding model run params`()
+    {
+        val mockContext = mock<ActionContext> {
+            on { params(":group-id") } doReturn "group-1"
+            on { params(":touchstone-id") } doReturn "touchstone-bad"
+            on { params(":scenario-id") } doReturn "scenario-1"
+        }
+
+        val controller = makeController(mockControllerContext())
+        val touchstoneSet = mockTouchstones()
+        val repo = mockRepository(touchstoneSet)
+
+        assertThatThrownBy { controller.addModelRunParameters(mockContext, repo) }
+                .isInstanceOf(UnknownObjectError::class.java)
     }
 
     @Test
@@ -99,13 +119,15 @@ class GroupEstimatesControllerTests : ControllerTests<GroupBurdenEstimatesContro
 
         val before = Instant.now()
         val controller = GroupBurdenEstimatesController(mockControllerContext())
-        controller.addBurdenEstimates(mockActionContext(data), repo)
+        controller.addBurdenEstimates(mockActionContext(data.asSequence()), repo)
         val after = Instant.now()
         verify(touchstoneSet).get("touchstone-1")
         verify(repo).addBurdenEstimateSet(
                 eq("group-1"), eq("touchstone-1"), eq("scenario-1"),
                 argWhere { it.toSet() == data.toSet() },
-                eq("username"), timestamp = check { it > before && it < after })
+                eq("username"),
+                timestamp = check { it > before && it < after }
+        )
     }
 
     @Test
@@ -174,7 +196,7 @@ class GroupEstimatesControllerTests : ControllerTests<GroupBurdenEstimatesContro
     @Test
     fun `cannot upload data with multiple diseases`()
     {
-        val data = listOf(
+        val data = sequenceOf(
                 BurdenEstimate("yf", 2000, 50, "AFG", "Afghanistan", 1000.toDecimal(), mapOf(
                         "deaths" to 10.toDecimal(),
                         "cases" to 100.toDecimal()
@@ -210,7 +232,7 @@ class GroupEstimatesControllerTests : ControllerTests<GroupBurdenEstimatesContro
         ))
     }
 
-    private fun mockActionContext(data: List<BurdenEstimate>): ActionContext
+    private fun mockActionContext(data: Sequence<BurdenEstimate>): ActionContext
     {
         return mock {
             on { csvData(eq(BurdenEstimate::class), any()) } doReturn data.asSequence()
@@ -223,6 +245,7 @@ class GroupEstimatesControllerTests : ControllerTests<GroupBurdenEstimatesContro
 
     private fun mockTouchstones() = mock<SimpleDataSet<Touchstone, String>> {
         on { get("touchstone-1") } doReturn Touchstone("touchstone-1", "touchstone", 1, "Description", TouchstoneStatus.OPEN)
+        on { get("touchstone-bad") } doReturn Touchstone("touchstone-bad", "touchstone", 1, "not open", TouchstoneStatus.IN_PREPARATION)
     }
 
     private fun mockTouchstoneRepository(touchstoneSet: SimpleDataSet<Touchstone, String> = mockTouchstones()) =
@@ -239,7 +262,7 @@ class GroupEstimatesControllerTests : ControllerTests<GroupBurdenEstimatesContro
             on { addBurdenEstimateSet(any(), any(), any(), any(), any(), any()) } doAnswer { args ->
                 // Force evaluation of sequence
                 args.getArgument<Sequence<BurdenEstimate>>(3).toList()
-                0 // Fake setId
+                0 // Return a fake setId
             }
         }
     }

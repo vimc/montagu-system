@@ -31,13 +31,20 @@ abstract class BurdenEstimateTests : DatabaseTest()
         val modelVersionId = db.addModelVersion("model-1", "version-1", setCurrent = true)
         val setId = db.addResponsibilitySet(groupId, touchstoneId)
         val responsibilityId = db.addResponsibility(setId, touchstoneId, scenarioId)
-        return ReturnedIds(responsibilityId, modelVersionId)
+        return ReturnedIds(responsibilityId, modelVersionId, setId)
     }
 
     protected fun setUpWithBurdenEstimateSet(db: JooqContext): Int
     {
         val returnedIds = setUp(db)
         return db.addBurdenEstimateSet(returnedIds.responsibilityId, returnedIds.modelVersionId, TestUserHelper.username)
+    }
+
+    protected fun setUpWithModelRunParameterSet(db: JooqContext): Int
+    {
+        val returnedIds = setUp(db)
+        return db.addModelRunParameterSet(returnedIds.responsibilitySetId, returnedIds.modelVersionId,
+                TestUserHelper.username, "description")
     }
 
     protected fun validateOneTimeLinkWithRedirect(url: String){
@@ -63,6 +70,10 @@ abstract class BurdenEstimateTests : DatabaseTest()
    "Hib3",   1996,    50,     "AGO",       "Angola",          5000,     1000,      NA,    5670
    "Hib3",   1997,    50,     "AGO",       "Angola",          6000,     1200,      NA,    5870
 """
+    val badCSVData = """
+"disease", "year", "age", "country", "country_name", "cohort_size", "deaths", "cases", "dalys"
+   "Hib3",   1996,    50,     "AFG",  "Afghanistan",              ,         ,        ,
+"""
 
-    data class ReturnedIds(val responsibilityId: Int, val modelVersionId: Int)
+    data class ReturnedIds(val responsibilityId: Int, val modelVersionId: Int, val responsibilitySetId: Int)
 }

@@ -59,13 +59,23 @@ class UploadBurdenEstimateTests : BurdenEstimateTests()
     }
 
     @Test
-    fun `bad CSV data results in ValidationError`()
+    fun `bad CSV headers results in ValidationError`()
     {
         JooqContext().use { setUp(it) }
         val token = TestUserHelper.setupTestUserAndGetToken(requiredWritePermissions, includeCanLogin = true)
         val helper = RequestHelper()
         val response = helper.post(url, "bad_header,year,age,country,country_name,cohort_size", token = token)
         JSONValidator().validateError(response.text, "csv-unexpected-header")
+    }
+
+    @Test
+    fun `bad CSV data results in ValidationError`()
+    {
+        JooqContext().use { setUp(it) }
+        val token = TestUserHelper.setupTestUserAndGetToken(requiredWritePermissions, includeCanLogin = true)
+        val helper = RequestHelper()
+        val response = helper.post(url, badCSVData, token = token)
+        JSONValidator().validateError(response.text, "csv-bad-data-type:1:cohort_size")
     }
 
     @Test
@@ -162,7 +172,7 @@ class UploadBurdenEstimateTests : BurdenEstimateTests()
     }
 
     @Test
-    fun `bad CSV data results in ValidationError in redirect`()
+    fun `bad CSV headers results in ValidationError in redirect`()
     {
         validate("$url/get_onetime_link/?redirectUrl=http://localhost") against "Token" given { db ->
             setUp(db)

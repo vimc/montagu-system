@@ -6,7 +6,6 @@ import org.pac4j.sparkjava.SparkWebContext
 import org.vaccineimpact.api.app.addDefaultResponseHeaders
 import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.errors.MissingRequiredPermissionError
-import org.vaccineimpact.api.app.errors.ValidationError
 import org.vaccineimpact.api.app.security.montaguPermissions
 import org.vaccineimpact.api.db.Config
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
@@ -14,7 +13,6 @@ import org.vaccineimpact.api.serialization.DataTableDeserializer
 import org.vaccineimpact.api.serialization.ModelBinder
 import org.vaccineimpact.api.serialization.MontaguSerializer
 import org.vaccineimpact.api.serialization.Serializer
-import org.vaccineimpact.api.serialization.validation.ValidationException
 import spark.Request
 import spark.Response
 import java.io.OutputStream
@@ -40,16 +38,7 @@ class DirectActionContext(private val context: SparkWebContext,
     override fun params(): Map<String, String> = request.params()
     override fun params(key: String): String = request.params(key)
     override fun <T : Any> postData(klass: Class<T>): T
-    {
-        return try
-        {
-            ModelBinder().deserialize(request.body(), klass)
-        }
-        catch (e: ValidationException)
-        {
-            throw ValidationError(e.errors)
-        }
-    }
+            = ModelBinder().deserialize(request.body(), klass)
 
     override fun getPart(name: String): Reader
     {
@@ -72,16 +61,7 @@ class DirectActionContext(private val context: SparkWebContext,
     }
 
     override fun <T : Any> csvData(klass: KClass<T>, from: RequestBodySource): Sequence<T>
-    {
-        return try
-        {
-            DataTableDeserializer.deserialize(from.getContent(this), klass, serializer)
-        }
-        catch (e: ValidationException)
-        {
-            throw ValidationError(e.errors)
-        }
-    }
+            = DataTableDeserializer.deserialize(from.getContent(this), klass, serializer)
 
     override fun setResponseStatus(status: Int)
     {

@@ -104,6 +104,18 @@ free text,in-preparation""")
     }
 
     @Test
+    fun `empty CSV data causes an exception`()
+    {
+        val csv = ""
+        assertThatThrownBy {
+            DataTableDeserializer.deserialize(csv, MixedTypes::class, MontaguSerializer.instance).toList()
+        }.matches {
+            val error = (it as ValidationException).errors.single()
+            error.code == "csv-empty"
+        }
+    }
+
+    @Test
     fun `csv headers are case insensitive`()
     {
         val csv = """
