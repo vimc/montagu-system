@@ -19,10 +19,6 @@ export class ResponsibilityGuidanceOver80 extends ContribPageWithHeader<undefine
         return "help/over80/";
     }
 
-    title() {
-        return <span>Extrapolating population data for over-80 year olds pre-1990</span>;
-    }
-
     hideTitle(): boolean {
         return true;
     }

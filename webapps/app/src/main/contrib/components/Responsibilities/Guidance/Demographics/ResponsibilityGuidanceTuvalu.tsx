@@ -19,10 +19,6 @@ export class ResponsibilityGuidanceTuvalu extends ContribPageWithHeader<undefine
         return "help/tuvalu/";
     }
 
-    title() {
-        return <span>Methods for creating Tuvalu demographic data</span>;
-    }
-
     hideTitle(): boolean {
         return true;
     }

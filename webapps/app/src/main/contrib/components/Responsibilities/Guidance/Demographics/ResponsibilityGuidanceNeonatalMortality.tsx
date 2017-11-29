@@ -19,10 +19,6 @@ export class ResponsibilityGuidanceNeonatalMortality extends ContribPageWithHead
         return "help/neonatal-mortality/";
     }
 
-    title() {
-        return <span>Discussion and methods for Child Mortality</span>;
-    }
-
     hideTitle(): boolean {
         return true;
     }

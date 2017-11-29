@@ -19,10 +19,6 @@ export class ResponsibilityGuidanceKosovo extends ContribPageWithHeader<undefine
         return "help/kosovo/";
     }
 
-    title() {
-        return <span>Methods for creating Kosovo demographic data</span>;
-    }
-
     hideTitle(): boolean {
         return true;
     }

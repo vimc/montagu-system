@@ -19,10 +19,6 @@ export class ResponsibilityGuidanceMarshallIslands extends ContribPageWithHeader
         return "help/marshall-islands/";
     }
 
-    title() {
-        return <span>Methods for creating Marshall Islands demographic data</span>;
-    }
-
     hideTitle(): boolean {
         return true;
     }
