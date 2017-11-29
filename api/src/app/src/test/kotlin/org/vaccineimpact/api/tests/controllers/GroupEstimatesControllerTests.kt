@@ -25,54 +25,6 @@ class GroupEstimatesControllerTests : ControllerTests<GroupBurdenEstimatesContro
             = GroupBurdenEstimatesController(controllerContext)
 
     @Test
-    fun `can upload model run params`()
-    {
-        val params = mapOf("param1" to "value1", "param2" to "value2")
-        val modelRuns = listOf<ModelRun>(ModelRun("run1", params))
-
-        val mockContext = mock<ActionContext> {
-            on { csvData<ModelRun>(any(), any()) } doReturn modelRuns.asSequence()
-            on { username } doReturn "user.name"
-            on { params(":group-id") } doReturn "group-1"
-            on { params(":touchstone-id") } doReturn "touchstone-1"
-            on { params(":scenario-id") } doReturn "scenario-1"
-            on { getPart("description") } doReturn StringReader("some description")
-        }
-
-        val controller = makeController(mockControllerContext())
-        val touchstoneRepo = mockTouchstoneRepository()
-        val repo = mock<BurdenEstimateRepository> {
-            on { touchstoneRepository } doReturn touchstoneRepo
-            on {
-                it.addModelRunParameterSet(eq("group-1"), eq("touchstone-1"), eq("scenario-1"),
-                        eq("some description"),
-                        eq(modelRuns), eq("user.name"), any())
-            } doReturn 11
-        }
-
-        val expectedPath = "/v1/modelling-groups/group-1/responsibilities/touchstone-1/scenario-1/model-run-parameters/11"
-        val objectCreationUrl = controller.addModelRunParameters(mockContext, repo)
-        assertThat(objectCreationUrl).endsWith(expectedPath)
-    }
-
-    @Test
-    fun `throws UnknownObjectError if touchstone is in preparation when adding model run params`()
-    {
-        val mockContext = mock<ActionContext> {
-            on { params(":group-id") } doReturn "group-1"
-            on { params(":touchstone-id") } doReturn "touchstone-bad"
-            on { params(":scenario-id") } doReturn "scenario-1"
-        }
-
-        val controller = makeController(mockControllerContext())
-        val touchstoneSet = mockTouchstones()
-        val repo = mockRepository(touchstoneSet)
-
-        assertThatThrownBy { controller.addModelRunParameters(mockContext, repo) }
-                .isInstanceOf(UnknownObjectError::class.java)
-    }
-
-    @Test
     fun `can get metadata for burden estimates`()
     {
         val data = listOf(

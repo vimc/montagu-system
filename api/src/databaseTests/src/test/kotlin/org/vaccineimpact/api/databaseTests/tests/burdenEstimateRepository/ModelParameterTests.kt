@@ -27,7 +27,7 @@ class ModelParameterTests : BurdenEstimateRepositoryTests()
         given { db ->
             returnedIds = setupDatabase(db)
         } makeTheseChanges { repo ->
-            repo.addModelRunParameterSet(groupId, touchstoneId, scenarioId,
+            repo.addModelRunParameterSet(groupId, touchstoneId, disease,
                     "a test set", modelRuns, username, timestamp)
         } andCheckDatabase { db ->
 
@@ -73,7 +73,7 @@ class ModelParameterTests : BurdenEstimateRepositoryTests()
             val repo = makeRepository(db)
 
             Assertions.assertThatThrownBy {
-                repo.addModelRunParameterSet(groupId, touchstoneId, scenarioId,
+                repo.addModelRunParameterSet(groupId, touchstoneId, disease,
                         "a test set", modelRuns, username, timestamp)
             }.isInstanceOf(DatabaseContentsError::class.java)
                     .hasMessageContaining("Modelling group $groupId does not have any models/model versions in the database")
@@ -88,7 +88,7 @@ class ModelParameterTests : BurdenEstimateRepositoryTests()
             val repo = makeRepository(db)
 
             Assertions.assertThatThrownBy {
-                repo.addModelRunParameterSet(groupId, touchstoneId, scenarioId,
+                repo.addModelRunParameterSet(groupId, touchstoneId, disease,
                         "a test set", listOf(), username, timestamp)
             }.isInstanceOf(BadRequest::class.java)
                     .hasMessageContaining("No model runs provided")
@@ -99,7 +99,7 @@ class ModelParameterTests : BurdenEstimateRepositoryTests()
     fun `cannot create model run parameter set if touchstone doesn't exist`()
     {
         assertUnknownObjectError(work = { repo ->
-            repo.addModelRunParameterSet(groupId, "wrong-id", scenarioId,
+            repo.addModelRunParameterSet(groupId, "wrong-id", disease,
                     "a test set", modelRuns, "test.user", timestamp)
         })
     }
@@ -108,16 +108,7 @@ class ModelParameterTests : BurdenEstimateRepositoryTests()
     fun `cannot create model run parameter set if group doesn't exist`()
     {
         assertUnknownObjectError({ repo ->
-            repo.addModelRunParameterSet("wrong-id", touchstoneId, scenarioId,
-                    "a test set", modelRuns, "test.user", timestamp)
-        })
-    }
-
-    @Test
-    fun `cannot create model run parameter set if scenario doesn't exist`()
-    {
-        assertUnknownObjectError({ repo ->
-            repo.addModelRunParameterSet(groupId, touchstoneId, "wrong-id",
+            repo.addModelRunParameterSet("wrong-id", touchstoneId, disease,
                     "a test set", modelRuns, "test.user", timestamp)
         })
     }
@@ -151,7 +142,7 @@ class ModelParameterTests : BurdenEstimateRepositoryTests()
         given { db ->
             returnedIds = setupDatabase(db)
         } makeTheseChanges { repo ->
-            repo.addModelRunParameterSet(groupId, touchstoneId, scenarioId,
+            repo.addModelRunParameterSet(groupId, touchstoneId, disease,
                     "a test set", modelRuns, username, timestamp)
 
         } andCheck { repo ->
