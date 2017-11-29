@@ -42,7 +42,7 @@ describe("ReportPageTitle", () => {
         expect(ReportPageTitleComponent.getPropsFromStores()).to.eql({
             name: "forecast",
             version: "v25",
-            displayName: "Shipping Forecast"
+            displayName: null,//"Shipping Forecast"
         });
     });
 
