@@ -69,6 +69,8 @@ open class GroupBurdenEstimatesController(context: ControllerContext) : Abstract
 
         val id = estimateRepository.createBurdenEstimateSet(path.groupId, path.touchstoneId, path.scenarioId,
                 uploader = context.username!!,
+                // Just a placeholder until i1044 is merged in
+                properties = CreateBurdenEstimateSet(BurdenEstimateSetType(BurdenEstimateSetTypeCode.CENTRAL_SINGLE_RUN)),
                 timestamp = Instant.now())
 
         val url = "/modelling-groups/${path.groupId}/responsibilities/${path.touchstoneId}/${path.scenarioId}/estimates/$id/"

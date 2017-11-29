@@ -101,6 +101,7 @@ class GroupEstimatesControllerTests : ControllerTests<GroupBurdenEstimatesContro
         verify(touchstoneSet).get("touchstone-1")
         verify(repo).createBurdenEstimateSet(
                 eq("group-1"), eq("touchstone-1"), eq("scenario-1"),
+                eq(CreateBurdenEstimateSet(BurdenEstimateSetType(BurdenEstimateSetTypeCode.CENTRAL_SINGLE_RUN))),
                 eq("username"), timestamp = check { it > before && it < after })
     }
 
@@ -203,7 +204,7 @@ class GroupEstimatesControllerTests : ControllerTests<GroupBurdenEstimatesContro
         val touchstoneRepo = mockTouchstoneRepository(touchstoneSet)
         return mock {
             on { touchstoneRepository } doReturn touchstoneRepo
-            on { createBurdenEstimateSet(any(), any(), any(), any(), any()) } doReturn 1
+            on { createBurdenEstimateSet(any(), any(), any(), any(), any(), any()) } doReturn 1
             on { addBurdenEstimateSet(any(), any(), any(), any(), any(), any()) } doAnswer { args ->
                 // Force evaluation of sequence
                 args.getArgument<Sequence<BurdenEstimate>>(3).toList()

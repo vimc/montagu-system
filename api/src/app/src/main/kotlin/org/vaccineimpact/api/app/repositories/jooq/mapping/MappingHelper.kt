@@ -2,9 +2,14 @@ package org.vaccineimpact.api.app.repositories.jooq.mapping
 
 import org.vaccineimpact.api.app.errors.BadDatabaseConstant
 import org.vaccineimpact.api.serialization.Deserializer
+import org.vaccineimpact.api.serialization.MontaguSerializer
+import org.vaccineimpact.api.serialization.Serializer
 import org.vaccineimpact.api.serialization.UnknownEnumValue
 
-open class MappingHelper(val deserializer: Deserializer = Deserializer())
+open class MappingHelper(
+        val deserializer: Deserializer = Deserializer(),
+        val serializer: Serializer = MontaguSerializer()
+)
 {
     inline fun <reified T : Enum<T>> mapEnum(raw: String): T
     {
@@ -17,4 +22,7 @@ open class MappingHelper(val deserializer: Deserializer = Deserializer())
             throw BadDatabaseConstant(e.name, e.type)
         }
     }
+
+    inline fun <reified T : Enum<T>> mapEnum(value: T): String
+            = serializer.serializeEnum(value)
 }
