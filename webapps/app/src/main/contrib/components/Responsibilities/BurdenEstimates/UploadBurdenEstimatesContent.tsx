@@ -6,7 +6,6 @@ import { RemoteContentComponent } from "../../../../shared/components/RemoteCont
 import { responsibilityStore } from "../../../stores/ResponsibilityStore";
 import { UploadForm } from "./UploadForm";
 import { TemplateLink } from "../Overview/List/TemplateLinks";
-import { estimateTokenActions } from "../../../actions/EstimateActions";
 
 const commonStyles = require("../../../../shared/styles/common.css");
 
@@ -71,10 +70,10 @@ export class UploadBurdenEstimatesContentComponent extends RemoteContentComponen
                     <td>Scenario</td>
                     <td>{data.scenario.description}</td>
                 </tr>
-                {/*<tr>*/}
-                    {/*<td>Burden estimates template</td>*/}
-                    {/*<td><TemplateLink diseaseId={data.scenario.disease} groupId={data.group.id}/></td>*/}
-                {/*</tr>*/}
+                <tr>
+                    <td>Burden estimates template</td>
+                    <td><TemplateLink diseaseId={data.scenario.disease} groupId={data.group.id}/></td>
+                </tr>
                 </tbody>
             </table>
 
