@@ -1,7 +1,6 @@
 package org.vaccineimpact.api.tests.controllers
 
 import com.nhaarman.mockito_kotlin.*
-import org.apache.commons.collections.CollectionUtils
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
@@ -9,6 +8,7 @@ import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.controllers.ControllerContext
 import org.vaccineimpact.api.app.controllers.GroupBurdenEstimatesController
 import org.vaccineimpact.api.app.errors.InconsistentDataError
+import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
 import org.vaccineimpact.api.app.repositories.SimpleDataSet
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
@@ -42,14 +42,33 @@ class GroupEstimatesControllerTests : ControllerTests<GroupBurdenEstimatesContro
         val touchstoneRepo = mockTouchstoneRepository()
         val repo = mock<BurdenEstimateRepository> {
             on { touchstoneRepository } doReturn touchstoneRepo
-            on { it.addModelRunParameterSet(eq("group-1"), eq("touchstone-1"), eq("scenario-1"),
-                    eq("some description"),
-                    eq(modelRuns), eq("user.name"), any()) } doReturn 11
+            on {
+                it.addModelRunParameterSet(eq("group-1"), eq("touchstone-1"), eq("scenario-1"),
+                        eq("some description"),
+                        eq(modelRuns), eq("user.name"), any())
+            } doReturn 11
         }
 
         val expectedPath = "/v1/modelling-groups/group-1/responsibilities/touchstone-1/scenario-1/model-run-parameters/11"
         val objectCreationUrl = controller.addModelRunParameters(mockContext, repo)
         assertThat(objectCreationUrl).endsWith(expectedPath)
+    }
+
+    @Test
+    fun `throws UnknownObjectError if touchstone is in preparation when adding model run params`()
+    {
+        val mockContext = mock<ActionContext> {
+            on { params(":group-id") } doReturn "group-1"
+            on { params(":touchstone-id") } doReturn "touchstone-bad"
+            on { params(":scenario-id") } doReturn "scenario-1"
+        }
+
+        val controller = makeController(mockControllerContext())
+        val touchstoneSet = mockTouchstones()
+        val repo = mockRepository(touchstoneSet)
+
+        assertThatThrownBy { controller.addModelRunParameters(mockContext, repo) }
+                .isInstanceOf(UnknownObjectError::class.java)
     }
 
     @Test
@@ -219,6 +238,7 @@ class GroupEstimatesControllerTests : ControllerTests<GroupBurdenEstimatesContro
 
     private fun mockTouchstones() = mock<SimpleDataSet<Touchstone, String>> {
         on { get("touchstone-1") } doReturn Touchstone("touchstone-1", "touchstone", 1, "Description", TouchstoneStatus.OPEN)
+        on { get("touchstone-bad") } doReturn Touchstone("touchstone-bad", "touchstone", 1, "not open", TouchstoneStatus.IN_PREPARATION)
     }
 
     private fun mockTouchstoneRepository(touchstoneSet: SimpleDataSet<Touchstone, String> = mockTouchstones()) =

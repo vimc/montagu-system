@@ -10,10 +10,9 @@ import org.vaccineimpact.api.app.controllers.endpoints.secured
 import org.vaccineimpact.api.app.errors.InconsistentDataError
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
 import org.vaccineimpact.api.app.repositories.RepositoryFactory
-import org.vaccineimpact.api.app.security.checkIsAllowedToSeeTouchstone
+import org.vaccineimpact.api.app.security.checkEstimatePermissionsForTouchstone
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.helpers.OneTimeAction
-import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import spark.route.HttpMethod
 import java.time.Instant
 
@@ -167,22 +166,7 @@ open class GroupBurdenEstimatesController(context: ControllerContext) : Abstract
     ): ResponsibilityPath
     {
         val path = ResponsibilityPath(context)
-        val touchstoneId = path.touchstoneId
-        val touchstones = estimateRepository.touchstoneRepository.touchstones
-        val touchstone = touchstones.get(touchstoneId)
-        context.checkIsAllowedToSeeTouchstone(path.touchstoneId, touchstone.status)
-        if (readEstimatesRequired)
-        {
-
-            if (touchstone.status == TouchstoneStatus.OPEN)
-            {
-                context.requirePermission(ReifiedPermission(
-                        "estimates.read-unfinished",
-                        Scope.Specific("modelling-group", path.groupId)
-                ))
-            }
-        }
-
+        context.checkEstimatePermissionsForTouchstone(path.groupId, path.touchstoneId, estimateRepository, readEstimatesRequired)
         return path
     }
 
