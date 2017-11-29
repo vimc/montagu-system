@@ -90,7 +90,8 @@ class RequestHelper
     private fun post(url: String, headers: Map<String, String>, data: Any?) = khttp.post(
             EndpointBuilder.build(url),
             data = data,
-            headers = headers
+            headers = headers,
+            allowRedirects = false
     )
 
     private fun postFiles(url: String, headers: Map<String, String>, files: List<FileLike>, data: Map<String, String> = mapOf()) = khttp.post(

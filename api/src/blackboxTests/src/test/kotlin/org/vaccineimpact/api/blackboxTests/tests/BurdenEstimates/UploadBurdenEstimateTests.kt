@@ -41,7 +41,7 @@ class UploadBurdenEstimateTests : BurdenEstimateTests()
             setId = setUpWithBurdenEstimateSet(it)
         }
 
-        val response = requestHelper.post("$setUrl/$setId", token = token, data = csvData)
+        val response = requestHelper.post("$setUrl/$setId/", token = token, data = csvData)
         Assertions.assertThat(response.statusCode).isEqualTo(200)
     }
 
@@ -168,8 +168,7 @@ class UploadBurdenEstimateTests : BurdenEstimateTests()
     @Test
     fun `can create burden estimate via onetime link and redirect`()
     {
-        // This test is wrong - it is trying to upload a file to an endpoint that doesn't take one
-        validate("$url/get_onetime_link/?redirectUrl=http://localhost/") against "Token" given { db ->
+        validate("$setUrl/get_onetime_link/?redirectUrl=http://localhost/") against "Token" given { db ->
             setUp(db)
         } requiringPermissions {
             requiredWritePermissions
@@ -177,7 +176,7 @@ class UploadBurdenEstimateTests : BurdenEstimateTests()
             val oneTimeURL = "/onetime_link/$token/"
             val requestHelper = RequestHelper()
 
-            val response = requestHelper.post(oneTimeURL)
+            val response = requestHelper.post(oneTimeURL, metadataForCreate())
             val resultAsString = response.getResultFromRedirect(checkRedirectTarget = "http://localhost")
             JSONValidator().validateSuccess(resultAsString)
         }
