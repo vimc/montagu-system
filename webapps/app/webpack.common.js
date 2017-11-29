@@ -77,7 +77,7 @@ function commonConfig(name, public_path) {
                     ]
                 },
                 {
-                    test: /\.(jpeg?|gif|png|svg|otf|ttf|pdf)$/,
+                    test: /\.(jpeg?|gif|png|svg|otf|ttf|pdf|html)$/,
                     loaders: [
                         {
                             loader: "file-loader",
@@ -85,7 +85,8 @@ function commonConfig(name, public_path) {
                                 publicPath: public_path,
                             }
                         }
-                    ]
+                    ],
+                    exclude: [/index.html$/],
                 },
                 {
                     test: /.md$/,
