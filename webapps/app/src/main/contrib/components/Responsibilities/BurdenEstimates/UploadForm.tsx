@@ -69,7 +69,7 @@ export class UploadForm extends React.Component<UploadFormProps, UploadState> {
                     <label className={formStyles.customFileUpload}>
                         <input name="file" type="file" onChange={this.handleChange.bind(this)}
                                disabled={!this.props.canUpload}/>
-                        <div className={`${buttonStyles.button} ${styles.button} ${commonStyles.mt5} ${commonStyles.mb5}
+                        <div className={`${buttonStyles.button} ${styles.button}
                         ${!this.props.canUpload ? buttonStyles.disabled : ""}`}>
                             {uploadText}
                         </div>

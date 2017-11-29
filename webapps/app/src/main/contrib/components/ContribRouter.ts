@@ -14,6 +14,7 @@ import { TouchstoneHelp } from "./TouchstoneHelp";
 import { UploadBurdenEstimatesPage } from "./Responsibilities/BurdenEstimates/UploadBurdenEstimatesPage";
 import { ResponsibilityGuidanceModelInputs } from "./Responsibilities/Guidance/ResponsibilityGuidanceModelInputs";
 import { ResponsibilityGuidanceModelOutputs } from "./Responsibilities/Guidance/ResponsibilityGuidanceModelOutputs";
+import {UploadModelRunParametersPage} from "./Responsibilities/ModelRunParameters/UploadModelRunParametersPage";
 
 interface RoutingProperties {
     loggedIn: boolean;
@@ -37,6 +38,7 @@ export class ContribRouter extends Router<RoutingProperties> {
                 map('/:groupId/responsibilities/:touchstoneId/coverage/:scenarioId', DownloadCoveragePage);
                 map('/:groupId/responsibilities/:touchstoneId/burdens/:scenarioId', UploadBurdenEstimatesPage);
                 map('/:groupId/responsibilities/:touchstoneId/demographics', DownloadDemographicsPage);
+                map('/:groupId/responsibilities/:touchstoneId/model-run-parameters', UploadModelRunParametersPage);
                 map('/help/touchstones/', TouchstoneHelp);
                 map('/help/model-inputs/', ResponsibilityGuidanceModelInputs);
                 map('/help/model-outputs/', ResponsibilityGuidanceModelOutputs);
