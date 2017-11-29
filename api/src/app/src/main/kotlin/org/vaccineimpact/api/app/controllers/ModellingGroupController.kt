@@ -12,10 +12,10 @@ import org.vaccineimpact.api.app.errors.MissingRequiredPermissionError
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
 import org.vaccineimpact.api.app.context.postData
 import org.vaccineimpact.api.app.repositories.*
+import org.vaccineimpact.api.app.security.checkEstimatePermissionsForTouchstone
 import org.vaccineimpact.api.app.security.checkIsAllowedToSeeTouchstone
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.helpers.OneTimeAction
-import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import org.vaccineimpact.api.serialization.FlexibleDataTable
 import org.vaccineimpact.api.serialization.SplitData
 import org.vaccineimpact.api.serialization.StreamSerializable
@@ -79,7 +79,7 @@ open class ModellingGroupController(context: ControllerContext)
     {
         val touchstoneId = context.params(":touchstone-id")
         val groupId = context.params(":group-id")
-        checkValidPermissions(groupId, touchstoneId, context, estimateRepository)
+        context.checkEstimatePermissionsForTouchstone(groupId, touchstoneId, estimateRepository)
         return estimateRepository.getModelRunParameterSets(groupId, touchstoneId)
     }
 
@@ -88,7 +88,7 @@ open class ModellingGroupController(context: ControllerContext)
         val touchstoneId = context.params(":touchstone-id")
         val groupId = context.params(":group-id")
         val disease = context.getPart("disease").readText()
-        checkValidPermissions(groupId, touchstoneId, context, estimateRepository)
+        context.checkEstimatePermissionsForTouchstone(groupId, touchstoneId, estimateRepository)
         val description = context.getPart("description").readText()
 
         val modelRuns = context.csvData<ModelRun>(RequestBodySource.HTMLMultipart("file"))
@@ -96,30 +96,6 @@ open class ModellingGroupController(context: ControllerContext)
                 description, modelRuns.toList(), context.username!!, Instant.now())
 
         return objectCreation(context, "$urlComponent/$groupId/model-run-parameters/$id/")
-    }
-
-    private fun checkValidPermissions(
-            groupId: String,
-            touchstoneId: String,
-            context: ActionContext,
-            estimateRepository: BurdenEstimateRepository,
-            readEstimatesRequired: Boolean = false
-    )
-    {
-
-        val touchstones = estimateRepository.touchstoneRepository.touchstones
-        val touchstone = touchstones.get(touchstoneId)
-        context.checkIsAllowedToSeeTouchstone(touchstoneId, touchstone.status)
-        if (readEstimatesRequired)
-        {
-            if (touchstone.status == TouchstoneStatus.OPEN)
-            {
-                context.requirePermission(ReifiedPermission(
-                        "estimates.read-unfinished",
-                        Scope.Specific("modelling-group", groupId)
-                ))
-            }
-        }
     }
 
     fun getResponsibilities(context: ActionContext, repo: ModellingGroupRepository): Responsibilities
