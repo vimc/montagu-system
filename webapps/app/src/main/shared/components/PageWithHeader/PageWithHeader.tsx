@@ -35,6 +35,7 @@ export abstract class PageWithHeader<TLocationProps>
 
     load() {
         this.createBreadcrumb();
+        window.scrollTo(0, 0);
     }
 
     createBreadcrumb() {

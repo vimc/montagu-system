@@ -66,7 +66,8 @@ export class ResponsibilityGuidanceModelOutputs extends ContribPageWithHeader<un
                 any problems with this.
             </p>
             <p>
-                Your scenarios are shown in the grey headings on Responsibility page.
+                Your scenarios are shown in the grey headings on the
+                Responsibilities page.
                 Most modelling groups have three scenarios (routine, no
                 vaccination, campaign) but others have more or less. The
                 coverage data for each scenario may contain more than one
