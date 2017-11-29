@@ -71,6 +71,10 @@ abstract class BurdenEstimateTests : DatabaseTest()
    "Hib3",   1996,    50,     "AGO",       "Angola",          5000,     1000,      NA,    5670
    "Hib3",   1997,    50,     "AGO",       "Angola",          6000,     1200,      NA,    5870
 """
+    val badCSVData = """
+"disease", "year", "age", "country", "country_name", "cohort_size", "deaths", "cases", "dalys"
+   "Hib3",   1996,    50,     "AFG",  "Afghanistan",              ,         ,        ,
+"""
 
     data class ReturnedIds(val responsibilityId: Int, val modelVersionId: Int, val responsibilitySetId: Int)
 }
