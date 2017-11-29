@@ -6,7 +6,8 @@
         "uploaded_by": { "$ref": "Username.schema.json" },
         "uploaded_on": { "$ref": "Timestamp.schema.json" },
         "type": { "$ref": "BurdenEstimateSetType.schema.json" },
-        "problems": { "type": "array","items": { "type": "string" } }
+        "problems": { "type": "array","items": { "type": "string" } },
+        "status": { "$ref": "BurdenEstimateSetStatus.schema.json" }
     },
     "additionalProperties": false,
     "required": [ "id", "uploaded_by", "uploaded_on", "type", "problems" ]
