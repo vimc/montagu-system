@@ -2,6 +2,7 @@ import * as React from "react";
 import { BurdenEstimateSet } from "../../../../shared/models/Generated";
 import { settings } from "../../../../shared/Settings";
 import fetcher from "../../../../shared/sources/Fetcher";
+import {UploadState} from "../BurdenEstimates/UploadForm";
 
 const formStyles = require("../../../../shared/styles/forms.css");
 const commonStyles = require("../../../../shared/styles/common.css");
@@ -17,12 +18,7 @@ interface UploadFormProps {
     token: string;
 }
 
-export interface UploadState {
-    fileSelected: boolean;
-    fileName: string;
-}
-
-export class UploadForm extends React.Component<UploadFormProps, UploadState> {
+export class ModelRunParametersUploadForm extends React.Component<UploadFormProps, UploadState> {
 
     constructor() {
         super();
@@ -46,7 +42,7 @@ export class UploadForm extends React.Component<UploadFormProps, UploadState> {
         const lastUploadedText = this.props.currentEstimateSet != null ?
             `You last uploaded an estimate on ${this.props.currentEstimateSet.uploaded_on}.`
             :
-                "You have not uploaded any burden estimate sets.";
+            "You have not uploaded any burden estimate sets.";
 
         const supportEmail = `mailto:${settings.supportContact}`;
         const helperText = !this.props.canUpload ?
