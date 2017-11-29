@@ -83,7 +83,7 @@ class CreateUserTests : DatabaseTest()
     fun `throws error if required field is missing`()
     {
         TestUserHelper.setupTestUser()
-        val response = requestHelper.post("/users", creationPermissions, json {
+        val response = requestHelper.post("/users/", creationPermissions, json {
             obj(
                     "username" to "bob",
                     "name" to "Robert Smith"
@@ -97,7 +97,7 @@ class CreateUserTests : DatabaseTest()
     fun `throws error if required field is blank`()
     {
         TestUserHelper.setupTestUser()
-        val response = requestHelper.post("/users", creationPermissions, json {
+        val response = requestHelper.post("/users/", creationPermissions, json {
             obj(
                     "username" to "bob",
                     "name" to " ",
@@ -112,7 +112,7 @@ class CreateUserTests : DatabaseTest()
     fun `throws error if username is invalid`()
     {
         TestUserHelper.setupTestUser()
-        val response = requestHelper.post("/users", creationPermissions, json {
+        val response = requestHelper.post("/users/", creationPermissions, json {
             obj(
                     "username" to "^&*",
                     "name" to "name",
@@ -127,7 +127,7 @@ class CreateUserTests : DatabaseTest()
     fun `throws error if email is invalid`()
     {
         TestUserHelper.setupTestUser()
-        val response = requestHelper.post("/users", creationPermissions, json {
+        val response = requestHelper.post("/users/", creationPermissions, json {
             obj(
                     "username" to "a.b.c",
                     "name" to "john@example.com",
