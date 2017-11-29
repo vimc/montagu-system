@@ -1,5 +1,6 @@
 package org.vaccineimpact.api.blackboxTests.tests.BurdenEstimates
 
+import com.beust.klaxon.json
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
@@ -13,20 +14,21 @@ import spark.route.HttpMethod
 
 class UploadBurdenEstimateTests : BurdenEstimateTests()
 {
+    private val createdSetLocation = LocationConstraint(
+            "/modelling-groups/group-1/responsibilities/touchstone-1/scenario-1/estimates/", unknownId = true
+    )
+
     @Test
     fun `can create burden estimate`()
     {
-        val requestHelper = RequestHelper()
-        val token = TestUserHelper.setupTestUserAndGetToken(requiredWritePermissions.plus(PermissionSet("*/can-login")))
-
-        JooqContext().use {
-            setUp(it)
-        }
-
-        val response = requestHelper.post(setUrl, token = token)
-        Assertions.assertThat(response.statusCode).isEqualTo(201)
+        validate(setUrl, method = HttpMethod.post) withRequestSchema "CreateBurdenEstimateSet" given { db ->
+            setUp(db)
+        } sendingJSON {
+            metadataForCreate()
+        } withPermissions {
+            requiredWritePermissions.plus(PermissionSet("*/can-login"))
+        } andCheckObjectCreation createdSetLocation
     }
-
 
     @Test
     fun `can populate burden estimate`()
@@ -155,9 +157,8 @@ class UploadBurdenEstimateTests : BurdenEstimateTests()
         } andCheckString { token ->
             val oneTimeURL = "/onetime_link/$token/"
             val requestHelper = RequestHelper()
-
-            val response = requestHelper.postFile(oneTimeURL, csvData)
-            assertThat(response.statusCode).isEqualTo(201)
+            val response = requestHelper.post(oneTimeURL, metadataForCreate())
+            createdSetLocation.checkObjectCreation(response)
 
             val badResponse = requestHelper.get(oneTimeURL)
             JSONValidator().validateError(badResponse.text, expectedErrorCode = "invalid-token-used")
@@ -168,7 +169,18 @@ class UploadBurdenEstimateTests : BurdenEstimateTests()
     fun `can create burden estimate via onetime link and redirect`()
     {
         // This test is wrong - it is trying to upload a file to an endpoint that doesn't take one
-        validateOneTimeLinkWithRedirect(setUrl)
+        validate("$url/get_onetime_link/?redirectUrl=http://localhost/") against "Token" given { db ->
+            setUp(db)
+        } requiringPermissions {
+            requiredWritePermissions
+        } andCheckString { token ->
+            val oneTimeURL = "/onetime_link/$token/"
+            val requestHelper = RequestHelper()
+
+            val response = requestHelper.post(oneTimeURL)
+            val resultAsString = response.getResultFromRedirect(checkRedirectTarget = "http://localhost")
+            JSONValidator().validateSuccess(resultAsString)
+        }
     }
 
     @Test
@@ -188,4 +200,10 @@ class UploadBurdenEstimateTests : BurdenEstimateTests()
         }
     }
 
+    private fun metadataForCreate() = json {
+        obj("type" to obj(
+                "type" to "central-averaged",
+                "details" to "median"
+        ))
+    }
 }
