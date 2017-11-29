@@ -34,7 +34,7 @@ describe("ReportPageTitle", () => {
             currentVersion: "v25",
             versionDetails: makeLookup([
                 mockVersion({
-                    id: "forecast",
+                    id: "v25",
                     displayname: "Shipping Forecast"
                 })
             ])
@@ -42,7 +42,7 @@ describe("ReportPageTitle", () => {
         expect(ReportPageTitleComponent.getPropsFromStores()).to.eql({
             name: "forecast",
             version: "v25",
-            displayName: null,//"Shipping Forecast"
+            displayName: "Shipping Forecast"
         });
     });
 
