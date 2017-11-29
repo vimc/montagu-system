@@ -10,7 +10,8 @@ constructor(
         val uploadedOn: Instant,
         val uploadedBy: String,
         val type: BurdenEstimateSetType,
-        val problems: List<String>
+        val problems: List<String>,
+        val status: BurdenEstimateSetStatus
 ) : HasKey<Int>
 
 
@@ -26,4 +27,10 @@ enum class BurdenEstimateSetTypeCode
     CENTRAL_AVERAGED,
     CENTRAL_UNKNOWN,
     STOCHASTIC
+}
+
+enum class BurdenEstimateSetStatus
+{
+    EMPTY,
+    COMPLETE
 }
