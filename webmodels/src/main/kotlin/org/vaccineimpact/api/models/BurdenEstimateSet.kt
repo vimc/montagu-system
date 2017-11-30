@@ -10,8 +10,8 @@ constructor(
         val uploadedOn: Instant,
         val uploadedBy: String,
         val type: BurdenEstimateSetType,
-        val problems: List<String>,
-        val status: BurdenEstimateSetStatus
+        val status: BurdenEstimateSetStatus,
+        val problems: List<String>
 ) : HasKey<Int>
 
 
