@@ -30,10 +30,12 @@ class GroupEstimatesControllerTests : ControllerTests<GroupBurdenEstimatesContro
         val data = listOf(
                 BurdenEstimateSet(1, Instant.MIN, "ThePast",
                         BurdenEstimateSetType(BurdenEstimateSetTypeCode.CENTRAL_AVERAGED, "Median"),
+                        BurdenEstimateSetStatus.COMPLETE,
                         emptyList()
                 ),
                 BurdenEstimateSet(2, Instant.MAX, "TheFuture",
                         BurdenEstimateSetType(BurdenEstimateSetTypeCode.CENTRAL_SINGLE_RUN, null),
+                        BurdenEstimateSetStatus.EMPTY,
                         listOf("Doesn't exist yet")
                 )
         )

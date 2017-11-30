@@ -47,6 +47,7 @@ class MontaguSerializer : Serializer
                 .registerTypeAdapter<LocalDate>(toDateStringSerializer)
 
                 .registerEnum<ActivityType>()
+                .registerEnum<BurdenEstimateSetStatus>()
                 .registerEnum<BurdenEstimateSetTypeCode>()
                 .registerEnum<GAVISupportLevel>()
                 .registerEnum<ResponsibilitySetStatus>()

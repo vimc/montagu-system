@@ -1,7 +1,7 @@
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
-    compile "org.postgresql:postgresql:9.4.1212.jre7"
-    compile "org.jooq:jooq:3.9.1"
-    compile "org.jooq:jooq-meta:3.9.1"
-    compile "org.apache.commons:commons-lang3:3.5"
+    compile "org.postgresql:postgresql:42.1.4"
+    compile "org.jooq:jooq:3.10.2"
+    compile "org.jooq:jooq-meta:3.10.2"
+    compile "org.apache.commons:commons-lang3:3.7"
 }

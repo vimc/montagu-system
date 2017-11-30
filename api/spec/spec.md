@@ -1011,7 +1011,8 @@ Schema: [`BurdenEstimates.schema.json`](BurdenEstimates.schema.json)
                 "type": "central-averaged",
                 "details": "Mean over all stochastic runs"
             },
-            "problems": []
+            "problems": [],
+            "status": "complete"
         }
     ]
 
@@ -1037,7 +1038,8 @@ Schema: [`BurdenEstimateSet.schema.json`](BurdenEstimateSet.schema.json)
             "type": "central-averaged",
             "details": "Mean over all stochastic runs"
         },
-        "problems": []
+        "problems": [],
+        "status": "empty"
     }
 
 ### CSV data
@@ -1393,7 +1395,8 @@ Schema: [`ResponsibilitySet.schema.json`](ResponsibilitySet.schema.json)
                         "type": "central-averaged",
                         "details": "Mean over all stochastic runs"
                     },
-                    "problems": []                    
+                    "problems": [],
+                    "status": "complete"
                 }
             }
         ]
