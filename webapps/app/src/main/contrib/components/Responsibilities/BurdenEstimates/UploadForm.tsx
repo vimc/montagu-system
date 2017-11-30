@@ -1,13 +1,12 @@
 import * as React from "react";
-import { BurdenEstimateSet } from "../../../../shared/models/Generated";
-import { settings } from "../../../../shared/Settings";
+import {BurdenEstimateSet} from "../../../../shared/models/Generated";
 import fetcher from "../../../../shared/sources/Fetcher";
+import {CurrentEstimateSetSummary} from "../Overview/List/CurrentEstimateSetSummary";
 
 const formStyles = require("../../../../shared/styles/forms.css");
 const commonStyles = require("../../../../shared/styles/common.css");
 const buttonStyles = require("../../../../shared/styles/buttons.css");
 const styles = require("../Responsibilities.css");
-const messageStyles = require("../../../../shared/styles/messages.css");
 
 export interface UploadFormProps {
     groupId: string;
@@ -40,29 +39,14 @@ export class UploadForm extends React.Component<UploadFormProps, UploadState> {
     }
 
     render() {
-
         const uploadText = this.props.canUpload ? "Choose a new burden estimate set" : "No more burden estimates can be uploaded";
 
-        const lastUploadedText = this.props.currentEstimateSet != null ?
-            `You last uploaded an estimate on ${this.props.currentEstimateSet.uploaded_on}.`
-            :
-                "You have not uploaded any burden estimate sets.";
-
-        const supportEmail = `mailto:${settings.supportContact}`;
-        const helperText = !this.props.canUpload ?
-            <p>The burden estimates uploaded by your modelling group have been reviewed
-                and approved.
-                You cannot upload any new estimates. If you need to upload new estimates (e.g. for corrections) please
-                contact us <a href={supportEmail}>here</a>.</p>
-
-            : "";
-
-        const props = this.props;
-        const url = fetcher.fetcher.buildOneTimeLink(props.token);
-        const enabled = props.token != null;
+        const {canUpload, currentEstimateSet, token} = this.props;
+        const url = fetcher.fetcher.buildOneTimeLink(token);
+        const enabled = token != null;
 
         return <div>
-            <div className={messageStyles.info}>{lastUploadedText} <br/> {helperText}</div>
+            <CurrentEstimateSetSummary estimateSet={currentEstimateSet} canUpload={canUpload}/>
             <form className={formStyles.form} action={url}
                   method="POST" encType="multipart/form-data">
                 <div>
