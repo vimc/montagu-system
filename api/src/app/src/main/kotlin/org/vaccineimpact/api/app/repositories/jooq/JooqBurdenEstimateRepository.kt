@@ -196,7 +196,7 @@ class JooqBurdenEstimateRepository(
         val properties = CreateBurdenEstimateSet(BurdenEstimateSetType(
                 BurdenEstimateSetTypeCode.CENTRAL_UNKNOWN,
                 "Created via deprecated method"
-        ))
+        ), null)
         val setId = createBurdenEstimateSet(groupId, touchstoneId, scenarioId, properties, uploader, timestamp)
         populateBurdenEstimateSet(setId, groupId, touchstoneId, scenarioId, estimates)
         return setId
@@ -249,6 +249,16 @@ class JooqBurdenEstimateRepository(
         {
             throw OperationNotAllowedError("The burden estimates uploaded for this touchstone have been reviewed" +
                     " and approved. You cannot upload any new estimates.")
+        }
+
+        val modelRunParameterSetId = properties.modelRunParameterSetId
+        if (modelRunParameterSetId != null)
+        {
+            dsl.select(MODEL_RUN_PARAMETER_SET.ID)
+                    .from(MODEL_RUN_PARAMETER_SET)
+                    .where(MODEL_RUN_PARAMETER_SET.ID.eq(modelRunParameterSetId))
+                    .fetch()
+                    .singleOrNull()?: throw UnknownObjectError(modelRunParameterSetId, "model run paramater set")
         }
 
         val latestModelVersion = getlatestModelVersion(modellingGroup.id, responsibilityInfo.disease)
@@ -408,6 +418,7 @@ class JooqBurdenEstimateRepository(
             this.status = "empty"
             this.setType = mapper.mapEnum(properties.type.type)
             this.setTypeDetails = properties.type.details
+            this.modelRunParameterSet = properties.modelRunParameterSetId
         }
         setRecord.insert()
         return setRecord.id
