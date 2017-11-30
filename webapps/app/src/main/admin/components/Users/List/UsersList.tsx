@@ -10,7 +10,7 @@ interface UserProps extends RemoteContent {
     users: User[]
 }
 
-export class UsersListComponent extends RemoteContentComponent<UserProps, {}> {
+export class UsersListComponent extends RemoteContentComponent<UserProps, undefined> {
     static getStores() {
         return [userStore];
     }

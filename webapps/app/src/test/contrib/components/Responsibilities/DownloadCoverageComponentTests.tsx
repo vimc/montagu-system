@@ -1,7 +1,7 @@
 import * as React from "react";
 import { expect } from "chai";
 import { mockCoverageSet, mockScenario, mockTouchstone } from "../../../mocks/mockModels";
-import { shallow, ShallowWrapper } from "enzyme";
+import { shallow, ShallowWrapper, mount } from "enzyme";
 
 import {
     DownloadCoverageContentComponent,
@@ -57,6 +57,22 @@ describe("DownloadCoverageContentComponent", () => {
         new DownloadCoverageContentComponent().refreshToken();
         expectOneAction(spy, { action: "CoverageTokenActions.clearUsedToken" });
         expect(fetchNewToken.called).to.be.true;
+    });
+
+    it("calling meth onDownloadClicked sets state prop downloadButtonEnabled to false for 5 seconds", function(done: DoneCallback) {
+        this.timeout(5020);
+        const props = makeProps({ coverageToken: "TOKEN" });
+        const component = shallow(<DownloadCoverageContentComponent {...props} />);
+        const instance = component.instance() as DownloadCoverageContentComponent;
+        expect(component.state().downloadButtonEnabled).to.be.equal(true)
+        instance.onDownloadClicked();
+        setTimeout(() => {
+            expect(component.state().downloadButtonEnabled).to.be.equal(false)
+        },70);
+        setTimeout(() => {
+            expect(component.state().downloadButtonEnabled).to.be.equal(true)
+            done();
+        },5010);
     });
 
     it("renders format control", () => {

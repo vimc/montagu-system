@@ -45,9 +45,11 @@ export class OneTimeButton extends React.Component<Props, any> {
         const url = fetcher.fetcher.buildOneTimeLink(props.token);
         const enabled = props.enabled && props.token != null;
         return <form action={ url }>
-            <button onClick={ this.onClick }
-                    disabled={ !enabled }
-                    type="submit">
+            <button
+                onClick={ this.onClick }
+                disabled={ !enabled }
+                type="submit"
+            >
                 { this.props.children }
             </button>
             { this.renderAnimation() }
