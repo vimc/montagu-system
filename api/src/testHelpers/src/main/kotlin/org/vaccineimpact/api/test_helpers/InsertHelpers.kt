@@ -35,7 +35,7 @@ fun JooqContext.addModel(
         versions: List<String> = emptyList()
 ): Int
 {
-    val record = this.dsl.newRecord(MODEL).apply {
+    this.dsl.newRecord(MODEL).apply {
         this.id = id
         this.modellingGroup = groupId
         this.description = description
