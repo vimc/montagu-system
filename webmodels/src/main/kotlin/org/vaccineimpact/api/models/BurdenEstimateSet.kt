@@ -16,7 +16,8 @@ constructor(
 
 
 data class CreateBurdenEstimateSet(
-        val type: BurdenEstimateSetType
+        val type: BurdenEstimateSetType,
+        val modelRunParameterSetId: Int?
 )
 
 data class BurdenEstimateSetType(val type: BurdenEstimateSetTypeCode, val details: String? = null)
