@@ -1,6 +1,6 @@
 dependencies {
     compile 'com.github.spullara.mustache.java:compiler:0.9.5'
-    compile "org.simplejavamail:simple-java-mail:4.2.3"
+    compile "org.simplejavamail:simple-java-mail:4.4.5"
 
     compile project(":databaseInterface")
     compile project(":security")
