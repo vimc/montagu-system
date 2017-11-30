@@ -15,7 +15,7 @@ interface Props extends RemoteContent {
 
 const commonStyles = require("../../../../shared/styles/common.css");
 
-export class UserDetailsContentComponent extends RemoteContentComponent<Props> {
+export class UserDetailsContentComponent extends RemoteContentComponent<Props, {}> {
     static getStores() {
         return [userStore];
     }

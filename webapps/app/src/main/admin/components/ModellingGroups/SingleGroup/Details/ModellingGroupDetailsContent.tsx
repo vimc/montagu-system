@@ -14,7 +14,7 @@ interface Props extends RemoteContent {
     users: User[];
 }
 
-class ModellingGroupDetailsContentComponent extends RemoteContentComponent<Props> {
+class ModellingGroupDetailsContentComponent extends RemoteContentComponent<Props, {}> {
     static getStores() {
         return [ groupStore, userStore ];
     }

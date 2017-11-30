@@ -10,7 +10,7 @@ interface ModellingGroupsProps extends RemoteContent {
     groups: ModellingGroup[]
 }
 
-export class ModellingGroupsListComponent extends RemoteContentComponent<ModellingGroupsProps> {
+export class ModellingGroupsListComponent extends RemoteContentComponent<ModellingGroupsProps, {}> {
     static getStores() {
         return [ groupStore ];
     }

@@ -27,7 +27,19 @@ interface Props extends HasFormatOption {
     coverageToken: string;
 }
 
-export class DownloadCoverageContentComponent extends RemoteContentComponent<DownloadCoverageComponentProps> {
+interface DownloadState {
+    downloadButtonEnabled: boolean;
+}
+
+export class DownloadCoverageContentComponent extends RemoteContentComponent<DownloadCoverageComponentProps, DownloadState> {
+    constructor() {
+        super();
+        this.state = {
+            downloadButtonEnabled: true
+        }
+        this.onDownloadClicked = this.onDownloadClicked.bind(this);
+    }
+
     static getStores() {
         return [responsibilityStore];
     }
@@ -43,7 +55,7 @@ export class DownloadCoverageContentComponent extends RemoteContentComponent<Dow
                     scenario: r.scenario,
                     coverageSets: r.coverageSets,
                     coverageToken: state.coverageOneTimeToken,
-                    selectedFormat: state.selectedFormat
+                    selectedFormat: state.selectedFormat,
                 }
             };
         } else {
@@ -54,7 +66,6 @@ export class DownloadCoverageContentComponent extends RemoteContentComponent<Dow
         }
     }
 
-
     onSelectFormat(format: string) {
         coverageSetActions.selectFormat(format);
         responsibilityStore.fetchOneTimeCoverageToken().catch(doNothing);
@@ -63,6 +74,19 @@ export class DownloadCoverageContentComponent extends RemoteContentComponent<Dow
     refreshToken() {
         coverageTokenActions.clearUsedToken();
         responsibilityStore.fetchOneTimeCoverageToken();
+    }
+
+    onDownloadClicked() {
+        setTimeout(() => {
+            this.setState({
+                downloadButtonEnabled: false,
+            })
+        }, 50)
+        setTimeout(() => {
+            this.setState({
+                downloadButtonEnabled: true,
+            })
+        }, 5000)
     }
 
     renderContent(props: DownloadCoverageComponentProps) {
@@ -132,7 +156,12 @@ export class DownloadCoverageContentComponent extends RemoteContentComponent<Dow
                 </div>
             </div>
             <div className="mt-4">
-                <OneTimeButton token={data.coverageToken} refreshToken={this.refreshToken}>
+                <OneTimeButton
+                    token={data.coverageToken}
+                    refreshToken={this.refreshToken}
+                    enabled={this.state.downloadButtonEnabled}
+                    onClickOuterEvent={this.onDownloadClicked}
+                >
                     Download combined coverage set data in CSV format
                 </OneTimeButton>
             </div>

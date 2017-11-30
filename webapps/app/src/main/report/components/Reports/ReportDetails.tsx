@@ -24,7 +24,7 @@ export interface ReportDetailsProps extends RemoteContent, PublicProps {
     allVersions: string[];
 }
 
-export class ReportDetailsComponent extends RemoteContentComponent<ReportDetailsProps> {
+export class ReportDetailsComponent extends RemoteContentComponent<ReportDetailsProps, {}> {
     static getStores() {
         return [reportStore];
     }

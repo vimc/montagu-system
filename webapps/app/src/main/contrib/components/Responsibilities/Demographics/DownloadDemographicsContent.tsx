@@ -22,7 +22,7 @@ export interface DownloadDemographicsContentProps extends RemoteContent {
     token: string;
 }
 
-export class DownloadDemographicsContentComponent extends RemoteContentComponent<DownloadDemographicsContentProps> {
+export class DownloadDemographicsContentComponent extends RemoteContentComponent<DownloadDemographicsContentProps, {}> {
     static getStores() {
         return [demographicStore, responsibilityStore];
     }

@@ -7,7 +7,7 @@ import { RemoteContentComponent } from "../../../main/shared/components/RemoteCo
 
 const spinner = require("../../../main/shared/components/RemoteContentComponent/spinner.gif");
 
-class DummyComponent extends RemoteContentComponent<RemoteContent> {
+class DummyComponent extends RemoteContentComponent<RemoteContent, {}> {
     renderContent() {
         return <span>Content</span>
     }

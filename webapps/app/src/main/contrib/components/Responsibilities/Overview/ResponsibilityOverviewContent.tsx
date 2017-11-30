@@ -18,7 +18,7 @@ export interface ResponsibilityOverviewComponentProps extends RemoteContent {
     modellingGroup: ModellingGroup;
 }
 
-export class ResponsibilityOverviewContentComponent extends RemoteContentComponent<ResponsibilityOverviewComponentProps> {
+export class ResponsibilityOverviewContentComponent extends RemoteContentComponent<ResponsibilityOverviewComponentProps, {}> {
     static getStores() {
         return [responsibilityStore];
     }

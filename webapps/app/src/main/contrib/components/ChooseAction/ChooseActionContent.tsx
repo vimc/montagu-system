@@ -16,7 +16,7 @@ export interface ChooseActionContentProps extends RemoteContent {
     group: ModellingGroup
 }
 
-export class ChooseActionContentComponent extends RemoteContentComponent<ChooseActionContentProps> {
+export class ChooseActionContentComponent extends RemoteContentComponent<ChooseActionContentProps, {}> {
     static getStores() {
         return [ responsibilityStore, contribAuthStore ];
     }

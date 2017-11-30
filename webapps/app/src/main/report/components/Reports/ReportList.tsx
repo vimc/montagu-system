@@ -10,7 +10,7 @@ interface ReportProps extends RemoteContent {
     reports: Report[]
 }
 
-export class ReportListComponent extends RemoteContentComponent<ReportProps> {
+export class ReportListComponent extends RemoteContentComponent<ReportProps, {}> {
     static getStores() {
         return [reportStore];
     }
