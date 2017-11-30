@@ -88,39 +88,11 @@ class Router(val config: RouteConfig,
         val controllerName = endpoint.controllerName
         val actionName = endpoint.actionName
 
-
         val controllerType = Class.forName("org.vaccineimpact.api.app.controllers.${controllerName}Controller").kotlin
-        val controller = instantiateController(controllerType, context, repositories)
-        val action = controllerType.functions.single { it.name == actionName }
+        val controller = ControllerFactory(context, repositories, webTokenHelper)
+                .instantiateController(controllerType)
 
+        val action = controllerType.functions.single { it.name == actionName }
         return action.call(controller)
     }
-
-    private fun instantiateController(
-            controllerType: KClass<out Any>,
-            context: ActionContext,
-            repositories: Repositories
-    ): Controller
-    {
-        val c1 = getConstructor(controllerType, ActionContext::class, Repositories::class, WebTokenHelper::class)
-        val c2 = getConstructor(controllerType, ActionContext::class, Repositories::class)
-
-        val controller = c1?.call(context, repositories, webTokenHelper)
-                ?: c2?.call(context, repositories)
-                ?: throw Exception("Unable to find a useable constructor for controller " + controllerType.simpleName)
-        return controller as Controller
-    }
-
-    private fun getConstructor(controllerType: KClass<out Any>, vararg parameterTypes: KClass<*>): KFunction<*>?
-    {
-        return controllerType.constructors.firstOrNull { constructorMatches(it, *parameterTypes) }
-    }
-
-    private fun constructorMatches(constructor: KFunction<*>, vararg parameterTypes: KClass<*>): Boolean
-    {
-        val actual = constructor.parameters.map { it.type.javaType }
-        val expected = parameterTypes.map { it.java }
-        return actual == expected
-    }
-
 }
