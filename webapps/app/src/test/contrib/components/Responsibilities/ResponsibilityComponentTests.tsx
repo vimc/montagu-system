@@ -1,20 +1,22 @@
 import * as React from "react";
-import { expect } from "chai";
-import { shallow, ShallowWrapper } from "enzyme";
+import {expect} from "chai";
+import {shallow, ShallowWrapper} from "enzyme";
 import {
-    mockBurdenEstimateSet, mockModellingGroup, mockResponsibility, mockScenario,
+    mockBurdenEstimateSet,
+    mockModellingGroup,
+    mockResponsibility,
+    mockScenario,
     mockTouchstone
 } from "../../../mocks/mockModels";
-import { setupMainStore } from "../../../mocks/mocks";
-import { Sandbox } from "../../../Sandbox";
+import {setupMainStore} from "../../../mocks/mocks";
+import {Sandbox} from "../../../Sandbox";
 
-import { ButtonLink } from "../../../../main/shared/components/ButtonLink";
-import { ResponsibilityComponent } from "../../../../main/contrib/components/Responsibilities/Overview/List/ResponsibilityComponent";
-import { BurdenEstimateSet, ResponsibilitySetStatus } from "../../../../main/shared/models/Generated";
+import {ButtonLink} from "../../../../main/shared/components/ButtonLink";
+import {ResponsibilityComponent} from "../../../../main/contrib/components/Responsibilities/Overview/List/ResponsibilityComponent";
+import {BurdenEstimateSet, ResponsibilitySetStatus} from "../../../../main/shared/models/Generated";
 import {CurrentEstimateSetSummary} from "../../../../main/contrib/components/Responsibilities/Overview/List/CurrentEstimateSetSummary";
 
 const styles = require("../../../../main/contrib/components/Responsibilities/Responsibilities.css");
-const messageStyles = require("../../../../main/shared/styles/messages.css");
 
 describe('ResponsibilityComponent', () => {
     let rendered: ShallowWrapper<any, any>;
@@ -62,7 +64,8 @@ describe('ResponsibilityComponent', () => {
         const summary = rendered.find(CurrentEstimateSetSummary);
         expect(summary).to.have.length(1);
         expect(summary.props()).to.eql({
-            estimateSet: set
+            estimateSet: set,
+            canUpload: true
         });
     });
 

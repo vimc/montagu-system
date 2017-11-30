@@ -39,8 +39,9 @@ export class UploadForm extends React.Component<UploadFormProps, UploadState> {
     }
 
     render() {
-        const uploadText = this.props.canUpload ? "Choose a new burden estimate set" : "No more burden estimates can be uploaded";
-
+        const uploadText = this.props.canUpload
+            ? "Choose a new burden estimate set"
+            : "No more burden estimates can be uploaded";
         const {canUpload, currentEstimateSet, token} = this.props;
         const url = fetcher.fetcher.buildOneTimeLink(token);
         const enabled = token != null;
