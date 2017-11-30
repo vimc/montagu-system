@@ -50,7 +50,7 @@ class UploadBurdenEstimateTests : BurdenEstimateRepositoryTests()
                 BurdenEstimateSetType(
                         BurdenEstimateSetTypeCode.CENTRAL_AVERAGED,
                         "mean"
-                )
+                ),1
         )
         given { db ->
             setupDatabase(db)
@@ -310,6 +310,7 @@ class UploadBurdenEstimateTests : BurdenEstimateRepositoryTests()
     )
 
     private val defaultProperties = CreateBurdenEstimateSet(
-            BurdenEstimateSetType(BurdenEstimateSetTypeCode.CENTRAL_UNKNOWN)
+            BurdenEstimateSetType(BurdenEstimateSetTypeCode.CENTRAL_UNKNOWN
+                    ), null
     )
 }

@@ -93,7 +93,8 @@ class GroupEstimatesControllerTests : ControllerTests<GroupBurdenEstimatesContro
         val before = Instant.now()
         val controller = GroupBurdenEstimatesController(mockControllerContext())
         val properties = CreateBurdenEstimateSet(
-                BurdenEstimateSetType(BurdenEstimateSetTypeCode.CENTRAL_AVERAGED, "mean")
+                BurdenEstimateSetType(BurdenEstimateSetTypeCode.CENTRAL_AVERAGED, "mean"),
+                1
         )
         val mockContext = mock<ActionContext> {
             on { username } doReturn "username"

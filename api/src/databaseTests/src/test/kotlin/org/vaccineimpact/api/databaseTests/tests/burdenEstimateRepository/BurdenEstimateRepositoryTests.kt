@@ -52,6 +52,11 @@ abstract class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRep
         val setId = db.addResponsibilitySet(groupId, touchstoneId, responsibilitySetStatus)
         val responsibilityId = db.addResponsibility(setId, touchstoneId, scenarioId)
         db.addUserForTesting(username)
+
+        if (modelVersionId != null)
+        {
+            db.addModelRunParameterSet(setId, modelVersionId, username, "test params")
+        }
         return ReturnedIds(modelVersionId, responsibilityId, setId)
     }
 
