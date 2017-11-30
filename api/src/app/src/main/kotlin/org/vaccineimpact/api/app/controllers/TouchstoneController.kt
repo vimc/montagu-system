@@ -4,6 +4,7 @@ import org.vaccineimpact.api.app.app_start.Controller
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
+import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.serialization.FlexibleDataTable
 import org.vaccineimpact.api.serialization.SplitData
@@ -17,6 +18,8 @@ class TouchstoneController(
         private val repo: TouchstoneRepository
 ) : Controller(context)
 {
+    constructor(context: ActionContext, repositories: Repositories)
+            : this(context, repositories.touchstone)
 
     private val touchstonePreparer = ReifiedPermission("touchstones.prepare", Scope.Global())
 

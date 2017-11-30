@@ -118,8 +118,9 @@ class Router(val config: RouteConfig,
 
     private fun constructorMatches(constructor: KFunction<*>, vararg parameterTypes: KClass<*>): Boolean
     {
-        return constructor.parameters.map { it.javaClass } ==
-                parameterTypes.map { it.java }
+        val actual = constructor.parameters.map { it.type.javaType }
+        val expected = parameterTypes.map { it.java }
+        return actual == expected
     }
 
 }

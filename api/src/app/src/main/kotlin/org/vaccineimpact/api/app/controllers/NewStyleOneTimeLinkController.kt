@@ -3,6 +3,7 @@ package org.vaccineimpact.api.app.controllers
 import org.vaccineimpact.api.app.RedirectValidator
 import org.vaccineimpact.api.app.app_start.Controller
 import org.vaccineimpact.api.app.context.ActionContext
+import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.TokenRepository
 import org.vaccineimpact.api.models.helpers.OneTimeAction
 import org.vaccineimpact.api.security.WebTokenHelper
@@ -15,6 +16,9 @@ class NewStyleOneTimeLinkController(
         private val redirectValidator: RedirectValidator = RedirectValidator())
     : Controller(context)
 {
+    constructor(context: ActionContext, repositories: Repositories, tokenHelper: WebTokenHelper)
+            : this(context, repositories.token, tokenHelper)
+
     val serializer = context.serializer
 
     private fun getTokenForDemographicData(): String

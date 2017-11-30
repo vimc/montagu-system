@@ -20,27 +20,27 @@ object TouchstoneRouteConfig : RouteConfig
                     .json()
                     .secure(scenarioPermissions),
 
-            Endpoint("$baseUrl::touchstone-id/scenarios/", controllerName, "getScenarios")
+            Endpoint("$baseUrl:touchstone-id/scenarios/", controllerName, "getScenarios")
                     .json()
                     .secure(scenarioPermissions),
 
-            Endpoint("$baseUrl::touchstone-id/scenarios/:scenario-id/", controllerName, "getScenario")
+            Endpoint("$baseUrl:touchstone-id/scenarios/:scenario-id/", controllerName, "getScenario")
                     .json()
                     .secure(scenarioPermissions),
 
-            Endpoint("$baseUrl::touchstone-id/demographics/", controllerName, "getDemographicDatasets")
+            Endpoint("$baseUrl:touchstone-id/demographics/", controllerName, "getDemographicDatasets")
                     .json()
                     .secure(demographicPermissions),
 
-            Endpoint("$baseUrl::touchstone-id/demographics/:source-code/:type-code/", controllerName, "getDemographicDataAndMetadata")
+            Endpoint("$baseUrl:touchstone-id/demographics/:source-code/:type-code/", controllerName, "getDemographicDataAndMetadata")
                     .json()
                     .secure(demographicPermissions),
 
-            Endpoint("$baseUrl::touchstone-id/demographics/:source-code/:type-code/", controllerName, "getDemographicData")
+            Endpoint("$baseUrl:touchstone-id/demographics/:source-code/:type-code/", controllerName, "getDemographicData")
                     .csv()
                     .secure(demographicPermissions),
 
-            Endpoint("$baseUrl::touchstone-id/demographics/:source-code/:type-code/get_onetime_link/", "NewStyleOneTimeLink", "getTokenForDemographicData")
+            Endpoint("$baseUrl:touchstone-id/demographics/:source-code/:type-code/get_onetime_link/", "NewStyleOneTimeLink", "getTokenForDemographicData")
                     .json()
                     .secure(demographicPermissions)
     )
