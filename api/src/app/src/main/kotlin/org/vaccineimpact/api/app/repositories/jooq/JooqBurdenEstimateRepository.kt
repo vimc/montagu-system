@@ -64,6 +64,7 @@ class JooqBurdenEstimateRepository(
                 table.UPLOADED_BY,
                 table.SET_TYPE,
                 table.SET_TYPE_DETAILS,
+                table.STATUS,
                 BURDEN_ESTIMATE_SET_PROBLEM.PROBLEM
         )
                 .from(table)
@@ -86,6 +87,7 @@ class JooqBurdenEstimateRepository(
                             common[table.UPLOADED_ON].toInstant(),
                             common[table.UPLOADED_BY],
                             mapper.mapBurdenEstimateSetType(common),
+                            mapper.mapEnum(common[table.STATUS]),
                             problems
                     )
                 }
