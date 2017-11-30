@@ -13,6 +13,13 @@ import org.vaccineimpact.api.serialization.Serializer
 import spark.Route
 import spark.Spark
 import spark.route.HttpMethod
+import kotlin.reflect.KClass
+import kotlin.reflect.KFunction
+import kotlin.reflect.KType
+import kotlin.reflect.full.functions
+import kotlin.reflect.full.isSubtypeOf
+import kotlin.reflect.jvm.internal.impl.load.java.structure.JavaClass
+import kotlin.reflect.jvm.javaType
 
 class Router(val config: RouteConfig,
              val serializer: Serializer,
@@ -29,7 +36,7 @@ class Router(val config: RouteConfig,
     fun mapEndpoints(urlBase: String)
     {
         urls.addAll(config.endpoints.map {
-           mapEndpoint(it, urlBase)
+            mapEndpoint(it, urlBase)
         })
     }
 
@@ -71,19 +78,47 @@ class Router(val config: RouteConfig,
         })
     }
 
-    private fun invokeControllerAction(endpoint: EndpointDefinition, context: ActionContext,
-                                       repositories: Repositories): Any?
+    private fun invokeControllerAction(
+            endpoint: EndpointDefinition,
+            context: ActionContext,
+            repositories: Repositories
+    ): Any?
     {
         val controllerName = endpoint.controllerName
         val actionName = endpoint.actionName
 
-        val controllerType = Class.forName("org.vaccineimpact.api.app.controllers.${controllerName}Controller")
 
-        val controller = controllerType.getConstructor(ActionContext::class.java, Repositories::class.java)
-                .newInstance(context, repositories) as Controller
-        val action = controllerType.getMethod(actionName)
+        val controllerType = Class.forName("org.vaccineimpact.api.app.controllers.${controllerName}Controller").kotlin
+        val controller = instantiateController(controllerType, context, repositories)
+        val action = controllerType.functions.single { it.name == actionName }
 
-        return action.invoke(controller)
+        return action.call(controller)
+    }
+
+    private fun instantiateController(
+            controllerType: KClass<out Any>,
+            context: ActionContext,
+            repositories: Repositories
+    ): Controller
+    {
+        val c1 = getConstructor(controllerType, ActionContext::class, Repositories::class, WebTokenHelper::class)
+        val c2 = getConstructor(controllerType, ActionContext::class, Repositories::class)
+
+        val controller = c1?.call(context, repositories, webTokenHelper)
+                ?: c2?.call(context, repositories)
+                ?: throw Exception("Unable to find a useable constructor for controller " + controllerType.simpleName)
+        return controller as Controller
+    }
+
+    private fun getConstructor(controllerType: KClass<out Any>, vararg parameterTypes: KClass<*>): KFunction<*>?
+    {
+        return controllerType.constructors.firstOrNull { constructorMatches(it, *parameterTypes) }
+    }
+
+    private fun constructorMatches(constructor: KFunction<*>, vararg parameterTypes: KClass<*>): Boolean
+    {
+        return constructor.parameters.map { it.javaClass } ==
+                parameterTypes.map { it.java }
     }
 
 }

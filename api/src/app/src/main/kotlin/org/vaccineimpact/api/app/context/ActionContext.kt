@@ -3,6 +3,9 @@ package org.vaccineimpact.api.app.context
 import org.pac4j.core.profile.CommonProfile
 import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
+import org.vaccineimpact.api.security.WebTokenHelper
+import org.vaccineimpact.api.serialization.MontaguSerializer
+import org.vaccineimpact.api.serialization.Serializer
 import spark.Request
 import java.io.OutputStream
 import java.io.Reader
@@ -17,6 +20,7 @@ interface ActionContext
      *  Otherwise it is null
      */
     val username: String?
+    val serializer: Serializer
 
     fun contentType(): String
 

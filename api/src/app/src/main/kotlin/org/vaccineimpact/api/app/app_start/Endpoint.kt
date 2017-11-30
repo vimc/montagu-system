@@ -36,10 +36,7 @@ data class Endpoint(
         {
             addSecurityFilter(url, webTokenHelper, repositoryFactory)
         }
-        if (this.contentType == ContentTypes.json)
-        {
-            Spark.after(url, ContentTypes.json, DefaultHeadersFilter("${ContentTypes.json}; charset=utf-8", method))
-        }
+        Spark.after(url, contentType, DefaultHeadersFilter("$contentType; charset=utf-8", method))
     }
 
     private fun addSecurityFilter(url: String, webTokenHelper: WebTokenHelper, repositoryFactory: RepositoryFactory)
@@ -70,4 +67,8 @@ fun Endpoint.secure(permissions: Set<String> = setOf()): Endpoint
 fun Endpoint.json(): Endpoint
 {
     return this.copy(contentType = ContentTypes.json)
+}
+fun Endpoint.csv(): Endpoint
+{
+    return this.copy(contentType = ContentTypes.csv)
 }

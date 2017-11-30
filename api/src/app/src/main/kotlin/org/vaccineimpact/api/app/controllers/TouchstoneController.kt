@@ -1,49 +1,26 @@
 package org.vaccineimpact.api.app.controllers
 
-import org.vaccineimpact.api.models.helpers.OneTimeAction
+import org.vaccineimpact.api.app.app_start.Controller
 import org.vaccineimpact.api.app.context.ActionContext
-import org.vaccineimpact.api.app.controllers.endpoints.EndpointDefinition
-import org.vaccineimpact.api.app.controllers.endpoints.oneRepoEndpoint
-import org.vaccineimpact.api.app.controllers.endpoints.secured
-import org.vaccineimpact.api.app.controllers.endpoints.streamed
 import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
-import org.vaccineimpact.api.app.repositories.Repositories
-import org.vaccineimpact.api.app.repositories.RepositoryFactory
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.serialization.FlexibleDataTable
 import org.vaccineimpact.api.serialization.SplitData
 import org.vaccineimpact.api.serialization.StreamSerializable
 import org.vaccineimpact.api.models.*
+import org.vaccineimpact.api.models.helpers.OneTimeAction
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 
-class TouchstoneController(context: ControllerContext) : AbstractController(context)
+class TouchstoneController(
+        context: ActionContext,
+        private val repo: TouchstoneRepository
+) : Controller(context)
 {
-    private val permissions = setOf("*/touchstones.read")
-    private val scenarioPermissions = permissions + setOf("*/scenarios.read", "*/coverage.read")
-    private val demographicPermissions = permissions + setOf("*/demographics.read")
-
-    override val urlComponent: String = "/touchstones"
-    override fun endpoints(repos: RepositoryFactory): Iterable<EndpointDefinition<*>>
-    {
-        val repo: (Repositories) -> TouchstoneRepository = { it.touchstone }
-        return listOf(
-                oneRepoEndpoint("/", this::getTouchstones, repos, repo).secured(permissions),
-                oneRepoEndpoint("/:touchstone-id/scenarios/", this::getScenarios, repos, repo).secured(scenarioPermissions),
-                oneRepoEndpoint("/:touchstone-id/scenarios/:scenario-id/", this::getScenario, repos, repo).secured(scenarioPermissions),
-                oneRepoEndpoint("/:touchstone-id/demographics/", this::getDemographicDatasets, repos, repo).secured(demographicPermissions),
-                oneRepoEndpoint("/:touchstone-id/demographics/:source-code/:type-code/", this::getDemographicDataAndMetadata.streamed(),
-                        repos, repo, contentType = "application/json").secured(demographicPermissions),
-                oneRepoEndpoint("/:touchstone-id/demographics/:source-code/:type-code/", this::getDemographicData.streamed(),
-                        repos, repo, contentType = "text/csv").secured(demographicPermissions),
-                oneRepoEndpoint("/:touchstone-id/demographics/:source-code/:type-code/get_onetime_link/",
-                        { c, r -> getOneTimeLinkToken(c, r, OneTimeAction.DEMOGRAPHY) }, repos, { it.token }).secured(demographicPermissions)
-        )
-    }
 
     private val touchstonePreparer = ReifiedPermission("touchstones.prepare", Scope.Global())
 
-    fun getTouchstones(context: ActionContext, repo: TouchstoneRepository): List<Touchstone>
+    fun getTouchstones(): List<Touchstone>
     {
         var touchstones = repo.touchstones.all()
         if (!context.hasPermission(touchstonePreparer))
@@ -53,20 +30,20 @@ class TouchstoneController(context: ControllerContext) : AbstractController(cont
         return touchstones.toList()
     }
 
-    fun getScenarios(context: ActionContext, repo: TouchstoneRepository): List<ScenarioAndCoverageSets>
+    fun getScenarios(): List<ScenarioAndCoverageSets>
     {
         val touchstone = touchstone(context, repo)
         val filterParameters = ScenarioFilterParameters.fromContext(context)
         return repo.scenarios(touchstone.id, filterParameters)
     }
 
-    fun getDemographicDatasets(context: ActionContext, repo: TouchstoneRepository): List<DemographicDataset>
+    fun getDemographicDatasets(): List<DemographicDataset>
     {
         val touchstone = touchstone(context, repo)
         return repo.getDemographicDatasets(touchstone.id)
     }
 
-    fun getDemographicDataAndMetadata(context: ActionContext, repo: TouchstoneRepository):
+    fun getDemographicDataAndMetadata():
             SplitData<DemographicDataForTouchstone, DemographicRow>
     {
         val touchstone = touchstone(context, repo)
@@ -106,10 +83,10 @@ class TouchstoneController(context: ControllerContext) : AbstractController(cont
         return FlexibleDataTable.new(rows.asSequence(), years)
     }
 
-    fun getDemographicData(context: ActionContext, repo: TouchstoneRepository)
+    fun getDemographicData()
             : StreamSerializable<DemographicRow>
     {
-        val data = getDemographicDataAndMetadata(context, repo)
+        val data = getDemographicDataAndMetadata()
         val metadata = data.structuredMetadata
         val source = context.params(":source-code")
         val gender = context.queryParams("gender") ?: "both"
@@ -138,7 +115,7 @@ class TouchstoneController(context: ControllerContext) : AbstractController(cont
                 valuesPerYear)
     }
 
-    fun getScenario(context: ActionContext, repo: TouchstoneRepository): ScenarioTouchstoneAndCoverageSets
+    fun getScenario(): ScenarioTouchstoneAndCoverageSets
     {
         val touchstone = touchstone(context, repo)
         val scenarioId: String = context.params(":scenario-id")
@@ -156,6 +133,4 @@ class TouchstoneController(context: ControllerContext) : AbstractController(cont
         }
         return touchstone
     }
-
-
 }

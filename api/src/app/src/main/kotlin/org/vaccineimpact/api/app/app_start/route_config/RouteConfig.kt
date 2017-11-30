@@ -9,6 +9,7 @@ interface RouteConfig
 
 object MontaguRouteConfig : RouteConfig
 {
-    override val endpoints: List<EndpointDefinition> =
-            DiseaseRouteConfig.endpoints
+    override val endpoints: List<EndpointDefinition>
+            = DiseaseRouteConfig.endpoints +
+            TouchstoneRouteConfig.endpoints
 }
