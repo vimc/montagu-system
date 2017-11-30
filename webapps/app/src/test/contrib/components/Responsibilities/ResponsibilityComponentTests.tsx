@@ -58,7 +58,17 @@ describe('ResponsibilityComponent', () => {
     });
 
     it("displays last uploaded estimate date if current estimate is populated", () => {
-        setUpComponent("incomplete", { id: 1, problems: [], uploaded_on : "2017-07-13 13:55:29 +0100"});
+        setUpComponent("incomplete", {
+            id: 1,
+            problems: [],
+            uploaded_on : "2017-07-13 13:55:29 +0100",
+            uploaded_by: "test.user",
+            status: "complete",
+            type: {
+                type: "central-averaged",
+                details: "mean"
+            }
+        });
         expect(rendered.find(`.${messageStyles.info}`).text()).to.eq("You last uploaded an estimate on 2017-07-13 13:55:29 +0100.")
     });
 
