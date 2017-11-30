@@ -1,6 +1,7 @@
 import * as React from "react";
 import {BurdenEstimateSet} from "../../../../../shared/models/Generated";
 import {settings} from "../../../../../shared/Settings";
+import {longDate, longTimestamp} from "../../../../../shared/Helpers";
 
 const messageStyles = require("../../../../../shared/styles/messages.css");
 
@@ -22,17 +23,18 @@ export class CurrentEstimateSetSummary extends React.Component<Props, undefined>
             if (set == null) {
                 return <span>No burden estimate sets have been uploaded.</span>;
             } else {
+                const timestamp = longTimestamp(new Date(set.uploaded_on));
                 if (set.status == "empty") {
                     return <span>
-                        An empty burden estimate set was created on {set.uploaded_on}.
+                        An empty burden estimate set was created on {timestamp}.
                     </span>;
                 } else if (set.status == "complete") {
                     return <span>
-                        A complete estimate set was uploaded on {set.uploaded_on}.
+                        A complete estimate set was uploaded on {timestamp}.
                     </span>;
                 } else {
                     return <span>
-                        You have an estimate set in status '{set.status}', which was created on {set.uploaded_on}
+                        You have an estimate set in status '{set.status}', which was created on {timestamp}
                     </span>;
                 }
             }
