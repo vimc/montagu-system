@@ -62,7 +62,8 @@ class MontaguApi
         val router = Router(MontaguRouteConfig, MontaguSerializer.instance, tokenHelper, repositoryFactory)
         val newStyleEndpoints = router.mapEndpoints(urlBase)
 
-        HomeController(oldStyleEndpoints + newStyleEndpoints, controllerContext).mapEndpoints()
+        val allEndpoints = (oldStyleEndpoints + newStyleEndpoints).sorted()
+        HomeController(allEndpoints, controllerContext).mapEndpoints()
 
         if (!Config.authEnabled)
         {
