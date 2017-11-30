@@ -13,7 +13,7 @@ class ModelBinder(private val serializer: Serializer = MontaguSerializer.instanc
 {
     fun <T : Any> deserialize(body: String, klass: Class<T>): T
     {
-        val model = serializer.fromJson(body, klass)
+        val model = serializer.fromJson(preprocessed(body), klass)
         val errors = verify(model)
         if (errors.any())
         {
@@ -52,6 +52,15 @@ class ModelBinder(private val serializer: Serializer = MontaguSerializer.instanc
         }
         errors += property.allAnnotations(klass).map { applyRule(it, value, name) }.filterNotNull()
         return errors
+    }
+
+    private fun preprocessed(body: String) = if (body.isBlank())
+    {
+        "{}"
+    }
+    else
+    {
+        body
     }
 
     private inline fun <reified TAnnotation : Annotation>

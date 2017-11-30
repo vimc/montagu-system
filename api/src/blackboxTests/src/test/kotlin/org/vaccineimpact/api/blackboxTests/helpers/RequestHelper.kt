@@ -45,7 +45,7 @@ class RequestHelper
         return post(url, data.toJsonString(prettyPrint = true), token = token)
     }
 
-    fun post(url: String, data: String?, token: TokenLiteral? = null): Response
+    fun post(url: String, data: String? = null, token: TokenLiteral? = null): Response
     {
         return post(
                 url,
@@ -90,7 +90,8 @@ class RequestHelper
     private fun post(url: String, headers: Map<String, String>, data: Any?) = khttp.post(
             EndpointBuilder.build(url),
             data = data,
-            headers = headers
+            headers = headers,
+            allowRedirects = false
     )
 
     private fun postFiles(url: String, headers: Map<String, String>, files: List<FileLike>, data: Map<String, String> = mapOf()) = khttp.post(

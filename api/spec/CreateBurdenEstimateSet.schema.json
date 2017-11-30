@@ -1,0 +1,9 @@
+{
+    "id": "CreateBurdenEstimateSet",
+    "type": "object",
+    "properties": {
+        "type": { "$ref": "BurdenEstimateSetType.schema.json" }
+    },
+    "additionalProperties": false,
+    "required": ["type"]
+}
