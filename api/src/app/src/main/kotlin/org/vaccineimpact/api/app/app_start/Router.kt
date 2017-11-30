@@ -33,11 +33,12 @@ class Router(val config: RouteConfig,
         val urls: MutableList<String> = mutableListOf()
     }
 
-    fun mapEndpoints(urlBase: String)
+    fun mapEndpoints(urlBase: String): List<String>
     {
         urls.addAll(config.endpoints.map {
             mapEndpoint(it, urlBase)
         })
+        return urls
     }
 
     private fun transform(x: Any) = when (x)
