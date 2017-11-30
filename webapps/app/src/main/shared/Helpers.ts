@@ -2,10 +2,6 @@ export function doNothing() {
 
 }
 
-export function encodeFilename(filename: string) {
-    return filename.replace("/", ":");
-}
-
 export function longTimestamp(date: Date) {
     const hours = padZero(date.getHours());
     const minutes = padZero(date.getMinutes());
@@ -35,5 +31,8 @@ export const helpers = {
             obj[key] = value;
         });
         return obj;
+    },
+    encodeFilename(filename: string) {
+        return filename.replace(/\//g, ":");
     }
 };

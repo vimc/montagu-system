@@ -1,6 +1,6 @@
 import * as React from "react";
 import {FileDownloadLink} from "../FileDownloadLink";
-import {encodeFilename} from "../../../shared/Helpers";
+import {helpers} from "../../../shared/Helpers";
 
 const styles = require("../../../shared/styles/common.css");
 
@@ -12,7 +12,7 @@ interface ResourceLinksProps {
 
 export class ResourceLinks extends React.Component<ResourceLinksProps, undefined> {
     buildUrl(resource: string): string {
-        resource = encodeFilename(resource);
+        resource = helpers.encodeFilename(resource);
         const p = this.props;
         return `/reports/${p.report}/versions/${p.version}/resources/${resource}/`;
     }
