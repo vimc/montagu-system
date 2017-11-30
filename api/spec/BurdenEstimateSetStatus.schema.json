@@ -1,5 +1,5 @@
 {
-	"id": "BurdenEstimateSetType",
+    "id": "BurdenEstimateSetType",
     "enum": [ 
         "empty",
         "complete"
