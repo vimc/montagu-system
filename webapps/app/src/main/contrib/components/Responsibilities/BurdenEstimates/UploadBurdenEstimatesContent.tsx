@@ -4,7 +4,6 @@ import { ModellingGroup, Responsibility, Scenario, Touchstone } from "../../../.
 import { RemoteContent } from "../../../../shared/models/RemoteContent";
 import { RemoteContentComponent } from "../../../../shared/components/RemoteContentComponent/RemoteContentComponent";
 import { responsibilityStore } from "../../../stores/ResponsibilityStore";
-import { UploadForm } from "./UploadForm";
 import { TemplateLink } from "../Overview/List/TemplateLinks";
 import {UploadBurdenEstimatesForm} from "./UploadBurdenEstimatesForm";
 

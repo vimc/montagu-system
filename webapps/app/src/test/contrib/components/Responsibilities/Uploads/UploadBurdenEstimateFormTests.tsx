@@ -9,9 +9,6 @@ import {mockFetcher} from "../../../../mocks/mockRemote";
 import {CurrentEstimateSetSummary} from "../../../../../main/contrib/components/Responsibilities/Overview/List/CurrentEstimateSetSummary";
 import {UploadBurdenEstimatesForm} from "../../../../../main/contrib/components/Responsibilities/BurdenEstimates/UploadBurdenEstimatesForm";
 import {UploadForm} from "../../../../../main/shared/components/UploadForm";
-import {FileDownloadLink} from "../../../../../main/report/components/FileDownloadLink";
-
-const messageStyles = require("../../../../../main/shared/styles/messages.css");
 
 describe('UploadBurdenEstimatesForm', () => {
     let rendered: ShallowWrapper<any, any>;

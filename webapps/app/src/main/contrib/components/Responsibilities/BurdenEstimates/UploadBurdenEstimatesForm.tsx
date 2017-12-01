@@ -2,6 +2,7 @@ import * as React from "react";
 import {BurdenEstimateSet} from "../../../../shared/models/Generated";
 import {settings} from "../../../../shared/Settings";
 import {UploadForm} from "../../../../shared/components/UploadForm";
+import {CurrentEstimateSetSummary} from "../Overview/List/CurrentEstimateSetSummary";
 
 const messageStyles = require("../../../../shared/styles/messages.css");
 
@@ -39,6 +40,7 @@ export class UploadBurdenEstimatesForm extends React.Component<UploadFormProps, 
 
         return <div>
             <div className={messageStyles.info}>{lastUploadedText} <br/> {helperText}</div>
+            <CurrentEstimateSetSummary estimateSet={this.props.currentEstimateSet} canUpload={this.props.canUpload}/>
             {uploadForm}
         </div>;
     }
