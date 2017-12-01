@@ -54,14 +54,20 @@ describe("DownloadCoverageContentComponent", () => {
     it("refreshToken triggers token refresh", () => {
         const spy = sandbox.dispatchSpy();
         const fetchNewToken = sandbox.stubFetch(responsibilityStore, "fetchOneTimeCoverageToken");
-        new DownloadCoverageContentComponent().refreshToken();
+        const props = makeProps({ready: true});
+        const component = shallow(<DownloadCoverageContentComponent {...props} />);
+        const instance = component.instance() as DownloadCoverageContentComponent;
+        instance.refreshToken();
         expectOneAction(spy, { action: "CoverageTokenActions.clearUsedToken" });
         expect(fetchNewToken.called).to.be.true;
     });
 
-    it("calling meth onDownloadClicked sets state prop downloadButtonEnabled to false for 5 seconds", function(done: DoneCallback) {
-        this.timeout(5020);
-        const props = makeProps({ coverageToken: "TOKEN" });
+    it("calling meth onDownloadClicked sets state prop downloadButtonEnabled to false after given timeout in 100ms", function(done: DoneCallback) {
+        this.timeout(140);
+        const props = makeProps({
+            coverageToken: "TOKEN",
+            downloadButtonDisableTimeout: 100,
+        });
         const component = shallow(<DownloadCoverageContentComponent {...props} />);
         const instance = component.instance() as DownloadCoverageContentComponent;
         expect(component.state().downloadButtonEnabled).to.be.equal(true)
@@ -72,7 +78,7 @@ describe("DownloadCoverageContentComponent", () => {
         setTimeout(() => {
             expect(component.state().downloadButtonEnabled).to.be.equal(true)
             done();
-        },5010);
+        },110);
     });
 
     it("renders format control", () => {
@@ -108,11 +114,10 @@ function makeProps(props: any): DownloadCoverageComponentProps {
     const scenario = mockScenario();
     return {
         ready: true,
-        props: Object.assign({
-            touchstone,
-            scenario,
-            coverageSets: [],
-            coverageToken: null,
-        }, props)
+        touchstone,
+        scenario,
+        coverageSets: [],
+        coverageToken: null,
+        ...props
     };
 }

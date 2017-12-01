@@ -17,27 +17,32 @@ const commonStyles = require("../../../../shared/styles/common.css");
 const styles = require("../Responsibilities.css");
 
 export interface DownloadCoverageComponentProps extends RemoteContent {
-    props: Props
-}
-
-interface Props extends HasFormatOption {
-    touchstone: Touchstone;
-    scenario: Scenario;
-    coverageSets: CoverageSet[];
-    coverageToken: string;
+    touchstone?: Touchstone;
+    scenario?: Scenario;
+    coverageSets?: CoverageSet[];
+    coverageToken?: string;
+    downloadButtonDisableTimeout?: number;
+    selectedFormat?: string;
 }
 
 interface DownloadState {
     downloadButtonEnabled: boolean;
 }
 
-export class DownloadCoverageContentComponent extends RemoteContentComponent<DownloadCoverageComponentProps, DownloadState> {
-    constructor() {
-        super();
+export class DownloadCoverageContentComponent
+    extends RemoteContentComponent<DownloadCoverageComponentProps, DownloadState>
+{
+    downloadButtonDisableTimeout: number;
+
+    constructor(props?: DownloadCoverageComponentProps) {
+        super(props);
         this.state = {
-            downloadButtonEnabled: true
-        }
+            downloadButtonEnabled: true,
+        };
         this.onDownloadClicked = this.onDownloadClicked.bind(this);
+        this.downloadButtonDisableTimeout = this.props.downloadButtonDisableTimeout
+            ? this.props.downloadButtonDisableTimeout
+            : 5000;
     }
 
     static getStores() {
@@ -46,24 +51,15 @@ export class DownloadCoverageContentComponent extends RemoteContentComponent<Dow
 
     static getPropsFromStores(): DownloadCoverageComponentProps {
         const state = responsibilityStore.getState();
-        const r = state.currentResponsibility;
-        if (r != null) {
-            return {
-                ready: state.ready,
-                props: {
-                    touchstone: state.currentTouchstone,
-                    scenario: r.scenario,
-                    coverageSets: r.coverageSets,
-                    coverageToken: state.coverageOneTimeToken,
-                    selectedFormat: state.selectedFormat,
-                }
-            };
-        } else {
-            return {
-                ready: false,
-                props: null
-            };
-        }
+        const curResp = state.currentResponsibility;
+        return {
+            ready: curResp ? state.ready : false,
+            touchstone: state.currentTouchstone,
+            scenario: curResp.scenario,
+            coverageSets: curResp.coverageSets,
+            coverageToken: state.coverageOneTimeToken,
+            selectedFormat: state.selectedFormat,
+        };
     }
 
     onSelectFormat(format: string) {
@@ -81,16 +77,16 @@ export class DownloadCoverageContentComponent extends RemoteContentComponent<Dow
             this.setState({
                 downloadButtonEnabled: false,
             })
-        }, 50)
+        }, 20);
         setTimeout(() => {
             this.setState({
                 downloadButtonEnabled: true,
             })
-        }, 5000)
+        }, this.downloadButtonDisableTimeout);
     }
 
     renderContent(props: DownloadCoverageComponentProps) {
-        const data = props.props;
+        const data = props;
         return <div>
             <p>
                 Each scenario is based on vaccination coverage from up to 3 different
@@ -147,7 +143,7 @@ export class DownloadCoverageContentComponent extends RemoteContentComponent<Dow
                                 </div>
                             </td>
                             <td><FormatControl
-                                value={props.props.selectedFormat}
+                                value={props.selectedFormat}
                                 onSelectFormat={this.onSelectFormat}/>
                             </td>
                         </tr>
