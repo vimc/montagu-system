@@ -6,6 +6,7 @@ import org.vaccineimpact.api.app.repositories.RepositoryFactory
 import org.vaccineimpact.api.app.security.MontaguAuthorizer
 import org.vaccineimpact.api.app.security.PermissionRequirement
 import org.vaccineimpact.api.app.security.TokenVerifyingConfigFactory
+import org.vaccineimpact.api.db.Config
 import org.vaccineimpact.api.models.helpers.ContentTypes
 import org.vaccineimpact.api.security.WebTokenHelper
 import spark.Spark
@@ -44,17 +45,20 @@ data class Endpoint(
 
     private fun addSecurityFilter(url: String, webTokenHelper: WebTokenHelper, repositoryFactory: RepositoryFactory)
     {
-        val configFactory = TokenVerifyingConfigFactory(webTokenHelper,
-                requiredPermissions.toSet(), repositoryFactory)
+        if (Config.authEnabled)
+        {
+            val configFactory = TokenVerifyingConfigFactory(webTokenHelper,
+                    requiredPermissions.toSet(), repositoryFactory)
 
-        val config = configFactory.build()
+            val config = configFactory.build()
 
-        Spark.before(url, org.pac4j.sparkjava.SecurityFilter(
-                config,
-                configFactory.allClients(),
-                MontaguAuthorizer::class.java.simpleName,
-                "method:$method"
-        ))
+            Spark.before(url, org.pac4j.sparkjava.SecurityFilter(
+                    config,
+                    configFactory.allClients(),
+                    MontaguAuthorizer::class.java.simpleName,
+                    "method:$method"
+            ))
+        }
     }
 
 }
