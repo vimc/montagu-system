@@ -218,10 +218,12 @@ class UploadBurdenEstimateTests : BurdenEstimateTests()
     }
 
     private fun metadataForCreateWithModelRunParameterSet() = json {
-        obj("type" to obj(
-                "type" to "central-averaged",
-                "details" to "median"
-        ),
-                "model_run_parameter_set" to 1)
+        obj(
+                "type" to obj(
+                        "type" to "central-averaged",
+                        "details" to "median"
+                ),
+                "model_run_parameter_set" to 1
+        )
     }
 }
