@@ -12,13 +12,14 @@ import org.vaccineimpact.api.serialization.StreamSerializable
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.helpers.OneTimeAction
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
+import org.vaccineimpact.api.security.WebTokenHelper
 
 class TouchstoneController(
         context: ActionContext,
         private val repo: TouchstoneRepository
 ) : Controller(context)
 {
-    constructor(context: ActionContext, repositories: Repositories)
+    constructor(context: ActionContext, repositories: Repositories, webTokenHelper: WebTokenHelper)
             : this(context, repositories.touchstone)
 
     private val touchstonePreparer = ReifiedPermission("touchstones.prepare", Scope.Global())

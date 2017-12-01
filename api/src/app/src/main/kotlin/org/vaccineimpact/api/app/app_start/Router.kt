@@ -80,8 +80,12 @@ class Router(val config: RouteConfig,
 
         val controllerType = Class.forName("org.vaccineimpact.api.app.controllers.${controllerName}Controller")
 
-        val controller = controllerType.getConstructor(ActionContext::class.java, Repositories::class.java)
-                .newInstance(context, repositories) as Controller
+        val constructor = controllerType.getConstructor(
+                ActionContext::class.java,
+                Repositories::class.java,
+                WebTokenHelper::class.java
+        )
+        val controller = constructor.newInstance(context, repositories) as Controller
         val action = controllerType.getMethod(actionName)
 
         return action.invoke(controller)
