@@ -4,6 +4,8 @@ import { ModellingGroup, Responsibility, Scenario, Touchstone } from "../../../.
 import { RemoteContent } from "../../../../shared/models/RemoteContent";
 import { RemoteContentComponent } from "../../../../shared/components/RemoteContentComponent/RemoteContentComponent";
 import { responsibilityStore } from "../../../stores/ResponsibilityStore";
+import { UploadForm } from "./UploadForm";
+import { TemplateLink } from "../Overview/List/TemplateLinks";
 import {UploadBurdenEstimatesForm} from "./UploadBurdenEstimatesForm";
 
 const commonStyles = require("../../../../shared/styles/common.css");
@@ -69,10 +71,10 @@ export class UploadBurdenEstimatesContentComponent extends RemoteContentComponen
                     <td>Scenario</td>
                     <td>{data.scenario.description}</td>
                 </tr>
-                {/*<tr>*/}
-                    {/*<td>Burden estimates template</td>*/}
-                    {/*<td><TemplateLink diseaseId={data.scenario.disease} groupId={data.group.id}/></td>*/}
-                {/*</tr>*/}
+                <tr>
+                    <td>Burden estimates template</td>
+                    <td><TemplateLink diseaseId={data.scenario.disease} groupId={data.group.id}/></td>
+                </tr>
                 </tbody>
             </table>
 

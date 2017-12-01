@@ -4,6 +4,7 @@ import { ChooseGroupPage } from "../../ChooseGroup/ChooseGroupPage";
 import { settings } from "../../../../shared/Settings";
 
 const commonStyles = require("../../../../shared/styles/common.css");
+const dalysPdf = require("./guidance-201710-DALYs.pdf");
 
 export class ResponsibilityGuidanceModelOutputs extends ContribPageWithHeader<undefined> {
     name() {
@@ -49,8 +50,9 @@ export class ResponsibilityGuidanceModelOutputs extends ContribPageWithHeader<un
                 estimates)
             </p>
             <p>
-                First, download your central burden estimate template from this
-                page (listed under ‘Scenarios’). These templates are customised
+                First, download your central burden estimate template from
+                the Responsibilities page
+                (listed under ‘Scenarios’). These templates are customised
                 for each model following the discussions after the test runs.
             </p>
             <p>
@@ -64,7 +66,8 @@ export class ResponsibilityGuidanceModelOutputs extends ContribPageWithHeader<un
                 any problems with this.
             </p>
             <p>
-                Your scenarios are shown in the grey headings on Responsibility page.
+                Your scenarios are shown in the grey headings on the
+                Responsibilities page.
                 Most modelling groups have three scenarios (routine, no
                 vaccination, campaign) but others have more or less. The
                 coverage data for each scenario may contain more than one
@@ -78,7 +81,7 @@ export class ResponsibilityGuidanceModelOutputs extends ContribPageWithHeader<un
             <p>
                 Once you have completed one output file for each scenario,
                 you should upload each file to Montagu, using the ‘Upload
-                burden estimates’ buttons on Responsibility page.
+                burden estimates’ buttons on the Responsibilities page.
             </p>
             <p>
                 There is no specific filename format to use. This is because
@@ -106,7 +109,7 @@ export class ResponsibilityGuidanceModelOutputs extends ContribPageWithHeader<un
             </p>
             <p>
                 First, download your stochastic burden estimate template from
-                Responsibility page
+                the Responsibilities page
                 (listed under ‘Scenarios’). This template is customised
                 for each model following the discussions after the test runs.
             </p>
@@ -149,7 +152,7 @@ export class ResponsibilityGuidanceModelOutputs extends ContribPageWithHeader<un
                 stochastic_burden_est_YF-IC-Garske_yf-routine-gavi_1.csv.
                 The first part is from the template filename, the second part
                 is the scenario ID (as it appears in Montagu), the final
-                numberlast part is an arbitrary way to distinguish between
+                number is an arbitrary way to distinguish between
                 different files for the same scenario if you choose to split
                 the estimates across several files.
             </p>
@@ -178,7 +181,7 @@ export class ResponsibilityGuidanceModelOutputs extends ContribPageWithHeader<un
             <p>
                 We would like to see the parameter values underlying your
                 stochastic runs. To create this parameters file, please use
-                the ‘parameters template’ available on Responsibility page
+                the ‘parameters template’ available on the Responsibilities page
                 (listed under ‘Scenarios’).
             </p>
             <p>
@@ -210,8 +213,15 @@ export class ResponsibilityGuidanceModelOutputs extends ContribPageWithHeader<un
                 they are an average of the stochastic estimates. If your
                 model changes between uploading your central estimates
                 and your stochastic estimates, please let us know by
-                emailing montagu-help@imperial.ac.uk or using the
-                #montagu-help channel on Slack.
+                emailing&nbsp;
+                <a href={`mailto:${settings.supportContact}`}>
+                    {settings.supportContact}
+                </a>
+                &nbsp;or using the #montagu-help channel on&nbsp;
+                <a href={settings.slackUrl} target="_blank">
+                    Slack
+                </a>
+                .
             </p>
             <p>
                 <b>Age groups</b>
@@ -225,7 +235,9 @@ export class ResponsibilityGuidanceModelOutputs extends ContribPageWithHeader<un
                 <b>DALYs guidance</b>
             </p>
             <p>
-                Download report with detailed guidance on DALYs.
+                <a href={dalysPdf} target="_blank">
+                    Download report with detailed guidance on DALYs.
+                </a>
             </p>
             <p>
                 <b>Cohort size</b>

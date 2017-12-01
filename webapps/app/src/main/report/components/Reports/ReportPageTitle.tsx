@@ -22,7 +22,7 @@ export class ReportPageTitleComponent extends React.Component<ReportPageTitlePro
             version: s.currentVersion,
             displayName: null
         };
-        const details = s.versionDetails[s.currentReport];
+        const details = s.versionDetails[s.currentVersion];
         if (details) {
             props.displayName = details.displayname;
         }

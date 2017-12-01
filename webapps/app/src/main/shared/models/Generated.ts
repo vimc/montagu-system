@@ -45,22 +45,22 @@ export interface ModellingGroupDetails {
     models: ResearchModel[];
 }
 
-export interface TemporalAccessor {
-}
+export type BurdenEstimateSetStatus = "empty" | "complete";
 
-export interface Temporal extends TemporalAccessor {
-}
+export type BurdenEstimateSetTypeCode = "central-single-run" | "central-averaged" | "central-unknown" | "stochastic";
 
-export interface TemporalAdjuster {
-}
-
-export interface Instant extends Temporal, TemporalAdjuster {
+export interface BurdenEstimateSetType {
+    details: string | null;
+    type: BurdenEstimateSetTypeCode;
 }
 
 export interface BurdenEstimateSet {
     id: number;
     problems: string[];
-    uploaded_on: Instant;
+    status: BurdenEstimateSetStatus;
+    type: BurdenEstimateSetType;
+    uploaded_by: string;
+    uploaded_on: string;
 }
 
 export interface Scenario {
@@ -130,7 +130,7 @@ export interface RoleAssignment {
 
 export interface User {
     email: string;
-    last_logged_in: Instant | null;
+    last_logged_in: string;
     name: string;
     roles: RoleAssignment[] | null;
     username: string;

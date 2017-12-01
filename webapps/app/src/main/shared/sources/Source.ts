@@ -8,6 +8,7 @@ import {
 } from "../actions/NotificationActions";
 import {authActions} from "../actions/AuthActions";
 import {jwtDecoder} from "./JwtDecoder";
+import {settings} from "../Settings";
 
 export interface FetchConfig<TState, TModel> {
     success: (data: TModel) => void;
@@ -42,6 +43,14 @@ export abstract class Source<TState> {
     protected fetchRemoteData(url: string): Promise<Response> {
         return fetcher.fetcher.fetch(url)
     }
+
+    protected buildQueryStringWithRedirectUrl(redirectPath?: string) {
+        if (redirectPath && redirectPath.length > 0) {
+            return "?redirectUrl=" + encodeURI(settings.montaguUrl() + redirectPath);
+        }
+
+        return ""
+    }
 }
 
 export function processResponseAndNotifyOnErrors<TModel>(response: Response): Promise<any> {
@@ -50,7 +59,7 @@ export function processResponseAndNotifyOnErrors<TModel>(response: Response): Pr
 
 export function processEncodedResultAndNotifyOnErrors<TModel>(queryAsObject: any): TModel | void {
 
-    if (!queryAsObject.result){
+    if (!queryAsObject.result) {
         return
     }
 

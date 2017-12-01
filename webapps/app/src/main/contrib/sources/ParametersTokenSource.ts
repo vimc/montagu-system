@@ -11,16 +11,15 @@ export class ModelParametersTokenSource extends Source<ResponsibilityState> {
     constructor() {
         super();
         this._fetchOneTimeParametersToken = () => this.doFetch(state => {
-            let queryString = "";
-            if (state.redirectPath && state.redirectPath.length > 0) {
-                queryString = "?redirectUrl=" + encodeURI(settings.montaguUrl() + state.redirectPath);
+                let queryString = this.buildQueryStringWithRedirectUrl(state.redirectPath);
+                return `/modelling-groups/${state.currentModellingGroup.id}/model-run-parameters/`
+                    + `${state.currentTouchstone.id}/get_onetime_link/${queryString}`;
+            },
+            {
+                success: modelParameterActions.update,
+                loading: modelParameterActions.beginFetch,
+                isCached: () => false   // Always get a fresh token
             }
-            return `/modelling-groups/${state.currentModellingGroup.id}/model-run-parameters/`
-                + `${state.currentTouchstone.id}/get_onetime_link/${queryString}`;
-        }, {
-            success: modelParameterActions.update,
-            loading: modelParameterActions.beginFetch,
-            isCached: () => false   // Always get a fresh token
-        });
+        );
     }
 }

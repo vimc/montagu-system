@@ -48,6 +48,32 @@ export class DummyPage extends PageWithHeader<undefined> {
     }
 }
 
+export class DummyPageNoTitle extends PageWithHeader<undefined> {
+    siteTitle() {
+        return "LOTR";
+    }
+
+    name() {
+        return "Dummy";
+    }
+
+    parent(): IPageWithParent {
+        return null;
+    }
+
+    urlFragment() {
+        return "/lotr/";
+    }
+
+    renderPageContent(): JSX.Element {
+        return <span>Content</span>;
+    }
+    hideTitle(): boolean {
+        return true;
+    }
+}
+
+
 describe('PageWithHeader', () => {
     let rendered: ShallowWrapper<any, any>;
     const sandbox = new Sandbox();
@@ -76,5 +102,10 @@ describe('PageWithHeader', () => {
         checkAsync(done, () => {
             expect(page.loaded).to.be.true;
         });
+    });
+
+    it("renders the content without title element if hideTitle equals true", () => {
+        const dummyPageNoTitle = shallow(<DummyPageNoTitle location={mockLocation<undefined>()} router={null} />);
+        expect(dummyPageNoTitle.find(`.${styles.pageTitle}`).exists()).to.equal(false);
     });
 });

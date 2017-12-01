@@ -34,7 +34,7 @@ describe("ReportPageTitle", () => {
             currentVersion: "v25",
             versionDetails: makeLookup([
                 mockVersion({
-                    id: "forecast",
+                    id: "v25",
                     displayname: "Shipping Forecast"
                 })
             ])

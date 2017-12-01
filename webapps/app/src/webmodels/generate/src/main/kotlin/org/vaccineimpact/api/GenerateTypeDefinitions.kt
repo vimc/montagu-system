@@ -5,6 +5,7 @@ import me.ntrrgc.tsGenerator.TypeScriptGenerator
 import me.ntrrgc.tsGenerator.camelCaseToSnakeCase
 import org.vaccineimpact.api.models.*
 import java.io.File
+import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.sql.Timestamp
@@ -47,7 +48,8 @@ fun main(args: Array<String>)
                 mappings = mapOf(
                         LocalDateTime::class to "Date",
                         LocalDate::class to "Date",
-                        Timestamp::class to "Date"
+                        Timestamp::class to "Date",
+                        Instant::class to "string"
                 ),
                 ignoreSuperclasses = setOf(Iterable::class, HasKey::class),
                 classTransformers = listOf(

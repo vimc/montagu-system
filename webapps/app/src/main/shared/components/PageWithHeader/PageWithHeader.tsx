@@ -25,6 +25,9 @@ export abstract class PageWithHeader<TLocationProps>
     includeInBreadcrumbs(): boolean {
         return true;
     }
+    hideTitle(): boolean {
+        return false;
+    }
 
     componentDidMount() {
         setTimeout(() => this.load());
@@ -32,6 +35,7 @@ export abstract class PageWithHeader<TLocationProps>
 
     load() {
         this.createBreadcrumb();
+        window.scrollTo(0, 0);
     }
 
     createBreadcrumb() {
@@ -56,7 +60,9 @@ export abstract class PageWithHeader<TLocationProps>
             <NavBar />
             { this.postHeader() }
             <article className={ `${styles.page} container` }>
-                <div className={ styles.pageTitle }>{ this.title() }</div>
+                { !this.hideTitle() &&
+                    <div className={ styles.pageTitle }>{ this.title() }</div>
+                }
                 <div className={ styles.pageContent }>{ this.renderPageContent() }</div>
             </article>
         </div>
