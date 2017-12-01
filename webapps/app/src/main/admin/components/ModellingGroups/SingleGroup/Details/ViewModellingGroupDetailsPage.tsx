@@ -26,7 +26,8 @@ export class ViewModellingGroupDetailsPage extends AdminPageWithHeader<Modelling
     }
 
     name(): string {
-        return "Group details";
+        const s = groupStore.getState();
+        return s.currentGroupId;
     }
 
     urlFragment(): string {

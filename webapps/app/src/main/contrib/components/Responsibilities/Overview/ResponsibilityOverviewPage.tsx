@@ -28,7 +28,8 @@ export class ResponsibilityOverviewPage extends ContribPageWithHeader<LocationPr
     }
 
     name() {
-        return "Responsibilities";
+        const s = responsibilityStore.getState();
+        return s.currentTouchstone.id;
     }
 
     title() {
