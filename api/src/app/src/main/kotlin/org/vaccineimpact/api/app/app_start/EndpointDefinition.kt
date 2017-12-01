@@ -5,13 +5,14 @@ import org.vaccineimpact.api.app.repositories.RepositoryFactory
 import org.vaccineimpact.api.app.security.PermissionRequirement
 import org.vaccineimpact.api.security.WebTokenHelper
 import spark.route.HttpMethod
+import kotlin.reflect.KClass
 
 typealias ResultProcessor = (Any?, ActionContext) -> Any?
 
 interface EndpointDefinition
 {
     val urlFragment: String
-    val controllerName: String
+    val controller: KClass<*>
     val actionName: String
     val method: HttpMethod
     val contentType: String
