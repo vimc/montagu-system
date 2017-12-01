@@ -8,7 +8,7 @@ interface Props {
     token: string
     enabled?: boolean;
     refreshToken: () => void;
-    onClickOuterEvent?: () =>void;
+    onClick?: () =>void;
 }
 
 export class OneTimeButton extends React.Component<Props, any> {
@@ -18,7 +18,7 @@ export class OneTimeButton extends React.Component<Props, any> {
 
     constructor() {
         super();
-        this.onClick = this.onClick.bind(this);
+        this.internalOnClickHandler = this.internalOnClickHandler.bind(this);
     }
 
     refreshToken() {
@@ -33,10 +33,10 @@ export class OneTimeButton extends React.Component<Props, any> {
         }
     }
 
-    onClick() {
+    internalOnClickHandler() {
         this.refreshToken();
-        if (typeof this.props.onClickOuterEvent === 'function') {
-            this.props.onClickOuterEvent();
+        if (typeof this.props.onClick === 'function') {
+            this.props.onClick();
         }
     }
 
@@ -46,7 +46,7 @@ export class OneTimeButton extends React.Component<Props, any> {
         const enabled = props.enabled && props.token != null;
         return <form action={ url }>
             <button
-                onClick={ this.onClick }
+                onClick={ this.internalOnClickHandler }
                 disabled={ !enabled }
                 type="submit"
             >

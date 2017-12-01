@@ -64,7 +64,7 @@ describe("OneTimeButton", () => {
         const rendered = shallow(<OneTimeButton
             token="TOKEN"
             refreshToken={()=>{}}
-            onClickOuterEvent={outerCallbackSpy}
+            onClick={outerCallbackSpy}
         />);
         const button = rendered.find("form").find("button");
         button.simulate("click");

@@ -156,7 +156,7 @@ export class DownloadCoverageContentComponent
                     token={data.coverageToken}
                     refreshToken={this.refreshToken}
                     enabled={this.state.downloadButtonEnabled}
-                    onClickOuterEvent={this.onDownloadClicked}
+                    onClick={this.onDownloadClicked}
                 >
                     Download combined coverage set data in CSV format
                 </OneTimeButton>

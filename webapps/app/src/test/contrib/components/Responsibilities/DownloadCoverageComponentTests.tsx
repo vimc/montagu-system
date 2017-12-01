@@ -45,7 +45,7 @@ describe("DownloadCoverageContentComponent", () => {
         expect(rendered.find(OneTimeButton).props()).to.eql({
             token: "TOKEN",
             refreshToken: (rendered.instance() as DownloadCoverageContentComponent).refreshToken,
-            onClickOuterEvent: (rendered.instance() as DownloadCoverageContentComponent).onDownloadClicked,
+            onClick: (rendered.instance() as DownloadCoverageContentComponent).onDownloadClicked,
             enabled: true,
             children: "Download combined coverage set data in CSV format"
         });
