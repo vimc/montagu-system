@@ -21,7 +21,7 @@ class NewStyleOneTimeLinkController(
 
     val serializer = context.serializer
 
-    private fun getTokenForDemographicData(): String
+    fun getTokenForDemographicData(): String
     {
         return getOneTimeLinkToken(context, repo, OneTimeAction.DEMOGRAPHY)
     }
