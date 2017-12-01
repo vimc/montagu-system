@@ -1,16 +1,22 @@
 import * as React from "react";
-import { expect } from "chai";
-import { shallow, ShallowWrapper } from "enzyme";
-import { mockModellingGroup, mockResponsibility, mockScenario, mockTouchstone } from "../../../mocks/mockModels";
-import { setupMainStore } from "../../../mocks/mocks";
-import { Sandbox } from "../../../Sandbox";
+import {expect} from "chai";
+import {shallow, ShallowWrapper} from "enzyme";
+import {
+    mockBurdenEstimateSet,
+    mockModellingGroup,
+    mockResponsibility,
+    mockScenario,
+    mockTouchstone
+} from "../../../mocks/mockModels";
+import {setupMainStore} from "../../../mocks/mocks";
+import {Sandbox} from "../../../Sandbox";
 
-import { ButtonLink } from "../../../../main/shared/components/ButtonLink";
-import { ResponsibilityComponent } from "../../../../main/contrib/components/Responsibilities/Overview/List/ResponsibilityComponent";
-import { BurdenEstimateSet, ResponsibilitySetStatus } from "../../../../main/shared/models/Generated";
+import {ButtonLink} from "../../../../main/shared/components/ButtonLink";
+import {ResponsibilityComponent} from "../../../../main/contrib/components/Responsibilities/Overview/List/ResponsibilityComponent";
+import {BurdenEstimateSet, ResponsibilitySetStatus} from "../../../../main/shared/models/Generated";
+import {CurrentEstimateSetSummary} from "../../../../main/contrib/components/Responsibilities/Overview/List/CurrentEstimateSetSummary";
 
 const styles = require("../../../../main/contrib/components/Responsibilities/Responsibilities.css");
-const messageStyles = require("../../../../main/shared/styles/messages.css");
 
 describe('ResponsibilityComponent', () => {
     let rendered: ShallowWrapper<any, any>;
@@ -52,24 +58,15 @@ describe('ResponsibilityComponent', () => {
         expect(rendered.find(`.${styles.header}`).text()).to.contain("empty");
     });
 
-    it("displays no estimates message if current estimate is null", () => {
-        setUpComponent("incomplete");
-        expect(rendered.find(`.${messageStyles.info}`).text()).to.eq("You have not uploaded any burden estimate sets.")
-    });
-
-    it("displays last uploaded estimate date if current estimate is populated", () => {
-        setUpComponent("incomplete", {
-            id: 1,
-            problems: [],
-            uploaded_on : "2017-07-13 13:55:29 +0100",
-            uploaded_by: "test.user",
-            status: "complete",
-            type: {
-                type: "central-averaged",
-                details: "mean"
-            }
+    it("renders current estimate set section", () => {
+        const set = mockBurdenEstimateSet();
+        setUpComponent("incomplete", set);
+        const summary = rendered.find(CurrentEstimateSetSummary);
+        expect(summary).to.have.length(1);
+        expect(summary.props()).to.eql({
+            estimateSet: set,
+            canUpload: true
         });
-        expect(rendered.find(`.${messageStyles.info}`).text()).to.eq("You last uploaded an estimate on 2017-07-13 13:55:29 +0100.")
     });
 
     it("renders the coverage download link", () => {
