@@ -85,7 +85,7 @@ class Router(val config: RouteConfig,
                 Repositories::class.java,
                 WebTokenHelper::class.java
         )
-        val controller = constructor.newInstance(context, repositories) as Controller
+        val controller = constructor.newInstance(context, repositories, webTokenHelper) as Controller
         val action = controllerType.getMethod(actionName)
 
         return action.invoke(controller)
