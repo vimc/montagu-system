@@ -55,4 +55,23 @@ abstract class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRep
         return ReturnedIds(modelVersionId, responsibilityId, setId)
     }
 
+    protected fun setupDatabaseWithModelRunParameterSet(db: JooqContext,
+                                                        responsibilitySetStatus: String = "incomplete"): ReturnedIds
+    {
+        db.addTouchstone("touchstone", 1, "Touchstone 1", addName = true)
+        db.addScenarioDescription(scenarioId, "Test scenario", "Hib3", addDisease = true)
+        db.addGroup(groupId, "Test group")
+
+        db.addModel(modelId, groupId, disease)
+        val modelVersionId = db.addModelVersion(modelId, modelVersion, setCurrent = true)
+
+        val setId = db.addResponsibilitySet(groupId, touchstoneId, responsibilitySetStatus)
+        val responsibilityId = db.addResponsibility(setId, touchstoneId, scenarioId)
+        db.addUserForTesting(username)
+
+        db.addModelRunParameterSet(setId, modelVersionId, username, "test params")
+
+        return ReturnedIds(modelVersionId, responsibilityId, setId)
+    }
+
 }

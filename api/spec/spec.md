@@ -1096,7 +1096,8 @@ Schema: [`CreateBurdenEstimateSet.schema.json`](CreateBurdenEstimateSet.schema.j
         "type": {
             "type": "central-averaged",
             "details": "Mean over 100 runs"
-        }
+        },
+        "model_run_parameter_set": 1
     }
 
 ## POST /modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}/{scenario-id}/estimate-sets/{set-id}/
