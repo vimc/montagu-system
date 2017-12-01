@@ -54,25 +54,13 @@ export interface BurdenEstimateSetType {
     type: BurdenEstimateSetTypeCode;
 }
 
-export interface TemporalAccessor {
-}
-
-export interface Temporal extends TemporalAccessor {
-}
-
-export interface TemporalAdjuster {
-}
-
-export interface Instant extends Temporal, TemporalAdjuster {
-}
-
 export interface BurdenEstimateSet {
     id: number;
     problems: string[];
     status: BurdenEstimateSetStatus;
     type: BurdenEstimateSetType;
     uploaded_by: string;
-    uploaded_on: Instant;
+    uploaded_on: string;
 }
 
 export interface Scenario {
@@ -142,7 +130,7 @@ export interface RoleAssignment {
 
 export interface User {
     email: string;
-    last_logged_in: Instant | null;
+    last_logged_in: string;
     name: string;
     roles: RoleAssignment[] | null;
     username: string;

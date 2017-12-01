@@ -20,7 +20,7 @@ describe("CurrentEstimateSetSummary", () => {
             status: "empty",
             uploaded_on: "2017-07-13 13:55:29 +0100"
         }), true);
-        expect(rendered.text()).to.contain("An empty burden estimate set was created on 2017-07-13 13:55:29 +0100.");
+        expect(rendered.text()).to.contain("An empty burden estimate set was created on Thu Jul 13");
     });
 
     it("displays complete set message if current estimate is complete", () => {
@@ -28,7 +28,7 @@ describe("CurrentEstimateSetSummary", () => {
             status: "complete",
             uploaded_on: "2017-07-13 13:55:29 +0100"
         }), true);
-        expect(rendered.text()).to.contain("A complete estimate set was uploaded on 2017-07-13 13:55:29 +0100.");
+        expect(rendered.text()).to.contain("A complete estimate set was uploaded on Thu Jul 13");
     });
 
     it("displays fallback message for unknown status", () => {
@@ -37,7 +37,7 @@ describe("CurrentEstimateSetSummary", () => {
             uploaded_on: "2017-07-13 13:55:29 +0100"
         }), true);
         expect(rendered.text()).to.contain("You have an estimate set in status 'foo'");
-        expect(rendered.text()).to.contain("2017-07-13 13:55:29 +0100");
+        expect(rendered.text()).to.contain("Thu Jul 13");
     });
 
     it("displays no upload message for when uploads are not allowed", () => {
