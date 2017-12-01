@@ -246,6 +246,32 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
 
             });
         });
+
+        it("fetches one time parameters token with redirect url", (done: DoneCallback) => {
+
+            setTouchstoneAndGroup(touchstoneId, groupId);
+
+            const promise = responsibilityStore.fetchOneTimeParametersToken("/redirect/back");
+
+            checkPromise(done, promise, token => {
+                const decoded = jwt_decode(token);
+                expect(decoded.action).to.equal("model-run-parameters");
+
+                const query = QueryString.parse(decoded.query);
+                expect(query).to.eql(JSON.parse(`{
+                    "redirectUrl": "http://localhost:5000/redirect/back"                   
+                }`
+                ));
+
+                const payload = QueryString.parse(decoded.payload);
+
+                expect(payload).to.eql(JSON.parse(`{
+                    ":touchstone-id": "${touchstoneId}",
+                    ":group-id": "${groupId}"
+                }`));
+
+            });
+        });
     }
 }
 

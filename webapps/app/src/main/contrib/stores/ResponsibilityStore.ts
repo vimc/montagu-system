@@ -25,6 +25,8 @@ import {EstimatesTokenSource} from "../sources/EstimatesTokenSource";
 import {estimateTokenActions} from "../actions/EstimateActions";
 import {HasFormatState} from "./DemographicStore";
 import StoreModel = AltJS.StoreModel;
+import {ModelParametersTokenSource} from "../sources/ParametersTokenSource";
+import {modelParameterActions} from "../actions/ModelParameterActions";
 
 export interface ResponsibilityState extends RemoteContent, HasFormatState {
     touchstones: Array<Touchstone>;
@@ -34,6 +36,7 @@ export interface ResponsibilityState extends RemoteContent, HasFormatState {
     currentResponsibility: ExtendedResponsibility;
     coverageOneTimeToken: string;
     estimatesOneTimeToken: string;
+    parametersOneTimeToken: string;
 
     currentModellingGroup: ModellingGroup;
     currentDiseaseId: string;
@@ -53,6 +56,10 @@ interface ResponsibilityStoreInterface extends AltJS.AltStore<ResponsibilityStat
 
     _fetchOneTimeEstimatesToken(): Promise<string>;
 
+    fetchOneTimeParametersToken(redirectPath: string): Promise<string>;
+
+    _fetchOneTimeParametersToken(): Promise<string>;
+
     isLoading(): boolean;
 
     responsibilitySetManager(): ResponsibilitySetManager;
@@ -68,6 +75,7 @@ class ResponsibilityStore extends AbstractStore<ResponsibilityState, Responsibil
     currentResponsibility: ExtendedResponsibility;
     coverageOneTimeToken: string;
     estimatesOneTimeToken: string;
+    parametersOneTimeToken: string;
 
     currentModellingGroup: ModellingGroup;
     currentDiseaseId: string;
@@ -83,6 +91,7 @@ class ResponsibilityStore extends AbstractStore<ResponsibilityState, Responsibil
         this.registerAsync(new CoverageSetSource());
         this.registerAsync(new CoverageTokenSource());
         this.registerAsync(new EstimatesTokenSource());
+        this.registerAsync(new ModelParametersTokenSource());
 
         this.bindListeners({
             handleSetCurrentModellingGroup: modellingGroupActions.setCurrentGroup,
@@ -106,6 +115,9 @@ class ResponsibilityStore extends AbstractStore<ResponsibilityState, Responsibil
             handleUpdateEstimatesToken: estimateTokenActions.update,
             handleClearUsedEstimatesToken: estimateTokenActions.clearUsedToken,
 
+            handleUpdateParametersToken: modelParameterActions.update,
+            handleClearUsedParametersToken: modelParameterActions.clearUsedToken,
+
             handleFilterByDisease: responsibilityActions.filterByDisease
         });
         this.exportPublicMethods({
@@ -117,6 +129,10 @@ class ResponsibilityStore extends AbstractStore<ResponsibilityState, Responsibil
             fetchOneTimeEstimatesToken: (redirectPath: string) => {
                 this.redirectPath = redirectPath;
                 return this.getInstance()._fetchOneTimeEstimatesToken();
+            },
+            fetchOneTimeParametersToken: (redirectPath: string) => {
+                this.redirectPath = redirectPath;
+                return this.getInstance()._fetchOneTimeParametersToken();
             }
         });
     }
@@ -131,9 +147,10 @@ class ResponsibilityStore extends AbstractStore<ResponsibilityState, Responsibil
 
             currentModellingGroup: null,
             currentDiseaseId: null,
-            coverageOneTimeToken: null,
 
+            coverageOneTimeToken: null,
             estimatesOneTimeToken: null,
+            parametersOneTimeToken: null,
 
             selectedFormat: "long",
             redirectPath: null,
@@ -211,6 +228,14 @@ class ResponsibilityStore extends AbstractStore<ResponsibilityState, Responsibil
 
     handleUpdateEstimatesToken(token: string) {
         this.estimatesOneTimeToken = token;
+    }
+
+    handleUpdateParametersToken(token: string) {
+        this.parametersOneTimeToken = token;
+    }
+
+    handleClearUsedParametersToken() {
+        this.parametersOneTimeToken = null;
     }
 
     handleFilterByDisease(diseaseId: string) {
