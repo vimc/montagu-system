@@ -6,7 +6,7 @@ import {CurrentEstimateSetSummary} from "../Overview/List/CurrentEstimateSetSumm
 
 const messageStyles = require("../../../../shared/styles/messages.css");
 
-interface UploadFormProps {
+interface UploadBurdenEstimateFormProps {
     groupId: string;
     canUpload: boolean;
     scenarioId: string;
@@ -14,7 +14,7 @@ interface UploadFormProps {
     token: string;
 }
 
-export class UploadBurdenEstimatesForm extends React.Component<UploadFormProps, undefined> {
+export class UploadBurdenEstimatesForm extends React.Component<UploadBurdenEstimateFormProps, undefined> {
 
     render() {
 

@@ -4,7 +4,7 @@ import {ModellingGroup, Touchstone} from "../../../../shared/models/Generated";
 import {RemoteContent} from "../../../../shared/models/RemoteContent";
 import {RemoteContentComponent} from "../../../../shared/components/RemoteContentComponent/RemoteContentComponent";
 import {responsibilityStore} from "../../../stores/ResponsibilityStore";
-import {ModelRunParametersUploadForm} from "./ModelRunParametersUploadForm";
+import { UploadModelRunParametersForm} from "./ModelRunParametersUploadForm";
 
 export interface UploadModelRunParametersContentComponentProps extends RemoteContent {
     props: {
@@ -51,7 +51,7 @@ export class UploadModelRunParametersContentComponent extends RemoteContentCompo
         const data = props.props;
 
         return <div className="mt-2">
-            <ModelRunParametersUploadForm groupId={data.group.id}
+            <UploadModelRunParametersForm groupId={data.group.id}
                                           token={data.parametersToken}
                                           diseases={data.diseases}
                                           touchstoneId={data.touchstone.id}

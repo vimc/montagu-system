@@ -11,16 +11,16 @@ interface ModelRunparametersUploadFormProps {
 interface ModelRunParametersUploadFormState {
 
     diseaseSelected: boolean;
-    description: boolean;
+    descriptionSelected: boolean;
 }
 
-export class ModelRunParametersUploadForm extends React.Component<ModelRunparametersUploadFormProps, ModelRunParametersUploadFormState> {
+export class UploadModelRunParametersForm extends React.Component<ModelRunparametersUploadFormProps, ModelRunParametersUploadFormState> {
 
     constructor() {
         super();
         this.state = {
             diseaseSelected: false,
-            description: false
+            descriptionSelected: false
         };
     }
 
@@ -32,7 +32,7 @@ export class ModelRunParametersUploadForm extends React.Component<ModelRunparame
 
     handleDescriptionChange(e: any) {
         this.setState({
-            description: e.target.value.length > 1
+            descriptionSelected: e.target.value.length > 1
         });
     }
 
@@ -44,7 +44,7 @@ export class ModelRunParametersUploadForm extends React.Component<ModelRunparame
 
         return <div>
             <UploadForm token={this.props.token} uploadText={uploadText}
-                        enableSubmit={this.state.description && this.state.diseaseSelected}>
+                        enableSubmit={this.state.descriptionSelected && this.state.diseaseSelected}>
                 <div className="form-group">
                     <select name="disease" className="form-control" onChange={this.handleDiseaseChange.bind(this)}>
                         <option value="">-- Select a disease --</option>
