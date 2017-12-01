@@ -19,6 +19,7 @@ export class ModelParametersTokenSource extends Source<ResponsibilityState> {
                 success: modelParameterActions.update,
                 loading: modelParameterActions.beginFetch,
                 isCached: () => false   // Always get a fresh token
-            });
+            }
+        );
     }
 }
