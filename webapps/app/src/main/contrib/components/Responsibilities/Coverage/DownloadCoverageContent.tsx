@@ -17,12 +17,12 @@ const commonStyles = require("../../../../shared/styles/common.css");
 const styles = require("../Responsibilities.css");
 
 export interface DownloadCoverageComponentProps extends RemoteContent {
-    touchstone?: Touchstone;
-    scenario?: Scenario;
-    coverageSets?: CoverageSet[];
-    coverageToken?: string;
+    touchstone: Touchstone;
+    scenario: Scenario;
+    coverageSets: CoverageSet[];
+    coverageToken: string;
     downloadButtonDisableTimeout?: number;
-    selectedFormat?: string;
+    selectedFormat: string;
 }
 
 interface DownloadState {
@@ -56,7 +56,7 @@ export class DownloadCoverageContentComponent
             ready: curResp ? state.ready : false,
             touchstone: state.currentTouchstone,
             scenario: curResp ? curResp.scenario : null,
-            coverageSets: curResp ? curResp.coverageSets : null,
+            coverageSets: curResp ? curResp.coverageSets : [],
             coverageToken: state.coverageOneTimeToken,
             selectedFormat: state.selectedFormat,
         };
