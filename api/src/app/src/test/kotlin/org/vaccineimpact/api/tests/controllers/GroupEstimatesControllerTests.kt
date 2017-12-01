@@ -5,6 +5,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
 import org.vaccineimpact.api.app.context.ActionContext
+import org.vaccineimpact.api.app.context.postData
 import org.vaccineimpact.api.app.controllers.ControllerContext
 import org.vaccineimpact.api.app.controllers.GroupBurdenEstimatesController
 import org.vaccineimpact.api.app.errors.InconsistentDataError
@@ -91,11 +92,15 @@ class GroupEstimatesControllerTests : ControllerTests<GroupBurdenEstimatesContro
 
         val before = Instant.now()
         val controller = GroupBurdenEstimatesController(mockControllerContext())
+        val properties = CreateBurdenEstimateSet(
+                BurdenEstimateSetType(BurdenEstimateSetTypeCode.CENTRAL_AVERAGED, "mean")
+        )
         val mockContext = mock<ActionContext> {
             on { username } doReturn "username"
             on { params(":group-id") } doReturn "group-1"
             on { params(":touchstone-id") } doReturn "touchstone-1"
             on { params(":scenario-id") } doReturn "scenario-1"
+            on { postData<CreateBurdenEstimateSet>() } doReturn properties
         }
         val url = controller.createBurdenEstimateSet(mockContext, repo)
         val after = Instant.now()
@@ -103,8 +108,9 @@ class GroupEstimatesControllerTests : ControllerTests<GroupBurdenEstimatesContro
         verify(touchstoneSet).get("touchstone-1")
         verify(repo).createBurdenEstimateSet(
                 eq("group-1"), eq("touchstone-1"), eq("scenario-1"),
-                eq(CreateBurdenEstimateSet(BurdenEstimateSetType(BurdenEstimateSetTypeCode.CENTRAL_SINGLE_RUN))),
-                eq("username"), timestamp = check { it > before && it < after })
+                eq(properties),
+                eq("username"),
+                timestamp = check { it > before && it < after })
     }
 
     @Test

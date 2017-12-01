@@ -1,11 +1,9 @@
 package org.vaccineimpact.api.serialization
 
-import com.github.salomonbrys.kotson.jsonSerializer
-import com.github.salomonbrys.kotson.registerTypeAdapter
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
-import com.google.gson.JsonPrimitive
+import com.github.salomonbrys.kotson.*
+import com.google.gson.*
 import org.vaccineimpact.api.models.*
+import java.lang.reflect.Type
 import java.time.Instant
 import java.time.LocalDate
 
@@ -23,12 +21,11 @@ interface Serializer
     val gson: Gson
 }
 
-class MontaguSerializer: Serializer
+class MontaguSerializer : Serializer
 {
     private val toDateStringSerializer = jsonSerializer<Any> {
         JsonPrimitive(it.src.toString())
     }
-    private val enumSerializer = jsonSerializer<Any> { JsonPrimitive(serializeEnum(it.src)) }
 
     companion object
     {
@@ -49,14 +46,14 @@ class MontaguSerializer: Serializer
                 .registerTypeAdapter<Instant>(toDateStringSerializer)
                 .registerTypeAdapter<LocalDate>(toDateStringSerializer)
 
-                .registerTypeAdapter<ActivityType>(enumSerializer)
-                .registerTypeAdapter<BurdenEstimateSetStatus>(enumSerializer)
-                .registerTypeAdapter<BurdenEstimateSetTypeCode>(enumSerializer)
-                .registerTypeAdapter<GAVISupportLevel>(enumSerializer)
-                .registerTypeAdapter<ResponsibilitySetStatus>(enumSerializer)
-                .registerTypeAdapter<ResponsibilityStatus>(enumSerializer)
-                .registerTypeAdapter<ResultStatus>(enumSerializer)
-                .registerTypeAdapter<TouchstoneStatus>(enumSerializer)
+                .registerEnum<ActivityType>()
+                .registerEnum<BurdenEstimateSetStatus>()
+                .registerEnum<BurdenEstimateSetTypeCode>()
+                .registerEnum<GAVISupportLevel>()
+                .registerEnum<ResponsibilitySetStatus>()
+                .registerEnum<ResponsibilityStatus>()
+                .registerEnum<ResultStatus>()
+                .registerEnum<TouchstoneStatus>()
 
         // Some serializers for complex objects need to recurse back to the default
         // serialization strategy. So we separate out a Gson object that has all the
@@ -115,6 +112,14 @@ class MontaguSerializer: Serializer
         // Legacy values
             GAVISupportLevel.BESTMINUS -> "best minus"
             GAVISupportLevel.HOLD2010 -> "hold 2010"
+        }
+    }
+
+    private inline fun <reified T: Enum<T>> GsonBuilder.registerEnum(): GsonBuilder
+    {
+        return this.registerTypeAdapter<T> {
+            serialize { JsonPrimitive(serializeEnum(it.src)) }
+            deserialize { Deserializer().parseEnum<T>(it.json.asString) }
         }
     }
 }

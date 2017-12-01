@@ -1088,6 +1088,17 @@ Required permissions: Scoped to modelling group: `estimates.write`, `responsibil
 
 Returns the integer id of the new set.
 
+### JSON metadata
+Schema: [`CreateBurdenEstimateSet.schema.json`](CreateBurdenEstimateSet.schema.json)
+
+### Example
+    {
+        "type": {
+            "type": "central-averaged",
+            "details": "Mean over 100 runs"
+        }
+    }
+
 ## POST /modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}/{scenario-id}/estimate-sets/{set-id}/
 Populates an empty burden estimate set.
 
