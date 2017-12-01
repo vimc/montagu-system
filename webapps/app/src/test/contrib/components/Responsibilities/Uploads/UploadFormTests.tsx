@@ -1,11 +1,11 @@
 import * as React from "react";
 import { expect } from "chai";
-import { UploadForm } from "../../../../../main/contrib/components/Responsibilities/BurdenEstimates/UploadForm";
 import { shallow, ShallowWrapper } from "enzyme";
 import {  mockResponsibility, mockScenario } from "../../../../mocks/mockModels";
 import { setupMainStore } from "../../../../mocks/mocks";
 import { BurdenEstimateSet } from "../../../../../main/shared/models/Generated";
 import { Sandbox } from "../../../../Sandbox";
+import {UploadBurdenEstimatesForm} from "../../../../../main/contrib/components/Responsibilities/BurdenEstimates/UploadBurdenEstimatesForm";
 
 const buttonStyles = require("../../../../../main/shared/styles/buttons.css");
 const messageStyles = require("../../../../../main/shared/styles/messages.css");
@@ -31,7 +31,7 @@ describe('UploadForm', () => {
             description: "Description",
         }));
 
-        rendered = shallow(<UploadForm
+        rendered = shallow(<UploadBurdenEstimatesForm
             token={token}
             canUpload={canUpload}
             groupId={"group-1"}

@@ -4,9 +4,7 @@ import { ModellingGroup, Responsibility, Scenario, Touchstone } from "../../../.
 import { RemoteContent } from "../../../../shared/models/RemoteContent";
 import { RemoteContentComponent } from "../../../../shared/components/RemoteContentComponent/RemoteContentComponent";
 import { responsibilityStore } from "../../../stores/ResponsibilityStore";
-import { UploadForm } from "./UploadForm";
-import { TemplateLink } from "../Overview/List/TemplateLinks";
-import { estimateTokenActions } from "../../../actions/EstimateActions";
+import {UploadBurdenEstimatesForm} from "./UploadBurdenEstimatesForm";
 
 const commonStyles = require("../../../../shared/styles/common.css");
 
@@ -79,7 +77,7 @@ export class UploadBurdenEstimatesContentComponent extends RemoteContentComponen
             </table>
 
             <div className={commonStyles.gapAbove}>
-                <UploadForm groupId={data.group.id}
+                <UploadBurdenEstimatesForm groupId={data.group.id}
                             token={data.estimatesToken}
                             canUpload={canUploadBurdenEstimate}
                             currentEstimateSet={data.responsibility.current_estimate_set}
