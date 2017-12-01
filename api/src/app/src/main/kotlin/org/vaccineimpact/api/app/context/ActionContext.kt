@@ -20,7 +20,6 @@ interface ActionContext
      *  Otherwise it is null
      */
     val username: String?
-    val serializer: Serializer
 
     fun contentType(): String
 

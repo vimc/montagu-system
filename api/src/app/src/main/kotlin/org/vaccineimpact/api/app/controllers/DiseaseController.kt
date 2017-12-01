@@ -11,7 +11,7 @@ class DiseaseController(context: ActionContext,
                         private val simpleObjectsRepository: SimpleObjectsRepository)
     : Controller(context)
 {
-    constructor(context: ActionContext, repositories: Repositories, webTokenHelper: WebTokenHelper)
+    constructor(context: ActionContext, repositories: Repositories)
             : this(context, repositories.simpleObjects)
 
 

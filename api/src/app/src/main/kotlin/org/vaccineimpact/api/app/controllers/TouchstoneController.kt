@@ -18,7 +18,7 @@ class TouchstoneController(
         private val repo: TouchstoneRepository
 ) : Controller(context)
 {
-    constructor(context: ActionContext, repositories: Repositories, webTokenHelper: WebTokenHelper)
+    constructor(context: ActionContext, repositories: Repositories)
             : this(context, repositories.touchstone)
 
     private val touchstonePreparer = ReifiedPermission("touchstones.prepare", Scope.Global())

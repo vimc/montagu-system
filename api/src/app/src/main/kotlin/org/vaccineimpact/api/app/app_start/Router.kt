@@ -101,11 +101,9 @@ class Router(val config: RouteConfig,
     {
         val constructor = controllerType.getConstructor(
                 ActionContext::class.java,
-                Repositories::class.java,
-                WebTokenHelper::class.java
+                Repositories::class.java
         )
-        val controller = constructor.newInstance(context, repositories, webTokenHelper) as Controller
-        return controller
+        return constructor.newInstance(context, repositories, webTokenHelper) as Controller
     }
 
 }
