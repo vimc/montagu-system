@@ -3,7 +3,7 @@ import {expect} from "chai";
 import {shallow, ShallowWrapper} from "enzyme";
 import {Sandbox} from "../../../../Sandbox";
 import {mockFetcher} from "../../../../mocks/mockRemote";
-import {UploadModelRunParametersForm} from "../../../../../main/contrib/components/Responsibilities/ModelRunParameters/ModelRunParametersUploadForm";
+import {UploadModelRunParametersForm} from "../../../../../main/contrib/components/Responsibilities/ModelRunParameters/UploadModelRunParametersForm";
 import {UploadForm} from "../../../../../main/shared/components/UploadForm";
 
 describe('UploadModelRunParametersForm', () => {

@@ -28,6 +28,7 @@ interface Props extends HasFormatOption {
 }
 
 export class DownloadCoverageContentComponent extends RemoteContentComponent<DownloadCoverageComponentProps> {
+
     static getStores() {
         return [responsibilityStore];
     }

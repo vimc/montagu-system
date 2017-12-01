@@ -4,15 +4,13 @@ import {ModellingGroup, Touchstone} from "../../../../shared/models/Generated";
 import {RemoteContent} from "../../../../shared/models/RemoteContent";
 import {RemoteContentComponent} from "../../../../shared/components/RemoteContentComponent/RemoteContentComponent";
 import {responsibilityStore} from "../../../stores/ResponsibilityStore";
-import { UploadModelRunParametersForm} from "./ModelRunParametersUploadForm";
+import {UploadModelRunParametersForm} from "./UploadModelRunParametersForm";
 
 export interface UploadModelRunParametersContentComponentProps extends RemoteContent {
-    props: {
-        touchstone: Touchstone;
-        group: ModellingGroup;
-        parametersToken: string;
-        diseases: string[];
-    };
+    touchstone: Touchstone;
+    group: ModellingGroup;
+    parametersToken: string;
+    diseases: string[];
 }
 
 export class UploadModelRunParametersContentComponent extends RemoteContentComponent<UploadModelRunParametersContentComponentProps> {
@@ -23,6 +21,7 @@ export class UploadModelRunParametersContentComponent extends RemoteContentCompo
 
     static getPropsFromStores(): UploadModelRunParametersContentComponentProps {
         const state = responsibilityStore.getState();
+
         function onlyUnique(value: any, index: number, self: any[]) {
             return self.indexOf(value) === index;
         }
@@ -30,31 +29,31 @@ export class UploadModelRunParametersContentComponent extends RemoteContentCompo
         if (state.parametersOneTimeToken != null) {
             return {
                 ready: state.ready,
-                props: {
-                    touchstone: state.currentTouchstone,
-                    group: state.currentModellingGroup,
-                    parametersToken: state.parametersOneTimeToken,
-                    diseases: [].concat.apply([],
-                        state.responsibilitySets.map((set) => set.responsibilities.map(r => r.scenario.disease)))
-                        .filter(onlyUnique)
-                }
+                touchstone: state.currentTouchstone,
+                group: state.currentModellingGroup,
+                parametersToken: state.parametersOneTimeToken,
+                diseases: [].concat.apply([],
+                    state.responsibilitySets.map((set) => set.responsibilities.map(r => r.scenario.disease)))
+                    .filter(onlyUnique)
             };
         } else {
             return {
                 ready: false,
-                props: null
+                touchstone: null,
+                group: null,
+                parametersToken: null,
+                diseases: []
             };
         }
     }
 
     renderContent(props: UploadModelRunParametersContentComponentProps) {
-        const data = props.props;
 
         return <div className="mt-2">
-            <UploadModelRunParametersForm groupId={data.group.id}
-                                          token={data.parametersToken}
-                                          diseases={data.diseases}
-                                          touchstoneId={data.touchstone.id}
+            <UploadModelRunParametersForm groupId={props.group.id}
+                                          token={props.parametersToken}
+                                          diseases={props.diseases}
+                                          touchstoneId={props.touchstone.id}
             />
         </div>;
     }
