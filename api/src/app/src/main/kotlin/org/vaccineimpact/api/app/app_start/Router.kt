@@ -13,6 +13,7 @@ import org.vaccineimpact.api.serialization.Serializer
 import spark.Route
 import spark.Spark
 import spark.route.HttpMethod
+import java.lang.reflect.InvocationTargetException
 
 class Router(val config: RouteConfig,
              val serializer: Serializer,
@@ -78,18 +79,33 @@ class Router(val config: RouteConfig,
         val controllerName = endpoint.controllerName
         val actionName = endpoint.actionName
 
-        val controllerType = Class.forName("org.vaccineimpact.api.app.controllers.${controllerName}Controller")
+        val className = "${controllerName}Controller"
+        val controllerType = Class.forName("org.vaccineimpact.api.app.controllers.$className")
+        val controller = instantiateController(controllerType, context, repositories)
+        val action = controllerType.getMethod(actionName)
 
+        val result = try
+        {
+            action.invoke(controller)
+        }
+        catch (e: InvocationTargetException)
+        {
+            logger.warn("Exception was thrown whilst using reflection to invoke " +
+                    "$className.$actionName, see below for details")
+            throw e.targetException
+        }
+        return endpoint.postProcess(result, context)
+    }
+
+    private fun instantiateController(controllerType: Class<*>, context: ActionContext, repositories: Repositories): Controller
+    {
         val constructor = controllerType.getConstructor(
                 ActionContext::class.java,
                 Repositories::class.java,
                 WebTokenHelper::class.java
         )
         val controller = constructor.newInstance(context, repositories, webTokenHelper) as Controller
-        val action = controllerType.getMethod(actionName)
-
-        val result = action.invoke(controller)
-        return endpoint.postProcess(result, context)
+        return controller
     }
 
 }
