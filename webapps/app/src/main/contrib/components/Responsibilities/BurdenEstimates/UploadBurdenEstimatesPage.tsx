@@ -27,7 +27,7 @@ export class UploadBurdenEstimatesPage extends ContribPageWithHeader<UploadEstim
 
             if (processEncodedResultAndNotifyOnErrors<string>(helpers.queryStringAsObject()))
             {
-                const notification = makeNotification("Success! You have uploaded a new set of burden estimates.", "info");
+                const notification = makeNotification("Success! You have uploaded a new set of burden estimates.", "info")
                 notificationActions.notify(notification)
             }
 
@@ -37,7 +37,7 @@ export class UploadBurdenEstimatesPage extends ContribPageWithHeader<UploadEstim
             touchstoneActions.setCurrentTouchstone(this.props.location.params.touchstoneId);
             responsibilityStore.fetchResponsibilities().catch(doNothing).then(() => {
                 responsibilityActions.setCurrentResponsibility(this.props.location.params.scenarioId);
-                responsibilityStore.fetchOneTimeEstimatesToken(this.props.location.pathname).catch(doNothing);
+                responsibilityStore.fetchOneTimeEstimatesToken(this.props.location.pathname).catch(doNothing)
                 super.load();
             });
         });
