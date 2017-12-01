@@ -13,13 +13,6 @@ import org.vaccineimpact.api.serialization.Serializer
 import spark.Route
 import spark.Spark
 import spark.route.HttpMethod
-import kotlin.reflect.KClass
-import kotlin.reflect.KFunction
-import kotlin.reflect.KType
-import kotlin.reflect.full.functions
-import kotlin.reflect.full.isSubtypeOf
-import kotlin.reflect.jvm.internal.impl.load.java.structure.JavaClass
-import kotlin.reflect.jvm.javaType
 
 class Router(val config: RouteConfig,
              val serializer: Serializer,
@@ -79,20 +72,19 @@ class Router(val config: RouteConfig,
         })
     }
 
-    private fun invokeControllerAction(
-            endpoint: EndpointDefinition,
-            context: ActionContext,
-            repositories: Repositories
-    ): Any?
+    private fun invokeControllerAction(endpoint: EndpointDefinition, context: ActionContext,
+                                       repositories: Repositories): Any?
     {
         val controllerName = endpoint.controllerName
         val actionName = endpoint.actionName
 
-        val controllerType = Class.forName("org.vaccineimpact.api.app.controllers.${controllerName}Controller").kotlin
-        val controller = ControllerFactory(context, repositories, webTokenHelper)
-                .instantiateController(controllerType)
+        val controllerType = Class.forName("org.vaccineimpact.api.app.controllers.${controllerName}Controller")
 
-        val action = controllerType.functions.single { it.name == actionName }
-        return action.call(controller)
+        val controller = controllerType.getConstructor(ActionContext::class.java, Repositories::class.java)
+                .newInstance(context, repositories) as Controller
+        val action = controllerType.getMethod(actionName)
+
+        return action.invoke(controller)
     }
+
 }
