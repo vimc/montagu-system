@@ -113,9 +113,7 @@ class DirectActionContext(private val context: SparkWebContext,
     {
         addDefaultResponseHeaders(response, contentType)
         val stream = response.raw().outputStream
-        GZIPOutputStream(stream, BUFFER_SIZE).use { zipStream ->
-            work(zipStream)
-        }
+        work(stream)
     }
 
     override fun redirect(url: String)
