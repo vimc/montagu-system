@@ -55,8 +55,8 @@ export class DownloadCoverageContentComponent
         return {
             ready: curResp ? state.ready : false,
             touchstone: state.currentTouchstone,
-            scenario: curResp.scenario,
-            coverageSets: curResp.coverageSets,
+            scenario: curResp ? curResp.scenario : null,
+            coverageSets: curResp ? curResp.coverageSets : null,
             coverageToken: state.coverageOneTimeToken,
             selectedFormat: state.selectedFormat,
         };
@@ -77,7 +77,7 @@ export class DownloadCoverageContentComponent
             this.setState({
                 downloadButtonEnabled: false,
             })
-        }, 20);
+        });
         setTimeout(() => {
             this.setState({
                 downloadButtonEnabled: true,
