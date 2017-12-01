@@ -28,7 +28,30 @@ describe('UploadModelRunParametersForm', () => {
 
     });
 
-    it("renders disease select input", () => {
+    it("renders disease select input if multiple diseases", () => {
+
+        rendered = shallow(<UploadModelRunParametersForm
+            token={"token"}
+            groupId={"group-1"}
+            touchstoneId={"touchstone-id"}
+            diseases={["d1", "d2"]}
+        />);
+
+        const select = rendered.find('select[name="disease"]');
+        expect(select).to.have.lengthOf(1);
+
+        const options = select.find("option");
+        expect(options).to.have.lengthOf(3);
+
+        expect(options.first().text()).to.equal("-- Select a disease --");
+        expect(options.first().prop("value")).to.be.empty;
+
+        expect(options.last().text()).to.equal("d2");
+        expect(options.last().prop("value")).to.equal("d2");
+
+    });
+
+    it("populates hidden input if only one diseases", () => {
 
         rendered = shallow(<UploadModelRunParametersForm
             token={"token"}
@@ -38,16 +61,11 @@ describe('UploadModelRunParametersForm', () => {
         />);
 
         const select = rendered.find('select[name="disease"]');
-        expect(select).to.have.lengthOf(1);
+        expect(select).to.have.lengthOf(0);
 
-        const options = select.find("option");
-        expect(options).to.have.lengthOf(2);
-
-        expect(options.first().text()).to.equal("-- Select a disease --");
-        expect(options.first().prop("value")).to.be.empty;
-
-        expect(options.last().text()).to.equal("d1");
-        expect(options.last().prop("value")).to.equal("d1");
+        const input = rendered.find('input[name="disease"]');
+        expect(input).to.have.lengthOf(1);
+        expect(input.prop("value")).to.eql("d1");
 
     });
 
@@ -73,9 +91,6 @@ describe('UploadModelRunParametersForm', () => {
             diseases={["d1"]}
         />);
 
-        const select = rendered.find('select[name="disease"]');
-        select.simulate("change", { target: { value: "some disease"}});
-
         const form = rendered.find(UploadForm);
         expect(form.prop("enableSubmit")).to.be.false;
     });
@@ -86,7 +101,7 @@ describe('UploadModelRunParametersForm', () => {
             token={"token"}
             groupId={"group-1"}
             touchstoneId={"touchstone-id"}
-            diseases={["d1"]}
+            diseases={["d1", "d2"]}
         />);
 
         const input = rendered.find('input[name="description"]');
@@ -96,7 +111,28 @@ describe('UploadModelRunParametersForm', () => {
         expect(form.prop("enableSubmit")).to.be.false;
     });
 
-    it("enables submit is true if disease and description selected", () => {
+    it("enables submit is true if disease selected and description selected", () => {
+
+        rendered = shallow(<UploadModelRunParametersForm
+            token={"token"}
+            groupId={"group-1"}
+            touchstoneId={"touchstone-id"}
+            diseases={["d1", "d2"]}
+        />);
+
+        const input = rendered.find('input[name="description"]');
+        input.simulate("change", { target: { value: "some description"}});
+
+        const select = rendered.find('select[name="disease"]');
+        select.simulate("change", { target: { value: "some disease"}});
+
+        const form = rendered.find(UploadForm);
+        expect(form.prop("enableSubmit")).to.be.true;
+
+    });
+
+
+    it("enables submit is true if only one disease and description selected", () => {
 
         rendered = shallow(<UploadModelRunParametersForm
             token={"token"}
@@ -107,9 +143,6 @@ describe('UploadModelRunParametersForm', () => {
 
         const input = rendered.find('input[name="description"]');
         input.simulate("change", { target: { value: "some description"}});
-
-        const select = rendered.find('select[name="disease"]');
-        select.simulate("change", { target: { value: "some disease"}});
 
         const form = rendered.find(UploadForm);
         expect(form.prop("enableSubmit")).to.be.true;

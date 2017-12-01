@@ -7,11 +7,6 @@ import {DownloadDataTitle} from "../DownloadDataTitle";
 import {ContribPageWithHeader} from "../../PageWithHeader/ContribPageWithHeader";
 import {IPageWithParent} from "../../../../shared/models/Breadcrumb";
 import {ResponsibilityOverviewPage} from "../Overview/ResponsibilityOverviewPage";
-import {
-    processEncodedResultAndNotifyOnErrors
-} from "../../../../shared/sources/Source";
-import {helpers} from "../../../../shared/Helpers";
-import {makeNotification, notificationActions} from "../../../../shared/actions/NotificationActions";
 import {UploadModelRunParametersContent} from "./UploadModelRunParametersContent";
 import {modelParameterActions} from "../../../actions/ModelParameterActions";
 
@@ -22,12 +17,6 @@ export interface UploadModelRunParametersProps {
 
 export class UploadModelRunParametersPage extends ContribPageWithHeader<UploadModelRunParametersProps> {
     load() {
-
-            if (processEncodedResultAndNotifyOnErrors<string>(helpers.queryStringAsObject()))
-            {
-                const notification = makeNotification("Success! You have uploaded a new set of model run parameters.", "info");
-                notificationActions.notify(notification)
-            }
 
         modelParameterActions.clearUsedToken();
         modellingGroupActions.setCurrentGroup(this.props.location.params.groupId);
@@ -56,6 +45,6 @@ export class UploadModelRunParametersPage extends ContribPageWithHeader<UploadMo
     }
 
     renderPageContent() {
-        return <UploadModelRunParametersContent/>
+        return <UploadModelRunParametersContent />
     }
 }

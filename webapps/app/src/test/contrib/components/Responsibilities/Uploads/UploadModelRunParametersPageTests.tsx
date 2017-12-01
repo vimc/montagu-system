@@ -48,7 +48,7 @@ describe('UploadModelRunParameterPage', () => {
                     message: "Success! You have uploaded a new set of model run parameters.",
                     type: "info"
                 };
-                expectOrderedActions(spy, [{action: "NotificationActions.notify", payload: successNotification},
+                expectOrderedActions(spy, [
                     {action: "ModelParameterActions.clearUsedToken", payload: true},
                     {action: "ModellingGroupActions.setCurrentGroup", payload: "group-1"},
                     {action: "TouchstoneActions.setCurrentTouchstone", payload: "touchstone-1"}
