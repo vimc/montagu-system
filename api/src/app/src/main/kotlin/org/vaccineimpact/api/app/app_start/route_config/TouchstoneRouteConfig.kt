@@ -1,6 +1,7 @@
 package org.vaccineimpact.api.app.app_start.route_config
 
 import org.vaccineimpact.api.app.app_start.*
+import org.vaccineimpact.api.app.controllers.endpoints.streamed
 
 object TouchstoneRouteConfig : RouteConfig
 {
@@ -33,11 +34,11 @@ object TouchstoneRouteConfig : RouteConfig
                     .secure(demographicPermissions),
 
             Endpoint("$baseUrl:touchstone-id/demographics/:source-code/:type-code/", controllerName, "getDemographicDataAndMetadata")
-                    .json()
+                    .json().streamed()
                     .secure(demographicPermissions),
 
             Endpoint("$baseUrl:touchstone-id/demographics/:source-code/:type-code/", controllerName, "getDemographicData")
-                    .csv()
+                    .csv().streamed()
                     .secure(demographicPermissions),
 
             Endpoint("$baseUrl:touchstone-id/demographics/:source-code/:type-code/get_onetime_link/", "NewStyleOneTimeLink", "getTokenForDemographicData")

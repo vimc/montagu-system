@@ -88,7 +88,8 @@ class Router(val config: RouteConfig,
         val controller = constructor.newInstance(context, repositories, webTokenHelper) as Controller
         val action = controllerType.getMethod(actionName)
 
-        return action.invoke(controller)
+        val result = action.invoke(controller)
+        return endpoint.postProcess(result, context)
     }
 
 }
