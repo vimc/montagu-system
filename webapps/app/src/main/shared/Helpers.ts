@@ -3,7 +3,8 @@ export function doNothing() {
 }
 
 export function encodeFilename(filename: string) {
-    return filename.replace(/\//g, ":");
+    const forwardSlashRegex = new RegExp("/", "g");
+    return filename.replace(forwardSlashRegex, ":");
 }
 
 export function longTimestamp(date: Date) {
