@@ -9,6 +9,7 @@ import {UploadForm} from "../../../../../main/shared/components/UploadForm";
 describe('UploadModelRunParametersForm', () => {
     let rendered: ShallowWrapper<any, any>;
     const sandbox = new Sandbox();
+
     before(() => mockFetcher(Promise.resolve(null)));
 
     afterEach(() => sandbox.restore());
@@ -63,7 +64,7 @@ describe('UploadModelRunParametersForm', () => {
         expect(input).to.have.lengthOf(1);
     });
 
-    it("enable submit is false if no description", () => {
+    it("enables submit is false if no description", () => {
 
         rendered = shallow(<UploadModelRunParametersForm
             token={"token"}
@@ -72,13 +73,14 @@ describe('UploadModelRunParametersForm', () => {
             diseases={["d1"]}
         />);
 
-        const form = rendered.find(UploadForm);
-        rendered.setState({"diseaseSelected": true});
+        const select = rendered.find('select[name="disease"]');
+        select.simulate("change", { target: { value: "some disease"}});
 
+        const form = rendered.find(UploadForm);
         expect(form.prop("enableSubmit")).to.be.false;
     });
 
-    it("enable submit is false if no disease", () => {
+    it("enables submit is false if no disease", () => {
 
         rendered = shallow(<UploadModelRunParametersForm
             token={"token"}
@@ -87,14 +89,14 @@ describe('UploadModelRunParametersForm', () => {
             diseases={["d1"]}
         />);
 
-        const form = rendered.find(UploadForm);
-        rendered.setState({"descriptionSelected": true});
+        const input = rendered.find('input[name="description"]');
+        input.simulate("change", { target: { value: "some description"}});
 
+        const form = rendered.find(UploadForm);
         expect(form.prop("enableSubmit")).to.be.false;
     });
 
-
-    it("enable submit is true if disease and description selected", () => {
+    it("enables submit is true if disease and description selected", () => {
 
         rendered = shallow(<UploadModelRunParametersForm
             token={"token"}
@@ -103,10 +105,15 @@ describe('UploadModelRunParametersForm', () => {
             diseases={["d1"]}
         />);
 
-        const form = rendered.find(UploadForm);
-        rendered.setState({"descriptionSelected": true, "diseaseSelected": true});
+        const input = rendered.find('input[name="description"]');
+        input.simulate("change", { target: { value: "some description"}});
 
-        expect(form.prop("enableSubmit")).to.be.false;
+        const select = rendered.find('select[name="disease"]');
+        select.simulate("change", { target: { value: "some disease"}});
+
+        const form = rendered.find(UploadForm);
+        expect(form.prop("enableSubmit")).to.be.true;
+
     });
 
 
