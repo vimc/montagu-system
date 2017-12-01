@@ -52,7 +52,7 @@ export class UploadForm extends React.Component<UploadFormProps, UploadState> {
                             className="mr-5">{this.state.fileSelected ? "File selected: " + this.state.fileName : ""}</div>
                     </label>
                 </div>
-                <button type="submit"
+                <button type="submit" className={enableSubmit ? "" : "disabled"}
                         disabled={!enableSubmit}>Upload
                 </button>
             </form>

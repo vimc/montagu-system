@@ -6,11 +6,12 @@ import { setupMainStore } from "../../../../mocks/mocks";
 import { BurdenEstimateSet } from "../../../../../main/shared/models/Generated";
 import { Sandbox } from "../../../../Sandbox";
 import {UploadBurdenEstimatesForm} from "../../../../../main/contrib/components/Responsibilities/BurdenEstimates/UploadBurdenEstimatesForm";
+import {UploadForm} from "../../../../../main/shared/components/UploadForm";
+import {FileDownloadLink} from "../../../../../main/report/components/FileDownloadLink";
 
-const buttonStyles = require("../../../../../main/shared/styles/buttons.css");
 const messageStyles = require("../../../../../main/shared/styles/messages.css");
 
-describe('UploadForm', () => {
+describe('UploadBurdenEstimatesForm', () => {
     let rendered: ShallowWrapper<any, any>;
     const sandbox = new Sandbox();
 
@@ -41,25 +42,17 @@ describe('UploadForm', () => {
 
     afterEach(() => sandbox.restore());
 
-    it("disables the choose file button if canUpload is false", () => {
+    it("does not show form if canUpload is false", () => {
         setUpComponent(false);
-        const chooseFileButton = rendered.find(`.${buttonStyles.button}`).first();
-        expect(chooseFileButton.text()).to.eq("No more burden estimates can be uploaded");
-        expect(chooseFileButton.hasClass(buttonStyles.disabled)).to.eq(true);
+        const form = rendered.find(UploadForm);
+        expect(form).to.have.lengthOf(0);
     });
 
-    it("disables the choose file button if token is null", () => {
-        setUpComponent(true, null, null);
-        const uploadButton = rendered.find(`button`).first();
-        expect(uploadButton.prop("disabled")).to.eq(true);
-    });
-
-    it("enables choose file button if canUpload is true", () => {
+    it("shows form if canUpload is true", () => {
         setUpComponent(true);
 
-        const chooseFileButton = rendered.find(`.${buttonStyles.button}`).first();
-        expect(chooseFileButton.text()).to.eq("Choose a new burden estimate set");
-        expect(chooseFileButton.hasClass(buttonStyles.disabled)).to.eq(false);
+        const form = rendered.find(UploadForm);
+        expect(form).to.have.lengthOf(1);
     });
 
     it("shows helper message if canUpload is false", () => {

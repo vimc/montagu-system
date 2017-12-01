@@ -1,7 +1,6 @@
 import * as React from "react";
 import {BurdenEstimateSet} from "../../../../shared/models/Generated";
 import {settings} from "../../../../shared/Settings";
-import fetcher from "../../../../shared/sources/Fetcher";
 import {UploadForm} from "../../../../shared/components/UploadForm";
 
 const messageStyles = require("../../../../shared/styles/messages.css");
@@ -18,7 +17,7 @@ export class UploadBurdenEstimatesForm extends React.Component<UploadFormProps, 
 
     render() {
 
-        const uploadText = this.props.canUpload ? "Choose a new burden estimate set" : "No more burden estimates can be uploaded";
+        const uploadText = "Choose a new burden estimate set";
 
         const lastUploadedText = this.props.currentEstimateSet != null ?
             `You last uploaded an estimate on ${this.props.currentEstimateSet.uploaded_on}.`
@@ -34,9 +33,13 @@ export class UploadBurdenEstimatesForm extends React.Component<UploadFormProps, 
 
             : "";
 
+        const uploadForm = this.props.canUpload ?
+            <UploadForm token={this.props.token} enableSubmit={this.props.canUpload} uploadText={uploadText}/>
+            : null;
+
         return <div>
             <div className={messageStyles.info}>{lastUploadedText} <br/> {helperText}</div>
-            <UploadForm token={this.props.token} enableSubmit={this.props.canUpload} uploadText={uploadText}/>
+            {uploadForm}
         </div>;
     }
 }
