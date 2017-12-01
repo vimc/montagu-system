@@ -17,6 +17,7 @@ import {mockLocation, setupMainStore} from "../../../../mocks/mocks";
 import {expectOrderedActions} from "../../../../actionHelpers";
 import {Sandbox} from "../../../../Sandbox";
 import {UploadModelRunParametersPage} from "../../../../../main/contrib/components/Responsibilities/ModelRunParameters/UploadModelRunParametersPage";
+import {DownloadDataTitle} from "../../../../../main/contrib/components/Responsibilities/DownloadDataTitle";
 
 describe('UploadModelRunParameterPage', () => {
     const sandbox = new Sandbox();
@@ -58,6 +59,15 @@ describe('UploadModelRunParameterPage', () => {
                 expect(fetchOneTimeParametersToken.called).to.be.equal(true, "fetchOneTimeParametersToken");
             });
         });
+    });
+
+    it("has correct meta data", () => {
+
+        const page = new UploadModelRunParametersPage({location: location, router: null});
+        expect(page.name()).to.eql("Upload model run parameters");
+        expect(page.urlFragment()).to.eql("model-run-parameters");
+        expect(page.title().props).to.have.property("title", "Upload model run parameters");
+
     });
 
     const page = new UploadModelRunParametersPage({location: location, router: null});

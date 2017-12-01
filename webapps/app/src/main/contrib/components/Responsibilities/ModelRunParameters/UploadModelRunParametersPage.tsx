@@ -29,7 +29,7 @@ export class UploadModelRunParametersPage extends ContribPageWithHeader<UploadMo
     }
 
     name() {
-        return "Upload burden estimates";
+        return "Upload model run parameters";
     }
 
     title() {
