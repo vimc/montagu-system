@@ -78,11 +78,11 @@ export class UploadBurdenEstimatesContentComponent extends RemoteContentComponen
             </table>
 
             <div className={commonStyles.gapAbove}>
-                <UploadBurdenEstimatesForm groupId={data.group.id}
+                <UploadBurdenEstimatesForm
                             token={data.estimatesToken}
                             canUpload={canUploadBurdenEstimate}
                             currentEstimateSet={data.responsibility.current_estimate_set}
-                            scenarioId={data.scenario.id}/>
+                            />
             </div>
         </div>;
     }

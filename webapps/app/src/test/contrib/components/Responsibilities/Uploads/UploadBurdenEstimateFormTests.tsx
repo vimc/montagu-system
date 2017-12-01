@@ -35,8 +35,6 @@ describe('UploadBurdenEstimatesForm', () => {
         rendered = shallow(<UploadBurdenEstimatesForm
             token={token}
             canUpload={canUpload}
-            groupId={"group-1"}
-            scenarioId={responsibility.scenario.id}
             currentEstimateSet={responsibility.current_estimate_set}/>);
     }
 

@@ -45,10 +45,6 @@ describe('UploadModelRunParameterPage', () => {
         checkAsync(done, (afterWait) => {
             afterWait(done, () => {
 
-                const successNotification: Notification = {
-                    message: "Success! You have uploaded a new set of model run parameters.",
-                    type: "info"
-                };
                 expectOrderedActions(spy, [
                     {action: "ModelParameterActions.clearUsedToken", payload: true},
                     {action: "ModellingGroupActions.setCurrentGroup", payload: "group-1"},
