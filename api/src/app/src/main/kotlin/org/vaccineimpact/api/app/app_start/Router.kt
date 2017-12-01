@@ -73,7 +73,7 @@ class Router(val config: RouteConfig,
         })
     }
 
-    private fun invokeControllerAction(endpoint: EndpointDefinition, context: ActionContext,
+    fun invokeControllerAction(endpoint: EndpointDefinition, context: ActionContext,
                                        repositories: Repositories): Any?
     {
         val controllerName = endpoint.controllerName
@@ -103,7 +103,7 @@ class Router(val config: RouteConfig,
                 ActionContext::class.java,
                 Repositories::class.java
         )
-        return constructor.newInstance(context, repositories, webTokenHelper) as Controller
+        return constructor.newInstance(context, repositories) as Controller
     }
 
 }
