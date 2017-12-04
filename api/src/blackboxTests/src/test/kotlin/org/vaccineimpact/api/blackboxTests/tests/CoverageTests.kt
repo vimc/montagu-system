@@ -9,8 +9,11 @@ import org.vaccineimpact.api.blackboxTests.schemas.SplitSchema
 import org.vaccineimpact.api.blackboxTests.validators.SplitValidator
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.direct.*
-import org.vaccineimpact.api.db.nextDecimal
+import org.vaccineimpact.api.db.toDecimal
+import org.vaccineimpact.api.models.CoverageRow
+import org.vaccineimpact.api.models.helpers.FlexibleColumns
 import org.vaccineimpact.api.models.permissions.PermissionSet
+import org.vaccineimpact.api.serialization.DataTableDeserializer
 import org.vaccineimpact.api.test_helpers.DatabaseTest
 import org.vaccineimpact.api.validateSchema.JSONValidator
 import java.io.StringReader
@@ -70,13 +73,13 @@ class CoverageTests : DatabaseTest()
         val headers = csv.first().toList()
         val firstRow = csv.drop(1).first().toList()
 
-        val expectedHeaders = listOf("scenario", "set_name","vaccine","gavi_support","activity_type",
-                "country_code", "country", "age_first", "age_last","age_range_verbatim", "coverage_$testYear",
+        val expectedHeaders = listOf("scenario", "set_name", "vaccine", "gavi_support", "activity_type",
+                "country_code", "country", "age_first", "age_last", "age_range_verbatim", "coverage_$testYear",
                 "coverage_1985", "coverage_1990", "coverage_1995", "coverage_2000",
                 "target_$testYear",
                 "target_1985", "target_1990", "target_1995", "target_2000")
 
-        headers.forEachIndexed{ index, h ->
+        headers.forEachIndexed { index, h ->
             Assertions.assertThat(h).isEqualTo(expectedHeaders[index])
         }
 
@@ -84,6 +87,64 @@ class CoverageTests : DatabaseTest()
         Assertions.assertThat(BigDecimal(firstRow[15])).isEqualTo(testTarget)
 
     }
+
+    @Test
+    fun `wide format coverage rows are sorted`()
+    {
+        val userHelper = TestUserHelper()
+        val requestHelper = RequestHelper()
+
+        JooqContext().use {
+            createGroupAndSupportingObjects(it)
+            giveCoverageSetsAndDataToResponsibility(it)
+            userHelper.setupTestUser(it)
+        }
+
+        val response = requestHelper.get("$url?format=wide", minimumPermissions, contentType = "text/csv")
+        val text = response.text
+        val year2000Map = mapOf("coverage_2000" to "<NA>", "target_2000" to "<NA>")
+        val year2001Map = mapOf("coverage_2000" to "<NA>",
+                "coverage_2001" to "<NA>", "target_2000" to "<NA>", "target_2001" to "<NA>")
+        val expected = listOf(
+                TestWideCoverageRow(scenarioId, "First", "AF", "no gavi", "routine",
+                        "AAA", "AAA-Name", 2.toDecimal(), 4.toDecimal(), "<NA>", year2001Map),
+                // first order by vaccine
+                TestWideCoverageRow(scenarioId, "Second", "BF", "no gavi", "campaign",
+                        "AAA", "AAA-Name", 1.toDecimal(), 2.toDecimal(), "<NA>", year2000Map),
+                // then by activity type
+                TestWideCoverageRow(scenarioId, "Third", "BF", "no gavi", "routine",
+                        "AAA", "AAA-Name", 1.toDecimal(), 2.toDecimal(), "<NA>", year2000Map),
+                // then by country
+                TestWideCoverageRow(scenarioId, "Third", "BF", "no gavi", "routine",
+                        "BBB", "BBB-Name", 1.toDecimal(), 2.toDecimal(), "<NA>", mapOf("coverage_2000" to "<NA>",
+                        "target_2000" to "<NA>", "coverage_2001" to "<NA>", "target_2001" to "<NA>")),
+                // then by age first
+                TestWideCoverageRow(scenarioId, "Third", "BF", "no gavi", "routine",
+                        "BBB", "BBB-Name", 2.toDecimal(), 2.toDecimal(), "<NA>", year2001Map),
+                // then by age last
+                TestWideCoverageRow(scenarioId, "Third", "BF", "no gavi", "routine",
+                        "BBB", "BBB-Name", 2.toDecimal(), 4.toDecimal(), "<NA>", year2001Map)
+        )
+
+        val rows = DataTableDeserializer.deserialize(response.text, TestWideCoverageRow::class)
+
+        Assertions.assertThat(rows.toList()).containsExactlyElementsOf(expected)
+    }
+
+    @FlexibleColumns
+    data class TestWideCoverageRow(
+            val scenario: String, //This is the scenario description ID
+            val setName: String,
+            val vaccine: String,
+            val gaviSupport: String,
+            val activityType: String,
+            val countryCode: String,
+            val country: String,
+            val ageFirst: BigDecimal?,
+            val ageLast: BigDecimal?,
+            val ageRangeVerbatim: String?,
+            val coverageAndTargetPerYear: Map<String, String?>
+    ) : CoverageRow
 
     @Test
     fun `can get pure CSV coverage data for responsibility`()
@@ -143,5 +204,39 @@ class CoverageTests : DatabaseTest()
         db.addCoverageSetToScenario(scenarioId, touchstoneId, coverageSetId, 0)
         db.generateCoverageData(coverageSetId, countryCount = 2, yearRange = 1985..2000 step 5,
                 ageRange = 0..20 step 5, testYear = testYear, target = target, coverage = coverage)
+    }
+
+    private fun createGroupAndSupportingObjects(db: JooqContext)
+    {
+        db.addGroup(groupId, "description")
+        db.addTouchstone("touchstone", 1, "description", "open", addName = true)
+        db.addScenarioDescription(scenarioId, "Blue Fever Scenario", "BF", addDisease = true)
+        db.addVaccine("BF", "Blue Fever")
+        db.addVaccine("AF", "Alpha Fever")
+    }
+
+
+    private fun giveCoverageSetsAndDataToResponsibility(db: JooqContext)
+    {
+        val setId = db.addResponsibilitySet(groupId, touchstoneId, "incomplete")
+        db.addResponsibility(setId, touchstoneId, scenarioId)
+        db.addCoverageSet(touchstoneId, "First", "AF", "without", "routine", id = 1)
+        db.addCoverageSet(touchstoneId, "Second", "BF", "without", "campaign", id = 2)
+        db.addCoverageSet(touchstoneId, "Third", "BF", "without", "routine", id = 3)
+        db.addCoverageSetToScenario(scenarioId, touchstoneId, coverageSetId = 1, order = 0)
+        db.addCoverageSetToScenario(scenarioId, touchstoneId, coverageSetId = 2, order = 1)
+        db.addCoverageSetToScenario(scenarioId, touchstoneId, coverageSetId = 3, order = 2)
+
+        db.addCountries(listOf("AAA", "BBB", "CCC"))
+
+        // adding these in jumbled up order
+        db.addCoverageRow(1, "AAA", 2001, 2.toDecimal(), 4.toDecimal(), null, null, null)
+        db.addCoverageRow(2, "AAA", 2000, 1.toDecimal(), 2.toDecimal(), null, null, null)
+        db.addCoverageRow(3, "AAA", 2000, 1.toDecimal(), 2.toDecimal(), null, null, null)
+        db.addCoverageRow(3, "BBB", 2001, 2.toDecimal(), 4.toDecimal(), null, null, null)
+        db.addCoverageRow(3, "BBB", 2001, 2.toDecimal(), 2.toDecimal(), null, null, null)
+        db.addCoverageRow(3, "BBB", 2001, 1.toDecimal(), 2.toDecimal(), null, null, null)
+        db.addCoverageRow(3, "BBB", 2000, 1.toDecimal(), 2.toDecimal(), null, null, null)
+
     }
 }
