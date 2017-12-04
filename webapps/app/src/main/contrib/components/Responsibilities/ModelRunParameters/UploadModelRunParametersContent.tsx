@@ -13,7 +13,7 @@ export interface UploadModelRunParametersContentComponentProps extends RemoteCon
     diseases: string[];
 }
 
-export class UploadModelRunParametersContentComponent extends RemoteContentComponent<UploadModelRunParametersContentComponentProps> {
+export class UploadModelRunParametersContentComponent extends RemoteContentComponent<UploadModelRunParametersContentComponentProps, undefined> {
 
     static getStores() {
         return [responsibilityStore];
