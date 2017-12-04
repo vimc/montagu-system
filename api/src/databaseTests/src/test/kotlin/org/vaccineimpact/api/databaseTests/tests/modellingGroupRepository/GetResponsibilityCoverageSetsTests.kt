@@ -22,7 +22,6 @@ class GetResponsibilityCoverageSetsTests : ModellingGroupRepositoryTests()
     val setD = 4
     val setE = 5
     val setF = 6
-    val setG = 7
 
     @Test
     fun `getCoverageSets throws exception if scenario doesn't exist`()
@@ -141,12 +140,12 @@ class GetResponsibilityCoverageSetsTests : ModellingGroupRepositoryTests()
         db.addCoverageSet(touchstoneId, "Sixth", "BF", "bestminus", "campaign", id = setF)
 
         // Deliberately out of order, to check ordering logic later
+        db.addCoverageSetToScenario(scenarioId, touchstoneId, setF, 5)
         db.addCoverageSetToScenario(scenarioId, touchstoneId, setB, 1)
         db.addCoverageSetToScenario(scenarioId, touchstoneId, setA, 0)
         db.addCoverageSetToScenario(scenarioId, touchstoneId, setC, 2)
         db.addCoverageSetToScenario(scenarioId, touchstoneId, setD, 3)
         db.addCoverageSetToScenario(scenarioId, touchstoneId, setE, 4)
-        db.addCoverageSetToScenario(scenarioId, touchstoneId, setF, 5)
 
     }
 
