@@ -130,6 +130,19 @@ class JooqTouchstoneRepository(
                 .fetch()
     }
 
+    private fun getScenariosAndCoverageSets(touchstoneId: String): SelectConditionStep<Record>
+    {
+        return dsl
+                .select(SCENARIO_DESCRIPTION.fieldsAsList())
+                .select(COVERAGE_SET.fieldsAsList())
+                .select(TOUCHSTONE.ID)
+                .fromJoinPath(TOUCHSTONE, SCENARIO, SCENARIO_DESCRIPTION)
+                // We don't mind if there are no coverage sets, so do a left join
+                .joinPath(SCENARIO, SCENARIO_COVERAGE_SET, COVERAGE_SET, joinType = JoinType.LEFT_OUTER_JOIN)
+                .where(TOUCHSTONE.ID.eq(touchstoneId))
+
+    }
+
     private fun getCoverageSetsAndCoverageDataForScenario(
             touchstoneId: String,
             scenarioDescriptionId: String)
@@ -157,17 +170,6 @@ class JooqTouchstoneRepository(
                 .joinPath(COVERAGE_SET, COVERAGE, joinType = JoinType.LEFT_OUTER_JOIN)
                 .joinPath(COVERAGE, COUNTRY, joinType = JoinType.LEFT_OUTER_JOIN)
                 .where(TOUCHSTONE.ID.eq(touchstoneId))
-    }
-
-    private fun getScenariosAndCoverageSets(touchstoneId: String): SelectConditionStep<Record>
-    {
-        return dsl
-                .select(SCENARIO_DESCRIPTION.fieldsAsList())
-                .select(COVERAGE_SET.fieldsAsList())
-                .select(TOUCHSTONE.ID)
-                .fromJoinPath(TOUCHSTONE, SCENARIO, SCENARIO_DESCRIPTION)
-                .where(TOUCHSTONE.ID.eq(touchstoneId))
-
     }
 
     private val TOUCHSTONE_SOURCES = "touchstoneSources"
