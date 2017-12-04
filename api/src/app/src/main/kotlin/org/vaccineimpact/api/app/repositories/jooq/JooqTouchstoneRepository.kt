@@ -98,7 +98,11 @@ class JooqTouchstoneRepository(
 
     override fun getScenario(touchstoneId: String, scenarioDescId: String): ScenarioAndCoverageSets
     {
-        val records = getCoverageSetsForScenario(touchstoneId, scenarioDescId)
+        val records = getScenariosAndCoverageSets(touchstoneId)
+                .and(SCENARIO_DESCRIPTION.ID.eq(scenarioDescId))
+                .orderBy(SCENARIO_COVERAGE_SET.ORDER)
+                .fetch()
+
         val scenario = getScenariosFromRecords(records).singleOrNull()
                 ?: throw UnknownObjectError(scenarioDescId, "scenario")
         return ScenarioAndCoverageSets(scenario, getCoverageSetsFromRecord(records, scenario))
@@ -117,17 +121,6 @@ class JooqTouchstoneRepository(
                 .filter { it[COVERAGE.ID] != null }
                 .map { mapCoverageRow(it, scenarioDescId) }
         return SplitData(metadata, DataTable.new(coverageRows.asSequence()))
-    }
-
-    private fun getCoverageSetsForScenario(
-            touchstoneId: String,
-            scenarioDescriptionId: String)
-            : Result<Record>
-    {
-        return getScenariosAndCoverageSets(touchstoneId)
-                .and(SCENARIO_DESCRIPTION.ID.eq(scenarioDescriptionId))
-                .orderBy(SCENARIO_COVERAGE_SET.ORDER)
-                .fetch()
     }
 
     private fun getScenariosAndCoverageSets(touchstoneId: String): SelectConditionStep<Record>
@@ -149,15 +142,6 @@ class JooqTouchstoneRepository(
             scenarioDescriptionId: String)
             : Result<Record>
     {
-        return getScenariosAndCoverageSetsWithCoverageData(touchstoneId)
-                .and(SCENARIO_DESCRIPTION.ID.eq(scenarioDescriptionId))
-                .orderBy(COVERAGE_SET.VACCINE, COVERAGE_SET.ACTIVITY_TYPE,
-                        COVERAGE.COUNTRY, COVERAGE.YEAR, COVERAGE.AGE_FROM, COVERAGE.AGE_TO)
-                .fetch()
-    }
-
-    private fun getScenariosAndCoverageSetsWithCoverageData(touchstoneId: String): SelectConditionStep<Record>
-    {
         return dsl
                 .select(SCENARIO_DESCRIPTION.fieldsAsList())
                 .select(COVERAGE_SET.fieldsAsList())
@@ -171,6 +155,10 @@ class JooqTouchstoneRepository(
                 .joinPath(COVERAGE_SET, COVERAGE, joinType = JoinType.LEFT_OUTER_JOIN)
                 .joinPath(COVERAGE, COUNTRY, joinType = JoinType.LEFT_OUTER_JOIN)
                 .where(TOUCHSTONE.ID.eq(touchstoneId))
+                .and(SCENARIO_DESCRIPTION.ID.eq(scenarioDescriptionId))
+                .orderBy(COVERAGE_SET.VACCINE, COVERAGE_SET.ACTIVITY_TYPE,
+                        COVERAGE.COUNTRY, COVERAGE.YEAR, COVERAGE.AGE_FROM, COVERAGE.AGE_TO)
+                .fetch()
     }
 
     private val TOUCHSTONE_SOURCES = "touchstoneSources"
