@@ -1,5 +1,6 @@
 package org.vaccineimpact.api.databaseTests.tests
 
+import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.jooq.Record
@@ -50,10 +51,10 @@ class UploadBurdenEstimateTests : BurdenEstimateRepositoryTests()
                 BurdenEstimateSetType(
                         BurdenEstimateSetTypeCode.CENTRAL_AVERAGED,
                         "mean"
-                )
+                ),1
         )
         given { db ->
-            setupDatabase(db)
+            setupDatabaseWithModelRunParameterSet(db)
         } makeTheseChanges { repo ->
             repo.createBurdenEstimateSet(groupId, touchstoneId, scenarioId, properties, username, timestamp)
         } andCheck { repo ->
@@ -208,34 +209,42 @@ class UploadBurdenEstimateTests : BurdenEstimateRepositoryTests()
         }
     }
 
+
+    @Test
+    fun `throws unknown create burden estimate set if model run parameter set does not exist`()
+    {
+        assertUnknownObjectError { repo -> repo.createBurdenEstimateSet(groupId, touchstoneId, scenarioId,
+                defaultProperties.copy(modelRunParameterSetId = 267), username, timestamp) }
+    }
+
     @Test
     fun `cannot create burden estimate set if touchstone doesn't exist`()
     {
-        checkBadId(otherTouchstoneId = "wrong-id")
+        assertUnknownObjectError {  repo -> repo.createBurdenEstimateSet(groupId, "wrong-id", scenarioId,
+                defaultProperties, username, timestamp)}
     }
 
     @Test
     fun `cannot create burden estimate set if group doesn't exist`()
     {
-        checkBadId(otherGroupId = "wrong-id")
+        assertUnknownObjectError {  repo -> repo.createBurdenEstimateSet("wrong-id", touchstoneId, scenarioId,
+                defaultProperties, username, timestamp)}
     }
 
     @Test
     fun `cannot create burden estimate set if scenario doesn't exist`()
     {
-        checkBadId(otherScenarioId = "wrong-id")
+        assertUnknownObjectError {  repo -> repo.createBurdenEstimateSet(groupId, touchstoneId, "wrong-id",
+                defaultProperties, username, timestamp)}
     }
 
-    private fun checkBadId(
-            otherGroupId: String = groupId,
-            otherTouchstoneId: String = touchstoneId,
-            otherScenarioId: String = scenarioId)
+    private fun assertUnknownObjectError(work: (repo: BurdenEstimateRepository) -> Any)
     {
         JooqContext().use { db ->
-            setupDatabase(db)
+            setupDatabaseWithModelRunParameterSet(db)
             val repo = makeRepository(db)
-            assertThatThrownBy {
-                repo.addBurdenEstimateSet(otherGroupId, otherTouchstoneId, otherScenarioId, data, username, timestamp)
+            Assertions.assertThatThrownBy {
+                work(repo)
             }.isInstanceOf(UnknownObjectError::class.java)
         }
     }
@@ -310,6 +319,7 @@ class UploadBurdenEstimateTests : BurdenEstimateRepositoryTests()
     )
 
     private val defaultProperties = CreateBurdenEstimateSet(
-            BurdenEstimateSetType(BurdenEstimateSetTypeCode.CENTRAL_UNKNOWN)
+            BurdenEstimateSetType(BurdenEstimateSetTypeCode.CENTRAL_UNKNOWN
+                    ), null
     )
 }

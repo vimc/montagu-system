@@ -2,7 +2,6 @@ package org.vaccineimpact.api.blackboxTests.tests.BurdenEstimates
 
 import com.beust.klaxon.json
 import org.assertj.core.api.Assertions
-import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.vaccineimpact.api.blackboxTests.helpers.*
 import org.vaccineimpact.api.blackboxTests.schemas.CSVSchema
@@ -19,12 +18,24 @@ class UploadBurdenEstimateTests : BurdenEstimateTests()
     )
 
     @Test
-    fun `can create burden estimate`()
+    fun `can create burden estimate set without model run parameter set`()
     {
         validate(setUrl, method = HttpMethod.post) withRequestSchema "CreateBurdenEstimateSet" given { db ->
             setUp(db)
         } sendingJSON {
             metadataForCreate()
+        } withPermissions {
+            requiredWritePermissions.plus(PermissionSet("*/can-login"))
+        } andCheckObjectCreation createdSetLocation
+    }
+
+    @Test
+    fun `can create burden estimate set with model run parameter set`()
+    {
+        validate(setUrl, method = HttpMethod.post) withRequestSchema "CreateBurdenEstimateSet" given { db ->
+            setUpWithModelRunParameterSet(db)
+        } sendingJSON {
+            metadataForCreateWithModelRunParameterSet()
         } withPermissions {
             requiredWritePermissions.plus(PermissionSet("*/can-login"))
         } andCheckObjectCreation createdSetLocation
@@ -204,5 +215,15 @@ class UploadBurdenEstimateTests : BurdenEstimateTests()
                 "type" to "central-averaged",
                 "details" to "median"
         ))
+    }
+
+    private fun metadataForCreateWithModelRunParameterSet() = json {
+        obj(
+                "type" to obj(
+                        "type" to "central-averaged",
+                        "details" to "median"
+                ),
+                "model_run_parameter_set" to 1
+        )
     }
 }

@@ -23,7 +23,7 @@ import javax.servlet.MultipartConfigElement
 import kotlin.reflect.KClass
 
 class DirectActionContext(private val context: SparkWebContext,
-                          override val serializer: Serializer = MontaguSerializer.instance) : ActionContext
+                          private val serializer: Serializer = MontaguSerializer.instance) : ActionContext
 {
     override val request
         get() = context.sparkRequest

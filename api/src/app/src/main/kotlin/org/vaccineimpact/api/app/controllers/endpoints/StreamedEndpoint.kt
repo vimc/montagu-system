@@ -26,8 +26,8 @@ fun streamIfStreamable(data: Any?, context: ActionContext): Any?
     }
     else
     {
-        val typeName = data?.javaClass?.simpleName ?: "unknown"
-        throw Exception("Attempted to stream $data (type: $typeName, but it is not StreamSerializable")
+        val typeName = data?.javaClass ?: "unknown"
+        throw Exception("Attempted to stream '$data' ($typeName), but it is not StreamSerializable")
     }
 }
 
