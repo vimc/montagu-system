@@ -21,7 +21,7 @@ export interface DownloadCoverageComponentProps extends RemoteContent {
     scenario: Scenario;
     coverageSets: CoverageSet[];
     coverageToken: string;
-    downloadButtonDisableTimeout?: number;
+    downloadButtonDisableDuration?: number;
     selectedFormat: string;
 }
 
@@ -32,8 +32,8 @@ interface DownloadState {
 export class DownloadCoverageContentComponent
     extends RemoteContentComponent<DownloadCoverageComponentProps, DownloadState>
 {
-    downloadButtonDisableTimeout: number;
-    downloadButtonDisableTimeoutId: any;
+    downloadButtonDisableDuration: number;
+    downloadButtonEnableTimeoutId: any;
 
     constructor(props?: DownloadCoverageComponentProps) {
         super(props);
@@ -42,9 +42,9 @@ export class DownloadCoverageContentComponent
         };
         this.onDownloadClicked = this.onDownloadClicked.bind(this);
         this.onSelectFormat = this.onSelectFormat.bind(this);
-        this.downloadButtonDisableTimeout = this.props.downloadButtonDisableTimeout
-            ? this.props.downloadButtonDisableTimeout
-            : 5000;
+        this.downloadButtonDisableDuration = this.props.downloadButtonDisableDuration
+            ? this.props.downloadButtonDisableDuration
+            : 1000;
     }
 
     static getStores() {
@@ -67,16 +67,20 @@ export class DownloadCoverageContentComponent
     onSelectFormat(format: string) {
         coverageSetActions.selectFormat(format);
         responsibilityStore.fetchOneTimeCoverageToken().catch(doNothing);
-        this.cancelTimeoutEnableOfDownloadButton();
+        this.enableDownloadButton();
+    }
+
+    enableDownloadButton(){
         this.setState({
             downloadButtonEnabled: true,
         })
+        this.clearTimeoutForDownloadButtonEnable();
     }
 
-    cancelTimeoutEnableOfDownloadButton(){
-        if (this.downloadButtonDisableTimeoutId) {
-            clearTimeout(this.downloadButtonDisableTimeoutId);
-            this.downloadButtonDisableTimeoutId = undefined;
+    clearTimeoutForDownloadButtonEnable(){
+        if (this.downloadButtonEnableTimeoutId) {
+            clearTimeout(this.downloadButtonEnableTimeoutId);
+            this.downloadButtonEnableTimeoutId = undefined;
         }
     }
 
@@ -91,15 +95,15 @@ export class DownloadCoverageContentComponent
                 downloadButtonEnabled: false,
             })
         });
-        this.downloadButtonDisableTimeoutId = setTimeout(() => {
+        this.downloadButtonEnableTimeoutId = setTimeout(() => {
             this.setState({
                 downloadButtonEnabled: true,
             })
-        }, this.downloadButtonDisableTimeout);
+        }, this.downloadButtonDisableDuration);
     }
 
     componentWillUnmount () {
-        this.cancelTimeoutEnableOfDownloadButton();
+        this.clearTimeoutForDownloadButtonEnable();
     }
 
     renderContent(props: DownloadCoverageComponentProps) {

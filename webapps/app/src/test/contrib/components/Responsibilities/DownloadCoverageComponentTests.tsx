@@ -66,7 +66,7 @@ describe("DownloadCoverageContentComponent", () => {
         this.timeout(140);
         const props = makeProps({
             coverageToken: "TOKEN",
-            downloadButtonDisableTimeout: 100,
+            downloadButtonDisableDuration: 100,
         });
         const component = shallow(<DownloadCoverageContentComponent {...props} />);
         const instance = component.instance() as DownloadCoverageContentComponent;
@@ -86,17 +86,17 @@ describe("DownloadCoverageContentComponent", () => {
         const spy = sandbox.dispatchSpy();
         const props = makeProps({
             coverageToken: "TOKEN",
-            downloadButtonDisableTimeout: 100,
+            downloadButtonDisableDuration: 100,
         });
         const component = shallow(<DownloadCoverageContentComponent {...props} />);
         const instance = component.instance() as DownloadCoverageContentComponent;
         expect(component.state().downloadButtonEnabled).to.be.equal(true)
         instance.onDownloadClicked();
-        expect(instance.downloadButtonDisableTimeoutId).to.be.not.empty;
+        expect(instance.downloadButtonEnableTimeoutId).to.be.not.empty;
         setTimeout(() => {
             expect(component.state().downloadButtonEnabled).to.be.equal(false);
             instance.onSelectFormat('wide');
-            expect(instance.downloadButtonDisableTimeoutId).to.be.empty;
+            expect(instance.downloadButtonEnableTimeoutId).to.be.empty;
         });
         setTimeout(() => {
             expect(component.state().downloadButtonEnabled).to.be.equal(true);
