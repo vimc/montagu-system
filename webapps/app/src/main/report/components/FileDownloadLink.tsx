@@ -71,7 +71,10 @@ export class FileDownloadLinkComponent extends React.Component<Props, undefined>
             <a
                 href={href}
                 onClick={this.refreshToken}
-                className={className}>
+                className={className}
+                target="_blank"
+                download="" // Filename is provided by server
+            >
                 {this.props.children}
             </a>
             {loader}
