@@ -44,7 +44,8 @@ export class UploadBurdenEstimatesPage extends ContribPageWithHeader<UploadEstim
     }
 
     name() {
-        return "Upload burden estimates";
+        const r = responsibilityStore.getState();
+        return `Upload burden estimates for ${r.currentResponsibility.scenario.description}`;
     }
 
     title() {

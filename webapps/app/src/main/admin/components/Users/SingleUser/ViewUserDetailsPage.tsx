@@ -22,7 +22,8 @@ export class ViewUserDetailsPage extends AdminPageWithHeader<UserDetailsPageProp
     }
 
     name(): string {
-        return "User details";
+        const s = userStore.getState();
+        return s.currentUsername;
     }
 
     title(): JSX.Element {
