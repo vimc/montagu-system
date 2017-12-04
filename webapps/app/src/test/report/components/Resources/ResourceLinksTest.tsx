@@ -13,14 +13,14 @@ describe("ResourceLinks", () => {
     it("can render", () => {
 
         const testResources = [
-            "R/someresource.csv",
+            "R/subdir/someresource.csv",
             "someother.rds"
         ];
 
         const rendered = shallow(<ResourceLinks resources={testResources} report="reportname" version="versionname" />);
         const links = rendered.find('li').find(FileDownloadLink);
 
-        expect(links.at(0).prop("href")).to.eq("/reports/reportname/versions/versionname/resources/R:someresource.csv/");
+        expect(links.at(0).prop("href")).to.eq("/reports/reportname/versions/versionname/resources/R:subdir:someresource.csv/");
         expect(links.at(1).prop("href")).to.eq("/reports/reportname/versions/versionname/resources/someother.rds/");
     });
 

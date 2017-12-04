@@ -4,6 +4,8 @@
   "description": "Modelling groups burden contribution portal",
   "main": "index.js",
   "scripts": {
+    "webpack": "webpack",
+    "watch_webpack": "webpack --watch",
     "generate-models": "cd ./src/webmodels && ./gradlew generateTypeDefinitions",
     "//": "This is a comment: To run just one test, or a subset, use run-test.sh, e.g. ./run-test src/test/components/ErrorLogTests.tsx",
     "test": "mocha-webpack --webpack-config webpack-test.config.js \"src/test/**/*\"",

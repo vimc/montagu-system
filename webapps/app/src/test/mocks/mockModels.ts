@@ -193,3 +193,19 @@ export function mockDemographicDataset(properties?: Partial<models.DemographicDa
     };
     return Object.assign(template, properties);
 }
+
+export function mockBurdenEstimateSet(properties?: Partial<models.BurdenEstimateSet>): models.BurdenEstimateSet {
+    counter++;
+    const template: models.BurdenEstimateSet = {
+        id: counter,
+        problems: [],
+        uploaded_by: "test.user",
+        uploaded_on : "2017-07-13 13:55:29 +0100",
+        type: {
+            type: "central-single-run",
+            details: "Run number 64"
+        },
+        status: "complete"
+    };
+    return Object.assign(template, properties);
+}
