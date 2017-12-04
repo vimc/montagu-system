@@ -22,19 +22,14 @@ export class UploadModelRunParametersContentComponent extends RemoteContentCompo
     static getPropsFromStores(): UploadModelRunParametersContentComponentProps {
         const state = responsibilityStore.getState();
 
-        function onlyUnique(value: any, index: number, self: any[]) {
-            return self.indexOf(value) === index;
-        }
-
         if (state.parametersOneTimeToken != null) {
             return {
                 ready: state.ready,
                 touchstone: state.currentTouchstone,
                 group: state.currentModellingGroup,
                 parametersToken: state.parametersOneTimeToken,
-                diseases: [].concat.apply([],
-                    state.responsibilitySets.map((set) => set.responsibilities.map(r => r.scenario.disease)))
-                    .filter(onlyUnique)
+                diseases: Array.from(new Set([].concat.apply([],
+                    state.responsibilitySets.map((set) => set.responsibilities.map(r => r.scenario.disease)))))
             };
         } else {
             return {

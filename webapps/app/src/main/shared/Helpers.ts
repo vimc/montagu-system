@@ -44,18 +44,22 @@ export const helpers = {
 
         const queryAsObject = this.queryStringAsObject();
 
+        const removeQueryString = () => {
+            history.replaceState({}, document.title, location.href.split("?")[0]);
+        };
+
         if (!queryAsObject.result) {
             return null
         }
 
         try {
             const decoded = jwtDecoder.jwtDecode(queryAsObject.result);
-            history.replaceState({}, document.title, location.href.split("?")[0]);
+            removeQueryString();
             return JSON.parse(decoded.result);
         }
         catch (e) {
             // if the query string token is nonsense, just return null
-            history.replaceState({}, document.title, location.href.split("?")[0]);
+            removeQueryString();
             return null;
         }
     }
