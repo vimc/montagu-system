@@ -34,15 +34,15 @@ export class UploadFileForm extends React.Component<UploadFileProps, UploadFileS
         };
     }
 
-    handleChange(e: any) {
+    handleChange(e: React.MouseEvent<HTMLInputElement>) {
         this.setState({
             showAlert: false,
             fileSelected: true,
-            fileName: e.target.value.replace("C:\\fakepath\\", "")
+            fileName: (e.target as HTMLInputElement).value.replace("C:\\fakepath\\", "")
         });
     }
 
-    closeAlert(e: any) {
+    closeAlert() {
         this.setState({
             showAlert: false
         })

@@ -23,15 +23,15 @@ export class UploadModelRunParametersForm extends React.Component<ModelRunParame
         };
     }
 
-    handleDiseaseChange(e: any) {
+    handleDiseaseChange(e: React.MouseEvent<HTMLSelectElement>) {
         this.setState({
-            diseaseSelected: e.target.value.length > 0
+            diseaseSelected: (e.target as HTMLSelectElement).value.length > 0
         });
     }
 
-    handleDescriptionChange(e: any) {
+    handleDescriptionChange(e: React.MouseEvent<HTMLInputElement>) {
         this.setState({
-            descriptionSelected: e.target.value.length > 1
+            descriptionSelected: (e.target as HTMLInputElement).value.length > 1
         });
     }
 
