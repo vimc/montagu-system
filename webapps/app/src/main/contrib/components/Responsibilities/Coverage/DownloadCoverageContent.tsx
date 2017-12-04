@@ -17,43 +17,50 @@ const commonStyles = require("../../../../shared/styles/common.css");
 const styles = require("../Responsibilities.css");
 
 export interface DownloadCoverageComponentProps extends RemoteContent {
-    props: Props
-}
-
-interface Props extends HasFormatOption {
     touchstone: Touchstone;
     scenario: Scenario;
     coverageSets: CoverageSet[];
     coverageToken: string;
+    downloadButtonDisableTimeout?: number;
+    selectedFormat: string;
 }
 
-export class DownloadCoverageContentComponent extends RemoteContentComponent<DownloadCoverageComponentProps> {
+interface DownloadState {
+    downloadButtonEnabled: boolean;
+}
+
+export class DownloadCoverageContentComponent
+    extends RemoteContentComponent<DownloadCoverageComponentProps, DownloadState>
+{
+    downloadButtonDisableTimeout: number;
+
+    constructor(props?: DownloadCoverageComponentProps) {
+        super(props);
+        this.state = {
+            downloadButtonEnabled: true,
+        };
+        this.onDownloadClicked = this.onDownloadClicked.bind(this);
+        this.downloadButtonDisableTimeout = this.props.downloadButtonDisableTimeout
+            ? this.props.downloadButtonDisableTimeout
+            : 5000;
+    }
+
     static getStores() {
         return [responsibilityStore];
     }
 
     static getPropsFromStores(): DownloadCoverageComponentProps {
         const state = responsibilityStore.getState();
-        const r = state.currentResponsibility;
-        if (r != null) {
-            return {
-                ready: state.ready,
-                props: {
-                    touchstone: state.currentTouchstone,
-                    scenario: r.scenario,
-                    coverageSets: r.coverageSets,
-                    coverageToken: state.coverageOneTimeToken,
-                    selectedFormat: state.selectedFormat
-                }
-            };
-        } else {
-            return {
-                ready: false,
-                props: null
-            };
-        }
+        const curResp = state.currentResponsibility;
+        return {
+            ready: curResp ? state.ready : false,
+            touchstone: state.currentTouchstone,
+            scenario: curResp ? curResp.scenario : null,
+            coverageSets: curResp ? curResp.coverageSets : [],
+            coverageToken: state.coverageOneTimeToken,
+            selectedFormat: state.selectedFormat,
+        };
     }
-
 
     onSelectFormat(format: string) {
         coverageSetActions.selectFormat(format);
@@ -65,8 +72,21 @@ export class DownloadCoverageContentComponent extends RemoteContentComponent<Dow
         responsibilityStore.fetchOneTimeCoverageToken();
     }
 
+    onDownloadClicked() {
+        setTimeout(() => {
+            this.setState({
+                downloadButtonEnabled: false,
+            })
+        });
+        setTimeout(() => {
+            this.setState({
+                downloadButtonEnabled: true,
+            })
+        }, this.downloadButtonDisableTimeout);
+    }
+
     renderContent(props: DownloadCoverageComponentProps) {
-        const data = props.props;
+        const data = props;
         return <div>
             <p>
                 Each scenario is based on vaccination coverage from up to 3 different
@@ -123,7 +143,7 @@ export class DownloadCoverageContentComponent extends RemoteContentComponent<Dow
                                 </div>
                             </td>
                             <td><FormatControl
-                                value={props.props.selectedFormat}
+                                value={props.selectedFormat}
                                 onSelectFormat={this.onSelectFormat}/>
                             </td>
                         </tr>
@@ -132,7 +152,12 @@ export class DownloadCoverageContentComponent extends RemoteContentComponent<Dow
                 </div>
             </div>
             <div className="mt-4">
-                <OneTimeButton token={data.coverageToken} refreshToken={this.refreshToken}>
+                <OneTimeButton
+                    token={data.coverageToken}
+                    refreshToken={this.refreshToken}
+                    enabled={this.state.downloadButtonEnabled}
+                    onClick={this.onDownloadClicked}
+                >
                     Download combined coverage set data in CSV format
                 </OneTimeButton>
             </div>

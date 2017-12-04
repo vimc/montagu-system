@@ -1,9 +1,7 @@
 import * as React from "react";
 import { expect } from "chai";
 import { shallow, ShallowWrapper } from "enzyme";
-import {mockBurdenEstimateSet, mockResponsibility, mockScenario} from "../../../../mocks/mockModels";
-import { setupMainStore } from "../../../../mocks/mocks";
-import { BurdenEstimateSet } from "../../../../../main/shared/models/Generated";
+import {mockBurdenEstimateSet} from "../../../../mocks/mockModels";
 import { Sandbox } from "../../../../Sandbox";
 import {mockFetcher} from "../../../../mocks/mockRemote";
 import {CurrentEstimateSetSummary} from "../../../../../main/contrib/components/Responsibilities/Overview/List/CurrentEstimateSetSummary";
@@ -15,47 +13,37 @@ describe('UploadBurdenEstimatesForm', () => {
     const sandbox = new Sandbox();
     before(() => mockFetcher(Promise.resolve(null)));
 
-    function setUpComponent(canUpload: boolean,
-                            burdenEstimateSet?: BurdenEstimateSet,
-                            token: string = "TOKEN") {
-        setupMainStore({
-            diseases: [
-                { id: "disease-id", name: "Disease name" }
-            ]
-        });
-
-        const responsibility = mockResponsibility({
-            status: "empty",
-            current_estimate_set: burdenEstimateSet
-        }, mockScenario({
-            id: "scenario-1",
-            description: "Description",
-        }));
-
-        rendered = shallow(<UploadBurdenEstimatesForm
-            token={token}
-            canUpload={canUpload}
-            currentEstimateSet={responsibility.current_estimate_set}/>);
-    }
-
     afterEach(() => sandbox.restore());
 
     it("does not show form if canUpload is false", () => {
-        setUpComponent(false);
+
+        rendered = shallow(<UploadBurdenEstimatesForm
+            token={"token"}
+            canUpload={false}
+            currentEstimateSet={null}/>);
+
         const form = rendered.find(UploadForm);
         expect(form).to.have.lengthOf(0);
     });
 
     it("shows form if canUpload is true", () => {
-        setUpComponent(true);
+
+        rendered = shallow(<UploadBurdenEstimatesForm
+            token={"token"}
+            canUpload={true}
+            currentEstimateSet={null}/>);
 
         const form = rendered.find(UploadForm);
         expect(form).to.have.lengthOf(1);
     });
 
     it("renders current burden estimate status", () => {
+
         const set = mockBurdenEstimateSet();
-        setUpComponent(true, set);
+        rendered = shallow(<UploadBurdenEstimatesForm
+            token={"token"}
+            canUpload={true}
+            currentEstimateSet={set}/>);
 
         const element = rendered.find(CurrentEstimateSetSummary);
         expect(element).to.have.length(1);

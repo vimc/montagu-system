@@ -8,7 +8,7 @@ export interface GroupTitleProps extends RemoteContent {
     group: ModellingGroup;
 }
 
-export abstract class ModellingGroupTitle extends RemoteContentComponent<GroupTitleProps> {
+export abstract class ModellingGroupTitle extends RemoteContentComponent<GroupTitleProps, undefined> {
     static getStores() {
         return [ groupStore ];
     }

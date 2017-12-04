@@ -4,8 +4,15 @@ import { shallow } from "enzyme";
 import { OneTimeButton } from "../../../main/shared/components/OneTimeButton";
 import { doNothing } from "../../../main/shared/Helpers";
 import fetcher from "../../../main/shared/sources/Fetcher";
+import { Sandbox } from "../../Sandbox";
 
 describe("OneTimeButton", () => {
+    const sandbox = new Sandbox();
+
+    afterEach(() => {
+        sandbox.restore();
+    });
+
     it("renders form with onetime URL", () => {
         const rendered = shallow(<OneTimeButton token="TOKEN" refreshToken={doNothing} />);
         expect(rendered.find("form").prop("action")).to.equal(fetcher.fetcher.buildURL("/onetime_link/TOKEN/"));
@@ -36,7 +43,7 @@ describe("OneTimeButton", () => {
         checkImage("TOKEN", true, false);
     });
 
-    it("clicking button triggers callback after timeout", (done: DoneCallback) => {
+    it("clicking button triggers refresh token callback after timeout", (done: DoneCallback) => {
         let tracker = false;
         const callback = () => tracker = true;
 
@@ -50,5 +57,17 @@ describe("OneTimeButton", () => {
             expect(tracker).to.be.true;
             done();
         });
+    });
+
+    it("clicking button triggers outer callback", () => {
+        const outerCallbackSpy = sandbox.createSpy();
+        const rendered = shallow(<OneTimeButton
+            token="TOKEN"
+            refreshToken={()=>{}}
+            onClick={outerCallbackSpy}
+        />);
+        const button = rendered.find("form").find("button");
+        button.simulate("click");
+        expect(outerCallbackSpy.calledOnce).to.equal(true);
     });
 });
