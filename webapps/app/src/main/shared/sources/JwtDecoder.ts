@@ -5,4 +5,4 @@ export const jwtDecoder = {
     jwtDecode (token: string): any {
         return jwt_decode(token)
     }
-};
+}

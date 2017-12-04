@@ -97,7 +97,7 @@ function processResult<TModel>(result: Result, response: any): TModel | void {
             default:
                 throw makeNotificationException(error.message, "error");
         }
-    };
+    }
 
     switch (result.status) {
         case "success":
