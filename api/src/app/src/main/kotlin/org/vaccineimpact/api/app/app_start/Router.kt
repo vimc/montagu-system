@@ -49,7 +49,7 @@ class Router(val config: RouteConfig,
         val route = getWrappedRoute(endpoint)::handle
         val contentType = endpoint.contentType
 
-        logger.info("Mapping $fullUrl to ${endpoint.actionName} on Controller ${endpoint.controllerName}")
+        logger.info("Mapping $fullUrl to ${endpoint.actionName} on ${endpoint.controller.simpleName}")
         when (endpoint.method)
         {
             HttpMethod.get -> Spark.get(fullUrl, contentType, route, this::transform)
@@ -76,11 +76,8 @@ class Router(val config: RouteConfig,
     fun invokeControllerAction(endpoint: EndpointDefinition, context: ActionContext,
                                        repositories: Repositories): Any?
     {
-        val controllerName = endpoint.controllerName
         val actionName = endpoint.actionName
-
-        val className = "${controllerName}Controller"
-        val controllerType = Class.forName("org.vaccineimpact.api.app.controllers.$className")
+        val controllerType = endpoint.controller.java
         val controller = instantiateController(controllerType, context, repositories)
         val action = controllerType.getMethod(actionName)
 
@@ -91,7 +88,7 @@ class Router(val config: RouteConfig,
         catch (e: InvocationTargetException)
         {
             logger.warn("Exception was thrown whilst using reflection to invoke " +
-                    "$className.$actionName, see below for details")
+                    "$controllerType.$actionName, see below for details")
             throw e.targetException
         }
         return endpoint.postProcess(result, context)

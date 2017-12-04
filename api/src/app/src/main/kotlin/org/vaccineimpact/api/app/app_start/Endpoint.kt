@@ -11,10 +11,11 @@ import org.vaccineimpact.api.models.helpers.ContentTypes
 import org.vaccineimpact.api.security.WebTokenHelper
 import spark.Spark
 import spark.route.HttpMethod
+import kotlin.reflect.KClass
 
 data class Endpoint(
         override val urlFragment: String,
-        override val controllerName: String,
+        override val controller: KClass<*>,
         override val actionName: String,
         override val contentType: String = ContentTypes.json,
         override val method: HttpMethod = HttpMethod.get,
