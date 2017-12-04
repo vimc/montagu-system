@@ -1,7 +1,7 @@
 import * as React from "react";
 import { expect } from "chai";
 import { mockCoverageSet, mockScenario, mockTouchstone } from "../../../mocks/mockModels";
-import { shallow, ShallowWrapper } from "enzyme";
+import { shallow, ShallowWrapper, mount } from "enzyme";
 
 import {
     DownloadCoverageContentComponent,
@@ -45,6 +45,7 @@ describe("DownloadCoverageContentComponent", () => {
         expect(rendered.find(OneTimeButton).props()).to.eql({
             token: "TOKEN",
             refreshToken: (rendered.instance() as DownloadCoverageContentComponent).refreshToken,
+            onClick: (rendered.instance() as DownloadCoverageContentComponent).onDownloadClicked,
             enabled: true,
             children: "Download combined coverage set data in CSV format"
         });
@@ -53,9 +54,31 @@ describe("DownloadCoverageContentComponent", () => {
     it("refreshToken triggers token refresh", () => {
         const spy = sandbox.dispatchSpy();
         const fetchNewToken = sandbox.stubFetch(responsibilityStore, "fetchOneTimeCoverageToken");
-        new DownloadCoverageContentComponent().refreshToken();
+        const props = makeProps({ready: true});
+        const component = shallow(<DownloadCoverageContentComponent {...props} />);
+        const instance = component.instance() as DownloadCoverageContentComponent;
+        instance.refreshToken();
         expectOneAction(spy, { action: "CoverageTokenActions.clearUsedToken" });
         expect(fetchNewToken.called).to.be.true;
+    });
+
+    it("calling meth onDownloadClicked sets state prop downloadButtonEnabled to false after given timeout in 100ms", function(done: DoneCallback) {
+        this.timeout(140);
+        const props = makeProps({
+            coverageToken: "TOKEN",
+            downloadButtonDisableTimeout: 100,
+        });
+        const component = shallow(<DownloadCoverageContentComponent {...props} />);
+        const instance = component.instance() as DownloadCoverageContentComponent;
+        expect(component.state().downloadButtonEnabled).to.be.equal(true)
+        instance.onDownloadClicked();
+        setTimeout(() => {
+            expect(component.state().downloadButtonEnabled).to.be.equal(false)
+        },70);
+        setTimeout(() => {
+            expect(component.state().downloadButtonEnabled).to.be.equal(true)
+            done();
+        },110);
     });
 
     it("renders format control", () => {
@@ -91,11 +114,10 @@ function makeProps(props: any): DownloadCoverageComponentProps {
     const scenario = mockScenario();
     return {
         ready: true,
-        props: Object.assign({
-            touchstone,
-            scenario,
-            coverageSets: [],
-            coverageToken: null,
-        }, props)
+        touchstone,
+        scenario,
+        coverageSets: [],
+        coverageToken: null,
+        ...props
     };
 }

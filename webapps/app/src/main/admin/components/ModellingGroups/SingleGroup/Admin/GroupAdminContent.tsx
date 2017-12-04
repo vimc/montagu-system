@@ -18,7 +18,7 @@ interface Props extends RemoteContent {
     isAdmin: boolean;
 }
 
-export class GroupAdminContentComponent extends RemoteContentComponent<Props> {
+export class GroupAdminContentComponent extends RemoteContentComponent<Props, undefined> {
     static getStores() {
         return [ groupStore, userStore, adminAuthStore ];
     }

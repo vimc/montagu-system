@@ -20,7 +20,7 @@ export interface UploadBurdenEstimatesContentComponentProps extends RemoteConten
     };
 }
 
-export class UploadBurdenEstimatesContentComponent extends RemoteContentComponent<UploadBurdenEstimatesContentComponentProps> {
+export class UploadBurdenEstimatesContentComponent extends RemoteContentComponent<UploadBurdenEstimatesContentComponentProps, undefined> {
 
     static getStores() {
         return [responsibilityStore];

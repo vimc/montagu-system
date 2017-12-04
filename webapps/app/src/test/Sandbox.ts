@@ -42,4 +42,12 @@ export class Sandbox {
     stubFetch(obj: any, method: string): sinon.SinonStub {
         return this.sinon.stub(obj, method).returns(Promise.resolve(true));
     }
+
+    setSpy(obj: any, method: string): sinon.SinonSpy {
+        return this.sinon.spy(obj, method);
+    }
+
+    createSpy(): sinon.SinonSpy {
+        return this.sinon.spy();
+    }
 }

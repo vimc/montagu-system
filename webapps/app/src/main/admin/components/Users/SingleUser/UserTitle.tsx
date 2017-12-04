@@ -8,7 +8,7 @@ export interface UserTitleProps extends RemoteContent {
     user: User;
 }
 
-export abstract class UserTitle extends RemoteContentComponent<UserTitleProps> {
+export abstract class UserTitle extends RemoteContentComponent<UserTitleProps, undefined> {
     static getStores() {
         return [ userStore ];
     }
