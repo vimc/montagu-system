@@ -1,15 +1,13 @@
 package org.vaccineimpact.api.tests.app_start
 
-import com.nhaarman.mockito_kotlin.doReturn
 import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.verify
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
+import org.vaccineimpact.api.app.app_start.Controller
 import org.vaccineimpact.api.app.app_start.Endpoint
 import org.vaccineimpact.api.app.app_start.Router
+import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.repositories.Repositories
-import org.vaccineimpact.api.app.repositories.SimpleObjectsRepository
-import org.vaccineimpact.api.app.repositories.inmemory.InMemoryDataSet
-import org.vaccineimpact.api.models.Disease
 import org.vaccineimpact.api.test_helpers.MontaguTests
 
 class RouterTests : MontaguTests()
@@ -17,16 +15,22 @@ class RouterTests : MontaguTests()
     @Test
     fun `router can invoke action`()
     {
+        TestController.invoked = false
         val router = Router(mock(), mock(), mock(), mock())
-        val repo = mock<SimpleObjectsRepository> {
-            on { diseases } doReturn InMemoryDataSet(listOf(Disease("d", "Disease")))
+        router.invokeControllerAction(Endpoint("/", TestController::class, "test"), mock(), mock())
+        assertThat(TestController.invoked).isTrue()
+    }
+
+    class TestController(context: ActionContext, repositories: Repositories) : Controller(context)
+    {
+        fun test()
+        {
+            invoked = true
         }
-        val repos = mock<Repositories> {
-            on { simpleObjects } doReturn repo
+
+        companion object
+        {
+            var invoked = false
         }
-        router.invokeControllerAction(Endpoint("/", "Disease", "getDiseases"), mock(), repos)
-        // If the diseases property was invoked the controller must have been
-        // successfully instantiated and the action invoked
-        verify(repo).diseases
     }
 }
