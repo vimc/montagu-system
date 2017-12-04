@@ -126,7 +126,7 @@ class JooqTouchstoneRepository(
     {
         return getScenariosAndCoverageSets(touchstoneId)
                 .and(SCENARIO_DESCRIPTION.ID.eq(scenarioDescriptionId))
-                .orderBy(COVERAGE_SET.VACCINE, COVERAGE_SET.ACTIVITY_TYPE)
+                .orderBy(SCENARIO_COVERAGE_SET.ORDER, COVERAGE_SET.VACCINE, COVERAGE_SET.ACTIVITY_TYPE)
                 .fetch()
     }
 
@@ -136,6 +136,7 @@ class JooqTouchstoneRepository(
                 .select(SCENARIO_DESCRIPTION.fieldsAsList())
                 .select(COVERAGE_SET.fieldsAsList())
                 .select(TOUCHSTONE.ID)
+                .select(SCENARIO_COVERAGE_SET.ORDER)
                 .fromJoinPath(TOUCHSTONE, SCENARIO, SCENARIO_DESCRIPTION)
                 // We don't mind if there are no coverage sets, so do a left join
                 .joinPath(SCENARIO, SCENARIO_COVERAGE_SET, COVERAGE_SET, joinType = JoinType.LEFT_OUTER_JOIN)
@@ -150,7 +151,7 @@ class JooqTouchstoneRepository(
     {
         return getScenariosAndCoverageSetsWithCoverageData(touchstoneId)
                 .and(SCENARIO_DESCRIPTION.ID.eq(scenarioDescriptionId))
-                .orderBy(COVERAGE_SET.VACCINE, COVERAGE_SET.ACTIVITY_TYPE, COVERAGE.COUNTRY, COVERAGE.YEAR, COVERAGE.AGE_FROM, COVERAGE.AGE_TO)
+                .orderBy(SCENARIO_COVERAGE_SET.ORDER, COVERAGE_SET.VACCINE, COVERAGE_SET.ACTIVITY_TYPE, COVERAGE.COUNTRY, COVERAGE.YEAR, COVERAGE.AGE_FROM, COVERAGE.AGE_TO)
                 .fetch()
     }
 
