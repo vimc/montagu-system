@@ -21,7 +21,7 @@ export class ChooseActionPage extends ContribPageWithHeader<LocationProps> {
 
     name(): string {
         const s = responsibilityStore.getState();
-        return s.currentModellingGroup.id;
+        return s.currentModellingGroup.description;
     }
 
     title(): JSX.Element {

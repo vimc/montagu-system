@@ -29,7 +29,7 @@ export class ResponsibilityOverviewPage extends ContribPageWithHeader<LocationPr
 
     name() {
         const s = responsibilityStore.getState();
-        return s.currentTouchstone.id;
+        return s.currentTouchstone.description;
     }
 
     title() {
