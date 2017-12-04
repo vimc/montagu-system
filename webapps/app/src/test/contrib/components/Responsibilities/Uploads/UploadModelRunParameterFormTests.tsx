@@ -3,8 +3,8 @@ import {expect} from "chai";
 import {shallow, ShallowWrapper} from "enzyme";
 import {Sandbox} from "../../../../Sandbox";
 import {mockFetcher} from "../../../../mocks/mockRemote";
-import {UploadModelRunParametersForm} from "../../../../../main/contrib/components/Responsibilities/ModelRunParameters/UploadModelRunParametersForm";
 import {UploadForm} from "../../../../../main/shared/components/UploadForm";
+import {UploadModelRunParametersForm} from "../../../../../../../app/src/main/contrib/components/Responsibilities/ModelRunParameters/UploadModelRunParametersForm";
 
 describe('UploadModelRunParametersForm', () => {
     let rendered: ShallowWrapper<any, any>;
@@ -25,6 +25,12 @@ describe('UploadModelRunParametersForm', () => {
 
         const form = rendered.find(UploadForm);
         expect(form).to.have.lengthOf(1);
+        expect(form.props()).to.include({
+            token: "token",
+            enableSubmit: false,
+            uploadText: "Choose a new model run parameter set",
+            successMessage: "Success! You have uploaded a new model run parameter set"
+        })
 
     });
 

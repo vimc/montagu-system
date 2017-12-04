@@ -5,8 +5,8 @@ import {mockBurdenEstimateSet} from "../../../../mocks/mockModels";
 import { Sandbox } from "../../../../Sandbox";
 import {mockFetcher} from "../../../../mocks/mockRemote";
 import {CurrentEstimateSetSummary} from "../../../../../main/contrib/components/Responsibilities/Overview/List/CurrentEstimateSetSummary";
-import {UploadBurdenEstimatesForm} from "../../../../../main/contrib/components/Responsibilities/BurdenEstimates/UploadBurdenEstimatesForm";
 import {UploadForm} from "../../../../../main/shared/components/UploadForm";
+import {UploadBurdenEstimatesForm} from "../../../../../../../app/src/main/contrib/components/Responsibilities/BurdenEstimates/UploadBurdenEstimatesForm";
 
 describe('UploadBurdenEstimatesForm', () => {
     let rendered: ShallowWrapper<any, any>;
@@ -35,6 +35,12 @@ describe('UploadBurdenEstimatesForm', () => {
 
         const form = rendered.find(UploadForm);
         expect(form).to.have.lengthOf(1);
+        expect(form.props()).to.include({
+            token: "token",
+            enableSubmit: true,
+            uploadText: "Choose a new burden estimate set",
+            successMessage: "Success! You have uploaded a new set of burden estimates"
+        })
     });
 
     it("renders current burden estimate status", () => {

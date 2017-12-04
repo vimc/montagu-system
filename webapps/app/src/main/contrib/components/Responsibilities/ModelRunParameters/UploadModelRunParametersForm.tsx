@@ -37,7 +37,6 @@ export class UploadModelRunParametersForm extends React.Component<ModelRunparame
 
     render() {
 
-        const uploadText = "Choose a new model run parameter set";
         const multipleDiseases = this.props.diseases.length > 1;
 
         let diseaseInput = null;
@@ -63,8 +62,10 @@ export class UploadModelRunParametersForm extends React.Component<ModelRunparame
         return <div>
             <p>On this page you can upload a new set of model run parameters. We need {diseaseHelperText} a human
                 readable description for you to easily identify them when uploading burden estimates.</p>
-            <UploadForm token={this.props.token} uploadText={uploadText}
-                        enableSubmit={this.state.descriptionSelected && this.state.diseaseSelected}>
+            <UploadForm token={this.props.token}
+                        uploadText={"Choose a new model run parameter set"}
+                        enableSubmit={this.state.descriptionSelected && this.state.diseaseSelected}
+                        successMessage={"Success! You have uploaded a new model run parameter set"}>
                 {diseaseInput}
                 <div className="form-group">
                     <label>Human readable name or description of this set:</label>

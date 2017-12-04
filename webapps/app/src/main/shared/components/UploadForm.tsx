@@ -1,7 +1,6 @@
 import * as React from "react";
 import fetcher from "../sources/Fetcher";
 import {helpers} from "../Helpers";
-import {fail} from "assert";
 import {ErrorInfo} from "../models/Generated";
 
 const formStyles = require("../styles/forms.css");
@@ -11,6 +10,7 @@ export interface UploadFormProps {
     token: string;
     uploadText: string;
     enableSubmit: boolean;
+    successMessage: string;
 }
 
 export interface UploadState {
@@ -54,15 +54,18 @@ export class UploadForm extends React.Component<UploadFormProps, UploadState> {
         const enableSubmit = this.props.enableSubmit && this.props.token != null && this.state.fileSelected;
 
         const hasError = this.state.errors.length > 0;
-        const alertClass = hasError ? "alert alert-danger": "alert alert-success";
-        const alertMessage = hasError ? this.state.errors[0].message : "Success! You have uploaded a new model run parameter set";
+        const alertClass = hasError ? "alert alert-danger" : "alert alert-success";
+        const alertMessage = hasError ? this.state.errors[0].message : this.props.successMessage;
 
         const alert = this.state.showAlert ?
             <div className={alertClass}>
-                <button type="button" style={ {"outline": "none"}} className="close" onClick={this.closeAlert.bind(this)}>
+                <button type="button" style={{"outline": "none"}} className="close"
+                        onClick={this.closeAlert.bind(this)}>
                     <span>&times;</span>
                 </button>
+                <span data-role={"alert-message"}>
                 {alertMessage}
+                </span>
             </div>
             : null;
 
