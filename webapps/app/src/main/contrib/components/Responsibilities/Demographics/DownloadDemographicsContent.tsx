@@ -19,17 +19,48 @@ export interface DownloadDemographicsContentProps extends RemoteContent {
     selectedGender: string;
     selectedFormat: string;
     touchstone: Touchstone;
+    downloadButtonDisableDuration?: number;
     token: string;
 }
 
-export class DownloadDemographicsContentComponent extends RemoteContentComponent<DownloadDemographicsContentProps, undefined> {
+interface DownloadState {
+    downloadButtonEnabled: boolean;
+}
+
+export class DownloadDemographicsContentComponent extends RemoteContentComponent<DownloadDemographicsContentProps, DownloadState> {
+    downloadButtonDisableDuration: number;
+    downloadButtonEnableTimeoutId: any;
+
+    constructor(props?: DownloadDemographicsContentProps) {
+        super(props);
+        this.state = {
+            downloadButtonEnabled: true,
+        };
+        this.onDownloadClicked = this.onDownloadClicked.bind(this);
+        this.downloadButtonDisableDuration = this.props.downloadButtonDisableDuration
+            ? this.props.downloadButtonDisableDuration
+            : 5000;
+    }
+
     static getStores() {
         return [demographicStore, responsibilityStore];
+    }
+
+    componentWillReceiveProps(nextProps: DownloadDemographicsContentProps) {
+        if (nextProps.ready) {
+            if (nextProps.selectedDataSet !== this.props.selectedDataSet
+            || nextProps.selectedFormat !== this.props.selectedFormat
+            || nextProps.selectedGender !== this.props.selectedGender)
+            {
+                this.enableDownloadButton();
+            }
+        }
     }
 
     static getPropsFromStores(props: DownloadDemographicsContentProps): Partial<DownloadDemographicsContentProps> {
         const demographicState = demographicStore.getState();
         const responsibilityState = responsibilityStore.getState();
+
         if (demographicState.currentTouchstone != null) {
             return {
                 ready: demographicState.currentTouchstone in demographicState.dataSets,
@@ -47,13 +78,47 @@ export class DownloadDemographicsContentComponent extends RemoteContentComponent
         }
     }
 
+    enableDownloadButton(){
+        this.setState({
+            downloadButtonEnabled: true,
+        })
+        this.clearTimeoutForDownloadButtonEnable();
+    }
+
+    clearTimeoutForDownloadButtonEnable(){
+        if (this.downloadButtonEnableTimeoutId) {
+            clearTimeout(this.downloadButtonEnableTimeoutId);
+            this.downloadButtonEnableTimeoutId = undefined;
+        }
+    }
+
+    onDownloadClicked() {
+        setTimeout(() => {
+            this.setState({
+                downloadButtonEnabled: false,
+            })
+        });
+
+        this.downloadButtonEnableTimeoutId = setTimeout(() => {
+            this.setState({
+                downloadButtonEnabled: true,
+            })
+        }, this.downloadButtonDisableDuration);
+
+    }
+
+    componentWillUnmount () {
+        this.clearTimeoutForDownloadButtonEnable();
+    }
+
     refreshToken() {
         demographicActions.clearUsedToken();
         demographicStore.fetchOneTimeToken().catch(doNothing);
     }
 
     renderContent(props: DownloadDemographicsContentProps) {
-        const canDownload = DownloadDemographicsContentComponent.canDownload(props);
+        const canDownload = DownloadDemographicsContentComponent.canDownload(props)
+                            && this.state.downloadButtonEnabled;
 
         return <div className={styles.demographics}>
             <div className={commonStyles.sectionTitle}>
@@ -77,7 +142,12 @@ export class DownloadDemographicsContentComponent extends RemoteContentComponent
                 selectedFormat={props.selectedFormat}
                 selectedDataSet={props.selectedDataSet}
                 selectedGender={props.selectedGender}/>
-            <OneTimeButton token={props.token} refreshToken={this.refreshToken} enabled={canDownload}>
+            <OneTimeButton
+                token={props.token}
+                refreshToken={this.refreshToken}
+                enabled={canDownload}
+                onClick={this.onDownloadClicked}
+            >
                 Download data set
             </OneTimeButton>
         </div>;
