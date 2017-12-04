@@ -33,6 +33,7 @@ export class DownloadCoverageContentComponent
     extends RemoteContentComponent<DownloadCoverageComponentProps, DownloadState>
 {
     downloadButtonDisableTimeout: number;
+    downloadButtonDisableTimeoutId: any;
 
     constructor(props?: DownloadCoverageComponentProps) {
         super(props);
@@ -40,6 +41,7 @@ export class DownloadCoverageContentComponent
             downloadButtonEnabled: true,
         };
         this.onDownloadClicked = this.onDownloadClicked.bind(this);
+        this.onSelectFormat = this.onSelectFormat.bind(this);
         this.downloadButtonDisableTimeout = this.props.downloadButtonDisableTimeout
             ? this.props.downloadButtonDisableTimeout
             : 5000;
@@ -65,6 +67,13 @@ export class DownloadCoverageContentComponent
     onSelectFormat(format: string) {
         coverageSetActions.selectFormat(format);
         responsibilityStore.fetchOneTimeCoverageToken().catch(doNothing);
+        if (this.downloadButtonDisableTimeoutId) {
+            clearTimeout(this.downloadButtonDisableTimeoutId);
+            this.downloadButtonDisableTimeoutId = undefined;
+        }
+        this.setState({
+            downloadButtonEnabled: true,
+        })
     }
 
     refreshToken() {
@@ -78,7 +87,7 @@ export class DownloadCoverageContentComponent
                 downloadButtonEnabled: false,
             })
         });
-        setTimeout(() => {
+        this.downloadButtonDisableTimeoutId = setTimeout(() => {
             this.setState({
                 downloadButtonEnabled: true,
             })

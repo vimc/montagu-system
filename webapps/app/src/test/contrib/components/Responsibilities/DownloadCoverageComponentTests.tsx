@@ -62,7 +62,7 @@ describe("DownloadCoverageContentComponent", () => {
         expect(fetchNewToken.called).to.be.true;
     });
 
-    it("calling meth onDownloadClicked sets state prop downloadButtonEnabled to false after given timeout in 100ms", function(done: DoneCallback) {
+    it("calling method onDownloadClicked sets state prop downloadButtonEnabled to false after given timeout in 100ms", function(done: DoneCallback) {
         this.timeout(140);
         const props = makeProps({
             coverageToken: "TOKEN",
@@ -80,6 +80,30 @@ describe("DownloadCoverageContentComponent", () => {
             done();
         },110);
     });
+
+    it("selecting format sets downloadButtonEnabled back to true immediately and stops timer for enabler of button", function(done) {
+        const fetchOneTimeToken = sandbox.stubFetch(responsibilityStore, "fetchOneTimeCoverageToken");
+        const spy = sandbox.dispatchSpy();
+        const props = makeProps({
+            coverageToken: "TOKEN",
+            downloadButtonDisableTimeout: 100,
+        });
+        const component = shallow(<DownloadCoverageContentComponent {...props} />);
+        const instance = component.instance() as DownloadCoverageContentComponent;
+        expect(component.state().downloadButtonEnabled).to.be.equal(true)
+        instance.onDownloadClicked();
+        expect(instance.downloadButtonDisableTimeoutId).to.be.not.empty;
+        setTimeout(() => {
+            expect(component.state().downloadButtonEnabled).to.be.equal(false);
+            instance.onSelectFormat('wide');
+            expect(instance.downloadButtonDisableTimeoutId).to.be.empty;
+        });
+        setTimeout(() => {
+            expect(component.state().downloadButtonEnabled).to.be.equal(true);
+            done();
+        });
+    });
+
 
     it("renders format control", () => {
         const props = makeProps({ selectedFormat: "x" });
