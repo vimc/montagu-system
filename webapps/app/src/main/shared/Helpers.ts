@@ -1,3 +1,6 @@
+import {jwtDecoder} from "./sources/JwtDecoder";
+import {Result} from "./models/Generated";
+
 export function doNothing() {
 
 }
@@ -24,7 +27,7 @@ export function padZero(number: number) {
 }
 
 export const helpers = {
-    queryStringAsObject(url: string = window.location.href): any {
+    queryStringAsObject(): any {
         const obj = {} as any;
         location.search.substr(1).split("&").forEach(item => {
             const parts = item.split("=");
@@ -36,5 +39,28 @@ export const helpers = {
             obj[key] = value;
         });
         return obj;
+    },
+    ingestQueryStringAndReturnResult<TModel>(): Result | void {
+
+        const queryAsObject = this.queryStringAsObject();
+
+        const removeQueryString = () => {
+            history.replaceState({}, document.title, location.href.split("?")[0]);
+        };
+
+        if (!queryAsObject.result) {
+            return null
+        }
+
+        try {
+            const decoded = jwtDecoder.jwtDecode(queryAsObject.result);
+            removeQueryString();
+            return JSON.parse(decoded.result);
+        }
+        catch (e) {
+            // if the query string token is nonsense, just return null
+            removeQueryString();
+            return null;
+        }
     }
 };

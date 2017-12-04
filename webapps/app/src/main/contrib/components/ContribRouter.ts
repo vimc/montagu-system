@@ -19,6 +19,7 @@ import { ResponsibilityGuidanceMarshallIslands } from "./Responsibilities/Guidan
 import { ResponsibilityGuidanceOver80 } from "./Responsibilities/Guidance/Demographics/ResponsibilityGuidanceOver80";
 import { ResponsibilityGuidanceKosovo } from "./Responsibilities/Guidance/Demographics/ResponsibilityGuidanceKosovo";
 import { ResponsibilityGuidanceTuvalu } from "./Responsibilities/Guidance/Demographics/ResponsibilityGuidanceTuvalu";
+import {UploadModelRunParametersPage} from "./Responsibilities/ModelRunParameters/UploadModelRunParametersPage";
 
 interface RoutingProperties {
     loggedIn: boolean;
@@ -42,6 +43,7 @@ export class ContribRouter extends Router<RoutingProperties> {
                 map('/:groupId/responsibilities/:touchstoneId/coverage/:scenarioId', DownloadCoveragePage);
                 map('/:groupId/responsibilities/:touchstoneId/burdens/:scenarioId', UploadBurdenEstimatesPage);
                 map('/:groupId/responsibilities/:touchstoneId/demographics', DownloadDemographicsPage);
+                map('/:groupId/responsibilities/:touchstoneId/model-run-parameters', UploadModelRunParametersPage);
                 map('/help/touchstones/', TouchstoneHelp);
                 map('/help/model-inputs/', ResponsibilityGuidanceModelInputs);
                 map('/help/model-outputs/', ResponsibilityGuidanceModelOutputs);
