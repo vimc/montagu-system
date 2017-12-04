@@ -36,8 +36,6 @@ describe("UploadEstimatesContentComponent", () => {
         expect(rendered.find(UploadForm).props()).to.eql({
             token: "TOKEN",
             canUpload: true,
-            groupId: "group-1",
-            scenarioId: "scenario-id",
             currentEstimateSet: null
         });
     });

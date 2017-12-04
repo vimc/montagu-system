@@ -9,9 +9,7 @@ const buttonStyles = require("../../../../shared/styles/buttons.css");
 const styles = require("../Responsibilities.css");
 
 export interface UploadFormProps {
-    groupId: string;
     canUpload: boolean;
-    scenarioId: string;
     currentEstimateSet: BurdenEstimateSet;
     token: string;
 }
