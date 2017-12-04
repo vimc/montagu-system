@@ -5,6 +5,7 @@ import org.vaccineimpact.api.app.app_start.Controller
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.SimpleObjectsRepository
 import org.vaccineimpact.api.models.Disease
+import org.vaccineimpact.api.security.WebTokenHelper
 
 class DiseaseController(context: ActionContext,
                         private val simpleObjectsRepository: SimpleObjectsRepository)

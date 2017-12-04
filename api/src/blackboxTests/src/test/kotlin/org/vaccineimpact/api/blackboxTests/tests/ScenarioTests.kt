@@ -71,18 +71,6 @@ class ScenarioTests : DatabaseTest()
         }
     }
 
-    @Test
-    fun `only touchstone-preparer can get scenario for in-preparation touchstone`()
-    {
-        val permissionUnderTest = "*/touchstones.prepare"
-        PermissionChecker(
-                "/touchstones/$touchstoneId/scenarios/$scenarioId",
-                requiredPermissions + permissionUnderTest
-        ).checkPermissionIsRequired(permissionUnderTest, given = {
-            addTouchstoneWithScenarios(it, touchstoneId, "in-preparation")
-        })
-    }
-
     private fun addTouchstoneWithScenarios(
             it: JooqContext,
             touchstoneId: String,

@@ -1,7 +1,7 @@
 package org.vaccineimpact.api.app.app_start
 
-import org.pac4j.sparkjava.SecurityFilter
 import org.vaccineimpact.api.app.DefaultHeadersFilter
+import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.repositories.RepositoryFactory
 import org.vaccineimpact.api.app.security.MontaguAuthorizer
 import org.vaccineimpact.api.app.security.PermissionRequirement
@@ -18,7 +18,7 @@ data class Endpoint(
         override val actionName: String,
         override val contentType: String = ContentTypes.json,
         override val method: HttpMethod = HttpMethod.get,
-        override val transform: Boolean = false,
+        override val postProcess: ResultProcessor = ::passThrough,
         override val requiredPermissions: List<PermissionRequirement> = listOf()
 
 ) : EndpointDefinition
@@ -37,10 +37,7 @@ data class Endpoint(
         {
             addSecurityFilter(url, webTokenHelper, repositoryFactory)
         }
-        if (this.contentType == ContentTypes.json)
-        {
-            Spark.after(url, ContentTypes.json, DefaultHeadersFilter("${ContentTypes.json}; charset=utf-8", method))
-        }
+        Spark.after(url, contentType, DefaultHeadersFilter("$contentType; charset=utf-8", method))
     }
 
     private fun addSecurityFilter(url: String, webTokenHelper: WebTokenHelper, repositoryFactory: RepositoryFactory)
@@ -75,3 +72,9 @@ fun Endpoint.json(): Endpoint
 {
     return this.copy(contentType = ContentTypes.json)
 }
+fun Endpoint.csv(): Endpoint
+{
+    return this.copy(contentType = ContentTypes.csv)
+}
+
+private fun passThrough(x: Any?, context: ActionContext): Any? = x
