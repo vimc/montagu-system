@@ -67,13 +67,17 @@ export class DownloadCoverageContentComponent
     onSelectFormat(format: string) {
         coverageSetActions.selectFormat(format);
         responsibilityStore.fetchOneTimeCoverageToken().catch(doNothing);
+        this.cancelTimeoutEnableOfDownloadButton();
+        this.setState({
+            downloadButtonEnabled: true,
+        })
+    }
+
+    cancelTimeoutEnableOfDownloadButton(){
         if (this.downloadButtonDisableTimeoutId) {
             clearTimeout(this.downloadButtonDisableTimeoutId);
             this.downloadButtonDisableTimeoutId = undefined;
         }
-        this.setState({
-            downloadButtonEnabled: true,
-        })
     }
 
     refreshToken() {
@@ -92,6 +96,10 @@ export class DownloadCoverageContentComponent
                 downloadButtonEnabled: true,
             })
         }, this.downloadButtonDisableTimeout);
+    }
+
+    componentWillUnmount () {
+        this.cancelTimeoutEnableOfDownloadButton();
     }
 
     renderContent(props: DownloadCoverageComponentProps) {
