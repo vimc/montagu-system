@@ -2,7 +2,7 @@ import * as React from "react";
 import {expect} from "chai";
 import {shallow, ShallowWrapper} from "enzyme";
 import {Sandbox} from "../../Sandbox";
-import {UploadForm} from "../../../main/shared/components/UploadForm";
+import {UploadFileForm} from "../../../main/shared/components/UploadFileForm";
 import {helpers} from "../../../main/shared/Helpers";
 
 describe('UploadForm', () => {
@@ -13,10 +13,10 @@ describe('UploadForm', () => {
 
     it("disables the submit button if enable submit is false", () => {
 
-        rendered = shallow(<UploadForm uploadText="upload text"
-                                       successMessage={"success"}
-                                       enableSubmit={false}
-                                       token="token"/>);
+        rendered = shallow(<UploadFileForm uploadText="upload text"
+                                           successMessage={"success"}
+                                           enableSubmit={false}
+                                           token="token"/>);
 
         rendered.setState({"fileSelected": true});
 
@@ -27,10 +27,10 @@ describe('UploadForm', () => {
 
     it("disables submit button if token is null", () => {
 
-        rendered = shallow(<UploadForm uploadText="upload text"
-                                       successMessage={"success"}
-                                       enableSubmit={true}
-                                       token={null}/>);
+        rendered = shallow(<UploadFileForm uploadText="upload text"
+                                           successMessage={"success"}
+                                           enableSubmit={true}
+                                           token={null}/>);
 
         rendered.setState({"fileSelected": true});
 
@@ -41,10 +41,10 @@ describe('UploadForm', () => {
 
     it("disables submit button if file not selected", () => {
 
-        rendered = shallow(<UploadForm uploadText="upload text"
-                                       successMessage={"success"}
-                                       enableSubmit={true}
-                                       token="token"/>);
+        rendered = shallow(<UploadFileForm uploadText="upload text"
+                                           successMessage={"success"}
+                                           enableSubmit={true}
+                                           token="token"/>);
 
         const uploadButton = rendered.find(`button`).first();
         expect(uploadButton.prop("disabled")).to.eq(true);
@@ -53,10 +53,10 @@ describe('UploadForm', () => {
 
     it("enables submit button if enableSubmit is true and token exists", () => {
 
-        rendered = shallow(<UploadForm uploadText="upload text"
-                                       successMessage={"success"}
-                                       enableSubmit={true}
-                                       token="token"/>);
+        rendered = shallow(<UploadFileForm uploadText="upload text"
+                                           successMessage={"success"}
+                                           enableSubmit={true}
+                                           token="token"/>);
 
         rendered.setState({"fileSelected": true});
 
@@ -69,10 +69,10 @@ describe('UploadForm', () => {
 
         sandbox.sinon.stub(helpers, "ingestQueryStringAndReturnResult").returns(null);
 
-        rendered = shallow(<UploadForm uploadText="upload text"
-                                       successMessage={"success message"}
-                                       enableSubmit={true}
-                                       token="token"/>);
+        rendered = shallow(<UploadFileForm uploadText="upload text"
+                                           successMessage={"success message"}
+                                           enableSubmit={true}
+                                           token="token"/>);
 
         const alert = rendered.find('.alert');
         expect(alert).to.have.lengthOf(0);
@@ -86,10 +86,10 @@ describe('UploadForm', () => {
             data: null
         });
 
-        rendered = shallow(<UploadForm uploadText="upload text"
-                                       successMessage={"success"}
-                                       enableSubmit={true}
-                                       token="token"/>);
+        rendered = shallow(<UploadFileForm uploadText="upload text"
+                                           successMessage={"success"}
+                                           enableSubmit={true}
+                                           token="token"/>);
 
         const alert = rendered.find('.alert').first();
         expect(alert.prop("className")).to.eq("alert alert-danger");
@@ -104,10 +104,10 @@ describe('UploadForm', () => {
             data: "OK"
         });
 
-        rendered = shallow(<UploadForm uploadText="upload text"
-                                       successMessage={"success message"}
-                                       enableSubmit={true}
-                                       token="token"/>);
+        rendered = shallow(<UploadFileForm uploadText="upload text"
+                                           successMessage={"success message"}
+                                           enableSubmit={true}
+                                           token="token"/>);
 
         const alert = rendered.find('.alert').first();
         expect(alert.prop("className")).to.eq("alert alert-success");
@@ -122,10 +122,10 @@ describe('UploadForm', () => {
             data: "OK"
         });
 
-        rendered = shallow(<UploadForm uploadText="upload text"
-                                       successMessage={"success message"}
-                                       enableSubmit={true}
-                                       token="token"/>);
+        rendered = shallow(<UploadFileForm uploadText="upload text"
+                                           successMessage={"success message"}
+                                           enableSubmit={true}
+                                           token="token"/>);
 
         const alertClose = rendered.find('.close').first();
         alertClose.simulate("click");

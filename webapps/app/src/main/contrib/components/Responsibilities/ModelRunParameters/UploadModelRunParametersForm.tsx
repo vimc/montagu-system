@@ -1,7 +1,7 @@
 import * as React from "react";
-import {UploadForm} from "../../../../shared/components/UploadForm";
+import {UploadFileForm} from "../../../../shared/components/UploadFileForm";
 
-interface ModelRunparametersUploadFormProps {
+interface ModelRunParametersUploadFormProps {
     groupId: string;
     touchstoneId: string;
     diseases: string[];
@@ -13,9 +13,9 @@ interface ModelRunParametersUploadFormState {
     descriptionSelected: boolean;
 }
 
-export class UploadModelRunParametersForm extends React.Component<ModelRunparametersUploadFormProps, ModelRunParametersUploadFormState> {
+export class UploadModelRunParametersForm extends React.Component<ModelRunParametersUploadFormProps, ModelRunParametersUploadFormState> {
 
-    constructor(props: ModelRunparametersUploadFormProps) {
+    constructor(props: ModelRunParametersUploadFormProps) {
         super();
         this.state = {
             diseaseSelected: props.diseases.length == 1,
@@ -62,17 +62,17 @@ export class UploadModelRunParametersForm extends React.Component<ModelRunparame
         return <div>
             <p>On this page you can upload a new set of model run parameters. We need {diseaseHelperText} a human
                 readable description for you to easily identify them when uploading burden estimates.</p>
-            <UploadForm token={this.props.token}
-                        uploadText={"Choose a new model run parameter set"}
-                        enableSubmit={this.state.descriptionSelected && this.state.diseaseSelected}
-                        successMessage={"Success! You have uploaded a new model run parameter set"}>
+            <UploadFileForm token={this.props.token}
+                            uploadText={"Choose a new model run parameter set"}
+                            enableSubmit={this.state.descriptionSelected && this.state.diseaseSelected}
+                            successMessage={"Success! You have uploaded a new model run parameter set"}>
                 {diseaseInput}
                 <div className="form-group">
                     <label>Human readable name or description of this set:</label>
                     <input type="text" className="form-control" name="description"
                            onChange={this.handleDescriptionChange.bind(this)}/>
                 </div>
-            </UploadForm>
+            </UploadFileForm>
 
         </div>;
     }

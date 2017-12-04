@@ -6,21 +6,21 @@ import {ErrorInfo} from "../models/Generated";
 const formStyles = require("../styles/forms.css");
 const buttonStyles = require("../styles/buttons.css");
 
-export interface UploadFormProps {
+export interface UploadFileProps {
     token: string;
     uploadText: string;
     enableSubmit: boolean;
     successMessage: string;
 }
 
-export interface UploadState {
+export interface UploadFileState {
     fileSelected: boolean;
     fileName: string;
     showAlert: boolean;
     errors: ErrorInfo[];
 }
 
-export class UploadForm extends React.Component<UploadFormProps, UploadState> {
+export class UploadFileForm extends React.Component<UploadFileProps, UploadFileState> {
     constructor() {
         super();
 

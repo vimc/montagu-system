@@ -1,7 +1,6 @@
 import * as React from "react";
 import {BurdenEstimateSet} from "../../../../shared/models/Generated";
-import {settings} from "../../../../shared/Settings";
-import {UploadForm} from "../../../../shared/components/UploadForm";
+import {UploadFileForm} from "../../../../shared/components/UploadFileForm";
 import {CurrentEstimateSetSummary} from "../Overview/List/CurrentEstimateSetSummary";
 
 interface UploadBurdenEstimateFormProps {
@@ -17,8 +16,8 @@ export class UploadBurdenEstimatesForm extends React.Component<UploadBurdenEstim
         const uploadText = "Choose a new burden estimate set";
 
         const uploadForm = this.props.canUpload ?
-            <UploadForm token={this.props.token} enableSubmit={this.props.canUpload} uploadText={uploadText}
-            successMessage={"Success! You have uploaded a new set of burden estimates"}/>
+            <UploadFileForm token={this.props.token} enableSubmit={this.props.canUpload} uploadText={uploadText}
+                            successMessage={"Success! You have uploaded a new set of burden estimates"}/>
             : null;
 
         return <div>

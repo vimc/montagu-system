@@ -5,7 +5,7 @@ import {mockBurdenEstimateSet} from "../../../../mocks/mockModels";
 import { Sandbox } from "../../../../Sandbox";
 import {mockFetcher} from "../../../../mocks/mockRemote";
 import {CurrentEstimateSetSummary} from "../../../../../main/contrib/components/Responsibilities/Overview/List/CurrentEstimateSetSummary";
-import {UploadForm} from "../../../../../main/shared/components/UploadForm";
+import {UploadFileForm} from "../../../../../main/shared/components/UploadFileForm";
 import {UploadBurdenEstimatesForm} from "../../../../../../../app/src/main/contrib/components/Responsibilities/BurdenEstimates/UploadBurdenEstimatesForm";
 
 describe('UploadBurdenEstimatesForm', () => {
@@ -22,7 +22,7 @@ describe('UploadBurdenEstimatesForm', () => {
             canUpload={false}
             currentEstimateSet={null}/>);
 
-        const form = rendered.find(UploadForm);
+        const form = rendered.find(UploadFileForm);
         expect(form).to.have.lengthOf(0);
     });
 
@@ -33,7 +33,7 @@ describe('UploadBurdenEstimatesForm', () => {
             canUpload={true}
             currentEstimateSet={null}/>);
 
-        const form = rendered.find(UploadForm);
+        const form = rendered.find(UploadFileForm);
         expect(form).to.have.lengthOf(1);
         expect(form.props()).to.include({
             token: "token",

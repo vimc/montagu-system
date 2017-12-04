@@ -3,7 +3,7 @@ import {expect} from "chai";
 import {shallow, ShallowWrapper} from "enzyme";
 import {Sandbox} from "../../../../Sandbox";
 import {mockFetcher} from "../../../../mocks/mockRemote";
-import {UploadForm} from "../../../../../main/shared/components/UploadForm";
+import {UploadFileForm} from "../../../../../main/shared/components/UploadFileForm";
 import {UploadModelRunParametersForm} from "../../../../../../../app/src/main/contrib/components/Responsibilities/ModelRunParameters/UploadModelRunParametersForm";
 
 describe('UploadModelRunParametersForm', () => {
@@ -23,7 +23,7 @@ describe('UploadModelRunParametersForm', () => {
             diseases={["d1"]}
         />);
 
-        const form = rendered.find(UploadForm);
+        const form = rendered.find(UploadFileForm);
         expect(form).to.have.lengthOf(1);
         expect(form.props()).to.include({
             token: "token",
@@ -97,7 +97,7 @@ describe('UploadModelRunParametersForm', () => {
             diseases={["d1"]}
         />);
 
-        const form = rendered.find(UploadForm);
+        const form = rendered.find(UploadFileForm);
         expect(form.prop("enableSubmit")).to.be.false;
     });
 
@@ -113,7 +113,7 @@ describe('UploadModelRunParametersForm', () => {
         const input = rendered.find('input[name="description"]');
         input.simulate("change", { target: { value: "some description"}});
 
-        const form = rendered.find(UploadForm);
+        const form = rendered.find(UploadFileForm);
         expect(form.prop("enableSubmit")).to.be.false;
     });
 
@@ -132,7 +132,7 @@ describe('UploadModelRunParametersForm', () => {
         const select = rendered.find('select[name="disease"]');
         select.simulate("change", { target: { value: "some disease"}});
 
-        const form = rendered.find(UploadForm);
+        const form = rendered.find(UploadFileForm);
         expect(form.prop("enableSubmit")).to.be.true;
 
     });
@@ -150,7 +150,7 @@ describe('UploadModelRunParametersForm', () => {
         const input = rendered.find('input[name="description"]');
         input.simulate("change", { target: { value: "some description"}});
 
-        const form = rendered.find(UploadForm);
+        const form = rendered.find(UploadFileForm);
         expect(form.prop("enableSubmit")).to.be.true;
 
     });
