@@ -4,7 +4,7 @@ import {shallow, ShallowWrapper} from "enzyme";
 import {Sandbox} from "../../../../Sandbox";
 import {mockFetcher} from "../../../../mocks/mockRemote";
 import {UploadFileForm} from "../../../../../main/shared/components/UploadFileForm";
-import {UploadModelRunParametersForm} from "../../../../../../../app/src/main/contrib/components/Responsibilities/ModelRunParameters/UploadModelRunParametersForm";
+import {UploadModelRunParametersForm} from "../../../../../main/contrib/components/Responsibilities/ModelRunParameters/UploadModelRunParametersForm";
 
 describe('UploadModelRunParametersForm', () => {
     let rendered: ShallowWrapper<any, any>;

@@ -6,7 +6,7 @@ import { Sandbox } from "../../../../Sandbox";
 import {mockFetcher} from "../../../../mocks/mockRemote";
 import {CurrentEstimateSetSummary} from "../../../../../main/contrib/components/Responsibilities/Overview/List/CurrentEstimateSetSummary";
 import {UploadFileForm} from "../../../../../main/shared/components/UploadFileForm";
-import {UploadBurdenEstimatesForm} from "../../../../../../../app/src/main/contrib/components/Responsibilities/BurdenEstimates/UploadBurdenEstimatesForm";
+import {UploadBurdenEstimatesForm} from "../../../../../main/contrib/components/Responsibilities/BurdenEstimates/UploadBurdenEstimatesForm";
 
 describe('UploadBurdenEstimatesForm', () => {
     let rendered: ShallowWrapper<any, any>;
