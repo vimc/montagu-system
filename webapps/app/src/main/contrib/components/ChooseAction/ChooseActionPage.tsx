@@ -20,7 +20,8 @@ export class ChooseActionPage extends ContribPageWithHeader<LocationProps> {
     }
 
     name(): string {
-        return "Touchstones";
+        const s = responsibilityStore.getState();
+        return s.currentModellingGroup.id;
     }
 
     title(): JSX.Element {
