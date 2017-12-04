@@ -32,16 +32,17 @@ abstract class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRep
     protected val modelVersion = "version-1"
     protected val username = "some.user"
     protected val timestamp = LocalDateTime.of(2017, Month.JUNE, 13, 12, 30).toInstant(ZoneOffset.UTC)
+    protected val disease = "Hib3"
 
     protected fun setupDatabase(db: JooqContext, addModel: Boolean = true,
-                              responsibilitySetStatus: String = "incomplete"): ReturnedIds
+                                responsibilitySetStatus: String = "incomplete"): ReturnedIds
     {
         db.addTouchstone("touchstone", 1, "Touchstone 1", addName = true)
         db.addScenarioDescription(scenarioId, "Test scenario", "Hib3", addDisease = true)
         db.addGroup(groupId, "Test group")
         val modelVersionId = if (addModel)
         {
-            db.addModel(modelId, groupId, "Hib3")
+            db.addModel(modelId, groupId, disease)
             db.addModelVersion(modelId, modelVersion, setCurrent = true)
         }
         else
@@ -53,4 +54,24 @@ abstract class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRep
         db.addUserForTesting(username)
         return ReturnedIds(modelVersionId, responsibilityId, setId)
     }
+
+    protected fun setupDatabaseWithModelRunParameterSet(db: JooqContext,
+                                                        responsibilitySetStatus: String = "incomplete"): ReturnedIds
+    {
+        db.addTouchstone("touchstone", 1, "Touchstone 1", addName = true)
+        db.addScenarioDescription(scenarioId, "Test scenario", "Hib3", addDisease = true)
+        db.addGroup(groupId, "Test group")
+
+        db.addModel(modelId, groupId, disease)
+        val modelVersionId = db.addModelVersion(modelId, modelVersion, setCurrent = true)
+
+        val setId = db.addResponsibilitySet(groupId, touchstoneId, responsibilitySetStatus)
+        val responsibilityId = db.addResponsibility(setId, touchstoneId, scenarioId)
+        db.addUserForTesting(username)
+
+        db.addModelRunParameterSet(setId, modelVersionId, username, "test params")
+
+        return ReturnedIds(modelVersionId, responsibilityId, setId)
+    }
+
 }

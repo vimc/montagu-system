@@ -1,14 +1,14 @@
 dependencies {
-    compile 'org.pac4j:spark-pac4j:2.0.0'
-    compile 'org.pac4j:pac4j-jwt:2.0.0'
-    compile 'commons-codec:commons-codec:1.10'
-    compile 'org.abstractj.kalium:kalium:0.6.0'
+    compile 'org.pac4j:spark-pac4j:2.1.0'
+    compile 'org.pac4j:pac4j-jwt:2.2.0'
+    compile 'commons-codec:commons-codec:1.11'
+    compile 'org.abstractj.kalium:kalium:0.7.0'
 
     testCompile "junit:junit:4.12"
     testCompile "org.mockito:mockito-core:2.+"
-    testCompile "com.nhaarman:mockito-kotlin:1.3.0"
-    testCompile "org.assertj:assertj-core:3.6.2"
-    testCompile "com.beust:klaxon:0.31"
+    testCompile "com.nhaarman:mockito-kotlin:1.5.0"
+    testCompile "org.assertj:assertj-core:3.8.0"
+    testCompile "com.beust:klaxon:0.32"
     testCompile project(":testHelpers")
 
     compile project(":models")

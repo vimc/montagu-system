@@ -3,7 +3,10 @@ package org.vaccineimpact.api.serialization
 import com.opencsv.CSVReader
 import org.vaccineimpact.api.models.ErrorInfo
 import org.vaccineimpact.api.models.helpers.FlexibleColumns
+import org.vaccineimpact.api.models.helpers.AllColumnsRequired
 import org.vaccineimpact.api.serialization.validation.ValidationException
+import java.io.FilterReader
+import java.io.Reader
 import java.io.StringReader
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
@@ -15,22 +18,29 @@ class HeaderDefinition(val name: String, val type: KType)
 
 open class DataTableDeserializer<out T>(
         protected val headerDefinitions: List<HeaderDefinition>,
-        private val constructor: KFunction<T>
+        private val constructor: KFunction<T>,
+        private val allColumnsRequired: Boolean = false
 )
 {
     private val headerCount = headerDefinitions.size
     protected open val extraHeadersAllowed = false
 
-    fun deserialize(body: String): Sequence<T>
+    fun deserialize(stream: Reader): Sequence<T>
     {
-        val reader = CSVReader(StringReader(body.trim()))
+        val reader = CSVReader(stream)
+        val rows = generateSequence { reader.readNext() }.stripEmptyRows()
+        val (headerRow, content) = rows.headAndTail()
 
-        val row = reader.readNext()
-        val actualHeaderNames = row.toList()
+        if (headerRow == null)
+        {
+            throw ValidationException(listOf(ErrorInfo("csv-empty", "CSV was empty - no rows or headers were found")))
+        }
+
+        val actualHeaderNames = headerRow.toList()
         checkHeaders(actualHeaderNames)
         val actualHeaders = getActualHeaderDefinitions(actualHeaderNames)
-        val rows = generateSequence { reader.readNext() }
-        return rows.withIndex().map { (i, row) ->
+
+        return content.withIndex().map { (i, row) ->
             deserializeRow(row.toList(), actualHeaders, i)
         }
     }
@@ -66,9 +76,12 @@ open class DataTableDeserializer<out T>(
                             row: Int, column: String,
                             problems: MutableList<ErrorInfo>): Any?
     {
+        val trimmed = raw.trim()
+        checkValueIsPresentIfRequired(trimmed, targetType, row, column, problems)
+
         return try
         {
-            val value = Deserializer().deserialize(raw.trim(), targetType)
+            val value = Deserializer().deserialize(trimmed, targetType)
             value
         }
         catch (e: Exception)
@@ -76,9 +89,23 @@ open class DataTableDeserializer<out T>(
             val oneIndexedRow = row + 1;
             problems.add(ErrorInfo(
                     "csv-bad-data-type:$oneIndexedRow:$column",
-                    "Unable to parse '${raw.trim()}' as ${targetType.toString().replace("kotlin.", "")} (Row $oneIndexedRow, column $column)"
+                    "Unable to parse '$trimmed' as ${targetType.toString().replace("kotlin.", "")} (Row $oneIndexedRow, column $column)"
             ))
             null
+        }
+    }
+
+    private fun checkValueIsPresentIfRequired(trimmed: String, targetType: KType,
+                                              row: Int, column: String,
+                                              problems: MutableList<ErrorInfo>)
+    {
+        if (allColumnsRequired && trimmed.isEmpty())
+        {
+            val oneIndexedRow = row + 1;
+            problems.add(ErrorInfo(
+                    "csv-missing-data:$oneIndexedRow:$column",
+                    "Unable to parse '$trimmed' as ${targetType.toString().replace("kotlin.", "")} (Row $oneIndexedRow, column $column)"
+            ))
         }
     }
 
@@ -124,10 +151,19 @@ open class DataTableDeserializer<out T>(
         return headerDefinitions
     }
 
+    private fun Sequence<Array<String>>.stripEmptyRows(): Sequence<Array<String>>
+    {
+        return this
+                // Skip leading empty rows
+                .dropWhile { row -> row.all { it.isBlank() } }
+                // Skip trailing empty rows
+                .takeWhile { row -> row.any { !it.isBlank() } }
+    }
+
     companion object
     {
         fun <T : Any> deserialize(
-                body: String,
+                body: Reader,
                 type: KClass<T>,
                 serializer: Serializer = MontaguSerializer.instance
         ): Sequence<T>
@@ -135,21 +171,31 @@ open class DataTableDeserializer<out T>(
             return getDeserializer(type, serializer).deserialize(body)
         }
 
-        private fun <T: Any> getDeserializer(type: KClass<T>, serializer: Serializer): DataTableDeserializer<T>
+        fun <T : Any> deserialize(
+                body: String,
+                type: KClass<T>,
+                serializer: Serializer = MontaguSerializer.instance
+        ): Sequence<T>
+        {
+            return deserialize(StringReader(body), type, serializer)
+        }
+
+        private fun <T : Any> getDeserializer(type: KClass<T>, serializer: Serializer): DataTableDeserializer<T>
         {
             val constructor = type.primaryConstructor
                     ?: throw Exception("Cannot deserialize to type ${type.simpleName} - it has no primary constructor")
             val headers = constructor.parameters
                     .map { HeaderDefinition(serializer.convertFieldName(it.name!!), it.type) }
 
+            val allColumnsRequired = type.findAnnotation<AllColumnsRequired>() != null
             return if (type.findAnnotation<FlexibleColumns>() != null)
             {
                 val flexibleType = getFlexibleColumnType(constructor, type)
-                FlexibleDataTableDeserializer(headers.dropLast(1), constructor, flexibleType)
+                FlexibleDataTableDeserializer(headers.dropLast(1), constructor, flexibleType, allColumnsRequired)
             }
             else
             {
-                DataTableDeserializer(headers, constructor)
+                DataTableDeserializer(headers, constructor, allColumnsRequired)
             }
         }
 

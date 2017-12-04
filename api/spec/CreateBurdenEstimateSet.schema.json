@@ -1,0 +1,10 @@
+{
+    "id": "CreateBurdenEstimateSet",
+    "type": "object",
+    "properties": {
+        "type": { "$ref": "BurdenEstimateSetType.schema.json" },
+        "model_run_parameter_set": { "type": [ "integer", "null" ] }
+    },
+    "additionalProperties": false,
+    "required": ["type"]
+}

@@ -1,15 +1,15 @@
 dependencies {
     testCompile "junit:junit:4.12"
-    testCompile "org.assertj:assertj-core:3.6.2"
+    testCompile "org.assertj:assertj-core:3.8.0"
 
-    testCompile "org.slf4j:slf4j-simple:1.7.21"
+    testCompile "org.slf4j:slf4j-simple:1.7.25"
 
     testCompile "khttp:khttp:0.1.0"
-    testCompile "com.beust:klaxon:0.31"
-    testCompile "com.opencsv:opencsv:3.9"
+    testCompile "com.beust:klaxon:0.32"
+    testCompile "com.opencsv:opencsv:4.1"
     testCompile "com.auth0:java-jwt:3.3.0"
 
-    testCompile "com.github.fge:json-schema-validator:2.2.6"
+    testCompile "com.github.fge:json-schema-validator:2.2.8"
 
     testCompile project(":testHelpers")
     testCompile project(":databaseInterface")

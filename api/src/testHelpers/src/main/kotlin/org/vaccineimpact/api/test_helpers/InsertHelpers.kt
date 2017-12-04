@@ -35,7 +35,7 @@ fun JooqContext.addModel(
         versions: List<String> = emptyList()
 ): Int
 {
-    val record = this.dsl.newRecord(MODEL).apply {
+    this.dsl.newRecord(MODEL).apply {
         this.id = id
         this.modellingGroup = groupId
         this.description = description
@@ -192,6 +192,26 @@ fun JooqContext.addBurdenEstimateSet(
         this.interpolated = false
         this.complete = false
         this.status = status
+    }
+    record.store()
+    return record.id
+}
+
+fun JooqContext.addModelRunParameterSet(
+        responsibilitySetId: Int, modelVersionId: Int,
+        username: String, description: String
+): Int
+{
+    val uploadInfo = this.dsl.newRecord(UPLOAD_INFO).apply{
+        this.uploadedBy = username
+    }
+    uploadInfo.store()
+
+    val record = this.dsl.newRecord(MODEL_RUN_PARAMETER_SET).apply {
+        this.responsibilitySet = responsibilitySetId
+        this.modelVersion = modelVersionId
+        this.uploadInfo = uploadInfo.id
+        this.description = description
     }
     record.store()
     return record.id

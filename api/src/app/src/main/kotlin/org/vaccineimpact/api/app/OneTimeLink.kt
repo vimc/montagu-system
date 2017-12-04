@@ -34,14 +34,15 @@ data class OneTimeLink(val action: OneTimeAction,
                     OneTimeAction.BURDENS -> controllers.groupBurdenEstimates.addBurdenEstimates(
                             context,
                             repos.burdenEstimates,
-                            RequestBodySource.HTMLMultipartFile()
+                            RequestBodySource.HTMLMultipart("file")
                     )
                     OneTimeAction.BURDENS_CREATE -> controllers.groupBurdenEstimates.createBurdenEstimateSet(context, repos.burdenEstimates)
                     OneTimeAction.BURDENS_POPULATE -> controllers.groupBurdenEstimates.populateBurdenEstimateSet(
                             context,
                             repos.burdenEstimates,
-                            RequestBodySource.HTMLMultipartFile()
+                            RequestBodySource.HTMLMultipart("file")
                     )
+                    OneTimeAction.MODEl_RUN_PARAMETERS -> controllers.modellingGroup.addModelRunParameters(context, repos.burdenEstimates)
                     OneTimeAction.COVERAGE -> stream(controllers.modellingGroup.getCoverageData(context, repos.modellingGroup), context)
                     OneTimeAction.DEMOGRAPHY -> stream(controllers.touchstone.getDemographicData(context, repos.touchstone), context)
                     OneTimeAction.SET_PASSWORD -> controllers.password.setPasswordForUser(context, repos.user, context.params("username"))

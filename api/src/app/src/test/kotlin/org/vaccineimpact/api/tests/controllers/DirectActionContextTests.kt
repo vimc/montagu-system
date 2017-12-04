@@ -11,12 +11,16 @@ import org.pac4j.core.profile.CommonProfile
 import org.pac4j.sparkjava.SparkWebContext
 import org.vaccineimpact.api.app.context.DirectActionContext
 import org.vaccineimpact.api.app.context.postData
+import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.security.PERMISSIONS
 import org.vaccineimpact.api.models.Scope
 import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import org.vaccineimpact.api.test_helpers.MontaguTests
 import spark.Request
+import java.io.InputStream
+import javax.servlet.http.HttpServletRequest
+import javax.servlet.http.Part
 
 class DirectActionContextTests : MontaguTests()
 {
@@ -85,6 +89,76 @@ class DirectActionContextTests : MontaguTests()
         assertThat(model).isEqualTo(Model(1, listOf("x", "y"), Model(100, listOf("z"), null)))
     }
 
+    @Test
+    fun `throw BadRequest if getPart called on non multipart request`()
+    {
+        val profile = CommonProfile()
+
+        val mockRequest = mock<Request> {
+            on { raw() } doReturn mock<HttpServletRequest>()
+            on { contentType() } doReturn "text/plain"
+        }
+
+        val webContext = mock<SparkWebContext> {
+            on { getRequestAttribute(Pac4jConstants.USER_PROFILES) } doReturn profile
+            on { sparkRequest } doReturn mockRequest
+        }
+
+        val context = DirectActionContext(webContext)
+        assertThatThrownBy {
+            context.getPart("whatever")
+        }.isInstanceOf(BadRequest::class.java)
+                .hasMessageContaining("Trying to extract a part from multipart/form-data but this request is of type text/plain")
+    }
+
+    @Test
+    fun `throw BadRequest if getPart called on non existent part`()
+    {
+        val profile = CommonProfile()
+
+        val mockRequest = mock<Request> {
+            on { raw() } doReturn mock<HttpServletRequest>()
+            on { contentType() } doReturn "multipart/form-data"
+        }
+
+        val webContext = mock<SparkWebContext> {
+            on { getRequestAttribute(Pac4jConstants.USER_PROFILES) } doReturn profile
+            on { sparkRequest } doReturn mockRequest
+        }
+
+        val context = DirectActionContext(webContext)
+        assertThatThrownBy {
+            context.getPart("whatever")
+        }.isInstanceOf(BadRequest::class.java)
+                .hasMessageContaining("No value passed for required POST parameter 'whatever'")
+    }
+
+    @Test
+    fun `can get part`()
+    {
+        val profile = CommonProfile()
+
+        val mockPart = mock<Part>(){
+            on { inputStream } doReturn "something".byteInputStream()
+        }
+        val mockServletRequest = mock<HttpServletRequest>() {
+            on { getPart("whatever") } doReturn mockPart
+        }
+
+        val mockRequest = mock<Request> {
+            on { raw() } doReturn mockServletRequest
+            on { contentType() } doReturn "multipart/form-data"
+        }
+
+        val webContext = mock<SparkWebContext> {
+            on { getRequestAttribute(Pac4jConstants.USER_PROFILES) } doReturn profile
+            on { sparkRequest } doReturn mockRequest
+        }
+
+        val context = DirectActionContext(webContext)
+        assertThat(context.getPart("whatever").readText()).isEqualTo("something")
+    }
+
     private fun mockWebContext(profile: CommonProfile): SparkWebContext
     {
         val webContext = mock<SparkWebContext> {
@@ -92,4 +166,5 @@ class DirectActionContextTests : MontaguTests()
         }
         return webContext
     }
+
 }

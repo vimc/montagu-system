@@ -14,15 +14,18 @@ import org.vaccineimpact.api.db.*
 import org.vaccineimpact.api.db.Tables.*
 import org.vaccineimpact.api.models.*
 import java.beans.ConstructorProperties
-import java.io.ByteArrayInputStream
-import java.io.ByteArrayOutputStream
+import java.io.BufferedInputStream
+import java.io.OutputStream
+import java.io.PipedInputStream
+import java.io.PipedOutputStream
 import java.math.BigDecimal
 import java.sql.Timestamp
 import java.time.Instant
+import kotlin.concurrent.thread
 
 private data class ResponsibilityInfo
-@ConstructorProperties("id", "disease", "status")
-constructor(val id: Int, val disease: String, val setStatus: String)
+@ConstructorProperties("id", "disease", "status", "setId")
+constructor(val id: Int, val disease: String, val setStatus: String, val setId: Int)
 
 class JooqBurdenEstimateRepository(
         dsl: DSLContext,
@@ -32,6 +35,24 @@ class JooqBurdenEstimateRepository(
         private val mapper: BurdenMappingHelper = BurdenMappingHelper()
 ) : JooqRepository(dsl), BurdenEstimateRepository
 {
+    override fun getModelRunParameterSets(groupId: String, touchstoneId: String): List<ModelRunParameterSet>
+    {
+        // Dereference modelling group IDs
+        val modellingGroup = modellingGroupRepository.getModellingGroup(groupId)
+        val setId = getResponsibilitySetId(groupId, touchstoneId)
+
+        return dsl.select(MODEL_RUN_PARAMETER_SET.ID, MODEL_RUN_PARAMETER_SET.DESCRIPTION,
+                MODEL.ID.`as`("model"),
+                UPLOAD_INFO.UPLOADED_BY, UPLOAD_INFO.UPLOADED_ON)
+                .fromJoinPath(MODEL_RUN_PARAMETER_SET, UPLOAD_INFO)
+                .join(MODEL)
+                .on(MODEL.CURRENT_VERSION.eq(MODEL_RUN_PARAMETER_SET.MODEL_VERSION))
+                .where(MODEL.MODELLING_GROUP.eq(modellingGroup.id))
+                .and(MODEL.IS_CURRENT)
+                .and(MODEL_RUN_PARAMETER_SET.RESPONSIBILITY_SET.eq(setId))
+                .fetchInto(ModelRunParameterSet::class.java)
+    }
+
     override fun getBurdenEstimateSets(groupId: String, touchstoneId: String, scenarioId: String): List<BurdenEstimateSet>
     {
         // Dereference modelling group IDs
@@ -43,6 +64,7 @@ class JooqBurdenEstimateRepository(
                 table.UPLOADED_BY,
                 table.SET_TYPE,
                 table.SET_TYPE_DETAILS,
+                table.STATUS,
                 BURDEN_ESTIMATE_SET_PROBLEM.PROBLEM
         )
                 .from(table)
@@ -65,14 +87,32 @@ class JooqBurdenEstimateRepository(
                             common[table.UPLOADED_ON].toInstant(),
                             common[table.UPLOADED_BY],
                             mapper.mapBurdenEstimateSetType(common),
+                            mapper.mapEnum(common[table.STATUS]),
                             problems
                     )
                 }
     }
 
-    override fun addModelRunParameterSet(responsibilitySetId: Int, modelVersionId: Int,
+    override fun addModelRunParameterSet(groupId: String, touchstoneId: String, disease: String,
                                          description: String, modelRuns: List<ModelRun>,
-                                         uploader: String, timestamp: Instant)
+                                         uploader: String, timestamp: Instant): Int
+    {
+        // Dereference modelling group IDs
+        val modellingGroup = modellingGroupRepository.getModellingGroup(groupId)
+        val modelVersion = getlatestModelVersion(modellingGroup.id, disease)
+
+        // We aren't checking whether the provided disease is associated with a scenario in this
+        // responsibility set but the intention is to refactor the data model so that a responsibility set
+        // is tied to a single disease, which will make this easier to do down the line
+        val setId = getResponsibilitySetId(modellingGroup.id, touchstoneId)
+
+        return addModelRunParameterSet(setId,
+                modelVersion, description, modelRuns, uploader, timestamp)
+    }
+
+    fun addModelRunParameterSet(responsibilitySetId: Int, modelVersionId: Int,
+                                description: String, modelRuns: List<ModelRun>,
+                                uploader: String, timestamp: Instant): Int
     {
         val uploadInfoId = addUploadInfo(uploader, timestamp)
         val parameterSetId = addParameterSet(responsibilitySetId, modelVersionId, description, uploadInfoId)
@@ -82,6 +122,8 @@ class JooqBurdenEstimateRepository(
         {
             addModelRun(run, parameterSetId, parameterLookup)
         }
+
+        return parameterSetId
     }
 
     private fun addUploadInfo(uploader: String, timestamp: Instant): Int
@@ -113,6 +155,11 @@ class JooqBurdenEstimateRepository(
 
     private fun addParameters(modelRuns: List<ModelRun>, modelRunParameterSetId: Int): Map<String, Int>
     {
+        if (!modelRuns.any())
+        {
+            throw BadRequest("No model runs provided")
+        }
+
         val parameters = modelRuns.first().parameterValues.keys
         return parameters.associateBy({ it }, {
             val record = this.dsl.newRecord(MODEL_RUN_PARAMETER).apply {
@@ -124,7 +171,8 @@ class JooqBurdenEstimateRepository(
         })
     }
 
-    private fun addModelRun(run: ModelRun, modelRunParameterSetId: Int, parameterIds: Map<String, Int>){
+    private fun addModelRun(run: ModelRun, modelRunParameterSetId: Int, parameterIds: Map<String, Int>)
+    {
 
         val record = this.dsl.newRecord(MODEL_RUN).apply {
             this.runId = run.runId
@@ -143,15 +191,19 @@ class JooqBurdenEstimateRepository(
     }
 
     override fun addBurdenEstimateSet(groupId: String, touchstoneId: String, scenarioId: String,
-                                      estimates: List<BurdenEstimate>, uploader: String, timestamp: Instant): Int
+                                      estimates: Sequence<BurdenEstimate>, uploader: String, timestamp: Instant): Int
     {
-        val setId = createBurdenEstimateSet(groupId, touchstoneId, scenarioId, uploader, timestamp)
+        val properties = CreateBurdenEstimateSet(BurdenEstimateSetType(
+                BurdenEstimateSetTypeCode.CENTRAL_UNKNOWN,
+                "Created via deprecated method"
+        ), null)
+        val setId = createBurdenEstimateSet(groupId, touchstoneId, scenarioId, properties, uploader, timestamp)
         populateBurdenEstimateSet(setId, groupId, touchstoneId, scenarioId, estimates)
         return setId
     }
 
     override fun populateBurdenEstimateSet(setId: Int, groupId: String, touchstoneId: String, scenarioId: String,
-                                           estimates: List<BurdenEstimate>)
+                                           estimates: Sequence<BurdenEstimate>)
     {
         val outcomeLookup = getOutcomesAsLookup()
         val cohortSizeId = outcomeLookup["cohort_size"]
@@ -178,6 +230,7 @@ class JooqBurdenEstimateRepository(
 
 
     override fun createBurdenEstimateSet(groupId: String, touchstoneId: String, scenarioId: String,
+                                         properties: CreateBurdenEstimateSet,
                                          uploader: String, timestamp: Instant): Int
     {
         // Dereference modelling group IDs
@@ -198,19 +251,34 @@ class JooqBurdenEstimateRepository(
                     " and approved. You cannot upload any new estimates.")
         }
 
-        val latestModelVersion = dsl.select(MODEL_VERSION.ID)
+        val modelRunParameterSetId = properties.modelRunParameterSetId
+        if (modelRunParameterSetId != null)
+        {
+            dsl.select(MODEL_RUN_PARAMETER_SET.ID)
+                    .from(MODEL_RUN_PARAMETER_SET)
+                    .where(MODEL_RUN_PARAMETER_SET.ID.eq(modelRunParameterSetId))
+                    .fetch()
+                    .singleOrNull()?: throw UnknownObjectError(modelRunParameterSetId, "model run paramater set")
+        }
+
+        val latestModelVersion = getlatestModelVersion(modellingGroup.id, responsibilityInfo.disease)
+
+        return addSet(responsibilityInfo.id, uploader, timestamp, latestModelVersion, properties)
+    }
+
+    private fun getlatestModelVersion(groupId: String, disease: String): Int
+    {
+        return dsl.select(MODEL_VERSION.ID)
                 .fromJoinPath(MODELLING_GROUP, MODEL)
                 .join(MODEL_VERSION)
                 .on(MODEL_VERSION.ID.eq(MODEL.CURRENT_VERSION))
-                .where(MODELLING_GROUP.ID.eq(modellingGroup.id))
-                .and(MODEL.DISEASE.eq(responsibilityInfo.disease))
+                .where(MODELLING_GROUP.ID.eq(groupId))
+                .and(MODEL.DISEASE.eq(disease))
                 .and(MODEL.IS_CURRENT)
                 .fetch().singleOrNull()?.value1()
                 ?: throw DatabaseContentsError("Modelling group $groupId does not have any models/model versions in the database")
 
-        return addSet(responsibilityInfo.id, uploader, timestamp, latestModelVersion)
     }
-
 
     private fun updateCurrentBurdenEstimateSet(responsibilityId: Int, setId: Int)
     {
@@ -220,7 +288,7 @@ class JooqBurdenEstimateRepository(
                 .execute()
     }
 
-    private fun addEstimatesToSet(estimates: List<BurdenEstimate>, setId: Int,
+    private fun addEstimatesToSet(estimates: Sequence<BurdenEstimate>, setId: Int,
                                   outcomeLookup: Map<String, Int>, cohortSizeId: Int,
                                   expectedDisease: String)
     {
@@ -234,48 +302,22 @@ class JooqBurdenEstimateRepository(
         //   columns and don't vary by row this could be made more efficient)
         dsl.withoutCheckingForeignKeyConstraints(BURDEN_ESTIMATE) {
 
-            // Currently we write everything to a byte array in memory and then later feed that stream to CopyManager.
-            // Obviously this could be made more performant by chaining those two together somehow.
-            val data = ByteArrayOutputStream().use { stream ->
-                PostgresCopyWriter(stream).use { writer ->
-                    for (estimate in estimates)
-                    {
-                        if (estimate.disease != expectedDisease)
-                        {
-                            throw InconsistentDataError("Provided estimate lists disease as '${estimate.disease}' but scenario is for disease '$expectedDisease'")
-                        }
-                        if (estimate.country !in countries)
-                        {
-                            throw UnknownObjectError(estimate.country, "country")
-                        }
+            PipedOutputStream().use { stream ->
+                // First, let's set up a thread to read from the stream and send
+                // it to the database. This will block if the thread is empty, and keep
+                // going until it sees the Postgres EOF marker.
+                val inputStream = PipedInputStream(stream).buffered()
+                val writeToDatabaseThread = writeStreamToDatabase(dsl, inputStream)
 
-                        writer.writeRow(newBurdenEstimateRow(setId, estimate, cohortSizeId, estimate.cohortSize))
-                        for (outcome in estimate.outcomes)
-                        {
-                            val outcomeId = outcomeLookup[outcome.key]
-                                    ?: throw UnknownObjectError(outcome.key, "burden-outcome")
-                            writer.writeRow(newBurdenEstimateRow(setId, estimate, outcomeId, outcome.value))
-                        }
-                    }
-                }
-                stream.toByteArray()
-            }
+                // In the main thread, write to piped stream, blocking if we get too far ahead of
+                // the other thread ("too far ahead" meaning the buffer on the input stream is full)
+                writeCopyData(
+                        stream, estimates, expectedDisease,
+                        countries, setId, cohortSizeId, outcomeLookup
+                )
 
-            // We use dsl.connection to drop down from jOOQ to the JDBC level so we can use CopyManager.
-            dsl.connection { connection ->
-                ByteArrayInputStream(data).use { stream ->
-                    val t = BURDEN_ESTIMATE
-                    val manager = CopyManager(connection as BaseConnection)
-                    manager.copyInto(BURDEN_ESTIMATE, stream, listOf(
-                            t.BURDEN_ESTIMATE_SET,
-                            t.COUNTRY,
-                            t.YEAR,
-                            t.AGE,
-                            t.STOCHASTIC,
-                            t.BURDEN_OUTCOME,
-                            t.VALUE
-                    ))
-                }
+                // Wait for the worker thread to finished
+                writeToDatabaseThread.join()
             }
         }
 
@@ -283,6 +325,60 @@ class JooqBurdenEstimateRepository(
                 .set(BURDEN_ESTIMATE_SET.STATUS, "complete")
                 .where(BURDEN_ESTIMATE_SET.ID.eq(setId))
                 .execute()
+    }
+
+    private fun writeStreamToDatabase(dsl: DSLContext, inputStream: BufferedInputStream): Thread
+    {
+        // Since we are in another thread here, we should be careful about what state we modify.
+        // Everything we have access to here is immutable, so we should be fine.
+        return thread(start = true) {
+            // We use dsl.connection to drop down from jOOQ to the JDBC level so we can use CopyManager.
+            dsl.connection { connection ->
+                val manager = CopyManager(connection as BaseConnection)
+                val t = BURDEN_ESTIMATE
+                // This will return once it reaches the EOF character written out by the other stream
+                manager.copyInto(BURDEN_ESTIMATE, inputStream, listOf(
+                        t.BURDEN_ESTIMATE_SET,
+                        t.COUNTRY,
+                        t.YEAR,
+                        t.AGE,
+                        t.STOCHASTIC,
+                        t.BURDEN_OUTCOME,
+                        t.VALUE
+                ))
+            }
+        }
+    }
+
+    private fun writeCopyData(
+            stream: OutputStream, estimates: Sequence<BurdenEstimate>,
+            expectedDisease: String, countries: HashSet<String>,
+            setId: Int, cohortSizeId: Int, outcomeLookup: Map<String, Int>
+    )
+    {
+        // When we exit the 'use' block the EOF character will be written out,
+        // signalling to the other thread that we are done.
+        PostgresCopyWriter(stream).use { writer ->
+            for (estimate in estimates)
+            {
+                if (estimate.disease != expectedDisease)
+                {
+                    throw InconsistentDataError("Provided estimate lists disease as '${estimate.disease}' but scenario is for disease '$expectedDisease'")
+                }
+                if (estimate.country !in countries)
+                {
+                    throw UnknownObjectError(estimate.country, "country")
+                }
+
+                writer.writeRow(newBurdenEstimateRow(setId, estimate, cohortSizeId, estimate.cohortSize))
+                for (outcome in estimate.outcomes)
+                {
+                    val outcomeId = outcomeLookup[outcome.key]
+                            ?: throw UnknownObjectError(outcome.key, "burden-outcome")
+                    writer.writeRow(newBurdenEstimateRow(setId, estimate, outcomeId, outcome.value))
+                }
+            }
+        }
     }
 
     private fun getAllCountryIds() = dsl.select(COUNTRY.ID)
@@ -309,7 +405,8 @@ class JooqBurdenEstimateRepository(
         )
     }
 
-    private fun addSet(responsibilityId: Int, uploader: String, timestamp: Instant, modelVersion: Int): Int
+    private fun addSet(responsibilityId: Int, uploader: String, timestamp: Instant,
+                       modelVersion: Int, properties: CreateBurdenEstimateSet): Int
     {
         val setRecord = dsl.newRecord(BURDEN_ESTIMATE_SET).apply {
             this.modelVersion = modelVersion
@@ -319,6 +416,9 @@ class JooqBurdenEstimateRepository(
             this.runInfo = "Not provided"
             this.interpolated = false
             this.status = "empty"
+            this.setType = mapper.mapEnum(properties.type.type)
+            this.setTypeDetails = properties.type.details
+            this.modelRunParameterSet = properties.modelRunParameterSetId
         }
         setRecord.insert()
         return setRecord.id
@@ -335,7 +435,7 @@ class JooqBurdenEstimateRepository(
     private fun getResponsibilityInfo(groupId: String, touchstoneId: String, scenarioId: String): ResponsibilityInfo
     {
         // Get responsibility ID
-        return dsl.select(RESPONSIBILITY.ID, SCENARIO_DESCRIPTION.DISEASE, RESPONSIBILITY_SET.STATUS)
+        return dsl.select(RESPONSIBILITY.ID, SCENARIO_DESCRIPTION.DISEASE, RESPONSIBILITY_SET.STATUS, RESPONSIBILITY_SET.ID.`as`("setId"))
                 .fromJoinPath(MODELLING_GROUP, RESPONSIBILITY_SET, RESPONSIBILITY, SCENARIO, SCENARIO_DESCRIPTION)
                 .joinPath(RESPONSIBILITY_SET, TOUCHSTONE)
                 .where(MODELLING_GROUP.ID.eq(groupId))
@@ -344,6 +444,17 @@ class JooqBurdenEstimateRepository(
                 .fetchOne()
                 ?.into(ResponsibilityInfo::class.java)
                 ?: findMissingObjects(touchstoneId, scenarioId)
+    }
+
+    private fun getResponsibilitySetId(groupId: String, touchstoneId: String): Int
+    {
+        // Get responsibility ID
+        return dsl.select(RESPONSIBILITY_SET.ID)
+                .fromJoinPath(MODELLING_GROUP, RESPONSIBILITY_SET, TOUCHSTONE)
+                .where(MODELLING_GROUP.ID.eq(groupId))
+                .and(TOUCHSTONE.ID.eq(touchstoneId))
+                .fetchOneInto(Int::class.java)
+                ?: throw UnknownObjectError(touchstoneId, "touchstone")
     }
 
     private fun <T> findMissingObjects(touchstoneId: String, scenarioId: String): T

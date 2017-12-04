@@ -1011,16 +1011,10 @@ Schema: [`BurdenEstimates.schema.json`](BurdenEstimates.schema.json)
                 "type": "central-averaged",
                 "details": "Mean over all stochastic runs"
             },
-            "problems": []
+            "problems": [],
+            "status": "complete"
         }
     ]
-
-### Query parameters
-#### scenario
-Filter by scenario. e.g. GET /touchstone/2017-op-1/estimates/?scenario=menA-novacc
-
-#### responsible_group
-Filter by responsible group. e.g. GET /touchstone/2017-op-1/estimates/?responsible_group=IC-YellowFever
 
 ## GET /modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}/{scenario-id}/estimate-sets/{estimate-id}/
 Returns the full burden estimate data.
@@ -1044,7 +1038,8 @@ Schema: [`BurdenEstimateSet.schema.json`](BurdenEstimateSet.schema.json)
             "type": "central-averaged",
             "details": "Mean over all stochastic runs"
         },
-        "problems": []
+        "problems": [],
+        "status": "empty"
     }
 
 ### CSV data
@@ -1092,6 +1087,18 @@ Can only by invoked if:
 Required permissions: Scoped to modelling group: `estimates.write`, `responsibilities.read`.
 
 Returns the integer id of the new set.
+
+### JSON metadata
+Schema: [`CreateBurdenEstimateSet.schema.json`](CreateBurdenEstimateSet.schema.json)
+
+### Example
+    {
+        "type": {
+            "type": "central-averaged",
+            "details": "Mean over 100 runs"
+        },
+        "model_run_parameter_set": 1
+    }
 
 ## POST /modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}/{scenario-id}/estimate-sets/{set-id}/
 Populates an empty burden estimate set.
@@ -1296,6 +1303,39 @@ Schema: [`CreateModelVersion.schema.json`](CreateModelVersion.schema.json)
         "note": "Notes about what's changed in the model",
         "fingerprint": null
     }
+    
+## GET /modelling-groups/{modelling-group-id}/model_run_parameter_sets/{touchstone-id}/
+Returns a list of model run parameter sets that the given modelling group has uploaded for responsibilities in the 
+ given touchstone.
+
+Required permissions: Scoped to modelling group: `responsibilities.read`.
+
+Schema: [`ModelRunParameterSets.schema.json`](ModelRunParameterSets.schema.json)
+
+### Example
+    [
+        {
+            "id": 1,
+            "description": "our first set of parameters",
+            "model": "HPVGoldie-flat",
+            "uploaded_by": "tgarske",
+            "uploaded_on": "2017-10-06T11:18:06Z"   
+        }
+    ]
+    
+## POST /modelling-groups/{modelling-group-id}/model_run_parameter_sets/{touchstone-id}/
+
+Required permissions: Scoped to modelling group: `estimates.write`.
+
+Creates a new model run parameter set for the given model. Accepts multipart/form-data with one text part named "description",
+ which should a human readable description for the new set, one text part named "disease", which must be a valid disease
+  id, and one file part named "file", which must be CSV data in the following format
+
+    "run_id", "param_1", "param_2", 
+       "1",   10,    50,
+       "2",   10,    60,
+       "3",   20,    50,
+
 
 # Responsibilities
 ## GET /modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}/
@@ -1356,7 +1396,8 @@ Schema: [`ResponsibilitySet.schema.json`](ResponsibilitySet.schema.json)
                         "type": "central-averaged",
                         "details": "Mean over all stochastic runs"
                     },
-                    "problems": []                    
+                    "problems": [],
+                    "status": "complete"
                 }
             }
         ]

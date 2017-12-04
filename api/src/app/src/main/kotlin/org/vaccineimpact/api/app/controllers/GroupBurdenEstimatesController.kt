@@ -1,18 +1,19 @@
 package org.vaccineimpact.api.app.controllers
 
+import org.vaccineimpact.api.app.checkAllValuesAreEqual
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.context.RequestBodySource
 import org.vaccineimpact.api.app.context.csvData
+import org.vaccineimpact.api.app.context.postData
 import org.vaccineimpact.api.app.controllers.endpoints.EndpointDefinition
 import org.vaccineimpact.api.app.controllers.endpoints.oneRepoEndpoint
 import org.vaccineimpact.api.app.controllers.endpoints.secured
 import org.vaccineimpact.api.app.errors.InconsistentDataError
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
 import org.vaccineimpact.api.app.repositories.RepositoryFactory
-import org.vaccineimpact.api.app.security.checkIsAllowedToSeeTouchstone
+import org.vaccineimpact.api.app.security.checkEstimatePermissionsForTouchstone
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.helpers.OneTimeAction
-import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import spark.route.HttpMethod
 import java.time.Instant
 
@@ -66,8 +67,10 @@ open class GroupBurdenEstimatesController(context: ControllerContext) : Abstract
     {
         // First check if we're allowed to see this touchstone
         val path = getValidResponsibilityPath(context, estimateRepository)
+        val properties = context.postData<CreateBurdenEstimateSet>()
 
         val id = estimateRepository.createBurdenEstimateSet(path.groupId, path.touchstoneId, path.scenarioId,
+                properties = properties,
                 uploader = context.username!!,
                 timestamp = Instant.now())
 
@@ -75,7 +78,7 @@ open class GroupBurdenEstimatesController(context: ControllerContext) : Abstract
         return objectCreation(context, url)
     }
 
-    /** Deprecated **/
+    @Deprecated("Instead use createBurdenEstimateSet and then populateBurdenEstimateSet")
     open fun addBurdenEstimates(
             context: ActionContext,
             estimateRepository: BurdenEstimateRepository,
@@ -106,34 +109,32 @@ open class GroupBurdenEstimatesController(context: ControllerContext) : Abstract
 
         // Then add the burden estimates
         val data = context.csvData<BurdenEstimate>(from = source)
-
-        if (data.map { it.disease }.distinct().count() > 1)
-        {
-            throw InconsistentDataError("More than one value was present in the disease column")
-        }
+        val checkedData = data.checkAllValuesAreEqual({ it.disease },
+                InconsistentDataError("More than one value was present in the disease column")
+        )
 
         estimateRepository.populateBurdenEstimateSet(
                 context.params(":set-id").toInt(),
                 path.groupId, path.touchstoneId, path.scenarioId,
-                data
+                checkedData
         )
 
         return okayResponse()
     }
 
-    private fun saveBurdenEstimates(data: List<BurdenEstimate>,
+    @Deprecated("Instead use createBurdenEstimateSet and then populateBurdenEstimateSet")
+    private fun saveBurdenEstimates(data: Sequence<BurdenEstimate>,
                                     estimateRepository: BurdenEstimateRepository,
                                     context: ActionContext,
                                     path: ResponsibilityPath): String
     {
-        if (data.map { it.disease }.distinct().count() > 1)
-        {
-            throw InconsistentDataError("More than one value was present in the disease column")
-        }
+        val checkedData = data.checkAllValuesAreEqual({ it.disease },
+                InconsistentDataError("More than one value was present in the disease column")
+        )
 
         val id = estimateRepository.addBurdenEstimateSet(
                 path.groupId, path.touchstoneId, path.scenarioId,
-                data,
+                checkedData,
                 uploader = context.username!!,
                 timestamp = Instant.now()
         )
@@ -148,22 +149,7 @@ open class GroupBurdenEstimatesController(context: ControllerContext) : Abstract
     ): ResponsibilityPath
     {
         val path = ResponsibilityPath(context)
-        val touchstoneId = path.touchstoneId
-        val touchstones = estimateRepository.touchstoneRepository.touchstones
-        val touchstone = touchstones.get(touchstoneId)
-        context.checkIsAllowedToSeeTouchstone(path.touchstoneId, touchstone.status)
-        if (readEstimatesRequired)
-        {
-
-            if (touchstone.status == TouchstoneStatus.OPEN)
-            {
-                context.requirePermission(ReifiedPermission(
-                        "estimates.read-unfinished",
-                        Scope.Specific("modelling-group", path.groupId)
-                ))
-            }
-        }
-
+        context.checkEstimatePermissionsForTouchstone(path.groupId, path.touchstoneId, estimateRepository, readEstimatesRequired)
         return path
     }
 

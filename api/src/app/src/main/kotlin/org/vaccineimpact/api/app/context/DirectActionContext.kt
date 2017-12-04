@@ -4,24 +4,25 @@ import org.pac4j.core.profile.CommonProfile
 import org.pac4j.core.profile.ProfileManager
 import org.pac4j.sparkjava.SparkWebContext
 import org.vaccineimpact.api.app.addDefaultResponseHeaders
+import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.errors.MissingRequiredPermissionError
 import org.vaccineimpact.api.app.security.montaguPermissions
-import org.vaccineimpact.api.app.errors.ValidationError
-import org.vaccineimpact.api.serialization.ModelBinder
-import org.vaccineimpact.api.serialization.MontaguSerializer
 import org.vaccineimpact.api.db.Config
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import org.vaccineimpact.api.serialization.DataTableDeserializer
+import org.vaccineimpact.api.serialization.ModelBinder
+import org.vaccineimpact.api.serialization.MontaguSerializer
 import org.vaccineimpact.api.serialization.Serializer
 import spark.Request
 import spark.Response
-import org.vaccineimpact.api.serialization.validation.ValidationException
 import java.io.OutputStream
+import java.io.Reader
 import java.util.zip.GZIPOutputStream
+import javax.servlet.MultipartConfigElement
 import kotlin.reflect.KClass
 
-open class DirectActionContext(private val context: SparkWebContext,
-                               private val serializer: Serializer = MontaguSerializer.instance): ActionContext
+class DirectActionContext(private val context: SparkWebContext,
+                          private val serializer: Serializer = MontaguSerializer.instance) : ActionContext
 {
     override val request
         get() = context.sparkRequest
@@ -37,28 +38,30 @@ open class DirectActionContext(private val context: SparkWebContext,
     override fun params(): Map<String, String> = request.params()
     override fun params(key: String): String = request.params(key)
     override fun <T : Any> postData(klass: Class<T>): T
+            = ModelBinder().deserialize(request.body(), klass)
+
+    override fun getPart(name: String): Reader
     {
-        return try
+        val contentType = request.contentType()
+        if (!contentType.startsWith("multipart/form-data"))
         {
-            ModelBinder().deserialize(request.body(), klass)
+            throw BadRequest("Trying to extract a part from multipart/form-data but this request is of type $contentType")
         }
-        catch(e: ValidationException)
+
+        if (request.raw().getAttribute("org.eclipse.jetty.multipartConfig") == null)
         {
-            throw ValidationError(e.errors)
+            val multipartConfigElement = MultipartConfigElement(System.getProperty("java.io.tmpdir"))
+            request.raw().setAttribute("org.eclipse.jetty.multipartConfig", multipartConfigElement)
         }
+
+        val part = request.raw().getPart(name)
+                ?: throw BadRequest("No value passed for required POST parameter '$name'")
+
+        return part.inputStream.bufferedReader()
     }
 
-    override fun <T : Any> csvData(klass: KClass<T>, from: RequestBodySource): List<T>
-    {
-        return try
-        {
-            DataTableDeserializer.deserialize(from.getBody(this), klass, serializer).toList()
-        }
-        catch(e: ValidationException)
-        {
-            throw ValidationError(e.errors)
-        }
-    }
+    override fun <T : Any> csvData(klass: KClass<T>, from: RequestBodySource): Sequence<T>
+            = DataTableDeserializer.deserialize(from.getContent(this), klass, serializer)
 
     override fun setResponseStatus(status: Int)
     {

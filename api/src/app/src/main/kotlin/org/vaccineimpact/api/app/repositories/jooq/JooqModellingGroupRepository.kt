@@ -173,6 +173,7 @@ class JooqModellingGroupRepository(
                         table.UPLOADED_BY,
                         table.SET_TYPE,
                         table.SET_TYPE_DETAILS,
+                        table.STATUS,
                         table.ID
                 )
                 .fromJoinPath(table, BURDEN_ESTIMATE_SET_PROBLEM, joinType = JoinType.LEFT_OUTER_JOIN)
@@ -198,6 +199,7 @@ class JooqModellingGroupRepository(
                 uploadedBy = first[BURDEN_ESTIMATE_SET.UPLOADED_BY],
                 uploadedOn = uploadedOn,
                 type = mapper.mapBurdenEstimateSetType(first),
+                status = mapper.mapEnum(first[BURDEN_ESTIMATE_SET.STATUS]),
                 problems = input.filter { it[BURDEN_ESTIMATE_SET_PROBLEM.PROBLEM] != null }
                         .map { it[BURDEN_ESTIMATE_SET_PROBLEM.PROBLEM] }
         )

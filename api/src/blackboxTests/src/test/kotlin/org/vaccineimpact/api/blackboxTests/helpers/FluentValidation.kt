@@ -66,22 +66,7 @@ data class FluentValidationConfig(
     infix fun andCheckObjectCreation(expectedLocation: LocationConstraint)
     {
         this.finalized().runWithCheck<String> { body, response ->
-            val expectedPath = EndpointBuilder.buildPath(expectedLocation.urlFragment)
-            assertThat(response.statusCode).`as`("Status code").isEqualTo(201)
-            val thingsToCheck = listOf(
-                    assertThat(response.headers["Location"]).`as`("Location header"),
-                    assertThat(body).`as`("Body")
-            )
-            thingsToCheck.forEach {
-                if (expectedLocation.unknownId)
-                {
-                    it.contains(expectedPath)
-                }
-                else
-                {
-                    it.endsWith(expectedPath)
-                }
-            }
+            expectedLocation.checkObjectCreation(response, body)
         }
     }
 

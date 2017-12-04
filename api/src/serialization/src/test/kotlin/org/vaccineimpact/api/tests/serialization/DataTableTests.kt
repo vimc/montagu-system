@@ -3,6 +3,7 @@ package org.vaccineimpact.api.tests.serialization
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
+import org.vaccineimpact.api.models.ModelRun
 import org.vaccineimpact.api.serialization.DataTableDeserializer
 import org.vaccineimpact.api.serialization.MontaguSerializer
 import org.vaccineimpact.api.models.TouchstoneStatus
@@ -20,6 +21,9 @@ class DataTableTests : MontaguTests()
     data class WithEnums(val text: String, val enum: TouchstoneStatus)
     @FlexibleColumns
     data class Flexible(val a: Int, val b: String, val extra: Map<String, Int>)
+
+    @FlexibleColumns
+    data class FlexibleWithStrings(val a: Int, val b: String, val extra: Map<String, String>)
 
     @Test
     fun `headers are written in order of constructor`()
@@ -97,6 +101,18 @@ free text,in-preparation""")
                 MixedTypes("joe", 1, BigDecimal.valueOf(6.53)),
                 MixedTypes("bob", 2, BigDecimal.valueOf(2.0))
         ))
+    }
+
+    @Test
+    fun `empty CSV data causes an exception`()
+    {
+        val csv = ""
+        assertThatThrownBy {
+            DataTableDeserializer.deserialize(csv, MixedTypes::class, MontaguSerializer.instance).toList()
+        }.matches {
+            val error = (it as ValidationException).errors.single()
+            error.code == "csv-empty"
+        }
     }
 
     @Test
@@ -220,6 +236,32 @@ free text,in-preparation""")
         checkValidationError("csv-bad-data-type:2:z") {
             DataTableDeserializer.deserialize(csv, Flexible::class, MontaguSerializer.instance).toList()
         }
+    }
+
+    @Test
+    fun `error if empty values when all columns required`()
+    {
+        val csv = """
+            run_id,p1,p2,p3
+            1,14,15.2,4
+            2,14,15.3,"""
+        checkValidationError("csv-missing-data:2:p3") {
+            DataTableDeserializer.deserialize(csv, ModelRun::class, MontaguSerializer.instance).toList()
+        }
+    }
+
+    @Test
+    fun `no error if empty values when not all columns required`()
+    {
+        val csv = """
+            a,b,x,y
+            1,14,15.2,4
+            2,14,15.3,"""
+
+        val result =
+                DataTableDeserializer.deserialize(csv, FlexibleWithStrings::class, MontaguSerializer.instance).toList()
+
+        assertThat(result.last().extra["y"]).isEmpty()
     }
 
     private fun serialize(table: DataTable<*>) = serializeToStreamAndGetAsString {

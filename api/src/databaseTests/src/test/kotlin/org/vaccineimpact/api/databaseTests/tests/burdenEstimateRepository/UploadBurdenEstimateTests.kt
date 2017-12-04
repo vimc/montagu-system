@@ -1,5 +1,6 @@
 package org.vaccineimpact.api.databaseTests.tests
 
+import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.jooq.Record
@@ -19,10 +20,7 @@ import org.vaccineimpact.api.db.Tables.*
 import org.vaccineimpact.api.db.direct.*
 import org.vaccineimpact.api.db.fromJoinPath
 import org.vaccineimpact.api.db.toDecimal
-import org.vaccineimpact.api.models.BurdenEstimate
-import org.vaccineimpact.api.models.BurdenEstimateSet
-import org.vaccineimpact.api.models.BurdenEstimateSetType
-import org.vaccineimpact.api.models.BurdenEstimateSetTypeCode
+import org.vaccineimpact.api.models.*
 import java.math.BigDecimal
 import java.time.Instant
 import java.time.LocalDateTime
@@ -31,7 +29,6 @@ import java.time.ZoneOffset
 
 class UploadBurdenEstimateTests : BurdenEstimateRepositoryTests()
 {
-
     @Test
     fun `can create burden estimate set with empty status`()
     {
@@ -41,9 +38,28 @@ class UploadBurdenEstimateTests : BurdenEstimateRepositoryTests()
         given { db ->
             returnedIds = setupDatabase(db)
         } makeTheseChanges { repo ->
-            setId = repo.createBurdenEstimateSet(groupId, touchstoneId, scenarioId, username, timestamp)
+            setId = repo.createBurdenEstimateSet(groupId, touchstoneId, scenarioId, defaultProperties, username, timestamp)
         } andCheckDatabase { db ->
             checkBurdenEstimateSetMetadata(db, setId!!, returnedIds!!, "empty")
+        }
+    }
+
+    @Test
+    fun `when creating burden estimate set, user supplied properties are persisted`()
+    {
+        val properties = CreateBurdenEstimateSet(
+                BurdenEstimateSetType(
+                        BurdenEstimateSetTypeCode.CENTRAL_AVERAGED,
+                        "mean"
+                ),1
+        )
+        given { db ->
+            setupDatabaseWithModelRunParameterSet(db)
+        } makeTheseChanges { repo ->
+            repo.createBurdenEstimateSet(groupId, touchstoneId, scenarioId, properties, username, timestamp)
+        } andCheck { repo ->
+            val set = repo.getBurdenEstimateSets(groupId, touchstoneId, scenarioId).single()
+            assertThat(set.type).isEqualTo(properties.type)
         }
     }
 
@@ -56,7 +72,7 @@ class UploadBurdenEstimateTests : BurdenEstimateRepositoryTests()
         given { db ->
             returnedIds = setupDatabase(db)
         } makeTheseChanges { repo ->
-            setId = repo.createBurdenEstimateSet(groupId, touchstoneId, scenarioId, username, timestamp)
+            setId = repo.createBurdenEstimateSet(groupId, touchstoneId, scenarioId, defaultProperties, username, timestamp)
             repo.populateBurdenEstimateSet(setId!!, groupId, touchstoneId, scenarioId, data)
         } andCheckDatabase { db ->
             checkBurdenEstimates(db, setId!!)
@@ -102,7 +118,7 @@ class UploadBurdenEstimateTests : BurdenEstimateRepositoryTests()
         given { db ->
             returnedIds = setupDatabase(db)
         } makeTheseChanges { repo ->
-            setId = repo.createBurdenEstimateSet(groupId, touchstoneId, scenarioId, username, timestamp)
+            setId = repo.createBurdenEstimateSet(groupId, touchstoneId, scenarioId, defaultProperties, username, timestamp)
             repo.populateBurdenEstimateSet(setId!!, groupId, touchstoneId, scenarioId, data)
         } andCheckDatabase { db ->
             checkCurrentBurdenEstimateSet(db, returnedIds!!, setId!!)
@@ -117,7 +133,7 @@ class UploadBurdenEstimateTests : BurdenEstimateRepositoryTests()
             setupDatabase(db)
             val repo = makeRepository(db)
             assertThatThrownBy {
-                val setId = repo.createBurdenEstimateSet(groupId, touchstoneId, scenarioId, username, timestamp)
+                val setId = repo.createBurdenEstimateSet(groupId, touchstoneId, scenarioId, defaultProperties, username, timestamp)
                 repo.populateBurdenEstimateSet(setId, groupId, touchstoneId, scenarioId, badData)
             }.isInstanceOf(InconsistentDataError::class.java)
         }
@@ -131,7 +147,7 @@ class UploadBurdenEstimateTests : BurdenEstimateRepositoryTests()
             setupDatabase(db)
             val repo = makeRepository(db)
             assertThatThrownBy {
-                val setId = repo.createBurdenEstimateSet(groupId, touchstoneId, scenarioId, username, timestamp)
+                val setId = repo.createBurdenEstimateSet(groupId, touchstoneId, scenarioId, defaultProperties, username, timestamp)
                 repo.populateBurdenEstimateSet(setId, groupId, touchstoneId, scenarioId, badData)
             }.isInstanceOf(UnknownObjectError::class.java).matches {
                 (it as UnknownObjectError).typeName == "country"
@@ -146,7 +162,7 @@ class UploadBurdenEstimateTests : BurdenEstimateRepositoryTests()
             setupDatabase(db, addModel = false)
             val repo = makeRepository(db)
             assertThatThrownBy {
-                repo.createBurdenEstimateSet(groupId, touchstoneId, scenarioId, username, timestamp)
+                repo.createBurdenEstimateSet(groupId, touchstoneId, scenarioId, defaultProperties, username, timestamp)
             }.isInstanceOf(DatabaseContentsError::class.java)
         }
     }
@@ -159,7 +175,7 @@ class UploadBurdenEstimateTests : BurdenEstimateRepositoryTests()
             db.dsl.deleteFrom(BURDEN_OUTCOME).where(BURDEN_OUTCOME.CODE.eq("cohort_size")).execute()
             val repo = makeRepository(db)
             assertThatThrownBy {
-                val setId = repo.createBurdenEstimateSet(groupId, touchstoneId, scenarioId, username, timestamp)
+                val setId = repo.createBurdenEstimateSet(groupId, touchstoneId, scenarioId, defaultProperties, username, timestamp)
                 repo.populateBurdenEstimateSet(setId, groupId, touchstoneId, scenarioId, data)
             }.isInstanceOf(DatabaseContentsError::class.java)
         }
@@ -172,7 +188,7 @@ class UploadBurdenEstimateTests : BurdenEstimateRepositoryTests()
             setupDatabase(db, responsibilitySetStatus = "submitted")
             val repo = makeRepository(db)
             assertThatThrownBy {
-                repo.createBurdenEstimateSet(groupId, touchstoneId, scenarioId, username, timestamp)
+                repo.createBurdenEstimateSet(groupId, touchstoneId, scenarioId, defaultProperties, username, timestamp)
             }.isInstanceOf(OperationNotAllowedError::class.java)
                     .hasMessage("the following problems occurred:\nThe burden estimates uploaded for this touchstone have been submitted for review." +
                             " You cannot upload any new estimates.")
@@ -186,41 +202,49 @@ class UploadBurdenEstimateTests : BurdenEstimateRepositoryTests()
             setupDatabase(db, responsibilitySetStatus = "approved")
             val repo = makeRepository(db)
             assertThatThrownBy {
-                repo.createBurdenEstimateSet(groupId, touchstoneId, scenarioId, username, timestamp)
+                repo.createBurdenEstimateSet(groupId, touchstoneId, scenarioId, defaultProperties, username, timestamp)
             }.isInstanceOf(OperationNotAllowedError::class.java)
                     .hasMessage("the following problems occurred:\nThe burden estimates uploaded for this touchstone have been reviewed and approved." +
                             " You cannot upload any new estimates.")
         }
     }
 
+
+    @Test
+    fun `throws unknown create burden estimate set if model run parameter set does not exist`()
+    {
+        assertUnknownObjectError { repo -> repo.createBurdenEstimateSet(groupId, touchstoneId, scenarioId,
+                defaultProperties.copy(modelRunParameterSetId = 267), username, timestamp) }
+    }
+
     @Test
     fun `cannot create burden estimate set if touchstone doesn't exist`()
     {
-        checkBadId(otherTouchstoneId = "wrong-id")
+        assertUnknownObjectError {  repo -> repo.createBurdenEstimateSet(groupId, "wrong-id", scenarioId,
+                defaultProperties, username, timestamp)}
     }
 
     @Test
     fun `cannot create burden estimate set if group doesn't exist`()
     {
-        checkBadId(otherGroupId = "wrong-id")
+        assertUnknownObjectError {  repo -> repo.createBurdenEstimateSet("wrong-id", touchstoneId, scenarioId,
+                defaultProperties, username, timestamp)}
     }
 
     @Test
     fun `cannot create burden estimate set if scenario doesn't exist`()
     {
-        checkBadId(otherScenarioId = "wrong-id")
+        assertUnknownObjectError {  repo -> repo.createBurdenEstimateSet(groupId, touchstoneId, "wrong-id",
+                defaultProperties, username, timestamp)}
     }
 
-    private fun checkBadId(
-            otherGroupId: String = groupId,
-            otherTouchstoneId: String = touchstoneId,
-            otherScenarioId: String = scenarioId)
+    private fun assertUnknownObjectError(work: (repo: BurdenEstimateRepository) -> Any)
     {
         JooqContext().use { db ->
-            setupDatabase(db)
+            setupDatabaseWithModelRunParameterSet(db)
             val repo = makeRepository(db)
-            assertThatThrownBy {
-                repo.addBurdenEstimateSet(otherGroupId, otherTouchstoneId, otherScenarioId, data, username, timestamp)
+            Assertions.assertThatThrownBy {
+                work(repo)
             }.isInstanceOf(UnknownObjectError::class.java)
         }
     }
@@ -247,7 +271,8 @@ class UploadBurdenEstimateTests : BurdenEstimateRepositoryTests()
     private fun checkBurdenEstimateSetMetadata(db: JooqContext,
                                                setId: Int,
                                                returnedIds: ReturnedIds,
-                                               expectedStatus: String): Int
+                                               expectedStatus: String)
+            : Int
     {
         val t = BURDEN_ESTIMATE_SET
         val set = db.dsl.selectFrom(t).where(t.ID.eq(setId)).fetchOne()
@@ -282,7 +307,7 @@ class UploadBurdenEstimateTests : BurdenEstimateRepositoryTests()
         assertThat(record[t.VALUE]).isEqualTo(outcomeValue)
     }
 
-    private val data = listOf(
+    private val data = sequenceOf(
             BurdenEstimate("Hib3", 2000, 50, "AFG", "Afghanistan", 1000.toDecimal(), mapOf(
                     "deaths" to 10.toDecimal(),
                     "cases" to 100.toDecimal()
@@ -291,5 +316,10 @@ class UploadBurdenEstimateTests : BurdenEstimateRepositoryTests()
                     "deaths" to 20.toDecimal(),
                     "dalys" to 73.6.toDecimal()
             ))
+    )
+
+    private val defaultProperties = CreateBurdenEstimateSet(
+            BurdenEstimateSetType(BurdenEstimateSetTypeCode.CENTRAL_UNKNOWN
+                    ), null
     )
 }

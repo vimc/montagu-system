@@ -5,6 +5,7 @@ import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import spark.Request
 import java.io.OutputStream
+import java.io.Reader
 import kotlin.reflect.KClass
 
 interface ActionContext
@@ -23,8 +24,9 @@ interface ActionContext
     fun queryString(): String?
     fun params(): Map<String, String>
     fun params(key: String): String
+    fun getPart(name: String): Reader
     fun <T: Any> postData(klass: Class<T>): T
-    fun <T: Any> csvData(klass: KClass<T>, from: RequestBodySource): List<T>
+    fun <T: Any> csvData(klass: KClass<T>, from: RequestBodySource): Sequence<T>
 
     fun addResponseHeader(key: String, value: String): Unit
     fun addAttachmentHeader(filename: String): Unit

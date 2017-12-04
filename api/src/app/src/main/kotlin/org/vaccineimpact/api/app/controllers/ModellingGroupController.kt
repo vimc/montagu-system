@@ -1,6 +1,8 @@
 package org.vaccineimpact.api.app.controllers
 
 import org.vaccineimpact.api.app.context.ActionContext
+import org.vaccineimpact.api.app.context.RequestBodySource
+import org.vaccineimpact.api.app.context.csvData
 import org.vaccineimpact.api.app.controllers.endpoints.EndpointDefinition
 import org.vaccineimpact.api.app.controllers.endpoints.oneRepoEndpoint
 import org.vaccineimpact.api.app.controllers.endpoints.secured
@@ -9,10 +11,8 @@ import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.errors.MissingRequiredPermissionError
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
 import org.vaccineimpact.api.app.context.postData
-import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
-import org.vaccineimpact.api.app.repositories.Repositories
-import org.vaccineimpact.api.app.repositories.RepositoryFactory
-import org.vaccineimpact.api.app.repositories.UserRepository
+import org.vaccineimpact.api.app.repositories.*
+import org.vaccineimpact.api.app.security.checkEstimatePermissionsForTouchstone
 import org.vaccineimpact.api.app.security.checkIsAllowedToSeeTouchstone
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.helpers.OneTimeAction
@@ -20,6 +20,7 @@ import org.vaccineimpact.api.serialization.FlexibleDataTable
 import org.vaccineimpact.api.serialization.SplitData
 import org.vaccineimpact.api.serialization.StreamSerializable
 import spark.route.HttpMethod
+import java.time.Instant
 
 
 open class ModellingGroupController(context: ControllerContext)
@@ -35,6 +36,7 @@ open class ModellingGroupController(context: ControllerContext)
     val responsibilitiesURL = "/:group-id/responsibilities/:touchstone-id"
     val scenarioURL = "$responsibilitiesURL/:scenario-id"
     val coverageURL = "$scenarioURL/coverage"
+    val parametersURL = "/:group-id/model-run-parameters/:touchstone-id"
 
     override fun endpoints(repos: RepositoryFactory): Iterable<EndpointDefinition<*>>
     {
@@ -48,7 +50,16 @@ open class ModellingGroupController(context: ControllerContext)
                 oneRepoEndpoint("$coverageURL/", this::getCoverageDataAndMetadata.streamed(), repos, repo, contentType = "application/json").secured(coveragePermissions),
                 oneRepoEndpoint("$coverageURL/", this::getCoverageData.streamed(), repos, repo, contentType = "text/csv").secured(coveragePermissions),
                 oneRepoEndpoint("$coverageURL/get_onetime_link/", { c, r -> getOneTimeLinkToken(c, r, OneTimeAction.COVERAGE) }, repos, { it.token }).secured(coveragePermissions),
-                oneRepoEndpoint("/:group-id/actions/associate_member/", this::modifyMembership, repos, { it.user }, method = HttpMethod.post).secured()
+                oneRepoEndpoint("/:group-id/actions/associate_member/", this::modifyMembership, repos, { it.user }, method = HttpMethod.post).secured(),
+
+                oneRepoEndpoint("$parametersURL/", this::getModelRunParameterSets, repos, { it.burdenEstimates })
+                        .secured(setOf("$groupScope/estimates.write", "$groupScope/responsibilities.read")),
+
+                oneRepoEndpoint("$parametersURL/", this::addModelRunParameters, repos, { it.burdenEstimates }, method = HttpMethod.post)
+                        .secured(setOf("$groupScope/estimates.write", "$groupScope/responsibilities.read")),
+
+                oneRepoEndpoint("$parametersURL/get_onetime_link/", { c, r -> getOneTimeLinkToken(c, r, OneTimeAction.MODEl_RUN_PARAMETERS) }, repos, { it.token })
+                        .secured(setOf("$groupScope/estimates.write", "$groupScope/responsibilities.read"))
         )
     }
 
@@ -62,6 +73,29 @@ open class ModellingGroupController(context: ControllerContext)
     {
         val groupId = groupId(context)
         return repo.getModellingGroupDetails(groupId)
+    }
+
+    fun getModelRunParameterSets(context: ActionContext, estimateRepository: BurdenEstimateRepository): List<ModelRunParameterSet>
+    {
+        val touchstoneId = context.params(":touchstone-id")
+        val groupId = context.params(":group-id")
+        context.checkEstimatePermissionsForTouchstone(groupId, touchstoneId, estimateRepository)
+        return estimateRepository.getModelRunParameterSets(groupId, touchstoneId)
+    }
+
+    fun addModelRunParameters(context: ActionContext, estimateRepository: BurdenEstimateRepository): String
+    {
+        val touchstoneId = context.params(":touchstone-id")
+        val groupId = context.params(":group-id")
+        val disease = context.getPart("disease").readText()
+        context.checkEstimatePermissionsForTouchstone(groupId, touchstoneId, estimateRepository)
+        val description = context.getPart("description").readText()
+
+        val modelRuns = context.csvData<ModelRun>(RequestBodySource.HTMLMultipart("file"))
+        val id = estimateRepository.addModelRunParameterSet(groupId, touchstoneId, disease,
+                description, modelRuns.toList(), context.username!!, Instant.now())
+
+        return objectCreation(context, "$urlComponent/$groupId/model-run-parameters/$id/")
     }
 
     fun getResponsibilities(context: ActionContext, repo: ModellingGroupRepository): Responsibilities

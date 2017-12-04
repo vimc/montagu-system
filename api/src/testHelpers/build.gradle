@@ -1,7 +1,7 @@
 dependencies {
     compile "junit:junit:4.12"
-    compile "org.jooq:jooq:3.9.1"
-    compile "org.jooq:jooq-meta:3.9.1"
+    compile "org.jooq:jooq:3.10.2"
+    compile "org.jooq:jooq-meta:3.10.2"
 
     compile project(':databaseInterface')
     compile project(':models')

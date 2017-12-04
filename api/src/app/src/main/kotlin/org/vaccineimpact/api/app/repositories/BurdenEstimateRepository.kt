@@ -1,8 +1,6 @@
 package org.vaccineimpact.api.app.repositories
 
-import org.vaccineimpact.api.models.BurdenEstimate
-import org.vaccineimpact.api.models.BurdenEstimateSet
-import org.vaccineimpact.api.models.ModelRun
+import org.vaccineimpact.api.models.*
 import java.time.Instant
 
 interface BurdenEstimateRepository : Repository
@@ -11,18 +9,21 @@ interface BurdenEstimateRepository : Repository
 
     /** Returns the database ID of the newly created burden estimate set **/
     fun createBurdenEstimateSet(groupId: String, touchstoneId: String, scenarioId: String,
+                                properties: CreateBurdenEstimateSet,
                                 uploader: String, timestamp: Instant): Int
 
     fun getBurdenEstimateSets(groupId: String, touchstoneId: String, scenarioId: String): List<BurdenEstimateSet>
 
-    /** Deprecated **/
+    @Deprecated("Instead use createBurdenEstimateSet and then populateBurdenEstimateSet")
     fun addBurdenEstimateSet(groupId: String, touchstoneId: String, scenarioId: String,
-                             estimates: List<BurdenEstimate>, uploader: String, timestamp: Instant): Int
+                             estimates: Sequence<BurdenEstimate>, uploader: String, timestamp: Instant): Int
 
     fun populateBurdenEstimateSet(setId: Int, groupId: String, touchstoneId: String, scenarioId: String,
-                                  estimates: List<BurdenEstimate>)
+                                  estimates: Sequence<BurdenEstimate>)
 
-    fun addModelRunParameterSet(responsibilitySetId: Int, modelVersionId: Int, description: String,
+    fun addModelRunParameterSet(groupId: String, touchstoneId: String, disease: String, description: String,
                                 modelRuns: List<ModelRun>,
-                                uploader: String, timestamp: Instant)
+                                uploader: String, timestamp: Instant): Int
+
+    fun getModelRunParameterSets(groupId: String, touchstoneId: String): List<ModelRunParameterSet>
 }

@@ -5,18 +5,21 @@ import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
 import org.vaccineimpact.api.app.context.ActionContext
+import org.vaccineimpact.api.app.context.postData
 import org.vaccineimpact.api.app.controllers.ControllerContext
 import org.vaccineimpact.api.app.controllers.GroupBurdenEstimatesController
 import org.vaccineimpact.api.app.errors.InconsistentDataError
+import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
 import org.vaccineimpact.api.app.repositories.SimpleDataSet
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
-import org.vaccineimpact.api.serialization.DataTableDeserializer
 import org.vaccineimpact.api.db.toDecimal
 import org.vaccineimpact.api.models.*
+import org.vaccineimpact.api.serialization.DataTableDeserializer
+import java.io.StringReader
 import java.time.Instant
 
-class UploadBurdenEstimateTests : ControllerTests<GroupBurdenEstimatesController>()
+class GroupEstimatesControllerTests : ControllerTests<GroupBurdenEstimatesController>()
 {
     override fun makeController(controllerContext: ControllerContext)
             = GroupBurdenEstimatesController(controllerContext)
@@ -27,10 +30,12 @@ class UploadBurdenEstimateTests : ControllerTests<GroupBurdenEstimatesController
         val data = listOf(
                 BurdenEstimateSet(1, Instant.MIN, "ThePast",
                         BurdenEstimateSetType(BurdenEstimateSetTypeCode.CENTRAL_AVERAGED, "Median"),
+                        BurdenEstimateSetStatus.COMPLETE,
                         emptyList()
                 ),
                 BurdenEstimateSet(2, Instant.MAX, "TheFuture",
                         BurdenEstimateSetType(BurdenEstimateSetTypeCode.CENTRAL_SINGLE_RUN, null),
+                        BurdenEstimateSetStatus.EMPTY,
                         listOf("Doesn't exist yet")
                 )
         )
@@ -68,12 +73,15 @@ class UploadBurdenEstimateTests : ControllerTests<GroupBurdenEstimatesController
 
         val before = Instant.now()
         val controller = GroupBurdenEstimatesController(mockControllerContext())
-        controller.addBurdenEstimates(mockActionContext(data), repo)
+        controller.addBurdenEstimates(mockActionContext(data.asSequence()), repo)
         val after = Instant.now()
         verify(touchstoneSet).get("touchstone-1")
         verify(repo).addBurdenEstimateSet(
                 eq("group-1"), eq("touchstone-1"), eq("scenario-1"),
-                eq(data), eq("username"), timestamp = check { it > before && it < after })
+                argWhere { it.toSet() == data.toSet() },
+                eq("username"),
+                timestamp = check { it > before && it < after }
+        )
     }
 
     @Test
@@ -84,11 +92,16 @@ class UploadBurdenEstimateTests : ControllerTests<GroupBurdenEstimatesController
 
         val before = Instant.now()
         val controller = GroupBurdenEstimatesController(mockControllerContext())
+        val properties = CreateBurdenEstimateSet(
+                BurdenEstimateSetType(BurdenEstimateSetTypeCode.CENTRAL_AVERAGED, "mean"),
+                1
+        )
         val mockContext = mock<ActionContext> {
             on { username } doReturn "username"
             on { params(":group-id") } doReturn "group-1"
             on { params(":touchstone-id") } doReturn "touchstone-1"
             on { params(":scenario-id") } doReturn "scenario-1"
+            on { postData<CreateBurdenEstimateSet>() } doReturn properties
         }
         val url = controller.createBurdenEstimateSet(mockContext, repo)
         val after = Instant.now()
@@ -96,7 +109,9 @@ class UploadBurdenEstimateTests : ControllerTests<GroupBurdenEstimatesController
         verify(touchstoneSet).get("touchstone-1")
         verify(repo).createBurdenEstimateSet(
                 eq("group-1"), eq("touchstone-1"), eq("scenario-1"),
-                eq("username"), timestamp = check { it > before && it < after })
+                eq(properties),
+                eq("username"),
+                timestamp = check { it > before && it < after })
     }
 
     @Test
@@ -118,7 +133,7 @@ class UploadBurdenEstimateTests : ControllerTests<GroupBurdenEstimatesController
 
         val controller = GroupBurdenEstimatesController(mockControllerContext())
         val mockContext = mock<ActionContext> {
-            on { csvData<BurdenEstimate>(any(), any()) } doReturn data
+            on { csvData<BurdenEstimate>(any(), any()) } doReturn data.asSequence()
             on { username } doReturn "username"
             on { params(":set-id") } doReturn "1"
             on { params(":group-id") } doReturn "group-1"
@@ -128,13 +143,15 @@ class UploadBurdenEstimateTests : ControllerTests<GroupBurdenEstimatesController
         controller.populateBurdenEstimateSet(mockContext, repo)
         verify(touchstoneSet).get("touchstone-1")
         verify(repo).populateBurdenEstimateSet(eq(1),
-                eq("group-1"), eq("touchstone-1"), eq("scenario-1"), eq(data))
+                eq("group-1"), eq("touchstone-1"), eq("scenario-1"),
+                argWhere { it.toSet() == data.toSet() }
+        )
     }
 
     @Test
     fun `cannot upload data with multiple diseases`()
     {
-        val data = listOf(
+        val data = sequenceOf(
                 BurdenEstimate("yf", 2000, 50, "AFG", "Afghanistan", 1000.toDecimal(), mapOf(
                         "deaths" to 10.toDecimal(),
                         "cases" to 100.toDecimal()
@@ -170,10 +187,10 @@ class UploadBurdenEstimateTests : ControllerTests<GroupBurdenEstimatesController
         ))
     }
 
-    private fun mockActionContext(data: List<BurdenEstimate>): ActionContext
+    private fun mockActionContext(data: Sequence<BurdenEstimate>): ActionContext
     {
         return mock {
-            on { csvData(eq(BurdenEstimate::class), any()) } doReturn data
+            on { csvData(eq(BurdenEstimate::class), any()) } doReturn data.asSequence()
             on { username } doReturn "username"
             on { params(":group-id") } doReturn "group-1"
             on { params(":touchstone-id") } doReturn "touchstone-1"
@@ -183,6 +200,7 @@ class UploadBurdenEstimateTests : ControllerTests<GroupBurdenEstimatesController
 
     private fun mockTouchstones() = mock<SimpleDataSet<Touchstone, String>> {
         on { get("touchstone-1") } doReturn Touchstone("touchstone-1", "touchstone", 1, "Description", TouchstoneStatus.OPEN)
+        on { get("touchstone-bad") } doReturn Touchstone("touchstone-bad", "touchstone", 1, "not open", TouchstoneStatus.IN_PREPARATION)
     }
 
     private fun mockTouchstoneRepository(touchstoneSet: SimpleDataSet<Touchstone, String> = mockTouchstones()) =
@@ -195,7 +213,12 @@ class UploadBurdenEstimateTests : ControllerTests<GroupBurdenEstimatesController
         val touchstoneRepo = mockTouchstoneRepository(touchstoneSet)
         return mock {
             on { touchstoneRepository } doReturn touchstoneRepo
-            on { createBurdenEstimateSet(any(), any(), any(), any(), any()) } doReturn 1
+            on { createBurdenEstimateSet(any(), any(), any(), any(), any(), any()) } doReturn 1
+            on { addBurdenEstimateSet(any(), any(), any(), any(), any(), any()) } doAnswer { args ->
+                // Force evaluation of sequence
+                args.getArgument<Sequence<BurdenEstimate>>(3).toList()
+                0 // Return a fake setId
+            }
         }
     }
 }
