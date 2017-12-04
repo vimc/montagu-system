@@ -25,12 +25,10 @@ class NewStyleOneTimeLinkController(
 
     fun getTokenForDemographicData(): String
     {
-        return getOneTimeLinkToken(context, repo, OneTimeAction.DEMOGRAPHY)
+        return getOneTimeLinkToken(OneTimeAction.DEMOGRAPHY)
     }
 
-    private fun getOneTimeLinkToken(
-            context: ActionContext,
-            repo: TokenRepository,
+    fun getOneTimeLinkToken(
             action: OneTimeAction,
             duration: Duration = tokenHelper.oneTimeLinkLifeSpan
     ): String

@@ -39,6 +39,9 @@ class AbstractControllerTests : ControllerTests<AbstractController>()
         )
     }
 
+    // This test is now duplicated in NewStyleOneTimeLinkControllerTests, during our period
+    // of overlap between the old and new style controllers. Changes made here should be
+    // duplicated until this test is removed.
     @Test
     fun `can get onetime link token`()
     {
@@ -60,6 +63,9 @@ class AbstractControllerTests : ControllerTests<AbstractController>()
         verify(tokenRepo).storeToken("MY-TOKEN")
     }
 
+    // This test is now duplicated in NewStyleOneTimeLinkControllerTests, during our period
+    // of overlap between the old and new style controllers. Changes made here should be
+    // duplicated until this test is removed.
     @Test
     fun `throws error if redirect param is invalid`()
     {
