@@ -12,7 +12,7 @@ import {
     UploadBurdenEstimatesContentComponent,
     UploadBurdenEstimatesContentComponentProps
 } from "../../../../../main/contrib/components/Responsibilities/BurdenEstimates/UploadBurdenEstimatesContent";
-import { UploadForm } from "../../../../../main/contrib/components/Responsibilities/BurdenEstimates/UploadForm";
+import {UploadBurdenEstimatesForm} from "../../../../../main/contrib/components/Responsibilities/BurdenEstimates/UploadBurdenEstimatesForm";
 
 describe("UploadEstimatesContentComponent", () => {
     const sandbox = new Sandbox();
@@ -33,7 +33,7 @@ describe("UploadEstimatesContentComponent", () => {
     it("renders UploadForm", () => {
         const props = makeProps({ coverageToken: "TOKEN" });
         const rendered = shallow(<UploadBurdenEstimatesContentComponent {...props} />);
-        expect(rendered.find(UploadForm).props()).to.eql({
+        expect(rendered.find(UploadBurdenEstimatesForm).props()).to.eql({
             token: "TOKEN",
             canUpload: true,
             currentEstimateSet: null

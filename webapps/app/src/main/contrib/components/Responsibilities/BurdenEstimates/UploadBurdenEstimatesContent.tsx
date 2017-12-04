@@ -1,11 +1,11 @@
 import * as React from "react";
-import {connectToStores} from "../../../../shared/alt";
-import {ModellingGroup, Responsibility, Scenario, Touchstone} from "../../../../shared/models/Generated";
-import {RemoteContent} from "../../../../shared/models/RemoteContent";
-import {RemoteContentComponent} from "../../../../shared/components/RemoteContentComponent/RemoteContentComponent";
-import {responsibilityStore} from "../../../stores/ResponsibilityStore";
-import {UploadForm} from "./UploadForm";
-import {TemplateLink} from "../Overview/List/TemplateLinks";
+import { connectToStores } from "../../../../shared/alt";
+import { ModellingGroup, Responsibility, Scenario, Touchstone } from "../../../../shared/models/Generated";
+import { RemoteContent } from "../../../../shared/models/RemoteContent";
+import { RemoteContentComponent } from "../../../../shared/components/RemoteContentComponent/RemoteContentComponent";
+import { responsibilityStore } from "../../../stores/ResponsibilityStore";
+import { TemplateLink } from "../Overview/List/TemplateLinks";
+import {UploadBurdenEstimatesForm} from "./UploadBurdenEstimatesForm";
 
 const commonStyles = require("../../../../shared/styles/common.css");
 
@@ -78,10 +78,11 @@ export class UploadBurdenEstimatesContentComponent extends RemoteContentComponen
             </table>
 
             <div className={commonStyles.gapAbove}>
-                <UploadForm token={data.estimatesToken}
+                <UploadBurdenEstimatesForm
+                            token={data.estimatesToken}
                             canUpload={canUploadBurdenEstimate}
                             currentEstimateSet={data.responsibility.current_estimate_set}
-                />
+                            />
             </div>
         </div>;
     }

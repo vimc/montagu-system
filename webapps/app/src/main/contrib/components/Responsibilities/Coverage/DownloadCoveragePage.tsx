@@ -31,7 +31,8 @@ export class DownloadCoveragePage extends ContribPageWithHeader<LocationProps> {
     }
 
     name() {
-        return "Download coverage data";
+        const s = responsibilityStore.getState();
+        return `Download coverage for ${s.currentResponsibility.scenario.description}`;
     }
 
     title() {
