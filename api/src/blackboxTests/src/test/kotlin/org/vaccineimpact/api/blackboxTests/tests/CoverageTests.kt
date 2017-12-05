@@ -202,8 +202,7 @@ class CoverageTests : DatabaseTest()
             val ageLast: BigDecimal?,
             val ageRangeVerbatim: String?,
             val coverageAndTargetPerYear: Map<String, String?>
-    ) : CoverageRow
-
+    )
 
     private fun createUnorderedCoverageData(db: JooqContext)
     {
