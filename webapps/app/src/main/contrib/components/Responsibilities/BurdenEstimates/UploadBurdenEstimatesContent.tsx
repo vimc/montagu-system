@@ -6,6 +6,7 @@ import { RemoteContentComponent } from "../../../../shared/components/RemoteCont
 import { responsibilityStore } from "../../../stores/ResponsibilityStore";
 import { TemplateLink } from "../Overview/List/TemplateLinks";
 import {UploadBurdenEstimatesForm} from "./UploadBurdenEstimatesForm";
+import {WrappedCreateBurdenEstimateSetForm} from "./CreateBurdenEstimateSetFormComponent";
 
 const commonStyles = require("../../../../shared/styles/common.css");
 
@@ -31,6 +32,7 @@ export class UploadBurdenEstimatesContentComponent extends RemoteContentComponen
         const r = state.currentResponsibility;
 
         if (r != null && state.estimatesOneTimeToken != null) {
+            console.log(state.ready)
             return {
                 ready: state.ready,
                 props: {
@@ -78,6 +80,8 @@ export class UploadBurdenEstimatesContentComponent extends RemoteContentComponen
             </table>
 
             <div className={commonStyles.gapAbove}>
+
+                <WrappedCreateBurdenEstimateSetForm />
                 <UploadBurdenEstimatesForm
                             token={data.estimatesToken}
                             canUpload={canUploadBurdenEstimate}

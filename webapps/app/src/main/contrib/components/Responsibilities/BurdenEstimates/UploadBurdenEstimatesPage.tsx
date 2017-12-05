@@ -25,12 +25,6 @@ export interface UploadEstimatesProps {
 export class UploadBurdenEstimatesPage extends ContribPageWithHeader<UploadEstimatesProps> {
     load() {
 
-            if (processEncodedResultAndNotifyOnErrors<string>(helpers.queryStringAsObject()))
-            {
-                const notification = makeNotification("Success! You have uploaded a new set of burden estimates.", "info")
-                notificationActions.notify(notification)
-            }
-
         estimateTokenActions.clearUsedToken();
         modellingGroupActions.setCurrentGroup(this.props.location.params.groupId);
         responsibilityStore.fetchTouchstones().catch(doNothing).then(() => {

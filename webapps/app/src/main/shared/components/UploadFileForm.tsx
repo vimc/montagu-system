@@ -2,6 +2,7 @@ import * as React from "react";
 import fetcher from "../sources/Fetcher";
 import {helpers} from "../Helpers";
 import {ErrorInfo} from "../models/Generated";
+import {Alert} from "./Alert";
 
 const formStyles = require("../styles/forms.css");
 const buttonStyles = require("../styles/buttons.css");
@@ -16,7 +17,7 @@ export interface UploadFileProps {
 export interface UploadFileState {
     fileSelected: boolean;
     fileName: string;
-    showAlert: boolean;
+    hasSuccess: boolean;
     errors: ErrorInfo[];
 }
 
@@ -29,23 +30,18 @@ export class UploadFileForm extends React.Component<UploadFileProps, UploadFileS
         this.state = {
             fileSelected: false,
             fileName: "",
-            showAlert: result != null,
+            hasSuccess: result && result.status == "success",
             errors: result ? result.errors : []
         };
     }
 
     handleChange(e: React.MouseEvent<HTMLInputElement>) {
         this.setState({
-            showAlert: false,
+            hasSuccess: false,
+            errors: [],
             fileSelected: true,
             fileName: (e.target as HTMLInputElement).value.replace("C:\\fakepath\\", "")
         });
-    }
-
-    closeAlert() {
-        this.setState({
-            showAlert: false
-        })
     }
 
     render() {
@@ -54,20 +50,7 @@ export class UploadFileForm extends React.Component<UploadFileProps, UploadFileS
         const enableSubmit = this.props.enableSubmit && this.props.token != null && this.state.fileSelected;
 
         const hasError = this.state.errors.length > 0;
-        const alertClass = hasError ? "alert alert-danger" : "alert alert-success";
         const alertMessage = hasError ? this.state.errors[0].message : this.props.successMessage;
-
-        const alert = this.state.showAlert ?
-            <div className={alertClass}>
-                <button type="button" style={{"outline": "none"}} className="close"
-                        onClick={this.closeAlert.bind(this)}>
-                    <span>&times;</span>
-                </button>
-                <span data-role={"alert-message"}>
-                {alertMessage}
-                </span>
-            </div>
-            : null;
 
         return <div>
             <form action={url} className={formStyles.form}
@@ -83,7 +66,7 @@ export class UploadFileForm extends React.Component<UploadFileProps, UploadFileS
                             className="mr-5">{this.state.fileSelected ? "File selected: " + this.state.fileName : ""}</div>
                     </label>
                 </div>
-                {alert}
+                <Alert hasSuccess={this.state.hasSuccess} hasError={hasError} message={alertMessage}/>
                 <button type="submit" className={enableSubmit ? "" : "disabled"}
                         disabled={!enableSubmit}>Upload
                 </button>
