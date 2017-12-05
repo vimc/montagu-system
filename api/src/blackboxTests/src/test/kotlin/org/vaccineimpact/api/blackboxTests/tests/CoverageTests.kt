@@ -95,8 +95,7 @@ class CoverageTests : DatabaseTest()
         val requestHelper = RequestHelper()
 
         JooqContext().use {
-            createGroupAndSupportingObjects(it)
-            giveCoverageSetsAndDataToResponsibility(it)
+            createUnorderedCoverageData(it)
             userHelper.setupTestUser(it)
         }
 
@@ -128,21 +127,6 @@ class CoverageTests : DatabaseTest()
 
         Assertions.assertThat(rows.toList()).containsExactlyElementsOf(expected)
     }
-
-    @FlexibleColumns
-    data class TestWideCoverageRow(
-            val scenario: String, //This is the scenario description ID
-            val setName: String,
-            val vaccine: String,
-            val gaviSupport: String,
-            val activityType: String,
-            val countryCode: String,
-            val country: String,
-            val ageFirst: BigDecimal?,
-            val ageLast: BigDecimal?,
-            val ageRangeVerbatim: String?,
-            val coverageAndTargetPerYear: Map<String, String?>
-    ) : CoverageRow
 
     @Test
     fun `can get pure CSV coverage data for responsibility`()
@@ -204,18 +188,31 @@ class CoverageTests : DatabaseTest()
                 ageRange = 0..20 step 5, testYear = testYear, target = target, coverage = coverage)
     }
 
-    private fun createGroupAndSupportingObjects(db: JooqContext)
+    // a helper class to deserialze the wide format coverage data
+    @FlexibleColumns
+    data class TestWideCoverageRow(
+            val scenario: String,
+            val setName: String,
+            val vaccine: String,
+            val gaviSupport: String,
+            val activityType: String,
+            val countryCode: String,
+            val country: String,
+            val ageFirst: BigDecimal?,
+            val ageLast: BigDecimal?,
+            val ageRangeVerbatim: String?,
+            val coverageAndTargetPerYear: Map<String, String?>
+    ) : CoverageRow
+
+
+    private fun createUnorderedCoverageData(db: JooqContext)
     {
         db.addGroup(groupId, "description")
         db.addTouchstone("touchstone", 1, "description", "open", addName = true)
         db.addScenarioDescription(scenarioId, "Blue Fever Scenario", "BF", addDisease = true)
         db.addVaccine("BF", "Blue Fever")
         db.addVaccine("AF", "Alpha Fever")
-    }
 
-
-    private fun giveCoverageSetsAndDataToResponsibility(db: JooqContext)
-    {
         val setId = db.addResponsibilitySet(groupId, touchstoneId, "incomplete")
         db.addResponsibility(setId, touchstoneId, scenarioId)
         db.addCoverageSet(touchstoneId, "First", "AF", "without", "routine", id = 1)
@@ -225,26 +222,23 @@ class CoverageTests : DatabaseTest()
         db.addCoverageSetToScenario(scenarioId, touchstoneId, coverageSetId = 2, order = 1)
         db.addCoverageSetToScenario(scenarioId, touchstoneId, coverageSetId = 3, order = 2)
 
-        db.addCountries(listOf("AAA", "BBB", "CCC"))
+        db.addCountries(listOf("AAA", "BBB"))
 
         // adding these in jumbled up order
-        db.addCoverageRow(1, "AAA", 2000, 2.toDecimal(), 4.toDecimal(), null, null, null)
-        db.addCoverageRow(1, "AAA", 2001, 2.toDecimal(), 4.toDecimal(), null, null, null)
-
+        // values are null because we are just testing the order these rows appear in
+        db.addCoverageRow(3, "BBB", 2001, 1.toDecimal(), 2.toDecimal(), null, null, null)
         db.addCoverageRow(2, "AAA", 2000, 1.toDecimal(), 2.toDecimal(), null, null, null)
-        db.addCoverageRow(2, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), null, null, null)
-
+        db.addCoverageRow(1, "AAA", 2001, 2.toDecimal(), 4.toDecimal(), null, null, null)
+        db.addCoverageRow(3, "BBB", 2001, 2.toDecimal(), 2.toDecimal(), null, null, null)
         db.addCoverageRow(3, "AAA", 2000, 1.toDecimal(), 2.toDecimal(), null, null, null)
         db.addCoverageRow(3, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), null, null, null)
-
         db.addCoverageRow(3, "BBB", 2000, 2.toDecimal(), 4.toDecimal(), null, null, null)
         db.addCoverageRow(3, "BBB", 2001, 2.toDecimal(), 4.toDecimal(), null, null, null)
-
-        db.addCoverageRow(3, "BBB", 2000, 2.toDecimal(), 2.toDecimal(), null, null, null)
-        db.addCoverageRow(3, "BBB", 2001, 2.toDecimal(), 2.toDecimal(), null, null, null)
-
-        db.addCoverageRow(3, "BBB", 2001, 1.toDecimal(), 2.toDecimal(), null, null, null)
         db.addCoverageRow(3, "BBB", 2000, 1.toDecimal(), 2.toDecimal(), null, null, null)
+        db.addCoverageRow(2, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), null, null, null)
+        db.addCoverageRow(1, "AAA", 2000, 2.toDecimal(), 4.toDecimal(), null, null, null)
+        db.addCoverageRow(3, "BBB", 2000, 2.toDecimal(), 2.toDecimal(), null, null, null)
+
 
     }
 }
