@@ -7,6 +7,7 @@ import { connectToStores } from "../../../../shared/alt";
 import { responsibilityStore } from "../../../stores/ResponsibilityStore";
 import { DemographicOptions } from "./DemographicOptions";
 import { OneTimeButton } from "../../../../shared/components/OneTimeButton";
+import { OneTimeButtonTimeBlocker } from "../../../../shared/components/ButtonTimeBlocker";
 import { demographicActions } from "../../../actions/DemographicActions";
 import { doNothing } from "../../../../shared/Helpers";
 
@@ -19,28 +20,13 @@ export interface DownloadDemographicsContentProps extends RemoteContent {
     selectedGender: string;
     selectedFormat: string;
     touchstone: Touchstone;
-    downloadButtonDisableDuration?: number;
     token: string;
 }
 
-interface DownloadState {
-    downloadButtonEnabled: boolean;
-}
+const ButtonWithTimeout = OneTimeButtonTimeBlocker(OneTimeButton);
 
-export class DownloadDemographicsContentComponent extends RemoteContentComponent<DownloadDemographicsContentProps, DownloadState> {
-    downloadButtonDisableDuration: number;
-    downloadButtonEnableTimeoutId: any;
-
-    constructor(props?: DownloadDemographicsContentProps) {
-        super(props);
-        this.state = {
-            downloadButtonEnabled: true,
-        };
-        this.onDownloadClicked = this.onDownloadClicked.bind(this);
-        this.downloadButtonDisableDuration = this.props.downloadButtonDisableDuration
-            ? this.props.downloadButtonDisableDuration
-            : 5000;
-    }
+export class DownloadDemographicsContentComponent extends RemoteContentComponent<DownloadDemographicsContentProps, undefined> {
+    ButtonWithTimeout?: any;
 
     static getStores() {
         return [demographicStore, responsibilityStore];
@@ -52,7 +38,7 @@ export class DownloadDemographicsContentComponent extends RemoteContentComponent
             || nextProps.selectedFormat !== this.props.selectedFormat
             || nextProps.selectedGender !== this.props.selectedGender)
             {
-                this.enableDownloadButton();
+                this.ButtonWithTimeout.enableDownloadButton();
             }
         }
     }
@@ -78,47 +64,13 @@ export class DownloadDemographicsContentComponent extends RemoteContentComponent
         }
     }
 
-    enableDownloadButton(){
-        this.setState({
-            downloadButtonEnabled: true,
-        })
-        this.clearTimeoutForDownloadButtonEnable();
-    }
-
-    clearTimeoutForDownloadButtonEnable(){
-        if (this.downloadButtonEnableTimeoutId) {
-            clearTimeout(this.downloadButtonEnableTimeoutId);
-            this.downloadButtonEnableTimeoutId = undefined;
-        }
-    }
-
-    onDownloadClicked() {
-        setTimeout(() => {
-            this.setState({
-                downloadButtonEnabled: false,
-            })
-        });
-
-        this.downloadButtonEnableTimeoutId = setTimeout(() => {
-            this.setState({
-                downloadButtonEnabled: true,
-            })
-        }, this.downloadButtonDisableDuration);
-
-    }
-
-    componentWillUnmount () {
-        this.clearTimeoutForDownloadButtonEnable();
-    }
-
     refreshToken() {
         demographicActions.clearUsedToken();
         demographicStore.fetchOneTimeToken().catch(doNothing);
     }
 
     renderContent(props: DownloadDemographicsContentProps) {
-        const canDownload = DownloadDemographicsContentComponent.canDownload(props)
-                            && this.state.downloadButtonEnabled;
+        const canDownload = DownloadDemographicsContentComponent.canDownload(props);
 
         return <div className={styles.demographics}>
             <div className={commonStyles.sectionTitle}>
@@ -141,15 +93,17 @@ export class DownloadDemographicsContentComponent extends RemoteContentComponent
                 dataSets={props.dataSets}
                 selectedFormat={props.selectedFormat}
                 selectedDataSet={props.selectedDataSet}
-                selectedGender={props.selectedGender}/>
-            <OneTimeButton
+                selectedGender={props.selectedGender}
+            />
+            <ButtonWithTimeout
                 token={props.token}
                 refreshToken={this.refreshToken}
+                disableDuration={5000}
                 enabled={canDownload}
-                onClick={this.onDownloadClicked}
+                onRef={ref => (this.ButtonWithTimeout = ref)}
             >
                 Download data set
-            </OneTimeButton>
+            </ButtonWithTimeout>
         </div>;
     }
 
