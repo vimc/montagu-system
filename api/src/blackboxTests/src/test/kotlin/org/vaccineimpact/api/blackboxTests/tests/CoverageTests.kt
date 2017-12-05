@@ -101,29 +101,27 @@ class CoverageTests : DatabaseTest()
         }
 
         val response = requestHelper.get("$url?format=wide", minimumPermissions, contentType = "text/csv")
-        val text = response.text
-        val year2000Map = mapOf("coverage_2000" to "<NA>", "target_2000" to "<NA>")
-        val year2001Map = mapOf("coverage_2000" to "<NA>",
+        val yearMap = mapOf("coverage_2000" to "<NA>",
                 "coverage_2001" to "<NA>", "target_2000" to "<NA>", "target_2001" to "<NA>")
+
         val expected = listOf(
                 TestWideCoverageRow(scenarioId, "First", "AF", "no gavi", "routine",
-                        "AAA", "AAA-Name", 2.toDecimal(), 4.toDecimal(), "<NA>", year2001Map),
+                        "AAA", "AAA-Name", 2.toDecimal(), 4.toDecimal(), "<NA>", yearMap),
                 // first order by vaccine
                 TestWideCoverageRow(scenarioId, "Second", "BF", "no gavi", "campaign",
-                        "AAA", "AAA-Name", 1.toDecimal(), 2.toDecimal(), "<NA>", year2000Map),
+                        "AAA", "AAA-Name", 1.toDecimal(), 2.toDecimal(), "<NA>", yearMap),
                 // then by activity type
                 TestWideCoverageRow(scenarioId, "Third", "BF", "no gavi", "routine",
-                        "AAA", "AAA-Name", 1.toDecimal(), 2.toDecimal(), "<NA>", year2000Map),
+                        "AAA", "AAA-Name", 1.toDecimal(), 2.toDecimal(), "<NA>", yearMap),
                 // then by country
                 TestWideCoverageRow(scenarioId, "Third", "BF", "no gavi", "routine",
-                        "BBB", "BBB-Name", 1.toDecimal(), 2.toDecimal(), "<NA>", mapOf("coverage_2000" to "<NA>",
-                        "target_2000" to "<NA>", "coverage_2001" to "<NA>", "target_2001" to "<NA>")),
+                        "BBB", "BBB-Name", 1.toDecimal(), 2.toDecimal(), "<NA>", yearMap),
                 // then by age first
                 TestWideCoverageRow(scenarioId, "Third", "BF", "no gavi", "routine",
-                        "BBB", "BBB-Name", 2.toDecimal(), 2.toDecimal(), "<NA>", year2001Map),
+                        "BBB", "BBB-Name", 2.toDecimal(), 2.toDecimal(), "<NA>", yearMap),
                 // then by age last
                 TestWideCoverageRow(scenarioId, "Third", "BF", "no gavi", "routine",
-                        "BBB", "BBB-Name", 2.toDecimal(), 4.toDecimal(), "<NA>", year2001Map)
+                        "BBB", "BBB-Name", 2.toDecimal(), 4.toDecimal(), "<NA>", yearMap)
         )
 
         val rows = DataTableDeserializer.deserialize(response.text, TestWideCoverageRow::class)
@@ -230,11 +228,21 @@ class CoverageTests : DatabaseTest()
         db.addCountries(listOf("AAA", "BBB", "CCC"))
 
         // adding these in jumbled up order
+        db.addCoverageRow(1, "AAA", 2000, 2.toDecimal(), 4.toDecimal(), null, null, null)
         db.addCoverageRow(1, "AAA", 2001, 2.toDecimal(), 4.toDecimal(), null, null, null)
+
         db.addCoverageRow(2, "AAA", 2000, 1.toDecimal(), 2.toDecimal(), null, null, null)
+        db.addCoverageRow(2, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), null, null, null)
+
         db.addCoverageRow(3, "AAA", 2000, 1.toDecimal(), 2.toDecimal(), null, null, null)
+        db.addCoverageRow(3, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), null, null, null)
+
+        db.addCoverageRow(3, "BBB", 2000, 2.toDecimal(), 4.toDecimal(), null, null, null)
         db.addCoverageRow(3, "BBB", 2001, 2.toDecimal(), 4.toDecimal(), null, null, null)
+
+        db.addCoverageRow(3, "BBB", 2000, 2.toDecimal(), 2.toDecimal(), null, null, null)
         db.addCoverageRow(3, "BBB", 2001, 2.toDecimal(), 2.toDecimal(), null, null, null)
+
         db.addCoverageRow(3, "BBB", 2001, 1.toDecimal(), 2.toDecimal(), null, null, null)
         db.addCoverageRow(3, "BBB", 2000, 1.toDecimal(), 2.toDecimal(), null, null, null)
 
