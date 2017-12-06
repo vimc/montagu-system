@@ -6,9 +6,10 @@ import {BurdenEstimateSetTypeCode, ErrorInfo} from "../../../../shared/models/Ge
 interface BurdenEstimateState {
     typeCode: BurdenEstimateSetTypeCode;
     typeDetails: string;
-    loading: boolean;
+    disabled: boolean;
     errors: ErrorInfo[];
     hasSuccess: boolean;
+    touched: boolean;
 }
 
 interface BurdenEstimateProps {
@@ -19,31 +20,65 @@ interface BurdenEstimateProps {
 
 export class CreateBurdenEstimateSetForm extends React.Component<BurdenEstimateProps, BurdenEstimateState> {
 
-    constructor(props: BurdenEstimateProps) {
+    constructor() {
 
         super();
 
         this.state = {
+            touched: false,
             typeCode: null,
             typeDetails: null,
-            loading: false,
+            disabled: true,
             errors: [],
             hasSuccess: false
         }
     }
 
+    onTypeChange(e: any) {
+        this.setState({
+            typeCode: e.target.value,
+            touched: true,
+            disabled: e.target.value.length == 0
+        })
+    }
 
-    onSubmit() {
-        const url = `/modelling-groups/${this.props.groupId}/responsibilities/${this.props.touchstoneId}/${this.props.scenarioId}/estimate-sets/`
+    onDetailsChange(e: any) {
+        this.setState({
+            typeDetails: e.target.value
+        })
+    }
+
+    onSubmit(e: any) {
+        e.preventDefault();
+        const self = this;
+        self.setState({
+            disabled: true
+        });
+
+        const url = `/modelling-groups/${this.props.groupId}/responsibilities/${this.props.touchstoneId}/${this.props.scenarioId}/estimate-sets/`;
         return fetcher.fetcher.fetch(url, {
             method: "post",
-            data: {}
-        }, false);
+            body: JSON.stringify({
+                type: {
+                    type: this.state.typeCode,
+                    details: this.state.typeDetails
+                }
+            })
+        }).then(() => {
+            self.setState({
+                hasSuccess: true,
+                disabled: false
+            })
+            // TODO dispatch action to update current responsibility with newly created burden estimate set
+        }).catch((e: any) => {
+            self.setState({
+                errors : [e]
+            })
+        });
     }
 
     render() {
 
-        const disabled = this.state.loading;
         const hasError = this.state.errors.length > 0;
 
         const alertMessage = hasError ? this.state.errors[0].message : "Success! You have created a new burden estimate set";
@@ -53,22 +88,25 @@ export class CreateBurdenEstimateSetForm extends React.Component<BurdenEstimateP
             <div className="row">
                 <div className="col">
                     <label>How were these estimates obtained?</label>
-                    <select className={`form-control ${!this.state.typeCode ? "has-error" : ""}`} name="type">
-                        <option>
-                        </option>
+                    <select onChange={this.onTypeChange.bind(this)}
+                            className={`form-control ${this.state.touched && this.state.typeCode.length == 0 ? "is-invalid" : ""}`}
+                            required name="type">
+                        <option value="">-- Please select one --</option>
+                        <option value="central-single-run">Single model run</option>
+                        <option value="central-averaged">Averaged across model runs</option>
                     </select>
                 </div>
                 <div className="col">
-                    <label>Any extra information about this run</label>
-                    <input type="text" className={`form-control ${!this.state.typeDetails ? "has-error" : ""}`}
-                           name="details"/>
+                    <label>Details of this run</label>
+                    <input type="text" className={"form-control"} name="details"
+                           onChange={this.onDetailsChange.bind(this)}/>
                 </div>
             </div>
             <div className="mt-4">
                 <Alert hasSuccess={this.state.hasSuccess} hasError={hasError} message={alertMessage}/>
             </div>
             <button type="submit" className="mt-2"
-                    disabled={disabled}>Create
+                    disabled={this.state.disabled}>Create
             </button>
         </form>;
     }
