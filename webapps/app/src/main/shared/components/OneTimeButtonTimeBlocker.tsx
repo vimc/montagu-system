@@ -3,10 +3,11 @@ import { Component } from "react";
 
 import { OneTimeButtonProps } from "./OneTimeButton";
 
-interface TimeBlockerProps extends OneTimeButtonProps {
+export interface TimeBlockerProps extends OneTimeButtonProps {
     enabled?: boolean;
     disableDuration?: number;
     onRef?: (ref: React.Component) => any;
+    children?: any;
 }
 
 interface TimeBlockerState {
@@ -14,7 +15,7 @@ interface TimeBlockerState {
 }
 
 export function OneTimeButtonTimeBlocker <P extends TimeBlockerProps>(
-    WrappedComponent: new () => React.Component<any, any> ) {
+    OneTimeButtonWrapped: new () => React.Component<OneTimeButtonProps, any> ) {
         return class ButtonTimeBlockerWrapper extends React.Component<TimeBlockerProps, TimeBlockerState> {
 
         disableDuration: number;
@@ -31,7 +32,7 @@ export function OneTimeButtonTimeBlocker <P extends TimeBlockerProps>(
                 : 5000;
         }
 
-        buttonClicked() {
+        buttonClicked() :void {
             setTimeout(() => {
                 this.setState({
                     enabled: false,
@@ -45,30 +46,30 @@ export function OneTimeButtonTimeBlocker <P extends TimeBlockerProps>(
             }, this.disableDuration);
         }
 
-        componentDidMount() {
+        componentDidMount() :void {
             this.props.onRef(this);
         }
 
-        componentWillUnmount () {
+        componentWillUnmount() :void {
             this.clearTimeoutButtonEnable();
         }
 
-        clearTimeoutButtonEnable(){
+        clearTimeoutButtonEnable() :void {
             if (this.enableTimeoutId) {
                 clearTimeout(this.enableTimeoutId);
                 this.enableTimeoutId = undefined;
             }
         }
 
-        enableDownloadButton(){
+        enable() :void {
             this.setState({
                 enabled: true,
             })
             this.clearTimeoutButtonEnable();
         }
 
-        render() {
-            return <WrappedComponent
+        render() :JSX.Element {
+            return <OneTimeButtonWrapped
                 token={this.props.token}
                 refreshToken={this.props.refreshToken}
                 enabled={this.props.enabled && this.state.enabled}

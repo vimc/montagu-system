@@ -7,7 +7,7 @@ import { connectToStores } from "../../../../shared/alt";
 import { responsibilityStore } from "../../../stores/ResponsibilityStore";
 import { DemographicOptions } from "./DemographicOptions";
 import { OneTimeButton } from "../../../../shared/components/OneTimeButton";
-import { OneTimeButtonTimeBlocker } from "../../../../shared/components/ButtonTimeBlocker";
+import { OneTimeButtonTimeBlocker } from "../../../../shared/components/OneTimeButtonTimeBlocker";
 import { demographicActions } from "../../../actions/DemographicActions";
 import { doNothing } from "../../../../shared/Helpers";
 
@@ -38,7 +38,7 @@ export class DownloadDemographicsContentComponent extends RemoteContentComponent
             || nextProps.selectedFormat !== this.props.selectedFormat
             || nextProps.selectedGender !== this.props.selectedGender)
             {
-                this.ButtonWithTimeout.enableDownloadButton();
+                this.ButtonWithTimeout.enable();
             }
         }
     }
