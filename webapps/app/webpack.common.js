@@ -82,7 +82,8 @@ function commonConfig(name, public_path) {
                         {
                             loader: "file-loader",
                             options: {
-                                publicPath: public_path,
+                                publicPath: public_path + 'resources/',
+                                outputPath: 'resources/'
                             }
                         }
                     ],
