@@ -7,6 +7,7 @@ import { CoverageSetList } from "./CoverageSetList";
 import { responsibilityStore } from "../../../stores/ResponsibilityStore";
 import { coverageTokenActions } from "../../../actions/CoverageActions";
 import { OneTimeButton } from "../../../../shared/components/OneTimeButton";
+import { OneTimeButtonTimeBlocker } from "../../../../shared/components/OneTimeButtonTimeBlocker";
 import { FormatControl } from "../FormatControl";
 import { HasFormatOption } from "../Demographics/DemographicOptions";
 import { doNothing } from "../../../../shared/Helpers";
@@ -21,28 +22,19 @@ export interface DownloadCoverageComponentProps extends RemoteContent {
     scenario: Scenario;
     coverageSets: CoverageSet[];
     coverageToken: string;
-    downloadButtonDisableTimeout?: number;
     selectedFormat: string;
 }
 
-interface DownloadState {
-    downloadButtonEnabled: boolean;
-}
+const ButtonWithTimeout = OneTimeButtonTimeBlocker(OneTimeButton);
 
 export class DownloadCoverageContentComponent
-    extends RemoteContentComponent<DownloadCoverageComponentProps, DownloadState>
+    extends RemoteContentComponent<DownloadCoverageComponentProps, undefined>
 {
-    downloadButtonDisableTimeout: number;
+    ButtonWithTimeout?: any;
 
-    constructor(props?: DownloadCoverageComponentProps) {
-        super(props);
-        this.state = {
-            downloadButtonEnabled: true,
-        };
-        this.onDownloadClicked = this.onDownloadClicked.bind(this);
-        this.downloadButtonDisableTimeout = this.props.downloadButtonDisableTimeout
-            ? this.props.downloadButtonDisableTimeout
-            : 5000;
+    constructor() {
+        super();
+        this.onSelectFormat = this.onSelectFormat.bind(this);
     }
 
     static getStores() {
@@ -65,24 +57,12 @@ export class DownloadCoverageContentComponent
     onSelectFormat(format: string) {
         coverageSetActions.selectFormat(format);
         responsibilityStore.fetchOneTimeCoverageToken().catch(doNothing);
+        if (this.ButtonWithTimeout) this.ButtonWithTimeout.enable();
     }
 
     refreshToken() {
         coverageTokenActions.clearUsedToken();
         responsibilityStore.fetchOneTimeCoverageToken();
-    }
-
-    onDownloadClicked() {
-        setTimeout(() => {
-            this.setState({
-                downloadButtonEnabled: false,
-            })
-        });
-        setTimeout(() => {
-            this.setState({
-                downloadButtonEnabled: true,
-            })
-        }, this.downloadButtonDisableTimeout);
     }
 
     renderContent(props: DownloadCoverageComponentProps) {
@@ -152,14 +132,15 @@ export class DownloadCoverageContentComponent
                 </div>
             </div>
             <div className="mt-4">
-                <OneTimeButton
+                <ButtonWithTimeout
                     token={data.coverageToken}
                     refreshToken={this.refreshToken}
-                    enabled={this.state.downloadButtonEnabled}
-                    onClick={this.onDownloadClicked}
+                    disableDuration={1000}
+                    enabled={true}
+                    onRef={ref => (this.ButtonWithTimeout = ref)}
                 >
                     Download combined coverage set data in CSV format
-                </OneTimeButton>
+                </ButtonWithTimeout>
             </div>
         </div>;
     }

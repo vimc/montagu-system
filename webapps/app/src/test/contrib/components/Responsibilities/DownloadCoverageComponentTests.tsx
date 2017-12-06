@@ -13,7 +13,7 @@ import { Sandbox } from "../../../Sandbox";
 import { expectOneAction } from "../../../actionHelpers";
 import { responsibilityStore } from "../../../../main/contrib/stores/ResponsibilityStore";
 import fetcher from "../../../../main/shared/sources/Fetcher";
-import { OneTimeButton } from "../../../../main/shared/components/OneTimeButton";
+import { TimeBlockerProps } from "../../../../main/shared/components/OneTimeButtonTimeBlocker";
 import { FormatControl } from "../../../../main/contrib/components/Responsibilities/FormatControl";
 
 describe("DownloadCoverageContentComponent", () => {
@@ -42,13 +42,12 @@ describe("DownloadCoverageContentComponent", () => {
     it("renders OnetimeButton", () => {
         const props = makeProps({ coverageToken: "TOKEN" });
         const rendered = shallow(<DownloadCoverageContentComponent {...props} />);
-        expect(rendered.find(OneTimeButton).props()).to.eql({
-            token: "TOKEN",
-            refreshToken: (rendered.instance() as DownloadCoverageContentComponent).refreshToken,
-            onClick: (rendered.instance() as DownloadCoverageContentComponent).onDownloadClicked,
-            enabled: true,
-            children: "Download combined coverage set data in CSV format"
-        });
+        const ButtonProps = rendered.find('ButtonTimeBlockerWrapper').props() as TimeBlockerProps;
+        expect(ButtonProps.token).to.eql("TOKEN");
+        expect(ButtonProps.disableDuration).to.eql(1000);
+        expect(ButtonProps.refreshToken).to.eql((rendered.instance() as DownloadCoverageContentComponent).refreshToken);
+        expect(ButtonProps.enabled).to.eql(true);
+        expect(ButtonProps.children).to.eql("Download combined coverage set data in CSV format");
     });
 
     it("refreshToken triggers token refresh", () => {
@@ -60,25 +59,6 @@ describe("DownloadCoverageContentComponent", () => {
         instance.refreshToken();
         expectOneAction(spy, { action: "CoverageTokenActions.clearUsedToken" });
         expect(fetchNewToken.called).to.be.true;
-    });
-
-    it("calling meth onDownloadClicked sets state prop downloadButtonEnabled to false after given timeout in 100ms", function(done: DoneCallback) {
-        this.timeout(140);
-        const props = makeProps({
-            coverageToken: "TOKEN",
-            downloadButtonDisableTimeout: 100,
-        });
-        const component = shallow(<DownloadCoverageContentComponent {...props} />);
-        const instance = component.instance() as DownloadCoverageContentComponent;
-        expect(component.state().downloadButtonEnabled).to.be.equal(true)
-        instance.onDownloadClicked();
-        setTimeout(() => {
-            expect(component.state().downloadButtonEnabled).to.be.equal(false)
-        },70);
-        setTimeout(() => {
-            expect(component.state().downloadButtonEnabled).to.be.equal(true)
-            done();
-        },110);
     });
 
     it("renders format control", () => {

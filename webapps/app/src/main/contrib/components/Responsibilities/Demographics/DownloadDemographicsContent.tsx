@@ -7,6 +7,7 @@ import { connectToStores } from "../../../../shared/alt";
 import { responsibilityStore } from "../../../stores/ResponsibilityStore";
 import { DemographicOptions } from "./DemographicOptions";
 import { OneTimeButton } from "../../../../shared/components/OneTimeButton";
+import { OneTimeButtonTimeBlocker } from "../../../../shared/components/OneTimeButtonTimeBlocker";
 import { demographicActions } from "../../../actions/DemographicActions";
 import { doNothing } from "../../../../shared/Helpers";
 
@@ -22,14 +23,30 @@ export interface DownloadDemographicsContentProps extends RemoteContent {
     token: string;
 }
 
+const ButtonWithTimeout = OneTimeButtonTimeBlocker(OneTimeButton);
+
 export class DownloadDemographicsContentComponent extends RemoteContentComponent<DownloadDemographicsContentProps, undefined> {
+    ButtonWithTimeout?: any;
+
     static getStores() {
         return [demographicStore, responsibilityStore];
+    }
+
+    componentWillReceiveProps(nextProps: DownloadDemographicsContentProps) {
+        if (nextProps.ready) {
+            if (nextProps.selectedDataSet !== this.props.selectedDataSet
+            || nextProps.selectedFormat !== this.props.selectedFormat
+            || nextProps.selectedGender !== this.props.selectedGender)
+            {
+                this.ButtonWithTimeout.enable();
+            }
+        }
     }
 
     static getPropsFromStores(props: DownloadDemographicsContentProps): Partial<DownloadDemographicsContentProps> {
         const demographicState = demographicStore.getState();
         const responsibilityState = responsibilityStore.getState();
+
         if (demographicState.currentTouchstone != null) {
             return {
                 ready: demographicState.currentTouchstone in demographicState.dataSets,
@@ -76,10 +93,17 @@ export class DownloadDemographicsContentComponent extends RemoteContentComponent
                 dataSets={props.dataSets}
                 selectedFormat={props.selectedFormat}
                 selectedDataSet={props.selectedDataSet}
-                selectedGender={props.selectedGender}/>
-            <OneTimeButton token={props.token} refreshToken={this.refreshToken} enabled={canDownload}>
+                selectedGender={props.selectedGender}
+            />
+            <ButtonWithTimeout
+                token={props.token}
+                refreshToken={this.refreshToken}
+                disableDuration={5000}
+                enabled={canDownload}
+                onRef={ref => (this.ButtonWithTimeout = ref)}
+            >
                 Download data set
-            </OneTimeButton>
+            </ButtonWithTimeout>
         </div>;
     }
 

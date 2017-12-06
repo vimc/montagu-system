@@ -9,7 +9,7 @@ import {
 } from "../../../../../main/contrib/components/Responsibilities/Demographics/DownloadDemographicsContent";
 import { shallow } from "enzyme";
 import { DemographicOptions } from "../../../../../main/contrib/components/Responsibilities/Demographics/DemographicOptions";
-import { OneTimeButton } from "../../../../../main/shared/components/OneTimeButton";
+import { TimeBlockerProps } from "../../../../../main/shared/components/OneTimeButtonTimeBlocker";
 import { Sandbox } from "../../../../Sandbox";
 import { expectOneAction } from "../../../../actionHelpers";
 
@@ -144,12 +144,12 @@ describe("DownloadDemographicsContent", () => {
             token: "TOKEN"
         };
         const rendered = shallow(<DownloadDemographicsContentComponent {...props} />);
-        expect(rendered.find(OneTimeButton).props()).to.eql({
-            token: "TOKEN",
-            enabled: DownloadDemographicsContentComponent.canDownload(props),
-            refreshToken: (rendered.instance() as DownloadDemographicsContentComponent).refreshToken,
-            children: "Download data set"
-        });
+        const ButtonProps = rendered.find('ButtonTimeBlockerWrapper').props() as TimeBlockerProps;
+        expect(ButtonProps.token).to.eql("TOKEN");
+        expect(ButtonProps.disableDuration).to.eql(5000);
+        expect(ButtonProps.refreshToken).to.eql((rendered.instance() as DownloadDemographicsContentComponent).refreshToken);
+        expect(ButtonProps.enabled).to.eql(DownloadDemographicsContentComponent.canDownload(props));
+        expect(ButtonProps.children).to.eql("Download data set");
     });
 
     it("refreshToken causes token to refresh", () => {

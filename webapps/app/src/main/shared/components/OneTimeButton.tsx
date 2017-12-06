@@ -4,15 +4,15 @@ import fetcher from "../sources/Fetcher";
 const loaderAnimation = require("../resources/link-loader.gif");
 const buttonStyles = require("../styles/buttons.css");
 
-interface Props {
+export interface OneTimeButtonProps {
     token: string
     enabled?: boolean;
     refreshToken: () => void;
     onClick?: () =>void;
 }
 
-export class OneTimeButton extends React.Component<Props, any> {
-    static defaultProps: Partial<Props> = {
+export class OneTimeButton extends React.Component<OneTimeButtonProps, any> {
+    static defaultProps: Partial<OneTimeButtonProps> = {
         enabled: true
     };
 
