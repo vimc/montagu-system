@@ -13,15 +13,14 @@ export class UploadBurdenEstimatesForm extends React.Component<UploadBurdenEstim
 
     render() {
 
-        const uploadText = "Choose a new burden estimate set";
+            const uploadText = "Choose a new burden estimate set";
 
-        const uploadForm = this.props.canUpload ?
-            <UploadFileForm token={this.props.token} enableSubmit={this.props.canUpload} uploadText={uploadText}
-                            successMessage={"Success! You have uploaded a new set of burden estimates"}/>
-            : null;
+            const uploadForm = this.props.canUpload ?
+                <UploadFileForm token={this.props.token} enableSubmit={this.props.canUpload} uploadText={uploadText}
+                                successMessage={"Success! You have uploaded a new set of burden estimates"}/>
+                : null;
 
         return <div>
-            <CurrentEstimateSetSummary estimateSet={this.props.currentEstimateSet} canUpload={this.props.canUpload}/>
             {uploadForm}
         </div>;
     }

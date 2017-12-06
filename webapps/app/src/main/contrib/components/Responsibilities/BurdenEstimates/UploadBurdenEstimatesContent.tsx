@@ -1,12 +1,13 @@
 import * as React from "react";
-import { connectToStores } from "../../../../shared/alt";
-import { ModellingGroup, Responsibility, Scenario, Touchstone } from "../../../../shared/models/Generated";
-import { RemoteContent } from "../../../../shared/models/RemoteContent";
-import { RemoteContentComponent } from "../../../../shared/components/RemoteContentComponent/RemoteContentComponent";
-import { responsibilityStore } from "../../../stores/ResponsibilityStore";
-import { TemplateLink } from "../Overview/List/TemplateLinks";
-import {UploadBurdenEstimatesForm} from "./UploadBurdenEstimatesForm";
-import {WrappedCreateBurdenEstimateSetForm} from "./CreateBurdenEstimateSetFormComponent";
+import {connectToStores} from "../../../../shared/alt";
+import {ModellingGroup, Responsibility, Scenario, Touchstone} from "../../../../shared/models/Generated";
+import {RemoteContent} from "../../../../shared/models/RemoteContent";
+import {RemoteContentComponent} from "../../../../shared/components/RemoteContentComponent/RemoteContentComponent";
+import {responsibilityStore} from "../../../stores/ResponsibilityStore";
+import {TemplateLink} from "../Overview/List/TemplateLinks";
+import {CreateBurdenEstimateSetForm} from "./CreateBurdenEstimateSetForm";
+import {CurrentEstimateSetSummary} from "../Overview/List/CurrentEstimateSetSummary";
+import {UploadFileForm} from "../../../../shared/components/UploadFileForm";
 
 const commonStyles = require("../../../../shared/styles/common.css");
 
@@ -32,7 +33,6 @@ export class UploadBurdenEstimatesContentComponent extends RemoteContentComponen
         const r = state.currentResponsibility;
 
         if (r != null && state.estimatesOneTimeToken != null) {
-            console.log(state.ready)
             return {
                 ready: state.ready,
                 props: {
@@ -54,7 +54,22 @@ export class UploadBurdenEstimatesContentComponent extends RemoteContentComponen
 
     renderContent(props: UploadBurdenEstimatesContentComponentProps) {
         const data = props.props;
-        const canUploadBurdenEstimate = data.responsibilitySetStatus == "incomplete";
+
+        const canCreate = data.responsibilitySetStatus == "incomplete";
+
+        const canUpload = canCreate && data.responsibility.current_estimate_set
+            && data.responsibility.current_estimate_set .status == "empty";
+
+        const uploadForm = canUpload ?
+            <UploadFileForm token={data.estimatesToken} enableSubmit={true} uploadText={"Choose a new burden estimate set"}
+                            successMessage={"Success! You have uploaded a new set of burden estimates"}/>
+            : null;
+
+        const createForm = canCreate ?
+            <CreateBurdenEstimateSetForm groupId={data.group.id}
+                                         touchstoneId={data.touchstone.id}
+                                         scenarioId={data.scenario.id}/>
+            : null;
 
         return <div>
             <p>
@@ -79,14 +94,12 @@ export class UploadBurdenEstimatesContentComponent extends RemoteContentComponen
                 </tbody>
             </table>
 
-            <div className={commonStyles.gapAbove}>
+            <div className="mt-3">
+                <CurrentEstimateSetSummary estimateSet={data.responsibility.current_estimate_set}
+                                           canUpload={canCreate}/>
 
-                <WrappedCreateBurdenEstimateSetForm />
-                <UploadBurdenEstimatesForm
-                            token={data.estimatesToken}
-                            canUpload={canUploadBurdenEstimate}
-                            currentEstimateSet={data.responsibility.current_estimate_set}
-                            />
+                {createForm}
+                {uploadForm}
             </div>
         </div>;
     }

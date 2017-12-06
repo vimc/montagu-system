@@ -1,26 +1,37 @@
 import * as React from "react";
 import {Alert} from "../../../../shared/components/Alert";
-import {CreateBurdenEstimateSetForm} from "./CreateBurdenEstimateSetForm";
 import fetcher from "../../../../shared/sources/Fetcher";
 import {BurdenEstimateSetTypeCode, ErrorInfo} from "../../../../shared/models/Generated";
 
 interface BurdenEstimateState {
-    typeId: BurdenEstimateSetTypeCode;
+    typeCode: BurdenEstimateSetTypeCode;
     typeDetails: string;
-    parameterSetId: number;
     loading: boolean;
     errors: ErrorInfo[];
     hasSuccess: boolean;
 }
 
 interface BurdenEstimateProps {
-    parameterSets: number[]
     groupId: string;
     touchstoneId: string;
     scenarioId: string;
 }
 
 export class CreateBurdenEstimateSetForm extends React.Component<BurdenEstimateProps, BurdenEstimateState> {
+
+    constructor(props: BurdenEstimateProps) {
+
+        super();
+
+        this.state = {
+            typeCode: null,
+            typeDetails: null,
+            loading: false,
+            errors: [],
+            hasSuccess: false
+        }
+    }
+
 
     onSubmit() {
         const url = `/modelling-groups/${this.props.groupId}/responsibilities/${this.props.touchstoneId}/${this.props.scenarioId}/estimate-sets/`
@@ -37,25 +48,26 @@ export class CreateBurdenEstimateSetForm extends React.Component<BurdenEstimateP
 
         const alertMessage = hasError ? this.state.errors[0].message : "Success! You have created a new burden estimate set";
 
-        const setTypes = BurdenEstimateSetTypeCode[0]
-
-        return <form onSubmit={this.onSubmit.bind(this)}>
-            <div className="form-group">
-                <select className={`form-control ${this.state.type ? "has-error" : ""}`} name="type">
-                    <option>
-                    </option>
-                </select>
+        return <form className="mt-4" onSubmit={this.onSubmit.bind(this)}>
+            <h4>First, please let us know a little about your methodology</h4>
+            <div className="row">
+                <div className="col">
+                    <label>How were these estimates obtained?</label>
+                    <select className={`form-control ${!this.state.typeCode ? "has-error" : ""}`} name="type">
+                        <option>
+                        </option>
+                    </select>
+                </div>
+                <div className="col">
+                    <label>Any extra information about this run</label>
+                    <input type="text" className={`form-control ${!this.state.typeDetails ? "has-error" : ""}`}
+                           name="details"/>
+                </div>
             </div>
-            <div className="form-group">
-                <select className="form-control" name="parameter-set">
-                    <option>
-
-                    </option>
-                </select>
+            <div className="mt-4">
+                <Alert hasSuccess={this.state.hasSuccess} hasError={hasError} message={alertMessage}/>
             </div>
-            <Alert hasSuccess={this.state.hasSuccess} hasError={this.state.hasError}
-                   message={alertMessage}/>
-            <button type="submit"
+            <button type="submit" className="mt-2"
                     disabled={disabled}>Create
             </button>
         </form>;
