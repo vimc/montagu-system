@@ -188,7 +188,7 @@ class CoverageTests : DatabaseTest()
                 ageRange = 0..20 step 5, testYear = testYear, target = target, coverage = coverage)
     }
 
-    // a helper class to deserialze the wide format coverage data
+    // a helper class to deserialize the wide format coverage data
     @FlexibleColumns
     data class TestWideCoverageRow(
             val scenario: String,
