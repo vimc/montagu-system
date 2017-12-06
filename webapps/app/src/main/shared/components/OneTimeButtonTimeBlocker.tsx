@@ -15,7 +15,7 @@ interface TimeBlockerState {
 }
 
 export function OneTimeButtonTimeBlocker <P extends TimeBlockerProps>(
-    OneTimeButtonWrapped: new () => React.Component<OneTimeButtonProps, any> ) {
+    OneTimeButtonWrapped: ComponentConstructor<OneTimeButtonProps, any>) {
         return class ButtonTimeBlockerWrapper extends React.Component<TimeBlockerProps, TimeBlockerState> {
 
         disableDuration: number;
