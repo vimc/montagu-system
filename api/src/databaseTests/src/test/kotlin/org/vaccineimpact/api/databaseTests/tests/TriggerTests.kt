@@ -48,7 +48,6 @@ class TriggerTests : DatabaseTest()
             country = "???"
             year = 2000
             age = 20
-            stochastic = false
             burdenOutcome = 0
             value = BigDecimal.TEN
         }
