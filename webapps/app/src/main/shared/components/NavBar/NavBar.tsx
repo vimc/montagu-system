@@ -4,7 +4,7 @@ import {connectToStores} from "../../alt";
 import {InternalLink} from "../InternalLink";
 import {Breadcrumb} from "../../models/Breadcrumb";
 
-const styles = require("./NavBar.css");
+import * as styles from "./NavBar.scss";
 
 interface Props {
     crumbs: Breadcrumb[];
