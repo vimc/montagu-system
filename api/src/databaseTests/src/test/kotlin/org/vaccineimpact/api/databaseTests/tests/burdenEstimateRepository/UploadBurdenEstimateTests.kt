@@ -119,7 +119,6 @@ class UploadBurdenEstimateTests : BurdenEstimateRepositoryTests()
             returnedIds = setupDatabase(db)
         } makeTheseChanges { repo ->
             setId = repo.createBurdenEstimateSet(groupId, touchstoneId, scenarioId, defaultProperties, username, timestamp)
-            repo.populateBurdenEstimateSet(setId!!, groupId, touchstoneId, scenarioId, data)
         } andCheckDatabase { db ->
             checkCurrentBurdenEstimateSet(db, returnedIds!!, setId!!)
         }
