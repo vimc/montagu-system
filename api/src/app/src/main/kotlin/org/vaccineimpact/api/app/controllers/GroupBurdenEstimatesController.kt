@@ -128,7 +128,9 @@ open class GroupBurdenEstimatesController(context: ControllerContext) : Abstract
     {
         val data = if (metadata.type.type == BurdenEstimateSetTypeCode.STOCHASTIC)
         {
-            context.csvData<BurdenEstimateWithRunId>(from = source)
+            context.csvData<StochasticBurdenEstimate>(from = source).map {
+                BurdenEstimateWithRunId(it)
+            }
         }
         else
         {

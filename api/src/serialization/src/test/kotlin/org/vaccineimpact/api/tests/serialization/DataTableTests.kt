@@ -18,6 +18,7 @@ class DataTableTests : MontaguTests()
 {
     data class ABC(val a: String, val b: String, val c: String)
     data class MixedTypes(val text: String?, val int: Int?, val dec: BigDecimal?)
+    data class SomeRequiredColumns(val text: String?, val int: Int)
     data class WithEnums(val text: String, val enum: TouchstoneStatus)
     @FlexibleColumns
     data class Flexible(val a: Int, val b: String, val extra: Map<String, Int>)
@@ -173,6 +174,18 @@ free text,in-preparation""")
             "sam",2.6,1"""
         checkValidationError("csv-bad-data-type:2:int", "Unable to parse '2.6' as Int? (Row 2, column int)") {
             DataTableDeserializer.deserialize(csv, MixedTypes::class, MontaguSerializer.instance).toList()
+        }
+    }
+
+    @Test
+    fun `error if NA value for non-nullable type`()
+    {
+        val csv = """
+            text,int
+            "x",5
+            "y",NA"""
+        checkValidationError("csv-bad-data-type:2:int", "Unable to parse 'NA' as Int (Row 2, column int)") {
+            DataTableDeserializer.deserialize(csv, SomeRequiredColumns::class, MontaguSerializer.instance).toList()
         }
     }
 
