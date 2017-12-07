@@ -11,8 +11,8 @@ if docker top db &>/dev/null; then
 fi
 
 echo "Starting database"
-$here/../db/scripts/start.sh $DB_VERSION
+$here/../db/scripts/start.sh $DB_VERSION $DB_PORT
 
-echo "----------------------------------------"
-echo "Database is now running on port 5432"
+echo "-------------------------------------------------------"
+echo "Database is now running and accessible at port $DB_PORT"
 

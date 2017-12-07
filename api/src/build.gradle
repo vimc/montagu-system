@@ -68,7 +68,10 @@ task loadPropertiesTask() {
 task startDatabase(type: Exec, dependsOn: ':loadPropertiesTask') {
     doFirst {
         String dbVersion = file("config/db_version").text
-        environment(['DB_VERSION': dbVersion])
+        environment([
+                'DB_VERSION': dbVersion,
+                'DB_PORT': rootProject.ext.props.get('testdb_port')
+        ])
     }
     commandLine 'bash', '../scripts/start-database.sh'
 }
