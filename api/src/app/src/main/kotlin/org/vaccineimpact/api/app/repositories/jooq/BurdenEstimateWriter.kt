@@ -76,7 +76,6 @@ class BurdenEstimateWriter(val dsl: DSLContext)
             // We use dsl.connection to drop down from jOOQ to the JDBC level so we can use CopyManager.
             dsl.connection { connection ->
                 val manager = CopyManager(connection as BaseConnection)
-                val t = Tables.BURDEN_ESTIMATE
                 // This will return once it reaches the EOF character written out by the other stream
                 manager.copyInto(target, inputStream, fields)
             }
