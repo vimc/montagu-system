@@ -17,18 +17,6 @@ describe("NavBar", () => {
         return shallow(<NavBarComponent crumbs={crumbs}/>).find("." + styles.chunk);
     };
 
-    it("can get props from store", () => {
-        navActions.navigate("a", "A");
-        navActions.navigate("b", "B");
-        const props = NavBarComponent.getPropsFromStores();
-        expect(props).to.eql({
-            crumbs: [
-                {url: "a", name: "A"},
-                {url: "b", name: "B"}
-            ]
-        });
-    });
-
     it("can render zero crumbs", () => {
         expect(renderCrumbs([])).to.have.length(0);
     });
