@@ -45,6 +45,7 @@ class BurdenEstimateWriter(val dsl: DSLContext)
                 val t = Tables.BURDEN_ESTIMATE
                 val writeToDatabaseThread = writeStreamToDatabase(dsl, inputStream, t, listOf(
                         t.BURDEN_ESTIMATE_SET,
+                        t.MODEL_RUN,
                         t.COUNTRY,
                         t.YEAR,
                         t.AGE,
@@ -102,12 +103,12 @@ class BurdenEstimateWriter(val dsl: DSLContext)
                     throw UnknownObjectError(estimate.country, "country")
                 }
 
-                writer.writeRow(newBurdenEstimateRow(setId, estimate, cohortSizeId, estimate.cohortSize))
+                writer.writeRow(newBurdenEstimateRow(setId, null, estimate, cohortSizeId, estimate.cohortSize))
                 for (outcome in estimate.outcomes)
                 {
                     val outcomeId = outcomeLookup[outcome.key]
                             ?: throw UnknownObjectError(outcome.key, "burden-outcome")
-                    writer.writeRow(newBurdenEstimateRow(setId, estimate, outcomeId, outcome.value))
+                    writer.writeRow(newBurdenEstimateRow(setId, null, estimate, outcomeId, outcome.value))
                 }
             }
         }
@@ -115,6 +116,7 @@ class BurdenEstimateWriter(val dsl: DSLContext)
 
     private fun newBurdenEstimateRow(
             setId: Int,
+            runId: Int?,
             estimate: BurdenEstimate,
             outcomeId: Int,
             outcomeValue: BigDecimal?
@@ -122,6 +124,7 @@ class BurdenEstimateWriter(val dsl: DSLContext)
     {
         return listOf(
                 setId,
+                runId,
                 estimate.country,
                 estimate.year,
                 estimate.age,
