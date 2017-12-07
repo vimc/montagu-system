@@ -8,6 +8,7 @@ import {TemplateLink} from "../Overview/List/TemplateLinks";
 import {CreateBurdenEstimateSetForm} from "./CreateBurdenEstimateSetForm";
 import {CurrentEstimateSetSummary} from "../Overview/List/CurrentEstimateSetSummary";
 import {UploadFileForm} from "../../../../shared/components/UploadFileForm";
+import {helpers} from "../../../../shared/Helpers";
 
 const commonStyles = require("../../../../shared/styles/common.css");
 
@@ -29,8 +30,11 @@ export class UploadBurdenEstimatesContentComponent extends RemoteContentComponen
     }
 
     static getPropsFromStores(): UploadBurdenEstimatesContentComponentProps {
+
         const state = responsibilityStore.getState();
         const r = state.currentResponsibility;
+
+        console.log("updating page")
 
         if (r != null && state.estimatesOneTimeToken != null) {
             return {
@@ -61,11 +65,11 @@ export class UploadBurdenEstimatesContentComponent extends RemoteContentComponen
             && data.responsibility.current_estimate_set .status == "empty";
 
         const uploadForm = canUpload ?
-            <UploadFileForm token={data.estimatesToken} enableSubmit={true} uploadText={"Choose a new burden estimate set"}
+            <UploadFileForm token={data.estimatesToken} enableSubmit={true} uploadText={"Upload estimates for this set"}
                             successMessage={"Success! You have uploaded a new set of burden estimates"}/>
             : null;
 
-        const createForm = canCreate ?
+        const createForm = canCreate && !canUpload  ?
             <CreateBurdenEstimateSetForm groupId={data.group.id}
                                          touchstoneId={data.touchstone.id}
                                          scenarioId={data.scenario.id}/>

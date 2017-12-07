@@ -45,7 +45,7 @@ export class CurrentEstimateSetSummary extends React.Component<Props, undefined>
         const {estimateSet, canUpload} = this.props;
         const estimateText = CurrentEstimateSetSummary.getMessage(estimateSet, canUpload);
 
-        return <div className={"mt-3 mr-3 " + messageStyles.info}>
+        return <div className={"mt-3 alert alert-warning"}>
             {estimateText}
         </div>;
     }

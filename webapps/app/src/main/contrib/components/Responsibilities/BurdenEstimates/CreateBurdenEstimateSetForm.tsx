@@ -1,7 +1,10 @@
 import * as React from "react";
 import {Alert} from "../../../../shared/components/Alert";
 import fetcher from "../../../../shared/sources/Fetcher";
-import {BurdenEstimateSetTypeCode, ErrorInfo} from "../../../../shared/models/Generated";
+import {BurdenEstimateSetTypeCode, ErrorInfo, Result} from "../../../../shared/models/Generated";
+import {apiResponse} from "../../../../shared/sources/Source";
+import {doNothing, helpers} from "../../../../shared/Helpers";
+import {responsibilityStore} from "../../../stores/ResponsibilityStore";
 
 interface BurdenEstimateState {
     typeCode: BurdenEstimateSetTypeCode;
@@ -10,6 +13,7 @@ interface BurdenEstimateState {
     errors: ErrorInfo[];
     hasSuccess: boolean;
     touched: boolean;
+    hasUploadSuccess: boolean;
 }
 
 interface BurdenEstimateProps {
@@ -22,6 +26,8 @@ export class CreateBurdenEstimateSetForm extends React.Component<BurdenEstimateP
 
     constructor() {
 
+        const result = helpers.ingestQueryStringAndReturnResult();
+
         super();
 
         this.state = {
@@ -30,7 +36,8 @@ export class CreateBurdenEstimateSetForm extends React.Component<BurdenEstimateP
             typeDetails: null,
             disabled: true,
             errors: [],
-            hasSuccess: false
+            hasSuccess: false,
+            hasUploadSuccess: result && result.status == "success"
         }
     }
 
@@ -64,16 +71,18 @@ export class CreateBurdenEstimateSetForm extends React.Component<BurdenEstimateP
                     details: this.state.typeDetails
                 }
             })
-        }).then(() => {
-            self.setState({
-                hasSuccess: true,
-                disabled: false
-            })
-            // TODO dispatch action to update current responsibility with newly created burden estimate set
-        }).catch((e: any) => {
-            self.setState({
-                errors : [e]
-            })
+        }).then((response: Response) => {
+            apiResponse(response)
+                .then((result: Result) => {
+                        self.setState({
+                            hasSuccess: result.status == "success",
+                            errors: result.errors,
+                            disabled: false
+                        });
+
+                        responsibilityStore.refreshResponsibilities()
+                    }
+                );
         });
     }
 
@@ -83,31 +92,35 @@ export class CreateBurdenEstimateSetForm extends React.Component<BurdenEstimateP
 
         const alertMessage = hasError ? this.state.errors[0].message : "Success! You have created a new burden estimate set";
 
-        return <form className="mt-4" onSubmit={this.onSubmit.bind(this)}>
-            <h4>First, please let us know a little about your methodology</h4>
-            <div className="row">
-                <div className="col">
-                    <label>How were these estimates obtained?</label>
-                    <select onChange={this.onTypeChange.bind(this)}
-                            className={`form-control ${this.state.touched && this.state.typeCode.length == 0 ? "is-invalid" : ""}`}
-                            required name="type">
-                        <option value="">-- Please select one --</option>
-                        <option value="central-single-run">Single model run</option>
-                        <option value="central-averaged">Averaged across model runs</option>
-                    </select>
+        return <div>
+            <Alert hasSuccess={this.state.hasUploadSuccess} hasError={false}
+                   message={"Success! Your burden estimates have been uploaded"}/>
+            <form className="mt-4" onSubmit={this.onSubmit.bind(this)}>
+                <h4>Create a new set of burden estimates:</h4>
+                <div className="row">
+                    <div className="col">
+                        <label>How were these estimates obtained?</label>
+                        <select onChange={this.onTypeChange.bind(this)}
+                                className={`form-control ${this.state.touched && this.state.typeCode.length == 0 ? "is-invalid" : ""}`}
+                                required name="type">
+                            <option value="">-- Please select one --</option>
+                            <option value="central-single-run">Single model run</option>
+                            <option value="central-averaged">Averaged across model runs</option>
+                        </select>
+                    </div>
+                    <div className="col">
+                        <label>Details of this run</label>
+                        <input type="text" className={"form-control"} name="details"
+                               onChange={this.onDetailsChange.bind(this)}/>
+                    </div>
                 </div>
-                <div className="col">
-                    <label>Details of this run</label>
-                    <input type="text" className={"form-control"} name="details"
-                           onChange={this.onDetailsChange.bind(this)}/>
+                <div className="mt-4">
+                    <Alert hasSuccess={this.state.hasSuccess} hasError={hasError} message={alertMessage}/>
                 </div>
-            </div>
-            <div className="mt-4">
-                <Alert hasSuccess={this.state.hasSuccess} hasError={hasError} message={alertMessage}/>
-            </div>
-            <button type="submit" className="mt-2"
-                    disabled={this.state.disabled}>Create
-            </button>
-        </form>;
+                <button type="submit" className="mt-2"
+                        disabled={this.state.disabled}>Create
+                </button>
+            </form>
+        </div>;
     }
 }

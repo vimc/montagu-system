@@ -1,5 +1,4 @@
 import { settings } from "../Settings";
-import { isUndefined } from "util";
 
 export interface FetchOptions {
     method?: string,
