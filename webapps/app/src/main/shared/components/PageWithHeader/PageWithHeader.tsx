@@ -40,11 +40,7 @@ export abstract class PageWithHeader<TLocationProps>
 
     createBreadcrumb() {
         if (this.includeInBreadcrumbs()) {
-            if (navStore.getState().isInitialized) {
-                navActions.navigate(this.url(), this.name());
-            } else {
-                navActions.initialize(this);
-            }
+            navActions.initialize(this);
         }
     }
 

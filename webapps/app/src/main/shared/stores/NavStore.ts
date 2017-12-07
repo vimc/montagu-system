@@ -24,7 +24,6 @@ class NavStore extends AbstractStore<NavState, AltJS.AltStore<NavState>> {
         super();
         this.bindListeners({
             handleInitialize: navActions.initialize,
-            handleNavigate: navActions.navigate
         });
     }
 
@@ -35,15 +34,6 @@ class NavStore extends AbstractStore<NavState, AltJS.AltStore<NavState>> {
     handleInitialize(breadcrumbs: Breadcrumb[]) {
         this.isInitialized = true;
         this.crumbs = breadcrumbs;
-    }
-
-    handleNavigate(breadcrumb: Breadcrumb) {
-        const i = this.crumbs.findIndex(c => c.url == breadcrumb.url);
-        if (i >= 0) {
-            this.crumbs.splice(i + 1);
-        } else {
-            this.crumbs.push(breadcrumb);
-        }
     }
 }
 
