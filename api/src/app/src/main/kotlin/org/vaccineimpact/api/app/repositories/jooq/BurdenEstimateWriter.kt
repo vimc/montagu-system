@@ -13,6 +13,7 @@ import org.vaccineimpact.api.db.Tables
 import org.vaccineimpact.api.db.copyInto
 import org.vaccineimpact.api.db.withoutCheckingForeignKeyConstraints
 import org.vaccineimpact.api.models.BurdenEstimate
+import org.vaccineimpact.api.models.BurdenEstimateWithRunId
 import java.io.BufferedInputStream
 import java.io.OutputStream
 import java.io.PipedInputStream
@@ -22,7 +23,7 @@ import kotlin.concurrent.thread
 
 class BurdenEstimateWriter(val dsl: DSLContext)
 {
-    fun addEstimatesToSet(estimates: Sequence<BurdenEstimate>, setId: Int, expectedDisease: String)
+    fun addEstimatesToSet(estimates: Sequence<BurdenEstimateWithRunId>, setId: Int, expectedDisease: String)
     {
         val countries = getAllCountryIds()
         val outcomeLookup = getOutcomesAsLookup()
@@ -84,7 +85,7 @@ class BurdenEstimateWriter(val dsl: DSLContext)
     }
 
     private fun writeCopyData(
-            stream: OutputStream, estimates: Sequence<BurdenEstimate>,
+            stream: OutputStream, estimates: Sequence<BurdenEstimateWithRunId>,
             expectedDisease: String, countries: HashSet<String>,
             setId: Int, cohortSizeId: Int, outcomeLookup: Map<String, Int>
     )
@@ -103,12 +104,12 @@ class BurdenEstimateWriter(val dsl: DSLContext)
                     throw UnknownObjectError(estimate.country, "country")
                 }
 
-                writer.writeRow(newBurdenEstimateRow(setId, null, estimate, cohortSizeId, estimate.cohortSize))
+                writer.writeRow(newBurdenEstimateRow(setId, estimate, cohortSizeId, estimate.cohortSize))
                 for (outcome in estimate.outcomes)
                 {
                     val outcomeId = outcomeLookup[outcome.key]
                             ?: throw UnknownObjectError(outcome.key, "burden-outcome")
-                    writer.writeRow(newBurdenEstimateRow(setId, null, estimate, outcomeId, outcome.value))
+                    writer.writeRow(newBurdenEstimateRow(setId, estimate, outcomeId, outcome.value))
                 }
             }
         }
@@ -116,15 +117,14 @@ class BurdenEstimateWriter(val dsl: DSLContext)
 
     private fun newBurdenEstimateRow(
             setId: Int,
-            runId: Int?,
-            estimate: BurdenEstimate,
+            estimate: BurdenEstimateWithRunId,
             outcomeId: Int,
             outcomeValue: BigDecimal?
     ): List<Any?>
     {
         return listOf(
                 setId,
-                runId,
+                estimate.runId, // This isn't right - it needs translating from external to internal run id
                 estimate.country,
                 estimate.year,
                 estimate.age,

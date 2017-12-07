@@ -107,19 +107,38 @@ open class GroupBurdenEstimatesController(context: ControllerContext) : Abstract
         // First check if we're allowed to see this touchstone
         val path = getValidResponsibilityPath(context, estimateRepository)
 
-        // Then add the burden estimates
-        val data = context.csvData<BurdenEstimate>(from = source)
-        val checkedData = data.checkAllValuesAreEqual({ it.disease },
-                InconsistentDataError("More than one value was present in the disease column")
-        )
+        // Next, get the metadata that will enable us to interpret the CSV
+        val setId = context.params(":set-id").toInt()
+        val metadata = estimateRepository.getBurdenEstimateSet(setId)
 
+        // Then add the burden estimates
+        val data = getBurdenEstimateDataFromCSV(metadata, context, source)
         estimateRepository.populateBurdenEstimateSet(
-                context.params(":set-id").toInt(),
+                setId,
                 path.groupId, path.touchstoneId, path.scenarioId,
-                checkedData
+                data
         )
 
         return okayResponse()
+    }
+
+    private fun getBurdenEstimateDataFromCSV(
+            metadata: BurdenEstimateSet, context: ActionContext, source: RequestBodySource
+    ): Sequence<BurdenEstimateWithRunId>
+    {
+        val data = if (metadata.type.type == BurdenEstimateSetTypeCode.STOCHASTIC)
+        {
+            context.csvData<BurdenEstimateWithRunId>(from = source)
+        }
+        else
+        {
+            context.csvData<BurdenEstimate>(from = source).map {
+                BurdenEstimateWithRunId(it, runId = null)
+            }
+        }
+        return data.checkAllValuesAreEqual({ it.disease },
+                InconsistentDataError("More than one value was present in the disease column")
+        )
     }
 
     @Deprecated("Instead use createBurdenEstimateSet and then populateBurdenEstimateSet")
