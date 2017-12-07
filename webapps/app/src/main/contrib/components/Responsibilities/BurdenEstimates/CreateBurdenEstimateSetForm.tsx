@@ -42,17 +42,17 @@ export class CreateBurdenEstimateSetForm extends React.Component<BurdenEstimateP
         }
     }
 
-    onTypeChange(e: any) {
+    onTypeChange(value: BurdenEstimateSetTypeCode) {
         this.setState({
-            typeCode: e.target.value,
+            typeCode: value,
             touched: true,
-            disabled: e.target.value.length == 0
+            disabled: value.length == 0
         })
     }
 
-    onDetailsChange(e: any) {
+    onDetailsChange(e: React.MouseEvent<HTMLInputElement>) {
         this.setState({
-            typeDetails: e.target.value
+            typeDetails: (e.target as HTMLInputElement).value
         })
     }
 
