@@ -1,2 +1,2 @@
 export const navbar: string;
-export const chunk: string;
+export const navbar__chunk: string;

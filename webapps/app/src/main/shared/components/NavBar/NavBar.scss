@@ -2,19 +2,20 @@
     background-color: rgb(200, 200, 200);
     padding: 2px 5px 5px 7px;
     color: black;
+
+    .navbar__chunk {
+        font-weight: bold;
+        font-size: 13px;
+        display: inline-block;
+        margin: 0 5px 0 0;
+    }
+
+    .navbar__chunk:before {
+        content: " » ";
+    }
+
+    a .navbar__chunk {
+        color: black;
+    }
 }
 
-.chunk {
-    font-weight: bold;
-    font-size: 13px;
-    display: inline-block;
-    margin: 0 5px 0 0;
-}
-
-.chunk:before {
-    content: " » ";
-}
-
-a .chunk {
-    color: black;
-}

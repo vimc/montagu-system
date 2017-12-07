@@ -32,15 +32,15 @@ export class NavBarComponent extends React.Component<Props, undefined> {
     }
 
     render(): JSX.Element {
-        const crumbs = this.props.crumbs.map(c =>
-            <div className={styles.chunk} key={c.url}>
-                {this.makeLink(c)}
+        return(
+            <div className={styles.navbar}>
+            { this.props.crumbs.map(c =>
+                <div className={styles.navbar__chunk} key={c.url}>
+                    {this.makeLink(c)}
+                </div>
+            ) }
             </div>
         );
-
-        return <div className={styles.navbar}>
-            {crumbs}
-        </div>
     }
 }
 
