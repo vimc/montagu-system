@@ -11,7 +11,13 @@ class CodeGenerator
 {
     fun run()
     {
-        val url = CodeGenerator::class.java.classLoader.getResource("config.xml")
+        generate("main-database.xml")
+        generate("annex-database.xml")
+    }
+
+    private fun generate(configFileName: String)
+    {
+        val url = CodeGenerator::class.java.classLoader.getResource(configFileName)
         val config = url.openStream().use {
             GenerationTool.load(it)
         }
