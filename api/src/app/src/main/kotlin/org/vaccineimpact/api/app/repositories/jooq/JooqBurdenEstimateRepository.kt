@@ -268,7 +268,10 @@ class JooqBurdenEstimateRepository(
 
         val latestModelVersion = getlatestModelVersion(modellingGroup.id, responsibilityInfo.disease)
 
-        return addSet(responsibilityInfo.id, uploader, timestamp, latestModelVersion, properties)
+        val setId = addSet(responsibilityInfo.id, uploader, timestamp, latestModelVersion, properties)
+        updateCurrentBurdenEstimateSet(responsibilityInfo.id, setId)
+
+        return setId
     }
 
     private fun getlatestModelVersion(groupId: String, disease: String): Int
