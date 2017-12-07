@@ -40,7 +40,7 @@ import org.vaccineimpact.api.db.tables.records.BurdenEstimateRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class BurdenEstimate extends TableImpl<BurdenEstimateRecord> {
 
-    private static final long serialVersionUID = -1525247353;
+    private static final long serialVersionUID = 1397506850;
 
     /**
      * The reference instance of <code>public.burden_estimate</code>
@@ -81,11 +81,6 @@ public class BurdenEstimate extends TableImpl<BurdenEstimateRecord> {
     public final TableField<BurdenEstimateRecord, Integer> BURDEN_OUTCOME = createField("burden_outcome", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
-     * The column <code>public.burden_estimate.stochastic</code>.
-     */
-    public final TableField<BurdenEstimateRecord, Boolean> STOCHASTIC = createField("stochastic", org.jooq.impl.SQLDataType.BOOLEAN.nullable(false), this, "");
-
-    /**
      * The column <code>public.burden_estimate.value</code>.
      */
     public final TableField<BurdenEstimateRecord, BigDecimal> VALUE = createField("value", org.jooq.impl.SQLDataType.NUMERIC, this, "");
@@ -94,6 +89,11 @@ public class BurdenEstimate extends TableImpl<BurdenEstimateRecord> {
      * The column <code>public.burden_estimate.age</code>.
      */
     public final TableField<BurdenEstimateRecord, Integer> AGE = createField("age", org.jooq.impl.SQLDataType.INTEGER, this, "");
+
+    /**
+     * The column <code>public.burden_estimate.model_run</code>.
+     */
+    public final TableField<BurdenEstimateRecord, Integer> MODEL_RUN = createField("model_run", org.jooq.impl.SQLDataType.INTEGER, this, "");
 
     /**
      * Create a <code>public.burden_estimate</code> table reference
@@ -169,7 +169,7 @@ public class BurdenEstimate extends TableImpl<BurdenEstimateRecord> {
      */
     @Override
     public List<ForeignKey<BurdenEstimateRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<BurdenEstimateRecord, ?>>asList(Keys.BURDEN_ESTIMATE__BURDEN_ESTIMATE_BURDEN_ESTIMATE_SET_FKEY, Keys.BURDEN_ESTIMATE__BURDEN_ESTIMATE_COUNTRY_FKEY, Keys.BURDEN_ESTIMATE__BURDEN_ESTIMATE_BURDEN_OUTCOME_FKEY);
+        return Arrays.<ForeignKey<BurdenEstimateRecord, ?>>asList(Keys.BURDEN_ESTIMATE__BURDEN_ESTIMATE_BURDEN_ESTIMATE_SET_FKEY, Keys.BURDEN_ESTIMATE__BURDEN_ESTIMATE_COUNTRY_FKEY, Keys.BURDEN_ESTIMATE__BURDEN_ESTIMATE_BURDEN_OUTCOME_FKEY, Keys.BURDEN_ESTIMATE__BURDEN_ESTIMATE_MODEL_RUN_FKEY);
     }
 
     /**
