@@ -53,7 +53,7 @@ export class ReportPage extends ReportingPageWithHeader<ReportPageProps> {
 
     name() {
         const params = this.props.location.params;
-        return `${params.report}-${params.version}`;
+        return `${params.report} (${params.version})`;
     }
 
     urlFragment() {
