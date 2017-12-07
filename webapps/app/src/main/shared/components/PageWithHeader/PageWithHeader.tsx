@@ -1,13 +1,15 @@
 import * as React from "react";
 import {IRouter, Location} from "simple-react-router";
+
 import { InternalLink } from "../InternalLink";
 import { navActions } from "../../actions/NavActions";
 import {NavBar} from "../NavBar/NavBar";
 import {navStore} from "../../stores/NavStore";
 import {IPageWithParent} from "../../models/Breadcrumb";
 
+import * as styles from './PageWithHeader.scss';
+
 const logo = require("./logo.png");
-const styles = require('./PageWithHeader.css');
 
 export abstract class PageWithHeader<TLocationProps>
     extends React.Component<PageProperties<TLocationProps>, undefined>
@@ -52,7 +54,7 @@ export abstract class PageWithHeader<TLocationProps>
         return <div>
             <header className={ styles.header }>
                 <a href="/"><img src={ logo } height="80" alt="VIMC" /></a>
-                <div className={ styles.siteTitle }>
+                <div className={ styles.header__siteTitle }>
                     <InternalLink href="/">{ this.siteTitle() }</InternalLink>
                 </div>
                 { this.header() }
@@ -61,9 +63,9 @@ export abstract class PageWithHeader<TLocationProps>
             { this.postHeader() }
             <article className={ `${styles.page} container` }>
                 { !this.hideTitle() &&
-                    <div className={ styles.pageTitle }>{ this.title() }</div>
+                    <div className={ styles.page__title }>{ this.title() }</div>
                 }
-                <div className={ styles.pageContent }>{ this.renderPageContent() }</div>
+                <div className={ styles.page__content }>{ this.renderPageContent() }</div>
             </article>
         </div>
     }

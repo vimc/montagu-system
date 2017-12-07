@@ -4,8 +4,7 @@ import { ModellingGroup, Touchstone } from "../../../shared/models/Generated";
 import { responsibilityStore } from "../../stores/ResponsibilityStore";
 import { connectToStores } from "../../../shared/alt";
 
-const headerStyles = require("../../../shared/components/PageWithHeader/PageWithHeader.css");
-
+import * as headerStyles from '../../../shared/components/PageWithHeader/PageWithHeader.scss';
 
 interface PublicProps {
     title: string;

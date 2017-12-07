@@ -1,0 +1,43 @@
+.header {
+    padding: 10px;
+    background-color: rgb(38, 50, 122);
+    border-bottom: 2px solid white;
+    color: white;
+
+    .header__siteTitle {
+        display: inline-block;
+        margin-bottom: 4px;
+        margin-left: 5px;
+        vertical-align: bottom;
+        font-family: header, sans-serif;
+        font-size: 24pt;
+        font-variant-caps: small-caps;
+
+        a, a:visited, a:hover {
+            text-decoration: inherit;
+            color: inherit;
+        }
+    }
+
+}
+
+.titleAddition {
+    font-family: body, sans-serif;
+    font-size: 10pt;
+}
+
+.page {
+    margin: 0 auto;
+    padding: 20px;
+
+    .page__title {
+        font-family: header, sans-serif;
+        font-size: 24pt;
+        margin-bottom: 30px;
+        border-bottom: 1px dashed;
+    }
+
+    .page__content {
+        color: inherit;
+    }
+}
