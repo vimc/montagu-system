@@ -34,8 +34,6 @@ export class UploadBurdenEstimatesContentComponent extends RemoteContentComponen
         const state = responsibilityStore.getState();
         const r = state.currentResponsibility;
 
-        console.log("updating page")
-
         if (r != null && state.estimatesOneTimeToken != null) {
             return {
                 ready: state.ready,

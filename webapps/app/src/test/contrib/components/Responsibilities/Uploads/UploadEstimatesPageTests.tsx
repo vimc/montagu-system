@@ -49,7 +49,7 @@ describe('UploadEstimatesPage', () => {
                     message: "Success! You have uploaded a new set of burden estimates.",
                     type: "info"
                 };
-                expectOrderedActions(spy, [{action: "NotificationActions.notify", payload: successNotification},
+                expectOrderedActions(spy, [
                     {action: "EstimateTokenActions.clearUsedToken", payload: true},
                     {action: "ModellingGroupActions.setCurrentGroup", payload: "group-1"},
                     {action: "TouchstoneActions.setCurrentTouchstone", payload: "touchstone-1"},

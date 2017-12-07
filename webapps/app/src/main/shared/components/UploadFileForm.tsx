@@ -1,7 +1,7 @@
 import * as React from "react";
 import fetcher from "../sources/Fetcher";
 import {helpers} from "../Helpers";
-import {ErrorInfo} from "../models/Generated";
+import {ErrorInfo, Result} from "../models/Generated";
 import {Alert} from "./Alert";
 
 const formStyles = require("../styles/forms.css");
@@ -30,7 +30,7 @@ export class UploadFileForm extends React.Component<UploadFileProps, UploadFileS
         this.state = {
             fileSelected: false,
             fileName: "",
-            hasSuccess: result && result.status == "success",
+            hasSuccess: result != null && (result as Result).status == "success",
             errors: result ? result.errors : []
         };
     }
