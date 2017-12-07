@@ -10,11 +10,6 @@ import {estimateTokenActions} from "../../../actions/EstimateActions";
 import {ContribPageWithHeader} from "../../PageWithHeader/ContribPageWithHeader";
 import {IPageWithParent} from "../../../../shared/models/Breadcrumb";
 import {ResponsibilityOverviewPage} from "../Overview/ResponsibilityOverviewPage";
-import {
-    processEncodedResultAndNotifyOnErrors
-} from "../../../../shared/sources/Source";
-import {helpers} from "../../../../shared/Helpers";
-import {makeNotification, notificationActions} from "../../../../shared/actions/NotificationActions";
 
 export interface UploadEstimatesProps {
     groupId: string;

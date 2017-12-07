@@ -5,6 +5,7 @@ import {BurdenEstimateSetTypeCode, ErrorInfo, Result} from "../../../../shared/m
 import {apiResponse} from "../../../../shared/sources/Source";
 import {doNothing, helpers} from "../../../../shared/Helpers";
 import {responsibilityStore} from "../../../stores/ResponsibilityStore";
+import {OptionSelector} from "../../OptionSelector/OptionSelector";
 
 interface BurdenEstimateState {
     typeCode: BurdenEstimateSetTypeCode;
@@ -92,6 +93,11 @@ export class CreateBurdenEstimateSetForm extends React.Component<BurdenEstimateP
 
         const alertMessage = hasError ? this.state.errors[0].message : "Success! You have created a new burden estimate set";
 
+        const options = [{value: "central-single-run", text: "Single model run"}, {
+            value: "central-averaged",
+            text: "Averaged across model runs"
+        }];
+
         return <div>
             <Alert hasSuccess={this.state.hasUploadSuccess} hasError={false}
                    message={"Success! Your burden estimates have been uploaded"}/>
@@ -100,13 +106,10 @@ export class CreateBurdenEstimateSetForm extends React.Component<BurdenEstimateP
                 <div className="row">
                     <div className="col">
                         <label>How were these estimates obtained?</label>
-                        <select onChange={this.onTypeChange.bind(this)}
-                                className={`form-control ${this.state.touched && this.state.typeCode.length == 0 ? "is-invalid" : ""}`}
-                                required name="type">
-                            <option value="">-- Please select one --</option>
-                            <option value="central-single-run">Single model run</option>
-                            <option value="central-averaged">Averaged across model runs</option>
-                        </select>
+                        <OptionSelector
+                            defaultOption={"-- Please select one --"}
+                            options={options} onChange={this.onTypeChange.bind(this)}
+                            className={`form-control ${this.state.touched && this.state.typeCode.length == 0 ? "is-invalid" : ""}`}/>
                     </div>
                     <div className="col">
                         <label>Details of this run</label>

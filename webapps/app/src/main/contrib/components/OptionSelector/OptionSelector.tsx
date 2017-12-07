@@ -9,6 +9,7 @@ export interface OptionList {
     defaultOption: string;
     options: Option[];
     onChange: (value: string) => void;
+    className?: string
 }
 
 export class OptionSelector extends React.Component<OptionList, undefined> {
@@ -23,7 +24,7 @@ export class OptionSelector extends React.Component<OptionList, undefined> {
             defaultOption = <option key={ null } value="">{ this.props.defaultOption }</option>;
         }
 
-        return <select onChange={ this.onChange }>
+        return <select onChange={ this.onChange } className={this.props.className}>
             { defaultOption }
             { options }
         </select>;

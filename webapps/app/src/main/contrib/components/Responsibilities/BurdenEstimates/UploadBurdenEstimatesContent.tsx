@@ -8,7 +8,6 @@ import {TemplateLink} from "../Overview/List/TemplateLinks";
 import {CreateBurdenEstimateSetForm} from "./CreateBurdenEstimateSetForm";
 import {CurrentEstimateSetSummary} from "../Overview/List/CurrentEstimateSetSummary";
 import {UploadFileForm} from "../../../../shared/components/UploadFileForm";
-import {helpers} from "../../../../shared/Helpers";
 
 const commonStyles = require("../../../../shared/styles/common.css");
 
