@@ -221,7 +221,7 @@ class JooqBurdenEstimateRepository(
         val responsibilityInfo = getResponsibilityInfo(modellingGroup.id, touchstoneId, scenarioId)
 
         checkSetStatusIsEmpty(setId)
-        BurdenEstimateWriter(dsl).addEstimatesToSet(estimates, setId, responsibilityInfo.disease)
+        BurdenEstimateWriter(dsl, setId).addEstimatesToSet(estimates, responsibilityInfo.disease)
         updateCurrentBurdenEstimateSet(responsibilityInfo.id, setId)
         dsl.update(Tables.BURDEN_ESTIMATE_SET)
                 .set(Tables.BURDEN_ESTIMATE_SET.STATUS, "complete")

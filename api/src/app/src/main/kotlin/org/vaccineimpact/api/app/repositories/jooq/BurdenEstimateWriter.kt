@@ -8,11 +8,11 @@ import org.postgresql.core.BaseConnection
 import org.vaccineimpact.api.app.errors.DatabaseContentsError
 import org.vaccineimpact.api.app.errors.InconsistentDataError
 import org.vaccineimpact.api.app.errors.UnknownObjectError
-import org.vaccineimpact.api.db.PostgresCopyWriter
-import org.vaccineimpact.api.db.Tables
-import org.vaccineimpact.api.db.copyInto
-import org.vaccineimpact.api.db.withoutCheckingForeignKeyConstraints
+import org.vaccineimpact.api.app.errors.UnknownRunIdError
+import org.vaccineimpact.api.db.*
+import org.vaccineimpact.api.db.Tables.*
 import org.vaccineimpact.api.models.BurdenEstimate
+import org.vaccineimpact.api.models.BurdenEstimateSet
 import org.vaccineimpact.api.models.BurdenEstimateWithRunId
 import java.io.BufferedInputStream
 import java.io.OutputStream
@@ -21,15 +21,16 @@ import java.io.PipedOutputStream
 import java.math.BigDecimal
 import kotlin.concurrent.thread
 
-class BurdenEstimateWriter(val dsl: DSLContext)
+class BurdenEstimateWriter(val dsl: DSLContext, val setId: Int)
 {
-    fun addEstimatesToSet(estimates: Sequence<BurdenEstimateWithRunId>, setId: Int, expectedDisease: String)
-    {
-        val countries = getAllCountryIds()
-        val outcomeLookup = getOutcomesAsLookup()
-        val cohortSizeId = outcomeLookup["cohort_size"]
-                ?: throw DatabaseContentsError("Expected a value with code 'cohort_size' in burden_outcome table")
+    private val countries = getAllCountryIds()
+    private val modelRuns = getModelRunsAsLookup(setId)
+    private val outcomeLookup = getOutcomesAsLookup()
+    private val cohortSizeId = outcomeLookup["cohort_size"]
+            ?: throw DatabaseContentsError("Expected a value with code 'cohort_size' in burden_outcome table")
 
+    fun addEstimatesToSet(estimates: Sequence<BurdenEstimateWithRunId>, expectedDisease: String)
+    {
         // The only foreign keys are:
         // * burden_estimate_set, which is the same for every row, and it's the one we just created and know exists
         // * country, which we check below, per row of the CSV (and each row represents multiple rows in the database
@@ -56,10 +57,7 @@ class BurdenEstimateWriter(val dsl: DSLContext)
 
                 // In the main thread, write to piped stream, blocking if we get too far ahead of
                 // the other thread ("too far ahead" meaning the buffer on the input stream is full)
-                writeCopyData(
-                        stream, estimates, expectedDisease,
-                        countries, setId, cohortSizeId, outcomeLookup
-                )
+                writeCopyData(stream, estimates, expectedDisease, setId)
 
                 // Wait for the worker thread to finished
                 writeToDatabaseThread.join()
@@ -86,8 +84,7 @@ class BurdenEstimateWriter(val dsl: DSLContext)
 
     private fun writeCopyData(
             stream: OutputStream, estimates: Sequence<BurdenEstimateWithRunId>,
-            expectedDisease: String, countries: HashSet<String>,
-            setId: Int, cohortSizeId: Int, outcomeLookup: Map<String, Int>
+            expectedDisease: String, setId: Int
     )
     {
         // When we exit the 'use' block the EOF character will be written out,
@@ -103,13 +100,14 @@ class BurdenEstimateWriter(val dsl: DSLContext)
                 {
                     throw UnknownObjectError(estimate.country, "country")
                 }
+                val modelRun = resolveRunId(estimate.runId)
 
-                writer.writeRow(newBurdenEstimateRow(setId, estimate, cohortSizeId, estimate.cohortSize))
+                writer.writeRow(newBurdenEstimateRow(setId, modelRun, estimate, cohortSizeId, estimate.cohortSize))
                 for (outcome in estimate.outcomes)
                 {
                     val outcomeId = outcomeLookup[outcome.key]
                             ?: throw UnknownObjectError(outcome.key, "burden-outcome")
-                    writer.writeRow(newBurdenEstimateRow(setId, estimate, outcomeId, outcome.value))
+                    writer.writeRow(newBurdenEstimateRow(setId, modelRun, estimate, outcomeId, outcome.value))
                 }
             }
         }
@@ -117,6 +115,7 @@ class BurdenEstimateWriter(val dsl: DSLContext)
 
     private fun newBurdenEstimateRow(
             setId: Int,
+            modelRun: Int?,
             estimate: BurdenEstimateWithRunId,
             outcomeId: Int,
             outcomeValue: BigDecimal?
@@ -124,13 +123,33 @@ class BurdenEstimateWriter(val dsl: DSLContext)
     {
         return listOf(
                 setId,
-                estimate.runId, // This isn't right - it needs translating from external to internal run id
+                modelRun,
                 estimate.country,
                 estimate.year,
                 estimate.age,
                 outcomeId,
                 outcomeValue
         )
+    }
+
+    private fun resolveRunId(runId: String?): Int?
+    {
+        // If we are expecting run IDs not to be null (i.e. for stochastic estimates)
+        // we expect this to have been caught at an earlier stage, during CSV parsing
+        return if (runId == null)
+        {
+            null
+        }
+        else
+        {
+            val modelRunParameterSetId = dsl.select(BURDEN_ESTIMATE_SET.MODEL_RUN_PARAMETER_SET)
+                    .from(BURDEN_ESTIMATE_SET)
+                    .where(BURDEN_ESTIMATE_SET.ID.eq(setId))
+                    .fetchOneInto(Int::class.java)
+
+            modelRuns.getOrDefault(runId, null)
+                    ?: throw UnknownRunIdError(runId, modelRunParameterSetId)
+        }
     }
 
     private fun getAllCountryIds() = dsl.select(Tables.COUNTRY.ID)
@@ -145,5 +164,17 @@ class BurdenEstimateWriter(val dsl: DSLContext)
                 .from(Tables.BURDEN_OUTCOME)
                 .fetch()
                 .intoMap(Tables.BURDEN_OUTCOME.CODE, Tables.BURDEN_OUTCOME.ID)
+    }
+
+    private fun getModelRunsAsLookup(setId: Int): Map<String, Int>
+    {
+        // This gets us from user defined run IDs (e.g. "run_with_extra_toffee")
+        // to our auto-generated internal IDs (e.g. 4532)
+        return dsl.select(MODEL_RUN.INTERNAL_ID, MODEL_RUN.RUN_ID)
+                .fromJoinPath(BURDEN_ESTIMATE_SET, MODEL_RUN_PARAMETER_SET, MODEL_RUN)
+                .where(BURDEN_ESTIMATE_SET.ID.eq(setId))
+                .fetch()
+                .map { it[MODEL_RUN.RUN_ID] to it[MODEL_RUN.INTERNAL_ID] }
+                .toMap()
     }
 }
