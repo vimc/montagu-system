@@ -9,7 +9,8 @@ export interface OptionList {
     defaultOption: string;
     options: Option[];
     onChange: (value: string) => void;
-    className?: string
+    className?: string;
+    name: string;
     required: boolean;
 }
 
@@ -25,11 +26,11 @@ export class OptionSelector extends React.Component<OptionList, undefined> {
             defaultOption = <option key={null} value="">{this.props.defaultOption}</option>;
         }
 
-        return this.props.required ? <select onChange={this.onChange} className={this.props.className} required>
+        return this.props.required ? <select onChange={this.onChange} className={this.props.className} name={this.props.name} required>
                 {defaultOption}
                 {options}
             </select> :
-            <select onChange={this.onChange} className={this.props.className}>
+            <select onChange={this.onChange} className={this.props.className} name={this.props.name}>
                 {defaultOption}
                 {options}
             </select>;

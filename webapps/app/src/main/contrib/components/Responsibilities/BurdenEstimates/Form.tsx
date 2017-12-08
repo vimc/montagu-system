@@ -25,9 +25,10 @@ interface FormProps {
     fields: FormField[];
     url: string;
     successCallback: (result: Result) => any;
-    buildPostData: () => any;
+    buildPostData: (formData: FormData) => any;
     successMessage: string;
     submitText: string;
+    nativeFormPost: boolean;
 }
 
 export class MontaguForm extends React.Component<FormProps, FormState> {
@@ -44,41 +45,51 @@ export class MontaguForm extends React.Component<FormProps, FormState> {
         }
     }
 
-    onSubmit(e: any) {
+    onSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
+        const form = e.target as HTMLFormElement;
+
+        const formData = new FormData(form);
+        const data = this.props.buildPostData(formData);
 
         const self = this;
         self.setState({
             validated: true
         });
 
-        if (e.target.checkValidity() === true) {
+        if (form.checkValidity() === true) {
 
             self.setState({
                 disabled: true
             });
 
-            fetcher.fetcher.fetch(this.props.url, {
-                method: "post",
-                body: JSON.stringify(this.props.buildPostData)
-            }).then((response: Response) => {
-                apiResponse(response)
-                    .then((result: Result) => {
+            if (this.props.nativeFormPost) {
+                form.submit()
+            }
+            else {
 
-                            const success = result.status == "success";
-                            self.setState({
-                                hasSuccess: success,
-                                errors: result.errors,
-                                disabled: false
-                            });
+                fetcher.fetcher.fetch(this.props.url, {
+                    method: "post",
+                    body: JSON.stringify(data)
+                }).then((response: Response) => {
+                    apiResponse(response)
+                        .then((result: Result) => {
 
-                            if (success) {
-                                self.props.successCallback(result)
+                                const success = result.status == "success";
+                                self.setState({
+                                    hasSuccess: success,
+                                    errors: result.errors,
+                                    disabled: false
+                                });
+
+                                if (success) {
+                                    self.props.successCallback(result)
+                                }
+
                             }
-
-                        }
-                    );
-            });
+                        );
+                });
+            }
         }
     }
 
