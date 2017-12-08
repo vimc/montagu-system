@@ -185,7 +185,5 @@ describe("CreateEstimatesFormComponent", () => {
         rendered.setState({validated: true});
 
         expect(rendered.find("form").hasClass("was-validated")).to.eq(true);
-
     });
-
 });

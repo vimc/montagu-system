@@ -1,13 +1,14 @@
 import {mainStore} from "../main/contrib/stores/MainStore";
 import {expect} from "chai";
-import {checkPromise} from "../test/testHelpers";
+import * as React from "react";
+import {checkAsync, checkPromise} from "../test/testHelpers";
 import {Client, QueryResult} from "pg";
 import {responsibilityStore} from "../main/contrib/stores/ResponsibilityStore";
 import {
     DemographicDataset,
     Disease,
     ModellingGroup,
-    Responsibilities,
+    Responsibilities, Result,
     ScenarioTouchstoneAndCoverageSets,
     Touchstone
 } from "../main/shared/models/Generated";
@@ -20,6 +21,10 @@ import {expectIsEqual, IntegrationTestSuite} from "./IntegrationTest";
 import {contribAuthStore} from "../main/contrib/stores/ContribAuthStore";
 import {ContribFetcher} from "../main/contrib/sources/ContribFetcher";
 import {demographicActions} from "../main/contrib/actions/DemographicActions";
+import {Form} from "../main/contrib/components/Responsibilities/BurdenEstimates/Form";
+import {shallow, mount} from "enzyme";
+import {CreateBurdenEstimateSetForm} from "../main/contrib/components/Responsibilities/BurdenEstimates/CreateBurdenEstimateSetForm";
+import {Sandbox} from "../test/Sandbox";
 
 const jwt_decode = require('jwt-decode');
 
@@ -272,6 +277,27 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
 
             });
         });
+
+        it("creates burden estimates set", (done: DoneCallback) => {
+
+            const rendered = mount(<CreateBurdenEstimateSetForm
+                touchstoneId={touchstoneId} groupId={groupId} scenarioId={scenarioId}/>);
+
+            const form = new Form(rendered.find(Form).props());
+            const spy = new Sandbox().setSpy(form, "resultCallback");
+
+            const getData = (name: string) => {
+                return "central-averaged"
+            };
+
+            const data = form.getData((rendered.find("form").getNode() as any));
+            form.submitForm(data);
+
+            checkAsync(done, (afterWait) => {
+                afterWait(done, () => {
+                    expect(spy.called).to.eq(true);
+                })})
+        })
     }
 }
 
