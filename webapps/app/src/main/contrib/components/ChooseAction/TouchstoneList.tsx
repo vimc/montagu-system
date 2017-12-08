@@ -13,24 +13,28 @@ export interface TouchstoneListProps extends RemoteContent {
 }
 
 export class TouchstoneList extends React.Component<TouchstoneListProps, undefined> {
+    renderButtonList(touchstones: Touchstone[]): JSX.Element {
+        const items = touchstones.map((touchstone: Touchstone) =>
+            <li key={ touchstone.id}>
+                { this.renderButton(touchstone) }
+            </li>
+        );
+        return <ul className={ chooseStyles.list }>{ items }</ul>;
+    }
+
     renderFinished(content: TouchstoneListProps): JSX.Element {
         const finished = content.touchstones.filter(x => x.status != "open");
         if (finished.length > 0) {
-            const items = finished.map((touchstone: Touchstone) =>
-                <li key={ touchstone.id}>
-                    { this.renderButton(touchstone) }
-                </li>
-            );
-            return <ul className={ chooseStyles.list }>{ items }</ul>
+            return this.renderButtonList(finished);
         } else {
             return <div>There are no past touchstones.</div>
         }
     }
 
     renderOpen(content: TouchstoneListProps): JSX.Element {
-        const open = content.touchstones.find(x => x.status == "open");
-        if (open) {
-            return this.renderButton(open);
+        const open = content.touchstones.filter(x => x.status == "open");
+        if (open.length > 0) {
+            return this.renderButtonList(open);
         } else {
             return <div>There is no open touchstone currently.</div>
         }
