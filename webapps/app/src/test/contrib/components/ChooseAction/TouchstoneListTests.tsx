@@ -31,7 +31,7 @@ describe('TouchstoneListComponent renders', () => {
         expect(rendered.find(`.${styles.finishedTouchstones}`).text()).to.contain("There are no past touchstones.");
     });
 
-    it("one Link per finished touchstone", () => {
+    it("one button per finished touchstone", () => {
         const touchstones = [
             mockTouchstone({ id: "touchstone-1", description: "Description 1", status: "finished" }),
             mockTouchstone({ id: "touchstone-2", description: "Description 2", status: "finished" })
@@ -53,14 +53,25 @@ describe('TouchstoneListComponent renders', () => {
     it("message when there is no open touchstone", () => {
         const props = makeProps();
         const rendered = shallow(<TouchstoneList {...props} />);
-        expect(rendered.find(`.${styles.openTouchstone}`).text()).to.contain("There is no open touchstone currently.");
+        expect(rendered.find(`.${styles.openTouchstones}`).text()).to.contain("There is no open touchstone currently.");
     });
 
-    it("link when there is an open touchstone", () => {
-        const touchstone = mockTouchstone({ id: "touchstone-1", description: "Description 1", status: "open" });
-        const props = makeProps([ touchstone ]);
-        const rendered = sandbox.mount(<TouchstoneList {...props} />);
-        const link = rendered.find(`.${styles.openTouchstone}`).find(ButtonLink);
-        expect(link.prop("href")).to.eql("/gId/responsibilities/touchstone-1/");
+    it("one button per open touchstone", () => {
+        const touchstones = [
+            mockTouchstone({ id: "touchstone-1", description: "Description 1", status: "open" }),
+            mockTouchstone({ id: "touchstone-2", description: "Description 2", status: "open" })
+        ];
+        const props = makeProps(touchstones);
+        const rendered = shallow(<TouchstoneList {...props} />);
+        const children = rendered.find(`.${styles.openTouchstones}`).find("li");
+        expect(children).to.have.length(2);
+
+        // Check the first link in detail
+        const first = children.at(0);
+        expect(first.key()).to.equal("touchstone-1");
+        expect(first.find(ButtonLink).prop("href")).to.eql("/gId/responsibilities/touchstone-1/");
+
+        // Also do a basic test on the other one, to make sure it's different
+        expect(children.at(1).key()).to.equal("touchstone-2");
     });
 });

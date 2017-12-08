@@ -47,7 +47,7 @@ export class TouchstoneList extends React.Component<TouchstoneListProps, undefin
 
     render(): JSX.Element {
         return <div>
-            <div className={ styles.openTouchstone }>
+            <div className={ styles.openTouchstones }>
                 <div className={ commonStyles.subSectionTitle }>Open touchstone</div>
                 <div>{ this.renderOpen(this.props) }</div>
             </div>
