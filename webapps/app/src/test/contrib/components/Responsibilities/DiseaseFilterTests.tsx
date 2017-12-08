@@ -48,7 +48,8 @@ describe("DiseaseFilter", () => {
                 { value: "d2", text: "Disease 2" }
             ],
             onChange: (rendered.instance() as DiseaseFilter).filterByDisease,
-            required: false
+            required: false,
+            name: "disease"
         });
     });
 

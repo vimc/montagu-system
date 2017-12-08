@@ -1,20 +1,10 @@
 import * as React from "react";
 import {Alert} from "../../../../shared/components/Alert";
 import fetcher from "../../../../shared/sources/Fetcher";
-import {BurdenEstimateSetTypeCode, ErrorInfo, Result} from "../../../../shared/models/Generated";
+import {ErrorInfo, Result} from "../../../../shared/models/Generated";
 import {apiResponse} from "../../../../shared/sources/Source";
-import {doNothing, helpers} from "../../../../shared/Helpers";
-import {responsibilityStore} from "../../../stores/ResponsibilityStore";
-import {OptionSelector} from "../../OptionSelector/OptionSelector";
-import {Validator} from "../../../../../../../app/src/main/shared/Validation";
 
-interface FormField {
-    name: string;
-    value: string;
-    validator: Validator;
-}
-
-interface FormState {
+export interface FormState {
     disabled: boolean;
     errors: ErrorInfo[];
     hasSuccess: boolean;
@@ -22,20 +12,18 @@ interface FormState {
 }
 
 interface FormProps {
-    fields: FormField[];
     url: string;
     successCallback: (result: Result) => any;
     buildPostData: (formData: FormData) => any;
     successMessage: string;
     submitText: string;
-    nativeFormPost: boolean;
 }
 
-export class MontaguForm extends React.Component<FormProps, FormState> {
+export class Form extends React.Component<FormProps, FormState> {
 
-    constructor() {
+    constructor(props: FormProps) {
 
-        super();
+        super(props);
 
         this.state = {
             validated: false,
@@ -45,51 +33,55 @@ export class MontaguForm extends React.Component<FormProps, FormState> {
         }
     }
 
+    submitForm(data: any) {
+
+        const self = this;
+
+        fetcher.fetcher.fetch(this.props.url, {
+            method: "post",
+            body: JSON.stringify(data)
+        }).then((response: Response) => {
+            apiResponse(response)
+                .then((result: Result) => {
+                        self.resultCallback.bind(self)(result)
+                    }
+                );
+        });
+    }
+
+    resultCallback(result: Result) {
+        const success = result.status == "success";
+        this.setState({
+            hasSuccess: success,
+            errors: result.errors,
+            disabled: false
+        });
+
+        if (success) {
+            this.props.successCallback(result)
+        }
+    }
+
+    getData(form: HTMLFormElement): any {
+        const formData = new FormData(form);
+        return this.props.buildPostData(formData);
+    }
+
     onSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
         const form = e.target as HTMLFormElement;
 
-        const formData = new FormData(form);
-        const data = this.props.buildPostData(formData);
-
-        const self = this;
-        self.setState({
+        this.setState({
             validated: true
         });
 
         if (form.checkValidity() === true) {
 
-            self.setState({
+            this.setState({
                 disabled: true
             });
 
-            if (this.props.nativeFormPost) {
-                form.submit()
-            }
-            else {
-
-                fetcher.fetcher.fetch(this.props.url, {
-                    method: "post",
-                    body: JSON.stringify(data)
-                }).then((response: Response) => {
-                    apiResponse(response)
-                        .then((result: Result) => {
-
-                                const success = result.status == "success";
-                                self.setState({
-                                    hasSuccess: success,
-                                    errors: result.errors,
-                                    disabled: false
-                                });
-
-                                if (success) {
-                                    self.props.successCallback(result)
-                                }
-
-                            }
-                        );
-                });
-            }
+            this.submitForm(this.getData(form))
         }
     }
 

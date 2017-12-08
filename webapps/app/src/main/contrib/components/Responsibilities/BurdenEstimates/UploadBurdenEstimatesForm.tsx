@@ -1,10 +1,9 @@
 import * as React from "react";
-import {CreateBurdenEstimateSetForm} from "./CreateBurdenEstimateSetForm";
 import {UploadFileForm} from "../../../../shared/components/UploadFileForm";
 import {helpers} from "../../../../shared/Helpers";
 import {Alert} from "../../../../shared/components/Alert";
 import {ErrorInfo, Result} from "../../../../shared/models/Generated";
-import {CreateBurdenEstimateSetFormTest} from "./CreateFormTest";
+import {CreateBurdenEstimateSetForm} from "../../../../../../../app/src/main/contrib/components/Responsibilities/BurdenEstimates/CreateBurdenEstimateSetForm";
 
 interface UploadBurdenEstimatesFormComponentProps {
     touchstoneId: string;
@@ -46,7 +45,7 @@ export class UploadBurdenEstimatesForm extends React.Component<UploadBurdenEstim
             : null;
 
         const createForm = this.props.canCreate && !this.props.canUpload ?
-            <CreateBurdenEstimateSetFormTest groupId={this.props.groupId}
+            <CreateBurdenEstimateSetForm groupId={this.props.groupId}
                                          touchstoneId={this.props.touchstoneId}
                                          scenarioId={this.props.scenarioId}/>
             : null;

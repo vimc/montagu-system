@@ -47,6 +47,10 @@ export class Sandbox {
         return this.sinon.spy(obj, method);
     }
 
+    setStub(obj: any, method: string): sinon.SinonStub {
+        return this.sinon.stub(obj, method);
+    }
+
     createSpy(): sinon.SinonSpy {
         return this.sinon.spy();
     }

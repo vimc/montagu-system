@@ -1,8 +1,7 @@
 import * as React from "react";
-import {apiResponse} from "../../../../shared/sources/Source";
 import {responsibilityStore} from "../../../stores/ResponsibilityStore";
 import {OptionSelector} from "../../OptionSelector/OptionSelector";
-import {MontaguForm} from "./Form";
+import {Form} from "./Form";
 
 interface BurdenEstimateProps {
     groupId: string;
@@ -36,11 +35,11 @@ export class CreateBurdenEstimateSetForm extends React.Component<BurdenEstimateP
 
         return <div>
             <h4>Create a new set of burden estimates:</h4>
-            <MontaguForm successCallback={CreateBurdenEstimateSetForm.successCallback}
-                         url={`/modelling-groups/${this.props.groupId}/responsibilities/${this.props.touchstoneId}/${this.props.scenarioId}/estimate-sets/`}
-                         buildPostData={CreateBurdenEstimateSetForm.buildPostData}
-                         successMessage={successMessage} fields={[]}
-                         submitText={"Create"}>
+            <Form successCallback={CreateBurdenEstimateSetForm.successCallback}
+                  url={`/modelling-groups/${this.props.groupId}/responsibilities/${this.props.touchstoneId}/${this.props.scenarioId}/estimate-sets/`}
+                  buildPostData={CreateBurdenEstimateSetForm.buildPostData}
+                  successMessage={successMessage}
+                  submitText={"Create"}>
                 <div className="row">
                     <div className="col">
                         <label>How were these estimates calculated?</label>
@@ -58,8 +57,7 @@ export class CreateBurdenEstimateSetForm extends React.Component<BurdenEstimateP
                         <input type="text" className={"form-control"} name="details"/>
                     </div>
                 </div>
-
-            </MontaguForm>
+            </Form>
         </div>;
     }
 }

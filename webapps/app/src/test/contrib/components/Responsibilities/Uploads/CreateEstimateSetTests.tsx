@@ -5,6 +5,7 @@ import {Sandbox} from "../../../../Sandbox";
 import {CreateBurdenEstimateSetForm} from "../../../../../main/contrib/components/Responsibilities/BurdenEstimates/CreateBurdenEstimateSetForm";
 import {Alert} from "../../../../../main/shared/components/Alert";
 import {ReactElement} from "react";
+import {OptionSelector} from "../../../../../../../app/src/main/contrib/components/OptionSelector/OptionSelector";
 
 describe("CreateEstimatesFormComponent", () => {
     const sandbox = new Sandbox();
@@ -13,53 +14,31 @@ describe("CreateEstimatesFormComponent", () => {
         sandbox.restore();
     });
 
-    it("sets the type details", () => {
+    it("renders type details input", () => {
         const props = {touchstoneId: "touchstone-1", groupId: "group-1", scenarioId: "scenario-1"};
 
         const rendered = shallow(<CreateBurdenEstimateSetForm {...props} />);
-        rendered.find('input[name="details"]').simulate("change", {target: {value: "test value"}});
+        const details = rendered.find('input[name="details"]');
 
-        expect(rendered.state().typeDetails).to.eq("test value")
+        expect(details).to.have.lengthOf(1);
     });
 
-    it("sets the type code", () => {
+    it("renders type code select", () => {
         const props = {touchstoneId: "touchstone-1", groupId: "group-1", scenarioId: "scenario-1"};
 
         const rendered = mount(<CreateBurdenEstimateSetForm {...props} />);
 
-        // mutate underlying node, as the simulate event doesn't pass through args as expected on
-        // select elements
-        // https://github.com/airbnb/enzyme/issues/389
-        (rendered.find('select').getNode() as any).selectedIndex = 2;
+        const select = rendered.find(OptionSelector);
 
-        rendered.find('select').simulate("change", "central-averaged");
+        expect(select.prop("name")).to.eql("typeCode");
+        expect(select.prop("defaultOption")).to.eql("-- Please select one --");
+        expect(select.prop("className")).to.eql("form-control");
+        expect(select.prop("required")).to.eql(true);
+        expect(select.prop("options")).to.eql([{value: "central-single-run", text: "Single model run"}, {
+            value: "central-averaged",
+            text: "Averaged across model runs"
+        }]);
 
-        expect(rendered.state().typeCode).to.equal("central-averaged")
     });
-
-    it("shows errors", () => {
-        const props = {touchstoneId: "touchstone-1", groupId: "group-1", scenarioId: "scenario-1"};
-
-        const rendered = mount(<CreateBurdenEstimateSetForm {...props} />);
-        const errors = [{code: "err", message: "err message"}];
-
-        rendered.setState({errors: errors});
-
-        expect(rendered.find(Alert).last().prop("hasError")).to.eq(true);
-        expect(rendered.find(Alert).last().prop("hasSuccess")).to.eq(false);
-    });
-
-    it("shows success", () => {
-        const props = {touchstoneId: "touchstone-1", groupId: "group-1", scenarioId: "scenario-1"};
-
-        const rendered = mount(<CreateBurdenEstimateSetForm {...props} />);
-        const errors = [{code: "err", message: "err message"}];
-
-        rendered.setState({hasSuccess: true});
-
-        expect(rendered.find(Alert).last().prop("hasSuccess")).to.eq(true);
-        expect(rendered.find(Alert).last().prop("hasError")).to.eq(false);
-    });
-
 
 });
