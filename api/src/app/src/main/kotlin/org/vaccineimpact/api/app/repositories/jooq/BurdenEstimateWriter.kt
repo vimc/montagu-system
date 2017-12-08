@@ -5,10 +5,7 @@ import org.jooq.TableField
 import org.jooq.impl.TableImpl
 import org.postgresql.copy.CopyManager
 import org.postgresql.core.BaseConnection
-import org.vaccineimpact.api.app.errors.DatabaseContentsError
-import org.vaccineimpact.api.app.errors.InconsistentDataError
-import org.vaccineimpact.api.app.errors.UnknownObjectError
-import org.vaccineimpact.api.app.errors.UnknownRunIdError
+import org.vaccineimpact.api.app.errors.*
 import org.vaccineimpact.api.db.*
 import org.vaccineimpact.api.db.Tables.*
 import org.vaccineimpact.api.models.BurdenEstimateWithRunId
@@ -26,6 +23,7 @@ class BurdenEstimateWriter(val dsl: DSLContext, val setId: Int)
     private val outcomeLookup = getOutcomesAsLookup()
     private val cohortSizeId = outcomeLookup["cohort_size"]
             ?: throw DatabaseContentsError("Expected a value with code 'cohort_size' in burden_outcome table")
+    private val modelRunParameterSetId = getModelRunParameterSetId()
 
     fun addEstimatesToSet(estimates: Sequence<BurdenEstimateWithRunId>, expectedDisease: String)
     {
@@ -140,15 +138,17 @@ class BurdenEstimateWriter(val dsl: DSLContext, val setId: Int)
         }
         else
         {
-            val modelRunParameterSetId = dsl.select(BURDEN_ESTIMATE_SET.MODEL_RUN_PARAMETER_SET)
-                    .from(BURDEN_ESTIMATE_SET)
-                    .where(BURDEN_ESTIMATE_SET.ID.eq(setId))
-                    .fetchOneInto(Int::class.java)
-
             modelRuns.getOrDefault(runId, null)
                     ?: throw UnknownRunIdError(runId, modelRunParameterSetId)
         }
     }
+
+    private fun getModelRunParameterSetId(): Int? =
+            dsl.select(BURDEN_ESTIMATE_SET.MODEL_RUN_PARAMETER_SET)
+                    .from(BURDEN_ESTIMATE_SET)
+                    .where(BURDEN_ESTIMATE_SET.ID.eq(setId))
+                    .fetch()
+                    .singleOrNull()?.value1()
 
     private fun getAllCountryIds() = dsl.select(Tables.COUNTRY.ID)
             .from(Tables.COUNTRY)
