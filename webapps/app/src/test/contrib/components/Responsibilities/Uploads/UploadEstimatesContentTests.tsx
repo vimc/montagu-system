@@ -13,10 +13,8 @@ import {
     UploadBurdenEstimatesContentComponent,
     UploadBurdenEstimatesContentComponentProps
 } from "../../../../../main/contrib/components/Responsibilities/BurdenEstimates/UploadBurdenEstimatesContent";
-import {UploadFileForm} from "../../../../../main/shared/components/UploadFileForm";
-import {CreateBurdenEstimateSetForm} from "../../../../../main/contrib/components/Responsibilities/BurdenEstimates/CreateBurdenEstimateSetForm";
 import {CurrentEstimateSetSummary} from "../../../../../main/contrib/components/Responsibilities/Overview/List/CurrentEstimateSetSummary";
-import {UploadBurdenEstimatesForm} from "../../../../../../../app/src/main/contrib/components/Responsibilities/BurdenEstimates/UploadBurdenEstimatesForm";
+import {UploadBurdenEstimatesForm} from "../../../../../main/contrib/components/Responsibilities/BurdenEstimates/UploadBurdenEstimatesForm";
 
 describe("UploadEstimatesContentComponent", () => {
     const sandbox = new Sandbox();
@@ -126,15 +124,13 @@ function makeProps(props: any): UploadBurdenEstimatesContentComponentProps {
     const scenario = mockScenario({id: "scenario-1"});
     const group = mockModellingGroup({id: "group-1"});
     const resp = mockResponsibility();
-    return {
+    return Object.assign({
+        touchstone,
+        scenario,
+        responsibilitySetStatus: "incomplete",
+        group: group,
+        estimatesToken: "TOKEN",
+        responsibility: resp,
         ready: true,
-        props: Object.assign({
-            touchstone,
-            scenario,
-            responsibilitySetStatus: "incomplete",
-            group: group,
-            estimatesToken: "TOKEN",
-            responsibility: resp
-        }, props)
-    };
+    }, props)
 }

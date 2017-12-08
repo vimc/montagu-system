@@ -13,7 +13,7 @@ interface BurdenEstimateState {
     disabled: boolean;
     errors: ErrorInfo[];
     hasSuccess: boolean;
-    touched: boolean;
+    validated: boolean;
 }
 
 interface BurdenEstimateProps {
@@ -29,10 +29,10 @@ export class CreateBurdenEstimateSetForm extends React.Component<BurdenEstimateP
         super();
 
         this.state = {
-            touched: false,
+            validated: false,
             typeCode: null,
             typeDetails: null,
-            disabled: true,
+            disabled: false,
             errors: [],
             hasSuccess: false
         }
@@ -40,9 +40,7 @@ export class CreateBurdenEstimateSetForm extends React.Component<BurdenEstimateP
 
     onTypeChange(value: BurdenEstimateSetTypeCode) {
         this.setState({
-            typeCode: value,
-            touched: true,
-            disabled: value.length == 0
+            typeCode: value
         })
     }
 
@@ -54,33 +52,45 @@ export class CreateBurdenEstimateSetForm extends React.Component<BurdenEstimateP
 
     onSubmit(e: any) {
         e.preventDefault();
+
         const self = this;
         self.setState({
-            disabled: true
+            validated: true
         });
 
-        const url = `/modelling-groups/${this.props.groupId}/responsibilities/${this.props.touchstoneId}/${this.props.scenarioId}/estimate-sets/`;
-        return fetcher.fetcher.fetch(url, {
-            method: "post",
-            body: JSON.stringify({
-                type: {
-                    type: this.state.typeCode,
-                    details: this.state.typeDetails
-                }
-            })
-        }).then((response: Response) => {
-            apiResponse(response)
-                .then((result: Result) => {
-                        self.setState({
-                            hasSuccess: result.status == "success",
-                            errors: result.errors,
-                            disabled: false
-                        });
+        if (e.target.checkValidity() === true) {
 
-                        responsibilityStore.refreshResponsibilities()
+            self.setState({
+                disabled: true
+            });
+
+            const url = `/modelling-groups/${this.props.groupId}/responsibilities/${this.props.touchstoneId}/${this.props.scenarioId}/estimate-sets/`;
+
+            fetcher.fetcher.fetch(url, {
+                method: "post",
+                body: JSON.stringify({
+                    type: {
+                        type: this.state.typeCode,
+                        details: this.state.typeDetails
                     }
-                );
-        });
+                })
+            }).then((response: Response) => {
+                apiResponse(response)
+                    .then((result: Result) => {
+                            const success = result.status == "success";
+                            self.setState({
+                                hasSuccess: success,
+                                errors: result.errors,
+                                disabled: false
+                            });
+
+                            if (success) {
+                                responsibilityStore.refreshResponsibilities()
+                            }
+                        }
+                    );
+            });
+        }
     }
 
     render() {
@@ -95,15 +105,19 @@ export class CreateBurdenEstimateSetForm extends React.Component<BurdenEstimateP
         }];
 
         return <div>
-            <form className="mt-4" onSubmit={this.onSubmit.bind(this)}>
+            <form className={`mt-4 ${this.state.validated ? "was-validated" : ""}`} onSubmit={this.onSubmit.bind(this)}
+                  noValidate>
                 <h4>Create a new set of burden estimates:</h4>
                 <div className="row">
                     <div className="col">
-                        <label>How were these estimates obtained?</label>
+                        <label>How were these estimates calculated?</label>
                         <OptionSelector
                             defaultOption={"-- Please select one --"}
                             options={options} onChange={this.onTypeChange.bind(this)}
-                            className={`form-control ${this.state.touched && this.state.typeCode.length == 0 ? "is-invalid" : ""}`}/>
+                            className="form-control" required={true}/>
+                        <div className="invalid-feedback">
+                            Please tell us how these estimates were calculated
+                        </div>
                     </div>
                     <div className="col">
                         <label>Details of this run</label>

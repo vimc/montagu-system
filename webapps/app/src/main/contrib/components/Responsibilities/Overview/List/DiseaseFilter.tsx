@@ -14,7 +14,7 @@ export class DiseaseFilter extends React.Component<IExtendedResponsibilitySet, u
 
             return <div>
                 Filter by disease:&nbsp;
-                <OptionSelector options={ options } onChange={ this.filterByDisease } defaultOption="All" />
+                <OptionSelector options={ options } onChange={ this.filterByDisease } defaultOption="All" required={false} />
             </div>;
         } else {
             return <span />;

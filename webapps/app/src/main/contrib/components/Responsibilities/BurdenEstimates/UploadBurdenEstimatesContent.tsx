@@ -11,14 +11,12 @@ import {UploadBurdenEstimatesForm} from "./UploadBurdenEstimatesForm";
 const commonStyles = require("../../../../shared/styles/common.css");
 
 export interface UploadBurdenEstimatesContentComponentProps extends RemoteContent {
-    props: {
-        touchstone: Touchstone;
-        scenario: Scenario;
-        group: ModellingGroup;
-        responsibilitySetStatus: string;
-        estimatesToken: string;
-        responsibility: Responsibility;
-    };
+    touchstone: Touchstone;
+    scenario: Scenario;
+    group: ModellingGroup;
+    responsibilitySetStatus: string;
+    estimatesToken: string;
+    responsibility: Responsibility;
 }
 
 export class UploadBurdenEstimatesContentComponent extends RemoteContentComponent<UploadBurdenEstimatesContentComponentProps, undefined> {
@@ -35,30 +33,33 @@ export class UploadBurdenEstimatesContentComponent extends RemoteContentComponen
         if (r != null && state.estimatesOneTimeToken != null) {
             return {
                 ready: state.ready,
-                props: {
-                    touchstone: state.currentTouchstone,
-                    scenario: r.scenario,
-                    group: state.currentModellingGroup,
-                    responsibility: r,
-                    estimatesToken: state.estimatesOneTimeToken,
-                    responsibilitySetStatus: responsibilityStore.getCurrentResponsibilitySet().status
-                }
+                touchstone: state.currentTouchstone,
+                scenario: r.scenario,
+                group: state.currentModellingGroup,
+                responsibility: r,
+                estimatesToken: state.estimatesOneTimeToken,
+                responsibilitySetStatus: responsibilityStore.getCurrentResponsibilitySet().status
+
             };
         } else {
             return {
                 ready: false,
-                props: null
+                touchstone: null,
+                scenario: null,
+                group: null,
+                responsibility: null,
+                estimatesToken: null,
+                responsibilitySetStatus: null
             };
         }
     }
 
     renderContent(props: UploadBurdenEstimatesContentComponentProps) {
-        const data = props.props;
 
-        const canCreate = data.responsibilitySetStatus == "incomplete";
+        const canCreate = this.props.responsibilitySetStatus == "incomplete";
 
-        const canUpload = canCreate && data.responsibility.current_estimate_set != null
-            && data.responsibility.current_estimate_set.status == "empty";
+        const canUpload = canCreate && this.props.responsibility.current_estimate_set != null
+            && this.props.responsibility.current_estimate_set.status == "empty";
 
         return <div>
             <p>
@@ -70,25 +71,26 @@ export class UploadBurdenEstimatesContentComponent extends RemoteContentComponen
                 <tbody>
                 <tr>
                     <td>Touchstone</td>
-                    <td>{data.touchstone.description}</td>
+                    <td>{this.props.touchstone.description}</td>
                 </tr>
                 <tr>
                     <td>Scenario</td>
-                    <td>{data.scenario.description}</td>
+                    <td>{this.props.scenario.description}</td>
                 </tr>
                 <tr>
                     <td>Burden estimates template</td>
-                    <td><TemplateLink diseaseId={data.scenario.disease} groupId={data.group.id}/></td>
+                    <td><TemplateLink diseaseId={this.props.scenario.disease} groupId={this.props.group.id}/></td>
                 </tr>
                 </tbody>
             </table>
 
             <div className="mt-3">
-                <CurrentEstimateSetSummary estimateSet={data.responsibility.current_estimate_set}
+                <CurrentEstimateSetSummary estimateSet={this.props.responsibility.current_estimate_set}
                                            canUpload={canCreate}/>
 
-                <UploadBurdenEstimatesForm canUpload={canUpload} canCreate={canCreate} groupId={data.scenario.id}
-                                           estimatesToken={data.estimatesToken} touchstoneId={data.touchstone.id} scenarioId={data.scenario.id}/>
+                <UploadBurdenEstimatesForm canUpload={canUpload} canCreate={canCreate} groupId={this.props.group.id}
+                                           estimatesToken={this.props.estimatesToken} touchstoneId={this.props.touchstone.id}
+                                           scenarioId={this.props.scenario.id}/>
             </div>
         </div>;
     }

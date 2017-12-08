@@ -22,11 +22,10 @@ export class Alert extends React.Component<AlertProps, AlertState> {
         };
     }
 
-    componentDidReceiveProps () {
-
+    componentWillReceiveProps(nextProps: AlertProps) {
         this.setState({
-            show: this.props.hasError || this.props.hasSuccess,
-            cssClass: this.props.hasError ? "alert alert-danger" : "alert alert-success"
+            show: nextProps.hasError || nextProps.hasSuccess,
+            cssClass: nextProps.hasError ? "alert alert-danger" : "alert alert-success"
         })
     }
 

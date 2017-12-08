@@ -1,24 +1,12 @@
 import * as React from "react";
 import {expect} from "chai";
-import {
-    mockBurdenEstimateSet,
-    mockModellingGroup, mockResponsibility, mockScenario,
-    mockTouchstone
-} from "../../../../mocks/mockModels";
 import {shallow} from "enzyme";
-
-import {findLabelledCell} from "../../../../TableHelpers";
 import {Sandbox} from "../../../../Sandbox";
-import {
-    UploadBurdenEstimatesContentComponent,
-    UploadBurdenEstimatesContentComponentProps
-} from "../../../../../main/contrib/components/Responsibilities/BurdenEstimates/UploadBurdenEstimatesContent";
 import {UploadFileForm} from "../../../../../main/shared/components/UploadFileForm";
 import {CreateBurdenEstimateSetForm} from "../../../../../main/contrib/components/Responsibilities/BurdenEstimates/CreateBurdenEstimateSetForm";
-import {CurrentEstimateSetSummary} from "../../../../../main/contrib/components/Responsibilities/Overview/List/CurrentEstimateSetSummary";
-import {UploadBurdenEstimatesForm} from "../../../../../../../app/src/main/contrib/components/Responsibilities/BurdenEstimates/UploadBurdenEstimatesForm";
-import {helpers} from "../../../../../../../app/src/main/shared/Helpers";
-import {Alert} from "../../../../../../../app/src/main/shared/components/Alert";
+import {UploadBurdenEstimatesForm} from "../../../../../main/contrib/components/Responsibilities/BurdenEstimates/UploadBurdenEstimatesForm";
+import {helpers} from "../../../../../main/shared/Helpers";
+import {Alert} from "../../../../../main/shared/components/Alert";
 
 describe("UploadEstimatesForm", () => {
     const sandbox = new Sandbox();
