@@ -1,21 +1,21 @@
-:local(.fade) {
+.fade {
 
 }
 
-:local(.fade-enter) {
+.fade-enter {
     opacity: 0.01;
 }
 
-:local(.fade-enter):local(.fade-enter-active) {
+.fade-enter.fade-enter-active {
     opacity: 1;
     transition: opacity 300ms ease-in;
 }
 
-:local(.fade-leave) {
+.fade-leave {
     opacity: 1;
 }
 
-:local(.fade-leave):local(.fade-leave-active) {
+.fade-leave.fade-leave-active {
     opacity: 0.01;
     transition: opacity 300ms ease-in;
 }
