@@ -14,10 +14,7 @@ import org.vaccineimpact.api.db.Tables.BURDEN_OUTCOME
 import org.vaccineimpact.api.db.direct.addBurdenEstimateSet
 import org.vaccineimpact.api.db.fromJoinPath
 import org.vaccineimpact.api.db.toDecimal
-import org.vaccineimpact.api.models.BurdenEstimate
-import org.vaccineimpact.api.models.BurdenEstimateSetType
-import org.vaccineimpact.api.models.BurdenEstimateSetTypeCode
-import org.vaccineimpact.api.models.CreateBurdenEstimateSet
+import org.vaccineimpact.api.models.*
 import java.math.BigDecimal
 
 class PopulateBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
