@@ -118,7 +118,7 @@ class PopulateBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
         // We order the rows coming back so they are in a guaranteed order. This allows
         // us to write simple hardcoded expectations.
         val t = BURDEN_ESTIMATE
-        val records = db.dsl.select(t.BURDEN_ESTIMATE_SET, t.COUNTRY, t.YEAR, t.AGE, t.VALUE, t.STOCHASTIC)
+        val records = db.dsl.select(t.BURDEN_ESTIMATE_SET, t.COUNTRY, t.YEAR, t.AGE, t.VALUE)
                 .select(BURDEN_OUTCOME.CODE)
                 .fromJoinPath(BURDEN_ESTIMATE, BURDEN_OUTCOME)
                 .orderBy(BURDEN_ESTIMATE.COUNTRY, BURDEN_OUTCOME.CODE)
@@ -140,7 +140,6 @@ class PopulateBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
         assertThat(record[t.COUNTRY]).isEqualTo(country)
         assertThat(record[t.YEAR]).isEqualTo(year)
         assertThat(record[t.AGE]).isEqualTo(age)
-        assertThat(record[t.STOCHASTIC]).isFalse()
         assertThat(record[BURDEN_OUTCOME.CODE]).isEqualTo(outcomeCode)
         assertThat(record[t.VALUE]).isEqualTo(outcomeValue)
     }

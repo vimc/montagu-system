@@ -344,7 +344,6 @@ class JooqBurdenEstimateRepository(
                         t.COUNTRY,
                         t.YEAR,
                         t.AGE,
-                        t.STOCHASTIC,
                         t.BURDEN_OUTCOME,
                         t.VALUE
                 ))
@@ -401,7 +400,6 @@ class JooqBurdenEstimateRepository(
                 estimate.country,
                 estimate.year,
                 estimate.age,
-                false, /* stochastic */
                 outcomeId,
                 outcomeValue
         )
