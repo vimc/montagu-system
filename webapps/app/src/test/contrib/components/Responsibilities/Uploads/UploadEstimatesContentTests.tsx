@@ -16,6 +16,7 @@ import {
 import {UploadFileForm} from "../../../../../main/shared/components/UploadFileForm";
 import {CreateBurdenEstimateSetForm} from "../../../../../main/contrib/components/Responsibilities/BurdenEstimates/CreateBurdenEstimateSetForm";
 import {CurrentEstimateSetSummary} from "../../../../../main/contrib/components/Responsibilities/Overview/List/CurrentEstimateSetSummary";
+import {UploadBurdenEstimatesForm} from "../../../../../../../app/src/main/contrib/components/Responsibilities/BurdenEstimates/UploadBurdenEstimatesForm";
 
 describe("UploadEstimatesContentComponent", () => {
     const sandbox = new Sandbox();
@@ -33,31 +34,37 @@ describe("UploadEstimatesContentComponent", () => {
         expect(findLabelledCell(rendered, "Scenario").text()).to.equal(scenario.description);
     });
 
-    it("renders create form when current burden estimate set is null", () => {
-
-        const props = makeProps({});
-        const rendered = shallow(<UploadBurdenEstimatesContentComponent {...props} />);
-
-        expect(rendered.find(CreateBurdenEstimateSetForm).props()).to.eql({
-            groupId: "group-1",
-            touchstoneId: "touchstone-1",
-            scenarioId: "scenario-1"
-        });
-    });
-
-    it("does not render upload form when current burden estimate set is null", () => {
-
-        const props = makeProps({});
-        const rendered = shallow(<UploadBurdenEstimatesContentComponent {...props} />);
-
-        const form = rendered.find(UploadFileForm);
-        expect(form).to.have.lengthOf(0);
-    });
-
-    it("renders create form when current burden estimate set status is complete", () => {
+    it("canCreate is false when responsibility set status is complete", () => {
 
         const props = makeProps({
-           responsibility: mockResponsibility({
+            responsibilitySetStatus: "complete"
+        });
+
+        const rendered = shallow(<UploadBurdenEstimatesContentComponent {...props} />);
+
+        expect(rendered.find(UploadBurdenEstimatesForm).prop("canCreate")).to.equal(false);
+    });
+
+    it("canCreate is true when current burden estimate set is null", () => {
+
+        const props = makeProps({});
+        const rendered = shallow(<UploadBurdenEstimatesContentComponent {...props} />);
+
+        expect(rendered.find(UploadBurdenEstimatesForm).prop("canCreate")).to.equal(true);
+    });
+
+    it("canUpload is false when current burden estimate set is null", () => {
+
+        const props = makeProps({});
+        const rendered = shallow(<UploadBurdenEstimatesContentComponent {...props} />);
+
+        expect(rendered.find(UploadBurdenEstimatesForm).prop("canUpload")).to.equal(false);
+    });
+
+    it("canUpload is false when current burden estimate set status is complete", () => {
+
+        const props = makeProps({
+            responsibility: mockResponsibility({
                 current_estimate_set: mockBurdenEstimateSet({
                     status: "complete"
                 })
@@ -65,24 +72,19 @@ describe("UploadEstimatesContentComponent", () => {
         });
         const rendered = shallow(<UploadBurdenEstimatesContentComponent {...props} />);
 
-        expect(rendered.find(CreateBurdenEstimateSetForm).props()).to.eql({
-            groupId: "group-1",
-            touchstoneId: "touchstone-1",
-            scenarioId: "scenario-1"
-        });
+        expect(rendered.find(UploadBurdenEstimatesForm).prop("canUpload")).to.equal(false);
     });
 
-    it("does not render upload form when current burden estimate set status is complete", () => {
+    it("canCreate is true when current burden estimate set is null", () => {
 
         const props = makeProps({});
         const rendered = shallow(<UploadBurdenEstimatesContentComponent {...props} />);
 
-        const form = rendered.find(UploadFileForm);
-        expect(form).to.have.lengthOf(0);
+        expect(rendered.find(UploadBurdenEstimatesForm).prop("canCreate")).to.equal(true);
     });
 
 
-    it("renders upload form when current burden estimate set is empty", () => {
+    it("canUpload is true when current burden estimate set is empty", () => {
 
         const props = makeProps({
             responsibility: mockResponsibility({
@@ -92,26 +94,8 @@ describe("UploadEstimatesContentComponent", () => {
             })
         });
         const rendered = shallow(<UploadBurdenEstimatesContentComponent {...props} />);
-        expect(rendered.find(UploadFileForm).props()).to.eql({
-            token: "TOKEN",
-            enableSubmit: true,
-            uploadText: "Upload estimates for this set",
-            successMessage: "Success! You have uploaded a new set of burden estimates"
-        });
-    });
 
-
-    it("does not render create form when current burden estimate set is empty", () => {
-
-        const props = makeProps({
-            responsibility: mockResponsibility({
-                current_estimate_set: mockBurdenEstimateSet({
-                    status: "empty"
-                })
-            })
-        });
-        const rendered = shallow(<UploadBurdenEstimatesContentComponent {...props} />);
-        expect(rendered.find(CreateBurdenEstimateSetForm)).to.have.lengthOf(0)
+        expect(rendered.find(UploadBurdenEstimatesForm).prop("canUpload")).to.equal(true);
     });
 
     it("renders current burden estimate status", () => {
@@ -138,7 +122,7 @@ describe("UploadEstimatesContentComponent", () => {
 });
 
 function makeProps(props: any): UploadBurdenEstimatesContentComponentProps {
-    const touchstone = mockTouchstone({id : "touchstone-1"});
+    const touchstone = mockTouchstone({id: "touchstone-1"});
     const scenario = mockScenario({id: "scenario-1"});
     const group = mockModellingGroup({id: "group-1"});
     const resp = mockResponsibility();

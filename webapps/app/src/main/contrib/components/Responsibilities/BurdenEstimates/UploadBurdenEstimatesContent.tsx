@@ -5,9 +5,8 @@ import {RemoteContent} from "../../../../shared/models/RemoteContent";
 import {RemoteContentComponent} from "../../../../shared/components/RemoteContentComponent/RemoteContentComponent";
 import {responsibilityStore} from "../../../stores/ResponsibilityStore";
 import {TemplateLink} from "../Overview/List/TemplateLinks";
-import {CreateBurdenEstimateSetForm} from "./CreateBurdenEstimateSetForm";
 import {CurrentEstimateSetSummary} from "../Overview/List/CurrentEstimateSetSummary";
-import {UploadFileForm} from "../../../../shared/components/UploadFileForm";
+import {UploadBurdenEstimatesForm} from "./UploadBurdenEstimatesForm";
 
 const commonStyles = require("../../../../shared/styles/common.css");
 
@@ -58,19 +57,8 @@ export class UploadBurdenEstimatesContentComponent extends RemoteContentComponen
 
         const canCreate = data.responsibilitySetStatus == "incomplete";
 
-        const canUpload = canCreate && data.responsibility.current_estimate_set
-            && data.responsibility.current_estimate_set .status == "empty";
-
-        const uploadForm = canUpload ?
-            <UploadFileForm token={data.estimatesToken} enableSubmit={true} uploadText={"Upload estimates for this set"}
-                            successMessage={"Success! You have uploaded a new set of burden estimates"}/>
-            : null;
-
-        const createForm = canCreate && !canUpload  ?
-            <CreateBurdenEstimateSetForm groupId={data.group.id}
-                                         touchstoneId={data.touchstone.id}
-                                         scenarioId={data.scenario.id}/>
-            : null;
+        const canUpload = canCreate && data.responsibility.current_estimate_set != null
+            && data.responsibility.current_estimate_set.status == "empty";
 
         return <div>
             <p>
@@ -99,8 +87,8 @@ export class UploadBurdenEstimatesContentComponent extends RemoteContentComponen
                 <CurrentEstimateSetSummary estimateSet={data.responsibility.current_estimate_set}
                                            canUpload={canCreate}/>
 
-                {createForm}
-                {uploadForm}
+                <UploadBurdenEstimatesForm canUpload={canUpload} canCreate={canCreate} groupId={data.scenario.id}
+                                           estimatesToken={data.estimatesToken} touchstoneId={data.touchstone.id} scenarioId={data.scenario.id}/>
             </div>
         </div>;
     }

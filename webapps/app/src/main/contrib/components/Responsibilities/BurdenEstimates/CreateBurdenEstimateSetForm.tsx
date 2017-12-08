@@ -14,7 +14,6 @@ interface BurdenEstimateState {
     errors: ErrorInfo[];
     hasSuccess: boolean;
     touched: boolean;
-    hasUploadSuccess: boolean;
 }
 
 interface BurdenEstimateProps {
@@ -27,8 +26,6 @@ export class CreateBurdenEstimateSetForm extends React.Component<BurdenEstimateP
 
     constructor() {
 
-        const result = helpers.ingestQueryStringAndReturnResult();
-
         super();
 
         this.state = {
@@ -37,8 +34,7 @@ export class CreateBurdenEstimateSetForm extends React.Component<BurdenEstimateP
             typeDetails: null,
             disabled: true,
             errors: [],
-            hasSuccess: false,
-            hasUploadSuccess: result && result.status == "success"
+            hasSuccess: false
         }
     }
 
@@ -99,8 +95,6 @@ export class CreateBurdenEstimateSetForm extends React.Component<BurdenEstimateP
         }];
 
         return <div>
-            <Alert hasSuccess={this.state.hasUploadSuccess} hasError={false}
-                   message={"Success! Your burden estimates have been uploaded"}/>
             <form className="mt-4" onSubmit={this.onSubmit.bind(this)}>
                 <h4>Create a new set of burden estimates:</h4>
                 <div className="row">
