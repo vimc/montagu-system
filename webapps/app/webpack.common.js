@@ -71,7 +71,8 @@ function commonConfig(name, public_path) {
                             loader: 'typings-for-css-modules-loader',
                             options: {
                               modules: true,
-                              namedExport: true
+                              namedExport: true,
+                              camelCase: true,
                             }
                         },
                         { loader: 'sass-loader' },

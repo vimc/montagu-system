@@ -2,8 +2,8 @@ import * as React from "react";
 import { CSSTransitionGroup } from "react-transition-group";
 import { notificationActions } from "../../actions/NotificationActions";
 
-const styles = require("./NotificationArea.css");
-const transitions = require('../../../shared/styles/transitions.css');
+import * as styles from "./NotificationArea.scss";
+import * as transitions from "../../../shared/styles/transitions.scss";
 
 interface Props {
     notifications: string[];

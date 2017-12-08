@@ -2,7 +2,7 @@ import * as React from 'react';
 import { notificationActions } from "../../actions/NotificationActions";
 import { MouseEvent } from "react";
 
-const styles = require("./ErrorLog.css");
+import * as styles from "./ErrorLog.scss";
 
 interface ErrorLogProps {
     errors: string[];
