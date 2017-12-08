@@ -22,7 +22,6 @@ describe("NavStore", () => {
         };
 
         navActions.initialize(pageB);
-        expect(navStore.getState().isInitialized).to.be.true;
         expect(navStore.getState().crumbs).to.eql([
             { url: "a", name: "A" },
             { url: "b", name: "B" }

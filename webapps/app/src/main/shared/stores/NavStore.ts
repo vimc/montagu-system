@@ -6,19 +6,16 @@ import {Breadcrumb} from "../models/Breadcrumb";
 
 export interface NavState {
     crumbs: Breadcrumb[];
-    isInitialized: boolean;
 }
 
 function initialState(): NavState {
     return {
-        crumbs: [],
-        isInitialized: false
+        crumbs: []
     };
 }
 
 class NavStore extends AbstractStore<NavState, AltJS.AltStore<NavState>> {
     crumbs: Breadcrumb[];
-    isInitialized: boolean;
 
     constructor() {
         super();
@@ -32,7 +29,6 @@ class NavStore extends AbstractStore<NavState, AltJS.AltStore<NavState>> {
     }
 
     handleInitialize(breadcrumbs: Breadcrumb[]) {
-        this.isInitialized = true;
         this.crumbs = breadcrumbs;
     }
 }
