@@ -1125,7 +1125,7 @@ outcomes in the database.
 If the burden estimate set was created with type 'stochastic' then an additional
 column, `run_id`, is expected between `disease` and `year`. See 
 [BurdenEstimate.csvschema.json](BurdenEstimate.csvschema.json) and 
-[StochasticBurdenEstimate.csvschema.json]([StochasticBurdenEstimate.csvschema.json])
+[StochasticBurdenEstimate.csvschema.json](StochasticBurdenEstimate.csvschema.json)
 for a strict definition.
        
 # Modelling groups
