@@ -1121,6 +1121,12 @@ outcomes in the database.
        "Hib3",   1997,    50,     "AFG",  "Afghanistan",         10500,      900,    2000,      NA
        "Hib3",   1996,    50,     "AGO",       "Angola",          5000,     1000,      NA,    5670
        "Hib3",   1997,    50,     "AGO",       "Angola",          6000,     1200,      NA,    5870
+
+If the burden estimate set was created with type 'stochastic' then an additional
+column, `run_id`, is expected between `disease` and `year`. See 
+[BurdenEstimate.csvschema.json](BurdenEstimate.csvschema.json) and 
+[StochasticBurdenEstimate.csvschema.json]([StochasticBurdenEstimate.csvschema.json])
+for a strict definition.
        
 # Modelling groups
 ## GET /modelling-groups/
