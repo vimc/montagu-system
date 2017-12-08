@@ -41,9 +41,10 @@ export class Form extends React.Component<FormProps, FormState> {
             method: "post",
             body: JSON.stringify(data)
         }).then((response: Response) => {
+
             apiResponse(response)
                 .then((result: Result) => {
-                        self.resultCallback.bind(self)(result)
+                        self.resultCallback(result)
                     }
                 );
         });
