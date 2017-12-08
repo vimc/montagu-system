@@ -61,6 +61,15 @@ data class FluentValidationConfig(
         this.finalized().runWithCheck({ data: String, _ -> additionalChecks(data) })
     }
 
+    infix fun andCheckHasStatus(expectedStatus: IntRange)
+    {
+        this.finalized().runWithCheck({ _: Any, response ->
+            assertThat(response.statusCode)
+                    .`as`("Response had unexpected status code. It had body: ${response.text}")
+                    .isBetween(expectedStatus.start, expectedStatus.endInclusive)
+        })
+    }
+
     infix fun andCheckObjectCreation(expectedLocation: String)
         = andCheckObjectCreation(LocationConstraint(expectedLocation))
     infix fun andCheckObjectCreation(expectedLocation: LocationConstraint)
