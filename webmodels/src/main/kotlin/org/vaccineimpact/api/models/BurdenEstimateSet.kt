@@ -13,6 +13,12 @@ constructor(
         val status: BurdenEstimateSetStatus,
         val problems: List<String>
 ) : HasKey<Int>
+{
+    fun withType(code: BurdenEstimateSetTypeCode, details: String? = null): BurdenEstimateSet
+    {
+        return this.copy(type = BurdenEstimateSetType(code, details))
+    }
+}
 
 
 data class CreateBurdenEstimateSet(
