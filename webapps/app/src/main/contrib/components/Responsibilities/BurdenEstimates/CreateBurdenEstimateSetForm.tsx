@@ -3,7 +3,6 @@ import {Alert} from "../../../../shared/components/Alert";
 import fetcher from "../../../../shared/sources/Fetcher";
 import {BurdenEstimateSetTypeCode, ErrorInfo, Result} from "../../../../shared/models/Generated";
 import {apiResponse} from "../../../../shared/sources/Source";
-import {doNothing, helpers} from "../../../../shared/Helpers";
 import {responsibilityStore} from "../../../stores/ResponsibilityStore";
 import {OptionSelector} from "../../OptionSelector/OptionSelector";
 
