@@ -6,20 +6,20 @@ import org.jooq.impl.DSL
 import java.sql.Connection
 import java.sql.DriverManager
 
-open class JooqContext(val dbName: String? = null) : AutoCloseable
+open class JooqContext(private val dbName: String? = null) : AutoCloseable
 {
     private val conn = getConnection()
     val dsl = createDSL(conn)
 
+    protected open fun loadSettings() = DatabaseSettings.fromConfig(prefix = "db")
+
     private fun getConnection(): Connection
     {
-        val dbHost = Config["db.host"]
-        val dbPort = Config["db.port"]
-        val dbName = dbName ?: Config["db.name"]
-        val url = "jdbc:postgresql://$dbHost:$dbPort/$dbName"
+        val config = loadSettings()
+        val url = config.url(dbName)
         try
         {
-            return DriverManager.getConnection(url, Config["db.username"], Config["db.password"])
+            return DriverManager.getConnection(url, config.username, config.password)
         }
         catch (e: Exception)
         {
