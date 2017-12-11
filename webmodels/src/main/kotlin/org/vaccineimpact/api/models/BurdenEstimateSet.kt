@@ -19,6 +19,12 @@ data class CreateBurdenEstimateSet(
         val type: BurdenEstimateSetType,
         val modelRunParameterSetId: Int?
 )
+{
+    fun withType(code: BurdenEstimateSetTypeCode, details: String? = null): CreateBurdenEstimateSet
+    {
+        return this.copy(type = BurdenEstimateSetType(code, details))
+    }
+}
 
 data class BurdenEstimateSetType(val type: BurdenEstimateSetTypeCode, val details: String? = null)
 
@@ -29,6 +35,7 @@ enum class BurdenEstimateSetTypeCode
     CENTRAL_UNKNOWN,
     STOCHASTIC
 }
+fun BurdenEstimateSetTypeCode.isStochastic() = this == BurdenEstimateSetTypeCode.STOCHASTIC
 
 enum class BurdenEstimateSetStatus
 {
