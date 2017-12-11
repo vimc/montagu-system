@@ -53,6 +53,27 @@ class JooqBurdenEstimateRepository(
                 .fetchInto(ModelRunParameterSet::class.java)
     }
 
+    override fun getBurdenEstimateSet(setId: Int): BurdenEstimateSet
+    {
+        val table = BURDEN_ESTIMATE_SET
+        val records = dsl.select(
+                table.ID,
+                table.UPLOADED_ON,
+                table.UPLOADED_BY,
+                table.SET_TYPE,
+                table.SET_TYPE_DETAILS,
+                table.STATUS,
+                BURDEN_ESTIMATE_SET_PROBLEM.PROBLEM
+        )
+                .from(table)
+                .joinPath(table, BURDEN_ESTIMATE_SET_PROBLEM, joinType = JoinType.LEFT_OUTER_JOIN)
+                .where(table.ID.eq(setId))
+                .fetch()
+
+        return mapper.mapBurdenEstimateSets(records).singleOrNull()
+                ?: throw UnknownObjectError(setId, "burden-estimate-set")
+    }
+
     override fun getBurdenEstimateSets(groupId: String, touchstoneId: String, scenarioId: String): List<BurdenEstimateSet>
     {
         // Dereference modelling group IDs
@@ -77,20 +98,7 @@ class JooqBurdenEstimateRepository(
                 .and(MODELLING_GROUP.ID.eq(modellingGroup.id))
                 .fetch()
 
-        return records
-                .groupBy { it[table.ID] }
-                .map { group ->
-                    val common = group.value.first()
-                    val problems = group.value.mapNotNull { it[BURDEN_ESTIMATE_SET_PROBLEM.PROBLEM] }
-                    BurdenEstimateSet(
-                            common[table.ID],
-                            common[table.UPLOADED_ON].toInstant(),
-                            common[table.UPLOADED_BY],
-                            mapper.mapBurdenEstimateSetType(common),
-                            mapper.mapEnum(common[table.STATUS]),
-                            problems
-                    )
-                }
+        return mapper.mapBurdenEstimateSets(records)
     }
 
     override fun addModelRunParameterSet(groupId: String, touchstoneId: String, disease: String,
@@ -263,7 +271,7 @@ class JooqBurdenEstimateRepository(
                     .from(MODEL_RUN_PARAMETER_SET)
                     .where(MODEL_RUN_PARAMETER_SET.ID.eq(modelRunParameterSetId))
                     .fetch()
-                    .singleOrNull()?: throw UnknownObjectError(modelRunParameterSetId, "model run paramater set")
+                    .singleOrNull() ?: throw UnknownObjectError(modelRunParameterSetId, "model run paramater set")
         }
 
         val latestModelVersion = getlatestModelVersion(modellingGroup.id, responsibilityInfo.disease)
