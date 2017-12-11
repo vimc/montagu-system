@@ -71,12 +71,12 @@ class RetrieveBurdenEstimatesTests : BurdenEstimateRepositoryTests()
     @Test
     fun `can retrieve single burden estimate set`()
     {
-        var setId = 0
-        given { db ->
+        val setId = withDatabase { db ->
             val ids = setupDatabase(db)
             val modelVersionId = ids.modelVersion!!
-            setId = db.addBurdenEstimateSet(ids.responsibility, modelVersionId, username)
-        } check { repo ->
+            db.addBurdenEstimateSet(ids.responsibility, modelVersionId, username)
+        }
+        withRepo { repo ->
             val set = repo.getBurdenEstimateSet(setId)
             assertThat(set.uploadedBy).isEqualTo(username)
             assertThat(set.problems).isEmpty()
