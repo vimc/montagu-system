@@ -108,7 +108,9 @@ open class GroupBurdenEstimatesController(context: ControllerContext) : Abstract
         val path = getValidResponsibilityPath(context, estimateRepository)
 
         // Then add the burden estimates
-        val data = context.csvData<BurdenEstimate>(from = source)
+        val data = context.csvData<BurdenEstimate>(from = source).map {
+            BurdenEstimateWithRunId(it, null)
+        }
         val checkedData = data.checkAllValuesAreEqual({ it.disease },
                 InconsistentDataError("More than one value was present in the disease column")
         )

@@ -130,6 +130,16 @@ class GroupEstimatesControllerTests : ControllerTests<GroupBurdenEstimatesContro
                         "dalys" to 73.6.toDecimal()
                 ))
         )
+        val expected = listOf(
+                BurdenEstimateWithRunId("yf", null, 2000, 50, "AFG", "Afghanistan", 1000.toDecimal(), mapOf(
+                        "deaths" to 10.toDecimal(),
+                        "cases" to 100.toDecimal()
+                )),
+                BurdenEstimateWithRunId("yf", null, 1980, 30, "AGO", "Angola", 2000.toDecimal(), mapOf(
+                        "deaths" to 20.toDecimal(),
+                        "dalys" to 73.6.toDecimal()
+                ))
+        )
 
         val controller = GroupBurdenEstimatesController(mockControllerContext())
         val mockContext = mock<ActionContext> {
@@ -144,7 +154,7 @@ class GroupEstimatesControllerTests : ControllerTests<GroupBurdenEstimatesContro
         verify(touchstoneSet).get("touchstone-1")
         verify(repo).populateBurdenEstimateSet(eq(1),
                 eq("group-1"), eq("touchstone-1"), eq("scenario-1"),
-                argWhere { it.toSet() == data.toSet() }
+                argWhere { it.toSet() == expected.toSet() }
         )
     }
 
