@@ -2,7 +2,6 @@ import * as React from "react";
 
 interface AlertState {
     show: boolean;
-    cssClass: string;
 }
 
 interface AlertProps {
@@ -17,15 +16,13 @@ export class Alert extends React.Component<AlertProps, AlertState> {
         super(props);
 
         this.state = {
-            show: props.hasError || props.hasSuccess,
-            cssClass: props.hasError ? "alert alert-danger" : "alert alert-success"
+            show: props.hasError || props.hasSuccess
         };
     }
 
     componentWillReceiveProps(nextProps: AlertProps) {
         this.setState({
-            show: nextProps.hasError || nextProps.hasSuccess,
-            cssClass: nextProps.hasError ? "alert alert-danger" : "alert alert-success"
+            show: nextProps.hasError || nextProps.hasSuccess
         })
     }
 
@@ -36,8 +33,9 @@ export class Alert extends React.Component<AlertProps, AlertState> {
     }
 
     render() {
+        const cssClass = this.props.hasError ? "alert alert-danger" : "alert alert-success";
         if (this.state.show) {
-            return <div className={this.state.cssClass}>
+            return <div className={cssClass}>
                 <button type="button" style={{"outline": "none"}} className="close"
                         onClick={this.closeAlert.bind(this)}>
                     <span>&times;</span>
