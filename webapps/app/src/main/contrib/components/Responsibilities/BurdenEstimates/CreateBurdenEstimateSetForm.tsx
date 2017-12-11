@@ -33,12 +33,12 @@ export class CreateBurdenEstimateSetForm extends React.Component<BurdenEstimateP
 
     onTypeChange(value: BurdenEstimateSetTypeCode) {
 
-
         this.setState((prevState) => {
             return {
-                type: Object.assign(prevState.type, {
-                    typeCode: value
-                })
+                type: {
+                    type: value,
+                    details: prevState.type.details
+                }
             }
         });
     }
@@ -48,9 +48,10 @@ export class CreateBurdenEstimateSetForm extends React.Component<BurdenEstimateP
         const details = (e.target as HTMLInputElement).value;
         this.setState((prevState) => {
             return {
-                type: Object.assign(prevState.type, {
+                type: {
+                    type: prevState.type.type,
                     details: details
-                })
+                }
             }
         })
     }

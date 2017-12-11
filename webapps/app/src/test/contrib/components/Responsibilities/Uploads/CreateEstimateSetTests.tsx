@@ -5,6 +5,7 @@ import {Sandbox} from "../../../../Sandbox";
 import {CreateBurdenEstimateSetForm} from "../../../../../main/contrib/components/Responsibilities/BurdenEstimates/CreateBurdenEstimateSetForm";
 import {OptionSelector} from "../../../../../main/contrib/components/OptionSelector/OptionSelector";
 import {Form} from "../../../../../main/contrib/components/Responsibilities/BurdenEstimates/Form";
+import {checkAsync} from "../../../../testHelpers";
 
 describe("CreateEstimatesFormComponent", () => {
     const sandbox = new Sandbox();
@@ -63,14 +64,15 @@ describe("CreateEstimatesFormComponent", () => {
 
     });
 
-    it("updates type code on change", () => {
+    it("updates type code on change", (done: DoneCallback) => {
         const props = {touchstoneId: "touchstone-1", groupId: "group-1", scenarioId: "scenario-1"};
 
         const rendered = mount(<CreateBurdenEstimateSetForm {...props} />);
 
         CreateBurdenEstimateSetForm.prototype.onTypeChange.bind(rendered)("central-averaged");
 
-        expect(rendered.state().type.typeCode).to.eql("central-averaged");
+        expect(rendered.state().type.type).to.eql("central-averaged");
+
     });
 
 });
