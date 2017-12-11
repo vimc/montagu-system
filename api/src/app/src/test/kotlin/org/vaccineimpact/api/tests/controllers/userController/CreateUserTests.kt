@@ -5,7 +5,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.fail
 import org.junit.Test
 import org.vaccineimpact.api.app.context.ActionContext
-import org.vaccineimpact.api.app.controllers.ControllerContext
 import org.vaccineimpact.api.app.controllers.UserController
 import org.vaccineimpact.api.app.models.CreateUser
 import org.vaccineimpact.api.app.repositories.Repositories
@@ -14,8 +13,9 @@ import org.vaccineimpact.api.app.repositories.UserRepository
 import org.vaccineimpact.api.emails.EmailManager
 import org.vaccineimpact.api.emails.NewUserEmail
 import org.vaccineimpact.api.emails.getEmailManager
+import org.vaccineimpact.api.test_helpers.MontaguTests
 
-class CreateUserTests : UserControllerTests()
+class CreateUserTests : MontaguTests()
 {
     private val fakeToken = "TOKEN"
     private val name = "Full name"
@@ -74,14 +74,9 @@ class CreateUserTests : UserControllerTests()
         val context = mock<ActionContext> {
             on { postData(CreateUser::class.java) } doReturn model
         }
-        val controller = UserController(controllerContext(), emailManager)
-        return controller.createUser(context, repos)
+
+        val sut = UserController(context, mock<UserRepository>(), mock<TokenRepository>(), emailManager)
+        return sut.createUser()
     }
 
-    private fun controllerContext(): ControllerContext
-    {
-        return mockControllerContext(webTokenHelper = mock {
-            on { generateOneTimeActionToken(any(), any(), anyOrNull(), any(), any()) } doReturn fakeToken
-        })
-    }
 }

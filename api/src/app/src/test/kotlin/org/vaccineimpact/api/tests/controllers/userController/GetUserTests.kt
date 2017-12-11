@@ -6,12 +6,14 @@ import org.assertj.core.api.Assertions
 import org.junit.Test
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.controllers.UserController
+import org.vaccineimpact.api.app.repositories.TokenRepository
 import org.vaccineimpact.api.app.repositories.UserRepository
 import org.vaccineimpact.api.models.User
 import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.models.permissions.RoleAssignment
+import org.vaccineimpact.api.test_helpers.MontaguTests
 
-class GetUserTests : UserControllerTests()
+class GetUserTests : MontaguTests()
 {
     @Test
     fun `getUser returns user without roles`()
@@ -30,8 +32,9 @@ class GetUserTests : UserControllerTests()
             on { permissions } doReturn permissionSet
         }
 
-        val controller = UserController(mockControllerContext())
-        Assertions.assertThat(controller.getUser(context, repo)).isEqualToComparingFieldByField(user)
+
+        val sut = UserController(context, repo, mock<TokenRepository>())
+        Assertions.assertThat(sut.getUser()).isEqualToComparingFieldByField(user)
     }
 
     @Test
@@ -57,8 +60,8 @@ class GetUserTests : UserControllerTests()
             on { permissions } doReturn permissionSet
         }
 
-        val controller = UserController(mockControllerContext())
-        val actualRoles = controller.getUser(context, repo).roles
+        val sut = UserController(context, repo, mock<TokenRepository>())
+        val actualRoles = sut.getUser().roles
         Assertions.assertThat(actualRoles).hasSameElementsAs(expectedRoles)
     }
 
@@ -89,8 +92,8 @@ class GetUserTests : UserControllerTests()
 
         val expectedRoles = listOf(RoleAssignment("member", "modelling-group", "IC-Garske"))
 
-        val controller = UserController(mockControllerContext())
-        val actualRoles = controller.getUser(context, repo).roles
+        val sut = UserController(context, repo, mock<TokenRepository>())
+        val actualRoles = sut.getUser().roles
 
         Assertions.assertThat(actualRoles).hasSameElementsAs(expectedRoles)
     }
@@ -108,8 +111,8 @@ class GetUserTests : UserControllerTests()
             on { permissions } doReturn PermissionSet()
         }
 
-        val controller = UserController(mockControllerContext())
-        val actualUsers = controller.getUsers(context, repo)
+        val sut = UserController(context, repo, mock<TokenRepository>())
+        val actualUsers = sut.getUsers()
 
         Assertions.assertThat(actualUsers).hasSameElementsAs(users)
     }
@@ -133,8 +136,8 @@ class GetUserTests : UserControllerTests()
             on { permissions } doReturn permissionSet
         }
 
-        val controller = UserController(mockControllerContext())
-        val actualRoles = controller.getUsers(context, repo)[0].roles
+        val sut = UserController(context, repo, mock<TokenRepository>())
+        val actualRoles = sut.getUsers()[0].roles
         Assertions.assertThat(actualRoles).hasSameElementsAs(expectedRoles)
     }
 
@@ -161,8 +164,8 @@ class GetUserTests : UserControllerTests()
 
         val expectedRoles = listOf(RoleAssignment("member", "modelling-group", "IC-Garske"))
 
-        val controller = UserController(mockControllerContext())
-        val actualRoles = controller.getUsers(context, repo)[0].roles
+        val sut = UserController(context, repo, mock<TokenRepository>())
+        val actualRoles = sut.getUsers()[0].roles
 
         Assertions.assertThat(actualRoles).hasSameElementsAs(expectedRoles)
     }

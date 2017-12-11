@@ -8,13 +8,15 @@ import org.junit.Test
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.controllers.UserController
 import org.vaccineimpact.api.app.errors.MissingRequiredPermissionError
+import org.vaccineimpact.api.app.repositories.TokenRepository
 import org.vaccineimpact.api.app.repositories.UserRepository
 import org.vaccineimpact.api.models.Scope
 import org.vaccineimpact.api.models.permissions.AssociateRole
 import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
+import org.vaccineimpact.api.test_helpers.MontaguTests
 
-class AssociateRoleTests : UserControllerTests()
+class AssociateRoleTests : MontaguTests()
 {
     private val userName = "test.user"
 
@@ -22,10 +24,6 @@ class AssociateRoleTests : UserControllerTests()
     fun `throws required permission error if no role writing permission`()
     {
         val mockUserRepo = mock<UserRepository>()
-
-        val mockControllerContext = mockControllerContext()
-        val controller = UserController(mockControllerContext)
-
         val model = AssociateRole("add", "member", "modelling-group", "IC-Garske")
         val mockActionContext = mock<ActionContext> {
             on { postData(AssociateRole::class.java) } doReturn model
@@ -33,19 +31,16 @@ class AssociateRoleTests : UserControllerTests()
             on { permissions } doReturn PermissionSet()
         }
 
+        val sut = UserController(mockActionContext, mockUserRepo, mock<TokenRepository>())
+
         assertThatThrownBy {
-            controller.modifyUserRole(mockActionContext, mockUserRepo)
+            sut.modifyUserRole()
         }.isInstanceOf(MissingRequiredPermissionError::class.java)
     }
 
     @Test
     fun `throws required permission error if role writing permission is scoped to different scope`()
     {
-        val mockUserRepo = mock<UserRepository>()
-
-        val mockControllerContext = mockControllerContext()
-        val controller = UserController(mockControllerContext)
-
         val model = AssociateRole("add", "member", "modelling-group", "IC-Garske")
         val mockActionContext = mock<ActionContext> {
             on { postData(AssociateRole::class.java) } doReturn model
@@ -54,19 +49,16 @@ class AssociateRoleTests : UserControllerTests()
                     Scope.parse("modelling-group:Someone-Else"))))
         }
 
+        val sut = UserController(mockActionContext, mock<UserRepository>(), mock<TokenRepository>())
+
         assertThatThrownBy {
-            controller.modifyUserRole(mockActionContext, mockUserRepo)
+            sut.modifyUserRole()
         }.isInstanceOf(MissingRequiredPermissionError::class.java)
     }
 
     @Test
     fun `throws required permission error if role writing permission is scoped and role is global`()
     {
-        val mockUserRepo = mock<UserRepository>()
-
-        val mockControllerContext = mockControllerContext()
-        val controller = UserController(mockControllerContext)
-
         val model = AssociateRole("add", "user", null, null)
         val mockActionContext = mock<ActionContext> {
             on { postData(AssociateRole::class.java) } doReturn model
@@ -75,19 +67,16 @@ class AssociateRoleTests : UserControllerTests()
                     Scope.parse("modelling-group:IC-Garske"))))
         }
 
+        val sut = UserController(mockActionContext, mock<UserRepository>(), mock<TokenRepository>())
+
         assertThatThrownBy {
-            controller.modifyUserRole(mockActionContext, mockUserRepo)
+            sut.modifyUserRole()
         }.isInstanceOf(MissingRequiredPermissionError::class.java)
     }
 
     @Test
     fun `returns ok if modifies role`()
     {
-        val mockUserRepo = mock<UserRepository>()
-
-        val mockControllerContext = mockControllerContext()
-        val controller = UserController(mockControllerContext)
-
         val model = AssociateRole("add", "member", "modelling-group", "IC-Garske")
         val mockActionContext = mock<ActionContext> {
             on { postData(AssociateRole::class.java) } doReturn model
@@ -96,7 +85,9 @@ class AssociateRoleTests : UserControllerTests()
                     Scope.parse("modelling-group:IC-Garske"))))
         }
 
-        val result = controller.modifyUserRole(mockActionContext, mockUserRepo)
+        val sut = UserController(mockActionContext, mock<UserRepository>(), mock<TokenRepository>())
+
+        val result = sut.modifyUserRole()
         assertThat(result).isEqualTo("OK")
     }
 
