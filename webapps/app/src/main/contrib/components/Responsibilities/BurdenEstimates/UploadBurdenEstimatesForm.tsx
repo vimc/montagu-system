@@ -3,7 +3,7 @@ import {UploadFileForm} from "../../../../shared/components/UploadFileForm";
 import {helpers} from "../../../../shared/Helpers";
 import {Alert} from "../../../../shared/components/Alert";
 import {ErrorInfo, Result} from "../../../../shared/models/Generated";
-import {CreateBurdenEstimateSetForm} from "../../../../../../../app/src/main/contrib/components/Responsibilities/BurdenEstimates/CreateBurdenEstimateSetForm";
+import {CreateBurdenEstimateSetForm} from "./CreateBurdenEstimateSetForm";
 
 interface UploadBurdenEstimatesFormComponentProps {
     touchstoneId: string;

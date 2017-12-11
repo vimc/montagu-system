@@ -1,11 +1,9 @@
 import * as React from "react";
 import {expect} from "chai";
-import {mount, render, shallow} from "enzyme";
+import {mount, shallow} from "enzyme";
 import {Sandbox} from "../../../../Sandbox";
 import {CreateBurdenEstimateSetForm} from "../../../../../main/contrib/components/Responsibilities/BurdenEstimates/CreateBurdenEstimateSetForm";
-import {Alert} from "../../../../../main/shared/components/Alert";
-import {ReactElement} from "react";
-import {OptionSelector} from "../../../../../../../app/src/main/contrib/components/OptionSelector/OptionSelector";
+import {OptionSelector} from "../../../../../main/contrib/components/OptionSelector/OptionSelector";
 
 describe("CreateEstimatesFormComponent", () => {
     const sandbox = new Sandbox();
