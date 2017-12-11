@@ -257,13 +257,13 @@ class JooqBurdenEstimateRepository(
                     .from(MODEL_RUN_PARAMETER_SET)
                     .where(MODEL_RUN_PARAMETER_SET.ID.eq(modelRunParameterSetId))
                     .fetch()
-                    .singleOrNull()?: throw UnknownObjectError(modelRunParameterSetId, "model run paramater set")
+                    .singleOrNull() ?: throw UnknownObjectError(modelRunParameterSetId, "model run paramater set")
         }
 
         val latestModelVersion = getlatestModelVersion(modellingGroup.id, responsibilityInfo.disease)
 
         val setId = addSet(responsibilityInfo.id, uploader, timestamp, latestModelVersion, properties)
-        updateCurrentBurdenEstimateSet(responsibilityInfo.id, setId)
+        updateCurrentBurdenEstimateSet(responsibilityInfo.id, setId, properties.type.type)
 
         return setId
     }
@@ -282,10 +282,19 @@ class JooqBurdenEstimateRepository(
 
     }
 
-    private fun updateCurrentBurdenEstimateSet(responsibilityId: Int, setId: Int)
+    private fun updateCurrentBurdenEstimateSet(responsibilityId: Int, setId: Int, type: BurdenEstimateSetTypeCode)
     {
+        val field = if (type.isStochastic())
+        {
+            RESPONSIBILITY.CURRENT_STOCHASTIC_BURDEN_ESTIMATE_SET
+        }
+        else
+        {
+            RESPONSIBILITY.CURRENT_BURDEN_ESTIMATE_SET
+        }
+
         dsl.update(RESPONSIBILITY)
-                .set(RESPONSIBILITY.CURRENT_BURDEN_ESTIMATE_SET, setId)
+                .set(field, setId)
                 .where(RESPONSIBILITY.ID.eq(responsibilityId))
                 .execute()
     }

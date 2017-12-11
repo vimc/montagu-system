@@ -4,6 +4,7 @@ import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.jooq.Record
+import org.jooq.TableField
 import org.junit.Test
 import org.vaccineimpact.api.app.errors.DatabaseContentsError
 import org.vaccineimpact.api.app.errors.InconsistentDataError
@@ -111,7 +112,7 @@ class UploadBurdenEstimateTests : BurdenEstimateRepositoryTests()
     }
 
     @Test
-    fun `updates responsibility current estimate set`()
+    fun `central estimates update current estimate set`()
     {
         var returnedIds: ReturnedIds? = null
         var setId: Int? = null
@@ -120,7 +121,24 @@ class UploadBurdenEstimateTests : BurdenEstimateRepositoryTests()
         } makeTheseChanges { repo ->
             setId = repo.createBurdenEstimateSet(groupId, touchstoneId, scenarioId, defaultProperties, username, timestamp)
         } andCheckDatabase { db ->
-            checkCurrentBurdenEstimateSet(db, returnedIds!!, setId!!)
+            checkCurrentBurdenEstimateSet(db, returnedIds!!, setId!!,
+                    RESPONSIBILITY.CURRENT_BURDEN_ESTIMATE_SET)
+        }
+    }
+
+    @Test
+    fun `stochastic estimates update current estimate set`()
+    {
+        var returnedIds: ReturnedIds? = null
+        var setId: Int? = null
+        given { db ->
+            returnedIds = setupDatabase(db)
+        } makeTheseChanges { repo ->
+            val properties = defaultProperties.withType(BurdenEstimateSetTypeCode.STOCHASTIC)
+            setId = repo.createBurdenEstimateSet(groupId, touchstoneId, scenarioId, properties, username, timestamp)
+        } andCheckDatabase { db ->
+            checkCurrentBurdenEstimateSet(db, returnedIds!!, setId!!,
+                    RESPONSIBILITY.CURRENT_STOCHASTIC_BURDEN_ESTIMATE_SET)
         }
     }
 
@@ -283,9 +301,10 @@ class UploadBurdenEstimateTests : BurdenEstimateRepositoryTests()
         return set[t.ID]
     }
 
-    private fun checkCurrentBurdenEstimateSet(db: JooqContext, returnedIds: ReturnedIds, setId: Int)
+    private fun checkCurrentBurdenEstimateSet(db: JooqContext, returnedIds: ReturnedIds, setId: Int,
+                                              fieldToCheck: TableField<*, *>)
     {
-        val actualSetId = db.dsl.select(RESPONSIBILITY.CURRENT_BURDEN_ESTIMATE_SET)
+        val actualSetId = db.dsl.select(fieldToCheck)
                 .from(RESPONSIBILITY)
                 .where(RESPONSIBILITY.ID.eq(returnedIds.responsibility))
                 .fetchOneInto(Int::class.java)
