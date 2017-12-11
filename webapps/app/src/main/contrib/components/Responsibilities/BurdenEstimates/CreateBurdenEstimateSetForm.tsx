@@ -37,9 +37,9 @@ export class CreateBurdenEstimateSetForm extends React.Component<BurdenEstimateP
         responsibilityStore.refreshResponsibilities()
     }
 
-    onTypeChange(e: FormEvent<HTMLInputElement>) {
+    onTypeChange(value: BurdenEstimateSetTypeCode) {
         const newData = this.state.data;
-        newData.type.type = (e.target as HTMLInputElement).value as BurdenEstimateSetTypeCode;
+        newData.type.type = value;
         this.setState({
             data: newData
         })
