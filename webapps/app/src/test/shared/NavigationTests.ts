@@ -33,7 +33,6 @@ export function addNavigationTests(page: PageWithHeader<any>, sandbox: Sandbox, 
                 checkString(crumb.name, "name", asString);
                 checkString(crumb.url, "URL", asString);
             });
-            //console.log("Last crumb: " + JSON.stringify(crumbs[crumbs.length - 1]));
         });
     };
 
@@ -41,15 +40,6 @@ export function addNavigationTests(page: PageWithHeader<any>, sandbox: Sandbox, 
         testCrumbIsAsExpected(done, actions => {
             const action = findActionWithName(actions, "NavActions.initialize");
             return action.payload as Breadcrumb[];
-        });
-    });
-
-    it("can be navigated to", (done: DoneCallback) => {
-        navActions.initialize(null);
-        testCrumbIsAsExpected(done, actions => {
-            const action = findActionWithName(actions, "NavActions.navigate");
-            const crumb = action.payload as Breadcrumb;
-            return [crumb];
         });
     });
 }

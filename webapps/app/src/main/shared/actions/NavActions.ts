@@ -4,7 +4,6 @@ import {Breadcrumb, IPageWithParent} from "../models/Breadcrumb";
 
 interface Actions {
     initialize(page: IPageWithParent): Breadcrumb[];
-    navigate(url: string, name: string): Breadcrumb;
 }
 
 function getParentsInOrderFromTopToBottom(page: IPageWithParent): IPageWithParent[] {
@@ -27,10 +26,6 @@ class NavActions extends AbstractActions implements Actions {
         } else {
             return [];
         }
-    }
-
-    navigate(url: string, name: string): Breadcrumb {
-        return { url, name };
     }
 }
 

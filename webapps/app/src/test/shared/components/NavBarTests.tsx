@@ -2,6 +2,8 @@ import {expect} from "chai";
 import {Sandbox} from "../../Sandbox";
 import {HTMLAttributes, shallow, ShallowWrapper} from "enzyme";
 import * as React from "react";
+import { alt } from "../../../main/shared/alt";
+
 import {NavBar, NavBarComponent} from "../../../main/shared/components/NavBar/NavBar";
 import {InternalLink} from "../../../main/shared/components/InternalLink";
 import {Breadcrumb} from "../../../main/shared/models/Breadcrumb";
@@ -18,8 +20,14 @@ describe("NavBar", () => {
     };
 
     it("can get props from store", () => {
-        navActions.navigate("a", "A");
-        navActions.navigate("b", "B");
+        alt.bootstrap(JSON.stringify({
+            NavStore: {
+                crumbs: [
+                    {url: "a", name: "A"},
+                    {url: "b", name: "B"},
+                ]
+            }
+        }));
         const props = NavBarComponent.getPropsFromStores();
         expect(props).to.eql({
             crumbs: [
@@ -28,6 +36,7 @@ describe("NavBar", () => {
             ]
         });
     });
+
 
     it("can render zero crumbs", () => {
         expect(renderCrumbs([])).to.have.length(0);

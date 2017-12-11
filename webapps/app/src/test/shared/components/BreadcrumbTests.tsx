@@ -19,19 +19,6 @@ describe("Breadcrumbs", () => {
             ]);
         });
     });
-
-    it("navigation after page load respects link order", (done: DoneCallback) => {
-        new A().componentDidMount();    // Page load
-        new C().componentDidMount();    // First user navigation
-
-        checkAsync(done, () => {
-            const nav = navStore.getState();
-            expect(nav.crumbs).to.eql([
-                {url: "/", name: "A"},
-                {url: "/b/c/", name: "C"},
-            ]);
-        });
-    });
 });
 
 class A extends DummyPage {
