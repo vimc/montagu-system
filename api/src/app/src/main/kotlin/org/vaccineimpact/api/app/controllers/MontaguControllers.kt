@@ -6,7 +6,6 @@ open class MontaguControllers(context: ControllerContext)
     open val modellingGroup = ModellingGroupController(context)
     open val groupBurdenEstimates = GroupBurdenEstimatesController(context)
     open val user = UserController(context)
-    open val model = ModelController(context)
     open val password = PasswordController(context)
 
     val all
@@ -15,7 +14,6 @@ open class MontaguControllers(context: ControllerContext)
                 modellingGroup,
                 groupBurdenEstimates,
                 user,
-                model,
                 password
         )
 }
