@@ -64,7 +64,7 @@ describe("CreateEstimatesFormComponent", () => {
 
     });
 
-    it("updates type code on change", (done: DoneCallback) => {
+    it("updates type code on change", () => {
         const props = {touchstoneId: "touchstone-1", groupId: "group-1", scenarioId: "scenario-1"};
 
         const rendered = mount(<CreateBurdenEstimateSetForm {...props} />);
