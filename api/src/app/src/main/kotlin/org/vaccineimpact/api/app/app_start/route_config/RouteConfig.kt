@@ -12,5 +12,6 @@ object MontaguRouteConfig : RouteConfig
     override val endpoints: List<EndpointDefinition>
             = DiseaseRouteConfig.endpoints +
             TouchstoneRouteConfig.endpoints +
-            ModelRouteConfig.endpoints
+            ModelRouteConfig.endpoints +
+            AuthenticationRouteConfig.endpoints
 }
