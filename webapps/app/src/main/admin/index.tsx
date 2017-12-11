@@ -5,8 +5,8 @@ import fetcher from "../shared/sources/Fetcher";
 import { AdminFetcher } from "./sources/AdminFetcher";
 import { adminAuthStore } from "./stores/AdminAuthStore";
 
-require('./index.html');
-require('../shared/styles/fonts.scss');
+import './index.html';
+import '../shared/styles/fonts.scss';
 import '../shared/styles/buttons.scss';
 import '../shared/styles/common.scss';
 
