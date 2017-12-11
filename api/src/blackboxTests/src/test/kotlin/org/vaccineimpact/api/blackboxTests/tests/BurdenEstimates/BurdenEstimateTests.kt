@@ -43,9 +43,16 @@ abstract class BurdenEstimateTests : DatabaseTest()
 
     protected fun setUpWithStochasticBurdenEstimateSet(db: JooqContext): Int
     {
-        val returnedIds = setUp(db)
-        return db.addBurdenEstimateSet(returnedIds.responsibilityId, returnedIds.modelVersionId,
-                TestUserHelper.username, setType = "stochastic")
+        val ids = setUp(db)
+        val parameterSetId = db.addModelRunParameterSet(ids.responsibilitySetId, ids.modelVersionId,
+                TestUserHelper.username, "description")
+        db.addModelRun(parameterSetId, "A")
+        db.addModelRun(parameterSetId, "B")
+        return db.addBurdenEstimateSet(ids.responsibilityId, ids.modelVersionId,
+                TestUserHelper.username,
+                setType = "stochastic",
+                modelRunParameterSetId = parameterSetId
+        )
     }
 
     protected fun setUpWithModelRunParameterSet(db: JooqContext): Int
@@ -55,7 +62,8 @@ abstract class BurdenEstimateTests : DatabaseTest()
                 TestUserHelper.username, "description")
     }
 
-    protected fun validateOneTimeLinkWithRedirect(url: String){
+    protected fun validateOneTimeLinkWithRedirect(url: String)
+    {
 
         validate("$url/get_onetime_link/?redirectUrl=http://localhost/") against "Token" given { db ->
             setUp(db)
