@@ -206,12 +206,14 @@ class JooqBurdenEstimateRepository(
                 "Created via deprecated method"
         ), null)
         val setId = createBurdenEstimateSet(groupId, touchstoneId, scenarioId, properties, uploader, timestamp)
-        populateBurdenEstimateSet(setId, groupId, touchstoneId, scenarioId, estimates)
+        populateBurdenEstimateSet(setId, groupId, touchstoneId, scenarioId, estimates.map {
+            BurdenEstimateWithRunId(it, runId = null)
+        })
         return setId
     }
 
     override fun populateBurdenEstimateSet(setId: Int, groupId: String, touchstoneId: String, scenarioId: String,
-                                           estimates: Sequence<BurdenEstimate>)
+                                           estimates: Sequence<BurdenEstimateWithRunId>)
     {
         // Dereference modelling group IDs
         val modellingGroup = modellingGroupRepository.getModellingGroup(groupId)
@@ -219,7 +221,7 @@ class JooqBurdenEstimateRepository(
         val responsibilityInfo = getResponsibilityInfo(modellingGroup.id, touchstoneId, scenarioId)
 
         checkSetStatusIsEmpty(setId)
-        BurdenEstimateWriter(dsl).addEstimatesToSet(estimates, setId, responsibilityInfo.disease)
+        BurdenEstimateWriter(dsl, setId).addEstimatesToSet(estimates, responsibilityInfo.disease)
         updateCurrentBurdenEstimateSet(responsibilityInfo.id, setId)
         dsl.update(Tables.BURDEN_ESTIMATE_SET)
                 .set(Tables.BURDEN_ESTIMATE_SET.STATUS, "complete")
