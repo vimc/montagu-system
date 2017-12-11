@@ -12,6 +12,7 @@ interface BurdenEstimateRepository : Repository
                                 properties: CreateBurdenEstimateSet,
                                 uploader: String, timestamp: Instant): Int
 
+    fun getBurdenEstimateSet(setId: Int): BurdenEstimateSet
     fun getBurdenEstimateSets(groupId: String, touchstoneId: String, scenarioId: String): List<BurdenEstimateSet>
 
     @Deprecated("Instead use createBurdenEstimateSet and then populateBurdenEstimateSet")
@@ -19,7 +20,7 @@ interface BurdenEstimateRepository : Repository
                              estimates: Sequence<BurdenEstimate>, uploader: String, timestamp: Instant): Int
 
     fun populateBurdenEstimateSet(setId: Int, groupId: String, touchstoneId: String, scenarioId: String,
-                                  estimates: Sequence<BurdenEstimate>)
+                                  estimates: Sequence<BurdenEstimateWithRunId>)
 
     fun addModelRunParameterSet(groupId: String, touchstoneId: String, disease: String, description: String,
                                 modelRuns: List<ModelRun>,

@@ -1,5 +1,6 @@
 package org.vaccineimpact.api.databaseTests.tests
 
+import org.assertj.core.api.Assertions
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
 import org.vaccineimpact.api.app.repositories.jooq.JooqBurdenEstimateRepository
 import org.vaccineimpact.api.app.repositories.jooq.JooqModellingGroupRepository
@@ -7,6 +8,7 @@ import org.vaccineimpact.api.app.repositories.jooq.JooqScenarioRepository
 import org.vaccineimpact.api.app.repositories.jooq.JooqTouchstoneRepository
 import org.vaccineimpact.api.databaseTests.RepositoryTests
 import org.vaccineimpact.api.db.JooqContext
+import org.vaccineimpact.api.db.Tables
 import org.vaccineimpact.api.db.direct.*
 import java.time.LocalDateTime
 import java.time.Month
@@ -74,4 +76,19 @@ abstract class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRep
         return ReturnedIds(modelVersionId, responsibilityId, setId)
     }
 
+    protected fun checkBurdenEstimateSetMetadata(db: JooqContext,
+                                               setId: Int,
+                                               returnedIds: ReturnedIds,
+                                               expectedStatus: String)
+            : Int
+    {
+        val t = Tables.BURDEN_ESTIMATE_SET
+        val set = db.dsl.selectFrom(t).where(t.ID.eq(setId)).fetchOne()
+        Assertions.assertThat(set[t.MODEL_VERSION]).isEqualTo(returnedIds.modelVersion!!)
+        Assertions.assertThat(set[t.RESPONSIBILITY]).isEqualTo(returnedIds.responsibility)
+        Assertions.assertThat(set[t.UPLOADED_BY]).isEqualTo(username)
+        Assertions.assertThat(set[t.UPLOADED_ON].toInstant()).isEqualTo(timestamp)
+        Assertions.assertThat(set[t.STATUS]).isEqualTo(expectedStatus)
+        return set[t.ID]
+    }
 }
