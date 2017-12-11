@@ -14,9 +14,9 @@ export interface FormState {
 interface FormProps {
     url: string;
     successCallback: (result: Result) => any;
-    buildPostData: (formData: FormData) => any;
     successMessage: string;
     submitText: string;
+    data: any;
 }
 
 export class Form extends React.Component<FormProps, FormState> {
@@ -33,13 +33,13 @@ export class Form extends React.Component<FormProps, FormState> {
         }
     }
 
-    submitForm(data: any) {
+    submitForm() {
 
         const self = this;
 
         fetcher.fetcher.fetch(this.props.url, {
             method: "post",
-            body: JSON.stringify(data)
+            body: JSON.stringify(this.props.data)
         }).then((response: Response) => {
 
             apiResponse(response)
@@ -63,11 +63,6 @@ export class Form extends React.Component<FormProps, FormState> {
         }
     }
 
-    getData(form: HTMLFormElement): any {
-        const formData = new FormData(form);
-        return this.props.buildPostData(formData);
-    }
-
     onSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
         const form = e.target as HTMLFormElement;
@@ -82,7 +77,7 @@ export class Form extends React.Component<FormProps, FormState> {
                 disabled: true
             });
 
-            this.submitForm(this.getData(form))
+            this.submitForm()
         }
     }
 

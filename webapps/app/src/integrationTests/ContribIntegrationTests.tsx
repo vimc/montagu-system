@@ -283,15 +283,17 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
             const rendered = mount(<CreateBurdenEstimateSetForm
                 touchstoneId={touchstoneId} groupId={groupId} scenarioId={scenarioId}/>);
 
+            rendered.find('input["name=details"]').simulate("change", "central-averaged");
+
+            // mutate underlying node, as the simulate event doesn't pass through args as expected on
+            // select elements
+            // https://github.com/airbnb/enzyme/issues/38
+            (rendered.find('select["name=typeCode"]').getNode() as any).selectedIndex = 2;
+
             const form = new Form(rendered.find(Form).props());
             const spy = new Sandbox().setSpy(form, "resultCallback");
 
-            const getData = (name: string) => {
-                return "central-averaged"
-            };
-
-            const data = form.getData((rendered.find("form").getNode() as any));
-            form.submitForm(data);
+            form.submitForm();
 
             checkAsync(done, (afterWait) => {
                 afterWait(done, () => {

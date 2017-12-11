@@ -7,16 +7,16 @@ import {Form} from "../../../../../main/contrib/components/Responsibilities/Burd
 import {Result} from "../../../../../main/shared/models/Generated";
 import {mockFetcherResponse, mockResponse} from "../../../../mocks/mockRemote";
 import {checkAsync} from "../../../../testHelpers";
+import {FormEvent} from "react";
 
-describe("CreateEstimatesFormComponent", () => {
+describe("FormComponent", () => {
     const sandbox = new Sandbox();
 
     const props = {
         url: "url",
         successCallback: (result: Result) => {
         },
-        buildPostData: (formData: FormData) => {
-        },
+        data: {something: "somevalue"},
         successMessage: "success message",
         submitText: "submit"
     };
@@ -78,12 +78,13 @@ describe("CreateEstimatesFormComponent", () => {
         sandbox.setStub(form, "setState");
 
         const spy = sandbox.setStub(form, "resultCallback");
-        form.submitForm({test: "test"});
+        form.submitForm();
 
         checkAsync(done, (afterWait) => {
             afterWait(done, () => {
                 expect(spy.called).to.eq(true);
-            })})
+            })
+        })
     });
 
     it("calls success callback if result is successful", () => {
@@ -133,10 +134,10 @@ describe("CreateEstimatesFormComponent", () => {
 
         const formElement = {checkValidity: () => false};
 
-        form.onSubmit(Object.assign({
+        form.onSubmit({
             target: formElement, preventDefault: () => {
             }
-        }));
+        } as any);
         expect(spy.called).to.eq(false);
 
     });
@@ -150,11 +151,12 @@ describe("CreateEstimatesFormComponent", () => {
 
         const formElement = {checkValidity: () => true};
 
-        form.onSubmit(Object.assign({
+        form.onSubmit({
             target: formElement, preventDefault: () => {
             }
-        }));
-        expect(spy.calledWith("test")).to.eq(true);
+        } as any);
+
+        expect(spy.called).to.eq(true);
 
     });
 
@@ -167,10 +169,10 @@ describe("CreateEstimatesFormComponent", () => {
 
         const formElement = {checkValidity: () => true};
 
-        form.onSubmit(Object.assign({
+        form.onSubmit({
             target: formElement, preventDefault: () => {
             }
-        }));
+        } as any);
 
         expect(spy.calledWith({validated: true})).to.eq(true);
 
