@@ -8,8 +8,6 @@ import { Touchstone } from "../../../../main/shared/models/Generated";
 import { TouchstoneList, TouchstoneListProps } from "../../../../main/contrib/components/ChooseAction/TouchstoneList";
 import { ButtonLink } from "../../../../main/shared/components/ButtonLink";
 
-const styles = require("../../../../main/contrib/components/ChooseAction/TouchstoneList.css");
-
 function makeProps(touchstones?: Array<Touchstone>): TouchstoneListProps {
     return {
         ready: true,
@@ -28,7 +26,7 @@ describe('TouchstoneListComponent renders', () => {
     it("message when there are no finished touchstones", () => {
         const props = makeProps();
         const rendered = shallow(<TouchstoneList {...props} />);
-        expect(rendered.find(`.${styles.finishedTouchstones}`).text()).to.contain("There are no past touchstones.");
+        expect(rendered.find(".finishedTouchstones").text()).to.contain("There are no past touchstones.");
     });
 
     it("one button per finished touchstone", () => {
@@ -38,7 +36,7 @@ describe('TouchstoneListComponent renders', () => {
         ];
         const props = makeProps(touchstones);
         const rendered = shallow(<TouchstoneList {...props} />);
-        const children = rendered.find(`.${styles.finishedTouchstones}`).find("li");
+        const children = rendered.find(".finishedTouchstones").find("li");
         expect(children).to.have.length(2);
 
         // Check the first link in detail
@@ -53,7 +51,7 @@ describe('TouchstoneListComponent renders', () => {
     it("message when there is no open touchstone", () => {
         const props = makeProps();
         const rendered = shallow(<TouchstoneList {...props} />);
-        expect(rendered.find(`.${styles.openTouchstones}`).text()).to.contain("There is no open touchstone currently.");
+        expect(rendered.find(".openTouchstones").text()).to.contain("There is no open touchstone currently.");
     });
 
     it("one button per open touchstone", () => {
@@ -63,7 +61,7 @@ describe('TouchstoneListComponent renders', () => {
         ];
         const props = makeProps(touchstones);
         const rendered = shallow(<TouchstoneList {...props} />);
-        const children = rendered.find(`.${styles.openTouchstones}`).find("li");
+        const children = rendered.find(".openTouchstones").find("li");
         expect(children).to.have.length(2);
 
         // Check the first link in detail

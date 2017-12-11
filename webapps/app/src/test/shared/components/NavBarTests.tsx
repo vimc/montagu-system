@@ -9,14 +9,12 @@ import {InternalLink} from "../../../main/shared/components/InternalLink";
 import {Breadcrumb} from "../../../main/shared/models/Breadcrumb";
 import {navActions} from "../../../main/shared/actions/NavActions";
 
-const styles = require("../../../main/shared/components/NavBar/NavBar.css");
-
 describe("NavBar", () => {
     const sandbox = new Sandbox();
     afterEach(() => sandbox.restore());
 
     const renderCrumbs = function (crumbs: Breadcrumb[]): ShallowWrapper<HTMLAttributes, any> {
-        return shallow(<NavBarComponent crumbs={crumbs}/>).find("." + styles.chunk);
+        return shallow(<NavBarComponent crumbs={crumbs}/>).find(".montagu-navbar__chunk");
     };
 
     it("can get props from store", () => {
