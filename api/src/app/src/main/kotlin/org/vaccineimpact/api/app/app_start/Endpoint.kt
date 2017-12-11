@@ -1,10 +1,13 @@
 package org.vaccineimpact.api.app.app_start
 
+import org.pac4j.http.client.direct.DirectBasicAuthClient
+import org.pac4j.sparkjava.SecurityFilter
 import org.vaccineimpact.api.app.DefaultHeadersFilter
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.repositories.RepositoryFactory
 import org.vaccineimpact.api.app.security.MontaguAuthorizer
 import org.vaccineimpact.api.app.security.PermissionRequirement
+import org.vaccineimpact.api.app.security.TokenIssuingConfigFactory
 import org.vaccineimpact.api.app.security.TokenVerifyingConfigFactory
 import org.vaccineimpact.api.db.Config
 import org.vaccineimpact.api.models.helpers.ContentTypes
@@ -20,7 +23,8 @@ data class Endpoint(
         override val contentType: String = ContentTypes.json,
         override val method: HttpMethod = HttpMethod.get,
         override val postProcess: ResultProcessor = ::passThrough,
-        override val requiredPermissions: List<PermissionRequirement> = listOf()
+        override val requiredPermissions: List<PermissionRequirement> = listOf(),
+        override val basicAuth: Boolean = false
 
 ) : EndpointDefinition
 {
@@ -38,6 +42,11 @@ data class Endpoint(
         {
             addSecurityFilter(url, webTokenHelper, repositoryFactory)
         }
+        if (basicAuth)
+        {
+            setupSecurity(url, repositoryFactory)
+        }
+
         Spark.after(url, contentType, DefaultHeadersFilter("$contentType; charset=utf-8", method))
     }
 
@@ -59,6 +68,20 @@ data class Endpoint(
         }
     }
 
+    private fun setupSecurity(url: String, repositoryFactory: RepositoryFactory)
+    {
+        if (Config.authEnabled)
+        {
+            val config = TokenIssuingConfigFactory(repositoryFactory).build()
+            Spark.before(url, SecurityFilter(
+                    config,
+                    DirectBasicAuthClient::class.java.simpleName,
+                    null,
+                    "method:${HttpMethod.post}"
+            ))
+        }
+    }
+
 }
 
 fun Endpoint.secure(permissions: Set<String> = setOf()): Endpoint
@@ -73,9 +96,15 @@ fun Endpoint.json(): Endpoint
 {
     return this.copy(contentType = ContentTypes.json)
 }
+
 fun Endpoint.csv(): Endpoint
 {
     return this.copy(contentType = ContentTypes.csv)
+}
+
+fun Endpoint.basicAuth(): Endpoint
+{
+    return this.copy(basicAuth = true)
 }
 
 private fun passThrough(x: Any?, context: ActionContext): Any? = x
