@@ -6,6 +6,7 @@ import org.junit.runner.RunWith
 import org.junit.runners.Suite
 import org.vaccineimpact.api.databaseTests.tests.*
 import org.vaccineimpact.api.databaseTests.tests.burdenEstimateRepository.BurdenEstimateRepositoryTestsDeprecated
+import org.vaccineimpact.api.databaseTests.tests.burdenEstimateRepository.CreateBurdenEstimateSetTests
 import org.vaccineimpact.api.databaseTests.tests.burdenEstimateRepository.ModelParameterTests
 import org.vaccineimpact.api.databaseTests.tests.burdenEstimateRepository.RetrieveBurdenEstimatesTests
 import org.vaccineimpact.api.databaseTests.tests.modellingGroupRepository.GetModellingGroupTests
@@ -20,6 +21,7 @@ import org.vaccineimpact.api.test_helpers.DatabaseCreationHelper
 @Suite.SuiteClasses(
         AnnexTests::class,
         BurdenEstimateRepositoryTestsDeprecated::class,
+        CreateBurdenEstimateSetTests::class,
         DiseaseTests::class,
         GetDemographicsTests::class,
         GetModellingGroupTests::class,
@@ -28,11 +30,11 @@ import org.vaccineimpact.api.test_helpers.DatabaseCreationHelper
         GetScenarioTests::class,
         ModelParameterTests::class,
         ModelTests::class,
+        PopulateBurdenEstimateSetTests::class,
         RetrieveBurdenEstimatesTests::class,
         TokenRepositoryTests::class,
         TransactionalityTests::class,
         TriggerTests::class,
-        UploadBurdenEstimateTests::class,
         UserTests::class
 )
 class RepositoryTestSuite
