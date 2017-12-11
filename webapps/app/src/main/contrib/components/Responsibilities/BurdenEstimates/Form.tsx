@@ -37,12 +37,11 @@ export class Form extends React.Component<FormProps, FormState> {
 
         const self = this;
 
-        fetcher.fetcher.fetch(this.props.url, {
-            method: "post",
+        return fetcher.fetcher.fetch(this.props.url, {
+            method: "POST",
             body: JSON.stringify(this.props.data)
         }).then((response: Response) => {
-
-            apiResponse(response)
+            return apiResponse(response)
                 .then((result: Result) => {
                         self.resultCallback(result)
                     }

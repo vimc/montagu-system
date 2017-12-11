@@ -11,24 +11,18 @@ interface BurdenEstimateProps {
     scenarioId: string;
 }
 
-interface CreateBurdenEstimateSet {
+class CreateBurdenEstimateSet {
     type: { type: BurdenEstimateSetTypeCode, details: string }
 }
 
-interface FormData {
-    data: CreateBurdenEstimateSet
-}
-
-export class CreateBurdenEstimateSetForm extends React.Component<BurdenEstimateProps, FormData> {
+export class CreateBurdenEstimateSetForm extends React.Component<BurdenEstimateProps, CreateBurdenEstimateSet> {
 
     constructor() {
         super();
         this.state = {
-            data: {
-                type: {
-                    type: null,
-                    details: null
-                }
+            type: {
+                type: null,
+                details: null
             }
         }
     }
@@ -38,18 +32,26 @@ export class CreateBurdenEstimateSetForm extends React.Component<BurdenEstimateP
     }
 
     onTypeChange(value: BurdenEstimateSetTypeCode) {
-        const newData = this.state.data;
-        newData.type.type = value;
-        this.setState({
-            data: newData
-        })
+
+
+        this.setState((prevState) => {
+            return {
+                type: Object.assign(prevState.type, {
+                    typeCode: value
+                })
+            }
+        });
     }
 
     onDetailsChange(e: FormEvent<HTMLInputElement>) {
-        const newData = this.state.data;
-        newData.type.details = (e.target as HTMLInputElement).value;
-        this.setState({
-            data: newData
+
+        const details = (e.target as HTMLInputElement).value;
+        this.setState((prevState) => {
+            return {
+                type: Object.assign(prevState.type, {
+                    details: details
+                })
+            }
         })
     }
 
@@ -57,10 +59,14 @@ export class CreateBurdenEstimateSetForm extends React.Component<BurdenEstimateP
 
         const successMessage = "Success! You have created a new burden estimate set";
 
-        const options = [{value: "central-single-run", text: "Single model run"}, {
-            value: "central-averaged",
-            text: "Averaged across model runs"
-        }];
+        const options = [
+            {
+                value: "central-single-run",
+                text: "Single model run"
+            }, {
+                value: "central-averaged",
+                text: "Averaged across model runs"
+            }];
 
         return <div>
             <h4>Create a new set of burden estimates:</h4>
@@ -68,7 +74,7 @@ export class CreateBurdenEstimateSetForm extends React.Component<BurdenEstimateP
                   url={`/modelling-groups/${this.props.groupId}/responsibilities/${this.props.touchstoneId}/${this.props.scenarioId}/estimate-sets/`}
                   successMessage={successMessage}
                   submitText={"Create"}
-                  data={this.state.data}>
+                  data={this.state}>
                 <div className="row">
                     <div className="col">
                         <label>How were these estimates calculated?</label>

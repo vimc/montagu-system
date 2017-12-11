@@ -22,9 +22,8 @@ import {contribAuthStore} from "../main/contrib/stores/ContribAuthStore";
 import {ContribFetcher} from "../main/contrib/sources/ContribFetcher";
 import {demographicActions} from "../main/contrib/actions/DemographicActions";
 import {Form} from "../main/contrib/components/Responsibilities/BurdenEstimates/Form";
-import {shallow, mount} from "enzyme";
+import {mount} from "enzyme";
 import {CreateBurdenEstimateSetForm} from "../main/contrib/components/Responsibilities/BurdenEstimates/CreateBurdenEstimateSetForm";
-import {Sandbox} from "../test/Sandbox";
 
 const jwt_decode = require('jwt-decode');
 
@@ -238,7 +237,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
 
                 const query = QueryString.parse(decoded.query);
                 expect(query).to.eql(JSON.parse(`{
-                    "redirectUrl": "http://localhost:5000/redirect/back"                   
+                    "redirectUrl": "http://localhost:5000/redirect/back"
                 }`
                 ));
 
@@ -264,7 +263,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
 
                 const query = QueryString.parse(decoded.query);
                 expect(query).to.eql(JSON.parse(`{
-                    "redirectUrl": "http://localhost:5000/redirect/back"                   
+                    "redirectUrl": "http://localhost:5000/redirect/back"
                 }`
                 ));
 
@@ -283,25 +282,36 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
             const rendered = mount(<CreateBurdenEstimateSetForm
                 touchstoneId={touchstoneId} groupId={groupId} scenarioId={scenarioId}/>);
 
-            rendered.find('input[name="details"]').simulate("change", "central-averaged");
+            const url = rendered.find(Form).prop("url");
 
-            // mutate underlying node, as the simulate event doesn't pass through args as expected on
-            // select elements
-            // https://github.com/airbnb/enzyme/issues/38
-            (rendered.find('select[name="typeCode"]').getNode() as any).selectedIndex = 2;
+            let testValue = 0;
+            const props = {
+                successCallback: () => {
+                    testValue = 1;
+                },
+                url: url,
+                successMessage: "hi",
+                submitText: "submit",
+                data: {
+                    type: {
+                        type: "central-averaged",
+                        details: "details"
+                    }
+                }
+            };
 
-            console.log(rendered.find(Form).props());
+            const form = new Form(props);
 
-            const form = new Form(rendered.find(Form).props());
+            const promise = addResponsibilities(this.db).then(() => {
+                return addModel(this.db).then(() => {
+                    return form.submitForm();
+                })
+            });
 
-            const spy = new Sandbox().setSpy(form, "resultCallback");
+            checkPromise(done, promise, (id) => {
+                expect(testValue).to.eq(1);
+            })
 
-            form.submitForm();
-
-            checkAsync(done, (afterWait) => {
-                afterWait(done, () => {
-                    expect(spy.called).to.eq(true);
-                })})
         })
     }
 }
@@ -353,8 +363,9 @@ function addResponsibilities(db: Client): Promise<number> {
 
 function addModel(db: Client): Promise<number> {
     return db.query(`
-        INSERT INTO model (id, modelling_group, description, citation) VALUES ('${modelId}', '${groupId}', 'a model', 'citation');        
-        INSERT INTO model_version (model, version) VALUES ('${modelId}', '${modelVersion}');`)
+        INSERT INTO model (id, modelling_group, disease, description, citation, is_current) VALUES ('${modelId}', '${groupId}', 'yf', 'a model', 'citation', true);        
+        INSERT INTO model_version (model, version) VALUES ('${modelId}', '${modelVersion}');
+                UPDATE model SET current_version = (SELECT id FROM model_version);`)
         .then(() => db.query(`SELECT id FROM model_version;`))
         .then(result => result.rows[0].id);
 }
