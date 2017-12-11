@@ -14,8 +14,8 @@ import { doNothing } from "../../../../shared/Helpers";
 import { responsibilityActions } from "../../../actions/ResponsibilityActions";
 import { coverageSetActions } from "../../../actions/CoverageSetActions";
 
-const commonStyles = require("../../../../shared/styles/common.css");
-const styles = require("../Responsibilities.css");
+import "../../../../shared/styles/common.scss";
+import "../Responsibilities.scss";
 
 export interface DownloadCoverageComponentProps extends RemoteContent {
     touchstone: Touchstone;
@@ -78,7 +78,7 @@ export class DownloadCoverageContentComponent
             </p>
             <div className="row mt-3">
                 <div className="col-12 col-md-8 col-lg-6">
-                    <table className={commonStyles.specialColumn}>
+                    <table className="specialColumn">
                         <tbody>
                         <tr>
                             <td>
@@ -106,15 +106,15 @@ export class DownloadCoverageContentComponent
             </div>
             <div className="row mt-2">
                 <div className="col-12">
-                    <div className={commonStyles.smallTitle}>Coverage sets included</div>
+                    <div className="smallTitle">Coverage sets included</div>
                     <CoverageSetList coverageSets={data.coverageSets}/>
                 </div>
             </div>
             <div className="row mt-4">
                 <div className="col-12 col-md-6">
-                    <table className={styles.options}>
+                    <table className="options">
                         <tbody>
-                        <tr className={commonStyles.specialColumn}>
+                        <tr className="specialColumn">
                             <td>
                                 <div className="col">
                                     <label className="col-form-label">

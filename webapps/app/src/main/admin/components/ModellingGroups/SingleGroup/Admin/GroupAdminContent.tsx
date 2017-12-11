@@ -9,7 +9,7 @@ import { ListOfUsers } from "../../ListOfUsers";
 import { AddMember } from "./AddMember";
 import { adminAuthStore } from "../../../../stores/AdminAuthStore";
 
-const commonStyles = require("../../../../../shared/styles/common.css");
+import "../../../../../shared/styles/common.scss";
 
 interface Props extends RemoteContent {
     members: User[];
@@ -62,13 +62,13 @@ export class GroupAdminContentComponent extends RemoteContentComponent<Props, un
 
         const addMembers =  props.isAdmin ?
             <div>
-                <div className={ commonStyles.sectionTitle }>Add modelling group member</div>
+                <div className="sectionTitle">Add modelling group member</div>
                 <AddMember members={ [...props.members.map(m=>m.username)] } users={props.users} groupId={props.groupId}/>
             </div>
             : "";
 
         return <div>
-                <div className={ commonStyles.sectionTitle }>Current group members</div>
+                <div className="sectionTitle">Current group members</div>
                 { this.renderCurrent(props) }
                 {addMembers}
         </div>

@@ -3,8 +3,8 @@ import { CreateUserFields, createUserFormStore, suggestUsername } from "./Create
 import { ValidationError } from "../../../../shared/components/Login/ValidationError";
 import * as React from "react";
 
-const commonStyles = require("../../../../shared/styles/common.css");
-const formStyles = require("../../../../shared/styles/forms.css");
+import "../../../../shared/styles/common.scss";
+import "../../../../shared/styles/forms.scss";
 
 export class CreateUserFormComponent extends React.Component<ReformProps, undefined> {
     constructor() {
@@ -21,10 +21,10 @@ export class CreateUserFormComponent extends React.Component<ReformProps, undefi
 
     render() {
         const fields = this.props.fields as CreateUserFields;
-        return <form className={commonStyles.gapAbove} onSubmit={this.props.submit}>
+        return <form className="gapAbove" onSubmit={this.props.submit}>
             <fieldset disabled={this.props.loading}>
-                <div className={commonStyles.sectionTitle}>Add new user</div>
-                <table className={formStyles.tableForm}>
+                <div className="sectionTitle">Add new user</div>
+                <table className="tableForm">
                     <tbody>
                     <tr>
                         <td>Full name</td>
@@ -43,10 +43,10 @@ export class CreateUserFormComponent extends React.Component<ReformProps, undefi
                     </tr>
                     </tbody>
                 </table>
-                <div className={commonStyles.gapAbove}>
+                <div className="gapAbove">
                     <ValidationError message={this.props.store.state.submitError}/>
                 </div>
-                <div className={commonStyles.gapAbove}>
+                <div className="gapAbove">
                     <button type="submit">Save user</button>
                 </div>
             </fieldset>

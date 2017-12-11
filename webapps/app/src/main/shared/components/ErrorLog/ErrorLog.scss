@@ -1,4 +1,4 @@
-:local(.errors) {
+.errors {
     position: fixed;
     width: 600px;
     bottom: 0;
@@ -17,18 +17,18 @@
     font-size: larger;
 }
 
-:local(.errors) ul {
+.errors ul {
     list-style-type: none;
     padding-left: 0;
     margin-top: 0;
     margin-bottom: 0;
 }
 
-:local(.errors) li {
+.errors li {
     margin: 10px 0;
 }
 
-:local(.clearButton) {
+.clearButton {
     width: 150px;
     margin: 0 auto 10px auto;
     display: block;

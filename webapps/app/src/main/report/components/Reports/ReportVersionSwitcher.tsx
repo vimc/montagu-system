@@ -2,8 +2,8 @@ import * as React from "react";
 import {VersionIdentifier} from "../../models/VersionIdentifier";
 import {longTimestamp} from "../../../shared/Helpers";
 
-const commonStyles = require("../../../shared/styles/common.css");
-const styles = require("../../styles/reports.css");
+import "../../../shared/styles/common.scss";
+import "../../styles/reports.scss";
 
 interface Props {
     currentVersion: string;
@@ -29,11 +29,11 @@ export class ReportVersionSwitcher extends React.Component<Props, undefined> {
                 {longTimestamp(v.timestamp)}
             </option>
         });
-        return <div className={"row " + styles.versionSwitcher}>
+        return <div className="row versionSwitcher">
             <div className="col-12 col-md-6">
                 <label
                     htmlFor="report-version-switcher"
-                    className={"mt-0 " + commonStyles.sectionTitle}>
+                    className="mt-0 sectionTitle">
                     Report version
                 </label>
                 <select

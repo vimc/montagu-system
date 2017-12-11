@@ -3,7 +3,7 @@ import {FileDownloadLink} from "../FileDownloadLink";
 import {encodeFilename} from "../../../shared/Helpers";
 import {ArtefactRow} from "./ArtefactRow";
 
-const styles = require("../../styles/reports.css");
+import "../../styles/reports.scss";
 
 interface ArtefactProps {
     filenames: string[],

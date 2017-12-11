@@ -7,7 +7,7 @@ import { mainStore } from "../../../../stores/MainStore";
 import { ButtonLink } from "../../../../../shared/components/ButtonLink";
 import {CurrentEstimateSetSummary} from "./CurrentEstimateSetSummary";
 
-const styles = require("../../Responsibilities.css");
+import "../../Responsibilities.scss";
 
 interface Props {
     responsibility: Responsibility;
@@ -23,19 +23,19 @@ export class ResponsibilityComponent extends React.Component<Props, undefined> {
         const uploadUrl = `/${this.props.modellingGroup.id}/responsibilities/${this.props.touchstone.id}/burdens/${item.scenario.id}/`;
         const canUpload = this.props.responsibilitySetStatus == "incomplete";
 
-        return <li className={styles.scenario}>
-            <div className={styles.header}>
-                <span className={styles.name}>{item.scenario.description}</span>
+        return <li className="scenario">
+            <div className="header">
+                <span className="name">{item.scenario.description}</span>
                 &nbsp;
                 (ID: {item.scenario.id})
-                <span className={styles.status}>{item.status}</span>
+                <span className="status">{item.status}</span>
             </div>
             <div>
-                <div className={styles.content}>
-                    <div className={styles.metadata}>
+                <div className="content">
+                    <div className="metadata">
                         Disease: {mainStore.getDiseaseById(item.scenario.disease).name}
                     </div>
-                    <div className={styles.actions}>
+                    <div className="actions">
                         <ButtonLink href={downloadUrl}>Download coverage data</ButtonLink>
                         <ButtonLink href={uploadUrl}>Upload burden estimates</ButtonLink>
                         <CurrentEstimateSetSummary

@@ -6,7 +6,7 @@ import { ChooseGroupPage } from "../../ChooseGroup/ChooseGroupPage";
 import { settings } from "../../../../shared/Settings";
 import { InternalLink } from "../../../../shared/components/InternalLink";
 
-const commonStyles = require("../../../../shared/styles/common.css");
+import "../../../../shared/styles/common.scss";
 
 export class ResponsibilityGuidanceModelInputs extends ContribPageWithHeader<undefined> {
     name() {
@@ -27,7 +27,7 @@ export class ResponsibilityGuidanceModelInputs extends ContribPageWithHeader<und
 
     renderPageContent() {
         return <div>
-            <div className={ commonStyles.largeSectionTitle }>
+            <div className="largeSectionTitle">
                 Input data sources
             </div>
             <p>
@@ -36,7 +36,7 @@ export class ResponsibilityGuidanceModelInputs extends ContribPageWithHeader<und
                 download and use these datasets, rather than your own datasets
                 to ensure consistency of estimates across the Consortium.
             </p>
-            <div className={ commonStyles.largeSectionTitle }>
+            <div className="largeSectionTitle">
                 Coverage
             </div>
             <p>
@@ -219,7 +219,7 @@ export class ResponsibilityGuidanceModelInputs extends ContribPageWithHeader<und
                 from the header row.
             </p>
             <ScrollableAnchor id={'demography'}>
-                <div className={ commonStyles.largeSectionTitle }>
+                <div className="largeSectionTitle">
                     Demography
                 </div>
             </ScrollableAnchor>

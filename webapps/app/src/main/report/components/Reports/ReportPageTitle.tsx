@@ -2,7 +2,7 @@ import {reportStore} from "../../stores/ReportStore";
 import {connectToStores} from "../../../shared/alt";
 import * as React from "react";
 
-const headerStyles = require("../../../shared/components/PageWithHeader/PageWithHeader.css");
+import * as headerStyles from '../../../shared/components/PageWithHeader/PageWithHeader.scss';
 
 export interface ReportPageTitleProps {
     name: string;
@@ -33,7 +33,7 @@ export class ReportPageTitleComponent extends React.Component<ReportPageTitlePro
         const title = this.props.displayName || this.props.name;
         return <span>
             <div>{title}</div>
-            <div className={ `${headerStyles.titleAddition}` }>
+            <div className="titleAddition">
                 Version: {this.props.version}
             </div>
         </span>;

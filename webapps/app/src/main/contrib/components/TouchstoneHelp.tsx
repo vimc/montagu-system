@@ -2,7 +2,7 @@ import * as React from "react";
 import { ContribPageWithHeader } from "./PageWithHeader/ContribPageWithHeader";
 import { ChooseGroupPage } from "./ChooseGroup/ChooseGroupPage";
 
-const commonStyles = require("../../shared/styles/common.css");
+import "../../shared/styles/common.scss";
 
 export class TouchstoneHelp extends ContribPageWithHeader<undefined> {
     name() {
@@ -42,7 +42,7 @@ export class TouchstoneHelp extends ContribPageWithHeader<undefined> {
                     </li>
                 </ol>
             </p>
-            <div className={ commonStyles.subSectionTitle }>Touchstone naming conventions</div>
+            <div className="subSectionTitle">Touchstone naming conventions</div>
             <p>
                 Touchstones are named by the date when they were generated (format
                 yyyymm), and a text string determining the assumptions of the

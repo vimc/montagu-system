@@ -7,7 +7,7 @@ import { connectToStores } from "../../../../../shared/alt";
 import { GroupAdminSummary } from "./GroupAdminSummary";
 import { userStore } from "../../../../stores/UserStore";
 
-const commonStyles = require("../../../../../shared/styles/common.css");
+import "../../../../../shared/styles/common.scss";
 
 interface Props extends RemoteContent {
     group: ModellingGroupDetails;
@@ -30,7 +30,7 @@ class ModellingGroupDetailsContentComponent extends RemoteContentComponent<Props
 
     renderContent(props: Props) {
         return <div className="col">
-            <table className={ commonStyles.specialColumn }>
+            <table className="specialColumn">
                 <tbody>
                     <tr><td>ID</td><td>{ props.group.id }</td></tr>
                     <tr>

@@ -63,6 +63,14 @@ function commonConfig(name, public_path) {
                         }
                     ]
                 },
+                {
+                    test: /\.scss$/,
+                    loaders: [
+                        'style-loader',
+                        'css-loader',
+                        'sass-loader',
+                    ]
+                },
                 // Substitute paths into index.html
                 {
                     test: /index.html$/,

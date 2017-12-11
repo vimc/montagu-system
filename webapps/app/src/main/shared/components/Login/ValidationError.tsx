@@ -1,6 +1,6 @@
 import * as React from "react";
 
-const formStyles = require("../../styles/forms.css");
+import "../../styles/forms.scss";
 
 interface Props {
     message: string;
@@ -9,7 +9,7 @@ interface Props {
 export class ValidationError extends React.Component<Props, undefined> {
     render() {
         if (typeof this.props.message == "string") {
-            return <span className={ formStyles.error }>{ this.props.message }</span>;
+            return <span className="error">{ this.props.message }</span>;
         } else {
             return null;
         }

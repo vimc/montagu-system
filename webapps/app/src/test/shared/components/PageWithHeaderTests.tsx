@@ -8,8 +8,6 @@ import {IPageWithParent} from "../../../main/shared/models/Breadcrumb";
 import {Sandbox} from "../../Sandbox";
 import {checkAsync} from "../../testHelpers";
 
-const styles = require('../../../main/shared/components/PageWithHeader/PageWithHeader.css');
-
 export class DummyPage extends PageWithHeader<undefined> {
     loaded: boolean;
 
@@ -84,15 +82,15 @@ describe('PageWithHeader', () => {
     afterEach(() => sandbox.restore());
 
     it("renders the application title", () => {
-        expect(rendered.find(`.${styles.siteTitle}`).render().text()).to.equal("LOTR");
+        expect(rendered.find(".header__siteTitle").render().text()).to.equal("LOTR");
     });
 
     it("renders the title", () => {
-        expect(rendered.find(`.${styles.pageTitle}`).text()).to.equal("Elbereth");
+        expect(rendered.find(".page__title").text()).to.equal("Elbereth");
     });
 
     it("renders the content", () => {
-        expect(rendered.find(`.${styles.pageContent}`).text()).to.equal("Content");
+        expect(rendered.find(".page__content").text()).to.equal("Content");
     });
 
     it("loads on mount after timeout", (done: DoneCallback) => {
@@ -106,6 +104,6 @@ describe('PageWithHeader', () => {
 
     it("renders the content without title element if hideTitle equals true", () => {
         const dummyPageNoTitle = shallow(<DummyPageNoTitle location={mockLocation<undefined>()} router={null} />);
-        expect(dummyPageNoTitle.find(`.${styles.pageTitle}`).exists()).to.equal(false);
+        expect(dummyPageNoTitle.find(".pageTitle").exists()).to.equal(false);
     });
 });

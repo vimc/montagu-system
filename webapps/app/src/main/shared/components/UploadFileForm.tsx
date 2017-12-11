@@ -3,8 +3,8 @@ import fetcher from "../sources/Fetcher";
 import {helpers} from "../Helpers";
 import {ErrorInfo} from "../models/Generated";
 
-const formStyles = require("../styles/forms.css");
-const buttonStyles = require("../styles/buttons.css");
+import "../styles/forms.scss";
+import "../styles/buttons.scss";
 
 export interface UploadFileProps {
     token: string;
@@ -70,13 +70,13 @@ export class UploadFileForm extends React.Component<UploadFileProps, UploadFileS
             : null;
 
         return <div>
-            <form action={url} className={formStyles.form}
+            <form action={url} className="form"
                   method="POST" encType="multipart/form-data">
                 {this.props.children}
                 <div className="form-group">
-                    <label className={formStyles.customFileUpload}>
+                    <label className="customFileUpload">
                         <input name="file" type="file" onChange={this.handleChange.bind(this)}/>
-                        <div className={`${buttonStyles.button} mt-2 mb-2`}>
+                        <div className="button mt-2 mb-2">
                             {this.props.uploadText}
                         </div>
                         <div

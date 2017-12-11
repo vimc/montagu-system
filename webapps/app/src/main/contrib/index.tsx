@@ -6,9 +6,9 @@ import fetcher from "../shared/sources/Fetcher";
 import { contribAuthStore } from "./stores/ContribAuthStore";
 
 require('./index.html');
-require('../shared/styles/fonts.css');
-require('../shared/styles/buttons.css');
-require('../shared/styles/common.css');
+require('../shared/styles/fonts.scss');
+require('../shared/styles/buttons.scss');
+require('../shared/styles/common.scss');
 
 fetcher.fetcher = new ContribFetcher();
 contribAuthStore.loadAccessToken();

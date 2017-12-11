@@ -13,7 +13,7 @@ interface Props extends RemoteContent {
     roles: RoleAssignment[];
 }
 
-const commonStyles = require("../../../../shared/styles/common.css");
+import "../../../../shared/styles/common.scss";
 
 export class UserDetailsContentComponent extends RemoteContentComponent<Props, undefined> {
     static getStores() {
@@ -58,7 +58,7 @@ export class UserDetailsContentComponent extends RemoteContentComponent<Props, u
         }
 
         return <div className="col-xs-12 col-lg-8">
-            <table className={commonStyles.specialColumn}>
+            <table className="specialColumn">
                 <tbody>
                 <tr>
                     <td>Username</td>

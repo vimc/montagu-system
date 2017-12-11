@@ -16,8 +16,6 @@ import {ResponsibilityComponent} from "../../../../main/contrib/components/Respo
 import {BurdenEstimateSet, ResponsibilitySetStatus} from "../../../../main/shared/models/Generated";
 import {CurrentEstimateSetSummary} from "../../../../main/contrib/components/Responsibilities/Overview/List/CurrentEstimateSetSummary";
 
-const styles = require("../../../../main/contrib/components/Responsibilities/Responsibilities.css");
-
 describe('ResponsibilityComponent', () => {
     let rendered: ShallowWrapper<any, any>;
     const sandbox = new Sandbox();
@@ -50,12 +48,12 @@ describe('ResponsibilityComponent', () => {
 
     it("renders the scenario header", () => {
         setUpComponent("incomplete");
-        expect(rendered.find(`.${styles.header}`).text()).to.contain("Description (ID: scenario-1)");
+        expect(rendered.find(".header").text()).to.contain("Description (ID: scenario-1)");
     });
 
     it("renders the responsibility status", () => {
         setUpComponent("incomplete");
-        expect(rendered.find(`.${styles.header}`).text()).to.contain("empty");
+        expect(rendered.find(".header").text()).to.contain("empty");
     });
 
     it("renders current estimate set section", () => {

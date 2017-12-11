@@ -1,8 +1,8 @@
 import * as React from "react";
 import { RemoteContent } from "../../models/RemoteContent";
 
-const spinner = require("./spinner.gif");
-const messageStyles = require("../../styles/messages.css");
+import * as spinner from "./spinner.gif";
+import "../../styles/messages.scss";
 
 export abstract class RemoteContentComponent<TProps extends RemoteContent, TState> extends React.Component<TProps, TState> {
     abstract renderContent(content: TProps): JSX.Element;

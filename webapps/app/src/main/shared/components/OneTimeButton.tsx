@@ -1,8 +1,8 @@
 import * as React from "react";
 import fetcher from "../sources/Fetcher";
 
-const loaderAnimation = require("../resources/link-loader.gif");
-const buttonStyles = require("../styles/buttons.css");
+import * as loaderAnimation from "../resources/link-loader.gif";
+import "../styles/buttons.scss";
 
 export interface OneTimeButtonProps {
     token: string

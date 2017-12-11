@@ -3,7 +3,7 @@ import { ReformProps } from "alt-reform";
 import { ValidationError } from "./ValidationError";
 import { InternalLink } from "../InternalLink";
 
-const formStyles = require("../../styles/forms.css");
+import "../../styles/forms.scss";
 
 export class LoginFormComponent extends React.Component<ReformProps, undefined> {
 
@@ -12,8 +12,8 @@ export class LoginFormComponent extends React.Component<ReformProps, undefined> 
             width: 140
         };
         const disabled = this.props.loading;
-        return <div><form className={ formStyles.form } onSubmit={ this.props.submit }>
-            <div className={ formStyles.fields }>
+        return <div><form className="form" onSubmit={ this.props.submit }>
+            <div className="fields">
                 <input name="email" type="email" placeholder="Email address"
                        disabled={ disabled }
                        { ...this.props.fields.email } />

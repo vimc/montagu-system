@@ -4,8 +4,7 @@ import { ModellingGroup, Touchstone } from "../../../shared/models/Generated";
 import { responsibilityStore } from "../../stores/ResponsibilityStore";
 import { connectToStores } from "../../../shared/alt";
 
-const headerStyles = require("../../../shared/components/PageWithHeader/PageWithHeader.css");
-
+import * as headerStyles from '../../../shared/components/PageWithHeader/PageWithHeader.scss';
 
 interface PublicProps {
     title: string;
@@ -31,7 +30,7 @@ export class DownloadDataTitleComponent extends React.Component<Props, undefined
     renderReturnLink() {
         if (this.props.touchstone && this.props.modellingGroup) {
             const url = `/${this.props.modellingGroup.id}/responsibilities/${this.props.touchstone.id}/`;
-            return <div className={ `${headerStyles.titleAddition} d-inline-block` }>
+            return <div className="titleAddition d-inline-block">
                 <InternalLink href={ url }>Return to responsibilities list</InternalLink>
             </div>;
         } else {

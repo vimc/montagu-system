@@ -1,7 +1,7 @@
 import * as React from "react";
 import {ILookup} from "../../../shared/models/Lookup";
 
-const styles = require("../../../shared/styles/common.css");
+import "../../../shared/styles/common.scss";
 
 export class ParameterList extends React.Component<ILookup<string>, undefined> {
     render() {
@@ -20,7 +20,7 @@ export class ParameterList extends React.Component<ILookup<string>, undefined> {
 
         return <div>
             <div className="row">
-                <div className={"col-12 " + styles.sectionTitle}>Parameters</div>
+                <div className="col-12 sectionTitle">Parameters</div>
             </div>
             {parameterList}
         </div>;

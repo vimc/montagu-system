@@ -3,9 +3,8 @@ import { ModellingGroup, Touchstone } from "../../../shared/models/Generated";
 import { RemoteContent } from "../../../shared/models/RemoteContent";
 import { ButtonLink } from "../../../shared/components/ButtonLink";
 
-const commonStyles = require("../../../shared/styles/common.css");
-const styles = require("./TouchstoneList.css");
-const chooseStyles = require("./ChooseTouchstone.css");
+import "../../../shared/styles/common.scss";
+import "./ChooseTouchstone.scss";
 
 export interface TouchstoneListProps extends RemoteContent {
     touchstones: Touchstone[];
@@ -19,7 +18,7 @@ export class TouchstoneList extends React.Component<TouchstoneListProps, undefin
                 { this.renderButton(touchstone) }
             </li>
         );
-        return <ul className={ chooseStyles.list }>{ items }</ul>;
+        return <ul className="list">{ items }</ul>;
     }
 
     renderFinished(content: TouchstoneListProps): JSX.Element {
@@ -42,17 +41,17 @@ export class TouchstoneList extends React.Component<TouchstoneListProps, undefin
 
     renderButton(touchstone: Touchstone): JSX.Element {
         const url = `/${this.props.group.id}/responsibilities/${touchstone.id}/`;
-        return <ButtonLink className={ chooseStyles.choice } href={ url }>{ touchstone.description }</ButtonLink>
+        return <ButtonLink className="choice" href={ url }>{ touchstone.description }</ButtonLink>
     }
 
     render(): JSX.Element {
         return <div>
-            <div className={ styles.openTouchstones }>
-                <div className={ commonStyles.subSectionTitle }>Open touchstone</div>
+            <div className="openTouchstones">
+                <div className="subSectionTitle">Open touchstone</div>
                 <div>{ this.renderOpen(this.props) }</div>
             </div>
-            <div className={ styles.finishedTouchstones }>
-                <div className={ commonStyles.subSectionTitle }>Past finished touchstones</div>
+            <div className="finishedTouchstones">
+                <div className="subSectionTitle">Past finished touchstones</div>
                 <div>{ this.renderFinished(this.props) }</div>
             </div>
         </div>;
