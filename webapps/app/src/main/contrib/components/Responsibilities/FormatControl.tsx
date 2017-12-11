@@ -1,7 +1,7 @@
 import * as React from "react";
 import ReactRadioButtonGroup, { RadioButtonOption } from "react-radio-button-group";
 
-const styles = require("./Responsibilities.css");
+import "./Responsibilities.scss";
 
 interface Props {
     value: string;

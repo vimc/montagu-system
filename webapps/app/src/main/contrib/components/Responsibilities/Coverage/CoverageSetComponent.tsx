@@ -1,6 +1,8 @@
 import * as React from "react";
+
 import { CoverageSet } from "../../../../shared/models/Generated";
-const styles = require("../Responsibilities.css");
+
+import "../Responsibilities.scss";
 
 export interface CoverageSetComponentProps {
     order: number,

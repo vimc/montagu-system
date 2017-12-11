@@ -12,7 +12,7 @@ import {ArtefactsSection} from "../Artefacts/ArtefactsSection";
 import {IRouter} from "simple-react-router";
 import {DraftStamp} from "../DraftStamp";
 
-const styles = require("../../../shared/styles/common.css");
+import "../../../shared/styles/common.scss";
 
 interface PublicProps {
     onChangeVersion: (version: string) => void;

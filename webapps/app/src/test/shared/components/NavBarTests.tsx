@@ -2,24 +2,30 @@ import {expect} from "chai";
 import {Sandbox} from "../../Sandbox";
 import {HTMLAttributes, shallow, ShallowWrapper} from "enzyme";
 import * as React from "react";
+import { alt } from "../../../main/shared/alt";
+
 import {NavBar, NavBarComponent} from "../../../main/shared/components/NavBar/NavBar";
 import {InternalLink} from "../../../main/shared/components/InternalLink";
 import {Breadcrumb} from "../../../main/shared/models/Breadcrumb";
 import {navActions} from "../../../main/shared/actions/NavActions";
-
-const styles = require("../../../main/shared/components/NavBar/NavBar.css");
 
 describe("NavBar", () => {
     const sandbox = new Sandbox();
     afterEach(() => sandbox.restore());
 
     const renderCrumbs = function (crumbs: Breadcrumb[]): ShallowWrapper<HTMLAttributes, any> {
-        return shallow(<NavBarComponent crumbs={crumbs}/>).find("." + styles.chunk);
+        return shallow(<NavBarComponent crumbs={crumbs}/>).find(".montagu-navbar__chunk");
     };
 
     it("can get props from store", () => {
-        navActions.navigate("a", "A");
-        navActions.navigate("b", "B");
+        alt.bootstrap(JSON.stringify({
+            NavStore: {
+                crumbs: [
+                    {url: "a", name: "A"},
+                    {url: "b", name: "B"},
+                ]
+            }
+        }));
         const props = NavBarComponent.getPropsFromStores();
         expect(props).to.eql({
             crumbs: [
@@ -28,6 +34,7 @@ describe("NavBar", () => {
             ]
         });
     });
+
 
     it("can render zero crumbs", () => {
         expect(renderCrumbs([])).to.have.length(0);

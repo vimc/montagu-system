@@ -6,9 +6,9 @@ import { ModellingGroup, Responsibility } from "../../../../../shared/models/Gen
 import { ButtonLink } from "../../../../../shared/components/ButtonLink";
 import { TemplateLinks } from "./TemplateLinks";
 
-const styles = require("../../Responsibilities.css");
-const messageStyles = require("../../../../../shared/styles/messages.css");
-const commonStyles = require("../../../../../shared/styles/common.css");
+import "../../Responsibilities.scss";
+import "../../../../../shared/styles/messages.scss";
+import "../../../../../shared/styles/common.scss";
 
 export interface ResponsibilityListComponentProps {
     responsibilitySet: IExtendedResponsibilitySet;
@@ -44,14 +44,14 @@ export class ResponsibilityList extends React.Component<ResponsibilityListCompon
                 />
             );
             return <div>
-                <div className={ `${commonStyles.control} mb-4` }>
+                <div className="control mb-4">
                     <DiseaseFilter { ...props.responsibilitySet } />
                     <TemplateLinks responsibilities={props.responsibilitySet.responsibilities } groupId={props.modellingGroup.id} />
                 </div>
-                <ul className={ styles.responsibilities }>{ items }</ul>
+                <ul className="responsibilities">{ items }</ul>
             </div>;
         } else {
-            return <div className={ messageStyles.message }>This modelling group has no responsibilities in this
+            return <div className="message">This modelling group has no responsibilities in this
                 touchstone</div>
         }
     }

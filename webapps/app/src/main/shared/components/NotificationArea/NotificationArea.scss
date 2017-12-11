@@ -1,4 +1,4 @@
-:local(.notifications) {
+.notifications {
     position: fixed;
     width: 400px;
     top: 130px;
@@ -11,7 +11,7 @@
     outline: rgb(200, 200, 200) outset 2px;
 }
 
-:local(.hideButton) {
+.hideButton {
     position: absolute;
     right: 1px;
     top: 0;

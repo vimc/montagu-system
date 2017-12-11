@@ -7,7 +7,7 @@ import { CreateUserSection } from "../Create/CreateUserSection";
 import {IPageWithParent} from "../../../../shared/models/Breadcrumb";
 import {MainMenu} from "../../MainMenu/MainMenu";
 
-const commonStyles = require("../../../../shared/styles/common.css");
+import "../../../../shared/styles/common.scss";
 
 export class ViewAllUsersPage extends AdminPageWithHeader<undefined> {
     load() {
@@ -32,7 +32,7 @@ export class ViewAllUsersPage extends AdminPageWithHeader<undefined> {
         return <div>
             <CreateUserSection/>
 
-            <div className={commonStyles.sectionTitle}>All users</div>
+            <div className="sectionTitle">All users</div>
             <UsersList/>
         </div>;
     }

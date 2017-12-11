@@ -3,7 +3,7 @@ import {BurdenEstimateSet} from "../../../../../shared/models/Generated";
 import {settings} from "../../../../../shared/Settings";
 import {longDate, longTimestamp} from "../../../../../shared/Helpers";
 
-const messageStyles = require("../../../../../shared/styles/messages.css");
+import "../../../../../shared/styles/messages.scss";
 
 interface Props {
     estimateSet: BurdenEstimateSet;

@@ -4,13 +4,14 @@ import {settings} from "../../../shared/Settings";
 import {Artefact} from "../../../shared/models/reports/Artefact";
 import {ArtefactItem} from "./ArtefactItem";
 
-const styles = require("../../styles/reports.css");
+import "../../styles/reports.scss";
 
 interface ArtefactsListProps{
     artefacts: ILookup<Artefact>[],
     report: string,
     version: string
 }
+
 export class ArtefactsList extends React.Component<ArtefactsListProps, undefined> {
 
     static buildUrl(type: string, hash: string): string {

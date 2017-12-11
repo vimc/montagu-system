@@ -2,7 +2,7 @@ import * as React from "react";
 import {FileDownloadLink} from "../FileDownloadLink";
 import {encodeFilename} from "../../../shared/Helpers";
 
-const styles = require("../../../shared/styles/common.css");
+import "../../../shared/styles/common.scss";
 
 interface ResourceLinksProps {
     resources: string[],
@@ -30,7 +30,7 @@ export class ResourceLinks extends React.Component<ResourceLinksProps, undefined
 
         return <div>
             <div className="row">
-                <div className={"col-12 " + styles.sectionTitle}>Resources</div>
+                <div className="col-12 sectionTitle">Resources</div>
             </div>
             <ul>
                 {links}

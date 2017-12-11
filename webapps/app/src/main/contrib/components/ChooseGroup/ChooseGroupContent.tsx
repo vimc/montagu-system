@@ -9,7 +9,7 @@ import { RemoteContent } from "../../../shared/models/RemoteContent";
 import { InternalLink } from "../../../shared/components/InternalLink";
 import { ButtonLink } from "../../../shared/components/ButtonLink";
 
-const commonStyles = require("../../../shared/styles/common.css");
+import "../../../shared/styles/common.scss";
 
 export interface ChooseGroupProps extends RemoteContent {
     groups: ModellingGroup[];
@@ -42,7 +42,7 @@ export class ChooseGroupContentComponent extends RemoteContentComponent<ChooseGr
                     You are a member of multiple modelling groups.
                     Which one do you want to act as currently?
                 </div>
-                <div className={ commonStyles.gapAbove }>
+                <div className="gapAbove">
                     <GroupList groups={ props.groups }/>
                 </div>
             </div>;

@@ -4,7 +4,7 @@ import {ArtefactsList} from "./ArtefactsList";
 import {Version} from "../../../shared/models/reports/Report";
 import {ArtefactRow} from "./ArtefactRow";
 
-const styles = require("../../../shared/styles/common.css");
+import "../../../shared/styles/common.scss";
 
 interface Props {
     report: string;
@@ -17,7 +17,7 @@ export class ArtefactsSection extends React.Component<Props, undefined> {
         const bundleUrl = `/reports/${this.props.report}/versions/${version}/all/`;
         return <div>
             <div className="row">
-                <div className={"col-12 " + styles.sectionTitle}>Artefacts</div>
+                <div className="col-12 sectionTitle">Artefacts</div>
             </div>
 
             <ArtefactsList artefacts={this.props.versionDetails.artefacts}

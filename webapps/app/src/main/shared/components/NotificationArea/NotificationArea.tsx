@@ -2,8 +2,8 @@ import * as React from "react";
 import { CSSTransitionGroup } from "react-transition-group";
 import { notificationActions } from "../../actions/NotificationActions";
 
-const styles = require("./NotificationArea.css");
-const transitions = require('../../../shared/styles/transitions.css');
+import "./NotificationArea.scss";
+import "../../../shared/styles/transitions.scss";
 
 interface Props {
     notifications: string[];
@@ -18,16 +18,16 @@ export class NotificationArea extends React.Component<Props, undefined> {
         let content = null;
         if (this.props.notifications.length > 0) {
             const message = this.props.notifications[0];
-            content = <div className={ styles.notifications }>
+            content = <div className="notifications">
                 { message }
-                <button className={ styles.hideButton }
+                <button className="hideButton"
                         onClick={ this.hideMessage }>
                     X
                 </button>
             </div>;
         }
         return <CSSTransitionGroup
-            transitionName={ transitions.fade }
+            transitionName="fade"
             transitionEnterTimeout={ 300 }
             transitionLeaveTimeout={ 300 }>
             { content }

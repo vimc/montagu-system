@@ -10,7 +10,7 @@ table tr td, table tr th {
     padding: 5px;
     border: 1px solid rgb(127, 127, 127);
 }
-table tr th, :local(.specialColumn) td:first-child {
+table tr th, .specialColumn td:first-child {
     background-color: rgb(170, 224, 250);
     font-weight: bold;
     vertical-align: top;
@@ -23,41 +23,41 @@ fieldset {
     padding: 0;
 }
 
-:local(.largeSectionTitle) {
+.largeSectionTitle {
     font-family: header;
     font-size: 24pt;
     margin: 30px 0 5px 0;
 }
 
-:local(.sectionTitle) {
+.sectionTitle {
     font-family: header;
     font-size: 16pt;
     margin: 30px 0 15px 0;
 }
 
-:local(.subSectionTitle) {
+.subSectionTitle {
     font-family: header;
     font-size: 12pt;
     margin: 15px 0;
     color: rgb(127, 127, 127);
 }
 
-:local(.smallTitle) {
+.smallTitle {
     font-family: header;
     font-size: 12pt;
     margin: 20px 0 5px 0;
     color: rgb(127, 127, 127);
 }
 
-:local(.control) {
+.control {
     font-size: 16pt;
 }
 
-:local(.gapAbove) {
+.gapAbove {
     margin-top: 20px;
 }
 
-:local(.disabledLink) {
+.disabledLink {
     color: rgb(127, 127, 127);
     text-decoration: underline;
 }

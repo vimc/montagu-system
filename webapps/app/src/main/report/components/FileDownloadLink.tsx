@@ -6,8 +6,8 @@ import { connectToStores } from "../../shared/alt";
 import { doNothing } from "../../shared/Helpers";
 import { oneTimeTokenActions } from "../actions/OneTimeTokenActions";
 
-const styles = require("../../shared/styles/common.css");
-const loaderAnimation = require("../../shared/resources/link-loader.gif");
+import "../../shared/styles/common.scss";
+import * as loaderAnimation from "../../shared/resources/link-loader.gif";
 
 interface PublicProps {
     href: string;
@@ -63,7 +63,7 @@ export class FileDownloadLinkComponent extends React.Component<Props, undefined>
             loader = null;
         } else {
             href = null;
-            className = styles.disabledLink;
+            className = 'disabledLink';
             loader = <img src={loaderAnimation}/>;
         }
 

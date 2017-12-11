@@ -6,8 +6,6 @@ import { Sandbox } from "../../../Sandbox";
 import { ArtefactItem } from "../../../../main/report/components/Artefacts/ArtefactItem";
 import {ArtefactRow} from "../../../../main/report/components/Artefacts/ArtefactRow";
 
-const styles = require("../../../../main/report/styles/reports.css");
-
 describe("ArtefactItem", () => {
     const sandbox = new Sandbox();
 

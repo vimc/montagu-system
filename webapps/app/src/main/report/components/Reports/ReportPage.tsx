@@ -46,13 +46,14 @@ export class ReportPage extends ReportingPageWithHeader<ReportPageProps> {
     parent() {
         return new MainMenu();
     }
-    
+
     title() {
         return <ReportPageTitle />;
     }
 
     name() {
-        return this.props.location.params.report;
+        const params = this.props.location.params;
+        return `${params.report} (${params.version})`;
     }
 
     urlFragment() {

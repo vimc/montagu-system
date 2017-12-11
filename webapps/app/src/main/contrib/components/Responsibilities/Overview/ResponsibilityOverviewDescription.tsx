@@ -4,8 +4,8 @@ import { settings } from "../../../../shared/Settings";
 import { RemoteContentComponent } from "../../../../shared/components/RemoteContentComponent/RemoteContentComponent";
 import { InternalLink } from "../../../../shared/components/InternalLink";
 
-const commonStyles = require("../../../../shared/styles/common.css");
-const messageStyles = require("../../../../shared/styles/messages.css");
+import "../../../../shared/styles/common.scss";
+import "../../../../shared/styles/messages.scss";
 
 export class ResponsibilityOverviewDescriptionComponent extends Component {
     render() {

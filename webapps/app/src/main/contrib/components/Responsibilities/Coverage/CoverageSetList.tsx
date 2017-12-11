@@ -2,8 +2,8 @@ import * as React from "react";
 import { CoverageSet } from "../../../../shared/models/Generated";
 import { CoverageSetComponent } from "./CoverageSetComponent";
 
-const styles = require("../Responsibilities.css");
-const commonStyles = require("../../../../shared/styles/common.css");
+import "../Responsibilities.scss";
+import "../../../../shared/styles/common.scss";
 
 interface Props {
     coverageSets: CoverageSet[];
@@ -15,7 +15,7 @@ export class CoverageSetList extends React.Component<Props, undefined> {
             const coverageSets = this.props.coverageSets.map((x, order) =>
                 <CoverageSetComponent key={order} order={order} set={x}/>
             );
-            return <div className={styles.coverageSets}>
+            return <div className="coverageSets">
                 <table>
                     <thead>
                     <tr>

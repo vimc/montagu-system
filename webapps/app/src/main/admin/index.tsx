@@ -5,10 +5,10 @@ import fetcher from "../shared/sources/Fetcher";
 import { AdminFetcher } from "./sources/AdminFetcher";
 import { adminAuthStore } from "./stores/AdminAuthStore";
 
-require('./index.html');
-require('../shared/styles/fonts.css');
-require('../shared/styles/buttons.css');
-require('../shared/styles/common.css');
+import './index.html';
+import '../shared/styles/fonts.scss';
+import '../shared/styles/buttons.scss';
+import '../shared/styles/common.scss';
 
 fetcher.fetcher = new AdminFetcher();
 adminAuthStore.loadAccessToken();

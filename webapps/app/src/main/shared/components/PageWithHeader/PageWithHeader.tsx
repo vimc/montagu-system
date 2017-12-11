@@ -1,13 +1,14 @@
 import * as React from "react";
 import {IRouter, Location} from "simple-react-router";
+
 import { InternalLink } from "../InternalLink";
 import { navActions } from "../../actions/NavActions";
 import {NavBar} from "../NavBar/NavBar";
 import {navStore} from "../../stores/NavStore";
 import {IPageWithParent} from "../../models/Breadcrumb";
 
-const logo = require("./logo.png");
-const styles = require('./PageWithHeader.css');
+import './PageWithHeader.scss';
+import * as logo from "./logo.png";
 
 export abstract class PageWithHeader<TLocationProps>
     extends React.Component<PageProperties<TLocationProps>, undefined>
@@ -40,30 +41,26 @@ export abstract class PageWithHeader<TLocationProps>
 
     createBreadcrumb() {
         if (this.includeInBreadcrumbs()) {
-            if (navStore.getState().isInitialized) {
-                navActions.navigate(this.url(), this.name());
-            } else {
-                navActions.initialize(this);
-            }
+            navActions.initialize(this);
         }
     }
 
     render() {
         return <div>
-            <header className={ styles.header }>
+            <header className="header">
                 <a href="/"><img src={ logo } height="80" alt="VIMC" /></a>
-                <div className={ styles.siteTitle }>
+                <div className="header__siteTitle">
                     <InternalLink href="/">{ this.siteTitle() }</InternalLink>
                 </div>
                 { this.header() }
             </header>
             <NavBar />
             { this.postHeader() }
-            <article className={ `${styles.page} container` }>
+            <article className="page container">
                 { !this.hideTitle() &&
-                    <div className={ styles.pageTitle }>{ this.title() }</div>
+                    <div className="page__title">{ this.title() }</div>
                 }
-                <div className={ styles.pageContent }>{ this.renderPageContent() }</div>
+                <div className="page__content">{ this.renderPageContent() }</div>
             </article>
         </div>
     }

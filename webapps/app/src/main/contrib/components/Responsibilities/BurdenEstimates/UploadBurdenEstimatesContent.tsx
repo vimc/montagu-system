@@ -8,7 +8,7 @@ import {TemplateLink} from "../Overview/List/TemplateLinks";
 import {CurrentEstimateSetSummary} from "../Overview/List/CurrentEstimateSetSummary";
 import {UploadBurdenEstimatesForm} from "./UploadBurdenEstimatesForm";
 
-const commonStyles = require("../../../../shared/styles/common.css");
+import "../../../../shared/styles/common.scss";
 
 export interface UploadBurdenEstimatesContentComponentProps extends RemoteContent {
     touchstone: Touchstone;
@@ -67,7 +67,7 @@ export class UploadBurdenEstimatesContentComponent extends RemoteContentComponen
                 cover 96 countries, 100 years, and 100 age bands to take around 1 minute to process. So don't worry if
                 it takes a little while!
             </p>
-            <table className={commonStyles.specialColumn}>
+            <table className="specialColumn">
                 <tbody>
                 <tr>
                     <td>Touchstone</td>

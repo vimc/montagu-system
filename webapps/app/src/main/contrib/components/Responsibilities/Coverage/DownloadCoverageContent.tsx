@@ -7,42 +7,34 @@ import { CoverageSetList } from "./CoverageSetList";
 import { responsibilityStore } from "../../../stores/ResponsibilityStore";
 import { coverageTokenActions } from "../../../actions/CoverageActions";
 import { OneTimeButton } from "../../../../shared/components/OneTimeButton";
+import { OneTimeButtonTimeBlocker } from "../../../../shared/components/OneTimeButtonTimeBlocker";
 import { FormatControl } from "../FormatControl";
 import { HasFormatOption } from "../Demographics/DemographicOptions";
 import { doNothing } from "../../../../shared/Helpers";
 import { responsibilityActions } from "../../../actions/ResponsibilityActions";
 import { coverageSetActions } from "../../../actions/CoverageSetActions";
 
-const commonStyles = require("../../../../shared/styles/common.css");
-const styles = require("../Responsibilities.css");
+import "../../../../shared/styles/common.scss";
+import "../Responsibilities.scss";
 
 export interface DownloadCoverageComponentProps extends RemoteContent {
     touchstone: Touchstone;
     scenario: Scenario;
     coverageSets: CoverageSet[];
     coverageToken: string;
-    downloadButtonDisableTimeout?: number;
     selectedFormat: string;
 }
 
-interface DownloadState {
-    downloadButtonEnabled: boolean;
-}
+const ButtonWithTimeout = OneTimeButtonTimeBlocker(OneTimeButton);
 
 export class DownloadCoverageContentComponent
-    extends RemoteContentComponent<DownloadCoverageComponentProps, DownloadState>
+    extends RemoteContentComponent<DownloadCoverageComponentProps, undefined>
 {
-    downloadButtonDisableTimeout: number;
+    ButtonWithTimeout?: any;
 
-    constructor(props?: DownloadCoverageComponentProps) {
-        super(props);
-        this.state = {
-            downloadButtonEnabled: true,
-        };
-        this.onDownloadClicked = this.onDownloadClicked.bind(this);
-        this.downloadButtonDisableTimeout = this.props.downloadButtonDisableTimeout
-            ? this.props.downloadButtonDisableTimeout
-            : 5000;
+    constructor() {
+        super();
+        this.onSelectFormat = this.onSelectFormat.bind(this);
     }
 
     static getStores() {
@@ -65,24 +57,12 @@ export class DownloadCoverageContentComponent
     onSelectFormat(format: string) {
         coverageSetActions.selectFormat(format);
         responsibilityStore.fetchOneTimeCoverageToken().catch(doNothing);
+        if (this.ButtonWithTimeout) this.ButtonWithTimeout.enable();
     }
 
     refreshToken() {
         coverageTokenActions.clearUsedToken();
         responsibilityStore.fetchOneTimeCoverageToken();
-    }
-
-    onDownloadClicked() {
-        setTimeout(() => {
-            this.setState({
-                downloadButtonEnabled: false,
-            })
-        });
-        setTimeout(() => {
-            this.setState({
-                downloadButtonEnabled: true,
-            })
-        }, this.downloadButtonDisableTimeout);
     }
 
     renderContent(props: DownloadCoverageComponentProps) {
@@ -98,7 +78,7 @@ export class DownloadCoverageContentComponent
             </p>
             <div className="row mt-3">
                 <div className="col-12 col-md-8 col-lg-6">
-                    <table className={commonStyles.specialColumn}>
+                    <table className="specialColumn">
                         <tbody>
                         <tr>
                             <td>
@@ -126,15 +106,15 @@ export class DownloadCoverageContentComponent
             </div>
             <div className="row mt-2">
                 <div className="col-12">
-                    <div className={commonStyles.smallTitle}>Coverage sets included</div>
+                    <div className="smallTitle">Coverage sets included</div>
                     <CoverageSetList coverageSets={data.coverageSets}/>
                 </div>
             </div>
             <div className="row mt-4">
                 <div className="col-12 col-md-6">
-                    <table className={styles.options}>
+                    <table className="options">
                         <tbody>
-                        <tr className={commonStyles.specialColumn}>
+                        <tr className="specialColumn">
                             <td>
                                 <div className="col">
                                     <label className="col-form-label">
@@ -152,14 +132,15 @@ export class DownloadCoverageContentComponent
                 </div>
             </div>
             <div className="mt-4">
-                <OneTimeButton
+                <ButtonWithTimeout
                     token={data.coverageToken}
                     refreshToken={this.refreshToken}
-                    enabled={this.state.downloadButtonEnabled}
-                    onClick={this.onDownloadClicked}
+                    disableDuration={1000}
+                    enabled={true}
+                    onRef={ref => (this.ButtonWithTimeout = ref)}
                 >
                     Download combined coverage set data in CSV format
-                </OneTimeButton>
+                </ButtonWithTimeout>
             </div>
         </div>;
     }
