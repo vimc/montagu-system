@@ -6,8 +6,6 @@ import { ChooseGroupPage } from "../../../ChooseGroup/ChooseGroupPage";
 import { settings } from "../../../../../shared/Settings";
 import { InternalLink } from "../../../../../shared/components/InternalLink";
 
-const commonStyles = require("../../../../../shared/styles/common.css");
-
 const embeddedHtml = require('./html/over80.html');
 
 export class ResponsibilityGuidanceOver80 extends ContribPageWithHeader<undefined> {

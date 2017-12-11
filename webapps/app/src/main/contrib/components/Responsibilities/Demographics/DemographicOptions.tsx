@@ -6,8 +6,8 @@ import { demographicStore } from "../../../stores/DemographicStore";
 import { doNothing } from "../../../../shared/Helpers";
 import { FormatControl } from "../FormatControl";
 
-const commonStyles = require("../../../../shared/styles/common.css");
-const styles = require("../Responsibilities.css");
+import "../../../../shared/styles/common.scss";
+import "../Responsibilities.scss";
 
 interface Props extends HasFormatOption {
     dataSets: DemographicDataset[];
@@ -45,9 +45,9 @@ export class DemographicOptions extends React.Component<Props, undefined> {
         );
 
         const selectedId = props.selectedDataSet != null ? props.selectedDataSet.id : "";
-        return <table className={styles.options}>
+        return <table className="options">
             <tbody>
-            <tr className={commonStyles.specialColumn}>
+            <tr className="specialColumn">
                 <td>
                     <label className="col-form-label">
                         Statistic type
@@ -65,7 +65,7 @@ export class DemographicOptions extends React.Component<Props, undefined> {
                     </div>
                 </td>
             </tr>
-            <tr className={commonStyles.specialColumn}>
+            <tr className="specialColumn">
                 <td>
                     <label className="col-form-label">
                         Gender
@@ -77,7 +77,7 @@ export class DemographicOptions extends React.Component<Props, undefined> {
                     onSelectGender={this.onSelectGender}/>
                 </td>
             </tr>
-            <tr className={commonStyles.specialColumn}>
+            <tr className="specialColumn">
                 <td>
                     <label className="col-form-label">
                         Format

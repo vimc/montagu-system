@@ -2,7 +2,7 @@ import * as React from 'react';
 import { notificationActions } from "../../actions/NotificationActions";
 import { MouseEvent } from "react";
 
-import * as styles from "./ErrorLog.scss";
+import "./ErrorLog.scss";
 
 interface ErrorLogProps {
     errors: string[];
@@ -18,9 +18,9 @@ export class ErrorLog extends React.Component<ErrorLogProps, undefined> {
             const items = this.props.errors.map((error, index) =>
                 <li key={index}>{ error }</li>
             );
-            return <div className={styles.errors}>
+            return <div className="errors">
                 <ul>{items}</ul>
-                <button onClick={ this.clearErrors } className={styles.clearButton}>
+                <button onClick={ this.clearErrors } className="clearButton">
                     Clear errors
                 </button>
             </div>

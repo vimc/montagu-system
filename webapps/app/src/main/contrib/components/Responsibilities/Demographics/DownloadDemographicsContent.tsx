@@ -11,8 +11,8 @@ import { OneTimeButtonTimeBlocker } from "../../../../shared/components/OneTimeB
 import { demographicActions } from "../../../actions/DemographicActions";
 import { doNothing } from "../../../../shared/Helpers";
 
-const commonStyles = require("../../../../shared/styles/common.css");
-const styles = require("../Responsibilities.css");
+import "../../../../shared/styles/common.scss";
+import "../Responsibilities.scss";
 
 export interface DownloadDemographicsContentProps extends RemoteContent {
     dataSets: DemographicDataset[];
@@ -72,8 +72,8 @@ export class DownloadDemographicsContentComponent extends RemoteContentComponent
     renderContent(props: DownloadDemographicsContentProps) {
         const canDownload = DownloadDemographicsContentComponent.canDownload(props);
 
-        return <div className={styles.demographics}>
-            <div className={commonStyles.sectionTitle}>
+        return <div className="demographics">
+            <div className="sectionTitle">
                 Demographic data for {props.touchstone.description}
             </div>
             <div>

@@ -1,0 +1,77 @@
+.responsibilities {
+    list-style-type: none;
+    padding: 0;
+
+    .scenario {
+        margin-bottom: 30px;
+        border: 1px solid rgb(200, 200, 200);
+
+        .header {
+            cursor: pointer;
+            padding: 5px 0 0px 10px;
+            background-color: rgb(210, 210, 210);
+            color: inherit;
+            border-bottom: 1px solid rgb(200, 200, 200);
+        }
+    }
+}
+
+.name {
+    font-size: 20pt;
+    font-weight: bold;
+}
+
+.status {
+    float: right;
+    margin: 10px 10px;
+    font-size: 10pt;
+    font-weight: bold;
+}
+
+.content {
+    padding: 10px;
+}
+
+.progress {
+    margin-bottom: 20px
+}
+
+.actions {
+    text-align: right;
+    margin: 5px 0 10px 0;
+}
+
+.actions button, .actions .button {
+    margin-right: 10px;
+}
+
+.demographics select {
+    display: inline-block;
+}
+
+.demographics .dataSet,
+.demographics .source {
+    width: 300px;
+    margin-right: 20px;
+}
+
+.demographics .options {
+    margin: 20px 0;
+}
+
+.demographics .options td {
+    padding: 10px;
+}
+
+.demographics .radioOptions {
+    display: inline-block;
+}
+
+.demographics .radioOptions div {
+    display: inline-block;
+    margin: 0 5px;
+}
+
+.estimates {
+    margin-right: 10px;
+}

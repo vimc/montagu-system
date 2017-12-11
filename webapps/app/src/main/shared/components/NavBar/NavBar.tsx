@@ -4,7 +4,7 @@ import {connectToStores} from "../../alt";
 import {InternalLink} from "../InternalLink";
 import {Breadcrumb} from "../../models/Breadcrumb";
 
-import * as styles from "./NavBar.scss";
+import "./NavBar.scss";
 
 interface Props {
     crumbs: Breadcrumb[];
@@ -33,9 +33,9 @@ export class NavBarComponent extends React.Component<Props, undefined> {
 
     render(): JSX.Element {
         return(
-            <div className={styles.navbar}>
+            <div className="montagu-navbar">
             { this.props.crumbs.map(c =>
-                <div className={styles.navbar__chunk} key={c.url}>
+                <div className="montagu-navbar__chunk" key={c.url}>
                     {this.makeLink(c)}
                 </div>
             ) }

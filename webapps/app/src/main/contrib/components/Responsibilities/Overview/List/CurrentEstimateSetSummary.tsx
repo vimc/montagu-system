@@ -3,7 +3,7 @@ import {BurdenEstimateSet} from "../../../../../shared/models/Generated";
 import {settings} from "../../../../../shared/Settings";
 import {longDate, longTimestamp} from "../../../../../shared/Helpers";
 
-const messageStyles = require("../../../../../shared/styles/messages.css");
+import "../../../../../shared/styles/messages.scss";
 
 interface Props {
     estimateSet: BurdenEstimateSet;
@@ -45,7 +45,7 @@ export class CurrentEstimateSetSummary extends React.Component<Props, undefined>
         const {estimateSet, canUpload} = this.props;
         const estimateText = CurrentEstimateSetSummary.getMessage(estimateSet, canUpload);
 
-        return <div className={"mt-3 mr-3 " + messageStyles.info}>
+        return <div className="mt-3 mr-3 info">
             {estimateText}
         </div>;
     }

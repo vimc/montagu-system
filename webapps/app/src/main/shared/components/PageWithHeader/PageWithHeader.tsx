@@ -7,9 +7,8 @@ import {NavBar} from "../NavBar/NavBar";
 import {navStore} from "../../stores/NavStore";
 import {IPageWithParent} from "../../models/Breadcrumb";
 
-import * as styles from './PageWithHeader.scss';
-
-const logo = require("./logo.png");
+import './PageWithHeader.scss';
+import * as logo from "./logo.png";
 
 export abstract class PageWithHeader<TLocationProps>
     extends React.Component<PageProperties<TLocationProps>, undefined>
@@ -52,20 +51,20 @@ export abstract class PageWithHeader<TLocationProps>
 
     render() {
         return <div>
-            <header className={ styles.header }>
+            <header className="header">
                 <a href="/"><img src={ logo } height="80" alt="VIMC" /></a>
-                <div className={ styles.header__siteTitle }>
+                <div className="header__siteTitle">
                     <InternalLink href="/">{ this.siteTitle() }</InternalLink>
                 </div>
                 { this.header() }
             </header>
             <NavBar />
             { this.postHeader() }
-            <article className={ `${styles.page} container` }>
+            <article className="page container">
                 { !this.hideTitle() &&
-                    <div className={ styles.page__title }>{ this.title() }</div>
+                    <div className="page__title">{ this.title() }</div>
                 }
-                <div className={ styles.page__content }>{ this.renderPageContent() }</div>
+                <div className="page__content">{ this.renderPageContent() }</div>
             </article>
         </div>
     }

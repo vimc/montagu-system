@@ -3,7 +3,7 @@ import { ContribPageWithHeader } from "../../PageWithHeader/ContribPageWithHeade
 import { ChooseGroupPage } from "../../ChooseGroup/ChooseGroupPage";
 import { settings } from "../../../../shared/Settings";
 
-const commonStyles = require("../../../../shared/styles/common.css");
+import "../../../../shared/styles/common.scss";
 const dalysPdf = require("./guidance-201710-DALYs.pdf");
 
 export class ResponsibilityGuidanceModelOutputs extends ContribPageWithHeader<undefined> {
@@ -26,7 +26,7 @@ export class ResponsibilityGuidanceModelOutputs extends ContribPageWithHeader<un
 
     renderPageContent() {
         return <div>
-            <div className={ commonStyles.largeSectionTitle }>
+            <div className="largeSectionTitle">
                 Required model outputs
             </div>
             <p>

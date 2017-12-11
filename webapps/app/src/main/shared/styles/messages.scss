@@ -1,13 +1,13 @@
-:local(.message) {
+.message {
     font-size: 16pt;
 }
 
-:local(.errorMessage) {
-    composes: message;
+.errorMessage {
+    // composes: message;
     color: red;
 }
 
-:local(.info) {
+.info {
     background-color: #fcf8e3;
     padding: 5px;
 }

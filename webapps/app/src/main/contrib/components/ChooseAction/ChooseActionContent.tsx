@@ -9,7 +9,7 @@ import { RemoteContentComponent } from "../../../shared/components/RemoteContent
 import { isNullOrUndefined } from "util";
 import { InternalLink } from "../../../shared/components/InternalLink";
 
-const commonStyles = require("../../../shared/styles/common.css");
+import "../../../shared/styles/common.scss";
 
 export interface ChooseActionContentProps extends RemoteContent {
     touchstones: Touchstone[];
@@ -31,7 +31,7 @@ export class ChooseActionContentComponent extends RemoteContentComponent<ChooseA
 
     renderTouchstoneChoice(props: ChooseActionContentProps): JSX.Element {
         return <div>
-            <div className={ commonStyles.sectionTitle }>Your responsibilities</div>
+            <div className="sectionTitle">Your responsibilities</div>
             <p>
                 Click on any of the past and open touchstones below to view your
                 group's responsibilities in that touchstone and to download

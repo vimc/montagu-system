@@ -2,7 +2,7 @@ import * as React from "react";
 import { settings } from "../Settings";
 import { InternalLink } from "./InternalLink";
 
-const styles = require("../styles/common.css");
+import "../styles/common.scss";
 
 export class NoRouteFound {
     static title(): string {
@@ -13,7 +13,7 @@ export class NoRouteFound {
         const supportEmail = `mailto:${settings.supportContact}`;
         return <div>
             We are sorry, but this page does not exist.
-            <div className={ styles.gapAbove }>
+            <div className="gapAbove">
                 Here are some options:
                 <ul>
                     <li>Click back in your browser to return to the previous page</li>

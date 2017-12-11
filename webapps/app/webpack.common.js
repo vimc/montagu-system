@@ -66,16 +66,9 @@ function commonConfig(name, public_path) {
                 {
                     test: /\.scss$/,
                     loaders: [
-                        "style-loader",
-                        {
-                            loader: 'typings-for-css-modules-loader',
-                            options: {
-                              modules: true,
-                              namedExport: true,
-                              camelCase: true,
-                            }
-                        },
-                        { loader: 'sass-loader' },
+                        'style-loader',
+                        'css-loader',
+                        'sass-loader',
                     ]
                 },
                 // Substitute paths into index.html

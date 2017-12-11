@@ -2,7 +2,7 @@ import * as React from "react";
 import {ILookup} from "../../../shared/models/Lookup";
 import {FileDownloadLink} from "../FileDownloadLink";
 
-const styles = require("../../../shared/styles/common.css");
+import "../../../shared/styles/common.scss";
 
 export class DataLinks extends React.Component<ILookup<string>, undefined> {
     buildUrl(type: string, key: string): string {
@@ -26,7 +26,7 @@ export class DataLinks extends React.Component<ILookup<string>, undefined> {
 
         return <div>
             <div className="row">
-                <div className={"col-12 " + styles.sectionTitle}>Input data to the report</div>
+                <div className="col-12 sectionTitle">Input data to the report</div>
             </div>
             {links}
         </div>;

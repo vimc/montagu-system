@@ -9,8 +9,8 @@ import { ResponsibilityList } from "./List/ResponsibilityList";
 import { connectToStores } from "../../../../shared/alt";
 import { ButtonLink } from "../../../../shared/components/ButtonLink";
 
-const commonStyles = require("../../../../shared/styles/common.css");
-const messageStyles = require("../../../../shared/styles/messages.css");
+import "../../../../shared/styles/common.scss";
+import "../../../../shared/styles/messages.scss";
 
 export interface ResponsibilityOverviewComponentProps extends RemoteContent {
     responsibilitySet: IExtendedResponsibilitySet;
@@ -38,18 +38,18 @@ export class ResponsibilityOverviewContentComponent extends RemoteContentCompone
         const demographyUrl = `/${props.modellingGroup.id}/responsibilities/${props.responsibilitySet.touchstone.id}/demographics/`;
         const supportEmail = `mailto:${settings.supportContact}`;
         const helperText = this.props.responsibilitySet.status  != "incomplete" ?
-            <div className={ messageStyles.info }>The burden estimates uploaded by your modelling group have been reviewed and approved.
+            <div className="info">The burden estimates uploaded by your modelling group have been reviewed and approved.
                 You cannot upload any new estimates. If you need to upload new estimates (e.g. for corrections) please contact us <a href={ supportEmail }>here</a>.
             </div>
         : "";
         return <div>
             {helperText}
-            <div className={ commonStyles.largeSectionTitle }>Demographic data</div>
-            <div className={ commonStyles.gapAbove }>
+            <div className="largeSectionTitle">Demographic data</div>
+            <div className="gapAbove">
                 <ButtonLink href={ demographyUrl }>Download demographic data</ButtonLink>
             </div>
 
-            <div className={ commonStyles.largeSectionTitle }>Scenarios</div>
+            <div className="largeSectionTitle">Scenarios</div>
             <ResponsibilityList
                 modellingGroup={ props.modellingGroup }
                 responsibilitySet={ props.responsibilitySet}

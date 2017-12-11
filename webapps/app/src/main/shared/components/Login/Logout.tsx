@@ -3,7 +3,7 @@ import { authActions } from "../../../shared/actions/AuthActions";
 import { AuthStateBase } from "../../stores/AuthStoreBase";
 import { InternalLink } from "../InternalLink";
 
-import * as style from "./Logout.scss";
+import "./Logout.scss";
 
 export abstract class LogoutComponent extends React.Component<AuthStateBase, undefined> {
     logout(e: React.MouseEvent<HTMLAnchorElement>) {
@@ -12,7 +12,7 @@ export abstract class LogoutComponent extends React.Component<AuthStateBase, und
 
     render() {
         if (this.props.loggedIn) {
-            return <div className={ style.logout }>
+            return <div className="logout">
                 <div>
                     Logged in as { this.props.username } |
                     <InternalLink href="/" onClick={ this.logout }>

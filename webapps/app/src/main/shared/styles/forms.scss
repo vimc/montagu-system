@@ -1,36 +1,36 @@
-:local(.form) :local(.fields) {
+.form .fields {
     float: left;
     margin-right: 20px;
 }
 
-:local(.form) :local(.fields) input {
+.form .fields input {
     display: block;
     margin-bottom: 10px;
     width: 300px;
     padding: 5px;
 }
 
-:local(.error) {
+.error {
     color: red;
 }
 
-:local(.form) input[type=file] {
+.form input[type=file] {
     display: none;
 }
 
-:local(.form) .custom-file-upload {
+.form .custom-file-upload {
     border: 1px solid #ccc;
     display: inline-block;
     padding: 6px 12px;
     cursor: pointer;
 }
 
-:local(.tableForm) {
+.tableForm {
     width: auto;
-    composes: specialColumn from "./common.css";
+    /* composes: specialColumn from "./common.css"; */
 }
 
-:local(.tableForm) input {
+.tableForm input {
     width: 300px;
     font-size: 16pt;
     border: none;
@@ -39,11 +39,11 @@
     background: none;
 }
 
-:local(.tableForm) tr td:nth-child(1) {
+.tableForm tr td:nth-child(1) {
     width: 150px;
 }
 
-:local(.tableForm) tr td:nth-child(2) {
+.tableForm tr td:nth-child(2) {
     width: 300px;
     padding: 0;
     background:
@@ -55,13 +55,13 @@
     background-size: 8px 8px;
 }
 
-:local(.tableForm) tr td:nth-child(3) {
+.tableForm tr td:nth-child(3) {
     width: 0;
     padding: 0;
     border: none;
 }
 
-:local(.tableForm) :local(.error) {
+.tableForm .error {
     padding: 10px;
 }
 
