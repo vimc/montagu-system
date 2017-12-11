@@ -1,6 +1,8 @@
 package org.vaccineimpact.api.app.controllers
 
+import org.vaccineimpact.api.app.app_start.Controller
 import org.vaccineimpact.api.app.context.ActionContext
+import org.vaccineimpact.api.app.context.OneTimeLinkActionContext
 import org.vaccineimpact.api.app.controllers.endpoints.Endpoint
 import org.vaccineimpact.api.app.controllers.endpoints.multiRepoEndpoint
 import org.vaccineimpact.api.app.controllers.endpoints.oneRepoEndpoint
@@ -10,6 +12,7 @@ import org.vaccineimpact.api.app.models.CreateUser
 import org.vaccineimpact.api.app.context.postData
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.RepositoryFactory
+import org.vaccineimpact.api.app.repositories.TokenRepository
 import org.vaccineimpact.api.app.repositories.UserRepository
 import org.vaccineimpact.api.emails.EmailManager
 import org.vaccineimpact.api.emails.NewUserEmail
@@ -22,23 +25,13 @@ import org.vaccineimpact.api.models.permissions.RoleAssignment
 import spark.route.HttpMethod
 
 class UserController(
-        context: ControllerContext,
+        context: ActionContext,
+        private val userRepository: UserRepository,
+        private val tokenRepository: TokenRepository,
         private val emailManager: EmailManager = getEmailManager()
-) : AbstractController(context)
+) : Controller(context)
 {
-    override val urlComponent = "/users"
-    override fun endpoints(repos: RepositoryFactory): List<Endpoint<*>> = listOf(
-            oneRepoEndpoint("/roles/all/",
-                    this::getGlobalRoles, repos, { it.user }, method = HttpMethod.get)
-                    .secured(setOf("*/roles.read")),
-            oneRepoEndpoint("/:username/", this::getUser, repos, { it.user }).secured(setOf("*/users.read")),
-            oneRepoEndpoint("/", this::getUsers, repos, { it.user }).secured(setOf("*/users.read")),
-            multiRepoEndpoint("/", this::createUser, repos, method = HttpMethod.post).secured(setOf("*/users.create")),
-            oneRepoEndpoint("/:username/actions/associate_role/",
-                    this::modifyUserRole, repos, { it.user }, method = HttpMethod.post).secured()
-    )
-
-    fun modifyUserRole(context: ActionContext, repo: UserRepository): String
+    fun modifyUserRole(): String
     {
         val userName = userName(context)
         val associateRole = context.postData<AssociateRole>()
@@ -59,19 +52,19 @@ class UserController(
             throw MissingRequiredPermissionError(setOf("${scope.toString()}/roles.write"))
         }
 
-        repo.modifyUserRole(userName, associateRole)
+        userRepository.modifyUserRole(userName, associateRole)
         return okayResponse()
     }
 
-    fun getUser(context: ActionContext, repo: UserRepository): User
+    fun getUser(): User
     {
         val userName = userName(context)
         val roleReadingScopes = roleReadingScopes(context)
 
-        val user = repo.getUserByUsername(userName)
+        val user = userRepository.getUserByUsername(userName)
         if (roleReadingScopes.any())
         {
-            val allRoles = repo.getRolesForUser(userName)
+            val allRoles = userRepository.getRolesForUser(userName)
             val roles = filteredRoles(allRoles, roleReadingScopes)
             return user.copy(roles = roles)
         }
@@ -81,13 +74,13 @@ class UserController(
         }
     }
 
-    fun getUsers(context: ActionContext, repo: UserRepository): List<User>
+    fun getUsers(): List<User>
     {
         val roleReadingScopes = roleReadingScopes(context)
 
         if (roleReadingScopes.any())
         {
-            val users = repo.allWithRoles().toList()
+            val users = userRepository.allWithRoles().toList()
 
             return users.map {
                 it.copy(roles = filteredRoles(it.roles, roleReadingScopes))
@@ -95,24 +88,28 @@ class UserController(
         }
         else
         {
-            return repo.all().toList()
+            return userRepository.all().toList()
         }
     }
 
-    fun getGlobalRoles(context: ActionContext, repo: UserRepository): List<String>
+    fun getGlobalRoles(): List<String>
     {
-        return repo.globalRoles()
+        return userRepository.globalRoles()
     }
 
-    fun createUser(context: ActionContext, repos: Repositories): String
+    fun createUser(): String
     {
         val user = context.postData<CreateUser>()
-        repos.user.addUser(user)
+        userRepository.addUser(user)
 
-        val token = getSetPasswordToken(user.username, context, repos.token)
+        val params = mapOf(":username" to user.username)
+        val n = NewStyleOneTimeLinkController(OneTimeLinkActionContext(params, emptyMap(), context, user.username),
+                this.tokenRepository)
+
+        val token = n.getSetPasswordToken(user.username)
         emailManager.sendEmail(NewUserEmail(user, token), user)
 
-        return objectCreation(context, urlComponent + "/${user.username}/")
+        return objectCreation(context, "/users/${user.username}/")
     }
 
     private fun userName(context: ActionContext): String = context.params(":username")

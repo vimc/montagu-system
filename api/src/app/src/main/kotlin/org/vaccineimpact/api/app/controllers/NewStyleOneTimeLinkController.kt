@@ -3,6 +3,7 @@ package org.vaccineimpact.api.app.controllers
 import org.vaccineimpact.api.app.RedirectValidator
 import org.vaccineimpact.api.app.app_start.Controller
 import org.vaccineimpact.api.app.context.ActionContext
+import org.vaccineimpact.api.app.context.OneTimeLinkActionContext
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.TokenRepository
 import org.vaccineimpact.api.models.helpers.OneTimeAction
@@ -26,6 +27,11 @@ class NewStyleOneTimeLinkController(
     fun getTokenForDemographicData(): String
     {
         return getOneTimeLinkToken(OneTimeAction.DEMOGRAPHY)
+    }
+
+    fun getSetPasswordToken(username: String): String
+    {
+        return getOneTimeLinkToken(OneTimeAction.SET_PASSWORD, duration = Duration.ofDays(1))
     }
 
     fun getOneTimeLinkToken(
