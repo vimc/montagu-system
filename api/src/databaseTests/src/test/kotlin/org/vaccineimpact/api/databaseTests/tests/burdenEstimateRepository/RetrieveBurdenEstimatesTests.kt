@@ -68,6 +68,21 @@ class RetrieveBurdenEstimatesTests : BurdenEstimateRepositoryTests()
         }
     }
 
+    @Test
+    fun `can retrieve single burden estimate set`()
+    {
+        val setId = withDatabase { db ->
+            val ids = setupDatabase(db)
+            val modelVersionId = ids.modelVersion!!
+            db.addBurdenEstimateSet(ids.responsibility, modelVersionId, username)
+        }
+        withRepo { repo ->
+            val set = repo.getBurdenEstimateSet(setId)
+            assertThat(set.uploadedBy).isEqualTo(username)
+            assertThat(set.problems).isEmpty()
+        }
+    }
+
     private fun checkSetHasExpectedType(sets: List<BurdenEstimateSet>, setId: Int, expectedType: BurdenEstimateSetType)
     {
         val set = sets.singleOrNull { it.id == setId }
