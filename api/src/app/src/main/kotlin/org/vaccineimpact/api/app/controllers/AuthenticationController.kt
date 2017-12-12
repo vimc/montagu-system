@@ -1,16 +1,12 @@
 package org.vaccineimpact.api.app.controllers
 
-import org.pac4j.http.client.direct.DirectBasicAuthClient
-import org.pac4j.sparkjava.SecurityFilter
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.FormHelpers
 import org.vaccineimpact.api.app.HTMLForm
 import org.vaccineimpact.api.app.HTMLFormHelpers
 import org.vaccineimpact.api.app.app_start.Controller
 import org.vaccineimpact.api.app.repositories.Repositories
-import org.vaccineimpact.api.app.repositories.RepositoryFactory
 import org.vaccineimpact.api.app.repositories.UserRepository
-import org.vaccineimpact.api.app.security.TokenIssuingConfigFactory
 import org.vaccineimpact.api.app.security.montaguUser
 import org.vaccineimpact.api.models.AuthenticationResponse
 import org.vaccineimpact.api.models.FailedAuthentication
