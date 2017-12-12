@@ -8,6 +8,8 @@ import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.controllers.NewStyleOneTimeLinkController
 import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.repositories.TokenRepository
+import org.vaccineimpact.api.app.repositories.UserRepository
+import org.vaccineimpact.api.emails.EmailManager
 import org.vaccineimpact.api.models.helpers.OneTimeAction
 import org.vaccineimpact.api.security.WebTokenHelper
 import org.vaccineimpact.api.test_helpers.MontaguTests
@@ -31,7 +33,7 @@ class NewStyleOneTimeLinkControllerTests : MontaguTests()
         val tokenHelper = tokenHelperThatCanGenerateOnetimeTokens()
 
         // Behaviour under test
-        val controller = NewStyleOneTimeLinkController(context, tokenRepo, tokenHelper)
+        val controller = NewStyleOneTimeLinkController(context, tokenRepo, mock<UserRepository>(), mock<EmailManager>(), tokenHelper)
         controller.getOneTimeLinkToken(OneTimeAction.COVERAGE)
 
         // Expectations
@@ -60,7 +62,7 @@ class NewStyleOneTimeLinkControllerTests : MontaguTests()
 
         // Behaviour under test
         val controller = NewStyleOneTimeLinkController(
-                context, tokenRepo, tokenHelper,
+                context, tokenRepo, mock<UserRepository>(), mock<EmailManager>(), tokenHelper,
                 redirectValidator = redirectValidator
         )
         assertThatThrownBy {

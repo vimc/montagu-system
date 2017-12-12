@@ -7,7 +7,7 @@ abstract class Controller(val context: ActionContext)
 {
     fun objectCreation(context: ActionContext, urlPath: String): String
     {
-        val url = Config["app.url"] + urlPath
+        val url = "${Config["app.url"]}/${Config["api.version"]}$urlPath"
         context.addResponseHeader("Location", url)
         context.setResponseStatus(201)
         return url

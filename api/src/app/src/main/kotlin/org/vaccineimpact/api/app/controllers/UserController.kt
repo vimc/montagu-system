@@ -90,21 +90,6 @@ class UserController(
         return userRepository.globalRoles()
     }
 
-    fun createUser(): String
-    {
-        val user = context.postData<CreateUser>()
-        userRepository.addUser(user)
-
-        val params = mapOf(":username" to user.username)
-        val n = NewStyleOneTimeLinkController(OneTimeLinkActionContext(params, emptyMap(), context, user.username),
-                this.tokenRepository)
-
-        val token = n.getSetPasswordToken(user.username)
-        emailManager.sendEmail(NewUserEmail(user, token), user)
-
-        return objectCreation(context, "/users/${user.username}/")
-    }
-
     private fun userName(context: ActionContext): String = context.params(":username")
 
     private fun roleReadingScopes(context: ActionContext) = context.permissions
