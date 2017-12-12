@@ -20,6 +20,7 @@ open class RedirectValidator
         return validRedirectUrlPattern.matches(redirectUrl)
     }
 
-    private val allowedDomains = arrayOf("http://localhost","https://localhost",
+    private val allowedDomains = arrayOf("http://localhost", "https://localhost",
+            "https://129.31.26.29",
             "https://support.montagu.dide.ic.ac.uk", "https://montagu.vaccineimpact.org")
 }
