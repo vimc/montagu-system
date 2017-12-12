@@ -6,6 +6,7 @@ import org.vaccineimpact.api.app.context.OneTimeLinkActionContext
 import org.vaccineimpact.api.app.errors.MissingRequiredPermissionError
 import org.vaccineimpact.api.app.models.CreateUser
 import org.vaccineimpact.api.app.context.postData
+import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.TokenRepository
 import org.vaccineimpact.api.app.repositories.UserRepository
 import org.vaccineimpact.api.emails.EmailManager
@@ -19,11 +20,13 @@ import org.vaccineimpact.api.models.permissions.RoleAssignment
 
 class UserController(
         context: ActionContext,
-        private val userRepository: UserRepository,
-        private val tokenRepository: TokenRepository,
-        private val emailManager: EmailManager = getEmailManager()
+        private val userRepository: UserRepository
 ) : Controller(context)
 {
+
+    constructor(context: ActionContext, repositories: Repositories)
+            : this(context, repositories.user)
+
     fun modifyUserRole(): String
     {
         val userName = userName(context)
