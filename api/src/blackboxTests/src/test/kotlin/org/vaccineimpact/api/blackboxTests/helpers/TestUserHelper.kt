@@ -14,7 +14,10 @@ class TestUserHelper(private val password: String = TestUserHelper.defaultPasswo
 
     fun setupTestUser(db: JooqContext)
     {
-        UserHelper.saveUser(db.dsl, username, "Test User", email, password)
+        if (!UserHelper.userExists(db.dsl, username))
+        {
+            UserHelper.saveUser(db.dsl, username, "Test User", email, password)
+        }
     }
 
     fun getTokenForTestUser(

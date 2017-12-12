@@ -41,6 +41,20 @@ abstract class BurdenEstimateTests : DatabaseTest()
         return db.addBurdenEstimateSet(returnedIds.responsibilityId, returnedIds.modelVersionId, TestUserHelper.username)
     }
 
+    protected fun setUpWithStochasticBurdenEstimateSet(db: JooqContext): Int
+    {
+        val ids = setUp(db)
+        val parameterSetId = db.addModelRunParameterSet(ids.responsibilitySetId, ids.modelVersionId,
+                TestUserHelper.username, "description")
+        db.addModelRun(parameterSetId, "A")
+        db.addModelRun(parameterSetId, "B")
+        return db.addBurdenEstimateSet(ids.responsibilityId, ids.modelVersionId,
+                TestUserHelper.username,
+                setType = "stochastic",
+                modelRunParameterSetId = parameterSetId
+        )
+    }
+
     protected fun setUpWithModelRunParameterSet(db: JooqContext): Int
     {
         val returnedIds = setUp(db)
@@ -48,7 +62,8 @@ abstract class BurdenEstimateTests : DatabaseTest()
                 TestUserHelper.username, "description")
     }
 
-    protected fun validateOneTimeLinkWithRedirect(url: String){
+    protected fun validateOneTimeLinkWithRedirect(url: String)
+    {
 
         validate("$url/get_onetime_link/?redirectUrl=http://localhost/") against "Token" given { db ->
             setUp(db)
@@ -70,6 +85,13 @@ abstract class BurdenEstimateTests : DatabaseTest()
    "Hib3",   1997,    50,     "AFG",  "Afghanistan",         10500,      900,    2000,      NA
    "Hib3",   1996,    50,     "AGO",       "Angola",          5000,     1000,      NA,    5670
    "Hib3",   1997,    50,     "AGO",       "Angola",          6000,     1200,      NA,    5870
+"""
+    val stochasticCSVData = """
+"disease", "run_id", "year", "age", "country", "country_name", "cohort_size", "deaths", "cases", "dalys"
+   "Hib3",      "A",  1996,    50,     "AFG",  "Afghanistan",         10000,     1000,    2000,      NA
+   "Hib3",      "A",  1997,    50,     "AFG",  "Afghanistan",         10500,      900,    2000,      NA
+   "Hib3",      "B",  1996,    50,     "AGO",       "Angola",          5000,     1000,      NA,    5670
+   "Hib3",      "B",  1997,    50,     "AGO",       "Angola",          6000,     1200,      NA,    5870
 """
     val badCSVData = """
 "disease", "year", "age", "country", "country_name", "cohort_size", "deaths", "cases", "dalys"

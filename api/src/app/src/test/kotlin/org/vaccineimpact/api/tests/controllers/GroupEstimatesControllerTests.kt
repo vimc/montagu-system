@@ -9,14 +9,12 @@ import org.vaccineimpact.api.app.context.postData
 import org.vaccineimpact.api.app.controllers.ControllerContext
 import org.vaccineimpact.api.app.controllers.GroupBurdenEstimatesController
 import org.vaccineimpact.api.app.errors.InconsistentDataError
-import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
 import org.vaccineimpact.api.app.repositories.SimpleDataSet
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.db.toDecimal
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.serialization.DataTableDeserializer
-import java.io.StringReader
 import java.time.Instant
 
 class GroupEstimatesControllerTests : ControllerTests<GroupBurdenEstimatesController>()
@@ -115,12 +113,13 @@ class GroupEstimatesControllerTests : ControllerTests<GroupBurdenEstimatesContro
     }
 
     @Test
-    fun `estimate set is populated`()
+    fun `can populate central estimate set`()
     {
         val touchstoneSet = mockTouchstones()
-        val repo = mockRepository(touchstoneSet)
+        val repo = mockRepository(touchstoneSet,
+                existingBurdenEstimateSet = defaultEstimateSet.withType(BurdenEstimateSetTypeCode.CENTRAL_SINGLE_RUN))
 
-        val data = listOf(
+        val csvData = listOf(
                 BurdenEstimate("yf", 2000, 50, "AFG", "Afghanistan", 1000.toDecimal(), mapOf(
                         "deaths" to 10.toDecimal(),
                         "cases" to 100.toDecimal()
@@ -130,7 +129,7 @@ class GroupEstimatesControllerTests : ControllerTests<GroupBurdenEstimatesContro
                         "dalys" to 73.6.toDecimal()
                 ))
         )
-        val expected = listOf(
+        val expectedData = listOf(
                 BurdenEstimateWithRunId("yf", null, 2000, 50, "AFG", "Afghanistan", 1000.toDecimal(), mapOf(
                         "deaths" to 10.toDecimal(),
                         "cases" to 100.toDecimal()
@@ -141,21 +140,40 @@ class GroupEstimatesControllerTests : ControllerTests<GroupBurdenEstimatesContro
                 ))
         )
 
-        val controller = GroupBurdenEstimatesController(mockControllerContext())
-        val mockContext = mock<ActionContext> {
-            on { csvData<BurdenEstimate>(any(), any()) } doReturn data.asSequence()
-            on { username } doReturn "username"
-            on { params(":set-id") } doReturn "1"
-            on { params(":group-id") } doReturn "group-1"
-            on { params(":touchstone-id") } doReturn "touchstone-1"
-            on { params(":scenario-id") } doReturn "scenario-1"
-        }
-        controller.populateBurdenEstimateSet(mockContext, repo)
-        verify(touchstoneSet).get("touchstone-1")
-        verify(repo).populateBurdenEstimateSet(eq(1),
-                eq("group-1"), eq("touchstone-1"), eq("scenario-1"),
-                argWhere { it.toSet() == expected.toSet() }
+        val mockContext = mockActionContextWithCSVData(csvData)
+        verifyRepositoryIsInvokedToPopulateSet(mockContext, repo, touchstoneSet, expectedData)
+    }
+
+    @Test
+    fun `can populate stochastic estimate set`()
+    {
+        val touchstoneSet = mockTouchstones()
+        val repo = mockRepository(touchstoneSet,
+                existingBurdenEstimateSet = defaultEstimateSet.withType(BurdenEstimateSetTypeCode.STOCHASTIC))
+
+        val csvData = listOf(
+                StochasticBurdenEstimate("yf", "runA", 2000, 50, "AFG", "Afghanistan", 1000.toDecimal(), mapOf(
+                        "deaths" to 10.toDecimal(),
+                        "cases" to 100.toDecimal()
+                )),
+                StochasticBurdenEstimate("yf", "runB", 1980, 30, "AGO", "Angola", 2000.toDecimal(), mapOf(
+                        "deaths" to 20.toDecimal(),
+                        "dalys" to 73.6.toDecimal()
+                ))
         )
+        val expectedData = listOf(
+                BurdenEstimateWithRunId("yf", "runA", 2000, 50, "AFG", "Afghanistan", 1000.toDecimal(), mapOf(
+                        "deaths" to 10.toDecimal(),
+                        "cases" to 100.toDecimal()
+                )),
+                BurdenEstimateWithRunId("yf", "runB", 1980, 30, "AGO", "Angola", 2000.toDecimal(), mapOf(
+                        "deaths" to 20.toDecimal(),
+                        "dalys" to 73.6.toDecimal()
+                ))
+        )
+
+        val mockContext = mockActionContextWithCSVData(csvData)
+        verifyRepositoryIsInvokedToPopulateSet(mockContext, repo, touchstoneSet, expectedData)
     }
 
     @Test
@@ -208,6 +226,32 @@ class GroupEstimatesControllerTests : ControllerTests<GroupBurdenEstimatesContro
         }
     }
 
+    private fun <T : Any> mockActionContextWithCSVData(csvData: List<T>): ActionContext
+    {
+        return mock {
+            on { csvData<T>(any(), any()) } doReturn csvData.asSequence()
+            on { username } doReturn "username"
+            on { params(":set-id") } doReturn "1"
+            on { params(":group-id") } doReturn "group-1"
+            on { params(":touchstone-id") } doReturn "touchstone-1"
+            on { params(":scenario-id") } doReturn "scenario-1"
+        }
+    }
+
+    private fun verifyRepositoryIsInvokedToPopulateSet(
+            actionContext: ActionContext, repo: BurdenEstimateRepository,
+            touchstoneSet: SimpleDataSet<Touchstone, String>, expectedData: List<BurdenEstimateWithRunId>
+    )
+    {
+        val controller = GroupBurdenEstimatesController(mockControllerContext())
+        controller.populateBurdenEstimateSet(actionContext, repo)
+        verify(touchstoneSet).get("touchstone-1")
+        verify(repo).populateBurdenEstimateSet(eq(1),
+                eq("group-1"), eq("touchstone-1"), eq("scenario-1"),
+                argWhere { it.toSet() == expectedData.toSet() }
+        )
+    }
+
     private fun mockTouchstones() = mock<SimpleDataSet<Touchstone, String>> {
         on { get("touchstone-1") } doReturn Touchstone("touchstone-1", "touchstone", 1, "Description", TouchstoneStatus.OPEN)
         on { get("touchstone-bad") } doReturn Touchstone("touchstone-bad", "touchstone", 1, "not open", TouchstoneStatus.IN_PREPARATION)
@@ -218,11 +262,15 @@ class GroupEstimatesControllerTests : ControllerTests<GroupBurdenEstimatesContro
                 on { touchstones } doReturn touchstoneSet
             }
 
-    private fun mockRepository(touchstoneSet: SimpleDataSet<Touchstone, String> = mockTouchstones()): BurdenEstimateRepository
+    private fun mockRepository(
+            touchstoneSet: SimpleDataSet<Touchstone, String> = mockTouchstones(),
+            existingBurdenEstimateSet: BurdenEstimateSet = defaultEstimateSet
+    ): BurdenEstimateRepository
     {
         val touchstoneRepo = mockTouchstoneRepository(touchstoneSet)
         return mock {
             on { touchstoneRepository } doReturn touchstoneRepo
+            on { getBurdenEstimateSet(any()) } doReturn existingBurdenEstimateSet
             on { createBurdenEstimateSet(any(), any(), any(), any(), any(), any()) } doReturn 1
             on { addBurdenEstimateSet(any(), any(), any(), any(), any(), any()) } doAnswer { args ->
                 // Force evaluation of sequence
@@ -231,4 +279,11 @@ class GroupEstimatesControllerTests : ControllerTests<GroupBurdenEstimatesContro
             }
         }
     }
+
+    private val defaultEstimateSet = BurdenEstimateSet(
+            1, Instant.now(), "test.user",
+            BurdenEstimateSetType(BurdenEstimateSetTypeCode.CENTRAL_AVERAGED, "mean"),
+            BurdenEstimateSetStatus.EMPTY,
+            emptyList()
+    )
 }
