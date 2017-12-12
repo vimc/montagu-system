@@ -79,7 +79,7 @@ class CreateUserTests : MontaguTests()
                 userRepo,
                 emailManager, tokenHelperThatCanGenerateOnetimeTokens)
 
-        return sut.createUser()
+        return sut.createUserAndGetPasswordLink()
     }
 
 }

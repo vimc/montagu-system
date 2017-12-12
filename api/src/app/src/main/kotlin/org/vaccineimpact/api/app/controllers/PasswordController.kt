@@ -1,61 +1,31 @@
 package org.vaccineimpact.api.app.controllers
 
+import org.vaccineimpact.api.app.app_start.Controller
 import org.vaccineimpact.api.app.context.ActionContext
-import org.vaccineimpact.api.app.controllers.endpoints.Endpoint
-import org.vaccineimpact.api.app.controllers.endpoints.multiRepoEndpoint
-import org.vaccineimpact.api.app.controllers.endpoints.oneRepoEndpoint
-import org.vaccineimpact.api.app.controllers.endpoints.secured
-import org.vaccineimpact.api.app.errors.MissingRequiredParameterError
 import org.vaccineimpact.api.app.models.SetPassword
 import org.vaccineimpact.api.app.context.postData
 import org.vaccineimpact.api.app.repositories.Repositories
-import org.vaccineimpact.api.app.repositories.RepositoryFactory
 import org.vaccineimpact.api.app.repositories.UserRepository
-import org.vaccineimpact.api.emails.EmailManager
-import org.vaccineimpact.api.emails.PasswordSetEmail
-import org.vaccineimpact.api.emails.getEmailManager
-import spark.route.HttpMethod
 
 open class PasswordController(
-        context: ControllerContext,
-        val emailManager: EmailManager = getEmailManager()
-) : AbstractController(context)
+        context: ActionContext,
+        val userRepository: UserRepository
+) : Controller(context)
 {
-    override val urlComponent = "/password"
 
-    override fun endpoints(repos: RepositoryFactory): List<Endpoint<*>> = listOf(
-            oneRepoEndpoint("/set/", this::setPassword, repos, { it.user }, HttpMethod.post).secured(),
-            multiRepoEndpoint("/request_link/", this::requestLink, repos, HttpMethod.post)
-    )
+    constructor(context: ActionContext, repositories: Repositories)
+            : this(context, repositories.user)
 
-    fun setPassword(context: ActionContext, repo: UserRepository): String
+    fun setPassword(): String
     {
-        return setPasswordForUser(context, repo, context.username!!)
+        return setPasswordForUser(context.username!!)
     }
 
     @Throws(Exception::class)
-    open fun setPasswordForUser(context: ActionContext, repo: UserRepository, username: String): String
+    open fun setPasswordForUser(username: String): String
     {
         val password = context.postData<SetPassword>().password
-        repo.setPassword(username, password)
-        return okayResponse()
-    }
-
-    fun requestLink(context: ActionContext, repos: Repositories): String
-    {
-        val address = context.queryParams("email")
-                ?: throw MissingRequiredParameterError("email")
-        val user = repos.user.getMontaguUserByEmail(address)
-        if (user != null)
-        {
-            val token = getSetPasswordToken(user.username, context, repos.token)
-            val email = PasswordSetEmail(token, user.name)
-            emailManager.sendEmail(email, user)
-        }
-        else
-        {
-            logger.warn("Requested set password email for unknown user '$address'")
-        }
+        userRepository.setPassword(username, password)
         return okayResponse()
     }
 }

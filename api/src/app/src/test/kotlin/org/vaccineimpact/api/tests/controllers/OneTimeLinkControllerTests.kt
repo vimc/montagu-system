@@ -31,7 +31,6 @@ class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
     {
         val repo = makeRepository(allowToken = false)
         val controller = makeController(tokenHelper = makeTokenHelper(true, basicClaims),
-                passwordController = null,
                 repos = mock {
                     on { token } doReturn repo
                 },
@@ -47,7 +46,6 @@ class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
     {
         val controller = makeController(
                 tokenHelper = makeTokenHelper(false, basicClaims),
-                passwordController = null,
                 repos = null,
                 errorHandler = mock<ErrorHandler>(),
                 redirectValidator = mock<RedirectValidator>())
@@ -63,7 +61,6 @@ class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
         )
 
         val controller = makeController(tokenHelper = makeTokenHelper(true, badClaims),
-                passwordController = null,
                 repos = null,
                 errorHandler = mock<ErrorHandler>(),
                 redirectValidator = mock<RedirectValidator>())
@@ -74,31 +71,28 @@ class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
     @Test
     fun `performs action if token is valid`()
     {
-        val otherController = mock<PasswordController>()
+        val userRepo = mock<UserRepository>()
         val controller = makeController(
                 tokenHelper = makeTokenHelper(true, mapOf(
                         "sub" to WebTokenHelper.oneTimeActionSubject,
                         "action" to "set-password",
                         "payload" to ":username=test.user"
                 )),
-                passwordController = otherController,
                 repos = mock {
-                    on { user } doReturn mock<UserRepository>()
+                    on { user } doReturn userRepo
                 },
                 errorHandler = mock<ErrorHandler>(),
                 redirectValidator = mock<RedirectValidator>()
         )
         controller.onetimeLink(actionContext(), makeRepository())
-        verify(otherController).setPasswordForUser(any<OneTimeLinkActionContext>(), any(), any())
+        verify(userRepo).setPassword(any(), any())
     }
 
     @Test
     fun `redirects if redirect url query parameter exists`()
     {
-        val otherController = mock<PasswordController>()
         val controller = makeController(
                 tokenHelper = makeTokenHelper(true, claimsWithRedirectUrl),
-                passwordController = otherController,
                 repos = mock {
                     on { user } doReturn mock<UserRepository>()
                 },
@@ -114,10 +108,8 @@ class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
     @Test
     fun `does not redirect if redirect url query parameter does not exist`()
     {
-        val otherController = mock<PasswordController>()
         val controller = makeController(
                 tokenHelper = makeTokenHelper(true, claimsWithoutRedirectUrl),
-                passwordController = otherController,
                 repos = mock {
                     on { user } doReturn mock<UserRepository>()
                 },
@@ -133,11 +125,9 @@ class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
     @Test
     fun `does not redirect if redirect url query parameter is empty`()
     {
-        val otherController = mock<PasswordController>()
         val controller = makeController(
                 tokenHelper = makeTokenHelper(true,
                         claimsWithoutRedirectUrl.plus(mapOf("query" to "redirectUrl="))),
-                passwordController = otherController,
                 repos = mock {
                     on { user } doReturn mock<UserRepository>()
                 },
@@ -153,10 +143,8 @@ class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
     @Test
     fun `does not redirect if redirect url not valid`()
     {
-        val otherController = mock<PasswordController>()
         val controller = makeController(
                 tokenHelper = makeTokenHelper(true, claimsWithRedirectUrl),
-                passwordController = otherController,
                 repos = mock {
                     on { user } doReturn mock<UserRepository>()
                 },
@@ -173,8 +161,8 @@ class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
     @Test
     fun `redirects on error if redirect url query parameter exists`()
     {
-        val otherController = mock<PasswordController> {
-            on(it.setPasswordForUser(any(), any(), any())) doThrow Exception()
+        val userRepo = mock<UserRepository> {
+            on(it.setPassword(any(), any())) doThrow Exception()
         }
 
         val mockErrorHandler = mock<ErrorHandler>() {
@@ -183,9 +171,8 @@ class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
 
         val controller = makeController(
                 tokenHelper = makeTokenHelper(true, claimsWithRedirectUrl),
-                passwordController = otherController,
                 repos = mock {
-                    on { user } doReturn mock<UserRepository>()
+                    on { user } doReturn userRepo
                 },
                 errorHandler = mockErrorHandler,
                 redirectValidator = mock<RedirectValidator>()
@@ -199,8 +186,8 @@ class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
     @Test
     fun `logs error if redirect url query parameter exists`()
     {
-        val otherController = mock<PasswordController> {
-            on(it.setPasswordForUser(any(), any(), any())) doThrow Exception()
+        val userRepo = mock<UserRepository> {
+            on(it.setPassword(any(), any())) doThrow Exception()
         }
 
         val mockErrorHandler = mock<ErrorHandler>() {
@@ -209,9 +196,8 @@ class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
 
         val controller = makeController(
                 tokenHelper = makeTokenHelper(true, claimsWithRedirectUrl),
-                passwordController = otherController,
                 repos = mock {
-                    on { user } doReturn mock<UserRepository>()
+                    on { user } doReturn userRepo
                 },
                 redirectValidator = mock<RedirectValidator>(),
                 errorHandler = mockErrorHandler
@@ -242,7 +228,6 @@ class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
 
     private fun makeController(
             tokenHelper: WebTokenHelper,
-            passwordController: PasswordController?,
             repos: Repositories?,
             redirectValidator: RedirectValidator,
             errorHandler: ErrorHandler
@@ -253,10 +238,8 @@ class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
                 webTokenHelper = tokenHelper,
                 repositories = repos ?: mock()
         )
-        val otherController = passwordController ?: mock()
-        val otherControllers = mock<MontaguControllers> {
-            on { password } doReturn otherController
-        }
+
+        val otherControllers = mock<MontaguControllers>()
 
         return OneTimeLinkController(controllerContext, otherControllers, errorHandler, redirectValidator)
     }
