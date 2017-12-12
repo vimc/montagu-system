@@ -33,7 +33,7 @@ class GetUserTests : MontaguTests()
         }
 
 
-        val sut = UserController(context, repo, mock<TokenRepository>())
+        val sut = UserController(context, repo)
         Assertions.assertThat(sut.getUser()).isEqualToComparingFieldByField(user)
     }
 
@@ -60,7 +60,7 @@ class GetUserTests : MontaguTests()
             on { permissions } doReturn permissionSet
         }
 
-        val sut = UserController(context, repo, mock<TokenRepository>())
+        val sut = UserController(context, repo)
         val actualRoles = sut.getUser().roles
         Assertions.assertThat(actualRoles).hasSameElementsAs(expectedRoles)
     }
@@ -92,7 +92,7 @@ class GetUserTests : MontaguTests()
 
         val expectedRoles = listOf(RoleAssignment("member", "modelling-group", "IC-Garske"))
 
-        val sut = UserController(context, repo, mock<TokenRepository>())
+        val sut = UserController(context, repo)
         val actualRoles = sut.getUser().roles
 
         Assertions.assertThat(actualRoles).hasSameElementsAs(expectedRoles)
@@ -111,7 +111,7 @@ class GetUserTests : MontaguTests()
             on { permissions } doReturn PermissionSet()
         }
 
-        val sut = UserController(context, repo, mock<TokenRepository>())
+        val sut = UserController(context, repo)
         val actualUsers = sut.getUsers()
 
         Assertions.assertThat(actualUsers).hasSameElementsAs(users)
@@ -136,7 +136,7 @@ class GetUserTests : MontaguTests()
             on { permissions } doReturn permissionSet
         }
 
-        val sut = UserController(context, repo, mock<TokenRepository>())
+        val sut = UserController(context, repo)
         val actualRoles = sut.getUsers()[0].roles
         Assertions.assertThat(actualRoles).hasSameElementsAs(expectedRoles)
     }
@@ -164,7 +164,7 @@ class GetUserTests : MontaguTests()
 
         val expectedRoles = listOf(RoleAssignment("member", "modelling-group", "IC-Garske"))
 
-        val sut = UserController(context, repo, mock<TokenRepository>())
+        val sut = UserController(context, repo)
         val actualRoles = sut.getUsers()[0].roles
 
         Assertions.assertThat(actualRoles).hasSameElementsAs(expectedRoles)
