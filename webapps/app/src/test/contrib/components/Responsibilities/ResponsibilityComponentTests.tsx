@@ -1,6 +1,10 @@
 import * as React from "react";
 import {expect} from "chai";
 import {shallow, ShallowWrapper} from "enzyme";
+import * as enzyme from "enzyme";
+import * as Adapter from "enzyme-adapter-react-15";
+enzyme.configure({ adapter: new Adapter() });
+
 import {
     mockBurdenEstimateSet,
     mockModellingGroup,
@@ -48,7 +52,7 @@ describe('ResponsibilityComponent', () => {
 
     it("renders the scenario header", () => {
         setUpComponent("incomplete");
-        expect(rendered.find(".header").text()).to.contain("Description (ID: scenario-1)");
+        expect(rendered.find(".header").text()).to.equal("Description  (ID: scenario-1)empty");
     });
 
     it("renders the responsibility status", () => {

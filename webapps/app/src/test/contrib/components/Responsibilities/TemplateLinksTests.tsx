@@ -2,6 +2,10 @@ import * as React from "react";
 import { Sandbox } from "../../../Sandbox";
 import * as mocks from "../../../mocks/mocks";
 import { shallow } from "enzyme";
+import * as enzyme from "enzyme";
+import * as Adapter from "enzyme-adapter-react-15";
+enzyme.configure({ adapter: new Adapter() });
+
 import { expect } from "chai";
 import { mockExtendedResponsibilitySet, mockResponsibility, mockScenario } from "../../../mocks/mockModels";
 
