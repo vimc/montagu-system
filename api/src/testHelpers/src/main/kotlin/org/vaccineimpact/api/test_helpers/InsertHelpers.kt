@@ -179,7 +179,8 @@ fun JooqContext.addResponsibilitySet(
 fun JooqContext.addBurdenEstimateSet(
         responsibilityId: Int, modelVersionId: Int,
         username: String, status: String = "empty",
-        setType: String = "central-single-run", setTypeDetails: String? = null
+        setType: String = "central-single-run", setTypeDetails: String? = null,
+        modelRunParameterSetId: Int? = null
 ): Int
 {
     val record = this.dsl.newRecord(BURDEN_ESTIMATE_SET).apply {
@@ -192,6 +193,7 @@ fun JooqContext.addBurdenEstimateSet(
         this.interpolated = false
         this.complete = false
         this.status = status
+        this.modelRunParameterSet = modelRunParameterSetId
     }
     record.store()
     return record.id
