@@ -1,28 +1,22 @@
+@import "mixins";
+
 button, .button {
-    display: inline-block;
-    border: none;
-    background-color: rgb(0, 173, 239);
-    color: white;
-    font-family: inherit;
-    font-size: 12pt;
-    font-weight: bold;
+    @include button-colors(rgb(0, 173, 239), #fff);
+    @include button-borders(none,0);
+    @include button-outlines(rgb(200, 200, 200), 1px, outset, null, 2px, outset);
+    @include fonts(inherit, 12pt, bold);
+    @extend .d-inline-block;
+    @extend .align-top;
     padding: 6px 20px 5px 20px;
-    vertical-align: top;
-    outline: rgb(200, 200, 200) outset 1px;
-}
-
-button[type=submit], .submit{
-    color: #fff;
-    background-color: #5cb85c;
-    outline-color: #4cae4c;
-}
-
-button:hover, .button:hover {
-    outline-width: 2px;
 }
 
 button:active {
-    outline-style: inset;
+    @include button-outlines(rgb(200, 200, 200), 1px, inset);
+}
+
+button[type=submit], .submit{
+    @include button-colors(#5cb85c, #fff);
+    @include button-outlines(#4cae4c, 1px, outset, null, 2px);
 }
 
 button:disabled, .button.disabled {
@@ -31,30 +25,25 @@ button:disabled, .button.disabled {
     -webkit-box-shadow: none;
     box-shadow: none;
     opacity: .65;
-    color: #333;
-    background-color: #d4d4d4;
-    border-color: #8c8c8c;
+    @include button-colors(#d4d4d4, #333);
+    @include button-outlines(#5cb85c, 1px, outset);
 }
 
-button:disabled:hover, .button.disabled:hover {
-    outline-width: 1px;
-}
-
-:local(.arrowDown:before){
+.arrowDown:before {
 
     content: "\25be";
     float:right;
     color: #ffffff;
 }
 
-:local(.arrowUp:before){
+.arrowUp:before {
 
     content: "\25b4";
     float:right;
     color: #ffffff;
 }
 
-:local(.arrowUp:after), :local(.arrowDown:after)
+.arrowUp:after, .arrowDown:after
 {
     content: "";
     margin:0 0.5em;
