@@ -34,17 +34,31 @@ The token is a signed Json Web Token. It contains these claims:
   ensuring a token generated for the same URL is always different.
 - exp: The timestamp the token expires
 - iss: The text `vaccineimpact.org`
+- username: The requester's username
 
 The server stores the signed token in the database table 'onetime_token'.
 
 ## Using a onetime link token
-Once you have a token, you always use it with this endpoint:
-`GET /onetime_link/{token}/`.
+Once you have a token, you always use it with one of:
+`GET /onetime_link/{token}/`, `POST /onetime_link/{token}/`.
 
 This will verify the token, perform the original action, invalidate the token, 
 and return the data as if the original URL had been invoked. Note that if there
 are errors in the user input - for example, an unknown touchstone ID - these 
 will only be checked at this point, not when the token is requested.
+
+### Redirection
+
+If making a POST request via a browser, we need to request a redirect back to the web app
+after the action has been performed. To do this, append a query parameter `redirectUrl` 
+to the original request for a token. The API will throw a 400 error if the redirect is not 
+one of our allowed domains: http://localhost, https://localhost, 
+https://support.montagu.dide.ic.ac.uk, https://montagu.vaccineimpact.org or https://129.31.26.29.
+
+The last is the IP address of Montagu in production, added to debug an issue with Cloudflare
+preventing uploads of large files. This may change.
+
+Example: `/some-endpoint/get_onetime_link/?redirectUrl=http://localhost`
 
 ### Server implementation details
 The server will:
