@@ -2,7 +2,7 @@
 
 button, .button {
     @include button-variant(rgb(0, 173, 239), rgb(200, 200, 200));
-    @include button-size(5px, 20px, 12px, 24px,  0);
+    @include button-size(5px, 20px, 1em, 2em,  0);
     font-weight: bold;
     @extend .d-inline-block;
     @extend .align-top;
@@ -10,9 +10,6 @@ button, .button {
 
 button[type=submit], .submit{
     @include button-variant(#5cb85c, #4cae4c);
-    @include button-size(5px, 20px, 12pt, 24px,  0);
-    outline: #4cae4c outset 1px;
-    font-weight: bold;
 }
 
 button:disabled, .button.disabled {
@@ -21,9 +18,7 @@ button:disabled, .button.disabled {
     -webkit-box-shadow: none;
     box-shadow: none;
     opacity: .65;
-    @include button-variant(#d4d4d4, #333);
-    @include button-size(5px, 20px, 12pt, 24px,  0);
-    font-weight: bold;
+    @include button-variant(#d4d4d4, #d4d4d4);
 }
 
 .arrowDown:before {
