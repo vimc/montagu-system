@@ -4,6 +4,7 @@ import {shallow, ShallowWrapper} from "enzyme";
 import {Sandbox} from "../../Sandbox";
 import {UploadFileForm} from "../../../main/shared/components/UploadFileForm";
 import {helpers} from "../../../main/shared/Helpers";
+import {Alert} from "../../../main/shared/components/Alert";
 
 describe('UploadForm', () => {
     let rendered: ShallowWrapper<any, any>;
@@ -74,8 +75,10 @@ describe('UploadForm', () => {
                                            enableSubmit={true}
                                            token="token"/>);
 
-        const alert = rendered.find('.alert');
-        expect(alert).to.have.lengthOf(0);
+        const alert = rendered.find(Alert);
+        expect(alert.prop("hasError")).to.eq(false);
+        expect(alert.prop("hasSuccess")).to.eq(false);
+
     });
 
     it("ingests query string and displays error", () => {
@@ -91,9 +94,10 @@ describe('UploadForm', () => {
                                            enableSubmit={true}
                                            token="token"/>);
 
-        const alert = rendered.find('.alert').first();
-        expect(alert.prop("className")).to.eq("alert alert-danger");
-        expect(alert.find('[data-role="alert-message"]').text()).to.eql("error message");
+        const alert = rendered.find(Alert).first();
+        expect(alert.prop("hasError")).to.eq(true);
+        expect(alert.prop("hasSuccess")).to.eq(false);
+        expect(alert.prop("message")).to.eql("error message");
     });
 
     it("ingests query string and displays success message", () => {
@@ -109,29 +113,10 @@ describe('UploadForm', () => {
                                            enableSubmit={true}
                                            token="token"/>);
 
-        const alert = rendered.find('.alert').first();
-        expect(alert.prop("className")).to.eq("alert alert-success");
-        expect(alert.find('[data-role="alert-message"]').text()).to.eql("success message");
-    });
-
-    it("closes alert", () => {
-
-        sandbox.sinon.stub(helpers, "ingestQueryStringAndReturnResult").returns({
-            status: "success",
-            errors: [],
-            data: "OK"
-        });
-
-        rendered = shallow(<UploadFileForm uploadText="upload text"
-                                           successMessage={"success message"}
-                                           enableSubmit={true}
-                                           token="token"/>);
-
-        const alertClose = rendered.find('.close').first();
-        alertClose.simulate("click");
-
-        const alert = rendered.find('.alert');
-        expect(alert).to.have.lengthOf(0);
+        const alert = rendered.find(Alert).first();
+        expect(alert.prop("hasSuccess")).to.eq(true);
+        expect(alert.prop("hasError")).to.eq(false);
+        expect(alert.prop("message")).to.eql("success message");
     });
 
 });

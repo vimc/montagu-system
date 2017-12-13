@@ -1,23 +1,22 @@
 import * as React from "react";
-import { connectToStores } from "../../../../shared/alt";
-import { ModellingGroup, Responsibility, Scenario, Touchstone } from "../../../../shared/models/Generated";
-import { RemoteContent } from "../../../../shared/models/RemoteContent";
-import { RemoteContentComponent } from "../../../../shared/components/RemoteContentComponent/RemoteContentComponent";
-import { responsibilityStore } from "../../../stores/ResponsibilityStore";
-import { TemplateLink } from "../Overview/List/TemplateLinks";
+import {connectToStores} from "../../../../shared/alt";
+import {ModellingGroup, Responsibility, Scenario, Touchstone} from "../../../../shared/models/Generated";
+import {RemoteContent} from "../../../../shared/models/RemoteContent";
+import {RemoteContentComponent} from "../../../../shared/components/RemoteContentComponent/RemoteContentComponent";
+import {responsibilityStore} from "../../../stores/ResponsibilityStore";
+import {TemplateLink} from "../Overview/List/TemplateLinks";
+import {CurrentEstimateSetSummary} from "../Overview/List/CurrentEstimateSetSummary";
 import {UploadBurdenEstimatesForm} from "./UploadBurdenEstimatesForm";
 
 import "../../../../shared/styles/common.scss";
 
 export interface UploadBurdenEstimatesContentComponentProps extends RemoteContent {
-    props: {
-        touchstone: Touchstone;
-        scenario: Scenario;
-        group: ModellingGroup;
-        responsibilitySetStatus: string;
-        estimatesToken: string;
-        responsibility: Responsibility;
-    };
+    touchstone: Touchstone;
+    scenario: Scenario;
+    group: ModellingGroup;
+    responsibilitySetStatus: string;
+    estimatesToken: string;
+    responsibility: Responsibility;
 }
 
 export class UploadBurdenEstimatesContentComponent extends RemoteContentComponent<UploadBurdenEstimatesContentComponentProps, undefined> {
@@ -27,32 +26,40 @@ export class UploadBurdenEstimatesContentComponent extends RemoteContentComponen
     }
 
     static getPropsFromStores(): UploadBurdenEstimatesContentComponentProps {
+
         const state = responsibilityStore.getState();
         const r = state.currentResponsibility;
 
         if (r != null && state.estimatesOneTimeToken != null) {
             return {
                 ready: state.ready,
-                props: {
-                    touchstone: state.currentTouchstone,
-                    scenario: r.scenario,
-                    group: state.currentModellingGroup,
-                    responsibility: r,
-                    estimatesToken: state.estimatesOneTimeToken,
-                    responsibilitySetStatus: responsibilityStore.getCurrentResponsibilitySet().status
-                }
+                touchstone: state.currentTouchstone,
+                scenario: r.scenario,
+                group: state.currentModellingGroup,
+                responsibility: r,
+                estimatesToken: state.estimatesOneTimeToken,
+                responsibilitySetStatus: responsibilityStore.getCurrentResponsibilitySet().status
+
             };
         } else {
             return {
                 ready: false,
-                props: null
+                touchstone: null,
+                scenario: null,
+                group: null,
+                responsibility: null,
+                estimatesToken: null,
+                responsibilitySetStatus: null
             };
         }
     }
 
     renderContent(props: UploadBurdenEstimatesContentComponentProps) {
-        const data = props.props;
-        const canUploadBurdenEstimate = data.responsibilitySetStatus == "incomplete";
+
+        const canCreate = this.props.responsibilitySetStatus == "incomplete";
+
+        const canUpload = canCreate && this.props.responsibility.current_estimate_set != null
+            && this.props.responsibility.current_estimate_set.status == "empty";
 
         return <div>
             <p>
@@ -64,25 +71,26 @@ export class UploadBurdenEstimatesContentComponent extends RemoteContentComponen
                 <tbody>
                 <tr>
                     <td>Touchstone</td>
-                    <td>{data.touchstone.description}</td>
+                    <td>{this.props.touchstone.description}</td>
                 </tr>
                 <tr>
                     <td>Scenario</td>
-                    <td>{data.scenario.description}</td>
+                    <td>{this.props.scenario.description}</td>
                 </tr>
                 <tr>
                     <td>Burden estimates template</td>
-                    <td><TemplateLink diseaseId={data.scenario.disease} groupId={data.group.id}/></td>
+                    <td><TemplateLink diseaseId={this.props.scenario.disease} groupId={this.props.group.id}/></td>
                 </tr>
                 </tbody>
             </table>
 
-            <div className="gapAbove">
-                <UploadBurdenEstimatesForm
-                            token={data.estimatesToken}
-                            canUpload={canUploadBurdenEstimate}
-                            currentEstimateSet={data.responsibility.current_estimate_set}
-                            />
+            <div className="mt-3">
+                <CurrentEstimateSetSummary estimateSet={this.props.responsibility.current_estimate_set}
+                                           canUpload={canCreate}/>
+
+                <UploadBurdenEstimatesForm canUpload={canUpload} canCreate={canCreate} groupId={this.props.group.id}
+                                           estimatesToken={this.props.estimatesToken} touchstoneId={this.props.touchstone.id}
+                                           scenarioId={this.props.scenario.id}/>
             </div>
         </div>;
     }

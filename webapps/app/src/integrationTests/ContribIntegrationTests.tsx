@@ -1,6 +1,7 @@
 import {mainStore} from "../main/contrib/stores/MainStore";
 import {expect} from "chai";
-import {checkPromise} from "../test/testHelpers";
+import * as React from "react";
+import {checkAsync, checkPromise} from "../test/testHelpers";
 import {Client, QueryResult} from "pg";
 import {responsibilityStore} from "../main/contrib/stores/ResponsibilityStore";
 import {
@@ -20,6 +21,9 @@ import {expectIsEqual, IntegrationTestSuite} from "./IntegrationTest";
 import {contribAuthStore} from "../main/contrib/stores/ContribAuthStore";
 import {ContribFetcher} from "../main/contrib/sources/ContribFetcher";
 import {demographicActions} from "../main/contrib/actions/DemographicActions";
+import {Form} from "../main/contrib/components/Responsibilities/BurdenEstimates/Form";
+import {shallow} from "enzyme";
+import {CreateBurdenEstimateSetForm} from "../main/contrib/components/Responsibilities/BurdenEstimates/CreateBurdenEstimateSetForm";
 
 const jwt_decode = require('jwt-decode');
 
@@ -233,7 +237,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
 
                 const query = QueryString.parse(decoded.query);
                 expect(query).to.eql(JSON.parse(`{
-                    "redirectUrl": "http://localhost:5000/redirect/back"                   
+                    "redirectUrl": "http://localhost:5000/redirect/back"
                 }`
                 ));
 
@@ -259,7 +263,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
 
                 const query = QueryString.parse(decoded.query);
                 expect(query).to.eql(JSON.parse(`{
-                    "redirectUrl": "http://localhost:5000/redirect/back"                   
+                    "redirectUrl": "http://localhost:5000/redirect/back"
                 }`
                 ));
 
@@ -272,6 +276,47 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
 
             });
         });
+
+        function getUrlFromCreateBurdenEstimateSetForm(): string {
+            const rendered = shallow(<CreateBurdenEstimateSetForm
+                touchstoneId={touchstoneId} groupId={groupId} scenarioId={scenarioId}/>);
+
+            return rendered.find(Form).prop("url");
+        }
+
+        it("creates burden estimates set", (done: DoneCallback) => {
+
+            const url = getUrlFromCreateBurdenEstimateSetForm();
+
+            let testValue = 0;
+            const props = {
+                successCallback: () => {
+                    testValue = 1;
+                },
+                url: url,
+                successMessage: "hi",
+                submitText: "submit",
+                data: {
+                    type: {
+                        type: "central-averaged",
+                        details: "details"
+                    }
+                }
+            };
+
+            const form = new Form(props);
+
+            const promise = addResponsibilities(this.db).then(() => {
+                return addModel(this.db).then(() => {
+                    return form.submitForm();
+                })
+            });
+
+            checkPromise(done, promise, (id) => {
+                expect(testValue).to.eq(1);
+            })
+
+        })
     }
 }
 
@@ -322,8 +367,9 @@ function addResponsibilities(db: Client): Promise<number> {
 
 function addModel(db: Client): Promise<number> {
     return db.query(`
-        INSERT INTO model (id, modelling_group, description, citation) VALUES ('${modelId}', '${groupId}', 'a model', 'citation');        
-        INSERT INTO model_version (model, version) VALUES ('${modelId}', '${modelVersion}');`)
+        INSERT INTO model (id, modelling_group, disease, description, citation, is_current) VALUES ('${modelId}', '${groupId}', 'yf', 'a model', 'citation', true);        
+        INSERT INTO model_version (model, version) VALUES ('${modelId}', '${modelVersion}');
+                UPDATE model SET current_version = (SELECT id FROM model_version);`)
         .then(() => db.query(`SELECT id FROM model_version;`))
         .then(result => result.rows[0].id);
 }

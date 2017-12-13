@@ -73,6 +73,13 @@ export function processEncodedResultAndNotifyOnErrors<TModel>(queryAsObject: any
     }
 }
 
+export function apiResponse(response: Response): Promise<Result> {
+    return response.json()
+        .then((response: any) => {
+            return <Result>response;
+        });
+}
+
 function processResponse<TModel>(response: Response): Promise<any> {
 
     return response.json()
@@ -97,7 +104,7 @@ function processResult<TModel>(result: Result, response: any): TModel | void {
             default:
                 throw makeNotificationException(error.message, "error");
         }
-    }
+    };
 
     switch (result.status) {
         case "success":

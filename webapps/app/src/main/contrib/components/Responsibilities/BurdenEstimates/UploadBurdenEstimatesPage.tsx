@@ -10,11 +10,6 @@ import {estimateTokenActions} from "../../../actions/EstimateActions";
 import {ContribPageWithHeader} from "../../PageWithHeader/ContribPageWithHeader";
 import {IPageWithParent} from "../../../../shared/models/Breadcrumb";
 import {ResponsibilityOverviewPage} from "../Overview/ResponsibilityOverviewPage";
-import {
-    processEncodedResultAndNotifyOnErrors
-} from "../../../../shared/sources/Source";
-import {helpers} from "../../../../shared/Helpers";
-import {makeNotification, notificationActions} from "../../../../shared/actions/NotificationActions";
 
 export interface UploadEstimatesProps {
     groupId: string;
@@ -24,12 +19,6 @@ export interface UploadEstimatesProps {
 
 export class UploadBurdenEstimatesPage extends ContribPageWithHeader<UploadEstimatesProps> {
     load() {
-
-            if (processEncodedResultAndNotifyOnErrors<string>(helpers.queryStringAsObject()))
-            {
-                const notification = makeNotification("Success! You have uploaded a new set of burden estimates.", "info")
-                notificationActions.notify(notification)
-            }
 
         estimateTokenActions.clearUsedToken();
         modellingGroupActions.setCurrentGroup(this.props.location.params.groupId);
