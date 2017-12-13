@@ -60,7 +60,7 @@ class AbstractControllerTests : ControllerTests<AbstractController>()
         controller.getOneTimeLinkToken(context, tokenRepo, OneTimeAction.COVERAGE)
 
         // Expectations
-        verify(tokenHelper).generateOneTimeActionToken("coverage", parameters, null, username = "test.user")
+        verify(tokenHelper).generateOneTimeActionToken("coverage", parameters, null, WebTokenHelper.oneTimeLinkLifeSpan, "test.user")
         verify(tokenRepo).storeToken("MY-TOKEN")
     }
 
@@ -79,7 +79,7 @@ class AbstractControllerTests : ControllerTests<AbstractController>()
          }
         val tokenRepo = mock<TokenRepository>()
         val tokenHelper = tokenHelperThatCanGenerateOnetimeTokens()
-        val redirectValidator = mock<MontaguRedirectValidator>{
+        val redirectValidator = mock<RedirectValidator>{
             on (it.validateRedirectUrl(any())) doThrow BadRequest("bad request")
         }
 

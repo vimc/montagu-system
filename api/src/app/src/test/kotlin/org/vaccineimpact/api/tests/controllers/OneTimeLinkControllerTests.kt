@@ -161,7 +161,7 @@ class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
                 repos = mock {
                     on { user } doReturn mock<UserRepository>()
                 },
-                redirectValidator = mock<MontaguRedirectValidator> {
+                redirectValidator = mock<RedirectValidator> {
                     on { validateRedirectUrl(any()) } doThrow BadRequest("bad request")
                 },
                 errorHandler = mock<ErrorHandler>()

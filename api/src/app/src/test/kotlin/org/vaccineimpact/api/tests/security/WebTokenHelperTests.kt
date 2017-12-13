@@ -69,7 +69,7 @@ class WebTokenHelperTests : MontaguTests()
         val token = sut.generateOneTimeActionToken("test-action", mapOf(
                 ":a" to "1",
                 ":b" to "2"
-        ), queryString, username = "test.user")
+        ), queryString, WebTokenHelper.oneTimeLinkLifeSpan, "test.user")
         val claims = sut.verify(token)
 
         assertThat(claims["iss"]).isEqualTo("vaccineimpact.org")
@@ -87,7 +87,7 @@ class WebTokenHelperTests : MontaguTests()
         val token = sut.generateOneTimeActionToken("test-action", mapOf(
                 ":a" to "1",
                 ":b" to "2"
-        ), null, username = "test.user")
+        ), null, WebTokenHelper.oneTimeLinkLifeSpan, "test.user")
         val claims = sut.verify(token)
 
         assertThat(claims["iss"]).isEqualTo("vaccineimpact.org")

@@ -4,8 +4,8 @@ import com.nhaarman.mockito_kotlin.*
 import org.junit.Test
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.controllers.NewStyleOneTimeLinkController
-import org.vaccineimpact.api.app.controllers.OneTimeTokenGenerator
 import org.vaccineimpact.api.app.repositories.TokenRepository
+import org.vaccineimpact.api.app.security.OneTimeTokenGenerator
 import org.vaccineimpact.api.models.helpers.OneTimeAction
 import org.vaccineimpact.api.test_helpers.MontaguTests
 import java.time.Duration

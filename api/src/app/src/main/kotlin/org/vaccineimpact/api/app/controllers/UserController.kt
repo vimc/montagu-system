@@ -9,6 +9,7 @@ import org.vaccineimpact.api.app.context.postData
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.TokenRepository
 import org.vaccineimpact.api.app.repositories.UserRepository
+import org.vaccineimpact.api.app.security.OneTimeTokenGenerator
 import org.vaccineimpact.api.emails.EmailManager
 import org.vaccineimpact.api.emails.NewUserEmail
 import org.vaccineimpact.api.emails.getEmailManager
@@ -67,7 +68,7 @@ class UserController(
                 username = user.username,
                 params = params,
                 queryString = context.queryString(),
-                redirectUrl = context.queryParams("redirectUrl"),
+                redirectUrl = context.redirectUrl,
                 duration = Duration.ofDays(1))
 
         emailManager.sendEmail(NewUserEmail(user, token), user)

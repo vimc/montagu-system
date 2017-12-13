@@ -31,7 +31,7 @@ open class WebTokenHelper(keyPair: KeyPair,
     open fun generateOneTimeActionToken(action: String,
                                         params: Map<String, String>,
                                         queryString: String?,
-                                        lifeSpan: Duration = oneTimeLinkLifeSpan,
+                                        lifeSpan: Duration,
                                         username: String): String
     {
         return generator.generate(mapOf(
