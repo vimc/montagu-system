@@ -2,10 +2,10 @@ package org.vaccineimpact.api.app
 
 import org.vaccineimpact.api.app.errors.BadRequest
 
-open class RedirectValidator
+class RedirectValidator
 {
     @Throws(BadRequest::class)
-    open fun validateRedirectUrl(redirectUrl: String)
+    fun validateRedirectUrl(redirectUrl: String)
     {
         if (!redirectUrlIsValid(redirectUrl))
         {

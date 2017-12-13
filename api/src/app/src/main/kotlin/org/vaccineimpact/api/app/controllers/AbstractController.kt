@@ -40,7 +40,7 @@ abstract class AbstractController(controllerContext: ControllerContext,
             context: ActionContext,
             repo: TokenRepository,
             action: OneTimeAction,
-            duration: Duration = tokenHelper.oneTimeLinkLifeSpan
+            duration: Duration = WebTokenHelper.oneTimeLinkLifeSpan
     ): String
     {
         val actionAsString = serializer.serializeEnum(action)

@@ -109,6 +109,5 @@ class AbstractControllerTests : ControllerTests<AbstractController>()
 
     private fun tokenHelperThatCanGenerateOnetimeTokens() = mock<WebTokenHelper> {
         on { generateOneTimeActionToken(any(), any(), anyOrNull(), any(), any()) } doReturn "MY-TOKEN"
-        on { oneTimeLinkLifeSpan } doReturn Duration.ofSeconds(30)
     }
 }

@@ -15,17 +15,21 @@ import org.vaccineimpact.api.emails.getEmailManager
 import org.vaccineimpact.api.models.Scope
 import org.vaccineimpact.api.models.User
 import org.vaccineimpact.api.models.encompass
+import org.vaccineimpact.api.models.helpers.OneTimeAction
 import org.vaccineimpact.api.models.permissions.AssociateRole
 import org.vaccineimpact.api.models.permissions.RoleAssignment
+import java.time.Duration
 
 class UserController(
         context: ActionContext,
-        private val userRepository: UserRepository
+        private val userRepository: UserRepository,
+        private val oneTimeTokenGenerator: OneTimeTokenGenerator,
+        private val emailManager: EmailManager = getEmailManager()
 ) : Controller(context)
 {
 
     constructor(context: ActionContext, repositories: Repositories)
-            : this(context, repositories.user)
+            : this(context, repositories.user, OneTimeTokenGenerator(repositories.token))
 
     fun modifyUserRole(): String
     {
@@ -50,6 +54,24 @@ class UserController(
 
         userRepository.modifyUserRole(userName, associateRole)
         return okayResponse()
+    }
+
+    fun createUser(): String
+    {
+        val user = context.postData<CreateUser>()
+        userRepository.addUser(user)
+
+        val params = mapOf(":username" to user.username)
+
+        val token = oneTimeTokenGenerator.getOneTimeLinkToken(OneTimeAction.SET_PASSWORD,
+                username = user.username,
+                params = params,
+                queryString = context.queryString(),
+                redirectUrl = context.queryParams("redirectUrl"),
+                duration = Duration.ofDays(1))
+
+        emailManager.sendEmail(NewUserEmail(user, token), user)
+        return objectCreation(context, "/users/${user.username}/")
     }
 
     fun getUser(): User
