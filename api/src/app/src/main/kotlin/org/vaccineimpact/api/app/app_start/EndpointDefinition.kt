@@ -1,6 +1,8 @@
 package org.vaccineimpact.api.app.app_start
 
+import com.sun.org.apache.xpath.internal.operations.Bool
 import org.vaccineimpact.api.app.context.ActionContext
+import org.vaccineimpact.api.app.controllers.endpoints.SetupCallback
 import org.vaccineimpact.api.app.repositories.RepositoryFactory
 import org.vaccineimpact.api.app.security.PermissionRequirement
 import org.vaccineimpact.api.security.WebTokenHelper
@@ -18,6 +20,7 @@ interface EndpointDefinition
     val contentType: String
     val postProcess: ResultProcessor
     val requiredPermissions: List<PermissionRequirement>
+    val basicAuth: Boolean
 
     fun additionalSetup(url: String, webTokenHelper: WebTokenHelper, repositoryFactory: RepositoryFactory)
 }
