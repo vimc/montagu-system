@@ -1,22 +1,18 @@
-@import "mixins";
+@import "bootstrap";
 
 button, .button {
-    @include button-colors(rgb(0, 173, 239), #fff);
-    @include button-borders(none,0);
-    @include button-outlines(rgb(200, 200, 200), 1px, outset, null, 2px, outset);
-    @include fonts(inherit, 12pt, bold);
+    @include button-variant(rgb(0, 173, 239), rgb(200, 200, 200));
+    @include button-size(5px, 20px, 12px, 24px,  0);
+    font-weight: bold;
     @extend .d-inline-block;
     @extend .align-top;
-    padding: 6px 20px 5px 20px;
-}
-
-button:active {
-    @include button-outlines(rgb(200, 200, 200), 1px, inset);
 }
 
 button[type=submit], .submit{
-    @include button-colors(#5cb85c, #fff);
-    @include button-outlines(#4cae4c, 1px, outset, null, 2px);
+    @include button-variant(#5cb85c, #4cae4c);
+    @include button-size(5px, 20px, 12pt, 24px,  0);
+    outline: #4cae4c outset 1px;
+    font-weight: bold;
 }
 
 button:disabled, .button.disabled {
@@ -25,8 +21,9 @@ button:disabled, .button.disabled {
     -webkit-box-shadow: none;
     box-shadow: none;
     opacity: .65;
-    @include button-colors(#d4d4d4, #333);
-    @include button-outlines(#5cb85c, 1px, outset);
+    @include button-variant(#d4d4d4, #333);
+    @include button-size(5px, 20px, 12pt, 24px,  0);
+    font-weight: bold;
 }
 
 .arrowDown:before {
