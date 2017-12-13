@@ -2,6 +2,7 @@ package org.vaccineimpact.api.databaseTests.tests.burdenEstimateRepository
 
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
+import org.jooq.TableField
 import org.junit.Test
 import org.vaccineimpact.api.app.errors.DatabaseContentsError
 import org.vaccineimpact.api.app.errors.OperationNotAllowedError
@@ -10,6 +11,7 @@ import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
 import org.vaccineimpact.api.databaseTests.tests.BurdenEstimateRepositoryTests
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.Tables
+import org.vaccineimpact.api.db.Tables.RESPONSIBILITY
 import org.vaccineimpact.api.models.BurdenEstimateSetType
 import org.vaccineimpact.api.models.BurdenEstimateSetTypeCode
 import org.vaccineimpact.api.models.CreateBurdenEstimateSet
@@ -51,7 +53,7 @@ class CreateBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
     }
 
     @Test
-    fun `updates responsibility current estimate set`()
+    fun `central estimates update current estimate set`()
     {
         var returnedIds: ReturnedIds? = null
         var setId: Int? = null
@@ -60,7 +62,24 @@ class CreateBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
         } makeTheseChanges { repo ->
             setId = repo.createBurdenEstimateSet(groupId, touchstoneId, scenarioId, defaultProperties, username, timestamp)
         } andCheckDatabase { db ->
-            checkCurrentBurdenEstimateSet(db, returnedIds!!, setId!!)
+            checkCurrentBurdenEstimateSet(db, returnedIds!!, setId!!,
+                    RESPONSIBILITY.CURRENT_BURDEN_ESTIMATE_SET)
+        }
+    }
+
+    @Test
+    fun `stochastic estimates update current estimate set`()
+    {
+        var returnedIds: ReturnedIds? = null
+        var setId: Int? = null
+        given { db ->
+            returnedIds = setupDatabase(db)
+        } makeTheseChanges { repo ->
+            val properties = defaultProperties.withType(BurdenEstimateSetTypeCode.STOCHASTIC)
+            setId = repo.createBurdenEstimateSet(groupId, touchstoneId, scenarioId, properties, username, timestamp)
+        } andCheckDatabase { db ->
+            checkCurrentBurdenEstimateSet(db, returnedIds!!, setId!!,
+                    RESPONSIBILITY.CURRENT_STOCHASTIC_BURDEN_ESTIMATE_SET)
         }
     }
 
@@ -151,16 +170,16 @@ class CreateBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
         }
     }
 
-    private fun checkCurrentBurdenEstimateSet(db: JooqContext, returnedIds: ReturnedIds, setId: Int)
+    private fun checkCurrentBurdenEstimateSet(db: JooqContext, returnedIds: ReturnedIds, setId: Int,
+                                              fieldToCheck: TableField<*, Int>)
     {
-        val actualSetId = db.dsl.select(Tables.RESPONSIBILITY.CURRENT_BURDEN_ESTIMATE_SET)
-                .from(Tables.RESPONSIBILITY)
-                .where(Tables.RESPONSIBILITY.ID.eq(returnedIds.responsibility))
+        val actualSetId = db.dsl.select(fieldToCheck)
+                .from(RESPONSIBILITY)
+                .where(RESPONSIBILITY.ID.eq(returnedIds.responsibility))
                 .fetchOneInto(Int::class.java)
 
         assertThat(actualSetId).isEqualTo(setId)
     }
-
 
     private val defaultProperties = CreateBurdenEstimateSet(
             BurdenEstimateSetType(BurdenEstimateSetTypeCode.CENTRAL_UNKNOWN),

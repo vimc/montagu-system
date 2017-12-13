@@ -220,27 +220,19 @@ class JooqBurdenEstimateRepository(
 
         val responsibilityInfo = getResponsibilityInfo(modellingGroup.id, touchstoneId, scenarioId)
 
-        checkSetStatusIsEmpty(setId)
-        BurdenEstimateWriter(dsl, setId).addEstimatesToSet(estimates, responsibilityInfo.disease)
-        updateCurrentBurdenEstimateSet(responsibilityInfo.id, setId)
-        dsl.update(Tables.BURDEN_ESTIMATE_SET)
-                .set(Tables.BURDEN_ESTIMATE_SET.STATUS, "complete")
-                .where(Tables.BURDEN_ESTIMATE_SET.ID.eq(setId))
-                .execute()
-    }
-
-    private fun checkSetStatusIsEmpty(setId: Int)
-    {
-        val status = dsl.select(BURDEN_ESTIMATE_SET.STATUS)
-                .from(BURDEN_ESTIMATE_SET)
-                .where(BURDEN_ESTIMATE_SET.ID.eq(setId))
-                .singleOrNull() ?: throw UnknownObjectError(setId, "Burden Estimate Set")
-
-        if (status.into(String::class.java) != "empty")
+        val set = getBurdenEstimateSet(setId)
+        if (set.status != BurdenEstimateSetStatus.EMPTY)
         {
             throw OperationNotAllowedError("This burden estimate set already contains estimates." +
                     " You must create a new set if you want to upload any new estimates.")
         }
+
+        BurdenEstimateWriter(dsl, setId).addEstimatesToSet(estimates, responsibilityInfo.disease)
+        updateCurrentBurdenEstimateSet(responsibilityInfo.id, setId, set.type.type)
+        dsl.update(Tables.BURDEN_ESTIMATE_SET)
+                .set(Tables.BURDEN_ESTIMATE_SET.STATUS, "complete")
+                .where(Tables.BURDEN_ESTIMATE_SET.ID.eq(setId))
+                .execute()
     }
 
 
@@ -279,7 +271,7 @@ class JooqBurdenEstimateRepository(
         val latestModelVersion = getlatestModelVersion(modellingGroup.id, responsibilityInfo.disease)
 
         val setId = addSet(responsibilityInfo.id, uploader, timestamp, latestModelVersion, properties)
-        updateCurrentBurdenEstimateSet(responsibilityInfo.id, setId)
+        updateCurrentBurdenEstimateSet(responsibilityInfo.id, setId, properties.type.type)
 
         return setId
     }
@@ -298,10 +290,19 @@ class JooqBurdenEstimateRepository(
 
     }
 
-    private fun updateCurrentBurdenEstimateSet(responsibilityId: Int, setId: Int)
+    private fun updateCurrentBurdenEstimateSet(responsibilityId: Int, setId: Int, type: BurdenEstimateSetTypeCode)
     {
+        val field = if (type.isStochastic())
+        {
+            RESPONSIBILITY.CURRENT_STOCHASTIC_BURDEN_ESTIMATE_SET
+        }
+        else
+        {
+            RESPONSIBILITY.CURRENT_BURDEN_ESTIMATE_SET
+        }
+
         dsl.update(RESPONSIBILITY)
-                .set(RESPONSIBILITY.CURRENT_BURDEN_ESTIMATE_SET, setId)
+                .set(field, setId)
                 .where(RESPONSIBILITY.ID.eq(responsibilityId))
                 .execute()
     }
