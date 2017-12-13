@@ -1,8 +1,5 @@
 import * as sinon from 'sinon';
 import {mount, MountRendererProps, ReactWrapper} from "enzyme";
-import * as enzyme from "enzyme";
-import * as Adapter from "enzyme-adapter-react-15";
-enzyme.configure({ adapter: new Adapter() });
 
 import { ReactElement } from "react";
 import { alt } from "../main/shared/alt";
