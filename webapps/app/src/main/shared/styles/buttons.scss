@@ -8,7 +8,7 @@ button, .button {
     @extend .align-top;
 }
 
-button[type=submit], .submit{
+button[type=submit], button.submit, .button.submit {
     @include button-variant(#5cb85c, #4cae4c);
 }
 
