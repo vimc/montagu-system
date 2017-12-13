@@ -220,7 +220,7 @@ class JooqModellingGroupRepository(
         }
         else
         {
-            return Responsibilities(touchstoneId, "", null, emptyList())
+            return Responsibilities(touchstoneId, "", ResponsibilitySetStatus.NOT_APPLICABLE, emptyList())
         }
     }
 
