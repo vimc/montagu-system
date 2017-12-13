@@ -3,8 +3,8 @@ import {expect} from "chai";
 import {Sandbox} from "../../../../Sandbox";
 import {shallow} from "enzyme";
 import {
-    UploadModelRunParametersContentComponent
-} from "../../../../../main/contrib/components/Responsibilities/ModelRunParameters/UploadModelRunParametersContent";
+    ModelRunParametersContentComponent
+} from "../../../../../main/contrib/components/Responsibilities/ModelRunParameters/ModelRunParametersContent";
 import {UploadModelRunParametersForm} from "../../../../../main/contrib/components/Responsibilities/ModelRunParameters/UploadModelRunParametersForm";
 import {
     mockModellingGroup, mockResponsibilitySet,
@@ -12,7 +12,7 @@ import {
 } from "../../../../mocks/mockModels";
 import alt from "../../../../../main/shared/alt";
 
-describe("UploadEstimatesContentComponent", () => {
+describe("ModelRunParametersContent", () => {
     const sandbox = new Sandbox();
 
     afterEach(() => {
@@ -34,7 +34,7 @@ describe("UploadEstimatesContentComponent", () => {
             }
         }));
 
-        const props = UploadModelRunParametersContentComponent.getPropsFromStores();
+        const props = ModelRunParametersContentComponent.getPropsFromStores();
         expect(props).to.eql({
             diseases:  ["disease-id"],
             group: group,
@@ -60,7 +60,7 @@ describe("UploadEstimatesContentComponent", () => {
             }
         }));
 
-        const props = UploadModelRunParametersContentComponent.getPropsFromStores();
+        const props = ModelRunParametersContentComponent.getPropsFromStores();
         expect(props).to.eql({
             diseases:  [],
             group: null,
@@ -79,7 +79,7 @@ describe("UploadEstimatesContentComponent", () => {
             ready: true
         };
 
-        const rendered = shallow(<UploadModelRunParametersContentComponent {...props} />);
+        const rendered = shallow(<ModelRunParametersContentComponent {...props} />);
         expect(rendered.find(UploadModelRunParametersForm).props()).to.eql({
             token: "TOKEN",
             diseases:  ["disease-1", "disease-2"],

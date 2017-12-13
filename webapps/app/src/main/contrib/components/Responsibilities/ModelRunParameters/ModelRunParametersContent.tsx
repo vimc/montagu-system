@@ -6,20 +6,20 @@ import {RemoteContentComponent} from "../../../../shared/components/RemoteConten
 import {responsibilityStore} from "../../../stores/ResponsibilityStore";
 import {UploadModelRunParametersForm} from "./UploadModelRunParametersForm";
 
-export interface UploadModelRunParametersContentComponentProps extends RemoteContent {
+export interface ModelRunParametersContentComponentProps extends RemoteContent {
     touchstone: Touchstone;
     group: ModellingGroup;
     parametersToken: string;
     diseases: string[];
 }
 
-export class UploadModelRunParametersContentComponent extends RemoteContentComponent<UploadModelRunParametersContentComponentProps, undefined> {
+export class ModelRunParametersContentComponent extends RemoteContentComponent<ModelRunParametersContentComponentProps, undefined> {
 
     static getStores() {
         return [responsibilityStore];
     }
 
-    static getPropsFromStores(): UploadModelRunParametersContentComponentProps {
+    static getPropsFromStores(): ModelRunParametersContentComponentProps {
         const state = responsibilityStore.getState();
 
         if (state.parametersOneTimeToken != null) {
@@ -42,7 +42,7 @@ export class UploadModelRunParametersContentComponent extends RemoteContentCompo
         }
     }
 
-    renderContent(props: UploadModelRunParametersContentComponentProps) {
+    renderContent(props: ModelRunParametersContentComponentProps) {
 
         return <div className="mt-2">
             <UploadModelRunParametersForm groupId={props.group.id}
@@ -54,4 +54,4 @@ export class UploadModelRunParametersContentComponent extends RemoteContentCompo
     }
 }
 
-export const UploadModelRunParametersContent = connectToStores(UploadModelRunParametersContentComponent);
+export const ModelRunParametersContent = connectToStores(ModelRunParametersContentComponent);

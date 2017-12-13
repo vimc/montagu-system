@@ -7,15 +7,15 @@ import {DownloadDataTitle} from "../DownloadDataTitle";
 import {ContribPageWithHeader} from "../../PageWithHeader/ContribPageWithHeader";
 import {IPageWithParent} from "../../../../shared/models/Breadcrumb";
 import {ResponsibilityOverviewPage} from "../Overview/ResponsibilityOverviewPage";
-import {UploadModelRunParametersContent} from "./UploadModelRunParametersContent";
+import {ModelRunParametersContent} from "./ModelRunParametersContent";
 import {modelParameterActions} from "../../../actions/ModelParameterActions";
 
-export interface UploadModelRunParametersProps {
+export interface ModelRunParametersProps {
     groupId: string;
     touchstoneId: string;
 }
 
-export class UploadModelRunParametersPage extends ContribPageWithHeader<UploadModelRunParametersProps> {
+export class ModelRunParametersPage extends ContribPageWithHeader<ModelRunParametersProps> {
     load() {
 
         modelParameterActions.clearUsedToken();
@@ -46,6 +46,6 @@ export class UploadModelRunParametersPage extends ContribPageWithHeader<UploadMo
     }
 
     renderPageContent() {
-        return <UploadModelRunParametersContent />
+        return <ModelRunParametersContent />
     }
 }
