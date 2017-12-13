@@ -15,7 +15,8 @@
 
 ## Linting
 1. `npm run tslint` to see all tslint errors
-2. Optionally you can enable tslint plugin in your IDE to see errors in code
+2. Optionally you can enable tslint plugin in your IDE to see errors in code (for Webstorm users:
+open Preferences > Languages & frameworks > Typescript > Tslint -> Enable)
 If you need more rules to check against, add them in file tslint.json, under section rules.
 
 # Testing
