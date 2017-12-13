@@ -13,12 +13,7 @@ interface Props {
 export class CurrentEstimateSetSummary extends React.Component<Props, undefined> {
     static getMessage(set: BurdenEstimateSet, canUpload: boolean): JSX.Element {
         if (!canUpload) {
-            const supportEmail = `mailto:${settings.supportContact}`;
-            return <span>
-                The burden estimates uploaded by your modelling group have been reviewed and approved.
-                You cannot upload any new estimates. If you need to upload new estimates (e.g. for corrections) please
-                contact us <a href={supportEmail}>here</a>.
-            </span>;
+            return <ReviewedAndApprovedMessage />;
         } else {
             if (set == null) {
                 return <span>No burden estimate sets have been uploaded.</span>;
@@ -48,5 +43,16 @@ export class CurrentEstimateSetSummary extends React.Component<Props, undefined>
         return <div className="mt-3 mr-3 info">
             {estimateText}
         </div>;
+    }
+}
+
+export class ReviewedAndApprovedMessage extends React.Component<undefined, undefined> {
+    render(): JSX.Element {
+        const supportEmail = `mailto:${settings.supportContact}`;
+        return <span>
+            The burden estimates uploaded by your modelling group have been reviewed and approved.
+            You cannot upload any new estimates. If you need to upload new estimates (e.g. for corrections) please
+            contact us <a href={supportEmail}>here</a>.
+        </span>;
     }
 }
