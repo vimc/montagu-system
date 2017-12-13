@@ -1,61 +1,158 @@
 import * as React from "react";
-import { expect } from "chai";
-import { shallow, ShallowWrapper } from "enzyme";
-import {mockBurdenEstimateSet} from "../../../../mocks/mockModels";
-import { Sandbox } from "../../../../Sandbox";
-import {mockFetcher} from "../../../../mocks/mockRemote";
-import {CurrentEstimateSetSummary} from "../../../../../main/contrib/components/Responsibilities/Overview/List/CurrentEstimateSetSummary";
+import {expect} from "chai";
+import {shallow} from "enzyme";
+import {Sandbox} from "../../../../Sandbox";
 import {UploadFileForm} from "../../../../../main/shared/components/UploadFileForm";
+import {CreateBurdenEstimateSetForm} from "../../../../../main/contrib/components/Responsibilities/BurdenEstimates/CreateBurdenEstimateSetForm";
 import {UploadBurdenEstimatesForm} from "../../../../../main/contrib/components/Responsibilities/BurdenEstimates/UploadBurdenEstimatesForm";
+import {helpers} from "../../../../../main/shared/Helpers";
+import {Alert} from "../../../../../main/shared/components/Alert";
 
-describe('UploadBurdenEstimatesForm', () => {
-    let rendered: ShallowWrapper<any, any>;
+describe("UploadEstimatesForm", () => {
     const sandbox = new Sandbox();
-    before(() => mockFetcher(Promise.resolve(null)));
 
-    afterEach(() => sandbox.restore());
-
-    it("does not show form if canUpload is false", () => {
-
-        rendered = shallow(<UploadBurdenEstimatesForm
-            token={"token"}
-            canUpload={false}
-            currentEstimateSet={null}/>);
-
-        const form = rendered.find(UploadFileForm);
-        expect(form).to.have.lengthOf(0);
+    afterEach(() => {
+        sandbox.restore();
     });
 
-    it("shows form if canUpload is true", () => {
+    it("renders create form if canCreate and not canUpload", () => {
 
-        rendered = shallow(<UploadBurdenEstimatesForm
-            token={"token"}
-            canUpload={true}
-            currentEstimateSet={null}/>);
+        const props = {
+            groupId: "group-1",
+            touchstoneId: "touchstone-1",
+            scenarioId: "scenario-1",
+            canUpload: false,
+            canCreate: true,
+            estimatesToken: "TOKEN"
+        };
 
-        const form = rendered.find(UploadFileForm);
-        expect(form).to.have.lengthOf(1);
-        expect(form.props()).to.include({
-            token: "token",
-            enableSubmit: true,
-            uploadText: "Choose a new burden estimate set",
-            successMessage: "Success! You have uploaded a new set of burden estimates"
-        })
+        const rendered = shallow(<UploadBurdenEstimatesForm {...props} />);
+
+        expect(rendered.find(CreateBurdenEstimateSetForm)).to.have.lengthOf(1);
+        expect(rendered.find(UploadFileForm)).to.have.lengthOf(0);
     });
 
-    it("renders current burden estimate status", () => {
+    it("renders upload form if canUpload", () => {
 
-        const set = mockBurdenEstimateSet();
-        rendered = shallow(<UploadBurdenEstimatesForm
-            token={"token"}
-            canUpload={true}
-            currentEstimateSet={set}/>);
+        const props = {
+            groupId: "group-1",
+            touchstoneId: "touchstone-1",
+            scenarioId: "scenario-1",
+            canUpload: true,
+            canCreate: true,
+            estimatesToken: "TOKEN"
+        };
 
-        const element = rendered.find(CurrentEstimateSetSummary);
-        expect(element).to.have.length(1);
-        expect(element.props()).to.eql({
-            estimateSet: set,
-            canUpload: true
+        const rendered = shallow(<UploadBurdenEstimatesForm {...props} />);
+
+        expect(rendered.find(CreateBurdenEstimateSetForm)).to.have.lengthOf(0);
+        expect(rendered.find(UploadFileForm)).to.have.lengthOf(1);
+    });
+
+    it("does not render forms if can not upload or create", () => {
+
+        const props = {
+            groupId: "group-1",
+            touchstoneId: "touchstone-1",
+            scenarioId: "scenario-1",
+            canUpload: false,
+            canCreate: false,
+            estimatesToken: "TOKEN"
+        };
+
+        const rendered = shallow(<UploadBurdenEstimatesForm {...props} />);
+
+        expect(rendered.find(CreateBurdenEstimateSetForm)).to.have.lengthOf(0);
+        expect(rendered.find(UploadFileForm)).to.have.lengthOf(0);
+    });
+
+    it("shows alert", () => {
+
+        const props = {
+            groupId: "group-1",
+            touchstoneId: "touchstone-1",
+            scenarioId: "scenario-1",
+            canUpload: false,
+            canCreate: false,
+            estimatesToken: "TOKEN"
+        };
+
+        const rendered = shallow(<UploadBurdenEstimatesForm {...props} />);
+
+        expect(rendered.find(CreateBurdenEstimateSetForm)).to.have.lengthOf(0);
+        expect(rendered.find(UploadFileForm)).to.have.lengthOf(0);
+    });
+
+    it("does not show alert", () => {
+
+        sandbox.sinon.stub(helpers, "ingestQueryStringAndReturnResult").returns(null);
+
+        const props = {
+            groupId: "group-1",
+            touchstoneId: "touchstone-1",
+            scenarioId: "scenario-1",
+            canUpload: false,
+            canCreate: false,
+            estimatesToken: "TOKEN"
+        };
+
+        const rendered = shallow(<UploadBurdenEstimatesForm {...props} />);
+
+        const alert = rendered.find(Alert);
+        expect(alert.prop("hasError")).to.eq(false);
+        expect(alert.prop("hasSuccess")).to.eq(false);
+
+    });
+
+    it("ingests query string and displays error", () => {
+
+        sandbox.sinon.stub(helpers, "ingestQueryStringAndReturnResult").returns({
+            status: "failure",
+            errors: [{code: "code", message: "error message"}],
+            data: null
         });
+
+        const props = {
+            groupId: "group-1",
+            touchstoneId: "touchstone-1",
+            scenarioId: "scenario-1",
+            canUpload: false,
+            canCreate: false,
+            estimatesToken: "TOKEN"
+        };
+
+        const rendered = shallow(<UploadBurdenEstimatesForm {...props} />);
+
+        const alert = rendered.find(Alert).first();
+        expect(alert.prop("hasError")).to.eq(true);
+        expect(alert.prop("hasSuccess")).to.eq(false);
+        expect(alert.prop("message")).to.eql("error message");
     });
+
+    it("ingests query string and displays success message", () => {
+
+        sandbox.sinon.stub(helpers, "ingestQueryStringAndReturnResult").returns({
+            status: "success",
+            errors: [],
+            data: "OK"
+        });
+
+        const props = {
+            groupId: "group-1",
+            touchstoneId: "touchstone-1",
+            scenarioId: "scenario-1",
+            canUpload: false,
+            canCreate: false,
+            estimatesToken: "TOKEN"
+        };
+
+        const rendered = shallow(<UploadBurdenEstimatesForm {...props} />);
+
+        const alert = rendered.find(Alert).first();
+        expect(alert.prop("hasSuccess")).to.eq(true);
+        expect(alert.prop("hasError")).to.eq(false);
+        expect(alert.prop("message")).to.eql("Success! You have uploaded a new set of burden estimates");
+    });
+
+
 });

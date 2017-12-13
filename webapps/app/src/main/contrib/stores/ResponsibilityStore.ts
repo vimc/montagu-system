@@ -27,6 +27,7 @@ import {HasFormatState} from "./DemographicStore";
 import StoreModel = AltJS.StoreModel;
 import {ModelParametersTokenSource} from "../sources/ParametersTokenSource";
 import {modelParameterActions} from "../actions/ModelParameterActions";
+import {doNothing} from "../../shared/Helpers";
 
 export interface ResponsibilityState extends RemoteContent, HasFormatState {
     touchstones: Array<Touchstone>;
@@ -65,6 +66,8 @@ interface ResponsibilityStoreInterface extends AltJS.AltStore<ResponsibilityStat
     responsibilitySetManager(): ResponsibilitySetManager;
 
     getCurrentResponsibilitySet(): ExtendedResponsibilitySet;
+
+    refreshResponsibilities(): void;
 }
 
 class ResponsibilityStore extends AbstractStore<ResponsibilityState, ResponsibilityStoreInterface> implements ResponsibilityState {
@@ -133,6 +136,21 @@ class ResponsibilityStore extends AbstractStore<ResponsibilityState, Responsibil
             fetchOneTimeParametersToken: (redirectPath: string) => {
                 this.redirectPath = redirectPath;
                 return this.getInstance()._fetchOneTimeParametersToken();
+            },
+            refreshResponsibilities: () => {
+                const self = this;
+                const instance  = self.getInstance();
+
+                const scenarioId = self.currentResponsibility.scenario.id;
+
+                self.currentResponsibility = null;
+                instance.responsibilitySetManager().clearSet(self.currentModellingGroup, self.currentTouchstone);
+                instance.fetchResponsibilities()
+                    .catch(doNothing)
+                    .then(() => {
+                        self.handleSetCurrentResponsibility(scenarioId);
+                        instance._fetchOneTimeEstimatesToken().catch(doNothing);
+                    })
             }
         });
     }

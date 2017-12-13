@@ -6,6 +6,7 @@ import {UploadEstimatesProps} from "../components/Responsibilities/BurdenEstimat
 interface Actions extends FetchActionsInterface<Responsibilities> {
     filterByDisease(diseaseId: string): string;
     setCurrentResponsibility(scenarioId: string): string;
+    refreshResponsibilities(): boolean
 }
 
 class ResponsibilityActions extends FetchActions<Responsibilities> implements Actions {
@@ -14,6 +15,9 @@ class ResponsibilityActions extends FetchActions<Responsibilities> implements Ac
     }
     setCurrentResponsibility(scenarioId: string): string {
         return scenarioId;
+    }
+    refreshResponsibilities(): boolean {
+        return true;
     }
 }
 
