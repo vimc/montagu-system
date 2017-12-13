@@ -36,6 +36,10 @@ class RequestHelper
 
     fun post(url: String, permissions: Set<ReifiedPermission>, data: JsonObject): Response
     {
+        return post(url, permissions, data.toJsonString(prettyPrint = true))
+    }
+    fun post(url: String, permissions: Set<ReifiedPermission>, data: String? = null): Response
+    {
         val token = TestUserHelper().getTokenForTestUser(permissions)
         return post(url, data, token = token)
     }
@@ -44,7 +48,6 @@ class RequestHelper
     {
         return post(url, data.toJsonString(prettyPrint = true), token = token)
     }
-
     fun post(url: String, data: String? = null, token: TokenLiteral? = null): Response
     {
         return post(
