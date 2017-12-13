@@ -13,14 +13,11 @@ import org.vaccineimpact.api.app.security.USER_OBJECT
 import org.vaccineimpact.api.security.MontaguUser
 import org.vaccineimpact.api.security.UserProperties
 import org.vaccineimpact.api.security.WebTokenHelper
+import org.vaccineimpact.api.test_helpers.MontaguTests
 import java.time.Duration
 
-
-class AuthenticationControllerTests : ControllerTests<AuthenticationController>()
+class AuthenticationControllerTests : MontaguTests()
 {
-    override fun makeController(controllerContext: ControllerContext)
-            = AuthenticationController(controllerContext)
-
     @Test
     fun `successful authentication updates last logged in timestamp`()
     {
@@ -48,10 +45,10 @@ class AuthenticationControllerTests : ControllerTests<AuthenticationController>(
             on { it.lifeSpan } doReturn Duration.ofHours(1)
         }
 
-        val sut = AuthenticationController(mockControllerContext(webTokenHelper = fakeWebTokenHelper),
-                fakeFormHelpers)
+        val sut = AuthenticationController(fakeContext, fakeUserRepo,
+                fakeFormHelpers, fakeWebTokenHelper)
 
-        sut.authenticate(fakeContext, fakeUserRepo)
+        sut.authenticate()
         verify(fakeUserRepo).updateLastLoggedIn("testusername")
     }
 
@@ -67,10 +64,12 @@ class AuthenticationControllerTests : ControllerTests<AuthenticationController>(
             } doReturn (HTMLForm.InvalidForm(""))
         }
 
-        val sut = AuthenticationController(mockControllerContext(),
-                fakeFormHelpers)
+        val fakeWebTokenHelper = mock<WebTokenHelper> ()
 
-        sut.authenticate(fakeContext, fakeUserRepo)
+        val sut = AuthenticationController(fakeContext, fakeUserRepo,
+                fakeFormHelpers, fakeWebTokenHelper)
+
+        sut.authenticate()
         verify(fakeUserRepo, never()).updateLastLoggedIn(any())
     }
 

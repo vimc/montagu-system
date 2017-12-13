@@ -42,20 +42,62 @@ class UploadBurdenEstimateTests : BurdenEstimateTests()
     }
 
     @Test
-    fun `can populate burden estimate`()
+    fun `can populate central burden estimate`()
     {
-        val requestHelper = RequestHelper()
-        val token = TestUserHelper.setupTestUserAndGetToken(requiredWritePermissions.plus(PermissionSet("*/can-login")))
-
-        var setId = 0
-        JooqContext().use {
-            setId = setUpWithBurdenEstimateSet(it)
+        TestUserHelper.setupTestUser()
+        val setId = JooqContext().use {
+            setUpWithBurdenEstimateSet(it)
         }
-
-        val response = requestHelper.post("$setUrl/$setId/", token = token, data = csvData)
-        Assertions.assertThat(response.statusCode).isEqualTo(200)
+        validate("$setUrl/$setId/", method = HttpMethod.post) withRequestSchema {
+            CSVSchema("BurdenEstimate")
+        } sending {
+            csvData
+        } withPermissions {
+            requiredWritePermissions
+        } andCheckHasStatus 200..299
     }
 
+    @Test
+    fun `cannot provide stochastic data for central estimates`()
+    {
+        TestUserHelper.setupTestUser()
+        val setId = JooqContext().use {
+            setUpWithBurdenEstimateSet(it)
+        }
+        val response = RequestHelper().post("$setUrl/$setId/",
+                requiredWritePermissions + "*/can-login", stochasticCSVData)
+        JSONValidator().validateError(response.text, "csv-unexpected-header",
+                "Expected column header 'year'; found 'run_id' instead (column 1)")
+    }
+
+    @Test
+    fun `can populate stochastic burden estimate`()
+    {
+        TestUserHelper.setupTestUser()
+        val setId = JooqContext().use {
+            setUpWithStochasticBurdenEstimateSet(it)
+        }
+        validate("$setUrl/$setId/", method = HttpMethod.post) withRequestSchema {
+            CSVSchema("StochasticBurdenEstimate")
+        } sending {
+            stochasticCSVData
+        } withPermissions {
+            requiredWritePermissions
+        } andCheckHasStatus 200..299
+    }
+
+    @Test
+    fun `cannot provide central data for stochastic estimates`()
+    {
+        TestUserHelper.setupTestUser()
+        val setId = JooqContext().use {
+            setUpWithStochasticBurdenEstimateSet(it)
+        }
+        val response = RequestHelper().post("$setUrl/$setId/",
+                requiredWritePermissions + "*/can-login", csvData)
+        JSONValidator().validateError(response.text, "csv-unexpected-header",
+                "Expected column header 'run_id'; found 'year' instead (column 1)")
+    }
 
     @Test
     fun `can upload burden estimate`()
