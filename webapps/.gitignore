@@ -32,4 +32,5 @@ nohup\.out
 react-prototype/dist/*
 react-prototype/node_modules/*
 react-prototype/npm-debug\.log
-.idea
+.idea/*
+!app/\.idea/codeStyleSettings.xml
