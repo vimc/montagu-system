@@ -8,7 +8,7 @@ import {
     DemographicDataset,
     Disease,
     ModellingGroup,
-    Responsibilities, Result,
+    Responsibilities,
     ScenarioTouchstoneAndCoverageSets,
     Touchstone
 } from "../main/shared/models/Generated";
@@ -22,7 +22,7 @@ import {contribAuthStore} from "../main/contrib/stores/ContribAuthStore";
 import {ContribFetcher} from "../main/contrib/sources/ContribFetcher";
 import {demographicActions} from "../main/contrib/actions/DemographicActions";
 import {Form} from "../main/contrib/components/Responsibilities/BurdenEstimates/Form";
-import {mount} from "enzyme";
+import {shallow} from "enzyme";
 import {CreateBurdenEstimateSetForm} from "../main/contrib/components/Responsibilities/BurdenEstimates/CreateBurdenEstimateSetForm";
 
 const jwt_decode = require('jwt-decode');
@@ -277,12 +277,16 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
             });
         });
 
-        it("creates burden estimates set", (done: DoneCallback) => {
-
-            const rendered = mount(<CreateBurdenEstimateSetForm
+        function getUrlFromCreateBurdenEstimateSetForm(): string {
+            const rendered = shallow(<CreateBurdenEstimateSetForm
                 touchstoneId={touchstoneId} groupId={groupId} scenarioId={scenarioId}/>);
 
-            const url = rendered.find(Form).prop("url");
+            return rendered.find(Form).prop("url");
+        }
+
+        it("creates burden estimates set", (done: DoneCallback) => {
+
+            const url = getUrlFromCreateBurdenEstimateSetForm();
 
             let testValue = 0;
             const props = {
