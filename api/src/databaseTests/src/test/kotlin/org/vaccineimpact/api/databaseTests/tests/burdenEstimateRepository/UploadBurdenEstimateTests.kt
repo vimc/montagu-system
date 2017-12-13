@@ -285,22 +285,6 @@ class UploadBurdenEstimateTests : BurdenEstimateRepositoryTests()
         checkRecord(records[5], setId, 1980, 30, "AGO", "deaths", 20.toDecimal())
     }
 
-    private fun checkBurdenEstimateSetMetadata(db: JooqContext,
-                                               setId: Int,
-                                               returnedIds: ReturnedIds,
-                                               expectedStatus: String)
-            : Int
-    {
-        val t = BURDEN_ESTIMATE_SET
-        val set = db.dsl.selectFrom(t).where(t.ID.eq(setId)).fetchOne()
-        assertThat(set[t.MODEL_VERSION]).isEqualTo(returnedIds.modelVersion!!)
-        assertThat(set[t.RESPONSIBILITY]).isEqualTo(returnedIds.responsibility)
-        assertThat(set[t.UPLOADED_BY]).isEqualTo(username)
-        assertThat(set[t.UPLOADED_ON].toInstant()).isEqualTo(timestamp)
-        assertThat(set[t.STATUS]).isEqualTo(expectedStatus)
-        return set[t.ID]
-    }
-
     private fun checkCurrentBurdenEstimateSet(db: JooqContext, returnedIds: ReturnedIds, setId: Int,
                                               fieldToCheck: TableField<*, *>)
     {
@@ -325,11 +309,11 @@ class UploadBurdenEstimateTests : BurdenEstimateRepositoryTests()
     }
 
     private val data = sequenceOf(
-            BurdenEstimate("Hib3", 2000, 50, "AFG", "Afghanistan", 1000.toDecimal(), mapOf(
+            BurdenEstimateWithRunId("Hib3", null, 2000, 50, "AFG", "Afghanistan", 1000.toDecimal(), mapOf(
                     "deaths" to 10.toDecimal(),
                     "cases" to 100.toDecimal()
             )),
-            BurdenEstimate("Hib3", 1980, 30, "AGO", "Angola", 2000.toDecimal(), mapOf(
+            BurdenEstimateWithRunId("Hib3", null, 1980, 30, "AGO", "Angola", 2000.toDecimal(), mapOf(
                     "deaths" to 20.toDecimal(),
                     "dalys" to 73.6.toDecimal()
             ))
