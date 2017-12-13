@@ -6,6 +6,7 @@ import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.MontaguRedirectValidator
+import org.vaccineimpact.api.app.RedirectValidator
 import org.vaccineimpact.api.app.controllers.AbstractController
 import org.vaccineimpact.api.app.controllers.ControllerContext
 import org.vaccineimpact.api.app.errors.BadRequest
@@ -23,7 +24,7 @@ class AbstractControllerTests : ControllerTests<AbstractController>()
     }
 
     private class Controller(context: ControllerContext,
-                             redirectValidator: MontaguRedirectValidator = mock<MontaguRedirectValidator>())
+                             redirectValidator: RedirectValidator = mock<RedirectValidator>())
         : AbstractController(context, redirectValidator)
     {
         override val urlComponent = "/test"

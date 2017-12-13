@@ -34,6 +34,6 @@ class NewStyleOneTimeLinkControllerTests : MontaguTests()
     }
 
     private fun tokenGenerator() = mock<OneTimeTokenGenerator> {
-        on { getOneTimeLinkToken(any(), any(), anyOrNull(), anyOrNull(), any()) } doReturn "MY-TOKEN"
+        on { getOneTimeLinkToken(any(), any(), anyOrNull(), anyOrNull(), any(), any()) } doReturn "MY-TOKEN"
     }
 }

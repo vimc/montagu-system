@@ -4,6 +4,7 @@ import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.ErrorHandler
 import org.vaccineimpact.api.app.OneTimeLink
 import org.vaccineimpact.api.app.MontaguRedirectValidator
+import org.vaccineimpact.api.app.RedirectValidator
 import org.vaccineimpact.api.app.controllers.endpoints.oneRepoEndpoint
 import org.vaccineimpact.api.app.errors.InvalidOneTimeLinkToken
 import org.vaccineimpact.api.app.repositories.RepositoryFactory
@@ -17,7 +18,7 @@ class OneTimeLinkController(
         val context: ControllerContext,
         val controllers: MontaguControllers,
         private val errorHandler: ErrorHandler = ErrorHandler(),
-        private val redirectValidator: MontaguRedirectValidator = MontaguRedirectValidator()
+        private val redirectValidator: RedirectValidator = MontaguRedirectValidator()
 ) : AbstractController(context)
 {
     override val urlComponent = ""

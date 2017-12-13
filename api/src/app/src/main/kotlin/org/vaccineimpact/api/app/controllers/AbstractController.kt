@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.context.OneTimeLinkActionContext
 import org.vaccineimpact.api.app.MontaguRedirectValidator
+import org.vaccineimpact.api.app.RedirectValidator
 import org.vaccineimpact.api.app.controllers.endpoints.EndpointDefinition
 import org.vaccineimpact.api.app.controllers.endpoints.getWrappedRoute
 import org.vaccineimpact.api.app.errors.UnsupportedValueException
@@ -20,7 +21,7 @@ import spark.route.HttpMethod
 import java.time.Duration
 
 abstract class AbstractController(controllerContext: ControllerContext,
-                                  private val redirectValidator: MontaguRedirectValidator = MontaguRedirectValidator(),
+                                  private val redirectValidator: RedirectValidator = MontaguRedirectValidator(),
                                   protected val serializer: Serializer = MontaguSerializer.instance)
 {
     protected val logger: Logger = LoggerFactory.getLogger(AbstractController::class.java)
