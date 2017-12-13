@@ -1,9 +1,6 @@
 import * as React from "react";
 import {expect} from "chai";
 import {shallow, ShallowWrapper} from "enzyme";
-import * as enzyme from "enzyme";
-import * as Adapter from "enzyme-adapter-react-15";
-enzyme.configure({ adapter: new Adapter() });
 
 import {
     mockBurdenEstimateSet,
