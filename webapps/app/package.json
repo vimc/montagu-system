@@ -14,7 +14,7 @@
     "admin": "serve out/admin --single",
     "contrib": "serve out/contrib --single",
     "report": "serve out/report --single",
-    "tslint": "tslint -c tslint.json 'src/**/*.{ts,tsx}'"
+    "tslint": "tslint -c tslint.json 'src/main/**/*.{ts,tsx}'"
   },
   "repository": {
     "type": "git",
