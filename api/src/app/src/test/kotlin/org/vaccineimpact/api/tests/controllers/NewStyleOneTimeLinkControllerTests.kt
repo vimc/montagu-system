@@ -1,18 +1,12 @@
 package org.vaccineimpact.api.tests.controllers
 
 import com.nhaarman.mockito_kotlin.*
-import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
-import org.vaccineimpact.api.app.RedirectValidator
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.controllers.NewStyleOneTimeLinkController
 import org.vaccineimpact.api.app.controllers.OneTimeTokenGenerator
-import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.repositories.TokenRepository
-import org.vaccineimpact.api.app.repositories.UserRepository
-import org.vaccineimpact.api.emails.EmailManager
 import org.vaccineimpact.api.models.helpers.OneTimeAction
-import org.vaccineimpact.api.security.WebTokenHelper
 import org.vaccineimpact.api.test_helpers.MontaguTests
 import java.time.Duration
 

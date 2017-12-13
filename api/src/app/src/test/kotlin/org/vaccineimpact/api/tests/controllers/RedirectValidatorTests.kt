@@ -2,7 +2,7 @@ package org.vaccineimpact.api.tests.controllers
 
 import org.assertj.core.api.Assertions
 import org.junit.Test
-import org.vaccineimpact.api.app.RedirectValidator
+import org.vaccineimpact.api.app.MontaguRedirectValidator
 import org.vaccineimpact.api.test_helpers.MontaguTests
 
 class RedirectValidatorTests : MontaguTests()
@@ -10,7 +10,7 @@ class RedirectValidatorTests : MontaguTests()
     @Test
     fun `support and prod redirect urls without https are not valid`()
     {
-        val redirectValidator = RedirectValidator()
+        val redirectValidator = MontaguRedirectValidator()
 
         Assertions.assertThatThrownBy {
             redirectValidator.validateRedirectUrl("http://montagu.vaccineimpact.org")
@@ -24,7 +24,7 @@ class RedirectValidatorTests : MontaguTests()
     @Test
     fun `redirect urls with https are valid`()
     {
-        val redirectValidator = RedirectValidator()
+        val redirectValidator = MontaguRedirectValidator()
 
         redirectValidator.validateRedirectUrl("https://localhost")
 
@@ -37,7 +37,7 @@ class RedirectValidatorTests : MontaguTests()
     @Test
     fun `localhost is valid`()
     {
-        val redirectValidator = RedirectValidator()
+        val redirectValidator = MontaguRedirectValidator()
 
         redirectValidator.validateRedirectUrl("http://localhost")
     }
@@ -45,7 +45,7 @@ class RedirectValidatorTests : MontaguTests()
     @Test
     fun `random redirect urls are not valid`()
     {
-        val redirectValidator = RedirectValidator()
+        val redirectValidator = MontaguRedirectValidator()
 
         Assertions.assertThatThrownBy {
             redirectValidator.validateRedirectUrl("https://google.com")
@@ -63,7 +63,7 @@ class RedirectValidatorTests : MontaguTests()
     @Test
     fun `can redirect to any path on allowed domains`()
     {
-        val redirectValidator = RedirectValidator()
+        val redirectValidator = MontaguRedirectValidator()
 
         redirectValidator.validateRedirectUrl("http://localhost/path")
 

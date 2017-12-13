@@ -5,7 +5,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
 import org.vaccineimpact.api.app.context.ActionContext
-import org.vaccineimpact.api.app.RedirectValidator
+import org.vaccineimpact.api.app.MontaguRedirectValidator
 import org.vaccineimpact.api.app.controllers.AbstractController
 import org.vaccineimpact.api.app.controllers.ControllerContext
 import org.vaccineimpact.api.app.errors.BadRequest
@@ -23,7 +23,7 @@ class AbstractControllerTests : ControllerTests<AbstractController>()
     }
 
     private class Controller(context: ControllerContext,
-                             redirectValidator: RedirectValidator = mock<RedirectValidator>())
+                             redirectValidator: MontaguRedirectValidator = mock<MontaguRedirectValidator>())
         : AbstractController(context, redirectValidator)
     {
         override val urlComponent = "/test"
@@ -39,7 +39,7 @@ class AbstractControllerTests : ControllerTests<AbstractController>()
         )
     }
 
-    // This test is now duplicated in NewStyleOneTimeLinkControllerTests, during our period
+    // This test is now duplicated in TokenGeneratorTests, during our period
     // of overlap between the old and new style controllers. Changes made here should be
     // duplicated until this test is removed.
     @Test
@@ -63,7 +63,7 @@ class AbstractControllerTests : ControllerTests<AbstractController>()
         verify(tokenRepo).storeToken("MY-TOKEN")
     }
 
-    // This test is now duplicated in NewStyleOneTimeLinkControllerTests, during our period
+    // This test is now duplicated in TokenGeneratorTests, during our period
     // of overlap between the old and new style controllers. Changes made here should be
     // duplicated until this test is removed.
     @Test
@@ -78,7 +78,7 @@ class AbstractControllerTests : ControllerTests<AbstractController>()
          }
         val tokenRepo = mock<TokenRepository>()
         val tokenHelper = tokenHelperThatCanGenerateOnetimeTokens()
-        val redirectValidator = mock<RedirectValidator>{
+        val redirectValidator = mock<MontaguRedirectValidator>{
             on (it.validateRedirectUrl(any())) doThrow BadRequest("bad request")
         }
 

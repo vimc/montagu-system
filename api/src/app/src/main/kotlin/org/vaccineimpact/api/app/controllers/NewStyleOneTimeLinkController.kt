@@ -1,5 +1,6 @@
 package org.vaccineimpact.api.app.controllers
 
+import org.vaccineimpact.api.app.MontaguRedirectValidator
 import org.vaccineimpact.api.app.RedirectValidator
 import org.vaccineimpact.api.app.app_start.Controller
 import org.vaccineimpact.api.app.context.ActionContext
@@ -36,7 +37,7 @@ open class OneTimeTokenGenerator(
         private val tokenRepository: TokenRepository,
         private val tokenHelper: WebTokenHelper = WebTokenHelper(KeyHelper.keyPair),
         private val serializer: Serializer = MontaguSerializer.instance,
-        private val redirectValidator: RedirectValidator = RedirectValidator())
+        private val redirectValidator: RedirectValidator = MontaguRedirectValidator())
 {
     open fun getOneTimeLinkToken(
             action: OneTimeAction,

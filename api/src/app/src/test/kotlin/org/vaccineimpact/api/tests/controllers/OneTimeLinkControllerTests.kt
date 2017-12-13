@@ -6,7 +6,7 @@ import org.junit.Test
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.ErrorHandler
 import org.vaccineimpact.api.app.context.OneTimeLinkActionContext
-import org.vaccineimpact.api.app.RedirectValidator
+import org.vaccineimpact.api.app.MontaguRedirectValidator
 import org.vaccineimpact.api.app.controllers.ControllerContext
 import org.vaccineimpact.api.app.controllers.MontaguControllers
 import org.vaccineimpact.api.app.controllers.OneTimeLinkController
@@ -36,7 +36,7 @@ class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
                     on { token } doReturn repo
                 },
                 errorHandler = mock<ErrorHandler>(),
-                redirectValidator = mock<RedirectValidator>()
+                redirectValidator = mock<MontaguRedirectValidator>()
         )
         assertThatThrownBy { controller.onetimeLink(actionContext(), repo) }
                 .isInstanceOf(InvalidOneTimeLinkToken::class.java)
@@ -50,7 +50,7 @@ class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
                 passwordController = null,
                 repos = null,
                 errorHandler = mock<ErrorHandler>(),
-                redirectValidator = mock<RedirectValidator>())
+                redirectValidator = mock<MontaguRedirectValidator>())
         assertThatThrownBy { controller.onetimeLink(actionContext(), makeRepository()) }
                 .isInstanceOf(InvalidOneTimeLinkToken::class.java)
     }
@@ -66,7 +66,7 @@ class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
                 passwordController = null,
                 repos = null,
                 errorHandler = mock<ErrorHandler>(),
-                redirectValidator = mock<RedirectValidator>())
+                redirectValidator = mock<MontaguRedirectValidator>())
         assertThatThrownBy { controller.onetimeLink(actionContext(), makeRepository()) }
                 .isInstanceOf(InvalidOneTimeLinkToken::class.java)
     }
@@ -86,7 +86,7 @@ class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
                     on { user } doReturn mock<UserRepository>()
                 },
                 errorHandler = mock<ErrorHandler>(),
-                redirectValidator = mock<RedirectValidator>()
+                redirectValidator = mock<MontaguRedirectValidator>()
         )
         controller.onetimeLink(actionContext(), makeRepository())
         verify(otherController).setPasswordForUser(any<OneTimeLinkActionContext>(), any(), any())
@@ -103,7 +103,7 @@ class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
                     on { user } doReturn mock<UserRepository>()
                 },
                 errorHandler = mock<ErrorHandler>(),
-                redirectValidator = mock<RedirectValidator>()
+                redirectValidator = mock<MontaguRedirectValidator>()
         )
 
         val fakeContext = actionContext()
@@ -122,7 +122,7 @@ class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
                     on { user } doReturn mock<UserRepository>()
                 },
                 errorHandler = mock<ErrorHandler>(),
-                redirectValidator = mock<RedirectValidator>()
+                redirectValidator = mock<MontaguRedirectValidator>()
         )
 
         val fakeContext = actionContext()
@@ -142,7 +142,7 @@ class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
                     on { user } doReturn mock<UserRepository>()
                 },
                 errorHandler = mock<ErrorHandler>(),
-                redirectValidator = mock<RedirectValidator>()
+                redirectValidator = mock<MontaguRedirectValidator>()
         )
 
         val fakeContext = actionContext()
@@ -160,7 +160,7 @@ class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
                 repos = mock {
                     on { user } doReturn mock<UserRepository>()
                 },
-                redirectValidator = mock<RedirectValidator> {
+                redirectValidator = mock<MontaguRedirectValidator> {
                     on { validateRedirectUrl(any()) } doThrow BadRequest("bad request")
                 },
                 errorHandler = mock<ErrorHandler>()
@@ -188,7 +188,7 @@ class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
                     on { user } doReturn mock<UserRepository>()
                 },
                 errorHandler = mockErrorHandler,
-                redirectValidator = mock<RedirectValidator>()
+                redirectValidator = mock<MontaguRedirectValidator>()
         )
 
         val fakeContext = actionContext()
@@ -213,7 +213,7 @@ class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
                 repos = mock {
                     on { user } doReturn mock<UserRepository>()
                 },
-                redirectValidator = mock<RedirectValidator>(),
+                redirectValidator = mock<MontaguRedirectValidator>(),
                 errorHandler = mockErrorHandler
         )
 
@@ -244,7 +244,7 @@ class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
             tokenHelper: WebTokenHelper,
             passwordController: PasswordController?,
             repos: Repositories?,
-            redirectValidator: RedirectValidator,
+            redirectValidator: MontaguRedirectValidator,
             errorHandler: ErrorHandler
     )
             : OneTimeLinkController

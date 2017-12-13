@@ -2,10 +2,10 @@ package org.vaccineimpact.api.app
 
 import org.vaccineimpact.api.app.errors.BadRequest
 
-class RedirectValidator
+class MontaguRedirectValidator: RedirectValidator
 {
     @Throws(BadRequest::class)
-    fun validateRedirectUrl(redirectUrl: String)
+    override fun validateRedirectUrl(redirectUrl: String)
     {
         if (!redirectUrlIsValid(redirectUrl))
         {
@@ -24,4 +24,11 @@ class RedirectValidator
             // NOTE this is our IP on production as of 12/12/2017
             "https://129.31.26.29",
             "https://support.montagu.dide.ic.ac.uk", "https://montagu.vaccineimpact.org")
+}
+
+interface RedirectValidator
+{
+    @Throws(BadRequest::class)
+    fun validateRedirectUrl(redirectUrl: String)
+
 }
