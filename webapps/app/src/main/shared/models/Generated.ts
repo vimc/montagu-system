@@ -79,7 +79,7 @@ export interface Responsibility {
     status: ResponsibilityStatus;
 }
 
-export type ResponsibilitySetStatus = "incomplete" | "submitted" | "approved";
+export type ResponsibilitySetStatus = "not-applicable" | "incomplete" | "submitted" | "approved";
 
 export interface Responsibilities {
     problems: string;
