@@ -15,11 +15,11 @@ import org.vaccineimpact.api.test_helpers.DatabaseTest
 
 class ResponsibilityTests : DatabaseTest()
 {
-    val touchstoneId = "touchstone-1"
-    val groupId = "awesome-group"
-    val groupScope = "modelling-group:$groupId"
-    val scenarioId = "yf-scenario"
-    val modelId = "model-1"
+    private val touchstoneId = "touchstone-1"
+    private val groupId = "awesome-group"
+    private val groupScope = "modelling-group:$groupId"
+    private val scenarioId = "yf-scenario"
+    private val modelId = "model-1"
 
     @Test
     fun `getResponsibilities matches schema`()
@@ -53,6 +53,25 @@ class ResponsibilityTests : DatabaseTest()
     }
 
     @Test
+    fun `not-applicable status is returned when there are no responsibilities`()
+    {
+        validate("/modelling-groups/$groupId/responsibilities/$touchstoneId/") against "ResponsibilitySet" given {
+            addUserGroupAndTouchstone(it, touchstoneStatus = "open")
+        } requiringPermissions {
+            PermissionSet("$groupScope/responsibilities.read", "*/scenarios.read")
+        } andCheck {
+            assertThat(it).isEqualTo(json {
+                obj(
+                        "touchstone" to touchstoneId,
+                        "status" to "not-applicable",
+                        "problems" to "",
+                        "responsibilities" to array()
+                )
+            })
+        }
+    }
+
+    @Test
     fun `only touchstone preparer can see in-preparation responsibilities`()
     {
         val url = "/modelling-groups/$groupId/responsibilities/$touchstoneId/"
@@ -78,23 +97,25 @@ class ResponsibilityTests : DatabaseTest()
             val responsibility = it["responsibility"] as JsonObject
             val scenario = responsibility["scenario"] as JsonObject
             assertThat(touchstone).isEqualTo(json {
-               obj(
-                                "id" to touchstoneId,
-                                "name" to "touchstone",
-                                "version" to 1,
-                                "description" to "description",
-                                "status" to "open"
-                        )})
+                obj(
+                        "id" to touchstoneId,
+                        "name" to "touchstone",
+                        "version" to 1,
+                        "description" to "description",
+                        "status" to "open"
+                )
+            })
 
-            assertThat(scenario).isEqualTo(json{
-                                obj(
-                                        "id" to scenarioId,
-                                        "description" to "description 1",
-                                        "disease" to "disease-1",
-                                        "touchstones" to array("touchstone-1")
-                                )})
+            assertThat(scenario).isEqualTo(json {
+                obj(
+                        "id" to scenarioId,
+                        "description" to "description 1",
+                        "disease" to "disease-1",
+                        "touchstones" to array("touchstone-1")
+                )
+            })
             assertThat(responsibility["status"]).isEqualTo("invalid")
-            assertThat(responsibility["problems"]).isEqualTo(json{array("problem")})
+            assertThat(responsibility["problems"]).isEqualTo(json { array("problem") })
             assertThat(responsibility["current_estimate_set"]).isNotNull()
         }
     }
@@ -167,14 +188,18 @@ class ResponsibilityTests : DatabaseTest()
         )
     }
 
-
-    private fun addResponsibilities(db: JooqContext, touchstoneStatus: String)
+    private fun addUserGroupAndTouchstone(db: JooqContext, touchstoneStatus: String)
     {
         db.addUserForTesting("model.user")
         db.addGroup(groupId, "description")
         db.addScenarioDescription(scenarioId, "description 1", "disease-1", addDisease = true)
         db.addScenarioDescription("scenario-2", "description 2", "disease-2", addDisease = true)
         db.addTouchstone("touchstone", 1, "description", touchstoneStatus, addName = true)
+    }
+
+    private fun addResponsibilities(db: JooqContext, touchstoneStatus: String)
+    {
+        addUserGroupAndTouchstone(db, touchstoneStatus)
         val setId = db.addResponsibilitySet(groupId, touchstoneId, "submitted")
         val responsibilityId = db.addResponsibility(setId, touchstoneId, scenarioId)
         db.addResponsibility(setId, touchstoneId, "scenario-2")

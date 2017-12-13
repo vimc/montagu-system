@@ -1409,14 +1409,14 @@ Schema: [`ResponsibilitySet.schema.json`](ResponsibilitySet.schema.json)
         ]
     }
 
-If they have no responsibilities, `status` is null.
+If they have no responsibilities, `status` is "not-applicable".
 
 Schema: [`ResponsibilitySet.schema.json`](ResponsibilitySet.schema.json)
 
 ### Example
     {
         "touchstone": "2017-op-1",
-        "status": null,
+        "status": "not-applicable",
         "problems": "",
         "responsibilities": []
     }
