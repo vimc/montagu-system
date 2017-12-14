@@ -30,7 +30,7 @@ class ModellingGroupDetailsContentComponent extends RemoteContentComponent<Props
 
     renderContent(props: Props) {
         return <div className="col">
-            <table className="specialColumn">
+            <table className="specialColumn table table-responsive">
                 <tbody>
                     <tr><td>ID</td><td>{ props.group.id }</td></tr>
                     <tr>

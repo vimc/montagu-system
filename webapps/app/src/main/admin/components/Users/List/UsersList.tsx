@@ -28,7 +28,7 @@ export class UsersListComponent extends RemoteContentComponent<UserProps, undefi
             .sort((a, b) => a.username.localeCompare(b.username))
             .map(g =>
                 <UserListItem key={ g.username } {...g} />);
-        return <table>
+        return <table className="table table-responsive">
             <thead>
             <tr>
                 <th>Username</th>

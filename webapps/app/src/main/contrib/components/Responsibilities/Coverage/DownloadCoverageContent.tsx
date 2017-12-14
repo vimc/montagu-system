@@ -78,7 +78,7 @@ export class DownloadCoverageContentComponent
             </p>
             <div className="row mt-3">
                 <div className="col-12 col-md-8 col-lg-6">
-                    <table className="specialColumn">
+                    <table className="specialColumn table table-responsive">
                         <tbody>
                         <tr>
                             <td>
@@ -112,7 +112,8 @@ export class DownloadCoverageContentComponent
             </div>
             <div className="row mt-4">
                 <div className="col-12 col-md-6">
-                    <table className="options">
+                    <div className="smallTitle">Choose format</div>
+                    <table className="options table table-responsive">
                         <tbody>
                         <tr className="specialColumn">
                             <td>

@@ -45,7 +45,7 @@ export class DemographicOptions extends React.Component<Props, undefined> {
         );
 
         const selectedId = props.selectedDataSet != null ? props.selectedDataSet.id : "";
-        return <table className="options">
+        return <table className="options table table-responsive">
             <tbody>
             <tr className="specialColumn">
                 <td>

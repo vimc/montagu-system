@@ -58,7 +58,7 @@ export class UserDetailsContentComponent extends RemoteContentComponent<Props, u
         }
 
         return <div className="col-xs-12 col-lg-8">
-            <table className="specialColumn">
+            <table className="specialColumn table table-responsive">
                 <tbody>
                 <tr>
                     <td>Username</td>
