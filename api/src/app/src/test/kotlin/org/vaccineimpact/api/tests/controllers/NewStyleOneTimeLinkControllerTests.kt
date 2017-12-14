@@ -4,11 +4,10 @@ import com.nhaarman.mockito_kotlin.*
 import org.junit.Test
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.controllers.NewStyleOneTimeLinkController
-import org.vaccineimpact.api.app.repositories.TokenRepository
 import org.vaccineimpact.api.app.security.OneTimeTokenGenerator
 import org.vaccineimpact.api.models.helpers.OneTimeAction
 import org.vaccineimpact.api.test_helpers.MontaguTests
-import java.time.Duration
+
 
 class NewStyleOneTimeLinkControllerTests : MontaguTests()
 {
@@ -21,7 +20,7 @@ class NewStyleOneTimeLinkControllerTests : MontaguTests()
             on { params() } doReturn parameters
             on { username } doReturn "test.user"
         }
-        val tokenRepo = mock<TokenRepository>()
+
         val tokenGenerator = tokenGenerator()
 
         // Behaviour under test
@@ -29,8 +28,7 @@ class NewStyleOneTimeLinkControllerTests : MontaguTests()
         controller.getTokenForDemographicData()
 
         // Expectations
-        verify(tokenGenerator).getOneTimeLinkToken(OneTimeAction.DEMOGRAPHY, parameters, null,
-                username = "test.user", duration = Duration.ofMinutes(10), redirectUrl = null)
+        verify(tokenGenerator).getOneTimeLinkToken(OneTimeAction.DEMOGRAPHY, context)
     }
 
     private fun tokenGenerator() = mock<OneTimeTokenGenerator> {
