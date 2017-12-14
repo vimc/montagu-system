@@ -1,10 +1,11 @@
 import * as React from "react";
 import {connectToStores} from "../../../../shared/alt";
-import {ModellingGroup, Touchstone} from "../../../../shared/models/Generated";
+import {ModellingGroup, ModelRunParameterSet, Touchstone} from "../../../../shared/models/Generated";
 import {RemoteContent} from "../../../../shared/models/RemoteContent";
 import {RemoteContentComponent} from "../../../../shared/components/RemoteContentComponent/RemoteContentComponent";
 import {responsibilityStore} from "../../../stores/ResponsibilityStore";
 import {UploadModelRunParametersForm} from "./UploadModelRunParametersForm";
+import {ModelRunParameterSetsList} from "./ModelRunParameterSetsList";
 import {runParametersStore} from "../../../stores/RunParametersStore";
 
 export interface ModelRunParametersContentComponentProps extends RemoteContent {
@@ -17,7 +18,7 @@ export interface ModelRunParametersContentComponentProps extends RemoteContent {
 export class ModelRunParametersContentComponent extends RemoteContentComponent<ModelRunParametersContentComponentProps, undefined> {
 
     static getStores() {
-        return [responsibilityStore];
+        return [responsibilityStore, runParametersStore];
     }
 
     static getPropsFromStores(): ModelRunParametersContentComponentProps {
@@ -47,6 +48,9 @@ export class ModelRunParametersContentComponent extends RemoteContentComponent<M
     renderContent(props: ModelRunParametersContentComponentProps) {
 
         return <div className="mt-2">
+            <div className="sectionTitle">All parameter sets for {props.touchstone.description}</div>
+            <ModelRunParameterSetsList />
+            <div className="sectionTitle">Upload a new parameter set</div>
             <UploadModelRunParametersForm groupId={props.group.id}
                                           token={props.parametersToken}
                                           diseases={props.diseases}

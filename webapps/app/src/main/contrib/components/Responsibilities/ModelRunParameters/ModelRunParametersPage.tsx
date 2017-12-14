@@ -29,11 +29,11 @@ export class ModelRunParametersPage extends ContribPageWithHeader<ModelRunParame
     }
 
     name() {
-        return "Upload model run parameters";
+        return "Model run parameters";
     }
 
     title() {
-        return <DownloadDataTitle title="Upload model run parameters"/>
+        return <DownloadDataTitle title="Model run parameters"/>
     }
 
     urlFragment(): string {
