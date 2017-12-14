@@ -67,7 +67,7 @@ export class UploadBurdenEstimatesContentComponent extends RemoteContentComponen
                 cover 96 countries, 100 years, and 100 age bands to take around 1 minute to process. So don't worry if
                 it takes a little while!
             </p>
-            <table className="specialColumn table table-responsive">
+            <table className="specialColumn table table-responsive table-bordered">
                 <tbody>
                 <tr>
                     <td>Touchstone</td>
