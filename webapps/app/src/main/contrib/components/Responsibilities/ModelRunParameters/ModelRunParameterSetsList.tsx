@@ -23,7 +23,7 @@ export class ModelRunParameterSetsListComponent extends RemoteContentComponent<P
         }
     }
 
-    renderContent(props: Props): JSX.Element {
+    private renderTable(props: Props) {
         const items = props.sets.map(set => <tr>
             <td>{set.description}</td>
             <td>{set.uploaded_by}</td>
@@ -38,9 +38,17 @@ export class ModelRunParameterSetsListComponent extends RemoteContentComponent<P
             </tr>
             </thead>
             <tbody>
-                {items}
+            {items}
             </tbody>
         </table>;
+    }
+
+    renderContent(props: Props): JSX.Element {
+        if (props.sets && props.sets.length > 0) {
+            return this.renderTable(props);
+        } else {
+            return <span>No parameter sets have been uploaded for this touchstone</span>;
+        }
     }
 }
 

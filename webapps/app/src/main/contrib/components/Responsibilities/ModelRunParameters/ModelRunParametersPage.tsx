@@ -23,6 +23,7 @@ export class ModelRunParametersPage extends ContribPageWithHeader<ModelRunParame
         responsibilityStore.fetchTouchstones().catch(doNothing).then(() => {
             touchstoneActions.setCurrentTouchstone(this.props.location.params.touchstoneId);
             responsibilityStore.fetchResponsibilities().catch(doNothing);
+            runParametersStore.fetchParameterSets().catch(doNothing);
             runParametersStore.fetchOneTimeParametersToken(this.props.location.pathname).catch(doNothing);
             super.load();
         });
