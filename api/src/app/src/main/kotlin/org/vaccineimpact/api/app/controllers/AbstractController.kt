@@ -4,6 +4,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.context.OneTimeLinkActionContext
+import org.vaccineimpact.api.app.MontaguRedirectValidator
 import org.vaccineimpact.api.app.RedirectValidator
 import org.vaccineimpact.api.app.controllers.endpoints.EndpointDefinition
 import org.vaccineimpact.api.app.controllers.endpoints.getWrappedRoute
@@ -20,7 +21,7 @@ import spark.route.HttpMethod
 import java.time.Duration
 
 abstract class AbstractController(controllerContext: ControllerContext,
-                                  private val redirectValidator: RedirectValidator = RedirectValidator(),
+                                  private val redirectValidator: RedirectValidator = MontaguRedirectValidator(),
                                   protected val serializer: Serializer = MontaguSerializer.instance)
 {
     protected val logger: Logger = LoggerFactory.getLogger(AbstractController::class.java)
@@ -40,7 +41,7 @@ abstract class AbstractController(controllerContext: ControllerContext,
             context: ActionContext,
             repo: TokenRepository,
             action: OneTimeAction,
-            duration: Duration = tokenHelper.oneTimeLinkLifeSpan
+            duration: Duration = WebTokenHelper.oneTimeLinkLifeSpan
     ): String
     {
         val actionAsString = serializer.serializeEnum(action)

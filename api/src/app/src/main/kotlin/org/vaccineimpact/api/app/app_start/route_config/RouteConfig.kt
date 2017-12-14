@@ -13,5 +13,6 @@ object MontaguRouteConfig : RouteConfig
             = DiseaseRouteConfig.endpoints +
             TouchstoneRouteConfig.endpoints +
             ModelRouteConfig.endpoints +
-            AuthenticationRouteConfig.endpoints
+            AuthenticationRouteConfig.endpoints +
+            UserRouteConfig.endpoints
 }

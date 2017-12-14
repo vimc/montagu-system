@@ -5,17 +5,16 @@ import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.fail
 import org.junit.Test
 import org.vaccineimpact.api.app.context.ActionContext
-import org.vaccineimpact.api.app.controllers.ControllerContext
 import org.vaccineimpact.api.app.controllers.UserController
 import org.vaccineimpact.api.app.models.CreateUser
-import org.vaccineimpact.api.app.repositories.Repositories
-import org.vaccineimpact.api.app.repositories.TokenRepository
 import org.vaccineimpact.api.app.repositories.UserRepository
+import org.vaccineimpact.api.app.security.OneTimeTokenGenerator
 import org.vaccineimpact.api.emails.EmailManager
 import org.vaccineimpact.api.emails.NewUserEmail
 import org.vaccineimpact.api.emails.getEmailManager
+import org.vaccineimpact.api.test_helpers.MontaguTests
 
-class CreateUserTests : UserControllerTests()
+class CreateUserTests : MontaguTests()
 {
     private val fakeToken = "TOKEN"
     private val name = "Full name"
@@ -26,8 +25,7 @@ class CreateUserTests : UserControllerTests()
     fun `can create user`()
     {
         val userRepo = mock<UserRepository>()
-        val repos = makeRepos(userRepo)
-        val location = postToUserCreate(repos = repos)
+        val location = postToUserCreate(userRepo)
         verify(userRepo).addUser(any())
         assertThat(location).endsWith("/v1/users/user.name/")
     }
@@ -57,16 +55,9 @@ class CreateUserTests : UserControllerTests()
         )
     }
 
-    private fun makeRepos(userRepo: UserRepository = mock()): Repositories
-    {
-        return mock {
-            on { user } doReturn userRepo
-            on { token } doReturn mock<TokenRepository>()
-        }
-    }
 
     private fun postToUserCreate(
-            repos: Repositories = makeRepos(),
+            userRepo: UserRepository = mock<UserRepository>(),
             emailManager: EmailManager = getEmailManager()
     ): String
     {
@@ -74,14 +65,16 @@ class CreateUserTests : UserControllerTests()
         val context = mock<ActionContext> {
             on { postData(CreateUser::class.java) } doReturn model
         }
-        val controller = UserController(controllerContext(), emailManager)
-        return controller.createUser(context, repos)
+
+        val tokenGenerator = mock<OneTimeTokenGenerator> {
+            on { getOneTimeLinkToken(any(), any(), anyOrNull(), anyOrNull(), any(), any()) } doReturn fakeToken
+        }
+        val sut = UserController(context,
+                userRepo,
+                tokenGenerator,
+                emailManager)
+
+        return sut.createUser()
     }
 
-    private fun controllerContext(): ControllerContext
-    {
-        return mockControllerContext(webTokenHelper = mock {
-            on { generateOneTimeActionToken(any(), any(), anyOrNull(), any(), any()) } doReturn fakeToken
-        })
-    }
 }

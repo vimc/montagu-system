@@ -5,6 +5,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
 import org.vaccineimpact.api.app.context.ActionContext
+import org.vaccineimpact.api.app.MontaguRedirectValidator
 import org.vaccineimpact.api.app.RedirectValidator
 import org.vaccineimpact.api.app.controllers.AbstractController
 import org.vaccineimpact.api.app.controllers.ControllerContext
@@ -39,7 +40,7 @@ class AbstractControllerTests : ControllerTests<AbstractController>()
         )
     }
 
-    // This test is now duplicated in NewStyleOneTimeLinkControllerTests, during our period
+    // This test is now duplicated in TokenGeneratorTests, during our period
     // of overlap between the old and new style controllers. Changes made here should be
     // duplicated until this test is removed.
     @Test
@@ -59,11 +60,11 @@ class AbstractControllerTests : ControllerTests<AbstractController>()
         controller.getOneTimeLinkToken(context, tokenRepo, OneTimeAction.COVERAGE)
 
         // Expectations
-        verify(tokenHelper).generateOneTimeActionToken("coverage", parameters, null, username = "test.user")
+        verify(tokenHelper).generateOneTimeActionToken("coverage", parameters, null, WebTokenHelper.oneTimeLinkLifeSpan, "test.user")
         verify(tokenRepo).storeToken("MY-TOKEN")
     }
 
-    // This test is now duplicated in NewStyleOneTimeLinkControllerTests, during our period
+    // This test is now duplicated in TokenGeneratorTests, during our period
     // of overlap between the old and new style controllers. Changes made here should be
     // duplicated until this test is removed.
     @Test
@@ -109,6 +110,5 @@ class AbstractControllerTests : ControllerTests<AbstractController>()
 
     private fun tokenHelperThatCanGenerateOnetimeTokens() = mock<WebTokenHelper> {
         on { generateOneTimeActionToken(any(), any(), anyOrNull(), any(), any()) } doReturn "MY-TOKEN"
-        on { oneTimeLinkLifeSpan } doReturn Duration.ofSeconds(30)
     }
 }

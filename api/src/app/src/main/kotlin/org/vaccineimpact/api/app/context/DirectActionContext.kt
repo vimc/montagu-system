@@ -9,7 +9,6 @@ import org.vaccineimpact.api.app.errors.MissingRequiredPermissionError
 import org.vaccineimpact.api.app.security.montaguPermissions
 import org.vaccineimpact.api.db.Config
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
-import org.vaccineimpact.api.security.WebTokenHelper
 import org.vaccineimpact.api.serialization.DataTableDeserializer
 import org.vaccineimpact.api.serialization.ModelBinder
 import org.vaccineimpact.api.serialization.MontaguSerializer
@@ -108,6 +107,10 @@ class DirectActionContext(private val context: SparkWebContext,
         manager.getAll(false).singleOrNull()
     }
     override val username = userProfile?.id
+
+    override val redirectUrl: String? by lazy {
+        queryParams("redirectUrl")
+    }
 
     override fun streamedResponse(contentType: String, work: (OutputStream) -> Unit)
     {
