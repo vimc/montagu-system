@@ -1,8 +1,9 @@
-import { expect } from "chai";
+import {expect} from "chai";
 import alt from "../../../main/shared/alt";
 import {
     mockCoverageSet,
-    mockExtendedResponsibility, mockExtendedResponsibilitySet,
+    mockExtendedResponsibility,
+    mockExtendedResponsibilitySet,
     mockModellingGroup,
     mockResponsibility,
     mockResponsibilitySet,
@@ -10,17 +11,16 @@ import {
     mockScenarioTouchstoneAndCoverageSets,
     mockTouchstone
 } from "../../mocks/mockModels";
-import { ExtendedResponsibilitySet } from "../../../main/contrib/models/ResponsibilitySet";
-import { touchstoneActions } from "../../../main/contrib/actions/TouchstoneActions";
-import { responsibilityActions } from "../../../main/contrib/actions/ResponsibilityActions";
-import { responsibilityStore } from "../../../main/contrib/stores/ResponsibilityStore";
-import { coverageSetActions } from "../../../main/contrib/actions/CoverageSetActions";
-import { coverageTokenActions } from "../../../main/contrib/actions/CoverageActions";
-import { modellingGroupActions } from "../../../main/shared/actions/ModellingGroupActions";
-import { makeLoadable } from "../../../main/contrib/stores/Loadable";
-import { ModellingGroup } from "../../../main/shared/models/Generated";
-import { estimateTokenActions } from "../../../main/contrib/actions/EstimateActions";
-import {runParameterActions} from "../../../main/contrib/actions/RunParameterActions";
+import {ExtendedResponsibilitySet} from "../../../main/contrib/models/ResponsibilitySet";
+import {touchstoneActions} from "../../../main/contrib/actions/TouchstoneActions";
+import {responsibilityActions} from "../../../main/contrib/actions/ResponsibilityActions";
+import {responsibilityStore} from "../../../main/contrib/stores/ResponsibilityStore";
+import {coverageSetActions} from "../../../main/contrib/actions/CoverageSetActions";
+import {coverageTokenActions} from "../../../main/contrib/actions/CoverageActions";
+import {modellingGroupActions} from "../../../main/shared/actions/ModellingGroupActions";
+import {makeLoadable} from "../../../main/contrib/stores/Loadable";
+import {ModellingGroup} from "../../../main/shared/models/Generated";
+import {estimateTokenActions} from "../../../main/contrib/actions/EstimateActions";
 
 describe("ResponsibilityStore", () => {
     beforeEach(() => {
@@ -312,25 +312,5 @@ describe("ResponsibilityStore", () => {
 
         const state = responsibilityStore.getState();
         expect(state.estimatesOneTimeToken).to.equal("TOKEN");
-    });
-
-
-    it("parameterTokenActions.clearUsedToken sets token to null", () => {
-        alt.bootstrap(JSON.stringify({
-            ResponsibilityStore: {
-                parametersOneTimeToken: "TOKEN",
-            }
-        }));
-        runParameterActions.clearUsedToken();
-
-        const state = responsibilityStore.getState();
-        expect(state.parametersOneTimeToken).to.equal(null);
-    });
-
-    it("parameterTokenActions.update sets the token", () => {
-        runParameterActions.update("TOKEN");
-
-        const state = responsibilityStore.getState();
-        expect(state.parametersOneTimeToken).to.equal("TOKEN");
     });
 });

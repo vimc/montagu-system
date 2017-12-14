@@ -5,6 +5,7 @@ import {RemoteContent} from "../../../../shared/models/RemoteContent";
 import {RemoteContentComponent} from "../../../../shared/components/RemoteContentComponent/RemoteContentComponent";
 import {responsibilityStore} from "../../../stores/ResponsibilityStore";
 import {UploadModelRunParametersForm} from "./UploadModelRunParametersForm";
+import {runParametersStore} from "../../../stores/RunParametersStore";
 
 export interface ModelRunParametersContentComponentProps extends RemoteContent {
     touchstone: Touchstone;
@@ -21,13 +22,14 @@ export class ModelRunParametersContentComponent extends RemoteContentComponent<M
 
     static getPropsFromStores(): ModelRunParametersContentComponentProps {
         const state = responsibilityStore.getState();
+        const runParameterState = runParametersStore.getState();
 
-        if (state.parametersOneTimeToken != null) {
+        if (runParameterState.oneTimeToken != null) {
             return {
                 ready: state.ready,
                 touchstone: state.currentTouchstone,
                 group: state.currentModellingGroup,
-                parametersToken: state.parametersOneTimeToken,
+                parametersToken: runParameterState.oneTimeToken,
                 diseases: Array.from(new Set([].concat.apply([],
                     state.responsibilitySets.map((set) => set.responsibilities.map(r => r.scenario.disease)))))
             };

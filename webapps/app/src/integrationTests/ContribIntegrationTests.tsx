@@ -24,6 +24,7 @@ import {demographicActions} from "../main/contrib/actions/DemographicActions";
 import {Form} from "../main/contrib/components/Responsibilities/BurdenEstimates/Form";
 import {shallow} from "enzyme";
 import {CreateBurdenEstimateSetForm} from "../main/contrib/components/Responsibilities/BurdenEstimates/CreateBurdenEstimateSetForm";
+import {runParametersStore} from "../main/contrib/stores/RunParametersStore";
 
 const jwt_decode = require('jwt-decode');
 
@@ -255,7 +256,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
 
             setTouchstoneAndGroup(touchstoneId, groupId);
 
-            const promise = responsibilityStore.fetchOneTimeParametersToken("/redirect/back");
+            const promise = runParametersStore.fetchOneTimeParametersToken("/redirect/back");
 
             checkPromise(done, promise, token => {
                 const decoded = jwt_decode(token);

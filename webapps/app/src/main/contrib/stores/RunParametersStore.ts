@@ -18,7 +18,7 @@ export interface RunParametersState {
     touchstoneId: string;
 }
 
-interface RunParametersStoreInterface extends AltJS.AltStore<RunParametersState> {
+export interface RunParametersStoreInterface extends AltJS.AltStore<RunParametersState> {
     fetchOneTimeParametersToken(redirectPath: string): Promise<string>;
     _fetchOneTimeParametersToken(): Promise<string>;
     fetchParameterSets(): Promise<ModelRunParameterSet[]>;
@@ -41,7 +41,7 @@ class RunParametersStore
             setGroup: modellingGroupActions.setCurrentGroup,
             setTouchstone: touchstoneActions.setCurrentTouchstone,
 
-            clearAll: runParameterActions.beginFetchParameterSets,
+            clearParameterSets: runParameterActions.beginFetchParameterSets,
             updateParameterSets: runParameterActions.updateParameterSets,
 
             updateParametersToken: runParameterActions.receiveToken,
@@ -67,15 +67,16 @@ class RunParametersStore
 
     setGroup(groupId: string) {
         this.groupId = groupId;
+        this.clearAll();
     }
 
     setTouchstone(touchstoneId: string) {
         this.touchstoneId = touchstoneId;
+        this.clearAll();
     }
 
-    clearAll(): void {
-        this.parameterSets = [];
-        this.oneTimeToken = null;
+    clearParameterSets() {
+        this.parameterSets = null;
     }
 
     updateParameterSets(parameterSets: ModelRunParameterSet[]) {
@@ -87,6 +88,11 @@ class RunParametersStore
     }
 
     clearUsedParametersToken() {
+        this.oneTimeToken = null;
+    }
+
+    clearAll(): void {
+        this.parameterSets = null;
         this.oneTimeToken = null;
     }
 }

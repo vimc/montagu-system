@@ -3,7 +3,7 @@ import AltStore = AltJS.AltStore;
 import { OneTimeToken } from "../main/report/models/OneTimeToken";
 import { oneTimeTokenStore } from "../main/report/stores/OneTimeTokenStore";
 
-export function bootstrapStore<TState, TInterface extends AltStore<TState>>(store: TInterface, state: TState) {
+export function bootstrapStore<TState, TInterface extends AltStore<TState>>(store: TInterface, state: Partial<TState>) {
     const data: any = {};
     const name = (store as any).displayName;
     data[name] = state;

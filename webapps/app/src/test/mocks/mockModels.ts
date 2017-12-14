@@ -1,8 +1,8 @@
 import * as models from "../../main/shared/models/Generated";
-import { ExtendedResponsibility, ExtendedResponsibilitySet } from "../../main/contrib/models/ResponsibilitySet";
-import { Version } from "../../main/shared/models/reports/Report";
-import { Artefact } from "../../main/shared/models/reports/Artefact";
-import { Report } from "../../main/shared/models/Generated";
+import {ExtendedResponsibility, ExtendedResponsibilitySet} from "../../main/contrib/models/ResponsibilitySet";
+import {Version} from "../../main/shared/models/reports/Report";
+import {Artefact} from "../../main/shared/models/reports/Artefact";
+import {Report} from "../../main/shared/models/Generated";
 
 let counter = 0;
 
@@ -39,7 +39,7 @@ export function mockModellingGroupDetails(properties?: any) {
         id: "group-" + counter,
         description: "Description",
         models: [],
-        members: [ "user.a" ]
+        members: ["user.a"]
     };
     return Object.assign(template, properties);
 }
@@ -53,6 +53,7 @@ export function mockResponsibility(properties?: any, scenario?: models.Scenario)
     };
     return Object.assign(template, properties);
 }
+
 export function mockExtendedResponsibility(properties?: any, scenarioProperties?: any): ExtendedResponsibility {
     const values = mockResponsibility(properties, scenarioProperties);
     return new ExtendedResponsibility(values);
@@ -73,7 +74,7 @@ export function mockTouchstone(properties?: any): models.Touchstone {
 export function mockResponsibilitySet(properties?: any,
                                       responsibilities?: Array<models.Responsibility>): models.Responsibilities {
     if (!responsibilities || responsibilities.length == 0) {
-        responsibilities = [ mockResponsibility(), mockResponsibility() ];
+        responsibilities = [mockResponsibility(), mockResponsibility()];
     }
 
     const template: models.Responsibilities = {
@@ -85,16 +86,13 @@ export function mockResponsibilitySet(properties?: any,
     return Object.assign(template, properties);
 }
 
-export function mockExtendedResponsibilitySet(
-    properties?: any,
-    responsibilities?: Array<models.Responsibility>,
-    touchstone?: models.Touchstone,
-    modellingGroup?: models.ModellingGroup
-): ExtendedResponsibilitySet
-{
+export function mockExtendedResponsibilitySet(properties?: any,
+                                              responsibilities?: Array<models.Responsibility>,
+                                              touchstone?: models.Touchstone,
+                                              modellingGroup?: models.ModellingGroup): ExtendedResponsibilitySet {
     touchstone = touchstone || mockTouchstone();
     modellingGroup = modellingGroup || mockModellingGroup();
-    properties = Object.assign(properties || {}, { touchstone: touchstone.id });
+    properties = Object.assign(properties || {}, {touchstone: touchstone.id});
     const values = mockResponsibilitySet(properties, responsibilities);
     return new ExtendedResponsibilitySet(values, touchstone, modellingGroup);
 }
@@ -111,17 +109,14 @@ export function mockCoverageSet(properties?: any): models.CoverageSet {
     return Object.assign(template, properties);
 }
 
-export function mockScenarioTouchstoneAndCoverageSets(
-    scenarioProperties?: any,
-    touchstoneProperties?: any,
-    coverageSets?: models.CoverageSet[]
-): models.ScenarioTouchstoneAndCoverageSets
-{
-    const touchstone =  mockTouchstone(touchstoneProperties);
+export function mockScenarioTouchstoneAndCoverageSets(scenarioProperties?: any,
+                                                      touchstoneProperties?: any,
+                                                      coverageSets?: models.CoverageSet[]): models.ScenarioTouchstoneAndCoverageSets {
+    const touchstone = mockTouchstone(touchstoneProperties);
     return {
         touchstone: touchstone,
         scenario: mockScenario(scenarioProperties),
-        coverage_sets: coverageSets || [ mockCoverageSet({ touchstone: touchstone.id }) ]
+        coverage_sets: coverageSets || [mockCoverageSet({touchstone: touchstone.id})]
     };
 }
 
@@ -140,7 +135,7 @@ export function mockUser(properties?: any): models.User {
         username: "mock.user" + counter,
         name: "Mockery Jones",
         email: "mock@example.com",
-        roles: [ mockRole(), mockRole() ],
+        roles: [mockRole(), mockRole()],
         last_logged_in: null
     }, properties);
 }
@@ -150,7 +145,7 @@ export function mockVersion(properties?: Partial<Version>): Version {
     const template: Version = {
         id: "vId",
         name: "testname",
-        displayname : "testdisplayname",
+        displayname: "testdisplayname",
         date: "2017-01-01",
         data: {},
         hash_data: {},
@@ -165,17 +160,17 @@ export function mockVersion(properties?: Partial<Version>): Version {
 export function mockArtefact(properties?: Partial<Artefact>): Artefact {
 
     const template: Artefact = {
-        filenames: [ "filename1.csv", "filename2.html" ],
+        filenames: ["filename1.csv", "filename2.html"],
         description: "description"
     };
 
     return Object.assign(template, properties);
 }
 
-export function mockReport(properties?: Partial<Report>): Report{
+export function mockReport(properties?: Partial<Report>): Report {
 
     const template: Report = {
-        name: "report" ,
+        name: "report",
         display_name: "display name",
         latest_version: "e62871eydhsjkh"
     };
@@ -200,12 +195,24 @@ export function mockBurdenEstimateSet(properties?: Partial<models.BurdenEstimate
         id: counter,
         problems: [],
         uploaded_by: "test.user",
-        uploaded_on : "2017-07-13 13:55:29 +0100",
+        uploaded_on: "2017-07-13 13:55:29 +0100",
         type: {
             type: "central-single-run",
             details: "Run number 64"
         },
         status: "complete"
+    };
+    return Object.assign(template, properties);
+}
+
+export function mockModelRunParameterSet(properties?: Partial<models.ModelRunParameterSet>): models.ModelRunParameterSet {
+    counter++;
+    const template: models.ModelRunParameterSet = {
+        id: counter,
+        description: "description",
+        model: "model-1",
+        uploaded_on: "2017-07-13 13:45:29 +0100",
+        uploaded_by: "test.user"
     };
     return Object.assign(template, properties);
 }
