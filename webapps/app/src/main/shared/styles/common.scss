@@ -4,11 +4,18 @@ select, input {
     font-size: inherit;
 }
 
+table tr th, .specialColumn td:first-child {
+    background-color: rgb(170, 224, 250);
+    font-weight: bold;
+    vertical-align: top;
+}
+
 table {
   @extend .table;
   @extend .table-responsive;
-  @extend .table-bordered;
+  @extend .table-bordered
 }
+
 
 fieldset {
     display: inline;
