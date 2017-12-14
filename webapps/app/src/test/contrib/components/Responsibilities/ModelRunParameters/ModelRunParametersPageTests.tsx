@@ -57,11 +57,10 @@ describe('ModelRunParameterPage', () => {
     });
 
     it("has correct meta data", () => {
-
         const page = new ModelRunParametersPage({location: location, router: null});
-        expect(page.name()).to.eql("Upload model run parameters");
+        expect(page.name()).to.eql("Model run parameters");
         expect(page.urlFragment()).to.eql("model-run-parameters");
-        expect(page.title().props).to.have.property("title", "Upload model run parameters");
+        expect(page.title().props).to.have.property("title", "Model run parameters");
 
     });
 

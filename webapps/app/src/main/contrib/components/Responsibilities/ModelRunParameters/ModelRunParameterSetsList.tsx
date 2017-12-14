@@ -26,7 +26,6 @@ export class ModelRunParameterSetsListComponent extends RemoteContentComponent<P
     renderContent(props: Props): JSX.Element {
         const items = props.sets.map(set => <tr>
             <td>{set.description}</td>
-            <td>{set.model}</td>
             <td>{set.uploaded_by}</td>
             <td>{longTimestamp(new Date(set.uploaded_on))}</td>
         </tr>);
@@ -34,7 +33,6 @@ export class ModelRunParameterSetsListComponent extends RemoteContentComponent<P
             <thead>
             <tr>
                 <th scope="col">Description</th>
-                <th scope="col">Model</th>
                 <th scope="col">Uploaded by</th>
                 <th scope="col">Uploaded on</th>
             </tr>
