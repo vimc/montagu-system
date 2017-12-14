@@ -6,7 +6,8 @@ select, input {
 
 table {
   @extend .table;
-  @extend .table-bordered
+  @extend .table-responsive;
+  @extend .table-bordered;
 }
 
 fieldset {
