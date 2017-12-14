@@ -5,16 +5,14 @@ import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.fail
 import org.junit.Test
 import org.vaccineimpact.api.app.context.ActionContext
-import org.vaccineimpact.api.app.controllers.NewStyleOneTimeLinkController
+import org.vaccineimpact.api.app.controllers.UserController
 import org.vaccineimpact.api.app.models.CreateUser
-import org.vaccineimpact.api.app.repositories.TokenRepository
 import org.vaccineimpact.api.app.repositories.UserRepository
+import org.vaccineimpact.api.app.security.OneTimeTokenGenerator
 import org.vaccineimpact.api.emails.EmailManager
 import org.vaccineimpact.api.emails.NewUserEmail
 import org.vaccineimpact.api.emails.getEmailManager
-import org.vaccineimpact.api.security.WebTokenHelper
 import org.vaccineimpact.api.test_helpers.MontaguTests
-import java.time.Duration
 
 class CreateUserTests : MontaguTests()
 {
@@ -22,11 +20,6 @@ class CreateUserTests : MontaguTests()
     private val name = "Full name"
     private val username = "user.name"
     private val email = "email@example.com"
-
-    private val tokenHelperThatCanGenerateOnetimeTokens = mock<WebTokenHelper> {
-        on { generateOneTimeActionToken(any(), any(), anyOrNull(), any(), any()) } doReturn fakeToken
-        on { oneTimeLinkLifeSpan } doReturn Duration.ofSeconds(30)
-    }
 
     @Test
     fun `can create user`()
@@ -65,7 +58,6 @@ class CreateUserTests : MontaguTests()
 
     private fun postToUserCreate(
             userRepo: UserRepository = mock<UserRepository>(),
-            tokenRepo: TokenRepository = mock<TokenRepository>(),
             emailManager: EmailManager = getEmailManager()
     ): String
     {
@@ -74,12 +66,15 @@ class CreateUserTests : MontaguTests()
             on { postData(CreateUser::class.java) } doReturn model
         }
 
-        val sut = NewStyleOneTimeLinkController(context,
-                tokenRepo,
+        val tokenGenerator = mock<OneTimeTokenGenerator> {
+            on { getOneTimeLinkToken(any(), any(), anyOrNull(), anyOrNull(), any(), any()) } doReturn fakeToken
+        }
+        val sut = UserController(context,
                 userRepo,
-                emailManager, tokenHelperThatCanGenerateOnetimeTokens)
+                tokenGenerator,
+                emailManager)
 
-        return sut.createUserAndGetPasswordLink()
+        return sut.createUser()
     }
 
 }

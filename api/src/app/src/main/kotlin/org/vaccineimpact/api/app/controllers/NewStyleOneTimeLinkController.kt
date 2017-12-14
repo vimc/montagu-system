@@ -17,31 +17,21 @@ import org.vaccineimpact.api.emails.NewUserEmail
 import org.vaccineimpact.api.emails.PasswordSetEmail
 import org.vaccineimpact.api.emails.getEmailManager
 import org.vaccineimpact.api.models.helpers.OneTimeAction
-import org.vaccineimpact.api.security.KeyHelper
-import org.vaccineimpact.api.security.WebTokenHelper
-import org.vaccineimpact.api.serialization.MontaguSerializer
-import org.vaccineimpact.api.serialization.Serializer
-import java.time.Duration
 
 class NewStyleOneTimeLinkController(
         context: ActionContext,
-        private val tokenRepository: TokenRepository,
-        private val userRepository: UserRepository,
-        private val emailManager: EmailManager = getEmailManager(),
-        private val tokenHelper: WebTokenHelper = WebTokenHelper(KeyHelper.keyPair),
-        private val serializer: Serializer = MontaguSerializer.instance,
-        private val redirectValidator: RedirectValidator = RedirectValidator())
+        private val oneTimeTokenGenerator: OneTimeTokenGenerator)
     : Controller(context)
 {
     constructor(context: ActionContext, repositories: Repositories)
-            : this(context, repositories.token, repositories.user)
+            : this(context, OneTimeTokenGenerator(repositories.token))
 
 
     private val logger: Logger = LoggerFactory.getLogger(NewStyleOneTimeLinkController::class.java)
 
     fun getTokenForDemographicData(): String
     {
-        return getOneTimeLinkToken(OneTimeAction.DEMOGRAPHY)
+        return oneTimeTokenGenerator.getOneTimeLinkToken(OneTimeAction.DEMOGRAPHY, context)
     }
 
     fun createUserAndGetPasswordLink(): String

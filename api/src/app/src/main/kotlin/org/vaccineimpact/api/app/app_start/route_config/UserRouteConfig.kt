@@ -9,7 +9,6 @@ import spark.route.HttpMethod
 object UserRouteConfig : RouteConfig
 {
     private val controller = UserController::class
-    private val onetimeLinkController = NewStyleOneTimeLinkController::class
     private val urlBase = "/users/"
 
     private val readRoles = setOf("*/roles.read")
@@ -26,7 +25,7 @@ object UserRouteConfig : RouteConfig
             Endpoint(urlBase, controller, "getUsers")
                     .json()
                     .secure(readUsers),
-            Endpoint(urlBase, onetimeLinkController, "createUserAndGetPasswordLink", method = HttpMethod.post)
+            Endpoint(urlBase, controller, "createUser", method = HttpMethod.post)
                     .json()
                     .secure(createUsers),
             Endpoint("$urlBase:username/actions/associate_role/", controller, "modifyUserRole", method = HttpMethod.post)

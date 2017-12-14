@@ -21,6 +21,8 @@ interface ActionContext
      */
     val username: String?
 
+    val redirectUrl: String?
+
     fun contentType(): String
 
     fun queryParams(key: String): String?

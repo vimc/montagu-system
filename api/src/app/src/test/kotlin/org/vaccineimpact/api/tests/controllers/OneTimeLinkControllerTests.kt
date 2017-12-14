@@ -6,6 +6,7 @@ import org.junit.Test
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.ErrorHandler
 import org.vaccineimpact.api.app.context.OneTimeLinkActionContext
+import org.vaccineimpact.api.app.MontaguRedirectValidator
 import org.vaccineimpact.api.app.RedirectValidator
 import org.vaccineimpact.api.app.controllers.ControllerContext
 import org.vaccineimpact.api.app.controllers.MontaguControllers

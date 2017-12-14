@@ -43,7 +43,7 @@ class GetResponsibilitiesTests : ModellingGroupRepositoryTests()
         } check { repo ->
             val set = repo.getResponsibilities("group", "touchstone-1", ScenarioFilterParameters()).responsibilities
             assertThat(set.touchstone).isEqualTo("touchstone-1")
-            assertThat(set.status).isNull()
+            assertThat(set.status).isEqualTo(ResponsibilitySetStatus.NOT_APPLICABLE)
             assertThat(set.problems).isEmpty()
             assertThat(set).isEmpty()
         }

@@ -8,8 +8,8 @@ import org.junit.Test
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.controllers.UserController
 import org.vaccineimpact.api.app.errors.MissingRequiredPermissionError
-import org.vaccineimpact.api.app.repositories.TokenRepository
 import org.vaccineimpact.api.app.repositories.UserRepository
+import org.vaccineimpact.api.app.security.OneTimeTokenGenerator
 import org.vaccineimpact.api.models.Scope
 import org.vaccineimpact.api.models.permissions.AssociateRole
 import org.vaccineimpact.api.models.permissions.PermissionSet
@@ -31,7 +31,7 @@ class AssociateRoleTests : MontaguTests()
             on { permissions } doReturn PermissionSet()
         }
 
-        val sut = UserController(mockActionContext, mockUserRepo)
+        val sut = UserController(mockActionContext, mockUserRepo, mock<OneTimeTokenGenerator>())
 
         assertThatThrownBy {
             sut.modifyUserRole()
@@ -49,7 +49,7 @@ class AssociateRoleTests : MontaguTests()
                     Scope.parse("modelling-group:Someone-Else"))))
         }
 
-        val sut = UserController(mockActionContext, mock<UserRepository>())
+        val sut = UserController(mockActionContext, mock<UserRepository>(), mock<OneTimeTokenGenerator>())
 
         assertThatThrownBy {
             sut.modifyUserRole()
@@ -67,7 +67,7 @@ class AssociateRoleTests : MontaguTests()
                     Scope.parse("modelling-group:IC-Garske"))))
         }
 
-        val sut = UserController(mockActionContext, mock<UserRepository>())
+        val sut = UserController(mockActionContext, mock<UserRepository>(), mock<OneTimeTokenGenerator>())
 
         assertThatThrownBy {
             sut.modifyUserRole()
@@ -85,7 +85,7 @@ class AssociateRoleTests : MontaguTests()
                     Scope.parse("modelling-group:IC-Garske"))))
         }
 
-        val sut = UserController(mockActionContext, mock<UserRepository>())
+        val sut = UserController(mockActionContext, mock<UserRepository>(), mock<OneTimeTokenGenerator>())
 
         val result = sut.modifyUserRole()
         assertThat(result).isEqualTo("OK")
