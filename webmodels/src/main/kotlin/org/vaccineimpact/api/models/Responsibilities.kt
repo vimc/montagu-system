@@ -28,6 +28,7 @@ data class Responsibility(
 
 enum class ResponsibilitySetStatus
 {
+    NOT_APPLICABLE,
     INCOMPLETE,
     SUBMITTED,
     APPROVED
