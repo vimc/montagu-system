@@ -2,6 +2,7 @@ import * as React from "react";
 import { Sandbox } from "../../../Sandbox";
 import * as mocks from "../../../mocks/mocks";
 import { shallow } from "enzyme";
+
 import { expect } from "chai";
 import { mockExtendedResponsibilitySet, mockResponsibility, mockScenario } from "../../../mocks/mockModels";
 

@@ -1,6 +1,7 @@
 import * as React from "react";
 import { expect } from "chai";
 import { shallow } from "enzyme";
+
 import { OneTimeButton } from "../../../main/shared/components/OneTimeButton";
 import { OneTimeButtonTimeBlocker } from "../../../main/shared/components/OneTimeButtonTimeBlocker";
 import { TimeBlockerProps } from "../../../main/shared/components/OneTimeButtonTimeBlocker";
@@ -37,11 +38,13 @@ describe("OneTimeButtonTimeBlocker", () => {
 
     it("calling method buttonClicked sets state prop enabled to false then to true in 100ms", function(done: DoneCallback) {
         this.timeout(120);
+        let reference :any = null;
         const component = shallow(<ButtonWithTimeout
             token="TOKEN"
             refreshToken={doNothing}
             disableDuration={100}
             enabled={true}
+            onRef={ref => (reference = ref)}
         />);
         const instance = component.instance() as any;
         expect(component.state().enabled).to.be.equal(true);
@@ -61,7 +64,9 @@ describe("OneTimeButtonTimeBlocker", () => {
             refreshToken={doNothing}
             disableDuration={100}
             enabled={true}
+            onRef={ref => (reference = ref)}
         />);
+        let reference :any = null;
         const instance = component.instance() as any;
         expect(component.state().enabled).to.be.equal(true)
         instance.buttonClicked();

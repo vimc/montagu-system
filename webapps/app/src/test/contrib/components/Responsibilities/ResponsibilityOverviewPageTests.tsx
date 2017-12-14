@@ -2,6 +2,7 @@ import * as React from "react";
 import {Sandbox} from "../../../Sandbox";
 import {expect} from "chai";
 import {shallow} from "enzyme";
+
 import {mockLocation, setupMainStore} from "../../../mocks/mocks";
 import {expectOneAction} from "../../../actionHelpers";
 
