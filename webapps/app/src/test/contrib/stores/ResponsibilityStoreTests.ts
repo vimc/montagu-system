@@ -20,7 +20,7 @@ import { modellingGroupActions } from "../../../main/shared/actions/ModellingGro
 import { makeLoadable } from "../../../main/contrib/stores/Loadable";
 import { ModellingGroup } from "../../../main/shared/models/Generated";
 import { estimateTokenActions } from "../../../main/contrib/actions/EstimateActions";
-import {modelParameterActions} from "../../../main/contrib/actions/RunParameterActions";
+import {runParameterActions} from "../../../main/contrib/actions/RunParameterActions";
 
 describe("ResponsibilityStore", () => {
     beforeEach(() => {
@@ -321,14 +321,14 @@ describe("ResponsibilityStore", () => {
                 parametersOneTimeToken: "TOKEN",
             }
         }));
-        modelParameterActions.clearUsedToken();
+        runParameterActions.clearUsedToken();
 
         const state = responsibilityStore.getState();
         expect(state.parametersOneTimeToken).to.equal(null);
     });
 
     it("parameterTokenActions.update sets the token", () => {
-        modelParameterActions.update("TOKEN");
+        runParameterActions.update("TOKEN");
 
         const state = responsibilityStore.getState();
         expect(state.parametersOneTimeToken).to.equal("TOKEN");

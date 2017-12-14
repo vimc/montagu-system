@@ -11,7 +11,7 @@ interface Actions {
     updateParameterSets(parameterSets: ModelRunParameterSet[]): ModelRunParameterSet[];
 }
 
-class ModelParameterActions extends AbstractActions implements Actions {
+class RunParameterActions extends AbstractActions implements Actions {
     receiveToken(token: string): string {
         return token;
     }
@@ -30,4 +30,4 @@ class ModelParameterActions extends AbstractActions implements Actions {
     }
 }
 
-export const modelParameterActions = alt.createActions<Actions>(ModelParameterActions);
+export const runParameterActions = alt.createActions<Actions>(RunParameterActions);

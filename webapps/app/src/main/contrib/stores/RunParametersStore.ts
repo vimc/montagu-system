@@ -2,7 +2,7 @@ import * as AltJS from "alt";
 import {AbstractStore} from "../../shared/stores/AbstractStore";
 import alt from "../../shared/alt";
 import {ModelRunParameterSet} from "../../shared/models/Generated";
-import {modelParameterActions} from "../actions/RunParameterActions";
+import {runParameterActions} from "../actions/RunParameterActions";
 import {RunParametersSource} from "../sources/RunParametersSource";
 import StoreModel = AltJS.StoreModel;
 import {touchstoneActions} from "../actions/TouchstoneActions";
@@ -41,11 +41,11 @@ class RunParametersStore
             setGroup: modellingGroupActions.setCurrentGroup,
             setTouchstone: touchstoneActions.setCurrentTouchstone,
 
-            clearAll: modelParameterActions.beginFetchParameterSets,
-            updateParameterSets: modelParameterActions.updateParameterSets,
+            clearAll: runParameterActions.beginFetchParameterSets,
+            updateParameterSets: runParameterActions.updateParameterSets,
 
-            updateParametersToken: modelParameterActions.receiveToken,
-            clearUsedParametersToken: modelParameterActions.clearUsedToken
+            updateParametersToken: runParameterActions.receiveToken,
+            clearUsedParametersToken: runParameterActions.clearUsedToken
         });
         this.exportPublicMethods({
             fetchOneTimeParametersToken: (redirectPath: string) => {

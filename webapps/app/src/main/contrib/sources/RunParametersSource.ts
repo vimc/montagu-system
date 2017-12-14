@@ -1,5 +1,5 @@
 import SourceModel = AltJS.SourceModel;
-import {modelParameterActions} from "../actions/RunParameterActions";
+import {runParameterActions} from "../actions/RunParameterActions";
 import {Source} from "../../shared/sources/Source";
 import {ModelRunParameterSet} from "../../shared/models/Generated";
 import {RunParametersState} from "../stores/RunParametersStore";
@@ -16,16 +16,16 @@ export class RunParametersSource extends Source<RunParametersState> {
                     + `${state.touchstoneId}/get_onetime_link/${queryString}`;
             },
             {
-                success: modelParameterActions.receiveToken,
-                loading: modelParameterActions.beginFetchToken,
+                success: runParameterActions.receiveToken,
+                loading: runParameterActions.beginFetchToken,
                 isCached: () => false   // Always get a fresh token
             }
         );
         this.fetchParameterSets = () => this.doFetch(
             s => `/modelling-groups/${s.groupId}/model-run-parameters/${s.touchstoneId}/`,
             {
-                success: modelParameterActions.updateParameterSets,
-                loading: modelParameterActions.beginFetchParameterSets,
+                success: runParameterActions.updateParameterSets,
+                loading: runParameterActions.beginFetchParameterSets,
                 isCached: s => s.parameterSets != null
             }
         );
