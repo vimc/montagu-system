@@ -20,7 +20,7 @@ import { modellingGroupActions } from "../../../main/shared/actions/ModellingGro
 import { makeLoadable } from "../../../main/contrib/stores/Loadable";
 import { ModellingGroup } from "../../../main/shared/models/Generated";
 import { estimateTokenActions } from "../../../main/contrib/actions/EstimateActions";
-import {modelParameterActions} from "../../../main/contrib/actions/ModelParameterActions";
+import {modelParameterActions} from "../../../main/contrib/actions/RunParameterActions";
 
 describe("ResponsibilityStore", () => {
     beforeEach(() => {
