@@ -7,9 +7,10 @@ import {DownloadDataTitle} from "../DownloadDataTitle";
 import {ContribPageWithHeader} from "../../PageWithHeader/ContribPageWithHeader";
 import {IPageWithParent} from "../../../../shared/models/Breadcrumb";
 import {ResponsibilityOverviewPage} from "../Overview/ResponsibilityOverviewPage";
-import {ModelRunParametersContent} from "./ModelRunParametersContent";
 import {runParametersStore} from "../../../stores/RunParametersStore";
 import {runParameterActions} from "../../../actions/RunParameterActions";
+import {ModelRunParameterSetsList} from "./ModelRunParameterSetsList";
+import {ModelRunParameterUploadSection} from "./ModelRunParameterUploadSection";
 
 export interface ModelRunParametersProps {
     groupId: string;
@@ -46,6 +47,9 @@ export class ModelRunParametersPage extends ContribPageWithHeader<ModelRunParame
     }
 
     renderPageContent() {
-        return <ModelRunParametersContent />
+        return <div className="mt-2">
+            <ModelRunParameterSetsList />
+            <ModelRunParameterUploadSection />
+        </div>;
     }
 }

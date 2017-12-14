@@ -2,17 +2,15 @@ import * as React from "react";
 import {expect} from "chai";
 import {Sandbox} from "../../../../Sandbox";
 import {shallow} from "enzyme";
-import {
-    ModelRunParametersContent
-} from "../../../../../main/contrib/components/Responsibilities/ModelRunParameters/ModelRunParametersContent";
 import {UploadModelRunParametersForm} from "../../../../../main/contrib/components/Responsibilities/ModelRunParameters/UploadModelRunParametersForm";
 import {
     mockModellingGroup, mockResponsibilitySet,
     mockTouchstone
 } from "../../../../mocks/mockModels";
 import alt from "../../../../../main/shared/alt";
+import {ModelRunParameterUploadSectionComponent} from "../../../../../main/contrib/components/Responsibilities/ModelRunParameters/ModelRunParameterUploadSection";
 
-describe("ModelRunParametersContent", () => {
+describe("ModelRunParameterUploadSectionTests", () => {
     const sandbox = new Sandbox();
 
     afterEach(() => {
@@ -36,7 +34,7 @@ describe("ModelRunParametersContent", () => {
             }
         }));
 
-        const props = ModelRunParametersContent.getPropsFromStores();
+        const props = ModelRunParameterUploadSectionComponent.getPropsFromStores();
         expect(props).to.eql({
             diseases:  ["disease-id"],
             group: group,
@@ -62,7 +60,7 @@ describe("ModelRunParametersContent", () => {
             }
         }));
 
-        const props = ModelRunParametersContent.getPropsFromStores();
+        const props = ModelRunParameterUploadSectionComponent.getPropsFromStores();
         expect(props).to.eql({
             diseases:  [],
             group: null,
@@ -81,7 +79,7 @@ describe("ModelRunParametersContent", () => {
             ready: true
         };
 
-        const rendered = shallow(<ModelRunParametersContent {...props} />);
+        const rendered = shallow(<ModelRunParameterUploadSectionComponent {...props} />);
         expect(rendered.find(UploadModelRunParametersForm).props()).to.eql({
             token: "TOKEN",
             diseases:  ["disease-1", "disease-2"],
