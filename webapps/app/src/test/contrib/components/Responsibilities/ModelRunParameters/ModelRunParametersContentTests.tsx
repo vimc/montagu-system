@@ -28,9 +28,11 @@ describe("ModelRunParametersContent", () => {
             ResponsibilityStore: {
                 currentTouchstone: touchstone,
                 currentModellingGroup: group,
-                parametersOneTimeToken: "token",
                 responsibilitySets: [ mockResponsibilitySet(), mockResponsibilitySet()],
                 ready: true
+            },
+            RunParametersStore: {
+                oneTimeToken: "token"
             }
         }));
 
