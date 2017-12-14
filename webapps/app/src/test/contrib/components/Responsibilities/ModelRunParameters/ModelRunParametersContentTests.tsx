@@ -3,7 +3,7 @@ import {expect} from "chai";
 import {Sandbox} from "../../../../Sandbox";
 import {shallow} from "enzyme";
 import {
-    ModelRunParametersContentComponent
+    ModelRunParametersContent
 } from "../../../../../main/contrib/components/Responsibilities/ModelRunParameters/ModelRunParametersContent";
 import {UploadModelRunParametersForm} from "../../../../../main/contrib/components/Responsibilities/ModelRunParameters/UploadModelRunParametersForm";
 import {
@@ -36,7 +36,7 @@ describe("ModelRunParametersContent", () => {
             }
         }));
 
-        const props = ModelRunParametersContentComponent.getPropsFromStores();
+        const props = ModelRunParametersContent.getPropsFromStores();
         expect(props).to.eql({
             diseases:  ["disease-id"],
             group: group,
@@ -62,7 +62,7 @@ describe("ModelRunParametersContent", () => {
             }
         }));
 
-        const props = ModelRunParametersContentComponent.getPropsFromStores();
+        const props = ModelRunParametersContent.getPropsFromStores();
         expect(props).to.eql({
             diseases:  [],
             group: null,
@@ -81,7 +81,7 @@ describe("ModelRunParametersContent", () => {
             ready: true
         };
 
-        const rendered = shallow(<ModelRunParametersContentComponent {...props} />);
+        const rendered = shallow(<ModelRunParametersContent {...props} />);
         expect(rendered.find(UploadModelRunParametersForm).props()).to.eql({
             token: "TOKEN",
             diseases:  ["disease-1", "disease-2"],

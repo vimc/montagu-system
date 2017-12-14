@@ -1,63 +1,12 @@
 import * as React from "react";
-import {connectToStores} from "../../../../shared/alt";
-import {ModellingGroup, ModelRunParameterSet, Touchstone} from "../../../../shared/models/Generated";
-import {RemoteContent} from "../../../../shared/models/RemoteContent";
-import {RemoteContentComponent} from "../../../../shared/components/RemoteContentComponent/RemoteContentComponent";
-import {responsibilityStore} from "../../../stores/ResponsibilityStore";
-import {UploadModelRunParametersForm} from "./UploadModelRunParametersForm";
 import {ModelRunParameterSetsList} from "./ModelRunParameterSetsList";
-import {runParametersStore} from "../../../stores/RunParametersStore";
+import {ModelRunParameterUploadSection} from "./ModelRunParameterUploadSection";
 
-export interface ModelRunParametersContentComponentProps extends RemoteContent {
-    touchstone: Touchstone;
-    group: ModellingGroup;
-    parametersToken: string;
-    diseases: string[];
-}
-
-export class ModelRunParametersContentComponent extends RemoteContentComponent<ModelRunParametersContentComponentProps, undefined> {
-
-    static getStores() {
-        return [responsibilityStore, runParametersStore];
-    }
-
-    static getPropsFromStores(): ModelRunParametersContentComponentProps {
-        const state = responsibilityStore.getState();
-        const runParameterState = runParametersStore.getState();
-
-        if (runParameterState.oneTimeToken != null) {
-            return {
-                ready: state.ready,
-                touchstone: state.currentTouchstone,
-                group: state.currentModellingGroup,
-                parametersToken: runParameterState.oneTimeToken,
-                diseases: Array.from(new Set([].concat.apply([],
-                    state.responsibilitySets.map((set) => set.responsibilities.map(r => r.scenario.disease)))))
-            };
-        } else {
-            return {
-                ready: false,
-                touchstone: null,
-                group: null,
-                parametersToken: null,
-                diseases: []
-            };
-        }
-    }
-
-    renderContent(props: ModelRunParametersContentComponentProps) {
-
+export class ModelRunParametersContent extends React.Component<undefined, undefined> {
+    render(): JSX.Element {
         return <div className="mt-2">
-            <div className="sectionTitle">All parameter sets for {props.touchstone.description}</div>
             <ModelRunParameterSetsList />
-            <div className="sectionTitle">Upload a new parameter set</div>
-            <UploadModelRunParametersForm groupId={props.group.id}
-                                          token={props.parametersToken}
-                                          diseases={props.diseases}
-                                          touchstoneId={props.touchstone.id}
-            />
+            <ModelRunParameterUploadSection />
         </div>;
     }
 }
-
-export const ModelRunParametersContent = connectToStores(ModelRunParametersContentComponent);
