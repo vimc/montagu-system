@@ -12,14 +12,13 @@ import spark.route.HttpMethod
 object PasswordRouteConfig : RouteConfig
 {
     private val controller = PasswordController::class
-    private val onetimeLinkController = NewStyleOneTimeLinkController::class
     private val urlBase = "/password"
 
     override val endpoints: List<EndpointDefinition> = listOf(
             Endpoint("$urlBase/set/", controller, "setPassword")
                     .json()
                     .secure(),
-            Endpoint("$urlBase/request_link/", onetimeLinkController, "requestResetPasswordLink")
+            Endpoint("$urlBase/request_link/", controller, "requestResetPasswordLink")
                     .json()
     )
 }

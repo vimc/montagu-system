@@ -8,6 +8,7 @@ import org.vaccineimpact.api.app.controllers.PasswordController
 import org.vaccineimpact.api.app.controllers.TouchstoneController
 import org.vaccineimpact.api.app.controllers.endpoints.stream
 import org.vaccineimpact.api.app.repositories.RepositoryFactory
+import org.vaccineimpact.api.app.security.OneTimeTokenGenerator
 import org.vaccineimpact.api.models.helpers.OneTimeAction
 import org.vaccineimpact.api.serialization.Deserializer
 
@@ -46,8 +47,8 @@ data class OneTimeLink(val action: OneTimeAction,
                     )
                     OneTimeAction.MODEl_RUN_PARAMETERS -> controllers.modellingGroup.addModelRunParameters(context, repos.burdenEstimates)
                     OneTimeAction.COVERAGE -> stream(controllers.modellingGroup.getCoverageData(context, repos.modellingGroup), context)
-                    OneTimeAction.DEMOGRAPHY -> stream(TouchstoneController(context, repos.touchstone).getDemographicData(), context)
-                    OneTimeAction.SET_PASSWORD -> PasswordController(context, repos.user).setPasswordForUser(context.params("username"))
+                    OneTimeAction.DEMOGRAPHY -> stream(TouchstoneController(context, repos).getDemographicData(), context)
+                    OneTimeAction.SET_PASSWORD -> PasswordController(context, repos).setPasswordForUser(context.params("username"))
                 }
             }
         }

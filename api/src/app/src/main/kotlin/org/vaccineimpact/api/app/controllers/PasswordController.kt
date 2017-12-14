@@ -1,20 +1,32 @@
 package org.vaccineimpact.api.app.controllers
 
+import org.slf4j.LoggerFactory
 import org.vaccineimpact.api.app.app_start.Controller
 import org.vaccineimpact.api.app.context.ActionContext
-import org.vaccineimpact.api.app.models.SetPassword
 import org.vaccineimpact.api.app.context.postData
+import org.vaccineimpact.api.app.errors.MissingRequiredParameterError
+import org.vaccineimpact.api.app.models.SetPassword
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.UserRepository
+import org.vaccineimpact.api.app.security.OneTimeTokenGenerator
+import org.vaccineimpact.api.emails.EmailManager
+import org.vaccineimpact.api.emails.PasswordSetEmail
+import org.vaccineimpact.api.emails.getEmailManager
+import org.vaccineimpact.api.models.helpers.OneTimeAction
+import java.time.Duration
 
 open class PasswordController(
         context: ActionContext,
-        val userRepository: UserRepository
-) : Controller(context)
+        private val userRepository: UserRepository,
+        private val oneTimeTokenGenerator: OneTimeTokenGenerator,
+        private val emailManager: EmailManager = getEmailManager()
+        ) : Controller(context)
 {
 
     constructor(context: ActionContext, repositories: Repositories)
-            : this(context, repositories.user)
+            : this(context, repositories.user, OneTimeTokenGenerator(repositories.token))
+
+    private val logger = LoggerFactory.getLogger(PasswordController::class.java)
 
     fun setPassword(): String
     {
@@ -28,4 +40,35 @@ open class PasswordController(
         userRepository.setPassword(username, password)
         return okayResponse()
     }
+
+    fun requestResetPasswordLink(): String
+    {
+        val address = context.queryParams("email")
+                ?: throw MissingRequiredParameterError("email")
+        val user = userRepository.getMontaguUserByEmail(address)
+        if (user != null)
+        {
+            val token = getSetPasswordToken(user.username)
+            val email = PasswordSetEmail(token, user.name)
+            emailManager.sendEmail(email, user)
+        }
+        else
+        {
+            logger.warn("Requested set password email for unknown user '$address'")
+        }
+        return okayResponse()
+    }
+
+    private fun getSetPasswordToken(username: String): String
+    {
+        val params = mapOf(":username" to username)
+        return oneTimeTokenGenerator.getOneTimeLinkToken(
+                OneTimeAction.SET_PASSWORD,
+                queryString = null,
+                redirectUrl = null,
+                username = username,
+                params = params,
+                duration = Duration.ofDays(1))
+    }
+
 }

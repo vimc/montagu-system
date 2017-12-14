@@ -4,18 +4,19 @@ import com.nhaarman.mockito_kotlin.*
 import org.assertj.core.api.Assertions.*
 import org.junit.Test
 import org.vaccineimpact.api.app.context.ActionContext
-import org.vaccineimpact.api.app.controllers.NewStyleOneTimeLinkController
 import org.vaccineimpact.api.app.controllers.PasswordController
 import org.vaccineimpact.api.app.errors.MissingRequiredParameterError
 import org.vaccineimpact.api.app.models.SetPassword
-import org.vaccineimpact.api.app.repositories.TokenRepository
 import org.vaccineimpact.api.app.repositories.UserRepository
+import org.vaccineimpact.api.app.security.OneTimeTokenGenerator
 import org.vaccineimpact.api.emails.EmailManager
 import org.vaccineimpact.api.emails.PasswordSetEmail
+import org.vaccineimpact.api.models.helpers.OneTimeAction
 import org.vaccineimpact.api.security.MontaguUser
 import org.vaccineimpact.api.security.UserProperties
 import org.vaccineimpact.api.security.WebTokenHelper
 import org.vaccineimpact.api.test_helpers.MontaguTests
+import java.time.Duration
 
 class PasswordControllerTests : MontaguTests()
 {
@@ -24,12 +25,13 @@ class PasswordControllerTests : MontaguTests()
     fun `can set password`()
     {
         val repo = mock<UserRepository>()
+        val oneTimeTokenGenerator = mock<OneTimeTokenGenerator>()
         val model = SetPassword("new_password")
         val context = mock<ActionContext> {
             on { postData(SetPassword::class.java) } doReturn model
             on { username } doReturn "thisUser"
         }
-        val sut = PasswordController(context, repo)
+        val sut = PasswordController(context, repo, oneTimeTokenGenerator)
         val response = sut.setPassword()
         verify(repo).setPassword("thisUser", "new_password")
         assertThat(response).isEqualTo("OK")
@@ -40,8 +42,14 @@ class PasswordControllerTests : MontaguTests()
     {
         val emailManager = mock<EmailManager>()
 
-        val sut = NewStyleOneTimeLinkController(context, mock<TokenRepository>(),
-                userRepo, emailManager, tokenHelper)
+        val tokenGenerator = mock<OneTimeTokenGenerator>() {
+            on {
+                getOneTimeLinkToken(OneTimeAction.SET_PASSWORD,
+                        mapOf(":username" to user.username),
+                        null, null, user.username, Duration.ofDays(1))
+            } doReturn "TOKEN"
+        }
+        val sut = PasswordController(context, userRepo, tokenGenerator, emailManager)
 
         assertThat(sut.requestResetPasswordLink()).isEqualTo("OK")
         verify(emailManager).sendEmail(check {
@@ -64,8 +72,8 @@ class PasswordControllerTests : MontaguTests()
         val context = mock<ActionContext> {
             on { queryParams("email") } doReturn "unknown@example.com"
         }
-        val sut = NewStyleOneTimeLinkController(context, mock<TokenRepository>(),
-                userRepo, emailManager, tokenHelper)
+        val sut = PasswordController(context, mock<UserRepository>(),
+                mock<OneTimeTokenGenerator>())
         assertThat(sut.requestResetPasswordLink()).isEqualTo("OK")
         verify(emailManager, never()).sendEmail(any(), any())
     }
@@ -75,8 +83,8 @@ class PasswordControllerTests : MontaguTests()
     {
         val emailManager = mock<EmailManager>()
         val context = mock<ActionContext>()
-        val sut = NewStyleOneTimeLinkController(context, mock<TokenRepository>(),
-                userRepo, emailManager, tokenHelper)
+        val sut = PasswordController(context, mock<UserRepository>(),
+                mock<OneTimeTokenGenerator>())
 
         assertThatThrownBy { sut.requestResetPasswordLink() }
                 .isInstanceOf(MissingRequiredParameterError::class.java)
