@@ -11,6 +11,7 @@ import { ButtonLink } from "../../../../shared/components/ButtonLink";
 
 import "../../../../shared/styles/common.scss";
 import "../../../../shared/styles/messages.scss";
+import {ResponsibilitySetStatusMessage} from "./ResponsibilitySetStatusMessage";
 
 export interface ResponsibilityOverviewComponentProps extends RemoteContent {
     responsibilitySet: IExtendedResponsibilitySet;
@@ -36,14 +37,8 @@ export class ResponsibilityOverviewContentComponent extends RemoteContentCompone
 
     renderContent(props: ResponsibilityOverviewComponentProps) {
         const demographyUrl = `/${props.modellingGroup.id}/responsibilities/${props.responsibilitySet.touchstone.id}/demographics/`;
-        const supportEmail = `mailto:${settings.supportContact}`;
-        const helperText = this.props.responsibilitySet.status  != "incomplete" ?
-            <div className="info">The burden estimates uploaded by your modelling group have been reviewed and approved.
-                You cannot upload any new estimates. If you need to upload new estimates (e.g. for corrections) please contact us <a href={ supportEmail }>here</a>.
-            </div>
-        : "";
         return <div>
-            {helperText}
+            <ResponsibilitySetStatusMessage status={this.props.responsibilitySet.status} />
             <div className="largeSectionTitle">Demographic data</div>
             <div className="gapAbove">
                 <ButtonLink href={ demographyUrl }>Download demographic data</ButtonLink>
