@@ -16,6 +16,7 @@ import {mockLocation, setupMainStore} from "../../../../mocks/mocks";
 import {expectOrderedActions} from "../../../../actionHelpers";
 import {Sandbox} from "../../../../Sandbox";
 import {ModelRunParametersPage} from "../../../../../main/contrib/components/Responsibilities/ModelRunParameters/ModelRunParametersPage";
+import {runParametersStore} from "../../../../../main/contrib/stores/RunParametersStore";
 
 describe('ModelRunParameterPage', () => {
     const sandbox = new Sandbox();
@@ -30,7 +31,7 @@ describe('ModelRunParameterPage', () => {
         const spy = sandbox.dispatchSpy();
         const fetchTouchstones = sandbox.sinon.stub(responsibilityStore, "fetchTouchstones").returns(Promise.resolve(true));
         const fetchResponsibilities = sandbox.sinon.stub(responsibilityStore, "fetchResponsibilities").returns(Promise.resolve(true));
-        const fetchOneTimeParametersToken = sandbox.sinon.stub(responsibilityStore, "fetchOneTimeParametersToken").returns(Promise.resolve(true));
+        const fetchOneTimeParametersToken = sandbox.sinon.stub(runParametersStore, "fetchOneTimeParametersToken").returns(Promise.resolve(true));
 
         const group = mockModellingGroup({id: "group-1"});
         sandbox.sinon.stub(jwtDecoder, "jwtDecode").returns({result: JSON.stringify(mockResult("OK"))});
@@ -44,7 +45,7 @@ describe('ModelRunParameterPage', () => {
             afterWait(done, () => {
 
                 expectOrderedActions(spy, [
-                    {action: "ModelParameterActions.clearUsedToken", payload: true},
+                    {action: "RunParameterActions.clearUsedToken", payload: true},
                     {action: "ModellingGroupActions.setCurrentGroup", payload: "group-1"},
                     {action: "TouchstoneActions.setCurrentTouchstone", payload: "touchstone-1"}
                 ], 0);

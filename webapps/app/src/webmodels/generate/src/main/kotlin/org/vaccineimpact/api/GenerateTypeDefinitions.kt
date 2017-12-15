@@ -4,6 +4,7 @@ import me.ntrrgc.tsGenerator.ClassTransformer
 import me.ntrrgc.tsGenerator.TypeScriptGenerator
 import me.ntrrgc.tsGenerator.camelCaseToSnakeCase
 import org.vaccineimpact.api.models.*
+import org.vaccineimpact.api.models.permissions.*
 import java.io.File
 import java.time.Instant
 import java.time.LocalDate
@@ -28,11 +29,15 @@ fun main(args: Array<String>)
 
         val generator = TypeScriptGenerator(
                 rootClasses = setOf(
+                        AssociateRole::class,
+                        AssociateUser::class,
                         CoverageSet::class,
                         Disease::class,
                         DemographicDataset::class,
                         ModellingGroup::class,
                         ModellingGroupDetails::class,
+                        ModelRunParameterSet::class,
+                        Report::class,
                         Responsibilities::class,
                         Result::class,
                         Scenario::class,
@@ -40,10 +45,7 @@ fun main(args: Array<String>)
                         ScenarioTouchstoneAndCoverageSets::class,
                         Touchstone::class,
                         TouchstoneStatus::class,
-                        User::class,
-                        Report::class,
-                        AssociateUser::class,
-                        org.vaccineimpact.api.models.permissions.AssociateRole::class
+                        User::class
                 ),
                 mappings = mapOf(
                         LocalDateTime::class to "Date",
