@@ -21,7 +21,7 @@ import {expectIsEqual, IntegrationTestSuite} from "./IntegrationTest";
 import {contribAuthStore} from "../main/contrib/stores/ContribAuthStore";
 import {ContribFetcher} from "../main/contrib/sources/ContribFetcher";
 import {demographicActions} from "../main/contrib/actions/DemographicActions";
-import {Form} from "../main/contrib/components/Responsibilities/BurdenEstimates/Form";
+import {Form} from "../main/shared/components/Form";
 import {shallow} from "enzyme";
 import {CreateBurdenEstimateSetForm} from "../main/contrib/components/Responsibilities/BurdenEstimates/CreateBurdenEstimateSetForm";
 import {runParametersStore} from "../main/contrib/stores/RunParametersStore";

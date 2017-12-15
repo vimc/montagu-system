@@ -1,7 +1,7 @@
 import * as React from "react";
 import {responsibilityStore} from "../../../stores/ResponsibilityStore";
 import {OptionSelector} from "../../OptionSelector/OptionSelector";
-import {Form} from "./Form";
+import {Form} from "../../../../shared/components/Form";
 import {BurdenEstimateSetTypeCode} from "../../../../shared/models/Generated";
 import {FormEvent} from "react";
 
@@ -58,7 +58,7 @@ export class CreateBurdenEstimateSetForm extends React.Component<BurdenEstimateP
 
     render() {
 
-        const successMessage = "Success! You have created a new burden estimate set";
+        const successMessage = "Success! You have registered how your central estimates were calculated";
 
         const options = [
             {
@@ -70,11 +70,11 @@ export class CreateBurdenEstimateSetForm extends React.Component<BurdenEstimateP
             }];
 
         return <div>
-            <h4>Create a new set of burden estimates:</h4>
+            <h4>Register how your central estimates were calculated:</h4>
             <Form successCallback={CreateBurdenEstimateSetForm.successCallback}
                   url={`/modelling-groups/${this.props.groupId}/responsibilities/${this.props.touchstoneId}/${this.props.scenarioId}/estimate-sets/`}
                   successMessage={successMessage}
-                  submitText={"Create"}
+                  submitText={"Register"}
                   data={this.state}>
                 <div className="row">
                     <div className="col">

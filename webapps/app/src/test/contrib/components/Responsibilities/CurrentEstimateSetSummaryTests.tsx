@@ -1,4 +1,4 @@
-import {shallow, ShallowWrapper} from "enzyme";
+    import {shallow, ShallowWrapper} from "enzyme";
 import {expect} from "chai";
 import * as React from "react";
 import {
@@ -23,7 +23,7 @@ describe("CurrentEstimateSetSummary", () => {
             status: "empty",
             uploaded_on: "2017-07-13 13:55:29 +0100"
         }), true);
-        expect(rendered.text()).to.contain("An empty burden estimate set was created on Thu Jul 13");
+        expect(rendered.text()).to.contain("You registered how you calculated your central estimates on Thu Jul 13");
     });
 
     it("displays complete set message if current estimate is complete", () => {

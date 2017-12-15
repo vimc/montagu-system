@@ -3,7 +3,7 @@ import {expect} from "chai";
 import {mount, shallow} from "enzyme";
 import {Sandbox} from "../../../../Sandbox";
 import {Alert} from "../../../../../main/shared/components/Alert";
-import {Form} from "../../../../../main/contrib/components/Responsibilities/BurdenEstimates/Form";
+import {Form} from "../../../../../main/shared/components/Form";
 import {Result} from "../../../../../main/shared/models/Generated";
 import {mockFetcherResponse, mockResponse} from "../../../../mocks/mockRemote";
 import {checkAsync} from "../../../../testHelpers";
