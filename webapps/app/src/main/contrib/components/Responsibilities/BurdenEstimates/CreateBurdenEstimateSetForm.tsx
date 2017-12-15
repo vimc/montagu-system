@@ -84,13 +84,16 @@ export class CreateBurdenEstimateSetForm extends React.Component<BurdenEstimateP
                                         options={options} onChange={this.onTypeChange.bind(this)}
                                         className="form-control" required={true}/>
                         <div className="invalid-feedback">
-                            Please tell us how these estimates were calculated
+                            Please choose one
                         </div>
                     </div>
                     <div className="col">
-                        <label>Details of this run</label>
-                        <input type="text" className={"form-control"} name="details"
+                        <label>Details of how these estimates were calculated. For example, if averaged, what kind of averaging function was used.</label>
+                        <input type="text" className={"form-control"} name="details" required={true}
                                onChange={this.onDetailsChange.bind(this)}/>
+                        <div className="invalid-feedback">
+                            Please give us some details, a short note is fine
+                        </div>
                     </div>
                 </div>
             </Form>
