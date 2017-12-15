@@ -1,3 +1,5 @@
+@import "bootstrap";
+
 select, input {
     font-size: inherit;
 }
@@ -7,6 +9,13 @@ table tr th, .specialColumn td:first-child {
     font-weight: bold;
     vertical-align: top;
 }
+
+table {
+  @extend .table;
+  @extend .table-responsive;
+  @extend .table-bordered
+}
+
 
 fieldset {
     display: inline;
