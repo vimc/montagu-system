@@ -112,6 +112,7 @@ export class DownloadCoverageContentComponent
             </div>
             <div className="row mt-4">
                 <div className="col-12 col-md-6">
+                    <div className="smallTitle">Choose format</div>
                     <table className="options">
                         <tbody>
                         <tr className="specialColumn">

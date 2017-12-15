@@ -1,20 +1,21 @@
+@import "bootstrap";
+
 select, input {
     font-size: inherit;
 }
 
-table {
-    border-collapse: collapse;
-    width: inherit;
-}
-table tr td, table tr th {
-    padding: 5px;
-    border: 1px solid rgb(127, 127, 127);
-}
 table tr th, .specialColumn td:first-child {
     background-color: rgb(170, 224, 250);
     font-weight: bold;
     vertical-align: top;
 }
+
+table {
+  @extend .table;
+  @extend .table-responsive;
+  @extend .table-bordered
+}
+
 
 fieldset {
     display: inline;
