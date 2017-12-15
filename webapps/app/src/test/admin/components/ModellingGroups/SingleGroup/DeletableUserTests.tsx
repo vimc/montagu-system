@@ -27,10 +27,9 @@ describe("DeletableUser", () => {
     });
 
     it("renders delete link", () => {
-
         const rendered = sandbox.mount(<DeletableUser showDelete={true} groupId="group1"
                                                       user={mockUser({ "name": "Wolfgang Amadeus Mozart" })}/>);
-        expect(rendered.find(".text-danger").text()).to.eq("Remove member")
+        expect(rendered.find("a.text-danger").text()).to.eq("Remove member")
     });
 
     it("does not render delete link if showDelete is false", () => {

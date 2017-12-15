@@ -7,7 +7,7 @@ import {responsibilityStore} from "../main/contrib/stores/ResponsibilityStore";
 import {
     DemographicDataset,
     Disease,
-    ModellingGroup,
+    ModellingGroup, ModelRunParameterSet,
     Responsibilities,
     ScenarioTouchstoneAndCoverageSets,
     Touchstone
@@ -89,10 +89,10 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
 
         it("fetches responsibilities", (done: DoneCallback) => {
             const promise = addResponsibilities(this.db)
-                .then((id) => {
+                .then((responsibilityIds) => {
                     return addModel(this.db)
                         .then((modelVersionId) => {
-                            return addBurdenEstimateSet(this.db, id, modelVersionId)
+                            return addBurdenEstimateSet(this.db, responsibilityIds.responsibility, modelVersionId)
                         })
                 })
                 .then(() => {
@@ -278,6 +278,26 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
             });
         });
 
+        it("fetches model run parameter sets", (done: DoneCallback) => {
+            const promise: Promise<any> = addModelRunParameterSets(this.db)
+                .then(() => {
+                    setTouchstoneAndGroup(touchstoneId, groupId);
+                    return runParametersStore.fetchParameterSets()
+                });
+
+            checkPromise(done, promise, parameterSets => {
+                expectIsEqual<ModelRunParameterSet[]>(parameterSets, [
+                    {
+                        id: 1,
+                        description: 'description',
+                        model: "model-1",
+                        uploaded_on: '2017-12-25T12:00:00Z',
+                        uploaded_by: 'test.user'
+                    }
+                ]);
+            });
+        });
+
         function getUrlFromCreateBurdenEstimateSetForm(): string {
             const rendered = shallow(<CreateBurdenEstimateSetForm
                 touchstoneId={touchstoneId} groupId={groupId} scenarioId={scenarioId}/>);
@@ -339,7 +359,12 @@ function addGroups(db: Client): Promise<QueryResult> {
     `);
 }
 
-function addResponsibilities(db: Client): Promise<number> {
+interface ResponsibilityIds {
+    responsibility: number;
+    responsibilitySet: number;
+}
+
+function addResponsibilities(db: Client): Promise<ResponsibilityIds> {
     return addTouchstone(db)
         .then(() => addGroups(db))
         .then(() => db.query(`
@@ -362,8 +387,12 @@ function addResponsibilities(db: Client): Promise<number> {
                 VALUES (set_id, scenario_id);
             END $$;
     `))
-        .then(() => db.query(`SELECT id FROM responsibility`))
-        .then(result => result.rows[0].id);
+        .then(() => db.query(`SELECT responsibility.id as responsibility, responsibility_set.id as responsibility_set 
+                              FROM responsibility JOIN responsibility_set ON true`))
+        .then(result => {
+            const row = result.rows[0];
+            return {responsibility: row.responsibility, responsibilitySet: row.responsibility_set}
+        });
 }
 
 function addModel(db: Client): Promise<number> {
@@ -447,6 +476,32 @@ function addDemographicDataSets(db: Client): Promise<QueryResult> {
                 (         source_id,   'ATL', 2017,       20,     25,                    type_id,          variant_id, gender_id,  8765);                
             END $$;
         `));
+}
+function addModelRunParameterSets(db: Client): Promise<QueryResult> {
+    return addResponsibilities(db)
+        .then((responsibilityIds: ResponsibilityIds) => {
+            return addModel(db).then(modelVersion => {
+                return {
+                    responsibilitySet: responsibilityIds.responsibilitySet,
+                    modelVersion: modelVersion
+                };
+            });
+        })
+        .then((ids) => {
+            return db.query(`
+                DO $$
+                    DECLARE upload_info_id integer;
+                BEGIN
+                    INSERT INTO upload_info (uploaded_by, uploaded_on) VALUES ('test.user', '2017-12-25 12:00')
+                        RETURNING id INTO upload_info_id;
+            
+                    INSERT INTO model_run_parameter_set 
+                    (responsibility_set, description, model_version, upload_info)
+                    VALUES 
+                    (${ids.responsibilitySet}, 'description', ${ids.modelVersion}, upload_info_id);
+                END $$;
+            `);
+        });
 }
 
 function setTouchstoneAndGroup(touchstoneId: string, groupId: string) {
