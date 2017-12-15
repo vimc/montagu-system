@@ -15,10 +15,10 @@ object PasswordRouteConfig : RouteConfig
     private val urlBase = "/password"
 
     override val endpoints: List<EndpointDefinition> = listOf(
-            Endpoint("$urlBase/set/", controller, "setPassword")
+            Endpoint("$urlBase/set/", controller, "setPassword", method = HttpMethod.post)
                     .json()
                     .secure(),
-            Endpoint("$urlBase/request_link/", controller, "requestResetPasswordLink")
+            Endpoint("$urlBase/request_link/", controller, "requestResetPasswordLink", method = HttpMethod.post)
                     .json()
     )
 }
