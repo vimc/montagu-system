@@ -6,11 +6,19 @@ import org.assertj.core.api.Assertions.fail
 import org.junit.Test
 import org.vaccineimpact.api.models.helpers.OneTimeAction
 import org.vaccineimpact.api.app.OneTimeLink
+import org.vaccineimpact.api.app.OnetimeLinkResolver
+import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.context.OneTimeLinkActionContext
+import org.vaccineimpact.api.app.context.postData
+import org.vaccineimpact.api.app.controllers.ModellingGroupController
 import org.vaccineimpact.api.app.controllers.MontaguControllers
 import org.vaccineimpact.api.app.controllers.PasswordController
+import org.vaccineimpact.api.app.models.SetPassword
+import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
 import org.vaccineimpact.api.app.repositories.Repositories
+import org.vaccineimpact.api.app.repositories.TokenRepository
 import org.vaccineimpact.api.app.repositories.UserRepository
+import org.vaccineimpact.api.security.WebTokenHelper
 import org.vaccineimpact.api.test_helpers.MontaguTests
 import org.vaccineimpact.api.tests.mocks.asFactory
 
@@ -58,30 +66,35 @@ class OneTimeLinkTests : MontaguTests()
                 username = "test.user"
         ))
     }
+}
+
+class OnetimeLinkResolverTests : MontaguTests()
+{
 
     @Test
     fun `perform invokes callback with OneTimeLinkActionContext`()
     {
         // Mocks
-        val controllers = mock<MontaguControllers> ()
-        val repos =  mock<Repositories> {
-            on { user } doReturn mock<UserRepository>()
+        val controllers = mock<MontaguControllers>() {
+            on { modellingGroup } doReturn mock<ModellingGroupController>()
         }
+        val userRepo = mock<UserRepository>()
+        val repos = mock<Repositories> {
+            on { token } doReturn mock<TokenRepository>()
+            on { user } doReturn userRepo
+        }
+        val mockContext = mock<ActionContext>() {
+            on { postData<SetPassword>() } doReturn SetPassword("password")
+        }
+        val mockWebTokenHelper = mock<WebTokenHelper>()
 
         // Object under test
-        val link = OneTimeLink(OneTimeAction.SET_PASSWORD, mapOf(":username" to "user"), mapOf(":queryKey" to "queryValue"), "test.user")
-        link.perform(controllers, mock(), repos.asFactory())
+        val link = OneTimeLink(OneTimeAction.SET_PASSWORD, mapOf(":username" to "user"),
+                mapOf(":queryKey" to "queryValue"), "test.user")
+        val sut = OnetimeLinkResolver(controllers, repos.asFactory(), mockWebTokenHelper)
+        sut.perform(link, mockContext)
 
         // Expectations
-//        verify(modelling).setPasswordForUser(check {
-//            if (it is OneTimeLinkActionContext)
-//            {
-//                assertThat(it.params(":username")).isEqualTo("user")
-//            }
-//            else
-//            {
-//                fail("Expected $it to be ${OneTimeLinkActionContext::class.simpleName}")
-//            }
-//        }, any(), any())
+        verify(userRepo).setPassword("user", "password")
     }
 }

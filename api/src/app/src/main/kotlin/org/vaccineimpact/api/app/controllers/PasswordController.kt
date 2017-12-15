@@ -15,7 +15,7 @@ import org.vaccineimpact.api.emails.getEmailManager
 import org.vaccineimpact.api.models.helpers.OneTimeAction
 import java.time.Duration
 
-open class PasswordController(
+class PasswordController(
         context: ActionContext,
         private val userRepository: UserRepository,
         private val oneTimeTokenGenerator: OneTimeTokenGenerator,
@@ -33,8 +33,7 @@ open class PasswordController(
         return setPasswordForUser(context.username!!)
     }
 
-    @Throws(Exception::class)
-    open fun setPasswordForUser(username: String): String
+    fun setPasswordForUser(username: String): String
     {
         val password = context.postData<SetPassword>().password
         userRepository.setPassword(username, password)
