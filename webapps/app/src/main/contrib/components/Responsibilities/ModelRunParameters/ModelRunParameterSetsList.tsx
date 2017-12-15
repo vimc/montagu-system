@@ -34,7 +34,7 @@ export class ModelRunParameterSetsListComponent extends RemoteContentComponent<P
                 <td>{set.uploaded_by}</td>
                 <td>{longTimestamp(new Date(set.uploaded_on))}</td>
             </tr>);
-            return <table className="table table-responsive">
+            return <table>
                 <thead>
                 <tr>
                     <th scope="col">Description</th>
