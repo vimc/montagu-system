@@ -48,7 +48,7 @@ export class ResponsibilityGuidanceModelInputs extends ContribPageWithHeader<und
                 other sources, some of which has been extrapolated by the VIMC
                 secretariat, in order to cover all countries and time periods.
             </p>
-            <table className="table table-responsive table-bordered">
+            <table>
                 <tbody>
                     <tr>
                         <th>

@@ -16,7 +16,7 @@ export class CoverageSetList extends React.Component<Props, undefined> {
                 <CoverageSetComponent key={order} order={order} set={x}/>
             );
             return <div className="coverageSets">
-                <table className="table table-responsive table-bordered">
+                <table>
                     <thead>
                     <tr>
                         <th>

@@ -24,7 +24,7 @@ export class CreateUserFormComponent extends React.Component<ReformProps, undefi
         return <form className="gapAbove" onSubmit={this.props.submit}>
             <fieldset disabled={this.props.loading}>
                 <div className="sectionTitle">Add new user</div>
-                <table className="tableForm table table-responsive table-bordered specialColumn">
+                <table className="tableForm specialColumn">
                     <tbody>
                     <tr>
                         <td>Full name</td>
