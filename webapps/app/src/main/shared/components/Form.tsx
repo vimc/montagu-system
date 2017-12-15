@@ -1,8 +1,8 @@
 import * as React from "react";
-import {Alert} from "../../../../shared/components/Alert";
-import fetcher from "../../../../shared/sources/Fetcher";
-import {ErrorInfo, Result} from "../../../../shared/models/Generated";
-import {apiResponse} from "../../../../shared/sources/Source";
+import {Alert} from "./Alert";
+import fetcher from "../sources/Fetcher";
+import {ErrorInfo, Result} from "../models/Generated";
+import {apiResponse} from "../sources/Source";
 
 export interface FormState {
     disabled: boolean;
