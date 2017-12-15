@@ -8,13 +8,11 @@ import org.vaccineimpact.api.app.ErrorHandler
 import org.vaccineimpact.api.app.context.OneTimeLinkActionContext
 import org.vaccineimpact.api.app.MontaguRedirectValidator
 import org.vaccineimpact.api.app.RedirectValidator
-import org.vaccineimpact.api.app.controllers.ControllerContext
-import org.vaccineimpact.api.app.controllers.MontaguControllers
-import org.vaccineimpact.api.app.controllers.OneTimeLinkController
-import org.vaccineimpact.api.app.controllers.PasswordController
+import org.vaccineimpact.api.app.controllers.*
 import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.errors.InvalidOneTimeLinkToken
 import org.vaccineimpact.api.app.errors.UnexpectedError
+import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.TokenRepository
 import org.vaccineimpact.api.app.repositories.UserRepository
@@ -76,11 +74,12 @@ class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
         val controller = makeController(
                 tokenHelper = makeTokenHelper(true, mapOf(
                         "sub" to WebTokenHelper.oneTimeActionSubject,
-                        "action" to "set-password",
+                        "action" to "create-burdens",
                         "payload" to ":username=test.user"
                 )),
                 repos = mock {
                     on { user } doReturn userRepo
+                    on { burdenEstimates } doReturn mock<BurdenEstimateRepository>()
                 },
                 errorHandler = mock<ErrorHandler>(),
                 redirectValidator = mock<RedirectValidator>()
@@ -96,6 +95,7 @@ class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
                 tokenHelper = makeTokenHelper(true, claimsWithRedirectUrl),
                 repos = mock {
                     on { user } doReturn mock<UserRepository>()
+                    on {burdenEstimates} doReturn mock<BurdenEstimateRepository>()
                 },
                 errorHandler = mock<ErrorHandler>(),
                 redirectValidator = mock<RedirectValidator>()
@@ -113,6 +113,8 @@ class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
                 tokenHelper = makeTokenHelper(true, claimsWithoutRedirectUrl),
                 repos = mock {
                     on { user } doReturn mock<UserRepository>()
+                    on { token } doReturn mock<TokenRepository>()
+                    on {burdenEstimates} doReturn mock<BurdenEstimateRepository>()
                 },
                 errorHandler = mock<ErrorHandler>(),
                 redirectValidator = mock<RedirectValidator>()
@@ -131,6 +133,7 @@ class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
                         claimsWithoutRedirectUrl.plus(mapOf("query" to "redirectUrl="))),
                 repos = mock {
                     on { user } doReturn mock<UserRepository>()
+                    on { burdenEstimates } doReturn mock<BurdenEstimateRepository>()
                 },
                 errorHandler = mock<ErrorHandler>(),
                 redirectValidator = mock<RedirectValidator>()
@@ -148,6 +151,7 @@ class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
                 tokenHelper = makeTokenHelper(true, claimsWithRedirectUrl),
                 repos = mock {
                     on { user } doReturn mock<UserRepository>()
+                    on { burdenEstimates } doReturn mock<BurdenEstimateRepository>()
                 },
                 redirectValidator = mock<RedirectValidator> {
                     on { validateRedirectUrl(any()) } doThrow BadRequest("bad request")
@@ -208,23 +212,25 @@ class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
         verify(mockErrorHandler, times(1)).logExceptionAndReturnMontaguError(any(), any())
     }
 
-    private val basicClaims = mapOf("sub" to WebTokenHelper.oneTimeActionSubject)
+    private val basicClaims = mapOf("sub" to WebTokenHelper.oneTimeActionSubject, "username" to "test.user")
 
     private val redirectUrl = "https://localhost"
 
     private val claimsWithRedirectUrl =
             mapOf(
                     "sub" to WebTokenHelper.oneTimeActionSubject,
-                    "action" to "set-password",
+                    "action" to "burdens-create",
                     "payload" to ":username=test.user",
-                    "query" to "redirectUrl=$redirectUrl"
+                    "query" to "redirectUrl=$redirectUrl",
+                    "username" to "test.user"
             )
 
     private val claimsWithoutRedirectUrl =
             mapOf(
                     "sub" to WebTokenHelper.oneTimeActionSubject,
-                    "action" to "set-password",
-                    "payload" to ":username=test.user"
+                    "action" to "burdens-create",
+                    "payload" to ":username=test.user",
+                    "username" to "test.user"
             )
 
     private fun makeController(
@@ -240,7 +246,9 @@ class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
                 repositories = repos ?: mock()
         )
 
-        val otherControllers = mock<MontaguControllers>()
+        val otherControllers = mock<MontaguControllers>() {
+            on { groupBurdenEstimates } doReturn mock<GroupBurdenEstimatesController>()
+        }
 
         return OneTimeLinkController(controllerContext, otherControllers, errorHandler, redirectValidator)
     }

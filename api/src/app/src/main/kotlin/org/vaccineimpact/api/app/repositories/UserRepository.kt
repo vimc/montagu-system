@@ -19,6 +19,7 @@ interface UserRepository : Repository
     fun globalRoles(): List<String>
 
     fun addUser(user: CreateUser)
+    @Throws(Exception::class)
     fun setPassword(username: String, plainPassword: String)
 
     fun modifyUserRole(username: String, associateRole: AssociateRole)
