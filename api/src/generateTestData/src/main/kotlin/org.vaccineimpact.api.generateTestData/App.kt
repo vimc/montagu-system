@@ -3,11 +3,6 @@ package org.vaccineimpact.api.generateTestData
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.direct.*
 
-/** The more important source set here is blackboxTests/src/test - that actually contains the
- * Black box tests. This "main" source set is just a place to put a little script you can
- * run to set up the database in a given state for manual testing. It's expected this code
- * changes frequently to allow developers to run arbitrary code against their development db.
- */
 fun main(args: Array<String>)
 {
     JooqContext().use { db ->
