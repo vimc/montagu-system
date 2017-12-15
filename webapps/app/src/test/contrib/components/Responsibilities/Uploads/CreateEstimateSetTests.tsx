@@ -4,7 +4,7 @@ import {mount, shallow} from "enzyme";
 import {Sandbox} from "../../../../Sandbox";
 import {CreateBurdenEstimateSetForm} from "../../../../../main/contrib/components/Responsibilities/BurdenEstimates/CreateBurdenEstimateSetForm";
 import {OptionSelector} from "../../../../../main/contrib/components/OptionSelector/OptionSelector";
-import {Form} from "../../../../../main/contrib/components/Responsibilities/BurdenEstimates/Form";
+import {Form} from "../../../../../main/shared/components/Form";
 import {checkAsync} from "../../../../testHelpers";
 
 describe("CreateEstimatesFormComponent", () => {

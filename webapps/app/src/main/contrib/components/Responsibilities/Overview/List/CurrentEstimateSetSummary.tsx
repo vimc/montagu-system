@@ -21,7 +21,7 @@ export class CurrentEstimateSetSummary extends React.Component<Props, undefined>
                 const timestamp = longTimestamp(new Date(set.uploaded_on));
                 if (set.status == "empty") {
                     return <span>
-                        An empty burden estimate set was created on {timestamp}.
+                        You registered how you calculated your central estimates on {timestamp}.
                     </span>;
                 } else if (set.status == "complete") {
                     return <span>
