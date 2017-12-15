@@ -1,26 +1,28 @@
-import * as React from "react";
-import {connectToStores} from "../../../../shared/alt";
-import {ModellingGroup, Touchstone} from "../../../../shared/models/Generated";
-import {RemoteContent} from "../../../../shared/models/RemoteContent";
 import {RemoteContentComponent} from "../../../../shared/components/RemoteContentComponent/RemoteContentComponent";
+import {RemoteContent} from "../../../../shared/models/RemoteContent";
+import {ModellingGroup, Touchstone} from "../../../../shared/models/Generated";
 import {responsibilityStore} from "../../../stores/ResponsibilityStore";
-import {UploadModelRunParametersForm} from "./UploadModelRunParametersForm";
 import {runParametersStore} from "../../../stores/RunParametersStore";
+import {UploadModelRunParametersForm} from "./UploadModelRunParametersForm";
+import {connectToStores} from "../../../../shared/alt";
+import * as React from "react";
 
-export interface ModelRunParametersContentComponentProps extends RemoteContent {
+export interface Props extends RemoteContent {
     touchstone: Touchstone;
     group: ModellingGroup;
     parametersToken: string;
     diseases: string[];
 }
 
-export class ModelRunParametersContentComponent extends RemoteContentComponent<ModelRunParametersContentComponentProps, undefined> {
+export class ModelRunParameterUploadSectionComponent
+    extends RemoteContentComponent<Props, undefined> {
+
 
     static getStores() {
-        return [responsibilityStore];
+        return [responsibilityStore, runParametersStore];
     }
 
-    static getPropsFromStores(): ModelRunParametersContentComponentProps {
+    static getPropsFromStores(): Props {
         const state = responsibilityStore.getState();
         const runParameterState = runParametersStore.getState();
 
@@ -44,9 +46,9 @@ export class ModelRunParametersContentComponent extends RemoteContentComponent<M
         }
     }
 
-    renderContent(props: ModelRunParametersContentComponentProps) {
-
-        return <div className="mt-2">
+    renderContent(props: Props): JSX.Element {
+        return <div>
+            <div className="sectionTitle">Upload a new parameter set</div>
             <UploadModelRunParametersForm groupId={props.group.id}
                                           token={props.parametersToken}
                                           diseases={props.diseases}
@@ -56,4 +58,4 @@ export class ModelRunParametersContentComponent extends RemoteContentComponent<M
     }
 }
 
-export const ModelRunParametersContent = connectToStores(ModelRunParametersContentComponent);
+export const ModelRunParameterUploadSection = connectToStores(ModelRunParameterUploadSectionComponent);

@@ -7,9 +7,10 @@ import {DownloadDataTitle} from "../DownloadDataTitle";
 import {ContribPageWithHeader} from "../../PageWithHeader/ContribPageWithHeader";
 import {IPageWithParent} from "../../../../shared/models/Breadcrumb";
 import {ResponsibilityOverviewPage} from "../Overview/ResponsibilityOverviewPage";
-import {ModelRunParametersContent} from "./ModelRunParametersContent";
 import {runParametersStore} from "../../../stores/RunParametersStore";
 import {runParameterActions} from "../../../actions/RunParameterActions";
+import {ModelRunParameterSetsList} from "./ModelRunParameterSetsList";
+import {ModelRunParameterUploadSection} from "./ModelRunParameterUploadSection";
 
 export interface ModelRunParametersProps {
     groupId: string;
@@ -23,17 +24,18 @@ export class ModelRunParametersPage extends ContribPageWithHeader<ModelRunParame
         responsibilityStore.fetchTouchstones().catch(doNothing).then(() => {
             touchstoneActions.setCurrentTouchstone(this.props.location.params.touchstoneId);
             responsibilityStore.fetchResponsibilities().catch(doNothing);
+            runParametersStore.fetchParameterSets().catch(doNothing);
             runParametersStore.fetchOneTimeParametersToken(this.props.location.pathname).catch(doNothing);
             super.load();
         });
     }
 
     name() {
-        return "Upload model run parameters";
+        return "Model run parameters";
     }
 
     title() {
-        return <DownloadDataTitle title="Upload model run parameters"/>
+        return <DownloadDataTitle title="Model run parameters"/>
     }
 
     urlFragment(): string {
@@ -45,6 +47,9 @@ export class ModelRunParametersPage extends ContribPageWithHeader<ModelRunParame
     }
 
     renderPageContent() {
-        return <ModelRunParametersContent />
+        return <div className="mt-2">
+            <ModelRunParameterSetsList />
+            <ModelRunParameterUploadSection />
+        </div>;
     }
 }
