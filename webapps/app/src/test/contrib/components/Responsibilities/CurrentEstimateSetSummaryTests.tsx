@@ -1,7 +1,10 @@
-import {shallow, ShallowWrapper} from "enzyme";
+    import {shallow, ShallowWrapper} from "enzyme";
 import {expect} from "chai";
 import * as React from "react";
-import {CurrentEstimateSetSummary} from "../../../../main/contrib/components/Responsibilities/Overview/List/CurrentEstimateSetSummary";
+import {
+    CurrentEstimateSetSummary,
+    ReviewedAndApprovedMessage
+} from "../../../../main/contrib/components/Responsibilities/Overview/List/CurrentEstimateSetSummary";
 import {BurdenEstimateSet} from "../../../../main/shared/models/Generated";
 import {mockBurdenEstimateSet} from "../../../mocks/mockModels";
 
@@ -20,7 +23,7 @@ describe("CurrentEstimateSetSummary", () => {
             status: "empty",
             uploaded_on: "2017-07-13 13:55:29 +0100"
         }), true);
-        expect(rendered.text()).to.contain("An empty burden estimate set was created on Thu Jul 13");
+        expect(rendered.text()).to.contain("You registered how you calculated your central estimates on Thu Jul 13");
     });
 
     it("displays complete set message if current estimate is complete", () => {
@@ -40,10 +43,8 @@ describe("CurrentEstimateSetSummary", () => {
         expect(rendered.text()).to.contain("Thu Jul 13");
     });
 
-    it("displays no upload message for when uploads are not allowed", () => {
+    it("displays standard reviewed and approved message when uploads are not allowed", () => {
         const rendered = render(mockBurdenEstimateSet(), false);
-        expect(rendered.text()).to.contain("The burden estimates uploaded by your modelling group have been reviewed and approved");
-        expect(rendered.text()).to.contain("You cannot upload any new estimates");
-        expect(rendered.text()).to.contain("please contact us here");
+        expect(rendered.find(ReviewedAndApprovedMessage)).to.have.length(1);
     });
 });

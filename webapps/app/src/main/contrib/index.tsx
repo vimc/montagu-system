@@ -5,10 +5,11 @@ import { ContribFetcher } from "./sources/ContribFetcher";
 import fetcher from "../shared/sources/Fetcher";
 import { contribAuthStore } from "./stores/ContribAuthStore";
 
-require('./index.html');
-require('../shared/styles/fonts.scss');
-require('../shared/styles/buttons.scss');
-require('../shared/styles/common.scss');
+import './index.html';
+import '../shared/styles/bootstrap.scss';
+import '../shared/styles/fonts.scss';
+import '../shared/styles/buttons.scss';
+import '../shared/styles/common.scss';
 
 fetcher.fetcher = new ContribFetcher();
 contribAuthStore.loadAccessToken();

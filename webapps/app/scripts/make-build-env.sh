@@ -15,6 +15,3 @@ docker build -f ./docker/build.dockerfile \
     --build-arg MONTAGU_GIT_ID=$git_id \
     --build-arg MONTAGU_GIT_BRANCH=$git_branch \
     .
-
-# Package up integration tests as a docker image for later rerunning
-./scripts/make-integration-tests-image.sh

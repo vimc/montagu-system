@@ -5,7 +5,8 @@ import fetcher from "../shared/sources/Fetcher";
 import { ReportingFetcher } from "./sources/ReportingFetcher";
 import { reportingAuthStore } from "./stores/ReportingAuthStore";
 
-require('./index.html');
+import './index.html';
+import '../shared/styles/bootstrap.scss';
 import '../shared/styles/fonts.scss';
 import '../shared/styles/buttons.scss';
 import '../shared/styles/common.scss';
