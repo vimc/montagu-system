@@ -15,8 +15,15 @@ docker network create test-data
 docker run -d --rm \
   --name db \
   --network=test-data \
-  -p "8000:5432" \
   $registry/montagu-db:$db_version
+
+# Teardown on exit
+function cleanup {
+    set +e
+    docker stop db
+    docker network rm test-data
+}
+trap cleanup EXIT
 
 docker exec db montagu-wait.sh
 
@@ -26,12 +33,8 @@ docker run --rm --network=test-data $registry/montagu-migrate:$db_version
 docker build --tag $name -f generate-test-data.Dockerfile .
 docker run --rm --network=test-data $name
 
-# Dump the test data to an SQL file
-docker exec db pg_dump -h localhost -U vimc -d montagu --data-only > ./test-data.sql
-
-# Teardown
-docker stop db
-docker network rm test-data
+# Dump the test data to a binary file
+docker exec db pg_dump --user=vimc -Fc --no-privileges montagu > ./test-data.bin
 
 # Tag and push
 docker_tag=$registry/$name
