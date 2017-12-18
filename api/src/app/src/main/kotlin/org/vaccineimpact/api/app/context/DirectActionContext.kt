@@ -20,6 +20,10 @@ import java.io.Reader
 import java.util.zip.GZIPOutputStream
 import javax.servlet.MultipartConfigElement
 import kotlin.reflect.KClass
+import com.sun.corba.se.spi.presentation.rmi.StubAdapter.request
+import org.apache.commons.fileupload.servlet.ServletFileUpload
+import org.apache.commons.fileupload.util.Streams
+
 
 class DirectActionContext(private val context: SparkWebContext,
                           private val serializer: Serializer = MontaguSerializer.instance) : ActionContext
@@ -42,22 +46,23 @@ class DirectActionContext(private val context: SparkWebContext,
 
     override fun getPart(name: String): Reader
     {
-        val contentType = request.contentType()
-        if (!contentType.startsWith("multipart/form-data"))
+        val rawRequest = request.raw()
+        val isMultipart = ServletFileUpload.isMultipartContent(rawRequest)
+        if (!isMultipart)
         {
-            throw BadRequest("Trying to extract a part from multipart/form-data but this request is of type $contentType")
+            throw BadRequest("Trying to extract a part from multipart/form-data " +
+                    "but this request is of type ${request.contentType()}")
         }
 
-        if (request.raw().getAttribute("org.eclipse.jetty.multipartConfig") == null)
-        {
-            val multipartConfigElement = MultipartConfigElement(System.getProperty("java.io.tmpdir"))
-            request.raw().setAttribute("org.eclipse.jetty.multipartConfig", multipartConfigElement)
+        val upload = ServletFileUpload()
+        val iterator = upload.getItemIterator(rawRequest)
+        val fileItems = generateSequence {
+            if (iterator.hasNext()) iterator.next() else null
         }
+        val matchingPart = fileItems.firstOrNull { it.fieldName == name }
+            ?: throw BadRequest("No value passed for required POST parameter '$name'")
 
-        val part = request.raw().getPart(name)
-                ?: throw BadRequest("No value passed for required POST parameter '$name'")
-
-        return part.inputStream.bufferedReader()
+        return matchingPart.openStream().bufferedReader()
     }
 
     override fun <T : Any> csvData(klass: KClass<T>, from: RequestBodySource): Sequence<T>
