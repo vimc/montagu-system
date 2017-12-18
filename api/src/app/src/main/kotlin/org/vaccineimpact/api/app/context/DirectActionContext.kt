@@ -23,6 +23,7 @@ import kotlin.reflect.KClass
 import com.sun.corba.se.spi.presentation.rmi.StubAdapter.request
 import org.apache.commons.fileupload.servlet.ServletFileUpload
 import org.apache.commons.fileupload.util.Streams
+import org.vaccineimpact.api.app.partsAsSequence
 
 
 class DirectActionContext(private val context: SparkWebContext,
@@ -54,13 +55,10 @@ class DirectActionContext(private val context: SparkWebContext,
                     "but this request is of type ${request.contentType()}")
         }
 
-        val upload = ServletFileUpload()
-        val iterator = upload.getItemIterator(rawRequest)
-        val fileItems = generateSequence {
-            if (iterator.hasNext()) iterator.next() else null
-        }
-        val matchingPart = fileItems.firstOrNull { it.fieldName == name }
-            ?: throw BadRequest("No value passed for required POST parameter '$name'")
+        val parts = ServletFileUpload().partsAsSequence(rawRequest)
+        val matchingPart = parts.firstOrNull { it.fieldName == name }
+            ?: throw BadRequest("No value passed for required POST parameter '$name'. " +
+                "Available parts: ${ServletFileUpload().partsAsSequence(rawRequest).joinToString { it.fieldName }}")
 
         return matchingPart.openStream().bufferedReader()
     }
