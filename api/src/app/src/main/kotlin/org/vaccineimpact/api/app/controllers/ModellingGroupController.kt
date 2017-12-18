@@ -118,7 +118,7 @@ open class ModellingGroupController(context: ControllerContext)
         return data.responsibilities
     }
 
-    private fun getTouchstones(context: ActionContext, repo: TouchstoneRepository): List<Touchstone>
+    fun getTouchstones(context: ActionContext, repo: TouchstoneRepository): List<Touchstone>
     {
         val groupId = groupId(context)
 
