@@ -7,6 +7,7 @@ import org.vaccineimpact.api.models.*
 interface TouchstoneRepository : Repository
 {
     val touchstones: SimpleDataSet<Touchstone, String>
+    fun getTouchstonesByGroupId(groupId: String): List<Touchstone>
     fun scenarios(touchstoneId: String, filterParams: ScenarioFilterParameters): List<ScenarioAndCoverageSets>
     fun getScenario(touchstoneId: String, scenarioDescId: String): ScenarioAndCoverageSets
     fun getScenarioAndCoverageData(touchstoneId: String, scenarioDescId: String): SplitData<ScenarioAndCoverageSets, LongCoverageRow>

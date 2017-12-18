@@ -108,6 +108,21 @@ class JooqTouchstoneRepository(
         return ScenarioAndCoverageSets(scenario, getCoverageSetsFromRecord(records, scenario))
     }
 
+    override fun getTouchstonesByGroupId(groupId: String): List<Touchstone>
+    {
+        var query = dsl
+                .select(
+                        TOUCHSTONE.ID,
+                        TOUCHSTONE.TOUCHSTONE_NAME,
+                        TOUCHSTONE.STATUS,
+                        TOUCHSTONE.DESCRIPTION,
+                        TOUCHSTONE.VERSION
+                )
+                .fromJoinPath(TOUCHSTONE, RESPONSIBILITY_SET, joinType = JoinType.JOIN)
+                .where(RESPONSIBILITY_SET.MODELLING_GROUP.eq(groupId))
+        return query.fetch().map { mapRecordToTouchstone(it) }
+    }
+
     private fun getScenariosAndCoverageSets(touchstoneId: String): SelectConditionStep<Record>
     {
         return dsl
@@ -287,6 +302,15 @@ class JooqTouchstoneRepository(
             record.description,
             mapper.mapEnum(record.status)
     )
+
+    private fun mapRecordToTouchstone(record: Record) = Touchstone(
+            record[TOUCHSTONE.ID],
+            record[TOUCHSTONE.TOUCHSTONE_NAME],
+            record[TOUCHSTONE.VERSION],
+            record[TOUCHSTONE.DESCRIPTION],
+            mapper.mapEnum(record[TOUCHSTONE.STATUS])
+    )
+
 
     inline fun <reified T : Any?> Record.getField(name: Name): T = this.get(name, T::class.java)
 

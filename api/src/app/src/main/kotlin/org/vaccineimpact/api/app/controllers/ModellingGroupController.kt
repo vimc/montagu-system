@@ -16,6 +16,7 @@ import org.vaccineimpact.api.app.security.checkEstimatePermissionsForTouchstone
 import org.vaccineimpact.api.app.security.checkIsAllowedToSeeTouchstone
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.helpers.OneTimeAction
+import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import org.vaccineimpact.api.serialization.FlexibleDataTable
 import org.vaccineimpact.api.serialization.SplitData
 import org.vaccineimpact.api.serialization.StreamSerializable
@@ -32,7 +33,13 @@ open class ModellingGroupController(context: ControllerContext)
             "*/scenarios.read",
             "$groupScope/responsibilities.read"
     )
+    private val touchstonePreparer = ReifiedPermission("touchstones.prepare", Scope.Global())
+    val touchtonePermissions = setOf(
+            "*/touchstones.read",
+            "$groupScope/responsibilities.read"
+    )
     val coveragePermissions = responsibilityPermissions + "$groupScope/coverage.read"
+    val touchstonesURL = "/:group-id/responsibilities"
     val responsibilitiesURL = "/:group-id/responsibilities/:touchstone-id"
     val scenarioURL = "$responsibilitiesURL/:scenario-id"
     val coverageURL = "$scenarioURL/coverage"
@@ -41,10 +48,12 @@ open class ModellingGroupController(context: ControllerContext)
     override fun endpoints(repos: RepositoryFactory): Iterable<EndpointDefinition<*>>
     {
         val repo: (Repositories) -> ModellingGroupRepository = { it.modellingGroup }
+        val touchstoneRepo: (Repositories) -> TouchstoneRepository = { it.touchstone }
         return listOf(
                 oneRepoEndpoint("/", this::getModellingGroups, repos, repo).secured(setOf("*/modelling-groups.read")),
                 oneRepoEndpoint("/:group-id/", this::getModellingGroup, repos, repo).secured(setOf("*/modelling-groups.read", "*/models.read")),
                 oneRepoEndpoint("$responsibilitiesURL/", this::getResponsibilities, repos, repo).secured(responsibilityPermissions),
+                oneRepoEndpoint("$touchstonesURL/", this::getTouchstones, repos, touchstoneRepo).secured(touchtonePermissions),
                 oneRepoEndpoint("$scenarioURL/", this::getResponsibility, repos, repo).secured(responsibilityPermissions),
                 oneRepoEndpoint("$scenarioURL/coverage_sets/", this::getCoverageSets, repos, repo).secured(coveragePermissions),
                 oneRepoEndpoint("$coverageURL/", this::getCoverageDataAndMetadata.streamed(), repos, repo, contentType = "application/json").secured(coveragePermissions),
@@ -107,6 +116,18 @@ open class ModellingGroupController(context: ControllerContext)
         val data = repo.getResponsibilities(groupId, touchstoneId, filterParameters)
         context.checkIsAllowedToSeeTouchstone(touchstoneId, data.touchstoneStatus)
         return data.responsibilities
+    }
+
+    private fun getTouchstones(context: ActionContext, repo: TouchstoneRepository): List<Touchstone>
+    {
+        val groupId = groupId(context)
+
+        var touchstones = repo.getTouchstonesByGroupId(groupId)
+        if (!context.hasPermission(touchstonePreparer))
+        {
+            touchstones = touchstones.filter { it.status != TouchstoneStatus.IN_PREPARATION }
+        }
+        return touchstones
     }
 
     fun getResponsibility(context: ActionContext, repo: ModellingGroupRepository): ResponsibilityAndTouchstone
