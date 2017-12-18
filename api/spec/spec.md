@@ -1344,6 +1344,27 @@ Creates a new model run parameter set for the given model. Accepts multipart/for
 
 
 # Responsibilities
+## GET /modelling-groups/{modelling-group-id}/responsibilities/
+Will return list of touchstones that this modelling group is responsible for.
+
+Touchstones that are `in-preparation` should not be returned unless the user has
+permission to see touchstones before they are made `open`.
+
+Required permissions: Global scope: `touchstones.read`. Scoped to modelling group: `responsibilities.read`. Also see note above about `in-preparation` touchstones - need `touchstones.prepare`.
+
+Schema: [`Touchstones.schema.json`](Touchstones.schema.json)
+
+### Example
+    [
+        {
+            "id": "op-2017-1",
+            "name": "op-2017",
+            "version": 1,
+            "description": "2017 Operational Forecast",
+            "status": "finished"
+        }
+    ]
+    
 ## GET /modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}/
 Returns an enumerations of the responsibilities of this modelling group in the given touchstone,
 and the overall status of this modelling groups work in this touchstone.
