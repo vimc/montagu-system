@@ -6,6 +6,7 @@ import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
+import org.vaccineimpact.api.app.security.isAllowedToSeeTouchstone
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import org.vaccineimpact.api.security.WebTokenHelper
@@ -26,10 +27,7 @@ class TouchstoneController(
     fun getTouchstones(): List<Touchstone>
     {
         var touchstones = repo.touchstones.all()
-        if (!context.hasPermission(touchstonePreparer))
-        {
-            touchstones = touchstones.filter { it.status != TouchstoneStatus.IN_PREPARATION }
-        }
+        touchstones = touchstones.filter { context.isAllowedToSeeTouchstone(it.status) }
         return touchstones.toList()
     }
 

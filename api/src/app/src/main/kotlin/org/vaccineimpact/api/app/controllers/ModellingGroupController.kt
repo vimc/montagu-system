@@ -13,6 +13,7 @@ import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
 import org.vaccineimpact.api.app.context.postData
 import org.vaccineimpact.api.app.repositories.*
 import org.vaccineimpact.api.app.security.checkEstimatePermissionsForTouchstone
+import org.vaccineimpact.api.app.security.isAllowedToSeeTouchstone
 import org.vaccineimpact.api.app.security.checkIsAllowedToSeeTouchstone
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.helpers.OneTimeAction
@@ -33,7 +34,6 @@ open class ModellingGroupController(context: ControllerContext)
             "*/scenarios.read",
             "$groupScope/responsibilities.read"
     )
-    private val touchstonePreparer = ReifiedPermission("touchstones.prepare", Scope.Global())
     val touchtonePermissions = setOf(
             "*/touchstones.read",
             "$groupScope/responsibilities.read"
@@ -123,10 +123,7 @@ open class ModellingGroupController(context: ControllerContext)
         val groupId = groupId(context)
 
         var touchstones = repo.getTouchstonesByGroupId(groupId)
-        if (!context.hasPermission(touchstonePreparer))
-        {
-            touchstones = touchstones.filter { it.status != TouchstoneStatus.IN_PREPARATION }
-        }
+        touchstones = touchstones.filter { context.isAllowedToSeeTouchstone(it.status) }
         return touchstones
     }
 
