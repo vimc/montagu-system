@@ -72,12 +72,10 @@ class OnetimeLinkResolverTests : MontaguTests()
 {
 
     @Test
-    fun `perform invokes callback with OneTimeLinkActionContext`()
+    fun `perform invokes callback`()
     {
         // Mocks
-        val controllers = mock<MontaguControllers>() {
-            on { modellingGroup } doReturn mock<ModellingGroupController>()
-        }
+        val controllers = mock<MontaguControllers>()
         val userRepo = mock<UserRepository>()
         val repos = mock<Repositories> {
             on { token } doReturn mock<TokenRepository>()
