@@ -233,6 +233,7 @@ class JooqModellingGroupRepository(
                 .select(SCENARIO_DESCRIPTION.ID, RESPONSIBILITY.ID)
                 .fromJoinPath(RESPONSIBILITY_SET, RESPONSIBILITY, SCENARIO, SCENARIO_DESCRIPTION)
                 .where(RESPONSIBILITY.RESPONSIBILITY_SET.eq(responsibilitySet.id))
+                .and(RESPONSIBILITY.IS_OPEN)
                 .applyWhereFilter()
                 .fetch()
                 .intoMap(SCENARIO_DESCRIPTION.ID)
