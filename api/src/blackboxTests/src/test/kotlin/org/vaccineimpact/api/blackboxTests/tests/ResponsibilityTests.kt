@@ -79,10 +79,7 @@ class ResponsibilityTests : DatabaseTest()
             it.addTouchstoneName("touchstone", "description")
             it.addTouchstone("touchstone", 1, description = "descr 1", status = "open")
             it.addTouchstone("touchstone", 2)
-            val setId = it.addResponsibilitySet(groupId, touchstoneId)
-            it.addScenarioDescription(scenarioId, "description", "yf", addDisease = true)
-            val scenarioId = it.addScenarioToTouchstone(touchstoneId, scenarioId)
-            it.addResponsibility(setId, scenarioId)
+            it.addResponsibilitySet(groupId, touchstoneId)
         } requiringPermissions {
             PermissionSet("*/touchstones.read", "$groupScope/responsibilities.read")
         } andCheckArray {

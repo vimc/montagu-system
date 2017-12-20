@@ -14,6 +14,7 @@ import org.vaccineimpact.api.databaseTests.tests.modellingGroupRepository.GetRes
 import org.vaccineimpact.api.databaseTests.tests.modellingGroupRepository.GetResponsibilityCoverageSetsTests
 import org.vaccineimpact.api.databaseTests.tests.touchstoneRepository.GetDemographicsTests
 import org.vaccineimpact.api.databaseTests.tests.touchstoneRepository.GetScenarioTests
+import org.vaccineimpact.api.databaseTests.tests.touchstoneRepository.GetTouchstoneTests
 import org.vaccineimpact.api.test_helpers.DatabaseCreationHelper
 
 // Keep these sorted alphabetically, for consistency
@@ -28,6 +29,7 @@ import org.vaccineimpact.api.test_helpers.DatabaseCreationHelper
         GetResponsibilitiesTests::class,
         GetResponsibilityCoverageSetsTests::class,
         GetScenarioTests::class,
+        GetTouchstoneTests::class,
         ModelParameterTests::class,
         ModelTests::class,
         PopulateBurdenEstimateSetTests::class,
