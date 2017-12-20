@@ -34,7 +34,7 @@ class GetTouchstoneTests : TouchstoneRepositoryTests()
         } check {
             repo ->
             val touchstones = repo.getTouchstonesByGroupId(groupId)
-            assertThat(touchstones).isNotEmpty()
+            assertThat(touchstones).isInstanceOf(List::class.java)
             assertThat(touchstones).hasSize(2)
             assertThat(touchstones[0]).isEqualTo(
                     Touchstone(touchstoneId, "touchstone", 1, "descr 1", TouchstoneStatus.OPEN)
