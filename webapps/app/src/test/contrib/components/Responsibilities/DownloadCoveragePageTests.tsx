@@ -2,7 +2,7 @@ import * as React from "react";
 import {Sandbox} from "../../../Sandbox";
 import {expect} from "chai";
 import {expectOneAction} from "../../../actionHelpers";
-import {mockLocation, setupMainStore} from "../../../mocks/mocks";
+import {mockLocation, setupStore} from "../../../mocks/mocks";
 
 import {responsibilityStore} from "../../../../main/contrib/stores/ResponsibilityStore";
 import {mockModellingGroup, mockTouchstone} from "../../../mocks/mockModels";
@@ -31,8 +31,10 @@ describe('DownloadCoveragePage', () => {
         const fetchResponsibilities = sandbox.sinon.stub(responsibilityStore, "fetchResponsibilities").returns(Promise.resolve(true));
         const fetchCoverageSets = sandbox.sinon.stub(responsibilityStore, "fetchCoverageSets").returns(Promise.resolve(true));
         const fetchOneTimeCoverageToken = sandbox.sinon.stub(responsibilityStore, "fetchOneTimeCoverageToken").returns(Promise.resolve(true));
+
         const group = mockModellingGroup({id: "group-1"});
-        setupMainStore({groups: [group]});
+        const touchstone = mockTouchstone({id: "touchstone-1"});
+        setupStore({groups: [group], touchstones: [touchstone]});
 
         new DownloadCoveragePage({location: location, router: null}).load();
 

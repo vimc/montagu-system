@@ -4,7 +4,7 @@ import {expect} from "chai";
 import {checkAsync} from "../../../../testHelpers";
 import {expectOneAction} from "../../../../actionHelpers";
 import {DownloadDemographicsPage} from "../../../../../main/contrib/components/Responsibilities/Demographics/DownloadDemographicsPage";
-import {mockLocation, setupMainStore} from "../../../../mocks/mocks";
+import {mockLocation, setupStore} from "../../../../mocks/mocks";
 import {mockDemographicDataset, mockModellingGroup, mockTouchstone} from "../../../../mocks/mockModels";
 import {responsibilityStore} from "../../../../../main/contrib/stores/ResponsibilityStore";
 import {demographicStore} from "../../../../../main/contrib/stores/DemographicStore";
@@ -25,12 +25,14 @@ describe("DownloadDemographicsPage", () => {
     });
 
     it("triggers actions on load", (done: DoneCallback) => {
+
         const spy = sandbox.dispatchSpy();
         const fetchTouchstones = sandbox.sinon.stub(responsibilityStore, "fetchTouchstones").returns(Promise.resolve(true));
         const fetchDataSets = sandbox.sinon.stub(demographicStore, "fetchDataSets").returns(Promise.resolve(true));
 
         const group = mockModellingGroup({id: "group-1"});
-        setupMainStore({groups: [group]});
+        const touchstone = mockTouchstone({id: "touchstone-1"});
+        setupStore({groups: [group], touchstones: [touchstone]});
 
         new DownloadDemographicsPage({location: location, router: null}).load();
 

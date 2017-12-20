@@ -14,7 +14,7 @@ import {bootstrapStore} from "../../../../StoreHelpers";
 import {mainStore} from "../../../../../main/contrib/stores/MainStore";
 import {makeLoadable} from "../../../../../main/contrib/stores/Loadable";
 import {mockResponsibilitiesEndpoint, mockTouchstonesEndpoint} from "../../../../mocks/mockEndpoints";
-import {mockLocation, setupMainStore} from "../../../../mocks/mocks";
+import {mockLocation, setupStore} from "../../../../mocks/mocks";
 import {expectOrderedActions} from "../../../../actionHelpers";
 import {Sandbox} from "../../../../Sandbox";
 
@@ -38,7 +38,9 @@ describe('UploadEstimatesPage', () => {
         sandbox.sinon.stub(jwtDecoder, "jwtDecode").returns({result: JSON.stringify(mockResult("OK"))});
         sandbox.sinon.stub(helpers, "queryStringAsObject").returns({result: "blahblahblah"});
 
-        setupMainStore({groups: [group]});
+        const touchstone = mockTouchstone({id: "touchstone-1"});
+
+        setupStore({groups: [group], touchstones: [touchstone]});
 
         new UploadBurdenEstimatesPage({location: location, router: null}).load();
 

@@ -27,6 +27,23 @@ export function setupMainStore(config: {
     }));
 }
 
+export function setupStore(config: {
+    diseases?: models.Disease[],
+    groups?: models.ModellingGroup[],
+    touchstones?: models.Touchstone[],
+})
+{
+    alt.bootstrap(JSON.stringify({
+        MainStore: {
+            diseases: makeLoadable<models.Disease>(config.diseases),
+            modellingGroups: makeLoadable<models.ModellingGroup>(config.groups),
+        },
+        ResponsibilityStore: {
+            touchstones: config.touchstones,
+        }
+    }));
+}
+
 export function mockEvent() {
     return {
         preventDefault: () => {
