@@ -12,6 +12,7 @@ demo/app/src/main/java/uk/ac/imperial/vimc/demo/app/models/jooq/**
 demo/build/*
 demo/out
 lib/
+spec/.idea/*
 src/*/build/*
 src/*/out/
 src/.gradle
@@ -31,7 +32,7 @@ src/.idea/vcs.xml
 src/.idea/workspace.xml
 src/build/*
 src/config/users/current_user
-src/out
-test-data\.sql
 src/config/users/martin\.properties
-spec/.idea/*
+src/out
+test-data\.bin
+test-data\.sql
