@@ -72,8 +72,8 @@ class ModellingGroupControllersTests : ControllerTests<ModellingGroupController>
             on { username } doReturn "user.name"
             on { params(":group-id") } doReturn "group-1"
             on { params(":touchstone-id") } doReturn "touchstone-1"
-            on { getPart("disease") } doReturn StringReader("disease-1")
-            on { getPart("description") } doReturn StringReader("some description")
+            on { getPart(eq("disease"), anyOrNull()) } doReturn StringReader("disease-1")
+            on { getPart(eq("description"), anyOrNull()) } doReturn StringReader("some description")
         }
 
         val controller = makeController(mockControllerContext())
@@ -90,7 +90,7 @@ class ModellingGroupControllersTests : ControllerTests<ModellingGroupController>
         val mockContext = mock<ActionContext> {
             on { params(":group-id") } doReturn "group-1"
             on { params(":touchstone-id") } doReturn "touchstone-bad"
-            on { getPart("disease") } doReturn StringReader("disease-1")
+            on { getPart(eq("disease"), anyOrNull()) } doReturn StringReader("disease-1")
         }
 
         val controller = makeController(mockControllerContext())

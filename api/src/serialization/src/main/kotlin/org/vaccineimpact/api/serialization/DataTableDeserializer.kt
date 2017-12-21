@@ -2,9 +2,10 @@ package org.vaccineimpact.api.serialization
 
 import com.opencsv.CSVReader
 import org.vaccineimpact.api.models.ErrorInfo
-import org.vaccineimpact.api.models.helpers.AllColumnsRequired
 import org.vaccineimpact.api.models.helpers.FlexibleColumns
+import org.vaccineimpact.api.models.helpers.AllColumnsRequired
 import org.vaccineimpact.api.serialization.validation.ValidationException
+import java.io.FilterReader
 import java.io.Reader
 import java.io.StringReader
 import kotlin.reflect.KClass
@@ -26,22 +27,21 @@ open class DataTableDeserializer<out T>(
 
     fun deserialize(stream: Reader): Sequence<T>
     {
-        return CSVReader(stream).use { reader ->
-            val rows = generateSequence { reader.readNext() }.stripEmptyRows()
-            val (headerRow, content) = rows.headAndTail()
+        val reader = CSVReader(stream)
+        val rows = generateSequence { reader.readNext() }.stripEmptyRows()
+        val (headerRow, content) = rows.headAndTail()
 
-            if (headerRow == null)
-            {
-                throw ValidationException(listOf(ErrorInfo("csv-empty", "CSV was empty - no rows or headers were found")))
-            }
+        if (headerRow == null)
+        {
+            throw ValidationException(listOf(ErrorInfo("csv-empty", "CSV was empty - no rows or headers were found")))
+        }
 
-            val actualHeaderNames = headerRow.toList()
-            checkHeaders(actualHeaderNames)
-            val actualHeaders = getActualHeaderDefinitions(actualHeaderNames)
+        val actualHeaderNames = headerRow.toList()
+        checkHeaders(actualHeaderNames)
+        val actualHeaders = getActualHeaderDefinitions(actualHeaderNames)
 
-            content.withIndex().map { (i, row) ->
-                deserializeRow(row.toList(), actualHeaders, i)
-            }
+        return content.withIndex().map { (i, row) ->
+            deserializeRow(row.toList(), actualHeaders, i)
         }
     }
 
