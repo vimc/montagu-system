@@ -1,6 +1,7 @@
 package org.vaccineimpact.api.app
 
 import com.google.gson.JsonSyntaxException
+import org.bouncycastle.cert.ocsp.Req
 import org.jooq.exception.DataAccessException
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -27,6 +28,7 @@ open class ErrorHandler(private val logger: Logger = LoggerFactory.getLogger(Err
 
     open fun logExceptionAndReturnMontaguError(exception: kotlin.Exception, req: Request): MontaguError
     {
+        consumeRequest(req)
         val error = when (exception)
         {
             is MontaguError -> exception
@@ -54,6 +56,18 @@ open class ErrorHandler(private val logger: Logger = LoggerFactory.getLogger(Err
     {
         return spark.Spark.exception(TException::class.java) { e, req, res ->
             handler(e as TException, req, res)
+        }
+    }
+
+    // This makes sure we have finished consuming the request before returning
+    // any error response.
+    private fun consumeRequest(req: Request)
+    {
+        val inputStream = req.raw().inputStream
+        val buffer = ByteArray(8096)
+        while (inputStream.read(buffer) > 0)
+        {
+            //keep going
         }
     }
 
