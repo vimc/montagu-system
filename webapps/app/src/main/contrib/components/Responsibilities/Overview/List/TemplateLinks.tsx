@@ -1,9 +1,8 @@
 import * as React from "react";
 import { mainStore } from "../../../../stores/MainStore";
 import { ExtendedResponsibility } from "../../../../models/ResponsibilitySet";
-import { ButtonLink } from "../../../../../shared/components/ButtonLink";
-import { Link } from "simple-react-router";
-import { appSettings } from "../../../../../shared/Settings";
+
+const stochasticParams = require('./stochastic_template_params.csv');
 
 export interface TemplateLinksProps {
     responsibilities: ExtendedResponsibility[];
@@ -46,7 +45,7 @@ export class TemplateLinks extends React.Component<TemplateLinksProps, undefined
                 {links}
                 <div>
                     <a key={"params"}
-                       href={"/contribution/templates/stochastic_template_params.csv"}>Stochastic parameters template</a>
+                       href={stochasticParams}>Stochastic parameters template</a>
                 </div>
             </div>;
         } else {
