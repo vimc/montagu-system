@@ -383,8 +383,8 @@ function addResponsibilities(db: Client): Promise<ResponsibilityIds> {
                 VALUES ('${groupId}', '${touchstoneId}', 'incomplete')
                 RETURNING id INTO set_id;
                 
-                INSERT INTO responsibility (responsibility_set, scenario)
-                VALUES (set_id, scenario_id);
+                INSERT INTO responsibility (responsibility_set, scenario, is_open)
+                VALUES (set_id, scenario_id, true);
             END $$;
     `))
         .then(() => db.query(`SELECT responsibility.id as responsibility, responsibility_set.id as responsibility_set 
