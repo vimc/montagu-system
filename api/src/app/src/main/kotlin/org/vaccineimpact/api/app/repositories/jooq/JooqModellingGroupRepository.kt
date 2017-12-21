@@ -233,6 +233,9 @@ class JooqModellingGroupRepository(
                 .select(SCENARIO_DESCRIPTION.ID, RESPONSIBILITY.ID)
                 .fromJoinPath(RESPONSIBILITY_SET, RESPONSIBILITY, SCENARIO, SCENARIO_DESCRIPTION)
                 .where(RESPONSIBILITY.RESPONSIBILITY_SET.eq(responsibilitySet.id))
+                // this check is needed for the situation where a group has a responsibility set with
+                // multiple diseases, but we want to 'close' some and not others for a touchstone
+                // it will be obsolete when we refactor responsibility sets to be single disease only
                 .and(RESPONSIBILITY.IS_OPEN)
                 .applyWhereFilter()
                 .fetch()
