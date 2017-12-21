@@ -98,6 +98,19 @@ function commonConfig(name, public_path) {
                     exclude: [/index.html$/],
                 },
                 {
+                    test: /stochastic_template_params.csv$/,
+                    loaders: [
+                    {
+                        loader: "file-loader",
+                        options: {
+                            publicPath: public_path + 'resources/',
+                            outputPath: 'resources/',
+                            name: 'stochastic_template_params.csv'
+                        }
+                    }
+                ]
+                },
+                {
                     test: /.md$/,
                     loader: "ignore-loader"
                 }
