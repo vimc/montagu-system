@@ -119,6 +119,30 @@ class GetResponsibilitiesTests : ModellingGroupRepositoryTests()
     }
 
     @Test
+    fun `only gets open responsibilities`()
+    {
+        given {
+            it.addGroup("group", "description")
+            it.addScenarioDescription("scenario-1", "description 1", "disease 1", addDisease = true)
+            it.addScenarioDescription("scenario-2", "description 2", "disease 2", addDisease = true)
+            it.addTouchstone("touchstone", 1, "description", "open", addName = true)
+            val setId = it.addResponsibilitySet("group", "touchstone-1", "submitted")
+            it.addResponsibility(setId, "touchstone-1", "scenario-1")
+            it.addResponsibility(setId, "touchstone-1", "scenario-2", open = false)
+        } check { repo ->
+            val set = repo.getResponsibilities("group", "touchstone-1", ScenarioFilterParameters()).responsibilities
+            assertThat(set).hasSameElementsAs(listOf(
+                    Responsibility(
+                            Scenario("scenario-1", "description 1", "disease 1", listOf("touchstone-1")),
+                            ResponsibilityStatus.EMPTY,
+                            emptyList(),
+                            null
+                    )
+            ))
+        }
+    }
+
+    @Test
     fun `returns burden estimate`()
     {
         var burdenEstimateId = 0
