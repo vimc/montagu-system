@@ -4,6 +4,8 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload
 import org.pac4j.core.profile.CommonProfile
 import org.pac4j.core.profile.ProfileManager
 import org.pac4j.sparkjava.SparkWebContext
+import org.vaccineimpact.api.app.MultipartData
+import org.vaccineimpact.api.app.ServletFileUploadWrapper
 import org.vaccineimpact.api.app.addDefaultResponseHeaders
 import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.errors.MissingRequiredPermissionError
@@ -42,20 +44,20 @@ class DirectActionContext(private val context: SparkWebContext,
     override fun <T : Any> postData(klass: Class<T>): T
             = ModelBinder().deserialize(request.body(), klass)
 
-    override fun getPart(name: String): Reader
+    override fun getPart(name: String, multipartData: MultipartData): Reader
     {
         val rawRequest = request.raw()
-        val isMultipart = ServletFileUpload.isMultipartContent(rawRequest)
+        val isMultipart = multipartData.isMultipartContent(rawRequest)
         if (!isMultipart)
         {
             throw BadRequest("Trying to extract a part from multipart/form-data " +
                     "but this request is of type ${request.contentType()}")
         }
 
-        val parts = ServletFileUpload().partsAsSequence(rawRequest)
+        val parts = multipartData.parts(rawRequest)
         val matchingPart = parts.firstOrNull { it.fieldName == name }
-            ?: throw BadRequest("No value passed for required POST parameter '$name'. " +
-                "Available parts: ${ServletFileUpload().partsAsSequence(rawRequest).joinToString { it.fieldName }}")
+                ?: throw BadRequest("No value passed for required POST parameter '$name'. " +
+                "Available parts: ${multipartData.parts(rawRequest).joinToString { it.fieldName }}")
 
         return matchingPart.openStream().bufferedReader()
     }
