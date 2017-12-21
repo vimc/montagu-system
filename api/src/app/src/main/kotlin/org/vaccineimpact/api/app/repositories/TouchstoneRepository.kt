@@ -1,5 +1,6 @@
 package org.vaccineimpact.api.app.repositories
 
+import org.jooq.Record
 import org.vaccineimpact.api.serialization.SplitData
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
 import org.vaccineimpact.api.models.*
@@ -12,5 +13,5 @@ interface TouchstoneRepository : Repository
     fun getScenarioAndCoverageData(touchstoneId: String, scenarioDescId: String): SplitData<ScenarioAndCoverageSets, LongCoverageRow>
     fun getDemographicDatasets(touchstoneId: String): List<DemographicDataset>
     fun getDemographicData(statisticTypeCode: String, source: String, touchstoneId: String, gender: String = "both"): SplitData<DemographicDataForTouchstone, LongDemographicRow>
-
+    fun mapTouchstone(record: Record): Touchstone
 }

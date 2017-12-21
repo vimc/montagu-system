@@ -141,6 +141,22 @@ class JooqModellingGroupRepository(
         ), scenarioAndData.tableData)
     }
 
+    override fun getTouchstonesByGroupId(groupId: String): List<Touchstone>
+    {
+        val group = getModellingGroup(groupId)
+        var query = dsl
+                .select(
+                        TOUCHSTONE.ID,
+                        TOUCHSTONE.TOUCHSTONE_NAME,
+                        TOUCHSTONE.STATUS,
+                        TOUCHSTONE.DESCRIPTION,
+                        TOUCHSTONE.VERSION
+                )
+                .fromJoinPath(TOUCHSTONE, RESPONSIBILITY_SET, joinType = JoinType.JOIN)
+                .where(RESPONSIBILITY_SET.MODELLING_GROUP.eq(group.id))
+        return query.fetch().map { touchstoneRepository.mapTouchstone(it) }
+    }
+
     private fun convertScenarioToResponsibility(scenario: Scenario, responsibilityId: Int): Responsibility
     {
         val burdenEstimateSet = getCurrentBurdenEstimate(responsibilityId)
