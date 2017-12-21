@@ -20,14 +20,9 @@ import org.vaccineimpact.api.models.Scope
 import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import org.vaccineimpact.api.test_helpers.MontaguTests
-import org.vaccineimpact.api.tests.mocks.MockServletInputStream
 import spark.Request
 import java.io.ByteArrayInputStream
-import java.io.InputStream
-import java.io.StringReader
-import javax.servlet.ServletInputStream
 import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.Part
 
 class DirectActionContextTests : MontaguTests()
 {
