@@ -63,11 +63,14 @@ open class ErrorHandler(private val logger: Logger = LoggerFactory.getLogger(Err
     // any error response.
     private fun consumeRequest(req: Request)
     {
-        val inputStream = req.raw().inputStream
-        val buffer = ByteArray(8096)
-        while (inputStream.read(buffer) > 0)
+        val inputStream = req.raw()?.inputStream
+        if (inputStream != null)
         {
-            //keep going
+            val buffer = ByteArray(8096)
+            while (inputStream.read(buffer) > 0)
+            {
+                //keep going
+            }
         }
     }
 
