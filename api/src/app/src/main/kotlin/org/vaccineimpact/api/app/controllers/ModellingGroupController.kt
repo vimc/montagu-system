@@ -48,12 +48,11 @@ open class ModellingGroupController(context: ControllerContext)
     override fun endpoints(repos: RepositoryFactory): Iterable<EndpointDefinition<*>>
     {
         val repo: (Repositories) -> ModellingGroupRepository = { it.modellingGroup }
-        val touchstoneRepo: (Repositories) -> TouchstoneRepository = { it.touchstone }
         return listOf(
                 oneRepoEndpoint("/", this::getModellingGroups, repos, repo).secured(setOf("*/modelling-groups.read")),
                 oneRepoEndpoint("/:group-id/", this::getModellingGroup, repos, repo).secured(setOf("*/modelling-groups.read", "*/models.read")),
                 oneRepoEndpoint("$responsibilitiesURL/", this::getResponsibilities, repos, repo).secured(responsibilityPermissions),
-                oneRepoEndpoint("$touchstonesURL/", this::getTouchstones, repos, touchstoneRepo).secured(touchtonePermissions),
+                oneRepoEndpoint("$touchstonesURL/", this::getTouchstones, repos, repo).secured(touchtonePermissions),
                 oneRepoEndpoint("$scenarioURL/", this::getResponsibility, repos, repo).secured(responsibilityPermissions),
                 oneRepoEndpoint("$scenarioURL/coverage_sets/", this::getCoverageSets, repos, repo).secured(coveragePermissions),
                 oneRepoEndpoint("$coverageURL/", this::getCoverageDataAndMetadata.streamed(), repos, repo, contentType = "application/json").secured(coveragePermissions),
@@ -118,7 +117,7 @@ open class ModellingGroupController(context: ControllerContext)
         return data.responsibilities
     }
 
-    fun getTouchstones(context: ActionContext, repo: TouchstoneRepository): List<Touchstone>
+    fun getTouchstones(context: ActionContext, repo: ModellingGroupRepository): List<Touchstone>
     {
         val groupId = groupId(context)
 

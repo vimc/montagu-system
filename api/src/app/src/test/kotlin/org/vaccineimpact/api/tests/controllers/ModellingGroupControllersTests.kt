@@ -365,10 +365,10 @@ class ModellingGroupControllersTests : ControllerTests<ModellingGroupController>
     }
 
     @Test
-    fun `can return touchstones list if user has permission to read prepared touchstones`()
+    fun `returns in preparation touchstones if user has permission to read prepared touchstones`()
     {
         val groupId = "test-group"
-        val repo = mock<TouchstoneRepository> {
+        val repo = mock<ModellingGroupRepository> {
             on { getTouchstonesByGroupId(groupId) } doReturn mockTouchstones
         }
 
@@ -383,10 +383,10 @@ class ModellingGroupControllersTests : ControllerTests<ModellingGroupController>
     }
 
     @Test
-    fun `can return touchstones list if user has no permission to read prepared touchstones`()
+    fun `does not return in preparation touchstones if user has no permission to read prepared touchstones`()
     {
         val groupId = "test-group"
-        val repo = mock<TouchstoneRepository> {
+        val repo = mock<ModellingGroupRepository> {
             on { getTouchstonesByGroupId(groupId) } doReturn mockTouchstones
         }
 
