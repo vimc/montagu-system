@@ -131,9 +131,6 @@ class GetResponsibilitiesTests : ModellingGroupRepositoryTests()
             it.addResponsibility(setId, "touchstone-1", "scenario-2", open = false)
         } check { repo ->
             val set = repo.getResponsibilities("group", "touchstone-1", ScenarioFilterParameters()).responsibilities
-            assertThat(set.touchstone).isEqualTo("touchstone-1")
-            assertThat(set.status).isEqualTo(ResponsibilitySetStatus.SUBMITTED)
-            assertThat(set.problems).isEmpty()
             assertThat(set).hasSameElementsAs(listOf(
                     Responsibility(
                             Scenario("scenario-1", "description 1", "disease 1", listOf("touchstone-1")),
