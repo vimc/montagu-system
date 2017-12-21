@@ -1,15 +1,12 @@
 package org.vaccineimpact.api.app.context
 
-import org.apache.commons.fileupload.servlet.ServletFileUpload
 import org.pac4j.core.profile.CommonProfile
 import org.pac4j.core.profile.ProfileManager
 import org.pac4j.sparkjava.SparkWebContext
 import org.vaccineimpact.api.app.MultipartData
-import org.vaccineimpact.api.app.ServletFileUploadWrapper
 import org.vaccineimpact.api.app.addDefaultResponseHeaders
 import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.errors.MissingRequiredPermissionError
-import org.vaccineimpact.api.app.partsAsSequence
 import org.vaccineimpact.api.app.security.montaguPermissions
 import org.vaccineimpact.api.db.Config
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
