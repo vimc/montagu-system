@@ -39,7 +39,7 @@ import org.vaccineimpact.api.db.tables.records.ResponsibilityRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Responsibility extends TableImpl<ResponsibilityRecord> {
 
-    private static final long serialVersionUID = 1270514123;
+    private static final long serialVersionUID = -176465499;
 
     /**
      * The reference instance of <code>public.responsibility</code>
@@ -78,6 +78,11 @@ public class Responsibility extends TableImpl<ResponsibilityRecord> {
      * The column <code>public.responsibility.current_stochastic_burden_estimate_set</code>.
      */
     public final TableField<ResponsibilityRecord, Integer> CURRENT_STOCHASTIC_BURDEN_ESTIMATE_SET = createField("current_stochastic_burden_estimate_set", org.jooq.impl.SQLDataType.INTEGER, this, "");
+
+    /**
+     * The column <code>public.responsibility.is_open</code>.
+     */
+    public final TableField<ResponsibilityRecord, Boolean> IS_OPEN = createField("is_open", org.jooq.impl.SQLDataType.BOOLEAN, this, "");
 
     /**
      * Create a <code>public.responsibility</code> table reference

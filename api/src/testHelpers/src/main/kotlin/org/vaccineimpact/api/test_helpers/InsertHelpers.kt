@@ -246,22 +246,25 @@ fun JooqContext.updateCurrentEstimate(responsibilityId: Int, burdenId: Int)
             .execute()
 }
 
-fun JooqContext.addResponsibility(responsibilitySetId: Int, scenarioId: Int, burdenId: Int? = null): Int
+fun JooqContext.addResponsibility(responsibilitySetId: Int, scenarioId: Int,
+                                  burdenId: Int? = null, open: Boolean = true): Int
 {
     val record = this.dsl.newRecord(RESPONSIBILITY).apply {
         responsibilitySet = responsibilitySetId
         scenario = scenarioId
         currentBurdenEstimateSet = burdenId
+        isOpen = open
     }
     record.store()
     return record.id
 }
 
 /** Creates both a responsibility and the scenario it depends on **/
-fun JooqContext.addResponsibility(responsibilitySetId: Int, touchstone: String, scenarioDescription: String): Int
+fun JooqContext.addResponsibility(responsibilitySetId: Int, touchstone: String, scenarioDescription: String,
+                                  open: Boolean = true): Int
 {
     val scenarioId = this.addScenarioToTouchstone(touchstone, scenarioDescription)
-    return this.addResponsibility(responsibilitySetId, scenarioId)
+    return this.addResponsibility(responsibilitySetId, scenarioId, open = open)
 }
 
 fun JooqContext.addCoverageSet(
