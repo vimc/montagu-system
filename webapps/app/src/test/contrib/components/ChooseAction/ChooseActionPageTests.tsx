@@ -2,7 +2,7 @@ import * as React from "react";
 import { expect } from "chai";
 import { Sandbox } from "../../../Sandbox";
 import { ChooseActionPage, LocationProps } from "../../../../main/contrib/components/ChooseAction/ChooseActionPage";
-import {mockLocation, setupStore} from "../../../mocks/mocks";
+import {mockLocation, setupStores} from "../../../mocks/mocks";
 import { expectOneAction } from "../../../actionHelpers";
 import { checkAsync } from "../../../testHelpers";
 import { responsibilityStore } from "../../../../main/contrib/stores/ResponsibilityStore";
@@ -30,7 +30,7 @@ describe("ChooseActionPage", () => {
         const location = mockLocation<LocationProps>({ groupId: "gId" });
 
         const group = mockModellingGroup({id: "gId"});
-        setupStore({groups: [group]});
+        setupStores({groups: [group]});
 
         new ChooseActionPage({location: location, router: null}).load();
         checkAsync(done, (afterWait) => {

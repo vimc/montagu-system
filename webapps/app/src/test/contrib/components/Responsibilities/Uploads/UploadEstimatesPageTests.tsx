@@ -14,7 +14,7 @@ import {bootstrapStore} from "../../../../StoreHelpers";
 import {mainStore} from "../../../../../main/contrib/stores/MainStore";
 import {makeLoadable} from "../../../../../main/contrib/stores/Loadable";
 import {mockResponsibilitiesEndpoint, mockTouchstonesEndpoint} from "../../../../mocks/mockEndpoints";
-import {mockLocation, setupStore} from "../../../../mocks/mocks";
+import {mockLocation, setupStores} from "../../../../mocks/mocks";
 import {expectOrderedActions} from "../../../../actionHelpers";
 import {Sandbox} from "../../../../Sandbox";
 
@@ -40,7 +40,7 @@ describe('UploadEstimatesPage', () => {
 
         const touchstone = mockTouchstone({id: "touchstone-1"});
 
-        setupStore({groups: [group], touchstones: [touchstone]});
+        setupStores({groups: [group], touchstones: [touchstone]});
 
         new UploadBurdenEstimatesPage({location: location, router: null}).load();
 

@@ -4,7 +4,7 @@ import {expect} from "chai";
 import {checkAsync} from "../../../../testHelpers";
 import {expectOneAction} from "../../../../actionHelpers";
 import {DownloadDemographicsPage} from "../../../../../main/contrib/components/Responsibilities/Demographics/DownloadDemographicsPage";
-import {mockLocation, setupStore} from "../../../../mocks/mocks";
+import {mockLocation, setupStores} from "../../../../mocks/mocks";
 import {mockDemographicDataset, mockModellingGroup, mockTouchstone} from "../../../../mocks/mockModels";
 import {responsibilityStore} from "../../../../../main/contrib/stores/ResponsibilityStore";
 import {demographicStore} from "../../../../../main/contrib/stores/DemographicStore";
@@ -32,7 +32,7 @@ describe("DownloadDemographicsPage", () => {
 
         const group = mockModellingGroup({id: "group-1"});
         const touchstone = mockTouchstone({id: "touchstone-1"});
-        setupStore({groups: [group], touchstones: [touchstone]});
+        setupStores({groups: [group], touchstones: [touchstone]});
 
         new DownloadDemographicsPage({location: location, router: null}).load();
 

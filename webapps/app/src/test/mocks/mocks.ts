@@ -27,7 +27,7 @@ export function setupMainStore(config: {
     }));
 }
 
-export function setupStore(config: {
+export function setupStores(config: {
     diseases?: models.Disease[],
     groups?: models.ModellingGroup[],
     touchstones?: models.Touchstone[],

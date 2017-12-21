@@ -3,7 +3,7 @@ import {Sandbox} from "../../../Sandbox";
 import {expect} from "chai";
 import {shallow} from "enzyme";
 
-import {mockLocation, setupStore} from "../../../mocks/mocks";
+import {mockLocation, setupStores} from "../../../mocks/mocks";
 import {expectOneAction} from "../../../actionHelpers";
 
 import {responsibilityStore} from "../../../../main/contrib/stores/ResponsibilityStore";
@@ -36,7 +36,7 @@ describe('ResponsibilityOverviewPage', () => {
         });
         const group = mockModellingGroup({id: "group-id"});
         const touchstone = mockTouchstone({id: "touchstone-id"});
-        setupStore({groups: [group], touchstones: [touchstone]});
+        setupStores({groups: [group], touchstones: [touchstone]});
 
         new ResponsibilityOverviewPage({location: location, router: null}).load();
 

@@ -2,7 +2,7 @@ import * as React from "react";
 import {Sandbox} from "../../../Sandbox";
 import {expect} from "chai";
 import {expectOneAction} from "../../../actionHelpers";
-import {mockLocation, setupStore} from "../../../mocks/mocks";
+import {mockLocation, setupStores} from "../../../mocks/mocks";
 
 import {responsibilityStore} from "../../../../main/contrib/stores/ResponsibilityStore";
 import {mockModellingGroup, mockTouchstone} from "../../../mocks/mockModels";
@@ -34,7 +34,7 @@ describe('DownloadCoveragePage', () => {
 
         const group = mockModellingGroup({id: "group-1"});
         const touchstone = mockTouchstone({id: "touchstone-1"});
-        setupStore({groups: [group], touchstones: [touchstone]});
+        setupStores({groups: [group], touchstones: [touchstone]});
 
         new DownloadCoveragePage({location: location, router: null}).load();
 

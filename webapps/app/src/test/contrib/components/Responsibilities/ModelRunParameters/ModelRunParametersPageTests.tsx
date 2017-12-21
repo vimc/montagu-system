@@ -12,7 +12,7 @@ import {bootstrapStore} from "../../../../StoreHelpers";
 import {mainStore} from "../../../../../main/contrib/stores/MainStore";
 import {makeLoadable} from "../../../../../main/contrib/stores/Loadable";
 import {mockTouchstonesEndpoint} from "../../../../mocks/mockEndpoints";
-import {mockLocation, setupStore} from "../../../../mocks/mocks";
+import {mockLocation, setupStores} from "../../../../mocks/mocks";
 import {expectOrderedActions} from "../../../../actionHelpers";
 import {Sandbox} from "../../../../Sandbox";
 import {ModelRunParametersPage} from "../../../../../main/contrib/components/Responsibilities/ModelRunParameters/ModelRunParametersPage";
@@ -38,7 +38,7 @@ describe('ModelRunParameterPage', () => {
         sandbox.sinon.stub(helpers, "queryStringAsObject").returns({result: "blahblahblah"});
 
         const touchstone = mockTouchstone({id: "touchstone-1"});
-        setupStore({groups: [group], touchstones: [touchstone]});
+        setupStores({groups: [group], touchstones: [touchstone]});
 
         new ModelRunParametersPage({location: location, router: null}).load();
 
