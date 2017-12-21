@@ -10,6 +10,7 @@ interface MultipartData
     fun parts(request: HttpServletRequest) : Sequence<FileItemStream>
 }
 
+// A simple wrapper to enable us to mock things out in unit tests
 class ServletFileUploadWrapper : MultipartData
 {
     override fun isMultipartContent(request: HttpServletRequest)
