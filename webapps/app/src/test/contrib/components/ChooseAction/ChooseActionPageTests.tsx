@@ -2,7 +2,7 @@ import * as React from "react";
 import { expect } from "chai";
 import { Sandbox } from "../../../Sandbox";
 import { ChooseActionPage, LocationProps } from "../../../../main/contrib/components/ChooseAction/ChooseActionPage";
-import { mockLocation } from "../../../mocks/mocks";
+import {mockLocation, setupStores} from "../../../mocks/mocks";
 import { expectOneAction } from "../../../actionHelpers";
 import { checkAsync } from "../../../testHelpers";
 import { responsibilityStore } from "../../../../main/contrib/stores/ResponsibilityStore";
@@ -28,6 +28,10 @@ describe("ChooseActionPage", () => {
             .returns(Promise.resolve(null));
         const fetchGroupDetails = sandbox.sinon.stub(groupStore, "fetchGroupDetails").returns(Promise.resolve({}));
         const location = mockLocation<LocationProps>({ groupId: "gId" });
+
+        const group = mockModellingGroup({id: "gId"});
+        setupStores({groups: [group]});
+
         new ChooseActionPage({location: location, router: null}).load();
         checkAsync(done, (afterWait) => {
             expect(fetchTouchstones.called).to.equal(true, "Expected responsibilityStore.fetchTouchstones to be called");

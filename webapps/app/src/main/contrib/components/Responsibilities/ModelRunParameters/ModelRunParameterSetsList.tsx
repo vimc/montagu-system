@@ -29,7 +29,7 @@ export class ModelRunParameterSetsListComponent extends RemoteContentComponent<P
 
     private renderTable(props: Props) {
         if (props.sets && props.sets.length > 0) {
-            const items = props.sets.map(set => <tr>
+            const items = props.sets.map((set, i) => <tr key={i}>
                 <td>{set.description}</td>
                 <td>{set.uploaded_by}</td>
                 <td>{longTimestamp(new Date(set.uploaded_on))}</td>
