@@ -52,8 +52,11 @@ describe("ChooseActionPage", () => {
                 mockModellingGroup({ id: "group-2" }),
             ])
         });
+        bootstrapStore(responsibilityStore, {
+            currentModellingGroup: {id: "group-1"},
+        });
         mockFetcherForMultipleResponses([
-            mockTouchstonesEndpoint([mockTouchstone(), mockTouchstone()])
+            mockTouchstonesEndpoint([mockTouchstone(), mockTouchstone()], "group-1")
         ]);
     });
 });

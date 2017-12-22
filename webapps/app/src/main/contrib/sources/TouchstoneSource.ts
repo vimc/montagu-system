@@ -9,10 +9,12 @@ export class TouchstoneSource extends Source<ResponsibilityState> {
 
     constructor() {
         super();
-        this.fetchTouchstones = () => this.doFetch(_ => "/touchstones/", {
-            success: touchstoneActions.update,
-            loading: touchstoneActions.beginFetch,
-            isCached: state => state.touchstones != null && state.touchstones.length > 0
-        });
+        this.fetchTouchstones = () => {
+            return this.doFetch(s => `/modelling-groups/${s.currentModellingGroup.id}/responsibilities/`, {
+                success: touchstoneActions.update,
+                loading: touchstoneActions.beginFetch,
+                isCached: state => state.touchstones != null && state.touchstones.length > 0
+            });
+        }
     }
 }

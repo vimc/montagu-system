@@ -74,7 +74,11 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
         });
 
         it("fetches touchstones", (done: DoneCallback) => {
-            const promise = addTouchstone(this.db).then(() => responsibilityStore.fetchTouchstones());
+            const promise = addResponsibilities(this.db)
+                .then(() => {
+                    setGroup(groupId);
+                    return responsibilityStore.fetchTouchstones()
+                });
 
             const expected: Touchstone = {
                 id: touchstoneId,
@@ -509,6 +513,13 @@ function setTouchstoneAndGroup(touchstoneId: string, groupId: string) {
         {id: touchstoneId, description: "Touchstone", status: "open", version: 1, name: "test"}
     ]);
     touchstoneActions.setCurrentTouchstone(touchstoneId);
+    modellingGroupActions.updateGroups([
+        {id: groupId, description: "Group 1"}
+    ]);
+    modellingGroupActions.setCurrentGroup(groupId);
+}
+
+function setGroup(groupId: string) {
     modellingGroupActions.updateGroups([
         {id: groupId, description: "Group 1"}
     ]);

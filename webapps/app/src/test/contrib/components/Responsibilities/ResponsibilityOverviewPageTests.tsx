@@ -62,7 +62,7 @@ describe('ResponsibilityOverviewPage', () => {
             modellingGroups: makeLoadable([mockModellingGroup({id: "group-1"})])
         });
         mockFetcherForMultipleResponses([
-            mockTouchstonesEndpoint([mockTouchstone({id: "touchstone-1"})]),
+            mockTouchstonesEndpoint([mockTouchstone({id: "touchstone-1"})],"group-1"),
             mockResponsibilitiesEndpoint(["scenario-1"])
         ]);
     });
