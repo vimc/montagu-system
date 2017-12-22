@@ -46,6 +46,7 @@ class DirectActionContext(private val context: SparkWebContext,
     override fun <T : Any> postData(klass: Class<T>): T
             = ModelBinder().deserialize(request.body(), klass)
 
+    // Return one part as a stream
     override fun getPart(name: String, multipartData: MultipartData): Reader
     {
         val parts = getPartsAsSequence(multipartData)
@@ -54,6 +55,7 @@ class DirectActionContext(private val context: SparkWebContext,
 
         return matchingPart.openStream().bufferedReader()
     }
+    // Pull all parts into memory and return them as a map
     override fun getParts(multipartData: MultipartData): MultipartDataMap
     {
         val map = getPartsAsSequence(multipartData)
