@@ -51,8 +51,11 @@ describe("DownloadDemographicsPage", () => {
         bootstrapStore(mainStore, {
             modellingGroups: makeLoadable([mockModellingGroup({id: "group-1"})])
         });
+        bootstrapStore(responsibilityStore, {
+            currentModellingGroup: {id: "group-1"},
+        });
         mockFetcherForMultipleResponses([
-            mockTouchstonesEndpoint([mockTouchstone({ id: "touchstone-1" })]),
+            mockTouchstonesEndpoint([mockTouchstone({ id: "touchstone-1" })], "group-1"),
             mockDemographicDatasetsEndpoint([mockDemographicDataset()])
         ])
     });

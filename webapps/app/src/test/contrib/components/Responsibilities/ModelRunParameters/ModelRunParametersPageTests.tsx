@@ -32,6 +32,7 @@ describe('ModelRunParameterPage', () => {
         const fetchTouchstones = sandbox.sinon.stub(responsibilityStore, "fetchTouchstones").returns(Promise.resolve(true));
         const fetchResponsibilities = sandbox.sinon.stub(responsibilityStore, "fetchResponsibilities").returns(Promise.resolve(true));
         const fetchOneTimeParametersToken = sandbox.sinon.stub(runParametersStore, "fetchOneTimeParametersToken").returns(Promise.resolve(true));
+        const fetchParameterSets = sandbox.sinon.stub(runParametersStore, "fetchParameterSets").returns(Promise.resolve(true));
 
         const group = mockModellingGroup({id: "group-1"});
         sandbox.sinon.stub(jwtDecoder, "jwtDecode").returns({result: JSON.stringify(mockResult("OK"))});
@@ -39,7 +40,6 @@ describe('ModelRunParameterPage', () => {
 
         const touchstone = mockTouchstone({id: "touchstone-1"});
         setupStores({groups: [group], touchstones: [touchstone]});
-
         new ModelRunParametersPage({location: location, router: null}).load();
 
         checkAsync(done, (afterWait) => {
@@ -71,7 +71,7 @@ describe('ModelRunParameterPage', () => {
             modellingGroups: makeLoadable([mockModellingGroup({id: "group-1"})])
         });
         mockFetcherForMultipleResponses([
-            mockTouchstonesEndpoint([mockTouchstone({id: "touchstone-1"})])
+            mockTouchstonesEndpoint([mockTouchstone({id: "touchstone-1"})], "group-1")
         ]);
     });
 });

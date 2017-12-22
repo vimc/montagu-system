@@ -14,8 +14,8 @@ function makeFakeEndpoint(url: string, data: any, api: APIType): FakeEndpoint {
     }
 }
 
-export function mockTouchstonesEndpoint(touchstones: Touchstone[]): FakeEndpoint {
-    return makeFakeEndpoint("/touchstones/", touchstones, APIType.Montagu);
+export function mockTouchstonesEndpoint( touchstones: Touchstone[], groupId?: string): FakeEndpoint {
+    return makeFakeEndpoint(`/modelling-groups/${groupId}/responsibilities/`, touchstones, APIType.Montagu);
 }
 
 export function mockDemographicDatasetsEndpoint(datasets: DemographicDataset[]): FakeEndpoint {
