@@ -16,16 +16,14 @@ import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import org.vaccineimpact.api.serialization.DataTable
 import org.vaccineimpact.api.serialization.SplitData
+import org.vaccineimpact.api.test_helpers.MontaguTests
 import java.io.StringReader
 import java.math.BigDecimal
 import java.time.Instant
 import java.util.*
 
-class ModellingGroupControllersTests : ControllerTests<ModellingGroupController>()
+class ModellingGroupControllersTests : MontaguTests()
 {
-    override fun makeController(controllerContext: ControllerContext)
-            = ModellingGroupController(controllerContext)
-
     @Test
     fun `modifyMembership returns error if user does not have permission to manage members`()
     {
@@ -33,10 +31,8 @@ class ModellingGroupControllersTests : ControllerTests<ModellingGroupController>
             on(it.params(":group-id")) doReturn "gId"
             on(it.permissions) doReturn PermissionSet()
         }
-
-        val controller = ModellingGroupController(mockControllerContext())
         assertThatThrownBy {
-            controller.modifyMembership(context, mock<UserRepository>())
+            ModellingGroupController(context, mock(), mock()).modifyMembership()
         }.isInstanceOf(MissingRequiredPermissionError::class.java)
     }
 
@@ -49,8 +45,8 @@ class ModellingGroupControllersTests : ControllerTests<ModellingGroupController>
                     setOf(ReifiedPermission("modelling-groups.manage-members",
                             Scope.Global())))
         }
-        val controller = ModellingGroupController(mockControllerContext())
-        controller.modifyMembership(context, mock<UserRepository>())
+        val controller = ModellingGroupController(context, mock(), mock())
+        controller.modifyMembership()
     }
 
     @Test
@@ -62,7 +58,7 @@ class ModellingGroupControllersTests : ControllerTests<ModellingGroupController>
                     setOf(ReifiedPermission("modelling-groups.manage-members",
                             Scope.Specific("modelling-group", "gId"))))
         }
-        val controller = ModellingGroupController(mockControllerContext())
-        controller.modifyMembership(context, mock<UserRepository>())
+        val controller = ModellingGroupController(context, mock(), mock())
+        controller.modifyMembership()
     }
 }

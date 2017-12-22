@@ -2,6 +2,7 @@ package org.vaccineimpact.api.app.controllers
 
 import org.vaccineimpact.api.app.app_start.Controller
 import org.vaccineimpact.api.app.context.ActionContext
+import org.vaccineimpact.api.app.controllers.helpers.ResponsibilityPath
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
 import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.Repositories
