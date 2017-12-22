@@ -44,7 +44,7 @@ export class UploadBurdenEstimatesForm extends React.Component<UploadBurdenEstim
                             successMessage={uploadSuccessMessage}/>
             : null;
 
-        const createForm = this.props.canCreate && !this.props.canUpload ?
+        const createForm = this.props.canCreate && !this.props.canUpload && !this.state.hasUploadSuccess ?
             <CreateBurdenEstimateSetForm groupId={this.props.groupId}
                                          touchstoneId={this.props.touchstoneId}
                                          scenarioId={this.props.scenarioId}/>

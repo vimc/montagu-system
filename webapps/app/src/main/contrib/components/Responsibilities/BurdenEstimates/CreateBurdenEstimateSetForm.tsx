@@ -70,11 +70,11 @@ export class CreateBurdenEstimateSetForm extends React.Component<BurdenEstimateP
             }];
 
         return <div>
-            <h4>Register how your central estimates were calculated:</h4>
+            <h4>First step: register how these central estimates were calculated</h4>
             <Form successCallback={CreateBurdenEstimateSetForm.successCallback}
                   url={`/modelling-groups/${this.props.groupId}/responsibilities/${this.props.touchstoneId}/${this.props.scenarioId}/estimate-sets/`}
                   successMessage={successMessage}
-                  submitText={"Register"}
+                  submitText={"Continue"}
                   data={this.state}>
                 <div className="row">
                     <div className="col">
@@ -88,9 +88,12 @@ export class CreateBurdenEstimateSetForm extends React.Component<BurdenEstimateP
                         </div>
                     </div>
                     <div className="col">
-                        <label>Details of how these estimates were calculated. For example, if averaged, what kind of averaging function was used.</label>
+                        <label>Details of how these estimates were calculated</label>
                         <input type="text" className={"form-control"} name="details" required={true}
                                onChange={this.onDetailsChange.bind(this)}/>
+                        <small className="form-text text-muted">
+                            For example, if averaged, what kind of averaging function was used.
+                        </small>
                         <div className="invalid-feedback">
                             Please give us some details, a short note is fine
                         </div>
