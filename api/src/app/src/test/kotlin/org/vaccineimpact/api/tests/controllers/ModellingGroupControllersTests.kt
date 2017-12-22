@@ -221,7 +221,7 @@ class ModellingGroupControllersTests : ControllerTests<ModellingGroupController>
             on { hasPermission(ReifiedPermission.parse("*/touchstones.prepare")) } doReturn true
         }
         val data = controller.getTouchstones(context, repo)
-        Assertions.assertThat(data.count()).isEqualTo(2)
+        assertThat(data.count()).isEqualTo(2)
     }
 
     @Test
@@ -239,7 +239,7 @@ class ModellingGroupControllersTests : ControllerTests<ModellingGroupController>
             on { hasPermission(ReifiedPermission.parse("*/touchstones.prepare")) } doReturn false
         }
         val data = controller.getTouchstones(context, repo)
-        Assertions.assertThat(data.count()).isEqualTo(1)
+        assertThat(data.count()).isEqualTo(1)
     }
 
 
