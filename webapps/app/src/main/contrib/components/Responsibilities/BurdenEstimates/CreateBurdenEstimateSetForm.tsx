@@ -91,7 +91,7 @@ export class CreateBurdenEstimateSetForm extends React.Component<BurdenEstimateP
                         <label>Details of how these estimates were calculated</label>
                         <input type="text" className={"form-control"} name="details" required={true}
                                onChange={this.onDetailsChange.bind(this)}/>
-                        <small id="emailHelp" className="form-text text-muted">
+                        <small className="form-text text-muted">
                             For example, if averaged, what kind of averaging function was used.
                         </small>
                         <div className="invalid-feedback">
