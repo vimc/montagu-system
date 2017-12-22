@@ -3,6 +3,7 @@ package org.vaccineimpact.api.app
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.context.OneTimeLinkActionContext
 import org.vaccineimpact.api.app.context.RequestBodySource
+import org.vaccineimpact.api.app.controllers.GroupCoverageController
 import org.vaccineimpact.api.app.controllers.MontaguControllers
 import org.vaccineimpact.api.app.controllers.PasswordController
 import org.vaccineimpact.api.app.controllers.TouchstoneController
@@ -51,7 +52,7 @@ open class OnetimeLinkResolver(private val controllers: MontaguControllers,
                             RequestBodySource.HTMLMultipart("file")
                     )
                     OneTimeAction.MODEl_RUN_PARAMETERS -> controllers.modellingGroup.addModelRunParameters(context, repos.burdenEstimates)
-                    OneTimeAction.COVERAGE -> stream(controllers.modellingGroup.getCoverageData(context, repos.modellingGroup), context)
+                    OneTimeAction.COVERAGE -> stream(GroupCoverageController(context, repos.modellingGroup).getCoverageData(), context)
                     OneTimeAction.DEMOGRAPHY -> stream(TouchstoneController(context, repos).getDemographicData(), context)
                     OneTimeAction.SET_PASSWORD -> PasswordController(context, repos.user, OneTimeTokenGenerator(repos.token, webTokenHelper)).setPasswordForUser(context.params("username"))
                 }
