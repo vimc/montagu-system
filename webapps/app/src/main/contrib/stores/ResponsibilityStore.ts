@@ -42,7 +42,7 @@ export interface ResponsibilityState extends RemoteContent, HasFormatState {
 interface ResponsibilityStoreInterface extends AltJS.AltStore<ResponsibilityState> {
     fetchResponsibilities(): Promise<Responsibilities>;
 
-    fetchTouchstones(groupId?: string): Promise<Touchstone[]>;
+    fetchTouchstones(): Promise<Touchstone[]>;
 
     fetchCoverageSets(): Promise<ScenarioTouchstoneAndCoverageSets>;
 
