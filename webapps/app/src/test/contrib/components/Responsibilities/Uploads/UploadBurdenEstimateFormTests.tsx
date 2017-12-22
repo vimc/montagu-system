@@ -49,6 +49,27 @@ describe("UploadEstimatesForm", () => {
         expect(rendered.find(UploadFileForm)).to.have.lengthOf(1);
     });
 
+
+    it("does not render forms after successful upload", () => {
+
+        const props = {
+            groupId: "group-1",
+            touchstoneId: "touchstone-1",
+            scenarioId: "scenario-1",
+            canUpload: false,
+            canCreate: true,
+            estimatesToken: "TOKEN"
+        };
+
+        sandbox.setStub(helpers, "ingestQueryStringAndReturnResult")
+            .returns({status: "success", data: null, errors: []});
+
+        const rendered = shallow(<UploadBurdenEstimatesForm {...props} />);
+
+        expect(rendered.find(CreateBurdenEstimateSetForm)).to.have.lengthOf(0);
+        expect(rendered.find(UploadFileForm)).to.have.lengthOf(0);
+    });
+
     it("does not render forms if can not upload or create", () => {
 
         const props = {
