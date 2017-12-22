@@ -29,9 +29,10 @@ class Router(val config: RouteConfig,
 
     fun mapEndpoints(urlBase: String): List<String>
     {
-        urls.addAll(config.endpoints.map {
-            mapEndpoint(it, urlBase)
-        })
+        urls.addAll(config.endpoints
+                .sortedBy { it.urlFragment }
+                .map { mapEndpoint(it, urlBase) }
+        )
         return urls
     }
 
