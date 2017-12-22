@@ -11,9 +11,11 @@ import org.vaccineimpact.api.app.errors.MissingRequiredPermissionError
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
 import org.vaccineimpact.api.app.repositories.*
 import org.vaccineimpact.api.app.security.checkEstimatePermissionsForTouchstone
+import org.vaccineimpact.api.app.security.isAllowedToSeeTouchstone
 import org.vaccineimpact.api.app.security.checkIsAllowedToSeeTouchstone
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.helpers.OneTimeAction
+import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import spark.route.HttpMethod
 import java.time.Instant
 
@@ -27,6 +29,11 @@ open class ModellingGroupController(context: ControllerContext)
             "*/scenarios.read",
             "$groupScope/responsibilities.read"
     )
+    val touchtonePermissions = setOf(
+            "*/touchstones.read",
+            "$groupScope/responsibilities.read"
+    )
+    val touchstonesURL = "/:group-id/responsibilities"
     val responsibilitiesURL = "/:group-id/responsibilities/:touchstone-id"
     val scenarioURL = "$responsibilitiesURL/:scenario-id"
     val parametersURL = "/:group-id/model-run-parameters/:touchstone-id"
@@ -38,6 +45,7 @@ open class ModellingGroupController(context: ControllerContext)
                 oneRepoEndpoint("/", this::getModellingGroups, repos, repo).secured(setOf("*/modelling-groups.read")),
                 oneRepoEndpoint("/:group-id/", this::getModellingGroup, repos, repo).secured(setOf("*/modelling-groups.read", "*/models.read")),
                 oneRepoEndpoint("$responsibilitiesURL/", this::getResponsibilities, repos, repo).secured(responsibilityPermissions),
+                oneRepoEndpoint("$touchstonesURL/", this::getTouchstones, repos, repo).secured(touchtonePermissions),
                 oneRepoEndpoint("$scenarioURL/", this::getResponsibility, repos, repo).secured(responsibilityPermissions),
                 oneRepoEndpoint("/:group-id/actions/associate_member/", this::modifyMembership, repos, { it.user }, method = HttpMethod.post).secured(),
 
@@ -96,6 +104,15 @@ open class ModellingGroupController(context: ControllerContext)
         val data = repo.getResponsibilities(groupId, touchstoneId, filterParameters)
         context.checkIsAllowedToSeeTouchstone(touchstoneId, data.touchstoneStatus)
         return data.responsibilities
+    }
+
+    fun getTouchstones(context: ActionContext, repo: ModellingGroupRepository): List<Touchstone>
+    {
+        val groupId = groupId(context)
+
+        var touchstones = repo.getTouchstonesByGroupId(groupId)
+        touchstones = touchstones.filter { context.isAllowedToSeeTouchstone(it.status) }
+        return touchstones
     }
 
     fun getResponsibility(context: ActionContext, repo: ModellingGroupRepository): ResponsibilityAndTouchstone
