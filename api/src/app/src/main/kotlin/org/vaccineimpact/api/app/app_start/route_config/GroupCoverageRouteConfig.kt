@@ -7,7 +7,7 @@ import org.vaccineimpact.api.app.controllers.endpoints.streamed
 
 object GroupCoverageRouteConfig : RouteConfig
 {
-    private val baseUrl = "/modelling-groups/:group-id/responsibilities/:touchstone-id/:scenario-id/"
+    private val baseUrl = "/modelling-groups/:group-id/responsibilities/:touchstone-id/:scenario-id"
     private val controller = GroupCoverageController::class
 
     private val groupScope = "modelling-group:<group-id>"
@@ -22,12 +22,12 @@ object GroupCoverageRouteConfig : RouteConfig
                     .json()
                     .secure(permissions),
 
-            Endpoint("$baseUrl/coverage", controller, "getCoverageDataAndMetadata")
+            Endpoint("$baseUrl/coverage/", controller, "getCoverageDataAndMetadata")
                     // TODO: Return true multipart data and change the data type
                     .json().streamed()
                     .secure(permissions),
 
-            Endpoint("$baseUrl/coverage", controller, "getCoverageData")
+            Endpoint("$baseUrl/coverage/", controller, "getCoverageData")
                     .csv().streamed()
                     .secure(permissions),
 
