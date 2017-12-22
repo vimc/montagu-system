@@ -5,6 +5,7 @@ import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
+import org.vaccineimpact.api.app.MultipartDataMap
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.controllers.ControllerContext
 import org.vaccineimpact.api.app.controllers.ModellingGroupController
@@ -65,6 +66,7 @@ class ModellingGroupControllersTests : ControllerTests<ModellingGroupController>
     fun `can upload model run params`()
     {
         val params = mapOf("param1" to "value1", "param2" to "value2")
+        @Suppress("RemoveExplicitTypeArguments")
         val modelRuns = listOf<ModelRun>(ModelRun("run1", params))
 
         val mockContext = mock<ActionContext> {
@@ -72,8 +74,12 @@ class ModellingGroupControllersTests : ControllerTests<ModellingGroupController>
             on { username } doReturn "user.name"
             on { params(":group-id") } doReturn "group-1"
             on { params(":touchstone-id") } doReturn "touchstone-1"
-            on { getPart(eq("disease"), anyOrNull()) } doReturn StringReader("disease-1")
-            on { getPart(eq("description"), anyOrNull()) } doReturn StringReader("some description")
+            on { getParts(anyOrNull()) } doReturn MultipartDataMap(
+                    "disease" to "disease-1",
+                    "description" to "some description",
+                    // This is passed to another mocked method, so its contents doesn't matter
+                    "file" to ""
+            )
         }
 
         val controller = makeController(mockControllerContext())

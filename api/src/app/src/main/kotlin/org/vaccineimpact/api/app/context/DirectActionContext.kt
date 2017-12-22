@@ -1,11 +1,15 @@
 package org.vaccineimpact.api.app.context
 
+import org.apache.commons.fileupload.FileItemStream
 import org.pac4j.core.profile.CommonProfile
 import org.pac4j.core.profile.ProfileManager
 import org.pac4j.sparkjava.SparkWebContext
 import org.vaccineimpact.api.app.MultipartData
+import org.vaccineimpact.api.app.MultipartDataMap
 import org.vaccineimpact.api.app.addDefaultResponseHeaders
+import org.vaccineimpact.api.app.contents
 import org.vaccineimpact.api.app.errors.BadRequest
+import org.vaccineimpact.api.app.errors.MissingRequiredMultipartParameterError
 import org.vaccineimpact.api.app.errors.MissingRequiredPermissionError
 import org.vaccineimpact.api.app.security.montaguPermissions
 import org.vaccineimpact.api.db.Config
@@ -19,6 +23,7 @@ import spark.Response
 import java.io.OutputStream
 import java.io.Reader
 import java.util.zip.GZIPOutputStream
+import javax.servlet.http.HttpServletRequest
 import kotlin.reflect.KClass
 
 
@@ -43,6 +48,21 @@ class DirectActionContext(private val context: SparkWebContext,
 
     override fun getPart(name: String, multipartData: MultipartData): Reader
     {
+        val parts = getPartsAsSequence(multipartData)
+        val matchingPart = parts.firstOrNull { it.fieldName == name }
+                ?: throw MissingRequiredMultipartParameterError(name)
+
+        return matchingPart.openStream().bufferedReader()
+    }
+    override fun getParts(multipartData: MultipartData): MultipartDataMap
+    {
+        val map = getPartsAsSequence(multipartData)
+                .map { it.fieldName to it.contents() }
+                .toMap()
+        return MultipartDataMap(map)
+    }
+    private fun getPartsAsSequence(multipartData: MultipartData): Sequence<FileItemStream>
+    {
         val rawRequest = request.raw()
         val isMultipart = multipartData.isMultipartContent(rawRequest)
         if (!isMultipart)
@@ -50,13 +70,7 @@ class DirectActionContext(private val context: SparkWebContext,
             throw BadRequest("Trying to extract a part from multipart/form-data " +
                     "but this request is of type ${request.contentType()}")
         }
-
-        val parts = multipartData.parts(rawRequest)
-        val matchingPart = parts.firstOrNull { it.fieldName == name }
-                ?: throw BadRequest("No value passed for required POST parameter '$name'. " +
-                "Available parts: ${multipartData.parts(rawRequest).joinToString { it.fieldName }}")
-
-        return matchingPart.openStream().bufferedReader()
+        return multipartData.parts(rawRequest)
     }
 
     override fun <T : Any> csvData(klass: KClass<T>, from: RequestBodySource): Sequence<T>

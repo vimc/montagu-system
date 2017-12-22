@@ -11,6 +11,8 @@ import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.errors.MissingRequiredPermissionError
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
 import org.vaccineimpact.api.app.context.postData
+import org.vaccineimpact.api.app.errors.MissingRequiredMultipartParameterError
+import org.vaccineimpact.api.app.errors.MissingRequiredParameterError
 import org.vaccineimpact.api.app.repositories.*
 import org.vaccineimpact.api.app.security.checkEstimatePermissionsForTouchstone
 import org.vaccineimpact.api.app.security.checkIsAllowedToSeeTouchstone
@@ -87,11 +89,13 @@ open class ModellingGroupController(context: ControllerContext)
     {
         val touchstoneId = context.params(":touchstone-id")
         val groupId = context.params(":group-id")
-        val disease = context.getPart("disease").readText()
         context.checkEstimatePermissionsForTouchstone(groupId, touchstoneId, estimateRepository)
-        val description = context.getPart("description").readText()
 
-        val modelRuns = context.csvData<ModelRun>(RequestBodySource.HTMLMultipart("file"))
+        val parts = context.getParts()
+        val disease = parts.getPart("disease")
+        val description = parts.getPart("description")
+        val modelRuns = context.csvData<ModelRun>(parts.getPartAsRequestBodySource("file"))
+
         val id = estimateRepository.addModelRunParameterSet(groupId, touchstoneId, disease,
                 description, modelRuns.toList(), context.username!!, Instant.now())
 

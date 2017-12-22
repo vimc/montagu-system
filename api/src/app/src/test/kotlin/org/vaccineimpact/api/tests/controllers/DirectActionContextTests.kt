@@ -15,6 +15,7 @@ import org.vaccineimpact.api.app.MultipartData
 import org.vaccineimpact.api.app.context.DirectActionContext
 import org.vaccineimpact.api.app.context.postData
 import org.vaccineimpact.api.app.errors.BadRequest
+import org.vaccineimpact.api.app.errors.MissingRequiredMultipartParameterError
 import org.vaccineimpact.api.app.security.PERMISSIONS
 import org.vaccineimpact.api.models.Scope
 import org.vaccineimpact.api.models.permissions.PermissionSet
@@ -104,7 +105,7 @@ class DirectActionContextTests : MontaguTests()
     }
 
     @Test
-    fun `throw BadRequest if getPart called on non existent part`()
+    fun `throw exception if getPart called on non existent part`()
     {
         val data = sequenceOf(
                 mockFileItem("partA", "Message A"),
@@ -116,8 +117,8 @@ class DirectActionContextTests : MontaguTests()
         }
         val context = DirectActionContext(mockWebContext())
         assertThatThrownBy { context.getPart("partB", mockData) }
-                .isInstanceOf(BadRequest::class.java)
-                .hasMessageContaining("No value passed for required POST parameter 'partB'")
+                .isInstanceOf(MissingRequiredMultipartParameterError::class.java)
+                .hasMessageContaining("You must supply a 'partB' parameter in the multipart body")
     }
 
     @Test

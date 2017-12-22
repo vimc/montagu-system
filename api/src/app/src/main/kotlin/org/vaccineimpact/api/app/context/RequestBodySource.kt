@@ -1,6 +1,7 @@
 package org.vaccineimpact.api.app.context
 
 import java.io.Reader
+import java.io.StringReader
 
 sealed class RequestBodySource
 {
@@ -16,6 +17,12 @@ sealed class RequestBodySource
     {
         override fun getContent(context: ActionContext)
                 = context.getPart(partName)
+    }
+
+    class InMemory(private val contents: String) : RequestBodySource()
+    {
+        override fun getContent(context: ActionContext): Reader
+                = StringReader(contents)
     }
 }
 
