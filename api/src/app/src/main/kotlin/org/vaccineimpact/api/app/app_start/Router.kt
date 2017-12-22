@@ -74,7 +74,7 @@ class Router(val config: RouteConfig,
     }
 
     fun invokeControllerAction(endpoint: EndpointDefinition, context: ActionContext,
-                                       repositories: Repositories): Any?
+                               repositories: Repositories): Any?
     {
         val actionName = endpoint.actionName
         val controllerType = endpoint.controller.java
@@ -96,10 +96,16 @@ class Router(val config: RouteConfig,
 
     private fun instantiateController(controllerType: Class<*>, context: ActionContext, repositories: Repositories): Controller
     {
-        val constructor = controllerType.getConstructor(
-                ActionContext::class.java,
-                Repositories::class.java
-        )
+        val constructor = try
+        {
+            controllerType.getConstructor(ActionContext::class.java, Repositories::class.java)
+        }
+        catch (e: NoSuchMethodException)
+        {
+            throw NoSuchMethodException("There is a problem with $controllerType. " +
+                    "All new-style controllers must have a secondary constructor that takes" +
+                    "an ActionContext and a Repositories instance")
+        }
         return constructor.newInstance(context, repositories) as Controller
     }
 
