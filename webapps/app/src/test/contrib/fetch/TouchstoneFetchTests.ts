@@ -20,6 +20,7 @@ describe("ResponsibilityStore.fetchTouchstones", () => {
                 }
             }));
         },
-        prepareForCachedFetch: () => touchstoneActions.update([ mockTouchstone() ])
+        // commented out as fetch touchstones is currently not cached
+        // prepareForCachedFetch: () => touchstoneActions.update([ mockTouchstone() ])
     }).addTestsToMocha();
 });
