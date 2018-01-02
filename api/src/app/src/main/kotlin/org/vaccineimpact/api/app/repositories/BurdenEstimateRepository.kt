@@ -22,6 +22,9 @@ interface BurdenEstimateRepository : Repository
     fun populateBurdenEstimateSet(setId: Int, groupId: String, touchstoneId: String, scenarioId: String,
                                   estimates: Sequence<BurdenEstimateWithRunId>)
 
+    fun populateStochasticBurdenEstimateSet(setId: Int, groupId: String, touchstoneId: String, scenarioId: String,
+                                  estimates: Sequence<BurdenEstimateWithRunId>)
+
     fun addModelRunParameterSet(groupId: String, touchstoneId: String, disease: String, description: String,
                                 modelRuns: List<ModelRun>,
                                 uploader: String, timestamp: Instant): Int

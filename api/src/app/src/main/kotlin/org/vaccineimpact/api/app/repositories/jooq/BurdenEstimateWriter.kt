@@ -5,7 +5,10 @@ import org.jooq.TableField
 import org.jooq.impl.TableImpl
 import org.postgresql.copy.CopyManager
 import org.postgresql.core.BaseConnection
-import org.vaccineimpact.api.app.errors.*
+import org.vaccineimpact.api.app.errors.DatabaseContentsError
+import org.vaccineimpact.api.app.errors.InconsistentDataError
+import org.vaccineimpact.api.app.errors.UnknownObjectError
+import org.vaccineimpact.api.app.errors.UnknownRunIdError
 import org.vaccineimpact.api.db.*
 import org.vaccineimpact.api.db.Tables.*
 import org.vaccineimpact.api.models.BurdenEstimateWithRunId
@@ -61,7 +64,7 @@ class BurdenEstimateWriter(val dsl: DSLContext, val setId: Int)
         }
     }
 
-    private fun writeStreamToDatabase(
+    fun writeStreamToDatabase(
             dsl: DSLContext, inputStream: BufferedInputStream,
             target: TableImpl<*>, fields: List<TableField<*, *>>
     ): Thread
@@ -78,7 +81,7 @@ class BurdenEstimateWriter(val dsl: DSLContext, val setId: Int)
         }
     }
 
-    private fun writeCopyData(
+    fun writeCopyData(
             stream: OutputStream, estimates: Sequence<BurdenEstimateWithRunId>,
             expectedDisease: String, setId: Int
     )

@@ -2,26 +2,24 @@ package org.vaccineimpact.api.app.repositories.jooq
 
 import org.jooq.DSLContext
 import org.jooq.JoinType
-import org.postgresql.copy.CopyManager
-import org.postgresql.core.BaseConnection
-import org.vaccineimpact.api.app.errors.*
+import org.vaccineimpact.api.app.errors.BadRequest
+import org.vaccineimpact.api.app.errors.DatabaseContentsError
+import org.vaccineimpact.api.app.errors.OperationNotAllowedError
+import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
 import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.ScenarioRepository
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.app.repositories.jooq.mapping.BurdenMappingHelper
-import org.vaccineimpact.api.db.*
+import org.vaccineimpact.api.db.AnnexJooqContext
+import org.vaccineimpact.api.db.Tables
 import org.vaccineimpact.api.db.Tables.*
+import org.vaccineimpact.api.db.fromJoinPath
+import org.vaccineimpact.api.db.joinPath
 import org.vaccineimpact.api.models.*
 import java.beans.ConstructorProperties
-import java.io.BufferedInputStream
-import java.io.OutputStream
-import java.io.PipedInputStream
-import java.io.PipedOutputStream
-import java.math.BigDecimal
 import java.sql.Timestamp
 import java.time.Instant
-import kotlin.concurrent.thread
 
 private data class ResponsibilityInfo
 @ConstructorProperties("id", "disease", "status", "setId")
@@ -228,6 +226,34 @@ class JooqBurdenEstimateRepository(
         }
 
         BurdenEstimateWriter(dsl, setId).addEstimatesToSet(estimates, responsibilityInfo.disease)
+        updateCurrentBurdenEstimateSet(responsibilityInfo.id, setId, set.type.type)
+        dsl.update(Tables.BURDEN_ESTIMATE_SET)
+                .set(Tables.BURDEN_ESTIMATE_SET.STATUS, "complete")
+                .where(Tables.BURDEN_ESTIMATE_SET.ID.eq(setId))
+                .execute()
+    }
+
+    override fun populateStochasticBurdenEstimateSet(setId: Int, groupId: String, touchstoneId: String, scenarioId: String,
+                                            estimates: Sequence<BurdenEstimateWithRunId>)
+    {
+        // Dereference modelling group IDs
+        val modellingGroup = modellingGroupRepository.getModellingGroup(groupId)
+
+        val responsibilityInfo = getResponsibilityInfo(modellingGroup.id, touchstoneId, scenarioId)
+
+        val set = getBurdenEstimateSet(setId)
+        if (set.type.type != BurdenEstimateSetTypeCode.STOCHASTIC)
+        {
+            throw OperationNotAllowedError("This burden estimate set is not marked as stochastic.")
+        }
+        if (set.status != BurdenEstimateSetStatus.EMPTY)
+        {
+            throw OperationNotAllowedError("This burden estimate set already contains estimates." +
+                    " You must create a new set if you want to upload any new estimates.")
+        }
+
+        StochasticBurdenEstimateWriter(AnnexJooqContext().dsl,
+                setId, BurdenEstimateWriter(dsl, setId)).addEstimatesToSet(estimates, responsibilityInfo.disease)
         updateCurrentBurdenEstimateSet(responsibilityInfo.id, setId, set.type.type)
         dsl.update(Tables.BURDEN_ESTIMATE_SET)
                 .set(Tables.BURDEN_ESTIMATE_SET.STATUS, "complete")

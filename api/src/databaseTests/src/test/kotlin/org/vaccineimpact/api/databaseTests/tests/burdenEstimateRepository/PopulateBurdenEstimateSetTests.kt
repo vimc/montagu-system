@@ -2,7 +2,6 @@ package org.vaccineimpact.api.databaseTests.tests
 
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
-import org.assertj.core.groups.Tuple
 import org.jooq.Record
 import org.jooq.Result
 import org.junit.Test
@@ -15,7 +14,10 @@ import org.vaccineimpact.api.db.direct.addModelRun
 import org.vaccineimpact.api.db.direct.addModelRunParameterSet
 import org.vaccineimpact.api.db.fromJoinPath
 import org.vaccineimpact.api.db.toDecimal
-import org.vaccineimpact.api.models.*
+import org.vaccineimpact.api.models.BurdenEstimateSetType
+import org.vaccineimpact.api.models.BurdenEstimateSetTypeCode
+import org.vaccineimpact.api.models.BurdenEstimateWithRunId
+import org.vaccineimpact.api.models.CreateBurdenEstimateSet
 import java.math.BigDecimal
 
 class PopulateBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
@@ -29,6 +31,28 @@ class PopulateBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
         val setId = withRepo { repo ->
             val setId = repo.createBurdenEstimateSet(groupId, touchstoneId, scenarioId, defaultProperties, username, timestamp)
             repo.populateBurdenEstimateSet(setId, groupId, touchstoneId, scenarioId, data())
+            setId
+        }
+        withDatabase { db ->
+            checkBurdenEstimates(db, setId)
+            checkBurdenEstimateSetMetadata(db, setId, returnedIds, "complete")
+        }
+    }
+
+    @Test
+    fun `can populate stochastic burden estimate set`()
+    {
+        val (returnedIds, modelRunData) = withDatabase { db ->
+            val returnedIds = setupDatabase(db)
+            val modelRunData = addModelRuns(db, returnedIds.responsibilitySetId, returnedIds.modelVersion!!)
+            Pair(returnedIds, modelRunData)
+        }
+        val setId = withRepo { repo ->
+            val properties = defaultProperties.copy(BurdenEstimateSetType(BurdenEstimateSetTypeCode.STOCHASTIC),
+                    modelRunData.runParameterSetId)
+            val setId = repo.createBurdenEstimateSet(groupId, touchstoneId, scenarioId, properties, username, timestamp)
+            val data = data(modelRunData.externalIds)
+            repo.populateBurdenEstimateSet(setId, groupId, touchstoneId, scenarioId, data)
             setId
         }
         withDatabase { db ->
