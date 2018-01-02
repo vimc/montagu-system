@@ -34,15 +34,15 @@ export class ResponsibilityGuidanceModelOutputs extends ContribPageWithHeader<un
             </p>
             <ul>
                 <li>
-                    central estimates from each model – due by 8 December
-                    (extended from 30 November)
+                    central estimates from each model – due by 8 January
+                    (extended from 8 December)
                 </li>
                 <li>
-                    stochastic estimates from each model – due by 8 January
-                    (extended from 31 December)
+                    stochastic estimates from each model – due by 15 January
+                    (extended from 8 January)
                 </li>
                 <li>
-                    parameters file – due by 8 January (see below)
+                    parameters file – due by 15 January (see below)
                 </li>
             </ul>
             <p>
