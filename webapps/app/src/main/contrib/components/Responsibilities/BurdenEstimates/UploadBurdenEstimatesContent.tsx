@@ -64,8 +64,11 @@ export class UploadBurdenEstimatesContentComponent extends RemoteContentComponen
         return <div>
             <p>
                 On this page you can upload burden estimates for the following scenario. We expect estimates which
-                cover 96 countries, 100 years, and 100 age bands to take around 1 minute to process. So don't worry if
+                cover 98 countries, 100 years, and 100 age bands to take around 1 minute to process. So don't worry if
                 it takes a little while!
+            </p>
+            <p>Before uploading central burden estimates,
+                you will need to register how these were calculated.
             </p>
             <table className="specialColumn">
                 <tbody>
@@ -89,7 +92,8 @@ export class UploadBurdenEstimatesContentComponent extends RemoteContentComponen
                                            canUpload={canCreate}/>
 
                 <UploadBurdenEstimatesForm canUpload={canUpload} canCreate={canCreate} groupId={this.props.group.id}
-                                           estimatesToken={this.props.estimatesToken} touchstoneId={this.props.touchstone.id}
+                                           estimatesToken={this.props.estimatesToken}
+                                           touchstoneId={this.props.touchstone.id}
                                            scenarioId={this.props.scenario.id}/>
             </div>
         </div>;
