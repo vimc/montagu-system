@@ -225,7 +225,7 @@ class JooqBurdenEstimateRepository(
                     " You must create a new set if you want to upload any new estimates.")
         }
 
-        BurdenEstimateWriter(dsl, setId).addEstimatesToSet(estimates, responsibilityInfo.disease)
+        CentralBurdenEstimateWriter(dsl, setId).addEstimatesToSet(estimates, responsibilityInfo.disease)
         updateCurrentBurdenEstimateSet(responsibilityInfo.id, setId, set.type.type)
         dsl.update(Tables.BURDEN_ESTIMATE_SET)
                 .set(Tables.BURDEN_ESTIMATE_SET.STATUS, "complete")
@@ -246,9 +246,9 @@ class JooqBurdenEstimateRepository(
         {
             throw OperationNotAllowedError("This burden estimate set is not marked as stochastic.")
         }
-        if (set.status != BurdenEstimateSetStatus.EMPTY)
+        if (set.status == BurdenEstimateSetStatus.COMPLETE)
         {
-            throw OperationNotAllowedError("This burden estimate set already contains estimates." +
+            throw OperationNotAllowedError("This burden estimate set is marked as complete." +
                     " You must create a new set if you want to upload any new estimates.")
         }
 
@@ -256,7 +256,7 @@ class JooqBurdenEstimateRepository(
                 setId, BurdenEstimateWriter(dsl, setId)).addEstimatesToSet(estimates, responsibilityInfo.disease)
         updateCurrentBurdenEstimateSet(responsibilityInfo.id, setId, set.type.type)
         dsl.update(Tables.BURDEN_ESTIMATE_SET)
-                .set(Tables.BURDEN_ESTIMATE_SET.STATUS, "complete")
+                .set(Tables.BURDEN_ESTIMATE_SET.STATUS, "partial")
                 .where(Tables.BURDEN_ESTIMATE_SET.ID.eq(setId))
                 .execute()
     }

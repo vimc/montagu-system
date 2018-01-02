@@ -7,12 +7,10 @@ import org.jooq.Result
 import org.junit.Test
 import org.vaccineimpact.api.app.errors.*
 import org.vaccineimpact.api.db.JooqContext
-import org.vaccineimpact.api.db.Tables.BURDEN_ESTIMATE
-import org.vaccineimpact.api.db.Tables.BURDEN_OUTCOME
+import org.vaccineimpact.api.db.Tables.*
 import org.vaccineimpact.api.db.direct.addBurdenEstimateSet
 import org.vaccineimpact.api.db.direct.addModelRun
 import org.vaccineimpact.api.db.direct.addModelRunParameterSet
-import org.vaccineimpact.api.db.fromJoinPath
 import org.vaccineimpact.api.db.toDecimal
 import org.vaccineimpact.api.models.BurdenEstimateSetType
 import org.vaccineimpact.api.models.BurdenEstimateSetTypeCode
@@ -20,27 +18,10 @@ import org.vaccineimpact.api.models.BurdenEstimateWithRunId
 import org.vaccineimpact.api.models.CreateBurdenEstimateSet
 import java.math.BigDecimal
 
-class PopulateBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
+class PopulateStochasticBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
 {
     @Test
-    fun `can populate burden estimate set`()
-    {
-        val returnedIds = withDatabase { db ->
-            setupDatabase(db)
-        }
-        val setId = withRepo { repo ->
-            val setId = repo.createBurdenEstimateSet(groupId, touchstoneId, scenarioId, defaultProperties, username, timestamp)
-            repo.populateBurdenEstimateSet(setId, groupId, touchstoneId, scenarioId, data())
-            setId
-        }
-        withDatabase { db ->
-            checkBurdenEstimates(db, setId)
-            checkBurdenEstimateSetMetadata(db, setId, returnedIds, "complete")
-        }
-    }
-
-    @Test
-    fun `can populate burden estimate set with model run information`()
+    fun `can populate stochastic burden estimate set`()
     {
         val (returnedIds, modelRunData) = withDatabase { db ->
             val returnedIds = setupDatabase(db)
@@ -48,35 +29,60 @@ class PopulateBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
             Pair(returnedIds, modelRunData)
         }
         val setId = withRepo { repo ->
-            val properties = defaultProperties.copy(modelRunParameterSetId = modelRunData.runParameterSetId)
+            val properties = defaultProperties.copy(BurdenEstimateSetType(BurdenEstimateSetTypeCode.STOCHASTIC),
+                    modelRunData.runParameterSetId)
             val setId = repo.createBurdenEstimateSet(groupId, touchstoneId, scenarioId, properties, username, timestamp)
             val data = data(modelRunData.externalIds)
-            repo.populateBurdenEstimateSet(setId, groupId, touchstoneId, scenarioId, data)
+            repo.populateStochasticBurdenEstimateSet(setId, groupId, touchstoneId, scenarioId, data)
             setId
         }
         withDatabase { db ->
             checkBurdenEstimates(db, setId)
-            checkModelRuns(db, modelRunData)
-            checkBurdenEstimateSetMetadata(db, setId, returnedIds, "complete")
+            checkBurdenEstimateSetMetadata(db, setId, returnedIds, "partial")
         }
     }
 
     @Test
-    fun `cannot populate a set unless status is empty`()
+    fun `cannot populate a stochastic set if status is complete`()
     {
-        JooqContext().use {
-            val returnedIds = setupDatabase(it)
-            val setId = it.addBurdenEstimateSet(returnedIds.responsibility, returnedIds.modelVersion!!, username, "complete")
+        val (setId, modelRunData) = withDatabase { db ->
+            val returnedIds = setupDatabase(db)
+            val modelRunData = addModelRuns(db, returnedIds.responsibilitySetId, returnedIds.modelVersion!!)
 
-            val repo = makeRepository(it)
+            Pair(db.addBurdenEstimateSet(returnedIds.responsibility, returnedIds.modelVersion,
+                    username, "complete", "stochastic", null, modelRunData.runParameterSetId), modelRunData)
+        }
+        withRepo { repo ->
+
+            val data = data(modelRunData.externalIds)
+
             assertThatThrownBy {
-                repo.populateBurdenEstimateSet(setId, groupId, touchstoneId, scenarioId, data())
+                repo.populateStochasticBurdenEstimateSet(setId, groupId, touchstoneId, scenarioId, data)
             }.isInstanceOf(OperationNotAllowedError::class.java)
-                    .hasMessage("the following problems occurred:\nThis burden estimate set already contains estimates." +
+                    .hasMessage("the following problems occurred:\nThis burden estimate set is marked as complete." +
                             " You must create a new set if you want to upload any new estimates.")
         }
     }
 
+    @Test
+    fun `can populate a stochastic set if status is partial`()
+    {
+        val (setId, modelRunData, returnedIds) = withDatabase { db ->
+            val returnedIds = setupDatabase(db)
+            val modelRunData = addModelRuns(db, returnedIds.responsibilitySetId, returnedIds.modelVersion!!)
+
+            Triple(db.addBurdenEstimateSet(returnedIds.responsibility, returnedIds.modelVersion,
+                    username, "partial", "stochastic", null, modelRunData.runParameterSetId, timestamp), modelRunData, returnedIds)
+        }
+        withRepo { repo ->
+            val data = data(modelRunData.externalIds)
+            repo.populateStochasticBurdenEstimateSet(setId, groupId, touchstoneId, scenarioId, data)
+        }
+        withDatabase { db ->
+            checkBurdenEstimates(db, setId)
+            checkBurdenEstimateSetMetadata(db, setId, returnedIds, "partial")
+        }
+    }
 
     @Test
     fun `populate set throws unknown object error if set does not exist`()
@@ -198,18 +204,20 @@ class PopulateBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
     {
         // We order the rows coming back so they are in a guaranteed order. This allows
         // us to write simple hardcoded expectations.
-        val t = BURDEN_ESTIMATE
+        val t = BURDEN_ESTIMATE_STOCHASTIC
         return db.dsl.select(t.BURDEN_ESTIMATE_SET, t.COUNTRY, t.YEAR, t.AGE, t.VALUE, t.MODEL_RUN)
                 .select(BURDEN_OUTCOME.CODE)
-                .fromJoinPath(BURDEN_ESTIMATE, BURDEN_OUTCOME)
-                .orderBy(BURDEN_ESTIMATE.COUNTRY, BURDEN_OUTCOME.CODE)
+                .from(BURDEN_ESTIMATE_STOCHASTIC)
+                .join(BURDEN_OUTCOME)
+                .on(BURDEN_OUTCOME.ID.eq(BURDEN_ESTIMATE_STOCHASTIC.BURDEN_OUTCOME))
+                .orderBy(BURDEN_ESTIMATE_STOCHASTIC.COUNTRY, BURDEN_OUTCOME.CODE)
                 .fetch()
     }
 
     private fun checkRecord(record: Record, setId: Int,
                             year: Int, age: Int, country: String, outcomeCode: String, outcomeValue: BigDecimal)
     {
-        val t = BURDEN_ESTIMATE
+        val t = BURDEN_ESTIMATE_STOCHASTIC
         assertThat(record[t.BURDEN_ESTIMATE_SET]).isEqualTo(setId)
         assertThat(record[t.COUNTRY]).isEqualTo(country)
         assertThat(record[t.YEAR]).isEqualTo(year)
@@ -239,7 +247,7 @@ class PopulateBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
     }
 
     private val defaultProperties = CreateBurdenEstimateSet(
-            BurdenEstimateSetType(BurdenEstimateSetTypeCode.CENTRAL_UNKNOWN),
+            BurdenEstimateSetType(BurdenEstimateSetTypeCode.STOCHASTIC),
             modelRunParameterSetId = null
     )
 
