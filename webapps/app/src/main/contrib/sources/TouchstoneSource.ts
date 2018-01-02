@@ -13,7 +13,7 @@ export class TouchstoneSource extends Source<ResponsibilityState> {
             return this.doFetch(s => `/modelling-groups/${s.currentModellingGroup.id}/responsibilities/`, {
                 success: touchstoneActions.update,
                 loading: touchstoneActions.beginFetch,
-                isCached: state => state.touchstones != null && state.touchstones.length > 0
+                isCached: state => false
             });
         }
     }
