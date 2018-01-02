@@ -20,14 +20,7 @@ class OneTimeLinkController(
 ) : AbstractController(context)
 {
 
-    private val onetimeLinkResolver = if (onetimeLinkResolver == null)
-    {
-        OnetimeLinkResolver(controllers, this.repos)
-    }
-    else
-    {
-        onetimeLinkResolver
-    }
+    private val onetimeLinkResolver = onetimeLinkResolver ?: OnetimeLinkResolver(controllers, this.repos)
 
     override val urlComponent = ""
     val url = "/onetime_link/:token/"
