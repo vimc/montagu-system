@@ -9,9 +9,13 @@ import org.vaccineimpact.api.app.controllers.MontaguControllers
 import org.vaccineimpact.api.app.controllers.OneTimeLinkController
 import org.vaccineimpact.api.app.repositories.RepositoryFactory
 import org.vaccineimpact.api.db.Config
+import org.vaccineimpact.api.models.ErrorInfo
+import org.vaccineimpact.api.models.Result
+import org.vaccineimpact.api.models.ResultStatus
 import org.vaccineimpact.api.security.KeyHelper
 import org.vaccineimpact.api.security.WebTokenHelper
 import org.vaccineimpact.api.serialization.MontaguSerializer
+import spark.Spark.notFound
 import java.io.File
 import java.net.BindException
 import java.net.ServerSocket
@@ -48,6 +52,7 @@ class MontaguApi
         spk.options("*", { _, res ->
             res.header("Access-Control-Allow-Headers", "Authorization")
         })
+        NotFoundHandler().setup()
         ErrorHandler.setup()
 
         // Old style controllers

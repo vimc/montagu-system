@@ -20,7 +20,7 @@ import org.vaccineimpact.api.test_helpers.DatabaseCreationHelper
         CreateUserTests::class,
         DemographicTests::class,
         DiseaseTests::class,
-        GeneralSecurityTests::class,
+        GeneralBlackboxTests::class,
         IndexTests::class,
         ModellingGroupTests::class,
         ModelRunParameterTests::class,
