@@ -13,7 +13,10 @@ table tr th, .specialColumn td:first-child {
 table {
   @extend .table;
   @extend .table-responsive;
-  @extend .table-bordered
+  @extend .table-bordered;
+
+    // Prevent double border on horizontal scroll due to combining table-bordered and table-responsive
+    border: 0;
 }
 
 
