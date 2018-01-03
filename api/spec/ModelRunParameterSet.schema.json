@@ -6,7 +6,8 @@
         "description": { "type": "string" },
         "model": { "type": "string"},
         "uploaded_by": { "$ref": "Username.schema.json" },
-        "uploaded_on": { "$ref": "Timestamp.schema.json" }
+        "uploaded_on": { "$ref": "Timestamp.schema.json" },
+        "disease": { "type": "string"}
     },
     "additionalProperties": false,
     "required": [ "id", "description", "uploaded_by", "uploaded_on" ]
