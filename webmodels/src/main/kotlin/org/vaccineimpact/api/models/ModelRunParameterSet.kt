@@ -6,13 +6,14 @@ import java.beans.ConstructorProperties
 import java.time.Instant
 
 data class ModelRunParameterSet
-@ConstructorProperties("id", "description", "model", "uploadedBy", "uploadedOn")
+@ConstructorProperties("id", "description", "model", "uploadedBy", "uploadedOn", "disease")
 constructor(
         override val id: Int,
         val description: String,
         val model: String,
         val uploadedBy: String,
-        val uploadedOn: Instant
+        val uploadedOn: Instant,
+        val disease: String
 ): HasKey<Int>
 
 @AllColumnsRequired
