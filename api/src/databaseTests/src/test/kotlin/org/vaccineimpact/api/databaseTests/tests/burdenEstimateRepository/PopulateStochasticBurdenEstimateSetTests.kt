@@ -85,13 +85,13 @@ class PopulateStochasticBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
     }
 
     @Test
-    fun `populate set throws unknown object error if set does not exist`()
+    fun `populate stochastic set throws unknown object error if set does not exist`()
     {
         JooqContext().use {
             setupDatabase(it)
             val repo = makeRepository(it)
             assertThatThrownBy {
-                repo.populateBurdenEstimateSet(12, groupId, touchstoneId, scenarioId, data())
+                repo.populateStochasticBurdenEstimateSet(12, groupId, touchstoneId, scenarioId, data())
             }.isInstanceOf(UnknownObjectError::class.java)
         }
     }
