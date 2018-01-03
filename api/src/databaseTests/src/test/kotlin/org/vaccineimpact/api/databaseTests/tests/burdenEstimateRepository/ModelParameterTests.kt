@@ -153,7 +153,7 @@ class ModelParameterTests : BurdenEstimateRepositoryTests()
             Assertions.assertThat(set.uploadedBy).isEqualTo(username)
             Assertions.assertThat(set.uploadedOn).isEqualTo(timestamp)
             Assertions.assertThat(set.id).isGreaterThan(0)
-            Assertions.assertThat(set.disease).isEqualTo(diseaseName)
+            Assertions.assertThat(set.disease).isEqualTo(diseaseId)
         }
     }
 

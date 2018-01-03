@@ -1326,7 +1326,7 @@ Schema: [`ModelRunParameterSets.schema.json`](ModelRunParameterSets.schema.json)
             "model": "HPVGoldie-flat",
             "uploaded_by": "tgarske",
             "uploaded_on": "2017-10-06T11:18:06Z",
-            "disease": "Yellow Fever"
+            "disease": "YF"
         }
     ]
     

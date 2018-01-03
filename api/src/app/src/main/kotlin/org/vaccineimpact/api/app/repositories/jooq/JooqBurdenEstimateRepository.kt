@@ -47,16 +47,14 @@ class JooqBurdenEstimateRepository(
                 MODEL.ID.`as`("model"),
                 UPLOAD_INFO.UPLOADED_BY,
                 UPLOAD_INFO.UPLOADED_ON,
-                DISEASE.NAME.`as`("disease"))
+                MODEL.DISEASE)
                 .fromJoinPath(MODEL_RUN_PARAMETER_SET, UPLOAD_INFO)
                 .join(MODEL)
                 .on(MODEL.CURRENT_VERSION.eq(MODEL_RUN_PARAMETER_SET.MODEL_VERSION))
-                .join(DISEASE)
-                .on(DISEASE.ID.eq(MODEL.DISEASE))
                 .where(MODEL.MODELLING_GROUP.eq(modellingGroup.id))
                 .and(MODEL.IS_CURRENT)
                 .and(MODEL_RUN_PARAMETER_SET.RESPONSIBILITY_SET.eq(setId))
-                .orderBy(DISEASE.NAME.asc(), UPLOAD_INFO.UPLOADED_BY.desc())
+                .orderBy(MODEL.DISEASE.asc(), UPLOAD_INFO.UPLOADED_ON.desc())
                 .fetchInto(ModelRunParameterSet::class.java)
     }
 
