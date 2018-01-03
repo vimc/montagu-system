@@ -210,6 +210,7 @@ export function mockModelRunParameterSet(properties?: Partial<models.ModelRunPar
     const template: models.ModelRunParameterSet = {
         id: counter,
         description: "description",
+        disease: "Yellow Fever",
         model: "model-1",
         uploaded_on: "2017-07-13 13:45:29 +0100",
         uploaded_by: "test.user"
