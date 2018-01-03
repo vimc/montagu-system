@@ -54,7 +54,7 @@ class JooqBurdenEstimateRepository(
                 .where(MODEL.MODELLING_GROUP.eq(modellingGroup.id))
                 .and(MODEL.IS_CURRENT)
                 .and(MODEL_RUN_PARAMETER_SET.RESPONSIBILITY_SET.eq(setId))
-                .orderBy(MODEL.DISEASE.asc(), UPLOAD_INFO.UPLOADED_BY.desc())
+                .orderBy(MODEL.DISEASE.asc(), UPLOAD_INFO.UPLOADED_ON.desc())
                 .fetchInto(ModelRunParameterSet::class.java)
     }
 
