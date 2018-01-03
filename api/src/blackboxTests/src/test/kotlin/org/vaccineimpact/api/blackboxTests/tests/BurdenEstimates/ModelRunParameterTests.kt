@@ -136,7 +136,7 @@ class ModelRunParameterTests : BurdenEstimateTests()
             Assertions.assertThat(obj["model"]).isEqualTo("model-1")
             Assertions.assertThat(obj["id"]).isEqualTo(setId)
             Assertions.assertThat(obj["description"]).isEqualTo("description")
-            Assertions.assertThat(obj["disease"]).isEqualTo(diseaseName)
+            Assertions.assertThat(obj["disease"]).isEqualTo(diseaseId)
         }
     }
 
