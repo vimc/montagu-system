@@ -59,6 +59,7 @@ export interface ModellingGroupDetails {
 
 export interface ModelRunParameterSet {
     description: string;
+    disease: string;
     id: number;
     model: string;
     uploaded_by: string;
