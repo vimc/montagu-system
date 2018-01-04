@@ -6,10 +6,7 @@ import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.errors.DatabaseContentsError
 import org.vaccineimpact.api.app.errors.OperationNotAllowedError
 import org.vaccineimpact.api.app.errors.UnknownObjectError
-import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
-import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
-import org.vaccineimpact.api.app.repositories.ScenarioRepository
-import org.vaccineimpact.api.app.repositories.TouchstoneRepository
+import org.vaccineimpact.api.app.repositories.*
 import org.vaccineimpact.api.app.repositories.jooq.mapping.BurdenMappingHelper
 import org.vaccineimpact.api.db.AnnexJooqContext
 import org.vaccineimpact.api.db.Tables
@@ -219,45 +216,44 @@ class JooqBurdenEstimateRepository(
         val responsibilityInfo = getResponsibilityInfo(modellingGroup.id, touchstoneId, scenarioId)
 
         val set = getBurdenEstimateSet(setId)
-        if (set.status != BurdenEstimateSetStatus.EMPTY)
-        {
-            throw OperationNotAllowedError("This burden estimate set already contains estimates." +
-                    " You must create a new set if you want to upload any new estimates.")
-        }
 
-        CentralBurdenEstimateWriter(dsl, setId).addEstimatesToSet(estimates, responsibilityInfo.disease)
-        updateCurrentBurdenEstimateSet(responsibilityInfo.id, setId, set.type.type)
-        dsl.update(Tables.BURDEN_ESTIMATE_SET)
-                .set(Tables.BURDEN_ESTIMATE_SET.STATUS, "complete")
-                .where(Tables.BURDEN_ESTIMATE_SET.ID.eq(setId))
-                .execute()
-    }
-
-    override fun populateStochasticBurdenEstimateSet(setId: Int, groupId: String, touchstoneId: String, scenarioId: String,
-                                            estimates: Sequence<BurdenEstimateWithRunId>)
-    {
-        // Dereference modelling group IDs
-        val modellingGroup = modellingGroupRepository.getModellingGroup(groupId)
-
-        val responsibilityInfo = getResponsibilityInfo(modellingGroup.id, touchstoneId, scenarioId)
-
-        val set = getBurdenEstimateSet(setId)
-        if (set.type.type != BurdenEstimateSetTypeCode.STOCHASTIC)
-        {
-            throw OperationNotAllowedError("This burden estimate set is not marked as stochastic.")
-        }
         if (set.status == BurdenEstimateSetStatus.COMPLETE)
         {
             throw OperationNotAllowedError("This burden estimate set is marked as complete." +
                     " You must create a new set if you want to upload any new estimates.")
         }
 
-        StochasticBurdenEstimateWriter(AnnexJooqContext().dsl,
-                setId, BurdenEstimateWriter(dsl, setId)).addEstimatesToSet(estimates, responsibilityInfo.disease)
+        if (set.type.type == BurdenEstimateSetTypeCode.STOCHASTIC)
+        {
+            populateStochasticBurdenEstimateSet(set, responsibilityInfo.disease, estimates)
+        }
+        else
+        {
+            populateCentralBurdenEstimateSet(set, responsibilityInfo.disease, estimates)
+        }
+
         updateCurrentBurdenEstimateSet(responsibilityInfo.id, setId, set.type.type)
+    }
+
+    private fun populateCentralBurdenEstimateSet(set: BurdenEstimateSet, disease: String, estimates: Sequence<BurdenEstimateWithRunId>)
+    {
+        CentralBurdenEstimateWriter(dsl, set.id).addEstimatesToSet(estimates, disease)
+        dsl.update(Tables.BURDEN_ESTIMATE_SET)
+                .set(Tables.BURDEN_ESTIMATE_SET.STATUS, "complete")
+                .where(Tables.BURDEN_ESTIMATE_SET.ID.eq(set.id))
+                .execute()
+    }
+
+    private fun populateStochasticBurdenEstimateSet(set: BurdenEstimateSet, disease: String,
+                                                    estimates: Sequence<BurdenEstimateWithRunId>)
+    {
+        StochasticBurdenEstimateWriter(AnnexJooqContext().dsl,
+                set.id, BurdenEstimateWriter(dsl, set.id))
+                .addEstimatesToSet(estimates, disease)
+
         dsl.update(Tables.BURDEN_ESTIMATE_SET)
                 .set(Tables.BURDEN_ESTIMATE_SET.STATUS, "partial")
-                .where(Tables.BURDEN_ESTIMATE_SET.ID.eq(setId))
+                .where(Tables.BURDEN_ESTIMATE_SET.ID.eq(set.id))
                 .execute()
     }
 

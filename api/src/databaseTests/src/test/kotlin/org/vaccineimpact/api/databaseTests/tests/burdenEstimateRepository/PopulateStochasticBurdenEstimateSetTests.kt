@@ -33,11 +33,12 @@ class PopulateStochasticBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
                     modelRunData.runParameterSetId)
             val setId = repo.createBurdenEstimateSet(groupId, touchstoneId, scenarioId, properties, username, timestamp)
             val data = data(modelRunData.externalIds)
-            repo.populateStochasticBurdenEstimateSet(setId, groupId, touchstoneId, scenarioId, data)
+            repo.populateBurdenEstimateSet(setId, groupId, touchstoneId, scenarioId, data)
             setId
         }
         withDatabase { db ->
             checkBurdenEstimates(db, setId)
+            checkModelRuns(db, modelRunData)
             checkBurdenEstimateSetMetadata(db, setId, returnedIds, "partial")
         }
     }
@@ -57,7 +58,7 @@ class PopulateStochasticBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
             val data = data(modelRunData.externalIds)
 
             assertThatThrownBy {
-                repo.populateStochasticBurdenEstimateSet(setId, groupId, touchstoneId, scenarioId, data)
+                repo.populateBurdenEstimateSet(setId, groupId, touchstoneId, scenarioId, data)
             }.isInstanceOf(OperationNotAllowedError::class.java)
                     .hasMessage("the following problems occurred:\nThis burden estimate set is marked as complete." +
                             " You must create a new set if you want to upload any new estimates.")
@@ -76,7 +77,7 @@ class PopulateStochasticBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
         }
         withRepo { repo ->
             val data = data(modelRunData.externalIds)
-            repo.populateStochasticBurdenEstimateSet(setId, groupId, touchstoneId, scenarioId, data)
+            repo.populateBurdenEstimateSet(setId, groupId, touchstoneId, scenarioId, data)
         }
         withDatabase { db ->
             checkBurdenEstimates(db, setId)
@@ -85,26 +86,20 @@ class PopulateStochasticBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
     }
 
     @Test
-    fun `populate stochastic set throws unknown object error if set does not exist`()
-    {
-        JooqContext().use {
-            setupDatabase(it)
-            val repo = makeRepository(it)
-            assertThatThrownBy {
-                repo.populateStochasticBurdenEstimateSet(12, groupId, touchstoneId, scenarioId, data())
-            }.isInstanceOf(UnknownObjectError::class.java)
-        }
-    }
-
-    @Test
     fun `cannot create burden estimates with diseases that do not match scenario`()
     {
-        val badData = data().map { it.copy(disease = "YF") }
-        JooqContext().use { db ->
-            setupDatabase(db)
-            val repo = makeRepository(db)
+        val (setId, modelRunData) = withDatabase { db ->
+            val returnedIds = setupDatabase(db)
+            val modelRunData = addModelRuns(db, returnedIds.responsibilitySetId, returnedIds.modelVersion!!)
+
+            Pair(db.addBurdenEstimateSet(returnedIds.responsibility, returnedIds.modelVersion,
+                    username, "partial", "stochastic", null, modelRunData.runParameterSetId, timestamp), modelRunData)
+
+        }
+        withRepo { repo ->
+            val data = data(modelRunData.externalIds)
+            val badData = data.map { it.copy(disease = "YF") }
             assertThatThrownBy {
-                val setId = repo.createBurdenEstimateSet(groupId, touchstoneId, scenarioId, defaultProperties, username, timestamp)
                 repo.populateBurdenEstimateSet(setId, groupId, touchstoneId, scenarioId, badData)
             }.isInstanceOf(InconsistentDataError::class.java)
         }
@@ -113,12 +108,17 @@ class PopulateStochasticBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
     @Test
     fun `cannot populate burden estimates with non-existent countries`()
     {
-        val badData = data().map { it.copy(country = "FAKE") }
-        JooqContext().use { db ->
-            setupDatabase(db)
-            val repo = makeRepository(db)
+        val (setId, modelRunData) = withDatabase { db ->
+            val returnedIds = setupDatabase(db)
+            val modelRunData = addModelRuns(db, returnedIds.responsibilitySetId, returnedIds.modelVersion!!)
+
+            Pair(db.addBurdenEstimateSet(returnedIds.responsibility, returnedIds.modelVersion,
+                    username, "partial", "stochastic", null, modelRunData.runParameterSetId, timestamp), modelRunData)
+        }
+        withRepo { repo ->
+            val data = data(modelRunData.externalIds)
+            val badData = data.map { it.copy(country = "FAKE") }
             assertThatThrownBy {
-                val setId = repo.createBurdenEstimateSet(groupId, touchstoneId, scenarioId, defaultProperties, username, timestamp)
                 repo.populateBurdenEstimateSet(setId, groupId, touchstoneId, scenarioId, badData)
             }.isInstanceOf(UnknownObjectError::class.java).matches {
                 (it as UnknownObjectError).typeName == "country"
@@ -129,13 +129,17 @@ class PopulateStochasticBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
     @Test
     fun `cannot populate burden estimate set if cohort_size is missing from burden_outcome table`()
     {
-        JooqContext().use { db ->
-            setupDatabase(db)
+        val (setId, modelRunData) = withDatabase { db ->
+            val returnedIds = setupDatabase(db)
+            val modelRunData = addModelRuns(db, returnedIds.responsibilitySetId, returnedIds.modelVersion!!)
             db.dsl.deleteFrom(BURDEN_OUTCOME).where(BURDEN_OUTCOME.CODE.eq("cohort_size")).execute()
-            val repo = makeRepository(db)
+            Pair(db.addBurdenEstimateSet(returnedIds.responsibility, returnedIds.modelVersion,
+                    username, "partial", "stochastic", null, modelRunData.runParameterSetId, timestamp), modelRunData)
+
+        }
+        withRepo { repo ->
             assertThatThrownBy {
-                val setId = repo.createBurdenEstimateSet(groupId, touchstoneId, scenarioId, defaultProperties, username, timestamp)
-                repo.populateBurdenEstimateSet(setId, groupId, touchstoneId, scenarioId, data())
+                repo.populateBurdenEstimateSet(setId, groupId, touchstoneId, scenarioId, data(modelRunData.externalIds))
             }.isInstanceOf(DatabaseContentsError::class.java)
         }
     }
