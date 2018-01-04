@@ -145,7 +145,7 @@ class JooqModellingGroupRepository(
     {
         val group = getModellingGroup(groupId)
         val query = dsl
-                .select(
+                .selectDistinct(
                         TOUCHSTONE.ID,
                         TOUCHSTONE.TOUCHSTONE_NAME,
                         TOUCHSTONE.STATUS,
