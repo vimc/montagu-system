@@ -144,16 +144,17 @@ class JooqModellingGroupRepository(
     override fun getTouchstonesByGroupId(groupId: String): List<Touchstone>
     {
         val group = getModellingGroup(groupId)
-        var query = dsl
-                .select(
+        val query = dsl
+                .selectDistinct(
                         TOUCHSTONE.ID,
                         TOUCHSTONE.TOUCHSTONE_NAME,
                         TOUCHSTONE.STATUS,
                         TOUCHSTONE.DESCRIPTION,
                         TOUCHSTONE.VERSION
                 )
-                .fromJoinPath(TOUCHSTONE, RESPONSIBILITY_SET, joinType = JoinType.JOIN)
+                .fromJoinPath(TOUCHSTONE, RESPONSIBILITY_SET, RESPONSIBILITY)
                 .where(RESPONSIBILITY_SET.MODELLING_GROUP.eq(group.id))
+                .and(RESPONSIBILITY.IS_OPEN)
         return query.fetch().map { touchstoneRepository.mapTouchstone(it) }
     }
 
