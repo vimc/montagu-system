@@ -295,7 +295,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
                         id: 1,
                         description: 'description',
                         model: "model-1",
-                        disease: "Yellow Fever",
+                        disease: "yf",
                         uploaded_on: '2017-12-25T12:00:00Z',
                         uploaded_by: 'test.user'
                     }
