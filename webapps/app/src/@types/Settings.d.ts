@@ -3,7 +3,9 @@ interface Settings {
     apiUrl: () => string;
     montaguUrl: () => string;
     supportContact: string;
+    vimcEmail: string;
     slackUrl: string;
+    modellerApplicantsTouchstoneId: string;
     teamcityServiceMessages: boolean;
     admin: AdminSettings;
     contrib: ContribSettings;
