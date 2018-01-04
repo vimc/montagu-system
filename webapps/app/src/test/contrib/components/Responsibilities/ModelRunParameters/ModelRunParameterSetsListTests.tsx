@@ -66,7 +66,11 @@ describe("ModelRunParameterSetsListComponent", () => {
         expect(values).to.eql([
             "Description",
             "me",
-            "Mon Dec 25 2017, 12:00"
+            "Mon Dec 25 2017, 12:00",
+            "Link"
         ])
+        const downloadLink = row.find("td");
+        expect(downloadLink.at(3).find("a").prop('href')).to.contains("data: text/json;charset=utf-8");
+        expect(downloadLink.at(3).find("a").prop('download')).to.eq('signature294.json');
     });
 });

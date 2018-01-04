@@ -6,6 +6,7 @@ import {connectToStores} from "../../../../shared/alt";
 import * as React from "react";
 import {longTimestamp} from "../../../../shared/Helpers";
 import {responsibilityStore} from "../../../stores/ResponsibilityStore";
+import { Base64 } from 'js-base64';
 
 interface Props extends RemoteContent {
     sets: ModelRunParameterSet[];
@@ -27,12 +28,31 @@ export class ModelRunParameterSetsListComponent extends RemoteContentComponent<P
         }
     }
 
+
+    private makeDownloadableSignatureLinkContent(set: ModelRunParameterSet) {
+        const setData = {
+            id: set.id,
+            disease: set.disease,
+            uploaded_by: set.uploaded_by,
+            uploaded_on: set.uploaded_on
+        };
+        const signature = Base64.encode(JSON.stringify(setData));
+        const signatureData = [setData, { signature }];
+        return "data: text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(signatureData, null, 2));
+    }
+
     private renderTable(props: Props) {
         if (props.sets && props.sets.length > 0) {
             const items = props.sets.map((set, i) => <tr key={i}>
                 <td>{set.description}</td>
                 <td>{set.uploaded_by}</td>
                 <td>{longTimestamp(new Date(set.uploaded_on))}</td>
+                <td>
+                    <a
+                        href={this.makeDownloadableSignatureLinkContent(set)}
+                        download={`signature${set.id}.json`}
+                    >Link</a>
+                </td>
             </tr>);
             return <table>
                 <thead>
@@ -40,6 +60,7 @@ export class ModelRunParameterSetsListComponent extends RemoteContentComponent<P
                     <th scope="col">Description</th>
                     <th scope="col">Uploaded by</th>
                     <th scope="col">Uploaded on</th>
+                    <th scope="col">Download</th>
                 </tr>
                 </thead>
                 <tbody>
