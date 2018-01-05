@@ -129,7 +129,7 @@ export class TemplateLink extends React.Component<TemplateLinkProps, undefined> 
             </ul>
         }
 
-        if (this.props.touchstoneId != settings.modellerApplicantsTouchstoneId) {
+        if (this.props.touchstoneId == settings.modellerApplicantsTouchstoneId) {
             return <div>
                 <a key="central_burden_template_Rubella-generic.csv"
                    href={`${templatePath}central_burden_template_Rubella-generic.csv`}>Rubella</a>
