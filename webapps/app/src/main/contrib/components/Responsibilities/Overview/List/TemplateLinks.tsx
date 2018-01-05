@@ -129,6 +129,16 @@ export class TemplateLink extends React.Component<TemplateLinkProps, undefined> 
                 </li>
             </ul>
         }
+
+        if (this.props.touchstoneId == settings.modellerApplicantsTouchstoneId) {
+            return <div>
+                <div>
+                    <a key={`central_burden_template_${disease.id}-generic.csv`}
+                       href={`${templatePath}central_burden_template_${disease.id}-generic.csv`}>{disease.name}</a>
+                </div>
+            </div>
+        }
+
         return <div>
             <div>
                 <a key={`${disease.id}-d`}
@@ -156,22 +166,6 @@ export class TemplateLinks extends React.Component<TemplateLinksProps, undefined
                         groupId={this.props.groupId}
                         touchstoneId={this.props.touchstoneId}
                     />);
-
-            if (this.props.touchstoneId == settings.modellerApplicantsTouchstoneId) {
-                links = <div>
-                    <div>
-                        <a key="central_burden_template_Rubella-generic.csv"
-                           href={`${templatePath}central_burden_template_Rubella-generic.csv`}>Rubella</a>
-                    </div>
-                    <div>
-                        <a key="central_burden_template_JE-generic.csv"
-                           href={`${templatePath}central_burden_template_JE-generic.csv`}>JE</a></div>
-                    <div>
-                        <a key="central_burden_template_YF-generic.csv"
-                           href={`${templatePath}central_burden_template_YF-generic.csv`}>Yellow Fever</a>
-                    </div>
-                </div>
-            }
 
             return <div>Download burden estimate templates:<br/>
                 {links}
