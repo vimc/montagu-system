@@ -197,5 +197,4 @@ describe("FormComponent", () => {
 
         expect(rendered.find("form").hasClass("was-validated")).to.eq(true);
     });
-
 });
