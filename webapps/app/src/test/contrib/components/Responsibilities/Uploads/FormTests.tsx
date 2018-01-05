@@ -1,13 +1,12 @@
 import * as React from "react";
 import {expect} from "chai";
-import {mount, shallow} from "enzyme";
+import {mount} from "enzyme";
 import {Sandbox} from "../../../../Sandbox";
-import {Alert} from "../../../../../main/shared/components/Alert";
+import {Alert} from "reactstrap";
 import {Form} from "../../../../../main/shared/components/Form";
 import {Result} from "../../../../../main/shared/models/Generated";
-import {mockFetcherResponse, mockResponse} from "../../../../mocks/mockRemote";
+import {mockFetcherResponse } from "../../../../mocks/mockRemote";
 import {checkAsync} from "../../../../testHelpers";
-import {FormEvent} from "react";
 
 describe("FormComponent", () => {
     const sandbox = new Sandbox();
@@ -38,11 +37,15 @@ describe("FormComponent", () => {
 
         rendered.setState({errors: errors});
 
-        const alert = rendered.find(Alert).at(0);
+        const alerts = rendered.find(Alert);
+        expect(alerts).to.have.lengthOf(2);
 
-        expect(alert.prop("hasError")).to.eq(true);
-        expect(alert.prop("hasSuccess")).to.eq(false);
-        expect(alert.prop("message")).to.eq("err message");
+        const errorAlert = alerts.first();
+        const successAlert = alerts.last();
+
+        expect(errorAlert.prop("isOpen")).to.eq(true);
+        expect(successAlert.prop("isOpen")).to.eq(false);
+        expect(errorAlert.text()).to.eq("err message");
     });
 
     it("passes success to alert", () => {
@@ -50,11 +53,15 @@ describe("FormComponent", () => {
         const rendered = mount(<Form {...props} />);
         rendered.setState({hasSuccess: true});
 
-        const alert = rendered.find(Alert).at(0);
+        const alerts = rendered.find(Alert);
+        expect(alerts).to.have.lengthOf(2);
 
-        expect(alert.prop("hasSuccess")).to.eq(true);
-        expect(alert.prop("hasError")).to.eq(false);
-        expect(alert.prop("message")).to.eq("success message");
+        const errorAlert = alerts.first();
+        const successAlert = alerts.last();
+
+        expect(errorAlert.prop("isOpen")).to.eq(false);
+        expect(successAlert.prop("isOpen")).to.eq(true);
+        expect(successAlert.text()).to.eq("success message");
     });
 
     it("result callback sets successful state", () => {
@@ -67,7 +74,8 @@ describe("FormComponent", () => {
         expect(spy.calledWith({
             hasSuccess: true,
             errors: [],
-            disabled: false
+            disabled: false,
+            validated: false
         })).to.eq(true);
     });
 
@@ -78,7 +86,7 @@ describe("FormComponent", () => {
         sandbox.setStub(form, "setState");
 
         const spy = sandbox.setStub(form, "resultCallback");
-        form.submitForm();
+        form.submitForm(null);
 
         checkAsync(done, (afterWait) => {
             afterWait(done, () => {
@@ -121,7 +129,8 @@ describe("FormComponent", () => {
         expect(spy.calledWith({
             hasSuccess: false,
             errors: errors,
-            disabled: false
+            disabled: false,
+            validated: false
         })).to.eq(true);
     });
 
@@ -188,4 +197,5 @@ describe("FormComponent", () => {
 
         expect(rendered.find("form").hasClass("was-validated")).to.eq(true);
     });
+    
 });

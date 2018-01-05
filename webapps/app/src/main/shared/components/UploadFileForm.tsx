@@ -2,7 +2,7 @@ import * as React from "react";
 import fetcher from "../sources/Fetcher";
 import {helpers} from "../Helpers";
 import {ErrorInfo, Result} from "../models/Generated";
-import {Alert} from "./Alert";
+import {Alert} from "reactstrap";
 
 import "../styles/forms.scss";
 import "../styles/buttons.scss";
@@ -50,7 +50,6 @@ export class UploadFileForm extends React.Component<UploadFileProps, UploadFileS
         const enableSubmit = this.props.enableSubmit && this.props.token != null && this.state.fileSelected;
 
         const hasError = this.state.errors.length > 0;
-        const alertMessage = hasError ? this.state.errors[0].message : this.props.successMessage;
 
         return <div>
             <form action={url} className="form"
@@ -66,8 +65,13 @@ export class UploadFileForm extends React.Component<UploadFileProps, UploadFileS
                             className="mr-5">{this.state.fileSelected ? "File selected: " + this.state.fileName : ""}</div>
                     </label>
                 </div>
-                <Alert hasSuccess={this.state.hasSuccess} hasError={hasError} message={alertMessage}/>
-                <button type="submit" className={enableSubmit ? "" : "disabled"}
+                <Alert color="danger" isOpen={hasError}>
+                    {this.state.errors[0] && this.state.errors[0].message}
+                </Alert>
+                <Alert color="success" isOpen={this.state.hasSuccess}>
+                    {this.props.successMessage}
+                </Alert>
+               <button type="submit" className={enableSubmit ? "" : "disabled"}
                         disabled={!enableSubmit}>Upload
                 </button>
             </form>
