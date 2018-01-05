@@ -11,7 +11,6 @@ import {ModelRunParametersSection} from "./ModelRunParametersSection";
 export interface Props extends RemoteContent {
     touchstone: Touchstone;
     group: ModellingGroup;
-    parametersToken: string;
     diseases: string[];
     sets: ModelRunParameterSet[];
 }
@@ -33,7 +32,6 @@ export class ModelRunParametersContentComponent
                 ready: state.ready,
                 touchstone: state.currentTouchstone,
                 group: state.currentModellingGroup,
-                parametersToken: runParameterState.oneTimeToken,
                 sets: runParameterState.parameterSets,
                 diseases: Array.from(new Set([].concat.apply([],
                     state.responsibilitySets.map(set => set.responsibilities.map(r => r.scenario.disease)))))
@@ -43,7 +41,6 @@ export class ModelRunParametersContentComponent
                 ready: false,
                 touchstone: null,
                 group: null,
-                parametersToken: null,
                 diseases: [],
                 sets: []
             };

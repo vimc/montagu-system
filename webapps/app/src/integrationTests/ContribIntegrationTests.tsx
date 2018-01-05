@@ -1,33 +1,19 @@
-import {mainStore} from "../main/contrib/stores/MainStore";
-import {expect} from "chai";
 import * as React from "react";
 import {checkPromise} from "../test/testHelpers";
 import {Client, QueryResult} from "pg";
-import {responsibilityStore} from "../main/contrib/stores/ResponsibilityStore";
-import {
-    DemographicDataset,
-    Disease,
-    ModellingGroup,
-    ModelRunParameterSet,
-    Responsibilities,
-    ScenarioTouchstoneAndCoverageSets,
-    Touchstone
-} from "../main/shared/models/Generated";
+import {Responsibilities, Touchstone, Disease} from "../main/shared/models/Generated";
 import {touchstoneActions} from "../main/contrib/actions/TouchstoneActions";
 import {modellingGroupActions} from "../main/shared/actions/ModellingGroupActions";
-import {responsibilityActions} from "../main/contrib/actions/ResponsibilityActions";
-import * as QueryString from 'querystring';
-import {demographicStore} from "../main/contrib/stores/DemographicStore";
 import {expectIsEqual, IntegrationTestSuite} from "./IntegrationTest";
 import {contribAuthStore} from "../main/contrib/stores/ContribAuthStore";
 import {ContribFetcher} from "../main/contrib/sources/ContribFetcher";
-import {demographicActions} from "../main/contrib/actions/DemographicActions";
-import {Form} from "../main/shared/components/Form";
 import {shallow} from "enzyme";
-import {CreateBurdenEstimateSetForm} from "../main/contrib/components/Responsibilities/BurdenEstimates/CreateBurdenEstimateSetForm";
-import {runParametersStore} from "../main/contrib/stores/RunParametersStore";
 import {ModelRunParametersSection} from "../main/contrib/components/Responsibilities/ModelRunParameters/ModelRunParametersSection";
-import {ModelRunParametersContent} from "../main/contrib/components/Responsibilities/ModelRunParameters/ModelRunParametersContent";
+import {ModelRunParametersContentComponent} from "../main/contrib/components/Responsibilities/ModelRunParameters/ModelRunParametersContent";
+import {mockModellingGroup, mockTouchstone} from "../test/mocks/mockModels";
+import {settings} from "../main/shared/Settings";
+import {IncomingMessage} from "http";
+import {mainStore} from "../main/contrib/stores/MainStore";
 
 const FormData = require('form-data');
 const http = require('http');
@@ -55,50 +41,52 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
     addTestsToMocha() {
 
         function getUrlFromModelRunParametersContent(): string {
-            const rendered = shallow(<ModelRunParametersContent/>);
+            const rendered = shallow(<ModelRunParametersContentComponent
+                ready={true} touchstone={mockTouchstone()}
+                group={mockModellingGroup()}
+                diseases={["yf"]}
+                sets={[]}/>);
 
             return rendered.find(ModelRunParametersSection).first().prop("url");
         }
 
-        it("can upload model run parameter sets", (done: DoneCallback) => {
-
-            setTouchstoneAndGroup(touchstoneId, groupId);
-            const url = getUrlFromModelRunParametersContent();
-            console.log(url)
-
-            const form = new FormData();
-
-            const promise = addResponsibilities(this.db).then(() => {
-                return addModel(this.db).then(() => {
-
-                    form.append('disease', 'yf');
-                    form.append('description', 'something');
-
-                    return form.submit(url, function (err: any, res: any) {
-                        // res – response object (http.IncomingMessage)  //
-                        console.log(err, res)
-                    });
-                })
-            });
-
-            checkPromise(done, promise, (response) => {
-                console.log(response)
-            })
-        });
-
-        // it("fetches diseases", (done: DoneCallback) => {
-        //     const promise = this.db.query(`
-        //         INSERT INTO disease (id, name) VALUES ('d1', 'Disease 1');
-        //         INSERT INTO disease (id, name) VALUES ('d2', 'Disease 2');
-        //     `).then(() => mainStore.fetchDiseases());
+        // it("can upload model run parameter sets", (done: DoneCallback) => {
         //
-        //     checkPromise(done, promise, (diseases) => {
-        //         expectIsEqual<Disease[]>(diseases, [
-        //             {id: "d1", name: "Disease 1"},
-        //             {id: "d2", name: "Disease 2"}
-        //         ]);
+        //     const url = getUrlFromModelRunParametersContent();
+        //
+        //     const form = new FormData();
+        //
+        //     const promise = addResponsibilities(this.db).then(() => {
+        //         return addModel(this.db).then(() => {
+        //
+        //             form.append('disease', 'yf');
+        //             form.append('description', 'something');
+        //
+        //             return form.submit(settings.apiUrl() + url, function (err: Error | undefined, res: IncomingMessage) {
+        //                 // res – response object (http.IncomingMessage)  //
+        //                 console.log(res.statusMessage, res.statusCode, res)
+        //             });
+        //         })
         //     });
+        //
+        //     checkPromise(done, promise, (response) => {
+        //
+        //     })
         // });
+
+        it("fetches diseases", (done: DoneCallback) => {
+            const promise = this.db.query(`
+                INSERT INTO disease (id, name) VALUES ('d1', 'Disease 1');
+                INSERT INTO disease (id, name) VALUES ('d2', 'Disease 2');
+            `).then(() => mainStore.fetchDiseases());
+
+            checkPromise(done, promise, (diseases) => {
+                expectIsEqual<Disease[]>(diseases, [
+                    {id: "d1", name: "Disease 1"},
+                    {id: "d2", name: "Disease 2"}
+                ]);
+            });
+        });
         //
         // it("fetches modelling groups", (done: DoneCallback) => {
         //     const promise = addGroups(this.db).then(() => mainStore.fetchModellingGroups());

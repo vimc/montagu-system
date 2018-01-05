@@ -44,7 +44,6 @@ describe("ModelRunParameterUploadSectionTests", () => {
             diseases: ["disease-id"],
             group: group,
             touchstone: touchstone,
-            parametersToken: "token",
             sets: sets,
             ready: true
         })
@@ -60,7 +59,6 @@ describe("ModelRunParameterUploadSectionTests", () => {
             ResponsibilityStore: {
                 currentTouchstone: touchstone,
                 currentModellingGroup: group,
-                parametersOneTimeToken: null,
                 responsibilitySets: [mockResponsibilitySet(), mockResponsibilitySet()],
                 ready: true
             }
@@ -71,7 +69,6 @@ describe("ModelRunParameterUploadSectionTests", () => {
             diseases: [],
             group: null,
             touchstone: null,
-            parametersToken: null,
             sets: [],
             ready: false
         })
@@ -81,14 +78,15 @@ describe("ModelRunParameterUploadSectionTests", () => {
         const props = {
             touchstone: mockTouchstone({id: "touchstone-1"}),
             group: mockModellingGroup({id: "group-1"}),
-            parametersToken: "TOKEN",
             diseases: ["disease-1", "disease-2"],
             sets: [mockModelRunParameterSet()],
             ready: true
         };
 
         const rendered = shallow(<ModelRunParametersContentComponent {...props} />);
-        expect(rendered.find(ModelRunParametersSection).length).to.eq(3);
+        const sections = rendered.find(ModelRunParametersSection);
+        expect(sections.length).to.eq(3);
+        expect(sections.first().prop("url")).to.eq("/modelling-groups/group-1/model-run-parameters/touchstone-1/")
     });
 
 });
