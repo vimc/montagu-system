@@ -8,13 +8,13 @@ const stochasticParams = require('./stochastic_template_params.csv');
 export interface TemplateLinksProps {
     responsibilities: ExtendedResponsibility[];
     groupId: string;
-    touchstoneId?: string;
+    touchstoneId: string;
 }
 
 export interface TemplateLinkProps {
     diseaseId: string;
     groupId: string;
-    touchstoneId?: string;
+    touchstoneId: string;
 }
 
 export class TemplateLink extends React.Component<TemplateLinkProps, undefined> {
