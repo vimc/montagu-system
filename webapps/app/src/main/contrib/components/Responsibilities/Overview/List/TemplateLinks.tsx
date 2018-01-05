@@ -17,10 +17,11 @@ export interface TemplateLinkProps {
     touchstoneId: string;
 }
 
+const templatePath = "/contribution/templates/";
+
 export class TemplateLink extends React.Component<TemplateLinkProps, undefined> {
     render(): JSX.Element {
 
-        const templatePath = "/contribution/templates/";
         const disease = mainStore.getDiseaseById(this.props.diseaseId);
         const href = `${templatePath}central_burden_template_${disease.id}-${this.props.groupId}.csv`;
         const hrefStochastic = `${templatePath}stochastic_burden_template_${disease.id}-${this.props.groupId}.csv`;
@@ -128,29 +129,16 @@ export class TemplateLink extends React.Component<TemplateLinkProps, undefined> 
                 </li>
             </ul>
         }
-
-        if (this.props.touchstoneId == settings.modellerApplicantsTouchstoneId) {
-            return <div>
-                <a key="central_burden_template_Rubella-generic.csv"
-                   href={`${templatePath}central_burden_template_Rubella-generic.csv`}>Rubella</a>
-                <a key="central_burden_template_JE-generic.csv"
-                   href={`${templatePath}central_burden_template_JE-generic.csv`}>JE</a>
-                <a key="central_burden_template_YF-generic.csv"
-                   href={`${templatePath}central_burden_template_YF-generic.csv`}>Yellow Fever</a>
+        return <div>
+            <div>
+                <a key={`${disease.id}-d`}
+                   href={href}>{disease.name} - central</a>
             </div>
-        }
-
-        else
-            return <div>
-                <div>
-                    <a key={`${disease.id}-d`}
-                       href={href}>{disease.name} - central</a>
-                </div>
-                <div>
-                    <a key={`${disease.id}-s`}
-                       href={hrefStochastic}>{disease.name} - stochastic</a>
-                </div>
-            </div>;
+            <div>
+                <a key={`${disease.id}-s`}
+                   href={hrefStochastic}>{disease.name} - stochastic</a>
+            </div>
+        </div>;
     }
 }
 
@@ -160,7 +148,7 @@ export class TemplateLinks extends React.Component<TemplateLinksProps, undefined
         const diseaseIds = [...new Set(this.props.responsibilities.map(x => x.scenario.disease))];
 
         if (diseaseIds.length > 0) {
-            const links = diseaseIds
+            let links: any = diseaseIds
                 .map(id =>
                     <TemplateLink
                         key={id}
@@ -169,8 +157,25 @@ export class TemplateLinks extends React.Component<TemplateLinksProps, undefined
                         touchstoneId={this.props.touchstoneId}
                     />);
 
+            if (this.props.touchstoneId == settings.modellerApplicantsTouchstoneId) {
+                links = <div>
+                    <div>
+                        <a key="central_burden_template_Rubella-generic.csv"
+                           href={`${templatePath}central_burden_template_Rubella-generic.csv`}>Rubella</a>
+                    </div>
+                    <div>
+                        <a key="central_burden_template_JE-generic.csv"
+                           href={`${templatePath}central_burden_template_JE-generic.csv`}>JE</a></div>
+                    <div>
+                        <a key="central_burden_template_YF-generic.csv"
+                           href={`${templatePath}central_burden_template_YF-generic.csv`}>Yellow Fever</a>
+                    </div>
+                </div>
+            }
+
             return <div>Download burden estimate templates:<br/>
                 {links}
+
                 {this.props.touchstoneId != settings.modellerApplicantsTouchstoneId &&
                 <div>
                     <a key={"params"}
