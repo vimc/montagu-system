@@ -17,9 +17,3 @@ function cleanup {
 trap cleanup EXIT
 
 $here/run-integration-tests.sh "$@"
-result=$?
-
-$here/stop-apis.sh
-exit $result
-
-trap - EXIT
