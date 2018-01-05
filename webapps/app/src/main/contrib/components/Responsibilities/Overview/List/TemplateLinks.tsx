@@ -109,16 +109,29 @@ export class TemplateLink extends React.Component<TemplateLinkProps, undefined> 
         }
 
         return <div>
+            {this.props.touchstoneId != settings.modellerApplicantsTouchstoneId &&
             <div>
                 <a key={`${disease.id}-d`}
-                    href={href}>{disease.name} - central</a>
+                   href={href}>{disease.name} - central</a>
             </div>
+            }
             {this.props.touchstoneId != settings.modellerApplicantsTouchstoneId &&
                 <div>
                     <a key={`${disease.id}-s`}
                        href={hrefStochastic}>{disease.name} - stochastic</a>
                 </div>
             }
+            {this.props.touchstoneId == settings.modellerApplicantsTouchstoneId &&
+            <div>
+                <a key="central_burden_template_Rubella-generic.csv"
+                   href={`${templatePath}central_burden_template_Rubella-generic.csv`}>Rubella</a>
+                <a key="central_burden_template_JE-generic.csv"
+                   href={`${templatePath}central_burden_template_JE-generic.csv`}>JE</a>
+                <a key="central_burden_template_YF-generic.csv"
+                   href={`${templatePath}central_burden_template_YF-generic.csv`}>Yellow Fever</a>
+            </div>
+            }
+
         </div>;
     }
 }
