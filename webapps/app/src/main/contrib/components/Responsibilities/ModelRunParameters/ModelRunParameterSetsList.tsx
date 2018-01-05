@@ -28,8 +28,7 @@ export class ModelRunParameterSetsListComponent extends RemoteContentComponent<P
         }
     }
 
-
-    private makeDownloadableSignatureLinkContent(set: ModelRunParameterSet) {
+    makeSignatureContent(set: ModelRunParameterSet): Array<any> {
         const setData = {
             id: set.id,
             disease: set.disease,
@@ -37,7 +36,12 @@ export class ModelRunParameterSetsListComponent extends RemoteContentComponent<P
             uploaded_on: set.uploaded_on
         };
         const signature = Base64.encode(JSON.stringify(setData));
-        const signatureData = [setData, { signature }];
+        return [setData, { signature }];
+    }
+
+
+    private makeDownloadableSignatureLinkContent(set: ModelRunParameterSet) {
+        const signatureData = this.makeSignatureContent(set);
         return "data: text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(signatureData, null, 2));
     }
 
@@ -50,7 +54,7 @@ export class ModelRunParameterSetsListComponent extends RemoteContentComponent<P
                 <td>
                     <a
                         href={this.makeDownloadableSignatureLinkContent(set)}
-                        download={`signature${set.id}.json`}
+                        download={`signature${set.id}`}
                     >Link</a>
                 </td>
             </tr>);
