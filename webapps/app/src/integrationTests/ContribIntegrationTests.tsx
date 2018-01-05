@@ -1,7 +1,12 @@
 import * as React from "react";
+import {expect} from "chai"
 import {checkPromise} from "../test/testHelpers";
 import {Client, QueryResult} from "pg";
-import {Responsibilities, Touchstone, Disease} from "../main/shared/models/Generated";
+import {
+    Responsibilities, Touchstone, Disease, Result, ModellingGroup, ScenarioTouchstoneAndCoverageSets,
+    DemographicDataset,
+    ModelRunParameterSet,
+} from "../main/shared/models/Generated";
 import {touchstoneActions} from "../main/contrib/actions/TouchstoneActions";
 import {modellingGroupActions} from "../main/shared/actions/ModellingGroupActions";
 import {expectIsEqual, IntegrationTestSuite} from "./IntegrationTest";
@@ -14,6 +19,16 @@ import {mockModellingGroup, mockTouchstone} from "../test/mocks/mockModels";
 import {settings} from "../main/shared/Settings";
 import {IncomingMessage} from "http";
 import {mainStore} from "../main/contrib/stores/MainStore";
+import fetcher, { Fetcher } from "../main/shared/sources/Fetcher";
+import {apiResponse} from "../main/shared/sources/Source";
+import {responsibilityStore} from "../main/contrib/stores/ResponsibilityStore";
+import {responsibilityActions} from "../main/contrib/actions/ResponsibilityActions";
+import {Form} from "../main/shared/components/Form";
+import {CreateBurdenEstimateSetForm} from "../main/contrib/components/Responsibilities/BurdenEstimates/CreateBurdenEstimateSetForm";
+import {runParametersStore} from "../main/contrib/stores/RunParametersStore";
+import * as QueryString from "querystring";
+import {demographicStore} from "../main/contrib/stores/DemographicStore";
+import {demographicActions} from "../main/contrib/actions/DemographicActions";
 
 const FormData = require('form-data');
 const http = require('http');
@@ -42,37 +57,46 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
 
         function getUrlFromModelRunParametersContent(): string {
             const rendered = shallow(<ModelRunParametersContentComponent
-                ready={true} touchstone={mockTouchstone()}
-                group={mockModellingGroup()}
+                ready={true} touchstone={mockTouchstone({id: touchstoneId})}
+                group={mockModellingGroup({id : groupId})}
                 diseases={["yf"]}
                 sets={[]}/>);
 
             return rendered.find(ModelRunParametersSection).first().prop("url");
         }
 
-        // it("can upload model run parameter sets", (done: DoneCallback) => {
-        //
-        //     const url = getUrlFromModelRunParametersContent();
-        //
-        //     const form = new FormData();
-        //
-        //     const promise = addResponsibilities(this.db).then(() => {
-        //         return addModel(this.db).then(() => {
-        //
-        //             form.append('disease', 'yf');
-        //             form.append('description', 'something');
-        //
-        //             return form.submit(settings.apiUrl() + url, function (err: Error | undefined, res: IncomingMessage) {
-        //                 // res – response object (http.IncomingMessage)  //
-        //                 console.log(res.statusMessage, res.statusCode, res)
-        //             });
-        //         })
-        //     });
-        //
-        //     checkPromise(done, promise, (response) => {
-        //
-        //     })
-        // });
+        it("can upload model run parameter sets", (done: DoneCallback) => {
+
+            const url = getUrlFromModelRunParametersContent();
+
+            const form = new FormData();
+
+            const promise = addResponsibilities(this.db).then(() => {
+                return addModel(this.db).then(() => {
+
+                    form.append('disease', 'yf');
+                    form.append('description', 'something');
+
+                    return fetcher.fetcher.fetch(url, {
+                        method: "POST",
+                        body: form
+                    }).then((response: Response) => {
+                        return apiResponse(response)
+                            .then((result: Result) => {
+                                   return result
+                                }
+                            );
+                    });
+
+                })
+            });
+
+            checkPromise(done, promise, (result: Result) => {
+                // we don't expect this to be successful as haven't attached a file
+                // but this verifies that that we have the right url
+                expect(result.errors[0].message).to.eq("No value passed for required POST parameter \'file\'")
+            })
+        });
 
         it("fetches diseases", (done: DoneCallback) => {
             const promise = this.db.query(`
@@ -87,289 +111,289 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
                 ]);
             });
         });
-        //
-        // it("fetches modelling groups", (done: DoneCallback) => {
-        //     const promise = addGroups(this.db).then(() => mainStore.fetchModellingGroups());
-        //
-        //     checkPromise(done, promise, (groups) => {
-        //         expectIsEqual<ModellingGroup[]>(groups, [
-        //             {id: groupId, description: "Group 1"},
-        //             {id: "Fake", description: "Group 2"}
-        //         ]);
-        //     });
-        // });
-        //
-        // it("fetches touchstones", (done: DoneCallback) => {
-        //     const promise = addResponsibilities(this.db)
-        //         .then(() => {
-        //             setGroup(groupId);
-        //             return responsibilityStore.fetchTouchstones()
-        //         });
-        //
-        //     const expected: Touchstone = {
-        //         id: touchstoneId,
-        //         name: "test",
-        //         version: 1,
-        //         description: "Testing version 1",
-        //         status: "open"
-        //     };
-        //
-        //     checkPromise(done, promise, (touchstones) => expectIsEqual<Touchstone[]>(touchstones, [expected]));
-        // });
-        //
-        // it("fetches responsibilities", (done: DoneCallback) => {
-        //     const promise = addResponsibilities(this.db)
-        //         .then((responsibilityIds) => {
-        //             return addModel(this.db)
-        //                 .then((modelVersionId) => {
-        //                     return addBurdenEstimateSet(this.db, responsibilityIds.responsibility, modelVersionId)
-        //                 })
-        //         })
-        //         .then(() => {
-        //             setTouchstoneAndGroup(touchstoneId, groupId);
-        //             return responsibilityStore.fetchResponsibilities();
-        //         });
-        //
-        //     checkPromise(done, promise, (responsibilities) => {
-        //         expectIsEqual<Responsibilities>(responsibilities, expectedResponsibilitiesResponse());
-        //     });
-        // });
-        //
-        // it("fetches coverage sets", (done: DoneCallback) => {
-        //     let coverageSetId: number;
-        //     const promise = addCoverageSets(this.db)
-        //         .then(id => coverageSetId = id)
-        //         .then(() => {
-        //             setTouchstoneAndGroup(touchstoneId, groupId);
-        //             responsibilityActions.update(expectedResponsibilitiesResponse());
-        //             responsibilityActions.setCurrentResponsibility(scenarioId);
-        //             return responsibilityStore.fetchCoverageSets()
-        //         });
-        //     checkPromise(done, promise, data => {
-        //         expectIsEqual<ScenarioTouchstoneAndCoverageSets>(data, {
-        //             scenario: {
-        //                 id: scenarioId,
-        //                 description: "Yellow Fever scenario",
-        //                 disease: "yf",
-        //                 touchstones: [touchstoneId]
-        //             },
-        //             touchstone: {
-        //                 id: touchstoneId,
-        //                 name: "test",
-        //                 version: 1,
-        //                 description: "Testing version 1",
-        //                 status: "open"
-        //             },
-        //             coverage_sets: [
-        //                 {
-        //                     id: coverageSetId,
-        //                     name: "Test set",
-        //                     touchstone: touchstoneId,
-        //                     activity_type: "none",
-        //                     vaccine: "yf",
-        //                     gavi_support: "no vaccine"
-        //                 }
-        //             ]
-        //         });
-        //     })
-        // });
-        //
-        // it("fetches coverage one time token", (done: DoneCallback) => {
-        //     const promise = addCoverageSets(this.db)
-        //         .then(() => {
-        //             setTouchstoneAndGroup(touchstoneId, groupId);
-        //             responsibilityActions.update(expectedResponsibilitiesResponse());
-        //             responsibilityActions.setCurrentResponsibility(scenarioId);
-        //             return responsibilityStore.fetchOneTimeCoverageToken()
-        //         });
-        //     checkPromise(done, promise, token => {
-        //         const decoded = jwt_decode(token);
-        //         expect(decoded.action).to.equal("coverage");
-        //         const payload = QueryString.parse(decoded.payload);
-        //         expect(payload).to.eql(JSON.parse(`{
-        //             ":group-id": "${groupId}",
-        //             ":touchstone-id": "${touchstoneId}",
-        //             ":scenario-id": "${scenarioId}"
-        //         }`));
-        //     });
-        // });
-        //
-        // it("fetches demographic data sets", (done: DoneCallback) => {
-        //     const promise = addDemographicDataSets(this.db)
-        //         .then(() => {
-        //             touchstoneActions.setCurrentTouchstone(touchstoneId);
-        //             return demographicStore.fetchDataSets();
-        //         });
-        //     checkPromise(done, promise, (dataSets: DemographicDataset[]) => {
-        //         expectIsEqual<DemographicDataset[]>(dataSets, [
-        //             {
-        //                 id: "statistic",
-        //                 name: "Some statistic",
-        //                 gender_is_applicable: false,
-        //                 source: "source"
-        //             }
-        //         ]);
-        //     });
-        // });
-        //
-        // it("fetches one time demographic token", (done: DoneCallback) => {
-        //     const promise = addDemographicDataSets(this.db)
-        //         .then(() => {
-        //             touchstoneActions.setCurrentTouchstone(touchstoneId);
-        //             return demographicStore.fetchDataSets();
-        //         })
-        //         .then(() => {
-        //             demographicActions.selectDataSet("statistic");
-        //             return demographicStore.fetchOneTimeToken();
-        //         });
-        //     checkPromise(done, promise, (token: string) => {
-        //         const decoded = jwt_decode(token);
-        //         expect(decoded.action).to.equal("demography");
-        //         const payload = QueryString.parse(decoded.payload);
-        //         expect(payload).to.eql(JSON.parse(`{
-        //             ":touchstone-id": "${touchstoneId}",
-        //             ":source-code": "source",
-        //             ":type-code": "statistic"
-        //         }`));
-        //     });
-        // });
-        //
-        // it("fetches one time estimates token", (done: DoneCallback) => {
-        //
-        //     setTouchstoneAndGroup(touchstoneId, groupId);
-        //     responsibilityActions.update(expectedResponsibilitiesResponse());
-        //     responsibilityActions.setCurrentResponsibility(scenarioId);
-        //
-        //     const promise = responsibilityStore.fetchOneTimeEstimatesToken();
-        //
-        //     checkPromise(done, promise, token => {
-        //         const decoded = jwt_decode(token);
-        //         expect(decoded.action).to.equal("burdens");
-        //         const payload = QueryString.parse(decoded.payload);
-        //         expect(payload).to.eql(JSON.parse(`{
-        //             ":group-id": "${groupId}",
-        //             ":touchstone-id": "${touchstoneId}",
-        //             ":scenario-id": "${scenarioId}"
-        //         }`));
-        //     });
-        // });
-        //
-        // it("fetches one time estimates token with redirect url", (done: DoneCallback) => {
-        //
-        //     setTouchstoneAndGroup(touchstoneId, groupId);
-        //     responsibilityActions.update(expectedResponsibilitiesResponse());
-        //     responsibilityActions.setCurrentResponsibility(scenarioId);
-        //
-        //     const promise = responsibilityStore.fetchOneTimeEstimatesToken("/redirect/back");
-        //
-        //     checkPromise(done, promise, token => {
-        //         const decoded = jwt_decode(token);
-        //         expect(decoded.action).to.equal("burdens");
-        //
-        //         const query = QueryString.parse(decoded.query);
-        //         expect(query).to.eql(JSON.parse(`{
-        //             "redirectUrl": "http://localhost:5000/redirect/back"
-        //         }`
-        //         ));
-        //
-        //         const payload = QueryString.parse(decoded.payload);
-        //         expect(payload).to.eql(JSON.parse(`{
-        //             ":group-id": "${groupId}",
-        //             ":touchstone-id": "${touchstoneId}",
-        //             ":scenario-id": "${scenarioId}"
-        //         }`));
-        //
-        //     });
-        // });
-        //
-        // it("fetches one time parameters token with redirect url", (done: DoneCallback) => {
-        //
-        //     setTouchstoneAndGroup(touchstoneId, groupId);
-        //
-        //     const promise = runParametersStore.fetchOneTimeParametersToken("/redirect/back");
-        //
-        //     checkPromise(done, promise, token => {
-        //         const decoded = jwt_decode(token);
-        //         expect(decoded.action).to.equal("model-run-parameters");
-        //
-        //         const query = QueryString.parse(decoded.query);
-        //         expect(query).to.eql(JSON.parse(`{
-        //             "redirectUrl": "http://localhost:5000/redirect/back"
-        //         }`
-        //         ));
-        //
-        //         const payload = QueryString.parse(decoded.payload);
-        //
-        //         expect(payload).to.eql(JSON.parse(`{
-        //             ":touchstone-id": "${touchstoneId}",
-        //             ":group-id": "${groupId}"
-        //         }`));
-        //
-        //     });
-        // });
-        //
-        // it("fetches model run parameter sets", (done: DoneCallback) => {
-        //     const promise: Promise<any> = addModelRunParameterSets(this.db)
-        //         .then(() => {
-        //             setTouchstoneAndGroup(touchstoneId, groupId);
-        //             return runParametersStore.fetchParameterSets()
-        //         });
-        //
-        //     checkPromise(done, promise, parameterSets => {
-        //         expectIsEqual<ModelRunParameterSet[]>(parameterSets, [
-        //             {
-        //                 id: 1,
-        //                 description: 'description',
-        //                 model: "model-1",
-        //                 disease: "yf",
-        //                 uploaded_on: '2017-12-25T12:00:00Z',
-        //                 uploaded_by: 'test.user'
-        //             }
-        //         ]);
-        //     });
-        // });
-        //
-        // function getUrlFromCreateBurdenEstimateSetForm(): string {
-        //     const rendered = shallow(<CreateBurdenEstimateSetForm
-        //         touchstoneId={touchstoneId} groupId={groupId} scenarioId={scenarioId}/>);
-        //
-        //     return rendered.find(Form).prop("url");
-        // }
-        //
-        //
-        // it("creates burden estimates set", (done: DoneCallback) => {
-        //
-        //     const url = getUrlFromCreateBurdenEstimateSetForm();
-        //
-        //     let testValue = 0;
-        //     const props = {
-        //         successCallback: () => {
-        //             testValue = 1;
-        //         },
-        //         url: url,
-        //         successMessage: "hi",
-        //         submitText: "submit",
-        //         data: {
-        //             type: {
-        //                 type: "central-averaged",
-        //                 details: "details"
-        //             }
-        //         }
-        //     };
-        //
-        //     const form = new Form(props);
-        //
-        //     const promise = addResponsibilities(this.db).then(() => {
-        //         return addModel(this.db).then(() => {
-        //             return form.submitForm(null);
-        //         })
-        //     });
-        //
-        //     checkPromise(done, promise, (id) => {
-        //         expect(testValue).to.eq(1);
-        //     })
-        //
-        // });
+
+        it("fetches modelling groups", (done: DoneCallback) => {
+            const promise = addGroups(this.db).then(() => mainStore.fetchModellingGroups());
+
+            checkPromise(done, promise, (groups) => {
+                expectIsEqual<ModellingGroup[]>(groups, [
+                    {id: groupId, description: "Group 1"},
+                    {id: "Fake", description: "Group 2"}
+                ]);
+            });
+        });
+
+        it("fetches touchstones", (done: DoneCallback) => {
+            const promise = addResponsibilities(this.db)
+                .then(() => {
+                    setGroup(groupId);
+                    return responsibilityStore.fetchTouchstones()
+                });
+
+            const expected: Touchstone = {
+                id: touchstoneId,
+                name: "test",
+                version: 1,
+                description: "Testing version 1",
+                status: "open"
+            };
+
+            checkPromise(done, promise, (touchstones) => expectIsEqual<Touchstone[]>(touchstones, [expected]));
+        });
+
+        it("fetches responsibilities", (done: DoneCallback) => {
+            const promise = addResponsibilities(this.db)
+                .then((responsibilityIds) => {
+                    return addModel(this.db)
+                        .then((modelVersionId) => {
+                            return addBurdenEstimateSet(this.db, responsibilityIds.responsibility, modelVersionId)
+                        })
+                })
+                .then(() => {
+                    setTouchstoneAndGroup(touchstoneId, groupId);
+                    return responsibilityStore.fetchResponsibilities();
+                });
+
+            checkPromise(done, promise, (responsibilities) => {
+                expectIsEqual<Responsibilities>(responsibilities, expectedResponsibilitiesResponse());
+            });
+        });
+
+        it("fetches coverage sets", (done: DoneCallback) => {
+            let coverageSetId: number;
+            const promise = addCoverageSets(this.db)
+                .then(id => coverageSetId = id)
+                .then(() => {
+                    setTouchstoneAndGroup(touchstoneId, groupId);
+                    responsibilityActions.update(expectedResponsibilitiesResponse());
+                    responsibilityActions.setCurrentResponsibility(scenarioId);
+                    return responsibilityStore.fetchCoverageSets()
+                });
+            checkPromise(done, promise, data => {
+                expectIsEqual<ScenarioTouchstoneAndCoverageSets>(data, {
+                    scenario: {
+                        id: scenarioId,
+                        description: "Yellow Fever scenario",
+                        disease: "yf",
+                        touchstones: [touchstoneId]
+                    },
+                    touchstone: {
+                        id: touchstoneId,
+                        name: "test",
+                        version: 1,
+                        description: "Testing version 1",
+                        status: "open"
+                    },
+                    coverage_sets: [
+                        {
+                            id: coverageSetId,
+                            name: "Test set",
+                            touchstone: touchstoneId,
+                            activity_type: "none",
+                            vaccine: "yf",
+                            gavi_support: "no vaccine"
+                        }
+                    ]
+                });
+            })
+        });
+
+        it("fetches coverage one time token", (done: DoneCallback) => {
+            const promise = addCoverageSets(this.db)
+                .then(() => {
+                    setTouchstoneAndGroup(touchstoneId, groupId);
+                    responsibilityActions.update(expectedResponsibilitiesResponse());
+                    responsibilityActions.setCurrentResponsibility(scenarioId);
+                    return responsibilityStore.fetchOneTimeCoverageToken()
+                });
+            checkPromise(done, promise, token => {
+                const decoded = jwt_decode(token);
+                expect(decoded.action).to.equal("coverage");
+                const payload = QueryString.parse(decoded.payload);
+                expect(payload).to.eql(JSON.parse(`{
+                    ":group-id": "${groupId}",
+                    ":touchstone-id": "${touchstoneId}",
+                    ":scenario-id": "${scenarioId}"
+                }`));
+            });
+        });
+
+        it("fetches demographic data sets", (done: DoneCallback) => {
+            const promise = addDemographicDataSets(this.db)
+                .then(() => {
+                    touchstoneActions.setCurrentTouchstone(touchstoneId);
+                    return demographicStore.fetchDataSets();
+                });
+            checkPromise(done, promise, (dataSets: DemographicDataset[]) => {
+                expectIsEqual<DemographicDataset[]>(dataSets, [
+                    {
+                        id: "statistic",
+                        name: "Some statistic",
+                        gender_is_applicable: false,
+                        source: "source"
+                    }
+                ]);
+            });
+        });
+
+        it("fetches one time demographic token", (done: DoneCallback) => {
+            const promise = addDemographicDataSets(this.db)
+                .then(() => {
+                    touchstoneActions.setCurrentTouchstone(touchstoneId);
+                    return demographicStore.fetchDataSets();
+                })
+                .then(() => {
+                    demographicActions.selectDataSet("statistic");
+                    return demographicStore.fetchOneTimeToken();
+                });
+            checkPromise(done, promise, (token: string) => {
+                const decoded = jwt_decode(token);
+                expect(decoded.action).to.equal("demography");
+                const payload = QueryString.parse(decoded.payload);
+                expect(payload).to.eql(JSON.parse(`{
+                    ":touchstone-id": "${touchstoneId}",
+                    ":source-code": "source",
+                    ":type-code": "statistic"
+                }`));
+            });
+        });
+
+        it("fetches one time estimates token", (done: DoneCallback) => {
+
+            setTouchstoneAndGroup(touchstoneId, groupId);
+            responsibilityActions.update(expectedResponsibilitiesResponse());
+            responsibilityActions.setCurrentResponsibility(scenarioId);
+
+            const promise = responsibilityStore.fetchOneTimeEstimatesToken();
+
+            checkPromise(done, promise, token => {
+                const decoded = jwt_decode(token);
+                expect(decoded.action).to.equal("burdens");
+                const payload = QueryString.parse(decoded.payload);
+                expect(payload).to.eql(JSON.parse(`{
+                    ":group-id": "${groupId}",
+                    ":touchstone-id": "${touchstoneId}",
+                    ":scenario-id": "${scenarioId}"
+                }`));
+            });
+        });
+
+        it("fetches one time estimates token with redirect url", (done: DoneCallback) => {
+
+            setTouchstoneAndGroup(touchstoneId, groupId);
+            responsibilityActions.update(expectedResponsibilitiesResponse());
+            responsibilityActions.setCurrentResponsibility(scenarioId);
+
+            const promise = responsibilityStore.fetchOneTimeEstimatesToken("/redirect/back");
+
+            checkPromise(done, promise, token => {
+                const decoded = jwt_decode(token);
+                expect(decoded.action).to.equal("burdens");
+
+                const query = QueryString.parse(decoded.query);
+                expect(query).to.eql(JSON.parse(`{
+                    "redirectUrl": "http://localhost:5000/redirect/back"
+                }`
+                ));
+
+                const payload = QueryString.parse(decoded.payload);
+                expect(payload).to.eql(JSON.parse(`{
+                    ":group-id": "${groupId}",
+                    ":touchstone-id": "${touchstoneId}",
+                    ":scenario-id": "${scenarioId}"
+                }`));
+
+            });
+        });
+
+        it("fetches one time parameters token with redirect url", (done: DoneCallback) => {
+
+            setTouchstoneAndGroup(touchstoneId, groupId);
+
+            const promise = runParametersStore.fetchOneTimeParametersToken("/redirect/back");
+
+            checkPromise(done, promise, token => {
+                const decoded = jwt_decode(token);
+                expect(decoded.action).to.equal("model-run-parameters");
+
+                const query = QueryString.parse(decoded.query);
+                expect(query).to.eql(JSON.parse(`{
+                    "redirectUrl": "http://localhost:5000/redirect/back"
+                }`
+                ));
+
+                const payload = QueryString.parse(decoded.payload);
+
+                expect(payload).to.eql(JSON.parse(`{
+                    ":touchstone-id": "${touchstoneId}",
+                    ":group-id": "${groupId}"
+                }`));
+
+            });
+        });
+
+        it("fetches model run parameter sets", (done: DoneCallback) => {
+            const promise: Promise<any> = addModelRunParameterSets(this.db)
+                .then(() => {
+                    setTouchstoneAndGroup(touchstoneId, groupId);
+                    return runParametersStore.fetchParameterSets()
+                });
+
+            checkPromise(done, promise, parameterSets => {
+                expectIsEqual<ModelRunParameterSet[]>(parameterSets, [
+                    {
+                        id: 1,
+                        description: 'description',
+                        model: "model-1",
+                        disease: "yf",
+                        uploaded_on: '2017-12-25T12:00:00Z',
+                        uploaded_by: 'test.user'
+                    }
+                ]);
+            });
+        });
+
+        function getUrlFromCreateBurdenEstimateSetForm(): string {
+            const rendered = shallow(<CreateBurdenEstimateSetForm
+                touchstoneId={touchstoneId} groupId={groupId} scenarioId={scenarioId}/>);
+
+            return rendered.find(Form).prop("url");
+        }
+
+
+        it("creates burden estimates set", (done: DoneCallback) => {
+
+            const url = getUrlFromCreateBurdenEstimateSetForm();
+
+            let testValue = 0;
+            const props = {
+                successCallback: () => {
+                    testValue = 1;
+                },
+                url: url,
+                successMessage: "hi",
+                submitText: "submit",
+                data: {
+                    type: {
+                        type: "central-averaged",
+                        details: "details"
+                    }
+                }
+            };
+
+            const form = new Form(props);
+
+            const promise = addResponsibilities(this.db).then(() => {
+                return addModel(this.db).then(() => {
+                    return form.submitForm(null);
+                })
+            });
+
+            checkPromise(done, promise, (id) => {
+                expect(testValue).to.eq(1);
+            })
+
+        });
 
     }
 }
