@@ -22,14 +22,14 @@ docker-compose pull
 docker-compose --project-name montagu up -d
 
 # Generate report test data
-#docker pull $registry/orderly:$orderly_version
-#docker run --rm \
-#    --entrypoint create_orderly_demo.sh \
-#    -v montagu_orderly_volume:/orderly \
-#    $registry/orderly:$orderly_version \
-#    /orderly
+docker pull $registry/orderly:$orderly_version
+docker run --rm \
+    --entrypoint create_orderly_demo.sh \
+    -v montagu_orderly_volume:/orderly \
+    $registry/orderly:$orderly_version \
+    /orderly
 
-#docker exec montagu_reporting_api_1 sh -c 'cp /orderly/demo/. /orderly/ -r'
+docker exec montagu_reporting_api_1 sh -c 'cp /orderly/demo/. /orderly/ -r'
 
 # Start the APIs
 docker exec montagu_api_1 mkdir -p /etc/montagu/api/
