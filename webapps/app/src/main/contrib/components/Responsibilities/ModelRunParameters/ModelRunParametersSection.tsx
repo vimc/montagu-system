@@ -4,6 +4,7 @@ import {Alert} from 'reactstrap';
 import {longestTimestamp} from "../../../../shared/Helpers";
 import {Form} from "../../../../shared/components/Form";
 import {CustomFileInput} from "../../../../shared/components/CustomFileInput";
+import {ModelRunParameterDownloadCertificate} from "./ModelRunParameterDownloadCertificate";
 
 interface Props {
     url: string;
@@ -43,10 +44,14 @@ export class ModelRunParametersSection extends React.Component<Props, State> {
             const alertText = `You last uploaded a parameter set on 
             ${longestTimestamp(new Date(lastUploaded.uploaded_on))}`;
 
-            const downloadCertificateLink = <button className="float-right">Download parameter certificate</button>;
+            const downloadCertificateLink = <ModelRunParameterDownloadCertificate set={lastUploaded}/>;
+
+            // TODO add link when API endpoint implemented
             const downloadParamsLink = <a href="#">View parameter set</a>;
 
-            alertContent = <span>{alertText} {downloadCertificateLink}<br/> {downloadParamsLink}</span>
+            alertContent = <span>{alertText} {downloadCertificateLink}
+            {/*<br/> {downloadParamsLink}*/}
+            </span>
         }
 
         return <div>
