@@ -7,3 +7,5 @@ declare module '*.png';
 declare module '*.gif';
 
 declare type ComponentConstructor<TProps, TState> = new (...args: any[]) => React.Component<TProps, TState>;
+
+declare module 'js-base64';
