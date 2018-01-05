@@ -30,12 +30,13 @@ export class Form extends React.Component<FormProps, FormState> {
             disabled: false,
             errors: [],
             hasSuccess: false
-        }
+        };
+
+        this.onSubmit = this.onSubmit.bind(this);
+        this.onChange = this.onChange.bind(this);
     }
 
     submitForm(form: HTMLFormElement) {
-
-        const self = this;
 
         const data = this.props.data ? JSON.stringify(this.props.data) : new FormData(form);
 
@@ -45,7 +46,7 @@ export class Form extends React.Component<FormProps, FormState> {
         }).then((response: Response) => {
             return apiResponse(response)
                 .then((result: Result) => {
-                        self.resultCallback(result)
+                        this.resultCallback(result)
                     }
                 );
         });
@@ -96,8 +97,8 @@ export class Form extends React.Component<FormProps, FormState> {
 
         return <div>
             <form encType="multipart/form-data" className={this.state.validated ? "was-validated" : ""}
-                  onSubmit={this.onSubmit.bind(this)}
-                  onChange={this.onChange.bind(this)}
+                  onSubmit={this.onSubmit}
+                  onChange={this.onChange}
                   noValidate>
                 {this.props.children}
                 <Alert color="danger" isOpen={hasError}>
