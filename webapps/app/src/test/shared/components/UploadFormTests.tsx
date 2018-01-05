@@ -4,7 +4,7 @@ import {shallow, ShallowWrapper} from "enzyme";
 import {Sandbox} from "../../Sandbox";
 import {UploadFileForm} from "../../../main/shared/components/UploadFileForm";
 import {helpers} from "../../../main/shared/Helpers";
-import {Alert} from "../../../main/shared/components/Alert";
+import {Alert} from "reactstrap";
 
 describe('UploadForm', () => {
     let rendered: ShallowWrapper<any, any>;
@@ -75,9 +75,10 @@ describe('UploadForm', () => {
                                            enableSubmit={true}
                                            token="token"/>);
 
-        const alert = rendered.find(Alert);
-        expect(alert.prop("hasError")).to.eq(false);
-        expect(alert.prop("hasSuccess")).to.eq(false);
+        const alerts = rendered.find(Alert);
+        expect(alerts).to.have.lengthOf(2);
+        expect(alerts.first().prop("isOpen")).to.eq(false);
+        expect(alerts.last().prop("isOpen")).to.eq(false);
 
     });
 
@@ -94,10 +95,12 @@ describe('UploadForm', () => {
                                            enableSubmit={true}
                                            token="token"/>);
 
-        const alert = rendered.find(Alert).first();
-        expect(alert.prop("hasError")).to.eq(true);
-        expect(alert.prop("hasSuccess")).to.eq(false);
-        expect(alert.prop("message")).to.eql("error message");
+        const alerts = rendered.find(Alert);
+        const errorAlert = alerts.first();
+        const successAlert = alerts.last();
+        expect(errorAlert.prop("isOpen")).to.eq(true);
+        expect(successAlert.prop("isOpen")).to.eq(false);
+        expect(errorAlert.childAt(0).text()).to.eql("error message");
     });
 
     it("ingests query string and displays success message", () => {
@@ -113,10 +116,12 @@ describe('UploadForm', () => {
                                            enableSubmit={true}
                                            token="token"/>);
 
-        const alert = rendered.find(Alert).first();
-        expect(alert.prop("hasSuccess")).to.eq(true);
-        expect(alert.prop("hasError")).to.eq(false);
-        expect(alert.prop("message")).to.eql("success message");
+        const alerts = rendered.find(Alert);
+        const errorAlert = alerts.first();
+        const successAlert = alerts.last();
+        expect(errorAlert.prop("isOpen")).to.eq(false);
+        expect(successAlert.prop("isOpen")).to.eq(true);
+        expect(successAlert.childAt(0).text()).to.eql("success message");
     });
 
 });

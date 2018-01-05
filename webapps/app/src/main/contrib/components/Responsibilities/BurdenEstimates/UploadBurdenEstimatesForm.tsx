@@ -1,7 +1,7 @@
 import * as React from "react";
 import {UploadFileForm} from "../../../../shared/components/UploadFileForm";
 import {helpers} from "../../../../shared/Helpers";
-import {Alert} from "../../../../shared/components/Alert";
+import {Alert} from "reactstrap";
 import {ErrorInfo, Result} from "../../../../shared/models/Generated";
 import {CreateBurdenEstimateSetForm} from "./CreateBurdenEstimateSetForm";
 
@@ -31,11 +31,16 @@ export class UploadBurdenEstimatesForm extends React.Component<UploadBurdenEstim
         }
     }
 
+    onDismiss() {
+        this.setState({
+            errors: []
+        })
+    }
+
     render() {
 
         const uploadSuccessMessage = "Success! You have uploaded a new set of burden estimates";
         const hasError = this.state.errors.length > 0;
-        const alertMessage = hasError ? this.state.errors[0].message : uploadSuccessMessage;
 
         const uploadForm = this.props.canUpload ?
             <UploadFileForm token={this.props.estimatesToken}
@@ -51,8 +56,13 @@ export class UploadBurdenEstimatesForm extends React.Component<UploadBurdenEstim
             : null;
 
         return <div>
-            <Alert hasSuccess={this.state.hasUploadSuccess} hasError={this.state.errors.length > 0}
-                   message={alertMessage}/>
+            <Alert color="danger" isOpen={hasError} toggle={this.onDismiss.bind(this)}>
+                {this.state.errors[0] && this.state.errors[0].message}
+            </Alert>
+            <Alert color="success" isOpen={this.state.hasUploadSuccess}>
+                {uploadSuccessMessage}
+            </Alert>
+
             {createForm}
             {uploadForm}
         </div>;

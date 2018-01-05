@@ -1,8 +1,8 @@
 import * as React from "react";
-import {Alert} from "./Alert";
 import fetcher from "../sources/Fetcher";
 import {ErrorInfo, Result} from "../models/Generated";
 import {apiResponse} from "../sources/Source";
+import {Alert} from "reactstrap";
 
 export interface FormState {
     disabled: boolean;
@@ -33,13 +33,15 @@ export class Form extends React.Component<FormProps, FormState> {
         }
     }
 
-    submitForm() {
+    submitForm(form: HTMLFormElement) {
 
         const self = this;
 
+        const data = this.props.data ? JSON.stringify(this.props.data) : new FormData(form);
+
         return fetcher.fetcher.fetch(this.props.url, {
             method: "POST",
-            body: JSON.stringify(this.props.data)
+            body: data
         }).then((response: Response) => {
             return apiResponse(response)
                 .then((result: Result) => {
@@ -54,11 +56,12 @@ export class Form extends React.Component<FormProps, FormState> {
         this.setState({
             hasSuccess: success,
             errors: result.errors,
-            disabled: false
+            disabled: false,
+            validated: false
         });
 
         if (success) {
-            this.props.successCallback(result)
+            this.props.successCallback(result);
         }
     }
 
@@ -76,22 +79,33 @@ export class Form extends React.Component<FormProps, FormState> {
                 disabled: true
             });
 
-            this.submitForm()
+            this.submitForm(form)
         }
+    }
+
+    onChange(){
+        this.setState({
+            errors: [],
+            hasSuccess: false
+        });
     }
 
     render() {
 
         const hasError = this.state.errors.length > 0;
-        const alertMessage = hasError ? this.state.errors[0].message : this.props.successMessage;
 
         return <div>
-            <form className={`mt-4 ${this.state.validated ? "was-validated" : ""}`} onSubmit={this.onSubmit.bind(this)}
+            <form encType="multipart/form-data" className={this.state.validated ? "was-validated" : ""}
+                  onSubmit={this.onSubmit.bind(this)}
+                  onChange={this.onChange.bind(this)}
                   noValidate>
                 {this.props.children}
-                <div className="mt-4">
-                    <Alert hasSuccess={this.state.hasSuccess} hasError={hasError} message={alertMessage}/>
-                </div>
+                <Alert color="danger" isOpen={hasError}>
+                    {this.state.errors[0] && this.state.errors[0].message}
+                </Alert>
+                <Alert color="success" isOpen={this.state.hasSuccess}>
+                    {this.props.successMessage}
+                </Alert>
                 <button type="submit" className="mt-2"
                         disabled={this.state.disabled}>{this.props.submitText}
                 </button>

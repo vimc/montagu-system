@@ -334,7 +334,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
 
             const promise = addResponsibilities(this.db).then(() => {
                 return addModel(this.db).then(() => {
-                    return form.submitForm();
+                    return form.submitForm(null);
                 })
             });
 

@@ -6,7 +6,7 @@ import {UploadFileForm} from "../../../../../main/shared/components/UploadFileFo
 import {CreateBurdenEstimateSetForm} from "../../../../../main/contrib/components/Responsibilities/BurdenEstimates/CreateBurdenEstimateSetForm";
 import {UploadBurdenEstimatesForm} from "../../../../../main/contrib/components/Responsibilities/BurdenEstimates/UploadBurdenEstimatesForm";
 import {helpers} from "../../../../../main/shared/Helpers";
-import {Alert} from "../../../../../main/shared/components/Alert";
+import {Alert} from "reactstrap"
 
 describe("UploadEstimatesForm", () => {
     const sandbox = new Sandbox();
@@ -119,9 +119,10 @@ describe("UploadEstimatesForm", () => {
 
         const rendered = shallow(<UploadBurdenEstimatesForm {...props} />);
 
-        const alert = rendered.find(Alert);
-        expect(alert.prop("hasError")).to.eq(false);
-        expect(alert.prop("hasSuccess")).to.eq(false);
+        const alerts = rendered.find(Alert);
+        expect(alerts).to.have.lengthOf(2);
+        expect(alerts.first().prop("isOpen")).to.eq(false);
+        expect(alerts.last().prop("isOpen")).to.eq(false);
 
     });
 
@@ -145,9 +146,8 @@ describe("UploadEstimatesForm", () => {
         const rendered = shallow(<UploadBurdenEstimatesForm {...props} />);
 
         const alert = rendered.find(Alert).first();
-        expect(alert.prop("hasError")).to.eq(true);
-        expect(alert.prop("hasSuccess")).to.eq(false);
-        expect(alert.prop("message")).to.eql("error message");
+        expect(alert.prop("color")).to.eq("danger");
+        expect(alert.childAt(0).text()).to.eql("error message");
     });
 
     it("ingests query string and displays success message", () => {
@@ -169,10 +169,9 @@ describe("UploadEstimatesForm", () => {
 
         const rendered = shallow(<UploadBurdenEstimatesForm {...props} />);
 
-        const alert = rendered.find(Alert).first();
-        expect(alert.prop("hasSuccess")).to.eq(true);
-        expect(alert.prop("hasError")).to.eq(false);
-        expect(alert.prop("message")).to.eql("Success! You have uploaded a new set of burden estimates");
+        const alert = rendered.find(Alert).last();
+        expect(alert.prop("color")).to.eq("success");
+        expect(alert.childAt(0).text()).to.eql("Success! You have uploaded a new set of burden estimates");
     });
 
 
