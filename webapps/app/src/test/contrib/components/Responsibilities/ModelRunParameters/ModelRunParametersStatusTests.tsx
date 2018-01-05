@@ -12,8 +12,8 @@ import {ModelRunParameterDownloadCertificate} from "../../../../../main/contrib/
 describe('ModelRunParameterStatus', () => {
     let rendered: ShallowWrapper<any, any>;
     const sandbox = new Sandbox();
-    const sets = [mockModelRunParameterSet({disease: "d1", uploaded_on: "2018-07-13 13:45:29 +0100"}),
-        mockModelRunParameterSet({disease: "d1", uploaded_on: "2017-07-13 13:45:29 +0100"}),
+    const sets = [mockModelRunParameterSet({disease: "d1", uploaded_on: "2018-07-13 13:45:29"}),
+        mockModelRunParameterSet({disease: "d1", uploaded_on: "2017-07-13 13:45:29"}),
         mockModelRunParameterSet({disease: "d2"})];
     beforeEach(() => {
         alt.bootstrap(JSON.stringify({
