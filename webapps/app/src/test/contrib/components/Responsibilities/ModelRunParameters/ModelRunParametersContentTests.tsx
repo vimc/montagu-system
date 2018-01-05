@@ -85,7 +85,7 @@ describe("ModelRunParameterUploadSectionTests", () => {
 
         const rendered = shallow(<ModelRunParametersContentComponent {...props} />);
         const sections = rendered.find(ModelRunParametersSection);
-        expect(sections.length).to.eq(3);
+        expect(sections.length).to.eq(2);
         expect(sections.first().prop("url")).to.eq("/modelling-groups/group-1/model-run-parameters/touchstone-1/")
     });
 
