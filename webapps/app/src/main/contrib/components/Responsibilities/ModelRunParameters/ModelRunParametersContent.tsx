@@ -1,20 +1,21 @@
 import {RemoteContentComponent} from "../../../../shared/components/RemoteContentComponent/RemoteContentComponent";
 import {RemoteContent} from "../../../../shared/models/RemoteContent";
-import {ModellingGroup, Touchstone} from "../../../../shared/models/Generated";
+import {ModellingGroup, ModelRunParameterSet, Touchstone} from "../../../../shared/models/Generated";
 import {responsibilityStore} from "../../../stores/ResponsibilityStore";
 import {runParametersStore} from "../../../stores/RunParametersStore";
-import {UploadModelRunParametersForm} from "./UploadModelRunParametersForm";
 import {connectToStores} from "../../../../shared/alt";
 import * as React from "react";
+import {mockModelRunParameterSet} from "../../../../../test/mocks/mockModels";
+import {ModelRunParametersSection} from "./ModelRunParametersSection";
 
 export interface Props extends RemoteContent {
     touchstone: Touchstone;
     group: ModellingGroup;
-    parametersToken: string;
     diseases: string[];
+    sets: ModelRunParameterSet[];
 }
 
-export class ModelRunParameterUploadSectionComponent
+export class ModelRunParametersContentComponent
     extends RemoteContentComponent<Props, undefined> {
 
 
@@ -31,31 +32,31 @@ export class ModelRunParameterUploadSectionComponent
                 ready: state.ready,
                 touchstone: state.currentTouchstone,
                 group: state.currentModellingGroup,
-                parametersToken: runParameterState.oneTimeToken,
+                sets: runParameterState.parameterSets,
                 diseases: Array.from(new Set([].concat.apply([],
-                    state.responsibilitySets.map((set) => set.responsibilities.map(r => r.scenario.disease)))))
+                    state.responsibilitySets.map(set => set.responsibilities.map(r => r.scenario.disease)))))
             };
         } else {
             return {
                 ready: false,
                 touchstone: null,
                 group: null,
-                parametersToken: null,
-                diseases: []
+                diseases: [],
+                sets: []
             };
         }
     }
 
     renderContent(props: Props): JSX.Element {
+
+        const url = `/modelling-groups/${this.props.group.id}/model-run-parameters/${this.props.touchstone.id}/`;
         return <div>
-            <div className="sectionTitle">Upload a new parameter set</div>
-            <UploadModelRunParametersForm groupId={props.group.id}
-                                          token={props.parametersToken}
-                                          diseases={props.diseases}
-                                          touchstoneId={props.touchstone.id}
-            />
+            {
+                this.props.diseases.map(d => <ModelRunParametersSection key={d} url={url}
+                                                                       disease={d} sets={props.sets.filter(set => set.disease == d)} />)
+            }
         </div>;
     }
 }
 
-export const ModelRunParameterUploadSection = connectToStores(ModelRunParameterUploadSectionComponent);
+export const ModelRunParametersContent = connectToStores(ModelRunParametersContentComponent);

@@ -43,7 +43,7 @@ export class ContribRouter extends Router<RoutingProperties> {
                 map('/:groupId/responsibilities/:touchstoneId/coverage/:scenarioId', DownloadCoveragePage);
                 map('/:groupId/responsibilities/:touchstoneId/burdens/:scenarioId', UploadBurdenEstimatesPage);
                 map('/:groupId/responsibilities/:touchstoneId/demographics', DownloadDemographicsPage);
-                map('/:groupId/responsibilities/:touchstoneId/model-run-parameters', ModelRunParametersPage);
+                map('/:groupId/responsibilities/:touchstoneId/parameters', ModelRunParametersPage);
                 map('/help/touchstones/', TouchstoneHelp);
                 map('/help/model-inputs/', ResponsibilityGuidanceModelInputs);
                 map('/help/model-outputs/', ResponsibilityGuidanceModelOutputs);

@@ -16,6 +16,13 @@ export function longTimestamp(date: Date) {
     return `${longDate(date)}, ${hours}:${minutes}`;
 }
 
+export function longestTimestamp(date: Date) {
+    const hours = padZero(date.getHours());
+    const minutes = padZero(date.getMinutes());
+    const seconds = padZero(date.getMinutes());
+    return `${longDate(date)}, ${hours}:${minutes}:${seconds}`;
+}
+
 // We use this format as it is unambiguous between USA and UK
 export function longDate(date: Date) {
     return date.toDateString();

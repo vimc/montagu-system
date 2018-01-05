@@ -1,31 +1,37 @@
-import {mainStore} from "../main/contrib/stores/MainStore";
-import {expect} from "chai";
 import * as React from "react";
-import {checkAsync, checkPromise} from "../test/testHelpers";
+import {expect} from "chai"
+import {checkPromise} from "../test/testHelpers";
 import {Client, QueryResult} from "pg";
-import {responsibilityStore} from "../main/contrib/stores/ResponsibilityStore";
 import {
+    Responsibilities, Touchstone, Disease, Result, ModellingGroup, ScenarioTouchstoneAndCoverageSets,
     DemographicDataset,
-    Disease,
-    ModellingGroup, ModelRunParameterSet,
-    Responsibilities,
-    ScenarioTouchstoneAndCoverageSets,
-    Touchstone
+    ModelRunParameterSet,
 } from "../main/shared/models/Generated";
 import {touchstoneActions} from "../main/contrib/actions/TouchstoneActions";
 import {modellingGroupActions} from "../main/shared/actions/ModellingGroupActions";
-import {responsibilityActions} from "../main/contrib/actions/ResponsibilityActions";
-import * as QueryString from 'querystring';
-import {demographicStore} from "../main/contrib/stores/DemographicStore";
 import {expectIsEqual, IntegrationTestSuite} from "./IntegrationTest";
 import {contribAuthStore} from "../main/contrib/stores/ContribAuthStore";
 import {ContribFetcher} from "../main/contrib/sources/ContribFetcher";
-import {demographicActions} from "../main/contrib/actions/DemographicActions";
-import {Form} from "../main/shared/components/Form";
 import {shallow} from "enzyme";
+import {ModelRunParametersSection} from "../main/contrib/components/Responsibilities/ModelRunParameters/ModelRunParametersSection";
+import {ModelRunParametersContentComponent} from "../main/contrib/components/Responsibilities/ModelRunParameters/ModelRunParametersContent";
+import {mockModellingGroup, mockTouchstone} from "../test/mocks/mockModels";
+import {settings} from "../main/shared/Settings";
+import {IncomingMessage} from "http";
+import {mainStore} from "../main/contrib/stores/MainStore";
+import fetcher, { Fetcher } from "../main/shared/sources/Fetcher";
+import {apiResponse} from "../main/shared/sources/Source";
+import {responsibilityStore} from "../main/contrib/stores/ResponsibilityStore";
+import {responsibilityActions} from "../main/contrib/actions/ResponsibilityActions";
+import {Form} from "../main/shared/components/Form";
 import {CreateBurdenEstimateSetForm} from "../main/contrib/components/Responsibilities/BurdenEstimates/CreateBurdenEstimateSetForm";
 import {runParametersStore} from "../main/contrib/stores/RunParametersStore";
+import * as QueryString from "querystring";
+import {demographicStore} from "../main/contrib/stores/DemographicStore";
+import {demographicActions} from "../main/contrib/actions/DemographicActions";
 
+const FormData = require('form-data');
+const http = require('http');
 const jwt_decode = require('jwt-decode');
 
 const groupId = "test-group"; // This group must match the one the logged in user belongs to
@@ -48,6 +54,50 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
     }
 
     addTestsToMocha() {
+
+        function getUrlFromModelRunParametersContent(): string {
+            const rendered = shallow(<ModelRunParametersContentComponent
+                ready={true} touchstone={mockTouchstone({id: touchstoneId})}
+                group={mockModellingGroup({id : groupId})}
+                diseases={["yf"]}
+                sets={[]}/>);
+
+            return rendered.find(ModelRunParametersSection).first().prop("url");
+        }
+
+        it("can upload model run parameter sets", (done: DoneCallback) => {
+
+            const url = getUrlFromModelRunParametersContent();
+
+            const form = new FormData();
+
+            const promise = addResponsibilities(this.db).then(() => {
+                return addModel(this.db).then(() => {
+
+                    form.append('disease', 'yf');
+                    form.append('description', 'something');
+
+                    return fetcher.fetcher.fetch(url, {
+                        method: "POST",
+                        body: form
+                    }).then((response: Response) => {
+                        return apiResponse(response)
+                            .then((result: Result) => {
+                                   return result
+                                }
+                            );
+                    });
+
+                })
+            });
+
+            checkPromise(done, promise, (result: Result) => {
+                // we don't expect this to be successful as haven't attached a file
+                // but this verifies that that we have the right url
+                expect(result.errors[0].message).to.eq("No value passed for required POST parameter \'file\'")
+            })
+        });
+
         it("fetches diseases", (done: DoneCallback) => {
             const promise = this.db.query(`
                 INSERT INTO disease (id, name) VALUES ('d1', 'Disease 1');
@@ -310,6 +360,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
             return rendered.find(Form).prop("url");
         }
 
+
         it("creates burden estimates set", (done: DoneCallback) => {
 
             const url = getUrlFromCreateBurdenEstimateSetForm();
@@ -342,7 +393,8 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
                 expect(testValue).to.eq(1);
             })
 
-        })
+        });
+
     }
 }
 
@@ -482,6 +534,7 @@ function addDemographicDataSets(db: Client): Promise<QueryResult> {
             END $$;
         `));
 }
+
 function addModelRunParameterSets(db: Client): Promise<QueryResult> {
     return addResponsibilities(db)
         .then((responsibilityIds: ResponsibilityIds) => {

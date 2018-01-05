@@ -9,8 +9,10 @@ import {IPageWithParent} from "../../../../shared/models/Breadcrumb";
 import {ResponsibilityOverviewPage} from "../Overview/ResponsibilityOverviewPage";
 import {runParametersStore} from "../../../stores/RunParametersStore";
 import {runParameterActions} from "../../../actions/RunParameterActions";
-import {ModelRunParameterSetsList} from "./ModelRunParameterSetsList";
-import {ModelRunParameterUploadSection} from "./ModelRunParameterUploadSection";
+import {InternalLink} from "../../../../shared/components/InternalLink";
+import {ModelRunParametersContent} from "./ModelRunParametersContent";
+
+const stochasticParams = require('../Overview/List/stochastic_template_params.csv');
 
 export interface ModelRunParametersProps {
     groupId: string;
@@ -31,15 +33,15 @@ export class ModelRunParametersPage extends ContribPageWithHeader<ModelRunParame
     }
 
     name() {
-        return "Model run parameters";
+        return "Upload parameters";
     }
 
     title() {
-        return <DownloadDataTitle title="Model run parameters"/>
+        return <DownloadDataTitle title="Upload parameters"/>
     }
 
     urlFragment(): string {
-        return 'model-run-parameters';
+        return 'parameters';
     }
 
     parent(): IPageWithParent {
@@ -47,9 +49,19 @@ export class ModelRunParametersPage extends ContribPageWithHeader<ModelRunParame
     }
 
     renderPageContent() {
+        const guidanceOutputsUrl = `/help/model-outputs/`;
+
         return <div className="mt-2">
-            <ModelRunParameterSetsList />
-            <ModelRunParameterUploadSection />
-        </div>;
+            <p>
+                <InternalLink href={guidanceOutputsUrl}>
+                    Guidance on creating and uploading parameter sets
+                </InternalLink>
+            </p>
+            <p>
+                <a key={"params"}
+                   href={stochasticParams}>Download stochastic parameters template</a>
+            </p>
+            <ModelRunParametersContent />
+        </div>
     }
 }

@@ -19,6 +19,9 @@ table {
     border: 0;
 }
 
+hr {
+    border-bottom: 1px dashed $body-color !important;
+}
 
 fieldset {
     display: inline;
