@@ -57,7 +57,7 @@ export class ModelRunParametersSection extends React.Component<Props, State> {
         return <div>
             <h2 className="largeSectionTitle mb-0">Disease: {this.props.disease}</h2>
             <hr className="mt-1"/>
-            <Alert color="warning">{alertContent}</Alert>
+            <Alert color="warning">{alertContent}<div className="clearfix"></div></Alert>
             <h4>Upload a new set of parameters:</h4>
             <Form url={this.props.url} submitText={"Upload"}
                   successMessage={"Success! You have uploaded a new parameter set"}
