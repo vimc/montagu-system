@@ -82,7 +82,13 @@ export class UploadBurdenEstimatesContentComponent extends RemoteContentComponen
                 </tr>
                 <tr>
                     <td>Burden estimates template</td>
-                    <td><TemplateLink diseaseId={this.props.scenario.disease} groupId={this.props.group.id}/></td>
+                    <td>
+                        <TemplateLink
+                            diseaseId={this.props.scenario.disease}
+                            groupId={this.props.group.id}
+                            touchstoneId={this.props.touchstone.id}
+                        />
+                    </td>
                 </tr>
                 </tbody>
             </table>
