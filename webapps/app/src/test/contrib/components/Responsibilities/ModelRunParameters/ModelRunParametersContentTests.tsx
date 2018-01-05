@@ -12,7 +12,7 @@ import alt from "../../../../../main/shared/alt";
 import {ModelRunParametersSection} from "../../../../../main/contrib/components/Responsibilities/ModelRunParameters/ModelRunParametersSection";
 import {ModelRunParametersContentComponent} from "../../../../../main/contrib/components/Responsibilities/ModelRunParameters/ModelRunParametersContent";
 
-describe("ModelRunParameterUploadSectionTests", () => {
+describe("ModelRunParameterContentTests", () => {
     const sandbox = new Sandbox();
 
     afterEach(() => {
@@ -44,34 +44,9 @@ describe("ModelRunParameterUploadSectionTests", () => {
             diseases: ["disease-id"],
             group: group,
             touchstone: touchstone,
-            sets: sets,
             ready: true
         })
 
-    });
-
-    it("can get props from stores when token is not fetched yet", () => {
-
-        const group = mockModellingGroup();
-        const touchstone = mockTouchstone();
-
-        alt.bootstrap(JSON.stringify({
-            ResponsibilityStore: {
-                currentTouchstone: touchstone,
-                currentModellingGroup: group,
-                responsibilitySets: [mockResponsibilitySet(), mockResponsibilitySet()],
-                ready: true
-            }
-        }));
-
-        const props = ModelRunParametersContentComponent.getPropsFromStores();
-        expect(props).to.eql({
-            diseases: [],
-            group: null,
-            touchstone: null,
-            sets: [],
-            ready: false
-        })
     });
 
     it("renders UploadModelRunParametersSection for each disease", () => {
@@ -79,7 +54,6 @@ describe("ModelRunParameterUploadSectionTests", () => {
             touchstone: mockTouchstone({id: "touchstone-1"}),
             group: mockModellingGroup({id: "group-1"}),
             diseases: ["disease-1", "disease-2"],
-            sets: [mockModelRunParameterSet()],
             ready: true
         };
 

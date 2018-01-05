@@ -34,6 +34,7 @@ export class Form extends React.Component<FormProps, FormState> {
 
         this.onSubmit = this.onSubmit.bind(this);
         this.onChange = this.onChange.bind(this);
+        this.clearSuccess = this.clearSuccess.bind(this);
     }
 
     submitForm(form: HTMLFormElement) {
@@ -91,6 +92,12 @@ export class Form extends React.Component<FormProps, FormState> {
         });
     }
 
+    clearSuccess(){
+        this.setState({
+            hasSuccess: false
+        })
+    }
+
     render() {
 
         const hasError = this.state.errors.length > 0;
@@ -104,7 +111,7 @@ export class Form extends React.Component<FormProps, FormState> {
                 <Alert color="danger" isOpen={hasError}>
                     {this.state.errors[0] && this.state.errors[0].message}
                 </Alert>
-                <Alert color="success" isOpen={this.state.hasSuccess}>
+                <Alert color="success" isOpen={this.state.hasSuccess} toggle={this.clearSuccess}>
                     {this.props.successMessage}
                 </Alert>
                 <button type="submit" className="mt-2"
