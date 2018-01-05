@@ -9,6 +9,7 @@ import { TemplateLinks } from "./TemplateLinks";
 import "../../Responsibilities.scss";
 import "../../../../../shared/styles/messages.scss";
 import "../../../../../shared/styles/common.scss";
+import {InternalLink} from "../../../../../shared/components/InternalLink";
 
 export interface ResponsibilityListComponentProps {
     responsibilitySet: IExtendedResponsibilitySet;

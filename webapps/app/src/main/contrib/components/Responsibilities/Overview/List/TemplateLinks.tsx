@@ -3,8 +3,6 @@ import {mainStore} from "../../../../stores/MainStore";
 import {ExtendedResponsibility} from "../../../../models/ResponsibilitySet";
 import {settings} from "../../../../../shared/Settings";
 
-const stochasticParams = require('./stochastic_template_params.csv');
-
 export interface TemplateLinksProps {
     responsibilities: ExtendedResponsibility[];
     groupId: string;
@@ -167,13 +165,6 @@ export class TemplateLinks extends React.Component<TemplateLinksProps, undefined
 
             return <div>Download burden estimate templates:<br/>
                 {links}
-
-                {this.props.touchstoneId != settings.modellerApplicantsTouchstoneId &&
-                <div>
-                    <a key={"params"}
-                       href={stochasticParams}>Stochastic parameters template</a>
-                </div>
-                }
             </div>;
         } else {
             return <span/>;

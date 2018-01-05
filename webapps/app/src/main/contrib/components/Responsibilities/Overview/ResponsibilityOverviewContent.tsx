@@ -1,17 +1,18 @@
 import * as React from "react";
-import { settings } from "../../../../shared/Settings";
-import { RemoteContent } from "../../../../shared/models/RemoteContent";
-import { IExtendedResponsibilitySet } from "../../../models/ResponsibilitySet";
-import { ModellingGroup } from "../../../../shared/models/Generated";
-import { RemoteContentComponent } from "../../../../shared/components/RemoteContentComponent/RemoteContentComponent";
-import { responsibilityStore } from "../../../stores/ResponsibilityStore";
-import { ResponsibilityList } from "./List/ResponsibilityList";
-import { connectToStores } from "../../../../shared/alt";
-import { ButtonLink } from "../../../../shared/components/ButtonLink";
+import {RemoteContent} from "../../../../shared/models/RemoteContent";
+import {IExtendedResponsibilitySet} from "../../../models/ResponsibilitySet";
+import {ModellingGroup} from "../../../../shared/models/Generated";
+import {RemoteContentComponent} from "../../../../shared/components/RemoteContentComponent/RemoteContentComponent";
+import {responsibilityStore} from "../../../stores/ResponsibilityStore";
+import {ResponsibilityList} from "./List/ResponsibilityList";
+import {connectToStores} from "../../../../shared/alt";
+import {ButtonLink} from "../../../../shared/components/ButtonLink";
 
 import "../../../../shared/styles/common.scss";
 import "../../../../shared/styles/messages.scss";
 import {ResponsibilitySetStatusMessage} from "./ResponsibilitySetStatusMessage";
+
+const stochasticParams = require('./stochastic_template_params.csv');
 
 export interface ResponsibilityOverviewComponentProps extends RemoteContent {
     responsibilitySet: IExtendedResponsibilitySet;
@@ -37,19 +38,26 @@ export class ResponsibilityOverviewContentComponent extends RemoteContentCompone
 
     renderContent(props: ResponsibilityOverviewComponentProps) {
         const demographyUrl = `/${props.modellingGroup.id}/responsibilities/${props.responsibilitySet.touchstone.id}/demographics/`;
-        return <div>
-            <ResponsibilitySetStatusMessage status={this.props.responsibilitySet.status} />
-            <div className="largeSectionTitle">Demographic data</div>
-            <div className="gapAbove">
-                <ButtonLink href={ demographyUrl }>Download demographic data</ButtonLink>
-            </div>
+        const parametersUrl = `/${props.modellingGroup.id}/responsibilities/${props.responsibilitySet.touchstone.id}/parameters/`;
 
+        return <div>
+            <ResponsibilitySetStatusMessage status={this.props.responsibilitySet.status}/>
+            <div className="largeSectionTitle">Demographic data</div>
+            <div className="mt-3">
+                <ButtonLink href={demographyUrl}>Download demographic data</ButtonLink>
+            </div>
+            <div className="largeSectionTitle">Parameters</div>
+            <div><a key={"params"}
+                    href={stochasticParams}>Download stochastic parameters template</a>
+            </div>
+            <ButtonLink href={parametersUrl}>Upload parameters</ButtonLink>
             <div className="largeSectionTitle">Scenarios</div>
             <ResponsibilityList
-                modellingGroup={ props.modellingGroup }
-                responsibilitySet={ props.responsibilitySet}
-                currentDiseaseId={ props.currentDiseaseId }
+                modellingGroup={props.modellingGroup}
+                responsibilitySet={props.responsibilitySet}
+                currentDiseaseId={props.currentDiseaseId}
             />
+
         </div>
     }
 }

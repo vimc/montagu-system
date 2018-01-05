@@ -12,7 +12,7 @@ import {runParameterActions} from "../../../actions/RunParameterActions";
 import {InternalLink} from "../../../../shared/components/InternalLink";
 import {ModelRunParametersContent} from "./ModelRunParametersContent";
 
-const stochasticParams = require('../Overview/List/stochastic_template_params.csv');
+const stochasticParams = require('../Overview/stochastic_template_params.csv');
 
 export interface ModelRunParametersProps {
     groupId: string;
