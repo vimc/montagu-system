@@ -47,7 +47,9 @@ export class ResponsibilityOverviewPage extends ContribPageWithHeader<LocationPr
 
     renderPageContent() {
         return <div>
-            <ResponsibilityOverviewDescription />
+            <ResponsibilityOverviewDescription
+                currentTouchstoneId={this.props.location.params.touchstoneId}
+            />
             <ResponsibilityOverviewContent />
         </div>
     }

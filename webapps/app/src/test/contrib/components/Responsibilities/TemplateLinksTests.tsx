@@ -23,7 +23,11 @@ describe("TemplateLinks", () => {
         const set = mockExtendedResponsibilitySet({}, []);
         set.responsibilities = [];
 
-        const rendered = shallow(<TemplateLinks responsibilities={set.responsibilities} groupId="grpid" />);
+        const rendered = shallow(<TemplateLinks
+            responsibilities={set.responsibilities}
+            groupId="grpid"
+            touchstoneId="tid"
+        />);
         expect(rendered.find(TemplateLink).length).to.eq(0)
     });
 
@@ -33,7 +37,11 @@ describe("TemplateLinks", () => {
             mockResponsibility({}, mockScenario({ disease: "d1" })),
             mockResponsibility({}, mockScenario({ disease: "d2" }))
         ]);
-        const rendered = shallow(<TemplateLinks responsibilities={set.responsibilities} groupId="grpid" />);
+        const rendered = shallow(<TemplateLinks
+            responsibilities={set.responsibilities}
+            groupId="grpid"
+            touchstoneId="tid"
+        />);
         const buttons = rendered.find(TemplateLink);
 
         expect(buttons.length).to.eq(2);
@@ -55,7 +63,11 @@ describe("TemplateLink", () => {
                 { id: "d2", name: "Disease 2" },
             ]
         });
-        const rendered = shallow(<TemplateLink groupId="grpid" diseaseId="d1"/>);
+        const rendered = shallow(<TemplateLink
+            groupId="grpid"
+            diseaseId="d1"
+            touchstoneId="tid"
+        />);
         const links = rendered.find("a");
         expect(links.length).to.eq(2);
         expect(links.first().prop("href")).to.eq("/contribution/templates/central_burden_template_d1-grpid.csv");

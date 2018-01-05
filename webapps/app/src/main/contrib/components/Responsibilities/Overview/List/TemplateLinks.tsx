@@ -1,17 +1,20 @@
 import * as React from "react";
 import {mainStore} from "../../../../stores/MainStore";
 import {ExtendedResponsibility} from "../../../../models/ResponsibilitySet";
+import { settings } from "../../../../../shared/Settings";
 
 const stochasticParams = require('./stochastic_template_params.csv');
 
 export interface TemplateLinksProps {
     responsibilities: ExtendedResponsibility[];
-    groupId: string
+    groupId: string;
+    touchstoneId: string;
 }
 
 export interface TemplateLinkProps {
     diseaseId: string;
     groupId: string;
+    touchstoneId: string;
 }
 
 export class TemplateLink extends React.Component<TemplateLinkProps, undefined> {
@@ -106,12 +109,16 @@ export class TemplateLink extends React.Component<TemplateLinkProps, undefined> 
         }
 
         return <div>
-            <div><a key={`${disease.id}-d`}
-                    href={href}>{disease.name} - central</a></div>
             <div>
-                <a key={`${disease.id}-s`}
-                   href={hrefStochastic}>{disease.name} - stochastic</a>
+                <a key={`${disease.id}-d`}
+                    href={href}>{disease.name} - central</a>
             </div>
+            {this.props.touchstoneId != settings.modellerApplicantsTouchstoneId &&
+                <div>
+                    <a key={`${disease.id}-s`}
+                       href={hrefStochastic}>{disease.name} - stochastic</a>
+                </div>
+            }
         </div>;
     }
 }
@@ -124,14 +131,21 @@ export class TemplateLinks extends React.Component<TemplateLinksProps, undefined
         if (diseaseIds.length > 0) {
             const links = diseaseIds
                 .map(id =>
-                    <TemplateLink key={id} diseaseId={id} groupId={this.props.groupId}/>);
+                    <TemplateLink
+                        key={id}
+                        diseaseId={id}
+                        groupId={this.props.groupId}
+                        touchstoneId={this.props.touchstoneId}
+                    />);
 
             return <div>Download burden estimate templates:<br/>
                 {links}
-                <div>
-                    <a key={"params"}
-                       href={stochasticParams}>Stochastic parameters template</a>
-                </div>
+                {this.props.touchstoneId != settings.modellerApplicantsTouchstoneId &&
+                    <div>
+                        <a key={"params"}
+                           href={stochasticParams}>Stochastic parameters template</a>
+                    </div>
+                }
             </div>;
         } else {
             return <span/>;
