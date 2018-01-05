@@ -10,8 +10,10 @@ $here/add-test-accounts-for-integration-tests.sh
 # Tell the tests where to find the database
 export PGHOST=localhost
 
-$here/run-integration-tests.sh "$@"
-result=$?
+function cleanup {
+    set +e
+    $here/stop-apis.sh
+}
+trap cleanup EXIT
 
-$here/stop-apis.sh
-exit $result
+$here/run-integration-tests.sh "$@"
