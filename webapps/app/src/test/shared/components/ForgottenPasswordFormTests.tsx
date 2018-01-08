@@ -72,7 +72,7 @@ describe("ForgottenPasswordForm", () => {
         form.change(data);
         checkSubmit(form, done, sandbox, _ => {
             expect(spy.called).to.be.true;
-            expect(spy.args[0][0]).to.equal("/password/request_link/?email=email@example.com");
+            expect(spy.args[0][0]).to.equal("/password/request-link/?email=email@example.com");
             expect(spy.args[0][1]).to.eql({
                 method: "post"
             });

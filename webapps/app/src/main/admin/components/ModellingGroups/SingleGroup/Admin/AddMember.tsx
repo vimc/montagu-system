@@ -43,7 +43,7 @@ export class AddMember extends React.Component<Props, State> {
 
         e.preventDefault();
 
-        const href = `/modelling-groups/${this.props.groupId}/actions/associate_member/`;
+        const href = `/modelling-groups/${this.props.groupId}/actions/associate-member/`;
         const associateUser: AssociateUser = {
             username: this.state.selectedUser,
             action: "add"

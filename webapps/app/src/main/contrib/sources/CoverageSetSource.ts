@@ -10,7 +10,7 @@ export class CoverageSetSource extends CoverageSource {
     constructor() {
         super();
         this.fetchCoverageSets = () => this.doFetch<ScenarioTouchstoneAndCoverageSets>(state => {
-            return this.baseURL(state) + "/coverage_sets/";
+            return this.baseURL(state) + "/coverage-sets/";
         }, {
             success: coverageSetActions.update,
             loading: coverageSetActions.beginFetch,

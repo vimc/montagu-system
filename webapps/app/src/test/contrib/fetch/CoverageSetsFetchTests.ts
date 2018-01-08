@@ -20,7 +20,7 @@ describe("ResponsibilityStore.fetchCoverageSets", () => {
     const responsibility = mockResponsibility({}, scenario);
 
     new FetchHelper<ScenarioTouchstoneAndCoverageSets, ScenarioTouchstoneAndCoverageSets>({
-        expectedURL: "/modelling-groups/group-id/responsibilities/touchstone-id/scenario-id/coverage_sets/",
+        expectedURL: "/modelling-groups/group-id/responsibilities/touchstone-id/scenario-id/coverage-sets/",
         prepareForFetch: () => {
             alt.bootstrap(JSON.stringify({
                 ResponsibilityStore: {
