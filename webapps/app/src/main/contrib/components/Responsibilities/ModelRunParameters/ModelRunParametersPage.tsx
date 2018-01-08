@@ -47,7 +47,7 @@ export class ModelRunParametersPage extends ContribPageWithHeader<ModelRunParame
     }
 
     renderPageContent() {
-        const guidanceOutputsUrl = `/help/model-outputs/`;
+        const guidanceOutputsUrl = `/help/model-outputs/#parameters`;
 
         return <div className="mt-2">
             <p>

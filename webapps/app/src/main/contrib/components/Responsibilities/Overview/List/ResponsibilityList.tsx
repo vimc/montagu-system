@@ -45,7 +45,7 @@ export class ResponsibilityList extends React.Component<ResponsibilityListCompon
                 />
             );
             return <div>
-                <div className="control mb-4">
+                <div className="mb-4">
                     <DiseaseFilter { ...props.responsibilitySet } />
                     <TemplateLinks
                         responsibilities={props.responsibilitySet.responsibilities }
