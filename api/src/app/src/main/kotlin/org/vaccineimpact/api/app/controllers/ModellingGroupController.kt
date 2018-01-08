@@ -49,7 +49,7 @@ open class ModellingGroupController(context: ControllerContext)
                 oneRepoEndpoint("$responsibilitiesURL/", this::getResponsibilities, repos, repo).secured(responsibilityPermissions),
                 oneRepoEndpoint("$touchstonesURL/", this::getTouchstones, repos, repo).secured(touchtonePermissions),
                 oneRepoEndpoint("$scenarioURL/", this::getResponsibility, repos, repo).secured(responsibilityPermissions),
-                oneRepoEndpoint("/:group-id/actions/associate_member/", this::modifyMembership, repos, { it.user }, method = HttpMethod.post).secured(),
+                oneRepoEndpoint("/:group-id/actions/associate-member/", this::modifyMembership, repos, { it.user }, method = HttpMethod.post).secured(),
 
                 oneRepoEndpoint("$parametersURL/", this::getModelRunParameterSets, repos, { it.burdenEstimates })
                         .secured(setOf("$groupScope/estimates.write", "$groupScope/responsibilities.read")),

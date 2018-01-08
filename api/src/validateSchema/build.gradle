@@ -4,6 +4,7 @@ dependencies {
     compile "com.github.fge:json-schema-validator:2.2.8"
 
     testCompile "junit:junit:4.12"
+    testCompile "org.assertj:assertj-core:3.8.0"
 }
 
 test.dependsOn 'copySpec'

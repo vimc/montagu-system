@@ -28,7 +28,7 @@ object UserRouteConfig : RouteConfig
             Endpoint(urlBase, controller, "createUser", method = HttpMethod.post)
                     .json()
                     .secure(createUsers),
-            Endpoint("$urlBase:username/actions/associate_role/", controller, "modifyUserRole", method = HttpMethod.post)
+            Endpoint("$urlBase:username/actions/associate-role/", controller, "modifyUserRole", method = HttpMethod.post)
                     .json()
                     .secure()
     )
