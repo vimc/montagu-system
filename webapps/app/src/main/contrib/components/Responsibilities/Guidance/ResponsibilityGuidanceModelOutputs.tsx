@@ -125,11 +125,9 @@ export class ResponsibilityGuidanceModelOutputs extends ContribPageWithHeader<un
                 on will determine the scenario.
             </p>
             <p>
-                If your central burden estimate uploads successfully, you
-                will be directed to a page with a message ending
-                “status”:”success”. If not, you will be directed to a page
-                with a message explaining the errors, and ending
-                “status”:”failure”.
+                If your central burden estimate uploads successfully, you will
+                see a ‘Success’ message. If not, you will see a red header
+                explaining the problem.
             </p>
             <p>
                 Montagu will also ask you to register how these have been
@@ -262,7 +260,8 @@ export class ResponsibilityGuidanceModelOutputs extends ContribPageWithHeader<un
             <p>
                 Montagu will then give you a ‘parameter certificate’. After
                 you have downloaded this, please upload it to Dropbox, to
-                the specific folder that we have emailed you.
+                the specific folder that we have emailed you. You do not
+                need to open or read this file.
             </p>
             <p>
                 You should only upload one parameter certificate to Dropbox.
