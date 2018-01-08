@@ -20,7 +20,7 @@ export class UserRole extends React.Component<UserRoleProps, UserRoleState> {
 
     componentWillMount() {
         this.setState({
-            href: `/users/${this.props.username}/actions/associate_role/`,
+            href: `/users/${this.props.username}/actions/associate-role/`,
             associateRole: {
                 action: "remove",
                 name: this.props.name,

@@ -18,7 +18,7 @@ export class DeletableUser extends React.Component<UserProps, undefined> {
 
     clickHandler() {
 
-        const href = `/modelling-groups/${this.props.groupId}/actions/associate_member/`;
+        const href = `/modelling-groups/${this.props.groupId}/actions/associate-member/`;
         const associateUser: AssociateUser = {
             username: this.props.user.username,
             action: "remove"

@@ -42,7 +42,7 @@ describe("DeletableUser", () => {
     it("removes member", (done: DoneCallback) => {
 
         const fetch = sandbox.sinon.stub(fetcher.fetcher, "fetch")
-            .withArgs("/modelling-groups/group1/actions/associate_member/",
+            .withArgs("/modelling-groups/group1/actions/associate-member/",
                 {
                     method: "post",
                     body: JSON.stringify({ username: "user1", action: "remove" })
@@ -69,7 +69,7 @@ describe("DeletableUser", () => {
 
         const fakeError = { code: "e1", message: "some error" };
         const fetch = sandbox.sinon.stub(fetcher.fetcher, "fetch")
-            .withArgs("/modelling-groups/group1/actions/associate_member/",
+            .withArgs("/modelling-groups/group1/actions/associate-member/",
                 {
                     method: "post",
                     body: JSON.stringify({ username: "user1", action: "remove" })

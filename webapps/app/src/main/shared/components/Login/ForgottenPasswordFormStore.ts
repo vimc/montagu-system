@@ -22,7 +22,7 @@ export function forgottenPasswordFormStore(name: string): Reform<ForgottenPasswo
             }
         },
         onSubmit: (state: ForgottenPasswordFields & FormErrors) => {
-            return fetcher.fetcher.fetch("/password/request_link/?email=" + encodeURI(state.email), {
+            return fetcher.fetcher.fetch("/password/request-link/?email=" + encodeURI(state.email), {
                 method: "post"
             }, false);
         },

@@ -88,7 +88,7 @@ describe("AddRoles", () => {
             .returns(mockResponse({ status: "success", data: ["role1", "role2"], errors: [] }));
 
         fetch
-            .withArgs("/users/testuser/actions/associate_role/",
+            .withArgs("/users/testuser/actions/associate-role/",
                 {
                     method: "post",
                     body: JSON.stringify({ name: "rolename", action: "add", scope_prefix: null, scope_id: null })

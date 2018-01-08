@@ -61,7 +61,7 @@ export class AddRoles extends React.Component<RolesProps, RolesState> {
 
         e.preventDefault();
 
-        const href = `/users/${this.props.username}/actions/associate_role/`;
+        const href = `/users/${this.props.username}/actions/associate-role/`;
         const associateRole: AssociateRole = {
             name: this.state.selectedRole,
             action: "add",
