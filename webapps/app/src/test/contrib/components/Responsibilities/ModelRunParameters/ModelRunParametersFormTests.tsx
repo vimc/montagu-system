@@ -3,11 +3,10 @@ import {expect} from "chai";
 import {shallow, ShallowWrapper} from "enzyme";
 import {Sandbox} from "../../../../Sandbox";
 import {mockFetcher} from "../../../../mocks/mockRemote";
-import {ModelRunParametersSection} from "../../../../../main/contrib/components/Responsibilities/ModelRunParameters/ModelRunParametersSection";
+import {Form} from "../../../../../main/shared/components/Form";
 import {ModelRunParametersForm} from "../../../../../main/contrib/components/Responsibilities/ModelRunParameters/ModelRunParametersForm";
-import {ModelRunParametersStatus} from "../../../../../main/contrib/components/Responsibilities/ModelRunParameters/ModelRunParametersStatus";
 
-describe('ModelRunParameterSection', () => {
+describe('ModelRunParameterForm', () => {
     let rendered: ShallowWrapper<any, any>;
     const sandbox = new Sandbox();
 
@@ -17,25 +16,37 @@ describe('ModelRunParameterSection', () => {
 
     it("renders Form", () => {
 
-        rendered = shallow(<ModelRunParametersSection
+        rendered = shallow(<ModelRunParametersForm
             url={"url"}
             disease={"d1"}
         />);
 
-        const form = rendered.find(ModelRunParametersForm);
+        const form = rendered.find(Form);
         expect(form).to.have.lengthOf(1);
     });
 
-    it("renders status", () => {
+    it("populates hidden disease input", () => {
 
-        rendered = shallow(<ModelRunParametersSection
+        rendered = shallow(<ModelRunParametersForm
             url={"url"}
             disease={"d1"}
         />);
 
-        const input = rendered.find(ModelRunParametersStatus);
+        const input = rendered.find('input[name="disease"][type="hidden"]');
         expect(input).to.have.lengthOf(1);
+        expect(input.prop("value")).to.eql("d1");
 
+    });
+
+    it("populate hidden description input", () => {
+
+        rendered = shallow(<ModelRunParametersForm
+            url={"url"}
+            disease={"d1"}
+        />);
+
+        const input = rendered.find('input[name="description"][type="hidden"]');
+        expect(input).to.have.lengthOf(1);
     });
 
 });

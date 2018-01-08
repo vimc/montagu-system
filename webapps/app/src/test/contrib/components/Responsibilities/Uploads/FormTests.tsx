@@ -61,7 +61,7 @@ describe("FormComponent", () => {
 
         expect(errorAlert.prop("isOpen")).to.eq(false);
         expect(successAlert.prop("isOpen")).to.eq(true);
-        expect(successAlert.text()).to.eq("success message");
+        expect(successAlert.text()).to.contain("success message");
     });
 
     it("result callback sets successful state", () => {

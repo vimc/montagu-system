@@ -31,7 +31,6 @@ describe('ModelRunParameterPage', () => {
         const spy = sandbox.dispatchSpy();
         const fetchTouchstones = sandbox.sinon.stub(responsibilityStore, "fetchTouchstones").returns(Promise.resolve(true));
         const fetchResponsibilities = sandbox.sinon.stub(responsibilityStore, "fetchResponsibilities").returns(Promise.resolve(true));
-        const fetchOneTimeParametersToken = sandbox.sinon.stub(runParametersStore, "fetchOneTimeParametersToken").returns(Promise.resolve(true));
         const fetchParameterSets = sandbox.sinon.stub(runParametersStore, "fetchParameterSets").returns(Promise.resolve(true));
 
         const group = mockModellingGroup({id: "group-1"});
@@ -46,13 +45,12 @@ describe('ModelRunParameterPage', () => {
             afterWait(done, () => {
 
                 expectOrderedActions(spy, [
-                    {action: "RunParameterActions.clearUsedToken", payload: true},
                     {action: "ModellingGroupActions.setCurrentGroup", payload: "group-1"},
                     {action: "TouchstoneActions.setCurrentTouchstone", payload: "touchstone-1"}
                 ], 0);
                 expect(fetchTouchstones.called).to.equal(true, "Expected fetchTouchstones to be called");
                 expect(fetchResponsibilities.called).to.equal(true, "Expected fetchResponsibilities to be called");
-                expect(fetchOneTimeParametersToken.called).to.be.equal(true, "fetchOneTimeParametersToken");
+                expect(fetchParameterSets.called).to.be.equal(true, "fetchOneTimeParametersToken");
             });
         });
     });
