@@ -1,10 +1,7 @@
 package org.vaccineimpact.api.app.controllers
 
+import org.vaccineimpact.api.app.*
 import org.vaccineimpact.api.app.context.ActionContext
-import org.vaccineimpact.api.app.ErrorHandler
-import org.vaccineimpact.api.app.OneTimeLink
-import org.vaccineimpact.api.app.MontaguRedirectValidator
-import org.vaccineimpact.api.app.RedirectValidator
 import org.vaccineimpact.api.app.controllers.endpoints.oneRepoEndpoint
 import org.vaccineimpact.api.app.errors.InvalidOneTimeLinkToken
 import org.vaccineimpact.api.app.repositories.RepositoryFactory
@@ -18,9 +15,13 @@ class OneTimeLinkController(
         val context: ControllerContext,
         val controllers: MontaguControllers,
         private val errorHandler: ErrorHandler = ErrorHandler(),
-        private val redirectValidator: RedirectValidator = MontaguRedirectValidator()
+        private val redirectValidator: RedirectValidator = MontaguRedirectValidator(),
+        onetimeLinkResolver: OnetimeLinkResolver? = null
 ) : AbstractController(context)
 {
+
+    private val onetimeLinkResolver = onetimeLinkResolver ?: OnetimeLinkResolver(controllers, this.repos)
+
     override val urlComponent = ""
     val url = "/onetime_link/:token/"
 
@@ -38,7 +39,7 @@ class OneTimeLinkController(
 
         return if (redirectUrl == null || redirectUrl.isEmpty())
         {
-            link.perform(controllers, context, repos)
+            onetimeLinkResolver.perform(link, context)
         }
         else
         {
@@ -48,7 +49,7 @@ class OneTimeLinkController(
 
             try
             {
-                val data = link.perform(controllers, context, repos)
+                val data = onetimeLinkResolver.perform(link, context)
                 val result = Result(ResultStatus.SUCCESS, data, emptyList())
                 redirectWithResult(context, result, redirectUrl)
 

@@ -32,7 +32,7 @@ class ModellingGroupControllersTests : ControllerTests<ModellingGroupController>
     @Test
     fun `can get model run params`()
     {
-        val modelRunParameterSets = listOf(ModelRunParameterSet(1, "description", "model", "user", Instant.now()))
+        val modelRunParameterSets = listOf(ModelRunParameterSet(1, "description", "model", "user", Instant.now(), "yf"))
 
         val mockContext = mock<ActionContext> {
             on { params(":group-id") } doReturn "group-1"
@@ -370,6 +370,43 @@ class ModellingGroupControllersTests : ControllerTests<ModellingGroupController>
         controller.modifyMembership(context, mock<UserRepository>())
     }
 
+    @Test
+    fun `returns in preparation touchstones if user has permission to read prepared touchstones`()
+    {
+        val groupId = "test-group"
+        val repo = mock<ModellingGroupRepository> {
+            on { getTouchstonesByGroupId(groupId) } doReturn mockTouchstones
+        }
+
+        val controller = makeController(mockControllerContext())
+
+        val context = mock<ActionContext> {
+            on { params(":group-id") } doReturn groupId
+            on { hasPermission(ReifiedPermission.parse("*/touchstones.prepare")) } doReturn true
+        }
+        val data = controller.getTouchstones(context, repo)
+        Assertions.assertThat(data.count()).isEqualTo(2)
+    }
+
+    @Test
+    fun `does not return in preparation touchstones if user has no permission to read prepared touchstones`()
+    {
+        val groupId = "test-group"
+        val repo = mock<ModellingGroupRepository> {
+            on { getTouchstonesByGroupId(groupId) } doReturn mockTouchstones
+        }
+
+        val controller = makeController(mockControllerContext())
+
+        val context = mock<ActionContext> {
+            on { params(":group-id") } doReturn groupId
+            on { hasPermission(ReifiedPermission.parse("*/touchstones.prepare")) } doReturn false
+        }
+        val data = controller.getTouchstones(context, repo)
+        Assertions.assertThat(data.count()).isEqualTo(1)
+    }
+
+
     private fun mockRepository(touchstoneSet: SimpleDataSet<Touchstone, String> = mockTouchstones(),
                                modelRuns: List<ModelRun> = listOf(),
                                modelRunParameterSets: List<ModelRunParameterSet> = listOf()): BurdenEstimateRepository
@@ -387,9 +424,14 @@ class ModellingGroupControllersTests : ControllerTests<ModellingGroupController>
         }
     }
 
+    private val mockTouchstones = listOf(
+            Touchstone("touchstone-1", "touchstone", 1, "Description", TouchstoneStatus.OPEN),
+            Touchstone("touchstone-bad", "touchstone", 1, "not open", TouchstoneStatus.IN_PREPARATION)
+    )
+
     private fun mockTouchstones() = mock<SimpleDataSet<Touchstone, String>> {
-        on { get("touchstone-1") } doReturn Touchstone("touchstone-1", "touchstone", 1, "Description", TouchstoneStatus.OPEN)
-        on { get("touchstone-bad") } doReturn Touchstone("touchstone-bad", "touchstone", 1, "not open", TouchstoneStatus.IN_PREPARATION)
+        on { get("touchstone-1") } doReturn mockTouchstones[0]
+        on { get("touchstone-bad") } doReturn mockTouchstones[1]
     }
 
     private fun mockContextForSpecificResponsibility(hasPermissions: Boolean): ActionContext

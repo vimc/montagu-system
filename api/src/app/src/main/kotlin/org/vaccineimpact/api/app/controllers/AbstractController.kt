@@ -59,13 +59,6 @@ abstract class AbstractController(controllerContext: ControllerContext,
         return token
     }
 
-    fun getSetPasswordToken(username: String, context: ActionContext, repo: TokenRepository): String
-    {
-        val params = mapOf(":username" to username)
-        val contextWithParams = OneTimeLinkActionContext(params, emptyMap(), context, username)
-        return getOneTimeLinkToken(contextWithParams, repo, OneTimeAction.SET_PASSWORD, duration = Duration.ofDays(1))
-    }
-
     private fun mapEndpoint(
             endpoint: EndpointDefinition<*>,
             urlBase: String,

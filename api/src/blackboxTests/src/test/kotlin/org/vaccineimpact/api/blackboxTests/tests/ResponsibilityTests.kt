@@ -72,6 +72,29 @@ class ResponsibilityTests : DatabaseTest()
     }
 
     @Test
+    fun `can get touchstones by group id`()
+    {
+        validate("/modelling-groups/$groupId/responsibilities/") against "Touchstones" given {
+            addResponsibilities(it, touchstoneStatus = "open")
+        } requiringPermissions {
+            PermissionSet("*/touchstones.read", "$groupScope/responsibilities.read")
+        } andCheckArray {
+            assertThat(it).isEqualTo(json {
+                array(
+                        obj(
+                                "id" to touchstoneId,
+                                "name" to "touchstone",
+                                "version" to 1,
+                                "description" to "description",
+                                "status" to "open"
+
+                        )
+                )
+            })
+        }
+    }
+
+    @Test
     fun `only touchstone preparer can see in-preparation responsibilities`()
     {
         val url = "/modelling-groups/$groupId/responsibilities/$touchstoneId/"
