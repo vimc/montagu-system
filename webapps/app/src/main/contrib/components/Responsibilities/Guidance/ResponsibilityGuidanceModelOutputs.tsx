@@ -33,25 +33,58 @@ export class ResponsibilityGuidanceModelOutputs extends ContribPageWithHeader<un
                 Required model outputs
             </div>
             <p>
-                In this round of model runs we require:
+                In this round of model runs we require the following:
             </p>
-            <ul>
-                <li>
-                    central estimates from each model – due by 8 January
-                    (extended from 8 December)
-                </li>
-                <li>
-                    stochastic estimates from each model – due by 15 January
-                    (extended from 8 January)
-                </li>
-                <li>
-                    parameters file – due by 15 January (see below)
-                </li>
-            </ul>
-            <p>
-                <b>Central estimates</b> (previously known as deterministic
-                estimates)
-            </p>
+            <table>
+                <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>How to create</th>
+                    <th>Where to upload complete file(s)</th>
+                    <th>Due by</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>Central estimates (multiple files)</td>
+                    <td>
+                        Download central burden estimate template from Montagu,
+                        use this to create one file per scenario
+                    </td>
+                    <td>Montagu</td>
+                    <td>8 January</td>
+                </tr>
+                <tr>
+                    <td>Stochastic estimates (multiple files)</td>
+                    <td>
+                        Download stochastic burden estimate template from Montagu,
+                        use this to create as many files as
+                        you need.
+                    </td>
+                    <td>Dropbox</td>
+                    <td>15 January</td>
+                </tr>
+                <tr>
+                    <td>Parameter set (1 file per disease)</td>
+                    <td>
+                        Download stochastic parameters template from Montagu,
+                        use this to create your parameter set.
+                    </td>
+                    <td>Montagu</td>
+                    <td>15 January</td>
+                </tr>
+                <tr>
+                    <td>Parameter certificate (1 file per disease)</td>
+                    <td>You will be able to download this from Montagu once you have uploaded your parameter set.</td>
+                    <td>Dropbox</td>
+                    <td>15 January</td>
+                </tr>
+                </tbody>
+            </table>
+            <div className="mb-3 mt-5">
+                <span className="sectionTitle">Central estimates</span>
+                &nbsp;(previously known as deterministic estimates)
+            </div>
             <p>
                 First, download your central burden estimate template from
                 the Responsibilities page
@@ -78,13 +111,13 @@ export class ResponsibilityGuidanceModelOutputs extends ContribPageWithHeader<un
                 campaign scenario may contain both routine and campaign
                 coverage to enable us to evaluate the incremental impact
                 of campaigns on top of routine vaccination. Details of the
-                coverage sets are shown after you click the ‘Download
-                coverage data’ buttons.
+                coverage sets are shown after you click the ‘<strong>Download
+                coverage data</strong>’ buttons.
             </p>
             <p>
                 Once you have completed one output file for each scenario,
-                you should upload each file to Montagu, using the ‘Upload
-                burden estimates’ buttons on the Responsibilities page.
+                you should upload each file to Montagu, using the ‘<strong>Upload
+                burden estimates</strong>’ buttons on the Responsibilities page.
             </p>
             <p>
                 There is no specific filename format to use. This is because
@@ -92,15 +125,26 @@ export class ResponsibilityGuidanceModelOutputs extends ContribPageWithHeader<un
                 on will determine the scenario.
             </p>
             <p>
-                If your central burden estimate uploads successfully, you
-                will be directed to a page with a message ending
-                “status”:”success”. If not, you will be directed to a page
-                with a message explaining the errors, and ending
-                “status”:”failure”.
+                If your central burden estimate uploads successfully, you will
+                see a ‘Success’ message. If not, you will see a red header
+                explaining the problem.
             </p>
             <p>
-                <b>Stochastic estimates</b> (also known as probabilistic estimates)
+                Montagu will also ask you to register how these have been
+                calculated, i.e. whether your central estimates are an average
+                of your stochastic estimates. (If you are unsure how to answer
+                the second question, you can enter ‘N/A’.)
             </p>
+            <p>
+                If your answers to these questions change between uploading
+                your central estimates and your stochastic estimates, you
+                should complete this registration step again and re-upload
+                your central estimates to Montagu.
+            </p>
+            <div className="mb-3 mt-5">
+                <span className="sectionTitle">Stochastic estimates</span>
+                &nbsp;(also known as probabilistic estimates)
+            </div>
             <p>
                 We require multiple model runs for each scenario, each of which
                 is based on a random sample from the joint uncertainty
@@ -120,7 +164,7 @@ export class ResponsibilityGuidanceModelOutputs extends ContribPageWithHeader<un
                 The format is almost identical to the central burden estimate
                 template, but there is one additional column ‘run_id’. This
                 column labels the particular run, and should link the run to
-                the parameter value detailed in the parameters file.
+                the parameter value detailed in the parameter set file.
                 Importantly, the runs across all scenarios with the same run
                 id should be based on the same parameter values.
             </p>
@@ -150,10 +194,12 @@ export class ResponsibilityGuidanceModelOutputs extends ContribPageWithHeader<un
                 &nbsp;if there are any problems with this.
             </p>
             <p>
-                The filename format for your stochastic burden files should
-                be, for example,
-                stochastic_burden_est_YF-IC-Garske_yf-routine-gavi_1.csv.
-                The first part is from the template filename, the second part
+                Next, rename your stochastic estimate files.
+                The filename format should be, for example,&nbsp;
+                <strong><em>
+                    stochastic_burden_est_YF-IC-Garske_yf-routine-gavi_1.csv
+                </em></strong>
+                . The first part is from the template filename, the second part
                 is the scenario ID (as it appears in Montagu), the final
                 number is an arbitrary way to distinguish between
                 different files for the same scenario if you choose to split
@@ -162,7 +208,7 @@ export class ResponsibilityGuidanceModelOutputs extends ContribPageWithHeader<un
             <p>
                 Once you have completed all files for each scenario, you
                 should upload each one to Dropbox, to the specific folder
-                that we will email you. We will then use scripts to
+                that we have emailed you. We will then use scripts to
                 automatically process the uploaded files and import them
                 into Montagu.
             </p>
@@ -178,16 +224,14 @@ export class ResponsibilityGuidanceModelOutputs extends ContribPageWithHeader<un
                     Slack
                 </a>.
             </p>
+            <ScrollableAnchor id={'parameters'}>
+                <div className="mb-3 mt-5 sectionTitle">Parameter set file</div>
+            </ScrollableAnchor>
             <p>
-                <ScrollableAnchor id={'parameters'}>
-                    <b>Parameters file</b>
-                </ScrollableAnchor>
-            </p>
-            <p>
-                We would like to see the parameter values underlying your
-                stochastic runs. To create this parameters file, please use
-                the ‘parameters template’ available on the Responsibilities page
-                (listed under ‘Scenarios’).
+                First, download your stochastic parameters template from
+                the Responsibilities page. You should use this template to
+                create one file (a parameter set) that will show us the
+                underlying parameter values of your stochastic runs.
             </p>
             <p>
                 It is essential that the runs across all scenarios with the
@@ -201,6 +245,7 @@ export class ResponsibilityGuidanceModelOutputs extends ContribPageWithHeader<un
                 The column headings in the template are labelled &lt;param_1&gt;
                 and &lt;param_2&gt; but you should rename these to the actual
                 parameters you are using, and add extra columns if necessary.
+                The parameters that you use are up to you.
             </p>
             <p>
                 If the model uses country-specific parameters, each
@@ -209,44 +254,56 @@ export class ResponsibilityGuidanceModelOutputs extends ContribPageWithHeader<un
                 where ISO is the 3-letter country code.
             </p>
             <p>
-                Once you have completed your parameters file, you should
-                upload this via Montagu.
+                Once you have completed your parameter set file, you should
+                upload this file via Montagu.
             </p>
             <p>
-                We will also be asking you to clarify how your central
-                estimates relate to your stochastic estimates, i.e. whether
-                they are an average of the stochastic estimates. If your
-                model changes between uploading your central estimates
-                and your stochastic estimates, please let us know by
-                emailing&nbsp;
-                <a href={`mailto:${settings.supportContact}`}>
-                    {settings.supportContact}
-                </a>
-                &nbsp;or using the #montagu-help channel on&nbsp;
-                <a href={settings.slackUrl} target="_blank">
-                    Slack
-                </a>
-                .
+                Montagu will then give you a ‘parameter certificate’. After
+                you have downloaded this, please upload it to Dropbox, to
+                the specific folder that we have emailed you. You do not
+                need to open or read this file.
             </p>
             <p>
-                <b>Age groups</b>
+                You should only upload one parameter certificate to Dropbox.
+                This must correspond to the exact parameters that underlie your
+                stochastic estimates. Therefore, if you discover a mistake in
+                your stochastic files or parameter set after you have uploaded
+                these to Dropbox, please do all of the following:
             </p>
+            <p>
+                <ol style={{listStyleType: "lower-alpha"}}>
+                    <li>
+                        Contact us
+                        (<a href={`mailto:${settings.supportContact}`}>{settings.supportContact}</a>)
+                        to request a new Dropbox link
+                    </li>
+                    <li>
+                        Upload your amended parameter set to Montagu and get
+                        a new parameter certificate
+                    </li>
+                    <li>
+                        Upload your new parameter certificate and all stochastic
+                        estimate files to the new Dropbox link
+                    </li>
+                </ol>
+                If you have any questions, please contact&nbsp;
+                <a href={`mailto:${settings.supportContact}`}>{settings.supportContact}</a>
+                or use the #montagu-help channel on&nbsp;
+                <a href={settings.slackUrl} target="_blank">Slack</a>
+            </p>
+            <div className="mb-3 mt-5 sectionTitle">Age groups</div>
             <p>
                 The age groups in your burden estimate templates must be
                 1-year age groups. If your model uses larger age groups,
                 you will need to disaggregate these.
             </p>
-            <p>
-                <b>DALYs guidance</b>
-            </p>
+            <div className="mb-3 mt-5 sectionTitle">DALYs guidance</div>
             <p>
                 <a href={dalysPdf} target="_blank">
                     Download report with detailed guidance on DALYs.
                 </a>
             </p>
-            <p>
-                <b>Cohort size</b>
-            </p>
+            <div className="mb-3 mt-5 sectionTitle">Cohort size</div>
             <p>
                 The cohort size is the number of people alive in a given
                 birth cohort specified by the calendar year and age during
@@ -259,9 +316,9 @@ export class ResponsibilityGuidanceModelOutputs extends ContribPageWithHeader<un
                 (female, male or both) for which your model is tracking the
                 population.
             </p>
-            <p>
-                <b>Checklist for avoiding errors when uploading to Montagu:</b>
-            </p>
+            <div className="mb-3 mt-5 sectionTitle">
+                Checklist for avoiding errors when uploading to Montagu:
+            </div>
             <ul>
                 <li>
                     Your file should not contain any empty columns
