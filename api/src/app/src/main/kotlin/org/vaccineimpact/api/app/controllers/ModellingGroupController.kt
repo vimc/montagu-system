@@ -2,20 +2,19 @@ package org.vaccineimpact.api.app.controllers
 
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.context.csvData
+import org.vaccineimpact.api.app.context.postData
 import org.vaccineimpact.api.app.controllers.endpoints.EndpointDefinition
 import org.vaccineimpact.api.app.controllers.endpoints.oneRepoEndpoint
 import org.vaccineimpact.api.app.controllers.endpoints.secured
-import org.vaccineimpact.api.app.controllers.endpoints.streamed
-import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.errors.MissingRequiredPermissionError
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
-import org.vaccineimpact.api.app.context.postData
 import org.vaccineimpact.api.app.repositories.*
 import org.vaccineimpact.api.app.security.checkEstimatePermissionsForTouchstone
 import org.vaccineimpact.api.app.security.isAllowedToSeeTouchstone
 import org.vaccineimpact.api.app.security.checkIsAllowedToSeeTouchstone
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.helpers.OneTimeAction
+import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import org.vaccineimpact.api.serialization.FlexibleDataTable
 import org.vaccineimpact.api.serialization.SplitData
 import org.vaccineimpact.api.serialization.StreamSerializable
@@ -36,11 +35,9 @@ open class ModellingGroupController(context: ControllerContext)
             "*/touchstones.read",
             "$groupScope/responsibilities.read"
     )
-    val coveragePermissions = responsibilityPermissions + "$groupScope/coverage.read"
     val touchstonesURL = "/:group-id/responsibilities"
     val responsibilitiesURL = "/:group-id/responsibilities/:touchstone-id"
     val scenarioURL = "$responsibilitiesURL/:scenario-id"
-    val coverageURL = "$scenarioURL/coverage"
     val parametersURL = "/:group-id/model-run-parameters/:touchstone-id"
 
     override fun endpoints(repos: RepositoryFactory): Iterable<EndpointDefinition<*>>
@@ -52,10 +49,6 @@ open class ModellingGroupController(context: ControllerContext)
                 oneRepoEndpoint("$responsibilitiesURL/", this::getResponsibilities, repos, repo).secured(responsibilityPermissions),
                 oneRepoEndpoint("$touchstonesURL/", this::getTouchstones, repos, repo).secured(touchtonePermissions),
                 oneRepoEndpoint("$scenarioURL/", this::getResponsibility, repos, repo).secured(responsibilityPermissions),
-                oneRepoEndpoint("$scenarioURL/coverage_sets/", this::getCoverageSets, repos, repo).secured(coveragePermissions),
-                oneRepoEndpoint("$coverageURL/", this::getCoverageDataAndMetadata.streamed(), repos, repo, contentType = "application/json").secured(coveragePermissions),
-                oneRepoEndpoint("$coverageURL/", this::getCoverageData.streamed(), repos, repo, contentType = "text/csv").secured(coveragePermissions),
-                oneRepoEndpoint("$coverageURL/get_onetime_link/", { c, r -> getOneTimeLinkToken(c, r, OneTimeAction.COVERAGE) }, repos, { it.token }).secured(coveragePermissions),
                 oneRepoEndpoint("/:group-id/actions/associate_member/", this::modifyMembership, repos, { it.user }, method = HttpMethod.post).secured(),
 
                 oneRepoEndpoint("$parametersURL/", this::getModelRunParameterSets, repos, { it.burdenEstimates })
@@ -132,101 +125,6 @@ open class ModellingGroupController(context: ControllerContext)
         val data = repo.getResponsibility(path.groupId, path.touchstoneId, path.scenarioId)
         context.checkIsAllowedToSeeTouchstone(path.touchstoneId, data.touchstone.status)
         return data
-    }
-
-    fun getCoverageSets(context: ActionContext, repo: ModellingGroupRepository): ScenarioTouchstoneAndCoverageSets
-    {
-        val path = ResponsibilityPath(context)
-        val data = repo.getCoverageSets(path.groupId, path.touchstoneId, path.scenarioId)
-        context.checkIsAllowedToSeeTouchstone(path.touchstoneId, data.touchstone.status)
-        return data
-    }
-
-    open fun getCoverageData(context: ActionContext, repo: ModellingGroupRepository): StreamSerializable<CoverageRow>
-    {
-        val data = getCoverageDataAndMetadata(context, repo)
-        val metadata = data.structuredMetadata
-        val filename = "coverage_${metadata.touchstone.id}_${metadata.scenario.id}.csv"
-        context.addAttachmentHeader(filename)
-        return data.tableData
-    }
-
-    // TODO: https://vimc.myjetbrains.com/youtrack/issue/VIMC-307
-    // Use streams to speed up this process of sending large data
-    fun getCoverageDataAndMetadata(context: ActionContext, repo: ModellingGroupRepository):
-            SplitData<ScenarioTouchstoneAndCoverageSets, CoverageRow>
-    {
-        val path = ResponsibilityPath(context)
-        val splitData = repo.getCoverageData(path.groupId, path.touchstoneId, path.scenarioId)
-        context.checkIsAllowedToSeeTouchstone(path.touchstoneId, splitData.structuredMetadata.touchstone.status)
-
-        val format = context.queryParams("format")
-
-        val tableData = when (format)
-        {
-
-            "wide" -> getWideDatatable(splitData.tableData.data)
-            "long", null -> splitData.tableData
-            else -> throw BadRequest("Format '$format' not a valid csv format. Available formats are 'long' " +
-                    "and 'wide'.")
-        }
-
-        return SplitData(splitData.structuredMetadata, tableData)
-    }
-
-    private fun getWideDatatable(data: Sequence<LongCoverageRow>):
-            FlexibleDataTable<WideCoverageRow>
-    {
-        val groupedRows = data
-                .groupBy {
-                    hashSetOf(
-                            it.countryCode, it.setName,
-                            it.ageFirst, it.ageLast,
-                            it.vaccine, it.gaviSupport, it.activityType
-                    )
-                }
-
-        val rows = groupedRows.values
-                .map {
-                    mapWideCoverageRow(it)
-                }
-
-
-        // all the rows should have the same number of years, so we just look at the first row
-        val years = if (rows.any())
-        {
-            rows.first().coverageAndTargetPerYear.keys.toList()
-        }
-        else
-        {
-            listOf()
-        }
-
-        return FlexibleDataTable.new(rows.asSequence(), years.sorted())
-
-    }
-
-    private fun mapWideCoverageRow(records: List<LongCoverageRow>)
-            : WideCoverageRow
-    {
-        // all records have same country, gender, age_from and age_to, so can look at first one for these
-        val reference = records.first()
-
-        val coverageAndTargetPerYear =
-                records.associateBy({ "coverage_${it.year}" }, { it.coverage }) +
-                        records.associateBy({ "target_${it.year}" }, { it.target })
-
-        return WideCoverageRow(reference.scenario,
-                reference.setName,
-                reference.vaccine,
-                reference.gaviSupport,
-                reference.activityType,
-                reference.countryCode,
-                reference.country,
-                reference.ageFirst,
-                reference.ageLast,
-                reference.ageRangeVerbatim,
-                coverageAndTargetPerYear)
     }
 
     fun modifyMembership(context: ActionContext, repo: UserRepository): String

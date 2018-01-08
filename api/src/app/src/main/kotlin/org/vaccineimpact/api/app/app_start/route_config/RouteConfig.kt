@@ -15,5 +15,6 @@ object MontaguRouteConfig : RouteConfig
             ModelRouteConfig.endpoints +
             AuthenticationRouteConfig.endpoints +
             UserRouteConfig.endpoints +
-            PasswordRouteConfig.endpoints
+            PasswordRouteConfig.endpoints +
+            GroupCoverageRouteConfig.endpoints
 }
