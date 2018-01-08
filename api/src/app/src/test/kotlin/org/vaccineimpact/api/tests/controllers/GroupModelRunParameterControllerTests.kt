@@ -1,12 +1,10 @@
 package org.vaccineimpact.api.tests.controllers
 
-import com.nhaarman.mockito_kotlin.any
-import com.nhaarman.mockito_kotlin.doReturn
-import com.nhaarman.mockito_kotlin.eq
-import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.*
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
+import org.vaccineimpact.api.app.MultipartDataMap
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.controllers.GroupModelRunParametersController
 import org.vaccineimpact.api.app.errors.UnknownObjectError
@@ -58,6 +56,7 @@ class GroupModelRunParameterControllerTests : MontaguTests()
     fun `can upload model run params`()
     {
         val params = mapOf("param1" to "value1", "param2" to "value2")
+        @Suppress("RemoveExplicitTypeArguments")
         val modelRuns = listOf<ModelRun>(ModelRun("run1", params))
 
         val mockContext = mock<ActionContext> {
@@ -65,8 +64,12 @@ class GroupModelRunParameterControllerTests : MontaguTests()
             on { username } doReturn "user.name"
             on { params(":group-id") } doReturn "group-1"
             on { params(":touchstone-id") } doReturn "touchstone-1"
-            on { getPart("disease") } doReturn StringReader("disease-1")
-            on { getPart("description") } doReturn StringReader("some description")
+            on { getParts(anyOrNull()) } doReturn MultipartDataMap(
+                    "disease" to "disease-1",
+                    "description" to "some description",
+                    // This is passed to another mocked method, so its contents doesn't matter
+                    "file" to ""
+            )
         }
         val repo = mockRepository(modelRuns = modelRuns)
 
@@ -82,7 +85,7 @@ class GroupModelRunParameterControllerTests : MontaguTests()
         val mockContext = mock<ActionContext> {
             on { params(":group-id") } doReturn "group-1"
             on { params(":touchstone-id") } doReturn "touchstone-bad"
-            on { getPart("disease") } doReturn StringReader("disease-1")
+            on { getPart(eq("disease"), anyOrNull()) } doReturn StringReader("disease-1")
         }
         val touchstoneSet = mockTouchstones()
         val repo = mockRepository(touchstoneSet)
