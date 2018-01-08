@@ -5,6 +5,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
 import org.vaccineimpact.api.app.context.ActionContext
+import org.vaccineimpact.api.app.context.RequestBodySource
 import org.vaccineimpact.api.app.context.postData
 import org.vaccineimpact.api.app.controllers.ControllerContext
 import org.vaccineimpact.api.app.controllers.GroupBurdenEstimatesController
@@ -218,7 +219,8 @@ class GroupEstimatesControllerTests : ControllerTests<GroupBurdenEstimatesContro
     private fun mockActionContext(data: Sequence<BurdenEstimate>): ActionContext
     {
         return mock {
-            on { csvData(eq(BurdenEstimate::class), any()) } doReturn data.asSequence()
+            on { csvData(eq(BurdenEstimate::class), any<RequestBodySource>()) } doReturn data.asSequence()
+            on { csvData(eq(BurdenEstimate::class), any<String>()) } doReturn data.asSequence()
             on { username } doReturn "username"
             on { params(":group-id") } doReturn "group-1"
             on { params(":touchstone-id") } doReturn "touchstone-1"
@@ -229,7 +231,8 @@ class GroupEstimatesControllerTests : ControllerTests<GroupBurdenEstimatesContro
     private fun <T : Any> mockActionContextWithCSVData(csvData: List<T>): ActionContext
     {
         return mock {
-            on { csvData<T>(any(), any()) } doReturn csvData.asSequence()
+            on { csvData<T>(any(), any<RequestBodySource>()) } doReturn csvData.asSequence()
+            on { csvData<T>(any(), any<String>()) } doReturn csvData.asSequence()
             on { username } doReturn "username"
             on { params(":set-id") } doReturn "1"
             on { params(":group-id") } doReturn "group-1"
