@@ -13,7 +13,7 @@ import org.vaccineimpact.api.validateSchema.JSONValidator
 
 class ModelRunParameterTests : BurdenEstimateTests()
 {
-    val modelRunParameterCSV = """
+    private val modelRunParameterCSV = """
 "run_id", "param1", "param2"
    "1",   996,    50
    "2",   997,    50
@@ -36,7 +36,7 @@ class ModelRunParameterTests : BurdenEstimateTests()
 
         val response = requestHelper.postFile("$modelRunParameterUrl/",
                 modelRunParameterCSV,
-                token = token, data = mapOf("description" to "description", "disease" to disease))
+                token = token, data = mapOf("description" to "description", "disease" to diseaseId))
 
         Assertions.assertThat(response.statusCode).isEqualTo(201)
         Assertions.assertThat(response.headers["Location"]).`as`("Location header")
@@ -56,7 +56,7 @@ class ModelRunParameterTests : BurdenEstimateTests()
             val requestHelper = RequestHelper()
 
             val response = requestHelper.postFile(oneTimeURL, modelRunParameterCSV,
-                    data = mapOf("description" to "description", "disease" to disease))
+                    data = mapOf("description" to "description", "disease" to diseaseId))
             Assertions.assertThat(response.statusCode).isEqualTo(201)
 
             val badResponse = requestHelper.get(oneTimeURL)
@@ -76,7 +76,7 @@ class ModelRunParameterTests : BurdenEstimateTests()
             val requestHelper = RequestHelper()
 
             val response = requestHelper.postFile(oneTimeURL, modelRunParameterCSV,
-                    data = mapOf("description" to "description", "disease" to disease))
+                    data = mapOf("description" to "description", "disease" to diseaseId))
             val resultAsString = response.getResultFromRedirect(checkRedirectTarget = "http://localhost")
             JSONValidator().validateSuccess(resultAsString)
         }
@@ -84,7 +84,7 @@ class ModelRunParameterTests : BurdenEstimateTests()
     }
 
     @Test
-    fun `throws BadRequest if request is not multipart`()
+    fun `returns BadRequest if request is not multipart`()
     {
         validate("$modelRunParameterUrl/get_onetime_link/") against "Token" given { db ->
             setUp(db)
@@ -103,7 +103,7 @@ class ModelRunParameterTests : BurdenEstimateTests()
     }
 
     @Test
-    fun `throws BadRequest if part is missing`()
+    fun `returns error if part is missing`()
     {
         validate("$modelRunParameterUrl/get_onetime_link/") against "Token" given { db ->
             setUp(db)
@@ -116,8 +116,8 @@ class ModelRunParameterTests : BurdenEstimateTests()
             val response = requestHelper.postFile(oneTimeURL, modelRunParameterCSV)
 
             JSONValidator().validateError(response.text,
-                    expectedErrorCode = "bad-request",
-                    expectedErrorText = "No value passed for required POST parameter 'disease'")
+                    expectedErrorCode = "missing-required-parameter:disease",
+                    expectedErrorText = "You must supply a 'disease' parameter in the multipart body")
         }
     }
 
@@ -136,6 +136,7 @@ class ModelRunParameterTests : BurdenEstimateTests()
             Assertions.assertThat(obj["model"]).isEqualTo("model-1")
             Assertions.assertThat(obj["id"]).isEqualTo(setId)
             Assertions.assertThat(obj["description"]).isEqualTo("description")
+            Assertions.assertThat(obj["disease"]).isEqualTo(diseaseId)
         }
     }
 

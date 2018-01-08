@@ -3,29 +3,37 @@ package org.vaccineimpact.api.app
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.context.OneTimeLinkActionContext
 import org.vaccineimpact.api.app.context.RequestBodySource
+import org.vaccineimpact.api.app.controllers.GroupCoverageController
 import org.vaccineimpact.api.app.controllers.MontaguControllers
+import org.vaccineimpact.api.app.controllers.PasswordController
 import org.vaccineimpact.api.app.controllers.TouchstoneController
 import org.vaccineimpact.api.app.controllers.endpoints.stream
 import org.vaccineimpact.api.app.repositories.RepositoryFactory
+import org.vaccineimpact.api.app.security.OneTimeTokenGenerator
 import org.vaccineimpact.api.models.helpers.OneTimeAction
+import org.vaccineimpact.api.security.KeyHelper
+import org.vaccineimpact.api.security.WebTokenHelper
 import org.vaccineimpact.api.serialization.Deserializer
 
-data class OneTimeLink(val action: OneTimeAction,
-                       val payload: Map<String, String>,
-                       val queryParams: Map<String, String>,
-                       val username: String)
+
+open class OnetimeLinkResolver(private val controllers: MontaguControllers,
+                               private val repositoryFactory: RepositoryFactory,
+                               private val webTokenHelper: WebTokenHelper = WebTokenHelper(KeyHelper.keyPair))
 {
-    fun perform(controllers: MontaguControllers, actionContext: ActionContext, repositoryFactory: RepositoryFactory): Any
+
+    @Throws(Exception::class)
+    open fun perform(oneTimeLink: OneTimeLink, actionContext: ActionContext): Any
     {
-        val callback = getCallback(action, controllers, repositoryFactory)
-        val context = OneTimeLinkActionContext(payload, queryParams, actionContext, username)
+        val callback = getCallback(oneTimeLink.action, controllers, repositoryFactory, webTokenHelper)
+        val context = OneTimeLinkActionContext(oneTimeLink.payload, oneTimeLink.queryParams, actionContext, oneTimeLink.username)
         return callback.invoke(context)
     }
 
     private fun getCallback(
             action: OneTimeAction,
             controllers: MontaguControllers,
-            repoFactory: RepositoryFactory
+            repoFactory: RepositoryFactory,
+            webTokenHelper: WebTokenHelper
     ): (ActionContext) -> Any
     {
         return { context ->
@@ -44,13 +52,20 @@ data class OneTimeLink(val action: OneTimeAction,
                             RequestBodySource.HTMLMultipart("file")
                     )
                     OneTimeAction.MODEl_RUN_PARAMETERS -> controllers.modellingGroup.addModelRunParameters(context, repos.burdenEstimates)
-                    OneTimeAction.COVERAGE -> stream(controllers.modellingGroup.getCoverageData(context, repos.modellingGroup), context)
-                    OneTimeAction.DEMOGRAPHY -> stream(TouchstoneController(context, repos.touchstone).getDemographicData(), context)
-                    OneTimeAction.SET_PASSWORD -> controllers.password.setPasswordForUser(context, repos.user, context.params("username"))
+                    OneTimeAction.COVERAGE -> stream(GroupCoverageController(context, repos.modellingGroup).getCoverageData(), context)
+                    OneTimeAction.DEMOGRAPHY -> stream(TouchstoneController(context, repos).getDemographicData(), context)
+                    OneTimeAction.SET_PASSWORD -> PasswordController(context, repos.user, OneTimeTokenGenerator(repos.token, webTokenHelper)).setPasswordForUser(context.params("username"))
                 }
             }
         }
     }
+}
+
+data class OneTimeLink(val action: OneTimeAction,
+                       val payload: Map<String, String>,
+                       val queryParams: Map<String, String>,
+                       val username: String)
+{
 
     companion object
     {

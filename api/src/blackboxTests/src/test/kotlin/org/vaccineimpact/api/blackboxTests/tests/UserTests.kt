@@ -62,7 +62,7 @@ class UserTests : DatabaseTest()
     @Test
     fun `can add user role`()
     {
-        validate("/users/testuser/actions/associate_role/", HttpMethod.post) given {
+        validate("/users/testuser/actions/associate-role/", HttpMethod.post) given {
             it.addUserForTesting("testuser")
             it.addGroup("IC-Garske")
         } withPermissions {
@@ -82,7 +82,7 @@ class UserTests : DatabaseTest()
     @Test
     fun `can remove user role`()
     {
-        validate("/users/testuser/actions/associate_role/", HttpMethod.post) given {
+        validate("/users/testuser/actions/associate-role/", HttpMethod.post) given {
             it.addUserForTesting("testuser")
             it.addGroup("IC-Garske")
         } withPermissions {
@@ -102,7 +102,7 @@ class UserTests : DatabaseTest()
     @Test
     fun `can remove global user role`()
     {
-        validate("/users/testuser/actions/associate_role/", HttpMethod.post) given {
+        validate("/users/testuser/actions/associate-role/", HttpMethod.post) given {
             it.addUserWithRoles("testuser", ReifiedRole("user", Scope.Global()))
             it.addGroup("IC-Garske")
         } withPermissions {

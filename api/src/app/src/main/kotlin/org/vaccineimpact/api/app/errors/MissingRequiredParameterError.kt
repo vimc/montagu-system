@@ -6,3 +6,8 @@ class MissingRequiredParameterError(parameterName: String) : MontaguError(400, l
         "missing-required-parameter:$parameterName",
         "You must supply a '$parameterName' parameter in the query string"
 )))
+
+class MissingRequiredMultipartParameterError(parameterName: String) : MontaguError(400, listOf(ErrorInfo(
+        "missing-required-parameter:$parameterName",
+        "You must supply a '$parameterName' parameter in the multipart body"
+)))

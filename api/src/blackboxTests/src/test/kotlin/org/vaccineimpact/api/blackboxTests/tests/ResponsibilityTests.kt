@@ -75,11 +75,7 @@ class ResponsibilityTests : DatabaseTest()
     fun `can get touchstones by group id`()
     {
         validate("/modelling-groups/$groupId/responsibilities/") against "Touchstones" given {
-            it.addGroup(groupId)
-            it.addTouchstoneName("touchstone", "description")
-            it.addTouchstone("touchstone", 1, description = "descr 1", status = "open")
-            it.addTouchstone("touchstone", 2)
-            it.addResponsibilitySet(groupId, touchstoneId)
+            addResponsibilities(it, touchstoneStatus = "open")
         } requiringPermissions {
             PermissionSet("*/touchstones.read", "$groupScope/responsibilities.read")
         } andCheckArray {
@@ -89,7 +85,7 @@ class ResponsibilityTests : DatabaseTest()
                                 "id" to touchstoneId,
                                 "name" to "touchstone",
                                 "version" to 1,
-                                "description" to "descr 1",
+                                "description" to "description",
                                 "status" to "open"
 
                         )
@@ -165,7 +161,7 @@ class ResponsibilityTests : DatabaseTest()
     fun `get coverage sets matches schema`()
     {
         val coverageSetId = 1
-        validate("/modelling-groups/$groupId/responsibilities/$touchstoneId/$scenarioId/coverage_sets/") against "ScenarioAndCoverageSets" given {
+        validate("/modelling-groups/$groupId/responsibilities/$touchstoneId/$scenarioId/coverage-sets/") against "ScenarioAndCoverageSets" given {
             addResponsibilities(it, touchstoneStatus = "open")
             it.addCoverageSet(touchstoneId, "coverage set name", "vaccine-1", "without", "routine", coverageSetId,
                     addVaccine = true)
@@ -204,7 +200,7 @@ class ResponsibilityTests : DatabaseTest()
     @Test
     fun `only touchstone preparer can see in-preparation coverage sets`()
     {
-        val url = "/modelling-groups/$groupId/responsibilities/$touchstoneId/$scenarioId/coverage_sets/"
+        val url = "/modelling-groups/$groupId/responsibilities/$touchstoneId/$scenarioId/coverage-sets/"
         val minimumPermissions = PermissionSet("*/can-login", "*/scenarios.read", "$groupScope/responsibilities.read", "$groupScope/coverage.read")
         val permissionUnderTest = "*/touchstones.prepare"
         val checker = PermissionChecker(url, minimumPermissions + permissionUnderTest)
