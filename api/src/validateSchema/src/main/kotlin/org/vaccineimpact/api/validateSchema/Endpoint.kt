@@ -5,7 +5,12 @@ import org.commonmark.node.IndentedCodeBlock
 import org.commonmark.node.Link
 import org.commonmark.node.Node
 
-class Endpoint(val method: String, val urlTemplate: String, contents: List<Node>)
+class Endpoint(
+        val method: String,
+        val urlTemplate: String,
+        val isMetaBlock: Boolean,
+        contents: List<Node>
+)
 {
     val requestSchemas: List<SchemaDefinition>
 
@@ -53,11 +58,13 @@ class Endpoint(val method: String, val urlTemplate: String, contents: List<Node>
                 {
                     val method = match.groups["method"]!!.value
                     val urlTemplate = match.groups["urlTemplate"]!!.value
-                    return Endpoint(method, urlTemplate, contents.toList())
+                    return Endpoint(method, urlTemplate,
+                            isMetaBlock = false, contents = contents.toList())
                 }
                 else if (headingText == "Standard response format")
                 {
-                    return Endpoint("", "<Standard response format>", contents.toList())
+                    return Endpoint("", "<Standard response format>",
+                            isMetaBlock = true, contents = contents.toList())
                 }
             }
             return null
