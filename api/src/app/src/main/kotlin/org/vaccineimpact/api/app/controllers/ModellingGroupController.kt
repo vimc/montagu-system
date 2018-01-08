@@ -1,7 +1,6 @@
 package org.vaccineimpact.api.app.controllers
 
 import org.vaccineimpact.api.app.context.ActionContext
-import org.vaccineimpact.api.app.context.RequestBodySource
 import org.vaccineimpact.api.app.context.csvData
 import org.vaccineimpact.api.app.context.postData
 import org.vaccineimpact.api.app.controllers.endpoints.EndpointDefinition
@@ -15,7 +14,13 @@ import org.vaccineimpact.api.app.security.isAllowedToSeeTouchstone
 import org.vaccineimpact.api.app.security.checkIsAllowedToSeeTouchstone
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.helpers.OneTimeAction
+<<<<<<< HEAD
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
+=======
+import org.vaccineimpact.api.serialization.FlexibleDataTable
+import org.vaccineimpact.api.serialization.SplitData
+import org.vaccineimpact.api.serialization.StreamSerializable
+>>>>>>> master
 import spark.route.HttpMethod
 import java.time.Instant
 
@@ -84,11 +89,13 @@ open class ModellingGroupController(context: ControllerContext)
     {
         val touchstoneId = context.params(":touchstone-id")
         val groupId = context.params(":group-id")
-        val disease = context.getPart("disease").readText()
         context.checkEstimatePermissionsForTouchstone(groupId, touchstoneId, estimateRepository)
-        val description = context.getPart("description").readText()
 
-        val modelRuns = context.csvData<ModelRun>(RequestBodySource.HTMLMultipart("file"))
+        val parts = context.getParts()
+        val disease = parts["disease"]
+        val description = parts["description"]
+        val modelRuns = context.csvData<ModelRun>(parts["file"])
+
         val id = estimateRepository.addModelRunParameterSet(groupId, touchstoneId, disease,
                 description, modelRuns.toList(), context.username!!, Instant.now())
 

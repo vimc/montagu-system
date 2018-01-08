@@ -1,26 +1,29 @@
 package org.vaccineimpact.api.tests.controllers
 
 import com.beust.klaxon.json
+import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.doReturn
 import com.nhaarman.mockito_kotlin.mock
+import org.apache.commons.fileupload.FileItemStream
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
 import org.pac4j.core.context.Pac4jConstants
 import org.pac4j.core.profile.CommonProfile
 import org.pac4j.sparkjava.SparkWebContext
+import org.vaccineimpact.api.app.MultipartData
 import org.vaccineimpact.api.app.context.DirectActionContext
 import org.vaccineimpact.api.app.context.postData
 import org.vaccineimpact.api.app.errors.BadRequest
+import org.vaccineimpact.api.app.errors.MissingRequiredMultipartParameterError
 import org.vaccineimpact.api.app.security.PERMISSIONS
 import org.vaccineimpact.api.models.Scope
 import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import org.vaccineimpact.api.test_helpers.MontaguTests
 import spark.Request
-import java.io.InputStream
+import java.io.ByteArrayInputStream
 import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.Part
 
 class DirectActionContextTests : MontaguTests()
 {
@@ -90,81 +93,68 @@ class DirectActionContextTests : MontaguTests()
     }
 
     @Test
-    fun `throw BadRequest if getPart called on non multipart request`()
+    fun `throws BadRequest if getPart called on non multipart request`()
     {
-        val profile = CommonProfile()
-
-        val mockRequest = mock<Request> {
-            on { raw() } doReturn mock<HttpServletRequest>()
-            on { contentType() } doReturn "text/plain"
+        val mockData = mock<MultipartData> {
+            on { isMultipartContent(any()) } doReturn false
         }
-
-        val webContext = mock<SparkWebContext> {
-            on { getRequestAttribute(Pac4jConstants.USER_PROFILES) } doReturn profile
-            on { sparkRequest } doReturn mockRequest
-        }
-
-        val context = DirectActionContext(webContext)
-        assertThatThrownBy {
-            context.getPart("whatever")
-        }.isInstanceOf(BadRequest::class.java)
-                .hasMessageContaining("Trying to extract a part from multipart/form-data but this request is of type text/plain")
+        val context = DirectActionContext(mockWebContext(contentType = "some/content/type"))
+        assertThatThrownBy { context.getPart("partB", mockData) }
+                .isInstanceOf(BadRequest::class.java)
+                .hasMessageContaining("Trying to extract a part from multipart/form-data but this request is of type some/content/type")
     }
 
     @Test
-    fun `throw BadRequest if getPart called on non existent part`()
+    fun `throw exception if getPart called on non existent part`()
     {
-        val profile = CommonProfile()
-
-        val mockRequest = mock<Request> {
-            on { raw() } doReturn mock<HttpServletRequest>()
-            on { contentType() } doReturn "multipart/form-data"
+        val data = sequenceOf(
+                mockFileItem("partA", "Message A"),
+                mockFileItem("partC", "Message C")
+        )
+        val mockData = mock<MultipartData> {
+            on { isMultipartContent(any()) } doReturn true
+            on { parts(any()) } doReturn data
         }
-
-        val webContext = mock<SparkWebContext> {
-            on { getRequestAttribute(Pac4jConstants.USER_PROFILES) } doReturn profile
-            on { sparkRequest } doReturn mockRequest
-        }
-
-        val context = DirectActionContext(webContext)
-        assertThatThrownBy {
-            context.getPart("whatever")
-        }.isInstanceOf(BadRequest::class.java)
-                .hasMessageContaining("No value passed for required POST parameter 'whatever'")
+        val context = DirectActionContext(mockWebContext())
+        assertThatThrownBy { context.getPart("partB", mockData) }
+                .isInstanceOf(MissingRequiredMultipartParameterError::class.java)
+                .hasMessageContaining("You must supply a 'partB' parameter in the multipart body")
     }
 
     @Test
     fun `can get part`()
     {
-        val profile = CommonProfile()
-
-        val mockPart = mock<Part>(){
-            on { inputStream } doReturn "something".byteInputStream()
+        val data = sequenceOf(
+                mockFileItem("partA", "Message A"),
+                mockFileItem("partB", "Message B"),
+                mockFileItem("partC", "Message C")
+        )
+        val mockData = mock<MultipartData> {
+            on { isMultipartContent(any()) } doReturn true
+            on { parts(any()) } doReturn data
         }
-        val mockServletRequest = mock<HttpServletRequest>() {
-            on { getPart("whatever") } doReturn mockPart
-        }
+        val context = DirectActionContext(mockWebContext())
+        assertThat(context.getPart("partB", mockData).readText()).isEqualTo("Message B")
+    }
 
+    private fun mockFileItem(name: String, contents: String): FileItemStream
+    {
+        return mock {
+            on { fieldName } doReturn name
+            on { openStream() } doReturn ByteArrayInputStream(contents.toByteArray())
+        }
+    }
+
+    private fun mockWebContext(profile: CommonProfile? = null, contentType: String? = null): SparkWebContext
+    {
+        val mockServletRequest = mock<HttpServletRequest>()
         val mockRequest = mock<Request> {
             on { raw() } doReturn mockServletRequest
-            on { contentType() } doReturn "multipart/form-data"
+            on { contentType() } doReturn contentType
         }
-
-        val webContext = mock<SparkWebContext> {
-            on { getRequestAttribute(Pac4jConstants.USER_PROFILES) } doReturn profile
+        return mock {
             on { sparkRequest } doReturn mockRequest
-        }
-
-        val context = DirectActionContext(webContext)
-        assertThat(context.getPart("whatever").readText()).isEqualTo("something")
-    }
-
-    private fun mockWebContext(profile: CommonProfile): SparkWebContext
-    {
-        val webContext = mock<SparkWebContext> {
             on { getRequestAttribute(Pac4jConstants.USER_PROFILES) } doReturn profile
         }
-        return webContext
     }
-
 }

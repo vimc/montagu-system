@@ -1,5 +1,6 @@
 package org.vaccineimpact.api.app.controllers.endpoints
 
+import org.vaccineimpact.api.app.consumeRemainder
 import org.vaccineimpact.api.models.helpers.ContentTypes
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.context.DirectActionContext
@@ -39,9 +40,15 @@ private fun <TRepository : Repository> wrapRoute(
         : Route
 {
     return Route({ req, res ->
-        repoFactory.inTransaction { repos ->
-            val repo = repository(repos)
-            route(DirectActionContext(req, res), repo)
+        try
+        {
+            repoFactory.inTransaction { repos ->
+                val repo = repository(repos)
+                route(DirectActionContext(req, res), repo)
+            }
+        } finally
+        {
+            req.consumeRemainder()
         }
     })
 }
