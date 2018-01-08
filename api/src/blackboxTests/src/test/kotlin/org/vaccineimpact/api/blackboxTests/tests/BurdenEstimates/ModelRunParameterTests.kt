@@ -36,7 +36,7 @@ class ModelRunParameterTests : BurdenEstimateTests()
 
         val response = requestHelper.postFile("$modelRunParameterUrl/",
                 modelRunParameterCSV,
-                token = token, data = mapOf("description" to "description", "disease" to disease))
+                token = token, data = mapOf("description" to "description", "disease" to diseaseId))
 
         Assertions.assertThat(response.statusCode).isEqualTo(201)
         Assertions.assertThat(response.headers["Location"]).`as`("Location header")
@@ -56,7 +56,7 @@ class ModelRunParameterTests : BurdenEstimateTests()
             val requestHelper = RequestHelper()
 
             val response = requestHelper.postFile(oneTimeURL, modelRunParameterCSV,
-                    data = mapOf("description" to "description", "disease" to disease))
+                    data = mapOf("description" to "description", "disease" to diseaseId))
             Assertions.assertThat(response.statusCode).isEqualTo(201)
 
             val badResponse = requestHelper.get(oneTimeURL)
@@ -76,7 +76,7 @@ class ModelRunParameterTests : BurdenEstimateTests()
             val requestHelper = RequestHelper()
 
             val response = requestHelper.postFile(oneTimeURL, modelRunParameterCSV,
-                    data = mapOf("description" to "description", "disease" to disease))
+                    data = mapOf("description" to "description", "disease" to diseaseId))
             val resultAsString = response.getResultFromRedirect(checkRedirectTarget = "http://localhost")
             JSONValidator().validateSuccess(resultAsString)
         }
@@ -136,6 +136,7 @@ class ModelRunParameterTests : BurdenEstimateTests()
             Assertions.assertThat(obj["model"]).isEqualTo("model-1")
             Assertions.assertThat(obj["id"]).isEqualTo(setId)
             Assertions.assertThat(obj["description"]).isEqualTo("description")
+            Assertions.assertThat(obj["disease"]).isEqualTo(diseaseId)
         }
     }
 

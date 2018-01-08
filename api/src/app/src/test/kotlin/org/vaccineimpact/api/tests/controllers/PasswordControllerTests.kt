@@ -66,6 +66,30 @@ class PasswordControllerTests : MontaguTests()
     }
 
     @Test
+    fun `can get set password onetime token`()
+    {
+        val tokenHelper = mock<WebTokenHelper>{
+            on {
+                generateOneTimeActionToken(any(),
+                        any(), anyOrNull(), any(), any())
+            } doReturn "TOKEN"
+        }
+        val tokenGenerator = OneTimeTokenGenerator(mock(), tokenHelper)
+        val sut = PasswordController(context, userRepo, tokenGenerator, mock())
+
+        sut.requestResetPasswordLink()
+
+        verify(tokenHelper).generateOneTimeActionToken(
+                eq("set-password"),
+                argThat { this[":username"] == user.username },
+                eq(null),
+                eq(Duration.ofDays(1)),
+                eq(user.username)
+        )
+    }
+
+
+    @Test
     fun `requesting set password email for unknown email fails silently`()
     {
         val emailManager = mock<EmailManager>()
@@ -99,10 +123,6 @@ class PasswordControllerTests : MontaguTests()
 
     private val context = mock<ActionContext> {
         on { queryParams("email") } doReturn "fake@example.com"
-    }
-
-    private val tokenHelper = mock<WebTokenHelper> {
-        on { generateOneTimeActionToken(any(), any(), anyOrNull(), any(), any()) } doReturn "TOKEN"
     }
 
     private val userRepo = mock<UserRepository> {
