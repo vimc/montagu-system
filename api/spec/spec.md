@@ -71,7 +71,7 @@ Schema: [`Index.schema.json`](Index.schema.json)
     }
 
 # Authentication
-## POST /authenticate
+## POST /authenticate/
 Required permissions: User does not need to be logged in to access this endpoint.
 
 ### Request
@@ -230,7 +230,7 @@ Schema: [`UpdateUser.schema.json`](UpdateUser.schema.json)
         "email": "example@imperial.ac.uk"
     }
 
-## POST /users/{username}/actions/associate_role/
+## POST /users/{username}/actions/associate-role/
 Adds or removes a role from a user.
 
 Required permissions: `roles.write`. If the logged in user only has `roles.write` with a scope `SCOPE_PREFIX/SCOPE_ID` then the following restrictions apply:
@@ -266,13 +266,13 @@ Schema: [`AssociateRole.schema.json`](AssociateRole.schema.json)
 The scope_id is additionally constrained to be a valid ID of the appropriate kind. If the scope_prefix
 is "modelling-group" then the scope_id must be the ID of a modelling group.
 
-## POST /users/{username}/actions/remove_all_access/
+## POST /users/{username}/actions/remove-all-access/
 Removes all roles from a user that match the given scope. If the scope is `*`, all roles are removed.
 
 Required permissions: `roles.write` with scope matching scope in URL.
 
 For example, to remove all permissions from user `martin` for modelling group `IC-YellowFever`, the URL
-would be `/users/martin/actions/remove_all_access/modelling-group:IC-YellowFever/`
+would be `/users/martin/actions/remove-all-access/modelling-group:IC-YellowFever/`
 
 ## POST /password/set/
 Changes the password for the currently logged in user.
@@ -286,7 +286,7 @@ Schema: [`SetPassword.schema.json`](SetPassword.schema.json)
         "password": "new_password"
     }
 
-## POST /password/request_link?email={email}
+## POST /password/request-link/?email={email}
 If the email provided is associated with a user account, sends an email to the 
 provided email address. This email contains a link to the set password page in 
 the portal and includes as a query string parameter a onetime token for the 
@@ -462,7 +462,7 @@ Schema: [`UpdateScenario.schema.json`](UpdateScenario.schema.json)
         "disease": "VALID-DISEASE-ID"
     }
 
-## GET /scenarios/{scenario-id}/responsible_groups/{touchstone-id}
+## GET /scenarios/{scenario-id}/responsible-groups/{touchstone-id}/
 Returns an enumeration (potentially empty) of modelling groups who are responsible for this 
 scenario in the given touchstone.
 
@@ -482,7 +482,7 @@ Schema: [`ModellingGroups.schema.json`](ModellingGroups.schema.json)
         }
     ]
 
-See `POST /modelling-groups/{modelling-group-id}/actions/associate_responsibility` for editing 
+See `POST /modelling-groups/{modelling-group-id}/actions/associate-responsibility/` for editing 
 this data.
 
 # Touchstones
@@ -711,7 +711,7 @@ identify which coverage set a line is from using `scenario` plus `vaccine`,
 `gavi_support` and `activity_type`. Note that we don't expect the modellers to
 need to know which coverage set the data is from.
 
-## POST /touchstones/{touchstone-id}/actions/associate_scenario/
+## POST /touchstones/{touchstone-id}/actions/associate-scenario/
 Associate or unassociate a scenario with a touchstone.
 
 Required permissions: `touchstones.prepare`, `scenarios.read`
@@ -822,7 +822,7 @@ The countries set here must:
 * Exist in this touchstone (see `/touchstones/{touchstone-id}/countries/`)
 
 # Coverage data
-## GET /touchstones/{touchstone-id}/coverage_sets/
+## GET /touchstones/{touchstone-id}/coverage-sets/
 Returns the coverage data sets associated with the touchstone
 
 Required permissions: `coverage.read`
@@ -861,19 +861,19 @@ Schema: [`CoverageSets.schema.json`](CoverageSets.schema.json)
 #### scenario
 Optional. Takes a scenario id. Returns only those coverage sets that belong to the given scenario.
 
-Example: `/touchstones/2017-op-1/coverage_sets/?scenario=64`
+Example: `/touchstones/2017-op-1/coverage-sets/?scenario=64`
 
 #### activity_type
 Optional. Takes either 'routine' or 'campaign'. The coverage sets are filtered to the specified coverage type.
 
-Example: `/touchstones/2017-op-1/coverage_sets/?activity_type=campaign`
+Example: `/touchstones/2017-op-1/coverage-sets/?activity_type=campaign`
 
 #### vaccine
 Optional. Takes a valid vaccine identifier. The coverage sets are filtered to the specified vaccine.
 
-Example: `/touchstones/2017-op-1/coverage_sets/?vaccine=MCV1`
+Example: `/touchstones/2017-op-1/coverage-sets/?vaccine=MCV1`
 
-## GET /touchstones/{touchstone-id}/coverage_sets/{coverage-set-id}/
+## GET /touchstones/{touchstone-id}/coverage-sets/{coverage-set-id}/
 Returns a single coverage set and its coverage data.
 
 Required permissions: `coverage.read`
@@ -907,9 +907,9 @@ The second section has `Content-Type: text/csv`, and returns CSV data with heade
 #### countries
 Optional. Takes a list of country codes. The coverage data is filtered to just the specified countries.
 
-Example: `/touchstones/2017-op-1/coverage_sets/189/?countries=AFG,ANG,CHN`
+Example: `/touchstones/2017-op-1/coverage-sets/189/?countries=AFG,ANG,CHN`
 
-## POST /touchstones/{touchstone-id}/coverage_sets/
+## POST /touchstones/{touchstone-id}/coverage-sets/
 Adds a new coverage set to the touchstone
 
 Required permissions: `coverage.write`
@@ -942,7 +942,7 @@ touchstone is in `in-preparation`. An error occurs if the name matches an existi
 coverage set in this touchstone. It then needs to be associated with 1 or more
 scenarios.
 
-## PUT /touchstones/{touchstone-id}/coverage_sets/{coverage-set-id}/
+## PUT /touchstones/{touchstone-id}/coverage-sets/{coverage-set-id}/
 Replaces the data in an existing coverage set.
 
 Required permissions: `coverage.write`
@@ -972,7 +972,7 @@ The second section must have `Content-Type: text\csv` and requires CSV data with
 
 This can only be invoked if the touchstone is in `in-preparation`.
 
-## POST /touchstones/{touchstone-id}/actions/associate_coverage_set/
+## POST /touchstones/{touchstone-id}/actions/associate-coverage-set/
 Associates or unassociates a given scenario and coverage set.
 
 Required permissions: `touchstones.prepare`
@@ -1213,7 +1213,7 @@ Schma: [`Users.schema.json`](Users.schema.json)
         }
     ]
 
-## POST /modelling-groups/{modelling-group-id}/actions/associate_member/
+## POST /modelling-groups/{modelling-group-id}/actions/associate-member/
 Adds or removes a user from a modelling group.
 
 Required permissions: `modelling-groups.manage-members` (scoped to the group or *)
@@ -1296,7 +1296,7 @@ Schema: [`Model.schema.json`](Model.schema.json)
         "modelling_group": "ID-OF-EXISTING-MODELLING-GROUP"
     }
 
-## POST /models/{model-id}/versions
+## POST /models/{model-id}/versions/
 Adds a new version to a model
 
 Required permissions: `models.write` scoped to the modelling group (or *).
@@ -1310,7 +1310,7 @@ Schema: [`CreateModelVersion.schema.json`](CreateModelVersion.schema.json)
         "fingerprint": null
     }
     
-## GET /modelling-groups/{modelling-group-id}/model_run_parameter_sets/{touchstone-id}/
+## GET /modelling-groups/{modelling-group-id}/model-run-parameter-sets/{touchstone-id}/
 Returns a list of model run parameter sets that the given modelling group has uploaded for responsibilities in the 
  given touchstone.
 
@@ -1330,7 +1330,7 @@ Schema: [`ModelRunParameterSets.schema.json`](ModelRunParameterSets.schema.json)
         }
     ]
     
-## POST /modelling-groups/{modelling-group-id}/model_run_parameter_sets/{touchstone-id}/
+## POST /modelling-groups/{modelling-group-id}/model-run-parameter-sets/{touchstone-id}/
 
 Required permissions: Scoped to modelling group: `estimates.write`.
 
@@ -1514,7 +1514,7 @@ Schema: [`ResponsibilityAndTouchstone.schema.json`](ResponsibilityAndTouchstone.
         }
     }
 
-## GET /modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}/{scenario-id}/coverage_sets/
+## GET /modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}/{scenario-id}/coverage-sets/
 Returns metadata for the coverage sets associated with the responsibility.
 
 Required permissions: Global scope: `scenarios.read`. Scoped to modelling group: `responsibilities.read` and `coverage.read`.  Additionally, to view coverage sets for an `in-preparation` touchstone, the user needs the `touchstones.prepare` permission.
@@ -1657,7 +1657,7 @@ This endpoint requires the same permissions as getting the coverage directly.
 It returns a onetime token that can be used to get the coverage data in CSV 
 format without authentication. See [Onetime Link](onetime-link-spec.md).
 
-## POST /modelling-groups/{modelling-group-id}/actions/associate_responsibility
+## POST /modelling-groups/{modelling-group-id}/actions/associate-responsibility/
 Adds or removes a responsibility for a given modelling group, scenario, and touchstone.
 
 Required permissions: `responsibilities.write`
