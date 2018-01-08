@@ -92,22 +92,6 @@ class AbstractControllerTests : ControllerTests<AbstractController>()
         }.isInstanceOf(BadRequest::class.java)
     }
 
-    @Test
-    fun `can get set password onetime token`()
-    {
-        val tokenHelper = tokenHelperThatCanGenerateOnetimeTokens()
-        val controllerContext = mockControllerContext(webTokenHelper = tokenHelper)
-        val controller = makeController(controllerContext)
-        controller.getSetPasswordToken("user", mock(), mock())
-        verify(tokenHelper).generateOneTimeActionToken(
-                eq("set-password"),
-                argThat { this[":username"] == "user" },
-                eq(null),
-                eq(Duration.ofDays(1)),
-                eq("user")
-        )
-    }
-
     private fun tokenHelperThatCanGenerateOnetimeTokens() = mock<WebTokenHelper> {
         on { generateOneTimeActionToken(any(), any(), anyOrNull(), any(), any()) } doReturn "MY-TOKEN"
     }

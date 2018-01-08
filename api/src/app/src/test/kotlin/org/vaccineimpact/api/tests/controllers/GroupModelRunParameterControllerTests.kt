@@ -26,7 +26,7 @@ class GroupModelRunParameterControllerTests : MontaguTests()
     @Test
     fun `can get model run params`()
     {
-        val modelRunParameterSets = listOf(ModelRunParameterSet(1, "description", "model", "user", Instant.now()))
+        val modelRunParameterSets = listOf(ModelRunParameterSet(1, "description", "model", "user", Instant.now(), "yf"))
 
         val mockContext = mock<ActionContext> {
             on { params(":group-id") } doReturn "group-1"
