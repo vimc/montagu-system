@@ -4,9 +4,7 @@ import org.vaccineimpact.api.app.app_start.Endpoint
 import org.vaccineimpact.api.app.app_start.EndpointDefinition
 import org.vaccineimpact.api.app.app_start.json
 import org.vaccineimpact.api.app.app_start.secure
-import org.vaccineimpact.api.app.controllers.NewStyleOneTimeLinkController
 import org.vaccineimpact.api.app.controllers.PasswordController
-import org.vaccineimpact.api.app.controllers.UserController
 import spark.route.HttpMethod
 
 object PasswordRouteConfig : RouteConfig

@@ -41,15 +41,20 @@ class JooqBurdenEstimateRepository(
         val modellingGroup = modellingGroupRepository.getModellingGroup(groupId)
         val setId = getResponsibilitySetId(groupId, touchstoneId)
 
-        return dsl.select(MODEL_RUN_PARAMETER_SET.ID, MODEL_RUN_PARAMETER_SET.DESCRIPTION,
+        return dsl.select(
+                MODEL_RUN_PARAMETER_SET.ID,
+                MODEL_RUN_PARAMETER_SET.DESCRIPTION,
                 MODEL.ID.`as`("model"),
-                UPLOAD_INFO.UPLOADED_BY, UPLOAD_INFO.UPLOADED_ON)
+                UPLOAD_INFO.UPLOADED_BY,
+                UPLOAD_INFO.UPLOADED_ON,
+                MODEL.DISEASE)
                 .fromJoinPath(MODEL_RUN_PARAMETER_SET, UPLOAD_INFO)
                 .join(MODEL)
                 .on(MODEL.CURRENT_VERSION.eq(MODEL_RUN_PARAMETER_SET.MODEL_VERSION))
                 .where(MODEL.MODELLING_GROUP.eq(modellingGroup.id))
                 .and(MODEL.IS_CURRENT)
                 .and(MODEL_RUN_PARAMETER_SET.RESPONSIBILITY_SET.eq(setId))
+                .orderBy(MODEL.DISEASE.asc(), UPLOAD_INFO.UPLOADED_ON.desc())
                 .fetchInto(ModelRunParameterSet::class.java)
     }
 

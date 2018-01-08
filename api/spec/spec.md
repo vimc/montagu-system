@@ -1325,7 +1325,8 @@ Schema: [`ModelRunParameterSets.schema.json`](ModelRunParameterSets.schema.json)
             "description": "our first set of parameters",
             "model": "HPVGoldie-flat",
             "uploaded_by": "tgarske",
-            "uploaded_on": "2017-10-06T11:18:06Z"   
+            "uploaded_on": "2017-10-06T11:18:06Z",
+            "disease": "YF"
         }
     ]
     
