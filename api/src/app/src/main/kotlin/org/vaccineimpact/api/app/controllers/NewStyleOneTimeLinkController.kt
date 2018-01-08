@@ -18,4 +18,5 @@ class NewStyleOneTimeLinkController(
     {
         return oneTimeTokenGenerator.getOneTimeLinkToken(OneTimeAction.DEMOGRAPHY, context)
     }
+
 }
