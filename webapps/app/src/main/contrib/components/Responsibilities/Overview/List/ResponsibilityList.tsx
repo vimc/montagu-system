@@ -3,13 +3,11 @@ import { DiseaseFilter } from "./DiseaseFilter";
 import { ResponsibilityComponent } from "./ResponsibilityComponent";
 import { IExtendedResponsibilitySet } from "../../../../models/ResponsibilitySet";
 import { ModellingGroup, Responsibility } from "../../../../../shared/models/Generated";
-import { ButtonLink } from "../../../../../shared/components/ButtonLink";
 import { TemplateLinks } from "./TemplateLinks";
 
 import "../../Responsibilities.scss";
 import "../../../../../shared/styles/messages.scss";
 import "../../../../../shared/styles/common.scss";
-import {InternalLink} from "../../../../../shared/components/InternalLink";
 
 export interface ResponsibilityListComponentProps {
     responsibilitySet: IExtendedResponsibilitySet;
