@@ -76,7 +76,7 @@ class ModellingGroupTests : DatabaseTest()
     @Test
     fun `can modify membership`()
     {
-        validate("/modelling-groups/IC-Garske/actions/associate_member/", HttpMethod.post) given {
+        validate("/modelling-groups/IC-Garske/actions/associate-member/", HttpMethod.post) given {
             it.addUserWithRoles("testuser", ReifiedRole("user", Scope.Global()))
             it.addGroup("IC-Garske")
         } withPermissions {
