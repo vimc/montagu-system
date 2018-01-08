@@ -6,7 +6,7 @@ import {RunParametersState} from "../stores/RunParametersStore";
 
 export class RunParametersSource extends Source<RunParametersState> {
     _fetchOneTimeParametersToken: () => SourceModel<string>;
-    fetchParameterSets: () => SourceModel<ModelRunParameterSet[]>;
+    _fetchParameterSets: () => SourceModel<ModelRunParameterSet[]>;
 
     constructor() {
         super();
@@ -21,7 +21,7 @@ export class RunParametersSource extends Source<RunParametersState> {
                 isCached: () => false   // Always get a fresh token
             }
         );
-        this.fetchParameterSets = () => this.doFetch(
+        this._fetchParameterSets = () => this.doFetch(
             s => `/modelling-groups/${s.groupId}/model-run-parameters/${s.touchstoneId}/`,
             {
                 success: runParameterActions.updateParameterSets,

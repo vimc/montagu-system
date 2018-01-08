@@ -59,8 +59,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
             const rendered = shallow(<ModelRunParametersContentComponent
                 ready={true} touchstone={mockTouchstone({id: touchstoneId})}
                 group={mockModellingGroup({id : groupId})}
-                diseases={["yf"]}
-                sets={[]}/>);
+                diseases={["yf"]}/>);
 
             return rendered.find(ModelRunParametersSection).first().prop("url");
         }

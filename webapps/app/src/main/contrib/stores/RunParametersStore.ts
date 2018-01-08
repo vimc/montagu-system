@@ -4,9 +4,9 @@ import alt from "../../shared/alt";
 import {ModelRunParameterSet} from "../../shared/models/Generated";
 import {runParameterActions} from "../actions/RunParameterActions";
 import {RunParametersSource} from "../sources/RunParametersSource";
-import StoreModel = AltJS.StoreModel;
 import {touchstoneActions} from "../actions/TouchstoneActions";
 import {modellingGroupActions} from "../../shared/actions/ModellingGroupActions";
+import StoreModel = AltJS.StoreModel;
 
 export interface RunParametersState {
     parameterSets: ModelRunParameterSet[];
@@ -20,8 +20,10 @@ export interface RunParametersState {
 
 export interface RunParametersStoreInterface extends AltJS.AltStore<RunParametersState> {
     fetchOneTimeParametersToken(redirectPath: string): Promise<string>;
+
     _fetchOneTimeParametersToken(): Promise<string>;
-    fetchParameterSets(): Promise<ModelRunParameterSet[]>;
+    fetchParameterSets(force?: boolean): Promise<ModelRunParameterSet[]>;
+    _fetchParameterSets(): Promise<ModelRunParameterSet[]>;
 }
 
 class RunParametersStore
@@ -52,6 +54,12 @@ class RunParametersStore
                 this.redirectPath = redirectPath;
                 return this.getInstance()._fetchOneTimeParametersToken();
             },
+            fetchParameterSets: (force?: boolean) => {
+                if (force)
+                    this.clearParameterSets();
+
+                return this.getInstance()._fetchParameterSets();
+            }
         });
     }
 
@@ -99,5 +107,4 @@ class RunParametersStore
 
 export const runParametersStore = <RunParametersStoreInterface>alt.createStore<RunParametersState>(
     RunParametersStore as StoreModel<RunParametersState>
-
 );

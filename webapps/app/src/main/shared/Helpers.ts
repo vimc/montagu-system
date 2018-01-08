@@ -19,7 +19,7 @@ export function longTimestamp(date: Date) {
 export function longestTimestamp(date: Date) {
     const hours = padZero(date.getHours());
     const minutes = padZero(date.getMinutes());
-    const seconds = padZero(date.getMinutes());
+    const seconds = padZero(date.getSeconds());
     return `${longDate(date)}, ${hours}:${minutes}:${seconds}`;
 }
 

@@ -21,13 +21,11 @@ export interface ModelRunParametersProps {
 
 export class ModelRunParametersPage extends ContribPageWithHeader<ModelRunParametersProps> {
     load() {
-        runParameterActions.clearUsedToken();
         modellingGroupActions.setCurrentGroup(this.props.location.params.groupId);
         responsibilityStore.fetchTouchstones().catch(doNothing).then(() => {
             touchstoneActions.setCurrentTouchstone(this.props.location.params.touchstoneId);
             responsibilityStore.fetchResponsibilities().catch(doNothing);
             runParametersStore.fetchParameterSets().catch(doNothing);
-            runParametersStore.fetchOneTimeParametersToken(this.props.location.pathname).catch(doNothing);
             super.load();
         });
     }
