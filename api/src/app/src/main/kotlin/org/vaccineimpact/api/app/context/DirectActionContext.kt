@@ -22,6 +22,7 @@ import spark.Request
 import spark.Response
 import java.io.OutputStream
 import java.io.Reader
+import java.io.StringReader
 import java.util.zip.GZIPOutputStream
 import javax.servlet.http.HttpServletRequest
 import kotlin.reflect.KClass
@@ -55,6 +56,7 @@ class DirectActionContext(private val context: SparkWebContext,
 
         return matchingPart.openStream().bufferedReader()
     }
+
     // Pull all parts into memory and return them as a map
     override fun getParts(multipartData: MultipartData): MultipartDataMap
     {
@@ -63,6 +65,7 @@ class DirectActionContext(private val context: SparkWebContext,
                 .toMap()
         return MultipartDataMap(map)
     }
+
     private fun getPartsAsSequence(multipartData: MultipartData): Sequence<FileItemStream>
     {
         val rawRequest = request.raw()
@@ -77,6 +80,9 @@ class DirectActionContext(private val context: SparkWebContext,
 
     override fun <T : Any> csvData(klass: KClass<T>, from: RequestBodySource): Sequence<T>
             = DataTableDeserializer.deserialize(from.getContent(this), klass, serializer)
+
+    override fun <T : Any> csvData(klass: KClass<T>, raw: String): Sequence<T>
+            = DataTableDeserializer.deserialize(raw, klass, serializer)
 
     override fun setResponseStatus(status: Int)
     {

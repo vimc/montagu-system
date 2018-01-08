@@ -27,19 +27,16 @@ class ServletFileUploadWrapper : MultipartData
     }
 }
 
-class MultipartDataMap(val map: Map<String, String>) : Map<String, String> by map
+class MultipartDataMap(private val map: Map<String, String>)
 {
     constructor(vararg pairs: Pair<String, String>)
             : this(mapOf(*pairs))
 
-    fun getPart(fieldName: String): String
+    operator fun get(fieldName: String): String
     {
         return map[fieldName]
                 ?: throw MissingRequiredMultipartParameterError(fieldName)
     }
-
-    fun getPartAsRequestBodySource(fieldName: String)
-            = RequestBodySource.InMemory(getPart(fieldName))
 }
 
 fun FileItemStream.contents() = this.openStream().bufferedReader().readText()

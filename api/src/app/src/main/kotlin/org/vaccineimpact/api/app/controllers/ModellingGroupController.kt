@@ -1,7 +1,6 @@
 package org.vaccineimpact.api.app.controllers
 
 import org.vaccineimpact.api.app.context.ActionContext
-import org.vaccineimpact.api.app.context.RequestBodySource
 import org.vaccineimpact.api.app.context.csvData
 import org.vaccineimpact.api.app.controllers.endpoints.EndpointDefinition
 import org.vaccineimpact.api.app.controllers.endpoints.oneRepoEndpoint
@@ -11,15 +10,12 @@ import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.errors.MissingRequiredPermissionError
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
 import org.vaccineimpact.api.app.context.postData
-import org.vaccineimpact.api.app.errors.MissingRequiredMultipartParameterError
-import org.vaccineimpact.api.app.errors.MissingRequiredParameterError
 import org.vaccineimpact.api.app.repositories.*
 import org.vaccineimpact.api.app.security.checkEstimatePermissionsForTouchstone
 import org.vaccineimpact.api.app.security.isAllowedToSeeTouchstone
 import org.vaccineimpact.api.app.security.checkIsAllowedToSeeTouchstone
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.helpers.OneTimeAction
-import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import org.vaccineimpact.api.serialization.FlexibleDataTable
 import org.vaccineimpact.api.serialization.SplitData
 import org.vaccineimpact.api.serialization.StreamSerializable
@@ -100,9 +96,9 @@ open class ModellingGroupController(context: ControllerContext)
         context.checkEstimatePermissionsForTouchstone(groupId, touchstoneId, estimateRepository)
 
         val parts = context.getParts()
-        val disease = parts.getPart("disease")
-        val description = parts.getPart("description")
-        val modelRuns = context.csvData<ModelRun>(parts.getPartAsRequestBodySource("file"))
+        val disease = parts["disease"]
+        val description = parts["description"]
+        val modelRuns = context.csvData<ModelRun>(parts["file"])
 
         val id = estimateRepository.addModelRunParameterSet(groupId, touchstoneId, disease,
                 description, modelRuns.toList(), context.username!!, Instant.now())

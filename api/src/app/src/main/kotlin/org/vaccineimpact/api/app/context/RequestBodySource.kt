@@ -18,11 +18,5 @@ sealed class RequestBodySource
         override fun getContent(context: ActionContext)
                 = context.getPart(partName)
     }
-
-    class InMemory(private val contents: String) : RequestBodySource()
-    {
-        override fun getContent(context: ActionContext): Reader
-                = StringReader(contents)
-    }
 }
 

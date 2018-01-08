@@ -37,6 +37,7 @@ interface ActionContext
 
     fun <T: Any> postData(klass: Class<T>): T
     fun <T: Any> csvData(klass: KClass<T>, from: RequestBodySource): Sequence<T>
+    fun <T: Any> csvData(klass: KClass<T>, raw: String): Sequence<T>
 
     fun addResponseHeader(key: String, value: String): Unit
     fun addAttachmentHeader(filename: String): Unit
@@ -51,3 +52,5 @@ interface ActionContext
 inline fun <reified T: Any> ActionContext.postData() = this.postData(T::class.java)
 inline fun <reified T: Any> ActionContext.csvData(from: RequestBodySource = RequestBodySource.Simple())
         = this.csvData(T::class, from)
+inline fun <reified T: Any> ActionContext.csvData(raw: String)
+        = this.csvData(T::class, raw)
