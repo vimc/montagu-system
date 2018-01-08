@@ -1,6 +1,7 @@
 package org.vaccineimpact.api.app.context
 
 import java.io.Reader
+import java.io.StringReader
 
 sealed class RequestBodySource
 {

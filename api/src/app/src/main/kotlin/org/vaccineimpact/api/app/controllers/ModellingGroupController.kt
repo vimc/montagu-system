@@ -9,6 +9,9 @@ import org.vaccineimpact.api.app.controllers.endpoints.secured
 import org.vaccineimpact.api.app.errors.MissingRequiredPermissionError
 import org.vaccineimpact.api.app.repositories.*
 import org.vaccineimpact.api.models.*
+import org.vaccineimpact.api.serialization.FlexibleDataTable
+import org.vaccineimpact.api.serialization.SplitData
+import org.vaccineimpact.api.serialization.StreamSerializable
 import spark.route.HttpMethod
 
 

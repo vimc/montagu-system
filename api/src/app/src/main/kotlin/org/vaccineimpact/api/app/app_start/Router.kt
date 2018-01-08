@@ -4,12 +4,14 @@ import org.slf4j.LoggerFactory
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.context.DirectActionContext
 import org.vaccineimpact.api.app.app_start.route_config.RouteConfig
+import org.vaccineimpact.api.app.consumeRemainder
 import org.vaccineimpact.api.app.errors.UnsupportedValueException
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.RepositoryFactory
 import org.vaccineimpact.api.models.AuthenticationResponse
 import org.vaccineimpact.api.security.WebTokenHelper
 import org.vaccineimpact.api.serialization.Serializer
+import spark.Request
 import spark.Route
 import spark.Spark
 import spark.route.HttpMethod
@@ -68,8 +70,15 @@ class Router(val config: RouteConfig,
     private fun getWrappedRoute(endpoint: EndpointDefinition): Route
     {
         return Route({ req, res ->
-            repositoryFactory.inTransaction { repos ->
-                invokeControllerAction(endpoint, DirectActionContext(req, res), repos)
+            try
+            {
+                repositoryFactory.inTransaction { repos ->
+                    invokeControllerAction(endpoint, DirectActionContext(req, res), repos)
+                }
+            }
+            finally
+            {
+                req.consumeRemainder()
             }
         })
     }
@@ -109,5 +118,4 @@ class Router(val config: RouteConfig,
         }
         return constructor.newInstance(context, repositories) as Controller
     }
-
 }

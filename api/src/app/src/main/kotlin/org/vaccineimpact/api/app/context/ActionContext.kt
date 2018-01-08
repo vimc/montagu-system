@@ -1,6 +1,9 @@
 package org.vaccineimpact.api.app.context
 
 import org.pac4j.core.profile.CommonProfile
+import org.vaccineimpact.api.app.MultipartData
+import org.vaccineimpact.api.app.MultipartDataMap
+import org.vaccineimpact.api.app.ServletFileUploadWrapper
 import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import org.vaccineimpact.api.security.WebTokenHelper
@@ -29,9 +32,12 @@ interface ActionContext
     fun queryString(): String?
     fun params(): Map<String, String>
     fun params(key: String): String
-    fun getPart(name: String): Reader
+    fun getPart(name: String, multipartData: MultipartData = ServletFileUploadWrapper()): Reader
+    fun getParts(multipartData: MultipartData = ServletFileUploadWrapper()): MultipartDataMap
+
     fun <T: Any> postData(klass: Class<T>): T
     fun <T: Any> csvData(klass: KClass<T>, from: RequestBodySource): Sequence<T>
+    fun <T: Any> csvData(klass: KClass<T>, raw: String): Sequence<T>
 
     fun addResponseHeader(key: String, value: String): Unit
     fun addAttachmentHeader(filename: String): Unit
@@ -46,3 +52,5 @@ interface ActionContext
 inline fun <reified T: Any> ActionContext.postData() = this.postData(T::class.java)
 inline fun <reified T: Any> ActionContext.csvData(from: RequestBodySource = RequestBodySource.Simple())
         = this.csvData(T::class, from)
+inline fun <reified T: Any> ActionContext.csvData(raw: String)
+        = this.csvData(T::class, raw)

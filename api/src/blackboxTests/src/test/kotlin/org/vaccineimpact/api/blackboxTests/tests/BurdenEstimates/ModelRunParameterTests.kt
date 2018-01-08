@@ -13,7 +13,7 @@ import org.vaccineimpact.api.validateSchema.JSONValidator
 
 class ModelRunParameterTests : BurdenEstimateTests()
 {
-    val modelRunParameterCSV = """
+    private val modelRunParameterCSV = """
 "run_id", "param1", "param2"
    "1",   996,    50
    "2",   997,    50
@@ -84,7 +84,7 @@ class ModelRunParameterTests : BurdenEstimateTests()
     }
 
     @Test
-    fun `throws BadRequest if request is not multipart`()
+    fun `returns BadRequest if request is not multipart`()
     {
         validate("$modelRunParameterUrl/get_onetime_link/") against "Token" given { db ->
             setUp(db)
@@ -103,7 +103,7 @@ class ModelRunParameterTests : BurdenEstimateTests()
     }
 
     @Test
-    fun `throws BadRequest if part is missing`()
+    fun `returns error if part is missing`()
     {
         validate("$modelRunParameterUrl/get_onetime_link/") against "Token" given { db ->
             setUp(db)
@@ -116,8 +116,8 @@ class ModelRunParameterTests : BurdenEstimateTests()
             val response = requestHelper.postFile(oneTimeURL, modelRunParameterCSV)
 
             JSONValidator().validateError(response.text,
-                    expectedErrorCode = "bad-request",
-                    expectedErrorText = "No value passed for required POST parameter 'disease'")
+                    expectedErrorCode = "missing-required-parameter:disease",
+                    expectedErrorText = "You must supply a 'disease' parameter in the multipart body")
         }
     }
 
