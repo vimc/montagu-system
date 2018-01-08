@@ -93,7 +93,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
             checkPromise(done, promise, (result: Result) => {
                 // we don't expect this to be successful as haven't attached a file
                 // but this verifies that that we have the right url
-                expect(result.errors[0].message).to.eq("No value passed for required POST parameter \'file\'")
+                expect(result.errors[0].message).to.eq("You must supply a \'file\' parameter in the multipart body")
             })
         });
 
