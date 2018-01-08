@@ -3,7 +3,6 @@ import { DiseaseFilter } from "./DiseaseFilter";
 import { ResponsibilityComponent } from "./ResponsibilityComponent";
 import { IExtendedResponsibilitySet } from "../../../../models/ResponsibilitySet";
 import { ModellingGroup, Responsibility } from "../../../../../shared/models/Generated";
-import { ButtonLink } from "../../../../../shared/components/ButtonLink";
 import { TemplateLinks } from "./TemplateLinks";
 
 import "../../Responsibilities.scss";
@@ -44,7 +43,7 @@ export class ResponsibilityList extends React.Component<ResponsibilityListCompon
                 />
             );
             return <div>
-                <div className="control mb-4">
+                <div className="mb-4">
                     <DiseaseFilter { ...props.responsibilitySet } />
                     <TemplateLinks
                         responsibilities={props.responsibilitySet.responsibilities }

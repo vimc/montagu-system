@@ -12,7 +12,7 @@ export class DiseaseFilter extends React.Component<IExtendedResponsibilitySet, u
                 .map(id => mainStore.getDiseaseById(id))
                 .map(disease => ({ value: disease.id, text: disease.name }));
 
-            return <div>
+            return <div className="control">
                 Filter by disease:&nbsp;
                 <OptionSelector options={ options }
                                 onChange={ this.filterByDisease }

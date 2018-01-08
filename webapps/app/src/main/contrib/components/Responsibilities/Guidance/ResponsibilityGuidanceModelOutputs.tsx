@@ -1,9 +1,12 @@
 import * as React from "react";
-import { ContribPageWithHeader } from "../../PageWithHeader/ContribPageWithHeader";
-import { ChooseGroupPage } from "../../ChooseGroup/ChooseGroupPage";
-import { settings } from "../../../../shared/Settings";
+import ScrollableAnchor from 'react-scrollable-anchor';
+
+import {ContribPageWithHeader} from "../../PageWithHeader/ContribPageWithHeader";
+import {ChooseGroupPage} from "../../ChooseGroup/ChooseGroupPage";
+import {settings} from "../../../../shared/Settings";
 
 import "../../../../shared/styles/common.scss";
+
 const dalysPdf = require("./guidance-201710-DALYs.pdf");
 
 export class ResponsibilityGuidanceModelOutputs extends ContribPageWithHeader<undefined> {
@@ -176,7 +179,9 @@ export class ResponsibilityGuidanceModelOutputs extends ContribPageWithHeader<un
                 </a>.
             </p>
             <p>
-                <b>Parameters file</b>
+                <ScrollableAnchor id={'parameters'}>
+                    <b>Parameters file</b>
+                </ScrollableAnchor>
             </p>
             <p>
                 We would like to see the parameter values underlying your

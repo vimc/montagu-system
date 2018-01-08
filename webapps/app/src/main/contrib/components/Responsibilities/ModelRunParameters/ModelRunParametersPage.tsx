@@ -12,7 +12,7 @@ import {runParameterActions} from "../../../actions/RunParameterActions";
 import {InternalLink} from "../../../../shared/components/InternalLink";
 import {ModelRunParametersContent} from "./ModelRunParametersContent";
 
-const stochasticParams = require('../Overview/List/stochastic_template_params.csv');
+const stochasticParams = require('../Overview/stochastic_template_params.csv');
 
 export interface ModelRunParametersProps {
     groupId: string;
@@ -47,7 +47,7 @@ export class ModelRunParametersPage extends ContribPageWithHeader<ModelRunParame
     }
 
     renderPageContent() {
-        const guidanceOutputsUrl = `/help/model-outputs/`;
+        const guidanceOutputsUrl = `/help/model-outputs/#parameters`;
 
         return <div className="mt-2">
             <p>
