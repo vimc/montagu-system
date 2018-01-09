@@ -38,7 +38,6 @@ open class ModellingGroupController(context: ControllerContext)
     val touchstonesURL = "/:group-id/responsibilities"
     val responsibilitiesURL = "/:group-id/responsibilities/:touchstone-id"
     val scenarioURL = "$responsibilitiesURL/:scenario-id"
-    val parametersURL = "/:group-id/model-run-parameters/:touchstone-id"
 
     override fun endpoints(repos: RepositoryFactory): Iterable<EndpointDefinition<*>>
     {
@@ -49,16 +48,7 @@ open class ModellingGroupController(context: ControllerContext)
                 oneRepoEndpoint("$responsibilitiesURL/", this::getResponsibilities, repos, repo).secured(responsibilityPermissions),
                 oneRepoEndpoint("$touchstonesURL/", this::getTouchstones, repos, repo).secured(touchtonePermissions),
                 oneRepoEndpoint("$scenarioURL/", this::getResponsibility, repos, repo).secured(responsibilityPermissions),
-                oneRepoEndpoint("/:group-id/actions/associate-member/", this::modifyMembership, repos, { it.user }, method = HttpMethod.post).secured(),
-
-                oneRepoEndpoint("$parametersURL/", this::getModelRunParameterSets, repos, { it.burdenEstimates })
-                        .secured(setOf("$groupScope/estimates.write", "$groupScope/responsibilities.read")),
-
-                oneRepoEndpoint("$parametersURL/", this::addModelRunParameters, repos, { it.burdenEstimates }, method = HttpMethod.post)
-                        .secured(setOf("$groupScope/estimates.write", "$groupScope/responsibilities.read")),
-
-                oneRepoEndpoint("$parametersURL/get_onetime_link/", { c, r -> getOneTimeLinkToken(c, r, OneTimeAction.MODEl_RUN_PARAMETERS) }, repos, { it.token })
-                        .secured(setOf("$groupScope/estimates.write", "$groupScope/responsibilities.read"))
+                oneRepoEndpoint("/:group-id/actions/associate-member/", this::modifyMembership, repos, { it.user }, method = HttpMethod.post).secured()
         )
     }
 
@@ -72,31 +62,6 @@ open class ModellingGroupController(context: ControllerContext)
     {
         val groupId = groupId(context)
         return repo.getModellingGroupDetails(groupId)
-    }
-
-    fun getModelRunParameterSets(context: ActionContext, estimateRepository: BurdenEstimateRepository): List<ModelRunParameterSet>
-    {
-        val touchstoneId = context.params(":touchstone-id")
-        val groupId = context.params(":group-id")
-        context.checkEstimatePermissionsForTouchstone(groupId, touchstoneId, estimateRepository)
-        return estimateRepository.getModelRunParameterSets(groupId, touchstoneId)
-    }
-
-    fun addModelRunParameters(context: ActionContext, estimateRepository: BurdenEstimateRepository): String
-    {
-        val touchstoneId = context.params(":touchstone-id")
-        val groupId = context.params(":group-id")
-        context.checkEstimatePermissionsForTouchstone(groupId, touchstoneId, estimateRepository)
-
-        val parts = context.getParts()
-        val disease = parts["disease"]
-        val description = parts["description"]
-        val modelRuns = context.csvData<ModelRun>(parts["file"])
-
-        val id = estimateRepository.addModelRunParameterSet(groupId, touchstoneId, disease,
-                description, modelRuns.toList(), context.username!!, Instant.now())
-
-        return objectCreation(context, "$urlComponent/$groupId/model-run-parameters/$id/")
     }
 
     fun getResponsibilities(context: ActionContext, repo: ModellingGroupRepository): Responsibilities

@@ -107,4 +107,9 @@ fun Endpoint.basicAuth(): Endpoint
     return this.copy(basicAuth = true)
 }
 
+fun Endpoint.post(): Endpoint
+{
+    return this.copy(method = spark.route.HttpMethod.post)
+}
+
 private fun passThrough(x: Any?, context: ActionContext): Any? = x

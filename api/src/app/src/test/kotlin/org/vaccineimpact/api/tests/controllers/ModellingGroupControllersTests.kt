@@ -28,84 +28,6 @@ class ModellingGroupControllersTests : ControllerTests<ModellingGroupController>
             = ModellingGroupController(controllerContext)
 
     @Test
-    fun `can get model run params`()
-    {
-        val modelRunParameterSets = listOf(ModelRunParameterSet(1, "description", "model", "user", Instant.now(), "yf"))
-
-        val mockContext = mock<ActionContext> {
-            on { params(":group-id") } doReturn "group-1"
-            on { params(":touchstone-id") } doReturn "touchstone-1"
-            on { params(":scenario-id") } doReturn "scenario-1"
-        }
-
-        val controller = makeController(mockControllerContext())
-        val repo = mockRepository(modelRunParameterSets = modelRunParameterSets)
-
-        assertThat(controller.getModelRunParameterSets(mockContext, repo)).isEqualTo(modelRunParameterSets)
-    }
-
-    @Test
-    fun `throws UnknownObjectError if touchstone is in preparation when getting model run params`()
-    {
-        val mockContext = mock<ActionContext> {
-            on { params(":group-id") } doReturn "group-1"
-            on { params(":touchstone-id") } doReturn "touchstone-bad"
-            on { params(":scenario-id") } doReturn "scenario-1"
-        }
-
-        val controller = makeController(mockControllerContext())
-        val repo = mockRepository()
-
-        assertThatThrownBy { controller.getModelRunParameterSets(mockContext, repo) }
-                .isInstanceOf(UnknownObjectError::class.java)
-    }
-
-    @Test
-    fun `can upload model run params`()
-    {
-        val params = mapOf("param1" to "value1", "param2" to "value2")
-        @Suppress("RemoveExplicitTypeArguments")
-        val modelRuns = listOf<ModelRun>(ModelRun("run1", params))
-
-        val mockContext = mock<ActionContext> {
-            on { csvData<ModelRun>(any(), any<String>()) } doReturn modelRuns.asSequence()
-            on { username } doReturn "user.name"
-            on { params(":group-id") } doReturn "group-1"
-            on { params(":touchstone-id") } doReturn "touchstone-1"
-            on { getParts(anyOrNull()) } doReturn MultipartDataMap(
-                    "disease" to "disease-1",
-                    "description" to "some description",
-                    // This is passed to another mocked method, so its contents doesn't matter
-                    "file" to ""
-            )
-        }
-
-        val controller = makeController(mockControllerContext())
-        val repo = mockRepository(modelRuns = modelRuns)
-
-        val expectedPath = "/v1/modelling-groups/group-1/model-run-parameters/11/"
-        val objectCreationUrl = controller.addModelRunParameters(mockContext, repo)
-        assertThat(objectCreationUrl).endsWith(expectedPath)
-    }
-
-    @Test
-    fun `throws UnknownObjectError if touchstone is in preparation when adding model run params`()
-    {
-        val mockContext = mock<ActionContext> {
-            on { params(":group-id") } doReturn "group-1"
-            on { params(":touchstone-id") } doReturn "touchstone-bad"
-            on { getPart(eq("disease"), anyOrNull()) } doReturn StringReader("disease-1")
-        }
-
-        val controller = makeController(mockControllerContext())
-        val touchstoneSet = mockTouchstones()
-        val repo = mockRepository(touchstoneSet)
-
-        assertThatThrownBy { controller.addModelRunParameters(mockContext, repo) }
-                .isInstanceOf(UnknownObjectError::class.java)
-    }
-
-    @Test
     fun `getResponsibilities gets parameters from URL`()
     {
         val data = ResponsibilitiesAndTouchstoneStatus(
@@ -248,33 +170,10 @@ class ModellingGroupControllersTests : ControllerTests<ModellingGroupController>
         assertThat(data.count()).isEqualTo(1)
     }
 
-
-    private fun mockRepository(touchstoneSet: SimpleDataSet<Touchstone, String> = mockTouchstones(),
-                               modelRuns: List<ModelRun> = listOf(),
-                               modelRunParameterSets: List<ModelRunParameterSet> = listOf()): BurdenEstimateRepository
-    {
-        val touchstoneRepo = mock<TouchstoneRepository> {
-            on { touchstones } doReturn touchstoneSet
-        }
-        return mock {
-            on { touchstoneRepository } doReturn touchstoneRepo
-            on { it.getModelRunParameterSets(eq("group-1"), eq("touchstone-1")) } doReturn modelRunParameterSets
-            on { it.addModelRunParameterSet(eq("group-1"), eq("touchstone-1"), eq("disease-1"),
-                        eq("some description"),
-                        eq(modelRuns), eq("user.name"), any())
-            } doReturn 11
-        }
-    }
-
     private val mockTouchstones = listOf(
             Touchstone("touchstone-1", "touchstone", 1, "Description", TouchstoneStatus.OPEN),
             Touchstone("touchstone-bad", "touchstone", 1, "not open", TouchstoneStatus.IN_PREPARATION)
     )
-
-    private fun mockTouchstones() = mock<SimpleDataSet<Touchstone, String>> {
-        on { get("touchstone-1") } doReturn mockTouchstones[0]
-        on { get("touchstone-bad") } doReturn mockTouchstones[1]
-    }
 
     private fun mockContextForSpecificResponsibility(hasPermissions: Boolean): ActionContext
     {
