@@ -21,15 +21,6 @@ abstract class DatabaseTest : MontaguTests()
             it.dsl.query("CREATE DATABASE $dbName TEMPLATE $templateDbName;").execute()
         }
         DatabaseCreationHelper.checkDatabaseExists(dbName)
-
-        val userMappingQuery = "CREATE USER MAPPING FOR $userName " +
-        "SERVER montagu_db_annex " +
-        "OPTIONS (user '$annexUserName', " +
-        "password '$annexPassword')"
-
-        JooqContext().use {
-            it.dsl.query(userMappingQuery).execute()
-        }
     }
 
     @After
