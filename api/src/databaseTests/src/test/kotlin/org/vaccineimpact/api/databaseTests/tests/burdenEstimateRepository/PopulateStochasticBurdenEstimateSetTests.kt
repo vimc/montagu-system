@@ -231,11 +231,11 @@ class PopulateStochasticBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
     }
 
     private fun data(runs: List<String?> = listOf(null, null)) = sequenceOf(
-            BurdenEstimateWithRunId(disease, runs[0], 2000, 50, "AFG", "Afghanistan", 1000.toDecimal(), mapOf(
+            BurdenEstimateWithRunId(diseaseId, runs[0], 2000, 50, "AFG", "Afghanistan", 1000.toDecimal(), mapOf(
                     "deaths" to 10.toDecimal(),
                     "cases" to 100.toDecimal()
             )),
-            BurdenEstimateWithRunId(disease, runs[1], 1980, 30, "AGO", "Angola", 2000.toDecimal(), mapOf(
+            BurdenEstimateWithRunId(diseaseId, runs[1], 1980, 30, "AGO", "Angola", 2000.toDecimal(), mapOf(
                     "deaths" to 20.toDecimal(),
                     "dalys" to 73.6.toDecimal()
             ))
