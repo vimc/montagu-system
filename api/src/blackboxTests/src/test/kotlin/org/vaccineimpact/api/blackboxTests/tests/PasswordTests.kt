@@ -36,7 +36,7 @@ class PasswordTests : DatabaseTest()
         val requestHelper = RequestHelper()
 
         // Request the link via (fake) email
-        val url = "/password/request_link/?email=${TestUserHelper.email}"
+        val url = "/password/request-link/?email=${TestUserHelper.email}"
         val response = requestHelper.post(url, null)
         val data = response.montaguData<String>()
         assertThat(data).isEqualTo("OK")

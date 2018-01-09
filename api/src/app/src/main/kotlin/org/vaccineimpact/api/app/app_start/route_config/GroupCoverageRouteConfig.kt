@@ -18,7 +18,7 @@ object GroupCoverageRouteConfig : RouteConfig
     )
 
     override val endpoints: List<EndpointDefinition> = listOf(
-            Endpoint("$baseUrl/coverage_sets/", controller, "getCoverageSets")
+            Endpoint("$baseUrl/coverage-sets/", controller, "getCoverageSets")
                     .json()
                     .secure(permissions),
 
