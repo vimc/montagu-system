@@ -16,7 +16,7 @@ object PasswordRouteConfig : RouteConfig
             Endpoint("$urlBase/set/", controller, "setPassword", method = HttpMethod.post)
                     .json()
                     .secure(),
-            Endpoint("$urlBase/request_link/", controller, "requestResetPasswordLink", method = HttpMethod.post)
+            Endpoint("$urlBase/request-link/", controller, "requestResetPasswordLink", method = HttpMethod.post)
                     .json()
     )
 }

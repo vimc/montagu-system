@@ -1,5 +1,6 @@
 package org.vaccineimpact.api.app.controllers.endpoints
 
+import org.vaccineimpact.api.app.consumeRemainder
 import org.vaccineimpact.api.models.helpers.ContentTypes
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.context.DirectActionContext
@@ -31,8 +32,15 @@ fun multiRepoEndpoint(
 private fun wrapRoute(route: (ActionContext, Repositories) -> Any, repositoryFactory: RepositoryFactory): Route
 {
     return Route({ req, res ->
-        repositoryFactory.inTransaction { repos ->
-            route(DirectActionContext(req, res), repos)
+        try
+        {
+            repositoryFactory.inTransaction { repos ->
+                route(DirectActionContext(req, res), repos)
+            }
+        }
+        finally
+        {
+            req.consumeRemainder()
         }
     })
 }

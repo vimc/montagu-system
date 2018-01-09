@@ -31,11 +31,13 @@ class GroupModelRunParametersController(
     {
         val touchstoneId = context.params(":touchstone-id")
         val groupId = context.params(":group-id")
-        val disease = context.getPart("disease").readText()
         context.checkEstimatePermissionsForTouchstone(groupId, touchstoneId, estimateRepository)
-        val description = context.getPart("description").readText()
 
-        val modelRuns = context.csvData<ModelRun>(RequestBodySource.HTMLMultipart("file"))
+        val parts = context.getParts()
+        val disease = parts["disease"]
+        val description = parts["description"]
+        val modelRuns = context.csvData<ModelRun>(parts["file"])
+
         val id = estimateRepository.addModelRunParameterSet(groupId, touchstoneId, disease,
                 description, modelRuns.toList(), context.username!!, Instant.now())
 
