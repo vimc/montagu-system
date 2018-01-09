@@ -22,7 +22,7 @@ object ModellingGroupRouteConfig : RouteConfig
                     .json()
                     .secure(permissions + setOf("*/models.read")),
 
-            Endpoint("$baseUrl/:group-id/actions/associate_member/", controller, "modifyMembership")
+            Endpoint("$baseUrl/:group-id/actions/associate-member/", controller, "modifyMembership")
                     .post()
                     .json()
                     .secure()
