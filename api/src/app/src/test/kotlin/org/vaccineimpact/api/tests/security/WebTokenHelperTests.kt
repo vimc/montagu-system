@@ -64,8 +64,11 @@ class WebTokenHelperTests : MontaguTests()
 
 
     @Test
-    fun `can generate shiny token`()
+    fun `can generate shiny token for report reviewer`()
     {
+        val roles = listOf(
+                ReifiedRole("report.reviewer", Scope.Global())
+        )
         val token = sut.generateShinyToken(MontaguUser(properties, roles, permissions))
         val claims = sut.verify(token)
 

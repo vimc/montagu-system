@@ -35,7 +35,7 @@ class AuthenticationController(context: ActionContext,
             {
                 val user = context.userProfile!!.montaguUser()!!
                 val token = tokenHelper.generateToken(user)
-                val shinyToken = tokenHelper.generateToken()
+                val shinyToken = tokenHelper.generateToken(user)
                 userRepository.updateLastLoggedIn(user.username)
                 return SuccessfulAuthentication(shinyToken, token, tokenHelper.lifeSpan)
             }
