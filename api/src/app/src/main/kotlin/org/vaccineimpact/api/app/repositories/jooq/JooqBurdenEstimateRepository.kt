@@ -27,9 +27,45 @@ class JooqBurdenEstimateRepository(
         private val scenarioRepository: ScenarioRepository,
         override val touchstoneRepository: TouchstoneRepository,
         private val modellingGroupRepository: ModellingGroupRepository,
-        private val mapper: BurdenMappingHelper = BurdenMappingHelper()
+        private val mapper: BurdenMappingHelper = BurdenMappingHelper(),
+        private val burdenEstimateWriter: BurdenEstimateWriter = BurdenEstimateWriter(dsl),
+        centralBurdenEstimateWriter: CentralBurdenEstimateWriter? = null,
+        stochasticBurdenEstimateWriter: CentralBurdenEstimateWriter? = null
 ) : JooqRepository(dsl), BurdenEstimateRepository
 {
+    private val centralBurdenEstimateWriter: CentralBurdenEstimateWriter
+    private val stochasticBurdenEstimateWriter: CentralBurdenEstimateWriter
+
+    init
+    {
+        val centralBurdenEstimates = Tables.BURDEN_ESTIMATE
+        val stochasticBurdenEstimates = Tables.BURDEN_ESTIMATE_STOCHASTIC
+        this.centralBurdenEstimateWriter = centralBurdenEstimateWriter ?:
+                CentralBurdenEstimateWriter(dsl, centralBurdenEstimates,
+                        listOf(
+                                centralBurdenEstimates.BURDEN_ESTIMATE_SET,
+                                centralBurdenEstimates.MODEL_RUN,
+                                centralBurdenEstimates.COUNTRY,
+                                centralBurdenEstimates.YEAR,
+                                centralBurdenEstimates.AGE,
+                                centralBurdenEstimates.BURDEN_OUTCOME,
+                                centralBurdenEstimates.VALUE
+                        ), this.burdenEstimateWriter)
+
+        this.stochasticBurdenEstimateWriter = stochasticBurdenEstimateWriter ?:
+                CentralBurdenEstimateWriter(AnnexJooqContext().dsl,
+                        stochasticBurdenEstimates,
+                        listOf(
+                                stochasticBurdenEstimates.BURDEN_ESTIMATE_SET,
+                                stochasticBurdenEstimates.MODEL_RUN,
+                                stochasticBurdenEstimates.COUNTRY,
+                                stochasticBurdenEstimates.YEAR,
+                                stochasticBurdenEstimates.AGE,
+                                stochasticBurdenEstimates.BURDEN_OUTCOME,
+                                stochasticBurdenEstimates.VALUE),
+                        this.burdenEstimateWriter)
+    }
+
     override fun getModelRunParameterSets(groupId: String, touchstoneId: String): List<ModelRunParameterSet>
     {
         // Dereference modelling group IDs
@@ -230,11 +266,11 @@ class JooqBurdenEstimateRepository(
 
         if (set.type.type == BurdenEstimateSetTypeCode.STOCHASTIC)
         {
-            populateStochasticBurdenEstimateSet(set, responsibilityInfo.disease, estimates)
+            stochasticBurdenEstimateWriter.addEstimatesToSet(set.id, estimates, responsibilityInfo.disease)
         }
         else
         {
-            populateCentralBurdenEstimateSet(set, responsibilityInfo.disease, estimates)
+            centralBurdenEstimateWriter.addEstimatesToSet(set.id, estimates, responsibilityInfo.disease)
         }
 
         dsl.update(Tables.BURDEN_ESTIMATE_SET)
@@ -244,20 +280,6 @@ class JooqBurdenEstimateRepository(
 
         updateCurrentBurdenEstimateSet(responsibilityInfo.id, setId, set.type.type)
     }
-
-    private fun populateCentralBurdenEstimateSet(set: BurdenEstimateSet, disease: String, estimates: Sequence<BurdenEstimateWithRunId>)
-    {
-        CentralBurdenEstimateWriter(dsl, set.id).addEstimatesToSet(estimates, disease)
-    }
-
-    private fun populateStochasticBurdenEstimateSet(set: BurdenEstimateSet, disease: String,
-                                                    estimates: Sequence<BurdenEstimateWithRunId>)
-    {
-        StochasticBurdenEstimateWriter(AnnexJooqContext().dsl,
-                set.id, BurdenEstimateWriter(dsl, set.id))
-                .addEstimatesToSet(estimates, disease)
-    }
-
 
     override fun createBurdenEstimateSet(groupId: String, touchstoneId: String, scenarioId: String,
                                          properties: CreateBurdenEstimateSet,

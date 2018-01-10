@@ -14,19 +14,13 @@ import org.vaccineimpact.api.db.Tables.*
 import org.vaccineimpact.api.models.BurdenEstimateWithRunId
 import java.io.BufferedInputStream
 import java.io.OutputStream
-import java.io.PipedInputStream
-import java.io.PipedOutputStream
 import java.math.BigDecimal
 import kotlin.concurrent.thread
 
-class BurdenEstimateWriter(val dsl: DSLContext, val setId: Int)
+class BurdenEstimateWriter(val dsl: DSLContext)
 {
     private val countries = getAllCountryIds()
-    private val modelRuns = getModelRunsAsLookup(setId)
     private val outcomeLookup = getOutcomesAsLookup()
-    private val cohortSizeId = outcomeLookup["cohort_size"]
-            ?: throw DatabaseContentsError("Expected a value with code 'cohort_size' in burden_outcome table")
-    private val modelRunParameterSetId = getModelRunParameterSetId()
 
     fun writeStreamToDatabase(
             dsl: DSLContext, inputStream: BufferedInputStream,
@@ -50,6 +44,11 @@ class BurdenEstimateWriter(val dsl: DSLContext, val setId: Int)
             expectedDisease: String, setId: Int
     )
     {
+        val modelRuns = getModelRunsAsLookup(setId)
+        val modelRunParameterSetId = getModelRunParameterSetId(setId)
+        val cohortSizeId = outcomeLookup["cohort_size"]
+                ?: throw DatabaseContentsError("Expected a value with code 'cohort_size' in burden_outcome table")
+
         // When we exit the 'use' block the EOF character will be written out,
         // signalling to the other thread that we are done.
         PostgresCopyWriter(stream).use { writer ->
@@ -63,7 +62,7 @@ class BurdenEstimateWriter(val dsl: DSLContext, val setId: Int)
                 {
                     throw UnknownObjectError(estimate.country, "country")
                 }
-                val modelRun = resolveRunId(estimate.runId)
+                val modelRun = resolveRunId(modelRuns, modelRunParameterSetId, estimate.runId)
 
                 writer.writeRow(newBurdenEstimateRow(setId, modelRun, estimate, cohortSizeId, estimate.cohortSize))
                 for (outcome in estimate.outcomes)
@@ -95,7 +94,7 @@ class BurdenEstimateWriter(val dsl: DSLContext, val setId: Int)
         )
     }
 
-    private fun resolveRunId(runId: String?): Int?
+    private fun resolveRunId(modelRuns: Map<String, Int>, modelRunParameterSetId: Int?, runId: String?): Int?
     {
         // If we are expecting run IDs not to be null (i.e. for stochastic estimates)
         // we expect this to have been caught at an earlier stage, during CSV parsing
@@ -110,7 +109,7 @@ class BurdenEstimateWriter(val dsl: DSLContext, val setId: Int)
         }
     }
 
-    private fun getModelRunParameterSetId(): Int? =
+    private fun getModelRunParameterSetId(setId: Int): Int? =
             dsl.select(BURDEN_ESTIMATE_SET.MODEL_RUN_PARAMETER_SET)
                     .from(BURDEN_ESTIMATE_SET)
                     .where(BURDEN_ESTIMATE_SET.ID.eq(setId))

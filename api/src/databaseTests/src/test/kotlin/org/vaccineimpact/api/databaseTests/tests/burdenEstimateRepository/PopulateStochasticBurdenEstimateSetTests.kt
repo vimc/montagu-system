@@ -39,7 +39,7 @@ class PopulateStochasticBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
         withDatabase { db ->
             checkBurdenEstimates(db, setId)
             checkModelRuns(db, modelRunData)
-            checkBurdenEstimateSetMetadata(db, setId, returnedIds, "partial")
+            checkBurdenEstimateSetMetadata(db, setId, returnedIds, "complete")
         }
     }
 
@@ -81,7 +81,7 @@ class PopulateStochasticBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
         }
         withDatabase { db ->
             checkBurdenEstimates(db, setId)
-            checkBurdenEstimateSetMetadata(db, setId, returnedIds, "partial")
+            checkBurdenEstimateSetMetadata(db, setId, returnedIds, "complete")
         }
     }
 
