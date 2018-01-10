@@ -31,7 +31,6 @@ import org.vaccineimpact.api.test_helpers.DatabaseCreationHelper
         ModelParameterTests::class,
         ModelTests::class,
         PopulateBurdenEstimateSetTests::class,
-        PopulateStochasticBurdenEstimateSetTests::class,
         RetrieveBurdenEstimatesTests::class,
         TokenRepositoryTests::class,
         TransactionalityTests::class,
