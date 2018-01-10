@@ -18,7 +18,7 @@ import java.io.PipedOutputStream
 import java.math.BigDecimal
 import kotlin.concurrent.thread
 
-class StochasticBurdenEstimateWriter(readDatabaseDSL: DSLContext, writeDatabaseDSL: DSLContext)
+open class StochasticBurdenEstimateWriter(readDatabaseDSL: DSLContext, writeDatabaseDSL: DSLContext = AnnexJooqContext().dsl)
     : BurdenEstimateWriter(readDatabaseDSL, writeDatabaseDSL, true)
 
 open class BurdenEstimateWriter(private val readDatabaseDSL: DSLContext,
@@ -62,11 +62,10 @@ open class BurdenEstimateWriter(private val readDatabaseDSL: DSLContext,
         )
     }
 
-    private val countries = getAllCountryIds()
-    private val outcomeLookup = getOutcomesAsLookup()
-
-    fun addEstimatesToSet(setId: Int, estimates: Sequence<BurdenEstimateWithRunId>, expectedDisease: String)
+    open fun addEstimatesToSet(setId: Int, estimates: Sequence<BurdenEstimateWithRunId>, expectedDisease: String)
     {
+        val countries = getAllCountryIds()
+        val outcomeLookup = getOutcomesAsLookup()
         val modelRuns = getModelRunsAsLookup(setId)
         val modelRunParameterId = getModelRunParameterSetId(setId)
 
@@ -87,7 +86,15 @@ open class BurdenEstimateWriter(private val readDatabaseDSL: DSLContext,
 
                 // In the main thread, write to piped stream, blocking if we get too far ahead of
                 // the other thread ("too far ahead" meaning the buffer on the input stream is full)
-                writeCopyData(modelRuns, modelRunParameterId, stream, estimates, expectedDisease, setId)
+                writeCopyData(
+                        outcomeLookup,
+                        countries,
+                        modelRuns,
+                        modelRunParameterId,
+                        stream,
+                        estimates,
+                        expectedDisease,
+                        setId)
 
                 // Wait for the worker thread to finished
                 writeToDatabaseThread.join()
@@ -95,7 +102,7 @@ open class BurdenEstimateWriter(private val readDatabaseDSL: DSLContext,
         }
     }
 
-    private fun writeCopyData(modelRuns: Map<String, Int>, modelRunParameterSetId: Int?,
+    private fun writeCopyData(outcomeLookup: Map<String, Int>, countries: HashSet<String> ,modelRuns: Map<String, Int>, modelRunParameterSetId: Int?,
                       stream: OutputStream, estimates: Sequence<BurdenEstimateWithRunId>,
                       expectedDisease: String, setId: Int
     )

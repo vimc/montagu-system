@@ -4,10 +4,13 @@ import org.assertj.core.api.Assertions
 import org.jooq.Record
 import org.jooq.Result
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
+import org.vaccineimpact.api.app.repositories.BurdenEstimateWriter
+import org.vaccineimpact.api.app.repositories.StochasticBurdenEstimateWriter
 import org.vaccineimpact.api.app.repositories.jooq.JooqBurdenEstimateRepository
 import org.vaccineimpact.api.app.repositories.jooq.JooqModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.jooq.JooqScenarioRepository
 import org.vaccineimpact.api.app.repositories.jooq.JooqTouchstoneRepository
+import org.vaccineimpact.api.app.repositories.jooq.mapping.BurdenMappingHelper
 import org.vaccineimpact.api.databaseTests.RepositoryTests
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.Tables
@@ -34,6 +37,17 @@ abstract class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRep
 
         val modellingGroup = JooqModellingGroupRepository(db.dsl, touchstone, scenario)
         return JooqBurdenEstimateRepository(db.dsl, scenario, touchstone, modellingGroup)
+    }
+
+    protected fun makeRepository(db: JooqContext, centralEstimateWriter: BurdenEstimateWriter,
+                                 stochasticBurdenEstimateWriter: StochasticBurdenEstimateWriter): JooqBurdenEstimateRepository
+    {
+        val scenario = JooqScenarioRepository(db.dsl)
+        val touchstone = JooqTouchstoneRepository(db.dsl, scenario)
+
+        val modellingGroup = JooqModellingGroupRepository(db.dsl, touchstone, scenario)
+        return JooqBurdenEstimateRepository(db.dsl, scenario, touchstone, modellingGroup, BurdenMappingHelper(),
+                centralEstimateWriter, stochasticBurdenEstimateWriter)
     }
 
     protected val scenarioId = "scenario-1"
@@ -129,7 +143,7 @@ abstract class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRep
         }
     }
 
-    protected fun getEstimatesInOrder(db: JooqContext): Result<Record>
+    private fun getEstimatesInOrder(db: JooqContext): Result<Record>
     {
         // We order the rows coming back so they are in a guaranteed order. This allows
         // us to write simple hardcoded expectations.
@@ -141,7 +155,7 @@ abstract class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRep
                 .fetch()
     }
 
-    protected fun checkRecord(record: Record, setId: Int,
+    private fun checkRecord(record: Record, setId: Int,
                             year: Int, age: Int, country: String, outcomeCode: String, outcomeValue: BigDecimal)
     {
         val t = Tables.BURDEN_ESTIMATE

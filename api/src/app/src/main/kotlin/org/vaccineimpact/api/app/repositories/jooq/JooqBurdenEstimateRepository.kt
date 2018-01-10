@@ -29,20 +29,14 @@ class JooqBurdenEstimateRepository(
         private val modellingGroupRepository: ModellingGroupRepository,
         private val mapper: BurdenMappingHelper = BurdenMappingHelper(),
         centralBurdenEstimateWriter: BurdenEstimateWriter? = null,
-        stochasticBurdenEstimateWriter: BurdenEstimateWriter? = null
+        stochasticBurdenEstimateWriter: StochasticBurdenEstimateWriter? = null
 ) : JooqRepository(dsl), BurdenEstimateRepository
 {
-    private val centralBurdenEstimateWriter: BurdenEstimateWriter
-    private val stochasticBurdenEstimateWriter: BurdenEstimateWriter
+    private val centralBurdenEstimateWriter: BurdenEstimateWriter = centralBurdenEstimateWriter ?:
+            BurdenEstimateWriter(dsl)
 
-    init
-    {
-        this.centralBurdenEstimateWriter = centralBurdenEstimateWriter ?:
-                BurdenEstimateWriter(dsl)
-
-        this.stochasticBurdenEstimateWriter = stochasticBurdenEstimateWriter ?:
-                StochasticBurdenEstimateWriter(dsl, AnnexJooqContext().dsl)
-    }
+    private val stochasticBurdenEstimateWriter: StochasticBurdenEstimateWriter = stochasticBurdenEstimateWriter ?:
+            StochasticBurdenEstimateWriter(dsl, AnnexJooqContext().dsl)
 
     override fun getModelRunParameterSets(groupId: String, touchstoneId: String): List<ModelRunParameterSet>
     {
@@ -235,6 +229,7 @@ class JooqBurdenEstimateRepository(
         val responsibilityInfo = getResponsibilityInfo(modellingGroup.id, touchstoneId, scenarioId)
 
         val set = getBurdenEstimateSet(setId)
+        val type = set.type.type
 
         if (set.status == BurdenEstimateSetStatus.COMPLETE)
         {
@@ -242,7 +237,7 @@ class JooqBurdenEstimateRepository(
                     " You must create a new set if you want to upload any new estimates.")
         }
 
-        if (set.type.type == BurdenEstimateSetTypeCode.STOCHASTIC)
+        if (type == BurdenEstimateSetTypeCode.STOCHASTIC)
         {
             stochasticBurdenEstimateWriter.addEstimatesToSet(set.id, estimates, responsibilityInfo.disease)
         }
@@ -256,7 +251,7 @@ class JooqBurdenEstimateRepository(
                 .where(Tables.BURDEN_ESTIMATE_SET.ID.eq(set.id))
                 .execute()
 
-        updateCurrentBurdenEstimateSet(responsibilityInfo.id, setId, set.type.type)
+        updateCurrentBurdenEstimateSet(responsibilityInfo.id, setId, type)
     }
 
     override fun createBurdenEstimateSet(groupId: String, touchstoneId: String, scenarioId: String,

@@ -1,111 +1,101 @@
 package org.vaccineimpact.api.databaseTests.tests.burdenEstimateRepository
 
 import org.assertj.core.api.Assertions
-import org.jooq.Record
-import org.jooq.Result
 import org.junit.Test
-import org.vaccineimpact.api.app.errors.*
+import org.vaccineimpact.api.app.errors.DatabaseContentsError
+import org.vaccineimpact.api.app.errors.InconsistentDataError
+import org.vaccineimpact.api.app.errors.UnknownObjectError
+import org.vaccineimpact.api.app.errors.UnknownRunIdError
 import org.vaccineimpact.api.app.repositories.BurdenEstimateWriter
-import org.vaccineimpact.api.app.repositories.jooq.BurdenEstimateCopyWriter
+import org.vaccineimpact.api.app.repositories.StochasticBurdenEstimateWriter
 import org.vaccineimpact.api.databaseTests.tests.BurdenEstimateRepositoryTests
-import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.Tables
-import org.vaccineimpact.api.db.Tables.BURDEN_ESTIMATE
-import org.vaccineimpact.api.db.Tables.BURDEN_ESTIMATE_SET
 import org.vaccineimpact.api.db.direct.addBurdenEstimateSet
-import org.vaccineimpact.api.db.direct.addModelRun
-import org.vaccineimpact.api.db.direct.addModelRunParameterSet
-import org.vaccineimpact.api.db.fromJoinPath
-import org.vaccineimpact.api.db.toDecimal
-import org.vaccineimpact.api.models.BurdenEstimateSetType
-import org.vaccineimpact.api.models.BurdenEstimateSetTypeCode
 
 class BurdenEstimateWriterTests : BurdenEstimateRepositoryTests()
 {
+    private fun createCentralSetWithoutModelRuns(): Int
+    {
+        return withDatabase { db ->
+            val returnedIds = setupDatabase(db)
+            db.addBurdenEstimateSet(returnedIds.responsibility, returnedIds.modelVersion!!,
+                    username, timestamp = timestamp)
+        }
+    }
+
+    private fun createCentralSetWithModelRuns(): Pair<Int, ModelRunTestData>
+    {
+        return withDatabase { db ->
+            val returnedIds = setupDatabase(db)
+            val modelRunData = addModelRuns(db, returnedIds.responsibilitySetId, returnedIds.modelVersion!!)
+            val setId = db.addBurdenEstimateSet(returnedIds.responsibility, returnedIds.modelVersion,
+                    username, timestamp = timestamp, modelRunParameterSetId = modelRunData.runParameterSetId)
+            Pair(setId, modelRunData)
+        }
+    }
+
+    private fun createStochasticSetWithModelRuns(): Pair<Int, ModelRunTestData>
+    {
+        return withDatabase { db ->
+            val returnedIds = setupDatabase(db)
+            val modelRunData = addModelRuns(db, returnedIds.responsibilitySetId, returnedIds.modelVersion!!)
+            val setId = db.addBurdenEstimateSet(returnedIds.responsibility, returnedIds.modelVersion,
+                    username, setType = "stochastic", timestamp = timestamp, modelRunParameterSetId = modelRunData.runParameterSetId)
+            Pair(setId, modelRunData)
+        }
+    }
+
     @Test
     fun `can populate central burden estimate set`()
     {
-        val (returnedIds, modelRunData) = withDatabase { db ->
-            val returnedIds = setupDatabase(db)
-            val modelRunData = addModelRuns(db, returnedIds.responsibilitySetId, returnedIds.modelVersion!!)
-            Pair(returnedIds, modelRunData)
-        }
-        val setId = withRepo { repo ->
-            val properties = defaultProperties.copy(BurdenEstimateSetType(BurdenEstimateSetTypeCode.STOCHASTIC),
-                    modelRunData.runParameterSetId)
-            val setId = repo.createBurdenEstimateSet(groupId, touchstoneId, scenarioId, properties, username, timestamp)
-            setId
-        }
+        val setId = createCentralSetWithoutModelRuns()
         withDatabase { db ->
-
             val sut = BurdenEstimateWriter(db.dsl)
+
+            sut.addEstimatesToSet(setId, data(), diseaseId)
+            checkBurdenEstimates(db, setId)
+        }
+    }
+
+    @Test
+    fun `can populate stochastic burden estimate set`()
+    {
+        val (setId, modelRunData) = createStochasticSetWithModelRuns()
+        withDatabase { db ->
+            val data = data(modelRunData.externalIds)
+            val sut = StochasticBurdenEstimateWriter(db.dsl)
+
+            sut.addEstimatesToSet(setId, data, diseaseId)
+            checkStochasticBurdenEstimates(db, setId)
+            checkStochasticModelRuns(db, modelRunData)
+        }
+    }
+
+    @Test
+    fun `can populate central burden estimate set with model run information`()
+    {
+        val (setId, modelRunData) = createCentralSetWithModelRuns()
+        withDatabase { db ->
             val data = data(modelRunData.externalIds)
 
+            val sut = BurdenEstimateWriter(db.dsl)
             sut.addEstimatesToSet(setId, data, diseaseId)
             checkBurdenEstimates(db, setId)
             checkModelRuns(db, modelRunData)
-            checkBurdenEstimateSetMetadata(db, setId, returnedIds, "complete")
-        }
-    }
-
-    @Test
-    fun `cannot populate a stochastic set if status is complete`()
-    {
-        val (setId, modelRunData) = withDatabase { db ->
-            val returnedIds = setupDatabase(db)
-            val modelRunData = addModelRuns(db, returnedIds.responsibilitySetId, returnedIds.modelVersion!!)
-
-            Pair(db.addBurdenEstimateSet(returnedIds.responsibility, returnedIds.modelVersion,
-                    username, "complete", "stochastic", null, modelRunData.runParameterSetId), modelRunData)
-        }
-        withRepo { repo ->
-
-            val data = data(modelRunData.externalIds)
-
-            Assertions.assertThatThrownBy {
-                repo.populateBurdenEstimateSet(setId, groupId, touchstoneId, scenarioId, data)
-            }.isInstanceOf(OperationNotAllowedError::class.java)
-                    .hasMessage("the following problems occurred:\nThis burden estimate set is marked as complete." +
-                            " You must create a new set if you want to upload any new estimates.")
-        }
-    }
-
-    @Test
-    fun `can populate a stochastic set if status is partial`()
-    {
-        val (setId, modelRunData, returnedIds) = withDatabase { db ->
-            val returnedIds = setupDatabase(db)
-            val modelRunData = addModelRuns(db, returnedIds.responsibilitySetId, returnedIds.modelVersion!!)
-
-            Triple(db.addBurdenEstimateSet(returnedIds.responsibility, returnedIds.modelVersion,
-                    username, "partial", "stochastic", null, modelRunData.runParameterSetId, timestamp), modelRunData, returnedIds)
-        }
-        withRepo { repo ->
-            val data = data(modelRunData.externalIds)
-            repo.populateBurdenEstimateSet(setId, groupId, touchstoneId, scenarioId, data)
-        }
-        withDatabase { db ->
-            checkStochasticBurdenEstimates(db, setId)
-            checkBurdenEstimateSetMetadata(db, setId, returnedIds, "complete")
         }
     }
 
     @Test
     fun `cannot create burden estimates with diseases that do not match scenario`()
     {
-        val (setId, modelRunData) = withDatabase { db ->
-            val returnedIds = setupDatabase(db)
-            val modelRunData = addModelRuns(db, returnedIds.responsibilitySetId, returnedIds.modelVersion!!)
+        val setId = createCentralSetWithoutModelRuns()
+        withDatabase { db ->
+            val badData = data().map { it.copy(disease = "YF") }
 
-            Pair(db.addBurdenEstimateSet(returnedIds.responsibility, returnedIds.modelVersion,
-                    username, "partial", "stochastic", null, modelRunData.runParameterSetId, timestamp), modelRunData)
+            val sut = BurdenEstimateWriter(db.dsl)
 
-        }
-        withRepo { repo ->
-            val data = data(modelRunData.externalIds)
-            val badData = data.map { it.copy(disease = "YF") }
             Assertions.assertThatThrownBy {
-                repo.populateBurdenEstimateSet(setId, groupId, touchstoneId, scenarioId, badData)
+                sut.addEstimatesToSet(setId, badData, diseaseId)
             }.isInstanceOf(InconsistentDataError::class.java)
         }
     }
@@ -113,18 +103,14 @@ class BurdenEstimateWriterTests : BurdenEstimateRepositoryTests()
     @Test
     fun `cannot populate burden estimates with non-existent countries`()
     {
-        val (setId, modelRunData) = withDatabase { db ->
-            val returnedIds = setupDatabase(db)
-            val modelRunData = addModelRuns(db, returnedIds.responsibilitySetId, returnedIds.modelVersion!!)
+        val setId = createCentralSetWithoutModelRuns()
+        withDatabase { db ->
+            val badData = data().map { it.copy(country = "FAKE") }
 
-            Pair(db.addBurdenEstimateSet(returnedIds.responsibility, returnedIds.modelVersion,
-                    username, "partial", "stochastic", null, modelRunData.runParameterSetId, timestamp), modelRunData)
-        }
-        withRepo { repo ->
-            val data = data(modelRunData.externalIds)
-            val badData = data.map { it.copy(country = "FAKE") }
+            val sut = BurdenEstimateWriter(db.dsl)
+
             Assertions.assertThatThrownBy {
-                repo.populateBurdenEstimateSet(setId, groupId, touchstoneId, scenarioId, badData)
+                sut.addEstimatesToSet(setId, badData, diseaseId)
             }.isInstanceOf(UnknownObjectError::class.java).matches {
                 (it as UnknownObjectError).typeName == "country"
             }
@@ -134,52 +120,51 @@ class BurdenEstimateWriterTests : BurdenEstimateRepositoryTests()
     @Test
     fun `cannot populate burden estimate set if cohort_size is missing from burden_outcome table`()
     {
-        val (setId, modelRunData) = withDatabase { db ->
-            val returnedIds = setupDatabase(db)
-            val modelRunData = addModelRuns(db, returnedIds.responsibilitySetId, returnedIds.modelVersion!!)
+        val setId = createCentralSetWithoutModelRuns()
+        withDatabase { db ->
             db.dsl.deleteFrom(Tables.BURDEN_OUTCOME).where(Tables.BURDEN_OUTCOME.CODE.eq("cohort_size")).execute()
-            Pair(db.addBurdenEstimateSet(returnedIds.responsibility, returnedIds.modelVersion,
-                    username, "partial", "stochastic", null, modelRunData.runParameterSetId, timestamp), modelRunData)
+            val badData = data().map { it.copy(country = "FAKE") }
 
-        }
-        withRepo { repo ->
+            val sut = BurdenEstimateWriter(db.dsl)
+
             Assertions.assertThatThrownBy {
-                repo.populateBurdenEstimateSet(setId, groupId, touchstoneId, scenarioId, data(modelRunData.externalIds))
+                sut.addEstimatesToSet(setId, badData, diseaseId)
             }.isInstanceOf(DatabaseContentsError::class.java)
         }
     }
 
     @Test
-    fun `populate set throws error if run ID is unknown`()
+    fun `cannot populate burden estimate set if run ID is unknown`()
     {
-        val modelRunData = withDatabase { db ->
-            val returnedIds = setupDatabase(db)
-            val modelRunData = addModelRuns(db, returnedIds.responsibilitySetId, returnedIds.modelVersion!!)
-            modelRunData
-        }
-        withRepo { repo ->
-            val properties = defaultStochasticProperties.copy(modelRunParameterSetId = modelRunData.runParameterSetId)
-            val setId = repo.createBurdenEstimateSet(groupId, touchstoneId, scenarioId, properties, username, timestamp)
-            val data = data(listOf("bad-id-1", "bad-id-2"))
+        val (setId, modelRunData) = createCentralSetWithModelRuns()
+
+        withDatabase { db ->
+            val badData = data(listOf("bad-id-1", "bad-id-2"))
+
+            val sut = BurdenEstimateWriter(db.dsl)
+
             Assertions.assertThatThrownBy {
-                repo.populateBurdenEstimateSet(setId, groupId, touchstoneId, scenarioId, data)
+                sut.addEstimatesToSet(setId, badData, diseaseId)
             }.isInstanceOf(UnknownRunIdError::class.java)
         }
     }
 
     @Test
-    fun `populate set throws error if run ID is specified but model run parameter set is not`()
+    fun `cannot populate burden estimate set if run ID is specified but model run parameter set is not`()
     {
-        val modelRunData = withDatabase { db ->
+        val (setId, modelRunData) = withDatabase { db ->
             val returnedIds = setupDatabase(db)
             val modelRunData = addModelRuns(db, returnedIds.responsibilitySetId, returnedIds.modelVersion!!)
-            modelRunData
+            val setId = db.addBurdenEstimateSet(returnedIds.responsibility, returnedIds.modelVersion,
+                    username, timestamp = timestamp, modelRunParameterSetId = null)
+            Pair(setId, modelRunData)
         }
-        withRepo { repo ->
-            val setId = repo.createBurdenEstimateSet(groupId, touchstoneId, scenarioId, defaultStochasticProperties, username, timestamp)
+        withDatabase { db ->
             val data = data(modelRunData.externalIds)
+            val sut = BurdenEstimateWriter(db.dsl)
+
             Assertions.assertThatThrownBy {
-                repo.populateBurdenEstimateSet(setId, groupId, touchstoneId, scenarioId, data)
+                sut.addEstimatesToSet(setId, data, diseaseId)
             }.isInstanceOf(UnknownRunIdError::class.java)
         }
     }
