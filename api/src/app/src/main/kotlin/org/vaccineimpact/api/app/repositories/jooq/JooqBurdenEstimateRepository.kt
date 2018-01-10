@@ -231,24 +231,24 @@ class JooqBurdenEstimateRepository(
         val set = getBurdenEstimateSet(setId)
         val type = set.type.type
 
-        if (set.status == BurdenEstimateSetStatus.COMPLETE)
+        if (set.status != BurdenEstimateSetStatus.EMPTY)
         {
-            throw OperationNotAllowedError("This burden estimate set is marked as complete." +
+            throw OperationNotAllowedError("This burden estimate set already contains estimates." +
                     " You must create a new set if you want to upload any new estimates.")
         }
 
         if (type == BurdenEstimateSetTypeCode.STOCHASTIC)
         {
-            stochasticBurdenEstimateWriter.addEstimatesToSet(set.id, estimates, responsibilityInfo.disease)
+            stochasticBurdenEstimateWriter.addEstimatesToSet(setId, estimates, responsibilityInfo.disease)
         }
         else
         {
-            centralBurdenEstimateWriter.addEstimatesToSet(set.id, estimates, responsibilityInfo.disease)
+            centralBurdenEstimateWriter.addEstimatesToSet(setId, estimates, responsibilityInfo.disease)
         }
 
         dsl.update(Tables.BURDEN_ESTIMATE_SET)
                 .set(Tables.BURDEN_ESTIMATE_SET.STATUS, "complete")
-                .where(Tables.BURDEN_ESTIMATE_SET.ID.eq(set.id))
+                .where(Tables.BURDEN_ESTIMATE_SET.ID.eq(setId))
                 .execute()
 
         updateCurrentBurdenEstimateSet(responsibilityInfo.id, setId, type)

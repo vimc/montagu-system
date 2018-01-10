@@ -96,7 +96,7 @@ class PopulateBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
             assertThatThrownBy {
                 repo.populateBurdenEstimateSet(setId, groupId, touchstoneId, scenarioId, data())
             }.isInstanceOf(OperationNotAllowedError::class.java)
-                    .hasMessage("the following problems occurred:\nThis burden estimate set is marked as complete." +
+                    .hasMessage("the following problems occurred:\nThis burden estimate set already contains estimates." +
                             " You must create a new set if you want to upload any new estimates.")
         }
     }
