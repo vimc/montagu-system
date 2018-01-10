@@ -28,42 +28,22 @@ class JooqBurdenEstimateRepository(
         override val touchstoneRepository: TouchstoneRepository,
         private val modellingGroupRepository: ModellingGroupRepository,
         private val mapper: BurdenMappingHelper = BurdenMappingHelper(),
-        private val burdenEstimateWriter: BurdenEstimateWriter = BurdenEstimateWriter(dsl),
-        centralBurdenEstimateWriter: CentralBurdenEstimateWriter? = null,
-        stochasticBurdenEstimateWriter: CentralBurdenEstimateWriter? = null
+        centralBurdenEstimateWriter: BurdenEstimateWriter? = null,
+        stochasticBurdenEstimateWriter: BurdenEstimateWriter? = null
 ) : JooqRepository(dsl), BurdenEstimateRepository
 {
-    private val centralBurdenEstimateWriter: CentralBurdenEstimateWriter
-    private val stochasticBurdenEstimateWriter: CentralBurdenEstimateWriter
+    private val centralBurdenEstimateWriter: BurdenEstimateWriter
+    private val stochasticBurdenEstimateWriter: BurdenEstimateWriter
 
     init
     {
-        val centralBurdenEstimates = Tables.BURDEN_ESTIMATE
-        val stochasticBurdenEstimates = Tables.BURDEN_ESTIMATE_STOCHASTIC
+        val burdenEstimateCopyWriter = BurdenEstimateCopyWriter(dsl)
         this.centralBurdenEstimateWriter = centralBurdenEstimateWriter ?:
-                CentralBurdenEstimateWriter(dsl, centralBurdenEstimates,
-                        listOf(
-                                centralBurdenEstimates.BURDEN_ESTIMATE_SET,
-                                centralBurdenEstimates.MODEL_RUN,
-                                centralBurdenEstimates.COUNTRY,
-                                centralBurdenEstimates.YEAR,
-                                centralBurdenEstimates.AGE,
-                                centralBurdenEstimates.BURDEN_OUTCOME,
-                                centralBurdenEstimates.VALUE
-                        ), this.burdenEstimateWriter)
+                BurdenEstimateWriter(dsl, burdenEstimateCopyWriter, stochastic = false)
 
         this.stochasticBurdenEstimateWriter = stochasticBurdenEstimateWriter ?:
-                CentralBurdenEstimateWriter(AnnexJooqContext().dsl,
-                        stochasticBurdenEstimates,
-                        listOf(
-                                stochasticBurdenEstimates.BURDEN_ESTIMATE_SET,
-                                stochasticBurdenEstimates.MODEL_RUN,
-                                stochasticBurdenEstimates.COUNTRY,
-                                stochasticBurdenEstimates.YEAR,
-                                stochasticBurdenEstimates.AGE,
-                                stochasticBurdenEstimates.BURDEN_OUTCOME,
-                                stochasticBurdenEstimates.VALUE),
-                        this.burdenEstimateWriter)
+                BurdenEstimateWriter(AnnexJooqContext().dsl,
+                        burdenEstimateCopyWriter, stochastic = true)
     }
 
     override fun getModelRunParameterSets(groupId: String, touchstoneId: String): List<ModelRunParameterSet>

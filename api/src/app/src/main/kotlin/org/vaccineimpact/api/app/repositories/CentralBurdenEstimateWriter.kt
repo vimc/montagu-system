@@ -3,18 +3,74 @@ package org.vaccineimpact.api.app.repositories
 import org.jooq.DSLContext
 import org.jooq.TableField
 import org.jooq.impl.TableImpl
-import org.vaccineimpact.api.app.repositories.jooq.BurdenEstimateWriter
+import org.postgresql.copy.CopyManager
+import org.postgresql.core.BaseConnection
+import org.vaccineimpact.api.app.repositories.jooq.BurdenEstimateCopyWriter
 import org.vaccineimpact.api.db.Tables
+import org.vaccineimpact.api.db.copyInto
 import org.vaccineimpact.api.db.withoutCheckingForeignKeyConstraints
 import org.vaccineimpact.api.models.BurdenEstimateWithRunId
+import java.io.BufferedInputStream
 import java.io.PipedInputStream
 import java.io.PipedOutputStream
+import kotlin.concurrent.thread
 
-class CentralBurdenEstimateWriter(private val dsl: DSLContext,
-                                  private val table: TableImpl<*>,
-                                  private val fields: List<TableField<*, *>>,
-                                  private val burdenEstimateWriter: BurdenEstimateWriter)
+open class BurdenEstimateWriter(private val dsl: DSLContext,
+                                private val burdenEstimateCopyWriter: BurdenEstimateCopyWriter,
+                                stochastic: Boolean)
 {
+
+    private val table: TableImpl<*> = if (stochastic)
+    {
+        Tables.BURDEN_ESTIMATE_STOCHASTIC
+    }
+    else
+    {
+        Tables.BURDEN_ESTIMATE
+    }
+
+    private val fields: List<TableField<*, *>> = if (stochastic)
+    {
+        val t = Tables.BURDEN_ESTIMATE
+        listOf(
+                t.BURDEN_ESTIMATE_SET,
+                t.MODEL_RUN,
+                t.COUNTRY,
+                t.YEAR,
+                t.AGE,
+                t.BURDEN_OUTCOME,
+                t.VALUE
+        )
+    }
+    else
+    {
+        val t = Tables.BURDEN_ESTIMATE_STOCHASTIC
+        listOf(
+                t.BURDEN_ESTIMATE_SET,
+                t.MODEL_RUN,
+                t.COUNTRY,
+                t.YEAR,
+                t.AGE,
+                t.BURDEN_OUTCOME,
+                t.VALUE
+        )
+    }
+
+    private fun writeStreamToDatabase(
+            inputStream: BufferedInputStream
+    ): Thread
+    {
+        // Since we are in another thread here, we should be careful about what state we modify.
+        // Everything we have access to here is immutable, so we should be fine.
+        return thread(start = true) {
+            // We use dsl.connection to drop down from jOOQ to the JDBC level so we can use CopyManager.
+            dsl.connection { connection ->
+                val manager = CopyManager(connection as BaseConnection)
+                // This will return once it reaches the EOF character written out by the other stream
+                manager.copyInto(table, inputStream, fields)
+            }
+        }
+    }
 
     fun addEstimatesToSet(setId: Int, estimates: Sequence<BurdenEstimateWithRunId>, expectedDisease: String)
     {
@@ -31,11 +87,11 @@ class CentralBurdenEstimateWriter(private val dsl: DSLContext,
                 // it to the database. This will block if the thread is empty, and keep
                 // going until it sees the Postgres EOF marker.
                 val inputStream = PipedInputStream(stream).buffered()
-                val writeToDatabaseThread = burdenEstimateWriter.writeStreamToDatabase(dsl, inputStream, table, fields)
+                val writeToDatabaseThread = writeStreamToDatabase(inputStream)
 
                 // In the main thread, write to piped stream, blocking if we get too far ahead of
                 // the other thread ("too far ahead" meaning the buffer on the input stream is full)
-                burdenEstimateWriter.writeCopyData(stream, estimates, expectedDisease, setId)
+                burdenEstimateCopyWriter.writeCopyData(stream, estimates, expectedDisease, setId)
 
                 // Wait for the worker thread to finished
                 writeToDatabaseThread.join()

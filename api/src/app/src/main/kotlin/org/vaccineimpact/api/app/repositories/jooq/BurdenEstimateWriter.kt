@@ -1,10 +1,6 @@
 package org.vaccineimpact.api.app.repositories.jooq
 
 import org.jooq.DSLContext
-import org.jooq.TableField
-import org.jooq.impl.TableImpl
-import org.postgresql.copy.CopyManager
-import org.postgresql.core.BaseConnection
 import org.vaccineimpact.api.app.errors.DatabaseContentsError
 import org.vaccineimpact.api.app.errors.InconsistentDataError
 import org.vaccineimpact.api.app.errors.UnknownObjectError
@@ -12,32 +8,13 @@ import org.vaccineimpact.api.app.errors.UnknownRunIdError
 import org.vaccineimpact.api.db.*
 import org.vaccineimpact.api.db.Tables.*
 import org.vaccineimpact.api.models.BurdenEstimateWithRunId
-import java.io.BufferedInputStream
 import java.io.OutputStream
 import java.math.BigDecimal
-import kotlin.concurrent.thread
 
-class BurdenEstimateWriter(val dsl: DSLContext)
+class BurdenEstimateCopyWriter(val dsl: DSLContext)
 {
     private val countries = getAllCountryIds()
     private val outcomeLookup = getOutcomesAsLookup()
-
-    fun writeStreamToDatabase(
-            dsl: DSLContext, inputStream: BufferedInputStream,
-            target: TableImpl<*>, fields: List<TableField<*, *>>
-    ): Thread
-    {
-        // Since we are in another thread here, we should be careful about what state we modify.
-        // Everything we have access to here is immutable, so we should be fine.
-        return thread(start = true) {
-            // We use dsl.connection to drop down from jOOQ to the JDBC level so we can use CopyManager.
-            dsl.connection { connection ->
-                val manager = CopyManager(connection as BaseConnection)
-                // This will return once it reaches the EOF character written out by the other stream
-                manager.copyInto(target, inputStream, fields)
-            }
-        }
-    }
 
     fun writeCopyData(
             stream: OutputStream, estimates: Sequence<BurdenEstimateWithRunId>,
