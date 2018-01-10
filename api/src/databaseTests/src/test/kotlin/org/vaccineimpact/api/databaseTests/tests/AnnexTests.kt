@@ -7,7 +7,6 @@ import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.annex.Tables.BURDEN_ESTIMATE_STOCHASTIC
 import org.vaccineimpact.api.db.fieldsAsList
 import org.vaccineimpact.api.test_helpers.DatabaseTest
-import org.vaccineimpact.api.test_helpers.MontaguTests
 
 class AnnexTests : DatabaseTest()
 {
@@ -23,7 +22,7 @@ class AnnexTests : DatabaseTest()
     }
 
     @Test
-    fun `can read from annex`()
+    fun `can read from annex via foreign table`()
     {
         JooqContext().use { db ->
             val records = db.dsl

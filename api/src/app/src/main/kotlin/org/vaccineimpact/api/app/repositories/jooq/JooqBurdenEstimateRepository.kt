@@ -237,16 +237,17 @@ class JooqBurdenEstimateRepository(
             populateCentralBurdenEstimateSet(set, responsibilityInfo.disease, estimates)
         }
 
+        dsl.update(Tables.BURDEN_ESTIMATE_SET)
+                .set(Tables.BURDEN_ESTIMATE_SET.STATUS, "complete")
+                .where(Tables.BURDEN_ESTIMATE_SET.ID.eq(set.id))
+                .execute()
+
         updateCurrentBurdenEstimateSet(responsibilityInfo.id, setId, set.type.type)
     }
 
     private fun populateCentralBurdenEstimateSet(set: BurdenEstimateSet, disease: String, estimates: Sequence<BurdenEstimateWithRunId>)
     {
         CentralBurdenEstimateWriter(dsl, set.id).addEstimatesToSet(estimates, disease)
-        dsl.update(Tables.BURDEN_ESTIMATE_SET)
-                .set(Tables.BURDEN_ESTIMATE_SET.STATUS, "complete")
-                .where(Tables.BURDEN_ESTIMATE_SET.ID.eq(set.id))
-                .execute()
     }
 
     private fun populateStochasticBurdenEstimateSet(set: BurdenEstimateSet, disease: String,
@@ -255,11 +256,6 @@ class JooqBurdenEstimateRepository(
         StochasticBurdenEstimateWriter(AnnexJooqContext().dsl,
                 set.id, BurdenEstimateWriter(dsl, set.id))
                 .addEstimatesToSet(estimates, disease)
-
-        dsl.update(Tables.BURDEN_ESTIMATE_SET)
-                .set(Tables.BURDEN_ESTIMATE_SET.STATUS, "partial")
-                .where(Tables.BURDEN_ESTIMATE_SET.ID.eq(set.id))
-                .execute()
     }
 
 
