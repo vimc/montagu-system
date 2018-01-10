@@ -18,6 +18,7 @@ export interface ResponsibilityOverviewComponentProps extends RemoteContent {
     responsibilitySet: IExtendedResponsibilitySet;
     currentDiseaseId: string;
     modellingGroup: ModellingGroup;
+    currentTouchstoneId: string;
 }
 
 export class ResponsibilityOverviewContentComponent extends RemoteContentComponent<ResponsibilityOverviewComponentProps, undefined> {
@@ -32,13 +33,21 @@ export class ResponsibilityOverviewContentComponent extends RemoteContentCompone
             responsibilitySet: set,
             ready: state.ready && set != null,
             currentDiseaseId: state.currentDiseaseId,
-            modellingGroup: state.currentModellingGroup
+            modellingGroup: state.currentModellingGroup,
+            currentTouchstoneId : state.currentTouchstone.id
         }
     }
 
     renderContent(props: ResponsibilityOverviewComponentProps) {
-        const demographyUrl = `/${props.modellingGroup.id}/responsibilities/${props.responsibilitySet.touchstone.id}/demographics/`;
-        const parametersUrl = `/${props.modellingGroup.id}/responsibilities/${props.responsibilitySet.touchstone.id}/parameters/`;
+        const demographyUrl = `/${props.modellingGroup.id}/responsibilities/${props.currentTouchstoneId}/demographics/`;
+        const parametersUrl = `/${props.modellingGroup.id}/responsibilities/${props.currentTouchstoneId}/parameters/`;
+
+        const paramsSection = <div>
+            <div className="largeSectionTitle">Parameters</div>
+            <div><a key={"params"}
+                    href={stochasticParams}>Download stochastic parameters template</a>
+            </div>
+        </div>;
 
         return <div>
             <ResponsibilitySetStatusMessage status={this.props.responsibilitySet.status}/>
@@ -46,10 +55,7 @@ export class ResponsibilityOverviewContentComponent extends RemoteContentCompone
             <div className="mt-3">
                 <ButtonLink href={demographyUrl}>Download demographic data</ButtonLink>
             </div>
-            <div className="largeSectionTitle">Parameters</div>
-            <div><a key={"params"}
-                    href={stochasticParams}>Download stochastic parameters template</a>
-            </div>
+            {this.props.currentTouchstoneId != "201801rfp-1" && paramsSection}
             <ButtonLink href={parametersUrl}>Upload parameters</ButtonLink>
             <div className="largeSectionTitle">Scenarios</div>
             <ResponsibilityList
