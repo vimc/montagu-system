@@ -11,18 +11,16 @@ import org.vaccineimpact.api.models.BurdenEstimateWithRunId
 import java.io.OutputStream
 import java.math.BigDecimal
 
-class BurdenEstimateCopyWriter(val dsl: DSLContext)
+class BurdenEstimateCopyWriter(val coreDatabaseDSL: DSLContext)
 {
     private val countries = getAllCountryIds()
     private val outcomeLookup = getOutcomesAsLookup()
 
-    fun writeCopyData(
+    fun writeCopyData(modelRuns: Map<String, Int>, modelRunParameterSetId: Int?,
             stream: OutputStream, estimates: Sequence<BurdenEstimateWithRunId>,
             expectedDisease: String, setId: Int
     )
     {
-        val modelRuns = getModelRunsAsLookup(setId)
-        val modelRunParameterSetId = getModelRunParameterSetId(setId)
         val cohortSizeId = outcomeLookup["cohort_size"]
                 ?: throw DatabaseContentsError("Expected a value with code 'cohort_size' in burden_outcome table")
 
@@ -86,14 +84,14 @@ class BurdenEstimateCopyWriter(val dsl: DSLContext)
         }
     }
 
-    private fun getModelRunParameterSetId(setId: Int): Int? =
-            dsl.select(BURDEN_ESTIMATE_SET.MODEL_RUN_PARAMETER_SET)
+    fun getModelRunParameterSetId(setId: Int): Int? =
+            coreDatabaseDSL.select(BURDEN_ESTIMATE_SET.MODEL_RUN_PARAMETER_SET)
                     .from(BURDEN_ESTIMATE_SET)
                     .where(BURDEN_ESTIMATE_SET.ID.eq(setId))
                     .fetch()
                     .singleOrNull()?.value1()
 
-    private fun getAllCountryIds() = dsl.select(Tables.COUNTRY.ID)
+    private fun getAllCountryIds() = coreDatabaseDSL.select(Tables.COUNTRY.ID)
             .from(Tables.COUNTRY)
             .fetch()
             .map { it[Tables.COUNTRY.ID] }
@@ -101,17 +99,17 @@ class BurdenEstimateCopyWriter(val dsl: DSLContext)
 
     private fun getOutcomesAsLookup(): Map<String, Int>
     {
-        return dsl.select(Tables.BURDEN_OUTCOME.CODE, Tables.BURDEN_OUTCOME.ID)
+        return coreDatabaseDSL.select(Tables.BURDEN_OUTCOME.CODE, Tables.BURDEN_OUTCOME.ID)
                 .from(Tables.BURDEN_OUTCOME)
                 .fetch()
                 .intoMap(Tables.BURDEN_OUTCOME.CODE, Tables.BURDEN_OUTCOME.ID)
     }
 
-    private fun getModelRunsAsLookup(setId: Int): Map<String, Int>
+    fun getModelRunsAsLookup(setId: Int): Map<String, Int>
     {
         // This gets us from user defined run IDs (e.g. "run_with_extra_toffee")
         // to our auto-generated internal IDs (e.g. 4532)
-        return dsl.select(MODEL_RUN.INTERNAL_ID, MODEL_RUN.RUN_ID)
+        return coreDatabaseDSL.select(MODEL_RUN.INTERNAL_ID, MODEL_RUN.RUN_ID)
                 .fromJoinPath(BURDEN_ESTIMATE_SET, MODEL_RUN_PARAMETER_SET, MODEL_RUN)
                 .where(BURDEN_ESTIMATE_SET.ID.eq(setId))
                 .fetch()
