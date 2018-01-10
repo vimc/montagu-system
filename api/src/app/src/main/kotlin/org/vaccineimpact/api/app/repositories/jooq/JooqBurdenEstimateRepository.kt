@@ -139,6 +139,36 @@ class JooqBurdenEstimateRepository(
         return parameterSetId
     }
 
+    //    override fun getModelRunParametersData(setId: Int): FlexibleDataTable<ModelRunParametersRow>
+//    {
+//        val sequence = getModelRunParametersSequence(setId)
+//        val headers = getModelRunParametersHeaders(setId)
+//
+//        return FlexibleDataTable.new(sequence, headers)
+//    }
+
+    override fun getModelRunParametersSequence(setId: Int): List<ModelRun>
+    {
+        val records = dsl.select(
+                MODEL_RUN_PARAMETER_VALUE.ID,
+                MODEL_RUN_PARAMETER.KEY,
+                MODEL_RUN.RUN_ID,
+                MODEL_RUN_PARAMETER_VALUE.VALUE
+        )
+                .from(MODEL_RUN_PARAMETER_VALUE)
+                .join(MODEL_RUN_PARAMETER)
+                .on(MODEL_RUN_PARAMETER_VALUE.MODEL_RUN_PARAMETER.eq(MODEL_RUN_PARAMETER.ID))
+                .join(MODEL_RUN)
+                .on(MODEL_RUN_PARAMETER_VALUE.MODEL_RUN.eq(MODEL_RUN.INTERNAL_ID))
+                .where(MODEL_RUN_PARAMETER.MODEL_RUN_PARAMETER_SET.eq(setId))
+                .fetch()
+                .map { mapper.mapModelParameterValuesPlain(it) }
+                .groupBy { it.run_id }
+                .map { mapper.mapModelParameterValuesGrouped(it.key, it.value)}
+
+        return records
+    }
+
     private fun addUploadInfo(uploader: String, timestamp: Instant): Int
     {
         val uploadInfo = dsl.newRecord(UPLOAD_INFO).apply {

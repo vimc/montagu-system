@@ -3,8 +3,13 @@ package org.vaccineimpact.api.app.repositories.jooq.mapping
 import org.jooq.Record
 import org.vaccineimpact.api.db.Tables
 import org.vaccineimpact.api.db.Tables.BURDEN_ESTIMATE_SET
+import org.vaccineimpact.api.db.Tables.MODEL_RUN_PARAMETER_VALUE
+import org.vaccineimpact.api.db.Tables.MODEL_RUN_PARAMETER
+import org.vaccineimpact.api.db.Tables.MODEL_RUN
 import org.vaccineimpact.api.models.BurdenEstimateSet
 import org.vaccineimpact.api.models.BurdenEstimateSetType
+import org.vaccineimpact.api.models.ModelRun
+import org.vaccineimpact.api.models.ModelRunParametersValue
 
 class BurdenMappingHelper : MappingHelper()
 {
@@ -36,5 +41,21 @@ class BurdenMappingHelper : MappingHelper()
                 mapEnum(common[table.STATUS]),
                 problems
         )
+    }
+
+    fun mapModelParameterValuesPlain(record: Record): ModelRunParametersValue
+    {
+        return ModelRunParametersValue(
+                record[MODEL_RUN_PARAMETER_VALUE.ID],
+                record[MODEL_RUN_PARAMETER.KEY],
+                record[MODEL_RUN.RUN_ID],
+                record[MODEL_RUN_PARAMETER_VALUE.VALUE]
+        )
+    }
+
+    fun mapModelParameterValuesGrouped(runId: String, records: List<ModelRunParametersValue>) : ModelRun
+    {
+        val map = records.associateBy({ it.key }, { it.value})
+        return ModelRun(runId, map)
     }
 }
