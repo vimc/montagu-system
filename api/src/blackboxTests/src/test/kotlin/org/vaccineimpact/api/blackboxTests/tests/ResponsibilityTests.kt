@@ -161,7 +161,7 @@ class ResponsibilityTests : DatabaseTest()
     fun `get coverage sets matches schema`()
     {
         val coverageSetId = 1
-        validate("/modelling-groups/$groupId/responsibilities/$touchstoneId/$scenarioId/coverage_sets/") against "ScenarioAndCoverageSets" given {
+        validate("/modelling-groups/$groupId/responsibilities/$touchstoneId/$scenarioId/coverage-sets/") against "ScenarioAndCoverageSets" given {
             addResponsibilities(it, touchstoneStatus = "open")
             it.addCoverageSet(touchstoneId, "coverage set name", "vaccine-1", "without", "routine", coverageSetId,
                     addVaccine = true)
@@ -200,7 +200,7 @@ class ResponsibilityTests : DatabaseTest()
     @Test
     fun `only touchstone preparer can see in-preparation coverage sets`()
     {
-        val url = "/modelling-groups/$groupId/responsibilities/$touchstoneId/$scenarioId/coverage_sets/"
+        val url = "/modelling-groups/$groupId/responsibilities/$touchstoneId/$scenarioId/coverage-sets/"
         val minimumPermissions = PermissionSet("*/can-login", "*/scenarios.read", "$groupScope/responsibilities.read", "$groupScope/coverage.read")
         val permissionUnderTest = "*/touchstones.prepare"
         val checker = PermissionChecker(url, minimumPermissions + permissionUnderTest)

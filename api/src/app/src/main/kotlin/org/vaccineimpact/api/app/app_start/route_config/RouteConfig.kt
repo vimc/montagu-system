@@ -9,10 +9,16 @@ interface RouteConfig
 
 object MontaguRouteConfig : RouteConfig
 {
+    // Keep these alphabetically sorted
     override val endpoints: List<EndpointDefinition>
-            = DiseaseRouteConfig.endpoints +
-            TouchstoneRouteConfig.endpoints +
+            = AuthenticationRouteConfig.endpoints +
+            DiseaseRouteConfig.endpoints +
+            GroupCoverageRouteConfig.endpoints +
+            GroupModelRunParametersRouteConfig.endpoints +
+            ModellingGroupRouteConfig.endpoints +
             ModelRouteConfig.endpoints +
-            AuthenticationRouteConfig.endpoints +
+            PasswordRouteConfig.endpoints +
+            ResponsibilityRouteConfig.endpoints +
+            TouchstoneRouteConfig.endpoints +
             UserRouteConfig.endpoints
 }

@@ -10,6 +10,7 @@ services:
       - emails:/tmp/montagu_emails
   db:
     image: docker.montagu.dide.ic.ac.uk:5000/montagu-db:${MONTAGU_DB_VERSION}
-
+  db_annex:
+    image: docker.montagu.dide.ic.ac.uk:5000/montagu-db:${MONTAGU_DB_VERSION}
 volumes:
   emails:

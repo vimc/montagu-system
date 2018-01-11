@@ -1,54 +1,53 @@
 package org.vaccineimpact.api.app.controllers
 
+import org.slf4j.LoggerFactory
+import org.vaccineimpact.api.app.app_start.Controller
 import org.vaccineimpact.api.app.context.ActionContext
-import org.vaccineimpact.api.app.controllers.endpoints.Endpoint
-import org.vaccineimpact.api.app.controllers.endpoints.multiRepoEndpoint
-import org.vaccineimpact.api.app.controllers.endpoints.oneRepoEndpoint
-import org.vaccineimpact.api.app.controllers.endpoints.secured
+import org.vaccineimpact.api.app.context.postData
 import org.vaccineimpact.api.app.errors.MissingRequiredParameterError
 import org.vaccineimpact.api.app.models.SetPassword
-import org.vaccineimpact.api.app.context.postData
 import org.vaccineimpact.api.app.repositories.Repositories
-import org.vaccineimpact.api.app.repositories.RepositoryFactory
 import org.vaccineimpact.api.app.repositories.UserRepository
+import org.vaccineimpact.api.app.security.OneTimeTokenGenerator
 import org.vaccineimpact.api.emails.EmailManager
 import org.vaccineimpact.api.emails.PasswordSetEmail
 import org.vaccineimpact.api.emails.getEmailManager
-import spark.route.HttpMethod
+import org.vaccineimpact.api.models.helpers.OneTimeAction
+import java.time.Duration
 
-open class PasswordController(
-        context: ControllerContext,
-        val emailManager: EmailManager = getEmailManager()
-) : AbstractController(context)
+class PasswordController(
+        context: ActionContext,
+        private val userRepository: UserRepository,
+        private val oneTimeTokenGenerator: OneTimeTokenGenerator,
+        private val emailManager: EmailManager = getEmailManager()
+        ) : Controller(context)
 {
-    override val urlComponent = "/password"
 
-    override fun endpoints(repos: RepositoryFactory): List<Endpoint<*>> = listOf(
-            oneRepoEndpoint("/set/", this::setPassword, repos, { it.user }, HttpMethod.post).secured(),
-            multiRepoEndpoint("/request_link/", this::requestLink, repos, HttpMethod.post)
-    )
+    constructor(context: ActionContext, repositories: Repositories)
+            : this(context, repositories.user, OneTimeTokenGenerator(repositories.token))
 
-    fun setPassword(context: ActionContext, repo: UserRepository): String
+    private val logger = LoggerFactory.getLogger(PasswordController::class.java)
+
+    fun setPassword(): String
     {
-        return setPasswordForUser(context, repo, context.username!!)
+        return setPasswordForUser(context.username!!)
     }
 
-    @Throws(Exception::class)
-    open fun setPasswordForUser(context: ActionContext, repo: UserRepository, username: String): String
+    fun setPasswordForUser(username: String): String
     {
         val password = context.postData<SetPassword>().password
-        repo.setPassword(username, password)
+        userRepository.setPassword(username, password)
         return okayResponse()
     }
 
-    fun requestLink(context: ActionContext, repos: Repositories): String
+    fun requestResetPasswordLink(): String
     {
         val address = context.queryParams("email")
                 ?: throw MissingRequiredParameterError("email")
-        val user = repos.user.getMontaguUserByEmail(address)
+        val user = userRepository.getMontaguUserByEmail(address)
         if (user != null)
         {
-            val token = getSetPasswordToken(user.username, context, repos.token)
+            val token = getSetPasswordToken(user.username)
             val email = PasswordSetEmail(token, user.name)
             emailManager.sendEmail(email, user)
         }
@@ -58,4 +57,17 @@ open class PasswordController(
         }
         return okayResponse()
     }
+
+    private fun getSetPasswordToken(username: String): String
+    {
+        val params = mapOf(":username" to username)
+        return oneTimeTokenGenerator.getOneTimeLinkToken(
+                OneTimeAction.SET_PASSWORD,
+                queryString = null,
+                redirectUrl = null,
+                username = username,
+                params = params,
+                duration = Duration.ofDays(1))
+    }
+
 }
