@@ -1,6 +1,7 @@
 package org.vaccineimpact.api.app.repositories
 
 import org.vaccineimpact.api.models.*
+import org.vaccineimpact.api.serialization.FlexibleDataTable
 import java.time.Instant
 
 interface BurdenEstimateRepository : Repository
@@ -27,4 +28,6 @@ interface BurdenEstimateRepository : Repository
                                 uploader: String, timestamp: Instant): Int
 
     fun getModelRunParameterSets(groupId: String, touchstoneId: String): List<ModelRunParameterSet>
+
+    fun getModelRunParametersData(setId: Int): FlexibleDataTable<ModelRun>
 }

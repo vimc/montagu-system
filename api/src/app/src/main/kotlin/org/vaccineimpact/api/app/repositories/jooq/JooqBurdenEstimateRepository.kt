@@ -13,6 +13,7 @@ import org.vaccineimpact.api.app.repositories.jooq.mapping.BurdenMappingHelper
 import org.vaccineimpact.api.db.*
 import org.vaccineimpact.api.db.Tables.*
 import org.vaccineimpact.api.models.*
+import org.vaccineimpact.api.serialization.FlexibleDataTable
 import java.beans.ConstructorProperties
 import java.io.BufferedInputStream
 import java.io.OutputStream
@@ -139,15 +140,27 @@ class JooqBurdenEstimateRepository(
         return parameterSetId
     }
 
-    //    override fun getModelRunParametersData(setId: Int): FlexibleDataTable<ModelRunParametersRow>
-//    {
-//        val sequence = getModelRunParametersSequence(setId)
-//        val headers = getModelRunParametersHeaders(setId)
-//
-//        return FlexibleDataTable.new(sequence, headers)
-//    }
+    override fun getModelRunParametersData(setId: Int): FlexibleDataTable<ModelRun>
+    {
+        val sequence = getModelRunParametersSequence(setId)
+        val headers = getModelRunParametersHeaders(setId)
 
-    override fun getModelRunParametersSequence(setId: Int): List<ModelRun>
+        return FlexibleDataTable.new(sequence, headers)
+    }
+
+    private fun getModelRunParametersHeaders(setId: Int): List<String>
+    {
+        val records = dsl.select(
+                MODEL_RUN_PARAMETER.KEY
+        )
+                .from(MODEL_RUN_PARAMETER)
+                .where(MODEL_RUN_PARAMETER.MODEL_RUN_PARAMETER_SET.eq(setId))
+                .fetch()
+                .map { mapper.mapModelParameterHeaders(it) }
+        return records
+    }
+
+    private fun getModelRunParametersSequence(setId: Int): Sequence<ModelRun>
     {
         val records = dsl.select(
                 MODEL_RUN_PARAMETER_VALUE.ID,
@@ -165,6 +178,7 @@ class JooqBurdenEstimateRepository(
                 .map { mapper.mapModelParameterValuesPlain(it) }
                 .groupBy { it.run_id }
                 .map { mapper.mapModelParameterValuesGrouped(it.key, it.value)}
+                .asSequence()
 
         return records
     }

@@ -12,6 +12,9 @@ import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.Tables
 import org.vaccineimpact.api.db.fromJoinPath
 import org.vaccineimpact.api.models.ModelRun
+import org.vaccineimpact.api.models.ModelRunParametersHeader
+import org.vaccineimpact.api.models.ModelRunParametersValue
+import org.vaccineimpact.api.serialization.FlexibleDataTable
 
 class ModelParameterTests : BurdenEstimateRepositoryTests()
 {
@@ -154,6 +157,32 @@ class ModelParameterTests : BurdenEstimateRepositoryTests()
             Assertions.assertThat(set.uploadedOn).isEqualTo(timestamp)
             Assertions.assertThat(set.id).isGreaterThan(0)
             Assertions.assertThat(set.disease).isEqualTo(diseaseId)
+        }
+    }
+
+    @Test
+    fun `can get model run parameter sets and values for download`()
+    {
+        var records = listOf<ModelRun>()
+        var contentType = ""
+
+        given { db ->
+            setupDatabaseWithModelRunParameterSetValues(db)
+        } makeTheseChanges { repo ->
+            val FlexTableData = repo.getModelRunParametersData(1)
+            records = FlexTableData.data.toList()
+            contentType = FlexTableData.contentType
+        } andCheck { repo ->
+            Assertions.assertThat(contentType).isEqualTo("text/csv")
+            Assertions.assertThat(records.size).isEqualTo(2)
+            val row1 = records[0]
+            Assertions.assertThat(row1.runId).isEqualTo("1")
+            Assertions.assertThat(row1.parameterValues["<param_1>"]).isEqualTo("aa")
+            Assertions.assertThat(row1.parameterValues["<param_2>"]).isEqualTo("bb")
+            val row2 = records[1]
+            Assertions.assertThat(row2.runId).isEqualTo("2")
+            Assertions.assertThat(row2.parameterValues["<param_1>"]).isEqualTo("cc")
+            Assertions.assertThat(row2.parameterValues["<param_2>"]).isEqualTo("dd")
         }
     }
 

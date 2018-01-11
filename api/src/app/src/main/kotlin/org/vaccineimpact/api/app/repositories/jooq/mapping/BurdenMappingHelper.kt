@@ -6,10 +6,7 @@ import org.vaccineimpact.api.db.Tables.BURDEN_ESTIMATE_SET
 import org.vaccineimpact.api.db.Tables.MODEL_RUN_PARAMETER_VALUE
 import org.vaccineimpact.api.db.Tables.MODEL_RUN_PARAMETER
 import org.vaccineimpact.api.db.Tables.MODEL_RUN
-import org.vaccineimpact.api.models.BurdenEstimateSet
-import org.vaccineimpact.api.models.BurdenEstimateSetType
-import org.vaccineimpact.api.models.ModelRun
-import org.vaccineimpact.api.models.ModelRunParametersValue
+import org.vaccineimpact.api.models.*
 
 class BurdenMappingHelper : MappingHelper()
 {
@@ -57,5 +54,10 @@ class BurdenMappingHelper : MappingHelper()
     {
         val map = records.associateBy({ it.key }, { it.value})
         return ModelRun(runId, map)
+    }
+
+    fun mapModelParameterHeaders(record: Record): String
+    {
+        return record[MODEL_RUN_PARAMETER.KEY]
     }
 }
