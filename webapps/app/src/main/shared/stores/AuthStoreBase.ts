@@ -1,11 +1,12 @@
 import alt from "../alt";
 import * as AltJS from "alt";
-import { AbstractStore } from "./AbstractStore";
-import { authActions, LogInProperties } from "../actions/AuthActions";
-import { decodeToken } from "../Token";
-import { contribAuthStore } from "../../contrib/stores/ContribAuthStore";
-import { adminAuthStore } from "../../admin/stores/AdminAuthStore";
-import { reportingAuthStore } from "../../report/stores/ReportingAuthStore";
+import {AbstractStore} from "./AbstractStore";
+import {authActions, LogInProperties} from "../actions/AuthActions";
+import {decodeToken} from "../Token";
+import Cookies from "universal-cookie";
+
+const universalCookie = require("universal-cookie");
+const cookies = new universalCookie() as Cookies;
 
 export interface AuthStateBase {
     loggedIn: boolean;
@@ -16,11 +17,14 @@ export interface AuthStateBase {
 
 export interface AuthStoreBaseInterface<TState> extends AltJS.AltStore<TState> {
     logIn(access_token: string, triggered_by_user: boolean): void;
+
     loadAccessToken(): void;
+
+    saveShinyCookie(shiny_token: string): void;
 }
 
 export const tokenStorageHelper = {
-    loadToken: function(): string {
+    loadToken: function (): string {
         if (typeof(Storage) !== "undefined") {
             const token = localStorage.getItem("accessToken");
             if (token) {
@@ -65,6 +69,9 @@ export abstract class AuthStore<TState extends AuthStateBase, TInterface extends
                 if (token != null) {
                     this.doLogIn(token, true);
                 }
+            },
+            saveShinyCookie: (shiny_token: string) => {
+                 cookies.set('jwt_token', shiny_token);
             }
         })
     }
@@ -109,5 +116,5 @@ export abstract class AuthStore<TState extends AuthStateBase, TInterface extends
             localStorage.clear();
         }
     }
-    
+
 }
