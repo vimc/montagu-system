@@ -47,24 +47,24 @@ class GroupModelRunParametersController(
         return objectCreation(context, "/modelling-groups/$groupId/model-run-parameters/$id/")
     }
 
-    fun getModelRunParameterSet(context: ActionContext, repo: BurdenEstimateRepository): StreamSerializable<ModelRun>
+    fun getModelRunParameterSet(): StreamSerializable<ModelRun>
     {
         val setId = context.params(":model-run-parameter-set-id")
-        val data = getModelRunParametersAndMetadata(context, repo)
+        val data = getModelRunParametersAndMetadata()
         val filename = "set_$setId.csv"
         context.addAttachmentHeader(filename)
         return data
     }
 
 
-    private fun getModelRunParametersAndMetadata(context: ActionContext, repo: BurdenEstimateRepository):
+    private fun getModelRunParametersAndMetadata():
             FlexibleDataTable<ModelRun>
     {
 
         val path = ModelRunParametersSetPath(context)
-        val touchstone = repo.get
+        val touchstone = estimateRepository.get
         context.checkIsAllowedToSeeTouchstone(path.touchstoneId, touchstone.id)
-        return repo.getModelRunParametersData(path.setId)
+        return estimateRepository.getModelRunParametersData(path.setId)
     }
 
     // path parameters for model run parameters by set
