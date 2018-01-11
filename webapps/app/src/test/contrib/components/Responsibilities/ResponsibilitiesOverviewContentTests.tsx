@@ -21,8 +21,7 @@ function makeProps(touchstoneId: string): ResponsibilityOverviewComponentProps {
             status: null,
             touchstone: touchstone.id,
             responsibilities: []
-        }, touchstone, modellingGroup),
-        currentTouchstoneId: touchstone.id
+        }, touchstone, modellingGroup)
     };
 }
 
