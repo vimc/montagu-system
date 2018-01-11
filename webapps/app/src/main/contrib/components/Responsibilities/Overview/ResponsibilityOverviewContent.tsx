@@ -42,7 +42,7 @@ export class ResponsibilityOverviewContentComponent extends RemoteContentCompone
         const demographyUrl = `/${props.modellingGroup.id}/responsibilities/${props.currentTouchstoneId}/demographics/`;
         const parametersUrl = `/${props.modellingGroup.id}/responsibilities/${props.currentTouchstoneId}/parameters/`;
 
-        const paramsSection = <div>
+        const paramsSection = <div id="params-section">
             <div className="largeSectionTitle">Parameters</div>
             <div><a key={"params"}
                     href={stochasticParams}>Download stochastic parameters template</a>
