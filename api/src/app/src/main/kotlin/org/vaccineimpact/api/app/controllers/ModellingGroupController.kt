@@ -155,13 +155,13 @@ open class ModellingGroupController(context: ControllerContext)
         return data.tableData
     }
 
-    open fun getModelRunParameterSet(context: ActionContext, repo: BurdenEstimateRepository): Sequence<ModelRun>
+    open fun getModelRunParameterSet(context: ActionContext, repo: BurdenEstimateRepository): StreamSerializable<ModelRun>
     {
         val setId = context.params(":model-run-parameter-set-id")
         val data = getModelRunParametersAndMetadata(context, repo)
         val filename = "set_$setId.csv"
         context.addAttachmentHeader(filename)
-        return data.data
+        return data
     }
 
     // TODO: https://vimc.myjetbrains.com/youtrack/issue/VIMC-307
@@ -188,11 +188,8 @@ open class ModellingGroupController(context: ControllerContext)
     }
 
     fun getModelRunParametersAndMetadata(context: ActionContext, repo: BurdenEstimateRepository):
-            FlexibleDataTable<ModelRun>
+            StreamSerializable<ModelRun>
     {
-
-
-
         val path = ModelRunParametersSetPath(context)
         val touchstone = repo.get
         context.checkIsAllowedToSeeTouchstone(path.touchstoneId, touchstone.id)
