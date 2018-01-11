@@ -37,7 +37,7 @@ export class ResponsibilityOverviewContentComponent extends RemoteContentCompone
     }
 
     renderContent(props: ResponsibilityOverviewComponentProps) {
-        const touchstoneId = props.responsibilitySet.touchstone.id
+        const touchstoneId = props.responsibilitySet.touchstone.id;
         const demographyUrl = `/${props.modellingGroup.id}/responsibilities/${touchstoneId}/demographics/`;
         const parametersUrl = `/${props.modellingGroup.id}/responsibilities/${touchstoneId}/parameters/`;
 
@@ -46,6 +46,7 @@ export class ResponsibilityOverviewContentComponent extends RemoteContentCompone
             <div><a key={"params"}
                     href={stochasticParams}>Download stochastic parameters template</a>
             </div>
+            <ButtonLink href={parametersUrl}>Upload parameters</ButtonLink>
         </div>;
 
         return <div>
@@ -55,7 +56,6 @@ export class ResponsibilityOverviewContentComponent extends RemoteContentCompone
                 <ButtonLink href={demographyUrl}>Download demographic data</ButtonLink>
             </div>
             {touchstoneId != "201801rfp-1" && paramsSection}
-            <ButtonLink href={parametersUrl}>Upload parameters</ButtonLink>
             <div className="largeSectionTitle">Scenarios</div>
             <ResponsibilityList
                 modellingGroup={props.modellingGroup}
