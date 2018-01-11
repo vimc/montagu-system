@@ -48,6 +48,7 @@ open class ModellingGroupController(context: ControllerContext)
     override fun endpoints(repos: RepositoryFactory): Iterable<EndpointDefinition<*>>
     {
         val repo: (Repositories) -> ModellingGroupRepository = { it.modellingGroup }
+
         return listOf(
                 oneRepoEndpoint("/", this::getModellingGroups, repos, repo).secured(setOf("*/modelling-groups.read")),
                 oneRepoEndpoint("/:group-id/", this::getModellingGroup, repos, repo).secured(setOf("*/modelling-groups.read", "*/models.read")),
@@ -62,6 +63,9 @@ open class ModellingGroupController(context: ControllerContext)
 
                 oneRepoEndpoint("$parametersURL/", this::getModelRunParameterSets, repos, { it.burdenEstimates })
                         .secured(setOf("$groupScope/estimates.write", "$groupScope/responsibilities.read")),
+
+                oneRepoEndpoint("$parametersURL/:model-run-parameter-set-id/", this::getModelRunParameterSet.streamed(), repos, repo, contentType = "text/csv")
+                        .secured(setOf("$groupScope/responsibilities.read")),
 
                 oneRepoEndpoint("$parametersURL/", this::addModelRunParameters, repos, { it.burdenEstimates }, method = HttpMethod.post)
                         .secured(setOf("$groupScope/estimates.write", "$groupScope/responsibilities.read")),
@@ -151,6 +155,15 @@ open class ModellingGroupController(context: ControllerContext)
         return data.tableData
     }
 
+    open fun getModelRunParameterSet(context: ActionContext, repo: BurdenEstimateRepository): Sequence<ModelRun>
+    {
+        val setId = context.params(":model-run-parameter-set-id")
+        val data = getModelRunParametersAndMetadata(context, repo)
+        val filename = "set_$setId.csv"
+        context.addAttachmentHeader(filename)
+        return data.data
+    }
+
     // TODO: https://vimc.myjetbrains.com/youtrack/issue/VIMC-307
     // Use streams to speed up this process of sending large data
     fun getCoverageDataAndMetadata(context: ActionContext, repo: ModellingGroupRepository):
@@ -174,7 +187,51 @@ open class ModellingGroupController(context: ControllerContext)
         return SplitData(splitData.structuredMetadata, tableData)
     }
 
+    fun getModelRunParametersAndMetadata(context: ActionContext, repo: BurdenEstimateRepository):
+            FlexibleDataTable<ModelRun>
+    {
+
+
+
+        val path = ModelRunParametersSetPath(context)
+        val touchstone = repo.get
+        context.checkIsAllowedToSeeTouchstone(path.touchstoneId, touchstone.id)
+        return repo.getModelRunParametersData(path.setId)
+    }
+
     private fun getWideDatatable(data: Sequence<LongCoverageRow>):
+            FlexibleDataTable<WideCoverageRow>
+    {
+        val groupedRows = data
+                .groupBy {
+                    hashSetOf(
+                            it.countryCode, it.setName,
+                            it.ageFirst, it.ageLast,
+                            it.vaccine, it.gaviSupport, it.activityType
+                    )
+                }
+
+        val rows = groupedRows.values
+                .map {
+                    mapWideCoverageRow(it)
+                }
+
+
+        // all the rows should have the same number of years, so we just look at the first row
+        val years = if (rows.any())
+        {
+            rows.first().coverageAndTargetPerYear.keys.toList()
+        }
+        else
+        {
+            listOf()
+        }
+
+        return FlexibleDataTable.new(rows.asSequence(), years.sorted())
+
+    }
+
+    private fun getModelRunParametersDatatable(data: Sequence<LongCoverageRow>):
             FlexibleDataTable<WideCoverageRow>
     {
         val groupedRows = data
@@ -263,4 +320,11 @@ data class ResponsibilityPath(val groupId: String, val touchstoneId: String, val
 {
     constructor(context: ActionContext)
             : this(context.params(":group-id"), context.params(":touchstone-id"), context.params(":scenario-id"))
+}
+
+// path parameters for model run parameters by set
+data class ModelRunParametersSetPath(val touchstoneId: String, val setId: Int)
+{
+    constructor(context: ActionContext)
+            : this(context.params(":touchstone-id"), context.params(":model-run-parameter-set-id").toInt())
 }
