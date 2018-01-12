@@ -3,7 +3,7 @@ import * as AltJS from "alt";
 import {AbstractStore} from "./AbstractStore";
 import {authActions, LogInProperties} from "../actions/AuthActions";
 import {decodeToken} from "../Token";
-import Cookies from "universal-cookie";
+import {Cookies} from "../../../@types/universal-cookie";
 
 const universalCookie = require("universal-cookie");
 const cookies = new universalCookie() as Cookies;
