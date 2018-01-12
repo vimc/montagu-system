@@ -1,6 +1,7 @@
 package org.vaccineimpact.api.blackboxTests.tests.BurdenEstimates
 
 import com.beust.klaxon.JsonObject
+import com.opencsv.CSVReader
 import org.assertj.core.api.Assertions
 import org.junit.Test
 import org.vaccineimpact.api.blackboxTests.helpers.RequestHelper
@@ -10,6 +11,8 @@ import org.vaccineimpact.api.blackboxTests.helpers.validate
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.validateSchema.JSONValidator
+import java.io.StringReader
+import java.math.BigDecimal
 
 class ModelRunParameterTests : BurdenEstimateTests()
 {
@@ -22,6 +25,7 @@ class ModelRunParameterTests : BurdenEstimateTests()
 """
 
     private val modelRunParameterUrl = "/modelling-groups/$groupId/model-run-parameters/$touchstoneId/"
+    private val modelRunParameterCsvUrl = "$modelRunParameterUrl/1/"
 
     @Test
     fun `can upload model run parameter set`()
@@ -138,6 +142,49 @@ class ModelRunParameterTests : BurdenEstimateTests()
             Assertions.assertThat(obj["description"]).isEqualTo("description")
             Assertions.assertThat(obj["disease"]).isEqualTo(diseaseId)
         }
+    }
+
+    @Test
+    fun `download csv of model run parameters values`()
+    {
+        val userHelper = TestUserHelper()
+        val requestHelper = RequestHelper()
+
+        JooqContext().use {
+            setupDatabaseWithModelRunParameterSetValues(it)
+            userHelper.setupTestUser(it)
+        }
+
+        val permissions = PermissionSet(
+                "*/can-login",
+                "$groupScope/estimates.write",
+                "$groupScope/responsibilities.read"
+        )
+
+        val response = requestHelper.get(modelRunParameterCsvUrl, permissions, contentType = "text/csv")
+
+        val csv = StringReader(response.text)
+                .use { CSVReader(it).readAll() }
+
+        val headers = csv.first().toList()
+        val firstRow = csv.drop(1).first().toList()
+
+        val expectedHeaders = listOf("run_id", "<param_1>", "<param_2>")
+
+        headers.forEachIndexed { index, h ->
+            Assertions.assertThat(h).isEqualTo(expectedHeaders[index])
+        }
+
+        Assertions.assertThat(firstRow[0]).isEqualTo("1")
+        Assertions.assertThat(firstRow[1]).isEqualTo("aa")
+        Assertions.assertThat(firstRow[2]).isEqualTo("bb")
+
+        val secondRow = csv.drop(2).first().toList()
+
+        Assertions.assertThat(secondRow[0]).isEqualTo("2")
+        Assertions.assertThat(secondRow[1]).isEqualTo("cc")
+        Assertions.assertThat(secondRow[2]).isEqualTo("dd")
+
     }
 
 }

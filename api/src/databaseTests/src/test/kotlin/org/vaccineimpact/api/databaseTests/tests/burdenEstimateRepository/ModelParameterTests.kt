@@ -158,6 +158,32 @@ class ModelParameterTests : BurdenEstimateRepositoryTests()
     }
 
     @Test
+    fun `can get model run parameter sets and values for download`()
+    {
+        var records = listOf<ModelRun>()
+        var contentType = ""
+
+        given { db ->
+            setupDatabaseWithModelRunParameterSetValues(db)
+        } makeTheseChanges { repo ->
+            val flexTableData = repo.getModelRunParameterSet(1)
+            records = flexTableData.data.toList()
+            contentType = flexTableData.contentType
+        } andCheck { repo ->
+            Assertions.assertThat(contentType).isEqualTo("text/csv")
+            Assertions.assertThat(records.size).isEqualTo(2)
+            val row1 = records[0]
+            Assertions.assertThat(row1.runId).isEqualTo("1")
+            Assertions.assertThat(row1.parameterValues["<param_1>"]).isEqualTo("aa")
+            Assertions.assertThat(row1.parameterValues["<param_2>"]).isEqualTo("bb")
+            val row2 = records[1]
+            Assertions.assertThat(row2.runId).isEqualTo("2")
+            Assertions.assertThat(row2.parameterValues["<param_1>"]).isEqualTo("cc")
+            Assertions.assertThat(row2.parameterValues["<param_2>"]).isEqualTo("dd")
+        }
+    }
+
+    @Test
     fun `cannot get model run parameter sets if touchstone doesn't exist`()
     {
         assertUnknownObjectError(work = { repo ->

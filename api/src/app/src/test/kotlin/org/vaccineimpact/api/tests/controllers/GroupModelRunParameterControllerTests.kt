@@ -9,12 +9,15 @@ import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.controllers.GroupModelRunParametersController
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
+import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.SimpleDataSet
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.models.ModelRun
 import org.vaccineimpact.api.models.ModelRunParameterSet
 import org.vaccineimpact.api.models.Touchstone
 import org.vaccineimpact.api.models.TouchstoneStatus
+import org.vaccineimpact.api.models.permissions.ReifiedPermission
+import org.vaccineimpact.api.serialization.FlexibleDataTable
 import org.vaccineimpact.api.test_helpers.MontaguTests
 import java.io.StringReader
 import java.time.Instant
@@ -31,11 +34,43 @@ class GroupModelRunParameterControllerTests : MontaguTests()
             on { params(":touchstone-id") } doReturn "touchstone-1"
             on { params(":scenario-id") } doReturn "scenario-1"
         }
-
         val repo = mockRepository(modelRunParameterSets = modelRunParameterSets)
-        val controller = GroupModelRunParametersController(mockContext, repo)
+
+        val controller = GroupModelRunParametersController(mockContext, repo, mock())
         assertThat(controller.getModelRunParameterSets()).isEqualTo(modelRunParameterSets)
     }
+
+    @Test
+    fun `can get model run params csv`()
+    {
+        val context = mock<ActionContext> {
+            on { it.params(":group-id") } doReturn "gId"
+            on { it.params(":touchstone-id") } doReturn "touchstone-1"
+            on { it.params(":model-run-parameter-set-id") } doReturn "1"
+            on { hasPermission(any()) } doReturn true
+        }
+
+        val data = GroupModelRunParametersController(context, mockRepository(), mockTouchstoneRepository())
+                .getModelRunParameterSet()
+
+        assertThat(data.contentType).isEqualTo("text/csv")
+        assertThat(data.data.first().runId).isEqualTo("1")
+    }
+
+    @Test
+    fun `can not get model run params csv if user has no access to not prepared touchstones`()
+    {
+        val context = mock<ActionContext> {
+            on { it.params(":group-id") } doReturn "gId"
+            on { it.params(":touchstone-id") } doReturn "touchstone-bad"
+            on { it.params(":model-run-parameter-set-id") } doReturn "1"
+            on { hasPermission(ReifiedPermission.parse("*/touchstones.prepare")) } doReturn false
+        }
+        Assertions.assertThatThrownBy {
+            GroupModelRunParametersController(context, mockRepository(), mockTouchstoneRepository()).getModelRunParameterSet()
+        }.hasMessageContaining("Unknown touchstone")
+    }
+
 
     @Test
     fun `throws UnknownObjectError if touchstone is in preparation when getting model run params`()
@@ -47,7 +82,7 @@ class GroupModelRunParameterControllerTests : MontaguTests()
         }
 
         val repo = mockRepository()
-        val controller = GroupModelRunParametersController(mockContext, repo)
+        val controller = GroupModelRunParametersController(mockContext, repo, mock())
         Assertions.assertThatThrownBy { controller.getModelRunParameterSets() }
                 .isInstanceOf(UnknownObjectError::class.java)
     }
@@ -74,7 +109,7 @@ class GroupModelRunParameterControllerTests : MontaguTests()
         val repo = mockRepository(modelRuns = modelRuns)
 
         val expectedPath = "/v1/modelling-groups/group-1/model-run-parameters/11/"
-        val controller = GroupModelRunParametersController(mockContext, repo)
+        val controller = GroupModelRunParametersController(mockContext, repo, mock())
         val objectCreationUrl = controller.addModelRunParameters()
         assertThat(objectCreationUrl).endsWith(expectedPath)
     }
@@ -90,7 +125,7 @@ class GroupModelRunParameterControllerTests : MontaguTests()
         val touchstoneSet = mockTouchstones()
         val repo = mockRepository(touchstoneSet)
 
-        val controller = GroupModelRunParametersController(mockContext, repo)
+        val controller = GroupModelRunParametersController(mockContext, repo, mock())
         Assertions.assertThatThrownBy {
             controller.addModelRunParameters()
         }.isInstanceOf(UnknownObjectError::class.java)
@@ -112,6 +147,10 @@ class GroupModelRunParameterControllerTests : MontaguTests()
                         eq("some description"),
                         eq(modelRuns), eq("user.name"), any())
             } doReturn 11
+            on { it.getModelRunParameterSet(any()) } doReturn FlexibleDataTable.new(
+                    sequenceOf(ModelRun("1", mapOf("<param_1>" to "aa", "<param_2>" to "bb"))),
+                    listOf("<param_1>", "<param_2>")
+            )
         }
     }
 
@@ -119,4 +158,13 @@ class GroupModelRunParameterControllerTests : MontaguTests()
         on { get("touchstone-1") } doReturn Touchstone("touchstone-1", "touchstone", 1, "Description", TouchstoneStatus.OPEN)
         on { get("touchstone-bad") } doReturn Touchstone("touchstone-bad", "touchstone", 1, "not open", TouchstoneStatus.IN_PREPARATION)
     }
+
+    private fun mockTouchstoneRepository(): TouchstoneRepository
+    {
+        val simpleDataset =  mockTouchstones()
+        return mock {
+            on { touchstones } doReturn simpleDataset
+        }
+    }
+
 }

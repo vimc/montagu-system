@@ -233,6 +233,27 @@ fun JooqContext.addModelRun(runParameterSetId: Int, id: String): Int
     return record.internalId
 }
 
+fun JooqContext.addModelRunParameter(runParameterSetId: Int, key: String): Int
+{
+    val record = this.dsl.newRecord(MODEL_RUN_PARAMETER).apply {
+        this.modelRunParameterSet = runParameterSetId
+        this.key = key
+    }
+    record.store()
+    return record.id
+}
+
+fun JooqContext.addModelRunParameterValue(modelRunId: Int, parameterId: Int, value: String): Int
+{
+    val record = this.dsl.newRecord(MODEL_RUN_PARAMETER_VALUE).apply {
+        this.modelRun = modelRunId
+        this.modelRunParameter = parameterId
+        this.value = value
+    }
+    record.store()
+    return record.id
+}
+
 fun JooqContext.addBurdenEstimateProblem(problem: String, burdenId: Int)
 {
     val record = this.dsl.newRecord(BURDEN_ESTIMATE_SET_PROBLEM).apply {

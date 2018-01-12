@@ -14,6 +14,7 @@ import org.vaccineimpact.api.db.Tables.*
 import org.vaccineimpact.api.db.fromJoinPath
 import org.vaccineimpact.api.db.joinPath
 import org.vaccineimpact.api.models.*
+import org.vaccineimpact.api.serialization.FlexibleDataTable
 import java.beans.ConstructorProperties
 import java.sql.Timestamp
 import java.time.Instant
@@ -140,6 +141,42 @@ class JooqBurdenEstimateRepository(
         }
 
         return parameterSetId
+    }
+
+    override fun getModelRunParameterSet(setId: Int): FlexibleDataTable<ModelRun>
+    {
+        val sequence = getModelRunParametersSequence(setId)
+        val headers = getModelRunParametersHeaders(setId)
+
+        return FlexibleDataTable.new(sequence, headers)
+    }
+
+    private fun getModelRunParametersHeaders(setId: Int): List<String>
+    {
+        val records = dsl.select(
+                MODEL_RUN_PARAMETER.KEY
+        )
+                .from(MODEL_RUN_PARAMETER)
+                .where(MODEL_RUN_PARAMETER.MODEL_RUN_PARAMETER_SET.eq(setId))
+                .fetchInto(String::class.java)
+        return records
+    }
+
+    private fun getModelRunParametersSequence(setId: Int): Sequence<ModelRun>
+    {
+        return dsl.select(
+                MODEL_RUN_PARAMETER_VALUE.ID,
+                MODEL_RUN_PARAMETER.KEY,
+                MODEL_RUN.RUN_ID,
+                MODEL_RUN_PARAMETER_VALUE.VALUE
+        )
+                .fromJoinPath(MODEL_RUN_PARAMETER, MODEL_RUN_PARAMETER_VALUE, MODEL_RUN)
+                .where(MODEL_RUN_PARAMETER.MODEL_RUN_PARAMETER_SET.eq(setId))
+                .fetch()
+                .map { mapper.mapModelRunParameter(it) }
+                .groupBy { it.run_id }
+                .map { mapper.mapModelRun(it.key, it.value)}
+                .asSequence()
     }
 
     private fun addUploadInfo(uploader: String, timestamp: Instant): Int

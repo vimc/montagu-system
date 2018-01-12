@@ -101,6 +101,30 @@ abstract class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRep
         return ReturnedIds(modelVersionId, responsibilityId, setId)
     }
 
+    protected fun setupDatabaseWithModelRunParameterSetValues(db: JooqContext)
+    {
+        db.addTouchstone("touchstone", 1, "Touchstone 1", addName = true)
+        db.addScenarioDescription(scenarioId, "Test scenario", "Hib3", addDisease = true)
+        db.addGroup(groupId, "Test group")
+
+        db.addModel(modelId, groupId, diseaseId)
+        val modelVersionId = db.addModelVersion(modelId, modelVersion, setCurrent = true)
+
+        val setId = db.addResponsibilitySet(groupId, touchstoneId, "incomplete")
+        db.addResponsibility(setId, touchstoneId, scenarioId)
+        db.addUserForTesting(username)
+
+        val paramsSetId = db.addModelRunParameterSet(setId, modelVersionId, username, "test params")
+        val modelRunId = db.addModelRun(paramsSetId, "1")
+        val modelRunId2 = db.addModelRun(paramsSetId, "2")
+        val modelRunParameterId1 = db.addModelRunParameter(paramsSetId, "<param_1>")
+        val modelRunParameterId2 = db.addModelRunParameter(paramsSetId, "<param_2>")
+        db.addModelRunParameterValue(modelRunId, modelRunParameterId1, "aa")
+        db.addModelRunParameterValue(modelRunId, modelRunParameterId2, "bb")
+        db.addModelRunParameterValue(modelRunId2, modelRunParameterId1, "cc")
+        db.addModelRunParameterValue(modelRunId2, modelRunParameterId2, "dd")
+    }
+
     protected fun checkBurdenEstimateSetMetadata(db: JooqContext,
                                                setId: Int,
                                                returnedIds: ReturnedIds,
