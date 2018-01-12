@@ -36,6 +36,7 @@ class AuthenticationController(context: ActionContext,
                 val user = context.userProfile!!.montaguUser()!!
                 val token = tokenHelper.generateToken(user)
                 val shinyToken = tokenHelper.generateToken(user)
+                context.addResponseHeader("Set-Cookie", "jwt_token=$shinyToken")
                 userRepository.updateLastLoggedIn(user.username)
                 return SuccessfulAuthentication(shinyToken, token, tokenHelper.lifeSpan)
             }
