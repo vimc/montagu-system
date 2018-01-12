@@ -1,10 +1,10 @@
 package org.vaccineimpact.api.app.controllers
 
-import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.FormHelpers
 import org.vaccineimpact.api.app.HTMLForm
 import org.vaccineimpact.api.app.HTMLFormHelpers
 import org.vaccineimpact.api.app.app_start.Controller
+import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.UserRepository
 import org.vaccineimpact.api.app.security.montaguUser
@@ -37,7 +37,6 @@ class AuthenticationController(context: ActionContext,
                 val token = tokenHelper.generateToken(user)
                 val shinyToken = tokenHelper.generateToken(user)
                 context.addResponseHeader("Set-Cookie", "jwt_token=test; Path=/")
-                context.addResponseHeader("Access-Control-Allow-Origin", "http://localhost:5000/")
                 userRepository.updateLastLoggedIn(user.username)
                 return SuccessfulAuthentication(shinyToken, token, tokenHelper.lifeSpan)
             }
