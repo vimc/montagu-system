@@ -67,7 +67,7 @@ export abstract class AuthStore<TState extends AuthStateBase, TInterface extends
                 }
             },
             saveShinyCookie: (shiny_token: string) => {
-                document.cookie = "jwt_token=" + shiny_token + ";path=/"
+                document.cookie = "jwt_token=" + shiny_token + ";path=/;secure"
             }
         })
     }
