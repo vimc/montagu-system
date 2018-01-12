@@ -74,7 +74,7 @@
     "@types/react-dom": "^15.5.0",
     "@types/react-transition-group": "^1.1.0",
     "@types/reactstrap": "^5.0.8",
-    "@types/universal-cookie": "git+ssh://git@github.com:S64/types-universal-cookie.git#v2.1.2-2",
+    "@types/universal-cookie": "git+https://git@github.com:S64/types-universal-cookie.git#v2.1.2-2",
     "alt": "^0.18.6",
     "alt-form": "^5.0.0",
     "alt-reform": "^1.0.1",
