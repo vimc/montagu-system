@@ -3,10 +3,6 @@ import * as AltJS from "alt";
 import {AbstractStore} from "./AbstractStore";
 import {authActions, LogInProperties} from "../actions/AuthActions";
 import {decodeToken} from "../Token";
-import {Cookies} from "../../../@types/universal-cookie";
-
-const universalCookie = require("universal-cookie");
-const cookies = new universalCookie() as Cookies;
 
 export interface AuthStateBase {
     loggedIn: boolean;
@@ -71,8 +67,7 @@ export abstract class AuthStore<TState extends AuthStateBase, TInterface extends
                 }
             },
             saveShinyCookie: (shiny_token: string) => {
-                console.log("set shiny cookie")
-                cookies.set('jwt_token', shiny_token);
+                document.cookie = "jwt_token=" + shiny_token + ";path=/"
             }
         })
     }

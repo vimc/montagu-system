@@ -90,7 +90,6 @@
     "react-transition-group": "^1.2.0",
     "reactstrap": "^4.8.0",
     "simple-react-router": "0.0.14",
-    "universal-cookie": "^2.1.2",
     "whatwg-fetch": "^2.0.3"
   }
 }
