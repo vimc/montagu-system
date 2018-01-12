@@ -48,7 +48,7 @@ open class OnetimeLinkResolver(private val controllers: MontaguControllers,
                             repos.burdenEstimates,
                             RequestBodySource.HTMLMultipart("file")
                     )
-                    OneTimeAction.MODEl_RUN_PARAMETERS -> GroupModelRunParametersController(context, repos.burdenEstimates).addModelRunParameters()
+                    OneTimeAction.MODEl_RUN_PARAMETERS -> GroupModelRunParametersController(context, repos).addModelRunParameters()
                     OneTimeAction.COVERAGE -> stream(GroupCoverageController(context, repos.modellingGroup).getCoverageData(), context)
                     OneTimeAction.DEMOGRAPHY -> stream(TouchstoneController(context, repos).getDemographicData(), context)
                     OneTimeAction.SET_PASSWORD -> PasswordController(context, repos.user, OneTimeTokenGenerator(repos.token, webTokenHelper)).setPasswordForUser(context.params("username"))

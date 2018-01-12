@@ -15,6 +15,7 @@ import org.vaccineimpact.api.models.ModelRun
 import org.vaccineimpact.api.models.ModelRunParameterSet
 import org.vaccineimpact.api.models.Touchstone
 import org.vaccineimpact.api.models.TouchstoneStatus
+import org.vaccineimpact.api.serialization.FlexibleDataTable
 import org.vaccineimpact.api.test_helpers.MontaguTests
 import java.io.StringReader
 import java.time.Instant
@@ -31,11 +32,32 @@ class GroupModelRunParameterControllerTests : MontaguTests()
             on { params(":touchstone-id") } doReturn "touchstone-1"
             on { params(":scenario-id") } doReturn "scenario-1"
         }
-
         val repo = mockRepository(modelRunParameterSets = modelRunParameterSets)
+        open class Repositories()
+        {
+            open val burdenEstimates: repo
+        }
         val controller = GroupModelRunParametersController(mockContext, repo)
         assertThat(controller.getModelRunParameterSets()).isEqualTo(modelRunParameterSets)
     }
+
+//    @Test
+//    fun `can get model run params csv`()
+//    {
+//
+//
+//        val repo = makeRepoMockingModelRunParameterData()
+//
+//        val context = mock<ActionContext> {
+//            on { it.params(":group-id") } doReturn "gId"
+//            on { it.params(":model-run-parameter-set-id") } doReturn "mRPId"
+//            on { hasPermission(any()) } doReturn true
+//        }
+//
+//        val data = GroupModelRunParametersController(context, repo)
+//                .getModelRunParameterSet().data
+//
+//    }
 
     @Test
     fun `throws UnknownObjectError if touchstone is in preparation when getting model run params`()
@@ -119,4 +141,12 @@ class GroupModelRunParameterControllerTests : MontaguTests()
         on { get("touchstone-1") } doReturn Touchstone("touchstone-1", "touchstone", 1, "Description", TouchstoneStatus.OPEN)
         on { get("touchstone-bad") } doReturn Touchstone("touchstone-bad", "touchstone", 1, "not open", TouchstoneStatus.IN_PREPARATION)
     }
+
+//    private fun makeRepoMockingEstimateRepository(): FlexibleDataTable<ModelRun>
+//    {
+//        val data = 2
+//        return mock {
+//            on { getModelRunParametersData(com.nhaarman.mockito_kotlin.any(), com.nhaarman.mockito_kotlin.any()) } doReturn data
+//        }
+//    }
 }

@@ -274,5 +274,5 @@ class JooqModellingGroupRepository(
 
     private fun mapModellingGroup(x: ModellingGroupRecord) = ModellingGroup(x.id, x.description)
 
-    private fun getTouchstone(touchstoneId: String) = touchstoneRepository.touchstones.get(touchstoneId)
+    override fun getTouchstone(touchstoneId: String): Touchstone = touchstoneRepository.touchstones.get(touchstoneId)
 }

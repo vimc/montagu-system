@@ -23,6 +23,9 @@ abstract class BurdenEstimateTests : DatabaseTest()
     )
     protected val diseaseId = "Hib3"
     protected val diseaseName = "Hib3 Name"
+    protected val modelId = "model-1"
+    protected val modelVersion = "version-1"
+    protected val username = "some.user"
 
     protected fun setUp(db: JooqContext): ReturnedIds
     {
@@ -63,6 +66,24 @@ abstract class BurdenEstimateTests : DatabaseTest()
         return db.addModelRunParameterSet(returnedIds.responsibilitySetId, returnedIds.modelVersionId,
                 TestUserHelper.username, "description")
     }
+
+
+    protected fun setupDatabaseWithModelRunParameterSetValues(db: JooqContext)
+    {
+        val returnedIds = setUp(db)
+
+        val paramsSetId = db.addModelRunParameterSet(returnedIds.responsibilitySetId, returnedIds.modelVersionId, username, "test params")
+        val modelRunId = db.addModelRun(paramsSetId, "1")
+        val modelRunId2 = db.addModelRun(paramsSetId, "2")
+        val modelRunParameterId1 = db.addModelRunParameter(paramsSetId, "<param_1>")
+        val modelRunParameterId2 = db.addModelRunParameter(paramsSetId, "<param_2>")
+        db.addModelRunParameterValue(modelRunId, modelRunParameterId1, "aa")
+        db.addModelRunParameterValue(modelRunId, modelRunParameterId2, "bb")
+        db.addModelRunParameterValue(modelRunId2, modelRunParameterId1, "cc")
+        db.addModelRunParameterValue(modelRunId2, modelRunParameterId2, "dd")
+    }
+
+
 
     protected fun validateOneTimeLinkWithRedirect(url: String)
     {
