@@ -22,14 +22,10 @@ constructor(
 @FlexibleColumns
 data class ModelRun(val runId: String,  @FlexibleProperty val parameterValues: Map<String, String>)
 
-data class ModelRunParametersValue(
+data class ModelRunParameter(
         val id: Int,
         val key: String,
         val run_id: String,
         val value: String
-)
-
-data class ModelRunParametersHeader(
-        val key: String
 )
 
