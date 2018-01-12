@@ -15,8 +15,6 @@ export interface AuthStoreBaseInterface<TState> extends AltJS.AltStore<TState> {
     logIn(access_token: string, triggered_by_user: boolean): void;
 
     loadAccessToken(): void;
-
-    saveShinyCookie(shiny_token: string): void;
 }
 
 export const tokenStorageHelper = {
@@ -65,9 +63,6 @@ export abstract class AuthStore<TState extends AuthStateBase, TInterface extends
                 if (token != null) {
                     this.doLogIn(token, true);
                 }
-            },
-            saveShinyCookie: (shiny_token: string) => {
-                document.cookie = "jwt_token=" + shiny_token + ";path=/;secure"
             }
         })
     }

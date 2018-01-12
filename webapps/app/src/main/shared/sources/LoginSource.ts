@@ -24,7 +24,6 @@ export function processLoginResponse(
             handleError("Your username or password is incorrect");
         } else if (json.access_token) {
             authStore.logIn(json.access_token, triggeredByUser);
-            authStore.saveShinyCookie(json.shiny_token);
         } else {
             // This case catches the situation where the server has an internal error, but
             // still returns something in the standard format
