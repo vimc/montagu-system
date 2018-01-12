@@ -12,9 +12,6 @@ import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.Tables
 import org.vaccineimpact.api.db.fromJoinPath
 import org.vaccineimpact.api.models.ModelRun
-import org.vaccineimpact.api.models.ModelRunParametersHeader
-import org.vaccineimpact.api.models.ModelRunParametersValue
-import org.vaccineimpact.api.serialization.FlexibleDataTable
 
 class ModelParameterTests : BurdenEstimateRepositoryTests()
 {
@@ -169,9 +166,9 @@ class ModelParameterTests : BurdenEstimateRepositoryTests()
         given { db ->
             setupDatabaseWithModelRunParameterSetValues(db)
         } makeTheseChanges { repo ->
-            val FlexTableData = repo.getModelRunParametersData(1)
-            records = FlexTableData.data.toList()
-            contentType = FlexTableData.contentType
+            val flexTableData = repo.getModelRunParameterSet(1)
+            records = flexTableData.data.toList()
+            contentType = flexTableData.contentType
         } andCheck { repo ->
             Assertions.assertThat(contentType).isEqualTo("text/csv")
             Assertions.assertThat(records.size).isEqualTo(2)

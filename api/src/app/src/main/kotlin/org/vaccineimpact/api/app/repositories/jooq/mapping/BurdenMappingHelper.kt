@@ -40,9 +40,9 @@ class BurdenMappingHelper : MappingHelper()
         )
     }
 
-    fun mapModelParameterValuesPlain(record: Record): ModelRunParametersValue
+    fun mapModelRunParameter(record: Record): ModelRunParameter
     {
-        return ModelRunParametersValue(
+        return ModelRunParameter(
                 record[MODEL_RUN_PARAMETER_VALUE.ID],
                 record[MODEL_RUN_PARAMETER.KEY],
                 record[MODEL_RUN.RUN_ID],
@@ -50,14 +50,9 @@ class BurdenMappingHelper : MappingHelper()
         )
     }
 
-    fun mapModelParameterValuesGrouped(runId: String, records: List<ModelRunParametersValue>) : ModelRun
+    fun mapModelRun(runId: String, records: List<ModelRunParameter>) : ModelRun
     {
         val map = records.associateBy({ it.key }, { it.value})
         return ModelRun(runId, map)
-    }
-
-    fun mapModelParameterHeaders(record: Record): String
-    {
-        return record[MODEL_RUN_PARAMETER.KEY]
     }
 }

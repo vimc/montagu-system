@@ -143,7 +143,7 @@ class JooqBurdenEstimateRepository(
         return parameterSetId
     }
 
-    override fun getModelRunParametersData(setId: Int): FlexibleDataTable<ModelRun>
+    override fun getModelRunParameterSet(setId: Int): FlexibleDataTable<ModelRun>
     {
         val sequence = getModelRunParametersSequence(setId)
         val headers = getModelRunParametersHeaders(setId)
@@ -158,32 +158,25 @@ class JooqBurdenEstimateRepository(
         )
                 .from(MODEL_RUN_PARAMETER)
                 .where(MODEL_RUN_PARAMETER.MODEL_RUN_PARAMETER_SET.eq(setId))
-                .fetch()
-                .map { mapper.mapModelParameterHeaders(it) }
+                .fetchInto(String::class.java)
         return records
     }
 
     private fun getModelRunParametersSequence(setId: Int): Sequence<ModelRun>
     {
-        val records = dsl.select(
+        return dsl.select(
                 MODEL_RUN_PARAMETER_VALUE.ID,
                 MODEL_RUN_PARAMETER.KEY,
                 MODEL_RUN.RUN_ID,
                 MODEL_RUN_PARAMETER_VALUE.VALUE
         )
-                .from(MODEL_RUN_PARAMETER_VALUE)
-                .join(MODEL_RUN_PARAMETER)
-                .on(MODEL_RUN_PARAMETER_VALUE.MODEL_RUN_PARAMETER.eq(MODEL_RUN_PARAMETER.ID))
-                .join(MODEL_RUN)
-                .on(MODEL_RUN_PARAMETER_VALUE.MODEL_RUN.eq(MODEL_RUN.INTERNAL_ID))
+                .fromJoinPath(MODEL_RUN_PARAMETER, MODEL_RUN_PARAMETER_VALUE, MODEL_RUN)
                 .where(MODEL_RUN_PARAMETER.MODEL_RUN_PARAMETER_SET.eq(setId))
                 .fetch()
-                .map { mapper.mapModelParameterValuesPlain(it) }
+                .map { mapper.mapModelRunParameter(it) }
                 .groupBy { it.run_id }
-                .map { mapper.mapModelParameterValuesGrouped(it.key, it.value)}
+                .map { mapper.mapModelRun(it.key, it.value)}
                 .asSequence()
-
-        return records
     }
 
     private fun addUploadInfo(uploader: String, timestamp: Instant): Int
