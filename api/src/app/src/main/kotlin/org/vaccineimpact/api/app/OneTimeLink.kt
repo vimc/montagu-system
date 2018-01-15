@@ -37,11 +37,6 @@ open class OnetimeLinkResolver(private val controllers: MontaguControllers,
             repoFactory.inTransaction { repos ->
                 when (action)
                 {
-                    OneTimeAction.BURDENS -> controllers.groupBurdenEstimates.addBurdenEstimates(
-                            context,
-                            repos.burdenEstimates,
-                            RequestBodySource.HTMLMultipart("file")
-                    )
                     OneTimeAction.BURDENS_CREATE -> controllers.groupBurdenEstimates.createBurdenEstimateSet(context, repos.burdenEstimates)
                     OneTimeAction.BURDENS_POPULATE -> controllers.groupBurdenEstimates.populateBurdenEstimateSet(
                             context,

@@ -16,10 +16,6 @@ interface BurdenEstimateRepository : Repository
     fun getBurdenEstimateSet(setId: Int): BurdenEstimateSet
     fun getBurdenEstimateSets(groupId: String, touchstoneId: String, scenarioId: String): List<BurdenEstimateSet>
 
-    @Deprecated("Instead use createBurdenEstimateSet and then populateBurdenEstimateSet")
-    fun addBurdenEstimateSet(groupId: String, touchstoneId: String, scenarioId: String,
-                             estimates: Sequence<BurdenEstimate>, uploader: String, timestamp: Instant): Int
-
     fun populateBurdenEstimateSet(setId: Int, groupId: String, touchstoneId: String, scenarioId: String,
                                   estimates: Sequence<BurdenEstimateWithRunId>)
 

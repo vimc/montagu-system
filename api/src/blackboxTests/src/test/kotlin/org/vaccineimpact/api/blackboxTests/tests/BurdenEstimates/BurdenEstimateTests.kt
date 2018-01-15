@@ -15,7 +15,6 @@ abstract class BurdenEstimateTests : DatabaseTest()
     protected val scenarioId = "scenario-1"
     protected val groupScope = "modelling-group:$groupId"
     protected val urlBase = "/modelling-groups/$groupId/responsibilities/$touchstoneId/$scenarioId"
-    protected val url = "$urlBase/estimates/"
     protected val setUrl = "$urlBase/estimate-sets/"
     protected val requiredWritePermissions = PermissionSet(
             "$groupScope/estimates.write",
@@ -23,8 +22,6 @@ abstract class BurdenEstimateTests : DatabaseTest()
     )
     protected val diseaseId = "Hib3"
     protected val diseaseName = "Hib3 Name"
-    protected val modelId = "model-1"
-    protected val modelVersion = "version-1"
     protected val username = "some.user"
 
     protected fun setUp(db: JooqContext): ReturnedIds
