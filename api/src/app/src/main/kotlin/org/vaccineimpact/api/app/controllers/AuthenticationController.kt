@@ -43,4 +43,13 @@ class AuthenticationController(context: ActionContext,
             is HTMLForm.InvalidForm -> FailedAuthentication(validationResult.problem)
         }
     }
+
+    fun setShinyCookie(): String
+    {
+        val user = context.userProfile!!.montaguUser()!!
+        val shinyToken = tokenHelper.generateToken(user)
+        context.addResponseHeader("Set-Cookie", "jwt_token=test; Path=/; HttpOnly; Secure; SameSite=Lax")
+        context.addResponseHeader("Access-Control-Allow-Credentials", "true")
+        return okayResponse()
+    }
 }
