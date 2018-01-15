@@ -46,9 +46,9 @@ class AuthenticationController(context: ActionContext,
 
     fun setShinyCookie(): String
     {
-        val user = context.userProfile!!.montaguUser()!!
-        val shinyToken = tokenHelper.generateToken(user)
-        context.addResponseHeader("Set-Cookie", "jwt_token=test; Path=/; HttpOnly; Secure; SameSite=Lax")
+      //  val user = context.userProfile!!.montaguUser()!!
+    //    val shinyToken = tokenHelper.generateToken(user)
+        context.addResponseHeader("Set-Cookie", "jwt_token=test; Path=/; Secure; HttpOnly; SameSite=Lax")
         context.addResponseHeader("Access-Control-Allow-Credentials", "true")
         return okayResponse()
     }

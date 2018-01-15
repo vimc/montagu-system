@@ -56,6 +56,7 @@ class MontaguApi
         })
         spk.options("*", { _, res ->
             res.header("Access-Control-Allow-Headers", "Authorization")
+            res.header("Access-Control-Allow-Credentials", "true")
         })
         NotFoundHandler().setup()
         ErrorHandler.setup()
