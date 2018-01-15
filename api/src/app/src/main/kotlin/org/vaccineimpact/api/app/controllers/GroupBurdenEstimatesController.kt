@@ -1,5 +1,6 @@
 package org.vaccineimpact.api.app.controllers
 
+import org.vaccineimpact.api.app.app_start.Controller
 import org.vaccineimpact.api.app.checkAllValuesAreEqual
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.context.RequestBodySource
@@ -11,6 +12,7 @@ import org.vaccineimpact.api.app.controllers.endpoints.secured
 import org.vaccineimpact.api.app.controllers.helpers.ResponsibilityPath
 import org.vaccineimpact.api.app.errors.InconsistentDataError
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
+import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.RepositoryFactory
 import org.vaccineimpact.api.app.security.checkEstimatePermissionsForTouchstone
 import org.vaccineimpact.api.models.*
@@ -18,43 +20,21 @@ import org.vaccineimpact.api.models.helpers.OneTimeAction
 import spark.route.HttpMethod
 import java.time.Instant
 
-open class GroupBurdenEstimatesController(context: ControllerContext) : AbstractController(context)
+open class GroupBurdenEstimatesController(
+        context: ActionContext,
+        private val estimateRepository: BurdenEstimateRepository
+) : Controller(context)
 {
-    override val urlComponent = "/modelling-groups/:group-id/responsibilities/:touchstone-id/:scenario-id"
-    private val groupScope = "modelling-group:<group-id>"
+    constructor(context: ActionContext, repos: Repositories)
+            : this(context, repos.burdenEstimates)
 
-    override fun endpoints(repos: RepositoryFactory): Iterable<EndpointDefinition<*>>
-    {
-        return listOf(
-                oneRepoEndpoint("/estimate-sets/", this::getBurdenEstimates, repos, { it.burdenEstimates }, method = HttpMethod.get)
-                        .secured(permissions("read")),
-
-                oneRepoEndpoint("/estimate-sets/", this::createBurdenEstimateSet, repos, { it.burdenEstimates }, method = HttpMethod.post)
-                        .secured(permissions("write")),
-
-                oneRepoEndpoint("/estimate-sets/:set-id/", this::populateBurdenEstimateSet, repos, { it.burdenEstimates }, method = HttpMethod.post)
-                        .secured(permissions("write")),
-
-                oneRepoEndpoint("/estimate-sets/get_onetime_link/", { c, r -> getOneTimeLinkToken(c, r, OneTimeAction.BURDENS_CREATE) }, repos, { it.token })
-                        .secured(setOf("$groupScope/estimates.write", "$groupScope/responsibilities.read")),
-
-                oneRepoEndpoint("/estimate-sets/:set-id/get_onetime_link/", { c, r -> getOneTimeLinkToken(c, r, OneTimeAction.BURDENS_POPULATE) }, repos, { it.token })
-                        .secured(setOf("$groupScope/estimates.write", "$groupScope/responsibilities.read"))
-        )
-    }
-
-    private fun permissions(readOrWrite: String) = setOf(
-            "$groupScope/estimates.$readOrWrite",
-            "$groupScope/responsibilities.read"
-    )
-
-    fun getBurdenEstimates(context: ActionContext, estimateRepository: BurdenEstimateRepository): List<BurdenEstimateSet>
+    fun getBurdenEstimates(): List<BurdenEstimateSet>
     {
         val path = getValidResponsibilityPath(context, estimateRepository)
         return estimateRepository.getBurdenEstimateSets(path.groupId, path.touchstoneId, path.scenarioId)
     }
 
-    fun createBurdenEstimateSet(context: ActionContext, estimateRepository: BurdenEstimateRepository): String
+    fun createBurdenEstimateSet(): String
     {
         // First check if we're allowed to see this touchstone
         val path = getValidResponsibilityPath(context, estimateRepository)
@@ -69,16 +49,7 @@ open class GroupBurdenEstimatesController(context: ControllerContext) : Abstract
         return objectCreation(context, url)
     }
 
-    fun populateBurdenEstimateSet(
-            context: ActionContext,
-            estimateRepository: BurdenEstimateRepository
-    ): String = populateBurdenEstimateSet(context, estimateRepository, RequestBodySource.Simple())
-
-    fun populateBurdenEstimateSet(
-            context: ActionContext,
-            estimateRepository: BurdenEstimateRepository,
-            source: RequestBodySource
-    ): String
+    fun populateBurdenEstimateSet(source: RequestBodySource = RequestBodySource.Simple()): String
     {
         // First check if we're allowed to see this touchstone
         val path = getValidResponsibilityPath(context, estimateRepository)

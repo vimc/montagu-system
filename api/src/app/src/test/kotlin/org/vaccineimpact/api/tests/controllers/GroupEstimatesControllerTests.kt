@@ -16,14 +16,11 @@ import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.db.toDecimal
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.serialization.DataTableDeserializer
+import org.vaccineimpact.api.test_helpers.MontaguTests
 import java.time.Instant
 
-class GroupEstimatesControllerTests : ControllerTests<GroupBurdenEstimatesController>()
-{
-    override fun makeController(controllerContext: ControllerContext)
-            = GroupBurdenEstimatesController(controllerContext)
-
-    @Test
+class GroupEstimatesControllerTests : MontaguTests()
+{    @Test
     fun `can get metadata for burden estimates`()
     {
         val data = listOf(
@@ -48,8 +45,7 @@ class GroupEstimatesControllerTests : ControllerTests<GroupBurdenEstimatesContro
             on { params(":touchstone-id") } doReturn "touchstone-1"
             on { params(":scenario-id") } doReturn "scenario-1"
         }
-        val controller = makeController(mockControllerContext())
-        assertThat(controller.getBurdenEstimates(context, repo))
+        assertThat(GroupBurdenEstimatesController(context, repo).getBurdenEstimates())
                 .hasSameElementsAs(data.toList())
         verify(repo).getBurdenEstimateSets("group-1", "touchstone-1", "scenario-1")
     }
@@ -61,7 +57,6 @@ class GroupEstimatesControllerTests : ControllerTests<GroupBurdenEstimatesContro
         val repo = mockRepository(touchstoneSet)
 
         val before = Instant.now()
-        val controller = GroupBurdenEstimatesController(mockControllerContext())
         val properties = CreateBurdenEstimateSet(
                 BurdenEstimateSetType(BurdenEstimateSetTypeCode.CENTRAL_AVERAGED, "mean"),
                 1
@@ -73,7 +68,7 @@ class GroupEstimatesControllerTests : ControllerTests<GroupBurdenEstimatesContro
             on { params(":scenario-id") } doReturn "scenario-1"
             on { postData<CreateBurdenEstimateSet>() } doReturn properties
         }
-        val url = controller.createBurdenEstimateSet(mockContext, repo)
+        val url = GroupBurdenEstimatesController(mockContext, repo).createBurdenEstimateSet()
         val after = Instant.now()
         assertThat(url).endsWith("/modelling-groups/group-1/responsibilities/touchstone-1/scenario-1/estimates/1/")
         verify(touchstoneSet).get("touchstone-1")
@@ -161,10 +156,10 @@ class GroupEstimatesControllerTests : ControllerTests<GroupBurdenEstimatesContro
                         "dalys" to 73.6.toDecimal()
                 ))
         )
-        val controller = GroupBurdenEstimatesController(mockControllerContext())
         val actionContext = mockActionContextWithCSVData(data)
-        assertThatThrownBy { controller.populateBurdenEstimateSet(actionContext, mockRepository()) }
-                .isInstanceOf(InconsistentDataError::class.java)
+        assertThatThrownBy {
+            GroupBurdenEstimatesController(actionContext, mockRepository()).populateBurdenEstimateSet()
+        }.isInstanceOf(InconsistentDataError::class.java)
     }
 
     @Test
@@ -209,8 +204,7 @@ class GroupEstimatesControllerTests : ControllerTests<GroupBurdenEstimatesContro
             touchstoneSet: SimpleDataSet<Touchstone, String>, expectedData: List<BurdenEstimateWithRunId>
     )
     {
-        val controller = GroupBurdenEstimatesController(mockControllerContext())
-        controller.populateBurdenEstimateSet(actionContext, repo)
+        GroupBurdenEstimatesController(actionContext, repo).populateBurdenEstimateSet()
         verify(touchstoneSet).get("touchstone-1")
         verify(repo).populateBurdenEstimateSet(eq(1),
                 eq("group-1"), eq("touchstone-1"), eq("scenario-1"),

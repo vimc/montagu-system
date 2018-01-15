@@ -25,7 +25,7 @@ import spark.Request
 class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
 {
     override fun makeController(controllerContext: ControllerContext)
-            = OneTimeLinkController(controllerContext, MontaguControllers(controllerContext))
+            = OneTimeLinkController(controllerContext)
 
     @Test
     fun `fails if token is not in repo`()
@@ -206,7 +206,7 @@ class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
                 repositories = mock<Repositories>()
         )
 
-        return OneTimeLinkController(controllerContext, mock<MontaguControllers>(),
+        return OneTimeLinkController(controllerContext,
                 errorHandler,
                 redirectValidator,
                 onetimeLinkResolver)

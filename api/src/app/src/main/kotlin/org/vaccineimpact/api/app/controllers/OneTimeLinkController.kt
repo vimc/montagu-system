@@ -13,14 +13,13 @@ import spark.route.HttpMethod
 
 class OneTimeLinkController(
         val context: ControllerContext,
-        val controllers: MontaguControllers,
         private val errorHandler: ErrorHandler = ErrorHandler(),
         private val redirectValidator: RedirectValidator = MontaguRedirectValidator(),
         onetimeLinkResolver: OnetimeLinkResolver? = null
 ) : AbstractController(context)
 {
 
-    private val onetimeLinkResolver = onetimeLinkResolver ?: OnetimeLinkResolver(controllers, this.repos)
+    private val onetimeLinkResolver = onetimeLinkResolver ?: OnetimeLinkResolver(this.repos)
 
     override val urlComponent = ""
     val url = "/onetime_link/:token/"
