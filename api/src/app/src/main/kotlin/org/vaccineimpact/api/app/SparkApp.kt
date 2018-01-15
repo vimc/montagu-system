@@ -39,7 +39,7 @@ class MontaguApi
     fun run(repositoryFactory: RepositoryFactory)
     {
         setupPort()
-        val allowedUrls = listOf("http://localhost:5000", "http://localhost/admin/")
+        val allowedUrls = listOf("http://localhost:5000", "https://localhost/admin/")
         spk.redirect.get("/", urlBase)
         spk.before("*", ::addTrailingSlashes)
         spk.before("*", { req, res ->
