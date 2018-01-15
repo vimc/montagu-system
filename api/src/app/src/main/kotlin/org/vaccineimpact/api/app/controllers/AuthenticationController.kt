@@ -35,7 +35,6 @@ class AuthenticationController(context: ActionContext,
             {
                 val user = context.userProfile!!.montaguUser()!!
                 val token = tokenHelper.generateToken(user)
-                context.addResponseHeader("Set-Cookie", "jwt_token=test; Path=/")
                 userRepository.updateLastLoggedIn(user.username)
                 return SuccessfulAuthentication(token, tokenHelper.lifeSpan)
             }
