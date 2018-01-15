@@ -1343,6 +1343,16 @@ Creates a new model run parameter set for the given model. Accepts multipart/for
        "2",   10,    60,
        "3",   20,    50,
 
+## POST /modelling-groups/{modelling-group-id}/model-run-parameters/{touchstone-id}/{model-run-parameter-set-id}
+
+Required permissions: Scoped to modelling group: `estimates.write` and `responsibilities.read`.
+
+Enables download of model run parameters values as .csv file. Example of structure of output file is:
+
+    "run_id", "param_1", "param_2", 
+       "1",   10,    50,
+       "2",   10,    60,
+       "3",   20,    50,
 
 # Responsibilities
 ## GET /modelling-groups/{modelling-group-id}/responsibilities/
