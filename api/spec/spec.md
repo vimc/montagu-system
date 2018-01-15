@@ -1101,11 +1101,11 @@ Schema: [`CreateBurdenEstimateSet.schema.json`](CreateBurdenEstimateSet.schema.j
     }
 
 ## POST /modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}/{scenario-id}/estimate-sets/{set-id}/
-Populates an empty burden estimate set.
+Populates an empty or partially filled burden estimate set.
 
 Can only by invoked if:
 
-* The set status is `empty`
+* The set status is `empty` or `incomplete`
 * The touchstone is `open`
 * The relevant responsibility set is `incomplete`
 
@@ -1127,6 +1127,18 @@ column, `run_id`, is expected between `disease` and `year`. See
 [BurdenEstimate.csvschema.json](BurdenEstimate.csvschema.json) and 
 [StochasticBurdenEstimate.csvschema.json](StochasticBurdenEstimate.csvschema.json)
 for a strict definition.
+
+### Keep open
+This endpoint takes `keepOpen=true|false` as a query parameter. If omitted, 
+defaults to `false`. If `keepOpen` is `true`, the burden estimate set is moved 
+into the `incomplete` status (if it is not already in that status). Otherwise
+the burden estimate set is moved into the `complete` status (meaning no more
+estimates can be added).
+
+In a future version of the API, burden estimate sets will always stay in the
+`incomplete` state after population, the `keepOpen` parameter will be removed, 
+and all clients will have to explicitly mark the set as `complete` via another
+endpoint. Clients should begin following that scheme now.
        
 # Modelling groups
 ## GET /modelling-groups/
