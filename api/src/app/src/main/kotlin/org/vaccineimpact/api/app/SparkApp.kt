@@ -42,7 +42,7 @@ class MontaguApi
         spk.redirect.get("/", urlBase)
         spk.before("*", ::addTrailingSlashes)
         spk.before("*", { _, res ->
-            res.header("Access-Control-Allow-Origin", "https://localhost/admin/")
+            res.header("Access-Control-Allow-Origin", "https://localhost/admin/, http://localhost:5000")
         })
         spk.after("*", { req, res ->
             repositoryFactory.inTransaction { repos ->
