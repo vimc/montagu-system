@@ -305,32 +305,6 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
             });
         });
 
-        it("fetches one time parameters token with redirect url", (done: DoneCallback) => {
-
-            setTouchstoneAndGroup(touchstoneId, groupId);
-
-            const promise = runParametersStore.fetchOneTimeParametersToken("/redirect/back");
-
-            checkPromise(done, promise, token => {
-                const decoded = jwt_decode(token);
-                expect(decoded.action).to.equal("model-run-parameters");
-
-                const query = QueryString.parse(decoded.query);
-                expect(query).to.eql(JSON.parse(`{
-                    "redirectUrl": "http://localhost:5000/redirect/back"
-                }`
-                ));
-
-                const payload = QueryString.parse(decoded.payload);
-
-                expect(payload).to.eql(JSON.parse(`{
-                    ":touchstone-id": "${touchstoneId}",
-                    ":group-id": "${groupId}"
-                }`));
-
-            });
-        });
-
         it("fetches model run parameter sets", (done: DoneCallback) => {
             const promise: Promise<any> = addModelRunParameterSets(this.db)
                 .then(() => {
