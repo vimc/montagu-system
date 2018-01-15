@@ -71,7 +71,7 @@ task startDatabase(type: Exec, dependsOn: ':loadPropertiesTask') {
         environment([
                 'DB_VERSION': dbVersion,
                 'DB_PORT': rootProject.ext.props.get('testdb_port'),
-                'ANNEX_PORT': rootProject.ext.props.get('annex_port')
+                'ANNEX_PORT': rootProject.ext.props.get('testannex_port')
         ])
     }
     commandLine 'bash', '../scripts/start-database.sh'

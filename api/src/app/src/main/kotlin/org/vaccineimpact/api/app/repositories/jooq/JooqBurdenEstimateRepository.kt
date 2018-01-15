@@ -2,26 +2,22 @@ package org.vaccineimpact.api.app.repositories.jooq
 
 import org.jooq.DSLContext
 import org.jooq.JoinType
-import org.postgresql.copy.CopyManager
-import org.postgresql.core.BaseConnection
-import org.vaccineimpact.api.app.errors.*
-import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
-import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
-import org.vaccineimpact.api.app.repositories.ScenarioRepository
-import org.vaccineimpact.api.app.repositories.TouchstoneRepository
+import org.vaccineimpact.api.app.errors.BadRequest
+import org.vaccineimpact.api.app.errors.DatabaseContentsError
+import org.vaccineimpact.api.app.errors.OperationNotAllowedError
+import org.vaccineimpact.api.app.errors.UnknownObjectError
+import org.vaccineimpact.api.app.repositories.*
 import org.vaccineimpact.api.app.repositories.jooq.mapping.BurdenMappingHelper
-import org.vaccineimpact.api.db.*
+import org.vaccineimpact.api.db.AnnexJooqContext
+import org.vaccineimpact.api.db.Tables
 import org.vaccineimpact.api.db.Tables.*
+import org.vaccineimpact.api.db.fromJoinPath
+import org.vaccineimpact.api.db.joinPath
 import org.vaccineimpact.api.models.*
+import org.vaccineimpact.api.serialization.FlexibleDataTable
 import java.beans.ConstructorProperties
-import java.io.BufferedInputStream
-import java.io.OutputStream
-import java.io.PipedInputStream
-import java.io.PipedOutputStream
-import java.math.BigDecimal
 import java.sql.Timestamp
 import java.time.Instant
-import kotlin.concurrent.thread
 
 private data class ResponsibilityInfo
 @ConstructorProperties("id", "disease", "status", "setId")
@@ -32,9 +28,17 @@ class JooqBurdenEstimateRepository(
         private val scenarioRepository: ScenarioRepository,
         override val touchstoneRepository: TouchstoneRepository,
         private val modellingGroupRepository: ModellingGroupRepository,
-        private val mapper: BurdenMappingHelper = BurdenMappingHelper()
+        private val mapper: BurdenMappingHelper = BurdenMappingHelper(),
+        centralBurdenEstimateWriter: BurdenEstimateWriter? = null,
+        stochasticBurdenEstimateWriter: StochasticBurdenEstimateWriter? = null
 ) : JooqRepository(dsl), BurdenEstimateRepository
 {
+    private val centralBurdenEstimateWriter: BurdenEstimateWriter = centralBurdenEstimateWriter ?:
+            BurdenEstimateWriter(dsl)
+
+    private val stochasticBurdenEstimateWriter: StochasticBurdenEstimateWriter = stochasticBurdenEstimateWriter ?:
+            StochasticBurdenEstimateWriter(dsl, { AnnexJooqContext().dsl })
+
     override fun getModelRunParameterSets(groupId: String, touchstoneId: String): List<ModelRunParameterSet>
     {
         // Dereference modelling group IDs
@@ -139,6 +143,42 @@ class JooqBurdenEstimateRepository(
         return parameterSetId
     }
 
+    override fun getModelRunParameterSet(setId: Int): FlexibleDataTable<ModelRun>
+    {
+        val sequence = getModelRunParametersSequence(setId)
+        val headers = getModelRunParametersHeaders(setId)
+
+        return FlexibleDataTable.new(sequence, headers)
+    }
+
+    private fun getModelRunParametersHeaders(setId: Int): List<String>
+    {
+        val records = dsl.select(
+                MODEL_RUN_PARAMETER.KEY
+        )
+                .from(MODEL_RUN_PARAMETER)
+                .where(MODEL_RUN_PARAMETER.MODEL_RUN_PARAMETER_SET.eq(setId))
+                .fetchInto(String::class.java)
+        return records
+    }
+
+    private fun getModelRunParametersSequence(setId: Int): Sequence<ModelRun>
+    {
+        return dsl.select(
+                MODEL_RUN_PARAMETER_VALUE.ID,
+                MODEL_RUN_PARAMETER.KEY,
+                MODEL_RUN.RUN_ID,
+                MODEL_RUN_PARAMETER_VALUE.VALUE
+        )
+                .fromJoinPath(MODEL_RUN_PARAMETER, MODEL_RUN_PARAMETER_VALUE, MODEL_RUN)
+                .where(MODEL_RUN_PARAMETER.MODEL_RUN_PARAMETER_SET.eq(setId))
+                .fetch()
+                .map { mapper.mapModelRunParameter(it) }
+                .groupBy { it.run_id }
+                .map { mapper.mapModelRun(it.key, it.value)}
+                .asSequence()
+    }
+
     private fun addUploadInfo(uploader: String, timestamp: Instant): Int
     {
         val uploadInfo = dsl.newRecord(UPLOAD_INFO).apply {
@@ -226,20 +266,30 @@ class JooqBurdenEstimateRepository(
         val responsibilityInfo = getResponsibilityInfo(modellingGroup.id, touchstoneId, scenarioId)
 
         val set = getBurdenEstimateSet(setId)
+        val type = set.type.type
+
         if (set.status != BurdenEstimateSetStatus.EMPTY)
         {
             throw OperationNotAllowedError("This burden estimate set already contains estimates." +
                     " You must create a new set if you want to upload any new estimates.")
         }
 
-        BurdenEstimateWriter(dsl, setId).addEstimatesToSet(estimates, responsibilityInfo.disease)
-        updateCurrentBurdenEstimateSet(responsibilityInfo.id, setId, set.type.type)
+        if (type == BurdenEstimateSetTypeCode.STOCHASTIC)
+        {
+            stochasticBurdenEstimateWriter.addEstimatesToSet(setId, estimates, responsibilityInfo.disease)
+        }
+        else
+        {
+            centralBurdenEstimateWriter.addEstimatesToSet(setId, estimates, responsibilityInfo.disease)
+        }
+
         dsl.update(Tables.BURDEN_ESTIMATE_SET)
                 .set(Tables.BURDEN_ESTIMATE_SET.STATUS, "complete")
                 .where(Tables.BURDEN_ESTIMATE_SET.ID.eq(setId))
                 .execute()
-    }
 
+        updateCurrentBurdenEstimateSet(responsibilityInfo.id, setId, type)
+    }
 
     override fun createBurdenEstimateSet(groupId: String, touchstoneId: String, scenarioId: String,
                                          properties: CreateBurdenEstimateSet,

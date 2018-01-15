@@ -9,6 +9,7 @@ abstract class DatabaseTest : MontaguTests()
 {
     private val templateDbName = Config["testdb.template_name"]
     private val dbName = Config["db.name"]
+    private val userName = Config["db.username"]
 
     @Before
     fun createDatabase()

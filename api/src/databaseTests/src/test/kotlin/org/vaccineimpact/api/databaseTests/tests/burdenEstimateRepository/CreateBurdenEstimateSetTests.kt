@@ -180,9 +180,4 @@ class CreateBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
 
         assertThat(actualSetId).isEqualTo(setId)
     }
-
-    private val defaultProperties = CreateBurdenEstimateSet(
-            BurdenEstimateSetType(BurdenEstimateSetTypeCode.CENTRAL_UNKNOWN),
-            modelRunParameterSetId = null
-    )
 }

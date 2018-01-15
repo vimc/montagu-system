@@ -3,6 +3,7 @@ package org.vaccineimpact.api.app.app_start.route_config
 import org.vaccineimpact.api.app.app_start.*
 import org.vaccineimpact.api.app.controllers.GroupModelRunParametersController
 import org.vaccineimpact.api.app.controllers.NewStyleOneTimeLinkController
+import org.vaccineimpact.api.app.controllers.endpoints.streamed
 
 object GroupModelRunParametersRouteConfig : RouteConfig
 {
@@ -16,6 +17,12 @@ object GroupModelRunParametersRouteConfig : RouteConfig
     )
 
     override val endpoints: List<EndpointDefinition> = listOf(
+
+            Endpoint("$baseUrl/:model-run-parameter-set-id/", controller, "getModelRunParameterSet")
+                    .csv()
+                    .streamed()
+                    .secure(permissions),
+
             Endpoint("$baseUrl/", controller, "getModelRunParameterSets")
                     .json()
                     .secure(permissions),

@@ -10,6 +10,8 @@ import org.vaccineimpact.api.models.permissions.ReifiedRole
 import org.vaccineimpact.api.security.UserHelper
 import org.vaccineimpact.api.security.ensureUserHasRole
 import java.math.BigDecimal
+import java.sql.Timestamp
+import java.time.Instant
 import java.util.*
 
 private val random = Random(0)
@@ -180,10 +182,12 @@ fun JooqContext.addBurdenEstimateSet(
         responsibilityId: Int, modelVersionId: Int,
         username: String, status: String = "empty",
         setType: String = "central-single-run", setTypeDetails: String? = null,
-        modelRunParameterSetId: Int? = null
+        modelRunParameterSetId: Int? = null,
+        timestamp: Instant = Instant.now()
 ): Int
 {
     val record = this.dsl.newRecord(BURDEN_ESTIMATE_SET).apply {
+        this.uploadedOn = Timestamp.from(timestamp)
         this.responsibility = responsibilityId
         this.modelVersion = modelVersionId
         this.uploadedBy = username
@@ -227,6 +231,27 @@ fun JooqContext.addModelRun(runParameterSetId: Int, id: String): Int
     }
     record.store()
     return record.internalId
+}
+
+fun JooqContext.addModelRunParameter(runParameterSetId: Int, key: String): Int
+{
+    val record = this.dsl.newRecord(MODEL_RUN_PARAMETER).apply {
+        this.modelRunParameterSet = runParameterSetId
+        this.key = key
+    }
+    record.store()
+    return record.id
+}
+
+fun JooqContext.addModelRunParameterValue(modelRunId: Int, parameterId: Int, value: String): Int
+{
+    val record = this.dsl.newRecord(MODEL_RUN_PARAMETER_VALUE).apply {
+        this.modelRun = modelRunId
+        this.modelRunParameter = parameterId
+        this.value = value
+    }
+    record.store()
+    return record.id
 }
 
 fun JooqContext.addBurdenEstimateProblem(problem: String, burdenId: Int)
