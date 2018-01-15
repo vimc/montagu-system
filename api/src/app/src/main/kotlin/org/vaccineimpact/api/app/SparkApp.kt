@@ -9,13 +9,9 @@ import org.vaccineimpact.api.app.controllers.MontaguControllers
 import org.vaccineimpact.api.app.controllers.OneTimeLinkController
 import org.vaccineimpact.api.app.repositories.RepositoryFactory
 import org.vaccineimpact.api.db.Config
-import org.vaccineimpact.api.models.ErrorInfo
-import org.vaccineimpact.api.models.Result
-import org.vaccineimpact.api.models.ResultStatus
 import org.vaccineimpact.api.security.KeyHelper
 import org.vaccineimpact.api.security.WebTokenHelper
 import org.vaccineimpact.api.serialization.MontaguSerializer
-import spark.Spark.notFound
 import java.io.File
 import java.net.BindException
 import java.net.ServerSocket
@@ -39,7 +35,20 @@ class MontaguApi
     fun run(repositoryFactory: RepositoryFactory)
     {
         setupPort()
-        val allowedUrls = listOf("http://localhost:5000", "https://localhost/admin/")
+        val allowedUrls = mutableListOf(
+                "https://support.montagu.dide.ic.ac.uk:10443/admin/",
+                "https://support.montagu.dide.ic.ac.uk:10443/reports/",
+                "https://support.montagu.dide.ic.ac.uk:10443/contrib/",
+                "https://montagu.vaccineimpact.org/admin/",
+                "https://montagu.vaccineimpact.org/contrib/",
+                "https://montagu.vaccineimpact.org/reports/")
+
+        if (Config.getBool("allow.localhost"))
+        {
+            allowedUrls.add("http://localhost:5000")
+            allowedUrls.add("https://localhost/admin/")
+        }
+
         spk.redirect.get("/", urlBase)
         spk.before("*", ::addTrailingSlashes)
         spk.before("*", { req, res ->
