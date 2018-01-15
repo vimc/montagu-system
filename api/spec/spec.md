@@ -1343,7 +1343,7 @@ Creates a new model run parameter set for the given model. Accepts multipart/for
        "2",   10,    60,
        "3",   20,    50,
 
-## POST /modelling-groups/{modelling-group-id}/model-run-parameters/{touchstone-id}/{model-run-parameter-set-id}
+## GET /modelling-groups/{modelling-group-id}/model-run-parameters/{touchstone-id}/{model-run-parameter-set-id}
 
 Required permissions: Scoped to modelling group: `estimates.write` and `responsibilities.read`.
 
