@@ -35,10 +35,9 @@ class AuthenticationController(context: ActionContext,
             {
                 val user = context.userProfile!!.montaguUser()!!
                 val token = tokenHelper.generateToken(user)
-                val shinyToken = tokenHelper.generateToken(user)
                 context.addResponseHeader("Set-Cookie", "jwt_token=test; Path=/")
                 userRepository.updateLastLoggedIn(user.username)
-                return SuccessfulAuthentication(shinyToken, token, tokenHelper.lifeSpan)
+                return SuccessfulAuthentication(token, tokenHelper.lifeSpan)
             }
             is HTMLForm.InvalidForm -> FailedAuthentication(validationResult.problem)
         }
