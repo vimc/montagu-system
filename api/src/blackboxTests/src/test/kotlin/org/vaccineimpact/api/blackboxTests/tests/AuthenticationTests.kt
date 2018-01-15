@@ -1,5 +1,6 @@
 package org.vaccineimpact.api.blackboxTests.tests
 
+import com.auth0.jwt.JWT
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
 import com.beust.klaxon.json
@@ -10,9 +11,19 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
 import org.junit.Test
 import org.vaccineimpact.api.blackboxTests.helpers.EndpointBuilder
+import org.vaccineimpact.api.blackboxTests.helpers.RequestHelper
+import org.vaccineimpact.api.blackboxTests.helpers.TestUserHelper
+import org.vaccineimpact.api.blackboxTests.helpers.TokenFetcher
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.Tables.APP_USER
+import org.vaccineimpact.api.db.direct.addUserForTesting
+import org.vaccineimpact.api.db.direct.addUserWithRoles
+import org.vaccineimpact.api.models.Scope
+import org.vaccineimpact.api.models.permissions.ReifiedRole
 import org.vaccineimpact.api.security.UserHelper
+import org.vaccineimpact.api.security.createRole
+import org.vaccineimpact.api.security.ensureUserHasRole
+import org.vaccineimpact.api.security.setRolePermissions
 import org.vaccineimpact.api.test_helpers.DatabaseTest
 
 class AuthenticationTests : DatabaseTest()
@@ -31,6 +42,55 @@ class AuthenticationTests : DatabaseTest()
     {
         val result = post("email@example.com", "password", includeAuth = false)
         assertDoesNotAuthenticate(result)
+    }
+
+    @Test
+    fun `can set shiny cookie for non report reviewer`()
+    {
+        val token = TestUserHelper.setupTestUserAndGetToken(setOf(), true)
+
+        val response = RequestHelper().get("/set-shiny-cookie/", token)
+
+        assertThat(response.statusCode).isEqualTo(200)
+
+        val cookie = response.headers["Set-Cookie"]!!
+        assertThat(cookie).contains("Secure")
+        assertThat(cookie).contains("HttpOnly")
+        assertThat(cookie).contains("SameSite=Lax")
+
+        val shinyToken = cookie.substring(cookie.indexOf("=") + 1, cookie.indexOf(";"))
+        val claims = JWT.decode(shinyToken)
+        val allowedShiny = claims.getClaim("allowed_shiny")
+        assertThat(allowedShiny.asBoolean()).isFalse()
+    }
+
+    @Test
+    fun `can set shiny cookie for report reviewer`()
+    {
+        JooqContext().use {
+            val roleId = it.createRole("report.reviewer", null, "")
+            it.setRolePermissions(roleId, listOf("can-login"))
+            it.addUserForTesting(TestUserHelper.username,
+                    email = TestUserHelper.email, password = TestUserHelper.defaultPassword)
+            it.ensureUserHasRole(TestUserHelper.username, ReifiedRole("report.reviewer", Scope.Global()))
+        }
+
+        val token = TokenFetcher().getToken(TestUserHelper.email, TestUserHelper.defaultPassword)
+                as TokenFetcher.TokenResponse.Token
+
+        val response = RequestHelper().get("/set-shiny-cookie/", token.token)
+
+        assertThat(response.statusCode).isEqualTo(200)
+
+        val cookie = response.headers["Set-Cookie"]!!
+        assertThat(cookie).contains("Secure")
+        assertThat(cookie).contains("HttpOnly")
+        assertThat(cookie).contains("SameSite=Lax")
+
+        val shinyToken = cookie.substring(cookie.indexOf("=") + 1, cookie.indexOf(";"))
+        val claims = JWT.decode(shinyToken)
+        val allowedShiny = claims.getClaim("allowed_shiny")
+        assertThat(allowedShiny.asBoolean()).isTrue()
     }
 
     @Test

@@ -20,6 +20,7 @@ fun <T> CommonProfile.getAttributeOrDefault(key: String, default: T): T
 
 fun CommonProfile.montaguPermissions() = this.getAttributeOrDefault(PERMISSIONS, PermissionSet())
 
+// This will be non-null if using Basic Auth, null otherwise
 fun CommonProfile.montaguUser(): MontaguUser?
 {
     val user = this.getAttribute(USER_OBJECT)
