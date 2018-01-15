@@ -27,7 +27,6 @@ export abstract class Fetcher {
         console.log(`Fetching from ${url}${methodText}`);
 
         options = options || {};
-        options.credentials = "include";
         options.headers = options.headers || {};
         if (includeToken) {
             options.headers["Authorization"] = `Bearer ${this.getBearerToken()}`;

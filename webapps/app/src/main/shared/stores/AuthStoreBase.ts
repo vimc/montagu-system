@@ -3,6 +3,7 @@ import * as AltJS from "alt";
 import {AbstractStore} from "./AbstractStore";
 import {authActions, LogInProperties} from "../actions/AuthActions";
 import {decodeToken} from "../Token";
+import {setShinyToken} from "../sources/LoginSource";
 
 export interface AuthStateBase {
     loggedIn: boolean;
@@ -93,6 +94,8 @@ export abstract class AuthStore<TState extends AuthStateBase, TInterface extends
         if (typeof(Storage) !== "undefined") {
             localStorage.setItem("accessToken", this.bearerToken);
         }
+
+        setShinyToken();
     }
 
     handleLogIn(props: LogInProperties) {
