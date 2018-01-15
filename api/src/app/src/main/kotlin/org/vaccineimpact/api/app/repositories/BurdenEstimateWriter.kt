@@ -18,11 +18,13 @@ import java.io.PipedOutputStream
 import java.math.BigDecimal
 import kotlin.concurrent.thread
 
-open class StochasticBurdenEstimateWriter(readDatabaseDSL: DSLContext, writeDatabaseDSL: DSLContext = AnnexJooqContext().dsl)
-    : BurdenEstimateWriter(readDatabaseDSL, writeDatabaseDSL, true)
+open class StochasticBurdenEstimateWriter(
+        readDatabaseDSL: DSLContext,
+        writeDatabaseDSLPromise: () -> DSLContext = { AnnexJooqContext().dsl }
+) : BurdenEstimateWriter(readDatabaseDSL, writeDatabaseDSLPromise, true)
 
 open class BurdenEstimateWriter(private val readDatabaseDSL: DSLContext,
-                                private val writeDatabaseDSL: DSLContext = readDatabaseDSL,
+                                private val writeDatabaseDSLPromise: () -> DSLContext = { readDatabaseDSL },
                                 stochastic: Boolean = false)
 {
 
@@ -68,6 +70,7 @@ open class BurdenEstimateWriter(private val readDatabaseDSL: DSLContext,
         val outcomeLookup = getOutcomesAsLookup()
         val modelRuns = getModelRunsAsLookup(setId)
         val modelRunParameterId = getModelRunParameterSetId(setId)
+        val writeDatabaseDSL = writeDatabaseDSLPromise()
 
         // The only foreign keys are:
         // * burden_estimate_set, which is the same for every row, and it's the one we just created and know exists
@@ -82,7 +85,7 @@ open class BurdenEstimateWriter(private val readDatabaseDSL: DSLContext,
                 // it to the database. This will block if the thread is empty, and keep
                 // going until it sees the Postgres EOF marker.
                 val inputStream = PipedInputStream(stream).buffered()
-                val writeToDatabaseThread = writeStreamToDatabase(inputStream)
+                val writeToDatabaseThread = writeStreamToDatabase(inputStream, writeDatabaseDSL)
 
                 // In the main thread, write to piped stream, blocking if we get too far ahead of
                 // the other thread ("too far ahead" meaning the buffer on the input stream is full)
@@ -203,7 +206,9 @@ open class BurdenEstimateWriter(private val readDatabaseDSL: DSLContext,
                 .toMap()
     }
 
-    private fun writeStreamToDatabase(inputStream: BufferedInputStream
+    private fun writeStreamToDatabase(
+            inputStream: BufferedInputStream,
+            writeDatabaseDSL: DSLContext
     ): Thread
     {
         // Since we are in another thread here, we should be careful about what state we modify.
