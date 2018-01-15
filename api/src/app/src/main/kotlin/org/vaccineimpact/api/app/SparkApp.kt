@@ -39,10 +39,15 @@ class MontaguApi
     fun run(repositoryFactory: RepositoryFactory)
     {
         setupPort()
+        val allowedUrls = listOf("http://localhost:5000", "http://localhost/admin/")
         spk.redirect.get("/", urlBase)
         spk.before("*", ::addTrailingSlashes)
-        spk.before("*", { _, res ->
-            res.header("Access-Control-Allow-Origin", "https://localhost/admin/, http://localhost:5000")
+        spk.before("*", { req, res ->
+            val origin = req.headers("Origin")
+            if (req.headers("Origin") in allowedUrls)
+            {
+                res.header("Access-Control-Allow-Origin", origin)
+            }
         })
         spk.after("*", { req, res ->
             repositoryFactory.inTransaction { repos ->
