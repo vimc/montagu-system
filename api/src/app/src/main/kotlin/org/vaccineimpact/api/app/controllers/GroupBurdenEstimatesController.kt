@@ -29,13 +29,6 @@ open class GroupBurdenEstimatesController(context: ControllerContext) : Abstract
                 oneRepoEndpoint("/estimate-sets/", this::getBurdenEstimates, repos, { it.burdenEstimates }, method = HttpMethod.get)
                         .secured(permissions("read")),
 
-                /** Deprecated **/
-                oneRepoEndpoint("/estimates/", this::addBurdenEstimates, repos, { it.burdenEstimates }, method = HttpMethod.post)
-                        .secured(permissions("write")),
-
-                oneRepoEndpoint("/estimates/get_onetime_link/", { c, r -> getOneTimeLinkToken(c, r, OneTimeAction.BURDENS) }, repos, { it.token })
-                        .secured(permissions("write")),
-
                 oneRepoEndpoint("/estimate-sets/", this::createBurdenEstimateSet, repos, { it.burdenEstimates }, method = HttpMethod.post)
                         .secured(permissions("write")),
 
@@ -61,9 +54,6 @@ open class GroupBurdenEstimatesController(context: ControllerContext) : Abstract
         return estimateRepository.getBurdenEstimateSets(path.groupId, path.touchstoneId, path.scenarioId)
     }
 
-    open fun addBurdenEstimates(context: ActionContext, estimateRepository: BurdenEstimateRepository)
-            = addBurdenEstimates(context, estimateRepository, RequestBodySource.Simple())
-
     fun createBurdenEstimateSet(context: ActionContext, estimateRepository: BurdenEstimateRepository): String
     {
         // First check if we're allowed to see this touchstone
@@ -77,21 +67,6 @@ open class GroupBurdenEstimatesController(context: ControllerContext) : Abstract
 
         val url = "/modelling-groups/${path.groupId}/responsibilities/${path.touchstoneId}/${path.scenarioId}/estimates/$id/"
         return objectCreation(context, url)
-    }
-
-    @Deprecated("Instead use createBurdenEstimateSet and then populateBurdenEstimateSet")
-    open fun addBurdenEstimates(
-            context: ActionContext,
-            estimateRepository: BurdenEstimateRepository,
-            source: RequestBodySource
-    ): String
-    {
-        // First check if we're allowed to see this touchstone
-        val path = getValidResponsibilityPath(context, estimateRepository)
-
-        // Then add the burden estimates
-        val data = context.csvData<BurdenEstimate>(from = source)
-        return saveBurdenEstimates(data, estimateRepository, context, path)
     }
 
     fun populateBurdenEstimateSet(
@@ -142,26 +117,6 @@ open class GroupBurdenEstimatesController(context: ControllerContext) : Abstract
         return data.checkAllValuesAreEqual({ it.disease },
                 InconsistentDataError("More than one value was present in the disease column")
         )
-    }
-
-    @Deprecated("Instead use createBurdenEstimateSet and then populateBurdenEstimateSet")
-    private fun saveBurdenEstimates(data: Sequence<BurdenEstimate>,
-                                    estimateRepository: BurdenEstimateRepository,
-                                    context: ActionContext,
-                                    path: ResponsibilityPath): String
-    {
-        val checkedData = data.checkAllValuesAreEqual({ it.disease },
-                InconsistentDataError("More than one value was present in the disease column")
-        )
-
-        val id = estimateRepository.addBurdenEstimateSet(
-                path.groupId, path.touchstoneId, path.scenarioId,
-                checkedData,
-                uploader = context.username!!,
-                timestamp = Instant.now()
-        )
-        val url = "/modelling-groups/${path.groupId}/responsibilities/${path.touchstoneId}/${path.scenarioId}/estimates/$id/"
-        return objectCreation(context, url)
     }
 
     private fun getValidResponsibilityPath(

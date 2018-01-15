@@ -55,35 +55,6 @@ class GroupEstimatesControllerTests : ControllerTests<GroupBurdenEstimatesContro
     }
 
     @Test
-    fun `estimates are passed through to repository`()
-    {
-        val data = listOf(
-                BurdenEstimate("yf", 2000, 50, "AFG", "Afghanistan", 1000.toDecimal(), mapOf(
-                        "deaths" to 10.toDecimal(),
-                        "cases" to 100.toDecimal()
-                )),
-                BurdenEstimate("yf", 1980, 30, "AGO", "Angola", 2000.toDecimal(), mapOf(
-                        "deaths" to 20.toDecimal(),
-                        "dalys" to 73.6.toDecimal()
-                ))
-        )
-        val touchstoneSet = mockTouchstones()
-        val repo = mockRepository(touchstoneSet)
-
-        val before = Instant.now()
-        val controller = GroupBurdenEstimatesController(mockControllerContext())
-        controller.addBurdenEstimates(mockActionContext(data.asSequence()), repo)
-        val after = Instant.now()
-        verify(touchstoneSet).get("touchstone-1")
-        verify(repo).addBurdenEstimateSet(
-                eq("group-1"), eq("touchstone-1"), eq("scenario-1"),
-                argWhere { it.toSet() == data.toSet() },
-                eq("username"),
-                timestamp = check { it > before && it < after }
-        )
-    }
-
-    @Test
     fun `estimate set is created`()
     {
         val touchstoneSet = mockTouchstones()
@@ -173,7 +144,7 @@ class GroupEstimatesControllerTests : ControllerTests<GroupBurdenEstimatesContro
                 ))
         )
 
-        val mockContext = mockActionContextWithCSVData(csvData)
+        val mockContext = mockActionContextWithCSVData(csvData.asSequence())
         verifyRepositoryIsInvokedToPopulateSet(mockContext, repo, touchstoneSet, expectedData)
     }
 
@@ -191,7 +162,8 @@ class GroupEstimatesControllerTests : ControllerTests<GroupBurdenEstimatesContro
                 ))
         )
         val controller = GroupBurdenEstimatesController(mockControllerContext())
-        assertThatThrownBy { controller.addBurdenEstimates(mockActionContext(data), mockRepository()) }
+        val actionContext = mockActionContextWithCSVData(data)
+        assertThatThrownBy { controller.populateBurdenEstimateSet(actionContext, mockRepository()) }
                 .isInstanceOf(InconsistentDataError::class.java)
     }
 
@@ -216,23 +188,14 @@ class GroupEstimatesControllerTests : ControllerTests<GroupBurdenEstimatesContro
         ))
     }
 
-    private fun mockActionContext(data: Sequence<BurdenEstimate>): ActionContext
-    {
-        return mock {
-            on { csvData(eq(BurdenEstimate::class), any<RequestBodySource>()) } doReturn data.asSequence()
-            on { csvData(eq(BurdenEstimate::class), any<String>()) } doReturn data.asSequence()
-            on { username } doReturn "username"
-            on { params(":group-id") } doReturn "group-1"
-            on { params(":touchstone-id") } doReturn "touchstone-1"
-            on { params(":scenario-id") } doReturn "scenario-1"
-        }
-    }
+    private fun <T : Any> mockActionContextWithCSVData(csvData: List<T>)
+            = mockActionContextWithCSVData(csvData.asSequence())
 
-    private fun <T : Any> mockActionContextWithCSVData(csvData: List<T>): ActionContext
+    private fun <T : Any> mockActionContextWithCSVData(csvData: Sequence<T>): ActionContext
     {
         return mock {
-            on { csvData<T>(any(), any<RequestBodySource>()) } doReturn csvData.asSequence()
-            on { csvData<T>(any(), any<String>()) } doReturn csvData.asSequence()
+            on { csvData<T>(any(), any<RequestBodySource>()) } doReturn csvData
+            on { csvData<T>(any(), any<String>()) } doReturn csvData
             on { username } doReturn "username"
             on { params(":set-id") } doReturn "1"
             on { params(":group-id") } doReturn "group-1"
@@ -275,10 +238,10 @@ class GroupEstimatesControllerTests : ControllerTests<GroupBurdenEstimatesContro
             on { touchstoneRepository } doReturn touchstoneRepo
             on { getBurdenEstimateSet(any()) } doReturn existingBurdenEstimateSet
             on { createBurdenEstimateSet(any(), any(), any(), any(), any(), any()) } doReturn 1
-            on { addBurdenEstimateSet(any(), any(), any(), any(), any(), any()) } doAnswer { args ->
+            on { populateBurdenEstimateSet(any(), any(), any(), any(), any()) } doAnswer { args ->
                 // Force evaluation of sequence
-                args.getArgument<Sequence<BurdenEstimate>>(3).toList()
-                0 // Return a fake setId
+                args.getArgument<Sequence<BurdenEstimate>>(4).toList()
+                Unit
             }
         }
     }

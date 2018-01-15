@@ -69,7 +69,7 @@ class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
         val controller = makeController(
                 tokenHelper = makeTokenHelper(true, mapOf(
                         "sub" to WebTokenHelper.oneTimeActionSubject,
-                        "action" to "burdens",
+                        "action" to "coverage",
                         "payload" to ":username=test.user"
                 )),
                 onetimeLinkResolver = mockOneTimeLinkResolver
