@@ -19,7 +19,7 @@ class CreateBurdenEstimateSet {
 
 export class CreateBurdenEstimateSetForm extends React.Component<BurdenEstimateProps, CreateBurdenEstimateSet> {
 
-    constructor() {
+    constructor(props: BurdenEstimateProps) {
         super();
         this.state = {
             type: {

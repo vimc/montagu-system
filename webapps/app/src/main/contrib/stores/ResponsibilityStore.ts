@@ -50,6 +50,8 @@ interface ResponsibilityStoreInterface extends AltJS.AltStore<ResponsibilityStat
 
     fetchOneTimeEstimatesToken(): Promise<string>;
 
+    _fetchOneTimeEstimatesToken(): Promise<string>;
+
     isLoading(): boolean;
 
     responsibilitySetManager(): ResponsibilitySetManager;
@@ -114,6 +116,13 @@ class ResponsibilityStore extends AbstractStore<ResponsibilityState, Responsibil
                 const manager = this.getInstance().responsibilitySetManager();
                 return manager.getSet(this.currentModellingGroup, this.currentTouchstone);
             },
+            fetchOneTimeEstimatesToken: () => {
+                if (this.currentResponsibility == null || this.currentResponsibility.current_estimate_set == null){
+                    return Promise.resolve(null);
+                }
+                return this.getInstance()._fetchOneTimeEstimatesToken();
+            },
+
             refreshResponsibilities: () => {
                 const self = this;
                 const instance = self.getInstance();

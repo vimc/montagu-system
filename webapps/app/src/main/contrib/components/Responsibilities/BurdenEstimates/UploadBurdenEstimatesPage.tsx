@@ -27,9 +27,8 @@ export class UploadBurdenEstimatesPage extends ContribPageWithHeader<UploadEstim
             touchstoneActions.setCurrentTouchstone(this.props.location.params.touchstoneId);
             responsibilityStore.fetchResponsibilities().catch(doNothing).then(() => {
                 responsibilityActions.setCurrentResponsibility(this.props.location.params.scenarioId);
-                responsibilityStore.fetchOneTimeEstimatesToken().catch(doNothing).then(() => {
-                    super.load();
-                });
+                responsibilityStore.fetchOneTimeEstimatesToken().catch(doNothing);
+                super.load();
             });
         });
     }
