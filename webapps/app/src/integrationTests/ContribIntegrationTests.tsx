@@ -16,8 +16,6 @@ import {shallow} from "enzyme";
 import {ModelRunParametersSection} from "../main/contrib/components/Responsibilities/ModelRunParameters/ModelRunParametersSection";
 import {ModelRunParametersContentComponent} from "../main/contrib/components/Responsibilities/ModelRunParameters/ModelRunParametersContent";
 import {mockModellingGroup, mockTouchstone} from "../test/mocks/mockModels";
-import {settings} from "../main/shared/Settings";
-import {IncomingMessage} from "http";
 import {mainStore} from "../main/contrib/stores/MainStore";
 import fetcher, { Fetcher } from "../main/shared/sources/Fetcher";
 import {apiResponse} from "../main/shared/sources/Source";
@@ -267,7 +265,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
 
             checkPromise(done, promise, token => {
                 const decoded = jwt_decode(token);
-                expect(decoded.action).to.equal("burdens");
+                expect(decoded.action).to.equal("burdens_populate");
                 const payload = QueryString.parse(decoded.payload);
                 expect(payload).to.eql(JSON.parse(`{
                     ":group-id": "${groupId}",
