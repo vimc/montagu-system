@@ -48,9 +48,7 @@ interface ResponsibilityStoreInterface extends AltJS.AltStore<ResponsibilityStat
 
     fetchOneTimeCoverageToken(): Promise<string>;
 
-    fetchOneTimeEstimatesToken(redirectPath?: string): Promise<string>;
-
-    _fetchOneTimeEstimatesToken(): Promise<string>;
+    fetchOneTimeEstimatesToken(): Promise<string>;
 
     isLoading(): boolean;
 
@@ -106,6 +104,7 @@ class ResponsibilityStore extends AbstractStore<ResponsibilityState, Responsibil
 
             handleUpdateEstimatesToken: estimateTokenActions.update,
             handleClearUsedEstimatesToken: estimateTokenActions.clearUsedToken,
+            handleSetEstimatesRedirectPath: estimateTokenActions.setRedirectPath,
 
             handleFilterByDisease: responsibilityActions.filterByDisease
         });
@@ -115,13 +114,9 @@ class ResponsibilityStore extends AbstractStore<ResponsibilityState, Responsibil
                 const manager = this.getInstance().responsibilitySetManager();
                 return manager.getSet(this.currentModellingGroup, this.currentTouchstone);
             },
-            fetchOneTimeEstimatesToken: (redirectPath: string) => {
-                this.redirectPath = redirectPath;
-                return this.getInstance()._fetchOneTimeEstimatesToken();
-            },
             refreshResponsibilities: () => {
                 const self = this;
-                const instance  = self.getInstance();
+                const instance = self.getInstance();
 
                 const scenarioId = self.currentResponsibility.scenario.id;
 
@@ -131,7 +126,7 @@ class ResponsibilityStore extends AbstractStore<ResponsibilityState, Responsibil
                     .catch(doNothing)
                     .then(() => {
                         self.handleSetCurrentResponsibility(scenarioId);
-                        instance._fetchOneTimeEstimatesToken().catch(doNothing);
+                        instance.fetchOneTimeEstimatesToken().catch(doNothing);
                     })
             }
         });
@@ -227,6 +222,10 @@ class ResponsibilityStore extends AbstractStore<ResponsibilityState, Responsibil
 
     handleUpdateEstimatesToken(token: string) {
         this.estimatesOneTimeToken = token;
+    }
+
+    handleSetEstimatesRedirectPath(path: string) {
+        this.redirectPath = path;
     }
 
     handleFilterByDisease(diseaseId: string) {

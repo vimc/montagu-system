@@ -27,6 +27,7 @@ import {runParametersStore} from "../main/contrib/stores/RunParametersStore";
 import * as QueryString from "querystring";
 import {demographicStore} from "../main/contrib/stores/DemographicStore";
 import {demographicActions} from "../main/contrib/actions/DemographicActions";
+import {estimateTokenActions} from "../main/contrib/actions/EstimateActions";
 
 const FormData = require('form-data');
 const http = require('http');
@@ -265,7 +266,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
 
             checkPromise(done, promise, token => {
                 const decoded = jwt_decode(token);
-                expect(decoded.action).to.equal("burdens_populate");
+                expect(decoded.action).to.equal("burdens_populate   ");
                 const payload = QueryString.parse(decoded.payload);
                 expect(payload).to.eql(JSON.parse(`{
                     ":group-id": "${groupId}",
@@ -280,12 +281,13 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
             setTouchstoneAndGroup(touchstoneId, groupId);
             responsibilityActions.update(expectedResponsibilitiesResponse());
             responsibilityActions.setCurrentResponsibility(scenarioId);
+            estimateTokenActions.setRedirectPath("/redirect/back");
 
-            const promise = responsibilityStore.fetchOneTimeEstimatesToken("/redirect/back");
+            const promise = responsibilityStore.fetchOneTimeEstimatesToken();
 
             checkPromise(done, promise, token => {
                 const decoded = jwt_decode(token);
-                expect(decoded.action).to.equal("burdens");
+                expect(decoded.action).to.equal("burdens_populate");
 
                 const query = QueryString.parse(decoded.query);
                 expect(query).to.eql(JSON.parse(`{

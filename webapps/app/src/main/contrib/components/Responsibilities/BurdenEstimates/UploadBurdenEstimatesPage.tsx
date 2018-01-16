@@ -21,13 +21,15 @@ export class UploadBurdenEstimatesPage extends ContribPageWithHeader<UploadEstim
     load() {
 
         estimateTokenActions.clearUsedToken();
+        estimateTokenActions.setRedirectPath(this.props.location.pathname);
         modellingGroupActions.setCurrentGroup(this.props.location.params.groupId);
         responsibilityStore.fetchTouchstones().catch(doNothing).then(() => {
             touchstoneActions.setCurrentTouchstone(this.props.location.params.touchstoneId);
             responsibilityStore.fetchResponsibilities().catch(doNothing).then(() => {
                 responsibilityActions.setCurrentResponsibility(this.props.location.params.scenarioId);
-                responsibilityStore.fetchOneTimeEstimatesToken(this.props.location.pathname).catch(doNothing)
-                super.load();
+                responsibilityStore.fetchOneTimeEstimatesToken().catch(doNothing).then(() => {
+                    super.load();
+                });
             });
         });
     }

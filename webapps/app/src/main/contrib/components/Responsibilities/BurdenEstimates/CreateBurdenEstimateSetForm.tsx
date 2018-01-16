@@ -4,6 +4,8 @@ import {OptionSelector} from "../../OptionSelector/OptionSelector";
 import {Form} from "../../../../shared/components/Form";
 import {BurdenEstimateSetTypeCode} from "../../../../shared/models/Generated";
 import {FormEvent} from "react";
+import {responsibilityActions} from "../../../actions/ResponsibilityActions";
+import {doNothing} from "../../../../shared/Helpers";
 
 interface BurdenEstimateProps {
     groupId: string;
@@ -28,7 +30,8 @@ export class CreateBurdenEstimateSetForm extends React.Component<BurdenEstimateP
     }
 
     static successCallback() {
-        responsibilityStore.refreshResponsibilities()
+        responsibilityStore.refreshResponsibilities();
+        responsibilityStore.fetchOneTimeEstimatesToken().catch(doNothing);
     }
 
     onTypeChange(value: BurdenEstimateSetTypeCode) {
