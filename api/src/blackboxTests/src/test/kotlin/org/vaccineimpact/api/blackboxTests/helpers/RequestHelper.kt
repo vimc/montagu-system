@@ -34,6 +34,12 @@ class RequestHelper
         return get(url, standardHeaders(contentType, token))
     }
 
+    fun getWithoutGzip(url: String, permissions: Set<ReifiedPermission>, contentType: String = ContentTypes.json): Response
+    {
+        val token = TestUserHelper().getTokenForTestUser(permissions)
+        return get(url, headersWithoutGzip(contentType, token))
+    }
+
     fun post(url: String, permissions: Set<ReifiedPermission>, data: JsonObject): Response
     {
         return post(url, permissions, data.toJsonString(prettyPrint = true))
@@ -82,6 +88,19 @@ class RequestHelper
         var headers = mapOf(
                 "Accept" to contentType,
                 "Accept-Encoding" to "gzip"
+        )
+        if (token != null)
+        {
+            headers += mapOf("Authorization" to "Bearer $token")
+        }
+        return headers
+    }
+
+    private fun headersWithoutGzip(contentType: String, token: TokenLiteral?): Map<String, String>
+    {
+        var headers = mapOf(
+                "Accept" to contentType,
+                "Accept-Encoding" to ""
         )
         if (token != null)
         {

@@ -10,7 +10,6 @@ import org.vaccineimpact.api.blackboxTests.validators.SplitValidator
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.direct.*
 import org.vaccineimpact.api.db.toDecimal
-import org.vaccineimpact.api.models.CoverageRow
 import org.vaccineimpact.api.models.helpers.FlexibleColumns
 import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.serialization.DataTableDeserializer
@@ -37,6 +36,22 @@ class CoverageTests : DatabaseTest()
             addCoverageData(it, touchstoneStatus = "open")
         } requiringPermissions { minimumPermissions }
         test.run()
+    }
+
+    @Test
+    fun `can get streamed data without gzip`()
+    {
+        val userHelper = TestUserHelper()
+        JooqContext().use {
+            userHelper.setupTestUser(it)
+            addCoverageData(it, touchstoneStatus = "open")
+        }
+
+        val response = RequestHelper().getWithoutGzip(url, minimumPermissions)
+        SplitSchema(json = "ScenarioAndCoverageSets", csv = "MergedCoverageData")
+                .validateResponse(response.text, response.headers["Content-Type"])
+
+        Assertions.assertThat(response.headers["Content-Encoding"]).isNull()
     }
 
     @Test

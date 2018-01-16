@@ -23,12 +23,18 @@ fun addTrailingSlashes(req: Request, res: Response)
     }
 }
 
-fun addDefaultResponseHeaders(res: Response, contentType: String = "${ContentTypes.json}; charset=utf-8")
-    = addDefaultResponseHeaders(res.raw(), contentType = contentType)
-fun addDefaultResponseHeaders(res: HttpServletResponse, contentType: String = "${ContentTypes.json}; charset=utf-8")
+fun addDefaultResponseHeaders(req: Request,
+                              res: Response,
+                              contentType: String = "${ContentTypes.json}; charset=utf-8")
+    = addDefaultResponseHeaders(req, res.raw(), contentType)
+
+
+fun addDefaultResponseHeaders(req: Request, res: HttpServletResponse,
+                              contentType: String = "${ContentTypes.json}; charset=utf-8")
 {
     res.contentType = contentType
-    if (res.getHeader("Content-Encoding") != "gzip")
+    val gzip = req.headers("Accept-Encoding")?.contains("gzip")
+    if (gzip != null && gzip && res.getHeader("Content-Encoding") != "gzip")
     {
         res.addHeader("Content-Encoding", "gzip")
     }
@@ -40,7 +46,7 @@ class DefaultHeadersFilter(val contentType: String, val method: HttpMethod) : Fi
     {
         if (request.requestMethod().equals(method.toString(), ignoreCase = true))
         {
-            addDefaultResponseHeaders(response, contentType)
+            addDefaultResponseHeaders(request, response, contentType)
         }
     }
 }

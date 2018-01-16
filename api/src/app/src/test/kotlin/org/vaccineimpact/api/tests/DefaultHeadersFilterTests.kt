@@ -1,10 +1,8 @@
 package org.vaccineimpact.api.tests
 
-import com.nhaarman.mockito_kotlin.doReturn
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.verify
-import com.nhaarman.mockito_kotlin.verifyZeroInteractions
+import com.nhaarman.mockito_kotlin.*
 import org.junit.Test
+import org.mockito.internal.verification.Times
 import org.vaccineimpact.api.app.DefaultHeadersFilter
 import org.vaccineimpact.api.test_helpers.MontaguTests
 import spark.Request
@@ -33,6 +31,14 @@ class DefaultHeadersFilterTests : MontaguTests()
     }
 
     @Test
+    fun `filter doesn't set gzip header if request does not accept it`()
+    {
+        val filter = DefaultHeadersFilter(contentType, HttpMethod.get)
+        val mockResponse = filter.handleMockRequest(HttpMethod.get, false)
+        verify(mockResponse, never()).addHeader("Content-Encoding", "gzip")
+    }
+
+    @Test
     fun `filter is not applied if method does not match`()
     {
         val filter = DefaultHeadersFilter(contentType, HttpMethod.get)
@@ -40,9 +46,13 @@ class DefaultHeadersFilterTests : MontaguTests()
         verifyZeroInteractions(mockResponse)
     }
 
-    private fun DefaultHeadersFilter.handleMockRequest(requestMethod: HttpMethod): HttpServletResponse
+    private fun DefaultHeadersFilter.handleMockRequest(requestMethod: HttpMethod, gzip: Boolean = true): HttpServletResponse
     {
         val mockRequest = mock<Request> {
+            if (gzip)
+            {
+                on { headers("Accept-Encoding") } doReturn "gzip"
+            }
             on { requestMethod() } doReturn requestMethod.toString()
         }
         val mockServletResponse = mock<HttpServletResponse>()

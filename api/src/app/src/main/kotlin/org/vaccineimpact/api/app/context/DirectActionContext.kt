@@ -134,7 +134,7 @@ class DirectActionContext(private val context: SparkWebContext,
 
     override fun streamedResponse(contentType: String, work: (OutputStream) -> Unit)
     {
-        addDefaultResponseHeaders(response, contentType)
+        addDefaultResponseHeaders(request, response, contentType)
         val stream = response.raw().outputStream
 
         val outputStream =
