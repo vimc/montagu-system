@@ -32,7 +32,7 @@ object GroupModelRunParametersRouteConfig : RouteConfig
                     .json()
                     .secure(permissions),
 
-            Endpoint("$baseUrl/get_onetime_link/",
+            Endpoint("$baseUrl/:model-run-parameter-set-id/get_onetime_link/",
                     NewStyleOneTimeLinkController::class, "getTokenForModelRunParameters")
                     .json()
                     .secure(permissions)
