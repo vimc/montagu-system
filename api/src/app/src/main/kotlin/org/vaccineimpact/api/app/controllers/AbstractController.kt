@@ -37,28 +37,6 @@ abstract class AbstractController(controllerContext: ControllerContext,
         return endpoints(repos).map { mapEndpoint(it, urlBase, tokenHelper) }
     }
 
-    fun getOneTimeLinkToken(
-            context: ActionContext,
-            repo: TokenRepository,
-            action: OneTimeAction,
-            duration: Duration = WebTokenHelper.oneTimeLinkLifeSpan
-    ): String
-    {
-        val actionAsString = serializer.serializeEnum(action)
-        val params = context.params()
-        val queryString = context.queryString()
-        val redirectUrl = context.queryParams("redirectUrl")
-
-        if (redirectUrl != null && !redirectUrl.isEmpty())
-        {
-            redirectValidator.validateRedirectUrl(redirectUrl)
-        }
-
-        val token = tokenHelper.generateOneTimeActionToken(actionAsString, params, queryString, duration, context.username!!)
-        repo.storeToken(token)
-        return token
-    }
-
     private fun mapEndpoint(
             endpoint: EndpointDefinition<*>,
             urlBase: String,
@@ -82,16 +60,4 @@ abstract class AbstractController(controllerContext: ControllerContext,
         endpoint.additionalSetup(fullUrl, tokenHelper, repos)
         return fullUrl
     }
-
-    fun objectCreation(context: ActionContext, urlFragment: String): String
-    {
-        val url = buildPublicUrl(urlFragment)
-        context.addResponseHeader("Location", url)
-        context.setResponseStatus(201)
-        return url
-    }
-
-    fun okayResponse() = "OK"
-
-    fun buildPublicUrl(urlFragment: String) = Config["app.url"] + urlBase + urlFragment
 }

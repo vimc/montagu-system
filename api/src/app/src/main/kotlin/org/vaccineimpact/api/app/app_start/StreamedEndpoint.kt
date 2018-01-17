@@ -1,19 +1,10 @@
-package org.vaccineimpact.api.app.controllers.endpoints
+package org.vaccineimpact.api.app.app_start
 
-import org.vaccineimpact.api.app.app_start.Endpoint
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.serialization.MontaguSerializer
 import org.vaccineimpact.api.serialization.Serializer
 import org.vaccineimpact.api.serialization.StreamSerializable
 
-// Old style endpoints
-fun <TRepository> ((ActionContext, TRepository) -> StreamSerializable<*>).streamed()
-        : (ActionContext, TRepository) -> Unit
-{
-    return { context, repo -> stream(this(context, repo), context) }
-}
-
-// New style endpoints
 fun Endpoint.streamed(): Endpoint
 {
     return this.copy(postProcess = ::streamIfStreamable)

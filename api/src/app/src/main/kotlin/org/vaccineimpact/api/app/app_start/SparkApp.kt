@@ -8,7 +8,6 @@ import org.vaccineimpact.api.app.addTrailingSlashes
 import org.vaccineimpact.api.app.app_start.route_config.MontaguRouteConfig
 import org.vaccineimpact.api.app.controllers.ControllerContext
 import org.vaccineimpact.api.app.controllers.HomeController
-import org.vaccineimpact.api.app.controllers.MontaguControllers
 import org.vaccineimpact.api.app.controllers.OneTimeLinkController
 import org.vaccineimpact.api.app.repositories.RepositoryFactory
 import org.vaccineimpact.api.db.Config
@@ -58,9 +57,8 @@ class MontaguApi
 
         // Old style controllers
         val controllerContext = ControllerContext(urlBase, repositoryFactory, tokenHelper)
-        val standardControllers = MontaguControllers(controllerContext)
-        val oneTimeLink = OneTimeLinkController(controllerContext, standardControllers)
-        val oldStyleEndpoints = (standardControllers.all + oneTimeLink).flatMap {
+        val oneTimeLink = OneTimeLinkController(controllerContext)
+        val oldStyleEndpoints = listOf(oneTimeLink).flatMap {
             it.mapEndpoints()
         }
 

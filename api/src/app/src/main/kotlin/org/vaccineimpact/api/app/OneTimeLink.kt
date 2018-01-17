@@ -4,7 +4,7 @@ import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.context.OneTimeLinkActionContext
 import org.vaccineimpact.api.app.context.RequestBodySource
 import org.vaccineimpact.api.app.controllers.*
-import org.vaccineimpact.api.app.controllers.endpoints.stream
+import org.vaccineimpact.api.app.app_start.stream
 import org.vaccineimpact.api.app.repositories.RepositoryFactory
 import org.vaccineimpact.api.app.security.OneTimeTokenGenerator
 import org.vaccineimpact.api.models.helpers.OneTimeAction
@@ -13,22 +13,20 @@ import org.vaccineimpact.api.security.WebTokenHelper
 import org.vaccineimpact.api.serialization.Deserializer
 
 
-open class OnetimeLinkResolver(private val controllers: MontaguControllers,
-                               private val repositoryFactory: RepositoryFactory,
+open class OnetimeLinkResolver(private val repositoryFactory: RepositoryFactory,
                                private val webTokenHelper: WebTokenHelper = WebTokenHelper(KeyHelper.keyPair))
 {
 
     @Throws(Exception::class)
     open fun perform(oneTimeLink: OneTimeLink, actionContext: ActionContext): Any
     {
-        val callback = getCallback(oneTimeLink.action, controllers, repositoryFactory, webTokenHelper)
+        val callback = getCallback(oneTimeLink.action, repositoryFactory, webTokenHelper)
         val context = OneTimeLinkActionContext(oneTimeLink.payload, oneTimeLink.queryParams, actionContext, oneTimeLink.username)
         return callback.invoke(context)
     }
 
     private fun getCallback(
             action: OneTimeAction,
-            controllers: MontaguControllers,
             repoFactory: RepositoryFactory,
             webTokenHelper: WebTokenHelper
     ): (ActionContext) -> Any
@@ -37,21 +35,24 @@ open class OnetimeLinkResolver(private val controllers: MontaguControllers,
             repoFactory.inTransaction { repos ->
                 when (action)
                 {
-                    OneTimeAction.BURDENS -> controllers.groupBurdenEstimates.addBurdenEstimates(
-                            context,
-                            repos.burdenEstimates,
-                            RequestBodySource.HTMLMultipart("file")
+                    OneTimeAction.BURDENS_CREATE -> GroupBurdenEstimatesController(context, repos.burdenEstimates)
+                            .createBurdenEstimateSet()
+                    OneTimeAction.BURDENS_POPULATE -> GroupBurdenEstimatesController(context, repos.burdenEstimates)
+                            .populateBurdenEstimateSet(RequestBodySource.HTMLMultipart("file"))
+                    OneTimeAction.MODEl_RUN_PARAMETERS -> stream(
+                             GroupModelRunParametersController(context, repos).getModelRunParameterSet(),
+                             context
                     )
-                    OneTimeAction.BURDENS_CREATE -> controllers.groupBurdenEstimates.createBurdenEstimateSet(context, repos.burdenEstimates)
-                    OneTimeAction.BURDENS_POPULATE -> controllers.groupBurdenEstimates.populateBurdenEstimateSet(
-                            context,
-                            repos.burdenEstimates,
-                            RequestBodySource.HTMLMultipart("file")
+                    OneTimeAction.COVERAGE -> stream(
+                            GroupCoverageController(context, repos.modellingGroup).getCoverageData(),
+                            context
                     )
-                    OneTimeAction.MODEl_RUN_PARAMETERS -> GroupModelRunParametersController(context, repos).addModelRunParameters()
-                    OneTimeAction.COVERAGE -> stream(GroupCoverageController(context, repos.modellingGroup).getCoverageData(), context)
-                    OneTimeAction.DEMOGRAPHY -> stream(TouchstoneController(context, repos).getDemographicData(), context)
-                    OneTimeAction.SET_PASSWORD -> PasswordController(context, repos.user, OneTimeTokenGenerator(repos.token, webTokenHelper)).setPasswordForUser(context.params("username"))
+                    OneTimeAction.DEMOGRAPHY -> stream(
+                            TouchstoneController(context, repos).getDemographicData(),
+                            context
+                    )
+                    OneTimeAction.SET_PASSWORD -> PasswordController(context, repos.user, OneTimeTokenGenerator(repos.token, webTokenHelper))
+                            .setPasswordForUser(context.params("username"))
                 }
             }
         }

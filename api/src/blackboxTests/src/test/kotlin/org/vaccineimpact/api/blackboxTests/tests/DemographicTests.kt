@@ -172,7 +172,7 @@ class DemographicTests : DatabaseTest()
             userHelper.setupTestUser(it)
         }
 
-        val response = requestHelper.get(url, requiredPermissions, contentType = "text/csv")
+        val response = requestHelper.get(url, requiredPermissions, acceptsContentType = "text/csv")
         schema.validate(response.text)
     }
 

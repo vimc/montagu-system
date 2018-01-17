@@ -3,7 +3,7 @@ package org.vaccineimpact.api.app.app_start.route_config
 import org.vaccineimpact.api.app.app_start.*
 import org.vaccineimpact.api.app.controllers.GroupCoverageController
 import org.vaccineimpact.api.app.controllers.NewStyleOneTimeLinkController
-import org.vaccineimpact.api.app.controllers.endpoints.streamed
+import org.vaccineimpact.api.app.app_start.streamed
 
 object GroupCoverageRouteConfig : RouteConfig
 {
