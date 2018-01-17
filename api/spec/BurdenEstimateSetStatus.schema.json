@@ -2,7 +2,7 @@
     "id": "BurdenEstimateSetType",
     "enum": [ 
         "empty",
-        "incomplete",
+        "partial",
         "complete"
     ]   
 }
