@@ -208,7 +208,24 @@ class UserTests : RepositoryTests<UserRepository>()
             repo.getUserByUsername("test.user")
             repo.getUserByUsername("Test.User")
         }
+    }
 
+    @Test
+    fun `getMontaguUserByUsername throws unknown object error for incorrect username`()
+    {
+        given(this::addTestUser).check { repo ->
+            assertThatThrownBy { repo.getMontaguUserByUsername("Test User") }
+                    .isInstanceOf(UnknownObjectError::class.java)
+        }
+    }
+
+    @Test
+    fun `can retrieve MontaguUser with any case username`()
+    {
+        given(this::addTestUser).check { repo ->
+            repo.getMontaguUserByUsername("test.user")
+            repo.getMontaguUserByUsername("Test.User")
+        }
     }
 
     @Test

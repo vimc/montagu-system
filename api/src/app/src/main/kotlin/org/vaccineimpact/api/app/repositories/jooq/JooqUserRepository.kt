@@ -11,7 +11,10 @@ import org.vaccineimpact.api.db.tables.records.AppUserRecord
 import org.vaccineimpact.api.models.AssociateUser
 import org.vaccineimpact.api.models.Scope
 import org.vaccineimpact.api.models.User
-import org.vaccineimpact.api.models.permissions.*
+import org.vaccineimpact.api.models.permissions.AssociateRole
+import org.vaccineimpact.api.models.permissions.ReifiedPermission
+import org.vaccineimpact.api.models.permissions.ReifiedRole
+import org.vaccineimpact.api.models.permissions.RoleAssignment
 import org.vaccineimpact.api.security.*
 import java.sql.Timestamp
 import java.time.Instant
@@ -99,6 +102,23 @@ class JooqUserRepository(dsl: DSLContext) : JooqRepository(dsl), UserRepository
         {
             return null
         }
+    }
+
+    override fun getMontaguUserByUsername(username: String): MontaguUser
+    {
+        val user = getUser(username)
+        val records = dsl.select(PERMISSION.NAME)
+                .select(ROLE.NAME, ROLE.SCOPE_PREFIX)
+                .select(USER_ROLE.SCOPE_ID)
+                .fromJoinPath(APP_USER, USER_ROLE, ROLE, ROLE_PERMISSION, PERMISSION)
+                .where(APP_USER.USERNAME.eq(username))
+                .fetch()
+
+        return MontaguUser(
+                user.into(UserProperties::class.java),
+                records.map(this::mapRole).distinct(),
+                records.map(this::mapPermission)
+        )
     }
 
     override fun getUserByUsername(username: String): User
