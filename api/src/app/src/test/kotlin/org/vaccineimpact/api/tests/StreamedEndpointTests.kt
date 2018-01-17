@@ -3,7 +3,7 @@ package org.vaccineimpact.api.tests
 import com.nhaarman.mockito_kotlin.mock
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
-import org.vaccineimpact.api.app.controllers.endpoints.streamIfStreamable
+import org.vaccineimpact.api.app.app_start.streamIfStreamable
 import org.vaccineimpact.api.test_helpers.MontaguTests
 
 class StreamedEndpointTests : MontaguTests()
