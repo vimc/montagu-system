@@ -34,7 +34,7 @@ fun addDefaultResponseHeaders(req: Request, res: HttpServletResponse,
 {
     res.contentType = contentType
     val gzip = req.headers("Accept-Encoding")?.contains("gzip")
-    if (gzip != null && gzip && res.getHeader("Content-Encoding") != "gzip")
+    if (gzip == true && res.getHeader("Content-Encoding") != "gzip")
     {
         res.addHeader("Content-Encoding", "gzip")
     }
