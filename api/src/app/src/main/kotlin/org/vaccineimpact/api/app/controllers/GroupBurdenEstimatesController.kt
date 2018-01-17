@@ -6,18 +6,12 @@ import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.context.RequestBodySource
 import org.vaccineimpact.api.app.context.csvData
 import org.vaccineimpact.api.app.context.postData
-import org.vaccineimpact.api.app.controllers.endpoints.EndpointDefinition
-import org.vaccineimpact.api.app.controllers.endpoints.oneRepoEndpoint
-import org.vaccineimpact.api.app.controllers.endpoints.secured
 import org.vaccineimpact.api.app.controllers.helpers.ResponsibilityPath
 import org.vaccineimpact.api.app.errors.InconsistentDataError
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
 import org.vaccineimpact.api.app.repositories.Repositories
-import org.vaccineimpact.api.app.repositories.RepositoryFactory
 import org.vaccineimpact.api.app.security.checkEstimatePermissionsForTouchstone
 import org.vaccineimpact.api.models.*
-import org.vaccineimpact.api.models.helpers.OneTimeAction
-import spark.route.HttpMethod
 import java.time.Instant
 
 open class GroupBurdenEstimatesController(
