@@ -9,7 +9,6 @@ import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.repositories.*
 import org.vaccineimpact.api.app.repositories.jooq.mapping.BurdenMappingHelper
 import org.vaccineimpact.api.db.AnnexJooqContext
-import org.vaccineimpact.api.db.Tables
 import org.vaccineimpact.api.db.Tables.*
 import org.vaccineimpact.api.db.fromJoinPath
 import org.vaccineimpact.api.db.joinPath
@@ -269,7 +268,7 @@ class JooqBurdenEstimateRepository(
             centralBurdenEstimateWriter.addEstimatesToSet(setId, estimates, responsibilityInfo.disease)
         }
 
-        changeBurdenEstimateStatus(setId, BurdenEstimateSetStatus.INCOMPLETE)
+        changeBurdenEstimateStatus(setId, BurdenEstimateSetStatus.PARTIAL)
         updateCurrentBurdenEstimateSet(responsibilityInfo.id, setId, type)
     }
 

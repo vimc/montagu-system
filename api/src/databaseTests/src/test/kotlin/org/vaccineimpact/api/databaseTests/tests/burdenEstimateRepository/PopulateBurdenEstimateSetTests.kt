@@ -1,6 +1,7 @@
 package org.vaccineimpact.api.databaseTests.tests
 
 import com.nhaarman.mockito_kotlin.*
+import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
 import org.vaccineimpact.api.app.errors.OperationNotAllowedError
@@ -25,7 +26,24 @@ class PopulateBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
         }
         withDatabase { db ->
             checkBurdenEstimates(db, setId)
-            checkBurdenEstimateSetMetadata(db, setId, returnedIds, "complete")
+            checkBurdenEstimateSetMetadata(db, setId, returnedIds, "partial")
+        }
+    }
+
+    @Test
+    fun `can populate burden estimate set more than once`()
+    {
+        val d = data()
+        val returnedIds = withDatabase { db -> setupDatabase(db) }
+        val setId = withRepo { repo ->
+            val setId = repo.createBurdenEstimateSet(groupId, touchstoneId, scenarioId, defaultProperties, username, timestamp)
+            repo.populateBurdenEstimateSet(setId, groupId, touchstoneId, scenarioId, d.take(1))
+            repo.populateBurdenEstimateSet(setId, groupId, touchstoneId, scenarioId, d.drop(1))
+            setId
+        }
+        withDatabase { db ->
+            checkBurdenEstimates(db, setId)
+            checkBurdenEstimateSetMetadata(db, setId, returnedIds, "partial")
         }
     }
 
@@ -46,7 +64,7 @@ class PopulateBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
         }
         withDatabase { db ->
             checkStochasticBurdenEstimates(db, setId)
-            checkBurdenEstimateSetMetadata(db, setId, returnedIds, "complete")
+            checkBurdenEstimateSetMetadata(db, setId, returnedIds, "partial")
             checkStochasticModelRuns(db, modelRunData)
         }
     }
@@ -96,8 +114,7 @@ class PopulateBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
             assertThatThrownBy {
                 repo.populateBurdenEstimateSet(setId, groupId, touchstoneId, scenarioId, data())
             }.isInstanceOf(OperationNotAllowedError::class.java)
-                    .hasMessage("the following problems occurred:\nThis burden estimate set already contains estimates." +
-                            " You must create a new set if you want to upload any new estimates.")
+                    .hasMessageContaining("You must create a new set if you want to upload any new estimates.")
         }
     }
 
