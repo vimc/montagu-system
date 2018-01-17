@@ -11,11 +11,13 @@ import org.vaccineimpact.api.app.repositories.RepositoryFactory
 import org.vaccineimpact.api.models.AuthenticationResponse
 import org.vaccineimpact.api.security.WebTokenHelper
 import org.vaccineimpact.api.serialization.Serializer
+import org.vaccineimpact.api.serialization.StreamSerializable
 import spark.Request
 import spark.Route
 import spark.Spark
 import spark.route.HttpMethod
 import java.lang.reflect.InvocationTargetException
+import javax.activation.UnsupportedDataTypeException
 
 class Router(val config: RouteConfig,
              val serializer: Serializer,
@@ -41,6 +43,7 @@ class Router(val config: RouteConfig,
     private fun transform(x: Any) = when (x)
     {
         is AuthenticationResponse -> serializer.gson.toJson(x)!!
+        is StreamSerializable<*> -> throw Exception("Streamable content is not expected here")
         else -> serializer.toResult(x)
     }
 
