@@ -159,8 +159,8 @@ class FluentValidation(config: FluentValidationConfig)
 
     private fun makeRequest(contentType: String, token: TokenLiteral? = null): Response = when (method)
     {
-        HttpMethod.get -> requestHelper.get(url, token = token, contentType = contentType)
-        HttpMethod.post -> requestHelper.post(url, postData, token = token)
+        HttpMethod.get -> requestHelper.get(url, token = token, acceptsContentType = contentType)
+        HttpMethod.post -> requestHelper.post(url, postData, token = token, acceptsContentType = contentType)
         else -> throw Exception("Requests of type $method are not supported")
     }
 

@@ -92,11 +92,15 @@ fun Endpoint.secure(permissions: Set<String> = setOf()): Endpoint
     return this.copy(requiredPermissions = allPermissions)
 }
 
+// This means that the endpoint will return JSON data, and we will only respond to requests
+// that say they accept application/json
 fun Endpoint.json(): Endpoint
 {
     return this.copy(contentType = ContentTypes.json)
 }
 
+// This means that the endpoint will return CSV data, and we will only respond to requests
+// that say they accept text/csv
 fun Endpoint.csv(): Endpoint
 {
     return this.copy(contentType = ContentTypes.csv)

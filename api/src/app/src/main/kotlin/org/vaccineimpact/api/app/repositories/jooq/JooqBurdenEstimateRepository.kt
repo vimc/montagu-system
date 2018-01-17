@@ -37,7 +37,7 @@ class JooqBurdenEstimateRepository(
             BurdenEstimateWriter(dsl)
 
     private val stochasticBurdenEstimateWriter: StochasticBurdenEstimateWriter = stochasticBurdenEstimateWriter ?:
-            StochasticBurdenEstimateWriter(dsl, AnnexJooqContext().dsl)
+            StochasticBurdenEstimateWriter(dsl, { AnnexJooqContext().dsl })
 
     override fun getModelRunParameterSets(groupId: String, touchstoneId: String): List<ModelRunParameterSet>
     {
@@ -241,20 +241,6 @@ class JooqBurdenEstimateRepository(
                 this.value = it.value
             }.store()
         }
-    }
-
-    override fun addBurdenEstimateSet(groupId: String, touchstoneId: String, scenarioId: String,
-                                      estimates: Sequence<BurdenEstimate>, uploader: String, timestamp: Instant): Int
-    {
-        val properties = CreateBurdenEstimateSet(BurdenEstimateSetType(
-                BurdenEstimateSetTypeCode.CENTRAL_UNKNOWN,
-                "Created via deprecated method"
-        ), null)
-        val setId = createBurdenEstimateSet(groupId, touchstoneId, scenarioId, properties, uploader, timestamp)
-        populateBurdenEstimateSet(setId, groupId, touchstoneId, scenarioId, estimates.map {
-            BurdenEstimateWithRunId(it, runId = null)
-        })
-        return setId
     }
 
     override fun populateBurdenEstimateSet(setId: Int, groupId: String, touchstoneId: String, scenarioId: String,

@@ -67,12 +67,21 @@ class TestUserHelper(private val password: String = TestUserHelper.defaultPasswo
                 TestUserHelper().setupTestUser(it)
             }
         }
+
         fun setupTestUserAndGetToken(
                 permissions: Set<ReifiedPermission>,
                 includeCanLogin: Boolean = false
         ): TokenLiteral
         {
             setupTestUser()
+            return TestUserHelper().getTokenForTestUser(permissions, includeCanLogin)
+        }
+
+        fun getToken(
+                permissions: Set<ReifiedPermission>,
+                includeCanLogin: Boolean = false
+        ): TokenLiteral
+        {
             return TestUserHelper().getTokenForTestUser(permissions, includeCanLogin)
         }
     }
