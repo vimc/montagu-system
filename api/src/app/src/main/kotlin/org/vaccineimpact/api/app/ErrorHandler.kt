@@ -45,7 +45,7 @@ open class ErrorHandler(private val logger: Logger = LoggerFactory.getLogger(Err
         val error = logExceptionAndReturnMontaguError(exception, req)
         res.body(serializer.toJson(error.asResult()))
         res.status(error.httpStatus)
-        addDefaultResponseHeaders(res)
+        addDefaultResponseHeaders(req, res)
     }
 
     // Just a helper to let us call Spark.exception using generic type parameters

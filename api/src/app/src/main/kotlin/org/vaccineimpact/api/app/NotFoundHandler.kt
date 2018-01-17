@@ -10,8 +10,8 @@ class NotFoundHandler
 {
     fun setup()
     {
-        Spark.notFound { _, res ->
-            addDefaultResponseHeaders(res)
+        Spark.notFound { req, res ->
+            addDefaultResponseHeaders(req, res)
             val result = Result(
                     ResultStatus.FAILURE,
                     null,
