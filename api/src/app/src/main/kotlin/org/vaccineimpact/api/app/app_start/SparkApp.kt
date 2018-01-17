@@ -1,7 +1,10 @@
-package org.vaccineimpact.api.app
+package org.vaccineimpact.api.app.app_start
 
 import org.slf4j.LoggerFactory
-import org.vaccineimpact.api.app.app_start.Router
+import org.vaccineimpact.api.app.ErrorHandler
+import org.vaccineimpact.api.app.NotFoundHandler
+import org.vaccineimpact.api.app.RequestLogger
+import org.vaccineimpact.api.app.addTrailingSlashes
 import org.vaccineimpact.api.app.app_start.route_config.MontaguRouteConfig
 import org.vaccineimpact.api.app.controllers.ControllerContext
 import org.vaccineimpact.api.app.controllers.HomeController
@@ -35,29 +38,12 @@ class MontaguApi
     fun run(repositoryFactory: RepositoryFactory)
     {
         setupPort()
-        val allowedUrls = mutableListOf(
-                "https://support.montagu.dide.ic.ac.uk:10443/admin/",
-                "https://support.montagu.dide.ic.ac.uk:10443/reports/",
-                "https://support.montagu.dide.ic.ac.uk:10443/contrib/",
-                "https://montagu.vaccineimpact.org/admin/",
-                "https://montagu.vaccineimpact.org/contrib/",
-                "https://montagu.vaccineimpact.org/reports/")
-
-        if (Config.getBool("allow.localhost"))
-        {
-            allowedUrls.add("http://localhost:5000")
-            allowedUrls.add("https://localhost/admin/")
-        }
 
         spk.redirect.get("/", urlBase)
+
         spk.before("*", ::addTrailingSlashes)
-        spk.before("*", { req, res ->
-            val origin = req.headers("Origin")
-            if (req.headers("Origin") in allowedUrls)
-            {
-                res.header("Access-Control-Allow-Origin", origin)
-            }
-        })
+        spk.before("*", AllowedOriginsFilter(Config.getBool("allow.localhost")))
+
         spk.after("*", { req, res ->
             repositoryFactory.inTransaction { repos ->
                 RequestLogger(repos.accessLogRepository).log(req, res)
