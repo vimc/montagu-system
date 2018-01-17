@@ -42,7 +42,7 @@ open class OnetimeLinkResolver(private val repositoryFactory: RepositoryFactory,
                     OneTimeAction.MODEl_RUN_PARAMETERS -> stream(
                              GroupModelRunParametersController(context, repos).getModelRunParameterSet(),
                              context
-                    ),
+                    )
                     OneTimeAction.COVERAGE -> stream(
                             GroupCoverageController(context, repos.modellingGroup).getCoverageData(),
                             context
