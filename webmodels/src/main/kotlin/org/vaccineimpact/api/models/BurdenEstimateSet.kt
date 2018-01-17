@@ -46,6 +46,6 @@ fun BurdenEstimateSetTypeCode.isStochastic() = this == BurdenEstimateSetTypeCode
 enum class BurdenEstimateSetStatus
 {
     EMPTY,
-    INCOMPLETE,
+    PARTIAL,
     COMPLETE
 }
