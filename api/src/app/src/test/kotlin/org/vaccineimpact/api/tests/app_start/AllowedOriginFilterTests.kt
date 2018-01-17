@@ -64,6 +64,15 @@ class AllowedOriginFilterTests : MontaguTests()
         val mockResponse = sut.handleMockRequest("https://google.com")
         verifyZeroInteractions(mockResponse)
     }
+
+    @Test
+    fun `does not allow no origin`()
+    {
+        val sut = AllowedOriginsFilter(false)
+        val mockResponse = sut.handleMockRequest(null)
+        verifyZeroInteractions(mockResponse)
+    }
+
     @Test
     fun `allows localhost`()
     {
@@ -82,7 +91,7 @@ class AllowedOriginFilterTests : MontaguTests()
                 .addHeader("Access-Control-Allow-Origin", "https://localhost")
     }
 
-    private fun AllowedOriginsFilter.handleMockRequest(origin: String): HttpServletResponse
+    private fun AllowedOriginsFilter.handleMockRequest(origin: String?): HttpServletResponse
     {
         val mockRequest = mock<Request> {
             on { headers("Origin") } doReturn origin
