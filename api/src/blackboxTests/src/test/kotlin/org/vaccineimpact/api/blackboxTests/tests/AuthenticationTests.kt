@@ -45,27 +45,7 @@ class AuthenticationTests : DatabaseTest()
     }
 
     @Test
-    fun `can set shiny cookie for non report reviewer`()
-    {
-        val token = TestUserHelper.setupTestUserAndGetToken(setOf(), true)
-
-        val response = RequestHelper().get("/set-shiny-cookie/", token)
-
-        assertThat(response.statusCode).isEqualTo(200)
-
-        val cookie = response.headers["Set-Cookie"]!!
-        assertThat(cookie).contains("Secure")
-        assertThat(cookie).contains("HttpOnly")
-        assertThat(cookie).contains("SameSite=Lax")
-
-        val shinyToken = cookie.substring(cookie.indexOf("=") + 1, cookie.indexOf(";"))
-        val claims = JWT.decode(shinyToken)
-        val allowedShiny = claims.getClaim("allowed_shiny")
-        assertThat(allowedShiny.asBoolean()).isFalse()
-    }
-
-    @Test
-    fun `can set shiny cookie for report reviewer`()
+    fun `can set shiny cookie`()
     {
         JooqContext().use {
             val roleId = it.createRole("report.reviewer", null, "")

@@ -62,6 +62,17 @@ class WebTokenHelperTests : MontaguTests()
         assertThat(claims["permissions"]).isEqualTo("*/p1,prefix:id/p2")
     }
 
+    @Test
+    fun `can generate shiny token for non report reviewer`()
+    {
+        val token = sut.generateShinyToken(MontaguUser(properties, roles, permissions))
+        val claims = sut.verify(token)
+
+        assertThat(claims["iss"]).isEqualTo("vaccineimpact.org")
+        assertThat(claims["sub"]).isEqualTo("test.user")
+        assertThat(claims["exp"]).isInstanceOf(Date::class.java)
+        assertThat(claims["allowed_shiny"]).isEqualTo(false)
+    }
 
     @Test
     fun `can generate shiny token for report reviewer`()
