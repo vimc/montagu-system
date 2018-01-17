@@ -254,9 +254,9 @@ class JooqBurdenEstimateRepository(
         val set = getBurdenEstimateSet(setId)
         val type = set.type.type
 
-        if (set.status != BurdenEstimateSetStatus.EMPTY)
+        if (set.status == BurdenEstimateSetStatus.COMPLETE)
         {
-            throw OperationNotAllowedError("This burden estimate set already contains estimates." +
+            throw OperationNotAllowedError("This burden estimate set has been marked as complete." +
                     " You must create a new set if you want to upload any new estimates.")
         }
 
@@ -269,12 +269,13 @@ class JooqBurdenEstimateRepository(
             centralBurdenEstimateWriter.addEstimatesToSet(setId, estimates, responsibilityInfo.disease)
         }
 
-        dsl.update(Tables.BURDEN_ESTIMATE_SET)
-                .set(Tables.BURDEN_ESTIMATE_SET.STATUS, "complete")
-                .where(Tables.BURDEN_ESTIMATE_SET.ID.eq(setId))
-                .execute()
-
+        changeBurdenEstimateStatus(setId, BurdenEstimateSetStatus.INCOMPLETE)
         updateCurrentBurdenEstimateSet(responsibilityInfo.id, setId, type)
+    }
+
+    override fun closeBurdenEstimateSet(setId: Int)
+    {
+        changeBurdenEstimateStatus(setId, BurdenEstimateSetStatus.COMPLETE)
     }
 
     override fun createBurdenEstimateSet(groupId: String, touchstoneId: String, scenarioId: String,
@@ -329,6 +330,14 @@ class JooqBurdenEstimateRepository(
                 .fetch().singleOrNull()?.value1()
                 ?: throw DatabaseContentsError("Modelling group $groupId does not have any models/model versions in the database")
 
+    }
+
+    private fun changeBurdenEstimateStatus(setId: Int, newStatus: BurdenEstimateSetStatus)
+    {
+        dsl.update(BURDEN_ESTIMATE_SET)
+                .set(BURDEN_ESTIMATE_SET.STATUS, mapper.mapEnum(newStatus))
+                .where(BURDEN_ESTIMATE_SET.ID.eq(setId))
+                .execute()
     }
 
     private fun updateCurrentBurdenEstimateSet(responsibilityId: Int, setId: Int, type: BurdenEstimateSetTypeCode)
