@@ -23,15 +23,15 @@ class RequestHelper
         CertificateHelper.disableCertificateValidation()
     }
 
-    fun get(url: String, permissions: Set<ReifiedPermission>, contentType: String = ContentTypes.json): Response
+    fun get(url: String, permissions: Set<ReifiedPermission>, acceptsContentType: String = ContentTypes.json): Response
     {
         val token = TestUserHelper().getTokenForTestUser(permissions)
-        return get(url, token, contentType = contentType)
+        return get(url, token, acceptsContentType = acceptsContentType)
     }
 
-    fun get(url: String, token: TokenLiteral? = null, contentType: String = ContentTypes.json): Response
+    fun get(url: String, token: TokenLiteral? = null, acceptsContentType: String = ContentTypes.json): Response
     {
-        return get(url, standardHeaders(contentType, token))
+        return get(url, standardHeaders(acceptsContentType, token))
     }
 
     fun post(url: String, permissions: Set<ReifiedPermission>, data: JsonObject): Response
@@ -44,20 +44,28 @@ class RequestHelper
         return post(url, data, token = token)
     }
 
-    fun post(url: String, data: JsonObject, token: TokenLiteral? = null): Response
+    fun post(url: String, data: JsonObject,
+             token: TokenLiteral? = null,
+             acceptsContentType: String = ContentTypes.json
+    ): Response
     {
-        return post(url, data.toJsonString(prettyPrint = true), token = token)
+        return post(url, data.toJsonString(prettyPrint = true),
+                token = token,
+                acceptsContentType = acceptsContentType)
     }
-    fun post(url: String, data: String? = null, token: TokenLiteral? = null): Response
+    fun post(url: String, data: String? = null,
+             token: TokenLiteral? = null,
+             acceptsContentType: String = ContentTypes.json
+    ): Response
     {
         return post(
                 url,
-                standardHeaders(ContentTypes.json, token),
+                standardHeaders(acceptsContentType, token),
                 data
         )
     }
 
-    fun postFile(url: String, fileContents: String, data: Map<String, String> = mapOf(), token: TokenLiteral? = null): Response
+    fun postFile(url: String, fileContents: String, data: Map<String, String> = mapOf(), token: TokenLiteral? = null, acceptsContentType: String = ContentTypes.json): Response
     {
         val file = File("file")
         try
@@ -77,10 +85,10 @@ class RequestHelper
         }
     }
 
-    private fun standardHeaders(contentType: String, token: TokenLiteral?): Map<String, String>
+    private fun standardHeaders(acceptsContentType: String, token: TokenLiteral?): Map<String, String>
     {
         var headers = mapOf(
-                "Accept" to contentType,
+                "Accept" to acceptsContentType,
                 "Accept-Encoding" to "gzip"
         )
         if (token != null)

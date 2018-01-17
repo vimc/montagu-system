@@ -43,7 +43,10 @@ open class GroupBurdenEstimatesController(
         return objectCreation(context, url)
     }
 
-    fun populateBurdenEstimateSet(source: RequestBodySource = RequestBodySource.Simple()): String
+    fun populateBurdenEstimateSet()
+            = populateBurdenEstimateSet(RequestBodySource.Simple())
+
+    fun populateBurdenEstimateSet(source: RequestBodySource): String
     {
         // First check if we're allowed to see this touchstone
         val path = getValidResponsibilityPath(context, estimateRepository)
