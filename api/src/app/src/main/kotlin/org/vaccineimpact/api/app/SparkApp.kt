@@ -5,17 +5,12 @@ import org.vaccineimpact.api.app.app_start.Router
 import org.vaccineimpact.api.app.app_start.route_config.MontaguRouteConfig
 import org.vaccineimpact.api.app.controllers.ControllerContext
 import org.vaccineimpact.api.app.controllers.HomeController
-import org.vaccineimpact.api.app.controllers.MontaguControllers
 import org.vaccineimpact.api.app.controllers.OneTimeLinkController
 import org.vaccineimpact.api.app.repositories.RepositoryFactory
 import org.vaccineimpact.api.db.Config
-import org.vaccineimpact.api.models.ErrorInfo
-import org.vaccineimpact.api.models.Result
-import org.vaccineimpact.api.models.ResultStatus
 import org.vaccineimpact.api.security.KeyHelper
 import org.vaccineimpact.api.security.WebTokenHelper
 import org.vaccineimpact.api.serialization.MontaguSerializer
-import spark.Spark.notFound
 import java.io.File
 import java.net.BindException
 import java.net.ServerSocket
@@ -57,9 +52,8 @@ class MontaguApi
 
         // Old style controllers
         val controllerContext = ControllerContext(urlBase, repositoryFactory, tokenHelper)
-        val standardControllers = MontaguControllers(controllerContext)
-        val oneTimeLink = OneTimeLinkController(controllerContext, standardControllers)
-        val oldStyleEndpoints = (standardControllers.all + oneTimeLink).flatMap {
+        val oneTimeLink = OneTimeLinkController(controllerContext)
+        val oldStyleEndpoints = listOf(oneTimeLink).flatMap {
             it.mapEndpoints()
         }
 

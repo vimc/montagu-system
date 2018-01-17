@@ -80,7 +80,7 @@ class CoverageTests : DatabaseTest()
             userHelper.setupTestUser(it)
         }
 
-        val response = requestHelper.get("$url?format=wide", minimumPermissions, contentType = "text/csv")
+        val response = requestHelper.get("$url?format=wide", minimumPermissions, acceptsContentType = "text/csv")
 
         val csv = StringReader(response.text)
                 .use { CSVReader(it).readAll() }
@@ -114,7 +114,7 @@ class CoverageTests : DatabaseTest()
             userHelper.setupTestUser(it)
         }
 
-        val response = requestHelper.get("$url?format=wide", minimumPermissions, contentType = "text/csv")
+        val response = requestHelper.get("$url?format=wide", minimumPermissions, acceptsContentType = "text/csv")
         val yearMap = mapOf("coverage_2000" to "<NA>",
                 "coverage_2001" to "<NA>", "target_2000" to "<NA>", "target_2001" to "<NA>")
 
@@ -155,7 +155,7 @@ class CoverageTests : DatabaseTest()
             userHelper.setupTestUser(it)
         }
 
-        val response = requestHelper.get(url, minimumPermissions, contentType = "text/csv")
+        val response = requestHelper.get(url, minimumPermissions, acceptsContentType = "text/csv")
         schema.validate(response.text)
     }
 

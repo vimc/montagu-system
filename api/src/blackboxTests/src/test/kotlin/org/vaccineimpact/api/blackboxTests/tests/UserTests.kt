@@ -54,7 +54,7 @@ class UserTests : DatabaseTest()
 
         val requestHelper = RequestHelper()
         val response = requestHelper.get("/users/roles/all/",
-                PermissionSet("*/can-login", "*/roles.read"), contentType = "application/json")
+                PermissionSet("*/can-login", "*/roles.read"), acceptsContentType = "application/json")
 
         Assertions.assertThat(response.statusCode).isEqualTo(200)
     }
@@ -198,7 +198,7 @@ class UserTests : DatabaseTest()
             userHelper.setupTestUser(it)
         }
 
-        val response = requestHelper.get("/users/nonexistentuser", PermissionSet("*/can-login", "*/users.read"), contentType = "application/json")
+        val response = requestHelper.get("/users/nonexistentuser", PermissionSet("*/can-login", "*/users.read"), acceptsContentType = "application/json")
         JSONSchema("User").validator.validateError(response.text, "unknown-username")
         Assertions.assertThat(response.statusCode).isEqualTo(404)
     }
