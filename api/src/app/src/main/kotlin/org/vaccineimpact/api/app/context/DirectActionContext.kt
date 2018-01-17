@@ -20,11 +20,10 @@ import org.vaccineimpact.api.serialization.MontaguSerializer
 import org.vaccineimpact.api.serialization.Serializer
 import spark.Request
 import spark.Response
+import java.io.BufferedOutputStream
 import java.io.OutputStream
 import java.io.Reader
-import java.io.StringReader
 import java.util.zip.GZIPOutputStream
-import javax.servlet.http.HttpServletRequest
 import kotlin.reflect.KClass
 
 
@@ -135,10 +134,21 @@ class DirectActionContext(private val context: SparkWebContext,
 
     override fun streamedResponse(contentType: String, work: (OutputStream) -> Unit)
     {
-        addDefaultResponseHeaders(response, contentType)
+        addDefaultResponseHeaders(request, response, contentType)
         val stream = response.raw().outputStream
-        GZIPOutputStream(stream, BUFFER_SIZE).use { zipStream ->
-            work(zipStream)
+
+        val outputStream =
+                if (request.headers("Accept-Encoding").contains("gzip"))
+                {
+                    GZIPOutputStream(stream, BUFFER_SIZE)
+                }
+                else
+                {
+                    BufferedOutputStream(stream)
+                }
+
+        outputStream.use { out ->
+            work(out)
         }
     }
 

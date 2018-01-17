@@ -7,6 +7,7 @@ import org.vaccineimpact.api.serialization.MontaguSerializer
 import org.vaccineimpact.api.models.AuthenticationResponse
 import org.vaccineimpact.api.security.WebTokenHelper
 import org.vaccineimpact.api.serialization.Serializer
+import org.vaccineimpact.api.serialization.StreamSerializable
 import spark.Route
 import spark.Spark
 import spark.route.HttpMethod
@@ -40,6 +41,7 @@ data class Endpoint<TRoute>(
     override fun transform(x: Any) = when (x)
     {
         is AuthenticationResponse -> serializer.gson.toJson(x)!!
+        is StreamSerializable<*> -> throw Exception("Streamable content is not expected here")
         else -> serializer.toResult(x)
     }
 

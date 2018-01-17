@@ -39,6 +39,22 @@ class CoverageTests : DatabaseTest()
     }
 
     @Test
+    fun `can get streamed data without gzip`()
+    {
+        val userHelper = TestUserHelper()
+        JooqContext().use {
+            userHelper.setupTestUser(it)
+            addCoverageData(it, touchstoneStatus = "open")
+        }
+
+        val response = RequestHelper().getWithoutGzip(url, minimumPermissions)
+        SplitSchema(json = "ScenarioAndCoverageSets", csv = "MergedCoverageData")
+                .validateResponse(response.text, response.headers["Content-Type"])
+
+        Assertions.assertThat(response.headers["Content-Encoding"]).isNull()
+    }
+
+    @Test
     fun `can get wide coverage data for responsibility`()
     {
         val schema = SplitSchema(json = "ScenarioAndCoverageSets", csv = "MergedWideCoverageData")
