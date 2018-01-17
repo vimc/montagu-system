@@ -40,7 +40,7 @@ open class OnetimeLinkResolver(private val repositoryFactory: RepositoryFactory,
                     OneTimeAction.BURDENS_POPULATE -> GroupBurdenEstimatesController(context, repos.burdenEstimates)
                             .populateBurdenEstimateSet(RequestBodySource.HTMLMultipart("file"))
                     OneTimeAction.MODEl_RUN_PARAMETERS -> GroupModelRunParametersController(context, repos)
-                            .addModelRunParameters()
+                            .getModelRunParameterSet()
                     OneTimeAction.COVERAGE -> stream(
                             GroupCoverageController(context, repos.modellingGroup).getCoverageData(),
                             context

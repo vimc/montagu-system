@@ -49,80 +49,43 @@ class ModelRunParameterTests : BurdenEstimateTests()
     }
 
     @Test
-    fun `can upload model run parameter set via onetime link`()
-    {
-        validate("$modelRunParameterUrl/get_onetime_link/") against "Token" given { db ->
-            setUp(db)
-        } requiringPermissions {
-            requiredWritePermissions
-        } andCheckString { token ->
-            val oneTimeURL = "/onetime_link/$token/"
-            val requestHelper = RequestHelper()
-
-            val response = requestHelper.postFile(oneTimeURL, modelRunParameterCSV,
-                    data = mapOf("description" to "description", "disease" to diseaseId))
-            Assertions.assertThat(response.statusCode).isEqualTo(201)
-
-            val badResponse = requestHelper.get(oneTimeURL)
-            JSONValidator().validateError(badResponse.text, expectedErrorCode = "invalid-token-used")
-        }
-    }
-
-    @Test
-    fun `can upload model run parameters via onetime link and redirect`()
-    {
-        validate("$modelRunParameterUrl/get_onetime_link/?redirectUrl=http://localhost") against "Token" given { db ->
-            setUp(db)
-        } requiringPermissions {
-            requiredWritePermissions
-        } andCheckString { token ->
-            val oneTimeURL = "/onetime_link/$token/"
-            val requestHelper = RequestHelper()
-
-            val response = requestHelper.postFile(oneTimeURL, modelRunParameterCSV,
-                    data = mapOf("description" to "description", "disease" to diseaseId))
-            val resultAsString = response.getResultFromRedirect(checkRedirectTarget = "http://localhost")
-            JSONValidator().validateSuccess(resultAsString)
-        }
-
-    }
-
-    @Test
     fun `returns BadRequest if request is not multipart`()
     {
-        validate("$modelRunParameterUrl/get_onetime_link/") against "Token" given { db ->
-            setUp(db)
-        } requiringPermissions {
-            requiredWritePermissions
-        } andCheckString { token ->
-            val oneTimeURL = "/onetime_link/$token/"
-            val requestHelper = RequestHelper()
+        val requestHelper = RequestHelper()
 
-            val response = requestHelper.post(oneTimeURL, modelRunParameterCSV)
+        val token = TestUserHelper.setupTestUserAndGetToken(requiredWritePermissions.plus(PermissionSet("*/can-login")))
+
+        JooqContext().use {
+            setUp(it)
+        }
+
+        val response = requestHelper.post("$modelRunParameterUrl/",
+                modelRunParameterCSV,
+                token = token)
 
             JSONValidator().validateError(response.text,
                     expectedErrorCode = "bad-request",
                     expectedErrorText = "Trying to extract a part from multipart/form-data but this request is of type text/plain")
-        }
     }
 
     @Test
     fun `returns error if part is missing`()
     {
-        validate("$modelRunParameterUrl/get_onetime_link/") against "Token" given { db ->
-            setUp(db)
-        } requiringPermissions {
-            requiredWritePermissions
-        } andCheckString { token ->
-            val oneTimeURL = "/onetime_link/$token/"
-            val requestHelper = RequestHelper()
+        val requestHelper = RequestHelper()
 
-            val response = requestHelper.postFile(oneTimeURL, modelRunParameterCSV)
+        val token = TestUserHelper.setupTestUserAndGetToken(requiredWritePermissions.plus(PermissionSet("*/can-login")))
+
+        JooqContext().use {
+            setUp(it)
+        }
+
+        val response = requestHelper.postFile("$modelRunParameterUrl/",
+                modelRunParameterCSV,
+                token = token, data = mapOf("description" to "description"))
 
             JSONValidator().validateError(response.text,
                     expectedErrorCode = "missing-required-parameter:disease",
                     expectedErrorText = "You must supply a 'disease' parameter in the multipart body")
-        }
     }
 
     @Test
