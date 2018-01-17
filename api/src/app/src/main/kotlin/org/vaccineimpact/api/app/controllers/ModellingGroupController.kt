@@ -3,16 +3,14 @@ package org.vaccineimpact.api.app.controllers
 import org.vaccineimpact.api.app.app_start.Controller
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.context.postData
-import org.vaccineimpact.api.app.controllers.endpoints.EndpointDefinition
-import org.vaccineimpact.api.app.controllers.endpoints.oneRepoEndpoint
-import org.vaccineimpact.api.app.controllers.endpoints.secured
 import org.vaccineimpact.api.app.errors.MissingRequiredPermissionError
-import org.vaccineimpact.api.app.repositories.*
-import org.vaccineimpact.api.models.*
-import org.vaccineimpact.api.serialization.FlexibleDataTable
-import org.vaccineimpact.api.serialization.SplitData
-import org.vaccineimpact.api.serialization.StreamSerializable
-import spark.route.HttpMethod
+import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
+import org.vaccineimpact.api.app.repositories.Repositories
+import org.vaccineimpact.api.app.repositories.UserRepository
+import org.vaccineimpact.api.models.AssociateUser
+import org.vaccineimpact.api.models.ModellingGroup
+import org.vaccineimpact.api.models.ModellingGroupDetails
+import org.vaccineimpact.api.models.Scope
 
 
 open class ModellingGroupController(
