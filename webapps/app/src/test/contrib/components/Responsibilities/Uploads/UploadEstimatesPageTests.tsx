@@ -47,12 +47,9 @@ describe('UploadEstimatesPage', () => {
         checkAsync(done, (afterWait) => {
             afterWait(done, () => {
 
-                const successNotification: Notification = {
-                    message: "Success! You have uploaded a new set of burden estimates.",
-                    type: "info"
-                };
                 expectOrderedActions(spy, [
                     {action: "EstimateTokenActions.clearUsedToken", payload: true},
+                    {action: "EstimateTokenActions.setRedirectPath"},
                     {action: "ModellingGroupActions.setCurrentGroup", payload: "group-1"},
                     {action: "TouchstoneActions.setCurrentTouchstone", payload: "touchstone-1"},
                     {action: "ResponsibilityActions.setCurrentResponsibility", payload: "scenario-1"}
