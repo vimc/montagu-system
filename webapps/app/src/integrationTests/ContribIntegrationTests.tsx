@@ -317,16 +317,11 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
         });
 
         function returnBurdenEstimateSetPromise(db: Client): Promise<any> {
+            let responsibilityIds: ResponsibilityIds = null;
             return addResponsibilities(db)
-                .then((responsibilityIds) => {
-                    return addModel(db)
-                        .then((modelVersionId) => {
-                            return addBurdenEstimateSet(db, responsibilityIds.responsibility, modelVersionId)
-                                .then((setId) => {
-                                    return updateCurrentBurdenEstimateSet(db, responsibilityIds.responsibility, setId)
-                                })
-                        })
-                })
+                .then(responsibilityIdsResult => {responsibilityIds = responsibilityIdsResult; return addModel(db)})
+                .then(modelVersionId => addBurdenEstimateSet(db, responsibilityIds.responsibility, modelVersionId))
+                .then(setId => updateCurrentBurdenEstimateSet(db, responsibilityIds.responsibility, setId));
         }
 
         it("fetches model run parameter sets", (done: DoneCallback) => {
