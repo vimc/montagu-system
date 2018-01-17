@@ -41,7 +41,7 @@ object GroupBurdenEstimatesRouteConfig : RouteConfig
 
             // Populate sets
             Endpoint("$baseUrl/:set-id/", controller, "populateBurdenEstimateSet", method = HttpMethod.post)
-                    .csv()
+                    .json()
                     .secure(writePermissions),
 
             Endpoint("$baseUrl/:set-id/get_onetime_link/",

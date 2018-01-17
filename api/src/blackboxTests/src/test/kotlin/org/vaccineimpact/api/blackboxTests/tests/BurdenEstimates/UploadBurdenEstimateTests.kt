@@ -48,7 +48,7 @@ class UploadBurdenEstimateTests : BurdenEstimateTests()
         val setId = JooqContext().use {
             setUpWithBurdenEstimateSet(it)
         }
-        validate("$setUrl/$setId/", method = HttpMethod.post) withRequestSchema {
+        validate("$setUrl$setId/", method = HttpMethod.post) withRequestSchema {
             CSVSchema("BurdenEstimate")
         } sending {
             csvData

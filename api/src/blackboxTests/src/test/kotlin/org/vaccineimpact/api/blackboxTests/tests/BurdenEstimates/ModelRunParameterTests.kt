@@ -6,13 +6,11 @@ import org.assertj.core.api.Assertions
 import org.junit.Test
 import org.vaccineimpact.api.blackboxTests.helpers.RequestHelper
 import org.vaccineimpact.api.blackboxTests.helpers.TestUserHelper
-import org.vaccineimpact.api.blackboxTests.helpers.getResultFromRedirect
 import org.vaccineimpact.api.blackboxTests.helpers.validate
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.validateSchema.JSONValidator
 import java.io.StringReader
-import java.math.BigDecimal
 
 class ModelRunParameterTests : BurdenEstimateTests()
 {
@@ -124,7 +122,7 @@ class ModelRunParameterTests : BurdenEstimateTests()
                 "$groupScope/responsibilities.read"
         )
 
-        val response = requestHelper.get(modelRunParameterCsvUrl, permissions, contentType = "text/csv")
+        val response = requestHelper.get(modelRunParameterCsvUrl, permissions, acceptsContentType = "text/csv")
 
         val csv = StringReader(response.text)
                 .use { CSVReader(it).readAll() }
