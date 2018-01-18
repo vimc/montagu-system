@@ -42,7 +42,7 @@ class AllowedOriginFilterTests : MontaguTests()
     }
 
     @Test
-    fun `does not allow localhost`()
+    fun `does not allow localhost when allowLocal is false`()
     {
         val sut = AllowedOriginsFilter(false)
         val mockResponse = sut.handleMockRequest("http://localhost")
@@ -50,7 +50,7 @@ class AllowedOriginFilterTests : MontaguTests()
     }
 
     @Test
-    fun `does not allow localhost on https`()
+    fun `does not allow localhost on https when allowLocal is false`()
     {
         val sut = AllowedOriginsFilter(false)
         val mockResponse = sut.handleMockRequest("https://localhost")
@@ -74,7 +74,7 @@ class AllowedOriginFilterTests : MontaguTests()
     }
 
     @Test
-    fun `allows localhost`()
+    fun `allows localhost when allowLocal is true`()
     {
         val sut = AllowedOriginsFilter(true)
         val mockResponse = sut.handleMockRequest("http://localhost:5000")
@@ -83,7 +83,7 @@ class AllowedOriginFilterTests : MontaguTests()
     }
 
     @Test
-    fun `allows localhost on https`()
+    fun `allows localhost on https when allowLocal is true`()
     {
         val sut = AllowedOriginsFilter(true)
         val mockResponse = sut.handleMockRequest("https://localhost")
