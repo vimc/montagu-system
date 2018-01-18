@@ -22,9 +22,9 @@ open class WebTokenHelper(keyPair: KeyPair,
     val generator = JwtGenerator<CommonProfile>(signatureConfiguration)
     private val random = SecureRandom()
 
-    open fun generateToken(userInternal: InternalUser): String
+    open fun generateToken(user: InternalUser): String
     {
-        return generator.generate(claims(userInternal))
+        return generator.generate(claims(user))
     }
 
     open fun generateOneTimeActionToken(action: String,
@@ -54,14 +54,14 @@ open class WebTokenHelper(keyPair: KeyPair,
                         "result" to json))
     }
 
-    fun claims(userInternal: InternalUser): Map<String, Any>
+    fun claims(user: InternalUser): Map<String, Any>
     {
         return mapOf(
                 "iss" to issuer,
-                "sub" to userInternal.username,
+                "sub" to user.username,
                 "exp" to Date.from(Instant.now().plus(lifeSpan)),
-                "permissions" to userInternal.permissions.joinToString(","),
-                "roles" to userInternal.roles.joinToString(",")
+                "permissions" to user.permissions.joinToString(","),
+                "roles" to user.roles.joinToString(",")
         )
     }
 

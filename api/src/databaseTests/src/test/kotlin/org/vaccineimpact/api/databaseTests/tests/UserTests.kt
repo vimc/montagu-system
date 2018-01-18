@@ -409,15 +409,15 @@ class UserTests : RepositoryTests<UserRepository>()
     }
 
     private fun checkUser(
-            userInternal: InternalUser,
+            user: InternalUser,
             expectedRoles: List<ReifiedRole> = emptyList(),
             expectedPermissions: List<ReifiedPermission> = emptyList())
     {
-        assertThat(userInternal.username).isEqualTo("test.userInternal")
-        assertThat(userInternal.name).isEqualTo("Test User")
-        assertThat(userInternal.email).isEqualTo("test@example.com")
-        assertThat(userInternal.roles).hasSameElementsAs(expectedRoles)
-        assertThat(userInternal.permissions).hasSameElementsAs(expectedPermissions)
+        assertThat(user.username).isEqualTo("test.user")
+        assertThat(user.name).isEqualTo("Test User")
+        assertThat(user.email).isEqualTo("test@example.com")
+        assertThat(user.roles).hasSameElementsAs(expectedRoles)
+        assertThat(user.permissions).hasSameElementsAs(expectedPermissions)
     }
 
     private fun checkUserWithRoles(
