@@ -160,7 +160,7 @@ class JooqUserRepository(dsl: DSLContext) : JooqRepository(dsl), UserRepository
                 ?: throw UnknownRoleException("member", "modelling-group")
 
         // this throws an error if user does not exist
-        getUserByUsername(associateUser.username)
+        getUser(associateUser.username)
 
         when (associateUser.action)
         {
