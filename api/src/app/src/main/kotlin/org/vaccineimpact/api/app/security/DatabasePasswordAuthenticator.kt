@@ -8,7 +8,7 @@ import org.pac4j.core.profile.CommonProfile
 import org.pac4j.core.util.CommonHelper
 import org.vaccineimpact.api.app.repositories.jooq.JooqUserRepository
 import org.vaccineimpact.api.db.JooqContext
-import org.vaccineimpact.api.security.MontaguUser
+import org.vaccineimpact.api.security.InternalMontaguUser
 import org.vaccineimpact.api.security.UserHelper
 
 class DatabasePasswordAuthenticator : Authenticator<UsernamePasswordCredentials>
@@ -39,7 +39,7 @@ class DatabasePasswordAuthenticator : Authenticator<UsernamePasswordCredentials>
         }
     }
 
-    private fun validate(email: String, password: String): MontaguUser
+    private fun validate(email: String, password: String): InternalMontaguUser
     {
         return JooqContext().use { db ->
             val repo = JooqUserRepository(db.dsl)

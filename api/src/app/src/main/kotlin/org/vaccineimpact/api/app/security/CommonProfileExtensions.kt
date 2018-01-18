@@ -2,7 +2,7 @@ package org.vaccineimpact.api.app.security
 
 import org.pac4j.core.profile.CommonProfile
 import org.vaccineimpact.api.models.permissions.PermissionSet
-import org.vaccineimpact.api.security.MontaguUser
+import org.vaccineimpact.api.security.InternalMontaguUser
 
 fun <T> CommonProfile.getAttributeOrDefault(key: String, default: T): T
 {
@@ -20,10 +20,10 @@ fun <T> CommonProfile.getAttributeOrDefault(key: String, default: T): T
 
 fun CommonProfile.montaguPermissions() = this.getAttributeOrDefault(PERMISSIONS, PermissionSet())
 
-fun CommonProfile.montaguUser(): MontaguUser?
+fun CommonProfile.montaguUser(): InternalMontaguUser?
 {
     val user = this.getAttribute(USER_OBJECT)
-    return if (user != null && user is MontaguUser)
+    return if (user != null && user is InternalMontaguUser)
     {
         user
     }

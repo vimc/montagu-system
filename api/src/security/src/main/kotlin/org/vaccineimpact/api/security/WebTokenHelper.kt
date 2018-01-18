@@ -5,7 +5,6 @@ import org.pac4j.jwt.config.signature.RSASignatureConfiguration
 import org.pac4j.jwt.profile.JwtGenerator
 import org.vaccineimpact.api.db.Config
 import org.vaccineimpact.api.models.Result
-import org.vaccineimpact.api.models.helpers.OneTimeAction
 import org.vaccineimpact.api.serialization.MontaguSerializer
 import org.vaccineimpact.api.serialization.Serializer
 import java.security.KeyPair
@@ -23,9 +22,9 @@ open class WebTokenHelper(keyPair: KeyPair,
     val generator = JwtGenerator<CommonProfile>(signatureConfiguration)
     private val random = SecureRandom()
 
-    open fun generateToken(user: MontaguUser): String
+    open fun generateToken(userInternal: InternalMontaguUser): String
     {
-        return generator.generate(claims(user))
+        return generator.generate(claims(userInternal))
     }
 
     open fun generateOneTimeActionToken(action: String,
@@ -55,14 +54,14 @@ open class WebTokenHelper(keyPair: KeyPair,
                         "result" to json))
     }
 
-    fun claims(user: MontaguUser): Map<String, Any>
+    fun claims(userInternal: InternalMontaguUser): Map<String, Any>
     {
         return mapOf(
                 "iss" to issuer,
-                "sub" to user.username,
+                "sub" to userInternal.username,
                 "exp" to Date.from(Instant.now().plus(lifeSpan)),
-                "permissions" to user.permissions.joinToString(","),
-                "roles" to user.roles.joinToString(",")
+                "permissions" to userInternal.permissions.joinToString(","),
+                "roles" to userInternal.roles.joinToString(",")
         )
     }
 

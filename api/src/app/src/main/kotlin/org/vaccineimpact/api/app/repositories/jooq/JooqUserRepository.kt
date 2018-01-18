@@ -76,14 +76,14 @@ class JooqUserRepository(dsl: DSLContext) : JooqRepository(dsl), UserRepository
                 .execute()
     }
 
-    override fun getUserByEmail(email: String): MontaguUser?
+    override fun getUserByEmail(email: String): InternalMontaguUser?
     {
         val user = dsl.fetchAny(APP_USER, caseInsensitiveEmailMatch(email))
         if (user != null)
         {
             val records = getRolesAndPermissions(caseInsensitiveEmailMatch(email))
 
-            return MontaguUser(
+            return InternalMontaguUser(
                     user.into(UserProperties::class.java),
                     records.map(this::mapRole).distinct(),
                     records.filter { it[PERMISSION.NAME] != null }.map(this::mapPermission)
@@ -110,11 +110,11 @@ class JooqUserRepository(dsl: DSLContext) : JooqRepository(dsl), UserRepository
 
     }
 
-    override fun getUserByUsername(username: String): MontaguUser
+    override fun getUserByUsername(username: String): InternalMontaguUser
     {
         val user = getUser(username).into(UserProperties::class.java)
         val records = getRolesAndPermissions(caseInsensitiveUsernameMatch(username))
-        return MontaguUser(
+        return InternalMontaguUser(
                 user,
                 records.map(this::mapRole).distinct(),
                 records.filter { it[PERMISSION.NAME] != null }.map(this::mapPermission)

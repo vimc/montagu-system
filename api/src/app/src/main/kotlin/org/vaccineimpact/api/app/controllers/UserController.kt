@@ -79,15 +79,15 @@ class UserController(
         val userName = userName(context)
         val roleReadingScopes = roleReadingScopes(context)
 
-        val user = userRepository.getUserByUsername(userName)
+        val internalUser = userRepository.getUserByUsername(userName)
         if (roleReadingScopes.any())
         {
-            val roles = filteredRoles(user.roles, roleReadingScopes)
-            return user.copy(roles=roles).toUser()
+            val roles = filteredRoles(internalUser.roles, roleReadingScopes)
+            return internalUser.copy(roles=roles).toUser()
         }
         else
         {
-            return user.toUser().copy(roles = null)
+            return internalUser.toUser().copy(roles = null)
         }
     }
 

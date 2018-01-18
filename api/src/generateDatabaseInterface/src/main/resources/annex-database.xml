@@ -3,7 +3,7 @@
     <jdbc>
         <driver>${db_driver}</driver>
         <url>jdbc:postgresql://${annex_host}:${annex_port}/${annex_name}</url>
-        <user>${annex_username}</user>
+        <userInternal>${annex_username}</userInternal>
         <password>${annex_password}</password>
     </jdbc>
 

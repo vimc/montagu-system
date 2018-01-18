@@ -12,7 +12,7 @@ import org.vaccineimpact.api.app.security.OneTimeTokenGenerator
 import org.vaccineimpact.api.emails.EmailManager
 import org.vaccineimpact.api.emails.PasswordSetEmail
 import org.vaccineimpact.api.models.helpers.OneTimeAction
-import org.vaccineimpact.api.security.MontaguUser
+import org.vaccineimpact.api.security.InternalMontaguUser
 import org.vaccineimpact.api.security.UserProperties
 import org.vaccineimpact.api.security.WebTokenHelper
 import org.vaccineimpact.api.test_helpers.MontaguTests
@@ -115,7 +115,7 @@ class PasswordControllerTests : MontaguTests()
         verify(emailManager, never()).sendEmail(any(), any())
     }
 
-    private val user = MontaguUser(
+    private val user = InternalMontaguUser(
             UserProperties("fake.user", "name", "fake@example.com", null, null),
             roles = emptyList(),
             permissions = emptyList()

@@ -13,7 +13,7 @@ import org.vaccineimpact.api.models.User
 import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.models.permissions.ReifiedRole
 import org.vaccineimpact.api.models.permissions.RoleAssignment
-import org.vaccineimpact.api.security.MontaguUser
+import org.vaccineimpact.api.security.InternalMontaguUser
 import org.vaccineimpact.api.security.UserProperties
 import org.vaccineimpact.api.test_helpers.MontaguTests
 
@@ -31,7 +31,7 @@ class GetUserTests : MontaguTests()
                 ReifiedRole("member", Scope.Specific("modelling-group", "IC-Garske"))
         )
 
-        val user = MontaguUser(UserProperties("test", "test name", "test@test.com", null, null), roles, listOf())
+        val user = InternalMontaguUser(UserProperties("test", "test name", "test@test.com", null, null), roles, listOf())
         val permissionSet = PermissionSet()
 
         val repo = mock<UserRepository> {
@@ -62,7 +62,7 @@ class GetUserTests : MontaguTests()
                 ReifiedRole("member", Scope.Specific("modelling-group", "IC-Garske"))
         )
 
-        val user = MontaguUser(UserProperties("test", "test name", "test@test.com", null, null), roles, listOf())
+        val user = InternalMontaguUser(UserProperties("test", "test name", "test@test.com", null, null), roles, listOf())
 
         val permissionSet = PermissionSet("*/roles.read")
 
@@ -92,7 +92,7 @@ class GetUserTests : MontaguTests()
                 ReifiedRole("member", Scope.Specific("foo", "IC-Garske"))
         )
 
-        val user = MontaguUser(UserProperties("test", "test name", "test@test.com", null, null), roles, listOf())
+        val user = InternalMontaguUser(UserProperties("test", "test name", "test@test.com", null, null), roles, listOf())
 
         val permissionSet = PermissionSet("modelling-group:IC-Garske/roles.read")
 

@@ -386,7 +386,7 @@ class UserTests : RepositoryTests<UserRepository>()
             repo.addUser(CreateUser("user.name", "Full Name", "email@example.com"))
         } andCheck { repo ->
             assertThat(repo.getUserByUsername("user.name")).isEqualTo(
-                    MontaguUser(UserProperties("user.name", "Full Name", "email@example.com", null, null),
+                    InternalMontaguUser(UserProperties("user.name", "Full Name", "email@example.com", null, null),
                             listOf(), listOf())
             )
         }
@@ -409,15 +409,15 @@ class UserTests : RepositoryTests<UserRepository>()
     }
 
     private fun checkUser(
-            user: MontaguUser,
+            userInternal: InternalMontaguUser,
             expectedRoles: List<ReifiedRole> = emptyList(),
             expectedPermissions: List<ReifiedPermission> = emptyList())
     {
-        assertThat(user.username).isEqualTo("test.user")
-        assertThat(user.name).isEqualTo("Test User")
-        assertThat(user.email).isEqualTo("test@example.com")
-        assertThat(user.roles).hasSameElementsAs(expectedRoles)
-        assertThat(user.permissions).hasSameElementsAs(expectedPermissions)
+        assertThat(userInternal.username).isEqualTo("test.userInternal")
+        assertThat(userInternal.name).isEqualTo("Test User")
+        assertThat(userInternal.email).isEqualTo("test@example.com")
+        assertThat(userInternal.roles).hasSameElementsAs(expectedRoles)
+        assertThat(userInternal.permissions).hasSameElementsAs(expectedPermissions)
     }
 
     private fun checkUserWithRoles(
@@ -431,7 +431,7 @@ class UserTests : RepositoryTests<UserRepository>()
         assertThat(actualUser.roles).hasSameElementsAs(expectedRoles)
     }
 
-    private fun getUser(repository: UserRepository, email: String): MontaguUser
+    private fun getUser(repository: UserRepository, email: String): InternalMontaguUser
     {
         val user = repository.getUserByEmail(email)
         assertThat(user).isNotNull()
