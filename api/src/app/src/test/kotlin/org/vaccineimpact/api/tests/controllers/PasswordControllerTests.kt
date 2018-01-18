@@ -126,7 +126,7 @@ class PasswordControllerTests : MontaguTests()
     }
 
     private val userRepo = mock<UserRepository> {
-        on { getMontaguUserByEmail("fake@example.com") } doReturn user
+        on { getUserByEmail("fake@example.com") } doReturn user
     }
 
 }

@@ -8,9 +8,13 @@ import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.controllers.UserController
 import org.vaccineimpact.api.app.repositories.UserRepository
 import org.vaccineimpact.api.app.security.OneTimeTokenGenerator
+import org.vaccineimpact.api.models.Scope
 import org.vaccineimpact.api.models.User
 import org.vaccineimpact.api.models.permissions.PermissionSet
+import org.vaccineimpact.api.models.permissions.ReifiedRole
 import org.vaccineimpact.api.models.permissions.RoleAssignment
+import org.vaccineimpact.api.security.MontaguUser
+import org.vaccineimpact.api.security.UserProperties
 import org.vaccineimpact.api.test_helpers.MontaguTests
 
 class GetUserTests : MontaguTests()
@@ -20,8 +24,14 @@ class GetUserTests : MontaguTests()
     fun `getUser returns user without roles`()
     {
         val userName = "test"
-        val user = User("test", "test name", "test@test.com", null)
+        val expectedUser = User("test", "test name", "test@test.com", null)
 
+        val roles = listOf(
+                ReifiedRole("user", Scope.Global()),
+                ReifiedRole("member", Scope.Specific("modelling-group", "IC-Garske"))
+        )
+
+        val user = MontaguUser(UserProperties("test", "test name", "test@test.com", null, null), roles, listOf())
         val permissionSet = PermissionSet()
 
         val repo = mock<UserRepository> {
@@ -34,7 +44,7 @@ class GetUserTests : MontaguTests()
         }
 
         val sut = UserController(context, repo, mock<OneTimeTokenGenerator>())
-        Assertions.assertThat(sut.getUser()).isEqualToComparingFieldByField(user)
+        Assertions.assertThat(sut.getUser()).isEqualToComparingFieldByField(expectedUser)
     }
 
     @Test
@@ -42,17 +52,22 @@ class GetUserTests : MontaguTests()
     {
         val userName = "test"
 
-        val user = User("test", "test name", "test@test.com", null)
         val expectedRoles = listOf(
-                RoleAssignment("user", null, null),
+                RoleAssignment("user", null, ""),
                 RoleAssignment("member", "modelling-group", "IC-Garske")
         )
+
+        val roles = listOf(
+                ReifiedRole("user", Scope.Global()),
+                ReifiedRole("member", Scope.Specific("modelling-group", "IC-Garske"))
+        )
+
+        val user = MontaguUser(UserProperties("test", "test name", "test@test.com", null, null), roles, listOf())
 
         val permissionSet = PermissionSet("*/roles.read")
 
         val repo = mock<UserRepository> {
             on { getUserByUsername(userName) } doReturn user
-            on { getRolesForUser(userName) } doReturn expectedRoles
         }
 
         val context = mock<ActionContext> {
@@ -70,19 +85,19 @@ class GetUserTests : MontaguTests()
     {
         val userName = "test"
 
-        val user = User("test", "test name", "test@test.com", null)
         val roles = listOf(
-                RoleAssignment("user", null, null),
-                RoleAssignment("member", "modelling-group", "IC-Garske"),
-                RoleAssignment("member", "modelling-group", "group2"),
-                RoleAssignment("member", "foo", "IC:Garske")
+                ReifiedRole("user", Scope.Global()),
+                ReifiedRole("member", Scope.Specific("modelling-group", "IC-Garske")),
+                ReifiedRole("member", Scope.Specific("modelling-group", "group-2")),
+                ReifiedRole("member", Scope.Specific("foo", "IC-Garske"))
         )
+
+        val user = MontaguUser(UserProperties("test", "test name", "test@test.com", null, null), roles, listOf())
 
         val permissionSet = PermissionSet("modelling-group:IC-Garske/roles.read")
 
         val repo = mock<UserRepository> {
             on { this.getUserByUsername(userName) } doReturn user
-            on { this.getRolesForUser(userName) } doReturn roles
         }
 
         val context = mock<ActionContext> {

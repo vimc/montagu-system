@@ -16,6 +16,7 @@ import org.vaccineimpact.api.models.User
 import org.vaccineimpact.api.models.encompass
 import org.vaccineimpact.api.models.helpers.OneTimeAction
 import org.vaccineimpact.api.models.permissions.AssociateRole
+import org.vaccineimpact.api.models.permissions.ReifiedRole
 import org.vaccineimpact.api.models.permissions.RoleAssignment
 import java.time.Duration
 
@@ -81,13 +82,12 @@ class UserController(
         val user = userRepository.getUserByUsername(userName)
         if (roleReadingScopes.any())
         {
-            val allRoles = userRepository.getRolesForUser(userName)
-            val roles = filteredRoles(allRoles, roleReadingScopes)
-            return user.copy(roles = roles)
+            val roles = filteredRoles(user.roles, roleReadingScopes)
+            return user.copy(roles=roles).toUser()
         }
         else
         {
-            return user
+            return user.toUser().copy(roles = null)
         }
     }
 
@@ -100,7 +100,7 @@ class UserController(
             val users = userRepository.allWithRoles().toList()
 
             return users.map {
-                it.copy(roles = filteredRoles(it.roles, roleReadingScopes))
+                it.copy(roles = filteredRoleAssignments(it.roles, roleReadingScopes))
             }
         }
         else
@@ -124,6 +124,9 @@ class UserController(
             .filter { it.name == "roles.write" }
             .map { it.scope }
 
-    private fun filteredRoles(allRoles: List<RoleAssignment>?, roleReadingScopes: Iterable<Scope>) =
+    private fun filteredRoleAssignments(allRoles: List<RoleAssignment>?, roleReadingScopes: Iterable<Scope>) =
             allRoles?.filter { roleReadingScopes.encompass(Scope.parse(it)) }
+
+    private fun filteredRoles(allRoles: List<ReifiedRole>, roleReadingScopes: Iterable<Scope>) =
+            allRoles.filter { roleReadingScopes.encompass(it.scope) }
 }

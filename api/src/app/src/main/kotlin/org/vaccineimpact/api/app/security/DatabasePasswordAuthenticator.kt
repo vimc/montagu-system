@@ -43,7 +43,7 @@ class DatabasePasswordAuthenticator : Authenticator<UsernamePasswordCredentials>
     {
         return JooqContext().use { db ->
             val repo = JooqUserRepository(db.dsl)
-            val user = repo.getMontaguUserByEmail(email)
+            val user = repo.getUserByEmail(email)
             if (user == null)
             {
                 throw CredentialsException("Unknown email '$email'")

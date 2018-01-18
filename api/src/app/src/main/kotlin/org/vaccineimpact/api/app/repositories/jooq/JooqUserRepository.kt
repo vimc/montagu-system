@@ -1,7 +1,6 @@
 package org.vaccineimpact.api.app.repositories.jooq
 
-import org.jooq.DSLContext
-import org.jooq.Record
+import org.jooq.*
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.models.CreateUser
 import org.vaccineimpact.api.app.repositories.UserRepository
@@ -77,22 +76,17 @@ class JooqUserRepository(dsl: DSLContext) : JooqRepository(dsl), UserRepository
                 .execute()
     }
 
-    override fun getMontaguUserByEmail(email: String): MontaguUser?
+    override fun getUserByEmail(email: String): MontaguUser?
     {
         val user = dsl.fetchAny(APP_USER, caseInsensitiveEmailMatch(email))
         if (user != null)
         {
-            val records = dsl.select(PERMISSION.NAME)
-                    .select(ROLE.NAME, ROLE.SCOPE_PREFIX)
-                    .select(USER_ROLE.SCOPE_ID)
-                    .fromJoinPath(APP_USER, USER_ROLE, ROLE, ROLE_PERMISSION, PERMISSION)
-                    .where(caseInsensitiveEmailMatch(email))
-                    .fetch()
+            val records = getRolesAndPermissions(caseInsensitiveEmailMatch(email))
 
             return MontaguUser(
                     user.into(UserProperties::class.java),
                     records.map(this::mapRole).distinct(),
-                    records.map(this::mapPermission)
+                    records.filter { it[PERMISSION.NAME] != null }.map(this::mapPermission)
             )
         }
         else
@@ -101,20 +95,30 @@ class JooqUserRepository(dsl: DSLContext) : JooqRepository(dsl), UserRepository
         }
     }
 
-    override fun getUserByUsername(username: String): User
+    private fun getRolesAndPermissions(whereCondition: Condition): Result<Record>
     {
-        return getUser(username).into(User::class.java)
-    }
-
-    override fun getRolesForUser(username: String): List<RoleAssignment>
-    {
-        return dsl.select(ROLE.NAME, ROLE.SCOPE_PREFIX)
+        return dsl.select(PERMISSION.NAME)
+                .select(ROLE.NAME, ROLE.SCOPE_PREFIX)
                 .select(USER_ROLE.SCOPE_ID)
                 .fromJoinPath(APP_USER, USER_ROLE, ROLE)
-                .where(caseInsensitiveUsernameMatch(username))
+                .leftJoin(ROLE_PERMISSION)
+                .on(ROLE_PERMISSION.ROLE.eq(ROLE.ID))
+                .leftJoin(PERMISSION)
+                .on(ROLE_PERMISSION.PERMISSION.eq(PERMISSION.NAME))
+                .where(whereCondition)
                 .fetch()
-                .map(this::mapRoleAssignment)
-                .distinct()
+
+    }
+
+    override fun getUserByUsername(username: String): MontaguUser
+    {
+        val user = getUser(username).into(UserProperties::class.java)
+        val records = getRolesAndPermissions(caseInsensitiveUsernameMatch(username))
+        return MontaguUser(
+                user,
+                records.map(this::mapRole).distinct(),
+                records.filter { it[PERMISSION.NAME] != null }.map(this::mapPermission)
+        )
     }
 
     override fun all(): Iterable<User>

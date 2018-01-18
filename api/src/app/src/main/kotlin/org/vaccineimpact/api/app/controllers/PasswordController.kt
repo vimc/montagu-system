@@ -44,7 +44,7 @@ class PasswordController(
     {
         val address = context.queryParams("email")
                 ?: throw MissingRequiredParameterError("email")
-        val user = userRepository.getMontaguUserByEmail(address)
+        val user = userRepository.getUserByEmail(address)
         if (user != null)
         {
             val token = getSetPasswordToken(user.username)
