@@ -52,7 +52,7 @@ class WebTokenHelperTests : MontaguTests()
     @Test
     fun `can generate token`()
     {
-        val token = sut.generateToken(MontaguUser(properties, roles, permissions))
+        val token = sut.generateToken(InternalUser(properties, roles, permissions))
         val claims = sut.verify(token)
 
         assertThat(claims["iss"]).isEqualTo("vaccineimpact.org")
@@ -65,7 +65,7 @@ class WebTokenHelperTests : MontaguTests()
     @Test
     fun `can generate shiny token for non report reviewer`()
     {
-        val token = sut.generateShinyToken(MontaguUser(properties, roles, permissions))
+        val token = sut.generateShinyToken(InternalUser(properties, roles, permissions))
         val claims = sut.verify(token)
 
         assertThat(claims["iss"]).isEqualTo("vaccineimpact.org")
@@ -80,7 +80,7 @@ class WebTokenHelperTests : MontaguTests()
         val roles = listOf(
                 ReifiedRole("report.reviewer", Scope.Global())
         )
-        val token = sut.generateShinyToken(MontaguUser(properties, roles, permissions))
+        val token = sut.generateShinyToken(InternalUser(properties, roles, permissions))
         val claims = sut.verify(token)
 
         assertThat(claims["iss"]).isEqualTo("vaccineimpact.org")
@@ -129,7 +129,7 @@ class WebTokenHelperTests : MontaguTests()
     @Test
     fun `token fails validation when issuer is wrong`()
     {
-        val claims = sut.claims(MontaguUser(properties, roles, permissions))
+        val claims = sut.claims(InternalUser(properties, roles, permissions))
         val badToken = sut.generator.generate(claims.plus("iss" to "unexpected.issuer"))
         val verifier = MontaguTokenAuthenticator(sut)
         assertThat(verifier.validateToken(badToken)).isNull()
@@ -139,7 +139,7 @@ class WebTokenHelperTests : MontaguTests()
     @Test
     fun `token fails validation when token is old`()
     {
-        val claims = sut.claims(MontaguUser(properties, roles, permissions))
+        val claims = sut.claims(InternalUser(properties, roles, permissions))
         val badToken = sut.generator.generate(claims.plus("exp" to Date.from(Instant.now())))
         val verifier = MontaguTokenAuthenticator(sut)
         assertThat(verifier.validateToken(badToken)).isNull()
@@ -150,7 +150,7 @@ class WebTokenHelperTests : MontaguTests()
     fun `token fails validation when token is signed by wrong key`()
     {
         val sauron = WebTokenHelper(KeyHelper.generateKeyPair())
-        val evilToken = sauron.generateToken(MontaguUser(properties, roles, permissions))
+        val evilToken = sauron.generateToken(InternalUser(properties, roles, permissions))
         val verifier = MontaguTokenAuthenticator(sut)
         assertThat(verifier.validateToken(evilToken)).isNull()
         assertThatThrownBy { sut.verify(evilToken) }

@@ -24,7 +24,7 @@ open class WebTokenHelper(keyPair: KeyPair,
     val generator = JwtGenerator<CommonProfile>(signatureConfiguration)
     private val random = SecureRandom()
 
-    open fun generateToken(user: MontaguUser): String
+    open fun generateToken(user: InternalUser): String
     {
         return generator.generate(claims(user))
     }
@@ -56,7 +56,7 @@ open class WebTokenHelper(keyPair: KeyPair,
                         "result" to json))
     }
 
-    fun claims(user: MontaguUser): Map<String, Any>
+    fun claims(user: InternalUser): Map<String, Any>
     {
         return mapOf(
                 "iss" to issuer,
@@ -67,7 +67,7 @@ open class WebTokenHelper(keyPair: KeyPair,
         )
     }
 
-    fun shinyClaims(user: MontaguUser): Map<String, Any>
+    fun shinyClaims(user: InternalUser): Map<String, Any>
     {
         val allowedShiny = user.roles.contains(ReifiedRole("report.reviewer", Scope.Global()))
         return mapOf(
@@ -94,8 +94,8 @@ open class WebTokenHelper(keyPair: KeyPair,
         val oneTimeLinkLifeSpan: Duration = Duration.ofMinutes(10)
     }
 
-    fun generateShinyToken(montaguUser: MontaguUser): String
+    fun generateShinyToken(internalUser: InternalUser): String
     {
-        return generator.generate(shinyClaims(montaguUser))
+        return generator.generate(shinyClaims(internalUser))
     }
 }

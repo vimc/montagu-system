@@ -7,7 +7,7 @@ import org.vaccineimpact.api.app.app_start.Controller
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.UserRepository
-import org.vaccineimpact.api.app.security.montaguUser
+import org.vaccineimpact.api.app.security.internalUser
 import org.vaccineimpact.api.models.AuthenticationResponse
 import org.vaccineimpact.api.models.FailedAuthentication
 import org.vaccineimpact.api.models.SuccessfulAuthentication
@@ -33,7 +33,7 @@ class AuthenticationController(context: ActionContext,
         {
             is HTMLForm.ValidForm ->
             {
-                val user = context.userProfile!!.montaguUser()!!
+                val user = context.userProfile!!.internalUser()!!
                 val token = tokenHelper.generateToken(user)
                 userRepository.updateLastLoggedIn(user.username)
                 return SuccessfulAuthentication(token, tokenHelper.lifeSpan)
@@ -44,8 +44,8 @@ class AuthenticationController(context: ActionContext,
 
     fun setShinyCookie(): String
     {
-        val montaguUser = userRepository.getMontaguUserByUsername(context.username!!)
-        val shinyToken = tokenHelper.generateShinyToken(montaguUser)
+        val internalUser = userRepository.getUserByUsername(context.username!!)
+        val shinyToken = tokenHelper.generateShinyToken(internalUser)
         context.addResponseHeader("Set-Cookie", "jwt_token=$shinyToken; Path=/; Secure; HttpOnly; SameSite=Lax")
         context.addResponseHeader("Access-Control-Allow-Credentials", "true")
         return okayResponse()

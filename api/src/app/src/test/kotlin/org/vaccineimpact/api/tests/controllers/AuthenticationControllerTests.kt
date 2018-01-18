@@ -7,10 +7,9 @@ import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.FormHelpers
 import org.vaccineimpact.api.app.HTMLForm
 import org.vaccineimpact.api.app.controllers.AuthenticationController
-import org.vaccineimpact.api.app.controllers.ControllerContext
 import org.vaccineimpact.api.app.repositories.UserRepository
 import org.vaccineimpact.api.app.security.USER_OBJECT
-import org.vaccineimpact.api.security.MontaguUser
+import org.vaccineimpact.api.security.InternalUser
 import org.vaccineimpact.api.security.UserProperties
 import org.vaccineimpact.api.security.WebTokenHelper
 import org.vaccineimpact.api.test_helpers.MontaguTests
@@ -23,7 +22,7 @@ class AuthenticationControllerTests : MontaguTests()
     {
         val fakeUserRepo = mock<UserRepository>()
 
-        val fakeUser = MontaguUser(UserProperties("testusername", "", "", "", null),
+        val fakeUser = InternalUser(UserProperties("testusername", "", "", "", null),
                 listOf(),
                 listOf())
 
