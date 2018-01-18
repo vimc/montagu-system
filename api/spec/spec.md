@@ -1127,6 +1127,16 @@ column, `run_id`, is expected between `disease` and `year`. See
 [BurdenEstimate.csvschema.json](BurdenEstimate.csvschema.json) and 
 [StochasticBurdenEstimate.csvschema.json](StochasticBurdenEstimate.csvschema.json)
 for a strict definition.
+
+## POST /modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}/{scenario-id}/estimate-sets/{set-id}/actions/clear/
+Deletes all burden estimates from an burden estimate set, leaving metadata
+unchanged. This can only be invoked if:
+
+* The set status is `empty` or `partial`
+* The touchstone is `open`
+* The relevant responsibility set is `incomplete`
+
+Required permissions: Scoped to modelling group: `estimates.write`, `responsibilities.read`.
        
 # Modelling groups
 ## GET /modelling-groups/
