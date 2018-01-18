@@ -66,6 +66,14 @@ open class GroupBurdenEstimatesController(
         return okayResponse()
     }
 
+    fun clearBurdenEstimateSet(): String
+    {
+        val path = getValidResponsibilityPath(context, estimateRepository)
+        val setId = context.params(":set-id").toInt()
+        //estimateRepository.clearBurdenEstimateSet(setId)
+        return okayResponse()
+    }
+
     private fun getBurdenEstimateDataFromCSV(
             metadata: BurdenEstimateSet, context: ActionContext, source: RequestBodySource
     ): Sequence<BurdenEstimateWithRunId>

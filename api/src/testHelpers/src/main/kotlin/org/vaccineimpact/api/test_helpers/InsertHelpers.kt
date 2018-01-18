@@ -214,7 +214,7 @@ fun JooqContext.addBurdenEstimate(
         country: String,
         year: Int = 2000,
         age: Int = 20,
-        outcome: String = "cohort-size",
+        outcome: String = "cohort_size",
         value: BigDecimal = 100.toDecimal(),
         modelRunId: Int? = null
 ): Int
