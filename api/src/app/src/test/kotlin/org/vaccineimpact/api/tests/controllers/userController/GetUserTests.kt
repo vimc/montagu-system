@@ -31,11 +31,11 @@ class GetUserTests : MontaguTests()
                 ReifiedRole("member", Scope.Specific("modelling-group", "IC-Garske"))
         )
 
-        val user = InternalUser(UserProperties("test", "test name", "test@test.com", null, null), roles, listOf())
+        val internalUser = InternalUser(UserProperties("test", "test name", "test@test.com", null, null), roles, listOf())
         val permissionSet = PermissionSet()
 
         val repo = mock<UserRepository> {
-            on { this.getUserByUsername(userName) } doReturn user
+            on { this.getUserByUsername(userName) } doReturn internalUser
         }
 
         val context = mock<ActionContext> {
@@ -62,12 +62,12 @@ class GetUserTests : MontaguTests()
                 ReifiedRole("member", Scope.Specific("modelling-group", "IC-Garske"))
         )
 
-        val user = InternalUser(UserProperties("test", "test name", "test@test.com", null, null), roles, listOf())
+        val internalUser = InternalUser(UserProperties("test", "test name", "test@test.com", null, null), roles, listOf())
 
         val permissionSet = PermissionSet("*/roles.read")
 
         val repo = mock<UserRepository> {
-            on { getUserByUsername(userName) } doReturn user
+            on { getUserByUsername(userName) } doReturn internalUser
         }
 
         val context = mock<ActionContext> {
@@ -92,12 +92,12 @@ class GetUserTests : MontaguTests()
                 ReifiedRole("member", Scope.Specific("foo", "IC-Garske"))
         )
 
-        val user = InternalUser(UserProperties("test", "test name", "test@test.com", null, null), roles, listOf())
+        val internalUser = InternalUser(UserProperties("test", "test name", "test@test.com", null, null), roles, listOf())
 
         val permissionSet = PermissionSet("modelling-group:IC-Garske/roles.read")
 
         val repo = mock<UserRepository> {
-            on { this.getUserByUsername(userName) } doReturn user
+            on { this.getUserByUsername(userName) } doReturn internalUser
         }
 
         val context = mock<ActionContext> {

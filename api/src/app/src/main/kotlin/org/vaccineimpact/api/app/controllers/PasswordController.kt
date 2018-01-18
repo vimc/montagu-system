@@ -44,12 +44,12 @@ class PasswordController(
     {
         val address = context.queryParams("email")
                 ?: throw MissingRequiredParameterError("email")
-        val user = userRepository.getUserByEmail(address)
-        if (user != null)
+        val internalUser = userRepository.getUserByEmail(address)
+        if (internalUser != null)
         {
-            val token = getSetPasswordToken(user.username)
-            val email = PasswordSetEmail(token, user.name)
-            emailManager.sendEmail(email, user)
+            val token = getSetPasswordToken(internalUser.username)
+            val email = PasswordSetEmail(token, internalUser.name)
+            emailManager.sendEmail(email, internalUser)
         }
         else
         {

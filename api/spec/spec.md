@@ -1648,7 +1648,7 @@ need to know which coverage set the data is from.
 
 #### format
 Optional. A format to return the CSV in, either `wide` or `long`. Defaults to `long`.
-    
+
 Example wide format:
 
        "scenario",                       "set_name", "vaccine", "gavi_support", "activity_type", country",    "age_first","age_last",  "age_range_verbatim", "target_2006", "coverage_2006", "target_2007", "coverage_2007"
