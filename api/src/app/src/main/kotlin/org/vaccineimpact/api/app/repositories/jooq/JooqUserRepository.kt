@@ -79,19 +79,13 @@ class JooqUserRepository(dsl: DSLContext) : JooqRepository(dsl), UserRepository
     override fun getUserByEmail(email: String): InternalUser?
     {
         val user = dsl.fetchAny(APP_USER, caseInsensitiveEmailMatch(email))
-        if (user != null)
+        return if (user != null)
         {
-            val records = getRolesAndPermissions(caseInsensitiveEmailMatch(email))
-
-            return InternalUser(
-                    user.into(UserProperties::class.java),
-                    records.map(this::mapRole).distinct(),
-                    records.filter { it[PERMISSION.NAME] != null }.map(this::mapPermission)
-            )
+            getUserByUsername(user.username)
         }
         else
         {
-            return null
+            null
         }
     }
 

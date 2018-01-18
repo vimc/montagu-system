@@ -82,8 +82,8 @@ class UserController(
         val internalUser = userRepository.getUserByUsername(userName)
         if (roleReadingScopes.any())
         {
-            val roles = filteredRoles(internalUser.roles, roleReadingScopes)
-            return internalUser.copy(roles=roles).toUser()
+            val userWithAllRoles = internalUser.toUser()
+            return userWithAllRoles.copy(roles=filteredRoleAssignments(userWithAllRoles.roles, roleReadingScopes))
         }
         else
         {
@@ -127,6 +127,4 @@ class UserController(
     private fun filteredRoleAssignments(allRoles: List<RoleAssignment>?, roleReadingScopes: Iterable<Scope>) =
             allRoles?.filter { roleReadingScopes.encompass(Scope.parse(it)) }
 
-    private fun filteredRoles(allRoles: List<ReifiedRole>, roleReadingScopes: Iterable<Scope>) =
-            allRoles.filter { roleReadingScopes.encompass(it.scope) }
 }
