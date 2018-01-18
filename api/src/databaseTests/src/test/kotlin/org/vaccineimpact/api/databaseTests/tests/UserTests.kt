@@ -55,13 +55,13 @@ class UserTests : RepositoryTests<UserRepository>()
         } check { repo ->
             repo.modifyUserRole(username, AssociateRole("add", "submitter", "modelling-group", "IC-Garske"))
 
-            val roles = repo.getRolesForUser(username)
+            val roles = repo.getUserByUsername(username).roles
             assertThat(roles.count()).isEqualTo(2)
 
             val role = roles[1]
             assertThat(role.name).isEqualTo("submitter")
-            assertThat(role.scopePrefix).isEqualTo("modelling-group")
-            assertThat(role.scopeId).isEqualTo("IC-Garske")
+            assertThat(role.scope.databaseScopePrefix).isEqualTo("modelling-group")
+            assertThat(role.scope.databaseScopeId).isEqualTo("IC-Garske")
         }
     }
 
@@ -74,7 +74,7 @@ class UserTests : RepositoryTests<UserRepository>()
         } check { repo ->
             repo.modifyUserRole(username, AssociateRole("remove", "member", "modelling-group", "IC-Garske"))
 
-            val roles = repo.getRolesForUser(username)
+            val roles = repo.getUserByUsername(username).roles
             assertThat(roles.count()).isEqualTo(0)
         }
     }
@@ -196,8 +196,8 @@ class UserTests : RepositoryTests<UserRepository>()
     fun `cannot retrieve user with incorrect email address`()
     {
         given(this::addTestUser).check { repo ->
-            assertThat(repo.getMontaguUserByEmail(username)).isNull()
-            assertThat(repo.getMontaguUserByEmail("Test User")).isNull()
+            assertThat(repo.getUserByEmail(username)).isNull()
+            assertThat(repo.getUserByEmail("Test User")).isNull()
         }
     }
 
@@ -261,11 +261,11 @@ class UserTests : RepositoryTests<UserRepository>()
         } check { repo ->
 
             val expectedRoles = listOf(
-                    RoleAssignment("role", null, null),
-                    RoleAssignment("a", "prefixA", "idA"),
-                    RoleAssignment("b", "prefixB", "idB")
+                    ReifiedRole("role", Scope.Global()),
+                    ReifiedRole("a", Scope.Specific("prefixA", "idA")),
+                    ReifiedRole("b", Scope.Specific("prefixB", "idB"))
             )
-            assertThat(repo.getRolesForUser("test.user")).hasSameElementsAs(expectedRoles)
+            assertThat(repo.getUserByUsername("test.user").roles).hasSameElementsAs(expectedRoles)
         }
     }
 
@@ -329,6 +329,25 @@ class UserTests : RepositoryTests<UserRepository>()
     }
 
     @Test
+    fun `can retrieve user by username with roles and permissions`()
+    {
+        given {
+            addTestUser(it)
+            val roleId = it.createRole("role", scopePrefix = null, description = "Role")
+            createPermissions(it, listOf("p1", "p2"))
+            it.setRolePermissions(roleId, listOf("p1", "p2"))
+            it.ensureUserHasRole("test.user", roleId, scopeId = "")
+        } check { repo ->
+            val roles = listOf(ReifiedRole("role", Scope.Global()))
+            val permissions = listOf(
+                    ReifiedPermission("p1", Scope.Global()),
+                    ReifiedPermission("p2", Scope.Global())
+            )
+            checkUser(repo.getUserByUsername(username), roles, permissions)
+        }
+    }
+
+    @Test
     fun `can retrieve user by email with specifically scoped permissions`()
     {
         given {
@@ -367,7 +386,8 @@ class UserTests : RepositoryTests<UserRepository>()
             repo.addUser(CreateUser("user.name", "Full Name", "email@example.com"))
         } andCheck { repo ->
             assertThat(repo.getUserByUsername("user.name")).isEqualTo(
-                    User("user.name", "Full Name", "email@example.com", null)
+                    InternalUser(UserProperties("user.name", "Full Name", "email@example.com", null, null),
+                            listOf(), listOf())
             )
         }
     }
@@ -389,7 +409,7 @@ class UserTests : RepositoryTests<UserRepository>()
     }
 
     private fun checkUser(
-            user: MontaguUser,
+            user: InternalUser,
             expectedRoles: List<ReifiedRole> = emptyList(),
             expectedPermissions: List<ReifiedPermission> = emptyList())
     {
@@ -411,9 +431,9 @@ class UserTests : RepositoryTests<UserRepository>()
         assertThat(actualUser.roles).hasSameElementsAs(expectedRoles)
     }
 
-    private fun getUser(repository: UserRepository, email: String): MontaguUser
+    private fun getUser(repository: UserRepository, email: String): InternalUser
     {
-        val user = repository.getMontaguUserByEmail(email)
+        val user = repository.getUserByEmail(email)
         assertThat(user).isNotNull()
         return user!!
     }

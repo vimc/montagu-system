@@ -1,15 +1,23 @@
 package org.vaccineimpact.api.security
 
+import org.vaccineimpact.api.models.User
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import org.vaccineimpact.api.models.permissions.ReifiedRole
+import org.vaccineimpact.api.models.permissions.RoleAssignment
 import java.beans.ConstructorProperties
-import java.sql.Timestamp
+import java.time.Instant
 
-data class MontaguUser(
+data class InternalUser(
         val properties: UserProperties,
         val roles: List<ReifiedRole>,
         val permissions: List<ReifiedPermission>
 ): UserPropertiesInterface by properties
+{
+    fun toUser(): User
+    {
+        return User(this.username, this.name, this.email, this.lastLoggedIn, this.roles.map{ RoleAssignment(it) })
+    }
+}
 
 interface BasicUserProperties
 {
@@ -21,7 +29,7 @@ interface BasicUserProperties
 interface UserPropertiesInterface : BasicUserProperties
 {
     val passwordHash: String?
-    val lastLoggedIn: Timestamp?
+    val lastLoggedIn: Instant?
 }
 
 data class UserProperties
@@ -31,5 +39,5 @@ constructor(
         override val name: String,
         override val email: String,
         override val passwordHash: String?,
-        override val lastLoggedIn: Timestamp?
+        override val lastLoggedIn: Instant?
 ): UserPropertiesInterface
