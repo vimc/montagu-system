@@ -6,16 +6,19 @@ import {modellingGroupActions} from "../../../shared/actions/ModellingGroupActio
 import {ContribPageWithHeader} from "../PageWithHeader/ContribPageWithHeader";
 import {IPageWithParent} from "../../../shared/models/Breadcrumb";
 import {ChooseGroupPage} from "../ChooseGroup/ChooseGroupPage";
+import { Page } from "../../../shared/components/PageWithHeader/Page";
 
 export interface LocationProps {
     groupId: string;
 }
 
 export class ChooseActionPage extends ContribPageWithHeader<LocationProps> {
-    load() {
-        modellingGroupActions.setCurrentGroup(this.props.location.params.groupId);
-        responsibilityStore.fetchTouchstones().catch(doNothing).then(() => {
-            super.load();
+    componentDidMount() {
+        setTimeout(()=> {
+            modellingGroupActions.setCurrentGroup(this.props.location.params.groupId);
+            responsibilityStore.fetchTouchstones().catch(doNothing).then(() => {
+                super.load();
+            });
         });
     }
 
@@ -37,7 +40,9 @@ export class ChooseActionPage extends ContribPageWithHeader<LocationProps> {
         return new ChooseGroupPage();
     }
 
-    renderPageContent() {
-        return <ChooseActionContent />;
+    render() {
+        return <Page page={this}>
+            <ChooseActionContent />
+        </Page>;
     }
 }

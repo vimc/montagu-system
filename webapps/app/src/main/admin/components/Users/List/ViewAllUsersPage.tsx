@@ -6,13 +6,16 @@ import { UsersList } from "./UsersList";
 import { CreateUserSection } from "../Create/CreateUserSection";
 import {IPageWithParent} from "../../../../shared/models/Breadcrumb";
 import {MainMenu} from "../../MainMenu/MainMenu";
+import { Page } from "../../../../shared/components/PageWithHeader/Page";
 
 import "../../../../shared/styles/common.scss";
 
 export class ViewAllUsersPage extends AdminPageWithHeader<undefined> {
-    load() {
-        userStore.fetchUsers().catch(doNothing).then(() => {
-            super.load();
+    componentDidMount() {
+        setTimeout(()=> {
+            userStore.fetchUsers().catch(doNothing).then(() => {
+                super.load();
+            });
         });
     }
 
@@ -28,12 +31,11 @@ export class ViewAllUsersPage extends AdminPageWithHeader<undefined> {
         return new MainMenu();
     }
 
-    renderPageContent() {
-        return <div>
+    render() {
+        return <Page page={this}>
             <CreateUserSection/>
-
             <div className="sectionTitle">All users</div>
             <UsersList/>
-        </div>;
+        </Page>;
     }
 }

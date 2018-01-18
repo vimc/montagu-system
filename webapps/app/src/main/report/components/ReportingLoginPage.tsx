@@ -5,6 +5,7 @@ import { loginForm } from "../../shared/components/Login/LoginForm";
 import { LoginFormComponent } from "../../shared/components/Login/LoginFormComponent";
 import { reportingAuthStore } from "../stores/ReportingAuthStore";
 import {IPageWithParent} from "../../shared/models/Breadcrumb";
+import { Page } from "../../shared/components/PageWithHeader/Page";
 
 const LoginForm = FormConnector(loginForm("reporting", reportingAuthStore))(LoginFormComponent);
 
@@ -25,7 +26,9 @@ export class ReportingLoginPage extends ReportingPageWithHeader<undefined> {
         return null;
     }
 
-    renderPageContent(): JSX.Element {
-        return <LoginForm />;
+    render(): JSX.Element {
+        return <Page page={this}>
+            <LoginForm />
+        </Page>;
     }
 }

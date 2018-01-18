@@ -11,7 +11,6 @@ import {expectOneAction} from "../../../../actionHelpers";
 import {alt} from "../../../../../main/shared/alt";
 import {addNavigationTests} from "../../../../shared/NavigationTests";
 import {mockFetcherForMultipleResponses} from "../../../../mocks/mockMultipleEndpoints";
-import {successResult} from "../../../../mocks/mockRemote";
 import {mockModellingGroup, mockModellingGroupDetails, mockUser} from "../../../../mocks/mockModels";
 import {mockGroupDetailsEndpoint, mockGroupsEndpoint, mockUsersEndpoint} from "../../../../mocks/mockEndpoints";
 
@@ -29,7 +28,7 @@ describe("GroupAdminPage", () => {
         const fetchGroupDetails = sandbox.sinon.stub(groupStore, "fetchGroupDetails").returns(Promise.resolve({}));
         const dispatchSpy = sandbox.dispatchSpy();
 
-        (new GroupAdminPage({location: location, router: null})).load();
+        (new GroupAdminPage({location: location, router: null})).componentDidMount();
 
         checkAsync(done, (afterWait) => {
             expect(fetchGroups.called).to.equal(true, "Expected groupStore.fetchGroups to be triggered");

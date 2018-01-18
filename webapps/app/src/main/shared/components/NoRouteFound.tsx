@@ -9,7 +9,7 @@ export class NoRouteFound {
         return "Page not found";
     }
 
-    static renderPageContent(): JSX.Element {
+    static render(): JSX.Element {
         const supportEmail = `mailto:${settings.supportContact}`;
         return <div>
             We are sorry, but this page does not exist.

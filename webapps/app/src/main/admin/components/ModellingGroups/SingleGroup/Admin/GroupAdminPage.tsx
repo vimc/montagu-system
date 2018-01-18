@@ -9,18 +9,21 @@ import { doNothing } from "../../../../../shared/Helpers";
 import { userStore } from "../../../../stores/UserStore";
 import {IPageWithParent} from "../../../../../shared/models/Breadcrumb";
 import {ViewModellingGroupDetailsPage} from "../Details/ViewModellingGroupDetailsPage";
+import { Page } from "../../../../../shared/components/PageWithHeader/Page";
 
 interface PageProps {
     groupId: string;
 }
 
 export class GroupAdminPage extends AdminPageWithHeader<PageProps> {
-    load() {
-        userStore.fetchUsers().catch(doNothing);
-        groupStore.fetchGroups().catch(doNothing).then(() => {
-            modellingGroupActions.setCurrentGroup(this.props.location.params.groupId);
-            groupStore.fetchGroupDetails().catch(doNothing).then(() => {
-                super.load();
+    componentDidMount() {
+        setTimeout(()=> {
+            userStore.fetchUsers().catch(doNothing);
+            groupStore.fetchGroups().catch(doNothing).then(() => {
+                modellingGroupActions.setCurrentGroup(this.props.location.params.groupId);
+                groupStore.fetchGroupDetails().catch(doNothing).then(() => {
+                    super.load();
+                });
             });
         });
     }
@@ -41,8 +44,10 @@ export class GroupAdminPage extends AdminPageWithHeader<PageProps> {
         return new ViewModellingGroupDetailsPage();
     }
 
-    renderPageContent(): JSX.Element {
-        return <GroupAdminContent />;
+    render(): JSX.Element {
+        return <Page page={this}>
+            <GroupAdminContent />
+        </Page>;
     }
 }
 

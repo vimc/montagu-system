@@ -10,6 +10,7 @@ import { InternalLink } from "../../../../shared/components/InternalLink";
 import { helpers } from "../../../../shared/Helpers";
 import {IPageWithParent} from "../../../../shared/models/Breadcrumb";
 import {MainMenu} from "../../MainMenu/MainMenu";
+import { Page } from "../../../../shared/components/PageWithHeader/Page";
 
 export interface ResetPasswordPageProps {
     token: string;
@@ -34,16 +35,18 @@ export class ResetPasswordPage extends AdminPageWithHeader<ResetPasswordPageProp
         return new MainMenu();
     }
 
-    load() {
-        super.load();
-        accountActions.setPasswordResetToken(helpers.queryStringAsObject().token);
+    componentDidMount() {
+        setTimeout(()=> {
+            super.load();
+            accountActions.setPasswordResetToken(helpers.queryStringAsObject().token);
+        });
     }
 
-    renderPageContent(): JSX.Element {
-        return <div>
+    render(): JSX.Element {
+        return <Page page={this}>
             <ResetPasswordForm  />
             <ResetPasswordButton />
-        </div>;
+        </Page>;
     }
 }
 

@@ -4,6 +4,7 @@ import ScrollableAnchor from 'react-scrollable-anchor';
 import {ContribPageWithHeader} from "../../PageWithHeader/ContribPageWithHeader";
 import {ChooseGroupPage} from "../../ChooseGroup/ChooseGroupPage";
 import {settings} from "../../../../shared/Settings";
+import { Page } from "../../../../shared/components/PageWithHeader/Page";
 
 import "../../../../shared/styles/common.scss";
 
@@ -27,8 +28,8 @@ export class ResponsibilityGuidanceModelOutputs extends ContribPageWithHeader<un
         return new ChooseGroupPage();
     }
 
-    renderPageContent() {
-        return <div>
+    render() {
+        return <Page page={this}>
             <div className="largeSectionTitle">
                 Required model outputs
             </div>
@@ -348,6 +349,6 @@ export class ResponsibilityGuidanceModelOutputs extends ContribPageWithHeader<un
                     Slack
                 </a>.
             </p>
-        </div>;
+        </Page>
     }
 }

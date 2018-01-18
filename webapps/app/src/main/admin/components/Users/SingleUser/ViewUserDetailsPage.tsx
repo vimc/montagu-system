@@ -8,16 +8,19 @@ import {userActions} from "../../../actions/UserActions";
 import {userStore} from "../../../stores/UserStore";
 import {IPageWithParent} from "../../../../shared/models/Breadcrumb";
 import {ViewAllUsersPage} from "../List/ViewAllUsersPage";
+import { Page } from "../../../../shared/components/PageWithHeader/Page";
 
 export interface UserDetailsPageProps {
     username: string;
 }
 
 export class ViewUserDetailsPage extends AdminPageWithHeader<UserDetailsPageProps> {
-    load() {
-        userStore.fetchUsers().catch(doNothing).then(() => {
-            userActions.setCurrentUser(this.props.location.params.username);
-            super.load();
+    componentDidMount() {
+        setTimeout(()=> {
+            userStore.fetchUsers().catch(doNothing).then(() => {
+                userActions.setCurrentUser(this.props.location.params.username);
+                super.load();
+            });
         });
     }
 
@@ -39,8 +42,10 @@ export class ViewUserDetailsPage extends AdminPageWithHeader<UserDetailsPageProp
         return new ViewAllUsersPage();
     }
 
-    renderPageContent(): JSX.Element {
-        return <UserDetailsContent />;
+    render(): JSX.Element {
+        return <Page page={this}>
+            <UserDetailsContent />
+        </Page>;
     }
 }
 

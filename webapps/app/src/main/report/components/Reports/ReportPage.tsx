@@ -8,6 +8,7 @@ import {PageProperties} from "../../../shared/components/PageWithHeader/PageWith
 import {appSettings} from "../../../shared/Settings";
 import {MainMenu} from "../MainMenu/MainMenu";
 import {ReportPageTitle} from "./ReportPageTitle";
+import { Page } from "../../../shared/components/PageWithHeader/Page";
 
 export interface ReportPageProps {
     report: string;
@@ -20,9 +21,11 @@ export class ReportPage extends ReportingPageWithHeader<ReportPageProps> {
         this.changeVersion = this.changeVersion.bind(this);
     }
 
-    load() {
-        const p = this.props.location.params;
-        this.loadVersion(p.report, p.version);
+    componentDidMount() {
+        setTimeout(()=> {
+            const p = this.props.location.params;
+            this.loadVersion(p.report, p.version);
+        });
     }
 
     loadVersion(report: string, version: string) {
@@ -61,7 +64,9 @@ export class ReportPage extends ReportingPageWithHeader<ReportPageProps> {
         return `${params.report}/${params.version}/`;
     }
 
-    renderPageContent() {
-        return <ReportDetails onChangeVersion={this.changeVersion} />;
+    render() {
+        return <Page page={this}>
+            <ReportDetails onChangeVersion={this.changeVersion} />
+        </Page>;
     }
 }

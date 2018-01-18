@@ -4,7 +4,6 @@ import {IRouter, Location} from "simple-react-router";
 import { InternalLink } from "../InternalLink";
 import { navActions } from "../../actions/NavActions";
 import {NavBar} from "../NavBar/NavBar";
-import {navStore} from "../../stores/NavStore";
 import {IPageWithParent} from "../../models/Breadcrumb";
 
 import './PageWithHeader.scss';
@@ -18,7 +17,6 @@ export abstract class PageWithHeader<TLocationProps>
         return <span>{this.name()}</span>;
     }
     abstract siteTitle(): string;
-    abstract renderPageContent(): JSX.Element;
 
     abstract name(): string;
     abstract urlFragment(): string;
@@ -43,26 +41,6 @@ export abstract class PageWithHeader<TLocationProps>
         if (this.includeInBreadcrumbs()) {
             navActions.initialize(this);
         }
-    }
-
-    render() {
-        return <div>
-            <header className="header">
-                <a href="/"><img src={ logo } height="80" alt="VIMC" /></a>
-                <div className="header__siteTitle">
-                    <InternalLink href="/">{ this.siteTitle() }</InternalLink>
-                </div>
-                { this.header() }
-            </header>
-            <NavBar />
-            { this.postHeader() }
-            <article className="page container">
-                { !this.hideTitle() &&
-                    <div className="page__title">{ this.title() }</div>
-                }
-                <div className="page__content">{ this.renderPageContent() }</div>
-            </article>
-        </div>
     }
 
     header(): JSX.Element { return null; }

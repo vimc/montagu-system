@@ -10,6 +10,7 @@ import {estimateTokenActions} from "../../../actions/EstimateActions";
 import {ContribPageWithHeader} from "../../PageWithHeader/ContribPageWithHeader";
 import {IPageWithParent} from "../../../../shared/models/Breadcrumb";
 import {ResponsibilityOverviewPage} from "../Overview/ResponsibilityOverviewPage";
+import { Page } from "../../../../shared/components/PageWithHeader/Page";
 
 export interface UploadEstimatesProps {
     groupId: string;
@@ -18,16 +19,17 @@ export interface UploadEstimatesProps {
 }
 
 export class UploadBurdenEstimatesPage extends ContribPageWithHeader<UploadEstimatesProps> {
-    load() {
-
-        estimateTokenActions.clearUsedToken();
-        modellingGroupActions.setCurrentGroup(this.props.location.params.groupId);
-        responsibilityStore.fetchTouchstones().catch(doNothing).then(() => {
-            touchstoneActions.setCurrentTouchstone(this.props.location.params.touchstoneId);
-            responsibilityStore.fetchResponsibilities().catch(doNothing).then(() => {
-                responsibilityActions.setCurrentResponsibility(this.props.location.params.scenarioId);
-                responsibilityStore.fetchOneTimeEstimatesToken(this.props.location.pathname).catch(doNothing)
-                super.load();
+    componentDidMount() {
+        setTimeout(()=> {
+            estimateTokenActions.clearUsedToken();
+            modellingGroupActions.setCurrentGroup(this.props.location.params.groupId);
+            responsibilityStore.fetchTouchstones().catch(doNothing).then(() => {
+                touchstoneActions.setCurrentTouchstone(this.props.location.params.touchstoneId);
+                responsibilityStore.fetchResponsibilities().catch(doNothing).then(() => {
+                    responsibilityActions.setCurrentResponsibility(this.props.location.params.scenarioId);
+                    responsibilityStore.fetchOneTimeEstimatesToken(this.props.location.pathname).catch(doNothing)
+                    super.load();
+                });
             });
         });
     }
@@ -50,7 +52,9 @@ export class UploadBurdenEstimatesPage extends ContribPageWithHeader<UploadEstim
         return new ResponsibilityOverviewPage();
     }
 
-    renderPageContent() {
-        return <UploadBurdenEstimatesContent/>
+    render() {
+        return <Page page={this}>
+            <UploadBurdenEstimatesContent/>
+        </Page>
     }
 }

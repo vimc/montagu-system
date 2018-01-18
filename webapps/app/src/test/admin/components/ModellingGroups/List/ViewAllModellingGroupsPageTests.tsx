@@ -8,9 +8,9 @@ import {checkAsync} from "../../../../testHelpers";
 import {addNavigationTests} from "../../../../shared/NavigationTests";
 import {mockFetcherForMultipleResponses} from "../../../../mocks/mockMultipleEndpoints";
 import {mockModellingGroup} from "../../../../mocks/mockModels";
-import {successResult} from "../../../../mocks/mockRemote";
 import alt from "../../../../../main/shared/alt";
 import {mockGroupsEndpoint} from "../../../../mocks/mockEndpoints";
+import { shallow } from "enzyme";
 
 describe("ViewAllModellingGroupsPageTests", () => {
     const sandbox = new Sandbox();
@@ -19,7 +19,7 @@ describe("ViewAllModellingGroupsPageTests", () => {
 
     it("triggers fetch on load", (done: DoneCallback) => {
         const fetchGroups = sandbox.sinon.spy(groupStore, "fetchGroups");
-        (new ViewAllModellingGroupsPage({location: mockLocation<undefined>(), router: null})).load();
+        const rendered = shallow(<ViewAllModellingGroupsPage location={ mockLocation<undefined>()} router={null} />);
         checkAsync(done, () => {
             expect(fetchGroups.called).to.equal(true, "Expected groupStore.fetchGroups to be triggered");
         });
