@@ -18,9 +18,9 @@ class AllowedOriginFilterTests : MontaguTests()
     fun `allows UAT`()
     {
         val sut = AllowedOriginsFilter(false)
-        val mockResponse = sut.handleMockRequest("https://support.montagu.dide.ic.ac.uk:10443/admin")
+        val mockResponse = sut.handleMockRequest("https://support.montagu.dide.ic.ac.uk:10443/contrib")
         verify(mockResponse)
-                .addHeader("Access-Control-Allow-Origin", "https://support.montagu.dide.ic.ac.uk:10443/admin")
+                .addHeader("Access-Control-Allow-Origin", "https://support.montagu.dide.ic.ac.uk:10443/contrib")
     }
 
     @Test
@@ -36,9 +36,9 @@ class AllowedOriginFilterTests : MontaguTests()
     fun `allows production`()
     {
         val sut = AllowedOriginsFilter(false)
-        val mockResponse = sut.handleMockRequest("https://montagu.vaccineimpact.org/admin")
+        val mockResponse = sut.handleMockRequest("https://montagu.vaccineimpact.org/reports")
         verify(mockResponse)
-                .addHeader("Access-Control-Allow-Origin", "https://montagu.vaccineimpact.org/admin")
+                .addHeader("Access-Control-Allow-Origin", "https://montagu.vaccineimpact.org/reports")
     }
 
     @Test
