@@ -174,5 +174,4 @@ describe("UploadEstimatesForm", () => {
         expect(alert.childAt(0).text()).to.eql("Success! You have uploaded a new set of burden estimates");
     });
 
-
 });

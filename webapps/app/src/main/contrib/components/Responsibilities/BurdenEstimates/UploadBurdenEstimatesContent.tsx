@@ -30,7 +30,7 @@ export class UploadBurdenEstimatesContentComponent extends RemoteContentComponen
         const state = responsibilityStore.getState();
         const r = state.currentResponsibility;
 
-        if (r != null && state.estimatesOneTimeToken != null) {
+        if (r != null) {
             return {
                 ready: state.ready,
                 touchstone: state.currentTouchstone,
