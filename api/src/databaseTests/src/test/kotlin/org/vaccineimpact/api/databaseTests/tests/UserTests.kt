@@ -208,7 +208,6 @@ class UserTests : RepositoryTests<UserRepository>()
             repo.getUserByUsername("test.user")
             repo.getUserByUsername("Test.User")
         }
-
     }
 
     @Test

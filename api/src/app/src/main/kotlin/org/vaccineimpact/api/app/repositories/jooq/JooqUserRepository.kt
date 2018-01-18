@@ -10,7 +10,10 @@ import org.vaccineimpact.api.db.tables.records.AppUserRecord
 import org.vaccineimpact.api.models.AssociateUser
 import org.vaccineimpact.api.models.Scope
 import org.vaccineimpact.api.models.User
-import org.vaccineimpact.api.models.permissions.*
+import org.vaccineimpact.api.models.permissions.AssociateRole
+import org.vaccineimpact.api.models.permissions.ReifiedPermission
+import org.vaccineimpact.api.models.permissions.ReifiedRole
+import org.vaccineimpact.api.models.permissions.RoleAssignment
 import org.vaccineimpact.api.security.*
 import java.sql.Timestamp
 import java.time.Instant
@@ -157,7 +160,7 @@ class JooqUserRepository(dsl: DSLContext) : JooqRepository(dsl), UserRepository
                 ?: throw UnknownRoleException("member", "modelling-group")
 
         // this throws an error if user does not exist
-        getUserByUsername(associateUser.username)
+        getUser(associateUser.username)
 
         when (associateUser.action)
         {

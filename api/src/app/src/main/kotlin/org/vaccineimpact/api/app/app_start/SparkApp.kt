@@ -1,7 +1,10 @@
-package org.vaccineimpact.api.app
+package org.vaccineimpact.api.app.app_start
 
 import org.slf4j.LoggerFactory
-import org.vaccineimpact.api.app.app_start.Router
+import org.vaccineimpact.api.app.ErrorHandler
+import org.vaccineimpact.api.app.NotFoundHandler
+import org.vaccineimpact.api.app.RequestLogger
+import org.vaccineimpact.api.app.addTrailingSlashes
 import org.vaccineimpact.api.app.app_start.route_config.MontaguRouteConfig
 import org.vaccineimpact.api.app.controllers.ControllerContext
 import org.vaccineimpact.api.app.controllers.HomeController
@@ -34,11 +37,12 @@ class MontaguApi
     fun run(repositoryFactory: RepositoryFactory)
     {
         setupPort()
+
         spk.redirect.get("/", urlBase)
+
         spk.before("*", ::addTrailingSlashes)
-        spk.before("*", { _, res ->
-            res.header("Access-Control-Allow-Origin", "*")
-        })
+        spk.before("*", AllowedOriginsFilter(Config.getBool("allow.localhost")))
+
         spk.after("*", { req, res ->
             repositoryFactory.inTransaction { repos ->
                 RequestLogger(repos.accessLogRepository).log(req, res)
@@ -46,6 +50,7 @@ class MontaguApi
         })
         spk.options("*", { _, res ->
             res.header("Access-Control-Allow-Headers", "Authorization")
+            res.header("Access-Control-Allow-Credentials", "true")
         })
         NotFoundHandler().setup()
         ErrorHandler.setup()

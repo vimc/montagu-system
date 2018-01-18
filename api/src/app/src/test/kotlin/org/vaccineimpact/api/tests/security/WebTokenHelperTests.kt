@@ -63,6 +63,33 @@ class WebTokenHelperTests : MontaguTests()
     }
 
     @Test
+    fun `can generate shiny token for non report reviewer`()
+    {
+        val token = sut.generateShinyToken(InternalUser(properties, roles, permissions))
+        val claims = sut.verify(token)
+
+        assertThat(claims["iss"]).isEqualTo("vaccineimpact.org")
+        assertThat(claims["sub"]).isEqualTo("test.user")
+        assertThat(claims["exp"]).isInstanceOf(Date::class.java)
+        assertThat(claims["allowed_shiny"]).isEqualTo(false)
+    }
+
+    @Test
+    fun `can generate shiny token for report reviewer`()
+    {
+        val roles = listOf(
+                ReifiedRole("report.reviewer", Scope.Global())
+        )
+        val token = sut.generateShinyToken(InternalUser(properties, roles, permissions))
+        val claims = sut.verify(token)
+
+        assertThat(claims["iss"]).isEqualTo("vaccineimpact.org")
+        assertThat(claims["sub"]).isEqualTo("test.user")
+        assertThat(claims["exp"]).isInstanceOf(Date::class.java)
+        assertThat(claims["allowed_shiny"]).isEqualTo(true)
+    }
+
+    @Test
     fun `can generate onetime action token`()
     {
         val queryString = "query=answer"

@@ -20,7 +20,8 @@ fun <T> CommonProfile.getAttributeOrDefault(key: String, default: T): T
 
 fun CommonProfile.montaguPermissions() = this.getAttributeOrDefault(PERMISSIONS, PermissionSet())
 
-fun CommonProfile.montaguUser(): InternalUser?
+// This will be non-null if using Basic Auth, null otherwise
+fun CommonProfile.internalUser(): InternalUser?
 {
     val user = this.getAttribute(USER_OBJECT)
     return if (user != null && user is InternalUser)

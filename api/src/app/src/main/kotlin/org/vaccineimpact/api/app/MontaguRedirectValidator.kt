@@ -16,14 +16,14 @@ class MontaguRedirectValidator: RedirectValidator
     private fun redirectUrlIsValid(redirectUrl: String): Boolean
     {
         val validRedirectUrlPattern =
-                Regex("(${allowedDomains.joinToString("|") { "($it)" }}).*")
+                Regex("^((${allowedDomains.joinToString("|") { "($it)" }}).*)")
         return validRedirectUrlPattern.matches(redirectUrl)
     }
 
     private val allowedDomains = arrayOf("http://localhost", "https://localhost",
             // NOTE this is our IP on production as of 12/12/2017
-            "https://129.31.26.29",
-            "https://support.montagu.dide.ic.ac.uk", "https://montagu.vaccineimpact.org")
+            "https://129\\.31\\.26\\.29",
+            "https://support\\.montagu\\.dide\\.ic\\.ac\\.uk", "https://montagu\\.vaccineimpact\\.org")
 }
 
 interface RedirectValidator

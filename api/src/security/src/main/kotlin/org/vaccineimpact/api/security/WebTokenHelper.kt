@@ -5,6 +5,8 @@ import org.pac4j.jwt.config.signature.RSASignatureConfiguration
 import org.pac4j.jwt.profile.JwtGenerator
 import org.vaccineimpact.api.db.Config
 import org.vaccineimpact.api.models.Result
+import org.vaccineimpact.api.models.Scope
+import org.vaccineimpact.api.models.permissions.ReifiedRole
 import org.vaccineimpact.api.serialization.MontaguSerializer
 import org.vaccineimpact.api.serialization.Serializer
 import java.security.KeyPair
@@ -65,6 +67,17 @@ open class WebTokenHelper(keyPair: KeyPair,
         )
     }
 
+    fun shinyClaims(user: InternalUser): Map<String, Any>
+    {
+        val allowedShiny = user.roles.contains(ReifiedRole("report.reviewer", Scope.Global()))
+        return mapOf(
+                "iss" to issuer,
+                "sub" to user.username,
+                "exp" to Date.from(Instant.now().plus(lifeSpan)),
+                "allowed_shiny" to allowedShiny
+        )
+    }
+
     open fun verify(token: String): Map<String, Any> = MontaguTokenAuthenticator(this).validateTokenAndGetClaims(token)
 
     private fun getNonce(): String
@@ -79,5 +92,10 @@ open class WebTokenHelper(keyPair: KeyPair,
         val oneTimeActionSubject = "onetime_link"
         val apiResponseSubject = "api_response"
         val oneTimeLinkLifeSpan: Duration = Duration.ofMinutes(10)
+    }
+
+    fun generateShinyToken(internalUser: InternalUser): String
+    {
+        return generator.generate(shinyClaims(internalUser))
     }
 }
