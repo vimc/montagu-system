@@ -1,6 +1,7 @@
 package org.vaccineimpact.api.models
 
 import org.vaccineimpact.api.models.permissions.AssociateRole
+import org.vaccineimpact.api.models.permissions.ReifiedRole
 import org.vaccineimpact.api.models.permissions.RoleAssignment
 
 sealed class Scope  (val value: String)
