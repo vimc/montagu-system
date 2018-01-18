@@ -6,6 +6,7 @@ import org.vaccineimpact.api.db.fromJoinPath
 import org.vaccineimpact.api.db.nextDecimal
 import org.vaccineimpact.api.db.tables.records.CoverageRecord
 import org.vaccineimpact.api.db.tables.records.DemographicStatisticRecord
+import org.vaccineimpact.api.db.toDecimal
 import org.vaccineimpact.api.models.permissions.ReifiedRole
 import org.vaccineimpact.api.security.UserHelper
 import org.vaccineimpact.api.security.ensureUserHasRole
@@ -183,7 +184,8 @@ fun JooqContext.addBurdenEstimateSet(
         username: String, status: String = "empty",
         setType: String = "central-single-run", setTypeDetails: String? = null,
         modelRunParameterSetId: Int? = null,
-        timestamp: Instant = Instant.now()
+        timestamp: Instant = Instant.now(),
+        setId: Int? = null
 ): Int
 {
     val record = this.dsl.newRecord(BURDEN_ESTIMATE_SET).apply {
@@ -199,6 +201,37 @@ fun JooqContext.addBurdenEstimateSet(
         this.status = status
         this.modelRunParameterSet = modelRunParameterSetId
     }
+    if (setId != null)
+    {
+        record.id = setId
+    }
+    record.store()
+    return record.id
+}
+
+fun JooqContext.addBurdenEstimate(
+        setId: Int,
+        country: String,
+        year: Int = 2000,
+        age: Int = 20,
+        outcome: String = "cohort-size",
+        value: BigDecimal = 100.toDecimal(),
+        modelRunId: Int? = null
+): Int
+{
+    val outcomeId = this.dsl.select(BURDEN_OUTCOME.ID)
+            .from(BURDEN_OUTCOME)
+            .where(BURDEN_OUTCOME.CODE.eq(outcome))
+            .fetchOne().value1()
+    val record = this.dsl.newRecord(BURDEN_ESTIMATE).apply {
+        this.burdenEstimateSet = setId
+        this.country = country
+        this.year = year
+        this.age = age
+        this.burdenOutcome = outcomeId
+        this.value = value
+        this.modelRun = modelRunId
+    }
     record.store()
     return record.id
 }
@@ -208,7 +241,7 @@ fun JooqContext.addModelRunParameterSet(
         username: String, description: String
 ): Int
 {
-    val uploadInfo = this.dsl.newRecord(UPLOAD_INFO).apply{
+    val uploadInfo = this.dsl.newRecord(UPLOAD_INFO).apply {
         this.uploadedBy = username
     }
     uploadInfo.store()

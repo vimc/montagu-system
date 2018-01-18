@@ -14,7 +14,6 @@ class PopulateBurdenEstimateTests : BurdenEstimateTests()
     @Test
     fun `can populate central burden estimate`()
     {
-        TestUserHelper.setupTestUser()
         val setId = JooqContext().use {
             setUpWithBurdenEstimateSet(it)
         }
@@ -30,7 +29,6 @@ class PopulateBurdenEstimateTests : BurdenEstimateTests()
     @Test
     fun `cannot provide stochastic data for central estimates`()
     {
-        TestUserHelper.setupTestUser()
         val setId = JooqContext().use {
             setUpWithBurdenEstimateSet(it)
         }
@@ -72,7 +70,6 @@ class PopulateBurdenEstimateTests : BurdenEstimateTests()
     @Test
     fun `bad CSV headers results in ValidationError`()
     {
-        TestUserHelper.setupTestUser()
         val setId = JooqContext().use {
             setUpWithBurdenEstimateSet(it)
         }
@@ -85,7 +82,6 @@ class PopulateBurdenEstimateTests : BurdenEstimateTests()
     @Test
     fun `bad CSV data results in ValidationError`()
     {
-        TestUserHelper.setupTestUser()
         val setId = JooqContext().use {
             setUpWithBurdenEstimateSet(it)
         }
@@ -99,13 +95,13 @@ class PopulateBurdenEstimateTests : BurdenEstimateTests()
     fun `can populate burden estimate via onetime link`()
     {
         val requestHelper = RequestHelper()
-        val token = TestUserHelper.setupTestUserAndGetToken(requiredWritePermissions.plus(PermissionSet("*/can-login")))
 
         var setId = 0
         JooqContext().use {
             setId = setUpWithBurdenEstimateSet(it)
         }
 
+        val token = TestUserHelper.getToken(requiredWritePermissions.plus(PermissionSet("*/can-login")))
         val onetimeTokenResult = requestHelper.get("$setUrl/$setId/get_onetime_link/", token)
         val onetimeToken = onetimeTokenResult.montaguData<String>()!!
 
@@ -120,7 +116,6 @@ class PopulateBurdenEstimateTests : BurdenEstimateTests()
     fun `can populate burden estimate via onetime link and redirect`()
     {
         val requestHelper = RequestHelper()
-        val token = TestUserHelper.setupTestUserAndGetToken(requiredWritePermissions.plus(PermissionSet("*/can-login")))
 
         var setId = 0
         JooqContext().use {
@@ -128,6 +123,7 @@ class PopulateBurdenEstimateTests : BurdenEstimateTests()
         }
 
         val url = "$setUrl/$setId/get_onetime_link/?redirectUrl=http://localhost/"
+        val token = TestUserHelper.getToken(requiredWritePermissions.plus(PermissionSet("*/can-login")))
         val onetimeTokenResult = requestHelper.get(url, token)
         val onetimeToken = onetimeTokenResult.montaguData<String>()!!
 
@@ -140,7 +136,6 @@ class PopulateBurdenEstimateTests : BurdenEstimateTests()
     @Test
     fun `bad CSV headers results in ValidationError in redirect`()
     {
-        TestUserHelper.setupTestUser()
         val setId = JooqContext().use {
             setUpWithBurdenEstimateSet(it)
         }
