@@ -19,6 +19,7 @@ import org.vaccineimpact.api.test_helpers.DatabaseCreationHelper
 @Suite.SuiteClasses(
         AnnexTests::class,
         BurdenEstimateWriterTests::class,
+        CloseBurdenEstimateSetTests::class,
         CreateBurdenEstimateSetTests::class,
         DiseaseTests::class,
         GetDemographicsTests::class,
