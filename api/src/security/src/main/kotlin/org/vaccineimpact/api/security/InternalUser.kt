@@ -7,7 +7,7 @@ import org.vaccineimpact.api.models.permissions.RoleAssignment
 import java.beans.ConstructorProperties
 import java.time.Instant
 
-data class InternalMontaguUser(
+data class InternalUser(
         val properties: UserProperties,
         val roles: List<ReifiedRole>,
         val permissions: List<ReifiedPermission>

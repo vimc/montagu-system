@@ -22,7 +22,7 @@ open class WebTokenHelper(keyPair: KeyPair,
     val generator = JwtGenerator<CommonProfile>(signatureConfiguration)
     private val random = SecureRandom()
 
-    open fun generateToken(userInternal: InternalMontaguUser): String
+    open fun generateToken(userInternal: InternalUser): String
     {
         return generator.generate(claims(userInternal))
     }
@@ -54,7 +54,7 @@ open class WebTokenHelper(keyPair: KeyPair,
                         "result" to json))
     }
 
-    fun claims(userInternal: InternalMontaguUser): Map<String, Any>
+    fun claims(userInternal: InternalUser): Map<String, Any>
     {
         return mapOf(
                 "iss" to issuer,
