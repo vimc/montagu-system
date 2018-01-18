@@ -4,12 +4,14 @@ import org.jooq.DSLContext
 import org.jooq.TableField
 import org.jooq.impl.TableImpl
 import org.vaccineimpact.api.db.AnnexJooqContext
+import org.vaccineimpact.api.db.CloseableContext
+import org.vaccineimpact.api.db.ShortlivedAnnexContext
 import org.vaccineimpact.api.db.Tables
 
 open class StochasticBurdenEstimateWriter(
         readDatabaseDSL: DSLContext,
-        writeDatabaseDSLPromise: () -> DSLContext = { AnnexJooqContext().dsl }
-) : BurdenEstimateWriter(readDatabaseDSL, writeDatabaseDSLPromise)
+        writeDatabaseDSLSource: CloseableContext = ShortlivedAnnexContext()
+) : BurdenEstimateWriter(readDatabaseDSL, writeDatabaseDSLSource)
 {
     override val table: TableImpl<*> = Tables.BURDEN_ESTIMATE_STOCHASTIC
     override val fields by lazy {

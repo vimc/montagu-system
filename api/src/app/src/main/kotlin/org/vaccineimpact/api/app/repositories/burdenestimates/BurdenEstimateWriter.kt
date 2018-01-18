@@ -11,19 +11,15 @@ import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.errors.UnknownRunIdError
 import org.vaccineimpact.api.db.*
 import org.vaccineimpact.api.models.BurdenEstimateWithRunId
-import java.io.BufferedInputStream
-import java.io.OutputStream
-import java.io.PipedInputStream
-import java.io.PipedOutputStream
+import java.io.*
 import java.math.BigDecimal
 import kotlin.concurrent.thread
 
 abstract class BurdenEstimateWriter(
         private val readDatabaseDSL: DSLContext,
-        private val writeDatabaseDSLPromise: () -> DSLContext = { readDatabaseDSL }
+        private val writeDatabaseDSLSource: CloseableContext
 )
 {
-
     protected abstract val table: TableImpl<*>
     protected abstract val fields: List<TableField<*, *>>
     protected abstract val setField: TableField<*, Int>
@@ -34,45 +30,46 @@ abstract class BurdenEstimateWriter(
         val outcomeLookup = getOutcomesAsLookup()
         val modelRuns = getModelRunsAsLookup(setId)
         val modelRunParameterId = getModelRunParameterSetId(setId)
-        val writeDatabaseDSL = writeDatabaseDSLPromise()
+        writeDatabaseDSLSource.inside { writeDatabaseDSL ->
+            // The only foreign keys are:
+            // * burden_estimate_set, which is the same for every row, and it's the one we just created and know exists
+            // * country, which we check below, per row of the CSV (and each row represents multiple rows in the database
+            //   so this is an effort saving).
+            // * burden_outcome, which we check below (currently we check for every row, but given these are set in the
+            //   columns and don't vary by row this could be made more efficient)
+            writeDatabaseDSL.withoutCheckingForeignKeyConstraints(table) {
 
-        // The only foreign keys are:
-        // * burden_estimate_set, which is the same for every row, and it's the one we just created and know exists
-        // * country, which we check below, per row of the CSV (and each row represents multiple rows in the database
-        //   so this is an effort saving).
-        // * burden_outcome, which we check below (currently we check for every row, but given these are set in the
-        //   columns and don't vary by row this could be made more efficient)
-        writeDatabaseDSL.withoutCheckingForeignKeyConstraints(table) {
+                PipedOutputStream().use { stream ->
+                    // First, let's set up a thread to read from the stream and send
+                    // it to the database. This will block if the thread is empty, and keep
+                    // going until it sees the Postgres EOF marker.
+                    val inputStream = PipedInputStream(stream).buffered()
+                    val writeToDatabaseThread = writeStreamToDatabase(inputStream, writeDatabaseDSL)
 
-            PipedOutputStream().use { stream ->
-                // First, let's set up a thread to read from the stream and send
-                // it to the database. This will block if the thread is empty, and keep
-                // going until it sees the Postgres EOF marker.
-                val inputStream = PipedInputStream(stream).buffered()
-                val writeToDatabaseThread = writeStreamToDatabase(inputStream, writeDatabaseDSL)
+                    // In the main thread, write to piped stream, blocking if we get too far ahead of
+                    // the other thread ("too far ahead" meaning the buffer on the input stream is full)
+                    writeCopyData(
+                            outcomeLookup,
+                            countries,
+                            modelRuns,
+                            modelRunParameterId,
+                            stream,
+                            estimates,
+                            expectedDisease,
+                            setId)
 
-                // In the main thread, write to piped stream, blocking if we get too far ahead of
-                // the other thread ("too far ahead" meaning the buffer on the input stream is full)
-                writeCopyData(
-                        outcomeLookup,
-                        countries,
-                        modelRuns,
-                        modelRunParameterId,
-                        stream,
-                        estimates,
-                        expectedDisease,
-                        setId)
-
-                // Wait for the worker thread to finished
-                writeToDatabaseThread.join()
+                    // Wait for the worker thread to finished
+                    writeToDatabaseThread.join()
+                }
             }
         }
     }
 
     fun clearEstimateSet(setId: Int)
     {
-        val dsl = writeDatabaseDSLPromise()
-        dsl.deleteFrom(table).where(setField.eq(setId)).execute()
+        writeDatabaseDSLSource.inside { dsl ->
+            dsl.deleteFrom(table).where(setField.eq(setId)).execute()
+        }
     }
 
     private fun writeCopyData(outcomeLookup: Map<String, Int>, countries: HashSet<String>, modelRuns: Map<String, Int>, modelRunParameterSetId: Int?,

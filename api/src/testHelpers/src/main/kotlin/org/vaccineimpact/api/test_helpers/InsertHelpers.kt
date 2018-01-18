@@ -1,12 +1,9 @@
 package org.vaccineimpact.api.db.direct
 
-import org.vaccineimpact.api.db.JooqContext
+import org.vaccineimpact.api.db.*
 import org.vaccineimpact.api.db.Tables.*
-import org.vaccineimpact.api.db.fromJoinPath
-import org.vaccineimpact.api.db.nextDecimal
 import org.vaccineimpact.api.db.tables.records.CoverageRecord
 import org.vaccineimpact.api.db.tables.records.DemographicStatisticRecord
-import org.vaccineimpact.api.db.toDecimal
 import org.vaccineimpact.api.models.permissions.ReifiedRole
 import org.vaccineimpact.api.security.UserHelper
 import org.vaccineimpact.api.security.ensureUserHasRole
@@ -233,6 +230,34 @@ fun JooqContext.addBurdenEstimate(
         this.modelRun = modelRunId
     }
     record.store()
+    return record.id
+}
+
+fun AnnexJooqContext.addStochasticBurdenEstimate(
+        mainDb: JooqContext,
+        setId: Int,
+        country: String,
+        year: Int = 2000,
+        age: Int = 20,
+        outcome: String = "cohort_size",
+        value: BigDecimal = 100.toDecimal(),
+        modelRunId: Int = 1
+): Long
+{
+    val outcomeId = mainDb.dsl.select(BURDEN_OUTCOME.ID)
+            .from(BURDEN_OUTCOME)
+            .where(BURDEN_OUTCOME.CODE.eq(outcome))
+            .fetchOne().value1()
+    val record = this.dsl.newRecord(BURDEN_ESTIMATE_STOCHASTIC).apply {
+        this.burdenEstimateSet = setId
+        this.country = country
+        this.year = year
+        this.age = age
+        this.burdenOutcome = outcomeId
+        this.value = value
+        this.modelRun = modelRunId
+    }
+    record.insert()
     return record.id
 }
 

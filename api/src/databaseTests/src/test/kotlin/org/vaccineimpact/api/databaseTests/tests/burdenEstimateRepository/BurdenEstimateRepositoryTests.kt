@@ -167,7 +167,7 @@ abstract class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRep
         }
     }
 
-    private fun getEstimatesInOrder(db: JooqContext): Result<Record>
+    protected fun getEstimatesInOrder(db: JooqContext): Result<Record>
     {
         // We order the rows coming back so they are in a guaranteed order. This allows
         // us to write simple hardcoded expectations.

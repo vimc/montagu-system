@@ -3,10 +3,11 @@ package org.vaccineimpact.api.app.repositories.burdenestimates
 import org.jooq.DSLContext
 import org.jooq.TableField
 import org.jooq.impl.TableImpl
+import org.vaccineimpact.api.db.AmbientDSLContext
 import org.vaccineimpact.api.db.Tables
 
 class CentralBurdenEstimateWriter(readDatabaseDSL: DSLContext)
-    : BurdenEstimateWriter(readDatabaseDSL, { readDatabaseDSL })
+    : BurdenEstimateWriter(readDatabaseDSL, AmbientDSLContext(readDatabaseDSL))
 {
     override val table: TableImpl<*> = Tables.BURDEN_ESTIMATE
     override val fields by lazy {
