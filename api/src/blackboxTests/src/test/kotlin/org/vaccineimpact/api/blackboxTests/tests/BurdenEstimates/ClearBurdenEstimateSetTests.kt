@@ -58,7 +58,7 @@ class ClearBurdenEstimateSetTests : BurdenEstimateTests()
         }
         val r = RequestHelper().post(clearUrl, requiredWritePermissions + PermissionSet("*/can-login"))
         JSONValidator().validateError(r.text, "forbidden",
-                "You cannot clear a burden estimate set which is marked as 'complete'")
+                "You cannot clear a burden estimate set which is marked as 'complete'.")
 
         checkSetHasThisManyRows(1)
     }

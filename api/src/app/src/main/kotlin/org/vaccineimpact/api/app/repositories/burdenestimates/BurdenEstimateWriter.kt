@@ -1,4 +1,4 @@
-package org.vaccineimpact.api.app.repositories
+package org.vaccineimpact.api.app.repositories.burdenestimates
 
 import org.jooq.DSLContext
 import org.jooq.TableField
@@ -18,51 +18,15 @@ import java.io.PipedOutputStream
 import java.math.BigDecimal
 import kotlin.concurrent.thread
 
-open class StochasticBurdenEstimateWriter(
-        readDatabaseDSL: DSLContext,
-        writeDatabaseDSLPromise: () -> DSLContext = { AnnexJooqContext().dsl }
-) : BurdenEstimateWriter(readDatabaseDSL, writeDatabaseDSLPromise, true)
-
-open class BurdenEstimateWriter(private val readDatabaseDSL: DSLContext,
-                                private val writeDatabaseDSLPromise: () -> DSLContext = { readDatabaseDSL },
-                                stochastic: Boolean = false)
+abstract class BurdenEstimateWriter(
+        private val readDatabaseDSL: DSLContext,
+        private val writeDatabaseDSLPromise: () -> DSLContext = { readDatabaseDSL }
+)
 {
 
-    private val table: TableImpl<*> = if (stochastic)
-    {
-        Tables.BURDEN_ESTIMATE_STOCHASTIC
-    }
-    else
-    {
-        Tables.BURDEN_ESTIMATE
-    }
-
-    private val fields: List<TableField<*, *>> = if (stochastic)
-    {
-        val t = Tables.BURDEN_ESTIMATE_STOCHASTIC
-        listOf(
-                t.BURDEN_ESTIMATE_SET,
-                t.MODEL_RUN,
-                t.COUNTRY,
-                t.YEAR,
-                t.AGE,
-                t.BURDEN_OUTCOME,
-                t.VALUE
-        )
-    }
-    else
-    {
-        val t = Tables.BURDEN_ESTIMATE
-        listOf(
-                t.BURDEN_ESTIMATE_SET,
-                t.MODEL_RUN,
-                t.COUNTRY,
-                t.YEAR,
-                t.AGE,
-                t.BURDEN_OUTCOME,
-                t.VALUE
-        )
-    }
+    protected abstract val table: TableImpl<*>
+    protected abstract val fields: List<TableField<*, *>>
+    protected abstract val setField: TableField<*, Int>
 
     open fun addEstimatesToSet(setId: Int, estimates: Sequence<BurdenEstimateWithRunId>, expectedDisease: String)
     {
@@ -105,9 +69,15 @@ open class BurdenEstimateWriter(private val readDatabaseDSL: DSLContext,
         }
     }
 
-    private fun writeCopyData(outcomeLookup: Map<String, Int>, countries: HashSet<String> ,modelRuns: Map<String, Int>, modelRunParameterSetId: Int?,
-                      stream: OutputStream, estimates: Sequence<BurdenEstimateWithRunId>,
-                      expectedDisease: String, setId: Int
+    fun clearEstimateSet(setId: Int)
+    {
+        val dsl = writeDatabaseDSLPromise()
+        dsl.deleteFrom(table).where(setField.eq(setId)).execute()
+    }
+
+    private fun writeCopyData(outcomeLookup: Map<String, Int>, countries: HashSet<String>, modelRuns: Map<String, Int>, modelRunParameterSetId: Int?,
+                              stream: OutputStream, estimates: Sequence<BurdenEstimateWithRunId>,
+                              expectedDisease: String, setId: Int
     )
     {
         val cohortSizeId = outcomeLookup["cohort_size"]

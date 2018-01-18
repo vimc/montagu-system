@@ -70,7 +70,7 @@ open class GroupBurdenEstimatesController(
     {
         val path = getValidResponsibilityPath(context, estimateRepository)
         val setId = context.params(":set-id").toInt()
-        //estimateRepository.clearBurdenEstimateSet(setId)
+        estimateRepository.clearBurdenEstimateSet(setId, path.groupId, path.touchstoneId, path.scenarioId)
         return okayResponse()
     }
 

@@ -5,8 +5,8 @@ import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
 import org.vaccineimpact.api.app.errors.OperationNotAllowedError
 import org.vaccineimpact.api.app.errors.UnknownObjectError
-import org.vaccineimpact.api.app.repositories.BurdenEstimateWriter
-import org.vaccineimpact.api.app.repositories.StochasticBurdenEstimateWriter
+import org.vaccineimpact.api.app.repositories.burdenestimates.BurdenEstimateWriter
+import org.vaccineimpact.api.app.repositories.burdenestimates.StochasticBurdenEstimateWriter
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.direct.addBurdenEstimateSet
 

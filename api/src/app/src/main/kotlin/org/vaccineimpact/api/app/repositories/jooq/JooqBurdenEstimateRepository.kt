@@ -7,6 +7,9 @@ import org.vaccineimpact.api.app.errors.DatabaseContentsError
 import org.vaccineimpact.api.app.errors.OperationNotAllowedError
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.repositories.*
+import org.vaccineimpact.api.app.repositories.burdenestimates.BurdenEstimateWriter
+import org.vaccineimpact.api.app.repositories.burdenestimates.CentralBurdenEstimateWriter
+import org.vaccineimpact.api.app.repositories.burdenestimates.StochasticBurdenEstimateWriter
 import org.vaccineimpact.api.app.repositories.jooq.mapping.BurdenMappingHelper
 import org.vaccineimpact.api.db.AnnexJooqContext
 import org.vaccineimpact.api.db.Tables
@@ -34,7 +37,7 @@ class JooqBurdenEstimateRepository(
 ) : JooqRepository(dsl), BurdenEstimateRepository
 {
     private val centralBurdenEstimateWriter: BurdenEstimateWriter = centralBurdenEstimateWriter ?:
-            BurdenEstimateWriter(dsl)
+            CentralBurdenEstimateWriter(dsl)
 
     private val stochasticBurdenEstimateWriter: StochasticBurdenEstimateWriter = stochasticBurdenEstimateWriter ?:
             StochasticBurdenEstimateWriter(dsl, { AnnexJooqContext().dsl })
@@ -315,6 +318,28 @@ class JooqBurdenEstimateRepository(
         updateCurrentBurdenEstimateSet(responsibilityInfo.id, setId, properties.type.type)
 
         return setId
+    }
+
+    override fun clearBurdenEstimateSet(setId: Int, groupId: String, touchstoneId: String, scenarioId: String)
+    {
+        val modellingGroup = modellingGroupRepository.getModellingGroup(groupId)
+        getResponsibilityInfo(modellingGroup.id, touchstoneId, scenarioId)
+        val set = getBurdenEstimateSet(setId)
+
+        if (set.status == BurdenEstimateSetStatus.COMPLETE)
+        {
+            throw OperationNotAllowedError("You cannot clear a burden estimate set which is marked as 'complete'.")
+        }
+
+        val type = set.type.type
+        if (type == BurdenEstimateSetTypeCode.STOCHASTIC)
+        {
+            stochasticBurdenEstimateWriter.clearEstimateSet(setId)
+        }
+        else
+        {
+            centralBurdenEstimateWriter.clearEstimateSet(setId)
+        }
     }
 
     private fun getlatestModelVersion(groupId: String, disease: String): Int
