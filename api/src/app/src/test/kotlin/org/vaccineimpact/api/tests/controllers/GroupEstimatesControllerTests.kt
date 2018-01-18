@@ -135,9 +135,11 @@ class GroupEstimatesControllerTests : MontaguTests()
     }
 
     @Test
-    fun `if keepOpen is not provided, burden estimate set is left open`()
+    fun `if keepOpen is not provided, populate closes estimate set`()
     {
-        populateAndCheckIfSetIsClosed(keepOpen = null, expectedClosed = false)
+        // This way, the webapps will carry on with the same behaviour as before.
+        // It's only if a client explicitly sets keepOpen that we will see the partial state
+        populateAndCheckIfSetIsClosed(keepOpen = null, expectedClosed = true)
     }
 
     @Test
