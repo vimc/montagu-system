@@ -6,6 +6,7 @@ import {CreateBurdenEstimateSetForm} from "../../../../../main/contrib/component
 import {OptionSelector} from "../../../../../main/contrib/components/OptionSelector/OptionSelector";
 import {Form} from "../../../../../main/shared/components/Form";
 import {checkAsync} from "../../../../testHelpers";
+import {responsibilityStore} from "../../../../../main/contrib/stores/ResponsibilityStore";
 
 describe("CreateEstimatesFormComponent", () => {
     const sandbox = new Sandbox();
@@ -29,7 +30,7 @@ describe("CreateEstimatesFormComponent", () => {
         const rendered = shallow(<CreateBurdenEstimateSetForm {...props} />);
         const details = rendered.find('input[name="details"]');
 
-        details.simulate("change", { target: { value: "some value"}});
+        details.simulate("change", {target: {value: "some value"}});
 
         expect(rendered.state().type.details).to.eql("some value");
     });
@@ -73,6 +74,17 @@ describe("CreateEstimatesFormComponent", () => {
 
         expect(rendered.state().type.type).to.eql("central-averaged");
 
+    });
+
+    it("fetches estimates token and refreshes responsibilities on success", () => {
+
+        const fetchSpy = sandbox.setSpy(responsibilityStore, "fetchOneTimeEstimatesToken");
+        const refreshSpy = sandbox.setStub(responsibilityStore, "refreshResponsibilities");
+
+        CreateBurdenEstimateSetForm.successCallback();
+
+        expect(fetchSpy.called).to.eq(true);
+        expect(refreshSpy.called).to.eq(true);
     });
 
 });

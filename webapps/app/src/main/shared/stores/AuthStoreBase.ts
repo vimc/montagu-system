@@ -1,11 +1,9 @@
 import alt from "../alt";
 import * as AltJS from "alt";
-import { AbstractStore } from "./AbstractStore";
-import { authActions, LogInProperties } from "../actions/AuthActions";
-import { decodeToken } from "../Token";
-import { contribAuthStore } from "../../contrib/stores/ContribAuthStore";
-import { adminAuthStore } from "../../admin/stores/AdminAuthStore";
-import { reportingAuthStore } from "../../report/stores/ReportingAuthStore";
+import {AbstractStore} from "./AbstractStore";
+import {authActions, LogInProperties} from "../actions/AuthActions";
+import {decodeToken} from "../Token";
+import {setShinyToken} from "../sources/LoginSource";
 
 export interface AuthStateBase {
     loggedIn: boolean;
@@ -16,11 +14,12 @@ export interface AuthStateBase {
 
 export interface AuthStoreBaseInterface<TState> extends AltJS.AltStore<TState> {
     logIn(access_token: string, triggered_by_user: boolean): void;
+
     loadAccessToken(): void;
 }
 
 export const tokenStorageHelper = {
-    loadToken: function(): string {
+    loadToken: function (): string {
         if (typeof(Storage) !== "undefined") {
             const token = localStorage.getItem("accessToken");
             if (token) {
@@ -95,6 +94,8 @@ export abstract class AuthStore<TState extends AuthStateBase, TInterface extends
         if (typeof(Storage) !== "undefined") {
             localStorage.setItem("accessToken", this.bearerToken);
         }
+
+        setShinyToken();
     }
 
     handleLogIn(props: LogInProperties) {
@@ -109,5 +110,5 @@ export abstract class AuthStore<TState extends AuthStateBase, TInterface extends
             localStorage.clear();
         }
     }
-    
+
 }

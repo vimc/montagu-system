@@ -294,18 +294,6 @@ describe("ResponsibilityStore", () => {
         expect(state.estimatesOneTimeToken).to.equal(null);
     });
 
-    it("estimateTokenActions.clearUsedToken sets token to null", () => {
-        alt.bootstrap(JSON.stringify({
-            ResponsibilityStore: {
-                estimatesOneTimeToken: "TOKEN",
-            }
-        }));
-        estimateTokenActions.clearUsedToken();
-
-        const state = responsibilityStore.getState();
-        expect(state.estimatesOneTimeToken).to.equal(null);
-    });
-
     it("estimateTokenActions.update sets the token", () => {
         estimateTokenActions.update("TOKEN");
 

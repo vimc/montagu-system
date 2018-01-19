@@ -13,6 +13,12 @@ export function requestAuthToken(email: string, password: string): Promise<Respo
     }, false);
 }
 
+export function setShinyToken(){
+    return fetcher.fetcher.fetch("/set-shiny-cookie/", {
+        method: "GET",
+        credentials : "include"
+    });
+}
 export function processLoginResponse(
     response: Response,
     authStore: AuthStoreBaseInterface<any>,

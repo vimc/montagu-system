@@ -16,10 +16,8 @@ import {shallow} from "enzyme";
 import {ModelRunParametersSection} from "../main/contrib/components/Responsibilities/ModelRunParameters/ModelRunParametersSection";
 import {ModelRunParametersContentComponent} from "../main/contrib/components/Responsibilities/ModelRunParameters/ModelRunParametersContent";
 import {mockModellingGroup, mockTouchstone} from "../test/mocks/mockModels";
-import {settings} from "../main/shared/Settings";
-import {IncomingMessage} from "http";
 import {mainStore} from "../main/contrib/stores/MainStore";
-import fetcher, { Fetcher } from "../main/shared/sources/Fetcher";
+import fetcher, {Fetcher} from "../main/shared/sources/Fetcher";
 import {apiResponse} from "../main/shared/sources/Source";
 import {responsibilityStore} from "../main/contrib/stores/ResponsibilityStore";
 import {responsibilityActions} from "../main/contrib/actions/ResponsibilityActions";
@@ -29,6 +27,7 @@ import {runParametersStore} from "../main/contrib/stores/RunParametersStore";
 import * as QueryString from "querystring";
 import {demographicStore} from "../main/contrib/stores/DemographicStore";
 import {demographicActions} from "../main/contrib/actions/DemographicActions";
+import {estimateTokenActions} from "../main/contrib/actions/EstimateActions";
 
 const FormData = require('form-data');
 const http = require('http');
@@ -58,7 +57,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
         function getUrlFromModelRunParametersContent(): string {
             const rendered = shallow(<ModelRunParametersContentComponent
                 ready={true} touchstone={mockTouchstone({id: touchstoneId})}
-                group={mockModellingGroup({id : groupId})}
+                group={mockModellingGroup({id: groupId})}
                 diseases={["yf"]}/>);
 
             return rendered.find(ModelRunParametersSection).first().prop("url");
@@ -82,7 +81,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
                     }).then((response: Response) => {
                         return apiResponse(response)
                             .then((result: Result) => {
-                                   return result
+                                    return result
                                 }
                             );
                     });
@@ -259,35 +258,46 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
 
         it("fetches one time estimates token", (done: DoneCallback) => {
 
-            setTouchstoneAndGroup(touchstoneId, groupId);
-            responsibilityActions.update(expectedResponsibilitiesResponse());
-            responsibilityActions.setCurrentResponsibility(scenarioId);
+            const promise = returnBurdenEstimateSetPromise(this.db)
+                .then(() => {
+                    setTouchstoneAndGroup(touchstoneId, groupId);
+                    return responsibilityStore.fetchResponsibilities().then(() => {
+                        responsibilityActions.setCurrentResponsibility(scenarioId);
+                        return responsibilityStore.fetchOneTimeEstimatesToken();
+                    });
 
-            const promise = responsibilityStore.fetchOneTimeEstimatesToken();
+                });
+
 
             checkPromise(done, promise, token => {
                 const decoded = jwt_decode(token);
-                expect(decoded.action).to.equal("burdens");
+                expect(decoded.action).to.equal("burdens-populate");
                 const payload = QueryString.parse(decoded.payload);
                 expect(payload).to.eql(JSON.parse(`{
                     ":group-id": "${groupId}",
                     ":touchstone-id": "${touchstoneId}",
-                    ":scenario-id": "${scenarioId}"
+                    ":scenario-id": "${scenarioId}",
+                    ":set-id": "1"
                 }`));
             });
         });
 
         it("fetches one time estimates token with redirect url", (done: DoneCallback) => {
 
-            setTouchstoneAndGroup(touchstoneId, groupId);
-            responsibilityActions.update(expectedResponsibilitiesResponse());
-            responsibilityActions.setCurrentResponsibility(scenarioId);
+            const promise = returnBurdenEstimateSetPromise(this.db)
+                .then(() => {
+                    setTouchstoneAndGroup(touchstoneId, groupId);
+                    return responsibilityStore.fetchResponsibilities().then(() => {
+                        responsibilityActions.setCurrentResponsibility(scenarioId);
+                        estimateTokenActions.setRedirectPath("/redirect/back");
+                        return responsibilityStore.fetchOneTimeEstimatesToken();
 
-            const promise = responsibilityStore.fetchOneTimeEstimatesToken("/redirect/back");
+                    });
+                });
 
             checkPromise(done, promise, token => {
                 const decoded = jwt_decode(token);
-                expect(decoded.action).to.equal("burdens");
+                expect(decoded.action).to.equal("burdens-populate");
 
                 const query = QueryString.parse(decoded.query);
                 expect(query).to.eql(JSON.parse(`{
@@ -299,11 +309,20 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
                 expect(payload).to.eql(JSON.parse(`{
                     ":group-id": "${groupId}",
                     ":touchstone-id": "${touchstoneId}",
-                    ":scenario-id": "${scenarioId}"
+                    ":scenario-id": "${scenarioId}",
+                    ":set-id": "1"
                 }`));
 
             });
         });
+
+        function returnBurdenEstimateSetPromise(db: Client): Promise<any> {
+            let responsibilityIds: ResponsibilityIds = null;
+            return addResponsibilities(db)
+                .then(responsibilityIdsResult => {responsibilityIds = responsibilityIdsResult; return addModel(db)})
+                .then(modelVersionId => addBurdenEstimateSet(db, responsibilityIds.responsibility, modelVersionId))
+                .then(setId => updateCurrentBurdenEstimateSet(db, responsibilityIds.responsibility, setId));
+        }
 
         it("fetches model run parameter sets", (done: DoneCallback) => {
             const promise: Promise<any> = addModelRunParameterSets(this.db)
@@ -332,7 +351,6 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
 
             return rendered.find(Form).prop("url");
         }
-
 
         it("creates burden estimates set", (done: DoneCallback) => {
 
@@ -434,10 +452,16 @@ function addModel(db: Client): Promise<number> {
         .then(result => result.rows[0].id);
 }
 
-function addBurdenEstimateSet(db: Client, responsibilityId: number, modelVersionId: number): Promise<QueryResult> {
+function addBurdenEstimateSet(db: Client, responsibilityId: number, modelVersionId: number): Promise<number> {
     return db.query(`INSERT INTO burden_estimate_set (responsibility, model_version, uploaded_by, run_info, interpolated, complete)
         VALUES ('${responsibilityId}', '${modelVersionId}', 'test.user', '', false, false);
-    `);
+    `)
+        .then(() => db.query(`SELECT id FROM burden_estimate_set;`))
+        .then(result => result.rows[0].id);
+}
+
+function updateCurrentBurdenEstimateSet(db: Client, responsibilityId: number, setId: number): Promise<QueryResult> {
+    return db.query(`UPDATE responsibility SET current_burden_estimate_set=${setId} WHERE id = ${responsibilityId}`);
 }
 
 function addCoverageSets(db: Client): Promise<number> {
