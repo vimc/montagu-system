@@ -1,16 +1,19 @@
 import {ModelRunParameterSet} from "../../../../shared/models/Generated";
 import * as React from "react";
 import {Alert} from 'reactstrap';
+import { isEqual, clone } from 'lodash';
 import {longestTimestamp} from "../../../../shared/Helpers";
 import {ModelRunParameterDownloadCertificate} from "./ModelRunParameterDownloadCertificate";
-import {RunParametersState, runParametersStore} from "../../../stores/RunParametersStore";
+import {RunParametersState, runParametersStore, TokensMap } from "../../../stores/RunParametersStore";
+import {runParameterActions} from "../../../actions/RunParameterActions";
 
 interface Props {
     disease: string;
 }
 
 interface State {
-    sets: ModelRunParameterSet[]
+    sets: ModelRunParameterSet[],
+    tokens: TokensMap
 }
 
 export class ModelRunParametersStatus extends React.Component<Props, State> {
@@ -21,7 +24,8 @@ export class ModelRunParametersStatus extends React.Component<Props, State> {
         this.state = {
             sets: storeState.parameterSets
                 ? storeState.parameterSets.filter(s => s.disease == props.disease)
-                : []
+                : [],
+            tokens: storeState.oneTimeTokens
         }
     }
 
@@ -29,14 +33,32 @@ export class ModelRunParametersStatus extends React.Component<Props, State> {
         runParametersStore.listen(this.onChange.bind(this));
     }
 
-    onChange(storeState: RunParametersState) {
+    fetchOneTimeTokens() {
+        const s = runParametersStore.getState();
+        console.log('params statdr', s)
+        // setTimeout(() => {
+        this.state.sets.map(set => setTimeout(() => {
+            runParameterActions.fetchToken(s.groupId, s.touchstoneId, set.id)
+        }));
+        // });
+    }
 
-        if (storeState.parameterSets) {
-            this.setState({sets: storeState.parameterSets.filter(s => s.disease == this.props.disease)})
+    onChange(storeState: RunParametersState) {
+        const oldStateSets = clone(this.state.sets)
+        this.setState({
+            sets: storeState.parameterSets
+                ? storeState.parameterSets.filter(s => s.disease == this.props.disease)
+                : [],
+            tokens: storeState.oneTimeTokens
+        })
+        if (!isEqual(oldStateSets, this.state.sets)) {
+            this.fetchOneTimeTokens();
         }
     }
 
     render(): JSX.Element {
+
+        console.log('stattus render', this.state)
 
         let alertContent = <span>You have not uploaded any parameter sets for {this.props.disease}</span>;
 

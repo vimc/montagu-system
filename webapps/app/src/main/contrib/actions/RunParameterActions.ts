@@ -1,24 +1,28 @@
 import {alt} from "../../shared/alt";
 import {ModelRunParameterSet} from "../../shared/models/Generated";
 import {AbstractActions} from "../../shared/actions/AbstractActions";
+import {fetchToken} from "../sources/RunParametersSource";
+import {TokenProps} from "../stores/RunParametersStore";
 
 interface Actions {
-    receiveToken(token: string): string;
+    receiveToken(id: number, token: string): TokenProps;
     beginFetchToken(): boolean;
-    clearUsedToken(): boolean;
+    clearToken(): boolean;
 
     beginFetchParameterSets(): boolean;
     updateParameterSets(parameterSets: ModelRunParameterSet[]): ModelRunParameterSet[];
+
+    fetchToken(groupId: string, touchstoneId: string, setId: number): void;
 }
 
 class RunParameterActions extends AbstractActions implements Actions {
-    receiveToken(token: string): string {
-        return token;
+    receiveToken(id: number, token: string): TokenProps {
+        return {id, token};
     }
     beginFetchToken(): boolean {
         return true;
     }
-    clearUsedToken(): boolean {
+    clearToken(): boolean {
         return true;
     }
 
@@ -27,6 +31,16 @@ class RunParameterActions extends AbstractActions implements Actions {
     }
     updateParameterSets(parameterSets: ModelRunParameterSet[]): ModelRunParameterSet[] {
         return parameterSets
+    }
+    fetchToken(groupId: string, touchstoneId: string, setId: number) {
+        console.log('fetch token will dispatch', groupId, touchstoneId, setId)
+        return (dispatch: any) => {
+            dispatch();
+            console.log('dipsd')
+            fetchToken(groupId, touchstoneId, setId) .then((res) => {
+                this.receiveToken(setId, res);
+            })
+        }
     }
 }
 
