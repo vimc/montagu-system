@@ -31,16 +31,14 @@ export class ModelRunParametersStatus extends React.Component<Props, State> {
 
     componentDidMount() {
         runParametersStore.listen(this.onChange.bind(this));
+        if (this.state.sets.length) this.fetchOneTimeTokens();
     }
 
     fetchOneTimeTokens() {
         const s = runParametersStore.getState();
-        console.log('params statdr', s)
-        // setTimeout(() => {
         this.state.sets.map(set => setTimeout(() => {
             runParameterActions.fetchToken(s.groupId, s.touchstoneId, set.id)
         }));
-        // });
     }
 
     onChange(storeState: RunParametersState) {
@@ -57,9 +55,6 @@ export class ModelRunParametersStatus extends React.Component<Props, State> {
     }
 
     render(): JSX.Element {
-
-        console.log('stattus render', this.state)
-
         let alertContent = <span>You have not uploaded any parameter sets for {this.props.disease}</span>;
 
         const hasSets = this.state.sets.length > 0;
