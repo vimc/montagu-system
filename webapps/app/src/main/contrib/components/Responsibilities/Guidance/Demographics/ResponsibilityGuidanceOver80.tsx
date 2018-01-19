@@ -23,7 +23,7 @@ export class ResponsibilityGuidanceOver80 extends ContribPageWithHeader<undefine
         return new ChooseGroupPage();
     }
 
-    render() {
+    render() :JSX.Element {
         return <Page page={this}>
             <iframe src={embeddedHtml} width="100%" height="5836px" frameBorder="0"></iframe>
         </Page>;

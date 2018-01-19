@@ -1,13 +1,10 @@
 import * as React from "react";
 import {IRouter, Location} from "simple-react-router";
 
-import { InternalLink } from "../InternalLink";
 import { navActions } from "../../actions/NavActions";
-import {NavBar} from "../NavBar/NavBar";
 import {IPageWithParent} from "../../models/Breadcrumb";
 
 import './PageWithHeader.scss';
-import * as logo from "./logo.png";
 
 export abstract class PageWithHeader<TLocationProps>
     extends React.Component<PageProperties<TLocationProps>, undefined>
@@ -26,6 +23,11 @@ export abstract class PageWithHeader<TLocationProps>
     }
     hideTitle(): boolean {
         return false;
+    }
+    componentDidMount() {
+        setTimeout(()=> {
+            this.load();
+        });
     }
 
     load() {

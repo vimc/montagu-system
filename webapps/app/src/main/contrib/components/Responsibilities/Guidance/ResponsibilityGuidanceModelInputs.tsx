@@ -26,7 +26,7 @@ export class ResponsibilityGuidanceModelInputs extends ContribPageWithHeader<und
         return new ChooseGroupPage();
     }
 
-    render() {
+    render() :JSX.Element {
         return <Page page={this}>
             <div className="largeSectionTitle">
                 Input data sources

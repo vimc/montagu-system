@@ -20,12 +20,6 @@ export interface ModelRunParametersProps {
 }
 
 export class ModelRunParametersPage extends ContribPageWithHeader<ModelRunParametersProps> {
-    componentDidMount() {
-        setTimeout(()=> {
-           this.load();
-        });
-    }
-
     load() {
         modellingGroupActions.setCurrentGroup(this.props.location.params.groupId);
         responsibilityStore.fetchTouchstones().catch(doNothing).then(() => {
@@ -52,7 +46,7 @@ export class ModelRunParametersPage extends ContribPageWithHeader<ModelRunParame
         return new ResponsibilityOverviewPage();
     }
 
-    render(){
+    render() :JSX.Element {
         const guidanceOutputsUrl = `/help/model-outputs/#parameters`;
 
         return <Page page={this}>

@@ -17,12 +17,6 @@ interface LocationProps {
 }
 
 export class ResponsibilityOverviewPage extends ContribPageWithHeader<LocationProps> {
-    componentDidMount() {
-        setTimeout(()=> {
-            this.load();
-        });
-    }
-
     load() {
         modellingGroupActions.setCurrentGroup(this.props.location.params.groupId);
         responsibilityStore.fetchTouchstones().catch(doNothing).then(() => {

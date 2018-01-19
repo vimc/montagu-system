@@ -35,7 +35,7 @@ export class ViewAllUsersPage extends AdminPageWithHeader<undefined> {
         return new MainMenu();
     }
 
-    render() {
+    render() :JSX.Element {
         return <Page page={this}>
             <CreateUserSection/>
             <div className="sectionTitle">All users</div>

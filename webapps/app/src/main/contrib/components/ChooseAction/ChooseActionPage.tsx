@@ -13,12 +13,6 @@ export interface LocationProps {
 }
 
 export class ChooseActionPage extends ContribPageWithHeader<LocationProps> {
-    componentDidMount() {
-        setTimeout(()=> {
-            this.load();
-        });
-    }
-
     load() {
         modellingGroupActions.setCurrentGroup(this.props.location.params.groupId);
         responsibilityStore.fetchTouchstones().catch(doNothing).then(() => {
@@ -44,7 +38,7 @@ export class ChooseActionPage extends ContribPageWithHeader<LocationProps> {
         return new ChooseGroupPage();
     }
 
-    render() {
+    render() :JSX.Element {
         return <Page page={this}>
             <ChooseActionContent />
         </Page>;

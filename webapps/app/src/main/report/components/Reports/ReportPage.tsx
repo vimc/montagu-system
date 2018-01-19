@@ -21,12 +21,6 @@ export class ReportPage extends ReportingPageWithHeader<ReportPageProps> {
         this.changeVersion = this.changeVersion.bind(this);
     }
 
-    componentDidMount() {
-        setTimeout(()=> {
-            this.load();
-        });
-    }
-
     load() {
         const p = this.props.location.params;
         this.loadVersion(p.report, p.version);
@@ -68,7 +62,7 @@ export class ReportPage extends ReportingPageWithHeader<ReportPageProps> {
         return `${params.report}/${params.version}/`;
     }
 
-    render() {
+    render() :JSX.Element {
         return <Page page={this}>
             <ReportDetails onChangeVersion={this.changeVersion} />
         </Page>;

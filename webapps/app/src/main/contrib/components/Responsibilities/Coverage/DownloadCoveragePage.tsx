@@ -18,12 +18,6 @@ interface LocationProps {
 }
 
 export class DownloadCoveragePage extends ContribPageWithHeader<LocationProps> {
-    componentDidMount() {
-        setTimeout(()=> {
-            this.load();
-        });
-    }
-
     load() {
         modellingGroupActions.setCurrentGroup(this.props.location.params.groupId);
         responsibilityStore.fetchTouchstones().catch(doNothing).then(() => {
@@ -55,7 +49,7 @@ export class DownloadCoveragePage extends ContribPageWithHeader<LocationProps> {
         return new ResponsibilityOverviewPage();
     }
 
-    render(){
+    render() :JSX.Element {
         return <Page page={this}>
             <DownloadCoverageContent />
         </Page>

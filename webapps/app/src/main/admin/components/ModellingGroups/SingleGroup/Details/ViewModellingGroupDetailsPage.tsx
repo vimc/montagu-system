@@ -16,12 +16,6 @@ export interface ModellingGroupDetailsPageProps {
 }
 
 export class ViewModellingGroupDetailsPage extends AdminPageWithHeader<ModellingGroupDetailsPageProps> {
-    componentDidMount() {
-        setTimeout(()=> {
-            this.load()
-        });
-    }
-
     load() {
         userStore.fetchUsers().catch(doNothing);
         groupStore.fetchGroups().catch(doNothing).then(() => {

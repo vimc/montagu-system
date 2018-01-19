@@ -16,12 +16,6 @@ interface PageProps {
 }
 
 export class GroupAdminPage extends AdminPageWithHeader<PageProps> {
-    componentDidMount() {
-        setTimeout(()=> {
-            this.load();
-        });
-    }
-
     load() {
         userStore.fetchUsers().catch(doNothing);
         groupStore.fetchGroups().catch(doNothing).then(() => {

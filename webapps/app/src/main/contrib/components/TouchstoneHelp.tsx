@@ -18,7 +18,7 @@ export class TouchstoneHelp extends ContribPageWithHeader<undefined> {
         return new ChooseGroupPage();
     }
 
-    render() {
+    render() :JSX.Element {
         return <Page page={this}>
             <p>
                 To distinguish between the different sets of impact estimates

@@ -8,12 +8,6 @@ import {MainMenu} from "../../MainMenu/MainMenu";
 import { Page } from "../../../../shared/components/PageWithHeader/Page";
 
 export class ViewAllModellingGroupsPage extends AdminPageWithHeader<undefined> {
-    componentDidMount() {
-        setTimeout(()=> {
-            this.load();
-        });
-    }
-
     load() {
         groupStore.fetchGroups().catch(doNothing).then(() => {
             super.load();
@@ -32,7 +26,7 @@ export class ViewAllModellingGroupsPage extends AdminPageWithHeader<undefined> {
         return new MainMenu();
     }
 
-    render() {
+    render() :JSX.Element {
         return <Page page={this}>
             <ModellingGroupsList />
         </Page>;

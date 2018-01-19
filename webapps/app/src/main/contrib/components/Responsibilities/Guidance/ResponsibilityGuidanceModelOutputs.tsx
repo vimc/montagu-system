@@ -28,7 +28,7 @@ export class ResponsibilityGuidanceModelOutputs extends ContribPageWithHeader<un
         return new ChooseGroupPage();
     }
 
-    render() {
+    render() :JSX.Element {
         return <Page page={this}>
             <div className="largeSectionTitle">
                 Required model outputs

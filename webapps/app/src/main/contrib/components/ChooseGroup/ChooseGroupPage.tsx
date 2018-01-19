@@ -17,7 +17,7 @@ export class ChooseGroupPage extends ContribPageWithHeader<undefined> {
         return null;
     }
 
-    render() {
+    render() :JSX.Element {
         return <Page page={this}>
             <p>
                 Montagu's database hosts estimates provided to Gavi in the

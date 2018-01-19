@@ -19,7 +19,7 @@ export class MainMenu extends AdminPageWithHeader<undefined> {
         return null;
     }
 
-    render() {
+    render() :JSX.Element {
         return <Page page={this}>
             <div>
                 Please select which area of Montagu you would like to manage:

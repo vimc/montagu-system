@@ -19,12 +19,6 @@ export interface UploadEstimatesProps {
 }
 
 export class UploadBurdenEstimatesPage extends ContribPageWithHeader<UploadEstimatesProps> {
-    componentDidMount() {
-        setTimeout(()=> {
-            this.load();
-        });
-    }
-
     load() {
         estimateTokenActions.clearUsedToken();
         estimateTokenActions.setRedirectPath(this.props.location.pathname);
@@ -57,7 +51,7 @@ export class UploadBurdenEstimatesPage extends ContribPageWithHeader<UploadEstim
         return new ResponsibilityOverviewPage();
     }
 
-    render() {
+    render() :JSX.Element {
         return <Page page={this}>
             <UploadBurdenEstimatesContent/>
         </Page>

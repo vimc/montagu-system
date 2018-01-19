@@ -37,7 +37,7 @@ export class MainMenu extends ReportingPageWithHeader<undefined> {
         return null;
     }
 
-    render() {
+    render() :JSX.Element {
         return <Page page={this}>
             <ReportList />
         </Page>;

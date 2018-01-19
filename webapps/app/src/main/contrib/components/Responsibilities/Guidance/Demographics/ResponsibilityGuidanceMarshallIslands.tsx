@@ -23,7 +23,7 @@ export class ResponsibilityGuidanceMarshallIslands extends ContribPageWithHeader
         return new ChooseGroupPage();
     }
 
-    render() {
+    render() :JSX.Element {
         return <Page page={this}>
             <iframe src={embeddedHtml} width="100%" height="9270px" frameBorder="0"></iframe>
         </Page>;

@@ -23,7 +23,7 @@ export class ResponsibilityGuidanceNeonatalMortality extends ContribPageWithHead
         return new ChooseGroupPage();
     }
 
-    render() {
+    render() :JSX.Element {
         return <Page page={this}>
             <iframe src={embeddedHtml} width="100%" height="2008px" frameBorder="0"></iframe>
         </Page>;
