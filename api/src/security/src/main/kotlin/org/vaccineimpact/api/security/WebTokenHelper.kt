@@ -6,6 +6,7 @@ import org.pac4j.jwt.profile.JwtGenerator
 import org.vaccineimpact.api.db.Config
 import org.vaccineimpact.api.models.Result
 import org.vaccineimpact.api.models.Scope
+import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import org.vaccineimpact.api.models.permissions.ReifiedRole
 import org.vaccineimpact.api.serialization.MontaguSerializer
 import org.vaccineimpact.api.serialization.Serializer
@@ -69,7 +70,7 @@ open class WebTokenHelper(keyPair: KeyPair,
 
     fun shinyClaims(user: InternalUser): Map<String, Any>
     {
-        val allowedShiny = user.roles.contains(ReifiedRole("reports-reviewer", Scope.Global()))
+        val allowedShiny = user.permissions.contains(ReifiedPermission("reports.review", Scope.Global()))
         return mapOf(
                 "iss" to issuer,
                 "sub" to user.username,
