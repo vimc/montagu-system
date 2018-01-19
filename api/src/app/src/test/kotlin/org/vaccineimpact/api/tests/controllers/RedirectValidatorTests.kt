@@ -58,6 +58,14 @@ class RedirectValidatorTests : MontaguTests()
         Assertions.assertThatThrownBy {
             redirectValidator.validateRedirectUrl("https://nonsense.montagu.dide.ic.ac.uk")
         }
+
+        Assertions.assertThatThrownBy {
+            redirectValidator.validateRedirectUrl("https://montaguadide.ic.ac.uk")
+        }
+
+        Assertions.assertThatThrownBy {
+            redirectValidator.validateRedirectUrl("https://montagudideicac.uk")
+        }
     }
 
     @Test

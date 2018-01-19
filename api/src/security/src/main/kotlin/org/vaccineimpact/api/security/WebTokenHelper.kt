@@ -5,7 +5,8 @@ import org.pac4j.jwt.config.signature.RSASignatureConfiguration
 import org.pac4j.jwt.profile.JwtGenerator
 import org.vaccineimpact.api.db.Config
 import org.vaccineimpact.api.models.Result
-import org.vaccineimpact.api.models.helpers.OneTimeAction
+import org.vaccineimpact.api.models.Scope
+import org.vaccineimpact.api.models.permissions.ReifiedRole
 import org.vaccineimpact.api.serialization.MontaguSerializer
 import org.vaccineimpact.api.serialization.Serializer
 import java.security.KeyPair
@@ -23,7 +24,7 @@ open class WebTokenHelper(keyPair: KeyPair,
     val generator = JwtGenerator<CommonProfile>(signatureConfiguration)
     private val random = SecureRandom()
 
-    open fun generateToken(user: MontaguUser): String
+    open fun generateToken(user: InternalUser): String
     {
         return generator.generate(claims(user))
     }
@@ -55,7 +56,7 @@ open class WebTokenHelper(keyPair: KeyPair,
                         "result" to json))
     }
 
-    fun claims(user: MontaguUser): Map<String, Any>
+    fun claims(user: InternalUser): Map<String, Any>
     {
         return mapOf(
                 "iss" to issuer,
@@ -63,6 +64,17 @@ open class WebTokenHelper(keyPair: KeyPair,
                 "exp" to Date.from(Instant.now().plus(lifeSpan)),
                 "permissions" to user.permissions.joinToString(","),
                 "roles" to user.roles.joinToString(",")
+        )
+    }
+
+    fun shinyClaims(user: InternalUser): Map<String, Any>
+    {
+        val allowedShiny = user.roles.contains(ReifiedRole("report.reviewer", Scope.Global()))
+        return mapOf(
+                "iss" to issuer,
+                "sub" to user.username,
+                "exp" to Date.from(Instant.now().plus(lifeSpan)),
+                "allowed_shiny" to allowedShiny
         )
     }
 
@@ -80,5 +92,10 @@ open class WebTokenHelper(keyPair: KeyPair,
         val oneTimeActionSubject = "onetime_link"
         val apiResponseSubject = "api_response"
         val oneTimeLinkLifeSpan: Duration = Duration.ofMinutes(10)
+    }
+
+    fun generateShinyToken(internalUser: InternalUser): String
+    {
+        return generator.generate(shinyClaims(internalUser))
     }
 }

@@ -64,6 +64,7 @@ class OneTimeLinkController(
     private fun redirectWithResult(context: ActionContext, result: Result, redirectUrl: String)
     {
         val encodedResult = tokenHelper.encodeResult(result)
+        context.request.consumeRemainder()
         context.redirect("$redirectUrl?result=$encodedResult")
     }
 

@@ -63,6 +63,13 @@ open class GroupBurdenEstimatesController(
                 data
         )
 
+        // Then, maybe close the burden estimate set
+        val keepOpen = context.queryParams("keepOpen")?.toBoolean() ?: false
+        if (!keepOpen)
+        {
+            estimateRepository.closeBurdenEstimateSet(setId)
+        }
+
         return okayResponse()
     }
 

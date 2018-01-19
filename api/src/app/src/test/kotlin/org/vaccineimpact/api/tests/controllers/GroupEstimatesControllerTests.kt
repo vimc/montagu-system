@@ -20,7 +20,8 @@ import org.vaccineimpact.api.test_helpers.MontaguTests
 import java.time.Instant
 
 class GroupEstimatesControllerTests : MontaguTests()
-{    @Test
+{
+    @Test
     fun `can get metadata for burden estimates`()
     {
         val data = listOf(
@@ -86,16 +87,6 @@ class GroupEstimatesControllerTests : MontaguTests()
         val repo = mockRepository(touchstoneSet,
                 existingBurdenEstimateSet = defaultEstimateSet.withType(BurdenEstimateSetTypeCode.CENTRAL_SINGLE_RUN))
 
-        val csvData = listOf(
-                BurdenEstimate("yf", 2000, 50, "AFG", "Afghanistan", 1000.toDecimal(), mapOf(
-                        "deaths" to 10.toDecimal(),
-                        "cases" to 100.toDecimal()
-                )),
-                BurdenEstimate("yf", 1980, 30, "AGO", "Angola", 2000.toDecimal(), mapOf(
-                        "deaths" to 20.toDecimal(),
-                        "dalys" to 73.6.toDecimal()
-                ))
-        )
         val expectedData = listOf(
                 BurdenEstimateWithRunId("yf", null, 2000, 50, "AFG", "Afghanistan", 1000.toDecimal(), mapOf(
                         "deaths" to 10.toDecimal(),
@@ -107,7 +98,7 @@ class GroupEstimatesControllerTests : MontaguTests()
                 ))
         )
 
-        val mockContext = mockActionContextWithCSVData(csvData)
+        val mockContext = mockActionContextWithCSVData(normalCSVData)
         verifyRepositoryIsInvokedToPopulateSet(mockContext, repo, touchstoneSet, expectedData)
     }
 
@@ -141,6 +132,36 @@ class GroupEstimatesControllerTests : MontaguTests()
 
         val mockContext = mockActionContextWithCSVData(csvData.asSequence())
         verifyRepositoryIsInvokedToPopulateSet(mockContext, repo, touchstoneSet, expectedData)
+    }
+
+    @Test
+    fun `if keepOpen is not provided, populate closes estimate set`()
+    {
+        // This way, the webapps will carry on with the same behaviour as before.
+        // It's only if a client explicitly sets keepOpen that we will see the partial state
+        populateAndCheckIfSetIsClosed(keepOpen = null, expectedClosed = true)
+    }
+
+    @Test
+    fun `if keepOpen is true, burden estimate set is left open`()
+    {
+        populateAndCheckIfSetIsClosed(keepOpen = "true", expectedClosed = false)
+    }
+
+    @Test
+    fun `if keepOpen is false, populate closes burden estimate set`()
+    {
+        populateAndCheckIfSetIsClosed(keepOpen = "false", expectedClosed = true)
+    }
+
+    private fun populateAndCheckIfSetIsClosed(keepOpen: String?, expectedClosed: Boolean)
+    {
+        val timesExpected = if (expectedClosed) times(1) else never()
+
+        val repo = mockRepository()
+        val mockContext = mockActionContextWithCSVData(normalCSVData, keepOpen = keepOpen)
+        GroupBurdenEstimatesController(mockContext, repo).populateBurdenEstimateSet()
+        verify(repo, timesExpected).closeBurdenEstimateSet(defaultEstimateSet.id)
     }
 
     @Test
@@ -183,10 +204,10 @@ class GroupEstimatesControllerTests : MontaguTests()
         ))
     }
 
-    private fun <T : Any> mockActionContextWithCSVData(csvData: List<T>)
-            = mockActionContextWithCSVData(csvData.asSequence())
+    private fun <T : Any> mockActionContextWithCSVData(csvData: List<T>, keepOpen: String? = null)
+            = mockActionContextWithCSVData(csvData.asSequence(), keepOpen = keepOpen)
 
-    private fun <T : Any> mockActionContextWithCSVData(csvData: Sequence<T>): ActionContext
+    private fun <T : Any> mockActionContextWithCSVData(csvData: Sequence<T>, keepOpen: String? = null): ActionContext
     {
         return mock {
             on { csvData<T>(any(), any<RequestBodySource>()) } doReturn csvData
@@ -196,6 +217,7 @@ class GroupEstimatesControllerTests : MontaguTests()
             on { params(":group-id") } doReturn "group-1"
             on { params(":touchstone-id") } doReturn "touchstone-1"
             on { params(":scenario-id") } doReturn "scenario-1"
+            on { queryParams("keepOpen") } doReturn keepOpen
         }
     }
 
@@ -245,5 +267,16 @@ class GroupEstimatesControllerTests : MontaguTests()
             BurdenEstimateSetType(BurdenEstimateSetTypeCode.CENTRAL_AVERAGED, "mean"),
             BurdenEstimateSetStatus.EMPTY,
             emptyList()
+    )
+
+    private val normalCSVData = listOf(
+            BurdenEstimate("yf", 2000, 50, "AFG", "Afghanistan", 1000.toDecimal(), mapOf(
+                    "deaths" to 10.toDecimal(),
+                    "cases" to 100.toDecimal()
+            )),
+            BurdenEstimate("yf", 1980, 30, "AGO", "Angola", 2000.toDecimal(), mapOf(
+                    "deaths" to 20.toDecimal(),
+                    "dalys" to 73.6.toDecimal()
+            ))
     )
 }
