@@ -5,9 +5,9 @@ import {fetchToken} from "../sources/RunParametersSource";
 import {TokenProps} from "../stores/RunParametersStore";
 
 interface Actions {
-    receiveToken(id: number, token: string): TokenProps;
+    receiveToken(setId: number, token: string): TokenProps;
     beginFetchToken(): boolean;
-    clearToken(): boolean;
+    clearToken(setId: number): number;
 
     beginFetchParameterSets(): boolean;
     updateParameterSets(parameterSets: ModelRunParameterSet[]): ModelRunParameterSet[];
@@ -16,14 +16,14 @@ interface Actions {
 }
 
 class RunParameterActions extends AbstractActions implements Actions {
-    receiveToken(id: number, token: string): TokenProps {
-        return {id, token};
+    receiveToken(setId: number, token: string): TokenProps {
+        return {setId, token};
     }
     beginFetchToken(): boolean {
         return true;
     }
-    clearToken(): boolean {
-        return true;
+    clearToken(setId: number): number {
+        return setId;
     }
 
     beginFetchParameterSets(): boolean {

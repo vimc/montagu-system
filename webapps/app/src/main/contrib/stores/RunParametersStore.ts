@@ -18,11 +18,11 @@ export interface RunParametersState {
 }
 
 export interface TokensMap {
-    [id: number]: string;
+    [setId: number]: string;
 }
 
 export interface TokenProps {
-    id: number;
+    setId: number;
     token: string;
 }
 
@@ -91,11 +91,11 @@ class RunParametersStore
     }
 
     updateParametersToken(data: TokenProps) {
-        this.oneTimeTokens[data.id] = data.token;
+        this.oneTimeTokens[data.setId] = data.token;
     }
 
-    clearParametersToken(id: number) {
-        this.oneTimeTokens[id] = null;
+    clearParametersToken(setId: number) {
+        this.oneTimeTokens[setId] = null;
     }
 
     clearAll(): void {

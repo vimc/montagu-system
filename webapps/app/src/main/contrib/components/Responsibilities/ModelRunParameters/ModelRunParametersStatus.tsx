@@ -56,8 +56,14 @@ export class ModelRunParametersStatus extends React.Component<Props, State> {
         }
     }
 
-    refreshToken() {
-        this.fetchOneTimeTokens();
+    refreshToken(setId: number) {
+        return () => {
+            runParameterActions.clearToken(setId);
+            const s = runParametersStore.getState();
+            setTimeout(() => {
+                runParameterActions.fetchToken(s.groupId, s.touchstoneId, setId)
+            })
+        }
     }
 
     render(): JSX.Element {
@@ -75,8 +81,8 @@ export class ModelRunParametersStatus extends React.Component<Props, State> {
             // TODO add link when API endpoint implemented
             const downloadParamsLink = <OneTimeButton
                 token={this.state.tokens[lastUploaded.id]}
-                refreshToken={this.refreshToken}
-                enabled={true}>
+                refreshToken={this.refreshToken(lastUploaded.id)}
+                enabled={!!this.state.tokens[lastUploaded.id]}>
                 Download data set
             </OneTimeButton>;
 
