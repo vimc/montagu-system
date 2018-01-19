@@ -37,9 +37,13 @@ export class ResetPasswordPage extends AdminPageWithHeader<ResetPasswordPageProp
 
     componentDidMount() {
         setTimeout(()=> {
-            super.load();
-            accountActions.setPasswordResetToken(helpers.queryStringAsObject().token);
+            this.load();
         });
+    }
+
+    load() {
+        super.load();
+        accountActions.setPasswordResetToken(helpers.queryStringAsObject().token);
     }
 
     render(): JSX.Element {

@@ -13,9 +13,13 @@ import "../../../../shared/styles/common.scss";
 export class ViewAllUsersPage extends AdminPageWithHeader<undefined> {
     componentDidMount() {
         setTimeout(()=> {
-            userStore.fetchUsers().catch(doNothing).then(() => {
-                super.load();
-            });
+            this.load();
+        });
+    }
+
+    load() {
+        userStore.fetchUsers().catch(doNothing).then(() => {
+            super.load();
         });
     }
 

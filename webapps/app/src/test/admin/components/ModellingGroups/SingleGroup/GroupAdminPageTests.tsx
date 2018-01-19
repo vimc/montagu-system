@@ -40,6 +40,7 @@ describe("GroupAdminPage", () => {
         });
     });
 
+
     const page = new GroupAdminPage({location: location, router: null});
     addNavigationTests(page, sandbox, () => {
         mockFetcherForMultipleResponses([

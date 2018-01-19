@@ -26,7 +26,7 @@ export function getActions(spy: sinon.SinonSpy): Action[] {
 }
 
 export function findActionWithName(actions: Action[], name: string): Action {
-    console.log(actions)
+    // console.log(actions)
     const action = actions.find(a => a.action == name);
     expect(isNullOrUndefined(action)).to.equal(false, `Could not find an action '${name}'`);
     return action;

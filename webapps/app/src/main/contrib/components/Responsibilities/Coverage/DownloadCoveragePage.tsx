@@ -20,15 +20,19 @@ interface LocationProps {
 export class DownloadCoveragePage extends ContribPageWithHeader<LocationProps> {
     componentDidMount() {
         setTimeout(()=> {
-            modellingGroupActions.setCurrentGroup(this.props.location.params.groupId);
-            responsibilityStore.fetchTouchstones().catch(doNothing).then(() => {
-                touchstoneActions.setCurrentTouchstone(this.props.location.params.touchstoneId);
-                responsibilityStore.fetchResponsibilities().catch(doNothing).then(() => {
-                    responsibilityActions.setCurrentResponsibility(this.props.location.params.scenarioId);
-                    responsibilityStore.fetchCoverageSets().catch(doNothing);
-                    responsibilityStore.fetchOneTimeCoverageToken().catch(doNothing);
-                    super.load();
-                });
+            this.load();
+        });
+    }
+
+    load() {
+        modellingGroupActions.setCurrentGroup(this.props.location.params.groupId);
+        responsibilityStore.fetchTouchstones().catch(doNothing).then(() => {
+            touchstoneActions.setCurrentTouchstone(this.props.location.params.touchstoneId);
+            responsibilityStore.fetchResponsibilities().catch(doNothing).then(() => {
+                responsibilityActions.setCurrentResponsibility(this.props.location.params.scenarioId);
+                responsibilityStore.fetchCoverageSets().catch(doNothing);
+                responsibilityStore.fetchOneTimeCoverageToken().catch(doNothing);
+                super.load();
             });
         });
     }

@@ -28,10 +28,6 @@ export abstract class PageWithHeader<TLocationProps>
         return false;
     }
 
-    componentDidMount() {
-        setTimeout(() => this.load());
-    }
-
     load() {
         this.createBreadcrumb();
         window.scrollTo(0, 0);

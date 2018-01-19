@@ -18,12 +18,16 @@ export interface ModellingGroupDetailsPageProps {
 export class ViewModellingGroupDetailsPage extends AdminPageWithHeader<ModellingGroupDetailsPageProps> {
     componentDidMount() {
         setTimeout(()=> {
-            userStore.fetchUsers().catch(doNothing);
-            groupStore.fetchGroups().catch(doNothing).then(() => {
-                modellingGroupActions.setCurrentGroup(this.props.location.params.groupId);
-                groupStore.fetchGroupDetails().catch(doNothing).then(() => {
-                    super.load();
-                });
+            this.load()
+        });
+    }
+
+    load() {
+        userStore.fetchUsers().catch(doNothing);
+        groupStore.fetchGroups().catch(doNothing).then(() => {
+            modellingGroupActions.setCurrentGroup(this.props.location.params.groupId);
+            groupStore.fetchGroupDetails().catch(doNothing).then(() => {
+                super.load();
             });
         });
     }

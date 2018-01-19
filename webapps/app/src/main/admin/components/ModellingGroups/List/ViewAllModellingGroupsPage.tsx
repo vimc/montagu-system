@@ -10,9 +10,13 @@ import { Page } from "../../../../shared/components/PageWithHeader/Page";
 export class ViewAllModellingGroupsPage extends AdminPageWithHeader<undefined> {
     componentDidMount() {
         setTimeout(()=> {
-            groupStore.fetchGroups().catch(doNothing).then(() => {
-                super.load();
-            });
+            this.load();
+        });
+    }
+
+    load() {
+        groupStore.fetchGroups().catch(doNothing).then(() => {
+            super.load();
         });
     }
 
