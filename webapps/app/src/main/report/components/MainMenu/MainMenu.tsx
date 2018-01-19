@@ -11,9 +11,13 @@ const menuStyles = require("./MainMenu.css");
 export class MainMenu extends ReportingPageWithHeader<undefined> {
     componentDidMount() {
         setTimeout(()=> {
-            reportStore.fetchReports().catch(doNothing).then(() => {
-                super.load();
-            });
+            this.load();
+        });
+    }
+
+    load() {
+        reportStore.fetchReports().catch(doNothing).then(() => {
+            super.load();
         });
     }
 

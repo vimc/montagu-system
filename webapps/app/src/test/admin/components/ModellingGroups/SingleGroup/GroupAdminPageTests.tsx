@@ -28,7 +28,7 @@ describe("GroupAdminPage", () => {
         const fetchGroupDetails = sandbox.sinon.stub(groupStore, "fetchGroupDetails").returns(Promise.resolve({}));
         const dispatchSpy = sandbox.dispatchSpy();
 
-        (new GroupAdminPage({location: location, router: null})).componentDidMount();
+        (new GroupAdminPage({location: location, router: null})).load();
 
         checkAsync(done, (afterWait) => {
             expect(fetchGroups.called).to.equal(true, "Expected groupStore.fetchGroups to be triggered");

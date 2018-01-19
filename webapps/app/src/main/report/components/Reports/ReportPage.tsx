@@ -23,9 +23,13 @@ export class ReportPage extends ReportingPageWithHeader<ReportPageProps> {
 
     componentDidMount() {
         setTimeout(()=> {
-            const p = this.props.location.params;
-            this.loadVersion(p.report, p.version);
+            this.load();
         });
+    }
+
+    load() {
+        const p = this.props.location.params;
+        this.loadVersion(p.report, p.version);
     }
 
     loadVersion(report: string, version: string) {
