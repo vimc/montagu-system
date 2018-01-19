@@ -6,6 +6,7 @@ import {longestTimestamp} from "../../../../shared/Helpers";
 import {ModelRunParameterDownloadCertificate} from "./ModelRunParameterDownloadCertificate";
 import {RunParametersState, runParametersStore, TokensMap } from "../../../stores/RunParametersStore";
 import {runParameterActions} from "../../../actions/RunParameterActions";
+import { OneTimeButton } from "../../../../shared/components/OneTimeButton";
 
 interface Props {
     disease: string;
@@ -27,6 +28,7 @@ export class ModelRunParametersStatus extends React.Component<Props, State> {
                 : [],
             tokens: storeState.oneTimeTokens
         }
+        this.refreshToken = this.refreshToken.bind(this)
     }
 
     componentDidMount() {
@@ -54,6 +56,10 @@ export class ModelRunParametersStatus extends React.Component<Props, State> {
         }
     }
 
+    refreshToken() {
+        this.fetchOneTimeTokens();
+    }
+
     render(): JSX.Element {
         let alertContent = <span>You have not uploaded any parameter sets for {this.props.disease}</span>;
 
@@ -67,10 +73,16 @@ export class ModelRunParametersStatus extends React.Component<Props, State> {
             const downloadCertificateLink = <ModelRunParameterDownloadCertificate set={lastUploaded}/>;
 
             // TODO add link when API endpoint implemented
-            const downloadParamsLink = <a href="#">View parameter set</a>;
+            const downloadParamsLink = <OneTimeButton
+                token={this.state.tokens[lastUploaded.id]}
+                refreshToken={this.refreshToken}
+                enabled={true}>
+                Download data set
+            </OneTimeButton>;
+
 
             alertContent = <span>{alertText} {downloadCertificateLink}
-                {/*<br/> {downloadParamsLink}*/}
+                <br/> {downloadParamsLink}
             </span>
         }
 
