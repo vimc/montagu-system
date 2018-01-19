@@ -69,7 +69,7 @@ open class WebTokenHelper(keyPair: KeyPair,
 
     fun shinyClaims(user: InternalUser): Map<String, Any>
     {
-        val allowedShiny = user.roles.contains(ReifiedRole("report.reviewer", Scope.Global()))
+        val allowedShiny = user.roles.contains(ReifiedRole("reports-reviewer", Scope.Global()))
         return mapOf(
                 "iss" to issuer,
                 "sub" to user.username,
