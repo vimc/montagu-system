@@ -6,9 +6,18 @@ import {IPageWithParent} from "../../models/Breadcrumb";
 
 import './PageWithHeader.scss';
 
+export interface PageParts {
+    header(): JSX.Element;
+    siteTitle(): string;
+    postHeader(): JSX.Element;
+    title(): JSX.Element;
+    hideTitle(): boolean;
+    children?: JSX.Element;
+}
+
 export abstract class PageWithHeader<TLocationProps>
     extends React.Component<PageProperties<TLocationProps>, undefined>
-    implements IPageWithParent {
+    implements IPageWithParent, PageParts {
 
     title(): JSX.Element {
         return <span>{this.name()}</span>;

@@ -1,10 +1,10 @@
 import * as React from "react";
 import { PageHeader } from "./PageHeader";
 import { PageArticle } from "./PageArticle";
-import { PageWithHeader, PageProperties } from "../../../shared/components/PageWithHeader/PageWithHeader";
+import { PageParts } from "../../../shared/components/PageWithHeader/PageWithHeader";
 
 interface PageProps {
-    page: PageWithHeader<any>;
+    page: PageParts;
 }
 
 export class Page extends React.Component<PageProps, undefined> {
