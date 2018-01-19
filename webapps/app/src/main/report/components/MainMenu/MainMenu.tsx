@@ -9,12 +9,6 @@ import { Page } from "../../../shared/components/PageWithHeader/Page";
 const menuStyles = require("./MainMenu.css");
 
 export class MainMenu extends ReportingPageWithHeader<undefined> {
-    componentDidMount() {
-        setTimeout(()=> {
-            this.load();
-        });
-    }
-
     load() {
         reportStore.fetchReports().catch(doNothing).then(() => {
             super.load();

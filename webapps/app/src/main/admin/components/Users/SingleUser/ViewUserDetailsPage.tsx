@@ -15,12 +15,6 @@ export interface UserDetailsPageProps {
 }
 
 export class ViewUserDetailsPage extends AdminPageWithHeader<UserDetailsPageProps> {
-    componentDidMount() {
-        setTimeout(()=> {
-            this.load();
-        });
-    }
-
     load() {
         userStore.fetchUsers().catch(doNothing).then(() => {
             userActions.setCurrentUser(this.props.location.params.username);
