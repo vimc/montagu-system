@@ -41,7 +41,7 @@ describe("GroupMembersContent", () => {
             ready: true,
             users: [a, b, c],
             members: [a, b],
-            isAdmin: true
+            canManageGroupMembers: true
         });
     });
 
