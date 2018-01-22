@@ -4,6 +4,7 @@ import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.verifyZeroInteractions
 import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.mockito.internal.verification.Times
 import org.vaccineimpact.api.app.errors.OperationNotAllowedError
@@ -14,6 +15,7 @@ import org.vaccineimpact.api.app.repositories.burdenestimates.StochasticBurdenEs
 import org.vaccineimpact.api.app.repositories.jooq.JooqBurdenEstimateRepository
 import org.vaccineimpact.api.databaseTests.tests.BurdenEstimateRepositoryTests
 import org.vaccineimpact.api.db.JooqContext
+import org.vaccineimpact.api.db.Tables.BURDEN_ESTIMATE_SET
 
 class ClearBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
 {
@@ -38,6 +40,19 @@ class ClearBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
             repo.clearBurdenEstimateSet(setId, groupId, touchstoneId, scenarioId)
             verify(stochastic, Times(1)).clearEstimateSet(setId)
             verifyZeroInteractions(central)
+        }
+    }
+
+    @Test
+    fun `clearing changes status back to empty`()
+    {
+        val setId = withDatabase { setupDatabaseWithBurdenEstimateSet(it, status = "partial") }
+        withRepo { repo ->
+            repo.clearBurdenEstimateSet(setId, groupId, touchstoneId, scenarioId)
+        }
+        withDatabase { db ->
+            val record = db.dsl.fetchOne(BURDEN_ESTIMATE_SET, BURDEN_ESTIMATE_SET.ID.eq(setId))
+            assertThat(record.status).isEqualTo("empty")
         }
     }
 

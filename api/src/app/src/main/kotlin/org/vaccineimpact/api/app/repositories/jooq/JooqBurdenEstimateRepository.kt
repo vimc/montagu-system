@@ -332,6 +332,10 @@ class JooqBurdenEstimateRepository(
             throw OperationNotAllowedError("You cannot clear a burden estimate set which is marked as 'complete'.")
         }
 
+        // We do this first, as this change will be rolled back if the annex
+        // changes fail, but the reverse is not true
+        changeBurdenEstimateStatus(setId, BurdenEstimateSetStatus.EMPTY)
+
         val type = set.type.type
         if (type == BurdenEstimateSetTypeCode.STOCHASTIC)
         {
