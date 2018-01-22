@@ -7,6 +7,8 @@ import org.vaccineimpact.api.app.errors.DatabaseContentsError
 import org.vaccineimpact.api.app.errors.OperationNotAllowedError
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.repositories.*
+import org.vaccineimpact.api.app.repositories.burdenestimates.CentralBurdenEstimateWriter
+import org.vaccineimpact.api.app.repositories.burdenestimates.StochasticBurdenEstimateWriter
 import org.vaccineimpact.api.app.repositories.jooq.mapping.BurdenMappingHelper
 import org.vaccineimpact.api.db.AnnexJooqContext
 import org.vaccineimpact.api.db.ShortlivedAnnexContext
@@ -29,15 +31,15 @@ class JooqBurdenEstimateRepository(
         override val touchstoneRepository: TouchstoneRepository,
         private val modellingGroupRepository: ModellingGroupRepository,
         private val mapper: BurdenMappingHelper = BurdenMappingHelper(),
-        centralBurdenEstimateWriter: BurdenEstimateWriter? = null,
+        centralBurdenEstimateWriter: CentralBurdenEstimateWriter? = null,
         stochasticBurdenEstimateWriter: StochasticBurdenEstimateWriter? = null
 ) : JooqRepository(dsl), BurdenEstimateRepository
 {
-    private val centralBurdenEstimateWriter: BurdenEstimateWriter = centralBurdenEstimateWriter ?:
-            BurdenEstimateWriter(dsl)
+    private val centralBurdenEstimateWriter: CentralBurdenEstimateWriter = centralBurdenEstimateWriter
+            ?: CentralBurdenEstimateWriter(dsl)
 
-    private val stochasticBurdenEstimateWriter: StochasticBurdenEstimateWriter = stochasticBurdenEstimateWriter ?:
-            StochasticBurdenEstimateWriter(dsl)
+    private val stochasticBurdenEstimateWriter: StochasticBurdenEstimateWriter = stochasticBurdenEstimateWriter
+            ?: StochasticBurdenEstimateWriter(dsl)
 
     override fun getModelRunParameterSets(groupId: String, touchstoneId: String): List<ModelRunParameterSet>
     {
@@ -175,7 +177,7 @@ class JooqBurdenEstimateRepository(
                 .fetch()
                 .map { mapper.mapModelRunParameter(it) }
                 .groupBy { it.run_id }
-                .map { mapper.mapModelRun(it.key, it.value)}
+                .map { mapper.mapModelRun(it.key, it.value) }
                 .asSequence()
     }
 

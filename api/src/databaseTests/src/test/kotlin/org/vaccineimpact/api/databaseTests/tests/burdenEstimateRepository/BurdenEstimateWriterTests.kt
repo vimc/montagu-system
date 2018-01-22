@@ -6,8 +6,8 @@ import org.vaccineimpact.api.app.errors.DatabaseContentsError
 import org.vaccineimpact.api.app.errors.InconsistentDataError
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.errors.UnknownRunIdError
-import org.vaccineimpact.api.app.repositories.BurdenEstimateWriter
-import org.vaccineimpact.api.app.repositories.StochasticBurdenEstimateWriter
+import org.vaccineimpact.api.app.repositories.burdenestimates.CentralBurdenEstimateWriter
+import org.vaccineimpact.api.app.repositories.burdenestimates.StochasticBurdenEstimateWriter
 import org.vaccineimpact.api.databaseTests.tests.BurdenEstimateRepositoryTests
 import org.vaccineimpact.api.db.Tables
 import org.vaccineimpact.api.db.direct.addBurdenEstimateSet
@@ -52,7 +52,7 @@ class BurdenEstimateWriterTests : BurdenEstimateRepositoryTests()
     {
         val setId = createCentralSetWithoutModelRuns()
         withDatabase { db ->
-            val sut = BurdenEstimateWriter(db.dsl)
+            val sut = CentralBurdenEstimateWriter(db.dsl)
 
             sut.addEstimatesToSet(setId, data(), diseaseId)
             checkBurdenEstimates(db, setId)
@@ -80,7 +80,7 @@ class BurdenEstimateWriterTests : BurdenEstimateRepositoryTests()
         withDatabase { db ->
             val data = data(modelRunData.externalIds)
 
-            val sut = BurdenEstimateWriter(db.dsl)
+            val sut = CentralBurdenEstimateWriter(db.dsl)
             sut.addEstimatesToSet(setId, data, diseaseId)
             checkBurdenEstimates(db, setId)
             checkModelRuns(db, modelRunData)
@@ -94,7 +94,7 @@ class BurdenEstimateWriterTests : BurdenEstimateRepositoryTests()
         withDatabase { db ->
             val badData = data().map { it.copy(disease = "YF") }
 
-            val sut = BurdenEstimateWriter(db.dsl)
+            val sut = CentralBurdenEstimateWriter(db.dsl)
 
             Assertions.assertThatThrownBy {
                 sut.addEstimatesToSet(setId, badData, diseaseId)
@@ -109,7 +109,7 @@ class BurdenEstimateWriterTests : BurdenEstimateRepositoryTests()
         withDatabase { db ->
             val badData = data().map { it.copy(country = "FAKE") }
 
-            val sut = BurdenEstimateWriter(db.dsl)
+            val sut = CentralBurdenEstimateWriter(db.dsl)
 
             Assertions.assertThatThrownBy {
                 sut.addEstimatesToSet(setId, badData, diseaseId)
@@ -127,7 +127,7 @@ class BurdenEstimateWriterTests : BurdenEstimateRepositoryTests()
             db.dsl.deleteFrom(Tables.BURDEN_OUTCOME).where(Tables.BURDEN_OUTCOME.CODE.eq("cohort_size")).execute()
             val badData = data().map { it.copy(country = "FAKE") }
 
-            val sut = BurdenEstimateWriter(db.dsl)
+            val sut = CentralBurdenEstimateWriter(db.dsl)
 
             Assertions.assertThatThrownBy {
                 sut.addEstimatesToSet(setId, badData, diseaseId)
@@ -143,7 +143,7 @@ class BurdenEstimateWriterTests : BurdenEstimateRepositoryTests()
         withDatabase { db ->
             val badData = data(listOf("bad-id-1", "bad-id-2"))
 
-            val sut = BurdenEstimateWriter(db.dsl)
+            val sut = CentralBurdenEstimateWriter(db.dsl)
 
             Assertions.assertThatThrownBy {
                 sut.addEstimatesToSet(setId, badData, diseaseId)
@@ -163,7 +163,7 @@ class BurdenEstimateWriterTests : BurdenEstimateRepositoryTests()
         }
         withDatabase { db ->
             val data = data(modelRunData.externalIds)
-            val sut = BurdenEstimateWriter(db.dsl)
+            val sut = CentralBurdenEstimateWriter(db.dsl)
 
             Assertions.assertThatThrownBy {
                 sut.addEstimatesToSet(setId, data, diseaseId)

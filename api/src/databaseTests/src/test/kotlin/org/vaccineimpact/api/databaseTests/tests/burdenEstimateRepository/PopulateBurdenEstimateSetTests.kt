@@ -6,8 +6,9 @@ import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
 import org.vaccineimpact.api.app.errors.OperationNotAllowedError
 import org.vaccineimpact.api.app.errors.UnknownObjectError
-import org.vaccineimpact.api.app.repositories.BurdenEstimateWriter
-import org.vaccineimpact.api.app.repositories.StochasticBurdenEstimateWriter
+import org.vaccineimpact.api.app.repositories.burdenestimates.BurdenEstimateWriter
+import org.vaccineimpact.api.app.repositories.burdenestimates.CentralBurdenEstimateWriter
+import org.vaccineimpact.api.app.repositories.burdenestimates.StochasticBurdenEstimateWriter
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.direct.addBurdenEstimateSet
 
@@ -74,7 +75,7 @@ class PopulateBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
     @Test
     fun `uses central estimate writer when set type is central`()
     {
-        val mockCentralEstimateWriter = mock<BurdenEstimateWriter>()
+        val mockCentralEstimateWriter = mock<CentralBurdenEstimateWriter>()
         val mockStochasticEstimateWriter = mock<StochasticBurdenEstimateWriter>()
         withDatabase { db ->
             setupDatabase(db)
@@ -91,7 +92,7 @@ class PopulateBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
     @Test
     fun `uses stochastic estimate writer when set type is stochastic`()
     {
-        val mockCentralEstimateWriter = mock<BurdenEstimateWriter>()
+        val mockCentralEstimateWriter = mock<CentralBurdenEstimateWriter>()
         val mockStochasticEstimateWriter = mock<StochasticBurdenEstimateWriter>()
         withDatabase { db ->
             setupDatabase(db)

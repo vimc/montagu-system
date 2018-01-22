@@ -1,4 +1,4 @@
-package org.vaccineimpact.api.app.repositories
+package org.vaccineimpact.api.app.repositories.burdenestimates
 
 import org.jooq.DSLContext
 import org.jooq.TableField
@@ -11,59 +11,17 @@ import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.errors.UnknownRunIdError
 import org.vaccineimpact.api.db.*
 import org.vaccineimpact.api.models.BurdenEstimateWithRunId
-import java.io.BufferedInputStream
-import java.io.OutputStream
-import java.io.PipedInputStream
-import java.io.PipedOutputStream
+import java.io.*
 import java.math.BigDecimal
 import kotlin.concurrent.thread
 
-open class StochasticBurdenEstimateWriter(
-        readDatabaseDSL: DSLContext,
-        writeDatabaseDSLPromise: CloseableContext = ShortlivedAnnexContext()
-) : BurdenEstimateWriter(readDatabaseDSL, writeDatabaseDSLPromise, true)
-
-open class BurdenEstimateWriter(
+abstract class BurdenEstimateWriter(
         private val readDatabaseDSL: DSLContext,
-        private val writeDatabaseDSLPromise: CloseableContext = AmbientDSLContext(readDatabaseDSL),
-        stochastic: Boolean = false)
+        private val writeDatabaseDSLSource: CloseableContext
+)
 {
-
-    private val table: TableImpl<*> = if (stochastic)
-    {
-        Tables.BURDEN_ESTIMATE_STOCHASTIC
-    }
-    else
-    {
-        Tables.BURDEN_ESTIMATE
-    }
-
-    private val fields: List<TableField<*, *>> = if (stochastic)
-    {
-        val t = Tables.BURDEN_ESTIMATE_STOCHASTIC
-        listOf(
-                t.BURDEN_ESTIMATE_SET,
-                t.MODEL_RUN,
-                t.COUNTRY,
-                t.YEAR,
-                t.AGE,
-                t.BURDEN_OUTCOME,
-                t.VALUE
-        )
-    }
-    else
-    {
-        val t = Tables.BURDEN_ESTIMATE
-        listOf(
-                t.BURDEN_ESTIMATE_SET,
-                t.MODEL_RUN,
-                t.COUNTRY,
-                t.YEAR,
-                t.AGE,
-                t.BURDEN_OUTCOME,
-                t.VALUE
-        )
-    }
+    protected abstract val table: TableImpl<*>
+    protected abstract val fields: List<TableField<*, *>>
 
     open fun addEstimatesToSet(setId: Int, estimates: Sequence<BurdenEstimateWithRunId>, expectedDisease: String)
     {
@@ -71,8 +29,7 @@ open class BurdenEstimateWriter(
         val outcomeLookup = getOutcomesAsLookup()
         val modelRuns = getModelRunsAsLookup(setId)
         val modelRunParameterId = getModelRunParameterSetId(setId)
-        writeDatabaseDSLPromise.inside { writeDatabaseDSL ->
-
+        writeDatabaseDSLSource.inside { writeDatabaseDSL ->
             // The only foreign keys are:
             // * burden_estimate_set, which is the same for every row, and it's the one we just created and know exists
             // * country, which we check below, per row of the CSV (and each row represents multiple rows in the database
@@ -107,9 +64,9 @@ open class BurdenEstimateWriter(
         }
     }
 
-    private fun writeCopyData(outcomeLookup: Map<String, Int>, countries: HashSet<String> ,modelRuns: Map<String, Int>, modelRunParameterSetId: Int?,
-                      stream: OutputStream, estimates: Sequence<BurdenEstimateWithRunId>,
-                      expectedDisease: String, setId: Int
+    private fun writeCopyData(outcomeLookup: Map<String, Int>, countries: HashSet<String>, modelRuns: Map<String, Int>, modelRunParameterSetId: Int?,
+                              stream: OutputStream, estimates: Sequence<BurdenEstimateWithRunId>,
+                              expectedDisease: String, setId: Int
     )
     {
         val cohortSizeId = outcomeLookup["cohort_size"]
