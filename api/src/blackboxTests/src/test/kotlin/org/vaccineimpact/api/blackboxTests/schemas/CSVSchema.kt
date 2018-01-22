@@ -10,7 +10,7 @@ class CSVSchema(schemaFileName: String) : Schema
     private val specification: CSVSpecification = parseSchema(schemaFileName)
 
     override val validator: Validator
-        get() = throw Exception("CSV only responses cannot communicate errors")
+        get() = throw Exception("Only JSON responses can communicate errors")
 
     override fun validateRequest(request: String)
     {

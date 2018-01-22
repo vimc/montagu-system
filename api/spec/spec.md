@@ -1139,6 +1139,16 @@ In a future version of the API, burden estimate sets will always stay in the
 `partial` state after population, the `keepOpen` parameter will be removed, 
 and all clients will have to explicitly mark the set as `complete` via another
 endpoint. Clients should begin following that scheme now.
+
+## POST /modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}/{scenario-id}/estimate-sets/{set-id}/actions/clear/
+Deletes all burden estimates from an burden estimate set, leaving metadata
+unchanged. This can only be invoked if:
+
+* The set status is `empty` or `partial`
+* The touchstone is `open`
+* The relevant responsibility set is `incomplete`
+
+Required permissions: Scoped to modelling group: `estimates.write`, `responsibilities.read`.
        
 # Modelling groups
 ## GET /modelling-groups/

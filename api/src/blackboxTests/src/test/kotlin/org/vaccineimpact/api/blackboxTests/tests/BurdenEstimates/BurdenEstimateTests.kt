@@ -37,10 +37,17 @@ abstract class BurdenEstimateTests : DatabaseTest()
         return ReturnedIds(responsibilityId, modelVersionId, setId)
     }
 
-    protected fun setUpWithBurdenEstimateSet(db: JooqContext): Int
+    protected fun setUpWithBurdenEstimateSet(db: JooqContext, setId: Int? = null, status: String = "empty"): Int
     {
         val returnedIds = setUp(db)
-        return db.addBurdenEstimateSet(returnedIds.responsibilityId, returnedIds.modelVersionId, TestUserHelper.username)
+        TestUserHelper.setupTestUser()
+        return db.addBurdenEstimateSet(
+                returnedIds.responsibilityId,
+                returnedIds.modelVersionId,
+                TestUserHelper.username,
+                status = status,
+                setId = setId
+        )
     }
 
     protected fun setUpWithStochasticBurdenEstimateSet(db: JooqContext): Int

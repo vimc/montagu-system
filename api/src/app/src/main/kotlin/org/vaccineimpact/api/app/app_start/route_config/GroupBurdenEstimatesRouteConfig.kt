@@ -48,6 +48,11 @@ object GroupBurdenEstimatesRouteConfig : RouteConfig
                     NewStyleOneTimeLinkController::class,
                     "getTokenForPopulateBurdenEstimateSet")
                     .json()
+                    .secure(writePermissions),
+
+            Endpoint("$baseUrl/:set-id/actions/clear/",
+                    controller, "clearBurdenEstimateSet", method = HttpMethod.post)
+                    .json()
                     .secure(writePermissions)
     )
 }
