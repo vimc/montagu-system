@@ -9,6 +9,7 @@ import org.vaccineimpact.api.security.tests.AddUserToGroupTests
 import org.vaccineimpact.api.security.tests.GroupsTests
 import org.vaccineimpact.api.security.tests.QuestionTests
 import org.vaccineimpact.api.test_helpers.DatabaseCreationHelper
+import org.vaccineimpact.api.test_helpers.DatabaseCreationHelper.Companion.main
 
 // Keep these sorted alphabetically, for consistency
 @RunWith(Suite::class)
@@ -26,14 +27,16 @@ class UserCLITestSuite
         @JvmStatic
         fun createTemplateDatabase()
         {
-            DatabaseCreationHelper.createTemplateFromDatabase()
+            DatabaseCreationHelper.main.createTemplateFromDatabase()
+            DatabaseCreationHelper.annex.createTemplateFromDatabase()
         }
 
         @AfterClass
         @JvmStatic
         fun restoreDatabaseFromTemplate()
         {
-            DatabaseCreationHelper.restoreDatabaseFromTemplate()
+            DatabaseCreationHelper.main.restoreDatabaseFromTemplate()
+            DatabaseCreationHelper.annex.restoreDatabaseFromTemplate()
         }
     }
 }

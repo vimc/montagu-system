@@ -10,6 +10,8 @@ import org.vaccineimpact.api.test_helpers.DatabaseTest
 
 class AnnexTests : DatabaseTest()
 {
+    override val usesAnnex = true
+
     @Test
     fun `can connect to annex`()
     {

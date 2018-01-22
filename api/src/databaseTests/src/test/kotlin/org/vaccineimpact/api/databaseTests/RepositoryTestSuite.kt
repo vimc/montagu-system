@@ -45,14 +45,16 @@ class RepositoryTestSuite
         @JvmStatic
         fun createTemplateDatabase()
         {
-            DatabaseCreationHelper.createTemplateFromDatabase()
+            DatabaseCreationHelper.main.createTemplateFromDatabase()
+            DatabaseCreationHelper.annex.createTemplateFromDatabase()
         }
 
         @AfterClass
         @JvmStatic
         fun restoreDatabaseFromTemplate()
         {
-            DatabaseCreationHelper.restoreDatabaseFromTemplate()
+            DatabaseCreationHelper.main.restoreDatabaseFromTemplate()
+            DatabaseCreationHelper.annex.restoreDatabaseFromTemplate()
         }
     }
 }

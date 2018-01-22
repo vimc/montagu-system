@@ -5,10 +5,7 @@ import org.junit.BeforeClass
 import org.junit.runner.RunWith
 import org.junit.runners.Suite
 import org.vaccineimpact.api.blackboxTests.tests.*
-import org.vaccineimpact.api.blackboxTests.tests.BurdenEstimates.CreateBurdenEstimateTests
-import org.vaccineimpact.api.blackboxTests.tests.BurdenEstimates.ModelRunParameterTests
-import org.vaccineimpact.api.blackboxTests.tests.BurdenEstimates.RetrieveBurdenEstimateTests
-import org.vaccineimpact.api.blackboxTests.tests.BurdenEstimates.PopulateBurdenEstimateTests
+import org.vaccineimpact.api.blackboxTests.tests.BurdenEstimates.*
 import org.vaccineimpact.api.test_helpers.DatabaseCreationHelper
 
 // Keep these sorted alphabetically, for consistency
@@ -42,14 +39,16 @@ class BlackboxTestsSuite
         @JvmStatic
         fun createTemplateDatabase()
         {
-            DatabaseCreationHelper.createTemplateFromDatabase()
+            DatabaseCreationHelper.main.createTemplateFromDatabase()
+            DatabaseCreationHelper.annex.createTemplateFromDatabase()
         }
 
         @AfterClass
         @JvmStatic
         fun restoreDatabaseFromTemplate()
         {
-            DatabaseCreationHelper.restoreDatabaseFromTemplate()
+            DatabaseCreationHelper.main.restoreDatabaseFromTemplate()
+            DatabaseCreationHelper.annex.restoreDatabaseFromTemplate()
         }
     }
 }
