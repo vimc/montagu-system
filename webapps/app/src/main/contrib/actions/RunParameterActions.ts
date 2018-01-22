@@ -33,12 +33,9 @@ class RunParameterActions extends AbstractActions implements Actions {
         return parameterSets
     }
     fetchToken(groupId: string, touchstoneId: string, setId: number) {
-        return (dispatch: any) => {
-            dispatch();
-            fetchToken(groupId, touchstoneId, setId) .then((token: string) => {
-                return this.receiveToken(setId, token);
-            })
-        }
+        return    fetchToken(groupId, touchstoneId, setId) .then((token: string) => {
+            return this.receiveToken(setId, token);
+        })
     }
 }
 
