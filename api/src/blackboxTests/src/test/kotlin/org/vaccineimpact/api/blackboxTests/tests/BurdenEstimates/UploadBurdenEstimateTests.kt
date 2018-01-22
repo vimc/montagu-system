@@ -224,6 +224,21 @@ class UploadBurdenEstimateTests : BurdenEstimateTests()
         }
     }
 
+    @Test
+    fun `cannot populate burden estimate set if duplicate rows`()
+    {
+        TestUserHelper.setupTestUser()
+        val setId = JooqContext().use {
+            setUpWithBurdenEstimateSet(it)
+        }
+        val token = TestUserHelper.getToken(requiredWritePermissions, includeCanLogin = true)
+        val helper = RequestHelper()
+        val response = helper.post("$setUrl/$setId/", duplicateCsvData, token = token)
+        JSONValidator()
+                .validateError(response.text, "duplicate-key:burden_estimate_set, country, year, age, burden_outcome")
+
+    }
+
     private fun metadataForCreate() = json {
         obj("type" to obj(
                 "type" to "central-averaged",

@@ -1,7 +1,6 @@
 package org.vaccineimpact.api.app
 
 import com.google.gson.JsonSyntaxException
-import org.bouncycastle.cert.ocsp.Req
 import org.jooq.exception.DataAccessException
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -24,6 +23,9 @@ open class ErrorHandler(private val logger: Logger = LoggerFactory.getLogger(Err
     init
     {
         sparkException<Exception>(this::handleError)
+//        Thread.setDefaultUncaughtExceptionHandler { _: Thread, throwable: Throwable ->
+//            throw throwable
+//        }
     }
 
     open fun logExceptionAndReturnMontaguError(exception: kotlin.Exception, req: Request): MontaguError

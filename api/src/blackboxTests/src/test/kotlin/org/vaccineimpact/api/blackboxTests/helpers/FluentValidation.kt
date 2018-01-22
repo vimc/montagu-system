@@ -70,6 +70,13 @@ data class FluentValidationConfig(
         })
     }
 
+    infix fun andCheckErrorMessage(expectedMessage: String)
+    {
+        this.finalized().runWithCheck({ _: Any, response ->
+            assertThat(response.montaguErrors().first().message.contains(expectedMessage))
+        })
+    }
+
     infix fun andCheckObjectCreation(expectedLocation: String)
         = andCheckObjectCreation(LocationConstraint(expectedLocation))
     infix fun andCheckObjectCreation(expectedLocation: LocationConstraint)

@@ -14,7 +14,16 @@ open class PostgresErrorHandler
 
     open fun handleException(exception: Exception): MontaguError
     {
-        val text = exception.toString()
+        var text = exception.toString()
+
+        if (!duplicateKeyRegex.containsMatchIn(text))
+        {
+            text = exception.cause.toString()
+
+            if (!duplicateKeyRegex.containsMatchIn(text)){
+                text = exception.cause?.cause.toString()
+            }
+        }
         if (duplicateKeyRegex.containsMatchIn(text))
         {
             val error = handleDuplicateKeyError(text)
