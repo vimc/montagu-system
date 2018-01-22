@@ -32,15 +32,15 @@ class JooqBurdenEstimateRepository(
         override val touchstoneRepository: TouchstoneRepository,
         private val modellingGroupRepository: ModellingGroupRepository,
         private val mapper: BurdenMappingHelper = BurdenMappingHelper(),
-        centralBurdenEstimateWriter: BurdenEstimateWriter? = null,
+        centralBurdenEstimateWriter: CentralBurdenEstimateWriter? = null,
         stochasticBurdenEstimateWriter: StochasticBurdenEstimateWriter? = null
 ) : JooqRepository(dsl), BurdenEstimateRepository
 {
     private val centralBurdenEstimateWriter: BurdenEstimateWriter = centralBurdenEstimateWriter ?:
             CentralBurdenEstimateWriter(dsl)
 
-    private val stochasticBurdenEstimateWriter: StochasticBurdenEstimateWriter = stochasticBurdenEstimateWriter ?:
-            StochasticBurdenEstimateWriter(dsl)
+    private val stochasticBurdenEstimateWriter: StochasticBurdenEstimateWriter = stochasticBurdenEstimateWriter
+            ?: StochasticBurdenEstimateWriter(dsl)
 
     override fun getModelRunParameterSets(groupId: String, touchstoneId: String): List<ModelRunParameterSet>
     {
@@ -178,7 +178,7 @@ class JooqBurdenEstimateRepository(
                 .fetch()
                 .map { mapper.mapModelRunParameter(it) }
                 .groupBy { it.run_id }
-                .map { mapper.mapModelRun(it.key, it.value)}
+                .map { mapper.mapModelRun(it.key, it.value) }
                 .asSequence()
     }
 

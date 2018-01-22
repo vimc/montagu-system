@@ -74,7 +74,7 @@ class PopulateBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
     @Test
     fun `uses central estimate writer when set type is central`()
     {
-        val mockCentralEstimateWriter = mock<BurdenEstimateWriter>()
+        val mockCentralEstimateWriter = mock<CentralBurdenEstimateWriter>()
         val mockStochasticEstimateWriter = mock<StochasticBurdenEstimateWriter>()
         withDatabase { db ->
             setupDatabase(db)
@@ -91,7 +91,7 @@ class PopulateBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
     @Test
     fun `uses stochastic estimate writer when set type is stochastic`()
     {
-        val mockCentralEstimateWriter = mock<BurdenEstimateWriter>()
+        val mockCentralEstimateWriter = mock<CentralBurdenEstimateWriter>()
         val mockStochasticEstimateWriter = mock<StochasticBurdenEstimateWriter>()
         withDatabase { db ->
             setupDatabase(db)

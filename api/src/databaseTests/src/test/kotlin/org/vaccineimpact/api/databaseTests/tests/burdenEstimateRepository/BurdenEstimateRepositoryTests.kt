@@ -36,8 +36,11 @@ abstract class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRep
         return JooqBurdenEstimateRepository(db.dsl, scenario, touchstone, modellingGroup)
     }
 
-    protected fun makeRepository(db: JooqContext, centralEstimateWriter: BurdenEstimateWriter,
-                                 stochasticBurdenEstimateWriter: StochasticBurdenEstimateWriter): JooqBurdenEstimateRepository
+    protected fun makeRepository(
+            db: JooqContext,
+            centralEstimateWriter: CentralBurdenEstimateWriter,
+            stochasticBurdenEstimateWriter: StochasticBurdenEstimateWriter
+    ): JooqBurdenEstimateRepository
     {
         val scenario = JooqScenarioRepository(db.dsl)
         val touchstone = JooqTouchstoneRepository(db.dsl, scenario)
