@@ -7,7 +7,7 @@ import { AdminLoginPage } from "./AdminLoginPage";
 import { AdminNoRouteFoundPage } from "./AdminNoRouteFoundPage";
 import { ViewAllModellingGroupsPage } from "./ModellingGroups/List/ViewAllModellingGroupsPage";
 import { ViewModellingGroupDetailsPage } from "./ModellingGroups/SingleGroup/Details/ViewModellingGroupDetailsPage";
-import { GroupAdminPage } from "./ModellingGroups/SingleGroup/Admin/GroupAdminPage";
+import { GroupAdminPage } from "./ModellingGroups/SingleGroup/Members/GroupAdminPage";
 import {ViewAllUsersPage} from "./Users/List/ViewAllUsersPage";
 import {ViewUserDetailsPage} from "./Users/SingleUser/ViewUserDetailsPage";
 import { AdminForgottenPasswordPage } from "./AdminForgottenPasswordPage";

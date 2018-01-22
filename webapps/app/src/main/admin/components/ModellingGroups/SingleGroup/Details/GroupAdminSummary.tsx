@@ -1,8 +1,7 @@
 import * as React from "react";
-import { ModellingGroupDetails, User } from "../../../../../shared/models/Generated";
-import { InternalLink } from "../../../../../shared/components/InternalLink";
-import { ListOfUsers } from "../../ListOfUsers";
-import { intersperse } from "../../../../../shared/components/Helpers";
+import {ModellingGroupDetails, User} from "../../../../../shared/models/Generated";
+import {InternalLink} from "../../../../../shared/components/InternalLink";
+import {intersperse} from "../../../../../shared/components/Helpers";
 
 interface Props {
     group: ModellingGroupDetails,

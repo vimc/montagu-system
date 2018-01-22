@@ -4,7 +4,7 @@ import {Sandbox} from "../../../../Sandbox";
 import {userStore} from "../../../../../main/admin/stores/UserStore";
 import {groupStore} from "../../../../../main/admin/stores/GroupStore";
 import {mockLocation} from "../../../../mocks/mocks";
-import {GroupAdminPage} from "../../../../../main/admin/components/ModellingGroups/SingleGroup/Admin/GroupAdminPage";
+import {GroupAdminPage} from "../../../../../main/admin/components/ModellingGroups/SingleGroup/Members/GroupAdminPage";
 import {ModellingGroupDetailsPageProps} from "../../../../../main/admin/components/ModellingGroups/SingleGroup/Details/ViewModellingGroupDetailsPage";
 import {checkAsync} from "../../../../testHelpers";
 import {expectOneAction} from "../../../../actionHelpers";
