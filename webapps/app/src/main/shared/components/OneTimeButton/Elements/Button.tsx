@@ -13,11 +13,17 @@ export class OneTimeButtonButton extends React.Component<OneTimeButtonElement, u
         }
     }
 
+    isReady() {
+        if (this.props.enabled && this.props.token) {
+            return true;
+        }
+    }
+
     render() :JSX.Element {
         return <form action={ this.props.url }>
             <button
                 onClick={ this.props.onClick }
-                disabled={ !this.props.enabled }
+                disabled={ !this.isReady() }
                 type="submit"
             >
                 { this.props.children }

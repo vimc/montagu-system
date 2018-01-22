@@ -18,7 +18,7 @@ export interface OneTimeButtonElement {
     enabled?: boolean;
     onClick?: () =>void;
     token: string;
-    children: JSX.Element;
+    children: string;
 }
 
 export class OneTimeButton extends React.Component<OneTimeButtonProps, any> {
@@ -52,12 +52,11 @@ export class OneTimeButton extends React.Component<OneTimeButtonProps, any> {
     render() :JSX.Element {
         const props = this.props;
         const url = fetcher.fetcher.buildOneTimeLink(props.token);
-        const enabled = props.enabled && props.token != null;
         const OneTimeElement = this.getElement();
 
         return <OneTimeElement
             url={url}
-            enabled={enabled}
+            enabled={this.props.enabled}
             onClick={ this.internalOnClickHandler }
             token={this.props.token}
             children={this.props.children}
