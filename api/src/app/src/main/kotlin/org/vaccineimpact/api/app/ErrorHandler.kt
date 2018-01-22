@@ -1,7 +1,6 @@
 package org.vaccineimpact.api.app
 
 import com.google.gson.JsonSyntaxException
-import org.bouncycastle.cert.ocsp.Req
 import org.jooq.exception.DataAccessException
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
