@@ -48,11 +48,10 @@ class AuthenticationTests : DatabaseTest()
     fun `can set shiny cookie`()
     {
         JooqContext().use {
-            val roleId = it.createRole("report.reviewer", null, "")
-            it.setRolePermissions(roleId, listOf("can-login"))
             it.addUserForTesting(TestUserHelper.username,
                     email = TestUserHelper.email, password = TestUserHelper.defaultPassword)
-            it.ensureUserHasRole(TestUserHelper.username, ReifiedRole("report.reviewer", Scope.Global()))
+            it.ensureUserHasRole(TestUserHelper.username, ReifiedRole("reports-reviewer", Scope.Global()))
+            it.ensureUserHasRole(TestUserHelper.username, ReifiedRole("user", Scope.Global()))
         }
 
         val token = TokenFetcher().getToken(TestUserHelper.email, TestUserHelper.defaultPassword)
