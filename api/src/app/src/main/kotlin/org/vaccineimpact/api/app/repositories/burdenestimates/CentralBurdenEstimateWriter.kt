@@ -22,5 +22,4 @@ open class CentralBurdenEstimateWriter(readDatabaseDSL: DSLContext)
                 t.VALUE
         )
     }
-    override val setField: TableField<*, Int> = Tables.BURDEN_ESTIMATE.BURDEN_ESTIMATE_SET
 }
