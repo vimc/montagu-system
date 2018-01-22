@@ -16,6 +16,6 @@ export class Page extends React.Component<PageProps, undefined> {
             <PageArticle title={page.title()} hideTitle={page.hideTitle()} >
                 { this.props.children }
             </PageArticle>
-         </div>
+         </div>;
     }
 }

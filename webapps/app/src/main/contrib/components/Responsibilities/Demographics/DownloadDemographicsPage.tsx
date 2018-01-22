@@ -45,8 +45,8 @@ export class DownloadDemographicsPage extends ContribPageWithHeader<LocationProp
 
     render(): JSX.Element {
         return <Page page={this}>
-            <DownloadDemographicsContent />;
-        </Page>
+            <DownloadDemographicsContent />
+        </Page>;
     }
 
 }

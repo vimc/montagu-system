@@ -51,6 +51,6 @@ export class ResponsibilityOverviewPage extends ContribPageWithHeader<LocationPr
                 currentTouchstoneId={this.props.location.params.touchstoneId}
             />
             <ResponsibilityOverviewContent />
-        </Page>
+        </Page>;
     }
 }
