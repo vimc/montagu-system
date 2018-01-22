@@ -13,6 +13,8 @@ import org.vaccineimpact.api.db.direct.addBurdenEstimateSet
 
 class PopulateBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
 {
+    override val usesAnnex = true
+
     @Test
     fun `can populate burden estimate set`()
     {
