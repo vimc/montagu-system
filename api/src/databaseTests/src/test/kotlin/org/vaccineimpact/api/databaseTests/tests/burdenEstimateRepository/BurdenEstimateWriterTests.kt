@@ -143,7 +143,7 @@ class BurdenEstimateWriterTests : BurdenEstimateRepositoryTests()
     @Test
     fun `cannot populate burden estimate set if run ID is unknown`()
     {
-        val (setId, modelRunData) = createCentralSetWithModelRuns()
+        val (setId, _) = createCentralSetWithModelRuns()
 
         withDatabase { db ->
             val badData = data(listOf("bad-id-1", "bad-id-2"))

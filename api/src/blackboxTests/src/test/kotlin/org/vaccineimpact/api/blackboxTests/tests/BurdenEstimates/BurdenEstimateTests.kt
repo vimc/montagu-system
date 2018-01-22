@@ -113,6 +113,13 @@ abstract class BurdenEstimateTests : DatabaseTest()
    "Hib3",   1996,    50,     "AGO",       "Angola",          5000,     1000,      NA,    5670
    "Hib3",   1997,    50,     "AGO",       "Angola",          6000,     1200,      NA,    5870
 """
+    val duplicateCsvData = """
+"disease", "year", "age", "country", "country_name", "cohort_size", "deaths", "cases", "dalys"
+   "Hib3",   1996,    50,     "AFG",  "Afghanistan",         10000,     1000,    2000,      NA
+   "Hib3",   1996,    50,     "AFG",  "Afghanistan",         10500,      900,    2000,      NA
+   "Hib3",   1997,    50,     "AGO",       "Angola",          5000,     1000,      NA,    5670
+   "Hib3",   1997,    50,     "AGO",       "Angola",          6000,     1200,      NA,    5870
+"""
     val stochasticCSVData = """
 "disease", "run_id", "year", "age", "country", "country_name", "cohort_size", "deaths", "cases", "dalys"
    "Hib3",      "A",  1996,    50,     "AFG",  "Afghanistan",         10000,     1000,    2000,      NA
