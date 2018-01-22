@@ -14,7 +14,7 @@ export abstract class LogoutComponent extends React.Component<AuthStateBase, und
         if (this.props.loggedIn) {
             return <div className="logout">
                 <div>
-                    Logged in as { this.props.username } |
+                    Logged in as { this.props.username } |&nbsp;
                     <InternalLink href="/" onClick={ this.logout }>
                         Log out
                     </InternalLink>
