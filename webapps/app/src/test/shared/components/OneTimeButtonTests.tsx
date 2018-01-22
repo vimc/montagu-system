@@ -1,7 +1,7 @@
 import * as React from "react";
 import { expect } from "chai";
 import { shallow } from "enzyme";
-import { OneTimeButton } from "../../../main/shared/components/OneTimeButton";
+import { OneTimeButton } from "../../../main/shared/components/OneTimeButton/OneTimeButton";
 import { doNothing } from "../../../main/shared/Helpers";
 import fetcher from "../../../main/shared/sources/Fetcher";
 import { Sandbox } from "../../Sandbox";

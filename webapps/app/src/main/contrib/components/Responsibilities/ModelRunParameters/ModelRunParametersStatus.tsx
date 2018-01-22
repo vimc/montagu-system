@@ -6,7 +6,7 @@ import {longestTimestamp} from "../../../../shared/Helpers";
 import {ModelRunParameterDownloadCertificate} from "./ModelRunParameterDownloadCertificate";
 import {RunParametersState, runParametersStore, TokensMap } from "../../../stores/RunParametersStore";
 import {runParameterActions} from "../../../actions/RunParameterActions";
-import { OneTimeButton } from "../../../../shared/components/OneTimeButton";
+import { OneTimeButton } from "../../../../shared/components/OneTimeButton/OneTimeButton";
 
 interface Props {
     disease: string;
@@ -82,7 +82,9 @@ export class ModelRunParametersStatus extends React.Component<Props, State> {
             const downloadParamsLink = <OneTimeButton
                 token={this.state.tokens[lastUploaded.id]}
                 refreshToken={this.refreshToken(lastUploaded.id)}
-                enabled={!!this.state.tokens[lastUploaded.id]}>
+                enabled={!!this.state.tokens[lastUploaded.id]}
+                element="Link"
+            >
                 Download data set
             </OneTimeButton>;
 

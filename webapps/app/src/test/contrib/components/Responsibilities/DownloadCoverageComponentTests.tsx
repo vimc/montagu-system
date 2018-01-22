@@ -13,7 +13,7 @@ import { Sandbox } from "../../../Sandbox";
 import { expectOneAction } from "../../../actionHelpers";
 import { responsibilityStore } from "../../../../main/contrib/stores/ResponsibilityStore";
 import fetcher from "../../../../main/shared/sources/Fetcher";
-import { TimeBlockerProps } from "../../../../main/shared/components/OneTimeButtonTimeBlocker";
+import { TimeBlockerProps } from "../../../../main/shared/components/OneTimeButton/OneTimeButtonTimeBlocker";
 import { FormatControl } from "../../../../main/contrib/components/Responsibilities/FormatControl";
 
 describe("DownloadCoverageContentComponent", () => {

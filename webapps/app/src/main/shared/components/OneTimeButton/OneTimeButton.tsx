@@ -1,14 +1,24 @@
 import * as React from "react";
-import fetcher from "../sources/Fetcher";
+import fetcher from "../../sources/Fetcher";
 
-import * as loaderAnimation from "../resources/link-loader.gif";
-import "../styles/buttons.scss";
+import { OneTimeButtonButton } from "./Elements/Button";
+import { OneTimeButtonLink } from "./Elements/Link";
+import "../../styles/buttons.scss";
 
 export interface OneTimeButtonProps {
-    token: string
+    token: string;
     enabled?: boolean;
     refreshToken: () => void;
     onClick?: () =>void;
+    element?: string;
+}
+
+export interface OneTimeButtonElement {
+    url: string
+    enabled?: boolean;
+    onClick?: () =>void;
+    token: string;
+    children: JSX.Element;
 }
 
 export class OneTimeButton extends React.Component<OneTimeButtonProps, any> {
@@ -25,12 +35,11 @@ export class OneTimeButton extends React.Component<OneTimeButtonProps, any> {
         setTimeout(this.props.refreshToken);
     }
 
-    renderAnimation() {
-        if (this.props.enabled && this.props.token == null) {
-            return <img src={ loaderAnimation } />;
-        } else {
-            return null;
+    getElement() :any {
+        if (this.props.element === 'Link') {
+            return OneTimeButtonLink;
         }
+        return OneTimeButtonButton;
     }
 
     internalOnClickHandler() {
@@ -40,19 +49,18 @@ export class OneTimeButton extends React.Component<OneTimeButtonProps, any> {
         }
     }
 
-    render() {
+    render() :JSX.Element {
         const props = this.props;
         const url = fetcher.fetcher.buildOneTimeLink(props.token);
         const enabled = props.enabled && props.token != null;
-        return <form action={ url }>
-            <button
-                onClick={ this.internalOnClickHandler }
-                disabled={ !enabled }
-                type="submit"
-            >
-                { this.props.children }
-            </button>
-            { this.renderAnimation() }
-        </form>;
+        const OneTimeElement = this.getElement();
+
+        return <OneTimeElement
+            url={url}
+            enabled={enabled}
+            onClick={ this.internalOnClickHandler }
+            token={this.props.token}
+            children={this.props.children}
+        />;
     }
 }

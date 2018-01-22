@@ -19,6 +19,7 @@ describe('ModelRunParameterStatus', () => {
         alt.bootstrap(JSON.stringify({
             RunParametersStore: {
                 parameterSets: sets,
+                oneTimeTokens: {1: 'testtoken'}
             }
         }));
 

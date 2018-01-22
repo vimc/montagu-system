@@ -9,7 +9,7 @@ import {
 } from "../../../../../main/contrib/components/Responsibilities/Demographics/DownloadDemographicsContent";
 import { shallow } from "enzyme";
 import { DemographicOptions } from "../../../../../main/contrib/components/Responsibilities/Demographics/DemographicOptions";
-import { TimeBlockerProps } from "../../../../../main/shared/components/OneTimeButtonTimeBlocker";
+import { TimeBlockerProps } from "../../../../../main/shared/components/OneTimeButton/OneTimeButtonTimeBlocker";
 import { Sandbox } from "../../../../Sandbox";
 import { expectOneAction } from "../../../../actionHelpers";
 
