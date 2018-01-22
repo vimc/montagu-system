@@ -4,7 +4,7 @@ import org.assertj.core.api.Assertions
 import org.jooq.Record
 import org.jooq.Result
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
-import org.vaccineimpact.api.app.repositories.burdenestimates.BurdenEstimateWriter
+import org.vaccineimpact.api.app.repositories.burdenestimates.CentralBurdenEstimateWriter
 import org.vaccineimpact.api.app.repositories.burdenestimates.StochasticBurdenEstimateWriter
 import org.vaccineimpact.api.app.repositories.jooq.JooqBurdenEstimateRepository
 import org.vaccineimpact.api.app.repositories.jooq.JooqModellingGroupRepository
