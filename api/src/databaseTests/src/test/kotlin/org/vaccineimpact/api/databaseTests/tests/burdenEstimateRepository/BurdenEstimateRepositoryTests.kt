@@ -4,7 +4,7 @@ import org.assertj.core.api.Assertions
 import org.jooq.Record
 import org.jooq.Result
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
-import org.vaccineimpact.api.app.repositories.burdenestimates.CentralBurdenEstimateWriter
+import org.vaccineimpact.api.app.repositories.burdenestimates.BurdenEstimateWriter
 import org.vaccineimpact.api.app.repositories.burdenestimates.StochasticBurdenEstimateWriter
 import org.vaccineimpact.api.app.repositories.jooq.JooqBurdenEstimateRepository
 import org.vaccineimpact.api.app.repositories.jooq.JooqModellingGroupRepository
@@ -17,10 +17,7 @@ import org.vaccineimpact.api.db.Tables
 import org.vaccineimpact.api.db.direct.*
 import org.vaccineimpact.api.db.fromJoinPath
 import org.vaccineimpact.api.db.toDecimal
-import org.vaccineimpact.api.models.BurdenEstimateSetType
-import org.vaccineimpact.api.models.BurdenEstimateSetTypeCode
-import org.vaccineimpact.api.models.BurdenEstimateWithRunId
-import org.vaccineimpact.api.models.CreateBurdenEstimateSet
+import org.vaccineimpact.api.models.*
 import java.math.BigDecimal
 import java.time.LocalDateTime
 import java.time.Month
@@ -85,6 +82,17 @@ abstract class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRep
         return ReturnedIds(modelVersionId, responsibilityId, setId)
     }
 
+    protected fun setupDatabaseWithBurdenEstimateSet(
+            db: JooqContext,
+            status: String = "empty",
+            type: String = "central-single-run"
+    ): Int
+    {
+        val ids = setupDatabase(db)
+        return db.addBurdenEstimateSet(ids.responsibility, ids.modelVersion!!, username,
+                status = status, setType = type)
+    }
+
     protected fun setupDatabaseWithModelRunParameterSet(db: JooqContext,
                                                         responsibilitySetStatus: String = "incomplete"): ReturnedIds
     {
@@ -129,9 +137,9 @@ abstract class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRep
     }
 
     protected fun checkBurdenEstimateSetMetadata(db: JooqContext,
-                                               setId: Int,
-                                               returnedIds: ReturnedIds,
-                                               expectedStatus: String)
+                                                 setId: Int,
+                                                 returnedIds: ReturnedIds,
+                                                 expectedStatus: String)
             : Int
     {
         val t = Tables.BURDEN_ESTIMATE_SET
@@ -170,7 +178,7 @@ abstract class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRep
         }
     }
 
-    private fun getEstimatesInOrder(db: JooqContext): Result<Record>
+    protected fun getEstimatesInOrder(db: JooqContext): Result<Record>
     {
         // We order the rows coming back so they are in a guaranteed order. This allows
         // us to write simple hardcoded expectations.
@@ -260,7 +268,7 @@ abstract class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRep
     }
 
     protected fun checkStochasticRecord(record: Record, setId: Int,
-                                      year: Int, age: Int, country: String, outcomeCode: String, outcomeValue: BigDecimal)
+                                        year: Int, age: Int, country: String, outcomeCode: String, outcomeValue: BigDecimal)
     {
         val t = Tables.BURDEN_ESTIMATE_STOCHASTIC
         Assertions.assertThat(record[t.BURDEN_ESTIMATE_SET]).isEqualTo(setId)

@@ -22,6 +22,7 @@ abstract class BurdenEstimateWriter(
 {
     protected abstract val table: TableImpl<*>
     protected abstract val fields: List<TableField<*, *>>
+    protected abstract val setField: TableField<*, Int>
 
     open fun addEstimatesToSet(setId: Int, estimates: Sequence<BurdenEstimateWithRunId>, expectedDisease: String)
     {
@@ -61,6 +62,13 @@ abstract class BurdenEstimateWriter(
                     writeToDatabaseThread.join()
                 }
             }
+        }
+    }
+
+    open fun clearEstimateSet(setId: Int)
+    {
+        writeDatabaseDSLSource.inside { dsl ->
+            dsl.deleteFrom(table).where(setField.eq(setId)).execute()
         }
     }
 

@@ -1,6 +1,7 @@
 package org.vaccineimpact.api.databaseTests.tests.burdenEstimateRepository
 
 import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.vaccineimpact.api.app.errors.DatabaseContentsError
 import org.vaccineimpact.api.app.errors.InconsistentDataError
@@ -9,8 +10,12 @@ import org.vaccineimpact.api.app.errors.UnknownRunIdError
 import org.vaccineimpact.api.app.repositories.burdenestimates.CentralBurdenEstimateWriter
 import org.vaccineimpact.api.app.repositories.burdenestimates.StochasticBurdenEstimateWriter
 import org.vaccineimpact.api.databaseTests.tests.BurdenEstimateRepositoryTests
+import org.vaccineimpact.api.db.AnnexJooqContext
 import org.vaccineimpact.api.db.Tables
+import org.vaccineimpact.api.db.direct.addBurdenEstimate
 import org.vaccineimpact.api.db.direct.addBurdenEstimateSet
+import org.vaccineimpact.api.db.direct.addCountries
+import org.vaccineimpact.api.db.direct.addStochasticBurdenEstimate
 
 class BurdenEstimateWriterTests : BurdenEstimateRepositoryTests()
 {
@@ -168,6 +173,42 @@ class BurdenEstimateWriterTests : BurdenEstimateRepositoryTests()
             Assertions.assertThatThrownBy {
                 sut.addEstimatesToSet(setId, data, diseaseId)
             }.isInstanceOf(UnknownRunIdError::class.java)
+        }
+    }
+
+    @Test
+    fun `can clear central burden estimate set`()
+    {
+        val setId = 1
+        withDatabase { db ->
+            val returnedIds = setupDatabase(db)
+            db.addBurdenEstimateSet(returnedIds.responsibility, returnedIds.modelVersion!!, username, setId = setId)
+            db.addCountries(listOf("ABC"))
+            db.addBurdenEstimate(setId, "ABC")
+        }
+        withDatabase { db ->
+            val sut = CentralBurdenEstimateWriter(db.dsl)
+            sut.clearEstimateSet(setId)
+            assertThat(getEstimatesInOrder(db)).isEmpty()
+        }
+    }
+
+    @Test
+    fun `can clear stochastic burden estimate set`()
+    {
+        val setId = 1
+        withDatabase { db ->
+            val returnedIds = setupDatabase(db)
+            db.addBurdenEstimateSet(returnedIds.responsibility, returnedIds.modelVersion!!, username, setId = setId)
+            db.addCountries(listOf("ABC"))
+            AnnexJooqContext().use { annex ->
+                annex.addStochasticBurdenEstimate(db, setId, "ABC")
+            }
+        }
+        withDatabase { db ->
+            val sut = CentralBurdenEstimateWriter(db.dsl)
+            sut.clearEstimateSet(setId)
+            assertThat(getEstimatesInOrder(db)).isEmpty()
         }
     }
 
