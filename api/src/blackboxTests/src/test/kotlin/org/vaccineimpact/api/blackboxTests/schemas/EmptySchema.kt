@@ -5,8 +5,6 @@ import org.vaccineimpact.api.validateSchema.Validator
 
 object EmptySchema : Schema
 {
-    override val validator: Validator = EmptyValidator()
-
     override fun validateResponse(response: String, contentType: String?)
     {
         assertThat(response).isBlank()
@@ -17,16 +15,6 @@ object EmptySchema : Schema
         assertThat(request).isBlank()
     }
 
-    class EmptyValidator : Validator
-    {
-        override fun validateError(response: String, expectedErrorCode: String?, expectedErrorText: String?, assertionText: String?)
-        {
-            assertThat(response).isBlank()
-        }
-
-        override fun validateSuccess(response: String, assertionText: String?)
-        {
-            assertThat(response).isBlank()
-        }
-    }
+    override val validator: Validator
+        get() = throw Exception("Only JSON responses can communicate errors")
 }
