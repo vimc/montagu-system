@@ -11,6 +11,8 @@ import spark.route.HttpMethod
 
 class PopulateBurdenEstimateTests : BurdenEstimateTests()
 {
+    override val usesAnnex = true
+
     @Test
     fun `can populate central burden estimate`()
     {
