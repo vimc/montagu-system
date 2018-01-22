@@ -37,7 +37,7 @@ class JooqBurdenEstimateRepository(
             BurdenEstimateWriter(dsl)
 
     private val stochasticBurdenEstimateWriter: StochasticBurdenEstimateWriter = stochasticBurdenEstimateWriter ?:
-            StochasticBurdenEstimateWriter(dsl, ShortlivedAnnexContext())
+            StochasticBurdenEstimateWriter(dsl)
 
     override fun getModelRunParameterSets(groupId: String, touchstoneId: String): List<ModelRunParameterSet>
     {

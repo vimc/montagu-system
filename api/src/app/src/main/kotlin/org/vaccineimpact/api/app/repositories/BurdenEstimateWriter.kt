@@ -20,12 +20,13 @@ import kotlin.concurrent.thread
 
 open class StochasticBurdenEstimateWriter(
         readDatabaseDSL: DSLContext,
-        writeDatabaseDSLPromise: CloseableContext
+        writeDatabaseDSLPromise: CloseableContext = ShortlivedAnnexContext()
 ) : BurdenEstimateWriter(readDatabaseDSL, writeDatabaseDSLPromise, true)
 
-open class BurdenEstimateWriter(private val readDatabaseDSL: DSLContext,
-                                private val writeDatabaseDSLPromise: CloseableContext,
-                                stochastic: Boolean = false)
+open class BurdenEstimateWriter(
+        private val readDatabaseDSL: DSLContext,
+        private val writeDatabaseDSLPromise: CloseableContext = AmbientDSLContext(readDatabaseDSL),
+        stochastic: Boolean = false)
 {
 
     private val table: TableImpl<*> = if (stochastic)
