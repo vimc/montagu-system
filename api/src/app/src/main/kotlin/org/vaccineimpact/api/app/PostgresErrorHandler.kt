@@ -39,7 +39,7 @@ open class PostgresErrorHandler
             val value = match.groups["value"]
             if (field != null && value != null)
             {
-                val map = mapOf(simplifyExpression(field.value) to value.value)
+                val map = mapOf(simplifyExpression(field.value.replace(" ", "")) to value.value)
                 return DuplicateKeyError(map)
             }
         }

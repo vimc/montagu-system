@@ -1,6 +1,7 @@
 package org.vaccineimpact.api.tests.errors
 
 import com.nhaarman.mockito_kotlin.*
+import com.sun.org.apache.bcel.internal.generic.DUP
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.vaccineimpact.api.app.ErrorHandler
@@ -44,6 +45,19 @@ Detail: Key (lower(email))=(email@example.com) already exists."""
         }
         val error = handler.handleException(fakeException)
         assertThat(error).isInstanceOf(DuplicateKeyError::class.java)
+    }
+
+    @Test
+    fun `strips spaces in error code`()
+    {
+        val exceptionText = """org.postgresql.util.PSQLException: ERROR: duplicate key value violates unique constraint "burden_estimate_unique"
+  Detail: Key (burden_estimate_set, country, year, age, burden_outcome)=(1, AFG, 1996, 50, 19) already exists."""
+        val fakeException = mock<Exception> {
+            on { toString() } doReturn (exceptionText)
+        }
+        val error = handler.handleException(fakeException) as DuplicateKeyError
+        assertThat(error.problems.first().code)
+                .isEqualTo("duplicate-key:burden_estimate_set,country,year,age,burden_outcome")
     }
 
     @Test

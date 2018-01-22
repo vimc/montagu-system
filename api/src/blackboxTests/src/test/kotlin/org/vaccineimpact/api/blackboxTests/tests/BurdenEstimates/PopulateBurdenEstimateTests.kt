@@ -170,7 +170,7 @@ class PopulateBurdenEstimateTests : BurdenEstimateTests()
         val helper = RequestHelper()
         val response = helper.post("$setUrl/$setId/", duplicateCsvData, token = token)
         JSONValidator()
-                .validateError(response.text, "duplicate-key:burden_estimate_set, country, year, age, burden_outcome")
+                .validateError(response.text, "duplicate-key:burden_estimate_set,country,year,age,burden_outcome")
 
     }
 
