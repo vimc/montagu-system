@@ -1,11 +1,11 @@
 import * as React from "react";
-import { expect } from "chai";
-import { shallow } from "enzyme";
-import { GroupMembersContentComponent } from "../../../../../main/admin/components/ModellingGroups/SingleGroup/Members/GroupMembersContent";
-import { mockModellingGroupDetails, mockUser } from "../../../../mocks/mockModels";
-import { alt } from "../../../../../main/shared/alt";
-import { ListOfUsers } from "../../../../../main/admin/components/ModellingGroups/ListOfUsers";
-import { AddMember } from "../../../../../main/admin/components/ModellingGroups/SingleGroup/Members/AddMember";
+import {expect} from "chai";
+import {shallow} from "enzyme";
+import {GroupMembersContentComponent} from "../../../../../main/admin/components/ModellingGroups/SingleGroup/Members/GroupMembersContent";
+import {mockModellingGroupDetails, mockUser} from "../../../../mocks/mockModels";
+import {alt} from "../../../../../main/shared/alt";
+import {ListOfUsers} from "../../../../../main/admin/components/ModellingGroups/ListOfUsers";
+import {AddMember} from "../../../../../main/admin/components/ModellingGroups/SingleGroup/Members/AddMember";
 
 describe("GroupMembersContent", () => {
 

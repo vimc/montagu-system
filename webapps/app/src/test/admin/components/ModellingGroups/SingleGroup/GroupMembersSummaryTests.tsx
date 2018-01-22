@@ -1,10 +1,9 @@
 import * as React from "react";
-import { expect } from "chai";
-import { mockModellingGroupDetails, mockUser } from "../../../../mocks/mockModels";
-import { shallow } from "enzyme";
-import { GroupMembersSummary } from "../../../../../main/admin/components/ModellingGroups/SingleGroup/Details/GroupMembersSummary";
-import { InternalLink } from "../../../../../main/shared/components/InternalLink";
-import { ListOfUsers } from "../../../../../main/admin/components/ModellingGroups/ListOfUsers";
+import {expect} from "chai";
+import {mockModellingGroupDetails, mockUser} from "../../../../mocks/mockModels";
+import {shallow} from "enzyme";
+import {GroupMembersSummary} from "../../../../../main/admin/components/ModellingGroups/SingleGroup/Details/GroupMembersSummary";
+import {InternalLink} from "../../../../../main/shared/components/InternalLink";
 
 describe("GroupMembersSummary", () => {
 
