@@ -320,6 +320,28 @@ class JooqBurdenEstimateRepository(
         return setId
     }
 
+    override fun clearBurdenEstimateSet(setId: Int, groupId: String, touchstoneId: String, scenarioId: String)
+    {
+        val modellingGroup = modellingGroupRepository.getModellingGroup(groupId)
+        getResponsibilityInfo(modellingGroup.id, touchstoneId, scenarioId)
+        val set = getBurdenEstimateSet(setId)
+
+        if (set.status == BurdenEstimateSetStatus.COMPLETE)
+        {
+            throw OperationNotAllowedError("You cannot clear a burden estimate set which is marked as 'complete'.")
+        }
+
+        val type = set.type.type
+        if (type == BurdenEstimateSetTypeCode.STOCHASTIC)
+        {
+            stochasticBurdenEstimateWriter.clearEstimateSet(setId)
+        }
+        else
+        {
+            centralBurdenEstimateWriter.clearEstimateSet(setId)
+        }
+    }
+
     private fun getlatestModelVersion(groupId: String, disease: String): Int
     {
         return dsl.select(MODEL_VERSION.ID)

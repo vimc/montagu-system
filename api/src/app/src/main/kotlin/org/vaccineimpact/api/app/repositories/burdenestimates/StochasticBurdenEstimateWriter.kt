@@ -26,4 +26,5 @@ open class StochasticBurdenEstimateWriter(
                 t.VALUE
         )
     }
+    override val setField: TableField<*, Int> = Tables.BURDEN_ESTIMATE_STOCHASTIC.BURDEN_ESTIMATE_SET
 }
