@@ -6,6 +6,7 @@ import {modellingGroupActions} from "../../../shared/actions/ModellingGroupActio
 import {ContribPageWithHeader} from "../PageWithHeader/ContribPageWithHeader";
 import {IPageWithParent} from "../../../shared/models/Breadcrumb";
 import {ChooseGroupPage} from "../ChooseGroup/ChooseGroupPage";
+import { Page } from "../../../shared/components/PageWithHeader/Page";
 
 export interface LocationProps {
     groupId: string;
@@ -37,7 +38,9 @@ export class ChooseActionPage extends ContribPageWithHeader<LocationProps> {
         return new ChooseGroupPage();
     }
 
-    renderPageContent() {
-        return <ChooseActionContent />;
+    render() :JSX.Element {
+        return <Page page={this}>
+            <ChooseActionContent />
+        </Page>;
     }
 }

@@ -9,6 +9,7 @@ import { doNothing } from "../../../../../shared/Helpers";
 import { userStore } from "../../../../stores/UserStore";
 import {IPageWithParent} from "../../../../../shared/models/Breadcrumb";
 import {ViewAllModellingGroupsPage} from "../../List/ViewAllModellingGroupsPage";
+import { Page } from "../../../../../shared/components/PageWithHeader/Page";
 
 export interface ModellingGroupDetailsPageProps {
     groupId: string;
@@ -43,8 +44,10 @@ export class ViewModellingGroupDetailsPage extends AdminPageWithHeader<Modelling
         return <Title />;
     }
 
-    renderPageContent(): JSX.Element {
-        return <ModellingGroupDetailsContent />;
+    render(): JSX.Element {
+        return <Page page={this}>
+            <ModellingGroupDetailsContent />
+        </Page>;
     }
 }
 

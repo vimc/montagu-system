@@ -1,24 +1,28 @@
 import * as React from "react";
 import {IRouter, Location} from "simple-react-router";
 
-import { InternalLink } from "../InternalLink";
 import { navActions } from "../../actions/NavActions";
-import {NavBar} from "../NavBar/NavBar";
-import {navStore} from "../../stores/NavStore";
 import {IPageWithParent} from "../../models/Breadcrumb";
 
 import './PageWithHeader.scss';
-import * as logo from "./logo.png";
+
+export interface PageParts {
+    header(): JSX.Element;
+    siteTitle(): string;
+    postHeader(): JSX.Element;
+    title(): JSX.Element;
+    hideTitle(): boolean;
+    children?: JSX.Element;
+}
 
 export abstract class PageWithHeader<TLocationProps>
     extends React.Component<PageProperties<TLocationProps>, undefined>
-    implements IPageWithParent {
+    implements IPageWithParent, PageParts {
 
     title(): JSX.Element {
         return <span>{this.name()}</span>;
     }
     abstract siteTitle(): string;
-    abstract renderPageContent(): JSX.Element;
 
     abstract name(): string;
     abstract urlFragment(): string;
@@ -29,9 +33,10 @@ export abstract class PageWithHeader<TLocationProps>
     hideTitle(): boolean {
         return false;
     }
-
     componentDidMount() {
-        setTimeout(() => this.load());
+        setTimeout(()=> {
+            this.load();
+        });
     }
 
     load() {
@@ -43,26 +48,6 @@ export abstract class PageWithHeader<TLocationProps>
         if (this.includeInBreadcrumbs()) {
             navActions.initialize(this);
         }
-    }
-
-    render() {
-        return <div>
-            <header className="header">
-                <a href="/"><img src={ logo } height="80" alt="VIMC" /></a>
-                <div className="header__siteTitle">
-                    <InternalLink href="/">{ this.siteTitle() }</InternalLink>
-                </div>
-                { this.header() }
-            </header>
-            <NavBar />
-            { this.postHeader() }
-            <article className="page container">
-                { !this.hideTitle() &&
-                    <div className="page__title">{ this.title() }</div>
-                }
-                <div className="page__content">{ this.renderPageContent() }</div>
-            </article>
-        </div>
     }
 
     header(): JSX.Element { return null; }

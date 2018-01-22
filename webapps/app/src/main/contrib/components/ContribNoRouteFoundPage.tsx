@@ -3,6 +3,7 @@ import { NoRouteFound } from "../../shared/components/NoRouteFound";
 import { ContribPageWithHeader } from "./PageWithHeader/ContribPageWithHeader";
 import {IPageWithParent} from "../../shared/models/Breadcrumb";
 import {ChooseGroupPage} from "./ChooseGroup/ChooseGroupPage";
+import { Page } from "../../shared/components/PageWithHeader/Page";
 
 export class ContribNoRouteFoundPage extends ContribPageWithHeader<undefined> {
     name(): string {
@@ -21,7 +22,9 @@ export class ContribNoRouteFoundPage extends ContribPageWithHeader<undefined> {
         return new ChooseGroupPage();
     }
 
-    renderPageContent(): JSX.Element {
-        return NoRouteFound.renderPageContent();
+    render(): JSX.Element {
+        return <Page page={this}>
+            {NoRouteFound.render()}
+        </Page>;
     }
 }

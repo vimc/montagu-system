@@ -8,9 +8,9 @@ import {ContribPageWithHeader} from "../../PageWithHeader/ContribPageWithHeader"
 import {IPageWithParent} from "../../../../shared/models/Breadcrumb";
 import {ResponsibilityOverviewPage} from "../Overview/ResponsibilityOverviewPage";
 import {runParametersStore} from "../../../stores/RunParametersStore";
-import {runParameterActions} from "../../../actions/RunParameterActions";
 import {InternalLink} from "../../../../shared/components/InternalLink";
 import {ModelRunParametersContent} from "./ModelRunParametersContent";
+import {Page} from "../../../../shared/components/PageWithHeader/Page";
 
 const stochasticParams = require('../Overview/stochastic_template_params.csv');
 
@@ -46,20 +46,22 @@ export class ModelRunParametersPage extends ContribPageWithHeader<ModelRunParame
         return new ResponsibilityOverviewPage();
     }
 
-    renderPageContent() {
+    render() :JSX.Element {
         const guidanceOutputsUrl = `/help/model-outputs/#parameters`;
 
-        return <div className="mt-2">
-            <p>
-                <InternalLink href={guidanceOutputsUrl}>
-                    Guidance on creating and uploading parameter sets
-                </InternalLink>
-            </p>
-            <p>
-                <a key={"params"}
-                   href={stochasticParams}>Download stochastic parameters template</a>
-            </p>
-            <ModelRunParametersContent />
-        </div>
+        return <Page page={this}>
+            <div className="mt-2">
+                <p>
+                    <InternalLink href={guidanceOutputsUrl}>
+                        Guidance on creating and uploading parameter sets
+                    </InternalLink>
+                </p>
+                <p>
+                    <a key={"params"}
+                       href={stochasticParams}>Download stochastic parameters template</a>
+                </p>
+                <ModelRunParametersContent />
+            </div>
+        </Page>
     }
 }

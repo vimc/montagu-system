@@ -10,6 +10,7 @@ import {estimateTokenActions} from "../../../actions/EstimateActions";
 import {ContribPageWithHeader} from "../../PageWithHeader/ContribPageWithHeader";
 import {IPageWithParent} from "../../../../shared/models/Breadcrumb";
 import {ResponsibilityOverviewPage} from "../Overview/ResponsibilityOverviewPage";
+import { Page } from "../../../../shared/components/PageWithHeader/Page";
 
 export interface UploadEstimatesProps {
     groupId: string;
@@ -19,7 +20,6 @@ export interface UploadEstimatesProps {
 
 export class UploadBurdenEstimatesPage extends ContribPageWithHeader<UploadEstimatesProps> {
     load() {
-
         estimateTokenActions.clearUsedToken();
         estimateTokenActions.setRedirectPath(this.props.location.pathname);
         modellingGroupActions.setCurrentGroup(this.props.location.params.groupId);
@@ -51,7 +51,9 @@ export class UploadBurdenEstimatesPage extends ContribPageWithHeader<UploadEstim
         return new ResponsibilityOverviewPage();
     }
 
-    renderPageContent() {
-        return <UploadBurdenEstimatesContent/>
+    render() :JSX.Element {
+        return <Page page={this}>
+            <UploadBurdenEstimatesContent/>
+        </Page>
     }
 }

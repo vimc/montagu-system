@@ -5,6 +5,7 @@ import {ContribPageWithHeader} from "../../PageWithHeader/ContribPageWithHeader"
 import { ChooseGroupPage } from "../../ChooseGroup/ChooseGroupPage";
 import { settings } from "../../../../shared/Settings";
 import { InternalLink } from "../../../../shared/components/InternalLink";
+import { Page } from "../../../../shared/components/PageWithHeader/Page";
 
 import "../../../../shared/styles/common.scss";
 
@@ -25,8 +26,8 @@ export class ResponsibilityGuidanceModelInputs extends ContribPageWithHeader<und
         return new ChooseGroupPage();
     }
 
-    renderPageContent() {
-        return <div>
+    render() :JSX.Element {
+        return <Page page={this}>
             <div className="largeSectionTitle">
                 Input data sources
             </div>
@@ -311,6 +312,6 @@ export class ResponsibilityGuidanceModelInputs extends ContribPageWithHeader<und
                 for the current runs you will need to download each demographic
                 dataset separately.
             </p>
-        </div>;
+        </Page>
     }
 }

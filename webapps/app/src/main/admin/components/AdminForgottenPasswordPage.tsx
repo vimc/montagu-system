@@ -8,6 +8,7 @@ import {
 } from "../../shared/components/Login/ForgottenPasswordForm";
 import {IPageWithParent} from "../../shared/models/Breadcrumb";
 import {MainMenu} from "./MainMenu/MainMenu";
+import { Page } from "../../shared/components/PageWithHeader/Page";
 
 const ForgottenPasswordForm = FormConnector(forgottenPasswordFormStore("admin"))(ForgottenPasswordFormComponent);
 
@@ -24,7 +25,9 @@ export class AdminForgottenPasswordPage extends AdminPageWithHeader<undefined> {
         return new MainMenu();
     }
 
-    renderPageContent(): JSX.Element {
-        return <ForgottenPasswordForm />;
+    render(): JSX.Element {
+        return <Page page={this}>
+            <ForgottenPasswordForm />
+        </Page>;
     }
 }

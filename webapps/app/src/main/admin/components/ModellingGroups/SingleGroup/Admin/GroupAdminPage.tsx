@@ -9,6 +9,7 @@ import { doNothing } from "../../../../../shared/Helpers";
 import { userStore } from "../../../../stores/UserStore";
 import {IPageWithParent} from "../../../../../shared/models/Breadcrumb";
 import {ViewModellingGroupDetailsPage} from "../Details/ViewModellingGroupDetailsPage";
+import { Page } from "../../../../../shared/components/PageWithHeader/Page";
 
 interface PageProps {
     groupId: string;
@@ -41,8 +42,10 @@ export class GroupAdminPage extends AdminPageWithHeader<PageProps> {
         return new ViewModellingGroupDetailsPage();
     }
 
-    renderPageContent(): JSX.Element {
-        return <GroupAdminContent />;
+    render(): JSX.Element {
+        return <Page page={this}>
+            <GroupAdminContent />
+        </Page>;
     }
 }
 

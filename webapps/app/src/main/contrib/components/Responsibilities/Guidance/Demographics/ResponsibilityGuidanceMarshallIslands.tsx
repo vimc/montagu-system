@@ -1,10 +1,8 @@
 import * as React from "react";
-import ScrollableAnchor from 'react-scrollable-anchor';
 
 import {ContribPageWithHeader} from "../../../PageWithHeader/ContribPageWithHeader";
 import { ChooseGroupPage } from "../../../ChooseGroup/ChooseGroupPage";
-import { settings } from "../../../../../shared/Settings";
-import { InternalLink } from "../../../../../shared/components/InternalLink";
+import { Page } from "../../../../../shared/components/PageWithHeader/Page";
 
 const embeddedHtml = require('./html/marshall.html');
 
@@ -25,9 +23,9 @@ export class ResponsibilityGuidanceMarshallIslands extends ContribPageWithHeader
         return new ChooseGroupPage();
     }
 
-    renderPageContent() {
-        return <div>
+    render() :JSX.Element {
+        return <Page page={this}>
             <iframe src={embeddedHtml} width="100%" height="9270px" frameBorder="0"></iframe>
-        </div>;
+        </Page>;
     }
 }

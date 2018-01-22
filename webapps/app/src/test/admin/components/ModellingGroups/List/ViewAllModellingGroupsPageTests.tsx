@@ -8,7 +8,6 @@ import {checkAsync} from "../../../../testHelpers";
 import {addNavigationTests} from "../../../../shared/NavigationTests";
 import {mockFetcherForMultipleResponses} from "../../../../mocks/mockMultipleEndpoints";
 import {mockModellingGroup} from "../../../../mocks/mockModels";
-import {successResult} from "../../../../mocks/mockRemote";
 import alt from "../../../../../main/shared/alt";
 import {mockGroupsEndpoint} from "../../../../mocks/mockEndpoints";
 
