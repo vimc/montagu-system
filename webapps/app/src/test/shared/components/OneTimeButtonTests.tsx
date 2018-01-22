@@ -57,22 +57,7 @@ describe("OneTimeButton Button Element", () => {
 
         expect(tracker).to.be.true;
     });
-    // it("clicking button triggers refresh token callback after timeout", (done: DoneCallback) => {
-    //     let tracker = false;
-    //     const callback = () => tracker = true;
-    //
-    //     const rendered = shallow(<OneTimeButtonButton token="TOKEN" onClick={callback} url="test" enabled={true}>Test</OneTimeButtonButton>);
-    //     const button = rendered.find("form").find("button");
-    //
-    //     expect(button.prop("disabled")).to.be.false;
-    //     button.simulate("click");
-    //
-    //     expect(tracker).to.be.false;
-    //     setTimeout(() => {
-    //         expect(tracker).to.be.true;
-    //         done();
-    //     });
-    // });
+   
 });
 
 describe("OneTimeButton Link Element", () => {
