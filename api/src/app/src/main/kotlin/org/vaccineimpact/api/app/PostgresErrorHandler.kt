@@ -3,8 +3,6 @@ package org.vaccineimpact.api.app
 import org.vaccineimpact.api.app.errors.DuplicateKeyError
 import org.vaccineimpact.api.app.errors.MontaguError
 import org.vaccineimpact.api.app.errors.UnexpectedError
-import spark.Request
-import spark.Response
 
 open class PostgresErrorHandler
 {
@@ -14,25 +12,22 @@ open class PostgresErrorHandler
 
     open fun handleException(exception: Exception): MontaguError
     {
-        var text = exception.toString()
+        val text = matchRecursive(exception)
+                ?: return UnexpectedError.new(exception)
 
-        if (!duplicateKeyRegex.containsMatchIn(text))
-        {
-            text = exception.cause.toString()
+        val error = handleDuplicateKeyError(text)
+        return error ?: UnexpectedError.new(exception)
+    }
 
-            if (!duplicateKeyRegex.containsMatchIn(text)){
-                text = exception.cause?.cause.toString()
-            }
-        }
-        if (duplicateKeyRegex.containsMatchIn(text))
-        {
-            val error = handleDuplicateKeyError(text)
-            if (error != null)
-            {
-                return error
-            }
-        }
-        return UnexpectedError.new(exception)
+    private fun matchRecursive(cause: Throwable?): String?
+    {
+        if (cause == null)
+            return null
+
+        if (duplicateKeyRegex.containsMatchIn(cause.toString()))
+            return cause.toString()
+
+        return matchRecursive(cause.cause)
     }
 
     private fun handleDuplicateKeyError(text: String): MontaguError?
