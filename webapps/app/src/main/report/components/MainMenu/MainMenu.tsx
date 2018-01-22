@@ -4,6 +4,7 @@ import {reportStore} from "../../stores/ReportStore";
 import {doNothing} from "../../../shared/Helpers";
 import {ReportList} from "../Reports/ReportList";
 import {IPageWithParent} from "../../../shared/models/Breadcrumb";
+import { Page } from "../../../shared/components/PageWithHeader/Page";
 
 const menuStyles = require("./MainMenu.css");
 
@@ -30,7 +31,9 @@ export class MainMenu extends ReportingPageWithHeader<undefined> {
         return null;
     }
 
-    renderPageContent() {
-        return <ReportList />;
+    render() :JSX.Element {
+        return <Page page={this}>
+            <ReportList />
+        </Page>;
     }
 }

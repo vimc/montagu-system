@@ -1,5 +1,4 @@
 import * as React from "react";
-import { settings } from "../../../../shared/Settings";
 import { ResponsibilityOverviewTitle } from "./ResponsibilityOverviewTitle";
 import { touchstoneActions } from "../../../actions/TouchstoneActions";
 import { responsibilityStore } from "../../../stores/ResponsibilityStore";
@@ -10,6 +9,7 @@ import { ResponsibilityOverviewContent } from "./ResponsibilityOverviewContent";
 import {ContribPageWithHeader} from "../../PageWithHeader/ContribPageWithHeader";
 import {ChooseActionPage} from "../../ChooseAction/ChooseActionPage";
 import {IPageWithParent} from "../../../../shared/models/Breadcrumb";
+import { Page } from "../../../../shared/components/PageWithHeader/Page";
 
 interface LocationProps {
     groupId: string;
@@ -45,12 +45,12 @@ export class ResponsibilityOverviewPage extends ContribPageWithHeader<LocationPr
         return new ChooseActionPage();
     }
 
-    renderPageContent() {
-        return <div>
+    render() :JSX.Element {
+        return <Page page={this}>
             <ResponsibilityOverviewDescription
                 currentTouchstoneId={this.props.location.params.touchstoneId}
             />
             <ResponsibilityOverviewContent />
-        </div>
+        </Page>;
     }
 }

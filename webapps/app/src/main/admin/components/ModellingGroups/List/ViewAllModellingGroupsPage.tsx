@@ -5,6 +5,7 @@ import { groupStore } from "../../../stores/GroupStore";
 import { doNothing } from "../../../../shared/Helpers";
 import {IPageWithParent} from "../../../../shared/models/Breadcrumb";
 import {MainMenu} from "../../MainMenu/MainMenu";
+import { Page } from "../../../../shared/components/PageWithHeader/Page";
 
 export class ViewAllModellingGroupsPage extends AdminPageWithHeader<undefined> {
     load() {
@@ -25,7 +26,9 @@ export class ViewAllModellingGroupsPage extends AdminPageWithHeader<undefined> {
         return new MainMenu();
     }
 
-    renderPageContent() {
-        return <ModellingGroupsList />;
+    render() :JSX.Element {
+        return <Page page={this}>
+            <ModellingGroupsList />
+        </Page>;
     }
 }

@@ -4,7 +4,6 @@ import { shallow } from "enzyme";
 import { GroupAdminContentComponent } from "../../../../../main/admin/components/ModellingGroups/SingleGroup/Admin/GroupAdminContent";
 import { mockModellingGroupDetails, mockUser } from "../../../../mocks/mockModels";
 import { alt } from "../../../../../main/shared/alt";
-import { User } from "../../../../../main/shared/models/Generated";
 import { ListOfUsers } from "../../../../../main/admin/components/ModellingGroups/ListOfUsers";
 import { AddMember } from "../../../../../main/admin/components/ModellingGroups/SingleGroup/Admin/AddMember";
 

@@ -9,6 +9,7 @@ import { DownloadDataTitle } from "../DownloadDataTitle";
 import {ContribPageWithHeader} from "../../PageWithHeader/ContribPageWithHeader";
 import {ResponsibilityOverviewPage} from "../Overview/ResponsibilityOverviewPage";
 import {IPageWithParent} from "../../../../shared/models/Breadcrumb";
+import { Page } from "../../../../shared/components/PageWithHeader/Page";
 
 interface LocationProps {
     groupId: string;
@@ -48,7 +49,9 @@ export class DownloadCoveragePage extends ContribPageWithHeader<LocationProps> {
         return new ResponsibilityOverviewPage();
     }
 
-    renderPageContent() {
-        return <DownloadCoverageContent />
+    render() :JSX.Element {
+        return <Page page={this}>
+            <DownloadCoverageContent />
+        </Page>
     }
 }

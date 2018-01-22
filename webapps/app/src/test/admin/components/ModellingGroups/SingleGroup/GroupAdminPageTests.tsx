@@ -11,7 +11,6 @@ import {expectOneAction} from "../../../../actionHelpers";
 import {alt} from "../../../../../main/shared/alt";
 import {addNavigationTests} from "../../../../shared/NavigationTests";
 import {mockFetcherForMultipleResponses} from "../../../../mocks/mockMultipleEndpoints";
-import {successResult} from "../../../../mocks/mockRemote";
 import {mockModellingGroup, mockModellingGroupDetails, mockUser} from "../../../../mocks/mockModels";
 import {mockGroupDetailsEndpoint, mockGroupsEndpoint, mockUsersEndpoint} from "../../../../mocks/mockEndpoints";
 
@@ -40,6 +39,7 @@ describe("GroupAdminPage", () => {
             });
         });
     });
+
 
     const page = new GroupAdminPage({location: location, router: null});
     addNavigationTests(page, sandbox, () => {

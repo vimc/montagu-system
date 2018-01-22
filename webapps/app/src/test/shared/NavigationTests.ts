@@ -4,7 +4,6 @@ import {Sandbox} from "../Sandbox";
 import {Action, findActionWithName, getActions} from "../actionHelpers";
 import {Breadcrumb} from "../../main/shared/models/Breadcrumb";
 import {checkAsync} from "../testHelpers";
-import {navActions} from "../../main/shared/actions/NavActions";
 import {isNullOrUndefined} from "util";
 
 function checkString(value: string, name: string, context: string) {

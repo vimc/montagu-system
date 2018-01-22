@@ -3,6 +3,7 @@ import { ReportingPageWithHeader } from "./ReportingPageWithHeader";
 import { NoRouteFound } from "../../shared/components/NoRouteFound";
 import {IPageWithParent} from "../../shared/models/Breadcrumb";
 import {MainMenu} from "./MainMenu/MainMenu";
+import { Page } from "../../shared/components/PageWithHeader/Page";
 
 export class ReportingNoRouteFoundPage extends ReportingPageWithHeader<undefined> {
     name(): string {
@@ -21,7 +22,9 @@ export class ReportingNoRouteFoundPage extends ReportingPageWithHeader<undefined
         return new MainMenu();
     }
 
-    renderPageContent(): JSX.Element {
-        return NoRouteFound.renderPageContent();
+    render(): JSX.Element {
+        return <Page page={this}>
+            {NoRouteFound.render()}
+        </Page>;
     }
 }

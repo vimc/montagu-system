@@ -9,6 +9,7 @@ import { DownloadDemographicsContent } from "./DownloadDemographicsContent";
 import {ContribPageWithHeader} from "../../PageWithHeader/ContribPageWithHeader";
 import {IPageWithParent} from "../../../../shared/models/Breadcrumb";
 import {ResponsibilityOverviewPage} from "../Overview/ResponsibilityOverviewPage";
+import { Page } from "../../../../shared/components/PageWithHeader/Page";
 
 interface LocationProps {
     groupId: string;
@@ -42,8 +43,10 @@ export class DownloadDemographicsPage extends ContribPageWithHeader<LocationProp
         return new ResponsibilityOverviewPage();
     }
 
-    renderPageContent(): JSX.Element {
-        return <DownloadDemographicsContent />;
+    render(): JSX.Element {
+        return <Page page={this}>
+            <DownloadDemographicsContent />
+        </Page>;
     }
 
 }

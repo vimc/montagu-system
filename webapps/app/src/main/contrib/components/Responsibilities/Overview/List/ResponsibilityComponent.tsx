@@ -29,6 +29,7 @@ export class ResponsibilityComponent extends React.Component<Props, undefined> {
                 &nbsp;
                 (ID: {item.scenario.id})
                 <span className="status">{item.status}</span>
+                <span className="clearfix"></span>
             </div>
             <div>
                 <div className="content">

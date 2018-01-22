@@ -8,6 +8,7 @@ import {
 } from "../../shared/components/Login/ForgottenPasswordForm";
 import {IPageWithParent} from "../../shared/models/Breadcrumb";
 import {ChooseGroupPage} from "./ChooseGroup/ChooseGroupPage";
+import { Page } from "../../shared/components/PageWithHeader/Page";
 
 const ForgottenPasswordForm = FormConnector(forgottenPasswordFormStore("contrib"))(ForgottenPasswordFormComponent);
 
@@ -24,7 +25,9 @@ export class ContribForgottenPasswordPage extends ContribPageWithHeader<undefine
         return new ChooseGroupPage();
     }
 
-    renderPageContent(): JSX.Element {
-        return <ForgottenPasswordForm />;
+    render(): JSX.Element {
+        return <Page page={this}>
+            <ForgottenPasswordForm />
+        </Page>;
     }
 }
