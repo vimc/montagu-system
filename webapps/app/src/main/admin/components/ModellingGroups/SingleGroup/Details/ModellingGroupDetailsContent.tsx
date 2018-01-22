@@ -4,7 +4,7 @@ import { ModellingGroupDetails, User } from "../../../../../shared/models/Genera
 import { RemoteContentComponent } from "../../../../../shared/components/RemoteContentComponent/RemoteContentComponent";
 import { groupStore } from "../../../../stores/GroupStore";
 import { connectToStores } from "../../../../../shared/alt";
-import { GroupAdminSummary } from "./GroupAdminSummary";
+import { GroupMembersSummary } from "./GroupMembersSummary";
 import { userStore } from "../../../../stores/UserStore";
 
 import "../../../../../shared/styles/common.scss";
@@ -35,7 +35,7 @@ class ModellingGroupDetailsContentComponent extends RemoteContentComponent<Props
                     <tr><td>ID</td><td>{ props.group.id }</td></tr>
                     <tr>
                         <td>Group members</td>
-                        <td><GroupAdminSummary group={ this.props.group } allUsers={ this.props.users } /></td>
+                        <td><GroupMembersSummary group={ this.props.group } allUsers={ this.props.users } /></td>
                     </tr>
                 </tbody>
             </table>

@@ -2,16 +2,16 @@ import * as React from "react";
 import { expect } from "chai";
 import { mockModellingGroupDetails, mockUser } from "../../../../mocks/mockModels";
 import { shallow } from "enzyme";
-import { GroupAdminSummary } from "../../../../../main/admin/components/ModellingGroups/SingleGroup/Details/GroupAdminSummary";
+import { GroupMembersSummary } from "../../../../../main/admin/components/ModellingGroups/SingleGroup/Details/GroupMembersSummary";
 import { InternalLink } from "../../../../../main/shared/components/InternalLink";
 import { ListOfUsers } from "../../../../../main/admin/components/ModellingGroups/ListOfUsers";
 
-describe("GroupAdminSummary", () => {
+describe("GroupMembersSummary", () => {
 
     it("renders no members if group has no members", () => {
         const group = mockModellingGroupDetails({ id: "group-id", members: [] });
         const users = [ mockUser() ];
-        const rendered = shallow(<GroupAdminSummary group={ group } allUsers={ users } />);
+        const rendered = shallow(<GroupMembersSummary group={ group } allUsers={ users } />);
         expect(rendered.text()).to.contain("This group does not have any members");
         expect(rendered.find(InternalLink).prop("href")).to.equal("/modelling-groups/group-id/admin/");
     });
@@ -22,7 +22,7 @@ describe("GroupAdminSummary", () => {
             mockUser({ username: "test.b" }),
         ];
         const group = mockModellingGroupDetails({ members: [ "test.a", "test.b" ] });
-        const rendered = shallow(<GroupAdminSummary group={ group } allUsers={ users } />);
+        const rendered = shallow(<GroupMembersSummary group={ group } allUsers={ users } />);
         expect(rendered.find(InternalLink).first().prop("href")).to.eql("/users/test.a/");
     });
 });
