@@ -138,7 +138,6 @@ describe("OneTimeButton", () => {
         const button = rendered.find("form").find("button");
         button.simulate("click");
         setTimeout(() => {
-            console.log(refreshUrlSpy.callCount)
             expect(refreshUrlSpy.callCount).to.equal(1);
             expect(onclickSpy.callCount).to.equal(1);
             done();

@@ -21,7 +21,7 @@ export class RunParametersSource extends Source<RunParametersState> {
     }
 }
 
-export function fetchToken(groupId: string, touchstoneId: string, setId: number) {
+export function fetchToken(groupId: string, touchstoneId: string, setId: number) :Promise<string> {
     return fetcher.fetcher
         .fetch(`/modelling-groups/${groupId}/model-run-parameters/${touchstoneId}/${setId}/get_onetime_link/`)
         .then((response :Response) => {
