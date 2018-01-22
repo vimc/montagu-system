@@ -1,9 +1,7 @@
 package org.vaccineimpact.api.databaseTests.tests.burdenEstimateRepository
 
 import org.assertj.core.api.Assertions
-import org.jooq.exception.DataAccessException
 import org.junit.Test
-import org.postgresql.util.PSQLException
 import org.vaccineimpact.api.app.errors.DatabaseContentsError
 import org.vaccineimpact.api.app.errors.InconsistentDataError
 import org.vaccineimpact.api.app.errors.UnknownObjectError
@@ -13,8 +11,6 @@ import org.vaccineimpact.api.app.repositories.StochasticBurdenEstimateWriter
 import org.vaccineimpact.api.databaseTests.tests.BurdenEstimateRepositoryTests
 import org.vaccineimpact.api.db.Tables
 import org.vaccineimpact.api.db.direct.addBurdenEstimateSet
-import org.vaccineimpact.api.db.toDecimal
-import org.vaccineimpact.api.models.BurdenEstimateWithRunId
 
 class BurdenEstimateWriterTests : BurdenEstimateRepositoryTests()
 {

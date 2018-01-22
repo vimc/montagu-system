@@ -23,9 +23,6 @@ open class ErrorHandler(private val logger: Logger = LoggerFactory.getLogger(Err
     init
     {
         sparkException<Exception>(this::handleError)
-//        Thread.setDefaultUncaughtExceptionHandler { _: Thread, throwable: Throwable ->
-//            throw throwable
-//        }
     }
 
     open fun logExceptionAndReturnMontaguError(exception: kotlin.Exception, req: Request): MontaguError
