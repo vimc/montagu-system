@@ -8,15 +8,17 @@ import { GroupMembersSummary } from "./GroupMembersSummary";
 import { userStore } from "../../../../stores/UserStore";
 
 import "../../../../../shared/styles/common.scss";
+import {adminAuthStore} from "../../../../stores/AdminAuthStore";
 
 interface Props extends RemoteContent {
     group: ModellingGroupDetails;
     users: User[];
+    canManageGroupMembers: boolean;
 }
 
 class ModellingGroupDetailsContentComponent extends RemoteContentComponent<Props, undefined> {
     static getStores() {
-        return [ groupStore, userStore ];
+        return [ groupStore, userStore, adminAuthStore ];
     }
     static getPropsFromStores(): Props {
         const group = groupStore.getCurrentGroupDetails();
@@ -24,7 +26,8 @@ class ModellingGroupDetailsContentComponent extends RemoteContentComponent<Props
         return {
             group: group,
             users: users.users,
-            ready: group != null && users.ready
+            ready: group != null && users.ready,
+            canManageGroupMembers: adminAuthStore.hasPermission("*/modelling-groups.manage-members")
         };
     }
 
@@ -35,7 +38,11 @@ class ModellingGroupDetailsContentComponent extends RemoteContentComponent<Props
                     <tr><td>ID</td><td>{ props.group.id }</td></tr>
                     <tr>
                         <td>Group members</td>
-                        <td><GroupMembersSummary group={ this.props.group } allUsers={ this.props.users } /></td>
+                        <td><GroupMembersSummary
+                            group={props.group}
+                            allUsers={props.users}
+                            canEdit={props.canManageGroupMembers}
+                        /></td>
                     </tr>
                 </tbody>
             </table>

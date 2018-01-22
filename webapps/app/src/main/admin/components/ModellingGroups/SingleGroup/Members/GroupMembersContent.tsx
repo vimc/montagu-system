@@ -15,7 +15,7 @@ interface Props extends RemoteContent {
     members: User[];
     users: User[];
     groupId: string;
-    isAdmin: boolean;
+    canManageGroupMembers: boolean;
 }
 
 export class GroupMembersContentComponent extends RemoteContentComponent<Props, undefined> {
@@ -27,8 +27,7 @@ export class GroupMembersContentComponent extends RemoteContentComponent<Props, 
         const group = groupStore.getCurrentGroupDetails();
         const allUsers = userStore.getState().users;
         const members = groupStore.getCurrentGroupMembers();
-        const isAdmin = adminAuthStore.getState()
-            .permissions.indexOf("*/modelling-groups.manage-members") > -1;
+        const canManageGroupMembers = adminAuthStore.hasPermission("*/modelling-groups.manage-members");
 
         if (group != null) {
             return {
@@ -36,7 +35,7 @@ export class GroupMembersContentComponent extends RemoteContentComponent<Props, 
                 members: members.map(a => allUsers.find(u => a == u.username)),
                 ready: group != null && userStore.getState().ready,
                 groupId: group.id,
-                isAdmin: isAdmin
+                canManageGroupMembers
             };
         } else {
             return {
@@ -44,7 +43,7 @@ export class GroupMembersContentComponent extends RemoteContentComponent<Props, 
                 members: [],
                 ready: false,
                 groupId: "",
-                isAdmin: false
+                canManageGroupMembers
             };
         }
     }
@@ -60,7 +59,7 @@ export class GroupMembersContentComponent extends RemoteContentComponent<Props, 
 
     renderContent(props: Props) {
 
-        const addMembers =  props.isAdmin ?
+        const addMembers = props.canManageGroupMembers ?
             <div>
                 <div className="sectionTitle">Add modelling group member</div>
                 <AddMember members={ [...props.members.map(m=>m.username)] } users={props.users} groupId={props.groupId}/>
