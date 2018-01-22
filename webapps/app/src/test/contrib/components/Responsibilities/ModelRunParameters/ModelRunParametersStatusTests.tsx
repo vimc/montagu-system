@@ -59,7 +59,6 @@ describe('ModelRunParameterStatus', () => {
         rendered = shallow(<ModelRunParametersStatus
             disease={"d1"}
         />);
-        console.log(rendered.debug())
         const alert = rendered.find(Alert);
         expect(alert.childAt(0).text()).to.contain("You last uploaded a parameter set on Fri Jul 13 2018, 13:45:29");
 

@@ -13,8 +13,10 @@ interface Props {
 }
 
 interface State {
-    sets: ModelRunParameterSet[],
-    tokens: TokensMap
+    set: ModelRunParameterSet,
+    tokens: TokensMap,
+    groupId: string,
+    touchstoneId: string
 }
 
 export class ModelRunParametersStatus extends React.Component<Props, State> {
@@ -23,36 +25,40 @@ export class ModelRunParametersStatus extends React.Component<Props, State> {
         super();
         const storeState = runParametersStore.getState();
         this.state = {
-            sets: storeState.parameterSets
-                ? storeState.parameterSets.filter(s => s.disease == props.disease)
-                : [],
-            tokens: storeState.oneTimeTokens
+            set: this.getLastSetForDisease(storeState.parameterSets, props.disease),
+            tokens: storeState.oneTimeTokens,
+            groupId: storeState.groupId,
+            touchstoneId: storeState.touchstoneId
         }
         this.refreshToken = this.refreshToken.bind(this)
     }
 
-    componentDidMount() {
-        runParametersStore.listen(this.onChange.bind(this));
-        if (this.state.sets.length) this.fetchOneTimeTokens();
+    getLastSetForDisease(allSets: ModelRunParameterSet[], disease: string) {
+        const sets = allSets
+            ? allSets.filter(s => s.disease == disease)
+            : []
+        if (sets.length) {
+            return sets[0]
+        }
+        return null;
     }
 
-    fetchOneTimeTokens() {
-        const s = runParametersStore.getState();
-        this.state.sets.map(set => setTimeout(() => {
-            runParameterActions.fetchToken(s.groupId, s.touchstoneId, set.id)
-        }));
+    componentDidMount() {
+        runParametersStore.listen(this.onChange.bind(this));
+        if (this.state.set) {
+            runParameterActions.fetchToken(this.state.groupId, this.state.touchstoneId, this.state.set.id)
+        }
     }
 
     onChange(storeState: RunParametersState) {
-        const oldStateSets = clone(this.state.sets)
+        const oldSetId = this.state.set ? this.state.set.id : null;
         this.setState({
-            sets: storeState.parameterSets
-                ? storeState.parameterSets.filter(s => s.disease == this.props.disease)
-                : [],
+            set: this.getLastSetForDisease(storeState.parameterSets, this.props.disease),
             tokens: storeState.oneTimeTokens
         })
-        if (!isEqual(oldStateSets, this.state.sets)) {
-            this.fetchOneTimeTokens();
+        const newSetId = this.state.set ? this.state.set.id : null;
+        if (newSetId && oldSetId != newSetId) {
+            runParameterActions.fetchToken(storeState.groupId, storeState.touchstoneId, newSetId)
         }
     }
 
@@ -60,29 +66,24 @@ export class ModelRunParametersStatus extends React.Component<Props, State> {
         return () => {
             runParameterActions.clearToken(setId);
             const s = runParametersStore.getState();
-            setTimeout(() => {
-                runParameterActions.fetchToken(s.groupId, s.touchstoneId, setId)
-            })
+            runParameterActions.fetchToken(s.groupId, s.touchstoneId, setId)
         }
     }
 
     render(): JSX.Element {
         let alertContent = <span>You have not uploaded any parameter sets for {this.props.disease}</span>;
-
-        const hasSets = this.state.sets.length > 0;
-
-        if (hasSets) {
-            const lastUploaded = this.state.sets[0];
+        const set = this.state.set;
+        if (set) {
             const alertText
-                = `You last uploaded a parameter set on ${longestTimestamp(new Date(lastUploaded.uploaded_on))}`;
+                = `You last uploaded a parameter set on ${longestTimestamp(new Date(set.uploaded_on))}`;
 
-            const downloadCertificateLink = <ModelRunParameterDownloadCertificate set={lastUploaded}/>;
+            const downloadCertificateLink = <ModelRunParameterDownloadCertificate set={set}/>;
 
             // TODO add link when API endpoint implemented
             const downloadParamsLink = <OneTimeButton
-                token={this.state.tokens[lastUploaded.id]}
-                refreshToken={this.refreshToken(lastUploaded.id)}
-                enabled={!!this.state.tokens[lastUploaded.id]}
+                token={this.state.tokens[set.id]}
+                refreshToken={this.refreshToken(set.id)}
+                enabled={!!this.state.tokens[set.id]}
                 element="Link"
             >
                 Download data set
