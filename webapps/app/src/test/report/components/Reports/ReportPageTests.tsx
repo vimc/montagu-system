@@ -55,8 +55,10 @@ describe("ReportPage", () => {
 
     it("triggers actions on mount", (done: DoneCallback) => {
         checkExpectedActionsWhen(done, () => {
-            const location = mockLocation<ReportPageProps>({report: "reportname", version: "versionname"});
-            new ReportPage({location: location, router: null}).componentDidMount();
+            return new ReportPage({location: location, router: null}).load({
+                report: "reportname",
+                version: "versionname"
+            });
         });
     });
 

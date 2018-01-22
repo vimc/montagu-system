@@ -7,7 +7,7 @@ import {mockLocation, setupStores} from "../../../mocks/mocks";
 import {responsibilityStore} from "../../../../main/contrib/stores/ResponsibilityStore";
 import {mockModellingGroup, mockTouchstone} from "../../../mocks/mockModels";
 import {DownloadCoveragePage} from "../../../../main/contrib/components/Responsibilities/Coverage/DownloadCoveragePage";
-import {checkAsync} from "../../../testHelpers";
+import {checkAsync, checkPromise} from "../../../testHelpers";
 import {addNavigationTests} from "../../../shared/NavigationTests";
 import {bootstrapStore} from "../../../StoreHelpers";
 import {mainStore} from "../../../../main/contrib/stores/MainStore";
@@ -36,9 +36,13 @@ describe('DownloadCoveragePage', () => {
         const touchstone = mockTouchstone({id: "touchstone-1"});
         setupStores({groups: [group], touchstones: [touchstone]});
 
-        new DownloadCoveragePage({location: location, router: null}).load();
+        const promise = new DownloadCoveragePage().load({
+            touchstoneId: "touchstone-1",
+            scenarioId: "scenario-1",
+            groupId: "group-1",
+        });
 
-        checkAsync(done, (afterWait) => {
+        checkPromise(done, promise, (_, afterWait) => {
             expectOneAction(spy, {action: "ModellingGroupActions.setCurrentGroup", payload: "group-1"}, 0);
             expect(fetchTouchstones.called).to.equal(true, "Expected fetchTouchstones to be called");
             afterWait(done, () => {

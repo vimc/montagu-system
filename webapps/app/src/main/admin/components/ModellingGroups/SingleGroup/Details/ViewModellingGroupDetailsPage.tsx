@@ -16,13 +16,14 @@ export interface ModellingGroupDetailsPageProps {
 }
 
 export class ViewModellingGroupDetailsPage extends AdminPageWithHeader<ModellingGroupDetailsPageProps> {
-    load() {
-        userStore.fetchUsers().catch(doNothing);
-        groupStore.fetchGroups().catch(doNothing).then(() => {
-            modellingGroupActions.setCurrentGroup(this.props.location.params.groupId);
-            groupStore.fetchGroupDetails().catch(doNothing).then(() => {
-                super.load();
-            });
+    load(props: ModellingGroupDetailsPageProps) {
+        const initial: Array<Promise<any>> = [
+            this.loadParent(props),  // Fetches groups
+            userStore.fetchUsers()
+        ];
+        return Promise.all(initial).then(() => {
+            modellingGroupActions.setCurrentGroup(props.groupId);
+            return groupStore.fetchGroupDetails();
         });
     }
 

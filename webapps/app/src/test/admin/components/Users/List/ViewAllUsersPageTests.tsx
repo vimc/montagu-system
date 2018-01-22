@@ -1,12 +1,12 @@
 import * as React from "react";
-import { expect } from "chai";
-import { Sandbox } from "../../../../Sandbox";
-import { mockLocation } from "../../../../mocks/mocks";
-import { checkAsync } from "../../../../testHelpers";
+import {expect} from "chai";
+import {Sandbox} from "../../../../Sandbox";
+import {checkPromise} from "../../../../testHelpers";
 import {ViewAllUsersPage} from "../../../../../main/admin/components/Users/List/ViewAllUsersPage";
 import {userStore} from "../../../../../main/admin/stores/UserStore";
 import {addNavigationTests} from "../../../../shared/NavigationTests";
 import {doNothing} from "../../../../../main/shared/Helpers";
+import {mockLocation} from "../../../../mocks/mocks";
 
 describe("ViewAllUsersPageTests", () => {
     const sandbox = new Sandbox();
@@ -15,11 +15,12 @@ describe("ViewAllUsersPageTests", () => {
 
     it("triggers fetch on load", (done: DoneCallback) => {
         const spy = sandbox.sinon.spy(userStore, "fetchUsers");
-        sandbox.mount(<ViewAllUsersPage location={ mockLocation<undefined>() } router={null} />);
-        checkAsync(done, () => {
+        const promise = new ViewAllUsersPage().load(undefined);
+        checkPromise(done, promise, () => {
             expect(spy.called).to.equal(true, "Expected usersStore.fetchUsers to be triggered");
         });
     });
 
-    addNavigationTests(new ViewAllUsersPage(), sandbox, doNothing);
+    const page = new ViewAllUsersPage({location: mockLocation(), router: null});
+    addNavigationTests(page, sandbox, doNothing);
 });

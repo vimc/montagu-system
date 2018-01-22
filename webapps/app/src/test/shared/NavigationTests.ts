@@ -3,7 +3,7 @@ import {PageWithHeader} from "../../main/shared/components/PageWithHeader/PageWi
 import {Sandbox} from "../Sandbox";
 import {Action, findActionWithName, getActions} from "../actionHelpers";
 import {Breadcrumb} from "../../main/shared/models/Breadcrumb";
-import {checkAsync} from "../testHelpers";
+import {checkAsync, checkPromise} from "../testHelpers";
 import {isNullOrUndefined} from "util";
 
 function checkString(value: string, name: string, context: string) {
@@ -21,8 +21,8 @@ export function addNavigationTests(page: PageWithHeader<any>, sandbox: Sandbox, 
         }
 
         const spy = sandbox.dispatchSpy();
-        page.load();
-        checkAsync(done, () => {
+        const promise = page.prepare();
+        checkPromise(done, promise, () => {
             const actions = getActions(spy);
             expect(actions).to.have.length.greaterThan(0, "No actions were emitted");
 

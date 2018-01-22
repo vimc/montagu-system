@@ -19,12 +19,6 @@ export class DummyPage extends PageWithHeader<undefined> {
         this.loaded = false;
     }
 
-    componentDidMount() {
-        setTimeout(() =>{
-            this.load();
-        });
-    }
-
     siteTitle() {
         return "LOTR";
     }
@@ -41,9 +35,9 @@ export class DummyPage extends PageWithHeader<undefined> {
         return "/lotr/";
     }
 
-    load() {
+    load(props: undefined) {
         this.loaded = true;
-        super.load();
+        return super.load(props);
     }
 
     title(): JSX.Element {
@@ -57,10 +51,6 @@ export class DummyPage extends PageWithHeader<undefined> {
 export class DummyPageNoTitle extends PageWithHeader<undefined> {
     siteTitle() {
         return "LOTR";
-    }
-
-    componentDidMount() {
-
     }
 
     name() {

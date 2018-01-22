@@ -17,13 +17,10 @@ interface LocationProps {
 }
 
 export class ResponsibilityOverviewPage extends ContribPageWithHeader<LocationProps> {
-    load() {
-        modellingGroupActions.setCurrentGroup(this.props.location.params.groupId);
-        responsibilityStore.fetchTouchstones().catch(doNothing).then(() => {
-            touchstoneActions.setCurrentTouchstone(this.props.location.params.touchstoneId);
-            responsibilityStore.fetchResponsibilities().catch(doNothing).then(() => {
-                super.load();
-            });
+    load(props: LocationProps) {
+        return this.loadParent(props).then(() => {
+            touchstoneActions.setCurrentTouchstone(props.touchstoneId);
+            return responsibilityStore.fetchResponsibilities();
         });
     }
 

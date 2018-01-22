@@ -2,14 +2,13 @@ import * as React from "react";
 import {expect} from "chai";
 import {responsibilityStore} from "../../../../../main/contrib/stores/ResponsibilityStore";
 import {mockModellingGroup, mockTouchstone} from "../../../../mocks/mockModels";
-import {checkAsync} from "../../../../testHelpers";
+import {checkAsync, checkPromise} from "../../../../testHelpers";
 import {UploadBurdenEstimatesPage} from "../../../../../main/contrib/components/Responsibilities/BurdenEstimates/UploadBurdenEstimatesPage";
 import {addNavigationTests} from "../../../../shared/NavigationTests";
 import {mockFetcherForMultipleResponses} from "../../../../mocks/mockMultipleEndpoints";
 import {jwtDecoder} from "../../../../../main/shared/sources/JwtDecoder";
 import {mockResult} from "../../../../mocks/mockRemote";
 import {helpers} from "../../../../../main/shared/Helpers";
-import {Notification} from "../../../../../main/shared/actions/NotificationActions";
 import {bootstrapStore} from "../../../../StoreHelpers";
 import {mainStore} from "../../../../../main/contrib/stores/MainStore";
 import {makeLoadable} from "../../../../../main/contrib/stores/Loadable";
@@ -42,11 +41,13 @@ describe('UploadEstimatesPage', () => {
 
         setupStores({groups: [group], touchstones: [touchstone]});
 
-        new UploadBurdenEstimatesPage({location: location, router: null}).load();
-
-        checkAsync(done, (afterWait) => {
+        const promise = new UploadBurdenEstimatesPage({location: location, router: null}).load({
+            touchstoneId: "touchstone-1",
+            scenarioId: "scenario-1",
+            groupId: "group-1",
+        });
+        checkPromise(done, promise, (_, afterWait) => {
             afterWait(done, () => {
-
                 expectOrderedActions(spy, [
                     {action: "EstimateTokenActions.clearUsedToken", payload: true},
                     {action: "EstimateTokenActions.setRedirectPath"},

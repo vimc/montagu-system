@@ -2,7 +2,7 @@ import * as React from "react";
 import {expect} from "chai";
 import {responsibilityStore} from "../../../../../main/contrib/stores/ResponsibilityStore";
 import {mockModellingGroup, mockTouchstone} from "../../../../mocks/mockModels";
-import {checkAsync} from "../../../../testHelpers";
+import {checkAsync, checkPromise} from "../../../../testHelpers";
 import {addNavigationTests} from "../../../../shared/NavigationTests";
 import {mockFetcherForMultipleResponses} from "../../../../mocks/mockMultipleEndpoints";
 import {jwtDecoder} from "../../../../../main/shared/sources/JwtDecoder";
@@ -39,11 +39,13 @@ describe('ModelRunParameterPage', () => {
 
         const touchstone = mockTouchstone({id: "touchstone-1"});
         setupStores({groups: [group], touchstones: [touchstone]});
-        new ModelRunParametersPage({location: location, router: null}).load();
 
-        checkAsync(done, (afterWait) => {
+        const promise = new ModelRunParametersPage().load({
+            touchstoneId: "touchstone-1",
+            groupId: "group-1",
+        });
+        checkPromise(done, promise, (_, afterWait) => {
             afterWait(done, () => {
-
                 expectOrderedActions(spy, [
                     {action: "ModellingGroupActions.setCurrentGroup", payload: "group-1"},
                     {action: "TouchstoneActions.setCurrentTouchstone", payload: "touchstone-1"}

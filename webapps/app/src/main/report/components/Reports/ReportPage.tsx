@@ -9,6 +9,7 @@ import {appSettings} from "../../../shared/Settings";
 import {MainMenu} from "../MainMenu/MainMenu";
 import {ReportPageTitle} from "./ReportPageTitle";
 import { Page } from "../../../shared/components/PageWithHeader/Page";
+import {Version} from "../../../shared/models/reports/Report";
 
 export interface ReportPageProps {
     report: string;
@@ -21,27 +22,24 @@ export class ReportPage extends ReportingPageWithHeader<ReportPageProps> {
         this.changeVersion = this.changeVersion.bind(this);
     }
 
-    load() {
-        const p = this.props.location.params;
-        this.loadVersion(p.report, p.version);
-    }
-
-    loadVersion(report: string, version: string) {
-        reportStore.fetchReports().catch(doNothing).then(() => {
-            reportActions.setCurrentReport(report);
-            reportStore.fetchVersions().catch(doNothing).then(() => {
-                reportActions.setCurrentVersion(version);
-                reportStore.fetchVersionDetails().catch(doNothing).then(() => {
-                    super.load();
-                });
-            });
+    load(props: ReportPageProps) {
+        return this.loadParent(props).then(() => {
+            return this.loadVersion(props.report, props.version);
         });
     }
 
-    changeVersion(version: string) {
+    loadVersion(report: string, version: string): Promise<Version> {
+        reportActions.setCurrentReport(report);
+        return reportStore.fetchVersions().catch(doNothing).then(() => {
+            reportActions.setCurrentVersion(version);
+            return reportStore.fetchVersionDetails()
+        });
+    }
+
+    changeVersion(version: string): Promise<Version> {
         const report = this.props.location.params.report;
         this.props.router.redirectTo(`${appSettings.publicPath}/${report}/${version}/`, false);
-        this.loadVersion(report, version);
+        return this.loadVersion(report, version);
     }
 
     parent() {
