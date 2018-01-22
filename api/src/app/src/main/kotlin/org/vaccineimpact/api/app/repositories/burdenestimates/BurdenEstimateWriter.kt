@@ -65,7 +65,7 @@ abstract class BurdenEstimateWriter(
         }
     }
 
-    fun clearEstimateSet(setId: Int)
+    open fun clearEstimateSet(setId: Int)
     {
         writeDatabaseDSLSource.inside { dsl ->
             dsl.deleteFrom(table).where(setField.eq(setId)).execute()

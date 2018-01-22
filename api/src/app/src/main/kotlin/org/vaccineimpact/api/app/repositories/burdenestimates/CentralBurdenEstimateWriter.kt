@@ -6,7 +6,7 @@ import org.jooq.impl.TableImpl
 import org.vaccineimpact.api.db.AmbientDSLContext
 import org.vaccineimpact.api.db.Tables
 
-class CentralBurdenEstimateWriter(readDatabaseDSL: DSLContext)
+open class CentralBurdenEstimateWriter(readDatabaseDSL: DSLContext)
     : BurdenEstimateWriter(readDatabaseDSL, AmbientDSLContext(readDatabaseDSL))
 {
     override val table: TableImpl<*> = Tables.BURDEN_ESTIMATE
