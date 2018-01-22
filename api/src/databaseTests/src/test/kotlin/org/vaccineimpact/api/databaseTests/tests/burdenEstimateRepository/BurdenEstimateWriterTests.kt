@@ -14,6 +14,8 @@ import org.vaccineimpact.api.db.direct.addBurdenEstimateSet
 
 class BurdenEstimateWriterTests : BurdenEstimateRepositoryTests()
 {
+    override val usesAnnex = true
+
     private fun createCentralSetWithoutModelRuns(): Int
     {
         return withDatabase { db ->
