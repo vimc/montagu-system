@@ -20,12 +20,14 @@ export function setShinyToken(){
     });
 }
 
-export function clearShinyToken(){
-    return fetcher.fetcher.fetch("/clear-shiny-cookie/", {
-        method: "GET",
-        credentials : "include"
-    }, false);
-}
+export const LoginSource = {
+    clearShinyToken() {
+        return fetcher.fetcher.fetch("/clear-shiny-cookie/", {
+            method: "GET",
+            credentials: "include"
+        }, false);
+    }
+};
 
 export function processLoginResponse(
     response: Response,
