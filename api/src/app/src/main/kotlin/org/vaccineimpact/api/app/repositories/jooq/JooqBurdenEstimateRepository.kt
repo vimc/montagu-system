@@ -101,6 +101,7 @@ class JooqBurdenEstimateRepository(
         )
                 .from(table)
                 .joinPath(table, BURDEN_ESTIMATE_SET_PROBLEM, joinType = JoinType.LEFT_OUTER_JOIN)
+                .where(table.ID.eq(setId))
                 .fetch()
 
         return mapper.mapBurdenEstimateSets(records).singleOrNull()
