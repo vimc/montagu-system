@@ -1,6 +1,7 @@
 package org.vaccineimpact.api.databaseTests.tests
 
 import com.nhaarman.mockito_kotlin.*
+import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
@@ -10,7 +11,7 @@ import org.vaccineimpact.api.app.repositories.burdenestimates.BurdenEstimateWrit
 import org.vaccineimpact.api.app.repositories.burdenestimates.CentralBurdenEstimateWriter
 import org.vaccineimpact.api.app.repositories.burdenestimates.StochasticBurdenEstimateWriter
 import org.vaccineimpact.api.db.JooqContext
-import org.vaccineimpact.api.db.direct.addBurdenEstimateSet
+import org.vaccineimpact.api.db.direct.*
 
 class PopulateBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
 {
@@ -129,6 +130,23 @@ class PopulateBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
             val repo = makeRepository(it)
             assertThatThrownBy {
                 repo.populateBurdenEstimateSet(12, groupId, touchstoneId, scenarioId, data())
+            }.isInstanceOf(UnknownObjectError::class.java)
+        }
+    }
+
+    @Test
+    fun `populate set throws unknown object error if set is for different responsibility`()
+    {
+        val scenario2 = "scenario-2"
+        val setId = withDatabase {
+            val returnedIds = setupDatabase(it)
+            it.addScenarioDescription(scenario2, "Test scenario 2", diseaseId, addDisease = false)
+            val responsibilityId = it.addResponsibility(returnedIds.responsibilitySetId, touchstoneId, scenario2)
+            it.addBurdenEstimateSet(responsibilityId, returnedIds.modelVersion!!, username, "complete")
+        }
+        withRepo { repo ->
+            Assertions.assertThatThrownBy {
+                repo.populateBurdenEstimateSet(setId, groupId, touchstoneId, scenarioId, data())
             }.isInstanceOf(UnknownObjectError::class.java)
         }
     }

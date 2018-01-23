@@ -16,6 +16,9 @@ import org.vaccineimpact.api.app.repositories.jooq.JooqBurdenEstimateRepository
 import org.vaccineimpact.api.databaseTests.tests.BurdenEstimateRepositoryTests
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.Tables.BURDEN_ESTIMATE_SET
+import org.vaccineimpact.api.db.direct.addBurdenEstimateSet
+import org.vaccineimpact.api.db.direct.addResponsibility
+import org.vaccineimpact.api.db.direct.addScenarioDescription
 
 class ClearBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
 {
@@ -96,6 +99,23 @@ class ClearBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
     {
         assertUnknownObjectError { repo, setId ->
             repo.clearBurdenEstimateSet(setId + 1, groupId, touchstoneId, scenarioId)
+        }
+    }
+
+    @Test
+    fun `cannot clear burden estimate set if set belongs to different responsibility`()
+    {
+        val scenario2 = "scenario-2"
+        val setId = withDatabase {
+            val returnedIds = setupDatabase(it)
+            it.addScenarioDescription(scenario2, "Test scenario 2", diseaseId, addDisease = false)
+            val responsibilityId = it.addResponsibility(returnedIds.responsibilitySetId, touchstoneId, scenario2)
+            it.addBurdenEstimateSet(responsibilityId, returnedIds.modelVersion!!, username, "partial")
+        }
+        withRepo { repo ->
+            Assertions.assertThatThrownBy {
+                repo.clearBurdenEstimateSet(setId, groupId, touchstoneId, scenarioId)
+            }.isInstanceOf(UnknownObjectError::class.java)
         }
     }
 
