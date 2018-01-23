@@ -16,7 +16,6 @@ object AuthenticationRouteConfig : RouteConfig
                     .secure()
                     .json(),
             Endpoint("/clear-shiny-cookie/", controller, "clearShinyCookie")
-                    .secure()
                     .json()
     )
 }
