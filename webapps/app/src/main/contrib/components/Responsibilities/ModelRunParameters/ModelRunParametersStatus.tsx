@@ -65,8 +65,7 @@ export class ModelRunParametersStatus extends React.Component<Props, State> {
     refreshToken(setId: number) {
         return () => {
             runParameterActions.clearToken(setId);
-            const s = runParametersStore.getState();
-            runParameterActions.fetchToken(s.groupId, s.touchstoneId, setId)
+            runParameterActions.fetchToken(this.state.groupId, this.state.touchstoneId, setId)
         }
     }
 
