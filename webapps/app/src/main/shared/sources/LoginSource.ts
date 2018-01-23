@@ -24,7 +24,7 @@ export function clearShinyToken(){
     return fetcher.fetcher.fetch("/clear-shiny-cookie/", {
         method: "GET",
         credentials : "include"
-    });
+    }, false);
 }
 
 export function processLoginResponse(

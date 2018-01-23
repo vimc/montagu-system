@@ -112,8 +112,8 @@ export abstract class AuthStore<TState extends AuthStateBase, TInterface extends
         alt.recycle();
         if (typeof(Storage) !== "undefined") {
             localStorage.clear();
-            clearShinyToken();
         }
+        clearShinyToken();
     }
 
 }
