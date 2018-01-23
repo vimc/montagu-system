@@ -27,15 +27,15 @@ export class ModelRunParametersStatus extends React.Component<Props, State> {
             token: null,
             groupId: null,
             touchstoneId: null
-        }
-        this.refreshToken = this.refreshToken.bind(this)
+        };
+        this.refreshToken = this.refreshToken.bind(this);
         this.onChange = this.onChange.bind(this)
     }
 
     getLastSetForDisease(allSets: ModelRunParameterSet[], disease: string) {
         const sets = allSets
             ? allSets.filter(s => s.disease == disease)
-            : []
+            : [];
         if (sets.length) {
             return sets[0]
         }
