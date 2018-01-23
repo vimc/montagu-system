@@ -41,12 +41,12 @@ describe("GroupMembersContent", () => {
             ready: true,
             users: [a, b, c],
             members: [a, b],
-            isAdmin: true
+            canManageGroupMembers: true
         });
     });
 
     it("renders no members if group has no members", () => {
-        const rendered = shallow(<GroupMembersContentComponent isAdmin={false} ready={ true } groupId="group1" users={ [] } members={ [] } />);
+        const rendered = shallow(<GroupMembersContentComponent canManageGroupMembers={false} ready={ true } groupId="group1" users={ [] } members={ [] } />);
         expect(rendered.text()).to.contain("This group does not have any members.");
     });
 
@@ -55,7 +55,7 @@ describe("GroupMembersContent", () => {
             mockUser({ name: "Test A" }),
             mockUser({ name: "Test B" })
         ];
-        const rendered = shallow(<GroupMembersContentComponent isAdmin={false} ready={ true } groupId="group1" users={ [] } members={ members } />);
+        const rendered = shallow(<GroupMembersContentComponent canManageGroupMembers={false} ready={ true } groupId="group1" users={ [] } members={ members } />);
         expect(rendered.find(ListOfUsers).prop("users")).to.eql(members);
     });
 
@@ -65,7 +65,7 @@ describe("GroupMembersContent", () => {
             mockUser({ name: "Test A" }),
             mockUser({ name: "Test B" })
         ];
-        const rendered = shallow(<GroupMembersContentComponent isAdmin={false} ready={ true } groupId="group1" users={ [] } members={ members } />);
+        const rendered = shallow(<GroupMembersContentComponent canManageGroupMembers={false} ready={ true } groupId="group1" users={ [] } members={ members } />);
         expect(rendered.find(AddMember).length).to.eql(0);
     });
 
@@ -75,7 +75,7 @@ describe("GroupMembersContent", () => {
             mockUser({ name: "Test A" }),
             mockUser({ name: "Test B" })
         ];
-        const rendered = shallow(<GroupMembersContentComponent isAdmin={true} ready={ true } groupId="group1" users={ [] } members={ members } />);
+        const rendered = shallow(<GroupMembersContentComponent canManageGroupMembers={true} ready={ true } groupId="group1" users={ [] } members={ members } />);
         expect(rendered.find(AddMember).length).to.eql(1);
     });
 });
