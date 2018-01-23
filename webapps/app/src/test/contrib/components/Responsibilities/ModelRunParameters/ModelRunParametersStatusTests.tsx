@@ -34,11 +34,9 @@ describe('ModelRunParameterStatus', () => {
             disease={"d1"}
         />);
 
-        const sets = rendered.state().sets;
+        const set = rendered.state().set;
 
-        expect(sets.length).to.eq(2);
-        expect(sets[0].disease).to.eq("d1");
-        expect(sets[1].disease).to.eq("d1");
+        expect(set.disease).to.eq("d1");
     });
 
     it("renders message if no sets", () => {
