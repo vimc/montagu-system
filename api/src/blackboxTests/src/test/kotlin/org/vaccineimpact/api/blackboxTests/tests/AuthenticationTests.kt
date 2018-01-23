@@ -75,17 +75,7 @@ class AuthenticationTests : DatabaseTest()
     @Test
     fun `can clear shiny cookie`()
     {
-        JooqContext().use {
-            it.addUserForTesting(TestUserHelper.username,
-                    email = TestUserHelper.email, password = TestUserHelper.defaultPassword)
-            it.ensureUserHasRole(TestUserHelper.username, ReifiedRole("reports-reviewer", Scope.Global()))
-            it.ensureUserHasRole(TestUserHelper.username, ReifiedRole("user", Scope.Global()))
-        }
-
-        val token = TokenFetcher().getToken(TestUserHelper.email, TestUserHelper.defaultPassword)
-                as TokenFetcher.TokenResponse.Token
-
-        val response = RequestHelper().get("/clear-shiny-cookie/", token.token)
+        val response = RequestHelper().get("/clear-shiny-cookie/")
 
         assertThat(response.statusCode).isEqualTo(200)
 
