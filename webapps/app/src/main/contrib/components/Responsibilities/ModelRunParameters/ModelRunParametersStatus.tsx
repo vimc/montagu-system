@@ -1,7 +1,6 @@
 import {ModelRunParameterSet} from "../../../../shared/models/Generated";
 import * as React from "react";
 import {Alert} from 'reactstrap';
-import { isEqual, clone } from 'lodash';
 import {longestTimestamp} from "../../../../shared/Helpers";
 import {ModelRunParameterDownloadCertificate} from "./ModelRunParameterDownloadCertificate";
 import {RunParametersState, runParametersStore, TokensMap } from "../../../stores/RunParametersStore";
@@ -26,8 +25,8 @@ export class ModelRunParametersStatus extends React.Component<Props, State> {
         this.state = {
             set: null,
             token: null,
-            groupId: "",
-            touchstoneId: ""
+            groupId: null,
+            touchstoneId: null
         }
         this.refreshToken = this.refreshToken.bind(this)
         this.onChange = this.onChange.bind(this)
@@ -44,8 +43,12 @@ export class ModelRunParametersStatus extends React.Component<Props, State> {
     }
 
     getTokenBySet(set: ModelRunParameterSet, tokens: TokensMap) {
-        if (!set) return null;
-        if (tokens[set.id]) return tokens[set.id];
+        if (!set) {
+            return null;
+        }
+        if (tokens[set.id]) {
+            return tokens[set.id];
+        }
         return null;
     }
 
@@ -100,7 +103,6 @@ export class ModelRunParametersStatus extends React.Component<Props, State> {
 
             const downloadCertificateLink = <ModelRunParameterDownloadCertificate set={set}/>;
 
-            // TODO add link when API endpoint implemented
             const downloadParamsLink = <OneTimeButton
                 token={this.state.token}
                 refreshToken={this.refreshToken(set.id)}
