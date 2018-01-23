@@ -65,6 +65,28 @@ class JooqBurdenEstimateRepository(
                 .fetchInto(ModelRunParameterSet::class.java)
     }
 
+    private fun getBurdenEstimateSetForResponsibility(setId: Int, responsibilityId: Int): BurdenEstimateSet
+    {
+        val table = BURDEN_ESTIMATE_SET
+        val records = dsl.select(
+                table.ID,
+                table.UPLOADED_ON,
+                table.UPLOADED_BY,
+                table.SET_TYPE,
+                table.SET_TYPE_DETAILS,
+                table.STATUS,
+                table.RESPONSIBILITY,
+                BURDEN_ESTIMATE_SET_PROBLEM.PROBLEM
+        )
+                .from(table)
+                .joinPath(table, BURDEN_ESTIMATE_SET_PROBLEM, joinType = JoinType.LEFT_OUTER_JOIN)
+                .where(table.ID.eq(setId).and(table.RESPONSIBILITY.eq(responsibilityId)))
+                .fetch()
+
+        return mapper.mapBurdenEstimateSets(records).singleOrNull()
+                ?: throw UnknownObjectError(setId, "burden-estimate-set")
+    }
+
     override fun getBurdenEstimateSet(setId: Int): BurdenEstimateSet
     {
         val table = BURDEN_ESTIMATE_SET
@@ -79,7 +101,6 @@ class JooqBurdenEstimateRepository(
         )
                 .from(table)
                 .joinPath(table, BURDEN_ESTIMATE_SET_PROBLEM, joinType = JoinType.LEFT_OUTER_JOIN)
-                .where(table.ID.eq(setId))
                 .fetch()
 
         return mapper.mapBurdenEstimateSets(records).singleOrNull()
@@ -254,7 +275,7 @@ class JooqBurdenEstimateRepository(
 
         val responsibilityInfo = getResponsibilityInfo(modellingGroup.id, touchstoneId, scenarioId)
 
-        val set = getBurdenEstimateSet(setId)
+        val set = getBurdenEstimateSetForResponsibility(setId, responsibilityInfo.id)
         val type = set.type.type
 
         if (set.status == BurdenEstimateSetStatus.COMPLETE)
@@ -324,8 +345,8 @@ class JooqBurdenEstimateRepository(
     override fun clearBurdenEstimateSet(setId: Int, groupId: String, touchstoneId: String, scenarioId: String)
     {
         val modellingGroup = modellingGroupRepository.getModellingGroup(groupId)
-        getResponsibilityInfo(modellingGroup.id, touchstoneId, scenarioId)
-        val set = getBurdenEstimateSet(setId)
+        val responsibilityInfo = getResponsibilityInfo(modellingGroup.id, touchstoneId, scenarioId)
+        val set = getBurdenEstimateSetForResponsibility(setId, responsibilityInfo.id)
 
         if (set.status == BurdenEstimateSetStatus.COMPLETE)
         {
