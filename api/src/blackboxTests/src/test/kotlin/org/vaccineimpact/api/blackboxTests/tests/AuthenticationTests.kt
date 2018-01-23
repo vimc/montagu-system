@@ -73,6 +73,32 @@ class AuthenticationTests : DatabaseTest()
     }
 
     @Test
+    fun `can clear shiny cookie`()
+    {
+        JooqContext().use {
+            it.addUserForTesting(TestUserHelper.username,
+                    email = TestUserHelper.email, password = TestUserHelper.defaultPassword)
+            it.ensureUserHasRole(TestUserHelper.username, ReifiedRole("reports-reviewer", Scope.Global()))
+            it.ensureUserHasRole(TestUserHelper.username, ReifiedRole("user", Scope.Global()))
+        }
+
+        val token = TokenFetcher().getToken(TestUserHelper.email, TestUserHelper.defaultPassword)
+                as TokenFetcher.TokenResponse.Token
+
+        val response = RequestHelper().get("/clear-shiny-cookie/", token.token)
+
+        assertThat(response.statusCode).isEqualTo(200)
+
+        val cookieHeader = response.headers["Set-Cookie"]!!
+        assertThat(cookieHeader).contains("Secure")
+        assertThat(cookieHeader).contains("HttpOnly")
+        assertThat(cookieHeader).contains("SameSite=Lax")
+
+        val cookie = cookieHeader.substring(cookieHeader.indexOf("=") + 1, cookieHeader.indexOf(";"))
+        assertThat(cookie.isEmpty()).isTrue()
+    }
+
+    @Test
     fun `unknown email does not authenticate`()
     {
         val result = post("bad@example.com", "password")

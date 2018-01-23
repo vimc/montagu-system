@@ -14,6 +14,9 @@ object AuthenticationRouteConfig : RouteConfig
                     .basicAuth(),
             Endpoint("/set-shiny-cookie/", controller, "setShinyCookie")
                     .secure()
+                    .json(),
+            Endpoint("/clear-shiny-cookie/", controller, "clearShinyCookie")
+                    .secure()
                     .json()
     )
 }

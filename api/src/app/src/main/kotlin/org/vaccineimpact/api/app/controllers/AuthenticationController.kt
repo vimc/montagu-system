@@ -50,4 +50,11 @@ class AuthenticationController(context: ActionContext,
         context.addResponseHeader("Access-Control-Allow-Credentials", "true")
         return okayResponse()
     }
+
+    fun clearShinyCookie(): String
+    {
+        context.addResponseHeader("Set-Cookie", "jwt_token=; Path=/; Secure; HttpOnly; SameSite=Lax")
+        context.addResponseHeader("Access-Control-Allow-Credentials", "true")
+        return okayResponse()
+    }
 }
