@@ -80,7 +80,7 @@ export function apiResponse(response: Response): Promise<Result> {
         });
 }
 
-function processResponse<TModel>(response: Response): Promise<any> {
+export function processResponse<TModel>(response: Response): Promise<any> {
 
     return response.json()
         .then((response: any) => {

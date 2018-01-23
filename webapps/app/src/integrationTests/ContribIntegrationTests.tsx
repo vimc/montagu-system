@@ -28,6 +28,9 @@ import * as QueryString from "querystring";
 import {demographicStore} from "../main/contrib/stores/DemographicStore";
 import {demographicActions} from "../main/contrib/actions/DemographicActions";
 import {estimateTokenActions} from "../main/contrib/actions/EstimateActions";
+import {runParameterActions} from "../main/contrib/actions/RunParameterActions";
+
+import {fetchToken as fetchTokenForModelRunParam} from "../main/contrib/sources/RunParametersSource";
 
 const FormData = require('form-data');
 const http = require('http');
@@ -342,6 +345,27 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
                         uploaded_by: 'test.user'
                     }
                 ]);
+            });
+        });
+
+        it("fetches one time model run parameter sets token", (done: DoneCallback) => {
+
+            const promise: Promise<any> = addModelRunParameterSets(this.db)
+                .then(() => {
+                    setTouchstoneAndGroup(touchstoneId, groupId);
+                    const s = runParametersStore.getState();
+                    return fetchTokenForModelRunParam(s.groupId, s.touchstoneId, 1)
+                });
+
+            checkPromise(done, promise, token => {
+                const decoded = jwt_decode(token);
+                expect(decoded.action).to.equal("model-run-parameters");
+                const payload = QueryString.parse(decoded.payload);
+                expect(payload).to.eql(JSON.parse(`{
+                    ":group-id": "${groupId}",
+                    ":touchstone-id": "${touchstoneId}",
+                    ":model-run-parameter-set-id": "1"
+                }`));
             });
         });
 

@@ -2,9 +2,9 @@ import * as React from "react";
 import { expect } from "chai";
 import { shallow } from "enzyme";
 
-import { OneTimeButton } from "../../../main/shared/components/OneTimeButton";
-import { OneTimeButtonTimeBlocker } from "../../../main/shared/components/OneTimeButtonTimeBlocker";
-import { TimeBlockerProps } from "../../../main/shared/components/OneTimeButtonTimeBlocker";
+import { OneTimeButton } from "../../../main/shared/components/OneTimeButton/OneTimeButton";
+import { OneTimeButtonTimeBlocker } from "../../../main/shared/components/OneTimeButton/OneTimeButtonTimeBlocker";
+import { TimeBlockerProps } from "../../../main/shared/components/OneTimeButton/OneTimeButtonTimeBlocker";
 import { doNothing } from "../../../main/shared/Helpers";
 import fetcher from "../../../main/shared/sources/Fetcher";
 import { Sandbox } from "../../Sandbox";

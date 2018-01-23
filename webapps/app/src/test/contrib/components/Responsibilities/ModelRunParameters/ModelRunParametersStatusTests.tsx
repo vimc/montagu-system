@@ -19,6 +19,7 @@ describe('ModelRunParameterStatus', () => {
         alt.bootstrap(JSON.stringify({
             RunParametersStore: {
                 parameterSets: sets,
+                oneTimeTokens: {1: 'testtoken'}
             }
         }));
 
@@ -33,11 +34,9 @@ describe('ModelRunParameterStatus', () => {
             disease={"d1"}
         />);
 
-        const sets = rendered.state().sets;
+        const set = rendered.state().set;
 
-        expect(sets.length).to.eq(2);
-        expect(sets[0].disease).to.eq("d1");
-        expect(sets[1].disease).to.eq("d1");
+        expect(set.disease).to.eq("d1");
     });
 
     it("renders message if no sets", () => {
@@ -58,7 +57,6 @@ describe('ModelRunParameterStatus', () => {
         rendered = shallow(<ModelRunParametersStatus
             disease={"d1"}
         />);
-
         const alert = rendered.find(Alert);
         expect(alert.childAt(0).text()).to.contain("You last uploaded a parameter set on Fri Jul 13 2018, 13:45:29");
 

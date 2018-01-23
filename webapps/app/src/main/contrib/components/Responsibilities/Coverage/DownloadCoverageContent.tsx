@@ -6,8 +6,8 @@ import { RemoteContentComponent } from "../../../../shared/components/RemoteCont
 import { CoverageSetList } from "./CoverageSetList";
 import { responsibilityStore } from "../../../stores/ResponsibilityStore";
 import { coverageTokenActions } from "../../../actions/CoverageActions";
-import { OneTimeButton } from "../../../../shared/components/OneTimeButton";
-import { OneTimeButtonTimeBlocker } from "../../../../shared/components/OneTimeButtonTimeBlocker";
+import { OneTimeButton } from "../../../../shared/components/OneTimeButton/OneTimeButton";
+import { OneTimeButtonTimeBlocker } from "../../../../shared/components/OneTimeButton/OneTimeButtonTimeBlocker";
 import { FormatControl } from "../FormatControl";
 import { HasFormatOption } from "../Demographics/DemographicOptions";
 import { doNothing } from "../../../../shared/Helpers";
