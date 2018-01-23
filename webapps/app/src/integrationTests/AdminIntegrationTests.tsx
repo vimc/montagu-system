@@ -9,7 +9,7 @@ import { Client, QueryResult } from "pg";
 import { ModellingGroup, ModellingGroupDetails, User } from "../main/shared/models/Generated";
 import { modellingGroupActions } from "../main/shared/actions/ModellingGroupActions";
 import { userStore } from "../main/admin/stores/UserStore";
-import {setShinyToken} from "../main/shared/sources/LoginSource";
+import {clearShinyToken, setShinyToken} from "../main/shared/sources/LoginSource";
 
 class AdminIntegrationTests extends IntegrationTestSuite {
     description() {
@@ -28,6 +28,13 @@ class AdminIntegrationTests extends IntegrationTestSuite {
 
         it("can fetch shiny cookie", (done: DoneCallback) => {
             setShinyToken().then((res: Response) => {
+                expect(res.ok).to.be.eq(true);
+                done()
+            })
+        });
+
+        it("can clear shiny cookie", (done: DoneCallback) => {
+            clearShinyToken().then((res: Response) => {
                 expect(res.ok).to.be.eq(true);
                 done()
             })

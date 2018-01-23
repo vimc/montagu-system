@@ -3,7 +3,7 @@ import * as AltJS from "alt";
 import {AbstractStore} from "./AbstractStore";
 import {authActions, LogInProperties} from "../actions/AuthActions";
 import {decodeToken} from "../Token";
-import {setShinyToken} from "../sources/LoginSource";
+import {clearShinyToken, setShinyToken} from "../sources/LoginSource";
 import {adminAuthStore} from "../../admin/stores/AdminAuthStore";
 
 export interface AuthStateBase {
@@ -112,6 +112,7 @@ export abstract class AuthStore<TState extends AuthStateBase, TInterface extends
         alt.recycle();
         if (typeof(Storage) !== "undefined") {
             localStorage.clear();
+            clearShinyToken();
         }
     }
 
