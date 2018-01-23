@@ -7,7 +7,7 @@ import { AdminLoginPage } from "./AdminLoginPage";
 import { AdminNoRouteFoundPage } from "./AdminNoRouteFoundPage";
 import { ViewAllModellingGroupsPage } from "./ModellingGroups/List/ViewAllModellingGroupsPage";
 import { ViewModellingGroupDetailsPage } from "./ModellingGroups/SingleGroup/Details/ViewModellingGroupDetailsPage";
-import { GroupAdminPage } from "./ModellingGroups/SingleGroup/Admin/GroupAdminPage";
+import { GroupMembersPage } from "./ModellingGroups/SingleGroup/Members/GroupMembersPage";
 import {ViewAllUsersPage} from "./Users/List/ViewAllUsersPage";
 import {ViewUserDetailsPage} from "./Users/SingleUser/ViewUserDetailsPage";
 import { AdminForgottenPasswordPage } from "./AdminForgottenPasswordPage";
@@ -30,7 +30,7 @@ export class AdminRouter extends Router<RouterProps> {
             map('/', MainMenu);
             map('/modelling-groups/', ViewAllModellingGroupsPage);
             map('/modelling-groups/:groupId/', ViewModellingGroupDetailsPage);
-            map('/modelling-groups/:groupId/admin/', GroupAdminPage);
+            map('/modelling-groups/:groupId/admin/', GroupMembersPage);
             map('/users/', ViewAllUsersPage);
             map('/users/:username', ViewUserDetailsPage);
             map('*', AdminNoRouteFoundPage);

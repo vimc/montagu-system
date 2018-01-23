@@ -1,13 +1,13 @@
 import * as React from "react";
-import { expect } from "chai";
-import { shallow } from "enzyme";
-import { GroupAdminContentComponent } from "../../../../../main/admin/components/ModellingGroups/SingleGroup/Admin/GroupAdminContent";
-import { mockModellingGroupDetails, mockUser } from "../../../../mocks/mockModels";
-import { alt } from "../../../../../main/shared/alt";
-import { ListOfUsers } from "../../../../../main/admin/components/ModellingGroups/ListOfUsers";
-import { AddMember } from "../../../../../main/admin/components/ModellingGroups/SingleGroup/Admin/AddMember";
+import {expect} from "chai";
+import {shallow} from "enzyme";
+import {GroupMembersContentComponent} from "../../../../../main/admin/components/ModellingGroups/SingleGroup/Members/GroupMembersContent";
+import {mockModellingGroupDetails, mockUser} from "../../../../mocks/mockModels";
+import {alt} from "../../../../../main/shared/alt";
+import {ListOfUsers} from "../../../../../main/admin/components/ModellingGroups/ListOfUsers";
+import {AddMember} from "../../../../../main/admin/components/ModellingGroups/SingleGroup/Members/AddMember";
 
-describe("GroupAdminContent", () => {
+describe("GroupMembersContent", () => {
 
     afterEach(() => {
         alt.recycle();
@@ -35,7 +35,7 @@ describe("GroupAdminContent", () => {
                 permissions: ["*/modelling-groups.manage-members"]
             }
         }));
-        const props = GroupAdminContentComponent.getPropsFromStores();
+        const props = GroupMembersContentComponent.getPropsFromStores();
         expect(props).to.eql({
             groupId: "group1",
             ready: true,
@@ -46,7 +46,7 @@ describe("GroupAdminContent", () => {
     });
 
     it("renders no members if group has no members", () => {
-        const rendered = shallow(<GroupAdminContentComponent isAdmin={false} ready={ true } groupId="group1" users={ [] } members={ [] } />);
+        const rendered = shallow(<GroupMembersContentComponent isAdmin={false} ready={ true } groupId="group1" users={ [] } members={ [] } />);
         expect(rendered.text()).to.contain("This group does not have any members.");
     });
 
@@ -55,7 +55,7 @@ describe("GroupAdminContent", () => {
             mockUser({ name: "Test A" }),
             mockUser({ name: "Test B" })
         ];
-        const rendered = shallow(<GroupAdminContentComponent isAdmin={false} ready={ true } groupId="group1" users={ [] } members={ members } />);
+        const rendered = shallow(<GroupMembersContentComponent isAdmin={false} ready={ true } groupId="group1" users={ [] } members={ members } />);
         expect(rendered.find(ListOfUsers).prop("users")).to.eql(members);
     });
 
@@ -65,7 +65,7 @@ describe("GroupAdminContent", () => {
             mockUser({ name: "Test A" }),
             mockUser({ name: "Test B" })
         ];
-        const rendered = shallow(<GroupAdminContentComponent isAdmin={false} ready={ true } groupId="group1" users={ [] } members={ members } />);
+        const rendered = shallow(<GroupMembersContentComponent isAdmin={false} ready={ true } groupId="group1" users={ [] } members={ members } />);
         expect(rendered.find(AddMember).length).to.eql(0);
     });
 
@@ -75,7 +75,7 @@ describe("GroupAdminContent", () => {
             mockUser({ name: "Test A" }),
             mockUser({ name: "Test B" })
         ];
-        const rendered = shallow(<GroupAdminContentComponent isAdmin={true} ready={ true } groupId="group1" users={ [] } members={ members } />);
+        const rendered = shallow(<GroupMembersContentComponent isAdmin={true} ready={ true } groupId="group1" users={ [] } members={ members } />);
         expect(rendered.find(AddMember).length).to.eql(1);
     });
 });
