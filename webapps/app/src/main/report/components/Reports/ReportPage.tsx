@@ -22,7 +22,7 @@ export class ReportPage extends ReportingPageWithHeader<ReportPageProps> {
         this.changeVersion = this.changeVersion.bind(this);
     }
 
-    load(props: ReportPageProps) {
+    load(props: ReportPageProps): Promise<Version> {
         return this.loadParent(props).then(() => {
             return this.loadVersion(props.report, props.version);
         });

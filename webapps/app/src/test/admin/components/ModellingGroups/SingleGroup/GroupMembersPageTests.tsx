@@ -6,7 +6,7 @@ import {groupStore} from "../../../../../main/admin/stores/GroupStore";
 import {mockLocation} from "../../../../mocks/mocks";
 import {GroupMembersPage} from "../../../../../main/admin/components/ModellingGroups/SingleGroup/Members/GroupMembersPage";
 import {ModellingGroupDetailsPageProps} from "../../../../../main/admin/components/ModellingGroups/SingleGroup/Details/ViewModellingGroupDetailsPage";
-import {checkAsync} from "../../../../testHelpers";
+import {checkAsync, checkPromise} from "../../../../testHelpers";
 import {expectOneAction} from "../../../../actionHelpers";
 import {alt} from "../../../../../main/shared/alt";
 import {addNavigationTests} from "../../../../shared/NavigationTests";
@@ -28,9 +28,8 @@ describe("GroupMembersPage", () => {
         const fetchGroupDetails = sandbox.sinon.stub(groupStore, "fetchGroupDetails").returns(Promise.resolve({}));
         const dispatchSpy = sandbox.dispatchSpy();
 
-        (new GroupMembersPage({location: location, router: null})).load();
-
-        checkAsync(done, (afterWait) => {
+        const promise = new GroupMembersPage({location: location, router: null}).load({groupId: groupId});
+        checkPromise(done, promise, (_, afterWait) => {
             expect(fetchGroups.called).to.equal(true, "Expected groupStore.fetchGroups to be triggered");
             expect(fetchUsers.called).to.equal(true, "Expected userStore.fetchUsers to be triggered");
             afterWait(done, () => {

@@ -41,13 +41,15 @@ describe("ReportPage", () => {
         action();
 
         checkAsync(done, (afterWait) => {
-            expect(fetchReports.called).to.equal(true, "Expected fetchReports to be called");
             afterWait(done, () => {
-                expectOneAction(spy, {action: "ReportActions.setCurrentReport", payload: "reportname"}, 0);
-                expect(fetchVersions.called).to.equal(true, "Expected fetchVersions to be called");
+                expect(fetchReports.called).to.equal(true, "Expected fetchReports to be called");
                 afterWait(done, () => {
-                    expectOneAction(spy, {action: "ReportActions.setCurrentVersion", payload: "versionname"}, 1);
-                    expect(fetchVersionDetails.called).to.equal(true, "Expected fetchVersionDetails to be called");
+                    expectOneAction(spy, {action: "ReportActions.setCurrentReport", payload: "reportname"}, 0);
+                    expect(fetchVersions.called).to.equal(true, "Expected fetchVersions to be called");
+                    afterWait(done, () => {
+                        expectOneAction(spy, {action: "ReportActions.setCurrentVersion", payload: "versionname"}, 1);
+                        expect(fetchVersionDetails.called).to.equal(true, "Expected fetchVersionDetails to be called");
+                    });
                 });
             });
         });
