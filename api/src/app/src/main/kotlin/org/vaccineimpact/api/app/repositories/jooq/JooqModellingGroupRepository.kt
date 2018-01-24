@@ -231,7 +231,6 @@ class JooqModellingGroupRepository(
             val responsibilities = getResponsibilitiesInResponsibilitySet(
                     responsibilitySet,
                     { this.whereMatchesFilter(JooqScenarioFilter(), scenarioFilterParameters) }
-
             )
             val status = mapper.mapEnum<ResponsibilitySetStatus>(responsibilitySet.status)
             return Responsibilities(touchstoneId, "", status, responsibilities)
