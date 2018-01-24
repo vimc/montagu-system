@@ -68,7 +68,7 @@ class JooqScenarioRepository(dsl: DSLContext,
                     id = first[d.ID],
                     description = first[d.DESCRIPTION],
                     disease = first[d.DISEASE],
-                    touchstones = input.map { it[SCENARIO.TOUCHSTONE] }
+                    touchstones = input.map { it[SCENARIO.TOUCHSTONE] }.sortedBy { it }
             )
         }
     }
