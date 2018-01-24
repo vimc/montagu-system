@@ -24,22 +24,22 @@ export class ReportPage extends ReportingPageWithHeader<ReportPageProps> {
 
     load(props: ReportPageProps): Promise<Version> {
         return this.loadParent(props).then(() => {
-            return this.loadVersion(props.report, props.version);
-        });
-    }
-
-    loadVersion(report: string, version: string): Promise<Version> {
-        reportActions.setCurrentReport(report);
-        return reportStore.fetchVersions().catch(doNothing).then(() => {
-            reportActions.setCurrentVersion(version);
-            return reportStore.fetchVersionDetails()
+            reportActions.setCurrentReport(props.report);
+            return reportStore.fetchVersions().then(() => {
+                reportActions.setCurrentVersion(props.version);
+                return reportStore.fetchVersionDetails();
+            });
         });
     }
 
     changeVersion(version: string): Promise<Version> {
-        const report = this.props.location.params.report;
+        const params = this.props.location.params;
+        const report = params.report;
         this.props.router.redirectTo(`${appSettings.publicPath}/${report}/${version}/`, false);
-        return this.loadVersion(report, version);
+        return this.load({
+            report: report,   // same report as in old URL
+            version: version  // new version from function argument
+        });
     }
 
     parent() {

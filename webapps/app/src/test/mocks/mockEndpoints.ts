@@ -53,6 +53,9 @@ export function mockGroupDetailsEndpoint(group: ModellingGroupDetails): FakeEndp
 export function mockReportsEndpoint(reports: Report[]): FakeEndpoint {
     return makeFakeEndpoint("/reports/", reports, APIType.Reporting);
 }
+export function mockReportVersionsEndpoint(reportName: string, versions: Version[]): FakeEndpoint {
+    return makeFakeEndpoint(`/reports/${reportName}/`, versions, APIType.Reporting)
+}
 export function mockReportDetailsEndpoint(details: Version): FakeEndpoint {
     return makeFakeEndpoint(`/reports/${details.name}/versions/${details.id}/`, details, APIType.Reporting)
 }
