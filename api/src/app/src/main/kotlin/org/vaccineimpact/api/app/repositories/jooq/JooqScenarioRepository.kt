@@ -25,7 +25,7 @@ class JooqScenarioRepository(dsl: DSLContext,
 
     override fun getScenarios(descriptionIds: Iterable<String>): List<Scenario>
     {
-        return dsl.select(SCENARIO_DESCRIPTION.fieldsAsList())
+        val scenarios =  dsl.select(SCENARIO_DESCRIPTION.fieldsAsList())
                 .select(SCENARIO.TOUCHSTONE, COVERAGE_SET.ACTIVITY_TYPE)
                 .fromJoinPath(SCENARIO_DESCRIPTION, SCENARIO)
                 .join(COVERAGE_SET)
@@ -34,8 +34,12 @@ class JooqScenarioRepository(dsl: DSLContext,
                 .fetch()
                 .groupBy { it[SCENARIO_DESCRIPTION.ID] }
                 .map { mapScenarioWithFocalActivityType(it.value) }
+
+                val sorted =  scenarios
                 .sortedBy { it.activityType }
                 .map { it.scenario }
+
+        return sorted
     }
 
     private fun mapScenarioWithFocalActivityType(input: List<Record>): ScenarioAndFocalActivityType

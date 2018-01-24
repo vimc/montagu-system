@@ -401,6 +401,22 @@ fun JooqContext.addCoverageSetToScenario(scenarioId: String, touchstoneId: Strin
     return this.addCoverageSetToScenario(record[SCENARIO.ID], coverageSetId, order)
 }
 
+fun JooqContext.addFocalCoverageSetToScenario(scenarioDescription: String, touchstoneId: String, coverageSetId: Int, order: Int)
+{
+    val scenarioId = this.dsl.select(SCENARIO.ID)
+            .fromJoinPath(SCENARIO, SCENARIO_DESCRIPTION)
+            .where(SCENARIO.TOUCHSTONE.eq(touchstoneId))
+            .and(SCENARIO_DESCRIPTION.ID.eq(scenarioDescription))
+            .fetchOneInto(Int::class.java)
+
+    this.addCoverageSetToScenario(scenarioId, coverageSetId, order)
+
+    this.dsl.update(SCENARIO)
+            .set(SCENARIO.FOCAL_COVERAGE_SET, coverageSetId)
+            .where(SCENARIO.ID.eq(scenarioId))
+            .execute()
+}
+
 fun JooqContext.addCountries(ids: List<String>)
 {
     val records = ids.map {
