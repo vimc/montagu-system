@@ -242,16 +242,18 @@ class GetResponsibilitiesTests : ModellingGroupRepositoryTests()
             assertThat(set.touchstone).isEqualTo("touchstone-1")
             assertThat(set.status).isEqualTo(ResponsibilitySetStatus.SUBMITTED)
             assertThat(set.problems).isEmpty()
-            assertThat(set).hasSameElementsAs(listOf(
-                    Responsibility(
-                            Scenario("scenario-1", "description 1", "disease 1", listOf(
-                                    "touchstone-1",
-                                    "touchstone-2"
-                            )),
-                            ResponsibilityStatus.EMPTY,
-                            emptyList(),
-                            null
-                    )
+            assertThat(set.count()).isEqualTo(1)
+
+            val responsibility = set.first()
+            assertThat(responsibility.status).isEqualTo(ResponsibilityStatus.EMPTY)
+            assertThat(responsibility.problems).hasSameElementsAs(emptyList())
+            assertThat(responsibility.currentEstimateSet).isNull()
+
+            assertThat(responsibility.scenario.id).isEqualTo("scenario-1")
+            assertThat(responsibility.scenario.disease).isEqualTo("disease 1")
+            assertThat(responsibility.scenario.touchstones).hasSameElementsAs(listOf(
+                    "touchstone-1",
+                    "touchstone-2"
             ))
         }
     }

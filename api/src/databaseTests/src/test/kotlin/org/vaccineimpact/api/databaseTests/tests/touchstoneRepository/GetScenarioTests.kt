@@ -90,9 +90,11 @@ class GetScenarioTests : TouchstoneRepositoryTests()
 
     private fun checkScenarioIsAsExpected(result: ScenarioAndCoverageSets, extraTouchstones: List<String> = emptyList())
     {
-        assertThat(result.scenario).isEqualTo(Scenario(
-                "yf-1", "Yellow Fever 1", "YF", listOf(touchstoneId) + extraTouchstones
-        ))
+        assertThat(result.scenario.description).isEqualTo("Yellow Fever 1")
+        assertThat(result.scenario.id).isEqualTo("yf-1")
+        assertThat(result.scenario.disease).isEqualTo("YF")
+        assertThat(result.scenario.touchstones).hasSameElementsAs(listOf(touchstoneId) + extraTouchstones)
+
         assertThat(result.coverageSets).hasSameElementsAs(listOf(
                 CoverageSet(setA, touchstoneId, "YF without", "YF", GAVISupportLevel.WITHOUT, ActivityType.CAMPAIGN),
                 CoverageSet(setB, touchstoneId, "YF with", "YF", GAVISupportLevel.WITH, ActivityType.CAMPAIGN)
