@@ -33,6 +33,7 @@ import org.vaccineimpact.api.test_helpers.DatabaseCreationHelper
         ModelTests::class,
         PopulateBurdenEstimateSetTests::class,
         RetrieveBurdenEstimatesTests::class,
+        ScenarioTests::class,
         TokenRepositoryTests::class,
         TransactionalityTests::class,
         TriggerTests::class,

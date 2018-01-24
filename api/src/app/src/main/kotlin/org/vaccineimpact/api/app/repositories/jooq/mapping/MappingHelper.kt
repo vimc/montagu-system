@@ -23,6 +23,16 @@ open class MappingHelper(
         }
     }
 
+    inline fun <reified T : Enum<T>> mapNullableEnum(raw: String?): T?
+    {
+        if (raw == null)
+        {
+            return null
+        }
+
+        return mapEnum<T>(raw)
+    }
+
     inline fun <reified T : Enum<T>> mapEnum(value: T): String
             = serializer.serializeEnum(value)
 }
