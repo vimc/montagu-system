@@ -73,6 +73,22 @@ class AuthenticationTests : DatabaseTest()
     }
 
     @Test
+    fun `can clear shiny cookie`()
+    {
+        val response = RequestHelper().get("/clear-shiny-cookie/")
+
+        assertThat(response.statusCode).isEqualTo(200)
+
+        val cookieHeader = response.headers["Set-Cookie"]!!
+        assertThat(cookieHeader).contains("Secure")
+        assertThat(cookieHeader).contains("HttpOnly")
+        assertThat(cookieHeader).contains("SameSite=Lax")
+
+        val cookie = cookieHeader.substring(cookieHeader.indexOf("=") + 1, cookieHeader.indexOf(";"))
+        assertThat(cookie.isEmpty()).isTrue()
+    }
+
+    @Test
     fun `unknown email does not authenticate`()
     {
         val result = post("bad@example.com", "password")
