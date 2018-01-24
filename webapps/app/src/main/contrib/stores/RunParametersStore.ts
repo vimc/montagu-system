@@ -11,17 +11,22 @@ import StoreModel = AltJS.StoreModel;
 export interface RunParametersState {
     parameterSets: ModelRunParameterSet[];
 
-    oneTimeToken: string;
-    redirectPath: string;
+    oneTimeTokens: TokensMap;
 
     groupId: string;
     touchstoneId: string;
 }
 
-export interface RunParametersStoreInterface extends AltJS.AltStore<RunParametersState> {
-    fetchOneTimeParametersToken(redirectPath: string): Promise<string>;
+export interface TokensMap {
+    [setId: number]: string;
+}
 
-    _fetchOneTimeParametersToken(): Promise<string>;
+export interface TokenProps {
+    setId: number;
+    token: string;
+}
+
+export interface RunParametersStoreInterface extends AltJS.AltStore<RunParametersState> {
     fetchParameterSets(force?: boolean): Promise<ModelRunParameterSet[]>;
     _fetchParameterSets(): Promise<ModelRunParameterSet[]>;
 }
@@ -31,8 +36,7 @@ class RunParametersStore
     implements RunParametersState {
 
     parameterSets: ModelRunParameterSet[];
-    oneTimeToken: string;
-    redirectPath: string;
+    oneTimeTokens: TokensMap;
     groupId: string;
     touchstoneId: string;
 
@@ -47,17 +51,13 @@ class RunParametersStore
             updateParameterSets: runParameterActions.updateParameterSets,
 
             updateParametersToken: runParameterActions.receiveToken,
-            clearUsedParametersToken: runParameterActions.clearUsedToken
+            clearParametersToken: runParameterActions.clearToken,
+
         });
         this.exportPublicMethods({
-            fetchOneTimeParametersToken: (redirectPath: string) => {
-                this.redirectPath = redirectPath;
-                return this.getInstance()._fetchOneTimeParametersToken();
-            },
             fetchParameterSets: (force?: boolean) => {
                 if (force)
                     this.clearParameterSets();
-
                 return this.getInstance()._fetchParameterSets();
             }
         });
@@ -66,8 +66,7 @@ class RunParametersStore
     initialState(): RunParametersState {
         return {
             parameterSets: null,
-            oneTimeToken: null,
-            redirectPath: null,
+            oneTimeTokens: {},
             groupId: null,
             touchstoneId: null
         };
@@ -91,17 +90,17 @@ class RunParametersStore
         this.parameterSets = parameterSets;
     }
 
-    updateParametersToken(token: string) {
-        this.oneTimeToken = token;
+    updateParametersToken(data: TokenProps) {
+        this.oneTimeTokens[data.setId] = data.token;
     }
 
-    clearUsedParametersToken() {
-        this.oneTimeToken = null;
+    clearParametersToken(setId: number) {
+        this.oneTimeTokens[setId] = null;
     }
 
     clearAll(): void {
         this.parameterSets = null;
-        this.oneTimeToken = null;
+        this.oneTimeTokens = {};
     }
 }
 

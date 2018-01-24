@@ -4,7 +4,7 @@ import {GroupTitleProps, ModellingGroupTitle} from "../ModellingGroupTitle";
 import { AdminPageWithHeader } from "../../../AdminPageWithHeader";
 import { groupStore } from "../../../../stores/GroupStore";
 import { modellingGroupActions } from "../../../../../shared/actions/ModellingGroupActions";
-import { GroupAdminContent } from "./GroupAdminContent";
+import { GroupMembersContent } from "./GroupMembersContent";
 import { doNothing } from "../../../../../shared/Helpers";
 import { userStore } from "../../../../stores/UserStore";
 import {IPageWithParent} from "../../../../../shared/models/Breadcrumb";
@@ -15,9 +15,12 @@ interface PageProps {
     groupId: string;
 }
 
-export class GroupAdminPage extends AdminPageWithHeader<PageProps> {
+export class GroupMembersPage extends AdminPageWithHeader<PageProps> {
     load(props: PageProps) {
-        return this.loadParent(props);
+        return this.loadParent(props).then(() => {
+            modellingGroupActions.setCurrentGroup(this.props.location.params.groupId);
+            return groupStore.fetchGroupDetails();
+        });
     }
 
     name(): string {
@@ -38,7 +41,7 @@ export class GroupAdminPage extends AdminPageWithHeader<PageProps> {
 
     render(): JSX.Element {
         return <Page page={this}>
-            <GroupAdminContent />
+            <GroupMembersContent />
         </Page>;
     }
 }

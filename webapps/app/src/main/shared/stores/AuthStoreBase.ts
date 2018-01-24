@@ -4,6 +4,7 @@ import {AbstractStore} from "./AbstractStore";
 import {authActions, LogInProperties} from "../actions/AuthActions";
 import {decodeToken} from "../Token";
 import {setShinyToken} from "../sources/LoginSource";
+import {adminAuthStore} from "../../admin/stores/AdminAuthStore";
 
 export interface AuthStateBase {
     loggedIn: boolean;
@@ -14,8 +15,8 @@ export interface AuthStateBase {
 
 export interface AuthStoreBaseInterface<TState> extends AltJS.AltStore<TState> {
     logIn(access_token: string, triggered_by_user: boolean): void;
-
     loadAccessToken(): void;
+    hasPermission(permission: string): boolean;
 }
 
 export const tokenStorageHelper = {
@@ -64,6 +65,9 @@ export abstract class AuthStore<TState extends AuthStateBase, TInterface extends
                 if (token != null) {
                     this.doLogIn(token, true);
                 }
+            },
+            hasPermission: (permission: string) => {
+                return this.permissions.indexOf("*/modelling-groups.manage-members") > -1;
             }
         })
     }

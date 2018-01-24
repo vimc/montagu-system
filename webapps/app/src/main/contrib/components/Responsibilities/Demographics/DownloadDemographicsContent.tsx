@@ -6,8 +6,8 @@ import { DemographicDataset, Touchstone } from "../../../../shared/models/Genera
 import { connectToStores } from "../../../../shared/alt";
 import { responsibilityStore } from "../../../stores/ResponsibilityStore";
 import { DemographicOptions } from "./DemographicOptions";
-import { OneTimeButton } from "../../../../shared/components/OneTimeButton";
-import { OneTimeButtonTimeBlocker } from "../../../../shared/components/OneTimeButtonTimeBlocker";
+import { OneTimeButton } from "../../../../shared/components/OneTimeButton/OneTimeButton";
+import { OneTimeButtonTimeBlocker } from "../../../../shared/components/OneTimeButton/OneTimeButtonTimeBlocker";
 import { demographicActions } from "../../../actions/DemographicActions";
 import { doNothing } from "../../../../shared/Helpers";
 

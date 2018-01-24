@@ -4,9 +4,9 @@ import {Sandbox} from "../../../../Sandbox";
 import {userStore} from "../../../../../main/admin/stores/UserStore";
 import {groupStore} from "../../../../../main/admin/stores/GroupStore";
 import {mockLocation} from "../../../../mocks/mocks";
-import {GroupAdminPage} from "../../../../../main/admin/components/ModellingGroups/SingleGroup/Admin/GroupAdminPage";
+import {GroupMembersPage} from "../../../../../main/admin/components/ModellingGroups/SingleGroup/Members/GroupMembersPage";
 import {ModellingGroupDetailsPageProps} from "../../../../../main/admin/components/ModellingGroups/SingleGroup/Details/ViewModellingGroupDetailsPage";
-import {checkAsync, checkPromise} from "../../../../testHelpers";
+import {checkAsync} from "../../../../testHelpers";
 import {expectOneAction} from "../../../../actionHelpers";
 import {alt} from "../../../../../main/shared/alt";
 import {addNavigationTests} from "../../../../shared/NavigationTests";
@@ -14,7 +14,7 @@ import {mockFetcherForMultipleResponses} from "../../../../mocks/mockMultipleEnd
 import {mockModellingGroup, mockModellingGroupDetails, mockUser} from "../../../../mocks/mockModels";
 import {mockGroupDetailsEndpoint, mockGroupsEndpoint, mockUsersEndpoint} from "../../../../mocks/mockEndpoints";
 
-describe("GroupAdminPage", () => {
+describe("GroupMembersPage", () => {
     const sandbox = new Sandbox();
     const groupId = "group-1";
     const location = mockLocation<ModellingGroupDetailsPageProps>({groupId: groupId});
@@ -28,9 +28,9 @@ describe("GroupAdminPage", () => {
         const fetchGroupDetails = sandbox.sinon.stub(groupStore, "fetchGroupDetails").returns(Promise.resolve({}));
         const dispatchSpy = sandbox.dispatchSpy();
 
-        const promise = new GroupAdminPage().load({groupId: groupId});
+        (new GroupMembersPage({location: location, router: null})).load();
 
-        checkPromise(done, promise, (_, afterWait) => {
+        checkAsync(done, (afterWait) => {
             expect(fetchGroups.called).to.equal(true, "Expected groupStore.fetchGroups to be triggered");
             expect(fetchUsers.called).to.equal(true, "Expected userStore.fetchUsers to be triggered");
             afterWait(done, () => {
@@ -41,7 +41,7 @@ describe("GroupAdminPage", () => {
     });
 
 
-    const page = new GroupAdminPage({location: location, router: null});
+    const page = new GroupMembersPage({location: location, router: null});
     addNavigationTests(page, sandbox, () => {
         mockFetcherForMultipleResponses([
             mockUsersEndpoint([mockUser()]),

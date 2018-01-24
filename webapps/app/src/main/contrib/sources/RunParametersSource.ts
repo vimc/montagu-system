@@ -1,26 +1,15 @@
 import SourceModel = AltJS.SourceModel;
 import {runParameterActions} from "../actions/RunParameterActions";
-import {Source} from "../../shared/sources/Source";
+import {Source, processResponse } from "../../shared/sources/Source";
 import {ModelRunParameterSet} from "../../shared/models/Generated";
 import {RunParametersState} from "../stores/RunParametersStore";
+import fetcher from "../../shared/sources/Fetcher";
 
 export class RunParametersSource extends Source<RunParametersState> {
-    _fetchOneTimeParametersToken: () => SourceModel<string>;
     _fetchParameterSets: () => SourceModel<ModelRunParameterSet[]>;
 
     constructor() {
         super();
-        this._fetchOneTimeParametersToken = () => this.doFetch(state => {
-                let queryString = this.buildQueryStringWithRedirectUrl(state.redirectPath);
-                return `/modelling-groups/${state.groupId}/model-run-parameters/`
-                    + `${state.touchstoneId}/get_onetime_link/${queryString}`;
-            },
-            {
-                success: runParameterActions.receiveToken,
-                loading: runParameterActions.beginFetchToken,
-                isCached: () => false   // Always get a fresh token
-            }
-        );
         this._fetchParameterSets = () => this.doFetch(
             s => `/modelling-groups/${s.groupId}/model-run-parameters/${s.touchstoneId}/`,
             {
@@ -30,4 +19,15 @@ export class RunParametersSource extends Source<RunParametersState> {
             }
         );
     }
+}
+
+export function fetchToken(groupId: string, touchstoneId: string, setId: number) :Promise<string> {
+    return fetcher.fetcher
+        .fetch(`/modelling-groups/${groupId}/model-run-parameters/${touchstoneId}/${setId}/get_onetime_link/`)
+        .then((response :Response) => {
+            return processResponse(response);
+        })
+        .then((token :string) => {
+            return token;
+        });
 }
