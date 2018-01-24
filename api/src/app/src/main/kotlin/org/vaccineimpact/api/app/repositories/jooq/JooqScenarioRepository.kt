@@ -25,31 +25,38 @@ class JooqScenarioRepository(dsl: DSLContext,
 
     override fun getScenarios(descriptionIds: Iterable<String>): List<Scenario>
     {
-        val scenarios =  dsl.select(SCENARIO_DESCRIPTION.fieldsAsList())
+        return dsl.select(SCENARIO_DESCRIPTION.fieldsAsList())
                 .select(SCENARIO.TOUCHSTONE, COVERAGE_SET.ACTIVITY_TYPE)
                 .fromJoinPath(SCENARIO_DESCRIPTION, SCENARIO)
-                .join(COVERAGE_SET)
+                .leftJoin(COVERAGE_SET)
                 .on(SCENARIO.FOCAL_COVERAGE_SET.eq(COVERAGE_SET.ID))
                 .where(SCENARIO_DESCRIPTION.ID.`in`(descriptionIds.distinct().toList()))
                 .fetch()
                 .groupBy { it[SCENARIO_DESCRIPTION.ID] }
                 .map { mapScenarioWithFocalActivityType(it.value) }
-
-                val sorted =  scenarios
                 .sortedBy { it.activityType }
                 .map { it.scenario }
 
-        return sorted
     }
 
     private fun mapScenarioWithFocalActivityType(input: List<Record>): ScenarioAndFocalActivityType
     {
         val first = input.first()
         val scenario = mapScenario(input)
-        return ScenarioAndFocalActivityType(scenario, mapper.mapEnum(first[COVERAGE_SET.ACTIVITY_TYPE]))
+        val activityType = first[COVERAGE_SET.ACTIVITY_TYPE]
+        val activityTypeEnum = if (activityType != null)
+        {
+            mapper.mapEnum<ActivityType>(activityType)
+        }
+        else
+        {
+            null
+        }
+
+        return ScenarioAndFocalActivityType(scenario, activityTypeEnum)
     }
 
-    data class ScenarioAndFocalActivityType(val scenario: Scenario, val activityType: ActivityType)
+    data class ScenarioAndFocalActivityType(val scenario: Scenario, val activityType: ActivityType?)
 
     companion object
     {
