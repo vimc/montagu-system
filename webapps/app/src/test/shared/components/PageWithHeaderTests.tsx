@@ -36,8 +36,9 @@ export class DummyPage extends PageWithHeader<undefined> {
     }
 
     load(props: undefined) {
-        this.loaded = true;
-        return super.load(props);
+        return super.load(props).then(() => {
+            this.loaded = true;
+        });
     }
 
     title(): JSX.Element {
