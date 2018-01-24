@@ -43,17 +43,8 @@ class JooqScenarioRepository(dsl: DSLContext,
     {
         val first = input.first()
         val scenario = mapScenario(input)
-        val activityType = first[COVERAGE_SET.ACTIVITY_TYPE]
-        val activityTypeEnum = if (activityType != null)
-        {
-            mapper.mapEnum<ActivityType>(activityType)
-        }
-        else
-        {
-            null
-        }
-
-        return ScenarioAndFocalActivityType(scenario, activityTypeEnum)
+        return ScenarioAndFocalActivityType(scenario,
+                mapper.mapNullableEnum<ActivityType>(first[COVERAGE_SET.ACTIVITY_TYPE]))
     }
 
     data class ScenarioAndFocalActivityType(val scenario: Scenario, val activityType: ActivityType?)
