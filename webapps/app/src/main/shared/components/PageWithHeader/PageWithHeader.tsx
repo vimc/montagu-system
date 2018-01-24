@@ -34,13 +34,7 @@ export abstract class PageWithHeader<TLocationProps>
     hideTitle(): boolean {
         return false;
     }
-    componentDidMount() {
-        setTimeout(()=> {
-            this.prepare().catch(doNothing);
-        });
-    }
-
-    prepare(): Promise<any> {
+    componentDidMount(): Promise<any> {
         return this.load(this.props.location.params).then(() => {
             this.createBreadcrumb();
             window.scrollTo(0, 0);

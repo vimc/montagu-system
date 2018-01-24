@@ -3,7 +3,7 @@ import { expect } from "chai";
 import { shallow, ShallowWrapper } from "enzyme";
 import { mockLocation } from "../../mocks/mocks";
 
-import { PageWithHeader } from "../../../main/shared/components/PageWithHeader/PageWithHeader";
+import {PageProperties, PageWithHeader} from "../../../main/shared/components/PageWithHeader/PageWithHeader";
 import { PageHeader } from "../../../main/shared/components/PageWithHeader/PageHeader";
 import { PageArticle } from "../../../main/shared/components/PageWithHeader/PageArticle";
 import { Page } from "../../../main/shared/components/PageWithHeader/Page";
@@ -14,8 +14,8 @@ import {checkAsync} from "../../testHelpers";
 export class DummyPage extends PageWithHeader<undefined> {
     loaded: boolean;
 
-    constructor() {
-        super();
+    constructor(props?: PageProperties<undefined>) {
+        super(props);
         this.loaded = false;
     }
 

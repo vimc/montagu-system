@@ -21,7 +21,7 @@ export function addNavigationTests(page: PageWithHeader<any>, sandbox: Sandbox, 
         }
 
         const spy = sandbox.dispatchSpy();
-        const promise = page.prepare();
+        const promise = page.componentDidMount();
         checkPromise(done, promise, () => {
             const actions = getActions(spy);
             expect(actions).to.have.length.greaterThan(0, "No actions were emitted");
