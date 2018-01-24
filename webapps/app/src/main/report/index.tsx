@@ -12,7 +12,7 @@ import '../shared/styles/buttons.scss';
 import '../shared/styles/common.scss';
 
 fetcher.fetcher = new ReportingFetcher();
-reportingAuthStore.loadAccessToken();
+// reportingAuthStore.loadAccessToken();
 
 ReactDOM.render(
     <ReportingApp />,
