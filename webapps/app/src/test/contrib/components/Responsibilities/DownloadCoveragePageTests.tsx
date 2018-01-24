@@ -5,7 +5,10 @@ import {expectOneAction} from "../../../actionHelpers";
 import {mockLocation, setupStores} from "../../../mocks/mocks";
 
 import {responsibilityStore} from "../../../../main/contrib/stores/ResponsibilityStore";
-import {mockModellingGroup, mockTouchstone} from "../../../mocks/mockModels";
+import {
+    mockCoverageSet, mockModellingGroup, mockScenarioTouchstoneAndCoverageSets,
+    mockTouchstone
+} from "../../../mocks/mockModels";
 import {DownloadCoveragePage} from "../../../../main/contrib/components/Responsibilities/Coverage/DownloadCoveragePage";
 import {checkAsync, checkPromise} from "../../../testHelpers";
 import {addNavigationTests} from "../../../shared/NavigationTests";
@@ -13,7 +16,10 @@ import {bootstrapStore} from "../../../StoreHelpers";
 import {mainStore} from "../../../../main/contrib/stores/MainStore";
 import {makeLoadable} from "../../../../main/contrib/stores/Loadable";
 import {mockFetcherForMultipleResponses} from "../../../mocks/mockMultipleEndpoints";
-import {mockResponsibilitiesEndpoint, mockTouchstonesEndpoint} from "../../../mocks/mockEndpoints";
+import {
+    mockCoverageSetsEndpoint, mockResponsibilitiesEndpoint,
+    mockTouchstonesEndpoint
+} from "../../../mocks/mockEndpoints";
 
 describe('DownloadCoveragePage', () => {
     const sandbox = new Sandbox();
@@ -61,13 +67,19 @@ describe('DownloadCoveragePage', () => {
     });
 
     const page = new DownloadCoveragePage({location: location, router: null});
+    console.log("Test");
     addNavigationTests(page, sandbox, () => {
         bootstrapStore(mainStore, {
             modellingGroups: makeLoadable([mockModellingGroup({id: "group-1"})])
         });
         mockFetcherForMultipleResponses([
             mockTouchstonesEndpoint([mockTouchstone({id: "touchstone-1"})], "group-1"),
-            mockResponsibilitiesEndpoint(["scenario-1"])
+            mockResponsibilitiesEndpoint(["scenario-1"]),
+            mockCoverageSetsEndpoint(mockScenarioTouchstoneAndCoverageSets({
+                id: "scenario-1"
+            }, {
+                id: "touchstone-1"
+            }))
         ]);
     });
 });

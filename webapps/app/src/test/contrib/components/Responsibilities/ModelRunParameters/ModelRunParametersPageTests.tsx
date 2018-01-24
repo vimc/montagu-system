@@ -1,7 +1,7 @@
 import * as React from "react";
 import {expect} from "chai";
 import {responsibilityStore} from "../../../../../main/contrib/stores/ResponsibilityStore";
-import {mockModellingGroup, mockTouchstone} from "../../../../mocks/mockModels";
+import {mockModellingGroup, mockModelRunParameterSet, mockScenario, mockTouchstone} from "../../../../mocks/mockModels";
 import {checkAsync, checkPromise} from "../../../../testHelpers";
 import {addNavigationTests} from "../../../../shared/NavigationTests";
 import {mockFetcherForMultipleResponses} from "../../../../mocks/mockMultipleEndpoints";
@@ -11,7 +11,10 @@ import {helpers} from "../../../../../main/shared/Helpers";
 import {bootstrapStore} from "../../../../StoreHelpers";
 import {mainStore} from "../../../../../main/contrib/stores/MainStore";
 import {makeLoadable} from "../../../../../main/contrib/stores/Loadable";
-import {mockTouchstonesEndpoint} from "../../../../mocks/mockEndpoints";
+import {
+    mockModelRunParametersEndpoint, mockResponsibilitiesEndpoint,
+    mockTouchstonesEndpoint
+} from "../../../../mocks/mockEndpoints";
 import {mockLocation, setupStores} from "../../../../mocks/mocks";
 import {expectOrderedActions} from "../../../../actionHelpers";
 import {Sandbox} from "../../../../Sandbox";
@@ -71,7 +74,9 @@ describe('ModelRunParameterPage', () => {
             modellingGroups: makeLoadable([mockModellingGroup({id: "group-1"})])
         });
         mockFetcherForMultipleResponses([
-            mockTouchstonesEndpoint([mockTouchstone({id: "touchstone-1"})], "group-1")
+            mockTouchstonesEndpoint([mockTouchstone({id: "touchstone-1"})], "group-1"),
+            mockResponsibilitiesEndpoint(["scenario-1"]),
+            mockModelRunParametersEndpoint([mockModelRunParameterSet()])
         ]);
     });
 });

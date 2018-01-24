@@ -7,6 +7,8 @@ import {userStore} from "../../../../../main/admin/stores/UserStore";
 import {addNavigationTests} from "../../../../shared/NavigationTests";
 import {doNothing} from "../../../../../main/shared/Helpers";
 import {mockLocation} from "../../../../mocks/mocks";
+import {mockFetcherForMultipleResponses} from "../../../../mocks/mockMultipleEndpoints";
+import {mockUsersEndpoint} from "../../../../mocks/mockEndpoints";
 
 describe("ViewAllUsersPageTests", () => {
     const sandbox = new Sandbox();
@@ -22,5 +24,9 @@ describe("ViewAllUsersPageTests", () => {
     });
 
     const page = new ViewAllUsersPage({location: mockLocation(), router: null});
-    addNavigationTests(page, sandbox, doNothing);
+    addNavigationTests(page, sandbox, () => {
+        mockFetcherForMultipleResponses([
+            mockUsersEndpoint([])
+        ]);
+    });
 });

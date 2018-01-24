@@ -10,13 +10,15 @@ describe("Breadcrumbs", () => {
 
     it("initial page load builds full crumbs from parents", (done: DoneCallback) => {
         new C().componentDidMount();
-        checkAsync(done, () => {
-            const nav = navStore.getState();
-            expect(nav.crumbs).to.eql([
-                {url: "/", name: "A"},
-                {url: "/b/", name: "B"},
-                {url: "/b/c/", name: "C"}
-            ]);
+        checkAsync(done, (afterWait) => {
+            afterWait(done, () => {
+                const nav = navStore.getState();
+                expect(nav.crumbs).to.eql([
+                    {url: "/", name: "A"},
+                    {url: "/b/", name: "B"},
+                    {url: "/b/c/", name: "C"}
+                ]);
+            });
         });
     });
 });

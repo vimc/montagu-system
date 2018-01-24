@@ -12,8 +12,8 @@ import {ReportPage, ReportPageProps} from "../../../../main/report/components/Re
 import {ReportDetails} from "../../../../main/report/components/Reports/ReportDetails";
 import {addNavigationTests} from "../../../shared/NavigationTests";
 import {mockFetcherForMultipleResponses} from "../../../mocks/mockMultipleEndpoints";
-import {mockReportsEndpoint} from "../../../mocks/mockEndpoints";
-import {mockReport} from "../../../mocks/mockModels";
+import {mockReportDetailsEndpoint, mockReportsEndpoint} from "../../../mocks/mockEndpoints";
+import {mockReport, mockVersion} from "../../../mocks/mockModels";
 
 describe("ReportPage", () => {
     const sandbox = new Sandbox();
@@ -81,7 +81,8 @@ describe("ReportPage", () => {
     const page = new ReportPage({location: location, router: null});
     addNavigationTests(page, sandbox, () => {
         mockFetcherForMultipleResponses([
-            mockReportsEndpoint([mockReport({name: "report"})])
+            mockReportsEndpoint([mockReport({name: "report"})]),
+            mockReportDetailsEndpoint(mockVersion({name: "report", id: "v1"}))
         ])
     });
 });

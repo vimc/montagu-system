@@ -11,7 +11,7 @@ describe("CoverageSetComponent", () => {
             name: "my-name",
             vaccine: "my-vaccine",
             activity_type: "campaign",
-            gavi_support: "none"
+            gavi_support: "no vaccine"
         });
         const rendered = shallow(<CoverageSetComponent order={ 0 } set={ set } />);
         const cells = rendered.find("td");
@@ -19,7 +19,7 @@ describe("CoverageSetComponent", () => {
             "my-name",
             "my-vaccine",
             "campaign",
-            "none"
+            "no vaccine"
         ];
         expectedCellContentsInOrder.forEach((expected, i) => {
             expect(cells.at(i).text()).to.equal(expected);

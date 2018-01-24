@@ -36,12 +36,12 @@ export abstract class PageWithHeader<TLocationProps>
     }
     componentDidMount() {
         setTimeout(()=> {
-            this.prepare();
+            this.prepare().catch(doNothing);
         });
     }
 
     prepare(): Promise<any> {
-        return this.load(this.props.location.params).catch(doNothing).then(() => {
+        return this.load(this.props.location.params).then(() => {
             this.createBreadcrumb();
             window.scrollTo(0, 0);
         });
