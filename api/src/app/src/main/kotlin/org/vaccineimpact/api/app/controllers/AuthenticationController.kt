@@ -46,15 +46,20 @@ class AuthenticationController(context: ActionContext,
     {
         val internalUser = userRepository.getUserByUsername(context.username!!)
         val shinyToken = tokenHelper.generateShinyToken(internalUser)
-        context.addResponseHeader("Set-Cookie", "jwt_token=$shinyToken; Path=/; Secure; HttpOnly; SameSite=Lax")
+        setCookie(shinyToken)
         context.addResponseHeader("Access-Control-Allow-Credentials", "true")
         return okayResponse()
     }
 
     fun clearShinyCookie(): String
     {
-        context.addResponseHeader("Set-Cookie", "jwt_token=; Path=/; Secure; HttpOnly; SameSite=Lax")
+        setCookie("")
         context.addResponseHeader("Access-Control-Allow-Credentials", "true")
         return okayResponse()
+    }
+
+    private fun setCookie(value: String){
+        context.addResponseHeader("Set-Cookie", "jwt_token=$value; Path=/; Secure; HttpOnly; SameSite=Lax")
+
     }
 }
