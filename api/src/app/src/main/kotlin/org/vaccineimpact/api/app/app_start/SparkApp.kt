@@ -55,19 +55,8 @@ class MontaguApi
         NotFoundHandler().setup()
         ErrorHandler.setup()
 
-        // Old style controllers
-        val controllerContext = ControllerContext(urlBase, repositoryFactory, tokenHelper)
-        val oneTimeLink = OneTimeLinkController(controllerContext)
-        val oldStyleEndpoints = listOf(oneTimeLink).flatMap {
-            it.mapEndpoints()
-        }
-
-        // New style controllers
         val router = Router(MontaguRouteConfig, MontaguSerializer.instance, tokenHelper, repositoryFactory)
-        val newStyleEndpoints = router.mapEndpoints(urlBase)
-
-        val allEndpoints = (oldStyleEndpoints + newStyleEndpoints).sorted()
-        HomeController(allEndpoints, controllerContext).mapEndpoints()
+        router.mapEndpoints(urlBase)
 
         if (!Config.authEnabled)
         {

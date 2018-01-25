@@ -2,7 +2,7 @@ package org.vaccineimpact.api.app.app_start.route_config
 
 import org.vaccineimpact.api.app.app_start.*
 import org.vaccineimpact.api.app.controllers.AuthenticationController
-import org.vaccineimpact.api.app.controllers.NewStyleOneTimeLinkController
+import org.vaccineimpact.api.app.controllers.OneTimeLinkController
 import org.vaccineimpact.api.app.controllers.UserController
 import spark.route.HttpMethod
 

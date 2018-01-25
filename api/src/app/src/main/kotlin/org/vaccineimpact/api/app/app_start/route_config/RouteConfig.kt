@@ -16,8 +16,10 @@ object MontaguRouteConfig : RouteConfig
             GroupBurdenEstimatesRouteConfig.endpoints +
             GroupCoverageRouteConfig.endpoints +
             GroupModelRunParametersRouteConfig.endpoints +
+            HomeRouteConfig.endpoints +
             ModellingGroupRouteConfig.endpoints +
             ModelRouteConfig.endpoints +
+            OneTimeLinkRouteConfig.endpoints +
             PasswordRouteConfig.endpoints +
             ResponsibilityRouteConfig.endpoints +
             TouchstoneRouteConfig.endpoints +

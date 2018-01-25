@@ -84,7 +84,7 @@ class OnetimeLinkResolverTests : MontaguTests()
         // Object under test
         val link = OneTimeLink(OneTimeAction.SET_PASSWORD, mapOf(":username" to "user"),
                 mapOf(":queryKey" to "queryValue"), "test.user")
-        val sut = OnetimeLinkResolver(repos.asFactory(), mockWebTokenHelper)
+        val sut = OnetimeLinkResolver(repos, mockWebTokenHelper)
         sut.perform(link, mockContext)
 
         // Expectations

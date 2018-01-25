@@ -1,11 +1,10 @@
 package org.vaccineimpact.api.app.app_start.route_config
 
 import org.vaccineimpact.api.app.app_start.Endpoint
-import org.vaccineimpact.api.app.app_start.csv
 import org.vaccineimpact.api.app.app_start.json
 import org.vaccineimpact.api.app.app_start.secure
 import org.vaccineimpact.api.app.controllers.GroupBurdenEstimatesController
-import org.vaccineimpact.api.app.controllers.NewStyleOneTimeLinkController
+import org.vaccineimpact.api.app.controllers.OneTimeLinkController
 import spark.route.HttpMethod
 
 object GroupBurdenEstimatesRouteConfig : RouteConfig
@@ -34,7 +33,7 @@ object GroupBurdenEstimatesRouteConfig : RouteConfig
                     .secure(writePermissions),
 
             Endpoint("$baseUrl/get_onetime_link/",
-                    NewStyleOneTimeLinkController::class,
+                    OneTimeLinkController::class,
                     "getTokenForCreateBurdenEstimateSet")
                     .json()
                     .secure(writePermissions),
@@ -45,7 +44,7 @@ object GroupBurdenEstimatesRouteConfig : RouteConfig
                     .secure(writePermissions),
 
             Endpoint("$baseUrl/:set-id/get_onetime_link/",
-                    NewStyleOneTimeLinkController::class,
+                    OneTimeLinkController::class,
                     "getTokenForPopulateBurdenEstimateSet")
                     .json()
                     .secure(writePermissions),

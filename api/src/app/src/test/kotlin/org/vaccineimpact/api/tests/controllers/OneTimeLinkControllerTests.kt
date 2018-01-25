@@ -18,23 +18,24 @@ import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.TokenRepository
 import org.vaccineimpact.api.app.repositories.UserRepository
+import org.vaccineimpact.api.app.security.OneTimeTokenGenerator
 import org.vaccineimpact.api.models.ResultStatus
+import org.vaccineimpact.api.models.helpers.OneTimeAction
 import org.vaccineimpact.api.security.WebTokenHelper
+import org.vaccineimpact.api.test_helpers.MontaguTests
 import spark.Request
 
-class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
+class OneTimeLinkControllerTests : MontaguTests()
 {
-    override fun makeController(controllerContext: ControllerContext)
-            = OneTimeLinkController(controllerContext)
-
     @Test
     fun `fails if token is not in repo`()
     {
         val repo = makeRepository(allowToken = false)
         val controller = makeController(
+                repo = repo,
                 tokenHelper = makeTokenHelper(true, basicClaims)
         )
-        assertThatThrownBy { controller.onetimeLink(actionContext(), repo) }
+        assertThatThrownBy { controller.onetimeLink() }
                 .isInstanceOf(InvalidOneTimeLinkToken::class.java)
     }
 
@@ -42,8 +43,9 @@ class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
     fun `fails if token cannot be verified`()
     {
         val controller = makeController(
-                tokenHelper = makeTokenHelper(false, basicClaims))
-        assertThatThrownBy { controller.onetimeLink(actionContext(), makeRepository()) }
+                tokenHelper = makeTokenHelper(false, basicClaims)
+        )
+        assertThatThrownBy { controller.onetimeLink() }
                 .isInstanceOf(InvalidOneTimeLinkToken::class.java)
     }
 
@@ -55,15 +57,17 @@ class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
         )
 
         val controller = makeController(
-                tokenHelper = makeTokenHelper(true, badClaims))
-        assertThatThrownBy { controller.onetimeLink(actionContext(), makeRepository()) }
-                .isInstanceOf(InvalidOneTimeLinkToken::class.java)
+                tokenHelper = makeTokenHelper(true, badClaims)
+        )
+        assertThatThrownBy {
+            controller.onetimeLink()
+        }.isInstanceOf(InvalidOneTimeLinkToken::class.java)
     }
 
     @Test
     fun `performs action if token is valid`()
     {
-        val mockOneTimeLinkResolver = mock<OnetimeLinkResolver>() {
+        val mockOneTimeLinkResolver = mock<OnetimeLinkResolver> {
             on { perform(any(), any()) } doReturn "OK"
         }
         val controller = makeController(
@@ -74,44 +78,47 @@ class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
                 )),
                 onetimeLinkResolver = mockOneTimeLinkResolver
         )
-        val result = controller.onetimeLink(actionContext(), makeRepository())
+        val result = controller.onetimeLink()
         assertThat(result).isEqualTo("OK")
     }
 
     @Test
     fun `redirects if redirect url query parameter exists`()
     {
+        val fakeContext = actionContext()
         val controller = makeController(
+                context = fakeContext,
                 tokenHelper = makeTokenHelper(true, claimsWithRedirectUrl)
         )
-
-        val fakeContext = actionContext()
-        controller.onetimeLink(fakeContext, makeRepository())
+        controller.onetimeLink()
         verify(fakeContext, times(1)).redirect("$redirectUrl?result=successtoken")
     }
 
     @Test
     fun `does not redirect if redirect url query parameter does not exist`()
     {
+        val fakeContext = actionContext()
         val controller = makeController(
+                context = fakeContext,
                 tokenHelper = makeTokenHelper(true, claimsWithoutRedirectUrl)
         )
-
-        val fakeContext = actionContext()
-        controller.onetimeLink(fakeContext, makeRepository())
+        controller.onetimeLink()
         verify(fakeContext, times(0)).redirect(any())
     }
 
     @Test
     fun `does not redirect if redirect url query parameter is empty`()
     {
-        val controller = makeController(
-                tokenHelper = makeTokenHelper(true,
-                        claimsWithoutRedirectUrl.plus(mapOf("query" to "redirectUrl=")))
+        val tokenHelper = makeTokenHelper(
+                true,
+                claimsWithoutRedirectUrl.plus(mapOf("query" to "redirectUrl="))
         )
-
         val fakeContext = actionContext()
-        controller.onetimeLink(fakeContext, makeRepository())
+        val controller = makeController(
+                context = fakeContext,
+                tokenHelper = tokenHelper
+        )
+        controller.onetimeLink()
         verify(fakeContext, times(0)).redirect(any())
     }
 
@@ -120,45 +127,44 @@ class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
     {
         val controller = makeController(
                 tokenHelper = makeTokenHelper(true, claimsWithRedirectUrl),
-                redirectValidator = mock<RedirectValidator> {
+                redirectValidator = mock {
                     on { validateRedirectUrl(any()) } doThrow BadRequest("bad request")
                 }
         )
-
-        assertThatThrownBy { controller.onetimeLink(actionContext(), makeRepository()) }
-                .isInstanceOf(BadRequest::class.java)
+        assertThatThrownBy {
+            controller.onetimeLink()
+        }.isInstanceOf(BadRequest::class.java)
     }
 
     @Test
     fun `redirects on error if redirect url query parameter exists`()
     {
-        val mockErrorHandler = mock<ErrorHandler>() {
+        val mockErrorHandler = mock<ErrorHandler> {
             on { logExceptionAndReturnMontaguError(any(), any()) } doReturn UnexpectedError.new(Exception())
         }
-
-        val mockOneTimeLinkResolver = mock<OnetimeLinkResolver>() {
+        val mockOneTimeLinkResolver = mock<OnetimeLinkResolver> {
             on { perform(any(), any()) } doThrow Exception()
         }
+        val fakeContext = actionContext()
 
         val controller = makeController(
+                context = fakeContext,
                 tokenHelper = makeTokenHelper(true, claimsWithRedirectUrl),
                 errorHandler = mockErrorHandler,
                 onetimeLinkResolver = mockOneTimeLinkResolver
         )
-
-        val fakeContext = actionContext()
-        controller.onetimeLink(fakeContext, makeRepository())
+        controller.onetimeLink()
         verify(fakeContext, times(1)).redirect("$redirectUrl?result=errortoken")
     }
 
     @Test
     fun `logs error if redirect url query parameter exists`()
     {
-        val mockErrorHandler = mock<ErrorHandler>() {
+        val mockErrorHandler = mock<ErrorHandler> {
             on { logExceptionAndReturnMontaguError(any(), any()) } doReturn UnexpectedError.new(Exception())
         }
 
-        val mockOneTimeLinkResolver = mock<OnetimeLinkResolver>() {
+        val mockOneTimeLinkResolver = mock<OnetimeLinkResolver> {
             on { perform(any(), any()) } doThrow Exception()
         }
         val controller = makeController(
@@ -166,9 +172,34 @@ class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
                 errorHandler = mockErrorHandler,
                 onetimeLinkResolver = mockOneTimeLinkResolver
         )
-
-        controller.onetimeLink(actionContext(), makeRepository())
+        controller.onetimeLink()
         verify(mockErrorHandler, times(1)).logExceptionAndReturnMontaguError(any(), any())
+    }
+
+    @Test
+    fun `can get onetime demographic data token`()
+    {
+        // Mocks
+        val parameters = mapOf(":a" to "1", ":b" to "2")
+        val context = mock<ActionContext> {
+            on { params() } doReturn parameters
+            on { username } doReturn "test.user"
+        }
+        val tokenGenerator = tokenGenerator()
+
+        // Behaviour under test
+        val controller = makeController(
+                context = context,
+                oneTimeTokenGenerator = tokenGenerator
+        )
+        controller.getTokenForDemographicData()
+
+        // Expectations
+        verify(tokenGenerator).getOneTimeLinkToken(OneTimeAction.DEMOGRAPHY, context)
+    }
+
+    private fun tokenGenerator() = mock<OneTimeTokenGenerator> {
+        on { getOneTimeLinkToken(any(), any(), anyOrNull(), anyOrNull(), any(), any()) } doReturn "MY-TOKEN"
     }
 
     private val basicClaims = mapOf("sub" to WebTokenHelper.oneTimeActionSubject, "username" to "test.user")
@@ -193,28 +224,29 @@ class OneTimeLinkControllerTests : ControllerTests<OneTimeLinkController>()
             )
 
     private fun makeController(
-            tokenHelper: WebTokenHelper,
+            context: ActionContext = actionContext(),
+            repo: TokenRepository = makeRepository(),
+            tokenHelper: WebTokenHelper = mock(),
+            oneTimeTokenGenerator: OneTimeTokenGenerator = mock(),
             redirectValidator: RedirectValidator = mock(),
             errorHandler: ErrorHandler = mock(),
             onetimeLinkResolver: OnetimeLinkResolver = mock()
     )
             : OneTimeLinkController
     {
-
-        val controllerContext = mockControllerContext(
-                webTokenHelper = tokenHelper,
-                repositories = mock<Repositories>()
-        )
-
-        return OneTimeLinkController(controllerContext,
+        return OneTimeLinkController(
+                context,
+                repo,
+                oneTimeTokenGenerator,
+                onetimeLinkResolver,
+                tokenHelper,
                 errorHandler,
-                redirectValidator,
-                onetimeLinkResolver)
+                redirectValidator)
     }
 
     private fun makeTokenHelper(allowToken: Boolean, claims: Map<String, Any>): WebTokenHelper
     {
-        return mock<WebTokenHelper> {
+        return mock {
             on(it.encodeResult(argThat { status == ResultStatus.FAILURE })) doReturn "errortoken"
             on(it.encodeResult(argThat { status == ResultStatus.SUCCESS })) doReturn "successtoken"
             if (allowToken)
