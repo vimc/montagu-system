@@ -40,11 +40,11 @@ class ScenarioTests : RepositoryTests<ScenarioRepository>()
             assertThat(scenarios[2].disease).isEqualTo(disease1)
 
             assertThat(scenarios[3].description).isEqualTo("none")
-            assertThat(scenarios[3].disease).isEqualTo(disease1)
+            assertThat(scenarios[3].disease).isEqualTo(disease2)
             assertThat(scenarios[4].description).isEqualTo("routine")
-            assertThat(scenarios[4].disease).isEqualTo(disease1)
+            assertThat(scenarios[4].disease).isEqualTo(disease2)
             assertThat(scenarios[5].description).isEqualTo("campaign")
-            assertThat(scenarios[5].disease).isEqualTo(disease1)
+            assertThat(scenarios[5].disease).isEqualTo(disease2)
         }
     }
 
