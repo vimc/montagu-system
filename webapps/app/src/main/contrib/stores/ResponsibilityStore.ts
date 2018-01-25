@@ -221,7 +221,8 @@ class ResponsibilityStore extends AbstractStore<ResponsibilityState, Responsibil
     }
 
     handleUpdateCoverageSets(data: ScenarioTouchstoneAndCoverageSets) {
-        this.getInstance().getCurrentResponsibilitySet().addCoverageSets(data.scenario.id, data.coverage_sets);
+        const responsibilitySet = this.getInstance().getCurrentResponsibilitySet();
+        responsibilitySet.addCoverageSets(data.scenario.id, data.coverage_sets);
         this.ready = true;
     }
 

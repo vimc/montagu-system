@@ -22,8 +22,7 @@ describe("ViewModelingGroupDetailsPage", () => {
         const fetchGroupDetails = sandbox.sinon.stub(groupStore, "fetchGroupDetails").returns(Promise.resolve({}));
         const dispatchSpy = sandbox.dispatchSpy();
 
-        const location = mockLocation<ModellingGroupDetailsPageProps>({ groupId: "gId" });
-        (new ViewModellingGroupDetailsPage({location: location, router: null})).load();
+        const promise = new ViewModellingGroupDetailsPage().load({groupId: "gId"});
         checkAsync(done, (afterWait) => {
             expect(fetchGroups.called).to.equal(true, "Expected groupStore.fetchGroups to be triggered");
             expect(fetchUsers.called).to.equal(true, "Expected userStore.fetchUsers to be triggered");

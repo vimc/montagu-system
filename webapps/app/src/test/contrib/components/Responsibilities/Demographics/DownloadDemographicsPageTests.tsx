@@ -1,7 +1,7 @@
 import * as React from "react";
 import {Sandbox} from "../../../../Sandbox";
 import {expect} from "chai";
-import {checkAsync} from "../../../../testHelpers";
+import {checkAsync, checkPromise} from "../../../../testHelpers";
 import {expectOneAction} from "../../../../actionHelpers";
 import {DownloadDemographicsPage} from "../../../../../main/contrib/components/Responsibilities/Demographics/DownloadDemographicsPage";
 import {mockLocation, setupStores} from "../../../../mocks/mocks";
@@ -34,9 +34,12 @@ describe("DownloadDemographicsPage", () => {
         const touchstone = mockTouchstone({id: "touchstone-1"});
         setupStores({groups: [group], touchstones: [touchstone]});
 
-        new DownloadDemographicsPage({location: location, router: null}).load();
+        const promise = new DownloadDemographicsPage().load({
+            groupId: "group-1",
+            touchstoneId: "touchstone-1",
+        });
 
-        checkAsync(done, (afterWait) => {
+        checkPromise(done, promise, (_, afterWait) => {
             expectOneAction(spy, {action: "ModellingGroupActions.setCurrentGroup", payload: "group-1"}, 0);
             expect(fetchTouchstones.called).to.equal(true, "Expected fetchTouchstones to be called");
             afterWait(done, () => {

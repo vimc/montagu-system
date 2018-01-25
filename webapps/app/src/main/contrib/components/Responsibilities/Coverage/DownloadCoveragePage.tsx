@@ -1,15 +1,15 @@
 import * as React from "react";
-import { touchstoneActions } from "../../../actions/TouchstoneActions";
-import { responsibilityActions } from "../../../actions/ResponsibilityActions";
-import { responsibilityStore } from "../../../stores/ResponsibilityStore";
-import { DownloadCoverageContent } from "./DownloadCoverageContent";
-import { modellingGroupActions } from "../../../../shared/actions/ModellingGroupActions";
-import { doNothing } from "../../../../shared/Helpers";
-import { DownloadDataTitle } from "../DownloadDataTitle";
+import {touchstoneActions} from "../../../actions/TouchstoneActions";
+import {responsibilityActions} from "../../../actions/ResponsibilityActions";
+import {responsibilityStore} from "../../../stores/ResponsibilityStore";
+import {DownloadCoverageContent} from "./DownloadCoverageContent";
+import {modellingGroupActions} from "../../../../shared/actions/ModellingGroupActions";
+import {doNothing} from "../../../../shared/Helpers";
+import {DownloadDataTitle} from "../DownloadDataTitle";
 import {ContribPageWithHeader} from "../../PageWithHeader/ContribPageWithHeader";
 import {ResponsibilityOverviewPage} from "../Overview/ResponsibilityOverviewPage";
 import {IPageWithParent} from "../../../../shared/models/Breadcrumb";
-import { Page } from "../../../../shared/components/PageWithHeader/Page";
+import {Page} from "../../../../shared/components/PageWithHeader/Page";
 
 interface LocationProps {
     groupId: string;
@@ -18,16 +18,11 @@ interface LocationProps {
 }
 
 export class DownloadCoveragePage extends ContribPageWithHeader<LocationProps> {
-    load() {
-        modellingGroupActions.setCurrentGroup(this.props.location.params.groupId);
-        responsibilityStore.fetchTouchstones().catch(doNothing).then(() => {
-            touchstoneActions.setCurrentTouchstone(this.props.location.params.touchstoneId);
-            responsibilityStore.fetchResponsibilities().catch(doNothing).then(() => {
-                responsibilityActions.setCurrentResponsibility(this.props.location.params.scenarioId);
-                responsibilityStore.fetchCoverageSets().catch(doNothing);
-                responsibilityStore.fetchOneTimeCoverageToken().catch(doNothing);
-                super.load();
-            });
+    load(props: LocationProps) {
+        return this.loadParent(props).then(() => {
+            responsibilityActions.setCurrentResponsibility(props.scenarioId);
+            responsibilityStore.fetchOneTimeCoverageToken().catch(doNothing);
+            return responsibilityStore.fetchCoverageSets();
         });
     }
 
@@ -37,7 +32,7 @@ export class DownloadCoveragePage extends ContribPageWithHeader<LocationProps> {
     }
 
     title() {
-        return <DownloadDataTitle title="Download coverage data" />
+        return <DownloadDataTitle title="Download coverage data"/>
     }
 
     urlFragment(): string {
@@ -49,9 +44,9 @@ export class DownloadCoveragePage extends ContribPageWithHeader<LocationProps> {
         return new ResponsibilityOverviewPage();
     }
 
-    render() :JSX.Element {
+    render(): JSX.Element {
         return <Page page={this}>
-            <DownloadCoverageContent />
+            <DownloadCoverageContent/>
         </Page>
     }
 }

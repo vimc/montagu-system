@@ -15,7 +15,7 @@ export function emptyLoadable<T>(): ILoadable<T> {
 
 export function makeLoadable<T extends HasId>(items: T[]) {
     const content: { [index: string]: T } = {};
-    if (items) {
+    if (items && Array.isArray(items)) {
         items.forEach(x => {
             content[x.id] = x;
         });

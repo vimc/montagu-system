@@ -4,7 +4,7 @@ import {Sandbox} from "../../../../Sandbox";
 import {ViewAllModellingGroupsPage} from "../../../../../main/admin/components/ModellingGroups/List/ViewAllModellingGroupsPage";
 import {mockLocation} from "../../../../mocks/mocks";
 import {groupStore} from "../../../../../main/admin/stores/GroupStore";
-import {checkAsync} from "../../../../testHelpers";
+import {checkAsync, checkPromise} from "../../../../testHelpers";
 import {addNavigationTests} from "../../../../shared/NavigationTests";
 import {mockFetcherForMultipleResponses} from "../../../../mocks/mockMultipleEndpoints";
 import {mockModellingGroup} from "../../../../mocks/mockModels";
@@ -18,8 +18,8 @@ describe("ViewAllModellingGroupsPageTests", () => {
 
     it("triggers fetch on load", (done: DoneCallback) => {
         const fetchGroups = sandbox.sinon.spy(groupStore, "fetchGroups");
-        (new ViewAllModellingGroupsPage({location: mockLocation<undefined>(), router: null})).load();
-        checkAsync(done, () => {
+        const promise = new ViewAllModellingGroupsPage().load(undefined);
+        checkPromise(done, promise, () => {
             expect(fetchGroups.called).to.equal(true, "Expected groupStore.fetchGroups to be triggered");
         });
     });

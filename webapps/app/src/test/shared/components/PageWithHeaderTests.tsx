@@ -3,7 +3,7 @@ import { expect } from "chai";
 import { shallow, ShallowWrapper } from "enzyme";
 import { mockLocation } from "../../mocks/mocks";
 
-import { PageWithHeader } from "../../../main/shared/components/PageWithHeader/PageWithHeader";
+import {PageProperties, PageWithHeader} from "../../../main/shared/components/PageWithHeader/PageWithHeader";
 import { PageHeader } from "../../../main/shared/components/PageWithHeader/PageHeader";
 import { PageArticle } from "../../../main/shared/components/PageWithHeader/PageArticle";
 import { Page } from "../../../main/shared/components/PageWithHeader/Page";
@@ -14,15 +14,9 @@ import {checkAsync} from "../../testHelpers";
 export class DummyPage extends PageWithHeader<undefined> {
     loaded: boolean;
 
-    constructor() {
-        super();
+    constructor(props?: PageProperties<undefined>) {
+        super(props);
         this.loaded = false;
-    }
-
-    componentDidMount() {
-        setTimeout(() =>{
-            this.load();
-        });
     }
 
     siteTitle() {
@@ -41,9 +35,10 @@ export class DummyPage extends PageWithHeader<undefined> {
         return "/lotr/";
     }
 
-    load() {
-        this.loaded = true;
-        super.load();
+    load(props: undefined) {
+        return super.load(props).then(() => {
+            this.loaded = true;
+        });
     }
 
     title(): JSX.Element {
@@ -57,10 +52,6 @@ export class DummyPage extends PageWithHeader<undefined> {
 export class DummyPageNoTitle extends PageWithHeader<undefined> {
     siteTitle() {
         return "LOTR";
-    }
-
-    componentDidMount() {
-
     }
 
     name() {

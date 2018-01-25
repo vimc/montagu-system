@@ -1,8 +1,8 @@
 import * as React from "react";
 import {expect} from "chai";
 import {responsibilityStore} from "../../../../../main/contrib/stores/ResponsibilityStore";
-import {mockModellingGroup, mockTouchstone} from "../../../../mocks/mockModels";
-import {checkAsync} from "../../../../testHelpers";
+import {mockModellingGroup, mockModelRunParameterSet, mockScenario, mockTouchstone} from "../../../../mocks/mockModels";
+import {checkAsync, checkPromise} from "../../../../testHelpers";
 import {addNavigationTests} from "../../../../shared/NavigationTests";
 import {mockFetcherForMultipleResponses} from "../../../../mocks/mockMultipleEndpoints";
 import {jwtDecoder} from "../../../../../main/shared/sources/JwtDecoder";
@@ -11,7 +11,10 @@ import {helpers} from "../../../../../main/shared/Helpers";
 import {bootstrapStore} from "../../../../StoreHelpers";
 import {mainStore} from "../../../../../main/contrib/stores/MainStore";
 import {makeLoadable} from "../../../../../main/contrib/stores/Loadable";
-import {mockTouchstonesEndpoint} from "../../../../mocks/mockEndpoints";
+import {
+    mockModelRunParametersEndpoint, mockResponsibilitiesEndpoint,
+    mockTouchstonesEndpoint
+} from "../../../../mocks/mockEndpoints";
 import {mockLocation, setupStores} from "../../../../mocks/mocks";
 import {expectOrderedActions} from "../../../../actionHelpers";
 import {Sandbox} from "../../../../Sandbox";
@@ -39,11 +42,13 @@ describe('ModelRunParameterPage', () => {
 
         const touchstone = mockTouchstone({id: "touchstone-1"});
         setupStores({groups: [group], touchstones: [touchstone]});
-        new ModelRunParametersPage({location: location, router: null}).load();
 
-        checkAsync(done, (afterWait) => {
+        const promise = new ModelRunParametersPage().load({
+            touchstoneId: "touchstone-1",
+            groupId: "group-1",
+        });
+        checkPromise(done, promise, (_, afterWait) => {
             afterWait(done, () => {
-
                 expectOrderedActions(spy, [
                     {action: "ModellingGroupActions.setCurrentGroup", payload: "group-1"},
                     {action: "TouchstoneActions.setCurrentTouchstone", payload: "touchstone-1"}
@@ -69,7 +74,9 @@ describe('ModelRunParameterPage', () => {
             modellingGroups: makeLoadable([mockModellingGroup({id: "group-1"})])
         });
         mockFetcherForMultipleResponses([
-            mockTouchstonesEndpoint([mockTouchstone({id: "touchstone-1"})], "group-1")
+            mockTouchstonesEndpoint([mockTouchstone({id: "touchstone-1"})], "group-1"),
+            mockResponsibilitiesEndpoint(["scenario-1"]),
+            mockModelRunParametersEndpoint([mockModelRunParameterSet()])
         ]);
     });
 });
