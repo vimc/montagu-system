@@ -55,6 +55,19 @@ class ContribAuthStoreTests extends AuthStoreBaseTests<ContribAuthState, Contrib
             expect(contribAuthStore.getState().modellingGroups).to.eql([ group ]);
         });
 
+        it("if the user is a member of a non-existent group, this is ignored", () => {
+            const realGroup = mockModellingGroup({ id: "test.group" });
+
+            alt.bootstrap(JSON.stringify({
+                ContribAuthStore: {
+                    modellingGroupIds: [ realGroup.id, "fake.group" ]
+                }
+            }));
+
+            modellingGroupActions.updateGroups([ realGroup ]);
+            expect(contribAuthStore.getState().modellingGroups).to.eql([ realGroup ]);
+        });
+
         it("logIn with good token also invokes MainStore.load", () => {
             const spy = this.sandbox.dispatchSpy();
             const storeLoad = this.sandbox.sinon.stub(mainStore, "load");
