@@ -3,9 +3,7 @@ package org.vaccineimpact.api.app.controllers
 import org.vaccineimpact.api.app.app_start.Controller
 import org.vaccineimpact.api.app.app_start.Router
 import org.vaccineimpact.api.app.context.ActionContext
-import org.vaccineimpact.api.app.controllers.endpoints.basicEndpoint
 import org.vaccineimpact.api.app.repositories.Repositories
-import org.vaccineimpact.api.app.repositories.RepositoryFactory
 import org.vaccineimpact.api.db.Config
 
 class HomeController(context: ActionContext) : Controller(context)

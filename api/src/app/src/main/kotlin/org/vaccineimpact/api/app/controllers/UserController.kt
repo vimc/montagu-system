@@ -49,7 +49,7 @@ class UserController(
 
         if (!roleWritingScopes.any({ it.encompasses(scope) }))
         {
-            throw MissingRequiredPermissionError(setOf("${scope.toString()}/roles.write"))
+            throw MissingRequiredPermissionError(setOf("$scope/roles.write"))
         }
 
         userRepository.modifyUserRole(userName, associateRole)
