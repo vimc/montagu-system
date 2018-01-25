@@ -183,12 +183,9 @@ class UserTests : RepositoryTests<UserRepository>()
     @Test
     fun `gets global roles`()
     {
-        given {
-
-        } check { repo ->
-
+        withRepo { repo ->
             val roles = repo.globalRoles()
-            assertThat(roles.count()).isEqualTo(8)
+            assertThat(roles.count()).isEqualTo(9)
         }
     }
 
