@@ -26,7 +26,7 @@ wherever an endpoint describes its response format, it should be assumed the pay
 the standard response format, so that the `data` property holds the payload.
 
 ## Success
-Schema: [`Response.schema.json`](Response.schema.json)
+Schema: [`Response.schema.json`](../schemas/Response.schema.json)
 
 ### Example
     {
@@ -36,7 +36,7 @@ Schema: [`Response.schema.json`](Response.schema.json)
     }
 
 ## Error
-Schema: [`Response.schema.json`](Response.schema.json)
+Schema: [`Response.schema.json`](../schemas/Response.schema.json)
 
 ### Example
     {
@@ -58,7 +58,7 @@ endpoints are implemented in the version you are currently connected to.
 
 Required permissions: User does not need to be logged in to access this endpoint.
 
-Schema: [`Index.schema.json`](Index.schema.json)
+Schema: [`Index.schema.json`](../schemas/Index.schema.json)
 
 ### Example
     {

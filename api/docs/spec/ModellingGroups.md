@@ -4,7 +4,7 @@ Returns an enumeration of all modelling groups.
 
 Required permissions: `modelling-groups.read`
 
-Schema: [`ModellingGroups.schema.json`](ModellingGroups.schema.json)
+Schema: [`ModellingGroups.schema.json`](../schemas/ModellingGroups.schema.json)
 
 ### Example
     [
@@ -23,7 +23,7 @@ Returns the identified modelling group and their model(s).
 
 Required permissions: `modelling-groups.read`, `models.read`.
 
-Schema: [`ModellingGroupDetails.schema.json`](ModellingGroupDetails.schema.json)
+Schema: [`ModellingGroupDetails.schema.json`](../schemas/ModellingGroupDetails.schema.json)
 
 ### Example
     {
@@ -45,7 +45,7 @@ Adds or removes a user from a modelling group.
 
 Required permissions: `modelling-groups.manage-members` (scoped to the group or *)
 
-Schema: [`AssociateUser.schema.json`](AssociateUser.schema.json)
+Schema: [`AssociateUser.schema.json`](../schemas/AssociateUser.schema.json)
 
 ### Example
     {

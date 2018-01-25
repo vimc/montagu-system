@@ -12,7 +12,7 @@ just tracks countries in their abstract sense, using ISO codes.
 
 Required permissions: none
 
-Schema: [`Countries.schema.json`](Countries.schema.json)
+Schema: [`Countries.schema.json`](../schemas/Countries.schema.json)
 
 ### Example
     [
@@ -31,7 +31,7 @@ Adds a new country.
 
 Required permissions: `countries.write`
 
-Schema: [`Country.schema.json`](Country.schema.json)
+Schema: [`Country.schema.json`](../schemas/Country.schema.json)
 
 ### Example
     {
@@ -45,7 +45,7 @@ Returns all scenarios.
 
 Required permissions: `scenarios.read`, `touchstones.read`
 
-Schema: [`Scenarios.schema.json`](Scenarios.schema.json)
+Schema: [`Scenarios.schema.json`](../schemas/Scenarios.schema.json)
 
 ### Example
     [
@@ -78,7 +78,7 @@ Creates a new scenario. Request format:
 
 Required permissions: `scenarios.write`
 
-Schema: [`CreateScenario.schema.json`](CreateScenario.schema.json)
+Schema: [`CreateScenario.schema.json`](../schemas/CreateScenario.schema.json)
 
 ### Example
     {
@@ -94,7 +94,7 @@ All fields are optional.
 
 Required permissions: `scenarios.write`
 
-Schema: [`UpdateScenario.schema.json`](UpdateScenario.schema.json)
+Schema: [`UpdateScenario.schema.json`](../schemas/UpdateScenario.schema.json)
 
 ### Example
 
@@ -109,7 +109,7 @@ scenario in the given touchstone.
 
 Required permissions: `scenarios.read`, `modellinggroups.read`, `responsibilities.read`
 
-Schema: [`ModellingGroups.schema.json`](ModellingGroups.schema.json)
+Schema: [`ModellingGroups.schema.json`](../schemas/ModellingGroups.schema.json)
 
 ### Example
     [
@@ -132,7 +132,7 @@ POST creates a new, empty touchstone in the 'in-preparation' state.
 
 Required permissions: `touchstones.prepare`
 
-Schema: [`CreateTouchstone.schema.json`](CreateTouchstone.schema.json)
+Schema: [`CreateTouchstone.schema.json`](../schemas/CreateTouchstone.schema.json)
 
 ### Example
     {
@@ -150,7 +150,7 @@ Changing the status is only allowed if requirements have been met (i.e. cannot m
 
 Required permissions: To change state to `open` the use needs `touchstones.open`.  To change state to `finished` the use needs `touchstones.finish`.
 
-Schema: [`UpdateTouchstone.schema.json`](UpdateTouchstone.schema.json)
+Schema: [`UpdateTouchstone.schema.json`](../schemas/UpdateTouchstone.schema.json)
 
 ### Example
     {
@@ -165,7 +165,7 @@ Required permissions: `touchstones.read`, `scenarios.read`, `coverage.read`
 This data is returned in two parts: First the metadata, then the coverage in CSV format.
 
 ### Metadata
-Schema: [`ScenarioAndCoverageSets.schema.json`](ScenarioAndCoverageSets.schema.json)
+Schema: [`ScenarioAndCoverageSets.schema.json`](../schemas/ScenarioAndCoverageSets.schema.json)
 
 #### Example
     {
@@ -231,7 +231,7 @@ Associate or unassociate a scenario with a touchstone.
 
 Required permissions: `touchstones.prepare`, `scenarios.read`
 
-Schema: [`AssociateScenario.schema.json`](AssociateScenario.schema.json)
+Schema: [`AssociateScenario.schema.json`](../schemas/AssociateScenario.schema.json)
 
 ### Example
     {
@@ -249,7 +249,7 @@ Returns all countries associated with the touchstone.
 
 Required permissions: `touchstones.read`
 
-Schema: [`CountriesWithDetails.schema.json`](CountriesWithDetails.schema.json)
+Schema: [`CountriesWithDetails.schema.json`](../schemas/CountriesWithDetails.schema.json)
 
 ### Example
     [
@@ -275,7 +275,7 @@ touchstone-specific properties (currently just name).
 
 Required permissions: `touchstones.prepare`
 
-Schema: [`SetCountriesWithDetails.schema.json`](SetCountriesWithDetails.schema.json)
+Schema: [`SetCountriesWithDetails.schema.json`](../schemas/SetCountriesWithDetails.schema.json)
 
 ### Example
     [
@@ -301,7 +301,7 @@ of countries (see `/countries/`), the action fails without effect.
 
 Returns a list of the countries associated with the scenario in this touchstone.
 
-Schema: [`CountriesWithDetails.schema.json`](CountriesWithDetails.schema.json)
+Schema: [`CountriesWithDetails.schema.json`](../schemas/CountriesWithDetails.schema.json)
 
 ### Example
     [
@@ -326,7 +326,7 @@ Schema: [`CountriesWithDetails.schema.json`](CountriesWithDetails.schema.json)
 
 Sets the list of countries associated with this scenario in this touchstone.
 
-Schema: [`CountryIds.schema.json`](CountryIds.schema.json)
+Schema: [`CountryIds.schema.json`](../schemas/CountryIds.schema.json)
 
 ### Example
     [ "AFG", "AGO" ]
@@ -342,7 +342,7 @@ Returns the coverage data sets associated with the touchstone
 
 Required permissions: `coverage.read`
 
-Schema: [`CoverageSets.schema.json`](CoverageSets.schema.json)
+Schema: [`CoverageSets.schema.json`](../schemas/CoverageSets.schema.json)
 
 ### Example
     [
@@ -396,7 +396,7 @@ Required permissions: `coverage.read`
 Returns HTTP multipart data with two sections. The first section has `Content-Type: application/json`
 and conforms to this schema.
 
-Schema: [`CoverageSet.schema.json`](CoverageSet.schema.json)
+Schema: [`CoverageSet.schema.json`](../schemas/CoverageSet.schema.json)
 
 ### Example
     {
@@ -432,7 +432,7 @@ Required permissions: `coverage.write`
 Takes HTTP multipart data with two sections. The first section must have
 `Content-Type: application/json` and must conform to this schema.
 
-Schema: [`CreateCoverageSet.schema.json`](CreateCoverageSet.schema.json)
+Schema: [`CreateCoverageSet.schema.json`](../schemas/CreateCoverageSet.schema.json)
 
 ### Example
     {
@@ -465,7 +465,7 @@ Required permissions: `coverage.write`
 Takes HTTP multipart data with two sections. The first section must have
 `Content-Type: application/json` and must conform to this schema.
 
-Schema: [`CreateCoverageSet.schema.json`](CreateCoverageSet.schema.json)
+Schema: [`CreateCoverageSet.schema.json`](../schemas/CreateCoverageSet.schema.json)
 
 ### Example
     {
@@ -492,7 +492,7 @@ Associates or unassociates a given scenario and coverage set.
 
 Required permissions: `touchstones.prepare`
 
-Schema: [`AssociateCoverageSet.schema.json`](AssociateCoverageSet.schema.json)
+Schema: [`AssociateCoverageSet.schema.json`](../schemas/AssociateCoverageSet.schema.json)
 
 ### Example
     {
@@ -513,7 +513,7 @@ Creates a new modelling group.
 
 Required permissions: `modelling-groups.write`
 
-Schema: [`ModellingGroup.schema.json`](ModellingGroup.schema.json)
+Schema: [`ModellingGroup.schema.json`](../schemas/ModellingGroup.schema.json)
 
 ### Example
     {
@@ -526,7 +526,7 @@ Returns all users in the modelling group.
 
 Required permissions: `users.read`, `modelling-groups.read`. Additionally, roles are only included if the user has `roles.read`, scoped to this group (or to *)
 
-Schma: [`Users.schema.json`](Users.schema.json)
+Schma: [`Users.schema.json`](../schemas/Users.schema.json)
 
 ### Example
     [
@@ -556,7 +556,7 @@ Adds or removes a responsibility for a given modelling group, scenario, and touc
 
 Required permissions: `responsibilities.write`
 
-Schema: [`AssociateResponsibility.schema.json`](AssociateResponsibility.schema.json)
+Schema: [`AssociateResponsibility.schema.json`](../schemas/AssociateResponsibility.schema.json)
 
 ### Example
     {
@@ -591,7 +591,7 @@ later we will want to communicate problems with missing or invalid demographic d
 Required permissions: `touchstones.read`, `scenarios.read`, `modelling-groups.read`
 
 ### In preparation
-Schema: [`TouchstoneOverview.schema.json`](TouchstoneOverview.schema.json)
+Schema: [`TouchstoneOverview.schema.json`](../schemas/TouchstoneOverview.schema.json)
 
 #### Example
     {
@@ -651,7 +651,7 @@ Schema: [`TouchstoneOverview.schema.json`](TouchstoneOverview.schema.json)
     }
 
 ### Open
-Schema: [`TouchstoneOverview.schema.json`](TouchstoneOverview.schema.json)
+Schema: [`TouchstoneOverview.schema.json`](../schemas/TouchstoneOverview.schema.json)
 
 #### Example
     {

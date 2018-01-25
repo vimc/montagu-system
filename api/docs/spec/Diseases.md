@@ -4,7 +4,7 @@ Returns an enumeration of all diseases.
 
 Required permissions: none
 
-Schema: [`Diseases.schema.json`](Diseases.schema.json)
+Schema: [`Diseases.schema.json`](../schemas/Diseases.schema.json)
 
 #### Example
 
@@ -24,7 +24,7 @@ Returns one disease.
 
 Required permissions: none
 
-Schema: [`Disease.schema.json`](Disease.schema.json)
+Schema: [`Disease.schema.json`](../schemas/Disease.schema.json)
 
 ### Example
     {
@@ -39,7 +39,7 @@ Adds a new disease. Request data:
 
 Required permissions: `diseases.write`
 
-Schema: [`Disease.schema.json`](Disease.schema.json)
+Schema: [`Disease.schema.json`](../schemas/Disease.schema.json)
 
 ### Example
     {
@@ -56,7 +56,7 @@ Update the disease's human-readable name. Request data:
 
 Required permissions: `diseases.write`
 
-Schema: [`UpdateDisease.schema.json`](UpdateDisease.schema.json)
+Schema: [`UpdateDisease.schema.json`](../schemas/UpdateDisease.schema.json)
 
 ### Example
     {

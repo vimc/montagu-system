@@ -7,7 +7,7 @@ permission to see touchstones before they are made `open`.
 
 Required permissions: Global scope: `touchstones.read`. Scoped to modelling group: `responsibilities.read`. Also see note above about `in-preparation` touchstones - need `touchstones.prepare`.
 
-Schema: [`Touchstones.schema.json`](Touchstones.schema.json)
+Schema: [`Touchstones.schema.json`](../schemas/Touchstones.schema.json)
 
 ### Example
     [
@@ -29,7 +29,7 @@ before they are made `open`, then this returns an error 404.
 
 Required permissions: Global scope: `scenarios.read`. Scoped to modelling group: `responsibilities.read`. Additionally, to view responsibilities for an `in-preparation` touchstone, the user needs the `touchstones.prepare` permission.
 
-Schema: [`ResponsibilitySet.schema.json`](ResponsibilitySet.schema.json)
+Schema: [`ResponsibilitySet.schema.json`](../schemas/ResponsibilitySet.schema.json)
 
 ### Example
     {
@@ -87,7 +87,7 @@ Schema: [`ResponsibilitySet.schema.json`](ResponsibilitySet.schema.json)
 
 If they have no responsibilities, `status` is "not-applicable".
 
-Schema: [`ResponsibilitySet.schema.json`](ResponsibilitySet.schema.json)
+Schema: [`ResponsibilitySet.schema.json`](../schemas/ResponsibilitySet.schema.json)
 
 ### Example
     {
@@ -108,7 +108,7 @@ before they are made `open`, then this returns an error 404.
 
 Required permissions: Global scope: `scenarios.read`. Scoped to modelling group: `responsibilities.read`. Additionally, to view responsibilities for an `in-preparation` touchstone, the user needs the `touchstones.prepare` permission.
 
-Schema: [`ResponsibilityAndTouchstone.schema.json`](ResponsibilityAndTouchstone.schema.json)
+Schema: [`ResponsibilityAndTouchstone.schema.json`](../schemas/ResponsibilityAndTouchstone.schema.json)
 
 ### Example
     {
@@ -150,7 +150,7 @@ Can only move the responsibility set to `submitted` if:
 
 Required permissions: `estimates.submit`, scoped to the modelling group (or *)
 
-Schema: [`EditResponsibilitySet.schema.json`](EditResponsibilitySet.schema.json)
+Schema: [`EditResponsibilitySet.schema.json`](../schemas/EditResponsibilitySet.schema.json)
 
 ### Example
     {
@@ -163,7 +163,7 @@ at least one problem.
 
 Required permissions: `estimates.review`, scoped to the modelling group (or *)
 
-Schema: [`EditResponsibilitySet.schema.json`](EditResponsibilitySet.schema.json)
+Schema: [`EditResponsibilitySet.schema.json`](../schemas/EditResponsibilitySet.schema.json)
 
 ### Example
     {

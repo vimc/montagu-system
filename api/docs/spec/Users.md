@@ -4,7 +4,7 @@ Returns an enumeration of all users in the system.
 
 Required permissions: `users.read`. Additionally, the `roles` section is not included unless the logged in user has the `roles.read` permission. If the user has `roles.read` in a specific scope, only roles with a matching scope are returned.
 
-Schema: [`Users.schema.json`](Users.schema.json)
+Schema: [`Users.schema.json`](../schemas/Users.schema.json)
 
 ### Example
     [
@@ -53,7 +53,7 @@ Returns a particular user.
 
 Required permissions: `users.read`. Additionally, the `roles` section is not included unless the logged in user has the `roles.read` permission. If the user has `roles.read` in a specific scope, only roles with a matching scope are returned.
 
-Schema: [`User.schema.json`](User.schema.json)
+Schema: [`User.schema.json`](../schemas/User.schema.json)
 
 ### Example
     {
@@ -100,7 +100,7 @@ Creates a new user.
 
 Required permissions: `users.create`
 
-Schema: [`CreateUser.schema.json`](CreateUser.schema.json)
+Schema: [`CreateUser.schema.json`](../schemas/CreateUser.schema.json)
 
 ### Example
     {
@@ -114,7 +114,7 @@ Updates an existing user. All fields are optional.
 
 Required permissions: `users.edit-all`, or none if the logged in user matches the user being edited.
 
-Schema: [`UpdateUser.schema.json`](UpdateUser.schema.json)
+Schema: [`UpdateUser.schema.json`](../schemas/UpdateUser.schema.json)
 
 ### Example
     {
@@ -133,7 +133,7 @@ Required permissions: `roles.write`. If the logged in user only has `roles.write
 For simple roles (see [Security.md](Security.md)) no scope should be specified 
 (which means they can't be used if the user only has a scoped `roles.write` permission).
 
-Schema: [`AssociateRole.schema.json`](AssociateRole.schema.json)
+Schema: [`AssociateRole.schema.json`](../schemas/AssociateRole.schema.json)
 
 ### Example
     {
@@ -145,7 +145,7 @@ Schema: [`AssociateRole.schema.json`](AssociateRole.schema.json)
 For complex roles, the `scope_id` must be provided. When removing an association, if the scope_prefix,
 name, and scope_id do not both match an existing association, no change is made.
 
-Schema: [`AssociateRole.schema.json`](AssociateRole.schema.json)
+Schema: [`AssociateRole.schema.json`](../schemas/AssociateRole.schema.json)
 
 ### Example
     {
@@ -171,7 +171,7 @@ Changes the password for the currently logged in user.
 
 Required permissions: `can-login`.
 
-Schema: [`SetPassword.schema.json`](SetPassword.schema.json)
+Schema: [`SetPassword.schema.json`](../schemas/SetPassword.schema.json)
 
 ### Example
     {

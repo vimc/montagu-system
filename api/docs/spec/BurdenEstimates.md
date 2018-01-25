@@ -5,7 +5,7 @@ responsibility.
 
 Required permissions: Scoped to modelling group: `estimates.read`, `responsibilities.read`. If the estimates belong to a touchstone that is `open` then they are only returned if the user has `estimates.read-unfinished` (again scoped to the modelling group)
 
-Schema: [`BurdenEstimates.schema.json`](BurdenEstimates.schema.json)
+Schema: [`BurdenEstimates.schema.json`](../schemas/BurdenEstimates.schema.json)
 
 ### Example
     [
@@ -33,7 +33,7 @@ section is JSON metadata; the second section is CSV data. If the client sends
 an Accept header of `text/csv` only the CSV data is returned.
 
 ### JSON metadata
-Schema: [`BurdenEstimateSet.schema.json`](BurdenEstimateSet.schema.json)
+Schema: [`BurdenEstimateSet.schema.json`](../schemas/BurdenEstimateSet.schema.json)
 
 ### Example
     {
@@ -71,7 +71,7 @@ Required permissions: Scoped to modelling group: `estimates.write`, `responsibil
 Returns the integer id of the new set.
 
 ### JSON metadata
-Schema: [`CreateBurdenEstimateSet.schema.json`](CreateBurdenEstimateSet.schema.json)
+Schema: [`CreateBurdenEstimateSet.schema.json`](../schemas/CreateBurdenEstimateSet.schema.json)
 
 ### Example
     {
@@ -106,8 +106,8 @@ outcomes in the database.
 
 If the burden estimate set was created with type 'stochastic' then an additional
 column, `run_id`, is expected between `disease` and `year`. See 
-[BurdenEstimate.csvschema.json](BurdenEstimate.csvschema.json) and 
-[StochasticBurdenEstimate.csvschema.json](StochasticBurdenEstimate.csvschema.json)
+[BurdenEstimate.csvschema.json](../schemas/BurdenEstimate.cs.schema.json) and 
+[StochasticBurdenEstimate.csvschema.json](../schemas/StochasticBurdenEstimate.cs.schema.json)
 for a strict definition.
 
 ### Keep open

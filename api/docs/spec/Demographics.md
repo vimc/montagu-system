@@ -6,7 +6,7 @@ whether multiple gender options are available.
 
 Required permissions: `demographics.read`.
 
-Schema: [`Demographics.schema.json`](Demographics.schema.json)
+Schema: [`Demographics.schema.json`](../schemas/Demographics.schema.json)
 
 ### Example
     [{ 
@@ -27,7 +27,7 @@ Schema: [`Demographics.schema.json`](Demographics.schema.json)
 Returns the data set with given type. This data is returned in two parts: First the metadata, then the coverage in CSV format.
 
 ### Metadata
-Schema: [`DemographicDataForTouchstone.schema.json`](DemographicDataForTouchstone.schema.json)
+Schema: [`DemographicDataForTouchstone.schema.json`](../schemas/DemographicDataForTouchstone.schema.json)
 
 #### Example
     {

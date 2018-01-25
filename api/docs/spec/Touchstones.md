@@ -4,7 +4,7 @@ Returns an enumeration of all touchstones.
 
 Required permissions: `touchstones.read`. To see touchstones that are `in-preparation` the user further requires `touchstones.prepare`.
 
-Schema: [`Touchstones.schema.json`](Touchstones.schema.json)
+Schema: [`Touchstones.schema.json`](../schemas/Touchstones.schema.json)
 
 ### Example
     [
@@ -31,7 +31,7 @@ Required permissions: `touchstones.read`, `scenarios.read`, `coverage.read`
 
 Additionally, to view scenarios for an in-preparation touchstone, `touchstones.prepare` is required.
 
-Schema: [`ScenariosInTouchstone.schema.json`](ScenariosInTouchstone.schema.json)
+Schema: [`ScenariosInTouchstone.schema.json`](../schemas/ScenariosInTouchstone.schema.json)
 
 ### Example
     [
@@ -96,7 +96,7 @@ Required permissions: `touchstones.read`, `scenarios.read`, `coverage.read`
 
 Additionally, to view scenarios for an in-preparation touchstone, `touchstones.prepare` is required.
 
-Schema: [`ScenarioAndCoverageSets.schema.json`](ScenarioAndCoverageSets.schema.json)
+Schema: [`ScenarioAndCoverageSets.schema.json`](../schemas/ScenarioAndCoverageSets.schema.json)
 
 ### Example
     {

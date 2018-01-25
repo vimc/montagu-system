@@ -7,7 +7,7 @@ Required permissions: Global scope: `scenarios.read`. Scoped to modelling group:
 If the touchstone is `in-preparation`, and the user does not have permission to see touchstones 
 before they are made `open`, then this returns an error 404.
 
-Schema: [`ScenarioAndCoverageSets.schema.json`](ScenarioAndCoverageSets.schema.json)
+Schema: [`ScenarioAndCoverageSets.schema.json`](../schemas/ScenarioAndCoverageSets.schema.json)
 
 ### Example
     {
@@ -58,7 +58,7 @@ CSV table data are returned, separated by a single line of three dashes. If
 "Accept" is "text/csv" then only the CSV table data is returned.
 
 ### JSON metadata
-Schema: [`ScenarioAndCoverageSets.schema.json`](ScenarioAndCoverageSets.schema.json)
+Schema: [`ScenarioAndCoverageSets.schema.json`](../schemas/ScenarioAndCoverageSets.schema.json)
 
 #### Example
     {

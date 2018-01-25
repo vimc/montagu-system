@@ -4,7 +4,7 @@ Returns an enumeration of all models
 
 Required permissions: `models.read`
 
-Schema: [`Models.schema.json`](Models.schema.json)
+Schema: [`Models.schema.json`](../schemas/Models.schema.json)
 
 ### Example
     [
@@ -27,7 +27,7 @@ Returns a model and all its versions.
 
 Required permissions: `models.read`
 
-Schema: [`ModelDetails.schema.json`](ModelDetails.schema.json)
+Schema: [`ModelDetails.schema.json`](../schemas/ModelDetails.schema.json)
 
 ### Example
     {
@@ -58,7 +58,7 @@ Creates a new model.
 
 Required permissions: `models.write` scoped to the modelling group (or *).
 
-Schema: [`Model.schema.json`](Model.schema.json)
+Schema: [`Model.schema.json`](../schemas/Model.schema.json)
 
 ### Example
     { 
@@ -73,7 +73,7 @@ Adds a new version to a model
 
 Required permissions: `models.write` scoped to the modelling group (or *).
 
-Schema: [`CreateModelVersion.schema.json`](CreateModelVersion.schema.json)
+Schema: [`CreateModelVersion.schema.json`](../schemas/CreateModelVersion.schema.json)
 
 ### Example
     {
@@ -88,7 +88,7 @@ Returns a list of model run parameter sets that the given modelling group has up
 
 Required permissions: Scoped to modelling group: `responsibilities.read`.
 
-Schema: [`ModelRunParameterSets.schema.json`](ModelRunParameterSets.schema.json)
+Schema: [`ModelRunParameterSets.schema.json`](../schemas/ModelRunParameterSets.schema.json)
 
 ### Example
     [

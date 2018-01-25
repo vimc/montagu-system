@@ -19,7 +19,7 @@ Like so:
 ### Response
 If the username and password are correct, and the user has the `can-login` permission:
 
-Schema: [`LoginSuccessful.schema.json`](LoginSuccessful.schema.json)
+Schema: [`LoginSuccessful.schema.json`](../schemas/LoginSuccessful.schema.json)
 
 #### Example
 
