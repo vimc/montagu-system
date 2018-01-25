@@ -126,7 +126,9 @@ class DirectActionContext(private val context: SparkWebContext,
         val manager = ProfileManager<CommonProfile>(context)
         manager.getAll(false).singleOrNull()
     }
-    override val username = userProfile?.id
+    override val username by lazy {
+        userProfile?.id
+    }
 
     override val redirectUrl: String? by lazy {
         queryParams("redirectUrl")

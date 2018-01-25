@@ -7,7 +7,6 @@ import org.junit.Test
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.context.RequestBodySource
 import org.vaccineimpact.api.app.context.postData
-import org.vaccineimpact.api.app.controllers.ControllerContext
 import org.vaccineimpact.api.app.controllers.GroupBurdenEstimatesController
 import org.vaccineimpact.api.app.errors.InconsistentDataError
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository

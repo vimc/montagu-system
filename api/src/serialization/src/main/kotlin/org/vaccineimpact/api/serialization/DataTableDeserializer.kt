@@ -86,7 +86,7 @@ open class DataTableDeserializer<out T>(
         }
         catch (e: Exception)
         {
-            val oneIndexedRow = row + 1;
+            val oneIndexedRow = row + 1
             problems.add(ErrorInfo(
                     "csv-bad-data-type:$oneIndexedRow:$column",
                     "Unable to parse '$trimmed' as ${targetType.toString().replace("kotlin.", "")} (Row $oneIndexedRow, column $column)"
@@ -101,7 +101,7 @@ open class DataTableDeserializer<out T>(
     {
         if (allColumnsRequired && trimmed.isEmpty())
         {
-            val oneIndexedRow = row + 1;
+            val oneIndexedRow = row + 1
             problems.add(ErrorInfo(
                     "csv-missing-data:$oneIndexedRow:$column",
                     "Unable to parse '$trimmed' as ${targetType.toString().replace("kotlin.", "")} (Row $oneIndexedRow, column $column)"

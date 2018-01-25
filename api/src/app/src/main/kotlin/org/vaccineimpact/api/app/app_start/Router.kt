@@ -70,7 +70,7 @@ class Router(val config: RouteConfig,
         return fullUrl
     }
 
-    private fun getWrappedRoute(endpoint: EndpointDefinition): Route
+    fun getWrappedRoute(endpoint: EndpointDefinition): Route
     {
         return Route({ req, res ->
             try

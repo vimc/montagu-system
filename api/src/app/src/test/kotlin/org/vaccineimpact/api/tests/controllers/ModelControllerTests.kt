@@ -5,7 +5,6 @@ import com.nhaarman.mockito_kotlin.mock
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.vaccineimpact.api.app.context.ActionContext
-import org.vaccineimpact.api.app.controllers.ControllerContext
 import org.vaccineimpact.api.app.controllers.ModelController
 import org.vaccineimpact.api.app.repositories.ModelRepository
 import org.vaccineimpact.api.models.Model

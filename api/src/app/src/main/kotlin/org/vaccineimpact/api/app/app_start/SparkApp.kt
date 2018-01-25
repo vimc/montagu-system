@@ -6,9 +6,6 @@ import org.vaccineimpact.api.app.NotFoundHandler
 import org.vaccineimpact.api.app.RequestLogger
 import org.vaccineimpact.api.app.addTrailingSlashes
 import org.vaccineimpact.api.app.app_start.route_config.MontaguRouteConfig
-import org.vaccineimpact.api.app.controllers.ControllerContext
-import org.vaccineimpact.api.app.controllers.HomeController
-import org.vaccineimpact.api.app.controllers.OneTimeLinkController
 import org.vaccineimpact.api.app.repositories.RepositoryFactory
 import org.vaccineimpact.api.db.Config
 import org.vaccineimpact.api.security.KeyHelper
