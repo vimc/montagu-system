@@ -37,7 +37,6 @@ class TransactionalityTests : DatabaseTest()
     {
         val router = Router(mock(), mock(), mock(), RepositoryFactory())
         val route = router.getWrappedRoute(Endpoint("/", SomeController::class, "endpoint"))
-        route.handle(mock(), mock())
 
         assertThatThrownBy {
             route.handle(mock(), mock())
