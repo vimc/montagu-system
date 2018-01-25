@@ -3,6 +3,7 @@ package org.vaccineimpact.api.validateSchema
 import org.assertj.core.api.Assertions.assertThat
 import org.commonmark.parser.Parser
 import org.junit.Test
+import java.io.StringReader
 
 class SchemaValidator
 {
@@ -10,8 +11,13 @@ class SchemaValidator
     fun run()
     {
         val parser = Parser.builder().build()
-        val spec = ResourceHelper.getResourceAsStream("spec/spec.md").use {
-            parser.parseReader(it.reader())
+        val allSpecFiles = ResourceHelper.getResourcesInFolder("docs/spec/", matching = Regex(".md$"))
+        val fullText = allSpecFiles.joinToString("") {
+            ResourceHelper.getResourceAsStream(it).reader().readText()
+        }
+
+        val spec = StringReader(fullText).use {
+            parser.parseReader(it)
         }
 
         val validator = JSONValidator()
