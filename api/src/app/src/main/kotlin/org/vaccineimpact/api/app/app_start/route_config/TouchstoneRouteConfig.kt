@@ -23,10 +23,6 @@ object TouchstoneRouteConfig : RouteConfig
                     .json()
                     .secure(scenarioPermissions),
 
-            Endpoint("$baseUrl:touchstone-id/scenarios/", controller, "getScenarios")
-                    .json()
-                    .secure(scenarioPermissions),
-
             Endpoint("$baseUrl:touchstone-id/scenarios/:scenario-id/", controller, "getScenario")
                     .json()
                     .secure(scenarioPermissions),
