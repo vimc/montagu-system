@@ -2,7 +2,7 @@ package org.vaccineimpact.api.app.app_start.route_config
 
 import org.vaccineimpact.api.app.app_start.*
 import org.vaccineimpact.api.app.controllers.GroupCoverageController
-import org.vaccineimpact.api.app.controllers.NewStyleOneTimeLinkController
+import org.vaccineimpact.api.app.controllers.OneTimeLinkController
 import org.vaccineimpact.api.app.app_start.streamed
 
 object GroupCoverageRouteConfig : RouteConfig
@@ -32,7 +32,7 @@ object GroupCoverageRouteConfig : RouteConfig
                     .secure(permissions),
 
             Endpoint("$baseUrl/coverage/get_onetime_link/",
-                    NewStyleOneTimeLinkController::class, "getTokenForCoverageData")
+                    OneTimeLinkController::class, "getTokenForCoverageData")
                     .json()
                     .secure(permissions))
 }

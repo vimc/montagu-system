@@ -1,38 +1,46 @@
 package org.vaccineimpact.api.app.controllers
 
+import org.slf4j.LoggerFactory
 import org.vaccineimpact.api.app.*
+import org.vaccineimpact.api.app.app_start.Controller
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.controllers.endpoints.oneRepoEndpoint
 import org.vaccineimpact.api.app.errors.InvalidOneTimeLinkToken
+import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.RepositoryFactory
 import org.vaccineimpact.api.app.repositories.TokenRepository
+import org.vaccineimpact.api.app.security.OneTimeTokenGenerator
 import org.vaccineimpact.api.models.Result
 import org.vaccineimpact.api.models.ResultStatus
+import org.vaccineimpact.api.models.helpers.OneTimeAction
+import org.vaccineimpact.api.security.KeyHelper
 import org.vaccineimpact.api.security.WebTokenHelper
 import spark.route.HttpMethod
 
 class OneTimeLinkController(
-        val context: ControllerContext,
+        context: ActionContext,
+        private val tokenRepository: TokenRepository,
+        private val oneTimeTokenGenerator: OneTimeTokenGenerator,
+        private val onetimeLinkResolver: OnetimeLinkResolver,
+        private val tokenHelper: WebTokenHelper = WebTokenHelper(KeyHelper.keyPair),
         private val errorHandler: ErrorHandler = ErrorHandler(),
-        private val redirectValidator: RedirectValidator = MontaguRedirectValidator(),
-        onetimeLinkResolver: OnetimeLinkResolver? = null
-) : AbstractController(context)
+        private val redirectValidator: RedirectValidator = MontaguRedirectValidator()
+) : Controller(context)
 {
+    private val logger = LoggerFactory.getLogger(OneTimeLinkController::class.java)
 
-    private val onetimeLinkResolver = onetimeLinkResolver ?: OnetimeLinkResolver(this.repos)
-
-    override val urlComponent = ""
-    val url = "/onetime_link/:token/"
-
-    override fun endpoints(repos: RepositoryFactory) = listOf(
-            oneRepoEndpoint(url, this::onetimeLink, repos, { it.token }, method = HttpMethod.get),
-            oneRepoEndpoint(url, this::onetimeLink, repos, { it.token }, method = HttpMethod.post)
+    constructor(context: ActionContext, repositories: Repositories)
+            : this(
+            context,
+            repositories.token,
+            OneTimeTokenGenerator(repositories.token),
+            OnetimeLinkResolver(repositories)
     )
 
-    fun onetimeLink(context: ActionContext, repo: TokenRepository): Any
+    fun onetimeLink(): Any
     {
         val token = context.params(":token")
-        val claims = verifyToken(token, repo)
+        val claims = verifyToken(token, tokenRepository)
         val link = OneTimeLink.parseClaims(claims)
         val redirectUrl = link.queryParams["redirectUrl"]
 
@@ -59,6 +67,31 @@ class OneTimeLinkController(
                 redirectWithResult(context, error.asResult(), redirectUrl)
             }
         }
+    }
+
+    fun getTokenForDemographicData(): String
+    {
+        return oneTimeTokenGenerator.getOneTimeLinkToken(OneTimeAction.DEMOGRAPHY, context)
+    }
+
+    fun getTokenForCoverageData(): String
+    {
+        return oneTimeTokenGenerator.getOneTimeLinkToken(OneTimeAction.COVERAGE, context)
+    }
+
+    fun getTokenForModelRunParameters(): String
+    {
+        return oneTimeTokenGenerator.getOneTimeLinkToken(OneTimeAction.MODEl_RUN_PARAMETERS, context)
+    }
+
+    fun getTokenForCreateBurdenEstimateSet(): String
+    {
+        return oneTimeTokenGenerator.getOneTimeLinkToken(OneTimeAction.BURDENS_CREATE, context)
+    }
+
+    fun getTokenForPopulateBurdenEstimateSet(): String
+    {
+        return oneTimeTokenGenerator.getOneTimeLinkToken(OneTimeAction.BURDENS_POPULATE, context)
     }
 
     private fun redirectWithResult(context: ActionContext, result: Result, redirectUrl: String)
