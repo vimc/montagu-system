@@ -1,4 +1,25 @@
 # Model run parameters
+## GET /modelling-groups/{modelling-group-id}/model-run-parameters/{touchstone-id}/
+Returns a list of model run parameter sets that the given modelling group has
+uploaded for responsibilities in the  given touchstone.
+
+Required permissions: Scoped to modelling group: `responsibilities.read`.
+
+Schema: [`ModelRunParameterSets.schema.json`](../schemas/ModelRunParameterSets.schema.json)
+
+### Example
+    [
+        {
+            "id": 1,
+            "description": "our first set of parameters",
+            "model": "HPVGoldie-flat",
+            "uploaded_by": "tgarske",
+            "uploaded_on": "2017-10-06T11:18:06Z",
+            "disease": "YF"
+        }
+    ]
+    
+
 ## POST /modelling-groups/{modelling-group-id}/model-run-parameters/{touchstone-id}/
 Creates a new model run parameter set for the given model. 
 
