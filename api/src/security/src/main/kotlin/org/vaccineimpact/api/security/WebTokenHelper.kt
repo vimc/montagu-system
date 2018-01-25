@@ -68,14 +68,14 @@ open class WebTokenHelper(keyPair: KeyPair,
         )
     }
 
-    fun shinyClaims(user: InternalUser): Map<String, Any>
+    private fun shinyClaims(user: InternalUser): Map<String, Any>
     {
         val allowedShiny = user.permissions.contains(ReifiedPermission("reports.review", Scope.Global()))
         return mapOf(
                 "iss" to issuer,
                 "sub" to user.username,
                 "exp" to Date.from(Instant.now().plus(lifeSpan)),
-                "allowed_shiny" to allowedShiny
+                "allowed_shiny" to allowedShiny.toString()
         )
     }
 
