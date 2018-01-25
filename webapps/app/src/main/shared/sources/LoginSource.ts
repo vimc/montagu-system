@@ -19,6 +19,16 @@ export function setShinyToken(){
         credentials : "include"
     });
 }
+
+export const LoginSource = {
+    clearShinyToken() {
+        return fetcher.fetcher.fetch("/clear-shiny-cookie/", {
+            method: "GET",
+            credentials: "include"
+        }, false);
+    }
+};
+
 export function processLoginResponse(
     response: Response,
     authStore: AuthStoreBaseInterface<any>,

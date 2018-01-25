@@ -7,6 +7,7 @@ import { mockFetcherResponse, mockResponse, mockResult } from "../../mocks/mockR
 import fetcher from "../../../main/shared/sources/Fetcher";
 import { Notification } from "../../../main/shared/actions/NotificationActions";
 import { SinonSpy } from "sinon";
+import {LoginSource} from "../../../main/shared/sources/LoginSource";
 
 export interface FetchHelperConfig<TPayload, TActionPayload> {
     prepareForFetch: () => void;
@@ -143,6 +144,7 @@ export class FetchHelper<TPayload, TActionPayload> {
                     message: "Something wicked this way comes"
                 }
             ];
+            this.sandbox.setStub(LoginSource, "clearShinyToken");
             this.config.prepareForFetch();
             this.testFetchWithMockedResponse({
                 done,
