@@ -189,6 +189,7 @@ class OneTimeLinkControllerTests : MontaguTests()
 
         // Behaviour under test
         val controller = makeController(
+                context = context,
                 oneTimeTokenGenerator = tokenGenerator
         )
         controller.getTokenForDemographicData()
