@@ -34,7 +34,7 @@ class JooqScenarioRepository(dsl: DSLContext,
                 .fetch()
                 .groupBy { it[SCENARIO_DESCRIPTION.ID] }
                 .map { mapScenarioWithFocalActivityType(it.value) }
-                .sortedBy { it.activityType }
+                .sortedWith(compareBy({ it.scenario.disease }, { it.activityType }))
                 .map { it.scenario }
 
     }
