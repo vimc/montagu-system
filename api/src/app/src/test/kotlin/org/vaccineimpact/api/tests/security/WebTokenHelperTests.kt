@@ -71,7 +71,7 @@ class WebTokenHelperTests : MontaguTests()
         assertThat(claims["iss"]).isEqualTo("vaccineimpact.org")
         assertThat(claims["sub"]).isEqualTo("test.user")
         assertThat(claims["exp"]).isInstanceOf(Date::class.java)
-        assertThat(claims["allowed_shiny"]).isEqualTo(false)
+        assertThat(claims["allowed_shiny"]).isEqualTo("false")
     }
 
     @Test
@@ -86,7 +86,7 @@ class WebTokenHelperTests : MontaguTests()
         assertThat(claims["iss"]).isEqualTo("vaccineimpact.org")
         assertThat(claims["sub"]).isEqualTo("test.user")
         assertThat(claims["exp"]).isInstanceOf(Date::class.java)
-        assertThat(claims["allowed_shiny"]).isEqualTo(true)
+        assertThat(claims["allowed_shiny"]).isEqualTo("true")
     }
 
     @Test
