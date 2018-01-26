@@ -3,10 +3,8 @@ package org.vaccineimpact.api.blackboxTests.tests.BurdenEstimates
 import com.beust.klaxon.json
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
-import org.vaccineimpact.api.blackboxTests.helpers.LocationConstraint
-import org.vaccineimpact.api.blackboxTests.helpers.RequestHelper
-import org.vaccineimpact.api.blackboxTests.helpers.getResultFromRedirect
-import org.vaccineimpact.api.blackboxTests.helpers.validate
+import org.junit.runner.Request
+import org.vaccineimpact.api.blackboxTests.helpers.*
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.Tables.BURDEN_ESTIMATE_SET
 import org.vaccineimpact.api.models.permissions.PermissionSet
@@ -42,6 +40,19 @@ class CreateBurdenEstimateTests : BurdenEstimateTests()
             val record = db.dsl.fetchOne(BURDEN_ESTIMATE_SET, BURDEN_ESTIMATE_SET.ID.eq(setId.toInt()))
             assertThat(record.modelRunParameterSet).isEqualTo(1)
         }
+    }
+
+    @Test
+    fun `cannot create stochastic burden estimate set without model run parameter set`()
+    {
+        JooqContext().use { db ->
+            TestUserHelper().setupTestUser(db)
+            setUpWithModelRunParameterSet(db)
+        }
+        val permissions = requiredWritePermissions.plus(PermissionSet("*/can-login"))
+        val data = metadataForCreateWithModelRunParameterSet(type = "stochastic")
+        val response = RequestHelper().post(setUrl, permissions, data = data)
+        JSONValidator().validateError(response.text, "invalid-field:model_run_parameter_set:missing")
     }
 
     @Test
@@ -90,10 +101,10 @@ class CreateBurdenEstimateTests : BurdenEstimateTests()
         ))
     }
 
-    private fun metadataForCreateWithModelRunParameterSet() = json {
+    private fun metadataForCreateWithModelRunParameterSet(type: String = "central-averaged") = json {
         obj(
                 "type" to obj(
-                        "type" to "central-averaged",
+                        "type" to type,
                         "details" to "median"
                 ),
                 "model_run_parameter_set" to 1
