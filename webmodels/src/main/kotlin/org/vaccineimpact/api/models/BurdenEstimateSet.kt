@@ -1,5 +1,6 @@
 package org.vaccineimpact.api.models
 
+import org.vaccineimpact.api.models.validation.RequiredWhen
 import java.beans.ConstructorProperties
 import java.time.Instant
 
@@ -23,13 +24,16 @@ constructor(
 
 data class CreateBurdenEstimateSet(
         val type: BurdenEstimateSetType,
-        val modelRunParameterSetId: Int?
+        @RequiredWhen("isStochastic")
+        val modelRunParameterSet: Int?
 )
 {
     fun withType(code: BurdenEstimateSetTypeCode, details: String? = null): CreateBurdenEstimateSet
     {
         return this.copy(type = BurdenEstimateSetType(code, details))
     }
+
+    fun isStochastic() = type.type.isStochastic()
 }
 
 data class BurdenEstimateSetType(val type: BurdenEstimateSetTypeCode, val details: String? = null)
@@ -41,6 +45,7 @@ enum class BurdenEstimateSetTypeCode
     CENTRAL_UNKNOWN,
     STOCHASTIC
 }
+
 fun BurdenEstimateSetTypeCode.isStochastic() = this == BurdenEstimateSetTypeCode.STOCHASTIC
 
 enum class BurdenEstimateSetStatus
