@@ -25,7 +25,7 @@ class CSVSchema(schemaFileName: String) : Schema
 
     private fun parseSchema(schemaFileName: String): CSVSpecification
     {
-        val schemaPath = getResource("spec/$schemaFileName.csvschema.json")
+        val schemaPath = getResource("docs/schemas/$schemaFileName.csvschema.json")
         val schema = Parser().parse(schemaPath.file) as JsonObject
         val columns = (schema["columns"] as JsonObject).map { (key, value) ->
             CSVColumnSpecification(key, CSVColumnType.parse(value))
