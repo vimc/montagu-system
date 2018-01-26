@@ -1,9 +1,10 @@
 package org.vaccineimpact.api.serialization
 
 import org.vaccineimpact.api.models.ErrorInfo
-import org.vaccineimpact.api.serialization.validation.CanBeBlank
+import org.vaccineimpact.api.models.validation.CanBeBlank
 import org.vaccineimpact.api.serialization.validation.ValidationException
 import org.vaccineimpact.api.serialization.validation.applyRule
+import org.vaccineimpact.api.serialization.validation.checkMissing
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty1
 import kotlin.reflect.full.findAnnotation
@@ -33,15 +34,12 @@ class ModelBinder(private val serializer: Serializer = MontaguSerializer.instanc
         @Suppress("UNCHECKED_CAST")
         val klass = model::class as KClass<Any>
         val errors = mutableListOf<ErrorInfo>()
-        val name = property.name
+        val name = serializer.convertFieldName(property.name)
         val value = property.get(model)
 
-        if (value == null && !property.returnType.isMarkedNullable)
+        if (!property.returnType.isMarkedNullable)
         {
-            errors += ErrorInfo(
-                    "invalid-field:$name:missing",
-                    "You have not supplied a value, or have supplied a null value, for field '$name'"
-            )
+            errors += listOfNotNull(checkMissing(value, name))
         }
         if (value is String && value.isBlank() && property.findAnnotationAnywhere<CanBeBlank>(klass) == null)
         {
@@ -50,7 +48,7 @@ class ModelBinder(private val serializer: Serializer = MontaguSerializer.instanc
                     "You have supplied an empty or blank string for field '$name'"
             )
         }
-        errors += property.allAnnotations(klass).map { applyRule(it, value, name) }.filterNotNull()
+        errors += property.allAnnotations(klass).map { applyRule(it, value, name, model) }.filterNotNull()
         return errors
     }
 
