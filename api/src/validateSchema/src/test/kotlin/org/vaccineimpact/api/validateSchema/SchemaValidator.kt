@@ -3,6 +3,7 @@ package org.vaccineimpact.api.validateSchema
 import org.assertj.core.api.Assertions.assertThat
 import org.commonmark.parser.Parser
 import org.junit.Test
+import org.vaccineimpact.api.test_helpers.TeamCityHelper
 import java.io.StringReader
 
 class SchemaValidator
@@ -10,14 +11,23 @@ class SchemaValidator
     @Test
     fun run()
     {
-        val parser = Parser.builder().build()
         val allSpecFiles = ResourceHelper.getResourcesInFolder("docs/spec/", matching = Regex(".md$"))
-        val fullText = allSpecFiles.joinToString("") {
-            ResourceHelper.getResourceAsStream(it).reader().readText()
+        for (specFile in allSpecFiles)
+        {
+            TeamCityHelper.asSuite(specFile) {
+                validateSpecFile(specFile)
+            }
         }
+        println("☺️\n")
+    }
 
-        val spec = StringReader(fullText).use {
-            parser.parseReader(it)
+    private fun validateSpecFile(path: String)
+    {
+        println("--------------------")
+        println("Checking file $path")
+        val parser = Parser.builder().build()
+        val spec = ResourceHelper.getResourceAsStream(path).use {
+            parser.parseReader(it.reader())
         }
 
         val validator = JSONValidator()
@@ -27,22 +37,22 @@ class SchemaValidator
         for (endpoint in endpoints)
         {
             println("Checking $endpoint:")
-
-            if (!endpoint.isMetaBlock)
-            {
-                assertThat(urlRegex.matches(endpoint.urlTemplate))
-                        .`as`("'${endpoint.urlTemplate}' did not match expected regex. URL must consist only of " +
-                                "letters, hyphens, and slashes, and must begin and end with a slash. Full " +
-                                "regex: $urlRegex  ")
-                        .isTrue()
-            }
-            for (requestSchema in endpoint.requestSchemas)
-            {
-                println("- Checking [${requestSchema.schemaPath}] against ${requestSchema.example}")
-                validator.validateExampleAgainstSchema(requestSchema.example, requestSchema.schema)
+            TeamCityHelper.asTest(endpoint.toString()) {
+                if (!endpoint.isMetaBlock)
+                {
+                    assertThat(urlRegex.matches(endpoint.urlTemplate))
+                            .`as`("'${endpoint.urlTemplate}' did not match expected regex. URL must consist only of " +
+                                    "letters, hyphens, and slashes, and must begin and end with a slash. Full " +
+                                    "regex: $urlRegex  ")
+                            .isTrue()
+                }
+                for (requestSchema in endpoint.requestSchemas)
+                {
+                    println("Checking [${requestSchema.schemaPath}] against ${requestSchema.example}")
+                    validator.validateExampleAgainstSchema(requestSchema.example, requestSchema.schema)
+                }
             }
         }
-        println("☺️\n")
     }
 
     private fun buildUrlRegex(): Regex
