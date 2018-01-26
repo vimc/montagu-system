@@ -37,7 +37,7 @@ class SchemaValidator
         for (endpoint in endpoints)
         {
             println("Checking $endpoint:")
-            TeamCityHelper.asTest(endpoint.toString()) {
+            TeamCityHelper.asTest(endpoint.toString().replace(":", "")) {
                 if (!endpoint.isMetaBlock)
                 {
                     assertThat(urlRegex.matches(endpoint.urlTemplate))
