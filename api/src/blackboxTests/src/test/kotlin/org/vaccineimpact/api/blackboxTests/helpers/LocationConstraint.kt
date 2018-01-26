@@ -28,7 +28,7 @@ data class LocationConstraint(val urlFragment: String, val unknownId: Boolean = 
             }
         }
 
-        val idRegex = Regex("""\/([a-zA-Z0-9-]+)\/$""")
+        val idRegex = Regex("""\/([^/]+)\/$""")
         val id = idRegex.find(body)?.groups?.get(1)?.value
         if (id != null)
         {
