@@ -6,7 +6,9 @@ import {FetchOptions} from "../../shared/sources/Fetcher";
 export class ReportingFetcher extends Fetcher {
 
     getBearerToken(): string {
-        return reportingAuthStore.getState().bearerToken;
+        if (typeof(Storage) !== "undefined") {
+            return localStorage.getItem("accessToken");
+        }
     }
 
     buildReportingURL(urlFragment: string): string {

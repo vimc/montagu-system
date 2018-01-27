@@ -7,9 +7,9 @@ import {IPageWithParent} from "../../models/Breadcrumb";
 import './PageWithHeader.scss';
 
 export interface PageParts {
-    header(): JSX.Element;
+    // header(): JSX.Element;
     siteTitle(): string;
-    postHeader(): JSX.Element;
+    // postHeader(): JSX.Element;
     title(): JSX.Element;
     hideTitle(): boolean;
     children?: JSX.Element;
@@ -50,8 +50,8 @@ export abstract class PageWithHeader<TLocationProps>
         }
     }
 
-    header(): JSX.Element { return null; }
-    postHeader(): JSX.Element { return null; }
+    // header(): JSX.Element { return null; }
+    // postHeader(): JSX.Element { return null; }
 
     url(): string {
         let url = this.urlFragment();

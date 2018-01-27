@@ -1,7 +1,7 @@
 import * as React from "react";
 import { connectToStores } from "../../../shared/alt";
 import { contribAuthStore } from "../../stores/ContribAuthStore";
-import { LogoutComponent } from "../../../shared/components/Login/Logout";
+import { LogoutComponent } from "../../../shared/components/Login/LoggedInUserBox";
 
 export const ContribLogout = connectToStores(class extends LogoutComponent {
     static getStores() {

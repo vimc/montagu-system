@@ -1,6 +1,6 @@
 import * as React from "react";
 import { connectToStores } from "../../../shared/alt";
-import { LogoutComponent } from "../../../shared/components/Login/Logout";
+import { LogoutComponent } from "../../../shared/components/Login/LoggedInUserBox";
 import { reportingAuthStore } from "../../stores/ReportingAuthStore";
 
 export const ReportingLogout = connectToStores(class extends LogoutComponent {

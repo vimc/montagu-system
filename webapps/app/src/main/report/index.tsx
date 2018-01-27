@@ -3,7 +3,9 @@ import * as ReactDOM from "react-dom";
 import { ReportingApp } from "./components/ReportingApp";
 import fetcher from "../shared/sources/Fetcher";
 import { ReportingFetcher } from "./sources/ReportingFetcher";
-import { reportingAuthStore } from "./stores/ReportingAuthStore";
+import { Provider } from "react-redux";
+import store from "./stores/Store";
+import { loadToken } from "../shared/_actions/AuthActions"
 
 import './index.html';
 import '../shared/styles/bootstrap.scss';
@@ -12,9 +14,11 @@ import '../shared/styles/buttons.scss';
 import '../shared/styles/common.scss';
 
 fetcher.fetcher = new ReportingFetcher();
-// reportingAuthStore.loadAccessToken();
+store.dispatch(loadToken())
 
 ReactDOM.render(
-    <ReportingApp />,
+    <Provider store={store}>
+        <ReportingApp />
+    </Provider>,
     document.getElementById("react")
 );

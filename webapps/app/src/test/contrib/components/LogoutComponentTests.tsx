@@ -6,7 +6,7 @@ import { expectOneAction } from "../../actionHelpers";
 
 import { initialAuthState } from "../../../main/contrib/stores/ContribAuthStore";
 import { InternalLink } from "../../../main/shared/components/InternalLink";
-import { LogoutComponent } from "../../../main/shared/components/Login/Logout";
+import { LogoutComponent } from "../../../main/shared/components/Login/LoggedInUserBox";
 
 describe("LogoutComponent", () => {
     const sandbox = new Sandbox();

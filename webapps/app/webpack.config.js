@@ -52,7 +52,7 @@ function makePortalConfig(name, urlPrefix) {
 }
 
 module.exports = [
-    makePortalConfig("admin", "admin"),
-    makePortalConfig("contrib", "contribution"),
+//     makePortalConfig("admin", "admin"),
+//     makePortalConfig("contrib", "contribution"),
     makePortalConfig("report", "reports")
 ];

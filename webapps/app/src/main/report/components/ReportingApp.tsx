@@ -1,4 +1,5 @@
 import * as React from "react";
+import { connect } from 'react-redux';
 
 import { ErrorLog } from "../../shared/components/ErrorLog/ErrorLog";
 import { ReportingRouter } from "./ReportingRouter";
@@ -6,16 +7,10 @@ import { NotificationArea } from "../../shared/components/NotificationArea/Notif
 
 import { notificationStore } from "../../shared/stores/NotificationStore";
 import { connectToStores } from "../../shared/alt";
-// import { reportingAuthStore } from "../stores/ReportingAuthStore";
-
-import { Provider } from 'react-redux';
-import configureStore from '../Store';
-const store = configureStore();
 
 export interface ReportingAppProps {
     errors: string[];
     infos: string[];
-    // loggedIn: boolean;
 }
 
 export class ReportingAppComponent extends React.Component<any, undefined> {
@@ -26,19 +21,22 @@ export class ReportingAppComponent extends React.Component<any, undefined> {
         return {
             errors: notificationStore.getState().errors,
             infos: notificationStore.getState().infos,
-            // loggedIn: reportingAuthStore.getState().loggedIn
         }
     }
 
-    render() {
-        return <Provider store={store}>
-                <div>
-                    <ReportingRouter loggedIn={ this.props.loggedIn } />
-                    <NotificationArea notifications={ this.props.infos } />
-                    <ErrorLog errors={ this.props.errors } />
-                </div>
-        </Provider>;
+    render() :JSX.Element {
+        return <div>
+            <ReportingRouter loggedIn={ this.props.auth.loggedIn } />
+            <NotificationArea notifications={ this.props.infos } />
+            <ErrorLog errors={ this.props.errors } />
+        </div>;
     }
 }
 
-export const ReportingApp = connectToStores(ReportingAppComponent);
+export const ReportingAppAltWrapped = connectToStores(ReportingAppComponent);
+
+const mapStateToProps = (state: any) => ({
+    auth: state.auth,
+});
+
+export const ReportingApp = connect(mapStateToProps)(ReportingAppAltWrapped);

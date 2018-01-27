@@ -1,13 +1,18 @@
+
+
+
+
+
 export default (state = {}, action: any) => {
     switch (action.type) {
         case 'AUTHENTICATED':
             return {
-                ...state, authenticated: true, errorMessage: '',
+                ...action.data, errorMessage: '',
             };
         case 'UNAUTHENTICATED':
-            return { ...state, authenticated: false, errorMessage: '' };
+            return {  errorMessage: '' };
         case 'AUTHENTICATION_ERROR':
-            return { ...state, errorMessage: action.payload };
+            return { ...state, errorMessage: action.error };
         default:
             return state;
     }
