@@ -3,7 +3,7 @@ import { alt } from "../../shared/alt";
 import { RemoteContent } from "../../shared/models/RemoteContent";
 import StoreModel = AltJS.StoreModel;
 import { accountActions } from "../actions/AccountActions";
-import { authActions } from "../../shared/actions/_AuthActions";
+import { authActions } from "../../shared/actions/AuthActions";
 
 export interface AccountStoreState extends RemoteContent {
     passwordResetToken: string;

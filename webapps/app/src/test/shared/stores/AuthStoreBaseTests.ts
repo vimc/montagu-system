@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import { Sandbox } from "../../Sandbox";
 import { alt } from "../../../main/shared/alt";
-import { authActions, LogInProperties } from "../../../main/shared/actions/_AuthActions";
+import { authActions, LogInProperties } from "../../../main/shared/actions/AuthActions";
 import { AuthStoreBaseInterface, tokenStorageHelper } from "../../../main/shared/stores/AuthStoreBase";
 import { notificationStore } from "../../../main/shared/stores/NotificationStore";
 import { expectNoActions, expectOneAction, expectOrderedActions } from "../../actionHelpers";

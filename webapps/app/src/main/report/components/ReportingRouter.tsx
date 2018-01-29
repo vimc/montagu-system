@@ -1,5 +1,4 @@
 import {RouteMap, Router} from "simple-react-router"
-
 import {appSettings} from "../../shared/Settings";
 
 // Pages
@@ -30,4 +29,3 @@ export class ReportingRouter extends Router<RouterProps> {
         }
     }
 }
-
