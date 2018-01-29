@@ -1,9 +1,9 @@
-import { request } from "../modules/Request";
+import { axiosRequest } from "../modules/AxiosRequest";
 import { settings } from "../Settings";
 
 export function localApiRequest(options?: any) {
 
     options.baseURL = settings.apiUrl();
 
-    return request(options)
+    return axiosRequest(options)
 }

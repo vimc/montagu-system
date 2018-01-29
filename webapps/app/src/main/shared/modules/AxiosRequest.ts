@@ -18,7 +18,7 @@ interface AxiosParams {
 }
 
 
-export function request(options: RequestProps) :AxiosInstance {
+export function axiosRequest(options: RequestProps) :AxiosInstance {
     if (!options) throw new Error('no parameters given for request instance creation');
     const params: AxiosParams = {
         baseURL: options.baseURL,
