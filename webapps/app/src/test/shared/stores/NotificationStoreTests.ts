@@ -4,7 +4,7 @@ import { Sandbox } from "../../Sandbox";
 
 import { NotificationState, notificationStore } from "../../../main/shared/stores/NotificationStore";
 import { notificationActions } from "../../../main/shared/actions/NotificationActions";
-import { authActions } from "../../../main/shared/actions/AuthActions";
+import { authActions } from "../../../main/shared/actions/_AuthActions";
 const jwt = require("jsonwebtoken");
 
 describe("NotificationStore", () => {

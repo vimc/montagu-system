@@ -1,5 +1,5 @@
 import alt from "../../shared/alt";
-import { LogInProperties } from "../../shared/actions/AuthActions";
+import { LogInProperties } from "../../shared/actions/_AuthActions";
 import { mainStore } from "./MainStore";
 import { ModellingGroup } from "../../shared/models/Generated";
 import { modellingGroupActions } from "../../shared/actions/ModellingGroupActions";

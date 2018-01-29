@@ -1,11 +1,17 @@
-import { combineReducers } from 'redux';
-import { reducer as formReducer } from 'redux-form';
+import { combineReducers } from "redux";
+import { reducer as formReducer } from "redux-form";
 
-import auth from '../../shared/reducers/AuthReducer';
+import { authReducer, AuthState } from "../../shared/reducers/AuthReducer";
+
+export interface GlobalState {
+    auth: AuthState;
+    form: any;
+}
 
 const reducers = combineReducers({
-    auth,
+    auth: authReducer,
     form: formReducer,
 });
 
 export default reducers;
+

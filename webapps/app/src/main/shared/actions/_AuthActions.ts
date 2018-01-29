@@ -1,20 +1,22 @@
-import { Action, Dispatch } from 'redux';
+import { Action, Dispatch } from "redux";
+import { AxiosResponse, AxiosError } from "axios";
 
-import { authService } from '../services/AuthService';
-import {decodeToken, Token, isExpired, parseModellingGroups} from "../modules/JwtToken";
-import {setShinyToken} from "../sources/LoginSource";
+import { Authenticated, AuthenticationError, Unauthenticated, TypeKeys } from "../actionTypes/AuthTypes";
+import { authService } from "../services/AuthService";
+import { decodeToken, Token, isExpired, parseModellingGroups } from "../modules/JwtToken";
+import { setShinyToken } from "../sources/LoginSource";
 
 export const login = (email :string, password: string) => (dispatch: Dispatch<any>) => {
     authService().logIn(email, password)
-        .then((response: any) => {
+        .then((response: AxiosResponse) => {
             dispatch(authenticated(response.data.access_token))
         })
-        .catch((error: any) => {
+        .catch((error: AxiosError) => {
             dispatch(authenticationError(error))
         })
 };
 
-export const loadToken = () => (dispatch: Dispatch<any>): any => {
+export const loadToken = () => (dispatch: Dispatch<any>) => {
     if (typeof(Storage) !== "undefined") {
         const token = localStorage.getItem("accessToken");
         if (token) {
@@ -29,23 +31,21 @@ export const loadToken = () => (dispatch: Dispatch<any>): any => {
             }
         }
     }
-    return null;
 }
 
 
-export const authenticated = (token: string) => (dispatch: Dispatch<any>) => {
+export const authenticated = (token: string) : Authenticated => {
     const decoded: Token = decodeToken(token);
     const permissions = decoded.permissions.split(",").filter(x => x.length > 0);
     const modellingGroups = parseModellingGroups(decoded.roles)
-
 
     if (typeof(Storage) !== "undefined") {
         localStorage.setItem("accessToken", token);
     }
     setShinyToken();
 
-    dispatch( {
-        type: 'AUTHENTICATED',
+    return {
+        type: TypeKeys.AUTHENTICATED,
         data: {
             loggedIn: true,
             bearerToken: token,
@@ -53,22 +53,22 @@ export const authenticated = (token: string) => (dispatch: Dispatch<any>) => {
             permissions,
             modellingGroups
         },
-    })
+    }
 };
 
-export const authenticationError = (error: any) => {
+export const authenticationError = (error: AxiosError) :AuthenticationError => {
     return {
-        type: 'AUTHENTICATION_ERROR',
+        type: TypeKeys.AUTHENTICATION_ERROR,
             error: error.response.data.error ? "Your username or password is incorrect" : "An error occurred logging in",
     }
 };
 
-export const logOut = () => {
+export const logOut = () :Unauthenticated => {
     if (typeof(Storage) !== "undefined") {
         localStorage.clear();
     }
     return {
-        type: 'UNAUTHENTICATED',
+        type: TypeKeys.UNAUTHENTICATED,
     };
 };
 

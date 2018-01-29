@@ -1,13 +1,8 @@
 import * as React from "react";
-// import { FormConnector } from "alt-reform";
 import { ReportingPageWithHeader } from "./ReportingPageWithHeader";
-import { LoginForm } from "../../shared/components/Login/_LoginForm";
-// import { LoginFormComponent } from "../../shared/components/Login/LoginFormComponent";
-// import { reportingAuthStore } from "../stores/ReportingAuthStore";
+import { LoginForm } from "../../shared/components/Login/LoginForm";
 import {IPageWithParent} from "../../shared/models/Breadcrumb";
 import { Page } from "../../shared/components/PageWithHeader/Page";
-
-// const LoginForm = FormConnector(loginForm("reporting", reportingAuthStore))(LoginFormComponent);
 
 export class ReportingLoginPage extends ReportingPageWithHeader<undefined> {
     name(): string {

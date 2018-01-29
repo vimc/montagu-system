@@ -1,11 +1,10 @@
 import * as React from "react";
-import { logOut } from "../../_actions/AuthActions";
-// import { AuthStateBase } from "../../reducers/AuthReducer";
+import { logOut } from "../../actions/_AuthActions";
 import { InternalLink } from "../InternalLink";
 import { connect } from "react-redux";
 
 import "./Logout.scss";
-//AuthStateBase
+
 export class LoggedInUserBoxComponent extends React.Component<any, undefined> {
     constructor() {
         super();

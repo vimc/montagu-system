@@ -5,7 +5,7 @@ import fetcher from "../shared/sources/Fetcher";
 import { ReportingFetcher } from "./sources/ReportingFetcher";
 import { Provider } from "react-redux";
 import store from "./stores/Store";
-import { loadToken } from "../shared/_actions/AuthActions"
+import { loadToken } from "../shared/actions/_AuthActions"
 
 import './index.html';
 import '../shared/styles/bootstrap.scss';

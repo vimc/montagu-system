@@ -1,19 +1,30 @@
+import { ActionsTypes, TypeKeys } from "../actionTypes/AuthTypes";
 
+export interface AuthState {
+    loggedIn: boolean;
+    username: string;
+    bearerToken: string;
+    permissions: string[];
+    modellingGroups?: any;
+}
 
+const initialState: AuthState = {
+    bearerToken: null,
+    loggedIn: false,
+    username: null,
+    permissions: []
+};
 
-
-
-export default (state = {}, action: any) => {
+export const authReducer = (state = initialState, action: ActionsTypes) => {
     switch (action.type) {
-        case 'AUTHENTICATED':
-            return {
-                ...action.data, errorMessage: '',
-            };
-        case 'UNAUTHENTICATED':
-            return {  errorMessage: '' };
-        case 'AUTHENTICATION_ERROR':
+        case TypeKeys.AUTHENTICATED:
+            return { ...action.data };
+        case TypeKeys.UNAUTHENTICATED:
+            return {  };
+        case TypeKeys.AUTHENTICATION_ERROR:
             return { ...state, errorMessage: action.error };
         default:
             return state;
     }
 };
+
