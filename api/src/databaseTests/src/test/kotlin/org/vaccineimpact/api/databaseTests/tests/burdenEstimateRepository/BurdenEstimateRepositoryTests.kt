@@ -224,7 +224,7 @@ abstract class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRep
 
     protected val defaultProperties = CreateBurdenEstimateSet(
             BurdenEstimateSetType(BurdenEstimateSetTypeCode.CENTRAL_UNKNOWN),
-            modelRunParameterSetId = null
+            modelRunParameterSet = null
     )
 
 
@@ -281,7 +281,7 @@ abstract class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRep
 
     protected val defaultStochasticProperties = CreateBurdenEstimateSet(
             BurdenEstimateSetType(BurdenEstimateSetTypeCode.STOCHASTIC),
-            modelRunParameterSetId = null
+            modelRunParameterSet = null
     )
 
     data class ModelRunTestData(val runParameterSetId: Int, val runs: List<Pair<String, Int>>)
