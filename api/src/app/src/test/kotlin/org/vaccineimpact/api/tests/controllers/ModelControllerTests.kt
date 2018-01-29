@@ -18,8 +18,8 @@ class ModelControllerTests : MontaguTests()
     {
         val models = listOf(Model("test", "test name", "test@test.com", ""))
 
-        val modelRepo = mock<ModelRepository>{
-            on {this.all()} doReturn models
+        val modelRepo = mock<ModelRepository> {
+            on { this.all() } doReturn models
         }
 
         val sut = ModelController(mock<ActionContext>(), modelRepo)
@@ -33,12 +33,12 @@ class ModelControllerTests : MontaguTests()
         val modelId = "testId"
         val model = Model(modelId, "test name", "test@test.com", "")
 
-        val modelRepo = mock<ModelRepository>{
-            on {this.get(modelId)} doReturn model
+        val modelRepo = mock<ModelRepository> {
+            on { this.get(modelId) } doReturn model
         }
 
         val actionContext = mock<ActionContext> {
-            on {this.params(":id")} doReturn modelId
+            on { this.params(":id") } doReturn modelId
         }
 
         val sut = ModelController(actionContext, modelRepo)

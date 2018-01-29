@@ -68,7 +68,7 @@ class PasswordControllerTests : MontaguTests()
     @Test
     fun `can get set password onetime token`()
     {
-        val tokenHelper = mock<WebTokenHelper>{
+        val tokenHelper = mock<WebTokenHelper> {
             on {
                 generateOneTimeActionToken(any(),
                         any(), anyOrNull(), any(), any())

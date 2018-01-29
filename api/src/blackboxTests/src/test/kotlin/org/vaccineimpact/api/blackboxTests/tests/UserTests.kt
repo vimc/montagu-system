@@ -11,10 +11,10 @@ import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.direct.addGroup
 import org.vaccineimpact.api.db.direct.addUserForTesting
 import org.vaccineimpact.api.db.direct.addUserWithRoles
-import org.vaccineimpact.api.models.permissions.ReifiedRole
 import org.vaccineimpact.api.models.Scope
 import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
+import org.vaccineimpact.api.models.permissions.ReifiedRole
 import org.vaccineimpact.api.security.createRole
 import org.vaccineimpact.api.test_helpers.DatabaseTest
 import spark.route.HttpMethod
@@ -69,7 +69,7 @@ class UserTests : DatabaseTest()
             PermissionSet(setOf(ReifiedPermission("roles.write", Scope.parse("modelling-group:IC-Garske"))))
         } sendingJSON {
             json {
-                obj(    "action" to "add",
+                obj("action" to "add",
                         "name" to "uploader",
                         "scope_prefix" to "modelling-group",
                         "scope_id" to "IC-Garske")
@@ -89,7 +89,7 @@ class UserTests : DatabaseTest()
             PermissionSet(setOf(ReifiedPermission("roles.write", Scope.parse("modelling-group:IC-Garske"))))
         } sendingJSON {
             json {
-                obj(    "action" to "remove",
+                obj("action" to "remove",
                         "name" to "uploader",
                         "scope_prefix" to "modelling-group",
                         "scope_id" to "IC-Garske")
@@ -109,7 +109,7 @@ class UserTests : DatabaseTest()
             PermissionSet(setOf(ReifiedPermission("roles.write", Scope.Global())))
         } sendingJSON {
             json {
-                obj(    "action" to "remove",
+                obj("action" to "remove",
                         "name" to "user",
                         "scope_prefix" to null,
                         "scope_id" to null)
@@ -228,11 +228,12 @@ class UserTests : DatabaseTest()
                 )
             })
 
-            Assertions.assertThat(it).contains(json{  obj(
-                            "username" to "testuser2",
-                            "name" to "Test User",
-                            "email" to "testuser2@example.com",
-                            "last_logged_in" to null)
+            Assertions.assertThat(it).contains(json {
+                obj(
+                        "username" to "testuser2",
+                        "name" to "Test User",
+                        "email" to "testuser2@example.com",
+                        "last_logged_in" to null)
             })
 
         }

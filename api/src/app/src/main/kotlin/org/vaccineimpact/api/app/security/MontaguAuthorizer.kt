@@ -10,7 +10,8 @@ import org.vaccineimpact.api.models.permissions.ReifiedPermission
 class MontaguAuthorizer(requiredPermissions: Set<PermissionRequirement>)
     : AbstractRequireAllAuthorizer<PermissionRequirement, CommonProfile>()
 {
-    init {
+    init
+    {
         elements = requiredPermissions
     }
 

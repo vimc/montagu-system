@@ -1,8 +1,8 @@
 package org.vaccineimpact.api.app.repositories
 
-import org.vaccineimpact.api.serialization.SplitData
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
 import org.vaccineimpact.api.models.*
+import org.vaccineimpact.api.serialization.SplitData
 
 interface ModellingGroupRepository : Repository
 {
@@ -12,6 +12,7 @@ interface ModellingGroupRepository : Repository
 
     fun getResponsibilities(groupId: String, touchstoneId: String,
                             scenarioFilterParameters: ScenarioFilterParameters): ResponsibilitiesAndTouchstoneStatus
+
     fun getResponsibility(groupId: String, touchstoneId: String, scenarioId: String): ResponsibilityAndTouchstone
 
     fun getTouchstonesByGroupId(groupId: String): List<Touchstone>

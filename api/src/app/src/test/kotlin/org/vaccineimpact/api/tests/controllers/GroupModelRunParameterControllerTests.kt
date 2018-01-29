@@ -9,7 +9,6 @@ import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.controllers.GroupModelRunParametersController
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
-import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.SimpleDataSet
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.models.ModelRun
@@ -161,7 +160,7 @@ class GroupModelRunParameterControllerTests : MontaguTests()
 
     private fun mockTouchstoneRepository(): TouchstoneRepository
     {
-        val simpleDataset =  mockTouchstones()
+        val simpleDataset = mockTouchstones()
         return mock {
             on { touchstones } doReturn simpleDataset
         }

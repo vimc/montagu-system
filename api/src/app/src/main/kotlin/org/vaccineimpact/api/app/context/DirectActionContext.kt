@@ -43,8 +43,7 @@ class DirectActionContext(private val context: SparkWebContext,
     override fun queryString(): String? = request.queryString()
     override fun params(): Map<String, String> = request.params()
     override fun params(key: String): String = request.params(key)
-    override fun <T : Any> postData(klass: Class<T>): T
-            = ModelBinder().deserialize(request.body(), klass)
+    override fun <T : Any> postData(klass: Class<T>): T = ModelBinder().deserialize(request.body(), klass)
 
     // Return one part as a stream
     override fun getPart(name: String, multipartData: MultipartData): Reader
@@ -77,11 +76,9 @@ class DirectActionContext(private val context: SparkWebContext,
         return multipartData.parts(rawRequest)
     }
 
-    override fun <T : Any> csvData(klass: KClass<T>, from: RequestBodySource): Sequence<T>
-            = DataTableDeserializer.deserialize(from.getContent(this), klass, serializer)
+    override fun <T : Any> csvData(klass: KClass<T>, from: RequestBodySource): Sequence<T> = DataTableDeserializer.deserialize(from.getContent(this), klass, serializer)
 
-    override fun <T : Any> csvData(klass: KClass<T>, raw: String): Sequence<T>
-            = DataTableDeserializer.deserialize(raw, klass, serializer)
+    override fun <T : Any> csvData(klass: KClass<T>, raw: String): Sequence<T> = DataTableDeserializer.deserialize(raw, klass, serializer)
 
     override fun setResponseStatus(status: Int)
     {

@@ -2,7 +2,7 @@ package org.vaccineimpact.api.app
 
 import org.vaccineimpact.api.app.errors.BadRequest
 
-class MontaguRedirectValidator: RedirectValidator
+class MontaguRedirectValidator : RedirectValidator
 {
     @Throws(BadRequest::class)
     override fun validateRedirectUrl(redirectUrl: String)

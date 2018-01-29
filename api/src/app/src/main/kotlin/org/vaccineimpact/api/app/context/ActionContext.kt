@@ -6,9 +6,6 @@ import org.vaccineimpact.api.app.MultipartDataMap
 import org.vaccineimpact.api.app.ServletFileUploadWrapper
 import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
-import org.vaccineimpact.api.security.WebTokenHelper
-import org.vaccineimpact.api.serialization.MontaguSerializer
-import org.vaccineimpact.api.serialization.Serializer
 import spark.Request
 import java.io.OutputStream
 import java.io.Reader
@@ -35,9 +32,9 @@ interface ActionContext
     fun getPart(name: String, multipartData: MultipartData = ServletFileUploadWrapper()): Reader
     fun getParts(multipartData: MultipartData = ServletFileUploadWrapper()): MultipartDataMap
 
-    fun <T: Any> postData(klass: Class<T>): T
-    fun <T: Any> csvData(klass: KClass<T>, from: RequestBodySource): Sequence<T>
-    fun <T: Any> csvData(klass: KClass<T>, raw: String): Sequence<T>
+    fun <T : Any> postData(klass: Class<T>): T
+    fun <T : Any> csvData(klass: KClass<T>, from: RequestBodySource): Sequence<T>
+    fun <T : Any> csvData(klass: KClass<T>, raw: String): Sequence<T>
 
     fun addResponseHeader(key: String, value: String): Unit
     fun addAttachmentHeader(filename: String): Unit
@@ -49,8 +46,6 @@ interface ActionContext
     fun redirect(url: String)
 }
 
-inline fun <reified T: Any> ActionContext.postData() = this.postData(T::class.java)
-inline fun <reified T: Any> ActionContext.csvData(from: RequestBodySource = RequestBodySource.Simple())
-        = this.csvData(T::class, from)
-inline fun <reified T: Any> ActionContext.csvData(raw: String)
-        = this.csvData(T::class, raw)
+inline fun <reified T : Any> ActionContext.postData() = this.postData(T::class.java)
+inline fun <reified T : Any> ActionContext.csvData(from: RequestBodySource = RequestBodySource.Simple()) = this.csvData(T::class, from)
+inline fun <reified T : Any> ActionContext.csvData(raw: String) = this.csvData(T::class, raw)

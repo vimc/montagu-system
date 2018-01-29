@@ -44,11 +44,11 @@ open class OneTimeTokenGenerator(
             duration: Duration = WebTokenHelper.oneTimeLinkLifeSpan
     ): String
     {
-       return getOneTimeLinkToken(action,
-               context.params(),
-               context.queryString(),
-               context.redirectUrl,
-               context.username!!,
-               duration)
+        return getOneTimeLinkToken(action,
+                context.params(),
+                context.queryString(),
+                context.redirectUrl,
+                context.username!!,
+                duration)
     }
 }

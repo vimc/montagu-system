@@ -43,8 +43,7 @@ open class GroupBurdenEstimatesController(
         return objectCreation(context, url)
     }
 
-    fun populateBurdenEstimateSet()
-            = populateBurdenEstimateSet(RequestBodySource.Simple())
+    fun populateBurdenEstimateSet() = populateBurdenEstimateSet(RequestBodySource.Simple())
 
     fun populateBurdenEstimateSet(source: RequestBodySource): String
     {

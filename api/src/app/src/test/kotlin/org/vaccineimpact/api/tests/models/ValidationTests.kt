@@ -8,7 +8,7 @@ abstract class ValidationTests : MontaguTests()
 {
     val binder = ModelBinder()
 
-    protected fun <T: Any> assertCausesTheseErrors(badModel: T, vararg codes: String)
+    protected fun <T : Any> assertCausesTheseErrors(badModel: T, vararg codes: String)
     {
         val actual = binder.verify(badModel)
         val actualCodes = actual.joinToString { it.code }

@@ -43,7 +43,7 @@ open class Question(val fieldName: String, val default: String? = null)
     }
 }
 
-class PasswordQuestion(fieldName: String): Question(fieldName)
+class PasswordQuestion(fieldName: String) : Question(fieldName)
 {
     override fun getLine(): String?
     {

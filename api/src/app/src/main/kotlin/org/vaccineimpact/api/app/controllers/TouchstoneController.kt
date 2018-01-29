@@ -9,7 +9,6 @@ import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.app.security.isAllowedToSeeTouchstone
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
-import org.vaccineimpact.api.security.WebTokenHelper
 import org.vaccineimpact.api.serialization.FlexibleDataTable
 import org.vaccineimpact.api.serialization.SplitData
 import org.vaccineimpact.api.serialization.StreamSerializable

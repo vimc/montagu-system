@@ -9,9 +9,9 @@ import org.vaccineimpact.api.databaseTests.tests.burdenEstimateRepository.*
 import org.vaccineimpact.api.databaseTests.tests.modellingGroupRepository.GetModellingGroupTests
 import org.vaccineimpact.api.databaseTests.tests.modellingGroupRepository.GetResponsibilitiesTests
 import org.vaccineimpact.api.databaseTests.tests.modellingGroupRepository.GetResponsibilityCoverageSetsTests
+import org.vaccineimpact.api.databaseTests.tests.modellingGroupRepository.GetTouchstoneTests
 import org.vaccineimpact.api.databaseTests.tests.touchstoneRepository.GetDemographicsTests
 import org.vaccineimpact.api.databaseTests.tests.touchstoneRepository.GetScenarioTests
-import org.vaccineimpact.api.databaseTests.tests.modellingGroupRepository.GetTouchstoneTests
 import org.vaccineimpact.api.test_helpers.DatabaseCreationHelper
 
 // Keep these sorted alphabetically, for consistency

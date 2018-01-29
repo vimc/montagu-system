@@ -1,9 +1,11 @@
 package org.vaccineimpact.api.serialization
 
-import com.github.salomonbrys.kotson.*
-import com.google.gson.*
+import com.github.salomonbrys.kotson.jsonSerializer
+import com.github.salomonbrys.kotson.registerTypeAdapter
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
+import com.google.gson.JsonPrimitive
 import org.vaccineimpact.api.models.*
-import java.lang.reflect.Type
 import java.time.Instant
 import java.time.LocalDate
 
@@ -85,6 +87,7 @@ class MontaguSerializer : Serializer
         }
         return builder.toString().trim('_')
     }
+
     override fun serializeEnum(value: Any): String
     {
         val text = when (value)
@@ -115,7 +118,7 @@ class MontaguSerializer : Serializer
         }
     }
 
-    private inline fun <reified T: Enum<T>> GsonBuilder.registerEnum(): GsonBuilder
+    private inline fun <reified T : Enum<T>> GsonBuilder.registerEnum(): GsonBuilder
     {
         return this.registerTypeAdapter<T> {
             serialize { JsonPrimitive(serializeEnum(it.src)) }

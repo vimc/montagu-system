@@ -57,6 +57,7 @@ class JSONValidator : Validator
             Assertions.assertThat(error["message"].asText()).contains(expectedErrorText)
         }
     }
+
     override fun validateSuccess(response: String, assertionText: String?)
     {
         val json = parseJson(response, "response")

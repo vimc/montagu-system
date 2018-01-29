@@ -1,10 +1,9 @@
 package org.vaccineimpact.api.tests.errors
 
-import com.nhaarman.mockito_kotlin.*
-import com.sun.org.apache.bcel.internal.generic.DUP
+import com.nhaarman.mockito_kotlin.doReturn
+import com.nhaarman.mockito_kotlin.mock
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
-import org.vaccineimpact.api.app.ErrorHandler
 import org.vaccineimpact.api.app.PostgresErrorHandler
 import org.vaccineimpact.api.app.errors.DuplicateKeyError
 import org.vaccineimpact.api.app.errors.UnexpectedError
@@ -63,7 +62,7 @@ Detail: Key (lower(email))=(email@example.com) already exists."""
     @Test
     fun `returns unexpected error if not duplicate key error`()
     {
-         val fakeException = mock<Exception> {
+        val fakeException = mock<Exception> {
             on { toString() } doReturn ("some other text")
         }
         val error = handler.handleException(fakeException)

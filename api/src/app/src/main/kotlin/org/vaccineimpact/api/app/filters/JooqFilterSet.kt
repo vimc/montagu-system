@@ -23,12 +23,10 @@ abstract class JooqFilterSet<in TParameters>
 fun <TRecord : Record, TParameters> SelectConditionStep<TRecord>.whereMatchesFilter(
         filterSet: JooqFilterSet<TParameters>,
         parameterValues: TParameters
-)
-        = filterSet.apply(this, parameterValues)
+) = filterSet.apply(this, parameterValues)
 
 // Helper that avoids us having to put a blank 'where' call in
 fun <TRecord : Record, TParameters> SelectWhereStep<TRecord>.whereMatchesFilter(
         filterSet: JooqFilterSet<TParameters>,
         parameterValues: TParameters
-)
-        = this.where().whereMatchesFilter(filterSet, parameterValues)
+) = this.where().whereMatchesFilter(filterSet, parameterValues)
