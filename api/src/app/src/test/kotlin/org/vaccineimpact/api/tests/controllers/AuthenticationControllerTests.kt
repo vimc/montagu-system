@@ -9,22 +9,24 @@ import org.vaccineimpact.api.app.HTMLForm
 import org.vaccineimpact.api.app.controllers.AuthenticationController
 import org.vaccineimpact.api.app.repositories.UserRepository
 import org.vaccineimpact.api.app.security.USER_OBJECT
+import org.vaccineimpact.api.db.ConfigWrapper
 import org.vaccineimpact.api.security.InternalUser
 import org.vaccineimpact.api.security.UserProperties
 import org.vaccineimpact.api.security.WebTokenHelper
 import org.vaccineimpact.api.test_helpers.MontaguTests
 import java.time.Duration
+import javax.swing.Action
 
 class AuthenticationControllerTests : MontaguTests()
 {
+    private val fakeUser = InternalUser(UserProperties("testusername", "", "", "", null),
+        listOf(),
+        listOf())
+
     @Test
     fun `successful authentication updates last logged in timestamp`()
     {
         val fakeUserRepo = mock<UserRepository>()
-
-        val fakeUser = InternalUser(UserProperties("testusername", "", "", "", null),
-                listOf(),
-                listOf())
 
         val fakeProfile = CommonProfile()
         fakeProfile.addAttribute(USER_OBJECT, fakeUser)
@@ -70,6 +72,61 @@ class AuthenticationControllerTests : MontaguTests()
 
         sut.authenticate()
         verify(fakeUserRepo, never()).updateLastLoggedIn(any())
+    }
+
+
+    @Test
+    fun `cookie is Secure if allowLocalhost is false`()
+    {
+        val fakeContext = mock<ActionContext>(){
+            on { it.username } doReturn "username"
+        }
+
+        val fakeUserRepo = mock<UserRepository>(){
+            on { it.getUserByUsername("username")} doReturn fakeUser
+        }
+
+        val fakeWebTokenHelper = mock<WebTokenHelper> (){
+            on { it.lifeSpan } doReturn Duration.ofHours(1)
+            on {it.generateShinyToken(fakeUser)} doReturn "token"
+        }
+
+        val config = mock<ConfigWrapper>(){
+            on { it.getBool("allow.localhost")} doReturn false
+        }
+
+        val sut = AuthenticationController(fakeContext, fakeUserRepo,
+                mock(), fakeWebTokenHelper, config)
+
+        sut.setShinyCookie()
+        verify(fakeContext).addResponseHeader("Set-Cookie", "jwt_token=token; Path=/; Secure; HttpOnly; SameSite=Lax")
+    }
+
+    @Test
+    fun `cookie is not Secure if allowLocalhost is true`()
+    {
+        val fakeContext = mock<ActionContext>(){
+            on { it.username } doReturn "username"
+        }
+
+        val fakeUserRepo = mock<UserRepository>(){
+            on { it.getUserByUsername("username")} doReturn fakeUser
+        }
+
+        val fakeWebTokenHelper = mock<WebTokenHelper> (){
+            on { it.lifeSpan } doReturn Duration.ofHours(1)
+            on {it.generateShinyToken(fakeUser)} doReturn "token"
+        }
+
+        val config = mock<ConfigWrapper>(){
+            on { it.getBool("allow.localhost")} doReturn true
+        }
+
+        val sut = AuthenticationController(fakeContext, fakeUserRepo,
+                mock(), fakeWebTokenHelper, config)
+
+        sut.setShinyCookie()
+        verify(fakeContext).addResponseHeader("Set-Cookie", "jwt_token=token; Path=/; HttpOnly; SameSite=Lax")
     }
 
 }

@@ -95,7 +95,7 @@ open class WebTokenHelper(keyPair: KeyPair,
         val oneTimeLinkLifeSpan: Duration = Duration.ofMinutes(10)
     }
 
-    fun generateShinyToken(internalUser: InternalUser): String
+    open fun generateShinyToken(internalUser: InternalUser): String
     {
         return generator.generate(shinyClaims(internalUser))
     }
