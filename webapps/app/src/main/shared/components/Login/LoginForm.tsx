@@ -2,7 +2,7 @@ import * as React from "react";
 import { reduxForm, Field } from 'redux-form';
 import { connect } from 'react-redux';
 import { compose } from 'recompose';
-import { login } from "../../actions/_AuthActions";
+// import { login } from "../../actions/_AuthActions";
 import { InternalLink } from "../InternalLink";
 import { ValidationError } from "./ValidationError";
 import { validations } from "../../modules/ReduxForm";
@@ -20,7 +20,13 @@ class LoginFormView extends React.Component<LoginFormProps, undefined> {
     }
 
     submit(values: any) {
-        this.props.dispatch(login(values.email, values.password));
+        this.props.dispatch({
+            type: "AUTH_API",
+            data: {
+                email: values.email,
+                password: values.password,
+            }
+        });
     }
 
     render() {

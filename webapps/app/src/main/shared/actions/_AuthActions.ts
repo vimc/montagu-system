@@ -2,19 +2,9 @@ import { Action, Dispatch } from "redux";
 import { AxiosResponse, AxiosError } from "axios";
 
 import { Authenticated, AuthenticationError, Unauthenticated, TypeKeys } from "../actionTypes/AuthTypes";
-import { authService } from "../services/AuthService";
 import { decodeToken, Token, isExpired, parseModellingGroups } from "../modules/JwtToken";
 import { setShinyToken } from "../sources/LoginSource";
 
-export const login = (email :string, password: string) => (dispatch: Dispatch<any>) => {
-    authService().logIn(email, password)
-        .then((response: AxiosResponse) => {
-            dispatch(authenticated(response.data.access_token))
-        })
-        .catch((error: AxiosError) => {
-            dispatch(authenticationError(error))
-        })
-};
 
 export const loadToken = () => (dispatch: Dispatch<any>) => {
     if (typeof(Storage) !== "undefined") {
@@ -32,7 +22,6 @@ export const loadToken = () => (dispatch: Dispatch<any>) => {
         }
     }
 }
-
 
 export const authenticated = (token: string) : Authenticated => {
     const decoded: Token = decodeToken(token);
