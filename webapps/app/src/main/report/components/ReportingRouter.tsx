@@ -1,4 +1,4 @@
-import {RouteMap, Router} from "simple-react-router"
+import {RouteMap, Router} from "simple-react-router";
 import {appSettings} from "../../shared/Settings";
 
 // Pages
