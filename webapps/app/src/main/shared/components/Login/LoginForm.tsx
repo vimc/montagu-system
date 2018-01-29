@@ -21,7 +21,7 @@ class LoginFormView extends React.Component<LoginFormProps, undefined> {
 
     submit(values: any) {
         this.props.dispatch({
-            type: "AUTH_API",
+            type: "DO_AUTH_TO_API",
             data: {
                 email: values.email,
                 password: values.password,

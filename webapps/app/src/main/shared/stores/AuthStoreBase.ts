@@ -99,7 +99,7 @@ export abstract class AuthStore<TState extends AuthStateBase, TInterface extends
             localStorage.setItem("accessToken", this.bearerToken);
         }
 
-        setShinyToken();
+        // setShinyToken();
     }
 
     handleLogIn(props: LogInProperties) {

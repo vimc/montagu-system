@@ -5,6 +5,7 @@ interface RequestProps {
     headers?: any;
     Authorization?: string;
     timeout?: number;
+    withCredentials?: boolean;
 }
 
 interface AxiosHeaders {
@@ -15,8 +16,8 @@ interface AxiosParams {
     baseURL: string;
     headers?: AxiosHeaders;
     timeout?: number;
+    withCredentials?: boolean;
 }
-
 
 export function axiosRequest(options: RequestProps) :AxiosInstance {
     if (!options) throw new Error('no parameters given for request instance creation');
@@ -28,6 +29,6 @@ export function axiosRequest(options: RequestProps) :AxiosInstance {
         params.headers.Authorization = options.Authorization;
     }
     if (options.timeout) params.timeout = options.timeout;
-    console.log(params)
+    if (options.withCredentials) params.withCredentials = options.withCredentials;
     return axios.create(params);
 }

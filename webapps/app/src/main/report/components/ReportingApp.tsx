@@ -35,8 +35,11 @@ export class ReportingAppComponent extends React.Component<any, undefined> {
 
 export const ReportingAppAltWrapped = connectToStores(ReportingAppComponent);
 
-const mapStateToProps = (state: any) => ({
-    auth: state.auth,
-});
+const mapStateToProps = (state: any) => {
+
+  return {
+      auth: state.auth,
+  }
+};
 
 export const ReportingApp = connect(mapStateToProps)(ReportingAppAltWrapped);
