@@ -41,17 +41,9 @@ object KeyHelper
     private fun loadPrivateKey(): PrivateKey
     {
         val file = File(keyPath, "private_key.der")
-        try
-        {
-            val keyBytes = file.readBytes()
-            val spec = PKCS8EncodedKeySpec(keyBytes)
-            return keyFactory.generatePrivate(spec)
-        }
-        finally
-        {
-            // Don't leave the private key lying around once we've read it
-            file.delete()
-        }
+        val keyBytes = file.readBytes()
+        val spec = PKCS8EncodedKeySpec(keyBytes)
+        return keyFactory.generatePrivate(spec)
     }
 
     fun generateKeyPair(): KeyPair
