@@ -54,6 +54,7 @@ Schema: [`ModelDetails.schema.json`](../schemas/ModelDetails.schema.json)
     }
 
 ## POST /models/
+**NOT IMPLEMENTED**
 Creates a new model.
 
 Required permissions: `models.write` scoped to the modelling group (or *).
@@ -69,6 +70,7 @@ Schema: [`Model.schema.json`](../schemas/Model.schema.json)
     }
 
 ## POST /models/{model-id}/versions/
+**NOT IMPLEMENTED**
 Adds a new version to a model
 
 Required permissions: `models.write` scoped to the modelling group (or *).

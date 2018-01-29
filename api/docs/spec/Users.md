@@ -110,6 +110,7 @@ Schema: [`CreateUser.schema.json`](../schemas/CreateUser.schema.json)
     }
 
 ## PATCH /users/{username}/
+**NOT IMPLEMENTED**
 Updates an existing user. All fields are optional.
 
 Required permissions: `users.edit-all`, or none if the logged in user matches the user being edited.
@@ -159,6 +160,7 @@ The scope_id is additionally constrained to be a valid ID of the appropriate kin
 is "modelling-group" then the scope_id must be the ID of a modelling group.
 
 ## POST /users/{username}/actions/remove-all-access/
+**NOT IMPLEMENTED**
 Removes all roles from a user that match the given scope. If the scope is `*`, all roles are removed.
 
 Required permissions: `roles.write` with scope matching scope in URL.
