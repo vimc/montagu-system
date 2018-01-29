@@ -74,7 +74,7 @@ class JSONValidator : Validator
                 .isEqualTo(expectedStatus)
     }
 
-    private fun readSchema(name: String): JsonNode = JsonLoader.fromResource("/spec/$name.schema.json")
+    private fun readSchema(name: String): JsonNode = JsonLoader.fromResource("/docs/schemas/$name.schema.json")
 
     private fun assertValidates(schema: JsonNode, json: JsonNode)
     {
@@ -87,7 +87,7 @@ class JSONValidator : Validator
 
     private fun makeSchemaFactory(): JsonSchemaFactory
     {
-        val namespace = "resource:/spec/"
+        val namespace = "resource:/docs/schemas/"
         val uriTranslatorConfig = URITranslatorConfiguration
                 .newBuilder()
                 .setNamespace(namespace)

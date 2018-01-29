@@ -4,14 +4,29 @@ import org.assertj.core.api.Assertions.assertThat
 import org.commonmark.parser.Parser
 import org.junit.Test
 import org.vaccineimpact.api.test_helpers.TeamCityHelper
+import java.io.StringReader
 
 class SchemaValidator
 {
     @Test
     fun run()
     {
+        val allSpecFiles = ResourceHelper.getResourcesInFolder("docs/spec/", matching = Regex(".md$"))
+        for (specFile in allSpecFiles)
+        {
+            TeamCityHelper.asSuite(specFile) {
+                validateSpecFile(specFile)
+            }
+        }
+        println("☺️\n")
+    }
+
+    private fun validateSpecFile(path: String)
+    {
+        println("--------------------")
+        println("Checking file $path")
         val parser = Parser.builder().build()
-        val spec = ResourceHelper.getResourceAsStream("spec/spec.md").use {
+        val spec = ResourceHelper.getResourceAsStream(path).use {
             parser.parseReader(it.reader())
         }
 
@@ -33,12 +48,11 @@ class SchemaValidator
                 }
                 for (requestSchema in endpoint.requestSchemas)
                 {
-                    println("- Checking [${requestSchema.schemaPath}] against ${requestSchema.example}")
+                    println("Checking [${requestSchema.schemaPath}] against ${requestSchema.example}")
                     validator.validateExampleAgainstSchema(requestSchema.example, requestSchema.schema)
                 }
             }
         }
-        println("☺️\n")
     }
 
     private fun buildUrlRegex(): Regex
