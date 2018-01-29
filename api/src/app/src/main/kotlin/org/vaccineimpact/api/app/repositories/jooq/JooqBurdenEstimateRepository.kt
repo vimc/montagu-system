@@ -11,8 +11,6 @@ import org.vaccineimpact.api.app.repositories.burdenestimates.BurdenEstimateWrit
 import org.vaccineimpact.api.app.repositories.burdenestimates.CentralBurdenEstimateWriter
 import org.vaccineimpact.api.app.repositories.burdenestimates.StochasticBurdenEstimateWriter
 import org.vaccineimpact.api.app.repositories.jooq.mapping.BurdenMappingHelper
-import org.vaccineimpact.api.db.AnnexJooqContext
-import org.vaccineimpact.api.db.ShortlivedAnnexContext
 import org.vaccineimpact.api.db.Tables.*
 import org.vaccineimpact.api.db.fromJoinPath
 import org.vaccineimpact.api.db.joinPath
@@ -325,7 +323,7 @@ class JooqBurdenEstimateRepository(
                     " and approved. You cannot upload any new estimates.")
         }
 
-        val modelRunParameterSetId = properties.modelRunParameterSetId
+        val modelRunParameterSetId = properties.modelRunParameterSet
         if (modelRunParameterSetId != null)
         {
             dsl.select(MODEL_RUN_PARAMETER_SET.ID)
@@ -421,7 +419,7 @@ class JooqBurdenEstimateRepository(
             this.status = "empty"
             this.setType = mapper.mapEnum(properties.type.type)
             this.setTypeDetails = properties.type.details
-            this.modelRunParameterSet = properties.modelRunParameterSetId
+            this.modelRunParameterSet = properties.modelRunParameterSet
         }
         setRecord.insert()
         return setRecord.id

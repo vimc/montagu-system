@@ -70,11 +70,11 @@ data class FluentValidationConfig(
         })
     }
 
-    infix fun andCheckObjectCreation(expectedLocation: String)
+    infix fun andCheckObjectCreation(expectedLocation: String): String
         = andCheckObjectCreation(LocationConstraint(expectedLocation))
-    infix fun andCheckObjectCreation(expectedLocation: LocationConstraint)
+    infix fun andCheckObjectCreation(expectedLocation: LocationConstraint): String
     {
-        this.finalized().runWithCheck<String> { body, response ->
+        return this.finalized().runWithCheck<String, String> { body, response ->
             expectedLocation.checkObjectCreation(response, body)
         }
     }
@@ -117,10 +117,10 @@ class FluentValidation(config: FluentValidationConfig)
     val userHelper = TestUserHelper()
     val requestHelper = RequestHelper()
 
-    fun <T> runWithCheck(additionalChecks: (T, Response) -> Unit)
+    fun <T, TReturn> runWithCheck(additionalChecks: (T, Response) -> TReturn): TReturn
     {
         val response = run()
-        additionalChecks(response.montaguData<T>()!!, response)
+        return additionalChecks(response.montaguData<T>()!!, response)
     }
 
     fun run(): Response

@@ -10,7 +10,6 @@ import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
 import org.vaccineimpact.api.databaseTests.tests.BurdenEstimateRepositoryTests
 import org.vaccineimpact.api.db.JooqContext
-import org.vaccineimpact.api.db.Tables
 import org.vaccineimpact.api.db.Tables.RESPONSIBILITY
 import org.vaccineimpact.api.models.BurdenEstimateSetType
 import org.vaccineimpact.api.models.BurdenEstimateSetTypeCode
@@ -128,7 +127,7 @@ class CreateBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
     {
         assertUnknownObjectError { repo ->
             repo.createBurdenEstimateSet(groupId, touchstoneId, scenarioId,
-                    defaultProperties.copy(modelRunParameterSetId = 267), username, timestamp)
+                    defaultProperties.copy(modelRunParameterSet = 267), username, timestamp)
         }
     }
 
