@@ -49,10 +49,10 @@ describe('UploadEstimatesPage', () => {
         checkPromise(done, promise, (_, afterWait) => {
             afterWait(done, () => {
                 expectOrderedActions(spy, [
-                    {action: "EstimateTokenActions.clearUsedToken", payload: true},
-                    {action: "EstimateTokenActions.setRedirectPath"},
                     {action: "ModellingGroupActions.setCurrentGroup", payload: "group-1"},
                     {action: "TouchstoneActions.setCurrentTouchstone", payload: "touchstone-1"},
+                    {action: "EstimateTokenActions.clearUsedToken", payload: true},
+                    {action: "EstimateTokenActions.setRedirectPath"},
                     {action: "ResponsibilityActions.setCurrentResponsibility", payload: "scenario-1"}
                 ], 0);
                 expect(fetchTouchstones.called).to.equal(true, "Expected fetchTouchstones to be called");
