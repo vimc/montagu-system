@@ -5,9 +5,7 @@ import fetcher from "../shared/sources/Fetcher";
 import { ReportingFetcher } from "./sources/ReportingFetcher";
 import { Provider } from "react-redux";
 import { createReportStore } from "./stores/createReportStore";
-
-"./stores/createReportStore";
-import { loadToken } from "../shared/actions/_AuthActions"
+import { AuthActions } from "../shared/actions/AuthActions"
 
 import './index.html';
 import '../shared/styles/bootstrap.scss';
@@ -17,7 +15,7 @@ import '../shared/styles/common.scss';
 
 fetcher.fetcher = new ReportingFetcher();
 const store = createReportStore();
-store.dispatch(loadToken())
+store.dispatch(AuthActions.loadToken())
 
 ReactDOM.render(
     <Provider store={store}>

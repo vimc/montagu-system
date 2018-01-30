@@ -1,8 +1,11 @@
 import { Fetcher } from "../../shared/sources/Fetcher";
-import { adminAuthStore } from "../stores/AdminAuthStore";
+// import { adminAuthStore } from "../stores/AdminAuthStore";
 
 export class AdminFetcher extends Fetcher {
     getBearerToken(): string {
-        return adminAuthStore.getState().bearerToken;
+        // TODO: after making this redux, will be loaded from state
+        if (typeof(Storage) !== "undefined") {
+            return localStorage.getItem("accessToken");
+        }
     }
 }

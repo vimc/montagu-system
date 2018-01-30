@@ -1,5 +1,5 @@
 import { localApiRequest } from "./LocalApiRequest"
-import {authenticated, authenticationError} from "../actions/_AuthActions";
+import { AuthActions } from "../actions/AuthActions";
 import { AxiosResponse, AxiosError } from "axios";
 
 export const authService = (store :any) => (next:any) => (action:any) => {
@@ -11,10 +11,11 @@ export const authService = (store :any) => (next:any) => (action:any) => {
             })
                 .post("/authenticate/", "grant_type=client_credentials")
                 .then((response: AxiosResponse) => {
-                    store.dispatch(authenticated(response.data.access_token));
+                    store.dispatch(AuthActions.authenticated(response.data.access_token));
                 })
                 .catch((error: AxiosError) => {
-                    store.dispatch(authenticationError(error))
+                    console.log('ae',error)
+                    store.dispatch(AuthActions.authenticationError(error))
                 })
         case 'DO_AUTH_TO_SHINY_API':
             return localApiRequest({

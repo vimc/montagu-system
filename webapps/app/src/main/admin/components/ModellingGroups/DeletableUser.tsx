@@ -6,7 +6,7 @@ import { modellingGroupActions } from "../../../shared/actions/ModellingGroupAct
 import { notificationActions, NotificationException } from "../../../shared/actions/NotificationActions";
 import fetcher from "../../../shared/sources/Fetcher";
 import { Link } from "simple-react-router";
-import { adminAuthStore } from "../../stores/AdminAuthStore";
+// import { adminAuthStore } from "../../stores/AdminAuthStore";
 
 interface UserProps {
     user: User;

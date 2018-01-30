@@ -6,7 +6,7 @@ import {
     notificationActions,
     NotificationException
 } from "../actions/NotificationActions";
-import {authActions} from "../actions/AuthActions";
+// import {authActions} from "../actions/AuthActions";
 import {jwtDecoder} from "./JwtDecoder";
 import {settings} from "../Settings";
 
@@ -95,7 +95,7 @@ function processResult<TModel>(result: Result, response: any): TModel | void {
         switch (error.code) {
             case "bearer-token-invalid":
                 console.log("Access token has expired or is otherwise invalid: Logging out.");
-                authActions.logOut();
+                // authActions.logOut();
                 const notification: Notification = {
                     message: "Your session has expired. You will need to log in again",
                     type: "info"

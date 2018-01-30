@@ -1,7 +1,7 @@
 import { AbstractStore } from "./AbstractStore";
 import { MessageType, Notification, notificationActions } from "../actions/NotificationActions";
 import { alt } from "../alt";
-import { authActions, LogInProperties } from "../actions/AuthActions";
+// import { authActions, LogInProperties } from "../actions/AuthActions";
 import { appSettings, settings } from "../Settings";
 import StoreModel = AltJS.StoreModel;
 
@@ -13,7 +13,8 @@ export interface NotificationState {
 function initialState(): NotificationState {
     return {
         errors: [],
-        infos: []
+        infos: [],
+        // loggedIn: false
     };
 }
 
@@ -26,7 +27,7 @@ class NotificationStore extends AbstractStore<NotificationState, AltJS.AltStore<
         this.bindListeners({
             handleNotification: notificationActions.notify,
             handleClear: notificationActions.clear,
-            handleLogIn: authActions.logIn
+            // handleLogIn: authActions.logIn
         });
     }
 
@@ -57,20 +58,20 @@ class NotificationStore extends AbstractStore<NotificationState, AltJS.AltStore<
         }
     }
 
-    handleLogIn(props: LogInProperties) {
-        if (!props.isAccountActive || !props.isModeller) {
-            let reason: string;
-            if (!props.isAccountActive) {
-                reason = "Your account has been deactivated";
-            } else if (appSettings.requiresModellingGroupMembership) {
-                reason = "Only members of modelling groups can log into the contribution portal";
-            }
-            if (reason) {
-                const support = settings.supportContact;
-                this.errors = [`${reason}. Please contact ${support} for help.`, ...this.errors];
-            }
-        }
-    }
+    // handleLogIn(props: LogInProperties) {
+    //     if (!props.isAccountActive || !props.isModeller) {
+    //         let reason: string;
+    //         if (!props.isAccountActive) {
+    //             reason = "Your account has been deactivated";
+    //         } else if (appSettings.requiresModellingGroupMembership) {
+    //             reason = "Only members of modelling groups can log into the contribution portal";
+    //         }
+    //         if (reason) {
+    //             const support = settings.supportContact;
+    //             this.errors = [`${reason}. Please contact ${support} for help.`, ...this.errors];
+    //         }
+    //     }
+    // }
 }
 
 export const notificationStore =

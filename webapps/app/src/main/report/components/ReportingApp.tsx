@@ -4,13 +4,13 @@ import { connect } from 'react-redux';
 import { ErrorLog } from "../../shared/components/ErrorLog/ErrorLog";
 import { ReportingRouter } from "./ReportingRouter";
 import { NotificationArea } from "../../shared/components/NotificationArea/NotificationArea";
-
 import { notificationStore } from "../../shared/stores/NotificationStore";
 import { connectToStores } from "../../shared/alt";
 
 export interface ReportingAppProps {
     errors: string[];
     infos: string[];
+    loggedIn?: boolean;
 }
 
 export class ReportingAppComponent extends React.Component<any, undefined> {
@@ -26,7 +26,7 @@ export class ReportingAppComponent extends React.Component<any, undefined> {
 
     render() :JSX.Element {
         return <div>
-            <ReportingRouter loggedIn={ this.props.auth.loggedIn } />
+            <ReportingRouter loggedIn={ this.props.loggedIn } />
             <NotificationArea notifications={ this.props.infos } />
             <ErrorLog errors={ this.props.errors } />
         </div>;
@@ -36,9 +36,8 @@ export class ReportingAppComponent extends React.Component<any, undefined> {
 export const ReportingAppAltWrapped = connectToStores(ReportingAppComponent);
 
 const mapStateToProps = (state: any) => {
-
   return {
-      auth: state.auth,
+      loggedIn: state.auth.loggedIn,
   }
 };
 

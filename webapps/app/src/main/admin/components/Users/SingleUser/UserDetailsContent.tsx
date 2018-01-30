@@ -1,4 +1,6 @@
 import * as React from "react";
+import { connect } from 'react-redux';
+
 import { RemoteContent } from "../../../../shared/models/RemoteContent";
 import { RemoteContentComponent } from "../../../../shared/components/RemoteContentComponent/RemoteContentComponent";
 import { connectToStores } from "../../../../shared/alt";
@@ -6,14 +8,16 @@ import { RoleAssignment, User } from "../../../../shared/models/Generated";
 import { UserRole } from "./UserRoleComponent";
 import { userStore } from "../../../stores/UserStore";
 import { AddRoles } from "./AddRoles";
-import { adminAuthStore } from "../../../stores/AdminAuthStore";
+// import { adminAuthStore } from "../../../stores/AdminAuthStore";
 
 interface Props extends RemoteContent {
     user: User;
     roles: RoleAssignment[];
+    permissions?: any;
 }
 
 import "../../../../shared/styles/common.scss";
+// import {AdminAppAltWrapped} from "../../AdminApp";
 
 export class UserDetailsContentComponent extends RemoteContentComponent<Props, undefined> {
     static getStores() {
@@ -32,7 +36,7 @@ export class UserDetailsContentComponent extends RemoteContentComponent<Props, u
 
     roles(username: string) {
 
-        const isAdmin = adminAuthStore.getState().permissions.indexOf("*/roles.write") > -1;
+        const isAdmin = this.props.permissions.indexOf("*/roles.write") > -1;
         const addRoles = isAdmin ?
             <AddRoles userRoles={this.props.roles.filter(r => r.scope_prefix == null).map(r => r.name)}
                    username={this.props.user.username}/>
@@ -81,5 +85,13 @@ export class UserDetailsContentComponent extends RemoteContentComponent<Props, u
     }
 }
 
-export const UserDetailsContent =
+export const UserDetailsContentAltWrapped =
     connectToStores(UserDetailsContentComponent);
+
+const mapStateToProps = (state: any) => {
+    return {
+        permissions: state.auth.permissions,
+    }
+};
+
+export const UserDetailsContent = connect(mapStateToProps)(UserDetailsContentAltWrapped);
