@@ -9,17 +9,17 @@ import org.vaccineimpact.api.app.controllers.TouchstoneController
 import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.app.repositories.inmemory.InMemoryDataSet
-import org.vaccineimpact.api.serialization.SplitData
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import org.vaccineimpact.api.serialization.DataTable
+import org.vaccineimpact.api.serialization.SplitData
 import org.vaccineimpact.api.test_helpers.MontaguTests
 import java.math.BigDecimal
 
 class TouchstoneControllerTests : MontaguTests()
 {
     private val openTouchstone = Touchstone("t-1", "t", 1, "description", TouchstoneStatus.OPEN)
-    private val inPrepTouchstone =  Touchstone("t-2", "t", 2, "description", TouchstoneStatus.IN_PREPARATION)
+    private val inPrepTouchstone = Touchstone("t-2", "t", 2, "description", TouchstoneStatus.IN_PREPARATION)
     private val source = "test-source"
     private val type = "test-type"
     private val scenario = Scenario("id", "desc", "disease", listOf("t1, t2"))

@@ -20,7 +20,7 @@ class PasswordController(
         private val userRepository: UserRepository,
         private val oneTimeTokenGenerator: OneTimeTokenGenerator,
         private val emailManager: EmailManager = getEmailManager()
-        ) : Controller(context)
+) : Controller(context)
 {
 
     constructor(context: ActionContext, repositories: Repositories)

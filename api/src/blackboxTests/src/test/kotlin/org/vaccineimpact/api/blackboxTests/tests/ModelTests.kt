@@ -24,12 +24,14 @@ class ModelTests : DatabaseTest()
             PermissionSet("*/models.read")
         } andCheckArray {
             Assertions.assertThat(it.count()).isEqualTo(2)
-            Assertions.assertThat(it).contains(json { obj(
-                    "id" to "modelId",
-                    "description" to "description1",
-                    "citation" to "Unknown citation",
-                    "modelling_group" to "groupId"
-            )})
+            Assertions.assertThat(it).contains(json {
+                obj(
+                        "id" to "modelId",
+                        "description" to "description1",
+                        "citation" to "Unknown citation",
+                        "modelling_group" to "groupId"
+                )
+            })
         }
     }
 
@@ -44,12 +46,14 @@ class ModelTests : DatabaseTest()
         } requiringPermissions {
             PermissionSet("*/models.read")
         } andCheck {
-            Assertions.assertThat(it).isEqualTo(json { obj(
-                    "id" to "modelId",
-                    "description" to "description1",
-                    "citation" to "Unknown citation",
-                    "modelling_group" to "groupId"
-            )})
+            Assertions.assertThat(it).isEqualTo(json {
+                obj(
+                        "id" to "modelId",
+                        "description" to "description1",
+                        "citation" to "Unknown citation",
+                        "modelling_group" to "groupId"
+                )
+            })
 
         }
     }

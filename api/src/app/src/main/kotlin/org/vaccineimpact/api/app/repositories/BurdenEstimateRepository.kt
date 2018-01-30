@@ -20,7 +20,7 @@ interface BurdenEstimateRepository : Repository
                                   estimates: Sequence<BurdenEstimateWithRunId>)
 
     fun clearBurdenEstimateSet(setId: Int, groupId: String, touchstoneId: String, scenarioId: String)
-    
+
     fun closeBurdenEstimateSet(setId: Int)
 
     fun addModelRunParameterSet(groupId: String, touchstoneId: String, disease: String, description: String,

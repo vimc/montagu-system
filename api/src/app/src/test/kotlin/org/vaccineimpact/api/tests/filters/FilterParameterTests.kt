@@ -15,7 +15,7 @@ class FilterParameterTests : MontaguTests()
     {
         val context = mock<ActionContext> {
             on { queryParams("scenario_id") } doReturn "scenario_17"
-            on { queryParams("disease" )} doReturn "common_cold"
+            on { queryParams("disease") } doReturn "common_cold"
         }
         val params = ScenarioFilterParameters.fromContext(context)
         assertThat(params).isEqualTo(ScenarioFilterParameters(

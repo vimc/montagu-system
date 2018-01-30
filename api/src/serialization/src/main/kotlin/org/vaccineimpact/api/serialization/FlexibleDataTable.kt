@@ -15,22 +15,21 @@ class FlexibleDataTable<T : Any>(data: Sequence<T>,
         it.findAnnotation<FlexibleProperty>() != null
     }
             ?: throw Exception("No parameter marked as flexible." +
-            " Use the DataTable class to serialise data with fixed headers.")
+                    " Use the DataTable class to serialise data with fixed headers.")
 
     private val flexibleProperty = properties.firstOrNull { it.name == flexibleParameter.name }
             ?: throw Exception("No property marked as flexible." +
-            " Use the DataTable class to serialise data with fixed headers.")
+                    " Use the DataTable class to serialise data with fixed headers.")
 
     init
     {
-        flexibleParameter.type.arguments.lastOrNull() ?:
-                throw Exception("Properties marked as flexible must be of " +
-                        "type Map<*, *>, where * can be whatever you like.")
+        flexibleParameter.type.arguments.lastOrNull() ?: throw Exception("Properties marked as flexible must be of " +
+                "type Map<*, *>, where * can be whatever you like.")
     }
 
-    override fun prepareHeadersForCSV(headers:  Iterable<DataTableHeader<T>>): Array<String>
+    override fun prepareHeadersForCSV(headers: Iterable<DataTableHeader<T>>): Array<String>
     {
-       return headers.map { it.name }.toTypedArray()
+        return headers.map { it.name }.toTypedArray()
                 .plus(flexibleHeaders.map { it.toString() })
     }
 
@@ -62,7 +61,6 @@ class FlexibleDataTable<T : Any>(data: Sequence<T>,
     companion object
     {
         // Simple helper to get around JVM type erasure
-        inline fun <reified R : Any> new(data: Sequence<R>, flexibleHeaders: Iterable<Any>)
-                = FlexibleDataTable(data, flexibleHeaders, R::class)
+        inline fun <reified R : Any> new(data: Sequence<R>, flexibleHeaders: Iterable<Any>) = FlexibleDataTable(data, flexibleHeaders, R::class)
     }
 }

@@ -16,5 +16,4 @@ inline fun <TRecord : Record, reified TModel : Any> ResultQuery<TRecord>.fetchSe
     return generateSequence { cursor.fetchOne().into(TModel::class.java) }
 }
 
-fun <TRecord : Record> ResultQuery<TRecord>.getCursor(): Cursor<TRecord>
-        = this.fetchSize(100).fetchLazy()
+fun <TRecord : Record> ResultQuery<TRecord>.getCursor(): Cursor<TRecord> = this.fetchSize(100).fetchLazy()

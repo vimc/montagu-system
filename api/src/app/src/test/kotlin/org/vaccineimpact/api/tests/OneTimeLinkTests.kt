@@ -16,7 +16,6 @@ import org.vaccineimpact.api.app.repositories.UserRepository
 import org.vaccineimpact.api.models.helpers.OneTimeAction
 import org.vaccineimpact.api.security.WebTokenHelper
 import org.vaccineimpact.api.test_helpers.MontaguTests
-import org.vaccineimpact.api.tests.mocks.asFactory
 
 class OneTimeLinkTests : MontaguTests()
 {

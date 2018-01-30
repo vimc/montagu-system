@@ -1,10 +1,10 @@
 package org.vaccineimpact.api.app.app_start
 
 import org.slf4j.LoggerFactory
-import org.vaccineimpact.api.app.context.ActionContext
-import org.vaccineimpact.api.app.context.DirectActionContext
 import org.vaccineimpact.api.app.app_start.route_config.RouteConfig
 import org.vaccineimpact.api.app.consumeRemainder
+import org.vaccineimpact.api.app.context.ActionContext
+import org.vaccineimpact.api.app.context.DirectActionContext
 import org.vaccineimpact.api.app.errors.UnsupportedValueException
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.RepositoryFactory
@@ -12,12 +12,10 @@ import org.vaccineimpact.api.models.AuthenticationResponse
 import org.vaccineimpact.api.security.WebTokenHelper
 import org.vaccineimpact.api.serialization.Serializer
 import org.vaccineimpact.api.serialization.StreamSerializable
-import spark.Request
 import spark.Route
 import spark.Spark
 import spark.route.HttpMethod
 import java.lang.reflect.InvocationTargetException
-import javax.activation.UnsupportedDataTypeException
 
 class Router(val config: RouteConfig,
              val serializer: Serializer,

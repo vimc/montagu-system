@@ -14,7 +14,8 @@ class DemographicDummyData(val it: JooqContext,
     val countries: List<String> = it.fetchCountries(numCountries)
     val source: String = source ?: "unwpp2015"
     val sourceId: Int = it.generateDemographicSource(this.source)
-    val variants = variants ?: listOf("unwpp_estimates", "unwpp_low_variant", "unwpp_medium_variant", "unwpp_high_variant")
+    val variants = variants
+            ?: listOf("unwpp_estimates", "unwpp_low_variant", "unwpp_medium_variant", "unwpp_high_variant")
     val variantIds: List<Int> = it.generateDemographicVariants(this.variants)
     val peopleUnitId: Int = it.fetchDemographicUnitId("Number of people")
     val birthsUnitId: Int = it.fetchDemographicUnitId("Births per woman")

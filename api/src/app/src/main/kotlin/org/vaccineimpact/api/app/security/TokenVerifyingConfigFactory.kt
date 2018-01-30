@@ -56,8 +56,8 @@ class TokenActionAdapter(repositoryFactory: RepositoryFactory)
             "bearer-token-invalid",
             "Bearer token not supplied in Authorization header, or bearer token was invalid"
     ))
-    private fun forbiddenResponse(missingPermissions: Set<String>)
-            = MissingRequiredPermissionError(missingPermissions).problems
+
+    private fun forbiddenResponse(missingPermissions: Set<String>) = MissingRequiredPermissionError(missingPermissions).problems
 
     override fun adapt(code: Int, context: SparkWebContext): Any? = when (code)
     {

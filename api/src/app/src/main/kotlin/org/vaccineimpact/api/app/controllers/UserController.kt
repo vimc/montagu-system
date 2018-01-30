@@ -16,7 +16,6 @@ import org.vaccineimpact.api.models.User
 import org.vaccineimpact.api.models.encompass
 import org.vaccineimpact.api.models.helpers.OneTimeAction
 import org.vaccineimpact.api.models.permissions.AssociateRole
-import org.vaccineimpact.api.models.permissions.ReifiedRole
 import org.vaccineimpact.api.models.permissions.RoleAssignment
 import java.time.Duration
 
@@ -83,7 +82,7 @@ class UserController(
         if (roleReadingScopes.any())
         {
             val userWithAllRoles = internalUser.toUser()
-            return userWithAllRoles.copy(roles=filteredRoleAssignments(userWithAllRoles.roles, roleReadingScopes))
+            return userWithAllRoles.copy(roles = filteredRoleAssignments(userWithAllRoles.roles, roleReadingScopes))
         }
         else
         {

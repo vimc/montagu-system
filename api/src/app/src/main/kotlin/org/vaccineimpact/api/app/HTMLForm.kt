@@ -7,7 +7,7 @@ interface FormHelpers
     fun checkForm(context: ActionContext, expectedContents: Map<String, String>): HTMLForm
 }
 
-class HTMLFormHelpers: FormHelpers
+class HTMLFormHelpers : FormHelpers
 {
     val requiredContentType = "application/x-www-form-urlencoded"
 
@@ -35,7 +35,8 @@ sealed class HTMLForm
     class ValidForm : HTMLForm()
     class InvalidForm(val problem: String) : HTMLForm()
 
-    override fun equals(other: Any?) = when (other) {
+    override fun equals(other: Any?) = when (other)
+    {
         is ValidForm -> this is ValidForm
         is InvalidForm -> this is InvalidForm && this.problem == other.problem
         else -> false

@@ -203,8 +203,7 @@ class GroupEstimatesControllerTests : MontaguTests()
         ))
     }
 
-    private fun <T : Any> mockActionContextWithCSVData(csvData: List<T>, keepOpen: String? = null)
-            = mockActionContextWithCSVData(csvData.asSequence(), keepOpen = keepOpen)
+    private fun <T : Any> mockActionContextWithCSVData(csvData: List<T>, keepOpen: String? = null) = mockActionContextWithCSVData(csvData.asSequence(), keepOpen = keepOpen)
 
     private fun <T : Any> mockActionContextWithCSVData(csvData: Sequence<T>, keepOpen: String? = null): ActionContext
     {

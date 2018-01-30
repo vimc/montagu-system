@@ -25,8 +25,7 @@ fun addTrailingSlashes(req: Request, res: Response)
 
 fun addDefaultResponseHeaders(req: Request,
                               res: Response,
-                              contentType: String = "${ContentTypes.json}; charset=utf-8")
-    = addDefaultResponseHeaders(req, res.raw(), contentType)
+                              contentType: String = "${ContentTypes.json}; charset=utf-8") = addDefaultResponseHeaders(req, res.raw(), contentType)
 
 
 fun addDefaultResponseHeaders(req: Request, res: HttpServletResponse,

@@ -58,7 +58,8 @@ class AuthenticationController(context: ActionContext,
         return okayResponse()
     }
 
-    private fun setCookie(value: String){
+    private fun setCookie(value: String)
+    {
         context.addResponseHeader("Set-Cookie", "jwt_token=$value; Path=/; Secure; HttpOnly; SameSite=Lax")
 
     }

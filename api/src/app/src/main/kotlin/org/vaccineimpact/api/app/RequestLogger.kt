@@ -19,6 +19,7 @@ class RequestLogger(private val accessLogRepository: AccessLogRepository)
         val ip = req.ip()
         accessLogRepository.log(principal, timestamp, resource, statusCode, ip)
     }
+
     fun log(context: SparkWebContext)
     {
         log(context.sparkRequest, context.sparkResponse)

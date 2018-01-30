@@ -4,10 +4,10 @@ import org.vaccineimpact.api.app.repositories.Repository
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.test_helpers.DatabaseTest
 
-abstract class RepositoryTests<TRepository: Repository> : DatabaseTest()
+abstract class RepositoryTests<TRepository : Repository> : DatabaseTest()
 {
     protected fun given(populateDatabase: (JooqContext) -> Unit)
-        : RepositoryTestConfig<TRepository>
+            : RepositoryTestConfig<TRepository>
     {
         return RepositoryTestConfig(this::makeRepository, populateDatabase = populateDatabase)
     }
@@ -21,6 +21,7 @@ abstract class RepositoryTests<TRepository: Repository> : DatabaseTest()
     {
         return JooqContext().use { doThis(it) }
     }
+
     protected fun <T> withRepo(doThis: (TRepository) -> T): T
     {
         return JooqContext().use {

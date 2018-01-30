@@ -1,4 +1,5 @@
 package org.vaccineimpact.api.emails
+
 import org.simplejavamail.email.Email
 import org.simplejavamail.mailer.Mailer
 import org.simplejavamail.mailer.config.ServerConfig
