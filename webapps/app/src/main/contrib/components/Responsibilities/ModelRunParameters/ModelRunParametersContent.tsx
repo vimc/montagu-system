@@ -24,7 +24,7 @@ export class ModelRunParametersContentComponent
         const state = responsibilityStore.getState();
 
         return {
-            ready: state.ready,
+            ready: state.ready && state.currentTouchstone != null,
             touchstone: state.currentTouchstone,
             group: state.currentModellingGroup,
             diseases: Array.from(new Set([].concat.apply([],

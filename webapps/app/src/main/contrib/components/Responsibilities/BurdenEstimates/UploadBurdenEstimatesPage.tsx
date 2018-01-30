@@ -19,10 +19,13 @@ export interface UploadEstimatesProps {
 }
 
 export class UploadBurdenEstimatesPage extends ContribPageWithHeader<UploadEstimatesProps> {
+
     load(props: UploadEstimatesProps) {
-        estimateTokenActions.clearUsedToken();
-        estimateTokenActions.setRedirectPath(this.props.location.pathname);
+
         return this.loadParent(props).then(() => {
+            estimateTokenActions.clearUsedToken();
+            estimateTokenActions.setRedirectPath(this.props.location.pathname);
+
             responsibilityActions.setCurrentResponsibility(props.scenarioId);
             responsibilityStore.fetchOneTimeEstimatesToken().catch(doNothing);
         });
