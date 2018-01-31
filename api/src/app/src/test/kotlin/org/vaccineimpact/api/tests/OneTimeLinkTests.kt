@@ -66,7 +66,7 @@ class OnetimeLinkResolverTests : MontaguTests()
 {
 
     @Test
-    fun `perform invokes callback`()
+    fun `perform invokes callback in transaction`()
     {
         // Mocks
         val userRepo = mock<UserRepository>()
