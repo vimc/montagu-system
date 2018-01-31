@@ -10,40 +10,18 @@ import org.vaccineimpact.api.db.JooqContext
 
 open class RepositoryFactory
 {
-    private val logger: Logger = LoggerFactory.getLogger(javaClass)
-
     open fun <T> inTransaction(work: (Repositories) -> T): T
     {
-        var result: T? = null
-        JooqContext().use { db ->
-            try
-            {
-                db.dsl.transaction { config ->
-                    val dsl = DSL.using(config)
-                    result = work(Repositories(dsl))
-                }
-            }
-            catch (e: DataAccessException)
-            {
-                // We don't want our custom exceptions getting wrapped in a
-                // Jooq rollback warning, so we rethrow the cause
-                if (e.message == "Rollback caused")
-                {
-                    logger.info("Rollback caused by: ${e.cause}")
-                    throw e.cause ?: e
-                }
-                else
-                {
-                    throw e
-                }
-            }
+        return JooqContext().use { db ->
+            Repositories(db.dsl).inTransaction(work)
         }
-        return result!!
     }
 }
 
 open class Repositories(val dsl: DSLContext)
 {
+    private val logger: Logger = LoggerFactory.getLogger(javaClass)
+
     open val simpleObjects: SimpleObjectsRepository by lazy {
         JooqSimpleObjectsRepository(dsl)
     }
@@ -70,5 +48,32 @@ open class Repositories(val dsl: DSLContext)
     }
     open val burdenEstimates: BurdenEstimateRepository by lazy {
         JooqBurdenEstimateRepository(dsl, scenario, touchstone, modellingGroup)
+    }
+
+    open fun <T> inTransaction(work: (Repositories) -> T): T
+    {
+        var result: T? = null
+        try
+        {
+            dsl.transaction { config ->
+                val dsl = DSL.using(config)
+                result = work(Repositories(dsl))
+            }
+        }
+        catch (e: DataAccessException)
+        {
+            // We don't want our custom exceptions getting wrapped in a
+            // Jooq rollback warning, so we rethrow the cause
+            if (e.message == "Rollback caused")
+            {
+                logger.info("Rollback caused by: ${e.cause}")
+                throw e.cause ?: e
+            }
+            else
+            {
+                throw e
+            }
+        }
+        return result!!
     }
 }
