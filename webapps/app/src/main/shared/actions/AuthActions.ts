@@ -1,10 +1,24 @@
 import { Dispatch } from "redux";
-import { AxiosError } from "axios";
+import { AxiosError, AxiosResponse } from "axios";
 
 import { AuthenticationError, TypeKeys } from "../actionTypes/AuthTypes";
 import { decodeToken, Token, isExpired, parseModellingGroups } from "../modules/JwtToken";
+import { AuthService } from "../services/AuthService";
 
 export const AuthActions = {
+
+    logIn(email: string, password: string) {
+        return (dispatch: any) => {
+            AuthService().logIn(email, password)
+                .then((response: AxiosResponse) => {
+                    dispatch(this.authenticated(response.data.access_token));
+                })
+                .catch((error: AxiosError) => {
+                    dispatch(this.authenticationError(error))
+                })
+        }
+    },
+
 
     loadToken() {
         return (dispatch: Dispatch<any>) => {
@@ -26,10 +40,10 @@ export const AuthActions = {
     },
 
     authenticated(token: string) {
-        return  (dispatch: Dispatch<any>) => {
+        return  (dispatch: Dispatch<any>, getState: any) => {
             const decoded: Token = decodeToken(token);
             const permissions = decoded.permissions.split(",").filter(x => x.length > 0);
-            console.log("roles",decoded.roles)
+            // console.log("roles",decoded.roles)
             const modellingGroups = parseModellingGroups(decoded.roles)
 
             if (typeof(Storage) !== "undefined") {
@@ -46,9 +60,7 @@ export const AuthActions = {
                 },
             });
 
-            dispatch({
-                type: TypeKeys.DO_AUTH_TO_SHINY_API
-            })
+            AuthService(getState().auth.bearerToken).authToShiny();
         }
     },
 
@@ -60,13 +72,11 @@ export const AuthActions = {
     },
 
     logOut() {
-        return (dispatch: Dispatch<any>) => {
+        return (dispatch: Dispatch<any>, getState: any) => {
             if (typeof(Storage) !== "undefined") {
                 localStorage.clear();
             }
-            dispatch({
-                type: TypeKeys.DO_UNAUTH_FROM_SHINY_API
-            })
+            AuthService(getState().auth.bearerToken).authToShiny();
             dispatch({
                 type: TypeKeys.UNAUTHENTICATED,
             });

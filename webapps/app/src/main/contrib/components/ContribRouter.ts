@@ -34,7 +34,6 @@ export class ContribRouter extends Router<RoutingProperties> {
         };
 
         map('/forgotten-password/', ContribForgottenPasswordPage);
-
         if (loggedIn) {
             if (loaded) {
                 map('/', ChooseGroupPage);

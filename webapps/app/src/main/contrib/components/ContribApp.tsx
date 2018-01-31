@@ -1,14 +1,15 @@
 import * as React from "react";
+import { connect } from 'react-redux';
+
 import { connectToStores } from "../../shared/alt";
 import { ErrorLog } from "../../shared/components/ErrorLog/ErrorLog";
-import { contribAuthStore } from "../stores/ContribAuthStore";
 import { mainStore } from "../stores/MainStore";
 import { notificationStore } from "../../shared/stores/NotificationStore";
 import { ContribRouter } from "./ContribRouter";
 import { NotificationArea } from "../../shared/components/NotificationArea/NotificationArea";
 
 interface AppProps {
-    loggedIn: boolean,
+    loggedIn?: boolean,
     ready: boolean,
     errors: string[],
     infos: string[]
@@ -16,12 +17,11 @@ interface AppProps {
 
 export class ContribAppComponent extends React.Component<AppProps, undefined> {
     static getStores() {
-        return [ mainStore, notificationStore, contribAuthStore ];
+        return [ mainStore, notificationStore ];
     }
 
     static getPropsFromStores(): AppProps {
         return {
-            loggedIn: contribAuthStore.getState().loggedIn,
             ready: mainStore.getState().ready,
             errors: notificationStore.getState().errors,
             infos: notificationStore.getState().infos
@@ -40,4 +40,12 @@ export class ContribAppComponent extends React.Component<AppProps, undefined> {
     }
 }
 
-export const ContribApp = connectToStores(ContribAppComponent);
+export const ContribAppAltWrapped = connectToStores(ContribAppComponent);
+
+const mapStateToProps = (state: any) => {
+    return {
+        loggedIn: state.auth.loggedIn,
+    }
+};
+
+export const ContribApp = connect(mapStateToProps)(ContribAppAltWrapped);

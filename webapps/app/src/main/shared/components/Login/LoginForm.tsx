@@ -5,6 +5,7 @@ import { compose } from 'recompose';
 import { InternalLink } from "../InternalLink";
 import { ValidationError } from "./ValidationError";
 import { validations } from "../../modules/ReduxForm";
+import { AuthActions } from "../../actions/AuthActions";
 
 export interface LoginFormProps {
     handleSubmit: (F: any) => any;
@@ -12,20 +13,14 @@ export interface LoginFormProps {
     dispatch: any;
 }
 
-class LoginFormView extends React.Component<LoginFormProps, undefined> {
+export class LoginFormView extends React.Component<LoginFormProps, undefined> {
     constructor() {
         super();
         this.submit = this.submit.bind(this);
     }
 
     submit(values: any) {
-        this.props.dispatch({
-            type: "DO_AUTH_TO_API",
-            data: {
-                email: values.email,
-                password: values.password,
-            }
-        });
+        this.props.dispatch(AuthActions.logIn(values.email, values.password))
     }
 
     renderField(data: any) {

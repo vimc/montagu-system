@@ -1,4 +1,6 @@
-import { ActionsTypes, TypeKeys } from "../actionTypes/AuthTypes";
+import { ActionsTypes, TypeKeys } from "../../shared/actionTypes/AuthTypes";
+
+import { contribAuthActions } from "../actions/ContribAuthActions";
 
 export interface AuthState {
     loggedIn: boolean;
@@ -18,6 +20,7 @@ const initialState: AuthState = {
 export const authReducer = (state = initialState, action: ActionsTypes) => {
     switch (action.type) {
         case TypeKeys.AUTHENTICATED:
+            action.dispatchAfter(contribAuthActions.afterAuth())
             return { ...action.data };
         case TypeKeys.UNAUTHENTICATED:
             return {  };
@@ -27,3 +30,4 @@ export const authReducer = (state = initialState, action: ActionsTypes) => {
             return state;
     }
 };
+

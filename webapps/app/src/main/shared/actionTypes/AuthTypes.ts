@@ -12,6 +12,7 @@ export enum TypeKeys {
 export interface Authenticated {
     type: TypeKeys.AUTHENTICATED;
     data: AuthState;
+    dispatchAfter?: any;
 }
 export interface AuthenticationError {
     type: TypeKeys.AUTHENTICATION_ERROR;
