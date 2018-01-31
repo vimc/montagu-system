@@ -1,8 +1,6 @@
 package org.vaccineimpact.api.tests
 
-import com.nhaarman.mockito_kotlin.doReturn
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.verify
+import com.nhaarman.mockito_kotlin.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.vaccineimpact.api.app.OneTimeLink
@@ -16,6 +14,7 @@ import org.vaccineimpact.api.app.repositories.UserRepository
 import org.vaccineimpact.api.models.helpers.OneTimeAction
 import org.vaccineimpact.api.security.WebTokenHelper
 import org.vaccineimpact.api.test_helpers.MontaguTests
+import org.vaccineimpact.api.tests.mocks.MockRepositories
 
 class OneTimeLinkTests : MontaguTests()
 {
@@ -71,11 +70,12 @@ class OnetimeLinkResolverTests : MontaguTests()
     {
         // Mocks
         val userRepo = mock<UserRepository>()
-        val repos = mock<Repositories> {
+        val innerRepos = mock<Repositories> {
             on { token } doReturn mock<TokenRepository>()
             on { user } doReturn userRepo
         }
-        val mockContext = mock<ActionContext>() {
+        val repos = MockRepositories(innerRepos)
+        val mockContext = mock<ActionContext> {
             on { postData<SetPassword>() } doReturn SetPassword("password")
         }
         val mockWebTokenHelper = mock<WebTokenHelper>()
