@@ -87,6 +87,7 @@ class OnetimeLinkResolverTests : MontaguTests()
         sut.perform(link, mockContext)
 
         // Expectations
+        assertThat(repos.workDoneInTransaction).isTrue()
         verify(userRepo).setPassword("user", "password")
     }
 }

@@ -14,8 +14,12 @@ class MockRepositoryFactory(val repositories: Repositories) : RepositoryFactory(
 
 class MockRepositories(private val reposInTransaction: Repositories = mock()) : Repositories(mock())
 {
+    var workDoneInTransaction = false
+        private set
+
     override fun <T> inTransaction(work: (Repositories) -> T): T
     {
+        workDoneInTransaction = true
         return work(reposInTransaction)
     }
 }
