@@ -98,7 +98,7 @@ class OneTimeLinkController(
     {
         val encodedResult = tokenHelper.encodeResult(result)
         context.request.consumeRemainder()
-        if (encodedResult.length > 5000 && exception != null)
+        if (encodedResult.length > 2000 && exception != null)
             throw exception
 
         context.redirect("$redirectUrl?result=$encodedResult")
