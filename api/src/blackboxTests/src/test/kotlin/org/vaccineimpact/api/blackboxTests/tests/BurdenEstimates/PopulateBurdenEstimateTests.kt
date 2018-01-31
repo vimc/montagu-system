@@ -1,10 +1,13 @@
 package org.vaccineimpact.api.blackboxTests.tests.BurdenEstimates
 
 import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.vaccineimpact.api.blackboxTests.helpers.*
 import org.vaccineimpact.api.blackboxTests.schemas.CSVSchema
 import org.vaccineimpact.api.db.JooqContext
+import org.vaccineimpact.api.db.Tables.BURDEN_ESTIMATE
+import org.vaccineimpact.api.db.fieldsAsList
 import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.validateSchema.JSONValidator
 import spark.route.HttpMethod
@@ -97,18 +100,11 @@ class PopulateBurdenEstimateTests : BurdenEstimateTests()
     fun `can populate burden estimate via onetime link`()
     {
         val requestHelper = RequestHelper()
-
-        var setId = 0
-        JooqContext().use {
-            setId = setUpWithBurdenEstimateSet(it)
+        val setId = JooqContext().use {
+            setUpWithBurdenEstimateSet(it)
         }
 
-        val token = TestUserHelper.getToken(requiredWritePermissions.plus(PermissionSet("*/can-login")))
-        val onetimeTokenResult = requestHelper.get("$setUrl/$setId/get_onetime_link/", token)
-        val onetimeToken = onetimeTokenResult.montaguData<String>()!!
-
-        val oneTimeURL = "/onetime_link/$onetimeToken/"
-
+        val oneTimeURL = getPopulateOneTimeURL(setId)
         val response = requestHelper.postFile(oneTimeURL, csvData)
 
         Assertions.assertThat(response.statusCode).isEqualTo(200)
@@ -119,17 +115,11 @@ class PopulateBurdenEstimateTests : BurdenEstimateTests()
     {
         val requestHelper = RequestHelper()
 
-        var setId = 0
-        JooqContext().use {
-            setId = setUpWithBurdenEstimateSet(it)
+        val setId = JooqContext().use {
+            setUpWithBurdenEstimateSet(it)
         }
 
-        val url = "$setUrl/$setId/get_onetime_link/?redirectUrl=http://localhost/"
-        val token = TestUserHelper.getToken(requiredWritePermissions.plus(PermissionSet("*/can-login")))
-        val onetimeTokenResult = requestHelper.get(url, token)
-        val onetimeToken = onetimeTokenResult.montaguData<String>()!!
-
-        val oneTimeURL = "/onetime_link/$onetimeToken/"
+        val oneTimeURL = getPopulateOneTimeURL(setId, redirect = true)
         val response = requestHelper.postFile(oneTimeURL, csvData)
         val resultAsString = response.getResultFromRedirect(checkRedirectTarget = "http://localhost")
         JSONValidator().validateSuccess(resultAsString)
@@ -169,6 +159,39 @@ class PopulateBurdenEstimateTests : BurdenEstimateTests()
         JSONValidator()
                 .validateError(response.text, "duplicate-key:burden_estimate_set,country,year,age,burden_outcome")
 
+    }
+
+    @Test
+    fun `data in invalid file is not committed when using onetime link with redirect`()
+    {
+        TestUserHelper.setupTestUser()
+        val setId = JooqContext().use {
+            setUpWithBurdenEstimateSet(it)
+        }
+        val oneTimeURL = getPopulateOneTimeURL(setId, redirect = true)
+        val response = RequestHelper().postFile(oneTimeURL, wrongOutcomeCSVData)
+        val resultAsString = response.getResultFromRedirect(checkRedirectTarget = "http://localhost")
+        JSONValidator().validateError(resultAsString)
+
+        JooqContext().use { db ->
+            val records = db.dsl.select(BURDEN_ESTIMATE.fieldsAsList())
+                    .from(BURDEN_ESTIMATE)
+                    .fetch()
+            assertThat(records).isEmpty()
+        }
+    }
+
+    private fun getPopulateOneTimeURL(setId: Int, redirect: Boolean = false): String
+    {
+        var url = "$setUrl/$setId/get_onetime_link/"
+        if (redirect)
+        {
+            url += "?redirectUrl=http://localhost/"
+        }
+        val token = TestUserHelper.getToken(requiredWritePermissions.plus(PermissionSet("*/can-login")))
+        val onetimeTokenResult = RequestHelper().get(url, token)
+        val onetimeToken = onetimeTokenResult.montaguData<String>()!!
+        return "/onetime_link/$onetimeToken/"
     }
 
 }
