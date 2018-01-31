@@ -8,6 +8,8 @@ import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.UserRepository
 import org.vaccineimpact.api.app.security.internalUser
+import org.vaccineimpact.api.db.Config
+import org.vaccineimpact.api.db.ConfigWrapper
 import org.vaccineimpact.api.models.AuthenticationResponse
 import org.vaccineimpact.api.models.FailedAuthentication
 import org.vaccineimpact.api.models.SuccessfulAuthentication
@@ -17,7 +19,8 @@ import org.vaccineimpact.api.security.WebTokenHelper
 class AuthenticationController(context: ActionContext,
                                private val userRepository: UserRepository,
                                private val htmlFormHelpers: FormHelpers = HTMLFormHelpers(),
-                               private val tokenHelper: WebTokenHelper = WebTokenHelper(KeyHelper.keyPair))
+                               private val tokenHelper: WebTokenHelper = WebTokenHelper(KeyHelper.keyPair),
+                               private val config: ConfigWrapper = Config)
     : Controller(context)
 {
 
@@ -60,7 +63,14 @@ class AuthenticationController(context: ActionContext,
 
     private fun setCookie(value: String)
     {
-        context.addResponseHeader("Set-Cookie", "jwt_token=$value; Path=/; Secure; HttpOnly; SameSite=Lax")
-
+        val secure = if (config.getBool("allow.localhost"))
+        {
+            ""
+        }
+        else
+        {
+            " Secure;"
+        }
+        context.addResponseHeader("Set-Cookie", "jwt_token=$value; Path=/;$secure HttpOnly; SameSite=Lax")
     }
 }

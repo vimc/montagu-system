@@ -62,7 +62,6 @@ class AuthenticationTests : DatabaseTest()
         assertThat(response.statusCode).isEqualTo(200)
 
         val cookie = response.headers["Set-Cookie"]!!
-        assertThat(cookie).contains("Secure")
         assertThat(cookie).contains("HttpOnly")
         assertThat(cookie).contains("SameSite=Lax")
 
@@ -80,7 +79,6 @@ class AuthenticationTests : DatabaseTest()
         assertThat(response.statusCode).isEqualTo(200)
 
         val cookieHeader = response.headers["Set-Cookie"]!!
-        assertThat(cookieHeader).contains("Secure")
         assertThat(cookieHeader).contains("HttpOnly")
         assertThat(cookieHeader).contains("SameSite=Lax")
 

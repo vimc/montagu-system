@@ -3,7 +3,7 @@ package org.vaccineimpact.api.db
 import java.io.File
 import java.util.*
 
-object Config
+object Config: ConfigWrapper
 {
     private val properties = Properties().apply {
         load(getResource("config.properties").openStream())
@@ -13,11 +13,11 @@ object Config
             global.inputStream().use { load(it) }
         }
     }
-    val authEnabled by lazy {
+    override val authEnabled by lazy {
         getBool("app.auth")
     }
 
-    operator fun get(key: String): String
+    override operator fun get(key: String): String
     {
         val x = properties[key]
         if (x != null)
@@ -35,8 +35,15 @@ object Config
         }
     }
 
-    fun getInt(key: String) = get(key).toInt()
-    fun getBool(key: String) = get(key).toBoolean()
+    override fun getInt(key: String) = get(key).toInt()
+    override fun getBool(key: String) = get(key).toBoolean()
+}
+
+interface ConfigWrapper {
+    val authEnabled: Boolean
+    operator fun get(key: String): String
+    fun getInt(key: String): Int
+    fun getBool(key: String): Boolean
 }
 
 class MissingConfiguration(key: String) : Exception("Detected a value like \${foo} for key '$key' in the configuration. This probably means that the config template has not been processed. Try running ./gradlew :PROJECT:copy[Test]Config")
