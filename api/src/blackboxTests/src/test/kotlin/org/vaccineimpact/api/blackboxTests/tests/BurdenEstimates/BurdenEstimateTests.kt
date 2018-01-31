@@ -131,6 +131,10 @@ abstract class BurdenEstimateTests : DatabaseTest()
 "disease", "year", "age", "country", "country_name", "cohort_size", "deaths", "cases", "dalys"
    "Hib3",   1996,    50,     "AFG",  "Afghanistan",              ,         ,        ,
 """
+    val wrongOutcomeCSVData = """
+"disease", "year", "age", "country", "country_name", "cohort_size", "bananas"
+   "Hib3",   2000,     0,     "AFG",  "Afghanistan",             1,         2
+"""
 
     data class ReturnedIds(val responsibilityId: Int, val modelVersionId: Int, val responsibilitySetId: Int)
 }

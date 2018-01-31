@@ -20,9 +20,11 @@ open class OnetimeLinkResolver(private val repositories: Repositories,
     @Throws(Exception::class)
     open fun perform(oneTimeLink: OneTimeLink, actionContext: ActionContext): Any
     {
-        val callback = getCallback(oneTimeLink.action, repositories, webTokenHelper)
-        val context = OneTimeLinkActionContext(oneTimeLink.payload, oneTimeLink.queryParams, actionContext, oneTimeLink.username)
-        return callback.invoke(context)
+        return repositories.inTransaction { reposInSubTransaction ->
+            val callback = getCallback(oneTimeLink.action, reposInSubTransaction, webTokenHelper)
+            val context = OneTimeLinkActionContext(oneTimeLink.payload, oneTimeLink.queryParams, actionContext, oneTimeLink.username)
+            callback.invoke(context)
+        }
     }
 
     private fun getCallback(
