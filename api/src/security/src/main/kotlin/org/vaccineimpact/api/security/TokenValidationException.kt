@@ -1,7 +1,7 @@
 package org.vaccineimpact.api.security
 
-class TokenValidationException(message: String): Exception("Token validation failed: $message")
+class TokenValidationException(message: String) : Exception("Token validation failed: $message")
 {
     constructor(field: String, expected: String, actual: String)
-        : this("$field was '$actual' - it should have been '$expected'")
+            : this("$field was '$actual' - it should have been '$expected'")
 }

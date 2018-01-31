@@ -13,7 +13,7 @@ import java.io.Writer
 class PostgresCopyWriter(private val wrapped: Writer) : Flushable by wrapped, Closeable by wrapped
 {
     constructor(stream: OutputStream)
-        : this(stream.writer())
+            : this(stream.writer())
 
     // From the documentation: "In particular, the following characters must be preceded by a backslash
     // if they appear as part of a column value: backslash itself, newline, carriage return, and the current

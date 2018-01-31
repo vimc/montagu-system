@@ -5,7 +5,6 @@ import org.assertj.core.api.Assertions
 import org.junit.Test
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.controllers.GroupCoverageController
-import org.vaccineimpact.api.app.controllers.ModellingGroupController
 import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.db.nextDecimal

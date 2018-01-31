@@ -6,7 +6,7 @@ import java.io.OutputStream
 data class SplitData<out Metadata, out DataRow : Any>(
         val structuredMetadata: Metadata,
         val tableData: StreamSerializable<DataRow>
-): StreamSerializable<DataRow>
+) : StreamSerializable<DataRow>
 {
     override val contentType = ContentTypes.json
 

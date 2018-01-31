@@ -1,6 +1,5 @@
 package org.vaccineimpact.api.app.repositories
 
-import org.bouncycastle.util.IPAddress
 import java.time.Instant
 
 interface AccessLogRepository : Repository

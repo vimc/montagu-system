@@ -1,7 +1,5 @@
 package org.vaccineimpact.api.serialization
 
-import org.vaccineimpact.api.models.helpers.AllColumnsRequired
-import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 import kotlin.reflect.KType
 

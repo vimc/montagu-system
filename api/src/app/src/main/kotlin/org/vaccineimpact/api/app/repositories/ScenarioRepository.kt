@@ -6,5 +6,6 @@ interface ScenarioRepository : Repository
 {
     /** Throws an UnknownObjectError if it doesn't exist **/
     fun checkScenarioDescriptionExists(id: String): Unit
+
     fun getScenarios(descriptionIds: Iterable<String>): List<Scenario>
 }

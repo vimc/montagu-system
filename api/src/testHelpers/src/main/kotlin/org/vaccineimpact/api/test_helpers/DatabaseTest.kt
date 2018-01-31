@@ -2,7 +2,6 @@ package org.vaccineimpact.api.test_helpers
 
 import org.junit.After
 import org.junit.Before
-import org.vaccineimpact.api.db.AnnexJooqContext
 import org.vaccineimpact.api.db.Config
 import org.vaccineimpact.api.db.JooqContext
 

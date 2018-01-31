@@ -3,9 +3,9 @@ package org.vaccineimpact.api.tests.controllers
 import com.nhaarman.mockito_kotlin.*
 import org.junit.Test
 import org.pac4j.core.profile.CommonProfile
-import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.FormHelpers
 import org.vaccineimpact.api.app.HTMLForm
+import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.controllers.AuthenticationController
 import org.vaccineimpact.api.app.repositories.UserRepository
 import org.vaccineimpact.api.app.security.USER_OBJECT
@@ -65,7 +65,7 @@ class AuthenticationControllerTests : MontaguTests()
             } doReturn (HTMLForm.InvalidForm(""))
         }
 
-        val fakeWebTokenHelper = mock<WebTokenHelper> ()
+        val fakeWebTokenHelper = mock<WebTokenHelper>()
 
         val sut = AuthenticationController(fakeContext, fakeUserRepo,
                 fakeFormHelpers, fakeWebTokenHelper)

@@ -57,17 +57,19 @@ class ScenarioTests : DatabaseTest()
         } requiringPermissions {
             requiredPermissions
         } andCheck {
-            assertThat(it).isEqualTo(json { obj(
-                    "touchstone" to obj(
-                            "id" to touchstoneId,
-                            "name" to "touchstone",
-                            "version" to 1,
-                            "description" to "Description",
-                            "status" to "open"
-                    ),
-                    "scenario" to expectedScenario(),
-                    "coverage_sets" to expectedCoverageSets()
-            ) })
+            assertThat(it).isEqualTo(json {
+                obj(
+                        "touchstone" to obj(
+                                "id" to touchstoneId,
+                                "name" to "touchstone",
+                                "version" to 1,
+                                "description" to "Description",
+                                "status" to "open"
+                        ),
+                        "scenario" to expectedScenario(),
+                        "coverage_sets" to expectedCoverageSets()
+                )
+            })
         }
     }
 

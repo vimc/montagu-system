@@ -4,7 +4,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.commonmark.parser.Parser
 import org.junit.Test
 import org.vaccineimpact.api.test_helpers.TeamCityHelper
-import java.io.StringReader
 
 class SchemaValidator
 {

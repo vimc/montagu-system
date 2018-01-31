@@ -2,7 +2,6 @@ package org.vaccineimpact.api.tests
 
 import com.nhaarman.mockito_kotlin.*
 import org.junit.Test
-import org.mockito.internal.verification.Times
 import org.vaccineimpact.api.app.DefaultHeadersFilter
 import org.vaccineimpact.api.test_helpers.MontaguTests
 import spark.Request

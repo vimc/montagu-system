@@ -16,7 +16,7 @@ class AllowedOriginsFilter(private val allowLocalhost: Boolean) : Filter
         val origin = request.headers("Origin")
         if (origin.isNullOrEmpty())
             return
-        
+
         if (allowedRegex.matches(origin) || (allowLocalhost && localRegex.matches(origin)))
         {
             response.raw().addHeader("Access-Control-Allow-Origin", origin)

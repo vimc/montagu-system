@@ -6,7 +6,7 @@ import org.vaccineimpact.api.security.BasicUserProperties
 class NewUserEmail(
         val user: BasicUserProperties,
         val token: String
-): MustacheEmail()
+) : MustacheEmail()
 {
     override val subject = "Welcome to Montagu"
 

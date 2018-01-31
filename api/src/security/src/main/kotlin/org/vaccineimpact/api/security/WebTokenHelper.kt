@@ -7,7 +7,6 @@ import org.vaccineimpact.api.db.Config
 import org.vaccineimpact.api.models.Result
 import org.vaccineimpact.api.models.Scope
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
-import org.vaccineimpact.api.models.permissions.ReifiedRole
 import org.vaccineimpact.api.serialization.MontaguSerializer
 import org.vaccineimpact.api.serialization.Serializer
 import java.security.KeyPair

@@ -7,11 +7,12 @@ sealed class Groups
 {
     abstract fun getGroups(db: JooqContext): Iterable<String>
 
-    data class GroupList(val groups: List<String>): Groups()
+    data class GroupList(val groups: List<String>) : Groups()
     {
         override fun getGroups(db: JooqContext) = groups
     }
-    class AllGroups: Groups()
+
+    class AllGroups : Groups()
     {
         override fun getGroups(db: JooqContext): Iterable<String>
         {

@@ -653,8 +653,7 @@ fun JooqContext.addCoverageRow(coverageSetId: Int, country: String, year: Int,
 
 private fun JooqContext.newCoverageRowRecord(coverageSetId: Int, country: String, year: Int,
                                              ageFrom: BigDecimal, ageTo: BigDecimal, ageRangeVerbatim: String?,
-                                             target: BigDecimal?, coverage: BigDecimal?)
-        = this.dsl.newRecord(COVERAGE).apply {
+                                             target: BigDecimal?, coverage: BigDecimal?) = this.dsl.newRecord(COVERAGE).apply {
     this.coverageSet = coverageSetId
     this.country = country
     this.year = year
@@ -667,8 +666,7 @@ private fun JooqContext.newCoverageRowRecord(coverageSetId: Int, country: String
 
 private fun JooqContext.newDemographicRowRecord(sourceId: Int, typeId: Int, country: String, year: Int,
                                                 ageFrom: Int, ageTo: Int, variant: Int, genderId: Int,
-                                                value: BigDecimal)
-        = this.dsl.newRecord(DEMOGRAPHIC_STATISTIC).apply {
+                                                value: BigDecimal) = this.dsl.newRecord(DEMOGRAPHIC_STATISTIC).apply {
     this.demographicSource = sourceId
     this.country = country
     this.year = year

@@ -9,6 +9,7 @@ fun Endpoint.streamed(): Endpoint
 {
     return this.copy(postProcess = ::streamIfStreamable)
 }
+
 fun streamIfStreamable(data: Any?, context: ActionContext): Any?
 {
     if (data is StreamSerializable<*>)

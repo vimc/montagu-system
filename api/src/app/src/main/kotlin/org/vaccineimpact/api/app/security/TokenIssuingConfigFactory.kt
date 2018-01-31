@@ -27,8 +27,7 @@ class TokenIssuingConfigFactory(private val repositoryFactory: RepositoryFactory
 class BasicAuthActionAdapter(repositoryFactory: RepositoryFactory, serializer: Serializer)
     : MontaguHttpActionAdapter(repositoryFactory, serializer)
 {
-    private val unauthorizedResponse: String
-            = serializer.gson.toJson(FailedAuthentication("Bad credentials"))
+    private val unauthorizedResponse: String = serializer.gson.toJson(FailedAuthentication("Bad credentials"))
 
     override fun adapt(code: Int, context: SparkWebContext): Any? = when (code)
     {

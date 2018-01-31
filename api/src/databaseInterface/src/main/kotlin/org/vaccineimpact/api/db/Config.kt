@@ -46,5 +46,5 @@ interface ConfigWrapper {
     fun getBool(key: String): Boolean
 }
 
-class MissingConfiguration(key: String): Exception("Detected a value like \${foo} for key '$key' in the configuration. This probably means that the config template has not been processed. Try running ./gradlew :PROJECT:copy[Test]Config")
-class MissingConfigurationKey(val key: String): Exception("Missing configuration key '$key'")
+class MissingConfiguration(key: String) : Exception("Detected a value like \${foo} for key '$key' in the configuration. This probably means that the config template has not been processed. Try running ./gradlew :PROJECT:copy[Test]Config")
+class MissingConfigurationKey(val key: String) : Exception("Missing configuration key '$key'")

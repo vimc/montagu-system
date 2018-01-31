@@ -16,7 +16,7 @@ fun ActionContext.checkIsAllowedToSeeTouchstone(touchstoneId: String, touchstone
     }
 }
 
-fun ActionContext.isAllowedToSeeTouchstone(touchstoneStatus: TouchstoneStatus) : Boolean
+fun ActionContext.isAllowedToSeeTouchstone(touchstoneStatus: TouchstoneStatus): Boolean
 {
     val permission = ReifiedPermission("touchstones.prepare", Scope.Global())
     if (!this.hasPermission(permission) && touchstoneStatus == TouchstoneStatus.IN_PREPARATION)

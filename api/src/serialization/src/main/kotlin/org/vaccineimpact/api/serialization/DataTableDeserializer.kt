@@ -2,10 +2,9 @@ package org.vaccineimpact.api.serialization
 
 import com.opencsv.CSVReader
 import org.vaccineimpact.api.models.ErrorInfo
-import org.vaccineimpact.api.models.helpers.FlexibleColumns
 import org.vaccineimpact.api.models.helpers.AllColumnsRequired
+import org.vaccineimpact.api.models.helpers.FlexibleColumns
 import org.vaccineimpact.api.serialization.validation.ValidationException
-import java.io.FilterReader
 import java.io.Reader
 import java.io.StringReader
 import kotlin.reflect.KClass

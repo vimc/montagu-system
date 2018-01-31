@@ -17,10 +17,12 @@ class DiseaseTests : DatabaseTest()
             it.addDisease("YF", "Yellow Fever")
         } andCheckArray {
             Assertions.assertThat(it.count()).isEqualTo(2)
-            Assertions.assertThat(it).contains(json { obj(
-                    "id" to "HepB",
-                    "name" to "Hepatitis B"
-            )})
+            Assertions.assertThat(it).contains(json {
+                obj(
+                        "id" to "HepB",
+                        "name" to "Hepatitis B"
+                )
+            })
         }
     }
 
@@ -31,10 +33,12 @@ class DiseaseTests : DatabaseTest()
             it.addDisease("HepB", "Hepatitis B")
             it.addDisease("YF", "Yellow Fever")
         } andCheck {
-            Assertions.assertThat(it).isEqualTo(json { obj(
-                    "id" to "HepB",
-                    "name" to "Hepatitis B"
-            )})
+            Assertions.assertThat(it).isEqualTo(json {
+                obj(
+                        "id" to "HepB",
+                        "name" to "Hepatitis B"
+                )
+            })
         }
     }
 }

@@ -1,9 +1,9 @@
 package org.vaccineimpact.api.app.repositories
 
 import org.jooq.Record
-import org.vaccineimpact.api.serialization.SplitData
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
 import org.vaccineimpact.api.models.*
+import org.vaccineimpact.api.serialization.SplitData
 
 interface TouchstoneRepository : Repository
 {

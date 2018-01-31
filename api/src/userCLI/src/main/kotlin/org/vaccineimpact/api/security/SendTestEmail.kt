@@ -46,8 +46,7 @@ private fun getRecipient(args: List<String>): String
 // password from the config file, and that should be retrieved
 // from the vault and put into the config file during the deployment
 // process.
-private fun getPassword()
-        = ProcessBuilder(listOf("vault", "read", "-field=value", "secret/email/password"))
+private fun getPassword() = ProcessBuilder(listOf("vault", "read", "-field=value", "secret/email/password"))
         .redirectOutput(PIPE)
         .start()
         .inputStream.bufferedReader().readText()

@@ -11,8 +11,7 @@ data class RepositoryTestConfig<TRepository : Repository>(
         val checkDatabase: ((JooqContext) -> Unit)? = null
 )
 {
-    infix fun makeTheseChanges(changeViaRepository: (TRepository) -> Unit)
-            = this.copy(changeViaRepository = changeViaRepository)
+    infix fun makeTheseChanges(changeViaRepository: (TRepository) -> Unit) = this.copy(changeViaRepository = changeViaRepository)
 
     infix fun check(checkRepository: (TRepository) -> Unit)
     {
@@ -20,8 +19,7 @@ data class RepositoryTestConfig<TRepository : Repository>(
         RepositoryTestRunner(config).run()
     }
 
-    infix fun andCheck(checkRepository: (TRepository) -> Unit)
-            = check(checkRepository)
+    infix fun andCheck(checkRepository: (TRepository) -> Unit) = check(checkRepository)
 
     infix fun andCheckDatabase(checkDatabase: (JooqContext) -> Unit)
     {

@@ -23,10 +23,12 @@ data class NewUser(
 
 fun addUser(args: List<String>)
 {
-    val user = when (args.size) {
+    val user = when (args.size)
+    {
         0 -> getInteractively()
-        4,5 -> NewUser.fromArgs(args)
-        else -> {
+        4, 5 -> NewUser.fromArgs(args)
+        else ->
+        {
             println("Usage: ./user.sh add [FULL_NAME USERNAME EMAIL PASSWORD [--if-not-exists]]")
             println("Leave off all arguments to add user interactively")
             exitProcess(0)
@@ -54,7 +56,8 @@ fun addUser(args: List<String>)
     }
 }
 
-private fun getInteractively(): NewUser {
+private fun getInteractively(): NewUser
+{
     println("Fill in the following fields to add a new user to the database:")
     val name = Question("Full name").ask()
     val username = Question("Username", default = UserHelper.suggestUsername(name)).ask()

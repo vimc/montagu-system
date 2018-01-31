@@ -77,7 +77,7 @@ fun JooqContext.createRole(name: String, scopePrefix: String?, description: Stri
 
 fun JooqContext.ensureUserHasRole(username: String, roleId: Int, scopeId: String)
 {
-   dsl.ensureUserHasRole(username, roleId, scopeId)
+    dsl.ensureUserHasRole(username, roleId, scopeId)
 }
 
 fun DSLContext.ensureUserHasRole(username: String, roleId: Int, scopeId: String)
@@ -100,7 +100,7 @@ fun DSLContext.ensureUserHasRole(username: String, roleId: Int, scopeId: String)
 
 fun JooqContext.ensureUserHasRole(username: String, role: ReifiedRole)
 {
-   this.dsl.ensureUserHasRole(username, role)
+    this.dsl.ensureUserHasRole(username, role)
 }
 
 fun DSLContext.ensureUserHasRole(username: String, role: ReifiedRole)
