@@ -153,6 +153,33 @@ class OneTimeLinkControllerTests : MontaguTests()
     }
 
     @Test
+    fun `rethrows error if redirect url query parameter is longer than 5000 chars`()
+    {
+        val longMessage = org.apache.commons.lang3.StringUtils.repeat('a', 5001)
+        val tokenHelper = mock<WebTokenHelper> {
+            on(it.encodeResult(argThat { status == ResultStatus.FAILURE })) doReturn longMessage
+            on (it.verify(any())) doReturn claimsWithRedirectUrl
+        }
+        val mockErrorHandler = mock<ErrorHandler> {
+            on { logExceptionAndReturnMontaguError(any(), any()) } doReturn
+                    UnexpectedError.new(Exception(longMessage))
+        }
+        val mockOneTimeLinkResolver = mock<OnetimeLinkResolver> {
+            on { perform(any(), any()) } doThrow Exception()
+        }
+        val fakeContext = actionContext()
+
+        val controller = makeController(
+                context = fakeContext,
+                tokenHelper = tokenHelper,
+                errorHandler = mockErrorHandler,
+                onetimeLinkResolver = mockOneTimeLinkResolver
+        )
+
+        assertThatThrownBy { controller.onetimeLink() }
+    }
+
+    @Test
     fun `logs error if redirect url query parameter exists`()
     {
         val mockErrorHandler = mock<ErrorHandler> {
