@@ -13,8 +13,9 @@ fun Request.consumeRemainder()
     if (inputStream != null)
     {
         val buffer = ByteArray(8096)
-        while (inputStream.read(buffer) > 0)
+        while (!inputStream.isFinished)
         {
+            inputStream.read(buffer)
             //keep going
         }
     }
