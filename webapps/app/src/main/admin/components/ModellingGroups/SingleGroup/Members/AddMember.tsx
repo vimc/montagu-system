@@ -23,7 +23,9 @@ export class AddMember extends React.Component<Props, State> {
     }
 
     componentWillReceiveProps(props: Props) {
-        const options = props.users.filter(x => props.members.indexOf(x.username) == -1);
+        const options = props.users
+            .filter(x => props.members.indexOf(x.username) == -1)
+            .sort((a, b) => a.username.localeCompare(b.username));
         const firstUser = options.length > 0 ? options[0].username : "";
 
         this.setState({
