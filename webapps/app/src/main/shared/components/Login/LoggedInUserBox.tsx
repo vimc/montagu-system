@@ -1,11 +1,19 @@
 import * as React from "react";
+import { Dispatch } from "redux";
+
 import { authActions } from "../../actions/authActions";
 import { InternalLink } from "../InternalLink";
 import { connect } from "react-redux";
+import { AuthState } from "../../reducers/authReducer";
 
 import "./Logout.scss";
 
-export class LoggedInUserBoxComponent extends React.Component<any, undefined> {
+interface LoggedInUserBoxProps {
+    auth: AuthState;
+    dispatch: Dispatch<any>;
+}
+
+export class LoggedInUserBoxComponent extends React.Component<LoggedInUserBoxProps, undefined> {
     constructor() {
         super();
         this.logout = this.logout.bind(this);

@@ -1,7 +1,9 @@
 import * as React from "react";
-import { reduxForm, Field } from 'redux-form';
-import { connect } from 'react-redux';
-import { compose } from 'recompose';
+import { reduxForm, Field } from "redux-form";
+import { connect } from "react-redux";
+import { compose } from "recompose";
+import { Dispatch } from "redux";
+
 import { InternalLink } from "../InternalLink";
 import { ValidationError } from "./ValidationError";
 import { validations } from "../../modules/ReduxForm";
@@ -10,7 +12,7 @@ import { authActions } from "../../actions/authActions";
 export interface LoginFormProps {
     handleSubmit: (F: any) => any;
     errorMessage?: string;
-    dispatch: any;
+    dispatch: Dispatch<any>;
 }
 
 export class LoginFormView extends React.Component<LoginFormProps, undefined> {

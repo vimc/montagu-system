@@ -15,7 +15,7 @@ export interface ReportingAppProps {
 
 export class ReportingAppComponent extends React.Component<any, undefined> {
     static getStores() {
-        return [ notificationStore/*, reportingAuthStore */ ];
+        return [ notificationStore ];
     }
     static getPropsFromStores(): ReportingAppProps {
         return {
