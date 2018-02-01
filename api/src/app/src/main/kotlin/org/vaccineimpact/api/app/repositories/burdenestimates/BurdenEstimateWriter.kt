@@ -62,7 +62,7 @@ abstract class BurdenEstimateWriter(
                     }
                     finally
                     {
-                        // Wait for the worker thread to finished
+                        // Wait for the worker thread to finish
                         writeToDatabaseThread.join()
                     }
                 }
