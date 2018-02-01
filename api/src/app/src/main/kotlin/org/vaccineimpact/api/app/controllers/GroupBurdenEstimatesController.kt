@@ -39,7 +39,7 @@ open class GroupBurdenEstimatesController(
                 uploader = context.username!!,
                 timestamp = Instant.now())
 
-        val url = "/modelling-groups/${path.groupId}/responsibilities/${path.touchstoneId}/${path.scenarioId}/estimates/$id/"
+        val url = "/modelling-groups/${path.groupId}/responsibilities/${path.touchstoneId}/${path.scenarioId}/estimate-sets/$id/"
         return objectCreation(context, url)
     }
 

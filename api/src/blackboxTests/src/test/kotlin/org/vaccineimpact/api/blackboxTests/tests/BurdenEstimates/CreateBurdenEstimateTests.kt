@@ -95,7 +95,7 @@ class CreateBurdenEstimateTests : BurdenEstimateTests()
     }
 
     private val createdSetLocation = LocationConstraint(
-            "/modelling-groups/group-1/responsibilities/touchstone-1/scenario-1/estimates/", unknownId = true
+            "/modelling-groups/group-1/responsibilities/touchstone-1/scenario-1/estimate-sets/", unknownId = true
     )
 
     private fun metadataForCreate() = json {
