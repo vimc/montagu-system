@@ -46,20 +46,25 @@ abstract class BurdenEstimateWriter(
                     val inputStream = PipedInputStream(stream).buffered()
                     val writeToDatabaseThread = writeStreamToDatabase(inputStream, writeDatabaseDSL)
 
-                    // In the main thread, write to piped stream, blocking if we get too far ahead of
-                    // the other thread ("too far ahead" meaning the buffer on the input stream is full)
-                    writeCopyData(
-                            outcomeLookup,
-                            countries,
-                            modelRuns,
-                            modelRunParameterId,
-                            stream,
-                            estimates,
-                            expectedDisease,
-                            setId)
-
-                    // Wait for the worker thread to finished
-                    writeToDatabaseThread.join()
+                    try
+                    {
+                        // In the main thread, write to piped stream, blocking if we get too far ahead of
+                        // the other thread ("too far ahead" meaning the buffer on the input stream is full)
+                        writeCopyData(
+                                outcomeLookup,
+                                countries,
+                                modelRuns,
+                                modelRunParameterId,
+                                stream,
+                                estimates,
+                                expectedDisease,
+                                setId)
+                    }
+                    finally
+                    {
+                        // Wait for the worker thread to finished
+                        writeToDatabaseThread.join()
+                    }
                 }
             }
         }
