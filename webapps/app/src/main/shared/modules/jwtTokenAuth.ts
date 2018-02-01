@@ -2,7 +2,7 @@ import {parseRole, Role} from "../models/Roles";
 
 const jwt_decode = require('jwt-decode');
 
-export interface DecodedInfoFromToken {
+export interface DecodedDataFromToken {
     permissions: string;
     roles: string;
     sub: string;
@@ -19,7 +19,7 @@ export function isExpired(expireTime: number) {
     return false;
 }
 
-export function decodeToken(token: string ): DecodedInfoFromToken {
+export function decodeToken(token: string ): DecodedDataFromToken {
     try {
         return jwt_decode(token);
     } catch (e) {
@@ -28,7 +28,7 @@ export function decodeToken(token: string ): DecodedInfoFromToken {
     }
 }
 
-export function emptyToken(): DecodedInfoFromToken {
+export function emptyToken(): DecodedDataFromToken {
     return {
         permissions: "",
         roles: "",
@@ -47,7 +47,7 @@ export function parseModellingGroups(roles: string) {
 
 
 export function getDataFromToken(token: string) {
-    const decoded: DecodedInfoFromToken = decodeToken(token);
+    const decoded: DecodedDataFromToken = decodeToken(token);
     const permissions = decoded.permissions.split(",").filter(x => x.length > 0);
     const modellingGroups = parseModellingGroups(decoded.roles);
     return {

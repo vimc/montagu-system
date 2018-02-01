@@ -2,24 +2,26 @@ import { Dispatch } from "redux";
 import { AxiosError, AxiosResponse } from "axios";
 
 import { AuthenticationError, TypeKeys } from "../actionTypes/AuthTypes";
-import {decodeToken, isExpired, getDataFromToken} from "../modules/JwtTokenAuth";
+import { decodeToken, isExpired, getDataFromToken } from "../modules/JwtTokenAuth";
 import { authService } from "../services/AuthService";
-import {notificationActions} from "./NotificationActions";
+import { notificationActions } from "./NotificationActions";
 import { appSettings, settings } from "../Settings";
 import { appName } from 'appName';
 import { mainStore as contribMainStore } from "../../contrib/stores/MainStore";
+import { DecodedDataFromToken } from "../modules/jwtTokenAuth";
+import { AuthState } from "../reducers/authReducer";
+import { makeNotification, Notification } from "../actions/NotificationActions";
 
 export const authActions = {
 
     logIn(email: string, password: string) {
-        return (dispatch: Dispatch<any>) => {
-            authService().logIn(email, password)
-                .then((response: AxiosResponse) => {
-                    dispatch(this.tokenReceived(response.data.access_token));
-                })
-                .catch((response: AxiosError) => {
-                    dispatch(this.authenticationError(response.response.data.error));
-                })
+        return async (dispatch: Dispatch<any>) => {
+            try {
+                const response = await authService().logIn(email, password)
+                dispatch(this.tokenReceived(response.data.access_token));
+            } catch(e) {
+                dispatch(this.authenticationError(e.response.data.error));
+            }
         }
     },
 
@@ -28,7 +30,7 @@ export const authActions = {
             if (typeof(Storage) !== "undefined") {
                 const token = localStorage.getItem("accessToken");
                 if (token) {
-                    const decoded = decodeToken(token);
+                    const decoded: DecodedDataFromToken = decodeToken(token);
                     if (isExpired(decoded.exp)) {
                         console.log("Token is expired");
                         localStorage.removeItem("accessToken");
@@ -42,7 +44,7 @@ export const authActions = {
         }
     },
 
-    validateAutResult(user: any) {
+    validateAuthResult(user: any)  {
         if (!user.isAccountActive) {
             return this.makeNotificationError("Your account has been deactivated");
         }
@@ -51,17 +53,16 @@ export const authActions = {
         }
     },
 
-    makeNotificationError(error: string) {
+    makeNotificationError(error: string) :Notification {
         if (!error) return null;
         const support = settings.supportContact;
-        return {message: `${error}. Please contact ${support} for help.`, type: "error"};
+        return makeNotification(`${error}. Please contact ${support} for help.`, "error")
     },
 
     tokenReceived(token: string) {
         return (dispatch: Dispatch<any>, getState: any) => {
-            const user = getDataFromToken(token);
-            console.log("sett", appSettings, appName)
-            const error: any = this.validateAutResult(user);
+            const user: AuthState = getDataFromToken(token);
+            const error: Notification = this.validateAuthResult(user);
             if (!error) {
                 if (typeof(Storage) !== "undefined") {
                     localStorage.setItem("accessToken", token);
@@ -80,10 +81,12 @@ export const authActions = {
         }
     },
 
-    authenticationError: (error: string): AuthenticationError => ({
-        type: TypeKeys.AUTHENTICATION_ERROR,
-        error: error ? "Your username or password is incorrect" : "An error occurred logging in",
-    }),
+    authenticationError(error: string) {
+        return {
+            type: TypeKeys.AUTHENTICATION_ERROR,
+            error: error ? "Your username or password is incorrect" : "An error occurred logging in",
+        };
+    },
 
     logOut() {
         return (dispatch: Dispatch<any>, getState: any) => {
