@@ -82,12 +82,12 @@ abstract class BurdenEstimateWriter(
                               expectedDisease: String, setId: Int
     )
     {
-        val cohortSizeId = outcomeLookup["cohort_size"]
-                ?: throw DatabaseContentsError("Expected a value with code 'cohort_size' in burden_outcome table")
-
         // When we exit the 'use' block the EOF character will be written out,
         // signalling to the other thread that we are done.
         PostgresCopyWriter(stream).use { writer ->
+            val cohortSizeId = outcomeLookup["cohort_size"]
+                    ?: throw DatabaseContentsError("Expected a value with code 'cohort_size' in burden_outcome table")
+
             for (estimate in estimates)
             {
                 if (estimate.disease != expectedDisease)
