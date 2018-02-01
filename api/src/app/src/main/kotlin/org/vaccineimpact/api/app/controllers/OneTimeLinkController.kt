@@ -98,6 +98,8 @@ class OneTimeLinkController(
     {
         val encodedResult = tokenHelper.encodeResult(result)
         context.request.consumeRemainder()
+        // it is recommended to keep urls under 2000 characters
+        // https://stackoverflow.com/questions/417142/what-is-the-maximum-length-of-a-url-in-different-browsers/417184#417184
         if (encodedResult.length > 1900 && exception != null)
             throw exception
 
