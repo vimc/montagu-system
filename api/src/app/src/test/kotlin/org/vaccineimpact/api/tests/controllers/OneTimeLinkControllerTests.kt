@@ -153,9 +153,9 @@ class OneTimeLinkControllerTests : MontaguTests()
     }
 
     @Test
-    fun `rethrows error if redirect url query parameter is longer than 5000 chars`()
+    fun `rethrows error if redirect url query parameter is longer than 1900 chars`()
     {
-        val longMessage = org.apache.commons.lang3.StringUtils.repeat('a', 2000)
+        val longMessage = org.apache.commons.lang3.StringUtils.repeat('a', 1901)
         val tokenHelper = mock<WebTokenHelper> {
             on(it.encodeResult(argThat { status == ResultStatus.FAILURE })) doReturn longMessage
             on (it.verify(any())) doReturn claimsWithRedirectUrl
