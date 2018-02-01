@@ -2,25 +2,28 @@ import { Dispatch } from "redux";
 import { AxiosError, AxiosResponse } from "axios";
 
 import { AuthenticationError, TypeKeys } from "../actionTypes/AuthTypes";
-import { decodeToken, Token, isExpired, parseModellingGroups } from "../modules/JwtToken";
-import { AuthService } from "../services/AuthService";
+import {decodeToken, isExpired, getDataFromToken} from "../modules/JwtToken";
+import { authService } from "../services/AuthService";
+import {notificationActions} from "./NotificationActions";
+import { appSettings, settings } from "../Settings";
+import { appName } from 'appName';
+import { mainStore as contribMainStore } from "../../contrib/stores/MainStore";
 
-export const AuthActions = {
+export const authActions = {
 
     logIn(email: string, password: string) {
-        return (dispatch: any) => {
-            AuthService().logIn(email, password)
+        return (dispatch: Dispatch<any>) => {
+            authService().logIn(email, password)
                 .then((response: AxiosResponse) => {
-                    dispatch(this.authenticated(response.data.access_token));
+                    dispatch(this.tokenReceived(response.data.access_token));
                 })
-                .catch((error: AxiosError) => {
-                    dispatch(this.authenticationError(error))
+                .catch((response: AxiosError) => {
+                    dispatch(this.authenticationError(response.response.data.error));
                 })
         }
     },
 
-
-    loadToken() {
+    loadSavedToken() {
         return (dispatch: Dispatch<any>) => {
             if (typeof(Storage) !== "undefined") {
                 const token = localStorage.getItem("accessToken");
@@ -32,55 +35,65 @@ export const AuthActions = {
                         dispatch(this.logOut())
                     } else {
                         console.log("Found unexpired access token in local storage, so we're already logged in");
-                        dispatch(this.authenticated(token));
+                        dispatch(this.tokenReceived(token));
                     }
                 }
             }
         }
     },
 
-    authenticated(token: string) {
-        return  (dispatch: Dispatch<any>, getState: any) => {
-            const decoded: Token = decodeToken(token);
-            const permissions = decoded.permissions.split(",").filter(x => x.length > 0);
-            // console.log("roles",decoded.roles)
-            const modellingGroups = parseModellingGroups(decoded.roles)
+    validateAutResult(user: any) {
+        if (!user.isAccountActive) {
+            return this.makeNotificationError("Your account has been deactivated");
+        }
+        if (appSettings.requiresModellingGroupMembership && (!user.modellingGroups || !user.modellingGroups.length)) {
+            return this.makeNotificationError( "Only members of modelling groups can log into the contribution portal");
+        }
+    },
 
-            if (typeof(Storage) !== "undefined") {
-                localStorage.setItem("accessToken", token);
+    makeNotificationError(error: string) {
+        if (!error) return null;
+        const support = settings.supportContact;
+        return {message: `${error}. Please contact ${support} for help.`, type: "error"};
+    },
+
+    tokenReceived(token: string) {
+        return (dispatch: Dispatch<any>, getState: any) => {
+            const user = getDataFromToken(token);
+            console.log("sett", appSettings, appName)
+            const error: any = this.validateAutResult(user);
+            if (!error) {
+                if (typeof(Storage) !== "undefined") {
+                    localStorage.setItem("accessToken", token);
+                }
+                dispatch({
+                    type: TypeKeys.AUTHENTICATED,
+                    data: user,
+                });
+                authService(getState).authToShiny();
+                if (appName === "contrib") {
+                    contribMainStore.load();
+                }
+            } else {
+                notificationActions.notify(error);
             }
-            dispatch({
-                type: TypeKeys.AUTHENTICATED,
-                data: {
-                    loggedIn: true,
-                    bearerToken: token,
-                    username: decoded.sub,
-                    permissions,
-                    modellingGroups
-                },
-            });
-
-            AuthService(getState().auth.bearerToken).authToShiny();
         }
     },
 
-    authenticationError(error: AxiosError): AuthenticationError {
-        return {
-            type: TypeKeys.AUTHENTICATION_ERROR,
-            error: error.response.data.error ? "Your username or password is incorrect" : "An error occurred logging in",
-        }
-    },
+    authenticationError: (error: string): AuthenticationError => ({
+        type: TypeKeys.AUTHENTICATION_ERROR,
+        error: error ? "Your username or password is incorrect" : "An error occurred logging in",
+    }),
 
     logOut() {
         return (dispatch: Dispatch<any>, getState: any) => {
             if (typeof(Storage) !== "undefined") {
                 localStorage.clear();
             }
-            AuthService(getState().auth.bearerToken).authToShiny();
+            authService(getState).authToShiny();
             dispatch({
                 type: TypeKeys.UNAUTHENTICATED,
             });
         }
     }
-
 };

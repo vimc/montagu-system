@@ -1,7 +1,7 @@
 import { localApiRequest } from "./LocalApiRequest"
 // import { AxiosResponse, AxiosError } from "axios";
 
-export function AuthService(token?: string) {
+export function authService(getState?: any) {
     return {
 
         logIn(email: string, password: string) {
@@ -13,7 +13,7 @@ export function AuthService(token?: string) {
 
         authToShiny() {
             return localApiRequest({
-                Authorization: 'Bearer ' + token,
+                Authorization: 'Bearer ' + getState().auth.bearerToken,
                 withCredentials: true
 
             })
@@ -22,7 +22,7 @@ export function AuthService(token?: string) {
 
         unauthFromShiny() {
             return localApiRequest({
-                Authorization: 'Bearer ' + token,
+                Authorization: 'Bearer ' + getState().auth.bearerToken,
                 withCredentials: true
 
             })

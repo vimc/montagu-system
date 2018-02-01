@@ -5,7 +5,7 @@ import { compose } from 'recompose';
 import { InternalLink } from "../InternalLink";
 import { ValidationError } from "./ValidationError";
 import { validations } from "../../modules/ReduxForm";
-import { AuthActions } from "../../actions/AuthActions";
+import { authActions } from "../../actions/authActions";
 
 export interface LoginFormProps {
     handleSubmit: (F: any) => any;
@@ -20,7 +20,7 @@ export class LoginFormView extends React.Component<LoginFormProps, undefined> {
     }
 
     submit(values: any) {
-        this.props.dispatch(AuthActions.logIn(values.email, values.password))
+        this.props.dispatch(authActions.logIn(values.email, values.password))
     }
 
     renderField(data: any) {

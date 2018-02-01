@@ -1,13 +1,12 @@
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 
-import reducers from '../reducers/Reducers';
-import { authService } from '../../shared/services/AuthService';
+import reducers from '../reducers/reducers';
 
 export function createAdminStore() {
     return createStore(
         reducers,
-        applyMiddleware(thunk, authService),
+        applyMiddleware(thunk),
     );
 }
 

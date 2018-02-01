@@ -2,7 +2,7 @@ import {parseRole, Role} from "../models/Roles";
 
 const jwt_decode = require('jwt-decode');
 
-export interface Token {
+export interface DecodedInfoFromToken {
     permissions: string;
     roles: string;
     sub: string;
@@ -19,15 +19,7 @@ export function isExpired(expireTime: number) {
     return false;
 }
 
-export function parseModellingGroups(roles: string) {
-    return roles
-        .split(",")
-        .map((x: string) => parseRole(x))
-        .filter((x: Role) => x.name == "member" && x.scope.prefix == "modelling-group")
-        .map((x: Role) => x.scope.id);
-}
-
-export function decodeToken(token: string ): Token {
+export function decodeToken(token: string ): DecodedInfoFromToken {
     try {
         return jwt_decode(token);
     } catch (e) {
@@ -36,11 +28,35 @@ export function decodeToken(token: string ): Token {
     }
 }
 
-export function emptyToken(): Token {
+export function emptyToken(): DecodedInfoFromToken {
     return {
         permissions: "",
         roles: "",
         sub: null,
         exp: null
     };
+}
+
+export function parseModellingGroups(roles: string) {
+    return roles
+        .split(",")
+        .map((x: string) => parseRole(x))
+        .filter((x: Role) => x.name == "member" && x.scope.prefix == "modelling-group")
+        .map((x: Role) => x.scope.id);
+}
+
+
+export function getDataFromToken(token: string) {
+    const decoded: DecodedInfoFromToken = decodeToken(token);
+    const permissions = decoded.permissions.split(",").filter(x => x.length > 0);
+    const modellingGroups = parseModellingGroups(decoded.roles);
+    return {
+        loggedIn: true,
+        bearerToken: token,
+        isAccountActive: permissions.some((x: string) => x == "*/can-login"),
+        isModeller: modellingGroups.length > 0,
+        username: decoded.sub,
+        permissions,
+        modellingGroups,
+    }
 }

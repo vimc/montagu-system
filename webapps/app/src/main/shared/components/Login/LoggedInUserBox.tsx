@@ -1,5 +1,5 @@
 import * as React from "react";
-import { AuthActions } from "../../actions/AuthActions";
+import { authActions } from "../../actions/authActions";
 import { InternalLink } from "../InternalLink";
 import { connect } from "react-redux";
 
@@ -12,7 +12,7 @@ export class LoggedInUserBoxComponent extends React.Component<any, undefined> {
     }
 
     logout(e: React.MouseEvent<HTMLAnchorElement>) {
-        this.props.dispatch(AuthActions.logOut());
+        this.props.dispatch(authActions.logOut());
     }
 
     render() :JSX.Element {

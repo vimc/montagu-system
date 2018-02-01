@@ -3,10 +3,9 @@ import * as ReactDOM from "react-dom";
 import { AdminApp } from "./components/AdminApp";
 import fetcher from "../shared/sources/Fetcher";
 import { AdminFetcher } from "./sources/AdminFetcher";
-// import { adminAuthStore } from "./stores/AdminAuthStore";
 import { Provider } from "react-redux";
 import { createAdminStore } from "./stores/createAdminStore";
-import { AuthActions } from "../shared/actions/AuthActions"
+import { authActions } from "../shared/actions/AuthActions"
 
 
 import './index.html';
@@ -17,7 +16,7 @@ import '../shared/styles/common.scss';
 
 fetcher.fetcher = new AdminFetcher();
 const store = createAdminStore();
-store.dispatch(AuthActions.loadToken())
+store.dispatch(authActions.loadSavedToken())
 
 ReactDOM.render(
     <Provider store={store}>
