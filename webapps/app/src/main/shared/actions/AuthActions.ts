@@ -2,7 +2,7 @@ import { Dispatch } from "redux";
 import { AxiosError, AxiosResponse } from "axios";
 
 import { AuthenticationError, TypeKeys } from "../actionTypes/AuthTypes";
-import {decodeToken, isExpired, getDataFromToken} from "../modules/JwtToken";
+import {decodeToken, isExpired, getDataFromToken} from "../modules/JwtTokenAuth";
 import { authService } from "../services/AuthService";
 import {notificationActions} from "./NotificationActions";
 import { appSettings, settings } from "../Settings";

@@ -6,12 +6,13 @@ import { GroupList } from "./GroupList";
 import { ButtonLink } from "../../../shared/components/ButtonLink";
 import { ModellingGroupsActions } from "../../actions/ModellingGroupsActions";
 import { LoadingElement } from "../../../shared/partials/LoadingElement/LoadingElement";
+// import { GlobalState } from "../../reducers/reducers";
 
 import "../../../shared/styles/common.scss";
 
 export interface ChooseGroupProps {
     groups: ModellingGroup[];
-    dispatch?: any;
+    dispatch: any;
     ready: boolean;
 }
 

@@ -1,12 +1,11 @@
 import { localApiRequest } from "../../shared/services/LocalApiRequest"
-// import { AxiosResponse, AxiosError } from "axios";
 
-export function ModellingGroupsService(token?: string) {
+export function modellingGroupsService(getState: Function) {
     return {
 
         getGroups() {
             return localApiRequest({
-                Authorization: 'Bearer ' + token,
+                Authorization: 'Bearer ' + getState().auth.bearerToken,
             })
                 .get("/modelling-groups/")
         },

@@ -1,24 +1,17 @@
-// import { ActionsTypes, TypeKeys } from "../actionTypes/AuthTypes";
+import { ActionsTypes, TypeKeys } from "../actionTypes/ModellingGroupsTypes";
+import { ModellingGroup } from "../../shared/models/Generated";
 
-// export interface AuthState {
-//     loggedIn: boolean;
-//     username: string;
-//     bearerToken: string;
-//     permissions: string[];
-//     modellingGroups?: any;
-// }
-//
-// const initialState: AuthState = {
-//     bearerToken: null,
-//     loggedIn: false,
-//     username: null,
-//     permissions: []
-// };
+export interface ModellingGroupsState {
+    items: ModellingGroup[];
+}
 
-export const modellingGroupsReducer = (state = {}, action: any) => {
+const initialState: ModellingGroupsState = {
+    items: []
+};
+
+export const modellingGroupsReducer = (state = initialState, action: ActionsTypes) => {
     switch (action.type) {
-        case "GROUPS_FETCHED":
-            console.log('gr f', action.data)
+        case TypeKeys.GROUPS_FETCHED:
             return { items: action.data };
         default:
             return state;

@@ -6,13 +6,17 @@ export interface AuthState {
     bearerToken: string;
     permissions: string[];
     modellingGroups?: any;
+    isAccountActive: boolean;
+    isModeller: boolean;
 }
 
 const initialState: AuthState = {
     bearerToken: null,
     loggedIn: false,
     username: null,
-    permissions: []
+    permissions: [],
+    isAccountActive: false,
+    isModeller: false
 };
 
 export const authReducer = (state = initialState, action: ActionsTypes) => {
