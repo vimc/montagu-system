@@ -1,7 +1,6 @@
 package org.vaccineimpact.api.app.app_start.route_config
 
 import org.vaccineimpact.api.app.app_start.Endpoint
-import org.vaccineimpact.api.app.app_start.json
 import org.vaccineimpact.api.app.app_start.secure
 import org.vaccineimpact.api.app.controllers.OneTimeLinkController
 import spark.route.HttpMethod

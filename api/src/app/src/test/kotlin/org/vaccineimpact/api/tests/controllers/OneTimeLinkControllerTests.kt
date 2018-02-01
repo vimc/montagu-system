@@ -5,7 +5,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
 import org.pac4j.core.profile.CommonProfile
-import org.pac4j.core.profile.UserProfile
 import org.vaccineimpact.api.app.ErrorHandler
 import org.vaccineimpact.api.app.OnetimeLinkResolver
 import org.vaccineimpact.api.app.RedirectValidator
@@ -161,7 +160,7 @@ class OneTimeLinkControllerTests : MontaguTests()
         val longMessage = org.apache.commons.lang3.StringUtils.repeat('a', 1901)
         val tokenHelper = mock<WebTokenHelper> {
             on(it.encodeResult(argThat { status == ResultStatus.FAILURE })) doReturn longMessage
-            on (it.verify(any())) doReturn claimsWithRedirectUrl
+            on(it.verify(any())) doReturn claimsWithRedirectUrl
         }
         val mockErrorHandler = mock<ErrorHandler> {
             on { logExceptionAndReturnMontaguError(any(), any()) } doReturn
