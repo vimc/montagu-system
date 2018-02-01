@@ -1,15 +1,15 @@
 package org.vaccineimpact.api.app.controllers
 
-import org.apache.commons.lang3.StringUtils
 import org.slf4j.LoggerFactory
 import org.vaccineimpact.api.app.*
 import org.vaccineimpact.api.app.app_start.Controller
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.errors.InvalidOneTimeLinkToken
+import org.vaccineimpact.api.app.errors.MissingRequiredParameterError
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.TokenRepository
 import org.vaccineimpact.api.app.security.OneTimeTokenGenerator
-import org.vaccineimpact.api.models.ErrorInfo
+import org.vaccineimpact.api.app.security.montaguPermissions
 import org.vaccineimpact.api.models.Result
 import org.vaccineimpact.api.models.ResultStatus
 import org.vaccineimpact.api.models.helpers.OneTimeAction
@@ -66,6 +66,13 @@ class OneTimeLinkController(
                 redirectWithResult(context, error.asResult(), redirectUrl, e)
             }
         }
+    }
+
+    fun getToken(): String
+    {
+        val url = context.queryParams("url") ?: throw MissingRequiredParameterError("url")
+        val profile = context.userProfile!!
+        return oneTimeTokenGenerator.getNewStyleOneTimeLinkToken(url, profile)
     }
 
     fun getTokenForDemographicData(): String

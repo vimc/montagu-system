@@ -24,6 +24,7 @@ import org.vaccineimpact.api.test_helpers.DatabaseCreationHelper
         ModellingGroupTests::class,
         ModelRunParameterTests::class,
         ModelTests::class,
+        OneTimeTokenTests::class,
         PasswordTests::class,
         PopulateBurdenEstimateTests::class,
         ResponsibilityTests::class,

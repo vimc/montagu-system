@@ -4,6 +4,8 @@ import com.nhaarman.mockito_kotlin.*
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
+import org.pac4j.core.profile.CommonProfile
+import org.pac4j.core.profile.UserProfile
 import org.vaccineimpact.api.app.ErrorHandler
 import org.vaccineimpact.api.app.OnetimeLinkResolver
 import org.vaccineimpact.api.app.RedirectValidator
@@ -11,6 +13,7 @@ import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.controllers.OneTimeLinkController
 import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.errors.InvalidOneTimeLinkToken
+import org.vaccineimpact.api.app.errors.MissingRequiredParameterError
 import org.vaccineimpact.api.app.errors.UnexpectedError
 import org.vaccineimpact.api.app.repositories.TokenRepository
 import org.vaccineimpact.api.app.security.OneTimeTokenGenerator
@@ -218,6 +221,34 @@ class OneTimeLinkControllerTests : MontaguTests()
 
         // Expectations
         verify(tokenGenerator).getOneTimeLinkToken(OneTimeAction.DEMOGRAPHY, context)
+    }
+
+    @Test
+    fun `can get new style token`()
+    {
+        val profile = mock<CommonProfile>()
+        val context = mock<ActionContext> {
+            on { queryParams("url") } doReturn "/some/url/"
+            on { userProfile } doReturn profile
+        }
+        val generator = mock<OneTimeTokenGenerator> {
+            on { getNewStyleOneTimeLinkToken(any(), any()) } doReturn "TOKEN"
+        }
+        val controller = OneTimeLinkController(context, mock(), generator, mock())
+        assertThat(controller.getToken()).isEqualTo("TOKEN")
+        verify(generator).getNewStyleOneTimeLinkToken("/some/url/", profile)
+    }
+
+    @Test
+    fun `error is thrown if url is not provided when getting new style token`()
+    {
+        val context = mock<ActionContext> {
+            on { queryParams("url") } doReturn (null as String?)
+        }
+        val controller = OneTimeLinkController(context, mock(), mock(), mock())
+        assertThatThrownBy {
+            controller.getToken()
+        }.isInstanceOf(MissingRequiredParameterError::class.java)
     }
 
     private fun tokenGenerator() = mock<OneTimeTokenGenerator> {

@@ -1,8 +1,9 @@
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.vaccineimpact.api.security.SodiumPasswordEncoder
+import org.vaccineimpact.api.test_helpers.MontaguTests
 
-class SodiumTests
+class SodiumTests : MontaguTests()
 {
     @Test
     fun `same password that was hashed verifies`()
