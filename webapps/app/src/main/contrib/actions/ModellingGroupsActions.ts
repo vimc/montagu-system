@@ -1,5 +1,5 @@
 import { Dispatch } from "redux";
-import { AxiosError, AxiosResponse } from "axios";
+import { AxiosResponse } from "axios";
 
 import { modellingGroupsService } from "../services/modellingGroupsService";
 
@@ -8,7 +8,7 @@ export const ModellingGroupsActions = {
     getGroups() {
         return async (dispatch: Dispatch<any>, getState: Function) => {
             try {
-                const response = await modellingGroupsService(getState).getGroups()
+                const response: AxiosResponse = await modellingGroupsService(getState).getGroups()
                 const userGroups = getState().auth.modellingGroups;
                 const groups = response.data.data.filter((item: any) => userGroups.indexOf(item.id) > -1)
                 dispatch({

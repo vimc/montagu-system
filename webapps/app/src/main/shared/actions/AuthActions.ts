@@ -11,6 +11,7 @@ import { mainStore as contribMainStore } from "../../contrib/stores/MainStore";
 import { DecodedDataFromToken } from "../modules/jwtTokenAuth";
 import { AuthState } from "../reducers/authReducer";
 import { makeNotification, Notification } from "../actions/NotificationActions";
+import { localStorageHandler } from "../services/localStorageHandler";
 
 export const authActions = {
 
@@ -27,18 +28,16 @@ export const authActions = {
 
     loadSavedToken() {
         return (dispatch: Dispatch<any>) => {
-            if (typeof(Storage) !== "undefined") {
-                const token = localStorage.getItem("accessToken");
-                if (token) {
-                    const decoded: DecodedDataFromToken = decodeToken(token);
-                    if (isExpired(decoded.exp)) {
-                        console.log("Token is expired");
-                        localStorage.removeItem("accessToken");
-                        dispatch(this.logOut())
-                    } else {
-                        console.log("Found unexpired access token in local storage, so we're already logged in");
-                        dispatch(this.tokenReceived(token));
-                    }
+            const token = localStorageHandler.get("accessToken");
+            if (token) {
+                const decoded: DecodedDataFromToken = decodeToken(token);
+                if (isExpired(decoded.exp)) {
+                    console.log("Token is expired");
+                    localStorageHandler.remove("accessToken");
+                    dispatch(this.logOut())
+                } else {
+                    console.log("Found unexpired access token in local storage, so we're already logged in");
+                    dispatch(this.tokenReceived(token));
                 }
             }
         }
@@ -64,9 +63,7 @@ export const authActions = {
             const user: AuthState = getDataFromToken(token);
             const error: Notification = this.validateAuthResult(user);
             if (!error) {
-                if (typeof(Storage) !== "undefined") {
-                    localStorage.setItem("accessToken", token);
-                }
+                localStorageHandler.set("accessToken", token);
                 dispatch({
                     type: TypeKeys.AUTHENTICATED,
                     data: user,
