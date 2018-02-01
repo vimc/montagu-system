@@ -10,8 +10,6 @@ import { GroupMembersSummary } from "./GroupMembersSummary";
 import { userStore } from "../../../../stores/UserStore";
 
 import "../../../../../shared/styles/common.scss";
-// import {AdminAppAltWrapped} from "../../../AdminApp";
-// import {adminAuthStore} from "../../../../stores/AdminAuthStore";
 
 interface Props extends RemoteContent {
     group: ModellingGroupDetails;
@@ -30,7 +28,6 @@ class ModellingGroupDetailsContentComponent extends RemoteContentComponent<Props
             group: group,
             users: users.users,
             ready: group != null && users.ready,
-            // canManageGroupMembers: adminAuthStore.hasPermission("*/modelling-groups.manage-members")
         };
     }
 

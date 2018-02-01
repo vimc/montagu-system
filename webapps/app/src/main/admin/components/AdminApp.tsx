@@ -5,9 +5,7 @@ import { notificationStore } from "../../shared/stores/NotificationStore";
 import { connectToStores } from "../../shared/alt";
 import { ErrorLog } from "../../shared/components/ErrorLog/ErrorLog";
 import { AdminRouter } from "./AdminRouter";
-// import { adminAuthStore } from "../stores/AdminAuthStore";
 import { NotificationArea } from "../../shared/components/NotificationArea/NotificationArea";
-// import {ReportingAppAltWrapped} from "../../report/components/ReportingApp";
 
 export interface AdminAppProps {
     errors: string[];

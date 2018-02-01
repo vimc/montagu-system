@@ -9,7 +9,6 @@ import { connectToStores } from "../../../../../shared/alt";
 import { userStore } from "../../../../stores/UserStore";
 import { ListOfUsers } from "../../ListOfUsers";
 import { AddMember } from "./AddMember";
-// import { adminAuthStore } from "../../../../stores/AdminAuthStore";
 
 import "../../../../../shared/styles/common.scss";
 
@@ -29,7 +28,6 @@ export class GroupMembersContentComponent extends RemoteContentComponent<Props, 
         const group = groupStore.getCurrentGroupDetails();
         const allUsers = userStore.getState().users;
         const members = groupStore.getCurrentGroupMembers();
-        // const canManageGroupMembers = adminAuthStore.hasPermission("*/modelling-groups.manage-members");
 
         if (group != null) {
             return {
@@ -37,7 +35,6 @@ export class GroupMembersContentComponent extends RemoteContentComponent<Props, 
                 members: members.map(a => allUsers.find(u => a == u.username)),
                 ready: group != null && userStore.getState().ready,
                 groupId: group.id,
-                // canManageGroupMembers
             };
         } else {
             return {
@@ -45,7 +42,6 @@ export class GroupMembersContentComponent extends RemoteContentComponent<Props, 
                 members: [],
                 ready: false,
                 groupId: "",
-                // canManageGroupMembers
             };
         }
     }
