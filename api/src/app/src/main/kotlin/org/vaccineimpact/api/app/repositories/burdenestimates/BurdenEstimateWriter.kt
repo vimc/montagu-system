@@ -60,6 +60,11 @@ abstract class BurdenEstimateWriter(
                                 expectedDisease,
                                 setId)
                     }
+                    catch (e: Exception)
+                    {
+                        inputStream.close()
+                        throw e
+                    }
                     finally
                     {
                         // Wait for the worker thread to finish
