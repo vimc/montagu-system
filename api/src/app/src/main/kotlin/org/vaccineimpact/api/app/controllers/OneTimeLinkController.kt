@@ -1,5 +1,6 @@
 package org.vaccineimpact.api.app.controllers
 
+import org.apache.commons.lang3.StringUtils
 import org.slf4j.LoggerFactory
 import org.vaccineimpact.api.app.*
 import org.vaccineimpact.api.app.app_start.Controller
@@ -8,6 +9,7 @@ import org.vaccineimpact.api.app.errors.InvalidOneTimeLinkToken
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.TokenRepository
 import org.vaccineimpact.api.app.security.OneTimeTokenGenerator
+import org.vaccineimpact.api.models.ErrorInfo
 import org.vaccineimpact.api.models.Result
 import org.vaccineimpact.api.models.ResultStatus
 import org.vaccineimpact.api.models.helpers.OneTimeAction
@@ -61,7 +63,7 @@ class OneTimeLinkController(
             catch (e: Exception)
             {
                 val error = errorHandler.logExceptionAndReturnMontaguError(e, context.request)
-                redirectWithResult(context, error.asResult(), redirectUrl)
+                redirectWithResult(context, error.asResult(), redirectUrl, e)
             }
         }
     }
@@ -91,10 +93,16 @@ class OneTimeLinkController(
         return oneTimeTokenGenerator.getOneTimeLinkToken(OneTimeAction.BURDENS_POPULATE, context)
     }
 
-    private fun redirectWithResult(context: ActionContext, result: Result, redirectUrl: String)
+    private fun redirectWithResult(context: ActionContext, result: Result, redirectUrl: String,
+                                   exception: Exception? = null)
     {
         val encodedResult = tokenHelper.encodeResult(result)
         context.request.consumeRemainder()
+        // it is recommended to keep urls under 2000 characters
+        // https://stackoverflow.com/questions/417142/what-is-the-maximum-length-of-a-url-in-different-browsers/417184#417184
+        if (encodedResult.length > 1900 && exception != null)
+            throw exception
+
         context.redirect("$redirectUrl?result=$encodedResult")
     }
 
