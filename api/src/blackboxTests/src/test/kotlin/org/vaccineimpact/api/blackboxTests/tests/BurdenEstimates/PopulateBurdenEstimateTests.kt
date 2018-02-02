@@ -172,8 +172,8 @@ class PopulateBurdenEstimateTests : BurdenEstimateTests()
         val token = TestUserHelper.getToken(requiredWritePermissions, includeCanLogin = true)
         val helper = RequestHelper()
         val response = helper.post("$setUrl/$setId/", duplicateStochasticCSVData, token = token)
-        JSONValidator()
-                .validateError(response.text, "duplicate-key:burden_estimate_set,country,year,age,burden_outcome")
+        val expectedError = "duplicate-key:burden_estimate_set,model_run,country,year,age,burden_outcome"
+        JSONValidator().validateError(response.text, expectedError)
         JooqContext().use {
             val records = it.dsl
                     .select(BURDEN_ESTIMATE_STOCHASTIC.fieldsAsList())
