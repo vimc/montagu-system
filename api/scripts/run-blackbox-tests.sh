@@ -23,7 +23,7 @@ docker run --rm --network=montagu_default $migrate_image
 docker run --rm --network=montagu_default $migrate_image -configFile=conf/flyway-annex.conf migrate
 
 docker exec montagu_db_1 psql -U vimc -d montagu -c \
-       "CREATE USER MAPPING FOR vimc SERVER db_annex OPTIONS (user 'vimc', password 'changeme');"
+       "CREATE USER MAPPING FOR vimc SERVER montagu_db_annex OPTIONS (user 'vimc', password 'changeme');"
 # -------------------------------------------------------------
 
 # Build and image that can run blackbox tests
