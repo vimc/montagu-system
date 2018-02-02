@@ -3,10 +3,9 @@ package org.vaccineimpact.api.databaseTests.tests
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.times
 import com.nhaarman.mockito_kotlin.verify
-import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
-import org.vaccineimpact.api.app.errors.MissingRequiredParameterError
+import org.postgresql.util.PSQLException
 import org.vaccineimpact.api.app.errors.OperationNotAllowedError
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.repositories.burdenestimates.CentralBurdenEstimateWriter
@@ -17,7 +16,6 @@ import org.vaccineimpact.api.db.Tables.BURDEN_ESTIMATE_STOCHASTIC
 import org.vaccineimpact.api.db.direct.addBurdenEstimateSet
 import org.vaccineimpact.api.db.direct.addResponsibility
 import org.vaccineimpact.api.db.direct.addScenarioDescription
-import org.vaccineimpact.api.db.fieldsAsList
 import org.vaccineimpact.api.models.BurdenEstimateWithRunId
 import java.math.BigDecimal
 
@@ -169,15 +167,9 @@ class PopulateBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
         withRepo { repo ->
             assertThatThrownBy {
                 repo.populateBurdenEstimateSet(setId, groupId, touchstoneId, scenarioId, estimates)
-            }.isInstanceOf(MissingRequiredParameterError::class.java)
+            }.isInstanceOf(PSQLException::class.java)
         }
-        withDatabase {
-            val records = it.dsl
-                    .select(BURDEN_ESTIMATE.fieldsAsList())
-                    .from(BURDEN_ESTIMATE)
-                    .fetch()
-            assertThat(records).isEmpty()
-        }
+        assertThatTableIsEmpty(BURDEN_ESTIMATE)
     }
 
     @Test
@@ -197,15 +189,9 @@ class PopulateBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
         withRepo { repo ->
             assertThatThrownBy {
                 repo.populateBurdenEstimateSet(setId, groupId, touchstoneId, scenarioId, estimates)
-            }.isInstanceOf(MissingRequiredParameterError::class.java)
+            }.isInstanceOf(PSQLException::class.java)
         }
-        withDatabase {
-            val records = it.dsl
-                    .select(BURDEN_ESTIMATE_STOCHASTIC.fieldsAsList())
-                    .from(BURDEN_ESTIMATE_STOCHASTIC)
-                    .fetch()
-            assertThat(records).isEmpty()
-        }
+        assertThatTableIsEmpty(BURDEN_ESTIMATE_STOCHASTIC)
     }
 
     private fun estimateObject(
