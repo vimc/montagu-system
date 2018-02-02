@@ -1,5 +1,6 @@
 package org.vaccineimpact.api.app.security
 
+import org.pac4j.core.profile.CommonProfile
 import org.vaccineimpact.api.app.MontaguRedirectValidator
 import org.vaccineimpact.api.app.RedirectValidator
 import org.vaccineimpact.api.app.context.ActionContext
@@ -50,5 +51,15 @@ open class OneTimeTokenGenerator(
                 context.redirectUrl,
                 context.username!!,
                 duration)
+    }
+
+    open fun getNewStyleOneTimeLinkToken(url: String, profile: CommonProfile): String
+    {
+        val attributes = profile.attributes
+        val permissions = attributes["permissions"].toString()
+        val roles = attributes["roles"].toString()
+        val token = tokenHelper.generateNewStyleOnetimeActionToken(url, permissions, roles)
+        tokenRepository.storeToken(token)
+        return token
     }
 }

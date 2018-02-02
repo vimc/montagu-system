@@ -47,6 +47,24 @@ open class WebTokenHelper(keyPair: KeyPair,
         ))
     }
 
+
+    open fun generateNewStyleOnetimeActionToken(
+            url: String,
+            permissions: String,
+            roles: String
+    ): String
+    {
+        return generator.generate(mapOf(
+                "iss" to issuer,
+                "sub" to oneTimeActionSubject,
+                "exp" to Date.from(Instant.now().plus(oneTimeLinkLifeSpan)),
+                "permissions" to permissions,
+                "roles" to roles,
+                "url" to url,
+                "nonce" to getNonce()
+        ))
+    }
+
     open fun encodeResult(result: Result): String
     {
         val json = serializer.toJson(result)

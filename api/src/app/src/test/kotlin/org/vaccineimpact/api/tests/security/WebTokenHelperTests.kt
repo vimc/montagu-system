@@ -127,6 +127,22 @@ class WebTokenHelperTests : MontaguTests()
     }
 
     @Test
+    fun `can generate new style onetime action token`()
+    {
+        val permissions = "*/can-login,modelling-group:IC-Garske/estimates.read"
+        val roles = "*/user,modelling-group:IC-Garske/member"
+        val token = sut.generateNewStyleOnetimeActionToken("/some/url/", permissions, roles)
+        val claims = sut.verify(token)
+        assertThat(claims["iss"]).isEqualTo("vaccineimpact.org")
+        assertThat(claims["sub"]).isEqualTo("onetime_link")
+        assertThat(claims["exp"] as Date).isAfter(Date.from(Instant.now()))
+        assertThat(claims["permissions"]).isEqualTo(permissions)
+        assertThat(claims["roles"]).isEqualTo(roles)
+        assertThat(claims["url"]).isEqualTo("/some/url/")
+        assertThat(claims["nonce"]).isNotNull()
+    }
+
+    @Test
     fun `token fails validation when issuer is wrong`()
     {
         val claims = sut.claims(InternalUser(properties, roles, permissions))
