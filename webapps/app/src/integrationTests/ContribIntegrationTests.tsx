@@ -10,7 +10,7 @@ import {
 import {touchstoneActions} from "../main/contrib/actions/TouchstoneActions";
 import {modellingGroupActions} from "../main/shared/actions/ModellingGroupActions";
 import {expectIsEqual, IntegrationTestSuite} from "./IntegrationTest";
-import {contribAuthStore} from "../main/contrib/stores/ContribAuthStore";
+// import {contribAuthStore} from "../main/contrib/stores/ContribAuthStore";
 import {ContribFetcher} from "../main/contrib/sources/ContribFetcher";
 import {shallow} from "enzyme";
 import {ModelRunParametersSection} from "../main/contrib/components/Responsibilities/ModelRunParameters/ModelRunParametersSection";
@@ -47,9 +47,9 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
         return "Contribution portal";
     }
 
-    authStore() {
-        return contribAuthStore;
-    }
+    // authStore() {
+    //     return contribAuthStore;
+    // }
 
     makeFetcher() {
         return new ContribFetcher();

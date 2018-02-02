@@ -72,12 +72,12 @@ describe("ResponsibilityStore", () => {
         modellingGroupActions.updateGroups([ group1, group2 ]);
         expect(responsibilityStore.getState().currentModellingGroup).to.be.null;
 
-        // User has membership of just one group
-        alt.bootstrap(JSON.stringify({
-            ContribAuthStore: { modellingGroupIds: [ group1.id ] }
-        }));
-        modellingGroupActions.updateGroups([ group1, group2 ]);
-        expect(responsibilityStore.getState().currentModellingGroup).to.eql(group1);
+        // // User has membership of just one group
+        // alt.bootstrap(JSON.stringify({
+        //     ContribAuthStore: { modellingGroupIds: [ group1.id ] }
+        // }));
+        // modellingGroupActions.updateGroups([ group1, group2 ]);
+        // expect(responsibilityStore.getState().currentModellingGroup).to.eql(group1);
     });
 
     it("responsibilityActions.update sets current responsibility set", () => {

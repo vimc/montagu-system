@@ -1,18 +1,18 @@
 import { localApiRequest } from "./LocalApiRequest"
 // import { AxiosResponse, AxiosError } from "axios";
 
-export function authService(getState?: any) {
+export function authService(dispatch?: any, getState?: any) {
     return {
 
         logIn(email: string, password: string) {
-            return localApiRequest({
+            return localApiRequest(dispatch, {
                 Authorization: 'Basic ' + btoa(`${email}:${password}`)
             })
-                .post("/authenticate/", "grant_type=client_credentials")
+                .postNoProcess("/authenticate/", "grant_type=client_credentials")
         },
 
         authToShiny() {
-            return localApiRequest({
+            return localApiRequest(dispatch,{
                 Authorization: 'Bearer ' + getState().auth.bearerToken,
                 withCredentials: true
 
@@ -21,7 +21,7 @@ export function authService(getState?: any) {
         },
 
         unauthFromShiny() {
-            return localApiRequest({
+            return localApiRequest(dispatch,{
                 Authorization: 'Bearer ' + getState().auth.bearerToken,
                 withCredentials: true
 

@@ -1,8 +1,8 @@
 import { Client } from "pg";
 import { checkPromise } from "../test/testHelpers";
 import { expect } from "chai";
-import { logIn } from "../main/shared/sources/LoginSource";
-import { AuthStoreBaseInterface } from "../main/shared/stores/AuthStoreBase";
+// import { logIn } from "../main/shared/sources/LoginSource";
+// import { AuthStoreBaseInterface } from "../main/shared/stores/AuthStoreBase";
 import fetcher, { Fetcher } from "../main/shared/sources/Fetcher";
 import { alt } from "../main/shared/alt";
 
@@ -12,7 +12,7 @@ const dbTemplateName = process.env.PGTEMPLATE;
 export abstract class IntegrationTestSuite {
     abstract description(): string;
 
-    abstract authStore(): AuthStoreBaseInterface<any>;
+    // abstract authStore(): AuthStoreBaseInterface<any>;
 
     abstract makeFetcher(): Fetcher;
 
@@ -43,7 +43,7 @@ export abstract class IntegrationTestSuite {
                 fetcher.fetcher = this.makeFetcher();
                 // Note that this will always trigger an authActions.logIn, which will result in all three login
                 // stores recording the user to some extent
-                checkPromise(done, logIn("test@example.com", "password", this.authStore(), false));
+                // checkPromise(done, logIn("test@example.com", "password", this.authStore(), false));
             });
             afterEach(() => alt.recycle());
 

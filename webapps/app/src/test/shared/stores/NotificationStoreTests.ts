@@ -88,39 +88,39 @@ describe("NotificationStore", () => {
         expect(notificationStore.getState().errors).to.eql([]);
     });
 
-    it("logIn does not set errorMessage if user is active modeller", () => {
-        const token = jwt.sign({
-            sub: "user",
-            permissions: "*/can-login",
-            roles: "modelling-group:group/member"
-        }, "secret");
-        authActions.logIn(token, false);
+    // it("logIn does not set errorMessage if user is active modeller", () => {
+    //     const token = jwt.sign({
+    //         sub: "user",
+    //         permissions: "*/can-login",
+    //         roles: "modelling-group:group/member"
+    //     }, "secret");
+    //     authActions.logIn(token, false);
+    //
+    //     const state = notificationStore.getState();
+    //     expect(state.errors).to.be.empty;
+    // });
 
-        const state = notificationStore.getState();
-        expect(state.errors).to.be.empty;
-    });
-
-    it("logIn does set errorMessage if user is inactive", () => {
-        const token = jwt.sign({
-            sub: "user",
-            permissions: "",
-            roles: "modelling-group:group/member"
-        }, "secret");
-        authActions.logIn(token, false);
-
-        const state = notificationStore.getState();
-        expect(state.errors[0]).to.contain("Your account has been deactivated");
-    });
-
-    it("logIn does set errorMessage if user is not a modeller", () => {
-        const token = jwt.sign({
-            sub: "user",
-            permissions: "*/can-login",
-            roles: ""
-        }, "secret");
-        authActions.logIn(token, false);
-
-        const state = notificationStore.getState();
-        expect(state.errors[0]).to.contain("Only members of modelling groups");
-    });
+    // it("logIn does set errorMessage if user is inactive", () => {
+    //     const token = jwt.sign({
+    //         sub: "user",
+    //         permissions: "",
+    //         roles: "modelling-group:group/member"
+    //     }, "secret");
+    //     authActions.logIn(token, false);
+    //
+    //     const state = notificationStore.getState();
+    //     expect(state.errors[0]).to.contain("Your account has been deactivated");
+    // });
+    //
+    // it("logIn does set errorMessage if user is not a modeller", () => {
+    //     const token = jwt.sign({
+    //         sub: "user",
+    //         permissions: "*/can-login",
+    //         roles: ""
+    //     }, "secret");
+    //     authActions.logIn(token, false);
+    //
+    //     const state = notificationStore.getState();
+    //     expect(state.errors[0]).to.contain("Only members of modelling groups");
+    // });
 });

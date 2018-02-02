@@ -68,7 +68,7 @@ export const authActions = {
                     type: TypeKeys.AUTHENTICATED,
                     data: user,
                 });
-                authService(getState).authToShiny();
+                authService(dispatch, getState).authToShiny();
                 if (appName === "contrib") {
                     contribMainStore.load();
                 }
@@ -78,7 +78,7 @@ export const authActions = {
         }
     },
 
-    authenticationError(error: string) {
+    authenticationError(error: any) {
         return {
             type: TypeKeys.AUTHENTICATION_ERROR,
             error: error ? "Your username or password is incorrect" : "An error occurred logging in",
@@ -90,7 +90,7 @@ export const authActions = {
             if (typeof(Storage) !== "undefined") {
                 localStorage.clear();
             }
-            authService(getState).authToShiny();
+            authService(dispatch, getState).authToShiny();
             dispatch({
                 type: TypeKeys.UNAUTHENTICATED,
             });

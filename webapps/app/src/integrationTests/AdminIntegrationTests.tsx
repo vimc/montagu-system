@@ -1,6 +1,6 @@
 import * as React from "react";
 import { expectIsEqual, IntegrationTestSuite } from "./IntegrationTest";
-import { adminAuthStore } from "../main/admin/stores/AdminAuthStore";
+// import { adminAuthStore } from "../main/admin/stores/AdminAuthStore";
 import { AdminFetcher } from "../main/admin/sources/AdminFetcher";
 import { groupStore } from "../main/admin/stores/GroupStore";
 import { checkPromise } from "../test/testHelpers";
@@ -9,29 +9,29 @@ import { Client, QueryResult } from "pg";
 import { ModellingGroup, ModellingGroupDetails, User } from "../main/shared/models/Generated";
 import { modellingGroupActions } from "../main/shared/actions/ModellingGroupActions";
 import { userStore } from "../main/admin/stores/UserStore";
-import {setShinyToken} from "../main/shared/sources/LoginSource";
+// import {setShinyToken} from "../main/shared/sources/LoginSource";
 
 class AdminIntegrationTests extends IntegrationTestSuite {
     description() {
         return "Admin portal";
     }
 
-    authStore() {
-        return adminAuthStore;
-    }
+    // authStore() {
+    //     return adminAuthStore;
+    // }
 
     makeFetcher() {
         return new AdminFetcher();
     }
 
     addTestsToMocha() {
-
-        it("can fetch shiny cookie", (done: DoneCallback) => {
-            setShinyToken().then((res: Response) => {
-                expect(res.ok).to.be.eq(true);
-                done()
-            })
-        });
+        //
+        // it("can fetch shiny cookie", (done: DoneCallback) => {
+        //     setShinyToken().then((res: Response) => {
+        //         expect(res.ok).to.be.eq(true);
+        //         done()
+        //     })
+        // });
 
         it("can fetch groups", (done: DoneCallback) => {
             const promise = addGroups(this.db)

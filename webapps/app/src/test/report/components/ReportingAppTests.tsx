@@ -15,13 +15,13 @@ describe("ReportingApp", () => {
                 errors: ["a", "b"],
                 infos: ["c", "d"]
             },
-            ReportingAuthStore: { loggedIn: true }
+            // ReportingAuthStore: { loggedIn: true }
         }));
 
         const expected: ReportingAppProps = {
             errors: ["a", "b"],
             infos: ["c", "d"],
-            loggedIn: true
+            // loggedIn: true
         };
         expect(ReportingAppComponent.getPropsFromStores()).to.eql(expected);
     });

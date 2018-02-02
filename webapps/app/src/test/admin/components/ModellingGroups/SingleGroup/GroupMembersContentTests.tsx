@@ -31,9 +31,9 @@ describe("GroupMembersContent", () => {
                 },
                 membersLookup: {"group1": ["a", "b"], "group2": []}
             },
-            AdminAuthStore: {
-                permissions: ["*/modelling-groups.manage-members"]
-            }
+            // AdminAuthStore: {
+            //     permissions: ["*/modelling-groups.manage-members"]
+            // }
         }));
         const props = GroupMembersContentComponent.getPropsFromStores();
         expect(props).to.eql({
@@ -41,7 +41,7 @@ describe("GroupMembersContent", () => {
             ready: true,
             users: [a, b, c],
             members: [a, b],
-            canManageGroupMembers: true
+            // canManageGroupMembers: true
         });
     });
 

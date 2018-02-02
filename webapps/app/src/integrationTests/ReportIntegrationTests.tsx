@@ -2,7 +2,7 @@ import { expect } from "chai";
 import * as React from "react";
 import { shallow, ShallowWrapper } from "enzyme";
 import { expectIsEqual, expectSameElements, IntegrationTestSuite } from "./IntegrationTest";
-import { reportingAuthStore } from "../main/report/stores/ReportingAuthStore";
+// import { reportingAuthStore } from "../main/report/stores/ReportingAuthStore";
 import { ReportingFetcher } from "../main/report/sources/ReportingFetcher";
 import { reportStore } from "../main/report/stores/ReportStore";
 import { checkPromise } from "../test/testHelpers";
@@ -24,9 +24,9 @@ class ReportIntegrationTests extends IntegrationTestSuite {
         return "Reporting portal";
     }
 
-    authStore() {
-        return reportingAuthStore;
-    }
+    // authStore() {
+    //     return reportingAuthStore;
+    // }
 
     makeFetcher() {
         return new ReportingFetcher();

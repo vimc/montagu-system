@@ -25,6 +25,7 @@ function makePortalConfig(name, urlPrefix) {
         name: name,
 
         entry: [
+        	"babel-regenerator-runtime",
             "whatwg-fetch",
             "./src/main/" + name + "/index.tsx"
         ],
@@ -52,7 +53,7 @@ function makePortalConfig(name, urlPrefix) {
 }
 
 module.exports = [
-//     makePortalConfig("admin", "admin"),
-//     makePortalConfig("contrib", "contribution"),
+    makePortalConfig("admin", "admin"),
+    makePortalConfig("contrib", "contribution"),
     makePortalConfig("report", "reports")
 ];
