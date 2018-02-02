@@ -7,6 +7,7 @@ import org.vaccineimpact.api.blackboxTests.helpers.*
 import org.vaccineimpact.api.blackboxTests.schemas.CSVSchema
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.Tables.BURDEN_ESTIMATE
+import org.vaccineimpact.api.db.Tables.BURDEN_ESTIMATE_STOCHASTIC
 import org.vaccineimpact.api.db.fieldsAsList
 import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.validateSchema.JSONValidator
@@ -147,7 +148,7 @@ class PopulateBurdenEstimateTests : BurdenEstimateTests()
     }
 
     @Test
-    fun `cannot populate burden estimate set if duplicate rows`()
+    fun `cannot populate central burden estimate set if duplicate rows`()
     {
         TestUserHelper.setupTestUser()
         val setId = JooqContext().use {
@@ -159,6 +160,27 @@ class PopulateBurdenEstimateTests : BurdenEstimateTests()
         JSONValidator()
                 .validateError(response.text, "duplicate-key:burden_estimate_set,country,year,age,burden_outcome")
 
+    }
+
+    @Test
+    fun `cannot populate stochastic burden estimate set if duplicate rows`()
+    {
+        TestUserHelper.setupTestUser()
+        val setId = JooqContext().use {
+            setUpWithStochasticBurdenEstimateSet(it)
+        }
+        val token = TestUserHelper.getToken(requiredWritePermissions, includeCanLogin = true)
+        val helper = RequestHelper()
+        val response = helper.post("$setUrl/$setId/", duplicateStochasticCSVData, token = token)
+        JSONValidator()
+                .validateError(response.text, "duplicate-key:burden_estimate_set,country,year,age,burden_outcome")
+        JooqContext().use {
+            val records = it.dsl
+                    .select(BURDEN_ESTIMATE_STOCHASTIC.fieldsAsList())
+                    .from(BURDEN_ESTIMATE_STOCHASTIC)
+                    .fetch()
+            assertThat(records).isEmpty()
+        }
     }
 
     @Test
