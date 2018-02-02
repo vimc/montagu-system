@@ -1,17 +1,23 @@
 package org.vaccineimpact.api.databaseTests.tests
 
-import com.nhaarman.mockito_kotlin.*
-import org.assertj.core.api.Assertions
-import org.assertj.core.api.Assertions.assertThat
+import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.times
+import com.nhaarman.mockito_kotlin.verify
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
+import org.postgresql.util.PSQLException
 import org.vaccineimpact.api.app.errors.OperationNotAllowedError
 import org.vaccineimpact.api.app.errors.UnknownObjectError
-import org.vaccineimpact.api.app.repositories.burdenestimates.BurdenEstimateWriter
 import org.vaccineimpact.api.app.repositories.burdenestimates.CentralBurdenEstimateWriter
 import org.vaccineimpact.api.app.repositories.burdenestimates.StochasticBurdenEstimateWriter
 import org.vaccineimpact.api.db.JooqContext
-import org.vaccineimpact.api.db.direct.*
+import org.vaccineimpact.api.db.Tables.BURDEN_ESTIMATE
+import org.vaccineimpact.api.db.Tables.BURDEN_ESTIMATE_STOCHASTIC
+import org.vaccineimpact.api.db.direct.addBurdenEstimateSet
+import org.vaccineimpact.api.db.direct.addResponsibility
+import org.vaccineimpact.api.db.direct.addScenarioDescription
+import org.vaccineimpact.api.models.BurdenEstimateWithRunId
+import java.math.BigDecimal
 
 class PopulateBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
 {
@@ -145,10 +151,61 @@ class PopulateBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
             it.addBurdenEstimateSet(responsibilityId, returnedIds.modelVersion!!, username, "complete")
         }
         withRepo { repo ->
-            Assertions.assertThatThrownBy {
+            assertThatThrownBy {
                 repo.populateBurdenEstimateSet(setId, groupId, touchstoneId, scenarioId, data())
             }.isInstanceOf(UnknownObjectError::class.java)
         }
+    }
+
+    @Test
+    fun `populate central estimate set with duplicate rows throws error`()
+    {
+        val setId = withDatabase {
+            setupDatabaseWithBurdenEstimateSet(it)
+        }
+        val estimates = sequenceOf(estimateObject(), estimateObject())
+        withRepo { repo ->
+            assertThatThrownBy {
+                repo.populateBurdenEstimateSet(setId, groupId, touchstoneId, scenarioId, estimates)
+            }.isInstanceOf(PSQLException::class.java)
+        }
+        assertThatTableIsEmpty(BURDEN_ESTIMATE)
+    }
+
+    @Test
+    fun `populate stochastic estimate set with duplicate rows throws error`()
+    {
+        val (setId, modelRunId) = withDatabase { db ->
+            val ids = setupDatabase(db)
+            val modelRunData = addModelRuns(db, ids.responsibilitySetId, ids.modelVersion!!)
+            val setId = db.addBurdenEstimateSet(ids.responsibility, ids.modelVersion,
+                    username, setType = "stochastic", modelRunParameterSetId = modelRunData.runParameterSetId)
+            Pair(setId, modelRunData.externalIds.first())
+        }
+        val estimates = sequenceOf(
+                estimateObject(runId = modelRunId),
+                estimateObject(runId = modelRunId)
+        )
+        withRepo { repo ->
+            assertThatThrownBy {
+                repo.populateBurdenEstimateSet(setId, groupId, touchstoneId, scenarioId, estimates)
+            }.isInstanceOf(PSQLException::class.java)
+        }
+        assertThatTableIsEmpty(BURDEN_ESTIMATE_STOCHASTIC)
+    }
+
+    private fun estimateObject(
+            diseaseId: String = this.diseaseId,
+            runId: String? = null,
+            year: Int = 2000,
+            age: Int = 25,
+            countryId: String = "AFG",
+            countryName: String = "Afghanistan",
+            cohortSize: BigDecimal = 100.toBigDecimal(),
+            outcomes: Map<String, BigDecimal> = emptyMap()
+    ): BurdenEstimateWithRunId
+    {
+        return BurdenEstimateWithRunId(diseaseId, runId, year, age, countryId, countryName, cohortSize, outcomes)
     }
 
 }

@@ -5,15 +5,20 @@ import org.jooq.TableField
 import org.jooq.impl.TableImpl
 import org.postgresql.copy.CopyManager
 import org.postgresql.core.BaseConnection
+import org.vaccineimpact.api.app.awaitAndThrowIfError
 import org.vaccineimpact.api.app.errors.DatabaseContentsError
 import org.vaccineimpact.api.app.errors.InconsistentDataError
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.errors.UnknownRunIdError
 import org.vaccineimpact.api.db.*
 import org.vaccineimpact.api.models.BurdenEstimateWithRunId
-import java.io.*
+import java.io.BufferedInputStream
+import java.io.OutputStream
+import java.io.PipedInputStream
+import java.io.PipedOutputStream
 import java.math.BigDecimal
-import kotlin.concurrent.thread
+import java.util.concurrent.Callable
+import java.util.concurrent.Executors
 
 abstract class BurdenEstimateWriter(
         private val readDatabaseDSL: DSLContext,
@@ -44,7 +49,9 @@ abstract class BurdenEstimateWriter(
                     // it to the database. This will block if the thread is empty, and keep
                     // going until it sees the Postgres EOF marker.
                     val inputStream = PipedInputStream(stream).buffered()
-                    val writeToDatabaseThread = writeStreamToDatabase(inputStream, writeDatabaseDSL)
+                    // TODO: Use a real thread pool
+                    val executor = Executors.newSingleThreadExecutor()
+                    val writeToDatabaseFuture = executor.submit(writeStreamToDatabase(inputStream, writeDatabaseDSL))
 
                     try
                     {
@@ -63,7 +70,7 @@ abstract class BurdenEstimateWriter(
                     finally
                     {
                         // Wait for the worker thread to finish
-                        writeToDatabaseThread.join()
+                        writeToDatabaseFuture.awaitAndThrowIfError()
                     }
                 }
             }
@@ -181,17 +188,25 @@ abstract class BurdenEstimateWriter(
     private fun writeStreamToDatabase(
             inputStream: BufferedInputStream,
             writeDatabaseDSL: DSLContext
-    ): Thread
+    ): Callable<Exception?>
     {
         // Since we are in another thread here, we should be careful about what state we modify.
         // Everything we have access to here is immutable, so we should be fine.
-        return thread(start = true) {
-            // We use dsl.connection to drop down from jOOQ to the JDBC level so we can use CopyManager.
-            writeDatabaseDSL.connection { connection ->
-                val manager = CopyManager(connection as BaseConnection)
-                // This will return once it reaches the EOF character written out by the other stream
-                manager.copyInto(table, inputStream, fields)
+        return Callable({
+            try
+            {
+                // We use dsl.connection to drop down from jOOQ to the JDBC level so we can use CopyManager.
+                writeDatabaseDSL.connection { connection ->
+                    val manager = CopyManager(connection as BaseConnection)
+                    // This will return once it reaches the EOF character written out by the other stream
+                    manager.copyInto(table, inputStream, fields)
+                }
+                null
             }
-        }
+            catch (e: Exception)
+            {
+                e
+            }
+        })
     }
 }
