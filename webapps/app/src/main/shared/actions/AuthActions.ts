@@ -21,7 +21,7 @@ export const authActions = {
                 const response = await authService().logIn(email, password)
                 dispatch(this.tokenReceived(response.data.access_token));
             } catch(e) {
-                dispatch(this.authenticationError(e.response.data.error));
+                dispatch(this.authenticationError(e.response ? e.response.data.error : "Server Error"));
             }
         }
     },

@@ -42,15 +42,13 @@ export function localApiRequest(dispatch?: any, options?: any) {
     }
 
     // for all with http error status code, probably the only one needed
-    const processFailure = (response: any) => {
-        if (response.data.errors) {
-            return response.data.errors.forEach(handleError);
+    const processFailure = (error: any) => {
+        if (error.response && error.response.data.errors && error.response.data.errors.length) {
+            return error.response.data.errors.forEach(handleError);
         }
         throw makeNotificationException("The server response was not correctly formatted: "
-            + response.toString(), "error");
+            + error.message, "error");
     }
-
-
 
     return {
         get(url: string){

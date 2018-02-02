@@ -10,7 +10,7 @@ export interface AuthState {
     isModeller: boolean;
 }
 
-const initialState: AuthState = {
+export const initialAuthState: AuthState = {
     bearerToken: null,
     loggedIn: false,
     username: null,
@@ -19,7 +19,7 @@ const initialState: AuthState = {
     isModeller: false
 };
 
-export const authReducer = (state = initialState, action: ActionsTypes) => {
+export const authReducer = (state = initialAuthState, action: ActionsTypes) => {
     switch (action.type) {
         case TypeKeys.AUTHENTICATED:
             return { ...action.data };

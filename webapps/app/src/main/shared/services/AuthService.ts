@@ -1,5 +1,4 @@
 import { localApiRequest } from "./LocalApiRequest"
-// import { AxiosResponse, AxiosError } from "axios";
 
 export function authService(dispatch?: any, getState?: any) {
     return {

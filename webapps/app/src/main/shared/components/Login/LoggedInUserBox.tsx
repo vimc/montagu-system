@@ -10,7 +10,7 @@ import "./Logout.scss";
 
 interface LoggedInUserBoxProps {
     auth: AuthState;
-    dispatch: Dispatch<any>;
+    dispatch?: Dispatch<any>;
 }
 
 export class LoggedInUserBoxComponent extends React.Component<LoggedInUserBoxProps, undefined> {
