@@ -5,6 +5,8 @@ import spark.Filter
 import spark.Request
 import spark.Response
 import spark.route.HttpMethod
+import java.util.concurrent.Callable
+import java.util.concurrent.Future
 import javax.servlet.http.HttpServletResponse
 
 // The idea is that as this file grows, I'll group helpers and split them off into files/classes with more
@@ -47,5 +49,16 @@ class DefaultHeadersFilter(val contentType: String, val method: HttpMethod) : Fi
         {
             addDefaultResponseHeaders(request, response, contentType)
         }
+    }
+}
+
+// If we have a future that may return and exception this method allows
+// us to await that result, examine it, and throw it if there is an exception
+fun Future<Exception?>.awaitAndThrowIfError()
+{
+    val exception = this.get()?.cause
+    if (exception != null)
+    {
+        throw exception
     }
 }

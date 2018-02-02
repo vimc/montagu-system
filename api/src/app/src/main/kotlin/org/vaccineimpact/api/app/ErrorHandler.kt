@@ -2,6 +2,7 @@ package org.vaccineimpact.api.app
 
 import com.google.gson.JsonSyntaxException
 import org.jooq.exception.DataAccessException
+import org.postgresql.util.PSQLException
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.vaccineimpact.api.app.errors.MontaguError
@@ -33,6 +34,7 @@ open class ErrorHandler(private val logger: Logger = LoggerFactory.getLogger(Err
             is ValidationException -> ValidationError(exception)
             is JsonSyntaxException -> UnableToParseJsonError(exception)
             is DataAccessException -> postgresHandler.handleException(exception)
+            is PSQLException -> postgresHandler.handleException(exception)
             else -> UnexpectedError.new(exception, logger = logger)
         }
         logger.warn("For request ${req.uri()}, a ${error::class.simpleName} occurred with the following problems: ${error.problems}")
