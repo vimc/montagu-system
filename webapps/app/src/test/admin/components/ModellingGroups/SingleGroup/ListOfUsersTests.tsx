@@ -11,14 +11,21 @@ describe("ListOfUsers", () => {
 
     afterEach(() => sandbox.restore());
 
-    it("renders users", () => {
+    it("renders users alphabetically", () => {
         const users = [
             mockUser({ "name": "Wolfgang Amadeus Mozart" }),
             mockUser({ "name": "Johann Sebastian Bach" }),
             mockUser({ "name": "Ludvig van Beethoven" }),
         ];
         const rendered = sandbox.mount(<ListOfUsers groupId="group1" users={users}/>);
-        expect(rendered.find(DeletableUser).length).to.eq(3)
+        const elements = rendered.find(DeletableUser);
+        expect(elements).to.have.length(3);
+        const names = elements.getElements().map(e => e.props.user.name);
+        expect(names).to.eql([
+            "Johann Sebastian Bach",
+            "Ludvig van Beethoven",
+            "Wolfgang Amadeus Mozart"
+        ]);
     });
 
 
