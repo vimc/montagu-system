@@ -1,11 +1,11 @@
 import * as React from "react";
-import { Sandbox } from "../../Sandbox";
+import { Sandbox } from "../../../Sandbox";
 import { expect } from "chai";
 import { shallow } from "enzyme";
 
-import { initialAuthState } from "../../../main/shared/reducers/authReducer";
-import { InternalLink } from "../../../main/shared/components/InternalLink";
-import { LoggedInUserBoxComponent } from "../../../main/shared/components/Login/LoggedInUserBox";
+import { initialAuthState } from "../../../../main/shared/reducers/authReducer";
+import { InternalLink } from "../../../../main/shared/components/InternalLink";
+import { LoggedInUserBoxComponent } from "../../../../main/shared/components/Login/LoggedInUserBox";
 
 describe("LoggedInUserBoxComponent", () => {
     const sandbox = new Sandbox();

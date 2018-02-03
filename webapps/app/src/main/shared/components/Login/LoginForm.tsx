@@ -15,7 +15,7 @@ export interface LoginFormProps {
     dispatch: Dispatch<any>;
 }
 
-export class LoginFormView extends React.Component<LoginFormProps, undefined> {
+export class LoginFormComponent extends React.Component<LoginFormProps, undefined> {
     constructor() {
         super();
         this.submit = this.submit.bind(this);
@@ -26,13 +26,13 @@ export class LoginFormView extends React.Component<LoginFormProps, undefined> {
     }
 
     renderField(data: any) {
+        console.log('data in filed form', data)
         const { input, label, type, meta: { touched,  error } } = data;
         return <div>
             <input {...input} placeholder={label} type={type}/>
             <ValidationError message={ touched && error ? label + error : null } />
         </div>;
     }
-
 
     render() {
         return (
@@ -81,4 +81,4 @@ const enhance = compose(
     connect(mapStateToProps),
 );
 
-export const LoginForm = enhance(LoginFormView);
+export const LoginForm = enhance(LoginFormComponent);
