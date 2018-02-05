@@ -1,8 +1,9 @@
 import {parseRole, Role} from "../models/Roles";
+import {AuthState} from "../reducers/authReducer";
 
 const jwt_decode = require('jwt-decode');
 
-export interface DecodedDataFromToken {
+export interface AuthTokenData {
     permissions: string;
     roles: string;
     sub: string;
@@ -21,7 +22,7 @@ export const JwtTokenAuth = {
         return false;
     },
 
-    decodeToken(token: string): DecodedDataFromToken {
+    decodeToken(token: string): AuthTokenData {
         try {
             return jwt_decode(token);
         } catch (e) {
@@ -30,7 +31,7 @@ export const JwtTokenAuth = {
         }
     },
 
-    emptyToken(): DecodedDataFromToken {
+    emptyToken(): AuthTokenData {
         return {
             permissions: "",
             roles: "",
@@ -47,8 +48,8 @@ export const JwtTokenAuth = {
             .map((x: Role) => x.scope.id);
     },
 
-    getDataFromToken(token: string) {
-        const decoded: DecodedDataFromToken = this.decodeToken(token);
+    getDataFromToken(token: string) :AuthState {
+        const decoded: AuthTokenData = this.decodeToken(token);
         const permissions = decoded.permissions.split(",").filter(x => x.length > 0);
         const modellingGroups = this.parseModellingGroups(decoded.roles);
         return {

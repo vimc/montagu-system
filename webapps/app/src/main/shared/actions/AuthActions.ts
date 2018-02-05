@@ -7,7 +7,7 @@ import { notificationActions } from "./NotificationActions";
 import { appSettings, settings } from "../Settings";
 import { appName } from 'appName';
 import { mainStore as contribMainStore } from "../../contrib/stores/MainStore";
-import { DecodedDataFromToken } from "../modules/jwtTokenAuth";
+import { AuthTokenData } from "../modules/jwtTokenAuth";
 import { AuthState } from "../reducers/authReducer";
 import { makeNotification, Notification } from "../actions/NotificationActions";
 import { localStorageHandler } from "../services/localStorageHandler";
@@ -29,7 +29,7 @@ export const authActions = {
         return (dispatch: Dispatch<any>) => {
             const token = localStorageHandler.get("accessToken");
             if (token) {
-                const decoded: DecodedDataFromToken = JwtTokenAuth.decodeToken(token);
+                const decoded: AuthTokenData = JwtTokenAuth.decodeToken(token);
                 if (JwtTokenAuth.isExpired(decoded.exp)) {
                     console.log("Token is expired");
                     localStorageHandler.remove("accessToken");
@@ -73,6 +73,7 @@ export const authActions = {
                 }
             } else {
                 notificationActions.notify(error);
+                dispatch(this.authenticationError(error.message));
             }
         }
     },

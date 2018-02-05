@@ -1,4 +1,4 @@
-import { axiosRequest } from "../modules/AxiosRequest";
+import { axiosRequest, RequestOptionsProps } from "../modules/AxiosRequest";
 import { settings } from "../Settings";
 import { localStorageHandler } from "./localStorageHandler";
 
@@ -8,60 +8,61 @@ import {
     notificationActions,
     NotificationException
 } from "../actions/NotificationActions";
-import {TypeKeys} from "../actionTypes/AuthTypes";
+
+import { TypeKeys } from "../actionTypes/AuthTypes";
 
 export abstract class LocalService {
     dispatch: any;
     bearerToken: string;
-    options: any = {};
+    options: RequestOptionsProps = {};
 
-    constructor(dispatch: any, getState: Function) {
+    public constructor(dispatch: any, getState: Function) {
         this.dispatch = dispatch;
         this.bearerToken = this.getTokenFromState(getState())
         this.initOptions();
     }
 
-    getTokenFromState(state: any) {
+    protected getTokenFromState(state: any) {
         if (state.auth && state.auth.bearerToken) {
             return state.auth.bearerToken
         }
     }
 
-    setOptions(options: any) {
-        this.options = Object.assign(this.options, options);
+    public setOptions(options: RequestOptionsProps) {
+        Object.assign(this.options, options);
     }
 
-    initOptions() {
+    protected initOptions() {
         this.options.baseURL = settings.apiUrl();
         if (this.bearerToken) {
             this.options.Authorization = 'Bearer ' + this.bearerToken;
         }
     }
 
-    initRequestEngine() {
+    protected initRequestEngine() {
         return axiosRequest(this.options)
     }
 
-    get(url: string){
+    public get(url: string){
         return this.initRequestEngine()
             .get(url)
             .then(this.processSuccess)
             .catch(this.processFailure)
     }
 
-    post(url: string, params:any){
+    public post(url: string, params:any){
         return this.initRequestEngine()
             .post(url, params)
             .then(this.processSuccess)
             .catch(this.processFailure)
     }
 
-    postNoProcess(url: string, params:any){
+    public postNoProcess(url: string, params:any){
         return this.initRequestEngine()
             .post(url, params)
     }
 
-    handleError (error: any) {
+    protected handleError (error: any) {
         switch (error.code) {
             case "bearer-token-invalid":
                 console.log("Access token has expired or is otherwise invalid: Logging out.");
@@ -77,7 +78,7 @@ export abstract class LocalService {
     }
 
     // for http status success codes
-    processSuccess (response: any) {
+    protected processSuccess (response: any) {
         switch (response.data.status) {
             case "success":
                 return response.data.data;
@@ -91,7 +92,7 @@ export abstract class LocalService {
     }
 
     // for all with http error status code, probably the only one needed
-    processFailure (error: any) {
+    protected processFailure (error: any) {
         if (error.response && error.response.data.errors && error.response.data.errors.length) {
             return error.response.data.errors.forEach(this.handleError);
         }
@@ -99,7 +100,7 @@ export abstract class LocalService {
             + error.message, "error");
     }
 
-    logOut() {
+    protected logOut() {
         localStorageHandler.remove("accessToken");
         this.dispatch({
             type: TypeKeys.UNAUTHENTICATED

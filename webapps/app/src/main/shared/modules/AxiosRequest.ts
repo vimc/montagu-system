@@ -1,8 +1,7 @@
 import axios, {AxiosInstance} from 'axios';
 
-interface RequestProps {
-    baseURL: string;
-    headers?: any;
+export interface RequestOptionsProps {
+    baseURL?: string;
     Authorization?: string;
     timeout?: number;
     withCredentials?: boolean;
@@ -19,7 +18,7 @@ interface AxiosParams {
     withCredentials?: boolean;
 }
 
-export function axiosRequest(options: RequestProps) :AxiosInstance {
+export function axiosRequest(options: RequestOptionsProps) :AxiosInstance {
     if (!options) throw new Error('no parameters given for request instance creation');
     const params: AxiosParams = {
         baseURL: options.baseURL,
