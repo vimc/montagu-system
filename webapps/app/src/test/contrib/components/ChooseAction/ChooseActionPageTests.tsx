@@ -5,7 +5,7 @@ import { ChooseActionPage, LocationProps } from "../../../../main/contrib/compon
 import {mockLocation, setupStores} from "../../../mocks/mocks";
 import { expectOneAction } from "../../../actionHelpers";
 import {checkAsync, checkPromise} from "../../../testHelpers";
-import { responsibilityStore } from "../../../../main/contrib/stores/ResponsibilityStore";
+import {ResponsibilityState, responsibilityStore} from "../../../../main/contrib/stores/ResponsibilityStore";
 import { groupStore } from "../../../../main/admin/stores/GroupStore";
 import {addNavigationTests} from "../../../shared/NavigationTests";
 import { successResult} from "../../../mocks/mockRemote";
@@ -52,7 +52,7 @@ describe("ChooseActionPage", () => {
             ])
         });
         bootstrapStore(responsibilityStore, {
-            currentModellingGroup: {id: "group-1"},
+            currentModellingGroup: mockModellingGroup({id: "group-1"}),
         });
         mockFetcherForMultipleResponses([
             mockTouchstonesEndpoint([mockTouchstone(), mockTouchstone()], "group-1")
