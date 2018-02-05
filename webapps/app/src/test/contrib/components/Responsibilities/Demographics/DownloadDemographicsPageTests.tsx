@@ -1,7 +1,7 @@
 import * as React from "react";
 import {Sandbox} from "../../../../Sandbox";
 import {expect} from "chai";
-import {checkAsync, checkPromise} from "../../../../testHelpers";
+import {checkPromise} from "../../../../testHelpers";
 import {expectOneAction} from "../../../../actionHelpers";
 import {DownloadDemographicsPage} from "../../../../../main/contrib/components/Responsibilities/Demographics/DownloadDemographicsPage";
 import {mockLocation, setupStores} from "../../../../mocks/mocks";
@@ -55,7 +55,7 @@ describe("DownloadDemographicsPage", () => {
             modellingGroups: makeLoadable([mockModellingGroup({id: "group-1"})])
         });
         bootstrapStore(responsibilityStore, {
-            currentModellingGroup: {id: "group-1"},
+            currentModellingGroup: mockModellingGroup({id: "group-1"}),
         });
         mockFetcherForMultipleResponses([
             mockTouchstonesEndpoint([mockTouchstone({ id: "touchstone-1" })], "group-1"),
