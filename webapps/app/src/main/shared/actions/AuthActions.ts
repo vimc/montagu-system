@@ -1,9 +1,8 @@
 import { Dispatch } from "redux";
-import { AxiosError, AxiosResponse } from "axios";
 
-import { AuthenticationError, TypeKeys } from "../actionTypes/AuthTypes";
-import { decodeToken, isExpired, getDataFromToken } from "../modules/JwtTokenAuth";
-import { authService } from "../services/AuthService";
+import { TypeKeys } from "../actionTypes/AuthTypes";
+import { JwtTokenAuth } from "../modules/JwtTokenAuth";
+import { AuthService } from "../services/AuthService";
 import { notificationActions } from "./NotificationActions";
 import { appSettings, settings } from "../Settings";
 import { appName } from 'appName';
@@ -16,9 +15,9 @@ import { localStorageHandler } from "../services/localStorageHandler";
 export const authActions = {
 
     logIn(email: string, password: string) {
-        return async (dispatch: Dispatch<any>) => {
+        return async (dispatch: Dispatch<any>, getState: any) => {
             try {
-                const response = await authService().logIn(email, password)
+                const response = await (new AuthService(dispatch, getState)).logIn(email, password)
                 dispatch(this.tokenReceived(response.data.access_token));
             } catch(e) {
                 dispatch(this.authenticationError(e.response ? e.response.data.error : "Server Error"));
@@ -30,8 +29,8 @@ export const authActions = {
         return (dispatch: Dispatch<any>) => {
             const token = localStorageHandler.get("accessToken");
             if (token) {
-                const decoded: DecodedDataFromToken = decodeToken(token);
-                if (isExpired(decoded.exp)) {
+                const decoded: DecodedDataFromToken = JwtTokenAuth.decodeToken(token);
+                if (JwtTokenAuth.isExpired(decoded.exp)) {
                     console.log("Token is expired");
                     localStorageHandler.remove("accessToken");
                     dispatch(this.logOut())
@@ -60,7 +59,7 @@ export const authActions = {
 
     tokenReceived(token: string) {
         return (dispatch: Dispatch<any>, getState: any) => {
-            const user: AuthState = getDataFromToken(token);
+            const user: AuthState = JwtTokenAuth.getDataFromToken(token);
             const error: Notification = this.validateAuthResult(user);
             if (!error) {
                 localStorageHandler.set("accessToken", token);
@@ -68,7 +67,7 @@ export const authActions = {
                     type: TypeKeys.AUTHENTICATED,
                     data: user,
                 });
-                authService(dispatch, getState).authToShiny();
+                (new AuthService(dispatch, getState)).authToShiny();
                 if (appName === "contrib") {
                     contribMainStore.load();
                 }
@@ -87,10 +86,8 @@ export const authActions = {
 
     logOut() {
         return (dispatch: Dispatch<any>, getState: any) => {
-            if (typeof(Storage) !== "undefined") {
-                localStorage.clear();
-            }
-            authService(dispatch, getState).authToShiny();
+            localStorageHandler.remove("accessToken");
+            (new AuthService(dispatch, getState)).unauthFromShiny();
             dispatch({
                 type: TypeKeys.UNAUTHENTICATED,
             });

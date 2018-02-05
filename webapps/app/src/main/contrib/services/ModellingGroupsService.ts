@@ -1,14 +1,7 @@
-import { localApiRequest } from "../../shared/services/LocalApiRequest"
+import { LocalService } from "../../shared/services/LocalService";
 
-export function modellingGroupsService(dispatch: any, getState: Function) {
-    return {
-
-        getGroups() {
-            return localApiRequest(dispatch, {
-                Authorization: 'Bearer ' + getState().auth.bearerToken
-            })
-                .get("/modelling-groups/")
-        },
-
+export class ModellingGroupsService extends LocalService {
+    getGroups() {
+        return this.get("/modelling-groups/");
     }
 }

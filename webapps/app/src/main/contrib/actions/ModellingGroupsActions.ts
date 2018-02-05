@@ -1,16 +1,17 @@
 import { Dispatch } from "redux";
 
-import { modellingGroupsService } from "../services/modellingGroupsService";
+import { ModellingGroupsService } from "../services/modellingGroupsService";
+import { TypeKeys } from "../actionTypes/ModellingGroupsTypes";
 
-export const ModellingGroupsActions = {
+export const modellingGroupsActions = {
 
     getGroups() {
         return async (dispatch: Dispatch<any>, getState: Function) => {
-            const allGroups: any = await modellingGroupsService(dispatch, getState).getGroups()
+            const allGroups: any = await (new ModellingGroupsService(dispatch, getState)).getGroups()
             const userGroups = getState().auth.modellingGroups;
             const groups = allGroups.filter((item: any) => userGroups.indexOf(item.id) > -1)
             dispatch({
-                type: 'GROUPS_FETCHED',
+                type: TypeKeys.GROUPS_FETCHED,
                 data: groups
             });
 

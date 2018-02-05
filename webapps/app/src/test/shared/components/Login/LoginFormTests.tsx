@@ -1,36 +1,36 @@
 import * as React from "react";
 import { expect } from "chai";
 import { shallow, mount } from "enzyme";
-import { createStore } from "redux";
+import { createStore, applyMiddleware } from "redux";
 import { Provider } from "react-redux";
 import { reducer as formReducer } from "redux-form";
 import { combineReducers } from "redux";
+import thunk from 'redux-thunk';
 
-import * as enzyme from "enzyme";
-import * as Adapter from "enzyme-adapter-react-15";
-enzyme.configure({ adapter: new Adapter() });
+// import * as enzyme from "enzyme";
+// import * as Adapter from "enzyme-adapter-react-15";
+// enzyme.configure({ adapter: new Adapter() });
 
 import { authReducer } from "../../../../main/shared/reducers/authReducer";
 import { Sandbox } from "../../../Sandbox";
 import { LoginFormComponent, LoginForm } from "../../../../main/shared/components/Login/LoginForm";
 import { ValidationError } from "../../../../main/shared/components/Login/ValidationError";
-// import { reduxHelper } from "../../../reduxHelper";
+import { authActions } from "../../../../main/shared/actions/authActions";
 
 describe("LoginFormComponent unit testing", () => {
     const sandbox = new Sandbox();
     let formWrapper :any = null;
     const submitMock = sandbox.createSpy();
-    const dispatchMock = sandbox.createSpy();
 
     before(() => {
-        formWrapper = shallow(<LoginFormComponent handleSubmit={submitMock} dispatch={dispatchMock}/>)
+        formWrapper = shallow(<LoginFormComponent handleSubmit={submitMock} dispatch={()=>{}}/>)
     });
 
     afterEach(() => {
         sandbox.restore();
     });
 
-    it("renders form and fields and submits on button click", () => {
+    it("renders form and fields elements and submits on button click", () => {
         expect(formWrapper.find('Field[name="email"]')).to.have.length(1);
         expect(formWrapper.find('Field[name="password"]')).to.have.length(1);
         expect(formWrapper.find('form')).to.have.length(1);
@@ -45,15 +45,13 @@ describe("LoginFormComponent unit testing", () => {
 describe("LoginForm connected with redux-form", () => {
     const sandbox = new Sandbox();
     let formWrapper :any = null;
-    const submitMock = sandbox.createSpy();
-    const dispatchMock = sandbox.createSpy();
     let store : any= null;
 
     before(() => {
         store = createStore(combineReducers({
             form: formReducer,
             auth: authReducer,
-        }));
+        }), applyMiddleware(thunk));
 
         formWrapper = mount(<Provider store={store}><LoginForm /></Provider>)
     });
@@ -62,14 +60,54 @@ describe("LoginForm connected with redux-form", () => {
         sandbox.restore();
     });
 
-    it("renders fields", () => {
-        formWrapper.find('input[name="email"]').simulate('change', {target: {value: 'My new value'}});
-        formWrapper.find('input[name="email"]').simulate('keydown');
-        console.log(formWrapper.debug());
-        console.log('state of store', JSON.stringify( store.getState(), null,2))
-        console.log('validation comp debug', formWrapper.find(ValidationError).debug());
-        // expect(rendered.find({ name: "email" }).prop("value")).to.equal("an@email");
+    it("validates email field while typing", () => {
+        // initially validation box is empty
+        expect(formWrapper.find(ValidationError).at(0).props().message).to.equal(null);
+        // this sets field as touched
+        formWrapper.find('input[name="email"]').simulate('focus');
+        // this triggers validation
+        formWrapper.find('input[name="email"]').simulate('blur');
+        // validation box will show that email is required if we touch input field and keep it empty
+        // check validation block prop
+        expect(formWrapper.find(ValidationError).at(0).props().message).to.equal("Email address is required");
+        // check if validation block rendered error
+        expect(formWrapper.find(ValidationError).at(0).text()).to.equal("Email address is required");
+        // trigger change of email field with invalid value
+        formWrapper.find('input[name="email"]').simulate('change', {target: {value: 'abc'}});
+        expect(formWrapper.find(ValidationError).at(0).props().message).to.equal("Email address is invalid");
+        expect(formWrapper.find(ValidationError).at(0).text()).to.equal("Email address is invalid");
+        // enter right value
+        formWrapper.find('input[name="email"]').simulate('change', {target: {value: 'abc@abc.com'}});
+        expect(formWrapper.find(ValidationError).at(0).props().message).to.equal(null);
     });
 
+    it("validates password field while typing", () => {
+        // initially validation box is empty
+        expect(formWrapper.find(ValidationError).at(1).props().message).to.equal(null);
+        // this sets field as touched
+        formWrapper.find('input[name="password"]').simulate('focus');
+        // this triggers validation
+        formWrapper.find('input[name="password"]').simulate('blur');
+        // validation box will show that password is required if we touch input field and keep it empty
+        // check validation block prop
+        expect(formWrapper.find(ValidationError).at(1).props().message).to.equal("Password is required");
+        // check if validation block rendered error
+        expect(formWrapper.find(ValidationError).at(1).text()).to.equal("Password is required");
+        // trigger change of email field with invalid value
+        formWrapper.find('input[name="password"]').simulate('change', {target: {value: 'abc'}});
+        expect(formWrapper.find(ValidationError).at(1).props().message).to.equal(null);
+    });
 
+    it("submits login form data", () => {
+        formWrapper.find('input[name="email"]').simulate('focus');
+        formWrapper.find('input[name="email"]').simulate('change', {target: {value: 'abc@abc.com'}});
+        formWrapper.find('input[name="password"]').simulate('focus');
+        formWrapper.find('input[name="password"]').simulate('change', {target: {value: 'abc'}});
+        const logInActionSpy = sandbox.setStubFunc(authActions, "logIn", ()=>({type: 'test'}));
+        // simulate form submit
+        formWrapper.find('form.form').simulate('submit');
+        expect(logInActionSpy.callCount).to.equal(1);
+        expect(logInActionSpy.getCall(0).args[0]).to.equal('abc@abc.com');
+        expect(logInActionSpy.getCall(0).args[1]).to.equal('abc');
+    });
 });

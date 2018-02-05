@@ -1,31 +1,18 @@
-import { localApiRequest } from "./LocalApiRequest"
+import { LocalService } from "./LocalService";
 
-export function authService(dispatch?: any, getState?: any) {
-    return {
+export class AuthService extends LocalService {
+    logIn(email: string, password: string) {
+        this.setOptions({Authorization: 'Basic ' + btoa(`${email}:${password}`)});
+        return this.postNoProcess("/authenticate/", "grant_type=client_credentials");
+    }
 
-        logIn(email: string, password: string) {
-            return localApiRequest(dispatch, {
-                Authorization: 'Basic ' + btoa(`${email}:${password}`)
-            })
-                .postNoProcess("/authenticate/", "grant_type=client_credentials")
-        },
+    authToShiny() {
+        this.setOptions({withCredentials: true});
+        return this.get("/set-shiny-cookie/");
+    }
 
-        authToShiny() {
-            return localApiRequest(dispatch,{
-                Authorization: 'Bearer ' + getState().auth.bearerToken,
-                withCredentials: true
-
-            })
-                .get("/set-shiny-cookie/")
-        },
-
-        unauthFromShiny() {
-            return localApiRequest(dispatch,{
-                Authorization: 'Bearer ' + getState().auth.bearerToken,
-                withCredentials: true
-
-            })
-                .get("/clear-shiny-cookie/")
-        }
+    unauthFromShiny() {
+        this.setOptions({withCredentials: true});
+        return this.get("/clear-shiny-cookie/");
     }
 }

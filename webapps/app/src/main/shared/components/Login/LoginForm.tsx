@@ -26,7 +26,6 @@ export class LoginFormComponent extends React.Component<LoginFormProps, undefine
     }
 
     renderField(data: any) {
-        console.log('data in filed form', data)
         const { input, label, type, meta: { touched,  error } } = data;
         return <div>
             <input {...input} placeholder={label} type={type}/>
@@ -77,7 +76,7 @@ function mapStateToProps(state: any) {
 }
 
 const enhance = compose(
-    reduxForm({ form: 'login' }),
+    reduxForm({ form: 'login'}),
     connect(mapStateToProps),
 );
 

@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { ModellingGroup } from "../../../shared/models/Generated";
 import { GroupList } from "./GroupList";
 import { ButtonLink } from "../../../shared/components/ButtonLink";
-import { ModellingGroupsActions } from "../../actions/ModellingGroupsActions";
+import { modellingGroupsActions } from "../../actions/ModellingGroupsActions";
 import { LoadingElement } from "../../../shared/partials/LoadingElement/LoadingElement";
 // import { GlobalState } from "../../reducers/reducers";
 
@@ -18,7 +18,7 @@ export interface ChooseGroupProps {
 
 export class ChooseGroupContentComponent extends React.Component<ChooseGroupProps, undefined> {
     componentDidMount() {
-        this.props.dispatch(ModellingGroupsActions.getGroups());
+        this.props.dispatch(modellingGroupsActions.getGroups());
     }
 
     render() {

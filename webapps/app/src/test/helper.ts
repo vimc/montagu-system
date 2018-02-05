@@ -1,3 +1,4 @@
+import 'babel-polyfill';
 import { addTeamCityHooks } from "./TeamCityIntegration";
 import { mockFetcherResponse } from "./mocks/mockRemote";
 
