@@ -1,4 +1,4 @@
-FROM node:7
+FROM node:8.9.4
 RUN npm install webpack --global
 
 RUN mkdir -p /usr/src/app
