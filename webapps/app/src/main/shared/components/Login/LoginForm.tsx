@@ -12,19 +12,10 @@ import { authActions } from "../../actions/authActions";
 export interface LoginFormProps {
     handleSubmit: (F: any) => any;
     errorMessage?: string;
-    dispatch: Dispatch<any>;
+    submit: Function;
 }
 
 export class LoginFormComponent extends React.Component<LoginFormProps, undefined> {
-    constructor() {
-        super();
-        this.submit = this.submit.bind(this);
-    }
-
-    submit(values: any) {
-        this.props.dispatch(authActions.logIn(values.email, values.password))
-    }
-
     renderField(data: any) {
         const { input, label, type, meta: { touched,  error } } = data;
         return <div>
@@ -36,7 +27,7 @@ export class LoginFormComponent extends React.Component<LoginFormProps, undefine
     render() {
         return (
             <div>
-                <form className="form" onSubmit={this.props.handleSubmit(this.submit)}>
+                <form className="form" onSubmit={this.props.handleSubmit(this.props.submit)}>
                     <div className="fields">
                         <Field
                             name="email"
@@ -75,9 +66,15 @@ function mapStateToProps(state: any) {
     return { errorMessage: state.auth.errorMessage || null };
 }
 
+const mapDispatchToProps = (dispatch: Dispatch<any>) => {
+    return {
+        submit : (values: any) => dispatch(authActions.logIn(values.email, values.password))
+    }
+}
+
 const enhance = compose(
     reduxForm({ form: 'login'}),
-    connect(mapStateToProps),
+    connect(mapStateToProps, mapDispatchToProps),
 );
 
 export const LoginForm = enhance(LoginFormComponent);
