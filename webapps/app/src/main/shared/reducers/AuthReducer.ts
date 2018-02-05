@@ -8,12 +8,13 @@ export interface AuthState {
     modellingGroups?: any;
     isAccountActive: boolean;
     isModeller: boolean;
+    errorMessage?: string;
 }
 
 export const initialAuthState: AuthState = {
-    bearerToken: null,
     loggedIn: false,
     username: null,
+    bearerToken: null,
     permissions: [],
     isAccountActive: false,
     isModeller: false
@@ -24,7 +25,7 @@ export const authReducer = (state = initialAuthState, action: ActionsTypes) => {
         case TypeKeys.AUTHENTICATED:
             return { ...action.data };
         case TypeKeys.UNAUTHENTICATED:
-            return {  };
+            return initialAuthState;
         case TypeKeys.AUTHENTICATION_ERROR:
             return { ...state, errorMessage: action.error };
         default:
