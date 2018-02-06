@@ -4,7 +4,7 @@ import { ContribApp } from "./components/ContribApp";
 import { ContribFetcher } from "./sources/ContribFetcher";
 import fetcher from "../shared/sources/Fetcher";
 import { Provider } from "react-redux";
-import { createReportStore } from "./stores/createContribStore";
+import { createContribStore } from "./stores/createContribStore";
 import { authActions } from "../shared/actions/authActions"
 
 import './index.html';
@@ -14,7 +14,7 @@ import '../shared/styles/buttons.scss';
 import '../shared/styles/common.scss';
 
 fetcher.fetcher = new ContribFetcher();
-const store = createReportStore();
+const store = createContribStore();
 store.dispatch(authActions.loadSavedToken())
 
 ReactDOM.render(

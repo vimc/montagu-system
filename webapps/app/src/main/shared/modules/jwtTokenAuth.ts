@@ -10,7 +10,7 @@ export interface AuthTokenData {
     exp: number;
 }
 
-export const JwtTokenAuth = {
+export const jwtTokenAuth = {
 
     isExpired(expireTime: number) {
         const now = new Date();

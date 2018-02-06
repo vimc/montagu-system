@@ -12,14 +12,18 @@ import {
 import { TypeKeys } from "../actionTypes/AuthTypes";
 
 export abstract class LocalService {
-    dispatch: any;
-    bearerToken: string;
-    options: RequestOptionsProps = {};
+    protected dispatch: any;
+    protected bearerToken: string;
+    protected options: RequestOptionsProps = {};
 
     public constructor(dispatch: any, getState: Function) {
         this.dispatch = dispatch;
         this.bearerToken = this.getTokenFromState(getState())
         this.initOptions();
+        this.processFailure = this.processFailure.bind(this);
+        this.processSuccess = this.processSuccess.bind(this);
+        this.handleError = this.handleError.bind(this);
+        this.logOut = this.logOut.bind(this);
     }
 
     protected getTokenFromState(state: any) {
@@ -58,6 +62,7 @@ export abstract class LocalService {
     }
 
     public postNoProcess(url: string, params:any){
+        console.log('opts', this.options);
         return this.initRequestEngine()
             .post(url, params)
     }
@@ -82,9 +87,6 @@ export abstract class LocalService {
         switch (response.data.status) {
             case "success":
                 return response.data.data;
-            // in case if failure comes with good http response status code
-            case "failure":
-                return response.data.errors.forEach(this.handleError);
             default:
                 throw makeNotificationException("The server response was not correctly formatted: "
                     + response.toString(), "error");

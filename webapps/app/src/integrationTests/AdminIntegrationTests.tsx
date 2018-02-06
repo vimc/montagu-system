@@ -9,6 +9,7 @@ import { Client, QueryResult } from "pg";
 import { ModellingGroup, ModellingGroupDetails, User } from "../main/shared/models/Generated";
 import { modellingGroupActions } from "../main/shared/actions/ModellingGroupActions";
 import { userStore } from "../main/admin/stores/UserStore";
+import {createAdminStore} from "../main/admin/stores/createAdminStore";
 // import {setShinyToken} from "../main/shared/sources/LoginSource";
 
 class AdminIntegrationTests extends IntegrationTestSuite {
@@ -19,6 +20,11 @@ class AdminIntegrationTests extends IntegrationTestSuite {
     // authStore() {
     //     return adminAuthStore;
     // }
+
+    createStore() {
+        return createAdminStore();
+    }
+
 
     makeFetcher() {
         return new AdminFetcher();

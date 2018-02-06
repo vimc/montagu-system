@@ -2,14 +2,13 @@ import { Fetcher } from "../../shared/sources/Fetcher";
 // import { reportingAuthStore } from "../stores/ReportingAuthStore";
 import {settings} from "../../shared/Settings";
 import {FetchOptions} from "../../shared/sources/Fetcher";
+import { localStorageHandler } from "../../shared/services/localStorageHandler";
 
 export class ReportingFetcher extends Fetcher {
 
     getBearerToken(): string {
         // TODO: after making this redux, will be loaded from state
-        if (typeof(Storage) !== "undefined") {
-            return localStorage.getItem("accessToken");
-        }
+        return localStorageHandler.get("accessToken");
     }
 
     buildReportingURL(urlFragment: string): string {

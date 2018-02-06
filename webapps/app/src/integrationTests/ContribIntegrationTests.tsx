@@ -31,6 +31,7 @@ import {estimateTokenActions} from "../main/contrib/actions/EstimateActions";
 import {runParameterActions} from "../main/contrib/actions/RunParameterActions";
 
 import {fetchToken as fetchTokenForModelRunParam} from "../main/contrib/sources/RunParametersSource";
+import {createContribStore} from "../main/contrib/stores/createContribStore";
 
 const FormData = require('form-data');
 const http = require('http');
@@ -50,6 +51,9 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
     // authStore() {
     //     return contribAuthStore;
     // }
+    createStore() {
+        return createContribStore();
+    }
 
     makeFetcher() {
         return new ContribFetcher();

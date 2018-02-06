@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { ModellingGroup } from "../../../shared/models/Generated";
 import { GroupList } from "./GroupList";
 import { ButtonLink } from "../../../shared/components/ButtonLink";
-import { modellingGroupsActions } from "../../actions/ModellingGroupsActions";
+import { modellingGroupsActions } from "../../actions/modellingGroupsActions";
 import { LoadingElement } from "../../../shared/partials/LoadingElement/LoadingElement";
 // import { GlobalState } from "../../reducers/reducers";
 

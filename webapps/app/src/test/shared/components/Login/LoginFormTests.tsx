@@ -7,10 +7,6 @@ import { reducer as formReducer } from "redux-form";
 import { combineReducers } from "redux";
 import thunk from 'redux-thunk';
 
-// import * as enzyme from "enzyme";
-// import * as Adapter from "enzyme-adapter-react-15";
-// enzyme.configure({ adapter: new Adapter() });
-
 import { authReducer } from "../../../../main/shared/reducers/authReducer";
 import { Sandbox } from "../../../Sandbox";
 import { LoginFormComponent, LoginForm } from "../../../../main/shared/components/Login/LoginForm";
@@ -23,7 +19,7 @@ describe("LoginFormComponent unit testing", () => {
     const submitMock = sandbox.createSpy();
 
     before(() => {
-        formWrapper = shallow(<LoginFormComponent handleSubmit={submitMock} dispatch={()=>{}}/>)
+        formWrapper = shallow(<LoginFormComponent handleSubmit={submitMock} submit={()=>{}}/>)
     });
 
     afterEach(() => {

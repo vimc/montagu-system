@@ -17,6 +17,8 @@ import { ReportDetailsComponent } from "../main/report/components/Reports/Report
 import { DataLinks } from "../main/report/components/Data/DataLinks";
 import {ArtefactsSection} from "../main/report/components/Artefacts/ArtefactsSection";
 
+import { createReportStore } from "../main/report/stores/createReportStore";
+
 const jwt_decode = require('jwt-decode');
 
 class ReportIntegrationTests extends IntegrationTestSuite {
@@ -27,6 +29,10 @@ class ReportIntegrationTests extends IntegrationTestSuite {
     // authStore() {
     //     return reportingAuthStore;
     // }
+    createStore() {
+        return createReportStore();
+    }
+
 
     makeFetcher() {
         return new ReportingFetcher();

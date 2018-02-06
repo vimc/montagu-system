@@ -1,1 +1,2 @@
 --require ./src/test/setupVirtualDOM.js
+--require ./node_modules/babel-regenerator-runtime/runtime.js

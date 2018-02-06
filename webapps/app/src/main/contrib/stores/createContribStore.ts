@@ -3,7 +3,7 @@ import thunk from 'redux-thunk';
 
 import reducers from '../reducers/reducers';
 
-export function createReportStore() {
+export function createContribStore() {
     return createStore(
         reducers,
         applyMiddleware(thunk),

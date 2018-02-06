@@ -1,7 +1,7 @@
 import { Dispatch } from "redux";
 
 import { TypeKeys } from "../actionTypes/AuthTypes";
-import { JwtTokenAuth } from "../modules/JwtTokenAuth";
+import { jwtTokenAuth } from "../modules/jwtTokenAuth";
 import { AuthService } from "../services/AuthService";
 import { notificationActions } from "./NotificationActions";
 import { appSettings, settings } from "../Settings";
@@ -18,8 +18,10 @@ export const authActions = {
         return async (dispatch: Dispatch<any>, getState: any) => {
             try {
                 const response = await (new AuthService(dispatch, getState)).logIn(email, password)
+                console.log('response login', response);
                 dispatch(this.tokenReceived(response.data.access_token));
             } catch(e) {
+                console.log('response login err', e);
                 dispatch(this.authenticationError(e.response ? e.response.data.error : "Server Error"));
             }
         }
@@ -29,8 +31,8 @@ export const authActions = {
         return (dispatch: Dispatch<any>) => {
             const token = localStorageHandler.get("accessToken");
             if (token) {
-                const decoded: AuthTokenData = JwtTokenAuth.decodeToken(token);
-                if (JwtTokenAuth.isExpired(decoded.exp)) {
+                const decoded: AuthTokenData = jwtTokenAuth.decodeToken(token);
+                if (jwtTokenAuth.isExpired(decoded.exp)) {
                     console.log("Token is expired");
                     localStorageHandler.remove("accessToken");
                     dispatch(this.logOut())
@@ -59,9 +61,11 @@ export const authActions = {
 
     tokenReceived(token: string) {
         return (dispatch: Dispatch<any>, getState: any) => {
-            const user: AuthState = JwtTokenAuth.getDataFromToken(token);
+            console.log('tok rec');
+            const user: AuthState = jwtTokenAuth.getDataFromToken(token);
             const error: Notification = this.validateAuthResult(user);
             if (!error) {
+                console.log('will auth');
                 localStorageHandler.set("accessToken", token);
                 dispatch({
                     type: TypeKeys.AUTHENTICATED,

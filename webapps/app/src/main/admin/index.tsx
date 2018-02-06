@@ -5,7 +5,7 @@ import fetcher from "../shared/sources/Fetcher";
 import { AdminFetcher } from "./sources/AdminFetcher";
 import { Provider } from "react-redux";
 import { createAdminStore } from "./stores/createAdminStore";
-import { authActions } from "../shared/actions/AuthActions"
+import { authActions } from "../shared/actions/authActions"
 
 
 import './index.html';

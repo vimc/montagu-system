@@ -1,6 +1,12 @@
 import { Client } from "pg";
-import { checkPromise } from "../test/testHelpers";
+// import { checkPromise } from "../test/testHelpers";
 import { expect } from "chai";
+
+// import { createStore, applyMiddleware, combineReducers } from "redux";
+// import thunk from 'redux-thunk';
+// import { authReducer } from "../main/shared/reducers/authReducer";
+import { authActions } from "../main/shared/actions/authActions";
+
 // import { logIn } from "../main/shared/sources/LoginSource";
 // import { AuthStoreBaseInterface } from "../main/shared/stores/AuthStoreBase";
 import fetcher, { Fetcher } from "../main/shared/sources/Fetcher";
@@ -13,6 +19,8 @@ export abstract class IntegrationTestSuite {
     abstract description(): string;
 
     // abstract authStore(): AuthStoreBaseInterface<any>;
+    abstract createStore(): any;
+    store: any;
 
     abstract makeFetcher(): Fetcher;
 
@@ -43,6 +51,16 @@ export abstract class IntegrationTestSuite {
                 fetcher.fetcher = this.makeFetcher();
                 // Note that this will always trigger an authActions.logIn, which will result in all three login
                 // stores recording the user to some extent
+
+                this.store = this.createStore();
+                this.store.dispatch(authActions.logIn("test@example.com", "password"));
+                // let unsubscribe = this.store.subscribe(handleChange);
+                console.log(111111);
+                let that = this;
+                function handleChange () {
+                    console.log(222, that.store.getState());
+                    done();
+                }
                 // checkPromise(done, logIn("test@example.com", "password", this.authStore(), false));
             });
             afterEach(() => alt.recycle());
