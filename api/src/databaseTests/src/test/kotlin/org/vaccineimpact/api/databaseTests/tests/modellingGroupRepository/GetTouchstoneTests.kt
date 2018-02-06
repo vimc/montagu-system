@@ -39,7 +39,7 @@ class GetTouchstoneTests : ModellingGroupRepositoryTests()
             assertThat(touchstones).hasSize(2)
             assertThat(touchstones).hasSameElementsAs(listOf(
                     Touchstone(touchstoneId, "touchstone", 1, "descr 1", TouchstoneStatus.OPEN),
-                    Touchstone("$touchstone2Name-1", touchstone2Name, 1, "descr 1", TouchstoneStatus.OPEN)
+                    Touchstone("$touchstone2Name-1", touchstone2Name, 1, "descr 2", TouchstoneStatus.OPEN)
             ))
 
         }
