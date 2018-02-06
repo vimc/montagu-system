@@ -37,9 +37,11 @@ class GetTouchstoneTests : ModellingGroupRepositoryTests()
             val touchstones = repo.getTouchstonesByGroupId(groupId)
             assertThat(touchstones).isInstanceOf(List::class.java)
             assertThat(touchstones).hasSize(2)
-            assertThat(touchstones[0]).isEqualTo(
-                    Touchstone(touchstoneId, "touchstone", 1, "descr 1", TouchstoneStatus.OPEN)
-            )
+            assertThat(touchstones).hasSameElementsAs(listOf(
+                    Touchstone(touchstoneId, "touchstone", 1, "descr 1", TouchstoneStatus.OPEN),
+                    Touchstone("$touchstone2Name-1", touchstone2Name, 1, "descr 1", TouchstoneStatus.OPEN)
+            ))
+
         }
     }
 

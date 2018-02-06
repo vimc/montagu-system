@@ -156,6 +156,7 @@ class JooqModellingGroupRepository(
                 .where(RESPONSIBILITY_SET.MODELLING_GROUP.eq(group.id))
                 .and(RESPONSIBILITY.IS_OPEN)
                 .orNot(TOUCHSTONE.STATUS.eq("open"))
+                .orderBy(TOUCHSTONE.ID)
         return query.fetch().map { touchstoneRepository.mapTouchstone(it) }
     }
 
