@@ -16,7 +16,7 @@ class Validator(private val serializer: Serializer = MontaguSerializer.instance)
 
     fun recursiveNullCheck(property: KProperty1<Any, *>, model: Any, name: String): List<ErrorInfo>?
     {
-        // end condition if this non-nullable property is null
+        // end condition if property is non-nullable and null
         val value = property.get(model)
                 ?: return nullCheck(property, name, model)
 
