@@ -37,14 +37,41 @@ class GetTouchstoneTests : ModellingGroupRepositoryTests()
             val touchstones = repo.getTouchstonesByGroupId(groupId)
             assertThat(touchstones).isInstanceOf(List::class.java)
             assertThat(touchstones).hasSize(2)
-            assertThat(touchstones[0]).isEqualTo(
-                    Touchstone(touchstoneId, "touchstone", 1, "descr 1", TouchstoneStatus.OPEN)
+            assertThat(touchstones[0])
+                    .isEqualTo(Touchstone(touchstoneId, "touchstone", 1, "descr 1", TouchstoneStatus.OPEN))
+            assertThat(touchstones[1])
+                    .isEqualTo(Touchstone("$touchstone2Name-1", touchstone2Name, 1, "descr 2", TouchstoneStatus.OPEN)
             )
+
         }
     }
 
     @Test
-    fun `doesnt return touchstone with closed responsibilities`()
+    fun `does not return open touchstone with no responsibilities`()
+    {
+        given {
+            setUpDb(it)
+
+        } check { repo ->
+            val touchstones = repo.getTouchstonesByGroupId(groupId)
+            assertThat(touchstones).hasSize(0)
+        }
+    }
+
+    @Test
+    fun `does not return finished touchstone with no responsibilities`()
+    {
+        given {
+            setUpDb(it, touchstoneStatus = "finished")
+
+        } check { repo ->
+            val touchstones = repo.getTouchstonesByGroupId(groupId)
+            assertThat(touchstones).hasSize(0)
+        }
+    }
+
+    @Test
+    fun `does not return open touchstone with closed responsibilities`()
     {
         val scenarioId = "scenario-1"
 
@@ -55,6 +82,36 @@ class GetTouchstoneTests : ModellingGroupRepositoryTests()
         } check { repo ->
             val touchstones = repo.getTouchstonesByGroupId(groupId)
             assertThat(touchstones).hasSize(0)
+        }
+    }
+
+    @Test
+    fun `does return finished touchstone with closed responsibilities`()
+    {
+        val scenarioId = "scenario-1"
+
+        given {
+            setUpDb(it, touchstoneStatus = "finished")
+            addResponsibilitySetWithResponsibility(it, scenarioId, groupId, touchstoneId, open = false)
+
+        } check { repo ->
+            val touchstones = repo.getTouchstonesByGroupId(groupId)
+            assertThat(touchstones).hasSize(1)
+        }
+    }
+
+    @Test
+    fun `does return in prep touchstone with closed responsibilities`()
+    {
+        val scenarioId = "scenario-1"
+
+        given {
+            setUpDb(it, touchstoneStatus = "in-preparation")
+            addResponsibilitySetWithResponsibility(it, scenarioId, groupId, touchstoneId, open = false)
+
+        } check { repo ->
+            val touchstones = repo.getTouchstonesByGroupId(groupId)
+            assertThat(touchstones).hasSize(1)
         }
     }
 
@@ -79,11 +136,11 @@ class GetTouchstoneTests : ModellingGroupRepositoryTests()
         db.addResponsibility(setId, touchstoneId, scenarioId, open = open)
     }
 
-    private fun setUpDb(db: JooqContext)
+    private fun setUpDb(db: JooqContext, touchstoneStatus: String = "open")
     {
         db.addDisease(diseaseId)
         db.addGroup(groupId)
-        db.addTouchstone(touchstoneName, 1, addName = true, description = "descr 1", status = "open")
+        db.addTouchstone(touchstoneName, 1, addName = true, description = "descr 1", status = touchstoneStatus)
 
     }
 
