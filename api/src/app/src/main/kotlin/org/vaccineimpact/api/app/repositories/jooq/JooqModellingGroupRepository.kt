@@ -153,10 +153,9 @@ class JooqModellingGroupRepository(
                         TOUCHSTONE.VERSION
                 )
                 .fromJoinPath(TOUCHSTONE, RESPONSIBILITY_SET, RESPONSIBILITY)
-                .where(RESPONSIBILITY_SET.MODELLING_GROUP.eq(group.id))
-                .and(RESPONSIBILITY.IS_OPEN)
-                .orNot(TOUCHSTONE.STATUS.eq("open"))
-                .orderBy(TOUCHSTONE.ID)
+                .where(RESPONSIBILITY.IS_OPEN).orNot(TOUCHSTONE.STATUS.eq("open"))
+                .and(RESPONSIBILITY_SET.MODELLING_GROUP.eq(group.id))
+
         return query.fetch().map { touchstoneRepository.mapTouchstone(it) }
     }
 

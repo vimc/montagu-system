@@ -37,11 +37,36 @@ class GetTouchstoneTests : ModellingGroupRepositoryTests()
             val touchstones = repo.getTouchstonesByGroupId(groupId)
             assertThat(touchstones).isInstanceOf(List::class.java)
             assertThat(touchstones).hasSize(2)
-            assertThat(touchstones).hasSameElementsAs(listOf(
-                    Touchstone(touchstoneId, "touchstone", 1, "descr 1", TouchstoneStatus.OPEN),
-                    Touchstone("$touchstone2Name-1", touchstone2Name, 1, "descr 2", TouchstoneStatus.OPEN)
-            ))
+            assertThat(touchstones[0])
+                    .isEqualTo(Touchstone(touchstoneId, "touchstone", 1, "descr 1", TouchstoneStatus.OPEN))
+            assertThat(touchstones[1])
+                    .isEqualTo(Touchstone("$touchstone2Name-1", touchstone2Name, 1, "descr 2", TouchstoneStatus.OPEN)
+            )
 
+        }
+    }
+
+    @Test
+    fun `does not return open touchstone with no responsibilities`()
+    {
+        given {
+            setUpDb(it)
+
+        } check { repo ->
+            val touchstones = repo.getTouchstonesByGroupId(groupId)
+            assertThat(touchstones).hasSize(0)
+        }
+    }
+
+    @Test
+    fun `does not return finished touchstone with no responsibilities`()
+    {
+        given {
+            setUpDb(it, touchstoneStatus = "finished")
+
+        } check { repo ->
+            val touchstones = repo.getTouchstonesByGroupId(groupId)
+            assertThat(touchstones).hasSize(0)
         }
     }
 
