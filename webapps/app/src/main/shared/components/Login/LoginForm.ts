@@ -3,7 +3,7 @@ import AltReform, { Reform } from "alt-reform";
 import { alt } from "../../alt";
 import fetcher from "../../sources/Fetcher";
 import FormActions from "../../FormActions";
-import * as Validation from "../../Validation";
+import * as Validation from "../../validation/Validation";
 import { FormErrors } from "../../FormHelpers";
 import { requestAuthToken, processLoginResponse } from "../../sources/LoginSource";
 

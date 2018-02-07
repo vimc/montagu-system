@@ -1,4 +1,4 @@
-import * as Validation from "../../../main/shared/Validation";
+import * as Validation from "../../../main/shared/validation/Validation";
 import { expect } from "chai";
 import { ValidationTest } from "./ValidationTestBaseClass";
 
