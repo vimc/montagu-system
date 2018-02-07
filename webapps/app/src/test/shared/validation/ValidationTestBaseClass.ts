@@ -1,4 +1,4 @@
-import * as Validation from "../../../main/shared/Validation";
+import * as Validation from "../../../main/shared/validation/Validation";
 
 export abstract class ValidationTest {
     validate: Validation.Validator;

@@ -1,7 +1,7 @@
 import AltReform, { Reform } from "alt-reform";
 import { alt } from "../../../../shared/alt";
 import FormActions from "../../../../shared/FormActions";
-import * as Validation from "../../../../shared/Validation";
+import * as Validation from "../../../../shared/validation/Validation";
 import fetcher from "../../../../shared/sources/Fetcher";
 import { notificationActions, NotificationException } from "../../../../shared/actions/NotificationActions";
 import { userStore } from "../../../stores/UserStore";
