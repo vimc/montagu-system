@@ -14,26 +14,30 @@ import kotlin.reflect.full.memberProperties
 class Validator(private val serializer: Serializer = MontaguSerializer.instance)
 {
 
-    fun nullCheck(property: KProperty1<Any, *>, model: Any, name: String): List<ErrorInfo>?
+    fun recursiveNullCheck(property: KProperty1<Any, *>, model: Any, name: String): List<ErrorInfo>?
     {
-        if (property.returnType.isMarkedNullable)
-            return null
+        // end condition
+        // this non-nullable property is null
+        val value = property.get(model)
+                ?: return nullCheck(property, name)
 
-        val value = property.get(model) ?: return missingFieldError(name)
-
+        // end condition
+        // only continue with the recursion if this is a data class type
         if (!value::class.isData)
         {
             return null
         }
 
         val members = value::class.memberProperties.filterIsInstance<KProperty1<Any, *>>()
+        return members.flatMap { recursiveNullCheck(it, value, serializer.convertFieldName(it.name)) ?: listOf() }
+    }
 
-        if (!members.any())
-        {
+    private fun nullCheck(property: KProperty1<Any, *>, name: String): List<ErrorInfo>?{
+
+        if (property.returnType.isMarkedNullable)
             return null
-        }
 
-        return members.flatMap { nullCheck(it, value, serializer.convertFieldName(it.name)) ?: listOf() }
+        return missingFieldError(name)
     }
 
     fun applyRule(annotation: Annotation, property: KProperty1<Any, *>, fieldName: String, model: Any): List<ErrorInfo>
@@ -129,7 +133,7 @@ class Validator(private val serializer: Serializer = MontaguSerializer.instance)
         val property = properties.find { it.name == requiredPropertyName }
                 ?: throw Exception("Class '${model::class.simpleName}' doesn't have a property '$requiredPropertyName'")
 
-        return nullCheck(property, model, requiredPropertyName)
+        return recursiveNullCheck(property, model, requiredPropertyName)
                 ?: listOf()
     }
 }

@@ -29,7 +29,6 @@ class CreateBurdenEstimateSetTests : ValidationTests()
         }
     }
 
-
     @Test
     fun `missing type throws validation exception`()
     {
