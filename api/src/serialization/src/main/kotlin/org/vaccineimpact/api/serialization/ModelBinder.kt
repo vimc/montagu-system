@@ -38,7 +38,7 @@ class ModelBinder(private val serializer: Serializer = MontaguSerializer.instanc
         val name = serializer.convertFieldName(property.name)
         val value = property.get(model)
 
-        errors += validator.nullableCheck(property, model, name) ?: listOf()
+        errors += validator.nullCheck(property, model, name) ?: listOf()
 
         if (value is String && value.isBlank() && property.findAnnotationAnywhere<CanBeBlank>(klass) == null)
         {
