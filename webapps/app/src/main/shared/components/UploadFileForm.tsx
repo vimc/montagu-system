@@ -96,7 +96,7 @@ export class UploadFileForm extends React.Component<UploadFileProps, UploadFileS
             const problems = this.validatePath();
             return <span>
                 File selected: {this.state.fileName}
-                <Alert color="danger" isOpen={!problems.isValid} className="mt-3">
+                <Alert color="danger" isOpen={!problems.isValid} className="mt-3 pathProblems">
                     {problems.content}
                 </Alert>
             </span>;
