@@ -133,7 +133,7 @@ class Validator(private val serializer: Serializer = MontaguSerializer.instance)
 
     private fun checkMissing(property: KProperty1<Any, *>, model: Any, name: String): List<ErrorInfo>
     {
-        property.get(model) ?: return missingFieldError(name, model.javaClass.simpleName)
+        property.get(model) ?: return missingFieldError(name, model)
         return listOf()
     }
 
