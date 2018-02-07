@@ -29,8 +29,8 @@ class RecursiveValidationTests : ValidationTests()
             val errors = e.errors
             Assertions.assertThat(errors.count()).isEqualTo(2)
             Assertions.assertThat(errors.map { it.code })
-                    .hasSameElementsAs(listOf("invalid-field:inner:missing",
-                            "invalid-field:non_nullable_prop:missing"))
+                    .hasSameElementsAs(listOf("invalid-field:test_class:inner:missing",
+                            "invalid-field:test_class:non_nullable_prop:missing"))
 
         }
     }
@@ -38,7 +38,7 @@ class RecursiveValidationTests : ValidationTests()
     @Test
     fun `missing inner non-nullable throws validation exception`()
     {
-        val badModelJson = "{\"inner\": { }, \"non_nullable_prop\": \"something\"}"
+        val badModelJson = "{\"inner\": { }}"
         Assertions.assertThatThrownBy {
             binder.deserialize<TestClass>(badModelJson, TestClass::class.java)
         }
@@ -50,9 +50,10 @@ class RecursiveValidationTests : ValidationTests()
         catch (e: ValidationException)
         {
             val errors = e.errors
-            Assertions.assertThat(errors.count()).isEqualTo(1)
+            Assertions.assertThat(errors.count()).isEqualTo(2)
             Assertions.assertThat(errors.map { it.code })
-                    .hasSameElementsAs(listOf("invalid-field:inner_non_nullable_prop:missing"))
+                    .hasSameElementsAs(listOf("invalid-field:inner_test_class:inner_non_nullable_prop:missing",
+                            "invalid-field:test_class:non_nullable_prop:missing"))
 
         }
     }
@@ -82,7 +83,7 @@ class RecursiveValidationTests : ValidationTests()
             val errors = e.errors
             Assertions.assertThat(errors.count()).isEqualTo(1)
             Assertions.assertThat(errors.map { it.code })
-                    .hasSameElementsAs(listOf("invalid-field:inner_non_nullable_prop:missing"))
+                    .hasSameElementsAs(listOf("invalid-field:inner_test_class:inner_non_nullable_prop:missing"))
 
         }
     }

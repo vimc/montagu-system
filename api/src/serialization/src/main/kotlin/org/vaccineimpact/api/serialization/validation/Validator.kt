@@ -16,10 +16,9 @@ class Validator(private val serializer: Serializer = MontaguSerializer.instance)
 
     fun recursiveNullCheck(property: KProperty1<Any, *>, model: Any, name: String): List<ErrorInfo>?
     {
-        // end condition
-        // this non-nullable property is null
+        // end condition if this non-nullable property is null
         val value = property.get(model)
-                ?: return nullCheck(property, name)
+                ?: return nullCheck(property, name, model)
 
         // end condition
         // only continue with the recursion if this is a data class type
@@ -32,12 +31,13 @@ class Validator(private val serializer: Serializer = MontaguSerializer.instance)
         return members.flatMap { recursiveNullCheck(it, value, serializer.convertFieldName(it.name)) ?: listOf() }
     }
 
-    private fun nullCheck(property: KProperty1<Any, *>, name: String): List<ErrorInfo>?{
+    private fun nullCheck(property: KProperty1<Any, *>, name: String, model: Any): List<ErrorInfo>?
+    {
 
         if (property.returnType.isMarkedNullable)
             return null
 
-        return missingFieldError(name)
+        return missingFieldError(name, model)
     }
 
     fun applyRule(annotation: Annotation, property: KProperty1<Any, *>, fieldName: String, model: Any): List<ErrorInfo>
@@ -45,28 +45,37 @@ class Validator(private val serializer: Serializer = MontaguSerializer.instance)
         val value = property.get(model)
         return when (annotation)
         {
-            is AllowedFormat -> checkFormat(annotation, value, fieldName)
-            is MinimumLength -> checkLength(annotation, value, fieldName)
+            is AllowedFormat -> checkFormat(annotation, value, fieldName, model)
+            is MinimumLength -> checkLength(annotation, value, fieldName, model)
             is RequiredWhen -> checkRequiredWhen(annotation, property, fieldName, model)
             else -> listOf()
         }
     }
 
-    private fun checkMissing(property: KProperty1<Any, *>, model: Any, name: String): List<ErrorInfo>
+    fun checkBlank(property: KProperty1<Any, *>, name: String, model: Any): List<ErrorInfo>
     {
-        property.get(model) ?: return missingFieldError(name)
+        val value = property.get(model)
+
+        if (value is String && value.isBlank())
+        {
+            return listOf(ErrorInfo(
+                    "${invalidFieldCode(model, name)}:blank",
+                    "You have supplied an empty or blank string for field '$name'"
+            ))
+        }
+
         return listOf()
     }
 
-    private fun missingFieldError(name: String): List<ErrorInfo>
+    private fun missingFieldError(name: String, model:Any): List<ErrorInfo>
     {
         return listOf(ErrorInfo(
-                "invalid-field:$name:missing",
+                "${invalidFieldCode(model, name)}:missing",
                 "You have not supplied a value, or have supplied a null value, for field '$name'"
         ))
     }
 
-    private fun checkFormat(format: AllowedFormat, value: Any?, name: String): List<ErrorInfo>
+    private fun checkFormat(format: AllowedFormat, value: Any?, name: String, model: Any): List<ErrorInfo>
     {
         if (value is String && !value.isBlank())
         {
@@ -74,7 +83,7 @@ class Validator(private val serializer: Serializer = MontaguSerializer.instance)
             if (!regex.matches(value))
             {
                 return listOf(ErrorInfo(
-                        "invalid-field:$name:bad-format",
+                        "${invalidFieldCode(model, name)}:bad-format",
                         "The '$name' field must be in the form '${format.example}'"
                 ))
             }
@@ -82,20 +91,24 @@ class Validator(private val serializer: Serializer = MontaguSerializer.instance)
         return listOf()
     }
 
-    private fun checkLength(length: MinimumLength, value: Any?, name: String): List<ErrorInfo>
+    private fun checkLength(length: MinimumLength, value: Any?, name: String, model: Any): List<ErrorInfo>
     {
         if (value is String && !value.isBlank())
         {
             if (value.length < length.length)
             {
                 return listOf(ErrorInfo(
-                        "invalid-field:$name:too-short",
+                        "${invalidFieldCode(model, name)}:too-short",
                         "The '$name' field must be at least ${length.length} characters long"
                 ))
             }
         }
         return listOf()
     }
+
+    private fun invalidFieldCode(model: Any, propertyName: String): String
+            = "invalid-field:${serializer.convertFieldName(model.javaClass.simpleName)}:$propertyName"
+
 
     private fun checkRequiredWhen(requiredWhen: RequiredWhen, property: KProperty1<Any, *>, name: String, model: Any): List<ErrorInfo>
     {
@@ -115,6 +128,12 @@ class Validator(private val serializer: Serializer = MontaguSerializer.instance)
         {
             return checkMissing(property, model, name)
         }
+        return listOf()
+    }
+
+    private fun checkMissing(property: KProperty1<Any, *>, model: Any, name: String): List<ErrorInfo>
+    {
+        property.get(model) ?: return missingFieldError(name, model.javaClass.simpleName)
         return listOf()
     }
 

@@ -25,7 +25,7 @@ class CreateBurdenEstimateSetTests : ValidationTests()
         {
             val errors = e.errors
             Assertions.assertThat(errors.count()).isEqualTo(1)
-            Assertions.assertThat(errors[0].code).isEqualTo("invalid-field:type:missing")
+            Assertions.assertThat(errors[0].code).isEqualTo("invalid-field:create_burden_estimate_set:type:missing")
         }
     }
 
@@ -45,7 +45,7 @@ class CreateBurdenEstimateSetTests : ValidationTests()
         {
             val errors = e.errors
             Assertions.assertThat(errors.count()).isEqualTo(1)
-            Assertions.assertThat(errors[0].code).isEqualTo("invalid-field:type:missing")
+            Assertions.assertThat(errors[0].code).isEqualTo("invalid-field:create_burden_estimate_set:type:missing")
         }
     }
 
@@ -65,7 +65,7 @@ class CreateBurdenEstimateSetTests : ValidationTests()
         {
             val errors = e.errors
             Assertions.assertThat(errors.count()).isEqualTo(1)
-            Assertions.assertThat(errors[0].code).isEqualTo("invalid-field:type:missing")
+            Assertions.assertThat(errors[0].code).isEqualTo("invalid-field:burden_estimate_set_type:type:missing")
         }
     }
 
@@ -93,7 +93,7 @@ class CreateBurdenEstimateSetTests : ValidationTests()
         {
             val errors = e.errors
             Assertions.assertThat(errors.count()).isEqualTo(1)
-            Assertions.assertThat(errors[0].code).isEqualTo("invalid-field:model_run_parameter_set:missing")
+            Assertions.assertThat(errors[0].code).isEqualTo("invalid-field:create_burden_estimate_set:model_run_parameter_set:missing")
         }
     }
 

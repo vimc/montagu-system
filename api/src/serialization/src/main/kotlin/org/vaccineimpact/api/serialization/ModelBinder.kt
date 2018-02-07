@@ -36,17 +36,14 @@ class ModelBinder(private val serializer: Serializer = MontaguSerializer.instanc
         val klass = model::class as KClass<Any>
         val errors = mutableListOf<ErrorInfo>()
         val name = serializer.convertFieldName(property.name)
-        val value = property.get(model)
 
         errors += validator.recursiveNullCheck(property, model, name) ?: listOf()
 
-        if (value is String && value.isBlank() && property.findAnnotationAnywhere<CanBeBlank>(klass) == null)
+        if (property.findAnnotationAnywhere<CanBeBlank>(klass) == null)
         {
-            errors += ErrorInfo(
-                    "invalid-field:$name:blank",
-                    "You have supplied an empty or blank string for field '$name'"
-            )
+            errors += validator.checkBlank(property, name, model)
         }
+
         errors += property.allAnnotations(klass).flatMap { validator.applyRule(it, property, name, model) }
         return errors
     }
