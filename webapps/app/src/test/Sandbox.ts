@@ -4,7 +4,7 @@ import {mount, MountRendererProps, ReactWrapper} from "enzyme";
 import { ReactElement } from "react";
 import { alt } from "../main/shared/alt";
 import fetcher from "../main/shared/sources/Fetcher";
-import {mockFetcher, mockFetcherResponse} from "./mocks/mockRemote";
+import {mockFetcher, mockFetcherResponse, resetFetcher} from "./mocks/mockRemote";
 
 export class Sandbox {
     sinon: sinon.SinonSandbox;
@@ -31,6 +31,7 @@ export class Sandbox {
         });
         this.mounted = [];
         alt.recycle();
+        resetFetcher();
     }
 
     dispatchSpy(): sinon.SinonSpy {

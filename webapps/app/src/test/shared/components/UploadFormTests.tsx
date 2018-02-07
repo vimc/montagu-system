@@ -5,11 +5,16 @@ import {Sandbox} from "../../Sandbox";
 import {UploadFileForm} from "../../../main/shared/components/UploadFileForm";
 import {helpers} from "../../../main/shared/Helpers";
 import {Alert} from "reactstrap";
+import {CustomValidationResult} from "../../../main/shared/validation/FileValidationHelpers";
+import {mockFetcher, resetFetcher} from "../../mocks/mockRemote";
+import fetcher from "../../../main/shared/sources/Fetcher";
+import {ReportingFetcher} from "../../../main/report/sources/ReportingFetcher";
 
 describe('UploadForm', () => {
     let rendered: ShallowWrapper<any, any>;
     const sandbox = new Sandbox();
 
+    before(() => resetFetcher());
     afterEach(() => sandbox.restore());
 
     it("disables the submit button if enable submit is false", () => {
@@ -20,10 +25,7 @@ describe('UploadForm', () => {
                                            token="token"/>);
 
         rendered.setState({"fileSelected": true});
-
-        const uploadButton = rendered.find(`button`).first();
-        expect(uploadButton.prop("disabled")).to.eq(true);
-        expect(uploadButton.hasClass("disabled")).to.eq(true);
+        assertButtonIsDisabled();
     });
 
     it("disables submit button if token is null", () => {
@@ -34,10 +36,7 @@ describe('UploadForm', () => {
                                            token={null}/>);
 
         rendered.setState({"fileSelected": true});
-
-        const uploadButton = rendered.find(`button`).first();
-        expect(uploadButton.prop("disabled")).to.eq(true);
-        expect(uploadButton.hasClass("disabled")).to.eq(true);
+        assertButtonIsDisabled();
     });
 
     it("disables submit button if file not selected", () => {
@@ -46,10 +45,24 @@ describe('UploadForm', () => {
                                            successMessage={"success"}
                                            enableSubmit={true}
                                            token="token"/>);
+        assertButtonIsDisabled();
+    });
 
-        const uploadButton = rendered.find(`button`).first();
-        expect(uploadButton.prop("disabled")).to.eq(true);
-        expect(uploadButton.hasClass("disabled")).to.eq(true);
+    it("disables submit button and renders explanation if checkPath fails validation", () => {
+        const validate = () => {
+            return {
+                isValid: false,
+                content: <span>Bad things</span>
+            };
+        };
+        rendered = shallow(<UploadFileForm token="token"
+                                           uploadText="upload text"
+                                           enableSubmit={true}
+                                           successMessage="success"
+                                           validatePath={validate}/>);
+        rendered.setState({"fileSelected": true});
+        assertButtonIsDisabled();
+        expect(rendered.find(".pathProblems").children().text()).to.contain("Bad things");
     });
 
     it("enables submit button if enableSubmit is true and token exists", () => {
@@ -123,5 +136,11 @@ describe('UploadForm', () => {
         expect(successAlert.prop("isOpen")).to.eq(true);
         expect(successAlert.childAt(0).text()).to.eql("success message");
     });
+
+    function assertButtonIsDisabled() {
+        const uploadButton = rendered.find(`button`).first();
+        expect(uploadButton.prop("disabled")).to.eq(true);
+        expect(uploadButton.hasClass("disabled")).to.eq(true);
+    }
 
 });

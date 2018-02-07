@@ -4,6 +4,7 @@ import {helpers} from "../../../../shared/Helpers";
 import {Alert} from "reactstrap";
 import {ErrorInfo, Result} from "../../../../shared/models/Generated";
 import {CreateBurdenEstimateSetForm} from "./CreateBurdenEstimateSetForm";
+import {checkFileExtensionIsCSV} from "../../../../shared/validation/FileValidationHelpers";
 
 interface UploadBurdenEstimatesFormComponentProps {
     touchstoneId: string;
@@ -46,7 +47,9 @@ export class UploadBurdenEstimatesForm extends React.Component<UploadBurdenEstim
             <UploadFileForm token={this.props.estimatesToken}
                             enableSubmit={true}
                             uploadText={"Upload estimates for this scenario"}
-                            successMessage={uploadSuccessMessage}/>
+                            successMessage={uploadSuccessMessage}
+                            validatePath={checkFileExtensionIsCSV}
+            />
             : null;
 
         const createForm = this.props.canCreate && !this.props.canUpload && !this.state.hasUploadSuccess ?
