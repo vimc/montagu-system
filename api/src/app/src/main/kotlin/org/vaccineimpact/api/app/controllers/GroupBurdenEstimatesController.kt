@@ -66,7 +66,8 @@ open class GroupBurdenEstimatesController(
         val keepOpen = context.queryParams("keepOpen")?.toBoolean() ?: false
         if (!keepOpen)
         {
-            estimateRepository.closeBurdenEstimateSet(setId)
+            estimateRepository.closeBurdenEstimateSet(setId,
+                    path.groupId, path.touchstoneId, path.scenarioId)
         }
 
         return okayResponse()
@@ -77,6 +78,14 @@ open class GroupBurdenEstimatesController(
         val path = getValidResponsibilityPath(context, estimateRepository)
         val setId = context.params(":set-id").toInt()
         estimateRepository.clearBurdenEstimateSet(setId, path.groupId, path.touchstoneId, path.scenarioId)
+        return okayResponse()
+    }
+
+    fun closeBurdenEstimateSet(): String
+    {
+        val path = getValidResponsibilityPath(context, estimateRepository)
+        val setId = context.params(":set-id").toInt()
+        estimateRepository.closeBurdenEstimateSet(setId, path.groupId, path.touchstoneId, path.scenarioId)
         return okayResponse()
     }
 

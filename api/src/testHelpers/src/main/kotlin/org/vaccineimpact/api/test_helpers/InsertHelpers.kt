@@ -4,6 +4,7 @@ import org.vaccineimpact.api.db.*
 import org.vaccineimpact.api.db.Tables.*
 import org.vaccineimpact.api.db.tables.records.CoverageRecord
 import org.vaccineimpact.api.db.tables.records.DemographicStatisticRecord
+import org.vaccineimpact.api.db.tables.records.ScenarioRecord
 import org.vaccineimpact.api.models.permissions.ReifiedRole
 import org.vaccineimpact.api.security.UserHelper
 import org.vaccineimpact.api.security.ensureUserHasRole
@@ -145,15 +146,26 @@ fun JooqContext.addScenarioToTouchstone(touchstone: String,
                                         id: Int? = null
 ): Int
 {
-    return this.dsl.newRecord(SCENARIO).apply {
-        if (id != null)
-        {
-            this.id = id
-        }
-        this.touchstone = touchstone
-        this.scenarioDescription = scenarioDescription
-        store()
-    }.id
+    val scenario: ScenarioRecord? = this.dsl.selectFrom(SCENARIO)
+            .where(SCENARIO.TOUCHSTONE.eq(touchstone))
+            .and(SCENARIO.SCENARIO_DESCRIPTION.eq(scenarioDescription))
+            .fetchAny()
+    if (scenario != null)
+    {
+        return scenario.id
+    }
+    else
+    {
+        return this.dsl.newRecord(SCENARIO).apply {
+            if (id != null)
+            {
+                this.id = id
+            }
+            this.touchstone = touchstone
+            this.scenarioDescription = scenarioDescription
+            store()
+        }.id
+    }
 }
 
 fun JooqContext.addScenarios(touchstone: String, vararg scenarioDescriptions: String): List<Int>

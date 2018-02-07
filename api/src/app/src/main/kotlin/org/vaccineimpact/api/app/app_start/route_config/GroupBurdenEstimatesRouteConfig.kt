@@ -49,8 +49,14 @@ object GroupBurdenEstimatesRouteConfig : RouteConfig
                     .json()
                     .secure(writePermissions),
 
+            // Actions
             Endpoint("$baseUrl/:set-id/actions/clear/",
                     controller, "clearBurdenEstimateSet", method = HttpMethod.post)
+                    .json()
+                    .secure(writePermissions),
+
+            Endpoint("$baseUrl/:set-id/actions/close/",
+                    controller, "closeBurdenEstimateSet", method = HttpMethod.post)
                     .json()
                     .secure(writePermissions)
     )
