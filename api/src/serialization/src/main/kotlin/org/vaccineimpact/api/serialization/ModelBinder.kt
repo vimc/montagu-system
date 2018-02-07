@@ -26,18 +26,38 @@ class ModelBinder(private val serializer: Serializer = MontaguSerializer.instanc
     fun verify(model: Any): List<ErrorInfo>
     {
         val properties = model::class.memberProperties.filterIsInstance<KProperty1<Any, *>>()
-                .sortedBy { it.returnType.isMarkedNullable }
-        return properties.flatMap { verify(it, model) }
+        return properties.flatMap { recursiveVerify(it, model) ?: listOf() }
     }
 
-    fun verify(property: KProperty1<Any, *>, model: Any): List<ErrorInfo>
+    private fun recursiveVerify(property: KProperty1<Any, *>, model: Any): List<ErrorInfo>
+    {
+        val errors = verify(property, model)
+
+        // end condition
+        // value is null
+        val value = property.get(model) ?:
+                return errors
+
+        val klass = value::class
+        if (!klass.isData)
+        {
+            // end condition
+            // primitive property
+            return errors
+        }
+
+        val members = klass.memberProperties.filterIsInstance<KProperty1<Any, *>>()
+        return errors + members.flatMap { recursiveVerify(it, value) }
+    }
+
+    private fun verify(property: KProperty1<Any, *>, model: Any): List<ErrorInfo>
     {
         @Suppress("UNCHECKED_CAST")
         val klass = model::class as KClass<Any>
         val errors = mutableListOf<ErrorInfo>()
         val name = serializer.convertFieldName(property.name)
 
-        errors += validator.recursiveNullCheck(property, model, name) ?: listOf()
+        errors += validator.nullCheck(property.get(model), property, model, name)
 
         if (property.findAnnotationAnywhere<CanBeBlank>(klass) == null)
         {
@@ -45,7 +65,13 @@ class ModelBinder(private val serializer: Serializer = MontaguSerializer.instanc
         }
 
         errors += property.allAnnotations(klass).flatMap { validator.applyRule(it, property, name, model) }
-        return errors
+
+        if (errors.any())
+        {
+            return errors
+        }
+
+        return listOf()
     }
 
     private fun preprocessed(body: String) = if (body.isBlank())

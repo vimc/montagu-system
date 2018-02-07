@@ -13,34 +13,8 @@ import kotlin.reflect.full.memberProperties
 
 class Validator(private val serializer: Serializer = MontaguSerializer.instance)
 {
-
-    fun recursiveNullCheck(property: KProperty1<Any, *>, model: Any, name: String): List<ErrorInfo>?
-    {
-        // end condition if property is non-nullable and null
-        val value = property.get(model)
-                ?: return nullCheck(property, name, model)
-
-        // end condition
-        // only continue with the recursion if this is a data class type
-        if (!value::class.isData)
-        {
-            return null
-        }
-
-        val members = value::class.memberProperties.filterIsInstance<KProperty1<Any, *>>()
-        return members.flatMap { recursiveNullCheck(it, value, serializer.convertFieldName(it.name)) ?: listOf() }
-    }
-
-    private fun nullCheck(property: KProperty1<Any, *>, name: String, model: Any): List<ErrorInfo>?
-    {
-
-        if (property.returnType.isMarkedNullable)
-            return null
-
-        return missingFieldError(name, model)
-    }
-
-    fun applyRule(annotation: Annotation, property: KProperty1<Any, *>, fieldName: String, model: Any): List<ErrorInfo>
+    fun applyRule(annotation: Annotation, property: KProperty1<Any, *>, fieldName: String, model: Any)
+            : List<ErrorInfo>
     {
         val value = property.get(model)
         return when (annotation)
@@ -118,10 +92,10 @@ class Validator(private val serializer: Serializer = MontaguSerializer.instance)
         val function = functions.singleOrNull { it.name == functionName && it.returnType.classifier == Boolean::class }
                 ?: throw Exception("Class '${model::class.simpleName}' doesn't have a function '$functionName'")
 
-        val validationErrorsForRequiredProperties = checkDependentProperties(requiredPropertyNames, model)
-        if (validationErrorsForRequiredProperties.any())
+        val nullCheckErrors = nullCheckRequiredProperties(requiredPropertyNames, model)
+        if (nullCheckErrors.any())
         {
-            return validationErrorsForRequiredProperties
+            return nullCheckErrors
         }
         val dependentValue = function.call(model) as Boolean
         if (dependentValue)
@@ -137,22 +111,56 @@ class Validator(private val serializer: Serializer = MontaguSerializer.instance)
         return listOf()
     }
 
-    private fun checkDependentProperties(requiredPropertyNames: List<String>, model: Any): List<ErrorInfo>
+    private fun nullCheckRequiredProperties(requiredPropertyNames: List<String>, model: Any): List<ErrorInfo>
     {
         val properties = model::class.declaredMemberProperties
         val requiredProperties = properties
                 .filterIsInstance<KProperty1<Any, *>>()
                 .filter { requiredPropertyNames.contains(it.name) }
 
-        return requiredProperties.flatMap { checkDependentProperty(requiredProperties, it.name, model) }
+        return requiredProperties.flatMap { nullCheckDependentProperty(requiredProperties, it.name, model) }
     }
 
-    private fun checkDependentProperty(properties: List<KProperty1<Any, *>>, requiredPropertyName: String, model: Any): List<ErrorInfo>
+    private fun nullCheckDependentProperty(properties: List<KProperty1<Any, *>>, requiredPropertyName: String, model: Any): List<ErrorInfo>
     {
         val property = properties.find { it.name == requiredPropertyName }
                 ?: throw Exception("Class '${model::class.simpleName}' doesn't have a property '$requiredPropertyName'")
 
         return recursiveNullCheck(property, model, requiredPropertyName)
-                ?: listOf()
+    }
+
+    private fun recursiveNullCheck(property: KProperty1<Any, *>, model: Any, name: String): List<ErrorInfo>
+    {
+        val value = property.get(model)
+                ?: return nullCheck(property, name, model)
+
+        // end condition
+        // only continue with the recursion if this is a data class type
+        if (!value::class.isData)
+        {
+            return listOf()
+        }
+
+        val members = value::class.memberProperties.filterIsInstance<KProperty1<Any, *>>()
+        return members.flatMap { recursiveNullCheck(it, value, serializer.convertFieldName(it.name)) }
+    }
+
+    private fun nullCheck(property: KProperty1<Any, *>, name: String, model: Any): List<ErrorInfo>
+    {
+        if (property.returnType.isMarkedNullable)
+            return listOf()
+
+        return missingFieldError(name, model)
+    }
+
+    fun nullCheck(value: Any?, property: KProperty1<Any, *>, model: Any, name: String): List<ErrorInfo>
+    {
+        if (value != null)
+                return listOf()
+
+        if (property.returnType.isMarkedNullable)
+            return listOf()
+
+        return missingFieldError(name, model)
     }
 }

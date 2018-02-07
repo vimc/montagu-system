@@ -1,37 +1,35 @@
 package org.vaccineimpact.api.tests.models
 
 import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
+import org.vaccineimpact.api.models.validation.MinimumLength
 import org.vaccineimpact.api.serialization.validation.ValidationException
 
 class RecursiveValidationTests : ValidationTests()
 {
     data class InnerTestClass(val innerNullableProp: String?, val innerNonNullableProp: String)
+    data class Nested(@MinimumLength(2) val minLengthValue: String)
     data class TestClass(val inner: InnerTestClass,
                          val nullableProp: String?,
                          val nonNullableProp: String,
-                         val innerNullable: InnerTestClass?)
+                         val innerNullable: InnerTestClass?,
+                         val nested: Nested?)
 
     @Test
     fun `empty json throws validation exception`()
     {
         val badModelJson = "{}"
+
         Assertions.assertThatThrownBy {
             binder.deserialize<TestClass>(badModelJson, TestClass::class.java)
-        }
-
-        try
-        {
-            binder.deserialize<TestClass>(badModelJson, TestClass::class.java)
-        }
-        catch (e: ValidationException)
-        {
-            val errors = e.errors
-            Assertions.assertThat(errors.count()).isEqualTo(2)
-            Assertions.assertThat(errors.map { it.code })
+        }.matches {
+            val errors = (it as ValidationException).errors
+            assertThat(errors).hasSize(2)
+            assertThat(errors.map { it.code })
                     .hasSameElementsAs(listOf("invalid-field:test_class:inner:missing",
                             "invalid-field:test_class:non_nullable_prop:missing"))
-
+            true
         }
     }
 
@@ -39,22 +37,16 @@ class RecursiveValidationTests : ValidationTests()
     fun `missing inner non-nullable throws validation exception`()
     {
         val badModelJson = "{\"inner\": { }}"
+
         Assertions.assertThatThrownBy {
             binder.deserialize<TestClass>(badModelJson, TestClass::class.java)
-        }
-
-        try
-        {
-            binder.deserialize<TestClass>(badModelJson, TestClass::class.java)
-        }
-        catch (e: ValidationException)
-        {
-            val errors = e.errors
-            Assertions.assertThat(errors.count()).isEqualTo(2)
+        }.matches {
+            val errors = (it as ValidationException).errors
+            Assertions.assertThat(errors).hasSize(2)
             Assertions.assertThat(errors.map { it.code })
                     .hasSameElementsAs(listOf("invalid-field:inner_test_class:inner_non_nullable_prop:missing",
                             "invalid-field:test_class:non_nullable_prop:missing"))
-
+            true
         }
     }
 
@@ -72,19 +64,29 @@ class RecursiveValidationTests : ValidationTests()
 
         Assertions.assertThatThrownBy {
             binder.deserialize<TestClass>(badModelJson, TestClass::class.java)
-        }
-
-        try
-        {
-            binder.deserialize<TestClass>(badModelJson, TestClass::class.java)
-        }
-        catch (e: ValidationException)
-        {
-            val errors = e.errors
+        }.matches {
+            val errors = (it as ValidationException).errors
             Assertions.assertThat(errors.count()).isEqualTo(1)
             Assertions.assertThat(errors.map { it.code })
                     .hasSameElementsAs(listOf("invalid-field:inner_test_class:inner_non_nullable_prop:missing"))
+            true
+        }
+    }
 
+    @Test
+    fun `nested property rule gets validated`()
+    {
+        val badModelJson = "{\"inner\": { \"inner_non_nullable_prop\": \"somevalue\" }, \"nested\": { \"min_length_value\": \"a\"}}"
+
+        Assertions.assertThatThrownBy {
+            binder.deserialize<TestClass>(badModelJson, TestClass::class.java)
+        }.matches {
+            val errors = (it as ValidationException).errors
+            Assertions.assertThat(errors.count()).isEqualTo(2)
+            Assertions.assertThat(errors.map { it.code })
+                    .hasSameElementsAs(listOf("invalid-field:test_class:non_nullable_prop:missing",
+                            "invalid-field:nested:min_length_value:too-short"))
+            true
         }
     }
 }
