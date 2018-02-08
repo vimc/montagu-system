@@ -269,12 +269,7 @@ class JooqBurdenEstimateRepository(
     override fun populateBurdenEstimateSet(setId: Int, groupId: String, touchstoneId: String, scenarioId: String,
                                            estimates: Sequence<BurdenEstimateWithRunId>)
     {
-        // Dereference modelling group IDs
-        val modellingGroup = modellingGroupRepository.getModellingGroup(groupId)
-
-        val responsibilityInfo = getResponsibilityInfo(modellingGroup.id, touchstoneId, scenarioId)
-
-        val set = getBurdenEstimateSetForResponsibility(setId, responsibilityInfo.id)
+        val (set, responsibilityInfo) = getSetFromResponsibilityPath(groupId, touchstoneId, scenarioId, setId)
         val type = set.type.type
 
         if (set.status == BurdenEstimateSetStatus.COMPLETE)
@@ -296,8 +291,10 @@ class JooqBurdenEstimateRepository(
         updateCurrentBurdenEstimateSet(responsibilityInfo.id, setId, type)
     }
 
-    override fun closeBurdenEstimateSet(setId: Int)
+    override fun closeBurdenEstimateSet(setId: Int, groupId: String, touchstoneId: String, scenarioId: String)
     {
+        // Check all the IDs match up
+        getSetFromResponsibilityPath(groupId, touchstoneId, scenarioId, setId)
         changeBurdenEstimateStatus(setId, BurdenEstimateSetStatus.COMPLETE)
     }
 
@@ -343,10 +340,7 @@ class JooqBurdenEstimateRepository(
 
     override fun clearBurdenEstimateSet(setId: Int, groupId: String, touchstoneId: String, scenarioId: String)
     {
-        val modellingGroup = modellingGroupRepository.getModellingGroup(groupId)
-        val responsibilityInfo = getResponsibilityInfo(modellingGroup.id, touchstoneId, scenarioId)
-        val set = getBurdenEstimateSetForResponsibility(setId, responsibilityInfo.id)
-
+        val (set, _) = getSetFromResponsibilityPath(groupId, touchstoneId, scenarioId, setId)
         if (set.status == BurdenEstimateSetStatus.COMPLETE)
         {
             throw OperationNotAllowedError("You cannot clear a burden estimate set which is marked as 'complete'.")
@@ -365,6 +359,17 @@ class JooqBurdenEstimateRepository(
         {
             centralBurdenEstimateWriter.clearEstimateSet(setId)
         }
+    }
+
+    private fun getSetFromResponsibilityPath(
+            groupId: String, touchstoneId: String, scenarioId: String, setId: Int
+    ): Pair<BurdenEstimateSet, ResponsibilityInfo>
+    {
+        // Dereference modelling group IDs
+        val modellingGroup = modellingGroupRepository.getModellingGroup(groupId)
+        val responsibilityInfo = getResponsibilityInfo(modellingGroup.id, touchstoneId, scenarioId)
+        val set = getBurdenEstimateSetForResponsibility(setId, responsibilityInfo.id)
+        return Pair(set, responsibilityInfo)
     }
 
     private fun getlatestModelVersion(groupId: String, disease: String): Int

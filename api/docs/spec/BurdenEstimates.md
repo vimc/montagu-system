@@ -131,3 +131,14 @@ unchanged. This can only be invoked if:
 * The relevant responsibility set is `incomplete`
 
 Required permissions: Scoped to modelling group: `estimates.write`, `responsibilities.read`.
+
+## POST /modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}/{scenario-id}/estimate-sets/{set-id}/actions/close/
+Marks a burden estimate set as `complete`. This can only be invoked if:
+
+* The touchstone is `open`
+* The relevant responsibility set is `incomplete`
+* The burden estimate set is **valid** - currently this is not implemented, but
+  in the future at this point we will check there is no missing data, no 
+  suspicious values, etc.
+
+Required permissions: Scoped to modelling group: `estimates.write`, `responsibilities.read`.
