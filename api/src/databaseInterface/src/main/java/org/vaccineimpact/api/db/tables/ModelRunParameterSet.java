@@ -39,7 +39,7 @@ import org.vaccineimpact.api.db.tables.records.ModelRunParameterSetRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ModelRunParameterSet extends TableImpl<ModelRunParameterSetRecord> {
 
-    private static final long serialVersionUID = 947798896;
+    private static final long serialVersionUID = 599040603;
 
     /**
      * The reference instance of <code>public.model_run_parameter_set</code>
@@ -63,6 +63,11 @@ public class ModelRunParameterSet extends TableImpl<ModelRunParameterSetRecord> 
      * The column <code>public.model_run_parameter_set.responsibility_set</code>.
      */
     public final TableField<ModelRunParameterSetRecord, Integer> RESPONSIBILITY_SET = createField("responsibility_set", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+
+    /**
+     * The column <code>public.model_run_parameter_set.description</code>.
+     */
+    public final TableField<ModelRunParameterSetRecord, String> DESCRIPTION = createField("description", org.jooq.impl.SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.model_run_parameter_set.upload_info</code>.
