@@ -3,14 +3,14 @@ package org.vaccineimpact.api.serialization
 import org.vaccineimpact.api.models.ErrorInfo
 import org.vaccineimpact.api.models.validation.CanBeBlank
 import org.vaccineimpact.api.serialization.validation.ValidationException
-import org.vaccineimpact.api.serialization.validation.applyRule
-import org.vaccineimpact.api.serialization.validation.checkMissing
+import org.vaccineimpact.api.serialization.validation.Validator
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty1
 import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.memberProperties
 
-class ModelBinder(private val serializer: Serializer = MontaguSerializer.instance)
+class ModelBinder(private val serializer: Serializer = MontaguSerializer.instance,
+                  private val validator: Validator = Validator())
 {
     fun <T : Any> deserialize(body: String, klass: Class<T>): T
     {
@@ -18,7 +18,7 @@ class ModelBinder(private val serializer: Serializer = MontaguSerializer.instanc
         val errors = verify(model)
         if (errors.any())
         {
-            throw ValidationException(errors)
+            throw ValidationException(errors.distinct())
         }
         return model
     }
@@ -26,29 +26,47 @@ class ModelBinder(private val serializer: Serializer = MontaguSerializer.instanc
     fun verify(model: Any): List<ErrorInfo>
     {
         val properties = model::class.memberProperties.filterIsInstance<KProperty1<Any, *>>()
-        return properties.flatMap { verify(it, model) }
+        return properties.flatMap { recursiveVerify(it, model, null) }
     }
 
-    fun verify(property: KProperty1<Any, *>, model: Any): List<ErrorInfo>
+    private fun recursiveVerify(property: KProperty1<Any, *>, model: Any, parentName: String?): MutableList<ErrorInfo>
+    {
+        val value = property.get(model)
+        val errors = verify(value, property, model, parentName)
+
+        if (value != null && value::class.isData)
+        {
+            val members = value::class.memberProperties.filterIsInstance<KProperty1<Any, *>>()
+            errors += members.flatMap { recursiveVerify(it, value, property.name) }
+        }
+
+        return errors
+    }
+
+    private fun verify(value: Any?, property: KProperty1<Any, *>, model: Any, parentName: String?): MutableList<ErrorInfo>
     {
         @Suppress("UNCHECKED_CAST")
         val klass = model::class as KClass<Any>
         val errors = mutableListOf<ErrorInfo>()
-        val name = serializer.convertFieldName(property.name)
-        val value = property.get(model)
 
-        if (!property.returnType.isMarkedNullable)
+        val qualifiedName =
+                if (parentName == null)
+                {
+                    serializer.convertFieldName(property.name)
+                }
+                else
+                {
+                    serializer.convertFieldName("$parentName:${property.name}")
+                }
+
+        errors += validator.checkNull(value, property, qualifiedName)
+
+        if (property.findAnnotationAnywhere<CanBeBlank>(klass) == null)
         {
-            errors += listOfNotNull(checkMissing(value, name))
+            errors += validator.checkBlank(value, qualifiedName)
         }
-        if (value is String && value.isBlank() && property.findAnnotationAnywhere<CanBeBlank>(klass) == null)
-        {
-            errors += ErrorInfo(
-                    "invalid-field:$name:blank",
-                    "You have supplied an empty or blank string for field '$name'"
-            )
-        }
-        errors += property.allAnnotations(klass).map { applyRule(it, value, name, model) }.filterNotNull()
+
+        errors += property.allAnnotations(klass).flatMap { validator.applyRule(it, value, qualifiedName, model) }
         return errors
     }
 

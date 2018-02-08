@@ -11,7 +11,6 @@ Schema: [`ModelRunParameterSets.schema.json`](../schemas/ModelRunParameterSets.s
     [
         {
             "id": 1,
-            "description": "our first set of parameters",
             "model": "HPVGoldie-flat",
             "uploaded_by": "tgarske",
             "uploaded_on": "2017-10-06T11:18:06Z",

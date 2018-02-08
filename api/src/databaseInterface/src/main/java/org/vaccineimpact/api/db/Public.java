@@ -42,6 +42,8 @@ import org.vaccineimpact.api.db.tables.DemographicValueUnit;
 import org.vaccineimpact.api.db.tables.DemographicVariant;
 import org.vaccineimpact.api.db.tables.DisabilityWeight;
 import org.vaccineimpact.api.db.tables.Disease;
+import org.vaccineimpact.api.db.tables.GaviEligibility;
+import org.vaccineimpact.api.db.tables.GaviEligibilityStatus;
 import org.vaccineimpact.api.db.tables.GaviFocalModel;
 import org.vaccineimpact.api.db.tables.GaviSupportLevel;
 import org.vaccineimpact.api.db.tables.Gender;
@@ -115,7 +117,7 @@ import org.vaccineimpact.api.db.tables.records.SelectBurdenDataColRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = -560568117;
+    private static final long serialVersionUID = 777950900;
 
     /**
      * The reference instance of <code>public</code>
@@ -241,6 +243,16 @@ public class Public extends SchemaImpl {
      * The table <code>public.disease</code>.
      */
     public final Disease DISEASE = org.vaccineimpact.api.db.tables.Disease.DISEASE;
+
+    /**
+     * The table <code>public.gavi_eligibility</code>.
+     */
+    public final GaviEligibility GAVI_ELIGIBILITY = org.vaccineimpact.api.db.tables.GaviEligibility.GAVI_ELIGIBILITY;
+
+    /**
+     * The table <code>public.gavi_eligibility_status</code>.
+     */
+    public final GaviEligibilityStatus GAVI_ELIGIBILITY_STATUS = org.vaccineimpact.api.db.tables.GaviEligibilityStatus.GAVI_ELIGIBILITY_STATUS;
 
     /**
      * The table <code>public.gavi_focal_model</code>.
@@ -718,6 +730,7 @@ public class Public extends SchemaImpl {
             Sequences.DEMOGRAPHIC_VALUE_UNIT_ID_SEQ,
             Sequences.DEMOGRAPHIC_VARIANT_ID_SEQ,
             Sequences.DISABILITY_WEIGHT_ID_SEQ,
+            Sequences.GAVI_ELIGIBILITY_ID_SEQ,
             Sequences.GAVI_FOCAL_MODEL_ID_SEQ,
             Sequences.GENDER_ID_SEQ,
             Sequences.IMPACT_ESTIMATE_ID_SEQ,
@@ -776,6 +789,8 @@ public class Public extends SchemaImpl {
             DemographicVariant.DEMOGRAPHIC_VARIANT,
             DisabilityWeight.DISABILITY_WEIGHT,
             Disease.DISEASE,
+            GaviEligibility.GAVI_ELIGIBILITY,
+            GaviEligibilityStatus.GAVI_ELIGIBILITY_STATUS,
             GaviFocalModel.GAVI_FOCAL_MODEL,
             GaviSupportLevel.GAVI_SUPPORT_LEVEL,
             Gender.GENDER,
