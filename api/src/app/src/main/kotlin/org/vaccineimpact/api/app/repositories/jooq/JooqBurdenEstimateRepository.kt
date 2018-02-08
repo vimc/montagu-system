@@ -4,9 +4,12 @@ import org.jooq.DSLContext
 import org.jooq.JoinType
 import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.errors.DatabaseContentsError
-import org.vaccineimpact.api.app.errors.OperationNotAllowedError
+import org.vaccineimpact.api.app.errors.InvalidOperationError
 import org.vaccineimpact.api.app.errors.UnknownObjectError
-import org.vaccineimpact.api.app.repositories.*
+import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
+import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
+import org.vaccineimpact.api.app.repositories.ScenarioRepository
+import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.app.repositories.burdenestimates.BurdenEstimateWriter
 import org.vaccineimpact.api.app.repositories.burdenestimates.CentralBurdenEstimateWriter
 import org.vaccineimpact.api.app.repositories.burdenestimates.StochasticBurdenEstimateWriter
@@ -274,19 +277,11 @@ class JooqBurdenEstimateRepository(
 
         if (set.status == BurdenEstimateSetStatus.COMPLETE)
         {
-            throw OperationNotAllowedError("This burden estimate set has been marked as complete." +
+            throw InvalidOperationError("This burden estimate set has been marked as complete." +
                     " You must create a new set if you want to upload any new estimates.")
         }
 
-        if (type == BurdenEstimateSetTypeCode.STOCHASTIC)
-        {
-            stochasticBurdenEstimateWriter.addEstimatesToSet(setId, estimates, responsibilityInfo.disease)
-        }
-        else
-        {
-            centralBurdenEstimateWriter.addEstimatesToSet(setId, estimates, responsibilityInfo.disease)
-        }
-
+        getEstimateWriter(set).addEstimatesToSet(setId, estimates, responsibilityInfo.disease)
         changeBurdenEstimateStatus(setId, BurdenEstimateSetStatus.PARTIAL)
         updateCurrentBurdenEstimateSet(responsibilityInfo.id, setId, type)
     }
@@ -294,8 +289,18 @@ class JooqBurdenEstimateRepository(
     override fun closeBurdenEstimateSet(setId: Int, groupId: String, touchstoneId: String, scenarioId: String)
     {
         // Check all the IDs match up
-        getSetFromResponsibilityPath(groupId, touchstoneId, scenarioId, setId)
-        changeBurdenEstimateStatus(setId, BurdenEstimateSetStatus.COMPLETE)
+        val (set, _) = getSetFromResponsibilityPath(groupId, touchstoneId, scenarioId, setId)
+        val helper = getEstimateWriter(set)
+        val isEmpty = dsl.fetchAny(helper.table, helper.setField.eq(setId)) == null
+        if (isEmpty)
+        {
+            throw InvalidOperationError("This burden estimate set does not have any burden estimate data. " +
+                            "It cannot be marked as complete")
+        }
+        else
+        {
+            changeBurdenEstimateStatus(setId, BurdenEstimateSetStatus.COMPLETE)
+        }
     }
 
     override fun createBurdenEstimateSet(groupId: String, touchstoneId: String, scenarioId: String,
@@ -310,13 +315,13 @@ class JooqBurdenEstimateRepository(
 
         if (status == ResponsibilitySetStatus.SUBMITTED.name.toLowerCase())
         {
-            throw OperationNotAllowedError("The burden estimates uploaded for this touchstone have been submitted " +
+            throw InvalidOperationError("The burden estimates uploaded for this touchstone have been submitted " +
                     "for review. You cannot upload any new estimates.")
         }
 
         if (status == ResponsibilitySetStatus.APPROVED.name.toLowerCase())
         {
-            throw OperationNotAllowedError("The burden estimates uploaded for this touchstone have been reviewed" +
+            throw InvalidOperationError("The burden estimates uploaded for this touchstone have been reviewed" +
                     " and approved. You cannot upload any new estimates.")
         }
 
@@ -343,21 +348,24 @@ class JooqBurdenEstimateRepository(
         val (set, _) = getSetFromResponsibilityPath(groupId, touchstoneId, scenarioId, setId)
         if (set.status == BurdenEstimateSetStatus.COMPLETE)
         {
-            throw OperationNotAllowedError("You cannot clear a burden estimate set which is marked as 'complete'.")
+            throw InvalidOperationError("You cannot clear a burden estimate set which is marked as 'complete'.")
         }
 
         // We do this first, as this change will be rolled back if the annex
         // changes fail, but the reverse is not true
         changeBurdenEstimateStatus(setId, BurdenEstimateSetStatus.EMPTY)
+        getEstimateWriter(set).clearEstimateSet(setId)
+    }
 
-        val type = set.type.type
-        if (type == BurdenEstimateSetTypeCode.STOCHASTIC)
+    private fun getEstimateWriter(set: BurdenEstimateSet): BurdenEstimateWriter
+    {
+        return if (set.type.type == BurdenEstimateSetTypeCode.STOCHASTIC)
         {
-            stochasticBurdenEstimateWriter.clearEstimateSet(setId)
+            stochasticBurdenEstimateWriter
         }
         else
         {
-            centralBurdenEstimateWriter.clearEstimateSet(setId)
+            centralBurdenEstimateWriter
         }
     }
 

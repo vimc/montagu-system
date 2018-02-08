@@ -1,9 +1,12 @@
 package org.vaccineimpact.api.databaseTests.tests.burdenEstimateRepository
 
+import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
+import org.vaccineimpact.api.app.errors.InvalidOperationError
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.databaseTests.tests.BurdenEstimateRepositoryTests
+import org.vaccineimpact.api.db.Tables.BURDEN_ESTIMATE_SET
 import org.vaccineimpact.api.db.direct.*
 
 class CloseBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
@@ -11,14 +14,34 @@ class CloseBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
     @Test
     fun `can close burden estimate set`()
     {
-        val returnedIds = withDatabase { setupDatabase(it) }
-        val setId = withRepo { repo ->
-            val setId = repo.createBurdenEstimateSet(groupId, touchstoneId, scenarioId, defaultProperties, username, timestamp)
-            repo.closeBurdenEstimateSet(setId, groupId, touchstoneId, scenarioId)
+        val setId = withDatabase {
+            val setId = setupDatabaseWithBurdenEstimateSet(it, status = "partial")
+            it.addBurdenEstimate(setId, "AFG")
             setId
         }
+        withRepo { repo ->
+            repo.closeBurdenEstimateSet(setId, groupId, touchstoneId, scenarioId)
+        }
         withDatabase { db ->
-            checkBurdenEstimateSetMetadata(db, setId, returnedIds, "complete")
+            val record = db.dsl.fetchOne(BURDEN_ESTIMATE_SET)
+            assertThat(record.status).isEqualTo("complete")
+        }
+    }
+
+    @Test
+    fun `cannot close empty burden estimate set`()
+    {
+        val setId = withDatabase {
+            setupDatabaseWithBurdenEstimateSet(it)
+        }
+        withRepo { repo ->
+            assertThatThrownBy {
+                repo.closeBurdenEstimateSet(setId, groupId, touchstoneId, scenarioId)
+            }.isInstanceOf(InvalidOperationError::class.java)
+        }
+        withDatabase { db ->
+            val record = db.dsl.fetchOne(BURDEN_ESTIMATE_SET)
+            assertThat(record.status).isEqualTo("empty")
         }
     }
 

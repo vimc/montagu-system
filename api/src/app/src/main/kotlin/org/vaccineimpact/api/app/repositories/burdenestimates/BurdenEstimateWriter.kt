@@ -25,9 +25,9 @@ abstract class BurdenEstimateWriter(
         private val writeDatabaseDSLSource: CloseableContext
 )
 {
-    protected abstract val table: TableImpl<*>
+    abstract val table: TableImpl<*>
     protected abstract val fields: List<TableField<*, *>>
-    protected abstract val setField: TableField<*, Int>
+    abstract val setField: TableField<*, Int>
 
     open fun addEstimatesToSet(setId: Int, estimates: Sequence<BurdenEstimateWithRunId>, expectedDisease: String)
     {

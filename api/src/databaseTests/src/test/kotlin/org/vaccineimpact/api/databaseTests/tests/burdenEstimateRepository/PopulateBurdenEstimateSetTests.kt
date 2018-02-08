@@ -6,7 +6,7 @@ import com.nhaarman.mockito_kotlin.verify
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
 import org.postgresql.util.PSQLException
-import org.vaccineimpact.api.app.errors.OperationNotAllowedError
+import org.vaccineimpact.api.app.errors.InvalidOperationError
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.repositories.burdenestimates.CentralBurdenEstimateWriter
 import org.vaccineimpact.api.app.repositories.burdenestimates.StochasticBurdenEstimateWriter
@@ -123,7 +123,7 @@ class PopulateBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
             val repo = makeRepository(it)
             assertThatThrownBy {
                 repo.populateBurdenEstimateSet(setId, groupId, touchstoneId, scenarioId, data())
-            }.isInstanceOf(OperationNotAllowedError::class.java)
+            }.isInstanceOf(InvalidOperationError::class.java)
                     .hasMessageContaining("You must create a new set if you want to upload any new estimates.")
         }
     }
