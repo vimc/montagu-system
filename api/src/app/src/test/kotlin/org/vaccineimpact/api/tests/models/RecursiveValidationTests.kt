@@ -27,8 +27,8 @@ class RecursiveValidationTests : ValidationTests()
             val errors = (it as ValidationException).errors
             assertThat(errors).hasSize(2)
             assertThat(errors.map { it.code })
-                    .hasSameElementsAs(listOf("invalid-field:test_class:inner:missing",
-                            "invalid-field:test_class:non_nullable_prop:missing"))
+                    .hasSameElementsAs(listOf("invalid-field:inner:missing",
+                            "invalid-field:non_nullable_prop:missing"))
             true
         }
     }
@@ -44,8 +44,8 @@ class RecursiveValidationTests : ValidationTests()
             val errors = (it as ValidationException).errors
             Assertions.assertThat(errors).hasSize(2)
             Assertions.assertThat(errors.map { it.code })
-                    .hasSameElementsAs(listOf("invalid-field:inner_test_class:inner_non_nullable_prop:missing",
-                            "invalid-field:test_class:non_nullable_prop:missing"))
+                    .hasSameElementsAs(listOf("invalid-field:inner:inner_non_nullable_prop:missing",
+                            "invalid-field:non_nullable_prop:missing"))
             true
         }
     }
@@ -68,7 +68,7 @@ class RecursiveValidationTests : ValidationTests()
             val errors = (it as ValidationException).errors
             Assertions.assertThat(errors.count()).isEqualTo(1)
             Assertions.assertThat(errors.map { it.code })
-                    .hasSameElementsAs(listOf("invalid-field:inner_test_class:inner_non_nullable_prop:missing"))
+                    .hasSameElementsAs(listOf("invalid-field:inner_nullable:inner_non_nullable_prop:missing"))
             true
         }
     }
@@ -84,7 +84,7 @@ class RecursiveValidationTests : ValidationTests()
             val errors = (it as ValidationException).errors
             Assertions.assertThat(errors.count()).isEqualTo(2)
             Assertions.assertThat(errors.map { it.code })
-                    .hasSameElementsAs(listOf("invalid-field:test_class:non_nullable_prop:missing",
+                    .hasSameElementsAs(listOf("invalid-field:non_nullable_prop:missing",
                             "invalid-field:nested:min_length_value:too-short"))
             true
         }
