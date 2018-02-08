@@ -37,7 +37,6 @@ class ModelParameterTests : BurdenEstimateRepositoryTests()
 
             Assertions.assertThat(record[Tables.MODEL_RUN_PARAMETER_SET.MODEL_VERSION]).isEqualTo(returnedIds!!.modelVersion!!)
             Assertions.assertThat(record[Tables.MODEL_RUN_PARAMETER_SET.RESPONSIBILITY_SET]).isEqualTo(returnedIds!!.responsibilitySetId)
-            Assertions.assertThat(record[Tables.MODEL_RUN_PARAMETER_SET.DESCRIPTION]).isEqualTo("a test set")
 
             checkUploadInfo(record)
             checkParameters(db)

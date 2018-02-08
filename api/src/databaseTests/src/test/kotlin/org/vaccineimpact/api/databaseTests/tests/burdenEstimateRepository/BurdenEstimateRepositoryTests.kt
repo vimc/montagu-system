@@ -107,7 +107,7 @@ abstract class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRep
         val responsibilityId = db.addResponsibility(setId, touchstoneId, scenarioId)
         db.addUserForTesting(username)
 
-        db.addModelRunParameterSet(setId, modelVersionId, username, "test params")
+        db.addModelRunParameterSet(setId, modelVersionId, username)
 
         return ReturnedIds(modelVersionId, responsibilityId, setId)
     }
@@ -125,7 +125,7 @@ abstract class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRep
         db.addResponsibility(setId, touchstoneId, scenarioId)
         db.addUserForTesting(username)
 
-        val paramsSetId = db.addModelRunParameterSet(setId, modelVersionId, username, "test params")
+        val paramsSetId = db.addModelRunParameterSet(setId, modelVersionId, username)
         val modelRunId = db.addModelRun(paramsSetId, "1")
         val modelRunId2 = db.addModelRun(paramsSetId, "2")
         val modelRunParameterId1 = db.addModelRunParameter(paramsSetId, "<param_1>")
@@ -216,7 +216,7 @@ abstract class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRep
     protected fun addModelRuns(db: JooqContext, responsibilitySetId: Int, modelVersionId: Int): ModelRunTestData
     {
         val runs = listOf("marathon", "sprint")
-        val runParameterSetId = db.addModelRunParameterSet(responsibilitySetId, modelVersionId, username, "Test")
+        val runParameterSetId = db.addModelRunParameterSet(responsibilitySetId, modelVersionId, username)
         return ModelRunTestData(runParameterSetId, runs.map { runId ->
             runId to db.addModelRun(runParameterSetId, runId)
         })

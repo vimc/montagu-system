@@ -48,7 +48,6 @@ class JooqBurdenEstimateRepository(
 
         return dsl.select(
                 MODEL_RUN_PARAMETER_SET.ID,
-                MODEL_RUN_PARAMETER_SET.DESCRIPTION,
                 MODEL.ID.`as`("model"),
                 UPLOAD_INFO.UPLOADED_BY,
                 UPLOAD_INFO.UPLOADED_ON,

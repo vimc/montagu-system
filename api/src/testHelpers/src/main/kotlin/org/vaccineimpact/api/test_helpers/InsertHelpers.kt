@@ -263,7 +263,7 @@ fun AnnexJooqContext.addStochasticBurdenEstimate(
 
 fun JooqContext.addModelRunParameterSet(
         responsibilitySetId: Int, modelVersionId: Int,
-        username: String, description: String
+        username: String
 ): Int
 {
     val uploadInfo = this.dsl.newRecord(UPLOAD_INFO).apply {
@@ -275,7 +275,6 @@ fun JooqContext.addModelRunParameterSet(
         this.responsibilitySet = responsibilitySetId
         this.modelVersion = modelVersionId
         this.uploadInfo = uploadInfo.id
-        this.description = description
     }
     record.store()
     return record.id
