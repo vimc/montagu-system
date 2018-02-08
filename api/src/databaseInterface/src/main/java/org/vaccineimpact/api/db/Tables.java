@@ -34,6 +34,8 @@ import org.vaccineimpact.api.db.tables.DemographicValueUnit;
 import org.vaccineimpact.api.db.tables.DemographicVariant;
 import org.vaccineimpact.api.db.tables.DisabilityWeight;
 import org.vaccineimpact.api.db.tables.Disease;
+import org.vaccineimpact.api.db.tables.GaviEligibility;
+import org.vaccineimpact.api.db.tables.GaviEligibilityStatus;
 import org.vaccineimpact.api.db.tables.GaviFocalModel;
 import org.vaccineimpact.api.db.tables.GaviSupportLevel;
 import org.vaccineimpact.api.db.tables.Gender;
@@ -226,6 +228,16 @@ public class Tables {
      * The table <code>public.disease</code>.
      */
     public static final Disease DISEASE = org.vaccineimpact.api.db.tables.Disease.DISEASE;
+
+    /**
+     * The table <code>public.gavi_eligibility</code>.
+     */
+    public static final GaviEligibility GAVI_ELIGIBILITY = org.vaccineimpact.api.db.tables.GaviEligibility.GAVI_ELIGIBILITY;
+
+    /**
+     * The table <code>public.gavi_eligibility_status</code>.
+     */
+    public static final GaviEligibilityStatus GAVI_ELIGIBILITY_STATUS = org.vaccineimpact.api.db.tables.GaviEligibilityStatus.GAVI_ELIGIBILITY_STATUS;
 
     /**
      * The table <code>public.gavi_focal_model</code>.
