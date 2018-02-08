@@ -23,7 +23,7 @@ interface BurdenEstimateRepository : Repository
 
     fun closeBurdenEstimateSet(setId: Int)
 
-    fun addModelRunParameterSet(groupId: String, touchstoneId: String, disease: String, description: String,
+    fun addModelRunParameterSet(groupId: String, touchstoneId: String, disease: String,
                                 modelRuns: List<ModelRun>,
                                 uploader: String, timestamp: Instant): Int
 

@@ -134,7 +134,7 @@ class JooqBurdenEstimateRepository(
     }
 
     override fun addModelRunParameterSet(groupId: String, touchstoneId: String, disease: String,
-                                         description: String, modelRuns: List<ModelRun>,
+                                         modelRuns: List<ModelRun>,
                                          uploader: String, timestamp: Instant): Int
     {
         // Dereference modelling group IDs
@@ -147,15 +147,15 @@ class JooqBurdenEstimateRepository(
         val setId = getResponsibilitySetId(modellingGroup.id, touchstoneId)
 
         return addModelRunParameterSet(setId,
-                modelVersion, description, modelRuns, uploader, timestamp)
+                modelVersion, modelRuns, uploader, timestamp)
     }
 
     fun addModelRunParameterSet(responsibilitySetId: Int, modelVersionId: Int,
-                                description: String, modelRuns: List<ModelRun>,
+                                modelRuns: List<ModelRun>,
                                 uploader: String, timestamp: Instant): Int
     {
         val uploadInfoId = addUploadInfo(uploader, timestamp)
-        val parameterSetId = addParameterSet(responsibilitySetId, modelVersionId, description, uploadInfoId)
+        val parameterSetId = addParameterSet(responsibilitySetId, modelVersionId, uploadInfoId)
         val parameterLookup = addParameters(modelRuns, parameterSetId)
 
         for (run in modelRuns)
@@ -215,11 +215,10 @@ class JooqBurdenEstimateRepository(
     }
 
     private fun addParameterSet(responsibilitySetId: Int, modelVersionId: Int,
-                                description: String, uploadInfoId: Int): Int
+                                uploadInfoId: Int): Int
     {
         val newParameterSet = this.dsl.newRecord(MODEL_RUN_PARAMETER_SET).apply {
             this.responsibilitySet = responsibilitySetId
-            this.description = description
             this.modelVersion = modelVersionId
             this.uploadInfo = uploadInfoId
         }
