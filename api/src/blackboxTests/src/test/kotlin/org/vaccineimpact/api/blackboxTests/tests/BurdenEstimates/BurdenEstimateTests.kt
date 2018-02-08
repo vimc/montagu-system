@@ -54,7 +54,7 @@ abstract class BurdenEstimateTests : DatabaseTest()
     {
         val ids = setUp(db)
         val parameterSetId = db.addModelRunParameterSet(ids.responsibilitySetId, ids.modelVersionId,
-                TestUserHelper.username, "description")
+                TestUserHelper.username)
         db.addModelRun(parameterSetId, "A")
         db.addModelRun(parameterSetId, "B")
         return db.addBurdenEstimateSet(ids.responsibilityId, ids.modelVersionId,
@@ -68,7 +68,7 @@ abstract class BurdenEstimateTests : DatabaseTest()
     {
         val returnedIds = setUp(db)
         return db.addModelRunParameterSet(returnedIds.responsibilitySetId, returnedIds.modelVersionId,
-                TestUserHelper.username, "description")
+                TestUserHelper.username)
     }
 
 
@@ -76,7 +76,7 @@ abstract class BurdenEstimateTests : DatabaseTest()
     {
         val returnedIds = setUp(db)
 
-        val paramsSetId = db.addModelRunParameterSet(returnedIds.responsibilitySetId, returnedIds.modelVersionId, username, "test params")
+        val paramsSetId = db.addModelRunParameterSet(returnedIds.responsibilitySetId, returnedIds.modelVersionId, username)
         val modelRunId = db.addModelRun(paramsSetId, "1")
         val modelRunId2 = db.addModelRun(paramsSetId, "2")
         val modelRunParameterId1 = db.addModelRunParameter(paramsSetId, "<param_1>")

@@ -40,7 +40,7 @@ class ModelRunParameterTests : BurdenEstimateTests()
 
         val response = requestHelper.postFile("$modelRunParameterUrl/",
                 modelRunParameterCSV,
-                token = token, data = mapOf("description" to "description", "disease" to diseaseId))
+                token = token, data = mapOf("disease" to diseaseId))
 
         Assertions.assertThat(response.statusCode).isEqualTo(201)
         Assertions.assertThat(response.headers["Location"]).`as`("Location header")
@@ -81,7 +81,7 @@ class ModelRunParameterTests : BurdenEstimateTests()
 
         val response = requestHelper.postFile("$modelRunParameterUrl/",
                 modelRunParameterCSV,
-                token = token, data = mapOf("description" to "description"))
+                token = token, data = mapOf())
 
             JSONValidator().validateError(response.text,
                     expectedErrorCode = "missing-required-parameter:disease",
@@ -102,7 +102,6 @@ class ModelRunParameterTests : BurdenEstimateTests()
             Assertions.assertThat(obj["uploaded_on"]).isNotNull()
             Assertions.assertThat(obj["model"]).isEqualTo("model-1")
             Assertions.assertThat(obj["id"]).isEqualTo(setId)
-            Assertions.assertThat(obj["description"]).isEqualTo("description")
             Assertions.assertThat(obj["disease"]).isEqualTo(diseaseId)
         }
     }

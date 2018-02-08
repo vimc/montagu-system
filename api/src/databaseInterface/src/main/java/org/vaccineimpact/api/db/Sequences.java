@@ -109,6 +109,11 @@ public class Sequences {
     public static final Sequence<Long> DISABILITY_WEIGHT_ID_SEQ = new SequenceImpl<Long>("disability_weight_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
     /**
+     * The sequence <code>public.gavi_eligibility_id_seq</code>
+     */
+    public static final Sequence<Long> GAVI_ELIGIBILITY_ID_SEQ = new SequenceImpl<Long>("gavi_eligibility_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
      * The sequence <code>public.gavi_focal_model_id_seq</code>
      */
     public static final Sequence<Long> GAVI_FOCAL_MODEL_ID_SEQ = new SequenceImpl<Long>("gavi_focal_model_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));

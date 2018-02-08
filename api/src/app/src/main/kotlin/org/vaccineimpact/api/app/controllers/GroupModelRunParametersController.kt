@@ -39,11 +39,10 @@ class GroupModelRunParametersController(
 
         val parts = context.getParts()
         val disease = parts["disease"]
-        val description = parts["description"]
         val modelRuns = context.csvData<ModelRun>(parts["file"])
 
         val id = estimateRepository.addModelRunParameterSet(groupId, touchstoneId, disease,
-                description, modelRuns.toList(), context.username!!, Instant.now())
+                modelRuns.toList(), context.username!!, Instant.now())
 
         return objectCreation(context, "/modelling-groups/$groupId/model-run-parameters/$id/")
     }
