@@ -32,6 +32,8 @@ import org.vaccineimpact.api.db.tables.DemographicValueUnit;
 import org.vaccineimpact.api.db.tables.DemographicVariant;
 import org.vaccineimpact.api.db.tables.DisabilityWeight;
 import org.vaccineimpact.api.db.tables.Disease;
+import org.vaccineimpact.api.db.tables.GaviEligibility;
+import org.vaccineimpact.api.db.tables.GaviEligibilityStatus;
 import org.vaccineimpact.api.db.tables.GaviFocalModel;
 import org.vaccineimpact.api.db.tables.GaviSupportLevel;
 import org.vaccineimpact.api.db.tables.Gender;
@@ -124,6 +126,9 @@ public class Indexes {
     public static final Index DEMOGRAPHIC_VARIANT_PKEY = Indexes0.DEMOGRAPHIC_VARIANT_PKEY;
     public static final Index DISABILITY_WEIGHT_PKEY = Indexes0.DISABILITY_WEIGHT_PKEY;
     public static final Index DISEASE_PKEY = Indexes0.DISEASE_PKEY;
+    public static final Index GAVI_ELIGIBILITY_PKEY = Indexes0.GAVI_ELIGIBILITY_PKEY;
+    public static final Index GAVI_ELIGIBILITY_TOUCHSTONE_COUNTRY_YEAR_KEY = Indexes0.GAVI_ELIGIBILITY_TOUCHSTONE_COUNTRY_YEAR_KEY;
+    public static final Index GAVI_ELIGIBILITY_STATUS_PKEY = Indexes0.GAVI_ELIGIBILITY_STATUS_PKEY;
     public static final Index GAVI_FOCAL_MODEL_PKEY = Indexes0.GAVI_FOCAL_MODEL_PKEY;
     public static final Index GAVI_SUPPORT_LEVEL_PKEY = Indexes0.GAVI_SUPPORT_LEVEL_PKEY;
     public static final Index GENDER_PKEY = Indexes0.GENDER_PKEY;
@@ -213,6 +218,9 @@ public class Indexes {
         public static Index DEMOGRAPHIC_VARIANT_PKEY = createIndex("demographic_variant_pkey", DemographicVariant.DEMOGRAPHIC_VARIANT, new OrderField[] { DemographicVariant.DEMOGRAPHIC_VARIANT.ID }, true);
         public static Index DISABILITY_WEIGHT_PKEY = createIndex("disability_weight_pkey", DisabilityWeight.DISABILITY_WEIGHT, new OrderField[] { DisabilityWeight.DISABILITY_WEIGHT.ID }, true);
         public static Index DISEASE_PKEY = createIndex("disease_pkey", Disease.DISEASE, new OrderField[] { Disease.DISEASE.ID }, true);
+        public static Index GAVI_ELIGIBILITY_PKEY = createIndex("gavi_eligibility_pkey", GaviEligibility.GAVI_ELIGIBILITY, new OrderField[] { GaviEligibility.GAVI_ELIGIBILITY.ID }, true);
+        public static Index GAVI_ELIGIBILITY_TOUCHSTONE_COUNTRY_YEAR_KEY = createIndex("gavi_eligibility_touchstone_country_year_key", GaviEligibility.GAVI_ELIGIBILITY, new OrderField[] { GaviEligibility.GAVI_ELIGIBILITY.TOUCHSTONE, GaviEligibility.GAVI_ELIGIBILITY.COUNTRY, GaviEligibility.GAVI_ELIGIBILITY.YEAR }, true);
+        public static Index GAVI_ELIGIBILITY_STATUS_PKEY = createIndex("gavi_eligibility_status_pkey", GaviEligibilityStatus.GAVI_ELIGIBILITY_STATUS, new OrderField[] { GaviEligibilityStatus.GAVI_ELIGIBILITY_STATUS.ID }, true);
         public static Index GAVI_FOCAL_MODEL_PKEY = createIndex("gavi_focal_model_pkey", GaviFocalModel.GAVI_FOCAL_MODEL, new OrderField[] { GaviFocalModel.GAVI_FOCAL_MODEL.ID }, true);
         public static Index GAVI_SUPPORT_LEVEL_PKEY = createIndex("gavi_support_level_pkey", GaviSupportLevel.GAVI_SUPPORT_LEVEL, new OrderField[] { GaviSupportLevel.GAVI_SUPPORT_LEVEL.ID }, true);
         public static Index GENDER_PKEY = createIndex("gender_pkey", Gender.GENDER, new OrderField[] { Gender.GENDER.ID }, true);
