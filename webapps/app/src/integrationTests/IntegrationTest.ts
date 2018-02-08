@@ -2,11 +2,6 @@ import { Client } from "pg";
 import { expect } from "chai";
 import { Sandbox } from "../test/Sandbox";
 
-process.on('unhandledRejection', (reason: any, p : any) => {
-    console.log('Unhandled Rejection at: Promise', p, 'reason:', reason);
-    // application specific logging, throwing an error, or other logic here
-});
-
 import { authActions } from "../main/shared/actions/authActions";
 
 import fetcher, { Fetcher } from "../main/shared/sources/Fetcher";
@@ -20,6 +15,7 @@ export abstract class IntegrationTestSuite {
     abstract description(): string;
 
     abstract createStore(): any;
+
     store: any;
 
     abstract makeFetcher(): Fetcher;

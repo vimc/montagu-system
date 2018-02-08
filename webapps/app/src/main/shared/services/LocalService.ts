@@ -118,7 +118,6 @@ export abstract class LocalService {
                     };
                     throw new NotificationException(notification);
                 default:
-                    console.log(1111111111, error);
                     throw makeNotificationException(error.message, "error");
             }
         };

@@ -18,7 +18,6 @@ export const authActions = {
         return async (dispatch: Dispatch<any>, getState: any) => {
             try {
                 const response = await (new AuthService(dispatch, getState)).logIn(email, password)
-                // console.log('response login', response);
                 if (response.error) {
                     dispatch(this.authenticationError(response.error));
                 } else {
@@ -64,11 +63,9 @@ export const authActions = {
 
     tokenReceived(token: string) {
         return (dispatch: Dispatch<any>, getState: any) => {
-            console.log('tok rec');
             const user: AuthState = jwtTokenAuth.getDataFromToken(token);
             const error: Notification = this.validateAuthResult(user);
             if (!error) {
-                console.log('will auth');
                 localStorageHandler.set("accessToken", token);
                 dispatch({
                     type: TypeKeys.AUTHENTICATED,

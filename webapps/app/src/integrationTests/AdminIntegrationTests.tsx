@@ -9,6 +9,7 @@ import { ModellingGroup, ModellingGroupDetails, User } from "../main/shared/mode
 import { modellingGroupActions } from "../main/shared/actions/ModellingGroupActions";
 import { userStore } from "../main/admin/stores/UserStore";
 import {createAdminStore} from "../main/admin/stores/createAdminStore";
+import { authActions } from "../main/shared/actions/authActions";
 
 
 class AdminIntegrationTests extends IntegrationTestSuite {
@@ -26,20 +27,20 @@ class AdminIntegrationTests extends IntegrationTestSuite {
     }
 
     addTestsToMocha() {
-        //
-        // it("can fetch shiny cookie", (done: DoneCallback) => {
-        //     setShinyToken().then((res: Response) => {
-        //         expect(res.ok).to.be.eq(true);
-        //         done()
-        //     })
-        // });
-
-        it("can clear shiny cookie", (done: DoneCallback) => {
+/*
+        it("can fetch shiny cookie", (done: DoneCallback) => {
+            setShinyToken().then((res: Response) => {
+                expect(res.ok).to.be.eq(true);
+                done()
+            })
+        });
+*/
+        // it("can clear shiny cookie", (done: DoneCallback) => {
             // LoginSource.clearShinyToken().then((res: Response) => {
             //     expect(res.ok).to.be.eq(true);
             //     done()
             // })
-        });
+        // });
 
         it("can fetch groups", (done: DoneCallback) => {
             const promise = addGroups(this.db)

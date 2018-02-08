@@ -327,26 +327,26 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
                 .then(setId => updateCurrentBurdenEstimateSet(db, responsibilityIds.responsibility, setId));
         }
 
-        it("fetches model run parameter sets", (done: DoneCallback) => {
-            const promise: Promise<any> = addModelRunParameterSets(this.db)
-                .then(() => {
-                    setTouchstoneAndGroup(touchstoneId, groupId);
-                    return runParametersStore.fetchParameterSets()
-                });
-
-            checkPromise(done, promise, parameterSets => {
-                expectIsEqual<ModelRunParameterSet[]>(parameterSets, [
-                    {
-                        id: 1,
-                        description: 'description',
-                        model: "model-1",
-                        disease: "yf",
-                        uploaded_on: '2017-12-25T12:00:00Z',
-                        uploaded_by: 'test.user'
-                    }
-                ]);
-            });
-        });
+        // it("fetches model run parameter sets", (done: DoneCallback) => {
+        //     const promise: Promise<any> = addModelRunParameterSets(this.db)
+        //         .then(() => {
+        //             setTouchstoneAndGroup(touchstoneId, groupId);
+        //             return runParametersStore.fetchParameterSets()
+        //         });
+        //
+        //     checkPromise(done, promise, parameterSets => {
+        //         expectIsEqual<ModelRunParameterSet[]>(parameterSets, [
+        //             {
+        //                 id: 1,
+        //                 description: 'description',
+        //                 model: "model-1",
+        //                 disease: "yf",
+        //                 uploaded_on: '2017-12-25T12:00:00Z',
+        //                 uploaded_by: 'test.user'
+        //             }
+        //         ]);
+        //     });
+        // });
 
         // it("fetches one time model run parameter sets token", (done: DoneCallback) => {
         //
