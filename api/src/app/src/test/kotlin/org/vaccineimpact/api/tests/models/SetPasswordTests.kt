@@ -17,13 +17,13 @@ class SetPasswordTests : ValidationTests()
     @Test
     fun `password is required`()
     {
-        assertCausesTheseErrors(model.copy(password = ""), "invalid-field:set_password:password:blank")
-        assertCausesTheseErrors(model.copy(password = " \n "), "invalid-field:set_password:password:blank")
+        assertCausesTheseErrors(model.copy(password = ""), "invalid-field:password:blank")
+        assertCausesTheseErrors(model.copy(password = " \n "), "invalid-field:password:blank")
     }
 
     @Test
     fun `password must be at least 8 characters long`()
     {
-        assertCausesTheseErrors(model.copy(password = "passwor"), "invalid-field:set_password:password:too-short")
+        assertCausesTheseErrors(model.copy(password = "passwor"), "invalid-field:password:too-short")
     }
 }

@@ -90,7 +90,7 @@ class CreateUserTests : DatabaseTest()
             )
         })
         assertThat(response.statusCode).isEqualTo(400)
-        validator.validateError(response.text, "invalid-field:create_user:email:missing")
+        validator.validateError(response.text, "invalid-field:email:missing")
     }
 
     @Test
@@ -105,7 +105,7 @@ class CreateUserTests : DatabaseTest()
             )
         })
         assertThat(response.statusCode).isEqualTo(400)
-        validator.validateError(response.text, "invalid-field:create_user:name:blank")
+        validator.validateError(response.text, "invalid-field:name:blank")
     }
 
     @Test
@@ -120,7 +120,7 @@ class CreateUserTests : DatabaseTest()
             )
         })
         assertThat(response.statusCode).isEqualTo(400)
-        validator.validateError(response.text, "invalid-field:create_user:username:bad-format")
+        validator.validateError(response.text, "invalid-field:username:bad-format")
     }
 
     @Test
@@ -135,7 +135,7 @@ class CreateUserTests : DatabaseTest()
             )
         })
         assertThat(response.statusCode).isEqualTo(400)
-        validator.validateError(response.text, "invalid-field:create_user:email:bad-format")
+        validator.validateError(response.text, "invalid-field:email:bad-format")
     }
 
     fun assertCannotCreateDuplicate(sharedProperty: Pair<String, *>, expectedErrorCode: String)

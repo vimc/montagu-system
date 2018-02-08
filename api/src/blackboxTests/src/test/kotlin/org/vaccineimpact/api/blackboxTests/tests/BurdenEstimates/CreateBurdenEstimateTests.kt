@@ -56,7 +56,7 @@ class CreateBurdenEstimateTests : BurdenEstimateTests()
             )
         }
         val response = RequestHelper().post(setUrl, permissions, data = data)
-        JSONValidator().validateError(response.text, "invalid-field:create_burden_estimate_set:model_run_parameter_set:missing")
+        JSONValidator().validateError(response.text, "invalid-field:model_run_parameter_set:missing")
     }
 
     @Test

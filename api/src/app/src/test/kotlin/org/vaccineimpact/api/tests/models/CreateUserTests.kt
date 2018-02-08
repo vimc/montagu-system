@@ -19,27 +19,27 @@ class CreateUserTests : ValidationTests()
     @Test
     fun `username must be valid`()
     {
-        assertCausesTheseErrors(model.copy(username = ""), "invalid-field:create_user:username:blank")
-        assertCausesTheseErrors(model.copy(username = "user name"), "invalid-field:create_user:username:bad-format")
-        assertCausesTheseErrors(model.copy(username = "User.Name"), "invalid-field:create_user:username:bad-format")
-        assertCausesTheseErrors(model.copy(username = "user-name"), "invalid-field:create_user:username:bad-format")
-        assertCausesTheseErrors(model.copy(username = "user_name"), "invalid-field:create_user:username:bad-format")
-        assertCausesTheseErrors(model.copy(username = "12345"), "invalid-field:create_user:username:bad-format")
-        assertCausesTheseErrors(model.copy(username = "name&"), "invalid-field:create_user:username:bad-format")
+        assertCausesTheseErrors(model.copy(username = ""), "invalid-field:username:blank")
+        assertCausesTheseErrors(model.copy(username = "user name"), "invalid-field:username:bad-format")
+        assertCausesTheseErrors(model.copy(username = "User.Name"), "invalid-field:username:bad-format")
+        assertCausesTheseErrors(model.copy(username = "user-name"), "invalid-field:username:bad-format")
+        assertCausesTheseErrors(model.copy(username = "user_name"), "invalid-field:username:bad-format")
+        assertCausesTheseErrors(model.copy(username = "12345"), "invalid-field:username:bad-format")
+        assertCausesTheseErrors(model.copy(username = "name&"), "invalid-field:username:bad-format")
     }
 
     @Test
     fun `email must be valid`()
     {
-        assertCausesTheseErrors(model.copy(email = ""), "invalid-field:create_user:email:blank")
-        assertCausesTheseErrors(model.copy(email = "user.name"), "invalid-field:create_user:email:bad-format")
-        assertCausesTheseErrors(model.copy(email = "Full Name"), "invalid-field:create_user:email:bad-format")
-        assertCausesTheseErrors(model.copy(email = "0800 123 4567"), "invalid-field:create_user:email:bad-format")
+        assertCausesTheseErrors(model.copy(email = ""), "invalid-field:email:blank")
+        assertCausesTheseErrors(model.copy(email = "user.name"), "invalid-field:email:bad-format")
+        assertCausesTheseErrors(model.copy(email = "Full Name"), "invalid-field:email:bad-format")
+        assertCausesTheseErrors(model.copy(email = "0800 123 4567"), "invalid-field:email:bad-format")
     }
 
     @Test
     fun `name is required`()
     {
-        assertCausesTheseErrors(model.copy(name = ""), "invalid-field:create_user:name:blank")
+        assertCausesTheseErrors(model.copy(name = ""), "invalid-field:name:blank")
     }
 }

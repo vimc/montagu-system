@@ -10,7 +10,7 @@ import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.memberProperties
 
 class ModelBinder(private val serializer: Serializer = MontaguSerializer.instance,
-                  private val validator: Validator = Validator(serializer))
+                  private val validator: Validator = Validator())
 {
     fun <T : Any> deserialize(body: String, klass: Class<T>): T
     {
@@ -26,38 +26,47 @@ class ModelBinder(private val serializer: Serializer = MontaguSerializer.instanc
     fun verify(model: Any): List<ErrorInfo>
     {
         val properties = model::class.memberProperties.filterIsInstance<KProperty1<Any, *>>()
-        return properties.flatMap { recursiveVerify(it, model) }
+        return properties.flatMap { recursiveVerify(it, model, null) }
     }
 
-    private fun recursiveVerify(property: KProperty1<Any, *>, model: Any): MutableList<ErrorInfo>
+    private fun recursiveVerify(property: KProperty1<Any, *>, model: Any, parentName: String?): MutableList<ErrorInfo>
     {
         val value = property.get(model)
-        val errors = verify(value, property, model)
+        val errors = verify(value, property, model, parentName)
 
         if (value != null && value::class.isData)
         {
             val members = value::class.memberProperties.filterIsInstance<KProperty1<Any, *>>()
-            errors += members.flatMap { recursiveVerify(it, value) }
+            errors += members.flatMap { recursiveVerify(it, value, property.name) }
         }
 
         return errors
     }
 
-    private fun verify(value: Any?, property: KProperty1<Any, *>, model: Any): MutableList<ErrorInfo>
+    private fun verify(value: Any?, property: KProperty1<Any, *>, model: Any, parentName: String?): MutableList<ErrorInfo>
     {
         @Suppress("UNCHECKED_CAST")
         val klass = model::class as KClass<Any>
         val errors = mutableListOf<ErrorInfo>()
-        val name = serializer.convertFieldName(property.name)
-        
-        errors += validator.checkNull(value, property, model, name)
+
+        val qualifiedName =
+                if (parentName == null)
+                {
+                    serializer.convertFieldName(property.name)
+                }
+                else
+                {
+                    serializer.convertFieldName("$parentName:${property.name}")
+                }
+
+        errors += validator.checkNull(value, property, qualifiedName)
 
         if (property.findAnnotationAnywhere<CanBeBlank>(klass) == null)
         {
-            errors += validator.checkBlank(value, name, model)
+            errors += validator.checkBlank(value, qualifiedName)
         }
 
-        errors += property.allAnnotations(klass).flatMap { validator.applyRule(it, value, name, model) }
+        errors += property.allAnnotations(klass).flatMap { validator.applyRule(it, value, qualifiedName, model) }
         return errors
     }
 
