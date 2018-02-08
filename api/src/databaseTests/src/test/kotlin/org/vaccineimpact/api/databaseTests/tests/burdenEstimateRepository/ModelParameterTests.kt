@@ -28,7 +28,7 @@ class ModelParameterTests : BurdenEstimateRepositoryTests()
             returnedIds = setupDatabase(db)
         } makeTheseChanges { repo ->
             repo.addModelRunParameterSet(groupId, touchstoneId, diseaseId,
-                    "a test set", modelRuns, username, timestamp)
+                     modelRuns, username, timestamp)
         } andCheckDatabase { db ->
 
             val record = db.dsl.select()
@@ -74,7 +74,7 @@ class ModelParameterTests : BurdenEstimateRepositoryTests()
 
             Assertions.assertThatThrownBy {
                 repo.addModelRunParameterSet(groupId, touchstoneId, diseaseId,
-                        "a test set", modelRuns, username, timestamp)
+                        modelRuns, username, timestamp)
             }.isInstanceOf(DatabaseContentsError::class.java)
                     .hasMessageContaining("Modelling group $groupId does not have any models/model versions in the database")
         }
@@ -89,7 +89,7 @@ class ModelParameterTests : BurdenEstimateRepositoryTests()
 
             Assertions.assertThatThrownBy {
                 repo.addModelRunParameterSet(groupId, touchstoneId, diseaseId,
-                        "a test set", listOf(), username, timestamp)
+                        listOf(), username, timestamp)
             }.isInstanceOf(BadRequest::class.java)
                     .hasMessageContaining("No model runs provided")
         }
@@ -100,7 +100,7 @@ class ModelParameterTests : BurdenEstimateRepositoryTests()
     {
         assertUnknownObjectError(work = { repo ->
             repo.addModelRunParameterSet(groupId, "wrong-id", diseaseId,
-                    "a test set", modelRuns, "test.user", timestamp)
+                     modelRuns, "test.user", timestamp)
         })
     }
 
@@ -109,7 +109,7 @@ class ModelParameterTests : BurdenEstimateRepositoryTests()
     {
         assertUnknownObjectError({ repo ->
             repo.addModelRunParameterSet("wrong-id", touchstoneId, diseaseId,
-                    "a test set", modelRuns, "test.user", timestamp)
+                   modelRuns, "test.user", timestamp)
         })
     }
 
@@ -143,13 +143,12 @@ class ModelParameterTests : BurdenEstimateRepositoryTests()
             returnedIds = setupDatabase(db)
         } makeTheseChanges { repo ->
             repo.addModelRunParameterSet(groupId, touchstoneId, diseaseId,
-                    "a test set", modelRuns, username, timestamp)
+                   modelRuns, username, timestamp)
 
         } andCheck { repo ->
             val sets = repo.getModelRunParameterSets(groupId, touchstoneId)
             val set = sets.first()
 
-            Assertions.assertThat(set.description).isEqualTo("a test set")
             Assertions.assertThat(set.uploadedBy).isEqualTo(username)
             Assertions.assertThat(set.uploadedOn).isEqualTo(timestamp)
             Assertions.assertThat(set.id).isGreaterThan(0)
