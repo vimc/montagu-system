@@ -1,16 +1,17 @@
 import { Client } from "pg";
-// import { checkPromise } from "../test/testHelpers";
 import { expect } from "chai";
+import { Sandbox } from "../test/Sandbox";
 
-// import { createStore, applyMiddleware, combineReducers } from "redux";
-// import thunk from 'redux-thunk';
-// import { authReducer } from "../main/shared/reducers/authReducer";
+process.on('unhandledRejection', (reason: any, p : any) => {
+    console.log('Unhandled Rejection at: Promise', p, 'reason:', reason);
+    // application specific logging, throwing an error, or other logic here
+});
+
 import { authActions } from "../main/shared/actions/authActions";
 
-// import { logIn } from "../main/shared/sources/LoginSource";
-// import { AuthStoreBaseInterface } from "../main/shared/stores/AuthStoreBase";
 import fetcher, { Fetcher } from "../main/shared/sources/Fetcher";
 import { alt } from "../main/shared/alt";
+import { localStorageHandler } from "../main/shared/services/localStorageHandler";
 
 const dbName = process.env.PGDATABASE;
 const dbTemplateName = process.env.PGTEMPLATE;
@@ -18,7 +19,6 @@ const dbTemplateName = process.env.PGTEMPLATE;
 export abstract class IntegrationTestSuite {
     abstract description(): string;
 
-    // abstract authStore(): AuthStoreBaseInterface<any>;
     abstract createStore(): any;
     store: any;
 
@@ -30,6 +30,9 @@ export abstract class IntegrationTestSuite {
 
     constructor() {
         describe(this.description(), () => {
+
+            const sandbox = new Sandbox();
+
             beforeEach((done: DoneCallback) => {
                 queryAgainstRootDb(`CREATE DATABASE ${dbName} TEMPLATE ${dbTemplateName};`)
                     .then(() => {
@@ -40,6 +43,7 @@ export abstract class IntegrationTestSuite {
                     .catch(e => done(e));
             });
             afterEach((done: DoneCallback) => {
+                sandbox.restore();
                 this.db.end();
                 queryAgainstRootDb(`DROP DATABASE ${dbName};`)
                     .then(() => done())
@@ -54,14 +58,14 @@ export abstract class IntegrationTestSuite {
 
                 this.store = this.createStore();
                 this.store.dispatch(authActions.logIn("test@example.com", "password"));
-                // let unsubscribe = this.store.subscribe(handleChange);
-                console.log(111111);
+                let unsubscribe = this.store.subscribe(handleChange);
                 let that = this;
                 function handleChange () {
-                    console.log(222, that.store.getState());
+                    const token =  that.store.getState().auth.bearerToken;
+                    sandbox.setStubFunc(localStorageHandler, 'get',()=> token);
+                    unsubscribe();
                     done();
                 }
-                // checkPromise(done, logIn("test@example.com", "password", this.authStore(), false));
             });
             afterEach(() => alt.recycle());
 

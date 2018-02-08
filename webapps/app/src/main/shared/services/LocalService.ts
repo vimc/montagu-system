@@ -1,28 +1,40 @@
-import { axiosRequest, RequestOptionsProps } from "../modules/AxiosRequest";
 import { settings } from "../Settings";
 import { localStorageHandler } from "./localStorageHandler";
-
+import {ErrorInfo, Result} from "../models/Generated";
 import {
     makeNotificationException,
     Notification,
-    notificationActions,
     NotificationException
 } from "../actions/NotificationActions";
 
 import { TypeKeys } from "../actionTypes/AuthTypes";
 
+
+export interface OptionsHeaders {
+   Authorization?: string;
+   'Content-Type'?: string;
+};
+
+export interface RequestOptions {
+    headers?: OptionsHeaders;
+    body?: any;
+    method?: string;
+    credentials?: "omit" | "same-origin" | "include";
+}
+
 export abstract class LocalService {
     protected dispatch: any;
     protected bearerToken: string;
-    protected options: RequestOptionsProps = {};
+    protected options: any = {};
 
     public constructor(dispatch: any, getState: Function) {
         this.dispatch = dispatch;
+
         this.bearerToken = this.getTokenFromState(getState())
         this.initOptions();
-        this.processFailure = this.processFailure.bind(this);
-        this.processSuccess = this.processSuccess.bind(this);
-        this.handleError = this.handleError.bind(this);
+
+        this.processResponse = this.processResponse.bind(this);
+        this.notifyOnErrors = this.notifyOnErrors.bind(this);
         this.logOut = this.logOut.bind(this);
     }
 
@@ -32,75 +44,110 @@ export abstract class LocalService {
         }
     }
 
-    public setOptions(options: RequestOptionsProps) {
+    public setOptions(options: any) {
         Object.assign(this.options, options);
     }
 
     protected initOptions() {
         this.options.baseURL = settings.apiUrl();
+
         if (this.bearerToken) {
             this.options.Authorization = 'Bearer ' + this.bearerToken;
         }
     }
 
-    protected initRequestEngine() {
-        return axiosRequest(this.options)
+    protected makeRequestOptions(method: string, body?: any) :any {
+        const headers: OptionsHeaders = {};
+        if (this.options.Authorization) headers.Authorization = this.options.Authorization;
+        if (this.options['Content-Type']) headers['Content-Type'] = this.options['Content-Type'];
+        const requestOptions : RequestOptions = {
+            method,
+            headers,
+        }
+        if (this.options.credentials) requestOptions.credentials = this.options.credentials;
+        if (body) requestOptions.body = body;
+        return requestOptions;
+    }
+
+    protected makeUrl(uri: string) {
+        return this.options.baseURL + uri;
+    }
+
+    protected doFetch(url: string, params?:any) {
+        return fetch(url, params)
     }
 
     public get(url: string){
-        return this.initRequestEngine()
-            .get(url)
-            .then(this.processSuccess)
-            .catch(this.processFailure)
+        console.log('get', url);
+        return this.doFetch(this.makeUrl(url), this.makeRequestOptions('GET'))
+            .then(this.processResponse)
+            .catch(this.notifyOnErrors);
     }
 
-    public post(url: string, params:any){
-        return this.initRequestEngine()
-            .post(url, params)
-            .then(this.processSuccess)
-            .catch(this.processFailure)
+    public post(url: string, params?:any){
+        console.log('post', url, params);
+        return this.doFetch(this.makeUrl(url), this.makeRequestOptions('POST', params))
+            .then(this.processResponse)
+            .catch(this.notifyOnErrors);
     }
 
-    public postNoProcess(url: string, params:any){
-        console.log('opts', this.options);
-        return this.initRequestEngine()
-            .post(url, params)
+    public postNoProcess(url: string, params?:any){
+        return this.doFetch(this.makeUrl(url), this.makeRequestOptions('POST', params))
+            .then((response:any) => response.json());
     }
 
-    protected handleError (error: any) {
-        switch (error.code) {
-            case "bearer-token-invalid":
-                console.log("Access token has expired or is otherwise invalid: Logging out.");
-                this.dispatch(this.logOut());
-                const notification: Notification = {
-                    message: "Your session has expired. You will need to log in again",
-                    type: "info"
-                };
-                throw new NotificationException(notification);
-            default:
-                throw makeNotificationException(error.message, "error");
-        }
+    processResponse<TModel>(response: Response): Promise<any> {
+
+        return response.json()
+            .then((response: any) => {
+                const apiResponse = <Result>response;
+                return this.processResult(apiResponse, response);
+            });
     }
 
-    // for http status success codes
-    protected processSuccess (response: any) {
-        switch (response.data.status) {
+    processResult<TModel>(result: Result, response: any): TModel | void {
+
+        const handleError = (error: ErrorInfo) => {
+            switch (error.code) {
+                case "bearer-token-invalid":
+                    console.log("Access token has expired or is otherwise invalid: Logging out.");
+                    this.dispatch(this.logOut())
+                    const notification: Notification = {
+                        message: "Your session has expired. You will need to log in again",
+                        type: "info"
+                    };
+                    throw new NotificationException(notification);
+                default:
+                    console.log(1111111111, error);
+                    throw makeNotificationException(error.message, "error");
+            }
+        };
+
+        switch (result.status) {
             case "success":
-                return response.data.data;
+                return result.data as TModel;
+            case "failure":
+                return result.errors.forEach(handleError);
             default:
                 throw makeNotificationException("The server response was not correctly formatted: "
                     + response.toString(), "error");
         }
     }
 
-    // for all with http error status code, probably the only one needed
-    protected processFailure (error: any) {
-        if (error.response && error.response.data.errors && error.response.data.errors.length) {
-            return error.response.data.errors.forEach(this.handleError);
-        }
-        throw makeNotificationException("The server response was not correctly formatted: "
-            + error.message, "error");
+    notifyOnErrors(error: any) {
+        throw this.errorToNotificationException(error)
     }
+
+    errorToNotificationException(error: any): NotificationException {
+        if (error.hasOwnProperty("notification")) {
+            return error;
+        } else if (error instanceof Error) {
+            return makeNotificationException(error.message, "error");
+        } else {
+            return makeNotificationException(error, "error");
+        }
+    }
+
 
     protected logOut() {
         localStorageHandler.remove("accessToken");

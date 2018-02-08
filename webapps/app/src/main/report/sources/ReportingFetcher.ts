@@ -1,5 +1,4 @@
 import { Fetcher } from "../../shared/sources/Fetcher";
-// import { reportingAuthStore } from "../stores/ReportingAuthStore";
 import {settings} from "../../shared/Settings";
 import {FetchOptions} from "../../shared/sources/Fetcher";
 import { localStorageHandler } from "../../shared/services/localStorageHandler";

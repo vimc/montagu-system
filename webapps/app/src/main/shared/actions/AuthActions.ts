@@ -3,7 +3,7 @@ import { Dispatch } from "redux";
 import { TypeKeys } from "../actionTypes/AuthTypes";
 import { jwtTokenAuth } from "../modules/jwtTokenAuth";
 import { AuthService } from "../services/AuthService";
-import { notificationActions } from "./NotificationActions";
+import {makeNotificationException, notificationActions} from "./NotificationActions";
 import { appSettings, settings } from "../Settings";
 import { appName } from 'appName';
 import { mainStore as contribMainStore } from "../../contrib/stores/MainStore";
@@ -18,11 +18,14 @@ export const authActions = {
         return async (dispatch: Dispatch<any>, getState: any) => {
             try {
                 const response = await (new AuthService(dispatch, getState)).logIn(email, password)
-                console.log('response login', response);
-                dispatch(this.tokenReceived(response.data.access_token));
-            } catch(e) {
-                console.log('response login err', e);
-                dispatch(this.authenticationError(e.response ? e.response.data.error : "Server Error"));
+                // console.log('response login', response);
+                if (response.error) {
+                    dispatch(this.authenticationError(response.error));
+                } else {
+                    dispatch(this.tokenReceived(response.access_token));
+                }
+            } catch(error) {
+                throw makeNotificationException(error.message, "error");
             }
         }
     },

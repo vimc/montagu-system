@@ -40,7 +40,7 @@ describe("Modelling groups actions tests", () => {
     it("dispatches authenticated action if service returned proper token", (done) => {
         const testToken = jwt.sign(mockUsertokenData, "secret");
         sandbox.setStubFunc(AuthService.prototype, "logIn", ()=>{
-            return Promise.resolve({data:{access_token: testToken}});
+            return Promise.resolve({access_token: testToken});
         });
         sandbox.setStub(AuthService.prototype, "authToShiny");
         sandbox.setStub(contribMainStore, "load");
@@ -55,7 +55,7 @@ describe("Modelling groups actions tests", () => {
     it("dispatches authentication error action if service returned error", (done) => {
         const testToken = jwt.sign(mockUsertokenData, "secret");
         sandbox.setStubFunc(AuthService.prototype, "logIn", ()=>{
-            return Promise.reject({data:{error: 'test error'}});
+            return Promise.resolve({error: 'test error'});
         });
         store.dispatch(authActions.logIn('test', 'test'))
         setTimeout(() => {
@@ -68,7 +68,7 @@ describe("Modelling groups actions tests", () => {
     it("dispatches authentication error action if user is not active", (done) => {
         const testToken = jwt.sign(mockUsertokenDataNotActive, "secret");
         sandbox.setStubFunc(AuthService.prototype, "logIn", ()=>{
-            return Promise.resolve({data:{access_token: testToken}});
+            return Promise.resolve({access_token: testToken});
         });
         store.dispatch(authActions.logIn('test', 'test'))
         setTimeout(() => {
