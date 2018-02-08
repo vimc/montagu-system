@@ -13,23 +13,20 @@ import kotlin.reflect.full.memberProperties
 
 class Validator(private val serializer: Serializer = MontaguSerializer.instance)
 {
-    fun applyRule(annotation: Annotation, property: KProperty1<Any, *>, fieldName: String, model: Any)
+    fun applyRule(annotation: Annotation, value: Any?, fieldName: String, model: Any)
             : List<ErrorInfo>
     {
-        val value = property.get(model)
         return when (annotation)
         {
             is AllowedFormat -> checkFormat(annotation, value, fieldName, model)
             is MinimumLength -> checkLength(annotation, value, fieldName, model)
-            is RequiredWhen -> checkRequiredWhen(annotation, property, fieldName, model)
+            is RequiredWhen -> checkRequiredWhen(annotation, value, fieldName, model)
             else -> listOf()
         }
     }
 
-    fun checkBlank(property: KProperty1<Any, *>, name: String, model: Any): List<ErrorInfo>
+    fun checkBlank(value: Any?, name: String, model: Any): List<ErrorInfo>
     {
-        val value = property.get(model)
-
         if (value is String && value.isBlank())
         {
             return listOf(ErrorInfo(
@@ -84,7 +81,7 @@ class Validator(private val serializer: Serializer = MontaguSerializer.instance)
             = "invalid-field:${serializer.convertFieldName(model.javaClass.simpleName)}:$propertyName"
 
 
-    private fun checkRequiredWhen(requiredWhen: RequiredWhen, property: KProperty1<Any, *>, name: String, model: Any): List<ErrorInfo>
+    private fun checkRequiredWhen(requiredWhen: RequiredWhen, value: Any?, name: String, model: Any): List<ErrorInfo>
     {
         val functionName = requiredWhen.functionName
         val requiredPropertyNames = requiredWhen.dependentProperties.toList()
@@ -100,14 +97,14 @@ class Validator(private val serializer: Serializer = MontaguSerializer.instance)
         val dependentValue = function.call(model) as Boolean
         if (dependentValue)
         {
-            return checkMissing(property, model, name)
+            return checkMissing(value, model, name)
         }
         return listOf()
     }
 
-    private fun checkMissing(property: KProperty1<Any, *>, model: Any, name: String): List<ErrorInfo>
+    private fun checkMissing(value: Any?, model: Any, name: String): List<ErrorInfo>
     {
-        property.get(model) ?: return missingFieldError(name, model)
+        value ?: return missingFieldError(name, model)
         return listOf()
     }
 
@@ -155,10 +152,7 @@ class Validator(private val serializer: Serializer = MontaguSerializer.instance)
 
     fun nullCheck(value: Any?, property: KProperty1<Any, *>, model: Any, name: String): List<ErrorInfo>
     {
-        if (value != null)
-                return listOf()
-
-        if (property.returnType.isMarkedNullable)
+        if (value != null || property.returnType.isMarkedNullable)
             return listOf()
 
         return missingFieldError(name, model)

@@ -26,52 +26,39 @@ class ModelBinder(private val serializer: Serializer = MontaguSerializer.instanc
     fun verify(model: Any): List<ErrorInfo>
     {
         val properties = model::class.memberProperties.filterIsInstance<KProperty1<Any, *>>()
-        return properties.flatMap { recursiveVerify(it, model) ?: listOf() }
+        return properties.flatMap { recursiveVerify(it, model) }
     }
 
-    private fun recursiveVerify(property: KProperty1<Any, *>, model: Any): List<ErrorInfo>
+    private fun recursiveVerify(property: KProperty1<Any, *>, model: Any): MutableList<ErrorInfo>
     {
-        val errors = verify(property, model)
+        val value = property.get(model)
+        val errors = verify(value, property, model)
 
-        // end condition
-        // value is null
-        val value = property.get(model) ?:
-                return errors
-
-        val klass = value::class
-        if (!klass.isData)
+        if (value != null && value::class.isData)
         {
-            // end condition
-            // primitive property
-            return errors
+            val members = value::class.memberProperties.filterIsInstance<KProperty1<Any, *>>()
+            errors += members.flatMap { recursiveVerify(it, value) }
         }
 
-        val members = klass.memberProperties.filterIsInstance<KProperty1<Any, *>>()
-        return errors + members.flatMap { recursiveVerify(it, value) }
+        return errors
     }
 
-    private fun verify(property: KProperty1<Any, *>, model: Any): List<ErrorInfo>
+    private fun verify(value: Any?, property: KProperty1<Any, *>, model: Any): MutableList<ErrorInfo>
     {
         @Suppress("UNCHECKED_CAST")
         val klass = model::class as KClass<Any>
         val errors = mutableListOf<ErrorInfo>()
         val name = serializer.convertFieldName(property.name)
 
-        errors += validator.nullCheck(property.get(model), property, model, name)
+        errors += validator.nullCheck(value, property, model, name)
 
         if (property.findAnnotationAnywhere<CanBeBlank>(klass) == null)
         {
-            errors += validator.checkBlank(property, name, model)
+            errors += validator.checkBlank(value, name, model)
         }
 
-        errors += property.allAnnotations(klass).flatMap { validator.applyRule(it, property, name, model) }
-
-        if (errors.any())
-        {
-            return errors
-        }
-
-        return listOf()
+        errors += property.allAnnotations(klass).flatMap { validator.applyRule(it, value, name, model) }
+        return errors
     }
 
     private fun preprocessed(body: String) = if (body.isBlank())
