@@ -15,10 +15,9 @@ export interface UserDetailsPageProps {
 }
 
 export class ViewUserDetailsPage extends AdminPageWithHeader<UserDetailsPageProps> {
-    load() {
-        userStore.fetchUsers().catch(doNothing).then(() => {
-            userActions.setCurrentUser(this.props.location.params.username);
-            super.load();
+    load(props: UserDetailsPageProps) {
+        return this.loadParent(props).then(() => {
+            userActions.setCurrentUser(props.username);
         });
     }
 

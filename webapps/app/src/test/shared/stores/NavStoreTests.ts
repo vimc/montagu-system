@@ -12,13 +12,15 @@ describe("NavStore", () => {
             url: () => "a",
             urlFragment: () => "a",
             name: () => "A",
-            parent: () => null
+            parent: () => null,
+            load: () => Promise.resolve(true)
         };
         const pageB: IPageWithParent = {
             url: () => "b",
             urlFragment: () => "b",
             name: () => "B",
-            parent: () => pageA
+            parent: () => pageA,
+            load: () => Promise.resolve(true)
         };
 
         navActions.initialize(pageB);

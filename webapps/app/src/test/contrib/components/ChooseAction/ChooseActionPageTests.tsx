@@ -4,8 +4,8 @@ import { Sandbox } from "../../../Sandbox";
 import { ChooseActionPage, LocationProps } from "../../../../main/contrib/components/ChooseAction/ChooseActionPage";
 import {mockLocation, setupStores} from "../../../mocks/mocks";
 import { expectOneAction } from "../../../actionHelpers";
-import { checkAsync } from "../../../testHelpers";
-import { responsibilityStore } from "../../../../main/contrib/stores/ResponsibilityStore";
+import {checkAsync, checkPromise} from "../../../testHelpers";
+import {ResponsibilityState, responsibilityStore} from "../../../../main/contrib/stores/ResponsibilityStore";
 import { groupStore } from "../../../../main/admin/stores/GroupStore";
 import {addNavigationTests} from "../../../shared/NavigationTests";
 import { successResult} from "../../../mocks/mockRemote";
@@ -27,13 +27,12 @@ describe("ChooseActionPage", () => {
             .stub(responsibilityStore, "fetchTouchstones")
             .returns(Promise.resolve(null));
         const fetchGroupDetails = sandbox.sinon.stub(groupStore, "fetchGroupDetails").returns(Promise.resolve({}));
-        const location = mockLocation<LocationProps>({ groupId: "gId" });
 
         const group = mockModellingGroup({id: "gId"});
         setupStores({groups: [group]});
 
-        new ChooseActionPage({location: location, router: null}).load();
-        checkAsync(done, (afterWait) => {
+        const promise = new ChooseActionPage().load({groupId: "gId"});
+        checkPromise(done, promise, (_, afterWait) => {
             expect(fetchTouchstones.called).to.equal(true, "Expected responsibilityStore.fetchTouchstones to be called");
             afterWait(done, () => {
                 expectOneAction(spy, {
@@ -53,7 +52,7 @@ describe("ChooseActionPage", () => {
             ])
         });
         bootstrapStore(responsibilityStore, {
-            currentModellingGroup: {id: "group-1"},
+            currentModellingGroup: mockModellingGroup({id: "group-1"}),
         });
         mockFetcherForMultipleResponses([
             mockTouchstonesEndpoint([mockTouchstone(), mockTouchstone()], "group-1")

@@ -1,7 +1,7 @@
 import AltReform, { FormConnector, Reform } from "alt-reform";
 import { alt } from "../../../../shared/alt";
 import FormActions from "../../../../shared/FormActions";
-import * as Validation from "../../../../shared/Validation";
+import * as Validation from "../../../../shared/validation/Validation";
 import {
     makeNotification, notificationActions,
     NotificationException

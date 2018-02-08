@@ -97,7 +97,7 @@ export function mockExtendedResponsibilitySet(properties?: any,
     return new ExtendedResponsibilitySet(values, touchstone, modellingGroup);
 }
 
-export function mockCoverageSet(properties?: any): models.CoverageSet {
+export function mockCoverageSet(properties?: Partial<models.CoverageSet>): models.CoverageSet {
     const template: models.CoverageSet = {
         id: 100,
         name: "Coverage set name",
@@ -109,8 +109,8 @@ export function mockCoverageSet(properties?: any): models.CoverageSet {
     return Object.assign(template, properties);
 }
 
-export function mockScenarioTouchstoneAndCoverageSets(scenarioProperties?: any,
-                                                      touchstoneProperties?: any,
+export function mockScenarioTouchstoneAndCoverageSets(scenarioProperties?: Partial<models.Scenario>,
+                                                      touchstoneProperties?: Partial<models.Touchstone>,
                                                       coverageSets?: models.CoverageSet[]): models.ScenarioTouchstoneAndCoverageSets {
     const touchstone = mockTouchstone(touchstoneProperties);
     return {

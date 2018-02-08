@@ -9,9 +9,9 @@ import { Page } from "../../../shared/components/PageWithHeader/Page";
 const menuStyles = require("./MainMenu.css");
 
 export class MainMenu extends ReportingPageWithHeader<undefined> {
-    load() {
-        reportStore.fetchReports().catch(doNothing).then(() => {
-            super.load();
+    load(props: undefined) {
+        return this.loadParent(props).then(() => {
+            return reportStore.fetchReports();
         });
     }
 

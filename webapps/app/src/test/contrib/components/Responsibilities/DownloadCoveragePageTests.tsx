@@ -5,15 +5,21 @@ import {expectOneAction} from "../../../actionHelpers";
 import {mockLocation, setupStores} from "../../../mocks/mocks";
 
 import {responsibilityStore} from "../../../../main/contrib/stores/ResponsibilityStore";
-import {mockModellingGroup, mockTouchstone} from "../../../mocks/mockModels";
+import {
+    mockCoverageSet, mockModellingGroup, mockScenarioTouchstoneAndCoverageSets,
+    mockTouchstone
+} from "../../../mocks/mockModels";
 import {DownloadCoveragePage} from "../../../../main/contrib/components/Responsibilities/Coverage/DownloadCoveragePage";
-import {checkAsync} from "../../../testHelpers";
+import {checkAsync, checkPromise} from "../../../testHelpers";
 import {addNavigationTests} from "../../../shared/NavigationTests";
 import {bootstrapStore} from "../../../StoreHelpers";
 import {mainStore} from "../../../../main/contrib/stores/MainStore";
 import {makeLoadable} from "../../../../main/contrib/stores/Loadable";
 import {mockFetcherForMultipleResponses} from "../../../mocks/mockMultipleEndpoints";
-import {mockResponsibilitiesEndpoint, mockTouchstonesEndpoint} from "../../../mocks/mockEndpoints";
+import {
+    mockCoverageSetsEndpoint, mockResponsibilitiesEndpoint,
+    mockTouchstonesEndpoint
+} from "../../../mocks/mockEndpoints";
 
 describe('DownloadCoveragePage', () => {
     const sandbox = new Sandbox();
@@ -36,9 +42,13 @@ describe('DownloadCoveragePage', () => {
         const touchstone = mockTouchstone({id: "touchstone-1"});
         setupStores({groups: [group], touchstones: [touchstone]});
 
-        new DownloadCoveragePage({location: location, router: null}).load();
+        const promise = new DownloadCoveragePage().load({
+            touchstoneId: "touchstone-1",
+            scenarioId: "scenario-1",
+            groupId: "group-1",
+        });
 
-        checkAsync(done, (afterWait) => {
+        checkPromise(done, promise, (_, afterWait) => {
             expectOneAction(spy, {action: "ModellingGroupActions.setCurrentGroup", payload: "group-1"}, 0);
             expect(fetchTouchstones.called).to.equal(true, "Expected fetchTouchstones to be called");
             afterWait(done, () => {
@@ -57,13 +67,19 @@ describe('DownloadCoveragePage', () => {
     });
 
     const page = new DownloadCoveragePage({location: location, router: null});
+    console.log("Test");
     addNavigationTests(page, sandbox, () => {
         bootstrapStore(mainStore, {
             modellingGroups: makeLoadable([mockModellingGroup({id: "group-1"})])
         });
         mockFetcherForMultipleResponses([
             mockTouchstonesEndpoint([mockTouchstone({id: "touchstone-1"})], "group-1"),
-            mockResponsibilitiesEndpoint(["scenario-1"])
+            mockResponsibilitiesEndpoint(["scenario-1"]),
+            mockCoverageSetsEndpoint(mockScenarioTouchstoneAndCoverageSets({
+                id: "scenario-1"
+            }, {
+                id: "touchstone-1"
+            }))
         ]);
     });
 });

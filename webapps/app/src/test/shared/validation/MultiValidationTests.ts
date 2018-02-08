@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import { ValidationTest } from "./ValidationTestBaseClass";
-import { multi, Validator } from "../../../main/shared/Validation";
+import { multi, Validator } from "../../../main/shared/validation/Validation";
 
 export class MultiValidationTests extends ValidationTest {
     name() { return "multi"; }

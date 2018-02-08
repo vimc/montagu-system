@@ -52,6 +52,10 @@ export function mockResult<T>(data: T,
     return { data, errors, status };
 }
 
+export function resetFetcher() {
+    mockFetcherResponse();
+}
+
 export function mockFetcher(promise: Promise<Response>, reportingPromise?: Promise<Response>) {
     fetcher.fetcher = new ReportingFetcher();
     fetcher.fetcher.fetch = function(urlFragment: string, options?: FetchOptions, includeToken: boolean = true) {

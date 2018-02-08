@@ -136,6 +136,7 @@ export class FetchHelper<TPayload, TActionPayload> {
             });
         });
 
+
         // it("triggers logout when server returns bearer token error", (done: DoneCallback) => {
         //     const errors: Array<ErrorInfo> = [
         //         {

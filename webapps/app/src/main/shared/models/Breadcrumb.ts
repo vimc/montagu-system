@@ -8,4 +8,5 @@ export interface IPageWithParent {
     urlFragment(): string;
     name(): string;
     parent(): IPageWithParent;
+    load(props: any): Promise<any>;
 }

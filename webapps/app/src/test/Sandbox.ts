@@ -4,6 +4,7 @@ import {mount, MountRendererProps, ReactWrapper} from "enzyme";
 import { ReactElement } from "react";
 import { alt } from "../main/shared/alt";
 import fetcher from "../main/shared/sources/Fetcher";
+import {mockFetcher, mockFetcherResponse, resetFetcher} from "./mocks/mockRemote";
 
 export class Sandbox {
     sinon: sinon.SinonSandbox;
@@ -30,6 +31,7 @@ export class Sandbox {
         });
         this.mounted = [];
         alt.recycle();
+        resetFetcher();
     }
 
     dispatchSpy(): sinon.SinonSpy {
@@ -38,6 +40,11 @@ export class Sandbox {
 
     fetcherSpy(): sinon.SinonSpy {
         return this.sinon.spy(fetcher.fetcher, "fetch");
+    }
+    // Use mockResponse to build the input to this
+    fetcherStub(promise: Promise<Response>): sinon.SinonSpy {
+        mockFetcherResponse();
+        return this.sinon.stub(fetcher.fetcher, "fetch").returns(promise);
     }
 
     stubFetch(obj: any, method: string): sinon.SinonStub {

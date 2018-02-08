@@ -10,7 +10,7 @@ import {responsibilityStore} from "../../../../main/contrib/stores/Responsibilit
 import {mockModellingGroup, mockResponsibility, mockTouchstone} from "../../../mocks/mockModels";
 import {ResponsibilityOverviewPage} from "../../../../main/contrib/components/Responsibilities/Overview/ResponsibilityOverviewPage";
 import {ResponsibilityOverviewTitleComponent} from "../../../../main/contrib/components/Responsibilities/Overview/ResponsibilityOverviewTitle";
-import {checkAsync} from "../../../testHelpers";
+import {checkAsync, checkPromise} from "../../../testHelpers";
 import {addNavigationTests} from "../../../shared/NavigationTests";
 import {makeLoadable} from "../../../../main/contrib/stores/Loadable";
 import {mainStore} from "../../../../main/contrib/stores/MainStore";
@@ -30,17 +30,15 @@ describe('ResponsibilityOverviewPage', () => {
         const spy = sandbox.dispatchSpy();
         const fetchTouchstones = sandbox.sinon.stub(responsibilityStore, "fetchTouchstones").returns(Promise.resolve(true));
         const fetchResponsibilities = sandbox.sinon.stub(responsibilityStore, "fetchResponsibilities").returns(Promise.resolve(true));
-        const location = mockLocation({
-            touchstoneId: "touchstone-id",
-            groupId: "group-id"
-        });
         const group = mockModellingGroup({id: "group-id"});
         const touchstone = mockTouchstone({id: "touchstone-id"});
         setupStores({groups: [group], touchstones: [touchstone]});
 
-        new ResponsibilityOverviewPage({location: location, router: null}).load();
-
-        checkAsync(done, (afterWait) => {
+        const promise = new ResponsibilityOverviewPage().load({
+            touchstoneId: "touchstone-id",
+            groupId: "group-id"
+        });
+        checkPromise(done, promise, (_, afterWait) => {
             expectOneAction(spy, {action: "ModellingGroupActions.setCurrentGroup", payload: "group-id"}, 0);
             expect(fetchTouchstones.called).to.equal(true, "Expected fetchTouchstones to be called");
             afterWait(done, () => {

@@ -8,10 +8,8 @@ import {MainMenu} from "../../MainMenu/MainMenu";
 import { Page } from "../../../../shared/components/PageWithHeader/Page";
 
 export class ViewAllModellingGroupsPage extends AdminPageWithHeader<undefined> {
-    load() {
-        groupStore.fetchGroups().catch(doNothing).then(() => {
-            super.load();
-        });
+    load(props: undefined) {
+        return this.loadParent(props).then(() => groupStore.fetchGroups());
     }
 
     name(): string {

@@ -11,19 +11,21 @@ interface Props {
     groupId: string;
 }
 
-interface State {
+export interface AddMemberState {
     options: User[];
     selectedUser: string;
 }
 
-export class AddMember extends React.Component<Props, State> {
+export class AddMember extends React.Component<Props, AddMemberState> {
 
     componentWillMount() {
         this.componentWillReceiveProps(this.props);
     }
 
     componentWillReceiveProps(props: Props) {
-        const options = props.users.filter(x => props.members.indexOf(x.username) == -1);
+        const options = props.users
+            .filter(x => props.members.indexOf(x.username) == -1)
+            .sort((a, b) => a.username.localeCompare(b.username));
         const firstUser = options.length > 0 ? options[0].username : "";
 
         this.setState({
@@ -32,14 +34,14 @@ export class AddMember extends React.Component<Props, State> {
         })
     }
 
-    handleChange(e: any) {
+    handleChange(e: React.ChangeEvent<HTMLSelectElement>) {
 
         this.setState({
             selectedUser: e.target.value
         });
     }
 
-    handleClick(e: any) {
+    handleClick(e: React.MouseEvent<HTMLButtonElement>) {
 
         e.preventDefault();
 
@@ -47,7 +49,6 @@ export class AddMember extends React.Component<Props, State> {
         const associateUser: AssociateUser = {
             username: this.state.selectedUser,
             action: "add"
-
         };
 
         fetcher.fetcher.fetch(href, {

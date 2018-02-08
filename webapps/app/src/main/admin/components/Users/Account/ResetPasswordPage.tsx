@@ -35,9 +35,10 @@ export class ResetPasswordPage extends AdminPageWithHeader<ResetPasswordPageProp
         return new MainMenu();
     }
 
-    load() {
-        super.load();
-        accountActions.setPasswordResetToken(helpers.queryStringAsObject().token);
+    load(props: ResetPasswordPageProps) {
+        return this.loadParent(props).then(() => {
+            accountActions.setPasswordResetToken(helpers.queryStringAsObject().token);
+        });
     }
 
     render(): JSX.Element {

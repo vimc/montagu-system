@@ -13,9 +13,19 @@ interface Props {
 export class ListOfUsersComponent extends React.Component<Props, undefined> {
 
     render() {
-        return <div>{this.props.users.map(a => <DeletableUser key={a.username} user={a} groupId={this.props.groupId}
-                                                              showDelete={this.props.isAdmin}/>)}
-        </div>;
+        const users = this.props.users.sort((a, b) => a.name.localeCompare(b.name));
+        return <div>{this.renderUsers(users, this.props.isAdmin)}</div>;
+    }
+
+    renderUsers(users: User[], isAdmin: boolean): JSX.Element[] {
+        return users.map(a => {
+            return <DeletableUser key={a.username}
+                                  user={a}
+                                  groupId={this.props.groupId}
+                                  showDelete={isAdmin}
+            />;
+        });
+
     }
 }
 

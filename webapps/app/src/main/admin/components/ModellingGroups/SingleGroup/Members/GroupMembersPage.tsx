@@ -16,13 +16,10 @@ interface PageProps {
 }
 
 export class GroupMembersPage extends AdminPageWithHeader<PageProps> {
-    load() {
-        userStore.fetchUsers().catch(doNothing);
-        groupStore.fetchGroups().catch(doNothing).then(() => {
+    load(props: PageProps) {
+        return this.loadParent(props).then(() => {
             modellingGroupActions.setCurrentGroup(this.props.location.params.groupId);
-            groupStore.fetchGroupDetails().catch(doNothing).then(() => {
-                super.load();
-            });
+            return groupStore.fetchGroupDetails();
         });
     }
 
@@ -51,6 +48,6 @@ export class GroupMembersPage extends AdminPageWithHeader<PageProps> {
 
 const Title = connectToStores(class extends ModellingGroupTitle {
     renderContent(props: GroupTitleProps) {
-        return <span>Manage admin users for { props.group.description }</span>
+        return <span>Manage membership for { props.group.description }</span>
     }
 });

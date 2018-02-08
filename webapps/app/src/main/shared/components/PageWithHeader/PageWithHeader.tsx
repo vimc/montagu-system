@@ -5,6 +5,7 @@ import { navActions } from "../../actions/NavActions";
 import {IPageWithParent} from "../../models/Breadcrumb";
 
 import './PageWithHeader.scss';
+import {doNothing} from "../../Helpers";
 
 export interface PageParts {
     siteTitle(): string;
@@ -31,15 +32,23 @@ export abstract class PageWithHeader<TLocationProps>
     hideTitle(): boolean {
         return false;
     }
-    componentDidMount() {
-        setTimeout(()=> {
-            this.load();
+    componentDidMount(): Promise<any> {
+        return this.load(this.props.location.params).then(() => {
+            this.createBreadcrumb();
+            window.scrollTo(0, 0);
         });
     }
 
-    load() {
-        this.createBreadcrumb();
-        window.scrollTo(0, 0);
+    load(props: TLocationProps): Promise<any> {
+        return Promise.resolve(true);
+    }
+    loadParent(props: TLocationProps): Promise<any> {
+        const parent = this.parent();
+        if (parent) {
+            return this.parent().load(props);
+        } else {
+            return Promise.resolve(true);
+        }
     }
 
     createBreadcrumb() {

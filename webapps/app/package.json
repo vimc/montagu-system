@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "webpack": "webpack",
-    "watch_webpack": "webpack --watch",
+    "watch": "webpack --watch",
     "generate-models": "cd ./src/webmodels && ./gradlew generateTypeDefinitions",
     "//": "This is a comment: To run just one test, or a subset, use run-test.sh, e.g. ./run-test src/test/components/ErrorLogTests.tsx",
     "test": "mocha-webpack --webpack-config webpack-test.config.js \"src/test/**/*\"",
@@ -61,7 +61,7 @@
     "source-map-loader": "^0.2.0",
     "string-replace-webpack-plugin": "^0.1.3",
     "tslint": "^5.8.0",
-    "typescript": "^2.6.1",
+    "typescript": "2.7.1",
     "webpack": "^2.3.1",
     "webpack-node-externals": "^1.5.4"
   },

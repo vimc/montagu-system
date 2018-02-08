@@ -1,4 +1,4 @@
-FROM node:7
+FROM node:8.9.4
 
 # Install OpenJDK
 # This section is cribbed from the official JDK image:
@@ -52,7 +52,7 @@ RUN ./src/webmodels/gradlew
 
 # Install Node dependencies
 COPY package.json .
-RUN npm install
+RUN npm install --quiet 2>&1
 
 # Generate Typescript models from montagu-webmodels
 COPY ./src/webmodels/ src/webmodels

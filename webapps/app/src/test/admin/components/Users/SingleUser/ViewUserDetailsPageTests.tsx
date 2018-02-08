@@ -3,7 +3,7 @@ import { expect } from "chai";
 import { mockLocation } from "../../../../mocks/mocks";
 import * as React from "react";
 import { expectOneAction } from "../../../../actionHelpers";
-import { checkAsync } from "../../../../testHelpers";
+import {checkAsync, checkPromise} from "../../../../testHelpers";
 import { userStore } from "../../../../../main/admin/stores/UserStore";
 import {
     UserDetailsPageProps,
@@ -37,9 +37,8 @@ describe("ViewUserDetailsPage", () => {
             .returns(Promise.resolve(true));
         const dispatchSpy = sandbox.dispatchSpy();
 
-        new ViewUserDetailsPage({location: location, router: null}).load();
-
-        checkAsync(done, (afterWait) => {
+        const promise = new ViewUserDetailsPage().load({username: "testuser"});
+        checkPromise(done, promise, (_, afterWait) => {
             expect(fetchUsers.called).to.equal(true, "Expected userStore.fetchUsers to be triggered");
             afterWait(done, () => {
                 expectOneAction(dispatchSpy, { action: "UserActions.setCurrentUser", payload: "testuser" });

@@ -28,7 +28,7 @@ function createFetchHandler(api: APIType, responses: FakeEndpoint[]) {
             return match && match.length > 0 && endpointAPI == api;
         });
         if (response) {
-            console.log(`Returned fake response for ${urlFragment} (${api})`);
+            console.log(`Returned fake response for ${urlFragment} (${api})`);//: ${JSON.stringify(response.result.data)}`);
             return mockResponse(response.result);
         } else {
             return mockResponse(null, `Unsupported URL for mock fetcher: ${urlFragment} (${api})`);

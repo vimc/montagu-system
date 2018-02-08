@@ -1,9 +1,10 @@
 import * as React from "react";
 import {expect} from "chai";
-import { shallow } from "enzyme";
+import {shallow} from "enzyme";
 import {DataLinks} from "../../../../main/report/components/Data/DataLinks";
-import { Sandbox } from "../../../Sandbox";
-import { FileDownloadLink } from "../../../../main/report/components/FileDownloadLink";
+import {Sandbox} from "../../../Sandbox";
+import {FileDownloadLink} from "../../../../main/report/components/FileDownloadLink";
+import {ILookup} from "../../../../main/shared/models/Lookup";
 
 describe("DataLinks", () => {
     const sandbox = new Sandbox();
@@ -13,11 +14,10 @@ describe("DataLinks", () => {
     it("renders list of links", () => {
 
         const fakeHash = "53269fehwjcfksd678";
-        const fakeData =
-            {
-                "datasource": fakeHash,
-                "another": "753927yhfdjwkncsalk"
-            };
+        const fakeData = {
+            "datasource": fakeHash,
+            "another": "753927yhfdjwkncsalk"
+        } as Readonly<ILookup<string>>;
 
         const rendered = shallow(<DataLinks {...fakeData}/>);
 
