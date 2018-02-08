@@ -26,7 +26,7 @@ class GroupModelRunParameterControllerTests : MontaguTests()
     @Test
     fun `can get model run params`()
     {
-        val modelRunParameterSets = listOf(ModelRunParameterSet(1, "description", "model", "user", Instant.now(), "yf"))
+        val modelRunParameterSets = listOf(ModelRunParameterSet(1, "model", "user", Instant.now(), "yf"))
 
         val mockContext = mock<ActionContext> {
             on { params(":group-id") } doReturn "group-1"
@@ -143,7 +143,6 @@ class GroupModelRunParameterControllerTests : MontaguTests()
             on { it.getModelRunParameterSets(eq("group-1"), eq("touchstone-1")) } doReturn modelRunParameterSets
             on {
                 it.addModelRunParameterSet(eq("group-1"), eq("touchstone-1"), eq("disease-1"),
-                        eq("some description"),
                         eq(modelRuns), eq("user.name"), any())
             } doReturn 11
             on { it.getModelRunParameterSet(any()) } doReturn FlexibleDataTable.new(

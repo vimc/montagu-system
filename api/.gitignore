@@ -36,3 +36,4 @@ src/config/users/martin\.properties
 src/out
 test-data\.bin
 test-data\.sql
+docs/.idea
