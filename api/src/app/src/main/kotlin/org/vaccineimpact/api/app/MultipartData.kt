@@ -25,12 +25,14 @@ class ServletFileUploadWrapper : MultipartData
     }
 }
 
-class MultipartDataMap(private val map: Map<String, String>)
+data class Part(val contents: String, val contentType: String)
+
+class MultipartDataMap(private val map: Map<String, Part>)
 {
-    constructor(vararg pairs: Pair<String, String>)
+    constructor(vararg pairs: Pair<String, Part>)
             : this(mapOf(*pairs))
 
-    operator fun get(fieldName: String): String
+    operator fun get(fieldName: String): Part
     {
         return map[fieldName]
                 ?: throw MissingRequiredMultipartParameterError(fieldName)

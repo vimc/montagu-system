@@ -90,7 +90,9 @@ open class GroupBurdenEstimatesController(
     }
 
     private fun getBurdenEstimateDataFromCSV(
-            metadata: BurdenEstimateSet, context: ActionContext, source: RequestBodySource
+            metadata: BurdenEstimateSet,
+            context: ActionContext,
+            source: RequestBodySource
     ): Sequence<BurdenEstimateWithRunId>
     {
         val data = if (metadata.type.type == BurdenEstimateSetTypeCode.STOCHASTIC)

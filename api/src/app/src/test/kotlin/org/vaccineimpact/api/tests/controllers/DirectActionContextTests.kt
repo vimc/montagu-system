@@ -134,7 +134,7 @@ class DirectActionContextTests : MontaguTests()
             on { parts(any()) } doReturn data
         }
         val context = DirectActionContext(mockWebContext())
-        assertThat(context.getPart("partB", mockData).readText()).isEqualTo("Message B")
+        assertThat(context.getPart("partB", mockData).contents.readText()).isEqualTo("Message B")
     }
 
     private fun mockFileItem(name: String, contents: String): FileItemStream
