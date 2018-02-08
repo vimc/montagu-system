@@ -6,6 +6,7 @@ import org.vaccineimpact.api.models.validation.MinimumLength
 import org.vaccineimpact.api.models.validation.RequiredWhen
 import org.vaccineimpact.api.serialization.MontaguSerializer
 import org.vaccineimpact.api.serialization.Serializer
+import java.lang.reflect.InvocationTargetException
 import kotlin.reflect.KProperty1
 import kotlin.reflect.full.declaredMemberProperties
 import kotlin.reflect.full.memberFunctions
@@ -36,6 +37,14 @@ class Validator(private val serializer: Serializer = MontaguSerializer.instance)
         }
 
         return listOf()
+    }
+
+    fun checkNull(value: Any?, property: KProperty1<Any, *>, model: Any, name: String): List<ErrorInfo>
+    {
+        if (value != null || property.returnType.isMarkedNullable)
+            return listOf()
+
+        return missingFieldError(name, model)
     }
 
     private fun missingFieldError(name: String, model:Any): List<ErrorInfo>
@@ -84,77 +93,28 @@ class Validator(private val serializer: Serializer = MontaguSerializer.instance)
     private fun checkRequiredWhen(requiredWhen: RequiredWhen, value: Any?, name: String, model: Any): List<ErrorInfo>
     {
         val functionName = requiredWhen.functionName
-        val requiredPropertyNames = requiredWhen.dependentProperties.toList()
         val functions = model::class.memberFunctions
         val function = functions.singleOrNull { it.name == functionName && it.returnType.classifier == Boolean::class }
                 ?: throw Exception("Class '${model::class.simpleName}' doesn't have a function '$functionName'")
 
-        val nullCheckErrors = nullCheckRequiredProperties(requiredPropertyNames, model)
-        if (nullCheckErrors.any())
+        try
         {
-            return nullCheckErrors
+            if (function.call(model) as Boolean)
+            {
+                return checkMissing(value, model, name)
+            }
+
+            return listOf()
         }
-        val dependentValue = function.call(model) as Boolean
-        if (dependentValue)
+        catch(e: InvocationTargetException)
         {
-            return checkMissing(value, model, name)
+            return listOf()
         }
-        return listOf()
     }
 
     private fun checkMissing(value: Any?, model: Any, name: String): List<ErrorInfo>
     {
         value ?: return missingFieldError(name, model)
         return listOf()
-    }
-
-    private fun nullCheckRequiredProperties(requiredPropertyNames: List<String>, model: Any): List<ErrorInfo>
-    {
-        val properties = model::class.declaredMemberProperties
-        val requiredProperties = properties
-                .filterIsInstance<KProperty1<Any, *>>()
-                .filter { requiredPropertyNames.contains(it.name) }
-
-        return requiredProperties.flatMap { nullCheckDependentProperty(requiredProperties, it.name, model) }
-    }
-
-    private fun nullCheckDependentProperty(properties: List<KProperty1<Any, *>>, requiredPropertyName: String, model: Any): List<ErrorInfo>
-    {
-        val property = properties.find { it.name == requiredPropertyName }
-                ?: throw Exception("Class '${model::class.simpleName}' doesn't have a property '$requiredPropertyName'")
-
-        return recursiveNullCheck(property, model, requiredPropertyName)
-    }
-
-    private fun recursiveNullCheck(property: KProperty1<Any, *>, model: Any, name: String): List<ErrorInfo>
-    {
-        val value = property.get(model)
-                ?: return nullCheck(property, name, model)
-
-        // end condition
-        // only continue with the recursion if this is a data class type
-        if (!value::class.isData)
-        {
-            return listOf()
-        }
-
-        val members = value::class.memberProperties.filterIsInstance<KProperty1<Any, *>>()
-        return members.flatMap { recursiveNullCheck(it, value, serializer.convertFieldName(it.name)) }
-    }
-
-    private fun nullCheck(property: KProperty1<Any, *>, name: String, model: Any): List<ErrorInfo>
-    {
-        if (property.returnType.isMarkedNullable)
-            return listOf()
-
-        return missingFieldError(name, model)
-    }
-
-    fun nullCheck(value: Any?, property: KProperty1<Any, *>, model: Any, name: String): List<ErrorInfo>
-    {
-        if (value != null || property.returnType.isMarkedNullable)
-            return listOf()
-
-        return missingFieldError(name, model)
     }
 }
