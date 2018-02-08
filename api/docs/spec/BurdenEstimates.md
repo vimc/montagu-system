@@ -1,4 +1,12 @@
 # Burden estimates
+This diagram shows the states a burden estimate set can move through. It begins
+as `empty`, and can then be repeatedly populated to fill with data. This moves
+it into the `partial` state. If a mistake is made, the set can be cleared back
+to `empty` with the `/actions/clear/` endpoint. Finally, the set can be marked
+as complete with the `/actions/close/` endpoint.
+
+![Burden estimate set state diagram](./set_state_diagram.dot.svg)
+
 ## GET /modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}/{scenario-id}/estimate-sets/
 Returns metadata for all burden estimates that have been uploaded for this 
 responsibility.
