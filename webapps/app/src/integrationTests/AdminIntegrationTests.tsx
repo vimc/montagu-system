@@ -39,7 +39,6 @@ class AdminIntegrationTests extends IntegrationTestSuite {
         it("can clear shiny cookie", (done: DoneCallback) => {
             (new AuthService(this.store.dispatch, this.store.getState)).unauthFromShiny()
                 .then(result => {
-                    console.log(3333, result);
                     expect(result).to.be.eq("OK");
                     done();
                 })
