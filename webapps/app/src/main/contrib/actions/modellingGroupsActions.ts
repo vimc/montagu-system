@@ -1,6 +1,6 @@
 import { Dispatch } from "redux";
 
-import { ModellingGroupsService } from "../services/modellingGroupsService";
+import { ModellingGroupsService } from "../services/ModellingGroupsService";
 import { TypeKeys } from "../actionTypes/ModellingGroupsTypes";
 
 export const modellingGroupsActions = {
