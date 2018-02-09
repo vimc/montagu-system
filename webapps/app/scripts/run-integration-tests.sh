@@ -24,7 +24,7 @@ docker exec montagu_db_1 psql -U vimc -d postgres -c \
 # Run the tests
 set +e
 ./node_modules/mocha-webpack/bin/mocha-webpack \
-    --watch \
+    # --watch \
     --webpack-config webpack-test.config.js \
     --timeout 5000 \
     "src/integrationTests/{helper,${portal}IntegrationTests}.tsx"

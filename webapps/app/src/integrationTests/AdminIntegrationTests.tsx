@@ -27,14 +27,15 @@ class AdminIntegrationTests extends IntegrationTestSuite {
     }
 
     addTestsToMocha() {
-/*
-        it("can fetch shiny cookie", (done: DoneCallback) => {
-            setShinyToken().then((res: Response) => {
-                expect(res.ok).to.be.eq(true);
-                done()
-            })
-        });
-*/
+
+        // it("can fetch shiny cookie", (done: DoneCallback) => {
+        //
+        //     // setShinyToken().then((res: Response) => {
+        //     //     expect(res.ok).to.be.eq(true);
+        //     //     done()
+        //     // })
+        // });
+
         // it("can clear shiny cookie", (done: DoneCallback) => {
             // LoginSource.clearShinyToken().then((res: Response) => {
             //     expect(res.ok).to.be.eq(true);
