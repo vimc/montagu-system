@@ -8,11 +8,8 @@ sealed class RequestBodySource
 
     class Simple : RequestBodySource()
     {
-        override fun getContent(context: ActionContext): UploadedFile
-        {
-            val reader = context.request.raw().inputStream.bufferedReader()
-            return UploadedFile(reader, context.contentType())
-        }
+        override fun getContent(context: ActionContext)
+                = UploadedFile(context.requestReader(), context.contentType())
     }
 
     class HTMLMultipart(private val partName: String) : RequestBodySource()

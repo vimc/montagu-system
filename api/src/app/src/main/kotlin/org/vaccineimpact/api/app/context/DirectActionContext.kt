@@ -19,8 +19,7 @@ import org.vaccineimpact.api.serialization.MontaguSerializer
 import org.vaccineimpact.api.serialization.Serializer
 import spark.Request
 import spark.Response
-import java.io.BufferedOutputStream
-import java.io.OutputStream
+import java.io.*
 import java.util.zip.GZIPOutputStream
 import kotlin.reflect.KClass
 
@@ -74,6 +73,8 @@ class DirectActionContext(private val context: SparkWebContext,
         }
         return multipartData.parts(rawRequest)
     }
+
+    override fun requestReader(): BufferedReader = request.raw().reader
 
     override fun <T : Any> csvData(klass: KClass<T>, from: RequestBodySource): Sequence<T>
     {

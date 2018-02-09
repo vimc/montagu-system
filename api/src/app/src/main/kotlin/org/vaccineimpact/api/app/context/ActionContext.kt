@@ -33,6 +33,7 @@ interface ActionContext
     fun getPart(name: String, multipartData: MultipartData = ServletFileUploadWrapper()): UploadedFile
     fun getParts(multipartData: MultipartData = ServletFileUploadWrapper()): MultipartDataMap
 
+    fun requestReader(): Reader
     fun <T : Any> postData(klass: Class<T>): T
     fun <T : Any> csvData(klass: KClass<T>, from: RequestBodySource): Sequence<T>
     fun <T : Any> csvData(klass: KClass<T>, part: Part): Sequence<T>
@@ -49,4 +50,4 @@ interface ActionContext
 
 inline fun <reified T : Any> ActionContext.postData() = this.postData(T::class.java)
 inline fun <reified T : Any> ActionContext.csvData(from: RequestBodySource = RequestBodySource.Simple()) = this.csvData(T::class, from)
-inline fun <reified T : Any> ActionContext.csvData(raw: Part) = this.csvData(T::class, raw)
+inline fun <reified T : Any> ActionContext.csvData(part: Part) = this.csvData(T::class, part)

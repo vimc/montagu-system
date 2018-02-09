@@ -12,17 +12,20 @@ import org.pac4j.core.context.Pac4jConstants
 import org.pac4j.core.profile.CommonProfile
 import org.pac4j.sparkjava.SparkWebContext
 import org.vaccineimpact.api.app.MultipartData
-import org.vaccineimpact.api.app.context.DirectActionContext
-import org.vaccineimpact.api.app.context.postData
+import org.vaccineimpact.api.app.Part
+import org.vaccineimpact.api.app.context.*
 import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.errors.MissingRequiredMultipartParameterError
+import org.vaccineimpact.api.app.errors.WrongDataFormatError
 import org.vaccineimpact.api.app.security.PERMISSIONS
+import org.vaccineimpact.api.models.BurdenEstimate
 import org.vaccineimpact.api.models.Scope
 import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import org.vaccineimpact.api.test_helpers.MontaguTests
 import spark.Request
 import java.io.ByteArrayInputStream
+import java.io.StringReader
 import javax.servlet.http.HttpServletRequest
 
 class DirectActionContextTests : MontaguTests()
@@ -93,6 +96,29 @@ class DirectActionContextTests : MontaguTests()
     }
 
     @Test
+    fun `throws WrongDataFormat if csvData is called with RequestBodySource and wrong content type`()
+    {
+        val context = DirectActionContext(mockWebContext())
+        val file = UploadedFile(StringReader(""), contentType = "application/json")
+        val source = mock<RequestBodySource> {
+            on { getContent(context) } doReturn file
+        }
+        assertThatThrownBy {
+            context.csvData<BurdenEstimate>(source)
+        }.isInstanceOf(WrongDataFormatError::class.java)
+    }
+
+    @Test
+    fun `throws WrongDataFormat if csvData is called with Part and wrong content type`()
+    {
+        val context = DirectActionContext(mockWebContext())
+        val part = Part("", contentType = "application/json")
+        assertThatThrownBy {
+            context.csvData<BurdenEstimate>(part)
+        }.isInstanceOf(WrongDataFormatError::class.java)
+    }
+
+    @Test
     fun `throws BadRequest if getPart called on non multipart request`()
     {
         val mockData = mock<MultipartData> {
@@ -108,8 +134,8 @@ class DirectActionContextTests : MontaguTests()
     fun `throw exception if getPart called on non existent part`()
     {
         val data = sequenceOf(
-                mockFileItem("partA", "Message A"),
-                mockFileItem("partC", "Message C")
+                mockFileItem("partA", "Message A", "text/a"),
+                mockFileItem("partC", "Message C", "text/c")
         )
         val mockData = mock<MultipartData> {
             on { isMultipartContent(any()) } doReturn true
@@ -125,23 +151,26 @@ class DirectActionContextTests : MontaguTests()
     fun `can get part`()
     {
         val data = sequenceOf(
-                mockFileItem("partA", "Message A"),
-                mockFileItem("partB", "Message B"),
-                mockFileItem("partC", "Message C")
+                mockFileItem("partA", "Message A", "text/a"),
+                mockFileItem("partB", "Message B", "text/b"),
+                mockFileItem("partC", "Message C", "text/c")
         )
         val mockData = mock<MultipartData> {
             on { isMultipartContent(any()) } doReturn true
             on { parts(any()) } doReturn data
         }
         val context = DirectActionContext(mockWebContext())
-        assertThat(context.getPart("partB", mockData).contents.readText()).isEqualTo("Message B")
+        val actual = context.getPart("partB", mockData)
+        assertThat(actual.contents.readText()).isEqualTo("Message B")
+        assertThat(actual.contentType).isEqualTo("text/b")
     }
 
-    private fun mockFileItem(name: String, contents: String): FileItemStream
+    private fun mockFileItem(name: String, contents: String, contentType: String): FileItemStream
     {
         return mock {
             on { fieldName } doReturn name
             on { openStream() } doReturn ByteArrayInputStream(contents.toByteArray())
+            on { this.contentType } doReturn contentType
         }
     }
 
