@@ -4,7 +4,7 @@ const configureReduxMockStore  = require('redux-mock-store');
 
 import { Sandbox } from "../../Sandbox";
 import { modellingGroupsActions } from "../../../main/contrib/actions/modellingGroupsActions";
-import { ModellingGroupsService } from "../../../main/contrib/services/modellingGroupsService";
+import { ModellingGroupsService } from "../../../main/contrib/services/ModellingGroupsService";
 import { TypeKeys } from "../../../main/contrib/actionTypes/ModellingGroupsTypes";
 
 import thunk from 'redux-thunk';
