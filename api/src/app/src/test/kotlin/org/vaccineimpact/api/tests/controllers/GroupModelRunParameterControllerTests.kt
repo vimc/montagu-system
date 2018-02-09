@@ -97,7 +97,7 @@ class GroupModelRunParameterControllerTests : MontaguTests()
         val modelRuns = listOf<ModelRun>(ModelRun("run1", params))
 
         val mockContext = mock<ActionContext> {
-            on { csvData<ModelRun>(any(), any<InMemoryPart>()) } doReturn modelRuns.asSequence()
+            on { csvData<ModelRun>(any(), any()) } doReturn modelRuns.asSequence()
             on { username } doReturn "user.name"
             on { params(":group-id") } doReturn "group-1"
             on { params(":touchstone-id") } doReturn "touchstone-1"

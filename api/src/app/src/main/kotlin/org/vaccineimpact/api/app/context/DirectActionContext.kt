@@ -78,23 +78,12 @@ class DirectActionContext(private val context: SparkWebContext,
 
     override fun <T : Any> csvData(klass: KClass<T>, from: RequestBodySource): Sequence<T>
     {
-        val file = from.getContent(this)
-        assertIsCSV(file.contentType)
-        return DataTableDeserializer.deserialize(file.contents, klass, serializer)
-    }
-
-    override fun <T : Any> csvData(klass: KClass<T>, part: InMemoryPart): Sequence<T>
-    {
-        assertIsCSV(part.contentType)
-        return DataTableDeserializer.deserialize(part.contents, klass, serializer)
-    }
-
-    private fun assertIsCSV(contentType: String?)
-    {
+        val (contents, contentType) = from.getContent(this)
         if (contentType != null && contentType !in ContentTypes.acceptableCSVTypes)
         {
             throw WrongDataFormatError(contentType, ContentTypes.csv)
         }
+        return DataTableDeserializer.deserialize(contents, klass, serializer)
     }
 
     override fun setResponseStatus(status: Int)

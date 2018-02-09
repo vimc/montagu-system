@@ -29,7 +29,7 @@ class RequestBodySourceTests : MontaguTests()
     @Test
     fun `can get content type from multipart body`()
     {
-        val source = RequestBodySource.HTMLMultipart("part1")
+        val source = RequestBodySource.Multipart.FromStream("part1")
         val file = RequestData(StringReader("Text"), "content/type")
         val context = mock<ActionContext> {
             on { getPart(eq("part1"), anyOrNull()) } doReturn file

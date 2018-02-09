@@ -224,8 +224,7 @@ class GroupEstimatesControllerTests : MontaguTests()
     private fun <T : Any> mockActionContextWithCSVData(csvData: Sequence<T>, keepOpen: String? = null): ActionContext
     {
         return mock {
-            on { csvData<T>(any(), any<RequestBodySource>()) } doReturn csvData
-            on { csvData<T>(any(), any<InMemoryPart>()) } doReturn csvData
+            on { csvData<T>(any(), any()) } doReturn csvData
             on { username } doReturn "username"
             on { params(":set-id") } doReturn "1"
             on { params(":group-id") } doReturn "group-1"

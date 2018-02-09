@@ -1,6 +1,8 @@
 package org.vaccineimpact.api.app.context
 
+import org.vaccineimpact.api.app.InMemoryPart
 import java.io.Reader
+import java.io.StringReader
 
 data class RequestData(val contents: Reader, val contentType: String?)
 
@@ -14,9 +16,18 @@ sealed class RequestBodySource
                 = RequestData(context.requestReader(), context.contentType())
     }
 
-    class HTMLMultipart(private val partName: String) : RequestBodySource()
+    sealed class Multipart : RequestBodySource()
     {
-        override fun getContent(context: ActionContext) = context.getPart(partName)
+        class FromStream(private val partName: String) : RequestBodySource()
+        {
+            override fun getContent(context: ActionContext) = context.getPart(partName)
+        }
+
+        class FromMemory(private val part: InMemoryPart) : RequestBodySource()
+        {
+            override fun getContent(context: ActionContext)
+                    = RequestData(StringReader(part.contents), part.contentType)
+        }
     }
 }
 

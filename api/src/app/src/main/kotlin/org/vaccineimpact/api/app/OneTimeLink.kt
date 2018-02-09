@@ -39,7 +39,7 @@ open class OnetimeLinkResolver(private val repositories: Repositories,
                 OneTimeAction.BURDENS_CREATE -> GroupBurdenEstimatesController(context, repos.burdenEstimates)
                         .createBurdenEstimateSet()
                 OneTimeAction.BURDENS_POPULATE -> GroupBurdenEstimatesController(context, repos.burdenEstimates)
-                        .populateBurdenEstimateSet(RequestBodySource.HTMLMultipart("file"))
+                        .populateBurdenEstimateSet(RequestBodySource.Multipart.FromStream("file"))
                 OneTimeAction.MODEl_RUN_PARAMETERS -> stream(
                         GroupModelRunParametersController(context, repos).getModelRunParameterSet(),
                         context
