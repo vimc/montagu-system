@@ -1,4 +1,4 @@
-package org.vaccineimpact.api.app
+package org.vaccineimpact.api.app.requests
 
 import org.vaccineimpact.api.app.context.ActionContext
 

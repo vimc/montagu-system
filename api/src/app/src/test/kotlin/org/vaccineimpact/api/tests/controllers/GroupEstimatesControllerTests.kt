@@ -4,19 +4,19 @@ import com.nhaarman.mockito_kotlin.*
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
-import org.vaccineimpact.api.app.InMemoryPart
 import org.vaccineimpact.api.app.context.ActionContext
-import org.vaccineimpact.api.app.context.RequestBodySource
 import org.vaccineimpact.api.app.context.postData
 import org.vaccineimpact.api.app.controllers.GroupBurdenEstimatesController
 import org.vaccineimpact.api.app.errors.InconsistentDataError
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
 import org.vaccineimpact.api.app.repositories.SimpleDataSet
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
+import org.vaccineimpact.api.app.requests.PostDataHelper
 import org.vaccineimpact.api.db.toDecimal
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.serialization.DataTableDeserializer
 import org.vaccineimpact.api.test_helpers.MontaguTests
+import org.vaccineimpact.api.tests.mocks.mockCSVPostData
 import java.time.Instant
 
 class GroupEstimatesControllerTests : MontaguTests()
@@ -98,8 +98,9 @@ class GroupEstimatesControllerTests : MontaguTests()
                 ))
         )
 
-        val mockContext = mockActionContextWithCSVData(normalCSVData)
-        verifyRepositoryIsInvokedToPopulateSet(mockContext, repo, touchstoneSet, expectedData)
+        val mockContext = mockActionContext()
+        verifyRepositoryIsInvokedToPopulateSet(mockContext, repo, touchstoneSet,
+                normalCSVData.asSequence(), expectedData)
     }
 
     @Test
@@ -130,8 +131,9 @@ class GroupEstimatesControllerTests : MontaguTests()
                 ))
         )
 
-        val mockContext = mockActionContextWithCSVData(csvData.asSequence())
-        verifyRepositoryIsInvokedToPopulateSet(mockContext, repo, touchstoneSet, expectedData)
+        val mockContext = mockActionContext()
+        verifyRepositoryIsInvokedToPopulateSet(mockContext, repo, touchstoneSet,
+                csvData.asSequence(), expectedData)
     }
 
     @Test
@@ -159,8 +161,9 @@ class GroupEstimatesControllerTests : MontaguTests()
         val timesExpected = if (expectedClosed) times(1) else never()
 
         val repo = mockRepository()
-        val mockContext = mockActionContextWithCSVData(normalCSVData, keepOpen = keepOpen)
-        GroupBurdenEstimatesController(mockContext, repo).populateBurdenEstimateSet()
+        val mockContext = mockActionContext(keepOpen = keepOpen)
+        val mockPostData = mockCSVPostData(normalCSVData)
+        GroupBurdenEstimatesController(mockContext, repo, postDataHelper = mockPostData).populateBurdenEstimateSet()
         verify(repo, timesExpected).closeBurdenEstimateSet(defaultEstimateSet.id,
                 "group-1", "touchstone-1", "scenario-1")
     }
@@ -192,9 +195,10 @@ class GroupEstimatesControllerTests : MontaguTests()
                         "dalys" to 73.6.toDecimal()
                 ))
         )
-        val actionContext = mockActionContextWithCSVData(data)
+        val actionContext = mockActionContext()
+        val controller = GroupBurdenEstimatesController(actionContext, mockRepository(), mockCSVPostData(data))
         assertThatThrownBy {
-            GroupBurdenEstimatesController(actionContext, mockRepository()).populateBurdenEstimateSet()
+            controller.populateBurdenEstimateSet()
         }.isInstanceOf(InconsistentDataError::class.java)
     }
 
@@ -219,12 +223,9 @@ class GroupEstimatesControllerTests : MontaguTests()
         ))
     }
 
-    private fun <T : Any> mockActionContextWithCSVData(csvData: List<T>, keepOpen: String? = null) = mockActionContextWithCSVData(csvData.asSequence(), keepOpen = keepOpen)
-
-    private fun <T : Any> mockActionContextWithCSVData(csvData: Sequence<T>, keepOpen: String? = null): ActionContext
+    private fun mockActionContext(keepOpen: String? = null): ActionContext
     {
         return mock {
-            on { csvData<T>(any(), any()) } doReturn csvData
             on { username } doReturn "username"
             on { params(":set-id") } doReturn "1"
             on { params(":group-id") } doReturn "group-1"
@@ -234,12 +235,17 @@ class GroupEstimatesControllerTests : MontaguTests()
         }
     }
 
-    private fun verifyRepositoryIsInvokedToPopulateSet(
+    private fun <T : Any> verifyRepositoryIsInvokedToPopulateSet(
             actionContext: ActionContext, repo: BurdenEstimateRepository,
-            touchstoneSet: SimpleDataSet<Touchstone, String>, expectedData: List<BurdenEstimateWithRunId>
+            touchstoneSet: SimpleDataSet<Touchstone, String>,
+            actualData: Sequence<T>,
+            expectedData: List<BurdenEstimateWithRunId>
     )
     {
-        GroupBurdenEstimatesController(actionContext, repo).populateBurdenEstimateSet()
+        val postDataHelper = mock<PostDataHelper> {
+            on { csvData<T>(any(), any()) } doReturn actualData
+        }
+        GroupBurdenEstimatesController(actionContext, repo, postDataHelper = postDataHelper).populateBurdenEstimateSet()
         verify(touchstoneSet).get("touchstone-1")
         verify(repo).populateBurdenEstimateSet(eq(1),
                 eq("group-1"), eq("touchstone-1"), eq("scenario-1"),

@@ -4,15 +4,15 @@ import com.nhaarman.mockito_kotlin.*
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
-import org.vaccineimpact.api.app.MultipartDataMap
-import org.vaccineimpact.api.app.InMemoryPart
 import org.vaccineimpact.api.app.context.ActionContext
+import org.vaccineimpact.api.app.context.InMemoryRequestData
 import org.vaccineimpact.api.app.context.RequestData
 import org.vaccineimpact.api.app.controllers.GroupModelRunParametersController
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
 import org.vaccineimpact.api.app.repositories.SimpleDataSet
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
+import org.vaccineimpact.api.app.requests.MultipartDataMap
 import org.vaccineimpact.api.models.ModelRun
 import org.vaccineimpact.api.models.ModelRunParameterSet
 import org.vaccineimpact.api.models.Touchstone
@@ -21,6 +21,7 @@ import org.vaccineimpact.api.models.helpers.ContentTypes
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import org.vaccineimpact.api.serialization.FlexibleDataTable
 import org.vaccineimpact.api.test_helpers.MontaguTests
+import org.vaccineimpact.api.tests.mocks.mockCSVPostData
 import java.io.StringReader
 import java.time.Instant
 
@@ -97,21 +98,20 @@ class GroupModelRunParameterControllerTests : MontaguTests()
         val modelRuns = listOf<ModelRun>(ModelRun("run1", params))
 
         val mockContext = mock<ActionContext> {
-            on { csvData<ModelRun>(any(), any()) } doReturn modelRuns.asSequence()
             on { username } doReturn "user.name"
             on { params(":group-id") } doReturn "group-1"
             on { params(":touchstone-id") } doReturn "touchstone-1"
             on { getParts(anyOrNull()) } doReturn MultipartDataMap(
-                    "disease" to InMemoryPart("disease-1", "text/plain"),
-                    "description" to InMemoryPart("some description", "text/plain"),
+                    "disease" to InMemoryRequestData("disease-1", "text/plain"),
+                    "description" to InMemoryRequestData("some description", "text/plain"),
                     // This is passed to another mocked method, so its contents doesn't matter
-                    "file" to InMemoryPart("", "")
+                    "file" to InMemoryRequestData("", "")
             )
         }
         val repo = mockRepository(modelRuns = modelRuns)
 
         val expectedPath = "/v1/modelling-groups/group-1/model-run-parameters/11/"
-        val controller = GroupModelRunParametersController(mockContext, repo, mock())
+        val controller = GroupModelRunParametersController(mockContext, repo, mock(), mockCSVPostData(modelRuns))
         val objectCreationUrl = controller.addModelRunParameters()
         assertThat(objectCreationUrl).endsWith(expectedPath)
     }

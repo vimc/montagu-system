@@ -2,11 +2,11 @@ package org.vaccineimpact.api.app.controllers
 
 import org.vaccineimpact.api.app.app_start.Controller
 import org.vaccineimpact.api.app.context.ActionContext
-import org.vaccineimpact.api.app.context.RequestBodySource
-import org.vaccineimpact.api.app.context.csvData
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
+import org.vaccineimpact.api.app.requests.PostDataHelper
+import org.vaccineimpact.api.app.requests.csvData
 import org.vaccineimpact.api.app.security.checkEstimatePermissionsForTouchstone
 import org.vaccineimpact.api.app.security.checkIsAllowedToSeeTouchstone
 import org.vaccineimpact.api.models.ModelRun
@@ -18,7 +18,8 @@ import java.time.Instant
 class GroupModelRunParametersController(
         context: ActionContext,
         private val estimateRepository: BurdenEstimateRepository,
-        private val touchstoneRepository: TouchstoneRepository
+        private val touchstoneRepository: TouchstoneRepository,
+        private val postDataHelper: PostDataHelper = PostDataHelper()
 ) : Controller(context)
 {
     constructor(context: ActionContext, repositories: Repositories)
@@ -40,7 +41,7 @@ class GroupModelRunParametersController(
 
         val parts = context.getParts()
         val disease = parts["disease"].contents
-        val modelRuns = context.csvData<ModelRun>(parts["file"])
+        val modelRuns = postDataHelper.csvData<ModelRun>(parts["file"])
 
         val id = estimateRepository.addModelRunParameterSet(groupId, touchstoneId, disease,
                 modelRuns.toList(), context.username!!, Instant.now())

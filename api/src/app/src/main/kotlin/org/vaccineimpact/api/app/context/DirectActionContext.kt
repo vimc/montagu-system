@@ -4,28 +4,26 @@ import org.apache.commons.fileupload.FileItemStream
 import org.pac4j.core.profile.CommonProfile
 import org.pac4j.core.profile.ProfileManager
 import org.pac4j.sparkjava.SparkWebContext
-import org.vaccineimpact.api.app.*
+import org.vaccineimpact.api.app.addDefaultResponseHeaders
 import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.errors.MissingRequiredMultipartParameterError
 import org.vaccineimpact.api.app.errors.MissingRequiredPermissionError
-import org.vaccineimpact.api.app.errors.WrongDataFormatError
+import org.vaccineimpact.api.app.requests.MultipartData
+import org.vaccineimpact.api.app.requests.MultipartDataMap
+import org.vaccineimpact.api.app.requests.contents
 import org.vaccineimpact.api.app.security.montaguPermissions
 import org.vaccineimpact.api.db.Config
-import org.vaccineimpact.api.models.helpers.ContentTypes
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
-import org.vaccineimpact.api.serialization.DataTableDeserializer
 import org.vaccineimpact.api.serialization.ModelBinder
-import org.vaccineimpact.api.serialization.MontaguSerializer
-import org.vaccineimpact.api.serialization.Serializer
 import spark.Request
 import spark.Response
-import java.io.*
+import java.io.BufferedOutputStream
+import java.io.BufferedReader
+import java.io.OutputStream
 import java.util.zip.GZIPOutputStream
-import kotlin.reflect.KClass
 
 
-class DirectActionContext(private val context: SparkWebContext,
-                          private val serializer: Serializer = MontaguSerializer.instance) : ActionContext
+class DirectActionContext(private val context: SparkWebContext) : ActionContext
 {
     override val request
         get() = context.sparkRequest
@@ -57,7 +55,7 @@ class DirectActionContext(private val context: SparkWebContext,
     override fun getParts(multipartData: MultipartData): MultipartDataMap
     {
         val map = getPartsAsSequence(multipartData)
-                .map { it.fieldName to InMemoryPart(it.contents(), it.contentType) }
+                .map { it.fieldName to InMemoryRequestData(it.contents(), it.contentType) }
                 .toMap()
         return MultipartDataMap(map)
     }
@@ -75,16 +73,6 @@ class DirectActionContext(private val context: SparkWebContext,
     }
 
     override fun requestReader(): BufferedReader = request.raw().inputStream.bufferedReader()
-
-    override fun <T : Any> csvData(klass: KClass<T>, from: RequestBodySource): Sequence<T>
-    {
-        val (contents, contentType) = from.getContent(this)
-        if (contentType != null && contentType !in ContentTypes.acceptableCSVTypes)
-        {
-            throw WrongDataFormatError(contentType, ContentTypes.csv)
-        }
-        return DataTableDeserializer.deserialize(contents, klass, serializer)
-    }
 
     override fun setResponseStatus(status: Int)
     {
