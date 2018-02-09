@@ -25,9 +25,9 @@ abstract class BurdenEstimateWriter(
         private val writeDatabaseDSLSource: CloseableContext
 )
 {
-    protected abstract val table: TableImpl<*>
+    abstract val table: TableImpl<*>
     protected abstract val fields: List<TableField<*, *>>
-    protected abstract val setField: TableField<*, Int>
+    abstract val setField: TableField<*, Int>
 
     open fun addEstimatesToSet(setId: Int, estimates: Sequence<BurdenEstimateWithRunId>, expectedDisease: String)
     {
@@ -82,6 +82,11 @@ abstract class BurdenEstimateWriter(
         writeDatabaseDSLSource.inside { dsl ->
             dsl.deleteFrom(table).where(setField.eq(setId)).execute()
         }
+    }
+
+    open fun isSetEmpty(setId: Int): Boolean
+    {
+        return readDatabaseDSL.fetchAny(table, setField.eq(setId)) == null
     }
 
     private fun writeCopyData(outcomeLookup: Map<String, Int>, countries: HashSet<String>, modelRuns: Map<String, Int>, modelRunParameterSetId: Int?,

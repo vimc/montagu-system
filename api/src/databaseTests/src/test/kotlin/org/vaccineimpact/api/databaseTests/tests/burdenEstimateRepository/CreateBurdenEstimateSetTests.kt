@@ -5,7 +5,7 @@ import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.jooq.TableField
 import org.junit.Test
 import org.vaccineimpact.api.app.errors.DatabaseContentsError
-import org.vaccineimpact.api.app.errors.OperationNotAllowedError
+import org.vaccineimpact.api.app.errors.InvalidOperationError
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
 import org.vaccineimpact.api.databaseTests.tests.BurdenEstimateRepositoryTests
@@ -102,7 +102,7 @@ class CreateBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
             val repo = makeRepository(db)
             assertThatThrownBy {
                 repo.createBurdenEstimateSet(groupId, touchstoneId, scenarioId, defaultProperties, username, timestamp)
-            }.isInstanceOf(OperationNotAllowedError::class.java)
+            }.isInstanceOf(InvalidOperationError::class.java)
                     .hasMessage("the following problems occurred:\nThe burden estimates uploaded for this touchstone have been submitted for review." +
                             " You cannot upload any new estimates.")
         }
@@ -116,7 +116,7 @@ class CreateBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
             val repo = makeRepository(db)
             assertThatThrownBy {
                 repo.createBurdenEstimateSet(groupId, touchstoneId, scenarioId, defaultProperties, username, timestamp)
-            }.isInstanceOf(OperationNotAllowedError::class.java)
+            }.isInstanceOf(InvalidOperationError::class.java)
                     .hasMessage("the following problems occurred:\nThe burden estimates uploaded for this touchstone have been reviewed and approved." +
                             " You cannot upload any new estimates.")
         }
