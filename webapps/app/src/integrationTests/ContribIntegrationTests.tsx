@@ -576,7 +576,7 @@ function addModelRunParameterSets(db: Client): Promise<QueryResult> {
                     INSERT INTO model_run_parameter_set 
                     (responsibility_set, model_version, upload_info)
                     VALUES 
-                    (${ids.responsibilitySet}, 'description', ${ids.modelVersion}, upload_info_id);
+                    (${ids.responsibilitySet}, ${ids.modelVersion}, upload_info_id);
                 END $$;
             `);
         });
