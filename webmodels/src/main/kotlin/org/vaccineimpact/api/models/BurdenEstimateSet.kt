@@ -19,6 +19,8 @@ constructor(
     {
         return this.copy(type = BurdenEstimateSetType(code, details))
     }
+
+    fun isStochastic() = type.isStochastic()
 }
 
 
@@ -33,10 +35,13 @@ data class CreateBurdenEstimateSet(
         return this.copy(type = BurdenEstimateSetType(code, details))
     }
 
-    fun isStochastic() = type.type.isStochastic()
+    fun isStochastic() = type.isStochastic()
 }
 
 data class BurdenEstimateSetType(val type: BurdenEstimateSetTypeCode, val details: String? = null)
+{
+    fun isStochastic() = type.isStochastic()
+}
 
 enum class BurdenEstimateSetTypeCode
 {
