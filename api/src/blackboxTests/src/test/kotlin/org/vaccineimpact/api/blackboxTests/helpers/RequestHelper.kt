@@ -80,7 +80,7 @@ class RequestHelper
             val files = listOf(file.fileLike())
             return postFiles(
                     url,
-                    standardHeaders(ContentTypes.json, token),
+                    standardHeaders(acceptsContentType, token),
                     files,
                     data
             )

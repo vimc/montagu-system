@@ -1,5 +1,6 @@
 package org.vaccineimpact.api.blackboxTests.tests.BurdenEstimates
 
+import com.beust.klaxon.json
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
@@ -107,8 +108,7 @@ class PopulateBurdenEstimateTests : BurdenEstimateTests()
 
         val oneTimeURL = getPopulateOneTimeURL(setId)
         val response = requestHelper.postFile(oneTimeURL, csvData)
-
-        Assertions.assertThat(response.statusCode).isEqualTo(200)
+        JSONValidator().validateSuccess(response.text)
     }
 
     @Test
@@ -201,6 +201,18 @@ class PopulateBurdenEstimateTests : BurdenEstimateTests()
                     .fetch()
             assertThat(records).isEmpty()
         }
+    }
+
+    @Test
+    fun `non-CSV data returns sensible error`()
+    {
+        TestUserHelper.setupTestUser()
+        val setId = JooqContext().use {
+            setUpWithBurdenEstimateSet(it)
+        }
+        val token = TestUserHelper.getToken(requiredWritePermissions, includeCanLogin = true)
+        val response =  RequestHelper().post("$setUrl/$setId/", json { obj("key" to "value") }, token = token)
+        JSONValidator().validateError(response.text, "bananas")
     }
 
     private fun getPopulateOneTimeURL(setId: Int, redirect: Boolean = false): String

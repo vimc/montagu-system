@@ -52,7 +52,7 @@ class DirectActionContext(private val context: SparkWebContext,
                 ?: throw MissingRequiredMultipartParameterError(name)
 
         val reader = matchingPart.openStream().bufferedReader()
-        return UploadedFile(reader, matchingPart.contentType)
+        return UploadedFile(reader, matchingPart.contentType ?: request.contentType())
     }
 
     // Pull all parts into memory and return them as a map
