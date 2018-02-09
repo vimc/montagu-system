@@ -8,10 +8,9 @@ import java.math.BigDecimal
 import java.time.Instant
 
 data class ModelRunParameterSet
-@ConstructorProperties("id", "description", "model", "uploadedBy", "uploadedOn", "disease")
+@ConstructorProperties("id", "model", "uploadedBy", "uploadedOn", "disease")
 constructor(
         override val id: Int,
-        val description: String,
         val model: String,
         val uploadedBy: String,
         val uploadedOn: Instant,
