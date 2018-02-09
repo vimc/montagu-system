@@ -7,7 +7,7 @@ import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.mockito.internal.verification.Times
-import org.vaccineimpact.api.app.errors.OperationNotAllowedError
+import org.vaccineimpact.api.app.errors.InvalidOperationError
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
 import org.vaccineimpact.api.app.repositories.burdenestimates.CentralBurdenEstimateWriter
@@ -66,7 +66,7 @@ class ClearBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
         withRepo { repo ->
             Assertions.assertThatThrownBy {
                 repo.clearBurdenEstimateSet(setId, groupId, touchstoneId, scenarioId)
-            }.isInstanceOf(OperationNotAllowedError::class.java)
+            }.isInstanceOf(InvalidOperationError::class.java)
         }
     }
 
