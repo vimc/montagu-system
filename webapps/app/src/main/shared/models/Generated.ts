@@ -82,7 +82,6 @@ export interface BurdenEstimateSetType {
 
 export interface BurdenEstimateSet {
     id: number;
-    is_stochastic: boolean;
     problems: string[];
     status: BurdenEstimateSetStatus;
     type: BurdenEstimateSetType;
