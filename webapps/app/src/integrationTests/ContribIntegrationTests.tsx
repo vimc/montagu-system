@@ -76,7 +76,6 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
                 return addModel(this.db).then(() => {
 
                     form.append('disease', 'yf');
-                    form.append('description', 'something');
 
                     return fetcher.fetcher.fetch(url, {
                         method: "POST",
@@ -575,7 +574,7 @@ function addModelRunParameterSets(db: Client): Promise<QueryResult> {
                         RETURNING id INTO upload_info_id;
             
                     INSERT INTO model_run_parameter_set 
-                    (responsibility_set, description, model_version, upload_info)
+                    (responsibility_set, model_version, upload_info)
                     VALUES 
                     (${ids.responsibilitySet}, 'description', ${ids.modelVersion}, upload_info_id);
                 END $$;
