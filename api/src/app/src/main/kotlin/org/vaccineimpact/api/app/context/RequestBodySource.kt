@@ -21,5 +21,5 @@ sealed class RequestBodySource
     }
 }
 
-data class UploadedFile(val contents: Reader, val contentType: String)
+data class UploadedFile(val contents: Reader, val contentType: String?)
 

@@ -25,7 +25,7 @@ class ServletFileUploadWrapper : MultipartData
     }
 }
 
-data class Part(val contents: String, val contentType: String)
+data class Part(val contents: String, val contentType: String?)
 
 class MultipartDataMap(private val map: Map<String, Part>)
 {

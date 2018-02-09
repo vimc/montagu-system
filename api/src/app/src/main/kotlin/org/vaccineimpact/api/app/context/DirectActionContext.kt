@@ -21,7 +21,6 @@ import spark.Request
 import spark.Response
 import java.io.BufferedOutputStream
 import java.io.OutputStream
-import java.io.Reader
 import java.util.zip.GZIPOutputStream
 import kotlin.reflect.KClass
 
@@ -52,7 +51,7 @@ class DirectActionContext(private val context: SparkWebContext,
                 ?: throw MissingRequiredMultipartParameterError(name)
 
         val reader = matchingPart.openStream().bufferedReader()
-        return UploadedFile(reader, matchingPart.contentType ?: request.contentType())
+        return UploadedFile(reader, matchingPart.contentType)
     }
 
     // Pull all parts into memory and return them as a map
@@ -89,9 +88,9 @@ class DirectActionContext(private val context: SparkWebContext,
         return DataTableDeserializer.deserialize(part.contents, klass, serializer)
     }
 
-    private fun assertIsCSV(contentType: String)
+    private fun assertIsCSV(contentType: String?)
     {
-        if (contentType !in ContentTypes.acceptableCSVTypes)
+        if (contentType != null && contentType !in ContentTypes.acceptableCSVTypes)
         {
             throw WrongDataFormatError(contentType, ContentTypes.csv)
         }

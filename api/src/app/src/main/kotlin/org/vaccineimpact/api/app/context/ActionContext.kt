@@ -35,7 +35,7 @@ interface ActionContext
 
     fun <T : Any> postData(klass: Class<T>): T
     fun <T : Any> csvData(klass: KClass<T>, from: RequestBodySource): Sequence<T>
-    fun <T : Any> csvData(klass: KClass<T>, raw: Part): Sequence<T>
+    fun <T : Any> csvData(klass: KClass<T>, part: Part): Sequence<T>
 
     fun addResponseHeader(key: String, value: String): Unit
     fun addAttachmentHeader(filename: String): Unit

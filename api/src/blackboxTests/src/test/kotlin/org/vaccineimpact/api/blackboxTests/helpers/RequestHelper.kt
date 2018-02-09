@@ -91,7 +91,7 @@ class RequestHelper
         }
     }
 
-    private fun standardHeaders(acceptsContentType: String, token: TokenLiteral?): Map<String, String>
+    fun standardHeaders(acceptsContentType: String, token: TokenLiteral?): Map<String, String>
     {
         var headers = mapOf(
                 "Accept" to acceptsContentType,
