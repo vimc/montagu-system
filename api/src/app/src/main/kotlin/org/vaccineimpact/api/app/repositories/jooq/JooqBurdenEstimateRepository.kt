@@ -288,9 +288,7 @@ class JooqBurdenEstimateRepository(
     {
         // Check all the IDs match up
         val (set, _) = getSetAndResponsibilityInfo(groupId, touchstoneId, scenarioId, setId)
-        val helper = getEstimateWriter(set)
-        val isEmpty = dsl.fetchAny(helper.table, helper.setField.eq(setId)) == null
-        if (isEmpty)
+        if (getEstimateWriter(set).isSetEmpty(setId))
         {
             throw InvalidOperationError("This burden estimate set does not have any burden estimate data. " +
                             "It cannot be marked as complete")

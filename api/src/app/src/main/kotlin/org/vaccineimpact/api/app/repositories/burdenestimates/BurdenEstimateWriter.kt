@@ -84,6 +84,11 @@ abstract class BurdenEstimateWriter(
         }
     }
 
+    open fun isSetEmpty(setId: Int): Boolean
+    {
+        return readDatabaseDSL.fetchAny(table, setField.eq(setId)) == null
+    }
+
     private fun writeCopyData(outcomeLookup: Map<String, Int>, countries: HashSet<String>, modelRuns: Map<String, Int>, modelRunParameterSetId: Int?,
                               stream: OutputStream, estimates: Sequence<BurdenEstimateWithRunId>,
                               expectedDisease: String, setId: Int
