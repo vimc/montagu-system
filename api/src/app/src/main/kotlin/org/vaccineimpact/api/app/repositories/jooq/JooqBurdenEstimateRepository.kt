@@ -270,7 +270,7 @@ class JooqBurdenEstimateRepository(
     override fun populateBurdenEstimateSet(setId: Int, groupId: String, touchstoneId: String, scenarioId: String,
                                            estimates: Sequence<BurdenEstimateWithRunId>)
     {
-        val (set, responsibilityInfo) = getSetFromResponsibilityPath(groupId, touchstoneId, scenarioId, setId)
+        val (set, responsibilityInfo) = getSetAndResponsibilityInfo(groupId, touchstoneId, scenarioId, setId)
         val type = set.type.type
 
         if (set.status == BurdenEstimateSetStatus.COMPLETE)
@@ -287,7 +287,7 @@ class JooqBurdenEstimateRepository(
     override fun closeBurdenEstimateSet(setId: Int, groupId: String, touchstoneId: String, scenarioId: String)
     {
         // Check all the IDs match up
-        val (set, _) = getSetFromResponsibilityPath(groupId, touchstoneId, scenarioId, setId)
+        val (set, _) = getSetAndResponsibilityInfo(groupId, touchstoneId, scenarioId, setId)
         val helper = getEstimateWriter(set)
         val isEmpty = dsl.fetchAny(helper.table, helper.setField.eq(setId)) == null
         if (isEmpty)
@@ -343,7 +343,7 @@ class JooqBurdenEstimateRepository(
 
     override fun clearBurdenEstimateSet(setId: Int, groupId: String, touchstoneId: String, scenarioId: String)
     {
-        val (set, _) = getSetFromResponsibilityPath(groupId, touchstoneId, scenarioId, setId)
+        val (set, _) = getSetAndResponsibilityInfo(groupId, touchstoneId, scenarioId, setId)
         if (set.status == BurdenEstimateSetStatus.COMPLETE)
         {
             throw InvalidOperationError("You cannot clear a burden estimate set which is marked as 'complete'.")
@@ -367,7 +367,7 @@ class JooqBurdenEstimateRepository(
         }
     }
 
-    private fun getSetFromResponsibilityPath(
+    private fun getSetAndResponsibilityInfo(
             groupId: String, touchstoneId: String, scenarioId: String, setId: Int
     ): Pair<BurdenEstimateSet, ResponsibilityInfo>
     {
