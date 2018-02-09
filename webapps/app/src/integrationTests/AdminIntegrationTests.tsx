@@ -9,7 +9,7 @@ import { ModellingGroup, ModellingGroupDetails, User } from "../main/shared/mode
 import { modellingGroupActions } from "../main/shared/actions/ModellingGroupActions";
 import { userStore } from "../main/admin/stores/UserStore";
 import {createAdminStore} from "../main/admin/stores/createAdminStore";
-import { authActions } from "../main/shared/actions/authActions";
+import { AuthService } from "../main/shared/services/AuthService";
 
 
 class AdminIntegrationTests extends IntegrationTestSuite {
@@ -28,20 +28,22 @@ class AdminIntegrationTests extends IntegrationTestSuite {
 
     addTestsToMocha() {
 
-        // it("can fetch shiny cookie", (done: DoneCallback) => {
-        //
-        //     // setShinyToken().then((res: Response) => {
-        //     //     expect(res.ok).to.be.eq(true);
-        //     //     done()
-        //     // })
-        // });
+        it("can fetch shiny cookie", (done: DoneCallback) => {
+            (new AuthService(this.store.dispatch, this.store.getState)).authToShiny()
+                .then(result => {
+                    expect(result).to.be.eq("OK");
+                    done();
+                })
+        });
 
-        // it("can clear shiny cookie", (done: DoneCallback) => {
-            // LoginSource.clearShinyToken().then((res: Response) => {
-            //     expect(res.ok).to.be.eq(true);
-            //     done()
-            // })
-        // });
+        it("can clear shiny cookie", (done: DoneCallback) => {
+            (new AuthService(this.store.dispatch, this.store.getState)).unauthFromShiny()
+                .then(result => {
+                    console.log(3333, result);
+                    expect(result).to.be.eq("OK");
+                    done();
+                })
+        });
 
         it("can fetch groups", (done: DoneCallback) => {
             const promise = addGroups(this.db)
