@@ -38,15 +38,4 @@ describe('ModelRunParameterForm', () => {
 
     });
 
-    it("populate hidden description input", () => {
-
-        rendered = shallow(<ModelRunParametersForm
-            url={"url"}
-            disease={"d1"}
-        />);
-
-        const input = rendered.find('input[name="description"][type="hidden"]');
-        expect(input).to.have.lengthOf(1);
-    });
-
 });

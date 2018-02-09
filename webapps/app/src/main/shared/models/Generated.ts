@@ -58,7 +58,6 @@ export interface ModellingGroupDetails {
 }
 
 export interface ModelRunParameterSet {
-    description: string;
     disease: string;
     id: number;
     model: string;
@@ -72,7 +71,7 @@ export interface Report {
     name: string;
 }
 
-export type BurdenEstimateSetStatus = "empty" | "complete";
+export type BurdenEstimateSetStatus = "empty" | "partial" | "complete";
 
 export type BurdenEstimateSetTypeCode = "central-single-run" | "central-averaged" | "central-unknown" | "stochastic";
 

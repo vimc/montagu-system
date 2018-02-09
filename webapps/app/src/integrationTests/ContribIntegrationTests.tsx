@@ -77,7 +77,6 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
                 return addModel(this.db).then(() => {
 
                     form.append('disease', 'yf');
-                    form.append('description', 'something');
 
                     return fetcher.fetcher.fetch(url, {
                         method: "POST",
@@ -328,47 +327,46 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
                 .then(setId => updateCurrentBurdenEstimateSet(db, responsibilityIds.responsibility, setId));
         }
 
-        // it("fetches model run parameter sets", (done: DoneCallback) => {
-        //     const promise: Promise<any> = addModelRunParameterSets(this.db)
-        //         .then(() => {
-        //             setTouchstoneAndGroup(touchstoneId, groupId);
-        //             return runParametersStore.fetchParameterSets()
-        //         });
-        //
-        //     checkPromise(done, promise, parameterSets => {
-        //         expectIsEqual<ModelRunParameterSet[]>(parameterSets, [
-        //             {
-        //                 id: 1,
-        //                 description: 'description',
-        //                 model: "model-1",
-        //                 disease: "yf",
-        //                 uploaded_on: '2017-12-25T12:00:00Z',
-        //                 uploaded_by: 'test.user'
-        //             }
-        //         ]);
-        //     });
-        // });
+        it("fetches model run parameter sets", (done: DoneCallback) => {
+            const promise: Promise<any> = addModelRunParameterSets(this.db)
+                .then(() => {
+                    setTouchstoneAndGroup(touchstoneId, groupId);
+                    return runParametersStore.fetchParameterSets()
+                });
 
-        // it("fetches one time model run parameter sets token", (done: DoneCallback) => {
-        //
-        //     const promise: Promise<any> = addModelRunParameterSets(this.db)
-        //         .then(() => {
-        //             setTouchstoneAndGroup(touchstoneId, groupId);
-        //             const s = runParametersStore.getState();
-        //             return fetchTokenForModelRunParam(s.groupId, s.touchstoneId, 1)
-        //         });
-        //
-        //     checkPromise(done, promise, token => {
-        //         const decoded = jwt_decode(token);
-        //         expect(decoded.action).to.equal("model-run-parameters");
-        //         const payload = QueryString.parse(decoded.payload);
-        //         expect(payload).to.eql(JSON.parse(`{
-        //             ":group-id": "${groupId}",
-        //             ":touchstone-id": "${touchstoneId}",
-        //             ":model-run-parameter-set-id": "1"
-        //         }`));
-        //     });
-        // });
+            checkPromise(done, promise, parameterSets => {
+                expectIsEqual<ModelRunParameterSet[]>(parameterSets, [
+                    {
+                        id: 1,
+                        model: "model-1",
+                        disease: "yf",
+                        uploaded_on: '2017-12-25T12:00:00Z',
+                        uploaded_by: 'test.user'
+                    }
+                ]);
+            });
+        });
+
+        it("fetches one time model run parameter sets token", (done: DoneCallback) => {
+
+            const promise: Promise<any> = addModelRunParameterSets(this.db)
+                .then(() => {
+                    setTouchstoneAndGroup(touchstoneId, groupId);
+                    const s = runParametersStore.getState();
+                    return fetchTokenForModelRunParam(s.groupId, s.touchstoneId, 1)
+                });
+
+            checkPromise(done, promise, token => {
+                const decoded = jwt_decode(token);
+                expect(decoded.action).to.equal("model-run-parameters");
+                const payload = QueryString.parse(decoded.payload);
+                expect(payload).to.eql(JSON.parse(`{
+                    ":group-id": "${groupId}",
+                    ":touchstone-id": "${touchstoneId}",
+                    ":model-run-parameter-set-id": "1"
+                }`));
+            });
+        });
 
         function getUrlFromCreateBurdenEstimateSetForm(): string {
             const rendered = shallow(<CreateBurdenEstimateSetForm
@@ -576,9 +574,9 @@ function addModelRunParameterSets(db: Client): Promise<QueryResult> {
                         RETURNING id INTO upload_info_id;
             
                     INSERT INTO model_run_parameter_set 
-                    (responsibility_set, description, model_version, upload_info)
+                    (responsibility_set, model_version, upload_info)
                     VALUES 
-                    (${ids.responsibilitySet}, 'description', ${ids.modelVersion}, upload_info_id);
+                    (${ids.responsibilitySet}, ${ids.modelVersion}, upload_info_id);
                 END $$;
             `);
         });
