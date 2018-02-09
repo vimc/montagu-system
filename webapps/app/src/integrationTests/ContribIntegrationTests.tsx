@@ -76,7 +76,6 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
                 return addModel(this.db).then(() => {
 
                     form.append('disease', 'yf');
-                    form.append('description', 'something');
 
                     return fetcher.fetcher.fetch(url, {
                         method: "POST",
@@ -338,7 +337,6 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
                 expectIsEqual<ModelRunParameterSet[]>(parameterSets, [
                     {
                         id: 1,
-                        description: 'description',
                         model: "model-1",
                         disease: "yf",
                         uploaded_on: '2017-12-25T12:00:00Z',
@@ -575,9 +573,9 @@ function addModelRunParameterSets(db: Client): Promise<QueryResult> {
                         RETURNING id INTO upload_info_id;
             
                     INSERT INTO model_run_parameter_set 
-                    (responsibility_set, description, model_version, upload_info)
+                    (responsibility_set, model_version, upload_info)
                     VALUES 
-                    (${ids.responsibilitySet}, 'description', ${ids.modelVersion}, upload_info_id);
+                    (${ids.responsibilitySet}, ${ids.modelVersion}, upload_info_id);
                 END $$;
             `);
         });
