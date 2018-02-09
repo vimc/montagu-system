@@ -133,7 +133,7 @@ class PopulateBurdenEstimateTests : BurdenEstimateTests()
             setUpWithBurdenEstimateSet(it)
         }
 
-        validate("$setUrl/$setId/get_onetime_link/?redirectUrl=http://localhost") against "Token" given { db ->
+        validate("$setUrl/$setId/get_onetime_link/?redirectUrl=http://localhost") against "Token" given { _ ->
             //set up already done
         } requiringPermissions {
             requiredWritePermissions

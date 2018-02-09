@@ -19,8 +19,8 @@ class BurdenEstimateSetTests
         val centralSet = BurdenEstimateSet(1, Instant.now(), "uploader",
                 BurdenEstimateSetType(BurdenEstimateSetTypeCode.CENTRAL_SINGLE_RUN),
                 BurdenEstimateSetStatus.EMPTY, emptyList())
-        assertThat(stochasticSet.isStochastic).isTrue()
-        assertThat(centralSet.isStochastic).isFalse()
+        assertThat(stochasticSet.isStochastic()).isTrue()
+        assertThat(centralSet.isStochastic()).isFalse()
     }
 
     @Test
