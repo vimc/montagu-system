@@ -2,7 +2,7 @@ import { combineReducers } from "redux";
 import { reducer as formReducer } from "redux-form";
 
 import { authReducer, AuthState } from "../../shared/reducers/authReducer";
-import { modellingGroupsReducer, ModellingGroupsState } from "./ModellingGroupsReducer";
+import { modellingGroupsReducer, ModellingGroupsState } from "./modellingGroupsReducer";
 
 export interface GlobalState {
     auth: AuthState;

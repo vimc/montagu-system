@@ -1,4 +1,4 @@
-// import 'babel-polyfill';
+
 import { expect } from "chai";
 const configureReduxMockStore  = require('redux-mock-store');
 
