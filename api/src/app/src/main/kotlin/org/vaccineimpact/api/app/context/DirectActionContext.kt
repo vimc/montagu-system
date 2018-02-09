@@ -74,7 +74,7 @@ class DirectActionContext(private val context: SparkWebContext,
         return multipartData.parts(rawRequest)
     }
 
-    override fun requestReader(): BufferedReader = request.raw().reader
+    override fun requestReader(): BufferedReader = request.raw().inputStream.bufferedReader()
 
     override fun <T : Any> csvData(klass: KClass<T>, from: RequestBodySource): Sequence<T>
     {
