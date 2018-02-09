@@ -40,7 +40,6 @@ export class ModelRunParametersForm extends React.Component<Props, State> {
                   successMessage={"Success! You have uploaded a new parameter set"}
                   successCallback={this.onSuccess.bind(this)}
                   data={null}>
-                <input type={"hidden"} name={"description"} value={""}/>
                 <input type={"hidden"} name={"disease"} value={this.props.disease}/>
                 <CustomFileInput required={true} key={this.state.fileInputKey.toISOString()}>Choose
                     file</CustomFileInput>
