@@ -357,7 +357,7 @@ class JooqBurdenEstimateRepository(
 
     private fun getEstimateWriter(set: BurdenEstimateSet): BurdenEstimateWriter
     {
-        return if (set.type.type == BurdenEstimateSetTypeCode.STOCHASTIC)
+        return if (set.isStochastic)
         {
             stochasticBurdenEstimateWriter
         }
