@@ -20,7 +20,7 @@ constructor(
         return this.copy(type = BurdenEstimateSetType(code, details))
     }
 
-    val isStochastic = type.isStochastic()
+    fun isStochastic() = type.isStochastic()
 }
 
 
