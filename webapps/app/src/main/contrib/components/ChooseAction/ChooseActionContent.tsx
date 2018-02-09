@@ -1,7 +1,6 @@
 import * as React from "react";
 import { ModellingGroup, Touchstone } from "../../../shared/models/Generated";
 import { responsibilityStore } from "../../stores/ResponsibilityStore";
-// import { contribAuthStore } from "../../stores/ContribAuthStore";
 import { connectToStores } from "../../../shared/alt";
 import { TouchstoneList } from "./TouchstoneList";
 import { RemoteContent } from "../../../shared/models/RemoteContent";

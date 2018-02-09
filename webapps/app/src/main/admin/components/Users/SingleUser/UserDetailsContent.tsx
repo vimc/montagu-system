@@ -8,7 +8,6 @@ import { RoleAssignment, User } from "../../../../shared/models/Generated";
 import { UserRole } from "./UserRoleComponent";
 import { userStore } from "../../../stores/UserStore";
 import { AddRoles } from "./AddRoles";
-// import { adminAuthStore } from "../../../stores/AdminAuthStore";
 
 interface Props extends RemoteContent {
     user: User;
@@ -17,7 +16,6 @@ interface Props extends RemoteContent {
 }
 
 import "../../../../shared/styles/common.scss";
-// import {AdminAppAltWrapped} from "../../AdminApp";
 
 export class UserDetailsContentComponent extends RemoteContentComponent<Props, undefined> {
     static getStores() {
