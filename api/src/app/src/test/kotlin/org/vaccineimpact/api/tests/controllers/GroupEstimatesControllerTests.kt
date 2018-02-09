@@ -4,7 +4,7 @@ import com.nhaarman.mockito_kotlin.*
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
-import org.vaccineimpact.api.app.Part
+import org.vaccineimpact.api.app.InMemoryPart
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.context.RequestBodySource
 import org.vaccineimpact.api.app.context.postData
@@ -225,7 +225,7 @@ class GroupEstimatesControllerTests : MontaguTests()
     {
         return mock {
             on { csvData<T>(any(), any<RequestBodySource>()) } doReturn csvData
-            on { csvData<T>(any(), any<Part>()) } doReturn csvData
+            on { csvData<T>(any(), any<InMemoryPart>()) } doReturn csvData
             on { username } doReturn "username"
             on { params(":set-id") } doReturn "1"
             on { params(":group-id") } doReturn "group-1"

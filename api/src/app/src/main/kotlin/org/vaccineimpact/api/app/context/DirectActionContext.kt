@@ -43,21 +43,21 @@ class DirectActionContext(private val context: SparkWebContext,
     override fun <T : Any> postData(klass: Class<T>): T = ModelBinder().deserialize(request.body(), klass)
 
     // Return one part as a stream
-    override fun getPart(name: String, multipartData: MultipartData): UploadedFile
+    override fun getPart(name: String, multipartData: MultipartData): RequestData
     {
         val parts = getPartsAsSequence(multipartData)
         val matchingPart = parts.firstOrNull { it.fieldName == name }
                 ?: throw MissingRequiredMultipartParameterError(name)
 
         val reader = matchingPart.openStream().bufferedReader()
-        return UploadedFile(reader, matchingPart.contentType)
+        return RequestData(reader, matchingPart.contentType)
     }
 
     // Pull all parts into memory and return them as a map
     override fun getParts(multipartData: MultipartData): MultipartDataMap
     {
         val map = getPartsAsSequence(multipartData)
-                .map { it.fieldName to Part(it.contents(), it.contentType) }
+                .map { it.fieldName to InMemoryPart(it.contents(), it.contentType) }
                 .toMap()
         return MultipartDataMap(map)
     }
@@ -83,7 +83,7 @@ class DirectActionContext(private val context: SparkWebContext,
         return DataTableDeserializer.deserialize(file.contents, klass, serializer)
     }
 
-    override fun <T : Any> csvData(klass: KClass<T>, part: Part): Sequence<T>
+    override fun <T : Any> csvData(klass: KClass<T>, part: InMemoryPart): Sequence<T>
     {
         assertIsCSV(part.contentType)
         return DataTableDeserializer.deserialize(part.contents, klass, serializer)

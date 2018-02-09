@@ -12,7 +12,7 @@ import org.pac4j.core.context.Pac4jConstants
 import org.pac4j.core.profile.CommonProfile
 import org.pac4j.sparkjava.SparkWebContext
 import org.vaccineimpact.api.app.MultipartData
-import org.vaccineimpact.api.app.Part
+import org.vaccineimpact.api.app.InMemoryPart
 import org.vaccineimpact.api.app.context.*
 import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.errors.MissingRequiredMultipartParameterError
@@ -99,7 +99,7 @@ class DirectActionContextTests : MontaguTests()
     fun `throws WrongDataFormat if csvData is called with RequestBodySource and wrong content type`()
     {
         val context = DirectActionContext(mockWebContext())
-        val file = UploadedFile(StringReader(""), contentType = "application/json")
+        val file = RequestData(StringReader(""), contentType = "application/json")
         val source = mock<RequestBodySource> {
             on { getContent(context) } doReturn file
         }
@@ -112,7 +112,7 @@ class DirectActionContextTests : MontaguTests()
     fun `throws WrongDataFormat if csvData is called with Part and wrong content type`()
     {
         val context = DirectActionContext(mockWebContext())
-        val part = Part("", contentType = "application/json")
+        val part = InMemoryPart("", contentType = "application/json")
         assertThatThrownBy {
             context.csvData<BurdenEstimate>(part)
         }.isInstanceOf(WrongDataFormatError::class.java)

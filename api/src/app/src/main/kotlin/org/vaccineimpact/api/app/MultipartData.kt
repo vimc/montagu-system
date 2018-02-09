@@ -25,14 +25,14 @@ class ServletFileUploadWrapper : MultipartData
     }
 }
 
-data class Part(val contents: String, val contentType: String?)
+data class InMemoryPart(val contents: String, val contentType: String?)
 
-class MultipartDataMap(private val map: Map<String, Part>)
+class MultipartDataMap(private val map: Map<String, InMemoryPart>)
 {
-    constructor(vararg pairs: Pair<String, Part>)
+    constructor(vararg pairs: Pair<String, InMemoryPart>)
             : this(mapOf(*pairs))
 
-    operator fun get(fieldName: String): Part
+    operator fun get(fieldName: String): InMemoryPart
     {
         return map[fieldName]
                 ?: throw MissingRequiredMultipartParameterError(fieldName)
