@@ -337,7 +337,6 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
                 expectIsEqual<ModelRunParameterSet[]>(parameterSets, [
                     {
                         id: 1,
-                        description: 'description',
                         model: "model-1",
                         disease: "yf",
                         uploaded_on: '2017-12-25T12:00:00Z',
