@@ -31,6 +31,7 @@ import {runParameterActions} from "../main/contrib/actions/RunParameterActions";
 
 import {fetchToken as fetchTokenForModelRunParam} from "../main/contrib/sources/RunParametersSource";
 import {createContribStore} from "../main/contrib/stores/createContribStore";
+import { ModellingGroupsService } from "../main/contrib/services/ModellingGroupsService";
 
 const FormData = require('form-data');
 const http = require('http');
@@ -114,7 +115,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
         });
 
         it("fetches modelling groups", (done: DoneCallback) => {
-            const promise = addGroups(this.db).then(() => mainStore.fetchModellingGroups());
+            const promise = addGroups(this.db).then(() => (new ModellingGroupsService(this.store.dispatch, this.store.getState).getGroups()));
 
             checkPromise(done, promise, (groups) => {
                 expectIsEqual<ModellingGroup[]>(groups, [
