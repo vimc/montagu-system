@@ -115,7 +115,6 @@ class WebTokenHelperTests : MontaguTests()
     @Test
     fun `can generate old style onetime action token with null query string`()
     {
-        val token = sut.generateOneTimeActionToken("test-action", mapOf(
         val token = sut.generateOldStyleOneTimeActionToken("test-action", mapOf(
                 ":a" to "1",
                 ":b" to "2"
