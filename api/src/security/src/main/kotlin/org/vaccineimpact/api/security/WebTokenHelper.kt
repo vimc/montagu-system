@@ -51,14 +51,15 @@ open class WebTokenHelper(keyPair: KeyPair,
 
     open fun generateNewStyleOnetimeActionToken(
             url: String,
+            username: String,
             permissions: String,
             roles: String
     ): String
     {
         return generator.generate(mapOf(
                 "iss" to issuer,
-                "sub" to oneTimeActionSubject,
                 "token_type" to TokenType.ONETIME,
+                "sub" to username,
                 "exp" to Date.from(Instant.now().plus(oneTimeLinkLifeSpan)),
                 "permissions" to permissions,
                 "roles" to roles,
@@ -101,9 +102,15 @@ open class WebTokenHelper(keyPair: KeyPair,
         )
     }
 
-    open fun verify(token: String, expectedType: TokenType): Map<String, Any>
+    open fun verify(token: String, expectedType: TokenType,
+                    oneTimeTokenChecker: OneTimeTokenChecker): Map<String, Any>
     {
-        return MontaguTokenAuthenticator(this, expectedType).validateTokenAndGetClaims(token)
+        val authenticator = when (expectedType)
+        {
+            TokenType.ONETIME -> OneTimeTokenAuthenticator(this, oneTimeTokenChecker)
+            else -> MontaguTokenAuthenticator(this, expectedType)
+        }
+        return authenticator.validateTokenAndGetClaims(token)
     }
 
     private fun getNonce(): String

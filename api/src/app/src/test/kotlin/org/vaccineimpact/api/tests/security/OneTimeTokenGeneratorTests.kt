@@ -23,6 +23,7 @@ class OneTimeTokenGeneratorTests : MontaguTests()
         )
         val profile = mock<CommonProfile> {
             on { this.attributes } doReturn attributes
+            on { this.id } doReturn "username"
         }
         val helper = mock<WebTokenHelper>()
 
@@ -30,6 +31,6 @@ class OneTimeTokenGeneratorTests : MontaguTests()
         val sut = OneTimeTokenGenerator(repo, helper)
         val token = sut.getNewStyleOneTimeLinkToken("/some/url/", profile)
         verify(repo).storeToken(token)
-        verify(helper).generateNewStyleOnetimeActionToken("/some/url/", "a,b,c", "x,y,z")
+        verify(helper).generateNewStyleOnetimeActionToken("/some/url/", "username", "a,b,c", "x,y,z")
     }
 }

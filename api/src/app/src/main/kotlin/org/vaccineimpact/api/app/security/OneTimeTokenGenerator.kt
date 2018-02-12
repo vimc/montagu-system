@@ -58,7 +58,9 @@ open class OneTimeTokenGenerator(
         val attributes = profile.attributes
         val permissions = attributes["permissions"].toString()
         val roles = attributes["roles"].toString()
-        val token = tokenHelper.generateNewStyleOnetimeActionToken(url, permissions, roles)
+        val token = tokenHelper.generateNewStyleOnetimeActionToken(
+                url, profile.id, permissions, roles
+        )
         tokenRepository.storeToken(token)
         return token
     }
