@@ -1,6 +1,5 @@
 package org.vaccineimpact.api.blackboxTests.tests.BurdenEstimates
 
-import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.vaccineimpact.api.blackboxTests.helpers.*
@@ -9,6 +8,7 @@ import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.Tables.BURDEN_ESTIMATE
 import org.vaccineimpact.api.db.Tables.BURDEN_ESTIMATE_STOCHASTIC
 import org.vaccineimpact.api.db.fieldsAsList
+import org.vaccineimpact.api.models.helpers.ContentTypes
 import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.validateSchema.JSONValidator
 import spark.route.HttpMethod
@@ -107,8 +107,7 @@ class PopulateBurdenEstimateTests : BurdenEstimateTests()
 
         val oneTimeURL = getPopulateOneTimeURL(setId)
         val response = requestHelper.postFile(oneTimeURL, csvData)
-
-        Assertions.assertThat(response.statusCode).isEqualTo(200)
+        JSONValidator().validateSuccess(response.text)
     }
 
     @Test
@@ -201,6 +200,27 @@ class PopulateBurdenEstimateTests : BurdenEstimateTests()
                     .fetch()
             assertThat(records).isEmpty()
         }
+    }
+
+    @Test
+    fun `non-CSV data returns sensible error`()
+    {
+        TestUserHelper.setupTestUser()
+        val setId = JooqContext().use {
+            setUpWithBurdenEstimateSet(it)
+        }
+        val token = TestUserHelper.getToken(requiredWritePermissions, includeCanLogin = true)
+        // It's quite hard to trick khttp into sending the content types we want,
+        // so here we drop down to directly invoking the khttp.post method so we
+        // can use the json argument.
+        val response =  khttp.post(
+                EndpointBuilder.build("$setUrl/$setId/"),
+                RequestHelper().standardHeaders(ContentTypes.json, token),
+                json = arrayOf("a", "b")
+        )
+        JSONValidator().validateError(response.text,
+                expectedErrorCode = "wrong-data-format",
+                expectedErrorText = "this format: application/json")
     }
 
     private fun getPopulateOneTimeURL(setId: Int, redirect: Boolean = false): String

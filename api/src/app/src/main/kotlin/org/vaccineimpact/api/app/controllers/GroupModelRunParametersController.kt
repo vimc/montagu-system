@@ -38,7 +38,7 @@ class GroupModelRunParametersController(
         context.checkEstimatePermissionsForTouchstone(groupId, touchstoneId, estimateRepository)
 
         val parts = context.getParts()
-        val disease = parts["disease"]
+        val disease = parts["disease"].contents
         val modelRuns = context.csvData<ModelRun>(parts["file"])
 
         val id = estimateRepository.addModelRunParameterSet(groupId, touchstoneId, disease,

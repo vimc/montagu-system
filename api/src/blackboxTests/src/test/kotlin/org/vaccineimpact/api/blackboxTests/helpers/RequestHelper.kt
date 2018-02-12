@@ -80,7 +80,7 @@ class RequestHelper
             val files = listOf(file.fileLike())
             return postFiles(
                     url,
-                    standardHeaders(ContentTypes.json, token),
+                    standardHeaders(acceptsContentType, token),
                     files,
                     data
             )
@@ -91,7 +91,7 @@ class RequestHelper
         }
     }
 
-    private fun standardHeaders(acceptsContentType: String, token: TokenLiteral?): Map<String, String>
+    fun standardHeaders(acceptsContentType: String, token: TokenLiteral?): Map<String, String>
     {
         var headers = mapOf(
                 "Accept" to acceptsContentType,

@@ -5,7 +5,9 @@ import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.vaccineimpact.api.app.MultipartDataMap
+import org.vaccineimpact.api.app.InMemoryPart
 import org.vaccineimpact.api.app.context.ActionContext
+import org.vaccineimpact.api.app.context.RequestData
 import org.vaccineimpact.api.app.controllers.GroupModelRunParametersController
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
@@ -15,6 +17,7 @@ import org.vaccineimpact.api.models.ModelRun
 import org.vaccineimpact.api.models.ModelRunParameterSet
 import org.vaccineimpact.api.models.Touchstone
 import org.vaccineimpact.api.models.TouchstoneStatus
+import org.vaccineimpact.api.models.helpers.ContentTypes
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import org.vaccineimpact.api.serialization.FlexibleDataTable
 import org.vaccineimpact.api.test_helpers.MontaguTests
@@ -94,15 +97,15 @@ class GroupModelRunParameterControllerTests : MontaguTests()
         val modelRuns = listOf<ModelRun>(ModelRun("run1", params))
 
         val mockContext = mock<ActionContext> {
-            on { csvData<ModelRun>(any(), any<String>()) } doReturn modelRuns.asSequence()
+            on { csvData<ModelRun>(any(), any<InMemoryPart>()) } doReturn modelRuns.asSequence()
             on { username } doReturn "user.name"
             on { params(":group-id") } doReturn "group-1"
             on { params(":touchstone-id") } doReturn "touchstone-1"
             on { getParts(anyOrNull()) } doReturn MultipartDataMap(
-                    "disease" to "disease-1",
-                    "description" to "some description",
+                    "disease" to InMemoryPart("disease-1", "text/plain"),
+                    "description" to InMemoryPart("some description", "text/plain"),
                     // This is passed to another mocked method, so its contents doesn't matter
-                    "file" to ""
+                    "file" to InMemoryPart("", "")
             )
         }
         val repo = mockRepository(modelRuns = modelRuns)
@@ -116,10 +119,11 @@ class GroupModelRunParameterControllerTests : MontaguTests()
     @Test
     fun `throws UnknownObjectError if touchstone is in preparation when adding model run params`()
     {
+        val uploaded = RequestData(StringReader("disease-1"), ContentTypes.csv)
         val mockContext = mock<ActionContext> {
             on { params(":group-id") } doReturn "group-1"
             on { params(":touchstone-id") } doReturn "touchstone-bad"
-            on { getPart(eq("disease"), anyOrNull()) } doReturn StringReader("disease-1")
+            on { getPart(eq("disease"), anyOrNull()) } doReturn uploaded
         }
         val touchstoneSet = mockTouchstones()
         val repo = mockRepository(touchstoneSet)
