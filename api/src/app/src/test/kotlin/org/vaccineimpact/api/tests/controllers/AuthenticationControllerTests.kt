@@ -28,7 +28,7 @@ class AuthenticationControllerTests : MontaguTests()
         val fakeUserRepo = mock<UserRepository>()
 
         val fakeProfile = CommonProfile()
-        fakeProfile.adapted().userObject = fakeUser
+        fakeProfile.adapted().internalUser = fakeUser
 
         val fakeContext = mock<ActionContext> {
             on { it.userProfile } doReturn fakeProfile

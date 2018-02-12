@@ -13,7 +13,7 @@ private const val MISMATCHED_URL = "mismatchedURL"
 class ProfileAdapter(val profile: CommonProfile)
 {
     // This will be non-null if using Basic Auth, null otherwise
-    var userObject: InternalUser?
+    var internalUser: InternalUser?
         get()
         {
             val user = profile.getAttribute(USER_OBJECT)
@@ -36,7 +36,7 @@ class ProfileAdapter(val profile: CommonProfile)
         set(value) = profile.addAttribute(PERMISSIONS, value)
 
     var mismatchedURL: String?
-        get() = profile.getAttribute(MISMATCHED_URL) as String
+        get() = profile.getAttribute(MISMATCHED_URL) as String?
         set(value) = profile.addAttribute(MISMATCHED_URL, value)
 }
 

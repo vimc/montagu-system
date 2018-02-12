@@ -34,7 +34,7 @@ class DatabasePasswordAuthenticator : Authenticator<UsernamePasswordCredentials>
             val user = validate(email, password)
             credentials.userProfile = CommonProfile().apply {
                 setId(email)
-                this.adapted().userObject = user
+                this.adapted().internalUser = user
             }
         }
     }

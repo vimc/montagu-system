@@ -36,7 +36,7 @@ class AuthenticationController(context: ActionContext,
         {
             is HTMLForm.ValidForm ->
             {
-                val user = context.userProfile!!.adapted().userObject!!
+                val user = context.userProfile!!.adapted().internalUser!!
                 val token = tokenHelper.generateToken(user)
                 userRepository.updateLastLoggedIn(user.username)
                 return SuccessfulAuthentication(token, tokenHelper.lifeSpan)

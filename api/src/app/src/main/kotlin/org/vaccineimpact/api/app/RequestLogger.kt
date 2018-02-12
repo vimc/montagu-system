@@ -36,7 +36,7 @@ class RequestLogger(private val accessLogRepository: AccessLogRepository)
         // We can't unify the two approaches as we have different information in
         // the two cases: We have the full user retrieved from the db in the first
         // case, and only what's in the token in the second case.
-        return profile?.adapted()?.userObject?.username
+        return profile?.adapted()?.internalUser?.username
                 ?: context.username
     }
 }
