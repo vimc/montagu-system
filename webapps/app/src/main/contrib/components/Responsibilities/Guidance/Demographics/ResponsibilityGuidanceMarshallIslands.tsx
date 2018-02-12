@@ -4,7 +4,7 @@ import {ContribPageWithHeader} from "../../../PageWithHeader/ContribPageWithHead
 import { ChooseGroupPage } from "../../../ChooseGroup/ChooseGroupPage";
 import { Page } from "../../../../../shared/components/PageWithHeader/Page";
 
-const embeddedHtml = require('./html/marshall.html');
+const iframeSrc = "/contribution/guidance/marshall_demography";
 
 export class ResponsibilityGuidanceMarshallIslands extends ContribPageWithHeader<undefined> {
     name() {
@@ -25,7 +25,7 @@ export class ResponsibilityGuidanceMarshallIslands extends ContribPageWithHeader
 
     render() :JSX.Element {
         return <Page page={this}>
-            <iframe src={embeddedHtml} width="100%" height="9270px" frameBorder="0"></iframe>
+            <iframe src={iframeSrc} width="100%" height="9270px" frameBorder="0"></iframe>
         </Page>;
     }
 }
