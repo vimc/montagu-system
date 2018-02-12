@@ -4,7 +4,7 @@ import {ContribPageWithHeader} from "../../../PageWithHeader/ContribPageWithHead
 import { ChooseGroupPage } from "../../../ChooseGroup/ChooseGroupPage";
 import { Page } from "../../../../../shared/components/PageWithHeader/Page";
 
-const embeddedHtml = require('./html/childmortality.html');
+const iframeSrc = "/contribution/guidance/child-mortality.html";
 
 export class ResponsibilityGuidanceNeonatalMortality extends ContribPageWithHeader<undefined> {
     name() {
@@ -25,7 +25,7 @@ export class ResponsibilityGuidanceNeonatalMortality extends ContribPageWithHead
 
     render() :JSX.Element {
         return <Page page={this}>
-            <iframe src={embeddedHtml} width="100%" height="2008px" frameBorder="0"></iframe>
+            <iframe src={iframeSrc} width="100%" height="2008px" frameBorder="0"></iframe>
         </Page>;
     }
 }
