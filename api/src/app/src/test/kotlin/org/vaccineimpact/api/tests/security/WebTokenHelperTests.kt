@@ -130,27 +130,6 @@ class WebTokenHelperTests : MontaguTests()
     }
 
     @Test
-    fun `can generate new style onetime action token`()
-    {
-        val permissions = "*/can-login,modelling-group:IC-Garske/estimates.read"
-        val roles = "*/user,modelling-group:IC-Garske/member"
-        val mockTokenChecker = mock<OneTimeTokenChecker> {
-            on { checkToken(com.nhaarman.mockito_kotlin.any()) } doReturn true
-        }
-
-        val token = sut.generateNewStyleOnetimeActionToken("/some/url/", "username", permissions, roles)
-        val claims = sut.verify(token, TokenType.ONETIME, mockTokenChecker)
-        assertThat(claims["iss"]).isEqualTo("vaccineimpact.org")
-        assertThat(claims["token_type"]).isEqualTo("ONETIME")
-        assertThat(claims["sub"]).isEqualTo("username")
-        assertThat(claims["exp"] as Date).isAfter(Date.from(Instant.now()))
-        assertThat(claims["permissions"]).isEqualTo(permissions)
-        assertThat(claims["roles"]).isEqualTo(roles)
-        assertThat(claims["url"]).isEqualTo("/some/url/")
-        assertThat(claims["nonce"]).isNotNull()
-    }
-
-    @Test
     fun `token fails validation when issuer is wrong`()
     {
         val claims = sut.claims(InternalUser(properties, roles, permissions))
@@ -188,6 +167,47 @@ class WebTokenHelperTests : MontaguTests()
         val verifier = MontaguTokenAuthenticator(sut, TokenType.BEARER)
         assertThat(verifier.validateToken(evilToken)).isNull()
         assertThatThrownBy { sut.verify(evilToken, TokenType.BEARER, mock()) }
+    }
+
+    @Test
+    fun `can generate new style onetime action token`()
+    {
+        val permissions = "*/can-login,modelling-group:IC-Garske/estimates.read"
+        val roles = "*/user,modelling-group:IC-Garske/member"
+        val mockTokenChecker = mock<OneTimeTokenChecker> {
+            on { checkToken(any()) } doReturn true
+        }
+
+        val token = sut.generateNewStyleOnetimeActionToken("/some/url/", "username", permissions, roles)
+        val claims = sut.verify(token, TokenType.ONETIME, mockTokenChecker)
+        assertThat(claims["iss"]).isEqualTo("vaccineimpact.org")
+        assertThat(claims["token_type"]).isEqualTo("ONETIME")
+        assertThat(claims["sub"]).isEqualTo("username")
+        assertThat(claims["exp"] as Date).isAfter(Date.from(Instant.now()))
+        assertThat(claims["permissions"]).isEqualTo(permissions)
+        assertThat(claims["roles"]).isEqualTo(roles)
+        assertThat(claims["url"]).isEqualTo("/some/url/")
+        assertThat(claims["nonce"]).isNotNull()
+    }
+
+    @Test
+    fun `new style onetime token fails validation when token fails onetime check`()
+    {
+        val mockTokenChecker = mock<OneTimeTokenChecker> {
+            on { checkToken(any()) } doReturn false
+        }
+        val token = sut.generateNewStyleOnetimeActionToken("/some/url/", "username", "", "")
+        assertThatThrownBy { sut.verify(token, TokenType.ONETIME, mockTokenChecker) }
+    }
+
+    @Test
+    fun `new style onetime token fails validation when URL is blank`()
+    {
+        val mockTokenChecker = mock<OneTimeTokenChecker> {
+            on { checkToken(any()) } doReturn true
+        }
+        val token = sut.generateNewStyleOnetimeActionToken("", "username", "", "")
+        assertThatThrownBy { sut.verify(token, TokenType.ONETIME, mockTokenChecker) }
     }
 
     @Test
