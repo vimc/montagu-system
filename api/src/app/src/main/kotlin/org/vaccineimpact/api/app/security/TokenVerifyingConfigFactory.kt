@@ -11,6 +11,7 @@ import org.vaccineimpact.api.app.errors.MissingRequiredPermissionError
 import org.vaccineimpact.api.app.repositories.RepositoryFactory
 import org.vaccineimpact.api.models.ErrorInfo
 import org.vaccineimpact.api.models.permissions.PermissionSet
+import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import org.vaccineimpact.api.security.WebTokenHelper
 
 class TokenVerifyingConfigFactory(
@@ -37,8 +38,9 @@ class TokenVerifyingConfigFactory(
 
     fun allClients() = clients.map { it::class.java.simpleName }.joinToString()
 
-    private fun extractPermissionsFromToken(commonProfile: CommonProfile): CommonProfile
+    private fun extractPermissionsFromToken(profile: CommonProfile): CommonProfile
     {
+        // "permissions" will exists as an attribute because profile is a JwtProfile
         val permissions = PermissionSet((profile.getAttribute("permissions") as String)
                 .split(',')
                 .filter { it.isNotEmpty() }
@@ -56,7 +58,7 @@ class TokenActionAdapter(repositoryFactory: RepositoryFactory)
             "Bearer token not supplied in Authorization header, or bearer token was invalid"
     ))
 
-    private fun forbiddenResponse(missingPermissions: Set<String>) = MissingRequiredPermissionError(missingPermissions).problems
+    private fun forbiddenResponse(missingPermissions: Set<ReifiedPermission>) = MissingRequiredPermissionError(missingPermissions).problems
 
     override fun adapt(code: Int, context: SparkWebContext): Any? = when (code)
     {
@@ -66,10 +68,9 @@ class TokenActionAdapter(repositoryFactory: RepositoryFactory)
         }
         HttpConstants.FORBIDDEN ->
         {
-            val missingPermissions = profile!!.getAttributeOrDefault(MISSING_PERMISSIONS, mutableSetOf<String>())
-            val response = forbiddenResponse(missingPermissions).toList()
-            haltWithError(code, context, response)
             val profile = DirectActionContext(context).userProfile!!.adapted()
+            val response = forbiddenResponse(profile.missingPermissions).toList()
+            haltWithError(code, context, response)
         }
         else -> super.adapt(code, context)
     }
