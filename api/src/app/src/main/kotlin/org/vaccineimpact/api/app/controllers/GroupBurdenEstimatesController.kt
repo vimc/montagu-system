@@ -4,19 +4,22 @@ import org.vaccineimpact.api.app.app_start.Controller
 import org.vaccineimpact.api.app.checkAllValuesAreEqual
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.context.RequestBodySource
-import org.vaccineimpact.api.app.context.csvData
+import org.vaccineimpact.api.app.context.RequestDataSource
 import org.vaccineimpact.api.app.context.postData
 import org.vaccineimpact.api.app.controllers.helpers.ResponsibilityPath
 import org.vaccineimpact.api.app.errors.InconsistentDataError
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
 import org.vaccineimpact.api.app.repositories.Repositories
+import org.vaccineimpact.api.app.requests.PostDataHelper
+import org.vaccineimpact.api.app.requests.csvData
 import org.vaccineimpact.api.app.security.checkEstimatePermissionsForTouchstone
 import org.vaccineimpact.api.models.*
 import java.time.Instant
 
 open class GroupBurdenEstimatesController(
         context: ActionContext,
-        private val estimateRepository: BurdenEstimateRepository
+        private val estimateRepository: BurdenEstimateRepository,
+        private val postDataHelper: PostDataHelper = PostDataHelper()
 ) : Controller(context)
 {
     constructor(context: ActionContext, repos: Repositories)
@@ -43,9 +46,9 @@ open class GroupBurdenEstimatesController(
         return objectCreation(context, url)
     }
 
-    fun populateBurdenEstimateSet() = populateBurdenEstimateSet(RequestBodySource.Simple())
+    fun populateBurdenEstimateSet() = populateBurdenEstimateSet(RequestBodySource(context))
 
-    fun populateBurdenEstimateSet(source: RequestBodySource): String
+    fun populateBurdenEstimateSet(source: RequestDataSource): String
     {
         // First check if we're allowed to see this touchstone
         val path = getValidResponsibilityPath(context, estimateRepository)
@@ -55,7 +58,7 @@ open class GroupBurdenEstimatesController(
         val metadata = estimateRepository.getBurdenEstimateSet(setId)
 
         // Then add the burden estimates
-        val data = getBurdenEstimateDataFromCSV(metadata, context, source)
+        val data = getBurdenEstimateDataFromCSV(metadata, source)
         estimateRepository.populateBurdenEstimateSet(
                 setId,
                 path.groupId, path.touchstoneId, path.scenarioId,
@@ -91,19 +94,18 @@ open class GroupBurdenEstimatesController(
 
     private fun getBurdenEstimateDataFromCSV(
             metadata: BurdenEstimateSet,
-            context: ActionContext,
-            source: RequestBodySource
+            source: RequestDataSource
     ): Sequence<BurdenEstimateWithRunId>
     {
         val data = if (metadata.type.type == BurdenEstimateSetTypeCode.STOCHASTIC)
         {
-            context.csvData<StochasticBurdenEstimate>(from = source).map {
+            postDataHelper.csvData<StochasticBurdenEstimate>(from = source).map {
                 BurdenEstimateWithRunId(it)
             }
         }
         else
         {
-            context.csvData<BurdenEstimate>(from = source).map {
+            postDataHelper.csvData<BurdenEstimate>(from = source).map {
                 BurdenEstimateWithRunId(it, runId = null)
             }
         }

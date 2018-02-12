@@ -1,16 +1,14 @@
 package org.vaccineimpact.api.app.context
 
 import org.pac4j.core.profile.CommonProfile
-import org.vaccineimpact.api.app.MultipartData
-import org.vaccineimpact.api.app.MultipartDataMap
-import org.vaccineimpact.api.app.InMemoryPart
-import org.vaccineimpact.api.app.ServletFileUploadWrapper
+import org.vaccineimpact.api.app.requests.MultipartData
+import org.vaccineimpact.api.app.requests.MultipartDataMap
+import org.vaccineimpact.api.app.requests.ServletFileUploadWrapper
 import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import spark.Request
 import java.io.OutputStream
 import java.io.Reader
-import kotlin.reflect.KClass
 
 interface ActionContext
 {
@@ -35,8 +33,6 @@ interface ActionContext
 
     fun requestReader(): Reader
     fun <T : Any> postData(klass: Class<T>): T
-    fun <T : Any> csvData(klass: KClass<T>, from: RequestBodySource): Sequence<T>
-    fun <T : Any> csvData(klass: KClass<T>, part: InMemoryPart): Sequence<T>
 
     fun addResponseHeader(key: String, value: String): Unit
     fun addAttachmentHeader(filename: String): Unit
@@ -49,5 +45,3 @@ interface ActionContext
 }
 
 inline fun <reified T : Any> ActionContext.postData() = this.postData(T::class.java)
-inline fun <reified T : Any> ActionContext.csvData(from: RequestBodySource = RequestBodySource.Simple()) = this.csvData(T::class, from)
-inline fun <reified T : Any> ActionContext.csvData(part: InMemoryPart) = this.csvData(T::class, part)
