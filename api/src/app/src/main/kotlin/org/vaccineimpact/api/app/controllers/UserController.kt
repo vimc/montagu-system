@@ -16,6 +16,7 @@ import org.vaccineimpact.api.models.User
 import org.vaccineimpact.api.models.encompass
 import org.vaccineimpact.api.models.helpers.OneTimeAction
 import org.vaccineimpact.api.models.permissions.AssociateRole
+import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.models.permissions.RoleAssignment
 import java.time.Duration
 
@@ -48,7 +49,7 @@ class UserController(
 
         if (!roleWritingScopes.any({ it.encompasses(scope) }))
         {
-            throw MissingRequiredPermissionError(setOf("$scope/roles.write"))
+            throw MissingRequiredPermissionError(PermissionSet("$scope/roles.write"))
         }
 
         userRepository.modifyUserRole(userName, associateRole)

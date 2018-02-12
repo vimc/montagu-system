@@ -3,7 +3,7 @@ package org.vaccineimpact.api.app
 import org.pac4j.sparkjava.SparkWebContext
 import org.vaccineimpact.api.app.context.DirectActionContext
 import org.vaccineimpact.api.app.repositories.AccessLogRepository
-import org.vaccineimpact.api.app.security.internalUser
+import org.vaccineimpact.api.app.security.adapted
 import spark.Request
 import spark.Response
 import java.time.Instant
@@ -36,7 +36,7 @@ class RequestLogger(private val accessLogRepository: AccessLogRepository)
         // We can't unify the two approaches as we have different information in
         // the two cases: We have the full user retrieved from the db in the first
         // case, and only what's in the token in the second case.
-        return profile?.internalUser()?.username
+        return profile?.adapted()?.userObject?.username
                 ?: context.username
     }
 }

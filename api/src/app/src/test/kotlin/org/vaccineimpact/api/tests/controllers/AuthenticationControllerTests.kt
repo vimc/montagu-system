@@ -8,14 +8,13 @@ import org.vaccineimpact.api.app.HTMLForm
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.controllers.AuthenticationController
 import org.vaccineimpact.api.app.repositories.UserRepository
-import org.vaccineimpact.api.app.security.USER_OBJECT
+import org.vaccineimpact.api.app.security.adapted
 import org.vaccineimpact.api.db.ConfigWrapper
 import org.vaccineimpact.api.security.InternalUser
 import org.vaccineimpact.api.security.UserProperties
 import org.vaccineimpact.api.security.WebTokenHelper
 import org.vaccineimpact.api.test_helpers.MontaguTests
 import java.time.Duration
-import javax.swing.Action
 
 class AuthenticationControllerTests : MontaguTests()
 {
@@ -29,13 +28,13 @@ class AuthenticationControllerTests : MontaguTests()
         val fakeUserRepo = mock<UserRepository>()
 
         val fakeProfile = CommonProfile()
-        fakeProfile.addAttribute(USER_OBJECT, fakeUser)
+        fakeProfile.adapted().userObject = fakeUser
 
         val fakeContext = mock<ActionContext> {
             on { it.userProfile } doReturn fakeProfile
         }
 
-        val fakeFormHelpers = mock<FormHelpers>() {
+        val fakeFormHelpers = mock<FormHelpers> {
             on {
                 it.checkForm(fakeContext, mapOf("grant_type" to "client_credentials"))
             } doReturn (HTMLForm.ValidForm())

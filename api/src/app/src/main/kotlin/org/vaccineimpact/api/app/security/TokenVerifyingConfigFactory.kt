@@ -39,13 +39,12 @@ class TokenVerifyingConfigFactory(
 
     private fun extractPermissionsFromToken(commonProfile: CommonProfile): CommonProfile
     {
-        val profile = commonProfile as JwtProfile
         val permissions = PermissionSet((profile.getAttribute("permissions") as String)
                 .split(',')
                 .filter { it.isNotEmpty() }
         )
-        commonProfile.addAttribute(PERMISSIONS, permissions)
-        return commonProfile
+        profile.adapted().permissions = permissions
+        return profile
     }
 }
 
@@ -67,10 +66,10 @@ class TokenActionAdapter(repositoryFactory: RepositoryFactory)
         }
         HttpConstants.FORBIDDEN ->
         {
-            val profile = DirectActionContext(context).userProfile
             val missingPermissions = profile!!.getAttributeOrDefault(MISSING_PERMISSIONS, mutableSetOf<String>())
             val response = forbiddenResponse(missingPermissions).toList()
             haltWithError(code, context, response)
+            val profile = DirectActionContext(context).userProfile!!.adapted()
         }
         else -> super.adapt(code, context)
     }
