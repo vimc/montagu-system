@@ -124,8 +124,7 @@ class OneTimeLinkController(
 
         val claims = try
         {
-            tokenHelper.verify(token, TokenType.LEGACY_ONETIME,
-                    NoopOneTimeTokenChecker()) // token has already been checked in previous step
+            tokenHelper.verify(token, TokenType.LEGACY_ONETIME)
         }
         catch (e: Exception)
         {

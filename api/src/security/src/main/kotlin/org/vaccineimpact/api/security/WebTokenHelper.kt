@@ -101,7 +101,10 @@ open class WebTokenHelper(keyPair: KeyPair,
         )
     }
 
-    open fun verify(token: String): Map<String, Any> = MontaguTokenAuthenticator(this).validateTokenAndGetClaims(token)
+    open fun verify(token: String, expectedType: TokenType): Map<String, Any>
+    {
+        return MontaguTokenAuthenticator(this, expectedType).validateTokenAndGetClaims(token)
+    }
 
     private fun getNonce(): String
     {
