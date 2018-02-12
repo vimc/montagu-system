@@ -29,11 +29,11 @@ open class WebTokenHelper(keyPair: KeyPair,
         return generator.generate(claims(user))
     }
 
-    open fun generateOneTimeActionToken(action: String,
-                                        params: Map<String, String>,
-                                        queryString: String?,
-                                        lifeSpan: Duration,
-                                        username: String): String
+    open fun generateOldStyleOneTimeActionToken(action: String,
+                                                params: Map<String, String>,
+                                                queryString: String?,
+                                                lifeSpan: Duration,
+                                                username: String): String
     {
         return generator.generate(mapOf(
                 "iss" to issuer,

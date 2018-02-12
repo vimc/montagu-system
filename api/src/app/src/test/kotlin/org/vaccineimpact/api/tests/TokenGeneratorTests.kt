@@ -16,7 +16,7 @@ class TokenGeneratorTests
 {
 
     private fun tokenHelperThatCanGenerateOnetimeTokens() = mock<WebTokenHelper> {
-        on { generateOneTimeActionToken(any(), any(), anyOrNull(), any(), any()) } doReturn "MY-TOKEN"
+        on { generateOldStyleOneTimeActionToken(any(), any(), anyOrNull(), any(), any()) } doReturn "MY-TOKEN"
     }
 
     // This test is now duplicated in AbstractControllerTests, during our period
@@ -36,7 +36,7 @@ class TokenGeneratorTests
         sut.getOneTimeLinkToken(OneTimeAction.COVERAGE, parameters, null, null, "test.user", Duration.ofDays(1))
 
         // Expectations
-        verify(tokenHelper).generateOneTimeActionToken("coverage", parameters, null, Duration.ofDays(1), "test.user")
+        verify(tokenHelper).generateOldStyleOneTimeActionToken("coverage", parameters, null, Duration.ofDays(1), "test.user")
         verify(tokenRepo).storeToken("MY-TOKEN")
     }
 
@@ -62,7 +62,7 @@ class TokenGeneratorTests
         sut.getOneTimeLinkToken(OneTimeAction.COVERAGE, context)
 
         // Expectations
-        verify(tokenHelper).generateOneTimeActionToken("coverage", parameters, null, WebTokenHelper.oneTimeLinkLifeSpan, "test.user")
+        verify(tokenHelper).generateOldStyleOneTimeActionToken("coverage", parameters, null, WebTokenHelper.oneTimeLinkLifeSpan, "test.user")
         verify(tokenRepo).storeToken("MY-TOKEN")
     }
 
