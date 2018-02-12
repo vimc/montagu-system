@@ -5,7 +5,7 @@ import org.vaccineimpact.api.security.OneTimeTokenChecker
 
 class JooqOneTimeTokenChecker(private val repositoryFactory: RepositoryFactory) : OneTimeTokenChecker
 {
-    override fun checkOneTimeTokenExistsAndRemoveIt(token: String): Boolean
+    override fun checkToken(token: String): Boolean
     {
         // This transaction is immediately committed, regardless of result
         return repositoryFactory.inTransaction { repos ->

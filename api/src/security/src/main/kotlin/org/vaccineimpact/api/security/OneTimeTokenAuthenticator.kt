@@ -17,7 +17,7 @@ class OneTimeTokenAuthenticator(
 
     private fun checkTokenAgainstRepository(credentials: TokenCredentials)
     {
-        if (!oneTimeTokenChecker.checkOneTimeTokenExistsAndRemoveIt(credentials.token))
+        if (!oneTimeTokenChecker.checkToken(credentials.token))
         {
             throw CredentialsException("Token has already been used (or never existed)")
         }

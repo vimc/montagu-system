@@ -31,6 +31,7 @@ import org.vaccineimpact.api.test_helpers.DatabaseCreationHelper
         GetTouchstoneTests::class,
         ModelParameterTests::class,
         ModelTests::class,
+        OneTimeTokenCheckerTests::class,
         PopulateBurdenEstimateSetTests::class,
         RetrieveBurdenEstimatesTests::class,
         ScenarioTests::class,
