@@ -5,8 +5,10 @@ import org.pac4j.core.credentials.TokenCredentials
 import org.pac4j.core.exception.CredentialsException
 import org.pac4j.jwt.credentials.authenticator.JwtAuthenticator
 
-class MontaguTokenAuthenticator(private val tokenHelper: WebTokenHelper)
-    : JwtAuthenticator(tokenHelper.signatureConfiguration)
+open class MontaguTokenAuthenticator(
+        private val tokenHelper: WebTokenHelper,
+        private val expectedType: TokenType
+) : JwtAuthenticator(tokenHelper.signatureConfiguration)
 {
     override fun createJwtProfile(credentials: TokenCredentials, jwt: JWT)
     {
@@ -16,6 +18,12 @@ class MontaguTokenAuthenticator(private val tokenHelper: WebTokenHelper)
         if (issuer != tokenHelper.issuer)
         {
             throw CredentialsException("Token was issued by '$issuer'. Must be issued by '${tokenHelper.issuer}'")
+        }
+        val tokenType = claims.getClaim("token_type").toString()
+        if (tokenType != expectedType.toString())
+        {
+            throw CredentialsException("Wrong type of token was provided. " +
+                    "Expected '$expectedType', was actually '$tokenType'")
         }
     }
 }

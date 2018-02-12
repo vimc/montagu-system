@@ -18,6 +18,7 @@ import org.vaccineimpact.api.app.repositories.TokenRepository
 import org.vaccineimpact.api.app.security.OneTimeTokenGenerator
 import org.vaccineimpact.api.models.ResultStatus
 import org.vaccineimpact.api.models.helpers.OneTimeAction
+import org.vaccineimpact.api.security.TokenType
 import org.vaccineimpact.api.security.WebTokenHelper
 import org.vaccineimpact.api.test_helpers.MontaguTests
 import spark.Request
@@ -160,7 +161,7 @@ class OneTimeLinkControllerTests : MontaguTests()
         val longMessage = org.apache.commons.lang3.StringUtils.repeat('a', 1901)
         val tokenHelper = mock<WebTokenHelper> {
             on(it.encodeResult(argThat { status == ResultStatus.FAILURE })) doReturn longMessage
-            on(it.verify(any())) doReturn claimsWithRedirectUrl
+            on(it.verify(any(), eq(TokenType.LEGACY_ONETIME), any())) doReturn claimsWithRedirectUrl
         }
         val mockErrorHandler = mock<ErrorHandler> {
             on { logExceptionAndReturnMontaguError(any(), any()) } doReturn
@@ -303,11 +304,11 @@ class OneTimeLinkControllerTests : MontaguTests()
             on(it.encodeResult(argThat { status == ResultStatus.SUCCESS })) doReturn "successtoken"
             if (allowToken)
             {
-                on(it.verify(any())) doReturn claims
+                on(it.verify(any(), eq(TokenType.LEGACY_ONETIME), any())) doReturn claims
             }
             else
             {
-                on(it.verify(any())) doThrow RuntimeException("X")
+                on(it.verify(any(), eq(TokenType.LEGACY_ONETIME), any())) doThrow RuntimeException("X")
             }
         }
     }
