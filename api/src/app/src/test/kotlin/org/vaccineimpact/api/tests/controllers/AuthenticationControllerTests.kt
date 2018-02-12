@@ -3,12 +3,12 @@ package org.vaccineimpact.api.tests.controllers
 import com.nhaarman.mockito_kotlin.*
 import org.junit.Test
 import org.pac4j.core.profile.CommonProfile
-import org.vaccineimpact.api.app.FormHelpers
-import org.vaccineimpact.api.app.HTMLForm
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.controllers.AuthenticationController
 import org.vaccineimpact.api.app.repositories.UserRepository
+import org.vaccineimpact.api.app.requests.FormHelpers
 import org.vaccineimpact.api.app.security.adapted
+import org.vaccineimpact.api.app.requests.HTMLForm
 import org.vaccineimpact.api.db.ConfigWrapper
 import org.vaccineimpact.api.security.InternalUser
 import org.vaccineimpact.api.security.UserProperties
