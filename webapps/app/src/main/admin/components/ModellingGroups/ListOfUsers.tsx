@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 
 import { User } from "../../../shared/models/Generated";
 import { DeletableUser } from "./DeletableUser";
+import {AdminAppState} from "../../reducers/adminReducers";
 
 interface Props {
     users: User[];
@@ -29,9 +30,9 @@ export class ListOfUsersComponent extends React.Component<Props, undefined> {
     }
 }
 
-const mapStateToProps = (state: any) => {
+const mapStateToProps = (state: AdminAppState) => {
     return {
-        isAdmin: state.auth.permissions.indexOf("*/modelling-groups.manage-members") > -1 ? true: false,
+        isAdmin: state.auth.permissions.indexOf("*/modelling-groups.manage-members") > -1,
     }
 };
 

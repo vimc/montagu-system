@@ -7,8 +7,7 @@ import {
     NotificationException
 } from "../actions/NotificationActions";
 
-import { TypeKeys } from "../actionTypes/AuthTypes";
-
+import { AuthTypeKeys } from "../actionTypes/AuthTypes";
 
 export interface OptionsHeaders {
    Authorization?: string;
@@ -151,7 +150,7 @@ export abstract class LocalService {
     protected logOut() {
         localStorageHandler.remove("accessToken");
         this.dispatch({
-            type: TypeKeys.UNAUTHENTICATED
+            type: AuthTypeKeys.UNAUTHENTICATED
         });
     }
 

@@ -6,18 +6,19 @@ import { ReportingRouter } from "./ReportingRouter";
 import { NotificationArea } from "../../shared/components/NotificationArea/NotificationArea";
 import { notificationStore } from "../../shared/stores/NotificationStore";
 import { connectToStores } from "../../shared/alt";
+import { ReportAppState } from "../reducers/reportReducers";
 
 export interface ReportingAppProps {
     errors: string[];
     infos: string[];
-    loggedIn?: boolean;
+    loggedIn: boolean;
 }
 
-export class ReportingAppComponent extends React.Component<any, undefined> {
+export class ReportingAppComponent extends React.Component<ReportingAppProps, undefined> {
     static getStores() {
         return [ notificationStore ];
     }
-    static getPropsFromStores(): ReportingAppProps {
+    static getPropsFromStores(): Partial<ReportingAppProps> {
         return {
             errors: notificationStore.getState().errors,
             infos: notificationStore.getState().infos,
@@ -35,7 +36,7 @@ export class ReportingAppComponent extends React.Component<any, undefined> {
 
 export const ReportingAppAltWrapped = connectToStores(ReportingAppComponent);
 
-const mapStateToProps = (state: any) => {
+const mapStateToProps = (state: ReportAppState) => {
   return {
       loggedIn: state.auth.loggedIn,
   }

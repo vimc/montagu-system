@@ -1,6 +1,5 @@
 import { Dispatch } from "redux";
 
-import { TypeKeys } from "../actionTypes/AuthTypes";
 import { jwtTokenAuth } from "../modules/jwtTokenAuth";
 import { AuthService } from "../services/AuthService";
 import { makeNotificationException, notificationActions} from "./NotificationActions";
@@ -11,6 +10,7 @@ import { AuthTokenData } from "../modules/jwtTokenAuth";
 import { AuthState } from "../reducers/authReducer";
 import { makeNotification, Notification } from "../actions/NotificationActions";
 import { localStorageHandler } from "../services/localStorageHandler";
+import { AuthActionsTypes, AuthTypeKeys } from "../actionTypes/AuthTypes";
 
 export const authActions = {
 
@@ -68,9 +68,9 @@ export const authActions = {
             if (!error) {
                 localStorageHandler.set("accessToken", token);
                 dispatch({
-                    type: TypeKeys.AUTHENTICATED,
+                    type: AuthTypeKeys.AUTHENTICATED,
                     data: user,
-                });
+                } as AuthActionsTypes);
                 (new AuthService(dispatch, getState)).authToShiny();
                 if (appName === "contrib") {
                     contribMainStore.load();
@@ -84,7 +84,7 @@ export const authActions = {
 
     authenticationError(error: any) {
         return {
-            type: TypeKeys.AUTHENTICATION_ERROR,
+            type: AuthTypeKeys.AUTHENTICATION_ERROR,
             error: error ? "Your username or password is incorrect" : "An error occurred logging in",
         };
     },
@@ -94,7 +94,7 @@ export const authActions = {
             localStorageHandler.remove("accessToken");
             (new AuthService(dispatch, getState)).unauthFromShiny();
             dispatch({
-                type: TypeKeys.UNAUTHENTICATED,
+                type: AuthTypeKeys.UNAUTHENTICATED,
             });
         }
     }

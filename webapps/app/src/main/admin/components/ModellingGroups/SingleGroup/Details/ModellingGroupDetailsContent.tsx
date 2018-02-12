@@ -10,24 +10,25 @@ import { GroupMembersSummary } from "./GroupMembersSummary";
 import { userStore } from "../../../../stores/UserStore";
 
 import "../../../../../shared/styles/common.scss";
+import {AdminAppState} from "../../../../reducers/adminReducers";
 
 interface Props extends RemoteContent {
     group: ModellingGroupDetails;
     users: User[];
-    canManageGroupMembers?: boolean;
+    canManageGroupMembers: boolean;
 }
 
 class ModellingGroupDetailsContentComponent extends RemoteContentComponent<Props, undefined> {
     static getStores() {
         return [ groupStore, userStore ];
     }
-    static getPropsFromStores(): Props {
+    static getPropsFromStores(): Partial<Props> {
         const group = groupStore.getCurrentGroupDetails();
         const users = userStore.getState();
         return {
             group: group,
             users: users.users,
-            ready: group != null && users.ready,
+            ready: group != null && users.ready
         };
     }
 
@@ -52,9 +53,9 @@ class ModellingGroupDetailsContentComponent extends RemoteContentComponent<Props
 
 export const ModellingGroupDetailsContentAltWrapped = connectToStores(ModellingGroupDetailsContentComponent);
 
-const mapStateToProps = (state: any) => {
+const mapStateToProps = (state: AdminAppState) => {
     return {
-        canManageGroupMembers: state.auth.permissions.indexOf("*/modelling-groups.manage-members") > -1 ? true: false,
+        canManageGroupMembers: state.auth.permissions.indexOf("*/modelling-groups.manage-members") > -1
     }
 };
 

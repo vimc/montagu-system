@@ -1,12 +1,12 @@
 import { combineReducers } from "redux";
-import { reducer as formReducer } from "redux-form";
+import { reducer as formReducer, FormReducer } from "redux-form";
 
 import { authReducer, AuthState } from "../../shared/reducers/authReducer";
 import { modellingGroupsReducer, ModellingGroupsState } from "./modellingGroupsReducer";
 
-export interface GlobalState {
+export interface ContribAppState {
     auth: AuthState;
-    form: any;
+    form: FormReducer;
     groups: ModellingGroupsState;
 }
 

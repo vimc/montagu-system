@@ -7,9 +7,10 @@ import { mainStore } from "../stores/MainStore";
 import { notificationStore } from "../../shared/stores/NotificationStore";
 import { ContribRouter } from "./ContribRouter";
 import { NotificationArea } from "../../shared/components/NotificationArea/NotificationArea";
+import {ContribAppState} from "../reducers/contribReducers";
 
 interface AppProps {
-    loggedIn?: boolean,
+    loggedIn: boolean,
     ready: boolean,
     errors: string[],
     infos: string[]
@@ -20,11 +21,11 @@ export class ContribAppComponent extends React.Component<AppProps, undefined> {
         return [ mainStore, notificationStore ];
     }
 
-    static getPropsFromStores(): AppProps {
+    static getPropsFromStores(): Partial<AppProps> {
         return {
             ready: mainStore.getState().ready,
             errors: notificationStore.getState().errors,
-            infos: notificationStore.getState().infos
+            infos: notificationStore.getState().infos,
         };
     }
 
@@ -42,7 +43,7 @@ export class ContribAppComponent extends React.Component<AppProps, undefined> {
 
 export const ContribAppAltWrapped = connectToStores(ContribAppComponent);
 
-const mapStateToProps = (state: any) => {
+const mapStateToProps = (state: ContribAppState) => {
     return {
         loggedIn: state.auth.loggedIn,
     }

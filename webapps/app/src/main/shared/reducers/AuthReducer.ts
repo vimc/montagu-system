@@ -1,4 +1,4 @@
-import { ActionsTypes, TypeKeys } from "../actionTypes/AuthTypes";
+import { AuthActionsTypes, AuthTypeKeys } from "../actionTypes/AuthTypes";
 
 export interface AuthState {
     loggedIn: boolean;
@@ -20,13 +20,13 @@ export const initialAuthState: AuthState = {
     isModeller: false
 };
 
-export const authReducer = (state = initialAuthState, action: ActionsTypes) => {
+export const authReducer = (state = initialAuthState, action: AuthActionsTypes) => {
     switch (action.type) {
-        case TypeKeys.AUTHENTICATED:
+        case AuthTypeKeys.AUTHENTICATED:
             return { ...action.data };
-        case TypeKeys.UNAUTHENTICATED:
+        case AuthTypeKeys.UNAUTHENTICATED:
             return initialAuthState;
-        case TypeKeys.AUTHENTICATION_ERROR:
+        case AuthTypeKeys.AUTHENTICATION_ERROR:
             return { ...state, errorMessage: action.error };
         default:
             return state;

@@ -1,24 +1,24 @@
 import { AuthState } from "../reducers/authReducer";
 
-export enum TypeKeys {
+export enum AuthTypeKeys {
     AUTHENTICATED = "AUTHENTICATED",
     UNAUTHENTICATED = "UNAUTHENTICATED",
     AUTHENTICATION_ERROR = "AUTHENTICATION_ERROR",
 }
 
 export interface Authenticated {
-    type: TypeKeys.AUTHENTICATED;
+    type: AuthTypeKeys.AUTHENTICATED;
     data: AuthState;
 }
 export interface AuthenticationError {
-    type: TypeKeys.AUTHENTICATION_ERROR;
+    type: AuthTypeKeys.AUTHENTICATION_ERROR;
     error: string;
 }
 export interface Unauthenticated {
-    type: TypeKeys.UNAUTHENTICATED;
+    type: AuthTypeKeys.UNAUTHENTICATED;
 }
 
-export type ActionsTypes =
+export type AuthActionsTypes =
     | Authenticated
     | AuthenticationError
     | Unauthenticated;

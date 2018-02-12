@@ -12,7 +12,6 @@ import {ExtendedResponsibility, ExtendedResponsibilitySet} from "../models/Respo
 import {coverageSetActions} from "../actions/CoverageSetActions";
 import {coverageTokenActions} from "../actions/CoverageActions";
 import {modellingGroupActions} from "../../shared/actions/ModellingGroupActions";
-// import {contribAuthStore} from "./ContribAuthStore";
 import {ResponsibilitySource} from "../sources/ResponsibilitySource";
 import {TouchstoneSource} from "../sources/TouchstoneSource";
 import {CoverageSetSource} from "../sources/CoverageSetSource";
@@ -201,11 +200,6 @@ class ResponsibilityStore extends AbstractStore<ResponsibilityState, Responsibil
     }
 
     handleUpdateModellingGroups(groups: ModellingGroup[]) {
-        // this.waitFor(contribAuthStore);
-        // const membership = contribAuthStore.getState().modellingGroups;
-        // if (membership.length == 1) {
-        //     this.currentModellingGroup = groups.find(g => g.id == membership[0].id);
-        // }
     }
 
     handleUpdateResponsibilities(responsibilities: Responsibilities) {

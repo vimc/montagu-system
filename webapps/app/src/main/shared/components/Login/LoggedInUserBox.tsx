@@ -4,31 +4,23 @@ import { Dispatch } from "redux";
 import { authActions } from "../../actions/authActions";
 import { InternalLink } from "../InternalLink";
 import { connect } from "react-redux";
-import { AuthState } from "../../reducers/authReducer";
+import { GlobalState } from "../../reducers/GlobalState";
 
 import "./Logout.scss";
 
 interface LoggedInUserBoxProps {
-    auth: AuthState;
-    dispatch?: Dispatch<any>;
+    loggedIn: boolean;
+    username: string;
+    logOut: Dispatch<any>;
 }
 
 export class LoggedInUserBoxComponent extends React.Component<LoggedInUserBoxProps, undefined> {
-    constructor() {
-        super();
-        this.logout = this.logout.bind(this);
-    }
-
-    logout(e: React.MouseEvent<HTMLAnchorElement>) {
-        this.props.dispatch(authActions.logOut());
-    }
-
     render() :JSX.Element {
-        if (this.props.auth.loggedIn) {
+        if (this.props.loggedIn) {
             return <div className="logout">
                 <div>
-                    Logged in as { this.props.auth.username } |&nbsp;
-                    <InternalLink href="/" onClick={ this.logout }>
+                    Logged in as { this.props.username } |&nbsp;
+                    <InternalLink href="/" onClick={ this.props.logOut }>
                         Log out
                     </InternalLink>
                 </div>
@@ -39,8 +31,15 @@ export class LoggedInUserBoxComponent extends React.Component<LoggedInUserBoxPro
     }
 }
 
-const mapStateToProps = (state: any) => ({
-    auth: state.auth
+const mapStateToProps = (state: GlobalState): Partial<LoggedInUserBoxProps> => ({
+    loggedIn: state.auth.loggedIn,
+    username: state.auth.username
 });
 
-export const LoggedInUserBox = connect(mapStateToProps)(LoggedInUserBoxComponent);
+const mapDispatchToProps = (dispatch: Dispatch<any>) => {
+    return {
+        logOut : (e: React.MouseEvent<HTMLAnchorElement>) => dispatch(authActions.logOut())
+    }
+};
+
+export const LoggedInUserBox = connect(mapStateToProps, mapDispatchToProps)(LoggedInUserBoxComponent);

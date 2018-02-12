@@ -1,11 +1,11 @@
 import { combineReducers } from "redux";
-import { reducer as formReducer } from "redux-form";
+import { reducer as formReducer, FormReducer } from "redux-form";
 
 import { authReducer, AuthState } from "../../shared/reducers/authReducer";
 
-export interface GlobalState {
+export interface ReportAppState {
     auth: AuthState;
-    form: any;
+    form: FormReducer;
 }
 
 const reducers = combineReducers({

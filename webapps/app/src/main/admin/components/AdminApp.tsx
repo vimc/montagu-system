@@ -6,18 +6,19 @@ import { connectToStores } from "../../shared/alt";
 import { ErrorLog } from "../../shared/components/ErrorLog/ErrorLog";
 import { AdminRouter } from "./AdminRouter";
 import { NotificationArea } from "../../shared/components/NotificationArea/NotificationArea";
+import { AdminAppState } from "../reducers/adminReducers";
 
 export interface AdminAppProps {
     errors: string[];
     infos: string[];
-    loggedIn?: boolean;
+    loggedIn: boolean;
 }
 
 export class AdminAppComponent extends React.Component<AdminAppProps, undefined> {
     static getStores() {
         return [ notificationStore ];
     }
-    static getPropsFromStores(): AdminAppProps {
+    static getPropsFromStores(): Partial<AdminAppProps> {
         return {
             errors: notificationStore.getState().errors,
             infos: notificationStore.getState().infos,
@@ -35,7 +36,7 @@ export class AdminAppComponent extends React.Component<AdminAppProps, undefined>
 
 export const AdminAppAltWrapped = connectToStores(AdminAppComponent);
 
-const mapStateToProps = (state: any) => {
+const mapStateToProps = (state: AdminAppState) => {
     return {
         loggedIn: state.auth.loggedIn,
     }

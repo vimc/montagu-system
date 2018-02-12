@@ -6,7 +6,7 @@ import { Sandbox } from "../../Sandbox";
 import { authActions } from "../../../main/shared/actions/authActions";
 import { AuthService } from "../../../main/shared/services/AuthService";
 import { mainStore as contribMainStore } from "../../../main/contrib/stores/MainStore";
-import { TypeKeys } from "../../../main/shared/actionTypes/AuthTypes";
+import { AuthTypeKeys } from "../../../main/shared/actionTypes/AuthTypes";
 
 import thunk from 'redux-thunk';
 import {localStorageHandler} from "../../../main/shared/services/localStorageHandler";
@@ -47,7 +47,7 @@ describe("Modelling groups actions tests", () => {
         store.dispatch(authActions.logIn('test', 'test'))
         setTimeout(() => {
             const actions = store.getActions()
-            expect(actions[0].type).to.eql(TypeKeys.AUTHENTICATED)
+            expect(actions[0].type).to.eql(AuthTypeKeys.AUTHENTICATED)
             done();
         });
     });
@@ -60,7 +60,7 @@ describe("Modelling groups actions tests", () => {
         store.dispatch(authActions.logIn('test', 'test'))
         setTimeout(() => {
             const actions = store.getActions()
-            expect(actions[0].type).to.eql(TypeKeys.AUTHENTICATION_ERROR)
+            expect(actions[0].type).to.eql(AuthTypeKeys.AUTHENTICATION_ERROR)
             done();
         });
     });
@@ -73,7 +73,7 @@ describe("Modelling groups actions tests", () => {
         store.dispatch(authActions.logIn('test', 'test'))
         setTimeout(() => {
             const actions = store.getActions()
-            expect(actions[0].type).to.eql(TypeKeys.AUTHENTICATION_ERROR)
+            expect(actions[0].type).to.eql(AuthTypeKeys.AUTHENTICATION_ERROR)
             done();
         });
     });
@@ -86,7 +86,7 @@ describe("Modelling groups actions tests", () => {
         store.dispatch(authActions.loadSavedToken())
         setTimeout(() => {
             const actions = store.getActions()
-            expect(actions[0].type).to.eql(TypeKeys.AUTHENTICATED)
+            expect(actions[0].type).to.eql(AuthTypeKeys.AUTHENTICATED)
             done();
         });
     });
@@ -99,7 +99,7 @@ describe("Modelling groups actions tests", () => {
         store.dispatch(authActions.loadSavedToken())
         setTimeout(() => {
             const actions = store.getActions()
-            expect(actions[0].type).to.eql(TypeKeys.UNAUTHENTICATED)
+            expect(actions[0].type).to.eql(AuthTypeKeys.UNAUTHENTICATED)
             done();
         });
     });

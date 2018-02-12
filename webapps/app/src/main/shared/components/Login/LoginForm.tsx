@@ -8,6 +8,8 @@ import { InternalLink } from "../InternalLink";
 import { ValidationError } from "./ValidationError";
 import { validations } from "../../modules/ReduxForm";
 import { authActions } from "../../actions/authActions";
+import { GlobalState } from "../../reducers/GlobalState";
+import { Unauthenticated } from "../../actionTypes/AuthTypes";
 
 export interface LoginFormProps {
     handleSubmit: (F: any) => any;
@@ -62,11 +64,11 @@ export class LoginFormComponent extends React.Component<LoginFormProps, undefine
     }
 }
 
-function mapStateToProps(state: any) {
+function mapStateToProps(state: GlobalState): Partial<LoginFormProps> {
     return { errorMessage: state.auth.errorMessage || null };
 }
 
-const mapDispatchToProps = (dispatch: Dispatch<any>) => {
+const mapDispatchToProps = (dispatch: Dispatch<Unauthenticated>) => {
     return {
         submit : (values: any) => dispatch(authActions.logIn(values.email, values.password))
     }

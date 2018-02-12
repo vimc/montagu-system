@@ -18,7 +18,7 @@ describe("ReportingApp", () => {
             // ReportingAuthStore: { loggedIn: true }
         }));
 
-        const expected: ReportingAppProps = {
+        const expected: Partial<ReportingAppProps> = {
             errors: ["a", "b"],
             infos: ["c", "d"],
             // loggedIn: true

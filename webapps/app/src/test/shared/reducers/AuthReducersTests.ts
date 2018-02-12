@@ -1,7 +1,7 @@
 import { expect } from "chai";
 
 import { authReducer, AuthState, initialAuthState } from "../../../main/shared/reducers/authReducer";
-import { TypeKeys } from "../../../main/shared/actionTypes/AuthTypes";
+import { AuthTypeKeys } from "../../../main/shared/actionTypes/AuthTypes";
 
 const testAuthData: AuthState = {
     loggedIn: true,
@@ -15,7 +15,7 @@ const testAuthData: AuthState = {
 describe('Modelling groups reducer tests', () => {
     it('sets logged in user data', () => {
         expect(authReducer(undefined, {
-            type: TypeKeys.AUTHENTICATED,
+            type: AuthTypeKeys.AUTHENTICATED,
             data: testAuthData
         })).to.eql(
             testAuthData
@@ -24,7 +24,7 @@ describe('Modelling groups reducer tests', () => {
 
     it('reverts state to initial after unauth action', () => {
         expect(authReducer(undefined, {
-            type: TypeKeys.UNAUTHENTICATED,
+            type: AuthTypeKeys.UNAUTHENTICATED,
         })).to.eql(
             initialAuthState
         )
@@ -32,7 +32,7 @@ describe('Modelling groups reducer tests', () => {
 
     it('sets errror', () => {
         expect(authReducer(undefined, {
-            type: TypeKeys.AUTHENTICATION_ERROR,
+            type: AuthTypeKeys.AUTHENTICATION_ERROR,
             error: "Test Error"
         })).to.eql(
             Object.assign({}, initialAuthState, { errorMessage: "Test Error" })
