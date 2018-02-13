@@ -19,7 +19,7 @@ export interface ChooseGroupProps {
     ready: boolean;
 }
 
-export class ChooseGroupContentComponent extends React.Component<ChooseGroupProps, any> {
+export class ChooseGroupContentComponent extends React.Component<ChooseGroupProps, undefined> {
     componentDidMount() {
         this.props.getGroups()
     }
