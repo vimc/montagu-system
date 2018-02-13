@@ -13,7 +13,7 @@ import {AuthActionsTypes} from "../../actionTypes/AuthTypes";
 
 export interface LoginFormProps {
     handleSubmit: (F: any) => any;
-    errorMessage: string;
+    errorMessage?: string;
     submit: (values: LoginFormFields) => void;
 }
 

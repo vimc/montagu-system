@@ -22,7 +22,6 @@ export interface ChooseGroupProps {
 export class ChooseGroupContentComponent extends React.Component<ChooseGroupProps, any> {
     componentDidMount() {
         this.props.getGroups()
-            .catch(doNothing)
     }
 
     render() {
@@ -48,19 +47,20 @@ export class ChooseGroupContentComponent extends React.Component<ChooseGroupProp
             return <LoadingElement />;
         }
     }
+
+     static mapStateToProps = (state: ContribAppState): Partial<ChooseGroupProps> => {
+        return {
+            groups: state.groups.items,
+            ready: state.groups.items && state.groups.items.length > 0
+        }
+    };
+
+     static mapDispatchToProps = (dispatch: Dispatch<ContribAppState>): Partial<ChooseGroupProps> => {
+        return {
+            getGroups : () => dispatch(modellingGroupsActions.getGroups())
+        }
+    };
 }
 
-const mapStateToProps = (state: ContribAppState): Partial<ChooseGroupProps> => {
-    return {
-        groups: state.groups.items,
-        ready: state.groups.items && state.groups.items.length > 0
-    }
-};
-
-const mapDispatchToProps = (dispatch: Dispatch<ContribAppState>): Partial<ChooseGroupProps> => {
-    return {
-        getGroups : () => dispatch(modellingGroupsActions.getGroups())
-    }
-};
-
-export const ChooseGroupContent = connect(mapStateToProps, mapDispatchToProps)(ChooseGroupContentComponent);
+export const ChooseGroupContent = connect(ChooseGroupContentComponent.mapStateToProps,
+    ChooseGroupContentComponent.mapDispatchToProps)(ChooseGroupContentComponent);

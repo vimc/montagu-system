@@ -19,7 +19,8 @@ describe("LoginFormComponent unit testing", () => {
     const submitMock = sandbox.createSpy();
 
     before(() => {
-        formWrapper = shallow(<LoginFormComponent handleSubmit={submitMock} submit={()=>{}}/>)
+        const spy = sandbox.sinon.spy();
+        formWrapper = shallow(<LoginFormComponent handleSubmit={submitMock} submit={spy}/>)
     });
 
     afterEach(() => {
