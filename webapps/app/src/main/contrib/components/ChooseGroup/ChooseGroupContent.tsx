@@ -6,19 +6,21 @@ import { GroupList } from "./GroupList";
 import { ButtonLink } from "../../../shared/components/ButtonLink";
 import { modellingGroupsActions } from "../../actions/modellingGroupsActions";
 import { LoadingElement } from "../../../shared/partials/LoadingElement/LoadingElement";
-// import { GlobalState } from "../../reducers/reducers";
+
+import { Dispatch } from "redux";
 
 import "../../../shared/styles/common.scss";
+import {ContribAppState} from "../../reducers/contribReducers";
 
 export interface ChooseGroupProps {
     groups: ModellingGroup[];
-    dispatch: any;
+    getGroups: () => void;
     ready: boolean;
 }
 
 export class ChooseGroupContentComponent extends React.Component<ChooseGroupProps, undefined> {
     componentDidMount() {
-        this.props.dispatch(modellingGroupsActions.getGroups());
+        this.props.getGroups()
     }
 
     render() {
@@ -44,13 +46,20 @@ export class ChooseGroupContentComponent extends React.Component<ChooseGroupProp
             return <LoadingElement />;
         }
     }
+
+     static mapStateToProps = (state: ContribAppState): Partial<ChooseGroupProps> => {
+        return {
+            groups: state.groups.items,
+            ready: state.groups.items && state.groups.items.length > 0
+        }
+    };
+
+     static mapDispatchToProps = (dispatch: Dispatch<ContribAppState>): Partial<ChooseGroupProps> => {
+         return {
+            getGroups : () => dispatch(modellingGroupsActions.getGroups())
+        }
+    };
 }
 
-const mapStateToProps = (state: any) => {
-    return {
-        groups: state.groups.items,
-        ready: state.groups.items && state.groups.items.length
-    }
-};
-
-export const ChooseGroupContent = connect(mapStateToProps)(ChooseGroupContentComponent);
+export const ChooseGroupContent = connect(ChooseGroupContentComponent.mapStateToProps,
+    ChooseGroupContentComponent.mapDispatchToProps)(ChooseGroupContentComponent);
