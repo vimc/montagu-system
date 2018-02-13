@@ -55,7 +55,6 @@ describe("DemographicStore.fetchOneTimeToken", () => {
         demographicActions.selectDataSet(dataSet.id);
 
         const fetcherSpy = helper.getFetcherSpy();
-        // helper.sandbox.setStub(LoginSource, "clearShinyToken");
         demographicStore.fetchOneTimeToken().catch(doNothing);
         checkAsync(done, () => {
             expect(fetcherSpy.args).to.have.length(1, "Fetch method was not invoked");

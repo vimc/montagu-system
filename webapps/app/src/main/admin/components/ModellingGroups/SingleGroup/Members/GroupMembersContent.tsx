@@ -17,7 +17,7 @@ interface Props extends RemoteContent {
     members: User[];
     users: User[];
     groupId: string;
-    canManageGroupMembers?: boolean;
+    canManageGroupMembers: boolean;
 }
 
 export class GroupMembersContentComponent extends RemoteContentComponent<Props, undefined> {
@@ -25,7 +25,7 @@ export class GroupMembersContentComponent extends RemoteContentComponent<Props, 
         return [ groupStore, userStore ];
     }
 
-    static getPropsFromStores(): Props {
+    static getPropsFromStores(): Partial<Props> {
         const group = groupStore.getCurrentGroupDetails();
         const allUsers = userStore.getState().users;
         const members = groupStore.getCurrentGroupMembers();
@@ -77,7 +77,7 @@ export const GroupMembersContentAltWrapped = connectToStores(GroupMembersContent
 
 const mapStateToProps = (state: AdminAppState) => {
     return {
-        canManageGroupMembers: state.auth.permissions.indexOf("*/modelling-groups.manage-members") > -1 ? true: false,
+        canManageGroupMembers: state.auth.permissions.indexOf("*/modelling-groups.manage-members") > -1,
     }
 };
 

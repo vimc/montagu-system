@@ -20,7 +20,6 @@ describe("AdminApp", () => {
         const expected: Partial<AdminAppProps> = {
             errors: ["a", "b"],
             infos: ["c", "d"],
-            // loggedIn: true
         };
         expect(AdminAppComponent.getPropsFromStores()).to.eql(expected);
     });

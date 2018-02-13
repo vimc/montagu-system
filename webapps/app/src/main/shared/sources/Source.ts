@@ -6,9 +6,10 @@ import {
     notificationActions,
     NotificationException
 } from "../actions/NotificationActions";
-// import {authActions} from "../actions/AuthActions";
 import {jwtDecoder} from "./JwtDecoder";
 import {settings} from "../Settings";
+import {localStorageHandler} from "../services/localStorageHandler";
+
 
 export interface FetchConfig<TState, TModel> {
     success: (data: TModel) => void;
@@ -95,7 +96,10 @@ function processResult<TModel>(result: Result, response: any): TModel | void {
         switch (error.code) {
             case "bearer-token-invalid":
                 console.log("Access token has expired or is otherwise invalid: Logging out.");
-                // authActions.logOut();
+                // Temporary log off
+                localStorageHandler.remove("accessToken");
+                location.reload();
+
                 const notification: Notification = {
                     message: "Your session has expired. You will need to log in again",
                     type: "info"

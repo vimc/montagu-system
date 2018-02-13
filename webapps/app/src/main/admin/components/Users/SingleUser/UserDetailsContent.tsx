@@ -8,22 +8,21 @@ import { RoleAssignment, User } from "../../../../shared/models/Generated";
 import { UserRole } from "./UserRoleComponent";
 import { userStore } from "../../../stores/UserStore";
 import { AddRoles } from "./AddRoles";
+import {AdminAppState} from "../../../reducers/adminReducers";
+import "../../../../shared/styles/common.scss";
 
 interface Props extends RemoteContent {
     user: User;
     roles: RoleAssignment[];
-    permissions?: any;
+    isAdmin: boolean;
 }
-
-import "../../../../shared/styles/common.scss";
-import {AdminAppState} from "../../../reducers/adminReducers";
 
 export class UserDetailsContentComponent extends RemoteContentComponent<Props, undefined> {
     static getStores() {
         return [userStore];
     }
 
-    static getPropsFromStores(): Props {
+    static getPropsFromStores(): Partial<Props> {
         const user = userStore.getCurrentUserDetails();
 
         return {
@@ -35,8 +34,7 @@ export class UserDetailsContentComponent extends RemoteContentComponent<Props, u
 
     roles(username: string) {
 
-        const isAdmin = this.props.permissions.indexOf("*/roles.write") > -1;
-        const addRoles = isAdmin ?
+        const addRoles = this.props.isAdmin ?
             <AddRoles userRoles={this.props.roles.filter(r => r.scope_prefix == null).map(r => r.name)}
                    username={this.props.user.username}/>
         : "";
@@ -46,7 +44,7 @@ export class UserDetailsContentComponent extends RemoteContentComponent<Props, u
             <form className="form">
                 <hr/>
                 {this.props.roles.map(r =>
-                    <UserRole key={r.name + r.scope_prefix + r.scope_id} {...r} username={username} showdelete={isAdmin}/>
+                    <UserRole key={r.name + r.scope_prefix + r.scope_id} {...r} username={username} showdelete={this.props.isAdmin}/>
                 )}
             </form>
             {addRoles}
@@ -89,7 +87,7 @@ export const UserDetailsContentAltWrapped =
 
 const mapStateToProps = (state: AdminAppState) => {
     return {
-        permissions: state.auth.permissions,
+        isAdmin: state.auth.permissions.indexOf("*/roles.write") > -1
     }
 };
 
