@@ -11,7 +11,7 @@ import "./Logout.scss";
 interface LoggedInUserBoxProps {
     loggedIn: boolean;
     username: string;
-    logOut: Dispatch<any>;
+    logOut: (e: React.MouseEvent<HTMLAnchorElement>) => void;
 }
 
 export class LoggedInUserBoxComponent extends React.Component<LoggedInUserBoxProps, undefined> {
@@ -36,10 +36,11 @@ const mapStateToProps = (state: GlobalState): Partial<LoggedInUserBoxProps> => (
     username: state.auth.username
 });
 
-const mapDispatchToProps = (dispatch: Dispatch<any>) => {
+const mapDispatchToProps = (dispatch: Dispatch<GlobalState>): Partial<LoggedInUserBoxProps> => {
     return {
         logOut : (e: React.MouseEvent<HTMLAnchorElement>) => dispatch(authActions.logOut())
     }
 };
+
 
 export const LoggedInUserBox = connect(mapStateToProps, mapDispatchToProps)(LoggedInUserBoxComponent);

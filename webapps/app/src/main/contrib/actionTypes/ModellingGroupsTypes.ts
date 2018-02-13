@@ -10,5 +10,4 @@ export interface GroupsFetched {
     data: ModellingGroup[];
 }
 
-export type ActionsTypes =
-    | GroupsFetched
+export type ActionsTypes = | GroupsFetched
