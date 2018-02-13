@@ -11,11 +11,10 @@ import { Dispatch } from "redux";
 
 import "../../../shared/styles/common.scss";
 import {ContribAppState} from "../../reducers/contribReducers";
-import {doNothing} from "../../../shared/Helpers";
 
 export interface ChooseGroupProps {
     groups: ModellingGroup[];
-    getGroups: () => Promise<void>;
+    getGroups: () => void;
     ready: boolean;
 }
 
@@ -56,7 +55,7 @@ export class ChooseGroupContentComponent extends React.Component<ChooseGroupProp
     };
 
      static mapDispatchToProps = (dispatch: Dispatch<ContribAppState>): Partial<ChooseGroupProps> => {
-        return {
+         return {
             getGroups : () => dispatch(modellingGroupsActions.getGroups())
         }
     };
