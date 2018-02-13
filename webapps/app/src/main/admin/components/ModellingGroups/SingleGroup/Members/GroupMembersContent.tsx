@@ -11,6 +11,7 @@ import { ListOfUsers } from "../../ListOfUsers";
 import { AddMember } from "./AddMember";
 
 import "../../../../../shared/styles/common.scss";
+import {AdminAppState} from "../../../../reducers/adminReducers";
 
 interface Props extends RemoteContent {
     members: User[];
@@ -74,7 +75,7 @@ export class GroupMembersContentComponent extends RemoteContentComponent<Props, 
 
 export const GroupMembersContentAltWrapped = connectToStores(GroupMembersContentComponent);
 
-const mapStateToProps = (state: any) => {
+const mapStateToProps = (state: AdminAppState) => {
     return {
         canManageGroupMembers: state.auth.permissions.indexOf("*/modelling-groups.manage-members") > -1 ? true: false,
     }

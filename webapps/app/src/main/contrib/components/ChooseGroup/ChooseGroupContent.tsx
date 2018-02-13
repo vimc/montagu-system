@@ -6,9 +6,9 @@ import { GroupList } from "./GroupList";
 import { ButtonLink } from "../../../shared/components/ButtonLink";
 import { modellingGroupsActions } from "../../actions/modellingGroupsActions";
 import { LoadingElement } from "../../../shared/partials/LoadingElement/LoadingElement";
-// import { GlobalState } from "../../reducers/reducers";
 
 import "../../../shared/styles/common.scss";
+import {ContribAppState} from "../../reducers/contribReducers";
 
 export interface ChooseGroupProps {
     groups: ModellingGroup[];
@@ -46,10 +46,10 @@ export class ChooseGroupContentComponent extends React.Component<ChooseGroupProp
     }
 }
 
-const mapStateToProps = (state: any) => {
+const mapStateToProps = (state: ContribAppState) => {
     return {
         groups: state.groups.items,
-        ready: state.groups.items && state.groups.items.length
+        ready: state.groups.items && state.groups.items.length > 0
     }
 };
 

@@ -16,6 +16,7 @@ interface Props extends RemoteContent {
 }
 
 import "../../../../shared/styles/common.scss";
+import {AdminAppState} from "../../../reducers/adminReducers";
 
 export class UserDetailsContentComponent extends RemoteContentComponent<Props, undefined> {
     static getStores() {
@@ -86,7 +87,7 @@ export class UserDetailsContentComponent extends RemoteContentComponent<Props, u
 export const UserDetailsContentAltWrapped =
     connectToStores(UserDetailsContentComponent);
 
-const mapStateToProps = (state: any) => {
+const mapStateToProps = (state: AdminAppState) => {
     return {
         permissions: state.auth.permissions,
     }
