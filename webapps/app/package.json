@@ -48,7 +48,7 @@
     "mocha-webpack": "^0.7.0",
     "node-fetch": "^1.7.2",
     "node-sass": "^4.7.2",
-    "pg": "7.2.0",
+    "pg": "^7.2.0",
     "react-addons-test-utils": "^15.5.1",
     "react-test-renderer": "^15.5.0",
     "sass-loader": "^6.0.6",
