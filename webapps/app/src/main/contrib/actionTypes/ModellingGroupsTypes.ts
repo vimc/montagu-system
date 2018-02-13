@@ -1,5 +1,4 @@
-import { ModellingGroupsState } from "../reducers/modellingGroupsReducer";
-import { ModellingGroup } from "../../shared/models/Generated";
+import {ModellingGroup} from "../../shared/models/Generated";
 
 export enum TypeKeys {
     GROUPS_FETCHED = "GROUPS_FETCHED",

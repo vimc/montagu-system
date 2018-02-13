@@ -9,12 +9,17 @@ import { ValidationError } from "./ValidationError";
 import { validations } from "../../modules/ReduxForm";
 import { authActions } from "../../actions/authActions";
 import { GlobalState } from "../../reducers/GlobalState";
-import { Unauthenticated } from "../../actionTypes/AuthTypes";
+import {AuthActionsTypes} from "../../actionTypes/AuthTypes";
 
 export interface LoginFormProps {
     handleSubmit: (F: any) => any;
     errorMessage?: string;
-    submit: Function;
+    submit: (values: LoginFormFields) => void;
+}
+
+export interface LoginFormFields{
+    email: string;
+    password: string;
 }
 
 export class LoginFormComponent extends React.Component<LoginFormProps, undefined> {
@@ -65,12 +70,12 @@ export class LoginFormComponent extends React.Component<LoginFormProps, undefine
 }
 
 function mapStateToProps(state: GlobalState): Partial<LoginFormProps> {
-    return { errorMessage: state.auth.errorMessage || null };
+    return { errorMessage: state.auth.errorMessage };
 }
 
-const mapDispatchToProps = (dispatch: Dispatch<Unauthenticated>) => {
+function mapDispatchToProps(dispatch: Dispatch<AuthActionsTypes>): Partial<LoginFormProps> {
     return {
-        submit : (values: any) => dispatch(authActions.logIn(values.email, values.password))
+        submit : (values: LoginFormFields) => dispatch(authActions.logIn(values.email, values.password))
     }
 }
 
