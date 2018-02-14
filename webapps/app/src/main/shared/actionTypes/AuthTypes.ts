@@ -10,6 +10,7 @@ export interface Authenticated {
     type: AuthTypeKeys.AUTHENTICATED;
     data: AuthState;
 }
+
 export interface AuthenticationError {
     type: AuthTypeKeys.AUTHENTICATION_ERROR;
     error: string;

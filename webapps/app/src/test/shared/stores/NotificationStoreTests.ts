@@ -87,5 +87,5 @@ describe("NotificationStore", () => {
         notificationActions.clear("error");
         expect(notificationStore.getState().errors).to.eql([]);
     });
-    
+
 });

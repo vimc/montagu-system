@@ -10,7 +10,10 @@ import { AuthTokenData } from "../modules/jwtTokenAuth";
 import { AuthState } from "../reducers/authReducer";
 import { makeNotification, Notification } from "../actions/NotificationActions";
 import { localStorageHandler } from "../services/localStorageHandler";
-import { AuthActionsTypes, AuthTypeKeys } from "../actionTypes/AuthTypes";
+import {
+    AuthActionsTypes, Authenticated, AuthenticationError, AuthTypeKeys,
+    Unauthenticated
+} from "../actionTypes/AuthTypes";
 
 export const authActions = {
 
@@ -70,7 +73,7 @@ export const authActions = {
                 dispatch({
                     type: AuthTypeKeys.AUTHENTICATED,
                     data: user,
-                } as AuthActionsTypes);
+                } as Authenticated);
                 (new AuthService(dispatch, getState)).authToShiny();
                 if (appName === "contrib") {
                     contribMainStore.load();
@@ -86,7 +89,7 @@ export const authActions = {
         return {
             type: AuthTypeKeys.AUTHENTICATION_ERROR,
             error: error ? "Your username or password is incorrect" : "An error occurred logging in",
-        };
+        } as AuthenticationError;
     },
 
     logOut() {
@@ -95,7 +98,7 @@ export const authActions = {
             (new AuthService(dispatch, getState)).unauthFromShiny();
             dispatch({
                 type: AuthTypeKeys.UNAUTHENTICATED,
-            });
+            } as Unauthenticated);
         }
     }
 };
