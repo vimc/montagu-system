@@ -7,8 +7,8 @@ import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.controllers.AuthenticationController
 import org.vaccineimpact.api.app.repositories.UserRepository
 import org.vaccineimpact.api.app.requests.FormHelpers
-import org.vaccineimpact.api.app.security.adapted
 import org.vaccineimpact.api.app.requests.HTMLForm
+import org.vaccineimpact.api.app.security.internalUser
 import org.vaccineimpact.api.db.ConfigWrapper
 import org.vaccineimpact.api.security.InternalUser
 import org.vaccineimpact.api.security.UserProperties
@@ -28,7 +28,7 @@ class AuthenticationControllerTests : MontaguTests()
         val fakeUserRepo = mock<UserRepository>()
 
         val fakeProfile = CommonProfile()
-        fakeProfile.adapted().internalUser = fakeUser
+        fakeProfile.internalUser = fakeUser
 
         val fakeContext = mock<ActionContext> {
             on { it.userProfile } doReturn fakeProfile

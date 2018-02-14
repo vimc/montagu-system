@@ -5,9 +5,9 @@ import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.UserRepository
 import org.vaccineimpact.api.app.requests.FormHelpers
-import org.vaccineimpact.api.app.security.adapted
 import org.vaccineimpact.api.app.requests.HTMLForm
 import org.vaccineimpact.api.app.requests.HTMLFormHelpers
+import org.vaccineimpact.api.app.security.internalUser
 import org.vaccineimpact.api.db.Config
 import org.vaccineimpact.api.db.ConfigWrapper
 import org.vaccineimpact.api.models.AuthenticationResponse
@@ -36,7 +36,7 @@ class AuthenticationController(context: ActionContext,
         {
             is HTMLForm.ValidForm ->
             {
-                val user = context.userProfile!!.adapted().internalUser!!
+                val user = context.userProfile!!.internalUser!!
                 val token = tokenHelper.generateToken(user)
                 userRepository.updateLastLoggedIn(user.username)
                 return SuccessfulAuthentication(token, tokenHelper.lifeSpan)
