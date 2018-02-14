@@ -38,7 +38,7 @@ import org.vaccineimpact.api.db.tables.records.AppUserRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class AppUser extends TableImpl<AppUserRecord> {
 
-    private static final long serialVersionUID = -1669414183;
+    private static final long serialVersionUID = -1383240764;
 
     /**
      * The reference instance of <code>public.app_user</code>
@@ -72,11 +72,6 @@ public class AppUser extends TableImpl<AppUserRecord> {
      * The column <code>public.app_user.password_hash</code>.
      */
     public final TableField<AppUserRecord, String> PASSWORD_HASH = createField("password_hash", org.jooq.impl.SQLDataType.CLOB, this, "");
-
-    /**
-     * The column <code>public.app_user.salt</code>.
-     */
-    public final TableField<AppUserRecord, String> SALT = createField("salt", org.jooq.impl.SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.app_user.last_logged_in</code>.
