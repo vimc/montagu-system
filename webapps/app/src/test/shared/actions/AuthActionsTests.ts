@@ -7,6 +7,7 @@ import { AuthService } from "../../../main/shared/services/AuthService";
 import { mainStore as contribMainStore } from "../../../main/contrib/stores/MainStore";
 import { AuthTypeKeys } from "../../../main/shared/actionTypes/AuthTypes";
 import { createMockStore } from "../../mocks/mockStore";
+import { NotificationState, notificationStore } from "../../../main/shared/stores/NotificationStore";
 
 import {localStorageHandler} from "../../../main/shared/services/localStorageHandler";
 
@@ -16,13 +17,18 @@ describe("Modelling groups actions tests", () => {
 
     const mockUsertokenData = {
         sub: "test.user",
-        permissions: "*/can-login,*/countries.read,*/demographics.read,*…les.write,modelling-group:test-group/users.create", roles: "*/user,modelling-group:IC-Garske/member,*/user-man…/uploader,modelling-group:test-group/user-manager",
+        permissions: "*/can-login,*/countries.read,*/demographics.read,*…les.write,modelling-group:test-group/users.create",
+        roles: "*/user,modelling-group:IC-Garske/member,*/user-man…/uploader,modelling-group:test-group/user-manager",
         iss: "vaccineimpact.org",
         exp: Math.round(Date.now() / 1000) + 1000
     };
 
     const mockUsertokenDataNotActive = Object.assign({}, mockUsertokenData, {
-        permissions: "*/countries.read,*/demographics.read,*…les.write,modelling-group:test-group/users.create", roles: "*/user,modelling-group:IC-Garske/member,*/user-man…/uploader,modelling-group:test-group/user-manager"
+        permissions: "*/countries.read,*/demographics.read,*…les.write,modelling-group:test-group/users.create"
+    });
+
+    const mockUsertokenNotModeller = Object.assign({}, mockUsertokenData, {
+        roles: ""
     });
 
     beforeEach(() => {
@@ -69,6 +75,23 @@ describe("Modelling groups actions tests", () => {
         store.dispatch(authActions.logIn('test', 'test'))
         setTimeout(() => {
             const actions = store.getActions();
+            const state = notificationStore.getState();
+            expect(state.errors[0].search('Your account has been deactivated.')).is.equal(0);
+            expect(actions[0].type).to.eql(AuthTypeKeys.AUTHENTICATION_ERROR);
+            done();
+        });
+    });
+
+    it("dispatches authentication error action if user is not modeller", (done) => {
+        const testToken = jwt.sign(mockUsertokenNotModeller, "secret");
+        sandbox.setStubFunc(AuthService.prototype, "logIn", ()=>{
+            return Promise.resolve({access_token: testToken});
+        });
+        store.dispatch(authActions.logIn('test', 'test'))
+        setTimeout(() => {
+            const actions = store.getActions();
+            const state = notificationStore.getState();
+            expect(state.errors[0].search('Only members of modelling groups can log into the contribution portal')).is.equal(0);
             expect(actions[0].type).to.eql(AuthTypeKeys.AUTHENTICATION_ERROR);
             done();
         });
