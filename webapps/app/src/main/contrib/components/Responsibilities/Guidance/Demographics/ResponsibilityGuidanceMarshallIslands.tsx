@@ -4,7 +4,7 @@ import {ContribPageWithHeader} from "../../../PageWithHeader/ContribPageWithHead
 import { ChooseGroupPage } from "../../../ChooseGroup/ChooseGroupPage";
 import { Page } from "../../../../../shared/components/PageWithHeader/Page";
 
-const iframeSrc = "/contribution/guidance/marshall_demography";
+const iframeSrc = "/contribution/guidance/marshall_demography.html";
 
 export class ResponsibilityGuidanceMarshallIslands extends ContribPageWithHeader<undefined> {
     name() {
