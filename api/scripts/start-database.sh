@@ -11,6 +11,7 @@ if docker top db &>/dev/null; then
 fi
 
 echo "Starting database"
+export PG_CONFIG=$here/config/postgresql.test.conf
 $here/../db/scripts/start.sh $DB_VERSION $DB_PORT $ANNEX_PORT
 
 echo "-------------------------------------------------------------------------"
