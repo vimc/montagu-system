@@ -5,7 +5,8 @@ import {ErrorInfo, Result} from "../models/Generated";
 import {
     makeNotificationException,
     Notification,
-    NotificationException
+    NotificationException,
+    notificationActions
 } from "../actions/NotificationActions";
 
 import { AuthTypeKeys } from "../actionTypes/AuthTypes";
@@ -132,7 +133,7 @@ export abstract class LocalService {
     }
 
     notifyOnErrors(error: any) {
-        throw this.errorToNotificationException(error)
+        notificationActions.notify(error);
     }
 
     errorToNotificationException(error: any): NotificationException {
