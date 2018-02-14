@@ -27,7 +27,7 @@ trap cleanup EXIT
 
 docker exec db montagu-wait.sh
 
-docker run --rm --network=test-data $registry/montagu-migrate:$db_version
+docker run --rm --network=test-data $registry/montagu-migrate:$db_version /etc/montagu/postgresql.test.conf
 
 # Generate the test data
 docker build --tag $name -f generate-test-data.Dockerfile .
