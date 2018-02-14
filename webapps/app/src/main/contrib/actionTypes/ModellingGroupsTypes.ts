@@ -1,11 +1,11 @@
-import {ModellingGroup} from "../../shared/models/Generated";
+import { ModellingGroup } from "../../shared/models/Generated";
 
-export enum TypeKeys {
+export enum ModellingGroupTypeKeys {
     GROUPS_FETCHED = "GROUPS_FETCHED",
 }
 
 export interface GroupsFetched {
-    type: TypeKeys.GROUPS_FETCHED;
+    type: ModellingGroupTypeKeys.GROUPS_FETCHED;
     data: ModellingGroup[];
 }
 

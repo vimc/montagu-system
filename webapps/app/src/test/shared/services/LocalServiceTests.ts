@@ -1,12 +1,11 @@
 import { expect } from "chai";
 import { createStore, applyMiddleware, combineReducers } from "redux";
-import thunk from 'redux-thunk';
 
 import { Sandbox } from "../../Sandbox";
-
-import { authReducer } from "../../../main/shared/reducers/authReducer";
 import { LocalService } from "../../../main/shared/services/LocalService";
 import { settings } from "../../../main/shared/Settings";
+import { AuthTypeKeys } from "../../../main/shared/actionTypes/AuthTypes";
+import { createMockStore } from "../../mocks/mockStore";
 
 describe('Local service class initialization tests', () => {
 
@@ -113,5 +112,30 @@ describe('Local service class requests tests', () => {
         sandbox.setStubFunc(testService, "processResponse", ()=> Promise.resolve("testData"));
         const serviceData = await testService.test();
         expect(serviceData).to.equal("testData");
+    });
+
+    it('performs query and api says token expired', async () => {
+        const store = createMockStore();
+        class TestService extends LocalService {
+            test() {
+                return this.get("/test/");
+            }
+        }
+        const testService = new TestService(store.dispatch, store.getState);
+        sandbox.setStubFunc(testService, "doFetch", ()=> Promise.resolve({
+            json: () => {
+                return Promise.resolve({
+                    status: "failure",
+                    errors: [{code: "bearer-token-invalid"}]
+                })
+            }
+        }));
+        try {
+            await testService.test();
+        } catch(e) {
+            const actions = store.getActions()
+            expect(actions[0].type).to.eql(AuthTypeKeys.UNAUTHENTICATED);
+            expect(e.notification.message).to.eql('Your session has expired. You will need to log in again');
+        }
     });
 });

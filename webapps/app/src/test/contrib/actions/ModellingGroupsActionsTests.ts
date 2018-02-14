@@ -1,25 +1,20 @@
-
 import { expect } from "chai";
-const configureReduxMockStore  = require('redux-mock-store');
 
 import { Sandbox } from "../../Sandbox";
 import { modellingGroupsActions } from "../../../main/contrib/actions/modellingGroupsActions";
 import { ModellingGroupsService } from "../../../main/contrib/services/ModellingGroupsService";
-import { TypeKeys } from "../../../main/contrib/actionTypes/ModellingGroupsTypes";
-
-import thunk from 'redux-thunk';
+import { ModellingGroupTypeKeys } from "../../../main/contrib/actionTypes/ModellingGroupsTypes";
+import {createMockStore} from "../../mocks/mockStore";
 
 describe("Modelling groups actions tests", () => {
     const sandbox = new Sandbox();
-    const middlewares: any = [thunk]
     let store: any = null;
     const initialState = {auth: {modellingGroups: "test1"}}
-    const mockStore = configureReduxMockStore(middlewares);
 
     const testGroup1 = {id: "test1", description: "Test 1"};
 
     before(() => {
-        store = mockStore(initialState)
+        store = createMockStore(initialState);
     });
 
     afterEach(() => {
@@ -33,7 +28,7 @@ describe("Modelling groups actions tests", () => {
         store.dispatch(modellingGroupsActions.getGroups())
         setTimeout(() => {
             const actions = store.getActions()
-            const expectedPayload = { type: TypeKeys.GROUPS_FETCHED, data: [testGroup1] }
+            const expectedPayload = { type: ModellingGroupTypeKeys.GROUPS_FETCHED, data: [testGroup1] }
             expect(actions).to.eql([expectedPayload])
             done();
         });

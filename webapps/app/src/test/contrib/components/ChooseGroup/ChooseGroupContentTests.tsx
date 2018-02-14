@@ -1,19 +1,31 @@
 import * as React from "react";
-import {shallow} from "enzyme";
-import {expect} from "chai";
-import * as sinon from 'sinon';
-import {mockModellingGroup} from "../../../mocks/mockModels";
+import { shallow, mount } from "enzyme";
+import { expect } from "chai";
+import { Provider } from "react-redux";
+
+import { ModellingGroupTypeKeys } from "../../../../main/contrib/actionTypes/ModellingGroupsTypes";
+import { mockModellingGroup } from "../../../mocks/mockModels";
 import {
-    ChooseGroupContentComponent
+    ChooseGroupContentComponent,
+    ChooseGroupContent,
+    mapStateToProps
 } from "../../../../main/contrib/components/ChooseGroup/ChooseGroupContent";
-import {GroupList} from "../../../../main/contrib/components/ChooseGroup/GroupList";
+import { GroupList } from "../../../../main/contrib/components/ChooseGroup/GroupList";
+import { mockContribState } from "../../../mocks/mockStates";
+import { ModellingGroup} from "../../../../main/shared/models/Generated";
+import { createMockStore } from "../../../mocks/mockStore";
+import { Sandbox } from "../../../Sandbox";
+import {ModellingGroupsService} from "../../../../main/contrib/services/ModellingGroupsService";
 
 
 describe("ChooseGroupContentComponent", () => {
 
+    const sandbox = new Sandbox();
+    afterEach(() => sandbox.restore());
+
     it("renders GroupList", () => {
         const groups = [mockModellingGroup(), mockModellingGroup()];
-        const spy = sinon.spy();
+        const spy = sandbox.createSpy();
         const rendered = shallow(<ChooseGroupContentComponent groups={groups} ready={true} getGroups={spy}/>);
         const list = rendered.find(GroupList);
         expect(list).to.have.length(1);
@@ -22,29 +34,43 @@ describe("ChooseGroupContentComponent", () => {
         });
     });
 
-
     it("gets groups when component mounts", () => {
-
         const groups = [mockModellingGroup(), mockModellingGroup()];
-        const spy = sinon.spy();
+        const spy = sandbox.createSpy();
         const rendered = shallow(<ChooseGroupContentComponent groups={groups} ready={true} getGroups={spy}/>);
         const list = rendered.find(GroupList);
         expect(spy.called).to.be.true;
     });
 
-
-    it("getGroups dispatches get groups action", () => {
-
-        // TODO
-        // const props = ChooseGroupContentComponent.mapDispatchToProps(dispatchStub())
-
-        //
+    it("maps state to props with groups and ready", () => {
+        const groups :ModellingGroup[] = [mockModellingGroup()];
+        const contribStateMock = mockContribState({ groups: { items: groups } })
+        const props = mapStateToProps(contribStateMock);
+        expect(props.groups).to.eql(groups);
+        expect(props.ready).to.eql(true);
     });
 
-    it("maps state to props", () => {
-
-        // TODO
-        // const props = ChooseGroupContentComponent.mapStateToProps(mockContribAppState())
-
+    it("maps state to props with no groups and not ready", () => {
+        const groups: ModellingGroup[] = [];
+        const contribStateMock = mockContribState({ groups: { items: groups } })
+        const props = mapStateToProps(contribStateMock);
+        expect(props.groups).to.eql(groups);
+        expect(props.ready).to.eql(false);
     });
+
+    it("getGroups dispatches get groups action", (done: DoneCallback) => {
+        const mockGroup = mockModellingGroup();
+        const contribStateMock = mockContribState({auth: {modellingGroups: [mockGroup.id]}});
+        const store = createMockStore(contribStateMock);
+        sandbox.setStubFunc(ModellingGroupsService.prototype, "getGroups", () => [
+            mockGroup
+        ]);
+        mount(<Provider store={store}><ChooseGroupContent /></Provider>);
+        setTimeout(() => {
+            const actions = store.getActions();
+            expect(actions[0].type).to.eql(ModellingGroupTypeKeys.GROUPS_FETCHED);
+            done();
+        });
+    });
+
 });

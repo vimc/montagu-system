@@ -1,3 +1,4 @@
+import { Dispatch } from "redux";
 import { settings } from "../Settings";
 import { localStorageHandler } from "./localStorageHandler";
 import {ErrorInfo, Result} from "../models/Generated";
@@ -34,7 +35,6 @@ export abstract class LocalService {
 
         this.processResponse = this.processResponse.bind(this);
         this.notifyOnErrors = this.notifyOnErrors.bind(this);
-        this.logOut = this.logOut.bind(this);
     }
 
     protected getTokenFromState(state: any) {
@@ -105,7 +105,6 @@ export abstract class LocalService {
     }
 
     processResult<TModel>(result: Result, response: any): TModel | void {
-
         const handleError = (error: ErrorInfo) => {
             switch (error.code) {
                 case "bearer-token-invalid":
@@ -148,10 +147,12 @@ export abstract class LocalService {
 
 
     protected logOut() {
-        localStorageHandler.remove("accessToken");
-        this.dispatch({
-            type: AuthTypeKeys.UNAUTHENTICATED
-        });
+        return (dispatch: Dispatch<any>, getState: any) => {
+            localStorageHandler.remove("accessToken");
+            dispatch({
+                type: AuthTypeKeys.UNAUTHENTICATED
+            });
+        };
     }
 
 }

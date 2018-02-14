@@ -75,7 +75,7 @@ export class GroupMembersContentComponent extends RemoteContentComponent<Props, 
 
 export const GroupMembersContentAltWrapped = connectToStores(GroupMembersContentComponent);
 
-const mapStateToProps = (state: AdminAppState) => {
+export const mapStateToProps = (state: AdminAppState) => {
     return {
         canManageGroupMembers: state.auth.permissions.indexOf("*/modelling-groups.manage-members") > -1,
     }

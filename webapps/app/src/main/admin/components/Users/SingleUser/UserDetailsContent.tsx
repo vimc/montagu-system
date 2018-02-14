@@ -85,7 +85,7 @@ export class UserDetailsContentComponent extends RemoteContentComponent<Props, u
 export const UserDetailsContentAltWrapped =
     connectToStores(UserDetailsContentComponent);
 
-const mapStateToProps = (state: AdminAppState) => {
+export const mapStateToProps = (state: AdminAppState) => {
     return {
         isAdmin: state.auth.permissions.indexOf("*/roles.write") > -1
     }

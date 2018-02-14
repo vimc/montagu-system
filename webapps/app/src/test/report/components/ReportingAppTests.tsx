@@ -14,14 +14,12 @@ describe("ReportingApp", () => {
             NotificationStore: {
                 errors: ["a", "b"],
                 infos: ["c", "d"]
-            },
-            // ReportingAuthStore: { loggedIn: true }
+            }
         }));
 
         const expected: Partial<ReportingAppProps> = {
             errors: ["a", "b"],
             infos: ["c", "d"],
-            // loggedIn: true
         };
         expect(ReportingAppComponent.getPropsFromStores()).to.eql(expected);
     });

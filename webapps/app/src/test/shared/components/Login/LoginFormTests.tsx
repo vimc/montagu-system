@@ -107,4 +107,5 @@ describe("LoginForm connected with redux-form", () => {
         expect(logInActionSpy.getCall(0).args[0]).to.equal('abc@abc.com');
         expect(logInActionSpy.getCall(0).args[1]).to.equal('abc');
     });
+
 });

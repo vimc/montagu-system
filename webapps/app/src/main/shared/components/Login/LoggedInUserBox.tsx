@@ -31,16 +31,15 @@ export class LoggedInUserBoxComponent extends React.Component<LoggedInUserBoxPro
     }
 }
 
-const mapStateToProps = (state: GlobalState): Partial<LoggedInUserBoxProps> => ({
+export const mapStateToProps = (state: GlobalState): Partial<LoggedInUserBoxProps> => ({
     loggedIn: state.auth.loggedIn,
     username: state.auth.username
 });
 
-const mapDispatchToProps = (dispatch: Dispatch<GlobalState>): Partial<LoggedInUserBoxProps> => {
+export const mapDispatchToProps = (dispatch: Dispatch<GlobalState>): Partial<LoggedInUserBoxProps> => {
     return {
         logOut : (e: React.MouseEvent<HTMLAnchorElement>) => dispatch(authActions.logOut())
     }
 };
-
 
 export const LoggedInUserBox = connect(mapStateToProps, mapDispatchToProps)(LoggedInUserBoxComponent);

@@ -1,5 +1,4 @@
 import { expect } from "chai";
-const configureReduxMockStore  = require('redux-mock-store');
 import * as jwt from "jsonwebtoken";
 
 import { Sandbox } from "../../Sandbox";
@@ -7,15 +6,12 @@ import { authActions } from "../../../main/shared/actions/authActions";
 import { AuthService } from "../../../main/shared/services/AuthService";
 import { mainStore as contribMainStore } from "../../../main/contrib/stores/MainStore";
 import { AuthTypeKeys } from "../../../main/shared/actionTypes/AuthTypes";
+import { createMockStore } from "../../mocks/mockStore";
 
-import thunk from 'redux-thunk';
 import {localStorageHandler} from "../../../main/shared/services/localStorageHandler";
 
 describe("Modelling groups actions tests", () => {
     const sandbox = new Sandbox();
-    const middlewares: any = [thunk]
-    const initialState = {}
-    const mockStore = configureReduxMockStore(middlewares);
     let store: any = null;
 
     const mockUsertokenData = {
@@ -30,7 +26,7 @@ describe("Modelling groups actions tests", () => {
     });
 
     beforeEach(() => {
-        store = mockStore(initialState);
+        store = createMockStore();
     });
 
     afterEach(() => {
@@ -46,8 +42,8 @@ describe("Modelling groups actions tests", () => {
         sandbox.setStub(contribMainStore, "load");
         store.dispatch(authActions.logIn('test', 'test'))
         setTimeout(() => {
-            const actions = store.getActions()
-            expect(actions[0].type).to.eql(AuthTypeKeys.AUTHENTICATED)
+            const actions = store.getActions();
+            expect(actions[0].type).to.eql(AuthTypeKeys.AUTHENTICATED);
             done();
         });
     });
@@ -59,8 +55,8 @@ describe("Modelling groups actions tests", () => {
         });
         store.dispatch(authActions.logIn('test', 'test'))
         setTimeout(() => {
-            const actions = store.getActions()
-            expect(actions[0].type).to.eql(AuthTypeKeys.AUTHENTICATION_ERROR)
+            const actions = store.getActions();
+            expect(actions[0].type).to.eql(AuthTypeKeys.AUTHENTICATION_ERROR);
             done();
         });
     });
@@ -72,8 +68,8 @@ describe("Modelling groups actions tests", () => {
         });
         store.dispatch(authActions.logIn('test', 'test'))
         setTimeout(() => {
-            const actions = store.getActions()
-            expect(actions[0].type).to.eql(AuthTypeKeys.AUTHENTICATION_ERROR)
+            const actions = store.getActions();
+            expect(actions[0].type).to.eql(AuthTypeKeys.AUTHENTICATION_ERROR);
             done();
         });
     });
@@ -85,8 +81,8 @@ describe("Modelling groups actions tests", () => {
         sandbox.setStub(AuthService.prototype, "authToShiny");
         store.dispatch(authActions.loadSavedToken())
         setTimeout(() => {
-            const actions = store.getActions()
-            expect(actions[0].type).to.eql(AuthTypeKeys.AUTHENTICATED)
+            const actions = store.getActions();
+            expect(actions[0].type).to.eql(AuthTypeKeys.AUTHENTICATED);
             done();
         });
     });
@@ -98,8 +94,8 @@ describe("Modelling groups actions tests", () => {
         sandbox.setStub(AuthService.prototype, "unauthFromShiny");
         store.dispatch(authActions.loadSavedToken())
         setTimeout(() => {
-            const actions = store.getActions()
-            expect(actions[0].type).to.eql(AuthTypeKeys.UNAUTHENTICATED)
+            const actions = store.getActions();
+            expect(actions[0].type).to.eql(AuthTypeKeys.UNAUTHENTICATED);
             done();
         });
     });

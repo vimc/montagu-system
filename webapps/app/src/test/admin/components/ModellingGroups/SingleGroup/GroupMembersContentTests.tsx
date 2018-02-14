@@ -1,11 +1,15 @@
 import * as React from "react";
 import {expect} from "chai";
-import {shallow} from "enzyme";
-import {GroupMembersContentComponent} from "../../../../../main/admin/components/ModellingGroups/SingleGroup/Members/GroupMembersContent";
+import {shallow, mount} from "enzyme";
+
+import {GroupMembersContentComponent, GroupMembersContent} from "../../../../../main/admin/components/ModellingGroups/SingleGroup/Members/GroupMembersContent";
 import {mockModellingGroupDetails, mockUser} from "../../../../mocks/mockModels";
 import {alt} from "../../../../../main/shared/alt";
 import {ListOfUsers} from "../../../../../main/admin/components/ModellingGroups/ListOfUsers";
 import {AddMember} from "../../../../../main/admin/components/ModellingGroups/SingleGroup/Members/AddMember";
+import { mockAdminState } from "../../../../mocks/mockStates";
+import {mapStateToProps} from "../../../../../main/admin/components/ModellingGroups/SingleGroup/Members/GroupMembersContent";
+
 
 describe("GroupMembersContent", () => {
 
@@ -31,9 +35,6 @@ describe("GroupMembersContent", () => {
                 },
                 membersLookup: {"group1": ["a", "b"], "group2": []}
             },
-            // AdminAuthStore: {
-            //     permissions: ["*/modelling-groups.manage-members"]
-            // }
         }));
         const props = GroupMembersContentComponent.getPropsFromStores();
         expect(props).to.eql({
@@ -41,8 +42,19 @@ describe("GroupMembersContent", () => {
             ready: true,
             users: [a, b, c],
             members: [a, b],
-            // canManageGroupMembers: true
         });
+    });
+
+    it("checks if user can manage groups if has permission", () => {
+        const adminStateMock = mockAdminState({ auth: {permissions: ['*/modelling-groups.manage-members']} })
+        const props = mapStateToProps(adminStateMock);
+        expect(props.canManageGroupMembers).to.eq(true);
+    });
+
+    it("checks if user can manage groups if has permission", () => {
+        const adminStateMock = mockAdminState({ auth: {permissions: ['']} })
+        const props = mapStateToProps(adminStateMock);
+        expect(props.canManageGroupMembers).to.eq(false);
     });
 
     it("renders no members if group has no members", () => {
