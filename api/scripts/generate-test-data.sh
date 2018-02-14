@@ -15,7 +15,7 @@ docker network create test-data
 docker run -d --rm \
   --name db \
   --network=test-data \
-  $registry/montagu-db:$db_version
+  $registry/montagu-db:$db_version /etc/montagu/postgresql.test.conf
 
 # Teardown on exit
 function cleanup {
@@ -27,7 +27,7 @@ trap cleanup EXIT
 
 docker exec db montagu-wait.sh
 
-docker run --rm --network=test-data $registry/montagu-migrate:$db_version /etc/montagu/postgresql.test.conf
+docker run --rm --network=test-data $registry/montagu-migrate:$db_version
 
 # Generate the test data
 docker build --tag $name -f generate-test-data.Dockerfile .
