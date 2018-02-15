@@ -34,7 +34,7 @@ open class OneTimeTokenGenerator(
             redirectValidator.validateRedirectUrl(redirectUrl)
         }
 
-        val token = tokenHelper.generateOneTimeActionToken(actionAsString, params, queryString, duration, username)
+        val token = tokenHelper.generateOldStyleOneTimeActionToken(actionAsString, params, queryString, duration, username)
         tokenRepository.storeToken(token)
         return token
     }

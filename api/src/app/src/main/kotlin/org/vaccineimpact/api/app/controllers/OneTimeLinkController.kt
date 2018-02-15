@@ -39,7 +39,7 @@ class OneTimeLinkController(
     fun onetimeLink(): Any
     {
         val token = context.params(":token")
-        val claims = verifyToken(token, tokenRepository)
+        val claims = verifyOldStyleToken(token, tokenRepository)
         val link = OneTimeLink.parseClaims(claims)
         val redirectUrl = link.queryParams["redirectUrl"]
 
@@ -113,7 +113,7 @@ class OneTimeLinkController(
         context.redirect("$redirectUrl?result=$encodedResult")
     }
 
-    private fun verifyToken(token: String, repo: TokenRepository): Map<String, Any>
+    private fun verifyOldStyleToken(token: String, repo: TokenRepository): Map<String, Any>
     {
         // By checking the database first, we ensure the token is
         // removed from the database, even if it fails some later check
