@@ -16,7 +16,7 @@ import org.vaccineimpact.api.app.context.postData
 import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.errors.MissingRequiredMultipartParameterError
 import org.vaccineimpact.api.app.requests.MultipartData
-import org.vaccineimpact.api.app.security.PERMISSIONS
+import org.vaccineimpact.api.app.security.montaguPermissions
 import org.vaccineimpact.api.models.Scope
 import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
@@ -39,10 +39,10 @@ class DirectActionContextTests : MontaguTests()
     fun `can get user permissions`()
     {
         val profile = CommonProfile().apply {
-            addAttribute(PERMISSIONS, PermissionSet(
+            this.montaguPermissions = PermissionSet(
                     "*/can-login",
                     "modelling-group:IC-Garske/coverage.read"
-            ))
+            )
         }
         val context = DirectActionContext(mockWebContext(profile))
         assertThat(context.permissions).hasSameElementsAs(listOf(
@@ -55,9 +55,7 @@ class DirectActionContextTests : MontaguTests()
     fun `requirePermission throws exception is user does not have permission`()
     {
         val profile = CommonProfile().apply {
-            addAttribute(PERMISSIONS, PermissionSet(
-                    "*/can-login"
-            ))
+            this.montaguPermissions = PermissionSet("*/can-login")
         }
         val context = DirectActionContext(mockWebContext(profile))
         // Does not throw exception

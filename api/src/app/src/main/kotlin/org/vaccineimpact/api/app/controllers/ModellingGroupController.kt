@@ -11,6 +11,7 @@ import org.vaccineimpact.api.models.AssociateUser
 import org.vaccineimpact.api.models.ModellingGroup
 import org.vaccineimpact.api.models.ModellingGroupDetails
 import org.vaccineimpact.api.models.Scope
+import org.vaccineimpact.api.models.permissions.PermissionSet
 
 
 open class ModellingGroupController(
@@ -43,7 +44,7 @@ open class ModellingGroupController(
         val managingScopes = managingScopes(context)
         if (!managingScopes.any({ it.encompasses(scope) }))
         {
-            throw MissingRequiredPermissionError(setOf("$scope/modelling-groups.manage-members"))
+            throw MissingRequiredPermissionError(PermissionSet("$scope/modelling-groups.manage-members"))
         }
 
         userRepo.modifyMembership(groupId, associateUser)

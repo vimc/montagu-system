@@ -167,7 +167,7 @@ class ModelParameterTests : BurdenEstimateRepositoryTests()
             val flexTableData = repo.getModelRunParameterSet(1)
             records = flexTableData.data.toList()
             contentType = flexTableData.contentType
-        } andCheck { repo ->
+        } andCheck { _ ->
             Assertions.assertThat(contentType).isEqualTo("text/csv")
             Assertions.assertThat(records.size).isEqualTo(2)
             val row1 = records[0]

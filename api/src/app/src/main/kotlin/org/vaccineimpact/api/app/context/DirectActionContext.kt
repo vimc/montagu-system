@@ -105,12 +105,12 @@ class DirectActionContext(private val context: SparkWebContext) : ActionContext
     {
         if (!hasPermission(requirement))
         {
-            throw MissingRequiredPermissionError(setOf(requirement.toString()))
+            throw MissingRequiredPermissionError(setOf(requirement))
         }
     }
 
     override val permissions by lazy {
-        userProfile!!.montaguPermissions()
+        userProfile!!.montaguPermissions
     }
 
     override val userProfile: CommonProfile? by lazy {
