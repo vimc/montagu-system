@@ -11,7 +11,7 @@ import { ListOfUsers } from "../../ListOfUsers";
 import { AddMember } from "./AddMember";
 
 import "../../../../../shared/styles/common.scss";
-import {AdminAppState} from "../../../../reducers/adminReducers";
+import {AdminAppState} from "../../../../reducers/adminAppReducers";
 
 interface Props extends RemoteContent {
     members: User[];

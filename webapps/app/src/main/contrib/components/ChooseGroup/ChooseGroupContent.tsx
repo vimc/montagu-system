@@ -10,7 +10,7 @@ import { LoadingElement } from "../../../shared/partials/LoadingElement/LoadingE
 import { Dispatch } from "redux";
 
 import "../../../shared/styles/common.scss";
-import {ContribAppState} from "../../reducers/contribReducers";
+import {ContribAppState} from "../../reducers/contribAppReducers";
 
 export interface ChooseGroupProps {
     groups: ModellingGroup[];

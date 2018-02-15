@@ -6,7 +6,7 @@ import { connectToStores } from "../../shared/alt";
 import { ErrorLog } from "../../shared/components/ErrorLog/ErrorLog";
 import { AdminRouter } from "./AdminRouter";
 import { NotificationArea } from "../../shared/components/NotificationArea/NotificationArea";
-import { AdminAppState } from "../reducers/adminReducers";
+import { AdminAppState } from "../reducers/adminAppReducers";
 
 export interface AdminAppProps {
     errors: string[];

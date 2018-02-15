@@ -6,7 +6,7 @@ import { ReportingRouter } from "./ReportingRouter";
 import { NotificationArea } from "../../shared/components/NotificationArea/NotificationArea";
 import { notificationStore } from "../../shared/stores/NotificationStore";
 import { connectToStores } from "../../shared/alt";
-import { ReportAppState } from "../reducers/reportReducers";
+import { ReportAppState } from "../reducers/reportAppReducers";
 
 export interface ReportingAppProps {
     errors: string[];

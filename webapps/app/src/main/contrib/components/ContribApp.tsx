@@ -7,7 +7,7 @@ import { mainStore } from "../stores/MainStore";
 import { notificationStore } from "../../shared/stores/NotificationStore";
 import { ContribRouter } from "./ContribRouter";
 import { NotificationArea } from "../../shared/components/NotificationArea/NotificationArea";
-import {ContribAppState} from "../reducers/contribReducers";
+import {ContribAppState} from "../reducers/contribAppReducers";
 
 interface AppProps {
     loggedIn: boolean,
