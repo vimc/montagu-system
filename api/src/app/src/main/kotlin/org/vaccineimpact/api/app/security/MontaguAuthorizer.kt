@@ -29,7 +29,7 @@ class MontaguAuthorizer(requiredPermissions: Set<PermissionRequirement>)
         else
         {
             logger.warn("This token is issued for $claimedUrl but the current request is for $requestedUrl")
-            profile.adapted().mismatchedURL = "This token is issued for $claimedUrl but the current request is for $requestedUrl"
+            profile.mismatchedURL = "This token is issued for $claimedUrl but the current request is for $requestedUrl"
             return false
         }
 
