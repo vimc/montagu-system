@@ -26,7 +26,7 @@ describe("ChooseGroupContentComponent", () => {
     it("renders GroupList", () => {
         const groups = [mockModellingGroup(), mockModellingGroup()];
         const spy = sandbox.createSpy();
-        const rendered = shallow(<ChooseGroupContentComponent groups={groups} ready={true} getGroups={spy}/>);
+        const rendered = shallow(<ChooseGroupContentComponent groups={groups} ready={true} getUserGroups={spy}/>);
         const list = rendered.find(GroupList);
         expect(list).to.have.length(1);
         expect(list.props()).to.eql({
@@ -37,7 +37,7 @@ describe("ChooseGroupContentComponent", () => {
     it("gets groups when component mounts", () => {
         const groups = [mockModellingGroup(), mockModellingGroup()];
         const spy = sandbox.createSpy();
-        const rendered = shallow(<ChooseGroupContentComponent groups={groups} ready={true} getGroups={spy}/>);
+        const rendered = shallow(<ChooseGroupContentComponent groups={groups} ready={true} getUserGroups={spy}/>);
         const list = rendered.find(GroupList);
         expect(spy.called).to.be.true;
     });
@@ -62,7 +62,7 @@ describe("ChooseGroupContentComponent", () => {
         const mockGroup = mockModellingGroup();
         const contribStateMock = mockContribState({auth: {modellingGroups: [mockGroup.id]}});
         const store = createMockStore(contribStateMock);
-        sandbox.setStubFunc(ModellingGroupsService.prototype, "getGroups", () => [
+        sandbox.setStubFunc(ModellingGroupsService.prototype, "getAllGroups", () => [
             mockGroup
         ]);
         mount(<Provider store={store}><ChooseGroupContent /></Provider>);

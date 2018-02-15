@@ -22,10 +22,10 @@ describe("Modelling groups actions tests", () => {
     });
 
     it("dispatches action groups fetched after it loaded groups", (done) => {
-        sandbox.setStubFunc(ModellingGroupsService.prototype, "getGroups", ()=>{
+        sandbox.setStubFunc(ModellingGroupsService.prototype, "getAllGroups", ()=>{
           return Promise.resolve([testGroup1]);
         });
-        store.dispatch(modellingGroupsActions.getGroups())
+        store.dispatch(modellingGroupsActions.getUserGroups())
         setTimeout(() => {
             const actions = store.getActions()
             const expectedPayload = { type: ModellingGroupTypeKeys.GROUPS_FETCHED, data: [testGroup1] }

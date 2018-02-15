@@ -114,7 +114,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
         });
 
         it("fetches modelling groups", (done: DoneCallback) => {
-            const promise = addGroups(this.db).then(() => (new ModellingGroupsService(this.store.dispatch, this.store.getState).getGroups()));
+            const promise = addGroups(this.db).then(() => (new ModellingGroupsService(this.store.dispatch, this.store.getState).getAllGroups()));
 
             checkPromise(done, promise, (groups) => {
                 expectIsEqual<ModellingGroup[]>(groups, [

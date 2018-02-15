@@ -5,9 +5,9 @@ import {GroupsFetched, ModellingGroupTypeKeys} from "../actionTypes/ModellingGro
 
 export const modellingGroupsActions = {
 
-    getGroups() {
+    getUserGroups() {
         return async (dispatch: Dispatch<any>, getState: Function) => {
-            const allGroups: any = await (new ModellingGroupsService(dispatch, getState)).getGroups();
+            const allGroups: any = await (new ModellingGroupsService(dispatch, getState)).getAllGroups();
             let groups = [];
             if (allGroups && allGroups.length) {
                 const userGroups = getState().auth.modellingGroups;

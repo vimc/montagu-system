@@ -14,13 +14,13 @@ import {ContribAppState} from "../../reducers/contribReducers";
 
 export interface ChooseGroupProps {
     groups: ModellingGroup[];
-    getGroups: () => void;
+    getUserGroups: () => void;
     ready: boolean;
 }
 
 export class ChooseGroupContentComponent extends React.Component<ChooseGroupProps, undefined> {
     componentDidMount() {
-        this.props.getGroups()
+        this.props.getUserGroups()
     }
 
     render() {
@@ -57,7 +57,7 @@ export const mapStateToProps = (state: ContribAppState): Partial<ChooseGroupProp
 
 export const mapDispatchToProps = (dispatch: Dispatch<ContribAppState>): Partial<ChooseGroupProps> => {
     return {
-        getGroups : () => dispatch(modellingGroupsActions.getGroups())
+        getUserGroups : () => dispatch(modellingGroupsActions.getUserGroups())
     }
 };
 
