@@ -10,7 +10,7 @@ import { GroupMembersSummary } from "./GroupMembersSummary";
 import { userStore } from "../../../../stores/UserStore";
 
 import "../../../../../shared/styles/common.scss";
-import {AdminAppState} from "../../../../reducers/adminReducers";
+import {AdminAppState} from "../../../../reducers/adminAppReducers";
 
 interface Props extends RemoteContent {
     group: ModellingGroupDetails;

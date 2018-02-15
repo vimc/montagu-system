@@ -1,7 +1,7 @@
 import {AuthState, initialAuthState} from "../../main/shared/reducers/authReducer";
-import {AdminAppState} from "../../main/admin/reducers/adminReducers";
+import {AdminAppState} from "../../main/admin/reducers/adminAppReducers";
 import { reducer as formReducer } from "redux-form";
-import {ContribAppState} from "../../main/contrib/reducers/contribReducers";
+import {ContribAppState} from "../../main/contrib/reducers/contribAppReducers";
 import {ModellingGroupsState, initialState as ModellingGroupsInitialState} from "../../main/contrib/reducers/modellingGroupsReducer";
 
 export const mockAuthStateObject: AuthState = {

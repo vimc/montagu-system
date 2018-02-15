@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import { User } from "../../../shared/models/Generated";
 import { DeletableUser } from "./DeletableUser";
-import {AdminAppState} from "../../reducers/adminReducers";
+import {AdminAppState} from "../../reducers/adminAppReducers";
 
 interface Props {
     users: User[];
