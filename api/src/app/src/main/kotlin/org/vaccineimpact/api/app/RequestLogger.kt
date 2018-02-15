@@ -1,11 +1,12 @@
 package org.vaccineimpact.api.app
 
-import org.pac4j.sparkjava.SparkWebContext
 import org.vaccineimpact.api.app.context.DirectActionContext
 import org.vaccineimpact.api.app.repositories.AccessLogRepository
+import org.vaccineimpact.api.app.repositories.RepositoryFactory
 import org.vaccineimpact.api.app.security.internalUser
 import spark.Request
 import spark.Response
+import spark.Spark
 import java.time.Instant
 
 class RequestLogger(private val accessLogRepository: AccessLogRepository)
@@ -18,11 +19,6 @@ class RequestLogger(private val accessLogRepository: AccessLogRepository)
         val statusCode = res.status()
         val ip = req.ip()
         accessLogRepository.log(principal, timestamp, resource, statusCode, ip)
-    }
-
-    fun log(context: SparkWebContext)
-    {
-        log(context.sparkRequest, context.sparkResponse)
     }
 
     private fun getPrincipal(req: Request, res: Response): String?
@@ -38,5 +34,19 @@ class RequestLogger(private val accessLogRepository: AccessLogRepository)
         // case, and only what's in the token in the second case.
         return profile?.internalUser?.username
                 ?: context.username
+    }
+
+    companion object
+    {
+        fun setup(repositoryFactory: RepositoryFactory)
+        {
+            // afterAfter acts as a 'finally' block: It runs after any 'after' filters
+            // and it runs regardless of whether the request results in an error
+            Spark.afterAfter("*", { req, res ->
+                repositoryFactory.inTransaction { repos ->
+                    RequestLogger(repos.accessLogRepository).log(req, res)
+                }
+            })
+        }
     }
 }

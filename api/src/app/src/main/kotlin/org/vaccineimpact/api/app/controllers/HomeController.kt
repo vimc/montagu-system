@@ -14,4 +14,6 @@ class HomeController(context: ActionContext) : Controller(context)
     fun index() = Index("montagu", Config["app.version"], Router.urls)
 
     data class Index(val name: String, val version: String, val endpoints: List<String>)
+
+    fun simulateError(): Nothing = throw Exception("An error was simulated")
 }

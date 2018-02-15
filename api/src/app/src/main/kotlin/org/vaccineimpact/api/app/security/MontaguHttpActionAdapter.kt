@@ -23,9 +23,6 @@ abstract class MontaguHttpActionAdapter(private val repositoryFactory: Repositor
     protected fun haltWithError(code: Int, context: SparkWebContext, response: String)
     {
         addDefaultResponseHeaders(context.sparkRequest, context.response)
-        repositoryFactory.inTransaction { repos ->
-            RequestLogger(repos.accessLogRepository).log(context)
-        }
         spark.Spark.halt(code, response)
     }
 }
