@@ -11,21 +11,18 @@ import org.junit.Test
 import org.pac4j.core.context.Pac4jConstants
 import org.pac4j.core.profile.CommonProfile
 import org.pac4j.sparkjava.SparkWebContext
-import org.vaccineimpact.api.app.MultipartData
-import org.vaccineimpact.api.app.InMemoryPart
-import org.vaccineimpact.api.app.context.*
+import org.vaccineimpact.api.app.context.DirectActionContext
+import org.vaccineimpact.api.app.context.postData
 import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.errors.MissingRequiredMultipartParameterError
-import org.vaccineimpact.api.app.errors.WrongDataFormatError
-import org.vaccineimpact.api.app.security.adapted
-import org.vaccineimpact.api.models.BurdenEstimate
+import org.vaccineimpact.api.app.requests.MultipartData
+import org.vaccineimpact.api.app.security.montaguPermissions
 import org.vaccineimpact.api.models.Scope
 import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import org.vaccineimpact.api.test_helpers.MontaguTests
 import spark.Request
 import java.io.ByteArrayInputStream
-import java.io.StringReader
 import javax.servlet.http.HttpServletRequest
 
 class DirectActionContextTests : MontaguTests()
@@ -42,7 +39,7 @@ class DirectActionContextTests : MontaguTests()
     fun `can get user permissions`()
     {
         val profile = CommonProfile().apply {
-            this.adapted().permissions = PermissionSet(
+            this.montaguPermissions = PermissionSet(
                     "*/can-login",
                     "modelling-group:IC-Garske/coverage.read"
             )
@@ -58,7 +55,7 @@ class DirectActionContextTests : MontaguTests()
     fun `requirePermission throws exception is user does not have permission`()
     {
         val profile = CommonProfile().apply {
-            this.adapted().permissions = PermissionSet("*/can-login")
+            this.montaguPermissions = PermissionSet("*/can-login")
         }
         val context = DirectActionContext(mockWebContext(profile))
         // Does not throw exception
@@ -91,29 +88,6 @@ class DirectActionContextTests : MontaguTests()
         val context = DirectActionContext(mockWebContext)
         val model = context.postData<Model>()
         assertThat(model).isEqualTo(Model(1, listOf("x", "y"), Model(100, listOf("z"), null)))
-    }
-
-    @Test
-    fun `throws WrongDataFormat if csvData is called with RequestBodySource and wrong content type`()
-    {
-        val context = DirectActionContext(mockWebContext())
-        val file = RequestData(StringReader(""), contentType = "application/json")
-        val source = mock<RequestBodySource> {
-            on { getContent(context) } doReturn file
-        }
-        assertThatThrownBy {
-            context.csvData<BurdenEstimate>(source)
-        }.isInstanceOf(WrongDataFormatError::class.java)
-    }
-
-    @Test
-    fun `throws WrongDataFormat if csvData is called with Part and wrong content type`()
-    {
-        val context = DirectActionContext(mockWebContext())
-        val part = InMemoryPart("", contentType = "application/json")
-        assertThatThrownBy {
-            context.csvData<BurdenEstimate>(part)
-        }.isInstanceOf(WrongDataFormatError::class.java)
     }
 
     @Test

@@ -45,7 +45,7 @@ class TokenVerifyingConfigFactory(
                 .split(',')
                 .filter { it.isNotEmpty() }
         )
-        profile.adapted().permissions = permissions
+        profile.montaguPermissions = permissions
         return profile
     }
 }
@@ -68,7 +68,7 @@ class TokenActionAdapter(repositoryFactory: RepositoryFactory)
         }
         HttpConstants.FORBIDDEN ->
         {
-            val profile = DirectActionContext(context).userProfile!!.adapted()
+            val profile = DirectActionContext(context).userProfile!!
             val response = forbiddenResponse(profile.missingPermissions).toList()
             haltWithError(code, context, response)
         }

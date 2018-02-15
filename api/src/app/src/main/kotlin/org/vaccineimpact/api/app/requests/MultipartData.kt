@@ -1,7 +1,8 @@
-package org.vaccineimpact.api.app
+package org.vaccineimpact.api.app.requests
 
 import org.apache.commons.fileupload.FileItemStream
 import org.apache.commons.fileupload.servlet.ServletFileUpload
+import org.vaccineimpact.api.app.context.InMemoryRequestData
 import org.vaccineimpact.api.app.errors.MissingRequiredMultipartParameterError
 import javax.servlet.http.HttpServletRequest
 
@@ -25,14 +26,12 @@ class ServletFileUploadWrapper : MultipartData
     }
 }
 
-data class InMemoryPart(val contents: String, val contentType: String?)
-
-class MultipartDataMap(private val map: Map<String, InMemoryPart>)
+class MultipartDataMap(private val map: Map<String, InMemoryRequestData>)
 {
-    constructor(vararg pairs: Pair<String, InMemoryPart>)
+    constructor(vararg pairs: Pair<String, InMemoryRequestData>)
             : this(mapOf(*pairs))
 
-    operator fun get(fieldName: String): InMemoryPart
+    operator fun get(fieldName: String): InMemoryRequestData
     {
         return map[fieldName]
                 ?: throw MissingRequiredMultipartParameterError(fieldName)
