@@ -153,16 +153,6 @@ class WebTokenHelperTests : MontaguTests()
     }
 
     @Test
-    fun `token fails validation when token type is wrong`()
-    {
-        val claims = sut.claims(InternalUser(properties, roles, permissions))
-        val badToken = sut.generator.generate(claims.plus("token_type" to "unexpected.type"))
-        val verifier = MontaguTokenAuthenticator(sut, TokenType.BEARER)
-        assertThat(verifier.validateToken(badToken)).isNull()
-        assertThatThrownBy { sut.verify(badToken, TokenType.BEARER, mock()) }
-    }
-
-    @Test
     fun `token fails validation when token is old`()
     {
         val claims = sut.claims(InternalUser(properties, roles, permissions))
