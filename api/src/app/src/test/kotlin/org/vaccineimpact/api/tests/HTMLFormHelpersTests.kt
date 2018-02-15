@@ -4,9 +4,9 @@ import com.nhaarman.mockito_kotlin.doReturn
 import com.nhaarman.mockito_kotlin.mock
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
-import org.vaccineimpact.api.app.HTMLForm
-import org.vaccineimpact.api.app.HTMLFormHelpers
 import org.vaccineimpact.api.app.context.ActionContext
+import org.vaccineimpact.api.app.requests.HTMLForm
+import org.vaccineimpact.api.app.requests.HTMLFormHelpers
 import org.vaccineimpact.api.test_helpers.MontaguTests
 
 class HTMLFormHelpersTests : MontaguTests()

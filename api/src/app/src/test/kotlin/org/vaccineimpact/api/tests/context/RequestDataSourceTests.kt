@@ -7,33 +7,34 @@ import com.nhaarman.mockito_kotlin.mock
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.vaccineimpact.api.app.context.ActionContext
+import org.vaccineimpact.api.app.context.MultipartStreamSource
 import org.vaccineimpact.api.app.context.RequestBodySource
 import org.vaccineimpact.api.app.context.RequestData
 import org.vaccineimpact.api.test_helpers.MontaguTests
 import java.io.StringReader
 
-class RequestBodySourceTests : MontaguTests()
+class RequestDataSourceTests : MontaguTests()
 {
     @Test
-    fun `can get content type from simple body`()
+    fun `can get content type from body source`()
     {
-        val source = RequestBodySource.Simple()
         val reader = StringReader("Text")
         val context = mock<ActionContext> {
             on { requestReader() } doReturn reader
             on { contentType() } doReturn "content/type"
         }
-        assertThat(source.getContent(context)).isEqualTo(RequestData(reader, "content/type"))
+        val source = RequestBodySource(context)
+        assertThat(source.getContent()).isEqualTo(RequestData(reader, "content/type"))
     }
 
     @Test
-    fun `can get content type from multipart body`()
+    fun `can get content type from multipart stream source`()
     {
-        val source = RequestBodySource.HTMLMultipart("part1")
         val file = RequestData(StringReader("Text"), "content/type")
         val context = mock<ActionContext> {
             on { getPart(eq("part1"), anyOrNull()) } doReturn file
         }
-        assertThat(source.getContent(context)).isEqualTo(file)
+        val source = MultipartStreamSource("part1", context)
+        assertThat(source.getContent()).isEqualTo(file)
     }
 }

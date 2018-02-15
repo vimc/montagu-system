@@ -10,40 +10,33 @@ private const val MISSING_PERMISSIONS = "missingPermissions"
 private const val PERMISSIONS = "montaguPermissions"
 private const val MISMATCHED_URL = "mismatchedURL"
 
-class ProfileAdapter(val profile: CommonProfile)
-{
-    // This will be non-null if using Basic Auth, null otherwise
-    var internalUser: InternalUser?
-        get()
+var CommonProfile.internalUser: InternalUser?
+    get()
+    {
+        val user = this.getAttribute(USER_OBJECT)
+        return if (user != null && user is InternalUser)
         {
-            val user = profile.getAttribute(USER_OBJECT)
-            return if (user != null && user is InternalUser)
-            {
-                user
-            }
-            else
-            {
-                null
-            }
+            user
         }
-        set(value) = profile.addAttribute(USER_OBJECT, value)
+        else
+        {
+            null
+        }
+    }
+    set(value) = this.addAttribute(USER_OBJECT, value)
 
-    val missingPermissions: MutableSet<ReifiedPermission>
-        get() = profile.getAttributeOrDefault(MISSING_PERMISSIONS, default = mutableSetOf())
+val CommonProfile.missingPermissions: MutableSet<ReifiedPermission>
+    get() = this.getAttributeOrDefault(MISSING_PERMISSIONS, default = mutableSetOf())
 
-    var permissions: PermissionSet
-        get() = profile.getAttributeOrDefault(PERMISSIONS, PermissionSet())
-        set(value) = profile.addAttribute(PERMISSIONS, value)
+var CommonProfile.montaguPermissions: PermissionSet
+    get() = this.getAttributeOrDefault(PERMISSIONS, PermissionSet())
+    set(value) = this.addAttribute(PERMISSIONS, value)
 
-    var mismatchedURL: String?
-        get() = profile.getAttribute(MISMATCHED_URL) as String?
-        set(value) = profile.addAttribute(MISMATCHED_URL, value)
-}
+var CommonProfile.mismatchedURL: String?
+    get() = this.getAttribute(MISMATCHED_URL) as String?
+    set(value) = this.addAttribute(MISMATCHED_URL, value)
 
-
-fun CommonProfile.adapted() = ProfileAdapter(this)
-
-fun <T> CommonProfile.getAttributeOrDefault(key: String, default: T): T
+private fun <T> CommonProfile.getAttributeOrDefault(key: String, default: T): T
 {
     if (this.attributes.containsKey(key))
     {

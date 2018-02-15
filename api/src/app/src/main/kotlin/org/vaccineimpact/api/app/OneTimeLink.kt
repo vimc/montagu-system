@@ -2,8 +2,8 @@ package org.vaccineimpact.api.app
 
 import org.vaccineimpact.api.app.app_start.stream
 import org.vaccineimpact.api.app.context.ActionContext
+import org.vaccineimpact.api.app.context.MultipartStreamSource
 import org.vaccineimpact.api.app.context.OneTimeLinkActionContext
-import org.vaccineimpact.api.app.context.RequestBodySource
 import org.vaccineimpact.api.app.controllers.*
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.security.OneTimeTokenGenerator
@@ -39,7 +39,7 @@ open class OnetimeLinkResolver(private val repositories: Repositories,
                 OneTimeAction.BURDENS_CREATE -> GroupBurdenEstimatesController(context, repos.burdenEstimates)
                         .createBurdenEstimateSet()
                 OneTimeAction.BURDENS_POPULATE -> GroupBurdenEstimatesController(context, repos.burdenEstimates)
-                        .populateBurdenEstimateSet(RequestBodySource.HTMLMultipart("file"))
+                        .populateBurdenEstimateSet(MultipartStreamSource("file", context))
                 OneTimeAction.MODEl_RUN_PARAMETERS -> stream(
                         GroupModelRunParametersController(context, repos).getModelRunParameterSet(),
                         context

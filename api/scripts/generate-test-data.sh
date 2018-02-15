@@ -15,7 +15,7 @@ docker network create test-data
 docker run -d --rm \
   --name db \
   --network=test-data \
-  $registry/montagu-db:$db_version
+  $registry/montagu-db:$db_version /etc/montagu/postgresql.test.conf
 
 # Teardown on exit
 function cleanup {

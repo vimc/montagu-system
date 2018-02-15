@@ -1,7 +1,7 @@
 version: '2'
 services:
   api:
-    image: docker.montagu.dide.ic.ac.uk:5000/montagu-api:${MONTAGU_API_VERSION}
+    image: docker.montagu.dide.ic.ac.uk:5000/montagu-api:master
     ports:
       - "8080:8080"
     depends_on:
@@ -10,7 +10,9 @@ services:
       - emails:/tmp/montagu_emails
   db:
     image: docker.montagu.dide.ic.ac.uk:5000/montagu-db:${MONTAGU_DB_VERSION}
+    command: /etc/montagu/postgresql.test.conf
   db_annex:
     image: docker.montagu.dide.ic.ac.uk:5000/montagu-db:${MONTAGU_DB_VERSION}
+    command: /etc/montagu/postgresql.test.conf
 volumes:
   emails:
