@@ -2,7 +2,6 @@ package org.vaccineimpact.api.blackboxTests.tests
 
 import com.beust.klaxon.json
 import org.assertj.core.api.Assertions.assertThat
-import org.assertj.core.api.Assertions.fail
 import org.bouncycastle.util.IPAddress
 import org.junit.Test
 import org.vaccineimpact.api.blackboxTests.helpers.RequestHelper
@@ -73,7 +72,7 @@ class AccessLogTests : DatabaseTest()
     {
         val token = TestUserHelper.setupTestUserAndGetToken(PermissionSet("*/can-login"))
         val helper = RequestHelper()
-        doThisAndCheck("test.user", "/meta/simulate-error/", 200) {
+        doThisAndCheck("test.user", "/meta/simulate-error/", 500) {
             helper.get("/meta/simulate-error/", token)
         }
     }
@@ -91,10 +90,14 @@ class AccessLogTests : DatabaseTest()
     @Test
     fun `logs request which results in 404 error`()
     {
-        val token = TestUserHelper.setupTestUserAndGetToken(PermissionSet("*/can-login"))
         val helper = RequestHelper()
-        doThisAndCheck("test.user", "/not-a-real-URL/", 404) {
-            helper.get("/not-a-real-URL/", token)
+        // We can't log the user in the case of a 404, as we only extract the user
+        // details from the token for endpoints that require a logged in user. In
+        // a 404 situation there is no endpoint, and no credentials extraction
+        // takes place.
+        doThisAndCheck(null, "/not-a-real-URL/", 404) {
+            val response = helper.get("/not-a-real-URL/")
+            JSONValidator().validateError(response.text, "unknown-resource")
         }
     }
 
@@ -106,29 +109,24 @@ class AccessLogTests : DatabaseTest()
         }
 
         action()
-        val entry = JooqContext().use { db ->
+        val entries = JooqContext().use { db ->
             db.dsl.select(API_ACCESS_LOG.fieldsAsList())
                     .from(API_ACCESS_LOG)
                     .orderBy(API_ACCESS_LOG.TIMESTAMP.desc())
                     .fetchInto(Entry::class.java)
-                    .firstOrNull()
         }
-        if (entry != null)
-        {
-            assertThat(entry.who).`as`("Who").isEqualTo(who)
+        assertThat(entries).hasSize(1)
+        val entry = entries.single()
 
-            val timestamp = entry.timestamp.toInstant()
-            assertThat(timestamp).isAfterOrEqualTo(before)
-            assertThat(timestamp).isBeforeOrEqualTo(Instant.now())
+        assertThat(entry.who).`as`("Who").isEqualTo(who)
 
-            assertThat(entry.what).`as`("What").isEqualTo("/v1" + what)
-            assertThat(entry.result).`as`("Result").isEqualTo(result)
-            assertThat(IPAddress.isValid(entry.ipAddress)).`as`("IP Address is valid").isTrue()
-        }
-        else
-        {
-            fail("Nothing was logged")
-        }
+        val timestamp = entry.timestamp.toInstant()
+        assertThat(timestamp).isAfterOrEqualTo(before)
+        assertThat(timestamp).isBeforeOrEqualTo(Instant.now())
+
+        assertThat(entry.what).`as`("What").isEqualTo("/v1" + what)
+        assertThat(entry.result).`as`("Result").isEqualTo(result)
+        assertThat(IPAddress.isValid(entry.ipAddress)).`as`("IP Address is valid").isTrue()
     }
 
     data class Entry
