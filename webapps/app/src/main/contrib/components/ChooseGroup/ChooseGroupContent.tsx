@@ -50,8 +50,8 @@ export class ChooseGroupContentComponent extends React.Component<ChooseGroupProp
 
 export const mapStateToProps = (state: ContribAppState): Partial<ChooseGroupProps> => {
     return {
-        groups: state.groups.items,
-        ready: state.groups.items && state.groups.items.length > 0
+        groups: state.groups.userGroups,
+        ready: state.groups.userGroups && state.groups.userGroups.length > 0
     }
 };
 

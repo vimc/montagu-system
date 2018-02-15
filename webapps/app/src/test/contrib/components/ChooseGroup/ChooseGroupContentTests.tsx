@@ -15,7 +15,7 @@ import { mockContribState } from "../../../mocks/mockStates";
 import { ModellingGroup} from "../../../../main/shared/models/Generated";
 import { createMockStore } from "../../../mocks/mockStore";
 import { Sandbox } from "../../../Sandbox";
-import {ModellingGroupsService} from "../../../../main/contrib/services/ModellingGroupsService";
+import {ModellingGroupsService} from "../../../../main/shared/services/ModellingGroupsService";
 
 
 describe("ChooseGroupContentComponent", () => {
@@ -44,7 +44,7 @@ describe("ChooseGroupContentComponent", () => {
 
     it("maps state to props with groups and ready", () => {
         const groups :ModellingGroup[] = [mockModellingGroup()];
-        const contribStateMock = mockContribState({ groups: { items: groups } })
+        const contribStateMock = mockContribState({ groups: { userGroups: groups } })
         const props = mapStateToProps(contribStateMock);
         expect(props.groups).to.eql(groups);
         expect(props.ready).to.eql(true);
@@ -52,7 +52,7 @@ describe("ChooseGroupContentComponent", () => {
 
     it("maps state to props with no groups and not ready", () => {
         const groups: ModellingGroup[] = [];
-        const contribStateMock = mockContribState({ groups: { items: groups } })
+        const contribStateMock = mockContribState({ groups: { userGroups: groups } })
         const props = mapStateToProps(contribStateMock);
         expect(props.groups).to.eql(groups);
         expect(props.ready).to.eql(false);
@@ -68,7 +68,7 @@ describe("ChooseGroupContentComponent", () => {
         mount(<Provider store={store}><ChooseGroupContent /></Provider>);
         setTimeout(() => {
             const actions = store.getActions();
-            expect(actions[0].type).to.eql(ModellingGroupTypeKeys.GROUPS_FETCHED);
+            expect(actions[0].type).to.eql(ModellingGroupTypeKeys.USER_GROUPS_FETCHED);
             done();
         });
     });

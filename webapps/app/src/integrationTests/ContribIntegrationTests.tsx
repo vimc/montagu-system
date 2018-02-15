@@ -31,7 +31,7 @@ import {runParameterActions} from "../main/contrib/actions/RunParameterActions";
 
 import {fetchToken as fetchTokenForModelRunParam} from "../main/contrib/sources/RunParametersSource";
 import {createContribStore} from "../main/contrib/stores/createContribStore";
-import { ModellingGroupsService } from "../main/contrib/services/ModellingGroupsService";
+import { ModellingGroupsService } from "../main/shared/services/ModellingGroupsService";
 
 const FormData = require('form-data');
 const http = require('http');

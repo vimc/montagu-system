@@ -8,24 +8,24 @@ const testModellingGroup = {id: "test1", description: "Test 1"};
 describe('Modelling groups reducer tests', () => {
     it('should return new state data with groups', () => {
         expect(modellingGroupsReducer(undefined, {
-            type: ModellingGroupTypeKeys.GROUPS_FETCHED,
+            type: ModellingGroupTypeKeys.USER_GROUPS_FETCHED,
             data: [testModellingGroup]
         })).to.eql(
             {
-                items: [testModellingGroup]
+                userGroups: [testModellingGroup]
             }
         )
     })
 
     it('should return new state data with no groups', () => {
         expect(modellingGroupsReducer({
-            items: [testModellingGroup]
+            userGroups: [testModellingGroup]
         }, {
-            type: ModellingGroupTypeKeys.GROUPS_FETCHED,
+            type: ModellingGroupTypeKeys.USER_GROUPS_FETCHED,
             data: []
         })).to.eql(
             {
-                items: []
+                userGroups: []
             }
         )
     })

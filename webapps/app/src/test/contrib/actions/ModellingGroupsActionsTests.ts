@@ -2,7 +2,7 @@ import { expect } from "chai";
 
 import { Sandbox } from "../../Sandbox";
 import { modellingGroupsActions } from "../../../main/contrib/actions/modellingGroupsActions";
-import { ModellingGroupsService } from "../../../main/contrib/services/ModellingGroupsService";
+import { ModellingGroupsService } from "../../../main/shared/services/ModellingGroupsService";
 import { ModellingGroupTypeKeys } from "../../../main/contrib/actionTypes/ModellingGroupsTypes";
 import {createMockStore} from "../../mocks/mockStore";
 
@@ -28,7 +28,7 @@ describe("Modelling groups actions tests", () => {
         store.dispatch(modellingGroupsActions.getUserGroups())
         setTimeout(() => {
             const actions = store.getActions()
-            const expectedPayload = { type: ModellingGroupTypeKeys.GROUPS_FETCHED, data: [testGroup1] }
+            const expectedPayload = { type: ModellingGroupTypeKeys.USER_GROUPS_FETCHED, data: [testGroup1] }
             expect(actions).to.eql([expectedPayload])
             done();
         });

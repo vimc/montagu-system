@@ -2,17 +2,17 @@ import { ActionsTypes, ModellingGroupTypeKeys } from "../actionTypes/ModellingGr
 import { ModellingGroup } from "../../shared/models/Generated";
 
 export interface ModellingGroupsState {
-    items: ModellingGroup[];
+    userGroups: ModellingGroup[];
 }
 
 export const initialState: ModellingGroupsState = {
-    items: []
+    userGroups: []
 };
 
 export const modellingGroupsReducer = (state = initialState, action: ActionsTypes) => {
     switch (action.type) {
-        case ModellingGroupTypeKeys.GROUPS_FETCHED:
-            return { items: action.data };
+        case ModellingGroupTypeKeys.USER_GROUPS_FETCHED:
+            return { userGroups: action.data };
         default:
             return state;
     }
