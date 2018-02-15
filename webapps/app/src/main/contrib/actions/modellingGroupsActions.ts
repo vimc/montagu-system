@@ -1,7 +1,7 @@
 import { Dispatch } from "redux";
 
 import { ModellingGroupsService } from "../../shared/services/ModellingGroupsService";
-import {GroupsFetched, ModellingGroupTypeKeys} from "../actionTypes/ModellingGroupsTypes";
+import { UserGroupsFetched, ModellingGroupTypeKeys} from "../actionTypes/ModellingGroupsTypes";
 
 export const modellingGroupsActions = {
 
@@ -18,7 +18,7 @@ export const modellingGroupsActions = {
             dispatch({
                 type: ModellingGroupTypeKeys.USER_GROUPS_FETCHED,
                 data: groups
-            } as GroupsFetched );
+            } as UserGroupsFetched );
         }
     },
 
