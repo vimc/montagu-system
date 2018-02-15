@@ -8,16 +8,17 @@ export const modellingGroupsActions = {
     getGroups() {
         return async (dispatch: Dispatch<any>, getState: Function) => {
             const allGroups: any = await (new ModellingGroupsService(dispatch, getState)).getGroups();
+            let groups = [];
             if (allGroups && allGroups.length) {
                 const userGroups = getState().auth.modellingGroups;
                 if (userGroups && userGroups.length) {
-                    const groups = allGroups.filter((item: any) => userGroups.indexOf(item.id) > -1);
-                    dispatch({
-                        type: ModellingGroupTypeKeys.GROUPS_FETCHED,
-                        data: groups
-                    } as GroupsFetched );
+                    groups = allGroups.filter((item: any) => userGroups.indexOf(item.id) > -1);
                 }
             }
+            dispatch({
+                type: ModellingGroupTypeKeys.GROUPS_FETCHED,
+                data: groups
+            } as GroupsFetched );
         }
     },
 
