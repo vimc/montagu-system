@@ -4,10 +4,10 @@ export enum ModellingGroupTypeKeys {
     USER_GROUPS_FETCHED = "USER_GROUPS_FETCHED",
 }
 
-export interface GroupsFetched {
+export interface UserGroupsFetched {
     type: ModellingGroupTypeKeys.USER_GROUPS_FETCHED;
     data: ModellingGroup[];
 }
 
-export type ActionsTypes =
-    | GroupsFetched
+export type ModellingGroupsActionsTypes =
+    | UserGroupsFetched
