@@ -6,13 +6,13 @@ import { Dispatch } from "redux";
 
 import { InternalLink } from "../InternalLink";
 import { ValidationError } from "./ValidationError";
-import { validations } from "../../modules/ReduxForm";
+import { validations } from "../../modules/reduxForm";
 import { authActions } from "../../actions/authActions";
 import { GlobalState } from "../../reducers/GlobalState";
-import {AuthActionsTypes} from "../../actionTypes/AuthTypes";
+import { AuthActionsTypes } from "../../actionTypes/AuthTypes";
 
 export interface LoginFormProps {
-    handleSubmit: (F: any) => any;
+    handleSubmit: (F: Function) => any;
     errorMessage?: string;
     submit: (values: LoginFormFields) => void;
 }

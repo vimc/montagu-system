@@ -36,7 +36,7 @@ export class AdminAppComponent extends React.Component<AdminAppProps, undefined>
 
 export const AdminAppAltWrapped = connectToStores(AdminAppComponent);
 
-const mapStateToProps = (state: AdminAppState) => {
+const mapStateToProps = (state: AdminAppState): Partial<AdminAppProps> => {
     return {
         loggedIn: state.auth.loggedIn,
     }

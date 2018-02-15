@@ -28,7 +28,7 @@ describe('Local service class initialization tests', () => {
         const testService = new TestService(store.dispatch, store.getState);
         const serviceData = testService.test();
         expect(serviceData.options.baseURL).is.equal('test-url');
-        expect(typeof serviceData.options.bearerToken).to.equal('undefined')
+        expect(typeof serviceData.options.Authorization).to.equal('undefined')
     });
 
     it('initializes default service with request engine and token', () => {

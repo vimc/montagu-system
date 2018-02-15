@@ -44,7 +44,7 @@ describe("Modelling groups actions tests", () => {
         sandbox.setStubFunc(AuthService.prototype, "logIn", ()=>{
             return Promise.resolve({access_token: testToken});
         });
-        sandbox.setStub(AuthService.prototype, "authToShiny");
+        sandbox.setStub(AuthService.prototype, "setShinyCookie");
         sandbox.setStub(contribMainStore, "load");
         store.dispatch(authActions.logIn('test', 'test'))
         setTimeout(() => {
@@ -101,7 +101,7 @@ describe("Modelling groups actions tests", () => {
         const testToken = jwt.sign(mockUsertokenData, "secret");
         sandbox.setStubFunc(localStorageHandler, "get", ()=> testToken);
         sandbox.setStub(contribMainStore, "load");
-        sandbox.setStub(AuthService.prototype, "authToShiny");
+        sandbox.setStub(AuthService.prototype, "setShinyCookie");
         store.dispatch(authActions.loadSavedToken())
         setTimeout(() => {
             const actions = store.getActions();
@@ -114,7 +114,7 @@ describe("Modelling groups actions tests", () => {
         const mockUserTokenDataExpired = Object.assign(mockUsertokenData, {exp: Math.round(Date.now() / 1000)});
         const testToken = jwt.sign(mockUserTokenDataExpired, "secret");
         sandbox.setStubFunc(localStorageHandler, "get", ()=> testToken);
-        sandbox.setStub(AuthService.prototype, "unauthFromShiny");
+        sandbox.setStub(AuthService.prototype, "clearShinyCookie");
         store.dispatch(authActions.loadSavedToken())
         setTimeout(() => {
             const actions = store.getActions();

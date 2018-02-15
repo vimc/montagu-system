@@ -27,11 +27,11 @@ export const jwtTokenAuth = {
             return jwt_decode(token);
         } catch (e) {
             console.log("Token decoding failed, token is malformed: " + token);
-            return this.emptyToken();
+            return this.emptyTokenData();
         }
     },
 
-    emptyToken(): AuthTokenData {
+    emptyTokenData(): AuthTokenData {
         return {
             permissions: "",
             roles: "",

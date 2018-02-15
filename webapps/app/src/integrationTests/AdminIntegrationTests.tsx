@@ -29,7 +29,7 @@ class AdminIntegrationTests extends IntegrationTestSuite {
     addTestsToMocha() {
 
         it("can fetch shiny cookie", (done: DoneCallback) => {
-            (new AuthService(this.store.dispatch, this.store.getState)).authToShiny()
+            (new AuthService(this.store.dispatch, this.store.getState)).setShinyCookie()
                 .then(result => {
                     expect(result).to.be.eq("OK");
                     done();
@@ -37,7 +37,7 @@ class AdminIntegrationTests extends IntegrationTestSuite {
         });
 
         it("can clear shiny cookie", (done: DoneCallback) => {
-            (new AuthService(this.store.dispatch, this.store.getState)).unauthFromShiny()
+            (new AuthService(this.store.dispatch, this.store.getState)).clearShinyCookie()
                 .then(result => {
                     expect(result).to.be.eq("OK");
                     done();

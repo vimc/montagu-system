@@ -1,5 +1,3 @@
-import * as React from "react";
-
 export const validations = {
     required: (value: string) => (value
         ? undefined

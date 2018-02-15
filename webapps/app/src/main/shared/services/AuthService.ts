@@ -9,12 +9,12 @@ export class AuthService extends LocalService {
         return this.postNoProcess("/authenticate/", "grant_type=client_credentials")
     }
 
-    authToShiny() {
+    setShinyCookie() {
         this.setOptions({credentials: "include"});
         return this.get("/set-shiny-cookie/");
     }
 
-    unauthFromShiny() {
+    clearShinyCookie() {
         this.setOptions({credentials: "include"});
         return this.get("/clear-shiny-cookie/");
     }

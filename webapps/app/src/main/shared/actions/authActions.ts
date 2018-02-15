@@ -18,7 +18,7 @@ import {
 export const authActions = {
 
     logIn(email: string, password: string) {
-        return async (dispatch: Dispatch<any>, getState: any) => {
+        return async (dispatch: Dispatch<any>, getState: Function) => {
             try {
                 const response = await (new AuthService(dispatch, getState)).logIn(email, password)
                 if (response.error) {
@@ -65,7 +65,7 @@ export const authActions = {
     },
 
     tokenReceived(token: string) {
-        return (dispatch: Dispatch<any>, getState: any) => {
+        return (dispatch: Dispatch<any>, getState: Function) => {
             const user: AuthState = jwtTokenAuth.getDataFromToken(token);
             const error: Notification = this.validateAuthResult(user);
             if (!error) {
@@ -74,7 +74,7 @@ export const authActions = {
                     type: AuthTypeKeys.AUTHENTICATED,
                     data: user,
                 } as Authenticated);
-                (new AuthService(dispatch, getState)).authToShiny();
+                (new AuthService(dispatch, getState)).setShinyCookie();
                 if (appName === "contrib") {
                     contribMainStore.load();
                 }
@@ -93,9 +93,9 @@ export const authActions = {
     },
 
     logOut() {
-        return (dispatch: Dispatch<any>, getState: any) => {
+        return (dispatch: Dispatch<any>, getState: Function) => {
             localStorageHandler.remove("accessToken");
-            (new AuthService(dispatch, getState)).unauthFromShiny();
+            (new AuthService(dispatch, getState)).clearShinyCookie();
             dispatch({
                 type: AuthTypeKeys.UNAUTHENTICATED,
             } as Unauthenticated);

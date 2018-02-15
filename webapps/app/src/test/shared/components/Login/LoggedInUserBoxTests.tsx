@@ -59,7 +59,7 @@ describe("LoggedInUserBoxComponent", () => {
 
     it("clicking log out dispatches unauthenticated action", (done: DoneCallback) => {
         const store = createMockStore({auth: {loggedIn: true}});
-        sandbox.setStub(AuthService.prototype, "unauthFromShiny");
+        sandbox.setStub(AuthService.prototype, "clearShinyCookie");
         const rendered = mount(<Provider store={store}><LoggedInUserBox/></Provider>);
         rendered.find(InternalLink).simulate("click");
         const actions = store.getActions();

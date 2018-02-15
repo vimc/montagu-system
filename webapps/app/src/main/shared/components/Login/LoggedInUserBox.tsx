@@ -38,7 +38,7 @@ export const mapStateToProps = (state: GlobalState): Partial<LoggedInUserBoxProp
 
 export const mapDispatchToProps = (dispatch: Dispatch<GlobalState>): Partial<LoggedInUserBoxProps> => {
     return {
-        logOut : (e: React.MouseEvent<HTMLAnchorElement>) => dispatch(authActions.logOut())
+        logOut : () => dispatch(authActions.logOut())
     }
 };
 

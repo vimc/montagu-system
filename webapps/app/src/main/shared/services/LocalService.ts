@@ -1,4 +1,4 @@
-import { Dispatch } from "redux";
+import { Dispatch, Action } from "redux";
 import { settings } from "../Settings";
 import { localStorageHandler } from "./localStorageHandler";
 import {ErrorInfo, Result} from "../models/Generated";
@@ -10,6 +10,7 @@ import {
 } from "../actions/NotificationActions";
 
 import { AuthTypeKeys } from "../actionTypes/AuthTypes";
+import {GlobalState} from "../reducers/GlobalState";
 
 export interface OptionsHeaders {
    Authorization?: string;
@@ -23,12 +24,19 @@ export interface RequestOptions {
     credentials?: "omit" | "same-origin" | "include";
 }
 
-export abstract class LocalService {
-    protected dispatch: any;
-    protected bearerToken: string;
-    protected options: any = {};
+export interface InputOptions {
+    Authorization?: string;
+    'Content-Type'?: string;
+    credentials?: "omit" | "same-origin" | "include";
+    baseURL?: string;
+}
 
-    public constructor(dispatch: any, getState: Function) {
+export abstract class LocalService {
+    protected dispatch: Dispatch<Action>;
+    protected bearerToken: string;
+    protected options: InputOptions = {};
+
+    public constructor(dispatch: Dispatch<Action>, getState: Function) {
         this.dispatch = dispatch;
 
         this.bearerToken = this.getTokenFromState(getState())
@@ -38,13 +46,13 @@ export abstract class LocalService {
         this.notifyOnErrors = this.notifyOnErrors.bind(this);
     }
 
-    protected getTokenFromState(state: any) {
+    protected getTokenFromState(state: GlobalState) {
         if (state.auth && state.auth.bearerToken) {
             return state.auth.bearerToken
         }
     }
 
-    public setOptions(options: any) {
+    public setOptions(options: InputOptions) {
         Object.assign(this.options, options);
     }
 
@@ -56,7 +64,7 @@ export abstract class LocalService {
         }
     }
 
-    protected makeRequestOptions(method: string, body?: any) :any {
+    protected makeRequestOptions(method: string, body?: any) :RequestOptions {
         const headers: OptionsHeaders = {};
         if (this.options.Authorization) headers.Authorization = this.options.Authorization;
         if (this.options['Content-Type']) headers['Content-Type'] = this.options['Content-Type'];
@@ -73,7 +81,7 @@ export abstract class LocalService {
         return this.options.baseURL + uri;
     }
 
-    protected doFetch(url: string, params?:any) {
+    protected doFetch(url: string, params? :any) {
         return fetch(url, params)
     }
 
@@ -97,7 +105,6 @@ export abstract class LocalService {
     }
 
     processResponse<TModel>(response: Response): Promise<any> {
-
         return response.json()
             .then((response: any) => {
                 const apiResponse = <Result>response;
@@ -148,7 +155,7 @@ export abstract class LocalService {
 
 
     protected logOut() {
-        return (dispatch: Dispatch<any>, getState: any) => {
+        return (dispatch: Dispatch<Action>) => {
             localStorageHandler.remove("accessToken");
             dispatch({
                 type: AuthTypeKeys.UNAUTHENTICATED

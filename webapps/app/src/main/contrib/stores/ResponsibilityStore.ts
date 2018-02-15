@@ -86,7 +86,6 @@ class ResponsibilityStore extends AbstractStore<ResponsibilityState, Responsibil
 
         this.bindListeners({
             handleSetCurrentModellingGroup: modellingGroupActions.setCurrentGroup,
-            handleUpdateModellingGroups: modellingGroupActions.updateGroups,
 
             handleBeginTouchstoneFetch: touchstoneActions.beginFetch,
             handleUpdateTouchstones: touchstoneActions.update,
@@ -197,9 +196,6 @@ class ResponsibilityStore extends AbstractStore<ResponsibilityState, Responsibil
 
     handleClearUsedEstimatesToken() {
         this.estimatesOneTimeToken = null;
-    }
-
-    handleUpdateModellingGroups(groups: ModellingGroup[]) {
     }
 
     handleUpdateResponsibilities(responsibilities: Responsibilities) {
