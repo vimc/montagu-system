@@ -46,7 +46,7 @@ class TokenVerifyingConfigFactory(
                 .split(',')
                 .filter { it.isNotEmpty() }
         )
-        profile.adapted().permissions = permissions
+        profile.montaguPermissions = permissions
         return profile
     }
 }
@@ -78,7 +78,7 @@ class TokenActionAdapter(wrappedClients: List<MontaguSecurityClientWrapper>, rep
         }
         HttpConstants.FORBIDDEN ->
         {
-            val profile = DirectActionContext(context).userProfile!!.adapted()
+            val profile = DirectActionContext(context).userProfile!!
             haltWithError(code, context, forbiddenResponse(profile.missingPermissions, profile.mismatchedURL))
         }
         else -> super.adapt(code, context)

@@ -37,13 +37,13 @@ class MontaguAuthorizer(requiredPermissions: Set<PermissionRequirement>)
 
     override fun check(context: WebContext, profile: CommonProfile, element: PermissionRequirement): Boolean
     {
-        val profilePermissions = profile.adapted().permissions
+        val profilePermissions = profile.montaguPermissions
         val reifiedRequirement = element.reify(DirectActionContext(context as SparkWebContext))
 
         val hasPermission = profilePermissions.any { reifiedRequirement.satisfiedBy(it) }
         if (!hasPermission)
         {
-            profile.adapted().missingPermissions.add(reifiedRequirement)
+            profile.missingPermissions.add(reifiedRequirement)
         }
         return hasPermission
     }
