@@ -27,6 +27,8 @@ export const authActions = {
                     dispatch(this.tokenReceived(response.access_token));
                 }
             } catch(error) {
+                const errorNotification = this.makeNotificationError('Server error');
+                notificationActions.notify(errorNotification);
                 throw makeNotificationException(error.message, "error");
             }
         }
