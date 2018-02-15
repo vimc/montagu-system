@@ -13,6 +13,7 @@ import org.vaccineimpact.api.models.Result
 import org.vaccineimpact.api.models.ResultStatus
 import org.vaccineimpact.api.models.helpers.OneTimeAction
 import org.vaccineimpact.api.security.KeyHelper
+import org.vaccineimpact.api.security.TokenType
 import org.vaccineimpact.api.security.WebTokenHelper
 
 class OneTimeLinkController(
@@ -123,7 +124,7 @@ class OneTimeLinkController(
 
         val claims = try
         {
-            tokenHelper.verify(token)
+            tokenHelper.verify(token, TokenType.LEGACY_ONETIME)
         }
         catch (e: Exception)
         {

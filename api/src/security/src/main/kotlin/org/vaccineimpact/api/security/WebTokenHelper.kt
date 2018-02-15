@@ -37,6 +37,7 @@ open class WebTokenHelper(keyPair: KeyPair,
     {
         return generator.generate(mapOf(
                 "iss" to issuer,
+                "token_type" to TokenType.LEGACY_ONETIME,
                 "sub" to oneTimeActionSubject,
                 "exp" to Date.from(Instant.now().plus(lifeSpan)),
                 "action" to action,
@@ -57,6 +58,7 @@ open class WebTokenHelper(keyPair: KeyPair,
         return generator.generate(mapOf(
                 "iss" to issuer,
                 "sub" to oneTimeActionSubject,
+                "token_type" to TokenType.ONETIME,
                 "exp" to Date.from(Instant.now().plus(oneTimeLinkLifeSpan)),
                 "permissions" to permissions,
                 "roles" to roles,
@@ -71,6 +73,7 @@ open class WebTokenHelper(keyPair: KeyPair,
         return generator.generate(
                 mapOf("sub" to apiResponseSubject,
                         "iss" to issuer,
+                        "token_type" to TokenType.API_RESPONSE,
                         "result" to json))
     }
 
@@ -78,6 +81,7 @@ open class WebTokenHelper(keyPair: KeyPair,
     {
         return mapOf(
                 "iss" to issuer,
+                "token_type" to TokenType.BEARER,
                 "sub" to user.username,
                 "exp" to Date.from(Instant.now().plus(lifeSpan)),
                 "permissions" to user.permissions.joinToString(","),
@@ -90,13 +94,17 @@ open class WebTokenHelper(keyPair: KeyPair,
         val allowedShiny = user.permissions.contains(ReifiedPermission("reports.review", Scope.Global()))
         return mapOf(
                 "iss" to issuer,
+                "token_type" to TokenType.SHINY,
                 "sub" to user.username,
                 "exp" to Date.from(Instant.now().plus(lifeSpan)),
                 "allowed_shiny" to allowedShiny.toString()
         )
     }
 
-    open fun verify(token: String): Map<String, Any> = MontaguTokenAuthenticator(this).validateTokenAndGetClaims(token)
+    open fun verify(token: String, expectedType: TokenType): Map<String, Any>
+    {
+        return MontaguTokenAuthenticator(this, expectedType).validateTokenAndGetClaims(token)
+    }
 
     private fun getNonce(): String
     {
