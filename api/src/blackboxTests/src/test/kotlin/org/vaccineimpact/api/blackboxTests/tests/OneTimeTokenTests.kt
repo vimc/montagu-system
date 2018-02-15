@@ -51,4 +51,21 @@ class OneTimeTokenTests : DatabaseTest()
                 expectedErrorText = "This token is issued for /v1/touchstones/ but the current request is for /v1/touchstones/1/scenarios/"
         )
     }
+
+    @Test
+    fun `cannot use onetime token to bypass permissions checks`()
+    {
+        val desiredUrl = "/touchstones/"
+        val permissions = PermissionSet("*/can-login")
+
+        val bearerToken = TestUserHelper.setupTestUserAndGetToken(permissions)
+        val requestHelper = RequestHelper()
+        val oneTimeToken = requestHelper.getOneTimeToken(desiredUrl, bearerToken)
+        val response = RequestHelper().get("$desiredUrl?access_token=$oneTimeToken")
+
+        JSONValidator().validateError(response.text,
+                expectedErrorCode = "forbidden",
+                expectedErrorText = "You do not have sufficient permissions to access this resource. Missing these permissions: */touchstones.read"
+        )
+    }
 }
