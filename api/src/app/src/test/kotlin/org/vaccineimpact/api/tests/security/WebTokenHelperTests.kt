@@ -5,6 +5,8 @@ import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Before
 import org.junit.Test
+import org.vaccineimpact.api.app.repositories.TokenRepository
+import org.vaccineimpact.api.security.OneTimeTokenAuthenticator
 import org.vaccineimpact.api.models.ErrorInfo
 import org.vaccineimpact.api.models.Result
 import org.vaccineimpact.api.models.ResultStatus
@@ -14,6 +16,7 @@ import org.vaccineimpact.api.models.permissions.ReifiedRole
 import org.vaccineimpact.api.security.*
 import org.vaccineimpact.api.serialization.Serializer
 import org.vaccineimpact.api.test_helpers.MontaguTests
+import org.vaccineimpact.api.tests.mocks.MockRepositoryFactory
 import java.time.Instant
 import java.util.*
 
@@ -134,6 +137,16 @@ class WebTokenHelperTests : MontaguTests()
     {
         val claims = sut.claims(InternalUser(properties, roles, permissions))
         val badToken = sut.generator.generate(claims.plus("iss" to "unexpected.issuer"))
+        val verifier = MontaguTokenAuthenticator(sut, TokenType.BEARER)
+        assertThat(verifier.validateToken(badToken)).isNull()
+        assertThatThrownBy { sut.verify(badToken, TokenType.BEARER, mock()) }
+    }
+
+    @Test
+    fun `token fails validation when token type is wrong`()
+    {
+        val claims = sut.claims(InternalUser(properties, roles, permissions))
+        val badToken = sut.generator.generate(claims.plus("token_type" to "unexpected.type"))
         val verifier = MontaguTokenAuthenticator(sut, TokenType.BEARER)
         assertThat(verifier.validateToken(badToken)).isNull()
         assertThatThrownBy { sut.verify(badToken, TokenType.BEARER, mock()) }
