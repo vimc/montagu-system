@@ -27,8 +27,7 @@ class OneTimeTokenAuthenticator(
     {
         val claims = jwt.jwtClaimsSet
         val url = claims.getClaim("url")
-        @Suppress("UselessCallOnNotNull")
-        if (url.toString().isNullOrEmpty())
+        if (url !is String || url.isEmpty())
         {
             throw CredentialsException("No 'url' claim provided. Token is invalid")
         }
