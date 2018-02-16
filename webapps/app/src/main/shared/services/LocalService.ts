@@ -36,10 +36,10 @@ export abstract class LocalService {
     protected bearerToken: string;
     protected options: InputOptions = {};
 
-    public constructor(dispatch: Dispatch<Action>, getState: Function) {
+    public constructor(dispatch: Dispatch<Action>, getState: () => GlobalState) {
         this.dispatch = dispatch;
 
-        this.bearerToken = this.getTokenFromState(getState())
+        this.bearerToken = this.getTokenFromState(getState());
         this.initOptions();
 
         this.processResponse = this.processResponse.bind(this);

@@ -2,11 +2,12 @@ import { Dispatch } from "redux";
 
 import { ModellingGroupsService } from "../../shared/services/ModellingGroupsService";
 import { UserGroupsFetched, ModellingGroupTypeKeys} from "../actionTypes/ModellingGroupsTypes";
+import {GlobalState} from "../../shared/reducers/GlobalState";
 
 export const modellingGroupsActions = {
 
     getUserGroups() {
-        return async (dispatch: Dispatch<any>, getState: Function) => {
+        return async (dispatch: Dispatch<any>, getState: () => GlobalState) => {
             const allGroups: any = await (new ModellingGroupsService(dispatch, getState)).getAllGroups();
             let groups = [];
             if (allGroups && allGroups.length) {

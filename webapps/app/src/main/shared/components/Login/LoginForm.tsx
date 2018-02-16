@@ -73,7 +73,7 @@ function mapStateToProps(state: GlobalState): Partial<LoginFormProps> {
     return { errorMessage: state.auth.errorMessage };
 }
 
-function mapDispatchToProps(dispatch: Dispatch<AuthActionsTypes>): Partial<LoginFormProps> {
+function mapDispatchToProps(dispatch: Dispatch<any>): Partial<LoginFormProps> {
     return {
         submit : (values: LoginFormFields) => dispatch(authActions.logIn(values.email, values.password))
     }

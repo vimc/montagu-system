@@ -5,13 +5,13 @@ import { User } from "../../../shared/models/Generated";
 import { DeletableUser } from "./DeletableUser";
 import {AdminAppState} from "../../reducers/adminAppReducers";
 
-interface Props {
+interface ListOfUsersProps {
     users: User[];
     groupId: string;
     isAdmin: boolean;
 }
 
-export class ListOfUsersComponent extends React.Component<Props, undefined> {
+export class ListOfUsersComponent extends React.Component<ListOfUsersProps, undefined> {
 
     render() {
         const users = this.props.users.sort((a, b) => a.name.localeCompare(b.name));
@@ -30,9 +30,10 @@ export class ListOfUsersComponent extends React.Component<Props, undefined> {
     }
 }
 
-const mapStateToProps = (state: AdminAppState) => {
+const mapStateToProps = (state: AdminAppState, props: Partial<ListOfUsersProps>) :Partial<ListOfUsersProps> => {
     return {
         isAdmin: state.auth.permissions.indexOf("*/modelling-groups.manage-members") > -1,
+        users: props.users
     }
 };
 
