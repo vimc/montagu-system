@@ -8,7 +8,7 @@ import { demographicActions } from "../../../main/contrib/actions/DemographicAct
 import { alt } from "../../../main/shared/alt";
 import { doNothing } from "../../../main/shared/Helpers";
 import { checkAsync } from "../../testHelpers";
-import {LoginSource} from "../../../main/shared/sources/LoginSource";
+// import {LoginSource} from "../../../main/shared/sources/LoginSource";
 
 describe("DemographicStore.fetchDataSets", () => {
     const touchstone = mockTouchstone();
@@ -55,7 +55,6 @@ describe("DemographicStore.fetchOneTimeToken", () => {
         demographicActions.selectDataSet(dataSet.id);
 
         const fetcherSpy = helper.getFetcherSpy();
-        helper.sandbox.setStub(LoginSource, "clearShinyToken");
         demographicStore.fetchOneTimeToken().catch(doNothing);
         checkAsync(done, () => {
             expect(fetcherSpy.args).to.have.length(1, "Fetch method was not invoked");

@@ -37,6 +37,7 @@ export class ResponsibilityOverviewContentComponent extends RemoteContentCompone
     }
 
     renderContent(props: ResponsibilityOverviewComponentProps) {
+
         const touchstoneId = props.responsibilitySet.touchstone.id;
         const demographyUrl = `/${props.modellingGroup.id}/responsibilities/${touchstoneId}/demographics/`;
         const parametersUrl = `/${props.modellingGroup.id}/responsibilities/${touchstoneId}/parameters/`;
@@ -48,7 +49,6 @@ export class ResponsibilityOverviewContentComponent extends RemoteContentCompone
             </div>
             <ButtonLink href={parametersUrl}>Upload parameters</ButtonLink>
         </div>;
-
         return <div>
             <ResponsibilitySetStatusMessage status={this.props.responsibilitySet.status}/>
             <div className="largeSectionTitle">Demographic data</div>

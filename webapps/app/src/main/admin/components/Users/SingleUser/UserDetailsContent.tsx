@@ -1,4 +1,6 @@
 import * as React from "react";
+import { connect } from 'react-redux';
+
 import { RemoteContent } from "../../../../shared/models/RemoteContent";
 import { RemoteContentComponent } from "../../../../shared/components/RemoteContentComponent/RemoteContentComponent";
 import { connectToStores } from "../../../../shared/alt";
@@ -6,21 +8,21 @@ import { RoleAssignment, User } from "../../../../shared/models/Generated";
 import { UserRole } from "./UserRoleComponent";
 import { userStore } from "../../../stores/UserStore";
 import { AddRoles } from "./AddRoles";
-import { adminAuthStore } from "../../../stores/AdminAuthStore";
+import {AdminAppState} from "../../../reducers/adminAppReducers";
+import "../../../../shared/styles/common.scss";
 
 interface Props extends RemoteContent {
     user: User;
     roles: RoleAssignment[];
+    isAdmin: boolean;
 }
-
-import "../../../../shared/styles/common.scss";
 
 export class UserDetailsContentComponent extends RemoteContentComponent<Props, undefined> {
     static getStores() {
         return [userStore];
     }
 
-    static getPropsFromStores(): Props {
+    static getPropsFromStores(): Partial<Props> {
         const user = userStore.getCurrentUserDetails();
 
         return {
@@ -32,8 +34,7 @@ export class UserDetailsContentComponent extends RemoteContentComponent<Props, u
 
     roles(username: string) {
 
-        const isAdmin = adminAuthStore.getState().permissions.indexOf("*/roles.write") > -1;
-        const addRoles = isAdmin ?
+        const addRoles = this.props.isAdmin ?
             <AddRoles userRoles={this.props.roles.filter(r => r.scope_prefix == null).map(r => r.name)}
                    username={this.props.user.username}/>
         : "";
@@ -43,7 +44,7 @@ export class UserDetailsContentComponent extends RemoteContentComponent<Props, u
             <form className="form">
                 <hr/>
                 {this.props.roles.map(r =>
-                    <UserRole key={r.name + r.scope_prefix + r.scope_id} {...r} username={username} showdelete={isAdmin}/>
+                    <UserRole key={r.name + r.scope_prefix + r.scope_id} {...r} username={username} showdelete={this.props.isAdmin}/>
                 )}
             </form>
             {addRoles}
@@ -81,5 +82,13 @@ export class UserDetailsContentComponent extends RemoteContentComponent<Props, u
     }
 }
 
-export const UserDetailsContent =
+export const UserDetailsContentAltWrapped =
     connectToStores(UserDetailsContentComponent);
+
+export const mapStateToProps = (state: AdminAppState) :Partial<Props> => {
+    return {
+        isAdmin: state.auth.permissions.indexOf("*/roles.write") > -1
+    }
+};
+
+export const UserDetailsContent = connect(mapStateToProps)(UserDetailsContentAltWrapped);

@@ -7,7 +7,6 @@ import { mockFetcherResponse, mockResponse, mockResult } from "../../mocks/mockR
 import fetcher from "../../../main/shared/sources/Fetcher";
 import { Notification } from "../../../main/shared/actions/NotificationActions";
 import { SinonSpy } from "sinon";
-import {LoginSource} from "../../../main/shared/sources/LoginSource";
 
 export interface FetchHelperConfig<TPayload, TActionPayload> {
     prepareForFetch: () => void;
@@ -137,26 +136,26 @@ export class FetchHelper<TPayload, TActionPayload> {
             });
         });
 
-        it("triggers logout when server returns bearer token error", (done: DoneCallback) => {
-            const errors: Array<ErrorInfo> = [
-                {
-                    code: "bearer-token-invalid",
-                    message: "Something wicked this way comes"
-                }
-            ];
-            this.sandbox.setStub(LoginSource, "clearShinyToken");
-            this.config.prepareForFetch();
-            this.testFetchWithMockedResponse({
-                done,
-                payload: mockResult(null, errors, "failure"),
-                errorMessage: null,
-                expectedAction: {
-                    action: "AuthActions.logOut",
-                    payload: true
-                },
-                triggerFetch: this.config.triggerFetch
-            });
-        });
+
+        // it("triggers logout when server returns bearer token error", (done: DoneCallback) => {
+        //     const errors: Array<ErrorInfo> = [
+        //         {
+        //             code: "bearer-token-invalid",
+        //             message: "Something wicked this way comes"
+        //         }
+        //     ];
+        //     this.config.prepareForFetch();
+        //     this.testFetchWithMockedResponse({
+        //         done,
+        //         payload: mockResult(null, errors, "failure"),
+        //         errorMessage: null,
+        //         expectedAction: {
+        //             action: "AuthActions.logOut",
+        //             payload: true
+        //         },
+        //         triggerFetch: this.config.triggerFetch
+        //     });
+        // });
 
         if (this.config.prepareForCachedFetch) {
             it("does not fetch when data is present in cache", (done: DoneCallback) => {

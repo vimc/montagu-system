@@ -1,10 +1,12 @@
 import * as React from "react";
-import { notificationStore } from "../../shared/stores/NotificationStore";
-import { connectToStores } from "../../shared/alt";
+import { connect } from 'react-redux';
+
 import { ErrorLog } from "../../shared/components/ErrorLog/ErrorLog";
 import { ReportingRouter } from "./ReportingRouter";
-import { reportingAuthStore } from "../stores/ReportingAuthStore";
 import { NotificationArea } from "../../shared/components/NotificationArea/NotificationArea";
+import { notificationStore } from "../../shared/stores/NotificationStore";
+import { connectToStores } from "../../shared/alt";
+import { ReportAppState } from "../reducers/reportAppReducers";
 
 export interface ReportingAppProps {
     errors: string[];
@@ -14,17 +16,16 @@ export interface ReportingAppProps {
 
 export class ReportingAppComponent extends React.Component<ReportingAppProps, undefined> {
     static getStores() {
-        return [ notificationStore, reportingAuthStore  ];
+        return [ notificationStore ];
     }
-    static getPropsFromStores(): ReportingAppProps {
+    static getPropsFromStores(): Partial<ReportingAppProps> {
         return {
             errors: notificationStore.getState().errors,
             infos: notificationStore.getState().infos,
-            loggedIn: reportingAuthStore.getState().loggedIn
         }
     }
 
-    render() {
+    render() :JSX.Element {
         return <div>
             <ReportingRouter loggedIn={ this.props.loggedIn } />
             <NotificationArea notifications={ this.props.infos } />
@@ -33,4 +34,12 @@ export class ReportingAppComponent extends React.Component<ReportingAppProps, un
     }
 }
 
-export const ReportingApp = connectToStores(ReportingAppComponent);
+export const ReportingAppAltWrapped = connectToStores(ReportingAppComponent);
+
+const mapStateToProps = (state: ReportAppState) :Partial<ReportingAppProps> => {
+  return {
+      loggedIn: state.auth.loggedIn,
+  }
+};
+
+export const ReportingApp = connect(mapStateToProps)(ReportingAppAltWrapped);

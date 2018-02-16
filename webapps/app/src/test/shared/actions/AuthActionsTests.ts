@@ -1,49 +1,126 @@
-import { expect } from 'chai';
+import { expect } from "chai";
+import * as jwt from "jsonwebtoken";
+
 import { Sandbox } from "../../Sandbox";
-const jwt = require("jsonwebtoken");
+import { authActions } from "../../../main/shared/actions/authActions";
+import { AuthService } from "../../../main/shared/services/AuthService";
+import { mainStore as contribMainStore } from "../../../main/contrib/stores/MainStore";
+import { AuthTypeKeys } from "../../../main/shared/actionTypes/AuthTypes";
+import { createMockStore } from "../../mocks/mockStore";
+import { NotificationState, notificationStore } from "../../../main/shared/stores/NotificationStore";
 
-import { authActions, LogInProperties } from "../../../main/shared/actions/AuthActions";
+import {localStorageHandler} from "../../../main/shared/services/localStorageHandler";
 
-function getPayload(tokenProperties: any): LogInProperties {
-    const token = jwt.sign(tokenProperties, "secret");
+describe("Modelling groups actions tests", () => {
     const sandbox = new Sandbox();
-    try {
-        const spy = sandbox.dispatchSpy();
-        authActions.logIn(token, false);
-        return spy.args[0][1] as LogInProperties;
-    } finally {
+    let store: any = null;
+
+    const mockUsertokenData = {
+        sub: "test.user",
+        permissions: "*/can-login,*/countries.read,*/demographics.read,*…les.write,modelling-group:test-group/users.create",
+        roles: "*/user,modelling-group:IC-Garske/member,*/user-man…/uploader,modelling-group:test-group/user-manager",
+        iss: "vaccineimpact.org",
+        exp: Math.round(Date.now() / 1000) + 1000
+    };
+
+    const mockUsertokenDataNotActive = Object.assign({}, mockUsertokenData, {
+        permissions: "*/countries.read,*/demographics.read,*…les.write,modelling-group:test-group/users.create"
+    });
+
+    const mockUsertokenNotModeller = Object.assign({}, mockUsertokenData, {
+        roles: ""
+    });
+
+    beforeEach(() => {
+        store = createMockStore();
+    });
+
+    afterEach(() => {
         sandbox.restore();
-    }
-}
-
-describe("AuthActions", () => {
-    it("retrieves username from token", () => {
-        const payload = getPayload({ sub: "username", permissions: "", roles: "" });
-        expect(payload.username).to.equal("username");
     });
 
-    it("retrieves permissions from token", () => {
-        const payload = getPayload({ sub: "username", permissions: "p1,p2", roles: "" });
-        expect(payload.permissions).to.eql([ "p1", "p2" ]);
+    it("dispatches authenticated action if service returned proper token", (done) => {
+        const testToken = jwt.sign(mockUsertokenData, "secret");
+        sandbox.setStubFunc(AuthService.prototype, "logIn", ()=>{
+            return Promise.resolve({access_token: testToken});
+        });
+        sandbox.setStub(AuthService.prototype, "setShinyCookie");
+        sandbox.setStub(contribMainStore, "load");
+        store.dispatch(authActions.logIn('test', 'test'))
+        setTimeout(() => {
+            const actions = store.getActions();
+            expect(actions[0].type).to.eql(AuthTypeKeys.AUTHENTICATED);
+            done();
+        });
     });
 
-    it("retrieves modelling groups from token", () => {
-        const roles = "modelling-group:g1/member,modelling-group:g2/wrong-name,wrong-scope:g3/member";
-        const payload = getPayload({ sub: "username", permissions: "", roles: roles });
-        expect(payload.modellingGroups).to.eql([ "g1" ]);
+    it("dispatches authentication error action if service returned error", (done) => {
+        const testToken = jwt.sign(mockUsertokenData, "secret");
+        sandbox.setStubFunc(AuthService.prototype, "logIn", ()=>{
+            return Promise.resolve({error: 'test error'});
+        });
+        store.dispatch(authActions.logIn('test', 'test'))
+        setTimeout(() => {
+            const actions = store.getActions();
+            expect(actions[0].type).to.eql(AuthTypeKeys.AUTHENTICATION_ERROR);
+            done();
+        });
     });
 
-    it("retrieves isAccountActive from token", () => {
-        const a = getPayload({ sub: "username", permissions: "p1", roles: "" });
-        expect(a.isAccountActive).to.be.false;
-        const b = getPayload({ sub: "username", permissions: "*/can-login", roles: "" });
-        expect(b.isAccountActive).to.be.true;
+    it("dispatches authentication error action if user is not active", (done) => {
+        const testToken = jwt.sign(mockUsertokenDataNotActive, "secret");
+        sandbox.setStubFunc(AuthService.prototype, "logIn", ()=>{
+            return Promise.resolve({access_token: testToken});
+        });
+        store.dispatch(authActions.logIn('test', 'test'))
+        setTimeout(() => {
+            const actions = store.getActions();
+            const state = notificationStore.getState();
+            expect(state.errors[0].search('Your account has been deactivated.')).is.equal(0);
+            expect(actions[0].type).to.eql(AuthTypeKeys.AUTHENTICATION_ERROR);
+            done();
+        });
     });
 
-    it("retrieves isModeller from token", () => {
-        const a = getPayload({ sub: "username", permissions: "", roles: "*/member" });
-        expect(a.isModeller).to.be.false;
-        const b = getPayload({ sub: "username", permissions: "", roles: "modelling-group:g1/member" });
-        expect(b.isModeller).to.be.true;
+    it("dispatches authentication error action if user is not modeller", (done) => {
+        const testToken = jwt.sign(mockUsertokenNotModeller, "secret");
+        sandbox.setStubFunc(AuthService.prototype, "logIn", ()=>{
+            return Promise.resolve({access_token: testToken});
+        });
+        store.dispatch(authActions.logIn('test', 'test'))
+        setTimeout(() => {
+            const actions = store.getActions();
+            const state = notificationStore.getState();
+            expect(state.errors[0].search('Only members of modelling groups can log into the contribution portal')).is.equal(0);
+            expect(actions[0].type).to.eql(AuthTypeKeys.AUTHENTICATION_ERROR);
+            done();
+        });
     });
+
+    it("dispatches authenticated action if saved token can be loaded and not expired", (done) => {
+        const testToken = jwt.sign(mockUsertokenData, "secret");
+        sandbox.setStubFunc(localStorageHandler, "get", ()=> testToken);
+        sandbox.setStub(contribMainStore, "load");
+        sandbox.setStub(AuthService.prototype, "setShinyCookie");
+        store.dispatch(authActions.loadSavedToken())
+        setTimeout(() => {
+            const actions = store.getActions();
+            expect(actions[0].type).to.eql(AuthTypeKeys.AUTHENTICATED);
+            done();
+        });
+    });
+
+    it("dispatches unauthenticated action if saved token can be loaded and expired", (done) => {
+        const mockUserTokenDataExpired = Object.assign(mockUsertokenData, {exp: Math.round(Date.now() / 1000)});
+        const testToken = jwt.sign(mockUserTokenDataExpired, "secret");
+        sandbox.setStubFunc(localStorageHandler, "get", ()=> testToken);
+        sandbox.setStub(AuthService.prototype, "clearShinyCookie");
+        store.dispatch(authActions.loadSavedToken())
+        setTimeout(() => {
+            const actions = store.getActions();
+            expect(actions[0].type).to.eql(AuthTypeKeys.UNAUTHENTICATED);
+            done();
+        });
+    });
+
 });

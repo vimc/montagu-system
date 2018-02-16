@@ -1,4 +1,6 @@
 import * as React from "react";
+import { connect } from 'react-redux';
+
 import { RemoteContentComponent } from "../../../../../shared/components/RemoteContentComponent/RemoteContentComponent";
 import { RemoteContent } from "../../../../../shared/models/RemoteContent";
 import {  User } from "../../../../../shared/models/Generated";
@@ -7,9 +9,9 @@ import { connectToStores } from "../../../../../shared/alt";
 import { userStore } from "../../../../stores/UserStore";
 import { ListOfUsers } from "../../ListOfUsers";
 import { AddMember } from "./AddMember";
-import { adminAuthStore } from "../../../../stores/AdminAuthStore";
 
 import "../../../../../shared/styles/common.scss";
+import {AdminAppState} from "../../../../reducers/adminAppReducers";
 
 interface Props extends RemoteContent {
     members: User[];
@@ -20,14 +22,13 @@ interface Props extends RemoteContent {
 
 export class GroupMembersContentComponent extends RemoteContentComponent<Props, undefined> {
     static getStores() {
-        return [ groupStore, userStore, adminAuthStore ];
+        return [ groupStore, userStore ];
     }
 
-    static getPropsFromStores(): Props {
+    static getPropsFromStores(): Partial<Props> {
         const group = groupStore.getCurrentGroupDetails();
         const allUsers = userStore.getState().users;
         const members = groupStore.getCurrentGroupMembers();
-        const canManageGroupMembers = adminAuthStore.hasPermission("*/modelling-groups.manage-members");
 
         if (group != null) {
             return {
@@ -35,7 +36,6 @@ export class GroupMembersContentComponent extends RemoteContentComponent<Props, 
                 members: members.map(a => allUsers.find(u => a == u.username)),
                 ready: group != null && userStore.getState().ready,
                 groupId: group.id,
-                canManageGroupMembers
             };
         } else {
             return {
@@ -43,7 +43,6 @@ export class GroupMembersContentComponent extends RemoteContentComponent<Props, 
                 members: [],
                 ready: false,
                 groupId: "",
-                canManageGroupMembers
             };
         }
     }
@@ -52,8 +51,7 @@ export class GroupMembersContentComponent extends RemoteContentComponent<Props, 
         if (props.members.length == 0) {
             return <div>This group does not have any members.</div>;
         } else {
-            return <ListOfUsers users={ [...props.members] } groupId={props.groupId}
-            />;
+            return <ListOfUsers users={ [...props.members] } groupId={props.groupId} />;
         }
     }
 
@@ -74,4 +72,12 @@ export class GroupMembersContentComponent extends RemoteContentComponent<Props, 
     }
 }
 
-export const GroupMembersContent = connectToStores(GroupMembersContentComponent);
+export const GroupMembersContentAltWrapped = connectToStores(GroupMembersContentComponent);
+
+export const mapStateToProps = (state: AdminAppState) :Partial<Props> => {
+    return {
+        canManageGroupMembers: state.auth.permissions.indexOf("*/modelling-groups.manage-members") > -1,
+    }
+};
+
+export const GroupMembersContent = connect(mapStateToProps)(GroupMembersContentAltWrapped);

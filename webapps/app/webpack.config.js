@@ -25,6 +25,7 @@ function makePortalConfig(name, urlPrefix) {
         name: name,
 
         entry: [
+        	"babel-regenerator-runtime",
             "whatwg-fetch",
             "./src/main/" + name + "/index.tsx"
         ],

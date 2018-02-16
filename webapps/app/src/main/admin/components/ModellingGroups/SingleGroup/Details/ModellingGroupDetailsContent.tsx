@@ -1,4 +1,6 @@
 import * as React from "react";
+import { connect } from 'react-redux';
+
 import { RemoteContent } from "../../../../../shared/models/RemoteContent";
 import { ModellingGroupDetails, User } from "../../../../../shared/models/Generated";
 import { RemoteContentComponent } from "../../../../../shared/components/RemoteContentComponent/RemoteContentComponent";
@@ -8,7 +10,7 @@ import { GroupMembersSummary } from "./GroupMembersSummary";
 import { userStore } from "../../../../stores/UserStore";
 
 import "../../../../../shared/styles/common.scss";
-import {adminAuthStore} from "../../../../stores/AdminAuthStore";
+import {AdminAppState} from "../../../../reducers/adminAppReducers";
 
 interface Props extends RemoteContent {
     group: ModellingGroupDetails;
@@ -18,16 +20,15 @@ interface Props extends RemoteContent {
 
 class ModellingGroupDetailsContentComponent extends RemoteContentComponent<Props, undefined> {
     static getStores() {
-        return [ groupStore, userStore, adminAuthStore ];
+        return [ groupStore, userStore ];
     }
-    static getPropsFromStores(): Props {
+    static getPropsFromStores(): Partial<Props> {
         const group = groupStore.getCurrentGroupDetails();
         const users = userStore.getState();
         return {
             group: group,
             users: users.users,
-            ready: group != null && users.ready,
-            canManageGroupMembers: adminAuthStore.hasPermission("*/modelling-groups.manage-members")
+            ready: group != null && users.ready
         };
     }
 
@@ -50,4 +51,12 @@ class ModellingGroupDetailsContentComponent extends RemoteContentComponent<Props
     }
 }
 
-export const ModellingGroupDetailsContent = connectToStores(ModellingGroupDetailsContentComponent);
+export const ModellingGroupDetailsContentAltWrapped = connectToStores(ModellingGroupDetailsContentComponent);
+
+const mapStateToProps = (state: AdminAppState) :Partial<Props> => {
+    return {
+        canManageGroupMembers: state.auth.permissions.indexOf("*/modelling-groups.manage-members") > -1
+    }
+};
+
+export const ModellingGroupDetailsContent = connect(mapStateToProps)(ModellingGroupDetailsContentAltWrapped);

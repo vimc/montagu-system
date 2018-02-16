@@ -12,7 +12,6 @@ describe("ContribApp", () => {
     it("pulls properties from stores", () => {
         alt.bootstrap(JSON.stringify({
             MainStore: { ready: true },
-            ContribAuthStore: { loggedIn: true },
             NotificationStore: {
                 errors: [ "Hi" ],
                 infos: [ "Ho" ]
@@ -23,7 +22,6 @@ describe("ContribApp", () => {
             ready: true,
             errors: [ "Hi" ],
             infos: [ "Ho" ],
-            loggedIn: true
         });
     });
 

@@ -10,7 +10,6 @@ import {
 import {touchstoneActions} from "../main/contrib/actions/TouchstoneActions";
 import {modellingGroupActions} from "../main/shared/actions/ModellingGroupActions";
 import {expectIsEqual, IntegrationTestSuite} from "./IntegrationTest";
-import {contribAuthStore} from "../main/contrib/stores/ContribAuthStore";
 import {ContribFetcher} from "../main/contrib/sources/ContribFetcher";
 import {shallow} from "enzyme";
 import {ModelRunParametersSection} from "../main/contrib/components/Responsibilities/ModelRunParameters/ModelRunParametersSection";
@@ -31,6 +30,8 @@ import {estimateTokenActions} from "../main/contrib/actions/EstimateActions";
 import {runParameterActions} from "../main/contrib/actions/RunParameterActions";
 
 import {fetchToken as fetchTokenForModelRunParam} from "../main/contrib/sources/RunParametersSource";
+import {createContribStore} from "../main/contrib/stores/createContribStore";
+import { ModellingGroupsService } from "../main/shared/services/ModellingGroupsService";
 
 const FormData = require('form-data');
 const http = require('http');
@@ -47,8 +48,8 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
         return "Contribution portal";
     }
 
-    authStore() {
-        return contribAuthStore;
+    createStore() {
+        return createContribStore();
     }
 
     makeFetcher() {
@@ -113,7 +114,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
         });
 
         it("fetches modelling groups", (done: DoneCallback) => {
-            const promise = addGroups(this.db).then(() => mainStore.fetchModellingGroups());
+            const promise = addGroups(this.db).then(() => (new ModellingGroupsService(this.store.dispatch, this.store.getState).getAllGroups()));
 
             checkPromise(done, promise, (groups) => {
                 expectIsEqual<ModellingGroup[]>(groups, [

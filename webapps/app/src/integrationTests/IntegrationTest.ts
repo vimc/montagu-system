@@ -1,10 +1,12 @@
 import { Client } from "pg";
-import { checkPromise } from "../test/testHelpers";
 import { expect } from "chai";
-import { logIn } from "../main/shared/sources/LoginSource";
-import { AuthStoreBaseInterface } from "../main/shared/stores/AuthStoreBase";
+import { Sandbox } from "../test/Sandbox";
+
+import { authActions } from "../main/shared/actions/authActions";
+
 import fetcher, { Fetcher } from "../main/shared/sources/Fetcher";
 import { alt } from "../main/shared/alt";
+import { localStorageHandler } from "../main/shared/services/localStorageHandler";
 
 const dbName = process.env.PGDATABASE;
 const dbTemplateName = process.env.PGTEMPLATE;
@@ -12,7 +14,9 @@ const dbTemplateName = process.env.PGTEMPLATE;
 export abstract class IntegrationTestSuite {
     abstract description(): string;
 
-    abstract authStore(): AuthStoreBaseInterface<any>;
+    abstract createStore(): any;
+
+    store: any;
 
     abstract makeFetcher(): Fetcher;
 
@@ -22,6 +26,9 @@ export abstract class IntegrationTestSuite {
 
     constructor() {
         describe(this.description(), () => {
+
+            const sandbox = new Sandbox();
+
             beforeEach((done: DoneCallback) => {
                 queryAgainstRootDb(`CREATE DATABASE ${dbName} TEMPLATE ${dbTemplateName};`)
                     .then(() => {
@@ -32,6 +39,7 @@ export abstract class IntegrationTestSuite {
                     .catch(e => done(e));
             });
             afterEach((done: DoneCallback) => {
+                sandbox.restore();
                 this.db.end();
                 queryAgainstRootDb(`DROP DATABASE ${dbName};`)
                     .then(() => done())
@@ -43,7 +51,17 @@ export abstract class IntegrationTestSuite {
                 fetcher.fetcher = this.makeFetcher();
                 // Note that this will always trigger an authActions.logIn, which will result in all three login
                 // stores recording the user to some extent
-                checkPromise(done, logIn("test@example.com", "password", this.authStore(), false));
+
+                this.store = this.createStore();
+                this.store.dispatch(authActions.logIn("test@example.com", "password"));
+                let unsubscribe = this.store.subscribe(handleChange);
+                let that = this;
+                function handleChange () {
+                    const token =  that.store.getState().auth.bearerToken;
+                    sandbox.setStubFunc(localStorageHandler, 'get',()=> token);
+                    unsubscribe();
+                    done();
+                }
             });
             afterEach(() => alt.recycle());
 

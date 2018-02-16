@@ -10,6 +10,7 @@ import { mockResponse } from "../../../../mocks/mockRemote";
 import { expectOneAction } from "../../../../actionHelpers";
 import { DeletableUser } from "../../../../../main/admin/components/ModellingGroups/DeletableUser";
 import { Link } from "simple-react-router";
+import { shallow } from "enzyme";
 
 
 describe("DeletableUser", () => {
@@ -19,7 +20,7 @@ describe("DeletableUser", () => {
 
     it("renders link to user page", () => {
 
-        const rendered = sandbox.mount(<DeletableUser showDelete={true} groupId="group1" user={mockUser({
+        const rendered = shallow(<DeletableUser showDelete={true} groupId="group1" user={mockUser({
             "username": "w.a.m",
             "name": "Wolfgang Amadeus Mozart"
         })}/>);

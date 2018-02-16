@@ -1,59 +1,67 @@
 import * as React from "react";
+import { connect } from 'react-redux';
+
 import { ModellingGroup } from "../../../shared/models/Generated";
-import { responsibilityStore } from "../../stores/ResponsibilityStore";
-import { contribAuthStore } from "../../stores/ContribAuthStore";
-import { connectToStores } from "../../../shared/alt";
 import { GroupList } from "./GroupList";
-import { RemoteContentComponent } from "../../../shared/components/RemoteContentComponent/RemoteContentComponent";
-import { RemoteContent } from "../../../shared/models/RemoteContent";
-import { InternalLink } from "../../../shared/components/InternalLink";
 import { ButtonLink } from "../../../shared/components/ButtonLink";
+import { modellingGroupsActions } from "../../actions/modellingGroupsActions";
+import { LoadingElement } from "../../../shared/partials/LoadingElement/LoadingElement";
+
+import { Dispatch } from "redux";
 
 import "../../../shared/styles/common.scss";
+import {ContribAppState} from "../../reducers/contribAppReducers";
 
-export interface ChooseGroupProps extends RemoteContent {
+export interface ChooseGroupProps {
     groups: ModellingGroup[];
+    getUserGroups: () => void;
+    ready: boolean;
 }
 
-export class ChooseGroupContentComponent extends RemoteContentComponent<ChooseGroupProps, undefined> {
-    static getStores() {
-        return [ responsibilityStore, contribAuthStore ];
-    }
-    static getPropsFromStores(): ChooseGroupProps {
-        const groups = contribAuthStore.getState().modellingGroups;
-        return {
-            groups: groups,
-            ready: groups != null && groups.length > 0// && groups.length > 1
-        };
+export class ChooseGroupContentComponent extends React.Component<ChooseGroupProps, undefined> {
+    componentDidMount() {
+        this.props.getUserGroups()
     }
 
-    /*componentDidMount() {
-        if (this.props.groups.length == 1) {
-            console.log("Redirecting");
-            const group = this.props.groups[0];
-            this.props.router.redirectTo(`/${group.id}/`, false);
-        }
-    }*/
-
-    renderContent(props: ChooseGroupProps) {
-        if (props.groups.length > 1) {
-            return <div>
-                <div>
-                    You are a member of multiple modelling groups.
-                    Which one do you want to act as currently?
-                </div>
-                <div className="gapAbove">
-                    <GroupList groups={ props.groups }/>
-                </div>
-            </div>;
+    render() {
+        if (this.props.ready) {
+            if (this.props.groups.length > 1) {
+                return <div>
+                    <div>
+                        You are a member of multiple modelling groups.
+                        Which one do you want to act as currently?
+                    </div>
+                    <div className="gapAbove">
+                        <GroupList groups={this.props.groups}/>
+                    </div>
+                </div>;
+            } else {
+                // This is a placeholder until we have automatic redirection working
+                const url = `/${this.props.groups[0].id}/`;
+                return <span>
+                    <ButtonLink href={url}>Next</ButtonLink>
+                </span>;
+            }
         } else {
-            // This is a placeholder until we have automatic redirection working
-            const url = `/${props.groups[0].id}/`;
-            return <span>
-                <ButtonLink href={ url }>Next</ButtonLink>
-            </span>;
+            return <LoadingElement />;
         }
     }
 }
 
-export const ChooseGroupContent = connectToStores(ChooseGroupContentComponent);
+export const mapStateToProps = (state: ContribAppState): Partial<ChooseGroupProps> => {
+    return {
+        groups: state.groups.userGroups,
+        ready: state.groups.userGroups && state.groups.userGroups.length > 0
+    }
+};
+
+export const mapDispatchToProps = (dispatch: Dispatch<ContribAppState>): Partial<ChooseGroupProps> => {
+    return {
+        getUserGroups : () => dispatch(modellingGroupsActions.getUserGroups())
+    }
+};
+
+export const ChooseGroupContent = connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(ChooseGroupContentComponent);

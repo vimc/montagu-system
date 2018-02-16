@@ -1,6 +1,5 @@
 import * as React from "react";
 import { expectIsEqual, IntegrationTestSuite } from "./IntegrationTest";
-import { adminAuthStore } from "../main/admin/stores/AdminAuthStore";
 import { AdminFetcher } from "../main/admin/sources/AdminFetcher";
 import { groupStore } from "../main/admin/stores/GroupStore";
 import { checkPromise } from "../test/testHelpers";
@@ -9,16 +8,19 @@ import { Client, QueryResult } from "pg";
 import { ModellingGroup, ModellingGroupDetails, User } from "../main/shared/models/Generated";
 import { modellingGroupActions } from "../main/shared/actions/ModellingGroupActions";
 import { userStore } from "../main/admin/stores/UserStore";
-import { LoginSource, setShinyToken} from "../main/shared/sources/LoginSource";
+import {createAdminStore} from "../main/admin/stores/createAdminStore";
+import { AuthService } from "../main/shared/services/AuthService";
+
 
 class AdminIntegrationTests extends IntegrationTestSuite {
     description() {
         return "Admin portal";
     }
 
-    authStore() {
-        return adminAuthStore;
+    createStore() {
+        return createAdminStore();
     }
+
 
     makeFetcher() {
         return new AdminFetcher();
@@ -27,17 +29,19 @@ class AdminIntegrationTests extends IntegrationTestSuite {
     addTestsToMocha() {
 
         it("can fetch shiny cookie", (done: DoneCallback) => {
-            setShinyToken().then((res: Response) => {
-                expect(res.ok).to.be.eq(true);
-                done()
-            })
+            (new AuthService(this.store.dispatch, this.store.getState)).setShinyCookie()
+                .then(result => {
+                    expect(result).to.be.eq("OK");
+                    done();
+                })
         });
 
         it("can clear shiny cookie", (done: DoneCallback) => {
-            LoginSource.clearShinyToken().then((res: Response) => {
-                expect(res.ok).to.be.eq(true);
-                done()
-            })
+            (new AuthService(this.store.dispatch, this.store.getState)).clearShinyCookie()
+                .then(result => {
+                    expect(result).to.be.eq("OK");
+                    done();
+                })
         });
 
         it("can fetch groups", (done: DoneCallback) => {

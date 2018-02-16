@@ -1,8 +1,9 @@
 import * as React from "react";
 import { expect } from "chai";
 import { shallow, ShallowWrapper } from "enzyme";
-import { mockLocation } from "../../mocks/mocks";
+import { Provider } from "react-redux";
 
+import { mockLocation } from "../../mocks/mocks";
 import {PageProperties, PageWithHeader} from "../../../main/shared/components/PageWithHeader/PageWithHeader";
 import { PageHeader } from "../../../main/shared/components/PageWithHeader/PageHeader";
 import { PageArticle } from "../../../main/shared/components/PageWithHeader/PageArticle";
@@ -10,6 +11,7 @@ import { Page } from "../../../main/shared/components/PageWithHeader/Page";
 import {IPageWithParent} from "../../../main/shared/models/Breadcrumb";
 import {Sandbox} from "../../Sandbox";
 import {checkAsync} from "../../testHelpers";
+import { reduxHelper } from "../../reduxHelper";
 
 export class DummyPage extends PageWithHeader<undefined> {
     loaded: boolean;
@@ -85,8 +87,9 @@ describe('PageWithHeader', () => {
     afterEach(() => sandbox.restore());
 
     it("loads on mount after timeout", (done: DoneCallback) => {
-        const page = sandbox.mount(<DummyPage location={mockLocation<undefined>()} router={null} />)
-            .instance() as DummyPage;
+        const store = reduxHelper.createStore({auth: {loggedIn: true}})
+        const page = sandbox.mount(<Provider store={store}><DummyPage location={mockLocation<undefined>()} router={null} /></Provider>)
+            .find(DummyPage).instance() as DummyPage;
         expect(page.loaded).to.be.false;
 
         checkAsync(done, () => {
@@ -106,7 +109,7 @@ describe('PageHeader', () => {
     const sandbox = new Sandbox();
 
     beforeEach(() => {
-        rendered = shallow(<PageHeader siteTitle={"LOTR"} header={null} postHeader={null} />);
+        rendered = shallow(<PageHeader siteTitle={"LOTR"} />);
     });
     afterEach(() => sandbox.restore());
 

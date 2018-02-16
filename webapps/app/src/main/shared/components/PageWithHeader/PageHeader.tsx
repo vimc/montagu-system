@@ -1,13 +1,12 @@
 import * as React from "react";
 import { InternalLink } from "../InternalLink";
 import {NavBar} from "../NavBar/NavBar";
+import { LoggedInUserBox } from "../Login/LoggedInUserBox";
 
 import * as logo from "./logo.png";
 
 interface HeaderProps {
     siteTitle: string;
-    header: JSX.Element;
-    postHeader: JSX.Element;
 }
 
 export class PageHeader extends React.Component<HeaderProps, undefined> {
@@ -19,10 +18,9 @@ export class PageHeader extends React.Component<HeaderProps, undefined> {
                 <div className="header__siteTitle">
                     <InternalLink href="/">{this.props.siteTitle}</InternalLink>
                 </div>
-                {this.props.header}
+                <LoggedInUserBox />
             </header>
             <NavBar />
-            {this.props.postHeader}
         </div>
 
     }
