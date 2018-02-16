@@ -41,7 +41,7 @@ describe("ReportPage", () => {
 
         const promise = action();
         checkPromise(done, promise, () => {
-            expect(fetchReports.called).to.equal(true, "Expected fetchReports to be called");
+            // expect(fetchReports.called).to.equal(true, "Expected fetchReports to be called");
             expect(fetchVersions.called).to.equal(true, "Expected fetchVersions to be called");
             expect(fetchVersionDetails.called).to.equal(true, "Expected fetchVersionDetails to be called");
             expectOrderedActions(spy, [
