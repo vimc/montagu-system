@@ -6,6 +6,7 @@ import { LocalService } from "../../../main/shared/services/LocalService";
 import { settings } from "../../../main/shared/Settings";
 import { AuthTypeKeys } from "../../../main/shared/actionTypes/AuthTypes";
 import { createMockStore } from "../../mocks/mockStore";
+import {mockGlobalState} from "../../mocks/mockStates";
 
 describe('Local service class initialization tests', () => {
 
@@ -16,7 +17,7 @@ describe('Local service class initialization tests', () => {
     });
 
     it('initializes default service with default option url', () => {
-        const store = createStore(state => state, {});
+        const store = createStore(state => state, mockGlobalState({auth: {bearerToken: null}}));
         class TestService extends LocalService {
             test() {
                 return {
@@ -32,7 +33,7 @@ describe('Local service class initialization tests', () => {
     });
 
     it('initializes default service with request engine and token', () => {
-        const store = createStore(state => state, {auth: {bearerToken: "token"}});
+        const store = createStore(state => state, mockGlobalState({auth: {bearerToken: "token"}}));
 
         class TestService extends LocalService {
             test() {
@@ -50,7 +51,7 @@ describe('Local service class initialization tests', () => {
     });
 
     it('initializes default service with request engine, token and withCredentials option', () => {
-        const store = createStore(state => state, {auth: {bearerToken: "token"}});
+        const store = createStore(state => state, mockGlobalState({auth: {bearerToken: "token"}}));
 
         class TestService extends LocalService {
             test() {
@@ -70,7 +71,7 @@ describe('Local service class initialization tests', () => {
     });
 
     it('initializes default service with request engine and basic authorization', () => {
-        const store = createStore(state => state, {});
+        const store = createStore(state => state, mockGlobalState());
         const email = "abc@abc.com";
         const password = "abc";
 
@@ -101,7 +102,7 @@ describe('Local service class requests tests', () => {
     });
 
     it('performs successful query', async () => {
-        const store = createStore(state => state, {});
+        const store = createStore(state => state, mockGlobalState());
         class TestService extends LocalService {
             test() {
                 return this.get("/test/");
