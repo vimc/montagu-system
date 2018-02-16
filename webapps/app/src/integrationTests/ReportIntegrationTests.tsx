@@ -12,13 +12,10 @@ import { Sandbox } from "../test/Sandbox";
 import { ArtefactItem } from "../main/report/components/Artefacts/ArtefactItem";
 import { FileDownloadLink } from "../main/report/components/FileDownloadLink";
 import { ResourceLinks } from "../main/report/components/Resources/ResourceLinks";
-import { ReportDetailsComponent } from "../main/report/components/Reports/ReportDetails";
 import { DataLinks } from "../main/report/components/Data/DataLinks";
 import {ArtefactsSection} from "../main/report/components/Artefacts/ArtefactsSection";
 
 import { createReportStore } from "../main/report/stores/createReportStore";
-import {authActions} from "../main/shared/actions/authActions";
-import {localStorageHandler} from "../main/shared/services/localStorageHandler";
 import {ReportsService} from "../main/report/services/ReportsService";
 import {Report} from "../main/shared/models/Generated";
 

@@ -1,11 +1,9 @@
 import * as React from "react";
 import { expect } from "chai";
 import { shallow } from "enzyme";
-// import {alt} from "../../../../main/shared/alt";
 import { mockReport } from "../../../mocks/mockModels";
 import {ReportListComponent} from "../../../../main/report/components/Reports/ReportList";
 import {ReportListItem} from "../../../../main/report/components/Reports/ReportListItem";
-import {ButtonLink} from "../../../../main/shared/components/ButtonLink";
 
 describe("ReportListComponent", () => {
     it("can get props from stores", () => {

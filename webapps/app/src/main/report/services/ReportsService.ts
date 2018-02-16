@@ -5,8 +5,3 @@ export class ReportsService extends ReportLocalService {
         return this.get("/reports/");
     }
 }
-
-//
-// this.fetchVersions = () => this.doFetch(s => `/reports/${s.currentReport}/`, {
-//
-// this.fetchVersionDetails = () => this.doFetch(s => `/reports/${s.currentReport}/versions/${s.currentVersion}/`, {
