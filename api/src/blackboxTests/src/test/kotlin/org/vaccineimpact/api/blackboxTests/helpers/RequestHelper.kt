@@ -9,6 +9,7 @@ import khttp.structures.files.FileLike
 import org.vaccineimpact.api.models.helpers.ContentTypes
 import org.vaccineimpact.api.models.ErrorInfo
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
+import org.vaccineimpact.api.validateSchema.JSONValidator
 import java.io.File
 
 data class TokenLiteral(val value: String)
@@ -38,6 +39,13 @@ class RequestHelper
     {
         val token = TestUserHelper().getTokenForTestUser(permissions)
         return get(url, headersWithoutGzip(contentType, token))
+    }
+
+    fun getOneTimeToken(url: String, token: TokenLiteral? = null): String
+    {
+        val response = get("/onetime_token/?url=/v1$url", token)
+        JSONValidator().validateSuccess(response.text)
+        return response.montaguData()!!
     }
 
     fun post(url: String, permissions: Set<ReifiedPermission>, data: JsonObject): Response

@@ -4,8 +4,8 @@ import org.pac4j.core.authorization.authorizer.AbstractRequireAllAuthorizer
 import org.pac4j.core.context.WebContext
 import org.pac4j.core.profile.CommonProfile
 import org.pac4j.sparkjava.SparkWebContext
+import org.slf4j.LoggerFactory
 import org.vaccineimpact.api.app.context.DirectActionContext
-import org.vaccineimpact.api.models.permissions.ReifiedPermission
 
 class MontaguAuthorizer(requiredPermissions: Set<PermissionRequirement>)
     : AbstractRequireAllAuthorizer<PermissionRequirement, CommonProfile>()
@@ -13,6 +13,26 @@ class MontaguAuthorizer(requiredPermissions: Set<PermissionRequirement>)
     init
     {
         elements = requiredPermissions
+    }
+
+    private val logger = LoggerFactory.getLogger(MontaguAuthorizer::class.java)
+
+    override fun isProfileAuthorized(context: WebContext, profile: CommonProfile): Boolean
+    {
+        val claimedUrl = profile.getAttribute("url")
+        val requestedUrl = context.path
+
+        if (claimedUrl == "*" || requestedUrl == claimedUrl)
+        {
+            return super.isProfileAuthorized(context, profile)
+        }
+        else
+        {
+            logger.warn("This token is issued for $claimedUrl but the current request is for $requestedUrl")
+            profile.mismatchedURL = "This token is issued for $claimedUrl but the current request is for $requestedUrl"
+            return false
+        }
+
     }
 
     override fun check(context: WebContext, profile: CommonProfile, element: PermissionRequirement): Boolean

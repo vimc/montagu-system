@@ -4,7 +4,6 @@ import org.pac4j.core.config.Config
 import org.pac4j.core.config.ConfigFactory
 import org.pac4j.core.context.HttpConstants
 import org.pac4j.core.profile.CommonProfile
-import org.pac4j.jwt.profile.JwtProfile
 import org.pac4j.sparkjava.SparkWebContext
 import org.vaccineimpact.api.app.context.DirectActionContext
 import org.vaccineimpact.api.app.errors.MissingRequiredPermissionError
@@ -16,13 +15,15 @@ import org.vaccineimpact.api.security.WebTokenHelper
 
 class TokenVerifyingConfigFactory(
         tokenHelper: WebTokenHelper,
-        val requiredPermissions: Set<PermissionRequirement>,
+        private val requiredPermissions: Set<PermissionRequirement>,
         private val repositoryFactory: RepositoryFactory
 ) : ConfigFactory
 {
-    private val clients = listOf(
-            JWTHeaderClient(tokenHelper)
+    private val wrappedClients: List<MontaguSecurityClientWrapper> = listOf(
+            JWTHeaderClient.Wrapper(tokenHelper),
+            JWTParameterClient.Wrapper(tokenHelper, JooqOneTimeTokenChecker(repositoryFactory))
     )
+    private val clients = wrappedClients.map { it.client }
 
     override fun build(vararg parameters: Any?): Config
     {
@@ -32,11 +33,11 @@ class TokenVerifyingConfigFactory(
         return Config(clients).apply {
             setAuthorizer(MontaguAuthorizer(requiredPermissions))
             addMethodMatchers()
-            httpActionAdapter = TokenActionAdapter(repositoryFactory)
+            httpActionAdapter = TokenActionAdapter(wrappedClients, repositoryFactory)
         }
     }
 
-    fun allClients() = clients.map { it::class.java.simpleName }.joinToString()
+    fun allClients() = clients.joinToString { it::class.java.simpleName }
 
     private fun extractPermissionsFromToken(profile: CommonProfile): CommonProfile
     {
@@ -50,15 +51,24 @@ class TokenVerifyingConfigFactory(
     }
 }
 
-class TokenActionAdapter(repositoryFactory: RepositoryFactory)
+class TokenActionAdapter(wrappedClients: List<MontaguSecurityClientWrapper>, repositoryFactory: RepositoryFactory)
     : MontaguHttpActionAdapter(repositoryFactory)
 {
-    private val unauthorizedResponse = listOf(ErrorInfo(
-            "bearer-token-invalid",
-            "Bearer token not supplied in Authorization header, or bearer token was invalid"
-    ))
+    private val unauthorizedResponse: List<ErrorInfo> = wrappedClients.map { it.authorizationError }
 
-    private fun forbiddenResponse(missingPermissions: Set<ReifiedPermission>) = MissingRequiredPermissionError(missingPermissions).problems
+    private fun forbiddenResponse(missingPermissions: Set<ReifiedPermission>, mismatchedURL: String?): List<ErrorInfo>
+    {
+        val errors = mutableListOf<ErrorInfo>()
+        if (missingPermissions.any())
+        {
+            errors.addAll(MissingRequiredPermissionError(missingPermissions).problems)
+        }
+        if (mismatchedURL != null)
+        {
+            errors.add(ErrorInfo("forbidden", mismatchedURL))
+        }
+        return errors
+    }
 
     override fun adapt(code: Int, context: SparkWebContext): Any? = when (code)
     {
@@ -69,8 +79,7 @@ class TokenActionAdapter(repositoryFactory: RepositoryFactory)
         HttpConstants.FORBIDDEN ->
         {
             val profile = DirectActionContext(context).userProfile!!
-            val response = forbiddenResponse(profile.missingPermissions).toList()
-            haltWithError(code, context, response)
+            haltWithError(code, context, forbiddenResponse(profile.missingPermissions, profile.mismatchedURL))
         }
         else -> super.adapt(code, context)
     }

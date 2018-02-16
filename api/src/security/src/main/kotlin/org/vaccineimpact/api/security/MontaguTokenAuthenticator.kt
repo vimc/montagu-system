@@ -25,5 +25,12 @@ open class MontaguTokenAuthenticator(
             throw CredentialsException("Wrong type of token was provided. " +
                     "Expected '$expectedType', was actually '$tokenType'")
         }
+        handleUrlAttribute(credentials, jwt)
+    }
+
+    protected open fun handleUrlAttribute(credentials: TokenCredentials, jwt: JWT)
+    {
+        // OAuth access tokens are allowed to access any URL
+        credentials.userProfile?.addAttribute("url", "*")
     }
 }
