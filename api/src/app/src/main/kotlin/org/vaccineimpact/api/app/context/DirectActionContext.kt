@@ -20,6 +20,7 @@ import spark.Response
 import java.io.BufferedOutputStream
 import java.io.BufferedReader
 import java.io.OutputStream
+import java.io.Reader
 import java.util.zip.GZIPOutputStream
 
 
@@ -41,21 +42,20 @@ class DirectActionContext(private val context: SparkWebContext) : ActionContext
     override fun <T : Any> postData(klass: Class<T>): T = ModelBinder().deserialize(request.body(), klass)
 
     // Return one part as a stream
-    override fun getPart(name: String, multipartData: MultipartData): RequestData
+    override fun getPart(name: String, multipartData: MultipartData): Reader
     {
         val parts = getPartsAsSequence(multipartData)
         val matchingPart = parts.firstOrNull { it.fieldName == name }
                 ?: throw MissingRequiredMultipartParameterError(name)
 
-        val reader = matchingPart.openStream().bufferedReader()
-        return RequestData(reader, matchingPart.contentType)
+        return matchingPart.openStream().bufferedReader()
     }
 
     // Pull all parts into memory and return them as a map
     override fun getParts(multipartData: MultipartData): MultipartDataMap
     {
         val map = getPartsAsSequence(multipartData)
-                .map { it.fieldName to InMemoryRequestData(it.contents(), it.contentType) }
+                .map { it.fieldName to InMemoryRequestData(it.contents()) }
                 .toMap()
         return MultipartDataMap(map)
     }
