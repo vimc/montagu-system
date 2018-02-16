@@ -14,11 +14,12 @@ import {
     AuthActionsTypes, Authenticated, AuthenticationError, AuthTypeKeys,
     Unauthenticated
 } from "../actionTypes/AuthTypes";
+import {GlobalState} from "../reducers/GlobalState";
 
 export const authActions = {
 
     logIn(email: string, password: string) {
-        return async (dispatch: Dispatch<any>, getState: Function) => {
+        return async (dispatch: Dispatch<any>, getState: () => GlobalState) => {
             try {
                 const response = await (new AuthService(dispatch, getState)).logIn(email, password)
                 if (response.error) {
@@ -67,7 +68,7 @@ export const authActions = {
     },
 
     tokenReceived(token: string) {
-        return (dispatch: Dispatch<any>, getState: Function) => {
+        return (dispatch: Dispatch<any>, getState: () => GlobalState) => {
             const user: AuthState = jwtTokenAuth.getDataFromToken(token);
             const error: Notification = this.validateAuthResult(user);
             if (!error) {
@@ -95,7 +96,7 @@ export const authActions = {
     },
 
     logOut() {
-        return (dispatch: Dispatch<any>, getState: Function) => {
+        return (dispatch: Dispatch<any>, getState: () => GlobalState) => {
             localStorageHandler.remove("accessToken");
             (new AuthService(dispatch, getState)).clearShinyCookie();
             dispatch({

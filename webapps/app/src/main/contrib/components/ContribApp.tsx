@@ -43,7 +43,7 @@ export class ContribAppComponent extends React.Component<AppProps, undefined> {
 
 export const ContribAppAltWrapped = connectToStores(ContribAppComponent);
 
-const mapStateToProps = (state: ContribAppState) => {
+const mapStateToProps = (state: ContribAppState) : Partial<AppProps> => {
     return {
         loggedIn: state.auth.loggedIn,
     }

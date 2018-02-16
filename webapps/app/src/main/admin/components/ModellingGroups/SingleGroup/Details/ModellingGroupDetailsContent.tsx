@@ -53,7 +53,7 @@ class ModellingGroupDetailsContentComponent extends RemoteContentComponent<Props
 
 export const ModellingGroupDetailsContentAltWrapped = connectToStores(ModellingGroupDetailsContentComponent);
 
-const mapStateToProps = (state: AdminAppState) => {
+const mapStateToProps = (state: AdminAppState) :Partial<Props> => {
     return {
         canManageGroupMembers: state.auth.permissions.indexOf("*/modelling-groups.manage-members") > -1
     }

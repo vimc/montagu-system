@@ -51,8 +51,7 @@ export class GroupMembersContentComponent extends RemoteContentComponent<Props, 
         if (props.members.length == 0) {
             return <div>This group does not have any members.</div>;
         } else {
-            return <ListOfUsers users={ [...props.members] } groupId={props.groupId}
-            />;
+            return <ListOfUsers users={ [...props.members] } groupId={props.groupId} />;
         }
     }
 
@@ -75,7 +74,7 @@ export class GroupMembersContentComponent extends RemoteContentComponent<Props, 
 
 export const GroupMembersContentAltWrapped = connectToStores(GroupMembersContentComponent);
 
-export const mapStateToProps = (state: AdminAppState) => {
+export const mapStateToProps = (state: AdminAppState) :Partial<Props> => {
     return {
         canManageGroupMembers: state.auth.permissions.indexOf("*/modelling-groups.manage-members") > -1,
     }

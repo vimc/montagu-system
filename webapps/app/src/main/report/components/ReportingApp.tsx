@@ -36,7 +36,7 @@ export class ReportingAppComponent extends React.Component<ReportingAppProps, un
 
 export const ReportingAppAltWrapped = connectToStores(ReportingAppComponent);
 
-const mapStateToProps = (state: ReportAppState) => {
+const mapStateToProps = (state: ReportAppState) :Partial<ReportingAppProps> => {
   return {
       loggedIn: state.auth.loggedIn,
   }
