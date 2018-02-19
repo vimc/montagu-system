@@ -46,7 +46,7 @@ export const ReportDetailsComponent = (props: ReportDetailsProps) => {
     }
 }
 
-export const mapStateToProps = (state: ReportAppState, props: any): Partial<ReportDetailsProps> => {
+export const mapStateToProps = (state: ReportAppState, props: PublicProps): Partial<ReportDetailsProps> => {
     return {
         versionDetails: state.reports.versionDetails,
         ready: !!state.reports.versionDetails,
