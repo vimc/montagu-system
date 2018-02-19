@@ -1,6 +1,9 @@
 import { LocalService } from "./LocalService";
 
 export class AuthService extends LocalService {
+
+    stateSegment = 'auth';
+
     logIn(email: string, password: string) {
         this.setOptions({
             Authorization: 'Basic ' + btoa(`${email}:${password}`),

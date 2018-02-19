@@ -33,17 +33,34 @@ export interface InputOptions {
 
 export abstract class LocalService {
     protected dispatch: Dispatch<Action>;
+    protected getGlobalState: Function;
+    protected abstract stateSegment: string;
+
     protected bearerToken: string;
     protected options: InputOptions = {};
 
+    protected isCached: boolean = false;
+    protected cachedData: any;
+
     public constructor(dispatch: Dispatch<Action>, getState: () => GlobalState) {
         this.dispatch = dispatch;
+        this.getGlobalState = getState;
 
         this.bearerToken = this.getTokenFromState(getState());
         this.initOptions();
 
         this.processResponse = this.processResponse.bind(this);
         this.notifyOnErrors = this.notifyOnErrors.bind(this);
+    }
+
+    protected setCached(isCached: boolean, cachedData?: any) {
+        console.log('set chach', isCached, cachedData)
+        this.isCached = isCached;
+        this.cachedData = cachedData;
+    }
+
+    protected getState(){
+        return this.getGlobalState()[this.stateSegment];
     }
 
     protected getTokenFromState(state: GlobalState) {
@@ -58,7 +75,6 @@ export abstract class LocalService {
 
     protected initOptions() {
         this.options.baseURL = settings.apiUrl();
-
         if (this.bearerToken) {
             this.options.Authorization = 'Bearer ' + this.bearerToken;
         }
@@ -87,16 +103,22 @@ export abstract class LocalService {
 
     public get(url: string){
         console.log('get', url);
-        return this.doFetch(this.makeUrl(url), this.makeRequestOptions('GET'))
-            .then(this.processResponse)
-            .catch(this.notifyOnErrors);
+        return this.doRequest(url, "GET");
     }
 
     public post(url: string, params?:any){
         console.log('post', url, params);
-        return this.doFetch(this.makeUrl(url), this.makeRequestOptions('POST', params))
-            .then(this.processResponse)
-            .catch(this.notifyOnErrors);
+        return this.doRequest(url, "POST");
+    }
+
+    protected doRequest(url: string, method: string) {
+        if (this.isCached) {
+           return Promise.resolve(this.cachedData);
+        } else {
+            return this.doFetch(this.makeUrl(url), this.makeRequestOptions(method))
+                .then(this.processResponse)
+                .catch(this.notifyOnErrors);
+        }
     }
 
     public postNoProcess(url: string, params?:any){
