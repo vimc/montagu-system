@@ -202,27 +202,6 @@ class PopulateBurdenEstimateTests : BurdenEstimateTests()
         }
     }
 
-    @Test
-    fun `non-CSV data returns sensible error`()
-    {
-        TestUserHelper.setupTestUser()
-        val setId = JooqContext().use {
-            setUpWithBurdenEstimateSet(it)
-        }
-        val token = TestUserHelper.getToken(requiredWritePermissions, includeCanLogin = true)
-        // It's quite hard to trick khttp into sending the content types we want,
-        // so here we drop down to directly invoking the khttp.post method so we
-        // can use the json argument.
-        val response =  khttp.post(
-                EndpointBuilder.build("$setUrl/$setId/"),
-                RequestHelper().standardHeaders(ContentTypes.json, token),
-                json = arrayOf("a", "b")
-        )
-        JSONValidator().validateError(response.text,
-                expectedErrorCode = "wrong-data-format",
-                expectedErrorText = "this format: application/json")
-    }
-
     private fun getPopulateOneTimeURL(setId: Int, redirect: Boolean = false): String
     {
         var url = "$setUrl/$setId/get_onetime_link/"
