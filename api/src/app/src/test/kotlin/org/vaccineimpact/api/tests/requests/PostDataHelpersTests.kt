@@ -4,7 +4,6 @@ import com.nhaarman.mockito_kotlin.doReturn
 import com.nhaarman.mockito_kotlin.mock
 import org.assertj.core.api.Assertions
 import org.junit.Test
-import org.vaccineimpact.api.app.context.RequestData
 import org.vaccineimpact.api.app.context.RequestDataSource
 import org.vaccineimpact.api.app.errors.WrongDataFormatError
 import org.vaccineimpact.api.app.requests.PostDataHelper
@@ -18,7 +17,7 @@ class PostDataHelpersTests : MontaguTests()
     @Test
     fun `throws WrongDataFormat if csvData is called with RequestBodySource and wrong content type`()
     {
-        val file = RequestData(StringReader(""), contentType = "application/json")
+        val file = StringReader("")
         val source = mock<RequestDataSource> {
             on { getContent() } doReturn file
         }

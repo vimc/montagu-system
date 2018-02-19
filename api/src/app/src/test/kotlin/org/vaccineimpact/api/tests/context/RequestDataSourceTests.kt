@@ -9,7 +9,6 @@ import org.junit.Test
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.context.MultipartStreamSource
 import org.vaccineimpact.api.app.context.RequestBodySource
-import org.vaccineimpact.api.app.context.RequestData
 import org.vaccineimpact.api.test_helpers.MontaguTests
 import java.io.StringReader
 
@@ -24,13 +23,13 @@ class RequestDataSourceTests : MontaguTests()
             on { contentType() } doReturn "content/type"
         }
         val source = RequestBodySource(context)
-        assertThat(source.getContent()).isEqualTo(RequestData(reader, "content/type"))
+        assertThat(source.getContent()).isEqualTo(reader)
     }
 
     @Test
     fun `can get content type from multipart stream source`()
     {
-        val file = RequestData(StringReader("Text"), "content/type")
+        val file = StringReader("Text")
         val context = mock<ActionContext> {
             on { getPart(eq("part1"), anyOrNull()) } doReturn file
         }
