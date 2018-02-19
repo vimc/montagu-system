@@ -12,7 +12,7 @@ import {ResourceLinks} from "../Resources/ResourceLinks";
 import {ReportVersionSwitcher} from "./ReportVersionSwitcher";
 import {ArtefactsSection} from "../Artefacts/ArtefactsSection";
 import {DraftStamp} from "../DraftStamp";
-
+import { LoadingElement } from "../../../shared/partials/LoadingElement/LoadingElement";
 import "../../../shared/styles/common.scss";
 import {ReportAppState} from "../../reducers/reportAppReducers";
 
@@ -26,22 +26,23 @@ export interface ReportDetailsProps extends RemoteContent, PublicProps {
     allVersions: string[];
 }
 
-export class ReportDetailsComponent extends RemoteContentComponent<ReportDetailsProps, undefined> {
-
-    renderContent(props: ReportDetailsProps) {
+export const ReportDetailsComponent = (props: ReportDetailsProps) => {
+    if (props.ready) {
         const version = props.versionDetails.id;
         return <div>
-            <DraftStamp published={props.versionDetails.published} />
+            <DraftStamp published={props.versionDetails.published}/>
             <ReportVersionSwitcher
                 currentVersion={props.versionDetails.id}
                 versions={props.allVersions}
                 onChangeVersion={props.onChangeVersion}
             />
-            <ArtefactsSection report={this.props.report} versionDetails={this.props.versionDetails} />
+            <ArtefactsSection report={props.report} versionDetails={props.versionDetails}/>
             <DataLinks {...props.versionDetails.hash_data} />
             <ResourceLinks resources={props.versionDetails.resources} report={props.report} version={version}/>
             <ParameterList {...props.versionDetails.parameters} />
-        </div>
+        </div>;
+    } else {
+        return <LoadingElement />;
     }
 }
 
