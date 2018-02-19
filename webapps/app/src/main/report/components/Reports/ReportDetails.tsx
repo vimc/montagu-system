@@ -9,10 +9,10 @@ import {DataLinks} from "../Data/DataLinks";
 import {ResourceLinks} from "../Resources/ResourceLinks";
 import {ReportVersionSwitcher} from "./ReportVersionSwitcher";
 import {ArtefactsSection} from "../Artefacts/ArtefactsSection";
-import {IRouter} from "simple-react-router";
 import {DraftStamp} from "../DraftStamp";
 
 import "../../../shared/styles/common.scss";
+import {InlineArtefact} from "../Artefacts/InlineArtefact";
 
 interface PublicProps {
     onChangeVersion: (version: string) => void;
@@ -36,25 +36,32 @@ export class ReportDetailsComponent extends RemoteContentComponent<ReportDetails
             report: s.currentReport,
             allVersions: s.versions[s.currentReport],
             ready: s.ready
-                && s.versions[s.currentReport] !== undefined
-                && s.versionDetails[s.currentVersion] != null,
+            && s.versions[s.currentReport] !== undefined
+            && s.versionDetails[s.currentVersion] != null,
 
             onChangeVersion: props.onChangeVersion
         };
     }
 
     renderContent(props: ReportDetailsProps) {
+        const report = props.report;
         const version = props.versionDetails.id;
+        const artefactGroup = this.props.versionDetails.artefacts[0];
+        const type = Object.getOwnPropertyNames(artefactGroup)[0];
+        const artefact = artefactGroup[type];
+
         return <div>
-            <DraftStamp published={props.versionDetails.published} />
+            <InlineArtefact report={report} version={version} artefact={artefact}/>
+            <DraftStamp published={props.versionDetails.published}/>
+            <DraftStamp published={props.versionDetails.published}/>
             <ReportVersionSwitcher
                 currentVersion={props.versionDetails.id}
                 versions={props.allVersions}
                 onChangeVersion={props.onChangeVersion}
             />
-            <ArtefactsSection report={this.props.report} versionDetails={this.props.versionDetails} />
+            <ArtefactsSection report={report} versionDetails={this.props.versionDetails}/>
             <DataLinks {...props.versionDetails.hash_data} />
-            <ResourceLinks resources={props.versionDetails.resources} report={props.report} version={version}/>
+            <ResourceLinks resources={props.versionDetails.resources} report={report} version={version}/>
             <ParameterList {...props.versionDetails.parameters} />
         </div>
     }
