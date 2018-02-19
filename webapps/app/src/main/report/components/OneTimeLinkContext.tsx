@@ -18,7 +18,7 @@ interface Props extends PublicProps {
 // These props are passed to the children
 export interface OneTimeLinkProps {
     href?: string;
-    refreshToken?: (e: React.MouseEvent<HTMLAnchorElement>) => void;
+    refreshToken?: () => void;
 }
 
 // This is a component that needs to get data from its parent component (the 'href' prop) but also
@@ -41,15 +41,17 @@ export class OneTimeLinkContextComponent extends React.Component<Props, undefine
         this.refreshToken = this.refreshToken.bind(this);
     }
 
-    componentDidMount() {
-        setTimeout(() => {
-            if (this.props.token == null) {
-                oneTimeTokenStore.fetchToken(this.props.href).catch(doNothing);
-            }
-        });
+    componentWillReceiveProps(newProps: Props) {
+        if (this.props.href != newProps.href) {
+            this.refreshToken();
+        }
     }
 
-    refreshToken(e: React.MouseEvent<HTMLAnchorElement>): void {
+    componentDidMount() {
+        this.refreshToken();
+    }
+
+    refreshToken(): void {
         setTimeout(() => {
             oneTimeTokenActions.clearUsedToken(this.props.href);
             oneTimeTokenStore.fetchToken(this.props.href).catch(doNothing);

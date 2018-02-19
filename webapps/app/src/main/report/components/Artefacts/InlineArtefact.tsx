@@ -13,20 +13,37 @@ export class InlineArtefact extends React.Component<Props, undefined> {
     render(): JSX.Element {
         const {report, version, artefact} = this.props;
         const filename = artefact.filenames[0];
-        return <OneTimeLinkContext href={buildArtefactUrl(report, version, filename, true)}>
-            <ArtefactIFrame />
-        </OneTimeLinkContext>
+        const extension = filename.split('.').pop();
+
+        if (this.canRenderInIFrame(extension)) {
+            return <OneTimeLinkContext href={buildArtefactUrl(report, version, filename, false)}>
+                <ArtefactIFrame/>
+            </OneTimeLinkContext>;
+        } else {
+            // Do other things here, like rendering CSV as a table, etc.
+            return null;
+        }
+    }
+
+    canRenderInIFrame(ext: string): boolean {
+        const images = ["png", "jpg", "jpeg", "gif", "svg"];
+        return (ext == "pdf" || images.indexOf(ext) > -1);
     }
 }
 
 class ArtefactIFrame extends React.Component<OneTimeLinkProps, undefined> {
     render(): JSX.Element {
-        return <iframe
-            src={this.props.href}
-            className="float-right"
-            width="50%" height="600px"
-            frameBorder={0}
-        />;
+        const {href} = this.props;
+        if (href != null) {
+            return <iframe
+                src={this.props.href + "&inline=true"}
+                className="float-right"
+                width="50%" height="600px"
+                frameBorder={0}
+            />;
+        } else {
+            return null;
+        }
     }
 }
 

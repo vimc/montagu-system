@@ -19,6 +19,15 @@ export class FileDownloadLink extends React.Component<Props, undefined> {
 }
 
 class FileDownloadLinkInner extends React.Component<OneTimeLinkProps, undefined> {
+    constructor(props: OneTimeLinkProps) {
+        super(props);
+        this.refreshToken = this.refreshToken.bind(this);
+    }
+
+    refreshToken(e: React.MouseEvent<HTMLAnchorElement>) {
+        this.props.refreshToken();
+    }
+
     render() {
         const {href} = this.props;
         let className: string;
@@ -35,7 +44,7 @@ class FileDownloadLinkInner extends React.Component<OneTimeLinkProps, undefined>
         return <span>
             <a
                 href={href}
-                onClick={this.props.refreshToken}
+                onClick={this.refreshToken}
                 className={className}
                 target="_blank"
                 download="" // Filename is provided by server
