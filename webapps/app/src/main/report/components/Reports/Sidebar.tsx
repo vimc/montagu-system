@@ -37,13 +37,13 @@ export class Sidebar extends React.Component<any, SidebarState> {
                         </NavItem>
                         <NavItem>
                             <NavLink href="#" disabled id="download">Downloads</NavLink>
-                            <UncontrolledTooltip placement="right" target="download">
+                            <UncontrolledTooltip placement="top" target="download">
                                 Coming soon
                             </UncontrolledTooltip>
                         </NavItem>
                         <NavItem>
                             <NavLink href="#" disabled id={"changelog"}>Changelog</NavLink>
-                            <UncontrolledTooltip placement="right" target="changelog">
+                            <UncontrolledTooltip placement="top" target="changelog">
                                 Coming soon
                             </UncontrolledTooltip>
                         </NavItem>
