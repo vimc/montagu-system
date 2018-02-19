@@ -63,7 +63,7 @@ export class ReportPage extends ReportingPageWithHeader<ReportPageProps> {
                     <div className="col-12 col-sm-4 col-xl-2">
                         <Sidebar/>
                     </div>
-                    <div className={"col-12 col-sm-10 col-md-8 pt-4"}>
+                    <div className={"col-12 col-sm-10 col-md-8"}>
                         <ReportDetails onChangeVersion={this.changeVersion}/>
                     </div>
                 </div>
