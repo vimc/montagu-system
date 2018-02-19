@@ -12,11 +12,12 @@ import { Sandbox } from "../test/Sandbox";
 import { ArtefactItem } from "../main/report/components/Artefacts/ArtefactItem";
 import { FileDownloadLink } from "../main/report/components/FileDownloadLink";
 import { ResourceLinks } from "../main/report/components/Resources/ResourceLinks";
-import { ReportDetailsComponent } from "../main/report/components/Reports/ReportDetails";
 import { DataLinks } from "../main/report/components/Data/DataLinks";
 import {ArtefactsSection} from "../main/report/components/Artefacts/ArtefactsSection";
 
 import { createReportStore } from "../main/report/stores/createReportStore";
+import {ReportsService} from "../main/report/services/ReportsService";
+import {Report} from "../main/shared/models/Generated";
 
 const jwt_decode = require('jwt-decode');
 
@@ -41,19 +42,17 @@ class ReportIntegrationTests extends IntegrationTestSuite {
 
         afterEach(() => sandbox.restore());
 
-        it("fetches reports", (done: DoneCallback) => {
-            const promise = reportStore.fetchReports();
+        it("fetches reports", async () => {
             const expectedNames: string[] = ["minimal", "multi-artefact", "multifile-artefact", "other", "use_resource"];
-            checkPromise(done, promise, (reports) => {
-                const names = reports.map((item) => item.name);
-                const versions = reports.filter((item) => item.latest_version.length > 0);
-                const otherReport = reports.filter((item) => item.name == "other");
+            const reports = await (new ReportsService(this.store.dispatch, this.store.getState)).getAllReports();
+            const names = reports.map((item: Report) => item.name);
+            const versions = reports.filter((item: Report) => item.latest_version.length > 0);
+            const otherReport = reports.filter((item: Report) => item.name == "other");
 
-                expectSameElements<string>(names, expectedNames);
+            expectSameElements<string>(names, expectedNames);
 
-                expect(otherReport[0].display_name).to.equal("another report");
-                expect(versions.length).to.equal(reports.length);
-            });
+            expect(otherReport[0].display_name).to.equal("another report");
+            expect(versions.length).to.equal(reports.length);
         });
 
         it("fetches report versions", (done: DoneCallback) => {

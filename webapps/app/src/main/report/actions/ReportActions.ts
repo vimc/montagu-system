@@ -5,9 +5,6 @@ import { Report } from "../../shared/models/Generated";
 
 interface Actions {
     setCurrentReport(name: string): string;
-    beginFetchReports() : boolean;
-    updateReports(reports: Report[]) : Report[];
-
     beginFetchVersions() : boolean;
     updateVersions(versions: string[]) : string[];
     setCurrentVersion(version: string) : string;
@@ -20,14 +17,6 @@ class ReportActions extends FetchActions<string[]> implements Actions {
 
     setCurrentReport(name: string): string {
         return name;
-    }
-
-    beginFetchReports(): boolean {
-        return true;
-    }
-
-    updateReports(data: Report[]) {
-        return data;
     }
 
     beginFetchVersions(): boolean {

@@ -23,12 +23,10 @@ export class ReportPage extends ReportingPageWithHeader<ReportPageProps> {
     }
 
     load(props: ReportPageProps): Promise<Version> {
-        return this.loadParent(props).then(() => {
-            reportActions.setCurrentReport(props.report);
-            return reportStore.fetchVersions().then(() => {
-                reportActions.setCurrentVersion(props.version);
-                return reportStore.fetchVersionDetails();
-            });
+        reportActions.setCurrentReport(props.report);
+        return reportStore.fetchVersions().then(() => {
+            reportActions.setCurrentVersion(props.version);
+            return reportStore.fetchVersionDetails();
         });
     }
 
