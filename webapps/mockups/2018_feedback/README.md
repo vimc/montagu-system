@@ -3,8 +3,8 @@ In February 2018 Alex and Martin conducted feedback sessions with:
 * Petra (LSHTM)
 * Kaja (LSHTM)
 * Katy (IC-Garske)
+* Kevin (LSHTM)
 * Margaret (??)
-* ??
 
 We:
 
