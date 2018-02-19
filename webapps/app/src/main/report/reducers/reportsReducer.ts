@@ -10,7 +10,7 @@ export interface ReportsState {
     versionDetails: Version;
 }
 
-export const initialState: ReportsState = {
+export const reportsInitialState: ReportsState = {
     reports: [],
     versions: [],
     currentReport: null,
@@ -18,7 +18,7 @@ export const initialState: ReportsState = {
     versionDetails: null
 };
 
-export const reportsReducer = (state = initialState, action: ReportsActionsTypes) => {
+export const reportsReducer = (state = reportsInitialState, action: ReportsActionsTypes) => {
     switch (action.type) {
         case ReportTypeKeys.REPORTS_FETCHED:
             return { ...state, reports: action.data };

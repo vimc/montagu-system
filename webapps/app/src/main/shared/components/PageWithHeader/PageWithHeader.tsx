@@ -33,6 +33,10 @@ export abstract class PageWithHeader<TLocationProps>
         return false;
     }
     componentDidMount(): Promise<any> | void {
+        return this.loadOnMount();
+    }
+
+    loadOnMount(): Promise<any> {
         return this.load(this.props.location.params).then(() => {
             this.createBreadcrumb();
             window.scrollTo(0, 0);
