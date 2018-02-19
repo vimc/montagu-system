@@ -15,7 +15,7 @@ export class InlineArtefact extends React.Component<Props, undefined> {
         const filename = artefact.filenames[0];
         const extension = filename.split('.').pop();
 
-        if (this.canRenderInIFrame(extension)) {
+        if (InlineArtefact.canRenderInIFrame(extension)) {
             return <OneTimeLinkContext href={buildArtefactUrl(report, version, filename, false)}>
                 <ArtefactIFrame/>
             </OneTimeLinkContext>;
@@ -25,7 +25,7 @@ export class InlineArtefact extends React.Component<Props, undefined> {
         }
     }
 
-    canRenderInIFrame(ext: string): boolean {
+    static canRenderInIFrame(ext: string): boolean {
         // This will be replaced with checking the mimetype once we have that metadata
         const images = ["png", "jpg", "jpeg", "gif", "svg"];
         const html = ["html", "htm"];
