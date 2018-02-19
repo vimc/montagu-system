@@ -9,7 +9,6 @@ import {Version} from "../../shared/models/reports/Report";
 import { Report } from "../../shared/models/Generated";
 
 export interface ReportStoreState extends RemoteContent {
-    reports: Report[];
     versions: ILookup<string[]>;
     currentReport: string;
     currentVersion: string;
@@ -17,7 +16,6 @@ export interface ReportStoreState extends RemoteContent {
 }
 
 export interface ReportStoreInterface extends AltJS.AltStore<ReportStoreState> {
-    fetchReports(): Promise<Report[]>;
     fetchVersions(): Promise<string[]>;
     fetchVersionDetails(): Promise<Version>;
 }
@@ -34,8 +32,6 @@ class ReportStore
     constructor() {
         super();
         this.bindListeners({
-            handleBeginFetchReports: reportActions.beginFetchReports,
-            handleUpdateReports: reportActions.updateReports,
             handleSetCurrentReport: reportActions.setCurrentReport,
 
             handleBeginFetchVersions: reportActions.beginFetchVersions,
@@ -50,23 +46,13 @@ class ReportStore
 
     initialState(): ReportStoreState {
         return {
-            reports: [],
+            // reports: [],
             versions: {},
             currentReport: null,
             currentVersion: null,
             versionDetails: {},
             ready: false
         };
-    }
-
-    handleBeginFetchReports() {
-        this.ready = false;
-        this.reports = [];
-    }
-
-    handleUpdateReports(reports: Report[]) {
-        this.reports = reports;
-        this.ready = true;
     }
 
     handleSetCurrentReport(name: string) {

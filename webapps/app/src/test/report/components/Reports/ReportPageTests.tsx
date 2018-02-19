@@ -35,7 +35,6 @@ describe("ReportPage", () => {
 
     const checkExpectedActionsWhen = function (done: DoneCallback, action: () => Promise<Version>) {
         const spy = sandbox.dispatchSpy();
-        const fetchReports = sandbox.sinon.stub(reportStore, "fetchReports").returns(Promise.resolve(null));
         const fetchVersions = sandbox.sinon.stub(reportStore, "fetchVersions").returns(Promise.resolve(null));
         const fetchVersionDetails = sandbox.sinon.stub(reportStore, "fetchVersionDetails").returns(Promise.resolve(null));
 

@@ -3,21 +3,14 @@ import { reportActions } from "../actions/ReportActions";
 import {ReportStoreState} from "../stores/ReportStore";
 import {ReportingSource} from "./ReportingSource";
 import {Version} from "../../shared/models/reports/Report";
-import { Report } from "../../shared/models/Generated";
 
 export class ReportSource extends ReportingSource<ReportStoreState> {
 
-    fetchReports: () => SourceModel<Report[]>;
     fetchVersions: () => SourceModel<string[]>;
     fetchVersionDetails: () => SourceModel<Version>;
 
     constructor() {
         super();
-        this.fetchReports = () => this.doFetch(() => "/reports/", {
-            loading: reportActions.beginFetchReports,
-            success: reportActions.updateReports,
-            isCached: s => s.reports && s.reports.length > 0
-        });
 
         this.fetchVersions = () => this.doFetch(s => `/reports/${s.currentReport}/`, {
             loading: reportActions.beginFetchVersions,
