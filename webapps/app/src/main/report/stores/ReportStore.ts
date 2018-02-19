@@ -46,7 +46,6 @@ class ReportStore
 
     initialState(): ReportStoreState {
         return {
-            // reports: [],
             versions: {},
             currentReport: null,
             currentVersion: null,
