@@ -28,7 +28,9 @@ export class InlineArtefact extends React.Component<Props, undefined> {
     canRenderInIFrame(ext: string): boolean {
         // This will be replaced with checking the mimetype once we have that metadata
         const images = ["png", "jpg", "jpeg", "gif", "svg"];
-        return (ext == "pdf" || images.indexOf(ext) > -1);
+        const html = ["html", "htm"];
+        const all = ["pdf"].concat(html).concat(images);
+        return all.indexOf(ext) > -1;
     }
 }
 
