@@ -13,7 +13,7 @@ export class Page extends React.Component<PageProps, undefined> {
         const page = this.props.page;
         return <div>
             <PageHeader siteTitle={page.siteTitle()} />
-            <PageArticle title={page.title()} hideTitle={page.hideTitle()} >
+            <PageArticle title={page.title()} hideTitle={page.hideTitle()}>
                 { this.props.children }
             </PageArticle>
          </div>;

@@ -1,3 +1,5 @@
+@import "../../shared/styles/bootstrap";
+
 .versionDetails {
     width: 100%;
 }
@@ -8,4 +10,28 @@
 
 .versionSwitcher {
     font-size: larger;
+}
+
+.sidebar{
+    border-bottom: 1px solid $gray-200;
+
+    @include media-breakpoint-up(sm) {
+        border-right: 1px solid $gray-200;
+        border-bottom: none;
+        height: 100%;
+    }
+
+    .nav-link {
+        &.active {
+            background: $gray-200;
+        }
+
+        &.disabled{
+            cursor: not-allowed;
+        }
+    }
+
+    .navbar-toggler{
+        background: inherit !important;
+    }
 }

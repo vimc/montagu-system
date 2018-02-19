@@ -7,6 +7,7 @@ import { NotificationArea } from "../../shared/components/NotificationArea/Notif
 import { notificationStore } from "../../shared/stores/NotificationStore";
 import { connectToStores } from "../../shared/alt";
 import { ReportAppState } from "../reducers/reportAppReducers";
+import {PageHeader} from "../../shared/components/PageWithHeader/PageHeader";
 
 export interface ReportingAppProps {
     errors: string[];
@@ -27,6 +28,7 @@ export class ReportingAppComponent extends React.Component<ReportingAppProps, un
 
     render() :JSX.Element {
         return <div>
+            <PageHeader siteTitle={"Reporting portal"}/>
             <ReportingRouter loggedIn={ this.props.loggedIn } />
             <NotificationArea notifications={ this.props.infos } />
             <ErrorLog errors={ this.props.errors } />

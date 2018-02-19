@@ -3,13 +3,12 @@ import {reportActions} from "../../actions/ReportActions";
 import {ReportingPageWithHeader} from "../ReportingPageWithHeader";
 import {ReportDetails} from "./ReportDetails";
 import {reportStore} from "../../stores/ReportStore";
-import {doNothing} from "../../../shared/Helpers";
 import {PageProperties} from "../../../shared/components/PageWithHeader/PageWithHeader";
 import {appSettings} from "../../../shared/Settings";
 import {MainMenu} from "../MainMenu/MainMenu";
 import {ReportPageTitle} from "./ReportPageTitle";
-import { Page } from "../../../shared/components/PageWithHeader/Page";
 import {Version} from "../../../shared/models/reports/Report";
+import {Sidebar} from "./Sidebar";
 
 export interface ReportPageProps {
     report: string;
@@ -45,7 +44,7 @@ export class ReportPage extends ReportingPageWithHeader<ReportPageProps> {
     }
 
     title() {
-        return <ReportPageTitle />;
+        return <ReportPageTitle/>;
     }
 
     name() {
@@ -58,9 +57,16 @@ export class ReportPage extends ReportingPageWithHeader<ReportPageProps> {
         return `${params.report}/${params.version}/`;
     }
 
-    render() :JSX.Element {
-        return <Page page={this}>
-            <ReportDetails onChangeVersion={this.changeVersion} />
-        </Page>;
+    render(): JSX.Element {
+        return <div className={"container-fluid pt-5"}>
+                <div className="row flex-xl-nowrap">
+                    <div className="col-12 col-sm-4 col-xl-2">
+                        <Sidebar/>
+                    </div>
+                    <div className={"col-12 col-sm-10 col-md-8 pt-4"}>
+                        <ReportDetails onChangeVersion={this.changeVersion}/>
+                    </div>
+                </div>
+            </div>;
     }
 }

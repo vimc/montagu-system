@@ -1,5 +1,8 @@
+@import "../../../../node_modules/bootstrap/scss/functions";
+@import "variables";
+
 .montagu-navbar {
-    background-color: rgb(200, 200, 200);
+    background-color: $montagu-nav-bg-color;
     padding: 2px 5px 5px 7px;
     color: black;
 
