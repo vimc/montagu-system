@@ -10,10 +10,12 @@ export class ReportsService extends ReportLocalService {
     }
 
     getReportVersions(reportId: string) {
+        this.setCached(this.getState().versions.length, this.getState().versions);
         return this.get(`/reports/${reportId}/`);
     }
 
     getVersionDetails(reportId: string, versionId: string) {
+        this.setCached(this.getState().versionDetails, this.getState().versionDetails);
         return this.get(`/reports/${reportId}/versions/${versionId}/`);
     }
 }

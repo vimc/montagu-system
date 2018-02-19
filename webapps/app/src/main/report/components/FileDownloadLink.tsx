@@ -37,12 +37,10 @@ export class FileDownloadLinkComponent extends React.Component<Props, undefined>
         this.refreshToken = this.refreshToken.bind(this);
     }
 
-    componentDidMount() {
-        setTimeout(() => {
-            if (this.props.token == null) {
-                oneTimeTokenStore.fetchToken(this.props.href).catch(doNothing);
-            }
-        });
+    componentWillReceiveProps(nextProps: Props) {
+        if (nextProps.href !== this.props.href) {
+            oneTimeTokenStore.fetchToken(this.props.href).catch(doNothing);
+        }
     }
 
     refreshToken(e: React.MouseEvent<HTMLAnchorElement>): void {

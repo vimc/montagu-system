@@ -54,7 +54,6 @@ export abstract class LocalService {
     }
 
     protected setCached(isCached: boolean, cachedData?: any) {
-        console.log('set chach', isCached, cachedData)
         this.isCached = isCached;
         this.cachedData = cachedData;
     }

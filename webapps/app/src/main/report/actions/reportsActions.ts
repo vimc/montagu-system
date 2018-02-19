@@ -37,7 +37,6 @@ export const reportsActions = {
     getReportVersions(reportId: string) {
         return async (dispatch: Dispatch<any>, getState: () => GlobalState) => {
             const versions = await (new ReportsService(dispatch, getState)).getReportVersions(reportId);
-            console.log(versions)
             dispatch({
                 type: ReportTypeKeys.REPORT_VERSIONS_FETCHED,
                 data: versions
