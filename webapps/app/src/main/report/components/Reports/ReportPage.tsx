@@ -29,7 +29,7 @@ export class ReportPage extends ReportingPageWithHeader<ReportPageProps> {
         });
     }
 
-    changeVersion(version: string): Promise<sVersion> {
+    changeVersion(version: string): Promise<Version> {
         const params = this.props.location.params;
         const report = params.report;
         this.props.router.redirectTo(`${appSettings.publicPath}/${report}/${version}/`, false);
