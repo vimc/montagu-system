@@ -11,6 +11,7 @@ import {
 
 import { AuthTypeKeys } from "../actionTypes/AuthTypes";
 import {GlobalState} from "../reducers/GlobalState";
+import {localCache} from "./localCache";
 
 export interface OptionsHeaders {
    Authorization?: string;
@@ -29,6 +30,7 @@ export interface InputOptions {
     'Content-Type'?: string;
     credentials?: "omit" | "same-origin" | "include";
     baseURL?: string;
+    isCached?: boolean;
 }
 
 export abstract class LocalService {
@@ -39,9 +41,6 @@ export abstract class LocalService {
     protected bearerToken: string;
     protected options: InputOptions = {};
 
-    protected isCached: boolean = false;
-    protected cachedData: any;
-
     public constructor(dispatch: Dispatch<Action>, getState: () => GlobalState) {
         this.dispatch = dispatch;
         this.getGlobalState = getState;
@@ -51,11 +50,6 @@ export abstract class LocalService {
 
         this.processResponse = this.processResponse.bind(this);
         this.notifyOnErrors = this.notifyOnErrors.bind(this);
-    }
-
-    protected setCached(isCached: boolean, cachedData?: any) {
-        this.isCached = isCached;
-        this.cachedData = cachedData;
     }
 
     protected getState(){
@@ -74,6 +68,7 @@ export abstract class LocalService {
 
     protected initOptions() {
         this.options.baseURL = settings.apiUrl();
+        this.options.isCached = false;
         if (this.bearerToken) {
             this.options.Authorization = 'Bearer ' + this.bearerToken;
         }
@@ -107,17 +102,19 @@ export abstract class LocalService {
 
     public post(url: string, params?:any){
         console.log('post', url, params);
-        return this.doRequest(url, "POST");
+        return this.doRequest(url, "POST", params);
     }
 
-    protected doRequest(url: string, method: string) {
-        if (this.isCached) {
-           return Promise.resolve(this.cachedData);
-        } else {
-            return this.doFetch(this.makeUrl(url), this.makeRequestOptions(method))
-                .then(this.processResponse)
-                .catch(this.notifyOnErrors);
+    protected doRequest(url: string, method: string, params?: any) {
+        if (this.options.isCached) {
+           const cacheValue = localCache.get([this.stateSegment, encodeURIComponent(this.makeUrl(url))].join('.'));
+           if (cacheValue) {
+               return Promise.resolve(cacheValue);
+           }
         }
+        return this.doFetch(this.makeUrl(url), this.makeRequestOptions(method, params))
+            .then(this.processResponse)
+            .catch(this.notifyOnErrors);
     }
 
     public postNoProcess(url: string, params?:any){
@@ -125,11 +122,11 @@ export abstract class LocalService {
             .then((response:any) => response.json());
     }
 
-    processResponse<TModel>(response: Response): Promise<any> {
-        return response.json()
+    processResponse<TModel>(httpResponse: Response): Promise<any> {
+        return httpResponse.json()
             .then((response: any) => {
                 const apiResponse = <Result>response;
-                return this.processResult(apiResponse, response);
+                return this.processResult(apiResponse, httpResponse);
             });
     }
 
@@ -151,6 +148,8 @@ export abstract class LocalService {
 
         switch (result.status) {
             case "success":
+                // console.log('rrr', response)
+                localCache.set([this.stateSegment, encodeURIComponent(response.url)].join('.'), result.data);
                 return result.data as TModel;
             case "failure":
                 return result.errors.forEach(handleError);

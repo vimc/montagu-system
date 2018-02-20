@@ -9,10 +9,7 @@ import {shallow} from "enzyme";
 import * as React from "react";
 import {Sandbox} from "../../../Sandbox";
 
-import * as enzyme from "enzyme";
-import * as Adapter from "enzyme-adapter-react-15";
 import {mockReportState} from "../../../mocks/mockStates";
-enzyme.configure({ adapter: new Adapter() });
 
 describe("ReportPageTitle", () => {
     const sandbox = new Sandbox();

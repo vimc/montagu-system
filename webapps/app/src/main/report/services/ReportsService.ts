@@ -5,17 +5,17 @@ export class ReportsService extends ReportLocalService {
     stateSegment = "reports";
 
     getAllReports() {
-        this.setCached(this.getState().reports.length, this.getState().reports);
+        this.setOptions({isCached: true});
         return this.get("/reports/");
     }
 
     getReportVersions(reportId: string) {
-        this.setCached(this.getState().versions.length, this.getState().versions);
+        this.setOptions({isCached: true});
         return this.get(`/reports/${reportId}/`);
     }
 
     getVersionDetails(reportId: string, versionId: string) {
-        this.setCached(this.getState().versionDetails, this.getState().versionDetails);
+        this.setOptions({isCached: true});
         return this.get(`/reports/${reportId}/versions/${versionId}/`);
     }
 }
