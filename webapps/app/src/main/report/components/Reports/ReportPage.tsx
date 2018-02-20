@@ -8,7 +8,7 @@ import {appSettings} from "../../../shared/Settings";
 import {MainMenu} from "../MainMenu/MainMenu";
 import {ReportPageTitle} from "./ReportPageTitle";
 import {Version} from "../../../shared/models/reports/Report";
-import {Sidebar} from "./Sidebar";
+import {Page} from "../../../shared/components/PageWithHeader/Page";
 
 export interface ReportPageProps {
     report: string;
@@ -29,7 +29,7 @@ export class ReportPage extends ReportingPageWithHeader<ReportPageProps> {
         });
     }
 
-    changeVersion(version: string): Promise<Version> {
+    changeVersion(version: string): Promise<sVersion> {
         const params = this.props.location.params;
         const report = params.report;
         this.props.router.redirectTo(`${appSettings.publicPath}/${report}/${version}/`, false);
@@ -58,15 +58,8 @@ export class ReportPage extends ReportingPageWithHeader<ReportPageProps> {
     }
 
     render(): JSX.Element {
-        return <div className={"container-fluid pt-5"}>
-                <div className="row flex-xl-nowrap">
-                    <div className="col-12 col-sm-4 col-xl-2">
-                        <Sidebar/>
-                    </div>
-                    <div className={"col-12 col-sm-10 col-md-8"}>
-                        <ReportDetails onChangeVersion={this.changeVersion}/>
-                    </div>
-                </div>
-            </div>;
+        return <Page page={this}>
+            <ReportDetails onChangeVersion={this.changeVersion}/>
+        </Page>
     }
 }
