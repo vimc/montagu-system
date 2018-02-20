@@ -28,7 +28,6 @@ export class ReportingAppComponent extends React.Component<ReportingAppProps, un
 
     render() :JSX.Element {
         return <div>
-            <PageHeader siteTitle={"Reporting portal"}/>
             <ReportingRouter loggedIn={ this.props.loggedIn } />
             <NotificationArea notifications={ this.props.infos } />
             <ErrorLog errors={ this.props.errors } />

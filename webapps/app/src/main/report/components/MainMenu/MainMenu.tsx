@@ -2,8 +2,7 @@ import * as React from "react";
 import { ReportingPageWithHeader } from "../ReportingPageWithHeader";
 import {ReportList} from "../Reports/ReportList";
 import {IPageWithParent} from "../../../shared/models/Breadcrumb";
-
-import {PageNoHeader} from "../../../shared/components/PageWithHeader/PageNoHeader";
+import {Page} from "../../../shared/components/PageWithHeader/Page";
 
 export class MainMenu extends ReportingPageWithHeader<undefined> {
 
@@ -24,8 +23,8 @@ export class MainMenu extends ReportingPageWithHeader<undefined> {
     }
 
     render() :JSX.Element {
-        return <PageNoHeader page={this}>
+        return <Page page={this}>
             <ReportList />
-        </PageNoHeader>;
+        </Page>;
     }
 }
