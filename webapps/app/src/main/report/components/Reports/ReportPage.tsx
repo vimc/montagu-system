@@ -8,7 +8,6 @@ import {appSettings} from "../../../shared/Settings";
 import {MainMenu} from "../MainMenu/MainMenu";
 import {ReportPageTitle} from "./ReportPageTitle";
 import {Version} from "../../../shared/models/reports/Report";
-import {Page} from "../../../shared/components/PageWithHeader/Page";
 import {Sidebar} from "./Sidebar";
 import {PageHeader} from "../../../shared/components/PageWithHeader/PageHeader";
 

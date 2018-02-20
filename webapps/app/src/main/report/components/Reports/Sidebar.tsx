@@ -5,10 +5,10 @@ interface SidebarState {
     isOpen: boolean
 }
 
-export class Sidebar extends React.Component<any, SidebarState> {
+export class Sidebar extends React.Component<{}, SidebarState> {
 
-    constructor(props: any) {
-        super(props);
+    constructor() {
+        super();
 
         this.toggle = this.toggle.bind(this);
         this.state = {
