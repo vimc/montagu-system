@@ -4,7 +4,7 @@ import {connect, Dispatch} from "react-redux";
 import {reportsActions} from "../../actions/reportsActions";
 import {ReportAppState} from "../../reducers/reportAppReducers";
 
-interface Props {
+export interface Props {
     name: string;
     version: string;
     published: boolean;
