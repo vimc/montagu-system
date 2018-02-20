@@ -12,8 +12,6 @@ import {ArtefactsSection} from "../Artefacts/ArtefactsSection";
 import {IRouter} from "simple-react-router";
 import {DraftStamp} from "../DraftStamp";
 
-import "../../../shared/styles/common.scss";
-
 interface PublicProps {
     onChangeVersion: (version: string) => void;
 }
@@ -46,7 +44,7 @@ export class ReportDetailsComponent extends RemoteContentComponent<ReportDetails
     renderContent(props: ReportDetailsProps) {
         const version = props.versionDetails.id;
         return <div>
-            <DraftStamp published={props.versionDetails.published} />
+           <DraftStamp published={props.versionDetails.published} />
             <ReportVersionSwitcher
                 currentVersion={props.versionDetails.id}
                 versions={props.allVersions}

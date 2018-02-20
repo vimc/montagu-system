@@ -8,14 +8,11 @@ import { createReportStore } from "./stores/createReportStore";
 import { authActions } from "../shared/actions/authActions"
 
 import './index.html';
-import '../shared/styles/bootstrap.scss';
-import '../shared/styles/fonts.scss';
-import '../shared/styles/buttons.scss';
-import '../shared/styles/common.scss';
+import './style.scss';
 
 fetcher.fetcher = new ReportingFetcher();
 const store = createReportStore();
-store.dispatch(authActions.loadSavedToken())
+store.dispatch(authActions.loadSavedToken());
 
 ReactDOM.render(
     <Provider store={store}>

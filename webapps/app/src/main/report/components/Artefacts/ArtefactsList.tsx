@@ -4,8 +4,6 @@ import {settings} from "../../../shared/Settings";
 import {Artefact} from "../../../shared/models/reports/Artefact";
 import {ArtefactItem} from "./ArtefactItem";
 
-import "../../styles/reports.scss";
-
 interface ArtefactsListProps{
     artefacts: ILookup<Artefact>[],
     report: string,

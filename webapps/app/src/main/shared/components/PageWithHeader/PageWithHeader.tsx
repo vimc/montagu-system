@@ -4,9 +4,6 @@ import {IRouter, Location} from "simple-react-router";
 import { navActions } from "../../actions/NavActions";
 import {IPageWithParent} from "../../models/Breadcrumb";
 
-import './PageWithHeader.scss';
-import {doNothing} from "../../Helpers";
-
 export interface PageParts {
     siteTitle(): string;
     title(): JSX.Element;

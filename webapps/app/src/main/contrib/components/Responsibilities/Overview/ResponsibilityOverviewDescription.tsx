@@ -4,9 +4,6 @@ import { settings } from "../../../../shared/Settings";
 import { RemoteContentComponent } from "../../../../shared/components/RemoteContentComponent/RemoteContentComponent";
 import { InternalLink } from "../../../../shared/components/InternalLink";
 
-import "../../../../shared/styles/common.scss";
-import "../../../../shared/styles/messages.scss";
-
 interface ResponsibilityOverviewDescriptionProps {
     currentTouchstoneId: string;
 }

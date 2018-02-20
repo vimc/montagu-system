@@ -4,8 +4,6 @@ import {ArtefactsList} from "./ArtefactsList";
 import {Version} from "../../../shared/models/reports/Report";
 import {ArtefactRow} from "./ArtefactRow";
 
-import "../../../shared/styles/common.scss";
-
 interface Props {
     report: string;
     versionDetails: Version;

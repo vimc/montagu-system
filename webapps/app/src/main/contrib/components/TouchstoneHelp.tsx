@@ -3,8 +3,6 @@ import { ContribPageWithHeader } from "./PageWithHeader/ContribPageWithHeader";
 import { ChooseGroupPage } from "./ChooseGroup/ChooseGroupPage";
 import { Page } from "../../shared/components/PageWithHeader/Page";
 
-import "../../shared/styles/common.scss";
-
 export class TouchstoneHelp extends ContribPageWithHeader<undefined> {
     name() {
         return "Touchstones Help";

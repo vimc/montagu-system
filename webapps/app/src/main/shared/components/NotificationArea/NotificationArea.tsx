@@ -2,9 +2,6 @@ import * as React from "react";
 import { CSSTransitionGroup } from "react-transition-group";
 import { notificationActions } from "../../actions/NotificationActions";
 
-import "./NotificationArea.scss";
-import "../../../shared/styles/transitions.scss";
-
 interface Props {
     notifications: string[];
 }

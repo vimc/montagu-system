@@ -3,9 +3,6 @@ import { ModellingGroup, Touchstone } from "../../../shared/models/Generated";
 import { RemoteContent } from "../../../shared/models/RemoteContent";
 import { ButtonLink } from "../../../shared/components/ButtonLink";
 
-import "../../../shared/styles/common.scss";
-import "./ChooseTouchstone.scss";
-
 export interface TouchstoneListProps extends RemoteContent {
     touchstones: Touchstone[];
     group: ModellingGroup;
@@ -18,7 +15,7 @@ export class TouchstoneList extends React.Component<TouchstoneListProps, undefin
                 { this.renderButton(touchstone) }
             </li>
         );
-        return <ul className="list">{ items }</ul>;
+        return <ul className="list-unstyled m-0 p-0">{ items }</ul>;
     }
 
     renderFinished(content: TouchstoneListProps): JSX.Element {
@@ -41,7 +38,7 @@ export class TouchstoneList extends React.Component<TouchstoneListProps, undefin
 
     renderButton(touchstone: Touchstone): JSX.Element {
         const url = `/${this.props.group.id}/responsibilities/${touchstone.id}/`;
-        return <ButtonLink className="choice" href={ url }>{ touchstone.description }</ButtonLink>
+        return <ButtonLink className="d-inline-block mb-2" href={ url }>{ touchstone.description }</ButtonLink>
     }
 
     render(): JSX.Element {

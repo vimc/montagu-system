@@ -2,8 +2,6 @@ import * as React from 'react';
 import { notificationActions } from "../../actions/NotificationActions";
 import { MouseEvent } from "react";
 
-import "./ErrorLog.scss";
-
 interface ErrorLogProps {
     errors: string[];
 }
