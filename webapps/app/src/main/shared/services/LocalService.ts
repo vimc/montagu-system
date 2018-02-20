@@ -36,7 +36,6 @@ export interface InputOptions {
 export abstract class LocalService {
     protected dispatch: Dispatch<Action>;
     protected getGlobalState: Function;
-    protected abstract stateSegment: string;
 
     protected bearerToken: string;
     protected options: InputOptions = {};
@@ -50,10 +49,6 @@ export abstract class LocalService {
 
         this.processResponse = this.processResponse.bind(this);
         this.notifyOnErrors = this.notifyOnErrors.bind(this);
-    }
-
-    protected getState(){
-        return this.getGlobalState()[this.stateSegment];
     }
 
     protected getTokenFromState(state: GlobalState) {
@@ -97,23 +92,23 @@ export abstract class LocalService {
 
     public get(url: string){
         console.log('get', url);
-        return this.doRequest(url, "GET");
+        return this.getData(url, "GET");
     }
 
     public post(url: string, params?:any){
         console.log('post', url, params);
-        return this.doRequest(url, "POST", params);
+        return this.getData(url, "POST", params);
     }
 
     protected getCache(url: string) {
-        return localCache.get([this.stateSegment, this.options.cache, encodeURIComponent(url)].join('.'));
+        return localCache.get([this.constructor.name, this.options.cache, encodeURIComponent(url)].join('.'));
     }
 
     protected setCache(url: string, data: any) {
-        localCache.set([this.stateSegment, this.options.cache, encodeURIComponent(url)].join('.'), data);
+        localCache.set([this.constructor.name, this.options.cache, encodeURIComponent(url)].join('.'), data);
     }
 
-    protected doRequest(url: string, method: string, params?: any) {
+    protected getData(url: string, method: string, params?: any) {
         if (this.options.cache) {
            const cacheValue = this.getCache(this.makeUrl(url));
            if (cacheValue) {
@@ -186,6 +181,7 @@ export abstract class LocalService {
     protected logOut() {
         return (dispatch: Dispatch<Action>) => {
             localStorageHandler.remove("accessToken");
+            localCache.clearAll();
             dispatch({
                 type: AuthTypeKeys.UNAUTHENTICATED
             });

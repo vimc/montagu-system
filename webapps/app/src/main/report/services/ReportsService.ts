@@ -2,8 +2,6 @@ import {ReportLocalService} from "./ReportLocalService";
 
 export class ReportsService extends ReportLocalService {
 
-    stateSegment = "reports";
-
     getAllReports() {
         this.setOptions({cache: "reports"});
         return this.get("/reports/");

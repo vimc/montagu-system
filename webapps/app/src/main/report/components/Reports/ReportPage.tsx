@@ -26,8 +26,10 @@ export class ReportPageComponent extends ReportingPageWithHeader<ReportPageProps
     }
 
     changeVersion(version: string): any {
-        this.loadVersion();
         this.redirectToVersion(version);
+        setTimeout(()=> {
+            this.loadVersion();
+        });
     }
 
     loadVersion() {
@@ -35,9 +37,7 @@ export class ReportPageComponent extends ReportingPageWithHeader<ReportPageProps
             report: this.getLocationParams().report,
             version: this.getLocationParams().version
         });
-        setTimeout(()=> {
-            this.createBreadcrumb();
-        });
+        this.createBreadcrumb();
     }
 
     getLocationParams(){
