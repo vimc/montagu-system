@@ -32,10 +32,13 @@ export class ReportPageComponent extends ReportingPageWithHeader<ReportPageProps
     changeVersion(version: string): any {
         const params = this.props.location.params;
         const report = params.report;
-        this.props.router.redirectTo(`${appSettings.publicPath}/${report}/${version}/`, false);
         this.props.onLoad({
             report,
             version
+        });
+        this.props.router.redirectTo(`${appSettings.publicPath}/${report}/${version}/`, false);
+        setTimeout(()=> {
+            this.createBreadcrumb();
         });
     }
 
