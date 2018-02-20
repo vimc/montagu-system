@@ -44,9 +44,7 @@ export class ReportDetailsComponent extends RemoteContentComponent<ReportDetails
     renderContent(props: ReportDetailsProps) {
         const version = props.versionDetails.id;
         return <div>
-            <h1 className={"h2"}>{props.versionDetails.displayname  || props.versionDetails.name}</h1>
-            <p className={"small text-muted"}>{props.versionDetails.id}</p>
-            <DraftStamp published={props.versionDetails.published} />
+           <DraftStamp published={props.versionDetails.published} />
             <ReportVersionSwitcher
                 currentVersion={props.versionDetails.id}
                 versions={props.allVersions}
