@@ -1,0 +1,36 @@
+.btn-default {
+  @include button-variant($gray-200, $gray-300);
+}
+
+.btn-published {
+  @include button-variant($published-color,  $gray-300);
+}
+
+.btn-internal {
+  @include button-variant(darken($warning, 10%),  $gray-300);
+  color: #ffffff;
+}
+
+.sidebar{
+  border-bottom: 1px solid $gray-200;
+
+  @include media-breakpoint-up(md) {
+    border-right: 1px solid $gray-200;
+    border-bottom: none;
+    height: 100%;
+  }
+
+  .nav-link {
+    &.active {
+      background: $gray-200;
+    }
+
+    &.disabled{
+      cursor: not-allowed;
+    }
+  }
+
+  .navbar-toggler{
+    background: inherit !important;
+  }
+}

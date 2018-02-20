@@ -59,12 +59,14 @@ export class ReportPage extends ReportingPageWithHeader<ReportPageProps> {
     }
 
     render(): JSX.Element {
+        const reportProps = this.props.location.params;
+
         return <div>
             <PageHeader siteTitle={this.siteTitle()}/>
             <div className={"container-fluid pt-4 sm-pt-5"}>
                 <div className="row flex-xl-nowrap">
                     <div className="col-12 col-md-4 col-xl-2">
-                        <Sidebar/>
+                        <Sidebar reportName={reportProps.report} version={reportProps.version}/>
                     </div>
                     <div className={"col-12 col-sm-10 col-md-8 pt-4 pt-md-1"}>
                         <ReportDetails onChangeVersion={this.changeVersion}/>

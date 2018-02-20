@@ -1,8 +1,8 @@
 .header {
     padding: 10px;
-    background-color: rgb(38, 50, 122);
+    background-color: $montagu-header-bg-color;
     border-bottom: 2px solid white;
-    color: white;
+    color: $montagu-header-color;
 
     .header__siteTitle {
         display: inline-block;
