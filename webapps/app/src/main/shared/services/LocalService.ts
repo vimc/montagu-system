@@ -30,7 +30,7 @@ export interface InputOptions {
     'Content-Type'?: string;
     credentials?: "omit" | "same-origin" | "include";
     baseURL?: string;
-    isCached?: boolean;
+    cache?: string;
 }
 
 export abstract class LocalService {
@@ -68,7 +68,7 @@ export abstract class LocalService {
 
     protected initOptions() {
         this.options.baseURL = settings.apiUrl();
-        this.options.isCached = false;
+        this.options.cache = null;
         if (this.bearerToken) {
             this.options.Authorization = 'Bearer ' + this.bearerToken;
         }
@@ -105,9 +105,17 @@ export abstract class LocalService {
         return this.doRequest(url, "POST", params);
     }
 
+    protected getCache(url: string) {
+        return localCache.get([this.stateSegment, this.options.cache, encodeURIComponent(url)].join('.'));
+    }
+
+    protected setCache(url: string, data: any) {
+        localCache.set([this.stateSegment, this.options.cache, encodeURIComponent(url)].join('.'), data);
+    }
+
     protected doRequest(url: string, method: string, params?: any) {
-        if (this.options.isCached) {
-           const cacheValue = localCache.get([this.stateSegment, encodeURIComponent(this.makeUrl(url))].join('.'));
+        if (this.options.cache) {
+           const cacheValue = this.getCache(this.makeUrl(url));
            if (cacheValue) {
                return Promise.resolve(cacheValue);
            }
@@ -148,8 +156,9 @@ export abstract class LocalService {
 
         switch (result.status) {
             case "success":
-                // console.log('rrr', response)
-                localCache.set([this.stateSegment, encodeURIComponent(response.url)].join('.'), result.data);
+                if (this.options.cache) {
+                    this.setCache(response.url, result.data);
+                }
                 return result.data as TModel;
             case "failure":
                 return result.errors.forEach(handleError);

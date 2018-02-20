@@ -15,6 +15,7 @@ import {
     Unauthenticated
 } from "../actionTypes/AuthTypes";
 import {GlobalState} from "../reducers/GlobalState";
+import {localCache} from "../services/localCache";
 
 export const authActions = {
 
@@ -98,6 +99,7 @@ export const authActions = {
     logOut() {
         return (dispatch: Dispatch<any>, getState: () => GlobalState) => {
             localStorageHandler.remove("accessToken");
+            localCache.clearAll();
             (new AuthService(dispatch, getState)).clearShinyCookie();
             dispatch({
                 type: AuthTypeKeys.UNAUTHENTICATED,

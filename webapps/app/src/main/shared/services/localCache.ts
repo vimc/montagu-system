@@ -25,5 +25,9 @@ export const localCache = {
 
     clear(key: string) {
         this.set(key, null);
+    },
+
+    clearAll() {
+        localStorageHandler.remove(this.cacheKey);
     }
 };
