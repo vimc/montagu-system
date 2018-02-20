@@ -1,21 +1,21 @@
-import { expect } from "chai";
+import {expect} from "chai";
 import * as React from "react";
-import { shallow, ShallowWrapper } from "enzyme";
-import { expectIsEqual, expectSameElements, IntegrationTestSuite } from "./IntegrationTest";
-import { ReportingFetcher } from "../main/report/sources/ReportingFetcher";
-import { reportStore } from "../main/report/stores/ReportStore";
-import { checkPromise } from "../test/testHelpers";
-import { reportActions } from "../main/report/actions/ReportActions";
-import { oneTimeTokenStore } from "../main/report/stores/OneTimeTokenStore";
-import { Version } from "../main/shared/models/reports/Report";
-import { Sandbox } from "../test/Sandbox";
-import { ArtefactItem } from "../main/report/components/Artefacts/ArtefactItem";
-import { FileDownloadLink } from "../main/report/components/FileDownloadLink";
-import { ResourceLinks } from "../main/report/components/Resources/ResourceLinks";
-import { DataLinks } from "../main/report/components/Data/DataLinks";
+import {shallow, ShallowWrapper} from "enzyme";
+import {expectIsEqual, expectSameElements, IntegrationTestSuite} from "./IntegrationTest";
+import {ReportingFetcher} from "../main/report/sources/ReportingFetcher";
+import {reportStore} from "../main/report/stores/ReportStore";
+import {checkPromise} from "../test/testHelpers";
+import {reportActions} from "../main/report/actions/ReportActions";
+import {oneTimeTokenStore} from "../main/report/stores/OneTimeTokenStore";
+import {Version} from "../main/shared/models/reports/Report";
+import {Sandbox} from "../test/Sandbox";
+import {ArtefactItem} from "../main/report/components/Artefacts/ArtefactItem";
+import {FileDownloadLink} from "../main/report/components/FileDownloadLink";
+import {ResourceLinks} from "../main/report/components/Resources/ResourceLinks";
+import {DataLinks} from "../main/report/components/Data/DataLinks";
 import {ArtefactsSection} from "../main/report/components/Artefacts/ArtefactsSection";
 
-import { createReportStore } from "../main/report/stores/createReportStore";
+import {createReportStore} from "../main/report/stores/createReportStore";
 import {ReportsService} from "../main/report/services/ReportsService";
 import {Report} from "../main/shared/models/Generated";
 
@@ -46,22 +46,22 @@ class ReportIntegrationTests extends IntegrationTestSuite {
 
             const reportName = "use_resource";
             const promise = getVersion(reportName)
-                .then((version: string) => {
-                    return (new ReportsService(this.store.dispatch, this.store.getState))
+                .then((version: string) =>
+                    (new ReportsService(this.store.dispatch, this.store.getState))
                         .publishReport(reportName, version)
-                });
+                );
 
             checkSuccessful(done, promise);
         });
 
-        it("unpublished report", (done: DoneCallback) => {
+        it("unpublishes report", (done: DoneCallback) => {
 
             const reportName = "use_resource";
             const promise = getVersion(reportName)
-                .then((version: string) => {
-                    return (new ReportsService(this.store.dispatch, this.store.getState))
+                .then((version: string) =>
+                    (new ReportsService(this.store.dispatch, this.store.getState))
                         .unPublishReport(reportName, version)
-                });
+                );
 
             checkSuccessful(done, promise);
         });

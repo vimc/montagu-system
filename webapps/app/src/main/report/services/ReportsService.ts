@@ -6,10 +6,10 @@ export class ReportsService extends ReportLocalService {
     }
 
     publishReport(name: string, version: string) {
-        return this.get(`/reports/${name}/versions/${version}/publish/`);
+        return this.post(`/reports/${name}/versions/${version}/publish/`);
     }
 
     unPublishReport(name: string, version: string) {
-        return this.get(`/reports/${name}/versions/${version}/publish/?value=false`);
+        return this.post(`/reports/${name}/versions/${version}/publish/?value=false`);
     }
 }
