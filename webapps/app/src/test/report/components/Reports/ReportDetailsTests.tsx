@@ -1,50 +1,38 @@
 import * as React from "react";
 import {shallow} from "enzyme";
+
 import {expect} from "chai";
 import {alt} from "../../../../main/shared/alt";
 import {mockVersion} from "../../../mocks/mockModels";
 import {Sandbox} from "../../../Sandbox";
 import {ReportStoreState} from "../../../../main/report/stores/ReportStore";
-import {ReportDetailsComponent, ReportDetailsProps} from "../../../../main/report/components/Reports/ReportDetails";
+import {ReportDetailsComponent, ReportDetailsProps, mapStateToProps} from "../../../../main/report/components/Reports/ReportDetails";
 import {ReportVersionSwitcher} from "../../../../main/report/components/Reports/ReportVersionSwitcher";
 import {DraftStamp} from "../../../../main/report/components/DraftStamp";
 import {ArtefactsSection} from "../../../../main/report/components/Artefacts/ArtefactsSection";
 import {DataLinks} from "../../../../main/report/components/Data/DataLinks";
 import {ResourceLinks} from "../../../../main/report/components/Resources/ResourceLinks";
 import {ParameterList} from "../../../../main/report/components/Parameters/ParameterList";
+import {mockReportState} from "../../../mocks/mockStates";
 
 describe("ReportDetails", () => {
     const sandbox = new Sandbox();
     afterEach(() => sandbox.restore());
 
     describe("getPropsFromStores", () => {
-        const setupStore = function (extraState?: Partial<ReportStoreState>) {
-            const state = Object.assign({
-                versionDetails: {"v1": mockVersion()},
-                currentReport: "reportname",
-                currentVersion: "v1",
-                versions: {
-                    reportname: ["v1", "v2", "v3"],
-                    otherReport: ["v4", "v5", "v6"]
-                },
-                ready: true
-            }, extraState);
 
-            alt.bootstrap(JSON.stringify({
-                ReportStore: state,
-                ReportingAuthStore: {loggedIn: true}
-            }));
-        };
-
-        const assertIsNotReady = function () {
-            expect(ReportDetailsComponent.getPropsFromStores({}).ready).to.equal(false);
-        };
-
-        it("is ready when state is correct", () => {
-            setupStore();
+        it("checks props mappings", () => {
+            const reportStateProps = mockReportState({
+                reports: {
+                    versionDetails: mockVersion(),
+                    currentReport: "reportname",
+                    versions: ["v1", "v2", "v3"],
+                }
+            })
             const onChangeVersion = sandbox.sinon.stub();
-            const inputProps = {onChangeVersion};
-
+            const reportPublicProps = {
+                onChangeVersion
+            }
             const expected: ReportDetailsProps = {
                 report: "reportname",
                 versionDetails: mockVersion(),
@@ -52,23 +40,32 @@ describe("ReportDetails", () => {
                 allVersions: ["v1", "v2", "v3"],
                 onChangeVersion: onChangeVersion
             };
-            expect(ReportDetailsComponent.getPropsFromStores(inputProps)).to.eql(expected);
+            expect(mapStateToProps(reportStateProps, reportPublicProps)).to.eql(expected);
         });
 
-        it("is not ready if store is not ready", () => {
-            setupStore({ready: false});
-            assertIsNotReady();
+        it("is ready when version details is there", () => {
+            const reportStateProps = mockReportState({
+                reports: {
+                    versionDetails: mockVersion(),
+                }
+            })
+            const reportPublicProps = {
+                onChangeVersion: sandbox.sinon.stub()
+            }
+            expect(mapStateToProps(reportStateProps, reportPublicProps).ready).to.eql(true);
         });
 
-        it("is not ready if versions have not been fetched", () => {
-            setupStore({versions: {}});
-            assertIsNotReady();
+        it("is not ready when no version details", () => {
+            const reportStateProps = mockReportState({
+                reports: {
+                }
+            })
+            const reportPublicProps = {
+                onChangeVersion: sandbox.sinon.stub()
+            }
+            expect(mapStateToProps(reportStateProps, reportPublicProps).ready).to.eql(false);
         });
 
-        it("is not ready if version details have not been fetched", () => {
-            setupStore({versionDetails: {}});
-            assertIsNotReady();
-        });
     });
 
     it("renders sub-components", () => {

@@ -20,10 +20,11 @@ interface PublicProps {
     onChangeVersion: (version: string) => void;
 }
 
-export interface ReportDetailsProps extends RemoteContent, PublicProps {
+export interface ReportDetailsProps extends PublicProps {
     versionDetails: Version;
     report: string;
     allVersions: string[];
+    ready: boolean;
 }
 
 export const ReportDetailsComponent = (props: ReportDetailsProps) => {
