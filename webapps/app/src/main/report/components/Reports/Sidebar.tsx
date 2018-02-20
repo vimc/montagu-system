@@ -4,15 +4,17 @@ import {PublishSwitch} from "./PublishSwitch";
 import {ReportAppState} from "../../reducers/reportAppReducers";
 import {connect, Dispatch} from "react-redux";
 import {reportsActions} from "../../actions/reportsActions";
+import {AdminAppState} from "../../../admin/reducers/adminAppReducers";
 
 interface SidebarState {
     isOpen: boolean
 }
 
-interface SidebarProps {
-    reportName: string;
+export interface SidebarProps {
+    name: string;
     version: string;
     published: boolean;
+    isReviewer: boolean;
 }
 
 export class SidebarComponent extends React.Component<SidebarProps, SidebarState> {
@@ -57,9 +59,11 @@ export class SidebarComponent extends React.Component<SidebarProps, SidebarState
                 </Collapse>
             </Navbar>
             <hr/>
-            <PublishSwitch name={this.props.reportName}
-                           version={this.props.version}
-                           published={this.props.published}/>
+            {
+                this.props.isReviewer && <PublishSwitch name={this.props.name}
+                                                        version={this.props.version}
+                                                        published={this.props.published}/>
+            }
         </div>
     }
 }
@@ -67,6 +71,7 @@ export class SidebarComponent extends React.Component<SidebarProps, SidebarState
 export const mapStateToProps = (state: ReportAppState, props: Partial<SidebarProps>): Partial<SidebarProps> => {
     // TOOD once versions are in the app state, get publish status from state
     return {
+        isReviewer: state.auth.permissions.indexOf("*/reports.review") > -1,
         published: true
     }
 };
