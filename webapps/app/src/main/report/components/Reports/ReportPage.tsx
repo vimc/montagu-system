@@ -22,24 +22,30 @@ export class ReportPageComponent extends ReportingPageWithHeader<ReportPageProps
     }
 
     componentDidMount() {
-        this.props.onLoad({
-            report: this.props.location.params.report,
-            version: this.props.location.params.version
-        });
-        this.createBreadcrumb();
+        this.loadVersion();
     }
 
     changeVersion(version: string): any {
-        const params = this.props.location.params;
-        const report = params.report;
+        this.loadVersion();
+        this.redirectToVersion(version);
+    }
+
+    loadVersion() {
         this.props.onLoad({
-            report,
-            version
+            report: this.getLocationParams().report,
+            version: this.getLocationParams().version
         });
-        this.props.router.redirectTo(`${appSettings.publicPath}/${report}/${version}/`, false);
         setTimeout(()=> {
             this.createBreadcrumb();
         });
+    }
+
+    getLocationParams(){
+        return this.props.location.params;
+    }
+
+    redirectToVersion(version: string) {
+        this.props.router.redirectTo(`${appSettings.publicPath}/${this.getLocationParams().report}/${version}/`, false);
     }
 
     parent() {
@@ -51,12 +57,12 @@ export class ReportPageComponent extends ReportingPageWithHeader<ReportPageProps
     }
 
     name() {
-        const params = this.props.location.params;
+        const params = this.getLocationParams();
         return `${params.report} (${params.version})`;
     }
 
     urlFragment() {
-        const params = this.props.location.params;
+        const params = this.getLocationParams();
         return `${params.report}/${params.version}/`;
     }
 
