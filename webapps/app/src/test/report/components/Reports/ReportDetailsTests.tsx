@@ -2,10 +2,8 @@ import * as React from "react";
 import {shallow} from "enzyme";
 
 import {expect} from "chai";
-import {alt} from "../../../../main/shared/alt";
 import {mockVersion} from "../../../mocks/mockModels";
 import {Sandbox} from "../../../Sandbox";
-import {ReportStoreState} from "../../../../main/report/stores/ReportStore";
 import {ReportDetailsComponent, ReportDetailsProps, mapStateToProps} from "../../../../main/report/components/Reports/ReportDetails";
 import {ReportVersionSwitcher} from "../../../../main/report/components/Reports/ReportVersionSwitcher";
 import {DraftStamp} from "../../../../main/report/components/DraftStamp";
