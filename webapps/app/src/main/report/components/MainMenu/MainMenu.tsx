@@ -3,7 +3,6 @@ import { ReportingPageWithHeader } from "../ReportingPageWithHeader";
 import {ReportList} from "../Reports/ReportList";
 import {IPageWithParent} from "../../../shared/models/Breadcrumb";
 
-import "./MainMenu.scss";
 import {PageNoHeader} from "../../../shared/components/PageWithHeader/PageNoHeader";
 
 export class MainMenu extends ReportingPageWithHeader<undefined> {

@@ -2,8 +2,6 @@ import * as React from "react";
 import { DemographicDataset } from "../../../../shared/models/Generated";
 import ReactRadioButtonGroup, { RadioButtonOption } from "react-radio-button-group";
 
-import "../Responsibilities.scss";
-
 interface Props {
     dataSet: DemographicDataset;
     value: string;

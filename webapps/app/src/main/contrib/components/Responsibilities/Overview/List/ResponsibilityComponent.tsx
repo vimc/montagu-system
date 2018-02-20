@@ -7,8 +7,6 @@ import { mainStore } from "../../../../stores/MainStore";
 import { ButtonLink } from "../../../../../shared/components/ButtonLink";
 import {CurrentEstimateSetSummary} from "./CurrentEstimateSetSummary";
 
-import "../../Responsibilities.scss";
-
 interface Props {
     responsibility: Responsibility;
     modellingGroup: ModellingGroup;

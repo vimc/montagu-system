@@ -6,7 +6,6 @@ import { connectToStores } from "../../shared/alt";
 import { doNothing } from "../../shared/Helpers";
 import { oneTimeTokenActions } from "../actions/OneTimeTokenActions";
 
-import "../../shared/styles/common.scss";
 import * as loaderAnimation from "../../shared/resources/link-loader.gif";
 
 interface PublicProps {

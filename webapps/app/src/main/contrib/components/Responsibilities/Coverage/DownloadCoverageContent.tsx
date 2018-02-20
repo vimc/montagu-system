@@ -14,9 +14,6 @@ import { doNothing } from "../../../../shared/Helpers";
 import { responsibilityActions } from "../../../actions/ResponsibilityActions";
 import { coverageSetActions } from "../../../actions/CoverageSetActions";
 
-import "../../../../shared/styles/common.scss";
-import "../Responsibilities.scss";
-
 export interface DownloadCoverageComponentProps extends RemoteContent {
     touchstone: Touchstone;
     scenario: Scenario;

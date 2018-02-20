@@ -2,8 +2,6 @@ import * as React from "react";
 import {ILookup} from "../../../shared/models/Lookup";
 import {FileDownloadLink} from "../FileDownloadLink";
 
-import "../../../shared/styles/common.scss";
-
 export class DataLinks extends React.Component<ILookup<string>, undefined> {
     buildUrl(type: string, key: string): string {
         let data = encodeURIComponent(this.props[key]);

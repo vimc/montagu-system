@@ -2,7 +2,7 @@ import {reportStore} from "../../stores/ReportStore";
 import {connectToStores} from "../../../shared/alt";
 import * as React from "react";
 
-import * as headerStyles from '../../../shared/components/PageWithHeader/PageWithHeader.scss';
+import * as headerStyles from '../../../shared/styles/PageWithHeader.scss';
 
 export interface ReportPageTitleProps {
     name: string;

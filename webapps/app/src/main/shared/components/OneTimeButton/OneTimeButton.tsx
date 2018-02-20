@@ -3,7 +3,6 @@ import fetcher from "../../sources/Fetcher";
 
 import { OneTimeButtonButton } from "./Elements/Button";
 import { OneTimeButtonLink } from "./Elements/Link";
-import "../../styles/buttons.scss";
 
 export interface OneTimeButtonProps {
     token: string;

@@ -4,8 +4,6 @@ import {connectToStores} from "../../alt";
 import {InternalLink} from "../InternalLink";
 import {Breadcrumb} from "../../models/Breadcrumb";
 
-import "../../styles/navbar.scss";
-
 interface Props {
     crumbs: Breadcrumb[];
 }

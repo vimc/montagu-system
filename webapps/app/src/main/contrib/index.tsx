@@ -8,14 +8,13 @@ import { createContribStore } from "./stores/createContribStore";
 import { authActions } from "../shared/actions/authActions"
 
 import './index.html';
-import '../shared/styles/bootstrap.scss';
-import '../shared/styles/fonts.scss';
-import '../shared/styles/buttons.scss';
-import '../shared/styles/common.scss';
+import './style.scss';
+
 
 fetcher.fetcher = new ContribFetcher();
 const store = createContribStore();
 store.dispatch(authActions.loadSavedToken())
+
 
 ReactDOM.render(
     <Provider store={store}>

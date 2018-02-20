@@ -4,8 +4,6 @@ import { ModellingGroup, Touchstone } from "../../../shared/models/Generated";
 import { responsibilityStore } from "../../stores/ResponsibilityStore";
 import { connectToStores } from "../../../shared/alt";
 
-import * as headerStyles from '../../../shared/components/PageWithHeader/PageWithHeader.scss';
-
 interface PublicProps {
     title: string;
 }

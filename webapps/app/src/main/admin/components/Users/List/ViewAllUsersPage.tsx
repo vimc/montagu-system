@@ -8,8 +8,6 @@ import {IPageWithParent} from "../../../../shared/models/Breadcrumb";
 import {MainMenu} from "../../MainMenu/MainMenu";
 import { Page } from "../../../../shared/components/PageWithHeader/Page";
 
-import "../../../../shared/styles/common.scss";
-
 export class ViewAllUsersPage extends AdminPageWithHeader<undefined> {
     load(props: undefined) {
         return this.loadParent(props).then(() => {

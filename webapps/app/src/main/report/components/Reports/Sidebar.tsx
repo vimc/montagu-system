@@ -1,10 +1,6 @@
 import * as React from "react";
 import {Collapse, Navbar, NavbarToggler, NavItem, NavLink, UncontrolledTooltip} from "reactstrap";
 
-import "../../../shared/styles/common.scss";
-import "../../styles/reports.scss";
-import {ReportVersionSwitcher} from "./ReportVersionSwitcher";
-
 interface SidebarState {
     isOpen: boolean
 }

@@ -2,8 +2,6 @@ import * as React from "react";
 import {VersionIdentifier} from "../../models/VersionIdentifier";
 import {longTimestamp} from "../../../shared/Helpers";
 
-import "../../../shared/styles/common.scss";
-import "../../styles/reports.scss";
 
 interface Props {
     currentVersion: string;

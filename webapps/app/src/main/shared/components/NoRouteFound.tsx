@@ -2,8 +2,6 @@ import * as React from "react";
 import { settings } from "../Settings";
 import { InternalLink } from "./InternalLink";
 
-import "../styles/common.scss";
-
 export class NoRouteFound {
     static title(): string {
         return "Page not found";

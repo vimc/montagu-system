@@ -7,8 +7,6 @@ import { settings } from "../../../../shared/Settings";
 import { InternalLink } from "../../../../shared/components/InternalLink";
 import { Page } from "../../../../shared/components/PageWithHeader/Page";
 
-import "../../../../shared/styles/common.scss";
-
 export class ResponsibilityGuidanceModelInputs extends ContribPageWithHeader<undefined> {
     name() {
         return "Model inputs";
@@ -51,162 +49,162 @@ export class ResponsibilityGuidanceModelInputs extends ContribPageWithHeader<und
             </p>
             <table>
                 <tbody>
-                    <tr>
-                        <th>
-                            Country set
-                        </th>
-                        <th>
-                            Period
-                        </th>
-                        <th>
-                            Type
-                        </th>
-                        <th>
-                            Source
-                        </th>
-                    </tr>
+                <tr>
+                    <th>
+                        Country set
+                    </th>
+                    <th>
+                        Period
+                    </th>
+                    <th>
+                        Type
+                    </th>
+                    <th>
+                        Source
+                    </th>
+                </tr>
 
-                    <tr>
-                        <td>
-                            Gavi 73
-                        </td>
-                        <td>
-                            Up to 2016
-                        </td>
-                        <td>
-                            Routine
-                        </td>
-                        <td>
-                            WUENIC
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            Gavi 73
-                        </td>
-                        <td>
-                            Up to 2016
-                        </td>
-                        <td>
-                            Campaign
-                        </td>
-                        <td>
-                            Gavi records of past campaigns
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            Gavi 73
-                        </td>
-                        <td>
-                            2017-2030
-                        </td>
-                        <td>
-                            Routine
-                        </td>
-                        <td>
-                            Gavi OP15
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            Gavi 73
-                        </td>
-                        <td>
-                            2017-2030
-                        </td>
-                        <td>
-                            Campaign
-                        </td>
-                        <td>
-                            Gavi OP15
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            Gavi 73
-                        </td>
-                        <td>
-                            2031 onwards
-                        </td>
-                        <td>
-                            Routine
-                        </td>
-                        <td>
-                            Extrapolated from Gavi OP15
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            Gavi 73
-                        </td>
-                        <td>
-                            2031 onwards
-                        </td>
-                        <td>
-                            Campaign
-                        </td>
-                        <td>
-                            Assume no further campaigns
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            Other 25 countries
-                        </td>
-                        <td>
-                            Up to 2016
-                        </td>
-                        <td>
-                            Routine
-                        </td>
-                        <td>
-                            WUENIC
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            Other 25 countries
-                        </td>
-                        <td>
-                            Up to 2016
-                        </td>
-                        <td>
-                            Campaign
-                        </td>
-                        <td>
-                            Gavi records of past campaigns
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            Other 25 countries
-                        </td>
-                        <td>
-                            2017 onwards
-                        </td>
-                        <td>
-                            Routine
-                        </td>
-                        <td>
-                            Extrapolated from WUENIC routine coverage data by VIMC
-                             secretariat, to cover future years.
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            Other 25 countries
-                        </td>
-                        <td>
-                            2017 onwards
-                        </td>
-                        <td>
-                            Campaign
-                        </td>
-                        <td>
-                            Extrapolated from various sources by VIMC secretariat
-                        </td>
-                    </tr>
+                <tr>
+                    <td>
+                        Gavi 73
+                    </td>
+                    <td>
+                        Up to 2016
+                    </td>
+                    <td>
+                        Routine
+                    </td>
+                    <td>
+                        WUENIC
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Gavi 73
+                    </td>
+                    <td>
+                        Up to 2016
+                    </td>
+                    <td>
+                        Campaign
+                    </td>
+                    <td>
+                        Gavi records of past campaigns
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Gavi 73
+                    </td>
+                    <td>
+                        2017-2030
+                    </td>
+                    <td>
+                        Routine
+                    </td>
+                    <td>
+                        Gavi OP15
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Gavi 73
+                    </td>
+                    <td>
+                        2017-2030
+                    </td>
+                    <td>
+                        Campaign
+                    </td>
+                    <td>
+                        Gavi OP15
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Gavi 73
+                    </td>
+                    <td>
+                        2031 onwards
+                    </td>
+                    <td>
+                        Routine
+                    </td>
+                    <td>
+                        Extrapolated from Gavi OP15
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Gavi 73
+                    </td>
+                    <td>
+                        2031 onwards
+                    </td>
+                    <td>
+                        Campaign
+                    </td>
+                    <td>
+                        Assume no further campaigns
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Other 25 countries
+                    </td>
+                    <td>
+                        Up to 2016
+                    </td>
+                    <td>
+                        Routine
+                    </td>
+                    <td>
+                        WUENIC
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Other 25 countries
+                    </td>
+                    <td>
+                        Up to 2016
+                    </td>
+                    <td>
+                        Campaign
+                    </td>
+                    <td>
+                        Gavi records of past campaigns
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Other 25 countries
+                    </td>
+                    <td>
+                        2017 onwards
+                    </td>
+                    <td>
+                        Routine
+                    </td>
+                    <td>
+                        Extrapolated from WUENIC routine coverage data by VIMC
+                        secretariat, to cover future years.
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Other 25 countries
+                    </td>
+                    <td>
+                        2017 onwards
+                    </td>
+                    <td>
+                        Campaign
+                    </td>
+                    <td>
+                        Extrapolated from various sources by VIMC secretariat
+                    </td>
+                </tr>
                 </tbody>
             </table>
             <br />
@@ -281,7 +279,7 @@ export class ResponsibilityGuidanceModelInputs extends ContribPageWithHeader<und
             </p>
             <p>
                 <b>Q. Why is population at birth (age 0) not the same as the
-                number of births?</b>
+                    number of births?</b>
             </p>
             <p>
                 A. In UNWPP data, age '0-0' refers to all people under 1 year
@@ -291,7 +289,7 @@ export class ResponsibilityGuidanceModelInputs extends ContribPageWithHeader<und
             </p>
             <p>
                 <b>Q. I require demographic data that isn't available on Montagu.
-                What should I do?</b>
+                    What should I do?</b>
             </p>
             <p>
                 A. Please contact us at&nbsp;
@@ -305,7 +303,7 @@ export class ResponsibilityGuidanceModelInputs extends ContribPageWithHeader<und
                 </a>.
             </p>
             <p>
-               <b>Q. Can I download all demographic data in one download?</b>
+                <b>Q. Can I download all demographic data in one download?</b>
             </p>
             <p>
                 A. We are working on this functionality for future runs, but
