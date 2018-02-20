@@ -34,8 +34,8 @@ export class ReportDetailsComponent extends RemoteContentComponent<ReportDetails
             report: s.currentReport,
             allVersions: s.versions[s.currentReport],
             ready: s.ready
-                && s.versions[s.currentReport] !== undefined
-                && s.versionDetails[s.currentVersion] != null,
+            && s.versions[s.currentReport] !== undefined
+            && s.versionDetails[s.currentVersion] != null,
 
             onChangeVersion: props.onChangeVersion
         };
@@ -44,13 +44,15 @@ export class ReportDetailsComponent extends RemoteContentComponent<ReportDetails
     renderContent(props: ReportDetailsProps) {
         const version = props.versionDetails.id;
         return <div>
-           <DraftStamp published={props.versionDetails.published} />
+            <h1 className={"h2"}>{props.versionDetails.displayname || props.versionDetails.name}</h1>
+            <p className={"small text-muted"}>{props.versionDetails.id}</p>
+            <DraftStamp published={props.versionDetails.published}/>
             <ReportVersionSwitcher
                 currentVersion={props.versionDetails.id}
                 versions={props.allVersions}
                 onChangeVersion={props.onChangeVersion}
             />
-            <ArtefactsSection report={this.props.report} versionDetails={this.props.versionDetails} />
+            <ArtefactsSection report={this.props.report} versionDetails={this.props.versionDetails}/>
             <DataLinks {...props.versionDetails.hash_data} />
             <ResourceLinks resources={props.versionDetails.resources} report={props.report} version={version}/>
             <ParameterList {...props.versionDetails.parameters} />
