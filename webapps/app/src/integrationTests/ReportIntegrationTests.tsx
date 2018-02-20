@@ -42,6 +42,30 @@ class ReportIntegrationTests extends IntegrationTestSuite {
 
         afterEach(() => sandbox.restore());
 
+        it("publishes report", (done: DoneCallback) => {
+
+            const reportName = "use_resource";
+            const promise = getVersion(reportName)
+                .then((version: string) => {
+                    return (new ReportsService(this.store.dispatch, this.store.getState))
+                        .publishReport(reportName, version)
+                });
+
+            checkSuccessful(done, promise);
+        });
+
+        it("unpublished report", (done: DoneCallback) => {
+
+            const reportName = "use_resource";
+            const promise = getVersion(reportName)
+                .then((version: string) => {
+                    return (new ReportsService(this.store.dispatch, this.store.getState))
+                        .unPublishReport(reportName, version)
+                });
+
+            checkSuccessful(done, promise);
+        });
+
         it("fetches reports", async () => {
             const expectedNames: string[] = ["minimal", "multi-artefact", "multifile-artefact", "other", "use_resource"];
             const reports = await (new ReportsService(this.store.dispatch, this.store.getState)).getAllReports();
