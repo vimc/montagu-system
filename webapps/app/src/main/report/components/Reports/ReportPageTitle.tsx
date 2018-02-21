@@ -1,7 +1,6 @@
 import { connect } from 'react-redux';
 import * as React from "react";
 
-import '../../../shared/components/PageWithHeader/PageWithHeader.scss';
 import {ReportAppState} from "../../reducers/reportAppReducers";
 
 export interface ReportPageTitleProps {

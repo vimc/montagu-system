@@ -13,7 +13,6 @@ import {ReportVersionSwitcher} from "./ReportVersionSwitcher";
 import {ArtefactsSection} from "../Artefacts/ArtefactsSection";
 import {DraftStamp} from "../DraftStamp";
 import { LoadingElement } from "../../../shared/partials/LoadingElement/LoadingElement";
-import "../../../shared/styles/common.scss";
 import {ReportAppState} from "../../reducers/reportAppReducers";
 
 interface PublicProps {
