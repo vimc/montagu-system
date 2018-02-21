@@ -41,7 +41,7 @@ export class UserDetailsContentComponent extends RemoteContentComponent<Props, u
         return <div className="mt-4">
             <h3>Manage roles</h3>
             <form className="form">
-                <hr/>
+                <hr className={"dashed"}/>
                 {this.props.roles.map(r =>
                     <UserRole key={r.name + r.scope_prefix + r.scope_id} {...r} username={username} showdelete={this.props.isAdmin}/>
                 )}
