@@ -62,7 +62,7 @@ export class UserRole extends React.Component<UserRoleProps, UserRoleState> {
                 <span className="role-name">{this.props.name}{scope}</span>
                 {this.renderButton()}
             </div>
-            <hr className="dashed"/>
+            <hr className={"dashed"}/>
         </div>
 
     }
