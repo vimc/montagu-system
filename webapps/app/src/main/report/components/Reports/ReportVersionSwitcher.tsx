@@ -27,8 +27,7 @@ export class ReportVersionSwitcher extends React.Component<Props, undefined> {
                 {longTimestamp(v.timestamp)}
             </option>
         });
-        return <div className="row versionSwitcher">
-            <div className="col-12 col-md-6">
+        return <div className="versionSwitcher">
                 <label
                     htmlFor="report-version-switcher"
                     className="mt-0 sectionTitle">
@@ -37,11 +36,10 @@ export class ReportVersionSwitcher extends React.Component<Props, undefined> {
                 <select
                     onChange={this.onSelect}
                     value={this.props.currentVersion}
-                    className="form-control"
+                    className="form-control form-control-sm"
                     id="report-version-switcher">
                     {items}
                 </select>
-            </div>
         </div>;
     }
 }

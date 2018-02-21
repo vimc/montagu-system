@@ -41,6 +41,7 @@ export class PublishSwitchComponent extends React.Component<Props, undefined> {
                 active={this.props.published}/>
             <UncontrolledTooltip target={"publish"}>
                 Publish functionality coming soon</UncontrolledTooltip>
+            <hr/>
         </div>
     }
 }

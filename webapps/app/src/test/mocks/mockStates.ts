@@ -8,7 +8,7 @@ import {reportsInitialState, ReportsState} from "../../main/report/reducers/repo
 import {ReportAppState} from "../../main/report/reducers/reportAppReducers";
 import {mockReport, mockVersion} from "./mockModels";
 
-type RecursivePartial<T> = {
+export type RecursivePartial<T> = {
     [P in keyof T]?: RecursivePartial<T[P]>
     };
 
