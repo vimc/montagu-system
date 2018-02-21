@@ -43,7 +43,8 @@ class ReportIntegrationTests extends IntegrationTestSuite {
         afterEach(() => sandbox.restore());
 
         it("fetches reports", async () => {
-            const expectedNames: string[] = ["minimal", "multi-artefact", "multifile-artefact", "other", "use_resource"];
+            const expectedNames: string[] = ["minimal", "multi-artefact", "multifile-artefact", "other",
+                "use_resource", "html"];
             const reports = await (new ReportsService(this.store.dispatch, this.store.getState)).getAllReports();
             const names = reports.map((item: Report) => item.name);
             const versions = reports.filter((item: Report) => item.latest_version.length > 0);

@@ -49,7 +49,8 @@ export class ReportDetailsComponent extends RemoteContentComponent<ReportDetails
         const artefact = artefactGroup[type];
 
         return <div>
-            <InlineArtefact report={report} version={version} artefact={artefact}/>
+            <h1 className={"h2"}>{props.versionDetails.displayname || props.versionDetails.name}</h1>
+            <p className={"small text-muted"}>{props.versionDetails.id}</p>
             <DraftStamp published={props.versionDetails.published}/>
             <ReportVersionSwitcher
                 currentVersion={props.versionDetails.id}
