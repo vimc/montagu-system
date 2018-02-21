@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="UTF-8">
+    <title>Montagu - Modelling groups contribution portal</title>
+    <link rel="stylesheet" href="./style.css" type="text/css" />
+    <style type="text/css">
+        .versionHistory .highlight:nth-child(odd) {
+             background-color: rgb(245, 245, 245);
+        }
+        .versionHistory .highlight {
+            margin: 10px 0;
+            padding: 10px;
+            cursor: pointer;
+            border: 1px solid rgb(200, 200, 200);
+        }
+    </style>
+    <script
+              src="https://code.jquery.com/jquery-3.3.1.min.js"
+              integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+              crossorigin="anonymous"></script>
+    <script type="text/javascript">
+        $(function() {
+            $(".highlight").click(function() {
+                $('form').slideUp(); 
+                $(this).find('form').slideDown();
+            });
+        });
+    </script>
+</head>
+<body>
+<div>
+    <div>
+        <div class="header">
+            <a href="http://localhost:5000/"><img src="logo.png" alt="VIMC" height="80" /></a>
+
+            <div class="header__siteTitle">
+                <a href="http://localhost:5000/">Modellers' contribution portal</a>
+            </div>
+
+            <div class="logout">
+                <div>
+                    Logged in as test.user |
+                    <a href="http://localhost:5000/">Log out</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="montagu-navbar">
+            <div class="montagu-navbar__chunk">
+                <a href="http://localhost:5000/">Modellers' contribution
+                portal</a>
+            </div>
+
+            <div class="montagu-navbar__chunk">
+                <a href="http://localhost:5000/IC-Garske/">Imperial Yellow
+                Fever modelling group</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="page">
+        <div class="page__title">
+            <span>Forecast October 2019</span>
+        </div>
+
+        <div class="page__content">
+                <p>
+                    Burden estimate forecast for October 2019 using WUENIC data from June 2019
+                    and coverage data published by GAVI on 11th September 2019.
+                </p>  
+                <div class="sectionTitle">Version history</div>                
+                <div class="versionHistory">
+                    <div id="v1" class="highlight">
+                        <div class="row">
+                            <div class="col-3">
+                                <strong>v1</strong>
+                                <p>Published 17th October 2019</p>
+                            </div>
+                            <div class="col-8">
+                                <ul>
+                                    <li>Initial version</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <form style="display: none">
+                            <div class="row">
+                                <div class="col-3">
+                                    <button type="submit" style="width: 100%">Go to download page &gt;&gt;</button>
+                                </div>
+                                <div class="col-3">
+                                    <button type="submit" style="width: 100%">Go to upload page &gt;&gt;</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div id="v2" class="highlight">
+                        <div class="row">
+                            <div class="col-3">
+                                <strong>v2</strong>
+                                <p>Published 25th October 2019</p>
+                            </div>
+                            <div class="col-8">
+                                <ul>
+                                    <li>Added scenarios for Yellow Fever</li>
+                                    <li>Updated coveraged data for 2050 onwards to reflect new interpolation requested by GAVI</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <form style="display: none">
+                            <div class="row">
+                                <div class="col-3">
+                                    <button type="submit" style="width: 100%">Go to download page &gt;&gt;</button>
+                                </div>
+                                <div class="col-3">
+                                    <button type="submit" style="width: 100%">Go to upload page &gt;&gt;</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div id="v3" class="highlight">
+                        <div class="row">
+                            <div class="col-3">
+                                <strong>v3</strong>
+                                <p>Published 1st November 2019</p>
+                            </div>
+                            <div class="col-8">
+                                <ul>
+                                    <li>Added new scenarios for HepB</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <form style="display: none">
+                            <div class="row">
+                                <div class="col-3">
+                                    <button type="submit" style="width: 100%">Go to download page &gt;&gt;</button>
+                                </div>
+                                <div class="col-3">
+                                    <button type="submit" style="width: 100%">Go to upload page &gt;&gt;</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div id="v4" class="highlight">
+                        <div class="row">
+                            <div class="col-3">
+                                <strong>v4</strong>
+                                <p>Published 6th November 2019</p>
+                            </div>
+                            <div class="col-8">
+                                <ul>
+                                    <li>Fixed coverage for Nigeria post 2030.</li>
+                                    <li>Updated mortality figures for all countries to remove rounding error.</li>
+                                </ul>
+                            </div>
+                        </div>                    
+                        <form>
+                            <div class="row">
+                                <div class="col-3">
+                                    <button type="submit" style="width: 100%">Go to download page &gt;&gt;</button>
+                                </div>
+                                <div class="col-3">
+                                    <button type="submit" style="width: 100%">Go to upload page &gt;&gt;</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body></html>
