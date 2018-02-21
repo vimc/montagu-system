@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="UTF-8">
+    <title>Montagu - Modelling groups contribution portal</title>
+    <link rel="stylesheet" href="./style.css" type="text/css" />
+    <style>
+        input[type='checkbox'] {
+            transform: scale(2);
+        }
+        table tr td:nth-child(3) {
+            font-family: monospace;
+            font-size: 10pt;
+            color: blue;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+        .demography table {
+            overflow-y: scroll;
+            height: 300px;
+        }
+    </style>
+</head>
+<body>
+<div>
+    <div>
+        <div class="header">
+            <a href="http://localhost:5000/"><img src="logo.png" alt="VIMC" height="80" /></a>
+
+            <div class="header__siteTitle">
+                <a href="http://localhost:5000/">Modellers' contribution portal</a>
+            </div>
+
+            <div class="logout">
+                <div>
+                    Logged in as test.user |
+                    <a href="http://localhost:5000/">Log out</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="montagu-navbar">
+            <div class="montagu-navbar__chunk">
+                <a href="http://localhost:5000/">Modellers' contribution
+                portal</a>
+            </div>
+
+            <div class="montagu-navbar__chunk">
+                <a href="http://localhost:5000/IC-Garske/">Imperial Yellow
+                Fever modelling group</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="page">
+        <div class="page__title">
+            <span>Forecast October 2018: Downloads</span>
+        </div>
+
+        <div class="page__content">
+            <div class="sectionTitle">Demographic data</div>
+            <div class="demography">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Name</th>
+                            <th>Filename</th>
+                            <th>Gender</th>
+                            <th>Format</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><input type="checkbox" /></td>
+                            <td>Fertility: Age specific fertility</td>
+                            <td>201710gavi-3_dds-201710_as_fert_both.csv</td>
+                            <td></td>
+                            <td><input type="radio" /> Long <input type="radio" /> Wide</td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" /></td>
+                            <td>Fertility: Births (number of)</td>
+                            <td>201710gavi-3_dds-201710_births_both.csv</td>
+                            <td></td>
+                            <td><input type="radio" /> Long <input type="radio" /> Wide</td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" /></td>
+                            <td>Fertility: Births (number of) - quinquennial</td>
+                            <td>201710gavi-3_dds-201710_qq_births_both.csv</td>
+                            <td></td>
+                            <td><input type="radio" /> Long <input type="radio" /> Wide</td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" /></td>
+                            <td>Population: Interpolated (1-year time and age)</td>
+                            <td>201710gavi-3_dds-201710_int_pop_both.csv</td>
+                            <td><input type="radio" /> Both <input type="radio" /> Male <input type="radio" /> Female</td>
+                            <td><input type="radio" /> Long <input type="radio" /> Wide</td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" /></td>
+                            <td>Fertility: Age specific fertility</td>
+                            <td>201710gavi-3_dds-201710_as_fert_both.csv</td>
+                            <td></td>
+                            <td><input type="radio" /> Long <input type="radio" /> Wide</td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" /></td>
+                            <td>Fertility: Births (number of)</td>
+                            <td>201710gavi-3_dds-201710_births_both.csv</td>
+                            <td></td>
+                            <td><input type="radio" /> Long <input type="radio" /> Wide</td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" /></td>
+                            <td>Fertility: Births (number of) - quinquennial</td>
+                            <td>201710gavi-3_dds-201710_qq_births_both.csv</td>
+                            <td></td>
+                            <td><input type="radio" /> Long <input type="radio" /> Wide</td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" /></td>
+                            <td>Population: Interpolated (1-year time and age)</td>
+                            <td>201710gavi-3_dds-201710_int_pop_both.csv</td>
+                            <td><input type="radio" /> Both <input type="radio" /> Male <input type="radio" /> Female</td>
+                            <td><input type="radio" /> Long <input type="radio" /> Wide</td>
+                        </tr>                        
+                    </tbody>
+                </table>
+
+                <button>Download selected</button>
+            </div>
+
+            <div class="sectionTitle">Coverage data</div>
+            <div class="sectionTitle">Templates for uploading results</div>
+        </div>
+    </div>
+</div>
+</body></html>
