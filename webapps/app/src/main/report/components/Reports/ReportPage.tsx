@@ -7,8 +7,9 @@ import {PageProperties} from "../../../shared/components/PageWithHeader/PageWith
 import {appSettings} from "../../../shared/Settings";
 import {MainMenu} from "../MainMenu/MainMenu";
 import {ReportPageTitle} from "./ReportPageTitle";
-import { Page } from "../../../shared/components/PageWithHeader/Page";
 import {reportPageActions} from "../../actions/reportPageActions";
+import {Sidebar} from "./Sidebar";
+import {PageHeader} from "../../../shared/components/PageWithHeader/PageHeader";
 
 export interface ReportPageProps {
     report: string;
@@ -67,9 +68,19 @@ export class ReportPageComponent extends ReportingPageWithHeader<ReportPageProps
     }
 
     render(): JSX.Element {
-        return <Page page={this}>
-            <ReportDetails onChangeVersion={this.changeVersion}/>
-        </Page>
+        return <div>
+            <PageHeader siteTitle={this.siteTitle()}/>
+            <div className={"container-fluid pt-4 sm-pt-5"}>
+                <div className="row flex-xl-nowrap">
+                    <div className="col-12 col-md-4 col-xl-2">
+                        <Sidebar/>
+                    </div>
+                    <div className={"col-12 col-sm-10 col-md-8 pt-4 pt-md-1"}>
+                        <ReportDetails onChangeVersion={this.changeVersion}/>
+                    </div>
+                </div>
+            </div>
+        </div>
     }
 }
 

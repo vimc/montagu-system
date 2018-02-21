@@ -1,9 +1,5 @@
 import * as React from "react";
-import { Dispatch, Action } from "redux";
 import { connect } from 'react-redux';
-
-import {RemoteContent} from "../../../shared/models/RemoteContent";
-import {RemoteContentComponent} from "../../../shared/components/RemoteContentComponent/RemoteContentComponent";
 
 import {Version} from "../../../shared/models/reports/Report";
 import {ParameterList} from "../Parameters/ParameterList";
@@ -15,6 +11,7 @@ import {DraftStamp} from "../DraftStamp";
 import { LoadingElement } from "../../../shared/partials/LoadingElement/LoadingElement";
 import {ReportAppState} from "../../reducers/reportAppReducers";
 
+import {InlineArtefact} from "../Artefacts/InlineArtefact";
 interface PublicProps {
     onChangeVersion: (version: string) => void;
 }
@@ -28,8 +25,14 @@ export interface ReportDetailsProps extends PublicProps {
 
 export const ReportDetailsComponent = (props: ReportDetailsProps) => {
     if (props.ready) {
-        const version = props.versionDetails.id;
+        const artefactGroup = this.props.versionDetails.artefacts[0];
+        const type = Object.getOwnPropertyNames(artefactGroup)[0];
+        const artefact = artefactGroup[type];
+
         return <div>
+            <h1 className={"h2"}>{props.versionDetails.displayname || props.versionDetails.name}</h1>
+            <p className={"small text-muted"}>{props.versionDetails.id}</p>
+            <InlineArtefact report={props.report} version={props.versionDetails.id} artefact={artefact}/>
             <DraftStamp published={props.versionDetails.published}/>
             <ReportVersionSwitcher
                 currentVersion={props.versionDetails.id}
@@ -38,7 +41,7 @@ export const ReportDetailsComponent = (props: ReportDetailsProps) => {
             />
             <ArtefactsSection report={props.report} versionDetails={props.versionDetails}/>
             <DataLinks {...props.versionDetails.hash_data} />
-            <ResourceLinks resources={props.versionDetails.resources} report={props.report} version={version}/>
+            <ResourceLinks resources={props.versionDetails.resources} report={props.report} version={props.versionDetails.id}/>
             <ParameterList {...props.versionDetails.parameters} />
         </div>;
     } else {
