@@ -11,7 +11,7 @@ import {ArtefactsSection} from "../../../../main/report/components/Artefacts/Art
 import {DataLinks} from "../../../../main/report/components/Data/DataLinks";
 import {ResourceLinks} from "../../../../main/report/components/Resources/ResourceLinks";
 import {ParameterList} from "../../../../main/report/components/Parameters/ParameterList";
-import {mockReportState} from "../../../mocks/mockStates";
+import {mockReportAppState} from "../../../mocks/mockStates";
 
 describe("ReportDetails", () => {
     const sandbox = new Sandbox();
@@ -20,7 +20,7 @@ describe("ReportDetails", () => {
     describe("getPropsFromStores", () => {
 
         it("checks props mappings", () => {
-            const reportStateProps = mockReportState({
+            const reportStateProps = mockReportAppState({
                 reports: {
                     versionDetails: mockVersion(),
                     currentReport: "reportname",
@@ -42,7 +42,7 @@ describe("ReportDetails", () => {
         });
 
         it("is ready when version details is there", () => {
-            const reportStateProps = mockReportState({
+            const reportStateProps = mockReportAppState({
                 reports: {
                     versionDetails: mockVersion(),
                 }
@@ -54,7 +54,7 @@ describe("ReportDetails", () => {
         });
 
         it("is not ready when no version details", () => {
-            const reportStateProps = mockReportState({
+            const reportStateProps = mockReportAppState({
                 reports: {
                 }
             })
@@ -138,5 +138,17 @@ describe("ReportDetails", () => {
         expect(rendered.find(DraftStamp).props()).to.eql({
             published: false
         });
+    });
+
+
+    it("renders name if display name not present", () => {
+        const rendered = shallow(<ReportDetailsComponent
+            versionDetails={mockVersion({ published: false, displayname: null, name: "name" })}
+            report="report"
+            allVersions={[]}
+            onChangeVersion={null}
+            ready={true}
+        />);
+        expect(rendered.find("h1.h2").text()).to.eql("name")
     });
 });
