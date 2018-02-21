@@ -5,6 +5,7 @@ import {PublishSwitch} from "../../../../main/report/components/Reports/PublishS
 import {Sandbox} from "../../../Sandbox";
 import {mapStateToProps, SidebarComponent, SidebarProps} from "../../../../main/report/components/Reports/Sidebar";
 import {mockAuthState, mockReportAppState, mockReportsState} from "../../../mocks/mockStates";
+import {mockVersion} from "../../../mocks/mockModels";
 
 describe("Sidebar", () => {
 
@@ -19,7 +20,9 @@ describe("Sidebar", () => {
         const props: SidebarProps = {
             published: true,
             isReviewer: true,
-            ready: true
+            ready: true,
+            name: "name",
+            version: "v1"
         };
 
         const rendered = shallow(<SidebarComponent {...props} />);
@@ -32,7 +35,9 @@ describe("Sidebar", () => {
         const props: SidebarProps = {
             published: true,
             isReviewer: false,
-            ready: true
+            ready: true,
+            name: "name",
+            version: "v1"
         };
 
         const rendered = shallow(<SidebarComponent {...props} />);
@@ -44,7 +49,9 @@ describe("Sidebar", () => {
         const props: SidebarProps = {
             published: true,
             isReviewer: true,
-            ready: false
+            ready: false,
+            name: "name",
+            version: "v1"
         };
 
         const rendered = shallow(<SidebarComponent {...props} />);
@@ -54,7 +61,8 @@ describe("Sidebar", () => {
     it("gets reviewer status from app state", () => {
 
         let state = mockReportAppState({
-            auth: mockAuthState({permissions: ["*/reports.review"]})
+            auth: mockAuthState({permissions: ["*/reports.review"]}),
+            reports: mockReportsState({versionDetails: mockVersion()})
         });
 
         let result = mapStateToProps(state, {});

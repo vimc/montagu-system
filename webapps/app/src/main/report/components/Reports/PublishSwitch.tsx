@@ -5,10 +5,13 @@ import {ReportAppState} from "../../reducers/reportAppReducers";
 import {UncontrolledTooltip} from "reactstrap";
 import {reportsActions} from "../../actions/reportsActions";
 
-export interface Props {
+export interface PublicProps {
     name: string;
     version: string;
     published: boolean;
+}
+
+export interface Props extends PublicProps {
     publish: (name: string, version: string) => void;
     unpublish: (name: string, version: string) => void;
 }
@@ -52,6 +55,5 @@ export const mapDispatchToProps = (dispatch: Dispatch<any>): Partial<Props> => {
     }
 };
 
-export const PublishSwitch = connect(
-    (state: ReportAppState, props: Partial<Props>) => props,
+export const PublishSwitch = connect((state: ReportAppState, props: PublicProps) => props,
     mapDispatchToProps)(PublishSwitchComponent);

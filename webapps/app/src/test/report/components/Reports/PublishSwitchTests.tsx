@@ -1,14 +1,16 @@
 import * as React from "react";
-import {shallow} from "enzyme";
+import {mount, shallow} from "enzyme";
 import {expect} from "chai";
 import Toggle from 'react-bootstrap-toggle';
 import {
     mapDispatchToProps,
-    Props,
+    Props, PublicProps, PublishSwitch,
     PublishSwitchComponent
 } from "../../../../main/report/components/Reports/PublishSwitch";
 import {Sandbox} from "../../../Sandbox";
 import {reportsActions} from "../../../../main/report/actions/reportsActions";
+import {createMockStore} from "../../../mocks/mockStore";
+import {Provider} from "react-redux";
 
 describe("PublishSwitch", () => {
 
@@ -29,6 +31,7 @@ describe("PublishSwitch", () => {
         };
 
         const rendered = shallow(<PublishSwitchComponent {...props} />);
+
         expect(rendered.find(Toggle).prop("active")).to.be.true
     });
 
