@@ -19,7 +19,6 @@ describe('Local service class initialization tests', () => {
     it('initializes default service with default option url', () => {
         const store = createStore(state => state, mockGlobalState({auth: {bearerToken: null}}));
         class TestService extends LocalService {
-            stateSegment: "test";
             test() {
                 return {
                     options: this.options
@@ -37,7 +36,6 @@ describe('Local service class initialization tests', () => {
         const store = createStore(state => state, mockGlobalState({auth: {bearerToken: "token"}}));
 
         class TestService extends LocalService {
-            stateSegment: "test";
             test() {
                 return {
                     options: this.options,
@@ -56,7 +54,6 @@ describe('Local service class initialization tests', () => {
         const store = createStore(state => state, mockGlobalState({auth: {bearerToken: "token"}}));
 
         class TestService extends LocalService {
-            stateSegment: "test";
             test() {
                 this.setOptions({credentials: "include"})
                 return {
@@ -79,7 +76,6 @@ describe('Local service class initialization tests', () => {
         const password = "abc";
 
         class TestService extends LocalService {
-            stateSegment: "test";
             test() {
                 this.setOptions({Authorization: 'Basic ' + btoa(`${email}:${password}`)});
                 return {
@@ -108,7 +104,6 @@ describe('Local service class requests tests', () => {
     it('performs successful query', async () => {
         const store = createStore(state => state, mockGlobalState());
         class TestService extends LocalService {
-            stateSegment: "test";
             test() {
                 return this.get("/test/");
             }
@@ -123,7 +118,6 @@ describe('Local service class requests tests', () => {
     it('performs query and api says token expired', async () => {
         const store = createMockStore();
         class TestService extends LocalService {
-            stateSegment: "test";
             test() {
                 return this.get("/test/");
             }
