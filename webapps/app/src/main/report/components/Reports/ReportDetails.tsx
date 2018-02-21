@@ -25,7 +25,7 @@ export interface ReportDetailsProps extends PublicProps {
 
 export const ReportDetailsComponent = (props: ReportDetailsProps) => {
     if (props.ready) {
-        const artefactGroup = this.props.versionDetails.artefacts[0];
+        const artefactGroup = props.versionDetails.artefacts[0];
         const type = Object.getOwnPropertyNames(artefactGroup)[0];
         const artefact = artefactGroup[type];
 
