@@ -126,4 +126,14 @@ describe("ReportDetails", () => {
         expect(handler.calledWith("v3"));
     });
 
+    it("renders name if display name not present", () => {
+        const rendered = shallow(<ReportDetailsComponent
+            versionDetails={mockVersion({ published: false, displayname: null, name: "name" })}
+            report="report"
+            allVersions={[]}
+            onChangeVersion={null}
+            ready={true}
+        />);
+        expect(rendered.find("h1.h2").text()).to.eql("name")
+    });
 });
