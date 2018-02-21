@@ -6,8 +6,6 @@ import {connect} from "react-redux";
 import {PublishSwitch} from "./PublishSwitch";
 
 export class SidebarProps {
-    name: string;
-    version: string;
     ready: boolean;
     isReviewer: boolean;
     published: boolean;

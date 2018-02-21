@@ -17,8 +17,6 @@ describe("Sidebar", () => {
     it("renders publish switch if user is reviewer", () => {
 
         const props: SidebarProps = {
-            name: "report-name",
-            version: "v1",
             published: true,
             isReviewer: true,
             ready: true
@@ -32,8 +30,6 @@ describe("Sidebar", () => {
     it("does not render publish switch if user is not reviewer", () => {
 
         const props: SidebarProps = {
-            name: "report-name",
-            version: "v1",
             published: true,
             isReviewer: false,
             ready: true
@@ -46,8 +42,6 @@ describe("Sidebar", () => {
     it("does not render publish switch if details are not ready", () => {
 
         const props: SidebarProps = {
-            name: "report-name",
-            version: "v1",
             published: true,
             isReviewer: true,
             ready: false
@@ -59,16 +53,11 @@ describe("Sidebar", () => {
 
     it("gets reviewer status from app state", () => {
 
-        const props: Partial<SidebarProps> = {
-            name: "report-name",
-            version: "v1"
-        };
-
         let state = mockReportAppState({
             auth: mockAuthState({permissions: ["*/reports.review"]})
         });
 
-        let result = mapStateToProps(state, props);
+        let result = mapStateToProps(state, {});
 
         expect(result.isReviewer).to.be.true;
 
@@ -76,7 +65,7 @@ describe("Sidebar", () => {
             auth: mockAuthState({permissions: []})
         });
 
-        result = mapStateToProps(state, props);
+        result = mapStateToProps(state, {});
 
         expect(result.isReviewer).to.be.false;
 
@@ -84,16 +73,11 @@ describe("Sidebar", () => {
 
     it("gets publish status from app state", () => {
 
-        const props: Partial<SidebarProps> = {
-            name: "report-name",
-            version: "v1"
-        };
-
         let state = mockReportAppState({
             reports: mockReportsState({versionDetails: {published: false}})
         });
 
-        let result = mapStateToProps(state, props);
+        let result = mapStateToProps(state, {});
 
         expect(result.published).to.be.false;
 
@@ -101,7 +85,7 @@ describe("Sidebar", () => {
             reports: mockReportsState({versionDetails: {published: true}})
         });
 
-        result = mapStateToProps(state, props);
+        result = mapStateToProps(state, {});
 
         expect(result.published).to.be.true;
 
@@ -109,29 +93,19 @@ describe("Sidebar", () => {
 
     it("is not ready when version details are null", () => {
 
-        const props: Partial<SidebarProps> = {
-            name: "report-name",
-            version: "v1"
-        };
-
         let state = mockReportAppState();
-        let result = mapStateToProps(state, props);
+        let result = mapStateToProps(state, {});
 
         expect(result.ready).to.be.false;
     });
 
     it("is ready when version details are non null", () => {
 
-        const props: Partial<SidebarProps> = {
-            name: "report-name",
-            version: "v1"
-        };
-
         let state = mockReportAppState({
             reports:
                 mockReportsState({versionDetails: {published: false}})
         });
-        let result = mapStateToProps(state, props);
+        let result = mapStateToProps(state, {});
 
         expect(result.ready).to.be.true;
     });
