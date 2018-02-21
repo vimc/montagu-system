@@ -1,6 +1,6 @@
 import * as React from "react";
-import { Dispatch, Action } from "redux";
-import { connect } from 'react-redux';
+import {Action, Dispatch} from "redux";
+import {connect} from 'react-redux';
 import {ReportingPageWithHeader} from "../ReportingPageWithHeader";
 import {ReportDetails} from "./ReportDetails";
 import {PageProperties} from "../../../shared/components/PageWithHeader/PageWithHeader";
@@ -27,7 +27,7 @@ export class ReportPageComponent extends ReportingPageWithHeader<ReportPageProps
 
     changeVersion(version: string): any {
         this.redirectToVersion(version);
-        setTimeout(()=> {
+        setTimeout(() => {
             this.loadVersion();
         });
     }
@@ -40,7 +40,7 @@ export class ReportPageComponent extends ReportingPageWithHeader<ReportPageProps
         this.createBreadcrumb();
     }
 
-    getLocationParams(){
+    getLocationParams() {
         return this.props.location.params;
     }
 
@@ -63,14 +63,12 @@ export class ReportPageComponent extends ReportingPageWithHeader<ReportPageProps
     }
 
     render(): JSX.Element {
-        const reportProps = this.props.location.params;
-
         return <div>
             <PageHeader siteTitle={this.siteTitle()}/>
             <div className={"container-fluid pt-4 sm-pt-5"}>
                 <div className="row flex-xl-nowrap">
                     <div className="col-12 col-md-4 col-xl-2">
-                        <Sidebar />
+                        <Sidebar/>
                     </div>
                     <div className={"col-12 col-sm-10 col-md-8 pt-4 pt-md-1"}>
                         <ReportDetails onChangeVersion={this.changeVersion}/>
