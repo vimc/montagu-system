@@ -12,7 +12,7 @@ interface Props {
 export class InlineArtefact extends React.Component<Props, undefined> {
     render(): JSX.Element {
         const {report, version, artefact} = this.props;
-        const filename = artefact.filenames.filter(x => x.split('.').pop() == "pdf")[0];
+        const filename = artefact.filenames[0];
         const extension = filename.split('.').pop();
 
         if (InlineArtefact.canRenderInIFrame(extension)) {
@@ -34,7 +34,7 @@ export class InlineArtefact extends React.Component<Props, undefined> {
     }
 }
 
-class ArtefactIFrame extends React.Component<OneTimeLinkProps, undefined> {
+export class ArtefactIFrame extends React.Component<OneTimeLinkProps, undefined> {
     render(): JSX.Element {
         const {href} = this.props;
         if (href != null) {

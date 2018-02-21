@@ -5,10 +5,6 @@ import * as React from "react";
 import {alt} from "../../../main/shared/alt";
 import {Sandbox} from "../../Sandbox";
 
-import * as enzyme from "enzyme";
-import * as Adapter from "enzyme-adapter-react-15";
-enzyme.configure({ adapter: new Adapter() });
-
 describe("FileDownloadLink", () => {
     const sandbox = new Sandbox();
 
