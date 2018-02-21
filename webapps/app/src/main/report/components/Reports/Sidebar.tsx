@@ -15,6 +15,7 @@ export interface SidebarProps {
     version: string;
     published: boolean;
     isReviewer: boolean;
+    ready: boolean;
 }
 
 export class SidebarComponent extends React.Component<SidebarProps, SidebarState> {
@@ -51,7 +52,7 @@ export class SidebarComponent extends React.Component<SidebarProps, SidebarState
                         </NavItem>
                         <NavItem>
                             <NavLink href="#" disabled id={"changelog"}>Changelog</NavLink>
-                            <UncontrolledTooltip placement="top" target="changelog">
+                            <UncontrolledTooltip placement="bottom" target="changelog">
                                 Coming soon
                             </UncontrolledTooltip>
                         </NavItem>
@@ -60,7 +61,7 @@ export class SidebarComponent extends React.Component<SidebarProps, SidebarState
             </Navbar>
             <hr/>
             {
-                this.props.isReviewer && <PublishSwitch name={this.props.name}
+                this.props.isReviewer && this.props.ready && <PublishSwitch name={this.props.name}
                                                         version={this.props.version}
                                                         published={this.props.published}/>
             }
@@ -70,8 +71,9 @@ export class SidebarComponent extends React.Component<SidebarProps, SidebarState
 
 export const mapStateToProps = (state: ReportAppState, props: Partial<SidebarProps>): Partial<SidebarProps> => {
     return {
+        ready: !!state.reports.versionDetails,
         isReviewer: state.auth.permissions.indexOf("*/reports.review") > -1,
-        published: state.reports.versionDetails.published
+        published: !!state.reports.versionDetails && state.reports.versionDetails.published
     }
 };
 

@@ -33,4 +33,13 @@
   .navbar-toggler{
     background: inherit !important;
   }
+
+  // TODO remove once button enabled
+  .btn.toggle {
+    cursor: not-allowed !important;
+
+    .btn {
+      cursor: not-allowed !important;
+    }
+  }
 }
