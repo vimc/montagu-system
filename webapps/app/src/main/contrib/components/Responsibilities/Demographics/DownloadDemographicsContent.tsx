@@ -11,8 +11,6 @@ import { OneTimeButtonTimeBlocker } from "../../../../shared/components/OneTimeB
 import { demographicActions } from "../../../actions/DemographicActions";
 import { doNothing } from "../../../../shared/Helpers";
 
-import "../../../../shared/styles/common.scss";
-import "../Responsibilities.scss";
 
 export interface DownloadDemographicsContentProps extends RemoteContent {
     dataSets: DemographicDataset[];

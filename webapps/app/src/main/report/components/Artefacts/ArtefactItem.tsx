@@ -3,9 +3,7 @@ import {FileDownloadLink} from "../FileDownloadLink";
 import {encodeFilename} from "../../../shared/Helpers";
 import {ArtefactRow} from "./ArtefactRow";
 
-import "../../styles/reports.scss";
 import {buildArtefactUrl} from "../../LinkHelpers";
-
 interface ArtefactProps {
     filenames: string[],
     description: string;

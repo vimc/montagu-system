@@ -7,6 +7,7 @@ import { NotificationArea } from "../../shared/components/NotificationArea/Notif
 import { notificationStore } from "../../shared/stores/NotificationStore";
 import { connectToStores } from "../../shared/alt";
 import { ReportAppState } from "../reducers/reportAppReducers";
+import {PageHeader} from "../../shared/components/PageWithHeader/PageHeader";
 
 export interface ReportingAppProps {
     errors: string[];

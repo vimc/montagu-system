@@ -5,29 +5,6 @@ import {Version} from "../../../main/shared/models/reports/Report";
 import { mockReport, mockVersion } from "../../mocks/mockModels";
 import { Report } from "../../../main/shared/models/Generated";
 
-describe("ReportStore.fetchReports", () => {
-    new ReportingFetchHelper<Report[], Report[]>({
-        makePayload: () => [ mockReport({"name": "report1"}), mockReport({"name": "report2"})],
-        prepareForFetch: () => {
-            alt.bootstrap(JSON.stringify({
-                ReportStore: {
-                    reports: [],
-                    currentReport: null,
-                    versions: {}
-                }
-            }));
-        },
-        prepareForCachedFetch: () => {
-            alt.bootstrap(JSON.stringify({
-                ReportStore: {
-                    reports: [ mockReport({"name": "report1"}), mockReport({"name": "report2"})]
-                }
-            }))
-        },
-        triggerFetch: () => reportStore.fetchReports(),
-        expectedURL: "/reports/"
-    }).addTestsToMocha();
-});
 
 describe("ReportStore.fetchVersions", () => {
     new ReportingFetchHelper<string[], string[]>({

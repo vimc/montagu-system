@@ -1,10 +1,8 @@
-import {NavState, navStore} from "../../stores/NavStore";
+import {navStore} from "../../stores/NavStore";
 import * as React from 'react';
 import {connectToStores} from "../../alt";
 import {InternalLink} from "../InternalLink";
 import {Breadcrumb} from "../../models/Breadcrumb";
-
-import "./NavBar.scss";
 
 interface Props {
     crumbs: Breadcrumb[];

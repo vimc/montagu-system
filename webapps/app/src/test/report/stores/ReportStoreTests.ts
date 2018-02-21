@@ -7,24 +7,6 @@ import { mockReport, mockVersion } from "../../mocks/mockModels";
 describe("ReportStore", () => {
     beforeEach(() => alt.recycle());
 
-    it("has reports reportActions.updateReports", () => {
-        const reports = [mockReport({"name": "testreport"}), mockReport({"name": "anothertestreport"})];
-
-        reportActions.updateReports(reports);
-
-        expect(reportStore.getState().reports).to.eql(reports);
-        expect(reportStore.getState().ready).to.be.true;
-    });
-
-    it("is blank after reportActions.beginFetchReports", () => {
-        const reports = [mockReport({"name": "testreport"}), mockReport({"name": "anothertestreport"})];
-        reportActions.updateReports(reports);
-        reportActions.beginFetchReports();
-
-        expect(reportStore.getState().reports).to.eql([]);
-        expect(reportStore.getState().ready).to.be.false;
-    });
-
     it("has current report after reportActions.setCurrentReport", () => {
         reportActions.setCurrentReport("reportname");
         expect(reportStore.getState().currentReport).to.eql("reportname");

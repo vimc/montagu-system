@@ -1,7 +1,5 @@
 import * as React from "react";
 
-import "../../styles/forms.scss";
-
 interface Props {
     message: string;
 }

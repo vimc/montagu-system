@@ -2,8 +2,6 @@ import * as React from "react";
 import {FileDownloadLink} from "../FileDownloadLink";
 import {encodeFilename} from "../../../shared/Helpers";
 
-import "../../../shared/styles/common.scss";
-
 interface ResourceLinksProps {
     resources: string[],
     report: string,

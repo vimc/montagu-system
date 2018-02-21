@@ -5,10 +5,6 @@ import { IExtendedResponsibilitySet } from "../../../../models/ResponsibilitySet
 import { ModellingGroup, Responsibility } from "../../../../../shared/models/Generated";
 import { TemplateLinks } from "./TemplateLinks";
 
-import "../../Responsibilities.scss";
-import "../../../../../shared/styles/messages.scss";
-import "../../../../../shared/styles/common.scss";
-
 export interface ResponsibilityListComponentProps {
     responsibilitySet: IExtendedResponsibilitySet;
     currentDiseaseId: string;

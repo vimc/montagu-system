@@ -9,7 +9,6 @@ import { UserRole } from "./UserRoleComponent";
 import { userStore } from "../../../stores/UserStore";
 import { AddRoles } from "./AddRoles";
 import {AdminAppState} from "../../../reducers/adminAppReducers";
-import "../../../../shared/styles/common.scss";
 
 interface Props extends RemoteContent {
     user: User;

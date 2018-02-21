@@ -8,8 +8,6 @@ import {ResponsibilityList} from "./List/ResponsibilityList";
 import {connectToStores} from "../../../../shared/alt";
 import {ButtonLink} from "../../../../shared/components/ButtonLink";
 
-import "../../../../shared/styles/common.scss";
-import "../../../../shared/styles/messages.scss";
 import {ResponsibilitySetStatusMessage} from "./ResponsibilitySetStatusMessage";
 
 const stochasticParams = require('./stochastic_template_params.csv');

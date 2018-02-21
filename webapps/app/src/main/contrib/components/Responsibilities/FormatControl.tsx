@@ -1,8 +1,6 @@
 import * as React from "react";
 import ReactRadioButtonGroup, { RadioButtonOption } from "react-radio-button-group";
 
-import "./Responsibilities.scss";
-
 interface Props {
     value: string;
     onSelectFormat: (format: string) => void;

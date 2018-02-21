@@ -6,8 +6,6 @@ import { InternalLink } from "../InternalLink";
 import { connect } from "react-redux";
 import { GlobalState } from "../../reducers/GlobalState";
 
-import "./Logout.scss";
-
 interface LoggedInUserBoxProps {
     loggedIn: boolean;
     username: string;

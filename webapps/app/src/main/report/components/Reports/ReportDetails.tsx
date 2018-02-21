@@ -11,9 +11,7 @@ import {ReportVersionSwitcher} from "./ReportVersionSwitcher";
 import {ArtefactsSection} from "../Artefacts/ArtefactsSection";
 import {DraftStamp} from "../DraftStamp";
 
-import "../../../shared/styles/common.scss";
 import {InlineArtefact} from "../Artefacts/InlineArtefact";
-
 interface PublicProps {
     onChangeVersion: (version: string) => void;
 }
@@ -52,7 +50,6 @@ export class ReportDetailsComponent extends RemoteContentComponent<ReportDetails
 
         return <div>
             <InlineArtefact report={report} version={version} artefact={artefact}/>
-            <DraftStamp published={props.versionDetails.published}/>
             <DraftStamp published={props.versionDetails.published}/>
             <ReportVersionSwitcher
                 currentVersion={props.versionDetails.id}

@@ -4,8 +4,6 @@ import {helpers} from "../Helpers";
 import {ErrorInfo, Result} from "../models/Generated";
 import {Alert} from "reactstrap";
 
-import "../styles/forms.scss";
-import "../styles/buttons.scss";
 import {CustomValidationResult} from "../validation/FileValidationHelpers";
 
 export interface UploadFileProps {

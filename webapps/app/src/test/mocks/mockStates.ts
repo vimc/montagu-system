@@ -3,6 +3,7 @@ import {AdminAppState} from "../../main/admin/reducers/adminAppReducers";
 import { reducer as formReducer } from "redux-form";
 import {ContribAppState} from "../../main/contrib/reducers/contribAppReducers";
 import {ModellingGroupsState, initialState as ModellingGroupsInitialState} from "../../main/contrib/reducers/modellingGroupsReducer";
+import {reportsInitialState, ReportsState} from "../../main/report/reducers/reportsReducer";
 
 export const mockAuthStateObject: AuthState = {
     loggedIn: true,
@@ -41,5 +42,15 @@ export const mockContribState = (props?: any) => {
         auth: authMock,
         form: formReducer,
         groups: groupsMock
+    };
+}
+
+export const mockReportState = (props?: any) => {
+    const authMock: AuthState = props && props.auth ? mockAuthState(props.auth) : mockAuthState();
+    const reportsMock: ReportsState = props && props.reports && props.reports.reports ? props.reports : reportsInitialState;
+    return {
+        auth: authMock,
+        form: formReducer,
+        reports: reportsMock
     };
 }
