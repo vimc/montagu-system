@@ -17,7 +17,7 @@ describe("ReportPageTitle", () => {
 
     it("it maps props", () => {
         const mockVersionData = mockVersion({ id: "v1" });
-        const reportStateMock = mockReportState({
+        const reportStateMock = mockReportAppState({
             reports: {
                 versionDetails: mockVersionData,
                 currentReport: "forecast"
@@ -32,7 +32,7 @@ describe("ReportPageTitle", () => {
 
     it("it maps props displayname if version details displayname was empty", () => {
         const mockVersionData = mockVersion({ id: "v1", displayname: null });
-        const reportStateMock = mockReportState({
+        const reportStateMock = mockReportAppState({
             reports: {
                 versionDetails: mockVersionData,
                 currentReport: "forecast"
@@ -47,7 +47,7 @@ describe("ReportPageTitle", () => {
 
     it("it has displayname undefined if version details and current report were missing", () => {
         const mockVersionData = mockVersion({ id: "v1", displayname: null });
-        const reportStateMock = mockReportState({
+        const reportStateMock = mockReportAppState({
             reports: {
                 versionDetails: mockVersionData,
             }
