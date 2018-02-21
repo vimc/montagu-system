@@ -7,9 +7,9 @@ import {PageProperties} from "../../../shared/components/PageWithHeader/PageWith
 import {appSettings} from "../../../shared/Settings";
 import {MainMenu} from "../MainMenu/MainMenu";
 import {ReportPageTitle} from "./ReportPageTitle";
+import {reportPageActions} from "../../actions/reportPageActions";
 import {Sidebar} from "./Sidebar";
 import {PageHeader} from "../../../shared/components/PageWithHeader/PageHeader";
-import {reportPageActions} from "../../actions/reportPageActions";
 
 export interface ReportPageProps {
     report: string;
