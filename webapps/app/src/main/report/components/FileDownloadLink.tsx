@@ -44,6 +44,14 @@ export class FileDownloadLinkComponent extends React.Component<Props, undefined>
         });
     }
 
+    componentWillReceiveProps(nextProps: Props) {
+        if (nextProps.href !== this.props.href) {
+            setTimeout(() => {
+                oneTimeTokenStore.fetchToken(this.props.href).catch(doNothing);
+            });
+        }
+    }
+
     refreshToken(e: React.MouseEvent<HTMLAnchorElement>): void {
         setTimeout(() => {
             oneTimeTokenActions.clearUsedToken(this.props.href);

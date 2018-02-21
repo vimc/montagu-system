@@ -3,6 +3,7 @@ import Toggle from 'react-bootstrap-toggle';
 import {connect, Dispatch} from "react-redux";
 import {ReportAppState} from "../../reducers/reportAppReducers";
 import {UncontrolledTooltip} from "reactstrap";
+import {reportsActions} from "../../actions/reportsActions";
 
 export interface Props {
     name: string;
@@ -46,9 +47,8 @@ export class PublishSwitchComponent extends React.Component<Props, undefined> {
 
 export const mapDispatchToProps = (dispatch: Dispatch<any>): Partial<Props> => {
     return {
-        //TODO actually hook these up
-        publish: (name: string, version: string) => {},
-        unpublish: (name: string, version: string) => {}
+        publish: (name: string, version: string) => dispatch(reportsActions.publishReport(name, version)),
+        unpublish: (name: string, version: string) => dispatch(reportsActions.unPublishReport(name, version))
     }
 };
 

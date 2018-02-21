@@ -47,7 +47,7 @@ export const mockContribState = (props?: any) => {
 
 export const mockReportState = (props?: any) => {
     const authMock: AuthState = props && props.auth ? mockAuthState(props.auth) : mockAuthState();
-    const reportsMock: ReportsState = props && props.reports && props.reports.reports ? props.reports : reportsInitialState;
+    const reportsMock: ReportsState = props && props.reports ? props.reports : reportsInitialState;
     return {
         auth: authMock,
         form: formReducer,

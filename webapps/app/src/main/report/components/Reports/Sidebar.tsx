@@ -69,10 +69,9 @@ export class SidebarComponent extends React.Component<SidebarProps, SidebarState
 }
 
 export const mapStateToProps = (state: ReportAppState, props: Partial<SidebarProps>): Partial<SidebarProps> => {
-    // TOOD once versions are in the app state, get publish status from state
     return {
         isReviewer: state.auth.permissions.indexOf("*/reports.review") > -1,
-        published: true
+        published: state.reports.versionDetails.published
     }
 };
 

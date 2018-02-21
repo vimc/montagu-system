@@ -1,10 +1,10 @@
 import {Dispatch} from "redux";
 
-import {ReportsService} from "../services/ReportsService";
+import { ReportsService } from "../services/ReportsService";
 import {
-    ReportPublished, ReportsActionsTypes, ReportsFetched, ReportTypeKeys,
-    ReportUnpublished
-} from "../actionTypes/ReportsTypes";
+    ReportsActionsTypes, ReportsFetched, ReportTypeKeys, ReportVersionDetailssFetched,
+    ReportVersionsFetched
+} from "../actionTypes/ReportsActionsTypes";
 import {GlobalState} from "../../shared/reducers/GlobalState";
 import {Report} from "../../shared/models/Generated";
 
@@ -20,11 +20,53 @@ export const reportsActions = {
         }
     },
 
+    setCurrentReport(report: string) {
+        return {
+            type: ReportTypeKeys.SET_CURRENT_REPORT,
+            data: report
+        }
+    },
     publishReport(name: string, version: string) {
-        //TODO
+        //TODO actually publish report
+        return {
+            type: ReportTypeKeys.REPORT_PUBLISHED,
+            data: {report: name, version: version}
+        }
     },
 
     unPublishReport(name: string, version: string) {
-        //TODO
+        //TODO actually publish report
+        return {
+            type: ReportTypeKeys.REPORT_UNPUBLISHED,
+            data: {report: name, version: version}
+        }
+    },
+
+    setCurrentVersion(version: string) {
+        return {
+            type: ReportTypeKeys.SET_CURRENT_VERSION,
+            data: version
+        }
+    },
+
+    getReportVersions(reportId: string) {
+        return async (dispatch: Dispatch<any>, getState: () => GlobalState) => {
+            const versions = await (new ReportsService(dispatch, getState)).getReportVersions(reportId);
+            dispatch({
+                type: ReportTypeKeys.REPORT_VERSIONS_FETCHED,
+                data: versions
+            } as ReportVersionsFetched );
+        }
+    },
+
+    getVersionDetails(reportId: string, versionId: string) {
+        return async (dispatch: Dispatch<any>, getState: () => GlobalState) => {
+            const versionDetails = await (new ReportsService(dispatch, getState)).getVersionDetails(reportId, versionId);
+            dispatch({
+                type: ReportTypeKeys.REPORT_VERSION_DETAILS_FETCHED,
+                data: versionDetails
+            } as ReportVersionDetailssFetched );
+        }
     }
+
 };

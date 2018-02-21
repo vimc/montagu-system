@@ -1,69 +1,77 @@
 import {expect} from "chai";
 import {
     ReportPageTitleComponent,
-    ReportPageTitleProps
+    ReportPageTitleProps,
+    mapStateToProps
 } from "../../../../main/report/components/Reports/ReportPageTitle";
-import {bootstrapStore} from "../../../StoreHelpers";
-import {reportStore} from "../../../../main/report/stores/ReportStore";
 import {mockVersion} from "../../../mocks/mockModels";
 import {shallow} from "enzyme";
 import * as React from "react";
-import {makeLookup} from "../../../../main/shared/models/Lookup";
 import {Sandbox} from "../../../Sandbox";
+
+import {mockReportState} from "../../../mocks/mockStates";
 
 describe("ReportPageTitle", () => {
     const sandbox = new Sandbox();
     afterEach(() => sandbox.restore());
 
-    it("gets name if details haven't been fetched yet", () => {
-        bootstrapStore(reportStore, {
-            currentReport: "forecast",
-            currentVersion: "v25",
-            versionDetails: {},
+    it("it maps props", () => {
+        const mockVersionData = mockVersion();
+        const reportStateMock = mockReportState({
+            reports: {
+                currentVersion: "v1",
+                versionDetails: mockVersionData,
+                currentReport: "forecast"
+            }
         });
-        expect(ReportPageTitleComponent.getPropsFromStores()).to.eql({
-            name: "forecast",
-            version: "v25",
-            displayName: null,
-        });
+        const expectedProps: ReportPageTitleProps = {
+            version: "v1",
+            displayName: mockVersionData.displayname
+        }
+        expect(mapStateToProps(reportStateMock)).to.eql(expectedProps);
     });
 
-    it("gets display name if details have been fetched", () => {
-        bootstrapStore(reportStore, {
-            currentReport: "forecast",
-            currentVersion: "v25",
-            versionDetails: makeLookup([
-                mockVersion({
-                    id: "v25",
-                    displayname: "Shipping Forecast"
-                })
-            ])
+    it("it maps props displayname if version details was missing", () => {
+        const mockVersionData = mockVersion();
+        const reportStateMock = mockReportState({
+            reports: {
+                currentVersion: "v1",
+                currentReport: "forecast"
+            }
         });
-        expect(ReportPageTitleComponent.getPropsFromStores()).to.eql({
-            name: "forecast",
-            version: "v25",
-            displayName: "Shipping Forecast"
+        const expectedProps: ReportPageTitleProps = {
+            version: "v1",
+            displayName: "forecast"
+        }
+        expect(mapStateToProps(reportStateMock)).to.eql(expectedProps);
+    });
+
+    it("it has displayname undefined if version details and current report were missing", () => {
+        const mockVersionData = mockVersion();
+        const reportStateMock = mockReportState({
+            reports: {
+                currentVersion: "v1"
+            }
         });
+        const expectedProps: ReportPageTitleProps = {
+            version: "v1",
+            displayName: undefined
+        }
+        expect(mapStateToProps(reportStateMock)).to.eql(expectedProps);
     });
 
-    const getTitleText = function (props: Partial<ReportPageTitleProps>): string {
-        const defaultProps: ReportPageTitleProps = {
-            name: null,
-            version: null,
-            displayName: null
-        };
-        const fullProps = Object.assign({}, defaultProps, props);
-        const rendered = shallow(<ReportPageTitleComponent {...fullProps} />);
-        return rendered.find("div").at(0).text();
-    };
-
-    it("renders name if display name is missing", () => {
-        expect(getTitleText({name: "name", displayName: null})).to.equal("name");
-        expect(getTitleText({name: "name", displayName: undefined})).to.equal("name");
-        expect(getTitleText({name: "name", displayName: ""})).to.equal("name");
+    it("it renders report page title if pass props to component", () => {
+        const mockVersionData = mockVersion();
+        const reportStateMock = mockReportState({
+            reports: {
+                currentVersion: "v1",
+                versionDetails: mockVersionData,
+                currentReport: "forecast"
+            }
+        });
+        const reportPageProps = mapStateToProps(reportStateMock);
+        const rendered = shallow(<ReportPageTitleComponent {...reportPageProps} />);
+        expect(rendered.find("div").at(0).text()).to.eql(mockVersionData.displayname);
     });
 
-    it("renders display name if available", () => {
-        expect(getTitleText({name: name, displayName: "display name"})).to.equal("display name");
-    });
 });
