@@ -8,8 +8,6 @@ import {TemplateLink} from "../Overview/List/TemplateLinks";
 import {CurrentEstimateSetSummary} from "../Overview/List/CurrentEstimateSetSummary";
 import {UploadBurdenEstimatesForm} from "./UploadBurdenEstimatesForm";
 
-import "../../../../shared/styles/common.scss";
-
 export interface UploadBurdenEstimatesContentComponentProps extends RemoteContent {
     touchstone: Touchstone;
     scenario: Scenario;

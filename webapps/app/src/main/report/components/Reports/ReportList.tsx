@@ -26,7 +26,7 @@ export class ReportListComponent extends React.Component<ReportProps, undefined>
                 .sort((a, b) => a.name.localeCompare(b.name))
                 .map((report) => <ReportListItem key={ report.name } {...report} />);
 
-            return <ul>
+            return <ul className="list-unstyled">
                 {items}
             </ul>;
         } else {

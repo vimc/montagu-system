@@ -2,9 +2,6 @@ import * as React from "react";
 import { CoverageSet } from "../../../../shared/models/Generated";
 import { CoverageSetComponent } from "./CoverageSetComponent";
 
-import "../Responsibilities.scss";
-import "../../../../shared/styles/common.scss";
-
 interface Props {
     coverageSets: CoverageSet[];
 }

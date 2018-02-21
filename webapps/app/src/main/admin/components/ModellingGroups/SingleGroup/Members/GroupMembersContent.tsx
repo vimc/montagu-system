@@ -10,7 +10,6 @@ import { userStore } from "../../../../stores/UserStore";
 import { ListOfUsers } from "../../ListOfUsers";
 import { AddMember } from "./AddMember";
 
-import "../../../../../shared/styles/common.scss";
 import {AdminAppState} from "../../../../reducers/adminAppReducers";
 
 interface Props extends RemoteContent {

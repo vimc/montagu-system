@@ -2,8 +2,6 @@ import * as React from "react";
 
 import { CoverageSet } from "../../../../shared/models/Generated";
 
-import "../Responsibilities.scss";
-
 export interface CoverageSetComponentProps {
     order: number,
     set: CoverageSet

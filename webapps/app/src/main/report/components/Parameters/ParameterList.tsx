@@ -1,8 +1,6 @@
 import * as React from "react";
 import {ILookup} from "../../../shared/models/Lookup";
 
-import "../../../shared/styles/common.scss";
-
 export class ParameterList extends React.Component<ILookup<string>, undefined> {
     render() {
         const parameters = Object.getOwnPropertyNames(this.props);

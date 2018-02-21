@@ -3,8 +3,6 @@ import {FileDownloadLink} from "../FileDownloadLink";
 import {encodeFilename} from "../../../shared/Helpers";
 import {ArtefactRow} from "./ArtefactRow";
 
-import "../../styles/reports.scss";
-
 interface ArtefactProps {
     filenames: string[],
     description: string;

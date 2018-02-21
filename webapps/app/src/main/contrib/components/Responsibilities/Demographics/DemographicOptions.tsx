@@ -6,9 +6,6 @@ import { demographicStore } from "../../../stores/DemographicStore";
 import { doNothing } from "../../../../shared/Helpers";
 import { FormatControl } from "../FormatControl";
 
-import "../../../../shared/styles/common.scss";
-import "../Responsibilities.scss";
-
 interface Props extends HasFormatOption {
     dataSets: DemographicDataset[];
     selectedDataSet: DemographicDataset;

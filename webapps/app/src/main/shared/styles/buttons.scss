@@ -1,5 +1,3 @@
-@import "bootstrap";
-
 button, .button {
     @include button-variant(rgb(0, 173, 239), rgb(200, 200, 200));
     @include button-size(5px, 20px, 1em, 1.5em,  0);

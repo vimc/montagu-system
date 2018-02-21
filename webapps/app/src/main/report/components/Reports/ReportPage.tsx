@@ -53,7 +53,7 @@ export class ReportPageComponent extends ReportingPageWithHeader<ReportPageProps
     }
 
     title() {
-        return <ReportPageTitle />;
+        return <ReportPageTitle/>;
     }
 
     name() {
@@ -66,10 +66,10 @@ export class ReportPageComponent extends ReportingPageWithHeader<ReportPageProps
         return `${params.report}/${params.version}/`;
     }
 
-    render() :JSX.Element {
+    render(): JSX.Element {
         return <Page page={this}>
-            <ReportDetails onChangeVersion={this.changeVersion} />
-        </Page>;
+            <ReportDetails onChangeVersion={this.changeVersion}/>
+        </Page>
     }
 }
 

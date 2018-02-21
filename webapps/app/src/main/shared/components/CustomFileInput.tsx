@@ -1,6 +1,4 @@
 import * as React from "react";
-import "../styles/forms.scss";
-import "../styles/buttons.scss";
 
 interface State {
     fileName: string;

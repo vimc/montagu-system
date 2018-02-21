@@ -8,7 +8,7 @@ import {
 } from "../../shared/components/Login/ForgottenPasswordForm";
 import {IPageWithParent} from "../../shared/models/Breadcrumb";
 import {MainMenu} from "./MainMenu/MainMenu";
-import { Page } from "../../shared/components/PageWithHeader/Page";
+import {Page} from "../../shared/components/PageWithHeader/Page";
 
 const ForgottenPasswordForm = FormConnector(forgottenPasswordFormStore("report"))(ForgottenPasswordFormComponent);
 

@@ -8,8 +8,6 @@ import { RemoteContentComponent } from "../../../shared/components/RemoteContent
 import { isNullOrUndefined } from "util";
 import { InternalLink } from "../../../shared/components/InternalLink";
 
-import "../../../shared/styles/common.scss";
-
 export interface ChooseActionContentProps extends RemoteContent {
     touchstones: Touchstone[];
     group: ModellingGroup

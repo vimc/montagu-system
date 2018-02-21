@@ -6,8 +6,6 @@ import {ChooseGroupPage} from "../../ChooseGroup/ChooseGroupPage";
 import {settings} from "../../../../shared/Settings";
 import { Page } from "../../../../shared/components/PageWithHeader/Page";
 
-import "../../../../shared/styles/common.scss";
-
 const dalysPdf = require("./guidance-201710-DALYs.pdf");
 
 export class ResponsibilityGuidanceModelOutputs extends ContribPageWithHeader<undefined> {

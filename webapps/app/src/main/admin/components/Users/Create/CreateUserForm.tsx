@@ -3,9 +3,6 @@ import { CreateUserFields, createUserFormStore, suggestUsername } from "./Create
 import { ValidationError } from "../../../../shared/components/Login/ValidationError";
 import * as React from "react";
 
-import "../../../../shared/styles/common.scss";
-import "../../../../shared/styles/forms.scss";
-
 export class CreateUserFormComponent extends React.Component<ReformProps, undefined> {
     constructor() {
         super();
