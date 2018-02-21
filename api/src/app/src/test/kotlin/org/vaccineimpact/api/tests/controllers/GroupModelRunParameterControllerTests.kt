@@ -6,7 +6,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.context.InMemoryRequestData
-import org.vaccineimpact.api.app.context.RequestData
 import org.vaccineimpact.api.app.controllers.GroupModelRunParametersController
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
@@ -102,10 +101,10 @@ class GroupModelRunParameterControllerTests : MontaguTests()
             on { params(":group-id") } doReturn "group-1"
             on { params(":touchstone-id") } doReturn "touchstone-1"
             on { getParts(anyOrNull()) } doReturn MultipartDataMap(
-                    "disease" to InMemoryRequestData("disease-1", "text/plain"),
-                    "description" to InMemoryRequestData("some description", "text/plain"),
+                    "disease" to InMemoryRequestData("disease-1"),
+                    "description" to InMemoryRequestData("some description"),
                     // This is passed to another mocked method, so its contents doesn't matter
-                    "file" to InMemoryRequestData("", "")
+                    "file" to InMemoryRequestData("")
             )
         }
         val repo = mockRepository(modelRuns = modelRuns)
@@ -119,7 +118,7 @@ class GroupModelRunParameterControllerTests : MontaguTests()
     @Test
     fun `throws UnknownObjectError if touchstone is in preparation when adding model run params`()
     {
-        val uploaded = RequestData(StringReader("disease-1"), ContentTypes.csv)
+        val uploaded = StringReader("disease-1")
         val mockContext = mock<ActionContext> {
             on { params(":group-id") } doReturn "group-1"
             on { params(":touchstone-id") } doReturn "touchstone-bad"

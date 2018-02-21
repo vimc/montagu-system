@@ -28,7 +28,7 @@ interface ActionContext
     fun queryString(): String?
     fun params(): Map<String, String>
     fun params(key: String): String
-    fun getPart(name: String, multipartData: MultipartData = ServletFileUploadWrapper()): RequestData
+    fun getPart(name: String, multipartData: MultipartData = ServletFileUploadWrapper()): Reader
     fun getParts(multipartData: MultipartData = ServletFileUploadWrapper()): MultipartDataMap
 
     fun requestReader(): Reader
