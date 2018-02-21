@@ -9,9 +9,9 @@ import {DataLinks} from "../Data/DataLinks";
 import {ResourceLinks} from "../Resources/ResourceLinks";
 import {ReportVersionSwitcher} from "./ReportVersionSwitcher";
 import {ArtefactsSection} from "../Artefacts/ArtefactsSection";
-import {IRouter} from "simple-react-router";
 import {DraftStamp} from "../DraftStamp";
 
+import {InlineArtefact} from "../Artefacts/InlineArtefact";
 interface PublicProps {
     onChangeVersion: (version: string) => void;
 }
@@ -42,7 +42,12 @@ export class ReportDetailsComponent extends RemoteContentComponent<ReportDetails
     }
 
     renderContent(props: ReportDetailsProps) {
+        const report = props.report;
         const version = props.versionDetails.id;
+        const artefactGroup = this.props.versionDetails.artefacts[0];
+        const type = Object.getOwnPropertyNames(artefactGroup)[0];
+        const artefact = artefactGroup[type];
+
         return <div>
             <h1 className={"h2"}>{props.versionDetails.displayname || props.versionDetails.name}</h1>
             <p className={"small text-muted"}>{props.versionDetails.id}</p>
@@ -52,9 +57,9 @@ export class ReportDetailsComponent extends RemoteContentComponent<ReportDetails
                 versions={props.allVersions}
                 onChangeVersion={props.onChangeVersion}
             />
-            <ArtefactsSection report={this.props.report} versionDetails={this.props.versionDetails}/>
+            <ArtefactsSection report={report} versionDetails={this.props.versionDetails}/>
             <DataLinks {...props.versionDetails.hash_data} />
-            <ResourceLinks resources={props.versionDetails.resources} report={props.report} version={version}/>
+            <ResourceLinks resources={props.versionDetails.resources} report={report} version={version}/>
             <ParameterList {...props.versionDetails.parameters} />
         </div>
     }
