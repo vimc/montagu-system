@@ -1,32 +1,12 @@
 import * as React from "react";
-import {Collapse, Navbar, NavbarToggler, NavItem, NavLink, UncontrolledTooltip} from "reactstrap";
+import {NavItem, NavLink, UncontrolledTooltip} from "reactstrap";
+import {NavbarCollapsedOnMobile} from "../../../shared/components/NavCollapsedOnMobile";
 
-interface SidebarState {
-    isOpen: boolean
-}
-
-export class Sidebar extends React.Component<{}, SidebarState> {
-
-    constructor() {
-        super();
-
-        this.toggle = this.toggle.bind(this);
-        this.state = {
-            isOpen: false
-        };
-    }
-
-    toggle() {
-        this.setState({
-            isOpen: !this.state.isOpen
-        });
-    }
+export class Sidebar extends React.Component<{}, undefined> {
 
     render() {
         return <div className={"sidebar pb-4 pb-md-0"}>
-            <Navbar light className={"pl-0 pr-0 pr-md-4"}>
-                <NavbarToggler onClick={this.toggle} className={"d-md-none"}/>
-                <Collapse isOpen={this.state.isOpen} navbar className={"d-md-block mt-4 mt-md-0"}>
+                <NavbarCollapsedOnMobile light className={"pl-0 pr-0 pr-md-4"}>
                     <ul className={"list-unstyled mb-0"}>
                         <NavItem>
                             <NavLink href="#" disabled>Report</NavLink>
@@ -44,8 +24,7 @@ export class Sidebar extends React.Component<{}, SidebarState> {
                             </UncontrolledTooltip>
                         </NavItem>
                     </ul>
-                </Collapse>
-            </Navbar>
+                </NavbarCollapsedOnMobile>
         </div>
     }
 }
