@@ -19,8 +19,8 @@ export const ReportPageTitleComponent =  (props: ReportPageTitleProps) => {
 
 export const mapStateToProps = (state: ReportAppState): ReportPageTitleProps => {
     return {
-        version: state.reports.currentVersion,
-        displayName: state.reports.versionDetails ? state.reports.versionDetails.displayname : state.reports.currentReport
+        version: state.reports.versionDetails.id,
+        displayName: state.reports.versionDetails && state.reports.versionDetails.displayname ? state.reports.versionDetails.displayname : state.reports.currentReport
     }
 };
 

@@ -42,13 +42,6 @@ export const reportsActions = {
         }
     },
 
-    setCurrentVersion(version: string) {
-        return {
-            type: ReportTypeKeys.SET_CURRENT_VERSION,
-            data: version
-        }
-    },
-
     getReportVersions(reportId: string) {
         return async (dispatch: Dispatch<any>, getState: () => GlobalState) => {
             const versions = await (new ReportsService(dispatch, getState)).getReportVersions(reportId);
