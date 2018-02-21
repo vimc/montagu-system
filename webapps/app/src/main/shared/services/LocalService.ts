@@ -11,6 +11,7 @@ import {
 
 import { AuthTypeKeys } from "../actionTypes/AuthTypes";
 import {GlobalState} from "../reducers/GlobalState";
+import {localCache} from "./localCache";
 
 export interface OptionsHeaders {
    Authorization?: string;
@@ -29,15 +30,19 @@ export interface InputOptions {
     'Content-Type'?: string;
     credentials?: "omit" | "same-origin" | "include";
     baseURL?: string;
+    cache?: string;
 }
 
 export abstract class LocalService {
     protected dispatch: Dispatch<Action>;
+    protected getGlobalState: Function;
+
     protected bearerToken: string;
     protected options: InputOptions = {};
 
     public constructor(dispatch: Dispatch<Action>, getState: () => GlobalState) {
         this.dispatch = dispatch;
+        this.getGlobalState = getState;
 
         this.bearerToken = this.getTokenFromState(getState());
         this.initOptions();
@@ -58,7 +63,7 @@ export abstract class LocalService {
 
     protected initOptions() {
         this.options.baseURL = settings.apiUrl();
-
+        this.options.cache = null;
         if (this.bearerToken) {
             this.options.Authorization = 'Bearer ' + this.bearerToken;
         }
@@ -87,14 +92,30 @@ export abstract class LocalService {
 
     public get(url: string){
         console.log('get', url);
-        return this.doFetch(this.makeUrl(url), this.makeRequestOptions('GET'))
-            .then(this.processResponse)
-            .catch(this.notifyOnErrors);
+        return this.getData(url, "GET");
     }
 
     public post(url: string, params?:any){
         console.log('post', url, params);
-        return this.doFetch(this.makeUrl(url), this.makeRequestOptions('POST', params))
+        return this.getData(url, "POST", params);
+    }
+
+    protected getCache(url: string) {
+        return localCache.get([this.constructor.name, this.options.cache, encodeURIComponent(url)].join('.'));
+    }
+
+    protected setCache(url: string, data: any) {
+        localCache.set([this.constructor.name, this.options.cache, encodeURIComponent(url)].join('.'), data);
+    }
+
+    protected getData(url: string, method: string, params?: any) {
+        if (this.options.cache) {
+           const cacheValue = this.getCache(this.makeUrl(url));
+           if (cacheValue) {
+               return Promise.resolve(cacheValue);
+           }
+        }
+        return this.doFetch(this.makeUrl(url), this.makeRequestOptions(method, params))
             .then(this.processResponse)
             .catch(this.notifyOnErrors);
     }
@@ -104,11 +125,11 @@ export abstract class LocalService {
             .then((response:any) => response.json());
     }
 
-    processResponse<TModel>(response: Response): Promise<any> {
-        return response.json()
+    processResponse<TModel>(httpResponse: Response): Promise<any> {
+        return httpResponse.json()
             .then((response: any) => {
                 const apiResponse = <Result>response;
-                return this.processResult(apiResponse, response);
+                return this.processResult(apiResponse, httpResponse);
             });
     }
 
@@ -130,6 +151,9 @@ export abstract class LocalService {
 
         switch (result.status) {
             case "success":
+                if (this.options.cache) {
+                    this.setCache(response.url, result.data);
+                }
                 return result.data as TModel;
             case "failure":
                 return result.errors.forEach(handleError);
@@ -157,6 +181,7 @@ export abstract class LocalService {
     protected logOut() {
         return (dispatch: Dispatch<Action>) => {
             localStorageHandler.remove("accessToken");
+            localCache.clearAll();
             dispatch({
                 type: AuthTypeKeys.UNAUTHENTICATED
             });
