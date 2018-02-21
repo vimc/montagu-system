@@ -17,7 +17,7 @@ export class FileDownloadLink extends React.Component<Props, undefined> {
     }
 }
 
-class FileDownloadLinkInner extends React.Component<OneTimeLinkProps, undefined> {
+export class FileDownloadLinkInner extends React.Component<OneTimeLinkProps, undefined> {
     constructor(props: OneTimeLinkProps) {
         super(props);
         this.refreshToken = this.refreshToken.bind(this);
