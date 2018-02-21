@@ -107,6 +107,7 @@ export abstract class LocalService {
     processResponse<TModel>(response: Response): Promise<any> {
         return response.json()
             .then((response: any) => {
+            console.log(response)
                 const apiResponse = <Result>response;
                 return this.processResult(apiResponse, response);
             });
@@ -140,6 +141,7 @@ export abstract class LocalService {
     }
 
     notifyOnErrors(error: any) {
+        console.log(error)
         notificationActions.notify(error);
     }
 

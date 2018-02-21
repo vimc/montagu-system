@@ -18,6 +18,7 @@ import {ArtefactsSection} from "../main/report/components/Artefacts/ArtefactsSec
 import {createReportStore} from "../main/report/stores/createReportStore";
 import {ReportsService} from "../main/report/services/ReportsService";
 import {Report} from "../main/shared/models/Generated";
+import {authActions} from "../main/shared/actions/authActions";
 
 const jwt_decode = require('jwt-decode');
 
@@ -42,32 +43,9 @@ class ReportIntegrationTests extends IntegrationTestSuite {
 
         afterEach(() => sandbox.restore());
 
-        it("publishes report", (done: DoneCallback) => {
-
-            const reportName = "use_resource";
-            const promise = getVersion(reportName)
-                .then((version: string) =>
-                    (new ReportsService(this.store.dispatch, this.store.getState))
-                        .publishReport(reportName, version)
-                );
-
-            checkSuccessful(done, promise);
-        });
-
-        it("unpublishes report", (done: DoneCallback) => {
-
-            const reportName = "use_resource";
-            const promise = getVersion(reportName)
-                .then((version: string) =>
-                    (new ReportsService(this.store.dispatch, this.store.getState))
-                        .unPublishReport(reportName, version)
-                );
-
-            checkSuccessful(done, promise);
-        });
-
         it("fetches reports", async () => {
-            const expectedNames: string[] = ["minimal", "multi-artefact", "multifile-artefact", "other", "use_resource"];
+            const expectedNames: string[] = ["minimal", "multi-artefact", "multifile-artefact", "other",
+                "use_resource"];
             const reports = await (new ReportsService(this.store.dispatch, this.store.getState)).getAllReports();
             const names = reports.map((item: Report) => item.name);
             const versions = reports.filter((item: Report) => item.latest_version.length > 0);

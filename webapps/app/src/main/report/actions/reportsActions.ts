@@ -21,23 +21,10 @@ export const reportsActions = {
     },
 
     publishReport(name: string, version: string) {
-        return async (dispatch: Dispatch<ReportsActionsTypes>, getState: () => GlobalState) => {
-            await (new ReportsService(dispatch, getState)).publishReport(name, version);
-
-            dispatch({
-                type: ReportTypeKeys.REPORT_PUBLISHED,
-                data: {name, version}
-            } as ReportPublished);
-        }
+        //TODO
     },
 
     unPublishReport(name: string, version: string) {
-        return async (dispatch: Dispatch<ReportsActionsTypes>, getState: () => GlobalState) => {
-            await (new ReportsService(dispatch, getState)).unPublishReport(name, version);
-            dispatch({
-                type: ReportTypeKeys.REPORT_UNPUBLISHED,
-                data: {name, version}
-            } as ReportUnpublished);
-        }
+        //TODO
     }
 };

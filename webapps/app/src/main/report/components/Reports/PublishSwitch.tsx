@@ -1,8 +1,8 @@
 import * as React from "react";
 import Toggle from 'react-bootstrap-toggle';
 import {connect, Dispatch} from "react-redux";
-import {reportsActions} from "../../actions/reportsActions";
 import {ReportAppState} from "../../reducers/reportAppReducers";
+import {UncontrolledTooltip} from "reactstrap";
 
 export interface Props {
     name: string;
@@ -29,7 +29,7 @@ export class PublishSwitchComponent extends React.Component<Props, undefined> {
     }
 
     render() {
-        return <div className="pl-3 pt-3"><Toggle
+        return <div className="pl-3 pt-3" id={"publish"}><Toggle
             onClick={this.onToggle}
             on={<span>Published</span>}
             off={<span>Internal</span>}
@@ -38,14 +38,17 @@ export class PublishSwitchComponent extends React.Component<Props, undefined> {
             onstyle={"published"}
             active={this.props.published}
         />
+            <UncontrolledTooltip target={"publish"}>This is a dummy switch.
+                Functionality coming soon</UncontrolledTooltip>
         </div>
     }
 }
 
 export const mapDispatchToProps = (dispatch: Dispatch<any>): Partial<Props> => {
     return {
-        publish: (name: string, version: string) => dispatch(reportsActions.publishReport(name, version)),
-        unpublish: (name: string, version: string) => dispatch(reportsActions.publishReport(name, version))
+        //TODO actually hook these up
+        publish: (name: string, version: string) => {},
+        unpublish: (name: string, version: string) => {}
     }
 };
 
