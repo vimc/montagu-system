@@ -31,9 +31,8 @@ describe("ReportPage", () => {
         setTimeout(() => {
             const actions = store.getActions();
             expect(actions[0].type).to.eql(ReportTypeKeys.SET_CURRENT_REPORT);
-            expect(actions[1].type).to.eql(ReportTypeKeys.SET_CURRENT_VERSION);
-            expect(actions[2].type).to.eql(ReportTypeKeys.REPORT_VERSIONS_FETCHED);
-            expect(actions[3].type).to.eql(ReportTypeKeys.REPORT_VERSION_DETAILS_FETCHED);
+            expect(actions[1].type).to.eql(ReportTypeKeys.REPORT_VERSIONS_FETCHED);
+            expect(actions[2].type).to.eql(ReportTypeKeys.REPORT_VERSION_DETAILS_FETCHED);
             expect(createBreadCrumbSpy.called).to.eq(true);
             done();
         });

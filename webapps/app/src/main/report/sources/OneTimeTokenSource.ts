@@ -2,6 +2,8 @@ import {ReportingSource} from "./ReportingSource";
 import {OneTimeTokenStoreState} from "../stores/OneTimeTokenStore";
 import SourceModel = AltJS.SourceModel;
 import {oneTimeTokenActions} from "../actions/OneTimeTokenActions";
+import {ILookup} from "../../shared/models/Lookup";
+import {OneTimeToken} from "../models/OneTimeToken";
 
 export class OneTimeTokenSource extends ReportingSource<OneTimeTokenStoreState> {
     _fetchToken: () => SourceModel<string>;

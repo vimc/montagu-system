@@ -16,10 +16,9 @@ describe("ReportPageTitle", () => {
     afterEach(() => sandbox.restore());
 
     it("it maps props", () => {
-        const mockVersionData = mockVersion();
+        const mockVersionData = mockVersion({ id: "v1" });
         const reportStateMock = mockReportState({
             reports: {
-                currentVersion: "v1",
                 versionDetails: mockVersionData,
                 currentReport: "forecast"
             }
@@ -31,11 +30,11 @@ describe("ReportPageTitle", () => {
         expect(mapStateToProps(reportStateMock)).to.eql(expectedProps);
     });
 
-    it("it maps props displayname if version details was missing", () => {
-        const mockVersionData = mockVersion();
+    it("it maps props displayname if version details displayname was empty", () => {
+        const mockVersionData = mockVersion({ id: "v1", displayname: null });
         const reportStateMock = mockReportState({
             reports: {
-                currentVersion: "v1",
+                versionDetails: mockVersionData,
                 currentReport: "forecast"
             }
         });
@@ -47,10 +46,10 @@ describe("ReportPageTitle", () => {
     });
 
     it("it has displayname undefined if version details and current report were missing", () => {
-        const mockVersionData = mockVersion();
+        const mockVersionData = mockVersion({ id: "v1", displayname: null });
         const reportStateMock = mockReportState({
             reports: {
-                currentVersion: "v1"
+                versionDetails: mockVersionData,
             }
         });
         const expectedProps: ReportPageTitleProps = {
@@ -64,7 +63,6 @@ describe("ReportPageTitle", () => {
         const mockVersionData = mockVersion();
         const reportStateMock = mockReportState({
             reports: {
-                currentVersion: "v1",
                 versionDetails: mockVersionData,
                 currentReport: "forecast"
             }
