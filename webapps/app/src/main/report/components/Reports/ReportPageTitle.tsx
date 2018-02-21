@@ -1,41 +1,27 @@
-import {reportStore} from "../../stores/ReportStore";
-import {connectToStores} from "../../../shared/alt";
+import { connect } from 'react-redux';
 import * as React from "react";
 
+import {ReportAppState} from "../../reducers/reportAppReducers";
+
 export interface ReportPageTitleProps {
-    name: string;
     displayName: string;
     version: string;
 }
 
-export class ReportPageTitleComponent extends React.Component<ReportPageTitleProps, undefined> {
-    static getStores() {
-        return [reportStore];
-    }
-
-    static getPropsFromStores(): ReportPageTitleProps {
-        const s = reportStore.getState();
-        const props: ReportPageTitleProps = {
-            name: s.currentReport,
-            version: s.currentVersion,
-            displayName: null
-        };
-        const details = s.versionDetails[s.currentVersion];
-        if (details) {
-            props.displayName = details.displayname;
-        }
-        return props;
-    }
-
-    render() {
-        const title = this.props.displayName || this.props.name;
-        return <span>
-            <div>{title}</div>
-            <div className="titleAddition">
-                Version: {this.props.version}
-            </div>
-        </span>;
-    }
+export const ReportPageTitleComponent =  (props: ReportPageTitleProps) => {
+    return <span>
+        <div>{props.displayName}</div>
+        <div className="titleAddition">
+            Version: { props.version }
+        </div>
+    </span>;
 }
 
-export const ReportPageTitle = connectToStores(ReportPageTitleComponent);
+export const mapStateToProps = (state: ReportAppState): ReportPageTitleProps => {
+    return {
+        version: state.reports.versionDetails.id,
+        displayName: state.reports.versionDetails && state.reports.versionDetails.displayname ? state.reports.versionDetails.displayname : state.reports.currentReport
+    }
+};
+
+export const ReportPageTitle = connect(mapStateToProps)(ReportPageTitleComponent);

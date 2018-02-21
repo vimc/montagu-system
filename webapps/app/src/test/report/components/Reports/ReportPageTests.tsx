@@ -1,85 +1,58 @@
 import * as React from "react";
-import {shallow} from "enzyme";
+import {mount} from "enzyme";
 import {expect} from "chai";
+import { Provider } from "react-redux";
+
 import {Sandbox} from "../../../Sandbox";
 import {mockLocation} from "../../../mocks/mocks";
-import {checkAsync, checkPromise} from "../../../testHelpers";
-import {reportStore} from "../../../../main/report/stores/ReportStore";
-import {expectOneAction, expectOrderedActions} from "../../../actionHelpers";
-import {alt} from "../../../../main/shared/alt";
 import {IRouter} from "simple-react-router";
-import {ReportPage, ReportPageProps} from "../../../../main/report/components/Reports/ReportPage";
-import {ReportDetails} from "../../../../main/report/components/Reports/ReportDetails";
+import {ReportPage, ReportPageComponent, ReportPageProps} from "../../../../main/report/components/Reports/ReportPage";
 import {addNavigationTests} from "../../../shared/NavigationTests";
-import {mockFetcherForMultipleResponses} from "../../../mocks/mockMultipleEndpoints";
-import {mockReportDetailsEndpoint, mockReportsEndpoint, mockReportVersionsEndpoint} from "../../../mocks/mockEndpoints";
-import {mockReport, mockVersion} from "../../../mocks/mockModels";
-import {Version} from "../../../../main/shared/models/reports/Report";
+import {createMockStore} from "../../../mocks/mockStore";
+import {ReportsService} from "../../../../main/report/services/ReportsService";
+import {ReportTypeKeys} from "../../../../main/report/actionTypes/ReportsActionsTypes";
 
 describe("ReportPage", () => {
     const sandbox = new Sandbox();
 
     afterEach(() => sandbox.restore());
-    beforeEach(() => {
-        alt.bootstrap(JSON.stringify({
-            ReportStore: {
-                ready: true,
-                reports: ["report"],
-                currentReport: "",
-                currentVersion: "",
-                versionDetails: {},
-                versions: {}
-            }
-        }));
-    });
-
-    const checkExpectedActionsWhen = function (done: DoneCallback, action: () => Promise<Version>) {
-        const spy = sandbox.dispatchSpy();
-        const fetchVersions = sandbox.sinon.stub(reportStore, "fetchVersions").returns(Promise.resolve(null));
-        const fetchVersionDetails = sandbox.sinon.stub(reportStore, "fetchVersionDetails").returns(Promise.resolve(null));
-
-        const promise = action();
-        checkPromise(done, promise, () => {
-            expect(fetchVersions.called).to.equal(true, "Expected fetchVersions to be called");
-            expect(fetchVersionDetails.called).to.equal(true, "Expected fetchVersionDetails to be called");
-            expectOrderedActions(spy, [
-                {action: "ReportActions.setCurrentReport", payload: "reportname"},
-                {action: "ReportActions.setCurrentVersion", payload: "versionname"}
-            ]);
-        });
-    };
 
     it("triggers actions on mount", (done: DoneCallback) => {
-        checkExpectedActionsWhen(done, () => {
-            return new ReportPage({location: location, router: null}).load({
-                report: "reportname",
-                version: "versionname"
-            });
+        const store = createMockStore({});
+
+        const location = mockLocation<ReportPageProps>({report: "report", version: "v1"});
+        sandbox.setStubFunc(ReportPageComponent.prototype, "getLocationParams", () => (location));
+        sandbox.setStubFunc(ReportPageComponent.prototype, "render", () => (<p/>));
+        const createBreadCrumbSpy = sandbox.setStub(ReportPageComponent.prototype, "createBreadcrumb");
+        sandbox.setStub(ReportsService.prototype, "getReportVersions");
+        sandbox.setStub(ReportsService.prototype, "getVersionDetails");
+
+        const rendered = mount(<Provider store={store}><ReportPage /></Provider>);
+        setTimeout(() => {
+            const actions = store.getActions();
+            expect(actions[0].type).to.eql(ReportTypeKeys.SET_CURRENT_REPORT);
+            expect(actions[1].type).to.eql(ReportTypeKeys.REPORT_VERSIONS_FETCHED);
+            expect(actions[2].type).to.eql(ReportTypeKeys.REPORT_VERSION_DETAILS_FETCHED);
+            expect(createBreadCrumbSpy.called).to.eq(true);
+            done();
         });
     });
 
     it("triggers actions and redirect when child triggers changeVersion", (done: DoneCallback) => {
         const redirectTo = sandbox.sinon.stub();
         const router: IRouter = {redirectTo};
-
-        checkExpectedActionsWhen(done, () => {
-            const location = mockLocation<ReportPageProps>({report: "reportname", version: "oldVersion"});
-            const page = new ReportPage({location: location, router: router});
-            const promise = page.changeVersion("versionname")
+        sandbox.setStub(ReportPageComponent.prototype, "loadVersion");
+        const location = mockLocation<ReportPageProps>({report: "reportname", version: "oldVersion"});
+        const page = new ReportPageComponent({location: location, router: router});
+        page.changeVersion("versionname")
+        setTimeout(() => {
             expect(redirectTo.called).to.equal(true, "Expected redirectTo to be called");
             expect(redirectTo.calledWith("/reportname/versionname/"));
-            return promise;
+            done();
         });
     });
 
     const location = mockLocation<ReportPageProps>({report: "report", version: "v1"});
-    const page = new ReportPage({location: location, router: null});
-    addNavigationTests(page, sandbox, () => {
-        const version = mockVersion({name: "report", id: "v1"});
-        mockFetcherForMultipleResponses([
-            mockReportsEndpoint([mockReport({name: "report"})]),
-            mockReportVersionsEndpoint("report", [version, mockVersion()]),
-            mockReportDetailsEndpoint(version)
-        ])
-    });
+    const page = new ReportPageComponent({location: location, router: null});
+    addNavigationTests(page, sandbox, () => {});
 });
