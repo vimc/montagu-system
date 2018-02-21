@@ -5,14 +5,25 @@
     <title>Montagu - Modelling groups contribution portal</title>
     <link rel="stylesheet" href="./style.css" type="text/css" />
     <style type="text/css">
-        .versionHistory .highlight:nth-child(odd) {
+        .versionHistory .version:nth-child(odd) {
              background-color: rgb(245, 245, 245);
         }
-        .versionHistory .highlight {
+        .versionHistory .version {
             margin: 10px 0;
-            padding: 10px;
-            cursor: pointer;
             border: 1px solid rgb(200, 200, 200);
+        }
+        .versionHistory .version .row, .versionHistory .version .form {
+            padding: 10px;
+        }
+        .hider {
+            width: 30px;
+            height: 30px;
+            border: 1px solid black;
+            border-radius: 15px;
+            text-align: center;
+            font-size: 18pt;
+            line-height: 25px;
+            cursor: pointer;
         }
     </style>
     <script
@@ -21,10 +32,18 @@
               crossorigin="anonymous"></script>
     <script type="text/javascript">
         $(function() {
-            $(".highlight").click(function() {
-                $('form').slideUp(); 
-                $(this).find('form').slideDown();
+            $(".hider").text("▼").click(function () {
+                const hider = $(this);
+                const form = hider.closest(".version").find("form");
+                form.slideToggle(function() {
+                    if (form.is(":visible") === true) {
+                        hider.text("▲");
+                    } else {
+                        hider.text("▼");
+                    }
+                });
             });
+            $("#v4 .hider").text("▲");
         });
     </script>
 </head>
@@ -71,8 +90,11 @@
                 </p>  
                 <div class="sectionTitle">Version history</div>                
                 <div class="versionHistory">
-                    <div id="v1" class="highlight">
+                    <div id="v1" class="version">
                         <div class="row">
+                            <div class="col-1">
+                                <div class="hider"></div>
+                            </div>
                             <div class="col-3">
                                 <strong>v1</strong>
                                 <p>Published 17th October 2019</p>
@@ -95,8 +117,11 @@
                         </form>
                     </div>
 
-                    <div id="v2" class="highlight">
+                    <div id="v2" class="version">
                         <div class="row">
+                            <div class="col-1">
+                                <div class="hider"></div>
+                            </div>
                             <div class="col-3">
                                 <strong>v2</strong>
                                 <p>Published 25th October 2019</p>
@@ -120,8 +145,11 @@
                         </form>
                     </div>
 
-                    <div id="v3" class="highlight">
+                    <div id="v3" class="version">
                         <div class="row">
+                            <div class="col-1">
+                                <div class="hider"></div>
+                            </div>
                             <div class="col-3">
                                 <strong>v3</strong>
                                 <p>Published 1st November 2019</p>
@@ -144,8 +172,11 @@
                         </form>
                     </div>
 
-                    <div id="v4" class="highlight">
+                    <div id="v4" class="version">
                         <div class="row">
+                            <div class="col-1">
+                                <div class="hider"></div>
+                            </div>
                             <div class="col-3">
                                 <strong>v4</strong>
                                 <p>Published 6th November 2019</p>
