@@ -1,9 +1,5 @@
 import * as React from "react";
-import { Dispatch, Action } from "redux";
 import { connect } from 'react-redux';
-
-import {RemoteContent} from "../../../shared/models/RemoteContent";
-import {RemoteContentComponent} from "../../../shared/components/RemoteContentComponent/RemoteContentComponent";
 
 import {Version} from "../../../shared/models/reports/Report";
 import {ParameterList} from "../Parameters/ParameterList";
@@ -11,7 +7,6 @@ import {DataLinks} from "../Data/DataLinks";
 import {ResourceLinks} from "../Resources/ResourceLinks";
 import {ReportVersionSwitcher} from "./ReportVersionSwitcher";
 import {ArtefactsSection} from "../Artefacts/ArtefactsSection";
-import {DraftStamp} from "../DraftStamp";
 import { LoadingElement } from "../../../shared/partials/LoadingElement/LoadingElement";
 import {ReportAppState} from "../../reducers/reportAppReducers";
 
@@ -45,7 +40,7 @@ export const ReportDetailsComponent = (props: ReportDetailsProps) => {
     } else {
         return <LoadingElement />;
     }
-}
+};
 
 export const mapStateToProps = (state: ReportAppState, props: PublicProps): Partial<ReportDetailsProps> => {
     return {

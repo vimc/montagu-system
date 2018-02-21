@@ -102,7 +102,7 @@ describe("PublishSwitch", () => {
         const dispatchSpy = sandbox.createSpy();
         const props = mapDispatchToProps(dispatchSpy);
 
-        const reportActionsUnpublishSpy = sandbox.setSpy(reportsActions, "publishReport");
+        const reportActionsUnpublishSpy = sandbox.setSpy(reportsActions, "unPublishReport");
 
         props.unpublish("report", "v1");
         expect(dispatchSpy.called).to.be.true;

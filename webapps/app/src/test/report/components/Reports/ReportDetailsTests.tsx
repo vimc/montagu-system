@@ -6,12 +6,11 @@ import {mockVersion} from "../../../mocks/mockModels";
 import {Sandbox} from "../../../Sandbox";
 import {ReportDetailsComponent, ReportDetailsProps, mapStateToProps} from "../../../../main/report/components/Reports/ReportDetails";
 import {ReportVersionSwitcher} from "../../../../main/report/components/Reports/ReportVersionSwitcher";
-import {DraftStamp} from "../../../../main/report/components/DraftStamp";
 import {ArtefactsSection} from "../../../../main/report/components/Artefacts/ArtefactsSection";
 import {DataLinks} from "../../../../main/report/components/Data/DataLinks";
 import {ResourceLinks} from "../../../../main/report/components/Resources/ResourceLinks";
 import {ParameterList} from "../../../../main/report/components/Parameters/ParameterList";
-import {mockReportState} from "../../../mocks/mockStates";
+import {mockReportAppState} from "../../../mocks/mockStates";
 
 describe("ReportDetails", () => {
     const sandbox = new Sandbox();
@@ -20,7 +19,7 @@ describe("ReportDetails", () => {
     describe("getPropsFromStores", () => {
 
         it("checks props mappings", () => {
-            const reportStateProps = mockReportState({
+            const reportStateProps = mockReportAppState({
                 reports: {
                     versionDetails: mockVersion(),
                     currentReport: "reportname",
@@ -42,7 +41,7 @@ describe("ReportDetails", () => {
         });
 
         it("is ready when version details is there", () => {
-            const reportStateProps = mockReportState({
+            const reportStateProps = mockReportAppState({
                 reports: {
                     versionDetails: mockVersion(),
                 }
@@ -54,7 +53,7 @@ describe("ReportDetails", () => {
         });
 
         it("is not ready when no version details", () => {
-            const reportStateProps = mockReportState({
+            const reportStateProps = mockReportAppState({
                 reports: {
                 }
             })
@@ -127,16 +126,4 @@ describe("ReportDetails", () => {
         expect(handler.calledWith("v3"));
     });
 
-    it("renders draft stamp", () => {
-        const rendered = shallow(<ReportDetailsComponent
-            versionDetails={mockVersion({ published: false })}
-            report="report"
-            allVersions={[]}
-            onChangeVersion={null}
-            ready={true}
-        />);
-        expect(rendered.find(DraftStamp).props()).to.eql({
-            published: false
-        });
-    });
 });

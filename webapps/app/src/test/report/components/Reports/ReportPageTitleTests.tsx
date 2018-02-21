@@ -9,7 +9,7 @@ import {shallow} from "enzyme";
 import * as React from "react";
 import {Sandbox} from "../../../Sandbox";
 
-import {mockReportState} from "../../../mocks/mockStates";
+import {mockReportAppState} from "../../../mocks/mockStates";
 
 describe("ReportPageTitle", () => {
     const sandbox = new Sandbox();
@@ -17,7 +17,7 @@ describe("ReportPageTitle", () => {
 
     it("it maps props", () => {
         const mockVersionData = mockVersion();
-        const reportStateMock = mockReportState({
+        const reportStateMock = mockReportAppState({
             reports: {
                 currentVersion: "v1",
                 versionDetails: mockVersionData,
@@ -33,7 +33,7 @@ describe("ReportPageTitle", () => {
 
     it("it maps props displayname if version details was missing", () => {
         const mockVersionData = mockVersion();
-        const reportStateMock = mockReportState({
+        const reportStateMock = mockReportAppState({
             reports: {
                 currentVersion: "v1",
                 currentReport: "forecast"
@@ -48,21 +48,21 @@ describe("ReportPageTitle", () => {
 
     it("it has displayname undefined if version details and current report were missing", () => {
         const mockVersionData = mockVersion();
-        const reportStateMock = mockReportState({
+        const reportStateMock = mockReportAppState({
             reports: {
                 currentVersion: "v1"
             }
         });
         const expectedProps: ReportPageTitleProps = {
             version: "v1",
-            displayName: undefined
+            displayName: null
         }
         expect(mapStateToProps(reportStateMock)).to.eql(expectedProps);
     });
 
     it("it renders report page title if pass props to component", () => {
         const mockVersionData = mockVersion();
-        const reportStateMock = mockReportState({
+        const reportStateMock = mockReportAppState({
             reports: {
                 currentVersion: "v1",
                 versionDetails: mockVersionData,

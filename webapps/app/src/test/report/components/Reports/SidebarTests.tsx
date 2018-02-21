@@ -4,9 +4,9 @@ import {expect} from "chai";
 import {PublishSwitch} from "../../../../main/report/components/Reports/PublishSwitch";
 import {Sandbox} from "../../../Sandbox";
 import {mapStateToProps, SidebarComponent, SidebarProps} from "../../../../main/report/components/Reports/Sidebar";
-import {mockAuthState, mockReportState} from "../../../mocks/mockStates";
+import {mockAuthState, mockReportAppState, mockReportsState} from "../../../mocks/mockStates";
 
-describe("PublishSwitch", () => {
+describe("Sidebar", () => {
 
     const sandbox = new Sandbox();
 
@@ -48,14 +48,21 @@ describe("PublishSwitch", () => {
             version: "v1"
         };
 
-        let state = mockReportState({auth: mockAuthState({permissions: ["*/reports.review"]})});
+        let state = mockReportAppState({
+            auth: mockAuthState({permissions: ["*/reports.review"]}),
+            reports: mockReportsState({versionDetails: {published: false}})
+        });
+
         let result = mapStateToProps(state, props);
 
         expect(result.isReviewer).to.be.true;
-        expect(result.published).to.be.true;
+        expect(result.published).to.be.false;
 
+        state = mockReportAppState({
+            auth: mockAuthState({permissions: []}),
+            reports: mockReportsState({versionDetails: {published: true}})
+        });
 
-        state = mockReportState({auth: mockAuthState({permissions: []})});
         result = mapStateToProps(state, props);
 
         expect(result.isReviewer).to.be.false;
