@@ -88,6 +88,9 @@ import org.vaccineimpact.api.db.tables.TouchstoneName;
 import org.vaccineimpact.api.db.tables.TouchstoneStatus;
 import org.vaccineimpact.api.db.tables.TouchstoneYears;
 import org.vaccineimpact.api.db.tables.UploadInfo;
+import org.vaccineimpact.api.db.tables.UserGroup;
+import org.vaccineimpact.api.db.tables.UserGroupMembership;
+import org.vaccineimpact.api.db.tables.UserGroupRole;
 import org.vaccineimpact.api.db.tables.UserRole;
 import org.vaccineimpact.api.db.tables.VCoverageInfo;
 import org.vaccineimpact.api.db.tables.VResponsibilityInfo;
@@ -117,7 +120,7 @@ import org.vaccineimpact.api.db.tables.records.SelectBurdenDataColRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = 777950900;
+    private static final long serialVersionUID = -670624308;
 
     /**
      * The reference instance of <code>public</code>
@@ -664,6 +667,21 @@ public class Public extends SchemaImpl {
     public final UploadInfo UPLOAD_INFO = org.vaccineimpact.api.db.tables.UploadInfo.UPLOAD_INFO;
 
     /**
+     * The table <code>public.user_group</code>.
+     */
+    public final UserGroup USER_GROUP = org.vaccineimpact.api.db.tables.UserGroup.USER_GROUP;
+
+    /**
+     * The table <code>public.user_group_membership</code>.
+     */
+    public final UserGroupMembership USER_GROUP_MEMBERSHIP = org.vaccineimpact.api.db.tables.UserGroupMembership.USER_GROUP_MEMBERSHIP;
+
+    /**
+     * The table <code>public.user_group_role</code>.
+     */
+    public final UserGroupRole USER_GROUP_ROLE = org.vaccineimpact.api.db.tables.UserGroupRole.USER_GROUP_ROLE;
+
+    /**
      * The table <code>public.user_role</code>.
      */
     public final UserRole USER_ROLE = org.vaccineimpact.api.db.tables.UserRole.USER_ROLE;
@@ -835,6 +853,9 @@ public class Public extends SchemaImpl {
             TouchstoneStatus.TOUCHSTONE_STATUS,
             TouchstoneYears.TOUCHSTONE_YEARS,
             UploadInfo.UPLOAD_INFO,
+            UserGroup.USER_GROUP,
+            UserGroupMembership.USER_GROUP_MEMBERSHIP,
+            UserGroupRole.USER_GROUP_ROLE,
             UserRole.USER_ROLE,
             VCoverageInfo.V_COVERAGE_INFO,
             VResponsibilityInfo.V_RESPONSIBILITY_INFO,
