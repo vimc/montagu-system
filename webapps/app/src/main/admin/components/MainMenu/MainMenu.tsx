@@ -3,7 +3,6 @@ import { AdminPageWithHeader } from "../AdminPageWithHeader";
 import { ButtonLink } from "../../../shared/components/ButtonLink";
 import {IPageWithParent} from "../../../shared/models/Breadcrumb";
 import { Page } from "../../../shared/components/PageWithHeader/Page";
-import {ReportingPage} from "../../../report/components/ReportingPage";
 
 const menuStyles = require("./MainMenu.css");
 
@@ -21,7 +20,7 @@ export class MainMenu extends AdminPageWithHeader<undefined> {
     }
 
     render() :JSX.Element {
-        return <ReportingPage page={this}>
+        return <Page page={this}>
             <div>
                 Please select which area of Montagu you would like to manage:
                 <ol className={ menuStyles.menu }>
@@ -36,6 +35,6 @@ export class MainMenu extends AdminPageWithHeader<undefined> {
                     </li>
                 </ol>
             </div>
-        </ReportingPage>;
+        </Page>;
     }
 }

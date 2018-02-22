@@ -1,7 +1,7 @@
 import * as React from "react";
 import {PageHeader} from "../../shared/components/PageWithHeader/PageHeader";
 
-import * as logo from "./logo-purple.png"
+import * as logo from "./logo-green.png"
 
 interface HeaderProps {
     siteTitle: string;
