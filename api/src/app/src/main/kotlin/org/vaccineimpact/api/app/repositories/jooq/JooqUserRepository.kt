@@ -50,6 +50,13 @@ class JooqUserRepository(dsl: DSLContext) : JooqRepository(dsl), UserRepository
         dsl.deleteFrom(USER_ROLE)
                 .where(USER_ROLE.USERNAME.eq(username))
                 .and(USER_ROLE.ROLE.eq(roleId))
+                .and(USER_ROLE.SCOPE_ID.eq(role.scope.databaseScopeId))
+                .execute()
+
+        dsl.deleteFrom(USER_GROUP_ROLE)
+                .where(USER_GROUP_ROLE.USER_GROUP.eq(username))
+                .and(USER_GROUP_ROLE.ROLE.eq(roleId))
+                .and(USER_GROUP_ROLE.SCOPE_ID.eq(role.scope.databaseScopeId))
                 .execute()
     }
 
@@ -139,10 +146,22 @@ class JooqUserRepository(dsl: DSLContext) : JooqRepository(dsl), UserRepository
 
     override fun addUser(user: CreateUser)
     {
+        val newusername = user.username
+
         dsl.newRecord(APP_USER).apply {
-            username = user.username
+            username = newusername
             name = user.name
             email = user.email
+        }.insert()
+
+        dsl.newRecord(USER_GROUP).apply {
+            name = newusername
+            id = newusername
+        }.insert()
+
+        dsl.newRecord(USER_GROUP_MEMBERSHIP).apply {
+            username = newusername
+            userGroup = newusername
         }.insert()
     }
 
@@ -170,11 +189,8 @@ class JooqUserRepository(dsl: DSLContext) : JooqRepository(dsl), UserRepository
             }
             "remove" ->
             {
-                dsl.deleteFrom(USER_ROLE)
-                        .where(USER_ROLE.USERNAME.eq(associateUser.username))
-                        .and(USER_ROLE.ROLE.eq(roleId))
-                        .and(USER_ROLE.SCOPE_ID.eq(groupId))
-                        .execute()
+                removeRoleFromUser(associateUser.username, ReifiedRole("member",
+                        Scope.Specific("modelling-group", groupId)))
             }
         }
     }

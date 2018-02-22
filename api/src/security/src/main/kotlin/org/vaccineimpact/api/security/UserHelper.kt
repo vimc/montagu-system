@@ -2,6 +2,7 @@ package org.vaccineimpact.api.security
 
 import org.jooq.DSLContext
 import org.pac4j.core.credentials.password.PasswordEncoder
+import org.vaccineimpact.api.db.Tables
 import org.vaccineimpact.api.db.Tables.APP_USER
 
 object UserHelper
@@ -16,6 +17,16 @@ object UserHelper
             this.email = email
             this.passwordHash = hashedPassword(plainPassword)
         }.store()
+
+        db.newRecord(Tables.USER_GROUP).apply {
+            this.name = username
+            id = username
+        }.insert()
+
+        db.newRecord(Tables.USER_GROUP_MEMBERSHIP).apply {
+            this.username = username
+            userGroup = username
+        }.insert()
     }
 
     fun userExists(db: DSLContext, username: String): Boolean

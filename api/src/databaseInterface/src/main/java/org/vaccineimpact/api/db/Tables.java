@@ -80,6 +80,9 @@ import org.vaccineimpact.api.db.tables.TouchstoneName;
 import org.vaccineimpact.api.db.tables.TouchstoneStatus;
 import org.vaccineimpact.api.db.tables.TouchstoneYears;
 import org.vaccineimpact.api.db.tables.UploadInfo;
+import org.vaccineimpact.api.db.tables.UserGroup;
+import org.vaccineimpact.api.db.tables.UserGroupMembership;
+import org.vaccineimpact.api.db.tables.UserGroupRole;
 import org.vaccineimpact.api.db.tables.UserRole;
 import org.vaccineimpact.api.db.tables.VCoverageInfo;
 import org.vaccineimpact.api.db.tables.VResponsibilityInfo;
@@ -647,6 +650,21 @@ public class Tables {
      * The table <code>public.upload_info</code>.
      */
     public static final UploadInfo UPLOAD_INFO = org.vaccineimpact.api.db.tables.UploadInfo.UPLOAD_INFO;
+
+    /**
+     * The table <code>public.user_group</code>.
+     */
+    public static final UserGroup USER_GROUP = org.vaccineimpact.api.db.tables.UserGroup.USER_GROUP;
+
+    /**
+     * The table <code>public.user_group_membership</code>.
+     */
+    public static final UserGroupMembership USER_GROUP_MEMBERSHIP = org.vaccineimpact.api.db.tables.UserGroupMembership.USER_GROUP_MEMBERSHIP;
+
+    /**
+     * The table <code>public.user_group_role</code>.
+     */
+    public static final UserGroupRole USER_GROUP_ROLE = org.vaccineimpact.api.db.tables.UserGroupRole.USER_GROUP_ROLE;
 
     /**
      * The table <code>public.user_role</code>.

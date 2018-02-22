@@ -96,6 +96,21 @@ fun DSLContext.ensureUserHasRole(username: String, roleId: Int, scopeId: String)
             this.scopeId = scopeId
         }.store()
     }
+
+    val groupRoleMapping = this.select(USER_GROUP_ROLE.fieldsAsList())
+            .from(USER_GROUP_ROLE)
+            .where(USER_GROUP_ROLE.USER_GROUP.eq(username))
+            .and(USER_GROUP_ROLE.ROLE.eq(roleId))
+            .and(USER_GROUP_ROLE.SCOPE_ID.eq(scopeId))
+            .fetchAny()
+    if (groupRoleMapping == null)
+    {
+        this.newRecord(USER_GROUP_ROLE).apply {
+            this.userGroup = username
+            this.role = roleId
+            this.scopeId = scopeId
+        }.store()
+    }
 }
 
 fun JooqContext.ensureUserHasRole(username: String, role: ReifiedRole)
