@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { createStore, applyMiddleware, combineReducers } from "redux";
+import { createStore } from "redux";
 
 import { Sandbox } from "../../Sandbox";
 import { AbstractLocalService } from "../../../main/shared/services/AbstractLocalService";

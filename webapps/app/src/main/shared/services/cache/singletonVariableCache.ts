@@ -18,7 +18,7 @@ export const singletonVariableCache = {
     },
 
     clear(key: string) {
-        this.set(key, null);
+        this.set(key, undefined);
     },
 
     clearAll() {
