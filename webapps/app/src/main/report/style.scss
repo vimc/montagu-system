@@ -5,9 +5,12 @@
 
 @import "../../../node_modules/bootstrap/scss/functions";
 @import "../../../node_modules/bootstrap/scss/variables";
+@import "../../../node_modules/bootstrap-toggle/css/bootstrap-toggle.css";
 
 $table-border-color: $gray-700;
 $montagu-nav-bg-color: $gray-200;
+$published-color: #868ED3;
 
 @import "../shared/styles/common";
 @import "./styles/reports";
+@import "./styles/sidebar";
