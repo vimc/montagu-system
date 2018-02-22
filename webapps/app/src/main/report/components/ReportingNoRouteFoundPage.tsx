@@ -2,7 +2,7 @@ import * as React from "react";
 import { ReportingPageWithHeader } from "./ReportingPageWithHeader";
 import { NoRouteFound } from "../../shared/components/NoRouteFound";
 import {IPageWithParent} from "../../shared/models/Breadcrumb";
-import {MainMenu} from "./MainMenu/MainMenu";
+import {ReportsListPage} from "./ReportsList/ReportsListPage";
 import { Page } from "../../shared/components/PageWithHeader/Page";
 
 export class ReportingNoRouteFoundPage extends ReportingPageWithHeader<undefined> {
@@ -19,7 +19,7 @@ export class ReportingNoRouteFoundPage extends ReportingPageWithHeader<undefined
     }
 
     parent(): IPageWithParent {
-        return new MainMenu();
+        return new ReportsListPage();
     }
 
     render(): JSX.Element {

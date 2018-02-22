@@ -2,7 +2,7 @@ import {RouteMap, Router} from "simple-react-router";
 import {appSettings} from "../../shared/Settings";
 
 // Pages
-import {MainMenu} from "./MainMenu/MainMenu";
+import {ReportsListPage} from "./ReportsList/ReportsListPage";
 import {ReportingNoRouteFoundPage} from "./ReportingNoRouteFoundPage";
 import {ReportingLoginPage} from "./ReportingLoginPage";
 import {ReportPage} from "./Reports/ReportPage";
@@ -21,7 +21,7 @@ export class ReportingRouter extends Router<RouterProps> {
         map('/forgotten-password/', ReportingForgottenPasswordPage);
 
         if (props.loggedIn) {
-            map('/', MainMenu);
+            map('/', ReportsListPage);
             map('/:report/:version/', ReportPage);
             map('*', ReportingNoRouteFoundPage);
         } else {

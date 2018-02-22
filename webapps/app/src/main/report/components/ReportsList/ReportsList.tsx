@@ -14,7 +14,7 @@ interface ReportProps {
     ready: boolean;
 }
 
-export class ReportListComponent extends React.Component<ReportProps, undefined> {
+export class ReportsListComponent extends React.Component<ReportProps, undefined> {
 
     componentDidMount() {
         this.props.getReports();
@@ -23,7 +23,6 @@ export class ReportListComponent extends React.Component<ReportProps, undefined>
     render() {
         if (this.props.ready) {
             const items = this.props.reports
-                .sort((a, b) => a.name.localeCompare(b.name))
                 .map((report) => <ReportListItem key={ report.name } {...report} />);
 
             return <ul className="list-unstyled">
@@ -48,4 +47,4 @@ export const mapDispatchToProps = (dispatch: Dispatch<ReportAppState>): Partial<
     }
 };
 
-export const ReportList = connect(mapStateToProps, mapDispatchToProps)(ReportListComponent);
+export const ReportsList = connect(mapStateToProps, mapDispatchToProps)(ReportsListComponent);

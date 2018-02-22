@@ -7,7 +7,7 @@ import {
     ForgottenPasswordPageTitle
 } from "../../shared/components/Login/ForgottenPasswordForm";
 import {IPageWithParent} from "../../shared/models/Breadcrumb";
-import {MainMenu} from "./MainMenu/MainMenu";
+import {ReportsListPage} from "./ReportsList/ReportsListPage";
 import {Page} from "../../shared/components/PageWithHeader/Page";
 
 const ForgottenPasswordForm = FormConnector(forgottenPasswordFormStore("report"))(ForgottenPasswordFormComponent);
@@ -22,7 +22,7 @@ export class ReportingForgottenPasswordPage extends ReportingPageWithHeader<unde
     }
 
     parent(): IPageWithParent {
-        return new MainMenu();
+        return new ReportsListPage();
     }
 
     render(): JSX.Element {

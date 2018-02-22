@@ -2,7 +2,7 @@ import { Dispatch } from "redux";
 
 import { ReportsService } from "../services/ReportsService";
 import {
-    ReportsActionsTypes, ReportsFetched, ReportTypeKeys, ReportVersionDetailssFetched,
+    ReportsActionsTypes, ReportsFetched, ReportsSortingFields, ReportTypeKeys, ReportVersionDetailssFetched,
     ReportVersionsFetched
 } from "../actionTypes/ReportsActionsTypes";
 import {GlobalState} from "../../shared/reducers/GlobalState";
@@ -17,6 +17,13 @@ export const reportsActions = {
                 type: ReportTypeKeys.REPORTS_FETCHED,
                 data: reports
             } as ReportsFetched );
+        }
+    },
+
+    sortReports(value: ReportsSortingFields) {
+        return {
+            type: ReportTypeKeys.REPORTS_SORTED,
+            data: value
         }
     },
 
