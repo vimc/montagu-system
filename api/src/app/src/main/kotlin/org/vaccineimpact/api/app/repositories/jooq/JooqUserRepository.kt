@@ -47,16 +47,17 @@ class JooqUserRepository(dsl: DSLContext) : JooqRepository(dsl), UserRepository
         val roleId = dsl.getRole(role.name, role.scope.databaseScopePrefix)
                 ?: throw UnknownRoleException(role.name, role.scope.databaseScopePrefix.toString())
 
-        dsl.deleteFrom(USER_ROLE)
-                .where(USER_ROLE.USERNAME.eq(username))
-                .and(USER_ROLE.ROLE.eq(roleId))
-                .and(USER_ROLE.SCOPE_ID.eq(role.scope.databaseScopeId))
-                .execute()
-
         dsl.deleteFrom(USER_GROUP_ROLE)
                 .where(USER_GROUP_ROLE.USER_GROUP.eq(username))
                 .and(USER_GROUP_ROLE.ROLE.eq(roleId))
                 .and(USER_GROUP_ROLE.SCOPE_ID.eq(role.scope.databaseScopeId))
+                .execute()
+
+        // TODO deprecate - all roles will be mapped via the USER_GROUP_ROLE
+        dsl.deleteFrom(USER_ROLE)
+                .where(USER_ROLE.USERNAME.eq(username))
+                .and(USER_ROLE.ROLE.eq(roleId))
+                .and(USER_ROLE.SCOPE_ID.eq(role.scope.databaseScopeId))
                 .execute()
     }
 
@@ -101,6 +102,7 @@ class JooqUserRepository(dsl: DSLContext) : JooqRepository(dsl), UserRepository
 
     private fun getRolesAndPermissions(whereCondition: Condition): Result<Record>
     {
+        // TODO deprecate - all roles will be mapped via the USER_GROUP_ROLE
         return dsl.select(PERMISSION.NAME)
                 .select(ROLE.NAME, ROLE.SCOPE_PREFIX)
                 .select(USER_ROLE.SCOPE_ID)
@@ -136,6 +138,7 @@ class JooqUserRepository(dsl: DSLContext) : JooqRepository(dsl), UserRepository
     {
         return dsl.select()
                 .from(APP_USER)
+                // TODO deprecate - all roles will be mapped via the USER_GROUP_ROLE
                 .leftJoin(USER_ROLE)
                 .on(APP_USER.USERNAME.eq(USER_ROLE.USERNAME))
                 .leftJoin(ROLE)

@@ -82,21 +82,6 @@ fun JooqContext.ensureUserHasRole(username: String, roleId: Int, scopeId: String
 
 fun DSLContext.ensureUserHasRole(username: String, roleId: Int, scopeId: String)
 {
-    val roleMapping = this.select(USER_ROLE.fieldsAsList())
-            .from(USER_ROLE)
-            .where(USER_ROLE.USERNAME.eq(username))
-            .and(USER_ROLE.ROLE.eq(roleId))
-            .and(USER_ROLE.SCOPE_ID.eq(scopeId))
-            .fetchAny()
-    if (roleMapping == null)
-    {
-        this.newRecord(USER_ROLE).apply {
-            this.username = username
-            this.role = roleId
-            this.scopeId = scopeId
-        }.store()
-    }
-
     val groupRoleMapping = this.select(USER_GROUP_ROLE.fieldsAsList())
             .from(USER_GROUP_ROLE)
             .where(USER_GROUP_ROLE.USER_GROUP.eq(username))
@@ -107,6 +92,22 @@ fun DSLContext.ensureUserHasRole(username: String, roleId: Int, scopeId: String)
     {
         this.newRecord(USER_GROUP_ROLE).apply {
             this.userGroup = username
+            this.role = roleId
+            this.scopeId = scopeId
+        }.store()
+    }
+
+    // TODO deprecate - all roles will be mapped via the USER_GROUP_ROLE
+    val roleMapping = this.select(USER_ROLE.fieldsAsList())
+            .from(USER_ROLE)
+            .where(USER_ROLE.USERNAME.eq(username))
+            .and(USER_ROLE.ROLE.eq(roleId))
+            .and(USER_ROLE.SCOPE_ID.eq(scopeId))
+            .fetchAny()
+    if (roleMapping == null)
+    {
+        this.newRecord(USER_ROLE).apply {
+            this.username = username
             this.role = roleId
             this.scopeId = scopeId
         }.store()
