@@ -2,8 +2,10 @@
 
 $table-border-color: $gray-700;
 $montagu-nav-bg-color: $gray-200;
+$published-color: #868ED3;
 $montagu-header-bg-color: $gray-200;
 $montagu-header-color: $body-color;
 
 @import "../shared/styles/common";
 @import "./styles/reports";
+@import "./styles/sidebar";

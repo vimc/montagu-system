@@ -1,4 +1,4 @@
-import { Dispatch } from "redux";
+import {Dispatch} from "redux";
 
 import { ReportsService } from "../services/ReportsService";
 import {
@@ -16,7 +16,7 @@ export const reportsActions = {
             dispatch({
                 type: ReportTypeKeys.REPORTS_FETCHED,
                 data: reports
-            } as ReportsFetched );
+            } as ReportsFetched);
         }
     },
 
@@ -24,6 +24,21 @@ export const reportsActions = {
         return {
             type: ReportTypeKeys.SET_CURRENT_REPORT,
             data: report
+        }
+    },
+    publishReport(name: string, version: string) {
+        //TODO actually publish report
+        return {
+            type: ReportTypeKeys.REPORT_PUBLISHED,
+            data: {report: name, version: version}
+        }
+    },
+
+    unPublishReport(name: string, version: string) {
+        //TODO actually publish report
+        return {
+            type: ReportTypeKeys.REPORT_UNPUBLISHED,
+            data: {report: name, version: version}
         }
     },
 
