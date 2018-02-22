@@ -106,11 +106,11 @@ export abstract class LocalService {
     }
 
     protected getCache(url: string) {
-        return this.cacheEngine.get(['api', this.constructor.name, this.options.cache, encodeURIComponent(url)].join('.'));
+        return this.cacheEngine.get(["localService", this.constructor.name, this.options.cache, encodeURIComponent(url)].join('.'));
     }
 
     protected setCache(url: string, data: any) {
-        this.cacheEngine.set(['api', this.constructor.name, this.options.cache, encodeURIComponent(url)].join('.'), data);
+        this.cacheEngine.set(["localService", this.constructor.name, this.options.cache, encodeURIComponent(url)].join('.'), data);
     }
 
     public clearAllCache() {
@@ -122,7 +122,7 @@ export abstract class LocalService {
         if (this.options.cache) {
             const cacheValue = this.getCache(this.makeUrl(url));
             if (cacheValue) {
-                // reset options after returning cached data from endpoint
+                // reset options on returning cached data from endpoint
                 this.initOptions();
                 return Promise.resolve(cacheValue);
             }
@@ -169,15 +169,15 @@ export abstract class LocalService {
                 if (this.options.cache) {
                     this.setCache(response.url, result.data);
                 }
-                // reset options after successful request
+                // reset options on successful request
                 this.initOptions();
                 return result.data as TModel;
             case "failure":
-                // reset options after successful after defined failure
+                // reset options on defined failure
                 this.initOptions();
                 return result.errors.forEach(handleError);
             default:
-                // reset options after unexpected failure
+                // reset options on unexpected failure
                 this.initOptions();
                 throw makeNotificationException("The server response was not correctly formatted: "
                     + response.toString(), "error");
