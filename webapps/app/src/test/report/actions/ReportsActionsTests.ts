@@ -71,5 +71,13 @@ describe("Modelling groups actions tests", () => {
         });
     });
 
-
+    it("dispatches reports sorted action if sort report is dispatched", (done) => {
+        store.dispatch(reportsActions.sortReports('name'))
+        setTimeout(() => {
+            const actions = store.getActions();
+            expect(actions[0].type).to.eql(ReportTypeKeys.REPORTS_SORTED);
+            expect(actions[0].data).to.eql("name");
+            done();
+        });
+    });
 });
