@@ -34,7 +34,6 @@ describe('Reports reducer tests', () => {
             {reports: reportsMock, versions: ["test1"], currentReport: "test1", versionDetails: mockVersion()},
             { type: ReportTypeKeys.REPORTS_SORTED, data: "name" as ReportsSortingFields }
         );
-        console.log(newState);
         expect(newState.reports[0].name).to.eql("a");
         expect(newState.reports[1].name).to.eql("b");
         expect(newState.reports[2].name).to.eql("c");
