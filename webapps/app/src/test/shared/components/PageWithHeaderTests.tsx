@@ -1,17 +1,17 @@
 import * as React from "react";
-import { expect } from "chai";
-import { shallow, ShallowWrapper } from "enzyme";
-import { Provider } from "react-redux";
+import {expect} from "chai";
+import {shallow, ShallowWrapper} from "enzyme";
+import {Provider} from "react-redux";
 
-import { mockLocation } from "../../mocks/mocks";
+import {mockLocation} from "../../mocks/mocks";
 import {PageProperties, PageWithHeader} from "../../../main/shared/components/PageWithHeader/PageWithHeader";
-import { PageHeader } from "../../../main/shared/components/PageWithHeader/PageHeader";
-import { PageArticle } from "../../../main/shared/components/PageWithHeader/PageArticle";
-import { Page } from "../../../main/shared/components/PageWithHeader/Page";
+import {PageHeader} from "../../../main/shared/components/PageWithHeader/PageHeader";
+import {PageArticle} from "../../../main/shared/components/PageWithHeader/PageArticle";
+import {Page} from "../../../main/shared/components/PageWithHeader/Page";
 import {IPageWithParent} from "../../../main/shared/models/Breadcrumb";
 import {Sandbox} from "../../Sandbox";
 import {checkAsync} from "../../testHelpers";
-import { reduxHelper } from "../../reduxHelper";
+import {reduxHelper} from "../../reduxHelper";
 
 export class DummyPage extends PageWithHeader<undefined> {
     loaded: boolean;
@@ -46,6 +46,7 @@ export class DummyPage extends PageWithHeader<undefined> {
     title(): JSX.Element {
         return <span>Elbereth</span>;
     }
+
     render(): JSX.Element {
         return <Page page={this}><span>Content</span></Page>;
     }
@@ -71,6 +72,7 @@ export class DummyPageNoTitle extends PageWithHeader<undefined> {
     render(): JSX.Element {
         return <Page page={this}><span>Content</span></Page>;
     }
+
     hideTitle(): boolean {
         return true;
     }
@@ -82,13 +84,14 @@ describe('PageWithHeader', () => {
     const sandbox = new Sandbox();
 
     beforeEach(() => {
-        rendered = shallow(<DummyPage location={mockLocation<undefined>()} router={null} />);
+        rendered = shallow(<DummyPage location={mockLocation<undefined>()} router={null}/>);
     });
     afterEach(() => sandbox.restore());
 
     it("loads on mount after timeout", (done: DoneCallback) => {
         const store = reduxHelper.createStore({auth: {loggedIn: true}})
-        const page = sandbox.mount(<Provider store={store}><DummyPage location={mockLocation<undefined>()} router={null} /></Provider>)
+        const page = sandbox.mount(<Provider store={store}><DummyPage location={mockLocation<undefined>()}
+                                                                      router={null}/></Provider>)
             .find(DummyPage).instance() as DummyPage;
         expect(page.loaded).to.be.false;
 
@@ -98,7 +101,7 @@ describe('PageWithHeader', () => {
     });
 
     it("renders the content without title element if hideTitle equals true", () => {
-        const dummyPageNoTitle = shallow(<DummyPageNoTitle location={mockLocation<undefined>()} router={null} />);
+        const dummyPageNoTitle = shallow(<DummyPageNoTitle location={mockLocation<undefined>()} router={null}/>);
         expect(dummyPageNoTitle.find(".pageTitle").exists()).to.equal(false);
     });
 });
@@ -107,14 +110,18 @@ describe('PageWithHeader', () => {
 describe('PageHeader', () => {
     let rendered: ShallowWrapper<any, any>;
     const sandbox = new Sandbox();
-
+    const logo = "logo.png";
     beforeEach(() => {
-        rendered = shallow(<PageHeader siteTitle={"LOTR"} />);
+        rendered = shallow(<PageHeader siteTitle={"LOTR"} logo={logo}/>);
     });
     afterEach(() => sandbox.restore());
 
     it("renders the application title", () => {
         expect(rendered.find(".header__siteTitle").render().text()).to.equal("LOTR");
+    });
+
+    it("renders the logo", () => {
+        expect(rendered.find("img").prop("src")).to.equal("logo.png");
     });
 });
 
