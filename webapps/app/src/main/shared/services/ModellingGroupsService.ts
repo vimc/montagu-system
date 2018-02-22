@@ -1,6 +1,6 @@
-import { LocalService } from "../../shared/services/LocalService";
+import { AbstractLocalService } from "./AbstractLocalService";
 
-export class ModellingGroupsService extends LocalService {
+export class ModellingGroupsService extends AbstractLocalService {
 
     getAllGroups() {
         return this.setOptions({cache: 'groups'})

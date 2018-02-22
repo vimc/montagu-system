@@ -11,8 +11,8 @@ import {
 
 import { AuthTypeKeys } from "../actionTypes/AuthTypes";
 import {GlobalState} from "../reducers/GlobalState";
-import {CacheInterface} from "./CacheInterface";
-import {singletonVariableCache} from "./singletonVariableCache";
+import {CacheInterface} from "./cache/CacheInterface";
+import {singletonVariableCache} from "./cache/singletonVariableCache";
 
 export interface OptionsHeaders {
    Authorization?: string;
@@ -34,7 +34,7 @@ export interface InputOptions {
     cache?: string;
 }
 
-export abstract class LocalService {
+export abstract class AbstractLocalService {
     protected dispatch: Dispatch<Action>;
 
     protected bearerToken: string;

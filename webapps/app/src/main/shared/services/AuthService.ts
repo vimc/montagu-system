@@ -1,6 +1,6 @@
-import { LocalService } from "./LocalService";
+import { AbstractLocalService } from "./AbstractLocalService";
 
-export class AuthService extends LocalService {
+export class AuthService extends AbstractLocalService {
 
     logIn(email: string, password: string) {
         return this.setOptions({

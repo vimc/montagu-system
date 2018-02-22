@@ -1,6 +1,6 @@
-import {ReportLocalService} from "./ReportLocalService";
+import {AbstractReportLocalService} from "./AbstractReportLocalService";
 
-export class ReportsService extends ReportLocalService {
+export class ReportsService extends AbstractReportLocalService {
 
     getAllReports() {
         return this.setOptions({cache: 'reports'})
