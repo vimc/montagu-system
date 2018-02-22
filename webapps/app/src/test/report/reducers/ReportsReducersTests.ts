@@ -1,7 +1,7 @@
 import { expect } from "chai";
 
-import { reportsReducer } from "../../../main/report/reducers/reportsReducer";
-import { ReportTypeKeys } from "../../../main/report/actionTypes/ReportsActionsTypes";
+import {reportsReducer, ReportsState} from "../../../main/report/reducers/reportsReducer";
+import {ReportsSortingFields, ReportTypeKeys} from "../../../main/report/actionTypes/ReportsActionsTypes";
 import {mockReport, mockVersion} from "../../mocks/mockModels";
 
 describe('Reports reducer tests', () => {
@@ -26,6 +26,18 @@ describe('Reports reducer tests', () => {
         const versionMock = mockVersion();
         const newState = reportsReducer(undefined, { type: ReportTypeKeys.REPORT_VERSION_DETAILS_FETCHED, data: versionMock });
         expect(newState.versionDetails).to.eql(versionMock);
+    });
+
+    it('sorts reports list', () => {
+        const reportsMock = [mockReport({name: "b"}), mockReport({name: "c"}), mockReport({name: "a"})];
+        const newState = reportsReducer(
+            {reports: reportsMock, versions: ["test1"], currentReport: "test1", versionDetails: mockVersion()},
+            { type: ReportTypeKeys.REPORTS_SORTED, data: "name" as ReportsSortingFields }
+        );
+        console.log(newState);
+        expect(newState.reports[0].name).to.eql("a");
+        expect(newState.reports[1].name).to.eql("b");
+        expect(newState.reports[2].name).to.eql("c");
     });
 
 })
