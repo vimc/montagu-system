@@ -1,13 +1,13 @@
 .header {
     padding: 10px;
-    background-color: rgb(38, 50, 122);
+    background-color: $montagu-header-bg-color;
     border-bottom: 2px solid white;
-    color: white;
+    color: $montagu-header-color;
 
     .header__siteTitle {
         display: inline-block;
-        margin-bottom: 4px;
-        margin-left: 5px;
+        margin-bottom: 5px;
+        margin-left: 10px;
         vertical-align: bottom;
         font-family: header, sans-serif;
         font-size: 24pt;
@@ -17,6 +17,10 @@
             text-decoration: inherit;
             color: inherit;
         }
+    }
+
+    .logo{
+        margin: 2px 15px 5px 5px;
     }
 
 }

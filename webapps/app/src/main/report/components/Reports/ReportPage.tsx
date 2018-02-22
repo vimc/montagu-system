@@ -9,6 +9,7 @@ import {MainMenu} from "../MainMenu/MainMenu";
 import {reportPageActions} from "../../actions/reportPageActions";
 import {Sidebar} from "./Sidebar";
 import {PageHeader} from "../../../shared/components/PageWithHeader/PageHeader";
+import {ReportingPageHeader} from "../ReportingPageHeader";
 
 export interface ReportPageProps {
     report: string;
@@ -64,7 +65,7 @@ export class ReportPageComponent extends ReportingPageWithHeader<ReportPageProps
 
     render(): JSX.Element {
         return <div>
-            <PageHeader siteTitle={this.siteTitle()}/>
+            <ReportingPageHeader     siteTitle={this.siteTitle()}/>
             <div className={"container-fluid pt-4 sm-pt-5"}>
                 <div className="row flex-xl-nowrap">
                     <div className="col-12 col-md-4 col-xl-2">
