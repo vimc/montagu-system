@@ -2,15 +2,20 @@ import * as React from "react";
 import {shallow} from "enzyme";
 
 import {expect} from "chai";
-import {mockVersion} from "../../../mocks/mockModels";
+import {mockArtefact, mockVersion} from "../../../mocks/mockModels";
 import {Sandbox} from "../../../Sandbox";
-import {ReportDetailsComponent, ReportDetailsProps, mapStateToProps} from "../../../../main/report/components/Reports/ReportDetails";
+import {
+    ReportDetailsComponent,
+    ReportDetailsProps,
+    mapStateToProps
+} from "../../../../main/report/components/Reports/ReportDetails";
 import {ReportVersionSwitcher} from "../../../../main/report/components/Reports/ReportVersionSwitcher";
 import {ArtefactsSection} from "../../../../main/report/components/Artefacts/ArtefactsSection";
 import {DataLinks} from "../../../../main/report/components/Data/DataLinks";
 import {ResourceLinks} from "../../../../main/report/components/Resources/ResourceLinks";
 import {ParameterList} from "../../../../main/report/components/Parameters/ParameterList";
 import {mockReportAppState} from "../../../mocks/mockStates";
+import {InlineArtefact} from "../../../../main/report/components/Artefacts/InlineArtefact";
 
 describe("ReportDetails", () => {
     const sandbox = new Sandbox();
@@ -54,8 +59,7 @@ describe("ReportDetails", () => {
 
         it("is not ready when no version details", () => {
             const reportStateProps = mockReportAppState({
-                reports: {
-                }
+                reports: {}
             })
             const reportPublicProps = {
                 onChangeVersion: sandbox.sinon.stub()
@@ -65,35 +69,20 @@ describe("ReportDetails", () => {
 
     });
 
-    it("renders sub-components", () => {
-        const details = mockVersion({
-            id: "v1",
-            hash_data: {foo: "bar"},
-            resources: ["a", "b", "c"],
-            parameters: {a: "1", b: "2"}
-        });
+    it("renders inline artefact", () => {
+        const handler = sandbox.sinon.stub();
+        const artefact = mockArtefact();
         const rendered = shallow(<ReportDetailsComponent
-            versionDetails={details}
+            versionDetails={mockVersion({id: "v1", artefacts: [{"a1": artefact}]})}
             report="reportname"
-            allVersions={[]}
-            onChangeVersion={null}
+            allVersions={["v1", "v2"]}
+            onChangeVersion={handler}
             ready={true}
         />);
-        expect(rendered.find(ArtefactsSection).props()).to.eql({
+        expect(rendered.find(InlineArtefact).props()).to.eql({
+            version: "v1",
             report: "reportname",
-            versionDetails: details
-        });
-        expect(rendered.find(DataLinks).props()).to.eql({
-            foo: "bar"
-        });
-        expect(rendered.find(ResourceLinks).props()).to.eql({
-            resources: ["a", "b", "c"],
-            report: "reportname",
-            version: "v1"
-        });
-        expect(rendered.find(ParameterList).props()).to.eql({
-            a: "1",
-            b: "2"
+            artefact: artefact
         });
     });
 
@@ -128,7 +117,7 @@ describe("ReportDetails", () => {
 
     it("renders name if display name not present", () => {
         const rendered = shallow(<ReportDetailsComponent
-            versionDetails={mockVersion({ published: false, displayname: null, name: "name" })}
+            versionDetails={mockVersion({published: false, displayname: null, name: "name"})}
             report="report"
             allVersions={[]}
             onChangeVersion={null}
