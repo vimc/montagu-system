@@ -35,14 +35,12 @@ export interface InputOptions {
 
 export abstract class LocalService {
     protected dispatch: Dispatch<Action>;
-    protected getGlobalState: Function;
 
     protected bearerToken: string;
     protected options: InputOptions = {};
 
     public constructor(dispatch: Dispatch<Action>, getState: () => GlobalState) {
         this.dispatch = dispatch;
-        this.getGlobalState = getState;
 
         this.bearerToken = this.getTokenFromState(getState());
         this.initOptions();
