@@ -134,7 +134,10 @@ export abstract class LocalService {
 
     public postNoProcess(url: string, params?:any){
         return this.doFetch(this.makeUrl(url), this.makeRequestOptions('POST', params))
-            .then((response:any) => response.json());
+            .then((response:any) => {
+                this.initOptions();
+                return response.json()
+            });
     }
 
     processResponse<TModel>(httpResponse: Response): Promise<any> {
