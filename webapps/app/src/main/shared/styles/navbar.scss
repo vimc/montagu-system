@@ -1,7 +1,7 @@
 .montagu-navbar {
-    background-color: $montagu-nav-bg-color;
+    background-color: $montagu-breadrumb-bg-color;
     padding: 2px 5px 5px 16px;
-    color: $success;
+    color: $montagu-breadcrumb-color;
 
     .montagu-navbar__chunk {
         font-weight: bold;
