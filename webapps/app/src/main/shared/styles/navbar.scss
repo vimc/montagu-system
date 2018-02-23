@@ -1,13 +1,17 @@
 .montagu-navbar {
     background-color: $montagu-nav-bg-color;
-    padding: 2px 5px 5px 7px;
-    color: black;
+    padding: 2px 5px 5px 16px;
+    color: $success;
 
     .montagu-navbar__chunk {
         font-weight: bold;
         font-size: 13px;
         display: inline-block;
         margin: 0 5px 0 0;
+
+        a {
+            color: $success !important;
+        }
     }
 
     .montagu-navbar__chunk:before {

@@ -11,26 +11,40 @@ export class SidebarProps {
     ready: boolean;
     isReviewer: boolean;
     published: boolean;
+    active: ReportTabEnum;
+}
+
+export class TabProps {
+    active: ReportTabEnum;
 }
 
 
+export enum ReportTabEnum {
+    DOWNLOAD,
+    REPORT,
+    CHANGELOG
+}
+
 export class SidebarComponent extends React.Component<SidebarProps, undefined> {
 
+
     render() {
+
         return <div className={"sidebar pb-4 pb-md-0"}>
             <NavbarCollapsedOnMobile light className={"pl-0 pr-0 pr-md-4"}>
                 <ul className={"list-unstyled mb-0"}>
                     <NavItem>
-                        <NavLink href="#" disabled>Report</NavLink>
-                        <UncontrolledTooltip placement="top" target="download">
-                            Coming soon
-                        </UncontrolledTooltip>
+                        <NavLink href="#report"
+                                 active={this.props.active == ReportTabEnum.REPORT}
+                                 id="report">Report</NavLink>
                     </NavItem>
                     <NavItem>
-                        <NavLink href="#" active id="download">Downloads</NavLink>
+                        <NavLink href="#downloads"
+                                 active={this.props.active == ReportTabEnum.DOWNLOAD}
+                                 id="downloads">Downloads</NavLink>
                     </NavItem>
                     <NavItem>
-                        <NavLink href="#" disabled id={"changelog"}>Changelog</NavLink>
+                        <NavLink href="#changelog" disabled id={"changelog"}>Changelog</NavLink>
                         <UncontrolledTooltip placement="bottom" target="changelog">
                             Coming soon
                         </UncontrolledTooltip>
@@ -48,7 +62,7 @@ export class SidebarComponent extends React.Component<SidebarProps, undefined> {
     }
 }
 
-export const mapStateToProps = (state: ReportAppState, props: {}): SidebarProps => {
+export const mapStateToProps = (state: ReportAppState, props: TabProps): SidebarProps => {
     const ready = !!state.reports.versionDetails;
 
     if (!ready) {
@@ -57,7 +71,8 @@ export const mapStateToProps = (state: ReportAppState, props: {}): SidebarProps 
             isReviewer: false,
             published: false,
             name: "",
-            version: ""
+            version: "",
+            active: props.active
         }
     }
     else {
@@ -67,7 +82,8 @@ export const mapStateToProps = (state: ReportAppState, props: {}): SidebarProps 
             isReviewer: state.auth.permissions.indexOf("*/reports.review") > -1,
             published: versionDetails.published,
             name: versionDetails.name,
-            version: versionDetails.id
+            version: versionDetails.id,
+            active: props.active
         }
     }
 };

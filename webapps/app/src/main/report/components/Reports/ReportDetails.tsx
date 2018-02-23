@@ -40,10 +40,6 @@ export const ReportDetailsComponent = (props: ReportDetailsProps) => {
                 versions={props.allVersions}
                 onChangeVersion={props.onChangeVersion}
             />
-            <ArtefactsSection report={props.report} versionDetails={props.versionDetails}/>
-            <DataLinks {...props.versionDetails.hash_data} />
-            <ResourceLinks resources={props.versionDetails.resources} report={props.report} version={props.versionDetails.id}/>
-            <ParameterList {...props.versionDetails.parameters} />
         </div>;
     } else {
         return <LoadingElement/>;
