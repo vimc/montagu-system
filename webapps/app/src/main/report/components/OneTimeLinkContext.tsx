@@ -74,9 +74,9 @@ export class OneTimeLinkContextComponent extends React.Component<Props, undefine
             return React.cloneElement(c, Object.assign({}, c.props, childProps))
         });
 
-        return <span>
+        return <div>
             {childrenWithProps}
-        </span>;
+        </div>;
     }
 }
 

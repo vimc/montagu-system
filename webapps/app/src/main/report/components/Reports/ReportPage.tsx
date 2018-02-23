@@ -1,19 +1,33 @@
 import * as React from "react";
-import { Dispatch, Action } from "redux";
-import { connect } from 'react-redux';
+import {Action, Dispatch} from "redux";
+import {connect} from 'react-redux';
 import {ReportingPageWithHeader} from "../ReportingPageWithHeader";
 import {ReportDetails} from "./ReportDetails";
 import {PageProperties} from "../../../shared/components/PageWithHeader/PageWithHeader";
 import {appSettings} from "../../../shared/Settings";
 import {MainMenu} from "../MainMenu/MainMenu";
 import {reportPageActions} from "../../actions/reportPageActions";
-import {Sidebar} from "./Sidebar";
+import {ReportTabEnum, Sidebar} from "./Sidebar";
 import {PageHeader} from "../../../shared/components/PageWithHeader/PageHeader";
+import {ReportingPageHeader} from "../ReportingPageHeader";
+import {ReportDownloads, ReportDownloadsComponent} from "./ReportDownloads";
 
 export interface ReportPageProps {
     report: string;
     version: string;
 }
+
+const hashToTab = (hash: string): ReportTabEnum => {
+    switch (hash) {
+        case "#downloads":
+            return ReportTabEnum.DOWNLOAD;
+        case "#changelog":
+            return ReportTabEnum.CHANGELOG;
+        case "#report":
+        default:
+            return ReportTabEnum.REPORT;
+    }
+};
 
 export class ReportPageComponent extends ReportingPageWithHeader<ReportPageProps> {
     constructor(props: PageProperties<ReportPageProps>) {
@@ -27,7 +41,7 @@ export class ReportPageComponent extends ReportingPageWithHeader<ReportPageProps
 
     changeVersion(version: string): any {
         this.redirectToVersion(version);
-        setTimeout(()=> {
+        setTimeout(() => {
             this.loadVersion();
         });
     }
@@ -40,12 +54,14 @@ export class ReportPageComponent extends ReportingPageWithHeader<ReportPageProps
         this.createBreadcrumb();
     }
 
-    getLocationParams(){
+    getLocationParams() {
         return this.props.location.params;
     }
 
     redirectToVersion(version: string) {
-        this.props.router.redirectTo(`${appSettings.publicPath}/${this.getLocationParams().report}/${version}/`, false);
+        const hash = this.props.location.hash;
+        this.props.router
+            .redirectTo(`${appSettings.publicPath}/${this.getLocationParams().report}/${version}/${hash}`, false);
     }
 
     parent() {
@@ -63,15 +79,19 @@ export class ReportPageComponent extends ReportingPageWithHeader<ReportPageProps
     }
 
     render(): JSX.Element {
+
+        const activeTab = hashToTab(this.props.location.hash);
+
         return <div>
-            <PageHeader siteTitle={this.siteTitle()}/>
+            <ReportingPageHeader siteTitle={this.siteTitle()}/>
             <div className={"container-fluid pt-4 sm-pt-5"}>
                 <div className="row flex-xl-nowrap">
                     <div className="col-12 col-md-4 col-xl-2">
-                        <Sidebar/>
+                        <Sidebar active={activeTab} onChangeVersion={this.changeVersion}/>
                     </div>
                     <div className={"col-12 col-sm-10 col-md-8 pt-4 pt-md-1"}>
-                        <ReportDetails onChangeVersion={this.changeVersion}/>
+                        {activeTab == ReportTabEnum.REPORT && <ReportDetails />}
+                        {activeTab == ReportTabEnum.DOWNLOAD && <ReportDownloads/>}
                     </div>
                 </div>
             </div>
@@ -85,4 +105,4 @@ export const mapDispatchToProps = (dispatch: Dispatch<Action>): Partial<PageProp
     }
 };
 
-export const ReportPage = connect((props: PageProperties<ReportPageProps>) => props, mapDispatchToProps)(ReportPageComponent);
+export const ReportPage = connect((props) => props, mapDispatchToProps)(ReportPageComponent);

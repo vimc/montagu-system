@@ -40,8 +40,9 @@ export class ArtefactIFrame extends React.Component<OneTimeLinkProps, undefined>
         if (href != null) {
             return <iframe
                 src={this.props.href + "&inline=true"}
-                className="float-right"
-                width="50%" height="600px"
+                width="100%"
+                height="600px"
+                className="border border-dark p-3"
                 frameBorder={0}
             />;
         } else {

@@ -16,6 +16,14 @@ export class ReportsService extends AbstractReportLocalService {
         return this.setOptions({cache: ReportsCacheKeysEnum.versionDetails})
             .get(`/reports/${reportId}/versions/${versionId}/`);
     }
+
+    publishReport(name: string, version: string) {
+        return this.post(`/reports/${name}/versions/${version}/publish/`);
+    }
+
+    unPublishReport(name: string, version: string) {
+        return this.post(`/reports/${name}/versions/${version}/publish/?value=false`);
+    }
 }
 
 export enum ReportsCacheKeysEnum {
