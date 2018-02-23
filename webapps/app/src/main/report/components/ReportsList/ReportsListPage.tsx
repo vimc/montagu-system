@@ -3,7 +3,7 @@ import { ReportingPageWithHeader } from "../ReportingPageWithHeader";
 import {ReportsList} from "./ReportsList";
 import {ReportsListSorting} from "./ReportsListSorting";
 import {IPageWithParent} from "../../../shared/models/Breadcrumb";
-import {Page} from "../../../shared/components/PageWithHeader/Page";
+import {ReportingPage} from "../ReportingPage";
 
 export class ReportsListPage extends ReportingPageWithHeader<undefined> {
 
@@ -24,9 +24,9 @@ export class ReportsListPage extends ReportingPageWithHeader<undefined> {
     }
 
     render() :JSX.Element {
-        return <Page page={this}>
+        return <ReportingPage page={this}>
             <ReportsListSorting />
             <ReportsList />
-        </Page>;
+        </ReportingPage>;
     }
 }

@@ -1,4 +1,4 @@
-import { expect } from "chai";
+import {expect} from "chai";
 import * as React from "react";
 import { shallow, ShallowWrapper } from "enzyme";
 import { expectIsEqual, expectSameElements, IntegrationTestSuite } from "./IntegrationTest";
@@ -13,9 +13,10 @@ import { ResourceLinks } from "../main/report/components/Resources/ResourceLinks
 import { DataLinks } from "../main/report/components/Data/DataLinks";
 import {ArtefactsSection} from "../main/report/components/Artefacts/ArtefactsSection";
 
-import { createReportStore } from "../main/report/stores/createReportStore";
+import {createReportStore} from "../main/report/stores/createReportStore";
 import {ReportsService} from "../main/report/services/ReportsService";
 import {Report} from "../main/shared/models/Generated";
+import {authActions} from "../main/shared/actions/authActions";
 
 const jwt_decode = require('jwt-decode');
 
@@ -41,7 +42,8 @@ class ReportIntegrationTests extends IntegrationTestSuite {
         afterEach(() => sandbox.restore());
 
         it("fetches reports", async () => {
-            const expectedNames: string[] = ["minimal", "multi-artefact", "multifile-artefact", "other", "use_resource", "html"];
+            const expectedNames: string[] = ["minimal", "multi-artefact", "multifile-artefact", "other",
+                "use_resource", "html"];
             const reports = await (new ReportsService(this.store.dispatch, this.store.getState)).getAllReports();
             const names = reports.map((item: Report) => item.name);
             const versions = reports.filter((item: Report) => item.latest_version.length > 0);

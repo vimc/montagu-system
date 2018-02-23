@@ -13,4 +13,12 @@ export class ReportsService extends ReportLocalService {
     getVersionDetails(reportId: string, versionId: string) {
         return this.get(`/reports/${reportId}/versions/${versionId}/`);
     }
+
+    publishReport(name: string, version: string) {
+        return this.post(`/reports/${name}/versions/${version}/publish/`);
+    }
+
+    unPublishReport(name: string, version: string) {
+        return this.post(`/reports/${name}/versions/${version}/publish/?value=false`);
+    }
 }

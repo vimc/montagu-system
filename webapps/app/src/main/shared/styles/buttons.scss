@@ -9,7 +9,7 @@ button, .button {
 }
 
 button[type=submit], button.submit, .button.submit {
-    @include button-variant(#5cb85c, #4cae4c);
+    @include button-variant($success, $success);
 }
 
 button:disabled, .button.disabled {
