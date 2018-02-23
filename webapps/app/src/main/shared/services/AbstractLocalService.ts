@@ -11,8 +11,8 @@ import {
 
 import { AuthTypeKeys } from "../actionTypes/AuthTypes";
 import {GlobalState} from "../reducers/GlobalState";
-import {CacheInterface} from "./cache/CacheInterface";
-import {singletonVariableCache} from "./cache/singletonVariableCache";
+import {CacheInterface} from "../modules/cache/CacheInterface";
+import {singletonVariableCache} from "../modules/cache/singletonVariableCache";
 
 export interface OptionsHeaders {
    Authorization?: string;
@@ -97,20 +97,17 @@ export abstract class AbstractLocalService {
 
     public get(url: string){
         console.log('get', url);
-        return this.getData(url, "GET");
+        return this.getData(this.makeUrl(url), "GET");
     }
 
     public post(url: string, params?:any){
         console.log('post', url, params);
-        return this.getData(url, "POST", params);
+        return this.getData(this.makeUrl(url), "POST", params);
     }
 
-    protected getCache(url: string) {
-        return this.cacheEngine.get(["localService", this.constructor.name, this.options.cache, encodeURIComponent(url)].join('.'));
-    }
-
-    protected setCache(url: string, data: any) {
-        this.cacheEngine.set(["localService", this.constructor.name, this.options.cache, encodeURIComponent(url)].join('.'), data);
+    protected makeCacheKey(url: string) : string {
+        if (!url || !this.options.cache) return null;
+        return ["localService", this.constructor.name, this.options.cache, encodeURIComponent(url)].join('.');
     }
 
     public clearAllCache() {
@@ -120,14 +117,14 @@ export abstract class AbstractLocalService {
 
     protected getData(url: string, method: string, params?: any) {
         if (this.options.cache) {
-            const cacheValue = this.getCache(this.makeUrl(url));
+            const cacheValue = this.cacheEngine.get(this.makeCacheKey(url));
             if (cacheValue) {
                 // reset options on returning cached data from endpoint
                 this.initOptions();
                 return Promise.resolve(cacheValue);
             }
         }
-        return this.doFetch(this.makeUrl(url), this.makeRequestOptions(method, params))
+        return this.doFetch(url, this.makeRequestOptions(method, params))
             .then(this.processResponse)
             .catch(this.notifyOnErrors);
     }
@@ -167,7 +164,7 @@ export abstract class AbstractLocalService {
         switch (result.status) {
             case "success":
                 if (this.options.cache) {
-                    this.setCache(response.url, result.data);
+                    this.cacheEngine.set(this.makeCacheKey(response.url), result.data)
                 }
                 // reset options on successful request
                 this.initOptions();
