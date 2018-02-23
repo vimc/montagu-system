@@ -59,7 +59,9 @@ export class ReportPageComponent extends ReportingPageWithHeader<ReportPageProps
     }
 
     redirectToVersion(version: string) {
-        this.props.router.redirectTo(`${appSettings.publicPath}/${this.getLocationParams().report}/${version}/`, false);
+        const hash = this.props.location.hash;
+        this.props.router
+            .redirectTo(`${appSettings.publicPath}/${this.getLocationParams().report}/${version}/${hash}`, false);
     }
 
     parent() {
