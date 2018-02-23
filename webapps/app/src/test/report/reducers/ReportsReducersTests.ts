@@ -28,7 +28,7 @@ describe('Reports reducer tests', () => {
         expect(newState.versionDetails).to.eql(versionMock);
     });
 
-    it('sorts reports list', () => {
+    it('sorts reports list by name', () => {
         const reportsMock = [mockReport({name: "b"}), mockReport({name: "c"}), mockReport({name: "a"})];
         const newState = reportsReducer(
             {reports: reportsMock, versions: ["test1"], currentReport: "test1", versionDetails: mockVersion()},

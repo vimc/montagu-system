@@ -16,7 +16,10 @@ export interface ReportsFetched {
     data: Report[];
 }
 
-export type ReportsSortingFields = "name" | "latest_version";
+export enum ReportsSortingFields {
+    "name" = "name",
+    "latest_version" = "latest_version"
+}
 
 export interface ReportsSorted {
     type: ReportTypeKeys.REPORTS_SORTED;

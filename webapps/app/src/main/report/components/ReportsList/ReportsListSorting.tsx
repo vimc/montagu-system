@@ -10,13 +10,14 @@ interface ReportsListSortingProps {
 }
 
 export const ReportsListSortingComponent: React.StatelessComponent<ReportsListSortingProps> = (props: ReportsListSortingProps) => (
-    <div>
-        <label>Sorting</label>
-        <select onChange={(e : React.ChangeEvent<HTMLSelectElement>) => props.sort(e.target.value as ReportsSortingFields)} >
-            <option value=""></option>
-            <option value="latest_version">Creation Date</option>
-            <option value="name">Name</option>
-        </select>
+    <div className="form-inline">
+        <div className="form-group">
+            <label>Sort by</label>
+            <select className="form-control" onChange={(e : React.ChangeEvent<HTMLSelectElement>) => props.sort(e.target.value as ReportsSortingFields)} >
+                <option value="name">Name</option>
+                <option value="latest_version">Creation Date</option>
+            </select>
+        </div>
     </div>
 )
 

@@ -1,6 +1,6 @@
 import {
     ReportPublished,
-    ReportsActionsTypes,
+    ReportsActionsTypes, ReportsSortingFields,
     ReportTypeKeys,
     ReportUnpublished
 } from "../actionTypes/ReportsActionsTypes";
@@ -25,9 +25,17 @@ export const reportsInitialState: ReportsState = {
 export const reportsReducer = (state = reportsInitialState, action: ReportsActionsTypes) => {
     switch (action.type) {
         case ReportTypeKeys.REPORTS_FETCHED:
-            return { ...state, reports: action.data };
+            return {
+                ...state,
+                reports: action.data
+                    .sort(sortReports(ReportsSortingFields.name))
+            };
         case ReportTypeKeys.REPORTS_SORTED:
-            return { ...state, reports: clone(state.reports).sort((a: Report, b: Report)=> a[action.data] < b[action.data] ? -1 : 1) };
+            return {
+                ...state,
+                reports: clone(state.reports)
+                    .sort(sortReports(action.data))
+            };
         case ReportTypeKeys.REPORT_VERSIONS_FETCHED:
             return {...state, versions: action.data};
         case ReportTypeKeys.SET_CURRENT_REPORT:
@@ -46,4 +54,6 @@ export const reportsReducer = (state = reportsInitialState, action: ReportsActio
             return state;
     }
 };
+
+export const sortReports = (sortBy: ReportsSortingFields) => (a: Report, b: Report)=> (a[sortBy] < b[sortBy] ? -1 : 1);
 
