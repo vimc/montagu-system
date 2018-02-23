@@ -33,13 +33,11 @@ export const SidebarComponent = (props: SidebarProps) => {
             <ul className={"list-unstyled mb-0"}>
                 <NavItem>
                     <NavLink href="#report"
-                             active={props.active == ReportTabEnum.REPORT}
-                             id="report">Report</NavLink>
+                             active={props.active == ReportTabEnum.REPORT}>Report</NavLink>
                 </NavItem>
                 <NavItem>
                     <NavLink href="#downloads"
-                             active={props.active == ReportTabEnum.DOWNLOAD}
-                             id="downloads">Downloads</NavLink>
+                             active={props.active == ReportTabEnum.DOWNLOAD}>Downloads</NavLink>
                 </NavItem>
                 <NavItem>
                     <NavLink href="#changelog" disabled id={"changelog"}>Changelog</NavLink>
