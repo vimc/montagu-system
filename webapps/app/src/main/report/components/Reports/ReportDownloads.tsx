@@ -18,7 +18,7 @@ export interface ReportDownloadsProps {
 
 export const ReportDownloadsComponent = (props: ReportDownloadsProps) => {
     if (props.ready) {
-        return <div>
+        return <div className={"pl-3 pl-md-0"}>
             <ReportTitle versionDetails={props.versionDetails}/>
             <ArtefactsSection report={props.report} versionDetails={props.versionDetails}/>
             <DataLinks {...props.versionDetails.hash_data} />
@@ -30,7 +30,7 @@ export const ReportDownloadsComponent = (props: ReportDownloadsProps) => {
     }
 };
 
-export const mapStateToProps = (state: ReportAppState, props: {}): ReportDownloadsProps => {
+export const mapStateToProps = (state: ReportAppState): ReportDownloadsProps => {
     return {
         versionDetails: state.reports.versionDetails,
         ready: !!state.reports.versionDetails,
