@@ -6,10 +6,10 @@ import {ReportDetails} from "./ReportDetails";
 import {PageProperties} from "../../../shared/components/PageWithHeader/PageWithHeader";
 import {appSettings} from "../../../shared/Settings";
 import {MainMenu} from "../MainMenu/MainMenu";
-import {ReportPageTitle} from "./ReportPageTitle";
+import {reportPageActions} from "../../actions/reportPageActions";
 import {Sidebar} from "./Sidebar";
 import {PageHeader} from "../../../shared/components/PageWithHeader/PageHeader";
-import {reportPageActions} from "../../actions/reportPageActions";
+import {ReportingPageHeader} from "../ReportingPageHeader";
 
 export interface ReportPageProps {
     report: string;
@@ -53,10 +53,6 @@ export class ReportPageComponent extends ReportingPageWithHeader<ReportPageProps
         return new MainMenu();
     }
 
-    title() {
-        return <ReportPageTitle/>;
-    }
-
     name() {
         const params = this.getLocationParams();
         return `${params.report} (${params.version})`;
@@ -68,10 +64,8 @@ export class ReportPageComponent extends ReportingPageWithHeader<ReportPageProps
     }
 
     render(): JSX.Element {
-        const reportProps = this.props.location.params;
-
         return <div>
-            <PageHeader siteTitle={this.siteTitle()}/>
+            <ReportingPageHeader     siteTitle={this.siteTitle()}/>
             <div className={"container-fluid pt-4 sm-pt-5"}>
                 <div className="row flex-xl-nowrap">
                     <div className="col-12 col-md-4 col-xl-2">

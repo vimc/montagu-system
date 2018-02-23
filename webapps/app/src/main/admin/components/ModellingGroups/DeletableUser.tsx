@@ -47,7 +47,7 @@ export class DeletableUser extends React.Component<UserProps, undefined> {
                 </InternalLink>
                 {deleteLink}
             </div>
-            <hr className="dashed"/>
+            <hr className={"dashed"}/>
         </div>;
     }
 }

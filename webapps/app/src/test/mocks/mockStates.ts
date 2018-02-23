@@ -6,7 +6,6 @@ import {
 } from "../../main/contrib/reducers/modellingGroupsReducer";
 import {reportsInitialState, ReportsState} from "../../main/report/reducers/reportsReducer";
 import {ReportAppState} from "../../main/report/reducers/reportAppReducers";
-import {mockReport, mockVersion} from "./mockModels";
 
 export type RecursivePartial<T> = {
     [P in keyof T]?: RecursivePartial<T[P]>

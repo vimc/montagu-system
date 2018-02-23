@@ -1,5 +1,5 @@
 import * as React from "react";
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 
 import {Version} from "../../../shared/models/reports/Report";
 import {ParameterList} from "../Parameters/ParameterList";
@@ -32,7 +32,7 @@ export const ReportDetailsComponent = (props: ReportDetailsProps) => {
             <InlineArtefact report={report} version={version} artefact={artefact}/>
             <ArtefactsSection report={props.report} versionDetails={props.versionDetails}/>
             <DataLinks {...props.versionDetails.hash_data} />
-            <ResourceLinks resources={props.versionDetails.resources} report={report} version={version}/>
+            <ResourceLinks resources={props.versionDetails.resources} report={props.report} version={props.versionDetails.id}/>
             <ParameterList {...props.versionDetails.parameters} />
         </div>;
     } else {

@@ -27,11 +27,11 @@ export class ReportVersionSwitcher extends React.Component<Props, undefined> {
                 {longTimestamp(v.timestamp)}
             </option>
         });
-        return <div className="versionSwitcher">
+        return <div>
                 <label
                     htmlFor="report-version-switcher"
-                    className="mt-0 sectionTitle">
-                    Report version
+                    className="mt-0 font-weight-bold">
+                    Version
                 </label>
                 <select
                     onChange={this.onSelect}
