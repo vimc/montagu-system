@@ -79,5 +79,5 @@ export abstract class PageWithHeader<TLocationProps>
 export interface PageProperties<T> {
     location: Location<T>;
     router: IRouter;
-    onLoad?: (props:T) => void;
+    onLoad?: (props:Partial<T>) => void;
 }

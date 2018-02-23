@@ -1,18 +1,15 @@
 import * as React from "react";
-import {mount, shallow, ShallowRendererProps, ShallowWrapper} from "enzyme";
+import {mount, shallow, ShallowWrapper} from "enzyme";
 import {expect} from "chai";
 import {PublishSwitch} from "../../../../main/report/components/Reports/PublishSwitch";
 import {Sandbox} from "../../../Sandbox";
 import {
-    mapStateToProps, ReportTabEnum, SidebarComponent,
-    SidebarProps, TabProps
+    mapStateToProps, PublicProps, ReportTabEnum, SidebarComponent,
+    SidebarProps,
 } from "../../../../main/report/components/Reports/Sidebar";
 import {mockAuthState, mockReportAppState, mockReportsState} from "../../../mocks/mockStates";
 import {mockVersion} from "../../../mocks/mockModels";
-import NavLink from "reactstrap/lib/NavLink";
-import {NavBarComponent} from "../../../../main/shared/components/NavBar/NavBar";
-import {NavbarCollapsedOnMobile} from "../../../../main/shared/components/NavCollapsedOnMobile";
-import NavItem from "reactstrap/lib/NavItem";
+import {ReportVersionSwitcher} from "../../../../main/report/components/Reports/ReportVersionSwitcher";
 
 describe("Sidebar", () => {
 
@@ -22,18 +19,46 @@ describe("Sidebar", () => {
         sandbox.restore();
     });
 
-    const defaultTabProps: TabProps = {
-        active: ReportTabEnum.REPORT
+    const defaultTabProps: PublicProps = {
+        active: ReportTabEnum.REPORT,
+        onChangeVersion: () => {}
     };
 
     const defaultSidebarProps: SidebarProps = {
         published: true,
         isReviewer: true,
         ready: true,
-        name: "name",
+        report: "name",
         version: "v1",
-        active: ReportTabEnum.REPORT
+        active: ReportTabEnum.REPORT,
+        onChangeVersion: () => {},
+        allVersions: ["v1", "v2"]
     };
+
+    it("renders report version switcher", () => {
+
+        const handler = sandbox.sinon.stub();
+        const props = defaultSidebarProps;
+        props.onChangeVersion = handler;
+
+        const rendered = shallow(<SidebarComponent {...props} />);
+        expect(rendered.find(ReportVersionSwitcher).props()).to.eql({
+            currentVersion: "v1",
+            versions: ["v1", "v2"],
+            onChangeVersion: handler
+        });
+    });
+
+    it("emits onChangeVersion when switcher triggers it", () => {
+        const handler = sandbox.sinon.stub();
+        const props = defaultSidebarProps;
+        props.onChangeVersion = handler;
+
+        const rendered = shallow(<SidebarComponent {...props} />);
+        rendered.find(ReportVersionSwitcher).simulate("changeVersion", "v3");
+        expect(handler.calledWith("v3"));
+    });
+
 
     it("renders publish switch if user is reviewer", () => {
 
@@ -68,21 +93,21 @@ describe("Sidebar", () => {
         const navItems = rendered.find("ul")
             .children();
 
-        return navItems.find("#report");
+        return navItems.find({href: "#report"});
     };
 
     const downloadsLink = (rendered: ShallowWrapper<any, any>): ShallowWrapper<any, any> => {
         const navItems = rendered.find("ul")
             .children();
 
-        return navItems.find("#downloads");
+        return navItems.find({href: "#downloads"});
     };
 
     const changelogLink = (rendered: ShallowWrapper<any, any>): ShallowWrapper<any, any> => {
         const navItems = rendered.find("ul")
             .children();
 
-        return navItems.find("#changelog");
+        return navItems.find({href: "#changelog"});
     };
 
     it("report link is active if report tab is active", () => {

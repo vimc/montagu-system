@@ -13,6 +13,7 @@ import {
     mapStateToProps, ReportDownloadsComponent,
     ReportDownloadsProps
 } from "../../../../main/report/components/Reports/ReportDownloads";
+import {ReportTitle} from "../../../../main/report/components/Reports/ReportTitle";
 
 describe("ReportDetails", () => {
     const sandbox = new Sandbox();
@@ -32,7 +33,7 @@ describe("ReportDetails", () => {
             versionDetails: mockVersion(),
             ready: true
         };
-        expect(mapStateToProps(reportStateProps, {})).to.eql(expected);
+        expect(mapStateToProps(reportStateProps)).to.eql(expected);
     });
 
     it("is ready when version details is there", () => {
@@ -42,7 +43,7 @@ describe("ReportDetails", () => {
             }
         });
 
-        expect(mapStateToProps(reportStateProps, {}).ready).to.eql(true);
+        expect(mapStateToProps(reportStateProps).ready).to.eql(true);
     });
 
     it("is not ready when no version details", () => {
@@ -50,7 +51,7 @@ describe("ReportDetails", () => {
             reports: {}
         });
 
-        expect(mapStateToProps(reportStateProps, {}).ready).to.eql(false);
+        expect(mapStateToProps(reportStateProps).ready).to.eql(false);
     });
 
     it("renders sub-components", () => {
@@ -81,7 +82,20 @@ describe("ReportDetails", () => {
             a: "1",
             b: "2"
         });
+
     });
 
+    it("renders title", () => {
+        const version = mockVersion();
+
+        const rendered = shallow(<ReportDownloadsComponent
+            versionDetails={version}
+            report="reportname"
+            ready={true}/>);
+
+        expect(rendered.find(ReportTitle).props()).to.eql({
+            versionDetails: version
+        });
+    });
 
 });

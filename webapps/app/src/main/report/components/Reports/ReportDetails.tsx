@@ -5,21 +5,16 @@ import {Version} from "../../../shared/models/reports/Report";
 import {ParameterList} from "../Parameters/ParameterList";
 import {DataLinks} from "../Data/DataLinks";
 import {ResourceLinks} from "../Resources/ResourceLinks";
-import {ReportVersionSwitcher} from "./ReportVersionSwitcher";
 import {ArtefactsSection} from "../Artefacts/ArtefactsSection";
 import {LoadingElement} from "../../../shared/partials/LoadingElement/LoadingElement";
 import {ReportAppState} from "../../reducers/reportAppReducers";
 
 import {InlineArtefact} from "../Artefacts/InlineArtefact";
+import {ReportTitle} from "./ReportTitle";
 
-interface PublicProps {
-    onChangeVersion: (version: string) => void;
-}
-
-export interface ReportDetailsProps extends PublicProps {
+export interface ReportDetailsProps {
     versionDetails: Version;
     report: string;
-    allVersions: string[];
     ready: boolean;
 }
 
@@ -31,28 +26,20 @@ export const ReportDetailsComponent = (props: ReportDetailsProps) => {
         const artefact = artefactGroup[type];
         const report = props.report;
 
-        return <div>
-            <h1 className={"h2"}>{props.versionDetails.displayname || props.versionDetails.name}</h1>
-            <p className={"small text-muted"}>{props.versionDetails.id}</p>
+        return <div className={"pl-3 pl-md-0"}>
+            <ReportTitle versionDetails={props.versionDetails}/>
             <InlineArtefact report={report} version={version} artefact={artefact}/>
-            <ReportVersionSwitcher
-                currentVersion={props.versionDetails.id}
-                versions={props.allVersions}
-                onChangeVersion={props.onChangeVersion}
-            />
         </div>;
     } else {
         return <LoadingElement/>;
     }
 };
 
-export const mapStateToProps = (state: ReportAppState, props: PublicProps): Partial<ReportDetailsProps> => {
+export const mapStateToProps = (state: ReportAppState): Partial<ReportDetailsProps> => {
     return {
         versionDetails: state.reports.versionDetails,
         ready: !!state.reports.versionDetails,
-        report: state.reports.currentReport,
-        allVersions: state.reports.versions,
-        onChangeVersion: props.onChangeVersion
+        report: state.reports.currentReport
     }
 };
 

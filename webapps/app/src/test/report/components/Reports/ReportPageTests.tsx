@@ -51,12 +51,12 @@ describe("ReportPage", () => {
         const redirectTo = sandbox.sinon.stub();
         const router: IRouter = {redirectTo};
         sandbox.setStub(ReportPageComponent.prototype, "loadVersion");
-        const location = mockLocation<ReportPageProps>({report: "reportname", version: "oldVersion"});
+        const location = mockLocation<ReportPageProps>({report: "reportname", version: "oldVersion"}, "hash");
         const page = new ReportPageComponent({location: location, router: router});
         page.changeVersion("versionname");
         setTimeout(() => {
             expect(redirectTo.called).to.equal(true, "Expected redirectTo to be called");
-            expect(redirectTo.calledWith("/reportname/versionname/"));
+            expect(redirectTo.calledWith("/reportname/versionname/#hash"));
             done();
         });
     });

@@ -7,7 +7,7 @@ import {
 import {reportsInitialState, ReportsState} from "../../main/report/reducers/reportsReducer";
 import {ReportAppState} from "../../main/report/reducers/reportAppReducers";
 
-type RecursivePartial<T> = {
+export type RecursivePartial<T> = {
     [P in keyof T]?: RecursivePartial<T[P]>
     };
 
