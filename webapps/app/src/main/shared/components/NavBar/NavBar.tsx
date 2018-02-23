@@ -31,7 +31,7 @@ export class NavBarComponent extends React.Component<Props, undefined> {
 
     render(): JSX.Element {
         return(
-            <div className="montagu-navbar ml-md-1">
+            <div className="montagu-navbar pl-md-1">
             { this.props.crumbs.map(c =>
                 <div className="montagu-navbar__chunk" key={c.url}>
                     {this.makeLink(c)}
