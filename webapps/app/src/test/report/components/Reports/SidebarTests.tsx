@@ -93,21 +93,21 @@ describe("Sidebar", () => {
         const navItems = rendered.find("ul")
             .children();
 
-        return navItems.find("#report");
+        return navItems.find({href: "#report"});
     };
 
     const downloadsLink = (rendered: ShallowWrapper<any, any>): ShallowWrapper<any, any> => {
         const navItems = rendered.find("ul")
             .children();
 
-        return navItems.find("#downloads");
+        return navItems.find({href: "#downloads"});
     };
 
     const changelogLink = (rendered: ShallowWrapper<any, any>): ShallowWrapper<any, any> => {
         const navItems = rendered.find("ul")
             .children();
 
-        return navItems.find("#changelog");
+        return navItems.find({href: "#changelog"});
     };
 
     it("report link is active if report tab is active", () => {
