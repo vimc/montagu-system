@@ -6,8 +6,15 @@ import {ReportVersionSwitcher} from "./ReportVersionSwitcher";
 import {ReportAppState} from "../../reducers/reportAppReducers";
 import {connect} from "react-redux";
 
+export enum ReportTabEnum {
+    DOWNLOAD,
+    REPORT,
+    CHANGELOG
+}
+
 export interface PublicProps {
     onChangeVersion: (version: string) => any;
+    active: ReportTabEnum;
 }
 
 export interface SidebarProps extends PublicProps {
@@ -16,7 +23,7 @@ export interface SidebarProps extends PublicProps {
     ready: boolean;
     isReviewer: boolean;
     published: boolean;
-    allVersions: string[]
+    allVersions: string[];
 }
 
 export const SidebarComponent = (props: SidebarProps) => {
@@ -25,16 +32,17 @@ export const SidebarComponent = (props: SidebarProps) => {
         <NavbarCollapsedOnMobile light className={"pl-0 pr-0 pr-md-4"}>
             <ul className={"list-unstyled mb-0"}>
                 <NavItem>
-                    <NavLink href="#" disabled>Report</NavLink>
-                    <UncontrolledTooltip placement="top" target="download">
-                        Coming soon
-                    </UncontrolledTooltip>
+                    <NavLink href="#report"
+                             active={props.active == ReportTabEnum.REPORT}
+                             id="report">Report</NavLink>
                 </NavItem>
                 <NavItem>
-                    <NavLink href="#" active id="download">Downloads</NavLink>
+                    <NavLink href="#downloads"
+                             active={props.active == ReportTabEnum.DOWNLOAD}
+                             id="downloads">Downloads</NavLink>
                 </NavItem>
                 <NavItem>
-                    <NavLink href="#" disabled id={"changelog"}>Changelog</NavLink>
+                    <NavLink href="#changelog" disabled id={"changelog"}>Changelog</NavLink>
                     <UncontrolledTooltip placement="bottom" target="changelog">
                         Coming soon
                     </UncontrolledTooltip>
@@ -56,7 +64,6 @@ export const SidebarComponent = (props: SidebarProps) => {
             </div>
         </NavbarCollapsedOnMobile>
     </div>
-
 };
 
 export const mapStateToProps = (state: ReportAppState, props: PublicProps): SidebarProps => {
@@ -70,7 +77,8 @@ export const mapStateToProps = (state: ReportAppState, props: PublicProps): Side
             report: "",
             version: "",
             allVersions: [],
-            onChangeVersion: props.onChangeVersion
+            onChangeVersion: props.onChangeVersion,
+            active: props.active
         }
     }
     else {
@@ -82,7 +90,8 @@ export const mapStateToProps = (state: ReportAppState, props: PublicProps): Side
             allVersions: state.reports.versions,
             report: versionDetails.name,
             version: versionDetails.id,
-            onChangeVersion: props.onChangeVersion
+            onChangeVersion: props.onChangeVersion,
+            active: props.active
         }
     }
 };

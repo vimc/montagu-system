@@ -8,34 +8,29 @@ import {ResourceLinks} from "../Resources/ResourceLinks";
 import {ArtefactsSection} from "../Artefacts/ArtefactsSection";
 import {LoadingElement} from "../../../shared/partials/LoadingElement/LoadingElement";
 import {ReportAppState} from "../../reducers/reportAppReducers";
-
-import {InlineArtefact} from "../Artefacts/InlineArtefact";
 import {ReportTitle} from "./ReportTitle";
 
-export interface ReportDetailsProps {
+export interface ReportDownloadsProps {
     versionDetails: Version;
     report: string;
     ready: boolean;
 }
 
-export const ReportDetailsComponent = (props: ReportDetailsProps) => {
+export const ReportDownloadsComponent = (props: ReportDownloadsProps) => {
     if (props.ready) {
-        const version = props.versionDetails.id;
-        const artefactGroup = props.versionDetails.artefacts[0];
-        const type = Object.getOwnPropertyNames(artefactGroup)[0];
-        const artefact = artefactGroup[type];
-        const report = props.report;
-
         return <div>
             <ReportTitle versionDetails={props.versionDetails}/>
-            <InlineArtefact report={report} version={version} artefact={artefact}/>
+            <ArtefactsSection report={props.report} versionDetails={props.versionDetails}/>
+            <DataLinks {...props.versionDetails.hash_data} />
+            <ResourceLinks resources={props.versionDetails.resources} report={props.report} version={props.versionDetails.id}/>
+            <ParameterList {...props.versionDetails.parameters} />
         </div>;
     } else {
         return <LoadingElement/>;
     }
 };
 
-export const mapStateToProps = (state: ReportAppState): Partial<ReportDetailsProps> => {
+export const mapStateToProps = (state: ReportAppState, props: {}): ReportDownloadsProps => {
     return {
         versionDetails: state.reports.versionDetails,
         ready: !!state.reports.versionDetails,
@@ -43,4 +38,4 @@ export const mapStateToProps = (state: ReportAppState): Partial<ReportDetailsPro
     }
 };
 
-export const ReportDetails = connect(mapStateToProps)(ReportDetailsComponent);
+export const ReportDownloads = connect(mapStateToProps)(ReportDownloadsComponent);
