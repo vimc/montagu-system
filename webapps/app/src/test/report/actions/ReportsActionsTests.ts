@@ -4,7 +4,7 @@ import * as jwt from "jsonwebtoken";
 import { Sandbox } from "../../Sandbox";
 import { reportsActions } from "../../../main/report/actions/reportsActions";
 import { ReportsService } from "../../../main/report/services/ReportsService";
-import { ReportTypeKeys } from "../../../main/report/actionTypes/ReportsActionsTypes";
+import {ReportsSortingFields, ReportTypeKeys} from "../../../main/report/actionTypes/ReportsActionsTypes";
 import { createMockStore } from "../../mocks/mockStore";
 import { NotificationState, notificationStore } from "../../../main/shared/stores/NotificationStore";
 
@@ -72,10 +72,10 @@ describe("Modelling groups actions tests", () => {
     });
 
     it("dispatches reports sorted action if sort report is dispatched", (done) => {
-        store.dispatch(reportsActions.sortReports('name'))
+        store.dispatch(reportsActions.sortReports(ReportsSortingFields.name))
         setTimeout(() => {
             const actions = store.getActions();
-            expect(actions[0].type).to.eql(ReportTypeKeys.REPORTS_SORTED);
+            expect(actions[0].type).to.eql(ReportTypeKeys.SORT_REPORTS);
             expect(actions[0].data).to.eql("name");
             done();
         });

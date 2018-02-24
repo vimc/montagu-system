@@ -3,7 +3,7 @@ import {Version} from "../../shared/models/reports/Report";
 
 export enum ReportTypeKeys {
     REPORTS_FETCHED = "REPORTS_FETCHED",
-    REPORTS_SORTED = "REPORTS_SORTED",
+    SORT_REPORTS = "SORT_REPORTS",
     REPORT_VERSIONS_FETCHED = "REPORT_VERSIONS_FETCHED",
     SET_CURRENT_REPORT = "SET_CURRENT_REPORT",
     REPORT_VERSION_DETAILS_FETCHED = "REPORT_VERSION_DETAILS_FETCHED",
@@ -21,8 +21,8 @@ export enum ReportsSortingFields {
     "latest_version" = "latest_version"
 }
 
-export interface ReportsSorted {
-    type: ReportTypeKeys.REPORTS_SORTED;
+export interface SortReports {
+    type: ReportTypeKeys.SORT_REPORTS;
     data: ReportsSortingFields;
 }
 
@@ -58,7 +58,7 @@ export interface BasicReport{
 
 export type ReportsActionsTypes =
     | ReportsFetched
-    | ReportsSorted
+    | SortReports
     | SetCurrentReport
     | ReportVersionsFetched
     | ReportVersionDetailssFetched

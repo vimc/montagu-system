@@ -22,7 +22,7 @@ export const reportsActions = {
 
     sortReports(value: ReportsSortingFields) {
         return {
-            type: ReportTypeKeys.REPORTS_SORTED,
+            type: ReportTypeKeys.SORT_REPORTS,
             data: value
         }
     },

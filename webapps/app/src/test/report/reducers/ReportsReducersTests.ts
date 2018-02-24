@@ -32,11 +32,28 @@ describe('Reports reducer tests', () => {
         const reportsMock = [mockReport({name: "b"}), mockReport({name: "c"}), mockReport({name: "a"})];
         const newState = reportsReducer(
             {reports: reportsMock, versions: ["test1"], currentReport: "test1", versionDetails: mockVersion()},
-            { type: ReportTypeKeys.REPORTS_SORTED, data: "name" as ReportsSortingFields }
+            { type: ReportTypeKeys.SORT_REPORTS, data: ReportsSortingFields.name }
         );
         expect(newState.reports[0].name).to.eql("a");
         expect(newState.reports[1].name).to.eql("b");
         expect(newState.reports[2].name).to.eql("c");
     });
+
+    it('sorts reports list by latest version', () => {
+        const reportsMock = [
+            mockReport({name: "b", latest_version: "20170327-002851-dd944766"}),
+            mockReport({name: "c", latest_version: "20170326-002851-dd944766"}),
+            mockReport({name: "a", latest_version: "20170328-002851-dd944766"})
+        ];
+        const newState = reportsReducer(
+            {reports: reportsMock, versions: ["test1"], currentReport: "test1", versionDetails: mockVersion()},
+            { type: ReportTypeKeys.SORT_REPORTS, data: ReportsSortingFields.latest_version }
+        );
+        expect(newState.reports[0].name).to.eql("c");
+        expect(newState.reports[1].name).to.eql("b");
+        expect(newState.reports[2].name).to.eql("a");
+    });
+
+
 
 })

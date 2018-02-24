@@ -30,7 +30,7 @@ export const reportsReducer = (state = reportsInitialState, action: ReportsActio
                 reports: action.data
                     .sort(sortReports(ReportsSortingFields.name))
             };
-        case ReportTypeKeys.REPORTS_SORTED:
+        case ReportTypeKeys.SORT_REPORTS:
             return {
                 ...state,
                 reports: clone(state.reports)
