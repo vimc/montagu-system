@@ -25,7 +25,9 @@ export class ReportsListPage extends ReportingPageWithHeader<undefined> {
 
     render() :JSX.Element {
         return <ReportingPage page={this}>
-            <ReportsListSorting />
+            <div className="mb-2">
+                <ReportsListSorting />
+            </div>    
             <ReportsList />
         </ReportingPage>;
     }

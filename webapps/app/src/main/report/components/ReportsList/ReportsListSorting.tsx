@@ -14,7 +14,7 @@ interface ReportsListSortingProps {
 export const ReportsListSortingComponent: React.StatelessComponent<ReportsListSortingProps> = (props: ReportsListSortingProps) => (
     <div className="form-inline">
         <div className="form-group">
-            <label>Sort by</label>
+            <label className="mr-2">Sort by</label>
             <select
                 className="form-control"
                 onChange={(e: React.ChangeEvent<HTMLSelectElement>) => props.sort(e.target.value as ReportsSortingFields)}
