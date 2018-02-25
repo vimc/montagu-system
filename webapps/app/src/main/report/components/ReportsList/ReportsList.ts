@@ -7,7 +7,10 @@ import {ReportAppState} from "../../reducers/reportAppReducers";
 import { reportsActions } from "../../actions/reportsActions";
 import {ReportsListComponent, ReportsListComponentProps} from "./ReportsListComponent";
 import {Report} from "../../../shared/models/Generated";
-import {ReportsSortingFields} from "../../actionTypes/ReportsActionsTypes";
+import {
+    ReportsFilterFields, ReportsFilterPublishTypes,
+    ReportsSortingFields
+} from "../../actionTypes/ReportsActionsTypes";
 import { LoadingElement } from "../../../shared/partials/LoadingElement/LoadingElement";
 
 export interface ReportsListContainerProps extends ReportsListComponentProps {
@@ -15,10 +18,17 @@ export interface ReportsListContainerProps extends ReportsListComponentProps {
     ready: boolean;
 }
 
-export const getDisplayedReportsList = (items: Report[], sortBy: ReportsSortingFields) => {
+export const getDisplayedReportsList = (items: Report[], sortBy: ReportsSortingFields, filter: ReportsFilterFields) => {
     if (!items || !items.length) return [];
-    let displayItemsSorted = clone(items).sort(sortReports(sortBy));
-    return displayItemsSorted;
+    let displayItems = clone(items);
+    if (filter.published !== ReportsFilterPublishTypes.all) {
+        displayItems = displayItems.filter((item: any) => filter.published === ReportsFilterPublishTypes.published
+            ? item.published
+            : !item.published
+        );
+    }
+    displayItems = displayItems.sort(sortReports(sortBy));
+    return displayItems;
 }
 
 export const sortReports = (sortBy: ReportsSortingFields) => (a: Report, b: Report)=> (a[sortBy] < b[sortBy] ? -1 : 1);
@@ -31,7 +41,7 @@ const lifecyleProps = {
 
 export const mapStateToProps = (state: ReportAppState): Partial<ReportsListContainerProps> => {
     return {
-        reports: getDisplayedReportsList(state.reports.reports, state.reports.reportsSortBy),
+        reports: getDisplayedReportsList(state.reports.reports, state.reports.reportsSortBy, state.reports.reportsFilter),
         ready: Array.isArray(state.reports.reports)
     }
 };
