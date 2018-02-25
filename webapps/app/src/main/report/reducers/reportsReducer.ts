@@ -6,18 +6,19 @@ import {
 } from "../actionTypes/ReportsActionsTypes";
 import {Report} from "../../shared/models/Generated";
 import {Version} from "../../shared/models/reports/Report";
-import { clone } from "lodash";
 
 export interface ReportsState {
     reports: Report[];
+    reportsSortBy: ReportsSortingFields;
     versions: string[];
     currentReport: string;
     versionDetails: Version;
 }
 
 export const reportsInitialState: ReportsState = {
-    reports: [],
-    versions: [],
+    reports: null,
+    reportsSortBy: ReportsSortingFields.name,
+    versions: null,
     currentReport: null,
     versionDetails: null
 };
@@ -25,17 +26,9 @@ export const reportsInitialState: ReportsState = {
 export const reportsReducer = (state = reportsInitialState, action: ReportsActionsTypes) => {
     switch (action.type) {
         case ReportTypeKeys.REPORTS_FETCHED:
-            return {
-                ...state,
-                reports: action.data
-                    .sort(sortReports(ReportsSortingFields.name))
-            };
+            return { ...state, reports: action.data };
         case ReportTypeKeys.SORT_REPORTS:
-            return {
-                ...state,
-                reports: clone(state.reports)
-                    .sort(sortReports(action.data))
-            };
+            return { ...state, reportsSortBy: action.data};
         case ReportTypeKeys.REPORT_VERSIONS_FETCHED:
             return {...state, versions: action.data};
         case ReportTypeKeys.SET_CURRENT_REPORT:
@@ -54,6 +47,3 @@ export const reportsReducer = (state = reportsInitialState, action: ReportsActio
             return state;
     }
 };
-
-export const sortReports = (sortBy: ReportsSortingFields) => (a: Report, b: Report)=> (a[sortBy] < b[sortBy] ? -1 : 1);
-

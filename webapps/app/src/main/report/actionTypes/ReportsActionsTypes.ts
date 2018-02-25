@@ -33,7 +33,7 @@ export interface SetCurrentReport {
 
 export interface ReportVersionsFetched {
     type: ReportTypeKeys.REPORT_VERSIONS_FETCHED;
-    data: Version[];
+    data: string[];
 }
 
 export interface ReportVersionDetailssFetched {
