@@ -27,8 +27,14 @@ export interface SortReports {
     data: ReportsSortingFields;
 }
 
+export enum ReportsFilterPublishTypes {
+    "all" = "all",
+    "published" = "published",
+    "not_published" = "not_published"
+}
+
 export interface ReportsFilterFields {
-    published: boolean;
+    published: ReportsFilterPublishTypes;
     timeFrom: string;
     timeUntil: string;
 }

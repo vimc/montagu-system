@@ -28,7 +28,7 @@ export const reportsActions = {
         }
     },
 
-    filterReports(values: ReportsFilterFields) {
+    filterReports(values: Partial<ReportsFilterFields>) {
         return {
             type: ReportTypeKeys.FILTER_REPORTS,
             data: values

@@ -3,11 +3,14 @@ import { connect } from 'react-redux';
 import { Dispatch, Action } from "redux";
 
 import {reportsActions} from "../../actions/reportsActions";
-import {ReportsFilterFields} from "../../actionTypes/ReportsActionsTypes";
+import {
+    ReportsFilterFields, ReportsFilterPublishTypes,
+    ReportsSortingFields
+} from "../../actionTypes/ReportsActionsTypes";
 import {ReportAppState} from "../../reducers/reportAppReducers";
 
 interface ReportsListFilterProps {
-    filter: (value: ReportsFilterFields) => void;
+    filterPublish: (value: ReportsFilterPublishTypes) => void;
     filterData: ReportsFilterFields;
 }
 
@@ -16,17 +19,38 @@ export const ReportsListFilterComponent: React.StatelessComponent<ReportsListFil
         <div className="form-group">
             <div className="form-check form-check-inline">
                 <label className="form-check-label">
-                    <input className="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1" /> All
+                    <input
+                        className="form-check-input"
+                        type="radio"
+                        value={ReportsFilterPublishTypes.all}
+                        name="publish_filter"
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => props.filterPublish(e.target.value as ReportsFilterPublishTypes)}
+                        checked={props.filterData.published === ReportsFilterPublishTypes.all}
+                    /> All
                 </label>
             </div>
             <div className="form-check form-check-inline">
                 <label className="form-check-label">
-                    <input className="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2" /> Published
+                    <input
+                        className="form-check-input"
+                        type="radio"
+                        value={ReportsFilterPublishTypes.published}
+                        name="publish_filter"
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => props.filterPublish(e.target.value as ReportsFilterPublishTypes)}
+                        checked={props.filterData.published === ReportsFilterPublishTypes.published}
+                    /> Published
                 </label>
             </div>
             <div className="form-check form-check-inline disabled">
                 <label className="form-check-label">
-                    <input className="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3" /> Not Published
+                    <input
+                        className="form-check-input"
+                        type="radio"
+                        value={ReportsFilterPublishTypes.not_published}
+                        name="publish_filter"
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => props.filterPublish(e.target.value as ReportsFilterPublishTypes)}
+                        checked={props.filterData.published === ReportsFilterPublishTypes.not_published}
+                    /> Not Published
                 </label>
             </div>
         </div>
@@ -35,14 +59,14 @@ export const ReportsListFilterComponent: React.StatelessComponent<ReportsListFil
 
 export const mapStateToProps = (state: ReportAppState): Partial<ReportsListFilterProps> => {
     return {
-        filterData: state.reports.reportsFilter
+        filterData: state.reports.reportsFilter,
     }
 };
 
 export const mapDispatchToProps = (dispatch: Dispatch<Action>): Partial<ReportsListFilterProps> => {
     return {
-        filter: (value: ReportsFilterFields) => {
-            dispatch(reportsActions.filterReports(value))
+        filterPublish: (value: ReportsFilterPublishTypes) => {
+            dispatch(reportsActions.filterReports({published: value}))
         }
     }
 };
