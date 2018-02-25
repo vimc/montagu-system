@@ -2,6 +2,7 @@ import * as React from "react";
 import { ReportingPageWithHeader } from "../ReportingPageWithHeader";
 import {ReportsList} from "./ReportsList";
 import {ReportsListSorting} from "./ReportsListSorting";
+import {ReportsListFilter} from "./ReportsListFilter";
 import {IPageWithParent} from "../../../shared/models/Breadcrumb";
 import {ReportingPage} from "../ReportingPage";
 
@@ -26,6 +27,7 @@ export class ReportsListPage extends ReportingPageWithHeader<undefined> {
     render() :JSX.Element {
         return <ReportingPage page={this}>
             <ReportsListSorting />
+            <ReportsListFilter />
             <ReportsList />
         </ReportingPage>;
     }
