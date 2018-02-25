@@ -1,6 +1,9 @@
 import * as React from "react";
 import { connect } from 'react-redux';
 import { Dispatch, Action } from "redux";
+import * as Datetime from "react-datetime";
+
+// import "../../../../../node_modules/react-datetime/css/react-datetime.css";
 
 import {reportsActions} from "../../actions/reportsActions";
 import {
@@ -53,6 +56,13 @@ export const ReportsListFilterComponent: React.StatelessComponent<ReportsListFil
                     /> Not Published
                 </label>
             </div>
+        </div>
+        <div className="form-group ml-2">
+            <label> From
+                <div className="ml-2">
+                    <Datetime dateFormat="DD/MM/YYYY" timeFormat="HH:mm"/>
+                </div>
+            </label>
         </div>
     </div>
 );

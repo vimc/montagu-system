@@ -93,6 +93,7 @@
     "lodash.clone": "^4.5.0",
     "react": "^15.4.2",
     "react-bootstrap-toggle": "^2.2.6",
+    "react-datetime": "^2.14.0",
     "react-dom": "^15.4.2",
     "react-radio-button-group": "1.2.5",
     "react-redux": "^5.0.6",
