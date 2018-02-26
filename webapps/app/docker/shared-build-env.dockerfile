@@ -35,6 +35,7 @@ RUN chmod 744 /usr/local/bin/docker-compose
 
 # Install webpack
 RUN npm install webpack --global
+RUN npm install webpack-cli --global
 
 # Create workspace
 WORKDIR /workspace
