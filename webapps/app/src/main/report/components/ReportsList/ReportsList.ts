@@ -6,11 +6,6 @@ import { createSelector } from "reselect";
 import {ReportAppState} from "../../reducers/reportAppReducers";
 import { reportsActions } from "../../actions/reportsActions";
 import {ReportsListComponent, ReportsListComponentProps} from "./ReportsListComponent";
-import {Report} from "../../../shared/models/Generated";
-import {
-    ReportsFilterFields, ReportsFilterPublishTypes,
-    ReportsSortingFields
-} from "../../actionTypes/ReportsActionsTypes";
 import { LoadingElement } from "../../../shared/partials/LoadingElement/LoadingElement";
 import {getDisplayedReportsListSelector} from "./reportsListSelectors";
 
@@ -19,24 +14,6 @@ export interface ReportsListContainerProps extends ReportsListComponentProps {
     ready: boolean;
 }
 
-<<<<<<< HEAD
-export const getDisplayedReportsList = (items: Report[], sortBy: ReportsSortingFields, filter: ReportsFilterFields) => {
-    if (!items || !items.length) return [];
-    let displayItems = clone(items);
-    if (filter.published !== ReportsFilterPublishTypes.all) {
-        displayItems = displayItems.filter((item: any) => filter.published === ReportsFilterPublishTypes.published
-            ? item.published
-            : !item.published
-        );
-    }
-    displayItems = displayItems.sort(sortReports(sortBy));
-    return displayItems;
-}
-
-export const sortReports = (sortBy: ReportsSortingFields) => (a: Report, b: Report)=> (a[sortBy] < b[sortBy] ? -1 : 1);
-
-=======
->>>>>>> i1510
 const lifecyleProps = {
     componentDidMount() {
         this.props.getReports();
@@ -45,11 +22,7 @@ const lifecyleProps = {
 
 export const mapStateToProps = (state: ReportAppState): Partial<ReportsListContainerProps> => {
     return {
-<<<<<<< HEAD
-        reports: getDisplayedReportsList(state.reports.reports, state.reports.reportsSortBy, state.reports.reportsFilter),
-=======
         reports: getDisplayedReportsListSelector(state),
->>>>>>> i1510
         ready: Array.isArray(state.reports.reports)
     }
 };
