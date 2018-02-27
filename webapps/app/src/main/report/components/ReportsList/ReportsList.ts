@@ -6,8 +6,6 @@ import { createSelector } from "reselect";
 import {ReportAppState} from "../../reducers/reportAppReducers";
 import { reportsActions } from "../../actions/reportsActions";
 import {ReportsListComponent, ReportsListComponentProps} from "./ReportsListComponent";
-import {Report} from "../../../shared/models/Generated";
-import {ReportsSortingFields} from "../../actionTypes/ReportsActionsTypes";
 import { LoadingElement } from "../../../shared/partials/LoadingElement/LoadingElement";
 import {getDisplayedReportsListSelector} from "./reportsListSelectors";
 
