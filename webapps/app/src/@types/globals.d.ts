@@ -11,3 +11,4 @@ declare type ComponentConstructor<TProps, TState> = new (...args: any[]) => Reac
 declare module 'js-base64';
 declare module 'appName';
 declare module 'lodash';
+declare module 'reselect';

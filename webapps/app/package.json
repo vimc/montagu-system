@@ -90,7 +90,7 @@
     "js-base64": "^2.4.0",
     "jsonwebtoken": "^7.4.0",
     "jwt-decode": "^2.2.0",
-    "lodash.clone": "^4.5.0",
+    "lodash.orderby": "^4.6.0",
     "react": "^15.4.2",
     "react-bootstrap-toggle": "^2.2.6",
     "react-dom": "^15.4.2",
@@ -103,6 +103,7 @@
     "redux": "^3.7.2",
     "redux-form": "^7.2.1",
     "redux-thunk": "^2.2.0",
+    "reselect": "^3.0.1",
     "simple-react-router": "0.0.14",
     "whatwg-fetch": "^2.0.3"
   }
