@@ -198,7 +198,7 @@ class JooqUserRepository(dsl: DSLContext) : JooqRepository(dsl), UserRepository
     private fun mapUserWithRoles(entry: Map.Entry<AppUserRecord, org.jooq.Result<Record>>): User
     {
         val user = entry.key.into(User::class.java)
-        val roles = entry.value.filter { r -> r[USER_ROLE.ROLE] != null }
+        val roles = entry.value.filter { r -> r[USER_GROUP_ROLE.ROLE] != null }
                 .map(this::mapRoleAssignment)
 
         return user.copy(roles = roles)
@@ -226,7 +226,7 @@ class JooqUserRepository(dsl: DSLContext) : JooqRepository(dsl), UserRepository
     {
         var scopeId = record[USER_GROUP_ROLE.SCOPE_ID]
 
-        // set scopeId to null if USER_ROLE.SCOPE_ID is an empty string,
+        // set scopeId to null if USER_GROUP_ROLE.SCOPE_ID is an empty string,
         // so that scopeId and scopePrefix are consistently null/not null
         scopeId = if (scopeId.isEmpty())
         {
