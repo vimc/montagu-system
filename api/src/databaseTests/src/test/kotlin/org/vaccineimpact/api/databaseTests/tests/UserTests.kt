@@ -13,9 +13,10 @@ import org.vaccineimpact.api.app.repositories.jooq.JooqUserRepository
 import org.vaccineimpact.api.databaseTests.RepositoryTests
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.Tables
-import org.vaccineimpact.api.db.Tables.APP_USER
+import org.vaccineimpact.api.db.Tables.*
 import org.vaccineimpact.api.db.direct.addGroup
 import org.vaccineimpact.api.db.direct.addUserWithRoles
+import org.vaccineimpact.api.db.fromJoinPath
 import org.vaccineimpact.api.models.AssociateUser
 import org.vaccineimpact.api.models.Scope
 import org.vaccineimpact.api.models.User
@@ -48,8 +49,7 @@ class UserTests : RepositoryTests<UserRepository>()
     @Test
     fun `can add role to user`()
     {
-        given {
-            db ->
+        given { db ->
             db.addGroup("IC-Garske")
             db.addUserWithRoles(username, ReifiedRole("member", Scope.parse("modelling-group:IC-Garske")))
         } check { repo ->
@@ -65,11 +65,37 @@ class UserTests : RepositoryTests<UserRepository>()
         }
     }
 
+
+    @Test
+    fun `adds roles to user group`()
+    {
+        withDatabase { db ->
+            db.addGroup("IC-Garske")
+            db.addUserWithRoles(username, ReifiedRole("member", Scope.parse("modelling-group:IC-Garske")))
+        }
+        withRepo { repo ->
+            repo.modifyUserRole(username, AssociateRole("add", "submitter", "modelling-group", "IC-Garske"))
+        }
+        withDatabase { db ->
+
+            val groupRoles = db.dsl.select(ROLE.NAME, ROLE.SCOPE_PREFIX, USER_GROUP_ROLE.SCOPE_ID)
+                    .fromJoinPath(USER_GROUP_ROLE, ROLE)
+                    .where(USER_GROUP_ROLE.USER_GROUP.eq(username))
+                    .fetch()
+
+            assertThat(groupRoles.count()).isEqualTo(2)
+
+            val role = groupRoles[1]
+            assertThat(role[ROLE.NAME]).isEqualTo("submitter")
+            assertThat(role[ROLE.SCOPE_PREFIX]).isEqualTo("modelling-group")
+            assertThat(role[USER_GROUP_ROLE.SCOPE_ID]).isEqualTo("IC-Garske")
+        }
+    }
+
     @Test
     fun `can remove role from user`()
     {
-        given {
-            db ->
+        given { db ->
             db.addUserWithRoles(username, ReifiedRole("member", Scope.parse("modelling-group:IC-Garske")))
         } check { repo ->
             repo.modifyUserRole(username, AssociateRole("remove", "member", "modelling-group", "IC-Garske"))
@@ -80,10 +106,36 @@ class UserTests : RepositoryTests<UserRepository>()
     }
 
     @Test
+    fun `removes role from user group`()
+    {
+        withDatabase { db ->
+            db.addUserWithRoles(username, ReifiedRole("member", Scope.parse("modelling-group:IC-Garske")))
+
+            val groupRoles = db.dsl.select(ROLE.NAME, ROLE.SCOPE_PREFIX, USER_GROUP_ROLE.SCOPE_ID)
+                    .fromJoinPath(USER_GROUP_ROLE, ROLE)
+                    .where(USER_GROUP_ROLE.USER_GROUP.eq(username))
+                    .fetch()
+
+            assertThat(groupRoles.any()).isTrue()
+        }
+        withRepo { repo ->
+            repo.modifyUserRole(username, AssociateRole("remove", "member", "modelling-group", "IC-Garske"))
+        }
+        withDatabase { db ->
+
+            val groupRoles = db.dsl.select(ROLE.NAME, ROLE.SCOPE_PREFIX, USER_GROUP_ROLE.SCOPE_ID)
+                    .fromJoinPath(USER_GROUP_ROLE, ROLE)
+                    .where(USER_GROUP_ROLE.USER_GROUP.eq(username))
+                    .fetch()
+
+            assertThat(groupRoles.any()).isFalse()
+        }
+    }
+
+    @Test
     fun `throws unknown role error is role does not exist`()
     {
-        given {
-            db ->
+        given { db ->
             db.addGroup("IC-Garske")
             db.addUserWithRoles(username, ReifiedRole("member", Scope.parse("modelling-group:IC-Garske")))
         } check { repo ->
@@ -103,8 +155,7 @@ class UserTests : RepositoryTests<UserRepository>()
     @Test
     fun `throws unknown object error if scopeId is not valid group id`()
     {
-        given {
-            db ->
+        given { db ->
             db.addUserWithRoles(username, ReifiedRole("member", Scope.parse("modelling-group:IC-Garske")))
         } check { repo ->
 
@@ -119,8 +170,7 @@ class UserTests : RepositoryTests<UserRepository>()
     @Test
     fun `throws unknown object error if user does not exist`()
     {
-        given {
-            db ->
+        given { db ->
             db.addGroup("IC-Garske")
             db.addUserWithRoles(username, ReifiedRole("member", Scope.parse("modelling-group:IC-Garske")))
         } check { repo ->
@@ -143,11 +193,34 @@ class UserTests : RepositoryTests<UserRepository>()
 
         } check { repo ->
             repo.modifyMembership("new-id", AssociateUser("add", "user.a"))
-            JooqContext().use{
+            JooqContext().use {
                 val groupRepo = makeGroupRepository(it)
                 assertThat(groupRepo.getModellingGroupDetails("new-id").members.contains("user-a"))
             }
 
+        }
+    }
+
+    @Test
+    fun `adds modelling group membership for user group`()
+    {
+        withDatabase {
+            it.addGroup("new-id", "description")
+            it.addUserWithRoles("user.a")
+
+        }
+        withRepo { repo ->
+            repo.modifyMembership("new-id", AssociateUser("add", "user.a"))
+        }
+        withDatabase {
+
+            val roles = it.dsl.select(ROLE.SCOPE_PREFIX, USER_GROUP_ROLE.SCOPE_ID)
+                    .fromJoinPath(USER_GROUP_ROLE, ROLE)
+                    .where(USER_GROUP_ROLE.USER_GROUP.eq("user.a"))
+                    .fetch()
+
+            assertThat(roles[0][ROLE.SCOPE_PREFIX]).isEqualTo("modelling-group")
+            assertThat(roles[0][USER_GROUP_ROLE.SCOPE_ID]).isEqualTo("new-id")
         }
     }
 
@@ -165,6 +238,28 @@ class UserTests : RepositoryTests<UserRepository>()
                 val groupRepo = makeGroupRepository(it)
                 assertThat(!groupRepo.getModellingGroupDetails("new-id").members.contains("user.a"))
             }
+        }
+    }
+
+    @Test
+    fun `removes modelling group membership from user group`()
+    {
+        withDatabase {
+            it.addGroup("new-id", "description")
+            val role = ReifiedRole("member", Scope.parse("modelling-group:new-id"))
+            it.addUserWithRoles("user.a", role)
+        }
+        withRepo { repo ->
+            repo.modifyMembership("new-id", AssociateUser("remove", "user.a"))
+        }
+        withDatabase {
+
+            val roles = it.dsl.select(ROLE.SCOPE_PREFIX, USER_GROUP_ROLE.SCOPE_ID)
+                    .fromJoinPath(USER_GROUP_ROLE, ROLE)
+                    .where(USER_GROUP_ROLE.USER_GROUP.eq("user.a"))
+                    .fetch()
+
+            assertThat(roles.any()).isFalse()
         }
     }
 
@@ -282,7 +377,7 @@ class UserTests : RepositoryTests<UserRepository>()
 
             val expectedRoles1 = listOf(
                     RoleAssignment("role", null, null),
-                    RoleAssignment("a", "prefixA","idA"))
+                    RoleAssignment("a", "prefixA", "idA"))
 
             val expectedUser = User(
                     "testuser1", "Test User", "test1@test.com",
@@ -291,7 +386,7 @@ class UserTests : RepositoryTests<UserRepository>()
             val expectedRoles2 = listOf(
                     RoleAssignment("b", "prefixB", "idB"))
 
-            val expectedUser2 =  User(
+            val expectedUser2 = User(
                     "testuser2", "Test User 2", "test2@test.com",
                     null, expectedRoles2)
 
@@ -385,6 +480,29 @@ class UserTests : RepositoryTests<UserRepository>()
                     InternalUser(UserProperties("user.name", "Full Name", "email@example.com", null, null),
                             listOf(), listOf())
             )
+        }
+    }
+
+    @Test
+    fun `user is added to group of same name on creation`()
+    {
+        withRepo { repo ->
+            repo.addUser(CreateUser("user.name", "Full Name", "email@example.com"))
+        }
+
+        withDatabase { db ->
+
+            val group = db.dsl.selectFrom(USER_GROUP)
+                    .where(USER_GROUP.NAME.eq("user.name"))
+
+            assertThat(group.any()).isTrue()
+
+            val membership = db.dsl.selectFrom(USER_GROUP_MEMBERSHIP)
+                    .where(USER_GROUP_MEMBERSHIP.USER_GROUP.eq("user.name"))
+                    .and(USER_GROUP_MEMBERSHIP.USERNAME.eq("user.name"))
+
+            assertThat(membership.any()).isTrue()
+
         }
     }
 
