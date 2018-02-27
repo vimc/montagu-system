@@ -15,7 +15,7 @@ sealed class Scope  (val value: String)
         override val databaseScopeId = ""
     }
 
-    class Specific(val scopePrefix: String, val scopeId: String) : Scope("$scopePrefix:$scopeId")
+    class Specific(scopePrefix: String, scopeId: String) : Scope("$scopePrefix:$scopeId")
     {
         override fun encompasses(other: Scope): Boolean = when (other)
         {
