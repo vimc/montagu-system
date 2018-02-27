@@ -139,17 +139,17 @@ class UserTests : DatabaseTest()
                         "last_logged_in" to null,
                         "roles" to array(
                                 obj(
+                                        "name" to "touchstone-preparer",
+                                        "scope_id" to "",
+                                        "scope_prefix" to null),
+                                obj(
                                         "name" to "member",
                                         "scope_id" to "group",
                                         "scope_prefix" to "modelling-group"),
                                 obj(
                                         "name" to "member",
                                         "scope_id" to "group2",
-                                        "scope_prefix" to "modelling-group"),
-                                obj(
-                                        "name" to "touchstone-preparer",
-                                        "scope_id" to "",
-                                        "scope_prefix" to null))
+                                        "scope_prefix" to "modelling-group"))
                 )
             })
         }
