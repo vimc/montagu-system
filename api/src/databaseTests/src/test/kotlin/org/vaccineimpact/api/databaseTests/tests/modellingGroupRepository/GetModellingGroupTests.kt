@@ -104,7 +104,7 @@ class GetModellingGroupTests : ModellingGroupRepositoryTests()
     }
 
     @Test
-    fun `can get admin users for modelling group`()
+    fun `can get users for modelling group`()
     {
         val expected = ModellingGroupDetails("new-id", "description", emptyList(), listOf(
                 "user.a",

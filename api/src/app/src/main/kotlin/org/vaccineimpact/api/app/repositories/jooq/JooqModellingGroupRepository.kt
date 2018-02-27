@@ -80,10 +80,10 @@ class JooqModellingGroupRepository(
                 .fetch()
                 .map { ResearchModel(it[MODEL.ID], it[MODEL.DESCRIPTION], it[MODEL.CITATION], group.id) }
         val users = dsl.select(APP_USER.USERNAME)
-                .fromJoinPath(APP_USER, USER_ROLE, ROLE)
+                .fromJoinPath(APP_USER, USER_GROUP_MEMBERSHIP, USER_GROUP, USER_GROUP_ROLE, ROLE)
                 .where(ROLE.NAME.eq("member"))
                 .and(ROLE.SCOPE_PREFIX.eq("modelling-group"))
-                .and(USER_ROLE.SCOPE_ID.eq(group.id))
+                .and(USER_GROUP_ROLE.SCOPE_ID.eq(group.id))
                 .fetch()
                 .map { it[APP_USER.USERNAME] }
         return ModellingGroupDetails(group.id, group.description, models, users)
