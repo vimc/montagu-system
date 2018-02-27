@@ -164,11 +164,9 @@ describe("Sidebar", () => {
 
         let state = mockReportAppState({
             auth: mockAuthState({permissions: ["*/reports.review"]}),
-            reports: mockReportsState({versionDetails: mockVersion()})
+            reports: mockReportsState({versionDetails: mockVersion(), versions: ["sdf"]})
         });
-
         let result = mapStateToProps(state, defaultTabProps);
-
         expect(result.isReviewer).to.be.true;
 
         state = mockReportAppState({
@@ -192,7 +190,7 @@ describe("Sidebar", () => {
         expect(result.published).to.be.false;
 
         state = mockReportAppState({
-            reports: mockReportsState({versionDetails: {published: true}})
+            reports: mockReportsState({versionDetails: {published: true}, versions: ["sdf"]})
         });
 
         result = mapStateToProps(state, defaultTabProps);
@@ -213,7 +211,7 @@ describe("Sidebar", () => {
 
         let state = mockReportAppState({
             reports:
-                mockReportsState({versionDetails: {published: false}})
+                mockReportsState({versionDetails: {published: false}, versions: ["sdf"]})
         });
         let result = mapStateToProps(state, defaultTabProps);
 
