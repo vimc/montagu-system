@@ -4,12 +4,11 @@ $success: #28a75e;
 @import "../../../node_modules/react-datetime/css/react-datetime.css";
 
 $table-border-color: $gray-700;
-$montagu-nav-bg-color: $gray-200;
 $published-color: #868ED3;
-$montagu-header-bg-color: $gray-200;
+$montagu-header-bg-color: $gray-100;
 $montagu-header-color: $body-color;
-
+$montagu-breadcrumb-bg-color: $gray-100;
+$montagu-breadcrumb-color: $success;
 
 @import "../shared/styles/common";
-@import "./styles/reports";
 @import "./styles/sidebar";

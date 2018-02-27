@@ -29,7 +29,7 @@ export const reportsInitialState: ReportsState = {
     versionDetails: null
 };
 
-export const reportsReducer = (state = reportsInitialState, action: ReportsActionsTypes) => {
+export const reportsReducer = (state = reportsInitialState, action: ReportsActionsTypes) : ReportsState => {
     switch (action.type) {
         case ReportTypeKeys.REPORTS_FETCHED:
             return { ...state, reports: action.data };

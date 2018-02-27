@@ -1,63 +1,82 @@
 import * as React from "react";
 import {NavItem, NavLink, UncontrolledTooltip} from "reactstrap";
 import {NavbarCollapsedOnMobile} from "../../../shared/components/NavCollapsedOnMobile";
+import {PublishSwitch} from "./PublishSwitch";
+import {ReportVersionSwitcher} from "./ReportVersionSwitcher";
 import {ReportAppState} from "../../reducers/reportAppReducers";
 import {connect} from "react-redux";
-import {PublishSwitch} from "./PublishSwitch";
 
-export class SidebarProps {
-    name: string;
+export enum ReportTabEnum {
+    DOWNLOAD,
+    REPORT,
+    CHANGELOG
+}
+
+export interface PublicProps {
+    onChangeVersion: (version: string) => any;
+    active: ReportTabEnum;
+}
+
+export interface SidebarProps extends PublicProps {
+    report: string;
     version: string;
     ready: boolean;
     isReviewer: boolean;
     published: boolean;
+    allVersions: string[];
 }
 
+export const SidebarComponent = (props: SidebarProps) => {
 
-export class SidebarComponent extends React.Component<SidebarProps, undefined> {
-
-    render() {
-        return <div className={"sidebar pb-4 pb-md-0"}>
-            <NavbarCollapsedOnMobile light className={"pl-0 pr-0 pr-md-4"}>
-                <ul className={"list-unstyled mb-0"}>
-                    <NavItem>
-                        <NavLink href="#" disabled>Report</NavLink>
-                        <UncontrolledTooltip placement="top" target="download">
-                            Coming soon
-                        </UncontrolledTooltip>
-                    </NavItem>
-                    <NavItem>
-                        <NavLink href="#" active id="download">Downloads</NavLink>
-                    </NavItem>
-                    <NavItem>
-                        <NavLink href="#" disabled id={"changelog"}>Changelog</NavLink>
-                        <UncontrolledTooltip placement="bottom" target="changelog">
-                            Coming soon
-                        </UncontrolledTooltip>
-                    </NavItem>
-                </ul>
-                <hr/>
+    return <div className={"sidebar pb-4 pb-md-0"}>
+        <NavbarCollapsedOnMobile light className={"pl-0 pr-0 pr-md-4"}>
+            <ul className={"list-unstyled mb-0"}>
+                <NavItem>
+                    <NavLink href="#report"
+                             active={props.active == ReportTabEnum.REPORT}>Report</NavLink>
+                </NavItem>
+                <NavItem>
+                    <NavLink href="#downloads"
+                             active={props.active == ReportTabEnum.DOWNLOAD}>Downloads</NavLink>
+                </NavItem>
+                <NavItem>
+                    <NavLink href="#changelog" disabled id={"changelog"}>Changelog</NavLink>
+                    <UncontrolledTooltip placement="bottom" target="changelog">
+                        Coming soon
+                    </UncontrolledTooltip>
+                </NavItem>
+            </ul>
+            <hr/>
+            <div className={"pl-3"}>
+                {props.ready && <ReportVersionSwitcher
+                    currentVersion={props.version}
+                    versions={props.allVersions}
+                    onChangeVersion={props.onChangeVersion}
+                />}
                 {
-                    this.props.ready && this.props.isReviewer &&
-                    <PublishSwitch name={this.props.name}
-                                   version={this.props.version}
-                                   published={this.props.published}/>
+                    props.ready && props.isReviewer &&
+                    <PublishSwitch name={props.report}
+                                   version={props.version}
+                                   published={props.published}/>
                 }
-            </NavbarCollapsedOnMobile>
-        </div>
-    }
-}
+            </div>
+        </NavbarCollapsedOnMobile>
+    </div>
+};
 
-export const mapStateToProps = (state: ReportAppState, props: {}): SidebarProps => {
-    const ready = !!state.reports.versionDetails;
+export const mapStateToProps = (state: ReportAppState, props: PublicProps): SidebarProps => {
+    const ready = !!state.reports.versionDetails && !!state.reports.versions;
 
     if (!ready) {
         return {
             ready: false,
             isReviewer: false,
             published: false,
-            name: "",
-            version: ""
+            report: "",
+            version: "",
+            allVersions: [],
+            onChangeVersion: props.onChangeVersion,
+            active: props.active
         }
     }
     else {
@@ -66,8 +85,11 @@ export const mapStateToProps = (state: ReportAppState, props: {}): SidebarProps 
             ready: true,
             isReviewer: state.auth.permissions.indexOf("*/reports.review") > -1,
             published: versionDetails.published,
-            name: versionDetails.name,
-            version: versionDetails.id
+            allVersions: state.reports.versions,
+            report: versionDetails.name,
+            version: versionDetails.id,
+            onChangeVersion: props.onChangeVersion,
+            active: props.active
         }
     }
 };

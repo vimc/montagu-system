@@ -12,3 +12,4 @@ declare module 'js-base64';
 declare module 'appName';
 declare module 'lodash';
 declare module 'react-datetime';
+declare module 'reselect';

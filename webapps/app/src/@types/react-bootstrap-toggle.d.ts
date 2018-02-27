@@ -5,7 +5,7 @@ declare module "react-bootstrap-toggle" {
         onClick: () => any;
         on: JSX.Element;
         off: JSX.Element;
-        size: string;
+        size?: string;
         offstyle: string;
         onstyle: string;
         active: boolean;

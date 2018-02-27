@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import { Dispatch } from "redux";
 import { compose, lifecycle, branch, renderComponent } from "recompose";
-import { clone } from "lodash";
+import { createSelector } from "reselect";
 
 import {ReportAppState} from "../../reducers/reportAppReducers";
 import { reportsActions } from "../../actions/reportsActions";
@@ -12,12 +12,14 @@ import {
     ReportsSortingFields
 } from "../../actionTypes/ReportsActionsTypes";
 import { LoadingElement } from "../../../shared/partials/LoadingElement/LoadingElement";
+import {getDisplayedReportsListSelector} from "./reportsListSelectors";
 
 export interface ReportsListContainerProps extends ReportsListComponentProps {
     getReports: () => void;
     ready: boolean;
 }
 
+<<<<<<< HEAD
 export const getDisplayedReportsList = (items: Report[], sortBy: ReportsSortingFields, filter: ReportsFilterFields) => {
     if (!items || !items.length) return [];
     let displayItems = clone(items);
@@ -33,6 +35,8 @@ export const getDisplayedReportsList = (items: Report[], sortBy: ReportsSortingF
 
 export const sortReports = (sortBy: ReportsSortingFields) => (a: Report, b: Report)=> (a[sortBy] < b[sortBy] ? -1 : 1);
 
+=======
+>>>>>>> i1510
 const lifecyleProps = {
     componentDidMount() {
         this.props.getReports();
@@ -41,7 +45,11 @@ const lifecyleProps = {
 
 export const mapStateToProps = (state: ReportAppState): Partial<ReportsListContainerProps> => {
     return {
+<<<<<<< HEAD
         reports: getDisplayedReportsList(state.reports.reports, state.reports.reportsSortBy, state.reports.reportsFilter),
+=======
+        reports: getDisplayedReportsListSelector(state),
+>>>>>>> i1510
         ready: Array.isArray(state.reports.reports)
     }
 };
