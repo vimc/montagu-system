@@ -4,6 +4,7 @@ import org.jooq.DSLContext
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.Tables.*
 import org.vaccineimpact.api.db.fieldsAsList
+import org.vaccineimpact.api.db.fromJoinPath
 import org.vaccineimpact.api.models.permissions.ReifiedRole
 
 fun JooqContext.givePermissionsToUserUsingTestRole(
@@ -19,7 +20,12 @@ fun JooqContext.givePermissionsToUserUsingTestRole(
 
 fun JooqContext.clearRolesForUser(username: String)
 {
-    dsl.deleteFrom(USER_ROLE).where(USER_ROLE.USERNAME.eq(username)).execute()
+    val groups = dsl.select(USER_GROUP.ID)
+            .fromJoinPath(USER_GROUP, USER_GROUP_MEMBERSHIP)
+            .where(USER_GROUP_MEMBERSHIP.USERNAME.eq(username))
+
+    dsl.deleteFrom(USER_GROUP_ROLE)
+            .where(USER_GROUP_ROLE.USER_GROUP.`in`(groups)).execute()
 }
 
 fun JooqContext.setRolePermissions(roleId: Int, permissions: List<String>)
@@ -92,22 +98,6 @@ fun DSLContext.ensureUserHasRole(username: String, roleId: Int, scopeId: String)
     {
         this.newRecord(USER_GROUP_ROLE).apply {
             this.userGroup = username
-            this.role = roleId
-            this.scopeId = scopeId
-        }.store()
-    }
-
-    // TODO deprecate - all roles will be mapped via the USER_GROUP_ROLE
-    val roleMapping = this.select(USER_ROLE.fieldsAsList())
-            .from(USER_ROLE)
-            .where(USER_ROLE.USERNAME.eq(username))
-            .and(USER_ROLE.ROLE.eq(roleId))
-            .and(USER_ROLE.SCOPE_ID.eq(scopeId))
-            .fetchAny()
-    if (roleMapping == null)
-    {
-        this.newRecord(USER_ROLE).apply {
-            this.username = username
             this.role = roleId
             this.scopeId = scopeId
         }.store()

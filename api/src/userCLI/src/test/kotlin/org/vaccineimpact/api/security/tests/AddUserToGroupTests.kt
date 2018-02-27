@@ -22,13 +22,13 @@ class AddUserToGroupTests : DatabaseTest()
             db.addGroup("group1")
             db.addGroup("group2")
             options.run()
-            val groups = db.dsl.select(USER_ROLE.SCOPE_ID)
-                    .fromJoinPath(APP_USER, USER_ROLE, ROLE)
+            val groups = db.dsl.select(USER_GROUP_ROLE.SCOPE_ID)
+                    .fromJoinPath(APP_USER, USER_GROUP_MEMBERSHIP, USER_GROUP, USER_GROUP_ROLE, ROLE)
                     .where(APP_USER.USERNAME.eq("username"))
                     .and(ROLE.NAME.eq("member"))
                     .and(ROLE.SCOPE_PREFIX.eq("modelling-group"))
                     .fetch()
-                    .map { it[USER_ROLE.SCOPE_ID] }
+                    .map { it[USER_GROUP_ROLE.SCOPE_ID] }
                     .toSet()
             assertThat(groups).isEqualTo(setOf("group1", "group2"))
         }

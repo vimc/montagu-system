@@ -52,13 +52,6 @@ class JooqUserRepository(dsl: DSLContext) : JooqRepository(dsl), UserRepository
                 .and(USER_GROUP_ROLE.ROLE.eq(roleId))
                 .and(USER_GROUP_ROLE.SCOPE_ID.eq(role.scope.databaseScopeId))
                 .execute()
-
-        // TODO deprecate - all roles will be mapped via the USER_GROUP_ROLE
-        dsl.deleteFrom(USER_ROLE)
-                .where(USER_ROLE.USERNAME.eq(username))
-                .and(USER_ROLE.ROLE.eq(roleId))
-                .and(USER_ROLE.SCOPE_ID.eq(role.scope.databaseScopeId))
-                .execute()
     }
 
     private fun ensureUserHasRole(username: String, role: ReifiedRole)
@@ -100,18 +93,21 @@ class JooqUserRepository(dsl: DSLContext) : JooqRepository(dsl), UserRepository
         }
     }
 
-    private fun getRolesAndPermissions(whereCondition: Condition): Result<Record>
+    private fun getRolesAndPermissions(username: String): Result<Record>
     {
-        // TODO deprecate - all roles will be mapped via the USER_GROUP_ROLE
         return dsl.select(PERMISSION.NAME)
                 .select(ROLE.NAME, ROLE.SCOPE_PREFIX)
-                .select(USER_ROLE.SCOPE_ID)
-                .fromJoinPath(APP_USER, USER_ROLE, ROLE)
+                .select(USER_GROUP_ROLE.SCOPE_ID)
+                .fromJoinPath(APP_USER,
+                        USER_GROUP_MEMBERSHIP,
+                        USER_GROUP,
+                        USER_GROUP_ROLE,
+                        ROLE)
                 .leftJoin(ROLE_PERMISSION)
                 .on(ROLE_PERMISSION.ROLE.eq(ROLE.ID))
                 .leftJoin(PERMISSION)
                 .on(ROLE_PERMISSION.PERMISSION.eq(PERMISSION.NAME))
-                .where(whereCondition)
+                .where(caseInsensitiveUsernameMatch(username))
                 .fetch()
 
     }
@@ -119,7 +115,7 @@ class JooqUserRepository(dsl: DSLContext) : JooqRepository(dsl), UserRepository
     override fun getUserByUsername(username: String): InternalUser
     {
         val user = getUser(username).into(UserProperties::class.java)
-        val records = getRolesAndPermissions(caseInsensitiveUsernameMatch(username))
+        val records = getRolesAndPermissions(username)
         return InternalUser(
                 user,
                 records.map(this::mapRole).distinct(),
@@ -138,11 +134,12 @@ class JooqUserRepository(dsl: DSLContext) : JooqRepository(dsl), UserRepository
     {
         return dsl.select()
                 .from(APP_USER)
-                // TODO deprecate - all roles will be mapped via the USER_GROUP_ROLE
-                .leftJoin(USER_ROLE)
-                .on(APP_USER.USERNAME.eq(USER_ROLE.USERNAME))
+                .leftJoin(USER_GROUP_MEMBERSHIP)
+                .on(USER_GROUP_MEMBERSHIP.USERNAME.eq(APP_USER.USERNAME))
+                .leftJoin(USER_GROUP_ROLE)
+                .on(USER_GROUP_ROLE.USER_GROUP.eq(USER_GROUP_MEMBERSHIP.USER_GROUP))
                 .leftJoin(ROLE)
-                .on(ROLE.ID.eq(USER_ROLE.ROLE))
+                .on(ROLE.ID.eq(USER_GROUP_ROLE.ROLE))
                 .fetchGroups(APP_USER)
                 .map(this::mapUserWithRoles)
     }
@@ -201,7 +198,7 @@ class JooqUserRepository(dsl: DSLContext) : JooqRepository(dsl), UserRepository
     private fun mapUserWithRoles(entry: Map.Entry<AppUserRecord, org.jooq.Result<Record>>): User
     {
         val user = entry.key.into(User::class.java)
-        val roles = entry.value.filter { r -> r[USER_ROLE.ROLE] != null }
+        val roles = entry.value.filter { r -> r[USER_GROUP_ROLE.ROLE] != null }
                 .map(this::mapRoleAssignment)
 
         return user.copy(roles = roles)
@@ -227,9 +224,9 @@ class JooqUserRepository(dsl: DSLContext) : JooqRepository(dsl), UserRepository
 
     private fun mapRoleAssignment(record: Record): RoleAssignment
     {
-        var scopeId = record[USER_ROLE.SCOPE_ID]
+        var scopeId = record[USER_GROUP_ROLE.SCOPE_ID]
 
-        // set scopeId to null if USER_ROLE.SCOPE_ID is an empty string,
+        // set scopeId to null if USER_GROUP_ROLE.SCOPE_ID is an empty string,
         // so that scopeId and scopePrefix are consistently null/not null
         scopeId = if (scopeId.isEmpty())
         {
@@ -249,7 +246,7 @@ class JooqUserRepository(dsl: DSLContext) : JooqRepository(dsl), UserRepository
     private fun mapScope(record: Record): Scope
     {
         val scopePrefix = record[ROLE.SCOPE_PREFIX]
-        val scopeId = record[USER_ROLE.SCOPE_ID]
+        val scopeId = record[USER_GROUP_ROLE.SCOPE_ID]
         if (scopePrefix != null)
         {
             return Scope.Specific(scopePrefix, scopeId)
