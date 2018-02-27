@@ -39,24 +39,4 @@ describe("ReportListSelector", () => {
         expect(displayReports[1].name).to.eql("b");
         expect(displayReports[2].name).to.eql("c");
     });
-
-    // it('sorts reports list by name', () => {
-    //     const reportsMock = [mockReport({name: "b"}), mockReport({name: "c"}), mockReport({name: "a"})];
-    //     const sortedReports = getDisplayedReportsList(reportsMock, ReportsSortingFields.name);
-    //     expect(sortedReports[0].name).to.eql("a");
-    //     expect(sortedReports[1].name).to.eql("b");
-    //     expect(sortedReports[2].name).to.eql("c");
-    // });
-    //
-    // it('sorts reports list by latest version', () => {
-    //     const reportsMock = [
-    //         mockReport({name: "b", latest_version: "20170327-002851-dd944766"}),
-    //         mockReport({name: "c", latest_version: "20170326-002851-dd944766"}),
-    //         mockReport({name: "a", latest_version: "20170328-002851-dd944766"})
-    //     ];
-    //     const sortedReports = getDisplayedReportsList(reportsMock, ReportsSortingFields.latest_version);
-    //     expect(sortedReports[0].name).to.eql("c");
-    //     expect(sortedReports[1].name).to.eql("b");
-    //     expect(sortedReports[2].name).to.eql("a");
-    // });
 });
