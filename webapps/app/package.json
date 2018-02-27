@@ -62,6 +62,7 @@
     "tslint": "^5.8.0",
     "typescript": "2.7.1",
     "webpack": "^2.3.1",
+    "webpack-cli": "^2.0.9",
     "webpack-node-externals": "^1.5.4"
   },
   "dependencies": {
@@ -91,6 +92,8 @@
     "jsonwebtoken": "^7.4.0",
     "jwt-decode": "^2.2.0",
     "lodash.orderby": "^4.6.0",
+    "lodash.get": "^4.4.2",
+    "lodash.set": "^4.3.2",
     "react": "^15.4.2",
     "react-bootstrap-toggle": "^2.2.6",
     "react-dom": "^15.4.2",

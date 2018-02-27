@@ -33,18 +33,17 @@ export class PublishSwitchComponent extends React.Component<Props, undefined> {
     }
 
     render() {
-        return <div className="pl-3 pt-3" id={"publish"}>
-            <Toggle
-                onClick={this.onToggle}
-                on={<span>Published</span>}
-                off={<span>Internal</span>}
-                size={"lg"}
-                offstyle="internal"
-                onstyle={"published"}
-                active={this.props.published}/>
-            <UncontrolledTooltip target={"publish"}>
-                Publish functionality coming soon</UncontrolledTooltip>
-        </div>
+        return <div className="pt-3" id={"publish"}>
+                <Toggle
+                    onClick={this.onToggle}
+                    on={<span>Published</span>}
+                    off={<span>Internal</span>}
+                    offstyle="internal"
+                    onstyle={"published"}
+                    active={this.props.published}/>
+                <UncontrolledTooltip target={"publish"}>
+                    Publish functionality coming soon</UncontrolledTooltip>
+            </div>
     }
 }
 

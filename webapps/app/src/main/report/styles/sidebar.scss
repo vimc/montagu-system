@@ -1,13 +1,13 @@
 .btn-default {
-  @include button-variant($gray-200, $gray-300);
+  @include button-variant($gray-200, $gray-400);
 }
 
 .btn-published {
-  @include button-variant($published-color,  $gray-300);
+  @include button-variant($published-color,  $gray-400);
 }
 
 .btn-internal {
-  @include button-variant(darken($warning, 10%),  $gray-300);
+  @include button-variant(darken($warning, 10%),  $gray-400);
   color: #ffffff;
 }
 

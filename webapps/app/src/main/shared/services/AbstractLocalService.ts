@@ -11,6 +11,8 @@ import {
 
 import { AuthTypeKeys } from "../actionTypes/AuthTypes";
 import {GlobalState} from "../reducers/GlobalState";
+import {CacheInterface} from "../modules/cache/CacheInterface";
+import {singletonVariableCache} from "../modules/cache/singletonVariableCache";
 
 export interface OptionsHeaders {
    Authorization?: string;
@@ -29,18 +31,24 @@ export interface InputOptions {
     'Content-Type'?: string;
     credentials?: "omit" | "same-origin" | "include";
     baseURL?: string;
+    cache?: string;
 }
 
-export abstract class LocalService {
+export abstract class AbstractLocalService {
     protected dispatch: Dispatch<Action>;
+
     protected bearerToken: string;
     protected options: InputOptions = {};
+
+    protected cacheEngine: CacheInterface = null;
 
     public constructor(dispatch: Dispatch<Action>, getState: () => GlobalState) {
         this.dispatch = dispatch;
 
         this.bearerToken = this.getTokenFromState(getState());
         this.initOptions();
+
+        this.cacheEngine = singletonVariableCache;
 
         this.processResponse = this.processResponse.bind(this);
         this.notifyOnErrors = this.notifyOnErrors.bind(this);
@@ -54,11 +62,13 @@ export abstract class LocalService {
 
     public setOptions(options: InputOptions) {
         Object.assign(this.options, options);
+        return this;
     }
 
     protected initOptions() {
+        this.options = {};
         this.options.baseURL = settings.apiUrl();
-
+        this.options.cache = null;
         if (this.bearerToken) {
             this.options.Authorization = 'Bearer ' + this.bearerToken;
         }
@@ -87,28 +97,51 @@ export abstract class LocalService {
 
     public get(url: string){
         console.log('get', url);
-        return this.doFetch(this.makeUrl(url), this.makeRequestOptions('GET'))
-            .then(this.processResponse)
-            .catch(this.notifyOnErrors);
+        return this.getData(this.makeUrl(url), "GET");
     }
 
     public post(url: string, params?:any){
         console.log('post', url, params);
-        return this.doFetch(this.makeUrl(url), this.makeRequestOptions('POST', params))
+        return this.getData(this.makeUrl(url), "POST", params);
+    }
+
+    protected makeCacheKey(url: string) : string {
+        if (!url || !this.options.cache) return null;
+        return ["localService", this.constructor.name, this.options.cache, encodeURIComponent(url)].join('.');
+    }
+
+    public clearAllCache() {
+        this.cacheEngine.clearAll();
+        return this;
+    }
+
+    protected getData(url: string, method: string, params?: any) {
+        if (this.options.cache) {
+            const cacheValue = this.cacheEngine.get(this.makeCacheKey(url));
+            if (cacheValue) {
+                // reset options on returning cached data from endpoint
+                this.initOptions();
+                return Promise.resolve(cacheValue);
+            }
+        }
+        return this.doFetch(url, this.makeRequestOptions(method, params))
             .then(this.processResponse)
             .catch(this.notifyOnErrors);
     }
 
     public postNoProcess(url: string, params?:any){
         return this.doFetch(this.makeUrl(url), this.makeRequestOptions('POST', params))
-            .then((response:any) => response.json());
+            .then((response:any) => {
+                this.initOptions();
+                return response.json()
+            });
     }
 
-    processResponse<TModel>(response: Response): Promise<any> {
-        return response.json()
+    processResponse<TModel>(httpResponse: Response): Promise<any> {
+        return httpResponse.json()
             .then((response: any) => {
                 const apiResponse = <Result>response;
-                return this.processResult(apiResponse, response);
+                return this.processResult(apiResponse, httpResponse);
             });
     }
 
@@ -130,33 +163,33 @@ export abstract class LocalService {
 
         switch (result.status) {
             case "success":
+                if (this.options.cache) {
+                    this.cacheEngine.set(this.makeCacheKey(response.url), result.data)
+                }
+                // reset options on successful request
+                this.initOptions();
                 return result.data as TModel;
             case "failure":
+                // reset options on defined failure
+                this.initOptions();
                 return result.errors.forEach(handleError);
             default:
+                // reset options on unexpected failure
+                this.initOptions();
                 throw makeNotificationException("The server response was not correctly formatted: "
                     + response.toString(), "error");
         }
     }
 
     notifyOnErrors(error: any) {
+        this.initOptions();
         notificationActions.notify(error);
     }
-
-    errorToNotificationException(error: any): NotificationException {
-        if (error.hasOwnProperty("notification")) {
-            return error;
-        } else if (error instanceof Error) {
-            return makeNotificationException(error.message, "error");
-        } else {
-            return makeNotificationException(error, "error");
-        }
-    }
-
 
     protected logOut() {
         return (dispatch: Dispatch<Action>) => {
             localStorageHandler.remove("accessToken");
+            this.clearAllCache();
             dispatch({
                 type: AuthTypeKeys.UNAUTHENTICATED
             });

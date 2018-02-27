@@ -5,9 +5,9 @@ import { makeLoadable } from "../../main/contrib/stores/Loadable";
 import { ILookup } from "../../main/shared/models/Lookup";
 import { emptyOneTimeTokenData, OneTimeToken, OneTimeTokenData } from "../../main/report/models/OneTimeToken";
 
-export function mockLocation<T>(params?: T): Location<T> {
+export function mockLocation<T>(params?: T, hash?: string): Location<T> {
     return {
-        hash: "hash",
+        hash: hash? hash : "hash",
         params: params || null,
         pathname: "/some/path",
         query: null

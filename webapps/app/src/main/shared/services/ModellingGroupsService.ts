@@ -1,8 +1,13 @@
-import { LocalService } from "../../shared/services/LocalService";
+import { AbstractLocalService } from "./AbstractLocalService";
 
-export class ModellingGroupsService extends LocalService {
+export class ModellingGroupsService extends AbstractLocalService {
 
     getAllGroups() {
-        return this.get("/modelling-groups/");
+        return this.setOptions({cache: ModellingGroupsCacheKeysEnum.groups})
+            .get("/modelling-groups/");
     }
+}
+
+export enum ModellingGroupsCacheKeysEnum {
+    "groups" = "groups",
 }
