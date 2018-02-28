@@ -66,7 +66,7 @@ class UserTests : DatabaseTest()
         validate("/users/report-readers/testname/") against "Users" given {
             TestUserHelper().setupTestUser(it)
             it.addUserWithRoles("reportreaduser", ReifiedRole("reports-reader", Scope.parse("report:testname")))
-        } withPermissions {
+        } requiringPermissions {
             PermissionSet(setOf(ReifiedPermission("roles.read", Scope.Global())))
         } andCheckArray {
             Assertions.assertThat(it).hasSize(1)
