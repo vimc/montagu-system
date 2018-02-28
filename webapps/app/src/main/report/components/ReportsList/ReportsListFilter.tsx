@@ -63,7 +63,7 @@ export const ReportsListFilterComponent: React.StatelessComponent<ReportsListFil
             </div>
         </div>
         <div className="float-md-right form-inline report-time-filters">
-            <div className="ml-2">
+            <div className="ml-md-2">
                 <label> From
                     <div className="ml-2">
                         <DayPickerInput
@@ -82,7 +82,7 @@ export const ReportsListFilterComponent: React.StatelessComponent<ReportsListFil
             </div>
             <div className="ml-2">
                 <label> Until
-                    <div className="ml-2">
+                    <div className="ml-2 picker-on-right">
                         <DayPickerInput
                             format="ll"
                             onDayChange={props.timeUntilSelected}

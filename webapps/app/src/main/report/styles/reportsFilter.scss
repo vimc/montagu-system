@@ -2,13 +2,18 @@
   input.form-control {
     width: 120px;
   }
+  .report-time-filters {
+    width: 350px;
+  }
+
 }
 
-.report-time-filters {
-  width: 350px;
+.picker-on-right {
+  .DayPickerInput {
+    .DayPickerInput-Overlay {
+      left: initial;
+      right: 0px;
+    }
+  }
 }
 
-.DayPickerInput-Overlay {
-  left: initial;
-  right: 0px;
-}
