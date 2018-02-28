@@ -197,7 +197,6 @@ Required permissions: `roles.read`.
 Schema: [`Users.schema.json`](../schemas/Users.schema.json)
 
 ### Example
-
     [
         {
             "username": "tini",
