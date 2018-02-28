@@ -33,4 +33,18 @@ describe("User actions tests", () => {
         });
     });
 
+    it("dispatches report reader removed action if remove report reader action is dispatched", (done) => {
+        const fakeUser = mockUser();
+        sandbox.setStubFunc(UserService.prototype, "removeReportReader", () => {
+            return Promise.resolve();
+        });
+        store.dispatch(userActions.removeReportReader("test", "user"));
+        setTimeout(() => {
+            const actions = store.getActions();
+            expect(actions[0].type).to.eql(UserTypeKeys.REPORT_READER_REMOVED);
+            expect(actions[0].data).to.eql("user");
+            done();
+        });
+    });
+
 });

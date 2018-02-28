@@ -105,9 +105,18 @@ export abstract class AbstractLocalService {
         return this.getData(this.makeUrl(url), "POST", params);
     }
 
-    protected makeCacheKey(url: string) : string {
+    private makeCacheKey(url: string) : string {
         if (!url || !this.options.cache) return null;
-        return ["localService", this.constructor.name, this.options.cache, encodeURIComponent(url)].join('.');
+        return this.getCacheKey(this.options.cache, url);
+    }
+
+    private getCacheKey(cacheKey: string, url: string) : string {
+        return ["localService", this.constructor.name, cacheKey, encodeURIComponent(url)].join('.');
+    }
+
+    protected clearCache(cacheKey: string, url: string) {
+        const key = this.getCacheKey(cacheKey, url);
+        this.cacheEngine.clear(key);
     }
 
     public clearAllCache() {

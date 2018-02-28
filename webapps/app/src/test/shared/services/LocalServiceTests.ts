@@ -124,7 +124,7 @@ describe('Local service class requests tests', () => {
         }
         const testService = new TestService(store.dispatch, store.getState);
         sandbox.setStubFunc(testService, "doFetch", ()=> Promise.resolve({
-            json: () => {
+            json: (): any => {
                 return Promise.resolve({
                     status: "failure",
                     errors: [{code: "bearer-token-invalid"}]
@@ -163,7 +163,7 @@ describe('Local service cache tests', () => {
         }
         const testService = new TestService(store.dispatch, store.getState);
         const doFetchStub = sandbox.setStubFunc(testService, "doFetch", ()=> Promise.resolve({
-            json: () => {
+            json: (): any => {
                 return Promise.resolve({
                     status: "success",
                     data: "testData"
@@ -191,7 +191,7 @@ describe('Local service cache tests', () => {
         }
         const testService = new TestService(store.dispatch, store.getState);
         const doFetchStub = sandbox.setStubFunc(testService, "doFetch", ()=> Promise.resolve({
-            json: () => {
+            json: (): any => {
                 return Promise.resolve({
                     status: "success",
                     data: "testData"
