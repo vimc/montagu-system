@@ -6,6 +6,7 @@ import {
     ReportsSortingFields
 } from "../../actionTypes/ReportsActionsTypes";
 import {ReportAppState} from "../../reducers/reportAppReducers";
+import {VersionIdentifier} from "../../models/VersionIdentifier";
 
 export const getReportsListSelector = (state: ReportAppState) => state.reports.reports;
 
@@ -24,6 +25,16 @@ export const getDisplayedReportsListSelector = createSelector(
                     : !item.published
                 );
             }
+            if (filter.timeFrom) {
+                displayReports = displayReports.filter((item: any) =>
+                    compareVersionAndFilterTime(item.latest_version, filter.timeFrom)
+                );
+            }
+            if (filter.timeUntil) {
+                displayReports = displayReports.filter((item: any) =>
+                    compareVersionAndFilterTime(item.latest_version, filter.timeUntil)
+                );
+            }
             return sortReportsList(displayReports, sorting);
         }
     }
@@ -34,4 +45,7 @@ const getSortOrderByReportFieldName = (field: ReportsSortingFields) => field ===
 export const sortReportsList = (reports: Report[], sortBy: ReportsSortingFields) => {
     return orderBy(reports, [sortBy], [getSortOrderByReportFieldName(sortBy)]);
 };
+
+export const compareVersionAndFilterTime = (version: string, filterTime: string) =>
+    (new VersionIdentifier(version)).timestamp.getTime() > Date.parse(filterTime);
 

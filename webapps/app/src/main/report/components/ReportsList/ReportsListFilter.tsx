@@ -62,7 +62,7 @@ export const ReportsListFilterComponent: React.StatelessComponent<ReportsListFil
                 </label>
             </div>
         </div>
-        <div className="float-right form-inline report-time-filters">
+        <div className="float-md-right form-inline report-time-filters">
             <div className="ml-2">
                 <label> From
                     <div className="ml-2">
@@ -74,8 +74,7 @@ export const ReportsListFilterComponent: React.StatelessComponent<ReportsListFil
                             dayPickerProps={{
                                 firstDayOfWeek: 1
                             }}
-                            placeholder="MMM D, YYYYY"
-                            value={props.filterData.timeFrom ? moment(props.filterData.timeFrom).format("ll") : undefined}
+                            value={moment(props.filterData.timeFrom).format("ll")}
                             inputProps={{className:"form-control-sm form-control"}}
                         />
                     </div>
@@ -92,8 +91,7 @@ export const ReportsListFilterComponent: React.StatelessComponent<ReportsListFil
                             dayPickerProps={{
                                 firstDayOfWeek: 1
                             }}
-                            placeholder="MMM D, YYYYY"
-                            value={props.filterData.timeFrom ? moment(props.filterData.timeFrom).format("ll") : undefined}
+                            value={moment(props.filterData.timeUntil).format("ll")}
                             inputProps={{className:"form-control-sm form-control"}}
                         />
                     </div>

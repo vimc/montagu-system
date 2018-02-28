@@ -30,7 +30,7 @@ export class ReportsListPage extends ReportingPageWithHeader<undefined> {
                 <div className="">
                     <ReportsListSorting />
                 </div>
-                <div className="ml-3">
+                <div className="ml-md-3">
                     <ReportsListFilter />
                 </div>
             </div>

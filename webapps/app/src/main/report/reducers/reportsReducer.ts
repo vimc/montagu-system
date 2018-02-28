@@ -22,7 +22,7 @@ export const reportsInitialState: ReportsState = {
     reportsFilter: {
         published: ReportsFilterPublishTypes.all,
         timeFrom: undefined,
-        timeUntil: null
+        timeUntil: undefined
     },
     versions: null,
     currentReport: null,
