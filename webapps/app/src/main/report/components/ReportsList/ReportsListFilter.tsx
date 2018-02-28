@@ -18,14 +18,13 @@ import {ReportAppState} from "../../reducers/reportAppReducers";
 interface ReportsListFilterProps {
     filterData: ReportsFilterFields;
     filterPublish: (value: ReportsFilterPublishTypes) => void;
-    timeFromSelected: (params: any) => void;
-    timeUntilSelected: (params: any) => void;
+    timeFromSelected: (params: string) => void;
+    timeUntilSelected: (params: string) => void;
 }
 
 export const ReportsListFilterComponent: React.StatelessComponent<ReportsListFilterProps> = (props: ReportsListFilterProps) => (
-    <div className="form-inline">
-        <div className="form-group">
-            
+    <div className="">
+        <div className="form-group float-left">
             <div className="form-check form-check-inline">
                 <label className="form-check-label">
                     <input
@@ -63,46 +62,49 @@ export const ReportsListFilterComponent: React.StatelessComponent<ReportsListFil
                 </label>
             </div>
         </div>
-        <div className="ml-2">
-            <label> From
-                <div className="ml-2">
-                    <DayPickerInput
-                        format="ll"
-                        onDayChange={props.timeFromSelected}
-                        formatDate={formatDate}
-                        parseDate={parseDate}
-                        dayPickerProps={{
-                            firstDayOfWeek: 1
-                        }}
-                        placeholder="MMM D, YYYYY"
-                        value={props.filterData.timeFrom ? moment(props.filterData.timeFrom).format("ll") : undefined}
-                        inputProps={{className:"form-control-sm form-control"}}
-                    />
-                </div>
-            </label>
+        <div className="float-right form-inline report-time-filters">
+            <div className="ml-2">
+                <label> From
+                    <div className="ml-2">
+                        <DayPickerInput
+                            format="ll"
+                            onDayChange={props.timeFromSelected}
+                            formatDate={formatDate}
+                            parseDate={parseDate}
+                            dayPickerProps={{
+                                firstDayOfWeek: 1
+                            }}
+                            placeholder="MMM D, YYYYY"
+                            value={props.filterData.timeFrom ? moment(props.filterData.timeFrom).format("ll") : undefined}
+                            inputProps={{className:"form-control-sm form-control"}}
+                        />
+                    </div>
+                </label>
+            </div>
+            <div className="ml-2">
+                <label> Until
+                    <div className="ml-2">
+                        <DayPickerInput
+                            format="ll"
+                            onDayChange={props.timeUntilSelected}
+                            formatDate={formatDate}
+                            parseDate={parseDate}
+                            dayPickerProps={{
+                                firstDayOfWeek: 1
+                            }}
+                            placeholder="MMM D, YYYYY"
+                            value={props.filterData.timeFrom ? moment(props.filterData.timeFrom).format("ll") : undefined}
+                            inputProps={{className:"form-control-sm form-control"}}
+                        />
+                    </div>
+                </label>
+            </div>
         </div>
-        <div className="ml-2">
-            <label> Until
-                <div className="ml-2">
-                    <DayPickerInput
-                        format="ll"
-                        onDayChange={(day:any) => console.log(day)}
-                        formatDate={formatDate}
-                        parseDate={parseDate}
-                        dayPickerProps={{
-                            firstDayOfWeek: 1
-                        }}
-                        placeholder="MMM D, YYYYY"
-                        inputProps={{className:"form-control-sm form-control"}}
-                    />
-                </div>
-            </label>
-        </div>
+        <div className="clearfix" />
     </div>
 );
 
 export const mapStateToProps = (state: ReportAppState): Partial<ReportsListFilterProps> => {
-    console.log(state.reports.reportsFilter);
     return {
         filterData: state.reports.reportsFilter,
     }
@@ -116,8 +118,8 @@ export const mapDispatchToProps = (dispatch: Dispatch<Action>): Partial<ReportsL
         timeFromSelected: (time: any) => {
             dispatch(reportsActions.filterReports({timeFrom: time}))
         },
-        timeUntilSelected: (params: any) => {
-            dispatch(reportsActions.filterReports({timeUntil: params.format("LL")}))
+        timeUntilSelected: (time: any) => {
+            dispatch(reportsActions.filterReports({timeUntil: time}))
         }
     }
 };
