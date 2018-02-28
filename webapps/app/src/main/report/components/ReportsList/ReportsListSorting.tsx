@@ -16,7 +16,7 @@ export const ReportsListSortingComponent: React.StatelessComponent<ReportsListSo
         <div className="form-group">
             <label className="mr-2">Sort by</label>
             <select
-                className="form-control"
+                className="form-control-sm"
                 onChange={(e: React.ChangeEvent<HTMLSelectElement>) => props.sort(e.target.value as ReportsSortingFields)}
                 value={props.sortBy}
             >

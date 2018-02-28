@@ -27,13 +27,12 @@ export class ReportsListPage extends ReportingPageWithHeader<undefined> {
     render() :JSX.Element {
         return <ReportingPage page={this}>
             <div className="mb-2">
-                <div className="float-left">
+                <div className="">
                     <ReportsListSorting />
                 </div>
-                <div className="float-left ml-3">
+                <div className="ml-3">
                     <ReportsListFilter />
                 </div>
-                <div className="clearfix"></div>
             </div>
             <ReportsList />
         </ReportingPage>;

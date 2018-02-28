@@ -21,7 +21,7 @@ export const reportsInitialState: ReportsState = {
     reportsSortBy: ReportsSortingFields.name,
     reportsFilter: {
         published: ReportsFilterPublishTypes.all,
-        timeFrom: null,
+        timeFrom: undefined,
         timeUntil: null
     },
     versions: null,

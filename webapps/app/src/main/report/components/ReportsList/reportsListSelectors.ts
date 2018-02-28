@@ -1,18 +1,30 @@
 import { createSelector } from "reselect";
 import { orderBy } from "lodash";
 import {Report} from "../../../shared/models/Generated";
-import {ReportsSortingFields} from "../../actionTypes/ReportsActionsTypes";
+import {
+    ReportsFilterFields, ReportsFilterPublishTypes,
+    ReportsSortingFields
+} from "../../actionTypes/ReportsActionsTypes";
 import {ReportAppState} from "../../reducers/reportAppReducers";
 
 export const getReportsListSelector = (state: ReportAppState) => state.reports.reports;
 
 export const getSortingPropsSelector = (state: ReportAppState) => state.reports.reportsSortBy;
 
+export const getFilterPropsSelector = (state: ReportAppState) => state.reports.reportsFilter;
+
 export const getDisplayedReportsListSelector = createSelector(
-    [ getReportsListSelector, getSortingPropsSelector],
-    ( reports: Report[], sorting: ReportsSortingFields) => {
+    [ getReportsListSelector, getSortingPropsSelector, getFilterPropsSelector],
+    ( reports: Report[], sorting: ReportsSortingFields, filter: ReportsFilterFields) => {
         if (reports) {
-            return sortReportsList(reports, sorting);
+            let displayReports = reports;
+            if (filter.published !== ReportsFilterPublishTypes.all) {
+                displayReports = displayReports.filter((item: any) => filter.published === ReportsFilterPublishTypes.published
+                    ? item.published
+                    : !item.published
+                );
+            }
+            return sortReportsList(displayReports, sorting);
         }
     }
 );
