@@ -22,6 +22,56 @@ interface ReportsListFilterProps {
     timeUntilSelected: (params: string) => void;
 }
 
+
+const updateInputRef = (ref:any) => {
+    if (ref) {
+        ref.input.focus = function () {}
+    }
+}
+
+const currentYear = new Date().getFullYear();
+const fromMonth = new Date(currentYear, 0);
+const toMonth = new Date(currentYear + 10, 11);
+
+function YearMonthForm(params: any) {
+    const { date, localeUtils, onChange } = params;
+    const months = localeUtils.getMonths();
+
+    const years = [];
+    for (let i = fromMonth.getFullYear(); i <= toMonth.getFullYear(); i += 1) {
+        years.push(i);
+    }
+
+    const handleChange = function handleChange(e: any) {
+        console.log('handl ch', e);
+        const { year, month } = e.target.form;
+        onChange(new Date(year.value, month.value));
+    };
+
+    return (
+        <form className="DayPicker-Caption">
+            <select name="month" onChange={handleChange} value={date.getMonth()}>
+                {months.map((month: any, i: any) => (
+                    <option key={month} value={i}>
+                        {month}
+                    </option>
+                ))}
+            </select>
+            <select name="year" onChange={handleChange} value={date.getFullYear()}>
+                {years.map(year => (
+                    <option key={year} value={year}>
+                        {year}
+                    </option>
+                ))}
+            </select>
+        </form>
+    );
+}
+
+let curMon = new Date();
+
+
+
 export const ReportsListFilterComponent: React.StatelessComponent<ReportsListFilterProps> = (props: ReportsListFilterProps) => (
     <div className="">
         <div className="form-group float-left">
@@ -66,13 +116,29 @@ export const ReportsListFilterComponent: React.StatelessComponent<ReportsListFil
             <div className="ml-md-2">
                 <label> From
                     <div className="ml-2">
+
                         <DayPickerInput
+                            ref={updateInputRef}
                             format="ll"
                             onDayChange={props.timeFromSelected}
                             formatDate={formatDate}
                             parseDate={parseDate}
+                            // showOverlay={true}
                             dayPickerProps={{
-                                firstDayOfWeek: 1
+                                firstDayOfWeek: 1,
+                                month: curMon,
+                                fromMonth: fromMonth,
+                                toMonth: toMonth,
+                                captionElement: (params: any) => {
+
+                                    const {date, localeUtils} = params;
+
+                                    return <YearMonthForm
+                                        date={date}
+                                        localeUtils={localeUtils}
+                                        onChange={(a:any)=>{console.log(a);curMon = a; }}
+                                    />
+                                }
                             }}
                             value={moment(props.filterData.timeFrom).format("ll")}
                             inputProps={{className:"form-control-sm form-control"}}
