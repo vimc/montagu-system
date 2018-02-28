@@ -13,6 +13,7 @@ interface UserRepository : Repository
     fun all(): Iterable<User>
     fun allWithRoles(): List<User>
     fun updateLastLoggedIn(username: String)
+    fun reportReaders(reportName: String): List<User>
 
     fun globalRoles(): List<String>
 

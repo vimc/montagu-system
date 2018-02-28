@@ -1,6 +1,8 @@
 package org.vaccineimpact.api.app.repositories.jooq
 
-import org.jooq.*
+import org.jooq.DSLContext
+import org.jooq.Record
+import org.jooq.Result
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.models.CreateUser
 import org.vaccineimpact.api.app.repositories.UserRepository
@@ -40,6 +42,17 @@ class JooqUserRepository(dsl: DSLContext) : JooqRepository(dsl), UserRepository
                 .from(ROLE)
                 .where(ROLE.SCOPE_PREFIX.isNull)
                 .fetchInto(String::class.java)
+    }
+
+    override fun reportReaders(reportName: String): List<User>
+    {
+        return dsl.select(APP_USER.USERNAME, APP_USER.NAME, APP_USER.EMAIL, APP_USER.LAST_LOGGED_IN)
+                .fromJoinPath(APP_USER, USER_GROUP_MEMBERSHIP, USER_GROUP,
+                        USER_GROUP_ROLE, ROLE)
+                .where(USER_GROUP_ROLE.SCOPE_ID.eq(reportName))
+                .or(ROLE.SCOPE_PREFIX.isNull)
+                .and(ROLE.NAME.eq("reports-reader"))
+                .fetchInto(User::class.java)
     }
 
     private fun removeRoleFromUser(username: String, role: ReifiedRole)

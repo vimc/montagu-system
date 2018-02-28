@@ -31,6 +31,13 @@ class UserController(
     constructor(context: ActionContext, repositories: Repositories)
             : this(context, repositories.user, OneTimeTokenGenerator(repositories.token))
 
+
+    fun getReportReaders(): List<User>
+    {
+        val reportName = context.params(":report")
+        return userRepository.reportReaders(reportName)
+    }
+
     fun modifyUserRole(): String
     {
         val userName = userName(context)
