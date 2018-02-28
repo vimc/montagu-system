@@ -6,6 +6,7 @@ import {
 } from "../../main/contrib/reducers/modellingGroupsReducer";
 import {reportsInitialState, ReportsState} from "../../main/report/reducers/reportsReducer";
 import {ReportAppState} from "../../main/report/reducers/reportAppReducers";
+import {usersInitialState, UsersState} from "../../main/report/reducers/userReducer";
 
 export type RecursivePartial<T> = {
     [P in keyof T]?: RecursivePartial<T[P]>
@@ -28,6 +29,10 @@ export const mockAuthState = (props?: RecursivePartial<AuthState>) => {
 
 export const mockReportsState = (props?: RecursivePartial<ReportsState>): ReportsState => {
     return Object.assign({}, reportsInitialState, props);
+};
+
+export const mockUsersState = (props?: RecursivePartial<UsersState>): UsersState => {
+    return Object.assign({}, usersInitialState, props);
 };
 
 export const mockGlobalState = (props?: any) => {
@@ -59,9 +64,11 @@ export const mockContribState = (props?: any) => {
 export const mockReportAppState = (props?: RecursivePartial<ReportAppState>): ReportAppState => {
     const authMock: AuthState = props && props.auth ? mockAuthState(props.auth) : mockAuthState();
     const reportsMock: ReportsState = props && props.reports ? mockReportsState(props.reports) : mockReportsState();
+    const usersMock: UsersState = props && props.users ? mockUsersState(props.users) : mockUsersState();
     return {
         auth: authMock,
         form: formReducer,
-        reports: reportsMock
+        reports: reportsMock,
+        users: usersMock
     };
 };

@@ -13,7 +13,6 @@ import {ReportsService} from "../../../../main/report/services/ReportsService";
 import {ReportTypeKeys} from "../../../../main/report/actionTypes/ReportsActionsTypes";
 import {ReportDetails} from "../../../../main/report/components/Reports/ReportDetails";
 import {ReportDownloads} from "../../../../main/report/components/Reports/ReportDownloads";
-import {ReportTabEnum} from "../../../../main/report/components/Reports/Sidebar";
 
 describe("ReportPage", () => {
     const sandbox = new Sandbox();

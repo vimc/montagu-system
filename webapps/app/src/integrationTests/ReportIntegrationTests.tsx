@@ -17,6 +17,7 @@ import {createReportStore} from "../main/report/stores/createReportStore";
 import {ReportsService} from "../main/report/services/ReportsService";
 import {Report} from "../main/shared/models/Generated";
 import {authActions} from "../main/shared/actions/authActions";
+import {UserService} from "../main/report/services/UserService";
 
 const jwt_decode = require('jwt-decode');
 
@@ -53,6 +54,12 @@ class ReportIntegrationTests extends IntegrationTestSuite {
 
             expect(otherReport[0].display_name).to.equal("another report");
             expect(versions.length).to.equal(reports.length);
+        });
+
+
+        it("fetches report readers", async () => {
+            const readers = await (new UserService(this.store.dispatch, this.store.getState)).getReportReaders("minimal");
+            expect(readers.length).to.be.greaterThan(0);
         });
 
         it("fetches report versions",  async () => {
