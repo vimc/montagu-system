@@ -52,6 +52,8 @@ class UserTests : RepositoryTests<UserRepository>()
         withDatabase { db ->
             db.addUserWithRoles(username, ReifiedRole("reports-reader", Scope.parse("report:testname")))
             db.addUserWithRoles("test.user2", ReifiedRole("reports-reader", Scope.Global()))
+            db.addUserWithRoles("test.user3", ReifiedRole("reports-reader", Scope.parse("report:othername")))
+            db.addUserWithRoles("test.user4", ReifiedRole("reports-reviewer", Scope.Global()))
         }
         withRepo { repo ->
             val users = repo.reportReaders("testname")
