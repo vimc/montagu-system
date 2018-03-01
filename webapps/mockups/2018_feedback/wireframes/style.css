@@ -5731,7 +5731,7 @@ select.form-control {
       color: inherit;
       border-bottom: 1px solid #c8c8c8; }
 
-.name {
+.scenario .name {
   font-size: 20pt;
   font-weight: bold; }
 
