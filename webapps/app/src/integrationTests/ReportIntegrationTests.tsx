@@ -58,7 +58,8 @@ class ReportIntegrationTests extends IntegrationTestSuite {
 
 
         it("fetches report readers", async () => {
-            const readers = await (new UserService(this.store.dispatch, this.store.getState)).getReportReaders("minimal");
+            const readers = await (new UserService(this.store.dispatch, this.store.getState))
+                .getReportReaders("minimal");
             expect(readers.length).to.be.greaterThan(0);
         });
 
