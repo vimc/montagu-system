@@ -1,8 +1,9 @@
 package org.vaccineimpact.api.app.app_start.route_config
 
-import org.vaccineimpact.api.app.app_start.*
-import org.vaccineimpact.api.app.controllers.AuthenticationController
-import org.vaccineimpact.api.app.controllers.OneTimeLinkController
+import org.vaccineimpact.api.app.app_start.Endpoint
+import org.vaccineimpact.api.app.app_start.EndpointDefinition
+import org.vaccineimpact.api.app.app_start.json
+import org.vaccineimpact.api.app.app_start.secure
 import org.vaccineimpact.api.app.controllers.UserController
 import spark.route.HttpMethod
 
@@ -30,6 +31,9 @@ object UserRouteConfig : RouteConfig
                     .secure(createUsers),
             Endpoint("$urlBase:username/actions/associate-role/", controller, "modifyUserRole", method = HttpMethod.post)
                     .json()
-                    .secure()
+                    .secure(),
+            Endpoint("${urlBase}report-readers/:report/", controller, "getReportReaders")
+                    .json()
+                    .secure(readRoles)
     )
 }

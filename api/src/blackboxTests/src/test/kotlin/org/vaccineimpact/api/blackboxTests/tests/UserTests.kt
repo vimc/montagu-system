@@ -1,10 +1,12 @@
 package org.vaccineimpact.api.blackboxTests.tests
 
+import com.beust.klaxon.JsonObject
 import com.beust.klaxon.json
 import org.assertj.core.api.Assertions
 import org.junit.Test
 import org.vaccineimpact.api.blackboxTests.helpers.RequestHelper
 import org.vaccineimpact.api.blackboxTests.helpers.TestUserHelper
+import org.vaccineimpact.api.blackboxTests.helpers.TestUserHelper.Companion.username
 import org.vaccineimpact.api.blackboxTests.helpers.validate
 import org.vaccineimpact.api.blackboxTests.schemas.JSONSchema
 import org.vaccineimpact.api.db.JooqContext
@@ -57,6 +59,20 @@ class UserTests : DatabaseTest()
                 PermissionSet("*/can-login", "*/roles.read"), acceptsContentType = "application/json")
 
         Assertions.assertThat(response.statusCode).isEqualTo(200)
+    }
+
+    @Test
+    fun `can get report readers`()
+    {
+        validate("/users/report-readers/testname/") against "Users" given {
+            TestUserHelper().setupTestUser(it)
+            it.addUserWithRoles("reportreaduser", ReifiedRole("reports-reader", Scope.parse("report:testname")))
+        } requiringPermissions {
+            PermissionSet(setOf(ReifiedPermission("roles.read", Scope.Global())))
+        } andCheckArray {
+            Assertions.assertThat(it).hasSize(1)
+            Assertions.assertThat((it[0] as JsonObject)["username"]).isEqualTo("reportreaduser")
+        }
     }
 
     @Test

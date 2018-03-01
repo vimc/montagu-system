@@ -188,3 +188,26 @@ the portal and includes as a query string parameter a onetime token for the
 the user being logged in.
 
 Required permissions: None. You do not need to be logged in to use this endpoint.
+
+## GET /users/report-readers/{reportname}/
+Returns a list of users who have the `reports-reader` role scoped to the given report.
+
+Required permissions: `roles.read`. 
+
+Schema: [`Users.schema.json`](../schemas/Users.schema.json)
+
+### Example
+    [
+        {
+            "username": "tini",
+            "name": "Tini Garske",
+            "email": "example@imperial.ac.uk",
+            "last_logged_in": "2017-10-06T11:06:22Z"
+        },
+        {
+            "username": "alex",
+            "name": "Alex Hill",
+            "email": "alex@example.com",
+            "last_logged_in": "2017-11-06T11:12:13Z"
+        }
+    ]
