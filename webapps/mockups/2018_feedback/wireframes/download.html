@@ -22,6 +22,12 @@
                 .prop("checked", true);
         }
 
+        $(function() {
+            $("table tr td:nth-child(3)").click(function() {
+                window.location = "chart.html";
+            });
+        });
+
     </script>
     <style>
         input[type='checkbox'] {
@@ -52,7 +58,11 @@
             font-family: monospace;
             color: blue;
             text-decoration: underline;
-            cursor: pointer;
+            cursor: pointer;            
+        }
+        table tr td:nth-child(3):after {
+            margin-left: 5px;
+            content: url(arrow.png);
         }
     </style>
 </head>
