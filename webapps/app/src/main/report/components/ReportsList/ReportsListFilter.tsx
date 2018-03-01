@@ -13,13 +13,16 @@ import {DataLinks} from "../Data/DataLinks";
 interface ReportsListFilterProps {
     filterData: ReportsFilterFields;
     filterPublish: (value: ReportsFilterPublishTypes) => void;
-    timeFromSelected: (params: string) => void;
-    timeUntilSelected: (params: string) => void;
+    timeFromSelected: (date: Date) => void;
+    timeUntilSelected: (date: Date) => void;
 }
+
+const fromMonth = new Date("2017-03-01T00:00:00");
+const toMonth = new Date;
 
 export const ReportsListFilterComponent: React.StatelessComponent<ReportsListFilterProps> = (props: ReportsListFilterProps) => (
     <div className="">
-        <div className="form-group float-left">
+        <div className="form-group float-md-left">
             <div className="form-check form-check-inline">
                 <label className="form-check-label">
                     <input
@@ -44,7 +47,7 @@ export const ReportsListFilterComponent: React.StatelessComponent<ReportsListFil
                     /> Published
                 </label>
             </div>
-            <div className="form-check form-check-inline disabled">
+            <div className="form-check form-check-inline">
                 <label className="form-check-label">
                     <input
                         className="form-check-input"
@@ -58,12 +61,14 @@ export const ReportsListFilterComponent: React.StatelessComponent<ReportsListFil
             </div>
         </div>
         <div className="float-md-right form-inline report-time-filters">
-            <div className="ml-md-2">
+            <div className="">
                 <label> From
                     <div className="ml-2">
                         <DatePicker
                             onChange={props.timeFromSelected}
-                            value={props.filterData.timeFrom}
+                            value={props.filterData.timeFrom ? new Date(props.filterData.timeFrom) : fromMonth}
+                            fromMonth={fromMonth}
+                            toMonth={toMonth}
                         />
                     </div>
                 </label>
@@ -73,7 +78,9 @@ export const ReportsListFilterComponent: React.StatelessComponent<ReportsListFil
                     <div className="ml-2 picker-on-right">
                         <DatePicker
                             onChange={props.timeUntilSelected}
-                            value={props.filterData.timeUntil}
+                            value={props.filterData.timeUntil ? new Date(props.filterData.timeUntil) : toMonth}
+                            fromMonth={fromMonth}
+                            toMonth={toMonth}
                         />
                     </div>
                 </label>
@@ -94,11 +101,11 @@ export const mapDispatchToProps = (dispatch: Dispatch<Action>): Partial<ReportsL
         filterPublish: (value: ReportsFilterPublishTypes) => {
             dispatch(reportsActions.filterReports({published: value}))
         },
-        timeFromSelected: (time: string) => {
-            dispatch(reportsActions.filterReports({timeFrom: time}))
+        timeFromSelected: (time: Date) => {
+            dispatch(reportsActions.filterReports({timeFrom: time.toString()}))
         },
-        timeUntilSelected: (time: string) => {
-            dispatch(reportsActions.filterReports({timeUntil: time}))
+        timeUntilSelected: (time: Date) => {
+            dispatch(reportsActions.filterReports({timeUntil: time.toString()}))
         }
     }
 };

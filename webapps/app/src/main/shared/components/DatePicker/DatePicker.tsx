@@ -11,7 +11,7 @@ import {DatePickerMonthYearForm} from "./DatePickerMonthYearForm";
 const currentYear = new Date().getFullYear();
 
 interface DatePickerProps {
-    onChange: (a: any) => void;
+    onChange: (date: Date) => void;
     value: any;
     format?: string;
     showPicker?: boolean;
