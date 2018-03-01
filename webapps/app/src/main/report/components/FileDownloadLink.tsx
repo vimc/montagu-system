@@ -3,7 +3,7 @@ import * as React from "react";
 import * as loaderAnimation from "../../shared/resources/link-loader.gif";
 import {OneTimeLinkContext, OneTimeLinkProps} from "./OneTimeLinkContext";
 
-export const FileDownloadLink = OneTimeLinkContext(class extends React.Component<OneTimeLinkProps, undefined> {
+export class FileDownloadLinkInner extends React.Component<OneTimeLinkProps, undefined> {
     constructor(props: OneTimeLinkProps) {
         super(props);
         this.refreshToken = this.refreshToken.bind(this);
@@ -39,4 +39,6 @@ export const FileDownloadLink = OneTimeLinkContext(class extends React.Component
             {loader}
         </span>;
     }
-});
+}
+
+export const FileDownloadLink = OneTimeLinkContext(FileDownloadLinkInner);

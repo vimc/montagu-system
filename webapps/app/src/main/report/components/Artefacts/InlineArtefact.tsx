@@ -32,7 +32,7 @@ export class InlineArtefact extends React.Component<Props, undefined> {
     }
 }
 
-export const ArtefactIFrame = OneTimeLinkContext(class extends React.Component<OneTimeLinkProps, undefined> {
+export class ArtefactIFrameInner extends React.Component<OneTimeLinkProps, undefined> {
     render(): JSX.Element {
         const {href} = this.props;
         if (href != null) {
@@ -47,4 +47,6 @@ export const ArtefactIFrame = OneTimeLinkContext(class extends React.Component<O
             return null;
         }
     }
-});
+}
+
+export const ArtefactIFrame = OneTimeLinkContext(ArtefactIFrameInner);
