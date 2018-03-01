@@ -2,6 +2,7 @@ import { connect } from 'react-redux';
 import { Dispatch } from "redux";
 import { compose, lifecycle, branch, renderComponent } from "recompose";
 import { createSelector } from "reselect";
+import withLifecycle from '@hocs/with-lifecycle';
 
 import {ReportAppState} from "../../reducers/reportAppReducers";
 import { reportsActions } from "../../actions/reportsActions";
@@ -15,8 +16,9 @@ export interface ReportsListContainerProps extends ReportsListComponentProps {
 }
 
 const lifecyleProps = {
-    componentDidMount() {
-        this.props.getReports();
+    onDidMount(props: ReportsListContainerProps) {
+        console.log('pr', props)
+        props.getReports();
     }
 }
 
@@ -35,7 +37,7 @@ export const mapDispatchToProps = (dispatch: Dispatch<ReportAppState>): Partial<
 
 const enhance = compose(
     connect(mapStateToProps, mapDispatchToProps),
-    lifecycle(lifecyleProps),
+    withLifecycle(lifecyleProps),
     branch((props: ReportsListContainerProps) => !props.ready, renderComponent(LoadingElement))
 );
 export const ReportsList = enhance(ReportsListComponent);
