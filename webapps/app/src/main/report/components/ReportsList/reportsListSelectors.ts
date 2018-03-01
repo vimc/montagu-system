@@ -18,7 +18,6 @@ export const getDisplayedReportsListSelector = createSelector(
     [ getReportsListSelector, getSortingPropsSelector, getFilterPropsSelector],
     ( reports: Report[], sorting: ReportsSortingFields, filter: ReportsFilterFields) => {
         if (reports) {
-            console.log('filt', filter)
             let displayReports = reports;
             if (filter.published !== ReportsFilterPublishTypes.all) {
                 displayReports = displayReports.filter((item: any) => filter.published === ReportsFilterPublishTypes.published

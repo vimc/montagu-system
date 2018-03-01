@@ -95,11 +95,9 @@ export const mapDispatchToProps = (dispatch: Dispatch<Action>): Partial<ReportsL
             dispatch(reportsActions.filterReports({published: value}))
         },
         timeFromSelected: (time: string) => {
-            console.log('fr', time);
             dispatch(reportsActions.filterReports({timeFrom: time}))
         },
         timeUntilSelected: (time: string) => {
-            console.log('to', time);
             dispatch(reportsActions.filterReports({timeUntil: time}))
         }
     }
