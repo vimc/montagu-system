@@ -5491,11 +5491,13 @@ button:disabled, .button.disabled {
 
 @font-face {
   font-family: header;
-  src: url(PetitaBold.ttf); }
+  src: url(PetitaBold.ttf); 
+}
 
 @font-face {
   font-family: body;
-  src: url(Cloud-Light.otf); }
+  src: url(Cloud-Light.otf); 
+}
 
 .form .fields {
   float: left;
