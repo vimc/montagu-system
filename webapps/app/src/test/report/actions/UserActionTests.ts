@@ -6,6 +6,7 @@ import {UserTypeKeys} from "../../../main/report/actionTypes/UsersActionTypes";
 import {userActions} from "../../../main/report/actions/userActions";
 import {UserService} from "../../../main/report/services/UserService";
 import {mockUser} from "../../mocks/mockModels";
+import {checkAsync} from "../../testHelpers";
 
 describe("User actions tests", () => {
     const sandbox = new Sandbox();
@@ -25,11 +26,10 @@ describe("User actions tests", () => {
             return Promise.resolve([fakeUser]);
         });
         store.dispatch(userActions.getReportReaders("test"));
-        setTimeout(() => {
+        checkAsync(done, () => {
             const actions = store.getActions();
             expect(actions[0].type).to.eql(UserTypeKeys.REPORT_READERS_FETCHED);
             expect(actions[0].data).to.eql([fakeUser]);
-            done();
         });
     });
 
