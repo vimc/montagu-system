@@ -17,7 +17,7 @@ import {singletonVariableCache} from "../modules/cache/singletonVariableCache";
 export interface OptionsHeaders {
    Authorization?: string;
    'Content-Type'?: string;
-};
+}
 
 export interface RequestOptions {
     headers?: OptionsHeaders;
@@ -31,7 +31,7 @@ export interface InputOptions {
     'Content-Type'?: string;
     credentials?: "omit" | "same-origin" | "include";
     baseURL?: string;
-    cache?: string;
+    cacheKey?: string;
 }
 
 export abstract class AbstractLocalService {
@@ -68,7 +68,7 @@ export abstract class AbstractLocalService {
     protected initOptions() {
         this.options = {};
         this.options.baseURL = settings.apiUrl();
-        this.options.cache = null;
+        this.options.cacheKey = null;
         if (this.bearerToken) {
             this.options.Authorization = 'Bearer ' + this.bearerToken;
         }
@@ -105,17 +105,12 @@ export abstract class AbstractLocalService {
         return this.getData(this.makeUrl(url), "POST", params);
     }
 
-    private makeCacheKey(url: string) : string {
-        if (!url || !this.options.cache) return null;
-        return this.getCacheKey(this.options.cache, url);
-    }
-
-    private getCacheKey(cacheKey: string, url: string) : string {
+    private getFullyQualifiedCacheKey(cacheKey: string, url: string) : string {
         return ["localService", this.constructor.name, cacheKey, encodeURIComponent(url)].join('.');
     }
 
     protected clearCache(cacheKey: string, url: string) {
-        const key = this.getCacheKey(cacheKey, url);
+        const key = this.getFullyQualifiedCacheKey(cacheKey, url);
         this.cacheEngine.clear(key);
     }
 
@@ -125,8 +120,8 @@ export abstract class AbstractLocalService {
     }
 
     protected getData(url: string, method: string, params?: any) {
-        if (this.options.cache) {
-            const cacheValue = this.cacheEngine.get(this.makeCacheKey(url));
+        if (this.options.cacheKey) {
+            const cacheValue = this.cacheEngine.get(this.getFullyQualifiedCacheKey(this.options.cacheKey, url));
             if (cacheValue) {
                 // reset options on returning cached data from endpoint
                 this.initOptions();
@@ -172,8 +167,8 @@ export abstract class AbstractLocalService {
 
         switch (result.status) {
             case "success":
-                if (this.options.cache) {
-                    this.cacheEngine.set(this.makeCacheKey(response.url), result.data)
+                if (this.options.cacheKey) {
+                    this.cacheEngine.set(this.getFullyQualifiedCacheKey(this.options.cacheKey, response.url), result.data)
                 }
                 // reset options on successful request
                 this.initOptions();

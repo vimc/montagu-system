@@ -10,7 +10,7 @@ export class UserService extends AbstractLocalService {
 
     getReportReaders(reportName: string) {
         const url = reportReadersUrl(reportName);
-        return this.setOptions({cache: UserCacheKeysEnum.reportReaders})
+        return this.setOptions({cacheKey: UserCacheKeysEnum.reportReaders})
             .get(url);
     }
 

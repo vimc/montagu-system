@@ -183,7 +183,7 @@ describe('Local service cache tests', () => {
         const store = createMockStore();
         class TestService extends AbstractLocalService {
             test() {
-                return this.setOptions({cache: "test"}).get("/test/");
+                return this.setOptions({cacheKey: "test"}).get("/test/");
             }
             getCacheEngine() {
                 return this.cacheEngine;
