@@ -1,5 +1,6 @@
 package org.vaccineimpact.api.blackboxTests.tests
 
+import com.beust.klaxon.JsonObject
 import com.beust.klaxon.json
 import org.assertj.core.api.Assertions
 import org.junit.Test
@@ -70,6 +71,7 @@ class UserTests : DatabaseTest()
             PermissionSet(setOf(ReifiedPermission("roles.read", Scope.Global())))
         } andCheckArray {
             Assertions.assertThat(it).hasSize(1)
+            Assertions.assertThat((it[0] as JsonObject)["username"]).isEqualTo("reportreaduser")
         }
     }
 
