@@ -26,7 +26,7 @@ export class UserService extends AbstractLocalService {
             scope_id: reportName
         };
 
-        return this.post(`/users/${username}/actions/associate-role/`, associateRole);
+        return this.post(`/users/${username}/actions/associate-role/`, JSON.stringify(associateRole));
     }
 
 }
