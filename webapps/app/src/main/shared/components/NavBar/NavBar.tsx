@@ -19,6 +19,19 @@ export class NavBarComponent extends React.Component<Props, undefined> {
         };
     }
 
+    render(): JSX.Element {
+        return (
+            <div className="montagu-navbar">
+                <div className={"pl-md-1"}></div>
+                {this.props.crumbs.map(c =>
+                    <div className="montagu-navbar__chunk" key={c.url}>
+                        {this.makeLink(c)}
+                    </div>
+                )}
+            </div>
+        );
+    }
+
     private makeLink(crumb: Breadcrumb): JSX.Element {
         if (crumb.url != null) {
             return <InternalLink href={crumb.url}>
@@ -27,18 +40,6 @@ export class NavBarComponent extends React.Component<Props, undefined> {
         } else {
             return <span>{crumb.name}</span>;
         }
-    }
-
-    render(): JSX.Element {
-        return(
-            <div className="montagu-navbar">
-            { this.props.crumbs.map(c =>
-                <div className="montagu-navbar__chunk" key={c.url}>
-                    {this.makeLink(c)}
-                </div>
-            ) }
-            </div>
-        );
     }
 }
 

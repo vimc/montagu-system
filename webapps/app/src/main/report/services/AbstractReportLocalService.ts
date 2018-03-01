@@ -1,7 +1,7 @@
-import { LocalService } from "../../shared/services/LocalService";
+import { AbstractLocalService } from "../../shared/services/AbstractLocalService";
 import {settings} from "../../shared/Settings";
 
-export class ReportLocalService extends LocalService {
+export abstract class AbstractReportLocalService extends AbstractLocalService {
     protected initOptions() {
         super.initOptions();
         this.options.baseURL = settings.reportingApiUrl();

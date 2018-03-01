@@ -10,6 +10,10 @@
 @import "notifications";
 @import "page";
 
+html, body {
+  height: 100%
+}
+
 select, input {
     font-size: inherit;
 }
@@ -29,7 +33,7 @@ table {
     border: 0;
 }
 
-hr {
+hr.dashed {
     border-bottom: 1px dashed $body-color !important;
 }
 

@@ -1,21 +1,22 @@
-import { LocalService } from "./LocalService";
+import { AbstractLocalService } from "./AbstractLocalService";
 
-export class AuthService extends LocalService {
+export class AuthService extends AbstractLocalService {
+
     logIn(email: string, password: string) {
-        this.setOptions({
+        return this.setOptions({
             Authorization: 'Basic ' + btoa(`${email}:${password}`),
             'Content-Type': 'application/x-www-form-urlencoded'
-        });
-        return this.postNoProcess("/authenticate/", "grant_type=client_credentials")
+        })
+            .postNoProcess("/authenticate/", "grant_type=client_credentials")
     }
 
     setShinyCookie() {
-        this.setOptions({credentials: "include"});
-        return this.get("/set-shiny-cookie/");
+        return this.setOptions({credentials: "include"})
+            .get("/set-shiny-cookie/");
     }
 
     clearShinyCookie() {
-        this.setOptions({credentials: "include"});
-        return this.get("/clear-shiny-cookie/");
+        return this.setOptions({credentials: "include"})
+            .get("/clear-shiny-cookie/");
     }
 }

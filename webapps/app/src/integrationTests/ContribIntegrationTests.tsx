@@ -12,6 +12,9 @@ import {modellingGroupActions} from "../main/shared/actions/ModellingGroupAction
 import {expectIsEqual, IntegrationTestSuite} from "./IntegrationTest";
 import {ContribFetcher} from "../main/contrib/sources/ContribFetcher";
 import {shallow} from "enzyme";
+import * as enzyme from "enzyme";
+import * as Adapter from "enzyme-adapter-react-15";
+enzyme.configure({ adapter: new Adapter() });
 import {ModelRunParametersSection} from "../main/contrib/components/Responsibilities/ModelRunParameters/ModelRunParametersSection";
 import {ModelRunParametersContentComponent} from "../main/contrib/components/Responsibilities/ModelRunParameters/ModelRunParametersContent";
 import {mockModellingGroup, mockTouchstone} from "../test/mocks/mockModels";

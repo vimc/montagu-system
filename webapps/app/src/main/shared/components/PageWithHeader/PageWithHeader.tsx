@@ -29,7 +29,11 @@ export abstract class PageWithHeader<TLocationProps>
     hideTitle(): boolean {
         return false;
     }
-    componentDidMount(): Promise<any> {
+    componentDidMount(): Promise<any> | void {
+        return this.loadOnMount();
+    }
+
+    loadOnMount(): Promise<any> {
         return this.load(this.props.location.params).then(() => {
             this.createBreadcrumb();
             window.scrollTo(0, 0);
@@ -75,4 +79,5 @@ export abstract class PageWithHeader<TLocationProps>
 export interface PageProperties<T> {
     location: Location<T>;
     router: IRouter;
+    onLoad?: (props:Partial<T>) => void;
 }

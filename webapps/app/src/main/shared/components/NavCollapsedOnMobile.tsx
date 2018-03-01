@@ -29,7 +29,7 @@ export class NavbarCollapsedOnMobile extends React.Component<NavProps, CollapseS
 
     render() {
         return <Navbar light={this.props.light} className={this.props.className}>
-            <NavbarToggler onClick={this.toggle} className={"d-md-none"}/>,
+            <NavbarToggler onClick={this.toggle} className={"d-md-none"}/>
             <Collapse isOpen={this.state.isOpen}
                       navbar
                       className={"d-md-block mt-4 mt-md-0"}>
