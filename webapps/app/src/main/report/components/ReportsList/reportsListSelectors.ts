@@ -18,6 +18,7 @@ export const getDisplayedReportsListSelector = createSelector(
     [ getReportsListSelector, getSortingPropsSelector, getFilterPropsSelector],
     ( reports: Report[], sorting: ReportsSortingFields, filter: ReportsFilterFields) => {
         if (reports) {
+            console.log('filt', filter)
             let displayReports = reports;
             if (filter.published !== ReportsFilterPublishTypes.all) {
                 displayReports = displayReports.filter((item: any) => filter.published === ReportsFilterPublishTypes.published
@@ -32,7 +33,7 @@ export const getDisplayedReportsListSelector = createSelector(
             }
             if (filter.timeUntil) {
                 displayReports = displayReports.filter((item: any) =>
-                    compareVersionAndFilterTime(item.latest_version, filter.timeUntil)
+                    !compareVersionAndFilterTime(item.latest_version, filter.timeUntil)
                 );
             }
             return sortReportsList(displayReports, sorting);
