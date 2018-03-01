@@ -1,7 +1,10 @@
 import { expect } from "chai";
 
 import {reportsReducer, ReportsState} from "../../../main/report/reducers/reportsReducer";
-import {ReportsSortingFields, ReportTypeKeys} from "../../../main/report/actionTypes/ReportsActionsTypes";
+import {
+    ReportsFilterPublishTypes, ReportsSortingFields,
+    ReportTypeKeys
+} from "../../../main/report/actionTypes/ReportsActionsTypes";
 import {mockReport, mockVersion} from "../../mocks/mockModels";
 
 describe('Reports reducer tests', () => {
@@ -38,4 +41,27 @@ describe('Reports reducer tests', () => {
         expect(newState.reportsSortBy).to.eql(ReportsSortingFields.latest_version);
     });
 
+    it('sets reports filter prop by published', () => {
+        const newState: ReportsState = reportsReducer(undefined, {
+            type: ReportTypeKeys.FILTER_REPORTS,
+            data: { published: ReportsFilterPublishTypes.published }
+        });
+        expect(newState.reportsFilter).to.eql({
+            published: "published",
+            timeFrom: null,
+            timeUntil: null
+        });
+    });
+
+    it('sets reports filter prop by timeFrom', () => {
+        const newState: ReportsState = reportsReducer(undefined, {
+            type: ReportTypeKeys.FILTER_REPORTS,
+            data: { timeFrom: "test_time" }
+        });
+        expect(newState.reportsFilter).to.eql({
+            published: "all",
+            timeFrom: "test_time",
+            timeUntil: null
+        });
+    });
 })

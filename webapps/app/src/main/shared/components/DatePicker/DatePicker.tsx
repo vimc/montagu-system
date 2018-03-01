@@ -4,15 +4,15 @@ import {
     formatDate,
     parseDate,
 } from 'react-day-picker/moment';
-
 import * as moment from "moment";
+
 import {DatePickerMonthYearForm} from "./DatePickerMonthYearForm";
 
 const currentYear = new Date().getFullYear();
 
 interface DatePickerProps {
     onChange: (date: Date) => void;
-    value: any;
+    value: Date;
     format?: string;
     showPicker?: boolean;
     fromMonth?: Date;
@@ -40,7 +40,7 @@ export class DatePicker extends React.Component<DatePickerProps, DatePickerState
     }
 
     // Fix for the bug of defocusing, should be fixed in future versions
-    updateInputRef(ref:any) {
+    updateInputRef(ref: any) {
         if (ref) {
             ref.input.focus = function () {}
         }
