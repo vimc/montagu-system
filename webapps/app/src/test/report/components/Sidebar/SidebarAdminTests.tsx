@@ -12,6 +12,7 @@ import {
     SidebarAdminProps
 } from "../../../../main/report/components/Sidebar/SidebarAdmin";
 import {PublishSwitch} from "../../../../main/report/components/Sidebar/PublishSwitch";
+import {ReportReadersList} from "../../../../main/report/components/Sidebar/ReportReadersList";
 
 describe("SidebarAdmin", () => {
 
@@ -92,6 +93,26 @@ describe("SidebarAdmin", () => {
 
         const rendered = shallow(<SidebarAdminComponent {...props} />);
         expect(rendered.find(PublishSwitch)).to.have.lengthOf(0);
+    });
+
+    it("renders report readers if user is admin", () => {
+
+        const props = defaultSidebarProps;
+        props.isAdmin = true;
+        props.ready = true;
+
+        const rendered = shallow(<SidebarAdminComponent {...props} />);
+        expect(rendered.find(ReportReadersList)).to.have.lengthOf(1);
+    });
+
+    it("does not render report readers if user is not admin", () => {
+
+        const props = defaultSidebarProps;
+        props.isAdmin = false;
+        props.ready = true;
+
+        const rendered = shallow(<SidebarAdminComponent {...props} />);
+        expect(rendered.find(ReportReadersList)).to.have.lengthOf(0);
     });
 
     it("gets reviewer status from app state", () => {

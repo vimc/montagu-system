@@ -4,7 +4,7 @@ import {connect} from "react-redux";
 import {User} from "../../../shared/models/Generated";
 import {ReportVersionSwitcher} from "../Reports/ReportVersionSwitcher";
 import {PublishSwitch} from "./PublishSwitch";
-import {UserList} from "./UserList";
+import {ReportReadersList} from "./ReportReadersList";
 
 export interface PublicProps {
     onChangeVersion: (version: string) => any;
@@ -36,7 +36,7 @@ export const SidebarAdminComponent = (props: SidebarAdminProps) => {
         {props.isAdmin &&
         <div className="mt-5">
             <label className={"font-weight-bold"}>Report readers</label>
-            <UserList users={props.reportReaders}/>
+            <ReportReadersList users={props.reportReaders}/>
         </div>}
     </div>
 
