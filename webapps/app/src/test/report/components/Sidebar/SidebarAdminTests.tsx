@@ -38,7 +38,8 @@ describe("SidebarAdmin", () => {
         onChangeVersion: () => {
         },
         allVersions: ["v1", "v2"],
-        reportReaders: [mockUser()]
+        reportReaders: [mockUser()],
+        getReportReaders: sandbox.sinon.stub()
     };
 
     it("renders report version switcher", () => {
