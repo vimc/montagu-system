@@ -20,7 +20,7 @@ fun sendTestEmail(args: List<String>)
             TransportStrategy.SMTP_TLS
     )
     val email = Email().apply {
-        addRecipient("Unknown recipient", to, Message.RecipientType.TO)
+        addNamedToRecipients("Unknown recipient", to)
         setFromAddress("Montagu Notifications", "montagu@imperial.ac.uk")
         subject = "Test email"
         text = "If you are reading this, the test email was sent correctly."
