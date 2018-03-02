@@ -116,4 +116,4 @@ fun Endpoint.post(): Endpoint
     return this.copy(method = spark.route.HttpMethod.post)
 }
 
-private fun passThrough(x: Any?, context: ActionContext): Any? = x
+private fun passThrough(x: Any?, @Suppress("UNUSED_PARAMETER") context: ActionContext): Any? = x
