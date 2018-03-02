@@ -25,6 +25,9 @@ To run Blackbox tests from the command line, after running the above 2 commands,
 
      ./gradlew :blackboxTests:run
 
+## Upgrading dependencies
+Run `./gradlew dependencyUpdates` and then manually update as required.
+
 ## Project anatomy
 At the top level we have four folders of note:
 * `src/`: The source code of the application and its tests and helpers
