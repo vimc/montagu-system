@@ -12,7 +12,6 @@ import org.jooq.Result;
 import org.jooq.impl.DSL;
 import org.vaccineimpact.api.db.routines.DisableTrigger;
 import org.vaccineimpact.api.db.routines.EnableTrigger;
-import org.vaccineimpact.api.db.routines.PostgresFdwHandler;
 import org.vaccineimpact.api.db.routines.PostgresFdwValidator;
 import org.vaccineimpact.api.db.tables.SelectBurdenData1;
 import org.vaccineimpact.api.db.tables.SelectBurdenData2;
@@ -67,27 +66,6 @@ public class Routines {
         p.setTriggerName(triggerName);
 
         p.execute(configuration);
-    }
-
-    /**
-     * @deprecated Unknown data type. Please define an explicit {@link org.jooq.Binding} to specify how this type should be handled.
-     */
-    @java.lang.Deprecated
-    public static Object postgresFdwHandler(Configuration configuration) {
-        PostgresFdwHandler f = new PostgresFdwHandler();
-
-        f.execute(configuration);
-        return f.getReturnValue();
-    }
-
-    /**
-     * @deprecated Unknown data type. Please define an explicit {@link org.jooq.Binding} to specify how this type should be handled.
-     */
-    @java.lang.Deprecated
-    public static Field<Object> postgresFdwHandler() {
-        PostgresFdwHandler f = new PostgresFdwHandler();
-
-        return f.asField();
     }
 
     /**

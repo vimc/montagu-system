@@ -21,7 +21,10 @@ class RouterTests : MontaguTests()
         assertThat(TestController.invoked).isTrue()
     }
 
-    class TestController(context: ActionContext, repositories: Repositories) : Controller(context)
+    class TestController(
+            context: ActionContext,
+            @Suppress("UNUSED_PARAMETER") repositories: Repositories
+    ) : Controller(context)
     {
         fun test()
         {
