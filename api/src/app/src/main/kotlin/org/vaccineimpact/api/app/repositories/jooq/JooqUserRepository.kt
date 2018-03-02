@@ -3,6 +3,7 @@ package org.vaccineimpact.api.app.repositories.jooq
 import org.jooq.DSLContext
 import org.jooq.Record
 import org.jooq.Result
+import org.jooq.SelectOnConditionStep
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.models.CreateUser
 import org.vaccineimpact.api.app.repositories.UserRepository
@@ -46,13 +47,16 @@ class JooqUserRepository(dsl: DSLContext) : JooqRepository(dsl), UserRepository
 
     override fun reportReaders(reportName: String): List<User>
     {
-        return dsl.select(APP_USER.USERNAME, APP_USER.NAME, APP_USER.EMAIL, APP_USER.LAST_LOGGED_IN)
-                .fromJoinPath(APP_USER, USER_GROUP_MEMBERSHIP, USER_GROUP,
-                        USER_GROUP_ROLE, ROLE)
+        val reportReaders = dsl.select(APP_USER.USERNAME)
+                .fromJoinPath(APP_USER, USER_GROUP_MEMBERSHIP, USER_GROUP, USER_GROUP_ROLE, ROLE)
                 .where(USER_GROUP_ROLE.SCOPE_ID.eq(reportName))
                 .or(ROLE.SCOPE_PREFIX.isNull)
                 .and(ROLE.NAME.eq("reports-reader"))
-                .fetchInto(User::class.java)
+
+        return this.allWithRolesQuery()
+                .where(APP_USER.USERNAME.`in`(reportReaders))
+                .fetchGroups(APP_USER)
+                .map(this::mapUserWithRoles)
     }
 
     private fun removeRoleFromUser(username: String, role: ReifiedRole)
@@ -145,6 +149,13 @@ class JooqUserRepository(dsl: DSLContext) : JooqRepository(dsl), UserRepository
 
     override fun allWithRoles(): List<User>
     {
+        return this.allWithRolesQuery()
+                .fetchGroups(APP_USER)
+                .map(this::mapUserWithRoles)
+    }
+
+    private fun allWithRolesQuery(): SelectOnConditionStep<Record>
+    {
         return dsl.select()
                 .from(APP_USER)
                 .leftJoin(USER_GROUP_MEMBERSHIP)
@@ -153,8 +164,6 @@ class JooqUserRepository(dsl: DSLContext) : JooqRepository(dsl), UserRepository
                 .on(USER_GROUP_ROLE.USER_GROUP.eq(USER_GROUP_MEMBERSHIP.USER_GROUP))
                 .leftJoin(ROLE)
                 .on(ROLE.ID.eq(USER_GROUP_ROLE.ROLE))
-                .fetchGroups(APP_USER)
-                .map(this::mapUserWithRoles)
     }
 
     override fun addUser(user: CreateUser)

@@ -72,6 +72,7 @@ class UserTests : DatabaseTest()
         } andCheckArray {
             Assertions.assertThat(it).hasSize(1)
             Assertions.assertThat((it[0] as JsonObject)["username"]).isEqualTo("reportreaduser")
+            Assertions.assertThat((it[0] as JsonObject)["roles"]).isNotNull()
         }
     }
 
