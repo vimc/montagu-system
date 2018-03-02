@@ -72,7 +72,6 @@ import org.vaccineimpact.api.db.tables.UploadInfo;
 import org.vaccineimpact.api.db.tables.UserGroup;
 import org.vaccineimpact.api.db.tables.UserGroupMembership;
 import org.vaccineimpact.api.db.tables.UserGroupRole;
-import org.vaccineimpact.api.db.tables.UserRole;
 import org.vaccineimpact.api.db.tables.Vaccine;
 import org.vaccineimpact.api.db.tables.VaccineRoutineAge;
 
@@ -180,7 +179,6 @@ public class Indexes {
     public static final Index USER_GROUP_PKEY = Indexes0.USER_GROUP_PKEY;
     public static final Index USER_GROUP_MEMBERSHIP_PKEY = Indexes0.USER_GROUP_MEMBERSHIP_PKEY;
     public static final Index USER_GROUP_ROLE_PKEY = Indexes0.USER_GROUP_ROLE_PKEY;
-    public static final Index USER_ROLE_PKEY = Indexes0.USER_ROLE_PKEY;
     public static final Index VACCINE_PKEY = Indexes0.VACCINE_PKEY;
     public static final Index VACCINE_ROUTINE_AGE_PKEY = Indexes0.VACCINE_ROUTINE_AGE_PKEY;
 
@@ -275,7 +273,6 @@ public class Indexes {
         public static Index USER_GROUP_PKEY = createIndex("user_group_pkey", UserGroup.USER_GROUP, new OrderField[] { UserGroup.USER_GROUP.ID }, true);
         public static Index USER_GROUP_MEMBERSHIP_PKEY = createIndex("user_group_membership_pkey", UserGroupMembership.USER_GROUP_MEMBERSHIP, new OrderField[] { UserGroupMembership.USER_GROUP_MEMBERSHIP.USERNAME, UserGroupMembership.USER_GROUP_MEMBERSHIP.USER_GROUP }, true);
         public static Index USER_GROUP_ROLE_PKEY = createIndex("user_group_role_pkey", UserGroupRole.USER_GROUP_ROLE, new OrderField[] { UserGroupRole.USER_GROUP_ROLE.USER_GROUP, UserGroupRole.USER_GROUP_ROLE.ROLE, UserGroupRole.USER_GROUP_ROLE.SCOPE_ID }, true);
-        public static Index USER_ROLE_PKEY = createIndex("user_role_pkey", UserRole.USER_ROLE, new OrderField[] { UserRole.USER_ROLE.USERNAME, UserRole.USER_ROLE.ROLE, UserRole.USER_ROLE.SCOPE_ID }, true);
         public static Index VACCINE_PKEY = createIndex("vaccine_pkey", Vaccine.VACCINE, new OrderField[] { Vaccine.VACCINE.ID }, true);
         public static Index VACCINE_ROUTINE_AGE_PKEY = createIndex("vaccine_routine_age_pkey", VaccineRoutineAge.VACCINE_ROUTINE_AGE, new OrderField[] { VaccineRoutineAge.VACCINE_ROUTINE_AGE.ID }, true);
     }

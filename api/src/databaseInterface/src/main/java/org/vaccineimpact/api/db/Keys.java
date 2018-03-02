@@ -74,7 +74,6 @@ import org.vaccineimpact.api.db.tables.UploadInfo;
 import org.vaccineimpact.api.db.tables.UserGroup;
 import org.vaccineimpact.api.db.tables.UserGroupMembership;
 import org.vaccineimpact.api.db.tables.UserGroupRole;
-import org.vaccineimpact.api.db.tables.UserRole;
 import org.vaccineimpact.api.db.tables.Vaccine;
 import org.vaccineimpact.api.db.tables.VaccineRoutineAge;
 import org.vaccineimpact.api.db.tables.records.ActivityTypeRecord;
@@ -141,7 +140,6 @@ import org.vaccineimpact.api.db.tables.records.UploadInfoRecord;
 import org.vaccineimpact.api.db.tables.records.UserGroupMembershipRecord;
 import org.vaccineimpact.api.db.tables.records.UserGroupRecord;
 import org.vaccineimpact.api.db.tables.records.UserGroupRoleRecord;
-import org.vaccineimpact.api.db.tables.records.UserRoleRecord;
 import org.vaccineimpact.api.db.tables.records.VaccineRecord;
 import org.vaccineimpact.api.db.tables.records.VaccineRoutineAgeRecord;
 
@@ -285,7 +283,6 @@ public class Keys {
     public static final UniqueKey<UserGroupRecord> USER_GROUP_PKEY = UniqueKeys0.USER_GROUP_PKEY;
     public static final UniqueKey<UserGroupMembershipRecord> USER_GROUP_MEMBERSHIP_PKEY = UniqueKeys0.USER_GROUP_MEMBERSHIP_PKEY;
     public static final UniqueKey<UserGroupRoleRecord> USER_GROUP_ROLE_PKEY = UniqueKeys0.USER_GROUP_ROLE_PKEY;
-    public static final UniqueKey<UserRoleRecord> USER_ROLE_PKEY = UniqueKeys0.USER_ROLE_PKEY;
     public static final UniqueKey<VaccineRecord> VACCINE_PKEY = UniqueKeys0.VACCINE_PKEY;
     public static final UniqueKey<VaccineRoutineAgeRecord> VACCINE_ROUTINE_AGE_PKEY = UniqueKeys0.VACCINE_ROUTINE_AGE_PKEY;
 
@@ -400,8 +397,6 @@ public class Keys {
     public static final ForeignKey<UserGroupMembershipRecord, UserGroupRecord> USER_GROUP_MEMBERSHIP__USER_GROUP_MEMBERSHIP_USER_GROUP_FKEY = ForeignKeys0.USER_GROUP_MEMBERSHIP__USER_GROUP_MEMBERSHIP_USER_GROUP_FKEY;
     public static final ForeignKey<UserGroupRoleRecord, UserGroupRecord> USER_GROUP_ROLE__USER_GROUP_ROLE_USER_GROUP_FKEY = ForeignKeys0.USER_GROUP_ROLE__USER_GROUP_ROLE_USER_GROUP_FKEY;
     public static final ForeignKey<UserGroupRoleRecord, RoleRecord> USER_GROUP_ROLE__USER_GROUP_ROLE_ROLE_FKEY = ForeignKeys0.USER_GROUP_ROLE__USER_GROUP_ROLE_ROLE_FKEY;
-    public static final ForeignKey<UserRoleRecord, AppUserRecord> USER_ROLE__USER_ROLE_USERNAME_FKEY = ForeignKeys0.USER_ROLE__USER_ROLE_USERNAME_FKEY;
-    public static final ForeignKey<UserRoleRecord, RoleRecord> USER_ROLE__USER_ROLE_ROLE_FKEY = ForeignKeys0.USER_ROLE__USER_ROLE_ROLE_FKEY;
     public static final ForeignKey<VaccineRoutineAgeRecord, VaccineRecord> VACCINE_ROUTINE_AGE__VACCINE_ROUTINE_AGE_VACCINE_FKEY = ForeignKeys0.VACCINE_ROUTINE_AGE__VACCINE_ROUTINE_AGE_VACCINE_FKEY;
 
     // -------------------------------------------------------------------------
@@ -528,7 +523,6 @@ public class Keys {
         public static final UniqueKey<UserGroupRecord> USER_GROUP_PKEY = createUniqueKey(UserGroup.USER_GROUP, "user_group_pkey", UserGroup.USER_GROUP.ID);
         public static final UniqueKey<UserGroupMembershipRecord> USER_GROUP_MEMBERSHIP_PKEY = createUniqueKey(UserGroupMembership.USER_GROUP_MEMBERSHIP, "user_group_membership_pkey", UserGroupMembership.USER_GROUP_MEMBERSHIP.USERNAME, UserGroupMembership.USER_GROUP_MEMBERSHIP.USER_GROUP);
         public static final UniqueKey<UserGroupRoleRecord> USER_GROUP_ROLE_PKEY = createUniqueKey(UserGroupRole.USER_GROUP_ROLE, "user_group_role_pkey", UserGroupRole.USER_GROUP_ROLE.USER_GROUP, UserGroupRole.USER_GROUP_ROLE.ROLE, UserGroupRole.USER_GROUP_ROLE.SCOPE_ID);
-        public static final UniqueKey<UserRoleRecord> USER_ROLE_PKEY = createUniqueKey(UserRole.USER_ROLE, "user_role_pkey", UserRole.USER_ROLE.USERNAME, UserRole.USER_ROLE.ROLE, UserRole.USER_ROLE.SCOPE_ID);
         public static final UniqueKey<VaccineRecord> VACCINE_PKEY = createUniqueKey(Vaccine.VACCINE, "vaccine_pkey", Vaccine.VACCINE.ID);
         public static final UniqueKey<VaccineRoutineAgeRecord> VACCINE_ROUTINE_AGE_PKEY = createUniqueKey(VaccineRoutineAge.VACCINE_ROUTINE_AGE, "vaccine_routine_age_pkey", VaccineRoutineAge.VACCINE_ROUTINE_AGE.ID);
     }
@@ -641,8 +635,6 @@ public class Keys {
         public static final ForeignKey<UserGroupMembershipRecord, UserGroupRecord> USER_GROUP_MEMBERSHIP__USER_GROUP_MEMBERSHIP_USER_GROUP_FKEY = createForeignKey(org.vaccineimpact.api.db.Keys.USER_GROUP_PKEY, UserGroupMembership.USER_GROUP_MEMBERSHIP, "user_group_membership__user_group_membership_user_group_fkey", UserGroupMembership.USER_GROUP_MEMBERSHIP.USER_GROUP);
         public static final ForeignKey<UserGroupRoleRecord, UserGroupRecord> USER_GROUP_ROLE__USER_GROUP_ROLE_USER_GROUP_FKEY = createForeignKey(org.vaccineimpact.api.db.Keys.USER_GROUP_PKEY, UserGroupRole.USER_GROUP_ROLE, "user_group_role__user_group_role_user_group_fkey", UserGroupRole.USER_GROUP_ROLE.USER_GROUP);
         public static final ForeignKey<UserGroupRoleRecord, RoleRecord> USER_GROUP_ROLE__USER_GROUP_ROLE_ROLE_FKEY = createForeignKey(org.vaccineimpact.api.db.Keys.ROLE_PKEY, UserGroupRole.USER_GROUP_ROLE, "user_group_role__user_group_role_role_fkey", UserGroupRole.USER_GROUP_ROLE.ROLE);
-        public static final ForeignKey<UserRoleRecord, AppUserRecord> USER_ROLE__USER_ROLE_USERNAME_FKEY = createForeignKey(org.vaccineimpact.api.db.Keys.APP_USER_PKEY, UserRole.USER_ROLE, "user_role__user_role_username_fkey", UserRole.USER_ROLE.USERNAME);
-        public static final ForeignKey<UserRoleRecord, RoleRecord> USER_ROLE__USER_ROLE_ROLE_FKEY = createForeignKey(org.vaccineimpact.api.db.Keys.ROLE_PKEY, UserRole.USER_ROLE, "user_role__user_role_role_fkey", UserRole.USER_ROLE.ROLE);
         public static final ForeignKey<VaccineRoutineAgeRecord, VaccineRecord> VACCINE_ROUTINE_AGE__VACCINE_ROUTINE_AGE_VACCINE_FKEY = createForeignKey(org.vaccineimpact.api.db.Keys.VACCINE_PKEY, VaccineRoutineAge.VACCINE_ROUTINE_AGE, "vaccine_routine_age__vaccine_routine_age_vaccine_fkey", VaccineRoutineAge.VACCINE_ROUTINE_AGE.VACCINE);
     }
 }

@@ -83,7 +83,6 @@ import org.vaccineimpact.api.db.tables.UploadInfo;
 import org.vaccineimpact.api.db.tables.UserGroup;
 import org.vaccineimpact.api.db.tables.UserGroupMembership;
 import org.vaccineimpact.api.db.tables.UserGroupRole;
-import org.vaccineimpact.api.db.tables.UserRole;
 import org.vaccineimpact.api.db.tables.VCoverageInfo;
 import org.vaccineimpact.api.db.tables.VResponsibilityInfo;
 import org.vaccineimpact.api.db.tables.Vaccine;
@@ -665,11 +664,6 @@ public class Tables {
      * The table <code>public.user_group_role</code>.
      */
     public static final UserGroupRole USER_GROUP_ROLE = org.vaccineimpact.api.db.tables.UserGroupRole.USER_GROUP_ROLE;
-
-    /**
-     * The table <code>public.user_role</code>.
-     */
-    public static final UserRole USER_ROLE = org.vaccineimpact.api.db.tables.UserRole.USER_ROLE;
 
     /**
      * The table <code>public.v_coverage_info</code>.
