@@ -21,7 +21,7 @@ class RealEmailManager : EmailManager
                 TransportStrategy.SMTP_TLS
         )
         val email = Email().apply {
-            addRecipient(recipient.name, recipient.email, Message.RecipientType.TO)
+            addNamedToRecipients(recipient.name, recipient.email)
             setFromAddress("Montagu notifications", sender)
             subject = data.subject
             text = data.text()

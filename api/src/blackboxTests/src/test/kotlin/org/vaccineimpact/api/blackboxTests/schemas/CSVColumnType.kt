@@ -25,7 +25,7 @@ sealed class CSVColumnType
             "Int" -> IntColumn()
             "String" -> StringColumn()
             "Decimal" -> DecimalColumn()
-            is JsonArray<*> -> EnumColumn(raw.value as List<String>)
+            is JsonArray<*> -> getEnumOptions(raw)
             is String ->
             {
                 if (raw.endsWith("?"))
@@ -39,6 +39,9 @@ sealed class CSVColumnType
             }
             else -> throwException(raw)
         }
+
+        @Suppress("UNCHECKED_CAST")
+        private fun getEnumOptions(raw: JsonArray<*>) = EnumColumn(raw.value as List<String>)
 
         private fun <T> throwException(raw: Any?): T
         {
