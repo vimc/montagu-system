@@ -102,6 +102,11 @@ subprojects {
             jvmTarget = "1.8"
         }
     }
+    compileTestKotlin {
+        kotlinOptions {
+            jvmTarget = "1.8"
+        }
+    }
 
     task copyConfig(type: Copy, dependsOn: ':loadPropertiesTask') {
         from 'src/main/resources'
