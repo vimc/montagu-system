@@ -66,4 +66,8 @@ export class Sandbox {
     createSpy(): sinon.SinonSpy {
         return this.sinon.spy();
     }
+
+    setStubReduxAction(obj: any, method: string, action?: any): sinon.SinonStub {
+        return this.sinon.stub(obj, method).callsFake(action ? action : () => ({type: 'test'}));
+    }
 }

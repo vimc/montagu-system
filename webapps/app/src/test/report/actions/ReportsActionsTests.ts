@@ -1,5 +1,4 @@
 import { expect } from "chai";
-import * as jwt from "jsonwebtoken";
 
 import { Sandbox } from "../../Sandbox";
 import { reportsActions } from "../../../main/report/actions/reportsActions";
@@ -9,11 +8,8 @@ import {
     ReportTypeKeys
 } from "../../../main/report/actionTypes/ReportsActionsTypes";
 import { createMockStore } from "../../mocks/mockStore";
-import { NotificationState, notificationStore } from "../../../main/shared/stores/NotificationStore";
 
-import {localStorageHandler} from "../../../main/shared/services/localStorageHandler";
-
-describe("Modelling groups actions tests", () => {
+describe("Report actions tests", () => {
     const sandbox = new Sandbox();
     let store: any = null;
 
