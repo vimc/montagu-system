@@ -17,7 +17,6 @@ export interface ReportsListContainerProps extends ReportsListComponentProps {
 
 const lifecyleProps = {
     onDidMount(props: ReportsListContainerProps) {
-        console.log('pr', props)
         props.getReports();
     }
 }
