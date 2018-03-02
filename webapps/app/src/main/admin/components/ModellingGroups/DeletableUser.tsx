@@ -36,7 +36,7 @@ export class DeletableUser extends React.Component<UserProps, undefined> {
     render() {
 
         const deleteLink = this.props.showDelete ?
-            <Link onClick={this.clickHandler.bind(this)} className="text-danger float-right" href="#">Remove
+            <Link onClick={this.clickHandler.bind(this)} className="text-danger float-right large" href="#">Remove
                 member</Link>
             : "";
 
