@@ -21,3 +21,4 @@ $here/cli.sh add "Report reviewer" report.reviewer \
 
 $here/cli.sh addRole report.reviewer user
 $here/cli.sh addRole report.reviewer reports-reviewer
+$here/cli.sh addRole report.reviewer user-manager
