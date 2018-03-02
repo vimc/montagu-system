@@ -190,7 +190,7 @@ the user being logged in.
 Required permissions: None. You do not need to be logged in to use this endpoint.
 
 ## GET /users/report-readers/{reportname}/
-Returns a list of users who have the `reports-reader` role scoped to the given report.
+Returns a list of users (with roles) who have the `reports-reader` role scoped to the given report.
 
 Required permissions: `roles.read`. 
 
@@ -202,12 +202,36 @@ Schema: [`Users.schema.json`](../schemas/Users.schema.json)
             "username": "tini",
             "name": "Tini Garske",
             "email": "example@imperial.ac.uk",
-            "last_logged_in": "2017-10-06T11:06:22Z"
+            "last_logged_in": "2017-10-06T11:06:22Z",
+            "roles": [ 
+                { 
+                    "name": "user", 
+                    "scope_prefix": null, 
+                    "scope_id": null 
+                },
+                { 
+                    "name": "reports-reader",
+                    "scope_prefix": null,
+                    "scope_id": null
+                }
+            ]
         },
         {
             "username": "alex",
             "name": "Alex Hill",
             "email": "alex@example.com",
-            "last_logged_in": "2017-11-06T11:12:13Z"
+            "last_logged_in": "2017-11-06T11:12:13Z",
+            "roles": [ 
+                { 
+                    "name": "user", 
+                    "scope_prefix": null, 
+                    "scope_id": null 
+                },
+                { 
+                    "name": "reports-reader",
+                    "scope_prefix": "report",
+                    "scope_id": "reportname"
+                }
+            ]
         }
     ]
