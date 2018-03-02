@@ -36,7 +36,7 @@ export class ReportPageComponent extends ReportingPageWithHeader<ReportPageProps
     }
 
     componentDidMount() {
-        this.loadVersion();
+        // this.loadVersion();
     }
 
     changeVersion(version: string): any {

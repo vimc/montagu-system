@@ -13,6 +13,7 @@ export interface ReportingAppProps {
     errors: string[];
     infos: string[];
     loggedIn: boolean;
+    history: any;
 }
 
 export class ReportingAppComponent extends React.Component<ReportingAppProps, undefined> {
@@ -27,8 +28,9 @@ export class ReportingAppComponent extends React.Component<ReportingAppProps, un
     }
 
     render() :JSX.Element {
+        console.log('app pr', this.props)
         return <div>
-            <ReportingRouter loggedIn={ this.props.loggedIn } />
+            <ReportingRouter loggedIn={ this.props.loggedIn } history={this.props.history} />
             <NotificationArea notifications={ this.props.infos } />
             <ErrorLog errors={ this.props.errors } />
         </div>;
@@ -37,9 +39,11 @@ export class ReportingAppComponent extends React.Component<ReportingAppProps, un
 
 export const ReportingAppAltWrapped = connectToStores(ReportingAppComponent);
 
-const mapStateToProps = (state: ReportAppState) :Partial<ReportingAppProps> => {
+const mapStateToProps = (state: ReportAppState, props: any) :Partial<ReportingAppProps> => {
+    console.log('app ma', props)
   return {
       loggedIn: state.auth.loggedIn,
+      history: props.history
   }
 };
 

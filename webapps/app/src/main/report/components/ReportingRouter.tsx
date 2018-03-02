@@ -1,4 +1,8 @@
-import {RouteMap, Router} from "simple-react-router";
+// import {RouteMap, Router} from "simple-react-router";
+import * as React from "react";
+import { Route, Switch } from 'react-router-dom';
+import { ConnectedRouter } from 'react-router-redux';
+
 import {appSettings} from "../../shared/Settings";
 
 // Pages
@@ -7,11 +11,14 @@ import {ReportingNoRouteFoundPage} from "./ReportingNoRouteFoundPage";
 import {ReportingLoginPage} from "./ReportingLoginPage";
 import {ReportPage} from "./Reports/ReportPage";
 import {ReportingForgottenPasswordPage} from "./ReportingForgottenPasswordPage";
+import {ReportingApp} from "./ReportingApp";
+// import {ReportsListComponentProps} from "./ReportsList/ReportsListComponent";
 
 interface RouterProps {
     loggedIn: boolean;
 }
 
+/*
 export class ReportingRouter extends Router<RouterProps> {
     getRoutes(_map: RouteMap, props: RouterProps) {
         const map: RouteMap = function (url: string, component: ComponentConstructor<any, any>) {
@@ -28,4 +35,29 @@ export class ReportingRouter extends Router<RouterProps> {
             map('*', ReportingLoginPage);
         }
     }
+}
+*/
+
+export const ReportingRouter : React.StatelessComponent<any> = (props: any) => {
+    console.log('ssssaaaaaa', props)
+
+    const loggedin = <div>
+        <Route exact path="/" component={ReportsListPage}/>
+        <Route exact path="/:report/:version/" component={ReportPage} />
+        <Route exact path="/forgotten-password/" component={ReportingForgottenPasswordPage} />
+    </div>
+
+    return <ConnectedRouter history={props.history}>
+        <div>
+            <Switch>
+                {
+
+                    ) : (
+                    <Route exact path="/" component={ReportingLoginPage}/>
+                    <Route component={ReportingNoRouteFoundPage} />
+                    )}
+            </Switch>
+            {/*<ReportingApp/>*/}
+        </div>
+    </ConnectedRouter>;
 }

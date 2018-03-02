@@ -1,5 +1,6 @@
 import { combineReducers } from "redux";
 import { reducer as formReducer, FormReducer } from "redux-form";
+import { routerReducer } from 'react-router-redux';
 
 import { authReducer, AuthState } from "../../shared/reducers/authReducer";
 import { reportsReducer, ReportsState } from "./reportsReducer";
@@ -13,7 +14,8 @@ export interface ReportAppState {
 const reducers = combineReducers({
     auth: authReducer,
     form: formReducer,
-    reports: reportsReducer
+    reports: reportsReducer,
+    router: routerReducer,
 });
 
 export default reducers;

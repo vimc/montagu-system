@@ -7,7 +7,9 @@ export const ReportListItem: React.StatelessComponent<Report> = (props: Report) 
     let name = props.display_name ? props.display_name : props.name;
     return (
         <li>
-            <InternalLink href={url}>{name}</InternalLink>
+            <InternalLink href={url}>
+                {name}
+            </InternalLink>
         </li>
     );
 }

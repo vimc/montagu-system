@@ -1,12 +1,15 @@
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
+import { routerReducer, routerMiddleware } from 'react-router-redux';
 
 import reducers from '../reducers/reportAppReducers';
 
-export function createReportStore() {
+export function createReportStore(history: any) {
+    console.log('hist', history)
+
     return createStore(
         reducers,
-        applyMiddleware(thunk),
+        applyMiddleware(thunk, routerMiddleware(history)),
     );
 }
 
