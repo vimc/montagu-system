@@ -11,7 +11,7 @@ mainClassName = "org.vaccineimpact.api.generateDatabaseInterface.AppKt"
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 
-    compile "org.postgresql:postgresql:42.1.4"
+    compile "org.postgresql:postgresql:42.2.1"
     compile "org.jooq:jooq:3.10.5"
     compile "org.jooq:jooq-meta:3.10.5"
     compile "org.jooq:jooq-codegen:3.10.5"
