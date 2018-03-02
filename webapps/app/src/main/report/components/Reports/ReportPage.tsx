@@ -5,7 +5,7 @@ import {ReportingPageWithHeader} from "../ReportingPageWithHeader";
 import {ReportDetails} from "./ReportDetails";
 import {PageProperties} from "../../../shared/components/PageWithHeader/PageWithHeader";
 import {appSettings} from "../../../shared/Settings";
-import {MainMenu} from "../MainMenu/MainMenu";
+import {ReportsListPage} from "../ReportsList/ReportsListPage";
 import {reportPageActions} from "../../actions/reportPageActions";
 import {ReportTabEnum, Sidebar} from "../Sidebar/Sidebar";
 import {ReportingPageHeader} from "../ReportingPageHeader";
@@ -64,7 +64,7 @@ export class ReportPageComponent extends ReportingPageWithHeader<ReportPageProps
     }
 
     parent() {
-        return new MainMenu();
+        return new ReportsListPage();
     }
 
     name() {
