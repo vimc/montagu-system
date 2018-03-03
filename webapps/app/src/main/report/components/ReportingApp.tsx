@@ -28,7 +28,6 @@ export class ReportingAppComponent extends React.Component<ReportingAppProps, un
     }
 
     render() :JSX.Element {
-        console.log('app pr', this.props)
         return <div>
             <ReportingRouter loggedIn={ this.props.loggedIn } history={this.props.history} />
             <NotificationArea notifications={ this.props.infos } />
@@ -40,7 +39,7 @@ export class ReportingAppComponent extends React.Component<ReportingAppProps, un
 export const ReportingAppAltWrapped = connectToStores(ReportingAppComponent);
 
 const mapStateToProps = (state: ReportAppState, props: any) :Partial<ReportingAppProps> => {
-    console.log('app ma', props)
+    // console.log('app ma', props)
   return {
       loggedIn: state.auth.loggedIn,
       history: props.history

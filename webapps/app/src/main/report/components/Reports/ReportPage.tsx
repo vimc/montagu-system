@@ -15,6 +15,7 @@ import {ReportDownloads, ReportDownloadsComponent} from "./ReportDownloads";
 export interface ReportPageProps {
     report: string;
     version: string;
+
 }
 
 const hashToTab = (hash: string): ReportTabEnum => {
@@ -36,7 +37,7 @@ export class ReportPageComponent extends ReportingPageWithHeader<ReportPageProps
     }
 
     componentDidMount() {
-        // this.loadVersion();
+        this.loadVersion();
     }
 
     changeVersion(version: string): any {
@@ -55,7 +56,8 @@ export class ReportPageComponent extends ReportingPageWithHeader<ReportPageProps
     }
 
     getLocationParams() {
-        return this.props.location.params;
+        console.log('pr',this.props)
+        return this.props.match.params;
     }
 
     redirectToVersion(version: string) {

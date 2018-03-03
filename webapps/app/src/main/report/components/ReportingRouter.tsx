@@ -21,7 +21,7 @@ interface RouterProps {
 /*
 export class ReportingRouter extends Router<RouterProps> {
     getRoutes(_map: RouteMap, props: RouterProps) {
-        const map: RouteMap = function (url: string, component: ComponentConstructor<any, any>) {
+        const map: RouteMap = functi;on (url: string, component: ComponentConstructor<any, any>) {
             _map(appSettings.publicPath + url, component);
         };
 
@@ -39,25 +39,30 @@ export class ReportingRouter extends Router<RouterProps> {
 */
 
 export const ReportingRouter : React.StatelessComponent<any> = (props: any) => {
-    console.log('ssssaaaaaa', props)
+    // console.log('ssssaaaaaa', props)
 
-    const loggedin = <div>
+    const loggedin = <Switch>
         <Route exact path="/" component={ReportsListPage}/>
         <Route exact path="/:report/:version/" component={ReportPage} />
+        <Route component={ReportingNoRouteFoundPage} />
+    </Switch>;
+
+    const notloggedin = <Switch>
+        <Route exact path="/" component={ReportingLoginPage}/>
         <Route exact path="/forgotten-password/" component={ReportingForgottenPasswordPage} />
-    </div>
+        <Route component={ReportingNoRouteFoundPage} />
+    </Switch>;
+
+    const routes = props.loggedIn ?  loggedin : notloggedin;
+
+    // console.log('r',routes)
 
     return <ConnectedRouter history={props.history}>
-        <div>
-            <Switch>
-                {
+        {/*<div>*/}
 
-                    ) : (
-                    <Route exact path="/" component={ReportingLoginPage}/>
-                    <Route component={ReportingNoRouteFoundPage} />
-                    )}
-            </Switch>
+                {routes}
+            {/*</Switch>*/}
             {/*<ReportingApp/>*/}
-        </div>
+        {/*</div>*/}
     </ConnectedRouter>;
 }

@@ -16,13 +16,13 @@ export interface ReportsListContainerProps extends ReportsListComponentProps {
 
 const lifecyleProps = {
     componentDidMount() {
-        console.log('pl', this.props)
+        // console.log('pl', this.props)
         this.props.getReports();
     }
 }
 
 export const mapStateToProps = (state: ReportAppState): Partial<ReportsListContainerProps> => {
-    console.log(state)
+    // console.log(state)
     return {
         reports: getDisplayedReportsListSelector(state),
         ready: Array.isArray(state.reports.reports)

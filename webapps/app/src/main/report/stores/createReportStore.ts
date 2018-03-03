@@ -5,8 +5,6 @@ import { routerReducer, routerMiddleware } from 'react-router-redux';
 import reducers from '../reducers/reportAppReducers';
 
 export function createReportStore(history: any) {
-    console.log('hist', history)
-
     return createStore(
         reducers,
         applyMiddleware(thunk, routerMiddleware(history)),

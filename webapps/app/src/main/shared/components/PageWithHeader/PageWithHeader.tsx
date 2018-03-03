@@ -80,4 +80,5 @@ export interface PageProperties<T> {
     location: Location<T>;
     router: IRouter;
     onLoad?: (props:Partial<T>) => void;
+    match?: any;
 }
