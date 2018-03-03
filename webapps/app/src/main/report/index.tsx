@@ -24,9 +24,7 @@ store.dispatch(authActions.loadSavedToken());
 
 ReactDOM.render(
     <Provider store={store}>
-        {/*<ConnectedRouter history={history}>*/}
-            <ReportingApp history={history} />
-        {/*</ConnectedRouter>*/}
+        <ReportingApp history={history} />
     </Provider>,
     document.getElementById("react")
 );

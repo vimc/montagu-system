@@ -25,7 +25,6 @@ export class ReportsListPage extends ReportingPageWithHeader<undefined> {
     }
 
     render() :JSX.Element {
-        // console.log('p', this.props);
         return <ReportingPage page={this}>
             <div className="mb-2">
                 <div className="">

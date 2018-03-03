@@ -7,7 +7,6 @@ import { NotificationArea } from "../../shared/components/NotificationArea/Notif
 import { notificationStore } from "../../shared/stores/NotificationStore";
 import { connectToStores } from "../../shared/alt";
 import { ReportAppState } from "../reducers/reportAppReducers";
-import {PageHeader} from "../../shared/components/PageWithHeader/PageHeader";
 
 export interface ReportingAppProps {
     errors: string[];
@@ -39,7 +38,6 @@ export class ReportingAppComponent extends React.Component<ReportingAppProps, un
 export const ReportingAppAltWrapped = connectToStores(ReportingAppComponent);
 
 const mapStateToProps = (state: ReportAppState, props: any) :Partial<ReportingAppProps> => {
-    // console.log('app ma', props)
   return {
       loggedIn: state.auth.loggedIn,
       history: props.history
