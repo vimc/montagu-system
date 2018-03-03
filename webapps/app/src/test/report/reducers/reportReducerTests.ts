@@ -51,8 +51,8 @@ describe('Reports reducer tests', () => {
 
     it('sets fetched report versions list', () => {
         const versionMock = mockVersion();
-        const newState = reportsReducer(undefined, { type: ReportTypeKeys.REPORT_VERSIONS_FETCHED, data: [versionMock] });
-        expect(newState.versions).to.eql([versionMock]);
+        const newState = reportsReducer(undefined, { type: ReportTypeKeys.REPORT_VERSIONS_FETCHED, data: [versionMock.id] });
+        expect(newState.versions).to.eql([versionMock.id]);
     });
 
     it('sets fetched report version details list', () => {

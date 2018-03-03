@@ -1,25 +1,40 @@
-import { createSelector } from "reselect";
+import { createSelector, createSelectorCreator, defaultMemoize } from "reselect";
 import { orderBy } from "lodash";
 import {Report} from "../../../shared/models/Generated";
 import {ReportsSortingFields} from "../../actionTypes/ReportsActionsTypes";
 import {ReportAppState} from "../../reducers/reportAppReducers";
+import {isEqual} from 'lodash';
 
-export const getReportsListSelector = (state: ReportAppState) => state.reports.reports;
-
-export const getSortingPropsSelector = (state: ReportAppState) => state.reports.reportsSortBy;
-
-export const getDisplayedReportsListSelector = createSelector(
-    [ getReportsListSelector, getSortingPropsSelector],
-    ( reports: Report[], sorting: ReportsSortingFields) => {
-        if (reports) {
-            return sortReportsList(reports, sorting);
-        }
-    }
+const createDeepEqualSelector = createSelectorCreator(
+    defaultMemoize,
+    isEqual
 );
 
-const getSortOrderByReportFieldName = (field: ReportsSortingFields) => field === ReportsSortingFields.name ? 'asc' : 'desc';
+export const reportsListSelectors = {
 
-export const sortReportsList = (reports: Report[], sortBy: ReportsSortingFields) => {
-    return orderBy(reports, [sortBy], [getSortOrderByReportFieldName(sortBy)]);
-};
+    getRawReportsListSelector: (state: ReportAppState) => state.reports.reports,
+
+    getSortingPropsSelector: (state: ReportAppState) => state.reports.reportsSortBy,
+
+    getSortOrderByReportFieldName: (field: ReportsSortingFields) => field === ReportsSortingFields.name ? 'asc' : 'desc',
+
+    sortReportsList(reports: Report[], sortBy: ReportsSortingFields) {
+        return orderBy(reports, [sortBy], [this.getSortOrderByReportFieldName(sortBy)])
+    },
+
+    makeReportsDisplayList(reports: Report[], sortBy: ReportsSortingFields) {
+        let displayList = null;
+        if (reports) {
+            displayList = this.sortReportsList(reports, sortBy);
+        }
+        return displayList;
+    },
+
+    createDisplayListSelector() {
+        return createDeepEqualSelector(
+            [ this.getRawReportsListSelector, this.getSortingPropsSelector],
+            (reports: Report[], sortBy: ReportsSortingFields) => this.makeReportsDisplayList(reports, sortBy)
+        );
+    }
+}
 
