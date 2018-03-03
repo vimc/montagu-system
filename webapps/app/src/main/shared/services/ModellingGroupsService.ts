@@ -3,7 +3,7 @@ import { AbstractLocalService } from "./AbstractLocalService";
 export class ModellingGroupsService extends AbstractLocalService {
 
     getAllGroups() {
-        return this.setOptions({cache: ModellingGroupsCacheKeysEnum.groups})
+        return this.setOptions({cacheKey: ModellingGroupsCacheKeysEnum.groups})
             .get("/modelling-groups/");
     }
 }

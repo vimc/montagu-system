@@ -7,10 +7,9 @@ import {PageProperties} from "../../../shared/components/PageWithHeader/PageWith
 import {appSettings} from "../../../shared/Settings";
 import {ReportsListPage} from "../ReportsList/ReportsListPage";
 import {reportPageActions} from "../../actions/reportPageActions";
-import {ReportTabEnum, Sidebar} from "./Sidebar";
-import {PageHeader} from "../../../shared/components/PageWithHeader/PageHeader";
+import {ReportTabEnum, Sidebar} from "../Sidebar/Sidebar";
 import {ReportingPageHeader} from "../ReportingPageHeader";
-import {ReportDownloads, ReportDownloadsComponent} from "./ReportDownloads";
+import {ReportDownloads} from "./ReportDownloads";
 
 export interface ReportPageProps {
     report: string;

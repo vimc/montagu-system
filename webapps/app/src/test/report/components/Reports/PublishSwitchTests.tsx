@@ -6,7 +6,7 @@ import {
     mapDispatchToProps,
     Props, PublicProps, PublishSwitch,
     PublishSwitchComponent
-} from "../../../../main/report/components/Reports/PublishSwitch";
+} from "../../../../main/report/components/Sidebar/PublishSwitch";
 import {Sandbox} from "../../../Sandbox";
 import {reportsActions} from "../../../../main/report/actions/reportsActions";
 import {createMockStore} from "../../../mocks/mockStore";

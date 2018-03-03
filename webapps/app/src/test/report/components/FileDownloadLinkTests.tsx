@@ -18,7 +18,7 @@ describe("FileDownloadLink", () => {
     });
 
     it("renders enabled link when href is set", () => {
-        const rendered = shallow(<FileDownloadLinkInner href="/grapefruit" />);
+        const rendered = shallow(<FileDownloadLinkInner href="/grapefruit" refreshToken={null} />);
         const a = rendered.find("a");
         expect(a.prop('href')).to.equal("/grapefruit");
     });

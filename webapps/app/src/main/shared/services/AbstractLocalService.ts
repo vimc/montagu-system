@@ -17,7 +17,7 @@ import {singletonVariableCache} from "../modules/cache/singletonVariableCache";
 export interface OptionsHeaders {
    Authorization?: string;
    'Content-Type'?: string;
-};
+}
 
 export interface RequestOptions {
     headers?: OptionsHeaders;
@@ -31,7 +31,7 @@ export interface InputOptions {
     'Content-Type'?: string;
     credentials?: "omit" | "same-origin" | "include";
     baseURL?: string;
-    cache?: string;
+    cacheKey?: string;
 }
 
 export abstract class AbstractLocalService {
@@ -68,7 +68,7 @@ export abstract class AbstractLocalService {
     protected initOptions() {
         this.options = {};
         this.options.baseURL = settings.apiUrl();
-        this.options.cache = null;
+        this.options.cacheKey = null;
         if (this.bearerToken) {
             this.options.Authorization = 'Bearer ' + this.bearerToken;
         }
@@ -106,8 +106,8 @@ export abstract class AbstractLocalService {
     }
 
     protected makeCacheKey(url: string) : string {
-        if (!url || !this.options.cache) return null;
-        return ["localService", this.constructor.name, this.options.cache, encodeURIComponent(url)].join('.');
+        if (!url || !this.options.cacheKey) return null;
+        return ["localService", this.constructor.name, this.options.cacheKey, encodeURIComponent(url)].join('.');
     }
 
     public clearAllCache() {
@@ -116,7 +116,7 @@ export abstract class AbstractLocalService {
     }
 
     protected getData(url: string, method: string, params?: any) {
-        if (this.options.cache) {
+        if (this.options.cacheKey) {
             const cacheValue = this.cacheEngine.get(this.makeCacheKey(url));
             if (cacheValue) {
                 // reset options on returning cached data from endpoint
@@ -163,7 +163,7 @@ export abstract class AbstractLocalService {
 
         switch (result.status) {
             case "success":
-                if (this.options.cache) {
+                if (this.options.cacheKey) {
                     this.cacheEngine.set(this.makeCacheKey(response.url), result.data)
                 }
                 // reset options on successful request
