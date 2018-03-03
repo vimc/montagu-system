@@ -31,27 +31,37 @@ export const reportsListSelectors = {
     compareVersionAndFilterTime: (version: string, filterTime: string) =>
         (new VersionIdentifier(version)).timestamp.getTime() > Date.parse(filterTime),
 
+    filterReportsList(reports: Report[], filter: ReportsFilterFields) {
+        let displayList = clone(reports);
+        if (filter.published !== ReportsFilterPublishTypes.all) {
+            displayList = displayList.filter((item: any) => filter.published === ReportsFilterPublishTypes.published
+                ? item.published
+                : !item.published
+            );
+        }
+        if (filter.timeFrom) {
+            displayList = displayList.filter((item: any) =>
+                this.compareVersionAndFilterTime(item.latest_version, filter.timeFrom)
+            );
+        }
+        if (filter.timeUntil) {
+            displayList = displayList.filter((item: any) =>
+                !this.compareVersionAndFilterTime(item.latest_version, filter.timeUntil)
+            );
+        }
+        return displayList;
+    },
+
     makeReportsDisplayList(reports: Report[], sortBy: ReportsSortingFields, filter: ReportsFilterFields) {
         let displayList = null;
         if (reports) {
             displayList = clone(reports);
-            if (filter.published !== ReportsFilterPublishTypes.all) {
-                displayList = displayList.filter((item: any) => filter.published === ReportsFilterPublishTypes.published
-                    ? item.published
-                    : !item.published
-                );
+            if (filter) {
+                displayList = this.filterReportsList(displayList, filter);
             }
-            if (filter.timeFrom) {
-                displayList = displayList.filter((item: any) =>
-                    this.compareVersionAndFilterTime(item.latest_version, filter.timeFrom)
-                );
+            if (sortBy) {
+                displayList = this.sortReportsList(displayList, sortBy);
             }
-            if (filter.timeUntil) {
-                displayList = displayList.filter((item: any) =>
-                    !this.compareVersionAndFilterTime(item.latest_version, filter.timeUntil)
-                );
-            }
-            displayList = this.sortReportsList(displayList, sortBy);
         }
         return displayList;
     },
