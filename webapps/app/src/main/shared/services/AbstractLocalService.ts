@@ -141,7 +141,6 @@ export abstract class AbstractLocalService {
         return httpResponse.json()
             .then((response: any) => {
                 const apiResponse = <Result>response;
-                console.log(apiResponse)
                 return this.processResult(apiResponse, httpResponse);
             });
     }
