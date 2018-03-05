@@ -12,7 +12,7 @@ export interface ReportingAppProps {
     errors: string[];
     infos: string[];
     loggedIn: boolean;
-    history: any;
+    history?: any;
 }
 
 export class ReportingAppComponent extends React.Component<ReportingAppProps, undefined> {

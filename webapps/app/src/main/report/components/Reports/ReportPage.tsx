@@ -53,9 +53,7 @@ export class ReportPageComponent extends ReportingPageWithHeader<ReportPageProps
         this.createBreadcrumb();
     }
 
-    getLocationParams() {
-        return this.props.match.params;
-    }
+
 
     redirectToVersion(version: string) {
         const hash = this.props.location.hash;

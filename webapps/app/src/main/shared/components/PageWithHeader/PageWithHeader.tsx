@@ -40,6 +40,10 @@ export abstract class PageWithHeader<TLocationProps>
         });
     }
 
+    getLocationParams() {
+        return this.props.match.params;
+    }
+
     load(props: TLocationProps): Promise<any> {
         return Promise.resolve(true);
     }
