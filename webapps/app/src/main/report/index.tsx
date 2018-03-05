@@ -1,6 +1,5 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { ConnectedRouter } from 'react-router-redux';
 import { createBrowserHistory } from 'history';
 
 import { ReportingApp } from "./components/ReportingApp";
@@ -9,8 +8,6 @@ import { ReportingFetcher } from "./sources/ReportingFetcher";
 import { Provider } from "react-redux";
 import { createReportStore } from "./stores/createReportStore";
 import { authActions } from "../shared/actions/authActions"
-
-import { ReportingRouter } from "./components/ReportingRouter";
 
 import './index.html';
 import './style.scss';

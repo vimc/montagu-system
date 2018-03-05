@@ -1,5 +1,6 @@
 import * as React from "react";
-import { Link } from "simple-react-router";
+// import { Link } from "simple-react-router";
+import { Link } from 'react-router-dom';
 import { appSettings } from "../Settings";
 
 interface Props {
