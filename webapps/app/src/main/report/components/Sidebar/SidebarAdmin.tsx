@@ -1,10 +1,11 @@
 import * as React from "react";
 import {ReportAppState} from "../../reducers/reportAppReducers";
-import {connect} from "react-redux";
+import {connect, Dispatch} from "react-redux";
 import {User} from "../../../shared/models/Generated";
 import {ReportVersionSwitcher} from "../Reports/ReportVersionSwitcher";
 import {PublishSwitch} from "./PublishSwitch";
 import {ReportReadersList} from "./ReportReadersList";
+import {userActions} from "../../actions/userActions";
 
 export interface PublicProps {
     onChangeVersion: (version: string) => any;
@@ -19,11 +20,18 @@ export interface SidebarAdminProps extends PublicProps {
     allVersions: string[];
     reportReaders: User[];
     isAdmin: boolean;
+    getReportReaders: (reportName: string) => void;
+
 }
 
 export const SidebarAdminComponent = (props: SidebarAdminProps) => {
     if (!props.ready)
         return null;
+
+    if (props.isAdmin) {
+        props.getReportReaders(props.report)
+    }
+
 
     return <div>
         <ReportVersionSwitcher
@@ -42,7 +50,7 @@ export const SidebarAdminComponent = (props: SidebarAdminProps) => {
 
 };
 
-export const mapStateToProps = (state: ReportAppState, props: PublicProps): SidebarAdminProps => {
+export const mapStateToProps = (state: ReportAppState, props: Partial<SidebarAdminProps>): SidebarAdminProps => {
     const ready = !!state.reports.versionDetails;
 
     if (!ready) {
@@ -55,7 +63,8 @@ export const mapStateToProps = (state: ReportAppState, props: PublicProps): Side
             version: "",
             allVersions: [],
             onChangeVersion: props.onChangeVersion,
-            reportReaders: state.users.reportReaders
+            reportReaders: state.users.reportReaders,
+            getReportReaders: props.getReportReaders
         }
     }
     else {
@@ -69,9 +78,16 @@ export const mapStateToProps = (state: ReportAppState, props: PublicProps): Side
             report: versionDetails.name,
             version: versionDetails.id,
             onChangeVersion: props.onChangeVersion,
-            reportReaders: state.users.reportReaders
+            reportReaders: state.users.reportReaders,
+            getReportReaders: props.getReportReaders
         }
     }
 };
 
-export const SidebarAdmin = connect(mapStateToProps)(SidebarAdminComponent);
+export const mapDispatchToProps = (dispatch: Dispatch<any>) => {
+    return {
+        getReportReaders: (reportName: string) => dispatch(userActions.getReportReaders(reportName))
+    }
+};
+
+export const SidebarAdmin = connect(mapStateToProps, mapDispatchToProps)(SidebarAdminComponent);
