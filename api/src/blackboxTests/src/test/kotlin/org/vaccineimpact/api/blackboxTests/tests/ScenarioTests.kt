@@ -1,8 +1,8 @@
 package org.vaccineimpact.api.blackboxTests.tests
 
-import com.beust.klaxon.JSON
 import com.beust.klaxon.JsonArray
 import com.beust.klaxon.JsonObject
+import com.beust.klaxon.KlaxonJson
 import com.beust.klaxon.json
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
@@ -90,7 +90,7 @@ class ScenarioTests : DatabaseTest()
         it.addCoverageSetToScenario(scenarioId, coverageSetId, order = 0)
     }
 
-    private fun JSON.expectedScenario(): JsonObject
+    private fun KlaxonJson.expectedScenario(): JsonObject
     {
         return obj(
                 "id" to "scenario",
@@ -100,7 +100,7 @@ class ScenarioTests : DatabaseTest()
         )
     }
 
-    private fun JSON.expectedCoverageSets(): JsonArray<Any?>
+    private fun KlaxonJson.expectedCoverageSets(): JsonArray<Any?>
     {
         return array(obj(
                 "id" to setId,
