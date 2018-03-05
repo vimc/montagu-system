@@ -1,15 +1,13 @@
 import * as React from "react";
-import { connect } from 'react-redux';
-import { Dispatch, Action } from "redux";
+import {connect} from 'react-redux';
+import {Action, Dispatch} from "redux";
 
 import {reportsActions} from "../../actions/reportsActions";
 
-import {
-    ReportsFilterFields, ReportsFilterPublishTypes,
-} from "../../actionTypes/ReportsActionsTypes";
+import {ReportsFilterFields, ReportsFilterPublishTypes,} from "../../actionTypes/ReportsActionsTypes";
 import {ReportAppState} from "../../reducers/reportAppReducers";
-import { DatePicker } from "../../../shared/components/DatePicker/DatePicker";
-import {DataLinks} from "../Data/DataLinks";
+import {DatePicker} from "../../../shared/components/DatePicker/DatePicker";
+import {CalendarIcon} from "./Calendar";
 
 interface ReportsListFilterProps {
     filterData: ReportsFilterFields;
@@ -22,12 +20,12 @@ const fromMonth = new Date("2017-03-01T00:00:00");
 const toMonth = new Date;
 
 export const ReportsListFilterComponent: React.StatelessComponent<ReportsListFilterProps> = (props: ReportsListFilterProps) => (
-    <div className="">
-        <div className="form-group float-md-left">
+    <div className="row">
+        <div className="col-12 col-lg-6 form-inline">
             <div className="form-check form-check-inline">
                 <label className="form-check-label">
                     <input
-                        className="form-check-input form-control-sm"
+                        className="form-check-input form-control form-control-sm"
                         type="radio"
                         value={ReportsFilterPublishTypes.all}
                         name="publish_filter"
@@ -61,33 +59,45 @@ export const ReportsListFilterComponent: React.StatelessComponent<ReportsListFil
                 </label>
             </div>
         </div>
-        <div className="float-md-right form-inline report-time-filters">
-            <div className="">
-                <label> From
-                    <div className="ml-2">
-                        <DatePicker
-                            onChange={props.timeFromSelected}
-                            value={props.filterData.timeFrom ? new Date(props.filterData.timeFrom) : fromMonth}
-                            fromMonth={fromMonth}
-                            toMonth={toMonth}
-                        />
+        <div className={"col-12 col-lg-6"}>
+            <div className="float-md-right report-time-filters">
+                <div className={"row"}>
+                    <div className="col">
+                        <label className={"mb-0 small font-weight-bold"}>From</label>
+                        <div className="input-group mb-3">
+                            <div className="input-group-prepend">
+                            <span className="input-group-text">
+                                <CalendarIcon/>
+                            </span>
+                            </div>
+                            <DatePicker
+                                onChange={props.timeFromSelected}
+                                value={props.filterData.timeFrom ? new Date(props.filterData.timeFrom) : fromMonth}
+                                fromMonth={fromMonth}
+                                toMonth={toMonth}
+                            />
+                        </div>
                     </div>
-                </label>
-            </div>
-            <div className="ml-2">
-                <label> Until
-                    <div className="ml-2 picker-on-right">
-                        <DatePicker
-                            onChange={props.timeUntilSelected}
-                            value={props.filterData.timeUntil ? new Date(props.filterData.timeUntil) : toMonth}
-                            fromMonth={fromMonth}
-                            toMonth={toMonth}
-                        />
+                    <div className="col">
+                        <label className={"mb-0 small font-weight-bold"}> Until</label>
+                        <div className="input-group mb-3 picker-on-right">
+                            <div className="input-group-prepend">
+                            <span className="input-group-text">
+                                <CalendarIcon/>
+                            </span>
+                            </div>
+                            <DatePicker
+                                onChange={props.timeUntilSelected}
+                                value={props.filterData.timeUntil ? new Date(props.filterData.timeUntil) : toMonth}
+                                fromMonth={fromMonth}
+                                toMonth={toMonth}
+                            />
+                        </div>
                     </div>
-                </label>
+                </div>
             </div>
         </div>
-        <div className="clearfix" />
+        <div className="clearfix"/>
     </div>
 );
 
