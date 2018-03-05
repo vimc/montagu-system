@@ -1,4 +1,4 @@
-FROM openjdk:8u121-jdk
+FROM openjdk
 
 # Install libsodium
 RUN apt-get update
