@@ -10,6 +10,7 @@ import {ContribPageWithHeader} from "../../PageWithHeader/ContribPageWithHeader"
 import {ChooseActionPage} from "../../ChooseAction/ChooseActionPage";
 import {IPageWithParent} from "../../../../shared/models/Breadcrumb";
 import { Page } from "../../../../shared/components/PageWithHeader/Page";
+import {PageProperties} from "../../../../shared/components/PageWithHeader/PageWithHeader";
 
 interface LocationProps {
     groupId: string;
@@ -17,9 +18,9 @@ interface LocationProps {
 }
 
 export class ResponsibilityOverviewPage extends ContribPageWithHeader<LocationProps> {
-    load(props: LocationProps) {
+    load(props: PageProperties<LocationProps>) {
         return this.loadParent(props).then(() => {
-            touchstoneActions.setCurrentTouchstone(props.touchstoneId);
+            touchstoneActions.setCurrentTouchstone(props.match.params.touchstoneId);
             return responsibilityStore.fetchResponsibilities();
         });
     }
@@ -45,7 +46,7 @@ export class ResponsibilityOverviewPage extends ContribPageWithHeader<LocationPr
     render() :JSX.Element {
         return <Page page={this}>
             <ResponsibilityOverviewDescription
-                currentTouchstoneId={this.props.location.params.touchstoneId}
+                currentTouchstoneId={this.props.match.params.touchstoneId}
             />
             <ResponsibilityOverviewContent />
         </Page>;

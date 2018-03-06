@@ -11,6 +11,7 @@ import {runParametersStore} from "../../../stores/RunParametersStore";
 import {InternalLink} from "../../../../shared/components/InternalLink";
 import {ModelRunParametersContent} from "./ModelRunParametersContent";
 import {Page} from "../../../../shared/components/PageWithHeader/Page";
+import {PageProperties} from "../../../../shared/components/PageWithHeader/PageWithHeader";
 
 const stochasticParams = require('../Overview/stochastic_template_params.csv');
 
@@ -20,7 +21,7 @@ export interface ModelRunParametersProps {
 }
 
 export class ModelRunParametersPage extends ContribPageWithHeader<ModelRunParametersProps> {
-    load(props: ModelRunParametersProps) {
+    load(props: PageProperties<ModelRunParametersProps>) {
         return this.loadParent(props).then(() => {
             return runParametersStore.fetchParameterSets();
         });

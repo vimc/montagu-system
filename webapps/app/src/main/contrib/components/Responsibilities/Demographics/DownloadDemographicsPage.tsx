@@ -11,6 +11,7 @@ import {IPageWithParent} from "../../../../shared/models/Breadcrumb";
 import {ResponsibilityOverviewPage} from "../Overview/ResponsibilityOverviewPage";
 import { Page } from "../../../../shared/components/PageWithHeader/Page";
 import {ChooseActionPage} from "../../ChooseAction/ChooseActionPage";
+import {PageProperties} from "../../../../shared/components/PageWithHeader/PageWithHeader";
 
 interface LocationProps {
     groupId: string;
@@ -18,9 +19,9 @@ interface LocationProps {
 }
 
 export class DownloadDemographicsPage extends ContribPageWithHeader<LocationProps> {
-    load(props: LocationProps) {
+    load(props: PageProperties<LocationProps>) {
         return new ChooseActionPage().load(props).then(() => {
-            touchstoneActions.setCurrentTouchstone(props.touchstoneId);
+            touchstoneActions.setCurrentTouchstone(props.match.params.touchstoneId);
             return demographicStore.fetchDataSets();
         });
     }

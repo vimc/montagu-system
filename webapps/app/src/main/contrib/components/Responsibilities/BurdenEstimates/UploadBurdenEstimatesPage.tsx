@@ -11,6 +11,7 @@ import {ContribPageWithHeader} from "../../PageWithHeader/ContribPageWithHeader"
 import {IPageWithParent} from "../../../../shared/models/Breadcrumb";
 import {ResponsibilityOverviewPage} from "../Overview/ResponsibilityOverviewPage";
 import { Page } from "../../../../shared/components/PageWithHeader/Page";
+import {PageProperties} from "../../../../shared/components/PageWithHeader/PageWithHeader";
 
 export interface UploadEstimatesProps {
     groupId: string;
@@ -20,13 +21,13 @@ export interface UploadEstimatesProps {
 
 export class UploadBurdenEstimatesPage extends ContribPageWithHeader<UploadEstimatesProps> {
 
-    load(props: UploadEstimatesProps) {
+    load(props: PageProperties<UploadEstimatesProps>) {
 
         return this.loadParent(props).then(() => {
             estimateTokenActions.clearUsedToken();
             estimateTokenActions.setRedirectPath(this.props.location.pathname);
 
-            responsibilityActions.setCurrentResponsibility(props.scenarioId);
+            responsibilityActions.setCurrentResponsibility(props.match.params.scenarioId);
             responsibilityStore.fetchOneTimeEstimatesToken().catch(doNothing);
         });
     }

@@ -34,7 +34,7 @@ export abstract class PageWithHeader<TLocationProps>
     }
 
     loadOnMount(): Promise<any> {
-        return this.load(this.props.location.params).then(() => {
+        return this.load(this.props).then(() => {
             this.createBreadcrumb();
             window.scrollTo(0, 0);
         });
@@ -44,10 +44,10 @@ export abstract class PageWithHeader<TLocationProps>
         return this.props.match.params;
     }
 
-    load(props: TLocationProps): Promise<any> {
+    load(props: PageProperties<TLocationProps>): Promise<any> {
         return Promise.resolve(true);
     }
-    loadParent(props: TLocationProps): Promise<any> {
+    loadParent(props: PageProperties<TLocationProps>): Promise<any> {
         const parent = this.parent();
         if (parent) {
             return this.parent().load(props);
@@ -80,9 +80,17 @@ export abstract class PageWithHeader<TLocationProps>
     }
 }
 
+interface MatchProps<T> {
+    isExact: boolean;
+    params: T;
+    path: string;
+    url: string;
+}
+
 export interface PageProperties<T> {
-    location: Location<T>;
-    router: IRouter;
+    location: any;
+    router: any;
     onLoad?: (props:Partial<T>) => void;
-    match?: any;
+    match?: MatchProps<T>;
+    history: any;
 }
