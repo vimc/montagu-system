@@ -2,7 +2,7 @@ import * as React from "react";
 import {ReportingPageWithHeader} from "../ReportingPageWithHeader";
 import {ReportsList} from "./ReportsList";
 import {ReportsListSorting} from "./ReportsListSorting";
-import {ReportsListFilter} from "./ReportsListFilter";
+import {ReportsListFilter} from "./Filter/ReportsListFilter";
 import {IPageWithParent} from "../../../shared/models/Breadcrumb";
 import {ReportingPage} from "../ReportingPage";
 

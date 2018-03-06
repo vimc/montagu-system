@@ -3,10 +3,12 @@ import { expect } from "chai";
 import { shallow } from "enzyme";
 
 import "../../../helper";
-import {ReportsListFilterComponent} from "../../../../main/report/components/ReportsList/ReportsListFilter";
+import {ReportsListFilterComponent} from "../../../../main/report/components/ReportsList/Filter/ReportsListFilter";
 import {Sandbox} from "../../../Sandbox";
 import {ReportsFilterPublishTypes} from "../../../../main/report/actionTypes/ReportsActionsTypes";
 import {DatePicker} from "../../../../main/shared/components/DatePicker/DatePicker";
+import {ReportsListFilterPublished} from "../../../../main/report/components/ReportsList/Filter/ReportsListFilterPublished";
+import {ReportsListFilterDate} from "../../../../main/report/components/ReportsList/Filter/ReportsListFilterDate";
 
 describe("ReportListFilter", () => {
 
@@ -14,30 +16,26 @@ describe("ReportListFilter", () => {
     afterEach(() => sandbox.restore());
 
     it("can render filter published with given value", () => {
-        const rendered = shallow(<ReportsListFilterComponent
+        const rendered = shallow(<ReportsListFilterPublished
             filterData={{
                 published: ReportsFilterPublishTypes.published,
                 timeFrom: null,
                 timeUntil: null
             }}
             filterPublish={()=>{}}
-            timeFromSelected={()=>{}}
-            timeUntilSelected={()=>{}}
         />);
-        const radioButtons = rendered.find('input[type="radio"]');
-        expect(radioButtons).to.have.length(3);
-        expect(radioButtons.at(1).props().checked).to.equal(true);
-        expect(radioButtons.at(0).props().checked).to.equal(false);
+        const select = rendered.find('select');
+        expect(select.props().value).to.equal("published");
+        expect(select.props().children).to.have.length(3);
     });
 
     it("can render filter time from with given value and until with no value", () => {
-        const rendered = shallow(<ReportsListFilterComponent
+        const rendered = shallow(<ReportsListFilterDate
             filterData={{
                 published: ReportsFilterPublishTypes.published,
                 timeFrom: "2017-02-01T00:00:00",
                 timeUntil: null
             }}
-            filterPublish={()=>{}}
             timeFromSelected={()=>{}}
             timeUntilSelected={()=>{}}
         />);
@@ -57,13 +55,12 @@ describe("ReportListFilter", () => {
     });
 
     it("can render filter time from with no value and until with value", () => {
-        const rendered = shallow(<ReportsListFilterComponent
+        const rendered = shallow(<ReportsListFilterDate
             filterData={{
                 published: ReportsFilterPublishTypes.published,
                 timeFrom: null,
                 timeUntil: "2018-09-07T00:00:00"
             }}
-            filterPublish={()=>{}}
             timeFromSelected={()=>{}}
             timeUntilSelected={()=>{}}
         />);
@@ -83,18 +80,16 @@ describe("ReportListFilter", () => {
 
     it("trigger filterPublish", () => {
         const filterPublishSpy = sandbox.createSpy();
-        const rendered = shallow(<ReportsListFilterComponent
+        const rendered = shallow(<ReportsListFilterPublished
             filterData={{
                 published: ReportsFilterPublishTypes.published,
                 timeFrom: null,
                 timeUntil: null
             }}
             filterPublish={filterPublishSpy}
-            timeFromSelected={()=>{}}
-            timeUntilSelected={()=>{}}
         />);
-        const radioButtons = rendered.find('input[type="radio"]');
-        radioButtons.at(1).simulate('change', {target: { value : 'not_published'}});
+        const select = rendered.find('select');
+        select.simulate('change', {target: { value : 'not_published'}});
         expect(filterPublishSpy.called).is.equal(true);
         expect(filterPublishSpy.getCall(0).args).is.eql(["not_published"]);
     });
