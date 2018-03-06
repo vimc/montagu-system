@@ -1,5 +1,6 @@
 import * as React from "react";
 import { connect } from 'react-redux';
+import {History} from "History";
 
 import { ErrorLog } from "../../shared/components/ErrorLog/ErrorLog";
 import { ReportingRouter } from "./ReportingRouter";
@@ -12,7 +13,7 @@ export interface ReportingAppProps {
     errors: string[];
     infos: string[];
     loggedIn: boolean;
-    history?: any;
+    history?: History;
 }
 
 export class ReportingAppComponent extends React.Component<ReportingAppProps, undefined> {

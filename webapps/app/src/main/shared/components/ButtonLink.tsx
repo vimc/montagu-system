@@ -1,42 +1,34 @@
 import * as React from "react";
-import { Link } from "simple-react-router";
-import { appSettings } from "../Settings";
+import { withRouter } from 'react-router-dom';
+import {compose, withHandlers} from 'recompose';
 
-export class ButtonLink extends Link {
-    constructor(props: any) {
-        super(props);
-        this.onClick = this.onClick.bind(this);
-    }
-
-    isAbsoluteURL(url: string) {
-        const pat = /^https?:\/\//i;
-        return pat.test(url);
-    }
-
-    onClick(event: any) {
-        let href = (this.refs.link as HTMLButtonElement).getAttribute("href");
-        if (!this.isAbsoluteURL(href)) {
-            href = location.origin + appSettings.publicPath + href;
-        }
-
-        if (this.props.onClick) {
-            this.props.onClick(event)
-        }
-
-        if (event.isDefaultPrevented() || event.isPropagationStopped()) return;
-
-        if (!this.props.externalLink && !event.ctrlKey && !event.metaKey && !event.shiftKey && href.startsWith(location.origin)) {
-            event.preventDefault();
-            this.context.redirectTo(href, !!this.props.replace)
-        }
-    };
-
-    render() {
-        const props = Object.assign({}, this.props) as any;
-        delete props.externalLink;
-        props.href = props.href || '';
-        props.onClick = this.onClick;
-
-        return <button ref="link" {...props}>{props.children}</button>;
-    }
+interface ButtonLinkProps {
+    href: string;
+    className?: string;
+    children: any;
+    onClick: any;
 }
+
+const handlers = {
+    onClick: (props:any) => (event:any) => {
+        event.preventDefault()
+        props.history.push(props.href);
+    },
+}
+
+export const ButtonLinkComponent : React.StatelessComponent<ButtonLinkProps> = (props: ButtonLinkProps) => {
+
+    return <button
+        className={props.className}
+        onClick={props.onClick}
+    >
+        {props.children}
+    </button>;
+}
+
+const enhance = compose<ButtonLinkProps, Partial<ButtonLinkProps>>(
+    withRouter,
+    withHandlers(handlers)
+);
+
+export const ButtonLink = enhance(ButtonLinkComponent);
