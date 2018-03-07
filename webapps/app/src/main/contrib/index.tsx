@@ -1,6 +1,7 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { createBrowserHistory } from 'history';
+import {History} from "History";
 
 import { ContribApp } from "./components/ContribApp";
 import { ContribFetcher } from "./sources/ContribFetcher";
@@ -15,7 +16,7 @@ import './style.scss';
 
 fetcher.fetcher = new ContribFetcher();
 
-const history = createBrowserHistory();
+const history: History = createBrowserHistory();
 const store = createContribStore(history);
 
 store.dispatch(authActions.loadSavedToken())

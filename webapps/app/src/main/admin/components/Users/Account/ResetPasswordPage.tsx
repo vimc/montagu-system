@@ -11,6 +11,7 @@ import { helpers } from "../../../../shared/Helpers";
 import {IPageWithParent} from "../../../../shared/models/Breadcrumb";
 import {MainMenu} from "../../MainMenu/MainMenu";
 import { Page } from "../../../../shared/components/PageWithHeader/Page";
+import {PageProperties} from "../../../../shared/components/PageWithHeader/PageWithHeader";
 
 export interface ResetPasswordPageProps {
     token: string;
@@ -35,7 +36,7 @@ export class ResetPasswordPage extends AdminPageWithHeader<ResetPasswordPageProp
         return new MainMenu();
     }
 
-    load(props: ResetPasswordPageProps) {
+    load(props: PageProperties<ResetPasswordPageProps>) {
         return this.loadParent(props).then(() => {
             accountActions.setPasswordResetToken(helpers.queryStringAsObject().token);
         });

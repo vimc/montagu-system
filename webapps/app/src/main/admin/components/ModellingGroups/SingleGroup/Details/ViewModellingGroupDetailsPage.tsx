@@ -5,24 +5,24 @@ import { ModellingGroupTitle, GroupTitleProps } from "../ModellingGroupTitle";
 import { AdminPageWithHeader } from "../../../AdminPageWithHeader";
 import { groupStore } from "../../../../stores/GroupStore";
 import { modellingGroupActions } from "../../../../../shared/actions/ModellingGroupActions";
-import { doNothing } from "../../../../../shared/Helpers";
 import { userStore } from "../../../../stores/UserStore";
 import {IPageWithParent} from "../../../../../shared/models/Breadcrumb";
 import {ViewAllModellingGroupsPage} from "../../List/ViewAllModellingGroupsPage";
 import { Page } from "../../../../../shared/components/PageWithHeader/Page";
+import {PageProperties} from "../../../../../shared/components/PageWithHeader/PageWithHeader";
 
 export interface ModellingGroupDetailsPageProps {
     groupId: string;
 }
 
 export class ViewModellingGroupDetailsPage extends AdminPageWithHeader<ModellingGroupDetailsPageProps> {
-    load(props: ModellingGroupDetailsPageProps) {
+    load(props: PageProperties<ModellingGroupDetailsPageProps>) {
         const initial: Array<Promise<any>> = [
             this.loadParent(props),  // Fetches groups
             userStore.fetchUsers()
         ];
         return Promise.all(initial).then(() => {
-            modellingGroupActions.setCurrentGroup(props.groupId);
+            modellingGroupActions.setCurrentGroup(props.match.params.groupId);
             return groupStore.fetchGroupDetails();
         });
     }

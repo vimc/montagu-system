@@ -1,5 +1,6 @@
 import * as React from "react";
 import { connect } from 'react-redux';
+import {History} from "History";
 
 import { notificationStore } from "../../shared/stores/NotificationStore";
 import { connectToStores } from "../../shared/alt";
@@ -12,6 +13,7 @@ export interface AdminAppProps {
     errors: string[];
     infos: string[];
     loggedIn: boolean;
+    history?: History;
 }
 
 export class AdminAppComponent extends React.Component<AdminAppProps, undefined> {
@@ -27,7 +29,7 @@ export class AdminAppComponent extends React.Component<AdminAppProps, undefined>
 
     render() {
         return <div>
-            <AdminRouter loggedIn={ this.props.loggedIn } />
+            <AdminRouter loggedIn={ this.props.loggedIn } history={this.props.history} />
             <NotificationArea notifications={ this.props.infos } />
             <ErrorLog errors={ this.props.errors } />
         </div>;
@@ -36,9 +38,10 @@ export class AdminAppComponent extends React.Component<AdminAppProps, undefined>
 
 export const AdminAppAltWrapped = connectToStores(AdminAppComponent);
 
-const mapStateToProps = (state: AdminAppState): Partial<AdminAppProps> => {
+const mapStateToProps = (state: AdminAppState, props: any): Partial<AdminAppProps> => {
     return {
         loggedIn: state.auth.loggedIn,
+        history: props.history
     }
 };
 

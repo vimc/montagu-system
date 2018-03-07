@@ -9,15 +9,16 @@ import {userStore} from "../../../stores/UserStore";
 import {IPageWithParent} from "../../../../shared/models/Breadcrumb";
 import {ViewAllUsersPage} from "../List/ViewAllUsersPage";
 import { Page } from "../../../../shared/components/PageWithHeader/Page";
+import {PageProperties} from "../../../../shared/components/PageWithHeader/PageWithHeader";
 
 export interface UserDetailsPageProps {
     username: string;
 }
 
 export class ViewUserDetailsPage extends AdminPageWithHeader<UserDetailsPageProps> {
-    load(props: UserDetailsPageProps) {
+    load(props: PageProperties<UserDetailsPageProps>) {
         return this.loadParent(props).then(() => {
-            userActions.setCurrentUser(props.username);
+            userActions.setCurrentUser(props.match.params.username);
         });
     }
 

@@ -59,7 +59,7 @@ export const ContribRouter : React.StatelessComponent<ContribRouterProps> = (pro
         <Redirect to="/"/>
     </Switch>;
 
-    const routes = props.loggedIn ?  loggedIn : notLoggedIn;
+    const routes = props.loggedIn ? loggedIn : notLoggedIn;
 
     return <ConnectedRouter history={props.history}>
         {routes}
