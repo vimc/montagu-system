@@ -3,7 +3,7 @@ import {expect} from "chai";
 import {shallow, ShallowWrapper} from "enzyme";
 import {Provider} from "react-redux";
 
-import {mockLocation} from "../../mocks/mocks";
+import {mockLocation, mockMatch} from "../../mocks/mocks";
 import {PageProperties, PageWithHeader} from "../../../main/shared/components/PageWithHeader/PageWithHeader";
 import {PageHeader} from "../../../main/shared/components/PageWithHeader/PageHeader";
 import {PageArticle} from "../../../main/shared/components/PageWithHeader/PageArticle";
@@ -84,14 +84,17 @@ describe('PageWithHeader', () => {
     const sandbox = new Sandbox();
 
     beforeEach(() => {
-        rendered = shallow(<DummyPage location={mockLocation<undefined>()} router={null}/>);
+        rendered = shallow(<DummyPage location={mockLocation()} router={null} match={mockMatch()}/>);
     });
     afterEach(() => sandbox.restore());
 
     it("loads on mount after timeout", (done: DoneCallback) => {
         const store = reduxHelper.createStore({auth: {loggedIn: true}})
-        const page = sandbox.mount(<Provider store={store}><DummyPage location={mockLocation<undefined>()}
-                                                                      router={null}/></Provider>)
+        const page = sandbox.mount(<Provider store={store}><DummyPage
+            location={mockLocation()}
+            router={null}
+            match={mockMatch()}
+        /></Provider>)
             .find(DummyPage).instance() as DummyPage;
         expect(page.loaded).to.be.false;
 
@@ -101,7 +104,11 @@ describe('PageWithHeader', () => {
     });
 
     it("renders the content without title element if hideTitle equals true", () => {
-        const dummyPageNoTitle = shallow(<DummyPageNoTitle location={mockLocation<undefined>()} router={null}/>);
+        const dummyPageNoTitle = shallow(<DummyPageNoTitle
+            location={mockLocation()}
+            router={null}
+            match={mockMatch()}
+        />);
         expect(dummyPageNoTitle.find(".pageTitle").exists()).to.equal(false);
     });
 });

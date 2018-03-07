@@ -13,7 +13,7 @@ import {bootstrapStore} from "../../../../StoreHelpers";
 import {mainStore} from "../../../../../main/contrib/stores/MainStore";
 import {makeLoadable} from "../../../../../main/contrib/stores/Loadable";
 import {mockResponsibilitiesEndpoint, mockTouchstonesEndpoint} from "../../../../mocks/mockEndpoints";
-import {mockLocation, setupStores} from "../../../../mocks/mocks";
+import {mockLocation, mockMatch, setupStores} from "../../../../mocks/mocks";
 import {expectOrderedActions} from "../../../../actionHelpers";
 import {Sandbox} from "../../../../Sandbox";
 
@@ -21,7 +21,8 @@ describe('UploadEstimatesPage', () => {
     const sandbox = new Sandbox();
     afterEach(() => sandbox.restore());
 
-    const location = mockLocation({
+    const location = mockLocation()
+    const match = mockMatch({
         touchstoneId: "touchstone-1",
         scenarioId: "scenario-1",
         groupId: "group-1",
@@ -41,11 +42,7 @@ describe('UploadEstimatesPage', () => {
 
         setupStores({groups: [group], touchstones: [touchstone]});
 
-        const promise = new UploadBurdenEstimatesPage({location: location, router: null}).load({
-            touchstoneId: "touchstone-1",
-            scenarioId: "scenario-1",
-            groupId: "group-1",
-        });
+        const promise = new UploadBurdenEstimatesPage({location, match, router: null}).load(match.params);
         checkPromise(done, promise, (_, afterWait) => {
             afterWait(done, () => {
                 expectOrderedActions(spy, [
@@ -62,7 +59,7 @@ describe('UploadEstimatesPage', () => {
         });
     });
 
-    const page = new UploadBurdenEstimatesPage({location: location, router: null});
+    const page = new UploadBurdenEstimatesPage({location, router: null, match});
     addNavigationTests(page, sandbox, () => {
         bootstrapStore(mainStore, {
             modellingGroups: makeLoadable([mockModellingGroup({id: "group-1"})])

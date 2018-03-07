@@ -10,7 +10,6 @@ import {ContribPageWithHeader} from "../../PageWithHeader/ContribPageWithHeader"
 import {ResponsibilityOverviewPage} from "../Overview/ResponsibilityOverviewPage";
 import {IPageWithParent} from "../../../../shared/models/Breadcrumb";
 import {Page} from "../../../../shared/components/PageWithHeader/Page";
-import {PageProperties} from "../../../../shared/components/PageWithHeader/PageWithHeader";
 
 interface LocationProps {
     groupId: string;
@@ -19,9 +18,9 @@ interface LocationProps {
 }
 
 export class DownloadCoveragePage extends ContribPageWithHeader<LocationProps> {
-    load(props: PageProperties<LocationProps>) {
+    load(props: LocationProps) {
         return this.loadParent(props).then(() => {
-            responsibilityActions.setCurrentResponsibility(props.match.params.scenarioId);
+            responsibilityActions.setCurrentResponsibility(props.scenarioId);
             responsibilityStore.fetchOneTimeCoverageToken().catch(doNothing);
             return responsibilityStore.fetchCoverageSets();
         });

@@ -1,4 +1,6 @@
 import * as React from "react";
+import { createMemoryHistory } from 'history';
+
 import { expectIsEqual, IntegrationTestSuite } from "./IntegrationTest";
 import { AdminFetcher } from "../main/admin/sources/AdminFetcher";
 import { groupStore } from "../main/admin/stores/GroupStore";
@@ -18,7 +20,7 @@ class AdminIntegrationTests extends IntegrationTestSuite {
     }
 
     createStore() {
-        return createAdminStore();
+        return createAdminStore(createMemoryHistory());
     }
 
 

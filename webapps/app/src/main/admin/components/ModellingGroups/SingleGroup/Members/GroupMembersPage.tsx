@@ -8,16 +8,15 @@ import { GroupMembersContent } from "./GroupMembersContent";
 import {IPageWithParent} from "../../../../../shared/models/Breadcrumb";
 import {ViewModellingGroupDetailsPage} from "../Details/ViewModellingGroupDetailsPage";
 import { Page } from "../../../../../shared/components/PageWithHeader/Page";
-import {PageProperties} from "../../../../../shared/components/PageWithHeader/PageWithHeader";
 
 interface GroupMembersPageProps {
     groupId: string;
 }
 
 export class GroupMembersPage extends AdminPageWithHeader<GroupMembersPageProps> {
-    load(props: PageProperties<GroupMembersPageProps>) {
+    load(props: GroupMembersPageProps) {
         return this.loadParent(props).then(() => {
-            modellingGroupActions.setCurrentGroup(this.props.match.params.groupId);
+            modellingGroupActions.setCurrentGroup(props.groupId);
             return groupStore.fetchGroupDetails();
         });
     }

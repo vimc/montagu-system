@@ -3,19 +3,18 @@ import {Sandbox} from "../../../Sandbox";
 import {expect} from "chai";
 import {shallow} from "enzyme";
 
-import {mockLocation, setupStores} from "../../../mocks/mocks";
+import {mockLocation, mockMatch, setupStores} from "../../../mocks/mocks";
 import {expectOneAction} from "../../../actionHelpers";
 
 import {responsibilityStore} from "../../../../main/contrib/stores/ResponsibilityStore";
-import {mockModellingGroup, mockResponsibility, mockTouchstone} from "../../../mocks/mockModels";
+import {mockModellingGroup, mockTouchstone} from "../../../mocks/mockModels";
 import {ResponsibilityOverviewPage} from "../../../../main/contrib/components/Responsibilities/Overview/ResponsibilityOverviewPage";
 import {ResponsibilityOverviewTitleComponent} from "../../../../main/contrib/components/Responsibilities/Overview/ResponsibilityOverviewTitle";
-import {checkAsync, checkPromise} from "../../../testHelpers";
+import {checkPromise} from "../../../testHelpers";
 import {addNavigationTests} from "../../../shared/NavigationTests";
 import {makeLoadable} from "../../../../main/contrib/stores/Loadable";
 import {mainStore} from "../../../../main/contrib/stores/MainStore";
 import {bootstrapStore} from "../../../StoreHelpers";
-import {successResult} from "../../../mocks/mockRemote";
 import {mockFetcherForMultipleResponses} from "../../../mocks/mockMultipleEndpoints";
 import {mockResponsibilitiesEndpoint, mockTouchstonesEndpoint} from "../../../mocks/mockEndpoints";
 
@@ -48,11 +47,15 @@ describe('ResponsibilityOverviewPage', () => {
         });
     });
 
+    const location = mockLocation();
+    const match = mockMatch({
+        touchstoneId: "touchstone-1",
+        groupId: "group-1"
+    });
+
     const page = new ResponsibilityOverviewPage({
-        location: mockLocation({
-            touchstoneId: "touchstone-1",
-            groupId: "group-1"
-        }),
+        location,
+        match,
         router: null
     });
     addNavigationTests(page, sandbox, () => {

@@ -1,6 +1,7 @@
 import * as React from "react";
 import { expect } from "chai";
 import { shallow } from "enzyme";
+import "../../helper";
 import { AdminRouter } from "../../../main/admin/components/AdminRouter";
 import { AdminLoginPage } from "../../../main/admin/components/AdminLoginPage";
 import {AdminNoRouteFoundPage} from "../../../main/admin/components/AdminNoRouteFoundPage";

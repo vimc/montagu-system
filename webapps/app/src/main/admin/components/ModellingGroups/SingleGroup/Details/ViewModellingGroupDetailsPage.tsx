@@ -9,20 +9,19 @@ import { userStore } from "../../../../stores/UserStore";
 import {IPageWithParent} from "../../../../../shared/models/Breadcrumb";
 import {ViewAllModellingGroupsPage} from "../../List/ViewAllModellingGroupsPage";
 import { Page } from "../../../../../shared/components/PageWithHeader/Page";
-import {PageProperties} from "../../../../../shared/components/PageWithHeader/PageWithHeader";
 
 export interface ModellingGroupDetailsPageProps {
     groupId: string;
 }
 
 export class ViewModellingGroupDetailsPage extends AdminPageWithHeader<ModellingGroupDetailsPageProps> {
-    load(props: PageProperties<ModellingGroupDetailsPageProps>) {
+    load(props: ModellingGroupDetailsPageProps) {
         const initial: Array<Promise<any>> = [
             this.loadParent(props),  // Fetches groups
             userStore.fetchUsers()
         ];
         return Promise.all(initial).then(() => {
-            modellingGroupActions.setCurrentGroup(props.match.params.groupId);
+            modellingGroupActions.setCurrentGroup(props.groupId);
             return groupStore.fetchGroupDetails();
         });
     }

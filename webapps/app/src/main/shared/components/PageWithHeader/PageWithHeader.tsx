@@ -1,6 +1,6 @@
 import * as React from "react";
-import {History} from "History";
-import {Router} from 'react-router';
+import {History, Location} from "history";
+import {Router, match} from 'react-router';
 
 import { navActions } from "../../actions/NavActions";
 import {IPageWithParent} from "../../models/Breadcrumb";
@@ -35,7 +35,7 @@ export abstract class PageWithHeader<TLocationProps>
     }
 
     loadOnMount(): Promise<any> {
-        return this.load(this.props).then(() => {
+        return this.load(this.props.match.params).then(() => {
             this.createBreadcrumb();
             window.scrollTo(0, 0);
         });
@@ -45,10 +45,10 @@ export abstract class PageWithHeader<TLocationProps>
         return this.props.match.params;
     }
 
-    load(props: PageProperties<TLocationProps>): Promise<any> {
+    load(props: TLocationProps): Promise<any> {
         return Promise.resolve(true);
     }
-    loadParent(props: PageProperties<TLocationProps>): Promise<any> {
+    loadParent(props: TLocationProps): Promise<any> {
         const parent = this.parent();
         if (parent) {
             return this.parent().load(props);
@@ -81,17 +81,10 @@ export abstract class PageWithHeader<TLocationProps>
     }
 }
 
-interface MatchProps<T> {
-    isExact: boolean;
-    params: T;
-    path: string;
-    url: string;
-}
-
 export interface PageProperties<T> {
-    location: Location;
-    router: Router;
+    location?: Location;
+    router?: Router;
     onLoad?: (props:Partial<T>) => void;
-    match?: MatchProps<T>;
-    history: History;
+    match: match<T>;
+    history?: History;
 }

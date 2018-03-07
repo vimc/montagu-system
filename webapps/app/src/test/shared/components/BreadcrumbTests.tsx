@@ -3,14 +3,14 @@ import {DummyPage} from "./PageWithHeaderTests";
 import {Sandbox} from "../../Sandbox";
 import {navStore} from "../../../main/shared/stores/NavStore";
 import {checkAsync, checkPromise} from "../../testHelpers";
-import {mockLocation} from "../../mocks/mocks";
+import {mockLocation, mockMatch} from "../../mocks/mocks";
 
 describe("Breadcrumbs", () => {
     const sandbox = new Sandbox();
     afterEach(() => sandbox.restore());
 
     it("initial page load builds full crumbs from parents", (done: DoneCallback) => {
-        const promise = new C({location: mockLocation(), router: null}).loadOnMount();
+        const promise = new C({location: mockLocation(), router: null, match: mockMatch()}).loadOnMount();
         checkPromise(done, promise, (_, afterWait) => {
             const nav = navStore.getState();
             expect(nav.crumbs).to.eql([

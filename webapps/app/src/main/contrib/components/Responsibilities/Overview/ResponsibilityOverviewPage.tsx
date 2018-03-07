@@ -2,15 +2,12 @@ import * as React from "react";
 import { ResponsibilityOverviewTitle } from "./ResponsibilityOverviewTitle";
 import { touchstoneActions } from "../../../actions/TouchstoneActions";
 import { responsibilityStore } from "../../../stores/ResponsibilityStore";
-import { doNothing } from "../../../../shared/Helpers";
-import {modellingGroupActions} from "../../../../shared/actions/ModellingGroupActions";
 import { ResponsibilityOverviewDescription } from "./ResponsibilityOverviewDescription";
 import { ResponsibilityOverviewContent } from "./ResponsibilityOverviewContent";
 import {ContribPageWithHeader} from "../../PageWithHeader/ContribPageWithHeader";
 import {ChooseActionPage} from "../../ChooseAction/ChooseActionPage";
 import {IPageWithParent} from "../../../../shared/models/Breadcrumb";
 import { Page } from "../../../../shared/components/PageWithHeader/Page";
-import {PageProperties} from "../../../../shared/components/PageWithHeader/PageWithHeader";
 
 interface LocationProps {
     groupId: string;
@@ -18,9 +15,9 @@ interface LocationProps {
 }
 
 export class ResponsibilityOverviewPage extends ContribPageWithHeader<LocationProps> {
-    load(props: PageProperties<LocationProps>) {
+    load(props: LocationProps) {
         return this.loadParent(props).then(() => {
-            touchstoneActions.setCurrentTouchstone(props.match.params.touchstoneId);
+            touchstoneActions.setCurrentTouchstone(props.touchstoneId);
             return responsibilityStore.fetchResponsibilities();
         });
     }

@@ -1,7 +1,6 @@
 import * as React from "react";
 import { connectToStores } from "../../../../shared/alt";
 import { AdminPageWithHeader } from "../../AdminPageWithHeader";
-import { doNothing } from "../../../../shared/Helpers";
 import {UserTitle, UserTitleProps} from "./UserTitle";
 import {UserDetailsContent} from "./UserDetailsContent";
 import {userActions} from "../../../actions/UserActions";
@@ -9,16 +8,15 @@ import {userStore} from "../../../stores/UserStore";
 import {IPageWithParent} from "../../../../shared/models/Breadcrumb";
 import {ViewAllUsersPage} from "../List/ViewAllUsersPage";
 import { Page } from "../../../../shared/components/PageWithHeader/Page";
-import {PageProperties} from "../../../../shared/components/PageWithHeader/PageWithHeader";
 
 export interface UserDetailsPageProps {
     username: string;
 }
 
 export class ViewUserDetailsPage extends AdminPageWithHeader<UserDetailsPageProps> {
-    load(props: PageProperties<UserDetailsPageProps>) {
+    load(props: UserDetailsPageProps) {
         return this.loadParent(props).then(() => {
-            userActions.setCurrentUser(props.match.params.username);
+            userActions.setCurrentUser(props.username);
         });
     }
 
