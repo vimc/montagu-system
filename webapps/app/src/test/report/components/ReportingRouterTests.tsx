@@ -16,6 +16,8 @@ describe("ReportingRouter", () => {
    });
 
     it("renders LoginPage when logged out", () => {
+        const history = createMemoryHistory({
+            initialEntries: [ '/' ]});
         const rendered = shallow(<ReportingRouter loggedIn={ false } history={history} />);
         expect(rendered.find(ReportingLoginPage).length).to.equal(1);
     });

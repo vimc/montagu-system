@@ -1,14 +1,13 @@
 import * as React from "react";
 import { expect } from "chai";
 import { Sandbox } from "../../../Sandbox";
-import { ChooseActionPage, LocationProps } from "../../../../main/contrib/components/ChooseAction/ChooseActionPage";
-import {mockLocation, setupStores} from "../../../mocks/mocks";
+import { ChooseActionPage } from "../../../../main/contrib/components/ChooseAction/ChooseActionPage";
+import {mockLocation, mockMatch, setupStores} from "../../../mocks/mocks";
 import { expectOneAction } from "../../../actionHelpers";
-import {checkAsync, checkPromise} from "../../../testHelpers";
-import {ResponsibilityState, responsibilityStore} from "../../../../main/contrib/stores/ResponsibilityStore";
+import { checkPromise} from "../../../testHelpers";
+import {responsibilityStore} from "../../../../main/contrib/stores/ResponsibilityStore";
 import { groupStore } from "../../../../main/admin/stores/GroupStore";
 import {addNavigationTests} from "../../../shared/NavigationTests";
-import { successResult} from "../../../mocks/mockRemote";
 import {mockModellingGroup, mockTouchstone} from "../../../mocks/mockModels";
 import {bootstrapStore} from "../../../StoreHelpers";
 import {mainStore} from "../../../../main/contrib/stores/MainStore";
@@ -43,7 +42,10 @@ describe("ChooseActionPage", () => {
         });
     });
 
-    const page = new ChooseActionPage({location: mockLocation({groupId: "group-1"}), router: null});
+    const location = mockLocation();
+    const match = mockMatch({groupId: "group-1"});
+
+    const page = new ChooseActionPage({location, match, router: null});
     addNavigationTests(page, sandbox, () => {
         bootstrapStore(mainStore, {
             modellingGroups: makeLoadable([

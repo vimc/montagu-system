@@ -1,6 +1,6 @@
 import { Sandbox } from "../../../../Sandbox";
 import { expect } from "chai";
-import { mockLocation } from "../../../../mocks/mocks";
+import {mockLocation, mockMatch} from "../../../../mocks/mocks";
 import * as React from "react";
 import { expectOneAction } from "../../../../actionHelpers";
 import {checkAsync, checkPromise} from "../../../../testHelpers";
@@ -20,7 +20,8 @@ describe("ViewUserDetailsPage", () => {
     const sandbox = new Sandbox();
     afterEach(() => sandbox.restore());
 
-    const location = mockLocation<UserDetailsPageProps>({ username: "testuser" });
+    const location = mockLocation();
+    const match = mockMatch<UserDetailsPageProps>({ username: "testuser" });
 
     it("triggers fetch on load", (done: DoneCallback) => {
         alt.bootstrap(JSON.stringify({
@@ -46,7 +47,7 @@ describe("ViewUserDetailsPage", () => {
         });
     });
 
-    const page = new ViewUserDetailsPage({location: location, router: null});
+    const page = new ViewUserDetailsPage({location, match, router: null});
     addNavigationTests(page, sandbox, () => {
         mockFetcherForMultipleResponses([
             mockUsersEndpoint([mockUser()])

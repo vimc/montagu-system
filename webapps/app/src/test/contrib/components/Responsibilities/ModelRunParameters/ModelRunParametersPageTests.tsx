@@ -15,7 +15,7 @@ import {
     mockModelRunParametersEndpoint, mockResponsibilitiesEndpoint,
     mockTouchstonesEndpoint
 } from "../../../../mocks/mockEndpoints";
-import {mockLocation, setupStores} from "../../../../mocks/mocks";
+import {mockLocation, mockMatch, setupStores} from "../../../../mocks/mocks";
 import {expectOrderedActions} from "../../../../actionHelpers";
 import {Sandbox} from "../../../../Sandbox";
 import {ModelRunParametersPage} from "../../../../../main/contrib/components/Responsibilities/ModelRunParameters/ModelRunParametersPage";
@@ -25,10 +25,11 @@ describe('ModelRunParameterPage', () => {
     const sandbox = new Sandbox();
     afterEach(() => sandbox.restore());
 
-    const location = mockLocation({
+    const match = mockMatch({
         touchstoneId: "touchstone-1",
         groupId: "group-1",
     });
+    const location = mockLocation();
 
     it("triggers actions when it loads", (done: DoneCallback) => {
         const spy = sandbox.dispatchSpy();
@@ -61,14 +62,14 @@ describe('ModelRunParameterPage', () => {
     });
 
     it("has correct meta data", () => {
-        const page = new ModelRunParametersPage({location: location, router: null});
+        const page = new ModelRunParametersPage({location, match, router: null});
         expect(page.name()).to.eql("Upload parameters");
         expect(page.urlFragment()).to.eql("parameters");
         expect(page.title().props).to.have.property("title", "Upload parameters");
 
     });
 
-    const page = new ModelRunParametersPage({location: location, router: null});
+    const page = new ModelRunParametersPage({location, match, router: null});
     addNavigationTests(page, sandbox, () => {
         bootstrapStore(mainStore, {
             modellingGroups: makeLoadable([mockModellingGroup({id: "group-1"})])
