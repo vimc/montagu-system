@@ -1,24 +1,31 @@
 import * as React from "react";
 import { expect } from "chai";
-import { shallow } from "enzyme";
+import { render } from "enzyme";
+import { Provider } from "react-redux";
 import { createMemoryHistory } from 'history';
 
+import "../../helper";
 import { ReportingRouter } from "../../../main/report/components/ReportingRouter";
-import { ReportingLoginPage } from "../../../main/report/components/ReportingLoginPage";
-import {ReportingNoRouteFoundPage} from "../../../main/report/components/ReportingNoRouteFoundPage";
+import {createReportStore} from "../../../main/report/stores/createReportStore";
 
 describe("ReportingRouter", () => {
    it("does normal routing when logged in", () => {
-       const history = createMemoryHistory({
-           initialEntries: [ '/' ]});
-       const rendered = shallow( <ReportingRouter loggedIn={ true } history={history} />);
-       expect(rendered.find(ReportingNoRouteFoundPage)).has.length(1, "Expected ReportingNoRouteFoundPage to be rendered");
+       const history = createMemoryHistory({initialEntries: [ '/asd' ]});
+       const store = createReportStore(history);
+
+       const rendered = render( <Provider store={store}><ReportingRouter loggedIn={ true } history={history} /></Provider>);
+
+       expect(rendered.find("div.page__title")).has.length(1);
+       expect(rendered.find("div.page__title").text()).is.equal("Page not found");
    });
 
     it("renders LoginPage when logged out", () => {
-        const history = createMemoryHistory({
-            initialEntries: [ '/' ]});
-        const rendered = shallow(<ReportingRouter loggedIn={ false } history={history} />);
-        expect(rendered.find(ReportingLoginPage).length).to.equal(1);
+        const history = createMemoryHistory({initialEntries: ['/']});
+        const store = createReportStore(history);
+
+        const rendered = render(<Provider store={store}><ReportingRouter loggedIn={false}
+                                                                         history={history}/></Provider>);
+        expect(rendered.find("div.page__title")).has.length(1);
+        expect(rendered.find("div.page__title").text()).is.equal("Log in");
     });
 });
