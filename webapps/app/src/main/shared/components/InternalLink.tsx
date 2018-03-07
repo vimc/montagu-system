@@ -8,8 +8,15 @@ interface Props {
 }
 
 export class InternalLink extends React.Component<Props, undefined> {
+    static contextTypes = {
+        router: React.PropTypes.object
+    }
     render() {
         const url = appSettings.publicPath + this.props.href;
-        return <Link to={ url } onClick={ this.props.onClick }>{ this.props.children }</Link>
+        if (this.context.router) {
+            return <Link to={url} onClick={this.props.onClick}>{this.props.children}</Link>
+        } else {
+            return <a href={url} onClick={this.props.onClick}>{this.props.children}</a>
+        }
     }
 }

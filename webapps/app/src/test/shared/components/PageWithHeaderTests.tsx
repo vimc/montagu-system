@@ -2,7 +2,10 @@ import * as React from "react";
 import {expect} from "chai";
 import {shallow, ShallowWrapper} from "enzyme";
 import {Provider} from "react-redux";
+import { MemoryRouter as Router } from 'react-router-dom';
+import { createMemoryHistory } from 'history';
 
+import "../../helper";
 import {mockLocation, mockMatch} from "../../mocks/mocks";
 import {PageProperties, PageWithHeader} from "../../../main/shared/components/PageWithHeader/PageWithHeader";
 import {PageHeader} from "../../../main/shared/components/PageWithHeader/PageHeader";
@@ -90,11 +93,11 @@ describe('PageWithHeader', () => {
 
     it("loads on mount after timeout", (done: DoneCallback) => {
         const store = reduxHelper.createStore({auth: {loggedIn: true}})
-        const page = sandbox.mount(<Provider store={store}><DummyPage
+        const page = sandbox.mount(<Provider store={store}><Router><DummyPage
             location={mockLocation()}
             router={null}
             match={mockMatch()}
-        /></Provider>)
+        /></Router></Provider>)
             .find(DummyPage).instance() as DummyPage;
         expect(page.loaded).to.be.false;
 
@@ -118,8 +121,10 @@ describe('PageHeader', () => {
     let rendered: ShallowWrapper<any, any>;
     const sandbox = new Sandbox();
     const logo = "logo.png";
+    const router = new Router();
+
     beforeEach(() => {
-        rendered = shallow(<PageHeader siteTitle={"LOTR"} logo={logo}/>);
+        rendered = shallow(<PageHeader siteTitle={"LOTR"} logo={logo}/>, {context: {router: {}}});
     });
     afterEach(() => sandbox.restore());
 

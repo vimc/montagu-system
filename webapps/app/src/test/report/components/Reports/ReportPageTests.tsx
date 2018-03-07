@@ -51,7 +51,8 @@ describe("ReportPage", () => {
         const history = mockHistory({push: redirectTo});
         sandbox.setStub(ReportPageComponent.prototype, "loadVersion");
         const match = mockMatch<ReportPageProps>({report: "reportname", version: "oldVersion"});
-        const page = new ReportPageComponent({match, history});
+        const location = mockLocation();
+        const page = new ReportPageComponent({match, history, location});
         page.changeVersion("versionname");
         setTimeout(() => {
             expect(redirectTo.called).to.equal(true, "Expected redirectTo to be called");
