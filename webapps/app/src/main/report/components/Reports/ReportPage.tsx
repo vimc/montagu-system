@@ -1,6 +1,7 @@
 import * as React from "react";
 import {Action, Dispatch} from "redux";
 import {connect} from 'react-redux';
+
 import {ReportingPageWithHeader} from "../ReportingPageWithHeader";
 import {ReportDetails} from "./ReportDetails";
 import {PageProperties} from "../../../shared/components/PageWithHeader/PageWithHeader";

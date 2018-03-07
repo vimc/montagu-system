@@ -17,7 +17,7 @@ interface GroupMembersPageProps {
 export class GroupMembersPage extends AdminPageWithHeader<GroupMembersPageProps> {
     load(props: PageProperties<GroupMembersPageProps>) {
         return this.loadParent(props).then(() => {
-            modellingGroupActions.setCurrentGroup(this.props.location.params.groupId);
+            modellingGroupActions.setCurrentGroup(this.props.match.params.groupId);
             return groupStore.fetchGroupDetails();
         });
     }

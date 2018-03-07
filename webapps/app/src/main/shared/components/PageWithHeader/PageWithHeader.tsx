@@ -1,5 +1,6 @@
 import * as React from "react";
-import {IRouter, Location} from "simple-react-router";
+import {History} from "History";
+import {Router} from 'react-router';
 
 import { navActions } from "../../actions/NavActions";
 import {IPageWithParent} from "../../models/Breadcrumb";
@@ -88,9 +89,9 @@ interface MatchProps<T> {
 }
 
 export interface PageProperties<T> {
-    location: any;
-    router: any;
+    location: Location;
+    router: Router;
     onLoad?: (props:Partial<T>) => void;
     match?: MatchProps<T>;
-    history: any;
+    history: History;
 }
