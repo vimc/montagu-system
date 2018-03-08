@@ -19,7 +19,7 @@ export class ReportingNoRouteFoundPage extends ReportingPageWithHeader<undefined
     }
 
     parent(): IPageWithParent {
-        return new ReportsListPage();
+        return null;//new ReportsListPage();
     }
 
     render(): JSX.Element {

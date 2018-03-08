@@ -23,7 +23,7 @@ export class ReportingForgottenPasswordPage extends ReportingPageWithHeader<unde
     }
 
     parent(): IPageWithParent {
-        return new ReportsListPage();
+        return null//new ReportsListPage();
     }
 
     render(): JSX.Element {

@@ -11,6 +11,7 @@ import {reportPageActions} from "../../actions/reportPageActions";
 import {ReportTabEnum, Sidebar} from "../Sidebar/Sidebar";
 import {ReportingPageHeader} from "../ReportingPageHeader";
 import {ReportDownloads} from "./ReportDownloads";
+import {IPageWithParent} from "../../../shared/models/Breadcrumb";
 
 export interface ReportPageProps {
     report: string;
@@ -60,8 +61,8 @@ export class ReportPageComponent extends ReportingPageWithHeader<ReportPageProps
             .push(`${appSettings.publicPath}/${this.getLocationParams().report}/${version}/${hash}`, false);
     }
 
-    parent() {
-        return new ReportsListPage();
+    parent() : IPageWithParent {
+        return null//new ReportsListPage();
     }
 
     name() {

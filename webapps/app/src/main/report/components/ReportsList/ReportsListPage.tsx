@@ -1,12 +1,13 @@
 import * as React from "react";
-import { ReportingPageWithHeader } from "../ReportingPageWithHeader";
+
 import {ReportsList} from "./ReportsList";
 import {ReportsListSorting} from "./ReportsListSorting";
 import {ReportsListFilter} from "./ReportsListFilter";
 import {IPageWithParent} from "../../../shared/models/Breadcrumb";
-import {ReportingPage} from "../ReportingPage";
 
-export class ReportsListPage extends ReportingPageWithHeader<undefined> {
+import {PageArticle} from "../../../shared/components/PageWithHeader/PageArticle";
+
+export class ReportsListPage extends React.Component {
 
     name() {
         return "Main menu";
@@ -25,7 +26,7 @@ export class ReportsListPage extends ReportingPageWithHeader<undefined> {
     }
 
     render() :JSX.Element {
-        return <ReportingPage page={this}>
+        return <PageArticle title={this.title()}>
             <div className="mb-2">
                 <div className="">
                     <ReportsListSorting />
@@ -35,6 +36,6 @@ export class ReportsListPage extends ReportingPageWithHeader<undefined> {
                 </div>
             </div>
             <ReportsList />
-        </ReportingPage>;
+        </PageArticle>;
     }
 }

@@ -2,11 +2,15 @@ import * as React from "react";
 
 interface ArticleProps {
     title: JSX.Element;
-    hideTitle: boolean;
+    hideTitle?: boolean;
     children: any;
 }
 
 export class PageArticle extends React.Component<ArticleProps, undefined> {
+
+    public static defaultProps: Partial<ArticleProps> = {
+        hideTitle: false
+    };
 
     render() {
         return <article className="page container">
