@@ -76,7 +76,6 @@ export class ReportPageComponent extends ReportingPageWithHeader<ReportPageProps
     }
 
     render(): JSX.Element {
-        console.log('pp', this.props)
         const activeTab = hashToTab(this.props.location.hash);
 
         return <div>

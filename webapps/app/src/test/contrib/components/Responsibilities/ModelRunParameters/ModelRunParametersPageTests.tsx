@@ -62,14 +62,14 @@ describe('ModelRunParameterPage', () => {
     });
 
     it("has correct meta data", () => {
-        const page = new ModelRunParametersPage({location, match, router: null});
+        const page = new ModelRunParametersPage({location, match, router: null, history: null});
         expect(page.name()).to.eql("Upload parameters");
         expect(page.urlFragment()).to.eql("parameters");
         expect(page.title().props).to.have.property("title", "Upload parameters");
 
     });
 
-    const page = new ModelRunParametersPage({location, match, router: null});
+    const page = new ModelRunParametersPage({location, match, router: null, history: null});
     addNavigationTests(page, sandbox, () => {
         bootstrapStore(mainStore, {
             modellingGroups: makeLoadable([mockModellingGroup({id: "group-1"})])

@@ -1,6 +1,6 @@
 import * as React from "react";
 import { connect } from 'react-redux';
-import {History} from "History";
+import {History} from "history";
 
 import { ErrorLog } from "../../shared/components/ErrorLog/ErrorLog";
 import { ReportingRouter } from "./ReportingRouter";
@@ -38,7 +38,7 @@ export class ReportingAppComponent extends React.Component<ReportingAppProps, un
 
 export const ReportingAppAltWrapped = connectToStores(ReportingAppComponent);
 
-const mapStateToProps = (state: ReportAppState, props: any) :Partial<ReportingAppProps> => {
+const mapStateToProps = (state: ReportAppState, props: Partial<ReportingAppProps>) :Partial<ReportingAppProps> => {
   return {
       loggedIn: state.auth.loggedIn,
       history: props.history

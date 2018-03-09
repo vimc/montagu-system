@@ -42,7 +42,7 @@ describe('UploadEstimatesPage', () => {
 
         setupStores({groups: [group], touchstones: [touchstone]});
 
-        const promise = new UploadBurdenEstimatesPage({location, match, router: null}).load(match.params);
+        const promise = new UploadBurdenEstimatesPage({location, match, router: null, history: null}).load(match.params);
         checkPromise(done, promise, (_, afterWait) => {
             afterWait(done, () => {
                 expectOrderedActions(spy, [
@@ -59,7 +59,7 @@ describe('UploadEstimatesPage', () => {
         });
     });
 
-    const page = new UploadBurdenEstimatesPage({location, router: null, match});
+    const page = new UploadBurdenEstimatesPage({location, router: null, match, history: null});
     addNavigationTests(page, sandbox, () => {
         bootstrapStore(mainStore, {
             modellingGroups: makeLoadable([mockModellingGroup({id: "group-1"})])

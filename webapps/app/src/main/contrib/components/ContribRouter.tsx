@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Route, Switch, Redirect } from 'react-router-dom';
 import { ConnectedRouter } from 'react-router-redux';
-import {History} from "History";
+import {History} from "history";
 
 // Pages
 import { ResponsibilityOverviewPage } from "./Responsibilities/Overview/ResponsibilityOverviewPage";

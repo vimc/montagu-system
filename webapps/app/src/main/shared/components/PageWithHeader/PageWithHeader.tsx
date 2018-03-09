@@ -82,9 +82,9 @@ export abstract class PageWithHeader<TLocationProps>
 }
 
 export interface PageProperties<T> {
-    location?: Location;
-    router?: Router;
+    location: Location;
+    router: Router;
     onLoad?: (props:Partial<T>) => void;
     match: match<T>;
-    history?: History;
+    history: History;
 }

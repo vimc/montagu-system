@@ -2,8 +2,9 @@ import * as React from "react";
 
 import {ReportsList} from "./ReportsList";
 import {ReportsListSorting} from "./ReportsListSorting";
-import {ReportsListFilter} from "./ReportsListFilter";
+import {ReportsListFilter} from "./Filter/ReportsListFilter";
 import {IPageWithParent} from "../../../shared/models/Breadcrumb";
+import {ReportingPage} from "../ReportingPage";
 
 import {PageArticle} from "../../../shared/components/PageWithHeader/PageArticle";
 
@@ -27,15 +28,9 @@ export class ReportsListPage extends React.Component {
 
     render() :JSX.Element {
         return <PageArticle title={this.title()}>
-            <div className="mb-2">
-                <div className="">
-                    <ReportsListSorting />
-                </div>
-                <div className="ml-md-3">
-                    <ReportsListFilter />
-                </div>
-            </div>
-            <ReportsList />
+            <ReportsListFilter/>
+            <ReportsListSorting/>
+            <ReportsList/>
         </PageArticle>;
     }
 }

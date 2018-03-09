@@ -1,7 +1,7 @@
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import { routerMiddleware } from 'react-router-redux';
-import {History} from "History";
+import {History} from "history";
 
 import reducers from '../reducers/reportAppReducers';
 

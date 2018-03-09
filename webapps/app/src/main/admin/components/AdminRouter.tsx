@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Route, Switch, Redirect } from 'react-router-dom';
 import { ConnectedRouter } from 'react-router-redux';
-import {History} from "History";
+import {History} from "history";
 
 // Pages
 import { MainMenu } from "./MainMenu/MainMenu";
@@ -29,6 +29,7 @@ export const AdminRouter : React.StatelessComponent<AdminRouterProps> = (props: 
         <Route exact path="/modelling-groups/:groupId/admin/" component={GroupMembersPage}/>
         <Route exact path="/users/" component={ViewAllUsersPage}/>
         <Route exact path="/users/:username" component={ViewUserDetailsPage}/>
+        <Route exact path="/set-password/" component={ResetPasswordPage} />
         <Route component={AdminNoRouteFoundPage}/>
     </Switch>
 

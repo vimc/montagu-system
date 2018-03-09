@@ -87,7 +87,12 @@ describe('PageWithHeader', () => {
     const sandbox = new Sandbox();
 
     beforeEach(() => {
-        rendered = shallow(<DummyPage location={mockLocation()} router={null} match={mockMatch()}/>);
+        rendered = shallow(<DummyPage
+            location={mockLocation()}
+            router={null}
+            match={mockMatch()}
+            history={null}
+        />);
     });
     afterEach(() => sandbox.restore());
 
@@ -97,6 +102,7 @@ describe('PageWithHeader', () => {
             location={mockLocation()}
             router={null}
             match={mockMatch()}
+            history={null}
         /></Router></Provider>)
             .find(DummyPage).instance() as DummyPage;
         expect(page.loaded).to.be.false;
@@ -110,6 +116,7 @@ describe('PageWithHeader', () => {
         const dummyPageNoTitle = shallow(<DummyPageNoTitle
             location={mockLocation()}
             router={null}
+            history={null}
             match={mockMatch()}
         />);
         expect(dummyPageNoTitle.find(".pageTitle").exists()).to.equal(false);

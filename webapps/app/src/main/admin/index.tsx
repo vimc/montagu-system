@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { createBrowserHistory } from 'history';
-import {History} from "History";
+import {History} from "history";
 
 import { AdminApp } from "./components/AdminApp";
 import fetcher from "../shared/sources/Fetcher";

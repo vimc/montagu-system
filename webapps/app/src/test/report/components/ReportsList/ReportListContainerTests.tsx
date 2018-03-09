@@ -19,7 +19,7 @@ describe("ReportListComponent", () => {
 
     it ("it maps props from initial state", () => {
         const props =  mapStateToProps(mockReportAppState());
-        expect(props.reports).to.eql(undefined);
+        expect(props.reports).to.eql(null);
         expect(props.ready).to.eql(false);
     });
 
@@ -49,7 +49,7 @@ describe("ReportListComponent", () => {
 
     it ("tests branch, branches rendering to component is loading is state not ready ", () => {
         let store = createMockStore({reports: {reports: null}});
-        const getReportsActionStub = sandbox.setStubReduxAction(reportsActions, 'getReports');
+        sandbox.setStubReduxAction(reportsActions, 'getReports');
         // 2 dives leads us to branch, 3rd needed to pass renderComponent
         const rendered = shallow(<ReportsList />, {context: {store}}).dive().dive().dive();
         const branchedElement = rendered.find(LoadingElement);

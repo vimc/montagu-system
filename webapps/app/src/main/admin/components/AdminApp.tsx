@@ -1,6 +1,6 @@
 import * as React from "react";
 import { connect } from 'react-redux';
-import {History} from "History";
+import {History} from "history";
 
 import { notificationStore } from "../../shared/stores/NotificationStore";
 import { connectToStores } from "../../shared/alt";
@@ -38,7 +38,7 @@ export class AdminAppComponent extends React.Component<AdminAppProps, undefined>
 
 export const AdminAppAltWrapped = connectToStores(AdminAppComponent);
 
-const mapStateToProps = (state: AdminAppState, props: any): Partial<AdminAppProps> => {
+const mapStateToProps = (state: AdminAppState, props: Partial<AdminAppProps>): Partial<AdminAppProps> => {
     return {
         loggedIn: state.auth.loggedIn,
         history: props.history

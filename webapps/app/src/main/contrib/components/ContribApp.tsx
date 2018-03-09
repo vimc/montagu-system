@@ -1,6 +1,6 @@
 import * as React from "react";
 import { connect } from 'react-redux';
-import {History} from "History";
+import {History} from "history";
 
 import { connectToStores } from "../../shared/alt";
 import { ErrorLog } from "../../shared/components/ErrorLog/ErrorLog";
@@ -46,7 +46,7 @@ export class ContribAppComponent extends React.Component<AppProps, undefined> {
 
 export const ContribAppAltWrapped = connectToStores(ContribAppComponent);
 
-const mapStateToProps = (state: ContribAppState, props: any) : Partial<AppProps> => {
+const mapStateToProps = (state: ContribAppState, props: Partial<AppProps>) : Partial<AppProps> => {
     return {
         loggedIn: state.auth.loggedIn,
         history: props.history

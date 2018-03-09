@@ -1,28 +1,29 @@
 import { expect } from "chai";
-import {mapStateToProps} from "../../../../main/report/components/ReportsList/ReportsList";
 import {mockReportAppState} from "../../../mocks/mockStates";
-import {
-    getDisplayedReportsListSelector,
-    getReportsListSelector,
-    getSortingPropsSelector
-} from "../../../../main/report/components/ReportsList/reportsListSelectors";
+import { reportsListSelectors } from "../../../../main/report/components/ReportsList/reportsListSelectors";
+
 import {mockReport} from "../../../mocks/mockModels";
 import {ReportsSortingFields} from "../../../../main/report/actionTypes/ReportsActionsTypes";
+import {Sandbox} from "../../../Sandbox";
 
 describe("ReportListSelector", () => {
 
+    const sandbox = new Sandbox();
+    afterEach(() => sandbox.restore());
+
     it ("it selects list", () => {
         const reports = [mockReport(), mockReport()];
-        expect(getReportsListSelector(mockReportAppState({reports: {reports}}))).to.eql(reports);
+        expect(reportsListSelectors.getRawReportsListSelector(mockReportAppState({reports: {reports}}))).to.eql(reports);
     });
 
     it ("it selects sort by", () => {
-        expect(getSortingPropsSelector(mockReportAppState({reports: {reportsSortBy: ReportsSortingFields.name}}))).to.eql("name");
+        expect(reportsListSelectors.getSortingPropsSelector(mockReportAppState({reports: {reportsSortBy: ReportsSortingFields.name}}))).to.eql("name");
     });
 
     it ("selects display list with default sorting by name", () => {
         const reports = [mockReport({name: "b"}), mockReport({name: "c"}), mockReport({name: "a"})];
-        const displayReports = getDisplayedReportsListSelector(mockReportAppState({reports: {reports}}));
+        const selector = reportsListSelectors.createDisplayListSelector();
+        const displayReports = selector(mockReportAppState({reports: {reports}}));
         expect(displayReports[0].name).to.eql("a");
         expect(displayReports[1].name).to.eql("b");
         expect(displayReports[2].name).to.eql("c");
@@ -34,9 +35,51 @@ describe("ReportListSelector", () => {
             mockReport({name: "a", latest_version: "20170326-002851-dd944766"}),
             mockReport({name: "b", latest_version: "20170328-002851-dd944766"})
         ];
-        const displayReports = getDisplayedReportsListSelector(mockReportAppState({reports: {reports, reportsSortBy: ReportsSortingFields.latest_version}}));
+        const selector = reportsListSelectors.createDisplayListSelector();
+        const displayReports = selector(mockReportAppState({reports: {reports, reportsSortBy: ReportsSortingFields.latest_version}}));
         expect(displayReports[0].name).to.eql("b");
         expect(displayReports[1].name).to.eql("c");
         expect(displayReports[2].name).to.eql("a");
+    });
+
+    it ("it creates reports display list, does it only once if state has not changed", () => {
+        const reports = [mockReport({name: "b"}), mockReport({name: "a"})];
+        const makeDisplayListStub = sandbox.setStubFunc(reportsListSelectors, 'makeReportsDisplayList', ()=>{});
+        const mockState = mockReportAppState({reports: {reports, reportsSortBy: ReportsSortingFields.name}});
+        const selector = reportsListSelectors.createDisplayListSelector();
+        selector(mockState);
+        expect(makeDisplayListStub.callCount).is.equal(1);
+        selector(mockState);
+        // make list is not called on second call with same state
+        expect(makeDisplayListStub.callCount).is.equal(1);
+    });
+
+    it ("it creates reports display list, does it only once, state objects recreated(different) but have same values", () => {
+        const reports = [mockReport({name: "b"}), mockReport({name: "a"})];
+        const reports2 = [mockReport({name: "b"}), mockReport({name: "a"})];
+        const makeDisplayListStub = sandbox.setStubFunc(reportsListSelectors, 'makeReportsDisplayList', ()=>{});
+        const mockState = mockReportAppState({reports: {reports, reportsSortBy: ReportsSortingFields.name}});
+        const mockState1 = mockReportAppState({reports: {reports: reports2, reportsSortBy: ReportsSortingFields.name}});
+        const selector = reportsListSelectors.createDisplayListSelector();
+        selector(mockState);
+        expect(makeDisplayListStub.callCount).is.equal(1);
+        selector(mockState1);
+        // make list is not called on second call with same state
+        expect(makeDisplayListStub.callCount).is.equal(1);
+    });
+
+    it ("it creates reports display list, runs it again if state has changed", () => {
+        const reports = [mockReport({name: "b"}), mockReport({name: "a"})];
+        const makeDisplayListStub = sandbox.setStubFunc(reportsListSelectors, 'makeReportsDisplayList', ()=>{});
+        const mockState = mockReportAppState({reports: {reports, reportsSortBy: ReportsSortingFields.name}});
+        // have to create another object, to trigger change, otherwise it will be mutating
+        const mockState2 = mockReportAppState({reports: {reports, reportsSortBy: ReportsSortingFields.latest_version}});
+        const selector = reportsListSelectors.createDisplayListSelector();
+        selector(mockState);
+        selector(mockState);
+        expect(makeDisplayListStub.callCount).is.equal(1);
+        // pass another state
+        selector(mockState2);
+        expect(makeDisplayListStub.callCount).is.equal(2);
     });
 });

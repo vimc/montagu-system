@@ -50,7 +50,7 @@ describe("DownloadDemographicsPage", () => {
         });
     });
 
-    const page = new DownloadDemographicsPage({location, match, router: null});
+    const page = new DownloadDemographicsPage({location, match, router: null, history: null});
     addNavigationTests(page, sandbox, () => {
         bootstrapStore(mainStore, {
             modellingGroups: makeLoadable([mockModellingGroup({id: "group-1"})])
