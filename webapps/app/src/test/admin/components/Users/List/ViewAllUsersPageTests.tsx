@@ -22,13 +22,13 @@ describe("ViewAllUsersPageTests", () => {
     it("triggers fetch on load", (done: DoneCallback) => {
         const spy = sandbox.sinon.spy(userStore, "fetchUsers");
         const store = reduxHelper.createAdminUserStore();
-        sandbox.mount(<Provider store={store}><ViewAllUsersPage location={ mockLocation() } router={null} match={mockMatch()}/></Provider>);
+        sandbox.mount(<Provider store={store}><ViewAllUsersPage location={ mockLocation() } router={null} match={mockMatch()} history={null}/></Provider>);
         checkAsync(done, () => {
             expect(spy.called).to.equal(true, "Expected usersStore.fetchUsers to be triggered");
         });
     });
 
-    const page = new ViewAllUsersPage({location: mockLocation(), router: null, match: mockMatch()});
+    const page = new ViewAllUsersPage({location: mockLocation(), router: null, match: mockMatch(), history: null});
     addNavigationTests(page, sandbox, () => {
         mockFetcherForMultipleResponses([
             mockUsersEndpoint([])

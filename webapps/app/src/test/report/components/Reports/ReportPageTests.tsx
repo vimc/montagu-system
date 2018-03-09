@@ -52,7 +52,7 @@ describe("ReportPage", () => {
         sandbox.setStub(ReportPageComponent.prototype, "loadVersion");
         const match = mockMatch<ReportPageProps>({report: "reportname", version: "oldVersion"});
         const location = mockLocation();
-        const page = new ReportPageComponent({match, history, location});
+        const page = new ReportPageComponent({match, history, location, router: null});
         page.changeVersion("versionname");
         setTimeout(() => {
             expect(redirectTo.called).to.equal(true, "Expected redirectTo to be called");
@@ -70,6 +70,7 @@ describe("ReportPage", () => {
             location={location}
             match={match}
             router={null}
+            history={null}
         />);
         expect(rendered.find(ReportDetails)).to.have.lengthOf(1);
         expect(rendered.find(ReportDownloads)).to.have.lengthOf(0);
@@ -85,6 +86,7 @@ describe("ReportPage", () => {
             location={location}
             match={match}
             router={null}
+            history={null}
         />);
         expect(rendered.find(ReportDetails)).to.have.lengthOf(0);
         expect(rendered.find(ReportDownloads)).to.have.lengthOf(1);
@@ -99,6 +101,7 @@ describe("ReportPage", () => {
             location={location}
             router={null}
             match={match}
+            history={null}
         />);
         expect(rendered.find(ReportDetails)).to.have.lengthOf(1);
         expect(rendered.find(ReportDownloads)).to.have.lengthOf(0);
@@ -106,7 +109,7 @@ describe("ReportPage", () => {
 
     const location = mockLocation();
     const match = mockMatch<ReportPageProps>({report: "report", version: "v1"});
-    const page = new ReportPageComponent({location: location, router: null, match});
+    const page = new ReportPageComponent({location: location, router: null, match, history: null});
     addNavigationTests(page, sandbox, () => {
     });
 });

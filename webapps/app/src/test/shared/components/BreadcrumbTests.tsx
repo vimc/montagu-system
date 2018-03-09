@@ -10,7 +10,7 @@ describe("Breadcrumbs", () => {
     afterEach(() => sandbox.restore());
 
     it("initial page load builds full crumbs from parents", (done: DoneCallback) => {
-        const promise = new C({location: mockLocation(), router: null, match: mockMatch()}).loadOnMount();
+        const promise = new C({location: mockLocation(), router: null, match: mockMatch(), history:null}).loadOnMount();
         checkPromise(done, promise, (_, afterWait) => {
             const nav = navStore.getState();
             expect(nav.crumbs).to.eql([

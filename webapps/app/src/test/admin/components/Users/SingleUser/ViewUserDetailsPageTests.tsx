@@ -47,7 +47,7 @@ describe("ViewUserDetailsPage", () => {
         });
     });
 
-    const page = new ViewUserDetailsPage({location, match, router: null});
+    const page = new ViewUserDetailsPage({location, match, router: null, history: null});
     addNavigationTests(page, sandbox, () => {
         mockFetcherForMultipleResponses([
             mockUsersEndpoint([mockUser()])

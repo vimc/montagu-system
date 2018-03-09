@@ -67,7 +67,7 @@ describe('DownloadCoveragePage', () => {
         });
     });
 
-    const page = new DownloadCoveragePage({location, match, router: null});
+    const page = new DownloadCoveragePage({location, match, router: null, history: null});
     console.log("Test");
     addNavigationTests(page, sandbox, () => {
         bootstrapStore(mainStore, {

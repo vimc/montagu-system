@@ -56,7 +56,8 @@ describe('ResponsibilityOverviewPage', () => {
     const page = new ResponsibilityOverviewPage({
         location,
         match,
-        router: null
+        router: null,
+        history: null
     });
     addNavigationTests(page, sandbox, () => {
         bootstrapStore(mainStore, {

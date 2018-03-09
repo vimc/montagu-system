@@ -29,6 +29,7 @@ export const AdminRouter : React.StatelessComponent<AdminRouterProps> = (props: 
         <Route exact path="/modelling-groups/:groupId/admin/" component={GroupMembersPage}/>
         <Route exact path="/users/" component={ViewAllUsersPage}/>
         <Route exact path="/users/:username" component={ViewUserDetailsPage}/>
+        <Route exact path="/set-password/" component={ResetPasswordPage} />
         <Route component={AdminNoRouteFoundPage}/>
     </Switch>
 

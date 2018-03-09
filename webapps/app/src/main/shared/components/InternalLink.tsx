@@ -1,22 +1,32 @@
 import * as React from "react";
 import { Link } from 'react-router-dom';
 import { appSettings } from "../Settings";
+import {Router} from 'react-router';
 
-interface Props {
+interface InternalLinkProps {
     href: string;
     onClick?: React.EventHandler<React.MouseEvent<HTMLAnchorElement>>;
+    children: JSX.Element | string;
+    className?: string;
 }
 
-export class InternalLink extends React.Component<Props, undefined> {
-    static contextTypes = {
-        router: React.PropTypes.object
-    }
-    render() {
-        const url = appSettings.publicPath + this.props.href;
-        if (this.context.router) {
-            return <Link to={url} onClick={this.props.onClick}>{this.props.children}</Link>
-        } else {
-            return <a href={url} onClick={this.props.onClick}>{this.props.children}</a>
-        }
+interface InternalLinkContext {
+    router: Router;
+}
+
+// this component is just a wrapper on top of original link for react router
+const InternalLink : React.StatelessComponent<InternalLinkProps> = (props: InternalLinkProps, context: InternalLinkContext) => {
+    const url = appSettings.publicPath + props.href;
+    // This condition here is used to ease burden of components unit testing, making it unnecessary to mock router context
+    if (context.router) {
+        return <Link to={url} className={props.className} onClick={props.onClick}>{props.children}</Link>
+    } else {
+        return <a href={url} className={props.className} onClick={props.onClick}>{props.children}</a>
     }
 }
+
+InternalLink.contextTypes = {
+    router: React.PropTypes.object
+};
+
+export { InternalLink };

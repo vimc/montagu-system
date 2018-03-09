@@ -5,7 +5,6 @@ import { processResponseAndNotifyOnErrors } from "../../../shared/sources/Source
 import { modellingGroupActions } from "../../../shared/actions/ModellingGroupActions";
 import { notificationActions, NotificationException } from "../../../shared/actions/NotificationActions";
 import fetcher from "../../../shared/sources/Fetcher";
-import { Link } from "simple-react-router";
 
 interface UserProps {
     user: User;
@@ -35,9 +34,14 @@ export class DeletableUser extends React.Component<UserProps, undefined> {
 
     render() {
 
-        const deleteLink = this.props.showDelete ?
-            <Link onClick={this.clickHandler.bind(this)} className="text-danger float-right" href="#">Remove
-                member</Link>
+        const deleteLink = this.props.showDelete
+            ? <InternalLink
+                onClick={this.clickHandler.bind(this)}
+                className="text-danger float-right"
+                href="#"
+            >
+                Remove member
+            </InternalLink>
             : "";
 
         return <div>

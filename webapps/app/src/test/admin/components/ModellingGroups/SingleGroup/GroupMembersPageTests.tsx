@@ -42,7 +42,7 @@ describe("GroupMembersPage", () => {
     });
 
 
-    const page = new GroupMembersPage({location, router: null, match});
+    const page = new GroupMembersPage({location, router: null, match, history: null});
     addNavigationTests(page, sandbox, () => {
         mockFetcherForMultipleResponses([
             mockUsersEndpoint([mockUser()]),

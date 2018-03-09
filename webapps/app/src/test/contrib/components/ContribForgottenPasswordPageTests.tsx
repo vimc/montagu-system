@@ -9,6 +9,6 @@ describe("ContribForgottenPasswordPage", () => {
     const location = mockLocation();
     const match = mockMatch(undefined);
 
-    const page = new ContribForgottenPasswordPage({location, match, router: null});
+    const page = new ContribForgottenPasswordPage({location, match, router: null, history: null});
     addNavigationTests(page, sandbox);
 });

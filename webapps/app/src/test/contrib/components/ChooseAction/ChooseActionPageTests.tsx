@@ -45,7 +45,7 @@ describe("ChooseActionPage", () => {
     const location = mockLocation();
     const match = mockMatch({groupId: "group-1"});
 
-    const page = new ChooseActionPage({location, match, router: null});
+    const page = new ChooseActionPage({location, match, router: null, history: null});
     addNavigationTests(page, sandbox, () => {
         bootstrapStore(mainStore, {
             modellingGroups: makeLoadable([
