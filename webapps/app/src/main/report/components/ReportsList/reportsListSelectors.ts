@@ -1,5 +1,5 @@
-import { createSelector } from "reselect";
-import { orderBy } from "lodash";
+import { createSelector, createSelectorCreator, defaultMemoize } from "reselect";
+import { orderBy, clone } from "lodash";
 import {Report} from "../../../shared/models/Generated";
 import {
     ReportsFilterFields, ReportsFilterPublishTypes,
@@ -7,45 +7,72 @@ import {
 } from "../../actionTypes/ReportsActionsTypes";
 import {ReportAppState} from "../../reducers/reportAppReducers";
 import {VersionIdentifier} from "../../models/VersionIdentifier";
+import {isEqual} from 'lodash';
 
-export const getReportsListSelector = (state: ReportAppState) => state.reports.reports;
-
-export const getSortingPropsSelector = (state: ReportAppState) => state.reports.reportsSortBy;
-
-export const getFilterPropsSelector = (state: ReportAppState) => state.reports.reportsFilter;
-
-export const getDisplayedReportsListSelector = createSelector(
-    [ getReportsListSelector, getSortingPropsSelector, getFilterPropsSelector],
-    ( reports: Report[], sorting: ReportsSortingFields, filter: ReportsFilterFields) => {
-        if (reports) {
-            let displayReports = reports;
-            if (filter.published !== ReportsFilterPublishTypes.all) {
-                displayReports = displayReports.filter((item: any) => filter.published === ReportsFilterPublishTypes.published
-                    ? item.published
-                    : !item.published
-                );
-            }
-            if (filter.timeFrom) {
-                displayReports = displayReports.filter((item: any) =>
-                    compareVersionAndFilterTime(item.latest_version, filter.timeFrom)
-                );
-            }
-            if (filter.timeUntil) {
-                displayReports = displayReports.filter((item: any) =>
-                    !compareVersionAndFilterTime(item.latest_version, filter.timeUntil)
-                );
-            }
-            return sortReportsList(displayReports, sorting);
-        }
-    }
+const createDeepEqualSelector = createSelectorCreator(
+    defaultMemoize,
+    isEqual
 );
 
-const getSortOrderByReportFieldName = (field: ReportsSortingFields) => field === ReportsSortingFields.name ? 'asc' : 'desc';
+export const reportsListSelectors = {
 
-export const sortReportsList = (reports: Report[], sortBy: ReportsSortingFields) => {
-    return orderBy(reports, [sortBy], [getSortOrderByReportFieldName(sortBy)]);
-};
+    getRawReportsListSelector: (state: ReportAppState) => state.reports.reports,
 
-export const compareVersionAndFilterTime = (version: string, filterTime: string) =>
-    (new VersionIdentifier(version)).timestamp.getTime() > Date.parse(filterTime);
+    getSortingPropsSelector: (state: ReportAppState) => state.reports.reportsSortBy,
+
+    getFilterPropsSelector: (state: ReportAppState) => state.reports.reportsFilter,
+
+    getSortOrderByReportFieldName: (field: ReportsSortingFields) => field === ReportsSortingFields.name ? 'asc' : 'desc',
+
+    sortReportsList(reports: Report[], sortBy: ReportsSortingFields) {
+        return orderBy(reports, [sortBy], [this.getSortOrderByReportFieldName(sortBy)])
+    },
+
+    compareVersionAndFilterTime: (version: string, filterTime: string) =>
+        (new VersionIdentifier(version)).timestamp.getTime() > Date.parse(filterTime),
+
+    filterReportsList(reports: Report[], filter: ReportsFilterFields) {
+        let displayList = clone(reports);
+        if (filter.published !== ReportsFilterPublishTypes.all) {
+            displayList = displayList.filter((item: any) => filter.published === ReportsFilterPublishTypes.published
+                ? item.published
+                : !item.published
+            );
+        }
+        if (filter.timeFrom) {
+            displayList = displayList.filter((item: any) =>
+                this.compareVersionAndFilterTime(item.latest_version, filter.timeFrom)
+            );
+        }
+        if (filter.timeUntil) {
+            displayList = displayList.filter((item: any) =>
+                !this.compareVersionAndFilterTime(item.latest_version, filter.timeUntil)
+            );
+        }
+        return displayList;
+    },
+
+    makeReportsDisplayList(reports: Report[], sortBy: ReportsSortingFields, filter: ReportsFilterFields) {
+        let displayList = null;
+        if (reports) {
+            displayList = clone(reports);
+            if (filter) {
+                displayList = this.filterReportsList(displayList, filter);
+            }
+            if (sortBy) {
+                displayList = this.sortReportsList(displayList, sortBy);
+            }
+        }
+        return displayList;
+    },
+
+    createDisplayListSelector() {
+        return createDeepEqualSelector(
+            [ this.getRawReportsListSelector, this.getSortingPropsSelector, this.getFilterPropsSelector],
+            (reports: Report[], sortBy: ReportsSortingFields, filter: ReportsFilterFields) =>
+                this.makeReportsDisplayList(reports, sortBy, filter)
+        );
+    }
+}
+
 
