@@ -2,7 +2,7 @@ import * as React from "react";
 import {Sandbox} from "../../../Sandbox";
 import {expect} from "chai";
 import {expectOneAction} from "../../../actionHelpers";
-import {mockLocation, setupStores} from "../../../mocks/mocks";
+import {mockLocation, mockMatch, setupStores} from "../../../mocks/mocks";
 
 import {responsibilityStore} from "../../../../main/contrib/stores/ResponsibilityStore";
 import {
@@ -25,7 +25,8 @@ describe('DownloadCoveragePage', () => {
     const sandbox = new Sandbox();
     afterEach(() => sandbox.restore());
 
-    const location = mockLocation({
+    const location = mockLocation();
+    const match = mockMatch({
         touchstoneId: "touchstone-1",
         scenarioId: "scenario-1",
         groupId: "group-1",
@@ -66,7 +67,7 @@ describe('DownloadCoveragePage', () => {
         });
     });
 
-    const page = new DownloadCoveragePage({location: location, router: null});
+    const page = new DownloadCoveragePage({location, match, router: null, history: null});
     console.log("Test");
     addNavigationTests(page, sandbox, () => {
         bootstrapStore(mainStore, {

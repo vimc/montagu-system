@@ -39,7 +39,7 @@ describe("ReportListComponent", () => {
     });
 
     it ("tests branch, doesn't branch rendering to component is loading is state is ready ", () => {
-        let store = createMockStore({reports: {reports: []}});
+        let store = createMockStore({reports: {reports: [], reportsFilter: {}}});
         sandbox.setStubReduxAction(reportsActions, 'getReports');
         // 2 dives leads us to branch
         const rendered = shallow(<ReportsList />, {context: {store}}).dive().dive();

@@ -9,7 +9,6 @@ import fetcher from "../../../../../main/shared/sources/Fetcher";
 import { mockResponse } from "../../../../mocks/mockRemote";
 import { expectOneAction } from "../../../../actionHelpers";
 import { DeletableUser } from "../../../../../main/admin/components/ModellingGroups/DeletableUser";
-import { Link } from "simple-react-router";
 import { shallow } from "enzyme";
 
 
@@ -24,7 +23,7 @@ describe("DeletableUser", () => {
             "username": "w.a.m",
             "name": "Wolfgang Amadeus Mozart"
         })}/>);
-        expect(rendered.find(InternalLink).prop("href")).to.eq("/users/w.a.m/")
+        expect(rendered.find(InternalLink).at(0).prop("href")).to.eq("/users/w.a.m/")
     });
 
     it("renders delete link", () => {

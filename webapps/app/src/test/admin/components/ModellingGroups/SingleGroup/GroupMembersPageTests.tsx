@@ -1,9 +1,10 @@
 import * as React from "react";
 import {expect} from "chai";
+
 import {Sandbox} from "../../../../Sandbox";
 import {userStore} from "../../../../../main/admin/stores/UserStore";
 import {groupStore} from "../../../../../main/admin/stores/GroupStore";
-import {mockLocation} from "../../../../mocks/mocks";
+import {mockLocation, mockMatch} from "../../../../mocks/mocks";
 import {GroupMembersPage} from "../../../../../main/admin/components/ModellingGroups/SingleGroup/Members/GroupMembersPage";
 import {ModellingGroupDetailsPageProps} from "../../../../../main/admin/components/ModellingGroups/SingleGroup/Details/ViewModellingGroupDetailsPage";
 import {checkAsync, checkPromise} from "../../../../testHelpers";
@@ -17,7 +18,8 @@ import {mockGroupDetailsEndpoint, mockGroupsEndpoint, mockUsersEndpoint} from ".
 describe("GroupMembersPage", () => {
     const sandbox = new Sandbox();
     const groupId = "group-1";
-    const location = mockLocation<ModellingGroupDetailsPageProps>({groupId: groupId});
+    const match = mockMatch<ModellingGroupDetailsPageProps>({groupId: groupId});
+    const location = mockLocation();
 
     beforeEach(() => alt.recycle());
     afterEach(() => sandbox.restore());
@@ -28,7 +30,7 @@ describe("GroupMembersPage", () => {
         const fetchGroupDetails = sandbox.sinon.stub(groupStore, "fetchGroupDetails").returns(Promise.resolve({}));
         const dispatchSpy = sandbox.dispatchSpy();
 
-        const promise = new GroupMembersPage({location: location, router: null}).load({groupId: groupId});
+        const promise = new GroupMembersPage({match, location, history: null, router: null}).load(match.params);
         checkPromise(done, promise, (_, afterWait) => {
             expect(fetchGroups.called).to.equal(true, "Expected groupStore.fetchGroups to be triggered");
             expect(fetchUsers.called).to.equal(true, "Expected userStore.fetchUsers to be triggered");
@@ -40,7 +42,7 @@ describe("GroupMembersPage", () => {
     });
 
 
-    const page = new GroupMembersPage({location: location, router: null});
+    const page = new GroupMembersPage({location, router: null, match, history: null});
     addNavigationTests(page, sandbox, () => {
         mockFetcherForMultipleResponses([
             mockUsersEndpoint([mockUser()]),

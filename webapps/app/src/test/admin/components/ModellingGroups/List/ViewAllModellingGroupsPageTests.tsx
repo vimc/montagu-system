@@ -1,8 +1,10 @@
 import * as React from "react";
 import {expect} from "chai";
+import { createMemoryHistory } from 'history';
+
 import {Sandbox} from "../../../../Sandbox";
 import {ViewAllModellingGroupsPage} from "../../../../../main/admin/components/ModellingGroups/List/ViewAllModellingGroupsPage";
-import {mockLocation} from "../../../../mocks/mocks";
+import {mockLocation, mockMatch} from "../../../../mocks/mocks";
 import {groupStore} from "../../../../../main/admin/stores/GroupStore";
 import {checkAsync, checkPromise} from "../../../../testHelpers";
 import {addNavigationTests} from "../../../../shared/NavigationTests";
@@ -24,7 +26,7 @@ describe("ViewAllModellingGroupsPageTests", () => {
         });
     });
 
-    const page = new ViewAllModellingGroupsPage({location: mockLocation(), router: null});
+    const page = new ViewAllModellingGroupsPage({location: mockLocation(), router: null, history: createMemoryHistory(), match: mockMatch()});
     addNavigationTests(page, sandbox, () => {
         mockFetcherForMultipleResponses([
             mockGroupsEndpoint([mockModellingGroup()])

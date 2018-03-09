@@ -4,8 +4,8 @@ import {expect} from "chai";
 import {UserRole} from "../../../../../main/admin/components/Users/SingleUser/UserRoleComponent";
 import {RoleAssignment} from "../../../../../main/shared/models/Generated";
 import {mockRole} from "../../../../mocks/mockModels";
-import { Link } from "simple-react-router";
 import { Sandbox } from "../../../../Sandbox";
+import { InternalLink } from "../../../../../main/shared/components/InternalLink";
 
 describe("UserRole", () => {
     it("does not show scope if global", () => {
@@ -40,7 +40,7 @@ describe("UserRole", () => {
         role.scope_id = "fake";
         role.name = "rolename";
         const rendered = sandbox.mount(<UserRole { ...role} username="testuser" showdelete={true}/>);
-        const text = rendered.find(Link).text();
+        const text = rendered.find(InternalLink).text();
 
         expect(text).to.eq("Remove role")
 
@@ -54,7 +54,7 @@ describe("UserRole", () => {
         role.scope_id = "fake";
         role.name = "rolename";
         const rendered = shallow(<UserRole { ...role} username="testuser" showdelete={false}/>);
-        expect(rendered.find(Link).length).to.eq(0)
+        expect(rendered.find(InternalLink).length).to.eq(0)
     });
 
 });

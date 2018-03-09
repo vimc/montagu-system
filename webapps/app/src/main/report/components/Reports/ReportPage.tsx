@@ -1,6 +1,7 @@
 import * as React from "react";
 import {Action, Dispatch} from "redux";
 import {connect} from 'react-redux';
+
 import {ReportingPageWithHeader} from "../ReportingPageWithHeader";
 import {ReportDetails} from "./ReportDetails";
 import {PageProperties} from "../../../shared/components/PageWithHeader/PageWithHeader";
@@ -53,14 +54,10 @@ export class ReportPageComponent extends ReportingPageWithHeader<ReportPageProps
         this.createBreadcrumb();
     }
 
-    getLocationParams() {
-        return this.props.location.params;
-    }
-
     redirectToVersion(version: string) {
         const hash = this.props.location.hash;
-        this.props.router
-            .redirectTo(`${appSettings.publicPath}/${this.getLocationParams().report}/${version}/${hash}`, false);
+        this.props.history
+            .push(`${appSettings.publicPath}/${this.getLocationParams().report}/${version}/${hash}`, false);
     }
 
     parent() {
@@ -78,7 +75,6 @@ export class ReportPageComponent extends ReportingPageWithHeader<ReportPageProps
     }
 
     render(): JSX.Element {
-
         const activeTab = hashToTab(this.props.location.hash);
 
         return <div>

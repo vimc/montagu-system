@@ -4,7 +4,7 @@ import {expect} from "chai";
 import {checkPromise} from "../../../../testHelpers";
 import {expectOneAction} from "../../../../actionHelpers";
 import {DownloadDemographicsPage} from "../../../../../main/contrib/components/Responsibilities/Demographics/DownloadDemographicsPage";
-import {mockLocation, setupStores} from "../../../../mocks/mocks";
+import {mockLocation, mockMatch, setupStores} from "../../../../mocks/mocks";
 import {mockDemographicDataset, mockModellingGroup, mockTouchstone} from "../../../../mocks/mockModels";
 import {responsibilityStore} from "../../../../../main/contrib/stores/ResponsibilityStore";
 import {demographicStore} from "../../../../../main/contrib/stores/DemographicStore";
@@ -19,7 +19,8 @@ describe("DownloadDemographicsPage", () => {
     const sandbox = new Sandbox();
     afterEach(() => sandbox.restore());
 
-    const location = mockLocation({
+    const location = mockLocation();
+    const match = mockMatch({
         groupId: "group-1",
         touchstoneId: "touchstone-1",
     });
@@ -49,7 +50,7 @@ describe("DownloadDemographicsPage", () => {
         });
     });
 
-    const page = new DownloadDemographicsPage({location: location, router: null});
+    const page = new DownloadDemographicsPage({location, match, router: null, history: null});
     addNavigationTests(page, sandbox, () => {
         bootstrapStore(mainStore, {
             modellingGroups: makeLoadable([mockModellingGroup({id: "group-1"})])

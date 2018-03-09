@@ -6,7 +6,9 @@ import { Provider } from "react-redux";
 import { reducer as formReducer } from "redux-form";
 import { combineReducers } from "redux";
 import thunk from 'redux-thunk';
+import { MemoryRouter as Router } from 'react-router-dom';
 
+import "../../../helper";
 import { authReducer } from "../../../../main/shared/reducers/authReducer";
 import { Sandbox } from "../../../Sandbox";
 import { LoginFormComponent, LoginForm } from "../../../../main/shared/components/Login/LoginForm";
@@ -50,7 +52,7 @@ describe("LoginForm connected with redux-form", () => {
             auth: authReducer,
         }), applyMiddleware(thunk));
 
-        formWrapper = mount(<Provider store={store}><LoginForm /></Provider>)
+        formWrapper = mount(<Provider store={store}><Router><LoginForm /></Router></Provider>);
     });
 
     afterEach(() => {

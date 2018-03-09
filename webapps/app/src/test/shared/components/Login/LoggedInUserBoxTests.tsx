@@ -3,6 +3,7 @@ import { Sandbox } from "../../../Sandbox";
 import { expect } from "chai";
 import { shallow, mount } from "enzyme";
 import { Provider } from "react-redux";
+import { MemoryRouter as Router } from 'react-router-dom';
 
 import { initialAuthState } from "../../../../main/shared/reducers/authReducer";
 import { InternalLink } from "../../../../main/shared/components/InternalLink";
@@ -60,7 +61,7 @@ describe("LoggedInUserBoxComponent", () => {
     it("clicking log out dispatches unauthenticated action", (done: DoneCallback) => {
         const store = createMockStore({auth: {loggedIn: true}});
         sandbox.setStub(AuthService.prototype, "clearShinyCookie");
-        const rendered = mount(<Provider store={store}><LoggedInUserBox/></Provider>);
+        const rendered = mount(<Provider store={store}><Router><LoggedInUserBox/></Router></Provider>);
         rendered.find(InternalLink).simulate("click");
         const actions = store.getActions();
         expect(actions[0].type).to.eql(AuthTypeKeys.UNAUTHENTICATED);

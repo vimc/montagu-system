@@ -5,20 +5,18 @@ import { AdminPageWithHeader } from "../../../AdminPageWithHeader";
 import { groupStore } from "../../../../stores/GroupStore";
 import { modellingGroupActions } from "../../../../../shared/actions/ModellingGroupActions";
 import { GroupMembersContent } from "./GroupMembersContent";
-import { doNothing } from "../../../../../shared/Helpers";
-import { userStore } from "../../../../stores/UserStore";
 import {IPageWithParent} from "../../../../../shared/models/Breadcrumb";
 import {ViewModellingGroupDetailsPage} from "../Details/ViewModellingGroupDetailsPage";
 import { Page } from "../../../../../shared/components/PageWithHeader/Page";
 
-interface PageProps {
+interface GroupMembersPageProps {
     groupId: string;
 }
 
-export class GroupMembersPage extends AdminPageWithHeader<PageProps> {
-    load(props: PageProps) {
+export class GroupMembersPage extends AdminPageWithHeader<GroupMembersPageProps> {
+    load(props: GroupMembersPageProps) {
         return this.loadParent(props).then(() => {
-            modellingGroupActions.setCurrentGroup(this.props.location.params.groupId);
+            modellingGroupActions.setCurrentGroup(props.groupId);
             return groupStore.fetchGroupDetails();
         });
     }

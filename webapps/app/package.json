@@ -70,6 +70,7 @@
     "@types/alt": "^0.16.32",
     "@types/chai": "^3.4.35",
     "@types/form-data": "^2.2.1",
+    "@types/history": "^4.6.2",
     "@types/jsdom": "^2.0.30",
     "@types/jsonwebtoken": "^7.2.0",
     "@types/jwt-decode": "^1.4.28",
@@ -79,6 +80,8 @@
     "@types/react-addons-test-utils": "^0.14.18",
     "@types/react-dom": "^15.5.0",
     "@types/react-redux": "^5.0.14",
+    "@types/react-router-dom": "^4.2.4",
+    "@types/react-router-redux": "^5.0.12",
     "@types/react-transition-group": "^1.1.0",
     "@types/reactstrap": "^5.0.8",
     "@types/recompose": "^0.24.4",
@@ -90,6 +93,7 @@
     "bootstrap": "^4.0.0-beta",
     "bootstrap-toggle": "^2.2.2",
     "form-data": "^2.3.1",
+    "history": "^4.7.2",
     "js-base64": "^2.4.0",
     "jsonwebtoken": "^7.4.0",
     "jwt-decode": "^2.2.0",
@@ -105,6 +109,8 @@
     "react-dom": "^15.4.2",
     "react-radio-button-group": "1.2.5",
     "react-redux": "^5.0.6",
+    "react-router-dom": "^4.2.2",
+    "react-router-redux": "^5.0.0-alpha.9",
     "react-scrollable-anchor": "^0.5.0",
     "react-transition-group": "^1.2.0",
     "reactstrap": "^4.8.0",
@@ -113,7 +119,6 @@
     "redux-form": "^7.2.1",
     "redux-thunk": "^2.2.0",
     "reselect": "^3.0.1",
-    "simple-react-router": "0.0.14",
     "whatwg-fetch": "^2.0.3"
   }
 }
