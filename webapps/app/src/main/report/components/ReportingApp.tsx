@@ -1,6 +1,6 @@
 import * as React from "react";
 import { connect } from 'react-redux';
-import {History} from "History";
+import {History} from "history";
 
 import { ErrorLog } from "../../shared/components/ErrorLog/ErrorLog";
 import { ReportingRouter } from "./ReportingRouter";
