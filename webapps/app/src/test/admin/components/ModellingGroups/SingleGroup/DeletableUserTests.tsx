@@ -9,7 +9,6 @@ import fetcher from "../../../../../main/shared/sources/Fetcher";
 import { mockResponse } from "../../../../mocks/mockRemote";
 import { expectOneAction } from "../../../../actionHelpers";
 import { DeletableUser } from "../../../../../main/admin/components/ModellingGroups/DeletableUser";
-import { Link } from "simple-react-router";
 import { shallow } from "enzyme";
 
 

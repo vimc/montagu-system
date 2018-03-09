@@ -5,7 +5,6 @@ import {Provider} from "react-redux";
 
 import {Sandbox} from "../../../Sandbox";
 import {mockHistory, mockLocation, mockMatch} from "../../../mocks/mocks";
-import {IRouter} from "simple-react-router";
 import {ReportPage, ReportPageComponent, ReportPageProps} from "../../../../main/report/components/Reports/ReportPage";
 import {addNavigationTests} from "../../../shared/NavigationTests";
 import {createMockStore} from "../../../mocks/mockStore";
