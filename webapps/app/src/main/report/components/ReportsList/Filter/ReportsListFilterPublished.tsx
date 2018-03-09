@@ -11,7 +11,7 @@ interface ReportsListFilterProps {
 
 export const ReportsListFilterPublished: React.StatelessComponent<ReportsListFilterProps> = (props: ReportsListFilterProps) => (
     <div className="col-12 col-lg-6 form-inline">
-        <label className="mr-2">Published</label>
+        <label className={"report-filter-label"}>Show</label>
         <select
             className="form-control-sm form-control"
             onChange={(e: React.ChangeEvent<HTMLSelectElement>) => props.filterPublish(e.target.value as ReportsFilterPublishTypes)}
@@ -19,7 +19,7 @@ export const ReportsListFilterPublished: React.StatelessComponent<ReportsListFil
         >
             <option value={ReportsFilterPublishTypes.all}>All</option>
             <option value={ReportsFilterPublishTypes.published}>Published</option>
-            <option value={ReportsFilterPublishTypes.not_published}>Not Published</option>
+            <option value={ReportsFilterPublishTypes.not_published}>Internal</option>
         </select>
     </div>
 );

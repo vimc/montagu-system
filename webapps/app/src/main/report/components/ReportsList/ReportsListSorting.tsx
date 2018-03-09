@@ -1,6 +1,6 @@
 import * as React from "react";
-import { connect } from 'react-redux';
-import { Dispatch, Action } from "redux";
+import {connect} from 'react-redux';
+import {Dispatch, Action} from "redux";
 
 import {reportsActions} from "../../actions/reportsActions";
 import {ReportsSortingFields} from "../../actionTypes/ReportsActionsTypes";
@@ -12,9 +12,9 @@ interface ReportsListSortingProps {
 }
 
 export const ReportsListSortingComponent: React.StatelessComponent<ReportsListSortingProps> = (props: ReportsListSortingProps) => (
-    <div className="form-inline mb-5">
-        <div className="form-group">
-            <label className="mr-2">Sort by</label>
+    <div className="row mb-5">
+        <div className="col-12 col-lg-6 form-inline">
+            <label className="report-filter-label">Sort by</label>
             <select
                 className="form-control-sm form-control"
                 onChange={(e: React.ChangeEvent<HTMLSelectElement>) => props.sort(e.target.value as ReportsSortingFields)}

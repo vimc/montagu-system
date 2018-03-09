@@ -1,13 +1,8 @@
 .DayPickerInput {
   input.form-control {
-    width: 110px;
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
   }
-  .report-time-filters {
-    width: 350px;
-  }
-
 }
 
 .picker-on-right {
@@ -19,3 +14,15 @@
   }
 }
 
+.report-time-filters {
+  .input-group {
+    flex-wrap: nowrap !important;
+  }
+}
+
+.report-filter-label {
+  margin-bottom: 0;
+  margin-right: 0.5em;
+  font-size: 80%;
+  font-weight: 700;
+}
