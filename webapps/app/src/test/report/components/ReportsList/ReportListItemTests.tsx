@@ -3,7 +3,7 @@ import {expect} from "chai";
 import {shallow} from "enzyme";
 import {Report} from "../../../../main/shared/models/Generated";
 import {InternalLink} from "../../../../main/shared/components/InternalLink";
-import {ReportListItem} from "../../../../main/report/components/Reports/ReportListItem";
+import {ReportListItem} from "../../../../main/report/components/ReportsList/ReportListItem";
 
 interface LinkProps {
     url: string;

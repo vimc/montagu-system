@@ -16,9 +16,7 @@ export class InlineArtefact extends React.Component<Props, undefined> {
         const extension = filename.split('.').pop();
 
         if (InlineArtefact.canRenderInIFrame(extension)) {
-            return <OneTimeLinkContext href={buildArtefactUrl(report, version, filename, false)}>
-                <ArtefactIFrame/>
-            </OneTimeLinkContext>;
+            return <ArtefactIFrame href={buildArtefactUrl(report, version, filename, false)}/>;
         } else {
             // Do other things here, like rendering CSV as a table, etc.
             return null;
@@ -34,7 +32,7 @@ export class InlineArtefact extends React.Component<Props, undefined> {
     }
 }
 
-export class ArtefactIFrame extends React.Component<OneTimeLinkProps, undefined> {
+export class ArtefactIFrameInner extends React.Component<OneTimeLinkProps, undefined> {
     render(): JSX.Element {
         const {href} = this.props;
         if (href != null) {
@@ -51,3 +49,4 @@ export class ArtefactIFrame extends React.Component<OneTimeLinkProps, undefined>
     }
 }
 
+export const ArtefactIFrame = OneTimeLinkContext(ArtefactIFrameInner);

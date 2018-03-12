@@ -1,8 +1,4 @@
 import * as React from "react";
-import {touchstoneActions} from "../../../actions/TouchstoneActions";
-import {responsibilityStore} from "../../../stores/ResponsibilityStore";
-import {modellingGroupActions} from "../../../../shared/actions/ModellingGroupActions";
-import {doNothing} from "../../../../shared/Helpers";
 import {DownloadDataTitle} from "../DownloadDataTitle";
 import {ContribPageWithHeader} from "../../PageWithHeader/ContribPageWithHeader";
 import {IPageWithParent} from "../../../../shared/models/Breadcrumb";

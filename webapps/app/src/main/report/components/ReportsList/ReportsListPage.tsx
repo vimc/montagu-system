@@ -1,10 +1,12 @@
 import * as React from "react";
-import { ReportingPageWithHeader } from "../ReportingPageWithHeader";
-import {ReportList} from "../Reports/ReportList";
+import {ReportingPageWithHeader} from "../ReportingPageWithHeader";
+import {ReportsList} from "./ReportsList";
+import {ReportsListSorting} from "./ReportsListSorting";
+import {ReportsListFilter} from "./Filter/ReportsListFilter";
 import {IPageWithParent} from "../../../shared/models/Breadcrumb";
 import {ReportingPage} from "../ReportingPage";
 
-export class MainMenu extends ReportingPageWithHeader<undefined> {
+export class ReportsListPage extends ReportingPageWithHeader<undefined> {
 
     name() {
         return "Main menu";
@@ -22,9 +24,11 @@ export class MainMenu extends ReportingPageWithHeader<undefined> {
         return null;
     }
 
-    render() :JSX.Element {
+    render(): JSX.Element {
         return <ReportingPage page={this}>
-            <ReportList />
+            <ReportsListFilter/>
+            <ReportsListSorting/>
+            <ReportsList/>
         </ReportingPage>;
     }
 }

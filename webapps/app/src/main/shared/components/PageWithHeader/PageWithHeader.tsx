@@ -1,5 +1,6 @@
 import * as React from "react";
-import {IRouter, Location} from "simple-react-router";
+import {History, Location} from "history";
+import {Router, match} from 'react-router';
 
 import { navActions } from "../../actions/NavActions";
 import {IPageWithParent} from "../../models/Breadcrumb";
@@ -34,10 +35,14 @@ export abstract class PageWithHeader<TLocationProps>
     }
 
     loadOnMount(): Promise<any> {
-        return this.load(this.props.location.params).then(() => {
+        return this.load(this.props.match.params).then(() => {
             this.createBreadcrumb();
             window.scrollTo(0, 0);
         });
+    }
+
+    getLocationParams() {
+        return this.props.match.params;
     }
 
     load(props: TLocationProps): Promise<any> {
@@ -77,7 +82,9 @@ export abstract class PageWithHeader<TLocationProps>
 }
 
 export interface PageProperties<T> {
-    location: Location<T>;
-    router: IRouter;
+    location: Location;
+    router: Router;
     onLoad?: (props:Partial<T>) => void;
+    match: match<T>;
+    history: History;
 }

@@ -1,9 +1,6 @@
 import * as React from "react";
 import { DownloadDataTitle } from "../DownloadDataTitle";
-import { modellingGroupActions } from "../../../../shared/actions/ModellingGroupActions";
-import { responsibilityStore } from "../../../stores/ResponsibilityStore";
 import { touchstoneActions } from "../../../actions/TouchstoneActions";
-import { doNothing } from "../../../../shared/Helpers";
 import { demographicStore } from "../../../stores/DemographicStore";
 import { DownloadDemographicsContent } from "./DownloadDemographicsContent";
 import {ContribPageWithHeader} from "../../PageWithHeader/ContribPageWithHeader";

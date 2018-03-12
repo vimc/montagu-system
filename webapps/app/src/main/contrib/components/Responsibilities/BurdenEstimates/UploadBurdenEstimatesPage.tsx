@@ -1,8 +1,6 @@
 import * as React from "react";
-import {touchstoneActions} from "../../../actions/TouchstoneActions";
 import {responsibilityActions} from "../../../actions/ResponsibilityActions";
 import {responsibilityStore} from "../../../stores/ResponsibilityStore";
-import {modellingGroupActions} from "../../../../shared/actions/ModellingGroupActions";
 import {doNothing} from "../../../../shared/Helpers";
 import {DownloadDataTitle} from "../DownloadDataTitle";
 import {UploadBurdenEstimatesContent} from "./UploadBurdenEstimatesContent";

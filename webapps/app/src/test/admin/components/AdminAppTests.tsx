@@ -27,7 +27,8 @@ describe("AdminApp", () => {
     it("passes through loggedIn to router", () => {
         const rendered = shallow(<AdminAppComponent errors={ [] } loggedIn={ true } infos={ [] } />);
         expect(rendered.find(AdminRouter).props()).to.eql({
-            loggedIn: true
+            loggedIn: true,
+            history: undefined
         });
     });
 

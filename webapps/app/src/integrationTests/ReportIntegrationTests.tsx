@@ -1,6 +1,8 @@
 import {expect} from "chai";
 import * as React from "react";
 import { shallow, ShallowWrapper } from "enzyme";
+import { createMemoryHistory } from 'history';
+
 import { expectIsEqual, expectSameElements, IntegrationTestSuite } from "./IntegrationTest";
 import { ReportingFetcher } from "../main/report/sources/ReportingFetcher";
 import { checkPromise } from "../test/testHelpers";
@@ -27,7 +29,9 @@ class ReportIntegrationTests extends IntegrationTestSuite {
     }
 
     createStore() {
-        return createReportStore();
+        const history = createMemoryHistory({
+            initialEntries: [ '/' ]});
+        return createReportStore(history);
     }
 
 
@@ -58,7 +62,8 @@ class ReportIntegrationTests extends IntegrationTestSuite {
 
 
         it("fetches report readers", async () => {
-            const readers = await (new UserService(this.store.dispatch, this.store.getState)).getReportReaders("minimal");
+            const readers = await (new UserService(this.store.dispatch, this.store.getState))
+                .getReportReaders("minimal");
             expect(readers.length).to.be.greaterThan(0);
         });
 

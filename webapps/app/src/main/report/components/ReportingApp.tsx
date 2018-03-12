@@ -1,5 +1,6 @@
 import * as React from "react";
 import { connect } from 'react-redux';
+import {History} from "history";
 
 import { ErrorLog } from "../../shared/components/ErrorLog/ErrorLog";
 import { ReportingRouter } from "./ReportingRouter";
@@ -7,12 +8,12 @@ import { NotificationArea } from "../../shared/components/NotificationArea/Notif
 import { notificationStore } from "../../shared/stores/NotificationStore";
 import { connectToStores } from "../../shared/alt";
 import { ReportAppState } from "../reducers/reportAppReducers";
-import {PageHeader} from "../../shared/components/PageWithHeader/PageHeader";
 
 export interface ReportingAppProps {
     errors: string[];
     infos: string[];
     loggedIn: boolean;
+    history?: History;
 }
 
 export class ReportingAppComponent extends React.Component<ReportingAppProps, undefined> {
@@ -28,7 +29,7 @@ export class ReportingAppComponent extends React.Component<ReportingAppProps, un
 
     render() :JSX.Element {
         return <div>
-            <ReportingRouter loggedIn={ this.props.loggedIn } />
+            <ReportingRouter loggedIn={ this.props.loggedIn } history={this.props.history} />
             <NotificationArea notifications={ this.props.infos } />
             <ErrorLog errors={ this.props.errors } />
         </div>;
@@ -37,9 +38,10 @@ export class ReportingAppComponent extends React.Component<ReportingAppProps, un
 
 export const ReportingAppAltWrapped = connectToStores(ReportingAppComponent);
 
-const mapStateToProps = (state: ReportAppState) :Partial<ReportingAppProps> => {
+const mapStateToProps = (state: ReportAppState, props: Partial<ReportingAppProps>) :Partial<ReportingAppProps> => {
   return {
       loggedIn: state.auth.loggedIn,
+      history: props.history
   }
 };
 

@@ -3,7 +3,10 @@ import { expect } from "chai";
 import { Sandbox } from "../../Sandbox";
 import { reportsActions } from "../../../main/report/actions/reportsActions";
 import { ReportsService } from "../../../main/report/services/ReportsService";
-import { ReportTypeKeys } from "../../../main/report/actionTypes/ReportsActionsTypes";
+import {
+    ReportsFilterFields, ReportsFilterPublishTypes, ReportsSortingFields,
+    ReportTypeKeys
+} from "../../../main/report/actionTypes/ReportsActionsTypes";
 import { createMockStore } from "../../mocks/mockStore";
 
 describe("Report actions tests", () => {
@@ -67,5 +70,23 @@ describe("Report actions tests", () => {
         });
     });
 
+    it("dispatches reports sorted action if sort report is dispatched", (done) => {
+        store.dispatch(reportsActions.sortReports(ReportsSortingFields.name))
+        setTimeout(() => {
+            const actions = store.getActions();
+            expect(actions[0].type).to.eql(ReportTypeKeys.SORT_REPORTS);
+            expect(actions[0].data).to.eql("name");
+            done();
+        });
+    });
 
+    it("dispatches reports filter action if filter reports is dispatched", (done) => {
+        store.dispatch(reportsActions.filterReports({published: ReportsFilterPublishTypes.published}))
+        setTimeout(() => {
+            const actions = store.getActions();
+            expect(actions[0].type).to.eql(ReportTypeKeys.FILTER_REPORTS);
+            expect(actions[0].data).to.eql({published: "published"});
+            done();
+        });
+    });
 });

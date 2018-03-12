@@ -4,8 +4,7 @@ import {expect} from "chai";
 import {Provider} from "react-redux";
 
 import {Sandbox} from "../../../Sandbox";
-import {mockLocation} from "../../../mocks/mocks";
-import {IRouter} from "simple-react-router";
+import {mockHistory, mockLocation, mockMatch} from "../../../mocks/mocks";
 import {ReportPage, ReportPageComponent, ReportPageProps} from "../../../../main/report/components/Reports/ReportPage";
 import {addNavigationTests} from "../../../shared/NavigationTests";
 import {createMockStore} from "../../../mocks/mockStore";
@@ -23,8 +22,8 @@ describe("ReportPage", () => {
 
     const mountPage = () => {
 
-        const location = mockLocation<ReportPageProps>({report: "report", version: "v1"});
-        sandbox.setStubFunc(ReportPageComponent.prototype, "getLocationParams", () => (location));
+        const matchMock = mockMatch({report: "report", version: "v1"})
+        sandbox.setStubFunc(ReportPageComponent.prototype, "getLocationParams", () => (matchMock));
         sandbox.setStubFunc(ReportPageComponent.prototype, "render", () => (<p/>));
         sandbox.setStub(ReportsService.prototype, "getReportVersions");
         sandbox.setStub(ReportsService.prototype, "getVersionDetails");
@@ -48,10 +47,11 @@ describe("ReportPage", () => {
 
     it("triggers actions and redirect when child triggers changeVersion", (done: DoneCallback) => {
         const redirectTo = sandbox.sinon.stub();
-        const router: IRouter = {redirectTo};
+        const history = mockHistory({push: redirectTo});
         sandbox.setStub(ReportPageComponent.prototype, "loadVersion");
-        const location = mockLocation<ReportPageProps>({report: "reportname", version: "oldVersion"}, "hash");
-        const page = new ReportPageComponent({location: location, router: router});
+        const match = mockMatch<ReportPageProps>({report: "reportname", version: "oldVersion"});
+        const location = mockLocation();
+        const page = new ReportPageComponent({match, history, location, router: null});
         page.changeVersion("versionname");
         setTimeout(() => {
             expect(redirectTo.called).to.equal(true, "Expected redirectTo to be called");
@@ -62,9 +62,15 @@ describe("ReportPage", () => {
 
     it("renders report details by default", () => {
 
-        const location = mockLocation<ReportPageProps>({report: "report", version: "v1"});
-        const rendered = shallow(<ReportPageComponent onLoad={() => {
-        }} location={location} router={null}/>);
+        const location = mockLocation();
+        const match = mockMatch<ReportPageProps>({report: "report", version: "v1"});
+        const rendered = shallow(<ReportPageComponent
+            onLoad={() => {}}
+            location={location}
+            match={match}
+            router={null}
+            history={null}
+        />);
         expect(rendered.find(ReportDetails)).to.have.lengthOf(1);
         expect(rendered.find(ReportDownloads)).to.have.lengthOf(0);
 
@@ -72,24 +78,37 @@ describe("ReportPage", () => {
 
     it("renders report downloads when hash #downloads", () => {
 
-        const location = mockLocation<ReportPageProps>({report: "report", version: "v1"}, "#downloads");
-        const rendered = shallow(<ReportPageComponent onLoad={() => {
-        }} location={location} router={null}/>);
+        const location = mockLocation({hash: "#downloads"});
+        const match = mockMatch<ReportPageProps>({report: "report", version: "v1"});
+        const rendered = shallow(<ReportPageComponent
+            onLoad={() => {}}
+            location={location}
+            match={match}
+            router={null}
+            history={null}
+        />);
         expect(rendered.find(ReportDetails)).to.have.lengthOf(0);
         expect(rendered.find(ReportDownloads)).to.have.lengthOf(1);
     });
 
     it("renders report details when hash #report", () => {
 
-        const location = mockLocation<ReportPageProps>({report: "report", version: "v1"}, "#report");
-        const rendered = shallow(<ReportPageComponent onLoad={() => {
-        }} location={location} router={null}/>);
+        const location = mockLocation({hash: "#report"});
+        const match = mockMatch<ReportPageProps>({report: "report", version: "v1"});
+        const rendered = shallow(<ReportPageComponent
+            onLoad={() => {}}
+            location={location}
+            router={null}
+            match={match}
+            history={null}
+        />);
         expect(rendered.find(ReportDetails)).to.have.lengthOf(1);
         expect(rendered.find(ReportDownloads)).to.have.lengthOf(0);
     });
 
-    const location = mockLocation<ReportPageProps>({report: "report", version: "v1"});
-    const page = new ReportPageComponent({location: location, router: null});
+    const location = mockLocation();
+    const match = mockMatch<ReportPageProps>({report: "report", version: "v1"});
+    const page = new ReportPageComponent({location: location, router: null, match, history: null});
     addNavigationTests(page, sandbox, () => {
     });
 });

@@ -1,5 +1,6 @@
-import {combineReducers} from "redux";
-import {FormReducer, reducer as formReducer} from "redux-form";
+import { combineReducers } from "redux";
+import { reducer as formReducer, FormReducer } from "redux-form";
+import { routerReducer } from 'react-router-redux';
 
 import {authReducer, AuthState} from "../../shared/reducers/authReducer";
 import {reportsReducer, ReportsState} from "./reportsReducer";
@@ -16,6 +17,7 @@ const reducers = combineReducers({
     auth: authReducer,
     form: formReducer,
     reports: reportsReducer,
+    router: routerReducer,
     users: usersReducer
 });
 

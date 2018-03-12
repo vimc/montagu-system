@@ -15,7 +15,9 @@ export class PageHeader extends React.Component<HeaderProps, undefined> {
             <header className="header">
                 <a href="/"><img src={this.props.logo} className="pl-md-1 logo" height="75" alt="VIMC"/></a>
                 <div className="header__siteTitle">
-                    <InternalLink href="/">{this.props.siteTitle}</InternalLink>
+                    <InternalLink href="/">
+                        {this.props.siteTitle}
+                    </InternalLink>
                 </div>
                 <LoggedInUserBox />
             </header>
