@@ -4,10 +4,8 @@ import {connect, Dispatch} from "react-redux";
 import {User} from "../../../shared/models/Generated";
 import {ReportVersionSwitcher} from "../Reports/ReportVersionSwitcher";
 import {PublishSwitch} from "./PublishSwitch";
-import {UserList} from "./UserList";
 import {userActions} from "../../actions/userActions";
 import {ReportReadersList} from "./ReportReadersList";
-import {userActions} from "../../actions/userActions";
 
 export interface PublicProps {
     onChangeVersion: (version: string) => any;
@@ -23,7 +21,6 @@ export interface SidebarAdminProps extends PublicProps {
     reportReaders: User[];
     isAdmin: boolean;
     getReportReaders: (reportName: string) => void;
-
     removeReportReader: (username: string, reportName: string) => void;
 }
 
@@ -47,19 +44,15 @@ export const SidebarAdminComponent = (props: SidebarAdminProps) => {
         {props.isAdmin &&
         <div className="mt-5">
             <label className={"font-weight-bold"}>Report readers</label>
-            <ReportReadersList users={props.reportReaders}/>
-            <UserList users={props.reportReaders} report={props.report}
-                      removeReportReader={(username: string) => props.removeReportReader(username, props.report)}/>
+            <ReportReadersList users={props.reportReaders} report={props.report}
+                               removeReportReader={(username: string) => props.removeReportReader(props.report, username)}/>
         </div>}
     </div>
 
 };
 
-export const mapStateToProps = (state: ReportAppState, props: SidebarAdminProps): SidebarAdminProps => {
-    const ready = !!state.reports.versionDetails && !!state.reports.versions
-        && !!state.users.reportReaders;
 export const mapStateToProps = (state: ReportAppState, props: Partial<SidebarAdminProps>): SidebarAdminProps => {
-    const ready = !!state.reports.versionDetails;
+    const ready = !!state.reports.versionDetails && !!state.reports.versions;
 
     if (!ready) {
         return {
@@ -71,8 +64,7 @@ export const mapStateToProps = (state: ReportAppState, props: Partial<SidebarAdm
             version: "",
             allVersions: [],
             onChangeVersion: props.onChangeVersion,
-            reportReaders: state.users.reportReaders,
-            getReportReaders: props.getReportReaders
+            getReportReaders: props.getReportReaders,
             reportReaders: [],
             removeReportReader: props.removeReportReader
         }
@@ -89,8 +81,7 @@ export const mapStateToProps = (state: ReportAppState, props: Partial<SidebarAdm
             version: versionDetails.id,
             onChangeVersion: props.onChangeVersion,
             reportReaders: state.users.reportReaders,
-            getReportReaders: props.getReportReaders
-            reportReaders: state.users.reportReaders,
+            getReportReaders: props.getReportReaders,
             removeReportReader: props.removeReportReader
         }
     }
@@ -99,14 +90,8 @@ export const mapStateToProps = (state: ReportAppState, props: Partial<SidebarAdm
 export const mapDispatchToProps = (dispatch: Dispatch<any>, props: PublicProps): Partial<SidebarAdminProps> => {
 
     return {
-        removeReportReader: (username: string, reportName: string) =>
-            dispatch(userActions.removeReportReader(reportName, username))
-    }
-};
-
-export const SidebarAdmin = connect(mapStateToProps, mapDispatchToProps)(SidebarAdminComponent);
-export const mapDispatchToProps = (dispatch: Dispatch<any>) => {
-    return {
+        removeReportReader: (report: string, username: string) =>
+            dispatch(userActions.removeReportReader(report, username)),
         getReportReaders: (reportName: string) => dispatch(userActions.getReportReaders(reportName))
     }
 };

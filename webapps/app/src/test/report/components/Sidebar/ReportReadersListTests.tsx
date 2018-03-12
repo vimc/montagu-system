@@ -11,7 +11,7 @@ describe("Report readers list", () => {
 
         const users: User[] = [mockUser({username: "b"}), mockUser({username: "a"}), mockUser({username: "c"})];
         
-        const rendered = shallow(<ReportReadersList users={users}/>);
+        const rendered = shallow(<ReportReadersList users={users} report={"report"} removeReportReader={() => {}}/>);
         const renderedUsers = rendered.find(ReportReader);
         expect(renderedUsers).to.have.lengthOf(3);
         expect(renderedUsers.at(0).prop("username")).to.eq("a");

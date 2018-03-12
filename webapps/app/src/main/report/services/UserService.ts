@@ -1,6 +1,5 @@
 import {AbstractLocalService} from "../../shared/services/AbstractLocalService";
 import {AssociateRole} from "../../shared/models/Generated";
-import {singletonVariableCache} from "../../shared/modules/cache/singletonVariableCache";
 
 function reportReadersUrl(reportName: string) {
     return `/users/report-readers/${reportName}/`
