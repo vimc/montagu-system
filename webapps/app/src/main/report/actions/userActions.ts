@@ -19,7 +19,8 @@ export const userActions = {
 
     removeReportReader(reportName: string, username: string) {
         return async (dispatch: Dispatch<any>, getState: () => GlobalState) => {
-           await (new UserService(dispatch, getState)).removeReportReader(reportName, username);
+           const result = await (new UserService(dispatch, getState)).removeReportReader(reportName, username);
+           console.log("OK");
             dispatch({
                 type: UserTypeKeys.REPORT_READER_REMOVED,
                 data: username
