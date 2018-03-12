@@ -16,7 +16,7 @@ import './style.scss';
 
 fetcher.fetcher = new AdminFetcher();
 
-const history: History = createBrowserHistory();
+const history: History = createBrowserHistory({ basename: "/admin"});
 const store = createAdminStore(history);
 
 store.dispatch(authActions.loadSavedToken());
