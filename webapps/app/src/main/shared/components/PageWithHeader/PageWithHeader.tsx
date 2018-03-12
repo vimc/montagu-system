@@ -81,6 +81,19 @@ export abstract class PageWithHeader<TLocationProps>
     }
 }
 
+export interface PageInterface {
+    name(): string;
+    urlFragment(): string;
+    parent(): PageInterface;
+}
+
+export interface PageProps<T> {
+    location: Location;
+    router: Router;
+    match: match<T>;
+    history: History;
+}
+
 export interface PageProperties<T> {
     location: Location;
     router: Router;

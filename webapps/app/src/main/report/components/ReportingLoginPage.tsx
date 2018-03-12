@@ -2,8 +2,7 @@ import * as React from "react";
 import { ReportingPageWithHeader } from "./ReportingPageWithHeader";
 import { LoginForm } from "../../shared/components/Login/LoginForm";
 import {IPageWithParent} from "../../shared/models/Breadcrumb";
-import {Page} from "../../shared/components/PageWithHeader/Page";
-import {ReportingPage} from "./ReportingPage";
+import {PageArticle} from "../../shared/components/PageWithHeader/PageArticle";
 
 export class ReportingLoginPage extends ReportingPageWithHeader<undefined> {
     name(): string {
@@ -23,8 +22,8 @@ export class ReportingLoginPage extends ReportingPageWithHeader<undefined> {
     }
 
     render(): JSX.Element {
-        return <ReportingPage page={this}>
+        return <PageArticle title={this.title()}>
             <LoginForm />
-        </ReportingPage>;
+        </PageArticle>;
     }
 }

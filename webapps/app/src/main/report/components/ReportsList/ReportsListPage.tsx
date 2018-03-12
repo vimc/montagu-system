@@ -4,8 +4,6 @@ import {ReportsList} from "./ReportsList";
 import {ReportsListSorting} from "./ReportsListSorting";
 import {ReportsListFilter} from "./Filter/ReportsListFilter";
 import {IPageWithParent} from "../../../shared/models/Breadcrumb";
-import {ReportingPage} from "../ReportingPage";
-
 import {PageArticle} from "../../../shared/components/PageWithHeader/PageArticle";
 
 export class ReportsListPage extends React.Component {
@@ -15,7 +13,7 @@ export class ReportsListPage extends React.Component {
     }
 
     title() {
-        return <span>Choose a report to view</span>;
+        return "Choose a report to view";
     }
 
     urlFragment() {

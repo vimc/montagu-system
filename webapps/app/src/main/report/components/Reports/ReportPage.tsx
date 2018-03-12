@@ -4,7 +4,6 @@ import {connect} from 'react-redux';
 
 import {ReportingPageWithHeader} from "../ReportingPageWithHeader";
 import {ReportDetails} from "./ReportDetails";
-import {PageProperties} from "../../../shared/components/PageWithHeader/PageWithHeader";
 import {appSettings} from "../../../shared/Settings";
 import {ReportsListPage} from "../ReportsList/ReportsListPage";
 import {reportPageActions} from "../../actions/reportPageActions";
@@ -12,10 +11,15 @@ import {ReportTabEnum, Sidebar} from "../Sidebar/Sidebar";
 import {ReportingPageHeader} from "../ReportingPageHeader";
 import {ReportDownloads} from "./ReportDownloads";
 import {IPageWithParent} from "../../../shared/models/Breadcrumb";
+import {PageProperties, PageInterface, PageProps} from "../../../shared/components/PageWithHeader/PageWithHeader";
 
-export interface ReportPageProps {
+export interface ReportPageLocationProps {
     report: string;
     version: string;
+}
+
+export interface ReportPageProps extends PageProps<ReportPageLocationProps> {
+    onLoad?: (props:ReportPageLocationProps) => void;
 }
 
 const hashToTab = (hash: string): ReportTabEnum => {
@@ -30,8 +34,11 @@ const hashToTab = (hash: string): ReportTabEnum => {
     }
 };
 
-export class ReportPageComponent extends ReportingPageWithHeader<ReportPageProps> {
-    constructor(props: PageProperties<ReportPageProps>) {
+export class ReportPageComponent
+    extends React.Component<ReportPageProps>
+    implements PageInterface {
+
+    constructor(props: ReportPageProps) {
         super(props);
         this.changeVersion = this.changeVersion.bind(this);
     }
@@ -48,38 +55,36 @@ export class ReportPageComponent extends ReportingPageWithHeader<ReportPageProps
     }
 
     loadVersion() {
-        this.props.onLoad({
-            report: this.getLocationParams().report,
-            version: this.getLocationParams().version
-        });
-        this.createBreadcrumb();
+        this.props.onLoad(this.props.match.params);
+        // this.createBreadcrumb();
     }
 
     redirectToVersion(version: string) {
         const hash = this.props.location.hash;
         this.props.history
-            .push(`${appSettings.publicPath}/${this.getLocationParams().report}/${version}/${hash}`, false);
+            .push(`${appSettings.publicPath}/${this.props.match.params.report}/${version}/${hash}`, false);
     }
+
 
     parent() : IPageWithParent {
         return null//new ReportsListPage();
     }
 
     name() {
-        const params = this.getLocationParams();
+        const params = this.props.match.params;
         return `${params.report} (${params.version})`;
     }
 
     urlFragment() {
-        const params = this.getLocationParams();
+        const params = this.props.match.params;
         return `${params.report}/${params.version}/`;
     }
+
 
     render(): JSX.Element {
         const activeTab = hashToTab(this.props.location.hash);
 
         return <div>
-            <ReportingPageHeader siteTitle={this.siteTitle()}/>
             <div className={"container-fluid pt-4 sm-pt-5"}>
                 <div className="row flex-xl-nowrap">
                     <div className="col-12 col-md-4 col-xl-2">
@@ -95,9 +100,9 @@ export class ReportPageComponent extends ReportingPageWithHeader<ReportPageProps
     }
 }
 
-export const mapDispatchToProps = (dispatch: Dispatch<Action>): Partial<PageProperties<ReportPageProps>> => {
+export const mapDispatchToProps = (dispatch: Dispatch<Action>): Partial<ReportPageProps> => {
     return {
-        onLoad: (props: ReportPageProps) => dispatch(reportPageActions.onLoad(props))
+        onLoad: (props: ReportPageLocationProps ) => dispatch(reportPageActions.onLoad(props))
     }
 };
 

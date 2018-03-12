@@ -1,7 +1,7 @@
 import * as React from "react";
 
 interface ArticleProps {
-    title: JSX.Element;
+    title: JSX.Element | string;
     hideTitle?: boolean;
     children: any;
 }

@@ -8,7 +8,7 @@ export class ReportingPage extends React.Component<PageProps, undefined> {
     render() :JSX.Element {
         const page = this.props.page;
         return <div>
-            <ReportingPageHeader siteTitle={page.siteTitle()} />
+            <ReportingPageHeader />
             <PageArticle title={page.title()} hideTitle={page.hideTitle()}>
                 { this.props.children }
             </PageArticle>

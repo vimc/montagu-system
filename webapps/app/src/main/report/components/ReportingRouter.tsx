@@ -20,7 +20,7 @@ export const ReportingRouter : React.StatelessComponent<ReportRouterProps> = (pr
 
     const loggedIn = <Switch>
         <Route exact path="/" component={ReportsListPage}/>
-        {/*<Route exact path="/:report/:version/" component={ReportPage} />*/}
+        <Route exact path="/:report/:version/" component={ReportPage} />
         <Route component={ReportingNoRouteFoundPage} />
     </Switch>;
 
@@ -34,7 +34,7 @@ export const ReportingRouter : React.StatelessComponent<ReportRouterProps> = (pr
 
     return <ConnectedRouter history={props.history}>
         <div>
-            <ReportingPageHeader siteTitle="Reporting portal" />
+            <ReportingPageHeader/>
             {routes}
         </div>
     </ConnectedRouter>;
