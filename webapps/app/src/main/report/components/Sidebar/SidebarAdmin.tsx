@@ -51,7 +51,8 @@ export const SidebarAdminComponent = (props: SidebarAdminProps) => {
 };
 
 export const mapStateToProps = (state: ReportAppState, props: Partial<SidebarAdminProps>): SidebarAdminProps => {
-    const ready = !!state.reports.versionDetails;
+    const ready = !!state.reports.versionDetails &&
+        !!state.reports.versions && !!state.users.reportReaders;
 
     if (!ready) {
         return {
@@ -63,7 +64,7 @@ export const mapStateToProps = (state: ReportAppState, props: Partial<SidebarAdm
             version: "",
             allVersions: [],
             onChangeVersion: props.onChangeVersion,
-            reportReaders: state.users.reportReaders,
+            reportReaders: [],
             getReportReaders: props.getReportReaders
         }
     }

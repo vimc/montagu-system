@@ -13,6 +13,8 @@ import {
 } from "../../../../main/report/components/Sidebar/SidebarAdmin";
 import {PublishSwitch} from "../../../../main/report/components/Sidebar/PublishSwitch";
 import {ReportReadersList} from "../../../../main/report/components/Sidebar/ReportReadersList";
+import {ReportsState} from "../../../../main/report/reducers/reportsReducer";
+import {UsersState} from "../../../../main/report/reducers/userReducer";
 
 describe("SidebarAdmin", () => {
 
@@ -41,6 +43,12 @@ describe("SidebarAdmin", () => {
         reportReaders: [mockUser()],
         getReportReaders: sandbox.sinon.stub()
     };
+
+    const readyReportsState: ReportsState =
+        mockReportsState({
+            versionDetails: {published: false},
+            versions: []
+        });
 
     it("renders report version switcher", () => {
 
@@ -120,7 +128,7 @@ describe("SidebarAdmin", () => {
 
         let state = mockReportAppState({
             auth: mockAuthState({permissions: ["*/reports.review"]}),
-            reports: mockReportsState({versionDetails: mockVersion()})
+            reports: readyReportsState
         });
 
         let result = mapStateToProps(state, defaultTabProps);
@@ -141,7 +149,7 @@ describe("SidebarAdmin", () => {
 
         let state = mockReportAppState({
             auth: mockAuthState({permissions: ["*/roles.read"]}),
-            reports: mockReportsState({versionDetails: mockVersion()})
+            reports: readyReportsState
         });
 
         let result = mapStateToProps(state, defaultTabProps);
@@ -161,7 +169,10 @@ describe("SidebarAdmin", () => {
     it("gets publish status from app state", () => {
 
         let state = mockReportAppState({
-            reports: mockReportsState({versionDetails: {published: false}})
+            reports: mockReportsState({
+                versionDetails: {published: false},
+                versions: []
+            })
         });
 
         let result = mapStateToProps(state, defaultTabProps);
@@ -169,7 +180,7 @@ describe("SidebarAdmin", () => {
         expect(result.published).to.be.false;
 
         state = mockReportAppState({
-            reports: mockReportsState({versionDetails: {published: true}})
+            reports: mockReportsState({versionDetails: {published: true}, versions: []})
         });
 
         result = mapStateToProps(state, defaultTabProps);
@@ -181,6 +192,7 @@ describe("SidebarAdmin", () => {
     it("gets report readers from app state", () => {
 
         const state = mockReportAppState({
+            reports: readyReportsState,
             users: mockUsersState({reportReaders: [mockUser()]})
         });
 
@@ -191,21 +203,22 @@ describe("SidebarAdmin", () => {
 
     it("is not ready when version details are null", () => {
 
-        const state = mockReportAppState();
+        const state = mockReportAppState({reports: mockReportsState({
+            versions: []
+        })});
         const result = mapStateToProps(state, defaultTabProps);
 
         expect(result.ready).to.be.false;
     });
 
-    it("is ready when version details are non null", () => {
+    it("is not ready when versions are null", () => {
 
         const state = mockReportAppState({
-            reports:
-                mockReportsState({versionDetails: {published: false}})
+            reports: mockReportsState({versionDetails: {published: false}})
         });
         const result = mapStateToProps(state, defaultTabProps);
 
-        expect(result.ready).to.be.true;
+        expect(result.ready).to.be.false;
     });
 
 });
