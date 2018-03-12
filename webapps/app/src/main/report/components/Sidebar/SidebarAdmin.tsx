@@ -51,37 +51,31 @@ export const SidebarAdminComponent = (props: SidebarAdminProps) => {
 };
 
 export const mapStateToProps = (state: ReportAppState, props: Partial<SidebarAdminProps>): SidebarAdminProps => {
-    const ready = !!state.reports.versionDetails;
+    const ready = !!state.reports.versionDetails &&
+        !!state.reports.versions;
 
-    if (!ready) {
-        return {
-            ready: false,
-            isReviewer: false,
-            isAdmin: false,
-            published: false,
-            report: "",
-            version: "",
-            allVersions: [],
-            onChangeVersion: props.onChangeVersion,
-            reportReaders: state.users.reportReaders,
-            getReportReaders: props.getReportReaders
-        }
-    }
-    else {
+    const finalProps: SidebarAdminProps = {
+        ready: ready,
+        isReviewer: state.auth.permissions.indexOf("*/reports.review") > -1,
+        isAdmin: state.auth.permissions.indexOf("*/roles.read") > -1,
+        published: false,
+        allVersions: state.reports.versions,
+        report: "",
+        version: "",
+        onChangeVersion: props.onChangeVersion,
+        reportReaders: state.users.reportReaders,
+        getReportReaders: props.getReportReaders
+    };
+
+    if (ready) {
         const versionDetails = state.reports.versionDetails;
-        return {
-            ready: true,
-            isReviewer: state.auth.permissions.indexOf("*/reports.review") > -1,
-            isAdmin: state.auth.permissions.indexOf("*/roles.read") > -1,
-            published: versionDetails.published,
-            allVersions: state.reports.versions,
-            report: versionDetails.name,
-            version: versionDetails.id,
-            onChangeVersion: props.onChangeVersion,
-            reportReaders: state.users.reportReaders,
-            getReportReaders: props.getReportReaders
-        }
+
+        finalProps.published = versionDetails.published;
+        finalProps.report = versionDetails.name;
+        finalProps.version = versionDetails.id;
     }
+
+    return finalProps
 };
 
 export const mapDispatchToProps = (dispatch: Dispatch<any>) => {
