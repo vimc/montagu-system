@@ -26,7 +26,6 @@ export const ReportingRouter : React.StatelessComponent<ReportRouterProps> = (pr
     const notLoggedIn = <Switch>
         <Route exact path="/" component={ReportingLoginPage}/>
         <Route exact path="/forgotten-password/" component={ReportingForgottenPasswordPage} />
-        <Redirect to="/"/>
     </Switch>;
 
     const routes = props.loggedIn ?  loggedIn : notLoggedIn;
