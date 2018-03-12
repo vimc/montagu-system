@@ -23,7 +23,7 @@ export class UploadBurdenEstimatesPage extends ContribPageWithHeader<UploadEstim
 
         return this.loadParent(props).then(() => {
             estimateTokenActions.clearUsedToken();
-            estimateTokenActions.setRedirectPath(appSettings.publicPath + "/" + this.props.location.pathname);
+            estimateTokenActions.setRedirectPath(appSettings.publicPath + this.props.location.pathname);
 
             responsibilityActions.setCurrentResponsibility(props.scenarioId);
             responsibilityStore.fetchOneTimeEstimatesToken().catch(doNothing);
