@@ -2,6 +2,7 @@ import { expect } from "chai";
 import { createStore } from "redux";
 
 import { Sandbox } from "../../Sandbox";
+import * as sinon from 'sinon';
 import { AbstractLocalService } from "../../../main/shared/services/AbstractLocalService";
 import { settings } from "../../../main/shared/Settings";
 import { AuthTypeKeys } from "../../../main/shared/actionTypes/AuthTypes";
@@ -10,6 +11,7 @@ import {mockGlobalState} from "../../mocks/mockStates";
 import {SingletonVariableCache} from "../../../main/shared/modules/cache/singletonVariableCache";
 import {Dispatch} from "react-redux";
 import {GlobalState} from "../../../main/shared/reducers/GlobalState";
+import {CacheInterface} from "../../../main/shared/modules/cache/CacheInterface";
 
 describe('Local service class initialization tests', () => {
 
@@ -162,44 +164,27 @@ describe('Local service cache tests', () => {
         getCacheEngine() {
             return this.cacheEngine;
         }
+        publicClearCache(cacheKey: string, url: string) {
+            this.clearCache(cacheKey, url);
+        }
     }
+
+    let testService: TestService, cacheEngine: CacheInterface, setCacheSpy: sinon.SinonSpy,
+        getCacheSpy: sinon.SinonSpy, doFetchStub: sinon.SinonStub;
 
     afterEach(() => {
         sandbox.restore();
     });
 
-    it('creates fully qualified cache key', () => {
-
-
-
-    });
-
-    it('performs query without a cache', async () => {
+    beforeEach(() => {
         const store = createMockStore();
 
-        const testService = new TestService(store.dispatch, store.getState);
-        const doFetchStub = sandbox.setStubFunc(testService, "doFetch", ()=> Promise.resolve({
-            json: (): any => {
-                return Promise.resolve({
-                    status: "success",
-                    data: "testData"
-                })
-            }
-        }));
-        const setCacheSpy = sandbox.setSpy(testService.getCacheEngine(), "set");
-        const getCacheSpy = sandbox.setSpy(testService.getCacheEngine(), "get");
-        const result = await testService.testWithoutCache();
-        expect(doFetchStub.called).to.equal(true);
-        expect(setCacheSpy.called).to.equal(false);
-        expect(getCacheSpy.called).to.equal(false);
-        expect(result).to.equal("testData");
-    });
+        testService = new TestService(store.dispatch, store.getState);
+        cacheEngine = testService.getCacheEngine();
+        setCacheSpy = sandbox.setSpy(cacheEngine, "set");
+        getCacheSpy = sandbox.setSpy(cacheEngine, "get");
 
-    it('performs query with the cache 2 times, first time from api, second from cache', async () => {
-        const store = createMockStore();
-
-        const testService = new TestService(store.dispatch, store.getState);
-        const doFetchStub = sandbox.setStubFunc(testService, "doFetch", ()=> Promise.resolve({
+        doFetchStub = sandbox.setStubFunc(testService, "doFetch", ()=> Promise.resolve({
             json: (): any => {
                 return Promise.resolve({
                     status: "success",
@@ -208,24 +193,54 @@ describe('Local service cache tests', () => {
             },
             url: settings.apiUrl() + "/test/"
         }));
-        const setCacheSpy = sandbox.setSpy(testService.getCacheEngine(), "set");
-        const getCacheSpy = sandbox.setSpy(testService.getCacheEngine(), "get");
+    });
+
+    it('creates fully qualified cache key', async () => {
+
+        const fullyQualifiedKey = ["localService", "TestService", "test",
+            encodeURIComponent(settings.apiUrl() + "/test/")].join(".");
+
+        // first set the cache
+        await testService.testWithCache();
+
+        expect(cacheEngine.get(fullyQualifiedKey)).to.not.be.undefined;
+
+        // now clear
+        testService.publicClearCache("test", "/test/");
+
+        expect(cacheEngine.get(fullyQualifiedKey)).to.be.undefined;
+
+    });
+
+    it('performs query without a cache', async () => {
+
+        const result = await testService.testWithoutCache();
+
+        expect(doFetchStub.called).to.equal(true);
+        expect(setCacheSpy.called).to.equal(false);
+        expect(getCacheSpy.called).to.equal(false);
+        expect(result).to.equal("testData");
+    });
+
+    it('performs query with the cache 2 times, first time from api, second from cache', async () => {
 
         const resultFromApi = await testService.testWithCache();
+
         // first time it makes request and sets data to cache
         expect(doFetchStub.called).to.equal(true);
         expect(setCacheSpy.called).to.equal(true);
         expect(resultFromApi).to.equal("testData");
 
         doFetchStub.reset();
+
         // do second request
         const resultFromCache = await testService.testWithCache();
+
         // second time it doesn't make a request and fetches data from cache
         expect(doFetchStub.called).to.equal(false);
         expect(getCacheSpy.called).to.equal(true);
         expect(resultFromCache).to.equal("testData");
-        expect(testService.getCacheEngine().get(["localService", "TestService", "test",
+        expect(cacheEngine.get(["localService", "TestService", "test",
             encodeURIComponent(settings.apiUrl() + "/test/")].join("."))).to.equal("testData");
-        testService.getCacheEngine().clearAll();
     });
 });

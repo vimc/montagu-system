@@ -154,7 +154,7 @@ export abstract class AbstractLocalService {
             switch (error.code) {
                 case "bearer-token-invalid":
                     console.log("Access token has expired or is otherwise invalid: Logging out.");
-                    this.dispatch(this.logOut())
+                    this.dispatch(this.logOut());
                     const notification: Notification = {
                         message: "Your session has expired. You will need to log in again",
                         type: "info"

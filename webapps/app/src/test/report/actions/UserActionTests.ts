@@ -36,7 +36,7 @@ describe("User actions tests", () => {
     it("dispatches report reader removed action if remove report reader action is dispatched", (done) => {
         const fakeUser = mockUser();
         sandbox.setStubFunc(UserService.prototype, "removeReportReader", () => {
-            return Promise.resolve();
+            return Promise.resolve("OK");
         });
         store.dispatch(userActions.removeReportReader("test", "user"));
         setTimeout(() => {

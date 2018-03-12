@@ -14,9 +14,9 @@ describe("Report readers list", () => {
         const rendered = shallow(<ReportReadersList users={users} report={"report"} removeReportReader={() => {}}/>);
         const renderedUsers = rendered.find(ReportReader);
         expect(renderedUsers).to.have.lengthOf(3);
-        expect(renderedUsers.at(0).prop("username")).to.eq("a");
-        expect(renderedUsers.at(1).prop("username")).to.eq("b");
-        expect(renderedUsers.at(2).prop("username")).to.eq("c");
+        expect(renderedUsers.at(0).prop("user").username).to.eq("a");
+        expect(renderedUsers.at(1).prop("user").username).to.eq("b");
+        expect(renderedUsers.at(2).prop("user").username).to.eq("c");
 
     })
 });
