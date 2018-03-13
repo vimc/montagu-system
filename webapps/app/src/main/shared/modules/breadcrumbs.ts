@@ -14,14 +14,12 @@ export const breadcrumbsModule = {
 
     initialize(page: PageInterface): Breadcrumb[] {
         if (page != null) {
-            console.log('in1')
             const parents = this.getParentsInOrderFromTopToBottom(page);
             return parents.map((p: PageInterface) => ({
                 url: this.url(page),
                 name: p.name()
             }));
         } else {
-            console.log('in2')
             return [];
         }
     },

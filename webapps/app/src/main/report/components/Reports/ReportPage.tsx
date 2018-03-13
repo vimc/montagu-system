@@ -2,16 +2,14 @@ import * as React from "react";
 import {Action, Dispatch} from "redux";
 import {connect} from 'react-redux';
 
-import {ReportingPageWithHeader} from "../ReportingPageWithHeader";
 import {ReportDetails} from "./ReportDetails";
 import {appSettings} from "../../../shared/Settings";
 import {ReportsListPage} from "../ReportsList/ReportsListPage";
 import {reportPageActions} from "../../actions/reportPageActions";
 import {ReportTabEnum, Sidebar} from "../Sidebar/Sidebar";
-import {ReportingPageHeader} from "../ReportingPageHeader";
 import {ReportDownloads} from "./ReportDownloads";
 import {IPageWithParent} from "../../../shared/models/Breadcrumb";
-import {PageProperties, PageInterface, PageProps} from "../../../shared/components/PageWithHeader/PageWithHeader";
+import {PageInterface, PageProps} from "../../../shared/components/PageWithHeader/PageWithHeader";
 
 export interface ReportPageLocationProps {
     report: string;
