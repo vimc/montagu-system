@@ -2,9 +2,9 @@ import * as React from "react";
 import {mount, shallow} from "enzyme";
 import {expect} from "chai";
 import {Provider} from "react-redux";
+import { createMemoryHistory } from 'history';
 
 import "../../../helper";
-
 import {Sandbox} from "../../../Sandbox";
 import {mockHistory, mockLocation, mockMatch} from "../../../mocks/mocks";
 import {
@@ -16,6 +16,8 @@ import {ReportTypeKeys} from "../../../../main/report/actionTypes/ReportsActions
 import {ReportDetails} from "../../../../main/report/components/Reports/ReportDetails";
 import {ReportDownloads} from "../../../../main/report/components/Reports/ReportDownloads";
 import {BreadcrumbsTypeKeys} from "../../../../main/shared/actionTypes/BreadrumbsTypes";
+import {createReportStore} from "../../../../main/report/stores/createReportStore";
+import {ReportAppState} from "../../../../main/report/reducers/reportAppReducers";
 
 describe("ReportPage", () => {
     const sandbox = new Sandbox();
@@ -39,6 +41,27 @@ describe("ReportPage", () => {
             expect(actions[2].type).to.eql(ReportTypeKeys.REPORT_VERSIONS_FETCHED);
             expect(actions[3].type).to.eql(ReportTypeKeys.REPORT_VERSION_DETAILS_FETCHED);
             expect(createBreadCrumbSpy.called).to.eq(true);
+            done();
+        });
+    });
+
+    it("generates breadcrumb on mount", (done: DoneCallback) => {
+        const history = createMemoryHistory();
+        let store = createReportStore(history);
+        const matchMock = mockMatch({report: "report", version: "v1"})
+        sandbox.setStubFunc(ReportPageComponent.prototype, "render", () => (<p/>));
+        sandbox.setStub(ReportsService.prototype, "getReportVersions");
+        sandbox.setStub(ReportsService.prototype, "getVersionDetails");
+
+        mount(<Provider store={store}><ReportPage match={matchMock} /></Provider>);
+
+        setTimeout(() => {
+            const state = store.getState() as ReportAppState;
+            const breadcrumbs = state.breadcrumbs.breadcrumbs;
+            expect(breadcrumbs[0].name).to.equal("Main menu")
+            expect(breadcrumbs[0].url).to.equal("/")
+            expect(breadcrumbs[1].name).to.equal("report (v1)")
+            expect(breadcrumbs[1].url).to.equal("/report/v1/")
             done();
         });
     });
