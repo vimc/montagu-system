@@ -47,28 +47,23 @@ export const SidebarAdminComponent: React.StatelessComponent<SidebarAdminProps> 
 };
 
 export const mapStateToProps = (state: ReportAppState): Partial<SidebarAdminProps> => {
-    const ready = !!state.reports.versionDetails && !!state.reports.versions;
 
-    const finalProps: Partial<SidebarAdminProps> = {
+    const versionDetails = state.reports.versionDetails;
+
+    const ready = !!versionDetails
+        && !!state.reports.versions;
+
+    return {
         ready: ready,
         isReviewer: state.auth.permissions.indexOf("*/reports.review") > -1,
         isAdmin: state.auth.permissions.indexOf("*/roles.read") > -1,
-        published: false,
+        published: versionDetails && versionDetails.published,
         allVersions: state.reports.versions,
-        report: "",
-        version: "",
-        reportReaders: state.users.reportReaders
+        report: versionDetails && versionDetails.name,
+        version: versionDetails && versionDetails.id,
+        reportReaders: state.users.reportReaders,
+
     };
-
-    if (ready) {
-        const versionDetails = state.reports.versionDetails;
-
-        finalProps.published = versionDetails.published;
-        finalProps.report = versionDetails.name;
-        finalProps.version = versionDetails.id;
-    }
-
-    return finalProps
 };
 
 export const mapDispatchToProps = (dispatch: Dispatch<any>, _: PublicProps): Partial<SidebarAdminProps> => {
