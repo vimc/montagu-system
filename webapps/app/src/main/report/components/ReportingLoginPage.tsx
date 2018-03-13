@@ -1,29 +1,29 @@
 import * as React from "react";
-import { ReportingPageWithHeader } from "./ReportingPageWithHeader";
+import { connect } from 'react-redux';
+import { Dispatch } from "redux";
+
 import { LoginForm } from "../../shared/components/Login/LoginForm";
-import {IPageWithParent} from "../../shared/models/Breadcrumb";
 import {PageArticle} from "../../shared/components/PageWithHeader/PageArticle";
+import {PageBreadcrumb, PageProperties} from "../../shared/components/PageWithHeader/PageWithHeader";
+import {breadcrumbsActions} from "../../shared/actions/breadcrumbsActions";
+import {ReportAppState} from "../reducers/reportAppReducers";
 
-export class ReportingLoginPage extends ReportingPageWithHeader<undefined> {
-    name(): string {
-        return "Log in";
-    }
-
-    includeInBreadcrumbs(): boolean {
-        return false;
-    }
-
-    urlFragment(): string {
-        return "/";
-    }
-
-    parent(): IPageWithParent {
-        return null;
+export class ReportingLoginPageComponent extends React.Component<PageProperties<undefined>> {
+    componentDidMount(){
+        this.props.createBreadcrumbs(null);
     }
 
     render(): JSX.Element {
-        return <PageArticle title={this.title()}>
+        return <PageArticle title={"Log in"}>
             <LoginForm />
         </PageArticle>;
     }
 }
+
+const mapDispatchToProps = (dispatch: Dispatch<ReportAppState>): Partial<PageProperties<undefined>> => {
+    return {
+        createBreadcrumbs: (pageBreadcrumb: PageBreadcrumb) => dispatch(breadcrumbsActions.createBreadcrumbs(pageBreadcrumb))
+    }
+};
+
+export const ReportingLoginPage = connect(state => state, mapDispatchToProps)(ReportingLoginPageComponent);

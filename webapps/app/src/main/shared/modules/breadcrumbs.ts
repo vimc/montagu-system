@@ -28,7 +28,7 @@ export const breadcrumbsModule = {
 
     url(pageBreadcrumb: PageBreadcrumb): string {
         let url = pageBreadcrumb.urlFragment;
-        if (url === undefined) {
+        if (!url) {
             return undefined;
         }
         let p = pageBreadcrumb.parent ? pageBreadcrumb.parent : null;

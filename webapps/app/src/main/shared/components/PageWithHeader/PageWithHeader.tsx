@@ -93,4 +93,5 @@ export interface PageProperties<T> {
     router: Router;
     match: match<T>;
     history: History;
+    createBreadcrumbs?: (pageBreadcrumb: PageBreadcrumb) => void;
 }

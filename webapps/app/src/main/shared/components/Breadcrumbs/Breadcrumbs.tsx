@@ -23,8 +23,8 @@ export const BreadcrumbsComponent: React.SFC<Props> = (props: Props) => {
     return (
         <div className="montagu-navbar">
             <div className={"pl-md-1"}></div>
-            {props.crumbs && props.crumbs.map(c =>
-                <div className="montagu-navbar__chunk" key={c.url}>
+            {props.crumbs && props.crumbs.map((c, index) =>
+                <div className="montagu-navbar__chunk" key={index}>
                     {makeLink(c)}
                 </div>
             )}

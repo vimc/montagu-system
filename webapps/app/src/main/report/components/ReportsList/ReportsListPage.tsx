@@ -10,11 +10,7 @@ import {breadcrumbsActions} from "../../../shared/actions/breadcrumbsActions";
 import {PageBreadcrumb, PageProperties} from "../../../shared/components/PageWithHeader/PageWithHeader";
 import {ReportAppState} from "../../reducers/reportAppReducers";
 
-export interface ReportsListPageProps extends PageProperties<undefined> {
-    createBreadcrumbs: (pageBreadcrumb: PageBreadcrumb) => void;
-}
-
-export class ReportsListPageComponent extends React.Component<ReportsListPageProps> {
+export class ReportsListPageComponent extends React.Component<PageProperties<undefined>> {
     componentDidMount(){
         this.props.createBreadcrumbs(ReportsListPageComponent.breadcrumb());
     }
@@ -36,7 +32,7 @@ export class ReportsListPageComponent extends React.Component<ReportsListPagePro
     }
 }
 
-const mapDispatchToProps = (dispatch: Dispatch<ReportAppState>): Partial<ReportsListPageProps> => {
+const mapDispatchToProps = (dispatch: Dispatch<ReportAppState>): Partial<PageProperties<undefined>> => {
     return {
         createBreadcrumbs: (pageBreadcrumb: PageBreadcrumb) => dispatch(breadcrumbsActions.createBreadcrumbs(pageBreadcrumb))
     }
