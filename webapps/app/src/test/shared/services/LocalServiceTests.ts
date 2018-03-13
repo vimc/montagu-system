@@ -195,10 +195,11 @@ describe('Local service cache tests', () => {
         }));
     });
 
-    it('creates fully qualified cache key', async () => {
+    it('clears individual cache item by key', async () => {
 
+        const url = settings.apiUrl() + "/test/";
         const fullyQualifiedKey = ["localService", "TestService", "test",
-            encodeURIComponent(settings.apiUrl() + "/test/")].join(".");
+            encodeURIComponent(url)].join(".");
 
         // first set the cache
         await testService.testWithCache();
@@ -206,7 +207,7 @@ describe('Local service cache tests', () => {
         expect(cacheEngine.get(fullyQualifiedKey)).to.not.be.undefined;
 
         // now clear
-        testService.publicClearCache("test", "/test/");
+        testService.publicClearCache("test", url);
 
         expect(cacheEngine.get(fullyQualifiedKey)).to.be.undefined;
 
