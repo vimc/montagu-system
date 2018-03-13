@@ -74,4 +74,7 @@ export const mapDispatchToProps = (dispatch: Dispatch<Action>): Partial<ReportPa
     }
 };
 
-export const ReportPage = connect((props: Partial<ReportPageProps>) => props, mapDispatchToProps)(ReportPageComponent);
+export const ReportPage = connect(
+    (props: Partial<ReportPageProps>) => props,
+    mapDispatchToProps
+)(ReportPageComponent) as React.ComponentClass<Partial<ReportPageProps>>;
