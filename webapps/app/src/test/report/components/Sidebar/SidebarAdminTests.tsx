@@ -39,7 +39,7 @@ describe("SidebarAdmin", () => {
         onChangeVersion: () => {
         },
         allVersions: ["v1", "v2"],
-        reportReaders: [mockUser()],
+        reportReaders: [],
         getReportReaders: sandbox.sinon.stub(),
         removeReportReader: sandbox.sinon.stub()
     };
@@ -132,7 +132,8 @@ describe("SidebarAdmin", () => {
         props.isAdmin = true;
         props.getReportReaders = getReadersStub;
 
-        shallow(<SidebarAdminComponent {...props} />);
+        const rendered = shallow(<SidebarAdminComponent {...defaultSidebarProps} />);
+        rendered.setProps(props);
 
         expect(getReadersStub.called).to.be.true;
     });
@@ -145,8 +146,24 @@ describe("SidebarAdmin", () => {
         props.isAdmin = false;
         props.getReportReaders = getReadersStub;
 
-        shallow(<SidebarAdminComponent {...props} />);
+        const rendered = shallow(<SidebarAdminComponent {...defaultSidebarProps} />);
+        rendered.setProps(props);
 
+        expect(getReadersStub.called).to.be.false;
+    });
+
+    it("does not call getReportReaders if report readers array is populated", () => {
+
+        const getReadersStub = sandbox.sinon.stub();
+
+        const props = defaultSidebarProps;
+        props.isAdmin = true;
+        props.getReportReaders = getReadersStub;
+        props.reportReaders = [mockUser()];
+
+        const rendered = shallow(<SidebarAdminComponent {...defaultSidebarProps} />);
+        rendered.setProps(props);
+        
         expect(getReadersStub.called).to.be.false;
     });
 

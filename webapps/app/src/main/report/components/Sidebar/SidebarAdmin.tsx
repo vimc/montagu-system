@@ -26,9 +26,8 @@ export interface SidebarAdminProps extends PublicProps {
 
 export class SidebarAdminComponent extends React.Component<SidebarAdminProps, undefined> {
 
-    constructor(props: SidebarAdminProps) {
-        super();
-        if (props.isAdmin) {
+    componentWillReceiveProps(props: SidebarAdminProps){
+        if (props.ready && props.isAdmin && props.reportReaders.length == 0) {
             props.getReportReaders(props.report)
         }
     }
@@ -54,7 +53,7 @@ export class SidebarAdminComponent extends React.Component<SidebarAdminProps, un
         </div>
     }
 
-};
+}
 
 export const mapStateToProps = (state: ReportAppState): Partial<SidebarAdminProps> => {
     const ready = !!state.reports.versionDetails && !!state.reports.versions;

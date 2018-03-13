@@ -14,7 +14,6 @@ export const usersReducer = (state = usersInitialState, action: UserActionTypes)
         case UserTypeKeys.REPORT_READERS_FETCHED:
             return {...state, reportReaders: action.data};
         case UserTypeKeys.REPORT_READER_REMOVED:
-            console.log("report reader removed", action.data)
             return {...state, reportReaders: state.reportReaders.filter(u => u.username != action.data)};
         default:
             return state;
