@@ -25,8 +25,7 @@ const mapStateToProps = (state: ReportAppState): Partial<SidebarAdminProps> => {
         allVersions: state.reports.versions,
         report: versionDetails && versionDetails.name,
         version: versionDetails && versionDetails.id,
-        reportReaders: state.users.reportReaders,
-
+        reportReaders: state.users.reportReaders
     };
 };
 
@@ -35,6 +34,8 @@ const mapDispatchToProps = (dispatch: Dispatch<any>, _: SidebarAdminPublicProps)
     return {
         removeReportReader: (report: string, username: string) =>
             dispatch(userActions.removeReportReader(report, username)),
+        addReportReader: (report: string, username: string) =>
+            dispatch(userActions.addReportReader(report, username)),
         getReportReaders: (reportName: string) =>
             dispatch(userActions.getReportReaders(reportName))
     }

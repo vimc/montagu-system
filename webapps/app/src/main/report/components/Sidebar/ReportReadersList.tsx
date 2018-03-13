@@ -6,6 +6,7 @@ export interface ReportReadersListProps {
     users: User[],
     report: string,
     removeReportReader: (username: string) => void
+    addReportReader: (username: string) => void
 }
 
 export interface ReportReaderProps {
@@ -14,10 +15,18 @@ export interface ReportReaderProps {
 }
 
 export const ReportReadersList = (props: ReportReadersListProps) => {
-    return <ul className={"list-unstyled report-readers"}>
-        {props.users.sort((a, b) => a.username < b.username ? -1 : 1)
-            .map(u => <ReportReader key={u.username} user={u} removeReportReader={props.removeReportReader} />)}
-    </ul>
+    return <div>
+        <ul className={"list-unstyled report-readers"}>
+            {props.users.sort((a, b) => a.username < b.username ? -1 : 1)
+                .map(u => <ReportReader key={u.username} user={u} removeReportReader={props.removeReportReader}/>)}
+        </ul>
+        <div className="input-group">
+            <input className={"form-control form-control-sm"} type={"text"} placeholder={"username"}/>
+            <div className="input-group-append">
+                <button type={"submit"} onClick={() => props.addReportReader("alex.hill")} className="btn btn-sm">Add reader</button>
+            </div>
+        </div>
+    </div>
 
 };
 
@@ -28,5 +37,6 @@ export const ReportReader = (props: ReportReaderProps) => {
     return <li><span>{props.user.name}</span> {showDelete &&
     <Link onClick={() => props.removeReportReader(props.user.username)}
           className="text-danger d-inline-block ml-2 large" to="#">&times;</Link>}
-          <div className={"text-muted small"} style={{marginTop: "-1rem"}}>{props.user.username}</div></li>
+        <div className={"text-muted small"} style={{marginTop: "-1rem"}}>{props.user.username}</div>
+    </li>
 };
