@@ -60,17 +60,6 @@ describe("SidebarAdmin", () => {
         expect(getReadersStub.called).to.be.false;
     });
 
-    it("does not call getReportReaders if report readers array is populated", () => {
-
-        // 1 dive takes us to the wrapped withLifecycle component
-        const rendered = shallow(<SidebarAdmin onChangeVersion={null}/>,
-            {context: {store}}).dive();
-
-        rendered.setProps({reportReaders: [mockUser()]});
-
-        expect(getReadersStub.called).to.be.false;
-    });
-
     it("gets reviewer status from app state", () => {
 
         let state = mockReportAppState({

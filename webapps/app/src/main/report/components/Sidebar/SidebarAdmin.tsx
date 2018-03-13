@@ -42,7 +42,7 @@ const mapDispatchToProps = (dispatch: Dispatch<any>, _: SidebarAdminPublicProps)
 
 const lifecycleMethods: Partial<LifecycleMethods<SidebarAdminProps>> = {
     onWillReceiveProps(_: SidebarAdminProps, nextProps: SidebarAdminProps) {
-        if (nextProps.ready && nextProps.isAdmin && nextProps.reportReaders.length == 0) {
+        if (nextProps.ready && nextProps.isAdmin) {
             nextProps.getReportReaders(nextProps.report)
         }
     }
