@@ -6,6 +6,9 @@ import {ReportVersionSwitcher} from "../Reports/ReportVersionSwitcher";
 import {PublishSwitch} from "./PublishSwitch";
 import {userActions} from "../../actions/userActions";
 import {ReportReadersList} from "./ReportReadersList";
+import {branch, compose, renderComponent, renderNothing} from "recompose";
+import {LoadingElement} from "../../../shared/partials/LoadingElement/LoadingElement";
+import withLifecycle, {LifecycleMethods} from "@hocs/with-lifecycle";
 
 export interface PublicProps {
     onChangeVersion: (version: string) => any;
@@ -24,36 +27,24 @@ export interface SidebarAdminProps extends PublicProps {
     removeReportReader: (username: string, reportName: string) => void;
 }
 
-export class SidebarAdminComponent extends React.Component<SidebarAdminProps, undefined> {
+export const SidebarAdminComponent: React.StatelessComponent<SidebarAdminProps> = (props: SidebarAdminProps) => {
 
-    componentWillReceiveProps(props: SidebarAdminProps){
-        if (props.ready && props.isAdmin && props.reportReaders.length == 0) {
-            props.getReportReaders(props.report)
-        }
-    }
-
-    render() {
-        if (!this.props.ready)
-            return null;
-
-        return <div>
-            <ReportVersionSwitcher
-                currentVersion={this.props.version}
-                versions={this.props.allVersions}
-                onChangeVersion={this.props.onChangeVersion}
-            /> {this.props.isReviewer && <PublishSwitch name={this.props.report}
-                                                   version={this.props.version}
-                                                   published={this.props.published}/>}
-            {this.props.isAdmin &&
-            <div className="mt-5">
-                <label className={"font-weight-bold"}>Report readers</label>
-                <ReportReadersList users={this.props.reportReaders} report={this.props.report}
-                                   removeReportReader={(username: string) => this.props.removeReportReader(this.props.report, username)}/>
-            </div>}
-        </div>
-    }
-
-}
+    return <div>
+        <ReportVersionSwitcher
+            currentVersion={props.version}
+            versions={props.allVersions}
+            onChangeVersion={props.onChangeVersion}
+        /> {props.isReviewer && <PublishSwitch name={props.report}
+                                                    version={props.version}
+                                                    published={props.published}/>}
+        {props.isAdmin &&
+        <div className="mt-5">
+            <label className={"font-weight-bold"}>Report readers</label>
+            <ReportReadersList users={props.reportReaders} report={props.report}
+                               removeReportReader={(username: string) => props.removeReportReader(props.report, username)}/>
+        </div>}
+    </div>
+};
 
 export const mapStateToProps = (state: ReportAppState): Partial<SidebarAdminProps> => {
     const ready = !!state.reports.versionDetails && !!state.reports.versions;
@@ -85,8 +76,23 @@ export const mapDispatchToProps = (dispatch: Dispatch<any>, _: PublicProps): Par
     return {
         removeReportReader: (report: string, username: string) =>
             dispatch(userActions.removeReportReader(report, username)),
-        getReportReaders: (reportName: string) => dispatch(userActions.getReportReaders(reportName))
+        getReportReaders: (reportName: string) =>
+            dispatch(userActions.getReportReaders(reportName))
     }
 };
 
-export const SidebarAdmin = connect(mapStateToProps, mapDispatchToProps)(SidebarAdminComponent);
+const lifecycleMethods: Partial<LifecycleMethods<SidebarAdminProps>> = {
+    onWillReceiveProps(_: SidebarAdminProps, nextProps: SidebarAdminProps) {
+        if (nextProps.ready && nextProps.isAdmin && nextProps.reportReaders.length == 0) {
+            nextProps.getReportReaders(nextProps.report)
+        }
+    }
+};
+
+const enhance = compose<SidebarAdminProps, PublicProps>(
+    connect(mapStateToProps, mapDispatchToProps),
+    withLifecycle(lifecycleMethods),
+    branch((props: SidebarAdminProps) =>  !props.ready, renderNothing)
+);
+
+export const SidebarAdmin = enhance(SidebarAdminComponent);

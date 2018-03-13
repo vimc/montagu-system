@@ -1,8 +1,8 @@
 import { connect } from 'react-redux';
 import { Dispatch } from "redux";
-import { compose, lifecycle, branch, renderComponent } from "recompose";
+import { compose, branch, renderComponent } from "recompose";
 import { createSelector } from "reselect";
-import withLifecycle from '@hocs/with-lifecycle';
+import withLifecycle, {LifecycleMethods} from '@hocs/with-lifecycle';
 
 import {ReportAppState} from "../../reducers/reportAppReducers";
 import { reportsActions } from "../../actions/reportsActions";
@@ -17,11 +17,11 @@ export interface ReportsListContainerProps extends ReportsListComponentProps {
     ready: boolean;
 }
 
-const lifecyleProps = {
+const lifecyleProps: Partial<LifecycleMethods<ReportsListContainerProps>> = {
     onDidMount(props: ReportsListContainerProps) {
         props.getReports();
     }
-}
+};
 
 export const mapStateToProps = (state: ReportAppState): Partial<ReportsListContainerProps> => {
     return {
