@@ -57,7 +57,7 @@ export class ReportPageComponent extends ReportingPageWithHeader<ReportPageProps
     redirectToVersion(version: string) {
         const hash = this.props.location.hash;
         this.props.history
-            .push(`${this.getLocationParams().report}/${version}/${hash}`, false);
+            .push(`/${this.getLocationParams().report}/${version}/${hash}`, false);
     }
 
     parent() {
