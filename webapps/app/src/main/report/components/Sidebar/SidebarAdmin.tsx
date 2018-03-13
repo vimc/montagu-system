@@ -1,52 +1,16 @@
 import * as React from "react";
 import {ReportAppState} from "../../reducers/reportAppReducers";
 import {connect, Dispatch} from "react-redux";
-import {User} from "../../../shared/models/Generated";
-import {ReportVersionSwitcher} from "../Reports/ReportVersionSwitcher";
-import {PublishSwitch} from "./PublishSwitch";
 import {userActions} from "../../actions/userActions";
-import {ReportReadersList} from "./ReportReadersList";
-import {branch, compose, renderComponent, renderNothing} from "recompose";
-import {LoadingElement} from "../../../shared/partials/LoadingElement/LoadingElement";
+import {branch, compose, renderNothing} from "recompose";
 import withLifecycle, {LifecycleMethods} from "@hocs/with-lifecycle";
+import {SidebarAdminComponent, SidebarAdminProps} from "./SidebarAdminComponent";
 
-export interface PublicProps {
+export interface SidebarAdminPublicProps {
     onChangeVersion: (version: string) => any;
 }
 
-export interface SidebarAdminProps extends PublicProps {
-    report: string;
-    version: string;
-    ready: boolean;
-    isReviewer: boolean;
-    published: boolean;
-    allVersions: string[];
-    reportReaders: User[];
-    isAdmin: boolean;
-    getReportReaders: (reportName: string) => void;
-    removeReportReader: (username: string, reportName: string) => void;
-}
-
-export const SidebarAdminComponent: React.StatelessComponent<SidebarAdminProps> = (props: SidebarAdminProps) => {
-
-    return <div>
-        <ReportVersionSwitcher
-            currentVersion={props.version}
-            versions={props.allVersions}
-            onChangeVersion={props.onChangeVersion}
-        /> {props.isReviewer && <PublishSwitch name={props.report}
-                                                    version={props.version}
-                                                    published={props.published}/>}
-        {props.isAdmin &&
-        <div className="mt-5">
-            <label className={"font-weight-bold"}>Report readers</label>
-            <ReportReadersList users={props.reportReaders} report={props.report}
-                               removeReportReader={(username: string) => props.removeReportReader(props.report, username)}/>
-        </div>}
-    </div>
-};
-
-export const mapStateToProps = (state: ReportAppState): Partial<SidebarAdminProps> => {
+const mapStateToProps = (state: ReportAppState): Partial<SidebarAdminProps> => {
 
     const versionDetails = state.reports.versionDetails;
 
@@ -66,7 +30,7 @@ export const mapStateToProps = (state: ReportAppState): Partial<SidebarAdminProp
     };
 };
 
-export const mapDispatchToProps = (dispatch: Dispatch<any>, _: PublicProps): Partial<SidebarAdminProps> => {
+const mapDispatchToProps = (dispatch: Dispatch<any>, _: SidebarAdminPublicProps): Partial<SidebarAdminProps> => {
 
     return {
         removeReportReader: (report: string, username: string) =>
@@ -84,7 +48,7 @@ const lifecycleMethods: Partial<LifecycleMethods<SidebarAdminProps>> = {
     }
 };
 
-const enhance = compose<SidebarAdminProps, PublicProps>(
+const enhance = compose<SidebarAdminProps, SidebarAdminPublicProps>(
     connect(mapStateToProps, mapDispatchToProps),
     withLifecycle(lifecycleMethods),
     branch((props: SidebarAdminProps) =>  !props.ready, renderNothing)

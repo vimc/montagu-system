@@ -5,13 +5,11 @@ import * as sinon from 'sinon';
 import {Sandbox} from "../../../Sandbox";
 import {mockAuthState, mockReportAppState, mockReportsState, mockUsersState} from "../../../mocks/mockStates";
 import {mockUser} from "../../../mocks/mockModels";
-import {mapStateToProps, SidebarAdmin,} from "../../../../main/report/components/Sidebar/SidebarAdmin";
+import {SidebarAdmin} from "../../../../main/report/components/Sidebar/SidebarAdmin";
 import {ReportsState} from "../../../../main/report/reducers/reportsReducer";
 import {createMockStore} from "../../../mocks/mockStore";
 import {userActions} from "../../../../main/report/actions/userActions";
 import {ReportAppState} from "../../../../main/report/reducers/reportAppReducers";
-import {LoadingElement} from "../../../../main/shared/partials/LoadingElement/LoadingElement";
-import {ReportVersionSwitcher} from "../../../../main/report/components/Reports/ReportVersionSwitcher";
 
 describe("SidebarAdmin", () => {
 

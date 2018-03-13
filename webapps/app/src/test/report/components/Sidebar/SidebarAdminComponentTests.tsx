@@ -3,7 +3,7 @@ import {shallow} from "enzyme";
 import {expect} from "chai";
 import {Sandbox} from "../../../Sandbox";
 import {ReportVersionSwitcher} from "../../../../main/report/components/Reports/ReportVersionSwitcher";
-import {SidebarAdminComponent, SidebarAdminProps} from "../../../../main/report/components/Sidebar/SidebarAdmin";
+import {SidebarAdminComponent, SidebarAdminProps} from "../../../../main/report/components/Sidebar/SidebarAdminComponent";
 import {PublishSwitch} from "../../../../main/report/components/Sidebar/PublishSwitch";
 import {ReportReadersList} from "../../../../main/report/components/Sidebar/ReportReadersList";
 

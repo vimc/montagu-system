@@ -10,8 +10,6 @@ declare module '@hocs/with-lifecycle'{
         onWillReceiveProps: (oldProps: TProps, newProps: TProps) => any
     }
 
-  //  export default<TProps> (methods: Partial<LifecycleMethods<TProps>>) => (target: Component) => WithLifecycle
-
     export function withLifecycle<TProps>(methods: Partial<LifecycleMethods<TProps>>) : (target: Component) =>
         WithLifecycle<TProps>
 
