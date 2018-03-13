@@ -41,11 +41,11 @@ export class ReportPageComponent extends React.Component<ReportPageProps> {
             .push(`${appSettings.publicPath}/${this.props.match.params.report}/${version}/${hash}`, false);
     }
 
-    static breadcrumb(params: any) {
+    static breadcrumb(params: ReportPageLocationProps) {
         return {
             name: `${params.report} (${params.version})`,
             urlFragment: `${params.report}/${params.version}/`,
-            parent: ReportsListPageComponent.breadcrumb
+            parent: ReportsListPageComponent.breadcrumb()
         }
     }
 

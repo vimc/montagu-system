@@ -11,7 +11,7 @@ export const reportPageActions = {
             dispatch(reportsActions.setCurrentReport(props.report));
             dispatch(reportsActions.getReportVersions(props.report));
             dispatch(reportsActions.getVersionDetails(props.report, props.version));
-            dispatch(breadcrumbsActions.createBreadcrumbs(ReportPageComponent.breadcrumb, props));
+            dispatch(breadcrumbsActions.createBreadcrumbs(ReportPageComponent.breadcrumb(props)));
         }
     }
 

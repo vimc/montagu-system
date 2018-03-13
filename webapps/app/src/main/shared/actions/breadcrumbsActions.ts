@@ -7,9 +7,9 @@ import {Breadcrumb} from "../models/Breadcrumb";
 import {breadcrumbsModule} from "../../shared/modules/breadcrumbs";
 
 export const breadcrumbsActions = {
-    createBreadcrumbs(pageBreadcrumb: (props?: any) => PageBreadcrumb, props?: any) {
-        return (dispatch: Dispatch<BreadcrumbsActionsTypes>, getState: () => GlobalState) => {
-            const breadcrumbs: Breadcrumb[] = breadcrumbsModule.initialize(pageBreadcrumb, props, getState());
+    createBreadcrumbs(pageBreadcrumb: PageBreadcrumb) {
+        return (dispatch: Dispatch<BreadcrumbsActionsTypes>) => {
+            const breadcrumbs: Breadcrumb[] = breadcrumbsModule.initialize(pageBreadcrumb);
             dispatch({
                 type: BreadcrumbsTypeKeys.BREADCRUMBS_RECEIVED,
                 data: breadcrumbs

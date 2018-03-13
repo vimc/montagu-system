@@ -1,23 +1,24 @@
-
 import {Breadcrumb} from "../models/Breadcrumb";
 import {PageBreadcrumb} from "../components/PageWithHeader/PageWithHeader";
+import {clone} from "lodash";
 
 export const breadcrumbsModule = {
 
-    getParentsInOrderFromTopToBottom(page: any, props:any): any {
-        let parents: any[] = [];
-        while (page != null) {
-            parents.unshift(page); // adds at the beginning
-            page = page.parent ? page.parent(props) : null;
+    getParentsInOrderFromTopToBottom(pageBreadcrumb: PageBreadcrumb): PageBreadcrumb[] {
+        let parents: PageBreadcrumb[] = [];
+        let currentBreadcrumb = clone(pageBreadcrumb);
+        while (currentBreadcrumb != null) {
+            parents.unshift(currentBreadcrumb); // adds at the beginning
+            currentBreadcrumb = currentBreadcrumb.parent ? currentBreadcrumb.parent : null;
         }
         return parents;
     },
 
-    initialize(pageBreadcrumb: () => PageBreadcrumb, props: any, state: any): Breadcrumb[] {
+    initialize(pageBreadcrumb: PageBreadcrumb): Breadcrumb[] {
         if (pageBreadcrumb != null) {
-            const parents = this.getParentsInOrderFromTopToBottom(pageBreadcrumb(props), props);
-            return parents.map((p: any) => ({
-                url: this.url(p, props),
+            const parents = this.getParentsInOrderFromTopToBottom(pageBreadcrumb);
+            return parents.map((p: PageBreadcrumb) => ({
+                url: this.url(p),
                 name: p.name
             }));
         } else {
@@ -25,19 +26,19 @@ export const breadcrumbsModule = {
         }
     },
 
-    url(page: any, props: any): string {
-        let url = page.urlFragment;
+    url(pageBreadcrumb: PageBreadcrumb): string {
+        let url = pageBreadcrumb.urlFragment;
         if (url === undefined) {
             return undefined;
         }
-        let p = page.parent ? page.parent(props) : null;
+        let p = pageBreadcrumb.parent ? pageBreadcrumb.parent : null;
         while (p != null) {
             const fragment = p.urlFragment;
             if (fragment === undefined) {
                 return undefined;
             }
             url = fragment + url;
-            p = p.parent ? p.parent(props) : null;
+            p = p.parent ? p.parent : null;
         }
         return url;
     }
