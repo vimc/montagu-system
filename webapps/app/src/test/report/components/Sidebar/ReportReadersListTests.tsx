@@ -46,5 +46,24 @@ describe("Report reader", () => {
         const rendered = shallow(<ReportReader user={user} removeReportReader={() => { }}/>);
         const deleteLink = rendered.find(Link);
         expect(deleteLink).to.have.lengthOf(0);
+    });
+
+    it("renders full name", () => {
+
+        const user: User = mockUser({name: "full name", username: "user.name", roles: [mockRole({name: "reports-reader"})]});
+
+        const rendered = shallow(<ReportReader user={user} removeReportReader={() => { }}/>);
+        const name = rendered.find("span");
+        expect(name.text()).to.eq("full name");
+    });
+
+    it("renders username", () => {
+
+        const user: User = mockUser({name: "full name", username: "user.name", roles: [mockRole({name: "reports-reader"})]});
+
+        const rendered = shallow(<ReportReader user={user} removeReportReader={() => { }}/>);
+        const username = rendered.find(".text-muted");
+        expect(username.text()).to.eq("user.name");
     })
+
 });
