@@ -7,9 +7,9 @@ import {Breadcrumb} from "../models/Breadcrumb";
 import {breadcrumbsModule} from "../../shared/modules/breadcrumbs";
 
 export const breadcrumbsActions = {
-    createBreadcrumbs(page: PageInterface) {
+    createBreadcrumbs(page: any, props: any) {
         return (dispatch: Dispatch<BreadcrumbsActionsTypes>) => {
-            const breadcrumbs: Breadcrumb[] = breadcrumbsModule.initialize(page);
+            const breadcrumbs: Breadcrumb[] = breadcrumbsModule.initialize(page, props);
             dispatch({
                 type: BreadcrumbsTypeKeys.BREADCRUMBS_RECEIVED,
                 data: breadcrumbs

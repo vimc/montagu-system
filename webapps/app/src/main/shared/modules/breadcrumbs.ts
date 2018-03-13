@@ -3,42 +3,41 @@ import {Breadcrumb} from "../models/Breadcrumb";
 
 export const breadcrumbsModule = {
 
-    getParentsInOrderFromTopToBottom(page: PageInterface): PageInterface[] {
-        let parents: PageInterface[] = [];
+    getParentsInOrderFromTopToBottom(page: any, props:any): any {
+        let parents: any[] = [];
         while (page != null) {
             parents.unshift(page); // adds at the beginning
-            page = page.parent();
+            page = page.parent ? page.parent(props) : null;
         }
         return parents;
     },
 
-    initialize(page: PageInterface): Breadcrumb[] {
+    initialize(page: any, props: any): Breadcrumb[] {
         if (page != null) {
-            const parents = this.getParentsInOrderFromTopToBottom(page);
-            return parents.map((p: PageInterface) => ({
-                url: this.url(page),
-                name: p.name()
+            const parents = this.getParentsInOrderFromTopToBottom(page(props), props);
+            return parents.map((p: any) => ({
+                url: this.url(p, props),
+                name: p.name
             }));
         } else {
             return [];
         }
     },
 
-    url(page: PageInterface): string {
-        let url = page.urlFragment();
+    url(page: any, props: any): string {
+        let url = page.urlFragment;
         if (url === undefined) {
             return undefined;
         }
-        let p = page.parent();
+        let p = page.parent ? page.parent(props) : null;
         while (p != null) {
-            const fragment = p.urlFragment();
+            const fragment = p.urlFragment;
             if (fragment === undefined) {
                 return undefined;
             }
             url = fragment + url;
-            p = p.parent();
+            p = p.parent ? p.parent(props) : null;
         }
         return url;
     }
-
 };

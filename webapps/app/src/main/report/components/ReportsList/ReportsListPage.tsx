@@ -2,39 +2,34 @@ import * as React from "react";
 import { connect } from 'react-redux';
 import { Dispatch } from "redux";
 
-import {ReportsList, ReportsListContainerProps} from "./ReportsList";
+import {ReportsList} from "./ReportsList";
 import {ReportsListSorting} from "./ReportsListSorting";
 import {ReportsListFilter} from "./Filter/ReportsListFilter";
-import {IPageWithParent} from "../../../shared/models/Breadcrumb";
 import {PageArticle} from "../../../shared/components/PageWithHeader/PageArticle";
 import {breadcrumbsActions} from "../../../shared/actions/breadcrumbsActions";
-import {PageInterface, PageProps} from "../../../shared/components/PageWithHeader/PageWithHeader";
+import { PageProps} from "../../../shared/components/PageWithHeader/PageWithHeader";
 import {ReportAppState} from "../../reducers/reportAppReducers";
 
 export interface ReportsListPageProps extends PageProps<undefined> {
-    createBreadcrumbs: (page: PageInterface) => void;
+    createBreadcrumbs: (page: any, props: any) => void;
 }
 
-export class ReportsListPageComponent extends React.Component<ReportsListPageProps> implements PageInterface {
+export class ReportsListPageComponent extends React.Component<ReportsListPageProps> {
 
     componentDidMount(){
-        this.props.createBreadcrumbs(this);
-    }
-
-    name() {
-        return "Main menu";
+        this.props.createBreadcrumbs(ReportsListPageComponent.breadcrumb, this.props);
     }
 
     title() {
         return "Choose a report to view";
     }
 
-    urlFragment() {
-        return "/";
-    }
-
-    parent(): IPageWithParent {
-        return null;
+    static breadcrumb(params: any) {
+        return {
+            name: "Main menu",
+            urlFragment: "/",
+            parent: null as any
+        }
     }
 
     render() :JSX.Element {
@@ -48,7 +43,7 @@ export class ReportsListPageComponent extends React.Component<ReportsListPagePro
 
 const mapDispatchToProps = (dispatch: Dispatch<ReportAppState>): Partial<ReportsListPageProps> => {
     return {
-        createBreadcrumbs: (page: PageInterface) => dispatch(breadcrumbsActions.createBreadcrumbs(page))
+        createBreadcrumbs: (page: any, props: any) => dispatch(breadcrumbsActions.createBreadcrumbs(page, props))
     }
 };
 

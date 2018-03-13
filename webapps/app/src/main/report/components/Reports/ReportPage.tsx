@@ -4,11 +4,10 @@ import {connect} from 'react-redux';
 
 import {ReportDetails} from "./ReportDetails";
 import {appSettings} from "../../../shared/Settings";
-import {ReportsListPage} from "../ReportsList/ReportsListPage";
+import {ReportsListPage, ReportsListPageComponent} from "../ReportsList/ReportsListPage";
 import {reportPageActions} from "../../actions/reportPageActions";
-import {ReportTabEnum, Sidebar} from "../Sidebar/Sidebar";
+import {ReportTabEnum, Sidebar, sidebarHashToTab} from "../Sidebar/Sidebar";
 import {ReportDownloads} from "./ReportDownloads";
-import {IPageWithParent} from "../../../shared/models/Breadcrumb";
 import {PageInterface, PageProps} from "../../../shared/components/PageWithHeader/PageWithHeader";
 
 export interface ReportPageLocationProps {
@@ -20,67 +19,38 @@ export interface ReportPageProps extends PageProps<ReportPageLocationProps> {
     onLoad?: (props:ReportPageLocationProps) => void;
 }
 
-const hashToTab = (hash: string): ReportTabEnum => {
-    switch (hash) {
-        case "#downloads":
-            return ReportTabEnum.DOWNLOAD;
-        case "#changelog":
-            return ReportTabEnum.CHANGELOG;
-        case "#report":
-        default:
-            return ReportTabEnum.REPORT;
-    }
-};
-
-export class ReportPageComponent
-    extends React.Component<ReportPageProps>
-    implements PageInterface {
-
+export class ReportPageComponent extends React.Component<ReportPageProps> {
     constructor(props: ReportPageProps) {
         super(props);
         this.changeVersion = this.changeVersion.bind(this);
     }
 
     componentDidMount() {
-        this.loadVersion();
+        this.props.onLoad(this.props.match.params);
+    }
+
+    componentWillReceiveProps(nextProps: ReportPageProps) {
+        if (nextProps.match.params.version !== this.props.match.params.version) {
+            this.props.onLoad(nextProps.match.params);
+        }
     }
 
     changeVersion(version: string): any {
-        this.redirectToVersion(version);
-        setTimeout(() => {
-            this.loadVersion();
-        });
-    }
-
-    loadVersion() {
-        this.props.onLoad(this.props.match.params);
-        // this.createBreadcrumb();
-    }
-
-    redirectToVersion(version: string) {
         const hash = this.props.location.hash;
         this.props.history
             .push(`${appSettings.publicPath}/${this.props.match.params.report}/${version}/${hash}`, false);
     }
 
-
-    parent() : IPageWithParent {
-        return null//new ReportsListPage();
+    static breadcrumb(params: any) {
+        return {
+            name: `${params.report} (${params.version})`,
+            urlFragment: `${params.report}/${params.version}/`,
+            parent: ReportsListPageComponent.breadcrumb
+        }
     }
-
-    name() {
-        const params = this.props.match.params;
-        return `${params.report} (${params.version})`;
-    }
-
-    urlFragment() {
-        const params = this.props.match.params;
-        return `${params.report}/${params.version}/`;
-    }
-
 
     render(): JSX.Element {
-        const activeTab = hashToTab(this.props.location.hash);
+        const activeTab = sidebarHashToTab(this.props.location.hash);
 
         return <div>
             <div className={"container-fluid pt-4 sm-pt-5"}>
@@ -100,7 +70,7 @@ export class ReportPageComponent
 
 export const mapDispatchToProps = (dispatch: Dispatch<Action>): Partial<ReportPageProps> => {
     return {
-        onLoad: (props: ReportPageLocationProps ) => dispatch(reportPageActions.onLoad(props))
+        onLoad: (props: ReportPageLocationProps) => dispatch(reportPageActions.onLoad(props))
     }
 };
 
