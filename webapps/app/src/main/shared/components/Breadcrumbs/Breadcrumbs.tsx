@@ -3,40 +3,33 @@ import { connect } from 'react-redux';
 
 import {InternalLink} from "../InternalLink";
 import {Breadcrumb} from "../../models/Breadcrumb";
-import {ReportAppState} from "../../../report/reducers/reportAppReducers";
-import {ReportsListContainerProps} from "../../../report/components/ReportsList/ReportsList";
 import {GlobalState} from "../../reducers/GlobalState";
 
 interface Props {
     crumbs: Breadcrumb[];
 }
 
-
-
-export class BreadcrumbsComponent extends React.Component<Props, undefined> {
-
-    render(): JSX.Element {
-        return (
-            <div className="montagu-navbar">
-                <div className={"pl-md-1"}></div>
-                {this.props.crumbs && this.props.crumbs.map(c =>
-                    <div className="montagu-navbar__chunk" key={c.url}>
-                        {this.makeLink(c)}
-                    </div>
-                )}
-            </div>
-        );
+export const makeLink = (crumb: Breadcrumb): JSX.Element => {
+    if (crumb.url != null) {
+        return <InternalLink href={crumb.url}>
+            {crumb.name}
+        </InternalLink>;
+    } else {
+        return <span>{crumb.name}</span>;
     }
+}
 
-    private makeLink(crumb: Breadcrumb): JSX.Element {
-        if (crumb.url != null) {
-            return <InternalLink href={crumb.url}>
-                {crumb.name}
-            </InternalLink>;
-        } else {
-            return <span>{crumb.name}</span>;
-        }
-    }
+export const BreadcrumbsComponent: React.SFC<Props> = (props: Props) => {
+    return (
+        <div className="montagu-navbar">
+            <div className={"pl-md-1"}></div>
+            {props.crumbs && props.crumbs.map(c =>
+                <div className="montagu-navbar__chunk" key={c.url}>
+                    {makeLink(c)}
+                </div>
+            )}
+        </div>
+    );
 }
 
 export const mapStateToProps = (state: GlobalState): Props => {
