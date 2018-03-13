@@ -1,4 +1,4 @@
-import { BreadcrumbsState } from "../reducers/breadcrumbsReducer";
+import {Breadcrumb} from "../models/Breadcrumb";
 
 export enum BreadcrumbsTypeKeys {
     BREADCRUMBS_RECEIVED = "BREADCRUMBS_RECEIVED",
@@ -6,7 +6,7 @@ export enum BreadcrumbsTypeKeys {
 
 export interface BreadcrumbsReceived {
     type: BreadcrumbsTypeKeys.BREADCRUMBS_RECEIVED;
-    data: BreadcrumbsState;
+    data: Breadcrumb[];
 }
 
 export type BreadcrumbsActionsTypes =

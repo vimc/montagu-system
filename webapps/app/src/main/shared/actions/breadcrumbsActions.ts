@@ -1,23 +1,19 @@
 import {Dispatch} from "redux";
 
-import {
-    ReportsActionsTypes, ReportsFetched, ReportsFilterFields, ReportsSortingFields, ReportTypeKeys,
-    ReportVersionDetailssFetched,
-    ReportVersionsFetched
-} from "../actionTypes/ReportsActionsTypes";
 import {GlobalState} from "../../shared/reducers/GlobalState";
-import {Report} from "../../shared/models/Generated";
+import {BreadcrumbsActionsTypes, BreadcrumbsReceived, BreadcrumbsTypeKeys} from "../actionTypes/BreadrumbsTypes";
+import {PageInterface} from "../components/PageWithHeader/PageWithHeader";
+import {Breadcrumb} from "../models/Breadcrumb";
+import {breadcrumbsModule} from "../../shared/modules/breadcrumbs";
 
-export const reportsActions = {
-
-    getReports() {
-        return async (dispatch: Dispatch<ReportsActionsTypes>, getState: () => GlobalState) => {
-            const reports: Report[] = await (new ReportsService(dispatch, getState)).getAllReports();
+export const breadcrumbsActions = {
+    createBreadcrumbs(page: PageInterface) {
+        return (dispatch: Dispatch<BreadcrumbsActionsTypes>) => {
+            const breadcrumbs: Breadcrumb[] = breadcrumbsModule.initialize(page);
             dispatch({
-                type: ReportTypeKeys.REPORTS_FETCHED,
-                data: reports
-            } as ReportsFetched);
+                type: BreadcrumbsTypeKeys.BREADCRUMBS_RECEIVED,
+                data: breadcrumbs
+            } as BreadcrumbsReceived);
         }
     }
-
 };

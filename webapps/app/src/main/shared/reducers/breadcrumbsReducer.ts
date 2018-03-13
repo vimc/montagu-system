@@ -1,33 +1,18 @@
-import { Bre, AuthTypeKeys } from "../actionTypes/BreadrumbsTypes";
+import {BreadcrumbsTypeKeys, BreadcrumbsActionsTypes} from "../actionTypes/BreadrumbsTypes";
+import {Breadcrumb} from "../models/Breadcrumb";
 
-export interface AuthState {
-    loggedIn: boolean;
-    username: string;
-    bearerToken: string;
-    permissions: string[];
-    modellingGroups?: any;
-    isAccountActive: boolean;
-    isModeller: boolean;
-    errorMessage?: string;
+export interface BreadcrumbsState {
+    breadcrumbs: Breadcrumb[];
 }
 
-export const initialAuthState: AuthState = {
-    loggedIn: false,
-    username: null,
-    bearerToken: null,
-    permissions: [],
-    isAccountActive: false,
-    isModeller: false
+export const initialBreadcrumbsState: BreadcrumbsState = {
+    breadcrumbs: null,
 };
 
-export const authReducer = (state = initialAuthState, action: AuthActionsTypes) => {
+export const breadcrumbsReducer = (state = initialBreadcrumbsState, action: BreadcrumbsActionsTypes) => {
     switch (action.type) {
-        case AuthTypeKeys.AUTHENTICATED:
-            return { ...action.data };
-        case AuthTypeKeys.UNAUTHENTICATED:
-            return initialAuthState;
-        case AuthTypeKeys.AUTHENTICATION_ERROR:
-            return { ...state, errorMessage: action.error };
+        case BreadcrumbsTypeKeys.BREADCRUMBS_RECEIVED:
+            return { ...state, breadcrumbs: action.data };
         default:
             return state;
     }
