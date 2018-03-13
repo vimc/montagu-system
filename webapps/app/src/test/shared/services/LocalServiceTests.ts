@@ -197,9 +197,9 @@ describe('Local service cache tests', () => {
 
     it('clears individual cache item by key', async () => {
 
-        const url = settings.apiUrl() + "/test/";
+        const url =  "/test/";
         const fullyQualifiedKey = ["localService", "TestService", "test",
-            encodeURIComponent(url)].join(".");
+            encodeURIComponent(settings.apiUrl() + url)].join(".");
 
         // first set the cache
         await testService.testWithCache();

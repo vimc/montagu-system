@@ -110,7 +110,9 @@ export abstract class AbstractLocalService {
     }
 
     protected clearCache(cacheKey: string, url: string) {
-        const key = this.getFullyQualifiedCacheKey(cacheKey, url);
+        const fullyQualifiedUrl = this.makeUrl(url);
+        const key = this.getFullyQualifiedCacheKey(cacheKey, fullyQualifiedUrl);
+
         this.cacheEngine.clear(key);
     }
 

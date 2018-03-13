@@ -124,6 +124,32 @@ describe("SidebarAdmin", () => {
         expect(rendered.find(ReportReadersList)).to.have.lengthOf(0);
     });
 
+    it("calls getReportReaders if user is admin", () => {
+
+        const getReadersStub = sandbox.sinon.stub();
+
+        const props = defaultSidebarProps;
+        props.isAdmin = true;
+        props.getReportReaders = getReadersStub;
+
+        shallow(<SidebarAdminComponent {...props} />);
+
+        expect(getReadersStub.called).to.be.true;
+    });
+
+    it("does not call getReportReaders if user is not admin", () => {
+
+        const getReadersStub = sandbox.sinon.stub();
+
+        const props = defaultSidebarProps;
+        props.isAdmin = false;
+        props.getReportReaders = getReadersStub;
+
+        shallow(<SidebarAdminComponent {...props} />);
+
+        expect(getReadersStub.called).to.be.false;
+    });
+
     it("gets reviewer status from app state", () => {
 
         let state = mockReportAppState({
@@ -131,7 +157,7 @@ describe("SidebarAdmin", () => {
             reports: readyReportsState
         });
 
-        let result = mapStateToProps(state, defaultTabProps);
+        let result = mapStateToProps(state);
 
         expect(result.isReviewer).to.be.true;
 
@@ -139,7 +165,7 @@ describe("SidebarAdmin", () => {
             auth: mockAuthState({permissions: []})
         });
 
-        result = mapStateToProps(state, defaultTabProps);
+        result = mapStateToProps(state);
 
         expect(result.isReviewer).to.be.false;
 
@@ -152,7 +178,7 @@ describe("SidebarAdmin", () => {
             reports: readyReportsState
         });
 
-        let result = mapStateToProps(state, defaultTabProps);
+        let result = mapStateToProps(state);
 
         expect(result.isAdmin).to.be.true;
 
@@ -160,7 +186,7 @@ describe("SidebarAdmin", () => {
             auth: mockAuthState({permissions: []})
         });
 
-        result = mapStateToProps(state, defaultTabProps);
+        result = mapStateToProps(state);
 
         expect(result.isAdmin).to.be.false;
 
@@ -175,7 +201,7 @@ describe("SidebarAdmin", () => {
             })
         });
 
-        let result = mapStateToProps(state, defaultTabProps);
+        let result = mapStateToProps(state);
 
         expect(result.published).to.be.false;
 
@@ -183,7 +209,7 @@ describe("SidebarAdmin", () => {
             reports: mockReportsState({versionDetails: {published: true}, versions: []})
         });
 
-        result = mapStateToProps(state, defaultTabProps);
+        result = mapStateToProps(state);
 
         expect(result.published).to.be.true;
 
@@ -196,7 +222,7 @@ describe("SidebarAdmin", () => {
             users: mockUsersState({reportReaders: [mockUser()]})
         });
 
-        const result = mapStateToProps(state, defaultTabProps);
+        const result = mapStateToProps(state);
 
         expect(result.reportReaders).to.have.lengthOf(1);
     });
@@ -206,7 +232,7 @@ describe("SidebarAdmin", () => {
         const state = mockReportAppState({reports: mockReportsState({
             versions: []
         })});
-        const result = mapStateToProps(state, defaultTabProps);
+        const result = mapStateToProps(state);
 
         expect(result.ready).to.be.false;
     });
@@ -216,7 +242,7 @@ describe("SidebarAdmin", () => {
         const state = mockReportAppState({
             reports: mockReportsState({versionDetails: {published: false}})
         });
-        const result = mapStateToProps(state, defaultTabProps);
+        const result = mapStateToProps(state);
 
         expect(result.ready).to.be.false;
     });
