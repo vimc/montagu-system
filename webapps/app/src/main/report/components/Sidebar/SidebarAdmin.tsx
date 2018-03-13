@@ -1,87 +1,57 @@
 import * as React from "react";
 import {ReportAppState} from "../../reducers/reportAppReducers";
 import {connect, Dispatch} from "react-redux";
-import {User} from "../../../shared/models/Generated";
-import {ReportVersionSwitcher} from "../Reports/ReportVersionSwitcher";
-import {PublishSwitch} from "./PublishSwitch";
-import {ReportReadersList} from "./ReportReadersList";
 import {userActions} from "../../actions/userActions";
+import {branch, compose, renderNothing} from "recompose";
+import withLifecycle, {LifecycleMethods} from "@hocs/with-lifecycle";
+import {SidebarAdminComponent, SidebarAdminProps} from "./SidebarAdminComponent";
 
-export interface PublicProps {
+export interface SidebarAdminPublicProps {
     onChangeVersion: (version: string) => any;
 }
 
-export interface SidebarAdminProps extends PublicProps {
-    report: string;
-    version: string;
-    ready: boolean;
-    isReviewer: boolean;
-    published: boolean;
-    allVersions: string[];
-    reportReaders: User[];
-    isAdmin: boolean;
-    getReportReaders: (reportName: string) => void;
+const mapStateToProps = (state: ReportAppState): Partial<SidebarAdminProps> => {
 
-}
+    const versionDetails = state.reports.versionDetails;
 
-export const SidebarAdminComponent = (props: SidebarAdminProps) => {
-    if (!props.ready)
-        return null;
+    const ready = !!versionDetails
+        && !!state.reports.versions;
 
-    if (props.isAdmin) {
-        props.getReportReaders(props.report)
-    }
-
-
-    return <div>
-        <ReportVersionSwitcher
-            currentVersion={props.version}
-            versions={props.allVersions}
-            onChangeVersion={props.onChangeVersion}
-        /> {props.isReviewer && <PublishSwitch name={props.report}
-                                               version={props.version}
-                                               published={props.published}/>}
-        {props.isAdmin &&
-        <div className="mt-5">
-            <label className={"font-weight-bold"}>Report readers</label>
-            <ReportReadersList users={props.reportReaders}/>
-        </div>}
-    </div>
-
-};
-
-export const mapStateToProps = (state: ReportAppState, props: Partial<SidebarAdminProps>): SidebarAdminProps => {
-    const ready = !!state.reports.versionDetails &&
-        !!state.reports.versions;
-
-    const finalProps: SidebarAdminProps = {
+    return {
         ready: ready,
         isReviewer: state.auth.permissions.indexOf("*/reports.review") > -1,
         isAdmin: state.auth.permissions.indexOf("*/roles.read") > -1,
-        published: false,
+        published: versionDetails && versionDetails.published,
         allVersions: state.reports.versions,
-        report: "",
-        version: "",
-        onChangeVersion: props.onChangeVersion,
+        report: versionDetails && versionDetails.name,
+        version: versionDetails && versionDetails.id,
         reportReaders: state.users.reportReaders,
-        getReportReaders: props.getReportReaders
+
     };
-
-    if (ready) {
-        const versionDetails = state.reports.versionDetails;
-
-        finalProps.published = versionDetails.published;
-        finalProps.report = versionDetails.name;
-        finalProps.version = versionDetails.id;
-    }
-
-    return finalProps
 };
 
-export const mapDispatchToProps = (dispatch: Dispatch<any>) => {
+const mapDispatchToProps = (dispatch: Dispatch<any>, _: SidebarAdminPublicProps): Partial<SidebarAdminProps> => {
+
     return {
-        getReportReaders: (reportName: string) => dispatch(userActions.getReportReaders(reportName))
+        removeReportReader: (report: string, username: string) =>
+            dispatch(userActions.removeReportReader(report, username)),
+        getReportReaders: (reportName: string) =>
+            dispatch(userActions.getReportReaders(reportName))
     }
 };
 
-export const SidebarAdmin = connect(mapStateToProps, mapDispatchToProps)(SidebarAdminComponent);
+const lifecycleMethods: Partial<LifecycleMethods<SidebarAdminProps>> = {
+    onWillReceiveProps(_: SidebarAdminProps, nextProps: SidebarAdminProps) {
+        if (nextProps.ready && nextProps.isAdmin) {
+            nextProps.getReportReaders(nextProps.report)
+        }
+    }
+};
+
+const enhance = compose<SidebarAdminProps, SidebarAdminPublicProps>(
+    connect(mapStateToProps, mapDispatchToProps),
+    withLifecycle(lifecycleMethods),
+    branch((props: SidebarAdminProps) =>  !props.ready, renderNothing)
+);
+
+export const SidebarAdmin = enhance(SidebarAdminComponent);

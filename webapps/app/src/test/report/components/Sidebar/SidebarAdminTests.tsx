@@ -1,127 +1,63 @@
 import * as React from "react";
 import {shallow} from "enzyme";
 import {expect} from "chai";
+import * as sinon from 'sinon';
 import {Sandbox} from "../../../Sandbox";
-import {PublicProps, ReportTabEnum} from "../../../../main/report/components/Sidebar/Sidebar";
 import {mockAuthState, mockReportAppState, mockReportsState, mockUsersState} from "../../../mocks/mockStates";
-import {mockUser, mockVersion} from "../../../mocks/mockModels";
-import {ReportVersionSwitcher} from "../../../../main/report/components/Reports/ReportVersionSwitcher";
-import {
-    mapStateToProps,
-    SidebarAdminComponent,
-    SidebarAdminProps
-} from "../../../../main/report/components/Sidebar/SidebarAdmin";
-import {PublishSwitch} from "../../../../main/report/components/Sidebar/PublishSwitch";
-import {ReportReadersList} from "../../../../main/report/components/Sidebar/ReportReadersList";
+import {mockUser} from "../../../mocks/mockModels";
+import {SidebarAdmin} from "../../../../main/report/components/Sidebar/SidebarAdmin";
 import {ReportsState} from "../../../../main/report/reducers/reportsReducer";
-import {UsersState} from "../../../../main/report/reducers/userReducer";
+import {createMockStore} from "../../../mocks/mockStore";
+import {userActions} from "../../../../main/report/actions/userActions";
+import {ReportAppState} from "../../../../main/report/reducers/reportAppReducers";
 
 describe("SidebarAdmin", () => {
 
     const sandbox = new Sandbox();
+    let store: ReportAppState, getReadersStub: sinon.SinonStub;
 
     afterEach(() => {
         sandbox.restore();
     });
 
-    const defaultTabProps: PublicProps = {
-        active: ReportTabEnum.REPORT,
-        onChangeVersion: () => {
-        }
-    };
-
-    const defaultSidebarProps: SidebarAdminProps = {
-        published: true,
-        isReviewer: true,
-        isAdmin: true,
-        ready: true,
-        report: "name",
-        version: "v1",
-        onChangeVersion: () => {
-        },
-        allVersions: ["v1", "v2"],
-        reportReaders: [mockUser()],
-        getReportReaders: sandbox.sinon.stub()
-    };
+    beforeEach(() => {
+        store = createMockStore(storeState);
+        getReadersStub = sandbox.setStubReduxAction(userActions, 'getReportReaders');
+    });
 
     const readyReportsState: ReportsState =
         mockReportsState({
-            versionDetails: {published: false},
+            versionDetails: {published: false, name: "name", id: "v1"},
             versions: []
         });
 
-    it("renders report version switcher", () => {
-
-        const handler = sandbox.sinon.stub();
-        const props = defaultSidebarProps;
-        props.onChangeVersion = handler;
-
-        const rendered = shallow(<SidebarAdminComponent {...props} />);
-        expect(rendered.find(ReportVersionSwitcher).props()).to.eql({
-            currentVersion: "v1",
-            versions: ["v1", "v2"],
-            onChangeVersion: handler
-        });
-    });
-
-    it("emits onChangeVersion when switcher triggers it", () => {
-        const handler = sandbox.sinon.stub();
-        const props = defaultSidebarProps;
-        props.onChangeVersion = handler;
-
-        const rendered = shallow(<SidebarAdminComponent {...props} />);
-        rendered.find(ReportVersionSwitcher).simulate("changeVersion", "v3");
-        expect(handler.calledWith("v3"));
+    const storeState = mockReportAppState({
+        reports: readyReportsState,
+        auth: mockAuthState({permissions: ["*/roles.read"]}),
+        users: mockUsersState({reportReaders: []})
     });
 
 
-    it("renders publish switch if user is reviewer", () => {
+    it("calls getReportReaders if user is admin", () => {
 
-        const props = defaultSidebarProps;
-        props.isReviewer = true;
+        // 1 dive takes us to the wrapped withLifecycle component
+        const rendered = shallow(<SidebarAdmin onChangeVersion={null}/>,
+            {context: {store}}).dive();
 
-        const rendered = shallow(<SidebarAdminComponent {...props} />);
-        expect(rendered.find(PublishSwitch)).to.have.lengthOf(1);
+        rendered.setProps({isAdmin: true});
+
+        expect(getReadersStub.called).to.be.true;
     });
 
+    it("does not call getReportReaders if user is not admin", () => {
 
-    it("does not render publish switch if user is not reviewer", () => {
+        // 1 dive takes us to the wrapped withLifecycle component
+        const rendered = shallow(<SidebarAdmin onChangeVersion={null}/>,
+            {context: {store}}).dive();
 
-        const props = defaultSidebarProps;
-        props.isReviewer = false;
+        rendered.setProps({isAdmin: false});
 
-        const rendered = shallow(<SidebarAdminComponent {...props} />);
-        expect(rendered.find(PublishSwitch)).to.have.lengthOf(0);
-    });
-
-    it("does not render publish switch if details are not ready", () => {
-
-        const props = defaultSidebarProps;
-        props.isReviewer = true;
-        props.ready = false;
-
-        const rendered = shallow(<SidebarAdminComponent {...props} />);
-        expect(rendered.find(PublishSwitch)).to.have.lengthOf(0);
-    });
-
-    it("renders report readers if user is admin", () => {
-
-        const props = defaultSidebarProps;
-        props.isAdmin = true;
-        props.ready = true;
-
-        const rendered = shallow(<SidebarAdminComponent {...props} />);
-        expect(rendered.find(ReportReadersList)).to.have.lengthOf(1);
-    });
-
-    it("does not render report readers if user is not admin", () => {
-
-        const props = defaultSidebarProps;
-        props.isAdmin = false;
-        props.ready = true;
-
-        const rendered = shallow(<SidebarAdminComponent {...props} />);
-        expect(rendered.find(ReportReadersList)).to.have.lengthOf(0);
+        expect(getReadersStub.called).to.be.false;
     });
 
     it("gets reviewer status from app state", () => {
@@ -131,17 +67,23 @@ describe("SidebarAdmin", () => {
             reports: readyReportsState
         });
 
-        let result = mapStateToProps(state, defaultTabProps);
+        store = createMockStore(state);
 
-        expect(result.isReviewer).to.be.true;
+        let rendered = shallow(<SidebarAdmin onChangeVersion={null}/>,
+            {context: {store}});
+
+        expect(rendered.prop("isReviewer")).to.be.true;
 
         state = mockReportAppState({
             auth: mockAuthState({permissions: []})
         });
 
-        result = mapStateToProps(state, defaultTabProps);
+        store = createMockStore(state);
 
-        expect(result.isReviewer).to.be.false;
+        rendered = shallow(<SidebarAdmin onChangeVersion={null}/>,
+            {context: {store}});
+
+        expect(rendered.prop("isReviewer")).to.be.false;
 
     });
 
@@ -152,17 +94,23 @@ describe("SidebarAdmin", () => {
             reports: readyReportsState
         });
 
-        let result = mapStateToProps(state, defaultTabProps);
+        store = createMockStore(state);
 
-        expect(result.isAdmin).to.be.true;
+        let rendered = shallow(<SidebarAdmin onChangeVersion={null}/>,
+            {context: {store}});
+
+        expect(rendered.prop("isAdmin")).to.be.true;
 
         state = mockReportAppState({
             auth: mockAuthState({permissions: []})
         });
 
-        result = mapStateToProps(state, defaultTabProps);
+        store = createMockStore(state);
 
-        expect(result.isAdmin).to.be.false;
+        rendered = shallow(<SidebarAdmin onChangeVersion={null}/>,
+            {context: {store}});
+
+        expect(rendered.prop("isAdmin")).to.be.false;
 
     });
 
@@ -170,22 +118,30 @@ describe("SidebarAdmin", () => {
 
         let state = mockReportAppState({
             reports: mockReportsState({
+                versionDetails: {published: true},
+                versions: []
+            })
+        });
+        store = createMockStore(state);
+
+        let rendered = shallow(<SidebarAdmin onChangeVersion={null}/>,
+            {context: {store}});
+
+        expect(rendered.prop("published")).to.be.true;
+
+        state = mockReportAppState({
+            reports: mockReportsState({
                 versionDetails: {published: false},
                 versions: []
             })
         });
 
-        let result = mapStateToProps(state, defaultTabProps);
+        store = createMockStore(state);
 
-        expect(result.published).to.be.false;
+        rendered = shallow(<SidebarAdmin onChangeVersion={null}/>,
+            {context: {store}});
 
-        state = mockReportAppState({
-            reports: mockReportsState({versionDetails: {published: true}, versions: []})
-        });
-
-        result = mapStateToProps(state, defaultTabProps);
-
-        expect(result.published).to.be.true;
+        expect(rendered.prop("published")).to.be.false;
 
     });
 
@@ -196,29 +152,42 @@ describe("SidebarAdmin", () => {
             users: mockUsersState({reportReaders: [mockUser()]})
         });
 
-        const result = mapStateToProps(state, defaultTabProps);
+        store = createMockStore(state);
 
-        expect(result.reportReaders).to.have.lengthOf(1);
+        const rendered = shallow(<SidebarAdmin onChangeVersion={null}/>,
+            {context: {store}});
+
+        expect(rendered.prop("reportReaders")).to.have.lengthOf(1);
     });
 
-    it("is not ready when version details are null", () => {
+    it("renders nothing when version details are null", () => {
 
-        const state = mockReportAppState({reports: mockReportsState({
-            versions: []
-        })});
-        const result = mapStateToProps(state, defaultTabProps);
+        const state = mockReportAppState({
+            reports: mockReportsState({
+                versions: []
+            })
+        });
 
-        expect(result.ready).to.be.false;
+        store = createMockStore(state);
+
+        const rendered = shallow(<SidebarAdmin onChangeVersion={null}/>,
+            {context: {store}}).dive().dive();
+
+        expect(rendered.find("div")).to.have.lengthOf(0);
     });
 
-    it("is not ready when versions are null", () => {
+    it("renders nothing when versions are null", () => {
 
         const state = mockReportAppState({
             reports: mockReportsState({versionDetails: {published: false}})
         });
-        const result = mapStateToProps(state, defaultTabProps);
 
-        expect(result.ready).to.be.false;
+        store = createMockStore(state);
+
+        const rendered = shallow(<SidebarAdmin onChangeVersion={null}/>,
+            {context: {store}}).dive().dive();
+
+        expect(rendered.find("div")).to.have.lengthOf(0);
     });
 
 });

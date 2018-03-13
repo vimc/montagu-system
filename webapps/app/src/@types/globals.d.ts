@@ -14,7 +14,6 @@ declare module 'lodash';
 declare module 'react-day-picker/DayPickerInput';
 declare module 'react-day-picker/moment';
 declare module 'reselect';
-declare module '@hocs/with-lifecycle';
 declare module 'moment';
 
 declare module 'react-open-iconic-svg';
