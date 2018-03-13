@@ -4,6 +4,7 @@ import {Router, match} from 'react-router';
 
 import { navActions } from "../../actions/NavActions";
 import {IPageWithParent} from "../../models/Breadcrumb";
+import {GlobalState} from "../../reducers/GlobalState";
 
 export interface PageParts {
     siteTitle(): string;
@@ -81,23 +82,15 @@ export abstract class PageWithHeader<TLocationProps>
     }
 }
 
-export interface PageInterface {
-    name(): string;
-    urlFragment(): string;
-    parent(): PageInterface;
-}
-
-export interface PageProps<T> {
-    location: Location;
-    router: Router;
-    match: match<T>;
-    history: History;
+export interface PageBreadcrumb {
+    name: string;
+    urlFragment: string;
+    parent: (props?: any, state?: any) => PageBreadcrumb;
 }
 
 export interface PageProperties<T> {
     location: Location;
     router: Router;
-    onLoad?: (props:Partial<T>) => void;
     match: match<T>;
     history: History;
 }

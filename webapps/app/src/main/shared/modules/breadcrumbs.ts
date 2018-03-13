@@ -1,5 +1,6 @@
-import {PageInterface} from "../components/PageWithHeader/PageWithHeader";
+
 import {Breadcrumb} from "../models/Breadcrumb";
+import {PageBreadcrumb} from "../components/PageWithHeader/PageWithHeader";
 
 export const breadcrumbsModule = {
 
@@ -12,9 +13,9 @@ export const breadcrumbsModule = {
         return parents;
     },
 
-    initialize(page: any, props: any): Breadcrumb[] {
-        if (page != null) {
-            const parents = this.getParentsInOrderFromTopToBottom(page(props), props);
+    initialize(pageBreadcrumb: () => PageBreadcrumb, props: any, state: any): Breadcrumb[] {
+        if (pageBreadcrumb != null) {
+            const parents = this.getParentsInOrderFromTopToBottom(pageBreadcrumb(props), props);
             return parents.map((p: any) => ({
                 url: this.url(p, props),
                 name: p.name

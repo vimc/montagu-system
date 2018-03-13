@@ -7,33 +7,28 @@ import {ReportsListSorting} from "./ReportsListSorting";
 import {ReportsListFilter} from "./Filter/ReportsListFilter";
 import {PageArticle} from "../../../shared/components/PageWithHeader/PageArticle";
 import {breadcrumbsActions} from "../../../shared/actions/breadcrumbsActions";
-import { PageProps} from "../../../shared/components/PageWithHeader/PageWithHeader";
+import {PageBreadcrumb, PageProperties} from "../../../shared/components/PageWithHeader/PageWithHeader";
 import {ReportAppState} from "../../reducers/reportAppReducers";
 
-export interface ReportsListPageProps extends PageProps<undefined> {
-    createBreadcrumbs: (page: any, props: any) => void;
+export interface ReportsListPageProps extends PageProperties<undefined> {
+    createBreadcrumbs: (pageBreadcrumb: () => PageBreadcrumb) => void;
 }
 
 export class ReportsListPageComponent extends React.Component<ReportsListPageProps> {
-
     componentDidMount(){
-        this.props.createBreadcrumbs(ReportsListPageComponent.breadcrumb, this.props);
+        this.props.createBreadcrumbs(ReportsListPageComponent.breadcrumb);
     }
 
-    title() {
-        return "Choose a report to view";
-    }
-
-    static breadcrumb(params: any) {
+    static breadcrumb() : PageBreadcrumb {
         return {
             name: "Main menu",
             urlFragment: "/",
-            parent: null as any
+            parent: null
         }
     }
 
     render() :JSX.Element {
-        return <PageArticle title={this.title()}>
+        return <PageArticle title="Choose a report to view">
             <ReportsListFilter/>
             <ReportsListSorting/>
             <ReportsList/>
@@ -43,7 +38,8 @@ export class ReportsListPageComponent extends React.Component<ReportsListPagePro
 
 const mapDispatchToProps = (dispatch: Dispatch<ReportAppState>): Partial<ReportsListPageProps> => {
     return {
-        createBreadcrumbs: (page: any, props: any) => dispatch(breadcrumbsActions.createBreadcrumbs(page, props))
+        createBreadcrumbs: (pageBreadcrumb: () => PageBreadcrumb) =>
+            dispatch(breadcrumbsActions.createBreadcrumbs(pageBreadcrumb))
     }
 };
 

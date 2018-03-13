@@ -4,18 +4,18 @@ import {connect} from 'react-redux';
 
 import {ReportDetails} from "./ReportDetails";
 import {appSettings} from "../../../shared/Settings";
-import {ReportsListPage, ReportsListPageComponent} from "../ReportsList/ReportsListPage";
+import {ReportsListPageComponent} from "../ReportsList/ReportsListPage";
 import {reportPageActions} from "../../actions/reportPageActions";
 import {ReportTabEnum, Sidebar, sidebarHashToTab} from "../Sidebar/Sidebar";
 import {ReportDownloads} from "./ReportDownloads";
-import {PageInterface, PageProps} from "../../../shared/components/PageWithHeader/PageWithHeader";
+import {PageProperties} from "../../../shared/components/PageWithHeader/PageWithHeader";
 
 export interface ReportPageLocationProps {
     report: string;
     version: string;
 }
 
-export interface ReportPageProps extends PageProps<ReportPageLocationProps> {
+export interface ReportPageProps extends PageProperties<ReportPageLocationProps> {
     onLoad?: (props:ReportPageLocationProps) => void;
 }
 
@@ -64,7 +64,7 @@ export class ReportPageComponent extends React.Component<ReportPageProps> {
                     </div>
                 </div>
             </div>
-        </div>
+        </div>;
     }
 }
 
