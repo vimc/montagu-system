@@ -7,6 +7,8 @@ import {
 import {reportsInitialState, ReportsState} from "../../main/report/reducers/reportsReducer";
 import {ReportAppState} from "../../main/report/reducers/reportAppReducers";
 import {usersInitialState, UsersState} from "../../main/report/reducers/userReducer";
+import {initialBreadcrumbsState} from "../../main/shared/reducers/breadcrumbsReducer";
+import {ContribAppState} from "../../main/contrib/reducers/contribAppReducers";
 
 export type RecursivePartial<T> = {
     [P in keyof T]?: RecursivePartial<T[P]>
@@ -39,7 +41,8 @@ export const mockGlobalState = (props?: any) => {
     const authMock: AuthState = props && props.auth ? mockAuthState(props.auth) : mockAuthState();
     return {
         auth: authMock,
-        form: formReducer
+        form: formReducer,
+        breadcrumbs: initialBreadcrumbsState
     };
 };
 
@@ -47,17 +50,19 @@ export const mockAdminState = (props?: any) => {
     const authMock: AuthState = props && props.auth ? mockAuthState(props.auth) : mockAuthState();
     return {
         auth: authMock,
-        form: formReducer
+        form: formReducer,
+        breadcrumbs: initialBreadcrumbsState
     };
 };
 
-export const mockContribState = (props?: any) => {
+export const mockContribState = (props?: any) :ContribAppState => {
     const authMock: AuthState = props && props.auth ? mockAuthState(props.auth) : mockAuthState();
     const groupsMock: ModellingGroupsState = props && props.groups ? props.groups : ModellingGroupsInitialState;
     return {
         auth: authMock,
         form: formReducer,
-        groups: groupsMock
+        groups: groupsMock,
+        breadcrumbs: initialBreadcrumbsState
     };
 };
 
@@ -69,6 +74,7 @@ export const mockReportAppState = (props?: RecursivePartial<ReportAppState>): Re
         auth: authMock,
         form: formReducer,
         reports: reportsMock,
-        users: usersMock
+        users: usersMock,
+        breadcrumbs: initialBreadcrumbsState
     };
 };

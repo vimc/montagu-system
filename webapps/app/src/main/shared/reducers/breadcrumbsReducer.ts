@@ -6,7 +6,7 @@ export interface BreadcrumbsState {
 }
 
 export const initialBreadcrumbsState: BreadcrumbsState = {
-    breadcrumbs: null,
+    breadcrumbs: [],
 };
 
 export const breadcrumbsReducer = (state = initialBreadcrumbsState, action: BreadcrumbsActionsTypes) => {

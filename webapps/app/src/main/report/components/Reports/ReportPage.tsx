@@ -35,7 +35,7 @@ export class ReportPageComponent extends React.Component<ReportPageProps> {
         }
     }
 
-    changeVersion(version: string): any {
+    changeVersion(version: string): void {
         const hash = this.props.location.hash;
         this.props.history
             .push(`${appSettings.publicPath}/${this.props.match.params.report}/${version}/${hash}`, false);
@@ -74,4 +74,4 @@ export const mapDispatchToProps = (dispatch: Dispatch<Action>): Partial<ReportPa
     }
 };
 
-export const ReportPage = connect((props) => props, mapDispatchToProps)(ReportPageComponent);
+export const ReportPage = connect((props: Partial<ReportPageProps>) => props, mapDispatchToProps)(ReportPageComponent);

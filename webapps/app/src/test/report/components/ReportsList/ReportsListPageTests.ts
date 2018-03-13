@@ -10,10 +10,5 @@ describe("Reporting MainMenu", () => {
     const sandbox = new Sandbox();
     afterEach(() => sandbox.restore());
 
-    const page = new ReportsListPage({location: mockLocation(), router: null, match: mockMatch(), history: null});
-    addNavigationTests(page, sandbox, () => {
-        mockFetcherForMultipleResponses([
-            mockReportsEndpoint([mockReport()])
-        ]);
-    });
+
 });
