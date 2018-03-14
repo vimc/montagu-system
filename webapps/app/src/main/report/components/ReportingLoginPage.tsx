@@ -1,12 +1,10 @@
 import * as React from "react";
-import { connect } from 'react-redux';
-import { Dispatch } from "redux";
+import { compose } from "recompose";
 
 import { LoginForm } from "../../shared/components/Login/LoginForm";
 import {PageArticle} from "../../shared/components/PageWithHeader/PageArticle";
-import {PageBreadcrumb, PageProperties} from "../../shared/components/PageWithHeader/PageWithHeader";
-import {breadcrumbsActions} from "../../shared/actions/breadcrumbsActions";
-import {ReportAppState} from "../reducers/reportAppReducers";
+import {PageProperties} from "../../shared/components/PageWithHeader/PageWithHeader";
+import {BreadcrumbInitializer} from "../../shared/components/Breadcrumbs/BreadcrumbsInitializer";
 
 export class ReportingLoginPageComponent extends React.Component<PageProperties<undefined>> {
     componentDidMount(){
@@ -20,10 +18,5 @@ export class ReportingLoginPageComponent extends React.Component<PageProperties<
     }
 }
 
-const mapDispatchToProps = (dispatch: Dispatch<ReportAppState>): Partial<PageProperties<undefined>> => {
-    return {
-        createBreadcrumbs: (pageBreadcrumb: PageBreadcrumb) => dispatch(breadcrumbsActions.createBreadcrumbs(pageBreadcrumb))
-    }
-};
-
-export const ReportingLoginPage = connect(state => state, mapDispatchToProps)(ReportingLoginPageComponent);
+export const ReportingLoginPage = compose(BreadcrumbInitializer)(ReportingLoginPageComponent) as
+    React.ComponentClass<Partial<PageProperties<undefined>>>;

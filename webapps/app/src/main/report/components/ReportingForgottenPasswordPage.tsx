@@ -1,7 +1,6 @@
 import * as React from "react";
 import { FormConnector } from "alt-reform";
-import { connect } from 'react-redux';
-import { Dispatch } from "redux";
+import { compose } from "recompose";
 
 import { forgottenPasswordFormStore } from "../../shared/components/Login/ForgottenPasswordFormStore";
 import {
@@ -10,9 +9,8 @@ import {
 } from "../../shared/components/Login/ForgottenPasswordForm";
 import {ReportsListPageComponent} from "./ReportsList/ReportsListPage";
 import {PageBreadcrumb, PageProperties} from "../../shared/components/PageWithHeader/PageWithHeader";
-import {breadcrumbsActions} from "../../shared/actions/breadcrumbsActions";
-import {ReportAppState} from "../reducers/reportAppReducers";
 import {PageArticle} from "../../shared/components/PageWithHeader/PageArticle";
+import {BreadcrumbInitializer} from "../../shared/components/Breadcrumbs/BreadcrumbsInitializer";
 
 const ForgottenPasswordForm = FormConnector(forgottenPasswordFormStore("report"))(ForgottenPasswordFormComponent);
 
@@ -36,10 +34,5 @@ export class ReportingForgottenPasswordPageComponent extends React.Component<Pag
     }
 }
 
-const mapDispatchToProps = (dispatch: Dispatch<ReportAppState>): Partial<PageProperties<undefined>> => {
-    return {
-        createBreadcrumbs: (pageBreadcrumb: PageBreadcrumb) => dispatch(breadcrumbsActions.createBreadcrumbs(pageBreadcrumb))
-    }
-};
-
-export const ReportingForgottenPasswordPage = connect(state => state, mapDispatchToProps)(ReportingForgottenPasswordPageComponent);
+export const ReportingForgottenPasswordPage = compose(BreadcrumbInitializer)(ReportingForgottenPasswordPageComponent) as
+    React.ComponentClass<Partial<PageProperties<undefined>>>;

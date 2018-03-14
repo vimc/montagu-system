@@ -3,7 +3,6 @@ import {Action, Dispatch} from "redux";
 import {connect} from 'react-redux';
 
 import {ReportDetails} from "./ReportDetails";
-import {appSettings} from "../../../shared/Settings";
 import {ReportsListPageComponent} from "../ReportsList/ReportsListPage";
 import {reportPageActions} from "../../actions/reportPageActions";
 import {ReportTabEnum, Sidebar, sidebarHashToTab} from "../Sidebar/Sidebar";

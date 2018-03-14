@@ -1,13 +1,11 @@
 import * as React from "react";
-import { connect } from 'react-redux';
-import { Dispatch } from "redux";
+import { compose } from "recompose";
 
 import { NoRouteFound } from "../../shared/components/NoRouteFound";
 import { ReportsListPageComponent} from "./ReportsList/ReportsListPage";
 import {PageBreadcrumb, PageProperties} from "../../shared/components/PageWithHeader/PageWithHeader";
-import {breadcrumbsActions} from "../../shared/actions/breadcrumbsActions";
-import {ReportAppState} from "../reducers/reportAppReducers";
 import {PageArticle} from "../../shared/components/PageWithHeader/PageArticle";
+import {BreadcrumbInitializer} from "../../shared/components/Breadcrumbs/BreadcrumbsInitializer";
 
 export class ReportingNoRouteFoundPageComponent extends React.Component<PageProperties<undefined>> {
     componentDidMount(){
@@ -29,10 +27,5 @@ export class ReportingNoRouteFoundPageComponent extends React.Component<PageProp
     }
 }
 
-const mapDispatchToProps = (dispatch: Dispatch<ReportAppState>): Partial<PageProperties<undefined>> => {
-    return {
-        createBreadcrumbs: (pageBreadcrumb: PageBreadcrumb) => dispatch(breadcrumbsActions.createBreadcrumbs(pageBreadcrumb))
-    }
-};
-
-export const ReportingNoRouteFoundPage = connect(state => state, mapDispatchToProps)(ReportingNoRouteFoundPageComponent);
+export const ReportingNoRouteFoundPage = compose(BreadcrumbInitializer)(ReportingNoRouteFoundPageComponent) as
+    React.ComponentClass<Partial<PageProperties<undefined>>>;
