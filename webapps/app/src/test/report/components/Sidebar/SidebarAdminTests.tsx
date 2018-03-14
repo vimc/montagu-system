@@ -5,11 +5,14 @@ import * as sinon from 'sinon';
 import {Sandbox} from "../../../Sandbox";
 import {mockAuthState, mockReportAppState, mockReportsState, mockUsersState} from "../../../mocks/mockStates";
 import {mockUser} from "../../../mocks/mockModels";
-import {SidebarAdmin} from "../../../../main/report/components/Sidebar/SidebarAdmin";
+import {mapDispatchToProps, SidebarAdmin} from "../../../../main/report/components/Sidebar/SidebarAdmin";
 import {ReportsState} from "../../../../main/report/reducers/reportsReducer";
 import {createMockStore} from "../../../mocks/mockStore";
 import {userActionCreators} from "../../../../main/report/actions/userActionCreators";
 import {ReportAppState} from "../../../../main/report/reducers/reportAppReducers";
+import {ReportReadersList} from "../../../../main/report/components/Sidebar/ReportReadersList";
+import {defaultProps} from "recompose";
+import {SidebarAdminProps} from "../../../../main/report/components/Sidebar/SidebarAdminComponent";
 
 describe("SidebarAdmin", () => {
 
@@ -24,6 +27,22 @@ describe("SidebarAdmin", () => {
         store = createMockStore(storeState);
         getReadersStub = sandbox.setStubReduxAction(userActionCreators, 'getReportReaders');
     });
+
+    const defaultSidebarProps: SidebarAdminProps = {
+        published: true,
+        isReviewer: true,
+        isAdmin: true,
+        ready: true,
+        report: "name",
+        version: "v1",
+        onChangeVersion: () => {
+        },
+        allVersions: ["v1", "v2"],
+        reportReaders: [],
+        getReportReaders: sandbox.sinon.stub(),
+        removeReportReader: sandbox.sinon.stub(),
+        addReportReader: sandbox.sinon.stub()
+    };
 
     const readyReportsState: ReportsState =
         mockReportsState({
@@ -158,6 +177,20 @@ describe("SidebarAdmin", () => {
             {context: {store}});
 
         expect(rendered.prop("reportReaders")).to.have.lengthOf(1);
+    });
+
+    it("passes addReportReader to ReportReadersList", () => {
+
+        const dispatchStub = sandbox.sinon.stub();
+        sandbox.setStubFunc(userActionCreators, "addReportReader", () => {
+            return "testresult"
+        });
+
+        const result = mapDispatchToProps(dispatchStub, defaultSidebarProps);
+
+        result.addReportReader("report", "test.user");
+        expect(dispatchStub.calledWith("testresult"));
+
     });
 
     it("renders nothing when version details are null", () => {

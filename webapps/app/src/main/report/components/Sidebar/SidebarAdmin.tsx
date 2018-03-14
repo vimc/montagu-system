@@ -29,7 +29,7 @@ const mapStateToProps = (state: ReportAppState): Partial<SidebarAdminProps> => {
     };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch<any>, _: SidebarAdminPublicProps): Partial<SidebarAdminProps> => {
+export const mapDispatchToProps = (dispatch: Dispatch<any>, _: SidebarAdminPublicProps): Partial<SidebarAdminProps> => {
 
     return {
         removeReportReader: (report: string, username: string) =>

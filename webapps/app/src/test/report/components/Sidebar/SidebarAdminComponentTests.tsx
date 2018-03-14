@@ -7,6 +7,7 @@ import {SidebarAdminComponent, SidebarAdminProps} from "../../../../main/report/
 import {PublishSwitch} from "../../../../main/report/components/Sidebar/PublishSwitch";
 import {ReportReadersList} from "../../../../main/report/components/Sidebar/ReportReadersList";
 
+
 describe("SidebarAdminComponent", () => {
 
     const sandbox = new Sandbox();
@@ -95,4 +96,33 @@ describe("SidebarAdminComponent", () => {
         expect(rendered.find(ReportReadersList)).to.have.lengthOf(0);
     });
 
+    it("passes down addReportReader with report name populated", () => {
+
+        const stub = sandbox.sinon.stub();
+        const props = defaultSidebarProps;
+        props.isAdmin = true;
+        props.ready = true;
+        props.addReportReader = stub;
+        props.report = "reportname";
+
+        const rendered = shallow(<SidebarAdminComponent {...props} />);
+        const addReportReader = rendered.find(ReportReadersList).prop("addReportReader");
+        addReportReader("test.user");
+        expect(stub.calledWith("reportname", "test.user")).to.be.true;
+    });
+
+    it("passes down removeReportReader with report name populated", () => {
+
+        const stub = sandbox.sinon.stub();
+        const props = defaultSidebarProps;
+        props.isAdmin = true;
+        props.ready = true;
+        props.removeReportReader = stub;
+        props.report = "reportname";
+
+        const rendered = shallow(<SidebarAdminComponent {...props} />);
+        const removeReportReader = rendered.find(ReportReadersList).prop("removeReportReader");
+        removeReportReader("test.user");
+        expect(stub.calledWith("reportname", "test.user")).to.be.true;
+    });
 });
