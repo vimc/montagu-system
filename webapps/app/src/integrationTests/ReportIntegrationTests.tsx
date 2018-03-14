@@ -67,6 +67,12 @@ class ReportIntegrationTests extends IntegrationTestSuite {
             expect(readers.length).to.be.greaterThan(0);
         });
 
+        it("removes a report reader", async () => {
+            const result = await (new UserService(this.store.dispatch, this.store.getState))
+                .removeReportReader("minimal", "test.user");
+            expect(result).to.eq("OK");
+        });
+
         it("fetches report versions",  async () => {
             const versions = await (new ReportsService(this.store.dispatch, this.store.getState)).getReportVersions("other");
             expect(versions.length).to.be.greaterThan(0);

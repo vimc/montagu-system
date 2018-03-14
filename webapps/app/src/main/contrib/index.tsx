@@ -16,7 +16,7 @@ import './style.scss';
 
 fetcher.fetcher = new ContribFetcher();
 
-const history: History = createBrowserHistory();
+const history: History = createBrowserHistory({ basename: "/contribution"});
 const store = createContribStore(history);
 
 store.dispatch(authActions.loadSavedToken())

@@ -22,4 +22,19 @@ describe('Reports reducer tests', () => {
 
     });
 
+    it('removes report reader from list', () => {
+
+        const originalState = mockUsersState({
+            reportReaders: [mockUser({username: "testuser"})]
+        });
+
+        const mutatedState = usersReducer(originalState, {
+            type: UserTypeKeys.REPORT_READER_REMOVED,
+            data: "testuser"
+        });
+
+        expect(mutatedState.reportReaders).to.have.lengthOf(0);
+
+    });
+
 });

@@ -120,13 +120,13 @@ export function mockScenarioTouchstoneAndCoverageSets(scenarioProperties?: Parti
     };
 }
 
-export function mockRole(): models.RoleAssignment {
+export function mockRole(properties?: any): models.RoleAssignment {
     counter++;
-    return {
+    return Object.assign({
         name: "mockRole" + counter,
         scope_prefix: null,
         scope_id: null
-    };
+    }, properties);
 }
 
 export function mockUser(properties?: any): models.User {
