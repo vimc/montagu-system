@@ -16,12 +16,11 @@ interface InternalLinkContext {
 
 // this component is just a wrapper on top of original link for react router
 const InternalLink : React.StatelessComponent<InternalLinkProps> = (props: InternalLinkProps, context: InternalLinkContext) => {
-    const url = appSettings.publicPath + props.href;
     // This condition here is used to ease burden of components unit testing, making it unnecessary to mock router context
     if (context.router) {
-        return <Link to={url} className={props.className} onClick={props.onClick}>{props.children}</Link>
+        return <Link to={props.href} className={props.className} onClick={props.onClick}>{props.children}</Link>
     } else {
-        return <a href={url} className={props.className} onClick={props.onClick}>{props.children}</a>
+        return <a href={props.href} className={props.className} onClick={props.onClick}>{props.children}</a>
     }
 }
 

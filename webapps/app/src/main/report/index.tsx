@@ -15,7 +15,7 @@ import './style.scss';
 
 fetcher.fetcher = new ReportingFetcher();
 
-const history: History = createBrowserHistory();
+const history: History = createBrowserHistory({ basename: "/reports"});
 const store = createReportStore(history);
 
 store.dispatch(authActions.loadSavedToken());
