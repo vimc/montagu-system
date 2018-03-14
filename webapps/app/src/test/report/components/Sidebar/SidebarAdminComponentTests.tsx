@@ -27,7 +27,8 @@ describe("SidebarAdminComponent", () => {
         allVersions: ["v1", "v2"],
         reportReaders: [],
         getReportReaders: sandbox.sinon.stub(),
-        removeReportReader: sandbox.sinon.stub()
+        removeReportReader: sandbox.sinon.stub(),
+        addReportReader: sandbox.sinon.stub()
     };
 
     it("renders report version switcher", () => {

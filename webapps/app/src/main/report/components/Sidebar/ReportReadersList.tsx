@@ -14,7 +14,11 @@ export interface ReportReaderProps {
     removeReportReader: (username: string) => void
 }
 
-export const ReportReadersList = (props: ReportReadersListProps) => {
+interface ReportReadersListState {
+    newReader: string;
+}
+
+export const ReportReadersList = (props: ReportReadersListProps, state: ReportReadersListState) => {
     return <div>
         <ul className={"list-unstyled report-readers"}>
             {props.users.sort((a, b) => a.username < b.username ? -1 : 1)
@@ -23,7 +27,9 @@ export const ReportReadersList = (props: ReportReadersListProps) => {
         <div className="input-group">
             <input className={"form-control form-control-sm"} type={"text"} placeholder={"username"}/>
             <div className="input-group-append">
-                <button type={"submit"} onClick={() => props.addReportReader("alex.hill")} className="btn btn-sm">Add reader</button>
+                <button type={"submit"} onClick={() => props.addReportReader("alex.hill")}
+                        className="btn btn-sm">Add reader
+                </button>
             </div>
         </div>
     </div>

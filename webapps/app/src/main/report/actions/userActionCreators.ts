@@ -1,20 +1,16 @@
 import {Dispatch} from "redux";
-
 import {GlobalState} from "../../shared/reducers/GlobalState";
-import {
-    ReportReaderAdded, ReportReaderRemoved, ReportReadersFetched,
-    UserTypeKeys
-} from "../actionTypes/UsersActionTypes";
+import {ReportReaderRemoved, ReportReadersFetched, UserActionKeys} from "../actionTypes/UsersActions";
 import {UserService} from "../services/UserService";
 import {User} from "../../shared/models/Generated";
 
-export const userActions = {
+export const userActionCreators = {
 
     getReportReaders(reportName: string) {
         return async (dispatch: Dispatch<any>, getState: () => GlobalState) => {
             const users: User[] = await (new UserService(dispatch, getState)).getReportReaders(reportName);
             dispatch({
-                type: UserTypeKeys.REPORT_READERS_FETCHED,
+                type: UserActionKeys.REPORT_READERS_FETCHED,
                 data: users
             } as ReportReadersFetched);
         }
@@ -26,7 +22,7 @@ export const userActions = {
 
             if (result == "OK") {
                 dispatch({
-                    type: UserTypeKeys.REPORT_READER_REMOVED,
+                    type: UserActionKeys.REPORT_READER_REMOVED,
                     data: username
                 } as ReportReaderRemoved);
             }
@@ -38,7 +34,7 @@ export const userActions = {
             const result = await (new UserService(dispatch, getState)).addReportReader(reportName, username);
 
             if (result == "OK") {
-               this.getReportReaders(reportName);
+                this.getReportReaders(reportName);
             }
         }
     }

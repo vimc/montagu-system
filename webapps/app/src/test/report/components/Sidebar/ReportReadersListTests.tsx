@@ -12,8 +12,8 @@ describe("Report readers list", () => {
 
         const users: User[] = [mockUser({username: "b"}), mockUser({username: "a"}), mockUser({username: "c"})];
 
-        const rendered = shallow(<ReportReadersList users={users} report={"report"} removeReportReader={() => {
-        }}/>);
+        const rendered = shallow(<ReportReadersList users={users} report={"report"}
+                                                    removeReportReader={null} addReportReader={null}/>);
         const renderedUsers = rendered.find(ReportReader);
         expect(renderedUsers).to.have.lengthOf(3);
         expect(renderedUsers.at(0).prop("user").username).to.eq("a");
@@ -50,7 +50,8 @@ describe("Report reader", () => {
 
     it("renders full name", () => {
 
-        const user: User = mockUser({name: "full name", username: "user.name", roles: [mockRole({name: "reports-reader"})]});
+        const user: User = mockUser({name: "full name", username: "user.name",
+            roles: [mockRole({name: "reports-reader"})]});
 
         const rendered = shallow(<ReportReader user={user} removeReportReader={() => { }}/>);
         const name = rendered.find("span");
@@ -59,7 +60,8 @@ describe("Report reader", () => {
 
     it("renders username", () => {
 
-        const user: User = mockUser({name: "full name", username: "user.name", roles: [mockRole({name: "reports-reader"})]});
+        const user: User = mockUser({name: "full name", username: "user.name",
+            roles: [mockRole({name: "reports-reader"})]});
 
         const rendered = shallow(<ReportReader user={user} removeReportReader={() => { }}/>);
         const username = rendered.find(".text-muted");

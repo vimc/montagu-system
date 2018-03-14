@@ -8,7 +8,7 @@ import {mockUser} from "../../../mocks/mockModels";
 import {SidebarAdmin} from "../../../../main/report/components/Sidebar/SidebarAdmin";
 import {ReportsState} from "../../../../main/report/reducers/reportsReducer";
 import {createMockStore} from "../../../mocks/mockStore";
-import {userActions} from "../../../../main/report/actions/userActions";
+import {userActionCreators} from "../../../../main/report/actions/userActionCreators";
 import {ReportAppState} from "../../../../main/report/reducers/reportAppReducers";
 
 describe("SidebarAdmin", () => {
@@ -22,7 +22,7 @@ describe("SidebarAdmin", () => {
 
     beforeEach(() => {
         store = createMockStore(storeState);
-        getReadersStub = sandbox.setStubReduxAction(userActions, 'getReportReaders');
+        getReadersStub = sandbox.setStubReduxAction(userActionCreators, 'getReportReaders');
     });
 
     const readyReportsState: ReportsState =
