@@ -34,15 +34,11 @@ export class ReportReadersList extends React.Component<ReportReadersListProps, R
 
     onSubmit() {
         this.props.addReportReader(this.state.newReader);
+        this.setState({newReader: ""});
     }
 
     render() {
         return <div>
-            <ul className={"list-unstyled report-readers"}>
-                {this.props.users.sort((a, b) => a.username < b.username ? -1 : 1)
-                    .map(u => <ReportReader key={u.username} user={u}
-                                            removeReportReader={this.props.removeReportReader}/>)}
-            </ul>
             <div className="input-group">
                 <input className={"form-control form-control-sm"} type={"text"} placeholder={"username"}
                        value={this.state.newReader} onChange={this.onChange}/>
@@ -52,6 +48,11 @@ export class ReportReadersList extends React.Component<ReportReadersListProps, R
                     </button>
                 </div>
             </div>
+            <ul className={"list-unstyled report-readers"}>
+                {this.props.users.sort((a, b) => a.username < b.username ? -1 : 1)
+                    .map(u => <ReportReader key={u.username} user={u}
+                                            removeReportReader={this.props.removeReportReader}/>)}
+            </ul>
         </div>
     }
 }
