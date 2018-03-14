@@ -2,7 +2,7 @@ import * as React from "react";
 import {connect} from 'react-redux';
 import {Action, Dispatch} from "redux";
 
-import {reportsActions} from "../../../actions/reportsActions";
+import {reportActionCreators} from "../../../actions/reportActionCreators";
 
 import {ReportsFilterFields, ReportsFilterPublishTypes,} from "../../../actionTypes/ReportsActionsTypes";
 import {ReportAppState} from "../../../reducers/reportAppReducers";
@@ -44,13 +44,13 @@ export const mapStateToProps = (state: ReportAppState): Partial<ReportsListFilte
 export const mapDispatchToProps = (dispatch: Dispatch<Action>): Partial<ReportsListFilterProps> => {
     return {
         filterPublish: (value: ReportsFilterPublishTypes) => {
-            dispatch(reportsActions.filterReports({published: value}))
+            dispatch(reportActionCreators.filterReports({published: value}))
         },
         timeFromSelected: (time: Date) => {
-            dispatch(reportsActions.filterReports({timeFrom: time.toString()}))
+            dispatch(reportActionCreators.filterReports({timeFrom: time.toString()}))
         },
         timeUntilSelected: (time: Date) => {
-            dispatch(reportsActions.filterReports({timeUntil: time.toString()}))
+            dispatch(reportActionCreators.filterReports({timeUntil: time.toString()}))
         }
     }
 };

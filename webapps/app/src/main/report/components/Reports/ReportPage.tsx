@@ -7,7 +7,7 @@ import {ReportDetails} from "./ReportDetails";
 import {PageProperties} from "../../../shared/components/PageWithHeader/PageWithHeader";
 import {appSettings} from "../../../shared/Settings";
 import {ReportsListPage} from "../ReportsList/ReportsListPage";
-import {reportPageActions} from "../../actions/reportPageActions";
+import {reportPageActionCreators} from "../../actions/reportPageActionCreators";
 import {ReportTabEnum, Sidebar} from "../Sidebar/Sidebar";
 import {ReportingPageHeader} from "../ReportingPageHeader";
 import {ReportDownloads} from "./ReportDownloads";
@@ -96,7 +96,7 @@ export class ReportPageComponent extends ReportingPageWithHeader<ReportPageProps
 
 export const mapDispatchToProps = (dispatch: Dispatch<Action>): Partial<PageProperties<ReportPageProps>> => {
     return {
-        onLoad: (props: ReportPageProps) => dispatch(reportPageActions.onLoad(props))
+        onLoad: (props: ReportPageProps) => dispatch(reportPageActionCreators.onLoad(props))
     }
 };
 

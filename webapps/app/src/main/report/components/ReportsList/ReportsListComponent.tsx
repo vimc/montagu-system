@@ -5,7 +5,7 @@ import { Report } from "../../../shared/models/Generated";
 
 export interface ReportsListComponentProps {
     reports: Report[]
-};
+}
 
 export const ReportsListComponent : React.StatelessComponent<ReportsListComponentProps> = (props: ReportsListComponentProps) => (
     <ul className="list-unstyled">
