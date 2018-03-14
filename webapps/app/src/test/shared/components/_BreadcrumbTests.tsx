@@ -5,6 +5,8 @@ import {navStore} from "../../../main/shared/stores/NavStore";
 import {checkAsync, checkPromise} from "../../testHelpers";
 import {mockLocation, mockMatch} from "../../mocks/mocks";
 
+// TODO: Deprecated
+
 describe("Breadcrumbs", () => {
     const sandbox = new Sandbox();
     afterEach(() => sandbox.restore());

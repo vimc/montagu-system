@@ -9,6 +9,8 @@ import {InternalLink} from "../../../main/shared/components/InternalLink";
 import {Breadcrumb} from "../../../main/shared/models/Breadcrumb";
 import {navActions} from "../../../main/shared/actions/NavActions";
 
+// TODO: Deprecated
+
 describe("NavBar", () => {
     const sandbox = new Sandbox();
     afterEach(() => sandbox.restore());

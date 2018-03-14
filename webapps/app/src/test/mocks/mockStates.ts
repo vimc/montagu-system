@@ -7,7 +7,7 @@ import {
 import {reportsInitialState, ReportsState} from "../../main/report/reducers/reportsReducer";
 import {ReportAppState} from "../../main/report/reducers/reportAppReducers";
 import {usersInitialState, UsersState} from "../../main/report/reducers/userReducer";
-import {initialBreadcrumbsState} from "../../main/shared/reducers/breadcrumbsReducer";
+import {BreadcrumbsState, initialBreadcrumbsState} from "../../main/shared/reducers/breadcrumbsReducer";
 import {ContribAppState} from "../../main/contrib/reducers/contribAppReducers";
 
 export type RecursivePartial<T> = {
@@ -39,10 +39,11 @@ export const mockUsersState = (props?: RecursivePartial<UsersState>): UsersState
 
 export const mockGlobalState = (props?: any) => {
     const authMock: AuthState = props && props.auth ? mockAuthState(props.auth) : mockAuthState();
+    const breadcrumbs: BreadcrumbsState = props && props.breadcrumbs ? {breadcrumbs: props.breadcrumbs} : initialBreadcrumbsState;
     return {
         auth: authMock,
         form: formReducer,
-        breadcrumbs: initialBreadcrumbsState
+        breadcrumbs
     };
 };
 
