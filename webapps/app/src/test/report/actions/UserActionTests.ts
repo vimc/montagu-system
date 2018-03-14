@@ -2,7 +2,7 @@ import {expect} from "chai";
 
 import {Sandbox} from "../../Sandbox";
 import {createMockStore} from "../../mocks/mockStore";
-import {UserActionKeys} from "../../../main/report/actionTypes/UsersActions";
+import {UserActionTypes} from "../../../main/report/actionTypes/UsersActionTypes";
 import {userActionCreators} from "../../../main/report/actions/userActionCreators";
 import {UserService} from "../../../main/report/services/UserService";
 import {mockUser} from "../../mocks/mockModels";
@@ -28,7 +28,7 @@ describe("User action creators", () => {
         store.dispatch(userActionCreators.getReportReaders("test"));
         checkAsync(done, () => {
             const actions = store.getActions();
-            expect(actions[0].type).to.eql(UserActionKeys.REPORT_READERS_FETCHED);
+            expect(actions[0].type).to.eql(UserActionTypes.REPORT_READERS_FETCHED);
             expect(actions[0].data).to.eql([fakeUser]);
         });
     });
@@ -41,7 +41,7 @@ describe("User action creators", () => {
         store.dispatch(userActionCreators.removeReportReader("test", "user"));
         setTimeout(() => {
             const actions = store.getActions();
-            expect(actions[0].type).to.eql(UserActionKeys.REPORT_READER_REMOVED);
+            expect(actions[0].type).to.eql(UserActionTypes.REPORT_READER_REMOVED);
             expect(actions[0].data).to.eql("user");
             done();
         });
@@ -81,7 +81,7 @@ describe("User action creators", () => {
         store.dispatch(userActionCreators.addReportReader("test", "user"));
         setTimeout(() => {
             const actions = store.getActions();
-            expect(actions[0].type).to.eql(UserActionKeys.REPORT_READERS_FETCHED);
+            expect(actions[0].type).to.eql(UserActionTypes.REPORT_READERS_FETCHED);
             expect(actions[0].data).to.eql([fakeUser]);
             done();
         });

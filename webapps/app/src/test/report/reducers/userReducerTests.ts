@@ -2,7 +2,7 @@ import {mockUsersState} from "../../mocks/mockStates";
 import {mockUser} from "../../mocks/mockModels";
 import {expect} from "chai";
 import {usersReducer} from "../../../main/report/reducers/userReducer";
-import {UserActionKeys} from "../../../main/report/actionTypes/UsersActions";
+import {UserActionTypes} from "../../../main/report/actionTypes/UsersActionTypes";
 
 describe('Reports reducer tests', () => {
 
@@ -13,7 +13,7 @@ describe('Reports reducer tests', () => {
         });
 
         const mutatedState = usersReducer(originalState, {
-            type: UserActionKeys.REPORT_READERS_FETCHED,
+            type: UserActionTypes.REPORT_READERS_FETCHED,
             data: [mockUser({username: "testuser"})]
         });
 
@@ -29,7 +29,7 @@ describe('Reports reducer tests', () => {
         });
 
         const mutatedState = usersReducer(originalState, {
-            type: UserActionKeys.REPORT_READER_REMOVED,
+            type: UserActionTypes.REPORT_READER_REMOVED,
             data: "testuser"
         });
 
