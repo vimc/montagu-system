@@ -76,7 +76,7 @@ class JooqUserRepository(dsl: DSLContext) : JooqRepository(dsl), UserRepository
         val roleId = dsl.getRole(role.name, role.scope.databaseScopePrefix)
                 ?: throw UnknownRoleException(role.name, role.scope.databaseScopePrefix.toString())
 
-        if (role.scope.databaseScopeId.isNotEmpty())
+        if (role.scope.databaseScopePrefix == "modelling-group" && role.scope.databaseScopeId.isNotEmpty())
         {
             dsl.select(MODELLING_GROUP.ID)
                     .from(MODELLING_GROUP)

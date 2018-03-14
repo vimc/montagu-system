@@ -20,7 +20,10 @@ import org.vaccineimpact.api.db.fromJoinPath
 import org.vaccineimpact.api.models.AssociateUser
 import org.vaccineimpact.api.models.Scope
 import org.vaccineimpact.api.models.User
-import org.vaccineimpact.api.models.permissions.*
+import org.vaccineimpact.api.models.permissions.AssociateRole
+import org.vaccineimpact.api.models.permissions.ReifiedPermission
+import org.vaccineimpact.api.models.permissions.ReifiedRole
+import org.vaccineimpact.api.models.permissions.RoleAssignment
 import org.vaccineimpact.api.security.*
 import java.time.Instant
 
@@ -96,6 +99,29 @@ class UserTests : RepositoryTests<UserRepository>()
         }
     }
 
+    @Test
+    fun `cant add role scoped to modelling group for non-existent group`()
+    {
+        withDatabase { db ->
+            db.addUserWithRoles(username)
+        }
+        withRepo { repo ->
+            assertThatThrownBy {
+                repo.modifyUserRole(username, AssociateRole("add", "member", "modelling-group", "fakegroup"))
+            }.isInstanceOf(UnknownObjectError::class.java).hasMessageContaining("modelling-group")
+        }
+    }
+
+    @Test
+    fun `can add role scoped to report`()
+    {
+        withDatabase { db ->
+            db.addUserWithRoles(username)
+        }
+        withRepo { repo ->
+            repo.modifyUserRole(username, AssociateRole("add", "reports-reader", "report", "anyreportname"))
+        }
+    }
 
     @Test
     fun `adds roles to user group`()
