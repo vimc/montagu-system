@@ -1,4 +1,5 @@
 import * as React from "react"
+import {ChangeEvent} from "react"
 import {User} from "../../../shared/models/Generated";
 import {Link} from "react-router-dom";
 
@@ -18,23 +19,42 @@ interface ReportReadersListState {
     newReader: string;
 }
 
-export const ReportReadersList = (props: ReportReadersListProps, state: ReportReadersListState) => {
-    return <div>
-        <ul className={"list-unstyled report-readers"}>
-            {props.users.sort((a, b) => a.username < b.username ? -1 : 1)
-                .map(u => <ReportReader key={u.username} user={u} removeReportReader={props.removeReportReader}/>)}
-        </ul>
-        <div className="input-group">
-            <input className={"form-control form-control-sm"} type={"text"} placeholder={"username"}/>
-            <div className="input-group-append">
-                <button type={"submit"} onClick={() => props.addReportReader("alex.hill")}
-                        className="btn btn-sm">Add reader
-                </button>
+export class ReportReadersList extends React.Component<ReportReadersListProps, ReportReadersListState> {
+
+    constructor() {
+        super();
+        this.state = {newReader: ""};
+        this.onChange = this.onChange.bind(this);
+        this.onSubmit = this.onSubmit.bind(this);
+    }
+
+    onChange(e: ChangeEvent<HTMLInputElement>) {
+        this.setState({newReader: e.target.value});
+    }
+
+    onSubmit() {
+        this.props.addReportReader(this.state.newReader);
+    }
+
+    render() {
+        return <div>
+            <ul className={"list-unstyled report-readers"}>
+                {this.props.users.sort((a, b) => a.username < b.username ? -1 : 1)
+                    .map(u => <ReportReader key={u.username} user={u}
+                                            removeReportReader={this.props.removeReportReader}/>)}
+            </ul>
+            <div className="input-group">
+                <input className={"form-control form-control-sm"} type={"text"} placeholder={"username"}
+                       value={this.state.newReader} onChange={this.onChange}/>
+                <div className="input-group-append">
+                    <button type={"submit"} onClick={this.onSubmit}
+                            className="btn btn-sm">Add reader
+                    </button>
+                </div>
             </div>
         </div>
-    </div>
-
-};
+    }
+}
 
 export const ReportReader = (props: ReportReaderProps) => {
     const showDelete =
