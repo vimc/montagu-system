@@ -2,7 +2,7 @@ import {Dispatch} from "redux";
 
 import { ReportsService } from "../services/ReportsService";
 import {
-    ReportsActions, ReportsFetched, ReportsFilterFields, ReportsSortingFields, ReportTypeKeys,
+    ReportsAction, ReportsFetched, ReportsFilterFields, ReportsSortingFields, ReportTypeKeys,
     ReportVersionDetailssFetched,
     ReportVersionsFetched
 } from "../actionTypes/ReportsActionsTypes";
@@ -12,7 +12,7 @@ import {Report} from "../../shared/models/Generated";
 export const reportActionCreators = {
 
     getReports() {
-        return async (dispatch: Dispatch<ReportsActions>, getState: () => GlobalState) => {
+        return async (dispatch: Dispatch<ReportsAction>, getState: () => GlobalState) => {
             const reports: Report[] = await (new ReportsService(dispatch, getState)).getAllReports();
             dispatch({
                 type: ReportTypeKeys.REPORTS_FETCHED,

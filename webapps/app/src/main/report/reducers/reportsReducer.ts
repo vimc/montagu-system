@@ -1,6 +1,6 @@
 import {
     ReportPublished,
-    ReportsActions, ReportsFilterFields, ReportsFilterPublishTypes, ReportsSortingFields,
+    ReportsAction, ReportsFilterFields, ReportsFilterPublishTypes, ReportsSortingFields,
     ReportTypeKeys,
     ReportUnpublished
 } from "../actionTypes/ReportsActionsTypes";
@@ -29,7 +29,7 @@ export const reportsInitialState: ReportsState = {
     versionDetails: null
 };
 
-export const reportsReducer = (state = reportsInitialState, action: ReportsActions) : ReportsState => {
+export const reportsReducer = (state = reportsInitialState, action: ReportsAction) : ReportsState => {
     switch (action.type) {
         case ReportTypeKeys.REPORTS_FETCHED:
             return { ...state, reports: action.data };

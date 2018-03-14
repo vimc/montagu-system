@@ -74,7 +74,7 @@ export interface BasicReport{
     version: string;
 }
 
-export type ReportsActions =
+export type ReportsAction =
     | ReportsFetched
     | SortReports
     | FilterReports
