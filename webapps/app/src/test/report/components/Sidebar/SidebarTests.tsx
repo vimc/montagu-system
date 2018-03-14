@@ -1,5 +1,5 @@
 import * as React from "react";
-import {mount, shallow, ShallowWrapper} from "enzyme";
+import {shallow, ShallowWrapper} from "enzyme";
 import {expect} from "chai";
 import {Sandbox} from "../../../Sandbox";
 import {

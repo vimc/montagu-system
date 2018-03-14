@@ -16,6 +16,7 @@ export interface SidebarAdminProps extends SidebarAdminPublicProps {
     isAdmin: boolean;
     getReportReaders: (reportName: string) => void;
     removeReportReader: (username: string, reportName: string) => void;
+    addReportReader: (username: string, reportName: string) => void;
 }
 
 export const SidebarAdminComponent: React.StatelessComponent<SidebarAdminProps> = (props: SidebarAdminProps) => {
@@ -32,7 +33,10 @@ export const SidebarAdminComponent: React.StatelessComponent<SidebarAdminProps> 
         <div className="mt-5">
             <label className={"font-weight-bold"}>Report readers</label>
             <ReportReadersList users={props.reportReaders} report={props.report}
-                               removeReportReader={(username: string) => props.removeReportReader(props.report, username)}/>
+                               removeReportReader={(username: string) =>
+                                   props.removeReportReader(props.report, username)}
+                               addReportReader={(username: string) =>
+                                   props.addReportReader(props.report, username)}/>
         </div>}
     </div>
 };

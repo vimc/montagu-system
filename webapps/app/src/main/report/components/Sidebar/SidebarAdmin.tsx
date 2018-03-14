@@ -1,7 +1,7 @@
 import * as React from "react";
 import {ReportAppState} from "../../reducers/reportAppReducers";
 import {connect, Dispatch} from "react-redux";
-import {userActions} from "../../actions/userActions";
+import {userActionCreators} from "../../actions/userActionCreators";
 import {branch, compose, renderNothing} from "recompose";
 import withLifecycle, {LifecycleMethods} from "@hocs/with-lifecycle";
 import {SidebarAdminComponent, SidebarAdminProps} from "./SidebarAdminComponent";
@@ -25,18 +25,19 @@ const mapStateToProps = (state: ReportAppState): Partial<SidebarAdminProps> => {
         allVersions: state.reports.versions,
         report: versionDetails && versionDetails.name,
         version: versionDetails && versionDetails.id,
-        reportReaders: state.users.reportReaders,
-
+        reportReaders: state.users.reportReaders
     };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch<any>, _: SidebarAdminPublicProps): Partial<SidebarAdminProps> => {
+export const mapDispatchToProps = (dispatch: Dispatch<any>, _: SidebarAdminPublicProps): Partial<SidebarAdminProps> => {
 
     return {
         removeReportReader: (report: string, username: string) =>
-            dispatch(userActions.removeReportReader(report, username)),
+            dispatch(userActionCreators.removeReportReader(report, username)),
+        addReportReader: (report: string, username: string) =>
+            dispatch(userActionCreators.addReportReader(report, username)),
         getReportReaders: (reportName: string) =>
-            dispatch(userActions.getReportReaders(reportName))
+            dispatch(userActionCreators.getReportReaders(reportName))
     }
 };
 
