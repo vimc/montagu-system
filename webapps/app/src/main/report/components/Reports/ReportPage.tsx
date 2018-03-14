@@ -81,10 +81,10 @@ export class ReportPageComponent extends ReportingPageWithHeader<ReportPageProps
             <ReportingPageHeader siteTitle={this.siteTitle()}/>
             <div className={"container-fluid pt-4 sm-pt-5"}>
                 <div className="row flex-xl-nowrap">
-                    <div className="col-12 col-md-4 col-xl-2">
+                    <div className="col-12 col-md-4 col-xl-3">
                         <Sidebar active={activeTab} onChangeVersion={this.changeVersion}/>
                     </div>
-                    <div className={"col-12 col-sm-10 col-md-8 pt-4 pt-md-1"}>
+                    <div className={"col-12 col-md-8 pt-4 pt-md-1"}>
                         {activeTab == ReportTabEnum.REPORT && <ReportDetails />}
                         {activeTab == ReportTabEnum.DOWNLOAD && <ReportDownloads/>}
                     </div>
