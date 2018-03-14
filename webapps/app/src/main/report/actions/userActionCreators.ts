@@ -34,7 +34,7 @@ export const userActionCreators = {
             const result = await (new UserService(dispatch, getState)).addReportReader(reportName, username);
 
             if (result == "OK") {
-                this.getReportReaders(reportName);
+                dispatch(this.getReportReaders(reportName));
             }
         }
     }

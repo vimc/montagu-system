@@ -16,12 +16,6 @@ export interface ReportReaderRemoved {
     data: string;
 }
 
-export interface ReportReaderAdded {
-    type: UserActionKeys.REPORT_READER_ADDED;
-    data: string;
-}
-
 export type UserAction =
     | ReportReadersFetched
     | ReportReaderRemoved
-    | ReportReaderAdded

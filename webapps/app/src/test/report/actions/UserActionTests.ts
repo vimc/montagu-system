@@ -34,7 +34,7 @@ describe("User action creators", () => {
     });
 
     it("removeReportReader dispatches report reader removed action if successful", (done) => {
-        const fakeUser = mockUser();
+
         sandbox.setStubFunc(UserService.prototype, "removeReportReader", () => {
             return Promise.resolve("OK");
         });
@@ -70,26 +70,33 @@ describe("User action creators", () => {
         });
     });
 
-    it("addReportReader calls getReportReaders if successful", (done) => {
+    it("addReportReader dispatches getReportReaders if successful", (done) => {
         sandbox.setStubFunc(UserService.prototype, "addReportReader", () => {
             return Promise.resolve("OK");
         });
-        const stub = sandbox.setStub(userActionCreators, "getReportReaders");
+        const fakeUser = mockUser();
+        sandbox.setStubFunc(UserService.prototype, "getReportReaders", () => {
+            return Promise.resolve([fakeUser]);
+        });
         store.dispatch(userActionCreators.addReportReader("test", "user"));
         setTimeout(() => {
-            expect(stub.called).to.be.true;
+            const actions = store.getActions();
+            expect(actions[0].type).to.eql(UserActionKeys.REPORT_READERS_FETCHED);
+            expect(actions[0].data).to.eql([fakeUser]);
             done();
         });
     });
 
-    it("addReportReader does not call getReportReaders if not successful", (done) => {
+    it("addReportReader does not dispatch getReportReaders if not successful", (done) => {
+
         sandbox.setStubFunc(UserService.prototype, "addReportReader", () => {
             return Promise.reject("error");
         });
-        const stub = sandbox.setStub(userActionCreators, "getReportReaders");
+
         store.dispatch(userActionCreators.addReportReader("test", "user"));
         setTimeout(() => {
-            expect(stub.called).to.be.false;
+            const actions = store.getActions();
+            expect(actions).to.have.lengthOf(0);
             done();
         });
     });
