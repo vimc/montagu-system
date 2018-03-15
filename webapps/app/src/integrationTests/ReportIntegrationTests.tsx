@@ -130,11 +130,19 @@ class ReportIntegrationTests extends IntegrationTestSuite {
             const versions = await (new ReportsService(this.store.dispatch, this.store.getState)).getReportVersions("minimal");
             const versionDetails = await (new ReportsService(this.store.dispatch, this.store.getState)).getVersionDetails("minimal", versions[0]);
             const rendered = shallow(<ReportDownloadsComponent report="minimal" versionDetails={versionDetails} ready={true}/>);
-            const response = await firstDownloadPromise(rendered);
+            const response = await firstDownloadButtonPromise(rendered);
             expect(response.status).to.equal(200)
         });
 
         function firstDownloadPromise(rendered: ShallowWrapper<any, any>) {
+            const link = rendered.find(FileDownloadLink).first();
+
+            const url = link.prop("href");
+            return fetcher.fetchFromReportingApi(url)
+        }
+
+
+        function firstDownloadButtonPromise(rendered: ShallowWrapper<any, any>) {
             const link = rendered.find(FileDownloadButton).first();
 
             const url = link.prop("href");
