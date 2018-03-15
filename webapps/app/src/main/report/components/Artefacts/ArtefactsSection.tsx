@@ -23,11 +23,9 @@ export class ArtefactsSection extends React.Component<Props, undefined> {
                            version={version}/>
 
             <ArtefactRow description="All files as zip bundle">
-                <li>
-                    <FileDownloadLink href={bundleUrl}>
-                        {this.props.report}-{version}.zip
-                    </FileDownloadLink>
-                </li>
+                <FileDownloadLink href={bundleUrl}>
+                    {this.props.report}-{version}.zip
+                </FileDownloadLink>
             </ArtefactRow>
         </div>;
     }

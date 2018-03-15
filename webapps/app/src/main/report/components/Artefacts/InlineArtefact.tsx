@@ -7,6 +7,7 @@ interface Props {
     report: string;
     version: string;
     artefact: Artefact;
+    height: string;
 }
 
 export class InlineArtefact extends React.Component<Props, undefined> {
@@ -15,8 +16,8 @@ export class InlineArtefact extends React.Component<Props, undefined> {
         const filename = artefact.filenames[0];
         const extension = filename.split('.').pop();
 
-        if (InlineArtefact.canRenderInIFrame(extension)) {
-            return <ArtefactIFrame href={buildArtefactUrl(report, version, filename, false)}/>;
+        if (InlineArtefact.canRenderInIFrame(filename)) {
+            return <ArtefactIFrame style={{height: this.props.height}} href={buildArtefactUrl(report, version, filename, false)}/>;
         } else {
             // Do other things here, like rendering CSV as a table, etc.
             return null;
@@ -39,7 +40,7 @@ export class ArtefactIFrameInner extends React.Component<OneTimeLinkProps, undef
             return <iframe
                 src={this.props.href + "&inline=true"}
                 width="100%"
-                height="600px"
+                height={this.props.style.height || "600px" }
                 className="border border-dark p-3"
                 frameBorder={0}
             />;

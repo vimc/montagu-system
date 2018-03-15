@@ -1,4 +1,5 @@
 import * as React from "react";
+import {Card, CardHeader, CardBody} from "reactstrap";
 
 interface ArtefactRowProps {
     description: string;
@@ -6,13 +7,13 @@ interface ArtefactRowProps {
 
 export class ArtefactRow extends React.Component<ArtefactRowProps, undefined> {
     render() {
-        return <div className="row">
-            <div className="col-12 col-md-3">
+        return <Card>
+            <CardHeader>
                 {this.props.description}
-            </div>
-            <div className="col-12 col-md-9">
-                <ul>{this.props.children}</ul>
-            </div>
-        </div>;
+            </CardHeader>
+            <CardBody>
+                {this.props.children}
+            </CardBody>
+        </Card>;
     }
 }

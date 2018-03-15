@@ -4,26 +4,29 @@ import {encodeFilename} from "../../../shared/Helpers";
 import {ArtefactRow} from "./ArtefactRow";
 
 import {buildArtefactUrl} from "../../LinkHelpers";
+import {link} from "fs";
+import {InlineArtefact} from "./InlineArtefact";
+import {Artefact} from "../../../shared/models/reports/Artefact";
 interface ArtefactProps {
-    filenames: string[],
-    description: string;
+    artefact: Artefact
     report: string;
     version: string;
 }
 
 export class ArtefactItem extends React.Component<ArtefactProps, undefined> {
     render() {
-        const p = this.props;
-        const links = p.filenames.map(filename => {
-            const url = buildArtefactUrl(p.report, p.version, filename, false);
-            return <li key={`li-${filename}`}>
-                <FileDownloadLink key={filename} href={url}>
+        const a = this.props.artefact;
+
+        const links = a.filenames.map(filename => {
+            const url = buildArtefactUrl(this.props.report, this.props.version, filename, false);
+            return <FileDownloadLink key={filename} href={url}>
                     {filename}
-                </FileDownloadLink>
-            </li>;
+                </FileDownloadLink>;
         });
 
-        return <ArtefactRow description={p.description}>
+        return <ArtefactRow description={a.description}>
+            <InlineArtefact report={this.props.report} version={this.props.version}
+                            artefact={a} height={"200px"}/>
             {links}
         </ArtefactRow>;
     }
