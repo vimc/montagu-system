@@ -10,7 +10,7 @@ import {oneTimeTokenStore} from "../main/report/stores/OneTimeTokenStore";
 import {Version} from "../main/shared/models/reports/Report";
 import {Sandbox} from "../test/Sandbox";
 import {ArtefactItem} from "../main/report/components/Artefacts/ArtefactItem";
-import {FileDownloadLink} from "../main/report/components/FileDownloadLink";
+import {FileDownloadButton, FileDownloadLink} from "../main/report/components/FileDownloadLink";
 import {ResourceLinks} from "../main/report/components/Resources/ResourceLinks";
 import {DataLinks} from "../main/report/components/Data/DataLinks";
 import {ArtefactsSection} from "../main/report/components/Artefacts/ArtefactsSection";
@@ -21,6 +21,8 @@ import {Report} from "../main/shared/models/Generated";
 import {authActions} from "../main/shared/actions/authActions";
 import {UserService} from "../main/report/services/UserService";
 import {mockArtefact} from "../test/mocks/mockModels";
+import {ReportDownloadSection} from "../main/report/components/Reports/DownloadSection";
+import {ReportDownloadsComponent} from "../main/report/components/Reports/ReportDownloads";
 
 const jwt_decode = require('jwt-decode');
 
@@ -127,13 +129,13 @@ class ReportIntegrationTests extends IntegrationTestSuite {
         it("downloads zipped report", async () => {
             const versions = await (new ReportsService(this.store.dispatch, this.store.getState)).getReportVersions("minimal");
             const versionDetails = await (new ReportsService(this.store.dispatch, this.store.getState)).getVersionDetails("minimal", versions[0]);
-            const rendered = shallow(<ArtefactsSection report="minimal" versionDetails={versionDetails}/>);
+            const rendered = shallow(<ReportDownloadsComponent report="minimal" versionDetails={versionDetails} ready={true}/>);
             const response = await firstDownloadPromise(rendered);
             expect(response.status).to.equal(200)
         });
 
         function firstDownloadPromise(rendered: ShallowWrapper<any, any>) {
-            const link = rendered.find(FileDownloadLink).first();
+            const link = rendered.find(FileDownloadButton).first();
 
             const url = link.prop("href");
             return fetcher.fetchFromReportingApi(url)
