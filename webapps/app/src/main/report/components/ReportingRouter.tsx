@@ -9,6 +9,7 @@ import {ReportingNoRouteFoundPage} from "./ReportingNoRouteFoundPage";
 import {ReportingLoginPage} from "./ReportingLoginPage";
 import {ReportPage} from "./Reports/ReportPage";
 import {ReportingForgottenPasswordPage} from "./ReportingForgottenPasswordPage";
+import {ReportingPageHeader} from "./ReportingPageHeader";
 
 interface ReportRouterProps {
     loggedIn: boolean;
@@ -32,6 +33,9 @@ export const ReportingRouter : React.StatelessComponent<ReportRouterProps> = (pr
     const routes = props.loggedIn ?  loggedIn : notLoggedIn;
 
     return <ConnectedRouter history={props.history}>
-        {routes}
+        <div>
+            <ReportingPageHeader/>
+            {routes}
+        </div>
     </ConnectedRouter>;
 }

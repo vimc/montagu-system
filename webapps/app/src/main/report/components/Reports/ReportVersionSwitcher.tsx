@@ -20,6 +20,7 @@ export class ReportVersionSwitcher extends React.Component<Props, undefined> {
     }
 
     render() {
+        if (!this.props.versions) return null;
         const versions = this.props.versions.map(v => new VersionIdentifier(v));
         versions.sort((a, b) => b.compareTo(a));
         const items = versions.map(v => {
