@@ -28,10 +28,10 @@ describe("DataLinks", () => {
         expect(links.length).to.eq(4);
 
         expect(firstLink.prop("href")).to.eq(`/data/csv/${fakeHash}/`);
-        expect(firstLink.children().first().text()).to.eq("Download csv");
+        expect(firstLink.children().first().text()).to.eq("csv");
 
         expect(secondLink.prop("href")).to.eq(`/data/rds/${fakeHash}/`);
-        expect(secondLink.children().first().text()).to.eq("Download rds");
+        expect(secondLink.children().first().text()).to.eq("rds");
     });
 
 });

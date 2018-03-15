@@ -15,8 +15,7 @@ interface Props extends PublicProps {
 }
 
 // These props are passed to the children
-export interface OneTimeLinkProps {
-    href: string;
+export interface OneTimeLinkProps extends PublicProps {
     refreshToken: () => void;
 }
 

@@ -24,7 +24,8 @@ export const ReportDetailsComponent = (props: ReportDetailsProps) => {
 
         return <div className={"pl-3 pl-md-0"}>
             <ReportTitle versionDetails={props.versionDetails}/>
-            <InlineArtefact report={report} version={version} artefact={artefact}/>
+            <InlineArtefact
+                report={report} version={version} artefact={artefact}/>
         </div>;
     } else {
         return <LoadingElement/>;
