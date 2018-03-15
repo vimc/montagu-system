@@ -56,7 +56,7 @@ export class FileDownloadInner extends React.Component<OneTimeLinkProps, undefin
             className = this.props.cssClass + ' disabledLink';
             loader = <img src={loaderAnimation}/>;
         }
-        
+
         return <a href={href}
                   onClick={this.refreshToken}
                   className={className}
