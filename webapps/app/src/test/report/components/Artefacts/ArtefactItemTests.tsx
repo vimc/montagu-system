@@ -6,6 +6,7 @@ import { Sandbox } from "../../../Sandbox";
 import { ArtefactItem } from "../../../../main/report/components/Artefacts/ArtefactItem";
 import {mockArtefact} from "../../../mocks/mockModels";
 import {ReportDownloadSection} from "../../../../main/report/components/Reports/DownloadSection";
+import {InlineArtefactFigure} from "../../../../main/report/components/Artefacts/InlineArtefactFigure";
 
 describe("ArtefactItem", () => {
     const sandbox = new Sandbox();
@@ -35,8 +36,15 @@ describe("ArtefactItem", () => {
     it("renders description", () => {
         const rendered = shallow(<ArtefactItem report="reportname" version="versionname"
                                                      artefact={artefact}/>);
-        const row = rendered.find(ReportDownloadSection);
-        expect(row.prop("title")).to.equal("a file");
+        const section = rendered.find(ReportDownloadSection);
+        expect(section.prop("title")).to.equal("a file");
+    });
+
+    it("renders inline figure", () => {
+        const rendered = shallow(<ArtefactItem report="reportname" version="versionname"
+                                               artefact={artefact}/>);
+        const figure = rendered.find(InlineArtefactFigure);
+        expect(figure).to.have.lengthOf(1)
     });
 
 });

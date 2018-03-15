@@ -23,7 +23,6 @@ export class InlineArtefactFigure extends React.Component<Props, undefined> {
     }
 
     static isImage(ext: string): boolean {
-        // This will be replaced with checking the mimetype once we have that metadata
         const images = ["png", "jpg", "jpeg", "gif", "svg"];
         return images.indexOf(ext) > -1;
     }

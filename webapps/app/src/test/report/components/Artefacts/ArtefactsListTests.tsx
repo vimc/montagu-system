@@ -6,7 +6,7 @@ import {mockArtefact} from "../../../mocks/mockModels";
 
 describe("ArtefactsList", () => {
     it("renders list of ArtefactItems", () => {
-        const staticGraph = mockArtefact()
+        const staticGraph = mockArtefact();
         const csv = mockArtefact();
         const fakeArtefactsArray = [
             {
