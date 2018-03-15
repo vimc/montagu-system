@@ -39,7 +39,7 @@ export class ReportReadersList extends React.Component<ReportReadersListProps, R
 
     render() {
         return <div>
-            <div className="input-group">
+            <div className="input-group mb-3">
                 <input className={"form-control form-control-sm"} type={"text"} placeholder={"username"}
                        value={this.state.newReader} onChange={this.onChange}/>
                 <div className="input-group-append">

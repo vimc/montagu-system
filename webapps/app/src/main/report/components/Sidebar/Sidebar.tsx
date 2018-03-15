@@ -9,6 +9,18 @@ export enum ReportTabEnum {
     CHANGELOG
 }
 
+export const sidebarHashToTab = (hash: string): ReportTabEnum => {
+    switch (hash) {
+        case "#downloads":
+            return ReportTabEnum.DOWNLOAD;
+        case "#changelog":
+            return ReportTabEnum.CHANGELOG;
+        case "#report":
+        default:
+            return ReportTabEnum.REPORT;
+    }
+};
+
 export interface PublicProps {
     onChangeVersion: (version: string) => any;
     active: ReportTabEnum;

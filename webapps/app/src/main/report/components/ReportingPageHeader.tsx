@@ -1,14 +1,10 @@
 import * as React from "react";
-import {PageHeader} from "../../shared/components/PageWithHeader/PageHeader";
+import {PageHeaderNew} from "../../shared/components/PageWithHeader/PageHeaderNew";
 import * as logo from "./logo-green.png"
 
-interface HeaderProps {
-    siteTitle: string;
-}
-
-export class ReportingPageHeader extends React.Component<HeaderProps, undefined> {
+export class ReportingPageHeader extends React.Component {
 
     render() {
-        return <PageHeader logo={logo} siteTitle={"Reporting portal"} />
+        return <PageHeaderNew logo={logo} siteTitle={"Reporting portal"} />
     }
 }
