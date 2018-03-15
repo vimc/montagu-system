@@ -1,6 +1,7 @@
 import * as React from "react";
 import {FileDownloadLink} from "../FileDownloadLink";
 import {encodeFilename} from "../../../shared/Helpers";
+import {ReportDownloadSection} from "../Reports/DownloadSection";
 
 interface ResourceLinksProps {
     resources: string[],
@@ -21,18 +22,13 @@ export class ResourceLinks extends React.Component<ResourceLinksProps, undefined
         }
 
         const links = this.props.resources.map((resource) =>
-            <li key={resource}>
+            <div>
                 <FileDownloadLink href={this.buildUrl(resource)}>{resource}</FileDownloadLink>
-            </li>
+            </div>
         );
 
-        return <div>
-            <div className="row">
-                <div className="col-12 sectionTitle">Resources</div>
-            </div>
-            <ul>
-                {links}
-            </ul>
-        </div>;
+        return <ReportDownloadSection title={"Resources"}>
+            {links}
+        </ReportDownloadSection>
     }
 }

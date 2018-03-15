@@ -4,21 +4,25 @@ import {  shallow } from "enzyme";
 import { FileDownloadLink } from "../../../../main/report/components/FileDownloadLink";
 import { Sandbox } from "../../../Sandbox";
 import { ArtefactItem } from "../../../../main/report/components/Artefacts/ArtefactItem";
-import {ArtefactRow} from "../../../../main/report/components/Artefacts/ArtefactRow";
+import {mockArtefact} from "../../../mocks/mockModels";
+import {ReportDownloadSection} from "../../../../main/report/components/Reports/DownloadSection";
 
 describe("ArtefactItem", () => {
     const sandbox = new Sandbox();
 
     afterEach(() => sandbox.restore());
 
+    const filenames = [
+        "file1.txt",
+        "subdir/file2.csv"
+    ];
+    const artefact = mockArtefact({filenames: filenames, description: "a file"});
+
     it("renders links", () => {
-        const filenames = [
-            "file1.txt",
-            "subdir/file2.csv"
-        ];
+
         const rendered = shallow(<ArtefactItem report="reportname" version="versionname"
-                                                     filenames={filenames} description="a file"/>);
-        const links = rendered.find(ArtefactRow).children().find(FileDownloadLink);
+                                                    artefact={artefact}/>);
+        const links = rendered.find(ReportDownloadSection).children().find(FileDownloadLink);
 
         expect(links).to.have.length(2);
         expect(links.at(0).prop("href")).to.eq("/reports/reportname/versions/versionname/artefacts/file1.txt/");
@@ -30,9 +34,9 @@ describe("ArtefactItem", () => {
 
     it("renders description", () => {
         const rendered = shallow(<ArtefactItem report="reportname" version="versionname"
-                                                     filenames={["filename.csv"]} description="a file"/>);
-        const row = rendered.find(ArtefactRow);
-        expect(row.prop("description")).to.equal("a file");
+                                                     artefact={artefact}/>);
+        const row = rendered.find(ReportDownloadSection);
+        expect(row.prop("title")).to.equal("a file");
     });
 
 });

@@ -3,16 +3,16 @@ import {shallow} from "enzyme";
 import {ArtefactsSection} from "../../../../main/report/components/Artefacts/ArtefactsSection";
 import {mockArtefact, mockVersion} from "../../../mocks/mockModels";
 import * as React from "react";
-import {ArtefactRow} from "../../../../main/report/components/Artefacts/ArtefactRow";
 import {FileDownloadLink} from "../../../../main/report/components/FileDownloadLink";
 import {ArtefactsList} from "../../../../main/report/components/Artefacts/ArtefactsList";
+import {ReportDownloadSection} from "../../../../main/report/components/Reports/DownloadSection";
 
 describe("ArtefactsSection", () => {
     it("renders zip download row", () => {
         const details = mockVersion({ id: "v1" });
         const rendered = shallow(<ArtefactsSection report="test_report" versionDetails={details}/>);
-        const row = rendered.find(ArtefactRow);
-        expect(row.children().find(FileDownloadLink).prop("href")).to.eq("/reports/test_report/versions/v1/all/");
+        const section = rendered.find(ReportDownloadSection);
+        expect(section.children().find(FileDownloadLink).prop("href")).to.eq("/reports/test_report/versions/v1/all/");
     });
 
     it("renders artefacts list", () => {

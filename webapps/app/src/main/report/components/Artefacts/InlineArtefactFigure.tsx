@@ -9,39 +9,33 @@ interface Props {
     artefact: Artefact;
 }
 
-export class InlineArtefact extends React.Component<Props, undefined> {
+export class InlineArtefactFigure extends React.Component<Props, undefined> {
     render(): JSX.Element {
         const {report, version, artefact} = this.props;
         const filename = artefact.filenames[0];
         const extension = filename.split('.').pop();
 
-        if (InlineArtefact.canRenderInIFrame(extension)) {
-            return <ArtefactIFrame href={buildArtefactUrl(report, version, filename, false)}/>;
+        if (InlineArtefactFigure.isImage(extension)) {
+            return <ArtefactFigure href={buildArtefactUrl(report, version, filename, false)}/>;
         } else {
-            // Do other things here, like rendering CSV as a table, etc.
             return null;
         }
     }
 
-    static canRenderInIFrame(ext: string): boolean {
+    static isImage(ext: string): boolean {
         // This will be replaced with checking the mimetype once we have that metadata
         const images = ["png", "jpg", "jpeg", "gif", "svg"];
-        const html = ["html", "htm"];
-        const all = ["pdf"].concat(html).concat(images);
-        return all.indexOf(ext) > -1;
+        return images.indexOf(ext) > -1;
     }
 }
 
-export class ArtefactIFrameInner extends React.Component<OneTimeLinkProps, undefined> {
+export class ArtefactFigureInner extends React.Component<OneTimeLinkProps, undefined> {
     render(): JSX.Element {
         const {href} = this.props;
         if (href != null) {
-            return <iframe
+            return <img
                 src={this.props.href + "&inline=true"}
-                width="100%"
-                height="600px"
                 className="border border-dark p-3"
-                frameBorder={0}
             />;
         } else {
             return null;
@@ -49,4 +43,4 @@ export class ArtefactIFrameInner extends React.Component<OneTimeLinkProps, undef
     }
 }
 
-export const ArtefactIFrame = OneTimeLinkContext(ArtefactIFrameInner);
+export const ArtefactFigure = OneTimeLinkContext(ArtefactFigureInner);
