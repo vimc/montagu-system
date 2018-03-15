@@ -4,7 +4,7 @@ import * as loaderAnimation from "../../shared/resources/link-loader.gif";
 import {OneTimeLinkContext, OneTimeLinkProps} from "./OneTimeLinkContext";
 import {DownloadIcon} from "../../shared/components/DownloadIcon";
 
-export class FileDownloadLinkInner extends React.Component<OneTimeLinkProps, undefined> {
+export class FileDownloadLinkInner extends React.Component<OneTimeLinkProps> {
 
     render() {
         return <FileDownloadInner {...this.props}>
@@ -19,7 +19,7 @@ export class FileDownloadLinkInner extends React.Component<OneTimeLinkProps, und
 
 }
 
-export class FileDownloadButtonInner extends React.Component<OneTimeLinkProps, undefined> {
+export class FileDownloadButtonInner extends React.Component<OneTimeLinkProps> {
 
     render() {
         return <FileDownloadInner cssClass="button" href={this.props.href} refreshToken={this.props.refreshToken}>
@@ -34,7 +34,7 @@ export class FileDownloadButtonInner extends React.Component<OneTimeLinkProps, u
 
 }
 
-export class FileDownloadInner extends React.Component<OneTimeLinkProps, undefined> {
+export class FileDownloadInner extends React.Component<OneTimeLinkProps> {
     constructor(props: OneTimeLinkProps) {
         super(props);
         this.refreshToken = this.refreshToken.bind(this);
