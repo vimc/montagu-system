@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { ModellingGroup } from "../../../shared/models/Generated";
 import { GroupList } from "./GroupList";
 import { ButtonLink } from "../../../shared/components/ButtonLink";
-import { modellingGroupsActions } from "../../actions/modellingGroupsActions";
+import { modellingGroupsActionCreators } from "../../actions/modellingGroupsActionCreators";
 import { LoadingElement } from "../../../shared/partials/LoadingElement/LoadingElement";
 
 import { Dispatch } from "redux";
@@ -56,7 +56,7 @@ export const mapStateToProps = (state: ContribAppState): Partial<ChooseGroupProp
 
 export const mapDispatchToProps = (dispatch: Dispatch<ContribAppState>): Partial<ChooseGroupProps> => {
     return {
-        getUserGroups : () => dispatch(modellingGroupsActions.getUserGroups())
+        getUserGroups : () => dispatch(modellingGroupsActionCreators.getUserGroups())
     }
 };
 

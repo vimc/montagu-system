@@ -2,7 +2,7 @@ import * as React from "react";
 import {connect} from 'react-redux';
 import {Dispatch, Action} from "redux";
 
-import {reportsActions} from "../../actions/reportsActions";
+import {reportActionCreators} from "../../actions/reportActionCreators";
 import {ReportsSortingFields} from "../../actionTypes/ReportsActionsTypes";
 import {ReportAppState} from "../../reducers/reportAppReducers";
 
@@ -36,7 +36,7 @@ export const mapStateToProps = (state: ReportAppState): Partial<ReportsListSorti
 export const mapDispatchToProps = (dispatch: Dispatch<Action>): Partial<ReportsListSortingProps> => {
     return {
         sort: (value: ReportsSortingFields) => {
-            dispatch(reportsActions.sortReports(value))
+            dispatch(reportActionCreators.sortReports(value))
         }
     }
 };

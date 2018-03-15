@@ -4,10 +4,10 @@ import {connect} from 'react-redux';
 
 import {ReportDetails} from "./ReportDetails";
 import {ReportsListPageComponent} from "../ReportsList/ReportsListPage";
-import {reportPageActions} from "../../actions/reportPageActions";
 import {ReportTabEnum, Sidebar, sidebarHashToTab} from "../Sidebar/Sidebar";
 import {ReportDownloads} from "./ReportDownloads";
 import {PageProperties} from "../../../shared/components/PageWithHeader/PageWithHeader";
+import {reportPageActionCreators} from "../../actions/reportPageActionCreators";
 
 export interface ReportPageLocationProps {
     report: string;
@@ -69,7 +69,7 @@ export class ReportPageComponent extends React.Component<ReportPageProps> {
 
 export const mapDispatchToProps = (dispatch: Dispatch<Action>): Partial<ReportPageProps> => {
     return {
-        onLoad: (props: ReportPageLocationProps) => dispatch(reportPageActions.onLoad(props))
+        onLoad: (props: ReportPageLocationProps) => dispatch(reportPageActionCreators.onLoad(props))
     }
 };
 

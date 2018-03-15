@@ -9,5 +9,5 @@ export interface UserGroupsFetched {
     data: ModellingGroup[];
 }
 
-export type ModellingGroupsActionsTypes =
+export type ModellingGroupsAction =
     | UserGroupsFetched

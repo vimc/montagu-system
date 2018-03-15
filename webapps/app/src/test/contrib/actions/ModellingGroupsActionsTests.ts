@@ -1,7 +1,7 @@
 import { expect } from "chai";
 
 import { Sandbox } from "../../Sandbox";
-import { modellingGroupsActions } from "../../../main/contrib/actions/modellingGroupsActions";
+import { modellingGroupsActionCreators } from "../../../main/contrib/actions/modellingGroupsActionCreators";
 import { ModellingGroupsService } from "../../../main/shared/services/ModellingGroupsService";
 import { ModellingGroupTypeKeys } from "../../../main/contrib/actionTypes/ModellingGroupsTypes";
 import {createMockStore} from "../../mocks/mockStore";
@@ -25,7 +25,7 @@ describe("Modelling groups actions tests", () => {
         sandbox.setStubFunc(ModellingGroupsService.prototype, "getAllGroups", ()=>{
           return Promise.resolve([testGroup1]);
         });
-        store.dispatch(modellingGroupsActions.getUserGroups())
+        store.dispatch(modellingGroupsActionCreators.getUserGroups())
         setTimeout(() => {
             const actions = store.getActions()
             const expectedPayload = { type: ModellingGroupTypeKeys.USER_GROUPS_FETCHED, data: [testGroup1] }
