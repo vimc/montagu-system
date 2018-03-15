@@ -1,30 +1,22 @@
 import * as React from "react";
-import { ReportingPageWithHeader } from "./ReportingPageWithHeader";
+import { compose } from "recompose";
+
 import { LoginForm } from "../../shared/components/Login/LoginForm";
-import {IPageWithParent} from "../../shared/models/Breadcrumb";
-import {Page} from "../../shared/components/PageWithHeader/Page";
-import {ReportingPage} from "./ReportingPage";
+import {PageArticle} from "../../shared/components/PageWithHeader/PageArticle";
+import {PageProperties} from "../../shared/components/PageWithHeader/PageWithHeader";
+import {BreadcrumbInitializer} from "../../shared/components/Breadcrumbs/BreadcrumbsInitializer";
 
-export class ReportingLoginPage extends ReportingPageWithHeader<undefined> {
-    name(): string {
-        return "Log in";
-    }
-
-    includeInBreadcrumbs(): boolean {
-        return false;
-    }
-
-    urlFragment(): string {
-        return "/";
-    }
-
-    parent(): IPageWithParent {
-        return null;
+export class ReportingLoginPageComponent extends React.Component<PageProperties<undefined>> {
+    componentDidMount(){
+        this.props.createBreadcrumbs(null);
     }
 
     render(): JSX.Element {
-        return <ReportingPage page={this}>
+        return <PageArticle title={"Log in"}>
             <LoginForm />
-        </ReportingPage>;
+        </PageArticle>;
     }
 }
+
+export const ReportingLoginPage = compose(BreadcrumbInitializer)(ReportingLoginPageComponent) as
+    React.ComponentClass<Partial<PageProperties<undefined>>>;

@@ -1,34 +1,34 @@
 import * as React from "react";
-import {ReportingPageWithHeader} from "../ReportingPageWithHeader";
+import { compose } from "recompose";
+
 import {ReportsList} from "./ReportsList";
 import {ReportsListSorting} from "./ReportsListSorting";
 import {ReportsListFilter} from "./Filter/ReportsListFilter";
-import {IPageWithParent} from "../../../shared/models/Breadcrumb";
-import {ReportingPage} from "../ReportingPage";
+import {PageArticle} from "../../../shared/components/PageWithHeader/PageArticle";
+import {PageBreadcrumb, PageProperties} from "../../../shared/components/PageWithHeader/PageWithHeader";
+import {BreadcrumbInitializer} from "../../../shared/components/Breadcrumbs/BreadcrumbsInitializer";
 
-export class ReportsListPage extends ReportingPageWithHeader<undefined> {
-
-    name() {
-        return "Main menu";
+export class ReportsListPageComponent extends React.Component<PageProperties<undefined>> {
+    componentDidMount(){
+        this.props.createBreadcrumbs(ReportsListPageComponent.breadcrumb());
     }
 
-    title() {
-        return <span>Choose a report to view</span>;
+    static breadcrumb() : PageBreadcrumb {
+        return {
+            name: "Main menu",
+            urlFragment: "/",
+            parent: null
+        }
     }
 
-    urlFragment() {
-        return "/";
-    }
-
-    parent(): IPageWithParent {
-        return null;
-    }
-
-    render(): JSX.Element {
-        return <ReportingPage page={this}>
+    render() :JSX.Element {
+        return <PageArticle title="Choose a report to view">
             <ReportsListFilter/>
             <ReportsListSorting/>
             <ReportsList/>
-        </ReportingPage>;
+        </PageArticle>;
     }
 }
+
+export const ReportsListPage = compose(BreadcrumbInitializer)(ReportsListPageComponent) as
+    React.ComponentClass<Partial<PageProperties<undefined>>>;
