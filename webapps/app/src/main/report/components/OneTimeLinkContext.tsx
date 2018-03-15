@@ -11,7 +11,7 @@ interface PublicProps {
     className?: string;
 }
 
-export interface Props extends PublicProps {
+interface Props extends PublicProps {
     token: OneTimeToken;
 }
 
