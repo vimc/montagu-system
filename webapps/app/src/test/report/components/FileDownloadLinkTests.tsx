@@ -1,11 +1,16 @@
 import {shallow} from "enzyme";
 import {expect} from "chai";
-import {FileDownloadInner} from "../../../main/report/components/FileDownloadLink";
+import {
+    FileDownloadButton,
+    FileDownloadButtonInner,
+    FileDownloadInner, FileDownloadLink,
+    FileDownloadLinkInner
+} from "../../../main/report/components/FileDownloadLink";
 import * as React from "react";
 import {alt} from "../../../main/shared/alt";
 import {Sandbox} from "../../Sandbox";
 
-describe("FileDownloadLink", () => {
+describe("FileDownloadLinkInner", () => {
     const sandbox = new Sandbox();
 
     beforeEach(() => alt.recycle());
@@ -30,4 +35,26 @@ describe("FileDownloadLink", () => {
         element.find("a").simulate("click");
         expect(called).to.be.true;
     });
+});
+
+describe("FileDownloadLink", () => {
+
+    it("renders file download link inner", () => {
+        const rendered = shallow(<FileDownloadLinkInner href={null} refreshToken={null} />);
+        const inner = rendered.find(FileDownloadInner);
+        expect(inner).to.have.lengthOf(1);
+        expect(inner.prop('className')).to.be.undefined;
+    });
+
+});
+
+describe("FileDownloadButton", () => {
+
+    it("renders file download link inner", () => {
+        const rendered = shallow(<FileDownloadButtonInner href={null} refreshToken={null}/>);
+        const inner = rendered.find(FileDownloadInner);
+        expect(inner).to.have.lengthOf(1);
+        expect(inner.prop('className')).to.equal("button");
+    });
+
 });

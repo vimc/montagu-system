@@ -8,7 +8,7 @@ import {oneTimeTokenActions} from "../actions/OneTimeTokenActions";
 
 interface PublicProps {
     href: string;
-    cssClass?: string;
+    className?: string;
 }
 
 export interface Props extends PublicProps {
@@ -20,8 +20,9 @@ export interface OneTimeLinkProps extends PublicProps {
     refreshToken: () => void;
 }
 
-export function OneTimeLinkContext(WrappedComponent: ComponentConstructor<OneTimeLinkProps, undefined>): ComponentConstructor<PublicProps, undefined> {
-    return connectToStores(class OneTimeLinkContextWrapper extends React.Component<Props, undefined> {
+export function OneTimeLinkContext(WrappedComponent: ComponentConstructor<OneTimeLinkProps, undefined>):
+ComponentConstructor<PublicProps, undefined> {
+    return connectToStores(class OneTimeLinkContextWrapper extends React.Component<Props> {
         static getStores() {
             return [oneTimeTokenStore]
         }
@@ -30,7 +31,7 @@ export function OneTimeLinkContext(WrappedComponent: ComponentConstructor<OneTim
             return {
                 href: props.href,
                 token: oneTimeTokenStore.getToken(oneTimeTokenStore.getState(), props.href),
-                cssClass: props.cssClass
+                className: props.className
             }
         }
 
@@ -63,7 +64,7 @@ export function OneTimeLinkContext(WrappedComponent: ComponentConstructor<OneTim
                     + "?access_token=" + this.props.token.raw;
             }
             return <WrappedComponent
-                cssClass={this.props.cssClass}
+                className={this.props.className}
                 href={href}
                 refreshToken={this.refreshToken}
                 children={this.props.children} />;

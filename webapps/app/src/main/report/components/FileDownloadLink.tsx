@@ -4,7 +4,7 @@ import * as loaderAnimation from "../../shared/resources/link-loader.gif";
 import {OneTimeLinkContext, OneTimeLinkProps} from "./OneTimeLinkContext";
 import {DownloadIcon} from "../../shared/components/DownloadIcon";
 
-export class FileDownloadLinkInner extends React.Component<OneTimeLinkProps> {
+export class FileDownloadLinkInner extends React.Component<OneTimeLinkProps, undefined> {
 
     render() {
         return <FileDownloadInner {...this.props}>
@@ -19,10 +19,10 @@ export class FileDownloadLinkInner extends React.Component<OneTimeLinkProps> {
 
 }
 
-export class FileDownloadButtonInner extends React.Component<OneTimeLinkProps> {
+export class FileDownloadButtonInner extends React.Component<OneTimeLinkProps, undefined> {
 
     render() {
-        return <FileDownloadInner cssClass="button" href={this.props.href} refreshToken={this.props.refreshToken}>
+        return <FileDownloadInner className="button" href={this.props.href} refreshToken={this.props.refreshToken}>
             {
                 this.props.children
             }
@@ -34,7 +34,7 @@ export class FileDownloadButtonInner extends React.Component<OneTimeLinkProps> {
 
 }
 
-export class FileDownloadInner extends React.Component<OneTimeLinkProps> {
+export class FileDownloadInner extends React.Component<OneTimeLinkProps, undefined> {
     constructor(props: OneTimeLinkProps) {
         super(props);
         this.refreshToken = this.refreshToken.bind(this);
@@ -50,10 +50,10 @@ export class FileDownloadInner extends React.Component<OneTimeLinkProps> {
         let loader: JSX.Element;
 
         if (href != null) {
-            className = this.props.cssClass;
+            className = this.props.className;
             loader = null;
         } else {
-            className = this.props.cssClass + ' disabledLink';
+            className = this.props.className + ' disabledLink';
             loader = <img src={loaderAnimation}/>;
         }
 
