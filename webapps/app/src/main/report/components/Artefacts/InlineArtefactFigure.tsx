@@ -34,7 +34,7 @@ export class ArtefactFigureInner extends React.Component<OneTimeLinkProps, undef
         if (href != null) {
             return <img
                 src={this.props.href + "&inline=true"}
-                className="border border-dark p-3 inline-figure"
+                className="border border-dark p-3 col-12 col-lg-8"
             />;
         } else {
             return null;
