@@ -5,7 +5,7 @@ import { createSelector } from "reselect";
 import withLifecycle, {LifecycleMethods} from '@hocs/with-lifecycle';
 
 import {ReportAppState} from "../../reducers/reportAppReducers";
-import { reportsActions } from "../../actions/reportsActions";
+import { reportActionCreators } from "../../actions/reportActionCreators";
 import {ReportsListComponent, ReportsListComponentProps} from "./ReportsListComponent";
 import { LoadingElement } from "../../../shared/partials/LoadingElement/LoadingElement";
 import {reportsListSelectors} from "./reportsListSelectors";
@@ -32,7 +32,7 @@ export const mapStateToProps = (state: ReportAppState): Partial<ReportsListConta
 
 export const mapDispatchToProps = (dispatch: Dispatch<ReportAppState>): Partial<ReportsListContainerProps> => {
     return {
-        getReports: () => dispatch(reportsActions.getReports())
+        getReports: () => dispatch(reportActionCreators.getReports())
     }
 };
 

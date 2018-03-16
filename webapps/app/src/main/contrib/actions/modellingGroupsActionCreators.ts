@@ -4,7 +4,7 @@ import { ModellingGroupsService } from "../../shared/services/ModellingGroupsSer
 import { UserGroupsFetched, ModellingGroupTypeKeys} from "../actionTypes/ModellingGroupsTypes";
 import {GlobalState} from "../../shared/reducers/GlobalState";
 
-export const modellingGroupsActions = {
+export const modellingGroupsActionCreators = {
 
     getUserGroups() {
         return async (dispatch: Dispatch<any>, getState: () => GlobalState) => {

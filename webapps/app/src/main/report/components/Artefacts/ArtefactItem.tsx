@@ -1,30 +1,31 @@
 import * as React from "react";
 import {FileDownloadLink} from "../FileDownloadLink";
-import {encodeFilename} from "../../../shared/Helpers";
-import {ArtefactRow} from "./ArtefactRow";
-
 import {buildArtefactUrl} from "../../LinkHelpers";
+import {Artefact} from "../../../shared/models/reports/Artefact";
+import {InlineArtefactFigure} from "./InlineArtefactFigure";
+import {ReportDownloadSection} from "../Reports/DownloadSection";
+
 interface ArtefactProps {
-    filenames: string[],
-    description: string;
+    artefact: Artefact
     report: string;
     version: string;
 }
 
 export class ArtefactItem extends React.Component<ArtefactProps, undefined> {
     render() {
-        const p = this.props;
-        const links = p.filenames.map(filename => {
-            const url = buildArtefactUrl(p.report, p.version, filename, false);
-            return <li key={`li-${filename}`}>
-                <FileDownloadLink key={filename} href={url}>
-                    {filename}
-                </FileDownloadLink>
-            </li>;
+        const a = this.props.artefact;
+
+        const links = a.filenames.map(filename => {
+            const url = buildArtefactUrl(this.props.report, this.props.version, filename, false);
+            return <div><FileDownloadLink key={filename} href={url}>
+                {filename}
+            </FileDownloadLink></div>;
         });
 
-        return <ArtefactRow description={p.description}>
-            {links}
-        </ArtefactRow>;
+        return <ReportDownloadSection title={a.description}>
+            <InlineArtefactFigure report={this.props.report} version={this.props.version}
+                                  artefact={a}/>
+            <div className="mt-2">{links}</div>
+        </ReportDownloadSection>;
     }
 }

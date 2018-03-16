@@ -2,6 +2,7 @@ import * as React from "react";
 
 import * as loaderAnimation from "../../shared/resources/link-loader.gif";
 import {OneTimeLinkContext, OneTimeLinkProps} from "./OneTimeLinkContext";
+import {DownloadIcon} from "../../shared/components/DownloadIcon";
 
 export class FileDownloadLinkInner extends React.Component<OneTimeLinkProps, undefined> {
     constructor(props: OneTimeLinkProps) {
@@ -27,14 +28,14 @@ export class FileDownloadLinkInner extends React.Component<OneTimeLinkProps, und
         }
 
         return <span>
-            <a
-                href={href}
+            <a href={href}
                 onClick={this.refreshToken}
                 className={className}
                 target="_blank"
                 download="" // Filename is provided by server
             >
                 {this.props.children}
+               <span className="download-icon"><DownloadIcon /></span>
             </a>
             {loader}
         </span>;

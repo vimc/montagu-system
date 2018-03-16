@@ -1,5 +1,6 @@
 import * as React from "react";
 import {ILookup} from "../../../shared/models/Lookup";
+import {ReportDownloadSection} from "../Reports/DownloadSection";
 
 export class ParameterList extends React.Component<ILookup<string>, undefined> {
     render() {
@@ -16,11 +17,8 @@ export class ParameterList extends React.Component<ILookup<string>, undefined> {
             </div>
         );
 
-        return <div>
-            <div className="row">
-                <div className="col-12 sectionTitle">Parameters</div>
-            </div>
+        return <ReportDownloadSection title={"Parameters"}>
             {parameterList}
-        </div>;
+        </ReportDownloadSection>;
     }
 }

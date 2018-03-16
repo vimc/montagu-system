@@ -4,6 +4,7 @@ import {Router, match} from 'react-router';
 
 import { navActions } from "../../actions/NavActions";
 import {IPageWithParent} from "../../models/Breadcrumb";
+import {GlobalState} from "../../reducers/GlobalState";
 
 export interface PageParts {
     siteTitle(): string;
@@ -81,10 +82,16 @@ export abstract class PageWithHeader<TLocationProps>
     }
 }
 
+export interface PageBreadcrumb {
+    name: string;
+    urlFragment: string;
+    parent: PageBreadcrumb;
+}
+
 export interface PageProperties<T> {
     location: Location;
     router: Router;
-    onLoad?: (props:Partial<T>) => void;
     match: match<T>;
     history: History;
+    createBreadcrumbs?: (pageBreadcrumb: PageBreadcrumb) => void;
 }
