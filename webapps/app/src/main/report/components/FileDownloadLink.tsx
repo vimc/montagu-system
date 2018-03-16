@@ -5,6 +5,36 @@ import {OneTimeLinkContext, OneTimeLinkProps} from "./OneTimeLinkContext";
 import {DownloadIcon} from "../../shared/components/DownloadIcon";
 
 export class FileDownloadLinkInner extends React.Component<OneTimeLinkProps, undefined> {
+
+    render() {
+        return <FileDownloadInner {...this.props}>
+            {
+                this.props.children
+            }
+            <span className="download-icon">
+                    <DownloadIcon fillColor={"#007bff"}/>
+                </span>
+        </FileDownloadInner>
+    }
+
+}
+
+export class FileDownloadButtonInner extends React.Component<OneTimeLinkProps, undefined> {
+
+    render() {
+        return <FileDownloadInner className="button" href={this.props.href} refreshToken={this.props.refreshToken}>
+            {
+                this.props.children
+            }
+            <span className="download-icon">
+                    <DownloadIcon fillColor={"#ffffff"}/>
+                </span>
+        </FileDownloadInner>
+    }
+
+}
+
+export class FileDownloadInner extends React.Component<OneTimeLinkProps, undefined> {
     constructor(props: OneTimeLinkProps) {
         super(props);
         this.refreshToken = this.refreshToken.bind(this);
@@ -20,26 +50,24 @@ export class FileDownloadLinkInner extends React.Component<OneTimeLinkProps, und
         let loader: JSX.Element;
 
         if (href != null) {
-            className = null;
+            className = this.props.className;
             loader = null;
         } else {
-            className = 'disabledLink';
+            className = this.props.className + ' disabledLink';
             loader = <img src={loaderAnimation}/>;
         }
 
-        return <span>
-            <a href={href}
-                onClick={this.refreshToken}
-                className={className}
-                target="_blank"
-                download="" // Filename is provided by server
-            >
-                {this.props.children}
-               <span className="download-icon"><DownloadIcon /></span>
-            </a>
+        return <a href={href}
+                  onClick={this.refreshToken}
+                  className={className}
+                  target="_blank"
+                  download="" // Filename is provided by server
+        >
+            {this.props.children}
             {loader}
-        </span>;
+        </a>
     }
 }
 
+export const FileDownloadButton = OneTimeLinkContext(FileDownloadButtonInner);
 export const FileDownloadLink = OneTimeLinkContext(FileDownloadLinkInner);

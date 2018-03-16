@@ -8,12 +8,6 @@ import {ArtefactsList} from "../../../../main/report/components/Artefacts/Artefa
 import {ReportDownloadSection} from "../../../../main/report/components/Reports/DownloadSection";
 
 describe("ArtefactsSection", () => {
-    it("renders zip download row", () => {
-        const details = mockVersion({ id: "v1" });
-        const rendered = shallow(<ArtefactsSection report="test_report" versionDetails={details}/>);
-        const section = rendered.find(ReportDownloadSection);
-        expect(section.children().find(FileDownloadLink).prop("href")).to.eq("/reports/test_report/versions/v1/all/");
-    });
 
     it("renders artefacts list", () => {
         const artefacts = [
