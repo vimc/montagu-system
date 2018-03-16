@@ -1,5 +1,5 @@
 import * as React from "react";
-import { reduxForm, Field } from "redux-form";
+import {reduxForm, Field, WrappedFieldProps, BaseFieldProps, GenericFieldHTMLAttributes} from "redux-form";
 import { connect } from "react-redux";
 import { compose } from "recompose";
 import { Dispatch } from "redux";
@@ -8,6 +8,7 @@ import { ValidationError } from "./ValidationError";
 import { validations } from "../../modules/reduxForm";
 import { authActions } from "../../actions/authActions";
 import { GlobalState } from "../../reducers/GlobalState";
+import {InputFieldProps} from "../../types";
 
 export interface ForgotPasswordFormProps {
     handleSubmit: (F: Function) => any;
@@ -20,7 +21,8 @@ export interface ForgotPasswordFormFields{
 }
 
 export class ForgottenPasswordFormComponent extends React.Component<ForgotPasswordFormProps, undefined> {
-    renderField(data: any) {
+    renderField(data: InputFieldProps)
+    {
         const { input, label, type, meta: { touched,  error } } = data;
         return <div>
             <input {...input} placeholder={label} type={type}/>
