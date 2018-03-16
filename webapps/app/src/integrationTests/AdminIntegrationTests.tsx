@@ -46,6 +46,14 @@ class AdminIntegrationTests extends IntegrationTestSuite {
                 })
         });
 
+        it("forgot password", (done: DoneCallback) => {
+            (new AuthService(this.store.dispatch, this.store.getState)).forgotPassword("test@test.com")
+                .then(result => {
+                    expect(result).to.be.eq("OK");
+                    done();
+                })
+        });
+
         it("can fetch groups", (done: DoneCallback) => {
             const promise = addGroups(this.db)
                 .then(() => groupStore.fetchGroups());
