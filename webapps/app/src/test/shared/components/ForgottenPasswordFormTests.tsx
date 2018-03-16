@@ -1,128 +1,91 @@
 import * as React from "react";
-import { Reform } from "alt-reform";
 import { expect } from "chai";
-import { shallow } from "enzyme";
-import * as sinon from "sinon";
+import { shallow, mount } from "enzyme";
+import { createStore, applyMiddleware } from "redux";
+import { Provider } from "react-redux";
+import { reducer as formReducer } from "redux-form";
+import { combineReducers } from "redux";
+import thunk from 'redux-thunk';
+import { MemoryRouter as Router } from 'react-router-dom';
+
+import "../../helper";
 import { Sandbox } from "../../Sandbox";
 import { mockEvent } from "../../mocks/mocks";
 import { mockFormProperties, numberOfSubmissionActions } from "../../mocks/mockForm";
 import { mockFetcher, mockResponse, mockResult, promiseJSON } from "../../mocks/mockRemote";
 import { ValidationError } from "../../../main/shared/components/Login/ValidationError";
 import { expectOrderedActions } from "../../actionHelpers";
-import { ForgottenPasswordFormComponent } from "../../../main/shared/components/Login/ForgottenPasswordForm";
-import {
-    ForgottenPasswordFields,
-    forgottenPasswordFormStore
-} from "../../../main/shared/components/Login/ForgottenPasswordFormStore";
+import { ForgottenPasswordFormComponent, ForgottenPasswordForm } from "../../../main/shared/components/Login/ForgottenPasswordForm";
 import { makeNotification, notificationActions } from "../../../main/shared/actions/NotificationActions";
+import {authReducer} from "../../../main/shared/reducers/authReducer";
+import {authActions} from "../../../main/shared/actions/authActions";
 
-function checkSubmit(form: Reform<ForgottenPasswordFields>,
-                     done: DoneCallback,
-                     sandbox: Sandbox,
-                     callback: (spy: sinon.SinonSpy) => void) {
-    const spy = sandbox.dispatchSpy();
-    form.submit(mockEvent()).then(() => {
-        callback(spy);
-        done();
-    }).catch(x => {
-        done(Error(x));
-    });
-}
 
-describe("ForgottenPasswordForm", () => {
+describe("ForgottenPasswordFormComponent unit testing", () => {
     const sandbox = new Sandbox();
-    let form: Reform<ForgottenPasswordFields>;
+
+    afterEach(() => {
+        sandbox.restore();
+    });
+
+    it("renders form and fields elements and submits on button click", () => {
+        const spy = sandbox.sinon.spy();
+        const submitMock = sandbox.createSpy();
+        const formWrapper = shallow(<ForgottenPasswordFormComponent handleSubmit={submitMock} submit={spy}/>)
+        expect(formWrapper.find('Field[name="email"]')).to.have.length(1);
+        expect(formWrapper.find('form')).to.have.length(1);
+        expect(formWrapper.find('button[type="submit"]')).to.have.length(1);
+        formWrapper.find('button[type="submit"]').simulate('click');
+        expect(submitMock.called).to.equal(true);
+    });
+});
+
+describe("ForgottenPasswordForm connected with redux-form", () => {
+    const sandbox = new Sandbox();
+    let formWrapper :any = null;
+    let store : any= null;
 
     before(() => {
-        form = forgottenPasswordFormStore("test");
+        store = createStore(combineReducers({
+            form: formReducer,
+            auth: authReducer,
+        }), applyMiddleware(thunk));
+
+        formWrapper = mount(<Provider store={store}><Router><ForgottenPasswordForm /></Router></Provider>);
     });
 
     afterEach(() => {
         sandbox.restore();
     });
 
-    it("renders fields", () => {
-        form.change({
-            email: "saruman@isengard"
-        });
-
-        const rendered = shallow(<ForgottenPasswordFormComponent {...mockFormProperties(form)} />);
-        expect(rendered.find({ name: "email" }).prop("value")).to.equal("saruman@isengard");
+    it("validates email field while typing", () => {
+        // initially validation box is empty
+        expect(formWrapper.find(ValidationError).at(0).props().message).to.equal(null);
+        // this sets field as touched
+        formWrapper.find('input[name="email"]').simulate('focus');
+        // this triggers validation
+        formWrapper.find('input[name="email"]').simulate('blur');
+        // validation box will show that email is required if we touch input field and keep it empty
+        // check validation block prop
+        expect(formWrapper.find(ValidationError).at(0).props().message).to.equal("Email address is required");
+        // check if validation block rendered error
+        expect(formWrapper.find(ValidationError).at(0).text()).to.equal("Email address is required");
+        // trigger change of email field with invalid value
+        formWrapper.find('input[name="email"]').simulate('change', {target: {value: 'abc'}});
+        expect(formWrapper.find(ValidationError).at(0).props().message).to.equal("Email address is invalid");
+        expect(formWrapper.find(ValidationError).at(0).text()).to.equal("Email address is invalid");
+        // enter right value
+        formWrapper.find('input[name="email"]').simulate('change', {target: {value: 'abc@abc.com'}});
+        expect(formWrapper.find(ValidationError).at(0).props().message).to.equal(null);
     });
 
-    it("renders validation errors", () => {
-        const errors = {
-            email: "Blah blah"
-        };
-        const rendered = shallow(<ForgottenPasswordFormComponent {...mockFormProperties(form, errors)} />);
-        const validationErrors = rendered.find(ValidationError);
-        let hasMessage: boolean = false;
-        validationErrors.forEach(x => {
-            hasMessage = hasMessage || x.prop("message") == "Blah blah";
-        });
-        expect(hasMessage).to.equal(true, "Expected there to be at least one ValidationError containing the message 'Blah blah'");
-    });
-
-    it("posts when form is submitted", (done: DoneCallback) => {
-        mockFetcher(mockResponse(mockResult("")));
-        const spy = sandbox.fetcherSpy();
-        const data = {
-            email: "email@example.com"
-        };
-        form.change(data);
-        checkSubmit(form, done, sandbox, _ => {
-            expect(spy.called).to.be.true;
-            expect(spy.args[0][0]).to.equal("/password/request-link/?email=email@example.com");
-            expect(spy.args[0][1]).to.eql({
-                method: "post"
-            });
-        });
-    });
-
-    it("displays error when post fails", (done: DoneCallback) => {
-        mockFetcher(Promise.reject(true));
-        form.change({
-            email: "email@example.com"
-        });
-        checkSubmit(form, done, sandbox, spy => {
-            expectOrderedActions(
-                spy,
-                [{ action: "ForgottenPassword_test/submitFailed", payload: "An error occurred sending password reset email" }],
-                numberOfSubmissionActions
-            );
-        });
-    });
-
-    it("notifies when response is success", (done: DoneCallback) => {
-
-        const spy = sandbox.sinon.spy(notificationActions, "notify");
-
-        mockFetcher(Promise.resolve(promiseJSON({status: "success", errors: [], data: "OK"})));
-        form.change({
-            email: "an@email"
-        });
-
-        const expectedNotification = makeNotification("Thank you. If we have an account registered for this email address you will receive a reset password link", "info")
-
-        checkSubmit(form, done, sandbox, _ => {
-            expect(spy.calledWith(expectedNotification)).to.be.true;
-        });
-
-    });
-
-    it("displays error when response is failure", (done: DoneCallback) => {
-
-        mockFetcher(Promise.resolve(promiseJSON({status: "failure", errors: [{code: "code", message: "some error message"}], data: null})));
-        form.change({
-            email: "an@email"
-        });
-
-        checkSubmit(form, done, sandbox, spy => {
-            expectOrderedActions(
-                spy,
-                [{ action: "ForgottenPassword_test/submitFailed", payload: "some error message" }],
-                numberOfSubmissionActions
-            );
-        });
+    it("submits email for forgotten password", () => {
+        formWrapper.find('input[name="email"]').simulate('focus');
+        formWrapper.find('input[name="email"]').simulate('change', {target: {value: 'abc@abc.com'}});
+        const logInActionSpy = sandbox.setStubFunc(authActions, "forgotPassword", ()=>({type: 'test'}));
+        // simulate form submit
+        formWrapper.find('form.form').simulate('submit');
+        expect(logInActionSpy.callCount).to.equal(1);
+        expect(logInActionSpy.getCall(0).args[0]).to.equal('abc@abc.com');
     });
 });

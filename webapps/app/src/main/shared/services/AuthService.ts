@@ -19,4 +19,8 @@ export class AuthService extends AbstractLocalService {
         return this.setOptions({credentials: "include"})
             .get("/clear-shiny-cookie/");
     }
+
+    forgotPassword(email: string) {
+        return this.post("/password/request-link/?email=" + encodeURI(email));
+    }
 }
