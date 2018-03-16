@@ -13,6 +13,9 @@ export class DataLinks extends React.Component<ILookup<string>, undefined> {
     render() {
         const keys = Object.getOwnPropertyNames(this.props);
 
+        if (keys.length == 0)
+            return null;
+
         const links = keys.map((key) =>
             <div className="row" key={key}>
                 <div className="col-12 col-md-3">{key}</div>
