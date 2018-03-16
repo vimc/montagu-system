@@ -1,18 +1,13 @@
 import * as React from "react";
-import { FormConnector } from "alt-reform";
 import { compose } from "recompose";
 
-import { forgottenPasswordFormStore } from "../../shared/components/Login/ForgottenPasswordFormStore";
-import {
-    ForgottenPasswordFormComponent,
-    ForgottenPasswordPageTitle
-} from "../../shared/components/Login/ForgottenPasswordForm";
+import {ForgottenPasswordForm} from "../../shared/components/Login/ForgottenPasswordForm";
 import {ReportsListPageComponent} from "./ReportsList/ReportsListPage";
 import {PageBreadcrumb, PageProperties} from "../../shared/components/PageWithHeader/PageWithHeader";
 import {PageArticle} from "../../shared/components/PageWithHeader/PageArticle";
 import {BreadcrumbInitializer} from "../../shared/components/Breadcrumbs/BreadcrumbsInitializer";
 
-const ForgottenPasswordForm = FormConnector(forgottenPasswordFormStore("report"))(ForgottenPasswordFormComponent);
+const pageTitle = "Forgotten your password?";
 
 export class ReportingForgottenPasswordPageComponent extends React.Component<PageProperties<undefined>> {
     componentDidMount(){
@@ -21,14 +16,14 @@ export class ReportingForgottenPasswordPageComponent extends React.Component<Pag
 
     static breadcrumb() : PageBreadcrumb {
         return {
-            name: ForgottenPasswordPageTitle,
+            name: pageTitle,
             urlFragment: "forgotten-password/",
             parent: ReportsListPageComponent.breadcrumb()
         }
     }
 
     render(): JSX.Element {
-        return <PageArticle title={ForgottenPasswordPageTitle}>
+        return <PageArticle title={pageTitle}>
             <ForgottenPasswordForm />
         </PageArticle>;
     }
