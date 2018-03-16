@@ -1,5 +1,5 @@
 import * as React from "react";
-import { reduxForm, Field } from "redux-form";
+import { reduxForm, Field} from "redux-form";
 import { connect } from "react-redux";
 import { compose } from "recompose";
 import { Dispatch } from "redux";
@@ -11,7 +11,6 @@ import { GlobalState } from "../../reducers/GlobalState";
 
 export interface ForgotPasswordFormProps {
     handleSubmit: (F: Function) => any;
-    errorMessage?: string;
     submit: (values: ForgotPasswordFormFields) => void;
 }
 
@@ -20,7 +19,7 @@ export interface ForgotPasswordFormFields{
 }
 
 export class ForgottenPasswordFormComponent extends React.Component<ForgotPasswordFormProps, undefined> {
-    renderField(data: any) {
+    renderField(data:  any) {
         const { input, label, type, meta: { touched,  error } } = data;
         return <div>
             <input {...input} placeholder={label} type={type}/>
@@ -40,7 +39,6 @@ export class ForgottenPasswordFormComponent extends React.Component<ForgotPasswo
                             label="Email address"
                             validate={[validations.required, validations.email]}
                         />
-                        <ValidationError message={ this.props.errorMessage } />
                     </div>
                     <button
                         type="submit"
@@ -53,10 +51,6 @@ export class ForgottenPasswordFormComponent extends React.Component<ForgotPasswo
     }
 }
 
-function mapStateToProps(state: GlobalState): Partial<ForgotPasswordFormProps> {
-    return { errorMessage: state.auth.errorMessage };
-}
-
 function mapDispatchToProps(dispatch: Dispatch<any>): Partial<ForgotPasswordFormProps> {
     return {
         submit : (values: ForgotPasswordFormFields) => dispatch(authActions.forgotPassword(values.email))
@@ -65,5 +59,5 @@ function mapDispatchToProps(dispatch: Dispatch<any>): Partial<ForgotPasswordForm
 
 export const ForgottenPasswordForm = compose(
     reduxForm({ form: 'forgotPassword'}),
-    connect(mapStateToProps, mapDispatchToProps),
+    connect(state => state, mapDispatchToProps),
 )(ForgottenPasswordFormComponent);
