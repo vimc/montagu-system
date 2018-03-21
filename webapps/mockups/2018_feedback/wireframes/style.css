@@ -5777,3 +5777,11 @@ select.form-control {
 
 .estimates {
   margin-right: 10px; }
+
+button {
+  cursor: pointer;
+}
+
+.download-icon {
+  vertical-align: sub; margin-left: 5px;
+}
