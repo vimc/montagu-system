@@ -14,8 +14,10 @@ import {
     ReportDownloadsProps
 } from "../../../../main/report/components/Reports/ReportDownloads";
 import {ReportTitle} from "../../../../main/report/components/Reports/ReportTitle";
+import {FileDownloadButton, FileDownloadLink} from "../../../../main/report/components/FileDownloadLink";
+import {ReportDownloadSection} from "../../../../main/report/components/Reports/DownloadSection";
 
-describe("ReportDetails", () => {
+describe("ReportDownloads", () => {
     const sandbox = new Sandbox();
     afterEach(() => sandbox.restore());
 
@@ -96,6 +98,17 @@ describe("ReportDetails", () => {
         expect(rendered.find(ReportTitle).props()).to.eql({
             versionDetails: version
         });
+    });
+
+    it("renders download zip button", () => {
+        const version = mockVersion({ id: "v1" });
+        const rendered = shallow(<ReportDownloadsComponent
+            versionDetails={version}
+            report="test_report"
+            ready={true}/>);
+
+        const button = rendered.find(FileDownloadButton);
+        expect(button.prop("href")).to.eq("/reports/test_report/versions/v1/all/");
     });
 
 });

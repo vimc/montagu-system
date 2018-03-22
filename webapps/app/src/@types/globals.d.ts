@@ -11,3 +11,9 @@ declare type ComponentConstructor<TProps, TState> = new (...args: any[]) => Reac
 declare module 'js-base64';
 declare module 'appName';
 declare module 'lodash';
+declare module 'react-day-picker/DayPickerInput';
+declare module 'react-day-picker/moment';
+declare module 'reselect';
+declare module 'moment';
+
+declare module 'react-open-iconic-svg';

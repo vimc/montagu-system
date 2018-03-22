@@ -1,8 +1,6 @@
 import * as React from "react";
-import {touchstoneActions} from "../../../actions/TouchstoneActions";
 import {responsibilityActions} from "../../../actions/ResponsibilityActions";
 import {responsibilityStore} from "../../../stores/ResponsibilityStore";
-import {modellingGroupActions} from "../../../../shared/actions/ModellingGroupActions";
 import {doNothing} from "../../../../shared/Helpers";
 import {DownloadDataTitle} from "../DownloadDataTitle";
 import {UploadBurdenEstimatesContent} from "./UploadBurdenEstimatesContent";
@@ -11,6 +9,7 @@ import {ContribPageWithHeader} from "../../PageWithHeader/ContribPageWithHeader"
 import {IPageWithParent} from "../../../../shared/models/Breadcrumb";
 import {ResponsibilityOverviewPage} from "../Overview/ResponsibilityOverviewPage";
 import { Page } from "../../../../shared/components/PageWithHeader/Page";
+import {appSettings} from "../../../../shared/Settings";
 
 export interface UploadEstimatesProps {
     groupId: string;
@@ -24,7 +23,7 @@ export class UploadBurdenEstimatesPage extends ContribPageWithHeader<UploadEstim
 
         return this.loadParent(props).then(() => {
             estimateTokenActions.clearUsedToken();
-            estimateTokenActions.setRedirectPath(this.props.location.pathname);
+            estimateTokenActions.setRedirectPath(appSettings.publicPath + this.props.location.pathname);
 
             responsibilityActions.setCurrentResponsibility(props.scenarioId);
             responsibilityStore.fetchOneTimeEstimatesToken().catch(doNothing);

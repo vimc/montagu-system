@@ -4,7 +4,7 @@ import fetcher from "../../../../shared/sources/Fetcher";
 import { userActions } from "../../../actions/UserActions";
 import { processResponseAndNotifyOnErrors } from "../../../../shared/sources/Source";
 import { notificationActions, NotificationException } from "../../../../shared/actions/NotificationActions";
-import { Link } from "simple-react-router";
+import { InternalLink } from "../../../../shared/components/InternalLink";
 
 interface UserRoleProps extends RoleAssignment {
     username: string;
@@ -48,7 +48,7 @@ export class UserRole extends React.Component<UserRoleProps, UserRoleState> {
             return ""
         }
 
-        return <Link onClick={this.clickHandler.bind(this)} className="text-danger float-right" href="#">Remove role</Link>
+        return <InternalLink onClick={this.clickHandler.bind(this)} className="text-danger float-right" href="#">Remove role</InternalLink>
     }
 
     render() {

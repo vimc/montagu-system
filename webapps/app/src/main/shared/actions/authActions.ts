@@ -105,5 +105,14 @@ export const authActions = {
                 type: AuthTypeKeys.UNAUTHENTICATED,
             } as Unauthenticated);
         }
+    },
+
+    forgotPassword(email: string) {
+        return async (dispatch: Dispatch<any>, getState: () => GlobalState) => {
+            const result = await (new AuthService(dispatch, getState)).forgotPassword(email);
+            if (result) {
+                return notificationActions.notify(makeNotification("Thank you. If we have an account registered for this email address you will receive a reset password link", "info"));
+            }
+        }
     }
 };

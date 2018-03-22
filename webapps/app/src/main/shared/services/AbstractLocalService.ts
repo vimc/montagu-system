@@ -17,7 +17,7 @@ import {singletonVariableCache} from "../modules/cache/singletonVariableCache";
 export interface OptionsHeaders {
    Authorization?: string;
    'Content-Type'?: string;
-};
+}
 
 export interface RequestOptions {
     headers?: OptionsHeaders;
@@ -31,7 +31,7 @@ export interface InputOptions {
     'Content-Type'?: string;
     credentials?: "omit" | "same-origin" | "include";
     baseURL?: string;
-    cache?: string;
+    cacheKey?: string;
 }
 
 export abstract class AbstractLocalService {
@@ -68,7 +68,7 @@ export abstract class AbstractLocalService {
     protected initOptions() {
         this.options = {};
         this.options.baseURL = settings.apiUrl();
-        this.options.cache = null;
+        this.options.cacheKey = null;
         if (this.bearerToken) {
             this.options.Authorization = 'Bearer ' + this.bearerToken;
         }
@@ -105,9 +105,15 @@ export abstract class AbstractLocalService {
         return this.getData(this.makeUrl(url), "POST", params);
     }
 
-    protected makeCacheKey(url: string) : string {
-        if (!url || !this.options.cache) return null;
-        return ["localService", this.constructor.name, this.options.cache, encodeURIComponent(url)].join('.');
+    private getFullyQualifiedCacheKey(cacheKey: string, url: string) : string {
+        return ["localService", this.constructor.name, cacheKey, encodeURIComponent(url)].join('.');
+    }
+
+    protected clearCache(cacheKey: string, url: string) {
+        const fullyQualifiedUrl = this.makeUrl(url);
+        const key = this.getFullyQualifiedCacheKey(cacheKey, fullyQualifiedUrl);
+
+        this.cacheEngine.clear(key);
     }
 
     public clearAllCache() {
@@ -116,8 +122,8 @@ export abstract class AbstractLocalService {
     }
 
     protected getData(url: string, method: string, params?: any) {
-        if (this.options.cache) {
-            const cacheValue = this.cacheEngine.get(this.makeCacheKey(url));
+        if (this.options.cacheKey) {
+            const cacheValue = this.cacheEngine.get(this.getFullyQualifiedCacheKey(this.options.cacheKey, url));
             if (cacheValue) {
                 // reset options on returning cached data from endpoint
                 this.initOptions();
@@ -150,7 +156,7 @@ export abstract class AbstractLocalService {
             switch (error.code) {
                 case "bearer-token-invalid":
                     console.log("Access token has expired or is otherwise invalid: Logging out.");
-                    this.dispatch(this.logOut())
+                    this.dispatch(this.logOut());
                     const notification: Notification = {
                         message: "Your session has expired. You will need to log in again",
                         type: "info"
@@ -163,8 +169,8 @@ export abstract class AbstractLocalService {
 
         switch (result.status) {
             case "success":
-                if (this.options.cache) {
-                    this.cacheEngine.set(this.makeCacheKey(response.url), result.data)
+                if (this.options.cacheKey) {
+                    this.cacheEngine.set(this.getFullyQualifiedCacheKey(this.options.cacheKey, response.url), result.data)
                 }
                 // reset options on successful request
                 this.initOptions();

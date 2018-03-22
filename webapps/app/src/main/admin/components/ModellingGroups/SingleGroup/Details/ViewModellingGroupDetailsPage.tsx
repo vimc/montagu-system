@@ -5,7 +5,6 @@ import { ModellingGroupTitle, GroupTitleProps } from "../ModellingGroupTitle";
 import { AdminPageWithHeader } from "../../../AdminPageWithHeader";
 import { groupStore } from "../../../../stores/GroupStore";
 import { modellingGroupActions } from "../../../../../shared/actions/ModellingGroupActions";
-import { doNothing } from "../../../../../shared/Helpers";
 import { userStore } from "../../../../stores/UserStore";
 import {IPageWithParent} from "../../../../../shared/models/Breadcrumb";
 import {ViewAllModellingGroupsPage} from "../../List/ViewAllModellingGroupsPage";

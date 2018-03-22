@@ -1,6 +1,8 @@
 import * as React from "react";
 import {ILookup} from "../../../shared/models/Lookup";
 import {FileDownloadLink} from "../FileDownloadLink";
+import {Card,CardHeader, CardBody} from "reactstrap";
+import {ReportDownloadSection} from "../Reports/DownloadSection";
 
 export class DataLinks extends React.Component<ILookup<string>, undefined> {
     buildUrl(type: string, key: string): string {
@@ -11,22 +13,22 @@ export class DataLinks extends React.Component<ILookup<string>, undefined> {
     render() {
         const keys = Object.getOwnPropertyNames(this.props);
 
+        if (keys.length == 0)
+            return null;
+
         const links = keys.map((key) =>
             <div className="row" key={key}>
                 <div className="col-12 col-md-3">{key}</div>
                 <div className="col-12 col-md-9">
                     <ul>
-                        <li><FileDownloadLink href={this.buildUrl("csv", key)}>Download csv</FileDownloadLink></li>
-                        <li><FileDownloadLink href={this.buildUrl("rds", key)}>Download rds</FileDownloadLink></li>
+                        <li><FileDownloadLink href={this.buildUrl("csv", key)}>csv</FileDownloadLink></li>
+                        <li><FileDownloadLink href={this.buildUrl("rds", key)}>rds</FileDownloadLink></li>
                     </ul>
                 </div>
             </div>);
 
-        return <div>
-            <div className="row">
-                <div className="col-12 sectionTitle">Input data to the report</div>
-            </div>
+        return <ReportDownloadSection title={"Input data to the report"}>
             {links}
-        </div>;
+        </ReportDownloadSection>
     }
 }

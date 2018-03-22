@@ -1,108 +1,79 @@
 import * as React from "react";
 import {Action, Dispatch} from "redux";
 import {connect} from 'react-redux';
-import {ReportingPageWithHeader} from "../ReportingPageWithHeader";
-import {ReportDetails} from "./ReportDetails";
-import {PageProperties} from "../../../shared/components/PageWithHeader/PageWithHeader";
-import {appSettings} from "../../../shared/Settings";
-import {MainMenu} from "../MainMenu/MainMenu";
-import {reportPageActions} from "../../actions/reportPageActions";
-import {ReportTabEnum, Sidebar} from "./Sidebar";
-import {PageHeader} from "../../../shared/components/PageWithHeader/PageHeader";
-import {ReportingPageHeader} from "../ReportingPageHeader";
-import {ReportDownloads, ReportDownloadsComponent} from "./ReportDownloads";
 
-export interface ReportPageProps {
+import {ReportDetails} from "./ReportDetails";
+import {ReportsListPageComponent} from "../ReportsList/ReportsListPage";
+import {ReportTabEnum, Sidebar, sidebarHashToTab} from "../Sidebar/Sidebar";
+import {ReportDownloads} from "./ReportDownloads";
+import {PageProperties} from "../../../shared/components/PageWithHeader/PageWithHeader";
+import {reportPageActionCreators} from "../../actions/reportPageActionCreators";
+
+export interface ReportPageLocationProps {
     report: string;
     version: string;
 }
 
-const hashToTab = (hash: string): ReportTabEnum => {
-    switch (hash) {
-        case "#downloads":
-            return ReportTabEnum.DOWNLOAD;
-        case "#changelog":
-            return ReportTabEnum.CHANGELOG;
-        case "#report":
-        default:
-            return ReportTabEnum.REPORT;
-    }
-};
+export interface ReportPageProps extends PageProperties<ReportPageLocationProps> {
+    onLoad?: (props:ReportPageLocationProps) => void;
+}
 
-export class ReportPageComponent extends ReportingPageWithHeader<ReportPageProps> {
-    constructor(props: PageProperties<ReportPageProps>) {
+export class ReportPageComponent extends React.Component<ReportPageProps> {
+    constructor(props: ReportPageProps) {
         super(props);
         this.changeVersion = this.changeVersion.bind(this);
     }
 
     componentDidMount() {
-        this.loadVersion();
+        this.props.onLoad(this.props.match.params);
     }
 
-    changeVersion(version: string): any {
-        this.redirectToVersion(version);
-        setTimeout(() => {
-            this.loadVersion();
-        });
+    componentWillReceiveProps(nextProps: ReportPageProps) {
+        if (nextProps.match.params.version !== this.props.match.params.version) {
+            this.props.onLoad(nextProps.match.params);
+        }
     }
 
-    loadVersion() {
-        this.props.onLoad({
-            report: this.getLocationParams().report,
-            version: this.getLocationParams().version
-        });
-        this.createBreadcrumb();
-    }
-
-    getLocationParams() {
-        return this.props.location.params;
-    }
-
-    redirectToVersion(version: string) {
+    changeVersion(version: string): void {
         const hash = this.props.location.hash;
-        this.props.router
-            .redirectTo(`${appSettings.publicPath}/${this.getLocationParams().report}/${version}/${hash}`, false);
+        this.props.history
+            .push(`/${this.props.match.params.report}/${version}/${hash}`, false);
     }
 
-    parent() {
-        return new MainMenu();
-    }
-
-    name() {
-        const params = this.getLocationParams();
-        return `${params.report} (${params.version})`;
-    }
-
-    urlFragment() {
-        const params = this.getLocationParams();
-        return `${params.report}/${params.version}/`;
+    static breadcrumb(params: ReportPageLocationProps) {
+        return {
+            name: `${params.report} (${params.version})`,
+            urlFragment: `${params.report}/${params.version}/`,
+            parent: ReportsListPageComponent.breadcrumb()
+        }
     }
 
     render(): JSX.Element {
-
-        const activeTab = hashToTab(this.props.location.hash);
+        const activeTab = sidebarHashToTab(this.props.location.hash);
 
         return <div>
-            <ReportingPageHeader siteTitle={this.siteTitle()}/>
             <div className={"container-fluid pt-4 sm-pt-5"}>
                 <div className="row flex-xl-nowrap">
-                    <div className="col-12 col-md-4 col-xl-2">
+                    <div className="col-12 col-md-4 col-xl-3">
                         <Sidebar active={activeTab} onChangeVersion={this.changeVersion}/>
                     </div>
-                    <div className={"col-12 col-sm-10 col-md-8 pt-4 pt-md-1"}>
+                    <div className={"col-12 col-md-8 pt-4 pt-md-1"}>
                         {activeTab == ReportTabEnum.REPORT && <ReportDetails />}
                         {activeTab == ReportTabEnum.DOWNLOAD && <ReportDownloads/>}
                     </div>
                 </div>
             </div>
-        </div>
+        </div>;
     }
 }
 
-export const mapDispatchToProps = (dispatch: Dispatch<Action>): Partial<PageProperties<ReportPageProps>> => {
+export const mapDispatchToProps = (dispatch: Dispatch<Action>): Partial<ReportPageProps> => {
     return {
-        onLoad: (props: ReportPageProps) => dispatch(reportPageActions.onLoad(props))
+        onLoad: (props: ReportPageLocationProps) => dispatch(reportPageActionCreators.onLoad(props))
     }
 };
 
-export const ReportPage = connect((props) => props, mapDispatchToProps)(ReportPageComponent);
+export const ReportPage = connect(
+    (props: Partial<ReportPageProps>) => props,
+    mapDispatchToProps
+)(ReportPageComponent) as React.ComponentClass<Partial<ReportPageProps>>;

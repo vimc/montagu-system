@@ -18,7 +18,7 @@ describe("ResourceLinks", () => {
         ];
 
         const rendered = shallow(<ResourceLinks resources={testResources} report="reportname" version="versionname" />);
-        const links = rendered.find('li').find(FileDownloadLink);
+        const links = rendered.find(FileDownloadLink);
 
         expect(links.at(0).prop("href")).to.eq("/reports/reportname/versions/versionname/resources/R:subdir:someresource.csv/");
         expect(links.at(1).prop("href")).to.eq("/reports/reportname/versions/versionname/resources/someother.rds/");

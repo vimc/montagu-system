@@ -3,6 +3,8 @@ import {Version} from "../../shared/models/reports/Report";
 
 export enum ReportTypeKeys {
     REPORTS_FETCHED = "REPORTS_FETCHED",
+    SORT_REPORTS = "SORT_REPORTS",
+    FILTER_REPORTS = "FILTER_REPORTS",
     REPORT_VERSIONS_FETCHED = "REPORT_VERSIONS_FETCHED",
     SET_CURRENT_REPORT = "SET_CURRENT_REPORT",
     REPORT_VERSION_DETAILS_FETCHED = "REPORT_VERSION_DETAILS_FETCHED",
@@ -15,6 +17,33 @@ export interface ReportsFetched {
     data: Report[];
 }
 
+export enum ReportsSortingFields {
+    "name" = "name",
+    "latest_version" = "latest_version"
+}
+
+export interface SortReports {
+    type: ReportTypeKeys.SORT_REPORTS;
+    data: ReportsSortingFields;
+}
+
+export enum ReportsFilterPublishTypes {
+    "all" = "all",
+    "published" = "published",
+    "not_published" = "not_published"
+}
+
+export interface ReportsFilterFields {
+    published?: ReportsFilterPublishTypes;
+    timeFrom?: string;
+    timeUntil?: string;
+}
+
+export interface FilterReports {
+    type: ReportTypeKeys.FILTER_REPORTS;
+    data: ReportsFilterFields;
+}
+
 export interface SetCurrentReport {
     type: ReportTypeKeys.SET_CURRENT_REPORT;
     data: string;
@@ -22,7 +51,7 @@ export interface SetCurrentReport {
 
 export interface ReportVersionsFetched {
     type: ReportTypeKeys.REPORT_VERSIONS_FETCHED;
-    data: Version[];
+    data: string[];
 }
 
 export interface ReportVersionDetailssFetched {
@@ -45,8 +74,10 @@ export interface BasicReport{
     version: string;
 }
 
-export type ReportsActionsTypes =
+export type ReportsAction =
     | ReportsFetched
+    | SortReports
+    | FilterReports
     | SetCurrentReport
     | ReportVersionsFetched
     | ReportVersionDetailssFetched

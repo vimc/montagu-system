@@ -1,16 +1,15 @@
 import * as React from "react";
-import {mount, shallow} from "enzyme";
+import {shallow} from "enzyme";
 import {expect} from "chai";
 import Toggle from 'react-bootstrap-toggle';
 import {
     mapDispatchToProps,
-    Props, PublicProps, PublishSwitch,
+    Props,
     PublishSwitchComponent
-} from "../../../../main/report/components/Reports/PublishSwitch";
+} from "../../../../main/report/components/Sidebar/PublishSwitch";
 import {Sandbox} from "../../../Sandbox";
-import {reportsActions} from "../../../../main/report/actions/reportsActions";
-import {createMockStore} from "../../../mocks/mockStore";
-import {Provider} from "react-redux";
+import {reportActionCreators} from "../../../../main/report/actions/reportActionCreators";
+
 
 describe("PublishSwitch", () => {
 
@@ -63,7 +62,7 @@ describe("PublishSwitch", () => {
         const rendered = shallow(<PublishSwitchComponent {...props} />);
         const toggle = rendered.find(Toggle);
         toggle.simulate("click");
-        
+
         expect(unpublishSpy.calledWith("report-name", "v1")).to.be.true;
 
     });
@@ -92,7 +91,7 @@ describe("PublishSwitch", () => {
         const dispatchSpy = sandbox.createSpy();
         const props = mapDispatchToProps(dispatchSpy);
 
-        const reportActionsPublishSpy = sandbox.setSpy(reportsActions, "publishReport");
+        const reportActionsPublishSpy = sandbox.setSpy(reportActionCreators, "publishReport");
 
         props.publish("report", "v1");
         expect(dispatchSpy.called).to.be.true;
@@ -105,7 +104,7 @@ describe("PublishSwitch", () => {
         const dispatchSpy = sandbox.createSpy();
         const props = mapDispatchToProps(dispatchSpy);
 
-        const reportActionsUnpublishSpy = sandbox.setSpy(reportsActions, "unPublishReport");
+        const reportActionsUnpublishSpy = sandbox.setSpy(reportActionCreators, "unPublishReport");
 
         props.unpublish("report", "v1");
         expect(dispatchSpy.called).to.be.true;

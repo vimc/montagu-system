@@ -1,5 +1,6 @@
 import * as React from "react";
 import { connect } from 'react-redux';
+import {History} from "history";
 
 import { connectToStores } from "../../shared/alt";
 import { ErrorLog } from "../../shared/components/ErrorLog/ErrorLog";
@@ -13,7 +14,8 @@ interface AppProps {
     loggedIn: boolean,
     ready: boolean,
     errors: string[],
-    infos: string[]
+    infos: string[],
+    history?: History;
 }
 
 export class ContribAppComponent extends React.Component<AppProps, undefined> {
@@ -32,6 +34,7 @@ export class ContribAppComponent extends React.Component<AppProps, undefined> {
     render() {
         return <div>
             <ContribRouter
+                history={this.props.history}
                 loggedIn={ this.props.loggedIn }
                 loaded={ this.props.ready } />
 
@@ -43,9 +46,10 @@ export class ContribAppComponent extends React.Component<AppProps, undefined> {
 
 export const ContribAppAltWrapped = connectToStores(ContribAppComponent);
 
-const mapStateToProps = (state: ContribAppState) : Partial<AppProps> => {
+const mapStateToProps = (state: ContribAppState, props: Partial<AppProps>) : Partial<AppProps> => {
     return {
         loggedIn: state.auth.loggedIn,
+        history: props.history
     }
 };
 

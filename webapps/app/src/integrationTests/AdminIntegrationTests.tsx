@@ -1,4 +1,6 @@
 import * as React from "react";
+import { createMemoryHistory } from 'history';
+
 import { expectIsEqual, IntegrationTestSuite } from "./IntegrationTest";
 import { AdminFetcher } from "../main/admin/sources/AdminFetcher";
 import { groupStore } from "../main/admin/stores/GroupStore";
@@ -18,7 +20,7 @@ class AdminIntegrationTests extends IntegrationTestSuite {
     }
 
     createStore() {
-        return createAdminStore();
+        return createAdminStore(createMemoryHistory());
     }
 
 
@@ -38,6 +40,14 @@ class AdminIntegrationTests extends IntegrationTestSuite {
 
         it("can clear shiny cookie", (done: DoneCallback) => {
             (new AuthService(this.store.dispatch, this.store.getState)).clearShinyCookie()
+                .then(result => {
+                    expect(result).to.be.eq("OK");
+                    done();
+                })
+        });
+
+        it("forgot password", (done: DoneCallback) => {
+            (new AuthService(this.store.dispatch, this.store.getState)).forgotPassword("test@test.com")
                 .then(result => {
                     expect(result).to.be.eq("OK");
                     done();

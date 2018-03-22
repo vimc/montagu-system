@@ -1,22 +1,28 @@
 import {expect} from "chai";
 import * as React from "react";
-import { shallow, ShallowWrapper } from "enzyme";
-import { expectIsEqual, expectSameElements, IntegrationTestSuite } from "./IntegrationTest";
-import { ReportingFetcher } from "../main/report/sources/ReportingFetcher";
-import { checkPromise } from "../test/testHelpers";
-import { oneTimeTokenStore } from "../main/report/stores/OneTimeTokenStore";
-import { Version } from "../main/shared/models/reports/Report";
-import { Sandbox } from "../test/Sandbox";
-import { ArtefactItem } from "../main/report/components/Artefacts/ArtefactItem";
-import { FileDownloadLink } from "../main/report/components/FileDownloadLink";
-import { ResourceLinks } from "../main/report/components/Resources/ResourceLinks";
-import { DataLinks } from "../main/report/components/Data/DataLinks";
+import {shallow, ShallowWrapper} from "enzyme";
+import {createMemoryHistory} from 'history';
+
+import {expectIsEqual, expectSameElements, IntegrationTestSuite} from "./IntegrationTest";
+import {ReportingFetcher} from "../main/report/sources/ReportingFetcher";
+import {checkPromise} from "../test/testHelpers";
+import {oneTimeTokenStore} from "../main/report/stores/OneTimeTokenStore";
+import {Version} from "../main/shared/models/reports/Report";
+import {Sandbox} from "../test/Sandbox";
+import {ArtefactItem} from "../main/report/components/Artefacts/ArtefactItem";
+import {FileDownloadButton, FileDownloadLink} from "../main/report/components/FileDownloadLink";
+import {ResourceLinks} from "../main/report/components/Resources/ResourceLinks";
+import {DataLinks} from "../main/report/components/Data/DataLinks";
 import {ArtefactsSection} from "../main/report/components/Artefacts/ArtefactsSection";
 
 import {createReportStore} from "../main/report/stores/createReportStore";
 import {ReportsService} from "../main/report/services/ReportsService";
 import {Report} from "../main/shared/models/Generated";
 import {authActions} from "../main/shared/actions/authActions";
+import {UserService} from "../main/report/services/UserService";
+import {mockArtefact} from "../test/mocks/mockModels";
+import {ReportDownloadSection} from "../main/report/components/Reports/DownloadSection";
+import {ReportDownloadsComponent} from "../main/report/components/Reports/ReportDownloads";
 
 const jwt_decode = require('jwt-decode');
 
@@ -26,7 +32,10 @@ class ReportIntegrationTests extends IntegrationTestSuite {
     }
 
     createStore() {
-        return createReportStore();
+        const history = createMemoryHistory({
+            initialEntries: ['/']
+        });
+        return createReportStore(history);
     }
 
 
@@ -55,7 +64,26 @@ class ReportIntegrationTests extends IntegrationTestSuite {
             expect(versions.length).to.equal(reports.length);
         });
 
-        it("fetches report versions",  async () => {
+
+        it("fetches report readers", async () => {
+            const readers = await (new UserService(this.store.dispatch, this.store.getState))
+                .getReportReaders("minimal");
+            expect(readers.length).to.be.greaterThan(0);
+        });
+
+        it("removes a report reader", async () => {
+            const result = await (new UserService(this.store.dispatch, this.store.getState))
+                .removeReportReader("minimal", "test.user");
+            expect(result).to.eq("OK");
+        });
+
+        it("adds a report reader", async () => {
+            const result = await (new UserService(this.store.dispatch, this.store.getState))
+                .addReportReader("minimal", "test.user");
+            expect(result).to.eq("OK");
+        });
+
+        it("fetches report versions", async () => {
             const versions = await (new ReportsService(this.store.dispatch, this.store.getState)).getReportVersions("other");
             expect(versions.length).to.be.greaterThan(0);
         });
@@ -74,10 +102,10 @@ class ReportIntegrationTests extends IntegrationTestSuite {
         });
 
         it("downloads artefact", async () => {
+            const artefact = mockArtefact({filenames: ["all.csv", "all.png"], description: "all things"});
             const versions = await (new ReportsService(this.store.dispatch, this.store.getState)).getReportVersions("multi-artefact");
             const rendered = shallow(<ArtefactItem report={"multi-artefact"} version={versions[0]}
-                                                                   filenames={["all.csv", "all.png"]}
-                                                                   description="all things"/>);
+                                                   artefact={artefact}/>);
             const response = await firstDownloadPromise(rendered);
             expect(response.status).to.equal(200)
         });
@@ -85,7 +113,7 @@ class ReportIntegrationTests extends IntegrationTestSuite {
         it("downloads resource", async () => {
             const versions = await (new ReportsService(this.store.dispatch, this.store.getState)).getReportVersions("use_resource");
             const rendered = shallow(<ResourceLinks report="use_resource" version={versions[0]}
-                                                                     resources={["meta/data.csv"]}/>);
+                                                    resources={["meta/data.csv"]}/>);
             const response = await firstDownloadPromise(rendered);
             expect(response.status).to.equal(200)
         });
@@ -101,13 +129,21 @@ class ReportIntegrationTests extends IntegrationTestSuite {
         it("downloads zipped report", async () => {
             const versions = await (new ReportsService(this.store.dispatch, this.store.getState)).getReportVersions("minimal");
             const versionDetails = await (new ReportsService(this.store.dispatch, this.store.getState)).getVersionDetails("minimal", versions[0]);
-            const rendered = shallow(<ArtefactsSection report="minimal" versionDetails={versionDetails} />);
-            const response = await firstDownloadPromise(rendered);
+            const rendered = shallow(<ReportDownloadsComponent report="minimal" versionDetails={versionDetails} ready={true}/>);
+            const response = await firstDownloadButtonPromise(rendered);
             expect(response.status).to.equal(200)
         });
 
         function firstDownloadPromise(rendered: ShallowWrapper<any, any>) {
             const link = rendered.find(FileDownloadLink).first();
+
+            const url = link.prop("href");
+            return fetcher.fetchFromReportingApi(url)
+        }
+
+
+        function firstDownloadButtonPromise(rendered: ShallowWrapper<any, any>) {
+            const link = rendered.find(FileDownloadButton).first();
 
             const url = link.prop("href");
             return fetcher.fetchFromReportingApi(url)

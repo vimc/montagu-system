@@ -27,7 +27,8 @@ describe("ReportingApp", () => {
     it("passes through loggedIn to router", () => {
         const rendered = shallow(<ReportingAppComponent errors={ [] } loggedIn={ true } infos={ [] } />);
         expect(rendered.find(ReportingRouter).props()).to.eql({
-            loggedIn: true
+            loggedIn: true,
+            history: undefined
         });
     });
 

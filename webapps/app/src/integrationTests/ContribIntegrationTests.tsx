@@ -2,6 +2,8 @@ import * as React from "react";
 import {expect} from "chai"
 import {checkPromise} from "../test/testHelpers";
 import {Client, QueryResult} from "pg";
+import { createMemoryHistory } from 'history';
+
 import {
     Responsibilities, Touchstone, Disease, Result, ModellingGroup, ScenarioTouchstoneAndCoverageSets,
     DemographicDataset,
@@ -52,7 +54,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
     }
 
     createStore() {
-        return createContribStore();
+        return createContribStore(createMemoryHistory());
     }
 
     makeFetcher() {

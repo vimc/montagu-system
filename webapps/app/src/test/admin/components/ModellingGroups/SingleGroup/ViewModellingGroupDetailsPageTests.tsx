@@ -1,10 +1,8 @@
 import { Sandbox } from "../../../../Sandbox";
 import { expect } from "chai";
 import { groupStore } from "../../../../../main/admin/stores/GroupStore";
-import { mockLocation } from "../../../../mocks/mocks";
 import * as React from "react";
 import {
-    ModellingGroupDetailsPageProps,
     ViewModellingGroupDetailsPage
 } from "../../../../../main/admin/components/ModellingGroups/SingleGroup/Details/ViewModellingGroupDetailsPage";
 import { expectOneAction } from "../../../../actionHelpers";

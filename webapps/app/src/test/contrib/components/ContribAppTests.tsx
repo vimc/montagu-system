@@ -31,7 +31,8 @@ describe("ContribApp", () => {
         expect(router).has.length(1, "Expected Router to be rendered");
         expect(router.props()).to.eql({
             loaded: true,
-            loggedIn: true
+            loggedIn: true,
+            history: undefined
         });
     });
 

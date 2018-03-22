@@ -10,6 +10,7 @@ import { validations } from "../../modules/reduxForm";
 import { authActions } from "../../actions/authActions";
 import { GlobalState } from "../../reducers/GlobalState";
 import { AuthActionsTypes } from "../../actionTypes/AuthTypes";
+import {InputFieldProps} from "../../types";
 
 export interface LoginFormProps {
     handleSubmit: (F: Function) => any;
@@ -23,7 +24,7 @@ export interface LoginFormFields{
 }
 
 export class LoginFormComponent extends React.Component<LoginFormProps, undefined> {
-    renderField(data: any) {
+    renderField(data: InputFieldProps) {
         const { input, label, type, meta: { touched,  error } } = data;
         return <div>
             <input {...input} placeholder={label} type={type}/>

@@ -2,14 +2,12 @@ import {expect} from "chai";
 import {ReportingFetcher} from "../../../main/report/sources/ReportingFetcher";
 import {checkAsync} from "../../testHelpers";
 import {bootstrapOneTimeTokenStore} from "../../StoreHelpers";
-import {OneTimeLinkContext, OneTimeLinkContextComponent} from "../../../main/report/components/OneTimeLinkContext";
+import {OneTimeLinkContext, OneTimeLinkProps} from "../../../main/report/components/OneTimeLinkContext";
 import {mockOneTimeToken} from "../../mocks/mocks";
 import * as React from "react";
 import {oneTimeTokenStore} from "../../../main/report/stores/OneTimeTokenStore";
 import {Sandbox} from "../../Sandbox";
 import {alt} from "../../../main/shared/alt";
-import {FileDownloadLinkInner} from "../../../main/report/components/FileDownloadLink";
-import {shallow} from "enzyme";
 import {OneTimeToken} from "../../../main/report/models/OneTimeToken";
 
 describe("OneTimeLinkContext", () => {
@@ -18,27 +16,34 @@ describe("OneTimeLinkContext", () => {
     beforeEach(() => alt.recycle());
     afterEach(() => sandbox.restore());
 
-    it("can get properties from empty store", () => {
-        const props = OneTimeLinkContextComponent.getPropsFromStores({href: "/banana", token: null});
-        expect(props).to.eql({
-            href: "/banana",
-            token: null
-        });
+    class EmptyComponent extends React.Component<OneTimeLinkProps, undefined> {
+        render(): JSX.Element {
+            return null;
+        }
+    }
+
+    it("if store does not contain matching token, href passed to child is null", () => {
+        mockFetchToken();
+        bootstrapOneTimeTokenStore([]);
+        const Class = OneTimeLinkContext(EmptyComponent);
+        const rendered = sandbox.mount(<Class href="/banana"/>);
+        const child = rendered.find(EmptyComponent);
+        expect(child.prop("href")).to.equal(null);
     });
 
     it("can get properties from store with matching token", () => {
         const token = setupStoreWithTokenFor("/banana");
-        const props = OneTimeLinkContextComponent.getPropsFromStores({href: "/banana", token: null});
-        expect(props).to.eql({
-            href: "/banana",
-            token: token
-        });
+        const Class = OneTimeLinkContext(EmptyComponent);
+        const rendered = sandbox.mount(<Class href="/banana"/>);
+        const child = rendered.find(EmptyComponent);
+        expect(child.prop("href")).to.equal("http://localhost:8081/v1/banana?access_token=" + token.raw);
     });
 
     it("triggers fetchToken on mount", (done: DoneCallback) => {
         const fetchToken = mockFetchToken();
         bootstrapOneTimeTokenStore([]);
-        sandbox.mount(<OneTimeLinkContext href="/panda"/>);
+        const Class: any = OneTimeLinkContext(EmptyComponent);
+        sandbox.mount(<Class href="/panda"/>);
 
         checkAsync(done, () => {
             expect(fetchToken.called).to.equal(true, "Expected _fetchToken to be called");
@@ -47,7 +52,8 @@ describe("OneTimeLinkContext", () => {
 
     it("it does not trigger fetchToken on properties change if href is the same", (done: DoneCallback) => {
         const url = "/bamboo";
-        const element = sandbox.mount(<OneTimeLinkContext href={url}/>);
+        const Class = OneTimeLinkContext(EmptyComponent);
+        const element = sandbox.mount(<Class href={url}/>);
         checkAsync(done, (afterWait) => {
             const fetchToken = mockFetchToken();
             element.setProps({href: url});
@@ -59,23 +65,13 @@ describe("OneTimeLinkContext", () => {
 
     it("it does trigger fetchToken on properties change if href is different", (done: DoneCallback) => {
         const url = "/bamboo";
-        const element = sandbox.mount(<OneTimeLinkContext href={url}/>);
+        const Class: any = OneTimeLinkContext(EmptyComponent);
+        const element = sandbox.mount(<Class href={url}/>);
         const fetchToken = mockFetchToken();
         element.setProps({href: "/juniper"});
         checkAsync(done, () => {
             expect(fetchToken.called).to.equal(true, "Expected _fetchToken to be called");
         });
-    });
-
-    it("passes through onetime link to inner element", () => {
-        const token = setupStoreWithTokenFor("/banana");
-        const rendered = sandbox.mount(<OneTimeLinkContext href="/banana">
-            <FileDownloadLinkInner />
-        </OneTimeLinkContext>);
-
-        const inner = rendered.find(FileDownloadLinkInner);
-        expect(inner).to.have.length(1);
-        expect(inner.prop("href")).to.contain("?access_token=" + token.raw);
     });
 
     function mockFetchToken() {

@@ -1,5 +1,7 @@
-import { RouteMap, Router } from "simple-react-router";
-import { appSettings } from "../../shared/Settings";
+import * as React from "react";
+import { Route, Switch, Redirect } from 'react-router-dom';
+import { ConnectedRouter } from 'react-router-redux';
+import {History} from "history";
 
 // Pages
 import { MainMenu } from "./MainMenu/MainMenu";
@@ -13,29 +15,34 @@ import {ViewUserDetailsPage} from "./Users/SingleUser/ViewUserDetailsPage";
 import { AdminForgottenPasswordPage } from "./AdminForgottenPasswordPage";
 import { ResetPasswordPage } from "./Users/Account/ResetPasswordPage";
 
-interface RouterProps {
+interface AdminRouterProps {
     loggedIn: boolean;
+    history: History;
 }
 
-export class AdminRouter extends Router<RouterProps> {
-    getRoutes(_map: RouteMap, props: RouterProps) {
-        const map: RouteMap = function (url: string, component: ComponentConstructor<any, any>) {
-            _map(appSettings.publicPath + url, component);
-        };
+export const AdminRouter : React.StatelessComponent<AdminRouterProps> = (props: AdminRouterProps) => {
 
-        map('/forgotten-password/', AdminForgottenPasswordPage);
-        map("/set-password/", ResetPasswordPage);
+    const loggedIn = <Switch>
+        <Route exact path="/" component={MainMenu}/>
+        <Route exact path="/modelling-groups/" component={ViewAllModellingGroupsPage}/>
+        <Route exact path="/modelling-groups/:groupId/" component={ViewModellingGroupDetailsPage}/>
+        <Route exact path="/modelling-groups/:groupId/admin/" component={GroupMembersPage}/>
+        <Route exact path="/users/" component={ViewAllUsersPage}/>
+        <Route exact path="/users/:username" component={ViewUserDetailsPage}/>
+        <Route exact path="/set-password/" component={ResetPasswordPage} />
+        <Route component={AdminNoRouteFoundPage}/>
+    </Switch>
 
-        if (props.loggedIn) {
-            map('/', MainMenu);
-            map('/modelling-groups/', ViewAllModellingGroupsPage);
-            map('/modelling-groups/:groupId/', ViewModellingGroupDetailsPage);
-            map('/modelling-groups/:groupId/admin/', GroupMembersPage);
-            map('/users/', ViewAllUsersPage);
-            map('/users/:username', ViewUserDetailsPage);
-            map('*', AdminNoRouteFoundPage);
-        } else {
-            map('*', AdminLoginPage);
-        }
-    }
+    const notLoggedIn = <Switch>
+        <Route exact path="/" component={AdminLoginPage}/>
+        <Route exact path="/forgotten-password/" component={AdminForgottenPasswordPage} />
+        <Route exact path="/set-password/" component={ResetPasswordPage} />
+        <Redirect to="/"/>
+    </Switch>;
+
+    const routes = props.loggedIn ? loggedIn : notLoggedIn;
+
+    return <ConnectedRouter history={props.history}>
+        {routes}
+    </ConnectedRouter>;
 }

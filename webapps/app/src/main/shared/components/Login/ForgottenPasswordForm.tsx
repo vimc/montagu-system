@@ -1,25 +1,65 @@
 import * as React from "react";
-import { ReformProps } from "alt-reform";
-import { ValidationError } from "./ValidationError";
+import { reduxForm, Field} from "redux-form";
+import { connect } from "react-redux";
+import { compose } from "recompose";
+import { Dispatch } from "redux";
 
-export class ForgottenPasswordFormComponent extends React.Component<ReformProps, undefined> {
+import { ValidationError } from "./ValidationError";
+import { validations } from "../../modules/reduxForm";
+import { authActions } from "../../actions/authActions";
+import { GlobalState } from "../../reducers/GlobalState";
+import {InputFieldProps} from "../../types";
+
+export interface ForgotPasswordFormProps {
+    handleSubmit: (F: Function) => any;
+    submit: (values: ForgotPasswordFormFields) => void;
+}
+
+export interface ForgotPasswordFormFields{
+    email: string;
+}
+
+export class ForgottenPasswordFormComponent extends React.Component<ForgotPasswordFormProps, undefined> {
+    renderField(data: InputFieldProps)
+    {
+        const { input, label, type, meta: { touched,  error } } = data;
+        return <div>
+            <input {...input} placeholder={label} type={type}/>
+            <ValidationError message={ touched && error ? label + error : null } />
+        </div>;
+    }
 
     render() {
-
-        const disabled = this.props.loading;
-        return <form className="form" onSubmit={ this.props.submit }>
-            <div className="fields">
-                <input name="email" type="email" placeholder="Email address"
-                       disabled={ disabled }
-                       { ...this.props.fields.email } />
-                <ValidationError message={ this.props.errors.email } />
-                <ValidationError message={ this.props.store.state.submitError } />
+        return (
+            <div>
+                <form className="form" onSubmit={this.props.handleSubmit(this.props.submit)}>
+                    <div className="fields">
+                        <Field
+                            name="email"
+                            component={this.renderField}
+                            type="text"
+                            label="Email address"
+                            validate={[validations.required, validations.email]}
+                        />
+                    </div>
+                    <button
+                        type="submit"
+                    >
+                        Log in
+                    </button>
+                </form>
             </div>
-            <button type="submit"
-                    disabled={ disabled }>Send password reset email
-            </button>
-        </form>;
+        );
     }
 }
 
-export const ForgottenPasswordPageTitle: string = "Forgotten your password?";
+function mapDispatchToProps(dispatch: Dispatch<any>): Partial<ForgotPasswordFormProps> {
+    return {
+        submit : (values: ForgotPasswordFormFields) => dispatch(authActions.forgotPassword(values.email))
+    }
+}
+
+export const ForgottenPasswordForm = compose(
+    reduxForm({ form: 'forgotPassword'}),
+    connect(state => state, mapDispatchToProps),
+)(ForgottenPasswordFormComponent);

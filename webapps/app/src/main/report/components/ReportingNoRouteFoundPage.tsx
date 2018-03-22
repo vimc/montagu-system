@@ -1,30 +1,31 @@
 import * as React from "react";
-import { ReportingPageWithHeader } from "./ReportingPageWithHeader";
+import { compose } from "recompose";
+
 import { NoRouteFound } from "../../shared/components/NoRouteFound";
-import {IPageWithParent} from "../../shared/models/Breadcrumb";
-import {MainMenu} from "./MainMenu/MainMenu";
-import {ReportingPage} from "./ReportingPage";
+import { ReportsListPageComponent} from "./ReportsList/ReportsListPage";
+import {PageBreadcrumb, PageProperties} from "../../shared/components/PageWithHeader/PageWithHeader";
+import {PageArticle} from "../../shared/components/PageWithHeader/PageArticle";
+import {BreadcrumbInitializer} from "../../shared/components/Breadcrumbs/BreadcrumbsInitializer";
 
-export class ReportingNoRouteFoundPage extends ReportingPageWithHeader<undefined> {
-    name(): string {
-        return NoRouteFound.title();
+export class ReportingNoRouteFoundPageComponent extends React.Component<PageProperties<undefined>> {
+    componentDidMount(){
+        this.props.createBreadcrumbs(ReportingNoRouteFoundPageComponent.breadcrumb());
     }
 
-    urlFragment(): string {
-        return null;
-    }
-
-    url(): string {
-        return null;
-    }
-
-    parent(): IPageWithParent {
-        return new MainMenu();
+    static breadcrumb() : PageBreadcrumb {
+        return {
+            name: NoRouteFound.title(),
+            urlFragment: null,
+            parent: ReportsListPageComponent.breadcrumb()
+        }
     }
 
     render(): JSX.Element {
-        return <ReportingPage page={this}>
+        return <PageArticle title={NoRouteFound.title()}>
             {NoRouteFound.render()}
-        </ReportingPage>;
+        </PageArticle>;
     }
 }
+
+export const ReportingNoRouteFoundPage = compose(BreadcrumbInitializer)(ReportingNoRouteFoundPageComponent) as
+    React.ComponentClass<Partial<PageProperties<undefined>>>;

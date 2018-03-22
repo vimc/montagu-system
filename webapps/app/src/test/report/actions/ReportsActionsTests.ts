@@ -1,16 +1,15 @@
 import { expect } from "chai";
-import * as jwt from "jsonwebtoken";
 
 import { Sandbox } from "../../Sandbox";
-import { reportsActions } from "../../../main/report/actions/reportsActions";
+import { reportActionCreators } from "../../../main/report/actions/reportActionCreators";
 import { ReportsService } from "../../../main/report/services/ReportsService";
-import { ReportTypeKeys } from "../../../main/report/actionTypes/ReportsActionsTypes";
+import {
+    ReportsFilterFields, ReportsFilterPublishTypes, ReportsSortingFields,
+    ReportTypeKeys
+} from "../../../main/report/actionTypes/ReportsActionsTypes";
 import { createMockStore } from "../../mocks/mockStore";
-import { NotificationState, notificationStore } from "../../../main/shared/stores/NotificationStore";
 
-import {localStorageHandler} from "../../../main/shared/services/localStorageHandler";
-
-describe("Modelling groups actions tests", () => {
+describe("Report actions tests", () => {
     const sandbox = new Sandbox();
     let store: any = null;
 
@@ -26,7 +25,7 @@ describe("Modelling groups actions tests", () => {
         sandbox.setStubFunc(ReportsService.prototype, "getAllReports", () => {
             return Promise.resolve([]);
         });
-        store.dispatch(reportsActions.getReports())
+        store.dispatch(reportActionCreators.getReports())
         setTimeout(() => {
             const actions = store.getActions();
             expect(actions[0].type).to.eql(ReportTypeKeys.REPORTS_FETCHED);
@@ -36,7 +35,7 @@ describe("Modelling groups actions tests", () => {
     });
 
     it("dispatches set current report", (done) => {
-        store.dispatch(reportsActions.setCurrentReport('test'))
+        store.dispatch(reportActionCreators.setCurrentReport('test'))
         setTimeout(() => {
             const actions = store.getActions();
             expect(actions[0].type).to.eql(ReportTypeKeys.SET_CURRENT_REPORT);
@@ -49,7 +48,7 @@ describe("Modelling groups actions tests", () => {
         sandbox.setStubFunc(ReportsService.prototype, "getReportVersions", () => {
             return Promise.resolve([]);
         });
-        store.dispatch(reportsActions.getReportVersions('test'))
+        store.dispatch(reportActionCreators.getReportVersions('test'))
         setTimeout(() => {
             const actions = store.getActions();
             expect(actions[0].type).to.eql(ReportTypeKeys.REPORT_VERSIONS_FETCHED);
@@ -62,7 +61,7 @@ describe("Modelling groups actions tests", () => {
         sandbox.setStubFunc(ReportsService.prototype, "getVersionDetails", () => {
             return Promise.resolve({});
         });
-        store.dispatch(reportsActions.getVersionDetails('test', 'v1'))
+        store.dispatch(reportActionCreators.getVersionDetails('test', 'v1'))
         setTimeout(() => {
             const actions = store.getActions();
             expect(actions[0].type).to.eql(ReportTypeKeys.REPORT_VERSION_DETAILS_FETCHED);
@@ -71,5 +70,23 @@ describe("Modelling groups actions tests", () => {
         });
     });
 
+    it("dispatches reports sorted action if sort report is dispatched", (done) => {
+        store.dispatch(reportActionCreators.sortReports(ReportsSortingFields.name))
+        setTimeout(() => {
+            const actions = store.getActions();
+            expect(actions[0].type).to.eql(ReportTypeKeys.SORT_REPORTS);
+            expect(actions[0].data).to.eql("name");
+            done();
+        });
+    });
 
+    it("dispatches reports filter action if filter reports is dispatched", (done) => {
+        store.dispatch(reportActionCreators.filterReports({published: ReportsFilterPublishTypes.published}))
+        setTimeout(() => {
+            const actions = store.getActions();
+            expect(actions[0].type).to.eql(ReportTypeKeys.FILTER_REPORTS);
+            expect(actions[0].data).to.eql({published: "published"});
+            done();
+        });
+    });
 });

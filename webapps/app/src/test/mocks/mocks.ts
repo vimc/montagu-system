@@ -1,17 +1,44 @@
-import { Location } from "simple-react-router";
+import { Location } from "history";
+import {match} from 'react-router';
+
 import * as models from "../../main/shared/models/Generated";
 import { alt } from "../../main/shared/alt";
 import { makeLoadable } from "../../main/contrib/stores/Loadable";
 import { ILookup } from "../../main/shared/models/Lookup";
 import { emptyOneTimeTokenData, OneTimeToken, OneTimeTokenData } from "../../main/report/models/OneTimeToken";
 
-export function mockLocation<T>(params?: T, hash?: string): Location<T> {
-    return {
-        hash: hash? hash : "hash",
-        params: params || null,
+export function mockLocation(params?: Partial<Location>): Location {
+    return Object.assign({
+        hash: "hash",
+        search: "",
         pathname: "/some/path",
-        query: null
+        state: undefined
+    }, params);
+}
+
+export function mockMatch<P>(params?: P) :match<P> {
+    return {
+        params: params || null,
+        isExact: true,
+        path: "/some/path",
+        url: "/some/url"
     };
+}
+
+export function mockHistory(params?: any) {
+    return Object.assign({
+        length: 1,
+        action: "",
+        location: "",
+        push: () => {},
+        replace: () => {},
+        go: () => {},
+        goBack: () => {},
+        goForward: () => {},
+        block: () => {},
+        listen: () => {},
+        createHref: () => {}
+    }, params);
 }
 
 export function setupMainStore(config: {

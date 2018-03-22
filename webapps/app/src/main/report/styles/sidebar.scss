@@ -42,4 +42,14 @@
       cursor: not-allowed !important;
     }
   }
+
+  .report-readers {
+    li {
+      line-height: 2rem;
+
+      span {
+        vertical-align: top;
+      }
+    }
+  }
 }

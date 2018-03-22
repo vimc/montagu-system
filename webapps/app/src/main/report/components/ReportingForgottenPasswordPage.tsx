@@ -1,34 +1,33 @@
 import * as React from "react";
-import { FormConnector } from "alt-reform";
-import { forgottenPasswordFormStore } from "../../shared/components/Login/ForgottenPasswordFormStore";
-import { ReportingPageWithHeader } from "./ReportingPageWithHeader";
-import {
-    ForgottenPasswordFormComponent,
-    ForgottenPasswordPageTitle
-} from "../../shared/components/Login/ForgottenPasswordForm";
-import {IPageWithParent} from "../../shared/models/Breadcrumb";
-import {MainMenu} from "./MainMenu/MainMenu";
-import {Page} from "../../shared/components/PageWithHeader/Page";
-import {ReportingPage} from "./ReportingPage";
+import { compose } from "recompose";
 
-const ForgottenPasswordForm = FormConnector(forgottenPasswordFormStore("report"))(ForgottenPasswordFormComponent);
+import {ForgottenPasswordForm} from "../../shared/components/Login/ForgottenPasswordForm";
+import {ReportsListPageComponent} from "./ReportsList/ReportsListPage";
+import {PageBreadcrumb, PageProperties} from "../../shared/components/PageWithHeader/PageWithHeader";
+import {PageArticle} from "../../shared/components/PageWithHeader/PageArticle";
+import {BreadcrumbInitializer} from "../../shared/components/Breadcrumbs/BreadcrumbsInitializer";
 
-export class ReportingForgottenPasswordPage extends ReportingPageWithHeader<undefined> {
-    name(): string {
-        return ForgottenPasswordPageTitle;
+const pageTitle = "Forgotten your password?";
+
+export class ReportingForgottenPasswordPageComponent extends React.Component<PageProperties<undefined>> {
+    componentDidMount(){
+        this.props.createBreadcrumbs(ReportingForgottenPasswordPageComponent.breadcrumb());
     }
 
-    urlFragment(): string {
-        return "forgotten-password/";
-    }
-
-    parent(): IPageWithParent {
-        return new MainMenu();
+    static breadcrumb() : PageBreadcrumb {
+        return {
+            name: pageTitle,
+            urlFragment: "forgotten-password/",
+            parent: ReportsListPageComponent.breadcrumb()
+        }
     }
 
     render(): JSX.Element {
-        return <ReportingPage page={this}>
+        return <PageArticle title={pageTitle}>
             <ForgottenPasswordForm />
-        </ReportingPage>;
+        </PageArticle>;
     }
 }
+
+export const ReportingForgottenPasswordPage = compose(BreadcrumbInitializer)(ReportingForgottenPasswordPageComponent) as
+    React.ComponentClass<Partial<PageProperties<undefined>>>;

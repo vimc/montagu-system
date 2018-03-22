@@ -1,7 +1,6 @@
 import * as React from "react";
 import { connectToStores } from "../../../../shared/alt";
 import { AdminPageWithHeader } from "../../AdminPageWithHeader";
-import { doNothing } from "../../../../shared/Helpers";
 import {UserTitle, UserTitleProps} from "./UserTitle";
 import {UserDetailsContent} from "./UserDetailsContent";
 import {userActions} from "../../../actions/UserActions";
