@@ -5,7 +5,7 @@ import { AuthService } from "../services/AuthService";
 import { makeNotificationException, notificationActions} from "./NotificationActions";
 import { appSettings, settings } from "../Settings";
 import { appName } from 'appName';
-import { mainStore as contribMainStore } from "../../contrib/stores/MainStore";
+// import { mainStore as contribMainStore } from "../../contrib/stores/MainStore";
 import { AuthTokenData } from "../modules/jwtTokenAuth";
 import { AuthState } from "../reducers/authReducer";
 import { makeNotification, Notification } from "../actions/NotificationActions";
@@ -78,9 +78,9 @@ export const authActions = {
                     data: user,
                 } as Authenticated);
                 (new AuthService(dispatch, getState)).setShinyCookie();
-                if (appName === "contrib") {
-                    contribMainStore.load();
-                }
+                // if (appName === "contrib") {
+                //     contribMainStore.load();
+                // }
             } else {
                 notificationActions.notify(error);
                 dispatch(this.authenticationError(error.message));

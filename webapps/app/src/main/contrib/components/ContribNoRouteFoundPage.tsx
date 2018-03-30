@@ -1,30 +1,31 @@
 import * as React from "react";
+import { compose } from "recompose";
+
 import { NoRouteFound } from "../../shared/components/NoRouteFound";
-import { ContribPageWithHeader } from "./PageWithHeader/ContribPageWithHeader";
-import {IPageWithParent} from "../../shared/models/Breadcrumb";
-import {ChooseGroupPage} from "./ChooseGroup/ChooseGroupPage";
-import { Page } from "../../shared/components/PageWithHeader/Page";
+import {ChooseGroupPageComponent} from "./ChooseGroup/ChooseGroupPage";
+import {PageBreadcrumb, PageProperties} from "../../shared/components/PageWithHeader/PageWithHeader";
+import {BreadcrumbInitializer} from "../../shared/components/Breadcrumbs/BreadcrumbsInitializer";
+import {PageArticle} from "../../shared/components/PageWithHeader/PageArticle";
 
-export class ContribNoRouteFoundPage extends ContribPageWithHeader<undefined> {
-    name(): string {
-        return NoRouteFound.title();
+export class ContribNoRouteFoundPageComponent extends React.Component<PageProperties<undefined>> {
+    componentDidMount(){
+        this.props.createBreadcrumbs(ChooseGroupPageComponent.breadcrumb());
     }
 
-    urlFragment(): string {
-        return null;
-    }
-
-    url(): string {
-        return null;
-    }
-
-    parent(): IPageWithParent {
-        return new ChooseGroupPage();
+    static breadcrumb() : PageBreadcrumb {
+        return {
+            name: NoRouteFound.title(),
+            urlFragment: null,
+            parent: ChooseGroupPageComponent.breadcrumb()
+        }
     }
 
     render(): JSX.Element {
-        return <Page page={this}>
+        return <PageArticle title={NoRouteFound.title()}>
             {NoRouteFound.render()}
-        </Page>;
+        </PageArticle>;
     }
 }
+
+export const ContribNoRouteFoundPage = compose(BreadcrumbInitializer)(ContribNoRouteFoundPageComponent) as
+    React.ComponentClass<Partial<PageProperties<undefined>>>;
