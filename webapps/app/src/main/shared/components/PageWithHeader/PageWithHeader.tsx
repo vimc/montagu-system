@@ -5,6 +5,7 @@ import {Router, match} from 'react-router';
 import { navActions } from "../../actions/NavActions";
 import {IPageWithParent} from "../../models/Breadcrumb";
 import {GlobalState} from "../../reducers/GlobalState";
+import {ReportPageLocationProps} from "../../../report/components/Reports/ReportPage";
 
 export interface PageParts {
     siteTitle(): string;
@@ -94,4 +95,5 @@ export interface PageProperties<T> {
     match: match<T>;
     history: History;
     createBreadcrumbs?: (pageBreadcrumb: PageBreadcrumb) => void;
+    onLoad?: (props?: T) => void;
 }

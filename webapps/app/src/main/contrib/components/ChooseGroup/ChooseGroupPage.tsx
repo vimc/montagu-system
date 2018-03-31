@@ -1,17 +1,25 @@
 import * as React from "react";
 import { compose } from "recompose";
+import { connect } from 'react-redux';
+import { Action, Dispatch } from "redux";
 
-import { ChooseGroupContent } from "./ChooseGroupContent";
+import {ChooseGroupContent} from "./ChooseGroupContent";
 import {PageArticle} from "../../../shared/components/PageWithHeader/PageArticle";
 import {PageBreadcrumb, PageProperties} from "../../../shared/components/PageWithHeader/PageWithHeader";
-import {BreadcrumbInitializer} from "../../../shared/components/Breadcrumbs/BreadcrumbsInitializer";
+import {ContribAppState} from "../../reducers/contribAppReducers";
+import {ModellingGroup} from "../../../shared/models/Generated";
+import {chooseGroupPageActionCreators} from "../../actions/chooseGroupPageActionCreators";
 
-export class ChooseGroupPageComponent extends React.Component<PageProperties<undefined>> {
+interface ChooseGroupPageProps extends PageProperties<undefined> {
+    groups: ModellingGroup[];
+}
+
+export class ChooseGroupPageComponent extends React.Component<ChooseGroupPageProps> {
 
     static title: string = "Modellers' contribution portal";
 
     componentDidMount(){
-        this.props.createBreadcrumbs(ChooseGroupPageComponent.breadcrumb());
+        this.props.onLoad()
     }
 
     static breadcrumb() : PageBreadcrumb {
@@ -33,10 +41,23 @@ export class ChooseGroupPageComponent extends React.Component<PageProperties<und
                 impact estimates to the VIMC to download input datasets and
                 upload, review and approve model estimates.
             </p>
-            <ChooseGroupContent />
+            <ChooseGroupContent groups={this.props.groups} />
         </PageArticle>;
     }
 }
 
-export const ChooseGroupPage = compose(BreadcrumbInitializer)(ChooseGroupPageComponent) as
-    React.ComponentClass<Partial<PageProperties<undefined>>>;
+export const mapStateToProps = (state: ContribAppState): Partial<ChooseGroupPageProps> => {
+    return {
+        groups: state.groups.userGroups,
+    }
+};
+
+export const mapDispatchToProps = (dispatch: Dispatch<Action>): Partial<ChooseGroupPageProps> => {
+    return {
+        onLoad: () => dispatch(chooseGroupPageActionCreators.onLoad())
+    }
+};
+
+export const ChooseGroupPage = compose(
+    connect(mapStateToProps, mapDispatchToProps)
+)(ChooseGroupPageComponent) as React.ComponentClass<Partial<PageProperties<undefined>>>;
