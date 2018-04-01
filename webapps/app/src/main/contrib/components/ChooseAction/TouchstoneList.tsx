@@ -1,9 +1,8 @@
 import * as React from "react";
 import { ModellingGroup, Touchstone } from "../../../shared/models/Generated";
-import { RemoteContent } from "../../../shared/models/RemoteContent";
 import { ButtonLink } from "../../../shared/components/ButtonLink";
 
-export interface TouchstoneListProps extends RemoteContent {
+export interface TouchstoneListProps {
     touchstones: Touchstone[];
     group: ModellingGroup;
 }

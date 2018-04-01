@@ -5,7 +5,6 @@ import { ModellingGroup } from "../../../shared/models/Generated";
 import { GroupList } from "./GroupList";
 import { ButtonLink } from "../../../shared/components/ButtonLink";
 import { LoadingElement } from "../../../shared/partials/LoadingElement/LoadingElement";
-import {PageProperties} from "../../../shared/components/PageWithHeader/PageWithHeader";
 
 export interface ChooseGroupProps {
     groups: ModellingGroup[];

@@ -3,7 +3,7 @@ import { Action, Dispatch } from "redux";
 import { compose } from "recompose";
 import { connect } from 'react-redux';
 
-//import { ChooseActionContent } from "./ChooseActionContent";
+import { ChooseActionContent } from "./ChooseActionContent";
 import {ChooseGroupPageComponent} from "../ChooseGroup/ChooseGroupPage";
 import {ModellingGroup, Touchstone} from "../../../shared/models/Generated";
 import {PageBreadcrumb, PageProperties} from "../../../shared/components/PageWithHeader/PageWithHeader";
@@ -35,7 +35,10 @@ export class ChooseActionPageComponent extends React.Component<ChooseActionPageP
 
     render(): JSX.Element {
         return <PageArticle title="What do you want to do?">
-            {/*<ChooseActionContent />*/}
+            <ChooseActionContent
+                touchstones={this.props.touchstones}
+                group={this.props.group}
+            />
         </PageArticle>;
     }
 }
