@@ -94,6 +94,6 @@ export interface PageProperties<T> {
     router: Router;
     match: match<T>;
     history: History;
-    createBreadcrumbs?: (pageBreadcrumb: PageBreadcrumb) => void;
-    onLoad?: (props?: T) => void;
+    createBreadcrumbs?: (pageBreadcrumb: PageBreadcrumb) => any;
+    onLoad?: (props?: T) => any;
 }

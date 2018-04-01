@@ -1,13 +1,13 @@
 import { Dispatch } from "redux";
 
 import { ModellingGroupsService } from "../../shared/services/ModellingGroupsService";
-import { UserGroupsFetched, ModellingGroupTypes} from "../actionTypes/ModellingGroupsTypes";
-import {GlobalState} from "../../shared/reducers/GlobalState";
+import {UserGroupsFetched, ModellingGroupTypes, SetCurrentUserGroup} from "../actionTypes/ModellingGroupsTypes";
+import {ContribAppState} from "../reducers/contribAppReducers";
 
 export const modellingGroupsActionCreators = {
 
     getUserGroups() {
-        return async (dispatch: Dispatch<any>, getState: () => GlobalState) => {
+        return async (dispatch: Dispatch<any>, getState: () => ContribAppState) => {
             const allGroups: any = await (new ModellingGroupsService(dispatch, getState)).getAllGroups();
             let groups = [];
             if (allGroups && allGroups.length) {
@@ -23,7 +23,14 @@ export const modellingGroupsActionCreators = {
         }
     },
 
-
-
-
+    setCurrentGroup(groupId: string) {
+        return (dispatch: Dispatch<any>, getState: () => ContribAppState) => {
+            const userGroups = getState().groups.userGroups;
+            const currentUserGroup = userGroups.filter(group => group.id === groupId)[0];
+            dispatch({
+                type: ModellingGroupTypes.SET_CURRENT_USER_GROUP,
+                data: currentUserGroup
+            } as SetCurrentUserGroup );
+        }
+    }
 };

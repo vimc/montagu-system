@@ -60,4 +60,4 @@ export const mapDispatchToProps = (dispatch: Dispatch<Action>): Partial<ChooseGr
 
 export const ChooseGroupPage = compose(
     connect(mapStateToProps, mapDispatchToProps)
-)(ChooseGroupPageComponent) as React.ComponentClass<Partial<PageProperties<undefined>>>;
+)(ChooseGroupPageComponent) as React.ComponentClass<Partial<ChooseGroupPageProps>>;
