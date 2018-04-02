@@ -5,7 +5,6 @@ import {ExtendedResponsibility} from "../../../../models/ResponsibilitySet";
 import {settings} from "../../../../../shared/Settings";
 import {ContribAppState} from "../../../../reducers/contribAppReducers";
 import {Disease} from "../../../../../shared/models/Generated";
-import {ResponsibilityOverviewPageProps} from "../ResponsibilityOverviewPage";
 
 export interface TemplateLinksProps {
     responsibilities: ExtendedResponsibility[];
@@ -17,7 +16,7 @@ export interface TemplateLinkProps {
     diseaseId: string;
     groupId: string;
     touchstoneId: string;
-    diseases?: Disease[]
+    diseases?: Disease[];
 }
 
 const templatePath = "/contribution/templates/";

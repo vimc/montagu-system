@@ -11,7 +11,7 @@ import {
     ResponsibilityList,
     ResponsibilityListComponentProps
 } from "../../../../main/contrib/components/Responsibilities/Overview/List/ResponsibilityList";
-import { ResponsibilityComponent } from "../../../../main/contrib/components/Responsibilities/Overview/List/ResponsibilityComponent";
+import { ResponsibilityComponent } from "../../../../main/contrib/components/Responsibilities/Overview/List/ResponsibilityScenario";
 
 function makeProps(responsibilities: Array<Responsibility>,
                         currentDiseaseId?: string): ResponsibilityListComponentProps {

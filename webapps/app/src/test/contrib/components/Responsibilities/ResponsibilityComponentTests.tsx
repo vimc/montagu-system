@@ -13,7 +13,7 @@ import {setupMainStore} from "../../../mocks/mocks";
 import {Sandbox} from "../../../Sandbox";
 
 import {ButtonLink} from "../../../../main/shared/components/ButtonLink";
-import {ResponsibilityComponent} from "../../../../main/contrib/components/Responsibilities/Overview/List/ResponsibilityComponent";
+import {ResponsibilityComponent} from "../../../../main/contrib/components/Responsibilities/Overview/List/ResponsibilityScenario";
 import {BurdenEstimateSet, ResponsibilitySetStatus} from "../../../../main/shared/models/Generated";
 import {CurrentEstimateSetSummary} from "../../../../main/contrib/components/Responsibilities/Overview/List/CurrentEstimateSetSummary";
 

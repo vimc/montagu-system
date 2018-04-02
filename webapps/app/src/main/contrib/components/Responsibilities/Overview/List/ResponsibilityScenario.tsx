@@ -1,26 +1,31 @@
 import * as React from "react";
+import { connect } from 'react-redux';
 
 import {
+    Disease,
     ModellingGroup, Responsibility, ResponsibilitySetStatus,
     Touchstone
 } from "../../../../../shared/models/Generated";
-import { mainStore } from "../../../../stores/MainStore";
 import { ButtonLink } from "../../../../../shared/components/ButtonLink";
 import {CurrentEstimateSetSummary} from "./CurrentEstimateSetSummary";
+import {TemplateLinkComponent, TemplateLinkProps} from "./TemplateLinks";
+import {ContribAppState} from "../../../../reducers/contribAppReducers";
 
-interface Props {
+export interface ResponsibilityScenarioProps {
     responsibility: Responsibility;
     modellingGroup: ModellingGroup;
     touchstone: Touchstone;
     responsibilitySetStatus: ResponsibilitySetStatus;
+    diseases?: Disease[];
 }
 
-export class ResponsibilityComponent extends React.Component<Props, undefined> {
+export class ResponsibilityScenarioComponent extends React.Component<ResponsibilityScenarioProps, undefined> {
     render() {
         const item = this.props.responsibility;
         const downloadUrl = `/${this.props.modellingGroup.id}/responsibilities/${this.props.touchstone.id}/coverage/${item.scenario.id}/`;
         const uploadUrl = `/${this.props.modellingGroup.id}/responsibilities/${this.props.touchstone.id}/burdens/${item.scenario.id}/`;
         const canUpload = this.props.responsibilitySetStatus == "incomplete";
+        const disease = this.props.diseases.find(disease => disease.id === item.scenario.disease);
 
         return <li className="scenario">
             <div className="header">
@@ -33,7 +38,7 @@ export class ResponsibilityComponent extends React.Component<Props, undefined> {
             <div>
                 <div className="content">
                     <div className="metadata">
-                        Disease: {mainStore.getDiseaseById(item.scenario.disease).name}
+                        Disease: {disease.name}
                     </div>
                     <div className="actions">
                         <ButtonLink href={downloadUrl}>Download coverage data</ButtonLink>
@@ -48,3 +53,12 @@ export class ResponsibilityComponent extends React.Component<Props, undefined> {
         </li>
     }
 }
+
+const mapStateToProps = (state: ContribAppState, props: ResponsibilityScenarioProps): Partial<ResponsibilityScenarioProps> => {
+    return {
+        ...props,
+        diseases: state.diseases.diseases
+    }
+}
+
+export const ResponsibilityScenario = connect(mapStateToProps)(ResponsibilityScenarioComponent);
