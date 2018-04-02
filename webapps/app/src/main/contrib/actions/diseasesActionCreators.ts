@@ -4,7 +4,7 @@ import { DiseasesService } from "../services/DiseasesService";
 import { DiseasesFetched, DiseasesTypes} from "../actionTypes/DiseasesTypes";
 import {GlobalState} from "../../shared/reducers/GlobalState";
 
-export const DiseasesActionCreators = {
+export const diseasesActionCreators = {
 
     getAllDiseases() {
         return async (dispatch: Dispatch<any>, getState: () => GlobalState) => {

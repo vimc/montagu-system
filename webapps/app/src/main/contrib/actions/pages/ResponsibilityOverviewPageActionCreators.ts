@@ -9,12 +9,14 @@ import {
     ResponsibilityOverviewPageLocationProps,
 } from "../../components/Responsibilities/Overview/ResponsibilityOverviewPage";
 import {responsibilitiesActionCreators} from "../responsibilitiesActionCreators";
+import {diseasesActionCreators} from "../diseasesActionCreators";
 
 export const responsibilityOverviewPageActionCreators = {
 
     onLoad(props: ResponsibilityOverviewPageLocationProps) {
         return async (dispatch: Dispatch<any>, getState: () => any) => {
             await dispatch(modellingGroupsActionCreators.getUserGroups());
+            await dispatch(diseasesActionCreators.getAllDiseases());
             dispatch(modellingGroupsActionCreators.setCurrentGroup(props.groupId));
             await dispatch(touchstonesActionCreators.getTouchstonesByGroupId(props.groupId));
             dispatch(touchstonesActionCreators.setCurrentTouchstone(props.touchstoneId));

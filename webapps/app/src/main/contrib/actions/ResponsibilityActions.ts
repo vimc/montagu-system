@@ -1,7 +1,7 @@
 import alt from "../../shared/alt";
 import { FetchActions, FetchActionsInterface } from "../../shared/actions/FetchActions";
 import { CoverageSet, Responsibilities, ScenarioTouchstoneAndCoverageSets, Touchstone } from "../../shared/models/Generated";
-import {UploadEstimatesProps} from "../components/Responsibilities/BurdenEstimates/UploadBurdenEstimatesPage";
+// import {UploadEstimatesProps} from "../components/Responsibilities/BurdenEstimates/UploadBurdenEstimatesPage";
 
 interface Actions extends FetchActionsInterface<Responsibilities> {
     filterByDisease(diseaseId: string): string;

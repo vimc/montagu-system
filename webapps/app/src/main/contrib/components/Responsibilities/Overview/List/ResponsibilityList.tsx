@@ -1,4 +1,5 @@
 import * as React from "react";
+
 import { DiseaseFilter } from "./DiseaseFilter";
 import { ResponsibilityComponent } from "./ResponsibilityComponent";
 import { IExtendedResponsibilitySet } from "../../../../models/ResponsibilitySet";
@@ -29,15 +30,15 @@ export class ResponsibilityList extends React.Component<ResponsibilityListCompon
         const props = this.props;
         const reps = this.getResponsibilities(props);
         if (reps.length) {
-            const items = reps.map((item: Responsibility) =>
-                <ResponsibilityComponent
-                    key={ item.scenario.id }
-                    responsibility={ item }
-                    touchstone={ props.responsibilitySet.touchstone }
-                    modellingGroup={ props.modellingGroup }
-                    responsibilitySetStatus={props.responsibilitySet.status}
-                />
-            );
+            // const items = reps.map((item: Responsibility) =>
+            //     <ResponsibilityComponent
+            //         key={ item.scenario.id }
+            //         responsibility={ item }
+            //         touchstone={ props.responsibilitySet.touchstone }
+            //         modellingGroup={ props.modellingGroup }
+            //         responsibilitySetStatus={props.responsibilitySet.status}
+            //     />
+            // );
             return <div>
                 <div className="mb-4">
                     <DiseaseFilter { ...props.responsibilitySet } />
@@ -47,7 +48,7 @@ export class ResponsibilityList extends React.Component<ResponsibilityListCompon
                         touchstoneId={props.responsibilitySet.touchstone.id}
                     />
                 </div>
-                <ul className="responsibilities">{ items }</ul>
+                {/*<ul className="responsibilities">{ items }</ul>*/}
             </div>;
         } else {
             return <div className="message">This modelling group has no responsibilities in this

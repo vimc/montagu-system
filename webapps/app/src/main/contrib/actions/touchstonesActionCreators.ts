@@ -19,7 +19,7 @@ export const touchstonesActionCreators = {
     setCurrentTouchstone(touchstoneId: string) {
         return (dispatch: Dispatch<any>, getState: () => ContribAppState) => {
             const touchstones = getState().touchstones.touchstones;
-            const currentTouchstone = touchstones.filter(touchstone => touchstone.id === touchstoneId)[0];
+            const currentTouchstone = touchstones.find(touchstone => touchstone.id === touchstoneId);
             dispatch({
                 type: TouchstoneTypes.SET_CURRENT_TOUCHSTONE,
                 data: currentTouchstone

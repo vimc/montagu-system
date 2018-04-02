@@ -3,11 +3,10 @@ import { compose, branch, renderComponent } from "recompose";
 
 import {IExtendedResponsibilitySet} from "../../../models/ResponsibilitySet";
 import {ModellingGroup} from "../../../../shared/models/Generated";
-// import {ResponsibilityList} from "./List/ResponsibilityList";
+import {ResponsibilityList} from "./List/ResponsibilityList";
 import {ButtonLink} from "../../../../shared/components/ButtonLink";
 
 import {ResponsibilitySetStatusMessage} from "./ResponsibilitySetStatusMessage";
-import {ChooseActionContentComponent, ChooseActionContentProps} from "../../ChooseAction/ChooseActionContent";
 import {LoadingElement} from "../../../../shared/partials/LoadingElement/LoadingElement";
 
 const stochasticParams = require('./stochastic_template_params.csv');
@@ -40,11 +39,11 @@ export const ResponsibilityOverviewContentComponent: React.SFC<ResponsibilityOve
         </div>
         {touchstoneId != "201801rfp-1" && paramsSection}
         <div className="largeSectionTitle">Scenarios</div>
-        {/*<ResponsibilityList*/}
-            {/*modellingGroup={props.modellingGroup}*/}
-            {/*responsibilitySet={props.responsibilitySet}*/}
-            {/*currentDiseaseId={props.currentDiseaseId}*/}
-        {/*/>*/}
+        <ResponsibilityList
+            modellingGroup={props.modellingGroup}
+            responsibilitySet={props.responsibilitySet}
+            currentDiseaseId={props.currentDiseaseId}
+        />
 
     </div>
 }
