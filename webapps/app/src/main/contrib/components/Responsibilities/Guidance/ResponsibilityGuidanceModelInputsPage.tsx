@@ -1,31 +1,30 @@
 import * as React from "react";
 import ScrollableAnchor from 'react-scrollable-anchor';
+import { compose } from "recompose";
 
-import {ContribPageWithHeader} from "../../PageWithHeader/ContribPageWithHeader";
-import { ChooseGroupPage } from "../../ChooseGroup/ChooseGroupPage";
+import {ChooseGroupPageComponent} from "../../ChooseGroup/ChooseGroupPage";
 import { settings } from "../../../../shared/Settings";
 import { InternalLink } from "../../../../shared/components/InternalLink";
-import { Page } from "../../../../shared/components/PageWithHeader/Page";
+import {PageBreadcrumb, PageProperties} from "../../../../shared/components/PageWithHeader/PageWithHeader";
+import {PageArticle} from "../../../../shared/components/PageWithHeader/PageArticle";
+import {BreadcrumbInitializer} from "../../../../shared/components/Breadcrumbs/BreadcrumbsInitializer";
+import {ContribNoRouteFoundPageComponent} from "../../ContribNoRouteFoundPage";
 
-export class ResponsibilityGuidanceModelInputs extends ContribPageWithHeader<undefined> {
-    name() {
-        return "Model inputs";
+export class ResponsibilityGuidanceModelInputsPageComponent extends React.Component<PageProperties<undefined>> {
+    componentDidMount(){
+        this.props.createBreadcrumbs(ResponsibilityGuidanceModelInputsPageComponent.breadcrumb());
     }
 
-    urlFragment() {
-        return "help/model-inputs/";
-    }
-
-    title() {
-        return <span>Guidance on model inputs: coverage and demographic data</span>;
-    }
-
-    parent() {
-        return new ChooseGroupPage();
+    static breadcrumb() : PageBreadcrumb {
+        return {
+            name: "Model inputs",
+            urlFragment: "help/model-inputs/",
+            parent: ChooseGroupPageComponent.breadcrumb()
+        }
     }
 
     render() :JSX.Element {
-        return <Page page={this}>
+        return <PageArticle title="Guidance on model inputs: coverage and demographic data">
             <div className="largeSectionTitle">
                 Input data sources
             </div>
@@ -310,6 +309,9 @@ export class ResponsibilityGuidanceModelInputs extends ContribPageWithHeader<und
                 for the current runs you will need to download each demographic
                 dataset separately.
             </p>
-        </Page>
+        </PageArticle>
     }
 }
+
+export const ResponsibilityGuidanceModelInputsPage = compose(BreadcrumbInitializer)(ResponsibilityGuidanceModelInputsPageComponent) as
+    React.ComponentClass<Partial<PageProperties<undefined>>>;

@@ -12,7 +12,6 @@ import {ContribAppState} from "../reducers/contribAppReducers";
 
 interface AppProps {
     loggedIn: boolean,
-    // ready: boolean,
     errors: string[],
     infos: string[],
     history?: History;
@@ -25,7 +24,6 @@ export class ContribAppComponent extends React.Component<AppProps, undefined> {
 
     static getPropsFromStores(): Partial<AppProps> {
         return {
-            // ready: mainStore.getState().ready,
             errors: notificationStore.getState().errors,
             infos: notificationStore.getState().infos,
         };
@@ -36,7 +34,6 @@ export class ContribAppComponent extends React.Component<AppProps, undefined> {
             <ContribRouter
                 history={this.props.history}
                 loggedIn={ this.props.loggedIn }
-                // loaded={ this.props.ready }
             />
 
             <NotificationArea notifications={ this.props.infos } />

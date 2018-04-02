@@ -12,10 +12,11 @@ import { ContribNoRouteFoundPage } from "./ContribNoRouteFoundPage";
 import { ContribForgottenPasswordPage } from "./ContribForgottenPasswordPage";
 import { TouchstoneHelpPage } from "./TouchstoneHelpPage";
 import { ResponsibilityOverviewPage } from "./Responsibilities/Overview/ResponsibilityOverviewPage";
+import { ResponsibilityGuidanceModelInputsPage } from "./Responsibilities/Guidance/ResponsibilityGuidanceModelInputsPage";
+import { ResponsibilityGuidanceModelOutputsPage } from "./Responsibilities/Guidance/ResponsibilityGuidanceModelOutputsPage";
 
 interface ContribRouterProps {
     loggedIn: boolean;
-    // loaded: boolean;
     history: History;
 }
 
@@ -26,6 +27,8 @@ export const ContribRouter : React.StatelessComponent<ContribRouterProps> = (pro
         <Route exact path="/:groupId/" component={ChooseActionPage}/>
         <Route exact path="/:groupId/responsibilities/:touchstoneId" component={ResponsibilityOverviewPage}/>
         <Route exact path="/help/touchstones/" component={TouchstoneHelpPage}/>
+        <Route exact path="/help/model-inputs/" component={ResponsibilityGuidanceModelInputsPage}/>
+        <Route exact path="/help/model-outputs/" component={ResponsibilityGuidanceModelOutputsPage}/>
         <Route component={ContribNoRouteFoundPage}/>
     </Switch>;
 

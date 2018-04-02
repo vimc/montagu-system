@@ -8,7 +8,6 @@ import {
 } from "../../../../../shared/models/Generated";
 import { ButtonLink } from "../../../../../shared/components/ButtonLink";
 import {CurrentEstimateSetSummary} from "./CurrentEstimateSetSummary";
-import {TemplateLinkComponent, TemplateLinkProps} from "./TemplateLinks";
 import {ContribAppState} from "../../../../reducers/contribAppReducers";
 
 export interface ResponsibilityScenarioProps {

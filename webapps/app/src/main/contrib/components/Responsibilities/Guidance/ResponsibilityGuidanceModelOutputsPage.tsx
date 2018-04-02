@@ -1,33 +1,36 @@
 import * as React from "react";
 import ScrollableAnchor from 'react-scrollable-anchor';
+import { compose } from "recompose";
 
 import {ContribPageWithHeader} from "../../PageWithHeader/ContribPageWithHeader";
-import {ChooseGroupPage} from "../../ChooseGroup/ChooseGroupPage";
+import {ChooseGroupPage, ChooseGroupPageComponent} from "../../ChooseGroup/ChooseGroupPage";
 import {settings} from "../../../../shared/Settings";
 import { Page } from "../../../../shared/components/PageWithHeader/Page";
+import {PageBreadcrumb, PageProperties} from "../../../../shared/components/PageWithHeader/PageWithHeader";
+import {ResponsibilityGuidanceModelInputsPageComponent} from "./ResponsibilityGuidanceModelInputsPage";
+import {PageArticle} from "../../../../shared/components/PageWithHeader/PageArticle";
+import {BreadcrumbInitializer} from "../../../../shared/components/Breadcrumbs/BreadcrumbsInitializer";
 
 const dalysPdf = require("./guidance-201710-DALYs.pdf");
 
-export class ResponsibilityGuidanceModelOutputs extends ContribPageWithHeader<undefined> {
-    name() {
-        return "Model outputs";
+export class ResponsibilityGuidanceModelOutputsPageComponent extends React.Component<PageProperties<undefined>> {
+    componentDidMount(){
+        this.props.createBreadcrumbs(ResponsibilityGuidanceModelOutputsPageComponent.breadcrumb());
     }
 
-    urlFragment() {
-        return "help/model-outputs/";
-    }
+    static title: string = `Guidance on model outputs: how to generate and upload
+        central and stochastic estimates`;
 
-    title() {
-        return <span>Guidance on model outputs: how to generate and upload
-            central and stochastic estimates</span>;
-    }
-
-    parent() {
-        return new ChooseGroupPage();
+    static breadcrumb() : PageBreadcrumb {
+        return {
+            name: "Model outputs",
+            urlFragment: "help/model-outputs/",
+            parent: ChooseGroupPageComponent.breadcrumb()
+        }
     }
 
     render() :JSX.Element {
-        return <Page page={this}>
+        return <PageArticle title={ResponsibilityGuidanceModelOutputsPageComponent.title}>
             <div className="largeSectionTitle">
                 Required model outputs
             </div>
@@ -269,7 +272,7 @@ export class ResponsibilityGuidanceModelOutputs extends ContribPageWithHeader<un
                 your stochastic files or parameter set after you have uploaded
                 these to Dropbox, please do all of the following:
             </p>
-            <p>
+
                 <ol style={{listStyleType: "lower-alpha"}}>
                     <li>
                         Contact us
@@ -289,7 +292,7 @@ export class ResponsibilityGuidanceModelOutputs extends ContribPageWithHeader<un
                 <a href={`mailto:${settings.supportContact}`}>{settings.supportContact}</a>
                 or use the #montagu-help channel on&nbsp;
                 <a href={settings.slackUrl} target="_blank">Slack</a>
-            </p>
+
             <div className="mb-3 mt-5 sectionTitle">Age groups</div>
             <p>
                 The age groups in your burden estimate templates must be
@@ -347,6 +350,9 @@ export class ResponsibilityGuidanceModelOutputs extends ContribPageWithHeader<un
                     Slack
                 </a>.
             </p>
-        </Page>
+        </PageArticle>
     }
 }
+
+export const ResponsibilityGuidanceModelOutputsPage = compose(BreadcrumbInitializer)(ResponsibilityGuidanceModelOutputsPageComponent) as
+    React.ComponentClass<Partial<PageProperties<undefined>>>;
