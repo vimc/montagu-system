@@ -12,7 +12,7 @@ import {ContribAppState} from "../../../reducers/contribAppReducers";
 import {chooseActionPageActionCreators} from "../../../actions/pages/chooseActionPageActionCreators";
 import {ModellingGroup, Touchstone} from "../../../../shared/models/Generated";
 import {LoadingElement} from "../../../../shared/partials/LoadingElement/LoadingElement";
-import {responsibilityOverviewPageActionCreators} from "../../../actions/pages/_ResponsibilityOverviewPageActionCreators";
+import {responsibilityOverviewPageActionCreators} from "../../../actions/pages/responsibilityOverviewPageActionCreators";
 import {IExtendedResponsibilitySet} from "../../../models/ResponsibilitySet";
 
 export interface ResponsibilityOverviewPageLocationProps {

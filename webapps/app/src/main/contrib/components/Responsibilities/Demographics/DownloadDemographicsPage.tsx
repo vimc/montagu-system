@@ -18,11 +18,11 @@ import {ChooseActionPage, ChooseActionPageComponent} from "../../ChooseAction/Ch
 import {PageBreadcrumb, PageProperties} from "../../../../shared/components/PageWithHeader/PageWithHeader";
 import {ContribAppState} from "../../../reducers/contribAppReducers";
 import {PageArticle} from "../../../../shared/components/PageWithHeader/PageArticle";
-import {responsibilityOverviewPageActionCreators} from "../../../actions/pages/_ResponsibilityOverviewPageActionCreators";
+import {responsibilityOverviewPageActionCreators} from "../../../actions/pages/responsibilityOverviewPageActionCreators";
 import {ModellingGroup, Touchstone} from "../../../../shared/models/Generated";
 import {IExtendedResponsibilitySet} from "../../../models/ResponsibilitySet";
 
-interface DownloadDemographicsPageLocationProps {
+export interface DownloadDemographicsPageLocationProps {
     groupId: string;
     touchstoneId: string;
 }

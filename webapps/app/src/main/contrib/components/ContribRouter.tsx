@@ -12,7 +12,7 @@ import { ContribNoRouteFoundPage } from "./ContribNoRouteFoundPage";
 import { ContribForgottenPasswordPage } from "./ContribForgottenPasswordPage";
 import { TouchstoneHelpPage } from "./TouchstoneHelpPage";
 import { ResponsibilityOverviewPage } from "./Responsibilities/Overview/ResponsibilityOverviewPage";
-import { DownloadDemographicsPage } from "./Responsibilities/Demographics/DownloadDemographicsPage";
+// import { DownloadDemographicsPage } from "./Responsibilities/Demographics/DownloadDemographicsPage";
 import { ResponsibilityGuidanceModelInputsPage } from "./Responsibilities/Guidance/ResponsibilityGuidanceModelInputsPage";
 import { ResponsibilityGuidanceModelOutputsPage } from "./Responsibilities/Guidance/ResponsibilityGuidanceModelOutputsPage";
 
@@ -27,7 +27,7 @@ export const ContribRouter : React.StatelessComponent<ContribRouterProps> = (pro
         <Route exact path="/" component={ChooseGroupPage}/>
         <Route exact path="/:groupId/" component={ChooseActionPage}/>
         <Route exact path="/:groupId/responsibilities/:touchstoneId" component={ResponsibilityOverviewPage}/>
-        <Route exact path="/:groupId/responsibilities/:touchstoneId/demographics" component={DownloadDemographicsPage}/>
+        {/*<Route exact path="/:groupId/responsibilities/:touchstoneId/demographics" component={DownloadDemographicsPage}/>*/}
         <Route exact path="/help/touchstones/" component={TouchstoneHelpPage}/>
         <Route exact path="/help/model-inputs/" component={ResponsibilityGuidanceModelInputsPage}/>
         <Route exact path="/help/model-outputs/" component={ResponsibilityGuidanceModelOutputsPage}/>
