@@ -4,23 +4,13 @@ import { compose} from "recompose";
 import { connect } from 'react-redux';
 
 import { DownloadDataTitle } from "../DownloadDataTitle";
-import { touchstoneActions } from "../../../actions/TouchstoneActions";
-import { demographicStore } from "../../../stores/DemographicStore";
 import { DownloadDemographicsContent } from "./DownloadDemographicsContent";
-import {ContribPageWithHeader} from "../../PageWithHeader/ContribPageWithHeader";
-import {IPageWithParent} from "../../../../shared/models/Breadcrumb";
-import {
-    ResponsibilityOverviewPage, ResponsibilityOverviewPageComponent, ResponsibilityOverviewPageLocationProps,
-    ResponsibilityOverviewPageProps
-} from "../Overview/ResponsibilityOverviewPage";
-import { Page } from "../../../../shared/components/PageWithHeader/Page";
-import {ChooseActionPage, ChooseActionPageComponent} from "../../ChooseAction/ChooseActionPage";
+import {ResponsibilityOverviewPageComponent} from "../Overview/ResponsibilityOverviewPage";
 import {PageBreadcrumb, PageProperties} from "../../../../shared/components/PageWithHeader/PageWithHeader";
 import {ContribAppState} from "../../../reducers/contribAppReducers";
 import {PageArticle} from "../../../../shared/components/PageWithHeader/PageArticle";
-import {responsibilityOverviewPageActionCreators} from "../../../actions/pages/responsibilityOverviewPageActionCreators";
 import {ModellingGroup, Touchstone} from "../../../../shared/models/Generated";
-import {IExtendedResponsibilitySet} from "../../../models/ResponsibilitySet";
+import {downloadDemographicsPageActionCreators} from "../../../actions/pages/downloadDemographicsPageActionCreators";
 
 export interface DownloadDemographicsPageLocationProps {
     groupId: string;
@@ -45,13 +35,6 @@ export class DownloadDemographicsPageComponent extends React.Component<DownloadD
         }
     }
 
-    // load(props: LocationProps) {
-    //     return new ChooseActionPage().load(props).then(() => {
-    //         touchstoneActions.setCurrentTouchstone(props.touchstoneId);
-    //         return demographicStore.fetchDataSets();
-    //     });
-    // }
-
     title(): JSX.Element {
         return <DownloadDataTitle title="Download demographic data sets" />
     }
@@ -74,7 +57,7 @@ export const mapStateToProps = (state: ContribAppState): Partial<DownloadDemogra
 
 export const mapDispatchToProps = (dispatch: Dispatch<Action>): Partial<DownloadDemographicsPageProps> => {
     return {
-        onLoad: (params: DownloadDemographicsPageLocationProps) => dispatch(responsibilityOverviewPageActionCreators.onLoad(params))
+        onLoad: (params: DownloadDemographicsPageLocationProps) => dispatch(downloadDemographicsPageActionCreators.onLoad(params))
     }
 };
 
