@@ -5,14 +5,15 @@ import { connect } from 'react-redux';
 
 import {PageArticle} from "../../../../shared/components/PageWithHeader/PageArticle";
 import { ResponsibilityOverviewDescription } from "./ResponsibilityOverviewDescription";
-// import { ResponsibilityOverviewContent } from "./ResponsibilityOverviewContent";
+import { ResponsibilityOverviewContent } from "./ResponsibilityOverviewContent";
 import {ChooseActionPageComponent, ChooseActionPageProps} from "../../ChooseAction/ChooseActionPage";
 import {PageBreadcrumb, PageProperties} from "../../../../shared/components/PageWithHeader/PageWithHeader";
 import {ContribAppState} from "../../../reducers/contribAppReducers";
 import {chooseActionPageActionCreators} from "../../../actions/pages/chooseActionPageActionCreators";
-import {Touchstone} from "../../../../shared/models/Generated";
+import {ModellingGroup, Touchstone} from "../../../../shared/models/Generated";
 import {LoadingElement} from "../../../../shared/partials/LoadingElement/LoadingElement";
 import {responsibilityOverviewPageActionCreators} from "../../../actions/pages/ResponsibilityOverviewPageActionCreators";
+import {IExtendedResponsibilitySet} from "../../../models/ResponsibilitySet";
 
 export interface ResponsibilityOverviewPageLocationProps {
     groupId: string;
@@ -21,6 +22,9 @@ export interface ResponsibilityOverviewPageLocationProps {
 
 export interface ResponsibilityOverviewPageProps extends PageProperties<ResponsibilityOverviewPageLocationProps> {
     touchstone: Touchstone;
+    responsibilitySet: IExtendedResponsibilitySet;
+    currentDiseaseId: string;
+    group: ModellingGroup;
 }
 
 export class ResponsibilityOverviewPageComponent extends React.Component<ResponsibilityOverviewPageProps> {
@@ -42,7 +46,11 @@ export class ResponsibilityOverviewPageComponent extends React.Component<Respons
                 <ResponsibilityOverviewDescription
                     currentTouchstoneId={this.props.match.params.touchstoneId}
                 />
-                {/*<ResponsibilityOverviewContent />*/}
+                <ResponsibilityOverviewContent
+                    responsibilitySet={this.props.responsibilitySet}
+                    currentDiseaseId={this.props.currentDiseaseId}
+                    modellingGroup={this.props.group}
+                />
             </PageArticle>;
         } else {
             return <LoadingElement/>
@@ -54,6 +62,9 @@ export const mapStateToProps = (state: ContribAppState): Partial<ResponsibilityO
     console.log(2223, state)
     return {
         touchstone: state.touchstones.currentTouchstone,
+        responsibilitySet: state.responsibilities.set,
+        currentDiseaseId: state.diseases.currentDiseaseId,
+        group: state.groups.currentUserGroup
     }
 };
 

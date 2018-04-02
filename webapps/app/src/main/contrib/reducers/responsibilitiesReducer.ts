@@ -1,8 +1,8 @@
 import {ResponsibilitiesAction, ResponsibilitiesTypes} from "../actionTypes/ResponsibilitiesTypes";
-import {ExtendedResponsibilitySet} from "../models/ResponsibilitySet";
+import { IExtendedResponsibilitySet} from "../models/ResponsibilitySet";
 
 export interface ResponsibilitiesState {
-    set: ExtendedResponsibilitySet;
+    set: IExtendedResponsibilitySet;
 }
 
 export const initialState: ResponsibilitiesState = {

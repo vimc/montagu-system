@@ -3,10 +3,12 @@ import { Disease } from "../../shared/models/Generated";
 
 export interface DiseasesState {
     diseases: Disease[];
+    currentDiseaseId: string;
 }
 
 export const initialState: DiseasesState = {
-    diseases: []
+    diseases: [],
+    currentDiseaseId: null
 };
 
 export const diseasesReducer = (state = initialState, action: DiseasesAction) => {

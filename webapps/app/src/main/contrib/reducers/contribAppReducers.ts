@@ -4,6 +4,7 @@ import { reducer as formReducer, FormReducer } from "redux-form";
 import { authReducer, AuthState } from "../../shared/reducers/authReducer";
 import { modellingGroupsReducer, ModellingGroupsState } from "./modellingGroupsReducer";
 import { touchstonesReducer, TouchstonesState } from "./touchstonesReducer";
+import { diseasesReducer, DiseasesState } from "./diseasesReducer";
 import { responsibilitiesReducer, ResponsibilitiesState } from "./responsibilitiesReducer";
 import {breadcrumbsReducer, BreadcrumbsState} from "../../shared/reducers/breadcrumbsReducer";
 
@@ -14,6 +15,7 @@ export interface ContribAppState {
     breadcrumbs: BreadcrumbsState;
     touchstones: TouchstonesState;
     responsibilities: ResponsibilitiesState;
+    diseases: DiseasesState;
 }
 
 const reducers = combineReducers({
@@ -22,7 +24,8 @@ const reducers = combineReducers({
     groups: modellingGroupsReducer,
     breadcrumbs: breadcrumbsReducer,
     touchstones: touchstonesReducer,
-    responsibilities: responsibilitiesReducer
+    responsibilities: responsibilitiesReducer,
+    diseases: diseasesReducer
 });
 
 export default reducers;

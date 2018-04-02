@@ -1,4 +1,4 @@
-import {ExtendedResponsibilitySet} from "../models/ResponsibilitySet";
+import {IExtendedResponsibilitySet} from "../models/ResponsibilitySet";
 
 export enum ResponsibilitiesTypes {
     SET_RESPONSIBILITIES = "SET_RESPONSIBILITIES"
@@ -6,7 +6,7 @@ export enum ResponsibilitiesTypes {
 
 export interface SetResponsibilities {
     type: ResponsibilitiesTypes.SET_RESPONSIBILITIES;
-    data: ExtendedResponsibilitySet;
+    data: IExtendedResponsibilitySet;
 }
 
 export type ResponsibilitiesAction =
