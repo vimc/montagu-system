@@ -1,51 +1,68 @@
 import * as React from "react";
-import { ResponsibilityOverviewTitle } from "./ResponsibilityOverviewTitle";
-import { touchstoneActions } from "../../../actions/TouchstoneActions";
-import { responsibilityStore } from "../../../stores/ResponsibilityStore";
-import { ResponsibilityOverviewDescription } from "./ResponsibilityOverviewDescription";
-import { ResponsibilityOverviewContent } from "./ResponsibilityOverviewContent";
-import {ContribPageWithHeader} from "../../PageWithHeader/ContribPageWithHeader";
-import {ChooseActionPage} from "../../ChooseAction/ChooseActionPage";
-import {IPageWithParent} from "../../../../shared/models/Breadcrumb";
-import { Page } from "../../../../shared/components/PageWithHeader/Page";
+import { Action, Dispatch } from "redux";
+import { compose} from "recompose";
+import { connect } from 'react-redux';
 
-interface LocationProps {
+import {PageArticle} from "../../../../shared/components/PageWithHeader/PageArticle";
+import { ResponsibilityOverviewDescription } from "./ResponsibilityOverviewDescription";
+// import { ResponsibilityOverviewContent } from "./ResponsibilityOverviewContent";
+import {ChooseActionPageComponent, ChooseActionPageProps} from "../../ChooseAction/ChooseActionPage";
+import {PageBreadcrumb, PageProperties} from "../../../../shared/components/PageWithHeader/PageWithHeader";
+import {ContribAppState} from "../../../reducers/contribAppReducers";
+import {chooseActionPageActionCreators} from "../../../actions/pages/chooseActionPageActionCreators";
+import {Touchstone} from "../../../../shared/models/Generated";
+import {LoadingElement} from "../../../../shared/partials/LoadingElement/LoadingElement";
+import {responsibilityOverviewPageActionCreators} from "../../../actions/pages/ResponsibilityOverviewPageActionCreators";
+
+export interface ResponsibilityOverviewPageLocationProps {
     groupId: string;
     touchstoneId: string;
 }
 
-export class ResponsibilityOverviewPage extends ContribPageWithHeader<LocationProps> {
-    load(props: LocationProps) {
-        return this.loadParent(props).then(() => {
-            touchstoneActions.setCurrentTouchstone(props.touchstoneId);
-            return responsibilityStore.fetchResponsibilities();
-        });
+export interface ResponsibilityOverviewPageProps extends PageProperties<ResponsibilityOverviewPageLocationProps> {
+    touchstone: Touchstone;
+}
+
+export class ResponsibilityOverviewPageComponent extends React.Component<ResponsibilityOverviewPageProps> {
+    componentDidMount() {
+        this.props.onLoad(this.props.match.params)
     }
 
-    name() {
-        const s = responsibilityStore.getState();
-        return s.currentTouchstone.description;
+    static breadcrumb(state: ContribAppState): PageBreadcrumb {
+        return {
+            name: state.touchstones.currentTouchstone.description,
+            urlFragment: `responsibilities/${state.touchstones.currentTouchstone.id}/`,
+            parent: ChooseActionPageComponent.breadcrumb(state)
+        }
     }
 
-    title() {
-        return <ResponsibilityOverviewTitle />;
-    }
-
-    urlFragment(): string {
-        const s = responsibilityStore.getState();
-        return `responsibilities/${s.currentTouchstone.id}/`;
-    }
-
-    parent(): IPageWithParent {
-        return new ChooseActionPage();
-    }
-
-    render() :JSX.Element {
-        return <Page page={this}>
-            <ResponsibilityOverviewDescription
-                currentTouchstoneId={this.props.match.params.touchstoneId}
-            />
-            <ResponsibilityOverviewContent />
-        </Page>;
+    render(): JSX.Element {
+        if (this.props.touchstone) {
+            return <PageArticle title={`Responsibilities in ${this.props.touchstone.description }`}>
+                <ResponsibilityOverviewDescription
+                    currentTouchstoneId={this.props.match.params.touchstoneId}
+                />
+                {/*<ResponsibilityOverviewContent />*/}
+            </PageArticle>;
+        } else {
+            return <LoadingElement/>
+        }
     }
 }
+
+export const mapStateToProps = (state: ContribAppState): Partial<ResponsibilityOverviewPageProps> => {
+    console.log(2223, state)
+    return {
+        touchstone: state.touchstones.currentTouchstone,
+    }
+};
+
+export const mapDispatchToProps = (dispatch: Dispatch<Action>): Partial<ResponsibilityOverviewPageProps> => {
+    return {
+        onLoad: (params: ResponsibilityOverviewPageLocationProps) => dispatch(responsibilityOverviewPageActionCreators.onLoad(params))
+    }
+};
+
+export const ResponsibilityOverviewPage = compose(
+    connect(mapStateToProps, mapDispatchToProps),
+)(ResponsibilityOverviewPageComponent) as React.ComponentClass<Partial<ResponsibilityOverviewPageProps>>;

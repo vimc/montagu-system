@@ -1,10 +1,10 @@
 import { Dispatch, Action } from "redux";
 
-import { modellingGroupsActionCreators } from "./modellingGroupsActionCreators";
-import {breadcrumbsActions} from "../../shared/actions/breadcrumbsActions";
-import {ChooseActionPageComponent, ChooseActionPageLocationProps} from "../components/ChooseAction/ChooseActionPage";
-import {touchstonesActionCreators} from "./touchstonesActionCreators";
-import {ContribAppState} from "../reducers/contribAppReducers";
+import { modellingGroupsActionCreators } from "../modellingGroupsActionCreators";
+import {breadcrumbsActions} from "../../../shared/actions/breadcrumbsActions";
+import {ChooseActionPageComponent, ChooseActionPageLocationProps} from "../../components/ChooseAction/ChooseActionPage";
+import {touchstonesActionCreators} from "../touchstonesActionCreators";
+import {ContribAppState} from "../../reducers/contribAppReducers";
 
 export const chooseActionPageActionCreators = {
 

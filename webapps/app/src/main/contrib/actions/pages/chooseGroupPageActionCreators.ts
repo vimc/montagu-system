@@ -1,8 +1,8 @@
 import { Dispatch } from "redux";
 
-import { modellingGroupsActionCreators } from "./modellingGroupsActionCreators";
-import {ChooseGroupPageComponent} from "../components/ChooseGroup/ChooseGroupPage";
-import {breadcrumbsActions} from "../../shared/actions/breadcrumbsActions";
+import { modellingGroupsActionCreators } from "../modellingGroupsActionCreators";
+import {ChooseGroupPageComponent} from "../../components/ChooseGroup/ChooseGroupPage";
+import {breadcrumbsActions} from "../../../shared/actions/breadcrumbsActions";
 
 export const chooseGroupPageActionCreators = {
 

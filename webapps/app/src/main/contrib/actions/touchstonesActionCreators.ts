@@ -2,7 +2,7 @@ import { Dispatch } from "redux";
 
 import {ContribAppState} from "../reducers/contribAppReducers";
 import {TouchstonesService} from "../services/TouchstonesService";
-import {TouchstonesFetched, TouchstoneTypes} from "../actionTypes/TouchstonesTypes";
+import {SetCurrentTouchstone, TouchstonesFetched, TouchstoneTypes} from "../actionTypes/TouchstonesTypes";
 
 export const touchstonesActionCreators = {
 
@@ -15,4 +15,15 @@ export const touchstonesActionCreators = {
             } as TouchstonesFetched );
         }
     },
+
+    setCurrentTouchstone(touchstoneId: string) {
+        return (dispatch: Dispatch<any>, getState: () => ContribAppState) => {
+            const touchstones = getState().touchstones.touchstones;
+            const currentTouchstone = touchstones.filter(touchstone => touchstone.id === touchstoneId)[0];
+            dispatch({
+                type: TouchstoneTypes.SET_CURRENT_TOUCHSTONE,
+                data: currentTouchstone
+            } as SetCurrentTouchstone );
+        }
+    }
 };

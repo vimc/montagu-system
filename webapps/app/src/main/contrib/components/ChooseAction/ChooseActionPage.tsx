@@ -9,7 +9,7 @@ import {ModellingGroup, Touchstone} from "../../../shared/models/Generated";
 import {PageBreadcrumb, PageProperties} from "../../../shared/components/PageWithHeader/PageWithHeader";
 import {ContribAppState} from "../../reducers/contribAppReducers";
 import {PageArticle} from "../../../shared/components/PageWithHeader/PageArticle";
-import {chooseActionPageActionCreators} from "../../actions/chooseActionPageActionCreators";
+import {chooseActionPageActionCreators} from "../../actions/pages/chooseActionPageActionCreators";
 
 export interface ChooseActionPageLocationProps {
     groupId: string;
@@ -44,7 +44,6 @@ export class ChooseActionPageComponent extends React.Component<ChooseActionPageP
 }
 
 export const mapStateToProps = (state: ContribAppState): Partial<ChooseActionPageProps> => {
-    console.log(222, state)
     return {
         touchstones: state.touchstones.touchstones,
         group: state.groups.currentUserGroup

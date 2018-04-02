@@ -8,7 +8,7 @@ import {PageArticle} from "../../../shared/components/PageWithHeader/PageArticle
 import {PageBreadcrumb, PageProperties} from "../../../shared/components/PageWithHeader/PageWithHeader";
 import {ContribAppState} from "../../reducers/contribAppReducers";
 import {ModellingGroup} from "../../../shared/models/Generated";
-import {chooseGroupPageActionCreators} from "../../actions/chooseGroupPageActionCreators";
+import {chooseGroupPageActionCreators} from "../../actions/pages/chooseGroupPageActionCreators";
 
 interface ChooseGroupPageProps extends PageProperties<undefined> {
     groups: ModellingGroup[];
