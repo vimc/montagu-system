@@ -1,7 +1,9 @@
 import * as React from "react";
+import { connect } from 'react-redux';
 
 import { InternalLink } from "../../../shared/components/InternalLink";
 import { ModellingGroup, Touchstone } from "../../../shared/models/Generated";
+import {ContribAppState} from "../../reducers/contribAppReducers";
 
 interface DownloadDataTitleProps {
     title: string;
@@ -9,7 +11,7 @@ interface DownloadDataTitleProps {
     group: ModellingGroup;
 }
 
-export class DownloadDataTitle extends React.Component<DownloadDataTitleProps, undefined> {
+export class DownloadDataTitleComponent extends React.Component<DownloadDataTitleProps> {
     renderReturnLink() {
         if (this.props.touchstone && this.props.group) {
             const url = `/${this.props.group.id}/responsibilities/${this.props.touchstone.id}/`;
@@ -30,3 +32,13 @@ export class DownloadDataTitle extends React.Component<DownloadDataTitleProps, u
         </div>;
     }
 }
+
+export const mapStateToProps = (state: ContribAppState, props: Partial<DownloadDataTitleProps>): Partial<DownloadDataTitleProps> => {
+    return {
+        touchstone: state.touchstones.currentTouchstone,
+        group: state.groups.currentUserGroup,
+        title: props.title
+    }
+};
+
+export const DownloadDataTitle = connect(mapStateToProps)(DownloadDataTitleComponent);

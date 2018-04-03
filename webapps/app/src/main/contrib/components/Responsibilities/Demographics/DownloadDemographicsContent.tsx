@@ -1,18 +1,16 @@
 import * as React from 'react';
-import { RemoteContentComponent } from "../../../../shared/components/RemoteContentComponent/RemoteContentComponent";
-import { RemoteContent } from "../../../../shared/models/RemoteContent";
-import { demographicStore } from "../../../stores/DemographicStore";
+import { Action, Dispatch } from "redux";
+import { compose, branch, renderComponent} from "recompose";
+import { connect } from 'react-redux';
+
 import { DemographicDataset, Touchstone } from "../../../../shared/models/Generated";
-import { connectToStores } from "../../../../shared/alt";
-import { responsibilityStore } from "../../../stores/ResponsibilityStore";
 import { DemographicOptions } from "./DemographicOptions";
 import { OneTimeButton } from "../../../../shared/components/OneTimeButton/OneTimeButton";
 import { OneTimeButtonTimeBlocker } from "../../../../shared/components/OneTimeButton/OneTimeButtonTimeBlocker";
-import { demographicActions } from "../../../actions/DemographicActions";
-import { doNothing } from "../../../../shared/Helpers";
+import {ContribAppState} from "../../../reducers/contribAppReducers";
+import {LoadingElement} from "../../../../shared/partials/LoadingElement/LoadingElement";
 
-
-export interface DownloadDemographicsContentProps extends RemoteContent {
+export interface DownloadDemographicsContentProps {
     dataSets: DemographicDataset[];
     selectedDataSet: DemographicDataset;
     selectedGender: string;
@@ -23,15 +21,12 @@ export interface DownloadDemographicsContentProps extends RemoteContent {
 
 const ButtonWithTimeout = OneTimeButtonTimeBlocker(OneTimeButton);
 
-export class DownloadDemographicsContentComponent extends RemoteContentComponent<DownloadDemographicsContentProps, undefined> {
+export class DownloadDemographicsContentComponent extends React.Component<DownloadDemographicsContentProps, undefined> {
+
     ButtonWithTimeout?: any;
 
-    static getStores() {
-        return [demographicStore, responsibilityStore];
-    }
-
     componentWillReceiveProps(nextProps: DownloadDemographicsContentProps) {
-        if (nextProps.ready) {
+        if (nextProps.touchstone && nextProps.dataSets) {
             if (nextProps.selectedDataSet !== this.props.selectedDataSet
             || nextProps.selectedFormat !== this.props.selectedFormat
             || nextProps.selectedGender !== this.props.selectedGender)
@@ -41,38 +36,17 @@ export class DownloadDemographicsContentComponent extends RemoteContentComponent
         }
     }
 
-    static getPropsFromStores(props: DownloadDemographicsContentProps): Partial<DownloadDemographicsContentProps> {
-        const demographicState = demographicStore.getState();
-        const responsibilityState = responsibilityStore.getState();
-
-        if (demographicState.currentTouchstone != null) {
-            return {
-                ready: demographicState.currentTouchstone in demographicState.dataSets,
-                selectedDataSet: demographicState.selectedDataSet,
-                selectedGender: demographicState.selectedGender,
-                selectedFormat: demographicState.selectedFormat,
-                dataSets: demographicState.dataSets[demographicState.currentTouchstone],
-                token: demographicState.token,
-                touchstone: responsibilityState.currentTouchstone
-            };
-        } else {
-            return {
-                ready: false
-            }
-        }
-    }
-
     refreshToken() {
-        demographicActions.clearUsedToken();
-        demographicStore.fetchOneTimeToken().catch(doNothing);
+        // demographicActions.clearUsedToken();
+        // demographicStore.fetchOneTimeToken().catch(doNothing);
     }
 
-    renderContent(props: DownloadDemographicsContentProps) {
-        const canDownload = DownloadDemographicsContentComponent.canDownload(props);
+    render() {
+        const canDownload = DownloadDemographicsContentComponent.canDownload(this.props);
 
         return <div className="demographics">
             <div className="sectionTitle">
-                Demographic data for {props.touchstone.description}
+                Demographic data for {this.props.touchstone.description}
             </div>
             <div>
                 <p>
@@ -88,13 +62,13 @@ export class DownloadDemographicsContentComponent extends RemoteContentComponent
                 </p>
             </div>
             <DemographicOptions
-                dataSets={props.dataSets}
-                selectedFormat={props.selectedFormat}
-                selectedDataSet={props.selectedDataSet}
-                selectedGender={props.selectedGender}
+                dataSets={this.props.dataSets}
+                selectedFormat={this.props.selectedFormat}
+                selectedDataSet={this.props.selectedDataSet}
+                selectedGender={this.props.selectedGender}
             />
             <ButtonWithTimeout
-                token={props.token}
+                token={this.props.token}
                 refreshToken={this.refreshToken}
                 disableDuration={5000}
                 enabled={canDownload}
@@ -111,4 +85,25 @@ export class DownloadDemographicsContentComponent extends RemoteContentComponent
     }
 }
 
-export const DownloadDemographicsContent = connectToStores(DownloadDemographicsContentComponent);
+export const mapStateToProps = (state: ContribAppState, props: Partial<DownloadDemographicsContentProps>): Partial<DownloadDemographicsContentProps> => {
+    console.log(2225, state)
+    return {
+        touchstone: state.touchstones.currentTouchstone,
+        dataSets: state.demographic.dataSets,
+        selectedDataSet: state.demographic.selectedDataSet,
+        selectedGender: state.demographic.selectedGender,
+        selectedFormat: state.demographic.selectedFormat,
+        token: state.demographic.token
+    }
+};
+
+// export const mapDispatchToProps = (dispatch: Dispatch<Action>): Partial<DownloadDemographicsPageProps> => {
+//     return {
+//         onLoad: (params: DownloadDemographicsPageLocationProps) => dispatch(downloadDemographicsPageActionCreators.onLoad(params))
+//     }
+// };
+
+export const DownloadDemographicsContent = compose(
+    connect(mapStateToProps/*, mapDispatchToProps*/),
+    branch((props: DownloadDemographicsContentProps) => !props.touchstone, renderComponent(LoadingElement))
+)(DownloadDemographicsContentComponent) as React.ComponentClass<Partial<DownloadDemographicsContentProps>>;

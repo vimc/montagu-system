@@ -9,7 +9,6 @@ import {ResponsibilityOverviewPageComponent} from "../Overview/ResponsibilityOve
 import {PageBreadcrumb, PageProperties} from "../../../../shared/components/PageWithHeader/PageWithHeader";
 import {ContribAppState} from "../../../reducers/contribAppReducers";
 import {PageArticle} from "../../../../shared/components/PageWithHeader/PageArticle";
-import {ModellingGroup, Touchstone} from "../../../../shared/models/Generated";
 import {downloadDemographicsPageActionCreators} from "../../../actions/pages/downloadDemographicsPageActionCreators";
 
 export interface DownloadDemographicsPageLocationProps {
@@ -17,12 +16,7 @@ export interface DownloadDemographicsPageLocationProps {
     touchstoneId: string;
 }
 
-export interface DownloadDemographicsPageProps extends PageProperties<DownloadDemographicsPageLocationProps> {
-    touchstone: Touchstone;
-    group: ModellingGroup;
-}
-
-export class DownloadDemographicsPageComponent extends React.Component<DownloadDemographicsPageProps> {
+export class DownloadDemographicsPageComponent extends React.Component<PageProperties<DownloadDemographicsPageLocationProps>> {
     componentDidMount() {
         this.props.onLoad(this.props.match.params)
     }
@@ -38,33 +32,23 @@ export class DownloadDemographicsPageComponent extends React.Component<DownloadD
     title(): JSX.Element {
         return <DownloadDataTitle
             title="Download demographic data sets"
-            group={this.props.group}
-            touchstone={this.props.touchstone}
         />
     }
 
     render(): JSX.Element {
         return <PageArticle title={this.title()}>
-            <DownloadDemographicsContent />
+            <DownloadDemographicsContent/>
         </PageArticle>;
     }
 
 }
 
-export const mapStateToProps = (state: ContribAppState): Partial<DownloadDemographicsPageProps> => {
-    console.log(2224, state)
-    return {
-        touchstone: state.touchstones.currentTouchstone,
-        group: state.groups.currentUserGroup
-    }
-};
-
-export const mapDispatchToProps = (dispatch: Dispatch<Action>): Partial<DownloadDemographicsPageProps> => {
+export const mapDispatchToProps = (dispatch: Dispatch<Action>): Partial<PageProperties<DownloadDemographicsPageLocationProps>> => {
     return {
         onLoad: (params: DownloadDemographicsPageLocationProps) => dispatch(downloadDemographicsPageActionCreators.onLoad(params))
     }
 };
 
 export const DownloadDemographicsPage = compose(
-    connect(mapStateToProps, mapDispatchToProps),
-)(DownloadDemographicsPageComponent) as React.ComponentClass<Partial<DownloadDemographicsPageProps>>;
+    connect(state => state, mapDispatchToProps),
+)(DownloadDemographicsPageComponent) as React.ComponentClass<Partial<PageProperties<DownloadDemographicsPageLocationProps>>>;
