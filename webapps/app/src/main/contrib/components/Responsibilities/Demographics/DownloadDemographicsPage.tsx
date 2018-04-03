@@ -36,7 +36,11 @@ export class DownloadDemographicsPageComponent extends React.Component<DownloadD
     }
 
     title(): JSX.Element {
-        return <DownloadDataTitle title="Download demographic data sets" />
+        return <DownloadDataTitle
+            title="Download demographic data sets"
+            group={this.props.group}
+            touchstone={this.props.touchstone}
+        />
     }
 
     render(): JSX.Element {

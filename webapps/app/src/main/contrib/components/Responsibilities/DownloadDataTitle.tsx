@@ -1,33 +1,18 @@
 import * as React from "react";
+
 import { InternalLink } from "../../../shared/components/InternalLink";
 import { ModellingGroup, Touchstone } from "../../../shared/models/Generated";
-import { responsibilityStore } from "../../stores/ResponsibilityStore";
-import { connectToStores } from "../../../shared/alt";
 
-interface PublicProps {
+interface DownloadDataTitleProps {
     title: string;
-}
-interface Props extends PublicProps {
     touchstone: Touchstone;
-    modellingGroup: ModellingGroup;
+    group: ModellingGroup;
 }
 
-export class DownloadDataTitleComponent extends React.Component<Props, undefined> {
-    static getStores() {
-        return [ responsibilityStore ];
-    }
-    static getPropsFromStores(props: Props): Props {
-        const state = responsibilityStore.getState();
-        return {
-            title: props.title,
-            touchstone: state.currentTouchstone,
-            modellingGroup: state.currentModellingGroup
-        };
-    }
-
+export class DownloadDataTitle extends React.Component<DownloadDataTitleProps, undefined> {
     renderReturnLink() {
-        if (this.props.touchstone && this.props.modellingGroup) {
-            const url = `/${this.props.modellingGroup.id}/responsibilities/${this.props.touchstone.id}/`;
+        if (this.props.touchstone && this.props.group) {
+            const url = `/${this.props.group.id}/responsibilities/${this.props.touchstone.id}/`;
             return <div className="titleAddition d-inline-block">
                 <InternalLink href={ url }>Return to responsibilities list</InternalLink>
             </div>;
@@ -45,5 +30,3 @@ export class DownloadDataTitleComponent extends React.Component<Props, undefined
         </div>;
     }
 }
-export const DownloadDataTitle =
-    connectToStores(DownloadDataTitleComponent) as ComponentConstructor<PublicProps, undefined>;
