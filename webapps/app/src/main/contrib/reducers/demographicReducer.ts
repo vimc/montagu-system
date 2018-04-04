@@ -12,8 +12,8 @@ export interface DemographicState {
 export const initialState: DemographicState = {
     dataSets: [],
     selectedDataSet: null,
-    selectedGender: null,
-    selectedFormat: null,
+    selectedGender: "both",
+    selectedFormat: "long",
     token: null
 };
 
@@ -27,8 +27,10 @@ export const demographicReducer = (state = initialState, action: DemographicActi
             return {...state, selectedGender: action.data };
         case DemographicTypes.DEMOGRAPHIC_SET_FORMAT:
             return {...state, selectedFormat: action.data };
-        case DemographicTypes.DEMOGRAPHIC_SET_TOKEN:
+        case DemographicTypes.DEMOGRAPHIC_ONE_TIME_TOKEN_FETCHED:
             return {...state, token: action.data };
+        case DemographicTypes.DEMOGRAPHIC_ONE_TIME_TOKEN_CLEAR:
+            return {...state, token: null };
         default:
             return state;
     }

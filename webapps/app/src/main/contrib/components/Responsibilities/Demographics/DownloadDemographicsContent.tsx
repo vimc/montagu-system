@@ -9,6 +9,7 @@ import { OneTimeButton } from "../../../../shared/components/OneTimeButton/OneTi
 import { OneTimeButtonTimeBlocker } from "../../../../shared/components/OneTimeButton/OneTimeButtonTimeBlocker";
 import {ContribAppState} from "../../../reducers/contribAppReducers";
 import {LoadingElement} from "../../../../shared/partials/LoadingElement/LoadingElement";
+import {demographicActionCreators} from "../../../actions/demographicActionCreators";
 
 export interface DownloadDemographicsContentProps {
     dataSets: DemographicDataset[];
@@ -17,6 +18,7 @@ export interface DownloadDemographicsContentProps {
     selectedFormat: string;
     touchstone: Touchstone;
     token: string;
+    refreshToken: any;
 }
 
 const ButtonWithTimeout = OneTimeButtonTimeBlocker(OneTimeButton);
@@ -34,11 +36,6 @@ export class DownloadDemographicsContentComponent extends React.Component<Downlo
                 this.ButtonWithTimeout.enable();
             }
         }
-    }
-
-    refreshToken() {
-        // demographicActions.clearUsedToken();
-        // demographicStore.fetchOneTimeToken().catch(doNothing);
     }
 
     render() {
@@ -61,15 +58,10 @@ export class DownloadDemographicsContentComponent extends React.Component<Downlo
                     to be relevant to all modellers.
                 </p>
             </div>
-            <DemographicOptions
-                dataSets={this.props.dataSets}
-                selectedFormat={this.props.selectedFormat}
-                selectedDataSet={this.props.selectedDataSet}
-                selectedGender={this.props.selectedGender}
-            />
+            <DemographicOptions/>
             <ButtonWithTimeout
                 token={this.props.token}
-                refreshToken={this.refreshToken}
+                refreshToken={this.props.refreshToken}
                 disableDuration={5000}
                 enabled={canDownload}
                 onRef={ref => (this.ButtonWithTimeout = ref)}
@@ -97,13 +89,13 @@ export const mapStateToProps = (state: ContribAppState, props: Partial<DownloadD
     }
 };
 
-// export const mapDispatchToProps = (dispatch: Dispatch<Action>): Partial<DownloadDemographicsPageProps> => {
-//     return {
-//         onLoad: (params: DownloadDemographicsPageLocationProps) => dispatch(downloadDemographicsPageActionCreators.onLoad(params))
-//     }
-// };
+export const mapDispatchToProps = (dispatch: Dispatch<Action>): Partial<DownloadDemographicsContentProps> => {
+    return {
+        refreshToken: () => dispatch(demographicActionCreators.getOneTimeToken())
+    }
+};
 
 export const DownloadDemographicsContent = compose(
-    connect(mapStateToProps/*, mapDispatchToProps*/),
+    connect(mapStateToProps, mapDispatchToProps),
     branch((props: DownloadDemographicsContentProps) => !props.touchstone, renderComponent(LoadingElement))
 )(DownloadDemographicsContentComponent) as React.ComponentClass<Partial<DownloadDemographicsContentProps>>;

@@ -5,7 +5,8 @@ export enum DemographicTypes {
     DEMOGRAPHIC_SET_DATA_SET = "DEMOGRAPHIC_SET_DATA_SET",
     DEMOGRAPHIC_SET_GENDER = "DEMOGRAPHIC_SET_GENDER",
     DEMOGRAPHIC_SET_FORMAT = "DEMOGRAPHIC_SET_FORMAT",
-    DEMOGRAPHIC_SET_TOKEN = "DEMOGRAPHIC_SET_TOKEN",
+    DEMOGRAPHIC_ONE_TIME_TOKEN_FETCHED = "DEMOGRAPHIC_ONE_TIME_TOKEN_FETCHED",
+    DEMOGRAPHIC_ONE_TIME_TOKEN_CLEAR = "DEMOGRAPHIC_ONE_TIME_TOKEN_CLEAR"
 }
 
 export interface DemographicDataSetsFetched {
@@ -28,9 +29,13 @@ export interface DemographicSetFormat {
     data: string;
 }
 
-export interface DemographicSetToken {
-    type: DemographicTypes.DEMOGRAPHIC_SET_TOKEN;
+export interface DemographicOneTimeTokenFetched {
+    type: DemographicTypes.DEMOGRAPHIC_ONE_TIME_TOKEN_FETCHED;
     data: string;
+}
+
+export interface DemographicOneTimeTokenClear {
+    type: DemographicTypes.DEMOGRAPHIC_ONE_TIME_TOKEN_CLEAR;
 }
 
 export type DemographicAction =
@@ -38,4 +43,5 @@ export type DemographicAction =
     | DemographicSetDataSet
     | DemographicSetGender
     | DemographicSetFormat
-    | DemographicSetToken
+    | DemographicOneTimeTokenFetched
+    | DemographicOneTimeTokenClear
