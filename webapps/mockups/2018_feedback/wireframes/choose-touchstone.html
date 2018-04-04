@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="UTF-8">
+    <title>Montagu - Modelling groups contribution portal</title>
+    <link rel="stylesheet" href="./style.css" type="text/css" />
+    <style>
+        .openTouchstones .row:nth-child(odd) {
+             background-color: rgb(245, 245, 245);
+        }
+        .openTouchstones .row {
+             padding: 5px;
+        }
+    </style>
+</head>
+<body>
+<div>
+    <div>
+        <div class="header">
+            <a href="http://localhost:5000/"><img src="logo.png" alt="VIMC" height="80" /></a>
+
+            <div class="header__siteTitle">
+                <a href="http://localhost:5000/">Modellers' contribution portal</a>
+            </div>
+
+            <div class="logout">
+                <div>
+                    Logged in as test.user |
+                    <a href="http://localhost:5000/">Log out</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="montagu-navbar">
+            <div class="montagu-navbar__chunk">
+                <a href="http://localhost:5000/">Modellers' contribution
+                portal</a>
+            </div>
+
+            <div class="montagu-navbar__chunk">
+                <a href="http://localhost:5000/IC-Garske/">Imperial Yellow
+                Fever modelling group</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="page">
+        <div class="page__title">
+            <span>Choose a touchstone</span>
+        </div>
+
+        <div class="page__content">
+            <div>
+                <div>
+                    <div class="sectionTitle">
+                        Your responsibilities
+                    </div>
+
+                    <p>Select any of the past and open touchstones below to
+                    view your group's responsibilities in that touchstone and to
+                    download vaccination coverage and demographic input datasets
+                    for each responsibility. Additionally, for open touchstones,
+                    you will be able to upload the estimates associated with each
+                    responsibility.</p>
+
+                    <p><a href="http://localhost:5000/help/touchstones/">What is a touchstone?</a></p>
+
+                    <div>
+                        <div class="openTouchstones">
+                            <div class="sectionTitle">
+                                Currently open touchstones
+                            </div>
+
+                            <div class="row">
+                                <div class="col-3">
+                                    <strong>Forecast October 2019</strong>
+                                    <p style="color: grey;" class="mt-2"><code>201910gavi</code></p>
+                                </div>
+                                <div class="col-6">
+                                    <p>
+                                        Burden estimate forecast for October 2019 using WUENIC data from June 2019
+                                        and coverage data published by GAVI on 11th September 2019.
+                                    </p>                                    
+                                    <p>
+                                        <strong>Version: v4</strong>, published 6th November 2019.
+                                        <ul>
+                                            <li>Fixed coverage for Nigeria post 2030.</li>
+                                            <li>Updated mortality figures for all countries to remove rounding error.</li>
+                                        </ul>
+                                    </p>
+                                </div>
+                                <div class="col-3">
+                                    <form action="touchstone-landing.html">
+                                        <button type="submit">Access this touchstone &gt;&gt;</button>
+                                    </form>
+                                </div>
+                            </div>
+
+                            <div class="row mt-3">
+                                <div class="col-3">
+                                    <strong>Experimental touchstone</strong>
+                                    <p style="color: grey;" class="mt-2"><code>201801uxe</code></p>
+                                </div>
+                                <div class="col-6">
+                                    <p>
+                                        Touchstone for experimenting with new Montagu functionality.
+                                        Upload whatever data you like!
+                                    </p>                                    
+                                    <p>
+                                        <strong>Version: v1</strong>, published 3rd January 2018.
+                                    </p>
+                                </div>
+                                <div class="col-3">
+                                    <form>
+                                        <button type="submit">Access this touchstone &gt;&gt;</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="finishedTouchstones">
+                            <div class="sectionTitle">
+                                Past finished touchstones
+                            </div>
+
+                            Choose a past touchstone from the dropdown:
+                            <select>
+                                <option></option>
+                                <option>Forecast October 2017</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body></html>

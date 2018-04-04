@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="UTF-8">
+    <title>Montagu - Modelling groups contribution portal</title>
+    <link rel="stylesheet" href="./style.css" type="text/css" />
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+
+    <style>
+        .row:nth-child(odd) .new-scenario {
+             background-color: rgb(245, 245, 245);
+        }
+        .new-scenario {
+            position: relative;
+            margin-bottom: 10px;
+            margin: 10px 0;
+            border: 1px solid rgb(200, 200, 200);
+            padding: 10px;
+        }        
+        .new-scenario .new-header {
+            position: relative;
+        }
+        .new-scenario .name {
+            display: inline-block;
+            margin-bottom: 0;
+            font-size: 20pt;
+        }
+        .new-scenario .id {
+            display: inline-block;
+            font-size: 10pt;
+            color: gray;
+            margin-left: 10px;
+        }
+        .new-scenario .upload {
+            position: absolute;
+            top: 0;
+            right: 0;
+        }
+        .new-scenario .details {
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+<div>
+    <div>
+        <div class="header">
+            <a href="http://localhost:5000/"><img src="logo.png" alt="VIMC" height="80" /></a>
+
+            <div class="header__siteTitle">
+                <a href="http://localhost:5000/">Modellers' contribution portal</a>
+            </div>
+
+            <div class="logout">
+                <div>
+                    Logged in as test.user |
+                    <a href="http://localhost:5000/">Log out</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="montagu-navbar">
+            <div class="montagu-navbar__chunk">
+                <a href="http://localhost:5000/">Modellers' contribution
+                portal</a>
+            </div>
+
+            <div class="montagu-navbar__chunk">
+                <a href="http://localhost:5000/IC-Garske/">Imperial Yellow
+                Fever modelling group</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="page">
+        <div class="page__title">
+            <span>Forecast October 2018: Uploads</span>
+        </div>
+
+        <div class="page__content">
+            <div class="row">        
+                <div class="largeSectionTitle">Central estimates</div>
+            </div>         
+
+            <div class="row">
+                <div class="col-lg-9 col-12 new-scenario">
+                    <div class="new-header">
+                        <div class="name">No vaccination</div>
+                        <div class="id">(<code>yf-no-vaccination</code>)</div>
+                        <form class="upload"><button type="submit">Upload &gt;&gt;</button></form>
+                    </div>
+                    <div class="details">
+                        <div>No estimates have been uploaded for this scenario.</div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-9 col-12 new-scenario">
+                    <div class="new-header">
+                        <div class="name">Routine, total</div>
+                        <div class="id">(<code>yf-routine-gavi</code>)</div>
+                        <form class="upload"><button type="submit">Upload &gt;&gt;</button></form>
+                    </div>                   
+                    <div class="details">
+                        <div>A complete estimate set was uploaded on Wed Jan 24 2018, 16:17.</div>
+                        <div>Download estimates: <a href="#" style="white-space: nowrap;">yf-routine-estimates-v7.csv</a></div>
+                    </div>                      
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-9 col-12 new-scenario">
+                    <div class="new-header">
+                        <div class="name">Campaign (preventive), total</div>
+                        <div class="id">(<code>yf-preventive-gavi</code>)</div>
+                        <form class="upload"><button type="submit">Upload &gt;&gt;</button></form>
+                    </div>
+                    <div class="details">
+                        <div>You registered how you calculated your central estimates on Thu Mar 01 2018, 13:42.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="largeSectionTitle">Stochastic estimates</div>
+            </div>
+            <div class="row">
+                <div class="col-lg-9 col-12 new-scenario">
+                    <div class="new-header">
+                        <div class="name">Model run parameters</div>
+                        <form class="upload">
+                            <button type="submit">Upload parameters &gt;&gt;</button>
+                        </form>
+                    </div>
+                    <div class="details">
+                        You last uploaded a parameter set on Tue Jan 23 2018, 15:52:58<br />
+                        <a href="#">Download parameter certificate</a><br />
+                        <a href="#">Download data set</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body></html>
