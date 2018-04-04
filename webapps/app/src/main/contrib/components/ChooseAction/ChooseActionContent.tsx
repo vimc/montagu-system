@@ -1,11 +1,13 @@
 import * as React from "react";
 import { compose, branch, renderComponent } from "recompose";
+import { connect } from 'react-redux';
 
 import { ModellingGroup, Touchstone } from "../../../shared/models/Generated";
 import { TouchstoneList } from "./TouchstoneList";
 import { isNullOrUndefined } from "util";
 import { InternalLink } from "../../../shared/components/InternalLink";
 import {LoadingElement} from "../../../shared/partials/LoadingElement/LoadingElement";
+import {ContribAppState} from "../../reducers/contribAppReducers";
 
 export interface ChooseActionContentProps {
     touchstones: Touchstone[];
@@ -32,6 +34,15 @@ export const ChooseActionContentComponent: React.SFC<ChooseActionContentProps> =
     </div>;
 }
 
+export const mapStateToProps = (state: ContribAppState): ChooseActionContentProps => {
+    return {
+        touchstones: state.touchstones.touchstones,
+        group: state.groups.currentUserGroup
+
+    }
+};
+
 export const ChooseActionContent = compose(
+    connect(mapStateToProps),
     branch((props: ChooseActionContentProps) => (!props.group), renderComponent(LoadingElement))
-)(ChooseActionContentComponent) as React.ComponentClass<ChooseActionContentProps>;
+)(ChooseActionContentComponent) as React.ComponentClass<Partial<ChooseActionContentProps>>;

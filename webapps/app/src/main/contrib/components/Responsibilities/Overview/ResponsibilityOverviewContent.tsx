@@ -1,5 +1,6 @@
 import * as React from "react";
 import { compose, branch, renderComponent } from "recompose";
+import { connect } from 'react-redux';
 
 import {IExtendedResponsibilitySet} from "../../../models/ResponsibilitySet";
 import {ModellingGroup} from "../../../../shared/models/Generated";
@@ -8,6 +9,7 @@ import {ButtonLink} from "../../../../shared/components/ButtonLink";
 
 import {ResponsibilitySetStatusMessage} from "./ResponsibilitySetStatusMessage";
 import {LoadingElement} from "../../../../shared/partials/LoadingElement/LoadingElement";
+import {ContribAppState} from "../../../reducers/contribAppReducers";
 
 const stochasticParams = require('./stochastic_template_params.csv');
 
@@ -48,7 +50,17 @@ export const ResponsibilityOverviewContentComponent: React.SFC<ResponsibilityOve
     </div>
 }
 
+export const mapStateToProps = (state: ContribAppState): Partial<ResponsibilityOverviewContentProps> => {
+    return {
+        responsibilitySet: state.responsibilities.set,
+        currentDiseaseId: state.diseases.currentDiseaseId,
+        modellingGroup: state.groups.currentUserGroup
+    }
+};
+
+
 export const ResponsibilityOverviewContent = compose(
+    connect(mapStateToProps),
     branch((props: ResponsibilityOverviewContentProps) => (!props.responsibilitySet), renderComponent(LoadingElement))
-)(ResponsibilityOverviewContentComponent) as React.ComponentClass<ResponsibilityOverviewContentProps>;
+)(ResponsibilityOverviewContentComponent) as React.ComponentClass<Partial<ResponsibilityOverviewContentProps>>;
 

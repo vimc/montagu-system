@@ -5,7 +5,6 @@ import { connect } from 'react-redux';
 
 import { ChooseActionContent } from "./ChooseActionContent";
 import {ChooseGroupPageComponent} from "../ChooseGroup/ChooseGroupPage";
-import {ModellingGroup, Touchstone} from "../../../shared/models/Generated";
 import {PageBreadcrumb, PageProperties} from "../../../shared/components/PageWithHeader/PageWithHeader";
 import {ContribAppState} from "../../reducers/contribAppReducers";
 import {PageArticle} from "../../../shared/components/PageWithHeader/PageArticle";
@@ -15,12 +14,7 @@ export interface ChooseActionPageLocationProps {
     groupId: string;
 }
 
-export interface ChooseActionPageProps extends PageProperties<ChooseActionPageLocationProps> {
-    touchstones: Touchstone[];
-    group: ModellingGroup;
-}
-
-export class ChooseActionPageComponent extends React.Component<ChooseActionPageProps> {
+export class ChooseActionPageComponent extends React.Component<PageProperties<ChooseActionPageLocationProps>> {
     componentDidMount() {
         this.props.onLoad(this.props.match.params)
     }
@@ -35,28 +29,17 @@ export class ChooseActionPageComponent extends React.Component<ChooseActionPageP
 
     render(): JSX.Element {
         return <PageArticle title="What do you want to do?">
-            <ChooseActionContent
-                touchstones={this.props.touchstones}
-                group={this.props.group}
-            />
+            <ChooseActionContent/>
         </PageArticle>;
     }
 }
 
-export const mapStateToProps = (state: ContribAppState): Partial<ChooseActionPageProps> => {
-    return {
-        touchstones: state.touchstones.touchstones,
-        group: state.groups.currentUserGroup
-
-    }
-};
-
-export const mapDispatchToProps = (dispatch: Dispatch<Action>): Partial<ChooseActionPageProps> => {
+export const mapDispatchToProps = (dispatch: Dispatch<Action>): Partial<PageProperties<ChooseActionPageLocationProps>> => {
     return {
         onLoad: (params: ChooseActionPageLocationProps) => dispatch(chooseActionPageActionCreators.onLoad(params))
     }
 };
 
 export const ChooseActionPage = compose(
-    connect(mapStateToProps, mapDispatchToProps)
-)(ChooseActionPageComponent) as React.ComponentClass<Partial<ChooseActionPageProps>>;
+    connect(state => state, mapDispatchToProps)
+)(ChooseActionPageComponent) as React.ComponentClass<Partial<PageProperties<ChooseActionPageLocationProps>>>;

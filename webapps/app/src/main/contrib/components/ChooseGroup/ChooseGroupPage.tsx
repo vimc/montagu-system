@@ -6,15 +6,9 @@ import { Action, Dispatch } from "redux";
 import {ChooseGroupContent} from "./ChooseGroupContent";
 import {PageArticle} from "../../../shared/components/PageWithHeader/PageArticle";
 import {PageBreadcrumb, PageProperties} from "../../../shared/components/PageWithHeader/PageWithHeader";
-import {ContribAppState} from "../../reducers/contribAppReducers";
-import {ModellingGroup} from "../../../shared/models/Generated";
 import {chooseGroupPageActionCreators} from "../../actions/pages/chooseGroupPageActionCreators";
 
-interface ChooseGroupPageProps extends PageProperties<undefined> {
-    groups: ModellingGroup[];
-}
-
-export class ChooseGroupPageComponent extends React.Component<ChooseGroupPageProps> {
+export class ChooseGroupPageComponent extends React.Component<PageProperties<undefined>> {
 
     static title: string = "Modellers' contribution portal";
 
@@ -41,23 +35,17 @@ export class ChooseGroupPageComponent extends React.Component<ChooseGroupPagePro
                 impact estimates to the VIMC to download input datasets and
                 upload, review and approve model estimates.
             </p>
-            <ChooseGroupContent groups={this.props.groups} />
+            <ChooseGroupContent/>
         </PageArticle>;
     }
 }
 
-export const mapStateToProps = (state: ContribAppState): Partial<ChooseGroupPageProps> => {
-    return {
-        groups: state.groups.userGroups,
-    }
-};
-
-export const mapDispatchToProps = (dispatch: Dispatch<Action>): Partial<ChooseGroupPageProps> => {
+export const mapDispatchToProps = (dispatch: Dispatch<Action>): Partial<PageProperties<undefined>> => {
     return {
         onLoad: () => dispatch(chooseGroupPageActionCreators.onLoad())
     }
 };
 
 export const ChooseGroupPage = compose(
-    connect(mapStateToProps, mapDispatchToProps)
-)(ChooseGroupPageComponent) as React.ComponentClass<Partial<ChooseGroupPageProps>>;
+    connect(state => state, mapDispatchToProps)
+)(ChooseGroupPageComponent) as React.ComponentClass<Partial<PageProperties<undefined>>>;

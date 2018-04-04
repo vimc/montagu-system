@@ -1,10 +1,12 @@
 import * as React from "react";
 import { compose, branch, renderComponent } from "recompose";
+import { connect } from 'react-redux';
 
 import { ModellingGroup } from "../../../shared/models/Generated";
 import { GroupList } from "./GroupList";
 import { ButtonLink } from "../../../shared/components/ButtonLink";
 import { LoadingElement } from "../../../shared/partials/LoadingElement/LoadingElement";
+import {ContribAppState} from "../../reducers/contribAppReducers";
 
 export interface ChooseGroupProps {
     groups: ModellingGroup[];
@@ -30,6 +32,13 @@ export const ChooseGroupContentComponent: React.SFC<ChooseGroupProps> = (props: 
     }
 }
 
+export const mapStateToProps = (state: ContribAppState): Partial<ChooseGroupProps> => {
+    return {
+        groups: state.groups.userGroups,
+    }
+};
+
 export const ChooseGroupContent = compose(
+    connect(mapStateToProps),
     branch((props: ChooseGroupProps) => (!props.groups || props.groups.length < 1), renderComponent(LoadingElement))
-)(ChooseGroupContentComponent) as React.ComponentClass<ChooseGroupProps>;
+)(ChooseGroupContentComponent) as React.ComponentClass<Partial<ChooseGroupProps>>;

@@ -23,7 +23,7 @@ export interface DownloadDemographicsContentProps {
 
 const ButtonWithTimeout = OneTimeButtonTimeBlocker(OneTimeButton);
 
-export class DownloadDemographicsContentComponent extends React.Component<DownloadDemographicsContentProps, undefined> {
+export class DownloadDemographicsContentComponent extends React.Component<DownloadDemographicsContentProps> {
 
     ButtonWithTimeout?: any;
 
@@ -77,7 +77,7 @@ export class DownloadDemographicsContentComponent extends React.Component<Downlo
     }
 }
 
-export const mapStateToProps = (state: ContribAppState, props: Partial<DownloadDemographicsContentProps>): Partial<DownloadDemographicsContentProps> => {
+export const mapStateToProps = (state: ContribAppState): Partial<DownloadDemographicsContentProps> => {
     console.log(2225, state)
     return {
         touchstone: state.touchstones.currentTouchstone,

@@ -21,20 +21,6 @@ export interface DemographicOptionsProps {
 }
 
 export class DemographicOptionsComponent extends React.Component<DemographicOptionsProps> {
-    // onSelectDataSet(e: React.ChangeEvent<HTMLSelectElement>) {
-    //     demographicActions.selectDataSet(e.target.value);
-    //     demographicStore.fetchOneTimeToken().catch(doNothing);
-    // }
-    //
-    // onSelectGender(gender: string) {
-    //     demographicActions.selectGender(gender);
-    //     demographicStore.fetchOneTimeToken().catch(doNothing);
-    // }
-    //
-    // onSelectFormat(format: string) {
-    //     demographicActions.selectFormat(format);
-    //     demographicStore.fetchOneTimeToken().catch(doNothing);
-    // }
 
     render() {
         const props = this.props;
