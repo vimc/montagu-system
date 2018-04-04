@@ -82,20 +82,67 @@
             </div>
         </div>
 
-        <div class="montagu-navbar">
-            <div class="montagu-navbar__chunk">
-                <a href="http://localhost:5000/">Modellers' contribution
-                    portal</a>
-            </div>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
 
-            <div class="montagu-navbar__chunk">
-                <a href="http://localhost:5000/IC-Garske/">Imperial Yellow
-                    Fever modelling group</a>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Guidance</a>
+                    </li>
+                    <li class="nav-item ">
+                        <a class="nav-link" href="topbar-nav-download.html">Downloads</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link " href="#">Uploads</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Touchstone Changelog</a>
+                    </li>
+                </ul>
+                <div class="btn-group">
+                    <div class="btn btn-light dropdown-toggle"
+                         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span id="current-disease">PCV</span>
+                    </div>
+                    <div class="dropdown-menu rounded-0">
+                        <a class="dropdown-item active" href="#" id="pcv">PCV</a>
+                        <a class="dropdown-item" href="#" id="hepb">HepB</a>
+                    </div>
+                </div>
+                <div class="btn-group">
+                    <div class="btn btn-light dropdown-toggle"
+                         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span id="current"> Forecast October 2019 | v1 (open)</span>
+                    </div>
+                    <div class="dropdown-menu rounded-0">
+                        <div class="btn-group dropleft rounded-0">
+                            <div class="dropdown-item submenu-btn" href="#"
+                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Forecast October 2019
+                            </div>
+                            <div class="dropdown-menu submenu rounded-0">
+                                <a class="dropdown-item active" href="#">v1 (open)</a>
+                                <a class="dropdown-item" href="#">v2 (finished)</a>
+                                <a class="dropdown-item" href="#">v3 (finished)</a>
+                                <a class="dropdown-item" href="#">v4 (finished)</a>
+                            </div>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <div class="btn-group dropleft rounded-0">
+                            <div class="dropdown-item submenu-btn" href="#"
+                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Experimental touchstone
+                            </div>
+                            <div class="dropdown-menu submenu rounded-0">
+                                <a class="dropdown-item" href="#">v1 (finished)</a>
+                                <a class="dropdown-item" href="#">v2 (finished)</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="montagu-navbar__chunk">
-                <a href="http://localhost:5000/IC-Garske/">Uploads</a>
-            </div>
-        </div>
+        </nav>
 
     </div>
 
@@ -118,7 +165,7 @@
                     <div class="new-header">
                         <div class="name">No vaccination</div>
                         <div class="id">(<code>yf-no-vaccination</code>)</div>
-                        <form class="upload" action="upload-estimates.html"><button type="submit">Upload &gt;&gt;</button></form>
+                        <form class="upload" action="upload.html"><button type="submit">Upload &gt;&gt;</button></form>
                     </div>
                     <div class="details">
                         <div>No estimates have been uploaded for this scenario.</div>
@@ -130,7 +177,7 @@
                     <div class="new-header">
                         <div class="name">Routine, total</div>
                         <div class="id">(<code>yf-routine-gavi</code>)</div>
-                        <form class="upload" action="upload-estimates.html"><button>Upload &gt;&gt;</button></form>
+                        <form class="upload" action="upload.html"><button>Upload &gt;&gt;</button></form>
                     </div>
                     <div class="details">
                         <div>A complete estimate set was uploaded on Wed Jan 24 2018, 16:17.</div>
@@ -148,7 +195,7 @@
                     <div class="new-header">
                         <div class="name">Campaign (preventive), total</div>
                         <div class="id">(<code>yf-preventive-gavi</code>)</div>
-                        <form class="upload" action="upload-estimates.html"><button type="submit">Upload &gt;&gt;</button></form>
+                        <form class="upload" action="upload.html"><button type="submit">Upload &gt;&gt;</button></form>
                     </div>
                     <div class="details">
                         <div>You registered how you calculated your central estimates on Thu Mar 01 2018, 13:42.</div>
