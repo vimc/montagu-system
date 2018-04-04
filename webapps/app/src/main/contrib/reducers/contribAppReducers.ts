@@ -7,6 +7,7 @@ import { touchstonesReducer, TouchstonesState } from "./touchstonesReducer";
 import { diseasesReducer, DiseasesState } from "./diseasesReducer";
 import { responsibilitiesReducer, ResponsibilitiesState } from "./responsibilitiesReducer";
 import { demographicReducer, DemographicState } from "./demographicReducer";
+import { runParametersReducer, RunParametersState } from "./runParametersReducer";
 import {breadcrumbsReducer, BreadcrumbsState} from "../../shared/reducers/breadcrumbsReducer";
 
 export interface ContribAppState {
@@ -18,6 +19,7 @@ export interface ContribAppState {
     responsibilities: ResponsibilitiesState;
     diseases: DiseasesState;
     demographic: DemographicState;
+    runParameters: RunParametersState;
 }
 
 const reducers = combineReducers({
@@ -28,7 +30,8 @@ const reducers = combineReducers({
     touchstones: touchstonesReducer,
     responsibilities: responsibilitiesReducer,
     diseases: diseasesReducer,
-    demographic: demographicReducer
+    demographic: demographicReducer,
+    runParameters: runParametersReducer
 });
 
 export default reducers;

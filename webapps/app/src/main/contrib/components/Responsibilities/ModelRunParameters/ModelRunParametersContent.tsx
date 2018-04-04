@@ -1,41 +1,21 @@
-import {RemoteContentComponent} from "../../../../shared/components/RemoteContentComponent/RemoteContentComponent";
-import {RemoteContent} from "../../../../shared/models/RemoteContent";
-import {ModellingGroup, ModelRunParameterSet, Touchstone} from "../../../../shared/models/Generated";
-import {responsibilityStore} from "../../../stores/ResponsibilityStore";
-import {runParametersStore} from "../../../stores/RunParametersStore";
-import {connectToStores} from "../../../../shared/alt";
 import * as React from "react";
-import {ModelRunParametersSection} from "./ModelRunParametersSection";
+import { compose, branch, renderComponent} from "recompose";
+import { connect } from 'react-redux';
 
-export interface Props extends RemoteContent {
+import {ModellingGroup, Touchstone} from "../../../../shared/models/Generated";
+import {ModelRunParametersSection} from "./ModelRunParametersSection";
+import {LoadingElement} from "../../../../shared/partials/LoadingElement/LoadingElement";
+import {ContribAppState} from "../../../reducers/contribAppReducers";
+
+export interface ModelRunParametersContentProps {
     touchstone: Touchstone;
     group: ModellingGroup;
     diseases: string[];
 }
 
-export class ModelRunParametersContentComponent
-    extends RemoteContentComponent<Props, undefined> {
-
-    static getStores() {
-        return [responsibilityStore];
-    }
-
-    static getPropsFromStores(): Props {
-        const state = responsibilityStore.getState();
-
-        return {
-            ready: state.ready && state.currentTouchstone != null,
-            touchstone: state.currentTouchstone,
-            group: state.currentModellingGroup,
-            diseases: Array.from(new Set([].concat.apply([],
-                state.responsibilitySets.map(set => set.responsibilities.map(r => r.scenario.disease)))))
-        };
-    }
-
-    renderContent(props: Props): JSX.Element {
-
+export class ModelRunParametersContentComponent extends React.Component<ModelRunParametersContentProps> {
+    render(): JSX.Element {
         const url = `/modelling-groups/${this.props.group.id}/model-run-parameters/${this.props.touchstone.id}/`;
-
         return <div>
             {
                 this.props.diseases.map(d => <ModelRunParametersSection disease={d} url={url} key={d} />)
@@ -44,4 +24,15 @@ export class ModelRunParametersContentComponent
     }
 }
 
-export const ModelRunParametersContent = connectToStores(ModelRunParametersContentComponent);
+export const mapStateToProps = (state: ContribAppState): Partial<ModelRunParametersContentProps> => {
+    return {
+        touchstone: state.touchstones.currentTouchstone,
+        group: state.groups.currentUserGroup,
+        diseases: state.responsibilities.set ? state.responsibilities.set.responsibilities.map(r => r.scenario.disease) : []
+    }
+};
+
+export const ModelRunParametersContent = compose(
+    connect(mapStateToProps),
+    branch((props: ModelRunParametersContentProps) => !props.touchstone, renderComponent(LoadingElement))
+)(ModelRunParametersContentComponent) as React.ComponentClass<Partial<ModelRunParametersContentProps>>;
