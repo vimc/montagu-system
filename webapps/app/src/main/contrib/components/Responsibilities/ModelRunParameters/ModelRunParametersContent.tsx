@@ -28,7 +28,7 @@ export const mapStateToProps = (state: ContribAppState): Partial<ModelRunParamet
     return {
         touchstone: state.touchstones.currentTouchstone,
         group: state.groups.currentUserGroup,
-        diseases: state.responsibilities.set ? state.responsibilities.set.responsibilities.map(r => r.scenario.disease) : []
+        diseases: state.responsibilities.set ? [...new Set(state.responsibilities.set.responsibilities.map(r => r.scenario.disease))] : []
     }
 };
 

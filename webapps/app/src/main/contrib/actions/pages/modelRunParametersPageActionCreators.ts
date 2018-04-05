@@ -18,7 +18,7 @@ export const modelRunParametersPageActionCreators = {
     },
 
     loadData(props: ModelRunParametersPageLocationProps) {
-        return async (dispatch: Dispatch<any>, getState: () => any) => {
+        return async (dispatch: Dispatch<any>) => {
             await dispatch(responsibilityOverviewPageActionCreators.loadData(props));
             await dispatch(runParametersActionCreators.getParameterSets(props.groupId, props.touchstoneId));
         }

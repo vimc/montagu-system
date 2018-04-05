@@ -1,117 +1,59 @@
-import {ModelRunParameterSet} from "../../../../shared/models/Generated";
 import * as React from "react";
+import { connect } from 'react-redux';
+import { compose, branch, renderComponent} from "recompose";
+import { Action, Dispatch } from "redux";
+import {isEqual} from "lodash";
+
+import {ModellingGroup, ModelRunParameterSet, Touchstone} from "../../../../shared/models/Generated";
 import {Alert} from 'reactstrap';
 import {longestTimestamp} from "../../../../shared/Helpers";
 import {ModelRunParameterDownloadCertificate} from "./ModelRunParameterDownloadCertificate";
-import {RunParametersState, runParametersStore, TokensMap } from "../../../stores/RunParametersStore";
-import {runParameterActions} from "../../../actions/RunParameterActions";
+import {TokensMap } from "../../../stores/RunParametersStore";
 import { OneTimeButton } from "../../../../shared/components/OneTimeButton/OneTimeButton";
+import {LoadingElement} from "../../../../shared/partials/LoadingElement/LoadingElement";
+import {ContribAppState} from "../../../reducers/contribAppReducers";
+import {runParametersActionCreators} from "../../../actions/runParametersActionCreators";
 
-interface Props {
+export interface ModelRunParametersStatusProps {
     disease: string;
+    set: ModelRunParameterSet;
+    group: ModellingGroup;
+    touchstone: Touchstone;
+    loadToken: (groupId: string, touchstoneId: string, setId: number) => any;
+    token: string;
 }
 
-interface State {
-    set: ModelRunParameterSet,
-    token: string,
-    groupId: string,
-    touchstoneId: string
-}
-
-export class ModelRunParametersStatus extends React.Component<Props, State> {
-
-    constructor(props: Props) {
-        super(props);
-        this.state = {
-            set: null,
-            token: null,
-            groupId: null,
-            touchstoneId: null
-        };
-        this.refreshToken = this.refreshToken.bind(this);
-        this.onChange = this.onChange.bind(this)
-    }
-
-    getLastSetForDisease(allSets: ModelRunParameterSet[], disease: string) {
-        const sets = allSets
-            ? allSets.filter(s => s.disease == disease)
-            : [];
-        if (sets.length) {
-            return sets[0]
-        }
-        return null;
-    }
-
-    getTokenBySet(set: ModelRunParameterSet, tokens: TokensMap) {
-        if (!set) {
-            return null;
-        }
-        if (tokens[set.id]) {
-            return tokens[set.id];
-        }
-        return null;
-    }
-
+export class ModelRunParametersStatusComponent extends React.Component<ModelRunParametersStatusProps> {
     componentDidMount() {
-        const s = runParametersStore.getState();
-        const set = this.getLastSetForDisease(s.parameterSets, this.props.disease);
-        const token = this.getTokenBySet(set, s.oneTimeTokens);
-        this.setState({
-            set: set,
-            token: token,
-            groupId: s.groupId,
-            touchstoneId: s.touchstoneId
-        });
-        runParametersStore.listen(this.onChange);
-        if (this.state.set) {
-            runParameterActions.fetchToken(this.state.groupId, this.state.touchstoneId, this.state.set.id)
+        if (this.props.set) {
+            this.props.loadToken(this.props.group.id, this.props.touchstone.id, this.props.set.id);
         }
     }
 
-    componentWillUnmount() {
-        runParametersStore.unlisten(this.onChange);
-    }
-
-    onChange(storeState: RunParametersState) {
-        const oldSetId = this.state.set ? this.state.set.id : null;
-        const set = this.getLastSetForDisease(storeState.parameterSets, this.props.disease);
-        this.setState({
-            set: set,
-            token: this.getTokenBySet(set, storeState.oneTimeTokens),
-            groupId: storeState.groupId,
-            touchstoneId: storeState.touchstoneId
-        });
-        const newSetId = this.state.set ? this.state.set.id : null;
-        if (newSetId && oldSetId != newSetId) {
-            runParameterActions.fetchToken(storeState.groupId, storeState.touchstoneId, newSetId)
-        }
-    }
-
-    refreshToken(setId: number) {
-        return () => {
-            runParameterActions.clearToken(setId);
-            runParameterActions.fetchToken(this.state.groupId, this.state.touchstoneId, setId)
+    componentWillReceiveProps(nextProps: ModelRunParametersStatusProps) {
+        if (!isEqual(this.props.set, nextProps.set)) {
+            this.props.loadToken(this.props.group.id, this.props.touchstone.id, nextProps.set.id);
         }
     }
 
     render(): JSX.Element {
-        let alertContent = <span>You have not uploaded any parameter sets for {this.props.disease}</span>;
-        const set = this.state.set;
-        if (set) {
-            const alertText
-                = `You last uploaded a parameter set on ${longestTimestamp(new Date(set.uploaded_on))}`;
 
-            const downloadCertificateLink = <ModelRunParameterDownloadCertificate set={set}/>;
+        let alertContent = <span>You have not uploaded any parameter sets for {this.props.disease}</span>;
+        if (this.props.set) {
+
+            const alertText
+                = `You last uploaded a parameter set on ${longestTimestamp(new Date(this.props.set.uploaded_on))}`;
+
+            const downloadCertificateLink = <ModelRunParameterDownloadCertificate set={this.props.set}/>;
 
             const downloadParamsLink = <OneTimeButton
-                token={this.state.token}
-                refreshToken={this.refreshToken(set.id)}
-                enabled={!!this.state.token}
+                token={this.props.token}
+                refreshToken={() => this.props.loadToken(this.props.group.id, this.props.touchstone.id, this.props.set.id)}
+                enabled={!!this.props.token}
                 element="Link"
             >
                 Download data set
             </OneTimeButton>;
-
 
             alertContent = <span>{alertText} {downloadCertificateLink}
                 <br/> {downloadParamsLink}
@@ -122,6 +64,52 @@ export class ModelRunParametersStatus extends React.Component<Props, State> {
             <Alert color="warning">{alertContent}
                 <div className="clearfix"></div>
             </Alert>
-        </div>
+        </div>;
     }
 }
+
+export const getLastSetForDisease = (allSets: ModelRunParameterSet[], disease: string) : ModelRunParameterSet => {
+    const sets = allSets
+        ? allSets.filter(s => s.disease == disease)
+        : [];
+    if (sets.length) {
+        return sets[0]
+    }
+    return null;
+}
+
+export const getTokenBySet = (set: ModelRunParameterSet, tokens: TokensMap) : string => {
+    if (!set) {
+        return null;
+    }
+    if (tokens[set.id]) {
+        return tokens[set.id];
+    }
+    return null;
+}
+
+export const mapStateToProps = (state: ContribAppState, props: Partial<ModelRunParametersStatusProps>): Partial<ModelRunParametersStatusProps> => {
+
+    const newProps : Partial<ModelRunParametersStatusProps> = {
+        disease: props.disease,
+        set: state.runParameters.sets.length ? getLastSetForDisease(state.runParameters.sets, props.disease) : null,
+        group: state.groups.currentUserGroup,
+        touchstone: state.touchstones.currentTouchstone,
+    }
+    newProps.token = newProps.set ? getTokenBySet(newProps.set, state.runParameters.tokens) : null;
+
+    return newProps;
+};
+
+export const mapDispatchToProps = (dispatch: Dispatch<Action>): Partial<ModelRunParametersStatusProps> => {
+    return {
+        loadToken: ((groupId: string, touchstoneId: string, setId: number) => {
+            dispatch(runParametersActionCreators.getOneTimeToken(groupId, touchstoneId, setId))
+        })
+    }
+};
+
+export const ModelRunParametersStatus = compose(
+    connect(mapStateToProps, mapDispatchToProps),
+    branch((props: ModelRunParametersStatusProps) => !props.group || !props.touchstone, renderComponent(LoadingElement)),
+)(ModelRunParametersStatusComponent) as React.ComponentClass<Partial<ModelRunParametersStatusProps>>;

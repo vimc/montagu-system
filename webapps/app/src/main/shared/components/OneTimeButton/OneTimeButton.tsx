@@ -7,7 +7,7 @@ import { OneTimeButtonLink } from "./Elements/Link";
 export interface OneTimeButtonProps {
     token: string;
     enabled?: boolean;
-    refreshToken: () => void;
+    refreshToken?: () => void;
     onClick?: () =>void;
     element?: string;
 }
