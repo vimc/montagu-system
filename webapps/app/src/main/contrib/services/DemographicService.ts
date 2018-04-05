@@ -2,7 +2,7 @@ import { AbstractLocalService } from "../../shared/services/AbstractLocalService
 
 export class DemographicService extends AbstractLocalService {
     getDataSetsByTouchstoneId(touchstoneId: string) {
-        return this.setOptions({cacheKey: DemographicCacheKeysEnum.demographic})
+        return this.setOptions({cacheKey: DemographicCacheKeysEnum.sets})
             .get(`/touchstones/${touchstoneId}/demographics/`);
     }
 
@@ -12,5 +12,5 @@ export class DemographicService extends AbstractLocalService {
 }
 
 export enum DemographicCacheKeysEnum {
-    "demographic" = "demographic",
+    "sets" = "sets",
 }

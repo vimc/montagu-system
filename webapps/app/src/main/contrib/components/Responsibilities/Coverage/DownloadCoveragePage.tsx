@@ -1,52 +1,64 @@
 import * as React from "react";
-import {touchstoneActions} from "../../../actions/TouchstoneActions";
-import {responsibilityActions} from "../../../actions/ResponsibilityActions";
-import {responsibilityStore} from "../../../stores/ResponsibilityStore";
-import {DownloadCoverageContent} from "./DownloadCoverageContent";
-import {modellingGroupActions} from "../../../../shared/actions/ModellingGroupActions";
-import {doNothing} from "../../../../shared/Helpers";
-import {DownloadDataTitle} from "../DownloadDataTitle";
-import {ContribPageWithHeader} from "../../PageWithHeader/ContribPageWithHeader";
-import {ResponsibilityOverviewPage} from "../Overview/ResponsibilityOverviewPage";
-import {IPageWithParent} from "../../../../shared/models/Breadcrumb";
-import {Page} from "../../../../shared/components/PageWithHeader/Page";
+import { Action, Dispatch } from "redux";
+import { compose} from "recompose";
+import { connect } from 'react-redux';
 
-interface LocationProps {
+import {DownloadCoverageContent} from "./DownloadCoverageContent";
+import {DownloadDataTitle} from "../DownloadDataTitle";
+import {ResponsibilityOverviewPageComponent} from "../Overview/ResponsibilityOverviewPage";
+import {PageBreadcrumb, PageProperties} from "../../../../shared/components/PageWithHeader/PageWithHeader";
+import {PageArticle} from "../../../../shared/components/PageWithHeader/PageArticle";
+import {ContribAppState} from "../../../reducers/contribAppReducers";
+import {ExtendedResponsibility} from "../../../models/ResponsibilitySet";
+import {downloadCoveragePageActionCreators} from "../../../actions/pages/downloadCoveragePageActionCreators";
+
+export interface DownloadCoveragePageLocationProps {
     groupId: string;
     touchstoneId: string;
     scenarioId: string;
 }
 
-export class DownloadCoveragePage extends ContribPageWithHeader<LocationProps> {
-    load(props: LocationProps) {
-        return this.loadParent(props).then(() => {
-            responsibilityActions.setCurrentResponsibility(props.scenarioId);
-            responsibilityStore.fetchOneTimeCoverageToken().catch(doNothing);
-            return responsibilityStore.fetchCoverageSets();
-        });
+export interface DownloadCoveragePageProps extends PageProperties<DownloadCoveragePageLocationProps> {
+    responsibility: ExtendedResponsibility;
+}
+
+export class DownloadCoveragePageComponent extends React.Component<DownloadCoveragePageProps> {
+    componentDidMount() {
+        this.props.onLoad(this.props.match.params)
     }
 
-    name() {
-        const s = responsibilityStore.getState();
-        return `Download coverage for ${s.currentResponsibility.scenario.description}`;
+    static breadcrumb(state: ContribAppState): PageBreadcrumb {
+        return {
+            name: `Download coverage for ${state.responsibilities.currentResponsibility.scenario.description}`,
+            urlFragment: `coverage/${state.responsibilities.currentResponsibility.scenario.id}/`,
+            parent: ResponsibilityOverviewPageComponent.breadcrumb(state)
+        }
     }
 
     title() {
         return <DownloadDataTitle title="Download coverage data"/>
     }
 
-    urlFragment(): string {
-        const s = responsibilityStore.getState();
-        return `coverage/${s.currentResponsibility.scenario.id}/`;
-    }
-
-    parent(): IPageWithParent {
-        return new ResponsibilityOverviewPage();
-    }
-
     render(): JSX.Element {
-        return <Page page={this}>
+        return <PageArticle title={this.title()}>
             <DownloadCoverageContent/>
-        </Page>
+        </PageArticle>
     }
 }
+
+export const mapStateToProps = (state: ContribAppState): Partial<DownloadCoveragePageProps> => {
+    console.log('pp', state)
+    return {
+        responsibility: state.responsibilities.currentResponsibility,
+    }
+};
+
+export const mapDispatchToProps = (dispatch: Dispatch<Action>): Partial<DownloadCoveragePageProps> => {
+    return {
+        onLoad: (params: DownloadCoveragePageLocationProps) => dispatch(downloadCoveragePageActionCreators.onLoad(params))
+    }
+};
+
+export const DownloadCoveragePage = compose(
+    connect(mapStateToProps, mapDispatchToProps),
+)(DownloadCoveragePageComponent) as React.ComponentClass<Partial<DownloadCoveragePageProps>>;
