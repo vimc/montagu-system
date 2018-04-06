@@ -1,23 +1,30 @@
 import * as React from "react";
-import {responsibilityStore} from "../../../stores/ResponsibilityStore";
+import { Action, Dispatch } from "redux";
+import { compose, branch, renderComponent} from "recompose";
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
+
+
 import {OptionSelector} from "../../OptionSelector/OptionSelector";
 import {Form} from "../../../../shared/components/Form";
 import {BurdenEstimateSetTypeCode} from "../../../../shared/models/Generated";
 import {FormEvent} from "react";
-import {responsibilityActions} from "../../../actions/ResponsibilityActions";
-import {doNothing} from "../../../../shared/Helpers";
+import {UploadBurdenEstimatesPageLocationProps} from "./UploadBurdenEstimatesPage";
+import {uploadBurdenEstimatesPageActionCreators} from "../../../actions/pages/uploadBurdenEstimatesPageActionCreators";
 
 interface BurdenEstimateProps {
     groupId: string;
     touchstoneId: string;
     scenarioId: string;
+    refreshResponsibilities: (props: UploadBurdenEstimatesPageLocationProps) => void;
+    match: any;
 }
 
 class CreateBurdenEstimateSet {
     type: { type: BurdenEstimateSetTypeCode, details: string }
 }
 
-export class CreateBurdenEstimateSetForm extends React.Component<BurdenEstimateProps, CreateBurdenEstimateSet> {
+export class CreateBurdenEstimateSetFormComponent extends React.Component<BurdenEstimateProps, CreateBurdenEstimateSet> {
 
     constructor(props: BurdenEstimateProps) {
         super();
@@ -27,11 +34,11 @@ export class CreateBurdenEstimateSetForm extends React.Component<BurdenEstimateP
                 details: null
             }
         }
+        this.successCallback = this.successCallback.bind(this);
     }
 
-    static successCallback() {
-        responsibilityStore.refreshResponsibilities();
-        responsibilityStore.fetchOneTimeEstimatesToken().catch(doNothing);
+    successCallback() {
+        this.props.refreshResponsibilities(this.props.match.params);
     }
 
     onTypeChange(value: BurdenEstimateSetTypeCode) {
@@ -54,12 +61,13 @@ export class CreateBurdenEstimateSetForm extends React.Component<BurdenEstimateP
                 type: {
                     type: prevState.type.type,
                     details: details
+
                 }
             }
         })
     }
 
-    render() {
+    render(): JSX.Element {
 
         const successMessage = "Success! You have registered how your central estimates were calculated";
 
@@ -74,7 +82,7 @@ export class CreateBurdenEstimateSetForm extends React.Component<BurdenEstimateP
 
         return <div>
             <h4>First step: register how these central estimates were calculated</h4>
-            <Form successCallback={CreateBurdenEstimateSetForm.successCallback}
+            <Form successCallback={this.successCallback}
                   url={`/modelling-groups/${this.props.groupId}/responsibilities/${this.props.touchstoneId}/${this.props.scenarioId}/estimate-sets/`}
                   successMessage={successMessage}
                   submitText={"Continue"}
@@ -106,3 +114,17 @@ export class CreateBurdenEstimateSetForm extends React.Component<BurdenEstimateP
         </div>;
     }
 }
+
+
+
+export const mapDispatchToProps = (dispatch: Dispatch<Action>): Partial<BurdenEstimateProps> => {
+    return {
+        refreshResponsibilities: (props: UploadBurdenEstimatesPageLocationProps) =>
+            dispatch(uploadBurdenEstimatesPageActionCreators.refreshResponsibilities(props)),
+    }
+};
+
+export const CreateBurdenEstimateSetForm = compose(
+    connect(state => state, mapDispatchToProps),
+    withRouter,
+)(CreateBurdenEstimateSetFormComponent) as React.ComponentClass<Partial<BurdenEstimateProps>>;

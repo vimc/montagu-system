@@ -10,8 +10,19 @@ import {ExtendedResponsibility, ExtendedResponsibilitySet} from "../models/Respo
 
 export const responsibilitiesActionCreators = {
 
-    getResponsibilitySet(group: ModellingGroup, touchstone: Touchstone) {
+    clearCacheForResponsibilitySet() {
         return async (dispatch: Dispatch<any>, getState: any) => {
+            const group = getState().groups.currentUserGroup;
+            const touchstone = getState().touchstones.currentTouchstone;
+            (new ResponsibilitiesService(dispatch, getState)).clearCacheForResponsibilities(group.id, touchstone.id);
+        }
+    },
+
+    getResponsibilitySet() {
+        return async (dispatch: Dispatch<any>, getState: any) => {
+            const group = getState().groups.currentUserGroup;
+            const touchstone = getState().touchstones.currentTouchstone;
+
             const responsibilities: any = await (new ResponsibilitiesService(dispatch, getState))
                 .getResponsibilities(group.id, touchstone.id);
             const set = new ExtendedResponsibilitySet(responsibilities, touchstone, group);

@@ -1,13 +1,16 @@
 import * as React from "react";
+import { compose, branch, renderComponent } from "recompose";
+
 import { ModellingGroup, Touchstone } from "../../../shared/models/Generated";
 import { ButtonLink } from "../../../shared/components/ButtonLink";
+import {LoadingElement} from "../../../shared/partials/LoadingElement/LoadingElement";
 
 export interface TouchstoneListProps {
     touchstones: Touchstone[];
     group: ModellingGroup;
 }
 
-export class TouchstoneList extends React.Component<TouchstoneListProps, undefined> {
+export class TouchstoneListComponent extends React.Component<TouchstoneListProps, undefined> {
     renderButtonList(touchstones: Touchstone[]): JSX.Element {
         const items = touchstones.map((touchstone: Touchstone) =>
             <li key={ touchstone.id}>
@@ -53,3 +56,7 @@ export class TouchstoneList extends React.Component<TouchstoneListProps, undefin
         </div>;
     }
 }
+
+export const TouchstoneList = compose(
+    branch((props: TouchstoneListProps) => !props.touchstones, renderComponent(LoadingElement))
+)(TouchstoneListComponent);

@@ -17,7 +17,7 @@ export const chooseActionPageActionCreators = {
     },
 
     loadData(props: ChooseActionPageLocationProps) {
-        return async (dispatch: Dispatch<any>, getState: () => any) => {
+        return async (dispatch: Dispatch<any>, getState: () => ContribAppState) => {
             await dispatch(chooseGroupPageActionCreators.loadData());
             dispatch(modellingGroupsActionCreators.setCurrentGroup(props.groupId));
             await dispatch(touchstonesActionCreators.getTouchstonesByGroupId(props.groupId));

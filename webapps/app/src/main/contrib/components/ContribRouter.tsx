@@ -13,6 +13,7 @@ import { ContribForgottenPasswordPage } from "./ContribForgottenPasswordPage";
 import { TouchstoneHelpPage } from "./TouchstoneHelpPage";
 import { ResponsibilityOverviewPage } from "./Responsibilities/Overview/ResponsibilityOverviewPage";
 import { DownloadCoveragePage } from "./Responsibilities/Coverage/DownloadCoveragePage";
+import { UploadBurdenEstimatesPage } from "./Responsibilities/BurdenEstimates/UploadBurdenEstimatesPage";
 import { DownloadDemographicsPage } from "./Responsibilities/Demographics/DownloadDemographicsPage";
 import { ModelRunParametersPage} from "./Responsibilities/ModelRunParameters/ModelRunParametersPage";
 import { ResponsibilityGuidanceModelInputsPage } from "./Responsibilities/Guidance/ResponsibilityGuidanceModelInputsPage";
@@ -30,6 +31,7 @@ export const ContribRouter : React.StatelessComponent<ContribRouterProps> = (pro
         <Route exact path="/:groupId/" component={ChooseActionPage}/>
         <Route exact path="/:groupId/responsibilities/:touchstoneId" component={ResponsibilityOverviewPage}/>
         <Route exact path="/:groupId/responsibilities/:touchstoneId/coverage/:scenarioId" component={DownloadCoveragePage}/>
+        <Route exact path="/:groupId/responsibilities/:touchstoneId/burdens/:scenarioId" component={UploadBurdenEstimatesPage}/>
         <Route exact path="/:groupId/responsibilities/:touchstoneId/demographics" component={DownloadDemographicsPage}/>
         <Route exact path="/:groupId/responsibilities/:touchstoneId/parameters" component={ModelRunParametersPage}/>
         <Route exact path="/help/touchstones/" component={TouchstoneHelpPage}/>

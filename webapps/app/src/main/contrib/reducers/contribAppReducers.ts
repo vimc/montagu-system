@@ -10,6 +10,7 @@ import { demographicReducer, DemographicState } from "./demographicReducer";
 import { coverageReducer, CoverageState } from "./coverageReducer";
 import { runParametersReducer, RunParametersState } from "./runParametersReducer";
 import {breadcrumbsReducer, BreadcrumbsState} from "../../shared/reducers/breadcrumbsReducer";
+import {estimatesReducer, EstimatesState} from "./estimatesReducer";
 
 export interface ContribAppState {
     auth: AuthState;
@@ -21,6 +22,7 @@ export interface ContribAppState {
     diseases: DiseasesState;
     demographic: DemographicState;
     coverage: CoverageState;
+    estimates: EstimatesState;
     runParameters: RunParametersState;
 }
 
@@ -34,6 +36,7 @@ const reducers = combineReducers({
     diseases: diseasesReducer,
     demographic: demographicReducer,
     coverage: coverageReducer,
+    estimates: estimatesReducer,
     runParameters: runParametersReducer
 });
 

@@ -25,10 +25,7 @@ export const responsibilityOverviewPageActionCreators = {
             await dispatch(chooseActionPageActionCreators.loadData(props));
             await dispatch(diseasesActionCreators.getAllDiseases());
             dispatch(touchstonesActionCreators.setCurrentTouchstone(props.touchstoneId));
-            await dispatch(responsibilitiesActionCreators.getResponsibilitySet(
-                getState().groups.currentUserGroup,
-                getState().touchstones.currentTouchstone
-            ));
+            await dispatch(responsibilitiesActionCreators.getResponsibilitySet());
         }
     }
 

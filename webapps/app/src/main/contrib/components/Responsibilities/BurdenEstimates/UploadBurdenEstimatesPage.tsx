@@ -1,56 +1,60 @@
 import * as React from "react";
-import {responsibilityActions} from "../../../actions/ResponsibilityActions";
-import {responsibilityStore} from "../../../stores/ResponsibilityStore";
-import {doNothing} from "../../../../shared/Helpers";
+import { Action, Dispatch } from "redux";
+import { compose} from "recompose";
+import { connect } from 'react-redux';
+
 import {DownloadDataTitle} from "../DownloadDataTitle";
 import {UploadBurdenEstimatesContent} from "./UploadBurdenEstimatesContent";
-import {estimateTokenActions} from "../../../actions/EstimateActions";
-import {ContribPageWithHeader} from "../../PageWithHeader/ContribPageWithHeader";
-import {IPageWithParent} from "../../../../shared/models/Breadcrumb";
-import {ResponsibilityOverviewPage} from "../Overview/ResponsibilityOverviewPage";
-import { Page } from "../../../../shared/components/PageWithHeader/Page";
+import { ResponsibilityOverviewPageComponent} from "../Overview/ResponsibilityOverviewPage";
+import {PageBreadcrumb, PageProperties} from "../../../../shared/components/PageWithHeader/PageWithHeader";
+import {PageArticle} from "../../../../shared/components/PageWithHeader/PageArticle";
+import {ContribAppState} from "../../../reducers/contribAppReducers";
+import {uploadBurdenEstimatesPageActionCreators} from "../../../actions/pages/uploadBurdenEstimatesPageActionCreators";
+import {estimatesActionCreators} from "../../../actions/estimatesActionCreators";
 import {appSettings} from "../../../../shared/Settings";
 
-export interface UploadEstimatesProps {
+export interface UploadBurdenEstimatesPageLocationProps {
     groupId: string;
     touchstoneId: string;
     scenarioId: string;
 }
 
-export class UploadBurdenEstimatesPage extends ContribPageWithHeader<UploadEstimatesProps> {
+export interface UploadBurdenEstimatesPageProps extends PageProperties<UploadBurdenEstimatesPageLocationProps> {
+    setRedirectPath: (path: string) => void;
+}
 
-    load(props: UploadEstimatesProps) {
-
-        return this.loadParent(props).then(() => {
-            estimateTokenActions.clearUsedToken();
-            estimateTokenActions.setRedirectPath(appSettings.publicPath + this.props.location.pathname);
-
-            responsibilityActions.setCurrentResponsibility(props.scenarioId);
-            responsibilityStore.fetchOneTimeEstimatesToken().catch(doNothing);
-        });
+export class UploadBurdenEstimatesPageComponent extends React.Component<UploadBurdenEstimatesPageProps> {
+    componentDidMount() {
+        this.props.setRedirectPath(appSettings.publicPath + this.props.location.pathname);
+        this.props.onLoad(this.props.match.params);
     }
 
-    name() {
-        const r = responsibilityStore.getState();
-        return `Upload burden estimates for ${r.currentResponsibility.scenario.description}`;
+    static breadcrumb(state: ContribAppState): PageBreadcrumb {
+        return {
+            name: `Upload burden estimates for ${state.responsibilities.currentResponsibility.scenario.description}`,
+            urlFragment: `burdens/${state.responsibilities.currentResponsibility.scenario.id}`,
+            parent: ResponsibilityOverviewPageComponent.breadcrumb(state)
+        }
     }
 
     title() {
         return <DownloadDataTitle title="Upload burden estimates"/>
     }
 
-    urlFragment(): string {
-        const r = responsibilityStore.getState();
-        return `burdens/${r.currentResponsibility.scenario.id}`;
-    }
-
-    parent(): IPageWithParent {
-        return new ResponsibilityOverviewPage();
-    }
-
     render() :JSX.Element {
-        return <Page page={this}>
+        return <PageArticle title={this.title()}>
             <UploadBurdenEstimatesContent/>
-        </Page>
+        </PageArticle>
     }
 }
+
+export const mapDispatchToProps = (dispatch: Dispatch<Action>): Partial<UploadBurdenEstimatesPageProps> => {
+    return {
+        onLoad: (params: UploadBurdenEstimatesPageLocationProps) => dispatch(uploadBurdenEstimatesPageActionCreators.onLoad(params)),
+        setRedirectPath: (path: string) => dispatch(estimatesActionCreators.setRedirectPath(path))
+    }
+};
+
+export const UploadBurdenEstimatesPage = compose(
+    connect(state => state, mapDispatchToProps),
+)(UploadBurdenEstimatesPageComponent) as React.ComponentClass<Partial<UploadBurdenEstimatesPageProps>>;
