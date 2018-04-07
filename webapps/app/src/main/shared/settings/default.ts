@@ -12,7 +12,7 @@ export const settings: Settings = {
         requiresModellingGroupMembership: false
     },
     contrib: {
-        publicPath: "",
+        publicPath: "contribution",
         requiresModellingGroupMembership: true
     },
     report: {

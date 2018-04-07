@@ -4,6 +4,7 @@ import { compose, branch, renderComponent } from "recompose";
 import { ModellingGroup, Touchstone } from "../../../shared/models/Generated";
 import { ButtonLink } from "../../../shared/components/ButtonLink";
 import {LoadingElement} from "../../../shared/partials/LoadingElement/LoadingElement";
+import {ChooseActionContentProps} from "./ChooseActionContent";
 
 export interface TouchstoneListProps {
     touchstones: Touchstone[];
@@ -59,4 +60,4 @@ export class TouchstoneListComponent extends React.Component<TouchstoneListProps
 
 export const TouchstoneList = compose(
     branch((props: TouchstoneListProps) => !props.touchstones, renderComponent(LoadingElement))
-)(TouchstoneListComponent);
+)(TouchstoneListComponent) as React.ComponentClass<Partial<TouchstoneListProps>>;;
