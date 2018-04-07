@@ -5,6 +5,7 @@ import {ChooseGroupPageComponent} from "../../../ChooseGroup/ChooseGroupPage";
 import {PageBreadcrumb, PageProperties} from "../../../../../shared/components/PageWithHeader/PageWithHeader";
 import {BreadcrumbInitializer} from "../../../../../shared/components/Breadcrumbs/BreadcrumbsInitializer";
 import {PageArticle} from "../../../../../shared/components/PageWithHeader/PageArticle";
+import {PageScrollOnMount} from "../../../../../shared/components/PageWithHeader/PageScrollUpOnMount";
 
 const iframeSrc = "/contribution/guidance/marshall_demography.html";
 
@@ -29,5 +30,6 @@ export class ResponsibilityGuidanceMarshallIslandsPageComponent extends React.Co
 }
 
 export const ResponsibilityGuidanceMarshallIslandsPage = compose(
-    BreadcrumbInitializer
+    BreadcrumbInitializer,
+    PageScrollOnMount
 )(ResponsibilityGuidanceMarshallIslandsPageComponent) as React.ComponentClass<Partial<PageProperties<undefined>>>;

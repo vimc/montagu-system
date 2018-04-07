@@ -5,6 +5,7 @@ import { ChooseGroupPageComponent } from "../../../ChooseGroup/ChooseGroupPage";
 import {PageArticle} from "../../../../../shared/components/PageWithHeader/PageArticle";
 import {PageBreadcrumb, PageProperties} from "../../../../../shared/components/PageWithHeader/PageWithHeader";
 import {BreadcrumbInitializer} from "../../../../../shared/components/Breadcrumbs/BreadcrumbsInitializer";
+import {PageScrollOnMount} from "../../../../../shared/components/PageWithHeader/PageScrollUpOnMount";
 
 const iframeSrc = "/contribution/guidance/child-mortality.html";
 
@@ -29,5 +30,6 @@ export class ResponsibilityGuidanceNeonatalMortalityPageComponent extends React.
 }
 
 export const ResponsibilityGuidanceNeonatalMortalityPage = compose(
-    BreadcrumbInitializer
+    BreadcrumbInitializer,
+    PageScrollOnMount
 )(ResponsibilityGuidanceNeonatalMortalityPageComponent) as React.ComponentClass<Partial<PageProperties<undefined>>>;

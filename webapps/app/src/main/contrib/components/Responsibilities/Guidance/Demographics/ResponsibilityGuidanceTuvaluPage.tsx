@@ -6,6 +6,7 @@ import {PageBreadcrumb, PageProperties} from "../../../../../shared/components/P
 import {PageArticle} from "../../../../../shared/components/PageWithHeader/PageArticle";
 import {BreadcrumbInitializer} from "../../../../../shared/components/Breadcrumbs/BreadcrumbsInitializer";
 import {ResponsibilityGuidanceNeonatalMortalityPageComponent} from "./ResponsibilityGuidanceNeonatalMortalityPage";
+import {PageScrollOnMount} from "../../../../../shared/components/PageWithHeader/PageScrollUpOnMount";
 
 const iframeSrc = "/contribution/guidance/tuvalu_demography.html";
 
@@ -30,5 +31,6 @@ export class ResponsibilityGuidanceTuvaluPageComponent extends React.Component<P
 }
 
 export const ResponsibilityGuidanceTuvaluPage = compose(
-    BreadcrumbInitializer
+    BreadcrumbInitializer,
+    PageScrollOnMount
 )(ResponsibilityGuidanceTuvaluPageComponent) as React.ComponentClass<Partial<PageProperties<undefined>>>;

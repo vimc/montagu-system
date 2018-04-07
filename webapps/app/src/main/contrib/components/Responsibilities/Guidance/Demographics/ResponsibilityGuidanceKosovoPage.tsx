@@ -5,6 +5,7 @@ import { ChooseGroupPageComponent } from "../../../ChooseGroup/ChooseGroupPage";
 import {PageArticle} from "../../../../../shared/components/PageWithHeader/PageArticle";
 import {PageBreadcrumb, PageProperties} from "../../../../../shared/components/PageWithHeader/PageWithHeader";
 import {BreadcrumbInitializer} from "../../../../../shared/components/Breadcrumbs/BreadcrumbsInitializer";
+import {PageScrollOnMount} from "../../../../../shared/components/PageWithHeader/PageScrollUpOnMount";
 
 const iframeSrc = "/contribution/guidance/kosovo_demography.html";
 
@@ -29,5 +30,6 @@ export class ResponsibilityGuidanceKosovoPageComponent extends React.Component<P
 }
 
 export const ResponsibilityGuidanceKosovoPage = compose(
-    BreadcrumbInitializer
+    BreadcrumbInitializer,
+    PageScrollOnMount
 )(ResponsibilityGuidanceKosovoPageComponent) as React.ComponentClass<Partial<PageProperties<undefined>>>;

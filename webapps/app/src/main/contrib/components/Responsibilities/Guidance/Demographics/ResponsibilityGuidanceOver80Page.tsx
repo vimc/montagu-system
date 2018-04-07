@@ -5,6 +5,7 @@ import {PageArticle} from "../../../../../shared/components/PageWithHeader/PageA
 import {PageBreadcrumb, PageProperties} from "../../../../../shared/components/PageWithHeader/PageWithHeader";
 import {ChooseGroupPageComponent} from "../../../ChooseGroup/ChooseGroupPage";
 import {BreadcrumbInitializer} from "../../../../../shared/components/Breadcrumbs/BreadcrumbsInitializer";
+import {PageScrollOnMount} from "../../../../../shared/components/PageWithHeader/PageScrollUpOnMount";
 
 const iframeSrc = "/contribution/guidance/over80.html";
 
@@ -29,5 +30,6 @@ export class ResponsibilityGuidanceOver80PageComponent extends React.Component<P
 }
 
 export const ResponsibilityGuidanceOver80Page = compose(
-    BreadcrumbInitializer
+    BreadcrumbInitializer,
+    PageScrollOnMount
 )(ResponsibilityGuidanceOver80PageComponent) as React.ComponentClass<Partial<PageProperties<undefined>>>;
