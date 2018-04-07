@@ -2,12 +2,9 @@ import * as React from "react";
 import ScrollableAnchor from 'react-scrollable-anchor';
 import { compose } from "recompose";
 
-import {ContribPageWithHeader} from "../../PageWithHeader/ContribPageWithHeader";
-import {ChooseGroupPage, ChooseGroupPageComponent} from "../../ChooseGroup/ChooseGroupPage";
+import {ChooseGroupPageComponent} from "../../ChooseGroup/ChooseGroupPage";
 import {settings} from "../../../../shared/Settings";
-import { Page } from "../../../../shared/components/PageWithHeader/Page";
 import {PageBreadcrumb, PageProperties} from "../../../../shared/components/PageWithHeader/PageWithHeader";
-import {ResponsibilityGuidanceModelInputsPageComponent} from "./ResponsibilityGuidanceModelInputsPage";
 import {PageArticle} from "../../../../shared/components/PageWithHeader/PageArticle";
 import {BreadcrumbInitializer} from "../../../../shared/components/Breadcrumbs/BreadcrumbsInitializer";
 

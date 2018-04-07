@@ -18,6 +18,11 @@ import { DownloadDemographicsPage } from "./Responsibilities/Demographics/Downlo
 import { ModelRunParametersPage} from "./Responsibilities/ModelRunParameters/ModelRunParametersPage";
 import { ResponsibilityGuidanceModelInputsPage } from "./Responsibilities/Guidance/ResponsibilityGuidanceModelInputsPage";
 import { ResponsibilityGuidanceModelOutputsPage } from "./Responsibilities/Guidance/ResponsibilityGuidanceModelOutputsPage";
+import { ResponsibilityGuidanceNeonatalMortalityPage } from "./Responsibilities/Guidance/Demographics/ResponsibilityGuidanceNeonatalMortalityPage";
+import { ResponsibilityGuidanceMarshallIslandsPage } from "./Responsibilities/Guidance/Demographics/ResponsibilityGuidanceMarshallIslandsPage";
+import { ResponsibilityGuidanceOver80Page } from "./Responsibilities/Guidance/Demographics/ResponsibilityGuidanceOver80Page";
+import { ResponsibilityGuidanceKosovoPage } from "./Responsibilities/Guidance/Demographics/ResponsibilityGuidanceKosovoPage";
+import { ResponsibilityGuidanceTuvaluPage } from "./Responsibilities/Guidance/Demographics/ResponsibilityGuidanceTuvaluPage";
 
 interface ContribRouterProps {
     loggedIn: boolean;
@@ -37,6 +42,11 @@ export const ContribRouter : React.StatelessComponent<ContribRouterProps> = (pro
         <Route exact path="/help/touchstones/" component={TouchstoneHelpPage}/>
         <Route exact path="/help/model-inputs/" component={ResponsibilityGuidanceModelInputsPage}/>
         <Route exact path="/help/model-outputs/" component={ResponsibilityGuidanceModelOutputsPage}/>
+        <Route exact path="/help/neonatal-mortality/" component={ResponsibilityGuidanceNeonatalMortalityPage}/>
+        <Route exact path="/help/marshall-islands/" component={ResponsibilityGuidanceMarshallIslandsPage}/>
+        <Route exact path="/help/over80/" component={ResponsibilityGuidanceOver80Page}/>
+        <Route exact path="/help/kosovo/" component={ResponsibilityGuidanceKosovoPage}/>
+        <Route exact path="/help/tuvalu/" component={ResponsibilityGuidanceTuvaluPage}/>
         <Route component={ContribNoRouteFoundPage}/>
     </Switch>;
 
