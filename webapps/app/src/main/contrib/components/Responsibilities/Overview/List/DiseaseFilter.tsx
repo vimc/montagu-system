@@ -1,31 +1,52 @@
 import * as React from "react";
-import { mainStore } from "../../../../stores/MainStore";
+import { compose, branch, renderNothing} from "recompose";
+import { connect } from 'react-redux';
+import { Action, Dispatch } from "redux";
+
 import { Option, OptionSelector } from "../../../OptionSelector/OptionSelector";
-import { responsibilityActions } from "../../../../actions/ResponsibilityActions";
-import { IExtendedResponsibilitySet } from "../../../../models/ResponsibilitySet";
+import {ContribAppState} from "../../../../reducers/contribAppReducers";
+import {Disease, Responsibility} from "../../../../../shared/models/Generated";
+import {diseasesActionCreators} from "../../../../actions/diseasesActionCreators";
 
-export class DiseaseFilter extends React.Component<IExtendedResponsibilitySet, undefined> {
-    render(): JSX.Element {
-        const diseaseIds = [ ...new Set(this.props.responsibilities.map(x => x.scenario.disease)) ];
-        if (diseaseIds.length > 1) {
-            const options: Option[] = diseaseIds
-                .map(id => mainStore.getDiseaseById(id))
-                .map(disease => ({ value: disease.id, text: disease.name }));
-
-            return <div className="control">
-                Filter by disease:&nbsp;
-                <OptionSelector options={ options }
-                                onChange={ this.filterByDisease }
-                                name={"disease"}
-                                defaultOption="All"
-                                required={false} />
-            </div>;
-        } else {
-            return <span />;
-        }
-    }
-
-    filterByDisease(id: string) {
-        responsibilityActions.filterByDisease(id);
-    }
+export interface DiseaseFilterProps {
+    options: Option[];
+    setCurrentDiseaseId: (diseaseId: string) => void;
 }
+
+export const DiseaseFilterComponent: React.SFC<DiseaseFilterProps> = (props: DiseaseFilterProps) => {
+    return <div className="control">
+        Filter by disease:&nbsp;
+        <OptionSelector
+            options={ props.options }
+            onChange={ (id) => props.setCurrentDiseaseId(id) }
+            name={"disease"}
+            defaultOption="All"
+            required={false}
+        />
+    </div>;
+ }
+
+export const mapDiseaseOptions = (diseases: Disease[], responsibilities: Responsibility[]): Option[] => {
+    if (!responsibilities) return null;
+    const diseaseIds = [ ...new Set(responsibilities.map(x => x.scenario.disease)) ]
+    return  diseaseIds
+        .map(id => diseases.find(item => id === item.id))
+        .map(disease => ({ value: disease.id, text: disease.name }));
+}
+
+export const mapStateToProps = (state: ContribAppState, props: Partial<DiseaseFilterProps>): Partial<DiseaseFilterProps> => {
+    return {
+        options: mapDiseaseOptions(state.diseases.diseases, state.responsibilities.set.responsibilities)
+    }
+};
+
+export const mapDispatchToProps = (dispatch: Dispatch<Action>): Partial<DiseaseFilterProps> => {
+    return {
+        setCurrentDiseaseId: (diseaseId: string) => dispatch(diseasesActionCreators.setCurrentDiseaseId(diseaseId))
+    }
+};
+
+export const DiseaseFilter = compose(
+    connect(mapStateToProps, mapDispatchToProps),
+    branch((props: DiseaseFilterProps) => (!props.options || props.options.length < 2), renderNothing)
+)(DiseaseFilterComponent) as React.ComponentClass<Partial<DiseaseFilterProps>>;

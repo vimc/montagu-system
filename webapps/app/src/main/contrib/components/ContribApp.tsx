@@ -4,7 +4,6 @@ import {History} from "history";
 
 import { connectToStores } from "../../shared/alt";
 import { ErrorLog } from "../../shared/components/ErrorLog/ErrorLog";
-import { mainStore } from "../stores/MainStore";
 import { notificationStore } from "../../shared/stores/NotificationStore";
 import { ContribRouter } from "./ContribRouter";
 import { NotificationArea } from "../../shared/components/NotificationArea/NotificationArea";
@@ -19,7 +18,7 @@ interface AppProps {
 
 export class ContribAppComponent extends React.Component<AppProps, undefined> {
     static getStores() {
-        return [ mainStore, notificationStore ];
+        return [ notificationStore ];
     }
 
     static getPropsFromStores(): Partial<AppProps> {

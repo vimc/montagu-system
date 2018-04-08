@@ -8,11 +8,11 @@ import {ModellingGroup, ModelRunParameterSet, Touchstone} from "../../../../shar
 import {Alert} from 'reactstrap';
 import {longestTimestamp} from "../../../../shared/Helpers";
 import {ModelRunParameterDownloadCertificate} from "./ModelRunParameterDownloadCertificate";
-import {TokensMap } from "../../../stores/RunParametersStore";
 import { OneTimeButton } from "../../../../shared/components/OneTimeButton/OneTimeButton";
 import {LoadingElement} from "../../../../shared/partials/LoadingElement/LoadingElement";
 import {ContribAppState} from "../../../reducers/contribAppReducers";
 import {runParametersActionCreators} from "../../../actions/runParametersActionCreators";
+import {TokensMap} from "../../../reducers/runParametersReducer";
 
 export interface ModelRunParametersStatusProps {
     disease: string;

@@ -14,7 +14,9 @@ export const initialState: DiseasesState = {
 export const diseasesReducer = (state = initialState, action: DiseasesAction) => {
     switch (action.type) {
         case DiseasesTypes.DISEASES_FETCHED:
-            return { diseases: action.data };
+            return { ...state, diseases: action.data };
+        case DiseasesTypes.DISEASES_SET_CURRENT_DISEASE_ID:
+            return { ...state, currentDiseaseId: action.data };
         default:
             return state;
     }
