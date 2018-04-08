@@ -17,6 +17,11 @@ export class RunParametersService extends AbstractLocalService {
     getOneTimeToken(groupId: string, touchstoneId: string, setId: number) {
         return this.get(`/modelling-groups/${groupId}/model-run-parameters/${touchstoneId}/${setId}/get_onetime_link/`);
     }
+
+    uploadSet(groupId: string, touchstoneId: string, data: FormData) {
+        return this.setOptions({exceptionOnError: false})
+            .post(`/modelling-groups/${groupId}/model-run-parameters/${touchstoneId}/`, data);
+    }
 }
 
 export enum RunParametersCacheKeysEnum {

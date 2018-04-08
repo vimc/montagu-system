@@ -8,6 +8,7 @@ export interface tokenData {
 export enum RunParametersTypes {
     RUN_PARAMETERS_SETS_FETCHED = "RUN_PARAMETERS_SETS_FETCHED",
     RUN_PARAMETERS_TOKEN_FETCHED = "RUN_PARAMETERS_TOKEN_FETCHED",
+    RUN_PARAMETERS_SET_UPLOAD_STATUS = "RUN_PARAMETERS_SET_UPLOAD_STATUS",
 }
 
 export interface RunParametersSetsFetched {
@@ -20,6 +21,23 @@ export interface RunParametersTokenFetched {
     data: tokenData;
 }
 
+export enum RunParametersUploadStatus {
+    off = 'off' ,
+    in_progress = 'in_progress' ,
+    completed = 'completed'
+}
+
+export interface RunParametersUploadStatusData {
+    status: RunParametersUploadStatus,
+    errors: Error[]
+}
+
+export interface RunParametersSetUploadStatus {
+    type: RunParametersTypes.RUN_PARAMETERS_SET_UPLOAD_STATUS;
+    data: RunParametersUploadStatusData
+}
+
 export type RunParametersAction =
     | RunParametersSetsFetched
     | RunParametersTokenFetched
+    | RunParametersSetUploadStatus

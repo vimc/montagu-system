@@ -1,5 +1,8 @@
 import {ModelRunParameterSet} from "../../shared/models/Generated";
-import {RunParametersAction, RunParametersTypes} from "../actionTypes/RunParametersTypes";
+import {
+    RunParametersAction, RunParametersTypes, RunParametersUploadStatus,
+    RunParametersUploadStatusData
+} from "../actionTypes/RunParametersTypes";
 
 export interface TokensMap {
     [setId: string]: string;
@@ -7,12 +10,14 @@ export interface TokensMap {
 
 export interface RunParametersState {
     sets: ModelRunParameterSet[];
-    tokens: TokensMap
+    tokens: TokensMap,
+    uploadStatus: RunParametersUploadStatusData;
 }
 
 export const initialState: RunParametersState = {
     sets: [],
-    tokens: {}
+    tokens: {},
+    uploadStatus: {status: RunParametersUploadStatus.off, errors: null},
 }
 
 export const runParametersReducer = (state = initialState, action: RunParametersAction) => {
@@ -21,6 +26,8 @@ export const runParametersReducer = (state = initialState, action: RunParameters
             return {...state, sets: action.data };
         case RunParametersTypes.RUN_PARAMETERS_TOKEN_FETCHED:
             return { ...state,  tokens: {...state.tokens, ...{[action.data.id]: action.data.token}}};
+        case RunParametersTypes.RUN_PARAMETERS_SET_UPLOAD_STATUS:
+            return {...state, uploadStatus: action.data };
         default:
             return state;
     }

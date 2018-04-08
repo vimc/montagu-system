@@ -6,7 +6,7 @@ import { createMemoryHistory } from 'history';
 
 import "../../helper";
 import { ContribRouter } from "../../../main/contrib/components/ContribRouter";
-import {createContribStore} from "../../../main/contrib/stores/createContribStore";
+import {createContribStore} from "../../../main/contrib/createStore";
 import {ContribLoginPage} from "../../../main/contrib/components/Login/ContribLoginPage";
 import {LoadingPage} from "../../../main/contrib/components/LoadingPage";
 import {ContribNoRouteFoundPage} from "../../../main/contrib/components/ContribNoRouteFoundPage";

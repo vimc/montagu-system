@@ -15,10 +15,9 @@ export interface ModelRunParametersContentProps {
 
 export class ModelRunParametersContentComponent extends React.Component<ModelRunParametersContentProps> {
     render(): JSX.Element {
-        const url = `/modelling-groups/${this.props.group.id}/model-run-parameters/${this.props.touchstone.id}/`;
         return <div>
             {
-                this.props.diseases.map(d => <ModelRunParametersSection disease={d} url={url} key={d} />)
+                this.props.diseases.map(d => <ModelRunParametersSection disease={d}  key={d} />)
             }
         </div>;
     }

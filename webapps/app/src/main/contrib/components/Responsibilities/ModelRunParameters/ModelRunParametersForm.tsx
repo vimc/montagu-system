@@ -2,23 +2,26 @@ import * as React from "react";
 import { compose, branch, renderComponent} from "recompose";
 import { connect } from 'react-redux';
 import { Action, Dispatch } from "redux";
+import {Alert} from "reactstrap";
 
-import {Form} from "../../../../shared/components/Form";
 import {CustomFileInput} from "../../../../shared/components/CustomFileInput";
 import {runParametersActionCreators} from "../../../actions/runParametersActionCreators";
 import {ContribAppState} from "../../../reducers/contribAppReducers";
-import {ModellingGroup, Touchstone} from "../../../../shared/models/Generated";
+import {RunParametersUploadStatus} from "../../../actionTypes/RunParametersTypes";
 
 export interface ModelRunParametersFormProps {
-    url: string;
     disease: string;
-    getParameterSets: (groupId: string, touchstoneId: string) => void;
-    group: ModellingGroup;
-    touchstone: Touchstone;
+    errors: Error[];
+    status: RunParametersUploadStatus;
+    uploadSet: (data: FormData) => void;
+    resetUploadStatus: () => void;
 }
 
 export interface ModelRunParametersFormState {
     fileInputKey: Date;
+    errors: Error[];
+    success: boolean;
+    disabled: boolean;
 }
 
 export class ModelRunParametersFormComponent extends React.Component<ModelRunParametersFormProps, ModelRunParametersFormState> {
@@ -26,9 +29,39 @@ export class ModelRunParametersFormComponent extends React.Component<ModelRunPar
     constructor() {
         super();
         this.state = {
-            fileInputKey: new Date()
+            fileInputKey: new Date(),
+            errors: [],
+            success: false,
+            disabled: false,
         }
         this.onSuccess = this.onSuccess.bind(this);
+        this.onSubmit = this.onSubmit.bind(this);
+        this.onChange = this.onChange.bind(this);
+    }
+
+    componentWillReceiveProps(nextProps: ModelRunParametersFormProps) {
+        if (this.props.status !== nextProps.status && nextProps.status === RunParametersUploadStatus.completed) {
+            this.setState({disabled: false});
+            if (nextProps.errors) {
+                this.setState({
+                    success: false,
+                    errors: nextProps.errors
+                });
+            } else {
+                this.setState({
+                    success: true,
+                    errors: []
+                });
+            }
+            this.props.resetUploadStatus();
+        }
+    }
+
+    onChange() {
+        this.setState({
+            success: false,
+            errors: []
+        });
     }
 
     onSuccess() {
@@ -37,41 +70,54 @@ export class ModelRunParametersFormComponent extends React.Component<ModelRunPar
             // see https://github.com/erikras/redux-form/issues/769
             fileInputKey: new Date()
         });
+    }
 
-        this.props.getParameterSets(this.props.group.id, this.props.touchstone.id);
+    onSubmit(e: React.FormEvent<HTMLFormElement>) {
+        e.preventDefault();
+        const form = e.target as HTMLFormElement;
+        const data = new FormData(form);
+        this.props.uploadSet(data);
     }
 
     render(): JSX.Element {
         return <div>
             <h4>Upload a new set of parameters:</h4>
-            <Form url={this.props.url} submitText={"Upload"}
-                  successMessage={"Success! You have uploaded a new parameter set"}
-                  successCallback={this.onSuccess}
-                  data={null}>
+            <form encType="multipart/form-data"
+                  onSubmit={this.onSubmit}
+                  onChange={this.onChange}
+            >
                 <input type={"hidden"} name={"disease"} value={this.props.disease}/>
-                <CustomFileInput required={true} key={this.state.fileInputKey.toISOString()}>Choose
-                    file</CustomFileInput>
-            </Form>
+                <CustomFileInput required={true} key={this.state.fileInputKey.toISOString()}>
+                    Choose file
+                </CustomFileInput>
+                <Alert color="danger" isOpen={this.state.errors.length > 0}>
+                    {this.state.errors[0] && this.state.errors[0].message}
+                </Alert>
+                <Alert color="success" isOpen={this.state.success}
+                       toggle={this.onChange}
+                >
+                    Success! You have uploaded a new parameter set
+                </Alert>
+                <button type="submit" className="mt-2" disabled={this.state.disabled}>
+                    Upload
+                </button>
+            </form>
         </div>
     }
 }
 
 export const mapStateToProps = (state: ContribAppState, props: Partial<ModelRunParametersFormProps>): Partial<ModelRunParametersFormProps> => {
     return {
-        url: props.url,
         disease: props.disease,
-        group: state.groups.currentUserGroup,
-        touchstone: state.touchstones.currentTouchstone
+        errors: state.runParameters.uploadStatus.errors,
+        status: state.runParameters.uploadStatus.status
     }
 };
 
 export const mapDispatchToProps = (dispatch: Dispatch<Action>): Partial<ModelRunParametersFormProps> => {
     return {
-        getParameterSets: (groupId: string, touchstoneId: string) => {
-            console.log('will reload set on upl', groupId, touchstoneId)
-            dispatch(runParametersActionCreators.clearCacheForGetParameterSets(groupId, touchstoneId))
-            dispatch(runParametersActionCreators.getParameterSets(groupId, touchstoneId))
-        }
+        uploadSet: (data: FormData) => dispatch(runParametersActionCreators.uploadSet(data)),
+        resetUploadStatus: () => dispatch(runParametersActionCreators.resetUploadStatus())
     }
 };
 

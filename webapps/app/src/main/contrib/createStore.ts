@@ -3,7 +3,7 @@ import thunk from 'redux-thunk';
 import { routerMiddleware } from 'react-router-redux';
 import {History} from "history";
 
-import reducers from '../reducers/contribAppReducers';
+import reducers from './reducers/contribAppReducers';
 
 export function createContribStore(history: History) {
     return createStore(

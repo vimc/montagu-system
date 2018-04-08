@@ -5,7 +5,7 @@ import {History} from "history";
 
 import { ContribApp } from "./components/ContribApp";
 import { Provider } from "react-redux";
-import { createContribStore } from "./stores/createContribStore";
+import { createContribStore } from "./createStore";
 import { authActions } from "../shared/actions/authActions"
 
 import './index.html';

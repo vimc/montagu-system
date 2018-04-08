@@ -35,7 +35,7 @@ import {estimateTokenActions} from "../main/contrib/actions/EstimateActions";
 import {runParameterActions} from "../main/contrib/actions/RunParameterActions";
 
 import {fetchToken as fetchTokenForModelRunParam} from "../main/contrib/sources/RunParametersSource";
-import {createContribStore} from "../main/contrib/stores/createContribStore";
+import {createContribStore} from "../main/contrib/createStore";
 import { ModellingGroupsService } from "../main/shared/services/ModellingGroupsService";
 
 const FormData = require('form-data');
