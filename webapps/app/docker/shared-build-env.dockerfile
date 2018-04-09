@@ -3,8 +3,8 @@ FROM node:8.9.4
 # Install OpenJDK
 # This section is cribbed from the official JDK image:
 # https://github.com/docker-library/openjdk/blob/445f8b8d18d7c61e2ae7fda76d8883b5d51ae0a5/8-jdk/Dockerfile
-ENV JAVA_DEBIAN_VERSION 8u131-b11-1~bpo8+1
-ENV CA_CERTIFICATES_JAVA_VERSION 20161107~bpo8+1
+ENV JAVA_DEBIAN_VERSION 8u162-b12-1~deb9u1
+ENV CA_CERTIFICATES_JAVA_VERSION 20170531+nmu1
 
 RUN echo 'deb http://deb.debian.org/debian jessie-backports main' > /etc/apt/sources.list.d/jessie-backports.list
 RUN apt-get update
