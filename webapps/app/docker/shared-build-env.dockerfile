@@ -1,4 +1,4 @@
-FROM node
+FROM node:8
 
 # Install OpenJDK
 # This section is cribbed from the official JDK image:
