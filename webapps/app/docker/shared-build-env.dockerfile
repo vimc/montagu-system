@@ -1,4 +1,4 @@
-FROM node:8.9.4
+FROM node:8
 
 # Install OpenJDK
 RUN echo 'deb http://deb.debian.org/debian jessie-backports main' > /etc/apt/sources.list.d/jessie-backports.list
