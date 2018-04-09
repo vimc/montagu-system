@@ -1,4 +1,4 @@
-FROM node:8.9.4
+FROM node
 
 # Install OpenJDK
 # This section is cribbed from the official JDK image:
