@@ -34,7 +34,7 @@ export class ModelRunParametersFormComponent extends React.Component<ModelRunPar
             success: false,
             disabled: false,
         }
-        this.onSuccess = this.onSuccess.bind(this);
+        this.resetForm = this.resetForm.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
         this.onChange = this.onChange.bind(this);
     }
@@ -54,6 +54,7 @@ export class ModelRunParametersFormComponent extends React.Component<ModelRunPar
                 });
             }
             this.props.resetUploadStatus();
+            this.resetForm();
         }
     }
 
@@ -64,7 +65,7 @@ export class ModelRunParametersFormComponent extends React.Component<ModelRunPar
         });
     }
 
-    onSuccess() {
+    resetForm() {
         this.setState({
             // this is to trick React into re-rendering the file input when the form has been successfully submitted
             // see https://github.com/erikras/redux-form/issues/769
@@ -85,6 +86,7 @@ export class ModelRunParametersFormComponent extends React.Component<ModelRunPar
             <form encType="multipart/form-data"
                   onSubmit={this.onSubmit}
                   onChange={this.onChange}
+                  noValidate
             >
                 <input type={"hidden"} name={"disease"} value={this.props.disease}/>
                 <CustomFileInput required={true} key={this.state.fileInputKey.toISOString()}>

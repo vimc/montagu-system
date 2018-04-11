@@ -55,6 +55,7 @@ export abstract class AbstractLocalService {
 
         this.processResponse = this.processResponse.bind(this);
         this.notifyOnErrors = this.notifyOnErrors.bind(this);
+        this.handleErrorsWithExceptions = this.handleErrorsWithExceptions.bind(this);
     }
 
     protected getTokenFromState(state: GlobalState) {
@@ -173,7 +174,7 @@ export abstract class AbstractLocalService {
     handleErrorsWithExceptions (error: ErrorInfo) {
         switch (error.code) {
             case "bearer-token-invalid":
-                this.expiredTokenAction();
+                return this.expiredTokenAction();
             default:
                 throw makeNotificationException(error.message, "error");
         }
@@ -183,14 +184,12 @@ export abstract class AbstractLocalService {
         if (result.errors[0].code === "bearer-token-invalid") {
             return this.expiredTokenAction();
         }
-        console.log('no, ex', result)
         return result;
     };
 
     processResult<TModel>(result: Result, response: any): TModel | void {
         const options = clone(this.options);
         this.initOptions();
-        console.log('opt', options)
         switch (result.status) {
             case "success":
                 if (options.cacheKey) {

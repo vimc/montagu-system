@@ -31,7 +31,7 @@ export class TouchstoneHelpPageComponent extends React.Component<PageProperties<
                 version and associated assumptions as well as input datasets, in
                 particular regarding vaccination coverage.
             </p>
-            <p>
+            <span>
                 There are two types of touchstones:
                 <ol>
                     <li>
@@ -46,7 +46,7 @@ export class TouchstoneHelpPageComponent extends React.Component<PageProperties<
                         consortium's secretariat without input from consortium members.
                     </li>
                 </ol>
-            </p>
+            </span>
             <div className="subSectionTitle">Touchstone naming conventions</div>
             <p>
                 Touchstones are named by the date when they were generated (format
