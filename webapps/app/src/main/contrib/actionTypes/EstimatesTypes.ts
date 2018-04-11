@@ -1,8 +1,9 @@
+import {BurdenEstimateSetTypeCode} from "../../shared/models/Generated";
 
 export enum EstimatesTypes {
     ESTIMATES_ONE_TIME_TOKEN_FETCHED = "ESTIMATES_ONE_TIME_TOKEN_FETCHED",
     ESTIMATES_ONE_TIME_TOKEN_CLEAR = "ESTIMATES_ONE_TIME_TOKEN_CLEAR",
-    ESTIMATES_SET_REDIRECT_PATH = "ESTIMATES_SET_REDIRECT_PATH"
+    ESTIMATES_SET_REDIRECT_PATH = "ESTIMATES_SET_REDIRECT_PATH",
 }
 
 export interface EstimatesOneTimeTokenFetched {
@@ -17,6 +18,13 @@ export interface EstimatesOneTimeTokenClear {
 export interface EstimatesSetRedirectPath {
     type: EstimatesTypes.ESTIMATES_SET_REDIRECT_PATH;
     data: string;
+}
+
+export interface EstimatesCreateBurdenData {
+    type: {
+        type: BurdenEstimateSetTypeCode,
+        details: string
+    }
 }
 
 export type EstimatesAction =

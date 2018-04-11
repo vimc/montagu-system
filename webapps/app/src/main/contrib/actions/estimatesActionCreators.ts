@@ -1,6 +1,7 @@
 import { Dispatch } from "redux";
 
 import {
+    EstimatesCreateBurdenData,
     EstimatesOneTimeTokenClear, EstimatesOneTimeTokenFetched, EstimatesSetRedirectPath,
     EstimatesTypes
 } from "../actionTypes/EstimatesTypes";
@@ -39,6 +40,15 @@ export const estimatesActionCreators = {
                 type: EstimatesTypes.ESTIMATES_SET_REDIRECT_PATH,
                 data: path
             } as EstimatesSetRedirectPath );
+        }
+    },
+
+    createBurden(data: EstimatesCreateBurdenData) {
+        return async (dispatch: Dispatch<any>, getState: any) => {
+            const group = getState().groups.currentUserGroup;
+            const touchstone = getState().touchstones.currentTouchstone;
+            const responsibility = getState().responsibilities.currentResponsibility;
+            await (new EstimatesService(dispatch, getState)).createBurden(group.id, touchstone.id, responsibility.scenario.id, data);
         }
     }
 };

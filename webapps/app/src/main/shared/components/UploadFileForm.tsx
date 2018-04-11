@@ -1,5 +1,6 @@
 import * as React from "react";
-import fetcher from "../sources/Fetcher";
+
+import { settings } from "../Settings";
 import {helpers} from "../Helpers";
 import {ErrorInfo, Result} from "../models/Generated";
 import {Alert} from "reactstrap";
@@ -51,8 +52,15 @@ export class UploadFileForm extends React.Component<UploadFileProps, UploadFileS
         return { isValid: true, content: null };
     }
 
+    buildURL(urlFragment: string): string {
+        return settings.apiUrl() + urlFragment;
+    }
+    buildOneTimeLink(token: string): string {
+        return this.buildURL(`/onetime_link/${token}/`);
+    }
+
     render() {
-        const url = fetcher.fetcher.buildOneTimeLink(this.props.token);
+        const url = this.buildOneTimeLink(this.props.token);
         const enableSubmit = this.props.enableSubmit
             && this.props.token != null
             && this.state.fileSelected
