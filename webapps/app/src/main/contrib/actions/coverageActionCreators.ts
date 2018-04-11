@@ -1,11 +1,7 @@
 import { Dispatch } from "redux";
 
 import {ContribAppState} from "../reducers/contribAppReducers";
-import {
-    CoverageDataSetsFetched,
-    CoverageOneTimeTokenClear, CoverageOneTimeTokenFetched, CoverageSetFormat,
-    CoverageTypes
-} from "../actionTypes/CoverageTypes";
+import {Coverage, CoverageTypes} from "../actionTypes/CoverageTypes";
 import {CoverageService} from "../services/CoverageService";
 
 export const coverageActionCreators = {
@@ -23,7 +19,7 @@ export const coverageActionCreators = {
             return dispatch({
                 type: CoverageTypes.COVERAGE_DATA_SETS_FETCHED,
                 data: sets ? sets.coverage_sets: null
-            } as CoverageDataSetsFetched );
+            } as Coverage.DataSetsFetched );
         }
     },
 
@@ -32,7 +28,7 @@ export const coverageActionCreators = {
             dispatch({
                 type: CoverageTypes.COVERAGE_SET_FORMAT,
                 data: format
-            } as CoverageSetFormat);
+            } as Coverage.SetFormat);
         }
     },
 
@@ -40,7 +36,7 @@ export const coverageActionCreators = {
         return async (dispatch: Dispatch<any>, getState: any) => {
             dispatch({
                 type: CoverageTypes.COVERAGE_ONE_TIME_TOKEN_CLEAR,
-            } as CoverageOneTimeTokenClear );
+            } as Coverage.OneTimeTokenClear );
 
             const touchstone = getState().touchstones.currentTouchstone;
             const format = getState().coverage.selectedFormat;
@@ -53,7 +49,7 @@ export const coverageActionCreators = {
             return dispatch({
                 type: CoverageTypes.COVERAGE_ONE_TIME_TOKEN_FETCHED,
                 data: token
-            } as CoverageOneTimeTokenFetched );
+            } as Coverage.OneTimeTokenFetched );
         }
     },
 };

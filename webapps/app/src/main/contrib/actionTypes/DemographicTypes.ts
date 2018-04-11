@@ -9,39 +9,42 @@ export enum DemographicTypes {
     DEMOGRAPHIC_ONE_TIME_TOKEN_CLEAR = "DEMOGRAPHIC_ONE_TIME_TOKEN_CLEAR"
 }
 
-export interface DemographicDataSetsFetched {
-    type: DemographicTypes.DEMOGRAPHIC_DATA_SETS_FETCHED;
-    data: DemographicDataset[];
-}
+export namespace Demographic {
 
-export interface DemographicSetDataSet {
-    type: DemographicTypes.DEMOGRAPHIC_SET_DATA_SET;
-    data: DemographicDataset;
-}
+    export interface DataSetsFetched {
+        type: DemographicTypes.DEMOGRAPHIC_DATA_SETS_FETCHED;
+        data: DemographicDataset[];
+    }
 
-export interface DemographicSetGender {
-    type: DemographicTypes.DEMOGRAPHIC_SET_GENDER;
-    data: string;
-}
+    export interface SetDataSet {
+        type: DemographicTypes.DEMOGRAPHIC_SET_DATA_SET;
+        data: DemographicDataset;
+    }
 
-export interface DemographicSetFormat {
-    type: DemographicTypes.DEMOGRAPHIC_SET_FORMAT;
-    data: string;
-}
+    export interface SetGender {
+        type: DemographicTypes.DEMOGRAPHIC_SET_GENDER;
+        data: string;
+    }
 
-export interface DemographicOneTimeTokenFetched {
-    type: DemographicTypes.DEMOGRAPHIC_ONE_TIME_TOKEN_FETCHED;
-    data: string;
-}
+    export interface SetFormat {
+        type: DemographicTypes.DEMOGRAPHIC_SET_FORMAT;
+        data: string;
+    }
 
-export interface DemographicOneTimeTokenClear {
-    type: DemographicTypes.DEMOGRAPHIC_ONE_TIME_TOKEN_CLEAR;
+    export interface OneTimeTokenFetched {
+        type: DemographicTypes.DEMOGRAPHIC_ONE_TIME_TOKEN_FETCHED;
+        data: string;
+    }
+
+    export interface OneTimeTokenClear {
+        type: DemographicTypes.DEMOGRAPHIC_ONE_TIME_TOKEN_CLEAR;
+    }
 }
 
 export type DemographicAction =
-    | DemographicDataSetsFetched
-    | DemographicSetDataSet
-    | DemographicSetGender
-    | DemographicSetFormat
-    | DemographicOneTimeTokenFetched
-    | DemographicOneTimeTokenClear
+    | Demographic.DataSetsFetched
+    | Demographic.SetDataSet
+    | Demographic.SetGender
+    | Demographic.SetFormat
+    | Demographic.OneTimeTokenFetched
+    | Demographic.OneTimeTokenClear

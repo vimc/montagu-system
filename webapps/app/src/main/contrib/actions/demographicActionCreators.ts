@@ -2,12 +2,7 @@ import { Dispatch } from "redux";
 
 import {ContribAppState} from "../reducers/contribAppReducers";
 import {DemographicService} from "../services/DemographicService";
-import {
-    DemographicDataSetsFetched, DemographicOneTimeTokenClear, DemographicOneTimeTokenFetched, DemographicSetDataSet,
-    DemographicSetFormat,
-    DemographicSetGender,
-    DemographicTypes
-} from "../actionTypes/DemographicTypes";
+import {Demographic, DemographicTypes} from "../actionTypes/DemographicTypes";
 import {DemographicDataset} from "../../shared/models/Generated";
 
 export const demographicActionCreators = {
@@ -18,7 +13,7 @@ export const demographicActionCreators = {
             return dispatch({
                 type: DemographicTypes.DEMOGRAPHIC_DATA_SETS_FETCHED,
                 data: dataSets
-            } as DemographicDataSetsFetched );
+            } as Demographic.DataSetsFetched );
         }
     },
 
@@ -29,7 +24,7 @@ export const demographicActionCreators = {
             dispatch({
                 type: DemographicTypes.DEMOGRAPHIC_SET_DATA_SET,
                 data: dataSet
-            } as DemographicSetDataSet );
+            } as Demographic.SetDataSet );
         }
     },
 
@@ -38,7 +33,7 @@ export const demographicActionCreators = {
             dispatch({
                 type: DemographicTypes.DEMOGRAPHIC_SET_GENDER,
                 data: gender
-            } as DemographicSetGender );
+            } as Demographic.SetGender );
         }
     },
 
@@ -47,7 +42,7 @@ export const demographicActionCreators = {
             dispatch({
                 type: DemographicTypes.DEMOGRAPHIC_SET_FORMAT,
                 data: format
-            } as DemographicSetFormat);
+            } as Demographic.SetFormat);
         }
     },
 
@@ -55,7 +50,7 @@ export const demographicActionCreators = {
         return async (dispatch: Dispatch<any>, getState: any) => {
             dispatch({
                 type: DemographicTypes.DEMOGRAPHIC_ONE_TIME_TOKEN_CLEAR,
-            } as DemographicOneTimeTokenClear );
+            } as Demographic.OneTimeTokenClear );
             const dataSet = getState().demographic.selectedDataSet;
             const touchstone = getState().touchstones.currentTouchstone;
             const format = getState().demographic.selectedFormat;
@@ -64,7 +59,7 @@ export const demographicActionCreators = {
             return dispatch({
                 type: DemographicTypes.DEMOGRAPHIC_ONE_TIME_TOKEN_FETCHED,
                 data: token
-            } as DemographicOneTimeTokenFetched );
+            } as Demographic.OneTimeTokenFetched );
         }
     },
 };

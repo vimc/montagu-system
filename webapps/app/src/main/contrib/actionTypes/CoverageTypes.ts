@@ -7,27 +7,30 @@ export enum CoverageTypes {
     COVERAGE_ONE_TIME_TOKEN_CLEAR = "COVERAGE_ONE_TIME_TOKEN_CLEAR"
 }
 
-export interface CoverageDataSetsFetched {
-    type: CoverageTypes.COVERAGE_DATA_SETS_FETCHED;
-    data: CoverageSet[];
-}
+export namespace Coverage {
 
-export interface CoverageSetFormat {
-    type: CoverageTypes.COVERAGE_SET_FORMAT;
-    data: string;
-}
+    export interface DataSetsFetched {
+        type: CoverageTypes.COVERAGE_DATA_SETS_FETCHED;
+        data: CoverageSet[];
+    }
 
-export interface CoverageOneTimeTokenFetched {
-    type: CoverageTypes.COVERAGE_ONE_TIME_TOKEN_FETCHED;
-    data: string;
-}
+    export interface SetFormat {
+        type: CoverageTypes.COVERAGE_SET_FORMAT;
+        data: string;
+    }
 
-export interface CoverageOneTimeTokenClear {
-    type: CoverageTypes.COVERAGE_ONE_TIME_TOKEN_CLEAR;
+    export interface OneTimeTokenFetched {
+        type: CoverageTypes.COVERAGE_ONE_TIME_TOKEN_FETCHED;
+        data: string;
+    }
+
+    export interface OneTimeTokenClear {
+        type: CoverageTypes.COVERAGE_ONE_TIME_TOKEN_CLEAR;
+    }
 }
 
 export type CoverageAction =
-    | CoverageDataSetsFetched
-    | CoverageSetFormat
-    | CoverageOneTimeTokenFetched
-    | CoverageOneTimeTokenClear
+    | Coverage.DataSetsFetched
+    | Coverage.SetFormat
+    | Coverage.OneTimeTokenFetched
+    | Coverage.OneTimeTokenClear
