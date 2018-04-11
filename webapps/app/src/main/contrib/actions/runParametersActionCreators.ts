@@ -59,9 +59,9 @@ export const runParametersActionCreators = {
             const result: any = await (new RunParametersService(dispatch, getState)).uploadSet(group.id, touchstone.id, data);
             dispatch({
                 type: RunParametersTypes.RUN_PARAMETERS_SET_UPLOAD_STATUS,
-                data: {status: RunParametersUploadStatus.completed, errors: result.errors ? result.errors : null}
+                data: {status: RunParametersUploadStatus.completed, errors: result && result.errors ? result.errors : null}
             })
-            if (!result.errors) {
+            if (result && !result.errors) {
                 dispatch(this.refreshParameterSets());
             }
         }

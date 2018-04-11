@@ -7,6 +7,7 @@ import {
 } from "../actionTypes/EstimatesTypes";
 import {EstimatesService} from "../services/EstimatesService";
 import {settings} from "../../shared/Settings";
+import {responsibilitiesActionCreators} from "./responsibilitiesActionCreators";
 
 export const estimatesActionCreators = {
 
@@ -49,6 +50,7 @@ export const estimatesActionCreators = {
             const touchstone = getState().touchstones.currentTouchstone;
             const responsibility = getState().responsibilities.currentResponsibility;
             await (new EstimatesService(dispatch, getState)).createBurden(group.id, touchstone.id, responsibility.scenario.id, data);
+            dispatch(responsibilitiesActionCreators.refreshResponsibilities());
         }
     }
 };

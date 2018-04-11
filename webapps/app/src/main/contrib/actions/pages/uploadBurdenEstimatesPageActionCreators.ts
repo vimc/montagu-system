@@ -26,13 +26,6 @@ export const uploadBurdenEstimatesPageActionCreators = {
         }
     },
 
-    refreshResponsibilities(props: UploadBurdenEstimatesPageLocationProps) {
-        return async (dispatch: Dispatch<any>) => {
-            dispatch(responsibilitiesActionCreators.clearCacheForResponsibilitySet());
-            await dispatch(responsibilitiesActionCreators.getResponsibilitySet());
-            dispatch(responsibilitiesActionCreators.setCurrentResponsibility(props.scenarioId));
-            await dispatch(estimatesActionCreators.getOneTimeToken());
-        }
-    }
+
 
 };

@@ -7,7 +7,6 @@ import { connect } from 'react-redux';
 import {OptionSelector} from "../../OptionSelector/OptionSelector";
 import {BurdenEstimateSetTypeCode} from "../../../../shared/models/Generated";
 import {FormEvent} from "react";
-import {UploadBurdenEstimatesPageLocationProps} from "./UploadBurdenEstimatesPage";
 import {EstimatesCreateBurdenData} from "../../../actionTypes/EstimatesTypes";
 import {estimatesActionCreators} from "../../../actions/estimatesActionCreators";
 
@@ -15,7 +14,6 @@ interface CreateBurdenEstimateSetFormProps {
     groupId: string;
     touchstoneId: string;
     scenarioId: string;
-    refreshResponsibilities: (props: UploadBurdenEstimatesPageLocationProps) => void;
     match: any;
     createBurden: (data: EstimatesCreateBurdenData) => void;
 }
@@ -43,7 +41,7 @@ export class CreateBurdenEstimateSetFormComponent extends React.Component<Create
         }];
 
     constructor(props: CreateBurdenEstimateSetFormProps) {
-        super();
+        super(props);
         this.state = {
             data: {
                 type: {
@@ -167,8 +165,6 @@ export class CreateBurdenEstimateSetFormComponent extends React.Component<Create
         </div>;
     }
 }
-
-
 
 export const mapDispatchToProps = (dispatch: Dispatch<Action>): Partial<CreateBurdenEstimateSetFormProps> => {
     return {

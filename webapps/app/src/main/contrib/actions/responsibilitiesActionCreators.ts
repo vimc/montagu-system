@@ -7,6 +7,8 @@ import {
     SetResponsibilities
 } from "../actionTypes/ResponsibilitiesTypes";
 import {ExtendedResponsibility, ExtendedResponsibilitySet} from "../models/ResponsibilitySet";
+import {estimatesActionCreators} from "./estimatesActionCreators";
+import {UploadBurdenEstimatesPageLocationProps} from "../components/Responsibilities/BurdenEstimates/UploadBurdenEstimatesPage";
 
 export const responsibilitiesActionCreators = {
 
@@ -42,6 +44,16 @@ export const responsibilitiesActionCreators = {
                 type: ResponsibilitiesTypes.SET_CURRENT_RESPONSIBILITY_SET,
                 data: responsibility
             } as SetCurrentResponsibility );
+        }
+    },
+
+    refreshResponsibilities() {
+        return async (dispatch: Dispatch<any>, getState: any) => {
+            const scenarioId = getState().responsibilities.currentResponsibility.scenario.id;
+            dispatch(this.clearCacheForResponsibilitySet());
+            await dispatch(this.getResponsibilitySet());
+            dispatch(this.setCurrentResponsibility(scenarioId));
+            await dispatch(estimatesActionCreators.getOneTimeToken());
         }
     }
 };
