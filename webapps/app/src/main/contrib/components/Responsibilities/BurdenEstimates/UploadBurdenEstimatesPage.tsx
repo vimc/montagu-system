@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Action, Dispatch } from "redux";
+import { Dispatch } from "redux";
 import { compose} from "recompose";
 import { connect } from 'react-redux';
 
@@ -48,7 +48,7 @@ export class UploadBurdenEstimatesPageComponent extends React.Component<UploadBu
     }
 }
 
-export const mapDispatchToProps = (dispatch: Dispatch<Action>): Partial<UploadBurdenEstimatesPageProps> => {
+export const mapDispatchToProps = (dispatch: Dispatch<ContribAppState>): Partial<UploadBurdenEstimatesPageProps> => {
     return {
         onLoad: (params: UploadBurdenEstimatesPageLocationProps) => dispatch(uploadBurdenEstimatesPageActionCreators.onLoad(params)),
         setRedirectPath: (path: string) => dispatch(estimatesActionCreators.setRedirectPath(path))

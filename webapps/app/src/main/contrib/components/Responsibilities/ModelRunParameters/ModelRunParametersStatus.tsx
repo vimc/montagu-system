@@ -1,7 +1,7 @@
 import * as React from "react";
 import { connect } from 'react-redux';
 import { compose, branch, renderComponent} from "recompose";
-import { Action, Dispatch } from "redux";
+import { Dispatch } from "redux";
 import {isEqual} from "lodash";
 
 import {ModellingGroup, ModelRunParameterSet, Touchstone} from "../../../../shared/models/Generated";
@@ -19,7 +19,7 @@ export interface ModelRunParametersStatusProps {
     set: ModelRunParameterSet;
     group: ModellingGroup;
     touchstone: Touchstone;
-    loadToken: (groupId: string, touchstoneId: string, setId: number) => any;
+    loadToken: (groupId: string, touchstoneId: string, setId: number) => void;
     token: string;
 }
 
@@ -101,7 +101,7 @@ export const mapStateToProps = (state: ContribAppState, props: Partial<ModelRunP
     return newProps;
 };
 
-export const mapDispatchToProps = (dispatch: Dispatch<Action>): Partial<ModelRunParametersStatusProps> => {
+export const mapDispatchToProps = (dispatch: Dispatch<ContribAppState>): Partial<ModelRunParametersStatusProps> => {
     return {
         loadToken: ((groupId: string, touchstoneId: string, setId: number) => {
             dispatch(runParametersActionCreators.getOneTimeToken(groupId, touchstoneId, setId))

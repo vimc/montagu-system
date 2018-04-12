@@ -1,12 +1,13 @@
 import * as React from "react";
 import { compose } from "recompose";
 import { connect } from 'react-redux';
-import { Action, Dispatch } from "redux";
+import { Dispatch } from "redux";
 
 import {ChooseGroupContent} from "./ChooseGroupContent";
 import {PageArticle} from "../../../shared/components/PageWithHeader/PageArticle";
 import {PageBreadcrumb, PageProperties} from "../../../shared/components/PageWithHeader/PageWithHeader";
 import {chooseGroupPageActionCreators} from "../../actions/pages/chooseGroupPageActionCreators";
+import {ContribAppState} from "../../reducers/contribAppReducers";
 
 export class ChooseGroupPageComponent extends React.Component<PageProperties<undefined>> {
 
@@ -40,7 +41,7 @@ export class ChooseGroupPageComponent extends React.Component<PageProperties<und
     }
 }
 
-export const mapDispatchToProps = (dispatch: Dispatch<Action>): Partial<PageProperties<undefined>> => {
+export const mapDispatchToProps = (dispatch: Dispatch<ContribAppState>): Partial<PageProperties<undefined>> => {
     return {
         onLoad: () => dispatch(chooseGroupPageActionCreators.onLoad())
     }

@@ -8,8 +8,9 @@ import {DemographicDataset} from "../../shared/models/Generated";
 export const demographicActionCreators = {
 
     getDataSets(touchstoneId: string) {
-        return async (dispatch: Dispatch<any>, getState: () => ContribAppState) => {
-            const dataSets: any = await (new DemographicService(dispatch, getState)).getDataSetsByTouchstoneId(touchstoneId);
+        return async (dispatch: Dispatch<ContribAppState>, getState: () => ContribAppState) => {
+            const dataSets: DemographicDataset[] = await (new DemographicService(dispatch, getState))
+                .getDataSetsByTouchstoneId(touchstoneId);
             return dispatch({
                 type: DemographicTypes.DEMOGRAPHIC_DATA_SETS_FETCHED,
                 data: dataSets
@@ -18,10 +19,10 @@ export const demographicActionCreators = {
     },
 
     setDataSet(dataSetId: string) {
-        return (dispatch: Dispatch<any>, getState: any) => {
+        return (dispatch: Dispatch<ContribAppState>, getState: () => ContribAppState) => {
             const dataSets = getState().demographic.dataSets;
             const dataSet = dataSets.find((set: DemographicDataset) => set.id === dataSetId);
-            dispatch({
+            return dispatch({
                 type: DemographicTypes.DEMOGRAPHIC_SET_DATA_SET,
                 data: dataSet
             } as Demographic.SetDataSet );
@@ -29,7 +30,7 @@ export const demographicActionCreators = {
     },
 
     setGender(gender: string) {
-        return (dispatch: Dispatch<any>) => {
+        return (dispatch: Dispatch<ContribAppState>) => {
             dispatch({
                 type: DemographicTypes.DEMOGRAPHIC_SET_GENDER,
                 data: gender
@@ -38,7 +39,7 @@ export const demographicActionCreators = {
     },
 
     setFormat(format: string) {
-        return (dispatch: Dispatch<any>) => {
+        return (dispatch: Dispatch<ContribAppState>) => {
             dispatch({
                 type: DemographicTypes.DEMOGRAPHIC_SET_FORMAT,
                 data: format
@@ -47,7 +48,7 @@ export const demographicActionCreators = {
     },
 
     getOneTimeToken() {
-        return async (dispatch: Dispatch<any>, getState: any) => {
+        return async (dispatch: Dispatch<ContribAppState>, getState: () => ContribAppState) => {
             dispatch({
                 type: DemographicTypes.DEMOGRAPHIC_ONE_TIME_TOKEN_CLEAR,
             } as Demographic.OneTimeTokenClear );

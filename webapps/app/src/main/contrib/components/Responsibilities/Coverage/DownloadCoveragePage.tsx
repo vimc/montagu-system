@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Action, Dispatch } from "redux";
+import { Dispatch } from "redux";
 import { compose} from "recompose";
 import { connect } from 'react-redux';
 
@@ -41,7 +41,7 @@ export class DownloadCoveragePageComponent extends React.Component<PagePropertie
     }
 }
 
-export const mapDispatchToProps = (dispatch: Dispatch<Action>): Partial<PageProperties<DownloadCoveragePageLocationProps>> => {
+export const mapDispatchToProps = (dispatch: Dispatch<ContribAppState>): Partial<PageProperties<DownloadCoveragePageLocationProps>> => {
     return {
         onLoad: (params: DownloadCoveragePageLocationProps) => dispatch(downloadCoveragePageActionCreators.onLoad(params))
     }

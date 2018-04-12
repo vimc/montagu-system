@@ -3,17 +3,18 @@ import { Dispatch } from "redux";
 import { ModellingGroupsService } from "../../shared/services/ModellingGroupsService";
 import {UserGroupsFetched, ModellingGroupTypes, SetCurrentUserGroup} from "../actionTypes/ModellingGroupsTypes";
 import {ContribAppState} from "../reducers/contribAppReducers";
+import {ModellingGroup} from "../../shared/models/Generated";
 
 export const modellingGroupsActionCreators = {
 
     getUserGroups() {
-        return async (dispatch: Dispatch<any>, getState: () => ContribAppState) => {
-            const allGroups: any = await (new ModellingGroupsService(dispatch, getState)).getAllGroups();
-            let groups = [];
+        return async (dispatch: Dispatch<ContribAppState>, getState: () => ContribAppState) => {
+            const allGroups: ModellingGroup[] = await (new ModellingGroupsService(dispatch, getState)).getAllGroups();
+            let groups: ModellingGroup[] = [];
             if (allGroups && allGroups.length) {
                 const userGroups = getState().auth.modellingGroups;
                 if (userGroups && userGroups.length) {
-                    groups = allGroups.filter((item: any) => userGroups.indexOf(item.id) > -1);
+                    groups = allGroups.filter((item: ModellingGroup) => userGroups.indexOf(item.id) > -1);
                 }
             }
             dispatch({
@@ -24,7 +25,7 @@ export const modellingGroupsActionCreators = {
     },
 
     setCurrentGroup(groupId: string) {
-        return (dispatch: Dispatch<any>, getState: () => ContribAppState) => {
+        return (dispatch: Dispatch<ContribAppState>, getState: () => ContribAppState) => {
             const userGroups = getState().groups.userGroups;
             const currentUserGroup = userGroups.filter(group => group.id === groupId)[0];
             dispatch({

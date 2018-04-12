@@ -9,11 +9,12 @@ import {EstimatesService} from "../services/EstimatesService";
 import {settings} from "../../shared/Settings";
 import {responsibilitiesActionCreators} from "./responsibilitiesActionCreators";
 import {statePropsMapHelper} from "../helpers/statePropsMapHelper";
+import {ContribAppState} from "../reducers/contribAppReducers";
 
 export const estimatesActionCreators = {
 
     getOneTimeToken() {
-        return async (dispatch: Dispatch<any>, getState: any) => {
+        return async (dispatch: Dispatch<ContribAppState>, getState: () => ContribAppState) => {
             dispatch({
                 type: EstimatesTypes.ESTIMATES_ONE_TIME_TOKEN_CLEAR,
             } as EstimatesOneTimeTokenClear );
@@ -48,7 +49,7 @@ export const estimatesActionCreators = {
     },
 
     createBurden(data: EstimatesCreateBurdenData) {
-        return async (dispatch: Dispatch<any>, getState: any) => {
+        return async (dispatch: Dispatch<ContribAppState>, getState: () => ContribAppState) => {
 
             const ids = statePropsMapHelper.getResponsibilityIds(getState())
 

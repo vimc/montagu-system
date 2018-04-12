@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Action, Dispatch } from "redux";
+import { Dispatch } from "redux";
 import { compose, branch, renderComponent} from "recompose";
 import { connect } from 'react-redux';
 
@@ -131,7 +131,7 @@ export const mapStateToProps = (state: ContribAppState): Partial<DownloadCoverag
     }
 };
 
-export const mapDispatchToProps = (dispatch: Dispatch<Action>): Partial<DownloadCoverageContentProps> => {
+export const mapDispatchToProps = (dispatch: Dispatch<ContribAppState>): Partial<DownloadCoverageContentProps> => {
     return {
         loadToken: () => dispatch(coverageActionCreators.getOneTimeToken()),
         setFormat: (format: string) => dispatch(coverageActionCreators.setFormat(format))

@@ -1,19 +1,19 @@
 import { Dispatch } from "redux";
 
 import {ResponsibilitiesService} from "../services/ResponsibilitiesService";
-import {ModellingGroup, Touchstone} from "../../shared/models/Generated";
 import {
     ResponsibilitiesTypes, SetCurrentResponsibility,
     SetResponsibilities
 } from "../actionTypes/ResponsibilitiesTypes";
 import {ExtendedResponsibility, ExtendedResponsibilitySet} from "../models/ResponsibilitySet";
 import {estimatesActionCreators} from "./estimatesActionCreators";
-import {UploadBurdenEstimatesPageLocationProps} from "../components/Responsibilities/BurdenEstimates/UploadBurdenEstimatesPage";
+import {ContribAppState} from "../reducers/contribAppReducers";
+import {Responsibilities} from "../../shared/models/Generated";
 
 export const responsibilitiesActionCreators = {
 
     clearCacheForResponsibilitySet() {
-        return async (dispatch: Dispatch<any>, getState: any) => {
+        return async (dispatch: Dispatch<ContribAppState>, getState: () => ContribAppState) => {
 
             const group = getState().groups.currentUserGroup;
             const touchstone = getState().touchstones.currentTouchstone;
@@ -23,12 +23,12 @@ export const responsibilitiesActionCreators = {
     },
 
     getResponsibilitySet() {
-        return async (dispatch: Dispatch<any>, getState: any) => {
+        return async (dispatch: Dispatch<ContribAppState>, getState: () => ContribAppState) => {
 
             const group = getState().groups.currentUserGroup;
             const touchstone = getState().touchstones.currentTouchstone;
 
-            const responsibilities: any = await (new ResponsibilitiesService(dispatch, getState))
+            const responsibilities: Responsibilities = await (new ResponsibilitiesService(dispatch, getState))
                 .getResponsibilities(group.id, touchstone.id);
             const set = new ExtendedResponsibilitySet(responsibilities, touchstone, group);
 
@@ -40,7 +40,7 @@ export const responsibilitiesActionCreators = {
     },
 
     setCurrentResponsibility(scenarioId: string ) {
-        return async (dispatch: Dispatch<any>, getState: any) => {
+        return async (dispatch: Dispatch<ContribAppState>, getState: () => ContribAppState) => {
             const set = getState().responsibilities.responsibilitiesSet;
             const responsibility = set ? set.responsibilities.find((item: ExtendedResponsibility) => item.scenario.id === scenarioId) : null;
             dispatch({
@@ -51,7 +51,7 @@ export const responsibilitiesActionCreators = {
     },
 
     refreshResponsibilities() {
-        return async (dispatch: Dispatch<any>, getState: any) => {
+        return async (dispatch: Dispatch<ContribAppState>, getState: () => ContribAppState) => {
             const scenarioId = getState().responsibilities.currentResponsibility.scenario.id;
             dispatch(this.clearCacheForResponsibilitySet());
             await dispatch(this.getResponsibilitySet());

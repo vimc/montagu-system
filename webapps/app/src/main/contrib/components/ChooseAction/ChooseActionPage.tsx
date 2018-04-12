@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Action, Dispatch } from "redux";
+import { Dispatch } from "redux";
 import { compose } from "recompose";
 import { connect } from 'react-redux';
 
@@ -34,7 +34,7 @@ export class ChooseActionPageComponent extends React.Component<PageProperties<Ch
     }
 }
 
-export const mapDispatchToProps = (dispatch: Dispatch<Action>): Partial<PageProperties<ChooseActionPageLocationProps>> => {
+export const mapDispatchToProps = (dispatch: Dispatch<ContribAppState>): Partial<PageProperties<ChooseActionPageLocationProps>> => {
     return {
         onLoad: (params: ChooseActionPageLocationProps) => dispatch(chooseActionPageActionCreators.onLoad(params))
     }

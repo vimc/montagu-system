@@ -43,7 +43,7 @@ export class DownloadDemographicsPageComponent extends React.Component<PagePrope
 
 }
 
-export const mapDispatchToProps = (dispatch: Dispatch<Action>): Partial<PageProperties<DownloadDemographicsPageLocationProps>> => {
+export const mapDispatchToProps = (dispatch: Dispatch<ContribAppState>): Partial<PageProperties<DownloadDemographicsPageLocationProps>> => {
     return {
         onLoad: (params: DownloadDemographicsPageLocationProps) => dispatch(downloadDemographicsPageActionCreators.onLoad(params))
     }

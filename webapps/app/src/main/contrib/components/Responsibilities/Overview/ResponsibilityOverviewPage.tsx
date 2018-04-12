@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Action, Dispatch } from "redux";
+import { Dispatch } from "redux";
 import { compose} from "recompose";
 import { connect } from 'react-redux';
 
@@ -55,7 +55,7 @@ export const mapStateToProps = (state: ContribAppState): Partial<ResponsibilityO
     }
 };
 
-export const mapDispatchToProps = (dispatch: Dispatch<Action>): Partial<ResponsibilityOverviewPageProps> => {
+export const mapDispatchToProps = (dispatch: Dispatch<ContribAppState>): Partial<ResponsibilityOverviewPageProps> => {
     return {
         onLoad: (params: ResponsibilityOverviewPageLocationProps) => dispatch(responsibilityOverviewPageActionCreators.onLoad(params))
     }

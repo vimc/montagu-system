@@ -167,7 +167,7 @@ export class TemplateLinks extends React.Component<TemplateLinksProps, undefined
         const diseaseIds = [...new Set(this.props.responsibilities.map(x => x.scenario.disease))];
 
         if (diseaseIds.length > 0) {
-            let links: any = diseaseIds
+            let links: JSX.Element[] = diseaseIds
                 .map(id =>
                     <TemplateLink
                         key={id}

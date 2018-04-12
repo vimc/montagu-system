@@ -1,4 +1,4 @@
-import { Dispatch, Action } from "redux";
+import { Dispatch } from "redux";
 
 import {breadcrumbsActions} from "../../../shared/actions/breadcrumbsActions";
 import {touchstonesActionCreators} from "../touchstonesActionCreators";
@@ -14,14 +14,14 @@ import {chooseActionPageActionCreators} from "./chooseActionPageActionCreators";
 export const responsibilityOverviewPageActionCreators = {
 
     onLoad(props: ResponsibilityOverviewPageLocationProps) {
-        return async (dispatch: Dispatch<any>, getState: () => any) => {
+        return async (dispatch: Dispatch<ContribAppState>, getState: () => ContribAppState) => {
             await dispatch(this.loadData(props));
             dispatch(breadcrumbsActions.createBreadcrumbs(ResponsibilityOverviewPageComponent.breadcrumb(getState())));
         }
     },
 
     loadData(props: ResponsibilityOverviewPageLocationProps) {
-        return async (dispatch: Dispatch<any>, getState: () => any) => {
+        return async (dispatch: Dispatch<ContribAppState>) => {
             await dispatch(chooseActionPageActionCreators.loadData(props));
             await dispatch(diseasesActionCreators.getAllDiseases());
             dispatch(touchstonesActionCreators.setCurrentTouchstone(props.touchstoneId));

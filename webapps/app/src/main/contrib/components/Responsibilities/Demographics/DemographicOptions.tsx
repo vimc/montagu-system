@@ -15,9 +15,9 @@ export interface DemographicOptionsProps {
     selectedDataSet: DemographicDataset;
     selectedGender: string;
     selectedFormat: string;
-    onSelectDataSet: any;
-    onSelectGender: any;
-    onSelectFormat: any;
+    onSelectDataSet: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+    onSelectGender: (gender: string) => void;
+    onSelectFormat: (gender: string) => void;
 }
 
 export class DemographicOptionsComponent extends React.Component<DemographicOptionsProps> {
@@ -81,7 +81,6 @@ export class DemographicOptionsComponent extends React.Component<DemographicOpti
 }
 
 export const mapStateToProps = (state: ContribAppState): Partial<DemographicOptionsProps> => {
-    console.log(2226, state)
     return {
         dataSets: state.demographic.dataSets,
         selectedDataSet: state.demographic.selectedDataSet,
@@ -90,7 +89,7 @@ export const mapStateToProps = (state: ContribAppState): Partial<DemographicOpti
     }
 };
 
-export const mapDispatchToProps = (dispatch: Dispatch<Action>): Partial<DemographicOptionsProps> => {
+export const mapDispatchToProps = (dispatch: Dispatch<ContribAppState>): Partial<DemographicOptionsProps> => {
     return {
         onSelectDataSet: (e: React.ChangeEvent<HTMLSelectElement>) => {
             dispatch(demographicActionCreators.setDataSet(e.target.value));

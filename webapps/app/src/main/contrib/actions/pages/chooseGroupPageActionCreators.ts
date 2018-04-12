@@ -3,18 +3,19 @@ import { Dispatch } from "redux";
 import { modellingGroupsActionCreators } from "../modellingGroupsActionCreators";
 import {ChooseGroupPageComponent} from "../../components/ChooseGroup/ChooseGroupPage";
 import {breadcrumbsActions} from "../../../shared/actions/breadcrumbsActions";
+import {ContribAppState} from "../../reducers/contribAppReducers";
 
 export const chooseGroupPageActionCreators = {
 
     onLoad() {
-        return async (dispatch: Dispatch<any>) => {
+        return async (dispatch: Dispatch<ContribAppState>) => {
             await dispatch(this.loadData());
             dispatch(breadcrumbsActions.createBreadcrumbs(ChooseGroupPageComponent.breadcrumb()));
         }
     },
 
     loadData() {
-        return async (dispatch: Dispatch<any>) => {
+        return async (dispatch: Dispatch<ContribAppState>) => {
             await dispatch(modellingGroupsActionCreators.getUserGroups());
         }
     }

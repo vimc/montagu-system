@@ -1,5 +1,5 @@
 import * as React from "react";
-import {Action, Dispatch} from "redux";
+import {Dispatch} from "redux";
 import {compose} from "recompose";
 import {connect} from 'react-redux';
 
@@ -60,7 +60,7 @@ export class ModelRunParametersPageComponent extends React.Component<PagePropert
     }
 }
 
-export const mapDispatchToProps = (dispatch: Dispatch<Action>): Partial<PageProperties<ModelRunParametersPageLocationProps>> => {
+export const mapDispatchToProps = (dispatch: Dispatch<ContribAppState>): Partial<PageProperties<ModelRunParametersPageLocationProps>> => {
     return {
         onLoad: (params: ModelRunParametersPageLocationProps) => dispatch(modelRunParametersPageActionCreators.onLoad(params))
     }

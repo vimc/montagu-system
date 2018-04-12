@@ -18,7 +18,7 @@ export interface DownloadDemographicsContentProps {
     selectedFormat: string;
     touchstone: Touchstone;
     token: string;
-    refreshToken: any;
+    refreshToken: () => void;
 }
 
 const ButtonWithTimeout = OneTimeButtonTimeBlocker(OneTimeButton);
@@ -78,7 +78,6 @@ export class DownloadDemographicsContentComponent extends React.Component<Downlo
 }
 
 export const mapStateToProps = (state: ContribAppState): Partial<DownloadDemographicsContentProps> => {
-    console.log(2225, state)
     return {
         touchstone: state.touchstones.currentTouchstone,
         dataSets: state.demographic.dataSets,
@@ -89,7 +88,7 @@ export const mapStateToProps = (state: ContribAppState): Partial<DownloadDemogra
     }
 };
 
-export const mapDispatchToProps = (dispatch: Dispatch<Action>): Partial<DownloadDemographicsContentProps> => {
+export const mapDispatchToProps = (dispatch: Dispatch<ContribAppState>): Partial<DownloadDemographicsContentProps> => {
     return {
         refreshToken: () => dispatch(demographicActionCreators.getOneTimeToken())
     }

@@ -6,18 +6,19 @@ import {
     RunParametersSetsFetched, RunParametersTokenFetched,
     RunParametersTypes, RunParametersUploadStatus
 } from "../actionTypes/RunParametersTypes";
+import {ModelRunParameterSet, Result} from "../../shared/models/Generated";
 
 export const runParametersActionCreators = {
 
     clearCacheForGetParameterSets(groupId: string, touchstoneId: string) {
-        return async (dispatch: Dispatch<any>, getState: () => any) => {
+        return async (dispatch: Dispatch<ContribAppState>, getState: () => ContribAppState) => {
             (new RunParametersService(dispatch, getState)).clearCacheForGetParameterSets(groupId, touchstoneId);
         }
     },
 
     getParameterSets(groupId: string, touchstoneId: string) {
-        return async (dispatch: Dispatch<any>, getState: () => any) => {
-            const sets: any = await (new RunParametersService(dispatch, getState)).getParameterSets(groupId, touchstoneId);
+        return async (dispatch: Dispatch<ContribAppState>, getState: () => ContribAppState) => {
+            const sets: ModelRunParameterSet[] = await (new RunParametersService(dispatch, getState)).getParameterSets(groupId, touchstoneId);
             return dispatch({
                 type: RunParametersTypes.RUN_PARAMETERS_SETS_FETCHED,
                 data: sets
@@ -26,7 +27,7 @@ export const runParametersActionCreators = {
     },
 
     getOneTimeToken(groupId: string, touchstoneId: string, setId: number) {
-        return async (dispatch: Dispatch<any>, getState: () => any) => {
+        return async (dispatch: Dispatch<ContribAppState>, getState: () => ContribAppState) => {
             const token: string = await (new RunParametersService(dispatch, getState)).getOneTimeToken(groupId, touchstoneId, setId);
             return dispatch({
                 type: RunParametersTypes.RUN_PARAMETERS_TOKEN_FETCHED,
@@ -39,7 +40,7 @@ export const runParametersActionCreators = {
     },
 
     refreshParameterSets() {
-        return (dispatch: Dispatch<any>, getState: () => any) => {
+        return (dispatch: Dispatch<ContribAppState>, getState: () => ContribAppState) => {
 
             const group = getState().groups.currentUserGroup;
             const touchstone = getState().touchstones.currentTouchstone;
@@ -50,7 +51,7 @@ export const runParametersActionCreators = {
     },
 
     uploadSet(data: FormData) {
-        return async (dispatch: Dispatch<any>, getState: () => any) => {
+        return async (dispatch: Dispatch<ContribAppState>, getState: () => ContribAppState) => {
             dispatch({
                 type: RunParametersTypes.RUN_PARAMETERS_SET_UPLOAD_STATUS,
                 data: {status: RunParametersUploadStatus.in_progress, errors: null}
@@ -59,7 +60,8 @@ export const runParametersActionCreators = {
             const group = getState().groups.currentUserGroup;
             const touchstone = getState().touchstones.currentTouchstone;
 
-            const result: any = await (new RunParametersService(dispatch, getState)).uploadSet(group.id, touchstone.id, data);
+            const result: Result = await (new RunParametersService(dispatch, getState))
+                .uploadSet(group.id, touchstone.id, data);
             dispatch({
                 type: RunParametersTypes.RUN_PARAMETERS_SET_UPLOAD_STATUS,
                 data: {status: RunParametersUploadStatus.completed, errors: result && result.errors ? result.errors : null}
@@ -71,7 +73,7 @@ export const runParametersActionCreators = {
     },
 
     resetUploadStatus() {
-        return (dispatch: Dispatch<any>) => {
+        return (dispatch: Dispatch<ContribAppState>) => {
             dispatch({
                 type: RunParametersTypes.RUN_PARAMETERS_SET_UPLOAD_STATUS,
                 data: {status: RunParametersUploadStatus.off, errors: null}

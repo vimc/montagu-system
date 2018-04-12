@@ -9,12 +9,12 @@ import {BurdenEstimateSetTypeCode} from "../../../../shared/models/Generated";
 import {FormEvent} from "react";
 import {EstimatesCreateBurdenData} from "../../../actionTypes/EstimatesTypes";
 import {estimatesActionCreators} from "../../../actions/estimatesActionCreators";
+import {ContribAppState} from "../../../reducers/contribAppReducers";
 
 interface CreateBurdenEstimateSetFormProps {
     groupId: string;
     touchstoneId: string;
     scenarioId: string;
-    match: any;
     createBurden: (data: EstimatesCreateBurdenData) => void;
 }
 
@@ -166,7 +166,7 @@ export class CreateBurdenEstimateSetFormComponent extends React.Component<Create
     }
 }
 
-export const mapDispatchToProps = (dispatch: Dispatch<Action>): Partial<CreateBurdenEstimateSetFormProps> => {
+export const mapDispatchToProps = (dispatch: Dispatch<ContribAppState>): Partial<CreateBurdenEstimateSetFormProps> => {
     return {
         createBurden: (data: EstimatesCreateBurdenData) => dispatch(estimatesActionCreators.createBurden(data))
     }
