@@ -9,7 +9,6 @@ import {ResponsibilityOverviewPageComponent} from "../Overview/ResponsibilityOve
 import {PageBreadcrumb, PageProperties} from "../../../../shared/components/PageWithHeader/PageWithHeader";
 import {PageArticle} from "../../../../shared/components/PageWithHeader/PageArticle";
 import {ContribAppState} from "../../../reducers/contribAppReducers";
-import {ExtendedResponsibility} from "../../../models/ResponsibilitySet";
 import {downloadCoveragePageActionCreators} from "../../../actions/pages/downloadCoveragePageActionCreators";
 
 export interface DownloadCoveragePageLocationProps {
@@ -18,11 +17,7 @@ export interface DownloadCoveragePageLocationProps {
     scenarioId: string;
 }
 
-export interface DownloadCoveragePageProps extends PageProperties<DownloadCoveragePageLocationProps> {
-    responsibility: ExtendedResponsibility;
-}
-
-export class DownloadCoveragePageComponent extends React.Component<DownloadCoveragePageProps> {
+export class DownloadCoveragePageComponent extends React.Component<PageProperties<DownloadCoveragePageLocationProps>> {
     componentDidMount() {
         this.props.onLoad(this.props.match.params)
     }
@@ -46,19 +41,12 @@ export class DownloadCoveragePageComponent extends React.Component<DownloadCover
     }
 }
 
-export const mapStateToProps = (state: ContribAppState): Partial<DownloadCoveragePageProps> => {
-    console.log('pp', state)
-    return {
-        responsibility: state.responsibilities.currentResponsibility,
-    }
-};
-
-export const mapDispatchToProps = (dispatch: Dispatch<Action>): Partial<DownloadCoveragePageProps> => {
+export const mapDispatchToProps = (dispatch: Dispatch<Action>): Partial<PageProperties<DownloadCoveragePageLocationProps>> => {
     return {
         onLoad: (params: DownloadCoveragePageLocationProps) => dispatch(downloadCoveragePageActionCreators.onLoad(params))
     }
 };
 
 export const DownloadCoveragePage = compose(
-    connect(mapStateToProps, mapDispatchToProps),
-)(DownloadCoveragePageComponent) as React.ComponentClass<Partial<DownloadCoveragePageProps>>;
+    connect(state => state, mapDispatchToProps),
+)(DownloadCoveragePageComponent) as React.ComponentClass<Partial<PageProperties<DownloadCoveragePageLocationProps>>>;
