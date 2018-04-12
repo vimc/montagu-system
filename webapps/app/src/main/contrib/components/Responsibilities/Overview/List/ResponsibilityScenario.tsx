@@ -1,21 +1,21 @@
 import * as React from "react";
 import { connect } from 'react-redux';
 
-import {
-    Disease,
-    ModellingGroup, Responsibility, ResponsibilitySetStatus,
-    Touchstone
-} from "../../../../../shared/models/Generated";
+import { Disease, ModellingGroup, Responsibility, ResponsibilitySetStatus, Touchstone } from "../../../../../shared/models/Generated";
 import { ButtonLink } from "../../../../../shared/components/ButtonLink";
 import {CurrentEstimateSetSummary} from "./CurrentEstimateSetSummary";
 import {ContribAppState} from "../../../../reducers/contribAppReducers";
+import {ResponsibilityOverviewContentProps} from "../ResponsibilityOverviewContent";
 
-export interface ResponsibilityScenarioProps {
+export interface ResponsibilityScenarioPublicProps {
     responsibility: Responsibility;
     modellingGroup: ModellingGroup;
     touchstone: Touchstone;
     responsibilitySetStatus: ResponsibilitySetStatus;
-    diseases?: Disease[];
+}
+
+interface ResponsibilityScenarioProps  extends ResponsibilityScenarioPublicProps {
+    diseases: Disease[];
 }
 
 export class ResponsibilityScenarioComponent extends React.Component<ResponsibilityScenarioProps, undefined> {
@@ -53,11 +53,12 @@ export class ResponsibilityScenarioComponent extends React.Component<Responsibil
     }
 }
 
-const mapStateToProps = (state: ContribAppState, props: ResponsibilityScenarioProps): Partial<ResponsibilityScenarioProps> => {
+const mapStateToProps = (state: ContribAppState, props: ResponsibilityScenarioProps): ResponsibilityScenarioProps => {
     return {
         ...props,
         diseases: state.diseases.diseases
     }
 }
 
-export const ResponsibilityScenario = connect(mapStateToProps)(ResponsibilityScenarioComponent);
+export const ResponsibilityScenario = connect(mapStateToProps)(ResponsibilityScenarioComponent) as
+    React.ComponentClass<ResponsibilityScenarioPublicProps>;
