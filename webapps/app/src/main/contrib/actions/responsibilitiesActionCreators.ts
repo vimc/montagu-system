@@ -44,7 +44,7 @@ export const responsibilitiesActionCreators = {
             const set = getState().responsibilities.responsibilitiesSet;
             const responsibility = set ? set.responsibilities.find((item: ExtendedResponsibility) => item.scenario.id === scenarioId) : null;
             dispatch({
-                type: ResponsibilitiesTypes.SET_CURRENT_RESPONSIBILITY_SET,
+                type: ResponsibilitiesTypes.SET_CURRENT_RESPONSIBILITY,
                 data: responsibility
             } as SetCurrentResponsibility );
         }

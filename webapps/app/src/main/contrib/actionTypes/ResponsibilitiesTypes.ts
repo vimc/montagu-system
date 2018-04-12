@@ -2,7 +2,7 @@ import {ExtendedResponsibility, IExtendedResponsibilitySet} from "../models/Resp
 
 export enum ResponsibilitiesTypes {
     SET_RESPONSIBILITIES = "SET_RESPONSIBILITIES",
-    SET_CURRENT_RESPONSIBILITY_SET = "SET_CURRENT_RESPONSIBILITY_SET",
+    SET_CURRENT_RESPONSIBILITY = "SET_CURRENT_RESPONSIBILITY",
 }
 
 export interface SetResponsibilities {
@@ -11,7 +11,7 @@ export interface SetResponsibilities {
 }
 
 export interface SetCurrentResponsibility {
-    type: ResponsibilitiesTypes.SET_CURRENT_RESPONSIBILITY_SET;
+    type: ResponsibilitiesTypes.SET_CURRENT_RESPONSIBILITY;
     data: ExtendedResponsibility
 }
 

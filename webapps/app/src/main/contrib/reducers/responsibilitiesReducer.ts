@@ -15,7 +15,7 @@ export const responsibilitiesReducer = (state = initialState, action: Responsibi
     switch (action.type) {
         case ResponsibilitiesTypes.SET_RESPONSIBILITIES:
             return {...state, responsibilitiesSet: action.data };
-        case ResponsibilitiesTypes.SET_CURRENT_RESPONSIBILITY_SET:
+        case ResponsibilitiesTypes.SET_CURRENT_RESPONSIBILITY:
             return {...state, currentResponsibility: action.data };
         default:
             return state;
