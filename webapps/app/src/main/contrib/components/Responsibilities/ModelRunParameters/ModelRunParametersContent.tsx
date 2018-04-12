@@ -25,7 +25,9 @@ export class ModelRunParametersContentComponent extends React.Component<ModelRun
 export const mapStateToProps = (state: ContribAppState): Partial<ModelRunParametersContentProps> => {
     return {
         touchstone: state.touchstones.currentTouchstone,
-        diseases: state.responsibilities.set ? [...new Set(state.responsibilities.set.responsibilities.map(r => r.scenario.disease))] : []
+        diseases: state.responsibilities.responsibilitiesSet
+            ? [...new Set(state.responsibilities.responsibilitiesSet.responsibilities.map(r => r.scenario.disease))]
+            : []
     }
 };
 

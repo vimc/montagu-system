@@ -36,7 +36,7 @@ export const mapDiseaseOptions = (diseases: Disease[], responsibilities: Respons
 
 export const mapStateToProps = (state: ContribAppState, props: Partial<DiseaseFilterProps>): Partial<DiseaseFilterProps> => {
     return {
-        options: mapDiseaseOptions(state.diseases.diseases, state.responsibilities.set.responsibilities)
+        options: mapDiseaseOptions(state.diseases.diseases, state.responsibilities.responsibilitiesSet.responsibilities)
     }
 };
 

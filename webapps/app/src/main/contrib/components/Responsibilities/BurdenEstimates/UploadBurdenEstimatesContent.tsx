@@ -78,7 +78,7 @@ export const mapStateToProps = (state: ContribAppState): Partial<UploadBurdenEst
         touchstone: state.touchstones.currentTouchstone,
         scenario: state.responsibilities.currentResponsibility ? state.responsibilities.currentResponsibility.scenario : null,
         group: state.groups.currentUserGroup,
-        responsibilitySetStatus: state.responsibilities.set ? state.responsibilities.set.status : null,
+        responsibilitySetStatus: state.responsibilities.responsibilitiesSet ? state.responsibilities.responsibilitiesSet.status : null,
         token: state.estimates.token,
         responsibility: state.responsibilities.currentResponsibility
     }

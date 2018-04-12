@@ -52,7 +52,7 @@ export const ResponsibilityOverviewContentComponent: React.SFC<ResponsibilityOve
 
 export const mapStateToProps = (state: ContribAppState): Partial<ResponsibilityOverviewContentProps> => {
     return {
-        responsibilitySet: state.responsibilities.set,
+        responsibilitySet: state.responsibilities.responsibilitiesSet,
         currentDiseaseId: state.diseases.currentDiseaseId,
         modellingGroup: state.groups.currentUserGroup
     }
