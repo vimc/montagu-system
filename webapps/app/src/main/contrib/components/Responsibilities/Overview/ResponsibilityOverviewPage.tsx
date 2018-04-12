@@ -39,7 +39,7 @@ export class ResponsibilityOverviewPageComponent extends React.Component<Respons
         if (this.props.touchstone) {
             return <PageArticle title={`Responsibilities in ${this.props.touchstone.description }`}>
                 <ResponsibilityOverviewDescription
-                    currentTouchstoneId={this.props.match.params.touchstoneId}
+                    currentTouchstoneId={this.props.touchstone.id}
                 />
                 <ResponsibilityOverviewContent/>
             </PageArticle>;

@@ -2,14 +2,13 @@ import * as React from "react";
 import { compose, branch, renderComponent} from "recompose";
 import { connect } from 'react-redux';
 
-import {ModellingGroup, Touchstone} from "../../../../shared/models/Generated";
+import {Touchstone} from "../../../../shared/models/Generated";
 import {ModelRunParametersSection} from "./ModelRunParametersSection";
 import {LoadingElement} from "../../../../shared/partials/LoadingElement/LoadingElement";
 import {ContribAppState} from "../../../reducers/contribAppReducers";
 
 export interface ModelRunParametersContentProps {
     touchstone: Touchstone;
-    group: ModellingGroup;
     diseases: string[];
 }
 
@@ -26,7 +25,6 @@ export class ModelRunParametersContentComponent extends React.Component<ModelRun
 export const mapStateToProps = (state: ContribAppState): Partial<ModelRunParametersContentProps> => {
     return {
         touchstone: state.touchstones.currentTouchstone,
-        group: state.groups.currentUserGroup,
         diseases: state.responsibilities.set ? [...new Set(state.responsibilities.set.responsibilities.map(r => r.scenario.disease))] : []
     }
 };

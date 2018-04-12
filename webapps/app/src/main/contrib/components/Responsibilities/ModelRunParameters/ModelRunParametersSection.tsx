@@ -4,7 +4,6 @@ import {ModelRunParametersStatus} from "./ModelRunParametersStatus";
 import {ModelRunParametersForm} from "./ModelRunParametersForm";
 
 interface Props {
-    // url: string;
     disease: string;
 }
 

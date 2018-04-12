@@ -8,6 +8,7 @@ import {
 import {EstimatesService} from "../services/EstimatesService";
 import {settings} from "../../shared/Settings";
 import {responsibilitiesActionCreators} from "./responsibilitiesActionCreators";
+import {statePropsMapHelper} from "../helpers/statePropsMapHelper";
 
 export const estimatesActionCreators = {
 
@@ -17,16 +18,20 @@ export const estimatesActionCreators = {
                 type: EstimatesTypes.ESTIMATES_ONE_TIME_TOKEN_CLEAR,
             } as EstimatesOneTimeTokenClear );
 
-            const group = getState().groups.currentUserGroup;
-            const touchstone = getState().touchstones.currentTouchstone;
-            const responsibility = getState().responsibilities.currentResponsibility;
+            const ids = statePropsMapHelper.getResponsibilityIds(getState());
+
             const redirectPath = getState().estimates.redirectPath;
             const queryString = "?redirectUrl=" + encodeURI(settings.montaguUrl() + '/' + redirectPath);
 
-            if (!responsibility.current_estimate_set) return null;
+            if (!ids.estimateSetId) {
+                return dispatch({
+                    type: EstimatesTypes.ESTIMATES_ONE_TIME_TOKEN_FETCHED,
+                    data: null
+                } as EstimatesOneTimeTokenFetched );
+            }
 
             const token: string = await (new EstimatesService(dispatch, getState))
-                .getOneTimeToken(group.id, touchstone.id, responsibility.scenario.id, responsibility.current_estimate_set.id, queryString);
+                .getOneTimeToken(ids.groupId, ids.touchstoneId, ids.scenarioId, ids.estimateSetId, queryString);
 
             return dispatch({
                 type: EstimatesTypes.ESTIMATES_ONE_TIME_TOKEN_FETCHED,
@@ -36,20 +41,18 @@ export const estimatesActionCreators = {
     },
 
     setRedirectPath(path: string) {
-        return async (dispatch: Dispatch<any>) => {
-            return dispatch({
-                type: EstimatesTypes.ESTIMATES_SET_REDIRECT_PATH,
-                data: path
-            } as EstimatesSetRedirectPath );
-        }
+        return {
+            type: EstimatesTypes.ESTIMATES_SET_REDIRECT_PATH,
+            data: path
+        } as EstimatesSetRedirectPath;
     },
 
     createBurden(data: EstimatesCreateBurdenData) {
         return async (dispatch: Dispatch<any>, getState: any) => {
-            const group = getState().groups.currentUserGroup;
-            const touchstone = getState().touchstones.currentTouchstone;
-            const responsibility = getState().responsibilities.currentResponsibility;
-            await (new EstimatesService(dispatch, getState)).createBurden(group.id, touchstone.id, responsibility.scenario.id, data);
+
+            const ids = statePropsMapHelper.getResponsibilityIds(getState())
+
+            await (new EstimatesService(dispatch, getState)).createBurden(ids.groupId, ids.touchstoneId, ids.scenarioId, data);
             dispatch(responsibilitiesActionCreators.refreshResponsibilities());
         }
     }

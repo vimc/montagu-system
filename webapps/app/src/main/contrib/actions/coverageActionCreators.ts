@@ -3,18 +3,17 @@ import { Dispatch } from "redux";
 import {ContribAppState} from "../reducers/contribAppReducers";
 import {Coverage, CoverageTypes} from "../actionTypes/CoverageTypes";
 import {CoverageService} from "../services/CoverageService";
+import {statePropsMapHelper} from "../helpers/statePropsMapHelper";
 
 export const coverageActionCreators = {
 
     getDataSets() {
         return async (dispatch: Dispatch<any>, getState: () => ContribAppState) => {
 
-            const touchstone = getState().touchstones.currentTouchstone;
-            const group = getState().groups.currentUserGroup;
-            const responsibility = getState().responsibilities.currentResponsibility;
+            const ids = statePropsMapHelper.getResponsibilityIds(getState());
 
             const sets: any = await (new CoverageService(dispatch, getState))
-                .getDataSets(group.id, touchstone.id, responsibility.scenario.id);
+                .getDataSets(ids.groupId, ids.touchstoneId, ids.scenarioId);
 
             return dispatch({
                 type: CoverageTypes.COVERAGE_DATA_SETS_FETCHED,
@@ -38,13 +37,12 @@ export const coverageActionCreators = {
                 type: CoverageTypes.COVERAGE_ONE_TIME_TOKEN_CLEAR,
             } as Coverage.OneTimeTokenClear );
 
-            const touchstone = getState().touchstones.currentTouchstone;
+            const ids = statePropsMapHelper.getResponsibilityIds(getState());
+
             const format = getState().coverage.selectedFormat;
-            const group = getState().groups.currentUserGroup;
-            const responsibility = getState().responsibilities.currentResponsibility;
 
             const token: string = await (new CoverageService(dispatch, getState))
-                .getOneTimeToken(group.id, touchstone.id, responsibility.scenario.id, format);
+                .getOneTimeToken(ids.groupId, ids.touchstoneId, ids.scenarioId, format);
 
             return dispatch({
                 type: CoverageTypes.COVERAGE_ONE_TIME_TOKEN_FETCHED,

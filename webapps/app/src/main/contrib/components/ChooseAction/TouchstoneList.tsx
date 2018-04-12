@@ -4,7 +4,6 @@ import { compose, branch, renderComponent } from "recompose";
 import { ModellingGroup, Touchstone } from "../../../shared/models/Generated";
 import { ButtonLink } from "../../../shared/components/ButtonLink";
 import {LoadingElement} from "../../../shared/partials/LoadingElement/LoadingElement";
-import {ChooseActionContentProps} from "./ChooseActionContent";
 
 export interface TouchstoneListProps {
     touchstones: Touchstone[];

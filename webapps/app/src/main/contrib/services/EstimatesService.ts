@@ -2,7 +2,7 @@ import { AbstractLocalService } from "../../shared/services/AbstractLocalService
 import {EstimatesCreateBurdenData} from "../actionTypes/EstimatesTypes";
 
 export class EstimatesService extends AbstractLocalService {
-    getOneTimeToken(groupId: string, touchstoneId: string, scenarioId: string, estimateSetId: string, queryString: string) {
+    getOneTimeToken(groupId: string, touchstoneId: string, scenarioId: string, estimateSetId: number, queryString: string) {
         return this.get(`/modelling-groups/${groupId}/responsibilities/${touchstoneId}/${scenarioId}/estimate-sets/${estimateSetId}/get_onetime_link/${queryString}`);
     }
 

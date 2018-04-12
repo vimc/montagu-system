@@ -14,14 +14,17 @@ export const responsibilitiesActionCreators = {
 
     clearCacheForResponsibilitySet() {
         return async (dispatch: Dispatch<any>, getState: any) => {
+
             const group = getState().groups.currentUserGroup;
             const touchstone = getState().touchstones.currentTouchstone;
+
             (new ResponsibilitiesService(dispatch, getState)).clearCacheForResponsibilities(group.id, touchstone.id);
         }
     },
 
     getResponsibilitySet() {
         return async (dispatch: Dispatch<any>, getState: any) => {
+
             const group = getState().groups.currentUserGroup;
             const touchstone = getState().touchstones.currentTouchstone;
 

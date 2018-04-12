@@ -18,7 +18,6 @@ export const runParametersActionCreators = {
     getParameterSets(groupId: string, touchstoneId: string) {
         return async (dispatch: Dispatch<any>, getState: () => any) => {
             const sets: any = await (new RunParametersService(dispatch, getState)).getParameterSets(groupId, touchstoneId);
-            console.log('get set in act', sets, groupId, touchstoneId)
             return dispatch({
                 type: RunParametersTypes.RUN_PARAMETERS_SETS_FETCHED,
                 data: sets
@@ -41,8 +40,10 @@ export const runParametersActionCreators = {
 
     refreshParameterSets() {
         return (dispatch: Dispatch<any>, getState: () => any) => {
+
             const group = getState().groups.currentUserGroup;
             const touchstone = getState().touchstones.currentTouchstone;
+
             dispatch(runParametersActionCreators.clearCacheForGetParameterSets(group.id, touchstone.id))
             dispatch(runParametersActionCreators.getParameterSets(group.id, touchstone.id))
         }
@@ -54,8 +55,10 @@ export const runParametersActionCreators = {
                 type: RunParametersTypes.RUN_PARAMETERS_SET_UPLOAD_STATUS,
                 data: {status: RunParametersUploadStatus.in_progress, errors: null}
             })
+
             const group = getState().groups.currentUserGroup;
             const touchstone = getState().touchstones.currentTouchstone;
+
             const result: any = await (new RunParametersService(dispatch, getState)).uploadSet(group.id, touchstone.id, data);
             dispatch({
                 type: RunParametersTypes.RUN_PARAMETERS_SET_UPLOAD_STATUS,

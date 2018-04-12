@@ -17,7 +17,9 @@ const defaultProps: Partial<HeaderProps> = {
 const PageHeaderNew: React.SFC<HeaderProps> = (props: HeaderProps) => {
     return <div>
         <header className="header">
-            <a href="/"><img src={props.logo} className="pl-md-1 logo" height="75" alt="VIMC"/></a>
+            <InternalLink href="/">
+                <img src={props.logo} className="pl-md-1 logo" height="75" alt="VIMC"/>
+            </InternalLink>
             <div className="header__siteTitle">
                 <InternalLink href="/">
                     {props.siteTitle}
