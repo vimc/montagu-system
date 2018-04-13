@@ -12,11 +12,8 @@ import org.vaccineimpact.api.app.repositories.jooq.JooqScenarioRepository
 import org.vaccineimpact.api.app.repositories.jooq.JooqTouchstoneRepository
 import org.vaccineimpact.api.app.repositories.jooq.mapping.BurdenMappingHelper
 import org.vaccineimpact.api.databaseTests.RepositoryTests
-import org.vaccineimpact.api.db.JooqContext
-import org.vaccineimpact.api.db.Tables
+import org.vaccineimpact.api.db.*
 import org.vaccineimpact.api.db.direct.*
-import org.vaccineimpact.api.db.fromJoinPath
-import org.vaccineimpact.api.db.toDecimal
 import org.vaccineimpact.api.models.*
 import java.math.BigDecimal
 import java.time.LocalDateTime
@@ -183,19 +180,21 @@ abstract class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRep
         // We order the rows coming back so they are in a guaranteed order. This allows
         // us to write simple hardcoded expectations.
         val t = Tables.BURDEN_ESTIMATE
-        return db.dsl.select(t.BURDEN_ESTIMATE_SET, t.COUNTRY, t.YEAR, t.AGE, t.VALUE, t.MODEL_RUN)
+        return db.dsl.select(t.BURDEN_ESTIMATE_SET, t.YEAR, t.AGE, t.VALUE, t.MODEL_RUN)
                 .select(Tables.BURDEN_OUTCOME.CODE)
+                .select(Tables.COUNTRY.ID)
                 .fromJoinPath(Tables.BURDEN_ESTIMATE, Tables.BURDEN_OUTCOME)
+                .join(Tables.COUNTRY).on(Tables.BURDEN_ESTIMATE.COUNTRY.eq(Tables.COUNTRY.NID))
                 .orderBy(Tables.BURDEN_ESTIMATE.COUNTRY, Tables.BURDEN_OUTCOME.CODE)
                 .fetch()
     }
 
     private fun checkRecord(record: Record, setId: Int,
-                            year: Int, age: Int, country: String, outcomeCode: String, outcomeValue: BigDecimal)
+                            year: Short, age: Short, country: String, outcomeCode: String, outcomeValue: BigDecimal)
     {
         val t = Tables.BURDEN_ESTIMATE
         Assertions.assertThat(record[t.BURDEN_ESTIMATE_SET]).isEqualTo(setId)
-        Assertions.assertThat(record[t.COUNTRY]).isEqualTo(country)
+        Assertions.assertThat(record[Tables.COUNTRY.ID]).isEqualTo(country)
         Assertions.assertThat(record[t.YEAR]).isEqualTo(year)
         Assertions.assertThat(record[t.AGE]).isEqualTo(age)
         Assertions.assertThat(record[Tables.BURDEN_OUTCOME.CODE]).isEqualTo(outcomeCode)
