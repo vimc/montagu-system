@@ -430,12 +430,14 @@ fun JooqContext.addFocalCoverageSetToScenario(scenarioDescription: String, touch
             .execute()
 }
 
+private var countryNID: Short = 1000
 fun JooqContext.addCountries(ids: List<String>)
 {
     val records = ids.map {
         this.dsl.newRecord(COUNTRY).apply {
             this.id = it
             this.name = "$it-Name"
+            this.nid = countryNID++
         }
     }
     this.dsl.batchStore(records).execute()
