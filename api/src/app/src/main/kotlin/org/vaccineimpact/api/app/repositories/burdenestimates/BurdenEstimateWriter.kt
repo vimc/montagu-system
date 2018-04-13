@@ -89,7 +89,7 @@ abstract class BurdenEstimateWriter(
         return readDatabaseDSL.fetchAny(table, setField.eq(setId)) == null
     }
 
-    private fun writeCopyData(outcomeLookup: Map<String, Int>, countries: HashSet<String>, modelRuns: Map<String, Int>, modelRunParameterSetId: Int?,
+    private fun writeCopyData(outcomeLookup: Map<String, Short>, countries: HashSet<String>, modelRuns: Map<String, Int>, modelRunParameterSetId: Int?,
                               stream: OutputStream, estimates: Sequence<BurdenEstimateWithRunId>,
                               expectedDisease: String, setId: Int
     )
@@ -127,7 +127,7 @@ abstract class BurdenEstimateWriter(
             setId: Int,
             modelRun: Int?,
             estimate: BurdenEstimateWithRunId,
-            outcomeId: Int,
+            outcomeId: Short,
             outcomeValue: BigDecimal?
     ): List<Any?>
     {
@@ -170,7 +170,7 @@ abstract class BurdenEstimateWriter(
             .map { it[Tables.COUNTRY.ID] }
             .toHashSet()
 
-    private fun getOutcomesAsLookup(): Map<String, Int>
+    private fun getOutcomesAsLookup(): Map<String, Short>
     {
         return readDatabaseDSL.select(Tables.BURDEN_OUTCOME.CODE, Tables.BURDEN_OUTCOME.ID)
                 .from(Tables.BURDEN_OUTCOME)
