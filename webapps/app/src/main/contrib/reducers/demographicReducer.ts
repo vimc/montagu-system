@@ -9,7 +9,7 @@ export interface DemographicState {
     token: string;
 }
 
-export const initialState: DemographicState = {
+export const demographicInitialState: DemographicState = {
     dataSets: [],
     selectedDataSet: null,
     selectedGender: "both",
@@ -17,7 +17,7 @@ export const initialState: DemographicState = {
     token: null
 };
 
-export const demographicReducer = (state = initialState, action: DemographicAction) => {
+export const demographicReducer = (state = demographicInitialState, action: DemographicAction) => {
     switch (action.type) {
         case DemographicTypes.DEMOGRAPHIC_DATA_SETS_FETCHED:
             return {...state, dataSets: action.data };

@@ -9,10 +9,10 @@ import {
     DemographicDataset,
     ModelRunParameterSet,
 } from "../main/shared/models/Generated";
-import {touchstoneActions} from "../main/contrib/actions/TouchstoneActions";
+// import {touchstoneActions} from "../main/contrib/actions/TouchstoneActions";
 import {modellingGroupActions} from "../main/shared/actions/ModellingGroupActions";
 import {expectIsEqual, IntegrationTestSuite} from "./IntegrationTest";
-import {ContribFetcher} from "../main/contrib/sources/ContribFetcher";
+// import {ContribFetcher} from "../main/contrib/sources/ContribFetcher";
 import {shallow} from "enzyme";
 import * as enzyme from "enzyme";
 import * as Adapter from "enzyme-adapter-react-15";
@@ -20,21 +20,21 @@ enzyme.configure({ adapter: new Adapter() });
 import {ModelRunParametersSection} from "../main/contrib/components/Responsibilities/ModelRunParameters/ModelRunParametersSection";
 import {ModelRunParametersContentComponent} from "../main/contrib/components/Responsibilities/ModelRunParameters/ModelRunParametersContent";
 import {mockModellingGroup, mockTouchstone} from "../test/mocks/mockModels";
-import {mainStore} from "../main/contrib/stores/MainStore";
+// import {mainStore} from "../main/contrib/stores/MainStore";
 import fetcher, {Fetcher} from "../main/shared/sources/Fetcher";
 import {apiResponse} from "../main/shared/sources/Source";
-import {responsibilityStore} from "../main/contrib/stores/ResponsibilityStore";
-import {responsibilityActions} from "../main/contrib/actions/ResponsibilityActions";
-import {Form} from "../main/shared/components/Form";
+// import {responsibilityStore} from "../main/contrib/stores/ResponsibilityStore";
+// import {responsibilityActions} from "../main/contrib/actions/ResponsibilityActions";
+// import {Form} from "../main/shared/components/Form";
 import {CreateBurdenEstimateSetForm} from "../main/contrib/components/Responsibilities/BurdenEstimates/CreateBurdenEstimateSetForm";
-import {runParametersStore} from "../main/contrib/stores/RunParametersStore";
+// import {runParametersStore} from "../main/contrib/stores/RunParametersStore";
 import * as QueryString from "querystring";
-import {demographicStore} from "../main/contrib/stores/DemographicStore";
-import {demographicActions} from "../main/contrib/actions/DemographicActions";
-import {estimateTokenActions} from "../main/contrib/actions/EstimateActions";
-import {runParameterActions} from "../main/contrib/actions/RunParameterActions";
+// import {demographicStore} from "../main/contrib/stores/DemographicStore";
+// import {demographicActions} from "../main/contrib/actions/DemographicActions";
+// import {estimateTokenActions} from "../main/contrib/actions/EstimateActions";
+// import {runParameterActions} from "../main/contrib/actions/RunParameterActions";
 
-import {fetchToken as fetchTokenForModelRunParam} from "../main/contrib/sources/RunParametersSource";
+// import {fetchToken as fetchTokenForModelRunParam} from "../main/contrib/sources/RunParametersSource";
 import {createContribStore} from "../main/contrib/createStore";
 import { ModellingGroupsService } from "../main/shared/services/ModellingGroupsService";
 
@@ -57,12 +57,13 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
         return createContribStore(createMemoryHistory());
     }
 
-    makeFetcher() {
-        return new ContribFetcher();
+    makeFetcher(): any {
+        return null;//new ContribFetcher();
     }
 
     addTestsToMocha() {
 
+        /*
         function getUrlFromModelRunParametersContent(): string {
             const rendered = shallow(<ModelRunParametersContentComponent
                 ready={true} touchstone={mockTouchstone({id: touchstoneId})}
@@ -413,6 +414,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
             })
 
         });
+        */
 
     }
 }
@@ -587,16 +589,16 @@ function addModelRunParameterSets(db: Client): Promise<QueryResult> {
         });
 }
 
-function setTouchstoneAndGroup(touchstoneId: string, groupId: string) {
-    touchstoneActions.update([
-        {id: touchstoneId, description: "Touchstone", status: "open", version: 1, name: "test"}
-    ]);
-    touchstoneActions.setCurrentTouchstone(touchstoneId);
-    modellingGroupActions.updateGroups([
-        {id: groupId, description: "Group 1"}
-    ]);
-    modellingGroupActions.setCurrentGroup(groupId);
-}
+// function setTouchstoneAndGroup(touchstoneId: string, groupId: string) {
+//     touchstoneActions.update([
+//         {id: touchstoneId, description: "Touchstone", status: "open", version: 1, name: "test"}
+//     ]);
+//     touchstoneActions.setCurrentTouchstone(touchstoneId);
+//     modellingGroupActions.updateGroups([
+//         {id: groupId, description: "Group 1"}
+//     ]);
+//     modellingGroupActions.setCurrentGroup(groupId);
+// }
 
 function setGroup(groupId: string) {
     modellingGroupActions.updateGroups([

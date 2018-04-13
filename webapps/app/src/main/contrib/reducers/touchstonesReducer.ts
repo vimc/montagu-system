@@ -6,12 +6,12 @@ export interface TouchstonesState {
     currentTouchstone: Touchstone;
 }
 
-export const initialState: TouchstonesState = {
+export const touchstonesInitialState: TouchstonesState = {
     touchstones: [],
     currentTouchstone: null
 };
 
-export const touchstonesReducer = (state = initialState, action: TouchstonesAction) => {
+export const touchstonesReducer = (state = touchstonesInitialState, action: TouchstonesAction) => {
     switch (action.type) {
         case TouchstoneTypes.TOUCHSTONES_FETCHED:
             return {...state, touchstones: action.data };

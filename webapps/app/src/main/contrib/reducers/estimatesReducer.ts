@@ -5,12 +5,12 @@ export interface EstimatesState {
     redirectPath: string;
 }
 
-export const initialState: EstimatesState = {
+export const estimatesInitialState: EstimatesState = {
     token: null,
     redirectPath: null
 };
 
-export const estimatesReducer = (state = initialState, action: EstimatesAction) => {
+export const estimatesReducer = (state = estimatesInitialState, action: EstimatesAction) => {
     switch (action.type) {
         case EstimatesTypes.ESTIMATES_SET_REDIRECT_PATH:
             console.log('reduc pat', action.data)

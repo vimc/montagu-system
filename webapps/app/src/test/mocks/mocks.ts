@@ -3,7 +3,7 @@ import {match} from 'react-router';
 
 import * as models from "../../main/shared/models/Generated";
 import { alt } from "../../main/shared/alt";
-import { makeLoadable } from "../../main/contrib/stores/Loadable";
+// import { makeLoadable } from "../../main/contrib/stores/Loadable";
 import { ILookup } from "../../main/shared/models/Lookup";
 import { emptyOneTimeTokenData, OneTimeToken, OneTimeTokenData } from "../../main/report/models/OneTimeToken";
 
@@ -41,35 +41,35 @@ export function mockHistory(params?: any) {
     }, params);
 }
 
-export function setupMainStore(config: {
-    diseases?: models.Disease[],
-    groups?: models.ModellingGroup[]
-})
-{
-    alt.bootstrap(JSON.stringify({
-        MainStore: {
-            diseases: makeLoadable<models.Disease>(config.diseases),
-            modellingGroups: makeLoadable<models.ModellingGroup>(config.groups),
-        }
-    }));
-}
-
-export function setupStores(config: {
-    diseases?: models.Disease[],
-    groups?: models.ModellingGroup[],
-    touchstones?: models.Touchstone[],
-})
-{
-    alt.bootstrap(JSON.stringify({
-        MainStore: {
-            diseases: makeLoadable<models.Disease>(config.diseases),
-            modellingGroups: makeLoadable<models.ModellingGroup>(config.groups),
-        },
-        ResponsibilityStore: {
-            touchstones: config.touchstones,
-        }
-    }));
-}
+// export function setupMainStore(config: {
+//     diseases?: models.Disease[],
+//     groups?: models.ModellingGroup[]
+// })
+// {
+//     alt.bootstrap(JSON.stringify({
+//         MainStore: {
+//             diseases: makeLoadable<models.Disease>(config.diseases),
+//             modellingGroups: makeLoadable<models.ModellingGroup>(config.groups),
+//         }
+//     }));
+// }
+//
+// export function setupStores(config: {
+//     diseases?: models.Disease[],
+//     groups?: models.ModellingGroup[],
+//     touchstones?: models.Touchstone[],
+// })
+// {
+//     alt.bootstrap(JSON.stringify({
+//         MainStore: {
+//             diseases: makeLoadable<models.Disease>(config.diseases),
+//             modellingGroups: makeLoadable<models.ModellingGroup>(config.groups),
+//         },
+//         ResponsibilityStore: {
+//             touchstones: config.touchstones,
+//         }
+//     }));
+// }
 
 export function mockEvent() {
     return {

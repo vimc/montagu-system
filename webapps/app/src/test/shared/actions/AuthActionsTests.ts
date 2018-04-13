@@ -4,7 +4,7 @@ import * as jwt from "jsonwebtoken";
 import { Sandbox } from "../../Sandbox";
 import { authActions } from "../../../main/shared/actions/authActions";
 import { AuthService } from "../../../main/shared/services/AuthService";
-import { mainStore as contribMainStore } from "../../../main/contrib/stores/MainStore";
+// import { mainStore as contribMainStore } from "../../../main/contrib/stores/MainStore";
 import { AuthTypeKeys } from "../../../main/shared/actionTypes/AuthTypes";
 import { createMockStore } from "../../mocks/mockStore";
 import { NotificationState, notificationStore } from "../../../main/shared/stores/NotificationStore";
@@ -45,7 +45,7 @@ describe("Modelling groups actions tests", () => {
             return Promise.resolve({access_token: testToken});
         });
         sandbox.setStub(AuthService.prototype, "setShinyCookie");
-        sandbox.setStub(contribMainStore, "load");
+        // sandbox.setStub(contribMainStore, "load");
         store.dispatch(authActions.logIn('test', 'test'))
         setTimeout(() => {
             const actions = store.getActions();
@@ -100,7 +100,7 @@ describe("Modelling groups actions tests", () => {
     it("dispatches authenticated action if saved token can be loaded and not expired", (done) => {
         const testToken = jwt.sign(mockUsertokenData, "secret");
         sandbox.setStubFunc(localStorageHandler, "get", ()=> testToken);
-        sandbox.setStub(contribMainStore, "load");
+        // sandbox.setStub(contribMainStore, "load");
         sandbox.setStub(AuthService.prototype, "setShinyCookie");
         store.dispatch(authActions.loadSavedToken())
         setTimeout(() => {

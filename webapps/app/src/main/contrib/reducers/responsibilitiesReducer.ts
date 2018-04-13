@@ -6,12 +6,12 @@ export interface ResponsibilitiesState {
     currentResponsibility: ExtendedResponsibility;
 }
 
-export const initialState: ResponsibilitiesState = {
+export const responsibilitiesInitialState: ResponsibilitiesState = {
     responsibilitiesSet: null,
     currentResponsibility: null,
 };
 
-export const responsibilitiesReducer = (state = initialState, action: ResponsibilitiesAction) => {
+export const responsibilitiesReducer = (state = responsibilitiesInitialState, action: ResponsibilitiesAction) => {
     switch (action.type) {
         case ResponsibilitiesTypes.SET_RESPONSIBILITIES:
             return {...state, responsibilitiesSet: action.data };

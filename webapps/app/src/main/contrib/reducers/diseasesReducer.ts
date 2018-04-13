@@ -6,12 +6,12 @@ export interface DiseasesState {
     currentDiseaseId: string;
 }
 
-export const initialState: DiseasesState = {
+export const diseasesInitialState: DiseasesState = {
     diseases: [],
     currentDiseaseId: null
 };
 
-export const diseasesReducer = (state = initialState, action: DiseasesAction) => {
+export const diseasesReducer = (state = diseasesInitialState, action: DiseasesAction) => {
     switch (action.type) {
         case DiseasesTypes.DISEASES_FETCHED:
             return { ...state, diseases: action.data };

@@ -7,13 +7,13 @@ export interface CoverageState {
     token: string;
 }
 
-export const initialState: CoverageState = {
+export const coverageInitialState: CoverageState = {
     dataSets: null,
     selectedFormat: "long",
     token: null
 };
 
-export const coverageReducer = (state = initialState, action: CoverageAction) => {
+export const coverageReducer = (state = coverageInitialState, action: CoverageAction) => {
     switch (action.type) {
         case CoverageTypes.COVERAGE_DATA_SETS_FETCHED:
             return {...state, dataSets: action.data };

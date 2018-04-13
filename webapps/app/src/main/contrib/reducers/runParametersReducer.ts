@@ -14,13 +14,13 @@ export interface RunParametersState {
     uploadStatus: RunParametersUploadStatusData;
 }
 
-export const initialState: RunParametersState = {
+export const runParametersInitialState: RunParametersState = {
     sets: [],
     tokens: {},
     uploadStatus: {status: RunParametersUploadStatus.off, errors: null},
 }
 
-export const runParametersReducer = (state = initialState, action: RunParametersAction) => {
+export const runParametersReducer = (state = runParametersInitialState, action: RunParametersAction) => {
     switch (action.type) {
         case RunParametersTypes.RUN_PARAMETERS_SETS_FETCHED:
             return {...state, sets: action.data };
