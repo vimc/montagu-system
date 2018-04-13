@@ -163,6 +163,7 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     public static final Identity<ApiAccessLogRecord, Integer> IDENTITY_API_ACCESS_LOG = Identities0.IDENTITY_API_ACCESS_LOG;
+    public static final Identity<BurdenEstimateRecord, Integer> IDENTITY_BURDEN_ESTIMATE = Identities0.IDENTITY_BURDEN_ESTIMATE;
     public static final Identity<BurdenEstimateSetRecord, Integer> IDENTITY_BURDEN_ESTIMATE_SET = Identities0.IDENTITY_BURDEN_ESTIMATE_SET;
     public static final Identity<BurdenEstimateSetProblemRecord, Integer> IDENTITY_BURDEN_ESTIMATE_SET_PROBLEM = Identities0.IDENTITY_BURDEN_ESTIMATE_SET_PROBLEM;
     public static final Identity<BurdenEstimateStochasticRecord, Long> IDENTITY_BURDEN_ESTIMATE_STOCHASTIC = Identities0.IDENTITY_BURDEN_ESTIMATE_STOCHASTIC;
@@ -405,6 +406,7 @@ public class Keys {
 
     private static class Identities0 {
         public static Identity<ApiAccessLogRecord, Integer> IDENTITY_API_ACCESS_LOG = Internal.createIdentity(ApiAccessLog.API_ACCESS_LOG, ApiAccessLog.API_ACCESS_LOG.ID);
+        public static Identity<BurdenEstimateRecord, Integer> IDENTITY_BURDEN_ESTIMATE = Internal.createIdentity(BurdenEstimate.BURDEN_ESTIMATE, BurdenEstimate.BURDEN_ESTIMATE.ID);
         public static Identity<BurdenEstimateSetRecord, Integer> IDENTITY_BURDEN_ESTIMATE_SET = Internal.createIdentity(BurdenEstimateSet.BURDEN_ESTIMATE_SET, BurdenEstimateSet.BURDEN_ESTIMATE_SET.ID);
         public static Identity<BurdenEstimateSetProblemRecord, Integer> IDENTITY_BURDEN_ESTIMATE_SET_PROBLEM = Internal.createIdentity(BurdenEstimateSetProblem.BURDEN_ESTIMATE_SET_PROBLEM, BurdenEstimateSetProblem.BURDEN_ESTIMATE_SET_PROBLEM.ID);
         public static Identity<BurdenEstimateStochasticRecord, Long> IDENTITY_BURDEN_ESTIMATE_STOCHASTIC = Internal.createIdentity(BurdenEstimateStochastic.BURDEN_ESTIMATE_STOCHASTIC, BurdenEstimateStochastic.BURDEN_ESTIMATE_STOCHASTIC.ID);
@@ -451,7 +453,7 @@ public class Keys {
         public static final UniqueKey<ApiAccessLogRecord> API_ACCESS_LOG_PKEY = Internal.createUniqueKey(ApiAccessLog.API_ACCESS_LOG, "api_access_log_pkey", ApiAccessLog.API_ACCESS_LOG.ID);
         public static final UniqueKey<AppUserRecord> APP_USER_PKEY = Internal.createUniqueKey(AppUser.APP_USER, "app_user_pkey", AppUser.APP_USER.USERNAME);
         public static final UniqueKey<BurdenEstimateRecord> BURDEN_ESTIMATE_PKEY = Internal.createUniqueKey(BurdenEstimate.BURDEN_ESTIMATE, "burden_estimate_pkey", BurdenEstimate.BURDEN_ESTIMATE.ID);
-        public static final UniqueKey<BurdenEstimateRecord> BURDEN_ESTIMATE_UNIQUE = Internal.createUniqueKey(BurdenEstimate.BURDEN_ESTIMATE, "burden_estimate_unique", BurdenEstimate.BURDEN_ESTIMATE.BURDEN_ESTIMATE_SET, BurdenEstimate.BURDEN_ESTIMATE.COUNTRY, BurdenEstimate.BURDEN_ESTIMATE.YEAR, BurdenEstimate.BURDEN_ESTIMATE.AGE, BurdenEstimate.BURDEN_ESTIMATE.BURDEN_OUTCOME);
+        public static final UniqueKey<BurdenEstimateRecord> BURDEN_ESTIMATE_UNIQUE = Internal.createUniqueKey(BurdenEstimate.BURDEN_ESTIMATE, "burden_estimate_unique", BurdenEstimate.BURDEN_ESTIMATE.BURDEN_ESTIMATE_SET, BurdenEstimate.BURDEN_ESTIMATE.MODEL_RUN, BurdenEstimate.BURDEN_ESTIMATE.COUNTRY, BurdenEstimate.BURDEN_ESTIMATE.YEAR, BurdenEstimate.BURDEN_ESTIMATE.AGE, BurdenEstimate.BURDEN_ESTIMATE.BURDEN_OUTCOME);
         public static final UniqueKey<BurdenEstimateSetRecord> BURDEN_ESTIMATE_SET_PKEY = Internal.createUniqueKey(BurdenEstimateSet.BURDEN_ESTIMATE_SET, "burden_estimate_set_pkey", BurdenEstimateSet.BURDEN_ESTIMATE_SET.ID);
         public static final UniqueKey<BurdenEstimateSetProblemRecord> BURDEN_ESTIMATE_SET_PROBLEM_PKEY = Internal.createUniqueKey(BurdenEstimateSetProblem.BURDEN_ESTIMATE_SET_PROBLEM, "burden_estimate_set_problem_pkey", BurdenEstimateSetProblem.BURDEN_ESTIMATE_SET_PROBLEM.ID);
         public static final UniqueKey<BurdenEstimateSetStatusRecord> BURDEN_ESTIMATE_SET_STATUS_PKEY = Internal.createUniqueKey(BurdenEstimateSetStatus.BURDEN_ESTIMATE_SET_STATUS, "burden_estimate_set_status_pkey", BurdenEstimateSetStatus.BURDEN_ESTIMATE_SET_STATUS.CODE);

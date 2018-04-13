@@ -39,7 +39,7 @@ import org.vaccineimpact.api.db.annex.tables.records.BurdenEstimateStochasticRec
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class BurdenEstimateStochastic extends TableImpl<BurdenEstimateStochasticRecord> {
 
-    private static final long serialVersionUID = 761563640;
+    private static final long serialVersionUID = -1975079521;
 
     /**
      * The reference instance of <code>public.burden_estimate_stochastic</code>
@@ -63,6 +63,11 @@ public class BurdenEstimateStochastic extends TableImpl<BurdenEstimateStochastic
      * The column <code>public.burden_estimate_stochastic.burden_estimate_set</code>.
      */
     public final TableField<BurdenEstimateStochasticRecord, Integer> BURDEN_ESTIMATE_SET = createField("burden_estimate_set", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+
+    /**
+     * The column <code>public.burden_estimate_stochastic.model_run</code>.
+     */
+    public final TableField<BurdenEstimateStochasticRecord, Integer> MODEL_RUN = createField("model_run", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * The column <code>public.burden_estimate_stochastic.country</code>.
