@@ -257,21 +257,26 @@ abstract class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRep
         // We order the rows coming back so they are in a guaranteed order. This allows
         // us to write simple hardcoded expectations.
         val t = Tables.BURDEN_ESTIMATE_STOCHASTIC
-        return db.dsl.select(t.BURDEN_ESTIMATE_SET, t.COUNTRY, t.YEAR, t.AGE, t.VALUE, t.MODEL_RUN)
+        return db.dsl.select(t.BURDEN_ESTIMATE_SET, t.YEAR, t.AGE, t.VALUE, t.MODEL_RUN)
                 .select(Tables.BURDEN_OUTCOME.CODE)
+                .select(Tables.COUNTRY.ID)
                 .from(Tables.BURDEN_ESTIMATE_STOCHASTIC)
                 .join(Tables.BURDEN_OUTCOME)
                 .on(Tables.BURDEN_OUTCOME.ID.eq(Tables.BURDEN_ESTIMATE_STOCHASTIC.BURDEN_OUTCOME))
+                .join(Tables.COUNTRY).on(t.COUNTRY.eq(Tables.COUNTRY.NID))
                 .orderBy(Tables.BURDEN_ESTIMATE_STOCHASTIC.COUNTRY, Tables.BURDEN_OUTCOME.CODE)
                 .fetch()
     }
 
-    protected fun checkStochasticRecord(record: Record, setId: Int,
-                                        year: Int, age: Int, country: String, outcomeCode: String, outcomeValue: BigDecimal)
+    protected fun checkStochasticRecord(
+            record: Record, setId: Int,
+            year: Short, age: Short, country: String,
+            outcomeCode: String, outcomeValue: BigDecimal
+    )
     {
         val t = Tables.BURDEN_ESTIMATE_STOCHASTIC
         Assertions.assertThat(record[t.BURDEN_ESTIMATE_SET]).isEqualTo(setId)
-        Assertions.assertThat(record[t.COUNTRY]).isEqualTo(country)
+        Assertions.assertThat(record[Tables.COUNTRY.ID]).isEqualTo(country)
         Assertions.assertThat(record[t.YEAR]).isEqualTo(year)
         Assertions.assertThat(record[t.AGE]).isEqualTo(age)
         Assertions.assertThat(record[Tables.BURDEN_OUTCOME.CODE]).isEqualTo(outcomeCode)
