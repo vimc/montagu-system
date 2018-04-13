@@ -45,7 +45,8 @@ class TriggerTests : DatabaseTest()
         return db.dsl.newRecord(table).apply {
             id = 1
             burdenEstimateSet = 0
-            country = 1
+            // This is a deliberately invalid country, to test the foreign key constraints aren't checked
+            country = -1
             year = 2000
             age = 20
             burdenOutcome = 0
