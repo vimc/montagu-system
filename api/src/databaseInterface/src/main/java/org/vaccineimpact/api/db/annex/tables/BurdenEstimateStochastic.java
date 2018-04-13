@@ -39,7 +39,7 @@ import org.vaccineimpact.api.db.annex.tables.records.BurdenEstimateStochasticRec
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class BurdenEstimateStochastic extends TableImpl<BurdenEstimateStochasticRecord> {
 
-    private static final long serialVersionUID = -1307915103;
+    private static final long serialVersionUID = 761563640;
 
     /**
      * The reference instance of <code>public.burden_estimate_stochastic</code>
@@ -67,17 +67,17 @@ public class BurdenEstimateStochastic extends TableImpl<BurdenEstimateStochastic
     /**
      * The column <code>public.burden_estimate_stochastic.country</code>.
      */
-    public final TableField<BurdenEstimateStochasticRecord, String> COUNTRY = createField("country", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<BurdenEstimateStochasticRecord, Short> COUNTRY = createField("country", org.jooq.impl.SQLDataType.SMALLINT, this, "");
 
     /**
      * The column <code>public.burden_estimate_stochastic.year</code>.
      */
-    public final TableField<BurdenEstimateStochasticRecord, Integer> YEAR = createField("year", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<BurdenEstimateStochasticRecord, Short> YEAR = createField("year", org.jooq.impl.SQLDataType.SMALLINT.nullable(false), this, "");
 
     /**
      * The column <code>public.burden_estimate_stochastic.burden_outcome</code>.
      */
-    public final TableField<BurdenEstimateStochasticRecord, Integer> BURDEN_OUTCOME = createField("burden_outcome", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<BurdenEstimateStochasticRecord, Short> BURDEN_OUTCOME = createField("burden_outcome", org.jooq.impl.SQLDataType.SMALLINT.nullable(false), this, "");
 
     /**
      * The column <code>public.burden_estimate_stochastic.value</code>.
@@ -87,12 +87,7 @@ public class BurdenEstimateStochastic extends TableImpl<BurdenEstimateStochastic
     /**
      * The column <code>public.burden_estimate_stochastic.age</code>.
      */
-    public final TableField<BurdenEstimateStochasticRecord, Integer> AGE = createField("age", org.jooq.impl.SQLDataType.INTEGER, this, "");
-
-    /**
-     * The column <code>public.burden_estimate_stochastic.model_run</code>.
-     */
-    public final TableField<BurdenEstimateStochasticRecord, Integer> MODEL_RUN = createField("model_run", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<BurdenEstimateStochasticRecord, Short> AGE = createField("age", org.jooq.impl.SQLDataType.SMALLINT, this, "");
 
     /**
      * Create a <code>public.burden_estimate_stochastic</code> table reference

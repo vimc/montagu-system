@@ -55,6 +55,6 @@ public class Keys {
 
     private static class UniqueKeys0 {
         public static final UniqueKey<BurdenEstimateStochasticRecord> BURDEN_ESTIMATE_STOCHASTIC_PKEY = Internal.createUniqueKey(BurdenEstimateStochastic.BURDEN_ESTIMATE_STOCHASTIC, "burden_estimate_stochastic_pkey", BurdenEstimateStochastic.BURDEN_ESTIMATE_STOCHASTIC.ID);
-        public static final UniqueKey<BurdenEstimateStochasticRecord> BURDEN_ESTIMATE_STOCHASTIC_UNIQUE = Internal.createUniqueKey(BurdenEstimateStochastic.BURDEN_ESTIMATE_STOCHASTIC, "burden_estimate_stochastic_unique", BurdenEstimateStochastic.BURDEN_ESTIMATE_STOCHASTIC.BURDEN_ESTIMATE_SET, BurdenEstimateStochastic.BURDEN_ESTIMATE_STOCHASTIC.MODEL_RUN, BurdenEstimateStochastic.BURDEN_ESTIMATE_STOCHASTIC.COUNTRY, BurdenEstimateStochastic.BURDEN_ESTIMATE_STOCHASTIC.YEAR, BurdenEstimateStochastic.BURDEN_ESTIMATE_STOCHASTIC.AGE, BurdenEstimateStochastic.BURDEN_ESTIMATE_STOCHASTIC.BURDEN_OUTCOME);
+        public static final UniqueKey<BurdenEstimateStochasticRecord> BURDEN_ESTIMATE_STOCHASTIC_UNIQUE = Internal.createUniqueKey(BurdenEstimateStochastic.BURDEN_ESTIMATE_STOCHASTIC, "burden_estimate_stochastic_unique", BurdenEstimateStochastic.BURDEN_ESTIMATE_STOCHASTIC.BURDEN_ESTIMATE_SET, BurdenEstimateStochastic.BURDEN_ESTIMATE_STOCHASTIC.COUNTRY, BurdenEstimateStochastic.BURDEN_ESTIMATE_STOCHASTIC.YEAR, BurdenEstimateStochastic.BURDEN_ESTIMATE_STOCHASTIC.AGE, BurdenEstimateStochastic.BURDEN_ESTIMATE_STOCHASTIC.BURDEN_OUTCOME);
     }
 }
