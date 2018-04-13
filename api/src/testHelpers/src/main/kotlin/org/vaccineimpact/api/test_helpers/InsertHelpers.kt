@@ -221,8 +221,8 @@ fun JooqContext.addBurdenEstimateSet(
 fun JooqContext.addBurdenEstimate(
         setId: Int,
         country: String,
-        year: Int = 2000,
-        age: Int = 20,
+        year: Short = 2000,
+        age: Short = 20,
         outcome: String = "cohort_size",
         value: BigDecimal = 100.toDecimal(),
         modelRunId: Int? = null
@@ -232,9 +232,10 @@ fun JooqContext.addBurdenEstimate(
             .from(BURDEN_OUTCOME)
             .where(BURDEN_OUTCOME.CODE.eq(outcome))
             .fetchOne().value1()
+    val countryId = this.dsl.fetchOne(COUNTRY, COUNTRY.ID.eq(country)).nid
     val record = this.dsl.newRecord(BURDEN_ESTIMATE).apply {
         this.burdenEstimateSet = setId
-        this.country = country
+        this.country = countryId
         this.year = year
         this.age = age
         this.burdenOutcome = outcomeId
