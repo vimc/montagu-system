@@ -9,5 +9,5 @@ export class TouchstonesService extends AbstractLocalService {
 }
 
 export enum TouchstonesCacheKeysEnum {
-    "touchstones" = "touchstones",
+    touchstones = "touchstones",
 }

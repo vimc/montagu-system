@@ -12,5 +12,5 @@ export class DemographicService extends AbstractLocalService {
 }
 
 export enum DemographicCacheKeysEnum {
-    "sets" = "sets",
+    sets = "sets",
 }

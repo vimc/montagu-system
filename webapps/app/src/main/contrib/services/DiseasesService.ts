@@ -9,5 +9,5 @@ export class DiseasesService extends AbstractLocalService {
 }
 
 export enum DiseasesCacheKeysEnum {
-    "diseases" = "diseases",
+    diseases = "diseases",
 }

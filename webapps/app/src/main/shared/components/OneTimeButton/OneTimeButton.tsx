@@ -7,7 +7,7 @@ import {settings} from "../../Settings";
 export interface OneTimeButtonProps {
     token: string;
     enabled?: boolean;
-    refreshToken?: () => void;
+    refreshToken: () => void;
     onClick?: () =>void;
     element?: string;
 }

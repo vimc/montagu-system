@@ -13,5 +13,5 @@ export class ResponsibilitiesService extends AbstractLocalService {
 }
 
 export enum ResponsibilitiesCacheKeysEnum {
-    "set" = "set",
+    set = "set",
 }

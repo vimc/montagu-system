@@ -25,5 +25,5 @@ export class RunParametersService extends AbstractLocalService {
 }
 
 export enum RunParametersCacheKeysEnum {
-    "runParameters" = "runParameters",
+    runParameters = "runParameters",
 }
