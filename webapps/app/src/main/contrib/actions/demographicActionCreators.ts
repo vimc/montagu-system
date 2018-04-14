@@ -30,21 +30,17 @@ export const demographicActionCreators = {
     },
 
     setGender(gender: string) {
-        return (dispatch: Dispatch<ContribAppState>) => {
-            dispatch({
-                type: DemographicTypes.DEMOGRAPHIC_SET_GENDER,
-                data: gender
-            } as Demographic.SetGender );
-        }
+        return {
+            type: DemographicTypes.DEMOGRAPHIC_SET_GENDER,
+            data: gender
+        } as Demographic.SetGender;
     },
 
     setFormat(format: string) {
-        return (dispatch: Dispatch<ContribAppState>) => {
-            dispatch({
-                type: DemographicTypes.DEMOGRAPHIC_SET_FORMAT,
-                data: format
-            } as Demographic.SetFormat);
-        }
+        return {
+            type: DemographicTypes.DEMOGRAPHIC_SET_FORMAT,
+            data: format
+        } as Demographic.SetFormat;
     },
 
     getOneTimeToken() {
@@ -52,11 +48,14 @@ export const demographicActionCreators = {
             dispatch({
                 type: DemographicTypes.DEMOGRAPHIC_ONE_TIME_TOKEN_CLEAR,
             } as Demographic.OneTimeTokenClear );
+
             const dataSet = getState().demographic.selectedDataSet;
             const touchstone = getState().touchstones.currentTouchstone;
             const format = getState().demographic.selectedFormat;
+
             const token: string = await (new DemographicService(dispatch, getState))
                 .getOneTimeToken(touchstone.id, dataSet.source, dataSet.id, format);
+
             return dispatch({
                 type: DemographicTypes.DEMOGRAPHIC_ONE_TIME_TOKEN_FETCHED,
                 data: token
