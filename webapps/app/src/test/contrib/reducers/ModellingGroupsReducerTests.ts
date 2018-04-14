@@ -12,21 +12,48 @@ describe('Modelling groups reducer tests', () => {
             data: [testModellingGroup]
         })).to.eql(
             {
-                userGroups: [testModellingGroup]
+                userGroups: [testModellingGroup],
+                currentUserGroup: null
             }
         )
     })
 
-    // it('should return new state data with no groups', () => {
-    //     expect(modellingGroupsReducer({
-    //         userGroups: [testModellingGroup]
-    //     }, {
-    //         type: ModellingGroupTypeKeys.USER_GROUPS_FETCHED,
-    //         data: []
-    //     })).to.eql(
-    //         {
-    //             userGroups: []
-    //         }
-    //     )
-    // })
+    it('should return new state data with no groups', () => {
+        expect(modellingGroupsReducer({
+            userGroups: [testModellingGroup],
+            currentUserGroup: null
+        }, {
+            type: ModellingGroupTypes.USER_GROUPS_FETCHED,
+            data: []
+        })).to.eql(
+            {
+                userGroups: [],
+                currentUserGroup: null
+            }
+        )
+    })
+
+    it('should set current group to state', () => {
+        expect(modellingGroupsReducer(undefined, {
+            type: ModellingGroupTypes.SET_CURRENT_USER_GROUP,
+            data: testModellingGroup
+        })).to.eql(
+            {
+                currentUserGroup: testModellingGroup,
+                userGroups: [],
+            }
+        )
+    })
+
+    it('should set current empty group to state', () => {
+        expect(modellingGroupsReducer(undefined, {
+            type: ModellingGroupTypes.SET_CURRENT_USER_GROUP,
+            data: null
+        })).to.eql(
+            {
+                currentUserGroup: null,
+                userGroups: [],
+            }
+        )
+    })
 })
