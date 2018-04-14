@@ -14,7 +14,7 @@ describe('Touchstones service tests', () => {
     });
 
     it('fetches touchstones', () => {
-        const history = createMemoryHistory({initialEntries: [ '/asd' ]});
+        const history = createMemoryHistory();
         const store = createContribStore(history)
         const touchstoneService = new TouchstonesService(store.dispatch, store.getState as () => ContribAppState);
 
