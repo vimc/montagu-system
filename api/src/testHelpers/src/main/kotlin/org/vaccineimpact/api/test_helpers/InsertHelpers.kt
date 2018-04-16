@@ -224,7 +224,7 @@ fun JooqContext.addBurdenEstimate(
         year: Short = 2000,
         age: Short = 20,
         outcome: String = "cohort_size",
-        value: BigDecimal = 100.toDecimal(),
+        value: Float = 100F,
         modelRunId: Int? = null
 ): Int
 {
@@ -253,7 +253,7 @@ fun AnnexJooqContext.addStochasticBurdenEstimate(
         year: Short = 2000,
         age: Short = 20,
         outcome: String = "cohort_size",
-        value: BigDecimal = 100.toDecimal(),
+        value: Float = 100F,
         modelRunId: Int = 1
 ): Long
 {

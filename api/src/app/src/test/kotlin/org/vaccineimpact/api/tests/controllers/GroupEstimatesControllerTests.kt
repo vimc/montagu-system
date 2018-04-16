@@ -88,13 +88,13 @@ class GroupEstimatesControllerTests : MontaguTests()
                 existingBurdenEstimateSet = defaultEstimateSet.withType(BurdenEstimateSetTypeCode.CENTRAL_SINGLE_RUN))
 
         val expectedData = listOf(
-                BurdenEstimateWithRunId("yf", null, 2000, 50, "AFG", "Afghanistan", 1000.toDecimal(), mapOf(
-                        "deaths" to 10.toDecimal(),
-                        "cases" to 100.toDecimal()
+                BurdenEstimateWithRunId("yf", null, 2000, 50, "AFG", "Afghanistan", 1000F, mapOf(
+                        "deaths" to 10F,
+                        "cases" to 100F
                 )),
-                BurdenEstimateWithRunId("yf", null, 1980, 30, "AGO", "Angola", 2000.toDecimal(), mapOf(
-                        "deaths" to 20.toDecimal(),
-                        "dalys" to 73.6.toDecimal()
+                BurdenEstimateWithRunId("yf", null, 1980, 30, "AGO", "Angola", 2000F, mapOf(
+                        "deaths" to 20F,
+                        "dalys" to 73.6F
                 ))
         )
 
@@ -111,23 +111,23 @@ class GroupEstimatesControllerTests : MontaguTests()
                 existingBurdenEstimateSet = defaultEstimateSet.withType(BurdenEstimateSetTypeCode.STOCHASTIC))
 
         val csvData = listOf(
-                StochasticBurdenEstimate("yf", "runA", 2000, 50, "AFG", "Afghanistan", 1000.toDecimal(), mapOf(
-                        "deaths" to 10.toDecimal(),
-                        "cases" to 100.toDecimal()
+                StochasticBurdenEstimate("yf", "runA", 2000, 50, "AFG", "Afghanistan", 1000F, mapOf(
+                        "deaths" to 10F,
+                        "cases" to 100F
                 )),
-                StochasticBurdenEstimate("yf", "runB", 1980, 30, "AGO", "Angola", 2000.toDecimal(), mapOf(
-                        "deaths" to 20.toDecimal(),
-                        "dalys" to 73.6.toDecimal()
+                StochasticBurdenEstimate("yf", "runB", 1980, 30, "AGO", "Angola", 2000F, mapOf(
+                        "deaths" to 20F,
+                        "dalys" to 73.6F
                 ))
         )
         val expectedData = listOf(
-                BurdenEstimateWithRunId("yf", "runA", 2000, 50, "AFG", "Afghanistan", 1000.toDecimal(), mapOf(
-                        "deaths" to 10.toDecimal(),
-                        "cases" to 100.toDecimal()
+                BurdenEstimateWithRunId("yf", "runA", 2000, 50, "AFG", "Afghanistan", 1000F, mapOf(
+                        "deaths" to 10F,
+                        "cases" to 100F
                 )),
-                BurdenEstimateWithRunId("yf", "runB", 1980, 30, "AGO", "Angola", 2000.toDecimal(), mapOf(
-                        "deaths" to 20.toDecimal(),
-                        "dalys" to 73.6.toDecimal()
+                BurdenEstimateWithRunId("yf", "runB", 1980, 30, "AGO", "Angola", 2000F, mapOf(
+                        "deaths" to 20F,
+                        "dalys" to 73.6F
                 ))
         )
 
@@ -186,13 +186,13 @@ class GroupEstimatesControllerTests : MontaguTests()
     fun `cannot upload data with multiple diseases`()
     {
         val data = sequenceOf(
-                BurdenEstimate("yf", 2000, 50, "AFG", "Afghanistan", 1000.toDecimal(), mapOf(
-                        "deaths" to 10.toDecimal(),
-                        "cases" to 100.toDecimal()
+                BurdenEstimate("yf", 2000, 50, "AFG", "Afghanistan", 1000F, mapOf(
+                        "deaths" to 10F,
+                        "cases" to 100F
                 )),
-                BurdenEstimate("menA", 1980, 30, "AGO", "Angola", 2000.toDecimal(), mapOf(
-                        "deaths" to 20.toDecimal(),
-                        "dalys" to 73.6.toDecimal()
+                BurdenEstimate("menA", 1980, 30, "AGO", "Angola", 2000F, mapOf(
+                        "deaths" to 20F,
+                        "dalys" to 73.6F
                 ))
         )
         val actionContext = mockActionContext()
@@ -212,13 +212,13 @@ class GroupEstimatesControllerTests : MontaguTests()
         """
         val data = DataTableDeserializer.deserialize(csv, BurdenEstimate::class).toList()
         assertThat(data).containsExactlyElementsOf(listOf(
-                BurdenEstimate("yf", 2000, 50, "AFG", "Afghanistan", 1000.toDecimal(), mapOf(
-                        "deaths" to 50.toDecimal(),
-                        "cases" to 100.toDecimal()
+                BurdenEstimate("yf", 2000, 50, "AFG", "Afghanistan", 1000F, mapOf(
+                        "deaths" to 50F,
+                        "cases" to 100F
                 )),
-                BurdenEstimate("yf", 2001, 50, "AFG", "Afghanistan", 1000.toDecimal(), mapOf(
-                        "deaths" to 63.5.toDecimal(),
-                        "cases" to 120.toDecimal()
+                BurdenEstimate("yf", 2001, 50, "AFG", "Afghanistan", 1000F, mapOf(
+                        "deaths" to 63.5F,
+                        "cases" to 120F
                 ))
         ))
     }
@@ -289,13 +289,13 @@ class GroupEstimatesControllerTests : MontaguTests()
     )
 
     private val normalCSVData = listOf(
-            BurdenEstimate("yf", 2000, 50, "AFG", "Afghanistan", 1000.toDecimal(), mapOf(
-                    "deaths" to 10.toDecimal(),
-                    "cases" to 100.toDecimal()
+            BurdenEstimate("yf", 2000, 50, "AFG", "Afghanistan", 1000F, mapOf(
+                    "deaths" to 10F,
+                    "cases" to 100F
             )),
-            BurdenEstimate("yf", 1980, 30, "AGO", "Angola", 2000.toDecimal(), mapOf(
-                    "deaths" to 20.toDecimal(),
-                    "dalys" to 73.6.toDecimal()
+            BurdenEstimate("yf", 1980, 30, "AGO", "Angola", 2000F, mapOf(
+                    "deaths" to 20F,
+                    "dalys" to 73.6F
             ))
     )
 }

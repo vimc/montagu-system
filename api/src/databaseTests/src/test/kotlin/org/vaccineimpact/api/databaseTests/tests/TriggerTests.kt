@@ -50,7 +50,7 @@ class TriggerTests : DatabaseTest()
             year = 2000
             age = 20
             burdenOutcome = 0
-            value = BigDecimal.TEN
+            value = 10F
         }
     }
 }

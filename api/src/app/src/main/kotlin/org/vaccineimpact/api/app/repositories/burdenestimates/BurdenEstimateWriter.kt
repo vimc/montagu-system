@@ -133,7 +133,7 @@ abstract class BurdenEstimateWriter(
             estimate: BurdenEstimateWithRunId,
             countryId: Short,
             outcomeId: Short,
-            outcomeValue: BigDecimal?
+            outcomeValue: Float?
     ): List<Any?>
     {
         return listOf(
