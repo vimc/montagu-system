@@ -9,17 +9,17 @@ import {ContribAppState} from "../../../main/contrib/reducers/contribAppReducers
 describe('Diseases service tests', () => {
     const sandbox = new Sandbox();
 
+    const history = createMemoryHistory();
+    const store = createContribStore(history)
+
     afterEach(() => {
         sandbox.restore();
     });
 
     it('fetches diseases', () => {
-        const history = createMemoryHistory();
-        const store = createContribStore(history)
         const diseaseService = new DiseasesService(store.dispatch, store.getState as () => ContribAppState);
 
         const setOptionsSpy = sandbox.setSpy(diseaseService, "setOptions");
-
         const getStub = sandbox.setStubFunc(diseaseService, "get", ()=>{
             return Promise.resolve();
         });
@@ -28,7 +28,6 @@ describe('Diseases service tests', () => {
 
         expect(getStub.getCall(0).args[0]).to.equal('/diseases/');
         expect(setOptionsSpy.getCall(0).args[0]).to.eql({ cacheKey: 'diseases' });
-    })
+    });
 
-
-})
+});
