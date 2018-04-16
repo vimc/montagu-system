@@ -21,14 +21,25 @@ export namespace Demographic {
         data: DemographicDataset;
     }
 
+    export enum SelectedGender {
+        male = "male",
+        female = "female",
+        both = "both"
+    }
+
     export interface SetGender {
         type: DemographicTypes.DEMOGRAPHIC_SET_GENDER;
-        data: string;
+        data: SelectedGender;
+    }
+
+    export enum SelectedFormat {
+        long = "long",
+        wide = "wide"
     }
 
     export interface SetFormat {
         type: DemographicTypes.DEMOGRAPHIC_SET_FORMAT;
-        data: string;
+        data: SelectedFormat;
     }
 
     export interface OneTimeTokenFetched {
