@@ -31,5 +31,17 @@ describe('Coverage service tests', () => {
         expect(setOptionsSpy.getCall(0).args[0]).to.eql({ cacheKey: 'sets' });
     })
 
+    it('gets one time token', () => {
+        const coverageService = new CoverageService(store.dispatch, store.getState as () => ContribAppState);
+
+        const getStub = sandbox.setStubFunc(coverageService, "get", ()=>{
+            return Promise.resolve();
+        });
+
+        coverageService.getOneTimeToken("group-1", "touchstone-1", "scenario-1", "long");
+
+        expect(getStub.getCall(0).args[0])
+            .to.equal("/modelling-groups/group-1/responsibilities/touchstone-1/scenario-1/coverage/get_onetime_link/?format=long");
+    })
 
 })
