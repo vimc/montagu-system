@@ -14,7 +14,7 @@ export interface PageParts {
 }
 
 export abstract class PageWithHeader<TLocationProps>
-    extends React.Component<PageProperties<TLocationProps>, undefined>
+    extends React.Component<PageProperties<TLocationProps>, any>
     implements IPageWithParent, PageParts {
 
     title(): JSX.Element {
