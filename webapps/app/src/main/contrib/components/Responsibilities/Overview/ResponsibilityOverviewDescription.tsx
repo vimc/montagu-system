@@ -10,7 +10,7 @@ interface ResponsibilityOverviewDescriptionProps {
 
 export class ResponsibilityOverviewDescriptionComponent extends Component<ResponsibilityOverviewDescriptionProps> {
     render() {
-        if (this.props.currentTouchstoneId == settings.modellerApplicantsTouchstoneId) {
+        if (settings.modellerApplicantsTouchstoneIds.indexOf(this.props.currentTouchstoneId) > -1) {
             return <div>
                 On this page you can:
                 <ul>
