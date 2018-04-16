@@ -6,7 +6,7 @@ export const settings: Settings = {
     vimcEmail: "vimc@imperial.ac.uk",
     slackUrl: "https://vimc.slack.com/",
     teamcityServiceMessages: false,
-    modellerApplicantsTouchstoneId: /*"op-2017-2",*/"201801rfp-1",
+    isApplicantTouchstone: (id: string) => id.indexOf("rfp-") > -1,
     admin: {
         publicPath: "",
         requiresModellingGroupMembership: false
