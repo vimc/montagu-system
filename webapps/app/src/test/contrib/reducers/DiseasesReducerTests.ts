@@ -3,9 +3,9 @@ import { expect } from "chai";
 import {diseasesInitialState, diseasesReducer} from "../../../main/contrib/reducers/diseasesReducer";
 import { DiseasesTypes } from "../../../main/contrib/actionTypes/DiseasesTypes";
 
-const testDisease = {id: "disease-1", name: "Test 1"};
-
 describe('Diseases reducer tests', () => {
+
+    const testDisease = {id: "disease-1", name: "Test 1"};
 
     it('sets fetched diseases', () => {
         expect(diseasesReducer(undefined, {

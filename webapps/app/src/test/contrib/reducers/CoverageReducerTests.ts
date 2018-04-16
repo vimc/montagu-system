@@ -4,9 +4,10 @@ import {coverageInitialState, coverageReducer} from "../../../main/contrib/reduc
 import {Coverage, CoverageTypes} from "../../../main/contrib/actionTypes/CoverageTypes";
 import {mockCoverageSet} from "../../mocks/mockModels";
 
-const testCoverageDataSet = mockCoverageSet();
-
 describe('Coverage reducer tests', () => {
+
+    const testCoverageDataSet = mockCoverageSet();
+
     it('sets fetched data sets', () => {
         expect(coverageReducer(undefined, {
             type: CoverageTypes.COVERAGE_DATA_SETS_FETCHED,

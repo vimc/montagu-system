@@ -6,26 +6,25 @@ import {
 } from "../../../main/contrib/actionTypes/RunParametersTypes";
 import {mockModelRunParameterSet} from "../../mocks/mockModels";
 
-const testModelRunParametersSet = mockModelRunParameterSet();
-const testModelRunParametersToken: RunParametersTokenData = {
-    id: 2,
-    token: "test-token"
-};
-const testModelRunParametersInProgress: RunParametersUploadStatusData = {
-    status: RunParametersUploadStatus.in_progress,
-    errors: null
-};
-const testModelRunParametersCompletedNoErrors: RunParametersUploadStatusData = {
-    status: RunParametersUploadStatus.completed,
-    errors: null
-};
-const testModelRunParametersCompletedWithErrors: RunParametersUploadStatusData = {
-    status: RunParametersUploadStatus.completed,
-    errors: [new Error('test')]
-}
-
-
 describe('Run Parameters reducer tests', () => {
+
+    const testModelRunParametersSet = mockModelRunParameterSet();
+    const testModelRunParametersToken: RunParametersTokenData = {
+        id: 2,
+        token: "test-token"
+    };
+    const testModelRunParametersInProgress: RunParametersUploadStatusData = {
+        status: RunParametersUploadStatus.in_progress,
+        errors: null
+    };
+    const testModelRunParametersCompletedNoErrors: RunParametersUploadStatusData = {
+        status: RunParametersUploadStatus.completed,
+        errors: null
+    };
+    const testModelRunParametersCompletedWithErrors: RunParametersUploadStatusData = {
+        status: RunParametersUploadStatus.completed,
+        errors: [new Error('test')]
+    }
 
     it('sets fetched model run parameters set', () => {
         expect(runParametersReducer(undefined, {

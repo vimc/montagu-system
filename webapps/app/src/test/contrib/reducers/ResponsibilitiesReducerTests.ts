@@ -4,10 +4,11 @@ import { responsibilitiesReducer, responsibilitiesInitialState } from "../../../
 import { ResponsibilitiesTypes } from "../../../main/contrib/actionTypes/ResponsibilitiesTypes";
 import {mockExtendedResponsibility, mockExtendedResponsibilitySet} from "../../mocks/mockModels";
 
-const testExtResponsibilitySet = mockExtendedResponsibilitySet();
-const testExtResponsibility = mockExtendedResponsibility();
-
 describe('Responsibilities reducer tests', () => {
+
+    const testExtResponsibilitySet = mockExtendedResponsibilitySet();
+    const testExtResponsibility = mockExtendedResponsibility();
+
     it('sets responsibility set', () => {
         expect(responsibilitiesReducer(undefined, {
             type: ResponsibilitiesTypes.SET_RESPONSIBILITIES,

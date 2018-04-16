@@ -4,9 +4,9 @@ import {demographicInitialState, demographicReducer} from "../../../main/contrib
 import {Demographic, DemographicTypes} from "../../../main/contrib/actionTypes/DemographicTypes";
 import {mockDemographicDataset} from "../../mocks/mockModels";
 
-const testDemographicDataSet = mockDemographicDataset({id: 'type-1'});
-
 describe('Demographic reducer tests', () => {
+
+    const testDemographicDataSet = mockDemographicDataset({id: 'type-1'});
 
     it('sets fetched data sets', () => {
         expect(demographicReducer(undefined, {

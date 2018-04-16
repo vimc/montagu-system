@@ -6,9 +6,9 @@ import {
 } from "../../../main/contrib/reducers/modellingGroupsReducer";
 import { ModellingGroupTypes } from "../../../main/contrib/actionTypes/ModellingGroupsTypes";
 
-const testModellingGroup = {id: "test1", description: "Test 1"};
-
 describe('Modelling groups reducer tests', () => {
+
+    const testModellingGroup = {id: "test1", description: "Test 1"};
 
     it('sets fetched user groups', () => {
         expect(modellingGroupsReducer(undefined, {
