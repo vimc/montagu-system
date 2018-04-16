@@ -4,8 +4,6 @@
 package org.vaccineimpact.api.db.tables;
 
 
-import java.math.BigDecimal;
-
 import javax.annotation.Generated;
 
 import org.jooq.Field;
@@ -34,7 +32,7 @@ import org.vaccineimpact.api.db.tables.records.BurdenEstimateStochasticRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class BurdenEstimateStochastic extends TableImpl<BurdenEstimateStochasticRecord> {
 
-    private static final long serialVersionUID = 1908768739;
+    private static final long serialVersionUID = 1787966718;
 
     /**
      * The reference instance of <code>public.burden_estimate_stochastic</code>
@@ -82,7 +80,7 @@ public class BurdenEstimateStochastic extends TableImpl<BurdenEstimateStochastic
     /**
      * The column <code>public.burden_estimate_stochastic.value</code>.
      */
-    public final TableField<BurdenEstimateStochasticRecord, BigDecimal> VALUE = createField("value", org.jooq.impl.SQLDataType.NUMERIC, this, "");
+    public final TableField<BurdenEstimateStochasticRecord, Float> VALUE = createField("value", org.jooq.impl.SQLDataType.REAL, this, "");
 
     /**
      * The column <code>public.burden_estimate_stochastic.age</code>.
