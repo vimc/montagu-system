@@ -1,6 +1,6 @@
 import {ModelRunParameterSet} from "../../shared/models/Generated";
 
-export interface tokenData {
+export interface RunParametersTokenData {
     id: number,
     token: string
 }
@@ -18,7 +18,7 @@ export interface RunParametersSetsFetched {
 
 export interface RunParametersTokenFetched {
     type: RunParametersTypes.RUN_PARAMETERS_TOKEN_FETCHED;
-    data: tokenData;
+    data: RunParametersTokenData;
 }
 
 export enum RunParametersUploadStatus {
