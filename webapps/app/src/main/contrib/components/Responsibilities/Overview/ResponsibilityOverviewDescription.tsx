@@ -9,7 +9,7 @@ interface ResponsibilityOverviewDescriptionProps {
 
 export const ResponsibilityOverviewDescription: React.SFC<ResponsibilityOverviewDescriptionProps> =
     (props: ResponsibilityOverviewDescriptionProps) => {
-    if (props.currentTouchstoneId == settings.modellerApplicantsTouchstoneId) {
+    if (settings.isApplicantTouchstone(props.currentTouchstoneId)) {
         return <div>
             On this page you can:
             <ul>
