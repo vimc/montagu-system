@@ -6,7 +6,7 @@ import {DemographicService} from "../../../main/contrib/services/DemographicServ
 import {Sandbox} from "../../Sandbox";
 import {ContribAppState} from "../../../main/contrib/reducers/contribAppReducers";
 
-describe('Diseases service tests', () => {
+describe('Demographic service tests', () => {
     const sandbox = new Sandbox();
 
     const history = createMemoryHistory();
