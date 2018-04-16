@@ -14,9 +14,14 @@ export namespace Coverage {
         data: CoverageSet[];
     }
 
+    export enum SelectedFormat {
+        long = "long",
+        wide = "wide"
+    }
+
     export interface SetFormat {
         type: CoverageTypes.COVERAGE_SET_FORMAT;
-        data: string;
+        data: SelectedFormat;
     }
 
     export interface OneTimeTokenFetched {
