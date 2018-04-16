@@ -5,7 +5,7 @@ interface Settings {
     supportContact: string;
     vimcEmail: string;
     slackUrl: string;
-    modellerApplicantsTouchstoneId: string;
+    isApplicantTouchstone: (id: string) => boolean;
     teamcityServiceMessages: boolean;
     admin: AdminSettings;
     contrib: ContribSettings;
