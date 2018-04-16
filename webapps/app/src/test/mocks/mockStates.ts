@@ -1,7 +1,7 @@
 import {AuthState} from "../../main/shared/reducers/authReducer";
 import {reducer as formReducer} from "redux-form";
 import {
-    initialState as ModellingGroupsInitialState,
+    modellingGroupInitialState as ModellingGroupsInitialState,
     ModellingGroupsState
 } from "../../main/contrib/reducers/modellingGroupsReducer";
 import {reportsInitialState, ReportsState} from "../../main/report/reducers/reportsReducer";

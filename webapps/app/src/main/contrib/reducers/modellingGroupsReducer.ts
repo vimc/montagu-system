@@ -6,15 +6,15 @@ export interface ModellingGroupsState {
     currentUserGroup: ModellingGroup;
 }
 
-export const initialState: ModellingGroupsState = {
+export const modellingGroupInitialState: ModellingGroupsState = {
     userGroups: [],
     currentUserGroup: null
 };
 
-export const modellingGroupsReducer = (state = initialState, action: ModellingGroupsAction) => {
+export const modellingGroupsReducer = (state = modellingGroupInitialState, action: ModellingGroupsAction) => {
     switch (action.type) {
         case ModellingGroupTypes.USER_GROUPS_FETCHED:
-            return {...state, userGroups: action.data };
+            return {...state, userGroups: action.data ? action.data : [] };
         case ModellingGroupTypes.SET_CURRENT_USER_GROUP:
             return {...state, currentUserGroup: action.data };
         default:

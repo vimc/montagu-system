@@ -14,7 +14,7 @@ export const touchstonesInitialState: TouchstonesState = {
 export const touchstonesReducer = (state = touchstonesInitialState, action: TouchstonesAction) => {
     switch (action.type) {
         case TouchstoneTypes.TOUCHSTONES_FETCHED:
-            return {...state, touchstones: action.data };
+            return {...state, touchstones: action.data ? action.data : [] };
         case TouchstoneTypes.SET_CURRENT_TOUCHSTONE:
             return {...state, currentTouchstone: action.data };
         default:

@@ -1,59 +1,43 @@
 import { expect } from "chai";
 
-import { modellingGroupsReducer } from "../../../main/contrib/reducers/modellingGroupsReducer";
+import {
+    modellingGroupInitialState,
+    modellingGroupsReducer
+} from "../../../main/contrib/reducers/modellingGroupsReducer";
 import { ModellingGroupTypes } from "../../../main/contrib/actionTypes/ModellingGroupsTypes";
 
 const testModellingGroup = {id: "test1", description: "Test 1"};
 
 describe('Modelling groups reducer tests', () => {
-    it('should return new state data with groups', () => {
+
+    it('sets fetched user groups', () => {
         expect(modellingGroupsReducer(undefined, {
             type: ModellingGroupTypes.USER_GROUPS_FETCHED,
             data: [testModellingGroup]
-        })).to.eql(
-            {
-                userGroups: [testModellingGroup],
-                currentUserGroup: null
-            }
-        )
-    })
+        })).to.eql({...modellingGroupInitialState, userGroups: [testModellingGroup]});
+    });
 
-    it('should return new state data with no groups', () => {
+    it('sets empty user groups', () => {
         expect(modellingGroupsReducer({
             userGroups: [testModellingGroup],
             currentUserGroup: null
         }, {
             type: ModellingGroupTypes.USER_GROUPS_FETCHED,
             data: []
-        })).to.eql(
-            {
-                userGroups: [],
-                currentUserGroup: null
-            }
-        )
-    })
+        })).to.eql(modellingGroupInitialState);
+    });
 
-    it('should set current group to state', () => {
+    it('sets current user group', () => {
         expect(modellingGroupsReducer(undefined, {
             type: ModellingGroupTypes.SET_CURRENT_USER_GROUP,
             data: testModellingGroup
-        })).to.eql(
-            {
-                currentUserGroup: testModellingGroup,
-                userGroups: [],
-            }
-        )
-    })
+        })).to.eql({...modellingGroupInitialState, currentUserGroup: testModellingGroup});
+    });
 
-    it('should set current empty group to state', () => {
+    it('sets current empty user group', () => {
         expect(modellingGroupsReducer(undefined, {
             type: ModellingGroupTypes.SET_CURRENT_USER_GROUP,
             data: null
-        })).to.eql(
-            {
-                currentUserGroup: null,
-                userGroups: [],
-            }
-        )
-    })
+        })).to.eql(modellingGroupInitialState);
+    });
 })

@@ -8,52 +8,31 @@ const testExtResponsibilitySet = mockExtendedResponsibilitySet();
 const testExtResponsibility = mockExtendedResponsibility();
 
 describe('Responsibilities reducer tests', () => {
-    it('set responsibility set', () => {
+    it('sets responsibility set', () => {
         expect(responsibilitiesReducer(undefined, {
             type: ResponsibilitiesTypes.SET_RESPONSIBILITIES,
             data: testExtResponsibilitySet
-        })).to.eql(
-            {
-                responsibilitiesSet: testExtResponsibilitySet,
-                currentResponsibility: null
-            }
-        )
-    })
+        })).to.eql({...responsibilitiesInitialState, responsibilitiesSet: testExtResponsibilitySet});
+    });
 
-    it('set empty responsibility set', () => {
+    it('sets empty responsibility set', () => {
         expect(responsibilitiesReducer(undefined, {
             type: ResponsibilitiesTypes.SET_RESPONSIBILITIES,
             data: null
-        })).to.eql(
-            {
-                responsibilitiesSet: null,
-                currentResponsibility: null
-            }
-        )
-    })
+        })).to.eql(responsibilitiesInitialState);
+    });
 
     it('set current responsibility', () => {
         expect(responsibilitiesReducer(undefined, {
             type: ResponsibilitiesTypes.SET_CURRENT_RESPONSIBILITY,
             data: testExtResponsibility
-        })).to.eql(
-            {
-                responsibilitiesSet: null,
-                currentResponsibility: testExtResponsibility
-            }
-        )
-    })
+        })).to.eql({...responsibilitiesInitialState, currentResponsibility: testExtResponsibility});
+    });
 
     it('set empty current responsibility', () => {
         expect(responsibilitiesReducer(undefined, {
             type: ResponsibilitiesTypes.SET_CURRENT_RESPONSIBILITY,
             data: null
-        })).to.eql(
-            {
-                responsibilitiesSet: null,
-                currentResponsibility: null
-            }
-        )
-    })
-
-})
+        })).to.eql(responsibilitiesInitialState);
+    });
+});

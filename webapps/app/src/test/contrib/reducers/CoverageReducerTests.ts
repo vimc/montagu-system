@@ -7,95 +7,51 @@ import {mockCoverageSet} from "../../mocks/mockModels";
 const testCoverageDataSet = mockCoverageSet();
 
 describe('Coverage reducer tests', () => {
-    it('adds fetched data sets to the state', () => {
+    it('sets fetched data sets', () => {
         expect(coverageReducer(undefined, {
             type: CoverageTypes.COVERAGE_DATA_SETS_FETCHED,
             data: [testCoverageDataSet]
-        })).to.eql(
-            {
-                dataSets: [testCoverageDataSet],
-                selectedFormat: "long",
-                token: null
-            }
-        )
+        })).to.eql({...coverageInitialState, dataSets: [testCoverageDataSet]});
     })
 
-    it('adds fetched empty data sets to the state', () => {
+    it('sets fetched empty data sets', () => {
         expect(coverageReducer(undefined, {
             type: CoverageTypes.COVERAGE_DATA_SETS_FETCHED,
             data: null
-        })).to.eql(
-            {
-                dataSets: [],
-                selectedFormat: "long",
-                token: null
-            }
-        )
+        })).to.eql(coverageInitialState);
     })
 
-    it('adds format to the state', () => {
+    it('sets format', () => {
         expect(coverageReducer(undefined, {
             type: CoverageTypes.COVERAGE_SET_FORMAT,
             data: Coverage.SelectedFormat.wide
-        })).to.eql(
-            {
-                dataSets: [],
-                selectedFormat: "wide",
-                token: null
-            }
-        )
+        })).to.eql({...coverageInitialState, selectedFormat: 'wide'});
     })
 
-    it('adds empty format to the state, get default format, which is long', () => {
+    it('sets empty format, get default format', () => {
         expect(coverageReducer(undefined, {
             type: CoverageTypes.COVERAGE_SET_FORMAT,
             data: null
-        })).to.eql(
-            {
-                dataSets: [],
-                selectedFormat: "long",
-                token: null
-            }
-        )
+        })).to.eql(coverageInitialState);
     })
 
-    it('sets fetched token to the state', () => {
+    it('sets fetched token', () => {
         expect(coverageReducer(undefined, {
             type: CoverageTypes.COVERAGE_ONE_TIME_TOKEN_FETCHED,
             data: 'test-token'
-        })).to.eql(
-            {
-                dataSets: [],
-                selectedFormat: "long",
-                token: 'test-token'
-            }
-        )
+        })).to.eql({...coverageInitialState, token: 'test-token'});
     })
 
-    it('sets empty fetched token to the state', () => {
+    it('sets empty fetched token', () => {
         expect(coverageReducer(undefined, {
             type: CoverageTypes.COVERAGE_ONE_TIME_TOKEN_FETCHED,
             data: null
-        })).to.eql(
-            {
-                dataSets: [],
-                selectedFormat: "long",
-                token: null
-            }
-        )
+        })).to.eql(coverageInitialState);
     })
 
-    it('clears token in the state', () => {
-        const state = coverageInitialState;
-        state.token = 'some-token';
-        expect(coverageReducer(state, {
+    it('clears token', () => {
+        expect(coverageReducer({...coverageInitialState, token: 'some-token'}, {
             type: CoverageTypes.COVERAGE_ONE_TIME_TOKEN_CLEAR,
-        })).to.eql(
-            {
-                dataSets: [],
-                selectedFormat: "long",
-                token: null
-            }
-        )
+        })).to.eql(coverageInitialState);
     })
 })

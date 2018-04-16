@@ -1,57 +1,38 @@
 import { expect } from "chai";
 
-import { touchstonesReducer } from "../../../main/contrib/reducers/touchstonesReducer";
+import {touchstonesInitialState, touchstonesReducer} from "../../../main/contrib/reducers/touchstonesReducer";
 import { TouchstoneTypes } from "../../../main/contrib/actionTypes/TouchstonesTypes";
 import {mockTouchstone} from "../../mocks/mockModels";
 
 const testTouchstone = mockTouchstone({id: "touchstone-1"});
 
 describe('Touchstones reducer tests', () => {
-    it('set new state with touchstones', () => {
+
+    it('sets fetched touchstones', () => {
         expect(touchstonesReducer(undefined, {
             type: TouchstoneTypes.TOUCHSTONES_FETCHED,
             data: [testTouchstone]
-        })).to.eql(
-            {
-                touchstones: [testTouchstone],
-                currentTouchstone: null
-            }
-        )
-    })
+        })).to.eql({...touchstonesInitialState, touchstones: [testTouchstone]});
+    });
 
-    it('sets new state with empty touchstones', () => {
+    it('sets empty fetched touchstones', () => {
         expect(touchstonesReducer(undefined, {
             type: TouchstoneTypes.TOUCHSTONES_FETCHED,
             data: null
-        })).to.eql(
-            {
-                touchstones: null,
-                currentTouchstone: null
-            }
-        )
-    })
+        })).to.eql(touchstonesInitialState);
+    });
 
-    it('sets new state with current touchstone', () => {
+    it('sets current touchstone', () => {
         expect(touchstonesReducer(undefined, {
             type: TouchstoneTypes.SET_CURRENT_TOUCHSTONE,
             data: testTouchstone
-        })).to.eql(
-            {
-                touchstones: [],
-                currentTouchstone: testTouchstone
-            }
-        )
-    })
+        })).to.eql({...touchstonesInitialState, currentTouchstone: testTouchstone});
+    });
 
-    it('sets new state with current touchstone empty', () => {
+    it('sets current touchstone empty', () => {
         expect(touchstonesReducer(undefined, {
             type: TouchstoneTypes.SET_CURRENT_TOUCHSTONE,
             data: null
-        })).to.eql(
-            {
-                touchstones: [],
-                currentTouchstone: null
-            }
-        )
-    })
+        })).to.eql(touchstonesInitialState);
+    });
 })
