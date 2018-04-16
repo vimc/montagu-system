@@ -10,8 +10,8 @@ data class BurdenEstimate(
         val age: Int,
         val country: String,
         val countryName: String,
-        val cohortSize: BigDecimal,
-        val outcomes: Map<String, BigDecimal?>
+        val cohortSize: Float,
+        val outcomes: Map<String, Float?>
 )
 
 @FlexibleColumns
@@ -22,8 +22,8 @@ data class StochasticBurdenEstimate(
         val age: Int,
         val country: String,
         val countryName: String,
-        val cohortSize: BigDecimal,
-        val outcomes: Map<String, BigDecimal?>
+        val cohortSize: Float,
+        val outcomes: Map<String, Float?>
 )
 
 data class BurdenEstimateWithRunId(
@@ -33,8 +33,8 @@ data class BurdenEstimateWithRunId(
         val age: Int,
         val country: String,
         val countryName: String,
-        val cohortSize: BigDecimal,
-        val outcomes: Map<String, BigDecimal?>
+        val cohortSize: Float,
+        val outcomes: Map<String, Float?>
 )
 {
     constructor(estimate: BurdenEstimate, runId: String?) : this(
