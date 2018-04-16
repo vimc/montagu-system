@@ -1,16 +1,11 @@
-FROM node:8.9.4
+FROM node:8
 
 # Install OpenJDK
-# This section is cribbed from the official JDK image:
-# https://github.com/docker-library/openjdk/blob/445f8b8d18d7c61e2ae7fda76d8883b5d51ae0a5/8-jdk/Dockerfile
-ENV JAVA_DEBIAN_VERSION 8u131-b11-1~bpo8+1
-ENV CA_CERTIFICATES_JAVA_VERSION 20161107~bpo8+1
-
 RUN echo 'deb http://deb.debian.org/debian jessie-backports main' > /etc/apt/sources.list.d/jessie-backports.list
 RUN apt-get update
 RUN apt-get install -t jessie-backports -y \
-    ca-certificates-java="$CA_CERTIFICATES_JAVA_VERSION" \
-    openjdk-8-jdk="$JAVA_DEBIAN_VERSION"
+    ca-certificates-java \
+    openjdk-8-jdk
 RUN rm /etc/apt/sources.list.d/jessie-backports.list
 
 # Install docker
