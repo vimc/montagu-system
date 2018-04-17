@@ -34,6 +34,9 @@ object UserRouteConfig : RouteConfig
                     .secure(),
             Endpoint("${urlBase}report-readers/:report/", controller, "getReportReaders")
                     .json()
-                    .secure(readRoles)
+                    .secure(readRoles),
+            Endpoint("${urlBase}agree-confidentiality", controller, "saveConfidentialityAgreement")
+                    .json()
+                    .secure()
     )
 }

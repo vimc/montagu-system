@@ -46,6 +46,19 @@ class UserTests : DatabaseTest()
     }
 
     @Test
+    fun `can save confidentiality agreement`()
+    {
+        validate("/users/agree-confidentiality/") given {
+            it.addUserWithRoles("testuser",
+                    ReifiedRole("user", Scope.Global()))
+        } requiringPermissions {
+            PermissionSet("*/can-login")
+        } andCheckString {
+            Assertions.assertThat(it).isEqualTo("OK")
+        }
+    }
+
+    @Test
     fun `can get roles`()
     {
         val userHelper = TestUserHelper()

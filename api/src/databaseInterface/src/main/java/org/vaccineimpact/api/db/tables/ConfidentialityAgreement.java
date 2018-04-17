@@ -36,7 +36,7 @@ import org.vaccineimpact.api.db.tables.records.ConfidentialityAgreementRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ConfidentialityAgreement extends TableImpl<ConfidentialityAgreementRecord> {
 
-    private static final long serialVersionUID = 445849337;
+    private static final long serialVersionUID = -285337109;
 
     /**
      * The reference instance of <code>public.confidentiality_agreement</code>
@@ -59,12 +59,7 @@ public class ConfidentialityAgreement extends TableImpl<ConfidentialityAgreement
     /**
      * The column <code>public.confidentiality_agreement.date</code>.
      */
-    public final TableField<ConfidentialityAgreementRecord, Timestamp> DATE = createField("date", org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
-
-    /**
-     * The column <code>public.confidentiality_agreement.signed</code>.
-     */
-    public final TableField<ConfidentialityAgreementRecord, Boolean> SIGNED = createField("signed", org.jooq.impl.SQLDataType.BOOLEAN, this, "");
+    public final TableField<ConfidentialityAgreementRecord, Timestamp> DATE = createField("date", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.field("now()", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
      * Create a <code>public.confidentiality_agreement</code> table reference
