@@ -92,7 +92,7 @@ export const mapStateToProps = (state: ContribAppState, props: Partial<ModelRunP
 
     const newProps : Partial<ModelRunParametersStatusProps> = {
         disease: props.disease,
-        set: state.runParameters.sets.length ? getLastSetForDisease(state.runParameters.sets, props.disease) : null,
+        set: state.runParameters.sets && state.runParameters.sets.length ? getLastSetForDisease(state.runParameters.sets, props.disease) : null,
         group: state.groups.currentUserGroup,
         touchstone: state.touchstones.currentTouchstone,
     }
