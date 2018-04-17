@@ -39,7 +39,7 @@ import org.vaccineimpact.api.db.tables.records.ResponsibilityRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Responsibility extends TableImpl<ResponsibilityRecord> {
 
-    private static final long serialVersionUID = -1249729560;
+    private static final long serialVersionUID = 1956843133;
 
     /**
      * The reference instance of <code>public.responsibility</code>
@@ -82,7 +82,7 @@ public class Responsibility extends TableImpl<ResponsibilityRecord> {
     /**
      * The column <code>public.responsibility.is_open</code>.
      */
-    public final TableField<ResponsibilityRecord, Boolean> IS_OPEN = createField("is_open", org.jooq.impl.SQLDataType.BOOLEAN, this, "");
+    public final TableField<ResponsibilityRecord, Boolean> IS_OPEN = createField("is_open", org.jooq.impl.SQLDataType.BOOLEAN.defaultValue(org.jooq.impl.DSL.field("true", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
 
     /**
      * Create a <code>public.responsibility</code> table reference
