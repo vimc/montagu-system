@@ -16,7 +16,7 @@ describe("Touchstone actions tests", () => {
         sandbox.restore();
     });
 
-    it("dispatches action touchstones fetched after they are loaded", (done) => {
+    it("touchstones fetched", (done) => {
         const store = createMockStore({});
         sandbox.setStubFunc(TouchstonesService.prototype, "getTouchstonesByGroupId", ()=>{
             return Promise.resolve([testTouchstone]);
@@ -30,7 +30,7 @@ describe("Touchstone actions tests", () => {
         });
     });
 
-    it("dispatches action set current touchstone by id using previously loaded touchstones", (done) => {
+    it("set current touchstone by id using previously loaded touchstones", (done) => {
         const initialState = {
             touchstones: {touchstones: [testTouchstone]}
         };

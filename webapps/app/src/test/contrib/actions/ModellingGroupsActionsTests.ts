@@ -15,7 +15,7 @@ describe("Modelling groups actions tests", () => {
         sandbox.restore();
     });
 
-    it("dispatches action groups fetched after it loaded groups", (done) => {
+    it("groups fetched", (done) => {
         const initialState = {
             auth: {modellingGroups: "test1"}
         };
@@ -32,7 +32,7 @@ describe("Modelling groups actions tests", () => {
         });
     });
 
-    it("dispatches action set current group by group id using previously loaded groups", (done) => {
+    it("set current group by group id using previously loaded groups", (done) => {
         const initialState = {
             groups: {userGroups: [testGroup1]}
         };

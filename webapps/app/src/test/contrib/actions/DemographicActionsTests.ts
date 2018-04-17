@@ -16,7 +16,7 @@ describe("Demographic actions tests", () => {
         sandbox.restore();
     });
 
-    it("dispatches action data sets fetched", (done) => {
+    it("sets fetched sets", (done) => {
         const store = createMockStore({});
         sandbox.setStubFunc(DemographicService.prototype, "getDataSetsByTouchstoneId", ()=>{
             return Promise.resolve([testDemographicDataSet]);
@@ -30,7 +30,7 @@ describe("Demographic actions tests", () => {
         });
     });
 
-    it("dispatches action set data set by id using previously loaded sets", (done) => {
+    it("set data set by id using previously loaded sets", (done) => {
         const store = createMockStore({demographic: {dataSets: [testDemographicDataSet] } });
         store.dispatch(demographicActionCreators.setDataSet('set-1'))
         setTimeout(() => {
@@ -41,7 +41,7 @@ describe("Demographic actions tests", () => {
         });
     });
 
-    it("dispatches action set gender", (done) => {
+    it("set gender", (done) => {
         const store = createMockStore({});
         store.dispatch(demographicActionCreators.setGender('male'))
         setTimeout(() => {
@@ -52,7 +52,7 @@ describe("Demographic actions tests", () => {
         });
     });
 
-    it("dispatches action set format", (done) => {
+    it("sets format", (done) => {
         const store = createMockStore({});
         store.dispatch(demographicActionCreators.setFormat('long'))
         setTimeout(() => {
@@ -63,7 +63,7 @@ describe("Demographic actions tests", () => {
         });
     });
 
-    it("dispatches actions to clear and set one time token", (done) => {
+    it("clears and sets one time token", (done) => {
         const store = createMockStore({
             demographic: {
                 selectedDataSet: testDemographicDataSet,
