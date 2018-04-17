@@ -48,12 +48,12 @@ class UserTests : DatabaseTest()
     @Test
     fun `can save confidentiality agreement`()
     {
-        validate("/users/agree-confidentiality/") given {
+        validate("/users/agree-confidentiality/", HttpMethod.post) given {
             it.addUserWithRoles("testuser",
                     ReifiedRole("user", Scope.Global()))
         } requiringPermissions {
             PermissionSet("*/can-login")
-        } andCheckString {
+        } withRequestSchema "" andCheckString {
             Assertions.assertThat(it).isEqualTo("OK")
         }
     }
