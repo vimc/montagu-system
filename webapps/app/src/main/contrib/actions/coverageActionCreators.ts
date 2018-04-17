@@ -24,12 +24,10 @@ export const coverageActionCreators = {
     },
 
     setFormat(format: string) {
-        return (dispatch: Dispatch<ContribAppState>) => {
-            dispatch({
-                type: CoverageTypes.COVERAGE_SET_FORMAT,
-                data: format
-            } as Coverage.SetFormat);
-        }
+        return {
+            type: CoverageTypes.COVERAGE_SET_FORMAT,
+            data: format
+        } as Coverage.SetFormat;
     },
 
     getOneTimeToken() {
