@@ -1,8 +1,9 @@
 import { Dispatch } from "redux";
 
 import { ModellingGroupsService } from "../../shared/services/ModellingGroupsService";
-import { UserGroupsFetched, ModellingGroupTypeKeys} from "../actionTypes/ModellingGroupsTypes";
+import {UserGroupsFetched, ModellingGroupTypeKeys, ConfidentialitySigned} from "../actionTypes/ModellingGroupsTypes";
 import {GlobalState} from "../../shared/reducers/GlobalState";
+import {UserService} from "../services/userService";
 
 export const modellingGroupsActionCreators = {
 
@@ -23,7 +24,17 @@ export const modellingGroupsActionCreators = {
         }
     },
 
+    signConfidentialityAgreement() {
 
+        return async (dispatch: Dispatch<any>, getState: () => GlobalState) => {
+            const result: any = await (new UserService(dispatch, getState)).signConfidentiality();
 
-
+            if (result == "OK") {
+                dispatch({
+                    type: ModellingGroupTypeKeys.CONFIDENTIALITY_SIGNED,
+                    data: true
+                } as ConfidentialitySigned);
+            }
+        }
+    }
 };

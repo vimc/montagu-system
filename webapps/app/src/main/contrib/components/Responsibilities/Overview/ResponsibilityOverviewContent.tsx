@@ -9,21 +9,29 @@ import {connectToStores} from "../../../../shared/alt";
 import {ButtonLink} from "../../../../shared/components/ButtonLink";
 
 import {ResponsibilitySetStatusMessage} from "./ResponsibilitySetStatusMessage";
+import {ContribAppState} from "../../../reducers/contribAppReducers";
+import {connect} from "react-redux";
+import {branch, compose, renderNothing} from "recompose";
+import {settings} from "../../../../shared/Settings";
 
 const stochasticParams = require('./stochastic_template_params.csv');
 
-export interface ResponsibilityOverviewComponentProps extends RemoteContent {
+export interface ResponsibilityOverviewComponentPublicProps extends RemoteContent {
     responsibilitySet: IExtendedResponsibilitySet;
     currentDiseaseId: string;
     modellingGroup: ModellingGroup;
 }
 
-export class ResponsibilityOverviewContentComponent extends RemoteContentComponent<ResponsibilityOverviewComponentProps, undefined> {
+export interface ResponsibilityOverviewComponentProps extends ResponsibilityOverviewComponentPublicProps {
+    canView: boolean;
+}
+
+export class ResponsibilityOverviewContentComponent extends RemoteContentComponent<ResponsibilityOverviewComponentPublicProps, undefined> {
     static getStores() {
         return [responsibilityStore];
     }
 
-    static getPropsFromStores(): ResponsibilityOverviewComponentProps {
+    static getPropsFromStores(): ResponsibilityOverviewComponentPublicProps {
         const state = responsibilityStore.getState();
         const set = responsibilityStore.getCurrentResponsibilitySet();
         return {
@@ -65,4 +73,22 @@ export class ResponsibilityOverviewContentComponent extends RemoteContentCompone
     }
 }
 
-export const ResponsibilityOverviewContent = connectToStores(ResponsibilityOverviewContentComponent);
+export const ResponsibilityOverviewContentAltComponent = connectToStores(ResponsibilityOverviewContentComponent);
+
+
+export const mapStateToProps = (state: ContribAppState, props: ResponsibilityOverviewComponentPublicProps)
+    : ResponsibilityOverviewComponentProps => {
+    return {
+        ...props,
+        canView: props.responsibilitySet && (state.groups.signedConfidentialityAgreement ||
+        !settings.isApplicantTouchstone(props.responsibilitySet.touchstone.id))
+    }
+};
+
+const enhance = compose(
+    connect(mapStateToProps),
+    branch((props: ResponsibilityOverviewComponentProps) => !props.canView, renderNothing)
+);
+
+export const ResponsibilityOverviewContent =
+    enhance(ResponsibilityOverviewContentAltComponent);
