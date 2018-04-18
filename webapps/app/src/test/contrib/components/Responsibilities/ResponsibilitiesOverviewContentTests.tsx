@@ -12,10 +12,7 @@ import {mockModellingGroup, mockTouchstone} from "../../../mocks/mockModels";
 import {createMockStore} from "../../../mocks/mockStore";
 import {ContribAppState} from "../../../../main/contrib/reducers/contribAppReducers";
 import {RecursivePartial} from "../../../mocks/mockStates";
-import {
-    ResponsibilityOverviewDescription,
-    ResponsibilityOverviewDescriptionComponent
-} from "../../../../main/contrib/components/Responsibilities/Overview/ResponsibilityOverviewDescription";
+import {ResponsibilityOverviewDescription} from "../../../../main/contrib/components/Responsibilities/Overview/ResponsibilityOverviewDescription";
 
 function makeProps(touchstoneId: string): ResponsibilityOverviewComponentProps {
     const touchstone = mockTouchstone({id: touchstoneId});
@@ -67,6 +64,13 @@ describe('ResponsibilityOverviewContent', () => {
         expect(params).to.have.lengthOf(0)
     });
 
+    it("renders description", () => {
+
+        const rendered = shallow(<ResponsibilityOverviewContentComponent {...makeProps("something")} />);
+        const description = rendered.find(ResponsibilityOverviewDescription);
+        expect(description).to.have.lengthOf(1)
+    });
+
     const testClass: React.StatelessComponent<any> =
         () => {
             return <div>Test content</div>
@@ -102,43 +106,6 @@ describe('ResponsibilityOverviewContent', () => {
         const rendered = shallow(<WrappedComponent touchstoneId={"rfp-"}/>,
             {context: {store}}).dive();
         expect(rendered.find(testClass)).to.have.lengthOf(1)
-    });
-
-});
-
-describe('ResponsibilityOverviewDescription', () => {
-    const sandbox = new Sandbox();
-
-    afterEach(() => {
-        sandbox.restore();
-    });
-
-    it("renders nothing if touchstone is rfp and confidentiality unsigned", () => {
-
-        const store = createMockStore(fakeState);
-
-        const rendered = shallow(<ResponsibilityOverviewDescription currentTouchstoneId={"rfp-"}/>,
-            {context: {store}}).dive();
-        expect(rendered.find(ResponsibilityOverviewDescriptionComponent)).to.have.lengthOf(0)
-    });
-
-    it("renders if touchstone is not rfp", () => {
-
-        const store = createMockStore(fakeState);
-
-        const rendered = shallow(<ResponsibilityOverviewDescription currentTouchstoneId={"somethingelse"}/>,
-            {context: {store}}).dive();
-        expect(rendered.find(ResponsibilityOverviewDescriptionComponent)).to.have.lengthOf(1)
-    });
-
-    it("renders if confidentiality is signed", () => {
-
-        fakeState.groups.signedConfidentialityAgreement = true;
-
-        const store = createMockStore(fakeState);
-        const rendered = shallow(<ResponsibilityOverviewDescription currentTouchstoneId={"rfp-"}/>,
-            {context: {store}}).dive();
-        expect(rendered.find(ResponsibilityOverviewDescriptionComponent)).to.have.lengthOf(1)
     });
 
 });

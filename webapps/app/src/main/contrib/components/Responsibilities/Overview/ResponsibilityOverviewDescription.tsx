@@ -9,11 +9,7 @@ interface ResponsibilityOverviewDescriptionPublicProps {
     currentTouchstoneId: string;
 }
 
-interface ResponsibilityOverviewDescriptionProps extends ResponsibilityOverviewDescriptionPublicProps {
-    canView: boolean;
-}
-
-export const ResponsibilityOverviewDescriptionComponent: React.StatelessComponent<ResponsibilityOverviewDescriptionPublicProps> =
+export const ResponsibilityOverviewDescription: React.StatelessComponent<ResponsibilityOverviewDescriptionPublicProps> =
     (props: ResponsibilityOverviewDescriptionPublicProps) => {
 
         if (settings.isApplicantTouchstone(props.currentTouchstoneId)) {
@@ -119,21 +115,3 @@ export const ResponsibilityOverviewDescriptionComponent: React.StatelessComponen
         }
 
     };
-
-
-export const mapStateToProps = (state: ContribAppState, props: ResponsibilityOverviewDescriptionPublicProps):
-    ResponsibilityOverviewDescriptionProps => {
-    return {
-        ...props,
-        canView: state.groups.signedConfidentialityAgreement ||
-        !settings.isApplicantTouchstone(props.currentTouchstoneId)
-    }
-};
-
-
-const enhance = compose<ResponsibilityOverviewDescriptionProps, ResponsibilityOverviewDescriptionPublicProps>(
-    connect(mapStateToProps),
-    branch((props: any) => !props.canView, renderNothing)
-);
-
-export const ResponsibilityOverviewDescription = enhance(ResponsibilityOverviewDescriptionComponent);

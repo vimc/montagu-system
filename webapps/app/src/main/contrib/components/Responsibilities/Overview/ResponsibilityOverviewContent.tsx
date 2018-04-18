@@ -13,6 +13,7 @@ import {ContribAppState} from "../../../reducers/contribAppReducers";
 import {connect} from "react-redux";
 import {branch, compose, renderNothing} from "recompose";
 import {settings} from "../../../../shared/Settings";
+import {ResponsibilityOverviewDescription} from "./ResponsibilityOverviewDescription";
 
 const stochasticParams = require('./stochastic_template_params.csv');
 
@@ -56,6 +57,8 @@ export class ResponsibilityOverviewContentComponent extends RemoteContentCompone
             <ButtonLink href={parametersUrl}>Upload parameters</ButtonLink>
         </div>;
         return <div>
+            <ResponsibilityOverviewDescription
+                currentTouchstoneId={this.props.responsibilitySet.touchstone.id}/>
             <ResponsibilitySetStatusMessage status={this.props.responsibilitySet.status}/>
             <div className="largeSectionTitle">Demographic data</div>
             <div className="mt-3">

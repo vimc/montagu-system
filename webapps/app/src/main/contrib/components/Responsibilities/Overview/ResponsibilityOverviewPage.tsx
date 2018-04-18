@@ -46,7 +46,6 @@ export class ResponsibilityOverviewPage extends ContribPageWithHeader<LocationPr
     render(): JSX.Element {
         return <Page page={this}>
             <ConfidentialityAgreement touchstoneId={this.props.match.params.touchstoneId}/>
-            <ResponsibilityOverviewDescription currentTouchstoneId={this.props.match.params.touchstoneId}/>
             <ResponsibilityOverviewContent touchstoneId={this.props.match.params.touchstoneId}/>
         </Page>;
     }
