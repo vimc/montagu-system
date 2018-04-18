@@ -8,7 +8,7 @@ import fetcher from "../shared/sources/Fetcher";
 import { ReportingFetcher } from "./sources/ReportingFetcher";
 import { Provider } from "react-redux";
 import { createReportStore } from "./stores/createReportStore";
-import { authActions } from "../shared/actions/authActions"
+import { authActionCreators } from "../shared/actions/authActionCreators"
 
 import './index.html';
 import './style.scss';
@@ -18,7 +18,7 @@ fetcher.fetcher = new ReportingFetcher();
 const history: History = createBrowserHistory({ basename: "/reports"});
 const store = createReportStore(history);
 
-store.dispatch(authActions.loadSavedToken());
+store.dispatch(authActionCreators.loadSavedToken());
 
 ReactDOM.render(
     <Provider store={store}>

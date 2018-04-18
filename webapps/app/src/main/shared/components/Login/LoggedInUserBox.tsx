@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Dispatch } from "redux";
 
-import { authActions } from "../../actions/authActions";
+import { authActionCreators } from "../../actions/authActionCreators";
 import { InternalLink } from "../InternalLink";
 import { connect } from "react-redux";
 import { GlobalState } from "../../reducers/GlobalState";
@@ -36,7 +36,7 @@ export const mapStateToProps = (state: GlobalState): Partial<LoggedInUserBoxProp
 
 export const mapDispatchToProps = (dispatch: Dispatch<GlobalState>): Partial<LoggedInUserBoxProps> => {
     return {
-        logOut : () => dispatch(authActions.logOut())
+        logOut : () => dispatch(authActionCreators.logOut())
     }
 };
 

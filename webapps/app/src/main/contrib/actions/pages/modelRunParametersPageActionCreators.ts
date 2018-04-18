@@ -1,6 +1,6 @@
 import { Dispatch } from "redux";
 
-import {breadcrumbsActions} from "../../../shared/actions/breadcrumbsActions";
+import {breadcrumbsActionCreators} from "../../../shared/actions/breadcrumbsActionsCreators";
 import {ContribAppState} from "../../reducers/contribAppReducers";
 import {responsibilityOverviewPageActionCreators} from "./responsibilityOverviewPageActionCreators";
 import {
@@ -13,7 +13,7 @@ export const modelRunParametersPageActionCreators = {
     onLoad(props: ModelRunParametersPageLocationProps) {
         return async (dispatch: Dispatch<ContribAppState>, getState: () => ContribAppState) => {
             await dispatch(this.loadData(props));
-            dispatch(breadcrumbsActions.createBreadcrumbs(ModelRunParametersPageComponent.breadcrumb(getState())));
+            dispatch(breadcrumbsActionCreators.createBreadcrumbs(ModelRunParametersPageComponent.breadcrumb(getState())));
         }
     },
 

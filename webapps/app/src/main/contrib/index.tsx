@@ -6,7 +6,7 @@ import {History} from "history";
 import { ContribApp } from "./components/ContribApp";
 import { Provider } from "react-redux";
 import { createContribStore } from "./createStore";
-import { authActions } from "../shared/actions/authActions"
+import { authActionCreators } from "../shared/actions/authActionCreators"
 
 import './index.html';
 import './style.scss';
@@ -14,7 +14,7 @@ import './style.scss';
 const history: History = createBrowserHistory({ basename: "/contribution"});
 const store = createContribStore(history);
 
-store.dispatch(authActions.loadSavedToken())
+store.dispatch(authActionCreators.loadSavedToken())
 
 ReactDOM.render(
     <Provider store={store}>

@@ -1,6 +1,6 @@
 import { Dispatch } from "redux";
 
-import {breadcrumbsActions} from "../../../shared/actions/breadcrumbsActions";
+import {breadcrumbsActionCreators} from "../../../shared/actions/breadcrumbsActionsCreators";
 import {responsibilityOverviewPageActionCreators} from "./responsibilityOverviewPageActionCreators";
 
 import {
@@ -15,7 +15,7 @@ export const uploadBurdenEstimatesPageActionCreators = {
     onLoad(props: UploadBurdenEstimatesPageLocationProps) {
         return async (dispatch: Dispatch<ContribAppState>, getState: () => ContribAppState) => {
             await dispatch(this.loadData(props));
-            dispatch(breadcrumbsActions.createBreadcrumbs(UploadBurdenEstimatesPageComponent.breadcrumb(getState())));
+            dispatch(breadcrumbsActionCreators.createBreadcrumbs(UploadBurdenEstimatesPageComponent.breadcrumb(getState())));
         }
     },
 

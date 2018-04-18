@@ -2,7 +2,7 @@ import { Dispatch } from "redux";
 
 import { modellingGroupsActionCreators } from "../modellingGroupsActionCreators";
 import {ChooseGroupPageComponent} from "../../components/ChooseGroup/ChooseGroupPage";
-import {breadcrumbsActions} from "../../../shared/actions/breadcrumbsActions";
+import {breadcrumbsActionCreators} from "../../../shared/actions/breadcrumbsActionsCreators";
 import {ContribAppState} from "../../reducers/contribAppReducers";
 
 export const chooseGroupPageActionCreators = {
@@ -10,7 +10,7 @@ export const chooseGroupPageActionCreators = {
     onLoad() {
         return async (dispatch: Dispatch<ContribAppState>) => {
             await dispatch(this.loadData());
-            dispatch(breadcrumbsActions.createBreadcrumbs(ChooseGroupPageComponent.breadcrumb()));
+            dispatch(breadcrumbsActionCreators.createBreadcrumbs(ChooseGroupPageComponent.breadcrumb()));
         }
     },
 

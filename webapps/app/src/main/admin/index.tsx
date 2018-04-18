@@ -8,7 +8,7 @@ import fetcher from "../shared/sources/Fetcher";
 import { AdminFetcher } from "./sources/AdminFetcher";
 import { Provider } from "react-redux";
 import { createAdminStore } from "./stores/createAdminStore";
-import { authActions } from "../shared/actions/authActions"
+import { authActionCreators } from "../shared/actions/authActionCreators"
 
 
 import './index.html';
@@ -19,7 +19,7 @@ fetcher.fetcher = new AdminFetcher();
 const history: History = createBrowserHistory({ basename: "/admin"});
 const store = createAdminStore(history);
 
-store.dispatch(authActions.loadSavedToken());
+store.dispatch(authActionCreators.loadSavedToken());
 
 ReactDOM.render(
     <Provider store={store}>

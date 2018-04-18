@@ -1,6 +1,6 @@
 import { Dispatch } from "redux";
 
-import {breadcrumbsActions} from "../../../shared/actions/breadcrumbsActions";
+import {breadcrumbsActionCreators} from "../../../shared/actions/breadcrumbsActionsCreators";
 import {touchstonesActionCreators} from "../touchstonesActionCreators";
 import {ContribAppState} from "../../reducers/contribAppReducers";
 import {
@@ -16,7 +16,7 @@ export const responsibilityOverviewPageActionCreators = {
     onLoad(props: ResponsibilityOverviewPageLocationProps) {
         return async (dispatch: Dispatch<ContribAppState>, getState: () => ContribAppState) => {
             await dispatch(this.loadData(props));
-            dispatch(breadcrumbsActions.createBreadcrumbs(ResponsibilityOverviewPageComponent.breadcrumb(getState())));
+            dispatch(breadcrumbsActionCreators.createBreadcrumbs(ResponsibilityOverviewPageComponent.breadcrumb(getState())));
         }
     },
 

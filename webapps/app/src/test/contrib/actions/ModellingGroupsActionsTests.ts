@@ -25,9 +25,9 @@ describe("Modelling groups actions tests", () => {
         });
         store.dispatch(modellingGroupsActionCreators.getUserGroups())
         setTimeout(() => {
-            const actions = store.getActions()
-            const expectedPayload = { type: ModellingGroupTypes.USER_GROUPS_FETCHED, data: [testGroup1] }
-            expect(actions).to.eql([expectedPayload])
+            const actions = store.getActions();
+            const expectedPayload = { type: ModellingGroupTypes.USER_GROUPS_FETCHED, data: [testGroup1] };
+            expect(actions).to.eql([expectedPayload]);
             done();
         });
     });

@@ -3,25 +3,20 @@ import * as React from "react";
 import {shallow, ShallowWrapper} from "enzyme";
 import {createMemoryHistory} from 'history';
 
-import {expectIsEqual, expectSameElements, IntegrationTestSuite} from "./IntegrationTest";
+import {expectSameElements, IntegrationTestSuite} from "./IntegrationTest";
 import {ReportingFetcher} from "../main/report/sources/ReportingFetcher";
-import {checkPromise} from "../test/testHelpers";
 import {oneTimeTokenStore} from "../main/report/stores/OneTimeTokenStore";
-import {Version} from "../main/shared/models/reports/Report";
 import {Sandbox} from "../test/Sandbox";
 import {ArtefactItem} from "../main/report/components/Artefacts/ArtefactItem";
 import {FileDownloadButton, FileDownloadLink} from "../main/report/components/FileDownloadLink";
 import {ResourceLinks} from "../main/report/components/Resources/ResourceLinks";
 import {DataLinks} from "../main/report/components/Data/DataLinks";
-import {ArtefactsSection} from "../main/report/components/Artefacts/ArtefactsSection";
 
 import {createReportStore} from "../main/report/stores/createReportStore";
 import {ReportsService} from "../main/report/services/ReportsService";
 import {Report} from "../main/shared/models/Generated";
-import {authActions} from "../main/shared/actions/authActions";
 import {UserService} from "../main/report/services/UserService";
 import {mockArtefact} from "../test/mocks/mockModels";
-import {ReportDownloadSection} from "../main/report/components/Reports/DownloadSection";
 import {ReportDownloadsComponent} from "../main/report/components/Reports/ReportDownloads";
 
 const jwt_decode = require('jwt-decode');

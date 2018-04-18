@@ -1,6 +1,6 @@
 import { Dispatch } from "redux";
 
-import {breadcrumbsActions} from "../../../shared/actions/breadcrumbsActions";
+import {breadcrumbsActionCreators} from "../../../shared/actions/breadcrumbsActionsCreators";
 import {ContribAppState} from "../../reducers/contribAppReducers";
 import {
     DownloadDemographicsPageComponent,
@@ -13,7 +13,7 @@ export const downloadDemographicsPageActionCreators = {
     onLoad(props: DownloadDemographicsPageLocationProps) {
         return async (dispatch: Dispatch<ContribAppState>, getState: () => ContribAppState) => {
             await dispatch(this.loadData(props));
-            dispatch(breadcrumbsActions.createBreadcrumbs(DownloadDemographicsPageComponent.breadcrumb(getState())));
+            dispatch(breadcrumbsActionCreators.createBreadcrumbs(DownloadDemographicsPageComponent.breadcrumb(getState())));
         }
     },
 

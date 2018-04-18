@@ -5,10 +5,9 @@ import { responsibilitiesActionCreators } from "../../../main/contrib/actions/re
 import { ResponsibilitiesService } from "../../../main/contrib/services/ResponsibilitiesService";
 import { ResponsibilitiesTypes } from "../../../main/contrib/actionTypes/ResponsibilitiesTypes";
 import {createMockStore} from "../../mocks/mockStore";
-import {mockModellingGroup, mockResponsibility, mockResponsibilitySet, mockTouchstone} from "../../mocks/mockModels";
+import {mockModellingGroup, mockResponsibilitySet, mockTouchstone} from "../../mocks/mockModels";
 import {statePropsMapHelper} from "../../../main/contrib/helpers/statePropsMapHelper";
 import {EstimatesTypes} from "../../../main/contrib/actionTypes/EstimatesTypes";
-import {estimatesActionCreators} from "../../../main/contrib/actions/estimatesActionCreators";
 import {EstimatesService} from "../../../main/contrib/services/EstimatesService";
 import {ExtendedResponsibilitySet} from "../../../main/contrib/models/ResponsibilitySet";
 

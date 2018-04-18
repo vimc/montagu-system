@@ -1,7 +1,7 @@
 import { Dispatch } from "redux";
 
 import { modellingGroupsActionCreators } from "../modellingGroupsActionCreators";
-import {breadcrumbsActions} from "../../../shared/actions/breadcrumbsActions";
+import {breadcrumbsActionCreators} from "../../../shared/actions/breadcrumbsActionsCreators";
 import {ChooseActionPageComponent, ChooseActionPageLocationProps} from "../../components/ChooseAction/ChooseActionPage";
 import {touchstonesActionCreators} from "../touchstonesActionCreators";
 import {chooseGroupPageActionCreators} from "./chooseGroupPageActionCreators";
@@ -12,7 +12,7 @@ export const chooseActionPageActionCreators = {
     onLoad(props: ChooseActionPageLocationProps) {
         return async (dispatch: Dispatch<ContribAppState>, getState: () => ContribAppState) => {
             await dispatch(this.loadData(props));
-            dispatch(breadcrumbsActions.createBreadcrumbs(ChooseActionPageComponent.breadcrumb(getState())));
+            dispatch(breadcrumbsActionCreators.createBreadcrumbs(ChooseActionPageComponent.breadcrumb(getState())));
         }
     },
 

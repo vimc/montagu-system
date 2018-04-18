@@ -7,9 +7,8 @@ import { Dispatch } from "redux";
 import { InternalLink } from "../InternalLink";
 import { ValidationError } from "./ValidationError";
 import { validations } from "../../modules/reduxForm";
-import { authActions } from "../../actions/authActions";
+import { authActionCreators } from "../../actions/authActionCreators";
 import { GlobalState } from "../../reducers/GlobalState";
-import { AuthActionsTypes } from "../../actionTypes/AuthTypes";
 import {InputFieldProps} from "../../types";
 
 export interface LoginFormProps {
@@ -76,7 +75,7 @@ function mapStateToProps(state: GlobalState): Partial<LoginFormProps> {
 
 function mapDispatchToProps(dispatch: Dispatch<any>): Partial<LoginFormProps> {
     return {
-        submit : (values: LoginFormFields) => dispatch(authActions.logIn(values.email, values.password))
+        submit : (values: LoginFormFields) => dispatch(authActionCreators.logIn(values.email, values.password))
     }
 }
 

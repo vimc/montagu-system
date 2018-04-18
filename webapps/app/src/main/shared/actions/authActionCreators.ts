@@ -14,7 +14,7 @@ import {
 } from "../actionTypes/AuthTypes";
 import {GlobalState} from "../reducers/GlobalState";
 
-export const authActions = {
+export const authActionCreators = {
 
     logIn(email: string, password: string) {
         return async (dispatch: Dispatch<any>, getState: () => GlobalState) => {

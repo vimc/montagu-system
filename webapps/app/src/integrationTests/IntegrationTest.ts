@@ -2,7 +2,7 @@ import { Client } from "pg";
 import { expect } from "chai";
 import { Sandbox } from "../test/Sandbox";
 
-import { authActions } from "../main/shared/actions/authActions";
+import { authActionCreators } from "../main/shared/actions/authActionCreators";
 
 import fetcher, { Fetcher } from "../main/shared/sources/Fetcher";
 import { alt } from "../main/shared/alt";
@@ -53,7 +53,7 @@ export abstract class IntegrationTestSuite {
                 // stores recording the user to some extent
 
                 this.store = this.createStore();
-                this.store.dispatch(authActions.logIn("test@example.com", "password"));
+                this.store.dispatch(authActionCreators.logIn("test@example.com", "password"));
                 let unsubscribe = this.store.subscribe(handleChange);
                 let that = this;
                 function handleChange () {

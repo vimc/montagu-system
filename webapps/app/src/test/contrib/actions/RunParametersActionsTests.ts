@@ -9,7 +9,6 @@ import {
 } from "../../../main/contrib/actionTypes/RunParametersTypes";
 import {createMockStore} from "../../mocks/mockStore";
 import {mockModellingGroup, mockModelRunParameterSet, mockTouchstone} from "../../mocks/mockModels";
-import {statePropsMapHelper} from "../../../main/contrib/helpers/statePropsMapHelper";
 
 describe("Run Parameters actions tests", () => {
     const sandbox = new Sandbox();

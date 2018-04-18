@@ -1,13 +1,11 @@
 import {expect} from "chai";
 import { createMemoryHistory } from 'history';
 
-// import {DummyPage} from "./PageWithHeaderTests";
 import {Sandbox} from "../../Sandbox";
 import {PageBreadcrumb} from "../../../main/shared/components/PageWithHeader/PageWithHeader";
 import {createReportStore} from "../../../main/report/stores/createReportStore";
-import {breadcrumbsActions} from "../../../main/shared/actions/breadcrumbsActions";
+import {breadcrumbsActionCreators} from "../../../main/shared/actions/breadcrumbsActionsCreators";
 import {ReportAppState} from "../../../main/report/reducers/reportAppReducers";
-// import {mockLocation, mockMatch} from "../../mocks/mocks";
 
 class A {
     static breadcrumb() : PageBreadcrumb {
@@ -29,16 +27,16 @@ class B {
     }
 }
 
+describe("Breadcrumbs actions integration tests with store", () => {
 
-
-describe("Breadcrumbs Actions", () => {
     const sandbox = new Sandbox();
+
     afterEach(() => sandbox.restore());
 
     it("initializes breadcrumbs for page A", () => {
         const history = createMemoryHistory();
         let store = createReportStore(history);
-        store.dispatch(breadcrumbsActions.createBreadcrumbs(A.breadcrumb()));
+        store.dispatch(breadcrumbsActionCreators.createBreadcrumbs(A.breadcrumb()));
         const state = store.getState() as ReportAppState;
         const breadcrumbs = state.breadcrumbs.breadcrumbs;
         expect(breadcrumbs.length).to.equal(1);
@@ -49,7 +47,7 @@ describe("Breadcrumbs Actions", () => {
     it("initializes breadcrumbs for page B", () => {
         const history = createMemoryHistory();
         let store = createReportStore(history);
-        store.dispatch(breadcrumbsActions.createBreadcrumbs(B.breadcrumb()));
+        store.dispatch(breadcrumbsActionCreators.createBreadcrumbs(B.breadcrumb()));
         const state = store.getState() as ReportAppState;
         const breadcrumbs = state.breadcrumbs.breadcrumbs;
         expect(breadcrumbs.length).to.equal(2);
@@ -60,3 +58,12 @@ describe("Breadcrumbs Actions", () => {
     });
 });
 
+describe("Breadcrumbs actions tests with mock store", () => {
+
+    const sandbox = new Sandbox();
+
+    afterEach(() => sandbox.restore());
+
+
+
+});

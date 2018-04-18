@@ -11,11 +11,6 @@ import {mockModellingGroup, mockResponsibilitySet, mockTouchstone} from "../../m
 import {ExtendedResponsibilitySet} from "../../../main/contrib/models/ResponsibilitySet";
 import {ResponsibilitiesTypes} from "../../../main/contrib/actionTypes/ResponsibilitiesTypes";
 
-process.on('unhandledRejection', (reason: any, p : any) => {
-    console.log('Unhandled Rejection at: Promise', p, 'reason:', reason);
-    // application specific logging, throwing an error, or other logic here
-});
-
 describe("Estimates actions tests", () => {
     const sandbox = new Sandbox();
 
@@ -23,7 +18,6 @@ describe("Estimates actions tests", () => {
     const testGroup = mockModellingGroup();
     const testResponsibilitySet = mockResponsibilitySet();
     const testExtResponsibilitySet = new ExtendedResponsibilitySet(testResponsibilitySet, testTouchstone, testGroup);
-    const testScenarioId = testExtResponsibilitySet.responsibilities[0].scenario.id;
     const testResponsibility = testExtResponsibilitySet.responsibilities[0];
 
     afterEach(() => {
