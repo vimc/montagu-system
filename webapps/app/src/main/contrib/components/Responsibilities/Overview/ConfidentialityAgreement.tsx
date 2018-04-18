@@ -17,7 +17,7 @@ export interface ConfidentialityAgreementProps extends ConfidentialityAgreementP
     getConfidentiality: () => void;
 }
 
-const fullConfidentialityAgreement = require('./rfp-applicants-confidentiality.doc');
+const fullConfidentialityAgreement = require('./rfp-applicants-confidentiality.pdf');
 
 export const ConfidentialityAgreementComponent: React.SFC<ConfidentialityAgreementProps>
     = (props: ConfidentialityAgreementProps) => {
