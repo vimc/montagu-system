@@ -3,8 +3,8 @@ import { Dispatch } from "redux";
 import {ContribAppState} from "../reducers/contribAppReducers";
 import {RunParametersService} from "../services/RunParametersService";
 import {
-    RunParametersSetsFetched, RunParametersTokenFetched,
-    RunParametersTypes, RunParametersUploadStatus
+    RunParametersSetsFetched, RunParametersSetUploadStatus, RunParametersTokenFetched,
+    RunParametersTypes, RunParametersUploadStatus, RunParametersUploadStatusData
 } from "../actionTypes/RunParametersTypes";
 import {ModelRunParameterSet, Result} from "../../shared/models/Generated";
 
@@ -18,7 +18,8 @@ export const runParametersActionCreators = {
 
     getParameterSets(groupId: string, touchstoneId: string) {
         return async (dispatch: Dispatch<ContribAppState>, getState: () => ContribAppState) => {
-            const sets: ModelRunParameterSet[] = await (new RunParametersService(dispatch, getState)).getParameterSets(groupId, touchstoneId);
+            const sets: ModelRunParameterSet[] = await (new RunParametersService(dispatch, getState))
+                .getParameterSets(groupId, touchstoneId);
             return dispatch({
                 type: RunParametersTypes.RUN_PARAMETERS_SETS_FETCHED,
                 data: sets
@@ -45,8 +46,8 @@ export const runParametersActionCreators = {
             const group = getState().groups.currentUserGroup;
             const touchstone = getState().touchstones.currentTouchstone;
 
-            dispatch(runParametersActionCreators.clearCacheForGetParameterSets(group.id, touchstone.id))
-            dispatch(runParametersActionCreators.getParameterSets(group.id, touchstone.id))
+            dispatch(this.clearCacheForGetParameterSets(group.id, touchstone.id))
+            dispatch(this.getParameterSets(group.id, touchstone.id))
         }
     },
 
@@ -62,6 +63,7 @@ export const runParametersActionCreators = {
 
             const result: Result = await (new RunParametersService(dispatch, getState))
                 .uploadSet(group.id, touchstone.id, data);
+
             dispatch({
                 type: RunParametersTypes.RUN_PARAMETERS_SET_UPLOAD_STATUS,
                 data: {status: RunParametersUploadStatus.completed, errors: result && result.errors ? result.errors : null}
@@ -73,12 +75,10 @@ export const runParametersActionCreators = {
     },
 
     resetUploadStatus() {
-        return (dispatch: Dispatch<ContribAppState>) => {
-            dispatch({
-                type: RunParametersTypes.RUN_PARAMETERS_SET_UPLOAD_STATUS,
-                data: {status: RunParametersUploadStatus.off, errors: null}
-            })
-        }
+        return {
+            type: RunParametersTypes.RUN_PARAMETERS_SET_UPLOAD_STATUS,
+            data: {status: RunParametersUploadStatus.off, errors: null}
+        } as RunParametersSetUploadStatus;
     }
 
 };
