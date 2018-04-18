@@ -21,6 +21,7 @@ import org.vaccineimpact.api.db.tables.BurdenEstimateSetType;
 import org.vaccineimpact.api.db.tables.BurdenEstimateStochastic;
 import org.vaccineimpact.api.db.tables.BurdenOutcome;
 import org.vaccineimpact.api.db.tables.ConfidentialityAgreement;
+import org.vaccineimpact.api.db.tables.ConfidentialityAgreementSignature;
 import org.vaccineimpact.api.db.tables.Country;
 import org.vaccineimpact.api.db.tables.CountryMetadata;
 import org.vaccineimpact.api.db.tables.CountryVaccineMetadata;
@@ -166,6 +167,11 @@ public class Tables {
      * The table <code>public.confidentiality_agreement</code>.
      */
     public static final ConfidentialityAgreement CONFIDENTIALITY_AGREEMENT = org.vaccineimpact.api.db.tables.ConfidentialityAgreement.CONFIDENTIALITY_AGREEMENT;
+
+    /**
+     * The table <code>public.confidentiality_agreement_signature</code>.
+     */
+    public static final ConfidentialityAgreementSignature CONFIDENTIALITY_AGREEMENT_SIGNATURE = org.vaccineimpact.api.db.tables.ConfidentialityAgreementSignature.CONFIDENTIALITY_AGREEMENT_SIGNATURE;
 
     /**
      * The table <code>public.country</code>.

@@ -4,20 +4,21 @@
 package org.vaccineimpact.api.db.tables;
 
 
-import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.Generated;
 
 import org.jooq.Field;
-import org.jooq.ForeignKey;
+import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
+import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
 import org.jooq.impl.TableImpl;
+import org.vaccineimpact.api.db.Indexes;
 import org.vaccineimpact.api.db.Keys;
 import org.vaccineimpact.api.db.Public;
 import org.vaccineimpact.api.db.tables.records.ConfidentialityAgreementRecord;
@@ -36,7 +37,7 @@ import org.vaccineimpact.api.db.tables.records.ConfidentialityAgreementRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ConfidentialityAgreement extends TableImpl<ConfidentialityAgreementRecord> {
 
-    private static final long serialVersionUID = -285337109;
+    private static final long serialVersionUID = 1519039655;
 
     /**
      * The reference instance of <code>public.confidentiality_agreement</code>
@@ -52,14 +53,14 @@ public class ConfidentialityAgreement extends TableImpl<ConfidentialityAgreement
     }
 
     /**
-     * The column <code>public.confidentiality_agreement.username</code>.
+     * The column <code>public.confidentiality_agreement.name</code>.
      */
-    public final TableField<ConfidentialityAgreementRecord, String> USERNAME = createField("username", org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<ConfidentialityAgreementRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
 
     /**
-     * The column <code>public.confidentiality_agreement.date</code>.
+     * The column <code>public.confidentiality_agreement.description</code>.
      */
-    public final TableField<ConfidentialityAgreementRecord, Timestamp> DATE = createField("date", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.field("now()", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<ConfidentialityAgreementRecord, String> DESCRIPTION = createField("description", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * Create a <code>public.confidentiality_agreement</code> table reference
@@ -102,8 +103,24 @@ public class ConfidentialityAgreement extends TableImpl<ConfidentialityAgreement
      * {@inheritDoc}
      */
     @Override
-    public List<ForeignKey<ConfidentialityAgreementRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<ConfidentialityAgreementRecord, ?>>asList(Keys.CONFIDENTIALITY_AGREEMENT__CONFIDENTIALITY_AGREEMENT_USERNAME_FKEY);
+    public List<Index> getIndexes() {
+        return Arrays.<Index>asList(Indexes.CONFIDENTIALITY_AGREEMENT_PKEY);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public UniqueKey<ConfidentialityAgreementRecord> getPrimaryKey() {
+        return Keys.CONFIDENTIALITY_AGREEMENT_PKEY;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<UniqueKey<ConfidentialityAgreementRecord>> getKeys() {
+        return Arrays.<UniqueKey<ConfidentialityAgreementRecord>>asList(Keys.CONFIDENTIALITY_AGREEMENT_PKEY);
     }
 
     /**

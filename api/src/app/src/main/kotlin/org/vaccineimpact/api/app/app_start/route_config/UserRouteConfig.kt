@@ -35,7 +35,7 @@ object UserRouteConfig : RouteConfig
             Endpoint("${urlBase}report-readers/:report/", controller, "getReportReaders")
                     .json()
                     .secure(readRoles),
-            Endpoint("${urlBase}agree-confidentiality/", controller, "saveConfidentialityAgreement",
+            Endpoint("${urlBase}rfp/agree-confidentiality/", controller, "saveConfidentialityAgreement",
                     method = HttpMethod.post)
                     .json()
                     .secure()

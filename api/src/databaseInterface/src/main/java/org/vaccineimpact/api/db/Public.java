@@ -29,6 +29,7 @@ import org.vaccineimpact.api.db.tables.BurdenEstimateSetType;
 import org.vaccineimpact.api.db.tables.BurdenEstimateStochastic;
 import org.vaccineimpact.api.db.tables.BurdenOutcome;
 import org.vaccineimpact.api.db.tables.ConfidentialityAgreement;
+import org.vaccineimpact.api.db.tables.ConfidentialityAgreementSignature;
 import org.vaccineimpact.api.db.tables.Country;
 import org.vaccineimpact.api.db.tables.CountryMetadata;
 import org.vaccineimpact.api.db.tables.CountryVaccineMetadata;
@@ -120,7 +121,7 @@ import org.vaccineimpact.api.db.tables.records.SelectBurdenDataColRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = 623167239;
+    private static final long serialVersionUID = 434178135;
 
     /**
      * The reference instance of <code>public</code>
@@ -181,6 +182,11 @@ public class Public extends SchemaImpl {
      * The table <code>public.confidentiality_agreement</code>.
      */
     public final ConfidentialityAgreement CONFIDENTIALITY_AGREEMENT = org.vaccineimpact.api.db.tables.ConfidentialityAgreement.CONFIDENTIALITY_AGREEMENT;
+
+    /**
+     * The table <code>public.confidentiality_agreement_signature</code>.
+     */
+    public final ConfidentialityAgreementSignature CONFIDENTIALITY_AGREEMENT_SIGNATURE = org.vaccineimpact.api.db.tables.ConfidentialityAgreementSignature.CONFIDENTIALITY_AGREEMENT_SIGNATURE;
 
     /**
      * The table <code>public.country</code>.
@@ -794,6 +800,7 @@ public class Public extends SchemaImpl {
             BurdenEstimateStochastic.BURDEN_ESTIMATE_STOCHASTIC,
             BurdenOutcome.BURDEN_OUTCOME,
             ConfidentialityAgreement.CONFIDENTIALITY_AGREEMENT,
+            ConfidentialityAgreementSignature.CONFIDENTIALITY_AGREEMENT_SIGNATURE,
             Country.COUNTRY,
             CountryMetadata.COUNTRY_METADATA,
             CountryVaccineMetadata.COUNTRY_VACCINE_METADATA,

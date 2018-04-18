@@ -27,7 +27,6 @@ import org.vaccineimpact.api.models.permissions.RoleAssignment
 import org.vaccineimpact.api.security.*
 import java.sql.Timestamp
 import java.time.Instant
-import java.util.*
 
 class UserTests : RepositoryTests<UserRepository>()
 {
@@ -54,16 +53,18 @@ class UserTests : RepositoryTests<UserRepository>()
     @Test
     fun `saves confidentiality with current timestamp`()
     {
-        withDatabase(this::addTestUser)
+        withDatabase { db ->
+            addTestUser(db)
+        }
         val now = Timestamp.from(Instant.now())
         withRepo { repo ->
             repo.saveConfidentialityAgreement(username)
         }
         withDatabase { db ->
-            val result = db.dsl.selectFrom(CONFIDENTIALITY_AGREEMENT)
+            val result = db.dsl.selectFrom(CONFIDENTIALITY_AGREEMENT_SIGNATURE)
                     .first()
-            assertThat(result[CONFIDENTIALITY_AGREEMENT.DATE]).isAfter(now)
-            assertThat(result[CONFIDENTIALITY_AGREEMENT.USERNAME]).isEqualTo(username)
+            assertThat(result[CONFIDENTIALITY_AGREEMENT_SIGNATURE.DATE]).isAfter(now)
+            assertThat(result[CONFIDENTIALITY_AGREEMENT_SIGNATURE.USERNAME]).isEqualTo(username)
         }
     }
 
