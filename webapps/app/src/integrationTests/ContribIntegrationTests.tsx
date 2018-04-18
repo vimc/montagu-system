@@ -131,7 +131,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
 
             const result = await (new UserService(this.store.dispatch, this.store.getState))
                 .getConfidentiality();
-            expect(result).to.eq("False");
+            expect(result).to.eq(false);
 
         });
 
