@@ -235,3 +235,10 @@ Schema: [`Users.schema.json`](../schemas/Users.schema.json)
             ]
         }
     ]
+    
+## POST /users/rfp/agree-confidentiality/
+POSTing to this endpoint confirms that you have read and understood the 
+[`RfP applicants' confidentiality agreement`](./rfp-applicants-condentiality-agreement.doc) in full. This explains in details that vaccine coverage for future years which is provided
+ by Montagu is confidential and must not be shared outside RfP applicants' specific modelling group.
+
+Required permissions: `can-login`. 
