@@ -4,7 +4,7 @@ import {connect} from "react-redux";
 import {branch, compose, renderNothing} from "recompose";
 import {Dispatch} from "redux";
 import {ContribAppState} from "../../../reducers/contribAppReducers";
-import {LifecycleMethods, default as withLifecycle} from "@hocs/with-lifecycle";
+import {default as withLifecycle, LifecycleMethods} from "@hocs/with-lifecycle";
 import {userActionCreators} from "../../../actions/userActionCreators";
 
 export interface ConfidentialityAgreementPublicProps {
@@ -55,8 +55,7 @@ const mapStateToProps
 };
 
 const mapDispatchToProps
-    = (dispatch: Dispatch<ContribAppState>, props: ConfidentialityAgreementPublicProps):
-    Partial<ConfidentialityAgreementProps> => {
+    = (dispatch: Dispatch<ContribAppState>, props: ConfidentialityAgreementProps): ConfidentialityAgreementProps => {
     return {
         ...props,
         getConfidentiality: () => dispatch(userActionCreators.getConfidentialityAgreement()),
