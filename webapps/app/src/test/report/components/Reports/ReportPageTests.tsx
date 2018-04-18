@@ -15,7 +15,7 @@ import {ReportsService} from "../../../../main/report/services/ReportsService";
 import {ReportTypeKeys} from "../../../../main/report/actionTypes/ReportsActionsTypes";
 import {ReportDetails} from "../../../../main/report/components/Reports/ReportDetails";
 import {ReportDownloads} from "../../../../main/report/components/Reports/ReportDownloads";
-import {BreadcrumbsTypeKeys} from "../../../../main/shared/actionTypes/BreadrumbsTypes";
+import {BreadcrumbsTypes} from "../../../../main/shared/actionTypes/BreadrumbsTypes";
 import {createReportStore} from "../../../../main/report/stores/createReportStore";
 import {ReportAppState} from "../../../../main/report/reducers/reportAppReducers";
 
@@ -37,7 +37,7 @@ describe("ReportPage", () => {
         setTimeout(() => {
             const actions = store.getActions();
             expect(actions[0].type).to.eql(ReportTypeKeys.SET_CURRENT_REPORT);
-            expect(actions[1].type).to.eql(BreadcrumbsTypeKeys.BREADCRUMBS_RECEIVED);
+            expect(actions[1].type).to.eql(BreadcrumbsTypes.BREADCRUMBS_RECEIVED);
             expect(actions[2].type).to.eql(ReportTypeKeys.REPORT_VERSIONS_FETCHED);
             expect(actions[3].type).to.eql(ReportTypeKeys.REPORT_VERSION_DETAILS_FETCHED);
             expect(createBreadCrumbSpy.called).to.eq(true);

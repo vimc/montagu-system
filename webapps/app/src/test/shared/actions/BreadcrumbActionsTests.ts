@@ -6,6 +6,10 @@ import {PageBreadcrumb} from "../../../main/shared/components/PageWithHeader/Pag
 import {createReportStore} from "../../../main/report/stores/createReportStore";
 import {breadcrumbsActionCreators} from "../../../main/shared/actions/breadcrumbsActionsCreators";
 import {ReportAppState} from "../../../main/report/reducers/reportAppReducers";
+import {createMockStore} from "../../mocks/mockStore";
+import {breadcrumbsModule} from "../../../main/shared/modules/breadcrumbs";
+import {mockBreadcrumbs, mockPageBreadcrumb} from "../../mocks/mockModels";
+import {BreadcrumbsTypes} from "../../../main/shared/actionTypes/BreadrumbsTypes";
 
 class A {
     static breadcrumb() : PageBreadcrumb {
@@ -64,6 +68,21 @@ describe("Breadcrumbs actions tests with mock store", () => {
 
     afterEach(() => sandbox.restore());
 
+    it("sets breadcrumb", (done) => {
+        const store = createMockStore({});
+        const testBreadcrumbs = mockBreadcrumbs();
+        const testPageBreadCrumb = mockPageBreadcrumb();
 
+        sandbox.setStubFunc(breadcrumbsModule, "initialize", ()=>{
+            return testBreadcrumbs;
+        });
+        store.dispatch(breadcrumbsActionCreators.createBreadcrumbs(testPageBreadCrumb));
+        setTimeout(() => {
+            const actions = store.getActions()
+            const expectedPayload = { type: BreadcrumbsTypes.BREADCRUMBS_RECEIVED, data: testBreadcrumbs }
+            expect(actions).to.eql([expectedPayload])
+            done();
+        });
+    });
 
 });

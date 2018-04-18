@@ -1,13 +1,13 @@
 import {Breadcrumb} from "../models/Breadcrumb";
 
-export enum BreadcrumbsTypeKeys {
+export enum BreadcrumbsTypes {
     BREADCRUMBS_RECEIVED = "BREADCRUMBS_RECEIVED",
 }
 
 export interface BreadcrumbsReceived {
-    type: BreadcrumbsTypeKeys.BREADCRUMBS_RECEIVED;
+    type: BreadcrumbsTypes.BREADCRUMBS_RECEIVED;
     data: Breadcrumb[];
 }
 
-export type BreadcrumbsActionsTypes =
+export type BreadcrumbsAction =
     | BreadcrumbsReceived; 
