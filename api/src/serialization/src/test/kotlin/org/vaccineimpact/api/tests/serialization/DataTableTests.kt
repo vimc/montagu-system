@@ -17,7 +17,7 @@ import java.math.BigDecimal
 class DataTableTests : MontaguTests()
 {
     data class ABC(val a: String, val b: String, val c: String)
-    data class MixedTypes(val text: String?, val int: Int?, val dec: BigDecimal?)
+    data class MixedTypes(val text: String?, val int: Int?, val dec: Float?)
     data class SomeRequiredColumns(val text: String?, val int: Int)
     data class WithEnums(val text: String, val enum: TouchstoneStatus)
     @FlexibleColumns
@@ -63,7 +63,7 @@ x,y,z
     fun `mixed types are written out`()
     {
         val table = DataTable.new(sequenceOf(
-                MixedTypes("text", 123, BigDecimal("3.1415"))
+                MixedTypes("text", 123, 3.1415F)
         ))
         assertThat(serialize(table)).isEqualTo("""text,int,dec
 text,123,3.1415""")
@@ -99,8 +99,8 @@ free text,in-preparation""")
             "bob",2,2.0"""
         val rows = DataTableDeserializer.deserialize(csv, MixedTypes::class, MontaguSerializer.instance).toList()
         assertThat(rows).containsExactlyElementsOf(listOf(
-                MixedTypes("joe", 1, BigDecimal.valueOf(6.53)),
-                MixedTypes("bob", 2, BigDecimal.valueOf(2.0))
+                MixedTypes("joe", 1, 6.53F),
+                MixedTypes("bob", 2,2.0F)
         ))
     }
 
@@ -125,8 +125,8 @@ free text,in-preparation""")
             "bob",2,2.0"""
         val rows = DataTableDeserializer.deserialize(csv, MixedTypes::class, MontaguSerializer.instance).toList()
         assertThat(rows).containsExactlyElementsOf(listOf(
-                MixedTypes("joe", 1, BigDecimal.valueOf(6.53)),
-                MixedTypes("bob", 2, BigDecimal.valueOf(2.0))
+                MixedTypes("joe", 1, 6.53F),
+                MixedTypes("bob", 2, 2.0F)
         ))
     }
 
