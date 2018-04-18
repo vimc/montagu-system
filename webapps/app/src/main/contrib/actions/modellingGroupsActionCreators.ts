@@ -1,12 +1,8 @@
-import {Dispatch} from "redux";
+import { Dispatch } from "redux";
 
-import {ModellingGroupsService} from "../../shared/services/ModellingGroupsService";
-import {
-    ModellingGroupTypeKeys,
-    UserGroupsFetched
-} from "../actionTypes/ModellingGroupsTypes";
+import { ModellingGroupsService } from "../../shared/services/ModellingGroupsService";
+import { UserGroupsFetched, ModellingGroupTypeKeys} from "../actionTypes/ModellingGroupsTypes";
 import {GlobalState} from "../../shared/reducers/GlobalState";
-import {UserService} from "../services/UserService";
 
 export const modellingGroupsActionCreators = {
 
@@ -23,7 +19,11 @@ export const modellingGroupsActionCreators = {
             dispatch({
                 type: ModellingGroupTypeKeys.USER_GROUPS_FETCHED,
                 data: groups
-            } as UserGroupsFetched);
+            } as UserGroupsFetched );
         }
-    }
+    },
+
+
+
+
 };
