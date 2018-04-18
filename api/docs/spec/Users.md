@@ -242,3 +242,8 @@ POSTing to this endpoint confirms that you have read and understood the
  by Montagu is confidential and must not be shared outside RfP applicants' specific modelling group.
 
 Required permissions: `can-login`. 
+
+## GET /users/rfp/agree-confidentiality/
+Returns whether the current logged in user has agreed to the above RfP confidentiality agreement.
+
+Required permissions: `can-login`. 
