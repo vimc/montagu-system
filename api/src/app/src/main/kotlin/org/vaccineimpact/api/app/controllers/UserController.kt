@@ -39,7 +39,7 @@ class UserController(
         return okayResponse()
     }
 
-    fun hasConfidentialityAgreement(): Boolean
+    fun hasAgreedConfidentiality(): Boolean
     {
         val userName = context.username!!
         return userRepository.hasAgreedConfidentiality(userName)
