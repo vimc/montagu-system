@@ -1,7 +1,7 @@
-import {ModellingGroup} from "../../shared/models/Generated";
+import { ModellingGroup } from "../../shared/models/Generated";
 
 export enum ModellingGroupTypeKeys {
-    USER_GROUPS_FETCHED = "USER_GROUPS_FETCHED"
+    USER_GROUPS_FETCHED = "USER_GROUPS_FETCHED",
 }
 
 export interface UserGroupsFetched {
