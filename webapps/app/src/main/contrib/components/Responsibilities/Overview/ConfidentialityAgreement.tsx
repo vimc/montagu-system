@@ -4,8 +4,8 @@ import {connect} from "react-redux";
 import {branch, compose, renderNothing} from "recompose";
 import {Dispatch} from "redux";
 import {ContribAppState} from "../../../reducers/contribAppReducers";
-import {modellingGroupsActionCreators} from "../../../actions/modellingGroupsActionCreators";
 import {LifecycleMethods, default as withLifecycle} from "@hocs/with-lifecycle";
+import {userActionCreators} from "../../../actions/userActionCreators";
 
 export interface ConfidentialityAgreementPublicProps {
     touchstoneId: string;
@@ -50,7 +50,7 @@ const mapStateToProps
     = (state: ContribAppState, props: ConfidentialityAgreementPublicProps): Partial<ConfidentialityAgreementProps> => {
     return {
         ...props,
-        signed: state.groups.signedConfidentialityAgreement
+        signed: state.user.signedConfidentialityAgreement
     }
 };
 
@@ -59,8 +59,8 @@ const mapDispatchToProps
     Partial<ConfidentialityAgreementProps> => {
     return {
         ...props,
-        getConfidentiality: () => dispatch(modellingGroupsActionCreators.getConfidentialityAgreement()),
-        signAgreement: () => dispatch(modellingGroupsActionCreators.signConfidentialityAgreement())
+        getConfidentiality: () => dispatch(userActionCreators.getConfidentialityAgreement()),
+        signAgreement: () => dispatch(userActionCreators.signConfidentialityAgreement())
     }
 };
 

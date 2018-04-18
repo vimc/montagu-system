@@ -1,9 +1,7 @@
 import {ModellingGroup} from "../../shared/models/Generated";
 
 export enum ModellingGroupTypeKeys {
-    USER_GROUPS_FETCHED = "USER_GROUPS_FETCHED",
-    CONFIDENTIALITY_SIGNED = "CONFIDENTIALITY_SIGNED",
-    CONFIDENTIALITY_RETRIEVED = "CONFIDENTIALITY_RETRIEVED"
+    USER_GROUPS_FETCHED = "USER_GROUPS_FETCHED"
 }
 
 export interface UserGroupsFetched {
@@ -11,17 +9,5 @@ export interface UserGroupsFetched {
     data: ModellingGroup[];
 }
 
-export interface ConfidentialitySigned {
-    type: ModellingGroupTypeKeys.CONFIDENTIALITY_SIGNED;
-    data: boolean;
-}
-
-export interface ConfidentialityRetrieved {
-    type: ModellingGroupTypeKeys.CONFIDENTIALITY_RETRIEVED;
-    data: boolean;
-}
-
 export type ModellingGroupsAction =
     | UserGroupsFetched
-    | ConfidentialitySigned
-    | ConfidentialityRetrieved

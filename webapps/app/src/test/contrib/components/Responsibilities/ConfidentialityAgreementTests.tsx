@@ -8,9 +8,9 @@ import {
     ConfidentialityAgreement,
     ConfidentialityAgreementComponent
 } from "../../../../main/contrib/components/Responsibilities/Overview/ConfidentialityAgreement";
-import {modellingGroupsActionCreators} from "../../../../main/contrib/actions/modellingGroupsActionCreators";
 import {RecursivePartial} from "../../../mocks/mockStates";
 import {ContribAppState} from "../../../../main/contrib/reducers/contribAppReducers";
+import {userActionCreators} from "../../../../main/contrib/actions/userActionCreators";
 
 describe('ConfidentialityAgreement', () => {
     const sandbox = new Sandbox();
@@ -22,12 +22,12 @@ describe('ConfidentialityAgreement', () => {
     });
 
     const setupStore = function(signed: boolean){
-        const store: RecursivePartial<ContribAppState> = createMockStore({groups: {
+        const store: RecursivePartial<ContribAppState> = createMockStore({user: {
             signedConfidentialityAgreement: signed
         }});
 
         getConfidentialityStub =
-            sandbox.setStubReduxAction(modellingGroupsActionCreators, "getConfidentialityAgreement");
+            sandbox.setStubReduxAction(userActionCreators, "getConfidentialityAgreement");
 
         return store;
     };
@@ -54,7 +54,7 @@ describe('ConfidentialityAgreement', () => {
 
         const store = setupStore(false);
 
-        const stub = sandbox.setStubReduxAction(modellingGroupsActionCreators, 'signConfidentialityAgreement');
+        const stub = sandbox.setStubReduxAction(userActionCreators, 'signConfidentialityAgreement');
 
         const rendered = shallow(<ConfidentialityAgreement touchstoneId={"rfp-1"}/>,
             {context: {store}}).dive().dive().dive();

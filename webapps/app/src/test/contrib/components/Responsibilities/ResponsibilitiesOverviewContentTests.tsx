@@ -31,8 +31,7 @@ function makeProps(touchstoneId: string): ResponsibilityOverviewComponentProps {
 }
 
 let fakeState: RecursivePartial<ContribAppState> = {
-    groups: {
-        userGroups: [],
+    user: {
         signedConfidentialityAgreement: false
     }
 };
@@ -43,8 +42,7 @@ describe('ResponsibilityOverviewContent', () => {
     afterEach(() => {
         sandbox.restore();
         fakeState = {
-            groups: {
-                userGroups: [],
+            user: {
                 signedConfidentialityAgreement: false
             }
         };
@@ -99,7 +97,7 @@ describe('ResponsibilityOverviewContent', () => {
 
     it("renders if confidentiality is signed", () => {
 
-        fakeState.groups.signedConfidentialityAgreement = true;
+        fakeState.user.signedConfidentialityAgreement = true;
         const store = createMockStore(fakeState);
 
         const WrappedComponent = enhance(testClass);

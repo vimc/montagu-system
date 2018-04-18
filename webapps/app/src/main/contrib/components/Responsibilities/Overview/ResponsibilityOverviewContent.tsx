@@ -81,7 +81,7 @@ export const ResponsibilityOverviewContentAltComponent = connectToStores(Respons
 export const mapStateToProps = (state: ContribAppState, props: ResponsibilityOverviewPublicProps)
     : ResponsibilityOverviewProps => {
     return {
-        canView: (state.groups.signedConfidentialityAgreement ||
+        canView: (state.user.signedConfidentialityAgreement ||
         !settings.isApplicantTouchstone(props.touchstoneId))
     }
 };
