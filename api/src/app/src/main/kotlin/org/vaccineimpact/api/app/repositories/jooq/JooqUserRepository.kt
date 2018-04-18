@@ -99,8 +99,8 @@ class JooqUserRepository(dsl: DSLContext) : JooqRepository(dsl), UserRepository
 
     override fun saveConfidentialityAgreement(username: String)
     {
-        dsl.newRecord(CONFIDENTIALITY_AGREEMENT_SIGNATURE).apply {
-            this.confidentialityAgreement = "rfp-applicants-04-18"
+        dsl.newRecord(USER_LEGAL_AGREEMENT).apply {
+            this.legalAgreement = "rfp-applicants-04-18"
             this.username = username
         }.insert()
     }

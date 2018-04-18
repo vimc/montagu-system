@@ -28,8 +28,6 @@ import org.vaccineimpact.api.db.tables.BurdenEstimateSetStatus;
 import org.vaccineimpact.api.db.tables.BurdenEstimateSetType;
 import org.vaccineimpact.api.db.tables.BurdenEstimateStochastic;
 import org.vaccineimpact.api.db.tables.BurdenOutcome;
-import org.vaccineimpact.api.db.tables.ConfidentialityAgreement;
-import org.vaccineimpact.api.db.tables.ConfidentialityAgreementSignature;
 import org.vaccineimpact.api.db.tables.Country;
 import org.vaccineimpact.api.db.tables.CountryMetadata;
 import org.vaccineimpact.api.db.tables.CountryVaccineMetadata;
@@ -55,6 +53,7 @@ import org.vaccineimpact.api.db.tables.ImpactEstimateRecipe;
 import org.vaccineimpact.api.db.tables.ImpactEstimateSet;
 import org.vaccineimpact.api.db.tables.ImpactEstimateSetIngredient;
 import org.vaccineimpact.api.db.tables.ImpactOutcome;
+import org.vaccineimpact.api.db.tables.LegalAgreement;
 import org.vaccineimpact.api.db.tables.Model;
 import org.vaccineimpact.api.db.tables.ModelRun;
 import org.vaccineimpact.api.db.tables.ModelRunParameter;
@@ -93,6 +92,7 @@ import org.vaccineimpact.api.db.tables.UploadInfo;
 import org.vaccineimpact.api.db.tables.UserGroup;
 import org.vaccineimpact.api.db.tables.UserGroupMembership;
 import org.vaccineimpact.api.db.tables.UserGroupRole;
+import org.vaccineimpact.api.db.tables.UserLegalAgreement;
 import org.vaccineimpact.api.db.tables.VCoverageInfo;
 import org.vaccineimpact.api.db.tables.VResponsibilityInfo;
 import org.vaccineimpact.api.db.tables.Vaccine;
@@ -121,7 +121,7 @@ import org.vaccineimpact.api.db.tables.records.SelectBurdenDataColRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = 434178135;
+    private static final long serialVersionUID = -758472687;
 
     /**
      * The reference instance of <code>public</code>
@@ -177,16 +177,6 @@ public class Public extends SchemaImpl {
      * The table <code>public.burden_outcome</code>.
      */
     public final BurdenOutcome BURDEN_OUTCOME = org.vaccineimpact.api.db.tables.BurdenOutcome.BURDEN_OUTCOME;
-
-    /**
-     * The table <code>public.confidentiality_agreement</code>.
-     */
-    public final ConfidentialityAgreement CONFIDENTIALITY_AGREEMENT = org.vaccineimpact.api.db.tables.ConfidentialityAgreement.CONFIDENTIALITY_AGREEMENT;
-
-    /**
-     * The table <code>public.confidentiality_agreement_signature</code>.
-     */
-    public final ConfidentialityAgreementSignature CONFIDENTIALITY_AGREEMENT_SIGNATURE = org.vaccineimpact.api.db.tables.ConfidentialityAgreementSignature.CONFIDENTIALITY_AGREEMENT_SIGNATURE;
 
     /**
      * The table <code>public.country</code>.
@@ -312,6 +302,11 @@ public class Public extends SchemaImpl {
      * The table <code>public.impact_outcome</code>.
      */
     public final ImpactOutcome IMPACT_OUTCOME = org.vaccineimpact.api.db.tables.ImpactOutcome.IMPACT_OUTCOME;
+
+    /**
+     * The table <code>public.legal_agreement</code>.
+     */
+    public final LegalAgreement LEGAL_AGREEMENT = org.vaccineimpact.api.db.tables.LegalAgreement.LEGAL_AGREEMENT;
 
     /**
      * With the self-referencing "current" field; we consider a model to be the current one if current is null.  See comment about recursion in modelling_group
@@ -693,6 +688,11 @@ public class Public extends SchemaImpl {
     public final UserGroupRole USER_GROUP_ROLE = org.vaccineimpact.api.db.tables.UserGroupRole.USER_GROUP_ROLE;
 
     /**
+     * The table <code>public.user_legal_agreement</code>.
+     */
+    public final UserLegalAgreement USER_LEGAL_AGREEMENT = org.vaccineimpact.api.db.tables.UserLegalAgreement.USER_LEGAL_AGREEMENT;
+
+    /**
      * The table <code>public.v_coverage_info</code>.
      */
     public final VCoverageInfo V_COVERAGE_INFO = org.vaccineimpact.api.db.tables.VCoverageInfo.V_COVERAGE_INFO;
@@ -799,8 +799,6 @@ public class Public extends SchemaImpl {
             BurdenEstimateSetType.BURDEN_ESTIMATE_SET_TYPE,
             BurdenEstimateStochastic.BURDEN_ESTIMATE_STOCHASTIC,
             BurdenOutcome.BURDEN_OUTCOME,
-            ConfidentialityAgreement.CONFIDENTIALITY_AGREEMENT,
-            ConfidentialityAgreementSignature.CONFIDENTIALITY_AGREEMENT_SIGNATURE,
             Country.COUNTRY,
             CountryMetadata.COUNTRY_METADATA,
             CountryVaccineMetadata.COUNTRY_VACCINE_METADATA,
@@ -826,6 +824,7 @@ public class Public extends SchemaImpl {
             ImpactEstimateSet.IMPACT_ESTIMATE_SET,
             ImpactEstimateSetIngredient.IMPACT_ESTIMATE_SET_INGREDIENT,
             ImpactOutcome.IMPACT_OUTCOME,
+            LegalAgreement.LEGAL_AGREEMENT,
             Model.MODEL,
             ModelRun.MODEL_RUN,
             ModelRunParameter.MODEL_RUN_PARAMETER,
@@ -864,6 +863,7 @@ public class Public extends SchemaImpl {
             UserGroup.USER_GROUP,
             UserGroupMembership.USER_GROUP_MEMBERSHIP,
             UserGroupRole.USER_GROUP_ROLE,
+            UserLegalAgreement.USER_LEGAL_AGREEMENT,
             VCoverageInfo.V_COVERAGE_INFO,
             VResponsibilityInfo.V_RESPONSIBILITY_INFO,
             Vaccine.VACCINE,

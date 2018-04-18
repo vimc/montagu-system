@@ -18,7 +18,6 @@ import org.vaccineimpact.api.db.tables.BurdenEstimateSetProblem;
 import org.vaccineimpact.api.db.tables.BurdenEstimateSetStatus;
 import org.vaccineimpact.api.db.tables.BurdenEstimateSetType;
 import org.vaccineimpact.api.db.tables.BurdenOutcome;
-import org.vaccineimpact.api.db.tables.ConfidentialityAgreement;
 import org.vaccineimpact.api.db.tables.Country;
 import org.vaccineimpact.api.db.tables.CountryMetadata;
 import org.vaccineimpact.api.db.tables.CountryVaccineMetadata;
@@ -44,6 +43,7 @@ import org.vaccineimpact.api.db.tables.ImpactEstimateRecipe;
 import org.vaccineimpact.api.db.tables.ImpactEstimateSet;
 import org.vaccineimpact.api.db.tables.ImpactEstimateSetIngredient;
 import org.vaccineimpact.api.db.tables.ImpactOutcome;
+import org.vaccineimpact.api.db.tables.LegalAgreement;
 import org.vaccineimpact.api.db.tables.Model;
 import org.vaccineimpact.api.db.tables.ModelRun;
 import org.vaccineimpact.api.db.tables.ModelRunParameter;
@@ -110,7 +110,6 @@ public class Indexes {
     public static final Index BURDEN_ESTIMATE_SET_TYPE_PKEY = Indexes0.BURDEN_ESTIMATE_SET_TYPE_PKEY;
     public static final Index BURDEN_OUTCOME_CODE_KEY = Indexes0.BURDEN_OUTCOME_CODE_KEY;
     public static final Index BURDEN_OUTCOME_PKEY = Indexes0.BURDEN_OUTCOME_PKEY;
-    public static final Index CONFIDENTIALITY_AGREEMENT_PKEY = Indexes0.CONFIDENTIALITY_AGREEMENT_PKEY;
     public static final Index COUNTRY_PKEY = Indexes0.COUNTRY_PKEY;
     public static final Index COUNTRY_METADATA_PKEY = Indexes0.COUNTRY_METADATA_PKEY;
     public static final Index COUNTRY_VACCINE_METADATA_PKEY = Indexes0.COUNTRY_VACCINE_METADATA_PKEY;
@@ -143,6 +142,7 @@ public class Indexes {
     public static final Index IMPACT_ESTIMATE_SET_PKEY = Indexes0.IMPACT_ESTIMATE_SET_PKEY;
     public static final Index IMPACT_ESTIMATE_SET_INGREDIENT_PKEY = Indexes0.IMPACT_ESTIMATE_SET_INGREDIENT_PKEY;
     public static final Index IMPACT_OUTCOME_PKEY = Indexes0.IMPACT_OUTCOME_PKEY;
+    public static final Index LEGAL_AGREEMENT_PKEY = Indexes0.LEGAL_AGREEMENT_PKEY;
     public static final Index MODEL_PKEY = Indexes0.MODEL_PKEY;
     public static final Index MODELLING_GROUP_DISEASE_UNIQUE_WHEN_CURRENT = Indexes0.MODELLING_GROUP_DISEASE_UNIQUE_WHEN_CURRENT;
     public static final Index MODEL_RUN_PKEY = Indexes0.MODEL_RUN_PKEY;
@@ -205,7 +205,6 @@ public class Indexes {
         public static Index BURDEN_ESTIMATE_SET_TYPE_PKEY = Internal.createIndex("burden_estimate_set_type_pkey", BurdenEstimateSetType.BURDEN_ESTIMATE_SET_TYPE, new OrderField[] { BurdenEstimateSetType.BURDEN_ESTIMATE_SET_TYPE.CODE }, true);
         public static Index BURDEN_OUTCOME_CODE_KEY = Internal.createIndex("burden_outcome_code_key", BurdenOutcome.BURDEN_OUTCOME, new OrderField[] { BurdenOutcome.BURDEN_OUTCOME.CODE }, true);
         public static Index BURDEN_OUTCOME_PKEY = Internal.createIndex("burden_outcome_pkey", BurdenOutcome.BURDEN_OUTCOME, new OrderField[] { BurdenOutcome.BURDEN_OUTCOME.ID }, true);
-        public static Index CONFIDENTIALITY_AGREEMENT_PKEY = Internal.createIndex("confidentiality_agreement_pkey", ConfidentialityAgreement.CONFIDENTIALITY_AGREEMENT, new OrderField[] { ConfidentialityAgreement.CONFIDENTIALITY_AGREEMENT.NAME }, true);
         public static Index COUNTRY_PKEY = Internal.createIndex("country_pkey", Country.COUNTRY, new OrderField[] { Country.COUNTRY.ID }, true);
         public static Index COUNTRY_METADATA_PKEY = Internal.createIndex("country_metadata_pkey", CountryMetadata.COUNTRY_METADATA, new OrderField[] { CountryMetadata.COUNTRY_METADATA.ID }, true);
         public static Index COUNTRY_VACCINE_METADATA_PKEY = Internal.createIndex("country_vaccine_metadata_pkey", CountryVaccineMetadata.COUNTRY_VACCINE_METADATA, new OrderField[] { CountryVaccineMetadata.COUNTRY_VACCINE_METADATA.ID }, true);
@@ -238,6 +237,7 @@ public class Indexes {
         public static Index IMPACT_ESTIMATE_SET_PKEY = Internal.createIndex("impact_estimate_set_pkey", ImpactEstimateSet.IMPACT_ESTIMATE_SET, new OrderField[] { ImpactEstimateSet.IMPACT_ESTIMATE_SET.ID }, true);
         public static Index IMPACT_ESTIMATE_SET_INGREDIENT_PKEY = Internal.createIndex("impact_estimate_set_ingredient_pkey", ImpactEstimateSetIngredient.IMPACT_ESTIMATE_SET_INGREDIENT, new OrderField[] { ImpactEstimateSetIngredient.IMPACT_ESTIMATE_SET_INGREDIENT.ID }, true);
         public static Index IMPACT_OUTCOME_PKEY = Internal.createIndex("impact_outcome_pkey", ImpactOutcome.IMPACT_OUTCOME, new OrderField[] { ImpactOutcome.IMPACT_OUTCOME.ID }, true);
+        public static Index LEGAL_AGREEMENT_PKEY = Internal.createIndex("legal_agreement_pkey", LegalAgreement.LEGAL_AGREEMENT, new OrderField[] { LegalAgreement.LEGAL_AGREEMENT.NAME }, true);
         public static Index MODEL_PKEY = Internal.createIndex("model_pkey", Model.MODEL, new OrderField[] { Model.MODEL.ID }, true);
         public static Index MODELLING_GROUP_DISEASE_UNIQUE_WHEN_CURRENT = Internal.createIndex("modelling_group_disease_unique_when_current", Model.MODEL, new OrderField[] { Model.MODEL.MODELLING_GROUP, Model.MODEL.DISEASE }, true);
         public static Index MODEL_RUN_PKEY = Internal.createIndex("model_run_pkey", ModelRun.MODEL_RUN, new OrderField[] { ModelRun.MODEL_RUN.INTERNAL_ID }, true);

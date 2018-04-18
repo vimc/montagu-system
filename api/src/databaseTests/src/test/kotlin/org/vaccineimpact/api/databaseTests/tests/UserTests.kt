@@ -61,10 +61,10 @@ class UserTests : RepositoryTests<UserRepository>()
             repo.saveConfidentialityAgreement(username)
         }
         withDatabase { db ->
-            val result = db.dsl.selectFrom(CONFIDENTIALITY_AGREEMENT_SIGNATURE)
+            val result = db.dsl.selectFrom(USER_LEGAL_AGREEMENT)
                     .first()
-            assertThat(result[CONFIDENTIALITY_AGREEMENT_SIGNATURE.DATE]).isAfter(now)
-            assertThat(result[CONFIDENTIALITY_AGREEMENT_SIGNATURE.USERNAME]).isEqualTo(username)
+            assertThat(result[USER_LEGAL_AGREEMENT.DATE]).isAfter(now)
+            assertThat(result[USER_LEGAL_AGREEMENT.USERNAME]).isEqualTo(username)
         }
     }
 
