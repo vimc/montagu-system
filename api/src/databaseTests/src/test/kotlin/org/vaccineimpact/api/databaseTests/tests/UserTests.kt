@@ -69,6 +69,32 @@ class UserTests : RepositoryTests<UserRepository>()
     }
 
     @Test
+    fun `returns false if user has not signed confidentiality agreement`()
+    {
+        withDatabase { db ->
+            addTestUser(db)
+        }
+        withRepo { repo ->
+            val result = repo.hasConfidentialityAgreement(username)
+            assertThat(result).isFalse()
+        }
+    }
+
+    @Test
+    fun `returns true if user has signed confidentiality agreement`()
+    {
+        withDatabase { db ->
+            addTestUser(db)
+        }
+        withRepo { repo ->
+            repo.saveConfidentialityAgreement(username)
+            val result = repo.hasConfidentialityAgreement(username)
+            assertThat(result).isTrue()
+        }
+
+    }
+
+    @Test
     fun `can retrieve report readers with roles`()
     {
         withDatabase { db ->

@@ -7,6 +7,7 @@ import org.junit.Test
 import org.vaccineimpact.api.blackboxTests.helpers.RequestHelper
 import org.vaccineimpact.api.blackboxTests.helpers.TestUserHelper
 import org.vaccineimpact.api.blackboxTests.helpers.TestUserHelper.Companion.username
+import org.vaccineimpact.api.blackboxTests.helpers.montaguData
 import org.vaccineimpact.api.blackboxTests.helpers.validate
 import org.vaccineimpact.api.blackboxTests.schemas.JSONSchema
 import org.vaccineimpact.api.db.JooqContext
@@ -48,7 +49,7 @@ class UserTests : DatabaseTest()
     @Test
     fun `can save confidentiality agreement`()
     {
-        validate("/users/agree-confidentiality/", HttpMethod.post) given {
+        validate("/users/rfp/agree-confidentiality/", HttpMethod.post) given {
             it.addUserWithRoles("testuser",
                     ReifiedRole("user", Scope.Global()))
         } requiringPermissions {
@@ -56,6 +57,23 @@ class UserTests : DatabaseTest()
         } withRequestSchema "" andCheckString {
             Assertions.assertThat(it).isEqualTo("OK")
         }
+    }
+
+    @Test
+    fun `can get confidentiality agreement`()
+    {
+        val userHelper = TestUserHelper()
+
+        JooqContext().use {
+            userHelper.setupTestUser(it)
+        }
+
+        val requestHelper = RequestHelper()
+        val response = requestHelper.get("/users/rfp/agree-confidentiality/",
+                PermissionSet("*/can-login"), acceptsContentType = "application/json")
+
+        Assertions.assertThat(response.statusCode).isEqualTo(200)
+        Assertions.assertThat(response.montaguData<Boolean>()).isFalse()
     }
 
     @Test

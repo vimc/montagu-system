@@ -38,6 +38,9 @@ object UserRouteConfig : RouteConfig
             Endpoint("${urlBase}rfp/agree-confidentiality/", controller, "saveConfidentialityAgreement",
                     method = HttpMethod.post)
                     .json()
+                    .secure(),
+            Endpoint("${urlBase}rfp/agree-confidentiality/", controller, "hasConfidentialityAgreement")
+                    .json()
                     .secure()
     )
 }
