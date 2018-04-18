@@ -30,7 +30,7 @@ export const ConfidentialityAgreementComponent: React.SFC<ConfidentialityAgreeme
                     RfP applicants' confidentiality agreement</a>. In doing so, I understand and agree not to disclose
                     or share any information on vaccine coverage data which I access from Montagu,
                     beyond my immediate RfP modelling group.
-                    {props.signed &&
+                    {!props.signed &&
                     <input type={"checkbox"} className={"mt-2 mb-2 d-block"}
                            onChange={props.signAgreement} style={{height: "20px", width: "20px"}}/>
                     }
