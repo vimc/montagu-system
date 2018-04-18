@@ -9,6 +9,7 @@ import {ChooseActionPage} from "../../ChooseAction/ChooseActionPage";
 import {IPageWithParent} from "../../../../shared/models/Breadcrumb";
 import {Page} from "../../../../shared/components/PageWithHeader/Page";
 import {ConfidentialityAgreement} from "./ConfidentialityAgreement";
+import {UserService} from "../../../services/UserService";
 
 interface LocationProps {
     groupId: string;
@@ -46,7 +47,7 @@ export class ResponsibilityOverviewPage extends ContribPageWithHeader<LocationPr
         return <Page page={this}>
             <ConfidentialityAgreement touchstoneId={this.props.match.params.touchstoneId}/>
             <ResponsibilityOverviewDescription currentTouchstoneId={this.props.match.params.touchstoneId}/>
-            <ResponsibilityOverviewContent/>
+            <ResponsibilityOverviewContent touchstoneId={this.props.match.params.touchstoneId}/>
         </Page>;
     }
 }

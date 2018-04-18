@@ -16,22 +16,22 @@ import {settings} from "../../../../shared/Settings";
 
 const stochasticParams = require('./stochastic_template_params.csv');
 
-export interface ResponsibilityOverviewComponentPublicProps extends RemoteContent {
+export interface ResponsibilityOverviewComponentProps extends RemoteContent {
     responsibilitySet: IExtendedResponsibilitySet;
     currentDiseaseId: string;
     modellingGroup: ModellingGroup;
 }
 
-export interface ResponsibilityOverviewComponentProps extends ResponsibilityOverviewComponentPublicProps {
+export interface ResponsibilityOverviewProps {
     canView: boolean;
 }
 
-export class ResponsibilityOverviewContentComponent extends RemoteContentComponent<ResponsibilityOverviewComponentPublicProps, undefined> {
+export class ResponsibilityOverviewContentComponent extends RemoteContentComponent<ResponsibilityOverviewComponentProps, undefined> {
     static getStores() {
         return [responsibilityStore];
     }
 
-    static getPropsFromStores(): ResponsibilityOverviewComponentPublicProps {
+    static getPropsFromStores(): ResponsibilityOverviewComponentProps {
         const state = responsibilityStore.getState();
         const set = responsibilityStore.getCurrentResponsibilitySet();
         return {
@@ -61,7 +61,7 @@ export class ResponsibilityOverviewContentComponent extends RemoteContentCompone
             <div className="mt-3">
                 <ButtonLink href={demographyUrl}>Download demographic data</ButtonLink>
             </div>
-            {touchstoneId != "201801rfp-1" && paramsSection}
+            {!settings.isApplicantTouchstone(touchstoneId) && paramsSection}
             <div className="largeSectionTitle">Scenarios</div>
             <ResponsibilityList
                 modellingGroup={props.modellingGroup}
@@ -75,19 +75,21 @@ export class ResponsibilityOverviewContentComponent extends RemoteContentCompone
 
 export const ResponsibilityOverviewContentAltComponent = connectToStores(ResponsibilityOverviewContentComponent);
 
-
-export const mapStateToProps = (state: ContribAppState, props: ResponsibilityOverviewComponentPublicProps)
-    : ResponsibilityOverviewComponentProps => {
+export const mapStateToProps = (state: ContribAppState, props: ResponsibilityOverviewPublicProps)
+    : ResponsibilityOverviewProps => {
     return {
-        ...props,
-        canView: props.responsibilitySet && (state.groups.signedConfidentialityAgreement ||
-        !settings.isApplicantTouchstone(props.responsibilitySet.touchstone.id))
+        canView: (state.groups.signedConfidentialityAgreement ||
+        !settings.isApplicantTouchstone(props.touchstoneId))
     }
 };
 
-const enhance = compose(
+interface ResponsibilityOverviewPublicProps{
+    touchstoneId: string
+}
+
+export const enhance = compose<{}, ResponsibilityOverviewPublicProps>(
     connect(mapStateToProps),
-    branch((props: ResponsibilityOverviewComponentProps) => !props.canView, renderNothing)
+    branch((props: ResponsibilityOverviewProps) => !props.canView, renderNothing)
 );
 
 export const ResponsibilityOverviewContent =

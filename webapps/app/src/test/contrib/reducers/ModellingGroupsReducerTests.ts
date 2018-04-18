@@ -12,20 +12,38 @@ describe('Modelling groups reducer tests', () => {
             data: [testModellingGroup]
         })).to.eql(
             {
-                userGroups: [testModellingGroup]
+                userGroups: [testModellingGroup],
+                signedConfidentialityAgreement: false
             }
         )
     })
 
     it('should return new state data with no groups', () => {
         expect(modellingGroupsReducer({
-            userGroups: [testModellingGroup]
+            userGroups: [testModellingGroup],
+            signedConfidentialityAgreement: false
         }, {
             type: ModellingGroupTypeKeys.USER_GROUPS_FETCHED,
             data: []
         })).to.eql(
             {
-                userGroups: []
+                userGroups: [],
+                signedConfidentialityAgreement: false
+            }
+        )
+    })
+
+    it('should return signed confidentiality statement true', () => {
+        expect(modellingGroupsReducer({
+            userGroups: [],
+            signedConfidentialityAgreement: false
+        }, {
+            type: ModellingGroupTypeKeys.CONFIDENTIALITY_SIGNED,
+            data: true
+        })).to.eql(
+            {
+                userGroups: [],
+                signedConfidentialityAgreement: true
             }
         )
     })

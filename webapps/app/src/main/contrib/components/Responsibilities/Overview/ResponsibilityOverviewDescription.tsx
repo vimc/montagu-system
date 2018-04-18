@@ -131,7 +131,7 @@ export const mapStateToProps = (state: ContribAppState, props: ResponsibilityOve
 };
 
 
-const enhance = compose<ResponsibilityOverviewDescriptionPublicProps>(
+const enhance = compose<ResponsibilityOverviewDescriptionProps, ResponsibilityOverviewDescriptionPublicProps>(
     connect(mapStateToProps),
     branch((props: any) => !props.canView, renderNothing)
 );

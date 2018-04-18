@@ -37,6 +37,7 @@ import {runParameterActions} from "../main/contrib/actions/RunParameterActions";
 import {fetchToken as fetchTokenForModelRunParam} from "../main/contrib/sources/RunParametersSource";
 import {createContribStore} from "../main/contrib/stores/createContribStore";
 import { ModellingGroupsService } from "../main/shared/services/ModellingGroupsService";
+import {UserService} from "../main/contrib/services/UserService";
 
 const FormData = require('form-data');
 const http = require('http');
@@ -116,6 +117,22 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
                     {id: "d2", name: "Disease 2"}
                 ]);
             });
+        });
+
+        it("signs confidentiality agreement", async () => {
+
+            const result = await (new UserService(this.store.dispatch, this.store.getState))
+                .signConfidentiality();
+            expect(result).to.eq("OK");
+
+        });
+
+        it("gets confidentiality agreement", async () => {
+
+            const result = await (new UserService(this.store.dispatch, this.store.getState))
+                .getConfidentiality();
+            expect(result).to.eq("False");
+
         });
 
         it("fetches modelling groups", (done: DoneCallback) => {

@@ -17,6 +17,8 @@ export const modellingGroupsReducer = (state = initialState, action: ModellingGr
             return {...state, userGroups: action.data};
         case ModellingGroupTypeKeys.CONFIDENTIALITY_SIGNED:
             return {...state, signedConfidentialityAgreement: true};
+        case ModellingGroupTypeKeys.CONFIDENTIALITY_RETRIEVED:
+            return {...state, signedConfidentialityAgreement: action.data};
         default:
             return state;
     }
