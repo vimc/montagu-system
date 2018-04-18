@@ -16,7 +16,7 @@ interface UserRepository : Repository
     fun reportReaders(reportName: String): List<User>
 
     fun saveConfidentialityAgreement(username: String)
-    fun hasConfidentialityAgreement(username: String): Boolean
+    fun hasAgreedConfidentiality(username: String): Boolean
 
     fun globalRoles(): List<String>
 

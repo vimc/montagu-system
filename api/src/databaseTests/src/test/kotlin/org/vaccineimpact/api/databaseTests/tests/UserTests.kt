@@ -75,7 +75,7 @@ class UserTests : RepositoryTests<UserRepository>()
             addTestUser(db)
         }
         withRepo { repo ->
-            val result = repo.hasConfidentialityAgreement(username)
+            val result = repo.hasAgreedConfidentiality(username)
             assertThat(result).isFalse()
         }
     }
@@ -88,7 +88,7 @@ class UserTests : RepositoryTests<UserRepository>()
         }
         withRepo { repo ->
             repo.saveConfidentialityAgreement(username)
-            val result = repo.hasConfidentialityAgreement(username)
+            val result = repo.hasAgreedConfidentiality(username)
             assertThat(result).isTrue()
         }
 

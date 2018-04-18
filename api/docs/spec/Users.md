@@ -248,8 +248,3 @@ Required permissions: `can-login`.
 Returns whether the current logged in user has agreed to the above RfP confidentiality agreement.
 
 Required permissions: `can-login`. 
-
-## GET /users/rfp/agree-confidentiality/
-Returns whether the current logged in user has agreed to the above RfP confidentiality agreement.
-
-Required permissions: `can-login`. 

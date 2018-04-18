@@ -1,6 +1,5 @@
 package org.vaccineimpact.api.app.controllers
 
-import com.sun.org.apache.xpath.internal.operations.Bool
 import org.vaccineimpact.api.app.app_start.Controller
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.context.postData
@@ -43,7 +42,7 @@ class UserController(
     fun hasConfidentialityAgreement(): Boolean
     {
         val userName = context.username!!
-        return userRepository.hasConfidentialityAgreement(userName)
+        return userRepository.hasAgreedConfidentiality(userName)
     }
 
     fun getReportReaders(): List<User>

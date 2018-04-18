@@ -105,7 +105,7 @@ class JooqUserRepository(dsl: DSLContext) : JooqRepository(dsl), UserRepository
         }.insert()
     }
 
-    override fun hasConfidentialityAgreement(username: String): Boolean
+    override fun hasAgreedConfidentiality(username: String): Boolean
     {
         return dsl.selectFrom(USER_LEGAL_AGREEMENT).where(
                 USER_LEGAL_AGREEMENT.USERNAME.eq(username).and(
