@@ -84,6 +84,16 @@ describe('ConfidentialityAgreement', () => {
         expect(rendered.find("input")).to.have.lengthOf(0)
     });
 
+    it("does not render checkbox if signed is null", () => {
+
+        const store = setupStore(null);
+
+        const rendered = shallow(<ConfidentialityAgreement touchstoneId={"rfp-1"}/>,
+            {context: {store}}).dive().dive().dive();
+
+        expect(rendered.find("input")).to.have.lengthOf(0)
+    });
+
     it("dispatches getConfidentialityAgreement onMount", () => {
 
         const store = setupStore(false);

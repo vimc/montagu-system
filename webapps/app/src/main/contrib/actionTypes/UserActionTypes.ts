@@ -5,7 +5,6 @@ export enum UserActionType {
 
 export interface ConfidentialitySigned {
     type: UserActionType.CONFIDENTIALITY_SIGNED;
-    data: boolean;
 }
 
 export interface ConfidentialityRetrieved {

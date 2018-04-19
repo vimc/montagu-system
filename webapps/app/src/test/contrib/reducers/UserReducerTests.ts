@@ -9,8 +9,7 @@ describe('User reducer tests', () => {
         expect(userReducer({
             signedConfidentialityAgreement: false
         }, {
-            type: UserActionType.CONFIDENTIALITY_SIGNED,
-            data: true
+            type: UserActionType.CONFIDENTIALITY_SIGNED
         })).to.eql(
             {
                 signedConfidentialityAgreement: true

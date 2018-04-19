@@ -1,11 +1,11 @@
 import {UserActionType, UserAction} from "../actionTypes/UserActionTypes";
 
 export interface UserState {
-    signedConfidentialityAgreement: boolean;
+    signedConfidentialityAgreement?: boolean;
 }
 
 export const initialState: UserState = {
-    signedConfidentialityAgreement: false
+    signedConfidentialityAgreement: null
 };
 
 export const userReducer = (state = initialState, action: UserAction) => {
