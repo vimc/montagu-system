@@ -10,21 +10,21 @@ import {chooseGroupPageActionCreators} from "../../../../main/contrib/actions/pa
 import {PageArticle} from "../../../../main/shared/components/PageWithHeader/PageArticle";
 import {ChooseGroupContent} from "../../../../main/contrib/components/ChooseGroup/ChooseGroupContent";
 
-describe("Choose Group Page", () => {
+describe("Choose Group Page Component", () => {
 
     const sandbox = new Sandbox();
     afterEach(() => sandbox.restore());
 
-    it("renders component with mapped props on top level", () => {
+    it("renders component on connect level", () => {
         let store = createMockStore();
-        const rendered = shallow(<ChooseGroupPage/>, {context: {store: store}});
+        const rendered = shallow(<ChooseGroupPage/>, {context: {store}});
         expect(typeof rendered.props().onLoad).is.equal('function');
     });
 
-    it("renders component and mounts on 2nd level", () => {
+    it("renders component component level", () => {
         let store = createMockStore();
         const onLoadStub = sandbox.setStubFunc(chooseGroupPageActionCreators, "onLoad", () => ({type: 'any'}));
-        const rendered = shallow(<ChooseGroupPage/>, {context: {store: store}}).dive();
+        const rendered = shallow(<ChooseGroupPage/>, {context: {store}}).dive();
         const pageArticle = rendered.find('PageArticle');
         expect(onLoadStub.called).is.equal(true);
         expect(pageArticle.props().title).is.equal(ChooseGroupPageComponent.title);

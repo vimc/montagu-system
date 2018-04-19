@@ -6,40 +6,49 @@ import "../../../helper";
 import { mockModellingGroup } from "../../../mocks/mockModels";
 import {
     ChooseGroupContentComponent,
-    mapStateToProps
+    ChooseGroupContent,
+    mapStateToProps, ChooseGroupContentProps
 } from "../../../../main/contrib/components/ChooseGroup/ChooseGroupContent";
 import { GroupList } from "../../../../main/contrib/components/ChooseGroup/GroupList";
 import { mockContribState } from "../../../mocks/mockStates";
 import { ModellingGroup} from "../../../../main/shared/models/Generated";
 import { Sandbox } from "../../../Sandbox";
+import {createMockStore} from "../../../mocks/mockStore";
 
 
-describe("ChooseGroupContentComponent", () => {
+describe("Choose Group Content Component", () => {
+
+    const testGroups = [mockModellingGroup(), mockModellingGroup()];
 
     const sandbox = new Sandbox();
     afterEach(() => sandbox.restore());
 
-    it("renders GroupList", () => {
-        const groups = [mockModellingGroup(), mockModellingGroup()];
-        const rendered = shallow(<ChooseGroupContentComponent groups={groups} />);
-        const list = rendered.find(GroupList);
-        expect(list).to.have.length(1);
-        expect(list.props()).to.eql({
-            groups: groups
-        });
+    it("renders Group Content on connect level", () => {
+        let store = createMockStore({groups: {userGroups: testGroups}});
+        const rendered = shallow(<ChooseGroupContent/>, {context: {store}});
+        expect(rendered.props().groups).to.eql(testGroups);
     });
 
-    it("gets groups when component mounts", () => {
-        const groups = [mockModellingGroup(), mockModellingGroup()];
-        const rendered = shallow(<ChooseGroupContentComponent groups={groups} />);
-        const list = rendered.find(GroupList);
+    it("renders Group Content on branch level", () => {
+        let store = createMockStore({groups: {userGroups: testGroups}});
+        const rendered = shallow(<ChooseGroupContent/>, {context: {store}}).dive();
+        const props = rendered.props() as ChooseGroupContentProps;
+        expect(props.groups).to.eql(testGroups);
+        expect(rendered.find(ChooseGroupContentComponent).length).to.eql(1);
+    });
+
+    it("renders Group Content on component level", () => {
+        let store = createMockStore({groups: {userGroups: testGroups}});
+        const rendered = shallow(<ChooseGroupContent/>, {context: {store}}).dive().dive();
+        expect(rendered.find(GroupList).length).to.eql(1);
+        expect(rendered.find(GroupList).props().groups).to.eql(testGroups);
     });
 
     it("maps state to props with groups", () => {
-        const groups :ModellingGroup[] = [mockModellingGroup()];
+        const groups :ModellingGroup[] = testGroups;
         const contribStateMock = mockContribState({ groups: { userGroups: groups } })
         const props = mapStateToProps(contribStateMock);
-        expect(props.groups).to.eql(groups);
+        expect(props.groups).to.eql(testGroups);
     });
 
     it("maps state to props with no groups", () => {
