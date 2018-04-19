@@ -45,6 +45,7 @@ import org.vaccineimpact.api.db.tables.ImpactEstimateRecipe;
 import org.vaccineimpact.api.db.tables.ImpactEstimateSet;
 import org.vaccineimpact.api.db.tables.ImpactEstimateSetIngredient;
 import org.vaccineimpact.api.db.tables.ImpactOutcome;
+import org.vaccineimpact.api.db.tables.LegalAgreement;
 import org.vaccineimpact.api.db.tables.Model;
 import org.vaccineimpact.api.db.tables.ModelRun;
 import org.vaccineimpact.api.db.tables.ModelRunParameter;
@@ -74,6 +75,7 @@ import org.vaccineimpact.api.db.tables.UploadInfo;
 import org.vaccineimpact.api.db.tables.UserGroup;
 import org.vaccineimpact.api.db.tables.UserGroupMembership;
 import org.vaccineimpact.api.db.tables.UserGroupRole;
+import org.vaccineimpact.api.db.tables.UserLegalAgreement;
 import org.vaccineimpact.api.db.tables.Vaccine;
 import org.vaccineimpact.api.db.tables.VaccineRoutineAge;
 import org.vaccineimpact.api.db.tables.records.ActivityTypeRecord;
@@ -111,6 +113,7 @@ import org.vaccineimpact.api.db.tables.records.ImpactEstimateRecord;
 import org.vaccineimpact.api.db.tables.records.ImpactEstimateSetIngredientRecord;
 import org.vaccineimpact.api.db.tables.records.ImpactEstimateSetRecord;
 import org.vaccineimpact.api.db.tables.records.ImpactOutcomeRecord;
+import org.vaccineimpact.api.db.tables.records.LegalAgreementRecord;
 import org.vaccineimpact.api.db.tables.records.ModelRecord;
 import org.vaccineimpact.api.db.tables.records.ModelRunParameterRecord;
 import org.vaccineimpact.api.db.tables.records.ModelRunParameterSetRecord;
@@ -140,6 +143,7 @@ import org.vaccineimpact.api.db.tables.records.UploadInfoRecord;
 import org.vaccineimpact.api.db.tables.records.UserGroupMembershipRecord;
 import org.vaccineimpact.api.db.tables.records.UserGroupRecord;
 import org.vaccineimpact.api.db.tables.records.UserGroupRoleRecord;
+import org.vaccineimpact.api.db.tables.records.UserLegalAgreementRecord;
 import org.vaccineimpact.api.db.tables.records.VaccineRecord;
 import org.vaccineimpact.api.db.tables.records.VaccineRoutineAgeRecord;
 
@@ -247,6 +251,7 @@ public class Keys {
     public static final UniqueKey<ImpactEstimateSetRecord> IMPACT_ESTIMATE_SET_PKEY = UniqueKeys0.IMPACT_ESTIMATE_SET_PKEY;
     public static final UniqueKey<ImpactEstimateSetIngredientRecord> IMPACT_ESTIMATE_SET_INGREDIENT_PKEY = UniqueKeys0.IMPACT_ESTIMATE_SET_INGREDIENT_PKEY;
     public static final UniqueKey<ImpactOutcomeRecord> IMPACT_OUTCOME_PKEY = UniqueKeys0.IMPACT_OUTCOME_PKEY;
+    public static final UniqueKey<LegalAgreementRecord> LEGAL_AGREEMENT_PKEY = UniqueKeys0.LEGAL_AGREEMENT_PKEY;
     public static final UniqueKey<ModelRecord> MODEL_PKEY = UniqueKeys0.MODEL_PKEY;
     public static final UniqueKey<ModelRunRecord> MODEL_RUN_PKEY = UniqueKeys0.MODEL_RUN_PKEY;
     public static final UniqueKey<ModelRunParameterRecord> MODEL_RUN_PARAMETER_PKEY = UniqueKeys0.MODEL_RUN_PARAMETER_PKEY;
@@ -398,6 +403,8 @@ public class Keys {
     public static final ForeignKey<UserGroupMembershipRecord, UserGroupRecord> USER_GROUP_MEMBERSHIP__USER_GROUP_MEMBERSHIP_USER_GROUP_FKEY = ForeignKeys0.USER_GROUP_MEMBERSHIP__USER_GROUP_MEMBERSHIP_USER_GROUP_FKEY;
     public static final ForeignKey<UserGroupRoleRecord, UserGroupRecord> USER_GROUP_ROLE__USER_GROUP_ROLE_USER_GROUP_FKEY = ForeignKeys0.USER_GROUP_ROLE__USER_GROUP_ROLE_USER_GROUP_FKEY;
     public static final ForeignKey<UserGroupRoleRecord, RoleRecord> USER_GROUP_ROLE__USER_GROUP_ROLE_ROLE_FKEY = ForeignKeys0.USER_GROUP_ROLE__USER_GROUP_ROLE_ROLE_FKEY;
+    public static final ForeignKey<UserLegalAgreementRecord, LegalAgreementRecord> USER_LEGAL_AGREEMENT__USER_LEGAL_AGREEMENT_LEGAL_AGREEMENT_FKEY = ForeignKeys0.USER_LEGAL_AGREEMENT__USER_LEGAL_AGREEMENT_LEGAL_AGREEMENT_FKEY;
+    public static final ForeignKey<UserLegalAgreementRecord, AppUserRecord> USER_LEGAL_AGREEMENT__USER_LEGAL_AGREEMENT_USERNAME_FKEY = ForeignKeys0.USER_LEGAL_AGREEMENT__USER_LEGAL_AGREEMENT_USERNAME_FKEY;
     public static final ForeignKey<VaccineRoutineAgeRecord, VaccineRecord> VACCINE_ROUTINE_AGE__VACCINE_ROUTINE_AGE_VACCINE_FKEY = ForeignKeys0.VACCINE_ROUTINE_AGE__VACCINE_ROUTINE_AGE_VACCINE_FKEY;
 
     // -------------------------------------------------------------------------
@@ -488,6 +495,7 @@ public class Keys {
         public static final UniqueKey<ImpactEstimateSetRecord> IMPACT_ESTIMATE_SET_PKEY = Internal.createUniqueKey(ImpactEstimateSet.IMPACT_ESTIMATE_SET, "impact_estimate_set_pkey", ImpactEstimateSet.IMPACT_ESTIMATE_SET.ID);
         public static final UniqueKey<ImpactEstimateSetIngredientRecord> IMPACT_ESTIMATE_SET_INGREDIENT_PKEY = Internal.createUniqueKey(ImpactEstimateSetIngredient.IMPACT_ESTIMATE_SET_INGREDIENT, "impact_estimate_set_ingredient_pkey", ImpactEstimateSetIngredient.IMPACT_ESTIMATE_SET_INGREDIENT.ID);
         public static final UniqueKey<ImpactOutcomeRecord> IMPACT_OUTCOME_PKEY = Internal.createUniqueKey(ImpactOutcome.IMPACT_OUTCOME, "impact_outcome_pkey", ImpactOutcome.IMPACT_OUTCOME.ID);
+        public static final UniqueKey<LegalAgreementRecord> LEGAL_AGREEMENT_PKEY = Internal.createUniqueKey(LegalAgreement.LEGAL_AGREEMENT, "legal_agreement_pkey", LegalAgreement.LEGAL_AGREEMENT.NAME);
         public static final UniqueKey<ModelRecord> MODEL_PKEY = Internal.createUniqueKey(Model.MODEL, "model_pkey", Model.MODEL.ID);
         public static final UniqueKey<ModelRunRecord> MODEL_RUN_PKEY = Internal.createUniqueKey(ModelRun.MODEL_RUN, "model_run_pkey", ModelRun.MODEL_RUN.INTERNAL_ID);
         public static final UniqueKey<ModelRunParameterRecord> MODEL_RUN_PARAMETER_PKEY = Internal.createUniqueKey(ModelRunParameter.MODEL_RUN_PARAMETER, "model_run_parameter_pkey", ModelRunParameter.MODEL_RUN_PARAMETER.ID);
@@ -637,6 +645,8 @@ public class Keys {
         public static final ForeignKey<UserGroupMembershipRecord, UserGroupRecord> USER_GROUP_MEMBERSHIP__USER_GROUP_MEMBERSHIP_USER_GROUP_FKEY = Internal.createForeignKey(org.vaccineimpact.api.db.Keys.USER_GROUP_PKEY, UserGroupMembership.USER_GROUP_MEMBERSHIP, "user_group_membership__user_group_membership_user_group_fkey", UserGroupMembership.USER_GROUP_MEMBERSHIP.USER_GROUP);
         public static final ForeignKey<UserGroupRoleRecord, UserGroupRecord> USER_GROUP_ROLE__USER_GROUP_ROLE_USER_GROUP_FKEY = Internal.createForeignKey(org.vaccineimpact.api.db.Keys.USER_GROUP_PKEY, UserGroupRole.USER_GROUP_ROLE, "user_group_role__user_group_role_user_group_fkey", UserGroupRole.USER_GROUP_ROLE.USER_GROUP);
         public static final ForeignKey<UserGroupRoleRecord, RoleRecord> USER_GROUP_ROLE__USER_GROUP_ROLE_ROLE_FKEY = Internal.createForeignKey(org.vaccineimpact.api.db.Keys.ROLE_PKEY, UserGroupRole.USER_GROUP_ROLE, "user_group_role__user_group_role_role_fkey", UserGroupRole.USER_GROUP_ROLE.ROLE);
+        public static final ForeignKey<UserLegalAgreementRecord, LegalAgreementRecord> USER_LEGAL_AGREEMENT__USER_LEGAL_AGREEMENT_LEGAL_AGREEMENT_FKEY = Internal.createForeignKey(org.vaccineimpact.api.db.Keys.LEGAL_AGREEMENT_PKEY, UserLegalAgreement.USER_LEGAL_AGREEMENT, "user_legal_agreement__user_legal_agreement_legal_agreement_fkey", UserLegalAgreement.USER_LEGAL_AGREEMENT.LEGAL_AGREEMENT);
+        public static final ForeignKey<UserLegalAgreementRecord, AppUserRecord> USER_LEGAL_AGREEMENT__USER_LEGAL_AGREEMENT_USERNAME_FKEY = Internal.createForeignKey(org.vaccineimpact.api.db.Keys.APP_USER_PKEY, UserLegalAgreement.USER_LEGAL_AGREEMENT, "user_legal_agreement__user_legal_agreement_username_fkey", UserLegalAgreement.USER_LEGAL_AGREEMENT.USERNAME);
         public static final ForeignKey<VaccineRoutineAgeRecord, VaccineRecord> VACCINE_ROUTINE_AGE__VACCINE_ROUTINE_AGE_VACCINE_FKEY = Internal.createForeignKey(org.vaccineimpact.api.db.Keys.VACCINE_PKEY, VaccineRoutineAge.VACCINE_ROUTINE_AGE, "vaccine_routine_age__vaccine_routine_age_vaccine_fkey", VaccineRoutineAge.VACCINE_ROUTINE_AGE.VACCINE);
     }
 }

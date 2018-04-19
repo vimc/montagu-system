@@ -97,6 +97,23 @@ class JooqUserRepository(dsl: DSLContext) : JooqRepository(dsl), UserRepository
                 .execute()
     }
 
+    override fun saveConfidentialityAgreement(username: String)
+    {
+        dsl.newRecord(USER_LEGAL_AGREEMENT).apply {
+            this.legalAgreement = "rfp-applicants-04-18"
+            this.username = username
+        }.insert()
+    }
+
+    override fun hasAgreedConfidentiality(username: String): Boolean
+    {
+        return dsl.selectFrom(USER_LEGAL_AGREEMENT).where(
+                USER_LEGAL_AGREEMENT.USERNAME.eq(username).and(
+                        USER_LEGAL_AGREEMENT.LEGAL_AGREEMENT.eq("rfp-applicants-04-18")
+                )
+        ).fetch().any()
+    }
+
     override fun getUserByEmail(email: String): InternalUser?
     {
         val user = dsl.fetchAny(APP_USER, caseInsensitiveEmailMatch(email))

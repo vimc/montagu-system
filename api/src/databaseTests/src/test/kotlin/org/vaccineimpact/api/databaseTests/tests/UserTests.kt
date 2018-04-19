@@ -25,6 +25,7 @@ import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import org.vaccineimpact.api.models.permissions.ReifiedRole
 import org.vaccineimpact.api.models.permissions.RoleAssignment
 import org.vaccineimpact.api.security.*
+import java.sql.Timestamp
 import java.time.Instant
 
 class UserTests : RepositoryTests<UserRepository>()
@@ -47,6 +48,67 @@ class UserTests : RepositoryTests<UserRepository>()
             checkUser(getUser(repo, email))
             checkUser(getUser(repo, email.toUpperCase()))
         }
+    }
+
+    @Test
+    fun `saves confidentiality with current timestamp`()
+    {
+        withDatabase { db ->
+            addTestUser(db)
+        }
+        val now = Timestamp.from(Instant.now())
+        withRepo { repo ->
+            repo.saveConfidentialityAgreement(username)
+        }
+        withDatabase { db ->
+            val result = db.dsl.selectFrom(USER_LEGAL_AGREEMENT)
+                    .first()
+            assertThat(result[USER_LEGAL_AGREEMENT.DATE]).isAfter(now)
+            assertThat(result[USER_LEGAL_AGREEMENT.USERNAME]).isEqualTo(username)
+        }
+    }
+
+    @Test
+    fun `saves confidentiality multiple times`()
+    {
+        withDatabase { db ->
+            addTestUser(db)
+        }
+        withRepo { repo ->
+            repo.saveConfidentialityAgreement(username)
+            repo.saveConfidentialityAgreement(username)
+        }
+        withDatabase { db ->
+            val result = db.dsl.selectFrom(USER_LEGAL_AGREEMENT)
+                    .fetch()
+            assertThat(result.count()).isEqualTo(2)
+        }
+    }
+
+    @Test
+    fun `returns false if user has not signed confidentiality agreement`()
+    {
+        withDatabase { db ->
+            addTestUser(db)
+        }
+        withRepo { repo ->
+            val result = repo.hasAgreedConfidentiality(username)
+            assertThat(result).isFalse()
+        }
+    }
+
+    @Test
+    fun `returns true if user has signed confidentiality agreement`()
+    {
+        withDatabase { db ->
+            addTestUser(db)
+        }
+        withRepo { repo ->
+            repo.saveConfidentialityAgreement(username)
+            val result = repo.hasAgreedConfidentiality(username)
+            assertThat(result).isTrue()
+        }
+
     }
 
     @Test

@@ -32,6 +32,19 @@ class UserController(
             : this(context, repositories.user, OneTimeTokenGenerator(repositories.token))
 
 
+    fun saveConfidentialityAgreement(): String
+    {
+        val userName = context.username!!
+        userRepository.saveConfidentialityAgreement(userName)
+        return okayResponse()
+    }
+
+    fun hasAgreedConfidentiality(): Boolean
+    {
+        val userName = context.username!!
+        return userRepository.hasAgreedConfidentiality(userName)
+    }
+
     fun getReportReaders(): List<User>
     {
         val reportName = context.params(":report")

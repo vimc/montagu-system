@@ -15,6 +15,9 @@ interface UserRepository : Repository
     fun updateLastLoggedIn(username: String)
     fun reportReaders(reportName: String): List<User>
 
+    fun saveConfidentialityAgreement(username: String)
+    fun hasAgreedConfidentiality(username: String): Boolean
+
     fun globalRoles(): List<String>
 
     fun addUser(user: CreateUser)

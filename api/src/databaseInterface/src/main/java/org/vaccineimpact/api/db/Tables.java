@@ -45,6 +45,7 @@ import org.vaccineimpact.api.db.tables.ImpactEstimateRecipe;
 import org.vaccineimpact.api.db.tables.ImpactEstimateSet;
 import org.vaccineimpact.api.db.tables.ImpactEstimateSetIngredient;
 import org.vaccineimpact.api.db.tables.ImpactOutcome;
+import org.vaccineimpact.api.db.tables.LegalAgreement;
 import org.vaccineimpact.api.db.tables.Model;
 import org.vaccineimpact.api.db.tables.ModelRun;
 import org.vaccineimpact.api.db.tables.ModelRunParameter;
@@ -83,6 +84,7 @@ import org.vaccineimpact.api.db.tables.UploadInfo;
 import org.vaccineimpact.api.db.tables.UserGroup;
 import org.vaccineimpact.api.db.tables.UserGroupMembership;
 import org.vaccineimpact.api.db.tables.UserGroupRole;
+import org.vaccineimpact.api.db.tables.UserLegalAgreement;
 import org.vaccineimpact.api.db.tables.VCoverageInfo;
 import org.vaccineimpact.api.db.tables.VResponsibilityInfo;
 import org.vaccineimpact.api.db.tables.Vaccine;
@@ -285,6 +287,11 @@ public class Tables {
      * The table <code>public.impact_outcome</code>.
      */
     public static final ImpactOutcome IMPACT_OUTCOME = org.vaccineimpact.api.db.tables.ImpactOutcome.IMPACT_OUTCOME;
+
+    /**
+     * The table <code>public.legal_agreement</code>.
+     */
+    public static final LegalAgreement LEGAL_AGREEMENT = org.vaccineimpact.api.db.tables.LegalAgreement.LEGAL_AGREEMENT;
 
     /**
      * With the self-referencing "current" field; we consider a model to be the current one if current is null.  See comment about recursion in modelling_group
@@ -664,6 +671,11 @@ public class Tables {
      * The table <code>public.user_group_role</code>.
      */
     public static final UserGroupRole USER_GROUP_ROLE = org.vaccineimpact.api.db.tables.UserGroupRole.USER_GROUP_ROLE;
+
+    /**
+     * The table <code>public.user_legal_agreement</code>.
+     */
+    public static final UserLegalAgreement USER_LEGAL_AGREEMENT = org.vaccineimpact.api.db.tables.UserLegalAgreement.USER_LEGAL_AGREEMENT;
 
     /**
      * The table <code>public.v_coverage_info</code>.

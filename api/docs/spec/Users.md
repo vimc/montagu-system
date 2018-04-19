@@ -235,3 +235,16 @@ Schema: [`Users.schema.json`](../schemas/Users.schema.json)
             ]
         }
     ]
+    
+## POST /users/rfp/agree-confidentiality/
+POST-ing to this endpoint confirms that the logged in user has read and understood the 
+[`RfP applicants' confidentiality agreement`](./rfp-applicants-condentiality-agreement.doc). 
+In doing so, you understand and agree not to disclose or share any information on vaccine coverage data which you access
+ from Montagu, beyond your immediate RfP modelling group.
+
+Required permissions: `can-login`. 
+
+## GET /users/rfp/agree-confidentiality/
+Returns whether the current logged in user has agreed to the above RfP confidentiality agreement.
+
+Required permissions: `can-login`. 

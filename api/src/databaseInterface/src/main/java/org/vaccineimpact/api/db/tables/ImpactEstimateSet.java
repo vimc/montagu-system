@@ -40,7 +40,7 @@ import org.vaccineimpact.api.db.tables.records.ImpactEstimateSetRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ImpactEstimateSet extends TableImpl<ImpactEstimateSetRecord> {
 
-    private static final long serialVersionUID = -1399587429;
+    private static final long serialVersionUID = -1146233726;
 
     /**
      * The reference instance of <code>public.impact_estimate_set</code>
@@ -68,7 +68,7 @@ public class ImpactEstimateSet extends TableImpl<ImpactEstimateSetRecord> {
     /**
      * The column <code>public.impact_estimate_set.computed_on</code>.
      */
-    public final TableField<ImpactEstimateSetRecord, Timestamp> COMPUTED_ON = createField("computed_on", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("now()", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<ImpactEstimateSetRecord, Timestamp> COMPUTED_ON = createField("computed_on", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
      * The column <code>public.impact_estimate_set.recipe_touchstone</code>.
