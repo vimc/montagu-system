@@ -69,6 +69,23 @@ class UserTests : RepositoryTests<UserRepository>()
     }
 
     @Test
+    fun `saves confidentiality multiple times`()
+    {
+        withDatabase { db ->
+            addTestUser(db)
+        }
+        withRepo { repo ->
+            repo.saveConfidentialityAgreement(username)
+            repo.saveConfidentialityAgreement(username)
+        }
+        withDatabase { db ->
+            val result = db.dsl.selectFrom(USER_LEGAL_AGREEMENT)
+                    .fetch()
+            assertThat(result.count()).isEqualTo(2)
+        }
+    }
+
+    @Test
     fun `returns false if user has not signed confidentiality agreement`()
     {
         withDatabase { db ->
