@@ -13,8 +13,7 @@ export const userActionCreators = {
 
             if (result == "OK") {
                 dispatch({
-                    type: UserActionType.CONFIDENTIALITY_SIGNED,
-                    data: true
+                    type: UserActionType.CONFIDENTIALITY_SIGNED
                 } as ConfidentialitySigned);
             }
         }
