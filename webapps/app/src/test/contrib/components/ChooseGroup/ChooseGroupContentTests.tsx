@@ -16,6 +16,7 @@ import { ModellingGroup} from "../../../../main/shared/models/Generated";
 import { Sandbox } from "../../../Sandbox";
 import {createMockStore} from "../../../mocks/mockStore";
 import {ContribAppState} from "../../../../main/contrib/reducers/contribAppReducers";
+import {LoadingElement} from "../../../../main/shared/partials/LoadingElement/LoadingElement";
 
 describe("Choose Group Content Component", () => {
 
@@ -33,11 +34,17 @@ describe("Choose Group Content Component", () => {
         expect(rendered.props().groups).to.eql(testGroups);
     });
 
-    it("renders Group Content on branch level", () => {
+    it("renders Group Content on branch level passes", () => {
         const rendered = shallow(<ChooseGroupContent/>, {context: {store}}).dive();
         const props = rendered.props() as ChooseGroupContentProps;
         expect(props.groups).to.eql(testGroups);
         expect(rendered.find(ChooseGroupContentComponent).length).to.eql(1);
+    });
+
+    it("renders Group Content on branch level not passes", () => {
+        store = createMockStore({groups: {userGroups: []}});
+        const rendered = shallow(<ChooseGroupContent/>, {context: {store}}).dive().dive();
+        expect(rendered.find(LoadingElement).length).to.eql(1);
     });
 
     it("renders Group Content on component level", () => {

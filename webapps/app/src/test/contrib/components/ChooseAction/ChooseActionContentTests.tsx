@@ -15,6 +15,7 @@ import {
     ChooseActionContentProps, mapStateToProps
 } from "../../../../main/contrib/components/ChooseAction/ChooseActionContent";
 import {TouchstoneList} from "../../../../main/contrib/components/ChooseAction/TouchstoneList";
+import {LoadingElement} from "../../../../main/shared/partials/LoadingElement/LoadingElement";
 
 
 describe("Choose Action Content Component", () => {
@@ -32,13 +33,13 @@ describe("Choose Action Content Component", () => {
     });
     afterEach(() => sandbox.restore());
 
-    it("renders Action Content on connect level", () => {
+    it("renders on connect level", () => {
         const rendered = shallow(<ChooseActionContent/>, {context: {store}});
         expect(rendered.props().group).to.eql(testCurrentGroup);
         expect(rendered.props().touchstones).to.eql(testTouchstones);
     });
 
-    it("renders Action Content on branch level", () => {
+    it("renders on branch level, passes", () => {
         const rendered = shallow(<ChooseActionContent/>, {context: {store}}).dive();
         const props = rendered.props() as ChooseActionContentProps;
         expect(props.group).to.eql(testCurrentGroup);
@@ -46,7 +47,16 @@ describe("Choose Action Content Component", () => {
         expect(rendered.find(ChooseActionContentComponent).length).to.eql(1);
     });
 
-    it("renders Group Content on component level", () => {
+    it("renders on branch level, not passes", () => {
+        store = createMockStore({
+            groups: {currentUserGroup: null},
+            touchstones: {touchstones: []}
+        });
+        const rendered = shallow(<ChooseActionContent/>, {context: {store}}).dive().dive();
+        expect(rendered.find(LoadingElement).length).to.eql(1);
+    });
+
+    it("renders on component level", () => {
         const rendered = shallow(<ChooseActionContent/>, {context: {store}}).dive().dive();
         expect(rendered.find(TouchstoneList).length).to.eql(1);
         expect(rendered.find(TouchstoneList).props().group).to.eql(testCurrentGroup);
