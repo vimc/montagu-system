@@ -7,7 +7,7 @@ import {ModellingGroupTypes} from "../../../../main/contrib/actionTypes/Modellin
 import {BreadcrumbsTypes} from "../../../../main/shared/actionTypes/BreadrumbsTypes";
 import {breadcrumbsModule} from "../../../../main/shared/modules/breadcrumbs";
 import {
-    mockBreadcrumbs, mockDemographicDataset, mockDisease, mockModellingGroup, mockResponsibilitySet,
+    mockBreadcrumbs, mockDisease, mockModellingGroup, mockModelRunParameterSet, mockResponsibilitySet,
     mockTouchstone
 } from "../../../mocks/mockModels";
 import {TouchstonesService} from "../../../../main/contrib/services/TouchstonesService";
@@ -17,11 +17,12 @@ import {ResponsibilitiesService} from "../../../../main/contrib/services/Respons
 import {DiseasesTypes} from "../../../../main/contrib/actionTypes/DiseasesTypes";
 import {ResponsibilitiesTypes} from "../../../../main/contrib/actionTypes/ResponsibilitiesTypes";
 import {ExtendedResponsibilitySet} from "../../../../main/contrib/models/ResponsibilitySet";
-import {downloadDemographicsPageActionCreators} from "../../../../main/contrib/actions/pages/downloadDemographicsPageActionCreators";
-import {DemographicService} from "../../../../main/contrib/services/DemographicService";
-import {DemographicTypes} from "../../../../main/contrib/actionTypes/DemographicTypes";
+import {modelRunParametersPageActionCreators} from "../../../../main/contrib/actions/pages/modelRunParametersPageActionCreators";
+import {RunParametersService} from "../../../../main/contrib/services/RunParametersService";
+import {runParametersActionCreators} from "../../../../main/contrib/actions/runParametersActionCreators";
+import {RunParametersTypes} from "../../../../main/contrib/actionTypes/RunParametersTypes";
 
-describe("Download Demographic Page actions tests", () => {
+describe("Model Run Parameters Page actions tests", () => {
     const sandbox = new Sandbox();
 
     const testGroup = mockModellingGroup();
@@ -30,7 +31,7 @@ describe("Download Demographic Page actions tests", () => {
     const testDisease = mockDisease();
     const testResponsibilitySet = mockResponsibilitySet();
     const testExtResponsibilitySet = new ExtendedResponsibilitySet(testResponsibilitySet, testTouchstone, testGroup);
-    const testDemographicDataSet = mockDemographicDataset();
+    const testModelRunParametersSet = mockModelRunParameterSet();
 
     afterEach(() => {
         sandbox.restore();
@@ -56,14 +57,14 @@ describe("Download Demographic Page actions tests", () => {
         sandbox.setStubFunc(ResponsibilitiesService.prototype, "getResponsibilities", ()=>{
             return Promise.resolve(testResponsibilitySet);
         });
-        sandbox.setStubFunc(DemographicService.prototype, "getDataSetsByTouchstoneId", ()=>{
-            return Promise.resolve([testDemographicDataSet]);
+        sandbox.setStubFunc(RunParametersService.prototype, "getParameterSets", ()=>{
+            return Promise.resolve([testModelRunParametersSet]);
         });
         sandbox.setStubFunc(breadcrumbsModule, "initialize", ()=>{
             return testBreadcrumbs;
         });
 
-        store.dispatch(downloadDemographicsPageActionCreators
+        store.dispatch(modelRunParametersPageActionCreators
             .onLoad({groupId: testGroup.id, touchstoneId: testTouchstone.id}));
 
         setTimeout(() => {
@@ -76,14 +77,12 @@ describe("Download Demographic Page actions tests", () => {
                 { type: DiseasesTypes.DISEASES_FETCHED, data: [testDisease]},
                 { type: TouchstoneTypes.SET_CURRENT_TOUCHSTONE, data: testTouchstone},
                 { type: ResponsibilitiesTypes.SET_RESPONSIBILITIES, data: testExtResponsibilitySet},
-                { type: DemographicTypes.DEMOGRAPHIC_DATA_SETS_FETCHED, data: [testDemographicDataSet]},
+                { type: RunParametersTypes.RUN_PARAMETERS_SETS_FETCHED, data: [testModelRunParametersSet]},
                 { type: BreadcrumbsTypes.BREADCRUMBS_RECEIVED, data: testBreadcrumbs },
             ];
             expect(actions).to.eql(expectedPayload);
             done();
         });
     });
-
-
 
 });
