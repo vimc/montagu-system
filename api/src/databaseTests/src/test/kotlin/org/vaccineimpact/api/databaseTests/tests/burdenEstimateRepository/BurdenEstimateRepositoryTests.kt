@@ -12,11 +12,8 @@ import org.vaccineimpact.api.app.repositories.jooq.JooqScenarioRepository
 import org.vaccineimpact.api.app.repositories.jooq.JooqTouchstoneRepository
 import org.vaccineimpact.api.app.repositories.jooq.mapping.BurdenMappingHelper
 import org.vaccineimpact.api.databaseTests.RepositoryTests
-import org.vaccineimpact.api.db.JooqContext
-import org.vaccineimpact.api.db.Tables
+import org.vaccineimpact.api.db.*
 import org.vaccineimpact.api.db.direct.*
-import org.vaccineimpact.api.db.fromJoinPath
-import org.vaccineimpact.api.db.toDecimal
 import org.vaccineimpact.api.models.*
 import java.math.BigDecimal
 import java.time.LocalDateTime
@@ -156,12 +153,12 @@ abstract class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRep
     protected fun checkBurdenEstimates(db: JooqContext, setId: Int)
     {
         val records = getEstimatesInOrder(db)
-        checkRecord(records[0], setId, 2000, 50, "AFG", "cases", 100.toDecimal())
-        checkRecord(records[1], setId, 2000, 50, "AFG", "cohort_size", 1000.toDecimal())
-        checkRecord(records[2], setId, 2000, 50, "AFG", "deaths", 10.toDecimal())
-        checkRecord(records[3], setId, 1980, 30, "AGO", "cohort_size", 2000.toDecimal())
-        checkRecord(records[4], setId, 1980, 30, "AGO", "dalys", 73.6.toDecimal())
-        checkRecord(records[5], setId, 1980, 30, "AGO", "deaths", 20.toDecimal())
+        checkRecord(records[0], setId, 2000, 50, "AFG", "cases", 100F)
+        checkRecord(records[1], setId, 2000, 50, "AFG", "cohort_size", 1000F)
+        checkRecord(records[2], setId, 2000, 50, "AFG", "deaths", 10F)
+        checkRecord(records[3], setId, 1980, 30, "AGO", "cohort_size", 2000F)
+        checkRecord(records[4], setId, 1980, 30, "AGO", "dalys", 73.6F)
+        checkRecord(records[5], setId, 1980, 30, "AGO", "deaths", 20F)
     }
 
     protected fun checkModelRuns(db: JooqContext, modelRunData: ModelRunTestData)
@@ -183,19 +180,21 @@ abstract class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRep
         // We order the rows coming back so they are in a guaranteed order. This allows
         // us to write simple hardcoded expectations.
         val t = Tables.BURDEN_ESTIMATE
-        return db.dsl.select(t.BURDEN_ESTIMATE_SET, t.COUNTRY, t.YEAR, t.AGE, t.VALUE, t.MODEL_RUN)
+        return db.dsl.select(t.BURDEN_ESTIMATE_SET, t.YEAR, t.AGE, t.VALUE, t.MODEL_RUN)
                 .select(Tables.BURDEN_OUTCOME.CODE)
+                .select(Tables.COUNTRY.ID)
                 .fromJoinPath(Tables.BURDEN_ESTIMATE, Tables.BURDEN_OUTCOME)
+                .join(Tables.COUNTRY).on(Tables.BURDEN_ESTIMATE.COUNTRY.eq(Tables.COUNTRY.NID))
                 .orderBy(Tables.BURDEN_ESTIMATE.COUNTRY, Tables.BURDEN_OUTCOME.CODE)
                 .fetch()
     }
 
     private fun checkRecord(record: Record, setId: Int,
-                            year: Int, age: Int, country: String, outcomeCode: String, outcomeValue: BigDecimal)
+                            year: Short, age: Short, country: String, outcomeCode: String, outcomeValue: Float)
     {
         val t = Tables.BURDEN_ESTIMATE
         Assertions.assertThat(record[t.BURDEN_ESTIMATE_SET]).isEqualTo(setId)
-        Assertions.assertThat(record[t.COUNTRY]).isEqualTo(country)
+        Assertions.assertThat(record[Tables.COUNTRY.ID]).isEqualTo(country)
         Assertions.assertThat(record[t.YEAR]).isEqualTo(year)
         Assertions.assertThat(record[t.AGE]).isEqualTo(age)
         Assertions.assertThat(record[Tables.BURDEN_OUTCOME.CODE]).isEqualTo(outcomeCode)
@@ -203,13 +202,13 @@ abstract class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRep
     }
 
     protected fun data(runs: List<String?> = listOf(null, null)) = sequenceOf(
-            BurdenEstimateWithRunId(diseaseId, runs[0], 2000, 50, "AFG", "Afghanistan", 1000.toDecimal(), mapOf(
-                    "deaths" to 10.toDecimal(),
-                    "cases" to 100.toDecimal()
+            BurdenEstimateWithRunId(diseaseId, runs[0], 2000, 50, "AFG", "Afghanistan", 1000F, mapOf(
+                    "deaths" to 10F,
+                    "cases" to 100F
             )),
-            BurdenEstimateWithRunId(diseaseId, runs[1], 1980, 30, "AGO", "Angola", 2000.toDecimal(), mapOf(
-                    "deaths" to 20.toDecimal(),
-                    "dalys" to 73.6.toDecimal()
+            BurdenEstimateWithRunId(diseaseId, runs[1], 1980, 30, "AGO", "Angola", 2000F, mapOf(
+                    "deaths" to 20F,
+                    "dalys" to 73.6F
             ))
     )
 
@@ -231,12 +230,12 @@ abstract class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRep
     protected fun checkStochasticBurdenEstimates(db: JooqContext, setId: Int)
     {
         val records = getStochasticEstimatesInOrder(db)
-        checkStochasticRecord(records[0], setId, 2000, 50, "AFG", "cases", 100.toDecimal())
-        checkStochasticRecord(records[1], setId, 2000, 50, "AFG", "cohort_size", 1000.toDecimal())
-        checkStochasticRecord(records[2], setId, 2000, 50, "AFG", "deaths", 10.toDecimal())
-        checkStochasticRecord(records[3], setId, 1980, 30, "AGO", "cohort_size", 2000.toDecimal())
-        checkStochasticRecord(records[4], setId, 1980, 30, "AGO", "dalys", 73.6.toDecimal())
-        checkStochasticRecord(records[5], setId, 1980, 30, "AGO", "deaths", 20.toDecimal())
+        checkStochasticRecord(records[0], setId, 2000, 50, "AFG", "cases", 100F)
+        checkStochasticRecord(records[1], setId, 2000, 50, "AFG", "cohort_size", 1000F)
+        checkStochasticRecord(records[2], setId, 2000, 50, "AFG", "deaths", 10F)
+        checkStochasticRecord(records[3], setId, 1980, 30, "AGO", "cohort_size", 2000F)
+        checkStochasticRecord(records[4], setId, 1980, 30, "AGO", "dalys", 73.6F)
+        checkStochasticRecord(records[5], setId, 1980, 30, "AGO", "deaths", 20F)
     }
 
     protected fun checkStochasticModelRuns(db: JooqContext, modelRunData: ModelRunTestData)
@@ -258,21 +257,26 @@ abstract class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRep
         // We order the rows coming back so they are in a guaranteed order. This allows
         // us to write simple hardcoded expectations.
         val t = Tables.BURDEN_ESTIMATE_STOCHASTIC
-        return db.dsl.select(t.BURDEN_ESTIMATE_SET, t.COUNTRY, t.YEAR, t.AGE, t.VALUE, t.MODEL_RUN)
+        return db.dsl.select(t.BURDEN_ESTIMATE_SET, t.YEAR, t.AGE, t.VALUE, t.MODEL_RUN)
                 .select(Tables.BURDEN_OUTCOME.CODE)
+                .select(Tables.COUNTRY.ID)
                 .from(Tables.BURDEN_ESTIMATE_STOCHASTIC)
                 .join(Tables.BURDEN_OUTCOME)
                 .on(Tables.BURDEN_OUTCOME.ID.eq(Tables.BURDEN_ESTIMATE_STOCHASTIC.BURDEN_OUTCOME))
+                .join(Tables.COUNTRY).on(t.COUNTRY.eq(Tables.COUNTRY.NID))
                 .orderBy(Tables.BURDEN_ESTIMATE_STOCHASTIC.COUNTRY, Tables.BURDEN_OUTCOME.CODE)
                 .fetch()
     }
 
-    protected fun checkStochasticRecord(record: Record, setId: Int,
-                                        year: Int, age: Int, country: String, outcomeCode: String, outcomeValue: BigDecimal)
+    protected fun checkStochasticRecord(
+            record: Record, setId: Int,
+            year: Short, age: Short, country: String,
+            outcomeCode: String, outcomeValue: Float
+    )
     {
         val t = Tables.BURDEN_ESTIMATE_STOCHASTIC
         Assertions.assertThat(record[t.BURDEN_ESTIMATE_SET]).isEqualTo(setId)
-        Assertions.assertThat(record[t.COUNTRY]).isEqualTo(country)
+        Assertions.assertThat(record[Tables.COUNTRY.ID]).isEqualTo(country)
         Assertions.assertThat(record[t.YEAR]).isEqualTo(year)
         Assertions.assertThat(record[t.AGE]).isEqualTo(age)
         Assertions.assertThat(record[Tables.BURDEN_OUTCOME.CODE]).isEqualTo(outcomeCode)

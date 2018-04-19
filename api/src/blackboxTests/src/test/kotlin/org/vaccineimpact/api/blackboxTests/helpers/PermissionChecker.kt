@@ -73,7 +73,7 @@ class PermissionChecker(
             val scope = permission.scope as Scope.Specific
 
             println("Checking that same permission with different scope will not satisfy the requirement")
-            val badPermission = ReifiedPermission(permission.name, Scope.Specific(scope.scopePrefix, "bad-id"))
+            val badPermission = ReifiedPermission(permission.name, Scope.Specific(scope.databaseScopePrefix, "bad-id"))
             checkThesePermissionsAreInsufficient(limitedPermissions + badPermission,
                     expectedProblem, assertionText)
 

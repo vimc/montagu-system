@@ -109,6 +109,7 @@ public class Indexes {
     public static final Index BURDEN_ESTIMATE_SET_TYPE_PKEY = Indexes0.BURDEN_ESTIMATE_SET_TYPE_PKEY;
     public static final Index BURDEN_OUTCOME_CODE_KEY = Indexes0.BURDEN_OUTCOME_CODE_KEY;
     public static final Index BURDEN_OUTCOME_PKEY = Indexes0.BURDEN_OUTCOME_PKEY;
+    public static final Index COUNTRY_NID_UNIQUE = Indexes0.COUNTRY_NID_UNIQUE;
     public static final Index COUNTRY_PKEY = Indexes0.COUNTRY_PKEY;
     public static final Index COUNTRY_METADATA_PKEY = Indexes0.COUNTRY_METADATA_PKEY;
     public static final Index COUNTRY_VACCINE_METADATA_PKEY = Indexes0.COUNTRY_VACCINE_METADATA_PKEY;
@@ -203,6 +204,7 @@ public class Indexes {
         public static Index BURDEN_ESTIMATE_SET_TYPE_PKEY = Internal.createIndex("burden_estimate_set_type_pkey", BurdenEstimateSetType.BURDEN_ESTIMATE_SET_TYPE, new OrderField[] { BurdenEstimateSetType.BURDEN_ESTIMATE_SET_TYPE.CODE }, true);
         public static Index BURDEN_OUTCOME_CODE_KEY = Internal.createIndex("burden_outcome_code_key", BurdenOutcome.BURDEN_OUTCOME, new OrderField[] { BurdenOutcome.BURDEN_OUTCOME.CODE }, true);
         public static Index BURDEN_OUTCOME_PKEY = Internal.createIndex("burden_outcome_pkey", BurdenOutcome.BURDEN_OUTCOME, new OrderField[] { BurdenOutcome.BURDEN_OUTCOME.ID }, true);
+        public static Index COUNTRY_NID_UNIQUE = Internal.createIndex("country_nid_unique", Country.COUNTRY, new OrderField[] { Country.COUNTRY.NID }, true);
         public static Index COUNTRY_PKEY = Internal.createIndex("country_pkey", Country.COUNTRY, new OrderField[] { Country.COUNTRY.ID }, true);
         public static Index COUNTRY_METADATA_PKEY = Internal.createIndex("country_metadata_pkey", CountryMetadata.COUNTRY_METADATA, new OrderField[] { CountryMetadata.COUNTRY_METADATA.ID }, true);
         public static Index COUNTRY_VACCINE_METADATA_PKEY = Internal.createIndex("country_vaccine_metadata_pkey", CountryVaccineMetadata.COUNTRY_VACCINE_METADATA, new OrderField[] { CountryVaccineMetadata.COUNTRY_VACCINE_METADATA.ID }, true);

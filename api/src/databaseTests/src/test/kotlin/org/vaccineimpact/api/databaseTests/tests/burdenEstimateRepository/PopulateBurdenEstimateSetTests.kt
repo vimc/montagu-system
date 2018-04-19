@@ -201,8 +201,8 @@ class PopulateBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
             age: Int = 25,
             countryId: String = "AFG",
             countryName: String = "Afghanistan",
-            cohortSize: BigDecimal = 100.toBigDecimal(),
-            outcomes: Map<String, BigDecimal> = emptyMap()
+            cohortSize: Float = 100F,
+            outcomes: Map<String, Float> = emptyMap()
     ): BurdenEstimateWithRunId
     {
         return BurdenEstimateWithRunId(diseaseId, runId, year, age, countryId, countryName, cohortSize, outcomes)

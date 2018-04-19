@@ -167,7 +167,7 @@ public class Keys {
     public static final Identity<BurdenEstimateSetRecord, Integer> IDENTITY_BURDEN_ESTIMATE_SET = Identities0.IDENTITY_BURDEN_ESTIMATE_SET;
     public static final Identity<BurdenEstimateSetProblemRecord, Integer> IDENTITY_BURDEN_ESTIMATE_SET_PROBLEM = Identities0.IDENTITY_BURDEN_ESTIMATE_SET_PROBLEM;
     public static final Identity<BurdenEstimateStochasticRecord, Long> IDENTITY_BURDEN_ESTIMATE_STOCHASTIC = Identities0.IDENTITY_BURDEN_ESTIMATE_STOCHASTIC;
-    public static final Identity<BurdenOutcomeRecord, Integer> IDENTITY_BURDEN_OUTCOME = Identities0.IDENTITY_BURDEN_OUTCOME;
+    public static final Identity<BurdenOutcomeRecord, Short> IDENTITY_BURDEN_OUTCOME = Identities0.IDENTITY_BURDEN_OUTCOME;
     public static final Identity<CountryMetadataRecord, Integer> IDENTITY_COUNTRY_METADATA = Identities0.IDENTITY_COUNTRY_METADATA;
     public static final Identity<CountryVaccineMetadataRecord, Integer> IDENTITY_COUNTRY_VACCINE_METADATA = Identities0.IDENTITY_COUNTRY_VACCINE_METADATA;
     public static final Identity<CoverageRecord, Integer> IDENTITY_COVERAGE = Identities0.IDENTITY_COVERAGE;
@@ -220,6 +220,7 @@ public class Keys {
     public static final UniqueKey<BurdenOutcomeRecord> BURDEN_OUTCOME_PKEY = UniqueKeys0.BURDEN_OUTCOME_PKEY;
     public static final UniqueKey<BurdenOutcomeRecord> BURDEN_OUTCOME_CODE_KEY = UniqueKeys0.BURDEN_OUTCOME_CODE_KEY;
     public static final UniqueKey<CountryRecord> COUNTRY_PKEY = UniqueKeys0.COUNTRY_PKEY;
+    public static final UniqueKey<CountryRecord> COUNTRY_NID_UNIQUE = UniqueKeys0.COUNTRY_NID_UNIQUE;
     public static final UniqueKey<CountryMetadataRecord> COUNTRY_METADATA_PKEY = UniqueKeys0.COUNTRY_METADATA_PKEY;
     public static final UniqueKey<CountryVaccineMetadataRecord> COUNTRY_VACCINE_METADATA_PKEY = UniqueKeys0.COUNTRY_VACCINE_METADATA_PKEY;
     public static final UniqueKey<CoverageRecord> COVERAGE_PKEY = UniqueKeys0.COVERAGE_PKEY;
@@ -291,10 +292,10 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     public static final ForeignKey<ApiAccessLogRecord, AppUserRecord> API_ACCESS_LOG__API_ACCESS_LOG_WHO_FKEY = ForeignKeys0.API_ACCESS_LOG__API_ACCESS_LOG_WHO_FKEY;
-    public static final ForeignKey<BurdenEstimateRecord, BurdenEstimateSetRecord> BURDEN_ESTIMATE__BURDEN_ESTIMATE_BURDEN_ESTIMATE_SET_FKEY = ForeignKeys0.BURDEN_ESTIMATE__BURDEN_ESTIMATE_BURDEN_ESTIMATE_SET_FKEY;
-    public static final ForeignKey<BurdenEstimateRecord, CountryRecord> BURDEN_ESTIMATE__BURDEN_ESTIMATE_COUNTRY_FKEY = ForeignKeys0.BURDEN_ESTIMATE__BURDEN_ESTIMATE_COUNTRY_FKEY;
-    public static final ForeignKey<BurdenEstimateRecord, BurdenOutcomeRecord> BURDEN_ESTIMATE__BURDEN_ESTIMATE_BURDEN_OUTCOME_FKEY = ForeignKeys0.BURDEN_ESTIMATE__BURDEN_ESTIMATE_BURDEN_OUTCOME_FKEY;
-    public static final ForeignKey<BurdenEstimateRecord, ModelRunRecord> BURDEN_ESTIMATE__BURDEN_ESTIMATE_MODEL_RUN_FKEY = ForeignKeys0.BURDEN_ESTIMATE__BURDEN_ESTIMATE_MODEL_RUN_FKEY;
+    public static final ForeignKey<BurdenEstimateRecord, BurdenEstimateSetRecord> BURDEN_ESTIMATE__BURDEN_ESTIMATE_BURDEN_ESTIMATE_SET = ForeignKeys0.BURDEN_ESTIMATE__BURDEN_ESTIMATE_BURDEN_ESTIMATE_SET;
+    public static final ForeignKey<BurdenEstimateRecord, CountryRecord> BURDEN_ESTIMATE__BURDEN_ESTIMATE_COUNTRY_NID = ForeignKeys0.BURDEN_ESTIMATE__BURDEN_ESTIMATE_COUNTRY_NID;
+    public static final ForeignKey<BurdenEstimateRecord, BurdenOutcomeRecord> BURDEN_ESTIMATE__BURDEN_ESTIMATE_BURDEN_OUTCOME = ForeignKeys0.BURDEN_ESTIMATE__BURDEN_ESTIMATE_BURDEN_OUTCOME;
+    public static final ForeignKey<BurdenEstimateRecord, ModelRunRecord> BURDEN_ESTIMATE__BURDEN_ESTIMATE_MODEL_RUN = ForeignKeys0.BURDEN_ESTIMATE__BURDEN_ESTIMATE_MODEL_RUN;
     public static final ForeignKey<BurdenEstimateSetRecord, ModelVersionRecord> BURDEN_ESTIMATE_SET__BURDEN_ESTIMATE_SET_MODEL_VERSION_FKEY = ForeignKeys0.BURDEN_ESTIMATE_SET__BURDEN_ESTIMATE_SET_MODEL_VERSION_FKEY;
     public static final ForeignKey<BurdenEstimateSetRecord, ResponsibilityRecord> BURDEN_ESTIMATE_SET__BURDEN_ESTIMATE_SET_RESPONSIBILITY_FKEY = ForeignKeys0.BURDEN_ESTIMATE_SET__BURDEN_ESTIMATE_SET_RESPONSIBILITY_FKEY;
     public static final ForeignKey<BurdenEstimateSetRecord, AppUserRecord> BURDEN_ESTIMATE_SET__BURDEN_ESTIMATE_SET_UPLOADED_BY_FKEY = ForeignKeys0.BURDEN_ESTIMATE_SET__BURDEN_ESTIMATE_SET_UPLOADED_BY_FKEY;
@@ -409,7 +410,7 @@ public class Keys {
         public static Identity<BurdenEstimateSetRecord, Integer> IDENTITY_BURDEN_ESTIMATE_SET = Internal.createIdentity(BurdenEstimateSet.BURDEN_ESTIMATE_SET, BurdenEstimateSet.BURDEN_ESTIMATE_SET.ID);
         public static Identity<BurdenEstimateSetProblemRecord, Integer> IDENTITY_BURDEN_ESTIMATE_SET_PROBLEM = Internal.createIdentity(BurdenEstimateSetProblem.BURDEN_ESTIMATE_SET_PROBLEM, BurdenEstimateSetProblem.BURDEN_ESTIMATE_SET_PROBLEM.ID);
         public static Identity<BurdenEstimateStochasticRecord, Long> IDENTITY_BURDEN_ESTIMATE_STOCHASTIC = Internal.createIdentity(BurdenEstimateStochastic.BURDEN_ESTIMATE_STOCHASTIC, BurdenEstimateStochastic.BURDEN_ESTIMATE_STOCHASTIC.ID);
-        public static Identity<BurdenOutcomeRecord, Integer> IDENTITY_BURDEN_OUTCOME = Internal.createIdentity(BurdenOutcome.BURDEN_OUTCOME, BurdenOutcome.BURDEN_OUTCOME.ID);
+        public static Identity<BurdenOutcomeRecord, Short> IDENTITY_BURDEN_OUTCOME = Internal.createIdentity(BurdenOutcome.BURDEN_OUTCOME, BurdenOutcome.BURDEN_OUTCOME.ID);
         public static Identity<CountryMetadataRecord, Integer> IDENTITY_COUNTRY_METADATA = Internal.createIdentity(CountryMetadata.COUNTRY_METADATA, CountryMetadata.COUNTRY_METADATA.ID);
         public static Identity<CountryVaccineMetadataRecord, Integer> IDENTITY_COUNTRY_VACCINE_METADATA = Internal.createIdentity(CountryVaccineMetadata.COUNTRY_VACCINE_METADATA, CountryVaccineMetadata.COUNTRY_VACCINE_METADATA.ID);
         public static Identity<CoverageRecord, Integer> IDENTITY_COVERAGE = Internal.createIdentity(Coverage.COVERAGE, Coverage.COVERAGE.ID);
@@ -460,6 +461,7 @@ public class Keys {
         public static final UniqueKey<BurdenOutcomeRecord> BURDEN_OUTCOME_PKEY = Internal.createUniqueKey(BurdenOutcome.BURDEN_OUTCOME, "burden_outcome_pkey", BurdenOutcome.BURDEN_OUTCOME.ID);
         public static final UniqueKey<BurdenOutcomeRecord> BURDEN_OUTCOME_CODE_KEY = Internal.createUniqueKey(BurdenOutcome.BURDEN_OUTCOME, "burden_outcome_code_key", BurdenOutcome.BURDEN_OUTCOME.CODE);
         public static final UniqueKey<CountryRecord> COUNTRY_PKEY = Internal.createUniqueKey(Country.COUNTRY, "country_pkey", Country.COUNTRY.ID);
+        public static final UniqueKey<CountryRecord> COUNTRY_NID_UNIQUE = Internal.createUniqueKey(Country.COUNTRY, "country_nid_unique", Country.COUNTRY.NID);
         public static final UniqueKey<CountryMetadataRecord> COUNTRY_METADATA_PKEY = Internal.createUniqueKey(CountryMetadata.COUNTRY_METADATA, "country_metadata_pkey", CountryMetadata.COUNTRY_METADATA.ID);
         public static final UniqueKey<CountryVaccineMetadataRecord> COUNTRY_VACCINE_METADATA_PKEY = Internal.createUniqueKey(CountryVaccineMetadata.COUNTRY_VACCINE_METADATA, "country_vaccine_metadata_pkey", CountryVaccineMetadata.COUNTRY_VACCINE_METADATA.ID);
         public static final UniqueKey<CoverageRecord> COVERAGE_PKEY = Internal.createUniqueKey(Coverage.COVERAGE, "coverage_pkey", Coverage.COVERAGE.ID);
@@ -529,10 +531,10 @@ public class Keys {
 
     private static class ForeignKeys0 {
         public static final ForeignKey<ApiAccessLogRecord, AppUserRecord> API_ACCESS_LOG__API_ACCESS_LOG_WHO_FKEY = Internal.createForeignKey(org.vaccineimpact.api.db.Keys.APP_USER_PKEY, ApiAccessLog.API_ACCESS_LOG, "api_access_log__api_access_log_who_fkey", ApiAccessLog.API_ACCESS_LOG.WHO);
-        public static final ForeignKey<BurdenEstimateRecord, BurdenEstimateSetRecord> BURDEN_ESTIMATE__BURDEN_ESTIMATE_BURDEN_ESTIMATE_SET_FKEY = Internal.createForeignKey(org.vaccineimpact.api.db.Keys.BURDEN_ESTIMATE_SET_PKEY, BurdenEstimate.BURDEN_ESTIMATE, "burden_estimate__burden_estimate_burden_estimate_set_fkey", BurdenEstimate.BURDEN_ESTIMATE.BURDEN_ESTIMATE_SET);
-        public static final ForeignKey<BurdenEstimateRecord, CountryRecord> BURDEN_ESTIMATE__BURDEN_ESTIMATE_COUNTRY_FKEY = Internal.createForeignKey(org.vaccineimpact.api.db.Keys.COUNTRY_PKEY, BurdenEstimate.BURDEN_ESTIMATE, "burden_estimate__burden_estimate_country_fkey", BurdenEstimate.BURDEN_ESTIMATE.COUNTRY);
-        public static final ForeignKey<BurdenEstimateRecord, BurdenOutcomeRecord> BURDEN_ESTIMATE__BURDEN_ESTIMATE_BURDEN_OUTCOME_FKEY = Internal.createForeignKey(org.vaccineimpact.api.db.Keys.BURDEN_OUTCOME_PKEY, BurdenEstimate.BURDEN_ESTIMATE, "burden_estimate__burden_estimate_burden_outcome_fkey", BurdenEstimate.BURDEN_ESTIMATE.BURDEN_OUTCOME);
-        public static final ForeignKey<BurdenEstimateRecord, ModelRunRecord> BURDEN_ESTIMATE__BURDEN_ESTIMATE_MODEL_RUN_FKEY = Internal.createForeignKey(org.vaccineimpact.api.db.Keys.MODEL_RUN_PKEY, BurdenEstimate.BURDEN_ESTIMATE, "burden_estimate__burden_estimate_model_run_fkey", BurdenEstimate.BURDEN_ESTIMATE.MODEL_RUN);
+        public static final ForeignKey<BurdenEstimateRecord, BurdenEstimateSetRecord> BURDEN_ESTIMATE__BURDEN_ESTIMATE_BURDEN_ESTIMATE_SET = Internal.createForeignKey(org.vaccineimpact.api.db.Keys.BURDEN_ESTIMATE_SET_PKEY, BurdenEstimate.BURDEN_ESTIMATE, "burden_estimate__burden_estimate_burden_estimate_set", BurdenEstimate.BURDEN_ESTIMATE.BURDEN_ESTIMATE_SET);
+        public static final ForeignKey<BurdenEstimateRecord, CountryRecord> BURDEN_ESTIMATE__BURDEN_ESTIMATE_COUNTRY_NID = Internal.createForeignKey(org.vaccineimpact.api.db.Keys.COUNTRY_NID_UNIQUE, BurdenEstimate.BURDEN_ESTIMATE, "burden_estimate__burden_estimate_country_nid", BurdenEstimate.BURDEN_ESTIMATE.COUNTRY);
+        public static final ForeignKey<BurdenEstimateRecord, BurdenOutcomeRecord> BURDEN_ESTIMATE__BURDEN_ESTIMATE_BURDEN_OUTCOME = Internal.createForeignKey(org.vaccineimpact.api.db.Keys.BURDEN_OUTCOME_PKEY, BurdenEstimate.BURDEN_ESTIMATE, "burden_estimate__burden_estimate_burden_outcome", BurdenEstimate.BURDEN_ESTIMATE.BURDEN_OUTCOME);
+        public static final ForeignKey<BurdenEstimateRecord, ModelRunRecord> BURDEN_ESTIMATE__BURDEN_ESTIMATE_MODEL_RUN = Internal.createForeignKey(org.vaccineimpact.api.db.Keys.MODEL_RUN_PKEY, BurdenEstimate.BURDEN_ESTIMATE, "burden_estimate__burden_estimate_model_run", BurdenEstimate.BURDEN_ESTIMATE.MODEL_RUN);
         public static final ForeignKey<BurdenEstimateSetRecord, ModelVersionRecord> BURDEN_ESTIMATE_SET__BURDEN_ESTIMATE_SET_MODEL_VERSION_FKEY = Internal.createForeignKey(org.vaccineimpact.api.db.Keys.MODEL_VERSION_PKEY, BurdenEstimateSet.BURDEN_ESTIMATE_SET, "burden_estimate_set__burden_estimate_set_model_version_fkey", BurdenEstimateSet.BURDEN_ESTIMATE_SET.MODEL_VERSION);
         public static final ForeignKey<BurdenEstimateSetRecord, ResponsibilityRecord> BURDEN_ESTIMATE_SET__BURDEN_ESTIMATE_SET_RESPONSIBILITY_FKEY = Internal.createForeignKey(org.vaccineimpact.api.db.Keys.RESPONSIBILITY_PKEY, BurdenEstimateSet.BURDEN_ESTIMATE_SET, "burden_estimate_set__burden_estimate_set_responsibility_fkey", BurdenEstimateSet.BURDEN_ESTIMATE_SET.RESPONSIBILITY);
         public static final ForeignKey<BurdenEstimateSetRecord, AppUserRecord> BURDEN_ESTIMATE_SET__BURDEN_ESTIMATE_SET_UPLOADED_BY_FKEY = Internal.createForeignKey(org.vaccineimpact.api.db.Keys.APP_USER_PKEY, BurdenEstimateSet.BURDEN_ESTIMATE_SET, "burden_estimate_set__burden_estimate_set_uploaded_by_fkey", BurdenEstimateSet.BURDEN_ESTIMATE_SET.UPLOADED_BY);

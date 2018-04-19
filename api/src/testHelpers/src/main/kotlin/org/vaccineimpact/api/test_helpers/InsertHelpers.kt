@@ -221,10 +221,10 @@ fun JooqContext.addBurdenEstimateSet(
 fun JooqContext.addBurdenEstimate(
         setId: Int,
         country: String,
-        year: Int = 2000,
-        age: Int = 20,
+        year: Short = 2000,
+        age: Short = 20,
         outcome: String = "cohort_size",
-        value: BigDecimal = 100.toDecimal(),
+        value: Float = 100F,
         modelRunId: Int? = null
 ): Int
 {
@@ -232,9 +232,10 @@ fun JooqContext.addBurdenEstimate(
             .from(BURDEN_OUTCOME)
             .where(BURDEN_OUTCOME.CODE.eq(outcome))
             .fetchOne().value1()
+    val countryId = this.dsl.fetchOne(COUNTRY, COUNTRY.ID.eq(country)).nid
     val record = this.dsl.newRecord(BURDEN_ESTIMATE).apply {
         this.burdenEstimateSet = setId
-        this.country = country
+        this.country = countryId
         this.year = year
         this.age = age
         this.burdenOutcome = outcomeId
@@ -249,10 +250,10 @@ fun AnnexJooqContext.addStochasticBurdenEstimate(
         mainDb: JooqContext,
         setId: Int,
         country: String,
-        year: Int = 2000,
-        age: Int = 20,
+        year: Short = 2000,
+        age: Short = 20,
         outcome: String = "cohort_size",
-        value: BigDecimal = 100.toDecimal(),
+        value: Float = 100F,
         modelRunId: Int = 1
 ): Long
 {
@@ -260,9 +261,10 @@ fun AnnexJooqContext.addStochasticBurdenEstimate(
             .from(BURDEN_OUTCOME)
             .where(BURDEN_OUTCOME.CODE.eq(outcome))
             .fetchOne().value1()
+    var countryId = mainDb.dsl.fetchOne(COUNTRY, COUNTRY.ID.eq(country)).nid
     val record = this.dsl.newRecord(BURDEN_ESTIMATE_STOCHASTIC).apply {
         this.burdenEstimateSet = setId
-        this.country = country
+        this.country = countryId
         this.year = year
         this.age = age
         this.burdenOutcome = outcomeId
@@ -428,12 +430,14 @@ fun JooqContext.addFocalCoverageSetToScenario(scenarioDescription: String, touch
             .execute()
 }
 
+private var countryNID: Short = 1000
 fun JooqContext.addCountries(ids: List<String>)
 {
     val records = ids.map {
         this.dsl.newRecord(COUNTRY).apply {
             this.id = it
             this.name = "$it-Name"
+            this.nid = countryNID++
         }
     }
     this.dsl.batchStore(records).execute()
