@@ -31,7 +31,7 @@ abstract class BurdenEstimateWriter(
 
     open fun addEstimatesToSet(setId: Int, estimates: Sequence<BurdenEstimateWithRunId>, expectedDisease: String)
     {
-        val countries = getAllCountryIds()
+        val countryLookup = getCountriesAsLookup()
         val outcomeLookup = getOutcomesAsLookup()
         val modelRuns = getModelRunsAsLookup(setId)
         val modelRunParameterId = getModelRunParameterSetId(setId)
@@ -59,7 +59,7 @@ abstract class BurdenEstimateWriter(
                         // the other thread ("too far ahead" meaning the buffer on the input stream is full)
                         writeCopyData(
                                 outcomeLookup,
-                                countries,
+                                countryLookup,
                                 modelRuns,
                                 modelRunParameterId,
                                 stream,
@@ -89,9 +89,15 @@ abstract class BurdenEstimateWriter(
         return readDatabaseDSL.fetchAny(table, setField.eq(setId)) == null
     }
 
-    private fun writeCopyData(outcomeLookup: Map<String, Int>, countries: HashSet<String>, modelRuns: Map<String, Int>, modelRunParameterSetId: Int?,
-                              stream: OutputStream, estimates: Sequence<BurdenEstimateWithRunId>,
-                              expectedDisease: String, setId: Int
+    private fun writeCopyData(
+            outcomeLookup: Map<String, Short>,
+            countries: Map<String, Short>,
+            modelRuns: Map<String, Int>,
+            modelRunParameterSetId: Int?,
+            stream: OutputStream,
+            estimates: Sequence<BurdenEstimateWithRunId>,
+            expectedDisease: String,
+            setId: Int
     )
     {
         // When we exit the 'use' block the EOF character will be written out,
@@ -106,18 +112,16 @@ abstract class BurdenEstimateWriter(
                 {
                     throw InconsistentDataError("Provided estimate lists disease as '${estimate.disease}' but scenario is for disease '$expectedDisease'")
                 }
-                if (estimate.country !in countries)
-                {
-                    throw UnknownObjectError(estimate.country, "country")
-                }
+                val countryId = countries[estimate.country]
+                    ?: throw UnknownObjectError(estimate.country, "country")
                 val modelRun = resolveRunId(modelRuns, modelRunParameterSetId, estimate.runId)
 
-                writer.writeRow(newBurdenEstimateRow(setId, modelRun, estimate, cohortSizeId, estimate.cohortSize))
+                writer.writeRow(newBurdenEstimateRow(setId, modelRun, estimate, countryId, cohortSizeId, estimate.cohortSize))
                 for (outcome in estimate.outcomes)
                 {
                     val outcomeId = outcomeLookup[outcome.key]
                             ?: throw UnknownObjectError(outcome.key, "burden-outcome")
-                    writer.writeRow(newBurdenEstimateRow(setId, modelRun, estimate, outcomeId, outcome.value))
+                    writer.writeRow(newBurdenEstimateRow(setId, modelRun, estimate, countryId, outcomeId, outcome.value))
                 }
             }
         }
@@ -127,14 +131,15 @@ abstract class BurdenEstimateWriter(
             setId: Int,
             modelRun: Int?,
             estimate: BurdenEstimateWithRunId,
-            outcomeId: Int,
-            outcomeValue: BigDecimal?
+            countryId: Short,
+            outcomeId: Short,
+            outcomeValue: Float?
     ): List<Any?>
     {
         return listOf(
                 setId,
                 modelRun,
-                estimate.country,
+                countryId,
                 estimate.year,
                 estimate.age,
                 outcomeId,
@@ -164,13 +169,12 @@ abstract class BurdenEstimateWriter(
                     .fetch()
                     .singleOrNull()?.value1()
 
-    private fun getAllCountryIds() = readDatabaseDSL.select(Tables.COUNTRY.ID)
+    private fun getCountriesAsLookup(): Map<String, Short> = readDatabaseDSL.select(Tables.COUNTRY.ID, Tables.COUNTRY.NID)
             .from(Tables.COUNTRY)
             .fetch()
-            .map { it[Tables.COUNTRY.ID] }
-            .toHashSet()
+            .intoMap(Tables.COUNTRY.ID, Tables.COUNTRY.NID)
 
-    private fun getOutcomesAsLookup(): Map<String, Int>
+    private fun getOutcomesAsLookup(): Map<String, Short>
     {
         return readDatabaseDSL.select(Tables.BURDEN_OUTCOME.CODE, Tables.BURDEN_OUTCOME.ID)
                 .from(Tables.BURDEN_OUTCOME)

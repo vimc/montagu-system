@@ -4,7 +4,6 @@
 package org.vaccineimpact.api.db.tables;
 
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
@@ -40,7 +39,7 @@ import org.vaccineimpact.api.db.tables.records.BurdenEstimateRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class BurdenEstimate extends TableImpl<BurdenEstimateRecord> {
 
-    private static final long serialVersionUID = 618730725;
+    private static final long serialVersionUID = 187868602;
 
     /**
      * The reference instance of <code>public.burden_estimate</code>
@@ -58,7 +57,7 @@ public class BurdenEstimate extends TableImpl<BurdenEstimateRecord> {
     /**
      * The column <code>public.burden_estimate.id</code>.
      */
-    public final TableField<BurdenEstimateRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('burden_estimate_id_seq'::regclass)", org.jooq.impl.SQLDataType.INTEGER)), this, "");
+    public final TableField<BurdenEstimateRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('burden_estimate_new_id_seq'::regclass)", org.jooq.impl.SQLDataType.INTEGER)), this, "");
 
     /**
      * The column <code>public.burden_estimate.burden_estimate_set</code>.
@@ -68,27 +67,27 @@ public class BurdenEstimate extends TableImpl<BurdenEstimateRecord> {
     /**
      * The column <code>public.burden_estimate.country</code>.
      */
-    public final TableField<BurdenEstimateRecord, String> COUNTRY = createField("country", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<BurdenEstimateRecord, Short> COUNTRY = createField("country", org.jooq.impl.SQLDataType.SMALLINT.nullable(false), this, "");
 
     /**
      * The column <code>public.burden_estimate.year</code>.
      */
-    public final TableField<BurdenEstimateRecord, Integer> YEAR = createField("year", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<BurdenEstimateRecord, Short> YEAR = createField("year", org.jooq.impl.SQLDataType.SMALLINT.nullable(false), this, "");
 
     /**
      * The column <code>public.burden_estimate.burden_outcome</code>.
      */
-    public final TableField<BurdenEstimateRecord, Integer> BURDEN_OUTCOME = createField("burden_outcome", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<BurdenEstimateRecord, Short> BURDEN_OUTCOME = createField("burden_outcome", org.jooq.impl.SQLDataType.SMALLINT.nullable(false), this, "");
 
     /**
      * The column <code>public.burden_estimate.value</code>.
      */
-    public final TableField<BurdenEstimateRecord, BigDecimal> VALUE = createField("value", org.jooq.impl.SQLDataType.NUMERIC, this, "");
+    public final TableField<BurdenEstimateRecord, Float> VALUE = createField("value", org.jooq.impl.SQLDataType.REAL, this, "");
 
     /**
      * The column <code>public.burden_estimate.age</code>.
      */
-    public final TableField<BurdenEstimateRecord, Integer> AGE = createField("age", org.jooq.impl.SQLDataType.INTEGER, this, "");
+    public final TableField<BurdenEstimateRecord, Short> AGE = createField("age", org.jooq.impl.SQLDataType.SMALLINT, this, "");
 
     /**
      * The column <code>public.burden_estimate.model_run</code>.
@@ -169,7 +168,7 @@ public class BurdenEstimate extends TableImpl<BurdenEstimateRecord> {
      */
     @Override
     public List<ForeignKey<BurdenEstimateRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<BurdenEstimateRecord, ?>>asList(Keys.BURDEN_ESTIMATE__BURDEN_ESTIMATE_BURDEN_ESTIMATE_SET_FKEY, Keys.BURDEN_ESTIMATE__BURDEN_ESTIMATE_COUNTRY_FKEY, Keys.BURDEN_ESTIMATE__BURDEN_ESTIMATE_BURDEN_OUTCOME_FKEY, Keys.BURDEN_ESTIMATE__BURDEN_ESTIMATE_MODEL_RUN_FKEY);
+        return Arrays.<ForeignKey<BurdenEstimateRecord, ?>>asList(Keys.BURDEN_ESTIMATE__BURDEN_ESTIMATE_BURDEN_ESTIMATE_SET, Keys.BURDEN_ESTIMATE__BURDEN_ESTIMATE_COUNTRY_NID, Keys.BURDEN_ESTIMATE__BURDEN_ESTIMATE_BURDEN_OUTCOME, Keys.BURDEN_ESTIMATE__BURDEN_ESTIMATE_MODEL_RUN);
     }
 
     /**

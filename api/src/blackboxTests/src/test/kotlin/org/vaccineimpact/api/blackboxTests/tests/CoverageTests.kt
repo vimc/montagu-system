@@ -120,22 +120,22 @@ class CoverageTests : DatabaseTest()
 
         val expected = listOf(
                 TestWideCoverageRow(scenarioId, "First", "AF", "no gavi", "routine",
-                        "AAA", "AAA-Name", 2.toDecimal(), 4.toDecimal(), "<NA>", yearMap),
+                        "AAA", "AAA-Name", 2, 4, "<NA>", yearMap),
                 // first order by vaccine
                 TestWideCoverageRow(scenarioId, "Second", "BF", "no gavi", "campaign",
-                        "AAA", "AAA-Name", 1.toDecimal(), 2.toDecimal(), "<NA>", yearMap),
+                        "AAA", "AAA-Name", 1, 2, "<NA>", yearMap),
                 // then by activity type
                 TestWideCoverageRow(scenarioId, "Third", "BF", "no gavi", "routine",
-                        "AAA", "AAA-Name", 1.toDecimal(), 2.toDecimal(), "<NA>", yearMap),
+                        "AAA", "AAA-Name", 1, 2, "<NA>", yearMap),
                 // then by country
                 TestWideCoverageRow(scenarioId, "Third", "BF", "no gavi", "routine",
-                        "BBB", "BBB-Name", 1.toDecimal(), 2.toDecimal(), "<NA>", yearMap),
+                        "BBB", "BBB-Name", 1, 2, "<NA>", yearMap),
                 // then by age first
                 TestWideCoverageRow(scenarioId, "Third", "BF", "no gavi", "routine",
-                        "BBB", "BBB-Name", 2.toDecimal(), 2.toDecimal(), "<NA>", yearMap),
+                        "BBB", "BBB-Name", 2, 2, "<NA>", yearMap),
                 // then by age last
                 TestWideCoverageRow(scenarioId, "Third", "BF", "no gavi", "routine",
-                        "BBB", "BBB-Name", 2.toDecimal(), 4.toDecimal(), "<NA>", yearMap)
+                        "BBB", "BBB-Name", 2, 4, "<NA>", yearMap)
         )
 
         val rows = DataTableDeserializer.deserialize(response.text, TestWideCoverageRow::class)
@@ -213,8 +213,8 @@ class CoverageTests : DatabaseTest()
             val activityType: String,
             val countryCode: String,
             val country: String,
-            val ageFirst: BigDecimal?,
-            val ageLast: BigDecimal?,
+            val ageFirst: Int?,
+            val ageLast: Int?,
             val ageRangeVerbatim: String?,
             val coverageAndTargetPerYear: Map<String, String?>
     )

@@ -85,11 +85,18 @@ open class DataTableDeserializer<out T>(
         }
         catch (e: Exception)
         {
+            if (e is UnsupportedOperationException)
+            {
+                throw e
+            }
+
             val oneIndexedRow = row + 1
+
             problems.add(ErrorInfo(
                     "csv-bad-data-type:$oneIndexedRow:$column",
                     "Unable to parse '$trimmed' as ${targetType.toString().replace("kotlin.", "")} (Row $oneIndexedRow, column $column)"
             ))
+
             null
         }
     }

@@ -36,7 +36,7 @@ import org.vaccineimpact.api.db.tables.records.UserLegalAgreementRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserLegalAgreement extends TableImpl<UserLegalAgreementRecord> {
 
-    private static final long serialVersionUID = 1755464472;
+    private static final long serialVersionUID = 1168419857;
 
     /**
      * The reference instance of <code>public.user_legal_agreement</code>
@@ -64,7 +64,7 @@ public class UserLegalAgreement extends TableImpl<UserLegalAgreementRecord> {
     /**
      * The column <code>public.user_legal_agreement.date</code>.
      */
-    public final TableField<UserLegalAgreementRecord, Timestamp> DATE = createField("date", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.field("now()", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<UserLegalAgreementRecord, Timestamp> DATE = createField("date", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
      * Create a <code>public.user_legal_agreement</code> table reference

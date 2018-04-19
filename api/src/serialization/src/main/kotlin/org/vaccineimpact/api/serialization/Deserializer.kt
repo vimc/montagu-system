@@ -1,7 +1,6 @@
 package org.vaccineimpact.api.serialization
 
 import java.lang.UnsupportedOperationException
-import java.math.BigDecimal
 import kotlin.reflect.KType
 import kotlin.reflect.full.createType
 import kotlin.reflect.full.withNullability
@@ -32,7 +31,7 @@ class Deserializer
         {
             String::class.createType() -> raw
             Int::class.createType() -> raw.toInt()
-            BigDecimal::class.createType() -> BigDecimal(raw)
+            Float::class.createType() -> raw.toFloat()
             else -> throw UnsupportedOperationException("org.vaccineimpact.api.serialization.Deserializer does not support target type $targetType")
         }
     }
