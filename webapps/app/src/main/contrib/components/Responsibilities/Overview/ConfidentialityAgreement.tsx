@@ -24,7 +24,7 @@ export class ConfidentialityAgreementComponent extends React.Component<Confident
     }
 
     onChange(e: ChangeEvent<HTMLInputElement>) {
-        console.log(e)
+
         this.setState({
             checked: e.target.checked
         })
