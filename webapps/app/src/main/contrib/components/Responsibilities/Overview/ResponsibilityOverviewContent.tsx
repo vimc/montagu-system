@@ -9,11 +9,9 @@ import {connectToStores} from "../../../../shared/alt";
 import {ButtonLink} from "../../../../shared/components/ButtonLink";
 
 import {ResponsibilitySetStatusMessage} from "./ResponsibilitySetStatusMessage";
-import {ContribAppState} from "../../../reducers/contribAppReducers";
-import {connect} from "react-redux";
-import {branch, compose, renderNothing} from "recompose";
 import {settings} from "../../../../shared/Settings";
 import {ResponsibilityOverviewDescription} from "./ResponsibilityOverviewDescription";
+import {withConfidentialityAgreement} from "./ConfidentialityAgreement";
 
 const stochasticParams = require('./stochastic_template_params.csv');
 
@@ -78,22 +76,9 @@ export class ResponsibilityOverviewContentComponent extends RemoteContentCompone
 
 export const ResponsibilityOverviewContentAltComponent = connectToStores(ResponsibilityOverviewContentComponent);
 
-export const mapStateToProps = (state: ContribAppState, props: ResponsibilityOverviewPublicProps)
-    : ResponsibilityOverviewProps => {
-    return {
-        canView: (state.user.signedConfidentialityAgreement ||
-        !settings.isApplicantTouchstone(props.touchstoneId))
-    }
-};
-
 interface ResponsibilityOverviewPublicProps{
     touchstoneId: string
 }
 
-export const enhance = compose<{}, ResponsibilityOverviewPublicProps>(
-    connect(mapStateToProps),
-    branch((props: ResponsibilityOverviewProps) => !props.canView, renderNothing)
-);
-
 export const ResponsibilityOverviewContent =
-    enhance(ResponsibilityOverviewContentAltComponent);
+    withConfidentialityAgreement<ResponsibilityOverviewPublicProps>(ResponsibilityOverviewContentAltComponent);

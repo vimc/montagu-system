@@ -7,7 +7,11 @@ export class UserService extends AbstractLocalService {
     }
 
     getConfidentiality() {
-        return this.get("/users/rfp/agree-confidentiality/");
+        return this.setOptions({cacheKey: UserCacheKeysEnum.signedConfidentiality})
+            .get("/users/rfp/agree-confidentiality/");
     }
+}
 
+export enum UserCacheKeysEnum {
+    signedConfidentiality = "signedConfidentiality"
 }

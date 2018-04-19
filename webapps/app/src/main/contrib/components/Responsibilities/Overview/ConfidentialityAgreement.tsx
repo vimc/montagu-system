@@ -1,26 +1,40 @@
 import * as React from "react";
 import {settings} from "../../../../shared/Settings";
 import {connect} from "react-redux";
-import {branch, compose, renderNothing} from "recompose";
+import {branch, compose, renderComponent, renderNothing} from "recompose";
 import {Dispatch} from "redux";
 import {ContribAppState} from "../../../reducers/contribAppReducers";
 import {default as withLifecycle, LifecycleMethods} from "@hocs/with-lifecycle";
 import {userActionCreators} from "../../../actions/userActionCreators";
+import {ChangeEvent} from "react";
+import {LoadingElement} from "../../../../shared/partials/LoadingElement/LoadingElement";
 
-export interface ConfidentialityAgreementPublicProps {
-    touchstoneId: string;
-}
-
-export interface ConfidentialityAgreementProps extends ConfidentialityAgreementPublicProps {
-    signAgreement: () => void;
-    signed?: boolean;
-    getConfidentiality: () => void;
+interface State {
+    checked: boolean;
 }
 
 const fullConfidentialityAgreement = require('./rfp-applicants-confidentiality.pdf');
 
-export const ConfidentialityAgreementComponent: React.SFC<ConfidentialityAgreementProps>
-    = (props: ConfidentialityAgreementProps) => {
+export class ConfidentialityAgreementComponent extends React.Component<ConfidentialityProps, State> {
+
+    constructor() {
+        super();
+        this.state = {checked: false};
+        this.onChange = this.onChange.bind(this)
+    }
+
+    onChange(e: ChangeEvent<HTMLInputElement>) {
+        console.log(e)
+        this.setState({
+            checked: e.target.checked
+        })
+    }
+
+    componentDidMount() {
+        this.props.getConfidentiality();
+    }
+
+    render() {
         return <div className={"row"}>
             <div className={"col-12 col-md-6 offset-md-3"}>
                 <div className={"border p-3 border-dark mb-5"}>
@@ -28,23 +42,34 @@ export const ConfidentialityAgreementComponent: React.SFC<ConfidentialityAgreeme
                     RfP applicants' confidentiality agreement</a>. In doing so, I understand and agree not to disclose
                     or share any information on vaccine coverage data which I access from Montagu,
                     beyond my immediate RfP modelling group.
-                    {props.signed == false &&
                     <input type={"checkbox"} className={"mt-2 mb-2 d-block"}
-                           onChange={props.signAgreement} style={{height: "20px", width: "20px"}}/>
+                           style={{height: "20px", width: "20px"}} checked={this.state.checked}
+                           onChange={this.onChange}/>
+                    {this.state.checked &&
+                    <button className="btn-success" onClick={this.props.signAgreement}>Submit</button>
                     }
                 </div>
             </div>
         </div>
-};
-
-const lifecyleProps: Partial<LifecycleMethods<ConfidentialityAgreementProps>> = {
-    onDidMount(props: ConfidentialityAgreementProps) {
-        props.getConfidentiality();
     }
-};
+
+}
+
+export interface ConfidentialityPublicProps {
+    touchstoneId: string;
+}
+
+interface ConfidentialityPropsFromState extends ConfidentialityPublicProps {
+    signed?: boolean;
+}
+
+interface ConfidentialityProps extends ConfidentialityPropsFromState {
+    signAgreement: () => void;
+    getConfidentiality: () => void;
+}
 
 const mapStateToProps
-    = (state: ContribAppState, props: ConfidentialityAgreementPublicProps): Partial<ConfidentialityAgreementProps> => {
+    = (state: ContribAppState, props: ConfidentialityPublicProps): ConfidentialityPropsFromState => {
     return {
         ...props,
         signed: state.user.signedConfidentialityAgreement
@@ -52,7 +77,7 @@ const mapStateToProps
 };
 
 const mapDispatchToProps
-    = (dispatch: Dispatch<ContribAppState>, props: ConfidentialityAgreementProps): ConfidentialityAgreementProps => {
+    = (dispatch: Dispatch<ContribAppState>, props: ConfidentialityPropsFromState): ConfidentialityProps => {
     return {
         ...props,
         getConfidentiality: () => dispatch(userActionCreators.getConfidentialityAgreement()),
@@ -60,13 +85,23 @@ const mapDispatchToProps
     }
 };
 
-const enhance = compose<ConfidentialityAgreementPublicProps, ConfidentialityAgreementPublicProps>(
-    connect(mapStateToProps, mapDispatchToProps),
-    withLifecycle(lifecyleProps),
-    branch((props: ConfidentialityAgreementProps) =>
-        !settings.isApplicantTouchstone(props.touchstoneId), renderNothing)
-);
+const lifecyleProps: Partial<LifecycleMethods<ConfidentialityProps>> = {
+    onDidMount(props: ConfidentialityProps) {
+        props.getConfidentiality();
+    }
+};
 
-export const ConfidentialityAgreement = enhance(ConfidentialityAgreementComponent);
+export function withConfidentialityAgreement<TOuter extends ConfidentialityPublicProps>(WrappedComponent: ComponentConstructor<any, any>) {
+    return compose<ConfidentialityPropsFromState, TOuter>(
+        connect(mapStateToProps, mapDispatchToProps),
+        withLifecycle(lifecyleProps),
+        branch((props: ConfidentialityProps) =>
+            settings.isApplicantTouchstone(props.touchstoneId) && !props.signed,
+            branch((props: ConfidentialityPropsFromState) => props.signed == false,
+                renderComponent(ConfidentialityAgreementComponent),
+                renderComponent(LoadingElement)))
+    )(WrappedComponent)
+}
+
 
 

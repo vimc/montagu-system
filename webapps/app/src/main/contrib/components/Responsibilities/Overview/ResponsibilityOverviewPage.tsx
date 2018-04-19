@@ -7,7 +7,6 @@ import {ContribPageWithHeader} from "../../PageWithHeader/ContribPageWithHeader"
 import {ChooseActionPage} from "../../ChooseAction/ChooseActionPage";
 import {IPageWithParent} from "../../../../shared/models/Breadcrumb";
 import { Page } from "../../../../shared/components/PageWithHeader/Page";
-import {ConfidentialityAgreement} from "./ConfidentialityAgreement";
 
 interface LocationProps {
     groupId: string;
@@ -42,7 +41,6 @@ export class ResponsibilityOverviewPage extends ContribPageWithHeader<LocationPr
 
     render() :JSX.Element {
         return <Page page={this}>
-            <ConfidentialityAgreement touchstoneId={this.props.match.params.touchstoneId}/>
             <ResponsibilityOverviewContent touchstoneId={this.props.match.params.touchstoneId} />
         </Page>;
     }

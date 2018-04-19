@@ -3,7 +3,6 @@ import {Sandbox} from "../../../Sandbox";
 import {shallow} from "enzyme";
 import {expect} from "chai"
 import {
-    enhance,
     ResponsibilityOverviewComponentProps,
     ResponsibilityOverviewContentComponent
 } from "../../../../main/contrib/components/Responsibilities/Overview/ResponsibilityOverviewContent";
@@ -67,43 +66,6 @@ describe('ResponsibilityOverviewContent', () => {
         const rendered = shallow(<ResponsibilityOverviewContentComponent {...makeProps("something")} />);
         const description = rendered.find(ResponsibilityOverviewDescription);
         expect(description).to.have.lengthOf(1)
-    });
-
-    const testClass: React.StatelessComponent<any> =
-        () => {
-            return <div>Test content</div>
-        };
-
-
-    it("renders nothing if touchstone is rfp and confidentiality unsigned", () => {
-
-        const store = createMockStore(fakeState);
-
-        const WrappedComponent = enhance(testClass);
-        const rendered = shallow(<WrappedComponent touchstoneId={"rfp-"}/>,
-            {context: {store}}).dive();
-        expect(rendered.find(testClass)).to.have.lengthOf(0)
-    });
-
-    it("renders if touchstone is not rfp", () => {
-
-        const store = createMockStore(fakeState);
-
-        const WrappedComponent = enhance(testClass);
-        const rendered = shallow(<WrappedComponent touchstoneId={"somethingelse"}/>,
-            {context: {store}}).dive();
-        expect(rendered.find(testClass)).to.have.lengthOf(1)
-    });
-
-    it("renders if confidentiality is signed", () => {
-
-        fakeState.user.signedConfidentialityAgreement = true;
-        const store = createMockStore(fakeState);
-
-        const WrappedComponent = enhance(testClass);
-        const rendered = shallow(<WrappedComponent touchstoneId={"rfp-"}/>,
-            {context: {store}}).dive();
-        expect(rendered.find(testClass)).to.have.lengthOf(1)
     });
 
 });
