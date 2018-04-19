@@ -91,16 +91,19 @@ const lifecyleProps: Partial<LifecycleMethods<ConfidentialityProps>> = {
     }
 };
 
+const renderConfidentialityAgreementOrLoadingElement =
+    branch((props: ConfidentialityPropsFromState) => props.signed == false,
+        renderComponent(ConfidentialityAgreementComponent),
+        renderComponent(LoadingElement));
+
 export function withConfidentialityAgreement<TOuter extends ConfidentialityPublicProps>(WrappedComponent: ComponentConstructor<any, any>) {
     return compose<ConfidentialityPropsFromState, TOuter>(
         connect(mapStateToProps, mapDispatchToProps),
         withLifecycle(lifecyleProps),
         branch((props: ConfidentialityProps) =>
             settings.isApplicantTouchstone(props.touchstoneId) && !props.signed,
-            branch((props: ConfidentialityPropsFromState) => props.signed == false,
-                renderComponent(ConfidentialityAgreementComponent),
-                renderComponent(LoadingElement)))
-    )(WrappedComponent)
+            renderConfidentialityAgreementOrLoadingElement
+        ))(WrappedComponent)
 }
 
 
