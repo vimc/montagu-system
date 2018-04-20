@@ -1,6 +1,7 @@
+import * as React from "react";
+
 import {ResponsibilitySetStatus} from "../../../../shared/models/Generated";
 import {ReviewedAndApprovedMessage} from "./List/CurrentEstimateSetSummary";
-import * as React from "react";
 import {settings} from "../../../../shared/Settings";
 
 interface Props {
