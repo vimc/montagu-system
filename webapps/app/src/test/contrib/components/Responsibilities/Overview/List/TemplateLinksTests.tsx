@@ -2,16 +2,16 @@ import * as React from "react";
 import { shallow } from "enzyme";
 import { expect } from "chai";
 
-import "../../../helper";
-import { Sandbox } from "../../../Sandbox";
-import { mockExtendedResponsibilitySet, mockResponsibility, mockScenario } from "../../../mocks/mockModels";
+import "../../../../../helper";
+import { Sandbox } from "../../../../../Sandbox";
+import { mockExtendedResponsibilitySet, mockResponsibility, mockScenario } from "../../../../../mocks/mockModels";
 import {
     TemplateLink,
     TemplateLinks
-} from "../../../../main/contrib/components/Responsibilities/Overview/List/TemplateLinks";
-import {createMockStore} from "../../../mocks/mockStore";
+} from "../../../../../../main/contrib/components/Responsibilities/Overview/List/TemplateLinks";
+import {createMockStore} from "../../../../../mocks/mockStore";
 
-describe("TemplateLinks", () => {
+describe("Responsibility Overview Template Links Components tests", () => {
     const sandbox = new Sandbox();
 
     afterEach(() => {

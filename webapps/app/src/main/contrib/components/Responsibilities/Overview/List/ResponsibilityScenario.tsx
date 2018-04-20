@@ -5,7 +5,6 @@ import { Disease, ModellingGroup, Responsibility, ResponsibilitySetStatus, Touch
 import { ButtonLink } from "../../../../../shared/components/ButtonLink";
 import {CurrentEstimateSetSummary} from "./CurrentEstimateSetSummary";
 import {ContribAppState} from "../../../../reducers/contribAppReducers";
-import {ResponsibilityOverviewContentProps} from "../ResponsibilityOverviewContent";
 
 export interface ResponsibilityScenarioPublicProps {
     responsibility: Responsibility;
