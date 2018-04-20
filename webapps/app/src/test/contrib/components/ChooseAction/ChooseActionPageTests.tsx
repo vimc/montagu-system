@@ -28,7 +28,7 @@ describe("Choose Action Page Component", () => {
     it("renders component component level", () => {
         let testMatch = mockMatch<ChooseActionPageLocationProps>({groupId: "g-1"});
         let store = createMockStore();
-        const onLoadStub = sandbox.setStubFunc(chooseActionPageActionCreators, "onLoad", () => ({type: 'any'}));
+        const onLoadStub = sandbox.setStubReduxAction(chooseActionPageActionCreators, "onLoad");
         const rendered = shallow(<ChooseActionPage
             match={testMatch}
         />, {context: {store}}).dive();

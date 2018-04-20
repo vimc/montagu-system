@@ -25,7 +25,7 @@ describe("Contrib Forgotten Password Page Component", () => {
 
     it("renders component on component level", () => {
         let store = createMockStore();
-        const createBreadcrumbsStub = sandbox.setStubFunc(breadcrumbsActionCreators, "createBreadcrumbs", () => ({type: 'any'}));
+        const createBreadcrumbsStub = sandbox.setStubReduxAction(breadcrumbsActionCreators, "createBreadcrumbs");
         const rendered = shallow(<ContribForgottenPasswordPage/>, {context: {store}}).dive().dive();
         const pageArticle = rendered.find('PageArticle');
         expect(createBreadcrumbsStub.called).is.equal(true);

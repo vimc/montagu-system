@@ -29,12 +29,13 @@ export const DiseaseFilterComponent: React.SFC<DiseaseFilterProps> = (props: Dis
 export const mapDiseaseOptions = (diseases: Disease[], responsibilities: Responsibility[]): Option[] => {
     if (!responsibilities) return null;
     const diseaseIds = [ ...new Set(responsibilities.map(x => x.scenario.disease)) ]
-    return  diseaseIds
-        .map(id => diseases.find(item => id === item.id))
-        .map(disease => ({ value: disease.id, text: disease.name }));
+    const foundDiseases: Disease[] = diseaseIds.map(id => diseases.find(item => id === item.id))
+        .filter(item => item);
+    if (!foundDiseases.length) return null;
+    return foundDiseases.map(disease => ({ value: disease.id, text: disease.name }));
 }
 
-export const mapStateToProps = (state: ContribAppState, props: Partial<DiseaseFilterProps>): Partial<DiseaseFilterProps> => {
+export const mapStateToProps = (state: ContribAppState): Partial<DiseaseFilterProps> => {
     return {
         options: mapDiseaseOptions(state.diseases.diseases, state.responsibilities.responsibilitiesSet.responsibilities)
     }

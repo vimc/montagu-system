@@ -41,7 +41,7 @@ describe("Responsibility Overview Page Component", () => {
             touchstoneId: testTouchstone.id
         });
         const testResponsibilityOverviewPageTitle = `Responsibilities in ${testTouchstone.description }`;
-        const onLoadStub = sandbox.setStubFunc(responsibilityOverviewPageActionCreators, "onLoad", () => ({type: 'any'}));
+        const onLoadStub = sandbox.setStubReduxAction(responsibilityOverviewPageActionCreators, "onLoad");
         const rendered = shallow(<ResponsibilityOverviewPage
             match={testMatch}
         />, {context: {store}}).dive();

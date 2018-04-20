@@ -23,7 +23,7 @@ describe("Choose Group Page Component", () => {
 
     it("renders component component level", () => {
         let store = createMockStore();
-        const onLoadStub = sandbox.setStubFunc(chooseGroupPageActionCreators, "onLoad", () => ({type: 'any'}));
+        const onLoadStub = sandbox.setStubReduxAction(chooseGroupPageActionCreators, "onLoad");
         const rendered = shallow(<ChooseGroupPage/>, {context: {store}}).dive();
         const pageArticle = rendered.find('PageArticle');
         expect(onLoadStub.called).is.equal(true);
