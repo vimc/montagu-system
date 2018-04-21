@@ -9,7 +9,7 @@ import {createMockStore} from "../../../../mocks/mockStore";
 import {PageArticle} from "../../../../../main/shared/components/PageWithHeader/PageArticle";
 import {mockLocation, mockMatch} from "../../../../mocks/mocks";
 import {ContribAppState} from "../../../../../main/contrib/reducers/contribAppReducers";
-import {DownloadDataTitle} from "../../../../../main/contrib/components/Responsibilities/DownloadDataTitle";
+import {ResponsibilitiesPageTitle} from "../../../../../main/contrib/components/Responsibilities/PageTitle";
 import {
     UploadBurdenEstimatesPage,
     UploadBurdenEstimatesPageLocationProps
@@ -47,7 +47,7 @@ describe("Upload Burden Estimates Page Component tests", () => {
         const pageArticle = rendered.find('PageArticle');
         expect(onLoadStub.called).is.equal(true);
         expect(pageArticle.find(UploadBurdenEstimatesContent).length).is.equal(1);
-        const titleComponent = pageArticle.dive().find(DownloadDataTitle);
+        const titleComponent = pageArticle.dive().find(ResponsibilitiesPageTitle);
         expect(titleComponent.props().title).is.equal("Upload burden estimates");
     });
 });

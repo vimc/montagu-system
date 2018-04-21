@@ -15,7 +15,7 @@ import {
 } from "../../../../../main/contrib/components/Responsibilities/Coverage/DownloadCoveragePage";
 import {downloadCoveragePageActionCreators} from "../../../../../main/contrib/actions/pages/downloadCoveragePageActionCreators";
 import {DownloadCoverageContent} from "../../../../../main/contrib/components/Responsibilities/Coverage/DownloadCoverageContent";
-import {DownloadDataTitle} from "../../../../../main/contrib/components/Responsibilities/DownloadDataTitle";
+import {ResponsibilitiesPageTitle} from "../../../../../main/contrib/components/Responsibilities/PageTitle";
 
 describe("Download Coverage Page Component tests", () => {
 
@@ -45,7 +45,7 @@ describe("Download Coverage Page Component tests", () => {
         const pageArticle = rendered.find('PageArticle');
         expect(onLoadStub.called).is.equal(true);
         expect(pageArticle.find(DownloadCoverageContent).length).is.equal(1);
-        const titleComponent = pageArticle.dive().find(DownloadDataTitle);
+        const titleComponent = pageArticle.dive().find(ResponsibilitiesPageTitle);
         expect(titleComponent.props().title).is.equal("Download coverage data");
     });
 });

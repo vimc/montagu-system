@@ -4,7 +4,7 @@ import { compose} from "recompose";
 import { connect } from 'react-redux';
 
 import {DownloadCoverageContent} from "./DownloadCoverageContent";
-import {DownloadDataTitle} from "../DownloadDataTitle";
+import {ResponsibilitiesPageTitle} from "../PageTitle";
 import {ResponsibilityOverviewPageComponent} from "../Overview/ResponsibilityOverviewPage";
 import {PageBreadcrumb, PageProperties} from "../../../../shared/components/PageWithHeader/PageWithHeader";
 import {PageArticle} from "../../../../shared/components/PageWithHeader/PageArticle";
@@ -31,7 +31,7 @@ export class DownloadCoveragePageComponent extends React.Component<PagePropertie
     }
 
     title(): JSX.Element {
-        return <DownloadDataTitle title="Download coverage data"/>;
+        return <ResponsibilitiesPageTitle title="Download coverage data"/>;
     }
 
     render(): JSX.Element {

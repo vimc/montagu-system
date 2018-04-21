@@ -3,7 +3,7 @@ import { Dispatch } from "redux";
 import { compose} from "recompose";
 import { connect } from 'react-redux';
 
-import {DownloadDataTitle} from "../DownloadDataTitle";
+import {ResponsibilitiesPageTitle} from "../PageTitle";
 import {UploadBurdenEstimatesContent} from "./UploadBurdenEstimatesContent";
 import { ResponsibilityOverviewPageComponent} from "../Overview/ResponsibilityOverviewPage";
 import {PageBreadcrumb, PageProperties} from "../../../../shared/components/PageWithHeader/PageWithHeader";
@@ -38,7 +38,7 @@ export class UploadBurdenEstimatesPageComponent extends React.Component<UploadBu
     }
 
     title() {
-        return <DownloadDataTitle title="Upload burden estimates"/>
+        return <ResponsibilitiesPageTitle title="Upload burden estimates"/>
     }
 
     render() :JSX.Element {

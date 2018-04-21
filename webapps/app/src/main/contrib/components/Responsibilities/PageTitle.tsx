@@ -5,13 +5,13 @@ import { InternalLink } from "../../../shared/components/InternalLink";
 import { ModellingGroup, Touchstone } from "../../../shared/models/Generated";
 import {ContribAppState} from "../../reducers/contribAppReducers";
 
-interface DownloadDataTitleProps {
+interface ResponsibilitiesPageTitleProps {
     title: string;
     touchstone: Touchstone;
     group: ModellingGroup;
 }
 
-export class DownloadDataTitleComponent extends React.Component<DownloadDataTitleProps> {
+export class ResponsibilitiesPageTitleComponent extends React.Component<ResponsibilitiesPageTitleProps> {
     renderReturnLink() {
         if (this.props.touchstone && this.props.group) {
             const url = `/${this.props.group.id}/responsibilities/${this.props.touchstone.id}/`;
@@ -33,7 +33,7 @@ export class DownloadDataTitleComponent extends React.Component<DownloadDataTitl
     }
 }
 
-export const mapStateToProps = (state: ContribAppState, props: Partial<DownloadDataTitleProps>): Partial<DownloadDataTitleProps> => {
+export const mapStateToProps = (state: ContribAppState, props: Partial<ResponsibilitiesPageTitleProps>): Partial<ResponsibilitiesPageTitleProps> => {
     return {
         touchstone: state.touchstones.currentTouchstone,
         group: state.groups.currentUserGroup,
@@ -41,4 +41,4 @@ export const mapStateToProps = (state: ContribAppState, props: Partial<DownloadD
     }
 };
 
-export const DownloadDataTitle = connect(mapStateToProps)(DownloadDataTitleComponent);
+export const ResponsibilitiesPageTitle = connect(mapStateToProps)(ResponsibilitiesPageTitleComponent);

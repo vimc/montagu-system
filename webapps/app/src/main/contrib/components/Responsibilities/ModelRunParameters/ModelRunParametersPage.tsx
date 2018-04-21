@@ -3,7 +3,7 @@ import {Dispatch} from "redux";
 import {compose} from "recompose";
 import {connect} from 'react-redux';
 
-import {DownloadDataTitle} from "../DownloadDataTitle";
+import {ResponsibilitiesPageTitle} from "../PageTitle";
 import {ResponsibilityOverviewPageComponent} from "../Overview/ResponsibilityOverviewPage";
 import {InternalLink} from "../../../../shared/components/InternalLink";
 import {ModelRunParametersContent} from "./ModelRunParametersContent";
@@ -35,7 +35,7 @@ export class ModelRunParametersPageComponent extends React.Component<PagePropert
     }
 
     title(): JSX.Element {
-        return <DownloadDataTitle
+        return <ResponsibilitiesPageTitle
             title={ModelRunParametersPageComponent.pageName}
         />
     }
