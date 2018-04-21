@@ -30,14 +30,14 @@ export class DownloadCoveragePageComponent extends React.Component<PagePropertie
         }
     }
 
-    title() {
-        return <DownloadDataTitle title="Download coverage data"/>
+    title(): JSX.Element {
+        return <DownloadDataTitle title="Download coverage data"/>;
     }
 
     render(): JSX.Element {
         return <PageArticle title={this.title()}>
             <DownloadCoverageContent/>
-        </PageArticle>
+        </PageArticle>;
     }
 }
 
