@@ -32,7 +32,7 @@ export class DownloadDemographicsPageComponent extends React.Component<PagePrope
     title(): JSX.Element {
         return <DownloadDataTitle
             title="Download demographic data sets"
-        />
+        />;
     }
 
     render(): JSX.Element {
