@@ -1,12 +1,12 @@
 import * as React from "react";
 
-interface ArticleProps {
+export interface PageArticleProps {
     title?: JSX.Element | string;
     hideTitle?: boolean;
     children: any;
 }
 
-const PageArticle: React.SFC<ArticleProps> = (props: ArticleProps) => {
+const PageArticle: React.SFC<PageArticleProps> = (props: PageArticleProps) => {
     return <article className="page container">
         { !props.hideTitle &&
         <div className="page__title">{ props.title }</div>
@@ -17,6 +17,6 @@ const PageArticle: React.SFC<ArticleProps> = (props: ArticleProps) => {
 
 PageArticle.defaultProps = {
     hideTitle: false
-} as Partial<ArticleProps> ;
+} as Partial<PageArticleProps> ;
 
 export { PageArticle };
