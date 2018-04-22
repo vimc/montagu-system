@@ -8,7 +8,6 @@ import {
     mockDemographicDataset,
     mockTouchstone
 } from "../../../../mocks/mockModels";
-import { mockContribState } from "../../../../mocks/mockStates";
 import { Sandbox } from "../../../../Sandbox";
 import {createMockStore} from "../../../../mocks/mockStore";
 import {ContribAppState} from "../../../../../main/contrib/reducers/contribAppReducers";
