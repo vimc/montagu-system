@@ -16,17 +16,12 @@ export interface UploadBurdenEstimatesContentProps {
     responsibilitySetStatus: string;
     token: string;
     responsibility: Responsibility;
+    canCreate: boolean;
+    canUpload: boolean;
 }
 
 export class UploadBurdenEstimatesContentComponent extends React.Component<UploadBurdenEstimatesContentProps> {
-
     render() {
-
-        const canCreate = this.props.responsibilitySetStatus == "incomplete";
-
-        const canUpload = canCreate && this.props.responsibility.current_estimate_set != null
-            && this.props.responsibility.current_estimate_set.status == "empty";
-
         return <div>
             <p>
                 On this page you can upload burden estimates for the following scenario. We expect estimates which
@@ -60,27 +55,39 @@ export class UploadBurdenEstimatesContentComponent extends React.Component<Uploa
             </table>
 
             <div className="mt-3">
-                <CurrentEstimateSetSummary estimateSet={this.props.responsibility.current_estimate_set}
-                                           canUpload={canCreate}/>
+                <CurrentEstimateSetSummary
+                    estimateSet={this.props.responsibility.current_estimate_set}
+                    canUpload={this.props.canCreate}
+                />
 
-                <UploadBurdenEstimatesForm canUpload={canUpload} canCreate={canCreate} groupId={this.props.group.id}
-                                           estimatesToken={this.props.token}
-                                           touchstoneId={this.props.touchstone.id}
-                                           scenarioId={this.props.scenario.id}/>
+                <UploadBurdenEstimatesForm
+                    canUpload={this.props.canUpload}
+                    canCreate={this.props.canCreate}
+                    groupId={this.props.group.id}
+                    estimatesToken={this.props.token}
+                    touchstoneId={this.props.touchstone.id}
+                    scenarioId={this.props.scenario.id}
+                />
             </div>
         </div>;
     }
 }
 
 export const mapStateToProps = (state: ContribAppState): Partial<UploadBurdenEstimatesContentProps> => {
-    return {
+    const newProps = {
         touchstone: state.touchstones.currentTouchstone,
         scenario: state.responsibilities.currentResponsibility ? state.responsibilities.currentResponsibility.scenario : null,
         group: state.groups.currentUserGroup,
         responsibilitySetStatus: state.responsibilities.responsibilitiesSet ? state.responsibilities.responsibilitiesSet.status : null,
         token: state.estimates.token,
-        responsibility: state.responsibilities.currentResponsibility
-    }
+        responsibility: state.responsibilities.currentResponsibility,
+        canCreate: false,
+        canUpload: false
+    };
+    newProps.canCreate = newProps.responsibilitySetStatus === "incomplete";
+    newProps.canUpload = newProps.canCreate && newProps.responsibility && newProps.responsibility.current_estimate_set != null
+        && newProps.responsibility.current_estimate_set.status == "empty";
+    return newProps;
 };
 
 export const UploadBurdenEstimatesContent = compose(
