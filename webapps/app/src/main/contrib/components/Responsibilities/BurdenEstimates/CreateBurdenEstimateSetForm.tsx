@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Action, Dispatch } from "redux";
+import { Dispatch } from "redux";
 import {Alert} from "reactstrap";
 import { compose, branch, renderComponent} from "recompose";
 import { connect } from 'react-redux';
@@ -11,14 +11,14 @@ import {EstimatesCreateBurdenData} from "../../../actionTypes/EstimatesTypes";
 import {estimatesActionCreators} from "../../../actions/estimatesActionCreators";
 import {ContribAppState} from "../../../reducers/contribAppReducers";
 
-interface CreateBurdenEstimateSetFormProps {
+export interface CreateBurdenEstimateSetFormProps {
     groupId: string;
     touchstoneId: string;
     scenarioId: string;
     createBurden: (data: EstimatesCreateBurdenData) => void;
 }
 
-interface CreateBurdenEstimateSetFormState {
+export interface CreateBurdenEstimateSetFormState {
     data: EstimatesCreateBurdenData;
     hasSuccess: boolean;
     errors: Error[];
