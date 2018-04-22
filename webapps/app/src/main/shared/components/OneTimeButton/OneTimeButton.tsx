@@ -10,6 +10,7 @@ export interface OneTimeButtonProps {
     refreshToken: () => void;
     onClick?: () =>void;
     element?: string;
+    children?: string;
 }
 
 export interface OneTimeButtonElement {
@@ -31,7 +32,11 @@ export class OneTimeButton extends React.Component<OneTimeButtonProps, any> {
     }
 
     refreshToken() {
-        setTimeout(this.props.refreshToken);
+        if (typeof this.props.refreshToken === "function") {
+            setTimeout(() => {
+                this.props.refreshToken();
+            });
+        }
     }
 
     getElement() :any {
