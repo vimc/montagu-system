@@ -5,31 +5,20 @@ import { Store } from "redux";
 
 import "../../../../helper";
 import {
-    mockCoverageSet,
     mockDisease, mockModellingGroup,
     mockResponsibility, mockResponsibilitySet,
     mockScenario, mockTouchstone
 } from "../../../../mocks/mockModels";
-import { mockContribState } from "../../../../mocks/mockStates";
 import { Sandbox } from "../../../../Sandbox";
 import {createMockStore} from "../../../../mocks/mockStore";
 import {ContribAppState} from "../../../../../main/contrib/reducers/contribAppReducers";
 import {LoadingElement} from "../../../../../main/shared/partials/LoadingElement/LoadingElement";
-import {
-    DownloadCoverageContent, DownloadCoverageContentComponent,
-    DownloadCoverageContentProps
-} from "../../../../../main/contrib/components/Responsibilities/Coverage/DownloadCoverageContent";
-import {CoverageSetList} from "../../../../../main/contrib/components/Responsibilities/Coverage/CoverageSetList";
-import {FormatControl} from "../../../../../main/contrib/components/Responsibilities/FormatControl";
-import {TimeBlockerProps} from "../../../../../main/shared/components/OneTimeButton/OneTimeButtonTimeBlocker";
-import {coverageActionCreators} from "../../../../../main/contrib/actions/coverageActionCreators";
 import {
     UploadBurdenEstimatesContent,
     UploadBurdenEstimatesContentComponent
 } from "../../../../../main/contrib/components/Responsibilities/BurdenEstimates/UploadBurdenEstimatesContent";
 import {
     TemplateLink,
-    TemplateLinkProps
 } from "../../../../../main/contrib/components/Responsibilities/Overview/List/TemplateLinks";
 import {CurrentEstimateSetSummary} from "../../../../../main/contrib/components/Responsibilities/Overview/List/CurrentEstimateSetSummary";
 import {UploadBurdenEstimatesForm} from "../../../../../main/contrib/components/Responsibilities/BurdenEstimates/UploadBurdenEstimatesForm";
@@ -48,7 +37,6 @@ describe("Upload Burden Estimates Content Component tests", () => {
         touchstones: {currentTouchstone: testTouchstone},
         responsibilities: {currentResponsibility: testResponsibility, responsibilitiesSet: testResponsibilitySet},
         estimates: {token: "test-token"},
-        // diseases: {diseases: [testDisease]},
     };
 
     let store : Store<ContribAppState>;
