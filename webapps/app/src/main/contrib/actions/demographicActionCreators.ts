@@ -53,6 +53,12 @@ export const demographicActionCreators = {
             const touchstone = getState().touchstones.currentTouchstone;
             const format = getState().demographic.selectedFormat;
 
+            if (!dataSet || !touchstone || !format ) {
+                return dispatch({
+                    type: DemographicTypes.DEMOGRAPHIC_ONE_TIME_TOKEN_CLEAR,
+                } as Demographic.OneTimeTokenClear);
+            }
+
             const token: string = await (new DemographicService(dispatch, getState))
                 .getOneTimeToken(touchstone.id, dataSet.source, dataSet.id, format);
 

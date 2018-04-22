@@ -1,7 +1,7 @@
 import * as React from "react";
 import { connect } from 'react-redux';
 import { compose, branch, renderComponent} from "recompose";
-import { Action, Dispatch } from "redux";
+import { Dispatch } from "redux";
 
 import { GenderControl } from "./GenderControl";
 import { DemographicDataset } from "../../../../shared/models/Generated";
@@ -108,6 +108,6 @@ export const mapDispatchToProps = (dispatch: Dispatch<ContribAppState>): Partial
 
 export const DemographicOptions = compose(
     connect(mapStateToProps, mapDispatchToProps),
-    branch((props: DemographicOptionsProps) => !props.dataSets, renderComponent(LoadingElement))
+    branch((props: DemographicOptionsProps) => !props.dataSets || !props.dataSets.length, renderComponent(LoadingElement))
 )(DemographicOptionsComponent) as React.ComponentClass<Partial<DemographicOptionsProps>>;
 

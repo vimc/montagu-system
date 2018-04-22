@@ -20,7 +20,7 @@ import {
 import {DemographicOptions} from "../../../../../main/contrib/components/Responsibilities/Demographics/DemographicOptions";
 import {TimeBlockerProps} from "../../../../../main/shared/components/OneTimeButton/OneTimeButtonTimeBlocker";
 
-describe("Download DEmographic Content Component", () => {
+describe("Download Demographic Content Component", () => {
 
     const testTouchstone = mockTouchstone();
     const testDemographicSet = mockDemographicDataset();
