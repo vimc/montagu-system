@@ -1,4 +1,5 @@
-FROM libsodium
+ARG libsodium_image=docker.montagu.dide.ic.ac.uk:5000/libsodium:master
+FROM $libsodium_image
 
 # Setup gradle
 COPY src/gradlew /api/src/
