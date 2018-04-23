@@ -7,14 +7,12 @@ package org.vaccineimpact.api.db.tables;
 import javax.annotation.Generated;
 
 import org.jooq.Field;
-import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.impl.DSL;
 import org.jooq.impl.TableImpl;
-import org.vaccineimpact.api.db.Keys;
 import org.vaccineimpact.api.db.Public;
 import org.vaccineimpact.api.db.tables.records.BurdenEstimateStochasticRecord;
 
@@ -32,7 +30,7 @@ import org.vaccineimpact.api.db.tables.records.BurdenEstimateStochasticRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class BurdenEstimateStochastic extends TableImpl<BurdenEstimateStochasticRecord> {
 
-    private static final long serialVersionUID = 1787966718;
+    private static final long serialVersionUID = 1425419478;
 
     /**
      * The reference instance of <code>public.burden_estimate_stochastic</code>
@@ -46,11 +44,6 @@ public class BurdenEstimateStochastic extends TableImpl<BurdenEstimateStochastic
     public Class<BurdenEstimateStochasticRecord> getRecordType() {
         return BurdenEstimateStochasticRecord.class;
     }
-
-    /**
-     * The column <code>public.burden_estimate_stochastic.id</code>.
-     */
-    public final TableField<BurdenEstimateStochasticRecord, Long> ID = createField("id", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('burden_estimate_stochastic_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
 
     /**
      * The column <code>public.burden_estimate_stochastic.burden_estimate_set</code>.
@@ -122,14 +115,6 @@ public class BurdenEstimateStochastic extends TableImpl<BurdenEstimateStochastic
     @Override
     public Schema getSchema() {
         return Public.PUBLIC;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Identity<BurdenEstimateStochasticRecord, Long> getIdentity() {
-        return Keys.IDENTITY_BURDEN_ESTIMATE_STOCHASTIC;
     }
 
     /**
