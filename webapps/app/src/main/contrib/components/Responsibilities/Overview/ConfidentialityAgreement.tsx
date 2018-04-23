@@ -1,12 +1,12 @@
 import * as React from "react";
+import {ChangeEvent} from "react";
 import {settings} from "../../../../shared/Settings";
 import {connect} from "react-redux";
-import {branch, compose, renderComponent, renderNothing} from "recompose";
+import {branch, compose, renderComponent} from "recompose";
 import {Dispatch} from "redux";
 import {ContribAppState} from "../../../reducers/contribAppReducers";
 import {default as withLifecycle, LifecycleMethods} from "@hocs/with-lifecycle";
 import {userActionCreators} from "../../../actions/userActionCreators";
-import {ChangeEvent} from "react";
 import {LoadingElement} from "../../../../shared/partials/LoadingElement/LoadingElement";
 
 interface State {
@@ -31,22 +31,29 @@ export class ConfidentialityAgreementComponent extends React.Component<Confident
     }
 
     render() {
-        return <div className={"row"}>
-            <div className={"col-12 col-md-6 offset-md-3"}>
-                <div className={"border p-3 border-dark mb-5"}>
-                    I have read and understood the terms of the <a href={fullConfidentialityAgreement}>
-                    RfP applicants' confidentiality agreement</a>. In doing so, I understand and agree not to disclose
-                    or share any information on vaccine coverage data which I access from Montagu,
-                    beyond my immediate RfP modelling group.
-                    <input type={"checkbox"} className={"mt-2 mb-2 d-block"}
-                           style={{height: "20px", width: "20px"}} checked={this.state.checked}
-                           onChange={this.onChange}/>
-                    {this.state.checked &&
-                    <button className="btn-success" onClick={this.props.signAgreement}>Submit</button>
-                    }
+
+        if (this.props.signed == null) {
+            return <LoadingElement />
+        }
+        else {
+            return <div className={"row"}>
+                <div className={"col-12 col-md-6 offset-md-3"}>
+                    <div className={"border p-3 border-dark mb-5"}>
+                        I have read and understood the terms of the <a href={fullConfidentialityAgreement}>
+                        RfP applicants' confidentiality agreement</a>. In doing so, I understand and agree not to
+                        disclose
+                        or share any information on vaccine coverage data which I access from Montagu,
+                        beyond my immediate RfP modelling group.
+                        <input type={"checkbox"} className={"mt-2 mb-2 d-block"}
+                               style={{height: "20px", width: "20px"}} checked={this.state.checked}
+                               onChange={this.onChange}/>
+                        {this.state.checked &&
+                        <button className="btn-success" onClick={this.props.signAgreement}>Submit</button>
+                        }
+                    </div>
                 </div>
             </div>
-        </div>
+        }
     }
 
 }
@@ -87,18 +94,13 @@ const lifecyleProps: Partial<LifecycleMethods<ConfidentialityProps>> = {
     }
 };
 
-const renderConfidentialityAgreementOrLoadingElement =
-    branch((props: ConfidentialityPropsFromState) => props.signed == false,
-        renderComponent(ConfidentialityAgreementComponent),
-        renderComponent(LoadingElement));
-
 export function withConfidentialityAgreement<TOuter extends ConfidentialityPublicProps>(WrappedComponent: ComponentConstructor<any, any>) {
     return compose<ConfidentialityPropsFromState, TOuter>(
         connect(mapStateToProps, mapDispatchToProps),
         withLifecycle(lifecyleProps),
         branch((props: ConfidentialityProps) =>
             settings.isApplicantTouchstone(props.touchstoneId) && !props.signed,
-            renderConfidentialityAgreementOrLoadingElement
+            renderComponent(ConfidentialityAgreementComponent)
         ))(WrappedComponent)
 }
 
