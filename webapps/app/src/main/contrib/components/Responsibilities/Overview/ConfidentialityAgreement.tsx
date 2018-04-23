@@ -30,10 +30,6 @@ export class ConfidentialityAgreementComponent extends React.Component<Confident
         })
     }
 
-    componentDidMount() {
-        this.props.getConfidentiality();
-    }
-
     render() {
         return <div className={"row"}>
             <div className={"col-12 col-md-6 offset-md-3"}>
