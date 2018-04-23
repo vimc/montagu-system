@@ -38,7 +38,7 @@ import org.vaccineimpact.api.db.tables.records.BurdenEstimateRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class BurdenEstimate extends TableImpl<BurdenEstimateRecord> {
 
-    private static final long serialVersionUID = -2117858919;
+    private static final long serialVersionUID = 1284904635;
 
     /**
      * The reference instance of <code>public.burden_estimate</code>
@@ -81,7 +81,7 @@ public class BurdenEstimate extends TableImpl<BurdenEstimateRecord> {
     /**
      * The column <code>public.burden_estimate.age</code>.
      */
-    public final TableField<BurdenEstimateRecord, Short> AGE = createField("age", org.jooq.impl.SQLDataType.SMALLINT.nullable(false), this, "");
+    public final TableField<BurdenEstimateRecord, Short> AGE = createField("age", org.jooq.impl.SQLDataType.SMALLINT, this, "");
 
     /**
      * The column <code>public.burden_estimate.model_run</code>.
@@ -130,15 +130,7 @@ public class BurdenEstimate extends TableImpl<BurdenEstimateRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.BURDEN_ESTIMATE_BURDEN_ESTIMATE_SET_IDX, Indexes.BURDEN_ESTIMATE_PKEY);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public UniqueKey<BurdenEstimateRecord> getPrimaryKey() {
-        return Keys.BURDEN_ESTIMATE_PKEY;
+        return Arrays.<Index>asList(Indexes.BURDEN_ESTIMATE_BURDEN_ESTIMATE_SET_IDX, Indexes.BURDEN_ESTIMATE_UNIQUE);
     }
 
     /**
@@ -146,7 +138,7 @@ public class BurdenEstimate extends TableImpl<BurdenEstimateRecord> {
      */
     @Override
     public List<UniqueKey<BurdenEstimateRecord>> getKeys() {
-        return Arrays.<UniqueKey<BurdenEstimateRecord>>asList(Keys.BURDEN_ESTIMATE_PKEY);
+        return Arrays.<UniqueKey<BurdenEstimateRecord>>asList(Keys.BURDEN_ESTIMATE_UNIQUE);
     }
 
     /**

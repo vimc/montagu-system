@@ -102,7 +102,7 @@ public class Indexes {
     public static final Index API_ACCESS_LOG_WHO_IDX = Indexes0.API_ACCESS_LOG_WHO_IDX;
     public static final Index APP_USER_PKEY = Indexes0.APP_USER_PKEY;
     public static final Index BURDEN_ESTIMATE_BURDEN_ESTIMATE_SET_IDX = Indexes0.BURDEN_ESTIMATE_BURDEN_ESTIMATE_SET_IDX;
-    public static final Index BURDEN_ESTIMATE_PKEY = Indexes0.BURDEN_ESTIMATE_PKEY;
+    public static final Index BURDEN_ESTIMATE_UNIQUE = Indexes0.BURDEN_ESTIMATE_UNIQUE;
     public static final Index BURDEN_ESTIMATE_SET_PKEY = Indexes0.BURDEN_ESTIMATE_SET_PKEY;
     public static final Index BURDEN_ESTIMATE_SET_PROBLEM_PKEY = Indexes0.BURDEN_ESTIMATE_SET_PROBLEM_PKEY;
     public static final Index BURDEN_ESTIMATE_SET_STATUS_PKEY = Indexes0.BURDEN_ESTIMATE_SET_STATUS_PKEY;
@@ -197,7 +197,7 @@ public class Indexes {
         public static Index API_ACCESS_LOG_WHO_IDX = Internal.createIndex("api_access_log_who_idx", ApiAccessLog.API_ACCESS_LOG, new OrderField[] { ApiAccessLog.API_ACCESS_LOG.WHO }, false);
         public static Index APP_USER_PKEY = Internal.createIndex("app_user_pkey", AppUser.APP_USER, new OrderField[] { AppUser.APP_USER.USERNAME }, true);
         public static Index BURDEN_ESTIMATE_BURDEN_ESTIMATE_SET_IDX = Internal.createIndex("burden_estimate_burden_estimate_set_idx", BurdenEstimate.BURDEN_ESTIMATE, new OrderField[] { BurdenEstimate.BURDEN_ESTIMATE.BURDEN_ESTIMATE_SET }, false);
-        public static Index BURDEN_ESTIMATE_PKEY = Internal.createIndex("burden_estimate_pkey", BurdenEstimate.BURDEN_ESTIMATE, new OrderField[] { BurdenEstimate.BURDEN_ESTIMATE.BURDEN_ESTIMATE_SET, BurdenEstimate.BURDEN_ESTIMATE.COUNTRY, BurdenEstimate.BURDEN_ESTIMATE.YEAR, BurdenEstimate.BURDEN_ESTIMATE.AGE, BurdenEstimate.BURDEN_ESTIMATE.BURDEN_OUTCOME }, true);
+        public static Index BURDEN_ESTIMATE_UNIQUE = Internal.createIndex("burden_estimate_unique", BurdenEstimate.BURDEN_ESTIMATE, new OrderField[] { BurdenEstimate.BURDEN_ESTIMATE.BURDEN_ESTIMATE_SET, BurdenEstimate.BURDEN_ESTIMATE.COUNTRY, BurdenEstimate.BURDEN_ESTIMATE.YEAR, BurdenEstimate.BURDEN_ESTIMATE.AGE, BurdenEstimate.BURDEN_ESTIMATE.BURDEN_OUTCOME }, true);
         public static Index BURDEN_ESTIMATE_SET_PKEY = Internal.createIndex("burden_estimate_set_pkey", BurdenEstimateSet.BURDEN_ESTIMATE_SET, new OrderField[] { BurdenEstimateSet.BURDEN_ESTIMATE_SET.ID }, true);
         public static Index BURDEN_ESTIMATE_SET_PROBLEM_PKEY = Internal.createIndex("burden_estimate_set_problem_pkey", BurdenEstimateSetProblem.BURDEN_ESTIMATE_SET_PROBLEM, new OrderField[] { BurdenEstimateSetProblem.BURDEN_ESTIMATE_SET_PROBLEM.ID }, true);
         public static Index BURDEN_ESTIMATE_SET_STATUS_PKEY = Internal.createIndex("burden_estimate_set_status_pkey", BurdenEstimateSetStatus.BURDEN_ESTIMATE_SET_STATUS, new OrderField[] { BurdenEstimateSetStatus.BURDEN_ESTIMATE_SET_STATUS.CODE }, true);
