@@ -43,7 +43,6 @@ class TriggerTests : DatabaseTest()
     {
         val table = BURDEN_ESTIMATE
         return db.dsl.newRecord(table).apply {
-            id = 1
             burdenEstimateSet = 0
             // This is a deliberately invalid country, to test the foreign key constraints aren't checked
             country = -1

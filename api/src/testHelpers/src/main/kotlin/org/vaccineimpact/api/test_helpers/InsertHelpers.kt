@@ -226,7 +226,7 @@ fun JooqContext.addBurdenEstimate(
         outcome: String = "cohort_size",
         value: Float = 100F,
         modelRunId: Int? = null
-): Int
+)
 {
     val outcomeId = this.dsl.select(BURDEN_OUTCOME.ID)
             .from(BURDEN_OUTCOME)
@@ -243,7 +243,6 @@ fun JooqContext.addBurdenEstimate(
         this.modelRun = modelRunId
     }
     record.store()
-    return record.id
 }
 
 fun AnnexJooqContext.addStochasticBurdenEstimate(
@@ -255,13 +254,13 @@ fun AnnexJooqContext.addStochasticBurdenEstimate(
         outcome: String = "cohort_size",
         value: Float = 100F,
         modelRunId: Int = 1
-): Long
+)
 {
     val outcomeId = mainDb.dsl.select(BURDEN_OUTCOME.ID)
             .from(BURDEN_OUTCOME)
             .where(BURDEN_OUTCOME.CODE.eq(outcome))
             .fetchOne().value1()
-    var countryId = mainDb.dsl.fetchOne(COUNTRY, COUNTRY.ID.eq(country)).nid
+    val countryId = mainDb.dsl.fetchOne(COUNTRY, COUNTRY.ID.eq(country)).nid
     val record = this.dsl.newRecord(BURDEN_ESTIMATE_STOCHASTIC).apply {
         this.burdenEstimateSet = setId
         this.country = countryId
@@ -272,7 +271,6 @@ fun AnnexJooqContext.addStochasticBurdenEstimate(
         this.modelRun = modelRunId
     }
     record.insert()
-    return record.id
 }
 
 fun JooqContext.addModelRunParameterSet(
