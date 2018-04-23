@@ -100,7 +100,7 @@ describe('ConfidentialityAgreement', () => {
 
         const rendered = shallow(<TestComponent touchstoneId={"rfp-1"}/>,
             {context: {store}}).dive().dive().dive().dive();
-;
+
         rendered.find("input").simulate("change", {target: {checked: true}});
         expect(rendered.find("button")).to.have.lengthOf(1)
     });
