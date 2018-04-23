@@ -242,7 +242,7 @@ fun JooqContext.addBurdenEstimate(
         this.value = value
         this.modelRun = modelRunId
     }
-    record.store()
+    record.insert()
 }
 
 fun AnnexJooqContext.addStochasticBurdenEstimate(
