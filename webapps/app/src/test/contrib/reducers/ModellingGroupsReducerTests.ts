@@ -29,4 +29,5 @@ describe('Modelling groups reducer tests', () => {
             }
         )
     })
+
 })

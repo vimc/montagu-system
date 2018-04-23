@@ -2,7 +2,6 @@ import * as React from "react";
 import { ResponsibilityOverviewTitle } from "./ResponsibilityOverviewTitle";
 import { touchstoneActions } from "../../../actions/TouchstoneActions";
 import { responsibilityStore } from "../../../stores/ResponsibilityStore";
-import { ResponsibilityOverviewDescription } from "./ResponsibilityOverviewDescription";
 import { ResponsibilityOverviewContent } from "./ResponsibilityOverviewContent";
 import {ContribPageWithHeader} from "../../PageWithHeader/ContribPageWithHeader";
 import {ChooseActionPage} from "../../ChooseAction/ChooseActionPage";
@@ -42,10 +41,7 @@ export class ResponsibilityOverviewPage extends ContribPageWithHeader<LocationPr
 
     render() :JSX.Element {
         return <Page page={this}>
-            <ResponsibilityOverviewDescription
-                currentTouchstoneId={this.props.match.params.touchstoneId}
-            />
-            <ResponsibilityOverviewContent />
+            <ResponsibilityOverviewContent touchstoneId={this.props.match.params.touchstoneId} />
         </Page>;
     }
 }

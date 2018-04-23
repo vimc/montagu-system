@@ -9,6 +9,9 @@ import {connectToStores} from "../../../../shared/alt";
 import {ButtonLink} from "../../../../shared/components/ButtonLink";
 
 import {ResponsibilitySetStatusMessage} from "./ResponsibilitySetStatusMessage";
+import {settings} from "../../../../shared/Settings";
+import {ResponsibilityOverviewDescription} from "./ResponsibilityOverviewDescription";
+import {withConfidentialityAgreement} from "./ConfidentialityAgreement";
 
 const stochasticParams = require('./stochastic_template_params.csv');
 
@@ -16,6 +19,10 @@ export interface ResponsibilityOverviewComponentProps extends RemoteContent {
     responsibilitySet: IExtendedResponsibilitySet;
     currentDiseaseId: string;
     modellingGroup: ModellingGroup;
+}
+
+export interface ResponsibilityOverviewProps {
+    canView: boolean;
 }
 
 export class ResponsibilityOverviewContentComponent extends RemoteContentComponent<ResponsibilityOverviewComponentProps, undefined> {
@@ -48,12 +55,14 @@ export class ResponsibilityOverviewContentComponent extends RemoteContentCompone
             <ButtonLink href={parametersUrl}>Upload parameters</ButtonLink>
         </div>;
         return <div>
+            <ResponsibilityOverviewDescription
+                currentTouchstoneId={this.props.responsibilitySet.touchstone.id}/>
             <ResponsibilitySetStatusMessage status={this.props.responsibilitySet.status}/>
             <div className="largeSectionTitle">Demographic data</div>
             <div className="mt-3">
                 <ButtonLink href={demographyUrl}>Download demographic data</ButtonLink>
             </div>
-            {touchstoneId != "201801rfp-1" && paramsSection}
+            {!settings.isApplicantTouchstone(touchstoneId) && paramsSection}
             <div className="largeSectionTitle">Scenarios</div>
             <ResponsibilityList
                 modellingGroup={props.modellingGroup}
@@ -65,4 +74,11 @@ export class ResponsibilityOverviewContentComponent extends RemoteContentCompone
     }
 }
 
-export const ResponsibilityOverviewContent = connectToStores(ResponsibilityOverviewContentComponent);
+export const ResponsibilityOverviewContentAltComponent = connectToStores(ResponsibilityOverviewContentComponent);
+
+interface ResponsibilityOverviewPublicProps{
+    touchstoneId: string
+}
+
+export const ResponsibilityOverviewContent =
+    withConfidentialityAgreement<ResponsibilityOverviewPublicProps>(ResponsibilityOverviewContentAltComponent);

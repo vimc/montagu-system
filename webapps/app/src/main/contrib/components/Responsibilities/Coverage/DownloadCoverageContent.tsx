@@ -9,10 +9,9 @@ import { coverageTokenActions } from "../../../actions/CoverageActions";
 import { OneTimeButton } from "../../../../shared/components/OneTimeButton/OneTimeButton";
 import { OneTimeButtonTimeBlocker } from "../../../../shared/components/OneTimeButton/OneTimeButtonTimeBlocker";
 import { FormatControl } from "../FormatControl";
-import { HasFormatOption } from "../Demographics/DemographicOptions";
 import { doNothing } from "../../../../shared/Helpers";
-import { responsibilityActions } from "../../../actions/ResponsibilityActions";
 import { coverageSetActions } from "../../../actions/CoverageSetActions";
+import {withConfidentialityAgreement} from "../Overview/ConfidentialityAgreement";
 
 export interface DownloadCoverageComponentProps extends RemoteContent {
     touchstone: Touchstone;
@@ -144,4 +143,7 @@ export class DownloadCoverageContentComponent
     }
 }
 
-export const DownloadCoverageContent = connectToStores(DownloadCoverageContentComponent);
+const DownloadCoverageAltContent = connectToStores(DownloadCoverageContentComponent);
+
+export const DownloadCoverageContent =
+    withConfidentialityAgreement(DownloadCoverageAltContent);

@@ -46,7 +46,7 @@ export class DownloadCoveragePage extends ContribPageWithHeader<LocationProps> {
 
     render(): JSX.Element {
         return <Page page={this}>
-            <DownloadCoverageContent/>
+            <DownloadCoverageContent touchstoneId={this.props.match.params.touchstoneId}/>
         </Page>
     }
 }
