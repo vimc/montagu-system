@@ -87,7 +87,6 @@ class BurdenEstimateWriterTests : BurdenEstimateRepositoryTests()
 
             val sut = CentralBurdenEstimateWriter(db.dsl)
             sut.addEstimatesToSet(setId, data, diseaseId)
-            sut.addEstimatesToSet(setId, data, diseaseId)
             checkBurdenEstimates(db, setId)
             checkModelRuns(db, modelRunData)
         }
