@@ -27,7 +27,6 @@ docker exec montagu_db_1 psql -U vimc -d montagu -c \
 # -------------------------------------------------------------
 
 # Build and image that can run blackbox tests
-docker build --tag libsodium -f libsodium.Dockerfile .
 docker build -f blackbox.Dockerfile -t montagu-api-blackbox-tests .
 
 # Push blackbox tests image so it can be reused
