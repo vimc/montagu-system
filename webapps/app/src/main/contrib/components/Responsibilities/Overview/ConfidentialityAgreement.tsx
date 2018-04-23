@@ -15,6 +15,8 @@ interface State {
 
 const fullConfidentialityAgreement = require('./rfp-applicants-confidentiality.pdf');
 
+// exported for testing but this class should not be invoked by itself, it is rendered as part of the
+// higher order component below
 export class ConfidentialityAgreementComponent extends React.Component<ConfidentialityProps, State> {
 
     constructor() {
@@ -36,6 +38,8 @@ export class ConfidentialityAgreementComponent extends React.Component<Confident
             return <LoadingElement />
         }
         else {
+            // at this point we can assume that `signed` is false, as if true this component would never be
+            // rendered
             return <div className={"row"}>
                 <div className={"col-12 col-md-6 offset-md-3"}>
                     <div className={"border p-3 border-dark mb-5"}>
