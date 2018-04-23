@@ -11,7 +11,6 @@ import javax.annotation.Generated;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Schema;
@@ -39,7 +38,7 @@ import org.vaccineimpact.api.db.tables.records.BurdenEstimateRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class BurdenEstimate extends TableImpl<BurdenEstimateRecord> {
 
-    private static final long serialVersionUID = 187868602;
+    private static final long serialVersionUID = -2117858919;
 
     /**
      * The reference instance of <code>public.burden_estimate</code>
@@ -53,11 +52,6 @@ public class BurdenEstimate extends TableImpl<BurdenEstimateRecord> {
     public Class<BurdenEstimateRecord> getRecordType() {
         return BurdenEstimateRecord.class;
     }
-
-    /**
-     * The column <code>public.burden_estimate.id</code>.
-     */
-    public final TableField<BurdenEstimateRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('burden_estimate_new_id_seq'::regclass)", org.jooq.impl.SQLDataType.INTEGER)), this, "");
 
     /**
      * The column <code>public.burden_estimate.burden_estimate_set</code>.
@@ -87,7 +81,7 @@ public class BurdenEstimate extends TableImpl<BurdenEstimateRecord> {
     /**
      * The column <code>public.burden_estimate.age</code>.
      */
-    public final TableField<BurdenEstimateRecord, Short> AGE = createField("age", org.jooq.impl.SQLDataType.SMALLINT, this, "");
+    public final TableField<BurdenEstimateRecord, Short> AGE = createField("age", org.jooq.impl.SQLDataType.SMALLINT.nullable(false), this, "");
 
     /**
      * The column <code>public.burden_estimate.model_run</code>.
@@ -136,15 +130,7 @@ public class BurdenEstimate extends TableImpl<BurdenEstimateRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.BURDEN_ESTIMATE_BURDEN_ESTIMATE_SET_IDX, Indexes.BURDEN_ESTIMATE_PKEY, Indexes.BURDEN_ESTIMATE_UNIQUE);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Identity<BurdenEstimateRecord, Integer> getIdentity() {
-        return Keys.IDENTITY_BURDEN_ESTIMATE;
+        return Arrays.<Index>asList(Indexes.BURDEN_ESTIMATE_BURDEN_ESTIMATE_SET_IDX, Indexes.BURDEN_ESTIMATE_PKEY);
     }
 
     /**
@@ -160,7 +146,7 @@ public class BurdenEstimate extends TableImpl<BurdenEstimateRecord> {
      */
     @Override
     public List<UniqueKey<BurdenEstimateRecord>> getKeys() {
-        return Arrays.<UniqueKey<BurdenEstimateRecord>>asList(Keys.BURDEN_ESTIMATE_PKEY, Keys.BURDEN_ESTIMATE_UNIQUE);
+        return Arrays.<UniqueKey<BurdenEstimateRecord>>asList(Keys.BURDEN_ESTIMATE_PKEY);
     }
 
     /**
