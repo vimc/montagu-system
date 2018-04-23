@@ -30,7 +30,7 @@ public class Indexes {
     // -------------------------------------------------------------------------
 
     public static final Index BURDEN_ESTIMATE_STOCHASTIC_BURDEN_ESTIMATE_SET_IDX = Indexes0.BURDEN_ESTIMATE_STOCHASTIC_BURDEN_ESTIMATE_SET_IDX;
-    public static final Index BURDEN_ESTIMATE_STOCHASTIC_PKEY = Indexes0.BURDEN_ESTIMATE_STOCHASTIC_PKEY;
+    public static final Index BURDEN_ESTIMATE_STOCHASTIC_UNIQUE = Indexes0.BURDEN_ESTIMATE_STOCHASTIC_UNIQUE;
 
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb
@@ -38,6 +38,6 @@ public class Indexes {
 
     private static class Indexes0 {
         public static Index BURDEN_ESTIMATE_STOCHASTIC_BURDEN_ESTIMATE_SET_IDX = Internal.createIndex("burden_estimate_stochastic_burden_estimate_set_idx", BurdenEstimateStochastic.BURDEN_ESTIMATE_STOCHASTIC, new OrderField[] { BurdenEstimateStochastic.BURDEN_ESTIMATE_STOCHASTIC.BURDEN_ESTIMATE_SET }, false);
-        public static Index BURDEN_ESTIMATE_STOCHASTIC_PKEY = Internal.createIndex("burden_estimate_stochastic_pkey", BurdenEstimateStochastic.BURDEN_ESTIMATE_STOCHASTIC, new OrderField[] { BurdenEstimateStochastic.BURDEN_ESTIMATE_STOCHASTIC.BURDEN_ESTIMATE_SET, BurdenEstimateStochastic.BURDEN_ESTIMATE_STOCHASTIC.MODEL_RUN, BurdenEstimateStochastic.BURDEN_ESTIMATE_STOCHASTIC.COUNTRY, BurdenEstimateStochastic.BURDEN_ESTIMATE_STOCHASTIC.YEAR, BurdenEstimateStochastic.BURDEN_ESTIMATE_STOCHASTIC.AGE, BurdenEstimateStochastic.BURDEN_ESTIMATE_STOCHASTIC.BURDEN_OUTCOME }, true);
+        public static Index BURDEN_ESTIMATE_STOCHASTIC_UNIQUE = Internal.createIndex("burden_estimate_stochastic_unique", BurdenEstimateStochastic.BURDEN_ESTIMATE_STOCHASTIC, new OrderField[] { BurdenEstimateStochastic.BURDEN_ESTIMATE_STOCHASTIC.BURDEN_ESTIMATE_SET, BurdenEstimateStochastic.BURDEN_ESTIMATE_STOCHASTIC.MODEL_RUN, BurdenEstimateStochastic.BURDEN_ESTIMATE_STOCHASTIC.COUNTRY, BurdenEstimateStochastic.BURDEN_ESTIMATE_STOCHASTIC.YEAR, BurdenEstimateStochastic.BURDEN_ESTIMATE_STOCHASTIC.AGE, BurdenEstimateStochastic.BURDEN_ESTIMATE_STOCHASTIC.BURDEN_OUTCOME }, true);
     }
 }

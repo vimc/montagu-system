@@ -37,7 +37,7 @@ import org.vaccineimpact.api.db.annex.tables.records.BurdenEstimateStochasticRec
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class BurdenEstimateStochastic extends TableImpl<BurdenEstimateStochasticRecord> {
 
-    private static final long serialVersionUID = -1626816819;
+    private static final long serialVersionUID = -1185653178;
 
     /**
      * The reference instance of <code>public.burden_estimate_stochastic</code>
@@ -85,7 +85,7 @@ public class BurdenEstimateStochastic extends TableImpl<BurdenEstimateStochastic
     /**
      * The column <code>public.burden_estimate_stochastic.age</code>.
      */
-    public final TableField<BurdenEstimateStochasticRecord, Short> AGE = createField("age", org.jooq.impl.SQLDataType.SMALLINT.nullable(false), this, "");
+    public final TableField<BurdenEstimateStochasticRecord, Short> AGE = createField("age", org.jooq.impl.SQLDataType.SMALLINT, this, "");
 
     /**
      * Create a <code>public.burden_estimate_stochastic</code> table reference
@@ -129,15 +129,7 @@ public class BurdenEstimateStochastic extends TableImpl<BurdenEstimateStochastic
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.BURDEN_ESTIMATE_STOCHASTIC_BURDEN_ESTIMATE_SET_IDX, Indexes.BURDEN_ESTIMATE_STOCHASTIC_PKEY);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public UniqueKey<BurdenEstimateStochasticRecord> getPrimaryKey() {
-        return Keys.BURDEN_ESTIMATE_STOCHASTIC_PKEY;
+        return Arrays.<Index>asList(Indexes.BURDEN_ESTIMATE_STOCHASTIC_BURDEN_ESTIMATE_SET_IDX, Indexes.BURDEN_ESTIMATE_STOCHASTIC_UNIQUE);
     }
 
     /**
@@ -145,7 +137,7 @@ public class BurdenEstimateStochastic extends TableImpl<BurdenEstimateStochastic
      */
     @Override
     public List<UniqueKey<BurdenEstimateStochasticRecord>> getKeys() {
-        return Arrays.<UniqueKey<BurdenEstimateStochasticRecord>>asList(Keys.BURDEN_ESTIMATE_STOCHASTIC_PKEY);
+        return Arrays.<UniqueKey<BurdenEstimateStochasticRecord>>asList(Keys.BURDEN_ESTIMATE_STOCHASTIC_UNIQUE);
     }
 
     /**

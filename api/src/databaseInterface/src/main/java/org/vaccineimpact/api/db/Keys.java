@@ -211,7 +211,7 @@ public class Keys {
     public static final UniqueKey<ActivityTypeRecord> ACTIVITY_TYPE_PKEY = UniqueKeys0.ACTIVITY_TYPE_PKEY;
     public static final UniqueKey<ApiAccessLogRecord> API_ACCESS_LOG_PKEY = UniqueKeys0.API_ACCESS_LOG_PKEY;
     public static final UniqueKey<AppUserRecord> APP_USER_PKEY = UniqueKeys0.APP_USER_PKEY;
-    public static final UniqueKey<BurdenEstimateRecord> BURDEN_ESTIMATE_PKEY = UniqueKeys0.BURDEN_ESTIMATE_PKEY;
+    public static final UniqueKey<BurdenEstimateRecord> BURDEN_ESTIMATE_UNIQUE = UniqueKeys0.BURDEN_ESTIMATE_UNIQUE;
     public static final UniqueKey<BurdenEstimateSetRecord> BURDEN_ESTIMATE_SET_PKEY = UniqueKeys0.BURDEN_ESTIMATE_SET_PKEY;
     public static final UniqueKey<BurdenEstimateSetProblemRecord> BURDEN_ESTIMATE_SET_PROBLEM_PKEY = UniqueKeys0.BURDEN_ESTIMATE_SET_PROBLEM_PKEY;
     public static final UniqueKey<BurdenEstimateSetStatusRecord> BURDEN_ESTIMATE_SET_STATUS_PKEY = UniqueKeys0.BURDEN_ESTIMATE_SET_STATUS_PKEY;
@@ -452,7 +452,7 @@ public class Keys {
         public static final UniqueKey<ActivityTypeRecord> ACTIVITY_TYPE_PKEY = Internal.createUniqueKey(ActivityType.ACTIVITY_TYPE, "activity_type_pkey", ActivityType.ACTIVITY_TYPE.ID);
         public static final UniqueKey<ApiAccessLogRecord> API_ACCESS_LOG_PKEY = Internal.createUniqueKey(ApiAccessLog.API_ACCESS_LOG, "api_access_log_pkey", ApiAccessLog.API_ACCESS_LOG.ID);
         public static final UniqueKey<AppUserRecord> APP_USER_PKEY = Internal.createUniqueKey(AppUser.APP_USER, "app_user_pkey", AppUser.APP_USER.USERNAME);
-        public static final UniqueKey<BurdenEstimateRecord> BURDEN_ESTIMATE_PKEY = Internal.createUniqueKey(BurdenEstimate.BURDEN_ESTIMATE, "burden_estimate_pkey", BurdenEstimate.BURDEN_ESTIMATE.BURDEN_ESTIMATE_SET, BurdenEstimate.BURDEN_ESTIMATE.COUNTRY, BurdenEstimate.BURDEN_ESTIMATE.YEAR, BurdenEstimate.BURDEN_ESTIMATE.AGE, BurdenEstimate.BURDEN_ESTIMATE.BURDEN_OUTCOME);
+        public static final UniqueKey<BurdenEstimateRecord> BURDEN_ESTIMATE_UNIQUE = Internal.createUniqueKey(BurdenEstimate.BURDEN_ESTIMATE, "burden_estimate_unique", BurdenEstimate.BURDEN_ESTIMATE.BURDEN_ESTIMATE_SET, BurdenEstimate.BURDEN_ESTIMATE.COUNTRY, BurdenEstimate.BURDEN_ESTIMATE.YEAR, BurdenEstimate.BURDEN_ESTIMATE.AGE, BurdenEstimate.BURDEN_ESTIMATE.BURDEN_OUTCOME);
         public static final UniqueKey<BurdenEstimateSetRecord> BURDEN_ESTIMATE_SET_PKEY = Internal.createUniqueKey(BurdenEstimateSet.BURDEN_ESTIMATE_SET, "burden_estimate_set_pkey", BurdenEstimateSet.BURDEN_ESTIMATE_SET.ID);
         public static final UniqueKey<BurdenEstimateSetProblemRecord> BURDEN_ESTIMATE_SET_PROBLEM_PKEY = Internal.createUniqueKey(BurdenEstimateSetProblem.BURDEN_ESTIMATE_SET_PROBLEM, "burden_estimate_set_problem_pkey", BurdenEstimateSetProblem.BURDEN_ESTIMATE_SET_PROBLEM.ID);
         public static final UniqueKey<BurdenEstimateSetStatusRecord> BURDEN_ESTIMATE_SET_STATUS_PKEY = Internal.createUniqueKey(BurdenEstimateSetStatus.BURDEN_ESTIMATE_SET_STATUS, "burden_estimate_set_status_pkey", BurdenEstimateSetStatus.BURDEN_ESTIMATE_SET_STATUS.CODE);
