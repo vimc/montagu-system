@@ -10,7 +10,6 @@ import java.util.List;
 import javax.annotation.Generated;
 
 import org.jooq.Field;
-import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Schema;
@@ -38,7 +37,7 @@ import org.vaccineimpact.api.db.annex.tables.records.BurdenEstimateStochasticRec
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class BurdenEstimateStochastic extends TableImpl<BurdenEstimateStochasticRecord> {
 
-    private static final long serialVersionUID = -284298259;
+    private static final long serialVersionUID = -1626816819;
 
     /**
      * The reference instance of <code>public.burden_estimate_stochastic</code>
@@ -52,11 +51,6 @@ public class BurdenEstimateStochastic extends TableImpl<BurdenEstimateStochastic
     public Class<BurdenEstimateStochasticRecord> getRecordType() {
         return BurdenEstimateStochasticRecord.class;
     }
-
-    /**
-     * The column <code>public.burden_estimate_stochastic.id</code>.
-     */
-    public final TableField<BurdenEstimateStochasticRecord, Long> ID = createField("id", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('burden_estimate_stochastic_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
 
     /**
      * The column <code>public.burden_estimate_stochastic.burden_estimate_set</code>.
@@ -91,7 +85,7 @@ public class BurdenEstimateStochastic extends TableImpl<BurdenEstimateStochastic
     /**
      * The column <code>public.burden_estimate_stochastic.age</code>.
      */
-    public final TableField<BurdenEstimateStochasticRecord, Short> AGE = createField("age", org.jooq.impl.SQLDataType.SMALLINT, this, "");
+    public final TableField<BurdenEstimateStochasticRecord, Short> AGE = createField("age", org.jooq.impl.SQLDataType.SMALLINT.nullable(false), this, "");
 
     /**
      * Create a <code>public.burden_estimate_stochastic</code> table reference
@@ -135,15 +129,7 @@ public class BurdenEstimateStochastic extends TableImpl<BurdenEstimateStochastic
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.BURDEN_ESTIMATE_STOCHASTIC_BURDEN_ESTIMATE_SET_IDX, Indexes.BURDEN_ESTIMATE_STOCHASTIC_PKEY, Indexes.BURDEN_ESTIMATE_STOCHASTIC_UNIQUE);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Identity<BurdenEstimateStochasticRecord, Long> getIdentity() {
-        return Keys.IDENTITY_BURDEN_ESTIMATE_STOCHASTIC;
+        return Arrays.<Index>asList(Indexes.BURDEN_ESTIMATE_STOCHASTIC_BURDEN_ESTIMATE_SET_IDX, Indexes.BURDEN_ESTIMATE_STOCHASTIC_PKEY);
     }
 
     /**
@@ -159,7 +145,7 @@ public class BurdenEstimateStochastic extends TableImpl<BurdenEstimateStochastic
      */
     @Override
     public List<UniqueKey<BurdenEstimateStochasticRecord>> getKeys() {
-        return Arrays.<UniqueKey<BurdenEstimateStochasticRecord>>asList(Keys.BURDEN_ESTIMATE_STOCHASTIC_PKEY, Keys.BURDEN_ESTIMATE_STOCHASTIC_UNIQUE);
+        return Arrays.<UniqueKey<BurdenEstimateStochasticRecord>>asList(Keys.BURDEN_ESTIMATE_STOCHASTIC_PKEY);
     }
 
     /**

@@ -11,7 +11,6 @@ import java.util.List;
 import javax.annotation.Generated;
 
 import org.jooq.Catalog;
-import org.jooq.Sequence;
 import org.jooq.Table;
 import org.jooq.impl.SchemaImpl;
 import org.vaccineimpact.api.db.annex.tables.BurdenEstimateStochastic;
@@ -30,7 +29,7 @@ import org.vaccineimpact.api.db.annex.tables.BurdenEstimateStochastic;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = 154549988;
+    private static final long serialVersionUID = -1591419440;
 
     /**
      * The reference instance of <code>public</code>
@@ -56,18 +55,6 @@ public class Public extends SchemaImpl {
     @Override
     public Catalog getCatalog() {
         return DefaultCatalog.DEFAULT_CATALOG;
-    }
-
-    @Override
-    public final List<Sequence<?>> getSequences() {
-        List result = new ArrayList();
-        result.addAll(getSequences0());
-        return result;
-    }
-
-    private final List<Sequence<?>> getSequences0() {
-        return Arrays.<Sequence<?>>asList(
-            Sequences.BURDEN_ESTIMATE_STOCHASTIC_ID_SEQ);
     }
 
     @Override
