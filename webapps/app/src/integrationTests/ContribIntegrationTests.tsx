@@ -1,6 +1,5 @@
 import * as React from "react";
 import {expect} from "chai"
-import {checkPromise} from "../test/testHelpers";
 import {Client, QueryResult} from "pg";
 import { createMemoryHistory } from 'history';
 
@@ -9,37 +8,26 @@ import {
     DemographicDataset,
     ModelRunParameterSet,
 } from "../main/shared/models/Generated";
-// import {touchstoneActions} from "../main/contrib/actions/TouchstoneActions";
-import {modellingGroupActions} from "../main/shared/actions/ModellingGroupActions";
-import {expectIsEqual, IntegrationTestSuite} from "./IntegrationTest";
-// import {ContribFetcher} from "../main/contrib/sources/ContribFetcher";
-import {shallow} from "enzyme";
+import { IntegrationTestSuite} from "./IntegrationTest";
 import * as enzyme from "enzyme";
 import * as Adapter from "enzyme-adapter-react-15";
 enzyme.configure({ adapter: new Adapter() });
-import {ModelRunParametersSection} from "../main/contrib/components/Responsibilities/ModelRunParameters/ModelRunParametersSection";
-import {ModelRunParametersContentComponent} from "../main/contrib/components/Responsibilities/ModelRunParameters/ModelRunParametersContent";
-import {mockModellingGroup, mockTouchstone} from "../test/mocks/mockModels";
-// import {mainStore} from "../main/contrib/stores/MainStore";
-import fetcher, {Fetcher} from "../main/shared/sources/Fetcher";
-import {apiResponse} from "../main/shared/sources/Source";
-// import {responsibilityStore} from "../main/contrib/stores/ResponsibilityStore";
-// import {responsibilityActions} from "../main/contrib/actions/ResponsibilityActions";
-// import {Form} from "../main/shared/components/Form";
-import {CreateBurdenEstimateSetForm} from "../main/contrib/components/Responsibilities/BurdenEstimates/CreateBurdenEstimateSetForm";
-// import {runParametersStore} from "../main/contrib/stores/RunParametersStore";
 import * as QueryString from "querystring";
-// import {demographicStore} from "../main/contrib/stores/DemographicStore";
-// import {demographicActions} from "../main/contrib/actions/DemographicActions";
-// import {estimateTokenActions} from "../main/contrib/actions/EstimateActions";
-// import {runParameterActions} from "../main/contrib/actions/RunParameterActions";
 
-// import {fetchToken as fetchTokenForModelRunParam} from "../main/contrib/sources/RunParametersSource";
 import {createContribStore} from "../main/contrib/createStore";
 import { ModellingGroupsService } from "../main/shared/services/ModellingGroupsService";
+import {RunParametersService} from "../main/contrib/services/RunParametersService";
+import {DiseasesService} from "../main/contrib/services/DiseasesService";
+import {TouchstonesService} from "../main/contrib/services/TouchstonesService";
+import {ResponsibilitiesService} from "../main/contrib/services/ResponsibilitiesService";
+import {CoverageService} from "../main/contrib/services/CoverageService";
+import {DemographicService} from "../main/contrib/services/DemographicService";
+import {appSettings, settings} from "../main/shared/Settings";
+import {EstimatesService} from "../main/contrib/services/EstimatesService";
+import {EstimatesCreateBurdenData} from "../main/contrib/actionTypes/EstimatesTypes";
+import {singletonVariableCache} from "../main/shared/modules/cache/singletonVariableCache";
 
 const FormData = require('form-data');
-const http = require('http');
 const jwt_decode = require('jwt-decode');
 
 const groupId = "test-group"; // This group must match the one the logged in user belongs to
@@ -63,265 +51,214 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
 
     addTestsToMocha() {
 
-        /*
-        function getUrlFromModelRunParametersContent(): string {
-            const rendered = shallow(<ModelRunParametersContentComponent
-                ready={true} touchstone={mockTouchstone({id: touchstoneId})}
-                group={mockModellingGroup({id: groupId})}
-                diseases={["yf"]}/>);
-
-            return rendered.find(ModelRunParametersSection).first().prop("url");
-        }
-
-        it("can upload model run parameter sets", (done: DoneCallback) => {
-
-            const url = getUrlFromModelRunParametersContent();
+        it("can upload model run parameter sets", async () => {
+            await addResponsibilities(this.db);
+            await addModel(this.db);
 
             const form = new FormData();
+            form.append('disease', 'yf');
 
-            const promise = addResponsibilities(this.db).then(() => {
-                return addModel(this.db).then(() => {
+            const uploadResult: Result = await (new RunParametersService(this.store.dispatch, this.store.getState))
+                .uploadSet(groupId, touchstoneId, form);
 
-                    form.append('disease', 'yf');
-
-                    return fetcher.fetcher.fetch(url, {
-                        method: "POST",
-                        body: form
-                    }).then((response: Response) => {
-                        return apiResponse(response)
-                            .then((result: Result) => {
-                                    return result
-                                }
-                            );
-                    });
-
-                })
-            });
-
-            checkPromise(done, promise, (result: Result) => {
-                // we don't expect this to be successful as haven't attached a file
-                // but this verifies that that we have the right url
-                expect(result.errors[0].message).to.eq("You must supply a \'file\' parameter in the multipart body")
-            })
+            expect(uploadResult.errors[0].message).to.eq("You must supply a \'file\' parameter in the multipart body")
         });
 
-        it("fetches diseases", (done: DoneCallback) => {
-            const promise = this.db.query(`
+        it("fetches diseases", async () => {
+            await this.db.query(`
                 INSERT INTO disease (id, name) VALUES ('d1', 'Disease 1');
                 INSERT INTO disease (id, name) VALUES ('d2', 'Disease 2');
-            `).then(() => mainStore.fetchDiseases());
+            `);
 
-            checkPromise(done, promise, (diseases) => {
-                expectIsEqual<Disease[]>(diseases, [
-                    {id: "d1", name: "Disease 1"},
-                    {id: "d2", name: "Disease 2"}
-                ]);
-            });
+            const fetchedDiseasesResult: Disease[] = await (new DiseasesService(this.store.dispatch, this.store.getState))
+                .getAllDiseases();
+
+            expect(fetchedDiseasesResult).to.eql([
+                {id: "d1", name: "Disease 1"},
+                {id: "d2", name: "Disease 2"}
+            ]);
         });
 
-        it("fetches modelling groups", (done: DoneCallback) => {
-            const promise = addGroups(this.db).then(() => (new ModellingGroupsService(this.store.dispatch, this.store.getState).getAllGroups()));
+        it("fetches modelling groups", async () => {
+            await addGroups(this.db);
 
-            checkPromise(done, promise, (groups) => {
-                expectIsEqual<ModellingGroup[]>(groups, [
-                    {id: groupId, description: "Group 1"},
-                    {id: "Fake", description: "Group 2"}
-                ]);
-            });
+            const fetchedGroupsResult: ModellingGroup[] = await (new ModellingGroupsService(this.store.dispatch, this.store.getState))
+                .getAllGroups();
+
+            expect(fetchedGroupsResult).to.eql([
+                {id: groupId, description: "Group 1"},
+                {id: "Fake", description: "Group 2"}
+            ]);
         });
 
-        it("fetches touchstones", (done: DoneCallback) => {
-            const promise = addResponsibilities(this.db)
-                .then(() => {
-                    setGroup(groupId);
-                    return responsibilityStore.fetchTouchstones()
-                });
+        it("fetches touchstones", async () => {
+            await addResponsibilities(this.db);
 
-            const expected: Touchstone = {
+            const fetchedTouchstonesResult: Touchstone[] = await (new TouchstonesService(this.store.dispatch, this.store.getState))
+                .getTouchstonesByGroupId(groupId);
+
+            const touchstone: Touchstone = {
                 id: touchstoneId,
                 name: "test",
                 version: 1,
                 description: "Testing version 1",
                 status: "open"
             };
-
-            checkPromise(done, promise, (touchstones) => expectIsEqual<Touchstone[]>(touchstones, [expected]));
+            expect(fetchedTouchstonesResult).to.eql([touchstone]);
         });
 
-        it("fetches responsibilities", (done: DoneCallback) => {
-            const promise = addResponsibilities(this.db)
-                .then((responsibilityIds) => {
-                    return addModel(this.db)
-                        .then((modelVersionId) => {
-                            return addBurdenEstimateSet(this.db, responsibilityIds.responsibility, modelVersionId)
-                        })
-                })
-                .then(() => {
-                    setTouchstoneAndGroup(touchstoneId, groupId);
-                    return responsibilityStore.fetchResponsibilities();
-                });
+        it("fetches responsibilities", async () => {
+            const responsibilityIds = await addResponsibilities(this.db);
+            const modelVersionId = await addModel(this.db);
+            await addBurdenEstimateSet(this.db, responsibilityIds.responsibility, modelVersionId);
 
-            checkPromise(done, promise, (responsibilities) => {
-                expectIsEqual<Responsibilities>(responsibilities, expectedResponsibilitiesResponse());
-            });
+            const responsibilities: Responsibilities = await (new ResponsibilitiesService(this.store.dispatch, this.store.getState))
+                .getResponsibilities(groupId, touchstoneId);
+
+            expect(responsibilities).to.eql(expectedResponsibilitiesResponse());
         });
 
-        it("fetches coverage sets", (done: DoneCallback) => {
-            let coverageSetId: number;
-            const promise = addCoverageSets(this.db)
-                .then(id => coverageSetId = id)
-                .then(() => {
-                    setTouchstoneAndGroup(touchstoneId, groupId);
-                    responsibilityActions.update(expectedResponsibilitiesResponse());
-                    responsibilityActions.setCurrentResponsibility(scenarioId);
-                    return responsibilityStore.fetchCoverageSets()
-                });
-            checkPromise(done, promise, data => {
-                expectIsEqual<ScenarioTouchstoneAndCoverageSets>(data, {
-                    scenario: {
-                        id: scenarioId,
-                        description: "Yellow Fever scenario",
-                        disease: "yf",
-                        touchstones: [touchstoneId]
-                    },
-                    touchstone: {
-                        id: touchstoneId,
-                        name: "test",
-                        version: 1,
-                        description: "Testing version 1",
-                        status: "open"
-                    },
-                    coverage_sets: [
-                        {
-                            id: coverageSetId,
-                            name: "Test set",
-                            touchstone: touchstoneId,
-                            activity_type: "none",
-                            vaccine: "yf",
-                            gavi_support: "no vaccine"
-                        }
-                    ]
-                });
-            })
-        });
+        it("fetches coverage sets", async () => {
+            const coverageSetId: number = await addCoverageSets(this.db);
 
-        it("fetches coverage one time token", (done: DoneCallback) => {
-            const promise = addCoverageSets(this.db)
-                .then(() => {
-                    setTouchstoneAndGroup(touchstoneId, groupId);
-                    responsibilityActions.update(expectedResponsibilitiesResponse());
-                    responsibilityActions.setCurrentResponsibility(scenarioId);
-                    return responsibilityStore.fetchOneTimeCoverageToken()
-                });
-            checkPromise(done, promise, token => {
-                const decoded = jwt_decode(token);
-                expect(decoded.action).to.equal("coverage");
-                const payload = QueryString.parse(decoded.payload);
-                expect(payload).to.eql(JSON.parse(`{
-                    ":group-id": "${groupId}",
-                    ":touchstone-id": "${touchstoneId}",
-                    ":scenario-id": "${scenarioId}"
-                }`));
-            });
-        });
+            const coverageSets: ScenarioTouchstoneAndCoverageSets = await (new CoverageService(this.store.dispatch, this.store.getState))
+                .getDataSets(groupId, touchstoneId, scenarioId);
 
-        it("fetches demographic data sets", (done: DoneCallback) => {
-            const promise = addDemographicDataSets(this.db)
-                .then(() => {
-                    touchstoneActions.setCurrentTouchstone(touchstoneId);
-                    return demographicStore.fetchDataSets();
-                });
-            checkPromise(done, promise, (dataSets: DemographicDataset[]) => {
-                expectIsEqual<DemographicDataset[]>(dataSets, [
+            const expectedCoverageSets: ScenarioTouchstoneAndCoverageSets = {
+                scenario: {
+                    id: scenarioId,
+                    description: "Yellow Fever scenario",
+                    disease: "yf",
+                    touchstones: [touchstoneId]
+                },
+                touchstone: {
+                    id: touchstoneId,
+                    name: "test",
+                    version: 1,
+                    description: "Testing version 1",
+                    status: "open"
+                },
+                coverage_sets: [
                     {
-                        id: "statistic",
-                        name: "Some statistic",
-                        gender_is_applicable: false,
-                        source: "source"
+                        id: coverageSetId,
+                        name: "Test set",
+                        touchstone: touchstoneId,
+                        activity_type: "none",
+                        vaccine: "yf",
+                        gavi_support: "no vaccine"
                     }
-                ]);
+                ]
+            };
+            expect(coverageSets).to.eql(expectedCoverageSets);
+        });
+
+
+        it("fetches coverage one time token", async () => {
+            await addCoverageSets(this.db);
+
+            const token: string = await (new CoverageService(this.store.dispatch, this.store.getState))
+                .getOneTimeToken(groupId, touchstoneId, scenarioId, 'long');
+
+            const decoded = jwt_decode(token);
+
+            expect(decoded.action).to.equal("coverage");
+            const payload = QueryString.parse(decoded.payload);
+            expect(payload).to.eql({
+                ":group-id": groupId,
+                ":touchstone-id": touchstoneId,
+                ":scenario-id": scenarioId
             });
         });
 
-        it("fetches one time demographic token", (done: DoneCallback) => {
-            const promise = addDemographicDataSets(this.db)
-                .then(() => {
-                    touchstoneActions.setCurrentTouchstone(touchstoneId);
-                    return demographicStore.fetchDataSets();
-                })
-                .then(() => {
-                    demographicActions.selectDataSet("statistic");
-                    return demographicStore.fetchOneTimeToken();
-                });
-            checkPromise(done, promise, (token: string) => {
-                const decoded = jwt_decode(token);
-                expect(decoded.action).to.equal("demography");
-                const payload = QueryString.parse(decoded.payload);
-                expect(payload).to.eql(JSON.parse(`{
-                    ":touchstone-id": "${touchstoneId}",
-                    ":source-code": "source",
-                    ":type-code": "statistic"
-                }`));
+        it("fetches demographic data sets", async () => {
+            await addDemographicDataSets(this.db);
+
+            const demographicDataSets: DemographicDataset[] = await (new DemographicService(this.store.dispatch, this.store.getState))
+                .getDataSetsByTouchstoneId(touchstoneId);
+
+            const expectedDataSets: DemographicDataset[] = [
+                {
+                    id: "statistic",
+                    name: "Some statistic",
+                    gender_is_applicable: false,
+                    source: "source"
+                }
+            ];
+            expect(demographicDataSets).to.eql(expectedDataSets)
+        });
+
+        it("fetches one time demographic token", async () => {
+            await addDemographicDataSets(this.db);
+
+            const demographicDataSets: DemographicDataset[] = await (new DemographicService(this.store.dispatch, this.store.getState))
+                .getDataSetsByTouchstoneId(touchstoneId);
+
+            const demographicDataSet = demographicDataSets[0];
+
+            const token: string = await (new DemographicService(this.store.dispatch, this.store.getState))
+                .getOneTimeToken(touchstoneId, demographicDataSet.source, demographicDataSet.id,'long');
+
+            const decoded = jwt_decode(token);
+
+            expect(decoded.action).to.equal("demography");
+            const payload = QueryString.parse(decoded.payload);
+            expect(payload).to.eql({
+                ":touchstone-id": touchstoneId,
+                ":source-code": demographicDataSet.source,
+                ":type-code": demographicDataSet.id
             });
         });
 
-        it("fetches one time estimates token", (done: DoneCallback) => {
+        it("fetches one time estimates token", async () => {
 
-            const promise = returnBurdenEstimateSetPromise(this.db)
-                .then(() => {
-                    setTouchstoneAndGroup(touchstoneId, groupId);
-                    return responsibilityStore.fetchResponsibilities().then(() => {
-                        responsibilityActions.setCurrentResponsibility(scenarioId);
-                        return responsibilityStore.fetchOneTimeEstimatesToken();
-                    });
+            await returnBurdenEstimateSetPromise(this.db);
 
-                });
+            const responsibilities: Responsibilities = await (new ResponsibilitiesService(this.store.dispatch, this.store.getState))
+                .getResponsibilities(groupId, touchstoneId);
 
+            const estimatesSet = responsibilities.responsibilities[0].current_estimate_set;
 
-            checkPromise(done, promise, token => {
-                const decoded = jwt_decode(token);
-                expect(decoded.action).to.equal("burdens-populate");
-                const payload = QueryString.parse(decoded.payload);
-                expect(payload).to.eql(JSON.parse(`{
-                    ":group-id": "${groupId}",
-                    ":touchstone-id": "${touchstoneId}",
-                    ":scenario-id": "${scenarioId}",
-                    ":set-id": "1"
-                }`));
+            const token: string = await (new EstimatesService(this.store.dispatch, this.store.getState))
+                .getOneTimeToken(groupId, touchstoneId, scenarioId, estimatesSet.id);
+
+            const decoded = jwt_decode(token);
+            expect(decoded.action).to.equal("burdens-populate");
+            const payload = QueryString.parse(decoded.payload);
+            expect(payload).to.eql({
+                ":group-id": groupId,
+                ":touchstone-id": touchstoneId,
+                ":scenario-id": scenarioId,
+                ":set-id": String(estimatesSet.id)
             });
         });
 
-        it("fetches one time estimates token with redirect url", (done: DoneCallback) => {
+        it("fetches one time estimates token with redirect url", async () => {
 
-            const promise = returnBurdenEstimateSetPromise(this.db)
-                .then(() => {
-                    setTouchstoneAndGroup(touchstoneId, groupId);
-                    return responsibilityStore.fetchResponsibilities().then(() => {
-                        responsibilityActions.setCurrentResponsibility(scenarioId);
-                        estimateTokenActions.setRedirectPath("/redirect/back");
-                        return responsibilityStore.fetchOneTimeEstimatesToken();
+            await returnBurdenEstimateSetPromise(this.db);
 
-                    });
-                });
+            const responsibilities: Responsibilities = await (new ResponsibilitiesService(this.store.dispatch, this.store.getState))
+                .getResponsibilities(groupId, touchstoneId);
 
-            checkPromise(done, promise, token => {
-                const decoded = jwt_decode(token);
-                expect(decoded.action).to.equal("burdens-populate");
+            const estimatesSet = responsibilities.responsibilities[0].current_estimate_set;
 
-                const query = QueryString.parse(decoded.query);
-                expect(query).to.eql(JSON.parse(`{
-                    "redirectUrl": "http://localhost:5000/redirect/back"
-                }`
-                ));
+            const redirectPath = appSettings.publicPath + '/test';
+            const queryString = "?redirectUrl=" + encodeURI(settings.montaguUrl() + '/' + redirectPath);
 
-                const payload = QueryString.parse(decoded.payload);
-                expect(payload).to.eql(JSON.parse(`{
-                    ":group-id": "${groupId}",
-                    ":touchstone-id": "${touchstoneId}",
-                    ":scenario-id": "${scenarioId}",
-                    ":set-id": "1"
-                }`));
+            const token: string = await (new EstimatesService(this.store.dispatch, this.store.getState))
+                .getOneTimeToken(groupId, touchstoneId, scenarioId, estimatesSet.id, queryString);
 
+            const decoded = jwt_decode(token);
+
+            const query = QueryString.parse(decoded.query);
+            expect(query.redirectUrl).to.equal("http://localhost:5000/contribution/test");
+
+            expect(decoded.action).to.equal("burdens-populate");
+            const payload = QueryString.parse(decoded.payload);
+            expect(payload).to.eql({
+                ":group-id": groupId,
+                ":touchstone-id": touchstoneId,
+                ":scenario-id": scenarioId,
+                ":set-id": String(estimatesSet.id)
             });
         });
 
@@ -333,89 +270,73 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
                 .then(setId => updateCurrentBurdenEstimateSet(db, responsibilityIds.responsibility, setId));
         }
 
-        it("fetches model run parameter sets", (done: DoneCallback) => {
-            const promise: Promise<any> = addModelRunParameterSets(this.db)
-                .then(() => {
-                    setTouchstoneAndGroup(touchstoneId, groupId);
-                    return runParametersStore.fetchParameterSets()
-                });
 
-            checkPromise(done, promise, parameterSets => {
-                expectIsEqual<ModelRunParameterSet[]>(parameterSets, [
-                    {
-                        id: 1,
-                        model: "model-1",
-                        disease: "yf",
-                        uploaded_on: '2017-12-25T12:00:00Z',
-                        uploaded_by: 'test.user'
-                    }
-                ]);
-            });
-        });
 
-        it("fetches one time model run parameter sets token", (done: DoneCallback) => {
+        it("fetches model run parameter sets", async () => {
+            await addModelRunParameterSets(this.db);
 
-            const promise: Promise<any> = addModelRunParameterSets(this.db)
-                .then(() => {
-                    setTouchstoneAndGroup(touchstoneId, groupId);
-                    const s = runParametersStore.getState();
-                    return fetchTokenForModelRunParam(s.groupId, s.touchstoneId, 1)
-                });
+            const runParametersSets: ModelRunParameterSet[] = await (new RunParametersService(this.store.dispatch, this.store.getState))
+                .getParameterSets(groupId, touchstoneId);
 
-            checkPromise(done, promise, token => {
-                const decoded = jwt_decode(token);
-                expect(decoded.action).to.equal("model-run-parameters");
-                const payload = QueryString.parse(decoded.payload);
-                expect(payload).to.eql(JSON.parse(`{
-                    ":group-id": "${groupId}",
-                    ":touchstone-id": "${touchstoneId}",
-                    ":model-run-parameter-set-id": "1"
-                }`));
-            });
-        });
-
-        function getUrlFromCreateBurdenEstimateSetForm(): string {
-            const rendered = shallow(<CreateBurdenEstimateSetForm
-                touchstoneId={touchstoneId} groupId={groupId} scenarioId={scenarioId}/>);
-
-            return rendered.find(Form).prop("url");
-        }
-
-        it("creates burden estimates set", (done: DoneCallback) => {
-
-            const url = getUrlFromCreateBurdenEstimateSetForm();
-
-            let testValue = 0;
-            const props = {
-                successCallback: () => {
-                    testValue = 1;
-                },
-                url: url,
-                successMessage: "hi",
-                submitText: "submit",
-                data: {
-                    type: {
-                        type: "central-averaged",
-                        details: "details"
-                    }
+            const expectedSet = [
+                {
+                    id: 1,
+                    model: "model-1",
+                    disease: "yf",
+                    uploaded_on: '2017-12-25T12:00:00Z',
+                    uploaded_by: 'test.user'
                 }
-            };
-
-            const form = new Form(props);
-
-            const promise = addResponsibilities(this.db).then(() => {
-                return addModel(this.db).then(() => {
-                    return form.submitForm(null);
-                })
-            });
-
-            checkPromise(done, promise, (id) => {
-                expect(testValue).to.eq(1);
-            })
-
+            ];
+            expect(runParametersSets).to.eql(expectedSet);
         });
-        */
 
+
+        it("fetches one time model run parameter sets token", async () => {
+            await addModelRunParameterSets(this.db);
+
+            const sets: ModelRunParameterSet[] = await (new RunParametersService(this.store.dispatch, this.store.getState))
+                .getParameterSets(groupId, touchstoneId);
+
+            const token: string = await (new RunParametersService(this.store.dispatch, this.store.getState))
+                .getOneTimeToken(groupId, touchstoneId, sets[0].id);
+
+            const decoded = jwt_decode(token);
+            expect(decoded.action).to.equal("model-run-parameters");
+            const payload = QueryString.parse(decoded.payload);
+            expect(payload).to.eql({
+                ":group-id": groupId,
+                ":touchstone-id": touchstoneId,
+                ":model-run-parameter-set-id": String(sets[0].id)
+            });
+        });
+
+        it("creates burden estimates set", async () => {
+            await addResponsibilities(this.db);
+            await addModel(this.db);
+
+            const data = {
+                type: {
+                    type: "central-averaged",
+                    details: "details"
+                }
+            } as EstimatesCreateBurdenData;
+
+            const responsibilitiesInitial: Responsibilities = await (new ResponsibilitiesService(this.store.dispatch, this.store.getState))
+                .getResponsibilities(groupId, touchstoneId);
+
+            expect(responsibilitiesInitial.responsibilities[0].current_estimate_set).to.equal(null);
+
+            const result: Result = await (new EstimatesService(this.store.dispatch, this.store.getState))
+                .createBurden(groupId, touchstoneId, scenarioId, data);
+
+            singletonVariableCache.clearAll();
+
+            const responsibilities: Responsibilities = await (new ResponsibilitiesService(this.store.dispatch, this.store.getState))
+                .getResponsibilities(groupId, touchstoneId);
+
+            const estimateSet = responsibilities.responsibilities[0].current_estimate_set;
+            expect(estimateSet.type).to.eql(data.type);
+        });
     }
 }
 
@@ -587,24 +508,6 @@ function addModelRunParameterSets(db: Client): Promise<QueryResult> {
                 END $$;
             `);
         });
-}
-
-// function setTouchstoneAndGroup(touchstoneId: string, groupId: string) {
-//     touchstoneActions.update([
-//         {id: touchstoneId, description: "Touchstone", status: "open", version: 1, name: "test"}
-//     ]);
-//     touchstoneActions.setCurrentTouchstone(touchstoneId);
-//     modellingGroupActions.updateGroups([
-//         {id: groupId, description: "Group 1"}
-//     ]);
-//     modellingGroupActions.setCurrentGroup(groupId);
-// }
-
-function setGroup(groupId: string) {
-    modellingGroupActions.updateGroups([
-        {id: groupId, description: "Group 1"}
-    ]);
-    modellingGroupActions.setCurrentGroup(groupId);
 }
 
 function expectedResponsibilitiesResponse(): Responsibilities {
