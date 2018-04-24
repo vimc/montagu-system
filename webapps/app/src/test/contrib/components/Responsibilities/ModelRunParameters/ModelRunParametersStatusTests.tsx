@@ -48,6 +48,7 @@ describe("Model Run Parameters Status component tests", () => {
         expect(rendered.props().group).to.eql(testGroup);
         expect(rendered.props().set).to.eql(testRunParametersSet);
         expect(rendered.props().disease).to.eql(testDisease.id);
+        expect(typeof rendered.props().loadToken).to.eql("function");
     });
 
     it("renders on branch level, passes", () => {

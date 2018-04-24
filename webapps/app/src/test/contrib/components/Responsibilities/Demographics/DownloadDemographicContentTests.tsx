@@ -52,6 +52,7 @@ describe("Download Demographic Content Component", () => {
         expect(rendered.props().selectedGender).to.eql("both");
         expect(rendered.props().selectedFormat).to.eql("long");
         expect(rendered.props().token).to.eql("test-token");
+        expect(typeof rendered.props().refreshToken).to.eql("function");
     });
 
     it("renders on branch level, passes", () => {

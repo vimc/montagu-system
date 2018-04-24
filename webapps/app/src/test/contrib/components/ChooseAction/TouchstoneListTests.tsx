@@ -8,7 +8,6 @@ import { Sandbox } from "../../../Sandbox";
 import { Touchstone } from "../../../../main/shared/models/Generated";
 import { TouchstoneList, TouchstoneListProps } from "../../../../main/contrib/components/ChooseAction/TouchstoneList";
 import { ButtonLink } from "../../../../main/shared/components/ButtonLink";
-import {LoadingElement} from "../../../../main/shared/partials/LoadingElement/LoadingElement";
 
 function makeProps(touchstones?: Array<Touchstone>): TouchstoneListProps {
     return {

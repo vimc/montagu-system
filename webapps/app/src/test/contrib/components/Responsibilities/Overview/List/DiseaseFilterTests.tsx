@@ -60,6 +60,7 @@ describe("Responsibility Overview Disease Filter Component tests", () => {
         const store = createMockStore(mockNotMatchingState());
         const rendered = shallow(<DiseaseFilter/>, {context: {store}});
         expect(rendered.props().options).to.eql(null);
+        expect(typeof rendered.props().setCurrentDiseaseId).to.eql("function");
     });
 
     it("renders on connect level 1 option", () => {

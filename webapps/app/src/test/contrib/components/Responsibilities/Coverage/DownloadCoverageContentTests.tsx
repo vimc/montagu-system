@@ -10,7 +10,6 @@ import {
     mockResponsibility,
     mockScenario, mockTouchstone
 } from "../../../../mocks/mockModels";
-import { mockContribState } from "../../../../mocks/mockStates";
 import { Sandbox } from "../../../../Sandbox";
 import {createMockStore} from "../../../../mocks/mockStore";
 import {ContribAppState} from "../../../../../main/contrib/reducers/contribAppReducers";
@@ -55,11 +54,13 @@ describe("Download Coverage Content Component", () => {
         expect(rendered.props().selectedFormat).to.eql("long");
         expect(rendered.props().scenario).to.eql(testScenario);
         expect(rendered.props().token).to.eql("test-token");
+        expect(typeof rendered.props().loadToken).to.eql("function");
+        expect(typeof rendered.props().setFormat).to.eql("function");
     });
 
     it("renders on branch level, passes", () => {
         const rendered = shallow(<DownloadCoverageContent/>, {context: {store}}).dive();
-        const props = rendered.props() as DownloadCoverageContentProps;
+        rendered.props() as DownloadCoverageContentProps;
         expect(rendered.find(DownloadCoverageContentComponent).length).to.eql(1);
     });
 
