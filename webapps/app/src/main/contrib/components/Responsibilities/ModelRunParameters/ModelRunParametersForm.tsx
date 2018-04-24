@@ -45,12 +45,14 @@ export class ModelRunParametersFormComponent extends React.Component<ModelRunPar
             if (nextProps.errors) {
                 this.setState({
                     success: false,
-                    errors: nextProps.errors
+                    errors: nextProps.errors,
+                    disabled: false
                 });
             } else {
                 this.setState({
                     success: true,
-                    errors: []
+                    errors: [],
+                    disabled: false
                 });
             }
             this.props.resetUploadStatus();
@@ -77,6 +79,11 @@ export class ModelRunParametersFormComponent extends React.Component<ModelRunPar
         e.preventDefault();
         const form = e.target as HTMLFormElement;
         const data = new FormData(form);
+        this.setState({
+            disabled: true,
+            success: false,
+            errors: []
+        });
         this.props.uploadSet(data);
     }
 

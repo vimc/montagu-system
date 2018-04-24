@@ -1,4 +1,5 @@
 const jsdom = require('jsdom');
+const FormData = require('form-data');
 
 // We don't actually use jsdom in the tests - we use Enzyme shallow rendering
 // However, this keeps the CSS modules happy
@@ -7,6 +8,7 @@ const window = document.defaultView;
 const g = global;
 g.document = document;
 g.window = window;
+g.FormData = FormData;
 
 for (var key in window) {
     if (!window.hasOwnProperty(key)) continue;
