@@ -46,7 +46,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
     }
 
     makeFetcher(): any {
-        return null;//new ContribFetcher();
+        return null;
     }
 
     addTestsToMocha() {
@@ -326,13 +326,11 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
 
             expect(responsibilitiesInitial.responsibilities[0].current_estimate_set).to.equal(null);
 
-            const result: Result = await (new EstimatesService(this.store.dispatch, this.store.getState))
+            await (new EstimatesService(this.store.dispatch, this.store.getState))
                 .createBurden(groupId, touchstoneId, scenarioId, data);
 
-            singletonVariableCache.clearAll();
-
             const responsibilities: Responsibilities = await (new ResponsibilitiesService(this.store.dispatch, this.store.getState))
-                .getResponsibilities(groupId, touchstoneId);
+                .setOptions({noCache: true}).getResponsibilities(groupId, touchstoneId);
 
             const estimateSet = responsibilities.responsibilities[0].current_estimate_set;
             expect(estimateSet.type).to.eql(data.type);

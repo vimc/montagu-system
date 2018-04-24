@@ -35,6 +35,7 @@ export interface InputOptions {
     baseURL?: string;
     cacheKey?: string;
     exceptionOnError?: boolean;
+    noCache?: boolean;
 }
 
 export abstract class AbstractLocalService {
@@ -74,6 +75,7 @@ export abstract class AbstractLocalService {
         this.options.baseURL = settings.apiUrl();
         this.options.cacheKey = null;
         this.options.exceptionOnError = true;
+        this.options.noCache = false;
         if (this.bearerToken) {
             this.options.Authorization = 'Bearer ' + this.bearerToken;
         }
@@ -132,7 +134,7 @@ export abstract class AbstractLocalService {
     }
 
     protected getData(url: string, method: string, params?: any) {
-        if (this.options.cacheKey) {
+        if (this.options.cacheKey && !this.options.noCache) {
             const cacheValue = this.cacheEngine.get(this.getFullyQualifiedCacheKey(this.options.cacheKey, url));
             if (cacheValue) {
                 // reset options on returning cached data from endpoint
@@ -192,7 +194,7 @@ export abstract class AbstractLocalService {
         this.initOptions();
         switch (result.status) {
             case "success":
-                if (options.cacheKey) {
+                if (options.cacheKey && !options.noCache) {
                     this.cacheEngine.set(this.getFullyQualifiedCacheKey(options.cacheKey, response.url), result.data)
                 }
                 return result.data as TModel;
