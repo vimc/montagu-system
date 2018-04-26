@@ -3,7 +3,7 @@ import { Dispatch } from "redux";
 import {ContribAppState} from "../reducers/contribAppReducers";
 import {Coverage, CoverageTypes} from "../actionTypes/CoverageTypes";
 import {CoverageService} from "../services/CoverageService";
-import {statePropsMapHelper} from "../helpers/statePropsMapHelper";
+import {mapStateToPropsHelper} from "../helpers/mapStateToPropsHelper";
 import { ScenarioAndCoverageSets} from "../../shared/models/Generated";
 
 export const coverageActionCreators = {
@@ -11,7 +11,7 @@ export const coverageActionCreators = {
     getDataSets() {
         return async (dispatch: Dispatch<ContribAppState>, getState: () => ContribAppState) => {
 
-            const ids = statePropsMapHelper.getResponsibilityIds(getState());
+            const ids = mapStateToPropsHelper.getResponsibilityIds(getState());
 
             const sets: ScenarioAndCoverageSets = await (new CoverageService(dispatch, getState))
                 .getDataSets(ids.groupId, ids.touchstoneId, ids.scenarioId);
@@ -36,7 +36,7 @@ export const coverageActionCreators = {
                 type: CoverageTypes.COVERAGE_ONE_TIME_TOKEN_CLEAR,
             } as Coverage.OneTimeTokenClear );
 
-            const ids = statePropsMapHelper.getResponsibilityIds(getState());
+            const ids = mapStateToPropsHelper.getResponsibilityIds(getState());
 
             const format = getState().coverage.selectedFormat;
 

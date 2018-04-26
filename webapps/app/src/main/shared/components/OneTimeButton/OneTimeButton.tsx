@@ -33,9 +33,7 @@ export class OneTimeButton extends React.Component<OneTimeButtonProps, any> {
 
     refreshToken() {
         if (typeof this.props.refreshToken === "function") {
-            setTimeout(() => {
-                this.props.refreshToken();
-            });
+            setTimeout(()=>{this.props.refreshToken()});
         }
     }
 

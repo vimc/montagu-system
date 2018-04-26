@@ -30,7 +30,6 @@ describe("Contrib No Route Found Page Component tests", () => {
         const pageArticle = rendered.find('PageArticle');
         expect(createBreadcrumbsStub.called).is.equal(true);
         expect(pageArticle.props().title).is.equal(NoRouteFound.title());
-        console.log(pageArticle.debug());
     });
 });
 

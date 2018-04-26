@@ -6,7 +6,6 @@ import { OneTimeButton } from "../../../main/shared/components/OneTimeButton/One
 import { OneTimeButtonTimeBlocker } from "../../../main/shared/components/OneTimeButton/OneTimeButtonTimeBlocker";
 import { TimeBlockerProps } from "../../../main/shared/components/OneTimeButton/OneTimeButtonTimeBlocker";
 import { doNothing } from "../../../main/shared/Helpers";
-import fetcher from "../../../main/shared/sources/Fetcher";
 import { Sandbox } from "../../Sandbox";
 
 const ButtonWithTimeout = OneTimeButtonTimeBlocker(OneTimeButton);

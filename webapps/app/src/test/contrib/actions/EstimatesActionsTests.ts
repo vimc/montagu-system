@@ -6,7 +6,7 @@ import { EstimatesService } from "../../../main/contrib/services/EstimatesServic
 import { ResponsibilitiesService } from "../../../main/contrib/services/ResponsibilitiesService";
 import {EstimatesCreateBurdenData, EstimatesTypes} from "../../../main/contrib/actionTypes/EstimatesTypes";
 import {createMockStore} from "../../mocks/mockStore";
-import {statePropsMapHelper} from "../../../main/contrib/helpers/statePropsMapHelper";
+import {mapStateToPropsHelper} from "../../../main/contrib/helpers/mapStateToPropsHelper";
 import {mockModellingGroup, mockResponsibilitySet, mockTouchstone} from "../../mocks/mockModels";
 import {ExtendedResponsibilitySet} from "../../../main/contrib/models/ResponsibilitySet";
 import {ResponsibilitiesTypes} from "../../../main/contrib/actionTypes/ResponsibilitiesTypes";
@@ -33,7 +33,7 @@ describe("Estimates actions tests", () => {
         sandbox.setStubFunc(EstimatesService.prototype, "getOneTimeToken", ()=>{
           return Promise.resolve('test-token');
         });
-        sandbox.setStubFunc(statePropsMapHelper, "getResponsibilityIds", ()=>{
+        sandbox.setStubFunc(mapStateToPropsHelper, "getResponsibilityIds", ()=>{
           return {groupId: "g-1", touchstoneId: "t-1", scenarioId: "s-1", estimateSetId: "e-1"};
         });
         store.dispatch(estimatesActionCreators.getOneTimeToken());
@@ -83,7 +83,7 @@ describe("Estimates actions tests", () => {
         sandbox.setStubFunc(EstimatesService.prototype, "getOneTimeToken", ()=>{
             return Promise.resolve('test-token');
         });
-        sandbox.setStubFunc(statePropsMapHelper, "getResponsibilityIds", ()=>{
+        sandbox.setStubFunc(mapStateToPropsHelper, "getResponsibilityIds", ()=>{
             return {groupId: "g-1", touchstoneId: "t-1", scenarioId: "s-1", estimateSetId: "e-1"};
         });
 

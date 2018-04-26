@@ -5,9 +5,9 @@ import { coverageActionCreators } from "../../../main/contrib/actions/coverageAc
 import { CoverageService } from "../../../main/contrib/services/CoverageService";
 import {Coverage, CoverageTypes} from "../../../main/contrib/actionTypes/CoverageTypes";
 import {createMockStore} from "../../mocks/mockStore";
-import {mockCoverageSet, mockDemographicDataset, mockScenario, mockTouchstone} from "../../mocks/mockModels";
+import {mockCoverageSet, mockScenario} from "../../mocks/mockModels";
 import {ScenarioAndCoverageSets} from "../../../main/shared/models/Generated";
-import {statePropsMapHelper} from "../../../main/contrib/helpers/statePropsMapHelper";
+import {mapStateToPropsHelper} from "../../../main/contrib/helpers/mapStateToPropsHelper";
 
 describe("Coverage actions tests", () => {
     const sandbox = new Sandbox();
@@ -25,7 +25,7 @@ describe("Coverage actions tests", () => {
 
     it("data sets fetched", (done) => {
         const store = createMockStore({});
-        sandbox.setStubFunc(statePropsMapHelper, "getResponsibilityIds", ()=>{
+        sandbox.setStubFunc(mapStateToPropsHelper, "getResponsibilityIds", ()=>{
             return Promise.resolve({groupId: "g1", touchstoneId: "t1", scenarioId: "s1"});
         });
         sandbox.setStubFunc(CoverageService.prototype, "getDataSets", ()=>{
@@ -58,8 +58,8 @@ describe("Coverage actions tests", () => {
                 selectedFormat: Coverage.SelectedFormat.long
             }
         });
-        sandbox.setStubFunc(statePropsMapHelper, "getResponsibilityIds", ()=>{
-            return Promise.resolve({groupId: "g1", touchstoneId: "t1", scenarioId: "s1"});
+        sandbox.setStubFunc(mapStateToPropsHelper, "getResponsibilityIds", ()=>{
+            return {groupId: "g1", touchstoneId: "t1", scenarioId: "s1"};
         });
         sandbox.setStubFunc(CoverageService.prototype, "getOneTimeToken", ()=>{
             return Promise.resolve('test-token');

@@ -1,7 +1,6 @@
 import {ContribAppState} from "../reducers/contribAppReducers";
 
-export const statePropsMapHelper = {
-
+export const mapStateToPropsHelper = {
     getResponsibilityIds(state: ContribAppState) {
         const groupId = state.groups.currentUserGroup.id;
         const touchstoneId = state.touchstones.currentTouchstone.id;

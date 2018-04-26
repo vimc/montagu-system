@@ -25,7 +25,7 @@ describe("Choose Action Page Component", () => {
         expect(typeof rendered.props().onLoad).is.equal('function');
     });
 
-    it("renders component component level", () => {
+    it("renders component on component level, renders title and sub component", () => {
         let testMatch = mockMatch<ChooseActionPageLocationProps>({groupId: "g-1"});
         let store = createMockStore();
         const onLoadStub = sandbox.setStubReduxAction(chooseActionPageActionCreators, "onLoad");

@@ -8,7 +8,7 @@ import {
 import {EstimatesService} from "../services/EstimatesService";
 import {settings} from "../../shared/Settings";
 import {responsibilitiesActionCreators} from "./responsibilitiesActionCreators";
-import {statePropsMapHelper} from "../helpers/statePropsMapHelper";
+import {mapStateToPropsHelper} from "../helpers/mapStateToPropsHelper";
 import {ContribAppState} from "../reducers/contribAppReducers";
 
 export const estimatesActionCreators = {
@@ -19,7 +19,7 @@ export const estimatesActionCreators = {
                 type: EstimatesTypes.ESTIMATES_ONE_TIME_TOKEN_CLEAR,
             } as EstimatesOneTimeTokenClear );
 
-            const ids = statePropsMapHelper.getResponsibilityIds(getState());
+            const ids = mapStateToPropsHelper.getResponsibilityIds(getState());
 
             const redirectPath = getState().estimates.redirectPath;
             const queryString = "?redirectUrl=" + encodeURI(settings.montaguUrl() + '/' + redirectPath);
@@ -51,7 +51,7 @@ export const estimatesActionCreators = {
     createBurden(data: EstimatesCreateBurdenData) {
         return async (dispatch: Dispatch<ContribAppState>, getState: () => ContribAppState) => {
 
-            const ids = statePropsMapHelper.getResponsibilityIds(getState())
+            const ids = mapStateToPropsHelper.getResponsibilityIds(getState())
 
             await (new EstimatesService(dispatch, getState)).createBurden(ids.groupId, ids.touchstoneId, ids.scenarioId, data);
             dispatch(responsibilitiesActionCreators.refreshResponsibilities());
