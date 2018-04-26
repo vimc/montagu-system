@@ -19,9 +19,9 @@ if (hasProperty('docker_name')) {
     api_docker_name = docker_name
 }
 
-def libsodium_image = 'docker.montagu.dide.ic.ac.uk:5000/libsodium:master'
+def base_image = 'docker.montagu.dide.ic.ac.uk:5000/openjdk-libsodium:master'
 if (hasProperty('libsodium_image')) {
-    api_docker_name = libsodium_image
+    base_image = libsodium_image
 }
 
 apply plugin: 'application'
@@ -57,9 +57,9 @@ dependencies {
 }
 
 distDocker {
-    baseImage = libsodium_image
+    baseImage = base_image
     dependsOn = [build]
-    push = true
+    push = false
     tag = api_docker_name
     tagVersion = api_docker_version
 }
