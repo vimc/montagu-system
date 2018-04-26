@@ -6,4 +6,4 @@
 	url = https://github.com/vimc/montagu-db
 [submodule "libsodium"]
 	path = libsodium
-	url = https://github.com/vimc/docker-libsodium.git
+	url = https://github.com/vimc/openjdk-libsodium.git
