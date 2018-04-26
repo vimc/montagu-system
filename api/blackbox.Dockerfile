@@ -1,4 +1,4 @@
-ARG libsodium_image=docker.montagu.dide.ic.ac.uk:5000/libsodium:i1695
+ARG libsodium_image=docker.montagu.dide.ic.ac.uk:5000/openjdk-libsodium:master
 FROM $libsodium_image
 
 # Setup gradle
