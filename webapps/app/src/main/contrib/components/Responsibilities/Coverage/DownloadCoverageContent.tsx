@@ -12,6 +12,7 @@ import { FormatControl } from "../FormatControl";
 import {LoadingElement} from "../../../../shared/partials/LoadingElement/LoadingElement";
 import {ContribAppState} from "../../../reducers/contribAppReducers";
 import {coverageActionCreators} from "../../../actions/coverageActionCreators";
+import {withConfidentialityAgreement} from "../Overview/ConfidentialityAgreement";
 
 export interface DownloadCoverageContentProps {
     touchstone: Touchstone;
@@ -140,5 +141,6 @@ export const mapDispatchToProps = (dispatch: Dispatch<ContribAppState>): Partial
 
 export const DownloadCoverageContent = compose(
     connect(mapStateToProps, mapDispatchToProps),
-    branch((props: DownloadCoverageContentProps) => !props.touchstone || !props.scenario, renderComponent(LoadingElement))
+    branch((props: DownloadCoverageContentProps) => !props.touchstone || !props.scenario, renderComponent(LoadingElement)),
+    withConfidentialityAgreement
 )(DownloadCoverageContentComponent) as React.ComponentClass<Partial<DownloadCoverageContentProps>>;

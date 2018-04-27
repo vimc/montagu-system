@@ -16,18 +16,19 @@ import {ContribAppState} from "../../../../../main/contrib/reducers/contribAppRe
 import {LoadingElement} from "../../../../../main/shared/partials/LoadingElement/LoadingElement";
 import {
     DownloadCoverageContent, DownloadCoverageContentComponent,
-    DownloadCoverageContentProps
 } from "../../../../../main/contrib/components/Responsibilities/Coverage/DownloadCoverageContent";
 import {CoverageSetList} from "../../../../../main/contrib/components/Responsibilities/Coverage/CoverageSetList";
 import {FormatControl} from "../../../../../main/contrib/components/Responsibilities/FormatControl";
 import {TimeBlockerProps} from "../../../../../main/shared/components/OneTimeButton/OneTimeButtonTimeBlocker";
 import {coverageActionCreators} from "../../../../../main/contrib/actions/coverageActionCreators";
+import {ConfidentialityAgreementComponent} from "../../../../../main/contrib/components/Responsibilities/Overview/ConfidentialityAgreement";
 
 describe("Download Coverage Content Component", () => {
 
     const testGroup = mockModellingGroup();
     const testDisease = mockDisease();
     const testTouchstone = mockTouchstone();
+    const testTouchstone2 = mockTouchstone({id: "rfp-1"});
     const testScenario = mockScenario({disease: testDisease.id, touchstones: [testTouchstone]});
     const testResponsibility = mockResponsibility({scenario: testScenario});
     const testCoverageSet = mockCoverageSet({touchstone: testTouchstone.id});
@@ -37,6 +38,7 @@ describe("Download Coverage Content Component", () => {
         touchstones: {currentTouchstone: testTouchstone},
         coverage: {dataSets: [testCoverageSet], selectedFormat: "long", token: "test-token"},
         responsibilities: {currentResponsibility: testResponsibility},
+        user: {signedConfidentialityAgreement: false}
     };
 
     let store : Store<ContribAppState>;
@@ -60,8 +62,9 @@ describe("Download Coverage Content Component", () => {
 
     it("renders on branch level, passes", () => {
         const rendered = shallow(<DownloadCoverageContent/>, {context: {store}}).dive();
-        rendered.props() as DownloadCoverageContentProps;
-        expect(rendered.find(DownloadCoverageContentComponent).length).to.eql(1);
+        // rendered.props() as DownloadCoverageContentProps;
+        // console.log(rendered.debug())
+        expect(rendered.find('Connect').length).to.eql(1);
     });
 
 
@@ -75,15 +78,28 @@ describe("Download Coverage Content Component", () => {
         expect(rendered.find(LoadingElement).length).to.eql(1);
     });
 
+    it("renders on confidentiality level, passes", () => {
+        const rendered = shallow(<DownloadCoverageContent/>, {context: {store}}).dive().dive().dive().dive().dive();
+        expect(rendered.find(CoverageSetList).length).to.eql(1);
+    });
+
+    it("renders on confidentiality level, not passes", () => {
+        const anotherState = {...testState, touchstones: {currentTouchstone: testTouchstone2}};
+        store = createMockStore(anotherState);
+        const rendered = shallow(<DownloadCoverageContent/>, {context: {store}}).dive().dive().dive().dive().dive();
+        expect(rendered.find(ConfidentialityAgreementComponent).length).to.eql(1);
+    });
+
+
     it("renders on component level touuchstone and scenario table", () => {
-        const rendered = shallow(<DownloadCoverageContent/>, {context: {store}}).dive().dive();
+        const rendered = shallow(<DownloadCoverageContent/>, {context: {store}}).dive().dive().dive().dive().dive();
         const firstTable = rendered.find('table.specialColumn').at(0);
         expect(firstTable.find('tr').at(0).find('div.col').at(1).text(), testTouchstone.description);
         expect(firstTable.find('tr').at(1).find('div.col').at(1).text(), testScenario.description);
     });
 
     it("renders on component level coverage set list and format control", () => {
-        const rendered = shallow(<DownloadCoverageContent/>, {context: {store}}).dive().dive();
+        const rendered = shallow(<DownloadCoverageContent/>, {context: {store}}).dive().dive().dive().dive().dive();
         expect(rendered.find(CoverageSetList).length).to.equal(1);
         expect(rendered.find(CoverageSetList).props().coverageSets).to.eql([testCoverageSet]);
         expect(rendered.find(FormatControl).length).to.equal(1);
@@ -91,7 +107,7 @@ describe("Download Coverage Content Component", () => {
     });
 
     it("renders on component level time blocked button", () => {
-        const rendered = shallow(<DownloadCoverageContent/>, {context: {store}}).dive().dive();
+        const rendered = shallow(<DownloadCoverageContent/>, {context: {store}}).dive().dive().dive().dive().dive();
         expect(rendered.find('ButtonTimeBlockerWrapper').length).to.equal(1);
         const buttonTimeBlockedProps = rendered.find('ButtonTimeBlockerWrapper').props() as TimeBlockerProps;
         expect(buttonTimeBlockedProps.token).to.equal("test-token");
@@ -102,7 +118,7 @@ describe("Download Coverage Content Component", () => {
     });
 
     it("can trigger mapped load token", () => {
-        const rendered = shallow(<DownloadCoverageContent/>, {context: {store}}).dive().dive();
+        const rendered = shallow(<DownloadCoverageContent/>, {context: {store}}).dive().dive().dive().dive().dive();
         const downloadCoverageContentComponentInstance = rendered.instance() as DownloadCoverageContentComponent;
         const onLoadTokenStub = sandbox.setStubReduxAction(coverageActionCreators, "getOneTimeToken");
         downloadCoverageContentComponentInstance.props.loadToken();
@@ -110,7 +126,7 @@ describe("Download Coverage Content Component", () => {
     });
 
     it("can trigger mapped chose format", () => {
-        const rendered = shallow(<DownloadCoverageContent/>, {context: {store}}).dive().dive();
+        const rendered = shallow(<DownloadCoverageContent/>, {context: {store}}).dive().dive().dive().dive().dive();
         const downloadCoverageContentComponentInstance = rendered.instance() as DownloadCoverageContentComponent;
         const onFormatSelectStub = sandbox.setStubReduxAction(coverageActionCreators, "setFormat");
         downloadCoverageContentComponentInstance.props.setFormat("long");
@@ -118,7 +134,7 @@ describe("Download Coverage Content Component", () => {
     });
 
     it("calling onSelectFormat triggers both get token and set format actions", () => {
-        const rendered = shallow(<DownloadCoverageContent/>, {context: {store}}).dive().dive();
+        const rendered = shallow(<DownloadCoverageContent/>, {context: {store}}).dive().dive().dive().dive().dive();
         const downloadCoverageContentComponentInstance = rendered.instance() as DownloadCoverageContentComponent;
         const onLoadTokenStub = sandbox.setStubReduxAction(coverageActionCreators, "getOneTimeToken");
         const onFormatSelectStub = sandbox.setStubReduxAction(coverageActionCreators, "setFormat");

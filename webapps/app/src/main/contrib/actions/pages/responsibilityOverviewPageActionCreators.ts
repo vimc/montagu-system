@@ -10,12 +10,14 @@ import {
 import {responsibilitiesActionCreators} from "../responsibilitiesActionCreators";
 import {diseasesActionCreators} from "../diseasesActionCreators";
 import {chooseActionPageActionCreators} from "./chooseActionPageActionCreators";
+import {userActionCreators} from "../userActionCreators";
 
 export const responsibilityOverviewPageActionCreators = {
 
     onLoad(props: ResponsibilityOverviewPageLocationProps) {
         return async (dispatch: Dispatch<ContribAppState>, getState: () => ContribAppState) => {
             await dispatch(this.loadData(props));
+            await dispatch(userActionCreators.getConfidentialityAgreement());
             dispatch(breadcrumbsActionCreators.createBreadcrumbs(ResponsibilityOverviewPageComponent.breadcrumb(getState())));
         }
     },

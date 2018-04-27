@@ -16,6 +16,7 @@ import {demographicInitialState, DemographicState} from "../../main/contrib/redu
 import {coverageInitialState, CoverageState} from "../../main/contrib/reducers/coverageReducer";
 import {estimatesInitialState, EstimatesState} from "../../main/contrib/reducers/estimatesReducer";
 import {runParametersInitialState, RunParametersState} from "../../main/contrib/reducers/runParametersReducer";
+import { initialState as UserInitialState, UserState} from "../../main/contrib/reducers/userReducer";
 
 export type RecursivePartial<T> = {
     [P in keyof T]?: RecursivePartial<T[P]>
@@ -66,6 +67,7 @@ export const mockAdminState = (props?: any) => {
 export const mockContribState = (props?: any) :ContribAppState => {
     const authMock: AuthState = props && props.auth ? mockAuthState(props.auth) : mockAuthState();
     const groupsMock: ModellingGroupsState = props && props.groups ? props.groups : ModellingGroupsInitialState;
+  const userMock: UserState = props && props.user ? props.user : UserInitialState;
     const touchstonesMock: TouchstonesState = props && props.touchstones ? props.touchstones : touchstonesInitialState;
     const responsibilitiesMock : ResponsibilitiesState = props && props.responsibilities ? props.responsibilities : responsibilitiesInitialState;
     const diseasesMock : DiseasesState = props && props.diseases ? props.diseases : diseasesInitialState;
@@ -79,6 +81,7 @@ export const mockContribState = (props?: any) :ContribAppState => {
         form: formReducer,
         groups: groupsMock,
         breadcrumbs: initialBreadcrumbsState,
+    user: userMock,
         touchstones: touchstonesMock,
         responsibilities: responsibilitiesMock,
         diseases: diseasesMock,

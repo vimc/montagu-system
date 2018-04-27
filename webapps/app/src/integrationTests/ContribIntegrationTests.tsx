@@ -26,6 +26,7 @@ import {appSettings, settings} from "../main/shared/Settings";
 import {EstimatesService} from "../main/contrib/services/EstimatesService";
 import {EstimatesCreateBurdenData} from "../main/contrib/actionTypes/EstimatesTypes";
 import {singletonVariableCache} from "../main/shared/modules/cache/singletonVariableCache";
+import {UserService} from "../main/contrib/services/UserService";
 
 const FormData = require('form-data');
 const jwt_decode = require('jwt-decode');
@@ -77,6 +78,22 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
                 {id: "d1", name: "Disease 1"},
                 {id: "d2", name: "Disease 2"}
             ]);
+        });
+
+        it("signs confidentiality agreement", async () => {
+
+          const result = await (new UserService(this.store.dispatch, this.store.getState))
+            .signConfidentiality();
+          expect(result).to.eq("OK");
+
+        });
+
+        it("gets confidentiality agreement", async () => {
+
+          const result = await (new UserService(this.store.dispatch, this.store.getState))
+            .getConfidentiality();
+         expect(result).to.eq(false);
+
         });
 
         it("fetches modelling groups", async () => {

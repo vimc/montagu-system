@@ -8,8 +8,10 @@ import {ResponsibilityList} from "./List/ResponsibilityList";
 import {ButtonLink} from "../../../../shared/components/ButtonLink";
 
 import {ResponsibilitySetStatusMessage} from "./ResponsibilitySetStatusMessage";
+import {settings} from "../../../../shared/Settings";
 import {LoadingElement} from "../../../../shared/partials/LoadingElement/LoadingElement";
 import {ContribAppState} from "../../../reducers/contribAppReducers";
+import {withConfidentialityAgreement} from "./ConfidentialityAgreement";
 
 const stochasticParams = require('./stochastic_template_params.csv');
 
@@ -17,14 +19,14 @@ export interface ResponsibilityOverviewContentProps {
     responsibilitySet: IExtendedResponsibilitySet;
     currentDiseaseId: string;
     modellingGroup: ModellingGroup;
+    touchstoneId: string;
 }
 
 export const ResponsibilityOverviewContentComponent: React.SFC<ResponsibilityOverviewContentProps> =
     (props: ResponsibilityOverviewContentProps) => {
 
-    const touchstoneId = props.responsibilitySet.touchstone.id;
-    const demographyUrl = `/${props.modellingGroup.id}/responsibilities/${touchstoneId}/demographics/`;
-    const parametersUrl = `/${props.modellingGroup.id}/responsibilities/${touchstoneId}/parameters/`;
+    const demographyUrl = `/${props.modellingGroup.id}/responsibilities/${props.touchstoneId}/demographics/`;
+    const parametersUrl = `/${props.modellingGroup.id}/responsibilities/${props.touchstoneId}/parameters/`;
 
     const paramsSection = <div id="params-section">
         <div className="largeSectionTitle">Parameters</div>
@@ -39,7 +41,7 @@ export const ResponsibilityOverviewContentComponent: React.SFC<ResponsibilityOve
         <div className="mt-3">
             <ButtonLink href={demographyUrl}>Download demographic data</ButtonLink>
         </div>
-        {touchstoneId != "201801rfp-1" && paramsSection}
+        {!settings.isApplicantTouchstone(props.touchstoneId) && paramsSection}
         <div className="largeSectionTitle">Scenarios</div>
         <ResponsibilityList
             modellingGroup={props.modellingGroup}
@@ -54,13 +56,15 @@ export const mapStateToProps = (state: ContribAppState): Partial<ResponsibilityO
     return {
         responsibilitySet: state.responsibilities.responsibilitiesSet,
         currentDiseaseId: state.diseases.currentDiseaseId,
-        modellingGroup: state.groups.currentUserGroup
+        modellingGroup: state.groups.currentUserGroup,
+        touchstoneId: state.touchstones.currentTouchstone.id
     }
 };
 
 
 export const ResponsibilityOverviewContent = compose(
     connect(mapStateToProps),
-    branch((props: ResponsibilityOverviewContentProps) => (!props.responsibilitySet), renderComponent(LoadingElement))
+    branch((props: ResponsibilityOverviewContentProps) => (!props.responsibilitySet), renderComponent(LoadingElement)),
+    withConfidentialityAgreement
 )(ResponsibilityOverviewContentComponent) as React.ComponentClass<Partial<ResponsibilityOverviewContentProps>>;
 

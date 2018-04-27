@@ -4,35 +4,44 @@ import { expect } from "chai";
 import { Store } from "redux";
 
 import "../../../../helper";
-import {mockExtendedResponsibilitySet, mockModellingGroup} from "../../../../mocks/mockModels";
+import {mockExtendedResponsibilitySet, mockModellingGroup, mockTouchstone} from "../../../../mocks/mockModels";
 import { mockContribState } from "../../../../mocks/mockStates";
 import { Sandbox } from "../../../../Sandbox";
 import {createMockStore} from "../../../../mocks/mockStore";
 import {ContribAppState} from "../../../../../main/contrib/reducers/contribAppReducers";
 import {LoadingElement} from "../../../../../main/shared/partials/LoadingElement/LoadingElement";
 import {
-    ResponsibilityOverviewContentComponent, ResponsibilityOverviewContent,
+    ResponsibilityOverviewContent,
     ResponsibilityOverviewContentProps, mapStateToProps
 } from "../../../../../main/contrib/components/Responsibilities/Overview/ResponsibilityOverviewContent";
 import {ResponsibilitySetStatusMessage} from "../../../../../main/contrib/components/Responsibilities/Overview/ResponsibilitySetStatusMessage";
 import {ResponsibilityList} from "../../../../../main/contrib/components/Responsibilities/Overview/List/ResponsibilityList";
 import {ButtonLink} from "../../../../../main/shared/components/ButtonLink";
+import {
+    ConfidentialityAgreementComponent
+} from "../../../../../main/contrib/components/Responsibilities/Overview/ConfidentialityAgreement";
 
 describe("Responsibility Overview Content Component", () => {
 
+    const testTouchstone = mockTouchstone();
+    const testTouchstone2 = mockTouchstone({id: "rfp-1"});
     const testCurrentGroup = mockModellingGroup();
     const testResponsibilitiesSet = mockExtendedResponsibilitySet();
     const testDiseaseId = "d-1";
+
+    const state = {
+        touchstones: {currentTouchstone: testTouchstone},
+        groups: {currentUserGroup: testCurrentGroup},
+        diseases: {currentDiseaseId: testDiseaseId},
+        responsibilities: {responsibilitiesSet: testResponsibilitiesSet},
+        user: {signedConfidentialityAgreement: false}
+    };
 
     let store : Store<ContribAppState>;
 
     const sandbox = new Sandbox();
     beforeEach(() => {
-        store = createMockStore({
-            groups: {currentUserGroup: testCurrentGroup},
-            diseases: {currentDiseaseId: testDiseaseId},
-            responsibilities: {responsibilitiesSet: testResponsibilitiesSet}
-        });
+        store = createMockStore(state);
     });
     afterEach(() => sandbox.restore());
 
@@ -49,21 +58,30 @@ describe("Responsibility Overview Content Component", () => {
         expect(props.modellingGroup).to.eql(testCurrentGroup);
         expect(props.currentDiseaseId).to.eql(testDiseaseId);
         expect(props.responsibilitySet).to.eql(testResponsibilitiesSet);
-        expect(rendered.find(ResponsibilityOverviewContentComponent).length).to.eql(1);
+        expect(rendered.find('Connect').length).to.eql(1);
     });
 
     it("renders on branch level, not passes", () => {
-        store = createMockStore({
-            groups: {currentUserGroup: testCurrentGroup},
-            diseases: {currentDiseaseId: testDiseaseId},
-            responsibilities: {responsibilitiesSet: null}
-        });
+        const anotherState = {...state, responsibilities: {responsibilitiesSet: null as any}};
+        store = createMockStore(anotherState);
         const rendered = shallow(<ResponsibilityOverviewContent/>, {context: {store}}).dive().dive();
         expect(rendered.find(LoadingElement).length).to.eql(1);
     });
 
+    it("renders on confidentiality level, passes", () => {
+        const rendered = shallow(<ResponsibilityOverviewContent/>, {context: {store}}).dive().dive().dive().dive().dive();
+        expect(rendered.find(ResponsibilitySetStatusMessage).length).to.eql(1);
+    });
+
+    it("renders on confidentiality level, not passes", () => {
+        const anotherState = {...state, touchstones: {currentTouchstone: testTouchstone2}};
+        store = createMockStore(anotherState);
+        const rendered = shallow(<ResponsibilityOverviewContent/>, {context: {store}}).dive().dive().dive().dive().dive();
+        expect(rendered.find(ConfidentialityAgreementComponent).length).to.eql(1);
+    });
+
     it("renders on component level", () => {
-        const rendered = shallow(<ResponsibilityOverviewContent/>, {context: {store}}).dive().dive();
+        const rendered = shallow(<ResponsibilityOverviewContent/>, {context: {store}}).dive().dive().dive().dive().dive();
         expect(rendered.find(ResponsibilitySetStatusMessage).length).to.eql(1);
         expect(rendered.find(ResponsibilitySetStatusMessage).props().status).to.eql(testResponsibilitiesSet.status);
         const responsibilityList = rendered.find(ResponsibilityList);
@@ -78,7 +96,8 @@ describe("Responsibility Overview Content Component", () => {
         const contribStateMock = mockContribState({
             groups: {currentUserGroup: testCurrentGroup},
             diseases: {currentDiseaseId: testDiseaseId},
-            responsibilities: {responsibilitiesSet: testResponsibilitiesSet}
+            responsibilities: {responsibilitiesSet: testResponsibilitiesSet},
+            touchstones: {currentTouchstone: testTouchstone.id}
         });
         const props = mapStateToProps(contribStateMock);
         expect(props.modellingGroup).to.eql(testCurrentGroup);

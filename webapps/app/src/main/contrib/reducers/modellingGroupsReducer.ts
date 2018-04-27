@@ -21,4 +21,3 @@ export const modellingGroupsReducer = (state = modellingGroupInitialState, actio
             return state;
     }
 };
-
