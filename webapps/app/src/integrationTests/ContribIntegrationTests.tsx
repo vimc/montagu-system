@@ -25,7 +25,6 @@ import {DemographicService} from "../main/contrib/services/DemographicService";
 import {appSettings, settings} from "../main/shared/Settings";
 import {EstimatesService} from "../main/contrib/services/EstimatesService";
 import {EstimatesCreateBurdenData} from "../main/contrib/actionTypes/EstimatesTypes";
-import {singletonVariableCache} from "../main/shared/modules/cache/singletonVariableCache";
 import {UserService} from "../main/contrib/services/UserService";
 
 const FormData = require('form-data');
