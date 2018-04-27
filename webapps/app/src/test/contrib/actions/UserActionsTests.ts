@@ -8,7 +8,7 @@ import {UserActionType} from "../../../main/contrib/actionTypes/UserActionTypes"
 
 describe("User actions tests", () => {
     const sandbox = new Sandbox();
-    
+
     afterEach(() => {
         sandbox.restore();
     });

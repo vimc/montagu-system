@@ -18,6 +18,8 @@ import {ResponsibilitiesService} from "../../../../main/contrib/services/Respons
 import {DiseasesTypes} from "../../../../main/contrib/actionTypes/DiseasesTypes";
 import {ResponsibilitiesTypes} from "../../../../main/contrib/actionTypes/ResponsibilitiesTypes";
 import {ExtendedResponsibilitySet} from "../../../../main/contrib/models/ResponsibilitySet";
+import {UserService} from "../../../../main/contrib/services/UserService";
+import {UserActionType} from "../../../../main/contrib/actionTypes/UserActionTypes";
 
 describe("Responsibility Overview Page actions tests", () => {
     const sandbox = new Sandbox();
@@ -53,6 +55,9 @@ describe("Responsibility Overview Page actions tests", () => {
         sandbox.setStubFunc(ResponsibilitiesService.prototype, "getResponsibilities", ()=>{
             return Promise.resolve(testResponsibilitySet);
         });
+        sandbox.setStubFunc(UserService.prototype, "getConfidentiality", ()=>{
+            return Promise.resolve(true);
+        });
         sandbox.setStubFunc(breadcrumbsModule, "initialize", ()=>{
             return testBreadcrumbs;
         });
@@ -70,6 +75,7 @@ describe("Responsibility Overview Page actions tests", () => {
                 { type: DiseasesTypes.DISEASES_FETCHED, data: [testDisease]},
                 { type: TouchstoneTypes.SET_CURRENT_TOUCHSTONE, data: testTouchstone},
                 { type: ResponsibilitiesTypes.SET_RESPONSIBILITIES, data: testExtResponsibilitySet},
+                { type: UserActionType.CONFIDENTIALITY_RETRIEVED, data: true},
                 { type: BreadcrumbsTypes.BREADCRUMBS_RECEIVED, data: testBreadcrumbs },
             ];
             expect(actions).to.eql(expectedPayload);

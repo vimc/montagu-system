@@ -21,6 +21,8 @@ import {downloadCoveragePageActionCreators} from "../../../../main/contrib/actio
 import {CoverageService} from "../../../../main/contrib/services/CoverageService";
 import {ScenarioAndCoverageSets} from "../../../../main/shared/models/Generated";
 import {CoverageTypes} from "../../../../main/contrib/actionTypes/CoverageTypes";
+import {UserService} from "../../../../main/contrib/services/UserService";
+import {UserActionType} from "../../../../main/contrib/actionTypes/UserActionTypes";
 
 describe("Download Coverage Page actions tests", () => {
     const sandbox = new Sandbox();
@@ -74,6 +76,9 @@ describe("Download Coverage Page actions tests", () => {
         sandbox.setStubFunc(CoverageService.prototype, "getDataSets", ()=>{
             return Promise.resolve(testScenarioAndCoverageSet);
         });
+        sandbox.setStubFunc(UserService.prototype, "getConfidentiality", ()=>{
+            return Promise.resolve(true);
+        });
         sandbox.setStubFunc(breadcrumbsModule, "initialize", ()=>{
             return testBreadcrumbs;
         });
@@ -99,6 +104,7 @@ describe("Download Coverage Page actions tests", () => {
                 { type: CoverageTypes.COVERAGE_ONE_TIME_TOKEN_CLEAR},
                 { type: CoverageTypes.COVERAGE_ONE_TIME_TOKEN_FETCHED, data: "test-token"},
                 { type: CoverageTypes.COVERAGE_DATA_SETS_FETCHED, data: [testCoverageSet]},
+                { type: UserActionType.CONFIDENTIALITY_RETRIEVED, data: true},
                 { type: BreadcrumbsTypes.BREADCRUMBS_RECEIVED, data: testBreadcrumbs },
             ];
             expect(actions).to.eql(expectedPayload);
