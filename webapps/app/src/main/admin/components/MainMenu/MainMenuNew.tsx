@@ -6,20 +6,20 @@ import { ButtonLink } from "../../../shared/components/ButtonLink";
 
 const menuStyles = require("./MainMenu.css");
 
-export class MainMenu extends React.Component<PageProperties<undefined>> {
+export class MainMenuNew extends React.Component<PageProperties<undefined>> {
 
     static title: string = "Modellers' contribution portal";
 
     static breadcrumb() : PageBreadcrumb {
         return {
-            name: MainMenu.title,
+            name: MainMenuNew.title,
             urlFragment: "/",
             parent: null
         }
     }
 
     render() :JSX.Element {
-        return <PageArticle title={MainMenu.title}>
+        return <PageArticle title={MainMenuNew.title}>
             <div>
                 Please select which area of Montagu you would like to manage:
                 <ol className={ menuStyles.menu }>

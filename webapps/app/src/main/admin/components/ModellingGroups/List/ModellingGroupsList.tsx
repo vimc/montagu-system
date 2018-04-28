@@ -1,37 +1,40 @@
 import * as React from "react";
-import { RemoteContentComponent } from "../../../../shared/components/RemoteContentComponent/RemoteContentComponent";
+import {branch, compose, renderComponent} from "recompose";
+import { connect } from 'react-redux';
+import {clone} from "lodash";
+
 import { ModellingGroup } from "../../../../shared/models/Generated";
-import { RemoteContent } from "../../../../shared/models/RemoteContent";
-import { groupStore } from "../../../stores/GroupStore";
-import { connectToStores } from "../../../../shared/alt";
 import { ModellingGroupListItem } from "./ModellingGroupListItem";
 
-interface ModellingGroupsProps extends RemoteContent {
+import {LoadingElement} from "../../../../shared/partials/LoadingElement/LoadingElement";
+import {AdminAppState} from "../../../reducers/adminAppReducers";
+
+interface ModellingGroupsProps {
     groups: ModellingGroup[]
 }
 
-export class ModellingGroupsListComponent extends RemoteContentComponent<ModellingGroupsProps, undefined> {
-    static getStores() {
-        return [ groupStore ];
-    }
-    static getPropsFromStores(): ModellingGroupsProps {
-        const s = groupStore.getState();
-        return {
-            groups: s.groups,
-            ready: s.ready
-        };
-    }
+export const ModellingGroupsListComponent: React.SFC<ModellingGroupsProps> = (props: ModellingGroupsProps) => {
+    return <ul>
+        {props.groups.map(g => <li key={ g.id }><ModellingGroupListItem {...g} /></li>)}
+    </ul>;
+};
 
-    renderContent(props: ModellingGroupsProps) {
-        const items = props.groups
-            .sort((a, b) => a.description.localeCompare(b.description))
-            .map(g => <li key={ g.id }>
-            <ModellingGroupListItem {...g} />
-        </li>);
-        return <ul>
-            { items }
-        </ul>;
-    }
+// TODO: move to reselect later if logic will get more complicated
+export const sortAdminModellingGroups = (originalGroups: ModellingGroup[]): ModellingGroup[] => {
+    if (!originalGroups || !originalGroups.length) return null;
+    // no mutating!
+    const groups: ModellingGroup[] = clone(originalGroups);
+    return groups.sort((a, b) => a.description.localeCompare(b.description));
 }
 
-export const ModellingGroupsList = connectToStores(ModellingGroupsListComponent);
+export const mapStateToProps = (state: AdminAppState): ModellingGroupsProps => {
+    return {
+        groups: (state.groups.groups && state.groups.groups) ? sortAdminModellingGroups(state.groups.groups) : []
+    }
+};
+
+export const ModellingGroupsList = compose(
+    connect(mapStateToProps),
+    branch((props: ModellingGroupsProps) => (!props.groups), renderComponent(LoadingElement))
+)(ModellingGroupsListComponent) as React.ComponentClass<Partial<ModellingGroupsProps>>;
+
