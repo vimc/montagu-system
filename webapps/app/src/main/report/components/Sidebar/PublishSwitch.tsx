@@ -6,15 +6,18 @@ import {ReportAppState} from "../../reducers/reportAppReducers";
 import {UncontrolledTooltip} from "reactstrap";
 import {reportActionCreators} from "../../actions/reportActionCreators";
 
-export interface PublishSwitchProps {
+export interface PublicProps {
     name: string;
     version: string;
     published: boolean;
+}
+
+export interface Props extends PublicProps {
     publish: (name: string, version: string) => void;
     unpublish: (name: string, version: string) => void;
 }
 
-export class PublishSwitchComponent extends React.Component<PublishSwitchProps, undefined> {
+export class PublishSwitchComponent extends React.Component<Props, undefined> {
 
     constructor() {
         super();
@@ -45,7 +48,7 @@ export class PublishSwitchComponent extends React.Component<PublishSwitchProps, 
     }
 }
 
-const mapStateToProps = (state: ReportAppState, props: Partial<PublishSwitchProps>): Partial<PublishSwitchProps> => {
+const mapStateToProps = (state: ReportAppState, props: PublicProps): Partial<Props> => {
     return {
         name: props.name,
         version: props.version,
@@ -53,12 +56,11 @@ const mapStateToProps = (state: ReportAppState, props: Partial<PublishSwitchProp
     };
 };
 
-export const mapDispatchToProps = (dispatch: Dispatch<ReportAppState>): Partial<PublishSwitchProps> => {
+export const mapDispatchToProps = (dispatch: Dispatch<ReportAppState>): Partial<Props> => {
     return {
         publish: (name: string, version: string) => dispatch(reportActionCreators.publishReport(name, version)),
         unpublish: (name: string, version: string) => dispatch(reportActionCreators.unPublishReport(name, version))
     }
 };
 
-export const PublishSwitch = connect(mapStateToProps, mapDispatchToProps)(PublishSwitchComponent) as
-    React.ComponentClass<Partial<PublishSwitchProps>>;;
+export const PublishSwitch = connect(mapStateToProps, mapDispatchToProps)(PublishSwitchComponent);
