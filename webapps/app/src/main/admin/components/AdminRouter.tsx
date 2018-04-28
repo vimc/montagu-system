@@ -3,6 +3,7 @@ import { Route, Switch, Redirect } from 'react-router-dom';
 import { ConnectedRouter } from 'react-router-redux';
 import {History} from "history";
 
+// import {AdminPageHeader} from "./AdminPageHeader";
 // Pages
 import { MainMenu } from "./MainMenu/MainMenu";
 import { AdminLoginPage } from "./AdminLoginPage";
@@ -43,6 +44,8 @@ export const AdminRouter : React.StatelessComponent<AdminRouterProps> = (props: 
     const routes = props.loggedIn ? loggedIn : notLoggedIn;
 
     return <ConnectedRouter history={props.history}>
-        {routes}
+        <div>
+            {routes}
+        </div>
     </ConnectedRouter>;
 }
