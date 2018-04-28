@@ -186,7 +186,7 @@ describe("SidebarAdmin", () => {
             return "testresult"
         });
 
-        const result = mapDispatchToProps(dispatchStub, defaultSidebarProps);
+        const result = mapDispatchToProps(dispatchStub);
 
         result.addReportReader("report", "test.user");
         expect(dispatchStub.calledWith("testresult"));
