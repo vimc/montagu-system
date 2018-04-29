@@ -25,11 +25,11 @@ describe("Breadcrumb Bar", () => {
         expect(rendered.find('span').text()).to.equal('Test');
     });
 
-    it("maps crumbs from state", () => {
-        const state = mockGlobalState();
-        const mappedProps = mapStateToProps(state);
-        expect(mappedProps.crumbs).to.eql([]);
-    });
+    // it("maps crumbs from state", () => {
+    //     const state = mockGlobalState();
+    //     const mappedProps = mapStateToProps(state);
+    //     expect(mappedProps.crumbs).to.eql([]);
+    // });
 
     it("passes crumbs from state to component", () => {
         const store = createMockStore(mockGlobalState({breadcrumbs: [{name: 'A', url: 'a'}]}));

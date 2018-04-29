@@ -51,12 +51,12 @@ describe("LoggedInUserBoxComponent", () => {
         expect(dispatchSpy.called).to.equal(true);
     });
 
-    it("maps state to props", () => {
-        const globalStateMock = mockGlobalState({ auth: {loggedIn: true, username: "test.user"} })
-        const props = mapStateToProps(globalStateMock)
-        expect(props.username).to.eq("test.user");
-        expect(props.loggedIn).to.eq(true);
-    });
+    // it("maps state to props", () => {
+    //     const globalStateMock = mockGlobalState({ auth: {loggedIn: true, username: "test.user"} })
+    //     const props = mapStateToProps(globalStateMock)
+    //     expect(props.username).to.eq("test.user");
+    //     expect(props.loggedIn).to.eq(true);
+    // });
 
     it("clicking log out dispatches unauthenticated action", (done: DoneCallback) => {
         const store = createMockStore({auth: {loggedIn: true}});
