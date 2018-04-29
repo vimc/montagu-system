@@ -3,16 +3,8 @@ import {compose} from "recompose";
 import { connect } from 'react-redux';
 import { Dispatch } from "redux";
 
-import { AssociateUser, User } from "../../../../../shared/models/Generated";
-import { modellingGroupActions } from "../../../../../shared/actions/ModellingGroupActions";
-import fetcher from "../../../../../shared/sources/Fetcher";
-import { processResponseAndNotifyOnErrors } from "../../../../../shared/sources/Source";
-import { notificationActions, NotificationException } from "../../../../../shared/actions/NotificationActions";
-import {GroupMembersContentComponent, GroupMembersContentProps} from "./GroupMembersContent";
+import { User } from "../../../../../shared/models/Generated";
 import {AdminAppState} from "../../../../reducers/adminAppReducers";
-import {LoadingElement} from "../../../../../shared/partials/LoadingElement/LoadingElement";
-import {GroupMembersPageProps} from "./GroupMembersPage";
-import {modellingGroupDetailsPageActionCreators} from "../../../../actions/pages/modellingGroupDetailsPageActionCreators";
 import {modellingGroupsActionCreators} from "../../../../actions/modellingGroupsActionCreators";
 
 export interface AddMemberProps {
@@ -20,13 +12,12 @@ export interface AddMemberProps {
     users: User[];
     groupId: string;
     addUserToGroup: (groupId: string, username: string) => void;
-}
+};
 
 export interface AddMemberState {
     options: User[];
     selectedUser: string;
-}
-
+};
 
 export class AddMemberComponent extends React.Component<AddMemberProps, AddMemberState> {
 
@@ -56,23 +47,6 @@ export class AddMemberComponent extends React.Component<AddMemberProps, AddMembe
     handleClick(e: React.MouseEvent<HTMLButtonElement>) {
         e.preventDefault();
         this.props.addUserToGroup(this.props.groupId, this.state.selectedUser);
-
-        // const href = `/modelling-groups/${this.props.groupId}/actions/associate-member/`;
-        // const associateUser: AssociateUser = {
-        //     username: this.state.selectedUser,
-        //     action: "add"
-        // };
-        //
-        // fetcher.fetcher.fetch(href, {
-        //     method: "post",
-        //     body: JSON.stringify(associateUser)
-        // }).then((response: Response) => {
-        //     return processResponseAndNotifyOnErrors(response)
-        //         .then(() => {
-        //             modellingGroupActions.addMember(this.state.selectedUser)
-        //         })
-        //         .catch((e: NotificationException) => notificationActions.notify(e))
-        // });
     }
 
     render() {
