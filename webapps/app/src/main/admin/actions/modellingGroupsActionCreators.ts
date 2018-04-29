@@ -55,6 +55,17 @@ export const modellingGroupsActionCreators = {
         }
     },
 
+    removeUserFromGroup(groupId: string, username: string) {
+        return async (dispatch: Dispatch<AdminAppState>, getState: () => AdminAppState) => {
+            const result = await (new ModellingGroupsService(dispatch, getState))
+                .removeMember(groupId, username);
+            if (result === "OK") {
+                dispatch(this.clearCacheForGroupDetails(groupId));
+                await dispatch(this.getGroupDetails(groupId));
+            }
+        }
+    },
+    
     clearCacheForGroupDetails(groupId: string,) {
         return (dispatch: Dispatch<ContribAppState>, getState: () => ContribAppState) => {
             (new ModellingGroupsService(dispatch, getState)).clearCacheForGroupDetails(groupId);

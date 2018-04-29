@@ -1,35 +1,24 @@
-import { AssociateUser, User } from "../../../shared/models/Generated";
 import * as React from "react";
-import { InternalLink } from "../../../shared/components/InternalLink";
-import { processResponseAndNotifyOnErrors } from "../../../shared/sources/Source";
-import { modellingGroupActions } from "../../../shared/actions/ModellingGroupActions";
-import { notificationActions, NotificationException } from "../../../shared/actions/NotificationActions";
-import fetcher from "../../../shared/sources/Fetcher";
+import { connect } from 'react-redux';
+import { Dispatch } from "redux";
+import {compose} from "recompose";
 
-interface UserProps {
+import { User } from "../../../shared/models/Generated";
+import { InternalLink } from "../../../shared/components/InternalLink";
+import {modellingGroupsActionCreators} from "../../actions/modellingGroupsActionCreators";
+import {AdminAppState} from "../../reducers/adminAppReducers";
+
+export interface DeletableUserProps {
     user: User;
     groupId: string;
     showDelete: boolean;
+    removeUserFromGroup: (groupId: string, username: string) => void;
 }
 
-export class DeletableUser extends React.Component<UserProps, undefined> {
+export class DeletableUserComponent extends React.Component<DeletableUserProps, undefined> {
 
     clickHandler() {
-
-        const href = `/modelling-groups/${this.props.groupId}/actions/associate-member/`;
-        const associateUser: AssociateUser = {
-            username: this.props.user.username,
-            action: "remove"
-        };
-
-        fetcher.fetcher.fetch(href, {
-            method: "post",
-            body: JSON.stringify(associateUser)
-        }).then((response: Response) =>
-            processResponseAndNotifyOnErrors(response)
-                .then(() => modellingGroupActions.removeMember(this.props.user.username))
-                .catch((e: NotificationException) => notificationActions.notify(e))
-        )
+        this.props.removeUserFromGroup(this.props.groupId, this.props.user.username);
     }
 
     render() {
@@ -55,3 +44,21 @@ export class DeletableUser extends React.Component<UserProps, undefined> {
         </div>;
     }
 }
+
+export const mapStateToProps = (state: AdminAppState, props: Partial<DeletableUserProps>) :Partial<DeletableUserProps> => {
+    return {
+        user: props.user,
+        groupId: props.groupId,
+        showDelete: props.showDelete
+    }
+};
+
+export const mapDispatchToProps = (dispatch: Dispatch<AdminAppState>): Partial<DeletableUserProps> => {
+    return {
+        removeUserFromGroup: (groupId: string, username: string) => dispatch(modellingGroupsActionCreators.removeUserFromGroup(groupId, username))
+    }
+};
+
+export const DeletableUser = compose(
+    connect(mapStateToProps, mapDispatchToProps),
+)(DeletableUserComponent) as React.ComponentClass<Partial<DeletableUserProps>>;

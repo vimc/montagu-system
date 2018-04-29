@@ -21,6 +21,14 @@ export class ModellingGroupsService extends AbstractLocalService {
         return this.post(`/modelling-groups/${groupId}/actions/associate-member/`, JSON.stringify(associateUser));
     }
 
+    removeMember(groupId: string, username: string) {
+        const associateUser: AssociateUser = {
+            username: username,
+            action: "remove"
+        };
+        return this.post(`/modelling-groups/${groupId}/actions/associate-member/`, JSON.stringify(associateUser));
+    }
+
     clearCacheForGroupDetails(groupId: string) {
         return this.clearCache(ModellingGroupsCacheKeysEnum.groupsDetails, `/modelling-groups/${groupId}/`);
     }
