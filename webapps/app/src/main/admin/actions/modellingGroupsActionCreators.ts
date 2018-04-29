@@ -65,7 +65,7 @@ export const modellingGroupsActionCreators = {
             }
         }
     },
-    
+
     clearCacheForGroupDetails(groupId: string,) {
         return (dispatch: Dispatch<ContribAppState>, getState: () => ContribAppState) => {
             (new ModellingGroupsService(dispatch, getState)).clearCacheForGroupDetails(groupId);

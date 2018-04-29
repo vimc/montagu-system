@@ -13,7 +13,7 @@ import { PageArticle } from "../../../../../shared/components/PageWithHeader/Pag
 import {AdminPageHeader} from "../../../AdminPageHeader";
 import {modellingGroupMembersPageActionCreators} from "../../../../actions/pages/modellingGroupMembersPageActionCreators";
 
-interface GroupMembersPageLocationProps {
+export interface GroupMembersPageLocationProps {
     groupId: string;
 }
 
