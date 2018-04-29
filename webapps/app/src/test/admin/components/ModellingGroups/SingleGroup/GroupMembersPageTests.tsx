@@ -6,7 +6,7 @@ import {userStore} from "../../../../../main/admin/stores/UserStore";
 import {groupStore} from "../../../../../main/admin/stores/GroupStore";
 import {mockLocation, mockMatch} from "../../../../mocks/mocks";
 import {GroupMembersPage} from "../../../../../main/admin/components/ModellingGroups/SingleGroup/Members/GroupMembersPage";
-import {ModellingGroupDetailsPageProps} from "../../../../../main/admin/components/ModellingGroups/SingleGroup/Details/ViewModellingGroupDetailsPage";
+import {ModellingGroupDetailsPageProps} from "../../../../../main/admin/components/ModellingGroups/SingleGroup/Details/ModellingGroupDetailsPage";
 import {checkAsync, checkPromise} from "../../../../testHelpers";
 import {expectOneAction} from "../../../../actionHelpers";
 import {alt} from "../../../../../main/shared/alt";

@@ -6,7 +6,7 @@ import { groupStore } from "../../../../stores/GroupStore";
 import { modellingGroupActions } from "../../../../../shared/actions/ModellingGroupActions";
 import { GroupMembersContent } from "./GroupMembersContent";
 import {IPageWithParent} from "../../../../../shared/models/Breadcrumb";
-import {ViewModellingGroupDetailsPage} from "../Details/ViewModellingGroupDetailsPage";
+import {ViewModellingGroupDetailsPage} from "../Details/ModellingGroupDetailsPage";
 import { Page } from "../../../../../shared/components/PageWithHeader/Page";
 
 interface GroupMembersPageProps {

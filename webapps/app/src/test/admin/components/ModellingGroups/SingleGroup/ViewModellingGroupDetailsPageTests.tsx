@@ -4,7 +4,7 @@ import { groupStore } from "../../../../../main/admin/stores/GroupStore";
 import * as React from "react";
 import {
     ViewModellingGroupDetailsPage
-} from "../../../../../main/admin/components/ModellingGroups/SingleGroup/Details/ViewModellingGroupDetailsPage";
+} from "../../../../../main/admin/components/ModellingGroups/SingleGroup/Details/ModellingGroupDetailsPage";
 import { expectOneAction } from "../../../../actionHelpers";
 import { checkAsync } from "../../../../testHelpers";
 import { userStore } from "../../../../../main/admin/stores/UserStore";

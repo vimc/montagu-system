@@ -13,7 +13,7 @@ interface ModellingGroupsProps {
     groups: ModellingGroup[]
 }
 
-export const ModellingGroupsListComponent: React.SFC<ModellingGroupsProps> = (props: ModellingGroupsProps) => {
+export const ModellingGroupsListContentComponent: React.SFC<ModellingGroupsProps> = (props: ModellingGroupsProps) => {
     return <ul>
         {props.groups.map(g => <li key={ g.id }><ModellingGroupListItem {...g} /></li>)}
     </ul>;
@@ -33,8 +33,8 @@ export const mapStateToProps = (state: AdminAppState): ModellingGroupsProps => {
     }
 };
 
-export const ModellingGroupsList = compose(
+export const ModellingGroupsListContent = compose(
     connect(mapStateToProps),
     branch((props: ModellingGroupsProps) => (!props.groups), renderComponent(LoadingElement))
-)(ModellingGroupsListComponent) as React.ComponentClass<Partial<ModellingGroupsProps>>;
+)(ModellingGroupsListContentComponent) as React.ComponentClass<Partial<ModellingGroupsProps>>;
 

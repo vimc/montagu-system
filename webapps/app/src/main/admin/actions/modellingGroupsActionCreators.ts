@@ -2,8 +2,13 @@ import { Dispatch } from "redux";
 
 import { ModellingGroupsService } from "../../shared/services/ModellingGroupsService";
 import {AdminAppState} from "../reducers/adminAppReducers";
-import {ModellingGroup} from "../../shared/models/Generated";
-import {AdminGroupsFetched, ModellingGroupTypes} from "../actionTypes/ModellingGroupsTypes";
+import {ModellingGroup, ModellingGroupDetails} from "../../shared/models/Generated";
+import {
+    AdminGroupsFetched,
+    ModellingGroupTypes,
+    SetAdminGroupDetails,
+    SetCurrentAdminGroup
+} from "../actionTypes/ModellingGroupsTypes";
 
 export const modellingGroupsActionCreators = {
 
@@ -17,14 +22,24 @@ export const modellingGroupsActionCreators = {
         }
     },
 
-    // setCurrentGroup(groupId: string) {
-    //     return (dispatch: Dispatch<ContribAppState>, getState: () => ContribAppState) => {
-    //         const userGroups = getState().groups.userGroups;
-    //         const currentUserGroup = userGroups.filter(group => group.id === groupId)[0];
-    //         dispatch({
-    //             type: ModellingGroupTypes.SET_CURRENT_USER_GROUP,
-    //             data: currentUserGroup
-    //         } as SetCurrentUserGroup );
-    //     }
-    // }
+    getGroupDetails(groupId: string) {
+        return async (dispatch: Dispatch<AdminAppState>, getState: () => AdminAppState) => {
+            const groupDetails: ModellingGroupDetails = await (new ModellingGroupsService(dispatch, getState)).getGroupDetails(groupId);
+            dispatch({
+                type: ModellingGroupTypes.ADMIN_GROUP_DETAILS_FETCHED,
+                data: groupDetails
+            } as SetAdminGroupDetails);
+        }
+    },
+
+    setCurrentGroup(groupId: string) {
+        return (dispatch: Dispatch<AdminAppState>, getState: () => AdminAppState) => {
+            const groups = getState().groups.groups;
+            const currentGroup = groups.find(group => group.id === groupId);
+            dispatch({
+                type: ModellingGroupTypes.SET_CURRENT_ADMIN_GROUP,
+                data: currentGroup
+            } as SetCurrentAdminGroup);
+        }
+    }
 };

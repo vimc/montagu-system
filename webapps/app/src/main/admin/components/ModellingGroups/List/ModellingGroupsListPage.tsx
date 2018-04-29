@@ -3,15 +3,15 @@ import { compose } from "recompose";
 import { connect } from 'react-redux';
 import { Dispatch } from "redux";
 
-import { ModellingGroupsList } from "./ModellingGroupsList";
+import { ModellingGroupsListContent } from "./ModellingGroupsListContent";
 import {PageBreadcrumb, PageProperties} from "../../../../shared/components/PageWithHeader/PageWithHeader";
 import {PageArticle} from "../../../../shared/components/PageWithHeader/PageArticle";
 import {AdminPageHeader} from "../../AdminPageHeader";
 import {AdminAppState} from "../../../reducers/adminAppReducers";
 import {MainMenuNew} from "../../MainMenu/MainMenuNew";
-import {viewAllModellingGroupsPageActionCreators} from "../../../actions/pages/viewAllModellingGroupsPageActionCreators";
+import {modellingGroupsListPageActionCreators} from "../../../actions/pages/modellingGroupsListPageActionCreators";
 
-export class ViewAllModellingGroupsPageComponent extends React.Component<PageProperties<undefined>> {
+export class ModellingGroupsListPageComponent extends React.Component<PageProperties<undefined>> {
     static title: string = "Modelling groups";
 
     componentDidMount(){
@@ -20,7 +20,7 @@ export class ViewAllModellingGroupsPageComponent extends React.Component<PagePro
 
     static breadcrumb() : PageBreadcrumb {
         return {
-            name: ViewAllModellingGroupsPageComponent.title,
+            name: ModellingGroupsListPageComponent.title,
             urlFragment: "modelling-groups/",
             parent: MainMenuNew.breadcrumb()
         }
@@ -29,8 +29,8 @@ export class ViewAllModellingGroupsPageComponent extends React.Component<PagePro
     render() :JSX.Element {
         return <div>
             <AdminPageHeader/>
-            <PageArticle title={ViewAllModellingGroupsPageComponent.title}>
-                <ModellingGroupsList />
+            <PageArticle title={ModellingGroupsListPageComponent.title}>
+                <ModellingGroupsListContent />
             </PageArticle>
         </div>;
     }
@@ -38,10 +38,10 @@ export class ViewAllModellingGroupsPageComponent extends React.Component<PagePro
 
 export const mapDispatchToProps = (dispatch: Dispatch<AdminAppState>): Partial<PageProperties<undefined>> => {
     return {
-        onLoad: () => dispatch(viewAllModellingGroupsPageActionCreators.onLoad())
+        onLoad: () => dispatch(modellingGroupsListPageActionCreators.onLoad())
     }
 };
 
-export const ViewAllModellingGroupsPage = compose(
+export const ModellingGroupsListPage = compose(
     connect(state => state, mapDispatchToProps)
-)(ViewAllModellingGroupsPageComponent) as React.ComponentClass<Partial<PageProperties<undefined>>>;
+)(ModellingGroupsListPageComponent) as React.ComponentClass<Partial<PageProperties<undefined>>>;

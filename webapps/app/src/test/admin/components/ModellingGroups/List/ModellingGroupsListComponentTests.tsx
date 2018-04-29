@@ -4,7 +4,7 @@ import { expect } from "chai";
 import { mockModellingGroup } from "../../../../mocks/mockModels";
 import { shallow } from "enzyme";
 
-import { ModellingGroupsListComponent } from "../../../../../main/admin/components/ModellingGroups/List/ModellingGroupsList";
+import { ModellingGroupsListComponent } from "../../../../../main/admin/components/ModellingGroups/List/ModellingGroupsListContent";
 import { ModellingGroupListItem } from "../../../../../main/admin/components/ModellingGroups/List/ModellingGroupListItem";
 
 describe("ModellingGroupsListComponent", () => {

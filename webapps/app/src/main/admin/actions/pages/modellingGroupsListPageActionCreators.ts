@@ -3,14 +3,14 @@ import { Dispatch } from "redux";
 import { modellingGroupsActionCreators } from "../modellingGroupsActionCreators";
 import {breadcrumbsActionCreators} from "../../../shared/actions/breadcrumbsActionsCreators";
 import {AdminAppState} from "../../reducers/adminAppReducers";
-import {ViewAllModellingGroupsPageComponent} from "../../components/ModellingGroups/List/ViewAllModellingGroupsPage";
+import {ModellingGroupsListPageComponent} from "../../components/ModellingGroups/List/ModellingGroupsListPage";
 
-export const viewAllModellingGroupsPageActionCreators = {
+export const modellingGroupsListPageActionCreators = {
 
     onLoad() {
         return async (dispatch: Dispatch<AdminAppState>) => {
-            await dispatch(viewAllModellingGroupsPageActionCreators.loadData());
-            dispatch(breadcrumbsActionCreators.createBreadcrumbs(ViewAllModellingGroupsPageComponent.breadcrumb()));
+            await dispatch(modellingGroupsListPageActionCreators.loadData());
+            dispatch(breadcrumbsActionCreators.createBreadcrumbs(ModellingGroupsListPageComponent.breadcrumb()));
         }
     },
 
