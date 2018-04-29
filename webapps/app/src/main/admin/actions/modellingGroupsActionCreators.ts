@@ -2,13 +2,14 @@ import { Dispatch } from "redux";
 
 import { ModellingGroupsService } from "../../shared/services/ModellingGroupsService";
 import {AdminAppState} from "../reducers/adminAppReducers";
-import {ModellingGroup, ModellingGroupDetails} from "../../shared/models/Generated";
+import {ModellingGroup, ModellingGroupDetails, Result} from "../../shared/models/Generated";
 import {
     AdminGroupsFetched,
     ModellingGroupTypes,
     SetAdminGroupDetails,
     SetCurrentAdminGroup
 } from "../actionTypes/ModellingGroupsTypes";
+import {ContribAppState} from "../../contrib/reducers/contribAppReducers";
 
 export const modellingGroupsActionCreators = {
 
@@ -41,5 +42,22 @@ export const modellingGroupsActionCreators = {
                 data: currentGroup
             } as SetCurrentAdminGroup);
         }
-    }
+    },
+
+    addUserToGroup(groupId: string, username: string) {
+        return async (dispatch: Dispatch<AdminAppState>, getState: () => AdminAppState) => {
+            const result = await (new ModellingGroupsService(dispatch, getState))
+                .addMember(groupId, username);
+            if (result === "OK") {
+                dispatch(this.clearCacheForGroupDetails(groupId));
+                await dispatch(this.getGroupDetails(groupId));
+            }
+        }
+    },
+
+    clearCacheForGroupDetails(groupId: string,) {
+        return (dispatch: Dispatch<ContribAppState>, getState: () => ContribAppState) => {
+            (new ModellingGroupsService(dispatch, getState)).clearCacheForGroupDetails(groupId);
+        }
+    },
 };
