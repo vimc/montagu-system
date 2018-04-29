@@ -1,51 +1,68 @@
 import * as React from "react";
-import { connectToStores } from "../../../../../shared/alt";
-import {GroupTitleProps, ModellingGroupTitle} from "../ModellingGroupTitle";
-import { AdminPageWithHeader } from "../../../AdminPageWithHeader";
-import { groupStore } from "../../../../stores/GroupStore";
-import { modellingGroupActions } from "../../../../../shared/actions/ModellingGroupActions";
-import { GroupMembersContent } from "./GroupMembersContent";
-import {IPageWithParent} from "../../../../../shared/models/Breadcrumb";
-import {ViewModellingGroupDetailsPage} from "../Details/ModellingGroupDetailsPage";
-import { Page } from "../../../../../shared/components/PageWithHeader/Page";
+import { compose} from "recompose";
+import { connect } from 'react-redux';
+import { Dispatch } from "redux";
 
-interface GroupMembersPageProps {
+import { GroupMembersContent } from "./GroupMembersContent";
+import {PageBreadcrumb, PageProperties} from "../../../../../shared/components/PageWithHeader/PageWithHeader";
+import {AdminAppState} from "../../../../reducers/adminAppReducers";
+import {
+    ModellingGroupDetailsPageComponent,
+} from "../Details/ModellingGroupDetailsPage";
+import { PageArticle } from "../../../../../shared/components/PageWithHeader/PageArticle";
+import {AdminPageHeader} from "../../../AdminPageHeader";
+import {modellingGroupDetailsPageActionCreators} from "../../../../actions/pages/modellingGroupDetailsPageActionCreators";
+
+interface GroupMembersPageLocationProps {
     groupId: string;
 }
 
-export class GroupMembersPage extends AdminPageWithHeader<GroupMembersPageProps> {
-    load(props: GroupMembersPageProps) {
-        return this.loadParent(props).then(() => {
-            modellingGroupActions.setCurrentGroup(props.groupId);
-            return groupStore.fetchGroupDetails();
-        });
+export interface GroupMembersPageProps extends PageProperties<GroupMembersPageLocationProps> {
+    groupDescription: string;
+};
+
+export class GroupMembersPageComponent extends React.Component<GroupMembersPageProps> {
+    static title: string = "Manage group members";
+
+    componentDidMount() {
+        this.props.onLoad(this.props.match.params)
     }
 
-    name(): string {
-        return "Manage group members";
+    static breadcrumb(state: AdminAppState): PageBreadcrumb {
+        return {
+            name: GroupMembersPageComponent.title,
+            urlFragment: "admin/",
+            parent: ModellingGroupDetailsPageComponent.breadcrumb(state)
+        }
     }
 
-    title(): JSX.Element {
-        return <Title />;
-    }
-
-    urlFragment(): string {
-        return `admin/`;
-    }
-
-    parent(): IPageWithParent {
-        return new ViewModellingGroupDetailsPage();
-    }
-
-    render(): JSX.Element {
-        return <Page page={this}>
-            <GroupMembersContent />
-        </Page>;
+    render() :JSX.Element {
+        return <div>
+            <AdminPageHeader/>
+            <PageArticle title={`Manage membership for ${this.props.groupDescription}`}>
+                <GroupMembersContent />
+            </PageArticle>
+        </div>;;
     }
 }
 
-const Title = connectToStores(class extends ModellingGroupTitle {
-    renderContent(props: GroupTitleProps) {
-        return <span>Manage membership for { props.group.description }</span>
+const mapStateToProps = (state: AdminAppState) :Partial<GroupMembersPageProps> => {
+    console.log('ppp', state)
+    return {
+        groupDescription: state.groups.currentGroup ? state.groups.currentGroup.description : ''
     }
-});
+};
+
+export const mapDispatchToProps = (dispatch: Dispatch<AdminAppState>): Partial<GroupMembersPageProps> => {
+    return {
+        onLoad: (params: GroupMembersPageLocationProps) => dispatch(modellingGroupDetailsPageActionCreators.onLoad(params))
+    }
+};
+
+export const GroupMembersPage = compose(
+    connect(mapStateToProps, mapDispatchToProps),
+)(GroupMembersPageComponent) as React.ComponentClass<Partial<GroupMembersPageProps>>;
+
+
+
+

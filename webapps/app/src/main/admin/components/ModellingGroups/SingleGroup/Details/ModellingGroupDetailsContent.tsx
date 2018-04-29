@@ -32,7 +32,6 @@ export const ModellingGroupDetailsContentComponent: React.SFC<ModellingGroupDeta
     </div>;
 }
 
-
 const mapStateToProps = (state: AdminAppState) :Partial<ModellingGroupDetailsContentProps> => {
     return {
         group: state.groups.currentGroupDetails,

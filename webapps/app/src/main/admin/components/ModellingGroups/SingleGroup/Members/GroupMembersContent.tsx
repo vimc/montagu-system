@@ -1,82 +1,68 @@
 import * as React from "react";
 import { connect } from 'react-redux';
+import { compose, branch, renderComponent} from "recompose";
 
-import { RemoteContentComponent } from "../../../../../shared/components/RemoteContentComponent/RemoteContentComponent";
-import { RemoteContent } from "../../../../../shared/models/RemoteContent";
 import {  User } from "../../../../../shared/models/Generated";
-import { groupStore } from "../../../../stores/GroupStore";
-import { connectToStores } from "../../../../../shared/alt";
-import { userStore } from "../../../../stores/UserStore";
 import { ListOfUsers } from "../../ListOfUsers";
 import { AddMember } from "./AddMember";
 
 import {AdminAppState} from "../../../../reducers/adminAppReducers";
+import {LoadingElement} from "../../../../../shared/partials/LoadingElement/LoadingElement";
 
-interface Props extends RemoteContent {
+export interface GroupMembersListProps {
+    members: User[];
+    groupId: string;
+}
+export const GroupMembersListComponent: React.SFC<GroupMembersListProps> = (props: GroupMembersListProps) => {
+    if (props.members.length == 0) {
+        return <div>This group does not have any members.</div>;
+    } else {
+        return <ListOfUsers users={ [...props.members] } groupId={props.groupId} />;
+    }
+}
+
+export interface AddGroupMembersProps {
+    canManageGroupMembers: boolean;
+    members: User[];
+    users: User[];
+    groupId: string;
+}
+export const AddGroupMembersComponent: React.SFC<AddGroupMembersProps> = (props: AddGroupMembersProps) => {
+    return props.canManageGroupMembers ?
+        <div>
+            <div className="sectionTitle">Add modelling group member</div>
+            <AddMember members={ [...props.members.map(m=>m.username)] } users={props.users} groupId={props.groupId}/>
+        </div>
+    : null;
+}
+
+
+export interface GroupMembersContentProps {
     members: User[];
     users: User[];
     groupId: string;
     canManageGroupMembers: boolean;
 }
+export const GroupMembersContentComponent: React.SFC<GroupMembersContentProps> = (props: GroupMembersContentProps) => {
+    return <div>
+        <div className="sectionTitle">Current group members</div>
+        <GroupMembersListComponent members={props.members} groupId={props.groupId}/>
+        <AddGroupMembersComponent
+            members={props.members} groupId={props.groupId} canManageGroupMembers={props.canManageGroupMembers} users={props.users}
+        />
+    </div>;
+};
 
-export class GroupMembersContentComponent extends RemoteContentComponent<Props, undefined> {
-    static getStores() {
-        return [ groupStore, userStore ];
-    }
-
-    static getPropsFromStores(): Partial<Props> {
-        const group = groupStore.getCurrentGroupDetails();
-        const allUsers = userStore.getState().users;
-        const members = groupStore.getCurrentGroupMembers();
-
-        if (group != null) {
-            return {
-                users: allUsers,
-                members: members.map(a => allUsers.find(u => a == u.username)),
-                ready: group != null && userStore.getState().ready,
-                groupId: group.id,
-            };
-        } else {
-            return {
-                users: [],
-                members: [],
-                ready: false,
-                groupId: "",
-            };
-        }
-    }
-
-    renderCurrent(props: Props): JSX.Element {
-        if (props.members.length == 0) {
-            return <div>This group does not have any members.</div>;
-        } else {
-            return <ListOfUsers users={ [...props.members] } groupId={props.groupId} />;
-        }
-    }
-
-    renderContent(props: Props) {
-
-        const addMembers = props.canManageGroupMembers ?
-            <div>
-                <div className="sectionTitle">Add modelling group member</div>
-                <AddMember members={ [...props.members.map(m=>m.username)] } users={props.users} groupId={props.groupId}/>
-            </div>
-            : "";
-
-        return <div>
-                <div className="sectionTitle">Current group members</div>
-                { this.renderCurrent(props) }
-                {addMembers}
-        </div>
-    }
-}
-
-export const GroupMembersContentAltWrapped = connectToStores(GroupMembersContentComponent);
-
-export const mapStateToProps = (state: AdminAppState) :Partial<Props> => {
+export const mapStateToProps = (state: AdminAppState) :Partial<GroupMembersContentProps> => {
     return {
         canManageGroupMembers: state.auth.permissions.indexOf("*/modelling-groups.manage-members") > -1,
+        groupId: state.groups.currentGroupDetails ? state.groups.currentGroupDetails.id : null,
+        users: state.users.users,
+        members: []
     }
 };
 
-export const GroupMembersContent = connect(mapStateToProps)(GroupMembersContentAltWrapped);
+export const GroupMembersContent = compose(
+    connect(mapStateToProps),
+    branch((props: GroupMembersContentProps) => !props.groupId, renderComponent(LoadingElement))
+)(GroupMembersContentComponent);
