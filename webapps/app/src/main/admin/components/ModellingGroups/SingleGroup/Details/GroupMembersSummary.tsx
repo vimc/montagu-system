@@ -12,7 +12,9 @@ interface Props {
 export class GroupMembersSummary extends React.Component<Props, undefined> {
     render() {
         const url = `/modelling-groups/${this.props.group.id}/admin/`;
+
         const members = this.props.group.members.map(member => this.props.allUsers.find(u => member == u.username));
+        console.log('0mmmm', members, this.props.allUsers)
         if (members.length == 0) {
             return this.renderNoMembers(url);
         } else {
@@ -37,6 +39,7 @@ export class GroupMembersSummary extends React.Component<Props, undefined> {
     }
 
     private renderMemberList(members: User[], url: string): JSX.Element {
+        console.log('mm', members)
         const items = members.map(a => <InternalLink key={a.username} href={`/users/${a.username}/`}>
             {a.name}
         </InternalLink>);

@@ -42,5 +42,5 @@ const mapStateToProps = (state: AdminAppState) :Partial<ModellingGroupDetailsCon
 
 export const ModellingGroupDetailsContent = compose(
     connect(mapStateToProps),
-    branch((props: ModellingGroupDetailsContentProps) => !props.group, renderComponent(LoadingElement))
+    branch((props: ModellingGroupDetailsContentProps) => !props.group || !props.users.length, renderComponent(LoadingElement))
 )(ModellingGroupDetailsContentComponent)

@@ -9,7 +9,7 @@ export const modellingGroupsListPageActionCreators = {
 
     onLoad() {
         return async (dispatch: Dispatch<AdminAppState>) => {
-            await dispatch(modellingGroupsListPageActionCreators.loadData());
+            await dispatch(this.loadData());
             dispatch(breadcrumbsActionCreators.createBreadcrumbs(ModellingGroupsListPageComponent.breadcrumb()));
         }
     },
@@ -19,5 +19,4 @@ export const modellingGroupsListPageActionCreators = {
             await dispatch(modellingGroupsActionCreators.getAllGroups());
         }
     }
-
 };

@@ -11,7 +11,7 @@ import {
 } from "../Details/ModellingGroupDetailsPage";
 import { PageArticle } from "../../../../../shared/components/PageWithHeader/PageArticle";
 import {AdminPageHeader} from "../../../AdminPageHeader";
-import {modellingGroupDetailsPageActionCreators} from "../../../../actions/pages/modellingGroupDetailsPageActionCreators";
+import {modellingGroupMembersPageActionCreators} from "../../../../actions/pages/modellingGroupMembersPageActionCreators";
 
 interface GroupMembersPageLocationProps {
     groupId: string;
@@ -55,7 +55,7 @@ const mapStateToProps = (state: AdminAppState) :Partial<GroupMembersPageProps> =
 
 export const mapDispatchToProps = (dispatch: Dispatch<AdminAppState>): Partial<GroupMembersPageProps> => {
     return {
-        onLoad: (params: GroupMembersPageLocationProps) => dispatch(modellingGroupDetailsPageActionCreators.onLoad(params))
+        onLoad: (params: GroupMembersPageLocationProps) => dispatch(modellingGroupMembersPageActionCreators.onLoad(params))
     }
 };
 

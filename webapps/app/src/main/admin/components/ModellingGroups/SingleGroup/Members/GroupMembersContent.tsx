@@ -58,11 +58,12 @@ export const mapStateToProps = (state: AdminAppState) :Partial<GroupMembersConte
         canManageGroupMembers: state.auth.permissions.indexOf("*/modelling-groups.manage-members") > -1,
         groupId: state.groups.currentGroupDetails ? state.groups.currentGroupDetails.id : null,
         users: state.users.users,
-        members: []
+        members: state.groups.currentGroupDetails && state.users.users.length ?
+            state.groups.currentGroupDetails.members.map(a => state.users.users.find(u => a == u.username)) : []
     }
 };
 
 export const GroupMembersContent = compose(
     connect(mapStateToProps),
-    branch((props: GroupMembersContentProps) => !props.groupId, renderComponent(LoadingElement))
+    branch((props: GroupMembersContentProps) => !props.groupId || !props.users.length, renderComponent(LoadingElement))
 )(GroupMembersContentComponent);
