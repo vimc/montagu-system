@@ -58,8 +58,3 @@ export const mapDispatchToProps = (dispatch: Dispatch<AdminAppState>): Partial<M
 export const ModellingGroupDetailsPage = compose(
     connect(mapStateToProps, mapDispatchToProps),
 )(ModellingGroupDetailsPageComponent) as React.ComponentClass<Partial<ModellingGroupDetailsPageProps>>;
-
-/*
-        userStore.fetchUsers()
-
-*/

@@ -8,6 +8,7 @@ import {
     ModellingGroupDetailsPageLocationProps
 } from "../../components/ModellingGroups/SingleGroup/Details/ModellingGroupDetailsPage";
 import {modellingGroupsListPageActionCreators} from "./modellingGroupsListPageActionCreators";
+import {usersActionCreators} from "../usersActionCreators";
 
 export const modellingGroupDetailsPageActionCreators = {
 
@@ -23,6 +24,7 @@ export const modellingGroupDetailsPageActionCreators = {
             await dispatch(modellingGroupsListPageActionCreators.loadData());
             dispatch(modellingGroupsActionCreators.setCurrentGroup(params.groupId));
             await dispatch(modellingGroupsActionCreators.getGroupDetails(params.groupId));
+            await dispatch(usersActionCreators.getAllUsers());
         }
     }
 
