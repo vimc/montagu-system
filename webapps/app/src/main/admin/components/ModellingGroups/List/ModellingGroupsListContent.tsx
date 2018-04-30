@@ -14,10 +14,13 @@ interface ModellingGroupsProps {
 }
 
 export const ModellingGroupsListContentComponent: React.SFC<ModellingGroupsProps> = (props: ModellingGroupsProps) => {
-    if (!props.groups)
-    return <ul>
-        {props.groups.map(g => <li key={ g.id }><ModellingGroupListItem {...g} /></li>)}
-    </ul>;
+    if (Array.isArray(props.groups) && props.groups.length) {
+        return <ul>
+            {props.groups.map(g => <li key={g.id}><ModellingGroupListItem {...g} /></li>)}
+        </ul>;
+    } else {
+        return null;
+    }
 };
 
 // TODO: move to reselect later if logic will get more complicated
