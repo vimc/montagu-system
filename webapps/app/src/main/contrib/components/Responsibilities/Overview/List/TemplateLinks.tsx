@@ -130,8 +130,18 @@ export class TemplateLink extends React.Component<TemplateLinkProps, undefined> 
 
         if (settings.isApplicantTouchstone(this.props.touchstoneId)) {
             return <div>
+                <div>
                     <a key={`central_burden_template_${disease.id}-generic.csv`}
-                       href={`${templatePath}central_burden_template_${disease.id}-generic.csv`}>{disease.name}</a>
+                       href={`${templatePath}central_burden_template_${disease.id}-generic.csv`}>{disease.name}
+                        { settings.is201804ApplicantTouchstone(this.props.touchstoneId) && " - central"}</a>
+                </div>
+                { settings.is201804ApplicantTouchstone(this.props.touchstoneId) &&
+
+                <div>
+                    <a key={`stochastic_burden_template_${disease.id}-generic.csv`}
+                       href={`${templatePath}stochastic_burden_template_${disease.id}-generic.csv`}>{disease.name}
+                       - stochastic</a>
+                </div>}
             </div>
         }
 

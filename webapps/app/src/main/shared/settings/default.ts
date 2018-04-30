@@ -7,6 +7,7 @@ export const settings: Settings = {
     slackUrl: "https://vimc.slack.com/",
     teamcityServiceMessages: false,
     isApplicantTouchstone: (id: string) => id.indexOf("rfp-") > -1,
+    is201804ApplicantTouchstone: (id: string) id.indexOf("201804rfp") > -1,
     admin: {
         publicPath: "",
         requiresModellingGroupMembership: false
