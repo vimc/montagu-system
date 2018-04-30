@@ -6,7 +6,7 @@ interface Settings {
     vimcEmail: string;
     slackUrl: string;
     isApplicantTouchstone: (id: string) => boolean;
-    is201804ApplicantTouchstone: (id: string) => boolean;
+    isStochasticTouchstone: (id: string) => boolean;
     teamcityServiceMessages: boolean;
     admin: AdminSettings;
     contrib: ContribSettings;
