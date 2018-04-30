@@ -12,6 +12,7 @@ import {settings} from "../../../../shared/Settings";
 import {LoadingElement} from "../../../../shared/partials/LoadingElement/LoadingElement";
 import {ContribAppState} from "../../../reducers/contribAppReducers";
 import {withConfidentialityAgreement} from "./ConfidentialityAgreement";
+import {ResponsibilityOverviewDescription} from "./ResponsibilityOverviewDescription";
 
 const stochasticParams = require('./stochastic_template_params.csv');
 
@@ -36,6 +37,9 @@ export const ResponsibilityOverviewContentComponent: React.SFC<ResponsibilityOve
         <ButtonLink href={parametersUrl}>Upload parameters</ButtonLink>
     </div>;
     return <div>
+        <ResponsibilityOverviewDescription
+            currentTouchstoneId={props.touchstoneId}
+        />
         <ResponsibilitySetStatusMessage status={props.responsibilitySet.status}/>
         <div className="largeSectionTitle">Demographic data</div>
         <div className="mt-3">

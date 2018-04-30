@@ -55,9 +55,6 @@ describe("Responsibility Overview Page actions tests", () => {
         sandbox.setStubFunc(ResponsibilitiesService.prototype, "getResponsibilities", ()=>{
             return Promise.resolve(testResponsibilitySet);
         });
-        sandbox.setStubFunc(UserService.prototype, "getConfidentiality", ()=>{
-            return Promise.resolve(true);
-        });
         sandbox.setStubFunc(breadcrumbsModule, "initialize", ()=>{
             return testBreadcrumbs;
         });
@@ -75,7 +72,6 @@ describe("Responsibility Overview Page actions tests", () => {
                 { type: DiseasesTypes.DISEASES_FETCHED, data: [testDisease]},
                 { type: TouchstoneTypes.SET_CURRENT_TOUCHSTONE, data: testTouchstone},
                 { type: ResponsibilitiesTypes.SET_RESPONSIBILITIES, data: testExtResponsibilitySet},
-                { type: UserActionType.CONFIDENTIALITY_RETRIEVED, data: true},
                 { type: BreadcrumbsTypes.BREADCRUMBS_RECEIVED, data: testBreadcrumbs },
             ];
             expect(actions).to.eql(expectedPayload);
