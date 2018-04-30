@@ -8,6 +8,8 @@ interface ResponsibilityOverviewDescriptionProps {
     currentTouchstoneId: string;
 }
 
+const outputGuide = require("./outputs-guide.pdf");
+
 export class ResponsibilityOverviewDescriptionComponent extends Component<ResponsibilityOverviewDescriptionProps> {
     render() {
         if (settings.isApplicantTouchstone(this.props.currentTouchstoneId)) {
@@ -37,7 +39,7 @@ export class ResponsibilityOverviewDescriptionComponent extends Component<Respon
                     <ul>
                         <li>
                             <a
-                                href="https://www.vaccineimpact.org/2017-12-19-request-for-proposals-yellow-fever-rubella-Japanese-encephalitis-closing-date-January-30/"
+                                href={outputGuide}
                                 target="_blank">Output specification guidance (PDF)</a>
                         </li>
                     </ul>
