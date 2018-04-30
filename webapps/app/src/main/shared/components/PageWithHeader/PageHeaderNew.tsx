@@ -3,16 +3,23 @@ import * as React from "react";
 import { InternalLink } from "../InternalLink";
 import {BreadcrumbsBar} from "../Breadcrumbs/Breadcrumbs";
 import { LoggedInUserBox } from "../Login/LoggedInUserBox";
+import * as logo from "./logo.png"
 
 interface HeaderProps {
     siteTitle: string;
-    logo: any;
+    logo?: any;
 }
 
-export const PageHeaderNew: React.SFC<HeaderProps> = (props: HeaderProps) => {
+const defaultProps: Partial<HeaderProps> = {
+    logo
+}
+
+const PageHeaderNew: React.SFC<HeaderProps> = (props: HeaderProps) => {
     return <div>
         <header className="header">
-            <a href="/"><img src={props.logo} className="pl-md-1 logo" height="75" alt="VIMC"/></a>
+            <InternalLink href="/">
+                <img src={props.logo} className="pl-md-1 logo" height="75" alt="VIMC"/>
+            </InternalLink>
             <div className="header__siteTitle">
                 <InternalLink href="/">
                     {props.siteTitle}
@@ -23,3 +30,7 @@ export const PageHeaderNew: React.SFC<HeaderProps> = (props: HeaderProps) => {
         <BreadcrumbsBar />
     </div>;
 }
+
+PageHeaderNew.defaultProps = defaultProps;
+
+export {PageHeaderNew}

@@ -10,15 +10,10 @@ import { MemoryRouter as Router } from 'react-router-dom';
 
 import "../../helper";
 import { Sandbox } from "../../Sandbox";
-import { mockEvent } from "../../mocks/mocks";
-import { mockFormProperties, numberOfSubmissionActions } from "../../mocks/mockForm";
-import { mockFetcher, mockResponse, mockResult, promiseJSON } from "../../mocks/mockRemote";
 import { ValidationError } from "../../../main/shared/components/Login/ValidationError";
-import { expectOrderedActions } from "../../actionHelpers";
 import { ForgottenPasswordFormComponent, ForgottenPasswordForm } from "../../../main/shared/components/Login/ForgottenPasswordForm";
-import { makeNotification, notificationActions } from "../../../main/shared/actions/NotificationActions";
 import {authReducer} from "../../../main/shared/reducers/authReducer";
-import {authActions} from "../../../main/shared/actions/authActions";
+import {authActionCreators} from "../../../main/shared/actions/authActionCreators";
 
 
 describe("ForgottenPasswordFormComponent unit testing", () => {
@@ -82,7 +77,7 @@ describe("ForgottenPasswordForm connected with redux-form", () => {
     it("submits email for forgotten password", () => {
         formWrapper.find('input[name="email"]').simulate('focus');
         formWrapper.find('input[name="email"]').simulate('change', {target: {value: 'abc@abc.com'}});
-        const logInActionSpy = sandbox.setStubFunc(authActions, "forgotPassword", ()=>({type: 'test'}));
+        const logInActionSpy = sandbox.setStubFunc(authActionCreators, "forgotPassword", ()=>({type: 'test'}));
         // simulate form submit
         formWrapper.find('form.form').simulate('submit');
         expect(logInActionSpy.callCount).to.equal(1);

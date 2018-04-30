@@ -1,47 +1,54 @@
 import * as React from "react";
-import { DownloadDataTitle } from "../DownloadDataTitle";
-import { touchstoneActions } from "../../../actions/TouchstoneActions";
-import { demographicStore } from "../../../stores/DemographicStore";
-import { DownloadDemographicsContent } from "./DownloadDemographicsContent";
-import {ContribPageWithHeader} from "../../PageWithHeader/ContribPageWithHeader";
-import {IPageWithParent} from "../../../../shared/models/Breadcrumb";
-import {ResponsibilityOverviewPage} from "../Overview/ResponsibilityOverviewPage";
-import { Page } from "../../../../shared/components/PageWithHeader/Page";
-import {ChooseActionPage} from "../../ChooseAction/ChooseActionPage";
+import { Action, Dispatch } from "redux";
+import { compose} from "recompose";
+import { connect } from 'react-redux';
 
-interface LocationProps {
+import { ResponsibilitiesPageTitle } from "../PageTitle";
+import { DownloadDemographicsContent } from "./DownloadDemographicsContent";
+import {ResponsibilityOverviewPageComponent} from "../Overview/ResponsibilityOverviewPage";
+import {PageBreadcrumb, PageProperties} from "../../../../shared/components/PageWithHeader/PageWithHeader";
+import {ContribAppState} from "../../../reducers/contribAppReducers";
+import {PageArticle} from "../../../../shared/components/PageWithHeader/PageArticle";
+import {downloadDemographicsPageActionCreators} from "../../../actions/pages/downloadDemographicsPageActionCreators";
+
+export interface DownloadDemographicsPageLocationProps {
     groupId: string;
     touchstoneId: string;
 }
 
-export class DownloadDemographicsPage extends ContribPageWithHeader<LocationProps> {
-    load(props: LocationProps) {
-        return new ChooseActionPage().load(props).then(() => {
-            touchstoneActions.setCurrentTouchstone(props.touchstoneId);
-            return demographicStore.fetchDataSets();
-        });
+export class DownloadDemographicsPageComponent extends React.Component<PageProperties<DownloadDemographicsPageLocationProps>> {
+    componentDidMount() {
+        this.props.onLoad(this.props.match.params)
     }
 
-    name() {
-        return "Download demographic data sets";
+    static breadcrumb(state: ContribAppState): PageBreadcrumb {
+        return {
+            name: "Download demographic data sets",
+            urlFragment: "demographics/",
+            parent: ResponsibilityOverviewPageComponent.breadcrumb(state)
+        }
     }
 
     title(): JSX.Element {
-        return <DownloadDataTitle title="Download demographic data sets" />
-    }
-
-    urlFragment(): string {
-        return "demographics/";
-    }
-
-    parent(): IPageWithParent {
-        return new ResponsibilityOverviewPage();
+        return <ResponsibilitiesPageTitle
+            title="Download demographic data sets"
+        />;
     }
 
     render(): JSX.Element {
-        return <Page page={this}>
-            <DownloadDemographicsContent />
-        </Page>;
+        return <PageArticle title={this.title()}>
+            <DownloadDemographicsContent/>
+        </PageArticle>;
     }
 
 }
+
+export const mapDispatchToProps = (dispatch: Dispatch<ContribAppState>): Partial<PageProperties<DownloadDemographicsPageLocationProps>> => {
+    return {
+        onLoad: (params: DownloadDemographicsPageLocationProps) => dispatch(downloadDemographicsPageActionCreators.onLoad(params))
+    }
+};
+
+export const DownloadDemographicsPage = compose(
+    connect(state => state, mapDispatchToProps),
+)(DownloadDemographicsPageComponent) as React.ComponentClass<Partial<PageProperties<DownloadDemographicsPageLocationProps>>>;

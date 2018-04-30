@@ -1,0 +1,26 @@
+import * as React from "react";
+import { shallow } from "enzyme";
+import { expect } from "chai";
+
+import "../../../../helper";
+import { Sandbox } from "../../../../Sandbox";
+import {ResponsibilityOverviewDescription} from "../../../../../main/contrib/components/Responsibilities/Overview/ResponsibilityOverviewDescription";
+
+describe("Responsibility Overview Description Component", () => {
+
+    const sandbox = new Sandbox();
+    const testTouchstoneId1 = "t-1";
+    const testTouchstoneId2 = "rfp-1";
+    afterEach(() => sandbox.restore());
+
+    it("renders component on touchstone not applicants", () => {
+        const rendered = shallow(<ResponsibilityOverviewDescription currentTouchstoneId={testTouchstoneId1}/>);
+        expect(rendered.text().indexOf("See an overview of which scenarios") > -1).to.equal(true);
+    });
+
+    it("renders component on touchstone is applicants", () => {
+        const rendered = shallow(<ResponsibilityOverviewDescription currentTouchstoneId={testTouchstoneId2}/>);
+        expect(rendered.text().indexOf("Access the standardised demographic") > -1).to.equal(true);
+    });
+});
+

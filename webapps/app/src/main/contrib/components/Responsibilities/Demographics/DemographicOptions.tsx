@@ -1,36 +1,26 @@
 import * as React from "react";
-import { demographicActions } from "../../../actions/DemographicActions";
+import { connect } from 'react-redux';
+import { compose, branch, renderComponent} from "recompose";
+import { Dispatch } from "redux";
+
 import { GenderControl } from "./GenderControl";
 import { DemographicDataset } from "../../../../shared/models/Generated";
-import { demographicStore } from "../../../stores/DemographicStore";
-import { doNothing } from "../../../../shared/Helpers";
 import { FormatControl } from "../FormatControl";
+import {LoadingElement} from "../../../../shared/partials/LoadingElement/LoadingElement";
+import {ContribAppState} from "../../../reducers/contribAppReducers";
+import {demographicActionCreators} from "../../../actions/demographicActionCreators";
 
-interface Props extends HasFormatOption {
+export interface DemographicOptionsProps {
     dataSets: DemographicDataset[];
     selectedDataSet: DemographicDataset;
     selectedGender: string;
-}
-
-export interface HasFormatOption {
     selectedFormat: string;
+    onSelectDataSet: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+    onSelectGender: (gender: string) => void;
+    onSelectFormat: (gender: string) => void;
 }
 
-export class DemographicOptions extends React.Component<Props, undefined> {
-    onSelectDataSet(e: React.ChangeEvent<HTMLSelectElement>) {
-        demographicActions.selectDataSet(e.target.value);
-        demographicStore.fetchOneTimeToken().catch(doNothing);
-    }
-
-    onSelectGender(gender: string) {
-        demographicActions.selectGender(gender);
-        demographicStore.fetchOneTimeToken().catch(doNothing);
-    }
-
-    onSelectFormat(format: string) {
-        demographicActions.selectFormat(format);
-        demographicStore.fetchOneTimeToken().catch(doNothing);
-    }
+export class DemographicOptionsComponent extends React.Component<DemographicOptionsProps> {
 
     render() {
         const props = this.props;
@@ -54,7 +44,7 @@ export class DemographicOptions extends React.Component<Props, undefined> {
                     <div className="col">
                         <select
                             className="form-control"
-                            onChange={this.onSelectDataSet}
+                            onChange={this.props.onSelectDataSet}
                             value={selectedId}>
                             <option value="">- Select -</option>
                             {statisticTypes}
@@ -71,7 +61,7 @@ export class DemographicOptions extends React.Component<Props, undefined> {
                 <td><GenderControl
                     dataSet={props.selectedDataSet}
                     value={props.selectedGender}
-                    onSelectGender={this.onSelectGender}/>
+                    onSelectGender={this.props.onSelectGender}/>
                 </td>
             </tr>
             <tr className="specialColumn">
@@ -82,10 +72,42 @@ export class DemographicOptions extends React.Component<Props, undefined> {
                 </td>
                 <td><FormatControl
                     value={props.selectedFormat}
-                    onSelectFormat={this.onSelectFormat}/>
+                    onSelectFormat={this.props.onSelectFormat}/>
                 </td>
             </tr>
             </tbody>
         </table>
     }
 }
+
+export const mapStateToProps = (state: ContribAppState): Partial<DemographicOptionsProps> => {
+    return {
+        dataSets: state.demographic.dataSets,
+        selectedDataSet: state.demographic.selectedDataSet,
+        selectedGender: state.demographic.selectedGender,
+        selectedFormat: state.demographic.selectedFormat,
+    }
+};
+
+export const mapDispatchToProps = (dispatch: Dispatch<ContribAppState>): Partial<DemographicOptionsProps> => {
+    return {
+        onSelectDataSet: (e: React.ChangeEvent<HTMLSelectElement>) => {
+            dispatch(demographicActionCreators.setDataSet(e.target.value));
+            dispatch(demographicActionCreators.getOneTimeToken());
+        },
+        onSelectGender: (gender: string) => {
+            dispatch(demographicActionCreators.setGender(gender));
+            dispatch(demographicActionCreators.getOneTimeToken());
+        },
+        onSelectFormat: (format: string) => {
+            dispatch(demographicActionCreators.setFormat(format));
+            dispatch(demographicActionCreators.getOneTimeToken());
+        }
+    }
+};
+
+export const DemographicOptions = compose(
+    connect(mapStateToProps, mapDispatchToProps),
+    branch((props: DemographicOptionsProps) => !props.dataSets || !props.dataSets.length, renderComponent(LoadingElement))
+)(DemographicOptionsComponent) as React.ComponentClass<Partial<DemographicOptionsProps>>;
+

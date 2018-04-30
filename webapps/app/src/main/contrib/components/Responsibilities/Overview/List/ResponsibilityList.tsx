@@ -1,6 +1,7 @@
 import * as React from "react";
+
 import { DiseaseFilter } from "./DiseaseFilter";
-import { ResponsibilityComponent } from "./ResponsibilityComponent";
+import { ResponsibilityScenario } from "./ResponsibilityScenario";
 import { IExtendedResponsibilitySet } from "../../../../models/ResponsibilitySet";
 import { ModellingGroup, Responsibility } from "../../../../../shared/models/Generated";
 import { TemplateLinks } from "./TemplateLinks";
@@ -30,7 +31,7 @@ export class ResponsibilityList extends React.Component<ResponsibilityListCompon
         const reps = this.getResponsibilities(props);
         if (reps.length) {
             const items = reps.map((item: Responsibility) =>
-                <ResponsibilityComponent
+                <ResponsibilityScenario
                     key={ item.scenario.id }
                     responsibility={ item }
                     touchstone={ props.responsibilitySet.touchstone }
@@ -40,7 +41,7 @@ export class ResponsibilityList extends React.Component<ResponsibilityListCompon
             );
             return <div>
                 <div className="mb-4">
-                    <DiseaseFilter { ...props.responsibilitySet } />
+                    <DiseaseFilter/>
                     <TemplateLinks
                         responsibilities={props.responsibilitySet.responsibilities }
                         groupId={props.modellingGroup.id}

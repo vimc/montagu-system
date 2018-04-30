@@ -14,12 +14,8 @@ export interface ReportPageLocationProps {
     version: string;
 }
 
-export interface ReportPageProps extends PageProperties<ReportPageLocationProps> {
-    onLoad?: (props:ReportPageLocationProps) => void;
-}
-
-export class ReportPageComponent extends React.Component<ReportPageProps> {
-    constructor(props: ReportPageProps) {
+export class ReportPageComponent extends React.Component<PageProperties<ReportPageLocationProps>> {
+    constructor(props: PageProperties<ReportPageLocationProps>) {
         super(props);
         this.changeVersion = this.changeVersion.bind(this);
     }
@@ -28,7 +24,7 @@ export class ReportPageComponent extends React.Component<ReportPageProps> {
         this.props.onLoad(this.props.match.params);
     }
 
-    componentWillReceiveProps(nextProps: ReportPageProps) {
+    componentWillReceiveProps(nextProps: PageProperties<ReportPageLocationProps>) {
         if (nextProps.match.params.version !== this.props.match.params.version) {
             this.props.onLoad(nextProps.match.params);
         }
@@ -67,13 +63,13 @@ export class ReportPageComponent extends React.Component<ReportPageProps> {
     }
 }
 
-export const mapDispatchToProps = (dispatch: Dispatch<Action>): Partial<ReportPageProps> => {
+export const mapDispatchToProps = (dispatch: Dispatch<Action>): Partial<PageProperties<ReportPageLocationProps>> => {
     return {
         onLoad: (props: ReportPageLocationProps) => dispatch(reportPageActionCreators.onLoad(props))
     }
 };
 
 export const ReportPage = connect(
-    (props: Partial<ReportPageProps>) => props,
+    (props: Partial<PageProperties<ReportPageLocationProps>>) => props,
     mapDispatchToProps
-)(ReportPageComponent) as React.ComponentClass<Partial<ReportPageProps>>;
+)(ReportPageComponent) as React.ComponentClass<Partial<PageProperties<ReportPageLocationProps>>>;

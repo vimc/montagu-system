@@ -6,8 +6,7 @@ import { Dispatch } from "redux";
 
 import { ValidationError } from "./ValidationError";
 import { validations } from "../../modules/reduxForm";
-import { authActions } from "../../actions/authActions";
-import { GlobalState } from "../../reducers/GlobalState";
+import { authActionCreators } from "../../actions/authActionCreators";
 import {InputFieldProps} from "../../types";
 
 export interface ForgotPasswordFormProps {
@@ -55,7 +54,7 @@ export class ForgottenPasswordFormComponent extends React.Component<ForgotPasswo
 
 function mapDispatchToProps(dispatch: Dispatch<any>): Partial<ForgotPasswordFormProps> {
     return {
-        submit : (values: ForgotPasswordFormFields) => dispatch(authActions.forgotPassword(values.email))
+        submit : (values: ForgotPasswordFormFields) => dispatch(authActionCreators.forgotPassword(values.email))
     }
 }
 

@@ -2,11 +2,12 @@ import { Client } from "pg";
 import { expect } from "chai";
 import { Sandbox } from "../test/Sandbox";
 
-import { authActions } from "../main/shared/actions/authActions";
+import { authActionCreators } from "../main/shared/actions/authActionCreators";
 
 import fetcher, { Fetcher } from "../main/shared/sources/Fetcher";
 import { alt } from "../main/shared/alt";
 import { localStorageHandler } from "../main/shared/services/localStorageHandler";
+import {singletonVariableCache} from "../main/shared/modules/cache/singletonVariableCache";
 
 const dbName = process.env.PGDATABASE;
 const dbTemplateName = process.env.PGTEMPLATE;
@@ -48,12 +49,13 @@ export abstract class IntegrationTestSuite {
 
             beforeEach((done: DoneCallback) => {
                 (global as any).fetch = require('node-fetch');
+                singletonVariableCache.clearAll();
                 fetcher.fetcher = this.makeFetcher();
                 // Note that this will always trigger an authActions.logIn, which will result in all three login
                 // stores recording the user to some extent
 
                 this.store = this.createStore();
-                this.store.dispatch(authActions.logIn("test@example.com", "password"));
+                this.store.dispatch(authActionCreators.logIn("test@example.com", "password"));
                 let unsubscribe = this.store.subscribe(handleChange);
                 let that = this;
                 function handleChange () {

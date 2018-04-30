@@ -1,64 +1,27 @@
 import * as React from "react";
-import {connectToStores} from "../../../../shared/alt";
+import { compose, branch, renderComponent} from "recompose";
+import { connect } from 'react-redux';
+
 import {ModellingGroup, Responsibility, Scenario, Touchstone} from "../../../../shared/models/Generated";
-import {RemoteContent} from "../../../../shared/models/RemoteContent";
-import {RemoteContentComponent} from "../../../../shared/components/RemoteContentComponent/RemoteContentComponent";
-import {responsibilityStore} from "../../../stores/ResponsibilityStore";
 import {TemplateLink} from "../Overview/List/TemplateLinks";
 import {CurrentEstimateSetSummary} from "../Overview/List/CurrentEstimateSetSummary";
 import {UploadBurdenEstimatesForm} from "./UploadBurdenEstimatesForm";
+import {LoadingElement} from "../../../../shared/partials/LoadingElement/LoadingElement";
+import {ContribAppState} from "../../../reducers/contribAppReducers";
 
-export interface UploadBurdenEstimatesContentComponentProps extends RemoteContent {
+export interface UploadBurdenEstimatesContentProps {
     touchstone: Touchstone;
     scenario: Scenario;
     group: ModellingGroup;
     responsibilitySetStatus: string;
-    estimatesToken: string;
+    token: string;
     responsibility: Responsibility;
+    canCreate: boolean;
+    canUpload: boolean;
 }
 
-export class UploadBurdenEstimatesContentComponent extends RemoteContentComponent<UploadBurdenEstimatesContentComponentProps, undefined> {
-
-    static getStores() {
-        return [responsibilityStore];
-    }
-
-    static getPropsFromStores(): UploadBurdenEstimatesContentComponentProps {
-
-        const state = responsibilityStore.getState();
-        const r = state.currentResponsibility;
-
-        if (r != null) {
-            return {
-                ready: state.ready,
-                touchstone: state.currentTouchstone,
-                scenario: r.scenario,
-                group: state.currentModellingGroup,
-                responsibility: r,
-                estimatesToken: state.estimatesOneTimeToken,
-                responsibilitySetStatus: responsibilityStore.getCurrentResponsibilitySet().status
-
-            };
-        } else {
-            return {
-                ready: false,
-                touchstone: null,
-                scenario: null,
-                group: null,
-                responsibility: null,
-                estimatesToken: null,
-                responsibilitySetStatus: null
-            };
-        }
-    }
-
-    renderContent(props: UploadBurdenEstimatesContentComponentProps) {
-
-        const canCreate = this.props.responsibilitySetStatus == "incomplete";
-
-        const canUpload = canCreate && this.props.responsibility.current_estimate_set != null
-            && this.props.responsibility.current_estimate_set.status == "empty";
-
+export class UploadBurdenEstimatesContentComponent extends React.Component<UploadBurdenEstimatesContentProps> {
+    render() {
         return <div>
             <p>
                 On this page you can upload burden estimates for the following scenario. We expect estimates which
@@ -92,16 +55,42 @@ export class UploadBurdenEstimatesContentComponent extends RemoteContentComponen
             </table>
 
             <div className="mt-3">
-                <CurrentEstimateSetSummary estimateSet={this.props.responsibility.current_estimate_set}
-                                           canUpload={canCreate}/>
+                <CurrentEstimateSetSummary
+                    estimateSet={this.props.responsibility.current_estimate_set}
+                    canUpload={this.props.canCreate}
+                />
 
-                <UploadBurdenEstimatesForm canUpload={canUpload} canCreate={canCreate} groupId={this.props.group.id}
-                                           estimatesToken={this.props.estimatesToken}
-                                           touchstoneId={this.props.touchstone.id}
-                                           scenarioId={this.props.scenario.id}/>
+                <UploadBurdenEstimatesForm
+                    canUpload={this.props.canUpload}
+                    canCreate={this.props.canCreate}
+                    groupId={this.props.group.id}
+                    estimatesToken={this.props.token}
+                    touchstoneId={this.props.touchstone.id}
+                    scenarioId={this.props.scenario.id}
+                />
             </div>
         </div>;
     }
 }
 
-export const UploadBurdenEstimatesContent = connectToStores(UploadBurdenEstimatesContentComponent);
+export const mapStateToProps = (state: ContribAppState): Partial<UploadBurdenEstimatesContentProps> => {
+    const newProps = {
+        touchstone: state.touchstones.currentTouchstone,
+        scenario: state.responsibilities.currentResponsibility ? state.responsibilities.currentResponsibility.scenario : null,
+        group: state.groups.currentUserGroup,
+        responsibilitySetStatus: state.responsibilities.responsibilitiesSet ? state.responsibilities.responsibilitiesSet.status : null,
+        token: state.estimates.token,
+        responsibility: state.responsibilities.currentResponsibility,
+        canCreate: false,
+        canUpload: false
+    };
+    newProps.canCreate = newProps.responsibilitySetStatus === "incomplete";
+    newProps.canUpload = newProps.canCreate && newProps.responsibility && newProps.responsibility.current_estimate_set != null
+        && newProps.responsibility.current_estimate_set.status == "empty";
+    return newProps;
+};
+
+export const UploadBurdenEstimatesContent = compose(
+    connect(mapStateToProps, ),
+    branch((props: UploadBurdenEstimatesContentProps) => !props.responsibility, renderComponent(LoadingElement))
+)(UploadBurdenEstimatesContentComponent) as React.ComponentClass<Partial<UploadBurdenEstimatesContentProps>>;

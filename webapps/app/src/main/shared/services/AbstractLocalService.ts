@@ -1,4 +1,6 @@
 import { Dispatch, Action } from "redux";
+import {clone} from "lodash";
+
 import { settings } from "../Settings";
 import { localStorageHandler } from "./localStorageHandler";
 import {ErrorInfo, Result} from "../models/Generated";
@@ -32,6 +34,8 @@ export interface InputOptions {
     credentials?: "omit" | "same-origin" | "include";
     baseURL?: string;
     cacheKey?: string;
+    exceptionOnError?: boolean;
+    noCache?: boolean;
 }
 
 export abstract class AbstractLocalService {
@@ -52,6 +56,7 @@ export abstract class AbstractLocalService {
 
         this.processResponse = this.processResponse.bind(this);
         this.notifyOnErrors = this.notifyOnErrors.bind(this);
+        this.handleErrorsWithExceptions = this.handleErrorsWithExceptions.bind(this);
     }
 
     protected getTokenFromState(state: GlobalState) {
@@ -69,6 +74,8 @@ export abstract class AbstractLocalService {
         this.options = {};
         this.options.baseURL = settings.apiUrl();
         this.options.cacheKey = null;
+        this.options.exceptionOnError = true;
+        this.options.noCache = false;
         if (this.bearerToken) {
             this.options.Authorization = 'Bearer ' + this.bearerToken;
         }
@@ -109,6 +116,11 @@ export abstract class AbstractLocalService {
         return ["localService", this.constructor.name, cacheKey, encodeURIComponent(url)].join('.');
     }
 
+    public clearCacheByModuleKey(cacheKey: string) {
+        const path = ["localService", this.constructor.name, cacheKey].join('.');
+        this.cacheEngine.clear(path);
+    }
+
     protected clearCache(cacheKey: string, url: string) {
         const fullyQualifiedUrl = this.makeUrl(url);
         const key = this.getFullyQualifiedCacheKey(cacheKey, fullyQualifiedUrl);
@@ -122,7 +134,7 @@ export abstract class AbstractLocalService {
     }
 
     protected getData(url: string, method: string, params?: any) {
-        if (this.options.cacheKey) {
+        if (this.options.cacheKey && !this.options.noCache) {
             const cacheValue = this.cacheEngine.get(this.getFullyQualifiedCacheKey(this.options.cacheKey, url));
             if (cacheValue) {
                 // reset options on returning cached data from endpoint
@@ -151,37 +163,46 @@ export abstract class AbstractLocalService {
             });
     }
 
-    processResult<TModel>(result: Result, response: any): TModel | void {
-        const handleError = (error: ErrorInfo) => {
-            switch (error.code) {
-                case "bearer-token-invalid":
-                    console.log("Access token has expired or is otherwise invalid: Logging out.");
-                    this.dispatch(this.logOut());
-                    const notification: Notification = {
-                        message: "Your session has expired. You will need to log in again",
-                        type: "info"
-                    };
-                    throw new NotificationException(notification);
-                default:
-                    throw makeNotificationException(error.message, "error");
-            }
+    expiredTokenAction() {
+        console.log("Access token has expired or is otherwise invalid: Logging out.");
+        this.dispatch(this.logOut());
+        const notification: Notification = {
+            message: "Your session has expired. You will need to log in again",
+            type: "info"
         };
+        throw new NotificationException(notification);
+    }
 
+    handleErrorsWithExceptions (error: ErrorInfo) {
+        switch (error.code) {
+            case "bearer-token-invalid":
+                return this.expiredTokenAction();
+            default:
+                throw makeNotificationException(error.message, "error");
+        }
+    };
+
+    handleErrorsReturn (result: any) {
+        if (result.errors[0].code === "bearer-token-invalid") {
+            return this.expiredTokenAction();
+        }
+        return result;
+    };
+
+    processResult<TModel>(result: Result, response: any): TModel | void {
+        const options = clone(this.options);
+        this.initOptions();
         switch (result.status) {
             case "success":
-                if (this.options.cacheKey) {
-                    this.cacheEngine.set(this.getFullyQualifiedCacheKey(this.options.cacheKey, response.url), result.data)
+                if (options.cacheKey && !options.noCache) {
+                    this.cacheEngine.set(this.getFullyQualifiedCacheKey(options.cacheKey, response.url), result.data)
                 }
-                // reset options on successful request
-                this.initOptions();
                 return result.data as TModel;
             case "failure":
-                // reset options on defined failure
-                this.initOptions();
-                return result.errors.forEach(handleError);
+                return options.exceptionOnError
+                    ? result.errors.forEach(this.handleErrorsWithExceptions)
+                    : this.handleErrorsReturn(result) as TModel;
             default:
-                // reset options on unexpected failure
-                this.initOptions();
                 throw makeNotificationException("The server response was not correctly formatted: "
                     + response.toString(), "error");
         }

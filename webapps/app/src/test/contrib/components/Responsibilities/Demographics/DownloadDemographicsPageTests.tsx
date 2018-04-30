@@ -1,66 +1,51 @@
 import * as React from "react";
-import {Sandbox} from "../../../../Sandbox";
-import {expect} from "chai";
-import {checkPromise} from "../../../../testHelpers";
-import {expectOneAction} from "../../../../actionHelpers";
-import {DownloadDemographicsPage} from "../../../../../main/contrib/components/Responsibilities/Demographics/DownloadDemographicsPage";
-import {mockLocation, mockMatch, setupStores} from "../../../../mocks/mocks";
-import {mockDemographicDataset, mockModellingGroup, mockTouchstone} from "../../../../mocks/mockModels";
-import {responsibilityStore} from "../../../../../main/contrib/stores/ResponsibilityStore";
-import {demographicStore} from "../../../../../main/contrib/stores/DemographicStore";
-import {addNavigationTests} from "../../../../shared/NavigationTests";
-import {bootstrapStore} from "../../../../StoreHelpers";
-import {mainStore} from "../../../../../main/contrib/stores/MainStore";
-import {makeLoadable} from "../../../../../main/contrib/stores/Loadable";
-import {mockFetcherForMultipleResponses} from "../../../../mocks/mockMultipleEndpoints";
-import {mockDemographicDatasetsEndpoint, mockTouchstonesEndpoint} from "../../../../mocks/mockEndpoints";
+import { shallow } from "enzyme";
+import { expect } from "chai";
+import { Store } from "redux";
 
-describe("DownloadDemographicsPage", () => {
+import "../../../../helper";
+import { Sandbox } from "../../../../Sandbox";
+import {createMockStore} from "../../../../mocks/mockStore";
+import {PageArticle} from "../../../../../main/shared/components/PageWithHeader/PageArticle";
+import {mockMatch} from "../../../../mocks/mocks";
+import {ContribAppState} from "../../../../../main/contrib/reducers/contribAppReducers";
+import {ResponsibilitiesPageTitle} from "../../../../../main/contrib/components/Responsibilities/PageTitle";
+import {
+    DownloadDemographicsPage,
+    DownloadDemographicsPageLocationProps
+} from "../../../../../main/contrib/components/Responsibilities/Demographics/DownloadDemographicsPage";
+import {downloadDemographicsPageActionCreators} from "../../../../../main/contrib/actions/pages/downloadDemographicsPageActionCreators";
+import {DownloadDemographicsContent} from "../../../../../main/contrib/components/Responsibilities/Demographics/DownloadDemographicsContent";
+
+describe("Download Demographics Page Component tests", () => {
+
     const sandbox = new Sandbox();
+
+    let store : Store<ContribAppState>;
+    beforeEach(() => {
+        store = createMockStore();
+    });
     afterEach(() => sandbox.restore());
 
-    const location = mockLocation();
-    const match = mockMatch({
-        groupId: "group-1",
-        touchstoneId: "touchstone-1",
+    it("renders component on connect level", () => {
+        const rendered = shallow(<DownloadDemographicsPage/>, {context: {store}});
+        expect(typeof rendered.props().onLoad).is.equal('function');
     });
 
-    it("triggers actions on load", (done: DoneCallback) => {
-
-        const spy = sandbox.dispatchSpy();
-        const fetchTouchstones = sandbox.sinon.stub(responsibilityStore, "fetchTouchstones").returns(Promise.resolve(true));
-        const fetchDataSets = sandbox.sinon.stub(demographicStore, "fetchDataSets").returns(Promise.resolve(true));
-
-        const group = mockModellingGroup({id: "group-1"});
-        const touchstone = mockTouchstone({id: "touchstone-1"});
-        setupStores({groups: [group], touchstones: [touchstone]});
-
-        const promise = new DownloadDemographicsPage().load({
-            groupId: "group-1",
-            touchstoneId: "touchstone-1",
+    it("renders component component level", () => {
+        let testMatch = mockMatch<DownloadDemographicsPageLocationProps>({
+            groupId: "g-1",
+            touchstoneId: "t-1"
         });
-
-        checkPromise(done, promise, (_, afterWait) => {
-            expectOneAction(spy, {action: "ModellingGroupActions.setCurrentGroup", payload: "group-1"}, 0);
-            expect(fetchTouchstones.called).to.equal(true, "Expected fetchTouchstones to be called");
-            afterWait(done, () => {
-                expectOneAction(spy, {action: "TouchstoneActions.setCurrentTouchstone", payload: "touchstone-1"}, 1);
-                expect(fetchDataSets.called).to.equal(true, "Expected fetchDataSets to be called");
-            });
-        });
-    });
-
-    const page = new DownloadDemographicsPage({location, match, router: null, history: null});
-    addNavigationTests(page, sandbox, () => {
-        bootstrapStore(mainStore, {
-            modellingGroups: makeLoadable([mockModellingGroup({id: "group-1"})])
-        });
-        bootstrapStore(responsibilityStore, {
-            currentModellingGroup: mockModellingGroup({id: "group-1"}),
-        });
-        mockFetcherForMultipleResponses([
-            mockTouchstonesEndpoint([mockTouchstone({ id: "touchstone-1" })], "group-1"),
-            mockDemographicDatasetsEndpoint([mockDemographicDataset()])
-        ])
+        const onLoadStub = sandbox.setStubReduxAction(downloadDemographicsPageActionCreators, "onLoad");
+        const rendered = shallow(<DownloadDemographicsPage
+            match={testMatch}
+        />, {context: {store}}).dive();
+        const pageArticle = rendered.find('PageArticle');
+        expect(onLoadStub.called).is.equal(true);
+        expect(pageArticle.find(DownloadDemographicsContent).length).is.equal(1);
+        const titleComponent = pageArticle.dive().find(ResponsibilitiesPageTitle);
+        expect(titleComponent.props().title).is.equal("Download demographic data sets");
     });
 });
+

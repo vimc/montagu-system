@@ -1,8 +1,10 @@
 import * as React from "react";
 import { expect } from "chai";
+import { shallow } from "enzyme";
+
+import "../../../../helper";
 import { GenderControl } from "../../../../../main/contrib/components/Responsibilities/Demographics/GenderControl";
 import { mockDemographicDataset } from "../../../../mocks/mockModels";
-import { shallow } from "enzyme";
 import ReactRadioButtonGroup from "react-radio-button-group";
 
 describe("GenderControl", () => {

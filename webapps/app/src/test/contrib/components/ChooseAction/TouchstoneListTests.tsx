@@ -1,16 +1,16 @@
 import * as React from "react";
 import { expect } from "chai";
 import { shallow } from "enzyme";
+
+import "../../../helper";
 import { mockModellingGroup, mockTouchstone } from "../../../mocks/mockModels";
 import { Sandbox } from "../../../Sandbox";
-
 import { Touchstone } from "../../../../main/shared/models/Generated";
 import { TouchstoneList, TouchstoneListProps } from "../../../../main/contrib/components/ChooseAction/TouchstoneList";
 import { ButtonLink } from "../../../../main/shared/components/ButtonLink";
 
 function makeProps(touchstones?: Array<Touchstone>): TouchstoneListProps {
     return {
-        ready: true,
         touchstones: touchstones || [],
         group: mockModellingGroup({ id: "gId" })
     };

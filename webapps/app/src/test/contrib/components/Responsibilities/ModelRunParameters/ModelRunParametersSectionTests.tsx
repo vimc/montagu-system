@@ -1,13 +1,15 @@
 import * as React from "react";
 import {expect} from "chai";
 import {shallow, ShallowWrapper} from "enzyme";
+
+import "../../../../helper";
 import {Sandbox} from "../../../../Sandbox";
 import {mockFetcher} from "../../../../mocks/mockRemote";
 import {ModelRunParametersSection} from "../../../../../main/contrib/components/Responsibilities/ModelRunParameters/ModelRunParametersSection";
 import {ModelRunParametersForm} from "../../../../../main/contrib/components/Responsibilities/ModelRunParameters/ModelRunParametersForm";
 import {ModelRunParametersStatus} from "../../../../../main/contrib/components/Responsibilities/ModelRunParameters/ModelRunParametersStatus";
 
-describe('ModelRunParameterSection', () => {
+describe('Model Run Parameter Section Component tests', () => {
     let rendered: ShallowWrapper<any, any>;
     const sandbox = new Sandbox();
 
@@ -18,7 +20,6 @@ describe('ModelRunParameterSection', () => {
     it("renders Form", () => {
 
         rendered = shallow(<ModelRunParametersSection
-            url={"url"}
             disease={"d1"}
         />);
 
@@ -29,13 +30,10 @@ describe('ModelRunParameterSection', () => {
     it("renders status", () => {
 
         rendered = shallow(<ModelRunParametersSection
-            url={"url"}
             disease={"d1"}
         />);
 
         const input = rendered.find(ModelRunParametersStatus);
         expect(input).to.have.lengthOf(1);
-
     });
-
 });

@@ -13,7 +13,7 @@ import { authReducer } from "../../../../main/shared/reducers/authReducer";
 import { Sandbox } from "../../../Sandbox";
 import { LoginFormComponent, LoginForm } from "../../../../main/shared/components/Login/LoginForm";
 import { ValidationError } from "../../../../main/shared/components/Login/ValidationError";
-import { authActions } from "../../../../main/shared/actions/authActions";
+import { authActionCreators } from "../../../../main/shared/actions/authActionCreators";
 
 describe("LoginFormComponent unit testing", () => {
     const sandbox = new Sandbox();
@@ -102,7 +102,7 @@ describe("LoginForm connected with redux-form", () => {
         formWrapper.find('input[name="email"]').simulate('change', {target: {value: 'abc@abc.com'}});
         formWrapper.find('input[name="password"]').simulate('focus');
         formWrapper.find('input[name="password"]').simulate('change', {target: {value: 'abc'}});
-        const logInActionSpy = sandbox.setStubFunc(authActions, "logIn", ()=>({type: 'test'}));
+        const logInActionSpy = sandbox.setStubFunc(authActionCreators, "logIn", ()=>({type: 'test'}));
         // simulate form submit
         formWrapper.find('form.form').simulate('submit');
         expect(logInActionSpy.callCount).to.equal(1);

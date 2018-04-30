@@ -1,14 +1,11 @@
 import {expect} from "chai";
 import * as React from "react";
+
 import {mockModelRunParameterSet,} from "../../../../mocks/mockModels";
-import alt from "../../../../../main/shared/alt";
 import {Base64} from 'js-base64';
 import {ModelRunParameterDownloadCertificate} from "../../../../../main/contrib/components/Responsibilities/ModelRunParameters/ModelRunParameterDownloadCertificate";
 
 describe("ModelRunParameterDownloadCertificate", () => {
-    beforeEach(() => alt.recycle());
-    afterEach(() => alt.recycle());
-
 
     it("creates signature data, signature and can be decoded back", () => {
         const component = new ModelRunParameterDownloadCertificate();

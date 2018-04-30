@@ -3,6 +3,7 @@ import { expect } from "chai";
 import { shallow } from "enzyme";
 import * as sinon from "sinon";
 
+import "../../helper";
 import { Option, OptionSelector } from "../../../main/contrib/components/OptionSelector/OptionSelector";
 
 function mockOptions(): Option[] {

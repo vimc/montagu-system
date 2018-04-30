@@ -1,6 +1,7 @@
 import * as React from "react";
 import Toggle from 'react-bootstrap-toggle';
 import {connect, Dispatch} from "react-redux";
+
 import {ReportAppState} from "../../reducers/reportAppReducers";
 import {UncontrolledTooltip} from "reactstrap";
 import {reportActionCreators} from "../../actions/reportActionCreators";
@@ -47,12 +48,19 @@ export class PublishSwitchComponent extends React.Component<Props, undefined> {
     }
 }
 
-export const mapDispatchToProps = (dispatch: Dispatch<any>): Partial<Props> => {
+const mapStateToProps = (state: ReportAppState, props: PublicProps): Partial<Props> => {
+    return {
+        name: props.name,
+        version: props.version,
+        published: props.published
+    };
+};
+
+export const mapDispatchToProps = (dispatch: Dispatch<ReportAppState>): Partial<Props> => {
     return {
         publish: (name: string, version: string) => dispatch(reportActionCreators.publishReport(name, version)),
         unpublish: (name: string, version: string) => dispatch(reportActionCreators.unPublishReport(name, version))
     }
 };
 
-export const PublishSwitch = connect((state: ReportAppState, props: PublicProps) => props,
-    mapDispatchToProps)(PublishSwitchComponent);
+export const PublishSwitch = connect(mapStateToProps, mapDispatchToProps)(PublishSwitchComponent);

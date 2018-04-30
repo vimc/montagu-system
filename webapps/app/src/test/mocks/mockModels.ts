@@ -3,6 +3,7 @@ import {ExtendedResponsibility, ExtendedResponsibilitySet} from "../../main/cont
 import {Version} from "../../main/shared/models/reports/Report";
 import {Artefact} from "../../main/shared/models/reports/Artefact";
 import {Report} from "../../main/shared/models/Generated";
+import {PageBreadcrumb} from "../../main/shared/components/PageWithHeader/PageWithHeader";
 
 let counter = 0;
 
@@ -215,4 +216,16 @@ export function mockModelRunParameterSet(properties?: Partial<models.ModelRunPar
         uploaded_by: "test.user"
     };
     return Object.assign(template, properties);
+}
+
+export function mockPageBreadcrumb() {
+    return {
+        name: "A",
+        urlFragment: "/",
+        parent: null
+    } as PageBreadcrumb;
+}
+
+export function mockBreadcrumbs() {
+    return [ { url: '/', name: 'A' }, { url: '/b/', name: 'B' } ];
 }

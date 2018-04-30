@@ -1,7 +1,9 @@
 import * as React from "react";
-import {mainStore} from "../../../../stores/MainStore";
+import { connect } from 'react-redux';
+
 import {ExtendedResponsibility} from "../../../../models/ResponsibilitySet";
 import {settings} from "../../../../../shared/Settings";
+import {ContribAppState} from "../../../../reducers/contribAppReducers";
 import {Disease} from "../../../../../shared/models/Generated";
 
 export interface TemplateLinksProps {
@@ -14,14 +16,15 @@ export interface TemplateLinkProps {
     diseaseId: string;
     groupId: string;
     touchstoneId: string;
+    diseases?: Disease[];
 }
 
 const templatePath = "/contribution/templates/";
 
-export class TemplateLink extends React.Component<TemplateLinkProps, undefined> {
+export class TemplateLinkComponent extends React.Component<TemplateLinkProps, undefined> {
     render(): JSX.Element {
 
-        const disease = mainStore.getDiseaseById(this.props.diseaseId);
+        const disease = this.props.diseases.find(disease => disease.id === this.props.diseaseId);
         const href = `${templatePath}central_burden_template_${disease.id}-${this.props.groupId}.csv`;
         const hrefStochastic = `${templatePath}stochastic_burden_template_${disease.id}-${this.props.groupId}.csv`;
 
@@ -146,6 +149,15 @@ export class TemplateLink extends React.Component<TemplateLinkProps, undefined> 
     }
 }
 
+const mapStateToProps = (state: ContribAppState, props: TemplateLinkProps): Partial<TemplateLinkProps> => {
+    return {
+        ...props,
+        diseases: state.diseases.diseases
+    }
+};
+
+export const TemplateLink = connect(mapStateToProps)(TemplateLinkComponent);
+
 const RfpTemplateLinks = (disease: Disease) => {
     if (settings.isStochasticTouchstone(this.props.touchstoneId)) {
         return <div>
@@ -175,7 +187,7 @@ export class TemplateLinks extends React.Component<TemplateLinksProps, undefined
         const diseaseIds = [...new Set(this.props.responsibilities.map(x => x.scenario.disease))];
 
         if (diseaseIds.length > 0) {
-            let links: any = diseaseIds
+            let links: JSX.Element[] = diseaseIds
                 .map(id =>
                     <TemplateLink
                         key={id}

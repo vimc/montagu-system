@@ -7,6 +7,12 @@ import {userActionCreators} from "../../../main/report/actions/userActionCreator
 import {UserService} from "../../../main/report/services/UserService";
 import {mockUser} from "../../mocks/mockModels";
 import {checkAsync} from "../../testHelpers";
+import {ModellingGroupTypes} from "../../../main/contrib/actionTypes/ModellingGroupsTypes";
+
+process.on('unhandledRejection', (reason: any, p : any) => {
+    console.log('Unhandled Rejection at: Promise', p, 'reason:', reason);
+    // application specific logging, throwing an error, or other logic here
+});
 
 describe("User action creators", () => {
     const sandbox = new Sandbox();
@@ -48,8 +54,9 @@ describe("User action creators", () => {
     });
 
     it("removeReportReader does not dispatch report reader removed action if not successful", (done) => {
+        const testError = new Error("test");
         sandbox.setStubFunc(UserService.prototype, "removeReportReader", () => {
-            return Promise.reject("reason");
+            return Promise.resolve({errors: [testError]});
         });
         store.dispatch(userActionCreators.removeReportReader("test", "user"));
         setTimeout(() => {
@@ -60,12 +67,18 @@ describe("User action creators", () => {
     });
 
     it("addReportReader adds report reader", (done) => {
-        const stub = sandbox.setStubFunc(UserService.prototype, "addReportReader", () => {
+        const testUser = mockUser();
+        sandbox.setStubFunc(UserService.prototype, "addReportReader", () => {
             return Promise.resolve("OK");
         });
+        sandbox.setStubFunc(UserService.prototype, "getReportReaders", () => {
+            return Promise.resolve([testUser]);
+        });
+        store.dispatch(userActionCreators.addReportReader("test", "user"));
         setTimeout(() => {
-            store.dispatch(userActionCreators.addReportReader("test", "user"));
-            expect(stub.calledWith("test", "user")).to.be.true;
+            const actions = store.getActions();
+            const expectedPayload = { type: UserActionTypes.REPORT_READERS_FETCHED, data: [testUser] }
+            expect(actions).to.eql([expectedPayload]);
             done();
         });
     });
@@ -88,9 +101,9 @@ describe("User action creators", () => {
     });
 
     it("addReportReader does not dispatch getReportReaders if not successful", (done) => {
-
+        const testError = new Error("test");
         sandbox.setStubFunc(UserService.prototype, "addReportReader", () => {
-            return Promise.reject("error");
+            return Promise.resolve({errors: [testError]});
         });
 
         store.dispatch(userActionCreators.addReportReader("test", "user"));

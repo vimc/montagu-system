@@ -1,45 +1,45 @@
 import * as React from "react";
-import { ChooseActionContent } from "./ChooseActionContent";
-import { responsibilityStore } from "../../stores/ResponsibilityStore";
-import {modellingGroupActions} from "../../../shared/actions/ModellingGroupActions";
-import {ContribPageWithHeader} from "../PageWithHeader/ContribPageWithHeader";
-import {IPageWithParent} from "../../../shared/models/Breadcrumb";
-import {ChooseGroupPage} from "../ChooseGroup/ChooseGroupPage";
-import { Page } from "../../../shared/components/PageWithHeader/Page";
+import { Dispatch } from "redux";
+import { compose } from "recompose";
+import { connect } from 'react-redux';
 
-export interface LocationProps {
+import { ChooseActionContent } from "./ChooseActionContent";
+import {ChooseGroupPageComponent} from "../ChooseGroup/ChooseGroupPage";
+import {PageBreadcrumb, PageProperties} from "../../../shared/components/PageWithHeader/PageWithHeader";
+import {ContribAppState} from "../../reducers/contribAppReducers";
+import {PageArticle} from "../../../shared/components/PageWithHeader/PageArticle";
+import {chooseActionPageActionCreators} from "../../actions/pages/chooseActionPageActionCreators";
+
+export interface ChooseActionPageLocationProps {
     groupId: string;
 }
 
-export class ChooseActionPage extends ContribPageWithHeader<LocationProps> {
-    load(props: LocationProps) {
-        return this.loadParent(props).then(() => {
-            modellingGroupActions.setCurrentGroup(props.groupId);
-            return responsibilityStore.fetchTouchstones();
-        });
+export class ChooseActionPageComponent extends React.Component<PageProperties<ChooseActionPageLocationProps>> {
+    componentDidMount() {
+        this.props.onLoad(this.props.match.params)
     }
 
-    name(): string {
-        const s = responsibilityStore.getState();
-        return s.currentModellingGroup.description;
+    static breadcrumb(state: ContribAppState): PageBreadcrumb {
+        return {
+            name: state.groups.currentUserGroup.description,
+            urlFragment: `${state.groups.currentUserGroup.id}/`,
+            parent: ChooseGroupPageComponent.breadcrumb()
+        }
     }
 
-    title(): JSX.Element {
-        return <span>What do you want to do?</span>;
-    }
-
-    urlFragment(): string {
-        const s = responsibilityStore.getState();
-        return `${s.currentModellingGroup.id}/`;
-    }
-
-    parent(): IPageWithParent {
-        return new ChooseGroupPage();
-    }
-
-    render() :JSX.Element {
-        return <Page page={this}>
-            <ChooseActionContent />
-        </Page>;
+    render(): JSX.Element {
+        return <PageArticle title="What do you want to do?">
+            <ChooseActionContent/>
+        </PageArticle>;
     }
 }
+
+export const mapDispatchToProps = (dispatch: Dispatch<ContribAppState>): Partial<PageProperties<ChooseActionPageLocationProps>> => {
+    return {
+        onLoad: (params: ChooseActionPageLocationProps) => dispatch(chooseActionPageActionCreators.onLoad(params))
+    }
+};
+
+export const ChooseActionPage = compose(
+    connect(state => state, mapDispatchToProps)
+)(ChooseActionPageComponent) as React.ComponentClass<Partial<PageProperties<ChooseActionPageLocationProps>>>;

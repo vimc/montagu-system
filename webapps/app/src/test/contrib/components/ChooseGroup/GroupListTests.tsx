@@ -2,11 +2,12 @@ import * as React from "react";
 import { shallow } from "enzyme";
 import { expect } from "chai";
 
+import "../../../helper";
 import { mockModellingGroup } from "../../../mocks/mockModels";
 import { GroupList } from "../../../../main/contrib/components/ChooseGroup/GroupList";
 import { ButtonLink } from "../../../../main/shared/components/ButtonLink";
 
-describe("GroupList", () => {
+describe("Choose Group List", () => {
     it("renders one group link per group", () => {
         const groups = [
             mockModellingGroup({ id: "g1" }),

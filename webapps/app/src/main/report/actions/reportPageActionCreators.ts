@@ -2,7 +2,7 @@ import { Dispatch } from "redux";
 
 import { reportActionCreators } from "./reportActionCreators";
 import {ReportPageComponent} from "../components/Reports/ReportPage";
-import {breadcrumbsActions} from "../../shared/actions/breadcrumbsActions";
+import {breadcrumbsActionCreators} from "../../shared/actions/breadcrumbsActionsCreators";
 
 export const reportPageActionCreators = {
 
@@ -11,7 +11,7 @@ export const reportPageActionCreators = {
             dispatch(reportActionCreators.setCurrentReport(props.report));
             dispatch(reportActionCreators.getReportVersions(props.report));
             dispatch(reportActionCreators.getVersionDetails(props.report, props.version));
-            dispatch(breadcrumbsActions.createBreadcrumbs(ReportPageComponent.breadcrumb(props)));
+            dispatch(breadcrumbsActionCreators.createBreadcrumbs(ReportPageComponent.breadcrumb(props)));
         }
     }
 

@@ -5,11 +5,11 @@ import {connect} from "react-redux";
 import {branch, compose, renderComponent} from "recompose";
 import {Dispatch} from "redux";
 import {ContribAppState} from "../../../reducers/contribAppReducers";
-import {default as withLifecycle, LifecycleMethods} from "@hocs/with-lifecycle";
 import {userActionCreators} from "../../../actions/userActionCreators";
 import {LoadingElement} from "../../../../shared/partials/LoadingElement/LoadingElement";
+import {LifecycleMethods, default as withLifecycle} from "@hocs/with-lifecycle";
 
-interface State {
+export interface ConfidentialityAgreementComponentState {
     checked: boolean;
 }
 
@@ -17,7 +17,7 @@ const fullConfidentialityAgreement = require('./rfp-applicants-confidentiality.p
 
 // exported for testing but this class should not be invoked by itself, it is rendered as part of the
 // higher order component below
-export class ConfidentialityAgreementComponent extends React.Component<ConfidentialityProps, State> {
+export class ConfidentialityAgreementComponent extends React.Component<ConfidentialityProps, ConfidentialityAgreementComponentState> {
 
     constructor() {
         super();
@@ -33,60 +33,46 @@ export class ConfidentialityAgreementComponent extends React.Component<Confident
     }
 
     render() {
-
-        if (this.props.signed == null) {
-            return <LoadingElement />
-        }
-        else {
-            // at this point we can assume that `signed` is false, as if true this component would never be
-            // rendered
-            return <div className={"row"}>
-                <div className={"col-12 col-md-6 offset-md-3"}>
-                    <div className={"border p-3 border-dark mb-5"}>
-                        I have read and understood the terms of the <a href={fullConfidentialityAgreement}>
-                        RfP applicants' confidentiality agreement</a>. In doing so, I understand and agree not to
-                        disclose
-                        or share any information on vaccine coverage data which I access from Montagu,
-                        beyond my immediate RfP modelling group.
-                        <input type={"checkbox"} className={"mt-2 mb-2 d-block"}
-                               style={{height: "20px", width: "20px"}} checked={this.state.checked}
-                               onChange={this.onChange}/>
-                        {this.state.checked &&
-                        <button className="btn-success" onClick={this.props.signAgreement}>Submit</button>
-                        }
-                    </div>
+        // at this point we can assume that `signed` is false, as if true this component would never be
+        // rendered
+        return <div className={"row"}>
+            <div className={"col-12 col-md-6 offset-md-3"}>
+                <div className={"border p-3 border-dark mb-5"}>
+                    I have read and understood the terms of the <a href={fullConfidentialityAgreement}>
+                    RfP applicants' confidentiality agreement</a>. In doing so, I understand and agree not to
+                    disclose
+                    or share any information on vaccine coverage data which I access from Montagu,
+                    beyond my immediate RfP modelling group.
+                    <input type={"checkbox"} className={"mt-2 mb-2 d-block"}
+                           style={{height: "20px", width: "20px"}} checked={this.state.checked}
+                           onChange={this.onChange}/>
+                    {this.state.checked &&
+                    <button className="btn-success" onClick={this.props.signAgreement}>Submit</button>
+                    }
                 </div>
             </div>
-        }
+        </div>;
     }
 
 }
 
-export interface ConfidentialityPublicProps {
+
+interface ConfidentialityProps {
     touchstoneId: string;
-}
-
-interface ConfidentialityPropsFromState extends ConfidentialityPublicProps {
     signed?: boolean;
-}
-
-interface ConfidentialityProps extends ConfidentialityPropsFromState {
     signAgreement: () => void;
     getConfidentiality: () => void;
 }
 
-const mapStateToProps
-    = (state: ContribAppState, props: ConfidentialityPublicProps): ConfidentialityPropsFromState => {
+const mapStateToProps = (state: ContribAppState): Partial<ConfidentialityProps> => {
     return {
-        ...props,
+        touchstoneId: state.touchstones.currentTouchstone.id,
         signed: state.user.signedConfidentialityAgreement
     }
 };
 
-const mapDispatchToProps
-    = (dispatch: Dispatch<ContribAppState>, props: ConfidentialityPropsFromState): ConfidentialityProps => {
+const mapDispatchToProps = (dispatch: Dispatch<ContribAppState>): Partial<ConfidentialityProps> => {
     return {
-        ...props,
         getConfidentiality: () => dispatch(userActionCreators.getConfidentialityAgreement()),
         signAgreement: () => dispatch(userActionCreators.signConfidentialityAgreement())
     }
@@ -94,18 +80,22 @@ const mapDispatchToProps
 
 const lifecyleProps: Partial<LifecycleMethods<ConfidentialityProps>> = {
     onDidMount(props: ConfidentialityProps) {
-        props.getConfidentiality();
+        return  props.getConfidentiality();
     }
 };
 
-export function withConfidentialityAgreement<TOuter extends ConfidentialityPublicProps>(WrappedComponent: ComponentConstructor<any, any>) {
-    return compose<ConfidentialityPropsFromState, TOuter>(
+export function withConfidentialityAgreement<TOuter extends Partial<ConfidentialityProps>>(WrappedComponent: ComponentConstructor<any, any>) {
+    return compose(
         connect(mapStateToProps, mapDispatchToProps),
         withLifecycle(lifecyleProps),
-        branch((props: ConfidentialityProps) =>
+        branch((props: Partial<ConfidentialityProps>) =>
+            settings.isApplicantTouchstone(props.touchstoneId) && props.signed === null,
+            renderComponent(LoadingElement)),
+        branch((props: Partial<ConfidentialityProps>) =>
             settings.isApplicantTouchstone(props.touchstoneId) && !props.signed,
             renderComponent(ConfidentialityAgreementComponent)
-        ))(WrappedComponent)
+        )
+    )(WrappedComponent);
 }
 
 

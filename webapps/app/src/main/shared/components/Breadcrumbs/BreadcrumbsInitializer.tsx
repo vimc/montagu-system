@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Dispatch } from "redux";
 
 import {PageBreadcrumb, PageProperties} from "../PageWithHeader/PageWithHeader";
-import {breadcrumbsActions} from "../../actions/breadcrumbsActions";
+import {breadcrumbsActionCreators} from "../../actions/breadcrumbsActionsCreators";
 import {GlobalState} from "../../reducers/GlobalState";
 
 export function BreadcrumbInitializer (
@@ -15,7 +15,7 @@ export function BreadcrumbInitializer (
     }
     const mapDispatchToProps = (dispatch: Dispatch<GlobalState>): Partial<PageProperties<undefined>> => {
         return {
-            createBreadcrumbs: (pageBreadcrumb: PageBreadcrumb) => dispatch(breadcrumbsActions.createBreadcrumbs(pageBreadcrumb))
+            createBreadcrumbs: (pageBreadcrumb: PageBreadcrumb) => dispatch(breadcrumbsActionCreators.createBreadcrumbs(pageBreadcrumb))
         }
     };
     return connect(state => state, mapDispatchToProps)(BreadcrumbInitializerWrapper);

@@ -1,8 +1,8 @@
 import * as React from "react";
-import fetcher from "../../sources/Fetcher";
 
 import { OneTimeButtonButton } from "./Elements/Button";
 import { OneTimeButtonLink } from "./Elements/Link";
+import {settings} from "../../Settings";
 
 export interface OneTimeButtonProps {
     token: string;
@@ -10,6 +10,7 @@ export interface OneTimeButtonProps {
     refreshToken: () => void;
     onClick?: () =>void;
     element?: string;
+    children?: string;
 }
 
 export interface OneTimeButtonElement {
@@ -31,7 +32,9 @@ export class OneTimeButton extends React.Component<OneTimeButtonProps, any> {
     }
 
     refreshToken() {
-        setTimeout(this.props.refreshToken);
+        if (typeof this.props.refreshToken === "function") {
+            setTimeout(()=>{this.props.refreshToken()});
+        }
     }
 
     getElement() :any {
@@ -48,9 +51,13 @@ export class OneTimeButton extends React.Component<OneTimeButtonProps, any> {
         }
     }
 
+    buildOneTimeLink(token: string): string {
+        return `${settings.apiUrl()}/onetime_link/${token}/`;
+    }
+
     render() :JSX.Element {
         const props = this.props;
-        const url = fetcher.fetcher.buildOneTimeLink(props.token);
+        const url = this.buildOneTimeLink(props.token);
         const OneTimeElement = this.getElement();
 
         return <OneTimeElement

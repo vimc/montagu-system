@@ -1,31 +1,33 @@
 import * as React from "react";
-import { connectToStores } from "../../../../shared/alt";
+import { Dispatch } from "redux";
+import { compose, branch, renderComponent} from "recompose";
+import { connect } from 'react-redux';
+
 import { CoverageSet, Scenario, Touchstone } from "../../../../shared/models/Generated";
-import { RemoteContent } from "../../../../shared/models/RemoteContent";
-import { RemoteContentComponent } from "../../../../shared/components/RemoteContentComponent/RemoteContentComponent";
 import { CoverageSetList } from "./CoverageSetList";
-import { responsibilityStore } from "../../../stores/ResponsibilityStore";
-import { coverageTokenActions } from "../../../actions/CoverageActions";
 import { OneTimeButton } from "../../../../shared/components/OneTimeButton/OneTimeButton";
 import { OneTimeButtonTimeBlocker } from "../../../../shared/components/OneTimeButton/OneTimeButtonTimeBlocker";
 import { FormatControl } from "../FormatControl";
-import { doNothing } from "../../../../shared/Helpers";
-import { coverageSetActions } from "../../../actions/CoverageSetActions";
+
+import {LoadingElement} from "../../../../shared/partials/LoadingElement/LoadingElement";
+import {ContribAppState} from "../../../reducers/contribAppReducers";
+import {coverageActionCreators} from "../../../actions/coverageActionCreators";
 import {withConfidentialityAgreement} from "../Overview/ConfidentialityAgreement";
 
-export interface DownloadCoverageComponentProps extends RemoteContent {
+export interface DownloadCoverageContentProps {
     touchstone: Touchstone;
     scenario: Scenario;
     coverageSets: CoverageSet[];
-    coverageToken: string;
+    token: string;
     selectedFormat: string;
+    loadToken: () => void;
+    setFormat: (format: string) => void;
 }
 
 const ButtonWithTimeout = OneTimeButtonTimeBlocker(OneTimeButton);
 
-export class DownloadCoverageContentComponent
-    extends RemoteContentComponent<DownloadCoverageComponentProps, undefined>
-{
+export class DownloadCoverageContentComponent extends React.Component<DownloadCoverageContentProps> {
+
     ButtonWithTimeout?: any;
 
     constructor() {
@@ -33,36 +35,13 @@ export class DownloadCoverageContentComponent
         this.onSelectFormat = this.onSelectFormat.bind(this);
     }
 
-    static getStores() {
-        return [responsibilityStore];
-    }
-
-    static getPropsFromStores(): DownloadCoverageComponentProps {
-        const state = responsibilityStore.getState();
-        const curResp = state.currentResponsibility;
-        return {
-            ready: curResp ? state.ready : false,
-            touchstone: state.currentTouchstone,
-            scenario: curResp ? curResp.scenario : null,
-            coverageSets: curResp ? curResp.coverageSets : [],
-            coverageToken: state.coverageOneTimeToken,
-            selectedFormat: state.selectedFormat,
-        };
-    }
-
     onSelectFormat(format: string) {
-        coverageSetActions.selectFormat(format);
-        responsibilityStore.fetchOneTimeCoverageToken().catch(doNothing);
+        this.props.setFormat(format);
+        this.props.loadToken()
         if (this.ButtonWithTimeout) this.ButtonWithTimeout.enable();
     }
 
-    refreshToken() {
-        coverageTokenActions.clearUsedToken();
-        responsibilityStore.fetchOneTimeCoverageToken();
-    }
-
-    renderContent(props: DownloadCoverageComponentProps) {
-        const data = props;
+    render() {
         return <div>
             <p>
                 Each scenario is based on vaccination coverage from up to 3 different
@@ -83,7 +62,7 @@ export class DownloadCoverageContentComponent
                                 </div>
                             </td>
                             <td>
-                                <div className="col">{data.touchstone.description}</div>
+                                <div className="col">{this.props.touchstone.description}</div>
                             </td>
                         </tr>
                         <tr>
@@ -93,7 +72,7 @@ export class DownloadCoverageContentComponent
                                 </div>
                             </td>
                             <td>
-                                <div className="col">{data.scenario.description}</div>
+                                <div className="col">{this.props.scenario.description}</div>
                             </td>
                         </tr>
                         </tbody>
@@ -103,7 +82,7 @@ export class DownloadCoverageContentComponent
             <div className="row mt-2">
                 <div className="col-12">
                     <div className="smallTitle">Coverage sets included</div>
-                    <CoverageSetList coverageSets={data.coverageSets}/>
+                    <CoverageSetList coverageSets={this.props.coverageSets}/>
                 </div>
             </div>
             <div className="row mt-4">
@@ -120,7 +99,7 @@ export class DownloadCoverageContentComponent
                                 </div>
                             </td>
                             <td><FormatControl
-                                value={props.selectedFormat}
+                                value={this.props.selectedFormat}
                                 onSelectFormat={this.onSelectFormat}/>
                             </td>
                         </tr>
@@ -130,8 +109,8 @@ export class DownloadCoverageContentComponent
             </div>
             <div className="mt-4">
                 <ButtonWithTimeout
-                    token={data.coverageToken}
-                    refreshToken={this.refreshToken}
+                    token={this.props.token}
+                    refreshToken={() => this.props.loadToken()}
                     disableDuration={1000}
                     enabled={true}
                     onRef={ref => (this.ButtonWithTimeout = ref)}
@@ -143,7 +122,25 @@ export class DownloadCoverageContentComponent
     }
 }
 
-const DownloadCoverageAltContent = connectToStores(DownloadCoverageContentComponent);
+export const mapStateToProps = (state: ContribAppState): Partial<DownloadCoverageContentProps> => {
+    return {
+        touchstone: state.touchstones.currentTouchstone,
+        coverageSets: state.coverage.dataSets,
+        selectedFormat: state.coverage.selectedFormat,
+        scenario: state.responsibilities.currentResponsibility ? state.responsibilities.currentResponsibility.scenario : null,
+        token: state.coverage.token
+    }
+};
 
-export const DownloadCoverageContent =
-    withConfidentialityAgreement(DownloadCoverageAltContent);
+export const mapDispatchToProps = (dispatch: Dispatch<ContribAppState>): Partial<DownloadCoverageContentProps> => {
+    return {
+        loadToken: () => dispatch(coverageActionCreators.getOneTimeToken()),
+        setFormat: (format: string) => dispatch(coverageActionCreators.setFormat(format))
+    }
+};
+
+export const DownloadCoverageContent = compose(
+    connect(mapStateToProps, mapDispatchToProps),
+    branch((props: DownloadCoverageContentProps) => !props.touchstone || !props.scenario, renderComponent(LoadingElement)),
+    withConfidentialityAgreement
+)(DownloadCoverageContentComponent) as React.ComponentClass<Partial<DownloadCoverageContentProps>>;

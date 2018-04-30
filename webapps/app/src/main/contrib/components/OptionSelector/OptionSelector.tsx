@@ -33,7 +33,6 @@ export class OptionSelector extends React.Component<OptionList, undefined> {
     }
 
     onChange = (event: React.FormEvent<HTMLSelectElement>) => {
-        event.preventDefault();
         this.props.onChange(event.currentTarget.value);
     }
 }
