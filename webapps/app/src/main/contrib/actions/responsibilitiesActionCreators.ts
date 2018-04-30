@@ -30,6 +30,7 @@ export const responsibilitiesActionCreators = {
 
             const responsibilities: Responsibilities = await (new ResponsibilitiesService(dispatch, getState))
                 .getResponsibilities(group.id, touchstone.id);
+
             const set = new ExtendedResponsibilitySet(responsibilities, touchstone, group);
 
             dispatch({

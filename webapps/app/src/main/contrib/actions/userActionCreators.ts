@@ -27,7 +27,8 @@ export const userActionCreators = {
             dispatch({
                 type: UserActionType.CONFIDENTIALITY_RETRIEVED,
                 data: result
-            } as ConfidentialityRetrieved);
+            } as ConfidentialityRetrieved)
+
         }
     }
 };

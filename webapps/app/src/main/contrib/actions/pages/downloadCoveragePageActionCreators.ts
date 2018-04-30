@@ -25,7 +25,6 @@ export const downloadCoveragePageActionCreators = {
             dispatch(responsibilitiesActionCreators.setCurrentResponsibility(props.scenarioId));
             await dispatch(coverageActionCreators.getOneTimeToken());
             await dispatch(coverageActionCreators.getDataSets());
-            await dispatch(userActionCreators.getConfidentialityAgreement());
         }
     }
 
