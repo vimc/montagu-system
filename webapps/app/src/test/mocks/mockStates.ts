@@ -4,10 +4,14 @@ import {
     modellingGroupInitialState as ModellingGroupsInitialState,
     ModellingGroupsState
 } from "../../main/contrib/reducers/modellingGroupsReducer";
+import {
+    modellingGroupInitialState as AdminModellingGroupsInitialState,
+} from "../../main/admin/reducers/modellingGroupsReducer";
 import {reportsInitialState, ReportsState} from "../../main/report/reducers/reportsReducer";
 import {ReportAppState} from "../../main/report/reducers/reportAppReducers";
 import {usersInitialState, UsersState} from "../../main/report/reducers/userReducer";
-import {BreadcrumbsState, initialBreadcrumbsState} from "../../main/shared/reducers/breadcrumbsReducer";
+import {usersInitialState as adminUsersInitialState} from "../../main/admin/reducers/usersReducer";
+import {initialBreadcrumbsState} from "../../main/shared/reducers/breadcrumbsReducer";
 import {ContribAppState} from "../../main/contrib/reducers/contribAppReducers";
 import {touchstonesInitialState, TouchstonesState} from "../../main/contrib/reducers/touchstonesReducer";
 import {responsibilitiesInitialState, ResponsibilitiesState} from "../../main/contrib/reducers/responsibilitiesReducer";
@@ -32,7 +36,6 @@ export const mockAuthStateObject: AuthState = {
     isModeller: false
 };
 
-
 export const mockAuthState = (props?: RecursivePartial<AuthState>) => {
     return Object.assign({}, mockAuthStateObject, props);
 };
@@ -45,29 +48,23 @@ export const mockUsersState = (props?: RecursivePartial<UsersState>): UsersState
     return Object.assign({}, usersInitialState, props);
 };
 
-export const mockGlobalState = (props?: any) => {
-    const authMock: AuthState = props && props.auth ? mockAuthState(props.auth) : mockAuthState();
-    const breadcrumbs: BreadcrumbsState = props && props.breadcrumbs ? {breadcrumbs: props.breadcrumbs} : initialBreadcrumbsState;
-    return {
-        auth: authMock,
-        form: formReducer,
-        breadcrumbs
-    };
-};
-
 export const mockAdminState = (props?: any) => {
     const authMock: AuthState = props && props.auth ? mockAuthState(props.auth) : mockAuthState();
+    const groupsMock: ModellingGroupsState = props && props.groups ? props.groups : AdminModellingGroupsInitialState;
+    const usersMock: UserState = props && props.user ? props.user : adminUsersInitialState;
     return {
         auth: authMock,
         form: formReducer,
-        breadcrumbs: initialBreadcrumbsState
+        groups: groupsMock,
+        breadcrumbs: initialBreadcrumbsState,
+        users: usersMock
     };
 };
 
 export const mockContribState = (props?: any) :ContribAppState => {
     const authMock: AuthState = props && props.auth ? mockAuthState(props.auth) : mockAuthState();
     const groupsMock: ModellingGroupsState = props && props.groups ? props.groups : ModellingGroupsInitialState;
-  const userMock: UserState = props && props.user ? props.user : UserInitialState;
+    const userMock: UserState = props && props.user ? props.user : UserInitialState;
     const touchstonesMock: TouchstonesState = props && props.touchstones ? props.touchstones : touchstonesInitialState;
     const responsibilitiesMock : ResponsibilitiesState = props && props.responsibilities ? props.responsibilities : responsibilitiesInitialState;
     const diseasesMock : DiseasesState = props && props.diseases ? props.diseases : diseasesInitialState;
@@ -81,7 +78,7 @@ export const mockContribState = (props?: any) :ContribAppState => {
         form: formReducer,
         groups: groupsMock,
         breadcrumbs: initialBreadcrumbsState,
-    user: userMock,
+        user: userMock,
         touchstones: touchstonesMock,
         responsibilities: responsibilitiesMock,
         diseases: diseasesMock,

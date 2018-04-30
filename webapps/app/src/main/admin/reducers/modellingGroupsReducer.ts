@@ -1,7 +1,7 @@
 import { ModellingGroupsAction, ModellingGroupTypes } from "../actionTypes/ModellingGroupsTypes";
 import {ModellingGroup, ModellingGroupDetails} from "../../shared/models/Generated";
 
-export interface ModellingGroupsState {
+export interface    ModellingGroupsState {
     groups: ModellingGroup[];
     currentGroup: ModellingGroup;
     currentGroupDetails: ModellingGroupDetails;

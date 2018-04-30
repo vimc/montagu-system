@@ -7,11 +7,11 @@ import { AbstractLocalService } from "../../../main/shared/services/AbstractLoca
 import { settings } from "../../../main/shared/Settings";
 import { AuthTypeKeys } from "../../../main/shared/actionTypes/AuthTypes";
 import { createMockStore } from "../../mocks/mockStore";
-import {mockGlobalState} from "../../mocks/mockStates";
 import {SingletonVariableCache} from "../../../main/shared/modules/cache/singletonVariableCache";
 import {Dispatch} from "react-redux";
 import {GlobalState} from "../../../main/shared/reducers/GlobalState";
 import {CacheInterface} from "../../../main/shared/modules/cache/CacheInterface";
+import {mockContribState} from "../../mocks/mockStates";
 
 describe('Local service class initialization tests', () => {
 
@@ -21,81 +21,81 @@ describe('Local service class initialization tests', () => {
         sandbox.restore();
     });
 
-    // it('initializes default service with default option url', () => {
-    //     const store = createStore(state => state, mockGlobalState({auth: {bearerToken: null}}));
-    //     class TestService extends AbstractLocalService {
-    //         test() {
-    //             return {
-    //                 options: this.options
-    //             };
-    //         }
-    //     }
-    //     sandbox.setStubFunc(settings, 'apiUrl', () => 'test-url')
-    //     const testService = new TestService(store.dispatch, store.getState);
-    //     const serviceData = testService.test();
-    //     expect(serviceData.options.baseURL).is.equal('test-url');
-    //     expect(typeof serviceData.options.Authorization).to.equal('undefined')
-    // });
-    //
-    // it('initializes default service with request engine and token', () => {
-    //     const store = createStore(state => state, mockGlobalState({auth: {bearerToken: "token"}}));
-    //
-    //     class TestService extends AbstractLocalService {
-    //         test() {
-    //             return {
-    //                 options: this.options,
-    //                 requestOptions: this.makeRequestOptions('POST')
-    //             };
-    //         }
-    //     }
-    //     const testService = new TestService(store.dispatch, store.getState);
-    //     const serviceData = testService.test();
-    //     expect(serviceData.options.baseURL).is.not.empty;
-    //     expect(serviceData.options.Authorization).is.equal("Bearer token");
-    //     expect(serviceData.requestOptions.headers.Authorization).is.equal("Bearer token");
-    // });
-    //
-    // it('initializes default service with request engine, token and withCredentials option', () => {
-    //     const store = createStore(state => state, mockGlobalState({auth: {bearerToken: "token"}}));
-    //
-    //     class TestService extends AbstractLocalService {
-    //         test() {
-    //             this.setOptions({credentials: "include"})
-    //             return {
-    //                 requestOptions: this.makeRequestOptions('POST'),
-    //                 options: this.options
-    //             };
-    //         }
-    //     }
-    //     const testService = new TestService(store.dispatch, store.getState);
-    //     const serviceData = testService.test();
-    //     expect(serviceData.options.baseURL).is.not.empty;
-    //     expect(serviceData.options.Authorization).is.equal("Bearer token");
-    //     expect(serviceData.requestOptions.credentials).is.equal("include");
-    //
-    // });
+    it('initializes default service with default option url', () => {
+        const store = createStore(state => state, mockContribState({auth: {bearerToken: null}}));
+        class TestService extends AbstractLocalService {
+            test() {
+                return {
+                    options: this.options
+                };
+            }
+        }
+        sandbox.setStubFunc(settings, 'apiUrl', () => 'test-url')
+        const testService = new TestService(store.dispatch, store.getState);
+        const serviceData = testService.test();
+        expect(serviceData.options.baseURL).is.equal('test-url');
+        expect(typeof serviceData.options.Authorization).to.equal('undefined')
+    });
 
-    // it('initializes default service with request engine and basic authorization', () => {
-    //     const store = createStore(state => state, mockGlobalState());
-    //     const email = "abc@abc.com";
-    //     const password = "abc";
-    //
-    //     class TestService extends AbstractLocalService {
-    //         test() {
-    //             this.setOptions({Authorization: 'Basic ' + btoa(`${email}:${password}`)});
-    //             return {
-    //                 requestOptions: this.makeRequestOptions('POST'),
-    //                 options: this.options
-    //             };
-    //         }
-    //     }
-    //
-    //     const testService = new TestService(store.dispatch, store.getState);
-    //     const serviceData = testService.test();
-    //     expect(serviceData.options.baseURL).is.not.empty;
-    //     expect(serviceData.options.Authorization).is.equal("Basic " + btoa(`${email}:${password}`));
-    //
-    // });
+    it('initializes default service with request engine and token', () => {
+        const store = createStore(state => state, mockContribState({auth: {bearerToken: "token"}}));
+
+        class TestService extends AbstractLocalService {
+            test() {
+                return {
+                    options: this.options,
+                    requestOptions: this.makeRequestOptions('POST')
+                };
+            }
+        }
+        const testService = new TestService(store.dispatch, store.getState);
+        const serviceData = testService.test();
+        expect(serviceData.options.baseURL).is.not.empty;
+        expect(serviceData.options.Authorization).is.equal("Bearer token");
+        expect(serviceData.requestOptions.headers.Authorization).is.equal("Bearer token");
+    });
+
+    it('initializes default service with request engine, token and withCredentials option', () => {
+        const store = createStore(state => state, mockContribState({auth: {bearerToken: "token"}}));
+
+        class TestService extends AbstractLocalService {
+            test() {
+                this.setOptions({credentials: "include"})
+                return {
+                    requestOptions: this.makeRequestOptions('POST'),
+                    options: this.options
+                };
+            }
+        }
+        const testService = new TestService(store.dispatch, store.getState);
+        const serviceData = testService.test();
+        expect(serviceData.options.baseURL).is.not.empty;
+        expect(serviceData.options.Authorization).is.equal("Bearer token");
+        expect(serviceData.requestOptions.credentials).is.equal("include");
+
+    });
+
+    it('initializes default service with request engine and basic authorization', () => {
+        const store = createStore(state => state, mockContribState());
+        const email = "abc@abc.com";
+        const password = "abc";
+
+        class TestService extends AbstractLocalService {
+            test() {
+                this.setOptions({Authorization: 'Basic ' + btoa(`${email}:${password}`)});
+                return {
+                    requestOptions: this.makeRequestOptions('POST'),
+                    options: this.options
+                };
+            }
+        }
+
+        const testService = new TestService(store.dispatch, store.getState);
+        const serviceData = testService.test();
+        expect(serviceData.options.baseURL).is.not.empty;
+        expect(serviceData.options.Authorization).is.equal("Basic " + btoa(`${email}:${password}`));
+
+    });
 });
 
 describe('Local service class requests tests', () => {
@@ -106,19 +106,19 @@ describe('Local service class requests tests', () => {
         sandbox.restore();
     });
 
-    // it('performs successful query', async () => {
-    //     const store = createStore(state => state, mockGlobalState());
-    //     class TestService extends AbstractLocalService {
-    //         test() {
-    //             return this.get("/test/");
-    //         }
-    //     }
-    //     const testService = new TestService(store.dispatch, store.getState);
-    //     sandbox.setStubFunc(testService, "doFetch", ()=> Promise.resolve());
-    //     sandbox.setStubFunc(testService, "processResponse", ()=> Promise.resolve("testData"));
-    //     const serviceData = await testService.test();
-    //     expect(serviceData).to.equal("testData");
-    // });
+    it('performs successful query', async () => {
+        const store = createStore(state => state, mockContribState());
+        class TestService extends AbstractLocalService {
+            test() {
+                return this.get("/test/");
+            }
+        }
+        const testService = new TestService(store.dispatch, store.getState);
+        sandbox.setStubFunc(testService, "doFetch", ()=> Promise.resolve());
+        sandbox.setStubFunc(testService, "processResponse", ()=> Promise.resolve("testData"));
+        const serviceData = await testService.test();
+        expect(serviceData).to.equal("testData");
+    });
 
     it('performs query and api says token expired', async () => {
         const store = createMockStore();
