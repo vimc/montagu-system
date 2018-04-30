@@ -14,6 +14,7 @@ interface ModellingGroupsProps {
 }
 
 export const ModellingGroupsListContentComponent: React.SFC<ModellingGroupsProps> = (props: ModellingGroupsProps) => {
+    if (!props.groups)
     return <ul>
         {props.groups.map(g => <li key={ g.id }><ModellingGroupListItem {...g} /></li>)}
     </ul>;
@@ -21,7 +22,7 @@ export const ModellingGroupsListContentComponent: React.SFC<ModellingGroupsProps
 
 // TODO: move to reselect later if logic will get more complicated
 export const sortAdminModellingGroups = (originalGroups: ModellingGroup[]): ModellingGroup[] => {
-    if (!originalGroups || !originalGroups.length) return null;
+    if (!originalGroups || !originalGroups.length) return [];
     // no mutating!
     const groups: ModellingGroup[] = clone(originalGroups);
     return groups.sort((a, b) => a.description.localeCompare(b.description));
@@ -34,7 +35,6 @@ export const mapStateToProps = (state: AdminAppState): ModellingGroupsProps => {
 };
 
 export const ModellingGroupsListContent = compose(
-    connect(mapStateToProps),
-    branch((props: ModellingGroupsProps) => (!props.groups), renderComponent(LoadingElement))
+    connect(mapStateToProps)
 )(ModellingGroupsListContentComponent) as React.ComponentClass<Partial<ModellingGroupsProps>>;
 

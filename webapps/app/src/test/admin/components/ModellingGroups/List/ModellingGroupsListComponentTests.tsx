@@ -12,29 +12,44 @@ import {ContribAppState} from "../../../../../main/contrib/reducers/contribAppRe
 import {AdminAppState} from "../../../../../main/admin/reducers/adminAppReducers";
 import {createMockStore} from "../../../../mocks/mockStore";
 import {Sandbox} from "../../../../Sandbox";
+import {LoadingElement} from "../../../../../main/shared/partials/LoadingElement/LoadingElement";
 
 describe("Modelling Groups List Content Component connected tests", () => {
 
-    const testGroup1 = mockModellingGroup()
-    const testGroup2 = mockModellingGroup()
-
-    const testState = {
-        groups: {groups: [testGroup1, testGroup2]}
-    }
-
-    let store : Store<AdminAppState>;
+    const testGroup1 = mockModellingGroup({id: 'g-1', description: "b"})
+    const testGroup2 = mockModellingGroup({id: 'g-2', description: "a"})
+    const testGroup3 = mockModellingGroup({id: 'g-3', description: "c"})
 
     const sandbox = new Sandbox();
-    beforeEach(() => {
-        store = createMockStore(testState);
-    });
     afterEach(() => sandbox.restore());
 
     it("renders on connect level", () => {
-        const rendered = shallow(<ModellingGroupsListContent/>, {context: store});
-        console.log(rendered.debug())
-
+        const testState = {
+            groups: {groups: [testGroup1]}
+        }
+        const store = createMockStore(testState);
+        const rendered = shallow(<ModellingGroupsListContent/>, {context: {store}});
+        expect(rendered.props().groups).to.eql([testGroup1]);
     })
+
+    it("renders on connect level, passes null as groups", () => {
+        const testState = {
+            groups: {groups: null as any}
+        }
+        const store = createMockStore(testState);
+        const rendered = shallow(<ModellingGroupsListContent/>, {context: {store}});
+        expect(rendered.props().groups).to.eql([]);
+    })
+
+    it("renders on connect level, check if groups are sorted", () => {
+        const testState = {
+            groups: {groups: [testGroup1, testGroup2, testGroup3]}
+        }
+        const store = createMockStore(testState);
+        const rendered = shallow(<ModellingGroupsListContent/>, {context: {store}}).dive().dive();
+        expect(rendered.find(LoadingElement).length).to.equal(1);
+    })
+
 
     // it("can get props from stores", () => {
     //     const groups = [ mockModellingGroup(), mockModellingGroup() ];
