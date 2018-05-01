@@ -133,7 +133,7 @@ export class TemplateLinkComponent extends React.Component<TemplateLinkProps, un
         }
 
         if (settings.isApplicantTouchstone(this.props.touchstoneId)) {
-            return RfpTemplateLinks(disease)
+            return RfpTemplateLinks(disease, this.props.touchstoneId)
         }
 
         return <div>
@@ -158,8 +158,8 @@ const mapStateToProps = (state: ContribAppState, props: TemplateLinkProps): Part
 
 export const TemplateLink = connect(mapStateToProps)(TemplateLinkComponent);
 
-const RfpTemplateLinks = (disease: Disease) => {
-    if (settings.isStochasticTouchstone(this.props.touchstoneId)) {
+const RfpTemplateLinks = (disease: Disease, touchstoneId: string) => {
+    if (settings.isStochasticTouchstone(touchstoneId)) {
         return <div>
             <div>
                 <a key={`central_burden_template_${disease.id}-generic.csv`}
