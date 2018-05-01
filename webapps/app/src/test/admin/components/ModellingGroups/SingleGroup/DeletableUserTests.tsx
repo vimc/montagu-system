@@ -1,97 +1,113 @@
 import * as React from "react";
 import { expect } from "chai";
+import { shallow } from "enzyme";
+
+import "../../../../helper";
 import { mockUser } from "../../../../mocks/mockModels";
 import { Sandbox } from "../../../../Sandbox";
 import { InternalLink } from "../../../../../main/shared/components/InternalLink";
-import { checkAsync } from "../../../../testHelpers";
-import { User } from "../../../../../main/shared/models/Generated";
-import fetcher from "../../../../../main/shared/sources/Fetcher";
-import { mockResponse } from "../../../../mocks/mockRemote";
-import { expectOneAction } from "../../../../actionHelpers";
-import { DeletableUser } from "../../../../../main/admin/components/ModellingGroups/DeletableUser";
-import { shallow } from "enzyme";
+import {
+    DeletableUser,
+    DeletableUserComponent
+} from "../../../../../main/admin/components/ModellingGroups/DeletableUser";
+import {createMockStore} from "../../../../mocks/mockStore";
+import {modellingGroupsActionCreators} from "../../../../../main/admin/actions/modellingGroupsActionCreators";
 
-//
-// describe("DeletableUser", () => {
-//     const sandbox = new Sandbox();
-//
-//     afterEach(() => sandbox.restore());
-//
-//     it("renders link to user page", () => {
-//
-//         const rendered = shallow(<DeletableUser showDelete={true} groupId="group1" user={mockUser({
-//             "username": "w.a.m",
-//             "name": "Wolfgang Amadeus Mozart"
-//         })}/>);
-//         expect(rendered.find(InternalLink).at(0).prop("href")).to.eq("/users/w.a.m/")
-//     });
-//
-//     it("renders delete link", () => {
-//         const rendered = sandbox.mount(<DeletableUser showDelete={true} groupId="group1"
-//                                                       user={mockUser({ "name": "Wolfgang Amadeus Mozart" })}/>);
-//         expect(rendered.find("a.text-danger").text()).to.eq("Remove member")
-//     });
-//
-//     it("does not render delete link if showDelete is false", () => {
-//
-//         const rendered = sandbox.mount(<DeletableUser showDelete={false} groupId="group1"
-//                                                       user={mockUser({ "name": "Wolfgang Amadeus Mozart" })}/>);
-//         expect(rendered.find(".text-danger").length).to.eq(0)
-//     });
-//
-//     it("removes member", (done: DoneCallback) => {
-//
-//         const fetch = sandbox.sinon.stub(fetcher.fetcher, "fetch")
-//             .withArgs("/modelling-groups/group1/actions/associate-member/",
-//                 {
-//                     method: "post",
-//                     body: JSON.stringify({ username: "user1", action: "remove" })
-//                 }
-//             )
-//             .returns(mockResponse({ status: "success", data: "OK", errors: [] }));
-//
-//         const dispatchSpy = sandbox.dispatchSpy();
-//
-//         const user: User = mockUser({ "name": "Wolfgang Amadeus Mozart", "username": "user1" });
-//
-//         const deletableUser = new DeletableUser({ showDelete: true, groupId: "group1", user: user });
-//         deletableUser.clickHandler();
-//
-//         checkAsync(done, afterWait => {
-//             afterWait(done, () => {
-//                 expect(fetch.called).to.equal(true);
-//                 expectOneAction(dispatchSpy, { action: "ModellingGroupActions.removeMember", payload: "user1" });
-//             })
-//         })
-//     });
-//
-//     it("notifies on error", (done: DoneCallback) => {
-//
-//         const fakeError = { code: "e1", message: "some error" };
-//         const fetch = sandbox.sinon.stub(fetcher.fetcher, "fetch")
-//             .withArgs("/modelling-groups/group1/actions/associate-member/",
-//                 {
-//                     method: "post",
-//                     body: JSON.stringify({ username: "user1", action: "remove" })
-//                 }
-//             )
-//             .returns(mockResponse({ status: "failure", data: null, errors: [fakeError] }));
-//
-//         const dispatchSpy = sandbox.dispatchSpy();
-//
-//         const user: User = mockUser({ "name": "Wolfgang Amadeus Mozart", "username": "user1" });
-//
-//         const deletableUser = new DeletableUser({ showDelete: true, groupId: "group1", user: user });
-//         deletableUser.clickHandler();
-//
-//         checkAsync(done, afterWait => {
-//             afterWait(done, () => {
-//                 expect(fetch.called).to.equal(true);
-//                 expectOneAction(dispatchSpy, {
-//                     action: "NotificationActions.notify",
-//                     payload: { type: "error", message: fakeError.message }
-//                 });
-//             })
-//         })
-//     })
-// });
+describe("Deletable User Component tests", () => {
+
+    describe("Connected", () => {
+
+        const sandbox = new Sandbox();
+        afterEach(() => sandbox.restore());
+
+        it("passes right props on connect level", () => {
+            const store = createMockStore();
+            const testUser = mockUser();
+            const rendered = shallow(<DeletableUser
+                user={testUser}
+                groupId={"g-1"}
+                showDelete={true}
+            />, {context: {store}});
+            expect(rendered.props().user).to.eql(testUser);
+            expect(rendered.props().groupId).to.eql("g-1");
+            expect(rendered.props().showDelete).to.be.true;
+            expect(typeof rendered.props().removeUserFromGroup).to.eql("function");
+        });
+
+        it("triggers action on remove click", () => {
+            const store = createMockStore();
+            const testUser = mockUser();
+            const rendered = shallow(<DeletableUser
+                user={testUser}
+                groupId={"g-1"}
+                showDelete={true}
+            />, {context: {store}}).dive();
+            const deleteLink = rendered.find("InternalLink.text-danger").dive();
+            const removeActionStub = sandbox.setStubReduxAction(modellingGroupsActionCreators, "removeUserFromGroup");
+            deleteLink.simulate("click");
+            expect(removeActionStub.called).to.be.true;
+            expect(removeActionStub.getCall(0).args[0]).to.equal("g-1");
+            expect(removeActionStub.getCall(0).args[1]).to.equal(testUser.username);
+        });
+    });
+
+    describe("Component", () => {
+
+        const testUser = mockUser({"username": "w.a.m", "name": "Wolfgang Amadeus Mozart"});
+
+        const sandbox = new Sandbox();
+        let removeSpy: sinon.SinonSpy;
+        beforeEach(() => {
+            removeSpy = sandbox.createSpy();
+        })
+        afterEach(() => sandbox.restore());
+
+        it("renders link to user page", () => {
+            const rendered = shallow(<DeletableUserComponent
+                showDelete={true}
+                groupId="group1"
+                user={testUser}
+                removeUserFromGroup={removeSpy}
+            />);
+            expect(rendered.find(InternalLink).at(0).prop("href")).to.eq("/users/w.a.m/")
+        });
+
+        it("renders delete link", () => {
+            const rendered = shallow(<DeletableUserComponent
+                showDelete={true}
+                groupId="group1"
+                user={testUser}
+                removeUserFromGroup={removeSpy}
+            />);
+            const deleteInternalLink = rendered.find("InternalLink.text-danger");
+            expect(deleteInternalLink.dive().text()).to.eq("Remove member")
+        });
+
+        it("does not render delete link if showDelete is false", () => {
+            const rendered = shallow(<DeletableUserComponent
+                showDelete={false}
+                groupId="group1"
+                user={testUser}
+                removeUserFromGroup={removeSpy}
+            />);
+            const deleteInternalLink = rendered.find("InternalLink.text-danger");
+            expect(deleteInternalLink.length).to.equal(0);
+        });
+
+        it("triggers remove function", () => {
+            const rendered = shallow(<DeletableUserComponent
+                showDelete={true}
+                groupId="group1"
+                user={testUser}
+                removeUserFromGroup={removeSpy}
+            />);
+            const deleteLink = rendered.find("InternalLink.text-danger").dive();
+            deleteLink.simulate("click");
+            expect(removeSpy.called).to.be.true;
+            expect(removeSpy.getCall(0).args[0]).to.equal("group1");
+            expect(removeSpy.getCall(0).args[1]).to.equal(testUser.username);
+        });
+
+    });
+
+});
