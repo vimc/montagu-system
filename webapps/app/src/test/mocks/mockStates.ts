@@ -52,11 +52,12 @@ export const mockAdminState = (props?: any) => {
     const authMock: AuthState = props && props.auth ? mockAuthState(props.auth) : mockAuthState();
     const groupsMock: ModellingGroupsState = props && props.groups ? props.groups : AdminModellingGroupsInitialState;
     const usersMock: UserState = props && props.user ? props.user : adminUsersInitialState;
+    const breadcrumbsMock: BreadcrumbsState = props && props.breadcrumbs ? props && props.breadcrumbs : initialBreadcrumbsState;
     return {
         auth: authMock,
         form: formReducer,
         groups: groupsMock,
-        breadcrumbs: initialBreadcrumbsState,
+        breadcrumbs: breadcrumbsMock,
         users: usersMock
     };
 };
@@ -90,15 +91,16 @@ export const mockContribState = (props?: any) :ContribAppState => {
     };
 };
 
-export const mockReportAppState = (props?: RecursivePartial<ReportAppState>): ReportAppState => {
+export const mockReportAppState = (props?: any): ReportAppState => {
     const authMock: AuthState = props && props.auth ? mockAuthState(props.auth) : mockAuthState();
     const reportsMock: ReportsState = props && props.reports ? mockReportsState(props.reports) : mockReportsState();
     const usersMock: UsersState = props && props.users ? mockUsersState(props.users) : mockUsersState();
+    const breadcrumbsMock: BreadcrumbsState = props && props.breadcrumbs ? props && props.breadcrumbs : initialBreadcrumbsState;
     return {
         auth: authMock,
         form: formReducer,
         reports: reportsMock,
         users: usersMock,
-        breadcrumbs: initialBreadcrumbsState
+        breadcrumbs: breadcrumbsMock
     };
 };
