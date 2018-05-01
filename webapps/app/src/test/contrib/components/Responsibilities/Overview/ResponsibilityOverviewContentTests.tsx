@@ -20,6 +20,8 @@ import {ButtonLink} from "../../../../../main/shared/components/ButtonLink";
 import {
     ConfidentialityAgreementComponent
 } from "../../../../../main/contrib/components/Responsibilities/Overview/ConfidentialityAgreement";
+import {ResponsibilityOverviewDescription} from "../../../../../main/contrib/components/Responsibilities/Overview/ResponsibilityOverviewDescription";
+import {userActionCreators} from "../../../../../main/contrib/actions/userActionCreators";
 
 describe("Responsibility Overview Content Component", () => {
 
@@ -42,6 +44,8 @@ describe("Responsibility Overview Content Component", () => {
     const sandbox = new Sandbox();
     beforeEach(() => {
         store = createMockStore(state);
+        sandbox.setStubReduxAction(userActionCreators, 'getConfidentialityAgreement');
+
     });
     afterEach(() => sandbox.restore());
 
@@ -69,19 +73,22 @@ describe("Responsibility Overview Content Component", () => {
     });
 
     it("renders on confidentiality level, passes", () => {
-        const rendered = shallow(<ResponsibilityOverviewContent/>, {context: {store}}).dive().dive().dive().dive().dive();
+        const rendered = shallow(<ResponsibilityOverviewContent/>, {context: {store}}).dive().dive()
+            .dive().dive().dive().dive();
         expect(rendered.find(ResponsibilitySetStatusMessage).length).to.eql(1);
     });
 
     it("renders on confidentiality level, not passes", () => {
         const anotherState = {...state, touchstones: {currentTouchstone: testTouchstone2}};
         store = createMockStore(anotherState);
-        const rendered = shallow(<ResponsibilityOverviewContent/>, {context: {store}}).dive().dive().dive().dive().dive();
+        const rendered = shallow(<ResponsibilityOverviewContent/>, {context: {store}})
+            .dive().dive().dive().dive().dive().dive();
         expect(rendered.find(ConfidentialityAgreementComponent).length).to.eql(1);
     });
 
     it("renders on component level", () => {
-        const rendered = shallow(<ResponsibilityOverviewContent/>, {context: {store}}).dive().dive().dive().dive().dive();
+        const rendered = shallow(<ResponsibilityOverviewContent/>, {context: {store}}).dive().dive()
+            .dive().dive().dive().dive();
         expect(rendered.find(ResponsibilitySetStatusMessage).length).to.eql(1);
         expect(rendered.find(ResponsibilitySetStatusMessage).props().status).to.eql(testResponsibilitiesSet.status);
         const responsibilityList = rendered.find(ResponsibilityList);
@@ -104,4 +111,12 @@ describe("Responsibility Overview Content Component", () => {
         expect(props.currentDiseaseId).to.eql(testDiseaseId);
         expect(props.responsibilitySet).to.eql(testResponsibilitiesSet);
     });
+
+    it("renders description", function(){
+        const rendered = shallow(<ResponsibilityOverviewContent/>, {context: {store}}).dive().dive()
+            .dive().dive().dive().dive();
+        expect(rendered.find(ResponsibilityOverviewDescription).length).is.equal(1);
+        expect(rendered.find(ResponsibilityOverviewDescription).props().currentTouchstoneId)
+            .is.equal(testTouchstone.id);
+    })
 });

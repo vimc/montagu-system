@@ -7,6 +7,7 @@ import {Dispatch} from "redux";
 import {ContribAppState} from "../../../reducers/contribAppReducers";
 import {userActionCreators} from "../../../actions/userActionCreators";
 import {LoadingElement} from "../../../../shared/partials/LoadingElement/LoadingElement";
+import {LifecycleMethods, default as withLifecycle} from "@hocs/with-lifecycle";
 
 export interface ConfidentialityAgreementComponentState {
     checked: boolean;
@@ -60,6 +61,7 @@ interface ConfidentialityProps {
     touchstoneId: string;
     signed?: boolean;
     signAgreement: () => void;
+    getConfidentiality: () => void;
 }
 
 const mapStateToProps = (state: ContribAppState): Partial<ConfidentialityProps> => {
@@ -71,13 +73,21 @@ const mapStateToProps = (state: ContribAppState): Partial<ConfidentialityProps> 
 
 const mapDispatchToProps = (dispatch: Dispatch<ContribAppState>): Partial<ConfidentialityProps> => {
     return {
+        getConfidentiality: () => dispatch(userActionCreators.getConfidentialityAgreement()),
         signAgreement: () => dispatch(userActionCreators.signConfidentialityAgreement())
+    }
+};
+
+const lifecyleProps: Partial<LifecycleMethods<ConfidentialityProps>> = {
+    onDidMount(props: ConfidentialityProps) {
+        return  props.getConfidentiality();
     }
 };
 
 export function withConfidentialityAgreement<TOuter extends Partial<ConfidentialityProps>>(WrappedComponent: ComponentConstructor<any, any>) {
     return compose(
         connect(mapStateToProps, mapDispatchToProps),
+        withLifecycle(lifecyleProps),
         branch((props: Partial<ConfidentialityProps>) =>
             settings.isApplicantTouchstone(props.touchstoneId) && props.signed === null,
             renderComponent(LoadingElement)),

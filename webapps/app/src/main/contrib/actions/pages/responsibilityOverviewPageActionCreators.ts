@@ -17,7 +17,6 @@ export const responsibilityOverviewPageActionCreators = {
     onLoad(props: ResponsibilityOverviewPageLocationProps) {
         return async (dispatch: Dispatch<ContribAppState>, getState: () => ContribAppState) => {
             await dispatch(this.loadData(props));
-            await dispatch(userActionCreators.getConfidentialityAgreement());
             dispatch(breadcrumbsActionCreators.createBreadcrumbs(ResponsibilityOverviewPageComponent.breadcrumb(getState())));
         }
     },

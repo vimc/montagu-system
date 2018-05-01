@@ -95,7 +95,7 @@
     "bootstrap-toggle": "^2.2.2",
     "history": "^4.7.2",
     "js-base64": "^2.4.0",
-    "jsonwebtoken": "^7.4.0",
+    "jsonwebtoken": "^8.2.1",
     "jwt-decode": "^2.2.0",
     "lodash.clone": "^4.5.0",
     "lodash.get": "^4.4.2",

@@ -48,8 +48,6 @@ describe("Responsibility Overview Page Component", () => {
         const pageArticle = rendered.find('PageArticle');
         expect(onLoadStub.called).is.equal(true);
         expect(pageArticle.props().title).is.equal(testResponsibilityOverviewPageTitle);
-        expect(pageArticle.find(ResponsibilityOverviewDescription).length).is.equal(1);
-        expect(pageArticle.find(ResponsibilityOverviewDescription).props().currentTouchstoneId).is.equal(testTouchstone.id);
         expect(pageArticle.find(ResponsibilityOverviewContent).length).is.equal(1);
     });
 });
