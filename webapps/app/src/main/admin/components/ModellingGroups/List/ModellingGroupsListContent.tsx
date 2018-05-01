@@ -1,12 +1,11 @@
 import * as React from "react";
-import {branch, compose, renderComponent} from "recompose";
+import {compose} from "recompose";
 import { connect } from 'react-redux';
 import {clone} from "lodash";
 
 import { ModellingGroup } from "../../../../shared/models/Generated";
 import { ModellingGroupListItem } from "./ModellingGroupListItem";
 
-import {LoadingElement} from "../../../../shared/partials/LoadingElement/LoadingElement";
 import {AdminAppState} from "../../../reducers/adminAppReducers";
 
 interface ModellingGroupsProps {
