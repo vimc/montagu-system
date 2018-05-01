@@ -11,7 +11,7 @@ import {reportsInitialState, ReportsState} from "../../main/report/reducers/repo
 import {ReportAppState} from "../../main/report/reducers/reportAppReducers";
 import {usersInitialState, UsersState} from "../../main/report/reducers/userReducer";
 import {usersInitialState as adminUsersInitialState} from "../../main/admin/reducers/usersReducer";
-import {initialBreadcrumbsState} from "../../main/shared/reducers/breadcrumbsReducer";
+import {BreadcrumbsState, initialBreadcrumbsState} from "../../main/shared/reducers/breadcrumbsReducer";
 import {ContribAppState} from "../../main/contrib/reducers/contribAppReducers";
 import {touchstonesInitialState, TouchstonesState} from "../../main/contrib/reducers/touchstonesReducer";
 import {responsibilitiesInitialState, ResponsibilitiesState} from "../../main/contrib/reducers/responsibilitiesReducer";
@@ -72,12 +72,13 @@ export const mockContribState = (props?: any) :ContribAppState => {
     const coverageMock: CoverageState = props && props.coverage ? props.coverage : coverageInitialState;
     const estimatesMock: EstimatesState = props && props.estimates ? props.estimates : estimatesInitialState;
     const runParametersMock: RunParametersState = props && props.runParameters ? props.runParameters : runParametersInitialState;
+    const breadcrumbsMock: BreadcrumbsState = props && props.breadcrumbs ? props && props.breadcrumbs : initialBreadcrumbsState;
 
     return {
         auth: authMock,
         form: formReducer,
         groups: groupsMock,
-        breadcrumbs: initialBreadcrumbsState,
+        breadcrumbs: breadcrumbsMock,
         user: userMock,
         touchstones: touchstonesMock,
         responsibilities: responsibilitiesMock,

@@ -30,13 +30,13 @@ describe("Breadcrumb Bar", () => {
     });
 
     it("passes crumbs from state to component", () => {
-        const store = createMockStore(mockContribState({breadcrumbs: [{name: 'A', url: 'a'}]}));
+        const store = createMockStore(mockContribState({breadcrumbs: {breadcrumbs: [{name: 'A', url: 'a'}]}}));
         const rendered = shallow(<BreadcrumbsBar />, {context: {store}});
         expect(rendered.props().crumbs).to.eql([{name: 'A', url: 'a'}])
     });
 
     it("renders one crumb based on data from state", () => {
-        const store = createMockStore(mockContribState({breadcrumbs: [{name: 'A', url: 'a'}]}));
+        const store = createMockStore(mockContribState({breadcrumbs: {breadcrumbs: [{name: 'A', url: 'a'}]}}));
         const rendered = shallow(<BreadcrumbsBar />, {context: {store}}).dive();
         const crumbs = rendered.find('div.montagu-navbar__chunk');
         expect(crumbs.length).to.equal(1);
