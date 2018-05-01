@@ -11,20 +11,20 @@ import {mockUser} from "../../../../mocks/mockModels";
 import {mockEvent} from "../../../../mocks/mocks";
 import {Sandbox} from "../../../../Sandbox";
 import {createMockStore} from "../../../../mocks/mockStore";
+import {modellingGroupsActionCreators} from "../../../../../main/admin/actions/modellingGroupsActionCreators";
 
 describe("AddMember component tests", () => {
 
     describe("connected component", () => {
         const groupId = "group-1";
-        const testUser1 = mockUser();
-        const testUser2 = mockUser();
+        const testUser1 = mockUser({username: "a"});
+        const testUser2 = mockUser({username: "b"});
 
         const sandbox = new Sandbox();
 
         afterEach(() => sandbox.restore());
 
         it("render on connect level", () => {
-
             const store = createMockStore();
             const rendered = shallow(
                 <AddMember members={[testUser1.username]} users={[testUser2]} groupId={groupId}/>,
@@ -35,6 +35,19 @@ describe("AddMember component tests", () => {
             expect(rendered.props().users).to.eql([testUser2]);
             expect(rendered.props().groupId).to.equal(groupId);
             expect(typeof rendered.props().addUserToGroup).to.equal("function");
+        });
+
+        it("when user clicks Add, emits correct actions", () => {
+            const store = createMockStore();
+            const addUserToGroupStub = sandbox.setStubReduxAction(modellingGroupsActionCreators, "addUserToGroup")
+            const rendered = shallow(
+                <AddMember members={[]} users={[testUser1, testUser2]} groupId={groupId}/>,
+                {context: {store}}
+            ).dive();
+            rendered.find("button.btn-success").simulate("click", mockEvent());
+            expect(addUserToGroupStub.called).to.be.true;
+            expect(addUserToGroupStub.getCall(0).args[0]).to.equal("group-1");
+            expect(addUserToGroupStub.getCall(0).args[1]).to.equal("a");
         });
     });
 
