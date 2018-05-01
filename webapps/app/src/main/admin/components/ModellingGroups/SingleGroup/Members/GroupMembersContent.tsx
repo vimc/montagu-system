@@ -2,7 +2,7 @@ import * as React from "react";
 import { connect } from 'react-redux';
 import { compose, branch, renderComponent} from "recompose";
 
-import {  User } from "../../../../../shared/models/Generated";
+import {ModellingGroupDetails, User} from "../../../../../shared/models/Generated";
 import { ListOfUsers } from "../../ListOfUsers";
 import { AddMember } from "./AddMember";
 
@@ -53,13 +53,21 @@ export const GroupMembersContentComponent: React.SFC<GroupMembersContentProps> =
     </div>;
 };
 
+export const mapGroupMembers = (groupDetails: ModellingGroupDetails, users: User[]) : User[] => {
+    if (!groupDetails || !groupDetails.members || !groupDetails.members.length) return [];
+    if (!users || !users.length) return [];
+    return groupDetails.members
+        .map(a => users
+            .find(u => a == u.username)
+        );
+}
+
 export const mapStateToProps = (state: AdminAppState) :Partial<GroupMembersContentProps> => {
     return {
         canManageGroupMembers: state.auth.permissions.indexOf("*/modelling-groups.manage-members") > -1,
         groupId: state.groups.currentGroupDetails ? state.groups.currentGroupDetails.id : null,
         users: state.users.users,
-        members: state.groups.currentGroupDetails && state.users.users.length ?
-            state.groups.currentGroupDetails.members.map(a => state.users.users.find(u => a == u.username)) : []
+        members: mapGroupMembers(state.groups.currentGroupDetails, state.users.users),
     }
 };
 
