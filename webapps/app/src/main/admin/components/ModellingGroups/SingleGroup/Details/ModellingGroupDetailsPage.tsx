@@ -43,7 +43,6 @@ export class ModellingGroupDetailsPageComponent extends React.Component<Modellin
 }
 
 const mapStateToProps = (state: AdminAppState) :Partial<ModellingGroupDetailsPageProps> => {
-    console.log('ppp', state)
     return {
         groupDescription: state.groups.currentGroup ? state.groups.currentGroup.description : ''
     }
