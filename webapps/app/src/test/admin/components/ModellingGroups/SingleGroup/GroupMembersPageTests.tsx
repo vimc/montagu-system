@@ -1,53 +1,49 @@
 import * as React from "react";
 import {expect} from "chai";
+import {shallow} from "enzyme";
 
+import "../../../../helper";
 import {Sandbox} from "../../../../Sandbox";
-import {userStore} from "../../../../../main/admin/stores/UserStore";
-import {groupStore} from "../../../../../main/admin/stores/GroupStore";
-import {mockLocation, mockMatch} from "../../../../mocks/mocks";
-import {GroupMembersPage} from "../../../../../main/admin/components/ModellingGroups/SingleGroup/Members/GroupMembersPage";
-import {ModellingGroupDetailsPageProps} from "../../../../../main/admin/components/ModellingGroups/SingleGroup/Details/ModellingGroupDetailsPage";
-import {checkAsync, checkPromise} from "../../../../testHelpers";
-import {expectOneAction} from "../../../../actionHelpers";
-import {alt} from "../../../../../main/shared/alt";
-import {addNavigationTests} from "../../../../shared/NavigationTests";
-import {mockFetcherForMultipleResponses} from "../../../../mocks/mockMultipleEndpoints";
-import {mockModellingGroup, mockModellingGroupDetails, mockUser} from "../../../../mocks/mockModels";
-import {mockGroupDetailsEndpoint, mockGroupsEndpoint, mockUsersEndpoint} from "../../../../mocks/mockEndpoints";
+import {mockMatch} from "../../../../mocks/mocks";
+import {
+    GroupMembersPage,
+    GroupMembersPageLocationProps
+} from "../../../../../main/admin/components/ModellingGroups/SingleGroup/Members/GroupMembersPage";
+import {mockModellingGroup} from "../../../../mocks/mockModels";
+import {createMockStore} from "../../../../mocks/mockStore";
+import {modellingGroupMembersPageActionCreators} from "../../../../../main/admin/actions/pages/modellingGroupMembersPageActionCreators";
+import {GroupMembersContent} from "../../../../../main/admin/components/ModellingGroups/SingleGroup/Members/GroupMembersContent";
 
-// describe("GroupMembersPage", () => {
-//     const sandbox = new Sandbox();
-//     const groupId = "group-1";
-//     const match = mockMatch<ModellingGroupDetailsPageProps>({groupId: groupId});
-//     const location = mockLocation();
-//
-//     beforeEach(() => alt.recycle());
-//     afterEach(() => sandbox.restore());
-//
-//     it("triggers fetch on load", (done: DoneCallback) => {
-//         const fetchUsers = sandbox.sinon.stub(userStore, "fetchUsers").returns(Promise.resolve(true));
-//         const fetchGroups = sandbox.sinon.stub(groupStore, "fetchGroups").returns(Promise.resolve([]));
-//         const fetchGroupDetails = sandbox.sinon.stub(groupStore, "fetchGroupDetails").returns(Promise.resolve({}));
-//         const dispatchSpy = sandbox.dispatchSpy();
-//
-//         const promise = new GroupMembersPage({match, location, history: null, router: null}).load(match.params);
-//         checkPromise(done, promise, (_, afterWait) => {
-//             expect(fetchGroups.called).to.equal(true, "Expected groupStore.fetchGroups to be triggered");
-//             expect(fetchUsers.called).to.equal(true, "Expected userStore.fetchUsers to be triggered");
-//             afterWait(done, () => {
-//                 expectOneAction(dispatchSpy, {action: "ModellingGroupActions.setCurrentGroup", payload: groupId});
-//                 expect(fetchGroupDetails.called).to.equal(true, "Expected groupStore.fetchGroupDetails to be triggered");
-//             });
-//         });
-//     });
-//
-//
-//     const page = new GroupMembersPage({location, router: null, match, history: null});
-//     addNavigationTests(page, sandbox, () => {
-//         mockFetcherForMultipleResponses([
-//             mockUsersEndpoint([mockUser()]),
-//             mockGroupsEndpoint([mockModellingGroup({id: groupId})]),
-//             mockGroupDetailsEndpoint(mockModellingGroupDetails())
-//         ]);
-//     });
-// });
+describe("Modelling Groups Members Page Component Tests", () => {
+
+    const testGroup = mockModellingGroup();
+
+    const testState = {
+        groups: { currentGroup: testGroup}
+    }
+
+    const sandbox = new Sandbox();
+    afterEach(() => sandbox.restore());
+
+    it("renders component on connect level", () => {
+        let store = createMockStore(testState);
+        const rendered = shallow(<GroupMembersPage/>, {context: {store}});
+        expect(rendered.props().groupDescription).is.equal(testGroup.description);
+        expect(typeof rendered.props().onLoad).is.equal('function');
+    });
+
+    it("renders page component, title and sub component", () => {
+        let testMatch = mockMatch<GroupMembersPageLocationProps>({groupId: testGroup.id});
+        let store = createMockStore(testState);
+        const onLoadStub = sandbox.setStubReduxAction(modellingGroupMembersPageActionCreators, "onLoad");
+        const rendered = shallow(<GroupMembersPage
+            match={testMatch}
+        />, {context: {store}}).dive();
+        const pageArticle = rendered.find('PageArticle');
+        expect(onLoadStub.called).is.equal(true);
+        expect(onLoadStub.getCall(0).args[0].groupId).is.equal(testGroup.id);
+        expect(pageArticle.props().title).is.equal(`Manage membership for ${testGroup.description}`);
+        expect(pageArticle.find(GroupMembersContent).length).is.equal(1);
+    });
+
+});

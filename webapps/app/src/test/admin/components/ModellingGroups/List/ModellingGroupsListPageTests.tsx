@@ -24,7 +24,7 @@ describe("Modelling Groups List Page Component Tests", () => {
         expect(typeof rendered.props().onLoad).is.equal('function');
     });
 
-    it("renders component on component level, renders title and sub component", () => {
+    it("renders page component, title and sub component", () => {
         let testMatch = mockMatch<undefined>();
         let store = createMockStore();
         const onLoadStub = sandbox.setStubReduxAction(modellingGroupsListPageActionCreators, "onLoad");

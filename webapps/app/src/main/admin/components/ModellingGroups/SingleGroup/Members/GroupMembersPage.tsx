@@ -47,7 +47,6 @@ export class GroupMembersPageComponent extends React.Component<GroupMembersPageP
 }
 
 const mapStateToProps = (state: AdminAppState) :Partial<GroupMembersPageProps> => {
-    console.log('ppp', state)
     return {
         groupDescription: state.groups.currentGroup ? state.groups.currentGroup.description : ''
     }
