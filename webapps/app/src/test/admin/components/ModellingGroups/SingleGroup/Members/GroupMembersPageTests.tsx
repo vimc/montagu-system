@@ -2,17 +2,17 @@ import * as React from "react";
 import {expect} from "chai";
 import {shallow} from "enzyme";
 
-import "../../../../helper";
-import {Sandbox} from "../../../../Sandbox";
-import {mockMatch} from "../../../../mocks/mocks";
+import "../../../../../helper";
+import {Sandbox} from "../../../../../Sandbox";
+import {mockMatch} from "../../../../../mocks/mocks";
 import {
     GroupMembersPage,
     GroupMembersPageLocationProps
-} from "../../../../../main/admin/components/ModellingGroups/SingleGroup/Members/GroupMembersPage";
-import {mockModellingGroup} from "../../../../mocks/mockModels";
-import {createMockStore} from "../../../../mocks/mockStore";
-import {modellingGroupMembersPageActionCreators} from "../../../../../main/admin/actions/pages/modellingGroupMembersPageActionCreators";
-import {GroupMembersContent} from "../../../../../main/admin/components/ModellingGroups/SingleGroup/Members/GroupMembersContent";
+} from "../../../../../../main/admin/components/ModellingGroups/SingleGroup/Members/GroupMembersPage";
+import {mockModellingGroup} from "../../../../../mocks/mockModels";
+import {createMockStore} from "../../../../../mocks/mockStore";
+import {modellingGroupMembersPageActionCreators} from "../../../../../../main/admin/actions/pages/modellingGroupMembersPageActionCreators";
+import {GroupMembersContent} from "../../../../../../main/admin/components/ModellingGroups/SingleGroup/Members/GroupMembersContent";
 
 describe("Modelling Groups Members Page Component Tests", () => {
 

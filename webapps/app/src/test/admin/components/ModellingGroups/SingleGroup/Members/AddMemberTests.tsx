@@ -2,16 +2,16 @@ import {shallow} from "enzyme";
 import * as React from "react";
 import {expect} from "chai";
 
-import "../../../../helper";
+import "../../../../../helper";
 import {
     AddMember, AddMemberComponent,
     AddMemberState
-} from "../../../../../main/admin/components/ModellingGroups/SingleGroup/Members/AddMember";
-import {mockUser} from "../../../../mocks/mockModels";
-import {mockEvent} from "../../../../mocks/mocks";
-import {Sandbox} from "../../../../Sandbox";
-import {createMockStore} from "../../../../mocks/mockStore";
-import {modellingGroupsActionCreators} from "../../../../../main/admin/actions/modellingGroupsActionCreators";
+} from "../../../../../../main/admin/components/ModellingGroups/SingleGroup/Members/AddMember";
+import {mockUser} from "../../../../../mocks/mockModels";
+import {mockEvent} from "../../../../../mocks/mocks";
+import {Sandbox} from "../../../../../Sandbox";
+import {createMockStore} from "../../../../../mocks/mockStore";
+import {modellingGroupsActionCreators} from "../../../../../../main/admin/actions/modellingGroupsActionCreators";
 
 describe("AddMember component tests", () => {
 

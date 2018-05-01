@@ -2,17 +2,17 @@ import * as React from "react";
 import {expect} from "chai";
 import {shallow, mount} from "enzyme";
 
-import "../../../../helper";
+import "../../../../../helper";
 import {
     GroupMembersContentComponent,
     GroupMembersContent,
     GroupMembersListComponent, AddGroupMembersComponent
-} from "../../../../../main/admin/components/ModellingGroups/SingleGroup/Members/GroupMembersContent";
-import {mockModellingGroupDetails, mockUser} from "../../../../mocks/mockModels";
-import {ListOfUsers} from "../../../../../main/admin/components/ModellingGroups/ListOfUsers";
-import {AddMember} from "../../../../../main/admin/components/ModellingGroups/SingleGroup/Members/AddMember";
-import {Sandbox} from "../../../../Sandbox";
-import {createMockStore} from "../../../../mocks/mockStore";
+} from "../../../../../../main/admin/components/ModellingGroups/SingleGroup/Members/GroupMembersContent";
+import {mockModellingGroupDetails, mockUser} from "../../../../../mocks/mockModels";
+import {ListOfUsers} from "../../../../../../main/admin/components/ModellingGroups/ListOfUsers";
+import {AddMember} from "../../../../../../main/admin/components/ModellingGroups/SingleGroup/Members/AddMember";
+import {Sandbox} from "../../../../../Sandbox";
+import {createMockStore} from "../../../../../mocks/mockStore";
 
 
 describe("GroupMembersContent component tests", () => {
