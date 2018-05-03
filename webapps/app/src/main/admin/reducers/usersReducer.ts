@@ -12,7 +12,7 @@ export const usersInitialState: UsersState = {
 export const usersReducer = (state = usersInitialState, action: UsersAction) => {
     switch (action.type) {
         case UsersTypes.ALL_USERS_FETCHED:
-            return {...state, users: action.data};
+            return {...state, users: action.data ? action.data : []};
         default:
             return state;
     }
