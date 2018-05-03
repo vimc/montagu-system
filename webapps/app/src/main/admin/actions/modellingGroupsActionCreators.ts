@@ -1,4 +1,5 @@
 import { Dispatch } from "redux";
+import {compact} from "lodash";
 
 import { ModellingGroupsService } from "../../shared/services/ModellingGroupsService";
 import {AdminAppState} from "../reducers/adminAppReducers";
@@ -39,7 +40,7 @@ export const modellingGroupsActionCreators = {
             const currentGroup = groups.find(group => group.id === groupId);
             dispatch({
                 type: ModellingGroupTypes.SET_CURRENT_ADMIN_GROUP,
-                data: currentGroup
+                data: currentGroup ? currentGroup : null
             } as SetCurrentAdminGroup);
         }
     },
@@ -85,8 +86,9 @@ export const modellingGroupsActionCreators = {
                 } as SetCurrentAdminGroupMembers);
             }
 
-            const currentGroupMembers = currentGroupDetails.members
-                .map(memberUsername => allUsers.find(user => user.username === memberUsername));
+            const currentGroupMembers = compact(currentGroupDetails.members
+                .map(memberUsername => allUsers.find(user => user.username === memberUsername))
+            );
 
             dispatch({
                 type: ModellingGroupTypes.SET_CURRENT_ADMIN_GROUP_MEMBERS,
