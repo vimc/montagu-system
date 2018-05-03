@@ -23,8 +23,9 @@ export const modellingGroupDetailsPageActionCreators = {
         return async (dispatch: Dispatch<AdminAppState>) => {
             await dispatch(modellingGroupsListPageActionCreators.loadData());
             dispatch(modellingGroupsActionCreators.setCurrentGroup(params.groupId));
-            await dispatch(modellingGroupsActionCreators.getGroupDetails(params.groupId));
             await dispatch(usersActionCreators.getAllUsers());
+            await dispatch(modellingGroupsActionCreators.getGroupDetails(params.groupId));
+            dispatch(modellingGroupsActionCreators.setCurrentGroupMembers());
         }
     }
 

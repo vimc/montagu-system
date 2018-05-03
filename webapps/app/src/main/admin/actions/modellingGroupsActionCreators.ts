@@ -7,7 +7,7 @@ import {
     AdminGroupsFetched,
     ModellingGroupTypes,
     SetAdminGroupDetails,
-    SetCurrentAdminGroup
+    SetCurrentAdminGroup, SetCurrentAdminGroupMembers
 } from "../actionTypes/ModellingGroupsTypes";
 import {ContribAppState} from "../../contrib/reducers/contribAppReducers";
 
@@ -51,6 +51,7 @@ export const modellingGroupsActionCreators = {
             if (result === "OK") {
                 dispatch(this.clearCacheForGroupDetails(groupId));
                 await dispatch(this.getGroupDetails(groupId));
+                dispatch(this.setCurrentGroupMembers());
             }
         }
     },
@@ -62,6 +63,7 @@ export const modellingGroupsActionCreators = {
             if (result === "OK") {
                 dispatch(this.clearCacheForGroupDetails(groupId));
                 await dispatch(this.getGroupDetails(groupId));
+                dispatch(this.setCurrentGroupMembers());
             }
         }
     },
@@ -71,4 +73,26 @@ export const modellingGroupsActionCreators = {
             (new ModellingGroupsService(dispatch, getState)).clearCacheForGroupDetails(groupId);
         }
     },
+
+    setCurrentGroupMembers() {
+        return (dispatch: Dispatch<AdminAppState>, getState: () => AdminAppState) => {
+            const currentGroupDetails = getState().groups.currentGroupDetails;
+            const allUsers = getState().users.users;
+            if (!currentGroupDetails || !allUsers.length) {
+                return dispatch({
+                    type: ModellingGroupTypes.SET_CURRENT_ADMIN_GROUP_MEMBERS,
+                    data: []
+                } as SetCurrentAdminGroupMembers);
+            }
+
+            const currentGroupMembers = currentGroupDetails.members
+                .map(memberUsername => allUsers.find(user => user.username === memberUsername));
+
+            dispatch({
+                type: ModellingGroupTypes.SET_CURRENT_ADMIN_GROUP_MEMBERS,
+                data: currentGroupMembers
+            } as SetCurrentAdminGroupMembers);
+        }
+    },
+
 };

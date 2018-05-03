@@ -5,20 +5,20 @@ import {AdminAppState} from "../../reducers/adminAppReducers";
 
 import {modellingGroupDetailsPageActionCreators} from "./modellingGroupDetailsPageActionCreators";
 import {
-    GroupMembersPageComponent,
-    GroupMembersPageLocationProps
-} from "../../components/ModellingGroups/SingleGroup/Members/GroupMembersPage";
+    ModellingGroupMembersPageComponent,
+    ModellingGroupMembersPageLocationProps
+} from "../../components/ModellingGroups/SingleGroup/Members/ModellingGroupMembersPage";
 
 export const modellingGroupMembersPageActionCreators = {
 
-    onLoad(params: GroupMembersPageLocationProps) {
+    onLoad(params: ModellingGroupMembersPageLocationProps) {
         return async (dispatch: Dispatch<AdminAppState>, getState : () => AdminAppState) => {
             await dispatch(this.loadData(params));
-            dispatch(breadcrumbsActionCreators.createBreadcrumbs(GroupMembersPageComponent.breadcrumb(getState())));
+            dispatch(breadcrumbsActionCreators.createBreadcrumbs(ModellingGroupMembersPageComponent.breadcrumb(getState())));
         }
     },
 
-    loadData(params: GroupMembersPageLocationProps) {
+    loadData(params: ModellingGroupMembersPageLocationProps) {
         return async (dispatch: Dispatch<AdminAppState>) => {
             await dispatch(modellingGroupDetailsPageActionCreators.loadData(params));
         }

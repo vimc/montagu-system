@@ -2,18 +2,18 @@ import * as React from "react";
 import { expect } from "chai";
 import { shallow } from "enzyme";
 
-import "../../../../helper";
-import { mockUser } from "../../../../mocks/mockModels";
-import { Sandbox } from "../../../../Sandbox";
-import { InternalLink } from "../../../../../main/shared/components/InternalLink";
+import "../../../../../helper";
+import { mockUser } from "../../../../../mocks/mockModels";
+import { Sandbox } from "../../../../../Sandbox";
+import { InternalLink } from "../../../../../../main/shared/components/InternalLink";
 import {
-    DeletableUser,
-    DeletableUserComponent
-} from "../../../../../main/admin/components/ModellingGroups/DeletableUser";
-import {createMockStore} from "../../../../mocks/mockStore";
-import {modellingGroupsActionCreators} from "../../../../../main/admin/actions/modellingGroupsActionCreators";
+    ModellingGroupMembersDeletableUser,
+    ModellingGroupMembersDeletableUserComponent
+} from "../../../../../../main/admin/components/ModellingGroups/SingleGroup/Members/ModellingGroupMembersDeletableUser";
+import {createMockStore} from "../../../../../mocks/mockStore";
+import {modellingGroupsActionCreators} from "../../../../../../main/admin/actions/modellingGroupsActionCreators";
 
-describe("Deletable User Component tests", () => {
+describe("Modelling Group Members Deletable User Component tests", () => {
 
     describe("Connected", () => {
 
@@ -23,7 +23,7 @@ describe("Deletable User Component tests", () => {
         it("passes right props on connect level", () => {
             const store = createMockStore();
             const testUser = mockUser();
-            const rendered = shallow(<DeletableUser
+            const rendered = shallow(<ModellingGroupMembersDeletableUser
                 user={testUser}
                 groupId={"g-1"}
                 showDelete={true}
@@ -37,7 +37,7 @@ describe("Deletable User Component tests", () => {
         it("triggers action on remove click", () => {
             const store = createMockStore();
             const testUser = mockUser();
-            const rendered = shallow(<DeletableUser
+            const rendered = shallow(<ModellingGroupMembersDeletableUser
                 user={testUser}
                 groupId={"g-1"}
                 showDelete={true}
@@ -63,7 +63,7 @@ describe("Deletable User Component tests", () => {
         afterEach(() => sandbox.restore());
 
         it("renders link to user page", () => {
-            const rendered = shallow(<DeletableUserComponent
+            const rendered = shallow(<ModellingGroupMembersDeletableUserComponent
                 showDelete={true}
                 groupId="group1"
                 user={testUser}
@@ -73,7 +73,7 @@ describe("Deletable User Component tests", () => {
         });
 
         it("renders delete link", () => {
-            const rendered = shallow(<DeletableUserComponent
+            const rendered = shallow(<ModellingGroupMembersDeletableUserComponent
                 showDelete={true}
                 groupId="group1"
                 user={testUser}
@@ -84,7 +84,7 @@ describe("Deletable User Component tests", () => {
         });
 
         it("does not render delete link if showDelete is false", () => {
-            const rendered = shallow(<DeletableUserComponent
+            const rendered = shallow(<ModellingGroupMembersDeletableUserComponent
                 showDelete={false}
                 groupId="group1"
                 user={testUser}
@@ -95,7 +95,7 @@ describe("Deletable User Component tests", () => {
         });
 
         it("triggers remove function", () => {
-            const rendered = shallow(<DeletableUserComponent
+            const rendered = shallow(<ModellingGroupMembersDeletableUserComponent
                 showDelete={true}
                 groupId="group1"
                 user={testUser}

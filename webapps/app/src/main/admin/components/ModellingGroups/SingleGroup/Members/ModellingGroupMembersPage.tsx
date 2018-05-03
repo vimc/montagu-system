@@ -3,7 +3,7 @@ import { compose} from "recompose";
 import { connect } from 'react-redux';
 import { Dispatch } from "redux";
 
-import { GroupMembersContent } from "./GroupMembersContent";
+import { ModellingGroupMembersContent } from "./ModellingGroupMembersContent";
 import {PageBreadcrumb, PageProperties} from "../../../../../shared/components/PageWithHeader/PageWithHeader";
 import {AdminAppState} from "../../../../reducers/adminAppReducers";
 import {
@@ -13,15 +13,15 @@ import { PageArticle } from "../../../../../shared/components/PageWithHeader/Pag
 import {AdminPageHeader} from "../../../AdminPageHeader";
 import {modellingGroupMembersPageActionCreators} from "../../../../actions/pages/modellingGroupMembersPageActionCreators";
 
-export interface GroupMembersPageLocationProps {
+export interface ModellingGroupMembersPageLocationProps {
     groupId: string;
 }
 
-export interface GroupMembersPageProps extends PageProperties<GroupMembersPageLocationProps> {
+export interface ModellingGroupMembersPageProps extends PageProperties<ModellingGroupMembersPageLocationProps> {
     groupDescription: string;
 };
 
-export class GroupMembersPageComponent extends React.Component<GroupMembersPageProps> {
+export class ModellingGroupMembersPageComponent extends React.Component<ModellingGroupMembersPageProps> {
     static title: string = "Manage group members";
 
     componentDidMount() {
@@ -30,7 +30,7 @@ export class GroupMembersPageComponent extends React.Component<GroupMembersPageP
 
     static breadcrumb(state: AdminAppState): PageBreadcrumb {
         return {
-            name: GroupMembersPageComponent.title,
+            name: ModellingGroupMembersPageComponent.title,
             urlFragment: "admin/",
             parent: ModellingGroupDetailsPageComponent.breadcrumb(state)
         }
@@ -40,27 +40,27 @@ export class GroupMembersPageComponent extends React.Component<GroupMembersPageP
         return <div>
             <AdminPageHeader/>
             <PageArticle title={`Manage membership for ${this.props.groupDescription}`}>
-                <GroupMembersContent />
+                <ModellingGroupMembersContent />
             </PageArticle>
         </div>;;
     }
 }
 
-const mapStateToProps = (state: AdminAppState) :Partial<GroupMembersPageProps> => {
+const mapStateToProps = (state: AdminAppState) :Partial<ModellingGroupMembersPageProps> => {
     return {
         groupDescription: state.groups.currentGroup ? state.groups.currentGroup.description : ''
     }
 };
 
-export const mapDispatchToProps = (dispatch: Dispatch<AdminAppState>): Partial<GroupMembersPageProps> => {
+export const mapDispatchToProps = (dispatch: Dispatch<AdminAppState>): Partial<ModellingGroupMembersPageProps> => {
     return {
-        onLoad: (params: GroupMembersPageLocationProps) => dispatch(modellingGroupMembersPageActionCreators.onLoad(params))
+        onLoad: (params: ModellingGroupMembersPageLocationProps) => dispatch(modellingGroupMembersPageActionCreators.onLoad(params))
     }
 };
 
-export const GroupMembersPage = compose(
+export const ModellingGroupMembersPage = compose(
     connect(mapStateToProps, mapDispatchToProps),
-)(GroupMembersPageComponent) as React.ComponentClass<Partial<GroupMembersPageProps>>;
+)(ModellingGroupMembersPageComponent) as React.ComponentClass<Partial<ModellingGroupMembersPageProps>>;
 
 
 

@@ -1,16 +1,18 @@
 import { ModellingGroupsAction, ModellingGroupTypes } from "../actionTypes/ModellingGroupsTypes";
-import {ModellingGroup, ModellingGroupDetails} from "../../shared/models/Generated";
+import {ModellingGroup, ModellingGroupDetails, User} from "../../shared/models/Generated";
 
 export interface    ModellingGroupsState {
     groups: ModellingGroup[];
     currentGroup: ModellingGroup;
     currentGroupDetails: ModellingGroupDetails;
+    currentGroupMembers: User[];
 }
 
 export const modellingGroupInitialState: ModellingGroupsState = {
     groups: [],
     currentGroup: null,
-    currentGroupDetails: null
+    currentGroupDetails: null,
+    currentGroupMembers: []
 };
 
 export const modellingGroupsReducer = (state = modellingGroupInitialState, action: ModellingGroupsAction) => {
@@ -19,6 +21,8 @@ export const modellingGroupsReducer = (state = modellingGroupInitialState, actio
             return {...state, groups: action.data ? action.data : [] };
         case ModellingGroupTypes.SET_CURRENT_ADMIN_GROUP:
             return {...state, currentGroup: action.data };
+        case ModellingGroupTypes.SET_CURRENT_ADMIN_GROUP_MEMBERS:
+            return {...state, currentGroupMembers: action.data };
         case ModellingGroupTypes.ADMIN_GROUP_DETAILS_FETCHED:
             return {...state, currentGroupDetails: action.data };
         default:

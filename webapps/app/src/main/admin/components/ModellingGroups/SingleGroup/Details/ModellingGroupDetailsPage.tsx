@@ -38,7 +38,7 @@ export class ModellingGroupDetailsPageComponent extends React.Component<Modellin
             <PageArticle title={this.props.groupDescription}>
                 <ModellingGroupDetailsContent />
             </PageArticle>
-        </div>;;
+        </div>;
     }
 }
 

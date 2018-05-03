@@ -7,25 +7,25 @@ import { User } from "../../../../../shared/models/Generated";
 import {AdminAppState} from "../../../../reducers/adminAppReducers";
 import {modellingGroupsActionCreators} from "../../../../actions/modellingGroupsActionCreators";
 
-export interface AddMemberProps {
+export interface ModellingGroupMembersAddProps {
     members: string[];
     users: User[];
     groupId: string;
     addUserToGroup: (groupId: string, username: string) => void;
 };
 
-export interface AddMemberState {
+export interface ModellingGroupMembersAddState {
     options: User[];
     selectedUser: string;
 };
 
-export class AddMemberComponent extends React.Component<AddMemberProps, AddMemberState> {
+export class ModellingGroupMembersAddComponent extends React.Component<ModellingGroupMembersAddProps, ModellingGroupMembersAddState> {
 
     componentWillMount() {
         this.componentWillReceiveProps(this.props);
     }
 
-    componentWillReceiveProps(props: AddMemberProps) {
+    componentWillReceiveProps(props: ModellingGroupMembersAddProps) {
         const options = props.users
             .filter(x => props.members.indexOf(x.username) == -1)
             .sort((a, b) => a.username.localeCompare(b.username));
@@ -77,22 +77,22 @@ export class AddMemberComponent extends React.Component<AddMemberProps, AddMembe
     }
 }
 
-export const mapStateToProps = (state: AdminAppState, props: Partial<AddMemberProps>) :Partial<AddMemberProps> => {
+export const mapStateToProps = (state: AdminAppState, props: Partial<ModellingGroupMembersAddProps>) :Partial<ModellingGroupMembersAddProps> => {
     return {
         members: props.members,
-        users: props.users,
+        users: state.users.users,
         groupId: props.groupId
     }
 };
 
-export const mapDispatchToProps = (dispatch: Dispatch<AdminAppState>): Partial<AddMemberProps> => {
+export const mapDispatchToProps = (dispatch: Dispatch<AdminAppState>): Partial<ModellingGroupMembersAddProps> => {
     return {
         addUserToGroup: (groupId: string, username: string) => dispatch(modellingGroupsActionCreators.addUserToGroup(groupId, username))
     }
 };
 
-export const AddMember = compose(
+export const ModellingGroupMembersAdd = compose(
     connect(mapStateToProps, mapDispatchToProps),
-)(AddMemberComponent) as React.ComponentClass<Partial<AddMemberProps>>;
+)(ModellingGroupMembersAddComponent) as React.ComponentClass<Partial<ModellingGroupMembersAddProps>>;
 
 

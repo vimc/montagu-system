@@ -10,7 +10,7 @@ import {
     ModellingGroupDetailsContent,
     ModellingGroupDetailsContentComponent
 } from "../../../../../../main/admin/components/ModellingGroups/SingleGroup/Details/ModellingGroupDetailsContent";
-import {GroupMembersSummary} from "../../../../../../main/admin/components/ModellingGroups/SingleGroup/Details/GroupMembersSummary";
+import {ModellingGroupDetailsMembers} from "../../../../../../main/admin/components/ModellingGroups/SingleGroup/Details/ModellingGroupDetailsMembers";
 
 
 describe("Modelling Group Details Content Component tests", () => {
@@ -27,14 +27,13 @@ describe("Modelling Group Details Content Component tests", () => {
 
         it("props on connect level, can manage", () => {
             const testState = {
-                groups: { currentGroupDetails: testGroupDetails},
-                users: { users: [testUser, testUser2]},
+                groups: { currentGroupDetails: testGroupDetails, currentGroupMembers: [testUser, testUser2]},
                 auth: { permissions: ["*/modelling-groups.manage-members"] }
             }
             const store = createMockStore(testState);
             const rendered = shallow(<ModellingGroupDetailsContent/>, {context: {store}});
             expect(rendered.props().group).to.equal(testGroupDetails);
-            expect(rendered.props().users).to.eql([testUser, testUser2]);
+            expect(rendered.props().members).to.eql([testUser, testUser2]);
             expect(rendered.props().canManageGroupMembers).to.be.true;
         });
 
@@ -55,15 +54,15 @@ describe("Modelling Group Details Content Component tests", () => {
         it("renders group details content", () => {
             const rendered = shallow(<ModellingGroupDetailsContentComponent
                 group={testGroupDetails}
-                users={[testUser]}
+                members={[testUser]}
                 canManageGroupMembers={true}
             />);
             const rows = rendered.find('tr');
             expect(rows.at(0).find('td').at(1).text()).to.equal(testGroupDetails.id);
-            const summary = rows.at(1).find(GroupMembersSummary);
+            const summary = rows.at(1).find(ModellingGroupDetailsMembers);
             expect(summary.length).to.equal(1);
             expect(summary.props().group).to.eql(testGroupDetails);
-            expect(summary.props().allUsers).to.eql([testUser]);
+            expect(summary.props().members).to.eql([testUser]);
             expect(summary.props().canEdit).to.be.true;
         });
 
