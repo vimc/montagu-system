@@ -23,21 +23,25 @@ export interface ResponsibilityOverviewContentProps {
     touchstoneId: string;
 }
 
+function paramsSection(props: ResponsibilityOverviewContentProps) {
+    if (settings.isStochasticTouchstone(props.touchstoneId) || !settings.isApplicantTouchstone(props.touchstoneId)) {
+        const parametersUrl = `/${props.modellingGroup.id}/responsibilities/${props.touchstoneId}/parameters/`;
+        return <div id="params-section">
+            <div className="largeSectionTitle">Parameters</div>
+            <div><a key={"params"}
+                    href={stochasticParams}>Download stochastic parameters template</a>
+            </div>
+            <ButtonLink href={parametersUrl}>Upload parameters</ButtonLink>
+        </div>
+    } else {
+        return null;
+    }
+}
+
 export const ResponsibilityOverviewContentComponent: React.SFC<ResponsibilityOverviewContentProps> =
     (props: ResponsibilityOverviewContentProps) => {
 
         const demographyUrl = `/${props.modellingGroup.id}/responsibilities/${props.touchstoneId}/demographics/`;
-        const parametersUrl = `/${props.modellingGroup.id}/responsibilities/${props.touchstoneId}/parameters/`;
-
-        const paramsSection =
-            settings.isStochasticTouchstone(props.touchstoneId) || !settings.isApplicantTouchstone(props.touchstoneId) ?
-                <div id="params-section">
-                    <div className="largeSectionTitle">Parameters</div>
-                    <div><a key={"params"}
-                            href={stochasticParams}>Download stochastic parameters template</a>
-                    </div>
-                    <ButtonLink href={parametersUrl}>Upload parameters</ButtonLink>
-                </div> : null;
 
         return <div>
             <ResponsibilityOverviewDescription
@@ -48,7 +52,7 @@ export const ResponsibilityOverviewContentComponent: React.SFC<ResponsibilityOve
             <div className="mt-3">
                 <ButtonLink href={demographyUrl}>Download demographic data</ButtonLink>
             </div>
-            {paramsSection}
+            {paramsSection(props)}
             <div className="largeSectionTitle">Scenarios</div>
             <ResponsibilityList
                 modellingGroup={props.modellingGroup}
