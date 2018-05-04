@@ -1,6 +1,6 @@
 import * as React from "react";
-import { compose, branch, renderComponent } from "recompose";
-import { connect } from 'react-redux';
+import {compose, branch, renderComponent} from "recompose";
+import {connect} from 'react-redux';
 
 import {IExtendedResponsibilitySet} from "../../../models/ResponsibilitySet";
 import {ModellingGroup} from "../../../../shared/models/Generated";
@@ -26,35 +26,38 @@ export interface ResponsibilityOverviewContentProps {
 export const ResponsibilityOverviewContentComponent: React.SFC<ResponsibilityOverviewContentProps> =
     (props: ResponsibilityOverviewContentProps) => {
 
-    const demographyUrl = `/${props.modellingGroup.id}/responsibilities/${props.touchstoneId}/demographics/`;
-    const parametersUrl = `/${props.modellingGroup.id}/responsibilities/${props.touchstoneId}/parameters/`;
+        const demographyUrl = `/${props.modellingGroup.id}/responsibilities/${props.touchstoneId}/demographics/`;
+        const parametersUrl = `/${props.modellingGroup.id}/responsibilities/${props.touchstoneId}/parameters/`;
 
-    const paramsSection = <div id="params-section">
-        <div className="largeSectionTitle">Parameters</div>
-        <div><a key={"params"}
-                href={stochasticParams}>Download stochastic parameters template</a>
-        </div>
-        <ButtonLink href={parametersUrl}>Upload parameters</ButtonLink>
-    </div>;
-    return <div>
-        <ResponsibilityOverviewDescription
-            currentTouchstoneId={props.touchstoneId}
-        />
-        <ResponsibilitySetStatusMessage status={props.responsibilitySet.status}/>
-        <div className="largeSectionTitle">Demographic data</div>
-        <div className="mt-3">
-            <ButtonLink href={demographyUrl}>Download demographic data</ButtonLink>
-        </div>
-        {!settings.isApplicantTouchstone(props.touchstoneId) && paramsSection}
-        <div className="largeSectionTitle">Scenarios</div>
-        <ResponsibilityList
-            modellingGroup={props.modellingGroup}
-            responsibilitySet={props.responsibilitySet}
-            currentDiseaseId={props.currentDiseaseId}
-        />
+        const paramsSection =
+            settings.isStochasticTouchstone(props.touchstoneId) || !settings.isApplicantTouchstone(props.touchstoneId) ?
+                <div id="params-section">
+                    <div className="largeSectionTitle">Parameters</div>
+                    <div><a key={"params"}
+                            href={stochasticParams}>Download stochastic parameters template</a>
+                    </div>
+                    <ButtonLink href={parametersUrl}>Upload parameters</ButtonLink>
+                </div> : null;
 
-    </div>
-}
+        return <div>
+            <ResponsibilityOverviewDescription
+                currentTouchstoneId={props.touchstoneId}
+            />
+            <ResponsibilitySetStatusMessage status={props.responsibilitySet.status}/>
+            <div className="largeSectionTitle">Demographic data</div>
+            <div className="mt-3">
+                <ButtonLink href={demographyUrl}>Download demographic data</ButtonLink>
+            </div>
+            {paramsSection}
+            <div className="largeSectionTitle">Scenarios</div>
+            <ResponsibilityList
+                modellingGroup={props.modellingGroup}
+                responsibilitySet={props.responsibilitySet}
+                currentDiseaseId={props.currentDiseaseId}
+            />
+
+        </div>
+    }
 
 export const mapStateToProps = (state: ContribAppState): Partial<ResponsibilityOverviewContentProps> => {
     return {
