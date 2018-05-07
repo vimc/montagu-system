@@ -54,11 +54,11 @@ describe("Modelling Group Details Page actions tests", () => {
         setTimeout(() => {
             const actions = store.getActions();
             const expectedPayload = [
-                { type: ModellingGroupTypes.ADMIN_GROUPS_FETCHED, data: [testGroup] },
-                { type: ModellingGroupTypes.SET_CURRENT_ADMIN_GROUP, data: testGroup},
+                { type: ModellingGroupTypes.GROUPS_FETCHED, data: [testGroup] },
+                { type: ModellingGroupTypes.SET_CURRENT_GROUP, data: testGroup},
                 { type: UsersTypes.ALL_USERS_FETCHED, data: [testUser, testUser2]},
-                { type: ModellingGroupTypes.ADMIN_GROUP_DETAILS_FETCHED, data: testGroupDetails},
-                { type: ModellingGroupTypes.SET_CURRENT_ADMIN_GROUP_MEMBERS, data: [testUser]},
+                { type: ModellingGroupTypes.GROUP_DETAILS_FETCHED, data: testGroupDetails},
+                { type: ModellingGroupTypes.SET_CURRENT_GROUP_MEMBERS, data: [testUser]},
                 { type: BreadcrumbsTypes.BREADCRUMBS_RECEIVED, data: testBreadcrumbs }
             ];
             expect(actions).to.eql(expectedPayload);

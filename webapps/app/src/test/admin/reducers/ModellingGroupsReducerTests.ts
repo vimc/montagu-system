@@ -13,7 +13,7 @@ describe('Admin Modelling Groups reducer tests', () => {
 
     it('sets fetched groups', () => {
         expect(modellingGroupsReducer(undefined, {
-            type: ModellingGroupTypes.ADMIN_GROUPS_FETCHED,
+            type: ModellingGroupTypes.GROUPS_FETCHED,
             data: [testGroup, testGroup2]
         })).to.eql({...modellingGroupInitialState, groups: [testGroup, testGroup2]});
     });
@@ -21,49 +21,49 @@ describe('Admin Modelling Groups reducer tests', () => {
     it('sets fetched groups empty ', () => {
 
         expect(modellingGroupsReducer(undefined, {
-            type: ModellingGroupTypes.ADMIN_GROUPS_FETCHED,
+            type: ModellingGroupTypes.GROUPS_FETCHED,
             data: null
         })).to.eql(modellingGroupInitialState);
     });
 
     it('sets current group', () => {
         expect(modellingGroupsReducer(undefined, {
-            type: ModellingGroupTypes.SET_CURRENT_ADMIN_GROUP,
+            type: ModellingGroupTypes.SET_CURRENT_GROUP,
             data: testGroup
         })).to.eql({...modellingGroupInitialState, currentGroup: testGroup});
     });
 
     it('sets current group empty', () => {
         expect(modellingGroupsReducer(undefined, {
-            type: ModellingGroupTypes.SET_CURRENT_ADMIN_GROUP,
+            type: ModellingGroupTypes.SET_CURRENT_GROUP,
             data: null
         })).to.eql(modellingGroupInitialState);
     });
 
     it('sets current group members', () => {
         expect(modellingGroupsReducer(undefined, {
-            type: ModellingGroupTypes.SET_CURRENT_ADMIN_GROUP_MEMBERS,
+            type: ModellingGroupTypes.SET_CURRENT_GROUP_MEMBERS,
             data: [testUser]
         })).to.eql({...modellingGroupInitialState, currentGroupMembers: [testUser]});
     });
 
     it('sets current group members empty', () => {
         expect(modellingGroupsReducer(undefined, {
-            type: ModellingGroupTypes.SET_CURRENT_ADMIN_GROUP_MEMBERS,
+            type: ModellingGroupTypes.SET_CURRENT_GROUP_MEMBERS,
             data: null
         })).to.eql(modellingGroupInitialState);
     });
 
     it('sets current group details', () => {
         expect(modellingGroupsReducer(undefined, {
-            type: ModellingGroupTypes.ADMIN_GROUP_DETAILS_FETCHED,
+            type: ModellingGroupTypes.GROUP_DETAILS_FETCHED,
             data: testGroupDetails
         })).to.eql({...modellingGroupInitialState, currentGroupDetails: testGroupDetails});
     });
 
     it('sets current group details empty', () => {
         expect(modellingGroupsReducer(undefined, {
-            type: ModellingGroupTypes.ADMIN_GROUP_DETAILS_FETCHED,
+            type: ModellingGroupTypes.GROUP_DETAILS_FETCHED,
             data: null
         })).to.eql(modellingGroupInitialState);
     });

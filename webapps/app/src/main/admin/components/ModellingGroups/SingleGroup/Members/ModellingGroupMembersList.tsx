@@ -5,6 +5,7 @@ import { orderBy } from "lodash";
 import { User } from "../../../../../shared/models/Generated";
 import { ModellingGroupMembersDeletableUser } from "./ModellingGroupMembersDeletableUser";
 import {AdminAppState} from "../../../../reducers/adminAppReducers";
+import {isNonEmptyArray} from "../../../../../shared/Helpers";
 
 interface ModellingGroupMembersListProps {
     users: User[];
@@ -13,7 +14,7 @@ interface ModellingGroupMembersListProps {
 }
 
 export const ModellingGroupMembersListComponent: React.SFC<ModellingGroupMembersListProps> = (props:ModellingGroupMembersListProps) => {
-    if (!props || !Array.isArray(props.users) || !props.users.length) {
+    if (!props || !isNonEmptyArray(props.users)) {
         return <div>This group does not have any members.</div>;
     } else {
         return <div>
@@ -29,7 +30,9 @@ export const ModellingGroupMembersListComponent: React.SFC<ModellingGroupMembers
 
 // TODO: move that logic to reselect if logic becomes more complex
 const mapSortUsers = (users: User[]) => {
-    if (!Array.isArray(users) || !users.length) return [];
+    if (!isNonEmptyArray(users)) {
+        return [];
+    }
     return orderBy(users, ['name'], ['asc']);
 };
 
@@ -41,4 +44,5 @@ const mapStateToProps = (state: AdminAppState, props: Partial<ModellingGroupMemb
     }
 };
 
-export const ModellingGroupMembersList = connect(mapStateToProps)(ModellingGroupMembersListComponent);
+export const ModellingGroupMembersList = connect(mapStateToProps)(ModellingGroupMembersListComponent) as
+    React.ComponentClass<Partial<ModellingGroupMembersListProps>>;

@@ -1,36 +1,36 @@
 import {ModellingGroup, ModellingGroupDetails, User} from "../../shared/models/Generated";
 
 export enum ModellingGroupTypes {
-    ADMIN_GROUPS_FETCHED = "ADMIN_GROUPS_FETCHED",
-    ADMIN_GROUP_DETAILS_FETCHED = "ADMIN_GROUP_DETAILS_FETCHED",
-    SET_CURRENT_ADMIN_GROUP = "SET_CURRENT_ADMIN_GROUP",
-    SET_CURRENT_ADMIN_GROUP_MEMBERS = "SET_CURRENT_ADMIN_GROUP_MEMBERS"
+    GROUPS_FETCHED = "GROUPS_FETCHED",
+    GROUP_DETAILS_FETCHED = "GROUP_DETAILS_FETCHED",
+    SET_CURRENT_GROUP = "SET_CURRENT_GROUP",
+    SET_CURRENT_GROUP_MEMBERS = "SET_CURRENT_GROUP_MEMBERS"
 }
 
-export interface AdminGroupsFetched {
-    type: ModellingGroupTypes.ADMIN_GROUPS_FETCHED;
+export interface GroupsFetched {
+    type: ModellingGroupTypes.GROUPS_FETCHED;
     data: ModellingGroup[];
 }
 
-export interface SetCurrentAdminGroup {
-    type: ModellingGroupTypes.SET_CURRENT_ADMIN_GROUP;
+export interface SetCurrentGroup {
+    type: ModellingGroupTypes.SET_CURRENT_GROUP;
     data: ModellingGroup;
 }
 
-export interface SetCurrentAdminGroupMembers {
-    type: ModellingGroupTypes.SET_CURRENT_ADMIN_GROUP_MEMBERS;
+export interface SetCurrentGroupMembers {
+    type: ModellingGroupTypes.SET_CURRENT_GROUP_MEMBERS;
     data: User[];
 }
 
 
-export interface SetAdminGroupDetails {
-    type: ModellingGroupTypes.ADMIN_GROUP_DETAILS_FETCHED;
+export interface SetGroupDetails {
+    type: ModellingGroupTypes.GROUP_DETAILS_FETCHED;
     data: ModellingGroupDetails;
 }
 
 export type ModellingGroupsAction =
-    | AdminGroupsFetched
-    | SetCurrentAdminGroup
-    | SetAdminGroupDetails
-    | SetCurrentAdminGroupMembers
+    | GroupsFetched
+    | SetCurrentGroup
+    | SetGroupDetails
+    | SetCurrentGroupMembers
 ;

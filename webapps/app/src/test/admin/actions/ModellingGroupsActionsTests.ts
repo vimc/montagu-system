@@ -28,7 +28,7 @@ describe("Admin Modelling groups actions tests", () => {
         store.dispatch(modellingGroupsActionCreators.getAllGroups());
         setTimeout(() => {
             const actions = store.getActions()
-            const expectedPayload = { type: ModellingGroupTypes.ADMIN_GROUPS_FETCHED, data: [testGroup, testGroup2]};
+            const expectedPayload = { type: ModellingGroupTypes.GROUPS_FETCHED, data: [testGroup, testGroup2]};
             expect(actions).to.eql([expectedPayload]);
             expect(getAllGroupsServiceStub.called).to.be.true;
             done();
@@ -43,7 +43,7 @@ describe("Admin Modelling groups actions tests", () => {
         store.dispatch(modellingGroupsActionCreators.getGroupDetails(testGroup.id));
         setTimeout(() => {
             const actions = store.getActions()
-            const expectedPayload = { type: ModellingGroupTypes.ADMIN_GROUP_DETAILS_FETCHED, data: testGroupDetails};
+            const expectedPayload = { type: ModellingGroupTypes.GROUP_DETAILS_FETCHED, data: testGroupDetails};
             expect(actions).to.eql([expectedPayload]);
             expect(getGroupDetailsServiceStub.called).to.be.true;
             expect(getGroupDetailsServiceStub.getCall(0).args[0]).to.equal(testGroup.id);
@@ -56,7 +56,7 @@ describe("Admin Modelling groups actions tests", () => {
         store.dispatch(modellingGroupsActionCreators.setCurrentGroup(testGroup.id));
         setTimeout(() => {
             const actions = store.getActions()
-            const expectedPayload = { type: ModellingGroupTypes.SET_CURRENT_ADMIN_GROUP, data: testGroup};
+            const expectedPayload = { type: ModellingGroupTypes.SET_CURRENT_GROUP, data: testGroup};
             expect(actions).to.eql([expectedPayload]);
             done();
         });
@@ -67,7 +67,7 @@ describe("Admin Modelling groups actions tests", () => {
         store.dispatch(modellingGroupsActionCreators.setCurrentGroup(testGroup2.id));
         setTimeout(() => {
             const actions = store.getActions()
-            const expectedPayload = { type: ModellingGroupTypes.SET_CURRENT_ADMIN_GROUP, data: null as any};
+            const expectedPayload = { type: ModellingGroupTypes.SET_CURRENT_GROUP, data: null as any};
             expect(actions).to.eql([expectedPayload]);
             done();
         });
@@ -88,8 +88,8 @@ describe("Admin Modelling groups actions tests", () => {
         setTimeout(() => {
             const actions = store.getActions()
             const expectedPayload = [
-                { type: ModellingGroupTypes.ADMIN_GROUP_DETAILS_FETCHED, data: testGroupDetails},
-                { type: ModellingGroupTypes.SET_CURRENT_ADMIN_GROUP_MEMBERS, data: [testUser]}
+                { type: ModellingGroupTypes.GROUP_DETAILS_FETCHED, data: testGroupDetails},
+                { type: ModellingGroupTypes.SET_CURRENT_GROUP_MEMBERS, data: [testUser]}
             ];
             expect(actions).to.eql(expectedPayload);
             expect(addMemberServiceStub.called).to.be.true;
@@ -135,8 +135,8 @@ describe("Admin Modelling groups actions tests", () => {
         setTimeout(() => {
             const actions = store.getActions()
             const expectedPayload = [
-                { type: ModellingGroupTypes.ADMIN_GROUP_DETAILS_FETCHED, data: testGroupDetails},
-                { type: ModellingGroupTypes.SET_CURRENT_ADMIN_GROUP_MEMBERS, data: [testUser]}
+                { type: ModellingGroupTypes.GROUP_DETAILS_FETCHED, data: testGroupDetails},
+                { type: ModellingGroupTypes.SET_CURRENT_GROUP_MEMBERS, data: [testUser]}
             ];
             expect(actions).to.eql(expectedPayload);
             expect(removeMemberServiceStub.called).to.be.true;
@@ -186,7 +186,7 @@ describe("Admin Modelling groups actions tests", () => {
         store.dispatch(modellingGroupsActionCreators.setCurrentGroupMembers());
         setTimeout(() => {
             const actions = store.getActions()
-            const expectedPayload = { type: ModellingGroupTypes.SET_CURRENT_ADMIN_GROUP_MEMBERS, data: [] as any};
+            const expectedPayload = { type: ModellingGroupTypes.SET_CURRENT_GROUP_MEMBERS, data: [] as any};
             expect(actions).to.eql([expectedPayload]);
             done();
         });
@@ -197,7 +197,7 @@ describe("Admin Modelling groups actions tests", () => {
         store.dispatch(modellingGroupsActionCreators.setCurrentGroupMembers());
         setTimeout(() => {
             const actions = store.getActions()
-            const expectedPayload = { type: ModellingGroupTypes.SET_CURRENT_ADMIN_GROUP_MEMBERS, data: [] as any};
+            const expectedPayload = { type: ModellingGroupTypes.SET_CURRENT_GROUP_MEMBERS, data: [] as any};
             expect(actions).to.eql([expectedPayload]);
             done();
         });
@@ -208,7 +208,7 @@ describe("Admin Modelling groups actions tests", () => {
         store.dispatch(modellingGroupsActionCreators.setCurrentGroupMembers());
         setTimeout(() => {
             const actions = store.getActions()
-            const expectedPayload = { type: ModellingGroupTypes.SET_CURRENT_ADMIN_GROUP_MEMBERS, data: [] as any};
+            const expectedPayload = { type: ModellingGroupTypes.SET_CURRENT_GROUP_MEMBERS, data: [] as any};
             expect(actions).to.eql([expectedPayload]);
             done();
         });
@@ -219,7 +219,7 @@ describe("Admin Modelling groups actions tests", () => {
         store.dispatch(modellingGroupsActionCreators.setCurrentGroupMembers());
         setTimeout(() => {
             const actions = store.getActions()
-            const expectedPayload = { type: ModellingGroupTypes.SET_CURRENT_ADMIN_GROUP_MEMBERS, data: [testUser]};
+            const expectedPayload = { type: ModellingGroupTypes.SET_CURRENT_GROUP_MEMBERS, data: [testUser]};
             expect(actions).to.eql([expectedPayload]);
             done();
         });

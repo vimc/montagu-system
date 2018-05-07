@@ -71,3 +71,7 @@ export const helpers = {
         }
     }
 };
+
+export const isNonEmptyArray = (arrayData: any[]) => {
+    return Array.isArray(arrayData) && arrayData.length;
+}

@@ -3,14 +3,15 @@ import {compact} from "lodash";
 
 import { ModellingGroupsService } from "../../shared/services/ModellingGroupsService";
 import {AdminAppState} from "../reducers/adminAppReducers";
-import {ModellingGroup, ModellingGroupDetails, Result} from "../../shared/models/Generated";
+import {ModellingGroup, ModellingGroupDetails} from "../../shared/models/Generated";
 import {
-    AdminGroupsFetched,
+    GroupsFetched,
     ModellingGroupTypes,
-    SetAdminGroupDetails,
-    SetCurrentAdminGroup, SetCurrentAdminGroupMembers
+    SetGroupDetails,
+    SetCurrentGroup, SetCurrentGroupMembers
 } from "../actionTypes/ModellingGroupsTypes";
 import {ContribAppState} from "../../contrib/reducers/contribAppReducers";
+import {isNonEmptyArray} from "../../shared/Helpers";
 
 export const modellingGroupsActionCreators = {
 
@@ -18,9 +19,9 @@ export const modellingGroupsActionCreators = {
         return async (dispatch: Dispatch<AdminAppState>, getState: () => AdminAppState) => {
             const groups: ModellingGroup[] = await (new ModellingGroupsService(dispatch, getState)).getAllGroups();
             dispatch({
-                type: ModellingGroupTypes.ADMIN_GROUPS_FETCHED,
+                type: ModellingGroupTypes.GROUPS_FETCHED,
                 data: groups
-            } as AdminGroupsFetched );
+            } as GroupsFetched );
         }
     },
 
@@ -28,9 +29,9 @@ export const modellingGroupsActionCreators = {
         return async (dispatch: Dispatch<AdminAppState>, getState: () => AdminAppState) => {
             const groupDetails: ModellingGroupDetails = await (new ModellingGroupsService(dispatch, getState)).getGroupDetails(groupId);
             dispatch({
-                type: ModellingGroupTypes.ADMIN_GROUP_DETAILS_FETCHED,
+                type: ModellingGroupTypes.GROUP_DETAILS_FETCHED,
                 data: groupDetails
-            } as SetAdminGroupDetails);
+            } as SetGroupDetails);
         }
     },
 
@@ -39,9 +40,9 @@ export const modellingGroupsActionCreators = {
             const groups = getState().groups.groups;
             const currentGroup = groups.find(group => group.id === groupId);
             dispatch({
-                type: ModellingGroupTypes.SET_CURRENT_ADMIN_GROUP,
+                type: ModellingGroupTypes.SET_CURRENT_GROUP,
                 data: currentGroup ? currentGroup : null
-            } as SetCurrentAdminGroup);
+            } as SetCurrentGroup);
         }
     },
 
@@ -79,21 +80,20 @@ export const modellingGroupsActionCreators = {
         return (dispatch: Dispatch<AdminAppState>, getState: () => AdminAppState) => {
             const currentGroupDetails = getState().groups.currentGroupDetails;
             const allUsers = getState().users.users;
-            if (!currentGroupDetails || !allUsers.length) {
-                return dispatch({
-                    type: ModellingGroupTypes.SET_CURRENT_ADMIN_GROUP_MEMBERS,
-                    data: []
-                } as SetCurrentAdminGroupMembers);
+            let currentGroupMembers = [];
+
+            if (currentGroupDetails && isNonEmptyArray(allUsers)) {
+                currentGroupMembers = compact(currentGroupDetails.members
+                    .map(memberUsername =>
+                        allUsers.find(user => user.username === memberUsername)
+                    )
+                )
             }
 
-            const currentGroupMembers = compact(currentGroupDetails.members
-                .map(memberUsername => allUsers.find(user => user.username === memberUsername))
-            );
-
             dispatch({
-                type: ModellingGroupTypes.SET_CURRENT_ADMIN_GROUP_MEMBERS,
+                type: ModellingGroupTypes.SET_CURRENT_GROUP_MEMBERS,
                 data: currentGroupMembers
-            } as SetCurrentAdminGroupMembers);
+            } as SetCurrentGroupMembers);
         }
     },
 
